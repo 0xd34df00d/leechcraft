@@ -28,13 +28,8 @@
  **********************************************************************/
 
 #include "qmlerrorwatcher.h"
-#if QT_VERSION < 0x050000
-#include <QDeclarativeView>
-#include <QDeclarativeError>
-#else
 #include <QQuickWidget>
 #include <QQmlError>
-#endif
 #include <QtDebug>
 #include <util/sll/slotclosure.h>
 
@@ -42,22 +37,14 @@ namespace LeechCraft
 {
 namespace Util
 {
-#if QT_VERSION < 0x050000
-	QmlErrorWatcher::QmlErrorWatcher (QDeclarativeView *view)
-#else
 	QmlErrorWatcher::QmlErrorWatcher (QQuickWidget *view)
-#endif
 	: QObject { view }
 	{
 		new Util::SlotClosure<Util::NoDeletePolicy>
 		{
 			[view]
 			{
-#if QT_VERSION < 0x050000
-				if (view->status () == QDeclarativeView::Error)
-#else
 				if (view->status () == QQuickWidget::Error)
-#endif
 				{
 					qWarning () << Q_FUNC_INFO
 							<< "view errors:";
@@ -67,11 +54,7 @@ namespace Util
 				}
 			},
 			view,
-#if QT_VERSION < 0x050000
-			SIGNAL (statusChanged (QDeclarativeView::Status)),
-#else
 			SIGNAL (statusChanged (QQuickWidget::Status)),
-#endif
 			view
 		};
 	}

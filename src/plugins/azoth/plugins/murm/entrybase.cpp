@@ -580,10 +580,13 @@ namespace Murm
 				replacement += "<div style='text-align:right'>";
 				replacement += EntryBase::tr ("Posted on: %1")
 						.arg (info.PostDate_.toString ());
-				replacement += "<br/>";
-				replacement += EntryBase::tr ("%n like(s)", 0, info.Likes_);
-				replacement += "; ";
-				replacement += EntryBase::tr ("%n repost(s)", 0, info.Reposts_);
+				if (info.Likes_ || info.Reposts_)
+				{
+					replacement += "<br/>";
+					replacement += EntryBase::tr ("%n like(s)", 0, info.Likes_);
+					replacement += "; ";
+					replacement += EntryBase::tr ("%n repost(s)", 0, info.Reposts_);
+				}
 				replacement += "</div>";
 			}
 			return replacement;
@@ -695,10 +698,11 @@ namespace Murm
 			body.replace ("<div id='" + pair.first + "'></div>",
 					"<div>" + pair.second + "</div>");
 
+			pair.second.replace ('\n', "<br/>");
 			pair.second.replace ('\\', "\\\\");
 			pair.second.replace ('"', "\\\"");
 
-			js += QString ("try { document.getElementById('%1').innerHTML = \"%2\"; } catch (e) {};")
+			js += QString ("try { document.getElementById('%1').innerHTML = \"%2\"; } catch (e) { console.log(e); };")
 					.arg (pair.first)
 					.arg (pair.second);
 		}

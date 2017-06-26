@@ -19,7 +19,7 @@ set (FORMS
 	)
 set (RESOURCES summaryresources.qrc)
 
-CreateTrs ("summary" "ar;be;de;en;es;fr;it;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
+CreateTrs ("summary" "ar;be;de;en;es;fr;it;ro;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("summary" "en;ru_RU" "${SRCS}" "${FORMS}" "")
 
 QtWrapUi (UIS_H ${FORMS})

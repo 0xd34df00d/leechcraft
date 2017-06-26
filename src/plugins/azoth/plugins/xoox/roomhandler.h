@@ -72,7 +72,6 @@ namespace Xoox
 
 		QString GetRoomJID () const;
 		RoomCLEntry* GetCLEntry ();
-		void HandleVCard (const QXmppVCardIq&, const QString&);
 
 		void SetPresence (QXmppPresence);
 
@@ -100,7 +99,6 @@ namespace Xoox
 				QXmppMucItem::Role,
 				const QString&);
 		void HandleMessage (const QXmppMessage&, const QString&);
-		void UpdatePerms (const QList<QXmppMucItem>&);
 		/** Creates a new entry for the given nick if it
 		 * doesn't exist already (and does so by calling
 		 * CreateParticipantEntry()) or just returns the

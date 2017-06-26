@@ -294,6 +294,7 @@ namespace Aggregator
 		JobHolderRepresentation_ = new JobHolderRepresentation ();
 
 		DBUpThread_ = std::make_shared<DBUpdateThread> (Proxy_);
+		DBUpThread_->SetAutoQuit (true);
 		DBUpThread_->start (QThread::LowestPriority);
 		DBUpThread_->ScheduleImpl (&DBUpdateThreadWorker::WithWorker,
 				[this] (DBUpdateThreadWorker *worker)

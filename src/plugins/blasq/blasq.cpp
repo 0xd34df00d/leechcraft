@@ -29,13 +29,7 @@
 
 #include "blasq.h"
 #include <QIcon>
-
-#if QT_VERSION < 0x050000
-#include <QtDeclarative>
-#else
 #include <QtQuick>
-#endif
-
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/util.h>
 #include <util/sys/mimedetector.h>
@@ -81,9 +75,6 @@ namespace Blasq
 			TFOpenableByRequest | TFSuggestOpening
 		};
 
-#if QT_VERSION < 0x050000
-		qmlRegisterType<QGraphicsBlurEffect> ("Effects", 1, 0, "Blur");
-#endif
 		qmlRegisterUncreatableType<EnumsProxy> ("org.LC.Blasq", 1, 0, "Blasq",
 				"This exports otherwise unavailable Blasq datatypes to QML");
 	}

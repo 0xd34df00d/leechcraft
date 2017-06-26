@@ -35,6 +35,7 @@
 #include <QTimer>
 #include <QDesktopWidget>
 #include <QLabel>
+#include <QStyleOptionViewItem>
 #include <QtDebug>
 
 namespace LeechCraft
@@ -144,6 +145,11 @@ namespace Util
 		color.setGreenF (alpha * c1.greenF () + (1 - alpha) * c2.greenF ());
 		color.setBlueF (alpha * c1.blueF () + (1 - alpha) * c2.blueF ());
 		return color;
+	}
+
+	QString ElideProgressBarText (const QString& text, const QStyleOptionViewItem& option)
+	{
+		return option.fontMetrics.elidedText (text, Qt::ElideRight, option.rect.width ());
 	}
 
 	void TintPalette (QWidget *widget, const QColor& color, double alpha, const QList<QPalette::ColorRole>& roles)

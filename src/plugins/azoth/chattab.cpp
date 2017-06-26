@@ -45,11 +45,7 @@
 #include <QDesktopWidget>
 #include <QMimeData>
 #include <QToolBar>
-
-#if QT_VERSION >= 0x050000
 #include <QUrlQuery>
-#endif
-
 #include <util/xpc/defaulthookproxy.h>
 #include <util/xpc/util.h>
 #include <util/shortcuts/shortcutmanager.h>
@@ -180,6 +176,7 @@ namespace Azoth
 		Ui_.setupUi (this);
 		Ui_.View_->page ()->setNetworkAccessManager (nam);
 		Ui_.View_->installEventFilter (new ZoomEventFilter (Ui_.View_));
+		Ui_.View_->settings ()->setAttribute (QWebSettings::DeveloperExtrasEnabled, true);
 		Ui_.MsgEdit_->installEventFilter (new CopyFilter (Ui_.View_));
 		MUCEventLog_->installEventFilter (this);
 
@@ -649,7 +646,7 @@ namespace Azoth
 		if (text.isEmpty ())
 			return;
 
-		const auto& richText = ToggleRichText_->isChecked () ?
+		const auto& richText = ToggleRichEditor_->isChecked () ?
 				MsgFormatter_->GetNormalizedRichText () :
 				QString {};
 
@@ -880,34 +877,50 @@ namespace Azoth
 		RequestLogs (ScrollbackPos_);
 	}
 
+	namespace
+	{
+		void UpdateSettingWithDefaultValue (bool currentValue,
+				const QString& entryId,
+				const QString& groupName,
+				const QByteArray& propertyName)
+		{
+			const bool defaultSetting = XmlSettingsManager::Instance ().property (propertyName).toBool ();
+
+			QSettings settings (QCoreApplication::organizationName (),
+					QCoreApplication::applicationName () + "_Azoth");
+			settings.beginGroup (groupName);
+
+			auto enabled = settings.value ("Enabled").toStringList ();
+			auto disabled = settings.value ("Disabled").toStringList ();
+
+			if (currentValue == defaultSetting)
+			{
+				enabled.removeAll (entryId);
+				disabled.removeAll (entryId);
+			}
+			else if (defaultSetting)
+				disabled << entryId;
+			else
+				enabled << entryId;
+
+			settings.setValue ("Enabled", enabled);
+			settings.setValue ("Disabled", disabled);
+
+			settings.endGroup ();
+		}
+	}
+
+	void ChatTab::handleRichEditorToggled ()
+	{
+		UpdateSettingWithDefaultValue (ToggleRichEditor_->isChecked (),
+				EntryID_, "RichEditorStates", "ShowRichTextEditor");
+	}
+
 	void ChatTab::handleRichTextToggled ()
 	{
 		PrepareTheme ();
-
-		const bool defaultSetting = XmlSettingsManager::Instance ()
-				.property ("ShowRichTextMessageBody").toBool ();
-
-		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_Azoth");
-		settings.beginGroup ("RichTextStates");
-
-		auto enabled = settings.value ("Enabled").toStringList ();
-		auto disabled = settings.value ("Disabled").toStringList ();
-
-		if (ToggleRichText_->isChecked () == defaultSetting)
-		{
-			enabled.removeAll (EntryID_);
-			disabled.removeAll (EntryID_);
-		}
-		else if (defaultSetting)
-			disabled << EntryID_;
-		else
-			enabled << EntryID_;
-
-		settings.setValue ("Enabled", enabled);
-		settings.setValue ("Disabled", disabled);
-
-		settings.endGroup ();
+		UpdateSettingWithDefaultValue (ToggleRichText_->isChecked (),
+				EntryID_, "RichTextStates", "ShowRichTextMessageBody");
 	}
 
 	void ChatTab::handleQuoteSelection ()
@@ -1203,11 +1216,7 @@ namespace Azoth
 		const auto& host = url.host ();
 		if (host == "msgeditreplace")
 		{
-#if QT_VERSION < 0x050000
-			const auto& queryItems = url.queryItems ();
-#else
 			const auto& queryItems = QUrlQuery { url }.queryItems ();
-#endif
 			if (queryItems.isEmpty ())
 			{
 				Ui_.MsgEdit_->setText (url.path ().mid (1));
@@ -1243,12 +1252,7 @@ namespace Azoth
 		}
 		else if (host == "insertnick")
 		{
-#if QT_VERSION < 0x050000
-			const auto& encoded = url.encodedQueryItemValue ("nick");
-			const auto& nick = QUrl::fromPercentEncoding (encoded);
-#else
 			const auto& nick = QUrlQuery { url }.queryItemValue ("nick", QUrl::FullyDecoded);
-#endif
 			InsertNick (nick);
 
 			if (!GetMucParticipants (EntryID_).contains (nick))
@@ -1259,11 +1263,7 @@ namespace Azoth
 		}
 		else if (host == "sendentities")
 		{
-#if QT_VERSION < 0x050000
-			const auto queryObject = url;
-#else
 			const QUrlQuery queryObject { url };
-#endif
 			const auto& count = std::max (queryObject.queryItemValue ("count").toInt (), 1);
 			for (int i = 0; i < count; ++i)
 			{
@@ -1442,6 +1442,26 @@ namespace Azoth
 		return qobject_cast<T*> (obj);
 	}
 
+	namespace
+	{
+		bool CheckWithDefaultValue (const QString& entryId,
+				const QString& groupName, const QByteArray& propertyName)
+		{
+			QSettings settings (QCoreApplication::organizationName (),
+					QCoreApplication::applicationName () + "_Azoth");
+
+			settings.beginGroup (groupName);
+			auto guard = Util::MakeScopeGuard ([&settings] { settings.endGroup (); });
+
+			if (settings.value ("Enabled").toStringList ().contains (entryId))
+				return true;
+			if (settings.value ("Disabled").toStringList ().contains (entryId))
+				return false;
+
+			return XmlSettingsManager::Instance ().property (propertyName).toBool ();
+		}
+	}
+
 	void ChatTab::BuildBasicActions ()
 	{
 		auto sm = Core::Instance ().GetShortcutManager ();
@@ -1471,26 +1491,26 @@ namespace Azoth
 
 		TabToolbar_->addSeparator ();
 
+		ToggleRichEditor_ = new QAction (tr ("Enable rich text editor"), this);
+		ToggleRichEditor_->setProperty ("ActionIcon", "accessories-text-editor");
+		ToggleRichEditor_->setCheckable (true);
+		ToggleRichEditor_->setChecked (CheckWithDefaultValue (EntryID_, "RichEditorStates", "ShowRichTextEditor"));
+		connect (ToggleRichEditor_,
+				SIGNAL (toggled (bool)),
+				this,
+				SLOT (handleRichEditorToggled ()));
+		TabToolbar_->addAction (ToggleRichEditor_);
+
 		ToggleRichText_ = new QAction (tr ("Enable rich text"), this);
 		ToggleRichText_->setProperty ("ActionIcon", "text-enriched");
 		ToggleRichText_->setCheckable (true);
-		ToggleRichText_->setChecked (XmlSettingsManager::Instance ()
-					.property ("ShowRichTextMessageBody").toBool ());
+		ToggleRichText_->setChecked (CheckWithDefaultValue (EntryID_, "RichTextStates", "ShowRichTextMessageBody"));
 		connect (ToggleRichText_,
 				SIGNAL (toggled (bool)),
 				this,
 				SLOT (handleRichTextToggled ()));
 		TabToolbar_->addAction (ToggleRichText_);
 		TabToolbar_->addSeparator ();
-
-		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_Azoth");
-		settings.beginGroup ("RichTextStates");
-		if (settings.value ("Enabled").toStringList ().contains (EntryID_))
-			ToggleRichText_->setChecked (true);
-		else if (settings.value ("Disabled").toStringList ().contains (EntryID_))
-			ToggleRichText_->setChecked (false);
-		settings.endGroup ();
 
 		const auto& quoteInfo = infos ["org.LeechCraft.Azoth.QuoteSelected"];
 		QAction *quoteSelection = new QAction (tr ("Quote selection"), this);
@@ -1766,11 +1786,11 @@ namespace Azoth
 
 		MsgFormatter_ = new MsgFormatterWidget (Ui_.MsgEdit_, Ui_.MsgEdit_);
 		handleRichFormatterPosition ();
-		connect (ToggleRichText_,
+		connect (ToggleRichEditor_,
 				SIGNAL (toggled (bool)),
 				MsgFormatter_,
 				SLOT (setVisible (bool)));
-		MsgFormatter_->setVisible (ToggleRichText_->isChecked ());
+		MsgFormatter_->setVisible (ToggleRichEditor_->isChecked ());
 	}
 
 	void ChatTab::RegisterSettings ()

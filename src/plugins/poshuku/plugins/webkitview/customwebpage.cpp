@@ -428,7 +428,8 @@ namespace WebKitView
 			}
 			else
 				qDebug () << Q_FUNC_INFO
-					<< "but frame is found";
+						<< "but frame is found";
+			break;
 		}
 		default:
 		{

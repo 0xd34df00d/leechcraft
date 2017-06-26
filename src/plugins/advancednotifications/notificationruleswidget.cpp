@@ -36,6 +36,7 @@
 #include <interfaces/an/ianemitter.h>
 #include <interfaces/an/constants.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <util/sys/resourceloader.h>
 #include <util/xpc/util.h>
@@ -84,8 +85,7 @@ namespace AdvancedNotifications
 	void NotificationRulesWidget::ResetMatchesModel ()
 	{
 		MatchesModel_->clear ();
-		MatchesModel_->setHorizontalHeaderLabels (QStringList (tr ("Field name"))
-				<< tr ("Rule description"));
+		MatchesModel_->setHorizontalHeaderLabels ({ tr ("Field name"), tr ("Rule description") });
 	}
 
 	QString NotificationRulesWidget::GetCurrentCat () const
@@ -337,9 +337,7 @@ namespace AdvancedNotifications
 				new QTreeWidgetItem (Ui_.CommandArgsTree_, QStringList (arg));
 		}
 
-		Ui_.RuleSingleShot_->setChecked (rule.IsSingleShot () ?
-					Qt::Checked :
-					Qt::Unchecked);
+		Ui_.RuleSingleShot_->setChecked (rule.IsSingleShot ());
 
 		Ui_.ColorButton_->SetColor (rule.GetColor ());
 	}
@@ -503,8 +501,13 @@ namespace AdvancedNotifications
 		if (path.isEmpty ())
 			return;
 
-		const Entity& e = Util::MakeEntity (path, QString (), Internal);
-		Core::Instance ().SendEntity (e);
+		const auto& e = Util::MakeEntity (path, {}, Internal | FromUserInitiated);
+		const bool wasHandled = Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (e);
+		if (!wasHandled)
+			QMessageBox::critical (this,
+					"LeechCraft",
+					tr ("No plugin has been found to play %1.")
+						.arg ("<em>" + path + "</em>"));
 	}
 
 	void NotificationRulesWidget::on_AddArgument__released()
@@ -542,16 +545,18 @@ namespace AdvancedNotifications
 	{
 		Ui_.AudioFile_->clear ();
 
-		const QString& theme = XmlSettingsManager::Instance ().property ("AudioTheme").toString ();
-		const QStringList filters = QStringList ("*.ogg")
-				<< "*.wav"
-				<< "*.flac"
-				<< "*.mp3";
+		const auto& theme = XmlSettingsManager::Instance ().property ("AudioTheme").toString ();
+		static const QStringList filters
+		{
+			"*.ogg",
+			"*.wav",
+			"*.flac",
+			"*.mp3"
+		};
 
-		const QFileInfoList& files = Core::Instance ()
-				.GetAudioThemeLoader ()->List (theme,
+		const auto& files = Core::Instance ().GetAudioThemeLoader ()->List (theme,
 						filters, QDir::Files | QDir::Readable);
-		Q_FOREACH (const QFileInfo& file, files)
+		for (const auto& file : files)
 			Ui_.AudioFile_->addItem (file.baseName (), file.absoluteFilePath ());
 	}
 }

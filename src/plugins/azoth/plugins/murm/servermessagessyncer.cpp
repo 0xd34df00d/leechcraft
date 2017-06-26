@@ -67,8 +67,16 @@ namespace Murm
 
 	void ServerMessagesSyncer::Request (IMessage::Direction dir)
 	{
-		auto getter = [=] (const QString& key, const VkConnection::UrlParams_t& params)
+		QPointer<QObject> guard { this };
+		auto getter = [=] (const QString& key, const VkConnection::UrlParams_t& params) -> QNetworkReply*
 		{
+			if (!guard)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "the object is already dead";
+				return nullptr;
+			}
+
 			const auto gracePeriod = 60 * 10;
 			const auto secsDiff = Since_.secsTo (QDateTime::currentDateTime ()) + gracePeriod;
 

@@ -30,6 +30,7 @@
 #include "modeldelegate.h"
 #include <QApplication>
 #include <QStyle>
+#include <util/gui/util.h>
 #include <interfaces/ijobholder.h>
 #include <interfaces/structures.h>
 
@@ -37,11 +38,6 @@ namespace LeechCraft
 {
 namespace Summary
 {
-	ModelDelegate::ModelDelegate (QObject *parent)
-	: QStyledItemDelegate (parent)
-	{
-	}
-
 	namespace
 	{
 		bool DrawProgress (QPainter *painter,
@@ -65,7 +61,7 @@ namespace Summary
 			pbo.maximum = total;
 			pbo.progress = done;
 			pbo.state = option.state;
-			pbo.text = index.data ().toString ();
+			pbo.text = Util::ElideProgressBarText (index.data ().toString (), option);
 			pbo.textVisible = true;
 			QApplication::style ()->drawControl (QStyle::CE_ProgressBar, &pbo, painter);
 			return true;

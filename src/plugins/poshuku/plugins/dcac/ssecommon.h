@@ -125,6 +125,7 @@ namespace DCAC
 	namespace detail
 	{
 		template<uchar... Is>
+		__attribute__ ((target ("sse2")))
 		auto MakeMaskImpl (Mask128, std::integer_sequence<uchar, Is...>)
 		{
 			return _mm_set_epi8 (Is...);

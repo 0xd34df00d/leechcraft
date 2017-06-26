@@ -7,6 +7,7 @@ set (SRCS
 	coreproxyproxy.cpp
 	../ipluginloader.cpp
 	../sopluginloader.cpp
+	../../debugmessagehandler.cpp
 	)
 
 add_executable (lc_plugin_wrapper${LC_EXEC_SUFFIX} WIN32

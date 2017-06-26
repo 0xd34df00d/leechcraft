@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "imageinfosmodel.h"
+#include <functional>
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QNetworkAccessManager>

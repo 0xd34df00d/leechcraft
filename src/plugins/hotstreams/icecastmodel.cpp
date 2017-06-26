@@ -30,6 +30,7 @@
 #include "icecastmodel.h"
 #include <QUrl>
 #include <QtDebug>
+#include <util/sll/unreachable.h>
 #include "roles.h"
 
 Q_DECLARE_METATYPE (QList<QUrl>)
@@ -115,7 +116,7 @@ namespace HotStreams
 			return {};
 		}
 
-		assert (false);
+		Util::Unreachable ();
 	}
 
 	QModelIndex IcecastModel::parent (const QModelIndex& child) const
@@ -131,7 +132,7 @@ namespace HotStreams
 			return createIndex (GetGenreIndex (child), 0, MakeGenreId ());
 		}
 
-		assert (false);
+		Util::Unreachable ();
 	}
 
 	int IcecastModel::rowCount (const QModelIndex& parent) const
@@ -148,7 +149,7 @@ namespace HotStreams
 			return 0;
 		}
 
-		assert (false);
+		Util::Unreachable ();
 	}
 
 	int IcecastModel::columnCount (const QModelIndex&) const
@@ -197,7 +198,7 @@ namespace HotStreams
 			return GetStationData (index, role);
 		}
 
-		assert (false);
+		Util::Unreachable ();
 	}
 
 	void IcecastModel::SetStations (const StationInfoList_t& stations)

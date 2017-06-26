@@ -28,10 +28,10 @@
  **********************************************************************/
 
 #include "audioaddictstreamfetcher.h"
-#include <cassert>
 #include <QNetworkRequest>
 #include <QtDebug>
 #include <util/sll/parsejson.h>
+#include <util/sll/unreachable.h>
 
 namespace LeechCraft
 {
@@ -52,7 +52,7 @@ namespace HotStreams
 				return "sky";
 			}
 
-			assert (false);
+			Util::Unreachable ();
 		}
 	}
 

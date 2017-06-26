@@ -42,7 +42,7 @@ namespace Util
 	using GSLResult_t = typename InstanceApplicative<AF>::template GSLResult<AV>::Type_t;
 
 	template<template<typename...> class Applicative, typename... Args, typename T>
-	Applicative<Args..., T> Pure (const T& v)
+	auto Pure (const T& v)
 	{
 		return InstanceApplicative<Applicative<Args..., T>>::Pure (v);
 	}

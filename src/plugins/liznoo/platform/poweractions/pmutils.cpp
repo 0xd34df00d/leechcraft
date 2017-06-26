@@ -28,10 +28,10 @@
  **********************************************************************/
 
 #include "pmutils.h"
-#include <cassert>
 #include <QProcess>
 #include <QtDebug>
 #include <util/sll/slotclosure.h>
+#include <util/sll/unreachable.h>
 #include <util/threads/futures.h>
 
 namespace LeechCraft
@@ -52,7 +52,7 @@ namespace PowerActions
 				return "hibernate";
 			}
 
-			assert (false);
+			Util::Unreachable ();
 		}
 
 		QString MakeErrMsg (QProcess *process)

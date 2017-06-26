@@ -60,7 +60,7 @@ set (RESOURCES netstoremanagerresources.qrc)
 
 QtWrapUi (UIS_H ${FORMS})
 QtAddResources (RCCS ${RESOURCES})
-CreateTrs ("netstoremanager" "en;es;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
+CreateTrs ("netstoremanager" "en;es;ro;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("netstoremanager" "en;ru_RU" "${SRCS}" "${FORMS}" "netstoremanagersettings.xml")
 
 add_library (leechcraft_netstoremanager SHARED
@@ -74,7 +74,6 @@ target_link_libraries (leechcraft_netstoremanager
 	)
 install (TARGETS leechcraft_netstoremanager DESTINATION ${LC_PLUGINS_DEST})
 install (FILES netstoremanagersettings.xml DESTINATION ${LC_SETTINGS_DEST})
-install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
 
 FindQtLibs (leechcraft_netstoremanager Network Widgets)
 

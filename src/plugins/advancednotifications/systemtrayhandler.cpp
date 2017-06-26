@@ -31,6 +31,7 @@
 #include <interfaces/structures.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
+#include <interfaces/core/ientitymanager.h>
 #include <QMenu>
 #include <QPainter>
 #include <QApplication>
@@ -38,13 +39,11 @@
 #include <util/gui/util.h>
 #include <util/gui/unhoverdeletemixin.h>
 #include <util/util.h>
+#include <util/sll/qtutil.h>
 #include "generalhandler.h"
 #include "xmlsettingsmanager.h"
 #include "core.h"
-
-#ifdef HAVE_QML
-#include "qml/visualnotificationsview.h"
-#endif
+#include "visualnotificationsview.h"
 
 namespace LeechCraft
 {
@@ -151,8 +150,7 @@ namespace AdvancedNotifications
 				this,
 				SLOT (handleTrayActivated (QSystemTrayIcon::ActivationReason)));
 
-#ifdef HAVE_QML
-		VisualNotificationsView *vnv = new VisualNotificationsView;
+		const auto vnv = new VisualNotificationsView;
 		connect (vnv,
 				SIGNAL (actionTriggered (const QString&, int)),
 				this,
@@ -165,7 +163,6 @@ namespace AdvancedNotifications
 
 		if (XmlSettingsManager::Instance ().property ("HideOnHoverOut").toBool ())
 			new Util::UnhoverDeleteMixin (vnv, SLOT (hide ()));
-#endif
 	}
 
 	void SystemTrayHandler::PrepareLCTrayAction (const QString& category)
@@ -173,8 +170,7 @@ namespace AdvancedNotifications
 		if (Category2Action_.contains (category))
 			return;
 
-		QAction *action = new QAction (GH_->GetIconForCategory (category), category, this);
-		action->setMenu (new QMenu ());
+		const auto action = new QAction (GH_->GetIconForCategory (category), category, this);
 		Category2Action_ [category] = action;
 
 		connect (action,
@@ -182,10 +178,9 @@ namespace AdvancedNotifications
 				this,
 				SLOT (handleLCAction ()));
 
-		emit gotActions (QList<QAction*> () << action, ActionsEmbedPlace::LCTray);
+		emit gotActions ({ action }, ActionsEmbedPlace::LCTray);
 
-#ifdef HAVE_QML
-		VisualNotificationsView *vnv = new VisualNotificationsView;
+		const auto vnv = new VisualNotificationsView;
 		connect (vnv,
 				SIGNAL (actionTriggered (const QString&, int)),
 				this,
@@ -198,12 +193,11 @@ namespace AdvancedNotifications
 
 		if (XmlSettingsManager::Instance ().property ("HideOnHoverOut").toBool ())
 			new Util::UnhoverDeleteMixin (vnv, SLOT (hide ()));
-#endif
 	}
 
 	void SystemTrayHandler::UpdateMenu (QMenu *menu, const QString& event, const EventData& data)
 	{
-		Q_FOREACH (const QString& pathItem, data.VisualPath_)
+		for (const auto& pathItem : data.VisualPath_)
 			menu = menu->addMenu (pathItem);
 
 		if (!data.Pixmap_.isNull ())
@@ -211,7 +205,7 @@ namespace AdvancedNotifications
 		menu->setToolTip (data.ExtendedText_);
 
 		int actionIdx = 0;
-		Q_FOREACH (const QString& actionName, data.Actions_)
+		for (const auto& actionName : data.Actions_)
 		{
 			QAction *action = menu->addAction (actionName);
 			action->setProperty ("Index", actionIdx++);
@@ -236,26 +230,23 @@ namespace AdvancedNotifications
 	void SystemTrayHandler::RebuildState ()
 	{
 		auto icons2hide = Category2Icon_.values ().toSet ();
-		Q_FOREACH (QSystemTrayIcon *icon, icons2hide)
+		for (const auto icon : icons2hide)
 			icon->contextMenu ()->clear ();
 
 		auto actsDel = Category2Action_.values ().toSet ();
-		Q_FOREACH (QAction *action, actsDel)
-			action->menu ()->clear ();
 
-#ifdef HAVE_QML
 		EventsForIcon_.clear ();
 		EventsForAction_.clear ();
-#endif
 
 		QSet<QSystemTrayIcon*> visibleIcons;
 		QSet<QAction*> actsUpd;
 
-		for (const auto& event : Events_.keys ())
+		for (const auto& pair : Util::Stlize (Events_))
 		{
-			const EventData& data = Events_ [event];
+			const auto& event = pair.first;
+			const auto& data = pair.second;
 
-			QSystemTrayIcon *icon = Category2Icon_.value (data.Category_);
+			const auto icon = Category2Icon_.value (data.Category_);
 			if (icon)
 			{
 				icons2hide.remove (icon);
@@ -266,21 +257,18 @@ namespace AdvancedNotifications
 			actsDel.remove (action);
 			actsUpd << action;
 
-#ifdef HAVE_QML
-			if (icon)
-				EventsForIcon_ [icon] << data;
 			EventsForAction_ [action] << data;
-#endif
 
 			if (icon)
+			{
+				EventsForIcon_ [icon] << data;
 				UpdateMenu (icon->contextMenu (), event, data);
-			UpdateMenu (action->menu (), event, data);
+			}
 		}
 
-#ifdef HAVE_QML
-		Q_FOREACH (QSystemTrayIcon *icon, Category2Icon_.values ())
+		for (const auto icon : Category2Icon_)
 		{
-			VisualNotificationsView *view = Icon2NotificationView_ [icon];
+			const auto view = Icon2NotificationView_ [icon];
 			if (!view->isVisible ())
 				continue;
 
@@ -290,9 +278,9 @@ namespace AdvancedNotifications
 				view->hide ();
 		}
 
-		Q_FOREACH (QAction *action, Category2Action_.values ())
+		for (const auto action : Category2Action_)
 		{
-			VisualNotificationsView *view = Action2NotificationView_ [action];
+			const auto view = Action2NotificationView_ [action];
 			if (!view->isVisible ())
 				continue;
 
@@ -301,22 +289,21 @@ namespace AdvancedNotifications
 			if (events.isEmpty ())
 				view->hide ();
 		}
-#endif
 
-		Q_FOREACH (QSystemTrayIcon *icon, visibleIcons)
+		for (const auto icon : visibleIcons)
 		{
 			if (!icon->isVisible ())
 				icon->show ();
 			UpdateSysTrayIcon (icon);
 		}
 
-		Q_FOREACH (QAction *action, actsUpd)
+		for (const auto action : actsUpd)
 			UpdateTrayAction (action);
 
-		Q_FOREACH (QSystemTrayIcon *icon, icons2hide)
+		for (const auto icon : icons2hide)
 			icon->hide ();
 
-		Q_FOREACH (QAction *action, actsDel)
+		for (const auto action : actsDel)
 		{
 			Category2Action_.remove (Category2Action_.key (action));
 			EventsForAction_.remove (action);
@@ -336,10 +323,13 @@ namespace AdvancedNotifications
 			return;
 		}
 
-		int eventCount = 0;
-		for (const auto& event : Events_)
-			if (event.Category_ == category)
-				eventCount += event.Count_;
+		int eventCount = std::accumulate (Events_.begin (), Events_.end (), 0,
+				[&category] (int acc, const EventData& event)
+				{
+					return event.Category_ == category ?
+							acc + event.Count_ :
+							acc;
+				});
 
 		const auto& palette = qApp->palette ();
 
@@ -405,7 +395,7 @@ namespace AdvancedNotifications
 			return;
 
 		const auto canceller = Events_.value (event).Canceller_;
-		Core::Instance ().SendEntity (canceller);
+		Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (canceller);
 	}
 
 	namespace
@@ -426,7 +416,6 @@ namespace AdvancedNotifications
 		if (reason != QSystemTrayIcon::Trigger)
 			return;
 
-#ifdef HAVE_QML
 		QSystemTrayIcon *trayIcon = qobject_cast<QSystemTrayIcon*> (sender ());
 		if (!trayIcon)
 		{
@@ -437,7 +426,6 @@ namespace AdvancedNotifications
 		}
 
 		ShowVNV (Icon2NotificationView_ [trayIcon], EventsForIcon_ [trayIcon]);
-#endif
 	}
 
 	void SystemTrayHandler::handleLCAction ()
@@ -451,11 +439,7 @@ namespace AdvancedNotifications
 			return;
 		}
 
-#ifndef HAVE_QML
-		action->menu ()->show ();
-#else
 		ShowVNV (Action2NotificationView_ [action], EventsForAction_ [action]);
-#endif
 	}
 }
 }

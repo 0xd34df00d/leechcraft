@@ -149,6 +149,9 @@ namespace Murm
 		Dispatcher_ [6] = [] (const QVariantList&) {};
 		Dispatcher_ [7] = [] (const QVariantList&) {};
 
+		// Unread counter value change, we dont' care
+		Dispatcher_ [80] = [] (const QVariantList&) {};
+
 		Dispatcher_ [101] = [] (const QVariantList&) {};	// unknown stuff
 
 		MarkOnlineTimer_->setInterval (12 * 60 * 1000);
@@ -1073,6 +1076,13 @@ namespace Murm
 			CallQueue_->Schedule ([this, f, key]
 					{
 						const auto reply = f (key);
+						if (!reply)
+						{
+							qWarning () << Q_FUNC_INFO
+									<< "the prepared call returned a null reply";
+							return;
+						}
+
 						Logger_ (IHaveConsole::PacketDirection::Out) << reply->request ().url ();
 						RunningCalls_.append ({ reply, f });
 
@@ -1490,10 +1500,15 @@ namespace Murm
 					{
 						auto history = wallMap.take ("copy_history");
 						for (const auto& obj : history.toList ())
-							HandleAttachments (repost, obj.toMap () ["attachments"], logger);
+						{
+							FullMessageInfo copyItem;
+							HandleBasicMsgInfo (copyItem, obj.toMap ());
+							HandleAttachments (copyItem, obj.toMap () ["attachments"], logger);
+							repost.ContainedReposts_ << copyItem;
+						}
 					}
 
-					info.ContainedReposts_.append (repost);
+					info.ContainedReposts_ << repost;
 				}
 				else
 					logger << "HandleAttachments" << attMap.keys ();
@@ -1579,8 +1594,7 @@ namespace Murm
 		}
 
 		std::sort (infos.begin (), infos.end (),
-				[] (const QPair<MessageInfo, FullMessageInfo>& m1, const QPair<MessageInfo, FullMessageInfo>& m2)
-					{ return m1.first.TS_ < m2.first.TS_; });
+				Util::ComparingBy ([] (const auto& pair) { return pair.first.TS_; }));
 		for (const auto& pair : infos)
 			emit gotMessage (pair.second, pair.first);
 	}

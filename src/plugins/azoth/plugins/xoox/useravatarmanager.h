@@ -27,38 +27,41 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_USERAVATARMANAGER_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_USERAVATARMANAGER_H
+#pragma once
+
 #include <QXmppClientExtension.h>
 
 namespace LeechCraft
 {
 namespace Azoth
 {
+class IAvatarsManager;
+
 namespace Xoox
 {
 	class PubSubManager;
 	class PEPEventBase;
 	class ClientConnection;
+	class UserAvatarMetadata;
 
 	class UserAvatarManager : public QObject
 	{
 		Q_OBJECT
 
-		PubSubManager *Manager_;
-		ClientConnection *Conn_;
+		PubSubManager * const Manager_;
+		ClientConnection * const Conn_;
+		IAvatarsManager * const AvatarsMgr_;
 	public:
-		UserAvatarManager (ClientConnection*);
+		UserAvatarManager (IAvatarsManager*, ClientConnection*);
 
 		void PublishAvatar (const QImage&);
+	private:
+		void HandleMDEvent (const QString&, UserAvatarMetadata*);
 	private slots:
 		void handleEvent (const QString&, PEPEventBase*);
-		void handleHTTPFinished ();
 	signals:
-		void avatarUpdated (const QString&, const QImage&);
+		void avatarUpdated (const QString&);
 	};
 }
 }
 }
-
-#endif

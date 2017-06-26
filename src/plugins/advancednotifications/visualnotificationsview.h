@@ -27,51 +27,29 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_ADVANCEDNOTIFICATIONS_QML_EVENTPROXYOBJECT_H
-#define PLUGINS_ADVANCEDNOTIFICATIONS_QML_EVENTPROXYOBJECT_H
-#include <QObject>
-#include <QUrl>
-#include "../eventdata.h"
+#pragma once
+
+#include <QtGlobal>
+#include <QQuickWidget>
+#include "eventdata.h"
 
 namespace LeechCraft
 {
 namespace AdvancedNotifications
 {
-	class EventProxyObject : public QObject
+	class VisualNotificationsView : public QQuickWidget
 	{
 		Q_OBJECT
-		Q_PROPERTY (int count READ count NOTIFY countChanged)
-		Q_PROPERTY (QUrl image READ image NOTIFY imageChanged)
-		Q_PROPERTY (QString extendedText READ extendedText NOTIFY extendedTextChanged)
-		Q_PROPERTY (QVariant eventActionsModel READ eventActionsModel NOTIFY eventActionsModelChanged)
 
-		EventData E_;
-		QUrl CachedImage_;
-		QVariant ActionsModel_;
+		QObjectList LastEvents_;
+		QUrl Location_;
 	public:
-		EventProxyObject (const EventData&, QObject* = 0);
+		VisualNotificationsView ();
 
-		int count () const;
-		QUrl image () const;
-		QString extendedText () const;
-
-		QVariant eventActionsModel () const;
-	private slots:
-		void handleActionSelected ();
-		void handleDismissEvent ();
+		void SetEvents (const QList<EventData>&);
 	signals:
-		void countChanged ();
-		void imageChanged ();
-		void extendedTextChanged ();
-
-		void eventActionsModelChanged ();
-
-		void dismissEvent ();
-
 		void actionTriggered (const QString&, int);
-		void dismissEventRequested (const QString&);
+		void dismissEvent (const QString&);
 	};
 }
 }
-
-#endif

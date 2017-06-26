@@ -46,7 +46,8 @@ namespace CleanWeb
 {
 	struct FilterOption
 	{
-		Qt::CaseSensitivity Case_;
+		Qt::CaseSensitivity Case_ = Qt::CaseInsensitive;
+
 		enum MatchType
 		{
 			MTWildcard,
@@ -54,7 +55,7 @@ namespace CleanWeb
 			MTPlain,
 			MTBegin,
 			MTEnd
-		} MatchType_;
+		} MatchType_ = MTWildcard;
 
 		enum MatchObject
 		{
@@ -80,9 +81,7 @@ namespace CleanWeb
 			Yes,
 			No,
 			Unspecified
-		} ThirdParty_;
-
-		FilterOption ();
+		} ThirdParty_ = ThirdParty::Unspecified;
 	};
 
 	QDataStream& operator<< (QDataStream&, const FilterOption&);
@@ -117,6 +116,8 @@ namespace CleanWeb
 		QByteArray PlainMatcher_;
 		FilterOption Option_;
 	};
+
+	QDebug operator<< (QDebug, const FilterItem&);
 
 	typedef std::shared_ptr<FilterItem> FilterItem_ptr;
 

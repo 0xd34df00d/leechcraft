@@ -35,6 +35,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/util.h>
+#include <util/sll/unreachable.h>
 #include "lastfmsubmitter.h"
 #include "xmlsettingsmanager.h"
 #include "pendingsimilarartists.h"
@@ -144,7 +145,7 @@ namespace Lastfmscrobble
 			return true;
 		}
 
-		assert (false);
+		Util::Unreachable ();
 	}
 
 	QString Plugin::GetServiceName () const

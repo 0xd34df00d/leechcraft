@@ -56,6 +56,8 @@ namespace LMP
 
 	struct Core::Members
 	{
+		ICoreProxy_ptr Proxy_;
+
 		LocalFileResolver Resolver_;
 
 		HookInterconnector HookInterconnector_;
@@ -73,17 +75,22 @@ namespace LMP
 
 		RadioManager RadioManager_;
 
-		Player Player_;
+		Player Player_ { Proxy_ };
 		PreviewHandler PreviewMgr_ { &Player_ };
 
 		LMPProxy LmpProxy_ { &Collection_, &Resolver_, &PreviewMgr_ };
 
 		RgAnalysisManager RgMgr_ { &Collection_ };
+
+		Members (const ICoreProxy_ptr& proxy)
+		: Proxy_ { proxy }
+		{
+		}
 	};
 
 	Core::Core (const ICoreProxy_ptr& proxy)
 	: Proxy_ (proxy)
-	, M_ (std::make_shared<Members> ())
+	, M_ (std::make_shared<Members> (proxy))
 	{
 		M_->ProgressManager_.AddSyncManager (&M_->SyncManager_);
 		M_->ProgressManager_.AddSyncManager (&M_->SyncUnmountableManager_);

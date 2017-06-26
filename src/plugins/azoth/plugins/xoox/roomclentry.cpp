@@ -28,11 +28,11 @@
  **********************************************************************/
 
 #include "roomclentry.h"
-#include <QImage>
 #include <QtDebug>
 #include <QXmppMucManager.h>
 #include <QXmppBookmarkManager.h>
 #include <QXmppDiscoveryManager.h>
+#include <util/sll/prelude.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include <interfaces/azoth/azothutil.h>
 #include "glooxaccount.h"
@@ -49,51 +49,81 @@ namespace Azoth
 {
 namespace Xoox
 {
+	namespace
+	{
+		auto MakePerms ()
+		{
+			static const QMap<QByteArray, QList<QByteArray>> map
+			{
+				{ "role", { "norole", "visitor", "participant", "moderator" } },
+				{ "aff", { "outcast", "noaffiliation", "member", "admin", "owner" } }
+			};
+
+			return map;
+		}
+
+		auto MakeRole2Str ()
+		{
+			static const QMap<QXmppMucItem::Role, QByteArray> map
+			{
+				{ QXmppMucItem::NoRole, "norole" },
+				{ QXmppMucItem::VisitorRole, "visitor" },
+				{ QXmppMucItem::ParticipantRole, "participant" },
+				{ QXmppMucItem::ModeratorRole, "moderator" }
+			};
+
+			return map;
+		}
+
+		auto MakeAff2Str ()
+		{
+			static const QMap<QXmppMucItem::Affiliation, QByteArray> map
+			{
+				{ QXmppMucItem::OutcastAffiliation, "outcast" },
+				{ QXmppMucItem::NoAffiliation, "noaffiliation" },
+				{ QXmppMucItem::MemberAffiliation, "member" },
+				{ QXmppMucItem::AdminAffiliation, "admin" },
+				{ QXmppMucItem::OwnerAffiliation, "owner" }
+			};
+
+			return map;
+		}
+
+		auto MakeTranslations ()
+		{
+			static const QMap<QByteArray, QString> map
+			{
+				{ "role", RoomCLEntry::tr ("Role") },
+				{ "aff", RoomCLEntry::tr ("Affiliation") },
+				{ "norole", RoomCLEntry::tr ("Kicked") },
+				{ "visitor", RoomCLEntry::tr ("Visitor") },
+				{ "participant", RoomCLEntry::tr ("Participant") },
+				{ "moderator", RoomCLEntry::tr ("Moderator") },
+				{ "outcast", RoomCLEntry::tr ("Banned") },
+				{ "noaffiliation", RoomCLEntry::tr ("None") },
+				{ "member", RoomCLEntry::tr ("Member") },
+				{ "admin", RoomCLEntry::tr ("Admin") },
+				{ "owner", RoomCLEntry::tr ("Owner") }
+			};
+
+			return map;
+		}
+	}
+
 	RoomCLEntry::RoomCLEntry (RoomHandler *rh, bool isAutojoined, GlooxAccount *account)
 	: QObject (rh)
 	, IsAutojoined_ (isAutojoined)
 	, Account_ (account)
 	, RH_ (rh)
-	, ActionRequestVoice_ (0)
+	, Perms_ (MakePerms ())
+	, Role2Str_ (MakeRole2Str ())
+	, Aff2Str_ (MakeAff2Str ())
+	, Translations_ (MakeTranslations ())
 	{
 		connect (Account_,
 				SIGNAL (statusChanged (const EntryStatus&)),
 				this,
 				SLOT (reemitStatusChange (const EntryStatus&)));
-
-		Perms_ ["role"] << "norole";
-		Perms_ ["role"] << "visitor";
-		Perms_ ["role"] << "participant";
-		Perms_ ["role"] << "moderator";
-
-		Perms_ ["aff"] << "outcast";
-		Perms_ ["aff"] << "noaffiliation";
-		Perms_ ["aff"] << "member";
-		Perms_ ["aff"] << "admin";
-		Perms_ ["aff"] << "owner";
-
-		Role2Str_ [QXmppMucItem::NoRole] = "norole";
-		Role2Str_ [QXmppMucItem::VisitorRole] = "visitor";
-		Role2Str_ [QXmppMucItem::ParticipantRole] = "participant";
-		Role2Str_ [QXmppMucItem::ModeratorRole] = "moderator";
-
-		Aff2Str_ [QXmppMucItem::OutcastAffiliation] = "outcast";
-		Aff2Str_ [QXmppMucItem::NoAffiliation] = "noaffiliation";
-		Aff2Str_ [QXmppMucItem::MemberAffiliation] = "member";
-		Aff2Str_ [QXmppMucItem::AdminAffiliation] = "admin";
-		Aff2Str_ [QXmppMucItem::OwnerAffiliation] = "owner";
-
-		Translations_ ["role"] = tr ("Role");
-		Translations_ ["aff"] = tr ("Affiliation");
-		Translations_ ["norole"] = tr ("Kicked");
-		Translations_ ["visitor"] = tr ("Visitor");
-		Translations_ ["participant"] = tr ("Participant");
-		Translations_ ["moderator"] = tr ("Moderator");
-		Translations_ ["outcast"] = tr ("Banned");
-		Translations_ ["noaffiliation"] = tr ("None");
-		Translations_ ["member"] = tr ("Member");
-		Translations_ ["admin"] = tr ("Admin");
-		Translations_ ["owner"] = tr ("Owner");
 
 		connect (Account_->GetClientConnection ()->GetBMManager (),
 				SIGNAL (bookmarksReceived (QXmppBookmarkSet)),
@@ -352,14 +382,12 @@ namespace Xoox
 
 	QPair<QByteArray, QByteArray> RoomCLEntry::GetKickPerm () const
 	{
-		return qMakePair<QByteArray, QByteArray> ("role",
-				Role2Str_ [QXmppMucItem::Role::NoRole]);
+		return { "role", Role2Str_ [QXmppMucItem::Role::NoRole] };
 	}
 
 	QPair<QByteArray, QByteArray> RoomCLEntry::GetBanPerm () const
 	{
-		return qMakePair<QByteArray, QByteArray> ("aff",
-				Aff2Str_ [QXmppMucItem::Affiliation::OutcastAffiliation]);
+		return { "aff", Aff2Str_ [QXmppMucItem::Affiliation::OutcastAffiliation] };
 	}
 
 	QByteArray RoomCLEntry::GetAffName (QObject *participant) const
@@ -587,10 +615,7 @@ namespace Xoox
 
 	void RoomCLEntry::HandleNewParticipants (const QList<ICLEntry*>& parts)
 	{
-		QObjectList objs;
-		Q_FOREACH (ICLEntry *e, parts)
-			objs << e->GetQObject ();
-		emit gotNewParticipants (objs);
+		emit gotNewParticipants (Util::Map (parts, &ICLEntry::GetQObject));
 	}
 
 	void RoomCLEntry::HandleSubjectChanged (const QString& subj)

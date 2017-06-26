@@ -97,11 +97,7 @@ namespace AnHero
 
 #if defined (Q_OS_MAC) && !defined (USE_UNIX_LAYOUT)
 			char crashprocess [1024] = { 0 };
-#if QT_VERSION > 0x050000
 			sprintf (crashprocess, "%s/lc_anhero_crashprocess-qt5", AppDir_.constData ());
-#else
-			sprintf (crashprocess, "%s/lc_anhero_crashprocess", AppDir_.constData ());
-#endif
 #endif
 
 			const char *argv [] =

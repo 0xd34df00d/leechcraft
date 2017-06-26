@@ -20,7 +20,7 @@ set(SRCS
 set(RESOURCES
 	res/resources.qrc
 )
-CreateTrs("gmailnotifier" "de;en;es;fr;it;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
+CreateTrs("gmailnotifier" "de;en;es;fr;it;ro;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("gmailnotifier" "en;ru_RU" "${SRCS}" "" "gmailnotifiersettings.xml")
 QtAddResources(RCCS ${RESOURCES})
 

@@ -40,6 +40,7 @@
 #endif
 
 #include <interfaces/media/iradiostation.h>
+#include <interfaces/core/icoreproxyfwd.h>
 #include "engine/audiosource.h"
 #include "mediainfo.h"
 #include "sortingcriteria.h"
@@ -71,6 +72,8 @@ namespace LMP
 	{
 		Q_OBJECT
 
+		const ICoreProxy_ptr Proxy_;
+
 		QStandardItemModel *PlaylistModel_;
 		SourceObject *Source_;
 		Output *Output_;
@@ -81,6 +84,8 @@ namespace LMP
 		QList<AudioSource> CurrentQueue_;
 		QHash<AudioSource, QStandardItem*> Items_;
 		QHash<QString, QList<QStandardItem*>> AlbumRoots_;
+
+		std::function<void ()> PlaybackStopHandler_;
 
 		AudioSource CurrentStopSource_;
 		QList<AudioSource> CurrentOneShotQueue_;
@@ -141,7 +146,7 @@ namespace LMP
 
 		Q_DECLARE_FLAGS (EnqueueFlags, EnqueueFlag)
 
-		Player (QObject* = 0);
+		Player (const ICoreProxy_ptr& proxy, QObject* = 0);
 
 		void InitWithOtherPlugins ();
 
@@ -238,8 +243,6 @@ namespace LMP
 		void handleStateChanged (SourceState, SourceState);
 		void handleCurrentSourceChanged (const AudioSource&);
 		void handleMetadata ();
-
-		void handleSourceError (const QString&, SourceError);
 
 		void refillPlaylist ();
 	signals:

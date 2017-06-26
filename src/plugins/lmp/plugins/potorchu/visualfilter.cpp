@@ -122,10 +122,16 @@ namespace Potorchu
 				SLOT (handlePrevVis ()));
 
 		const auto srcpad = gst_element_get_static_pad (Converter_, "src");
-		gst_pad_add_buffer_probe (srcpad,
-				G_CALLBACK (+[] (GstPad*, GstBuffer *buf, VisualFilter *filter)
-					{ filter->HandleBuffer (buf); }),
-				this);
+		gst_pad_add_probe (srcpad,
+				GST_PAD_PROBE_TYPE_BUFFER,
+				[] (GstPad*, GstPadProbeInfo *info, gpointer filterPtr) -> GstPadProbeReturn
+				{
+					const auto filter = static_cast<VisualFilter*> (filterPtr);
+					filter->HandleBuffer (GST_PAD_PROBE_INFO_BUFFER (info));
+					return GST_PAD_PROBE_PASS;
+				},
+				this,
+				nullptr);
 	}
 
 	QByteArray VisualFilter::GetEffectId () const

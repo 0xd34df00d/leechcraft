@@ -31,6 +31,7 @@
 #include <util/threads/futures.h>
 #include <util/sll/util.h>
 #include <util/sll/qtutil.h>
+#include <util/sll/unreachable.h>
 #include "interfaces/azoth/iaccount.h"
 #include "avatarsstorage.h"
 #include "resourcesmanager.h"
@@ -61,10 +62,19 @@ namespace Azoth
 				return 64;
 			}
 
-			qWarning () << Q_FUNC_INFO
-					<< "unknown size"
-					<< static_cast<int> (size);
-			return 256;
+			Util::Unreachable ();
+		}
+
+		boost::optional<IHaveAvatars::Size> ChooseSize (IHaveAvatars *iha, IHaveAvatars::Size size)
+		{
+			if (iha->SupportsSize (size))
+				return size;
+
+			for (auto known : { IHaveAvatars::Size::Full, IHaveAvatars::Size::Thumbnail })
+				if (iha->SupportsSize (known))
+					return known;
+
+			return {};
 		}
 	}
 
@@ -78,6 +88,11 @@ namespace Azoth
 		const auto entry = qobject_cast<ICLEntry*> (entryObj);
 		const auto iha = qobject_cast<IHaveAvatars*> (entryObj);
 		if (!iha)
+			return Util::MakeReadyFuture (defaultAvatarGetter ());
+
+		if (const auto requestSize = ChooseSize (iha, size))
+			size = *requestSize;
+		else
 			return Util::MakeReadyFuture (defaultAvatarGetter ());
 
 		const auto& sizes = PendingRequests_.value (entryObj);
@@ -114,6 +129,11 @@ namespace Azoth
 				};
 		PendingRequests_ [entryObj] [size] = future;
 		return future;
+	}
+
+	QFuture<boost::optional<QByteArray>> AvatarsManager::GetStoredAvatarData (const QString& entryId, IHaveAvatars::Size size)
+	{
+		return Storage_->GetAvatar (entryId, size);
 	}
 
 	bool AvatarsManager::HasAvatar (QObject *entryObj) const

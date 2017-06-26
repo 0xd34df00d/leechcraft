@@ -12,7 +12,11 @@ project (leechcraft)
 
 set (CMAKE_MACOSX_RPATH OFF)
 
-set (CMAKE_CXX_STANDARD 14)
+if (NOT LC_CXX_STANDARD)
+	set (LC_CXX_STANDARD 14)
+endif ()
+
+set (CMAKE_CXX_STANDARD ${LC_CXX_STANDARD})
 set (CMAKE_CXX_EXTENSIONS OFF)
 
 option (EXTRA_WARNINGS "Enable extra compiler warnings" OFF)
@@ -840,7 +844,7 @@ endif ()
 if (UNIX)
 	add_custom_target (data_leechcraft_gz ALL
 		"${CMAKE_CURRENT_SOURCE_DIR}/data/compress"
-		DEPENDS data/leechcraft.1
+		DEPENDS data/leechcraft-qt5.1
 		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data
 		)
 endif ()

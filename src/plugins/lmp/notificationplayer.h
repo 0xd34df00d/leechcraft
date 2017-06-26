@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QObject>
+#include <interfaces/core/icoreproxyfwd.h>
 
 namespace LeechCraft
 {
@@ -41,7 +42,7 @@ namespace LMP
 	{
 		Q_OBJECT
 	public:
-		NotificationPlayer (const QString&, QObject* = 0);
+		NotificationPlayer (const QString&, const ICoreProxy_ptr&, QObject* = nullptr);
 	private slots:
 		void handleStateChanged (SourceState, SourceState);
 	};

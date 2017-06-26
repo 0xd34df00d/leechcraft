@@ -28,8 +28,8 @@
  **********************************************************************/
 
 #include "structures.h"
-#include <cassert>
 #include <QtDebug>
+#include <util/sll/unreachable.h>
 #include <interfaces/itexteditor.h>
 
 namespace LeechCraft
@@ -48,7 +48,7 @@ namespace Snails
 			return "forward";
 		}
 
-		assert (false);
+		Util::Unreachable ();
 	}
 
 	QString GetExtension (ContentType type)
@@ -61,7 +61,7 @@ namespace Snails
 			return "html";
 		}
 
-		assert (false);
+		Util::Unreachable ();
 	}
 }
 }

@@ -30,6 +30,8 @@
 #include "audiohandler.h"
 #include <util/xpc/util.h>
 #include <util/sys/resourceloader.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ientitymanager.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
 
@@ -61,8 +63,8 @@ namespace AdvancedNotifications
 
 		LastNotify_ [fname] = now;
 
-		const Entity& e = Util::MakeEntity (fname, QString (), Internal);
-		Core::Instance ().SendEntity (e);
+		const auto& e = Util::MakeEntity (fname, QString (), Internal);
+		Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (e);
 	}
 }
 }

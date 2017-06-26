@@ -225,17 +225,12 @@ namespace LeechCraft
 		if (pos != -1)
 			box->setCurrentIndex (pos);
 		else
-		{
 			qWarning () << Q_FUNC_INFO
-				<< box
-				<< box->count ()
-				<< box->currentIndex ()
-				<< data
-				<< "not found";
-
-			if (box->count ())
-				XSD_->GetManagerObject ()->setProperty (prop.toLatin1 (), GetObjectValue (box));
-		}
+					<< box
+					<< box->count ()
+					<< box->currentIndex ()
+					<< data
+					<< "not found";
 
 		if (!data.toString ().isEmpty ())
 			ChangedProperties_.remove (prop);

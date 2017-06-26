@@ -30,6 +30,7 @@
 
 #include "dummytexteditor.h"
 #include <QWebFrame>
+#include <util/sll/unreachable.h>
 
 namespace LeechCraft
 {
@@ -55,7 +56,7 @@ namespace Blogique
 			return page ()->mainFrame ()->toPlainText ();
 		}
 
-		return QString ();
+		Util::Unreachable ();
 	}
 
 	void DummyTextEditor::SetContents (QString contents, ContentType type)
@@ -64,8 +65,10 @@ namespace Blogique
 		{
 		case ContentType::HTML:
 			setHtml (contents);
+			break;
 		case ContentType::PlainText:
 			setContent (contents.toUtf8 ());
+			break;
 		}
 	}
 

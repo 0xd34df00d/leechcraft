@@ -395,6 +395,8 @@ namespace LeechCraft
 
 		for (const auto obj : ordered)
 		{
+			++*proc;
+
 			const auto ii = qobject_cast<IInfo*> (obj);
 			try
 			{
@@ -427,8 +429,6 @@ namespace LeechCraft
 						<< "caught unknown exception";
 				return obj;
 			}
-
-			++*proc;
 		}
 
 		return 0;
@@ -1153,6 +1153,7 @@ namespace LeechCraft
 				ordered.removeAll (obj);
 
 			proc->SetCount (ordered.size () + initialized.size ());
+			proc->ReportValue (initialized.size ());
 		}
 
 		return failedList;

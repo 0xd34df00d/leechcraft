@@ -31,11 +31,7 @@
 #include <QClipboard>
 #include <QFileDialog>
 #include <QUrl>
-
-#if QT_VERSION >= 0x050000
 #include <QUrlQuery>
-#endif
-
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
 #include "core.h"
@@ -53,15 +49,9 @@ namespace BitTorrent
 			if (!url.isValid () || url.scheme () != "magnet")
 				return false;
 
-#if QT_VERSION < 0x050000
-			for (const auto& item : url.queryItems ())
-#else
-			for (const auto& item : QUrlQuery { url }.queryItems ())
-#endif
-				if (item.first == "xt" && item.second.startsWith ("urn:btih:"))
-					return true;
-
-			return false;
+			const auto& items = QUrlQuery { url }.queryItems ();
+			return std::any_of (items.begin (), items.end (),
+					[] (const auto& item) { return item.first == "xt" && item.second.startsWith ("urn:btih:"); });
 		}
 
 		QString CheckClipboard (QClipboard::Mode mode)

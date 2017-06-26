@@ -206,6 +206,7 @@ namespace Xoox
 		void HandlePEPEvent (QString, PEPEventBase*);
 		void HandleAttentionMessage (const QXmppMessage&);
 		void UpdateChatState (QXmppMessage::State, const QString&);
+		void SetErrorPresence (const QString&);
 		void SetStatus (const EntryStatus&, const QString&, const QXmppPresence&);
 		QXmppVCardIq GetVCard () const;
 		void SetVCard (const QXmppVCardIq&);

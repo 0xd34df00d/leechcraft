@@ -41,9 +41,6 @@ namespace Azoth
 {
 namespace Xoox
 {
-	const QString NsXhtmlIM = "http://jabber.org/protocol/xhtml-im";
-	const QString NsXhtml = "http://www.w3.org/1999/xhtml";
-
 	GlooxMessage::GlooxMessage (IMessage::Type type,
 			IMessage::Direction dir,
 			const QString& jid,
@@ -105,11 +102,10 @@ namespace Xoox
 		{
 		case Type::ChatMessage:
 			Message_.setReceiptRequested (true);
+			[[fallthrough]];
 		case Type::MUCMessage:
 			Connection_->SendMessage (this);
-			QMetaObject::invokeMethod (OtherPart (),
-					"gotMessage",
-					Q_ARG (QObject*, this));
+			qobject_cast<ICLEntry*> (OtherPart ())->gotMessage (this);
 			break;
 		default:
 			qWarning () << Q_FUNC_INFO
@@ -122,9 +118,7 @@ namespace Xoox
 
 	void GlooxMessage::Store ()
 	{
-		QMetaObject::invokeMethod (OtherPart (),
-				"gotMessage",
-				Q_ARG (QObject*, this));
+		qobject_cast<ICLEntry*> (OtherPart ())->gotMessage (this);
 	}
 
 	IMessage::Direction GlooxMessage::GetDirection () const

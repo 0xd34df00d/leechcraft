@@ -631,6 +631,21 @@ namespace Xoox
 		}
 	}
 
+	void EntryBase::SetErrorPresence (const QString& variant)
+	{
+		if (!variant.isEmpty ())
+		{
+			if (CurrentStatus_.contains (variant))
+				SetStatus ({}, variant, {});
+			return;
+		}
+
+		for (const auto& var : Variants ())
+			SetStatus ({}, var, {});
+
+		SetStatus ({ SError, {} }, {}, {});
+	}
+
 	void EntryBase::SetStatus (const EntryStatus& status, const QString& variant, const QXmppPresence& presence)
 	{
 		const bool existed = CurrentStatus_.contains (variant);
@@ -767,13 +782,16 @@ namespace Xoox
 	void EntryBase::SetClientInfo (const QString& variant,
 			const QString& node, const QByteArray& ver)
 	{
+		if (Variant2VerString_ [variant] == ver)
+			return;
+
 		const auto& staticClientInfo = XooxUtil::GetStaticClientInfo (node);
 		if (staticClientInfo.IsEmpty () && !node.isEmpty ())
 			qWarning () << Q_FUNC_INFO
 					<< "unknown client for"
 					<< node;
-		Variant2ClientInfo_ [variant] ["client_type"] = staticClientInfo.ID_;
 
+		Variant2ClientInfo_ [variant] ["client_type"] = staticClientInfo.ID_;
 		Variant2ClientInfo_ [variant] ["client_name"] = staticClientInfo.HumanReadableName_;
 		Variant2ClientInfo_ [variant] ["raw_client_name"] = staticClientInfo.HumanReadableName_;
 

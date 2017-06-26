@@ -55,7 +55,7 @@ namespace BirthdayNotifier
 
 		Util::InstallTranslator ("azoth_birthdaynotifier");
 
-		XSD_.reset (new Util::XmlSettingsDialog);
+		XSD_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "azothbirthdaynotifiersettings.xml");
 		XmlSettingsManager::Instance ().RegisterObject ("NotifyNTimesPerDay", this, "notifyNTimesPerDaySettingsChanged");
 

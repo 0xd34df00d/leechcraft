@@ -35,13 +35,7 @@
 #include "ui_commentswidget.h"
 
 class QStandardItem;
-
-#if QT_VERSION < 0x050000
-class QDeclarativeView;
-class QGraphicsObject;
-#else
 class QQuickWidget;
-#endif
 
 namespace LeechCraft
 {
@@ -55,17 +49,11 @@ namespace Blogique
 		Q_OBJECT
 
 		Ui::CommentsWidget Ui_;
-#if QT_VERSION < 0x050000
-		QDeclarativeView * const View_;
-#else
 		QQuickWidget * const View_;
-#endif
-
 		CommentsModel * const CommentsModel_;
 		SortCommentsProxyModel * const ProxyModel_;
 		QHash<QStandardItem*, CommentEntry> Item2RecentComment_;
 		QSet<CommentEntry> RecentComments_;
-
 	public:
 		struct CommentID
 		{
@@ -102,10 +90,6 @@ namespace Blogique
 		void handleMarkCommentAsRead (const QString& accountId, int commentId);
 		void handleAddComment (const QString& accountId, int entryId, int commentId);
 		void handleCommentsUpdated ();
-#if QT_VERSION < 0x050000
-	public slots:
-		void setItemCursor (QGraphicsObject *object, const QString& shape);
-#endif
 	};
 
 	QDataStream& operator>> (QDataStream& in, LeechCraft::Blogique::CommentsWidget::CommentID& comment);

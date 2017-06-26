@@ -37,6 +37,7 @@
 #include <util/sll/delayedexecutor.h>
 #include <util/sll/util.h>
 #include <util/sll/eithercont.h>
+#include <util/sll/prelude.h>
 #include <util/xpc/passutils.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include "glooxaccount.h"
@@ -99,11 +100,7 @@ namespace Xoox
 				SLOT (handlePendingForm (QXmppDataForm*, const QString&)),
 				Qt::QueuedConnection);
 
-		new Util::DelayedExecutor
-		{
-			[this] { Room_->join (); },
-			0
-		};
+		Util::ExecuteLater ([this] { Room_->join (); });
 	}
 
 	QString RoomHandler::GetRoomJID () const
@@ -116,21 +113,6 @@ namespace Xoox
 		return CLEntry_;
 	}
 
-	void RoomHandler::HandleVCard (const QXmppVCardIq& card, const QString& nick)
-	{
-		if (!Nick2Entry_.contains (nick))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "no such nick"
-					<< nick
-					<< "; available:"
-					<< Nick2Entry_.keys ();
-			return;
-		}
-
-		Nick2Entry_ [nick]->SetVCard (card);
-	}
-
 	void RoomHandler::SetPresence (QXmppPresence pres)
 	{
 		if (pres.type () == QXmppPresence::Unavailable)
@@ -139,15 +121,13 @@ namespace Xoox
 			Join ();
 	}
 
-	/** @todo Detect kicks, bans and the respective actor.
-	 */
 	void RoomHandler::MakeLeaveMessage (const QXmppPresence& pres, const QString& nick)
 	{
 		QString msg = tr ("%1 has left the room").arg (nick);
 		if (pres.statusText ().size ())
 			msg += ": " + pres.statusText ();
 
-		RoomPublicMessage *message = new RoomPublicMessage (msg,
+		const auto message = new RoomPublicMessage (msg,
 				IMessage::Direction::In,
 				CLEntry_,
 				IMessage::Type::StatusMessage,
@@ -156,13 +136,11 @@ namespace Xoox
 		CLEntry_->HandleMessage (message);
 	}
 
-	/** @todo Detect the role, affiliation and real jid, if applicable.
-	 */
 	void RoomHandler::MakeJoinMessage (const QXmppPresence& pres, const QString& nick)
 	{
-		QString affiliation = XooxUtil::AffiliationToString (pres.mucItem ().affiliation ());
-		QString role = XooxUtil::RoleToString (pres.mucItem ().role ());
-		QString realJid = pres.mucItem ().jid ();
+		const auto& affiliation = XooxUtil::AffiliationToString (pres.mucItem ().affiliation ());
+		const auto& role = XooxUtil::RoleToString (pres.mucItem ().role ());
+		const auto& realJid = pres.mucItem ().jid ();
 		QString msg;
 		if (realJid.isEmpty ())
 			msg = tr ("%1 joined the room as %2 and %3")
@@ -176,7 +154,7 @@ namespace Xoox
 					.arg (role)
 					.arg (affiliation);
 
-		RoomPublicMessage *message = new RoomPublicMessage (msg,
+		const auto message = new RoomPublicMessage (msg,
 				IMessage::Direction::In,
 				CLEntry_,
 				IMessage::Type::StatusMessage,
@@ -194,7 +172,7 @@ namespace Xoox
 				.arg (state)
 				.arg (pres.statusText ());
 
-		RoomPublicMessage *message = new RoomPublicMessage (msg,
+		const auto message = new RoomPublicMessage (msg,
 				IMessage::Direction::In,
 				CLEntry_,
 				IMessage::Type::StatusMessage,
@@ -212,7 +190,7 @@ namespace Xoox
 				.arg (oldNick)
 				.arg (newNick);
 
-		auto message = new RoomPublicMessage (msg,
+		const auto message = new RoomPublicMessage (msg,
 				IMessage::Direction::In,
 				CLEntry_,
 				IMessage::Type::StatusMessage,
@@ -232,7 +210,7 @@ namespace Xoox
 					.arg (nick)
 					.arg (reason);
 
-		RoomPublicMessage *message = new RoomPublicMessage (msg,
+		const auto message = new RoomPublicMessage (msg,
 				IMessage::Direction::In,
 				CLEntry_,
 				IMessage::Type::StatusMessage,
@@ -252,7 +230,7 @@ namespace Xoox
 					.arg (nick)
 					.arg (reason);
 
-		RoomPublicMessage *message = new RoomPublicMessage (msg,
+		const auto message = new RoomPublicMessage (msg,
 				IMessage::Direction::In,
 				CLEntry_,
 				IMessage::Type::StatusMessage,
@@ -265,8 +243,8 @@ namespace Xoox
 			QXmppMucItem::Affiliation aff,
 			QXmppMucItem::Role role, const QString& reason)
 	{
-		const QString& affStr = XooxUtil::AffiliationToString (aff);
-		const QString& roleStr = XooxUtil::RoleToString (role);
+		const auto& affStr = XooxUtil::AffiliationToString (aff);
+		const auto& roleStr = XooxUtil::RoleToString (role);
 		QString msg;
 		if (reason.isEmpty ())
 			msg = tr ("%1 is now %2 and %3")
@@ -280,7 +258,7 @@ namespace Xoox
 					.arg (affStr)
 					.arg (reason);
 
-		RoomPublicMessage *message = new RoomPublicMessage (msg,
+		const auto message = new RoomPublicMessage (msg,
 				IMessage::Direction::In,
 				CLEntry_,
 				IMessage::Type::StatusMessage,
@@ -365,7 +343,7 @@ namespace Xoox
 				.arg (errorText.isEmpty () ?
 						tr ("no message") :
 						errorText);
-		RoomPublicMessage *message = new RoomPublicMessage (text,
+		const auto message = new RoomPublicMessage (text,
 				IMessage::Direction::In,
 				CLEntry_,
 				IMessage::Type::EventMessage,
@@ -505,28 +483,10 @@ namespace Xoox
 		}
 	}
 
-	void RoomHandler::UpdatePerms (const QList<QXmppMucItem>& perms)
-	{
-		for (const auto& item : perms)
-		{
-			if (!Nick2Entry_.contains (item.nick ()))
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "no participant with nick"
-						<< item.nick ()
-						<< Nick2Entry_.keys ();
-				continue;
-			}
-
-			Nick2Entry_ [item.nick ()]->SetAffiliation (item.affiliation ());
-			Nick2Entry_ [item.nick ()]->SetRole (item.role ());
-		}
-	}
-
 	GlooxMessage* RoomHandler::CreateMessage (IMessage::Type,
 			const QString& nick, const QString& body)
 	{
-		GlooxMessage *message = new GlooxMessage (IMessage::Type::ChatMessage,
+		const auto message = new GlooxMessage (IMessage::Type::ChatMessage,
 				IMessage::Direction::Out,
 				GetRoomJID (),
 				nick,
@@ -538,10 +498,7 @@ namespace Xoox
 
 	QList<QObject*> RoomHandler::GetParticipants () const
 	{
-		QList<QObject*> result;
-		for (const auto& rpe : Nick2Entry_)
-			result << rpe.get ();
-		return result;
+		return Util::Map (Nick2Entry_, [] (const auto& ptr) -> QObject* { return ptr.get (); });
 	}
 
 	QString RoomHandler::GetSubject () const
@@ -638,8 +595,7 @@ namespace Xoox
 
 	RoomParticipantEntry_ptr RoomHandler::CreateParticipantEntry (const QString& nick, bool announce)
 	{
-		RoomParticipantEntry_ptr entry (new RoomParticipantEntry (nick,
-					this, Account_));
+		auto entry = std::make_shared<RoomParticipantEntry> (nick, this, Account_);
 		connect (entry.get (),
 				SIGNAL (chatTabClosed ()),
 				this,
@@ -661,7 +617,7 @@ namespace Xoox
 
 	void RoomHandler::handleParticipantAdded (const QString& jid)
 	{
-		const QXmppPresence& pres = Room_->participantPresence (jid);
+		const auto& pres = Room_->participantPresence (jid);
 
 		QString nick;
 		ClientConnection::Split (jid, 0, &nick);
@@ -689,27 +645,26 @@ namespace Xoox
 
 	void RoomHandler::handleParticipantChanged (const QString& jid)
 	{
-		const QXmppPresence& pres = Room_->participantPresence (jid);
+		const auto& pres = Room_->participantPresence (jid);
 
 		QString nick;
 		ClientConnection::Split (jid, 0, &nick);
 
-		RoomParticipantEntry_ptr entry = GetParticipantEntry (nick);
+		const auto& entry = GetParticipantEntry (nick);
 
 		entry->HandlePresence (pres, QString ());
 		if (XooxUtil::PresenceToStatus (pres) != entry->GetStatus (QString ()))
 			MakeStatusChangedMessage (pres, nick);
 
-		const QXmppMucItem& item = pres.mucItem ();
+		const auto& item = pres.mucItem ();
 		if (item.affiliation () != entry->GetAffiliation () ||
 				item.role () != entry->GetRole ())
-			HandlePermsChanged (nick,
-					item.affiliation (), item.role (), item.reason ());
+			HandlePermsChanged (nick, item.affiliation (), item.role (), item.reason ());
 	}
 
 	void RoomHandler::handleParticipantRemoved (const QString& jid)
 	{
-		const QXmppPresence& pres = Room_->participantPresence (jid);
+		const auto& pres = Room_->participantPresence (jid);
 
 		QString nick;
 		ClientConnection::Split (jid, 0, &nick);
@@ -717,7 +672,8 @@ namespace Xoox
 		const bool us = Room_->nickName () == nick;
 
 		const auto& entry = GetParticipantEntry (nick);
-		const QXmppMucItem& item = pres.mucItem ();
+		const auto& item = pres.mucItem ();
+		const auto& reason = item.reason ();
 		if (!item.nick ().isEmpty () &&
 				item.nick () != nick)
 		{
@@ -726,18 +682,12 @@ namespace Xoox
 		}
 		else if (pres.mucStatusCodes ().contains (301))
 			!us ?
-				MakeBanMessage (nick, item.reason ()) :
-				static_cast<void> (QMetaObject::invokeMethod (CLEntry_,
-							"beenBanned",
-							Qt::QueuedConnection,
-							Q_ARG (QString, item.reason ())));
+				MakeBanMessage (nick, reason) :
+				Util::ExecuteLater ([=] { CLEntry_->beenBanned (reason); });
 		else if (pres.mucStatusCodes ().contains (307))
 			!us ?
-				MakeKickMessage (nick, item.reason ()) :
-				static_cast<void> (QMetaObject::invokeMethod (CLEntry_,
-							"beenKicked",
-							Qt::QueuedConnection,
-							Q_ARG (QString, item.reason ())));
+				MakeKickMessage (nick, reason) :
+				Util::ExecuteLater ([=] { CLEntry_->beenKicked (reason); });
 		else
 			MakeLeaveMessage (pres, nick);
 
@@ -752,12 +702,12 @@ namespace Xoox
 
 		if (us)
 		{
-			Leave (QString (), false);
+			Leave ({}, false);
 			return;
 		}
 
 		if (entry->HasUnreadMsgs ())
-			entry->SetStatus (EntryStatus (SOffline, item.reason ()),
+			entry->SetStatus (EntryStatus (SOffline, reason),
 					QString (), QXmppPresence (QXmppPresence::Unavailable));
 		else
 			RemoveEntry (entry.get ());
@@ -765,26 +715,22 @@ namespace Xoox
 
 	void RoomHandler::requestVoice ()
 	{
-		QList<QXmppDataForm::Field> fields;
-
 		QXmppDataForm::Field typeField (QXmppDataForm::Field::HiddenField);
 		typeField.setKey ("FORM_TYPE");
 		typeField.setValue ("http://jabber.org/protocol/muc#request");
-		fields << typeField;
 
 		QXmppDataForm::Field reqField (QXmppDataForm::Field::TextSingleField);
 		reqField.setLabel ("Requested role");
 		reqField.setKey ("muc#role");
 		reqField.setValue ("participant");
-		fields << reqField;
 
 		QXmppDataForm form;
 		form.setType (QXmppDataForm::Submit);
-		form.setFields (fields);
+		form.setFields ({ typeField, reqField });
 
 		QXmppMessage msg ("", Room_->jid ());
 		msg.setType (QXmppMessage::Normal);
-		msg.setExtensions (QXmppElementList () << XooxUtil::Form2XmppElem (form));
+		msg.setExtensions ({ XooxUtil::Form2XmppElem (form) });
 
 		Account_->GetClientConnection ()->GetClient ()->sendPacket (msg);
 	}

@@ -29,45 +29,29 @@
 
 #pragma once
 
-#ifndef HAVE_QML
-#error "Trying to compile QML notifications view without having QML :("
-#endif
+#include <QObject>
 
-#include <QtGlobal>
-#if QT_VERSION < 0x050000
-#include <QDeclarativeView>
-#else
-#include <QQuickWidget>
-#endif
-#include "../eventdata.h"
+class IEntityManager;
 
 namespace LeechCraft
 {
-namespace AdvancedNotifications
+namespace LMP
 {
-#if QT_VERSION < 0x050000
-	class VisualNotificationsView : public QDeclarativeView
-#else
-	class VisualNotificationsView : public QQuickWidget
-#endif
+	class SourceObject;
+	enum class SourceError;
+
+	class SourceErrorHandler : public QObject
 	{
 		Q_OBJECT
 
-		QObjectList LastEvents_;
-		QUrl Location_;
+		SourceObject * const Source_;
+		IEntityManager * const IEM_;
 	public:
-		VisualNotificationsView ();
-
-		void SetEvents (const QList<EventData>&);
+		SourceErrorHandler (SourceObject*, IEntityManager*);
 	private slots:
-#if QT_VERSION < 0x050000
-		void handleStatusChanged (QDeclarativeView::Status);
-#else
-		void handleStatusChanged (QQuickWidget::Status);
-#endif
+		void handleSourceError (const QString&, SourceError);
 	signals:
-		void actionTriggered (const QString&, int);
-		void dismissEvent (const QString&);
+		void nextTrack ();
 	};
 }
 }

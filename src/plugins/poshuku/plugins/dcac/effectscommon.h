@@ -31,7 +31,7 @@
 
 #include <QtGlobal>
 
-#if (defined (Q_PROCESSOR_X86_64) || QT_VERSION < 0x050000) && !defined (POSHUKU_DCAC_NO_SIMD)
+#if (defined (Q_PROCESSOR_X86_64) || defined (Q_PROCESSOR_X86)) && !defined (POSHUKU_DCAC_NO_SIMD)
 
 #define SSE_ENABLED
 #include <tmmintrin.h>

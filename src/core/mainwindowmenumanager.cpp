@@ -28,9 +28,9 @@
  **********************************************************************/
 
 #include "mainwindowmenumanager.h"
-#include <cassert>
 #include <QMenu>
 #include <util/sll/qtutil.h>
+#include <util/sll/unreachable.h>
 #include "interfaces/iactionsexporter.h"
 #include "ui_leechcraft.h"
 #include "core.h"
@@ -80,7 +80,7 @@ namespace LeechCraft
 			return MenuView_;
 		}
 
-		assert (false);
+		Util::Unreachable ();
 	}
 
 	void MainWindowMenuManager::FillToolMenu()

@@ -39,12 +39,9 @@ namespace BitTorrent
 {
 	class FilesViewDelegate : public QStyledItemDelegate
 	{
-		Q_OBJECT
-
-		QTreeView *View_;
+		QTreeView * const View_;
 	public:
-		FilesViewDelegate (QTreeView *parent = 0);
-		virtual ~FilesViewDelegate ();
+		FilesViewDelegate (QTreeView *parent = nullptr);
 
 		QWidget* createEditor (QWidget*, const QStyleOptionViewItem&, const QModelIndex&) const override;
 		void paint (QPainter*, const QStyleOptionViewItem&, const QModelIndex&) const override;

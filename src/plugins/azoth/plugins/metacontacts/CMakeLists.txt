@@ -22,7 +22,7 @@ set (METACONTACTS_FORMS
 	managecontactsdialog.ui
 	)
 set (METACONTACTS_RESOURCES azothmetacontactsresources.qrc)
-CreateTrs ("azoth_metacontacts" "en;es;ru_RU;uk_UA" METACONTACTS_COMPILED_TRANSLATIONS)
+CreateTrs ("azoth_metacontacts" "en;es;ro;ru_RU;uk_UA" METACONTACTS_COMPILED_TRANSLATIONS)
 CreateTrsUpTarget ("azoth_metacontacts" "en;ru_RU" "${METACONTACTS_SRCS}" "${METACONTACTS_FORMS}" "")
 QtWrapUi (METACONTACTS_UIS_H ${METACONTACTS_FORMS})
 QtAddResources (METACONTACTS_RCCS ${METACONTACTS_RESOURCES})

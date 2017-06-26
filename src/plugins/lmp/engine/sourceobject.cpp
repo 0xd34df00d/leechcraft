@@ -33,10 +33,10 @@
 #include <map>
 #include <stdexcept>
 #include <algorithm>
-#include <cassert>
 #include <QtDebug>
 #include <QTimer>
 #include <QThread>
+#include <util/sll/unreachable.h>
 #include "util/lmp/gstutil.h"
 #include "audiosource.h"
 #include "path.h"
@@ -261,7 +261,7 @@ namespace LMP
 			return Metadata_ ["maximum-bitrate"];
 		}
 
-		assert (false);
+		Util::Unreachable ();
 	}
 
 	qint64 SourceObject::GetCurrentTime ()
@@ -517,6 +517,57 @@ namespace LMP
 		AsyncHandlers_.AddHandler (handler, dependent);
 	}
 
+	namespace
+	{
+		const auto& GetErrorMap ()
+		{
+			static const std::map<GQuark, std::map<gint, SourceError>> errMap
+			{
+				{
+					GST_CORE_ERROR,
+					{
+						{
+							GST_CORE_ERROR_MISSING_PLUGIN,
+							SourceError::MissingPlugin
+						}
+					}
+				},
+				{
+					GST_RESOURCE_ERROR,
+					{
+						{
+							GST_RESOURCE_ERROR_NOT_FOUND,
+							SourceError::SourceNotFound
+						},
+						{
+							GST_RESOURCE_ERROR_OPEN_READ,
+							SourceError::CannotOpenSource
+						},
+						{
+							GST_RESOURCE_ERROR_BUSY,
+							SourceError::DeviceBusy
+						}
+					}
+				},
+				{
+					GST_STREAM_ERROR,
+					{
+						{
+							GST_STREAM_ERROR_TYPE_NOT_FOUND,
+							SourceError::InvalidSource
+						},
+						{
+							GST_STREAM_ERROR_DECODE,
+							SourceError::InvalidSource
+						}
+					}
+				}
+			};
+
+			return errMap;
+		}
+	}
+
 	void SourceObject::HandleErrorMsg (GstMessage *msg)
 	{
 		GError *gerror = nullptr;
@@ -545,45 +596,6 @@ namespace LMP
 				<< msgStr
 				<< debugStr;
 
-		static const std::map<decltype (domain), std::map<decltype (code), SourceError>> errMap
-		{
-			{
-				GST_CORE_ERROR,
-				{
-					{
-						GST_CORE_ERROR_MISSING_PLUGIN,
-						SourceError::MissingPlugin
-					}
-				}
-			},
-			{
-				GST_RESOURCE_ERROR,
-				{
-					{
-						GST_RESOURCE_ERROR_NOT_FOUND,
-						SourceError::SourceNotFound
-					},
-					{
-						GST_RESOURCE_ERROR_OPEN_READ,
-						SourceError::CannotOpenSource
-					}
-				}
-			},
-			{
-				GST_STREAM_ERROR,
-				{
-					{
-						GST_STREAM_ERROR_TYPE_NOT_FOUND,
-						SourceError::InvalidSource
-					},
-					{
-						GST_STREAM_ERROR_DECODE,
-						SourceError::InvalidSource
-					}
-				}
-			}
-		};
-
 		if (!IsDrainingMsgs_)
 		{
 			qDebug () << Q_FUNC_INFO << "draining bus";
@@ -600,7 +612,7 @@ namespace LMP
 			{
 				try
 				{
-					return errMap.at (domain).at (code);
+					return GetErrorMap ().at (domain).at (code);
 				}
 				catch (const std::out_of_range&)
 				{
@@ -734,6 +746,15 @@ namespace LMP
 		g_free (debug);
 
 		qDebug () << Q_FUNC_INFO << code << domain << msgStr << debugStr;
+
+		try
+		{
+			emit error (msgStr, GetErrorMap ().at (domain).at (code));
+		}
+		catch (const std::out_of_range&)
+		{
+			qDebug () << "not found";
+		}
 	}
 
 	int SourceObject::HandleSyncMessage (GstBus *bus, GstMessage *msg)

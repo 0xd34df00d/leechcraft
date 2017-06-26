@@ -126,6 +126,10 @@
 					<label value="Show rich text message body (if available)" />
 					<tooltip>Whether rich text body of the messages should be used, if available. This is a default value, and the behavior could be changed for each opened chat window.</tooltip>
 				</item>
+				<item type="checkbox" property="ShowRichTextEditor" default="true">
+					<label value="Show rich text editor (if available)" />
+					<tooltip>Whether rich text editor should be displayed, if supported by the protocol plugin. This is a default value, and the behavior could be changed for each opened chat window.</tooltip>
+				</item>
 				<item type="checkbox" property="ShowNormalChatResources" default="false">
 					<label value="Show client resources in normal one-to-one chats" />
 				</item>
@@ -140,6 +144,17 @@
 				<item type="spinbox" property="ShortenURLLength" default="100" minimum="10" maximum="1000">
 					<label value="Shorten URLs longer than:" />
 					<suffix value=" symbols" />
+				</item>
+				<item type="groupbox" checkable="true" property="LimitMaxImageSize" default="false">
+					<label value="Limit the display dimensions of images embedded in messages" />
+					<item type="spinbox" property="MaxImageWidth" default="1440" minimum="0" maximum="100000" step="10">
+						<label value="Maximum width:" />
+						<suffix value=" px" />
+					</item>
+					<item type="spinbox" property="MaxImageHeight" default="900" minimum="0" maximum="100000" step="10">
+						<label value="Maximum height:" />
+						<suffix value=" px" />
+					</item>
 				</item>
 			</groupbox>
 			<groupbox>

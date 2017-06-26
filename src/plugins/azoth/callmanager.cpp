@@ -221,11 +221,7 @@ namespace Azoth
 					<< "\n\tcodecs:"
 					<< info.supportedCodecs ()
 					<< "\n\tfrequencies:"
-#if QT_VERSION < 0x050000
-					<< info.supportedFrequencies ()
-#else
 					<< info.supportedSampleRates ()
-#endif
 					<< "\n\tsample types:"
 					<< info.supportedSampleTypes ();
 			qWarning () << "instead we got:"
@@ -243,13 +239,8 @@ namespace Azoth
 
 		int GetBufSize (const QAudioFormat& format)
 		{
-#if QT_VERSION < 0x050000
-			const auto frequency = format.frequency ();
-			const auto channels = format.channels ();
-#else
 			const auto frequency = format.sampleRate ();
 			const auto channels = format.channelCount ();
-#endif
 			return (frequency * channels * (format.sampleSize () / 8) * 160) / 1000;
 		}
 #endif
@@ -292,11 +283,7 @@ namespace Azoth
 				return;
 			}
 
-#if QT_VERSION >= 0x050000
 			qDebug () << "opening:" << info.deviceName () << format;
-#else
-			qDebug () << "opening:" << info.deviceName ();
-#endif
 
 			if (!info.isFormatSupported (format))
 				WarnUnsupported (info, format, "raw audio format not supported by backend");

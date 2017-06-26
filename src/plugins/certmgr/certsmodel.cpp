@@ -39,11 +39,6 @@ namespace LeechCraft
 {
 namespace CertMgr
 {
-	CertsModel::CertsModel (QObject *parent)
-	: QAbstractItemModel { parent }
-	{
-	}
-
 	QModelIndex CertsModel::index (int row, int column, const QModelIndex& parent) const
 	{
 		if (!hasIndex (row, column, parent))
@@ -102,15 +97,10 @@ namespace CertMgr
 				result += "<td>" + val + "</td></tr>";
 			};
 
-#if QT_VERSION < 0x050000
-			auto addStdFields = [&add] (std::function<QString (QSslCertificate::SubjectInfo)> getter) -> void
-			{
-#else
-			auto addStdFields = [&add] (std::function<QStringList (QSslCertificate::SubjectInfo)> listGetter) -> void
+			auto addStdFields = [&add] (auto&& listGetter)
 			{
 				const auto getter = [listGetter] (QSslCertificate::SubjectInfo key)
 						{ return listGetter (key).join ("; "); };
-#endif
 				add (CertsModel::tr ("Organization"),
 						getter (QSslCertificate::Organization));
 				add (CertsModel::tr ("Unit"),
@@ -147,11 +137,7 @@ namespace CertMgr
 					QLocale {}.toString (cert.expiryDate (), QLocale::ShortFormat));
 			result += "</table><br />";
 
-#if QT_VERSION < 0x050000
-			const auto& subjs = cert.alternateSubjectNames ();
-#else
 			const auto& subjs = cert.subjectAlternativeNames ();
-#endif
 			if (!subjs.isEmpty ())
 			{
 				result += "<strong>" + CertsModel::tr ("Alternate names") + ":</strong>";
@@ -204,13 +190,8 @@ namespace CertMgr
 
 			if (!name.isEmpty () && !org.isEmpty ())
 				return QString ("%1 (%2)")
-#if QT_VERSION < 0x050000
-						.arg (name)
-						.arg (org);
-#else
 						.arg (name.join ("; "))
 						.arg (org.join ("; "));
-#endif
 			else if (!name.isEmpty ())
 				return name;
 			else
@@ -315,12 +296,7 @@ namespace CertMgr
 			auto issuer = cert.issuerInfo (QSslCertificate::Organization);
 			if (issuer.isEmpty ())
 				issuer = cert.issuerInfo (QSslCertificate::CommonName);
-
-#if QT_VERSION < 0x050000
-			return issuer;
-#else
 			return issuer.join ("; ");
-#endif
 		}
 	}
 

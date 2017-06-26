@@ -31,19 +31,10 @@
 #include <stdexcept>
 #include <QComboBox>
 #include <QToolBar>
-
-#if QT_VERSION < 0x050000
-#include <QDeclarativeView>
-#include <QDeclarativeContext>
-#include <QDeclarativeEngine>
-#include <QGraphicsObject>
-#else
 #include <QQuickWidget>
 #include <QQmlContext>
 #include <QQmlEngine>
 #include <QQuickItem>
-#endif
-
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QProgressBar>
@@ -86,13 +77,8 @@ namespace Blogique
 
 	BlogiqueWidget::BlogiqueWidget (QWidget *parent)
 	: QWidget (parent)
-#if QT_VERSION < 0x050000
-	, TagsCloud_ (new QDeclarativeView)
-	, Tags_ (new QDeclarativeView)
-#else
 	, TagsCloud_ (new QQuickWidget)
 	, Tags_ (new QQuickWidget)
-#endif
 	, ToolBar_ (new QToolBar)
 	, ProgressToolBar_ (new QToolBar (this))
 	, AccountsBox_ (new QComboBox ())
@@ -104,13 +90,8 @@ namespace Blogique
 	{
 		Ui_.setupUi (this);
 
-#if QT_VERSION < 0x050000
-		TagsCloud_->setResizeMode (QDeclarativeView::SizeRootObjectToView);
-		Tags_->setResizeMode (QDeclarativeView::SizeRootObjectToView);
-#else
 		TagsCloud_->setResizeMode (QQuickWidget::SizeRootObjectToView);
 		Tags_->setResizeMode (QQuickWidget::SizeRootObjectToView);
-#endif
 
 		new Util::QmlErrorWatcher { TagsCloud_ };
 		new Util::QmlErrorWatcher { Tags_ };

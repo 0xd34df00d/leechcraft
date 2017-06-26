@@ -293,12 +293,6 @@ namespace CleanWeb
 
 	namespace
 	{
-		void DumbReductor (bool& res, bool value)
-		{
-			if (value)
-				res = true;
-		}
-
 		FilterOption::MatchObjects ResourceType2Objs (IInterceptableRequests::ResourceType type)
 		{
 			switch (type)
@@ -309,6 +303,8 @@ namespace CleanWeb
 				return FilterOption::MatchObject::Subdocument;
 			case IInterceptableRequests::ResourceType::Stylesheet:
 				return FilterOption::MatchObject::CSS;
+			case IInterceptableRequests::ResourceType::Script:
+				return FilterOption::MatchObject::Script;
 			default:
 				return FilterOption::MatchObject::All;
 			}
@@ -350,7 +346,6 @@ namespace CleanWeb
 											continue;
 
 									if (opt.MatchObjects_ != FilterOption::MatchObject::All &&
-											objs != FilterOption::MatchObject::All &&
 											!(objs & opt.MatchObjects_))
 										continue;
 
@@ -361,7 +356,8 @@ namespace CleanWeb
 
 								return false;
 							}
-						}, DumbReductor);
+						},
+						+[] (bool& res, bool value) { res = res || value; });
 			};
 			if (matches (exceptions))
 				return false;
@@ -384,11 +380,14 @@ namespace CleanWeb
 			{
 				const auto view = *info.View_;
 				const auto reqUrl = info.RequestUrl_;
+
 				auto exec = new Util::DelayedExecutor
 				{
 					[this, view, reqUrl] { DelayedRemoveElements (view, reqUrl); },
-					0
+					0,
+					view->GetQWidget ()
 				};
+
 				exec->moveToThread (qApp->thread ());
 			}
 

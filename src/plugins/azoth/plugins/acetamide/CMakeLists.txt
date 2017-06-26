@@ -65,7 +65,7 @@ set (ACETAMIDE_FORMS
 	)
 set (ACETAMIDE_RESOURCES azothacetamideresources.qrc)
 
-CreateTrs ("azoth_acetamide" "de;en;es;fr;it;ru_RU;uk_UA" ACETAMIDE_COMPILED_TRANSLATIONS)
+CreateTrs ("azoth_acetamide" "de;en;es;fr;it;ro;ru_RU;uk_UA" ACETAMIDE_COMPILED_TRANSLATIONS)
 CreateTrsUpTarget ("azoth_acetamide" "en;ru_RU" "${ACETAMIDE_SRCS}" "${ACETAMIDE_FORMS}" "azothacetamidesettings.xml")
 
 QtWrapUi (ACETAMIDE_UIS_H ${ACETAMIDE_FORMS})

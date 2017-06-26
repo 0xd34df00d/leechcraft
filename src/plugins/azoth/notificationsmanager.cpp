@@ -318,11 +318,7 @@ namespace Azoth
 		QString GetStatusChangeText (const ICLEntry *entry,
 				const EntryStatus& entrySt, const QString& variant, QString status)
 		{
-#if QT_VERSION < 0x050000
-			const auto& statusString = Qt::escape (entrySt.StatusString_);
-#else
 			const auto& statusString = entrySt.StatusString_.toHtmlEscaped ();
-#endif
 			if (!statusString.isEmpty ())
 				status += " (" + statusString + ")";
 

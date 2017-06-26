@@ -37,9 +37,8 @@ namespace Summary
 {
 	class ModelDelegate : public QStyledItemDelegate
 	{
-		Q_OBJECT
 	public:
-		ModelDelegate (QObject* = 0);
+		using QStyledItemDelegate::QStyledItemDelegate;
 
 		void paint (QPainter*, const QStyleOptionViewItem&, const QModelIndex&) const;
 	};

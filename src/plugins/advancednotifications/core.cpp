@@ -142,10 +142,5 @@ namespace AdvancedNotifications
 
 		return GetAudioThemeLoader ()->GetPath (pathVariants);
 	}
-
-	void Core::SendEntity (const Entity& e)
-	{
-		emit gotEntity (e);
-	}
 }
 }

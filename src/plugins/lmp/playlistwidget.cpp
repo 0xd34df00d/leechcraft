@@ -436,8 +436,14 @@ namespace LMP
 			QAction *action = new QAction (pair.second, this);
 			action->setProperty ("PlayMode", static_cast<int> (pair.first));
 			action->setCheckable (true);
-			action->setChecked (hadChecked ? false : hadChecked = true);
 			action->setActionGroup (PlayModesGroup_);
+
+			if (!hadChecked)
+			{
+				action->setChecked (true);
+				hadChecked = true;
+			}
+
 			playMode->addAction (action);
 
 			connect (action,
@@ -465,12 +471,9 @@ namespace LMP
 		auto menu = new QMenu (tr ("Sorting"));
 		sortButton->setMenu (menu);
 
-		auto getInts = [] (const QList<SortingCriteria>& crit) -> QVariantList
+		auto getInts = [] (const QList<SortingCriteria>& crit)
 		{
-			QVariantList result;
-			std::transform (crit.begin (), crit.end (), std::back_inserter (result),
-					[] (decltype (crit.front ()) item) { return static_cast<int> (item); });
-			return result;
+			return Util::Map (crit, [] (auto item) { return QVariant { static_cast<int> (item) }; });
 		};
 
 		const auto stdSorts =

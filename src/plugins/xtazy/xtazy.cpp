@@ -28,12 +28,11 @@
  **********************************************************************/
 
 #include "xtazy.h"
-#include <cassert>
 #include <QIcon>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include <util/sll/unreachable.h>
 #include <util/util.h>
 #include "xmlsettingsmanager.h"
-
 #include "tunesourcebase.h"
 #include "filesource.h"
 #include "lcsource.h"
@@ -110,7 +109,7 @@ namespace Xtazy
 			return false;
 		}
 
-		assert (false);
+		Util::Unreachable ();
 	}
 
 	QString Plugin::GetServiceName () const

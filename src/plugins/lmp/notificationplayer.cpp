@@ -29,16 +29,19 @@
 
 #include "notificationplayer.h"
 #include <QtDebug>
+#include <interfaces/core/icoreproxy.h>
 #include "engine/sourceobject.h"
 #include "engine/audiosource.h"
 #include "engine/output.h"
 #include "engine/path.h"
+#include "sourceerrorhandler.h"
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	NotificationPlayer::NotificationPlayer (const QString& audiofile, QObject *parent)
+	NotificationPlayer::NotificationPlayer (const QString& audiofile,
+			const ICoreProxy_ptr& proxy, QObject *parent)
 	: QObject (parent)
 	{
 		qDebug () << Q_FUNC_INFO << audiofile;
@@ -54,6 +57,8 @@ namespace LMP
 				SIGNAL (stateChanged (SourceState, SourceState)),
 				this,
 				SLOT (handleStateChanged (SourceState, SourceState)));
+
+		new SourceErrorHandler { source, proxy->GetEntityManager () };
 	}
 
 	void NotificationPlayer::handleStateChanged (SourceState state, SourceState previous)

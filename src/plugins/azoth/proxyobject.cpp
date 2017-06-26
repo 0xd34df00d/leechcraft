@@ -35,6 +35,7 @@
 #include <util/xpc/passutils.h>
 #include <util/sys/sysinfo.h>
 #include <util/sll/prelude.h>
+#include <util/sll/unreachable.h>
 #include "interfaces/azoth/iaccount.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"
@@ -307,7 +308,7 @@ namespace Azoth
 				<< "unknown type"
 				<< loader;
 
-		assert (false);
+		Util::Unreachable ();
 	}
 
 	QIcon ProxyObject::GetIconForState (State state) const

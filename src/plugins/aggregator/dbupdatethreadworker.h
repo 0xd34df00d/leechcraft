@@ -30,6 +30,7 @@
 #pragma once
 
 #include <memory>
+#include <functional>
 #include <QObject>
 #include <QVariantList>
 #include <interfaces/core/ihookproxy.h>

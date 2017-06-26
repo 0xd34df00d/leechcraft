@@ -28,9 +28,9 @@ set (SRCS
 	rulesmanager.cpp
 	quarkproxy.cpp
 	actionsmodel.cpp
-	qml/visualnotificationsview.cpp
-	qml/eventproxyobject.cpp
-	qml/actionsproxyobject.cpp
+	visualnotificationsview.cpp
+	eventproxyobject.cpp
+	actionsproxyobject.cpp
 	)
 set (FORMS
 	notificationruleswidget.ui
@@ -40,11 +40,9 @@ set (FORMS
 	stringlikematcherconfigwidget.ui
 	)
 
-add_definitions(-DHAVE_QML=1)
-
 set (RESOURCES advancednotificationsresources.qrc)
 
-CreateTrs ("advancednotifications" "en;es;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
+CreateTrs ("advancednotifications" "en;es;ro;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("advancednotifications" "en;ru_RU" "${SRCS}" "${FORMS}" "advancednotificationssettings.xml")
 QtWrapUi (UIS_H ${FORMS})
 QtAddResources (RCCS ${RESOURCES})

@@ -41,6 +41,7 @@
 #include <QDateTime>
 #include <QtDebug>
 #include "../sopluginloader.h"
+#include "../../debugmessagehandler.h"
 #include "marshalling.h"
 #include "infoserverwrapper.h"
 
@@ -48,52 +49,14 @@ namespace LeechCraft
 {
 namespace DBus
 {
-	namespace
-	{
-		QMutex G_DbgMutex;
-		uint Counter = 0;
-
-		void Write (QtMsgType type, const char *message)
-		{
-			if (!strcmp (message, "QPixmap::handle(): Pixmap is not an X11 class pixmap") ||
-					strstr (message, ": Painter not active"))
-				return;
-
-			static const std::map<QtMsgType, QString> fileName =
-			{
-				{QtDebugMsg, "debug_slave.log"},
-				{QtWarningMsg, "warning_slave.log"},
-				{QtCriticalMsg, "critical_slave.log"},
-				{QtFatalMsg, "fatal_slave.log"}
-			};
-
-			const QString name = QDir::homePath () + "/.leechcraft/" + fileName.at (type);
-
-			G_DbgMutex.lock ();
-
-			std::ofstream ostr;
-			ostr.open (QDir::toNativeSeparators (name).toStdString ().c_str (), std::ios::app);
-			ostr << "["
-				<< QDateTime::currentDateTime ().toString ("dd.MM.yyyy HH:mm:ss.zzz").toStdString ()
-				<< "] ["
-				<< QThread::currentThread ()
-				<< "] ["
-				<< std::setfill ('0')
-				<< std::setw (3)
-				<< Counter++
-				<< "] "
-				<< message
-				<< std::endl;
-
-			ostr.close ();
-			G_DbgMutex.unlock ();
-		}
-	}
-
 	Server::Server ()
 	: QObject ()
 	{
-		qInstallMsgHandler (Write);
+		qInstallMessageHandler ([] (QtMsgType type, const QMessageLogContext& ctx, const QString& msg)
+				{
+					DebugHandler::Write (type, ctx, msg.toLocal8Bit ().constData (), DebugHandler::DWFNone);
+				});
+
 		const auto pid = QCoreApplication::applicationPid ();
 
 		RegisterTypes ();

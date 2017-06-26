@@ -64,6 +64,7 @@
 #include "engine/path.h"
 #include "localcollectionmodel.h"
 #include "playerrulesmanager.h"
+#include "sourceerrorhandler.h"
 
 namespace LeechCraft
 {
@@ -133,8 +134,9 @@ namespace LMP
 		bool ShouldClear_;
 	};
 
-	Player::Player (QObject *parent)
+	Player::Player (const ICoreProxy_ptr& proxy, QObject *parent)
 	: QObject (parent)
+	, Proxy_ (proxy)
 	, PlaylistModel_ (new PlaylistModel (this))
 	, Source_ (new SourceObject (Category::Music, this))
 	, Output_ (new Output (this))
@@ -178,10 +180,11 @@ namespace LMP
 				this,
 				SIGNAL (bufferStatusChanged (int)));
 
-		connect (Source_,
-				SIGNAL (error (QString, SourceError)),
+		const auto seh = new SourceErrorHandler { Source_, Proxy_->GetEntityManager () };
+		connect (seh,
+				SIGNAL (nextTrack ()),
 				this,
-				SLOT (handleSourceError (QString, SourceError)));
+				SLOT (nextTrack ()));
 
 		PlaylistModel_->setHorizontalHeaderLabels ({ tr ("Playlist") });
 	}
@@ -740,7 +743,8 @@ namespace LMP
 
 		template<typename UrlInfoSetter, typename Setter, typename Clearer>
 		void CheckPlaylistRefreshes (const NativePlaylist_t& playlist,
-				const UrlInfoSetter& urlInfoSetter, const Setter& setter, const Clearer& clearer)
+				const UrlInfoSetter& urlInfoSetter, const Setter& setter, const Clearer& clearer,
+				const ICoreProxy_ptr& proxy)
 		{
 			QHash<QByteArray, QList<RestoreInfo>> plugin2infos;
 			for (const auto& item : playlist)
@@ -761,7 +765,7 @@ namespace LMP
 
 			const auto syncer = std::make_shared<QFutureSynchronizer<Media::RadiosRestoreResult_t>> ();
 
-			const auto ipm = Core::Instance ().GetProxy ()->GetPluginsManager ();
+			const auto ipm = proxy->GetPluginsManager ();
 			for (const auto& pair : Util::Stlize (plugin2infos))
 				HandlePluginInfos (pair.first, pair.second, syncer.get (), ipm);
 
@@ -803,7 +807,8 @@ namespace LMP
 		CheckPlaylistRefreshes (playlist,
 				[this] (const QUrl& url, const MediaInfo& media) { Url2Info_ [url] = media; },
 				setter,
-				[this] { clear (); });
+				[this] { clear (); },
+				Proxy_);
 
 		setter (playlist);
 	}
@@ -1118,7 +1123,7 @@ namespace LMP
 		e.Additional_ [AN::Field::MediaTitle] = mediaInfo.Title_;
 		e.Additional_ [AN::Field::MediaLength] = mediaInfo.Length_;
 
-		Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (e);
+		Proxy_->GetEntityManager ()->HandleEntity (e);
 	}
 
 	template<typename T>
@@ -1647,21 +1652,23 @@ namespace LMP
 
 		if (HandleCurrentStop (current))
 		{
-			if (!next.IsEmpty ())
-				new Util::SlotClosure<Util::DeleteLaterPolicy>
-				{
-					[this, next] { Source_->SetCurrentSource (next); },
-					Source_,
-					SIGNAL (finished ()),
-					Source_
-				};
-
-			MarkAsCurrent (Items_.value (next));
+			PlaybackStopHandler_ = [this, next]
+			{
+				MarkAsCurrent (Items_.value (next));
+				Source_->SetCurrentSource (next);
+			};
 			return;
 		}
 
 		if (next.IsEmpty ())
+		{
+			PlaybackStopHandler_ = [this]
+			{
+				MarkAsCurrent (nullptr);
+				Source_->SetCurrentSource ({});
+			};
 			return;
+		}
 
 		Source_->PrepareNextSource (next);
 		EmitStateChange (SourceState::Stopped);
@@ -1698,8 +1705,16 @@ namespace LMP
 		{
 		case SourceState::Stopped:
 			emit songChanged ({});
+
 			if (!CurrentQueue_.contains (Source_->GetCurrentSource ()))
 				Source_->SetCurrentSource ({});
+
+			if (PlaybackStopHandler_)
+			{
+				PlaybackStopHandler_ ();
+				PlaybackStopHandler_ = nullptr;
+			}
+
 			break;
 		default:
 			break;
@@ -1767,47 +1782,6 @@ namespace LMP
 		LastPhononMediaInfo_ = info;
 
 		EmitStateChange (Source_->GetState ());
-	}
-
-	void Player::handleSourceError (const QString& sourceText, SourceError error)
-	{
-		QString text;
-
-		const auto& curSource = Source_->GetCurrentSource ();
-		const auto& curPath = curSource.ToUrl ().path ();
-		const auto& filename = "<em>" + QFileInfo { curPath }.fileName () + "</em>";
-		switch (error)
-		{
-		case SourceError::MissingPlugin:
-			text = tr ("Cannot find a proper audio decoder for file %1. "
-					"You probably don't have all the codec plugins installed.")
-					.arg (filename);
-			text += "<br/>" + sourceText;
-			if (PlayMode_ == PlayMode::Sequential)
-				nextTrack ();
-			break;
-		case SourceError::SourceNotFound:
-			text = tr ("Audio source %1 not found, playing next track...")
-					.arg (filename);
-			nextTrack ();
-			break;
-		case SourceError::CannotOpenSource:
-			text = tr ("Cannot open source %1, playing next track...")
-					.arg (filename);
-			nextTrack ();
-			break;
-		case SourceError::InvalidSource:
-			text = tr ("Audio source %1 is invalid, playing next track...")
-					.arg (filename);
-			nextTrack ();
-			break;
-		case SourceError::Other:
-			text = sourceText;
-			break;
-		}
-
-		const auto& e = Util::MakeNotification ("LMP", text, PCritical_);
-		Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (e);
 	}
 
 	void Player::refillPlaylist ()

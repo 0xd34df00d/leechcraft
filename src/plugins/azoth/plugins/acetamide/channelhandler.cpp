@@ -400,36 +400,24 @@ namespace Acetamide
 		case ChannelRole::Participant:
 			break;
 		case ChannelRole::Voiced:
-			if (entry->Roles ().contains (Voiced))
-				mode = "-v";
-			else
-				mode = "+v";
+			mode = "v";
 			break;
 		case ChannelRole::HalfOperator:
-			if (entry->Roles ().contains (Voiced))
-				mode = "-h";
-			else
-				mode = "+h";
+			mode = "h";
 			break;
 		case ChannelRole::Operator:
-			if (entry->Roles ().contains (Voiced))
-				mode = "-o";
-			else
-				mode = "+o";
+			mode = "o";
 			break;
 		case ChannelRole::Admin:
-			if (entry->Roles ().contains (Voiced))
-				mode = "-a";
-			else
-				mode = "+a";
+			mode = "a";
 			break;
 		case ChannelRole::Owner:
-			if (entry->Roles ().contains (Voiced))
-				mode = "-q";
-			else
-				mode = "+q";
+			mode = "q";
 			break;
 		}
+
+		if (!mode.isEmpty ())
+			mode.prepend (entry->Roles ().contains (Voiced) ? '-' : '+');
 
 		if (!mode.isEmpty ())
 			CM_->SetNewChannelMode (ChannelOptions_.ChannelName_,
@@ -468,29 +456,11 @@ namespace Acetamide
 		{
 			const bool isPrivate = entry->IsPrivateChat ();
 			const QString nick = entry->GetEntryName ();
-// 			const auto& participants = CM_->GetParticipantsByNick (nick);
-//
-// 			if (participants.count () == 1)
-// 			{
 			CM_->GetAccount ()->handleEntryRemoved (entry.get ());
 			if (isPrivate)
 				CM_->CreateServerParticipantEntry (nick);
-// 			}
-// 			else
-// 			{
-// 				CM_->GetAccount ()->handleEntryRemoved (entry.get ());
-// 				Nick2Entry_.remove (nick);
-// 				Q_FOREACH (QObject *entryObj, participants.values ())
-// 				{
-// 					if (participants.key (entryObj) == ChannelOptions_.ChannelName_)
-// 						continue;
-//
-// 					CM_->GetChannelHandler (participants.key (entryObj))->RemoveUserFromChannel (nick);
-// 					CM_->GetChannelHandler (participants.key (entryObj))->
-// 							GetParticipantEntry (nick)->SetStatus (EntryStatus (SOnline, ""));
-// 				}
-// 			}
 		}
+
 		Nick2Entry_.clear ();
 
 		CM_->GetAccount ()->handleEntryRemoved (ChannelCLEntry_.get ());

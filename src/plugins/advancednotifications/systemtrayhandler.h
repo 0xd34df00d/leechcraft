@@ -45,9 +45,7 @@ namespace LeechCraft
 {
 namespace AdvancedNotifications
 {
-#ifdef HAVE_QML
 	class VisualNotificationsView;
-#endif
 
 	class SystemTrayHandler : public ConcreteHandlerBase
 	{
@@ -57,13 +55,11 @@ namespace AdvancedNotifications
 		QMap<QString, QAction*> Category2Action_;
 		QMap<QString, EventData> Events_;
 
-#ifdef HAVE_QML
 		QMap<QSystemTrayIcon*, QList<EventData>> EventsForIcon_;
 		QMap<QSystemTrayIcon*, VisualNotificationsView*> Icon2NotificationView_;
 
 		QMap<QAction*, QList<EventData>> EventsForAction_;
 		QMap<QAction*, VisualNotificationsView*> Action2NotificationView_;
-#endif
 	public:
 		SystemTrayHandler ();
 		~SystemTrayHandler ();

@@ -52,6 +52,7 @@
 #include <QtDebug>
 #include <util/sll/qtutil.h>
 #include <util/sll/prelude.h>
+#include <util/sll/unreachable.h>
 #include <util/db/dblock.h>
 #include <util/db/util.h>
 #include "oraltypes.h"
@@ -482,7 +483,7 @@ namespace oral
 				return "INSERT OR REPLACE";
 			}
 
-			assert (0);
+			Util::Unreachable ();
 		}
 
 		template<typename Seq>
@@ -745,10 +746,7 @@ namespace oral
 				return "invalid type";
 			}
 
-			qWarning () << Q_FUNC_INFO
-					<< "unhandled type"
-					<< static_cast<int> (type);
-			return {};
+			Util::Unreachable ();
 		}
 
 		template<ExprType Type>

@@ -56,6 +56,7 @@
 #include <util/xpc/defaulthookproxy.h>
 #include <util/gui/findnotificationwk.h>
 #include <util/sll/delayedexecutor.h>
+#include <util/sll/unreachable.h>
 #include <interfaces/core/icoreproxy.h>
 #include "interfaces/poshuku/ibrowserwidget.h"
 #include "interfaces/poshuku/iwebviewhistory.h"
@@ -238,7 +239,7 @@ namespace WebKitView
 			return { SslWatcherHandler_->GetStateAction () };
 		}
 
-		assert (false);
+		Util::Unreachable ();
 	}
 
 	QAction* CustomWebView::GetPageAction (PageAction action) const
@@ -268,7 +269,7 @@ namespace WebKitView
 
 #undef ACT
 
-		assert (false);
+		Util::Unreachable ();
 	}
 
 	QString CustomWebView::GetTitle () const
@@ -457,7 +458,7 @@ namespace WebKitView
 						return History_->backItems (maxItems);
 					}
 
-					assert (false);
+					Util::Unreachable ();
 				} ();
 
 				QList<IItem_ptr> result;
@@ -650,7 +651,7 @@ namespace WebKitView
 				return QWebPage::PermissionDeniedByUser;
 			}
 
-			assert (false);
+			Util::Unreachable ();
 		}
 
 		class FrameFeatureSecurityOrigin : public IWebView::IFeatureSecurityOrigin

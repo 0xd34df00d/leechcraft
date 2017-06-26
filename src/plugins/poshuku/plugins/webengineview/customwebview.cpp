@@ -28,7 +28,6 @@
  **********************************************************************/
 
 #include "customwebview.h"
-#include <cassert>
 #include <QIcon>
 #include <QFile>
 #include <QWebEngineSettings>
@@ -36,6 +35,7 @@
 #include <QWebEngineContextMenuData>
 #include <QWebChannel>
 #include <QContextMenuEvent>
+#include <util/sll/unreachable.h>
 #include <interfaces/poshuku/iwebviewhistory.h>
 #include <interfaces/poshuku/iproxyobject.h>
 #include "customwebpage.h"
@@ -115,7 +115,7 @@ namespace WebEngineView
 
 #undef ACT
 
-		assert (false);
+		Util::Unreachable ();
 	}
 
 	QString CustomWebView::GetTitle () const
@@ -381,7 +381,7 @@ namespace WebEngineView
 						return History_->backItems (maxItems);
 					}
 
-					assert (false);
+					Util::Unreachable ();
 				} ();
 
 				QList<IItem_ptr> result;

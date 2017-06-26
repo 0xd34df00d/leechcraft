@@ -85,6 +85,7 @@ namespace DCAC
 			__m128i S1_;
 			__m128i S2_;
 
+			__attribute__ ((target ("ssse3")))
 			Divide (uint16_t factor)
 			{
 				const uint16_t log = BSRL (factor - 1) + 1;

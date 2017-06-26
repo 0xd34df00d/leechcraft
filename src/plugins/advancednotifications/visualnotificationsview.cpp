@@ -28,24 +28,18 @@
  **********************************************************************/
 
 #include "visualnotificationsview.h"
-#include <QFile>
-#if QT_VERSION < 0x050000
-#include <QDeclarativeContext>
-#include <QDeclarativeError>
-#include <QDeclarativeEngine>
-#else
 #include <QQmlContext>
 #include <QQmlError>
 #include <QQmlEngine>
-#endif
 #include <QtDebug>
 #include <util/util.h>
 #include <util/sys/paths.h>
 #include <util/qml/colorthemeproxy.h>
 #include <util/qml/themeimageprovider.h>
+#include <util/qml/qmlerrorwatcher.h>
 #include <interfaces/core/icoreproxy.h>
 #include "eventproxyobject.h"
-#include "../core.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -57,17 +51,12 @@ namespace AdvancedNotifications
 		setWindowFlags (Qt::WindowStaysOnTopHint | Qt::ToolTip);
 		setAttribute (Qt::WA_TranslucentBackground);
 
-#if QT_VERSION < 0x050000
-		connect (this,
-				SIGNAL (statusChanged (QDeclarativeView::Status)),
-				this,
-				SLOT (handleStatusChanged (QDeclarativeView::Status)));
-#else
+		new Util::QmlErrorWatcher { this };
+
 		connect (this,
 				SIGNAL (statusChanged (QQuickWidget::Status)),
 				this,
 				SLOT (handleStatusChanged (QQuickWidget::Status)));
-#endif
 
 		const auto& fileLocation = Util::GetSysPath (Util::SysPath::QML, "advancednotifications", "visualnotificationsview.qml");
 
@@ -93,12 +82,12 @@ namespace AdvancedNotifications
 
 	void VisualNotificationsView::SetEvents (const QList<EventData>& events)
 	{
-		QObjectList oldEvents = LastEvents_;
+		auto oldEvents { std::move (LastEvents_) };
 
 		LastEvents_.clear ();
-		Q_FOREACH (const EventData& ed, events)
+		for (const auto& ed : events)
 		{
-			EventProxyObject *obj = new EventProxyObject (ed, this);
+			const auto obj = new EventProxyObject (ed, this);
 			connect (obj,
 					SIGNAL (actionTriggered (const QString&, int)),
 					this,
@@ -116,28 +105,6 @@ namespace AdvancedNotifications
 		setSource (Location_);
 
 		qDeleteAll (oldEvents);
-	}
-
-#if QT_VERSION < 0x050000
-	void VisualNotificationsView::handleStatusChanged (QDeclarativeView::Status status)
-#else
-	void VisualNotificationsView::handleStatusChanged (QQuickWidget::Status status)
-#endif
-	{
-		qDebug () << Q_FUNC_INFO
-				<< status;
-
-		if (status == Error)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "got errors:"
-					<< errors ().size ();
-			for (const auto& error : errors ())
-				qWarning () << error.toString ()
-						<< "["
-						<< error.description ()
-						<< "]";
-		}
 	}
 }
 }

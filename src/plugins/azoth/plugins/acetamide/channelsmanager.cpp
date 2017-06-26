@@ -139,17 +139,19 @@ namespace Acetamide
 			ChannelHandlers_ [chnnl]->CloseChannel ();
 	}
 
-	void ChannelsManager::CloseAllChannels () const
+	void ChannelsManager::CloseAllChannels ()
 	{
-		Util::Map (ChannelHandlers_,
-				[] (const ChannelHandler_ptr& ich) { ich->CloseChannel (); });
+		auto handlers = std::move (ChannelHandlers_);
+		ChannelHandlers_.clear ();
+		Util::Map (handlers, [] (const ChannelHandler_ptr& ich) { ich->CloseChannel (); });
 	}
 
 	void ChannelsManager::UnregisterChannel (ChannelHandler *ich)
 	{
-		ChannelHandlers_.remove (ich->GetChannelOptions ().ChannelName_);
+		const auto wasntEmpty = ChannelHandlers_.remove (ich->GetChannelOptions ().ChannelName_);
 
-		if (!ChannelHandlers_.count () &&
+		if (ChannelHandlers_.isEmpty () &&
+				wasntEmpty &&
 				XmlSettingsManager::Instance ()
 						.property ("AutoDisconnectFromServer").toBool ())
 			ISH_->DisconnectFromServer ();

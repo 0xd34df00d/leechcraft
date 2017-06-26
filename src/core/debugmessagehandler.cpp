@@ -392,6 +392,9 @@ namespace
 		if (file.contains ("src/util/"))
 			return "util";
 
+		if (file.contains ("src/xmlsettingsdialog/"))
+			return "xsd";
+
 		if (file.endsWith (".qml"))
 		{
 			const auto lastSlash = file.lastIndexOf ('/');

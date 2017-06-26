@@ -278,26 +278,23 @@ namespace Azoth
 
 	void MsgFormatterWidget::handleBold ()
 	{
-		CharFormatActor ([this] (QTextCharFormat *fmt)
-				{ fmt->setFontWeight (FormatBold_->isChecked () ? QFont::Bold : QFont::Normal); });
+		const auto weight = FormatBold_->isChecked () ? QFont::Bold : QFont::Normal;
+		CharFormatActor ([weight] (QTextCharFormat *fmt) { fmt->setFontWeight (weight); });
 	}
 
 	void MsgFormatterWidget::handleItalic ()
 	{
-		CharFormatActor ([this] (QTextCharFormat *fmt)
-				{ fmt->setFontItalic (FormatItalic_->isChecked ()); });
+		CharFormatActor ([this] (QTextCharFormat *fmt) { fmt->setFontItalic (FormatItalic_->isChecked ()); });
 	}
 
 	void MsgFormatterWidget::handleUnderline ()
 	{
-		CharFormatActor ([this] (QTextCharFormat *fmt)
-				{ fmt->setFontUnderline (FormatUnderline_->isChecked ()); });
+		CharFormatActor ([this] (QTextCharFormat *fmt) { fmt->setFontUnderline (FormatUnderline_->isChecked ()); });
 	}
 
 	void MsgFormatterWidget::handleStrikeThrough ()
 	{
-		CharFormatActor ([this] (QTextCharFormat *fmt)
-				{ fmt->setFontStrikeOut (FormatStrikeThrough_->isChecked ()); });
+		CharFormatActor ([this] (QTextCharFormat *fmt) { fmt->setFontStrikeOut (FormatStrikeThrough_->isChecked ()); });
 	}
 
 	void MsgFormatterWidget::handleTextColor ()
@@ -307,8 +304,7 @@ namespace Azoth
 		if (!color.isValid ())
 			return;
 
-		CharFormatActor ([color] (QTextFormat *fmt)
-				{ fmt->setForeground (QBrush (color)); });
+		CharFormatActor ([color] (QTextFormat *fmt) { fmt->setForeground (QBrush (color)); });
 	}
 
 	void MsgFormatterWidget::handleFont ()
@@ -319,16 +315,13 @@ namespace Azoth
 		if (!ok)
 			return;
 
-		CharFormatActor ([font] (QTextCharFormat *fmt)
-				{ fmt->setFont (font); });
+		CharFormatActor ([font] (QTextCharFormat *fmt) { fmt->setFont (font); });
 	}
 
 	void MsgFormatterWidget::handleParaAlignment ()
 	{
-		Qt::Alignment alignment = static_cast<Qt::Alignment> (sender ()->
-					property ("Alignment").toInt ());
-		BlockFormatActor ([alignment] (QTextBlockFormat* fmt)
-				{ fmt->setAlignment (alignment); });
+		const auto alignment = static_cast<Qt::Alignment> (sender ()->property ("Alignment").toInt ());
+		BlockFormatActor ([alignment] (QTextBlockFormat* fmt) { fmt->setAlignment (alignment); });
 	}
 
 	void MsgFormatterWidget::handleAddEmoticon ()
@@ -349,9 +342,11 @@ namespace Azoth
 	{
 		const auto& emoPack = XmlSettingsManager::Instance ()
 				.property ("SmileIcons").toString ();
-		AddEmoticon_->setEnabled (!emoPack.isEmpty ());
 
 		const auto src = Core::Instance ().GetCurrentEmoSource ();
+
+		AddEmoticon_->setEnabled (src);
+
 		if (!src)
 			return;
 
@@ -359,10 +354,12 @@ namespace Azoth
 
 		if (const auto lay = SmilesTooltip_->layout ())
 		{
-			while (lay->count ())
-				delete lay->takeAt (0);
+			while (const auto item = lay->takeAt (0))
+				delete item;
 			delete lay;
 		}
+
+		qDeleteAll (SmilesTooltip_->children ());
 
 		const auto layout = new QGridLayout (SmilesTooltip_);
 		layout->setSpacing (0);
@@ -387,7 +384,7 @@ namespace Azoth
 					this,
 					SLOT (insertEmoticon ()));
 
-			const auto button = new QToolButton;
+			const auto button = new QToolButton { SmilesTooltip_ };
 			button->setDefaultAction (action);
 			buttons << button;
 

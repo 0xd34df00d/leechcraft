@@ -28,9 +28,9 @@
  **********************************************************************/
 
 #include "upower.h"
-#include <cassert>
 #include <QtConcurrentRun>
 #include <QtDBus>
+#include <util/sll/unreachable.h>
 
 namespace LeechCraft
 {
@@ -50,7 +50,7 @@ namespace PowerActions
 				return "Hibernate";
 			}
 
-			assert (false);
+			Util::Unreachable ();
 		}
 	}
 

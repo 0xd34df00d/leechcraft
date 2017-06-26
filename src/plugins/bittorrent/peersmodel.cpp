@@ -27,14 +27,15 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
+#include "peersmodel.h"
 #include <numeric>
 #include <QTimer>
 #include <QApplication>
 #include <QtDebug>
 #include <util/util.h>
 #include <util/sys/paths.h>
+#include <util/sll/unreachable.h>
 #include "core.h"
-#include "peersmodel.h"
 
 namespace LeechCraft
 {
@@ -135,8 +136,7 @@ namespace BitTorrent
 			return "Unhandled column";
 		}
 
-		assert (false);
-		return {};
+		Util::Unreachable ();
 	}
 
 	Qt::ItemFlags PeersModel::flags (const QModelIndex&) const

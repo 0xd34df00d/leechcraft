@@ -46,6 +46,7 @@
 #include <QXmppMessageReceiptManager.h>
 #include <QXmppCallManager.h>
 #include <util/sll/delayedexecutor.h>
+#include <util/sll/prelude.h>
 #include <util/xpc/util.h>
 #include <util/network/socketerrorstrings.h>
 #include <util/sys/sysinfo.h>
@@ -177,6 +178,8 @@ namespace Xoox
 		LastState_.State_ = SOffline;
 		handlePriorityChanged (Settings_->GetPriority ());
 
+		const auto proxy = account->GetParentProtocol ()->GetProxyObject ();
+
 		PubSubManager_->RegisterCreator<UserActivity> ();
 		PubSubManager_->RegisterCreator<UserMood> ();
 		PubSubManager_->RegisterCreator<UserTune> ();
@@ -193,11 +196,11 @@ namespace Xoox
 				this,
 				SLOT (handlePEPEvent (const QString&, PEPEventBase*)));
 
-		UserAvatarManager_ = new UserAvatarManager (this);
+		UserAvatarManager_ = new UserAvatarManager (proxy->GetAvatarsManager (), this);
 		connect (UserAvatarManager_,
-				SIGNAL (avatarUpdated (QString, QImage)),
+				SIGNAL (avatarUpdated (QString)),
 				this,
-				SLOT (handlePEPAvatarUpdated (QString, QImage)));
+				SLOT (handlePEPAvatarUpdated (QString)));
 
 		CryptHandler_->Init ();
 
@@ -218,8 +221,7 @@ namespace Xoox
 		Client_->addExtension (JabberSearchManager_);
 		Client_->addExtension (RIEXManager_);
 		Client_->addExtension (AdHocCommandManager_);
-		Client_->addExtension (new AdHocCommandServer (this,
-					account->GetParentProtocol ()->GetProxyObject ()));
+		Client_->addExtension (new AdHocCommandServer (this, proxy));
 		Client_->addExtension (Xep0313Manager_);
 		Client_->addExtension (CarbonsManager_);
 		Client_->addExtension (PingManager_);
@@ -822,15 +824,21 @@ namespace Xoox
 
 	QList<QObject*> ClientConnection::GetCLEntries () const
 	{
-		QList<QObject*> result;
-		result << SelfContact_;
-		for (const auto entry : JID2CLEntry_.values () + ODSEntries_.values ())
-			result << entry;
+		QList<QObject*> result { SelfContact_ };
+
+		const auto totalRoomParticipants = std::accumulate (RoomHandlers_.begin (), RoomHandlers_.end (), 0,
+				[] (int acc, RoomHandler *rh) { return acc + rh->GetParticipants ().size (); });
+		result.reserve (1 + JID2CLEntry_.size () + ODSEntries_.size () + totalRoomParticipants + RoomHandlers_.size ());
+
+		std::copy (JID2CLEntry_.begin (), JID2CLEntry_.end (), std::back_inserter (result));
+		std::copy (ODSEntries_.begin (), ODSEntries_.end (), std::back_inserter (result));
+
 		for (const auto rh : RoomHandlers_)
 		{
 			result << rh->GetCLEntry ();
-			result << rh->GetParticipants ();
+			result += rh->GetParticipants ();
 		}
+
 		return result;
 	}
 
@@ -947,7 +955,7 @@ namespace Xoox
 		msg.setType (QXmppMessage::Normal);
 		QXmppDataForm subForm = fb.GetForm ();
 		subForm.setType (QXmppDataForm::Submit);
-		msg.setExtensions (QXmppElementList () << XooxUtil::Form2XmppElem (subForm));
+		msg.setExtensions ({ XooxUtil::Form2XmppElem (subForm) });
 		Client_->sendPacket (msg);
 	}
 
@@ -959,9 +967,9 @@ namespace Xoox
 		Client_->vCardManager ().requestVCard (OurBareJID_);
 
 		connect (BMManager_,
-				SIGNAL (bookmarksReceived (const QXmppBookmarkSet&)),
+				SIGNAL (bookmarksReceived (QXmppBookmarkSet)),
 				this,
-				SLOT (handleBookmarksReceived (const QXmppBookmarkSet&)),
+				SLOT (handleBookmarksReceived (QXmppBookmarkSet)),
 				Qt::UniqueConnection);
 
 		AnnotationsManager_->refetchNotes ();
@@ -1269,14 +1277,15 @@ namespace Xoox
 				qWarning () << Q_FUNC_INFO
 						<< "unknown PEP event source"
 						<< from
+						<< event->Node ()
 						<< "; known entries:"
-						<< JID2CLEntry_.keys ().size ();
+						<< JID2CLEntry_.size ();
 		}
 		else
 			JID2CLEntry_ [bare]->HandlePEPEvent (resource, event);
 	}
 
-	void ClientConnection::handlePEPAvatarUpdated (const QString& from, const QImage& image)
+	void ClientConnection::handlePEPAvatarUpdated (const QString& from)
 	{
 		QString bare;
 		QString resource;
@@ -1285,21 +1294,20 @@ namespace Xoox
 		if (!JID2CLEntry_.contains (from))
 			return;
 
-		// TODO
-		//JID2CLEntry_ [from]->SetAvatar (image);
+		const auto entry = JID2CLEntry_ [from];
+		entry->avatarChanged (entry);
 	}
 
 	void ClientConnection::handleMessageDelivered (const QString&, const QString& msgId)
 	{
-		QPointer<GlooxMessage> msg = UndeliveredMessages_.take (msgId);
-		if (msg)
+		if (const auto msg = UndeliveredMessages_.take (msgId))
 			msg->SetDelivered (true);
 	}
 
 	void ClientConnection::handleRoomInvitation (const QString& room,
 			const QString& inviter, const QString& reason)
 	{
-		const QStringList& split = room.split ('@', QString::SkipEmptyParts);
+		const auto& split = room.split ('@', QString::SkipEmptyParts);
 
 		QVariantMap identifying;
 		identifying ["HumanReadableName"] = QString ("%2 (%1)")
@@ -1333,7 +1341,7 @@ namespace Xoox
 			if (!conf.autoJoin ())
 				continue;
 
-			JoinQueueItem item =
+			const JoinQueueItem item
 			{
 				true,
 				conf.jid (),
@@ -1392,12 +1400,8 @@ namespace Xoox
 		}
 	}
 
-	/** @todo Handle action reasons in QXmppPresence::Subscribe and
-	 * QXmppPresence::Unsubscribe cases.
-	 */
 	void ClientConnection::HandleOtherPresence (const QXmppPresence& pres)
 	{
-		qDebug () << "OtherPresence" << pres.from () << pres.type ();
 		const QString& jid = pres.from ();
 		switch (pres.type ())
 		{
@@ -1409,7 +1413,7 @@ namespace Xoox
 				emit gotRosterItems ({ entry });
 			}
 			JID2CLEntry_ [jid]->SetAuthRequested (true);
-			emit gotSubscriptionRequest (JID2CLEntry_ [jid], QString ());
+			emit gotSubscriptionRequest (JID2CLEntry_ [jid], pres.statusText ());
 			break;
 		case QXmppPresence::Subscribed:
 			if (JID2CLEntry_.contains (jid))
@@ -1417,13 +1421,13 @@ namespace Xoox
 			break;
 		case QXmppPresence::Unsubscribe:
 			if (JID2CLEntry_.contains (jid))
-				emit rosterItemUnsubscribed (JID2CLEntry_ [jid], QString ());
+				emit rosterItemUnsubscribed (JID2CLEntry_ [jid], pres.statusText ());
 			else
-				emit rosterItemUnsubscribed (jid, QString ());
+				emit rosterItemUnsubscribed (jid, pres.statusText ());
 			break;
 		case QXmppPresence::Unsubscribed:
 			if (JID2CLEntry_.contains (jid))
-				emit rosterItemCancelledSubscription (JID2CLEntry_ [jid], QString ());
+				emit rosterItemCancelledSubscription (JID2CLEntry_ [jid], pres.statusText ());
 			break;
 		case QXmppPresence::Error:
 		{
@@ -1431,7 +1435,17 @@ namespace Xoox
 			QString resource;
 			ClientConnection::Split (jid, &bare, &resource);
 			if (RoomHandlers_.contains (bare))
-				RoomHandlers_ [bare]->HandleErrorPresence (pres, resource);;
+				RoomHandlers_ [bare]->HandleErrorPresence (pres, resource);
+			else if (JID2CLEntry_.contains (bare))
+			{
+				qDebug () << Q_FUNC_INFO
+						<< "got error presence for"
+						<< jid
+						<< pres.error ().type ()
+						<< pres.error ().condition ()
+						<< pres.error ().text ();
+				JID2CLEntry_ [jid]->SetErrorPresence (resource);
+			}
 			break;
 		}
 		case QXmppPresence::Available:
@@ -1446,30 +1460,24 @@ namespace Xoox
 
 	void ClientConnection::HandleRIEX (QString msgFrom, QList<RIEXManager::Item> origItems, QString body)
 	{
-		QList<RIEXItem> items;
-		for (const auto& item : origItems)
-		{
-			RIEXItem ri =
-			{
-				static_cast<RIEXItem::Action> (item.GetAction ()),
-				item.GetJID (),
-				item.GetName (),
-				item.GetGroups ()
-			};
-
-			items << ri;
-		}
+		const auto& items = Util::Map (origItems,
+				[] (const RIEXManager::Item& item)
+				{
+					return RIEXItem
+					{
+						static_cast<RIEXItem::Action> (item.GetAction ()),
+						item.GetJID (),
+						item.GetName (),
+						item.GetGroups ()
+					};
+				});
 
 		QString jid;
 		QString resource;
 		Split (msgFrom, &jid, &resource);
 
 		if (!items.isEmpty ())
-			QMetaObject::invokeMethod (Account_,
-					"riexItemsSuggested",
-					Q_ARG (QList<LeechCraft::Azoth::RIEXItem>, items),
-					Q_ARG (QObject*, JID2CLEntry_.value (jid)),
-					Q_ARG (QString, body));
+			Account_->riexItemsSuggested (items, JID2CLEntry_.value (jid), body);
 	}
 
 	void ClientConnection::InvokeCallbacks (const QXmppIq& iq)
