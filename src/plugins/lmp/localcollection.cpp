@@ -464,6 +464,54 @@ namespace LMP
 		}
 	}
 
+	namespace
+	{
+		bool FuzzyMatchTrack (const Collection::Track& left, const Collection::Track& right)
+		{
+			if (left.Name_.compare (right.Name_, Qt::CaseInsensitive) != 0)
+				return false;
+
+			if (!left.Length_ && !right.Length_)
+				return true;
+
+			return std::abs (left.Length_ - right.Length_) / std::max (left.Length_, right.Length_) < 0.05;
+		}
+
+		bool FuzzyMatchTrackList (QList<Collection::Track> left, QList<Collection::Track> right)
+		{
+			if (left.size () != right.size ())
+				return false;
+
+			std::sort (left.begin (), left.end (), Util::ComparingBy (&Collection::Track::Number_));
+			std::sort (right.begin (), right.end (), Util::ComparingBy (&Collection::Track::Number_));
+
+			const auto& alls = Util::ZipWith (left, right, &FuzzyMatchTrack);
+			return std::all_of (alls.begin (), alls.end (), Util::Id);
+		}
+
+		bool FuzzyMatchAlbum (const Collection::Album& left, const Collection::Album& right)
+		{
+			return left.Year_ == right.Year_ &&
+					left.Name_.compare (right.Name_, Qt::CaseInsensitive) == 0 &&
+					FuzzyMatchTrackList (left.Tracks_, right.Tracks_);
+		}
+
+		bool UniteSplitTryAllEqual (Collection::Artists_t& artists, const QList<Collection::Album_ptr>& albumsSet)
+		{
+			if (!std::all_of (albumsSet.begin () + 1, albumsSet.end (),
+					[&albumsSet] (const auto& album) { return FuzzyMatchAlbum (*album, *albumsSet [0]); }))
+				return false;
+
+			for (auto& artist : artists)
+				for (auto& album : artist.Albums_)
+					if (albumsSet.indexOf (album) > 0)
+						album = albumsSet [0];
+
+			return true;
+		}
+
+	}
+
 	void LocalCollection::PostprocessArtistsInfos (Collection::Artists_t& artists)
 	{
 		qDebug () << "postproc begin";
