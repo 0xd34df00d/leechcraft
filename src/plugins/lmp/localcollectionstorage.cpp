@@ -110,33 +110,33 @@ namespace LMP
 		lock.Init ();
 		for (const auto& info : infos)
 		{
-			Collection::Artist artist =
+			Collection::Artist artist
 			{
 				0,
 				info.Artist_,
-				QList<Collection::Album_ptr> ()
+				{}
 			};
 			if (!IsPresent (artist, artist.ID_))
 				AddArtist (artist);
 			if (!artists.contains (artist.ID_))
 				artists [artist.ID_] = artist;
 
-			Collection::Album album =
+			Collection::Album album
 			{
 				0,
 				info.Album_,
 				info.Year_,
-				QString (),
-				QList<Collection::Track> ()
+				{},
+				{}
 			};
 			if (!IsPresent (artist, album, album.ID_))
 			{
 				album.CoverPath_ = FindAlbumArtPath (info.LocalPath_);
 				AddAlbum (artist, album);
-				artists [artist.ID_].Albums_ << Collection::Album_ptr (new Collection::Album (album));
+				artists [artist.ID_].Albums_ << std::make_shared<Collection::Album> (album);
 			}
 
-			Collection::Track track =
+			Collection::Track track
 			{
 				0,
 				info.TrackNumber_,
