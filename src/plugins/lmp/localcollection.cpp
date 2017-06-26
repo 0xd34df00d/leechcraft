@@ -32,7 +32,6 @@
 #include <algorithm>
 #include <numeric>
 #include <QStandardItemModel>
-#include <QSortFilterProxyModel>
 #include <QtConcurrentMap>
 #include <QtConcurrentRun>
 #include <QTimer>
