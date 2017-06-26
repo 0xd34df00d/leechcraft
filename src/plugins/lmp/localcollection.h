@@ -153,7 +153,8 @@ namespace LMP
 		void RecordPlayedTrack (int, const QDateTime&) override;
 	private:
 		void HandleExistingInfos (const QList<MediaInfo>&);
-		void HandleNewArtists (const Collection::Artists_t&);
+		void PostprocessArtistsInfos (Collection::Artists_t&);
+		void HandleNewArtists (Collection::Artists_t);
 		void RemoveAlbum (int);
 		Collection::Artists_t::iterator RemoveArtist (Collection::Artists_t::iterator);
 

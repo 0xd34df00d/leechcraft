@@ -464,8 +464,16 @@ namespace LMP
 		}
 	}
 
-	void LocalCollection::HandleNewArtists (const Collection::Artists_t& artists)
+	void LocalCollection::PostprocessArtistsInfos (Collection::Artists_t& artists)
 	{
+		qDebug () << "postproc begin";
+		qDebug () << "postproc end";
+	}
+
+	void LocalCollection::HandleNewArtists (Collection::Artists_t artists)
+	{
+		PostprocessArtistsInfos (artists);
+
 		int albumCount = 0;
 		int trackCount = 0;
 		const bool shouldEmit = !Artists_.isEmpty ();
