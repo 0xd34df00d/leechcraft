@@ -142,10 +142,11 @@ namespace MusicZombie
 			if (packet.stream_index != streamIndex)
 				continue;
 
-			av_frame_unref (frame.get ());
 			if (avcodec_send_packet (codecCtx.get (), &packet) ||
 					avcodec_receive_frame (codecCtx.get (), frame.get ()))
 				continue;
+
+			const auto unrefGuard = Util::MakeScopeGuard ([&frame] { av_frame_unref (frame.get ()); });
 
 			uint8_t **data = nullptr;
 			if (swr)
