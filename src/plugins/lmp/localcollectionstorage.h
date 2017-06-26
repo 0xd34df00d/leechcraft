@@ -44,8 +44,6 @@ namespace LMP
 
 	class LocalCollectionStorage : public QObject
 	{
-		Q_OBJECT
-
 		QHash<QString, int> PresentArtists_;
 		QHash<QString, int> PresentAlbums_;
 
