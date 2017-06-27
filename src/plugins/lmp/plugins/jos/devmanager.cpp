@@ -73,14 +73,14 @@ namespace jOS
 		};
 
 		template<typename PListGetter>
-		std::function<typename PListType<PListGetter>::type (plist_t)> Wrap (PListGetter g)
+		auto Wrap (PListGetter g)
 		{
-			return [g] (plist_t t) -> typename PListType<PListGetter>::type
-					{
-						typename PListType<PListGetter>::type r;
-						g (t, &r);
-						return r;
-					};
+			return [g] (plist_t t)
+			{
+				typename PListType<PListGetter>::type r;
+				g (t, &r);
+				return r;
+			};
 		}
 
 		template<typename L>
