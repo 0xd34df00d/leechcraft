@@ -37,6 +37,7 @@
 #include <QFuture>
 #include <libimobiledevice/libimobiledevice.h>
 #include <libimobiledevice/lockdown.h>
+#include <util/sll/delayedexecutor.h>
 #include "mobileraii.h"
 
 namespace LeechCraft
@@ -49,11 +50,9 @@ namespace jOS
 	: QObject (parent)
 	{
 		idevice_event_subscribe ([] (const idevice_event_t*, void *mgr)
-					{
-						QTimer::singleShot (0,
-								static_cast<DevManager*> (mgr),
-								SLOT (refresh ()));
-					},
+				{
+					Util::ExecuteLater ([mgr] { static_cast<DevManager*> (mgr)->refresh (); });
+				},
 				this);
 	}
 
