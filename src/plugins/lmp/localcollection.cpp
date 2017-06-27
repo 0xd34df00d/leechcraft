@@ -510,11 +510,133 @@ namespace LMP
 			return true;
 		}
 
+		class FuzzyStrComparator
+		{
+			const QString& Str_;
+		public:
+			FuzzyStrComparator (const QString& str)
+			: Str_ (str)
+			{
+			}
+
+			// TODO implement Levenshtein distance comparison
+			bool operator== (const FuzzyStrComparator& other) const
+			{
+				return Str_ == other.Str_;
+			}
+
+			bool operator< (const FuzzyStrComparator& other) const
+			{
+				return Str_ < other.Str_;
+			}
+		};
+
+		void DumpAlbumsSet (const QList<Collection::Album_ptr>& albumsSet)
+		{
+			qDebug () << "\t" << albumsSet [0]->Name_;
+			for (const auto& album : albumsSet)
+			{
+				qDebug () << "\tnext album:";
+				for (const auto& track : album->Tracks_)
+					qDebug () << "\t\t" << track.Number_ << track.Name_ << track.Length_;
+			}
+		}
+
+		bool UniteSplitTryMerge (Collection::Artists_t& artists, const QList<Collection::Album_ptr>& albumsSet)
+		{
+			qDebug () << Q_FUNC_INFO << "initial state";
+			DumpAlbumsSet (albumsSet);
+
+			const auto trackPred = [] (int idx)
+			{
+				return [idx] (const auto& album)
+				{
+					return std::any_of (album->Tracks_.begin (), album->Tracks_.end (),
+							[idx] (const auto& track) { return track.Number_ == idx; });
+				};
+			};
+
+			const auto firstTrackCounts = std::count_if (albumsSet.begin (), albumsSet.end (), trackPred (1));
+			if (firstTrackCounts != 1)
+			{
+				qDebug () << "cannot break"
+						<< firstTrackCounts
+						<< "ties for albums"
+						<< albumsSet [0]->Name_
+						<< albumsSet [0]->Year_
+						<< "\n"; return false;
+			}
+
+			for (const auto& album : albumsSet)
+			{
+				const auto toTuple = [] (const auto& track)
+						{ return std::make_tuple (track.Number_, FuzzyStrComparator { track.Name_ }, track.Length_); };
+
+				std::sort (album->Tracks_.begin (), album->Tracks_.end (), Util::ComparingBy (toTuple));
+				const auto unique = std::unique (album->Tracks_.begin (), album->Tracks_.end (),
+						Util::EqualityBy (toTuple));
+				album->Tracks_.erase (unique, album->Tracks_.end ());
+			}
+
+			qDebug () << Q_FUNC_INFO << "after unification";
+			DumpAlbumsSet (albumsSet);
+
+			auto firstPos = std::find_if (albumsSet.begin (), albumsSet.end (), trackPred (1));
+			while (true)
+			{
+				const auto curTracksCount = (*firstPos)->Tracks_.size ();
+				auto nextPos = std::find_if (albumsSet.begin (), albumsSet.end (), trackPred (curTracksCount + 1));
+				if (nextPos == albumsSet.end ())
+					break;
+
+				(*firstPos)->Tracks_ += (*nextPos)->Tracks_;
+
+				for (auto& artist : artists)
+				{
+					const auto otherIdx = artist.Albums_.indexOf (*nextPos);
+					if (otherIdx >= 0)
+						artist.Albums_ [otherIdx] = *firstPos;
+				}
+			}
+
+			qDebug () << Q_FUNC_INFO << "after whole processing";
+			DumpAlbumsSet (albumsSet);
+			qDebug () << "\n";
+
+			return true;
+		}
+
+		void UniteSplitAlbums (Collection::Artists_t& artists)
+		{
+			QHash<QPair<int, QString>, QList<Collection::Album_ptr>> potentialSplitAlbums;
+
+			for (const auto& artist : artists)
+				for (const auto& album : artist.Albums_)
+					potentialSplitAlbums [{ album->Year_, album->Name_ }] << album;
+
+			for (auto it = potentialSplitAlbums.begin (); it != potentialSplitAlbums.end (); )
+			{
+				if (it.value ().size () == 1)
+					it = potentialSplitAlbums.erase (it);
+				else
+					++it;
+			}
+
+			if (potentialSplitAlbums.isEmpty ())
+				return;
+
+			qDebug () << Q_FUNC_INFO
+					<< "candidates:"
+					<< potentialSplitAlbums.keys ();
+			for (const auto& albumsSet : potentialSplitAlbums)
+				UniteSplitTryAllEqual (artists, albumsSet) || UniteSplitTryMerge (artists, albumsSet);
+		}
 	}
 
 	void LocalCollection::PostprocessArtistsInfos (Collection::Artists_t& artists)
 	{
 		qDebug () << "postproc begin";
+		UniteSplitAlbums (artists);
 		qDebug () << "postproc end";
 	}
 
