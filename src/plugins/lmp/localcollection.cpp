@@ -559,13 +559,14 @@ namespace LMP
 				if (autoFetchAA)
 					AlbumArtMgr_->CheckAlbumArt (artist, album);
 
-				if (AlbumID2Album_.contains (album->ID_))
-					AlbumID2Album_ [album->ID_]->Tracks_ << album->Tracks_;
-				else
+				auto& presentAlbum = AlbumID2Album_ [album->ID_];
+				if (!presentAlbum)
 				{
-					AlbumID2Album_ [album->ID_] = album;
+					presentAlbum = album;
 					AlbumID2ArtistID_ [album->ID_] = artist.ID_;
 				}
+				else if (presentAlbum != album)
+					presentAlbum->Tracks_ << album->Tracks_;
 
 				for (const auto& track : album->Tracks_)
 				{
