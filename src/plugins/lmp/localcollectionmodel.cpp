@@ -147,7 +147,8 @@ namespace LMP
 								item->setData (album->CoverPath_, Role::AlbumArt);
 						},
 						artistItem,
-						album->ID_);
+						album->ID_,
+						artist.ID_);
 
 				for (const auto& track : album->Tracks_)
 				{
@@ -190,8 +191,8 @@ namespace LMP
 
 	void LocalCollectionModel::RemoveAlbum (int id)
 	{
-		auto item = Album2Item_.take (id);
-		item->parent ()->removeRow (item->row ());
+		for (const auto item : Album2Item_.take (id))
+			item->parent ()->removeRow (item->row ());
 	}
 
 	QVariant LocalCollectionModel::GetTrackData (int trackId, LocalCollectionModel::Role role) const
@@ -207,8 +208,8 @@ namespace LMP
 
 	void LocalCollectionModel::SetAlbumArt (int id, const QString& path)
 	{
-		if (Album2Item_.contains (id))
-			Album2Item_ [id]->setData (path, Role::AlbumArt);
+		for (const auto item : Album2Item_.value (id))
+			item->setData (path, Role::AlbumArt);
 	}
 }
 }

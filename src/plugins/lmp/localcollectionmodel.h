@@ -47,7 +47,7 @@ namespace LMP
 		QIcon ArtistIcon_ = QIcon::fromTheme ("view-media-artist");
 
 		QHash<int, QStandardItem*> Artist2Item_;
-		QHash<int, QStandardItem*> Album2Item_;
+		QHash<int, QHash<int, QStandardItem*>> Album2Item_;
 		QHash<int, QStandardItem*> Track2Item_;
 	public:
 		enum NodeType
