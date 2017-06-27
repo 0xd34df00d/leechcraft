@@ -271,6 +271,12 @@ namespace Util
 		return [r] (const auto& left, const auto& right) { return Invoke (r, left) < Invoke (r, right); };
 	}
 
+	template<typename R>
+	auto EqualityBy (R r)
+	{
+		return [r] (const auto& left, const auto& right) { return Invoke (r, left) == Invoke (r, right); };
+	}
+
 	const auto Apply = [] (const auto& t) { return t (); };
 
 	const auto Fst = [] (const auto& pair) { return pair.first; };
