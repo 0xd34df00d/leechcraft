@@ -95,19 +95,24 @@ namespace LMP
 
 	namespace
 	{
-		template<typename T, typename U, typename Init, typename Parent>
-		QStandardItem* GetItem (T& c, U idx, Init f, Parent parent)
+		template<typename T, typename Init, typename Parent, typename Idx>
+		QStandardItem* GetItem (T& c, Init f, Parent parent, Idx idx)
 		{
-			auto item = c [idx];
+			auto& item = c [idx];
 			if (item)
 				return item;
 
-			item = new QStandardItem ();
+			item = new QStandardItem;
 			item->setEditable (false);
 			f (item);
 			parent->appendRow (item);
-			c [idx] = item;
 			return item;
+		}
+
+		template<typename T, typename Init, typename Parent, typename Idx, typename... Idxs>
+		QStandardItem* GetItem (T& c, Init f, Parent parent, Idx idx, Idxs... idxs)
+		{
+			return GetItem (c [idx], f, parent, idxs...);
 		}
 	}
 
@@ -116,7 +121,6 @@ namespace LMP
 		for (const auto& artist : artists)
 		{
 			auto artistItem = GetItem (Artist2Item_,
-					artist.ID_,
 					[this, &artist] (QStandardItem *item)
 					{
 						item->setIcon (ArtistIcon_);
@@ -124,11 +128,12 @@ namespace LMP
 						item->setData (artist.Name_, Role::ArtistName);
 						item->setData (NodeType::Artist, Role::Node);
 					},
-					this);
+					this,
+					artist.ID_);
+
 			for (auto album : artist.Albums_)
 			{
 				auto albumItem = GetItem (Album2Item_,
-						album->ID_,
 						[album, artist] (QStandardItem *item)
 						{
 							item->setText (QString::fromUtf8 ("%1 — %2")
@@ -141,7 +146,8 @@ namespace LMP
 							if (!album->CoverPath_.isEmpty ())
 								item->setData (album->CoverPath_, Role::AlbumArt);
 						},
-						artistItem);
+						artistItem,
+						album->ID_);
 
 				for (const auto& track : album->Tracks_)
 				{
