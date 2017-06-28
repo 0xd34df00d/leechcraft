@@ -20,7 +20,7 @@ set (FORMS
 set (RESOURCES
 	cstpresources.qrc
 	)
-CreateTrs ("cstp" "ar;de;en;eo;es;fr;it;oc;pl;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
+CreateTrs ("cstp" "ar;de;en;eo;es;fr;it;oc;pl;ro;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget ("cstp" "en;ru_RU" "${SRCS}" "${FORMS}" "cstpsettings.xml")
 QtWrapUi (UIS_H ${FORMS})
 QtAddResources (RCCS ${RESOURCES})
