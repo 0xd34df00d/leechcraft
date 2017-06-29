@@ -59,7 +59,7 @@ namespace AdvancedNotifications
 		SettingsDialog_ = std::make_shared<Util::XmlSettingsDialog> ();
 		SettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"advancednotificationssettings.xml");
-		SettingsDialog_->SetCustomWidget ("RulesWidget", new NotificationRulesWidget { RulesManager_ });
+		SettingsDialog_->SetCustomWidget ("RulesWidget", new NotificationRulesWidget { RulesManager_, proxy });
 		SettingsDialog_->SetDataSource ("AudioTheme",
 				Core::Instance ().GetAudioThemeLoader ()->GetSubElemModel ());
 
