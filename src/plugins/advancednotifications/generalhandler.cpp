@@ -120,7 +120,15 @@ namespace AdvancedNotifications
 
 	QIcon GeneralHandler::GetIconForCategory (const QString& cat) const
 	{
-		const QString& name = Cat2IconName_.value (cat, "dialog-information");
+		auto name = Cat2IconName_.value (cat);
+		if (name.isEmpty ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no icon for category"
+					<< cat;
+			name = "dialog-information";
+		}
+
 		return Proxy_->GetIconThemeManager ()->GetIcon (name);
 	}
 }
