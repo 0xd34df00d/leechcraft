@@ -58,7 +58,7 @@ namespace AdvancedNotifications
 		SettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"advancednotificationssettings.xml");
 		SettingsDialog_->SetCustomWidget ("RulesWidget",
-				Core::Instance ().GetNRW ());
+				new NotificationRulesWidget { Core::Instance ().GetRulesManager () });
 		SettingsDialog_->SetDataSource ("AudioTheme",
 				Core::Instance ().GetAudioThemeLoader ()->GetSubElemModel ());
 

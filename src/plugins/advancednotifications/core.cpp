@@ -73,13 +73,6 @@ namespace AdvancedNotifications
 		return RulesManager_;
 	}
 
-	NotificationRulesWidget* Core::GetNRW ()
-	{
-		if (!NRW_)
-			NRW_ = new NotificationRulesWidget { RulesManager_ };
-		return NRW_;
-	}
-
 	std::shared_ptr<Util::ResourceLoader> Core::GetAudioThemeLoader () const
 	{
 		return AudioThemeLoader_;

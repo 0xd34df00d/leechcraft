@@ -52,7 +52,6 @@ namespace AdvancedNotifications
 		ICoreProxy_ptr Proxy_;
 
 		RulesManager *RulesManager_;
-		NotificationRulesWidget *NRW_ = nullptr;
 		std::shared_ptr<Util::ResourceLoader> AudioThemeLoader_;
 
 		Core ();
