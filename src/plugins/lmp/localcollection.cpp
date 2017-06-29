@@ -466,6 +466,18 @@ namespace LMP
 
 	namespace
 	{
+		void DumpAlbumsSet (const QList<Collection::Album_ptr>& albumsSet, const char *context)
+		{
+			qDebug () << context;
+			qDebug () << "\t" << albumsSet [0]->Name_;
+			for (const auto& album : albumsSet)
+			{
+				qDebug () << "\tnext album:";
+				for (const auto& track : album->Tracks_)
+					qDebug () << "\t\t" << track.Number_ << track.Name_ << track.Length_;
+			}
+		}
+
 		class FuzzyStrComparator
 		{
 			const QString& Str_;
@@ -487,21 +499,9 @@ namespace LMP
 			}
 		};
 
-		void DumpAlbumsSet (const QList<Collection::Album_ptr>& albumsSet)
-		{
-			qDebug () << "\t" << albumsSet [0]->Name_;
-			for (const auto& album : albumsSet)
-			{
-				qDebug () << "\tnext album:";
-				for (const auto& track : album->Tracks_)
-					qDebug () << "\t\t" << track.Number_ << track.Name_ << track.Length_;
-			}
-		}
-
 		bool UniteSplitTryMerge (Collection::Artists_t& artists, const QList<Collection::Album_ptr>& albumsSet)
 		{
-			qDebug () << Q_FUNC_INFO << "initial state";
-			DumpAlbumsSet (albumsSet);
+			DumpAlbumsSet (albumsSet, "initial state");
 
 			const auto trackPred = [] (int idx)
 			{
@@ -534,8 +534,7 @@ namespace LMP
 				album->Tracks_.erase (unique, album->Tracks_.end ());
 			}
 
-			qDebug () << Q_FUNC_INFO << "after unification";
-			DumpAlbumsSet (albumsSet);
+			DumpAlbumsSet (albumsSet, "after unification");
 
 			auto firstPos = std::find_if (albumsSet.begin (), albumsSet.end (), trackPred (1));
 			while (true)
@@ -555,9 +554,7 @@ namespace LMP
 				}
 			}
 
-			qDebug () << Q_FUNC_INFO << "after whole processing";
-			DumpAlbumsSet (albumsSet);
-			qDebug () << "\n";
+			DumpAlbumsSet (albumsSet, "after whole processing");
 
 			return true;
 		}
