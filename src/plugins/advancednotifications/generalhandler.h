@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_ADVANCEDNOTIFICATIONS_GENERALHANDLER_H
-#define PLUGINS_ADVANCEDNOTIFICATIONS_GENERALHANDLER_H
+#pragma once
+
 #include <QObject>
 #include <QList>
 #include <QIcon>
@@ -49,7 +49,7 @@ namespace AdvancedNotifications
 		ICoreProxy_ptr Proxy_;
 		QMap<QString, QString> Cat2IconName_;
 	public:
-		GeneralHandler (ICoreProxy_ptr);
+		GeneralHandler (const ICoreProxy_ptr&);
 
 		void RegisterHandler (const INotificationHandler_ptr&);
 
@@ -62,5 +62,3 @@ namespace AdvancedNotifications
 	};
 }
 }
-
-#endif

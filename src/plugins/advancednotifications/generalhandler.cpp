@@ -44,8 +44,8 @@ namespace LeechCraft
 {
 namespace AdvancedNotifications
 {
-	GeneralHandler::GeneralHandler (ICoreProxy_ptr proxy)
-	: Proxy_ (proxy)
+	GeneralHandler::GeneralHandler (const ICoreProxy_ptr& proxy)
+	: Proxy_ { proxy }
 	{
 		const QList<ConcreteHandlerBase_ptr> coreHandlers
 		{
@@ -67,13 +67,16 @@ namespace AdvancedNotifications
 				this,
 				SIGNAL (gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace)));
 
-		Cat2IconName_ [AN::CatDownloads] = "folder-downloads";
-		Cat2IconName_ [AN::CatIM] = "mail-unread-new";
-		Cat2IconName_ [AN::CatOrganizer] = "view-calendar";
-		Cat2IconName_ [AN::CatGeneric] = "preferences-desktop-notification-bell";
-		Cat2IconName_ [AN::CatPackageManager] = "system-software-update";
-		Cat2IconName_ [AN::CatMediaPlayer] = "applications-multimedia";
-		Cat2IconName_ [AN::CatTerminal] = "utilities-terminal";
+		Cat2IconName_ =
+		{
+			{ AN::CatDownloads, "folder-downloads" },
+			{ AN::CatIM, "mail-unread-new" },
+			{ AN::CatOrganizer, "view-calendar" },
+			{ AN::CatGeneric, "preferences-desktop-notification-bell" },
+			{ AN::CatPackageManager, "system-software-update" },
+			{ AN::CatMediaPlayer, "applications-multimedia" },
+			{ AN::CatTerminal, "utilities-terminal" }
+		};
 	}
 
 	void GeneralHandler::RegisterHandler (const INotificationHandler_ptr& handler)
