@@ -44,8 +44,9 @@ namespace LeechCraft
 {
 namespace AdvancedNotifications
 {
-	GeneralHandler::GeneralHandler (const ICoreProxy_ptr& proxy)
-	: Proxy_ { proxy }
+	GeneralHandler::GeneralHandler (RulesManager *rm, const ICoreProxy_ptr& proxy)
+	: RulesManager_ { rm }
+	, Proxy_ { proxy }
 	{
 		const QList<ConcreteHandlerBase_ptr> coreHandlers
 		{
@@ -88,7 +89,7 @@ namespace AdvancedNotifications
 	{
 		if (e.Mime_ == "x-leechcraft/notification-rule-create")
 		{
-			Core::Instance ().GetRulesManager ()->HandleEntity (e);
+			RulesManager_->HandleEntity (e);
 			return;
 		}
 

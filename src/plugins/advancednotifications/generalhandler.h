@@ -40,16 +40,20 @@ namespace LeechCraft
 {
 namespace AdvancedNotifications
 {
+	class RulesManager;
+
 	class GeneralHandler : public QObject
 	{
 		Q_OBJECT
 
+		RulesManager * const RulesManager_;
+		ICoreProxy_ptr Proxy_;
+
 		QList<INotificationHandler_ptr> Handlers_;
 
-		ICoreProxy_ptr Proxy_;
 		QMap<QString, QString> Cat2IconName_;
 	public:
-		GeneralHandler (const ICoreProxy_ptr&);
+		GeneralHandler (RulesManager *rm, const ICoreProxy_ptr&);
 
 		void RegisterHandler (const INotificationHandler_ptr&);
 

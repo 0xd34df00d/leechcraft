@@ -62,7 +62,7 @@ namespace AdvancedNotifications
 		SettingsDialog_->SetDataSource ("AudioTheme",
 				Core::Instance ().GetAudioThemeLoader ()->GetSubElemModel ());
 
-		GeneralHandler_ = std::make_shared<GeneralHandler> (proxy);
+		GeneralHandler_ = std::make_shared<GeneralHandler> (Core::Instance ().GetRulesManager (), proxy);
 		connect (GeneralHandler_.get (),
 				SIGNAL (gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace)),
 				this,
