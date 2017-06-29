@@ -112,6 +112,44 @@ namespace AdvancedNotifications
 		return Rules_;
 	}
 
+	QList<NotificationRule> RulesManager::GetRules (const Entity& e)
+	{
+		const QString& type = e.Additional_ ["org.LC.AdvNotifications.EventType"].toString ();
+
+		QList<NotificationRule> result;
+
+		for (const auto& rule : GetRulesList ())
+		{
+			if (!rule.IsEnabled ())
+				continue;
+
+			if (!rule.GetTypes ().contains (type))
+				continue;
+
+			bool fieldsMatch = true;
+			for (const auto& match : rule.GetFieldMatches ())
+			{
+				const QString& fieldName = match.GetFieldName ();
+				const auto& matcher = match.GetMatcher ();
+				if (!matcher->Match (e.Additional_ [fieldName]))
+				{
+					fieldsMatch = false;
+					break;
+				}
+			}
+
+			if (!fieldsMatch)
+				continue;
+
+			if (rule.IsSingleShot ())
+				SetRuleEnabled (rule, false);
+
+			result << rule;
+		}
+
+		return result;
+	}
+
 	void RulesManager::SetRuleEnabled (const NotificationRule& rule, bool enabled)
 	{
 		const int idx = Rules_.indexOf (rule);

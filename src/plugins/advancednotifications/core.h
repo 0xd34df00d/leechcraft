@@ -68,7 +68,6 @@ namespace AdvancedNotifications
 		NotificationRulesWidget* GetNRW ();
 		std::shared_ptr<Util::ResourceLoader> GetAudioThemeLoader () const;
 
-		QList<NotificationRule> GetRules (const Entity&) const;
 		QString GetAbsoluteAudioPath (const QString&) const;
 	};
 }

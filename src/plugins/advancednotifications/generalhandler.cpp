@@ -100,8 +100,7 @@ namespace AdvancedNotifications
 			return;
 		}
 
-		const auto& rules = Core::Instance ().GetRules (e);
-		for (const auto& rule : rules)
+		for (const auto& rule : RulesManager_->GetRules (e))
 		{
 			const auto& methods = rule.GetMethods ();
 			for (const auto& handler : Handlers_)

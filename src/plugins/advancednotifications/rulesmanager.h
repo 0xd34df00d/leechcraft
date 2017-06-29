@@ -54,6 +54,7 @@ namespace AdvancedNotifications
 
 		QAbstractItemModel* GetRulesModel () const;
 		QList<NotificationRule> GetRulesList () const;
+		QList<NotificationRule> GetRules (const Entity&);
 
 		void SetRuleEnabled (const NotificationRule&, bool);
 		void UpdateRule (const QModelIndex&, const NotificationRule&);
