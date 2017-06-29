@@ -45,6 +45,7 @@ namespace LeechCraft
 namespace AdvancedNotifications
 {
 	class GeneralHandler;
+	class RulesManager;
 
 	class Plugin : public QObject
 				 , public IInfo
@@ -67,7 +68,11 @@ namespace AdvancedNotifications
 		LC_PLUGIN_METADATA ("org.LeechCraft.AdvancedNotifications")
 
 		ICoreProxy_ptr Proxy_;
+
+		RulesManager *RulesManager_;
+
 		Util::XmlSettingsDialog_ptr SettingsDialog_;
+
 		std::shared_ptr<GeneralHandler> GeneralHandler_;
 
 		QuarkComponent_ptr Component_;

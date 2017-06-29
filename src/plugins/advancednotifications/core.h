@@ -51,7 +51,6 @@ namespace AdvancedNotifications
 
 		ICoreProxy_ptr Proxy_;
 
-		RulesManager *RulesManager_;
 		std::shared_ptr<Util::ResourceLoader> AudioThemeLoader_;
 
 		Core ();
@@ -62,9 +61,6 @@ namespace AdvancedNotifications
 		ICoreProxy_ptr GetProxy () const;
 		void SetProxy (ICoreProxy_ptr);
 
-		RulesManager* GetRulesManager () const;
-
-		NotificationRulesWidget* GetNRW ();
 		std::shared_ptr<Util::ResourceLoader> GetAudioThemeLoader () const;
 
 		QString GetAbsoluteAudioPath (const QString&) const;

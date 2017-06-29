@@ -39,8 +39,7 @@ namespace LeechCraft
 namespace AdvancedNotifications
 {
 	Core::Core ()
-	: RulesManager_ { new RulesManager { this } }
-	, AudioThemeLoader_ { new Util::ResourceLoader { "sounds/" } }
+	: AudioThemeLoader_ { new Util::ResourceLoader { "sounds/" } }
 	{
 		AudioThemeLoader_->AddLocalPrefix ();
 		AudioThemeLoader_->AddGlobalPrefix ();
@@ -55,7 +54,6 @@ namespace AdvancedNotifications
 	void Core::Release ()
 	{
 		AudioThemeLoader_.reset ();
-		delete RulesManager_;
 	}
 
 	ICoreProxy_ptr Core::GetProxy () const
@@ -66,11 +64,6 @@ namespace AdvancedNotifications
 	void Core::SetProxy (ICoreProxy_ptr proxy)
 	{
 		Proxy_ = proxy;
-	}
-
-	RulesManager* Core::GetRulesManager () const
-	{
-		return RulesManager_;
 	}
 
 	std::shared_ptr<Util::ResourceLoader> Core::GetAudioThemeLoader () const

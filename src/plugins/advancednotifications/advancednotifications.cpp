@@ -54,15 +54,16 @@ namespace AdvancedNotifications
 		Proxy_ = proxy;
 		Core::Instance ().SetProxy (proxy);
 
+		RulesManager_ = new RulesManager { this };
+
 		SettingsDialog_ = std::make_shared<Util::XmlSettingsDialog> ();
 		SettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"advancednotificationssettings.xml");
-		SettingsDialog_->SetCustomWidget ("RulesWidget",
-				new NotificationRulesWidget { Core::Instance ().GetRulesManager () });
+		SettingsDialog_->SetCustomWidget ("RulesWidget", new NotificationRulesWidget { RulesManager_ });
 		SettingsDialog_->SetDataSource ("AudioTheme",
 				Core::Instance ().GetAudioThemeLoader ()->GetSubElemModel ());
 
-		GeneralHandler_ = std::make_shared<GeneralHandler> (Core::Instance ().GetRulesManager (), proxy);
+		GeneralHandler_ = std::make_shared<GeneralHandler> (RulesManager_, proxy);
 		connect (GeneralHandler_.get (),
 				SIGNAL (gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace)),
 				this,
@@ -70,10 +71,10 @@ namespace AdvancedNotifications
 
 		Component_ = std::make_shared<QuarkComponent> ("advancednotifications", "ANQuark.qml");
 		Component_->StaticProps_.push_back ({ "AN_quarkTooltip", tr ("Toggle Advanced Notifications rules...") });
-		Component_->DynamicProps_.push_back ({ "AN_rulesManager", Core::Instance ().GetRulesManager () });
+		Component_->DynamicProps_.push_back ({ "AN_rulesManager", RulesManager_ });
 		Component_->DynamicProps_.push_back ({ "AN_proxy", new QuarkProxy });
 
-		connect (Core::Instance ().GetRulesManager (),
+		connect (RulesManager_,
 				SIGNAL (rulesChanged ()),
 				this,
 				SIGNAL (rulesChanged ()));
@@ -167,12 +168,12 @@ namespace AdvancedNotifications
 
 	QList<Entity> Plugin::GetAllRules (const QString& category) const
 	{
-		return Core::Instance ().GetRulesManager ()->GetAllRules (category);
+		return RulesManager_->GetAllRules (category);
 	}
 
 	void Plugin::RequestRuleConfiguration (const Entity& rule)
 	{
-		Core::Instance ().GetRulesManager ()->SuggestRuleConfiguration (rule);
+		RulesManager_->SuggestRuleConfiguration (rule);
 	}
 }
 }
