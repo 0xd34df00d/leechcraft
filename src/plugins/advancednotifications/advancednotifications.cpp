@@ -52,7 +52,6 @@ namespace AdvancedNotifications
 		Util::InstallTranslator ("advancednotifications");
 
 		Proxy_ = proxy;
-		Core::Instance ().SetProxy (proxy);
 
 		RulesManager_ = new RulesManager { proxy, this };
 

@@ -56,16 +56,6 @@ namespace AdvancedNotifications
 		AudioThemeLoader_.reset ();
 	}
 
-	ICoreProxy_ptr Core::GetProxy () const
-	{
-		return Proxy_;
-	}
-
-	void Core::SetProxy (ICoreProxy_ptr proxy)
-	{
-		Proxy_ = proxy;
-	}
-
 	std::shared_ptr<Util::ResourceLoader> Core::GetAudioThemeLoader () const
 	{
 		return AudioThemeLoader_;

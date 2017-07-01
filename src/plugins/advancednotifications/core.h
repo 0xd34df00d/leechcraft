@@ -58,9 +58,6 @@ namespace AdvancedNotifications
 		static Core& Instance ();
 		void Release ();
 
-		ICoreProxy_ptr GetProxy () const;
-		void SetProxy (ICoreProxy_ptr);
-
 		std::shared_ptr<Util::ResourceLoader> GetAudioThemeLoader () const;
 
 		QString GetAbsoluteAudioPath (const QString&) const;
