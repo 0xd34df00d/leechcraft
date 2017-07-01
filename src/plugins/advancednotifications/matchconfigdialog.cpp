@@ -28,8 +28,9 @@
  **********************************************************************/
 
 #include "matchconfigdialog.h"
+#include <QtDebug>
 #include <util/xpc/stdanfields.h>
-#include "core.h"
+#include <interfaces/iinfo.h>
 #include "typedmatchers.h"
 #include "fieldmatch.h"
 

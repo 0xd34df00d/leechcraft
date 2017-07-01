@@ -40,7 +40,6 @@
 #include <interfaces/core/icoreproxy.h>
 #include "eventproxyobject.h"
 #include "generalhandler.h"
-#include "core.h"
 
 namespace LeechCraft
 {

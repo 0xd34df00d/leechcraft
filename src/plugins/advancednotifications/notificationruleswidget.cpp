@@ -47,7 +47,6 @@
 #include "xmlsettingsmanager.h"
 #include "matchconfigdialog.h"
 #include "typedmatchers.h"
-#include "core.h"
 #include "rulesmanager.h"
 #include "audiothememanager.h"
 

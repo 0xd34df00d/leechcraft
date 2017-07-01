@@ -36,7 +36,6 @@
 #include "visualhandler.h"
 #include "audiohandler.h"
 #include "cmdrunhandler.h"
-#include "core.h"
 #include "wmurgenthandler.h"
 #include "rulesmanager.h"
 

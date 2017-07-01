@@ -43,7 +43,6 @@
 #include <util/xpc/util.h>
 #include <util/xpc/anutil.h>
 #include <util/models/rolenamesmixin.h>
-#include "core.h"
 #include "typedmatchers.h"
 #include "xmlsettingsmanager.h"
 

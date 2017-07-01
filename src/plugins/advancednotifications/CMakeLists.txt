@@ -10,7 +10,6 @@ include_directories (
 	)
 set (SRCS
 	advancednotifications.cpp
-	core.cpp
 	generalhandler.cpp
 	concretehandlerbase.cpp
 	systemtrayhandler.cpp

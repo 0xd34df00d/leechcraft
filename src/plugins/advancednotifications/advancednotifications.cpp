@@ -38,7 +38,6 @@
 #include "generalhandler.h"
 #include "xmlsettingsmanager.h"
 #include "notificationruleswidget.h"
-#include "core.h"
 #include "rulesmanager.h"
 #include "quarkproxy.h"
 #include "audiothememanager.h"
@@ -94,7 +93,6 @@ namespace AdvancedNotifications
 	void Plugin::Release ()
 	{
 		GeneralHandler_.reset ();
-		Core::Instance ().Release ();
 	}
 
 	QString Plugin::GetName () const

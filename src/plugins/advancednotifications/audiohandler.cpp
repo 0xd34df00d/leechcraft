@@ -32,10 +32,10 @@
 #include <util/sys/resourceloader.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
-#include "core.h"
 #include "generalhandler.h"
 #include "xmlsettingsmanager.h"
 #include "audiothememanager.h"
+#include "notificationrule.h"
 
 namespace LeechCraft
 {

@@ -42,7 +42,6 @@
 #include <util/sll/qtutil.h>
 #include "generalhandler.h"
 #include "xmlsettingsmanager.h"
-#include "core.h"
 #include "visualnotificationsview.h"
 
 namespace LeechCraft
