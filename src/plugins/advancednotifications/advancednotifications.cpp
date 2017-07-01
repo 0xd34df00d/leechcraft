@@ -54,7 +54,7 @@ namespace AdvancedNotifications
 		Proxy_ = proxy;
 		Core::Instance ().SetProxy (proxy);
 
-		RulesManager_ = new RulesManager { this };
+		RulesManager_ = new RulesManager { proxy, this };
 
 		SettingsDialog_ = std::make_shared<Util::XmlSettingsDialog> ();
 		SettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),

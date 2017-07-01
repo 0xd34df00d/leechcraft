@@ -85,8 +85,9 @@ namespace AdvancedNotifications
 		};
 	}
 
-	RulesManager::RulesManager (QObject *parent)
+	RulesManager::RulesManager (const ICoreProxy_ptr& proxy, QObject *parent)
 	: QObject (parent)
+	, Proxy_ (proxy)
 	, RulesModel_ (new RulesModel (this))
 	{
 		qRegisterMetaType<NotificationRule> ("LeechCraft::AdvancedNotifications::NotificationRule");
@@ -180,8 +181,7 @@ namespace AdvancedNotifications
 		const auto& category = e.Additional_ ["org.LC.AdvNotifications.EventCategory"].toString ();
 		const auto& types = e.Additional_ ["org.LC.AdvNotifications.EventType"].toStringList ();
 
-		const auto& proxy = Core::Instance ().GetProxy ();
-		const auto plugin = proxy->GetPluginsManager ()->GetPluginByID (sender);
+		const auto plugin = Proxy_->GetPluginsManager ()->GetPluginByID (sender);
 		if (!plugin)
 		{
 			qWarning () << Q_FUNC_INFO
