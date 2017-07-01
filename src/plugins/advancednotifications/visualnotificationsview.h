@@ -31,6 +31,7 @@
 
 #include <QtGlobal>
 #include <QQuickWidget>
+#include <interfaces/core/icoreproxyfwd.h>
 #include "eventdata.h"
 
 namespace LeechCraft
@@ -44,7 +45,7 @@ namespace AdvancedNotifications
 		QObjectList LastEvents_;
 		QUrl Location_;
 	public:
-		VisualNotificationsView ();
+		VisualNotificationsView (const ICoreProxy_ptr&);
 
 		void SetEvents (const QList<EventData>&);
 	signals:

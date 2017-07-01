@@ -150,7 +150,7 @@ namespace AdvancedNotifications
 				this,
 				SLOT (handleTrayActivated (QSystemTrayIcon::ActivationReason)));
 
-		const auto vnv = new VisualNotificationsView;
+		const auto vnv = new VisualNotificationsView { GH_->GetProxy () };
 		connect (vnv,
 				SIGNAL (actionTriggered (const QString&, int)),
 				this,
@@ -180,7 +180,7 @@ namespace AdvancedNotifications
 
 		emit gotActions ({ action }, ActionsEmbedPlace::LCTray);
 
-		const auto vnv = new VisualNotificationsView;
+		const auto vnv = new VisualNotificationsView { GH_->GetProxy () };
 		connect (vnv,
 				SIGNAL (actionTriggered (const QString&, int)),
 				this,

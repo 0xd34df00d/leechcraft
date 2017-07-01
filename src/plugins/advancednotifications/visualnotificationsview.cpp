@@ -39,13 +39,14 @@
 #include <util/qml/qmlerrorwatcher.h>
 #include <interfaces/core/icoreproxy.h>
 #include "eventproxyobject.h"
+#include "generalhandler.h"
 #include "core.h"
 
 namespace LeechCraft
 {
 namespace AdvancedNotifications
 {
-	VisualNotificationsView::VisualNotificationsView ()
+	VisualNotificationsView::VisualNotificationsView (const ICoreProxy_ptr& proxy)
 	{
 		setStyleSheet ("background: transparent");
 		setWindowFlags (Qt::WindowStaysOnTopHint | Qt::ToolTip);
@@ -71,7 +72,6 @@ namespace AdvancedNotifications
 
 		Location_ = QUrl::fromLocalFile (fileLocation);
 
-		auto proxy = Core::Instance ().GetProxy ();
 		rootContext ()->setContextProperty ("colorProxy",
 				new Util::ColorThemeProxy (proxy->GetColorThemeManager (), this));
 		engine ()->addImageProvider ("ThemeIcons", new Util::ThemeImageProvider (proxy));
