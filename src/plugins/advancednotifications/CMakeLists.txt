@@ -31,6 +31,7 @@ set (SRCS
 	visualnotificationsview.cpp
 	eventproxyobject.cpp
 	actionsproxyobject.cpp
+	audiothememanager.cpp
 	)
 set (FORMS
 	notificationruleswidget.ui

@@ -45,6 +45,7 @@ struct ANFieldData;
 namespace AdvancedNotifications
 {
 	class RulesManager;
+	class AudioThemeManager;
 
 	class NotificationRulesWidget : public QWidget
 	{
@@ -53,12 +54,13 @@ namespace AdvancedNotifications
 		Ui::NotificationRulesWidget Ui_;
 
 		RulesManager * const RM_;
+		const AudioThemeManager * const AudioThemeManager_;
 		const ICoreProxy_ptr Proxy_;
 
 		FieldMatches_t Matches_;
 		QStandardItemModel *MatchesModel_;
 	public:
-		NotificationRulesWidget (RulesManager*, const ICoreProxy_ptr&, QWidget* = 0);
+		NotificationRulesWidget (RulesManager*, const AudioThemeManager*, const ICoreProxy_ptr&, QWidget* = 0);
 	private:
 		void ResetMatchesModel ();
 

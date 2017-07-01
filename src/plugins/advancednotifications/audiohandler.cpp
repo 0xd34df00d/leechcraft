@@ -35,11 +35,17 @@
 #include "core.h"
 #include "generalhandler.h"
 #include "xmlsettingsmanager.h"
+#include "audiothememanager.h"
 
 namespace LeechCraft
 {
 namespace AdvancedNotifications
 {
+	AudioHandler::AudioHandler (const AudioThemeManager *mgr)
+	: AudioThemeMgr_ { mgr }
+	{
+	}
+
 	NotificationMethod AudioHandler::GetHandlerMethod () const
 	{
 		return NMAudio;
@@ -56,7 +62,7 @@ namespace AdvancedNotifications
 			return;
 
 		if (!fname.contains ('/'))
-			fname = Core::Instance ().GetAbsoluteAudioPath (fname);
+			fname = AudioThemeMgr_->GetAbsoluteFilePath (fname);
 
 		const auto& now = QDateTime::currentDateTime ();
 		if (LastNotify_ [fname].msecsTo (now) < 1000)

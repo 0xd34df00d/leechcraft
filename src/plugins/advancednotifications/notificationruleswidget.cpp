@@ -49,14 +49,17 @@
 #include "typedmatchers.h"
 #include "core.h"
 #include "rulesmanager.h"
+#include "audiothememanager.h"
 
 namespace LeechCraft
 {
 namespace AdvancedNotifications
 {
-	NotificationRulesWidget::NotificationRulesWidget (RulesManager *rm, const ICoreProxy_ptr& proxy, QWidget *parent)
+	NotificationRulesWidget::NotificationRulesWidget (RulesManager *rm,
+			const AudioThemeManager *audioMgr, const ICoreProxy_ptr& proxy, QWidget *parent)
 	: QWidget (parent)
 	, RM_ (rm)
+	, AudioThemeManager_ (audioMgr)
 	, Proxy_ (proxy)
 	, MatchesModel_ (new QStandardItemModel (this))
 	{
@@ -545,17 +548,7 @@ namespace AdvancedNotifications
 		Ui_.AudioFile_->clear ();
 
 		const auto& theme = XmlSettingsManager::Instance ().property ("AudioTheme").toString ();
-		static const QStringList filters
-		{
-			"*.ogg",
-			"*.wav",
-			"*.flac",
-			"*.mp3"
-		};
-
-		const auto& files = Core::Instance ().GetAudioThemeLoader ()->List (theme,
-						filters, QDir::Files | QDir::Readable);
-		for (const auto& file : files)
+		for (const auto& file : AudioThemeManager_->GetFilesList (theme))
 			Ui_.AudioFile_->addItem (file.baseName (), file.absoluteFilePath ());
 	}
 }

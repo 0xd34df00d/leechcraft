@@ -41,6 +41,7 @@
 #include "core.h"
 #include "rulesmanager.h"
 #include "quarkproxy.h"
+#include "audiothememanager.h"
 #include "interfaces/advancednotifications/inotificationbackendplugin.h"
 
 namespace LeechCraft
@@ -55,14 +56,16 @@ namespace AdvancedNotifications
 
 		RulesManager_ = new RulesManager { proxy, this };
 
+		auto audioThemeMgr = new AudioThemeManager { this };
+
 		SettingsDialog_ = std::make_shared<Util::XmlSettingsDialog> ();
 		SettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"advancednotificationssettings.xml");
-		SettingsDialog_->SetCustomWidget ("RulesWidget", new NotificationRulesWidget { RulesManager_, proxy });
-		SettingsDialog_->SetDataSource ("AudioTheme",
-				Core::Instance ().GetAudioThemeLoader ()->GetSubElemModel ());
+		SettingsDialog_->SetCustomWidget ("RulesWidget",
+				new NotificationRulesWidget { RulesManager_, audioThemeMgr, proxy });
+		SettingsDialog_->SetDataSource ("AudioTheme", audioThemeMgr->GetSettingsModel ());
 
-		GeneralHandler_ = std::make_shared<GeneralHandler> (RulesManager_, proxy);
+		GeneralHandler_ = std::make_shared<GeneralHandler> (RulesManager_, audioThemeMgr, proxy);
 		connect (GeneralHandler_.get (),
 				SIGNAL (gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace)),
 				this,

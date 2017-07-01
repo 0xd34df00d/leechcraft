@@ -27,31 +27,57 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <QHash>
-#include <QDateTime>
-#include <interfaces/structures.h>
-#include "concretehandlerbase.h"
-#include "eventdata.h"
+#include "audiothememanager.h"
+#include <util/sys/resourceloader.h>
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
 namespace AdvancedNotifications
 {
-	class AudioThemeManager;
-
-	class AudioHandler : public ConcreteHandlerBase
+	AudioThemeManager::AudioThemeManager (QObject *parent)
+	: QObject { parent }
+	, Loader_ { std::make_shared<Util::ResourceLoader> ("sounds/") }
 	{
-		const AudioThemeManager * const AudioThemeMgr_;
+		Loader_->AddLocalPrefix ();
+		Loader_->AddGlobalPrefix ();
+	}
 
-		QHash<QString, QDateTime> LastNotify_;
-	public:
-		AudioHandler (const AudioThemeManager*);
+	QFileInfoList AudioThemeManager::GetFilesList (const QString& theme) const
+	{
+		static const QStringList filters
+		{
+			"*.ogg",
+			"*.wav",
+			"*.flac",
+			"*.mp3"
+		};
 
-		NotificationMethod GetHandlerMethod () const;
-		void Handle (const Entity&, const NotificationRule&);
-	};
+		return Loader_->List (theme, filters, QDir::Files | QDir::Readable);
+	}
+
+	QAbstractItemModel* AudioThemeManager::GetSettingsModel () const
+	{
+		return Loader_->GetSubElemModel ();
+	}
+
+	QString AudioThemeManager::GetAbsoluteFilePath (const QString& fname) const
+	{
+		if (fname.contains ('/'))
+			return fname;
+
+		const auto& option = XmlSettingsManager::Instance ().property ("AudioTheme").toString ();
+		const auto& base = option + '/' + fname;
+
+		const QStringList pathVariants
+		{
+			base + ".ogg",
+			base + ".wav",
+			base + ".flac",
+			base + ".mp3"
+		};
+
+		return Loader_->GetPath (pathVariants);
+	}
 }
 }

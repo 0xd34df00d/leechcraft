@@ -57,10 +57,6 @@ namespace AdvancedNotifications
 	public:
 		static Core& Instance ();
 		void Release ();
-
-		std::shared_ptr<Util::ResourceLoader> GetAudioThemeLoader () const;
-
-		QString GetAbsoluteAudioPath (const QString&) const;
 	};
 }
 }

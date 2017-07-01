@@ -29,29 +29,34 @@
 
 #pragma once
 
+#include <memory>
 #include <QObject>
-#include <QHash>
-#include <QDateTime>
-#include <interfaces/structures.h>
-#include "concretehandlerbase.h"
-#include "eventdata.h"
+#include <QString>
+
+class QAbstractItemModel;
+class QFileInfo;
+
+using QFileInfoList = QList<QFileInfo>;
 
 namespace LeechCraft
 {
+namespace Util
+{
+	class ResourceLoader;
+}
+
 namespace AdvancedNotifications
 {
-	class AudioThemeManager;
-
-	class AudioHandler : public ConcreteHandlerBase
+	class AudioThemeManager : public QObject
 	{
-		const AudioThemeManager * const AudioThemeMgr_;
-
-		QHash<QString, QDateTime> LastNotify_;
+		std::shared_ptr<Util::ResourceLoader> Loader_;
 	public:
-		AudioHandler (const AudioThemeManager*);
+		AudioThemeManager (QObject* = nullptr);
 
-		NotificationMethod GetHandlerMethod () const;
-		void Handle (const Entity&, const NotificationRule&);
+		QFileInfoList GetFilesList (const QString& theme) const;
+		QAbstractItemModel* GetSettingsModel () const;
+
+		QString GetAbsoluteFilePath (const QString&) const;
 	};
 }
 }

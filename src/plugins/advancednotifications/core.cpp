@@ -55,30 +55,5 @@ namespace AdvancedNotifications
 	{
 		AudioThemeLoader_.reset ();
 	}
-
-	std::shared_ptr<Util::ResourceLoader> Core::GetAudioThemeLoader () const
-	{
-		return AudioThemeLoader_;
-	}
-
-	QString Core::GetAbsoluteAudioPath (const QString& fname) const
-	{
-		if (fname.contains ('/'))
-			return fname;
-
-		const QString& option = XmlSettingsManager::Instance ()
-				.property ("AudioTheme").toString ();
-		const QString& base = option + '/' + fname;
-
-		const QStringList pathVariants
-		{
-			base + ".ogg",
-			base + ".wav",
-			base + ".flac",
-			base + ".mp3"
-		};
-
-		return GetAudioThemeLoader ()->GetPath (pathVariants);
-	}
 }
 }

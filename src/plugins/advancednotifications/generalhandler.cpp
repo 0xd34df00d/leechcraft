@@ -44,7 +44,7 @@ namespace LeechCraft
 {
 namespace AdvancedNotifications
 {
-	GeneralHandler::GeneralHandler (RulesManager *rm, const ICoreProxy_ptr& proxy)
+	GeneralHandler::GeneralHandler (RulesManager *rm, const AudioThemeManager *mgr, const ICoreProxy_ptr& proxy)
 	: RulesManager_ { rm }
 	, Proxy_ { proxy }
 	{
@@ -52,7 +52,7 @@ namespace AdvancedNotifications
 		{
 			std::make_shared<SystemTrayHandler> (),
 			std::make_shared<VisualHandler> (),
-			std::make_shared<AudioHandler> (),
+			std::make_shared<AudioHandler> (mgr),
 			std::make_shared<CmdRunHandler> (),
 			std::make_shared<WMUrgentHandler> ()
 		};
