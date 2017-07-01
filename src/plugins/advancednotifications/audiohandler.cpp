@@ -33,6 +33,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
 #include "core.h"
+#include "generalhandler.h"
 #include "xmlsettingsmanager.h"
 
 namespace LeechCraft
@@ -64,7 +65,7 @@ namespace AdvancedNotifications
 		LastNotify_ [fname] = now;
 
 		const auto& e = Util::MakeEntity (fname, QString (), Internal);
-		Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (e);
+		GH_->GetProxy ()->GetEntityManager ()->HandleEntity (e);
 	}
 }
 }

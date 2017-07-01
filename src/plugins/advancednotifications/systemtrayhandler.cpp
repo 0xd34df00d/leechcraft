@@ -395,7 +395,7 @@ namespace AdvancedNotifications
 			return;
 
 		const auto canceller = Events_.value (event).Canceller_;
-		Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (canceller);
+		GH_->GetProxy ()->GetEntityManager ()->HandleEntity (canceller);
 	}
 
 	namespace

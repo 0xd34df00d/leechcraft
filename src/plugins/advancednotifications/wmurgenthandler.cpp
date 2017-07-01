@@ -34,7 +34,7 @@
 #include <interfaces/structures.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
-#include "core.h"
+#include "generalhandler.h"
 
 namespace LeechCraft
 {
@@ -57,7 +57,7 @@ namespace AdvancedNotifications
 		bool ok = false;
 		auto winIdx = e.Additional_ ["org.LC.AdvNotifications.WindowIndex"].toInt (&ok);
 
-		auto rootWM = Core::Instance ().GetProxy ()->GetRootWindowsManager ();
+		auto rootWM = GH_->GetProxy ()->GetRootWindowsManager ();
 
 		if (winIdx < 0 || winIdx >= rootWM->GetWindowsCount ())
 		{
