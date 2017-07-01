@@ -63,6 +63,9 @@ namespace AdvancedNotifications
 
 	QString AudioThemeManager::GetAbsoluteFilePath (const QString& fname) const
 	{
+		if (fname.isEmpty ())
+			return {};
+
 		if (fname.contains ('/'))
 			return fname;
 

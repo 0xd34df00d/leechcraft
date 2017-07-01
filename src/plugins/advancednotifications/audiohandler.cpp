@@ -57,12 +57,7 @@ namespace AdvancedNotifications
 				.property ("EnableAudioNots").toBool ())
 			return;
 
-		QString fname = rule.GetAudioParams ().Filename_;
-		if (fname.isEmpty ())
-			return;
-
-		if (!fname.contains ('/'))
-			fname = AudioThemeMgr_->GetAbsoluteFilePath (fname);
+		const auto& fname = AudioThemeMgr_->GetAbsoluteFilePath (rule.GetAudioParams ().Filename_);
 
 		const auto& now = QDateTime::currentDateTime ();
 		if (LastNotify_ [fname].msecsTo (now) < 1000)
