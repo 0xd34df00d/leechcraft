@@ -1441,7 +1441,6 @@ namespace Xoox
 				qDebug () << Q_FUNC_INFO
 						<< "got error presence for"
 						<< jid
-						<< JID2CLEntry_ [jid]
 						<< pres.error ().type ()
 						<< pres.error ().condition ()
 						<< pres.error ().text ();
