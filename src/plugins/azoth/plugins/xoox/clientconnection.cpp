@@ -1436,15 +1436,16 @@ namespace Xoox
 			ClientConnection::Split (jid, &bare, &resource);
 			if (RoomHandlers_.contains (bare))
 				RoomHandlers_ [bare]->HandleErrorPresence (pres, resource);
-			else if (JID2CLEntry_.contains (bare))
+			else if (const auto entry = JID2CLEntry_.value (bare))
 			{
 				qDebug () << Q_FUNC_INFO
 						<< "got error presence for"
 						<< jid
+						<< JID2CLEntry_ [jid]
 						<< pres.error ().type ()
 						<< pres.error ().condition ()
 						<< pres.error ().text ();
-				JID2CLEntry_ [jid]->SetErrorPresence (resource);
+				entry->SetErrorPresence (resource);
 			}
 			break;
 		}
