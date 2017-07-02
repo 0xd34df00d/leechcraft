@@ -69,7 +69,12 @@ namespace AdvancedNotifications
 
 		row [0]->setData (QVariant::fromValue (e));
 
-		for (const auto& fieldData : Util::GetStdANFields (category) + Util::GetStdANFields (type))
+		auto possibleFields = Util::GetStdANFields (category) + Util::GetStdANFields (type);
+		const auto& sender = e.Additional_ ["org.LC.AdvNotifications.SenderID"].toByteArray ();
+		if (const auto iane = qobject_cast<IANEmitter*> (Proxy_->GetPluginsManager ()->GetPluginByID (sender)))
+			possibleFields += iane->GetANFields ();
+
+		for (const auto& fieldData : possibleFields)
 			if (e.Additional_.contains (fieldData.ID_))
 			{
 				QList<QStandardItem*> subrow
