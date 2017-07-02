@@ -14,7 +14,16 @@
    <string/>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_4">
-   <property name="margin">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
     <number>0</number>
    </property>
    <item>
@@ -28,6 +37,9 @@
         <widget class="QPushButton" name="AddRule_">
          <property name="text">
           <string>Add</string>
+         </property>
+         <property name="icon">
+          <iconset theme="list-add"/>
          </property>
         </widget>
        </item>
@@ -43,12 +55,18 @@
          <property name="text">
           <string>Move up</string>
          </property>
+         <property name="icon">
+          <iconset theme="arrow-up"/>
+         </property>
         </widget>
        </item>
        <item>
         <widget class="QPushButton" name="MoveRuleDown_">
          <property name="text">
           <string>Move down</string>
+         </property>
+         <property name="icon">
+          <iconset theme="arrow-down"/>
          </property>
         </widget>
        </item>
@@ -64,12 +82,18 @@
          <property name="text">
           <string>Remove</string>
          </property>
+         <property name="icon">
+          <iconset theme="list-remove"/>
+         </property>
         </widget>
        </item>
        <item>
         <widget class="QPushButton" name="DefaultRules_">
          <property name="text">
           <string>Default</string>
+         </property>
+         <property name="icon">
+          <iconset theme="document-revert"/>
          </property>
         </widget>
        </item>
@@ -103,7 +127,16 @@
        <string>Rule</string>
       </attribute>
       <layout class="QHBoxLayout" name="horizontalLayout_3">
-       <property name="margin">
+       <property name="leftMargin">
+        <number>1</number>
+       </property>
+       <property name="topMargin">
+        <number>1</number>
+       </property>
+       <property name="rightMargin">
+        <number>1</number>
+       </property>
+       <property name="bottomMargin">
         <number>1</number>
        </property>
        <item>
@@ -237,7 +270,16 @@
        <string>Fields</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_3">
-       <property name="margin">
+       <property name="leftMargin">
+        <number>1</number>
+       </property>
+       <property name="topMargin">
+        <number>1</number>
+       </property>
+       <property name="rightMargin">
+        <number>1</number>
+       </property>
+       <property name="bottomMargin">
         <number>1</number>
        </property>
        <item>
@@ -257,6 +299,9 @@
            <property name="text">
             <string>Add...</string>
            </property>
+           <property name="icon">
+            <iconset theme="list-add"/>
+           </property>
           </widget>
          </item>
          <item>
@@ -264,12 +309,18 @@
            <property name="text">
             <string>Modify...</string>
            </property>
+           <property name="icon">
+            <iconset theme="document-edit"/>
+           </property>
           </widget>
          </item>
          <item>
           <widget class="QPushButton" name="RemoveMatch_">
            <property name="text">
             <string>Remove</string>
+           </property>
+           <property name="icon">
+            <iconset theme="list-remove"/>
            </property>
           </widget>
          </item>
@@ -285,7 +336,16 @@
        <property name="fieldGrowthPolicy">
         <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
        </property>
-       <property name="margin">
+       <property name="leftMargin">
+        <number>1</number>
+       </property>
+       <property name="topMargin">
+        <number>1</number>
+       </property>
+       <property name="rightMargin">
+        <number>1</number>
+       </property>
+       <property name="bottomMargin">
         <number>1</number>
        </property>
        <item row="0" column="0">
@@ -312,12 +372,18 @@
            <property name="text">
             <string>Browse...</string>
            </property>
+           <property name="icon">
+            <iconset theme="document-open"/>
+           </property>
           </widget>
          </item>
          <item>
           <widget class="QPushButton" name="TestAudio_">
            <property name="text">
             <string>Test</string>
+           </property>
+           <property name="icon">
+            <iconset theme="media-playback-start"/>
            </property>
           </widget>
          </item>
@@ -333,7 +399,16 @@
        <string>Command</string>
       </attribute>
       <layout class="QFormLayout" name="formLayout_2">
-       <property name="margin">
+       <property name="leftMargin">
+        <number>1</number>
+       </property>
+       <property name="topMargin">
+        <number>1</number>
+       </property>
+       <property name="rightMargin">
+        <number>1</number>
+       </property>
+       <property name="bottomMargin">
         <number>1</number>
        </property>
        <item row="0" column="0">
@@ -371,6 +446,9 @@
              <property name="text">
               <string>Add...</string>
              </property>
+             <property name="icon">
+              <iconset theme="list-add"/>
+             </property>
             </widget>
            </item>
            <item>
@@ -378,12 +456,18 @@
              <property name="text">
               <string>Modify...</string>
              </property>
+             <property name="icon">
+              <iconset theme="document-edit"/>
+             </property>
             </widget>
            </item>
            <item>
             <widget class="QPushButton" name="RemoveArgument_">
              <property name="text">
               <string>Remove</string>
+             </property>
+             <property name="icon">
+              <iconset theme="list-remove"/>
              </property>
             </widget>
            </item>
@@ -439,6 +523,9 @@
     <widget class="QPushButton" name="UpdateRule_">
      <property name="text">
       <string>Save rule</string>
+     </property>
+     <property name="icon">
+      <iconset theme="document-save"/>
      </property>
     </widget>
    </item>
