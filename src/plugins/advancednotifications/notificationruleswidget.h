@@ -81,6 +81,7 @@ namespace AdvancedNotifications
 		void selectRule (const QModelIndex&);
 
 		void on_AddRule__released ();
+		void on_AddFromMissed__released ();
 		void on_UpdateRule__released ();
 		void on_MoveRuleUp__released ();
 		void on_MoveRuleDown__released ();

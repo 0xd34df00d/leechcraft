@@ -360,6 +360,40 @@ namespace AdvancedNotifications
 		RM_->PrependRule ();
 	}
 
+	void NotificationRulesWidget::on_AddFromMissed__released ()
+	{
+		auto dia = new QDialog { this };
+		dia->setLayout (new QVBoxLayout);
+
+		auto view = new QTreeView;
+		dia->layout ()->addWidget (view);
+
+		auto buttons = new QDialogButtonBox;
+		connect (buttons,
+				SIGNAL (accepted ()),
+				dia,
+				SLOT (accept ()));
+		connect (buttons,
+				SIGNAL (rejected ()),
+				dia,
+				SLOT (reject ()));
+		dia->layout ()->addWidget (buttons);
+
+		view->setModel (UnhandledKeeper_->GetUnhandledModel ());
+
+		dia->show ();
+		dia->setAttribute (Qt::WA_DeleteOnClose);
+
+		auto handleAccepted = [this, view]
+		{
+			const auto& idxs = view->selectionModel ()->selectedRows ();
+			for (const auto entity : UnhandledKeeper_->GetRulesEntities (idxs))
+				if (const auto rule = RM_->CreateRuleFromEntity (entity))
+					RM_->PrependRule (*rule);
+		};
+		connect (dia, &QDialog::accepted, this, handleAccepted);
+	}
+
 	void NotificationRulesWidget::on_UpdateRule__released ()
 	{
 		const auto& index = Ui_.RulesTree_->currentIndex ();
