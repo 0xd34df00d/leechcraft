@@ -368,7 +368,7 @@ namespace AdvancedNotifications
 		auto view = new QTreeView;
 		dia->layout ()->addWidget (view);
 
-		auto buttons = new QDialogButtonBox;
+		auto buttons = new QDialogButtonBox { QDialogButtonBox::Ok | QDialogButtonBox::Cancel };
 		connect (buttons,
 				SIGNAL (accepted ()),
 				dia,
