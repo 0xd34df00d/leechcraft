@@ -28,7 +28,6 @@
  **********************************************************************/
 
 #include "generalhandler.h"
-#include <interfaces/structures.h>
 #include <interfaces/an/constants.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>

@@ -34,7 +34,6 @@
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/sys/resourceloader.h>
 #include <util/util.h>
-#include <util/sys/paths.h>
 #include "generalhandler.h"
 #include "xmlsettingsmanager.h"
 #include "notificationruleswidget.h"
