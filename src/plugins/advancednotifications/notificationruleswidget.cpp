@@ -49,16 +49,21 @@
 #include "typedmatchers.h"
 #include "rulesmanager.h"
 #include "audiothememanager.h"
+#include "unhandlednotificationskeeper.h"
 
 namespace LeechCraft
 {
 namespace AdvancedNotifications
 {
 	NotificationRulesWidget::NotificationRulesWidget (RulesManager *rm,
-			const AudioThemeManager *audioMgr, const ICoreProxy_ptr& proxy, QWidget *parent)
+			const AudioThemeManager *audioMgr,
+			const UnhandledNotificationsKeeper *unhandledKeeper,
+			const ICoreProxy_ptr& proxy,
+			QWidget *parent)
 	: QWidget (parent)
 	, RM_ (rm)
 	, AudioThemeManager_ (audioMgr)
+	, UnhandledKeeper_ (unhandledKeeper)
 	, Proxy_ (proxy)
 	, MatchesModel_ (new QStandardItemModel (this))
 	{
