@@ -53,7 +53,7 @@ namespace AdvancedNotifications
 
 		QAbstractItemModel* GetUnhandledModel () const;
 
-		NotificationRule GetRuleFromIndex (const QModelIndex&) const;
+		QList<Entity> GetRulesEntities (const QList<QModelIndex>&) const;
 	};
 }
 }

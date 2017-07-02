@@ -34,6 +34,8 @@
 #include <interfaces/an/ianemitter.h>
 #include <util/xpc/anutil.h>
 #include <util/xpc/stdanfields.h>
+#include <util/sll/prelude.h>
+#include <util/sll/qtutil.h>
 #include "notificationrule.h"
 
 namespace LeechCraft
@@ -90,9 +92,41 @@ namespace AdvancedNotifications
 		return Model_;
 	}
 
-	NotificationRule UnhandledNotificationsKeeper::GetRuleFromIndex (const QModelIndex& idx) const
+	namespace
 	{
-		return {};
+		auto BuildHierarchy (const QList<QStandardItem*>& allItems)
+		{
+			QHash<QStandardItem*, QList<QStandardItem*>> result;
+			for (const auto& item : allItems)
+				if (const auto& parent = item->parent ())
+					if (allItems.contains (parent))
+						result [parent] << item;
+			return result;
+		}
+	}
+
+	QList<Entity> UnhandledNotificationsKeeper::GetRulesEntities (const QList<QModelIndex>& idxs) const
+	{
+		QList<Entity> result;
+
+		const auto& allItems = Util::Map (idxs,
+				[this] (const QModelIndex& idx) { return Model_->itemFromIndex (idx); });
+		const auto& hierarchy = BuildHierarchy (allItems);
+
+		for (const auto& [entityNode, fieldNodes] : Util::Stlize (hierarchy))
+		{
+			auto entity = entityNode->data ().value<Entity> ();
+			for (int i = 0; i < entityNode->rowCount (); ++i)
+			{
+				const auto& fieldNode = entityNode->child (i);
+				if (!fieldNodes.contains (fieldNode))
+					entity.Additional_.remove (fieldNode->data ().toString ());
+			}
+
+			result << entity;
+		}
+
+		return result;
 	}
 }
 }
