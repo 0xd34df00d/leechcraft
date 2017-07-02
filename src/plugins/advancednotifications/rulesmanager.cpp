@@ -291,6 +291,12 @@ namespace AdvancedNotifications
 		return result;
 	}
 
+	void RulesManager::PrependRule (const NotificationRule& rule)
+	{
+		Rules_.prepend (rule);
+		RulesModel_->insertRow (0, RuleToRow (rule));
+	}
+
 	void RulesManager::LoadDefaultRules (int version)
 	{
 		if (version <= 0)
@@ -469,12 +475,6 @@ namespace AdvancedNotifications
 		}
 
 		return items;
-	}
-
-	void RulesManager::prependRule ()
-	{
-		Rules_.prepend (NotificationRule ());
-		RulesModel_->insertRow (0, RuleToRow (NotificationRule ()));
 	}
 
 	void RulesManager::removeRule (const QModelIndex& index)

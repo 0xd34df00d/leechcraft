@@ -65,6 +65,8 @@ namespace AdvancedNotifications
 		void HandleEntity (const Entity&);
 		void SuggestRuleConfiguration (const Entity&);
 		QList<Entity> GetAllRules (const QString&) const;
+
+		void PrependRule (const NotificationRule& = {});
 	private:
 		void LoadDefaultRules (int = -1);
 		void LoadSettings ();
@@ -73,7 +75,6 @@ namespace AdvancedNotifications
 
 		QList<QStandardItem*> RuleToRow (const NotificationRule&) const;
 	public slots:
-		void prependRule ();
 		void removeRule (const QModelIndex&);
 		void moveUp (const QModelIndex&);
 		void moveDown (const QModelIndex&);

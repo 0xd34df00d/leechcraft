@@ -352,7 +352,7 @@ namespace AdvancedNotifications
 
 	void NotificationRulesWidget::on_AddRule__released ()
 	{
-		RM_->prependRule ();
+		RM_->PrependRule ();
 	}
 
 	void NotificationRulesWidget::on_UpdateRule__released ()
