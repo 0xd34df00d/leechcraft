@@ -173,7 +173,7 @@ namespace AdvancedNotifications
 		SaveSettings ();
 	}
 
-	void RulesManager::HandleEntity (const Entity& e)
+	boost::optional<NotificationRule> RulesManager::CreateRuleFromEntity (const Entity& e)
 	{
 		const auto& title = e.Entity_.toString ();
 		const auto& sender = e.Additional_ ["org.LC.AdvNotifications.SenderID"].toByteArray ();
@@ -186,7 +186,7 @@ namespace AdvancedNotifications
 			qWarning () << Q_FUNC_INFO
 					<< "no plugin for"
 					<< sender;
-			return;
+			return {};
 		}
 
 		NotificationRule rule (title, category, types);
@@ -242,8 +242,16 @@ namespace AdvancedNotifications
 					tryAddFieldMatch (field, false);
 			}
 
+		return rule;
+	}
 
-		PrependRule (rule);
+	void RulesManager::HandleEntity (const Entity& e)
+	{
+		const auto rule = CreateRuleFromEntity (e);
+		if (!rule)
+			return;
+
+		PrependRule (*rule);
 
 		SaveSettings ();
 
