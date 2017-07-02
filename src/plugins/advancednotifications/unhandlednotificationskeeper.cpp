@@ -31,7 +31,9 @@
 #include <QStandardItemModel>
 #include <interfaces/structures.h>
 #include <interfaces/an/entityfields.h>
+#include <interfaces/an/ianemitter.h>
 #include <util/xpc/anutil.h>
+#include <util/xpc/stdanfields.h>
 #include "notificationrule.h"
 
 namespace LeechCraft
@@ -47,15 +49,38 @@ namespace AdvancedNotifications
 
 	void UnhandledNotificationsKeeper::AddUnhandled (const Entity& e)
 	{
+		const auto& category = e.Additional_ [AN::EF::EventCategory].toString ();
+		const auto& type = e.Additional_ [AN::EF::EventType].toString ();
+
 		QList<QStandardItem*> row
 		{
 			new QStandardItem { e.Entity_.toString () },
 			new QStandardItem { e.Additional_ [AN::EF::FullText].toString () },
-			new QStandardItem { Util::AN::GetCategoryName (e.Additional_ [AN::EF::EventCategory].toString ()) },
-			new QStandardItem { Util::AN::GetTypeName (e.Additional_ [AN::EF::EventType].toString ()) }
+			new QStandardItem { Util::AN::GetCategoryName (category) },
+			new QStandardItem { Util::AN::GetTypeName (type) }
 		};
 		for (const auto item : row)
 			item->setEditable (false);
+
+		row [0]->setData (QVariant::fromValue (e));
+
+		for (const auto& fieldData : Util::GetStdANFields (category) + Util::GetStdANFields (type))
+			if (e.Additional_.contains (fieldData.ID_))
+			{
+				QList<QStandardItem*> subrow
+				{
+					new QStandardItem { fieldData.Name_ },
+					new QStandardItem { e.Additional_ [fieldData.ID_].toString () },
+					new QStandardItem { fieldData.Description_ }
+				};
+
+				for (const auto item : subrow)
+					item->setEditable (false);
+
+				subrow [0]->setData (fieldData.ID_);
+
+				row [0]->appendRow (subrow);
+			}
 
 		Model_->insertRow (0, row);
 	}
