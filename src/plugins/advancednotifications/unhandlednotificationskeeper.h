@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QObject>
+#include <interfaces/core/icoreproxyfwd.h>
 
 class QAbstractItemModel;
 class QStandardItemModel;
@@ -45,9 +46,10 @@ namespace AdvancedNotifications
 
 	class UnhandledNotificationsKeeper : public QObject
 	{
+		const ICoreProxy_ptr Proxy_;
 		QStandardItemModel * const Model_;
 	public:
-		UnhandledNotificationsKeeper (QObject* = nullptr);
+		UnhandledNotificationsKeeper (const ICoreProxy_ptr&, QObject* = nullptr);
 
 		void AddUnhandled (const Entity&);
 

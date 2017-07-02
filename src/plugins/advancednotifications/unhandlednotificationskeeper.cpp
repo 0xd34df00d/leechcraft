@@ -30,6 +30,8 @@
 #include "unhandlednotificationskeeper.h"
 #include <QStandardItemModel>
 #include <interfaces/structures.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/an/entityfields.h>
 #include <interfaces/an/ianemitter.h>
 #include <util/xpc/anutil.h>
@@ -42,8 +44,9 @@ namespace LeechCraft
 {
 namespace AdvancedNotifications
 {
-	UnhandledNotificationsKeeper::UnhandledNotificationsKeeper (QObject *parent)
+	UnhandledNotificationsKeeper::UnhandledNotificationsKeeper (const ICoreProxy_ptr& proxy, QObject *parent)
 	: QObject { parent }
+	, Proxy_ { proxy }
 	, Model_ { new QStandardItemModel { this } }
 	{
 		Model_->setHorizontalHeaderLabels ({ tr ("Title"), tr ("Text"), tr ("Category"), tr ("Type") });

@@ -57,7 +57,7 @@ namespace AdvancedNotifications
 
 		auto audioThemeMgr = new AudioThemeManager { this };
 
-		auto unhandledKeeper = new UnhandledNotificationsKeeper { this };
+		auto unhandledKeeper = new UnhandledNotificationsKeeper { proxy, this };
 
 		SettingsDialog_ = std::make_shared<Util::XmlSettingsDialog> ();
 		SettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
