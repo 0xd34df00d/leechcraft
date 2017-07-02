@@ -40,6 +40,7 @@
 #include "rulesmanager.h"
 #include "quarkproxy.h"
 #include "audiothememanager.h"
+#include "unhandlednotificationskeeper.h"
 #include "interfaces/advancednotifications/inotificationbackendplugin.h"
 
 namespace LeechCraft
@@ -56,6 +57,8 @@ namespace AdvancedNotifications
 
 		auto audioThemeMgr = new AudioThemeManager { this };
 
+		auto unhandledKeeper = new UnhandledNotificationsKeeper { this };
+
 		SettingsDialog_ = std::make_shared<Util::XmlSettingsDialog> ();
 		SettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"advancednotificationssettings.xml");
@@ -63,7 +66,7 @@ namespace AdvancedNotifications
 				new NotificationRulesWidget { RulesManager_, audioThemeMgr, proxy });
 		SettingsDialog_->SetDataSource ("AudioTheme", audioThemeMgr->GetSettingsModel ());
 
-		GeneralHandler_ = std::make_shared<GeneralHandler> (RulesManager_, audioThemeMgr, proxy);
+		GeneralHandler_ = std::make_shared<GeneralHandler> (RulesManager_, audioThemeMgr, unhandledKeeper, proxy);
 		connect (GeneralHandler_.get (),
 				SIGNAL (gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace)),
 				this,

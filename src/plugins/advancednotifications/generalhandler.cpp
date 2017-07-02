@@ -37,13 +37,16 @@
 #include "cmdrunhandler.h"
 #include "wmurgenthandler.h"
 #include "rulesmanager.h"
+#include "unhandlednotificationskeeper.h"
 
 namespace LeechCraft
 {
 namespace AdvancedNotifications
 {
-	GeneralHandler::GeneralHandler (RulesManager *rm, const AudioThemeManager *mgr, const ICoreProxy_ptr& proxy)
+	GeneralHandler::GeneralHandler (RulesManager *rm, const AudioThemeManager *mgr,
+			UnhandledNotificationsKeeper *keeper, const ICoreProxy_ptr& proxy)
 	: RulesManager_ { rm }
+	, UnhandledKeeper_ { keeper }
 	, Proxy_ { proxy }
 	{
 		const QList<ConcreteHandlerBase_ptr> coreHandlers
@@ -98,6 +101,7 @@ namespace AdvancedNotifications
 			return;
 		}
 
+		bool wasHandled = false;
 		for (const auto& rule : RulesManager_->GetRules (e))
 		{
 			const auto& methods = rule.GetMethods ();
@@ -107,8 +111,12 @@ namespace AdvancedNotifications
 					continue;
 
 				handler->Handle (e, rule);
+				wasHandled = true;
 			}
 		}
+
+		if (!wasHandled)
+			UnhandledKeeper_->AddUnhandled (e);
 	}
 
 	ICoreProxy_ptr GeneralHandler::GetProxy () const

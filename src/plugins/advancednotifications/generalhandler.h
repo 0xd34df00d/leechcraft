@@ -42,19 +42,22 @@ namespace AdvancedNotifications
 {
 	class RulesManager;
 	class AudioThemeManager;
+	class UnhandledNotificationsKeeper;
 
 	class GeneralHandler : public QObject
 	{
 		Q_OBJECT
 
 		RulesManager * const RulesManager_;
+		UnhandledNotificationsKeeper * const UnhandledKeeper_;
 		ICoreProxy_ptr Proxy_;
 
 		QList<INotificationHandler_ptr> Handlers_;
 
 		QMap<QString, QString> Cat2IconName_;
 	public:
-		GeneralHandler (RulesManager*, const AudioThemeManager*, const ICoreProxy_ptr&);
+		GeneralHandler (RulesManager*, const AudioThemeManager*,
+				UnhandledNotificationsKeeper*, const ICoreProxy_ptr&);
 
 		void RegisterHandler (const INotificationHandler_ptr&);
 
