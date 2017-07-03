@@ -218,18 +218,23 @@ namespace AdvancedNotifications
 		for (const auto& type : types)
 			stdFieldData += Util::GetStdANFields (type);
 
-		auto tryAddFieldMatch = [&e, &rule, sender] (const ANFieldData& field, bool standard) -> void
+		auto tryAddFieldMatch = [&e, &rule, sender] (const ANFieldData& field, bool standard)
 		{
-			if (e.Additional_.contains (field.ID_))
-			{
-				const auto& valMatcher = TypedMatcherBase::Create (field.Type_);
-				valMatcher->SetValue (e.Additional_ [field.ID_].value<ANFieldValue> ());
+			if (!e.Additional_.contains (field.ID_))
+				return;
 
-				FieldMatch fieldMatch (field.Type_, valMatcher);
-				fieldMatch.SetPluginID (standard ? QString {} : sender);
-				fieldMatch.SetFieldName (field.ID_);
-				rule.AddFieldMatch (fieldMatch);
-			}
+			const auto& valMatcher = TypedMatcherBase::Create (field.Type_);
+
+			const auto& fieldValVar = e.Additional_ [field.ID_];
+			if (fieldValVar.canConvert<ANFieldValue> ())
+				valMatcher->SetValue (e.Additional_ [field.ID_].value<ANFieldValue> ());
+			else
+				valMatcher->SetValue (e.Additional_ [field.ID_]);
+
+			FieldMatch fieldMatch (field.Type_, valMatcher);
+			fieldMatch.SetPluginID (standard ? QString {} : sender);
+			fieldMatch.SetFieldName (field.ID_);
+			rule.AddFieldMatch (fieldMatch);
 		};
 		for (const auto& field : stdFieldData)
 			tryAddFieldMatch (field, true);
