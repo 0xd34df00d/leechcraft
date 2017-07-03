@@ -61,20 +61,20 @@ namespace AdvancedNotifications
 		switch (type)
 		{
 		case QVariant::Bool:
-			return TypedMatcherBase_ptr (new BoolMatcher (fieldData.Name_));
+			return std::make_shared<BoolMatcher> (fieldData.Name_);
 		case QVariant::Int:
-			return TypedMatcherBase_ptr (new IntMatcher ());
+			return std::make_shared<IntMatcher> ();
 		case QVariant::String:
-			return TypedMatcherBase_ptr (new StringMatcher (ToTList<QString> (fieldData.AllowedValues_)));
+			return std::make_shared<StringMatcher> (ToTList<QString> (fieldData.AllowedValues_));
 		case QVariant::StringList:
-			return TypedMatcherBase_ptr (new StringListMatcher (ToTList<QString> (fieldData.AllowedValues_)));
+			return std::make_shared<StringListMatcher> (ToTList<QString> (fieldData.AllowedValues_));
 		case QVariant::Url:
-			return TypedMatcherBase_ptr (new UrlMatcher ());
+			return std::make_shared<UrlMatcher> ();
 		default:
 			qWarning () << Q_FUNC_INFO
 					<< "unknown type"
 					<< type;
-			return TypedMatcherBase_ptr ();
+			return {};
 		}
 	}
 
