@@ -1443,7 +1443,19 @@ namespace Azoth
 
 	void Core::FillANFields ()
 	{
-		const QStringList havingCommonFields
+		const QStringList havingMsgField
+		{
+			AN::TypeIMMUCHighlight,
+			AN::TypeIMMUCMsg,
+			AN::TypeIMIncMsg,
+			AN::TypeIMIncFile,
+			AN::TypeIMAttention,
+			AN::TypeIMSubscrGrant,
+			AN::TypeIMSubscrRevoke,
+			AN::TypeIMSubscrRequest
+		};
+
+		const QStringList havingSourceFields
 		{
 			AN::TypeIMMUCHighlight,
 			AN::TypeIMMUCMsg,
@@ -1453,44 +1465,53 @@ namespace Azoth
 			AN::TypeIMSubscrGrant,
 			AN::TypeIMSubscrRevoke,
 			AN::TypeIMSubscrRequest,
-			AN::TypeIMStatusChange
+			AN::TypeIMStatusChange,
+			AN::TypeIMEventTuneChange,
+			AN::TypeIMEventMoodChange,
+			AN::TypeIMEventActivityChange,
+			AN::TypeIMEventLocationChange
 		};
 
 		ANFields_ << ANFieldData ("org.LC.Plugins.Azoth.Msg",
 				tr ("Message body"),
 				tr ("Original human-readable message body."),
 				QVariant::String,
-				havingCommonFields);
+				[&]
+				{
+					auto res = havingMsgField + havingSourceFields;
+					res.removeDuplicates ();
+					return res;
+				} ());
 
 		ANFields_ << ANFieldData ("org.LC.Plugins.Azoth.SourceName",
 				tr ("Sender name"),
 				tr ("Human-readable name of the sender of the message."),
 				QVariant::String,
-				havingCommonFields);
+				havingSourceFields);
 
 		ANFields_ << ANFieldData ("org.LC.Plugins.Azoth.SourceID",
 				tr ("Sender ID"),
 				tr ("Non-human-readable ID of the sender (protocol-specific)."),
 				QVariant::String,
-				havingCommonFields);
+				havingSourceFields);
 
 		ANFields_ << ANFieldData ("org.LC.Plugins.Azoth.ParentSourceName",
 				tr ("Sender's parent entry name"),
 				tr ("Human-readable name of the parent entry of the sender of the message, like MUC name for a chat participant."),
 				QVariant::String,
-				havingCommonFields);
+				havingSourceFields);
 
 		ANFields_ << ANFieldData ("org.LC.Plugins.Azoth.ParentSourceID",
 				tr ("Sender's parent ID"),
 				tr ("Non-human-readable ID of the parent entry of the sender of the message, like MUC name for a chat participant."),
 				QVariant::String,
-				havingCommonFields);
+				havingSourceFields);
 
 		ANFields_ << ANFieldData ("org.LC.Plugins.Azoth.SourceGroups",
 				tr ("Sender groups"),
 				tr ("Groups to which the sender belongs."),
 				QVariant::StringList,
-				havingCommonFields);
+				havingSourceFields);
 
 		ANFields_ << ANFieldData ("org.LC.Plugins.Azoth.NewStatus",
 				tr ("New status"),
