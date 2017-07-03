@@ -50,6 +50,7 @@
 #include "rulesmanager.h"
 #include "audiothememanager.h"
 #include "unhandlednotificationskeeper.h"
+#include "addfrommisseddialog.h"
 
 namespace LeechCraft
 {
@@ -362,31 +363,13 @@ namespace AdvancedNotifications
 
 	void NotificationRulesWidget::on_AddFromMissed__released ()
 	{
-		auto dia = new QDialog { this };
-		dia->setLayout (new QVBoxLayout);
-
-		auto view = new QTreeView;
-		dia->layout ()->addWidget (view);
-
-		auto buttons = new QDialogButtonBox { QDialogButtonBox::Ok | QDialogButtonBox::Cancel };
-		connect (buttons,
-				SIGNAL (accepted ()),
-				dia,
-				SLOT (accept ()));
-		connect (buttons,
-				SIGNAL (rejected ()),
-				dia,
-				SLOT (reject ()));
-		dia->layout ()->addWidget (buttons);
-
-		view->setModel (UnhandledKeeper_->GetUnhandledModel ());
-
-		dia->show ();
+		auto dia = new AddFromMissedDialog { UnhandledKeeper_->GetUnhandledModel (), this };
 		dia->setAttribute (Qt::WA_DeleteOnClose);
+		dia->show ();
 
-		auto handleAccepted = [this, view]
+		auto handleAccepted = [this, dia]
 		{
-			const auto& idxs = view->selectionModel ()->selectedRows ();
+			const auto& idxs = dia->GetSelectedRows ();
 			for (const auto entity : UnhandledKeeper_->GetRulesEntities (idxs))
 				if (const auto rule = RM_->CreateRuleFromEntity (entity))
 					RM_->PrependRule (*rule);
