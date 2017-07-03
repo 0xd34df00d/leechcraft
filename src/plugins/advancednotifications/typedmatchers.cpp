@@ -127,6 +127,12 @@ namespace AdvancedNotifications
 		boost::apply_visitor (ValueSetVisitor<ANStringFieldValue> { Value_ }, value);
 	}
 
+	void StringLikeMatcher::SetValue (const QVariant& variant)
+	{
+		Value_.Rx_ = QRegExp { variant.toString (), Qt::CaseSensitive, QRegExp::FixedString };
+		Value_.Contains_ = true;
+	}
+
 	ANFieldValue StringLikeMatcher::GetValue () const
 	{
 		return Value_;
@@ -334,6 +340,11 @@ namespace AdvancedNotifications
 		boost::apply_visitor (ValueSetVisitor<ANBoolFieldValue> { Value_ }, value);
 	}
 
+	void BoolMatcher::SetValue (const QVariant& variant)
+	{
+		Value_.IsSet_ = variant.toBool ();
+	}
+
 	ANFieldValue BoolMatcher::GetValue () const
 	{
 		return Value_;
@@ -417,6 +428,12 @@ namespace AdvancedNotifications
 	void IntMatcher::SetValue (const ANFieldValue& value)
 	{
 		boost::apply_visitor (ValueSetVisitor<ANIntFieldValue> { Value_ }, value);
+	}
+
+	void IntMatcher::SetValue (const QVariant& variant)
+	{
+		Value_.Boundary_ = variant.toInt ();
+		Value_.Ops_ = ANIntFieldValue::OEqual;
 	}
 
 	ANFieldValue IntMatcher::GetValue () const

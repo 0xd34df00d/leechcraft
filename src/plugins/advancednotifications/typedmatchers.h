@@ -56,11 +56,13 @@ namespace AdvancedNotifications
 		QWidget *CW_ = nullptr;
 	public:
 		static TypedMatcherBase_ptr Create (QVariant::Type, const ANFieldData& = {});
+		static TypedMatcherBase_ptr Create (QVariant::Type, const QVariant&);
 
 		virtual QVariantMap Save () const = 0;
 		virtual void Load (const QVariantMap&) = 0;
 
 		virtual void SetValue (const ANFieldValue&) = 0;
+		virtual void SetValue (const QVariant&) = 0;
 		virtual ANFieldValue GetValue () const = 0;
 
 		virtual bool Match (const QVariant&) const = 0;
@@ -86,6 +88,7 @@ namespace AdvancedNotifications
 		void Load (const QVariantMap&);
 
 		void SetValue (const ANFieldValue&);
+		void SetValue (const QVariant&);
 		ANFieldValue GetValue () const;
 
 		QWidget* GetConfigWidget ();
@@ -136,6 +139,7 @@ namespace AdvancedNotifications
 		void Load (const QVariantMap&);
 
 		void SetValue (const ANFieldValue&);
+		void SetValue (const QVariant&);
 		ANFieldValue GetValue () const;
 
 		bool Match (const QVariant&) const;
@@ -159,6 +163,7 @@ namespace AdvancedNotifications
 		void Load (const QVariantMap&);
 
 		void SetValue (const ANFieldValue&);
+		void SetValue (const QVariant&);
 		ANFieldValue GetValue () const;
 
 		bool Match (const QVariant&) const;
