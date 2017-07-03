@@ -107,8 +107,12 @@ namespace AdvancedNotifications
 			QHash<QStandardItem*, QList<QStandardItem*>> result;
 			for (const auto& item : allItems)
 				if (const auto& parent = item->parent ())
+				{
 					if (allItems.contains (parent))
 						result [parent] << item;
+				}
+				else
+					result [item];
 			return result;
 		}
 	}
