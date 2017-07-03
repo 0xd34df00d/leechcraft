@@ -53,11 +53,6 @@ namespace AdvancedNotifications
 
 		new Util::QmlErrorWatcher { this };
 
-		connect (this,
-				SIGNAL (statusChanged (QQuickWidget::Status)),
-				this,
-				SLOT (handleStatusChanged (QQuickWidget::Status)));
-
 		const auto& fileLocation = Util::GetSysPath (Util::SysPath::QML, "advancednotifications", "visualnotificationsview.qml");
 
 		if (fileLocation.isEmpty ())
