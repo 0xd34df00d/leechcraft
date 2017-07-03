@@ -48,6 +48,9 @@
          <property name="text">
           <string>New from missed</string>
          </property>
+         <property name="icon">
+          <iconset theme="document-new-from-template"/>
+         </property>
         </widget>
        </item>
        <item>
