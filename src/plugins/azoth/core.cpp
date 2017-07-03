@@ -1448,6 +1448,7 @@ namespace Azoth
 			AN::TypeIMMUCHighlight,
 			AN::TypeIMMUCMsg,
 			AN::TypeIMIncMsg,
+			AN::TypeIMIncFile,
 			AN::TypeIMAttention,
 			AN::TypeIMSubscrGrant,
 			AN::TypeIMSubscrRevoke,
