@@ -32,6 +32,7 @@ set (SRCS
 	actionsproxyobject.cpp
 	audiothememanager.cpp
 	unhandlednotificationskeeper.cpp
+	addfrommisseddialog.cpp
 	)
 set (FORMS
 	notificationruleswidget.ui
@@ -39,6 +40,7 @@ set (FORMS
 	boolmatcherconfigwidget.ui
 	intmatcherconfigwidget.ui
 	stringlikematcherconfigwidget.ui
+	addfrommisseddialog.ui
 	)
 
 set (RESOURCES advancednotificationsresources.qrc)
