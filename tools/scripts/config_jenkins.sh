@@ -2,7 +2,7 @@
 
 case $1 in
 	debian_unstable*)
-		cmake ../src \
+		CC=/usr/bin/gcc-7 CXX=/usr/bin/g++-7 cmake ../src \
 			-DEXTRA_WARNINGS=True \
 			-DLC_CXX_STANDARD=17 \
 			-DENABLE_BLASQ=True \
