@@ -1443,14 +1443,17 @@ namespace Azoth
 
 	void Core::FillANFields ()
 	{
-		const QStringList commonFields = QStringList (AN::TypeIMMUCHighlight)
-						<< AN::TypeIMMUCMsg
-						<< AN::TypeIMIncMsg
-						<< AN::TypeIMAttention
-						<< AN::TypeIMSubscrGrant
-						<< AN::TypeIMSubscrRevoke
-						<< AN::TypeIMSubscrRequest
-						<< AN::TypeIMStatusChange;
+		const QStringList commonFields
+		{
+			AN::TypeIMMUCHighlight,
+			AN::TypeIMMUCMsg,
+			AN::TypeIMIncMsg,
+			AN::TypeIMAttention,
+			AN::TypeIMSubscrGrant,
+			AN::TypeIMSubscrRevoke,
+			AN::TypeIMSubscrRequest,
+			AN::TypeIMStatusChange
+		};
 
 		ANFields_ << ANFieldData ("org.LC.Plugins.Azoth.Msg",
 				tr ("Message body"),
@@ -1492,7 +1495,7 @@ namespace Azoth
 				tr ("New status"),
 				tr ("The new status string of the contact."),
 				QVariant::String,
-				QStringList (AN::TypeIMStatusChange));
+				{ AN::TypeIMStatusChange });
 	}
 
 	namespace
