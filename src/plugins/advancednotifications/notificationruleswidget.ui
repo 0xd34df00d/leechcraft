@@ -36,17 +36,17 @@
        <item>
         <widget class="QPushButton" name="AddRule_">
          <property name="text">
-          <string>Add</string>
+          <string>New</string>
          </property>
          <property name="icon">
-          <iconset theme="list-add"/>
+          <iconset theme="document-new"/>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QPushButton" name="AddFromMissed_">
          <property name="text">
-          <string>Add from missed</string>
+          <string>New from missed</string>
          </property>
         </widget>
        </item>
