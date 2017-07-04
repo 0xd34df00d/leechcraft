@@ -125,8 +125,10 @@ namespace AdvancedNotifications
 				[this] (const QModelIndex& idx) { return Model_->itemFromIndex (idx); });
 		const auto& hierarchy = BuildHierarchy (allItems);
 
-		for (const auto& [entityNode, fieldNodes] : Util::Stlize (hierarchy))
+		for (const auto& pair : Util::Stlize (hierarchy))
 		{
+			const auto& entityNode = pair.first;
+			const auto& fieldNodes = pair.second;
 			auto entity = entityNode->data ().value<Entity> ();
 			for (int i = 0; i < entityNode->rowCount (); ++i)
 			{
