@@ -31,6 +31,7 @@
 #include <QColor>
 #include <QApplication>
 #include <QFontMetrics>
+#include <util/sll/typegetter.h>
 #include <interfaces/core/itagsmanager.h>
 #include "core.h"
 #include "accountsmanager.h"
@@ -118,13 +119,15 @@ namespace Poleemery
 
 	namespace
 	{
-		template<typename T>
+		template<typename Getter>
 		QVariant GetDataIf (EntryBase_ptr entry, EntryType expected,
-				std::function<QVariant (std::shared_ptr<T>)> getter,
+				Getter getter,
 				const QVariant& def = QVariant ())
 		{
 			if (entry->GetType () != expected)
 				return def;
+
+			using T = typename std::decay_t<Util::ArgType_t<Getter, 0>>::element_type;
 
 			auto derived = std::dynamic_pointer_cast<T> (entry);
 			return getter (derived);
@@ -151,15 +154,15 @@ namespace Poleemery
 			case Columns::Price:
 				return QString::number (entry->Amount_, 'f', 2);
 			case Columns::EntryCurrency:
-				return GetDataIf<ExpenseEntry> (entry, EntryType::Expense,
+				return GetDataIf (entry, EntryType::Expense,
 						[] (ExpenseEntry_ptr exp)
 							{ return exp->EntryCurrency_; });
 			case Columns::EntryRate:
-				return GetDataIf<ExpenseEntry> (entry, EntryType::Expense,
+				return GetDataIf (entry, EntryType::Expense,
 						[] (ExpenseEntry_ptr exp)
 							{ return QString::number (exp->Rate_, 'f', 3); });
 			case Columns::NativePrice:
-				return GetDataIf<ExpenseEntry> (entry, EntryType::Expense,
+				return GetDataIf (entry, EntryType::Expense,
 						[&acc] (ExpenseEntry_ptr exp)
 						{
 							return QString::number (exp->Rate_ * exp->Amount_, 'f', 2) +
@@ -168,13 +171,13 @@ namespace Poleemery
 			case Columns::Date:
 				return entry->Date_;
 			case Columns::Count:
-				return GetDataIf<ExpenseEntry> (entry, EntryType::Expense,
+				return GetDataIf (entry, EntryType::Expense,
 						[] (ExpenseEntry_ptr exp) { return exp->Count_; });
 			case Columns::Shop:
-				return GetDataIf<ExpenseEntry> (entry, EntryType::Expense,
+				return GetDataIf (entry, EntryType::Expense,
 						[] (ExpenseEntry_ptr exp) { return exp->Shop_; });
 			case Columns::Categories:
-				return GetDataIf<ExpenseEntry> (entry, EntryType::Expense,
+				return GetDataIf (entry, EntryType::Expense,
 						[] (ExpenseEntry_ptr exp) -> QVariant
 						{
 							auto itm = Core::Instance ().GetCoreProxy ()->GetTagsManager ();
@@ -201,27 +204,27 @@ namespace Poleemery
 			case Columns::Price:
 				return entry->Amount_;
 			case Columns::EntryCurrency:
-				return GetDataIf<ExpenseEntry> (entry, EntryType::Expense,
+				return GetDataIf (entry, EntryType::Expense,
 						[] (ExpenseEntry_ptr exp)
 							{ return exp->EntryCurrency_; });
 			case Columns::EntryRate:
-				return GetDataIf<ExpenseEntry> (entry, EntryType::Expense,
+				return GetDataIf (entry, EntryType::Expense,
 						[] (ExpenseEntry_ptr exp)
 							{ return exp->Rate_; });
 			case Columns::NativePrice:
-				return GetDataIf<ExpenseEntry> (entry, EntryType::Expense,
+				return GetDataIf (entry, EntryType::Expense,
 						[] (ExpenseEntry_ptr exp)
 							{ return exp->Rate_ * exp->Amount_; });
 			case Columns::Date:
 				return entry->Date_;
 			case Columns::Count:
-				return GetDataIf<ExpenseEntry> (entry, EntryType::Expense,
+				return GetDataIf (entry, EntryType::Expense,
 						[] (ExpenseEntry_ptr exp) { return exp->Count_; });
 			case Columns::Shop:
-				return GetDataIf<ExpenseEntry> (entry, EntryType::Expense,
+				return GetDataIf (entry, EntryType::Expense,
 						[] (ExpenseEntry_ptr exp) { return exp->Shop_; });
 			case Columns::Categories:
-				return GetDataIf<ExpenseEntry> (entry, EntryType::Expense,
+				return GetDataIf (entry, EntryType::Expense,
 						[] (ExpenseEntry_ptr exp) { return exp->Categories_; });
 			case Columns::AccBalance:
 				return QVariant ();
