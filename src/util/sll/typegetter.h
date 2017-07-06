@@ -29,9 +29,7 @@
 
 #pragma once
 
-#include <type_traits>
-#include <QObject>
-#include "typegetter.h"
+#include <tuple>
 
 namespace LeechCraft
 {
@@ -39,34 +37,26 @@ namespace Util
 {
 	namespace detail
 	{
+		template<typename R, typename... Args>
+		std::tuple<R, Args...> TypeGetter (R (*) (Args...));
+
 		template<typename F>
-		class LambdaEventFilter : public QObject
-		{
-			const F F_;
+		auto TypeGetter (F&& f) -> decltype (TypeGetter (+f));
 
-			using EventType_t = std::remove_pointer_t<std::decay_t<ArgType_t<F, 0>>>;
-		public:
-			LambdaEventFilter (F&& f, QObject *parent = nullptr)
-			: QObject { parent }
-			, F_ { std::move (f) }
-			{
-			}
+		template<typename C, typename R, typename... Args>
+		std::tuple<R, Args...> TypeGetter (R (C::*) (Args...) const);
 
-			bool eventFilter (QObject*, QEvent *srcEv) override
-			{
-				const auto ev = dynamic_cast<EventType_t*> (srcEv);
-				if (!ev)
-					return false;
+		template<typename C, typename R, typename... Args>
+		std::tuple<R, Args...> TypeGetter (R (C::*) (Args...));
 
-				return F_ (ev);
-			}
-		};
+		template<typename C>
+		decltype (TypeGetter (&C::operator ())) TypeGetter (const C& c);
 	}
+
+	template<typename F, size_t Idx>
+	using ArgType_t = decltype (std::get<Idx + 1> (detail::TypeGetter (*static_cast<F*> (nullptr))));
 
 	template<typename F>
-	auto MakeLambdaEventFilter (F&& f, QObject *parent = nullptr)
-	{
-		return new detail::LambdaEventFilter<std::decay_t<F>> { std::forward<F> (f), parent };
-	}
+	using RetType_t = decltype (std::get<0> (detail::TypeGetter (*static_cast<F*> (nullptr))));
 }
 }
