@@ -155,12 +155,10 @@ namespace Poleemery
 				return QString::number (entry->Amount_, 'f', 2);
 			case Columns::EntryCurrency:
 				return GetDataIf (entry, EntryType::Expense,
-						[] (ExpenseEntry_ptr exp)
-							{ return exp->EntryCurrency_; });
+						[] (ExpenseEntry_ptr exp) { return exp->EntryCurrency_; });
 			case Columns::EntryRate:
 				return GetDataIf (entry, EntryType::Expense,
-						[] (ExpenseEntry_ptr exp)
-							{ return QString::number (exp->Rate_, 'f', 3); });
+						[] (ExpenseEntry_ptr exp) { return QString::number (exp->Rate_, 'f', 3); });
 			case Columns::NativePrice:
 				return GetDataIf (entry, EntryType::Expense,
 						[&acc] (ExpenseEntry_ptr exp)
@@ -205,16 +203,13 @@ namespace Poleemery
 				return entry->Amount_;
 			case Columns::EntryCurrency:
 				return GetDataIf (entry, EntryType::Expense,
-						[] (ExpenseEntry_ptr exp)
-							{ return exp->EntryCurrency_; });
+						[] (ExpenseEntry_ptr exp) { return exp->EntryCurrency_; });
 			case Columns::EntryRate:
 				return GetDataIf (entry, EntryType::Expense,
-						[] (ExpenseEntry_ptr exp)
-							{ return exp->Rate_; });
+						[] (ExpenseEntry_ptr exp) { return exp->Rate_; });
 			case Columns::NativePrice:
 				return GetDataIf (entry, EntryType::Expense,
-						[] (ExpenseEntry_ptr exp)
-							{ return exp->Rate_ * exp->Amount_; });
+						[] (ExpenseEntry_ptr exp) { return exp->Rate_ * exp->Amount_; });
 			case Columns::Date:
 				return entry->Date_;
 			case Columns::Count:
