@@ -242,7 +242,7 @@ namespace AdvancedNotifications
 		if (auto iane = qobject_cast<IANEmitter*> (plugin))
 			for (const auto& field : iane->GetANFields ())
 			{
-				qDebug () << "testing" << field.EventTypes_ << "against" << typeSet;
+				qDebug () << field.ID_ << "testing" << field.EventTypes_ << "against" << typeSet;
 				if (!field.EventTypes_.toSet ().intersect (typeSet).isEmpty ())
 					tryAddFieldMatch (field, false);
 			}
