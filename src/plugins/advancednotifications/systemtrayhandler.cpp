@@ -99,35 +99,37 @@ namespace AdvancedNotifications
 		const QString& cat = e.Additional_ ["org.LC.AdvNotifications.EventCategory"].toString ();
 		const QString& eventId = e.Additional_ ["org.LC.AdvNotifications.EventID"].toString ();
 
-		if (cat != "org.LC.AdvNotifications.Cancel")
+		if (cat == "org.LC.AdvNotifications.Cancel")
 		{
-			PrepareSysTrayIcon (cat);
-			PrepareLCTrayAction (cat);
-			if (!Events_.contains (eventId))
-			{
-				EventData data;
-				data.EventID_ = eventId;
-				data.Count_ = 0;
-				data.Category_ = cat;
-				data.VisualPath_ = e.Additional_ ["org.LC.AdvNotifications.VisualPath"].toStringList ();
-				data.HandlingObject_ = e.Additional_ ["HandlingObject"].value<QObject_ptr> ();
-				data.Actions_ = e.Additional_ ["NotificationActions"].toStringList ();
-				data.Canceller_ = Util::MakeANCancel (e);
-				Events_ [eventId] = data;
-			}
-
-			const int delta = e.Additional_.value ("org.LC.AdvNotifications.DeltaCount", 0).toInt ();
-			if (delta)
-				Events_ [eventId].Count_ += delta;
-			else
-				Events_ [eventId].Count_ = e.Additional_.value ("org.LC.AdvNotifications.Count", 1).toInt ();
-			Events_ [eventId].ExtendedText_ = e.Additional_ ["org.LC.AdvNotifications.ExtendedText"].toString ();
-			Events_ [eventId].FullText_ = e.Additional_ ["org.LC.AdvNotifications.FullText"].toString ();
-
-			Events_ [eventId].Pixmap_ = GetPixmap (e, GH_->GetProxy ());
-		}
-		else if (!Events_.remove (eventId))
+			if (Events_.remove (eventId))
+				RebuildState ();
 			return;
+		}
+
+		PrepareSysTrayIcon (cat);
+		PrepareLCTrayAction (cat);
+		if (!Events_.contains (eventId))
+		{
+			EventData data;
+			data.EventID_ = eventId;
+			data.Count_ = 0;
+			data.Category_ = cat;
+			data.VisualPath_ = e.Additional_ ["org.LC.AdvNotifications.VisualPath"].toStringList ();
+			data.HandlingObject_ = e.Additional_ ["HandlingObject"].value<QObject_ptr> ();
+			data.Actions_ = e.Additional_ ["NotificationActions"].toStringList ();
+			data.Canceller_ = Util::MakeANCancel (e);
+			Events_ [eventId] = data;
+		}
+
+		const int delta = e.Additional_.value ("org.LC.AdvNotifications.DeltaCount", 0).toInt ();
+		if (delta)
+			Events_ [eventId].Count_ += delta;
+		else
+			Events_ [eventId].Count_ = e.Additional_.value ("org.LC.AdvNotifications.Count", 1).toInt ();
+		Events_ [eventId].ExtendedText_ = e.Additional_ ["org.LC.AdvNotifications.ExtendedText"].toString ();
+		Events_ [eventId].FullText_ = e.Additional_ ["org.LC.AdvNotifications.FullText"].toString ();
+
+		Events_ [eventId].Pixmap_ = GetPixmap (e, GH_->GetProxy ());
 
 		RebuildState ();
 	}
