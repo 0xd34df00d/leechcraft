@@ -420,9 +420,6 @@ namespace Azoth
 				tr ("%1 (%2) unsubscribed from us: %3."));
 	}
 
-	/** @todo Option for disabling notifications of unsubscription events from
-		* non-roster items.
-		*/
 	void NotificationsManager::handleItemUnsubscribed (const QString& entryId, const QString& msg)
 	{
 		if (!XmlSettingsManager::Instance ()
