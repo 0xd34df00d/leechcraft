@@ -46,7 +46,7 @@ namespace Imgaste
 		return static_cast<int> (s1) < static_cast<int> (s2);
 	}
 
-	std::function<bool (ImageInfo)> MakeChecker (quint64 sizeLimit, const QSize& dimLimit)
+	auto MakeChecker (quint64 sizeLimit, const QSize& dimLimit)
 	{
 		return [=] (const ImageInfo& info)
 		{
@@ -56,7 +56,7 @@ namespace Imgaste
 		};
 	}
 
-	std::function<bool (ImageInfo)> MakeChecker (quint64 sizeLimit)
+	auto MakeChecker (quint64 sizeLimit)
 	{
 		return [=] (const ImageInfo& info) { return info.Size_ <= sizeLimit; };
 	}
