@@ -121,8 +121,7 @@ namespace AdvancedNotifications
 			Events_ [eventId] = data;
 		}
 
-		const int delta = e.Additional_.value ("org.LC.AdvNotifications.DeltaCount", 0).toInt ();
-		if (delta)
+		if (const int delta = e.Additional_.value ("org.LC.AdvNotifications.DeltaCount", 0).toInt ())
 			Events_ [eventId].Count_ += delta;
 		else
 			Events_ [eventId].Count_ = e.Additional_.value ("org.LC.AdvNotifications.Count", 1).toInt ();
