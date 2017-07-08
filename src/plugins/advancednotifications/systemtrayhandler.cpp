@@ -71,25 +71,26 @@ namespace AdvancedNotifications
 	{
 		QPixmap GetPixmap (const Entity& e, ICoreProxy_ptr proxy)
 		{
-			QPixmap pixmap = e.Additional_ ["NotificationPixmap"].value<QPixmap> ();
-			if (pixmap.isNull ())
-			{
-				QString mi = "information";
-				switch (e.Additional_ ["Priority"].toInt ())
-				{
-					case PWarning_:
-						mi = "warning";
-						break;
-					case PCritical_:
-						mi = "error";
-					default:
-						break;
-				}
+			const auto& pxVar = e.Additional_ ["NotificationPixmap"];
+			if (pxVar.canConvert<QPixmap> ())
+				return pxVar.value<QPixmap> ();
+			if (pxVar.canConvert<QImage> ())
+				return QPixmap::fromImage (pxVar.value<QImage> ());
 
-				pixmap = proxy->GetIconThemeManager ()->
-						GetIcon ("dialog-" + mi).pixmap (QSize (64, 64));
+			QString mi = "information";
+			switch (e.Additional_ ["Priority"].toInt ())
+			{
+			case PWarning_:
+				mi = "warning";
+				break;
+			case PCritical_:
+				mi = "error";
+			default:
+				break;
 			}
-			return pixmap;
+
+			return proxy->GetIconThemeManager ()->
+					GetIcon ("dialog-" + mi).pixmap (QSize (64, 64));
 		}
 	}
 
