@@ -226,34 +226,41 @@ namespace Kinotify
 
 		notificationWidget->SetContent (header, text, QString ());
 
-		const auto& pxVar = e.Additional_ ["NotificationPixmap"];
-		Util::Sequence (this, OverridePixmap (notificationWidget, pxVar, prio, Proxy_)) >>
-				[this, notifyId, notificationWidget] (const auto&)
-				{
-					if (!ActiveNotifications_.size ())
-						notificationWidget->PrepareNotification ();
+		auto worker = [this, notificationWidget] (auto sameIdPos)
+		{
+			if (!ActiveNotifications_.size ())
+				notificationWidget->PrepareNotification ();
 
-					// Being async, the ID position should be recalculated.
-					auto sameIdPos = notifyId.isEmpty () ?
-							ActiveNotifications_.end () :
-							std::find_if (ActiveNotifications_.begin (), ActiveNotifications_.end (),
-									[&notifyId] (KinotifyWidget *w) { return notifyId == w->GetID (); });
-					if (sameIdPos == ActiveNotifications_.end ())
-						ActiveNotifications_ << notificationWidget;
-					else if (sameIdPos == ActiveNotifications_.begin ())
+			if (sameIdPos == ActiveNotifications_.end ())
+				ActiveNotifications_ << notificationWidget;
+			else if (sameIdPos == ActiveNotifications_.begin ())
+			{
+				auto oldNotify = *sameIdPos;
+				std::advance (sameIdPos, 1);
+				ActiveNotifications_.insert (sameIdPos, notificationWidget);
+				oldNotify->closeNotificationWidget ();
+			}
+			else
+			{
+				(*sameIdPos)->deleteLater ();
+				auto newPos = ActiveNotifications_.erase (sameIdPos);
+				ActiveNotifications_.insert (newPos, notificationWidget);
+			}
+		};
+		const auto& pxVar = e.Additional_ ["NotificationPixmap"];
+		const auto& pxFuture = OverridePixmap (notificationWidget, pxVar, prio, Proxy_);
+		if (pxFuture.isFinished ())
+			worker (sameIdPos);
+		else
+			Util::Sequence (this, pxFuture) >>
+					[worker, notifyId, this] (const auto&)
 					{
-						auto oldNotify = *sameIdPos;
-						std::advance (sameIdPos, 1);
-						ActiveNotifications_.insert (sameIdPos, notificationWidget);
-						oldNotify->closeNotificationWidget ();
-					}
-					else
-					{
-						(*sameIdPos)->deleteLater ();
-						auto newPos = ActiveNotifications_.erase (sameIdPos);
-						ActiveNotifications_.insert (newPos, notificationWidget);
-					}
-				};
+						const auto sameIdPos = notifyId.isEmpty () ?
+								ActiveNotifications_.end () :
+								std::find_if (ActiveNotifications_.begin (), ActiveNotifications_.end (),
+										[&notifyId] (KinotifyWidget *w) { return notifyId == w->GetID (); });
+						worker (sameIdPos);
+					};
 	}
 
 	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
