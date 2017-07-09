@@ -134,14 +134,17 @@ namespace BirthdayNotifier
 		e.Additional_ ["org.LC.AdvNotifications.Count"] = 1;
 
 		const auto avatarsMgr = AzothProxy_->GetAvatarsManager ();
+		const QPointer<QObject> entryObj { entry->GetQObject () };
 
-		const auto iem = Proxy_->GetEntityManager ();
-		Util::Sequence (this, avatarsMgr->GetAvatar (entry->GetQObject (), IHaveAvatars::Size::Thumbnail)) >>
-				[iem, e] (const QImage& image) mutable
-				{
-					e.Additional_ ["NotificationPixmap"] = QPixmap::fromImage (image);
-					iem->HandleEntity (e);
-				};
+		const auto avatarGetter = [avatarsMgr, entryObj] () -> Util::LazyNotificationPixmap_t::result_type
+		{
+			if (entryObj)
+				return avatarsMgr->GetAvatar (entryObj, IHaveAvatars::Size::Thumbnail);
+			else
+				return {};
+		};
+		e.Additional_ ["NotificationPixmap"] = QVariant::fromValue<Util::LazyNotificationPixmap_t> (avatarGetter);
+		Proxy_->GetEntityManager ()->HandleEntity (e);
 	}
 
 	void Plugin::initPlugin (QObject *proxy)
