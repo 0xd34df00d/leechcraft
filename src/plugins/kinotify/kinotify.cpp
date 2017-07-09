@@ -33,6 +33,9 @@
 #include <QTimer>
 #include <util/sys/resourceloader.h>
 #include <util/util.h>
+#include <util/xpc/util.h>
+#include <util/sll/void.h>
+#include <util/threads/futures.h>
 #include <interfaces/entitytesthandleresult.h>
 #include <xmlsettingsdialog/basesettingsmanager.h>
 #include <interfaces/core/icoreproxy.h>
@@ -124,7 +127,7 @@ namespace Kinotify
 			}
 		}
 
-		void OverridePixmap (KinotifyWidget *notificationWidget,
+		QFuture<Util::Void> OverridePixmap (KinotifyWidget *notificationWidget,
 				const QVariant& notifVar, Priority prio, const ICoreProxy_ptr& proxy)
 		{
 			if (notifVar.canConvert<QPixmap> ())
@@ -133,7 +136,7 @@ namespace Kinotify
 				if (!pixmap.isNull ())
 				{
 					notificationWidget->OverrideImage (pixmap);
-					return;
+					return Util::MakeReadyFuture<Util::Void> ({});
 				}
 			}
 			else if (notifVar.canConvert<QImage> ())
@@ -142,13 +145,25 @@ namespace Kinotify
 				if (!image.isNull ())
 				{
 					notificationWidget->OverrideImage (image);
-					return;
+					return Util::MakeReadyFuture<Util::Void> ({});
 				}
+			}
+			else if (notifVar.canConvert<Util::LazyNotificationPixmap_t> ())
+			{
+				const auto& maybePxFuture = notifVar.value<Util::LazyNotificationPixmap_t> () ();
+				if (maybePxFuture)
+					return Util::Sequence (notificationWidget, *maybePxFuture) >>
+							[notificationWidget] (const QImage& image)
+							{
+								notificationWidget->OverrideImage (image);
+								return Util::MakeReadyFuture<Util::Void> ({});
+							};
 			}
 
 			const auto& icon = proxy->GetIconThemeManager ()->GetIcon (GetPriorityIconName (prio));
 			const auto& px = icon.pixmap ({ 128, 128 });
 			notificationWidget->OverrideImage (px);
+			return Util::MakeReadyFuture<Util::Void> ({});
 		}
 	}
 
@@ -211,26 +226,34 @@ namespace Kinotify
 
 		notificationWidget->SetContent (header, text, QString ());
 
-		OverridePixmap (notificationWidget, e.Additional_ ["NotificationPixmap"], prio, Proxy_);
+		const auto& pxVar = e.Additional_ ["NotificationPixmap"];
+		Util::Sequence (this, OverridePixmap (notificationWidget, pxVar, prio, Proxy_)) >>
+				[this, notifyId, notificationWidget] (const auto&)
+				{
+					if (!ActiveNotifications_.size ())
+						notificationWidget->PrepareNotification ();
 
-		if (!ActiveNotifications_.size ())
-			notificationWidget->PrepareNotification ();
-
-		if (sameIdPos == ActiveNotifications_.end ())
-			ActiveNotifications_ << notificationWidget;
-		else if (sameIdPos == ActiveNotifications_.begin ())
-		{
-			auto oldNotify = *sameIdPos;
-			std::advance (sameIdPos, 1);
-			ActiveNotifications_.insert (sameIdPos, notificationWidget);
-			oldNotify->closeNotificationWidget ();
-		}
-		else
-		{
-			(*sameIdPos)->deleteLater ();
-			auto newPos = ActiveNotifications_.erase (sameIdPos);
-			ActiveNotifications_.insert (newPos, notificationWidget);
-		}
+					// Being async, the ID position should be recalculated.
+					auto sameIdPos = notifyId.isEmpty () ?
+							ActiveNotifications_.end () :
+							std::find_if (ActiveNotifications_.begin (), ActiveNotifications_.end (),
+									[&notifyId] (KinotifyWidget *w) { return notifyId == w->GetID (); });
+					if (sameIdPos == ActiveNotifications_.end ())
+						ActiveNotifications_ << notificationWidget;
+					else if (sameIdPos == ActiveNotifications_.begin ())
+					{
+						auto oldNotify = *sameIdPos;
+						std::advance (sameIdPos, 1);
+						ActiveNotifications_.insert (sameIdPos, notificationWidget);
+						oldNotify->closeNotificationWidget ();
+					}
+					else
+					{
+						(*sameIdPos)->deleteLater ();
+						auto newPos = ActiveNotifications_.erase (sameIdPos);
+						ActiveNotifications_.insert (newPos, notificationWidget);
+					}
+				};
 	}
 
 	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
