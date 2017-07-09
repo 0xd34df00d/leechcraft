@@ -29,6 +29,10 @@
 
 #pragma once
 
+#include <functional>
+#include <boost/optional.hpp>
+#include <QFuture>
+#include <QImage>
 #include <interfaces/structures.h>
 #include <interfaces/an/constants.h>
 #include <interfaces/an/ianemitter.h>
@@ -267,5 +271,9 @@ namespace Util
 	UTIL_XPC_API void SetJobHolderProgress (QStandardItem *item, qint64 done, qint64 total);
 
 	UTIL_XPC_API void InitJobHolderRow (const QList<QStandardItem*>& row);
+
+	using LazyNotificationPixmap_t = std::function<boost::optional<QFuture<QImage>> ()>;
 }
 }
+
+Q_DECLARE_METATYPE (LeechCraft::Util::LazyNotificationPixmap_t)
