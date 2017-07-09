@@ -40,6 +40,7 @@
 #include <util/gui/unhoverdeletemixin.h>
 #include <util/util.h>
 #include <util/sll/qtutil.h>
+#include <util/threads/futures.h>
 #include "generalhandler.h"
 #include "xmlsettingsmanager.h"
 #include "visualnotificationsview.h"
@@ -69,28 +70,47 @@ namespace AdvancedNotifications
 
 	namespace
 	{
-		QPixmap GetPixmap (const Entity& e, ICoreProxy_ptr proxy)
+		QFuture<QPixmap> GetPixmap (const Entity& e, ICoreProxy_ptr proxy)
 		{
 			const auto& pxVar = e.Additional_ ["NotificationPixmap"];
-			if (pxVar.canConvert<QPixmap> ())
-				return pxVar.value<QPixmap> ();
-			if (pxVar.canConvert<QImage> ())
-				return QPixmap::fromImage (pxVar.value<QImage> ());
 
-			QString mi = "information";
-			switch (e.Additional_ ["Priority"].toInt ())
+			if (pxVar.canConvert<QPixmap> ())
+				return Util::MakeReadyFuture (pxVar.value<QPixmap> ());
+
+			if (pxVar.canConvert<QImage> ())
+				return Util::MakeReadyFuture (QPixmap::fromImage (pxVar.value<QImage> ()));
+
+			const auto prio = e.Additional_ ["Priority"].toInt ();
+			auto getDefault = [proxy, prio]
 			{
-			case PWarning_:
-				mi = "warning";
-				break;
-			case PCritical_:
-				mi = "error";
-			default:
-				break;
+				QString mi = "information";
+				switch (prio)
+				{
+				case PWarning_:
+					mi = "warning";
+					break;
+				case PCritical_:
+					mi = "error";
+				default:
+					break;
+				}
+
+				const auto& pixmap = proxy->GetIconThemeManager ()->
+						GetIcon ("dialog-" + mi).pixmap (QSize (64, 64));
+				return Util::MakeReadyFuture (pixmap);
+			};
+
+			if (pxVar.canConvert<Util::LazyNotificationPixmap_t> ())
+			{
+				const auto& maybeLazy = pxVar.value<Util::LazyNotificationPixmap_t> () ();
+				if (!maybeLazy)
+					return getDefault ();
+
+				return Util::Sequence (nullptr, *maybeLazy) >>
+						[] (const QImage& img) { return Util::MakeReadyFuture (QPixmap::fromImage (img)); };
 			}
 
-			return proxy->GetIconThemeManager ()->
-					GetIcon ("dialog-" + mi).pixmap (QSize (64, 64));
+			return getDefault ();
 		}
 	}
 
@@ -128,7 +148,19 @@ namespace AdvancedNotifications
 		Events_ [eventId].ExtendedText_ = e.Additional_ ["org.LC.AdvNotifications.ExtendedText"].toString ();
 		Events_ [eventId].FullText_ = e.Additional_ ["org.LC.AdvNotifications.FullText"].toString ();
 
-		Events_ [eventId].Pixmap_ = GetPixmap (e, GH_->GetProxy ());
+		const auto& pxFuture = GetPixmap (e, GH_->GetProxy ());
+		if (pxFuture.isFinished ())
+			Events_ [eventId].Pixmap_ = pxFuture;
+		else
+			Util::Sequence (this, pxFuture) >>
+					[eventId, this] (const QPixmap& px)
+					{
+						if (!Events_.contains (eventId))
+							return;
+
+						Events_ [eventId].Pixmap_ = px;
+						RebuildState ();
+					};
 
 		RebuildState ();
 	}
