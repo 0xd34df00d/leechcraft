@@ -108,7 +108,7 @@ namespace Azoth
 
 		QPointer<AvatarsManager> mgr { avatarsMgr };
 		QPointer<QObject> src { avatarSource->GetQObject () };
-		const auto& avatarFutureGetter = [mgr, src] () -> boost::optional<QFuture<QImage>>
+		const auto& avatarFutureGetter = [mgr, src] () -> Util::LazyNotificationPixmap_t::result_type
 		{
 			if (mgr && src)
 				return mgr->GetAvatar (src, IHaveAvatars::Size::Thumbnail);
