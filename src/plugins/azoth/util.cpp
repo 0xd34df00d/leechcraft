@@ -29,6 +29,7 @@
 
 #include "util.h"
 #include <cmath>
+#include <boost/optional.hpp>
 
 #ifdef USE_BOOST_LOCALE
 #include <boost/locale.hpp>
@@ -105,13 +106,17 @@ namespace Azoth
 		if (!avatarSource)
 			avatarSource = other;
 
-		return Util::Sequence (nullptr,
-				avatarsMgr->GetAvatar (avatarSource->GetQObject (), IHaveAvatars::Size::Thumbnail)) >>
-				[e] (const QImage& image) mutable
-				{
-					e.Additional_ ["NotificationPixmap"] = QVariant::fromValue<QImage> (image);
-					return Util::MakeReadyFuture (e);
-				};
+		QPointer<AvatarsManager> mgr { avatarsMgr };
+		QPointer<QObject> src { avatarSource->GetQObject () };
+		const auto& avatarFutureGetter = [mgr, src] () -> boost::optional<QFuture<QImage>>
+		{
+			if (mgr && src)
+				return mgr->GetAvatar (src, IHaveAvatars::Size::Thumbnail);
+			else
+				return {};
+		};
+		e.Additional_ ["NotificationPixmap"] = QVariant::fromValue<Util::LazyNotificationPixmap_t> (avatarFutureGetter);
+		return Util::MakeReadyFuture (e);
 	}
 
 	QString GetActivityIconName (const QString& general, const QString& specific)
