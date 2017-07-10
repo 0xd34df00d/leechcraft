@@ -240,6 +240,23 @@ namespace LMP
 		}
 	}
 
+	QList<int> LocalCollectionStorage::GetIgnoredTracks ()
+	{
+		if (!GetIgnoredTracks_.exec ())
+		{
+			Util::DBLock::DumpError (GetIgnoredTracks_);
+			throw std::runtime_error ("cannot get ignored tracks track");
+		}
+
+		QList<int> result;
+		while (GetIgnoredTracks_.next ())
+			result << GetIgnoredTracks_.value (0).toInt ();
+
+		GetIgnoredTracks_.finish ();
+
+		return result;
+	}
+
 	void LocalCollectionStorage::RemoveTrack (int id)
 	{
 		RemoveTrack_.bindValue (":track_id", id);
@@ -713,6 +730,9 @@ namespace LMP
 
 		IgnoreTrack_ = QSqlQuery (DB_);
 		IgnoreTrack_.prepare ("INSERT INTO ignored_tracks (TrackId) VALUES (:track_id);");
+
+		GetIgnoredTracks_ = QSqlQuery (DB_);
+		GetIgnoredTracks_.prepare ("SELECT TrackId FROM ignored_tracks;");
 
 		RemoveTrack_ = QSqlQuery (DB_);
 		RemoveTrack_.prepare ("DELETE FROM tracks WHERE Id = :track_id;");
