@@ -38,6 +38,7 @@
 #include <util/util.h>
 #include <util/sll/util.h>
 #include <util/sll/qtutil.h>
+#include <util/sll/prelude.h>
 #include "xmlsettingsmanager.h"
 
 namespace LeechCraft
@@ -48,12 +49,9 @@ namespace Lastfmscrobble
 	{
 		void AppendSig (ParamsList_t& params)
 		{
-			std::sort (params.begin (), params.end (),
-					[] (decltype (*params.constEnd ()) left, decltype (*params.constEnd ()) right)
-						{ return left.first < right.first; });
+			std::sort (params.begin (), params.end (), Util::ComparingBy (Util::Snd));
 			auto str = std::accumulate (params.begin (), params.end (), QString (),
-					[] (const QString& str, decltype (params.front ()) pair)
-						{ return str + pair.first + pair.second; });
+					[] (const QString& str, const auto& pair) { return str + pair.first + pair.second; });
 			str += lastfm::ws::SharedSecret;
 			const auto& sig = QCryptographicHash::hash (str.toUtf8 (), QCryptographicHash::Md5).toHex ();
 
