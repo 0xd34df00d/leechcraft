@@ -230,6 +230,16 @@ namespace LMP
 		return result;
 	}
 
+	void LocalCollectionStorage::IgnoreTrack (int id)
+	{
+		IgnoreTrack_.bindValue (":track_id", id);
+		if (!IgnoreTrack_.exec ())
+		{
+			Util::DBLock::DumpError (IgnoreTrack_);
+			throw std::runtime_error ("cannot ignore track");
+		}
+	}
+
 	void LocalCollectionStorage::RemoveTrack (int id)
 	{
 		RemoveTrack_.bindValue (":track_id", id);
@@ -700,6 +710,9 @@ namespace LMP
 
 		AddGenre_ = QSqlQuery (DB_);
 		AddGenre_.prepare ("INSERT INTO genres (TrackId, Name) VALUES (:track_id, :name);");
+
+		IgnoreTrack_ = QSqlQuery (DB_);
+		IgnoreTrack_.prepare ("INSERT INTO ignored_tracks (TrackId) VALUES (:track_id);");
 
 		RemoveTrack_ = QSqlQuery (DB_);
 		RemoveTrack_.prepare ("DELETE FROM tracks WHERE Id = :track_id;");

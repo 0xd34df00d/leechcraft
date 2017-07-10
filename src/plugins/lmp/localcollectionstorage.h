@@ -59,6 +59,7 @@ namespace LMP
 		QSqlQuery AddTrack_;
 		QSqlQuery AddGenre_;
 
+		QSqlQuery IgnoreTrack_;
 		QSqlQuery RemoveTrack_;
 		QSqlQuery RemoveAlbum_;
 		QSqlQuery RemoveArtist_;
@@ -102,6 +103,7 @@ namespace LMP
 
 		QStringList GetTracksPaths ();
 
+		void IgnoreTrack (int);
 		void RemoveTrack (int);
 		void RemoveAlbum (int);
 		void RemoveArtist (int);
