@@ -31,6 +31,7 @@
 
 #include <QObject>
 #include <QHash>
+#include <QSet>
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include "mediainfo.h"
@@ -93,6 +94,8 @@ namespace LMP
 
 			QHash<QString, int> PresentArtists_;
 			QHash<QString, int> PresentAlbums_;
+
+			QSet<int> IgnoredTracks_;
 		};
 
 		LocalCollectionStorage (QObject* = nullptr);

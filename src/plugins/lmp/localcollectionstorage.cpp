@@ -195,11 +195,13 @@ namespace LMP
 				AddToPresent (artist, *album);
 			}
 		}
+
 		LoadResult result =
 		{
 			artists,
 			PresentArtists_,
-			PresentAlbums_
+			PresentAlbums_,
+			GetIgnoredTracks ().toSet ()
 		};
 		qDebug () << "end";
 
