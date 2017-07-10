@@ -183,6 +183,12 @@ namespace LMP
 		Track2Item_.clear ();
 	}
 
+	void LocalCollectionModel::IgnoreTrack (int id)
+	{
+		auto item = Track2Item_.value (id);
+		item->setData (true, IsTrackIgnored);
+	}
+
 	void LocalCollectionModel::RemoveTrack (int id)
 	{
 		auto item = Track2Item_.take (id);

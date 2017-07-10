@@ -68,7 +68,8 @@ namespace LMP
 			TrackTitle,
 			TrackPath,
 			TrackGenres,
-			TrackLength
+			TrackLength,
+			IsTrackIgnored
 		};
 
 		LocalCollectionModel (QObject*);
@@ -80,6 +81,9 @@ namespace LMP
 
 		void AddArtists (const Collection::Artists_t&);
 		void Clear ();
+
+		void IgnoreTrack (int);
+
 		void RemoveTrack (int);
 		void RemoveAlbum (int);
 		void RemoveArtist (int);
