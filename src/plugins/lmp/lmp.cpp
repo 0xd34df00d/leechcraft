@@ -32,12 +32,14 @@
 #include <QFileInfo>
 #include <QUrl>
 #include <QGraphicsEffect>
+#include <QMessageBox>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <util/util.h>
 #include <util/xpc/util.h>
 #include <util/sll/prelude.h>
+#include <util/sll/slotclosure.h>
 #include "gstfix.h"
 #include "playertab.h"
 #include "player.h"
@@ -168,10 +170,20 @@ namespace LMP
 
 		ActionRescan_ = new QAction (tr ("Rescan collection"), this);
 		ActionRescan_->setProperty ("ActionIcon", "view-refresh");
-		connect (ActionRescan_,
-				SIGNAL (triggered ()),
-				&Core::Instance (),
-				SLOT (rescan ()));
+		new Util::SlotClosure<Util::NoDeletePolicy>
+		{
+			[]
+			{
+				if (QMessageBox::question (nullptr,
+						"LeechCraft",
+						tr ("Are you sure you want to rebuild the collection? "
+							"This will reset all the play history and counts.")) == QMessageBox::Yes)
+					Core::Instance ().rescan ();
+			},
+			ActionRescan_,
+			SIGNAL (triggered ()),
+			ActionRescan_
+		};
 
 		ActionCollectionStats_ = new QAction (tr ("Collection statistics"), this);
 		ActionCollectionStats_->setProperty ("ActionIcon", "view-statistics");
