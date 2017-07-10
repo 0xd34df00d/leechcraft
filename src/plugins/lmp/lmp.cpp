@@ -168,7 +168,7 @@ namespace LMP
 				this,
 				SLOT (handleFullRaiseRequested ()));
 
-		ActionRescan_ = new QAction (tr ("Rescan collection"), this);
+		ActionRescan_ = new QAction (tr ("Rebuild collection"), this);
 		ActionRescan_->setProperty ("ActionIcon", "view-refresh");
 		new Util::SlotClosure<Util::NoDeletePolicy>
 		{
