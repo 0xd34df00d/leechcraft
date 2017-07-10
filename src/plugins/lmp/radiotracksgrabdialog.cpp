@@ -31,13 +31,7 @@
 #include <QStandardItemModel>
 #include <QFileDialog>
 #include <QFileInfo>
-
-#if QT_VERSION >= 0x050000
 #include <QStandardPaths>
-#else
-#include <QDesktopServices>
-#endif
-
 #include <util/sll/prelude.h>
 #include <util/sll/slotclosure.h>
 #include <util/lmp/util.h>
@@ -52,11 +46,7 @@ namespace LMP
 	{
 		QString GetDefaultPath ()
 		{
-#if QT_VERSION >= 0x050000
 			return QStandardPaths::writableLocation (QStandardPaths::DownloadLocation);
-#else
-			return QDesktopServices::storageLocation (QDesktopServices::DocumentsLocation);
-#endif
 		}
 	}
 

@@ -28,19 +28,10 @@
  **********************************************************************/
 
 #include "releaseswidget.h"
-
-#if QT_VERSION < 0x050000
-#include <QDeclarativeView>
-#include <QDeclarativeContext>
-#include <QDeclarativeEngine>
-#include <QGraphicsObject>
-#else
 #include <QQuickWidget>
 #include <QQmlContext>
 #include <QQmlEngine>
 #include <QQuickItem>
-#endif
-
 #include <QStandardItemModel>
 #include <QtDebug>
 #include <util/xpc/util.h>
@@ -96,21 +87,13 @@ namespace LMP
 
 	ReleasesWidget::ReleasesWidget (QWidget *parent)
 	: QWidget (parent)
-#if QT_VERSION < 0x050000
-	, ReleasesView_ (new QDeclarativeView)
-#else
 	, ReleasesView_ (new QQuickWidget)
-#endif
 	, ReleasesModel_ (new ReleasesModel (this))
 	{
 		Ui_.setupUi (this);
 		layout ()->addWidget (ReleasesView_);
 
-#if QT_VERSION < 0x050000
-		ReleasesView_->setResizeMode (QDeclarativeView::SizeRootObjectToView);
-#else
 		ReleasesView_->setResizeMode (QQuickWidget::SizeRootObjectToView);
-#endif
 
 		new Util::StandardNAMFactory ("lmp/qml",
 				[] { return 50 * 1024 * 1024; },

@@ -28,13 +28,7 @@
  **********************************************************************/
 
 #include "similarview.h"
-
-#if QT_VERSION < 0x050000
-#include <QDeclarativeEngine>
-#else
 #include <QQmlEngine>
-#endif
-
 #include <util/qml/themeimageprovider.h>
 #include <util/qml/standardnamfactory.h>
 #include <util/sys/paths.h>
@@ -45,11 +39,7 @@ namespace LeechCraft
 namespace LMP
 {
 	SimilarView::SimilarView (const ICoreProxy_ptr& proxy, QWidget *parent)
-#if QT_VERSION < 0x050000
-	: QDeclarativeView (parent)
-#else
 	: QQuickWidget (parent)
-#endif
 	, Manager_ (new SimilarViewManager (proxy, this, this))
 	{
 		setResizeMode (SizeRootObjectToView);

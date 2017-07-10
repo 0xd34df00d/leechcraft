@@ -28,13 +28,7 @@
  **********************************************************************/
 
 #include "biowidget.h"
-
-#if QT_VERSION < 0x050000
-#include <QDeclarativeView>
-#else
 #include <QQuickWidget>
-#endif
-
 #include <QtDebug>
 #include <util/util.h>
 #include <util/qml/standardnamfactory.h>
@@ -54,19 +48,11 @@ namespace LMP
 {
 	BioWidget::BioWidget (QWidget *parent)
 	: QWidget (parent)
-#if QT_VERSION < 0x050000
-	, View_ (new QDeclarativeView)
-#else
 	, View_ (new QQuickWidget)
-#endif
 	{
 		Ui_.setupUi (this);
 
-#if QT_VERSION < 0x050000
-		View_->setResizeMode (QDeclarativeView::SizeRootObjectToView);
-#else
 		View_->setResizeMode (QQuickWidget::SizeRootObjectToView);
-#endif
 		View_->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
 
 		layout ()->addWidget (View_);

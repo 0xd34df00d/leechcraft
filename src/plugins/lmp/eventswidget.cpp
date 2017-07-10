@@ -29,17 +29,9 @@
 
 #include "eventswidget.h"
 #include <QStandardItemModel>
-
-#if QT_VERSION < 0x050000
-#include <QDeclarativeView>
-#include <QDeclarativeContext>
-#include <QGraphicsObject>
-#else
 #include <QQuickWidget>
 #include <QQmlContext>
 #include <QQuickItem>
-#endif
-
 #include <QtDebug>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/media/ieventsprovider.h>
@@ -100,11 +92,7 @@ namespace LMP
 
 	EventsWidget::EventsWidget (QWidget *parent)
 	: QWidget (parent)
-#if QT_VERSION < 0x050000
-	, View_ (new QDeclarativeView)
-#else
 	, View_ (new QQuickWidget)
-#endif
 	, Model_ (new EventsModel (this))
 	{
 		Ui_.setupUi (this);
@@ -114,11 +102,7 @@ namespace LMP
 				[] { return 50 * 1024 * 1024; },
 				View_->engine ());
 
-#if QT_VERSION < 0x050000
-		View_->setResizeMode (QDeclarativeView::SizeRootObjectToView);
-#else
 		View_->setResizeMode (QQuickWidget::SizeRootObjectToView);
-#endif
 
 		View_->rootContext ()->setContextProperty ("eventsModel", Model_);
 		View_->rootContext ()->setContextProperty ("attendSureTextString", tr ("Sure!"));

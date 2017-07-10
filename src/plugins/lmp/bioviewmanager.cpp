@@ -29,18 +29,10 @@
 
 #include "bioviewmanager.h"
 #include <numeric>
-#if QT_VERSION < 0x050000
-#include <QDeclarativeView>
-#include <QDeclarativeContext>
-#include <QDeclarativeEngine>
-#include <QGraphicsObject>
-#else
 #include <QQuickWidget>
 #include <QQmlContext>
 #include <QQmlEngine>
 #include <QQuickItem>
-#endif
-
 #include <QtConcurrentRun>
 #include <QFutureWatcher>
 #include <QStandardItemModel>
@@ -94,13 +86,8 @@ namespace LMP
 		const int AASize = 170;
 	}
 
-#if QT_VERSION < 0x050000
-	BioViewManager::BioViewManager (const ICoreProxy_ptr& proxy,
-			QDeclarativeView *view, QObject *parent)
-#else
 	BioViewManager::BioViewManager (const ICoreProxy_ptr& proxy,
 			QQuickWidget *view, QObject *parent)
-#endif
 	: QObject (parent)
 	, View_ (view)
 	, BioPropProxy_ (new BioPropProxy (this))

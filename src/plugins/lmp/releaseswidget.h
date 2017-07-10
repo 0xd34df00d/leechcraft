@@ -34,12 +34,7 @@
 #include "ui_releaseswidget.h"
 
 class QStandardItemModel;
-
-#if QT_VERSION < 0x050000
-class QDeclarativeView;
-#else
 class QQuickWidget;
-#endif
 
 namespace Media
 {
@@ -57,11 +52,7 @@ namespace LMP
 
 		Ui::ReleasesWidget Ui_;
 
-#if QT_VERSION < 0x050000
-		QDeclarativeView * const ReleasesView_;
-#else
 		QQuickWidget * const ReleasesView_;
-#endif
 
 		QList<Media::IRecentReleases*> Providers_;
 		QList<Media::IDiscographyProvider*> DiscoProviders_;

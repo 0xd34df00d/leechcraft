@@ -31,11 +31,6 @@
 #include <QIcon>
 #include <QFileInfo>
 #include <QUrl>
-
-#if QT_VERSION < 0x050000
-#include <QtDeclarative>
-#endif
-
 #include <QGraphicsEffect>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <interfaces/entitytesthandleresult.h>
@@ -104,13 +99,6 @@ namespace LMP
 
 		XSD_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "lmpsettings.xml");
-
-#if QT_VERSION < 0x050000
-		qmlRegisterType<QGraphicsBlurEffect> ("Effects", 1, 0, "Blur");
-		qmlRegisterType<QGraphicsColorizeEffect> ("Effects", 1, 0, "Colorize");
-		qmlRegisterType<QGraphicsDropShadowEffect> ("Effects", 1, 0, "DropShadow");
-		qmlRegisterType<QGraphicsOpacityEffect> ("Effects", 1, 0, "OpacityEffect");
-#endif
 
 		PlayerTC_ =
 		{

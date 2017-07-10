@@ -33,12 +33,7 @@
 #include "ui_eventswidget.h"
 
 class QStandardItemModel;
-
-#if QT_VERSION < 0x050000
-class QDeclarativeView;
-#else
 class QQuickWidget;
-#endif
 
 namespace Media
 {
@@ -57,11 +52,7 @@ namespace LMP
 		Q_OBJECT
 
 		Ui::EventsWidget Ui_;
-#if QT_VERSION < 0x050000
-		QDeclarativeView * const View_;
-#else
 		QQuickWidget * const View_;
-#endif
 
 		QStandardItemModel * const Model_;
 

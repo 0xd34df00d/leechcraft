@@ -33,11 +33,7 @@
 #include <interfaces/media/audiostructs.h>
 #include <interfaces/core/icoreproxyfwd.h>
 
-#if QT_VERSION < 0x050000
-class QDeclarativeView;
-#else
 class QQuickWidget;
-#endif
 
 class QStandardItemModel;
 
@@ -49,19 +45,11 @@ namespace LMP
 	{
 		Q_OBJECT
 
-#if QT_VERSION < 0x050000
-		QDeclarativeView * const View_;
-#else
 		QQuickWidget * const View_;
-#endif
 		QStandardItemModel * const Model_;
 		const ICoreProxy_ptr Proxy_;
 	public:
-#if QT_VERSION < 0x050000
-		SimilarViewManager (const ICoreProxy_ptr&, QDeclarativeView*, QObject* = 0);
-#else
 		SimilarViewManager (const ICoreProxy_ptr&, QQuickWidget*, QObject* = 0);
-#endif
 
 		void InitWithSource ();
 

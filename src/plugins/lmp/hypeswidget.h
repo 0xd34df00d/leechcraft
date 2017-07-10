@@ -34,12 +34,7 @@
 #include "ui_hypeswidget.h"
 
 class QStandardItemModel;
-
-#if QT_VERSION < 0x050000
-class QDeclarativeView;
-#else
 class QQuickWidget;
-#endif
 
 namespace LeechCraft
 {
@@ -51,11 +46,7 @@ namespace LMP
 
 		Ui::HypesWidget Ui_;
 
-#if QT_VERSION < 0x050000
-		QDeclarativeView * const HypesView_;
-#else
 		QQuickWidget * const HypesView_;
-#endif
 
 		QStandardItemModel * const NewArtistsModel_;
 		QStandardItemModel * const TopArtistsModel_;

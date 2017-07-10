@@ -29,13 +29,7 @@
 
 #include "artistbrowsertab.h"
 #include <QMessageBox>
-
-#if QT_VERSION < 0x050000
-#include <QDeclarativeView>
-#else
 #include <QQuickWidget>
-#endif
-
 #include <interfaces/media/iartistbiofetcher.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <util/gui/clearlineeditaddon.h>
@@ -53,11 +47,7 @@ namespace LMP
 			const TabClassInfo& tc, QObject *plugin)
 	: TC_ (tc)
 	, Plugin_ (plugin)
-#if QT_VERSION < 0x050000
-	, View_ (new QDeclarativeView)
-#else
 	, View_ (new QQuickWidget)
-#endif
 	, BioMgr_ (new BioViewManager (proxy, View_, this))
 	, SimilarMgr_ (new SimilarViewManager (proxy, View_, this))
 	, Proxy_ (proxy)
@@ -65,11 +55,7 @@ namespace LMP
 		Ui_.setupUi (this);
 
 		View_->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
-#if QT_VERSION < 0x050000
-		View_->setResizeMode (QDeclarativeView::SizeRootObjectToView);
-#else
 		View_->setResizeMode (QQuickWidget::SizeRootObjectToView);
-#endif
 		layout ()->addWidget (View_);
 
 		new Util::StandardNAMFactory ("lmp/qml",

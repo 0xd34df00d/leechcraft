@@ -1141,12 +1141,6 @@ namespace LMP
 		if (files.isEmpty ())
 			return;
 
-#if QT_VERSION < 0x050000
-		if (files.size () > 1)
-			for (auto& file : files)
-				file = QString::fromUtf8 (QByteArray::fromPercentEncoding (file.toUtf8 ()));
-#endif
-
 		prevPath = QFileInfo (files.at (0)).absoluteDir ().absolutePath ();
 		XmlSettingsManager::Instance ().setProperty ("PrevAddToPlaylistPath", prevPath);
 

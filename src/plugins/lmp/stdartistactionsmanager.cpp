@@ -28,15 +28,8 @@
  **********************************************************************/
 
 #include "stdartistactionsmanager.h"
-
-#if QT_VERSION < 0x050000
-#include <QDeclarativeView>
-#include <QGraphicsObject>
-#else
 #include <QQuickWidget>
 #include <QQuickItem>
-#endif
-
 #include <util/xpc/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
@@ -47,13 +40,8 @@ namespace LeechCraft
 {
 namespace LMP
 {
-#if QT_VERSION < 0x050000
-	StdArtistActionsManager::StdArtistActionsManager (const ICoreProxy_ptr& proxy,
-			QDeclarativeView *view, QObject* parent)
-#else
 	StdArtistActionsManager::StdArtistActionsManager (const ICoreProxy_ptr& proxy,
 			QQuickWidget *view, QObject* parent)
-#endif
 	: QObject { parent }
 	, Proxy_ { proxy }
 	{

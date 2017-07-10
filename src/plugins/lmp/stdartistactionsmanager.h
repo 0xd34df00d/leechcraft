@@ -32,11 +32,7 @@
 #include <QObject>
 #include <interfaces/core/icoreproxyfwd.h>
 
-#if QT_VERSION < 0x050000
-class QDeclarativeView;
-#else
 class QQuickWidget;
-#endif
 
 namespace LeechCraft
 {
@@ -48,11 +44,7 @@ namespace LMP
 
 		const ICoreProxy_ptr Proxy_;
 	public:
-#if QT_VERSION < 0x050000
-		StdArtistActionsManager (const ICoreProxy_ptr&, QDeclarativeView *view, QObject *parent = 0);
-#else
 		StdArtistActionsManager (const ICoreProxy_ptr&, QQuickWidget *view, QObject *parent = 0);
-#endif
 	private slots:
 		void handleBookmark (const QString&, const QString&, const QString&);
 		void handleLink (const QString&);

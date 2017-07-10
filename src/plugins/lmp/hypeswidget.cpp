@@ -29,19 +29,10 @@
 
 #include "hypeswidget.h"
 #include <QStandardItemModel>
-
-#if QT_VERSION < 0x050000
-#include <QDeclarativeView>
-#include <QDeclarativeContext>
-#include <QDeclarativeEngine>
-#include <QGraphicsObject>
-#else
 #include <QQuickWidget>
 #include <QQmlContext>
 #include <QQmlEngine>
 #include <QQuickItem>
-#endif
-
 #include <util/xpc/util.h>
 #include <util/qml/colorthemeproxy.h>
 #include <util/qml/standardnamfactory.h>
@@ -96,11 +87,7 @@ namespace LMP
 
 	HypesWidget::HypesWidget (QWidget *parent)
 	: QWidget (parent)
-#if QT_VERSION < 0x050000
-	, HypesView_ (new QDeclarativeView)
-#else
 	, HypesView_ (new QQuickWidget)
-#endif
 	, NewArtistsModel_ (new SimilarModel (this))
 	, TopArtistsModel_ (new SimilarModel (this))
 	, NewTracksModel_ (new TracksModel (this))
@@ -109,11 +96,7 @@ namespace LMP
 		Ui_.setupUi (this);
 		layout ()->addWidget (HypesView_);
 
-#if QT_VERSION < 0x050000
-		HypesView_->setResizeMode (QDeclarativeView::SizeRootObjectToView);
-#else
 		HypesView_->setResizeMode (QQuickWidget::SizeRootObjectToView);
-#endif
 
 		HypesView_->engine ()->addImageProvider ("ThemeIcons",
 				new Util::ThemeImageProvider (Core::Instance ().GetProxy ()));
