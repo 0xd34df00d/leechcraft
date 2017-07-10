@@ -33,11 +33,7 @@
 #include <QCryptographicHash>
 #include <QUrl>
 #include <QDomElement>
-
-#if QT_VERSION >= 0x050000
 #include <QUrlQuery>
-#endif
-
 #include <ws.h>
 #include <util/util.h>
 #include <util/sll/util.h>
@@ -68,32 +64,20 @@ namespace Lastfmscrobble
 		{
 			AppendSig (params);
 
-#if QT_VERSION < 0x050000
-			QUrl url;
-			for (const auto& pair : params)
-				url.addQueryItem (pair.first, pair.second);
-			return url.encodedQuery ();
-#else
 			QUrlQuery query;
 			for (const auto& pair : params)
 				query.addQueryItem (pair.first, pair.second);
 			return query.toString (QUrl::FullyEncoded).toUtf8 ();
-#endif
 		}
 
 		void AppendParams2Url (ParamsList_t params, QUrl& url)
 		{
 			AppendSig (params);
 
-#if QT_VERSION < 0x050000
-			for (const auto& pair : params)
-				url.addQueryItem (pair.first, pair.second);
-#else
 			QUrlQuery query;
 			for (const auto& pair : params)
 				query.addQueryItem (pair.first, pair.second);
 			url.setQuery (query);
-#endif
 		}
 
 		QNetworkReply* MakePostRequest (QNetworkAccessManager *nam, const ParamsList_t& params)
