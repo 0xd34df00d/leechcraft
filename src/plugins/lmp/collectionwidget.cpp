@@ -64,14 +64,20 @@ namespace LMP
 			bool filterAcceptsRow (int sourceRow, const QModelIndex& sourceParent) const
 			{
 				const auto& source = sourceModel ()->index (sourceRow, 0, sourceParent);
+				if (source.data (LocalCollectionModel::Role::IsTrackIgnored).toBool ())
+					return false;
+
 				const auto type = source.data (LocalCollectionModel::Role::Node).toInt ();
-
-				const auto& pattern = filterRegExp ().pattern ();
-
-				if (type != LocalCollectionModel::NodeType::Track)
+				const bool isTrack = type == LocalCollectionModel::NodeType::Track;
+				if (!isTrack)
 					for (int i = 0, rc = sourceModel ()->rowCount (source); i < rc; ++i)
 						if (filterAcceptsRow (i, source))
 							return true;
+
+				const auto& pattern = filterRegExp ().pattern ();
+
+				if (pattern.isEmpty () && !isTrack)
+					return false;
 
 				auto check = [&source, &pattern] (int role)
 				{
