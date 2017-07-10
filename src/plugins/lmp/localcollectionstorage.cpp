@@ -843,6 +843,11 @@ namespace LMP
 				"TrackId INTEGER NOT NULL REFERENCES tracks (Id) ON DELETE CASCADE, "
 				"Date TIMESTAMP"
 				");");
+		table2query << QueryPair_t ("ignored_tracks",
+				"CREATE TABLE ignored_tracks ("
+				"Id INTEGER PRIMARY KEY AUTOINCREMENT, "
+				"TrackId INTEGER UNIQUE NOT NULL REFERENCES tracks (Id) ON DELETE CASCADE"
+				");");
 
 		Util::DBLock lock (DB_);
 		lock.Init ();
