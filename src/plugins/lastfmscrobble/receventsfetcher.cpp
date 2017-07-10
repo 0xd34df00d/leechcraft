@@ -88,7 +88,7 @@ namespace Lastfmscrobble
 		{
 		case Type::Recommended:
 		{
-			auto reply = NAM_->get (QNetworkRequest (QUrl ("http://freegeoip.net/xml/")));
+			auto reply = NAM_->get (QNetworkRequest (QUrl ("https://freegeoip.net/xml/")));
 			connect (reply,
 					SIGNAL (finished ()),
 					this,
