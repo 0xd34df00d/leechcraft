@@ -76,7 +76,7 @@ namespace LMP
 				[this] (const LocalCollectionStorage::LoadResult& result)
 				{
 					Storage_->Load (result);
-					HandleNewArtists (result.Artists_);
+					HandleNewArtists (result.Artists_, result.IgnoredTracks_);
 
 					IsReady_ = true;
 					emit collectionReady ();
@@ -593,7 +593,7 @@ namespace LMP
 		qDebug () << "postproc end";
 	}
 
-	void LocalCollection::HandleNewArtists (Collection::Artists_t artists)
+	void LocalCollection::HandleNewArtists (Collection::Artists_t artists, const QSet<int>& ignored)
 	{
 		PostprocessArtistsInfos (artists);
 
@@ -622,8 +622,7 @@ namespace LMP
 					PresentPaths_ << track.FilePath_;
 		}
 
-		const auto autoFetchAA = XmlSettingsManager::Instance ()
-				.property ("AutoFetchAlbumArt").toBool ();
+		const auto autoFetchAA = XmlSettingsManager::Instance ().property ("AutoFetchAlbumArt").toBool ();
 		for (const auto& artist : artists)
 		{
 			albumCount += artist.Albums_.size ();
@@ -654,6 +653,9 @@ namespace LMP
 		}
 
 		CollectionModel_->AddArtists (artists);
+
+		for (const auto item : ignored)
+			CollectionModel_->IgnoreTrack (item);
 
 		if (shouldEmit &&
 				trackCount)
