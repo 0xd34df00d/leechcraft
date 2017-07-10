@@ -43,7 +43,7 @@ namespace Lastfmscrobble
 {
 	namespace
 	{
-		const QString ScrobblingSite = "http://ws.audioscrobbler.com/2.0/";
+		const QString ScrobblingSite = "https://ws.audioscrobbler.com/2.0/";
 
 		QString AuthToken (const QString& username, const QString& password)
 		{

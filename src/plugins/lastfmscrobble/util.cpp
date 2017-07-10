@@ -100,7 +100,7 @@ namespace Lastfmscrobble
 		{
 			const auto& data = Params2PostData (params);
 
-			QNetworkRequest req { QUrl { "http://ws.audioscrobbler.com/2.0/" } };
+			QNetworkRequest req { QUrl { "https://ws.audioscrobbler.com/2.0/" } };
 			req.setHeader (QNetworkRequest::ContentLengthHeader, data.size ());
 			req.setHeader (QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
 			return nam->post (req, data);
@@ -108,7 +108,7 @@ namespace Lastfmscrobble
 
 		QNetworkReply* MakeGetRequest (QNetworkAccessManager *nam, const ParamsList_t& params)
 		{
-			QUrl url { "http://ws.audioscrobbler.com/2.0/" };
+			QUrl url { "https://ws.audioscrobbler.com/2.0/" };
 			AppendParams2Url (params, url);
 
 			return nam->get (QNetworkRequest { url });
