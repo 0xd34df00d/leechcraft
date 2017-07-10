@@ -200,20 +200,9 @@ namespace LMP
 		if (paths.isEmpty ())
 			return;
 
-		auto response = QMessageBox::question (this,
-				"LeechCraft",
-				tr ("Are you sure you want to remove %n track(s) from your collection?<br/><br/>"
-					"Please note that if tracks remain on your disk they will be re-added next "
-					"time collection is scanned, but you will lose the statistics.",
-					0,
-					paths.size ()),
-					QMessageBox::Yes | QMessageBox::No);
-		if (response != QMessageBox::Yes)
-			return;
-
 		auto collection = Core::Instance ().GetLocalCollection ();
-		Q_FOREACH (const auto& path, paths)
-			collection->RemoveTrack (path);
+		for (const auto& path : paths)
+			collection->IgnoreTrack (path);
 	}
 
 	void CollectionWidget::handleCollectionDelete ()
