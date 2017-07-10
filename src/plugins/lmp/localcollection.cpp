@@ -664,6 +664,27 @@ namespace LMP
 		}
 	}
 
+	void LocalCollection::IgnoreTrack (const QString& path)
+	{
+		const int id = FindTrack (path);
+		if (id == -1)
+			return;
+
+		try
+		{
+			Storage_->IgnoreTrack (id);
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "error removing track:"
+					<< e.what ();
+			throw;
+		}
+
+		CollectionModel_->IgnoreTrack (id);
+	}
+
 	void LocalCollection::RemoveTrack (const QString& path)
 	{
 		const int id = FindTrack (path);
