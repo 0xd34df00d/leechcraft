@@ -100,6 +100,9 @@
 			<item type="checkbox" property="HighlightGroups" default="false">
 				<label value="Highlight groups" />
 			</item>
+			<item type="checkbox" property="HideErrorContactsWithOffline" default="false">
+				<label value="Hide contacts with errors when hiding offline contacts" />
+			</item>
 			<item type="spinbox" property="RosterContactHeight" default="20" minimum="8" maximum="96">
 				<label value="Distance between contacts in roster:" />
 				<suffix value=" px" />

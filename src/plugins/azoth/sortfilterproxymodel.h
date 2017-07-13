@@ -44,6 +44,7 @@ namespace Azoth
 		bool OrderByStatus_ = true;
 		bool HideMUCParts_ = false;
 		bool ShowSelfContacts_ = true;
+		bool HideErroring_ = true;
 		QObject *MUCEntry_ = nullptr;
 	public:
 		SortFilterProxyModel (QObject* = nullptr);
@@ -57,6 +58,7 @@ namespace Azoth
 		void handleStatusOrderingChanged ();
 		void handleHideMUCPartsChanged ();
 		void handleShowSelfContactsChanged ();
+		void handleHideErrorContactsChanged ();
 		void handleMUCDestroyed ();
 	protected:
 		bool filterAcceptsRow (int, const QModelIndex&) const override;

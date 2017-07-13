@@ -55,6 +55,10 @@ namespace Azoth
 		XmlSettingsManager::Instance ().RegisterObject ("ShowSelfContacts",
 				this, "handleShowSelfContactsChanged");
 		handleShowSelfContactsChanged ();
+
+		XmlSettingsManager::Instance ().RegisterObject ("HideErrorContactsWithOffline",
+				this, "handleHideErrorContactsChanged");
+		handleHideErrorContactsChanged ();
 	}
 
 	void SortFilterProxyModel::SetMUCMode (bool muc)
@@ -110,6 +114,12 @@ namespace Azoth
 	void SortFilterProxyModel::handleShowSelfContactsChanged ()
 	{
 		ShowSelfContacts_ = XmlSettingsManager::Instance ().property ("ShowSelfContacts").toBool ();
+		invalidate ();
+	}
+
+	void SortFilterProxyModel::handleHideErrorContactsChanged ()
+	{
+		HideErroring_ = XmlSettingsManager::Instance ().property ("HideErrorContactsWithOffline").toBool ();
 		invalidate ();
 	}
 
@@ -220,6 +230,11 @@ namespace Azoth
 		{
 			const auto entry = GetEntry (idx);
 			const auto state = entry->GetStatus ().State_;
+
+			if (!ShowOffline_ &&
+					HideErroring_ &&
+					state == SError)
+				return false;
 
 			if (!ShowOffline_ &&
 					state == SOffline &&
