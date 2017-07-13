@@ -59,8 +59,8 @@ namespace Azoth
 		void handleShowSelfContactsChanged ();
 		void handleMUCDestroyed ();
 	protected:
-		bool filterAcceptsRow (int, const QModelIndex&) const;
-		bool lessThan (const QModelIndex&, const QModelIndex&) const;
+		bool filterAcceptsRow (int, const QModelIndex&) const override;
+		bool lessThan (const QModelIndex&, const QModelIndex&) const override;
 	signals:
 		void mucMode ();
 		void wholeMode ();
