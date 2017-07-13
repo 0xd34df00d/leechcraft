@@ -61,6 +61,9 @@ namespace Azoth
 	protected:
 		bool filterAcceptsRow (int, const QModelIndex&) const override;
 		bool lessThan (const QModelIndex&, const QModelIndex&) const override;
+	private:
+		bool FilterAcceptsMucMode (int, const QModelIndex&) const;
+		bool FilterAcceptsNonMucMode (int, const QModelIndex&) const;
 	signals:
 		void mucMode ();
 		void wholeMode ();

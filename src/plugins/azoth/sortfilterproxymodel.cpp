@@ -135,77 +135,9 @@ namespace Azoth
 
 	bool SortFilterProxyModel::filterAcceptsRow (int row, const QModelIndex& parent) const
 	{
-		if (MUCMode_)
-		{
-			if (!MUCEntry_)
-				return false;
-
-			const auto& idx = sourceModel ()->index (row, 0, parent);
-			switch (GetType (idx))
-			{
-			case Core::CLETAccount:
-			{
-				const auto acc = qobject_cast<ICLEntry*> (MUCEntry_)->GetParentAccount ();
-				return acc == idx.data (Core::CLRAccountObject).value<IAccount*> ();
-			}
-			case Core::CLETCategory:
-			{
-				const QString& gName = idx.data ().toString ();
-				return gName == qobject_cast<IMUCEntry*> (MUCEntry_)->GetGroupName () ||
-						qobject_cast<ICLEntry*> (MUCEntry_)->Groups ().contains (gName);
-			}
-			default:
-				break;
-			}
-		}
-		else
-		{
-			const auto& idx = sourceModel ()->index (row, 0, parent);
-			if (!filterRegExp ().isEmpty ())
-				return GetType (idx) == Core::CLETContact ?
-						idx.data ().toString ().contains (filterRegExp ()) :
-						true;
-
-			if (idx.data (Core::CLRUnreadMsgCount).toInt ())
-				return true;
-
-			const auto type = GetType (idx);
-
-			if (type == Core::CLETContact)
-			{
-				const auto entry = GetEntry (idx);
-				const auto state = entry->GetStatus ().State_;
-
-				if (!ShowOffline_ &&
-						state == SOffline &&
-						!idx.data (Core::CLRUnreadMsgCount).toInt ())
-					return false;
-
-				if (HideMUCParts_ &&
-						entry->GetEntryType () == ICLEntry::EntryType::PrivateChat)
-					return false;
-
-				if (!ShowSelfContacts_ &&
-						entry->GetEntryFeatures () & ICLEntry::FSelfContact)
-					return false;
-			}
-			else if (type == Core::CLETCategory)
-			{
-				if (!ShowOffline_ &&
-						!idx.data (Core::CLRNumOnline).toInt ())
-					return false;
-
-				for (int subRow = 0; subRow < sourceModel ()->rowCount (idx); ++subRow)
-					if (filterAcceptsRow (subRow, idx))
-						return true;
-
-				return false;
-			}
-			else if (type == Core::CLETAccount)
-				return idx.data (Core::CLRAccountObject).value<IAccount*> ()->IsShownInRoster ();
-		}
-
-		return QSortFilterProxyModel::filterAcceptsRow (row, parent);
+		return MUCMode_ ?
+				FilterAcceptsMucMode (row, parent) :
+				FilterAcceptsNonMucMode (row, parent);
 	}
 
 	bool SortFilterProxyModel::lessThan (const QModelIndex& right,
@@ -245,6 +177,79 @@ namespace Azoth
 			return lE->GetEntryName ().localeAwareCompare (rE->GetEntryName ()) < 0;
 		else
 			return IsLess (lState, rState);
+	}
+
+	bool SortFilterProxyModel::FilterAcceptsMucMode (int row, const QModelIndex& parent) const
+	{
+		if (!MUCEntry_)
+			return false;
+
+		const auto& idx = sourceModel ()->index (row, 0, parent);
+		switch (GetType (idx))
+		{
+		case Core::CLETAccount:
+		{
+			const auto acc = qobject_cast<ICLEntry*> (MUCEntry_)->GetParentAccount ();
+			return acc == idx.data (Core::CLRAccountObject).value<IAccount*> ();
+		}
+		case Core::CLETCategory:
+		{
+			const QString& gName = idx.data ().toString ();
+			return gName == qobject_cast<IMUCEntry*> (MUCEntry_)->GetGroupName () ||
+				   qobject_cast<ICLEntry*> (MUCEntry_)->Groups ().contains (gName);
+		}
+		default:
+			return QSortFilterProxyModel::filterAcceptsRow (row, parent);
+		}
+	}
+
+	bool SortFilterProxyModel::FilterAcceptsNonMucMode (int row, const QModelIndex& parent) const
+	{
+		const auto& idx = sourceModel ()->index (row, 0, parent);
+		if (!filterRegExp ().isEmpty ())
+			return GetType (idx) == Core::CLETContact ?
+					idx.data ().toString ().contains (filterRegExp ()) :
+					true;
+
+		if (idx.data (Core::CLRUnreadMsgCount).toInt ())
+			return true;
+
+		const auto type = GetType (idx);
+
+		if (type == Core::CLETContact)
+		{
+			const auto entry = GetEntry (idx);
+			const auto state = entry->GetStatus ().State_;
+
+			if (!ShowOffline_ &&
+				state == SOffline &&
+				!idx.data (Core::CLRUnreadMsgCount).toInt ())
+				return false;
+
+			if (HideMUCParts_ &&
+				entry->GetEntryType () == ICLEntry::EntryType::PrivateChat)
+				return false;
+
+			if (!ShowSelfContacts_ &&
+				entry->GetEntryFeatures () & ICLEntry::FSelfContact)
+				return false;
+		}
+		else if (type == Core::CLETCategory)
+		{
+			if (!ShowOffline_ &&
+				!idx.data (Core::CLRNumOnline).toInt ())
+				return false;
+
+			for (int subRow = 0; subRow < sourceModel ()->rowCount (idx); ++subRow)
+				if (filterAcceptsRow (subRow, idx))
+					return true;
+
+			return false;
+		}
+		else if (type == Core::CLETAccount)
+			return idx.data (Core::CLRAccountObject).value<IAccount*> ()->IsShownInRoster ();
+
+		return QSortFilterProxyModel::filterAcceptsRow (row, parent);
 	}
 }
 }
