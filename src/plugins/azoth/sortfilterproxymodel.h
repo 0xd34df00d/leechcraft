@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_SORTFILTERPROXYMODEL_H
-#define PLUGINS_AZOTH_SORTFILTERPROXYMODEL_H
+#pragma once
+
 #include <QSortFilterProxyModel>
 
 namespace LeechCraft
@@ -46,7 +46,7 @@ namespace Azoth
 		bool ShowSelfContacts_;
 		QObject *MUCEntry_;
 	public:
-		SortFilterProxyModel (QObject* = 0);
+		SortFilterProxyModel (QObject* = nullptr);
 
 		void SetMUCMode (bool);
 		bool IsMUCMode () const;
@@ -67,5 +67,3 @@ namespace Azoth
 	};
 }
 }
-
-#endif

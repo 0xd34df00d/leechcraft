@@ -39,7 +39,7 @@ namespace LeechCraft
 namespace Azoth
 {
 	SortFilterProxyModel::SortFilterProxyModel (QObject *parent)
-	: QSortFilterProxyModel (parent)
+	: QSortFilterProxyModel { parent }
 	, ShowOffline_ (true)
 	, MUCMode_ (false)
 	, OrderByStatus_ (true)
@@ -103,28 +103,25 @@ namespace Azoth
 
 	void SortFilterProxyModel::handleStatusOrderingChanged ()
 	{
-		OrderByStatus_ = XmlSettingsManager::Instance ()
-				.property ("OrderByStatus").toBool ();
+		OrderByStatus_ = XmlSettingsManager::Instance ().property ("OrderByStatus").toBool ();
 		invalidate ();
 	}
 
 	void SortFilterProxyModel::handleHideMUCPartsChanged ()
 	{
-		HideMUCParts_ = XmlSettingsManager::Instance ()
-				.property ("HideMUCPartsInWholeCL").toBool ();
+		HideMUCParts_ = XmlSettingsManager::Instance ().property ("HideMUCPartsInWholeCL").toBool ();
 		invalidate ();
 	}
 
 	void SortFilterProxyModel::handleShowSelfContactsChanged ()
 	{
-		ShowSelfContacts_ = XmlSettingsManager::Instance ()
-				.property ("ShowSelfContacts").toBool ();
+		ShowSelfContacts_ = XmlSettingsManager::Instance ().property ("ShowSelfContacts").toBool ();
 		invalidate ();
 	}
 
 	void SortFilterProxyModel::handleMUCDestroyed ()
 	{
-		SetMUC (0);
+		SetMUC (nullptr);
 		SetMUCMode (false);
 		emit wholeMode ();
 	}
@@ -138,8 +135,7 @@ namespace Azoth
 
 		ICLEntry* GetEntry (const QModelIndex& idx)
 		{
-			return qobject_cast<ICLEntry*> (idx
-						.data (Core::CLREntryObject).value<QObject*> ());
+			return qobject_cast<ICLEntry*> (idx.data (Core::CLREntryObject).value<QObject*> ());
 		}
 	}
 
@@ -150,7 +146,7 @@ namespace Azoth
 			if (!MUCEntry_)
 				return false;
 
-			const QModelIndex& idx = sourceModel ()->index (row, 0, parent);
+			const auto& idx = sourceModel ()->index (row, 0, parent);
 			switch (GetType (idx))
 			{
 			case Core::CLETAccount:
@@ -170,7 +166,7 @@ namespace Azoth
 		}
 		else
 		{
-			const QModelIndex& idx = sourceModel ()->index (row, 0, parent);
+			const auto& idx = sourceModel ()->index (row, 0, parent);
 			if (!filterRegExp ().isEmpty ())
 				return GetType (idx) == Core::CLETContact ?
 						idx.data ().toString ().contains (filterRegExp ()) :
@@ -183,8 +179,8 @@ namespace Azoth
 
 			if (type == Core::CLETContact)
 			{
-				ICLEntry *entry = GetEntry (idx);
-				const State state = entry->GetStatus ().State_;
+				const auto entry = GetEntry (idx);
+				const auto state = entry->GetStatus ().State_;
 
 				if (!ShowOffline_ &&
 						state == SOffline &&
@@ -234,8 +230,8 @@ namespace Azoth
 				return rightIsMuc;
 		}
 
-		ICLEntry *lE = GetEntry (left);
-		ICLEntry *rE = GetEntry (right);
+		const auto lE = GetEntry (left);
+		const auto rE = GetEntry (right);
 
 		if (lE->GetEntryType () == ICLEntry::EntryType::PrivateChat &&
 				rE->GetEntryType () == ICLEntry::EntryType::PrivateChat &&
@@ -248,8 +244,8 @@ namespace Azoth
 					return more;
 			}
 
-		State lState = lE->GetStatus ().State_;
-		State rState = rE->GetStatus ().State_;
+		const auto lState = lE->GetStatus ().State_;
+		const auto rState = rE->GetStatus ().State_;
 		if (lState == rState ||
 				!OrderByStatus_)
 			return lE->GetEntryName ().localeAwareCompare (rE->GetEntryName ()) < 0;
