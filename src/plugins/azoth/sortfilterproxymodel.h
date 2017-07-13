@@ -39,12 +39,12 @@ namespace Azoth
 	{
 		Q_OBJECT
 
-		bool ShowOffline_;
-		bool MUCMode_;
-		bool OrderByStatus_;
-		bool HideMUCParts_;
-		bool ShowSelfContacts_;
-		QObject *MUCEntry_;
+		bool ShowOffline_ = true;
+		bool MUCMode_ = false;
+		bool OrderByStatus_ = true;
+		bool HideMUCParts_ = false;
+		bool ShowSelfContacts_ = true;
+		QObject *MUCEntry_ = nullptr;
 	public:
 		SortFilterProxyModel (QObject* = nullptr);
 

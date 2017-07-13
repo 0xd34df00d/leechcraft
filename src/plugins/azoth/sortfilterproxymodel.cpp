@@ -40,12 +40,6 @@ namespace Azoth
 {
 	SortFilterProxyModel::SortFilterProxyModel (QObject *parent)
 	: QSortFilterProxyModel { parent }
-	, ShowOffline_ (true)
-	, MUCMode_ (false)
-	, OrderByStatus_ (true)
-	, HideMUCParts_ (false)
-	, ShowSelfContacts_ (true)
-	, MUCEntry_ (0)
 	{
 		setDynamicSortFilter (true);
 		setFilterCaseSensitivity (Qt::CaseInsensitive);
