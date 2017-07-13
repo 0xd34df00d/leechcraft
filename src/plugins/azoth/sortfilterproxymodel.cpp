@@ -222,22 +222,22 @@ namespace Azoth
 			const auto state = entry->GetStatus ().State_;
 
 			if (!ShowOffline_ &&
-				state == SOffline &&
-				!idx.data (Core::CLRUnreadMsgCount).toInt ())
+					state == SOffline &&
+					!idx.data (Core::CLRUnreadMsgCount).toInt ())
 				return false;
 
 			if (HideMUCParts_ &&
-				entry->GetEntryType () == ICLEntry::EntryType::PrivateChat)
+					entry->GetEntryType () == ICLEntry::EntryType::PrivateChat)
 				return false;
 
 			if (!ShowSelfContacts_ &&
-				entry->GetEntryFeatures () & ICLEntry::FSelfContact)
+					entry->GetEntryFeatures () & ICLEntry::FSelfContact)
 				return false;
 		}
 		else if (type == Core::CLETCategory)
 		{
 			if (!ShowOffline_ &&
-				!idx.data (Core::CLRNumOnline).toInt ())
+					!idx.data (Core::CLRNumOnline).toInt ())
 				return false;
 
 			for (int subRow = 0; subRow < sourceModel ()->rowCount (idx); ++subRow)
