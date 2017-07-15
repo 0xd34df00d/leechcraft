@@ -30,6 +30,7 @@
 #include "otlozhu.h"
 #include <QIcon>
 #include <util/util.h>
+#include <util/sll/prelude.h>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/itagsmanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
@@ -152,10 +153,7 @@ namespace Otlozhu
 
 		const auto& tags = e.Additional_ ["Tags"].toStringList ();
 		auto tm = Core::Instance ().GetProxy ()->GetTagsManager ();
-		QStringList ids;
-		std::transform (tags.begin (), tags.end (), std::back_inserter (ids),
-				[tm] (const QString& tag) { return tm->GetID (tag); });
-		item->SetTagIDs (ids);
+		item->SetTagIDs (Util::Map (tags, [tm] (const QString& tag) { return tm->GetID (tag); }));
 
 		mgr->GetTodoStorage ()->AddItem (item);
 	}
