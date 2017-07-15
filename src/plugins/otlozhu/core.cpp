@@ -87,11 +87,6 @@ namespace Otlozhu
 		Proxy_ = proxy;
 	}
 
-	void Core::SendEntity (const Entity& e)
-	{
-		emit gotEntity (e);
-	}
-
 	TodoManager* Core::GetTodoManager () const
 	{
 		return TodoManager_;

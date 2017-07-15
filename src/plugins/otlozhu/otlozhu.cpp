@@ -58,11 +58,6 @@ namespace Otlozhu
 
 		Core::Instance ().SetProxy (proxy);
 
-		connect (&Core::Instance (),
-				SIGNAL (gotEntity (LeechCraft::Entity)),
-				this,
-				SIGNAL (gotEntity (LeechCraft::Entity)));
-
 		TCTodo_ = TabClassInfo
 		{
 			GetUniqueID () + "_todo",
