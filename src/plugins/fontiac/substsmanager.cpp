@@ -131,11 +131,7 @@ namespace Fontiac
 
 	void SubstsManager::RebuildSubsts (const QString& family)
 	{
-#if QT_VERSION >= 0x050000
 		QFont::removeSubstitutions (family);
-#else
-		QFont::removeSubstitution (family);
-#endif
 
 		const auto& remaining = Util::Filter (Substitutes_,
 				[&family] (const auto& pair) { return pair.first == family; });
