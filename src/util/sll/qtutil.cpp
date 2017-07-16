@@ -29,23 +29,9 @@
 
 #include "qtutil.h"
 
-#if QT_VERSION < 0x050000
-#include <QTextDocument>
-#else
-#include <QString>
-#endif
-
 namespace LeechCraft
 {
 namespace Util
 {
-	QString Escape (const QString& str)
-	{
-#if QT_VERSION < 0x050000
-		return Qt::escape (str);
-#else
-		return str.toHtmlEscaped ();
-#endif
-	}
 }
 }

@@ -173,7 +173,5 @@ namespace Util
 	{
 		return { std::forward<Assoc> (assoc) };
 	}
-
-	UTIL_SLL_API QString Escape (const QString&);
 }
 }
