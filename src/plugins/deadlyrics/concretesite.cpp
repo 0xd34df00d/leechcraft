@@ -228,11 +228,7 @@ namespace DeadLyrics
 		QNetworkRequest req { url };
 
 		url.setPath ({});
-#if QT_VERSION < 0x050000
-		url.setQueryItems ({});
-#else
 		url.setQuery (QString {});
-#endif
 		req.setRawHeader ("Referer", url.toString ().toUtf8 ());
 		req.setAttribute (QNetworkRequest::HttpPipeliningAllowedAttribute, false);
 
