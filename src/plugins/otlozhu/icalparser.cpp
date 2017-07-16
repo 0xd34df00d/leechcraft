@@ -212,7 +212,7 @@ namespace Otlozhu
 			const QStringList& tags = AsQString (item ["CATEGORIES"])
 					.split (',', QString::SkipEmptyParts);
 			auto tm = Core::Instance ().GetProxy ()->GetTagsManager ();
-			const auto& ids = Util::Map (tags, [tm] (const QString& tag) { return tm->GetID (tag); });
+			todo->SetTagIDs (Util::Map (tags, [tm] (const QString& tag) { return tm->GetID (tag); }));
 
 			result << todo;
 		}
