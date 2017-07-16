@@ -136,8 +136,7 @@ namespace Fontiac
 		const auto& remaining = Util::Filter (Substitutes_,
 				[&family] (const auto& pair) { return pair.first == family; });
 		if (!remaining.isEmpty ())
-			QFont::insertSubstitutions (family,
-					Util::Map (remaining, [] (const auto& pair) { return pair.second; }));
+			QFont::insertSubstitutions (family, Util::Map (remaining, Util::Snd));
 	}
 
 	namespace
