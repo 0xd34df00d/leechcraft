@@ -35,7 +35,6 @@
 #include <vmime/messageIdSequence.hpp>
 #include <util/xpc/util.h>
 #include <util/threads/futures.h>
-#include <util/sll/qtutil.h>
 #include <util/sll/urlaccessor.h>
 #include <util/sll/either.h>
 #include <util/sll/visitor.h>
@@ -276,7 +275,7 @@ namespace Snails
 
 		QString GetListName (const Message_ptr& msg)
 		{
-			const auto& addrString = "<em>" + Util::Escape (msg->GetAddressString (Message::Address::From)) + "</em>";
+			const auto& addrString = "<em>" + msg->GetAddressString (Message::Address::From).toHtmlEscaped () + "</em>";
 
 			const auto& headers = msg->GetVmimeHeader ();
 			if (!headers)
@@ -290,7 +289,7 @@ namespace Snails
 			if (!vmimeText)
 				return addrString;
 
-			return "<em>" + Util::Escape (StringizeCT (*vmimeText)) + "</em>";
+			return "<em>" + StringizeCT (*vmimeText).toHtmlEscaped () + "</em>";
 		}
 
 		void HandleUnsubscribeText (const QString& text, const Message_ptr& msg, Account *acc)
@@ -305,7 +304,7 @@ namespace Snails
 						QObject::tr ("Are you sure you want to unsubscribe from %1? "
 							"This will send an email to %2.")
 							.arg (addrString)
-							.arg ("<em>" + Util::Escape (url.path ()) + "</em>"),
+							.arg ("<em>" + url.path ().toHtmlEscaped () + "</em>"),
 						QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
 					return;
 

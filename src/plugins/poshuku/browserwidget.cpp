@@ -61,7 +61,6 @@
 #endif
 
 #include <util/util.h>
-#include <util/sll/qtutil.h>
 #include <util/sll/slotclosure.h>
 #include <util/sll/unreachable.h>
 #include <util/xpc/util.h>
@@ -1233,8 +1232,7 @@ namespace Poshuku
 					w.writeStartDocument ();
 					w.writeStartElement ("html");
 					w.writeStartElement ("head");
-					w.writeTextElement ("title",
-							Util::Escape (WebView_->GetUrl ().toString ()));
+					w.writeTextElement ("title", WebView_->GetUrl ().toString ().toHtmlEscaped ());
 					w.writeEndElement ();
 					w.writeStartElement ("body");
 					w.writeAttribute ("style", "font-family:monospace;");
@@ -1522,7 +1520,7 @@ namespace Poshuku
 		QString text;
 		Priority prio = PInfo_;
 
-		const auto& escapedTitle = Util::Escape (WebView_->GetTitle ());
+		const auto& escapedTitle = WebView_->GetTitle ().toHtmlEscaped ();
 		if (ok)
 			text = tr ("Page load finished: %1")
 					.arg (escapedTitle);

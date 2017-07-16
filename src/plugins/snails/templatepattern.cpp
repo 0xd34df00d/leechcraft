@@ -29,7 +29,6 @@
 
 #include "templatepattern.h"
 #include <QHash>
-#include <util/sll/qtutil.h>
 #include <util/sll/prelude.h>
 #include <util/sll/curry.h>
 #include <interfaces/itexteditor.h>
@@ -70,7 +69,7 @@ namespace Snails
 		QString FormatNameAndEmail (ContentType ct, const Message::Address_t& addr)
 		{
 			const auto& result = (addr.first.isEmpty () ? "" : addr.first + " ") + "<" + addr.second + ">";
-			return ct == ContentType::HTML ? Util::Escape (result) : result;
+			return ct == ContentType::HTML ? result.toHtmlEscaped () : result;
 		}
 	}
 

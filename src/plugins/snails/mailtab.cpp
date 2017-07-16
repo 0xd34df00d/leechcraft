@@ -600,7 +600,7 @@ namespace Snails
 				auto lines = body.split ('\n');
 				for (auto& line : lines)
 				{
-					const auto& escaped = Util::Escape (line);
+					const auto& escaped = line.toHtmlEscaped ();
 					if (line.startsWith ('>'))
 						line = "<span class='replyPart'>" + escaped + "</span>";
 					else

@@ -76,7 +76,7 @@ namespace Azoth
 		QString Status2Str (const EntryStatus& status)
 		{
 			auto result = "<table><tr><td valign='middle'>" + StateToString (status.State_);
-			const QString& statusString = Util::Escape (status.StatusString_);
+			const QString& statusString = status.StatusString_.toHtmlEscaped ();
 			if (!statusString.isEmpty ())
 				result += " (" + statusString + ")";
 
@@ -267,7 +267,7 @@ namespace Azoth
 
 			if (info.contains ("client_name"))
 			{
-				tip += "<br />" + CLTooltipManager::tr ("Using:") + ' ' + Util::Escape (info.value ("client_name").toString ());
+				tip += "<br />" + CLTooltipManager::tr ("Using:") + ' ' + info.value ("client_name").toString ().toHtmlEscaped ();
 
 				if (!info.contains ("client_version"))
 				{
@@ -277,20 +277,20 @@ namespace Azoth
 			}
 			if (info.contains ("client_version"))
 			{
-				tip += " " + Util::Escape (info.value ("client_version").toString ());
+				tip += " " + info.value ("client_version").toString ().toHtmlEscaped ();
 
 				tip += clientIconString;
 				clientIconInserted = true;
 			}
 			if (info.contains ("client_remote_name"))
 			{
-				tip += "<br />" + CLTooltipManager::tr ("Claiming:") + ' ' + Util::Escape (info.value ("client_remote_name").toString ());
+				tip += "<br />" + CLTooltipManager::tr ("Claiming:") + ' ' + info.value ("client_remote_name").toString ().toHtmlEscaped ();
 
 				if (!clientIconInserted)
 					tip += clientIconString;
 			}
 			if (info.contains ("client_os"))
-				tip += "<br />" + CLTooltipManager::tr ("OS:") + ' ' + Util::Escape (info.value ("client_os").toString ());
+				tip += "<br />" + CLTooltipManager::tr ("OS:") + ' ' + info.value ("client_os").toString ().toHtmlEscaped ();
 		}
 	}
 
@@ -317,13 +317,13 @@ namespace Azoth
 			tip += "</td><td>";
 		}
 
-		tip += "<strong>" + Util::Escape (entry->GetEntryName ()) + "</strong>";
-		tip += "&nbsp;(<em>" + Util::Escape (entry->GetHumanReadableID ()) + "</em>)";
+		tip += "<strong>" + entry->GetEntryName ().toHtmlEscaped () + "</strong>";
+		tip += "&nbsp;(<em>" + entry->GetHumanReadableID ().toHtmlEscaped () + "</em>)";
 		tip += Status2Str (entry->GetStatus ());
 		if (entry->GetEntryType () != ICLEntry::EntryType::PrivateChat)
 		{
 			tip += "<br />";
-			tip += tr ("In groups:") + ' ' + Util::Escape (entry->Groups ().join ("; "));
+			tip += tr ("In groups:") + ' ' + entry->Groups ().join ("; ").toHtmlEscaped ();
 		}
 
 		const QStringList& variants = entry->Variants ();
@@ -332,7 +332,7 @@ namespace Azoth
 		{
 			const QString& jid = mucEntry->GetRealID (entry->GetQObject ());
 			tip += "<br />" + tr ("Real ID:") + ' ';
-			tip += jid.isEmpty () ? tr ("unknown") : Util::Escape (jid);
+			tip += jid.isEmpty () ? tr ("unknown") : jid.toHtmlEscaped ();
 		}
 
 		FormatMucPerms (tip,
@@ -394,7 +394,7 @@ namespace Azoth
 			{
 				const auto& map = info ["custom_user_visible_map"].toMap ();
 				for (const auto& pair : Util::Stlize (map))
-					tip += "<br />" + pair.first + ": " + Util::Escape (pair.second.toString ()) + "<br />";
+					tip += "<br />" + pair.first + ": " + pair.second.toString ().toHtmlEscaped () + "<br />";
 			}
 		}
 

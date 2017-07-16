@@ -30,7 +30,6 @@
 #include "notifier.h"
 #include <QTextDocument>
 #include <util/xpc/util.h>
-#include <util/sll/qtutil.h>
 #include <interfaces/core/ientitymanager.h>
 #include "xmlsettingsmanager.h"
 
@@ -62,7 +61,7 @@ namespace GmailNotifier
 		{
 			return text.isEmpty () ?
 					fallback :
-					Util::Escape (text);
+					text.toHtmlEscaped ();
 		};
 
 		int handledMsgs = 0;
@@ -78,7 +77,7 @@ namespace GmailNotifier
 			result += tr ("at") + " ";
 			result += info.Modified_.toString (Qt::SystemLocaleLongDate);
 			result += "</p><p class=\"additionaltext\">";
-			result += Util::Escape (info.Summary_) + "</p>";
+			result += info.Summary_.toHtmlEscaped () + "</p>";
 
 			if (++handledMsgs == fullShow)
 				break;

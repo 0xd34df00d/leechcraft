@@ -29,7 +29,6 @@
 
 #include "util.h"
 #include <QString>
-#include <util/sll/qtutil.h>
 
 namespace LeechCraft
 {
@@ -37,7 +36,7 @@ namespace Snails
 {
 	QString PlainBody2HTML (const QString& body)
 	{
-		auto str = Util::Escape (body);
+		auto str = body.toHtmlEscaped ();
 		str.replace ("\r\n", "<br/>");
 		str.replace ("\r", "<br/>");
 		str.replace ("\n", "<br/>");

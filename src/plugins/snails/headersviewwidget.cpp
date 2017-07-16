@@ -29,7 +29,6 @@
 
 #include "headersviewwidget.h"
 #include <QBuffer>
-#include <util/sll/qtutil.h>
 #include "outputiodevadapter.h"
 
 namespace LeechCraft
@@ -47,7 +46,7 @@ namespace Snails
 		header->generate (adapter);
 
 		const auto& bufferStr = QString::fromUtf8 (buffer.buffer ());
-		const auto& escaped = Util::Escape (bufferStr);
+		const auto& escaped = bufferStr.toHtmlEscaped ();
 		Ui_.Edit_->setHtml ("<pre>" + escaped + "</pre>");
 	}
 }
