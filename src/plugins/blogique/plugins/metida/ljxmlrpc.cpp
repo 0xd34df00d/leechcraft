@@ -35,13 +35,7 @@
 #include <QFile>
 #include <QTemporaryFile>
 #include <QXmlQuery>
-
-#if QT_VERSION < 0x050000
-#include <QDesktopServices>
-#else
 #include <QStandardPaths>
-#endif
-
 #include <util/sys/sysinfo.h>
 #include <util/xpc/util.h>
 #include <util/sll/urloperator.h>
@@ -648,11 +642,7 @@ namespace Metida
 				("date_ymd_yyyy", QString::number (event.DateTime_.date ().year ()))
 				("date_diff", "1");
 
-#if QT_VERSION < 0x050000
-		const auto& payload = params.encodedQuery ();
-#else
 		const auto& payload = QUrlQuery { params }.toString (QUrl::FullyEncoded).toUtf8 ();
-#endif
 		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
 				GetNetworkAccessManager ()->post (request, payload);
 		connect (reply,
@@ -1851,11 +1841,7 @@ namespace Metida
 		if (!reply)
 			return;
 
-#if QT_VERSION < 0x050000
-		const auto& path = QDesktopServices::storageLocation (QDesktopServices::TempLocation) +
-#else
 		const auto& path = QStandardPaths::writableLocation (QStandardPaths::TempLocation) +
-#endif
 				QString ("/blogique_preview_%1.bml")
 						.arg (QDateTime::currentDateTime ().toTime_t ());
 		QFile file (path);

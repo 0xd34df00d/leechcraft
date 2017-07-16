@@ -29,11 +29,6 @@
 
 #include "metida.h"
 #include <QIcon>
-
-#if QT_VERSION < 0x050000
-#include <QtDeclarative>
-#endif
-
 #include <util/util.h>
 #include <interfaces/structures.h>
 #include "core.h"
@@ -51,10 +46,6 @@ namespace Metida
 		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
 		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"blogiquemetidasettings.xml");
-
-#if QT_VERSION < 0x050000
-		qmlRegisterType<QGraphicsBlurEffect> ("Effects", 1, 0, "Blur");
-#endif
 
 		Core::Instance ().SetCoreProxy (proxy);
 		Core::Instance ().CreateBloggingPlatfroms (this);
