@@ -29,6 +29,7 @@
 
 #include "previewpage.h"
 #include <QtDebug>
+#include <util/sll/unreachable.h>
 #include "reportwizard.h"
 #include "reporttypepage.h"
 #include "bugreportpage.h"
@@ -63,10 +64,7 @@ namespace Dolozhee
 				return QObject::tr ("High");
 			}
 
-			qWarning () << Q_FUNC_INFO
-					<< "unknown priority"
-					<< static_cast<int> (priority);
-			return "unknown";
+			Util::Unreachable ();
 		}
 	}
 
