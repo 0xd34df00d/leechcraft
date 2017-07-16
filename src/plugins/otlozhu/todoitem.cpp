@@ -41,15 +41,11 @@ namespace Otlozhu
 {
 	TodoItem::TodoItem ()
 	: ID_ (QUuid::createUuid ().toString ())
-	, Created_ (QDateTime::currentDateTime ())
-	, Percentage_ (0)
 	{
 	}
 
 	TodoItem::TodoItem (const QString& id)
 	: ID_ (id)
-	, Created_ (QDateTime::currentDateTime ())
-	, Percentage_ (0)
 	{
 	}
 

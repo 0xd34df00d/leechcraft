@@ -48,10 +48,10 @@ namespace Otlozhu
 		QString Title_;
 		QString Comment_;
 		QStringList TagIDs_;
-		QDateTime Created_;
+		QDateTime Created_ = QDateTime::currentDateTime ();
 		QDateTime Due_;
 
-		int Percentage_;
+		int Percentage_ = 0;
 		QStringList Deps_;
 	public:
 		TodoItem ();
