@@ -25,11 +25,7 @@
 #include "qxtglobalshortcut_p.h"
 #include <QX11Info>
 #include <X11/Xlib.h>
-
-#if QT_VERSION >= 0x050000
 #include <xcb/xcb.h>
-#endif
-
 #include "keymapper_x11.h"
 
 static int (*original_x_errhandler)(Display* display, XErrorEvent* event);
@@ -56,20 +52,6 @@ static int qxt_x_errhandler(Display* display, XErrorEvent *event)
     }
 }
 
-#if QT_VERSION < 0x050000
-bool QxtGlobalShortcutPrivate::eventFilter(void* message)
-{
-    XEvent* event = static_cast<XEvent*>(message);
-    if (event->type == KeyPress)
-    {
-        XKeyEvent* key = (XKeyEvent*) event;
-        activateShortcut(key->keycode,
-            // Mod1Mask == Alt, Mod4Mask == Meta
-            key->state & (ShiftMask | ControlMask | Mod1Mask | Mod4Mask));
-    }
-    return prevEventFilter ? prevEventFilter(message) : false;
-}
-#else
 bool QxtGlobalShortcutPrivate::nativeEventFilter (const QByteArray& eventType, void *msg, long*)
 {
 	if (eventType != "xcb_generic_event_t")
@@ -96,7 +78,6 @@ bool QxtGlobalShortcutPrivate::nativeEventFilter (const QByteArray& eventType, v
 
 	return false;
 }
-#endif
 
 quint32 QxtGlobalShortcutPrivate::nativeModifiers(Qt::KeyboardModifiers modifiers)
 {

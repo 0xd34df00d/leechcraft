@@ -31,39 +31,26 @@ bool QxtGlobalShortcutPrivate::error = false;
 #ifndef Q_OS_MAC
 int QxtGlobalShortcutPrivate::ref = 0;
 QList<QxtGlobalShortcutPrivate*> QxtGlobalShortcutPrivate::allPrivates;
-#if QT_VERSION < 0x050000
-QAbstractEventDispatcher::EventFilter QxtGlobalShortcutPrivate::prevEventFilter = 0;
-#endif
 #endif // Q_OS_MAC
 QHash<QPair<quint32, quint32>, QxtGlobalShortcut*> QxtGlobalShortcutPrivate::shortcuts;
 
 QxtGlobalShortcutPrivate::QxtGlobalShortcutPrivate() : enabled(true), key(Qt::Key(0)), mods(Qt::NoModifier)
 {
 #ifndef Q_OS_MAC
-#if QT_VERSION < 0x050000
-	if (!ref++)
-		prevEventFilter = QAbstractEventDispatcher::instance()->setEventFilter(eventFilter);
-#else
 	if (allPrivates.isEmpty ())
 		QAbstractEventDispatcher::instance ()->installNativeEventFilter (this);
 	allPrivates << this;
-#endif
 #endif // Q_OS_MAC
 }
 
 QxtGlobalShortcutPrivate::~QxtGlobalShortcutPrivate()
 {
 #ifndef Q_OS_MAC
-#if QT_VERSION < 0x050000
-	if (!--ref)
-		QAbstractEventDispatcher::instance()->setEventFilter(prevEventFilter);
-#else
 	const auto isActiveFilter = allPrivates.value (0) == this;
 	allPrivates.removeOne (this);
 
 	if (isActiveFilter && !allPrivates.isEmpty ())
 		QAbstractEventDispatcher::instance ()->installNativeEventFilter (allPrivates.first ());
-#endif
 #endif // Q_OS_MAC
 }
 

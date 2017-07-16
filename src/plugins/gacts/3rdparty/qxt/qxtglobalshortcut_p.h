@@ -29,12 +29,10 @@
 #include <QAbstractEventDispatcher>
 #include <QKeySequence>
 #include <QHash>
-#if QT_VERSION >= 0x050000
 #include <QAbstractNativeEventFilter>
-#endif
 
 class QxtGlobalShortcutPrivate : public QxtPrivate<QxtGlobalShortcut>
-#if QT_VERSION >= 0x050000 && !defined(Q_OS_MAC)
+#if !defined(Q_OS_MAC)
 							   , public QAbstractNativeEventFilter
 #endif
 {
@@ -54,12 +52,7 @@ public:
 #ifndef Q_OS_MAC
 	static int ref;
 	static QList<QxtGlobalShortcutPrivate*> allPrivates;
-#if QT_VERSION < 0x050000
-	static QAbstractEventDispatcher::EventFilter prevEventFilter;
-	static bool eventFilter(void* message);
-#else
 	bool nativeEventFilter (const QByteArray&, void*, long*) override;
-#endif
 #endif // Q_OS_MAC
 
 	static void activateShortcut(quint32 nativeKey, quint32 nativeMods);
