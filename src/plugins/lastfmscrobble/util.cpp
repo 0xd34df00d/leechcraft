@@ -49,7 +49,7 @@ namespace Lastfmscrobble
 	{
 		void AppendSig (ParamsList_t& params)
 		{
-			std::sort (params.begin (), params.end (), Util::ComparingBy (Util::Snd));
+			std::sort (params.begin (), params.end (), Util::ComparingBy (Util::Fst));
 			auto str = std::accumulate (params.begin (), params.end (), QString (),
 					[] (const QString& str, const auto& pair) { return str + pair.first + pair.second; });
 			str += lastfm::ws::SharedSecret;
