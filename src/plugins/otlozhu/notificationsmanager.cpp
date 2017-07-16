@@ -96,6 +96,9 @@ namespace Otlozhu
 		for (int i = 0, size = Storage_->GetNumItems (); i < size; ++i)
 		{
 			auto item = Storage_->GetItemAt (i);
+			if (item->GetPercentage () == 100)
+				continue;
+
 			const auto& due = item->GetDueDate ();
 			if ((!min.isValid () || due < min) && due > now)
 			{
