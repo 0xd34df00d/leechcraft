@@ -643,7 +643,7 @@ namespace Xoox
 		for (const auto& var : Variants ())
 			SetStatus ({}, var, {});
 
-		SetStatus ({ SError, {} }, {}, {});
+		SetStatus ({ SError, presence.error ().text () }, {}, {});
 	}
 
 	void EntryBase::SetStatus (const EntryStatus& status, const QString& variant, const QXmppPresence& presence)
