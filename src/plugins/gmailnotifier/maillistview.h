@@ -30,13 +30,7 @@
 #pragma once
 
 #include <QObject>
-
-#if QT_VERSION < 0x050000
-#include <QDeclarativeView>
-#else
 #include <QQuickWidget>
-#endif
-
 #include <interfaces/core/icoreproxy.h>
 #include "convinfo.h"
 
@@ -46,11 +40,7 @@ namespace LeechCraft
 {
 namespace GmailNotifier
 {
-#if QT_VERSION < 0x050000
-	class MailListView : public QDeclarativeView
-#else
 	class MailListView : public QQuickWidget
-#endif
 	{
 		Q_OBJECT
 
