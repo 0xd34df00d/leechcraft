@@ -1444,7 +1444,7 @@ namespace Xoox
 						<< pres.error ().type ()
 						<< pres.error ().condition ()
 						<< pres.error ().text ();
-				entry->SetErrorPresence (resource);
+				entry->SetErrorPresence (resource, pres);
 			}
 			break;
 		}

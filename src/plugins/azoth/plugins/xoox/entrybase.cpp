@@ -631,7 +631,7 @@ namespace Xoox
 		}
 	}
 
-	void EntryBase::SetErrorPresence (const QString& variant)
+	void EntryBase::SetErrorPresence (const QString& variant, const QXmppPresence& presence)
 	{
 		if (!variant.isEmpty ())
 		{
