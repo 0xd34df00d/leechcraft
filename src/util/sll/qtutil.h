@@ -122,6 +122,14 @@ namespace Util
 			: boost::iterator_range<StlAssocIteratorAdaptor<KeyMF, ValueMF, Iter, PairType>> { assoc.begin (), assoc.end () }
 			{
 			}
+
+			auto AsList () const
+			{
+				QList<typename StlAssocRange::value_type> result;
+				result.reserve (std::distance (this->begin (), this->end ()));
+				std::copy (this->begin (), this->end (), std::back_inserter (result));
+				return result;
+			}
 		};
 	}
 
