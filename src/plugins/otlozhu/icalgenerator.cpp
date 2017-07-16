@@ -28,7 +28,7 @@
  **********************************************************************/
 
 #include "icalgenerator.h"
-#include <algorithm>
+#include <util/sll/prelude.h>
 #include <interfaces/core/itagsmanager.h>
 #include "core.h"
 
@@ -66,10 +66,8 @@ namespace Otlozhu
 				lines << ("COMMENT:" + item->GetComment ().toUtf8 ().trimmed ());
 			lines << ("PERCENT-COMPLETE:" + QByteArray::number (item->GetPercentage ()));
 
-			QStringList cats;
 			auto tm = Core::Instance ().GetProxy ()->GetTagsManager ();
-			Q_FOREACH (const QString& id, item->GetTagIDs ())
-				cats << tm->GetTag (id);
+			const auto& cats = Util::Map (item->GetTagIDs (), [tm] (const QString& id) { return tm->GetTag (id); });
 			if (!cats.isEmpty ())
 				lines << ("CATEGORIES:" + cats.join (",").toUtf8 ());
 
@@ -84,8 +82,7 @@ namespace Otlozhu
 		lines << "BEGIN:VCALENDAR"
 			<< "VERSION:2.0"
 			<< "PRODID:-//LeechCraft//NONSGML Otlozhu//EN";
-		std::for_each (Items_.begin (), Items_.end (),
-				[&lines] (TodoItem_ptr item) { lines += Serialize (item); });
+		lines += Util::ConcatMap (Items_, &Serialize);
 		lines << "END:VCALENDAR";
 
 		auto it = lines.begin ();
