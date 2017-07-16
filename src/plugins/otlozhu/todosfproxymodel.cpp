@@ -28,7 +28,7 @@
  **********************************************************************/
 
 #include "todosfproxymodel.h"
-#include <algorithm>
+#include <util/sll/prelude.h>
 #include <interfaces/core/itagsmanager.h>
 #include "core.h"
 #include "storagemodel.h"
@@ -45,10 +45,7 @@ namespace Otlozhu
 		const auto& ids = sourceModel ()->index (row, 0)
 				.data (StorageModel::Roles::ItemTags).toStringList ();
 		const auto tm = Core::Instance ().GetProxy ()->GetTagsManager ();
-		QStringList result;
-		std::transform (ids.begin (), ids.end (), std::back_inserter (result),
-				[tm] (const QString& id) { return tm->GetTag (id); });
-		return result;
+		return Util::Map (ids, [tm] (const QString& id) { return tm->GetTag (id); });
 	}
 
 	bool TodoSFProxyModel::lessThan (const QModelIndex& left, const QModelIndex& right) const

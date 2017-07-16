@@ -34,6 +34,7 @@
 #include <boost/fusion/sequence/intrinsic/at_c.hpp>
 #include <boost/phoenix/fusion.hpp>
 #include <QtDebug>
+#include <util/sll/prelude.h>
 #include <interfaces/core/itagsmanager.h>
 #include "core.h"
 
@@ -211,10 +212,7 @@ namespace Otlozhu
 			const QStringList& tags = AsQString (item ["CATEGORIES"])
 					.split (',', QString::SkipEmptyParts);
 			auto tm = Core::Instance ().GetProxy ()->GetTagsManager ();
-			QStringList ids;
-			std::transform (tags.begin (), tags.end (), std::back_inserter (ids),
-					[tm] (const QString& tag) { return tm->GetID (tag); });
-			todo->SetTagIDs (ids);
+			const auto& ids = Util::Map (tags, [tm] (const QString& tag) { return tm->GetID (tag); });
 
 			result << todo;
 		}

@@ -31,6 +31,7 @@
 #include <algorithm>
 #include <QCoreApplication>
 #include <QtDebug>
+#include <util/sll/prelude.h>
 
 namespace LeechCraft
 {
@@ -81,10 +82,7 @@ namespace Otlozhu
 
 	QList<TodoItem_ptr> TodoStorage::GetAllItems () const
 	{
-		QList<TodoItem_ptr> result;
-		std::transform (Items_.begin (), Items_.end (), std::back_inserter (result),
-				[] (decltype (Items_.front ()) item) { return item->Clone (); });
-		return result;
+		return Util::Map (Items_, [] (const auto& item) { return item->Clone (); });
 	}
 
 	void TodoStorage::AddDependency (const QString& itemId, const QString& depId)
