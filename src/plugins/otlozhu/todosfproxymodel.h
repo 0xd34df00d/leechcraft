@@ -38,7 +38,7 @@ namespace Otlozhu
 	class TodoSFProxyModel : public Util::TagsFilterModel
 	{
 	public:
-		TodoSFProxyModel (QObject* = 0);
+		using Util::TagsFilterModel::TagsFilterModel;
 	protected:
 		QStringList GetTagsForIndex (int) const;
 

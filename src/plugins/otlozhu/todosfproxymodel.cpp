@@ -37,11 +37,6 @@ namespace LeechCraft
 {
 namespace Otlozhu
 {
-	TodoSFProxyModel::TodoSFProxyModel (QObject *parent)
-	: Util::TagsFilterModel (parent)
-	{
-	}
-
 	QStringList TodoSFProxyModel::GetTagsForIndex (int row) const
 	{
 		if (!sourceModel ())
