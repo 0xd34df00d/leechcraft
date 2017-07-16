@@ -33,10 +33,6 @@
 #include <QAbstractItemModel>
 #include <QSslCertificate>
 
-#if QT_VERSION < 0x050000
-Q_DECLARE_METATYPE (QSslCertificate)
-#endif
-
 namespace LeechCraft
 {
 namespace CertMgr
