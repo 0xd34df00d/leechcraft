@@ -61,11 +61,11 @@ namespace Otlozhu
 			boost::optional<FieldVal_t> operator[] (const std::string& fName) const
 			{
 				auto pos = std::find_if (Fields_.begin (), Fields_.end (),
-						[&fName] (decltype (Fields_.front ())& field) { return field.Name_ == fName; });
+						[&fName] (const auto& field) { return field.Name_ == fName; });
 				if (pos == Fields_.end ())
-					return boost::optional<FieldVal_t> ();
+					return {};
 				else
-					return boost::optional<FieldVal_t> (pos->Val_);
+					return pos->Val_;
 			}
 		};
 		typedef std::vector<Item> Items_t;
@@ -190,7 +190,7 @@ namespace Otlozhu
 
 		QList<TodoItem_ptr> result;
 
-		Q_FOREACH (const Item& item, ical.Items_)
+		for (const auto& item : ical.Items_)
 		{
 			if (item.Name_ != "VTODO")
 				continue;
@@ -209,8 +209,7 @@ namespace Otlozhu
 			todo->SetComment (AsQStrings ({ item ["COMMENT"], item ["DESCRIPTION"] }));
 			todo->SetPercentage (AsInt (item ["PERCENT-COMPLETE"]));
 
-			const QStringList& tags = AsQString (item ["CATEGORIES"])
-					.split (',', QString::SkipEmptyParts);
+			const auto& tags = AsQString (item ["CATEGORIES"]).split (',', QString::SkipEmptyParts);
 			auto tm = Core::Instance ().GetProxy ()->GetTagsManager ();
 			todo->SetTagIDs (Util::Map (tags, [tm] (const QString& tag) { return tm->GetID (tag); }));
 

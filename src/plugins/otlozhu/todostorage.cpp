@@ -56,7 +56,7 @@ namespace Otlozhu
 	int TodoStorage::FindItem (const QString& id) const
 	{
 		const auto pos = std::find_if (Items_.begin (), Items_.end (),
-				[&id] (decltype (Items_.front ()) item) { return item->GetID () == id; });
+				[&id] (const auto& item) { return item->GetID () == id; });
 		return pos == Items_.end () ?
 				-1 :
 				std::distance (Items_.begin (), pos);
@@ -193,7 +193,7 @@ namespace Otlozhu
 	{
 		Storage_.beginGroup ("Items");
 		Storage_.beginWriteArray ("List", GetNumItems ());
-		Q_FOREACH (int idx, indexes)
+		for (int idx : indexes)
 		{
 			Storage_.setArrayIndex (idx);
 			Storage_.setValue ("Item", GetItemAt (idx)->Serialize ());

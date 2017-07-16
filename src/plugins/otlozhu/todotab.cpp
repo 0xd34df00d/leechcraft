@@ -362,7 +362,7 @@ namespace Otlozhu
 
 		QFile file (filename);
 		file.open (QIODevice::ReadOnly);
-		auto items = ICalParser ().Parse (file.readAll ());
+		const auto& items = ICalParser ().Parse (file.readAll ());
 		if (items.isEmpty ())
 			return;
 
@@ -372,11 +372,11 @@ namespace Otlozhu
 
 		auto storage = Core::Instance ().GetTodoManager ()->GetTodoStorage ();
 		auto ourItems = storage->GetAllItems ();
-		Q_FOREACH (auto item, items)
+		for (const auto& item : items)
 		{
 			const auto& itemId = item->GetID ();
 			auto pos = std::find_if (ourItems.begin (), ourItems.end (),
-					[&itemId] (decltype (ourItems.front ()) ourItem) { return ourItem->GetID () == itemId; });
+					[&itemId] (const auto& ourItem) { return ourItem->GetID () == itemId; });
 			if (pos != ourItems.end ())
 			{
 				if (dia.GetPriority () == ItemsMergeDialog::Priority::Imported)
@@ -389,7 +389,7 @@ namespace Otlozhu
 
 			const auto& itemTitle = item->GetTitle ();
 			pos = std::find_if (ourItems.begin (), ourItems.end (),
-					[itemTitle] (decltype (ourItems.front ()) ourItem) { return ourItem->GetTitle () == itemTitle; });
+					[itemTitle] (const auto& ourItem) { return ourItem->GetTitle () == itemTitle; });
 			if (pos != ourItems.end ())
 			{
 				if (dia.GetPriority () == ItemsMergeDialog::Priority::Imported &&

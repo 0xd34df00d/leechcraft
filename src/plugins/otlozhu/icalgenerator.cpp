@@ -100,7 +100,7 @@ namespace Otlozhu
 		}
 
 		QByteArray result;
-		Q_FOREACH (const QByteArray& arr, lines)
+		for (const auto& arr : lines)
 			result += arr + "\r\n";
 		return result;
 	}
