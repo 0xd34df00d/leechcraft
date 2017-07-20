@@ -54,48 +54,48 @@ namespace Keywords
 	{
 		EditKeywordDialog addDialog("", "");
 
-		if (addDialog.exec () == QDialog::Accepted)
+		if (addDialog.exec () != QDialog::Accepted)
+			return;
+
+		const QString& keyword = addDialog.GetKeyword ();
+		const QString& url = addDialog.GetUrl ();
+
+		if (url.isEmpty () || keyword.isEmpty ())
+			return;
+
+		bool alreadyExists = Keywords_.allKeys ().contains (keyword);
+
+		if (alreadyExists)
+			if (QMessageBox::question (this,
+					tr ("Keyword already exists"),
+					tr ("Entered keyword already exists. Change url for this keyword?"),
+					QMessageBox::Yes | QMessageBox::No,
+					QMessageBox::Yes) == QMessageBox::No)
+						return;
+
+		Keywords_.setValue (keyword, url);
+
+		if (alreadyExists)
 		{
-			const QString& keyword = addDialog.GetKeyword ();
-			const QString& url = addDialog.GetUrl ();
-
-			if (url.isEmpty () || keyword.isEmpty ())
-				return;
-
-			bool alreadyExists = Keywords_.allKeys ().contains (keyword);
-
-			if (alreadyExists)
-				if (QMessageBox::question (this,
-						tr ("Keyword already exists"),
-						tr ("Entered keyword already exists. Change url for this keyword?"),
-						QMessageBox::Yes | QMessageBox::No,
-						QMessageBox::Yes) == QMessageBox::No)
-							return;
-
-			Keywords_.setValue (keyword, url);
-
-			if (alreadyExists)
+			for (int i = 0; i < Model_->rowCount (); i++)
 			{
-				for (int i = 0; i < Model_->rowCount (); i++)
+				if (Model_->item (i, 0)->text () == keyword)
 				{
-					if (Model_->item (i, 0)->text () == keyword)
-					{
-						Model_->item (i, 1)->setText (url);
-						break;
-					}
+					Model_->item (i, 1)->setText (url);
+					break;
 				}
 			}
-			else
-			{
-				QStandardItem *keywordItem = new QStandardItem (keyword);
-				QStandardItem *urlItem = new QStandardItem (url);
-				QList<QStandardItem*> items;
-
-				items << keywordItem << urlItem;
-				Model_->appendRow (items);
-			}
-			Plugin_->UpdateKeywords (keyword, url);
 		}
+		else
+		{
+			QStandardItem *keywordItem = new QStandardItem (keyword);
+			QStandardItem *urlItem = new QStandardItem (url);
+			QList<QStandardItem*> items;
+
+			items << keywordItem << urlItem;
+			Model_->appendRow (items);
+		}
+		Plugin_->UpdateKeywords (keyword, url);
 	}
 
 	void KeywordsManagerWidget::on_Modify__released ()
