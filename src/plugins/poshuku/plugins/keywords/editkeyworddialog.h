@@ -27,11 +27,10 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_KEYWORDS_EDITKEYWORDDIALOG_H
-#define PLUGINS_POSHUKU_PLUGINS_KEYWORDS_EDITKEYWORDDIALOG_H
-#include <QDialog> 
-#include "ui_editkeyworddialog.h"
+#pragma once
 
+#include <QDialog>
+#include "ui_editkeyworddialog.h"
 
 namespace LeechCraft
 {
@@ -39,17 +38,17 @@ namespace Poshuku
 {
 namespace Keywords
 { 
-    class EditKeywordDialog : public QDialog
-    {
-        Q_OBJECT
+	class EditKeywordDialog : public QDialog
+	{
+		Q_OBJECT
 
-        Ui::EditKeywordDialog Ui_;
-    public:
-        EditKeywordDialog (const QString& url, const QString& keyword, QWidget *parent = 0);
-        QString GetUrl () const;
-        QString GetKeyword () const;
-    };
+		Ui::EditKeywordDialog Ui_;
+	public:
+		EditKeywordDialog (const QString& url, const QString& keyword, QWidget *parent = nullptr);
+
+		QString GetUrl () const;
+		QString GetKeyword () const;
+	};
 }
 }
 }
-#endif

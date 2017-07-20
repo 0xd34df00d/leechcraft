@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_KEYWORDS_USERSCRIPTSMANAGER_H
-#define PLUGINS_POSHUKU_PLUGINS_KEYWORDS_USERSCRIPTSMANAGER_H
+#pragma once
+
 #include <QWidget>
 #include <QStandardItemModel>
 #include <QSettings>
@@ -59,6 +59,3 @@ namespace Keywords
 }
 }
 }
-
-#endif 
-

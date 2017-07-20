@@ -29,7 +29,6 @@
 
 #include "editkeyworddialog.h"
 
-
 namespace LeechCraft
 {
 namespace Poshuku
@@ -37,7 +36,7 @@ namespace Poshuku
 namespace Keywords
 { 
 	EditKeywordDialog::EditKeywordDialog (const QString& url, 
-		const QString& keyword, QWidget *parent)
+			const QString& keyword, QWidget *parent)
 	: QDialog (parent)
 	{
 		Ui_.setupUi (this);

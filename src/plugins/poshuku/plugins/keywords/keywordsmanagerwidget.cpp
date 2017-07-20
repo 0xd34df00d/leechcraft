@@ -52,7 +52,7 @@ namespace Keywords
 
 	void KeywordsManagerWidget::on_Add__released ()
 	{
-		EditKeywordDialog addDialog("", "");
+		EditKeywordDialog addDialog { {}, {} };
 
 		if (addDialog.exec () != QDialog::Accepted)
 			return;
