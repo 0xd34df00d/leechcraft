@@ -65,13 +65,13 @@ namespace Keywords
 
 		bool alreadyExists = Keywords_.allKeys ().contains (keyword);
 
-		if (alreadyExists)
-			if (QMessageBox::question (this,
-					tr ("Keyword already exists"),
-					tr ("Entered keyword already exists. Change url for this keyword?"),
-					QMessageBox::Yes | QMessageBox::No,
-					QMessageBox::Yes) == QMessageBox::No)
-						return;
+		if (alreadyExists &&
+				QMessageBox::question (this,
+						tr ("Keyword already exists"),
+						tr ("Entered keyword already exists. Change url for this keyword?"),
+						QMessageBox::Yes | QMessageBox::No,
+						QMessageBox::Yes) == QMessageBox::No)
+				return;
 
 		Keywords_.setValue (keyword, url);
 
