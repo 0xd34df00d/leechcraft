@@ -68,7 +68,8 @@ namespace Keywords
 		if (alreadyExists &&
 				QMessageBox::question (this,
 						tr ("Keyword already exists"),
-						tr ("Entered keyword already exists. Change url for this keyword?"),
+						tr ("The keyword %1 already exists. Do you want to update the URL for this keyword?")
+							.arg ("<em>" + keyword + "</em>"),
 						QMessageBox::Yes | QMessageBox::No,
 						QMessageBox::Yes) == QMessageBox::No)
 				return;
