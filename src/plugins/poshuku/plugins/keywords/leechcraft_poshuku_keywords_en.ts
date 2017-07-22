@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="en_US">
+<TS version="2.1" language="en_US">
 <context>
     <name>EditKeywordDialog</name>
     <message>
@@ -48,20 +48,20 @@
 <context>
     <name>LeechCraft::Poshuku::Keywords::KeywordsManagerWidget</name>
     <message>
-        <location filename="keywordsmanagerwidget.cpp" line="69"/>
+        <location filename="keywordsmanagerwidget.cpp" line="70"/>
         <source>Keyword already exists</source>
         <translation>Keyword already exists</translation>
     </message>
     <message>
-        <location filename="keywordsmanagerwidget.cpp" line="70"/>
-        <source>Entered keyword already exists. Change url for this keyword?</source>
-        <translation>Entered keyword already exists. Change url for this keyword?</translation>
+        <location filename="keywordsmanagerwidget.cpp" line="71"/>
+        <source>The keyword %1 already exists. Do you want to update the URL for this keyword?</source>
+        <translation>The keyword %1 already exists. Do you want to update the URL for this keyword?</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Poshuku::Keywords::Plugin</name>
     <message>
-        <location filename="keywords.cpp" line="52"/>
+        <location filename="keywords.cpp" line="53"/>
         <source>Keyword</source>
         <translation>Keyword</translation>
     </message>
@@ -71,7 +71,7 @@
         <translation>Url</translation>
     </message>
     <message>
-        <location filename="keywords.cpp" line="97"/>
+        <location filename="keywords.cpp" line="98"/>
         <source>URL keywords support for the Poshuku browser.</source>
         <translation>URL keywords support for the Poshuku browser.</translation>
     </message>
