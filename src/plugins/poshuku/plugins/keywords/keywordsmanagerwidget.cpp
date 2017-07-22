@@ -79,21 +79,20 @@ namespace Keywords
 		if (alreadyExists)
 		{
 			for (int i = 0; i < Model_->rowCount (); i++)
-			{
 				if (Model_->item (i, 0)->text () == keyword)
 				{
 					Model_->item (i, 1)->setText (url);
 					break;
 				}
-			}
 		}
 		else
 		{
-			QStandardItem *keywordItem = new QStandardItem (keyword);
-			QStandardItem *urlItem = new QStandardItem (url);
-			QList<QStandardItem*> items;
+			const QList<QStandardItem*> items
+			{
+				new QStandardItem (keyword),
+				new QStandardItem (url)
+			};
 
-			items << keywordItem << urlItem;
 			Model_->appendRow (items);
 		}
 		Plugin_->UpdateKeywords (keyword, url);
