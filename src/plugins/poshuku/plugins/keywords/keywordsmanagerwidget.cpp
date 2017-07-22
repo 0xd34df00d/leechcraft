@@ -101,35 +101,37 @@ namespace Keywords
 
 	void KeywordsManagerWidget::on_Modify__released ()
 	{
-		const QModelIndex& selected = Ui_.Items_->currentIndex ();
-
+		const auto& selected = Ui_.Items_->currentIndex ();
 		if (!selected.isValid ())
 			return;
 
-		const QString& keyword = Model_->item (selected.row (), 0)->text ();
-		const QString& url = Model_->item (selected.row (), 1)->text ();
-		EditKeywordDialog editDialog(url, keyword);
+		const auto row = selected.row ();
+
+		const auto& keyword = Model_->item (row, 0)->text ();
+		const auto& url = Model_->item (row, 1)->text ();
+		EditKeywordDialog editDialog { url, keyword };
 
 		if (editDialog.exec () == QDialog::Accepted &&
 				(keyword != editDialog.GetKeyword () || url != editDialog.GetUrl ()))
 		{
 			if (keyword != editDialog.GetKeyword ())
 				Keywords_.remove (keyword);
+
 			Keywords_.setValue (editDialog.GetKeyword (), editDialog.GetUrl ());
-			Model_->item (selected.row (), 0)->setText (editDialog.GetKeyword ());
-			Model_->item (selected.row (), 1)->setText (editDialog.GetUrl ());
+			Model_->item (row, 0)->setText (editDialog.GetKeyword ());
+			Model_->item (row, 1)->setText (editDialog.GetUrl ());
 			Plugin_->UpdateKeywords (editDialog.GetKeyword (), editDialog.GetUrl ());
 		}
 	}
 
 	void KeywordsManagerWidget::on_Remove__released ()
 	{
-		const QModelIndex& selected = Ui_.Items_->currentIndex ();
+		const auto& selected = Ui_.Items_->currentIndex ();
 
 		if (!selected.isValid ())
 			return;
 
-		const QString& keyword = Model_->item (selected.row (), 0)->text ();
+		const auto& keyword = Model_->item (selected.row (), 0)->text ();
 
 		Keywords_.remove (keyword);
 		Model_->removeRow (selected.row ());
