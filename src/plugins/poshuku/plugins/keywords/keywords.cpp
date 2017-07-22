@@ -68,7 +68,7 @@ namespace Keywords
 			UpdateKeywords (keyword, url);
 		}
 
-		SettingsDialog_.reset (new Util::XmlSettingsDialog);
+		SettingsDialog_ = std::make_shared<Util::XmlSettingsDialog> ();
 		SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
 				"poshukukeywordssettings.xml");
 		SettingsDialog_->SetCustomWidget ("KeywordsManagerWidget",

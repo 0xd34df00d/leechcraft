@@ -57,8 +57,8 @@ namespace Keywords
 		if (addDialog.exec () != QDialog::Accepted)
 			return;
 
-		const QString& keyword = addDialog.GetKeyword ();
-		const QString& url = addDialog.GetUrl ();
+		const auto& keyword = addDialog.GetKeyword ();
+		const auto& url = addDialog.GetUrl ();
 
 		if (url.isEmpty () || keyword.isEmpty ())
 			return;
