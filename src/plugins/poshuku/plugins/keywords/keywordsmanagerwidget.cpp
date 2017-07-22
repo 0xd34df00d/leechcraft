@@ -111,17 +111,19 @@ namespace Keywords
 		const auto& url = Model_->item (row, 1)->text ();
 		EditKeywordDialog editDialog { url, keyword };
 
-		if (editDialog.exec () == QDialog::Accepted &&
-				(keyword != editDialog.GetKeyword () || url != editDialog.GetUrl ()))
-		{
-			if (keyword != editDialog.GetKeyword ())
-				Keywords_.remove (keyword);
+		if (editDialog.exec () != QDialog::Accepted)
+			return;
 
-			Keywords_.setValue (editDialog.GetKeyword (), editDialog.GetUrl ());
-			Model_->item (row, 0)->setText (editDialog.GetKeyword ());
-			Model_->item (row, 1)->setText (editDialog.GetUrl ());
-			Plugin_->UpdateKeywords (editDialog.GetKeyword (), editDialog.GetUrl ());
-		}
+		if (keyword == editDialog.GetKeyword () && url == editDialog.GetUrl ())
+			return;
+
+		if (keyword != editDialog.GetKeyword ())
+			Keywords_.remove (keyword);
+
+		Keywords_.setValue (editDialog.GetKeyword (), editDialog.GetUrl ());
+		Model_->item (row, 0)->setText (editDialog.GetKeyword ());
+		Model_->item (row, 1)->setText (editDialog.GetUrl ());
+		Plugin_->UpdateKeywords (editDialog.GetKeyword (), editDialog.GetUrl ());
 	}
 
 	void KeywordsManagerWidget::on_Remove__released ()
