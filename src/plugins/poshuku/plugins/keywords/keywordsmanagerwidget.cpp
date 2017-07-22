@@ -106,20 +106,8 @@ namespace Keywords
 		if (!selected.isValid ())
 			return;
 
-		QStandardItemModel *model = qobject_cast<QStandardItemModel*> (Ui_.Items_->model ());
-
-
-		if (!model)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "unable cast "
-				<< Ui_.Items_->model ()
-				<< "to QStandardItemModel";
-			return;
-		}
-
-		const QString& keyword = model->item (selected.row (), 0)->text ();
-		const QString& url = model->item (selected.row (), 1)->text ();
+		const QString& keyword = Model_->item (selected.row (), 0)->text ();
+		const QString& url = Model_->item (selected.row (), 1)->text ();
 		EditKeywordDialog editDialog(url, keyword);
 
 		if (editDialog.exec () == QDialog::Accepted &&
@@ -128,8 +116,8 @@ namespace Keywords
 			if (keyword != editDialog.GetKeyword ())
 				Keywords_.remove (keyword);
 			Keywords_.setValue (editDialog.GetKeyword (), editDialog.GetUrl ());
-			model->item (selected.row (), 0)->setText (editDialog.GetKeyword ());
-			model->item (selected.row (), 1)->setText (editDialog.GetUrl ());
+			Model_->item (selected.row (), 0)->setText (editDialog.GetKeyword ());
+			Model_->item (selected.row (), 1)->setText (editDialog.GetUrl ());
 			Plugin_->UpdateKeywords (editDialog.GetKeyword (), editDialog.GetUrl ());
 		}
 	}
@@ -141,19 +129,7 @@ namespace Keywords
 		if (!selected.isValid ())
 			return;
 
-		QStandardItemModel *model = qobject_cast<QStandardItemModel*> (Ui_.Items_->model ());
-
-
-		if (!model)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "unable cast "
-				<< Ui_.Items_->model ()
-				<< "to QStandardItemModel";
-			return;
-		}
-
-		const QString& keyword = model->item (selected.row (), 0)->text ();
+		const QString& keyword = Model_->item (selected.row (), 0)->text ();
 
 		Keywords_.remove (keyword);
 		Model_->removeRow (selected.row ());
