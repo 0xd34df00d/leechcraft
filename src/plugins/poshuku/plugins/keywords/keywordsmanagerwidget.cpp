@@ -92,7 +92,8 @@ namespace Keywords
 				new QStandardItem (keyword),
 				new QStandardItem (url)
 			};
-
+			for (const auto item : items)
+				item->setEditable (false);
 			Model_->appendRow (items);
 		}
 		Plugin_->UpdateKeywords (keyword, url);
