@@ -99,6 +99,9 @@ namespace Otlozhu
 			if (item->GetPercentage () == 100)
 				continue;
 
+			if (!item->GetDueDate ().isValid ())
+				continue;
+
 			const auto& due = item->GetDueDate ();
 			if ((!min.isValid () || due < min) && due > now)
 			{
