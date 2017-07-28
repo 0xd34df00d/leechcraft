@@ -52,10 +52,6 @@
 
 Q_DECLARE_METATYPE (QMenu*)
 
-#if QT_VERSION < 0x050500
-Q_DECLARE_METATYPE (QList<QModelIndex>)
-#endif
-
 namespace LeechCraft
 {
 namespace Summary
