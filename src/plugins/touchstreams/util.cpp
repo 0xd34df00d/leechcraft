@@ -75,11 +75,7 @@ namespace TouchStreams
 				("audio_id", map.value ("id").toString ())
 				("owner_id", map.value ("owner_id").toString ());
 
-#if QT_VERSION >= 0x050000
 		return radioID.toString (QUrl::FullyEncoded);
-#else
-		return radioID.toString ();
-#endif
 	}
 }
 }
