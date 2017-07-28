@@ -38,25 +38,13 @@
 #include <QToolBar>
 #include <QMenu>
 #include <QFileInfo>
-
-#if QT_VERSION < 0x050000
-#include <QDeclarativeView>
-#include <QDeclarativeContext>
-#include <QDeclarativeError>
-#else
 #include <QQuickWidget>
 #include <QQuickItem>
 #include <QQmlContext>
-#endif
-
 #include <util/models/rolenamesmixin.h>
 #include <util/sys/paths.h>
 #include <util/util.h>
 #include <interfaces/core/iiconthememanager.h>
-
-#if QT_VERSION < 0x050000
-Q_DECLARE_METATYPE (QFileInfo);
-#endif
 
 namespace LeechCraft
 {
@@ -87,11 +75,7 @@ namespace Choroid
 	: TabClass_ (tc)
 	, Parent_ (parent)
 	, Proxy_ (proxy)
-#if QT_VERSION < 0x050000
-	, DeclView_ (new QDeclarativeView)
-#else
 	, DeclView_ (new QQuickWidget)
-#endif
 	, QMLFilesModel_ (new QMLItemModel)
 	, FSModel_ (new QFileSystemModel (this))
 	, FilesModel_ (new QStandardItemModel (this))
@@ -174,11 +158,7 @@ namespace Choroid
 
 	void ChoroidTab::LoadQML ()
 	{
-#if QT_VERSION < 0x050000
-		DeclView_->setResizeMode (QDeclarativeView::SizeRootObjectToView);
-#else
 		DeclView_->setResizeMode (QQuickWidget::SizeRootObjectToView);
-#endif
 
 		DeclView_->rootContext ()->setContextProperty ("filesListModel", QMLFilesModel_);
 

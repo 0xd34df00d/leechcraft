@@ -43,11 +43,7 @@ class QStandardItem;
 class QFileInfo;
 class QDeclarativeView;
 
-#if QT_VERSION <= 0x050000
-class QDeclarativeView;
-#else
 class QQuickWidget;
-#endif
 
 namespace LeechCraft
 {
@@ -67,12 +63,7 @@ namespace Choroid
 
 		Ui::ChoroidTab Ui_;
 
-#if QT_VERSION <= 0x050000
-		QDeclarativeView *DeclView_;
-#else
 		QQuickWidget *DeclView_;
-#endif
-
 		QMLItemModel *QMLFilesModel_;
 
 		QFileSystemModel *FSModel_;
