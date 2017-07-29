@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_KEYWORDS_H
-#define PLUGINS_POSHUKU_PLUGINS_KEYWORDS_H
+#pragma once
+
 #include <QIcon>
 #include <QMap>
 #include <QStandardItemModel>
@@ -76,6 +76,3 @@ namespace Keywords
 }
 }
 }
-
-#endif
-

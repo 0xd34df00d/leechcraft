@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_KEYWORDS_XMLSETTINGSMANAGER_H
-#define PLUGINS_POSHUKU_PLUGINS_KEYWORDS_XMLSETTINGSMANAGER_H
+#pragma once
+
 #include <xmlsettingsdialog/basesettingsmanager.h>
 
 namespace LeechCraft
@@ -52,5 +52,3 @@ namespace Keywords
 }
 }
 }
-
-#endif
