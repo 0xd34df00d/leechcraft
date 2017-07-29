@@ -28,7 +28,6 @@
  **********************************************************************/
 
 #include "flagiconprovider.h"
-#include <QImage>
 #include <QIcon>
 #include <util/sys/paths.h>
 
