@@ -34,11 +34,7 @@
 #include <QProcess>
 #include <QCoreApplication>
 #include <QAbstractEventDispatcher>
-
-#if QT_VERSION >= 0x050000
 #include <QGuiApplication>
-#endif
-
 #include <util/x11/xwrapper.h>
 #include "xmlsettingsmanager.h"
 #include "rulesstorage.h"
@@ -48,56 +44,23 @@
 #include <X11/Xatom.h>
 #include <X11/XKBlib.h>
 
-#if QT_VERSION >= 0x050000
 #include <xcb/xcb.h>
 
 #define explicit xcb_authors_dont_care_about_cplusplus
 #include <xcb/xkb.h>
 #undef explicit
 
-#endif
-
 namespace LeechCraft
 {
 namespace KBSwitch
 {
-	namespace
-	{
-#if QT_VERSION < 0x050000
-		bool EvFilter (void *msg)
-		{
-			return KBCtl::Instance ().Filter (static_cast<XEvent*> (msg));
-		}
-#endif
-	}
-
 	KBCtl::KBCtl ()
-#if QT_VERSION < 0x050000
-	: PrevFilter_ (QAbstractEventDispatcher::instance ()->setEventFilter (EvFilter))
-#endif
 	{
-#if QT_VERSION >= 0x050000
 		QAbstractEventDispatcher::instance ()->installNativeEventFilter (this);
-#endif
 		InitDisplay ();
 
 		Rules_ = new RulesStorage (Display_);
 
-#if QT_VERSION < 0x050000
-		XWindowAttributes wa;
-		XGetWindowAttributes (Display_, Window_, &wa);
-		const auto rootEvents = StructureNotifyMask |
-				SubstructureNotifyMask |
-				PropertyChangeMask |
-				FocusChangeMask |
-				KeymapStateMask |
-				LeaveWindowMask |
-				EnterWindowMask;
-		XSelectInput (Display_, Window_, wa.your_event_mask | rootEvents);
-
-		XkbSelectEventDetails (Display_, XkbUseCoreKbd,
-				XkbStateNotify, XkbAllStateComponentsMask, XkbGroupStateMask);
-#else
 		const auto conn = QX11Info::connection ();
 
 		const uint32_t rootEvents [] =
@@ -127,7 +90,6 @@ namespace KBSwitch
 				requiredMapParts,
 				requiredMapParts,
 				nullptr);
-#endif
 
 		CheckExtWM ();
 
@@ -155,16 +117,6 @@ namespace KBSwitch
 
 	void KBCtl::InitDisplay ()
 	{
-#if QT_VERSION < 0x050000
-		int xkbError, xkbReason;
-		int mjr = XkbMajorVersion, mnr = XkbMinorVersion;
-		Display_ = XkbOpenDisplay (nullptr,
-				&XkbEventType_,
-				&xkbError,
-				&mjr,
-				&mnr,
-				&xkbReason);
-#else
 		Display_ = QX11Info::display ();
 
 		const auto conn = QX11Info::connection ();
@@ -179,7 +131,6 @@ namespace KBSwitch
 		XkbEventType_ = reply->first_event;
 
 		xcb_xkb_use_extension (conn, XCB_XKB_MAJOR_VERSION, XCB_XKB_MINOR_VERSION);
-#endif
 
 		Window_ = DefaultRootWindow (Display_);
 		NetActiveWinAtom_ = Util::XWrapper::Instance ().GetAtom ("_NET_ACTIVE_WINDOW");
@@ -295,59 +246,6 @@ namespace KBSwitch
 		return Rules_;
 	}
 
-#if QT_VERSION < 0x050000
-	bool KBCtl::Filter (XEvent *event)
-	{
-		auto invokePrev = [this, event] { return PrevFilter_ ? PrevFilter_ (event) : false; };
-
-		if (event->type == XkbEventType_)
-		{
-			HandleXkbEvent (event);
-			return invokePrev ();
-		}
-
-		switch (event->type)
-		{
-		case FocusIn:
-		case FocusOut:
-		case PropertyNotify:
-			SetWindowLayout (Util::XWrapper::Instance ().GetActiveApp ());
-			break;
-		case CreateNotify:
-		{
-			const auto window = event->xcreatewindow.window;
-			AssignWindow (window);
-			break;
-		}
-		case DestroyNotify:
-			Win2Group_.remove (event->xdestroywindow.window);
-			break;
-		}
-
-		return invokePrev ();
-	}
-
-	void KBCtl::HandleXkbEvent (XEvent *event)
-	{
-		XkbEvent xkbEv;
-		xkbEv.core = *event;
-
-		switch (xkbEv.any.xkb_type)
-		{
-		case XkbStateNotify:
-			if (xkbEv.state.group == xkbEv.state.locked_group)
-				Win2Group_ [Util::XWrapper::Instance ().GetActiveApp ()] = xkbEv.state.group;
-			emit groupChanged (xkbEv.state.group);
-			break;
-		case XkbNewKeyboardNotify:
-			Win2Group_.clear ();
-			UpdateGroupNames ();
-			break;
-		default:
-			break;
-		}
-	}
-#else
 	bool KBCtl::nativeEventFilter (const QByteArray& eventType, void *msg, long int*)
 	{
 		if (eventType != "xcb_generic_event_t")
@@ -395,7 +293,6 @@ namespace KBSwitch
 			break;
 		}
 	}
-#endif
 
 	void KBCtl::SetWindowLayout (ulong window)
 	{

@@ -30,22 +30,13 @@
 #pragma once
 
 #include <QtGlobal>
-
-#if QT_VERSION < 0x050000
-#include <QDeclarativeImageProvider>
-#else
 #include <QQuickImageProvider>
-#endif
 
 namespace LeechCraft
 {
 namespace KBSwitch
 {
-#if QT_VERSION < 0x050000
-	class FlagIconProvider : public QDeclarativeImageProvider
-#else
 	class FlagIconProvider : public QQuickImageProvider
-#endif
 	{
 	public:
 		FlagIconProvider ();
