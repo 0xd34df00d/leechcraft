@@ -33,8 +33,10 @@
 #include <QDesktopWidget>
 #include <QLabel>
 #include <QMenu>
+#include <QKeyEvent>
 #include <qrencode.h>
 #include <util/util.h>
+#include <util/sll/lambdaeventfilter.h>
 
 namespace LeechCraft
 {
@@ -151,6 +153,13 @@ namespace QRd
 		label->setAttribute (Qt::WA_DeleteOnClose);
 		label->setPixmap (QPixmap::fromImage (image));
 		label->show ();
+		label->installEventFilter (Util::MakeLambdaEventFilter ([label] (QKeyEvent *ev)
+				{
+					if (ev->type () == QEvent::KeyRelease && ev->key () == Qt::Key_Escape)
+						label->deleteLater ();
+
+					return false;
+				}));
 	}
 }
 }
