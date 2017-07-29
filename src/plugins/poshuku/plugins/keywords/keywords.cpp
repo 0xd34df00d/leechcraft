@@ -49,8 +49,8 @@ namespace Keywords
 
 		CoreProxy_ = proxy;
 
-		Model_ = std::make_shared<QStandardItemModel> ();
-		Model_->setHorizontalHeaderLabels ({ tr ("Keyword"), tr ("Url") });
+		auto model = new QStandardItemModel;
+		model->setHorizontalHeaderLabels ({ tr ("Keyword"), tr ("Url") });
 
 		QSettings keywords { QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Poshuku_Keywords" };
@@ -64,7 +64,7 @@ namespace Keywords
 				new QStandardItem { url }
 			};
 
-			Model_->appendRow (items);
+			model->appendRow (items);
 			UpdateKeywords (keyword, url);
 		}
 
@@ -72,7 +72,7 @@ namespace Keywords
 		SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
 				"poshukukeywordssettings.xml");
 		SettingsDialog_->SetCustomWidget ("KeywordsManagerWidget",
-				new KeywordsManagerWidget { Model_.get (), this });
+				new KeywordsManagerWidget { model, this });
 	}
 
 	void Plugin::SecondInit ()

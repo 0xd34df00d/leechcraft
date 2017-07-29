@@ -31,7 +31,6 @@
 
 #include <QIcon>
 #include <QMap>
-#include <QStandardItemModel>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/ihavesettings.h>
@@ -55,7 +54,6 @@ namespace Keywords
 
 		ICoreProxy_ptr CoreProxy_;
 		Util::XmlSettingsDialog_ptr SettingsDialog_;
-		std::shared_ptr<QStandardItemModel> Model_;
 		QMap<QString, QString> Keywords2Urls_;
 	public:
 		void Init (ICoreProxy_ptr);
