@@ -85,19 +85,26 @@ namespace QRd
 	}
 
 	void Plugin::hookWebViewContextMenu (IHookProxy_ptr,
-			IWebView *view, const ContextMenuInfo&,
+			IWebView *view, const ContextMenuInfo& info,
 			QMenu *menu, WebViewCtxMenuStage menuBuildStage)
 	{
 		if (menuBuildStage != WVSAfterFinish)
 			return;
 
 		const auto& url = view->GetUrl ();
-		if (url.isEmpty ())
-			return;
+		if (!url.isEmpty ())
+		{
+			const auto act = menu->addAction (tr ("Generate QR code..."),
+					this, SLOT (genQR ()));
+			act->setProperty ("Poshuku/QRd/URL", url);
+		}
 
-		const auto act = menu->addAction (tr ("Generate QR code..."),
-				this, SLOT (genQR ()));
-		act->setProperty ("Poshuku/QRd/URL", url);
+		if (!info.LinkUrl_.isEmpty ())
+		{
+			const auto act = menu->addAction (tr ("Generate QR code for the link..."),
+					this, SLOT (genQR ()));
+			act->setProperty ("Poshuku/QRd/URL", info.LinkUrl_);
+		}
 	}
 
 	void Plugin::genQR ()
