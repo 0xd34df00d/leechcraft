@@ -90,6 +90,11 @@ namespace PDF
 		return XSD_;
 	}
 
+	QString Plugin::GetDiagInfoString () const
+	{
+		return QString { "Built with poppler " POPPLER_VERSION };
+	}
+
 	auto Plugin::CanLoadDocument (const QString& file) -> LoadCheckResult
 	{
 		return Document (file, this).IsValid () ?

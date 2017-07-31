@@ -33,6 +33,7 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/ihavesettings.h>
+#include <interfaces/ihavediaginfo.h>
 #include <interfaces/monocle/ibackendplugin.h>
 #include <interfaces/monocle/iknowfileextensions.h>
 
@@ -46,6 +47,7 @@ namespace PDF
 				 , public IInfo
 				 , public IPlugin2
 				 , public IHaveSettings
+				   , public IHaveDiagInfo
 				 , public IBackendPlugin
 				 , public IKnowFileExtensions
 	{
@@ -53,6 +55,7 @@ namespace PDF
 		Q_INTERFACES (IInfo
 				IPlugin2
 				IHaveSettings
+				IHaveDiagInfo
 				LeechCraft::Monocle::IBackendPlugin
 				LeechCraft::Monocle::IKnowFileExtensions)
 
@@ -71,6 +74,8 @@ namespace PDF
 		QSet<QByteArray> GetPluginClasses () const;
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+
+		QString GetDiagInfoString () const;
 
 		LoadCheckResult CanLoadDocument (const QString&);
 		IDocument_ptr LoadDocument (const QString&);
