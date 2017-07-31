@@ -40,8 +40,6 @@ namespace Keywords
 { 
 	class EditKeywordDialog : public QDialog
 	{
-		Q_OBJECT
-
 		Ui::EditKeywordDialog Ui_;
 	public:
 		EditKeywordDialog (const QString& url, const QString& keyword, QWidget *parent = nullptr);
