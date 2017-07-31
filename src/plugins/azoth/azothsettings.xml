@@ -148,6 +148,9 @@
 					<label value="Shorten URLs longer than:" />
 					<suffix value=" symbols" />
 				</item>
+			</groupbox>
+			<groupbox>
+				<label value="Images" />
 				<item type="checkbox" property="ShowRichImagesAsLinks" default="false">
 					<label value="Show rich text images in chat as links" />
 				</item>
