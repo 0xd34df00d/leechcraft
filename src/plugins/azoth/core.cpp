@@ -896,12 +896,33 @@ namespace Azoth
 			}
 		}
 
-		void LimitImagesSize (QString& body)
+		bool LimitImagesSize (const QDomNodeList& imgs)
+		{
+			if (!XmlSettingsManager::Instance ().property ("LimitMaxImageSize").toBool ())
+				return false;
+
+			const auto maxWidth = XmlSettingsManager::Instance ().property ("MaxImageWidth").toInt ();
+			const auto maxHeight = XmlSettingsManager::Instance ().property ("MaxImageHeight").toInt ();
+
+			for (int i = 0; i < imgs.size (); ++i)
+			{
+				auto img = imgs.at (i).toElement ();
+				if (img.isNull ())
+					continue;
+
+				auto style = img.attribute ("style");
+				style += QString { "; max-width: %1px; max-height: %2px;" }
+						.arg (maxWidth)
+						.arg (maxHeight);
+				img.setAttribute ("style", style);
+			}
+
+			return true;
+		}
+
+		void HandleImages (QString& body)
 		{
 			if (!body.contains ("img", Qt::CaseInsensitive))
-				return;
-
-			if (!XmlSettingsManager::Instance ().property ("LimitMaxImageSize").toBool ())
 				return;
 
 			QDomDocument doc;
@@ -922,23 +943,13 @@ namespace Azoth
 			if (imgs.isEmpty ())
 				return;
 
-			const auto maxWidth = XmlSettingsManager::Instance ().property ("MaxImageWidth").toInt ();
-			const auto maxHeight = XmlSettingsManager::Instance ().property ("MaxImageHeight").toInt ();
+			if (LimitImagesSize (imgs) )
+				body = doc.toString (-1);
+		}
 
-			for (int i = 0; i < imgs.size (); ++i)
-			{
-				auto img = imgs.at (i).toElement ();
-				if (img.isNull ())
-					continue;
-
-				auto style = img.attribute ("style");
-				style += QString { "; max-width: %1px; max-height: %2px;" }
-						.arg (maxWidth)
-						.arg (maxHeight);
-				img.setAttribute ("style", style);
-			}
-
-			body = doc.toString (-1);
+		void PostprocRichBody (QString& body)
+		{
+			HandleImages (body);
 		}
 	}
 
@@ -971,7 +982,7 @@ namespace Azoth
 			HighlightNicks (body, msg, colors);
 
 		if (isRich)
-			LimitImagesSize (body);
+			PostprocRichBody (body);
 
 		proxy.reset (new Util::DefaultHookProxy);
 		proxy->SetValue ("body", body);
