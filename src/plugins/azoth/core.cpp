@@ -927,7 +927,12 @@ namespace Azoth
 
 			auto doc = imgs.at (0).ownerDocument ();
 
-			QList<QPair<QDomElement, QDomElement>> replacements;
+			struct Replacement
+			{
+				QDomElement NewElem_;
+				QDomElement OldElem_;
+			};
+			QList<Replacement> replacements;
 			for (int i = 0; i < imgs.size (); ++i)
 			{
 				auto img = imgs.at (i).toElement ();
@@ -945,8 +950,8 @@ namespace Azoth
 				replacements.append ({ link, img });
 			}
 
-			for (const auto& pair : replacements)
-				pair.second.parentNode ().replaceChild (pair.first, pair.second);
+			for (const auto& rep : replacements)
+				rep.OldElem_.parentNode ().replaceChild (rep.NewElem_, rep.OldElem_);
 
 			return !replacements.isEmpty ();
 		}
