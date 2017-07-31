@@ -40,6 +40,7 @@
 #include <QGraphicsView>
 #include <QMenu>
 #include <QWidgetAction>
+#include <interfaces/core/iiconthememanager.h>
 #include <util/threads/futures.h>
 #include "core.h"
 #include "pixmapcachemanager.h"
@@ -220,6 +221,8 @@ namespace Monocle
 		auto actionWidget = new QWidgetAction (arbMenu);
 		actionWidget->setDefaultWidget (ArbWidget_);
 		arbMenu->addAction (actionWidget);
+
+		Core::Instance ().GetProxy ()->GetIconThemeManager ()->ManageWidget (&rotateMenu);
 
 		rotateMenu.exec (event->screenPos ());
 	}
