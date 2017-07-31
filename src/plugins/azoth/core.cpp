@@ -898,9 +898,6 @@ namespace Azoth
 
 		bool LimitImagesSize (const QDomNodeList& imgs)
 		{
-			if (!XmlSettingsManager::Instance ().property ("LimitMaxImageSize").toBool ())
-				return false;
-
 			const auto maxWidth = XmlSettingsManager::Instance ().property ("MaxImageWidth").toInt ();
 			const auto maxHeight = XmlSettingsManager::Instance ().property ("MaxImageHeight").toInt ();
 
@@ -922,9 +919,6 @@ namespace Azoth
 
 		bool ReplaceImgsWithLinks (const QDomNodeList& imgs)
 		{
-			if (!XmlSettingsManager::Instance ().property ("ShowRichImagesAsLinks").toBool ())
-				return false;
-
 			auto doc = imgs.at (0).ownerDocument ();
 
 			struct Replacement
@@ -961,6 +955,21 @@ namespace Azoth
 			if (!body.contains ("img", Qt::CaseInsensitive))
 				return;
 
+			using Fun_t = bool (*) (const QDomNodeList&);
+			QList<QPair<QByteArray, Fun_t>> processors
+			{
+				{ "LimitMaxImageSize", &LimitImagesSize },
+				{ "ShowRichImagesAsLinks", &ReplaceImgsWithLinks }
+			};
+
+			auto ignorePair = [] (const auto& pair)
+			{
+				return !XmlSettingsManager::Instance ().property (pair.first).toBool ();
+			};
+
+			if (std::all_of (processors.begin (), processors.end (), ignorePair))
+				return;
+
 			QDomDocument doc;
 			QString error;
 			int errorLine;
@@ -979,8 +988,17 @@ namespace Azoth
 			if (imgs.isEmpty ())
 				return;
 
-			if (ReplaceImgsWithLinks (imgs) || LimitImagesSize (imgs) )
+			for (const auto& pair : processors)
+			{
+				if (ignorePair (pair))
+					continue;
+
+				if (!pair.second (imgs))
+					continue;
+
 				body = doc.toString (-1);
+				break;
+			}
 		}
 
 		void PostprocRichBody (QString& body)
