@@ -69,14 +69,12 @@ namespace PDF
 		setRenderHint ("EnableTextHinting", Poppler::Document::TextHinting);
 		setRenderHint ("EnableTextSlightHinting", Poppler::Document::TextSlightHinting);
 
-#if POPPLER_VERSION_MAJOR > 0 || POPPLER_VERSION_MINOR >= 24
 		const auto& enhanceMode = XmlSettingsManager::Instance ()
 				.property ("ThinLineEnhancement").toString ();
 		if (enhanceMode == "Solid")
 			PDocument_->setRenderHint (Poppler::Document::ThinLineSolid);
 		else if (enhanceMode == "Shape")
 			PDocument_->setRenderHint (Poppler::Document::ThinLineShape);
-#endif
 
 		BuildTOC ();
 	}
@@ -244,7 +242,6 @@ namespace PDF
 	{
 		typedef QMap<int, QList<QRectF>> Result_t;
 		Result_t result;
-#if POPPLER_VERSION_MAJOR > 0 || POPPLER_VERSION_MINOR >= 22
 	#if POPPLER_VERSION_MAJOR > 0 || POPPLER_VERSION_MINOR >= 31
 		Poppler::Page::SearchFlags searchFlags;
 		if (cs != Qt::CaseSensitive)
@@ -282,7 +279,7 @@ namespace PDF
 		for (int i = 0; i < numPages; ++i)
 			if (!resVec.at (i).isEmpty ())
 				result [i] = resVec.at (i);
-#endif
+
 		return result;
 	}
 

@@ -166,20 +166,12 @@ namespace PDF
 
 	QString FormFieldChoice::GetEditChoice () const
 	{
-#if POPPLER_VERSION_MAJOR > 0 || POPPLER_VERSION_MINOR >= 22
 		return Field_->editChoice ();
-#else
-		return QString ();
-#endif
 	}
 
 	void FormFieldChoice::SetEditChoice (const QString& choice)
 	{
-#if POPPLER_VERSION_MAJOR > 0 || POPPLER_VERSION_MINOR >= 22
 		Field_->setEditChoice (choice);
-#else
-		Q_UNUSED (choice);
-#endif
 	}
 
 	bool FormFieldChoice::IsEditable () const

@@ -109,11 +109,7 @@ namespace PDF
 
 	bool Plugin::IsThreaded () const
 	{
-#if POPPLER_VERSION_MAJOR > 0 || POPPLER_VERSION_MINOR >= 24
 		return true;
-#else
-		return false;
-#endif
 	}
 
 	QList<IKnowFileExtensions::ExtInfo> Plugin::GetKnownFileExtensions () const

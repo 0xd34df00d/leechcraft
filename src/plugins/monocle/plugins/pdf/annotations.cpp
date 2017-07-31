@@ -48,13 +48,11 @@ namespace PDF
 			return std::make_shared<TextAnnotation> (dynamic_cast<Poppler::TextAnnotation*> (ann));
 		case Poppler::Annotation::SubType::AHighlight:
 			return std::make_shared<HighlightAnnotation> (dynamic_cast<Poppler::HighlightAnnotation*> (ann));
-#if POPPLER_VERSION_MAJOR > 0 || POPPLER_VERSION_MINOR >= 20
 		case Poppler::Annotation::SubType::ALink:
 			if (ann->contents ().isEmpty ())
 				return {};
 			else
 				return std::make_shared<LinkAnnotation> (doc, dynamic_cast<Poppler::LinkAnnotation*> (ann));
-#endif
 		case Poppler::Annotation::SubType::ACaret:
 			return std::make_shared<CaretAnnotation> (dynamic_cast<Poppler::CaretAnnotation*> (ann));
 		default:
@@ -109,9 +107,7 @@ namespace PDF
 	LinkAnnotation::LinkAnnotation (Document *doc, Poppler::LinkAnnotation *ann)
 	: AnnotationBase { ann }
 	, LinkAnn_ { ann }
-#if POPPLER_VERSION_MAJOR > 0 || POPPLER_VERSION_MINOR >= 20
 	, Link_ { new Link { doc, LinkAnn_->linkDestination (), {} } }
-#endif
 	{
 	}
 
