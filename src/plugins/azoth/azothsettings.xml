@@ -148,6 +148,9 @@
 					<label value="Shorten URLs longer than:" />
 					<suffix value=" symbols" />
 				</item>
+				<item type="checkbox" property="ShowRichImagesAsLinks" default="false">
+					<label value="Show rich text images in chat as links" />
+				</item>
 				<item type="groupbox" checkable="true" property="LimitMaxImageSize" default="false">
 					<label value="Limit the display dimensions of images embedded in messages" />
 					<item type="spinbox" property="MaxImageWidth" default="1440" minimum="0" maximum="100000" step="10">

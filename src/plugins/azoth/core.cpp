@@ -920,6 +920,37 @@ namespace Azoth
 			return true;
 		}
 
+		bool ReplaceImgsWithLinks (const QDomNodeList& imgs)
+		{
+			if (!XmlSettingsManager::Instance ().property ("ShowRichImagesAsLinks").toBool ())
+				return false;
+
+			auto doc = imgs.at (0).ownerDocument ();
+
+			QList<QPair<QDomElement, QDomElement>> replacements;
+			for (int i = 0; i < imgs.size (); ++i)
+			{
+				auto img = imgs.at (i).toElement ();
+				if (img.isNull ())
+					continue;
+
+				auto src = img.attribute ("src");
+				if (src.isEmpty () || !src.startsWith ("http", Qt::CaseInsensitive))
+					continue;
+
+				auto link = doc.createElement ("a");
+				link.setAttribute ("href", src);
+				link.appendChild (doc.createTextNode (src));
+
+				replacements.append ({ link, img });
+			}
+
+			for (const auto& pair : replacements)
+				pair.second.parentNode ().replaceChild (pair.first, pair.second);
+
+			return !replacements.isEmpty ();
+		}
+
 		void HandleImages (QString& body)
 		{
 			if (!body.contains ("img", Qt::CaseInsensitive))
@@ -943,7 +974,7 @@ namespace Azoth
 			if (imgs.isEmpty ())
 				return;
 
-			if (LimitImagesSize (imgs) )
+			if (ReplaceImgsWithLinks (imgs) || LimitImagesSize (imgs) )
 				body = doc.toString (-1);
 		}
 
