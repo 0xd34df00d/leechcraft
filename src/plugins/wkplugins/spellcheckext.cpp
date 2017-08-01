@@ -82,23 +82,15 @@ namespace WKPlugins
 		bool IsWordStart (QTextBoundaryFinder::BoundaryReasons reasons,
 				QTextBoundaryFinder::BoundaryType type)
 		{
-#if QT_VERSION < 0x050000
-			return reasons & QTextBoundaryFinder::StartWord;
-#else
 			return reasons & QTextBoundaryFinder::StartOfItem &&
 					type & QTextBoundaryFinder::Word;
-#endif
 		}
 
 		bool IsWordEnd (QTextBoundaryFinder::BoundaryReasons reasons,
 				QTextBoundaryFinder::BoundaryType type)
 		{
-#if QT_VERSION < 0x050000
-			return reasons & QTextBoundaryFinder::EndWord;
-#else
 			return reasons & QTextBoundaryFinder::EndOfItem &&
 					type & QTextBoundaryFinder::Word;
-#endif
 		}
 	}
 
