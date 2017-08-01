@@ -46,7 +46,6 @@ namespace Keywords
 		virtual QSettings* BeginSettings () const;
 		virtual void EndSettings (QSettings*) const;
 	};
-
 }
 }
 }

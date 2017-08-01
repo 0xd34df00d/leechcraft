@@ -41,6 +41,7 @@ namespace Poshuku
 namespace Keywords
 {
 	class Plugin;
+
 	class KeywordsManagerWidget : public QWidget
 	{
 		Q_OBJECT
