@@ -958,8 +958,8 @@ namespace Azoth
 			using Fun_t = bool (*) (const QDomNodeList&);
 			QList<QPair<QByteArray, Fun_t>> processors
 			{
-				{ "LimitMaxImageSize", &LimitImagesSize },
-				{ "ShowRichImagesAsLinks", &ReplaceImgsWithLinks }
+				{ "ShowRichImagesAsLinks", &ReplaceImgsWithLinks },
+				{ "LimitMaxImageSize", &LimitImagesSize }
 			};
 
 			auto ignorePair = [] (const auto& pair)
