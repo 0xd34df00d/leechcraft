@@ -242,15 +242,9 @@ namespace PDF
 	{
 		typedef QMap<int, QList<QRectF>> Result_t;
 		Result_t result;
-	#if POPPLER_VERSION_MAJOR > 0 || POPPLER_VERSION_MINOR >= 31
 		Poppler::Page::SearchFlags searchFlags;
 		if (cs != Qt::CaseSensitive)
 			searchFlags |= Poppler::Page::SearchFlag::IgnoreCase;
-	#else
-		const auto searchFlags = cs == Qt::CaseSensitive ?
-						Poppler::Page::CaseSensitive :
-						Poppler::Page::CaseInsensitive;
-	#endif
 
 		const auto numPages = PDocument_->numPages ();
 
