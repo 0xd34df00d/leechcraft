@@ -69,8 +69,6 @@ namespace SeekThru
 				"shops; yamarket", QString::fromUtf8 ("Яндекс.Маркет"));
 		Sets_ ["ru"] << EngineInfo ("yalingvo.xml",
 				"dicts", QString::fromUtf8 ("Яндекс.Словари"));
-		Sets_ ["ru"] << EngineInfo ("lurkmore.xml",
-				"lm", QString::fromUtf8 ("Lurkmore"));
 
 		setTitle ("SeekThru");
 		setSubTitle (tr ("Select default search engines"));
