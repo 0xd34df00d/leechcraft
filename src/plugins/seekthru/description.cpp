@@ -31,10 +31,7 @@
 #include <stdexcept>
 #include <type_traits>
 #include <QDataStream>
-
-#if QT_VERSION >= 0x050000
 #include <QUrlQuery>
-#endif
 
 namespace LeechCraft
 {
@@ -68,11 +65,7 @@ namespace SeekThru
 	{
 		QUrl url = Template_;
 
-#if QT_VERSION < 0x050000
-		const auto& items = url.queryItems ();
-#else
 		const auto& items = QUrlQuery { url }.queryItems ();
-#endif
 
 		std::decay<decltype (items)>::type newItems;
 		for (auto item : items)
@@ -98,13 +91,9 @@ namespace SeekThru
 
 			newItems << item;
 		}
-#if QT_VERSION < 0x050000
-		url.setQueryItems (newItems);
-#else
 		QUrlQuery newQuery;
 		newQuery.setQueryItems (newItems);
 		url.setQuery (newQuery);
-#endif
 		return url;
 	}
 
