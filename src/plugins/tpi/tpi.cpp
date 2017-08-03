@@ -34,10 +34,6 @@
 #include <util/gui/util.h>
 #include "infomodelmanager.h"
 
-#if QT_VERSION < 0x050000
-#include "tooltipview.h"
-#endif
-
 namespace LeechCraft
 {
 namespace TPI
@@ -50,9 +46,6 @@ namespace TPI
 
 		auto comp = std::make_shared<QuarkComponent> ("tpi", "TPIQuark.qml");
 		comp->DynamicProps_.append ({ "TPI_infoModel", ModelMgr_->GetModel () });
-#if QT_VERSION < 0x050000
-		comp->DynamicProps_.append ({ "TPI_proxy", this });
-#endif
 		Components_ << comp;
 	}
 
@@ -89,25 +82,6 @@ namespace TPI
 	{
 		return Components_;
 	}
-
-#if QT_VERSION < 0x050000
-	void Plugin::hovered (int x, int y, const QRect& geometry)
-	{
-		if (!TooltipView_)
-			TooltipView_ = new TooltipView (ModelMgr_->GetModel (), Proxy_);
-
-		TooltipView_->move (Util::FitRect ({ x, y },
-				TooltipView_->size (), geometry, Util::NoOverlap));
-		TooltipView_->show ();
-		TooltipView_->Hovered ();
-	}
-
-	void Plugin::hoverLeft ()
-	{
-		if (TooltipView_)
-			TooltipView_->Unhovered ();
-	}
-#endif
 }
 }
 
