@@ -218,23 +218,18 @@ namespace Qrosp
 	{
 		if (!Interfaces_.contains (interfaceName))
 			return QObject::qt_metacast (interfaceName);
-		if (!strcmp (interfaceName, "IInfo") ||
-				!strcmp (interfaceName, "org.Deviant.LeechCraft.IInfo/1.0"))
+
+		if (!strcmp (interfaceName, qobject_interface_iid<IInfo*> ()))
 			return static_cast<IInfo*> (this);
-		if (!strcmp (interfaceName, "IEntityHandler") ||
-				!strcmp (interfaceName, "org.Deviant.LeechCraft.IEntityHandler/1.0"))
+		if (!strcmp (interfaceName, qobject_interface_iid<IEntityHandler*> ()))
 			return static_cast<IEntityHandler*> (this);
-		if (!strcmp (interfaceName, "IPlugin2") ||
-				!strcmp (interfaceName, "org.Deviant.LeechCraft.IPlugin2/1.0"))
+		if (!strcmp (interfaceName, qobject_interface_iid<IPlugin2*> ()))
 			return static_cast<IPlugin2*> (this);
-		if (!strcmp (interfaceName, "IJobHolder") ||
-				!strcmp (interfaceName, "org.Deviant.LeechCraft.IJobHolder/1.0"))
+		if (!strcmp (interfaceName, qobject_interface_iid<IJobHolder*> ()))
 			return static_cast<IJobHolder*> (this);
-		if (!strcmp (interfaceName, "IActionsExporter") ||
-				!strcmp (interfaceName, "org.Deviant.LeechCraft.IActionsExporter/1.0"))
+		if (!strcmp (interfaceName, qobject_interface_iid<IActionsExporter*> ()))
 			return static_cast<IActionsExporter*> (this);
-		if (!strcmp (interfaceName, "IHaveTabs") ||
-				!strcmp (interfaceName, "org.Deviant.LeechCraft.IHaveTabs/1.0"))
+		if (!strcmp (interfaceName, qobject_interface_iid<IHaveTabs*> ()))
 			return static_cast<IHaveTabs*> (this);
 
 		return QObject::qt_metacast (interfaceName);
