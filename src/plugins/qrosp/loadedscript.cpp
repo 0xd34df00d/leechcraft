@@ -114,9 +114,6 @@ namespace Qrosp
 					<< "script action though we are Qt Script";
 			return;
 		}
-
-		for (const auto& req : { "qt", "qt.core", "qt.gui", "qt.network", "qt.svg", "qt.xml" })
-			engine->importExtension (req);
 #endif
 	}
 }
