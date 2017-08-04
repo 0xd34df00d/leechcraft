@@ -88,11 +88,7 @@ namespace WebKitView
 			auto name = cert.subjectInfo (QSslCertificate::CommonName);
 			if (name.isEmpty ())
 				name = cert.subjectInfo (QSslCertificate::Organization);
-#if QT_VERSION < 0x050000
-			Ui_.CertChainBox_->addItem (name);
-#else
 			Ui_.CertChainBox_->addItem (name.join ("; "));
-#endif
 		}
 	}
 

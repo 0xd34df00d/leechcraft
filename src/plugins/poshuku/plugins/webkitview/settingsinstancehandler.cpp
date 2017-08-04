@@ -75,10 +75,7 @@ namespace WebKitView
 		boolOpt (QWebSettings::OfflineStorageDatabaseEnabled, "OfflineStorageDB");
 		boolOpt (QWebSettings::OfflineWebApplicationCacheEnabled, "OfflineWebApplicationCache");
 		boolOpt (QWebSettings::DeveloperExtrasEnabled, "DeveloperExtrasEnabled");
-
-#if QT_VERSION >= 0x050000
 		boolOpt (QWebSettings::NotificationsEnabled, "EnableNotifications");
-#endif
 	}
 
 	void SettingsInstanceHandler::cacheSettingsChanged ()

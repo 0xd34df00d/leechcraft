@@ -33,11 +33,6 @@
 #include <QFile>
 #include <QBuffer>
 #include <qwebframe.h>
-
-#if QT_VERSION < 0x050000
-#include <qwebkitversion.h>
-#endif
-
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QDesktopServices>

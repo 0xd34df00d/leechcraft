@@ -31,13 +31,7 @@
 #include <QIcon>
 #include <QDir>
 #include <qwebsettings.h>
-
-#if QT_VERSION < 0x050000
-#include <qwebkitversion.h>
-#else
 #include <qtwebkitversion.h>
-#endif
-
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/sys/paths.h>
 #include <interfaces/core/icoreproxy.h>
