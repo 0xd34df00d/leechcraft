@@ -37,6 +37,7 @@
 #include <QScriptEngine>
 #endif
 #include <QStandardItemModel>
+#include <private/qmetaobjectbuilder_p.h>
 #include <qross/core/script.h>
 #include <qross/core/manager.h>
 #include <qross/core/wrapperinterface.h>
@@ -51,7 +52,6 @@
 #include "wrappers/pluginsmanagerwrapper.h"
 #include "wrappers/shortcutproxywrapper.h"
 #include "wrappers/tagsmanagerwrapper.h"
-#include <private/qmetaobjectbuilder_p.h>
 
 Q_DECLARE_METATYPE (QList<QAction*>);
 Q_DECLARE_METATYPE (QList<QMenu*>);
