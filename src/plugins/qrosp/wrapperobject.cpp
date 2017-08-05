@@ -32,11 +32,11 @@
 #include <QCoreApplication>
 #include <QTranslator>
 #include <QMenu>
+#include <QtGlobal>
 #ifndef QROSP_NO_QTSCRIPT
 #include <QScriptEngine>
 #endif
 #include <QStandardItemModel>
-
 #include <qross/core/script.h>
 #include <qross/core/manager.h>
 #include <qross/core/wrapperinterface.h>
@@ -51,7 +51,6 @@
 #include "wrappers/pluginsmanagerwrapper.h"
 #include "wrappers/shortcutproxywrapper.h"
 #include "wrappers/tagsmanagerwrapper.h"
-#include <QtGlobal>
 #include <private/qmetaobjectbuilder_p.h>
 
 Q_DECLARE_METATYPE (QList<QAction*>);
