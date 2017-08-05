@@ -19,6 +19,9 @@
 			<item type="checkbox" property="DeveloperExtrasEnabled" default="false">
 				<label value="Developer extras" />
 			</item>
+			<item type="checkbox" property="FixNonWhitePalettes" default="true">
+				<label value="Fix palettes with non-white background" />
+			</item>
 			<item type="lineedit" property="UserStyleSheet">
 				<label value="User CSS URL:" />
 			</item>

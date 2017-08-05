@@ -84,11 +84,14 @@ namespace WebKitView
 		}
 	}
 	{
-		auto p = palette ();
-		if (p.color (QPalette::Window) != Qt::white)
+		if (XmlSettingsManager::Instance ().property ("FixNonWhitePalettes").toBool ())
 		{
-			p.setColor (QPalette::Window, Qt::white);
-			setPalette (p);
+			auto p = palette ();
+			if (p.color (QPalette::Window) != Qt::white)
+			{
+				p.setColor (QPalette::Window, Qt::white);
+				setPalette (p);
+			}
 		}
 
 		const auto page = new CustomWebPage { proxy, poshukuProxy, this };
