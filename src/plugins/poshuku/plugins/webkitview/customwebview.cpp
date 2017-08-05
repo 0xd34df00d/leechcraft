@@ -45,11 +45,6 @@
 #include <QPrinter>
 #include <QPrintDialog>
 #include <QPrintPreviewDialog>
-
-#if QT_VERSION < 0x050000
-#include <QWindowsStyle>
-#endif
-
 #include <QFileDialog>
 #include <QtDebug>
 #include <util/xpc/util.h>
@@ -67,6 +62,7 @@
 #include "webviewrendersettingshandler.h"
 #include "webviewsslwatcherhandler.h"
 #include "settingsinstancehandler.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -88,11 +84,12 @@ namespace WebKitView
 		}
 	}
 	{
-#if QT_VERSION < 0x050000
-		QPalette p;
+		auto p = palette ();
 		if (p.color (QPalette::Window) != Qt::white)
-			setPalette (QWindowsStyle ().standardPalette ());
-#endif
+		{
+			p.setColor (QPalette::Window, Qt::white);
+			setPalette (p);
+		}
 
 		const auto page = new CustomWebPage { proxy, poshukuProxy, this };
 		setPage (page);
