@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="ru_RU">
+<TS version="2.1" language="ru_RU">
 <context>
     <name>AccountConfigDialog</name>
     <message>
@@ -72,7 +72,7 @@
         <translation>Опубликовано: %1</translation>
     </message>
     <message numerus="yes">
-        <location filename="entrybase.cpp" line="584"/>
+        <location filename="entrybase.cpp" line="586"/>
         <source>%n like(s)</source>
         <translation>
             <numerusform>%n пользователю это нравится</numerusform>
@@ -81,7 +81,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="entrybase.cpp" line="586"/>
+        <location filename="entrybase.cpp" line="588"/>
         <source>%n repost(s)</source>
         <translation>
             <numerusform>%n пользователь опубликовал это у себя</numerusform>
@@ -150,12 +150,12 @@
 <context>
     <name>LeechCraft::Azoth::Murm::VkAccount</name>
     <message>
-        <location filename="vkaccount.cpp" line="327"/>
+        <location filename="vkaccount.cpp" line="328"/>
         <source>me</source>
         <translation>я</translation>
     </message>
     <message>
-        <location filename="vkaccount.cpp" line="464"/>
+        <location filename="vkaccount.cpp" line="465"/>
         <source>%1 is invalid VKontake ID</source>
         <translation>%1 — неправильный ID В Контакте</translation>
     </message>
