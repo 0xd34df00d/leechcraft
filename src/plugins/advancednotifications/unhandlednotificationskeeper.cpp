@@ -54,6 +54,9 @@ namespace AdvancedNotifications
 
 	void UnhandledNotificationsKeeper::AddUnhandled (const Entity& e)
 	{
+		while (Model_->rowCount () >= 1000)
+			Model_->removeRow (0);
+
 		const auto& category = e.Additional_ [AN::EF::EventCategory].toString ();
 		const auto& type = e.Additional_ [AN::EF::EventType].toString ();
 
