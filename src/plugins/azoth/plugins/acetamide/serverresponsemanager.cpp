@@ -994,6 +994,8 @@ namespace Acetamide
 
 		switch (server)
 		{
+		case IrcServer::UnknownServer:
+			break;
 		case IrcServer::UnrealIRCD:
 			Command2Action_ ["307"] = [this] (const IrcMessageOptions& opts)
 				{
@@ -1023,8 +1025,6 @@ namespace Acetamide
 					msg.ConnectedFrom_ = opts.Message_;
 					ISH_->ShowWhoIsReply (msg);
 				};
-			break;
-		default:
 			break;
 		}
 	}
