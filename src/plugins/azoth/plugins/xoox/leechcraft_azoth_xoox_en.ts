@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="en_US">
+<TS version="2.1" language="en_US">
 <context>
     <name>AffiliationSelectorDialog</name>
     <message>
@@ -473,22 +473,22 @@
 <context>
     <name>LeechCraft::Azoth::Xoox::ClientConnection</name>
     <message>
-        <location filename="clientconnection.cpp" line="457"/>
+        <location filename="clientconnection.cpp" line="459"/>
         <source>This room is already joined.</source>
         <translation>This room is already joined.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="926"/>
+        <location filename="clientconnection.cpp" line="934"/>
         <source>Data form from %1</source>
         <translation>Data form from %1</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="929"/>
+        <location filename="clientconnection.cpp" line="937"/>
         <source>You have received dataform from %1:</source>
         <translation>You have received dataform from %1:</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1012"/>
+        <location filename="clientconnection.cpp" line="1020"/>
         <source>Using the juick.com service is discouraged. Please consider migrating to saner alternatives, like point.im.</source>
         <translation>Using the juick.com service is discouraged. Please consider migrating to saner alternatives, like point.im.</translation>
     </message>
@@ -774,17 +774,17 @@
         <translation>Job role</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="725"/>
+        <location filename="entrybase.cpp" line="740"/>
         <source>%1 is now %2 (%3)</source>
         <translation>%1 is now %2 (%3)</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="1052"/>
+        <location filename="entrybase.cpp" line="1070"/>
         <source>Select resource</source>
         <translation>Select resource</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="1053"/>
+        <location filename="entrybase.cpp" line="1071"/>
         <source>Select resource for which to fetch the commands</source>
         <translation>Select resource for which to fetch the commands</translation>
     </message>
@@ -925,12 +925,12 @@
 <context>
     <name>LeechCraft::Azoth::Xoox::GlooxProtocol</name>
     <message>
-        <location filename="glooxprotocol.cpp" line="389"/>
+        <location filename="glooxprotocol.cpp" line="385"/>
         <source>Unable to import account: malformed import data.</source>
         <translation>Unable to import account: malformed import data.</translation>
     </message>
     <message>
-        <location filename="glooxprotocol.cpp" line="398"/>
+        <location filename="glooxprotocol.cpp" line="394"/>
         <source>Account %1 already exists, cannot import another one.</source>
         <translation>Account %1 already exists, cannot import another one.</translation>
     </message>
@@ -1276,72 +1276,72 @@
 <context>
     <name>LeechCraft::Azoth::Xoox::RoomCLEntry</name>
     <message>
-        <location filename="roomclentry.cpp" line="86"/>
+        <location filename="roomclentry.cpp" line="96"/>
         <source>Role</source>
         <translation>Role</translation>
     </message>
     <message>
-        <location filename="roomclentry.cpp" line="87"/>
+        <location filename="roomclentry.cpp" line="97"/>
         <source>Affiliation</source>
         <translation>Affiliation</translation>
     </message>
     <message>
-        <location filename="roomclentry.cpp" line="88"/>
+        <location filename="roomclentry.cpp" line="98"/>
         <source>Kicked</source>
         <translation>Kicked</translation>
     </message>
     <message>
-        <location filename="roomclentry.cpp" line="89"/>
+        <location filename="roomclentry.cpp" line="99"/>
         <source>Visitor</source>
         <translation>Visitor</translation>
     </message>
     <message>
-        <location filename="roomclentry.cpp" line="90"/>
+        <location filename="roomclentry.cpp" line="100"/>
         <source>Participant</source>
         <translation>Participant</translation>
     </message>
     <message>
-        <location filename="roomclentry.cpp" line="91"/>
+        <location filename="roomclentry.cpp" line="101"/>
         <source>Moderator</source>
         <translation>Moderator</translation>
     </message>
     <message>
-        <location filename="roomclentry.cpp" line="92"/>
+        <location filename="roomclentry.cpp" line="102"/>
         <source>Banned</source>
         <translation>Banned</translation>
     </message>
     <message>
-        <location filename="roomclentry.cpp" line="93"/>
+        <location filename="roomclentry.cpp" line="103"/>
         <source>None</source>
         <translation>None</translation>
     </message>
     <message>
-        <location filename="roomclentry.cpp" line="94"/>
+        <location filename="roomclentry.cpp" line="104"/>
         <source>Member</source>
         <translation>Member</translation>
     </message>
     <message>
-        <location filename="roomclentry.cpp" line="95"/>
+        <location filename="roomclentry.cpp" line="105"/>
         <source>Admin</source>
         <translation>Admin</translation>
     </message>
     <message>
-        <location filename="roomclentry.cpp" line="96"/>
+        <location filename="roomclentry.cpp" line="106"/>
         <source>Owner</source>
         <translation>Owner</translation>
     </message>
     <message>
-        <location filename="roomclentry.cpp" line="154"/>
+        <location filename="roomclentry.cpp" line="184"/>
         <source>Multiuser chatrooms</source>
         <translation>Multiuser chatrooms</translation>
     </message>
     <message>
-        <location filename="roomclentry.cpp" line="203"/>
+        <location filename="roomclentry.cpp" line="233"/>
         <source>Request voice</source>
         <translation>Request voice</translation>
     </message>
     <message>
-        <location filename="roomclentry.cpp" line="286"/>
+        <location filename="roomclentry.cpp" line="316"/>
         <source>%1 participants</source>
         <translation>%1 participants</translation>
     </message>
@@ -1378,123 +1378,123 @@
 <context>
     <name>LeechCraft::Azoth::Xoox::RoomHandler</name>
     <message>
-        <location filename="roomhandler.cpp" line="146"/>
+        <location filename="roomhandler.cpp" line="126"/>
         <source>%1 has left the room</source>
         <translation>%1 has left the room</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="168"/>
+        <location filename="roomhandler.cpp" line="146"/>
         <source>%1 joined the room as %2 and %3</source>
         <translation>%1 joined the room as %2 and %3</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="173"/>
+        <location filename="roomhandler.cpp" line="151"/>
         <source>%1 (%2) joined the room as %3 and %4</source>
         <translation>%1 (%2) joined the room as %3 and %4</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="192"/>
+        <location filename="roomhandler.cpp" line="170"/>
         <source>%1 changed status to %2 (%3)</source>
         <translation>%1 changed status to %2 (%3)</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="211"/>
+        <location filename="roomhandler.cpp" line="189"/>
         <source>%1 changed nick to %2</source>
         <translation>%1 changed nick to %2</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="228"/>
+        <location filename="roomhandler.cpp" line="206"/>
         <source>%1 has been kicked</source>
         <translation>%1 has been kicked</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="231"/>
+        <location filename="roomhandler.cpp" line="209"/>
         <source>%1 has been kicked: %2</source>
         <translation>%1 has been kicked: %2</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="248"/>
+        <location filename="roomhandler.cpp" line="226"/>
         <source>%1 has been banned</source>
         <translation>%1 has been banned</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="251"/>
+        <location filename="roomhandler.cpp" line="229"/>
         <source>%1 has been banned: %2</source>
         <translation>%1 has been banned: %2</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="272"/>
+        <location filename="roomhandler.cpp" line="250"/>
         <source>%1 is now %2 and %3</source>
         <translation>%1 is now %2 and %3</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="277"/>
+        <location filename="roomhandler.cpp" line="255"/>
         <source>%1 is now %2 and %3: %4</source>
         <oldsource>%1 is now %2 and %3: %2</oldsource>
         <translation>%1 is now %2 and %3: %4</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="303"/>
+        <location filename="roomhandler.cpp" line="281"/>
         <source>This room is password-protected. Please enter the password required to join this room.</source>
         <translation>This room is password-protected. Please enter the password required to join this room.</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="333"/>
+        <location filename="roomhandler.cpp" line="311"/>
         <source>nickname already taken</source>
         <translation>nickname already taken</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="337"/>
+        <location filename="roomhandler.cpp" line="315"/>
         <source>access forbidden</source>
         <translation>access forbidden</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="340"/>
+        <location filename="roomhandler.cpp" line="318"/>
         <source>password required</source>
         <translation>password required</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="343"/>
+        <location filename="roomhandler.cpp" line="321"/>
         <source>malformed JID</source>
         <translation>malformed JID</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="346"/>
+        <location filename="roomhandler.cpp" line="324"/>
         <source>only registered users can enter this room</source>
         <translation>only registered users can enter this room</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="349"/>
+        <location filename="roomhandler.cpp" line="327"/>
         <source>remote server not found (try contacting your server&apos;s administrator)</source>
         <translation>remote server not found (try contacting your server&apos;s administrator)</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="352"/>
+        <location filename="roomhandler.cpp" line="330"/>
         <source>timeout connecting to remote server (try contacting your server&apos;s administrator)</source>
         <translation>timeout connecting to remote server (try contacting your server&apos;s administrator)</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="355"/>
+        <location filename="roomhandler.cpp" line="333"/>
         <source>service unavailable</source>
         <translation>service unavailable</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="358"/>
+        <location filename="roomhandler.cpp" line="336"/>
         <source>unknown condition %1 (please report to developers)</source>
         <translation>unknown condition %1 (please report to developers)</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="362"/>
+        <location filename="roomhandler.cpp" line="340"/>
         <source>Error for %1: %2 (original message: %3)</source>
         <translation>Error for %1: %2 (original message: %3)</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="366"/>
+        <location filename="roomhandler.cpp" line="344"/>
         <source>no message</source>
         <translation>no message</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="478"/>
+        <location filename="roomhandler.cpp" line="456"/>
         <source>%1 changed subject to %2</source>
         <translation>%1 changed subject to %2</translation>
     </message>
@@ -1502,107 +1502,107 @@
 <context>
     <name>LeechCraft::Azoth::Xoox::SDSession</name>
     <message>
-        <location filename="sdsession.cpp" line="90"/>
+        <location filename="sdsession.cpp" line="91"/>
         <source>Name</source>
         <translation>Name</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="90"/>
+        <location filename="sdsession.cpp" line="91"/>
         <source>JID</source>
         <translation>JID</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="90"/>
+        <location filename="sdsession.cpp" line="91"/>
         <source>Node</source>
         <translation>Node</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="138"/>
+        <location filename="sdsession.cpp" line="139"/>
         <source>View VCard...</source>
         <translation>View VCard...</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="140"/>
+        <location filename="sdsession.cpp" line="141"/>
         <source>Add to roster...</source>
         <translation>Add to roster...</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="142"/>
+        <location filename="sdsession.cpp" line="143"/>
         <source>Register...</source>
         <translation>Register...</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="144"/>
+        <location filename="sdsession.cpp" line="145"/>
         <source>Execute...</source>
         <translation>Execute...</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="146"/>
+        <location filename="sdsession.cpp" line="147"/>
         <source>Join...</source>
         <translation>Join...</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="148"/>
+        <location filename="sdsession.cpp" line="149"/>
         <source>Refresh...</source>
         <translation>Refresh...</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="265"/>
+        <location filename="sdsession.cpp" line="236"/>
         <source>MUC description: %1.</source>
         <translation>MUC description: %1.</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="279"/>
+        <location filename="sdsession.cpp" line="250"/>
         <source>OS: %1.</source>
         <translation>OS: %1.</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="280"/>
+        <location filename="sdsession.cpp" line="251"/>
         <source>OS version: %1.</source>
         <translation>OS version: %1.</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="281"/>
+        <location filename="sdsession.cpp" line="252"/>
         <source>Software: %1.</source>
         <translation>Software: %1.</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="282"/>
+        <location filename="sdsession.cpp" line="253"/>
         <source>Software version: %1.</source>
         <translation>Software version: %1.</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="284"/>
+        <location filename="sdsession.cpp" line="255"/>
         <source>Version:</source>
         <translation>Version:</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="289"/>
+        <location filename="sdsession.cpp" line="260"/>
         <source>Identities:</source>
         <translation>Identities:</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="297"/>
+        <location filename="sdsession.cpp" line="272"/>
         <source>Identity name:</source>
         <translation>Identity name:</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="298"/>
+        <location filename="sdsession.cpp" line="273"/>
         <source>Category:</source>
         <translation>Category:</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="299"/>
+        <location filename="sdsession.cpp" line="274"/>
         <source>Type:</source>
         <translation>Type:</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="300"/>
+        <location filename="sdsession.cpp" line="275"/>
         <source>Language:</source>
         <translation>Language:</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="310"/>
+        <location filename="sdsession.cpp" line="285"/>
         <source>Capabilities:</source>
         <translation>Capabilities:</translation>
     </message>
