@@ -984,8 +984,7 @@ namespace Acetamide
 		IrcServer server;
 		auto serversKeys = MatchString2Server_.keys ();
 		auto it = std::find_if (serversKeys.begin (),serversKeys.end (),
-				[&ircServer] (decltype (serversKeys.front ()) key)
-					{ return ircServer.contains (key, Qt::CaseInsensitive); });
+				[&ircServer] (const auto& key) { return ircServer.contains (key, Qt::CaseInsensitive); });
 
 		if (it == serversKeys.end ())
 			return;
