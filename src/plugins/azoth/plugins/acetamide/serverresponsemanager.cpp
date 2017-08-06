@@ -983,7 +983,7 @@ namespace Acetamide
 		QString ircServer = QString::fromStdString (opts.Parameters_.at (2));
 		IrcServer server;
 		auto serversKeys = MatchString2Server_.keys ();
-		auto it = std::find_if (serversKeys.begin (),serversKeys.end (),
+		auto it = std::find_if (serversKeys.begin (), serversKeys.end (),
 				[&ircServer] (const auto& key) { return ircServer.contains (key, Qt::CaseInsensitive); });
 
 		if (it == serversKeys.end ())
