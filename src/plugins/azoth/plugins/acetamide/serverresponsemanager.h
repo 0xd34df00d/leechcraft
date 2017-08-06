@@ -55,7 +55,6 @@ namespace Acetamide
 		ServerResponseManager (IrcServerHandler*);
         void DoAction (const IrcMessageOptions& opts);
 	private:
-		void Init ();
 		bool IsCTCPMessage (const QString&);
 		void GotJoin (const IrcMessageOptions& opts);
 		void GotPart (const IrcMessageOptions& opts);

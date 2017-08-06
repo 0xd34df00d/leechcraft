@@ -47,23 +47,6 @@ namespace Acetamide
 	: QObject (ish)
 	, ISH_ (ish)
 	{
-		Init ();
-	}
-
-	void ServerResponseManager::DoAction (const IrcMessageOptions& opts)
-	{
-		if (opts.Command_ == "privmsg" && IsCTCPMessage (opts.Message_))
-			Command2Action_ ["ctcp_rpl"] (opts);
-		else if (opts.Command_ == "notice" && IsCTCPMessage (opts.Message_))
-			Command2Action_ ["ctcp_rqst"] (opts);
-		else if (Command2Action_.contains (opts.Command_))
-			Command2Action_ [opts.Command_] (opts);
-		else
-			ISH_->ShowAnswer ("UNKNOWN CMD " + opts.Command_, opts.Message_);
-	}
-
-	void ServerResponseManager::Init ()
-	{
 		using Util::BindMemFn;
 
 		Command2Action_ ["join"] = BindMemFn (&ServerResponseManager::GotJoin, this);
@@ -167,6 +150,18 @@ namespace Acetamide
 		Command2Action_ ["378"] = [this] (const IrcMessageOptions& opts) { ISH_->ShowAnswer ("278", opts.Message_); };
 
 		MatchString2Server_ ["unreal"] = IrcServer::UnrealIRCD;
+	}
+
+	void ServerResponseManager::DoAction (const IrcMessageOptions& opts)
+	{
+		if (opts.Command_ == "privmsg" && IsCTCPMessage (opts.Message_))
+			Command2Action_ ["ctcp_rpl"] (opts);
+		else if (opts.Command_ == "notice" && IsCTCPMessage (opts.Message_))
+			Command2Action_ ["ctcp_rqst"] (opts);
+		else if (Command2Action_.contains (opts.Command_))
+			Command2Action_ [opts.Command_] (opts);
+		else
+			ISH_->ShowAnswer ("UNKNOWN CMD " + opts.Command_, opts.Message_);
 	}
 
 	bool ServerResponseManager::IsCTCPMessage (const QString& msg)
