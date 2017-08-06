@@ -476,10 +476,8 @@ namespace Acetamide
 
 		WhoIsMessage msg;
 		msg.Nick_ = QString::fromUtf8 (opts.Parameters_.at (1).c_str ());
-		msg.IdleTime_ = Util::MakeTimeFromLong (QString::fromUtf8 (opts
-				.Parameters_.at (2).c_str ()).toULong ());
-		msg.AuthTime_ = QDateTime::fromTime_t (QString::fromUtf8 (opts
-				.Parameters_.at (3).c_str ()).toUInt ()).toString (Qt::TextDate);
+		msg.IdleTime_ = Util::MakeTimeFromLong (std::stol (opts.Parameters_.at (2)));
+		msg.AuthTime_ = QDateTime::fromTime_t (std::stoul (opts.Parameters_.at (3))).toString (Qt::TextDate);
 		ISH_->ShowWhoIsReply (msg);
 	}
 
