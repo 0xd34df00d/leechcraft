@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="en_US">
+<TS version="2.1" language="en_US">
 <context>
     <name>BookmarkEditWidget</name>
     <message>
@@ -308,72 +308,72 @@
 <context>
     <name>LeechCraft::Azoth::Acetamide::ChannelCLEntry</name>
     <message>
-        <location filename="channelclentry.cpp" line="68"/>
+        <location filename="channelclentry.cpp" line="69"/>
         <source>Role</source>
         <translation>Role</translation>
     </message>
     <message>
-        <location filename="channelclentry.cpp" line="69"/>
+        <location filename="channelclentry.cpp" line="70"/>
         <source>Participant</source>
         <translation>Participant</translation>
     </message>
     <message>
-        <location filename="channelclentry.cpp" line="71"/>
+        <location filename="channelclentry.cpp" line="72"/>
         <source>Kick and Ban</source>
         <translation>Kick and Ban</translation>
     </message>
     <message>
-        <location filename="channelclentry.cpp" line="72"/>
+        <location filename="channelclentry.cpp" line="73"/>
         <source>Kick</source>
         <translation>Kick</translation>
     </message>
     <message>
-        <location filename="channelclentry.cpp" line="73"/>
+        <location filename="channelclentry.cpp" line="74"/>
         <source>Ban by nickname</source>
         <translation>Ban by nickname</translation>
     </message>
     <message>
-        <location filename="channelclentry.cpp" line="74"/>
+        <location filename="channelclentry.cpp" line="75"/>
         <source>Ban by mask (*!*@domain)</source>
         <translation>Ban by mask (*!*@domain)</translation>
     </message>
     <message>
-        <location filename="channelclentry.cpp" line="75"/>
+        <location filename="channelclentry.cpp" line="76"/>
         <source>Ban by mask (*!user@domain)</source>
         <translation>Ban by mask (*!user@domain)</translation>
     </message>
     <message>
-        <location filename="channelclentry.cpp" line="76"/>
+        <location filename="channelclentry.cpp" line="77"/>
         <source>Kick and ban</source>
         <translation>Kick and ban</translation>
     </message>
     <message>
-        <location filename="channelclentry.cpp" line="87"/>
+        <location filename="channelclentry.cpp" line="88"/>
         <source>Voiced</source>
         <translation>Voiced</translation>
     </message>
     <message>
-        <location filename="channelclentry.cpp" line="93"/>
+        <location filename="channelclentry.cpp" line="94"/>
         <source>HalfOperator</source>
         <translation>HalfOperator</translation>
     </message>
     <message>
-        <location filename="channelclentry.cpp" line="99"/>
+        <location filename="channelclentry.cpp" line="100"/>
         <source>Operator</source>
         <translation>Operator</translation>
     </message>
     <message>
-        <location filename="channelclentry.cpp" line="105"/>
+        <location filename="channelclentry.cpp" line="106"/>
         <source>Admin</source>
         <translation>Admin</translation>
     </message>
     <message>
-        <location filename="channelclentry.cpp" line="111"/>
+        <location filename="channelclentry.cpp" line="112"/>
         <source>Owner</source>
         <translation>Owner</translation>
     </message>
     <message>
-        <location filename="channelclentry.cpp" line="165"/>
+        <location filename="channelclentry.cpp" line="166"/>
         <source>Channels</source>
         <translation>Channels</translation>
     </message>
@@ -458,100 +458,100 @@
         <translation>%1 is not %2 anymore</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="552"/>
-        <location filename="channelhandler.cpp" line="566"/>
-        <location filename="channelhandler.cpp" line="580"/>
+        <location filename="channelhandler.cpp" line="522"/>
+        <location filename="channelhandler.cpp" line="536"/>
+        <location filename="channelhandler.cpp" line="550"/>
         <source>%1 set by %2 on %3</source>
         <oldsource> setted by </oldsource>
         <translation>%1 set by %2 on %3</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="598"/>
+        <location filename="channelhandler.cpp" line="568"/>
         <source>Channel mode set to invite only channel (+i)</source>
         <translation>Channel mode set to invite only channel (+i)</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="600"/>
+        <location filename="channelhandler.cpp" line="570"/>
         <source>Channel mode set to non invite only channel (-i)</source>
         <translation>Channel mode set to non invite only channel (-i)</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="611"/>
+        <location filename="channelhandler.cpp" line="581"/>
         <source>Channel mode set to moderate channel (+m)</source>
         <translation>Channel mode set to moderate channel (+m)</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="613"/>
+        <location filename="channelhandler.cpp" line="583"/>
         <source>Channel mode set to unmoderate channel (-m)</source>
         <translation>Channel mode set to unmoderate channel (-m)</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="624"/>
+        <location filename="channelhandler.cpp" line="594"/>
         <source>Channel mode set to block outside messages (+n)</source>
         <translation>Channel mode set to block outside messages (+n)</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="626"/>
+        <location filename="channelhandler.cpp" line="596"/>
         <source>Channel mode set to not block outside messages (-n)</source>
         <translation>Channel mode set to not block outside messages (-n)</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="637"/>
+        <location filename="channelhandler.cpp" line="607"/>
         <source>Channel mode set to private channel (+p)</source>
         <translation>Channel mode set to private channel (+p)</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="639"/>
+        <location filename="channelhandler.cpp" line="609"/>
         <source>Channel mode set to non private channel (-p)</source>
         <translation>Channel mode set to non private channel (-p)</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="650"/>
+        <location filename="channelhandler.cpp" line="620"/>
         <source>Channel mode set to secret channel (+s)</source>
         <translation>Channel mode set to secret channel (+s)</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="652"/>
+        <location filename="channelhandler.cpp" line="622"/>
         <source>Channel mode set to non secret channel (-s)</source>
         <translation>Channel mode set to non secret channel (-s)</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="663"/>
+        <location filename="channelhandler.cpp" line="633"/>
         <source>Reop flag is set (+r)</source>
         <translation>Reop flag is set (+r)</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="665"/>
+        <location filename="channelhandler.cpp" line="635"/>
         <source>Reop flag is remove (-r)</source>
         <translation>Reop flag is remove (-r)</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="676"/>
+        <location filename="channelhandler.cpp" line="646"/>
         <source>Change topic available only for channel operators (+t)</source>
         <translation>Change topic available only for channel operators (+t)</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="678"/>
+        <location filename="channelhandler.cpp" line="648"/>
         <source>Change topic available not only for channel operators (-t)</source>
         <translation>Change topic available not only for channel operators (-t)</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="689"/>
+        <location filename="channelhandler.cpp" line="659"/>
         <source>Limit user set to %1 (+l)</source>
         <translation>Limit user set to %1 (+l)</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="691"/>
+        <location filename="channelhandler.cpp" line="661"/>
         <source>Remove limit user (-l)</source>
         <translation>Remove limit user (-l)</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="702"/>
+        <location filename="channelhandler.cpp" line="672"/>
         <source>Channel key set to %1 (+k)</source>
         <translation>Channel key set to %1 (+k)</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="704"/>
+        <location filename="channelhandler.cpp" line="674"/>
         <source>Remove channel key (-k)</source>
         <translation>Remove channel key (-k)</translation>
     </message>
@@ -590,22 +590,22 @@
 <context>
     <name>LeechCraft::Azoth::Acetamide::ChannelsManager</name>
     <message>
-        <location filename="channelsmanager.cpp" line="471"/>
+        <location filename="channelsmanager.cpp" line="473"/>
         <source>%1 added to your ban list.</source>
         <translation>%1 added to your ban list.</translation>
     </message>
     <message>
-        <location filename="channelsmanager.cpp" line="475"/>
+        <location filename="channelsmanager.cpp" line="477"/>
         <source>%1 added to your except list.</source>
         <translation>%1 added to your except list.</translation>
     </message>
     <message>
-        <location filename="channelsmanager.cpp" line="479"/>
+        <location filename="channelsmanager.cpp" line="481"/>
         <source>%1 added to your invite list.</source>
         <translation>%1 added to your invite list.</translation>
     </message>
     <message>
-        <location filename="channelsmanager.cpp" line="572"/>
+        <location filename="channelsmanager.cpp" line="574"/>
         <source>Topic was set by %1 at %2</source>
         <translation>Topic was set by %1 at %2</translation>
     </message>
@@ -613,13 +613,13 @@
 <context>
     <name>LeechCraft::Azoth::Acetamide::ClientConnection</name>
     <message>
-        <location filename="clientconnection.cpp" line="135"/>
+        <location filename="clientconnection.cpp" line="147"/>
         <source>This channel is already joined.</source>
         <oldsource>This server is already joined.</oldsource>
         <translation>This channel is already joined.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="212"/>
+        <location filename="clientconnection.cpp" line="224"/>
         <source>Some bookmarks were lost due to unknown storage version.</source>
         <translation>Some bookmarks were lost due to unknown storage version.</translation>
     </message>
@@ -660,12 +660,12 @@
 <context>
     <name>LeechCraft::Azoth::Acetamide::IrcProtocol</name>
     <message>
-        <location filename="ircprotocol.cpp" line="255"/>
+        <location filename="ircprotocol.cpp" line="252"/>
         <source>This channel needs password.</source>
         <translation>This channel needs password.</translation>
     </message>
     <message>
-        <location filename="ircprotocol.cpp" line="256"/>
+        <location filename="ircprotocol.cpp" line="253"/>
         <source>Password:</source>
         <translation>Password:</translation>
     </message>
@@ -686,77 +686,77 @@
 <context>
     <name>LeechCraft::Azoth::Acetamide::IrcServerHandler</name>
     <message>
-        <location filename="ircserverhandler.cpp" line="548"/>
+        <location filename="ircserverhandler.cpp" line="546"/>
         <source>%1 is a %2</source>
         <translation>%1 is a %2</translation>
     </message>
     <message>
-        <location filename="ircserverhandler.cpp" line="553"/>
+        <location filename="ircserverhandler.cpp" line="551"/>
         <source>%1 is on server</source>
         <translation>%1 is on server</translation>
     </message>
     <message>
-        <location filename="ircserverhandler.cpp" line="572"/>
+        <location filename="ircserverhandler.cpp" line="570"/>
         <source>%1 is %2</source>
         <translation>%1 is %2</translation>
     </message>
     <message>
-        <location filename="ircserverhandler.cpp" line="589"/>
+        <location filename="ircserverhandler.cpp" line="587"/>
         <source>%1&apos;s real name is %2</source>
         <translation>%1&apos;s real name is %2</translation>
     </message>
     <message>
-        <location filename="ircserverhandler.cpp" line="605"/>
+        <location filename="ircserverhandler.cpp" line="603"/>
         <source>%1 is on channels: %2</source>
         <translation>%1 is on channels: %2</translation>
     </message>
     <message>
-        <location filename="ircserverhandler.cpp" line="624"/>
+        <location filename="ircserverhandler.cpp" line="622"/>
         <source>%1&apos;s server is: %2 - %3</source>
         <translation>%1&apos;s server is: %2 - %3</translation>
     </message>
     <message>
-        <location filename="ircserverhandler.cpp" line="635"/>
+        <location filename="ircserverhandler.cpp" line="633"/>
         <source>%1&apos;s idle time: %2</source>
         <translation>%1&apos;s idle time: %2</translation>
     </message>
     <message>
-        <location filename="ircserverhandler.cpp" line="645"/>
+        <location filename="ircserverhandler.cpp" line="643"/>
         <source>%1&apos;s auth date: %2</source>
         <translation>%1&apos;s auth date: %2</translation>
     </message>
     <message>
-        <location filename="ircserverhandler.cpp" line="665"/>
+        <location filename="ircserverhandler.cpp" line="663"/>
         <source>%1 is logged in as %2 </source>
         <translation>%1 is logged in as %2 </translation>
     </message>
     <message>
-        <location filename="ircserverhandler.cpp" line="676"/>
+        <location filename="ircserverhandler.cpp" line="674"/>
         <source>%1 is using a secure connection</source>
         <translation>%1 is using a secure connection</translation>
     </message>
     <message>
-        <location filename="ircserverhandler.cpp" line="687"/>
+        <location filename="ircserverhandler.cpp" line="685"/>
         <source>%1: %2</source>
         <translation>%1: %2</translation>
     </message>
     <message>
-        <location filename="ircserverhandler.cpp" line="699"/>
+        <location filename="ircserverhandler.cpp" line="697"/>
         <source>%1 is available for help</source>
         <translation>%1 is available for help</translation>
     </message>
     <message>
-        <location filename="ircserverhandler.cpp" line="710"/>
+        <location filename="ircserverhandler.cpp" line="708"/>
         <source>%1 is a registered nick</source>
         <translation>%1 is a registered nick</translation>
     </message>
     <message>
-        <location filename="ircserverhandler.cpp" line="721"/>
+        <location filename="ircserverhandler.cpp" line="719"/>
         <source>%1 e-mail address is %2</source>
         <translation>%1 e-mail address is %2</translation>
     </message>
     <message>
-        <location filename="ircserverhandler.cpp" line="766"/>
+        <location filename="ircserverhandler.cpp" line="762"/>
         <source>%1 [%2@%3]: Channel: %4, Server: %5, Hops: %6, Flags: %7, Away: %8, Real Name: %9</source>
         <translation>%1 [%2@%3]: Channel: %4, Server: %5, Hops: %6, Flags: %7, Away: %8, Real Name: %9</translation>
     </message>
@@ -764,7 +764,7 @@
 <context>
     <name>LeechCraft::Azoth::Acetamide::IrcServerSocket</name>
     <message>
-        <location filename="ircserversocket.cpp" line="153"/>
+        <location filename="ircserversocket.cpp" line="165"/>
         <source>Unknown encoding %1.</source>
         <translation>Unknown encoding %1.</translation>
     </message>
@@ -816,41 +816,41 @@
 <context>
     <name>LeechCraft::Azoth::Acetamide::ServerResponseManager</name>
     <message>
-        <location filename="serverresponsemanager.cpp" line="367"/>
+        <location filename="serverresponsemanager.cpp" line="271"/>
         <source> invites you to a channel </source>
         <translation> invites you to a channel </translation>
     </message>
     <message>
-        <location filename="serverresponsemanager.cpp" line="375"/>
+        <location filename="serverresponsemanager.cpp" line="279"/>
         <source>You invite </source>
         <translation>You invite </translation>
     </message>
     <message>
-        <location filename="serverresponsemanager.cpp" line="376"/>
+        <location filename="serverresponsemanager.cpp" line="280"/>
         <source> to a channel </source>
         <translation> to a channel </translation>
     </message>
     <message>
-        <location filename="serverresponsemanager.cpp" line="408"/>
-        <location filename="serverresponsemanager.cpp" line="415"/>
-        <location filename="serverresponsemanager.cpp" line="423"/>
-        <location filename="serverresponsemanager.cpp" line="430"/>
-        <location filename="serverresponsemanager.cpp" line="438"/>
+        <location filename="serverresponsemanager.cpp" line="312"/>
+        <location filename="serverresponsemanager.cpp" line="319"/>
+        <location filename="serverresponsemanager.cpp" line="327"/>
+        <location filename="serverresponsemanager.cpp" line="334"/>
+        <location filename="serverresponsemanager.cpp" line="342"/>
         <source>Received request %1 from %2, sending response</source>
         <translation>Received request %1 from %2, sending response</translation>
     </message>
     <message>
-        <location filename="serverresponsemanager.cpp" line="466"/>
+        <location filename="serverresponsemanager.cpp" line="370"/>
         <source>Received answer CTCP-%1 from %2: %3</source>
         <translation>Received answer CTCP-%1 from %2: %3</translation>
     </message>
     <message>
-        <location filename="serverresponsemanager.cpp" line="651"/>
+        <location filename="serverresponsemanager.cpp" line="553"/>
         <source> summoning to IRC</source>
         <translation> summoning to IRC</translation>
     </message>
     <message>
-        <location filename="serverresponsemanager.cpp" line="750"/>
+        <location filename="serverresponsemanager.cpp" line="668"/>
         <source>End of USERS</source>
         <translation>End of USERS</translation>
     </message>
