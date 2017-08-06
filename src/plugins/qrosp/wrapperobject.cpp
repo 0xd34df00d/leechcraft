@@ -44,6 +44,7 @@
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/ihookproxy.h>
 #include <util/sll/parsejson.h>
+#include <util/sll/typelist.h>
 #include <util/util.h>
 #include "utilproxy.h"
 #include "wrappers/coreproxywrapper.h"
@@ -218,20 +219,13 @@ namespace Qrosp
 		if (!Interfaces_.contains (interfaceName))
 			return QObject::qt_metacast (interfaceName);
 
-		if (!strcmp (interfaceName, qobject_interface_iid<IInfo*> ()))
-			return static_cast<IInfo*> (this);
-		if (!strcmp (interfaceName, qobject_interface_iid<IEntityHandler*> ()))
-			return static_cast<IEntityHandler*> (this);
-		if (!strcmp (interfaceName, qobject_interface_iid<IPlugin2*> ()))
-			return static_cast<IPlugin2*> (this);
-		if (!strcmp (interfaceName, qobject_interface_iid<IJobHolder*> ()))
-			return static_cast<IJobHolder*> (this);
-		if (!strcmp (interfaceName, qobject_interface_iid<IActionsExporter*> ()))
-			return static_cast<IActionsExporter*> (this);
-		if (!strcmp (interfaceName, qobject_interface_iid<IHaveTabs*> ()))
-			return static_cast<IHaveTabs*> (this);
+		using tl = Util::Typelist<IInfo*, IEntityHandler*, IPlugin2*, IJobHolder*, IActionsExporter*, IHaveTabs*>;
 
-		return QObject::qt_metacast (interfaceName);
+		auto matcher = [interfaceName] (auto iface) { return !strcmp (interfaceName, qobject_interface_iid<decltype (iface)> ()); };
+		return Util::FirstMatching (matcher,
+				[this] (auto iface) -> void* { return static_cast<decltype (iface)> (this); },
+				[interfaceName, this] { return QObject::qt_metacast (interfaceName); },
+				tl {});
 	}
 
 	const QMetaObject* WrapperObject::metaObject () const
