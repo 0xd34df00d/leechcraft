@@ -903,7 +903,7 @@ namespace Acetamide
 		}
 
 		if (count > 4)
-			time = QDateTime::fromTime_t (QString::fromUtf8 (opts.Parameters_.at (4).c_str ()).toInt ());
+			time = QDateTime::fromTime_t (std::stoi (opts.Parameters_.at (4)));
 
 		ISH_->ShowBanList (channel, mask, opts.Nick_, time);
 	}
@@ -934,7 +934,7 @@ namespace Acetamide
 		}
 
 		if (count > 4)
-			time = QDateTime::fromTime_t (QString::fromUtf8 (opts.Parameters_.at (4).c_str ()).toInt ());
+			time = QDateTime::fromTime_t (std::stoi (opts.Parameters_.at (4)));
 
 		ISH_->ShowExceptList (channel, mask, opts.Nick_, time);
 	}
@@ -965,7 +965,7 @@ namespace Acetamide
 		}
 
 		if (count > 4)
-			time = QDateTime::fromTime_t (QString::fromUtf8 (opts.Parameters_.at (4).c_str ()).toInt ());
+			time = QDateTime::fromTime_t (std::stoi (opts.Parameters_.at (4)));
 
 		ISH_->ShowInviteList (channel, mask, opts.Nick_, time);
 	}
@@ -1068,7 +1068,7 @@ namespace Acetamide
 
 		ISH_->GotTopicWhoTime (QString::fromStdString (opts.Parameters_.at (1)),
 				QString::fromStdString (opts.Parameters_.at (2)),
-				QString::fromUtf8 (opts.Parameters_.at (3).c_str ()).toULongLong ());
+				std::stoll (opts.Parameters_.at (3)));
 	}
 
 
