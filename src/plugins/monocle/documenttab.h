@@ -176,7 +176,7 @@ namespace Monocle
 
 		void RegenPageVisibility ();
 	private slots:
-		void handleLoaderReady (const IDocument_ptr&, const QString&);
+		void handleLoaderReady (DocumentOpenOptions, const IDocument_ptr&, const QString&);
 
 		void handleNavigateRequested (QString, int, double, double);
 		void handlePrintRequested ();

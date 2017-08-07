@@ -413,17 +413,18 @@ namespace Monocle
 			qWarning () << Q_FUNC_INFO
 					<< "unable to navigate to"
 					<< path;
-			QMessageBox::warning (this,
-					"LeechCraft",
-					tr ("Unable to open document %1.")
-						.arg ("<em>" + path + "</em>"));
+			if (!(options & DocumentOpenOption::IgnoreErrors))
+				QMessageBox::warning (this,
+						"LeechCraft",
+						tr ("Unable to open document %1.")
+							.arg ("<em>" + path + "</em>"));
 			return false;
 		}
 
 		connect (document,
-				SIGNAL (ready (IDocument_ptr, QString)),
+				&CoreLoadProxy::ready,
 				this,
-				SLOT (handleLoaderReady (IDocument_ptr, QString)));
+				[options, this] (auto ptr, auto path) { handleLoaderReady (options, ptr, path); });
 
 		return true;
 	}
@@ -862,17 +863,19 @@ namespace Monocle
 		emit pagesVisibilityChanged (rects);
 	}
 
-	void DocumentTab::handleLoaderReady (const IDocument_ptr& document, const QString& path)
+	void DocumentTab::handleLoaderReady (DocumentOpenOptions options,
+			const IDocument_ptr& document, const QString& path)
 	{
 		if (!document || !document->IsValid ())
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unable to navigate to"
 					<< path;
-			QMessageBox::warning (this,
-					"LeechCraft",
-					tr ("Unable to open document %1.")
-						.arg ("<em>" + path + "</em>"));
+			if (!(options & DocumentOpenOption::IgnoreErrors))
+				QMessageBox::warning (this,
+						"LeechCraft",
+						tr ("Unable to open document %1.")
+							.arg ("<em>" + path + "</em>"));
 			return;
 		}
 
