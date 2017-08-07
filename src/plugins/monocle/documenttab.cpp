@@ -389,11 +389,6 @@ namespace Monocle
 
 	void DocumentTab::ReloadDoc (const QString& doc)
 	{
-		Scene_.clear ();
-		Pages_.clear ();
-		CurrentDoc_ = IDocument_ptr ();
-		CurrentDocPath_.clear ();
-
 		const auto& pos = Ui_.PagesView_->GetCurrentCenter ();
 
 		SetDoc (doc, DocumentOpenOption::IgnoreErrors);
