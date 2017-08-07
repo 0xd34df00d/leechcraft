@@ -85,8 +85,7 @@ namespace Monocle
 		return std::any_of (Backends_.begin (), Backends_.end (),
 				[&mime] (QObject *plugin)
 				{
-					return qobject_cast<IBackendPlugin*> (plugin)->
-							GetSupportedMimes ().contains (mime);
+					return qobject_cast<IBackendPlugin*> (plugin)->GetSupportedMimes ().contains (mime);
 				});
 	}
 
@@ -109,7 +108,7 @@ namespace Monocle
 		}
 
 		return std::any_of (redirectors.begin (), redirectors.end (),
-				[&path, this] (QObject *redirectorObj) -> bool
+				[&path, this] (QObject *redirectorObj)
 				{
 					const auto redirector = qobject_cast<IBackendPlugin*> (redirectorObj);
 					const auto redirect = redirector->GetRedirection (path);
