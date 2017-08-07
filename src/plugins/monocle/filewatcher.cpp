@@ -74,7 +74,10 @@ namespace Monocle
 			return;
 
 		CurrentFile_ = file;
-		Watcher_.removePaths (Watcher_.files ());
+
+		const auto& existing = Watcher_.files ();
+		if (!existing.isEmpty ())
+			Watcher_.removePaths (existing);
 
 		Watcher_.addPath (file);
 	}
