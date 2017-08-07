@@ -137,7 +137,7 @@ namespace Monocle
 	void Plugin::Handle (Entity e)
 	{
 		auto tab = new DocumentTab (DocTabInfo_, this);
-		tab->SetDoc (e.Entity_.toUrl ().toLocalFile ());
+		tab->SetDoc (e.Entity_.toUrl ().toLocalFile (), DocumentTab::DocumentOpenOptions {});
 		EmitTab (tab);
 	}
 

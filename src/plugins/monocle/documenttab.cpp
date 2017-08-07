@@ -346,7 +346,7 @@ namespace Monocle
 		if (!url.isLocalFile () || !QFile::exists (url.toLocalFile ()))
 			return;
 
-		SetDoc (url.toLocalFile ());
+		SetDoc (url.toLocalFile (), DocumentOpenOptions {});
 		event->acceptProposedAction ();
 	}
 
@@ -377,7 +377,7 @@ namespace Monocle
 		else if (modeStr == "two")
 			LayoutManager_->SetLayoutMode (LayoutMode::TwoPages);
 
-		SetDoc (path);
+		SetDoc (path, DocumentOpenOptions {});
 		LayoutManager_->SetScaleMode (ScaleMode::Fixed);
 		LayoutManager_->SetFixedScale (scale);
 		Relayout ();
@@ -396,13 +396,13 @@ namespace Monocle
 
 		const auto& pos = Ui_.PagesView_->GetCurrentCenter ();
 
-		SetDoc (doc);
+		SetDoc (doc, DocumentOpenOption::IgnoreErrors);
 
 		if (Scene_.itemsBoundingRect ().contains (pos))
 			Ui_.PagesView_->centerOn (pos);
 	}
 
-	bool DocumentTab::SetDoc (const QString& path)
+	bool DocumentTab::SetDoc (const QString& path, DocumentOpenOptions options)
 	{
 		if (SaveStateScheduled_)
 			saveState ();
@@ -960,7 +960,7 @@ namespace Monocle
 
 			Onload_ = { num, x, y };
 
-			if (!SetDoc (path))
+			if (!SetDoc (path, DocumentOpenOptions {}))
 				Onload_.Num_ = -1;
 			return;
 		}
@@ -1039,7 +1039,7 @@ namespace Monocle
 			return;
 		}
 
-		SetDoc (path);
+		SetDoc (path, DocumentOpenOptions {});
 	}
 
 	void DocumentTab::selectFile ()
@@ -1072,7 +1072,7 @@ namespace Monocle
 		XmlSettingsManager::Instance ()
 				.setProperty ("LastOpenFileName", QFileInfo (path).absolutePath ());
 
-		SetDoc (path);
+		SetDoc (path, DocumentOpenOptions {});
 	}
 
 	void DocumentTab::handleSave ()

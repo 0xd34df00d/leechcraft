@@ -34,6 +34,7 @@
 #include <interfaces/ihavetabs.h>
 #include <interfaces/ihaverecoverabletabs.h>
 #include <interfaces/idndtab.h>
+#include <util/sll/bitflags.h>
 #include "interfaces/monocle/idocument.h"
 #include "docstatemanager.h"
 #include "ui_documenttab.h"
@@ -123,6 +124,13 @@ namespace Monocle
 			double Y_;
 		} Onload_;
 	public:
+		enum class DocumentOpenOption
+		{
+			None = 0x0,
+			IgnoreErrors = 0x1
+		};
+		using DocumentOpenOptions = Util::BitFlags<DocumentOpenOption>;
+
 		DocumentTab (const TabClassInfo&, QObject*);
 
 		TabClassInfo GetTabClassInfo () const override;
@@ -141,7 +149,7 @@ namespace Monocle
 		void RecoverState (const QByteArray&);
 
 		void ReloadDoc (const QString&);
-		bool SetDoc (const QString&);
+		bool SetDoc (const QString&, DocumentOpenOptions);
 
 		void CreateViewCtxMenuActions (QMenu*);
 
