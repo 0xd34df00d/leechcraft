@@ -42,7 +42,7 @@ namespace Util
 		BitFlags () = default;
 
 		BitFlags (T t)
-				: Storage_ { static_cast<St_t> (t) }
+		: Storage_ { static_cast<St_t> (t) }
 		{
 		}
 
