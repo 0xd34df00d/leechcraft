@@ -38,6 +38,8 @@ namespace Util
 	template<typename T>
 	class BitFlags
 	{
+		static_assert (std::is_enum<T>::value, "The instantiating type should be a enumeration");
+
 		using St_t = std::underlying_type_t<T>;
 		St_t Storage_ = 0;
 	public:
