@@ -389,12 +389,7 @@ namespace Monocle
 
 	void DocumentTab::ReloadDoc (const QString& doc)
 	{
-		const auto& pos = Ui_.PagesView_->GetCurrentCenter ();
-
 		SetDoc (doc, DocumentOpenOption::IgnoreErrors);
-
-		if (Scene_.itemsBoundingRect ().contains (pos))
-			Ui_.PagesView_->centerOn (pos);
 	}
 
 	bool DocumentTab::SetDoc (const QString& path, DocumentOpenOptions options)
