@@ -65,18 +65,16 @@ namespace Util
 			return *this;
 		}
 
-		friend BitFlags operator& (const BitFlags& left, const BitFlags& right)
+		friend BitFlags operator& (BitFlags left, BitFlags right)
 		{
-			BitFlags res { left };
-			res &= right;
-			return res;
+			left &= right;
+			return left;
 		}
 
-		friend BitFlags operator| (const BitFlags& left, const BitFlags& right)
+		friend BitFlags operator| (BitFlags left, BitFlags right)
 		{
-			BitFlags res { left };
-			res |= right;
-			return res;
+			left |= right;
+			return left;
 		}
 	};
 }
