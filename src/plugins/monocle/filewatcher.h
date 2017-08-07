@@ -47,7 +47,7 @@ namespace Monocle
 		QString CurrentFile_;
 		QFileSystemWatcher Watcher_;
 
-		bool IsScheduled_;
+		bool IsScheduled_ = false;
 	public:
 		FileWatcher (DocumentTab*);
 	private slots:

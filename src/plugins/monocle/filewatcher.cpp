@@ -38,7 +38,6 @@ namespace Monocle
 	FileWatcher::FileWatcher (DocumentTab *tab)
 	: QObject (tab)
 	, Tab_ (tab)
-	, IsScheduled_ (false)
 	{
 		connect (tab,
 				SIGNAL (fileLoaded (QString)),
