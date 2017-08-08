@@ -29,7 +29,6 @@
 
 #pragma once
 
-#include <set>
 #include <QObject>
 #include <QDateTime>
 #include <QFuture>
@@ -54,18 +53,16 @@ namespace Murm
 
 		QFutureInterface<IHaveServerHistory::DatedFetchResult_t> Iface_;
 
-		std::set<IMessage::Direction> Dones_;
-
 		IHaveServerHistory::MessagesSyncMap_t Messages_;
 	public:
 		ServerMessagesSyncer (const QDateTime&, VkAccount*, QObject* = nullptr);
 
 		QFuture<IHaveServerHistory::DatedFetchResult_t> GetFuture ();
 	private:
-		void Request (IMessage::Direction);
-		void HandleFinished (QNetworkReply*, IMessage::Direction);
+		void Request ();
+		void HandleFinished (QNetworkReply*);
 
-		void CheckDone ();
+		void HandleDone ();
 		void ReportError (const QString&);
 	};
 }

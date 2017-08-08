@@ -55,9 +55,7 @@ namespace Murm
 	, Acc_ { acc }
 	{
 		Iface_.reportStarted ();
-
-		Request (IMessage::Direction::Out);
-		Request (IMessage::Direction::In);
+		Request ();
 	}
 
 	QFuture<IHaveServerHistory::DatedFetchResult_t> ServerMessagesSyncer::GetFuture ()
@@ -65,7 +63,7 @@ namespace Murm
 		return Iface_.future ();
 	}
 
-	void ServerMessagesSyncer::Request (IMessage::Direction dir)
+	void ServerMessagesSyncer::Request ()
 	{
 		QPointer<QObject> guard { this };
 		auto getter = [=] (const QString& key, const VkConnection::UrlParams_t& params) -> QNetworkReply*
@@ -83,7 +81,6 @@ namespace Murm
 			QUrl url { "https://api.vk.com/method/messages.get" };
 			Util::UrlOperator { url }
 					("access_token", key)
-					("out", dir == IMessage::Direction::Out ? "1" : "0")
 					("count", RequestSize)
 					("offset", Offset_)
 					("time_offset", secsDiff);
@@ -94,7 +91,7 @@ namespace Murm
 
 			new Util::SlotClosure<Util::DeleteLaterPolicy>
 			{
-				[=] { HandleFinished (reply, dir); },
+				[=] { HandleFinished (reply); },
 				reply,
 				SIGNAL (finished ()),
 				this
@@ -106,7 +103,7 @@ namespace Murm
 		Acc_->GetConnection ()->QueueRequest (getter);
 	}
 
-	void ServerMessagesSyncer::HandleFinished (QNetworkReply *reply, IMessage::Direction dir)
+	void ServerMessagesSyncer::HandleFinished (QNetworkReply *reply)
 	{
 		const auto& json = Util::ParseJson (reply, Q_FUNC_INFO);
 		reply->deleteLater ();
@@ -128,7 +125,7 @@ namespace Murm
 			const HistoryItem item
 			{
 				QDateTime::fromTime_t (map ["date"].toULongLong ()),
-				dir,
+				map ["out"].toInt () == 1 ? IMessage::Direction::Out : IMessage::Direction::In,
 				map ["body"].toString (),
 				{},
 				IMessage::Type::ChatMessage,
@@ -144,26 +141,19 @@ namespace Murm
 		if (itemsList.size () == RequestSize)
 		{
 			Offset_ += RequestSize;
-			Request (dir);
+			Request ();
 		}
 		else
-		{
-			Dones_.insert (dir);
-			CheckDone ();
-		}
+			HandleDone ();
 	}
 
-	void ServerMessagesSyncer::CheckDone ()
+	void ServerMessagesSyncer::HandleDone ()
 	{
-		if (Dones_.size () != 2)
-			return;
-
 		qDebug () << Q_FUNC_INFO
 				<< Messages_.size ();
 
 		for (auto& list : Messages_)
-			std::sort (list.Messages_.begin (), list.Messages_.end (),
-					Util::ComparingBy (&HistoryItem::Date_));
+			std::sort (list.Messages_.begin (), list.Messages_.end (), Util::ComparingBy (&HistoryItem::Date_));
 
 		const auto res = IHaveServerHistory::DatedFetchResult_t::Right (Messages_);
 		Iface_.reportFinished (&res);
