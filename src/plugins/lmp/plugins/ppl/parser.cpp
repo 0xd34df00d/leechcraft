@@ -56,8 +56,7 @@ namespace PPL
 			return [] (const QDateTime& dt) { return dt; };
 		}
 
-		template<typename S>
-		boost::optional<QPair<Media::AudioInfo, QDateTime>> ParseTrack (S&& line)
+		boost::optional<QPair<Media::AudioInfo, QDateTime>> ParseTrack (QStringRef line)
 		{
 			enum
 			{
