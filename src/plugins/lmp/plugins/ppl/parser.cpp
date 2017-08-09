@@ -56,11 +56,6 @@ namespace PPL
 			return [] (const QDateTime& dt) { return dt; };
 		}
 
-		QString ToQString (const QStringRef& s)
-		{
-			return s.toString ();
-		}
-
 		template<typename S>
 		boost::optional<QPair<Media::AudioInfo, QDateTime>> ParseTrack (S&& line)
 		{
@@ -107,9 +102,9 @@ namespace PPL
 
 			Media::AudioInfo info
 			{
-				ToQString (elems.at (Artist)),
-				ToQString (elems.at (Album)),
-				ToQString (elems.at (Title)),
+				elems.at (Artist).toString (),
+				elems.at (Album).toString (),
+				elems.at (Title).toString (),
 				{},
 				elems.at (Duration).toInt (),
 				0,
