@@ -29,11 +29,7 @@
 
 #include "connection.h"
 #include <QTemporaryFile>
-#if QT_VERSION < 0x050000
-#include <QDesktopServices>
-#else
 #include <QStandardPaths>
-#endif
 #include <QStringList>
 #include <QtDebug>
 #include <QtConcurrentRun>
@@ -53,11 +49,7 @@ namespace jOS
 	{
 		QString GetTemporaryDir ()
 		{
-#if QT_VERSION < 0x050000
-			const auto& tempLocation = QDesktopServices::storageLocation (QDesktopServices::TempLocation);
-#else
 			const auto& tempLocation = QStandardPaths::writableLocation (QStandardPaths::TempLocation);
-#endif
 
 			QTemporaryFile file { tempLocation + '/' + "lmp_jos_XXXXXX" };
 			if (file.open ())
