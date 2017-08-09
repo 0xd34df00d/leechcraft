@@ -37,11 +37,7 @@
 
 class QSortFilterProxyModel;
 
-#if QT_VERSION < 0x050000
-class QDeclarativeView;
-#else
 class QQuickWidget;
-#endif
 
 namespace LeechCraft
 {
@@ -59,11 +55,7 @@ namespace BrainSlugz
 		Q_INTERFACES (ITabWidget)
 
 		Ui::CheckTab Ui_;
-#if QT_VERSION < 0x050000
-		QDeclarativeView * const CheckView_;
-#else
 		QQuickWidget * const CheckView_;
-#endif
 
 		const ICoreProxy_ptr CoreProxy_;
 		const TabClassInfo TC_;

@@ -30,17 +30,9 @@
 #include "checktab.h"
 #include <QStandardItemModel>
 #include <QToolBar>
-
-#if QT_VERSION < 0x050000
-#include <QDeclarativeView>
-#include <QDeclarativeContext>
-#include <QDeclarativeEngine>
-#else
 #include <QQuickWidget>
 #include <QQmlContext>
 #include <QQmlEngine>
-#endif
-
 #include <QSortFilterProxyModel>
 #include <util/sys/paths.h>
 #include <util/qml/colorthemeproxy.h>
@@ -82,11 +74,7 @@ namespace BrainSlugz
 			const ICoreProxy_ptr& coreProxy,
 			const TabClassInfo& tc,
 			QObject* plugin)
-#if QT_VERSION < 0x050000
-	: CheckView_ { new QDeclarativeView }
-#else
 	: CheckView_ { new QQuickWidget }
-#endif
 	, CoreProxy_ { coreProxy }
 	, TC_ (tc)
 	, Plugin_ { plugin }
@@ -103,11 +91,7 @@ namespace BrainSlugz
 		CheckView_->engine ()->addImageProvider ("ThemeIcons",
 				new Util::ThemeImageProvider { coreProxy });
 
-#if QT_VERSION < 0x050000
-		CheckView_->setResizeMode (QDeclarativeView::SizeRootObjectToView);
-#else
 		CheckView_->setResizeMode (QQuickWidget::SizeRootObjectToView);
-#endif
 
 		const auto root = CheckView_->rootContext ();
 		root->setContextProperty ("colorProxy",
