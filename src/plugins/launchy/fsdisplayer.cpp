@@ -55,6 +55,7 @@
 #include <util/xdg/item.h>
 #include <util/models/rolenamesmixin.h>
 #include <util/sll/slotclosure.h>
+#include <util/qml/qmlerrorwatcher.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/ihavetabs.h>
@@ -178,29 +179,7 @@ namespace Launchy
 		View_->rootContext ()->setContextProperty ("colorProxy",
 				new Util::ColorThemeProxy (proxy->GetColorThemeManager (), parent));
 
-		new Util::SlotClosure<Util::NoDeletePolicy>
-		{
-			[this]
-			{
-#if QT_VERSION < 0x050000
-				if (View_->status () != QDeclarativeView::Error)
-#else
-				if (View_->status () != QQuickWidget::Error)
-#endif
-					return;
-
-				qWarning () << Q_FUNC_INFO
-						<< "declarative view error";
-				deleteLater ();
-			},
-			View_,
-#if QT_VERSION < 0x050000
-			SIGNAL (statusChanged (QDeclarativeView::Status)),
-#else
-			SIGNAL (statusChanged (QQuickWidget::Status)),
-#endif
-			View_
-		};
+		new Util::QmlErrorWatcher { View_ };
 
 		View_->setSource (Util::GetSysPathUrl (Util::SysPath::QML, "launchy", "FSView.qml"));
 
