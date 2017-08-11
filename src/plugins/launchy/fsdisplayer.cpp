@@ -29,21 +29,11 @@
 
 #include "fsdisplayer.h"
 #include <algorithm>
-
-#if QT_VERSION < 0x050000
-#include <QDeclarativeView>
-#include <QDeclarativeContext>
-#include <QDeclarativeEngine>
-#include <QDeclarativeImageProvider>
-#include <QGraphicsObject>
-#else
 #include <QQuickWidget>
 #include <QQmlContext>
 #include <QQmlEngine>
 #include <QQuickImageProvider>
 #include <QQuickItem>
-#endif
-
 #include <QStandardItemModel>
 #include <QApplication>
 #include <QDesktopWidget>
@@ -69,21 +59,13 @@ namespace LeechCraft
 {
 namespace Launchy
 {
-#if QT_VERSION < 0x050000
-	class ItemIconsProvider : public QDeclarativeImageProvider
-#else
 	class ItemIconsProvider : public QQuickImageProvider
-#endif
 	{
 		ICoreProxy_ptr Proxy_;
 		QHash<QString, QIcon> Icons_;
 	public:
 		ItemIconsProvider (ICoreProxy_ptr proxy)
-#if QT_VERSION < 0x050000
-		: QDeclarativeImageProvider (Pixmap)
-#else
 		: QQuickImageProvider (Pixmap)
-#endif
 		, Proxy_ (proxy)
 		{
 		}
@@ -146,11 +128,7 @@ namespace Launchy
 	, CatsModel_ (new DisplayModel (this))
 	, ItemsModel_ (new DisplayModel (this))
 	, ItemsProxyModel_ (new ItemsSortFilterProxyModel (ItemsModel_, this))
-#if QT_VERSION < 0x050000
-	, View_ (new QDeclarativeView)
-#else
 	, View_ (new QQuickWidget)
-#endif
 	, IconsProvider_ (new ItemIconsProvider (proxy))
 	, SysPathHandler_ (new SysPathItemProvider (ItemsModel_, this))
 	{
@@ -168,11 +146,7 @@ namespace Launchy
 		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, ""))
 			View_->engine ()->addImportPath (cand);
 
-#if QT_VERSION < 0x050000
-		View_->setResizeMode (QDeclarativeView::SizeRootObjectToView);
-#else
 		View_->setResizeMode (QQuickWidget::SizeRootObjectToView);
-#endif
 		View_->rootContext ()->setContextProperty ("itemsModel", ItemsProxyModel_);
 		View_->rootContext ()->setContextProperty ("catsModel", CatsModel_);
 		View_->rootContext ()->setContextProperty ("launchyProxy", this);

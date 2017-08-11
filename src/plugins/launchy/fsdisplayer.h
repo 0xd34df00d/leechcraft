@@ -38,11 +38,7 @@
 class QStandardItem;
 class QStandardItemModel;
 
-#if QT_VERSION < 0x050000
-class QDeclarativeView;
-#else
 class QQuickWidget;
-#endif
 
 namespace LeechCraft
 {
@@ -70,11 +66,7 @@ namespace Launchy
 		QStandardItemModel * const ItemsModel_;
 		ItemsSortFilterProxyModel * const ItemsProxyModel_;
 
-#if QT_VERSION < 0x050000
-		QDeclarativeView * const View_;
-#else
 		QQuickWidget * const View_;
-#endif
 		ItemIconsProvider * const IconsProvider_;
 
 		SysPathItemProvider * const SysPathHandler_;
