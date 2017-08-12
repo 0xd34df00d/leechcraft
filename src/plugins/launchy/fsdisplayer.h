@@ -72,7 +72,7 @@ namespace Launchy
 		SysPathItemProvider * const SysPathHandler_;
 	public:
 		FSDisplayer (ICoreProxy_ptr, Util::XDG::ItemsFinder*,
-				FavoritesManager*, RecentManager*, QObject* = 0);
+				FavoritesManager*, RecentManager*, QObject* = nullptr);
 		~FSDisplayer ();
 
 		QString GetAppFilterText () const;
