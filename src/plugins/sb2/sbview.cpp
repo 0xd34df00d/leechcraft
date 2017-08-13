@@ -29,12 +29,8 @@
 
 #include "sbview.h"
 #include <QLayout>
-
-#if QT_VERSION >= 0x050000
 #include <QQmlEngine>
 #include <QQuickItem>
-#endif
-
 #include <util/sll/delayedexecutor.h>
 
 namespace LeechCraft
@@ -42,11 +38,7 @@ namespace LeechCraft
 namespace SB2
 {
 	SBView::SBView (QWidget *parent)
-#if QT_VERSION < 0x050000
-	: QDeclarativeView (parent)
-#else
 	: QQuickWidget (parent)
-#endif
 	{
 		setResizeMode (SizeRootObjectToView);
 		setSizePolicy (QSizePolicy::Preferred, QSizePolicy::Expanding);
@@ -72,7 +64,6 @@ namespace SB2
 		return { Dim_, Dim_ };
 	}
 
-#if QT_VERSION >= 0x050000
 	void SBView::enterEvent (QEvent *lev)
 	{
 		for (const auto item : UnhoverItems_)
@@ -173,6 +164,5 @@ namespace SB2
 
 		QQuickWidget::leaveEvent (lev);
 	}
-#endif
 }
 }

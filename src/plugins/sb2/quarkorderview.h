@@ -30,13 +30,7 @@
 #pragma once
 
 #include <QtGlobal>
-
-#if QT_VERSION < 0x050000
-#include <QDeclarativeView>
-#else
 #include <QQuickWidget>
-#endif
-
 #include <interfaces/core/icoreproxy.h>
 
 class QStandardItemModel;
@@ -47,11 +41,7 @@ namespace SB2
 {
 	class ViewManager;
 
-#if QT_VERSION < 0x050000
-	class QuarkOrderView : public QDeclarativeView
-#else
 	class QuarkOrderView : public QQuickWidget
-#endif
 	{
 		Q_OBJECT
 

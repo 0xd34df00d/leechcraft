@@ -30,44 +30,25 @@
 #pragma once
 
 #include <QtGlobal>
-
-#if QT_VERSION < 0x050000
-#include <QDeclarativeItem>
-#else
 #include <QQuickItem>
-#endif
 
 namespace LeechCraft
 {
 namespace SB2
 {
-#if QT_VERSION < 0x050000
-	class LauncherDropArea : public QDeclarativeItem
-#else
 	class LauncherDropArea : public QQuickItem
-#endif
 	{
 		Q_OBJECT
 		Q_PROPERTY (bool acceptingDrops READ GetAcceptingDrops WRITE SetAcceptingDrops NOTIFY acceptingDropsChanged)
 	public:
-#if QT_VERSION < 0x050000
-		LauncherDropArea (QDeclarativeItem* = 0);
-#else
 		LauncherDropArea (QQuickItem* = 0);
-#endif
 
 		bool GetAcceptingDrops () const;
 		void SetAcceptingDrops (bool);
 	protected:
-#if QT_VERSION < 0x050000
-		void dragEnterEvent (QGraphicsSceneDragDropEvent*) override;
-		void dragLeaveEvent (QGraphicsSceneDragDropEvent*) override;
-		void dropEvent (QGraphicsSceneDragDropEvent*) override;
-#else
 		void dragEnterEvent (QDragEnterEvent*) override;
 		void dragLeaveEvent (QDragLeaveEvent*) override;
 		void dropEvent (QDropEvent*) override;
-#endif
 	signals:
 		void acceptingDropsChanged (bool);
 		void tabDropped (const QByteArray& tabClass);

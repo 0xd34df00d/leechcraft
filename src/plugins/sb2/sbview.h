@@ -30,35 +30,25 @@
 #pragma once
 
 #include <QtGlobal>
-#if QT_VERSION < 0x050000
-#include <QDeclarativeView>
-#else
 #include <QQuickWidget>
 #include <QPointer>
-#endif
 
 namespace LeechCraft
 {
 namespace SB2
 {
-#if QT_VERSION < 0x050000
-	class SBView : public QDeclarativeView
-#else
 	class SBView : public QQuickWidget
-#endif
 	{
 		Q_OBJECT
 
 		int Dim_ = 32;
 
-#if QT_VERSION >= 0x050000
 		struct UnhoverItem
 		{
 			QPointer<QQuickItem> Item_;
 			QPointF OldPos_;
 		};
 		QList<UnhoverItem> UnhoverItems_;
-#endif
 	public:
 		SBView (QWidget* = 0);
 
@@ -67,10 +57,8 @@ namespace SB2
 		QSize minimumSizeHint () const override;
 		QSize sizeHint () const override;
 	protected:
-#if QT_VERSION >= 0x050000
 		void enterEvent (QEvent*) override;
 		void leaveEvent (QEvent*) override;
-#endif
 	};
 }
 }

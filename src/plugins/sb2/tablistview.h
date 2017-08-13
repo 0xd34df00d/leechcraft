@@ -30,11 +30,7 @@
 #pragma once
 
 #include <QtGlobal>
-#if QT_VERSION < 0x050000
-#include <QDeclarativeView>
-#else
 #include <QQuickWidget>
-#endif
 
 #include <interfaces/core/icoreproxy.h>
 
@@ -51,11 +47,7 @@ namespace Util
 
 namespace SB2
 {
-#if QT_VERSION < 0x050000
-	class TabListView : public QDeclarativeView
-#else
 	class TabListView : public QQuickWidget
-#endif
 	{
 		Q_OBJECT
 

@@ -28,13 +28,7 @@
  **********************************************************************/
 
 #include "viewpropsmanager.h"
-
-#if QT_VERSION < 0x050000
-#include <QDeclarativeContext>
-#else
 #include <QQmlContext>
-#endif
-
 #include <xmlsettingsdialog/basesettingsmanager.h>
 #include "viewsettingsmanager.h"
 #include "viewmanager.h"

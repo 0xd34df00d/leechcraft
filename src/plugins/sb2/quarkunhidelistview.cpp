@@ -28,13 +28,7 @@
  **********************************************************************/
 
 #include "quarkunhidelistview.h"
-
-#if QT_VERSION < 0x050000
-#include <QGraphicsObject>
-#else
 #include <QQuickItem>
-#endif
-
 #include <QtDebug>
 #include <util/util.h>
 #include <util/qml/unhidelistmodel.h>

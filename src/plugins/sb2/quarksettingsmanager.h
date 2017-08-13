@@ -32,11 +32,7 @@
 #include <QUrl>
 #include <xmlsettingsdialog/basesettingsmanager.h>
 
-#if QT_VERSION < 0x050000
-class QDeclarativeContext;
-#else
 class QQmlContext;
-#endif
 
 namespace LeechCraft
 {
@@ -47,17 +43,9 @@ namespace SB2
 		Q_OBJECT
 
 		const QUrl QuarkURL_;
-#if QT_VERSION < 0x050000
-		QDeclarativeContext * const Ctx_;
-#else
 		QQmlContext * const Ctx_;
-#endif
 	public:
-#if QT_VERSION < 0x050000
-		QuarkSettingsManager (const QUrl&, QDeclarativeContext*);
-#else
 		QuarkSettingsManager (const QUrl&, QQmlContext*);
-#endif
 	public slots:
 		void setSettingsValue (const QString& key, const QVariant& value);
 	protected:

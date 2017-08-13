@@ -28,17 +28,9 @@
  **********************************************************************/
 
 #include "declarativewindow.h"
-
-#if QT_VERSION < 0x050000
-#include <QDeclarativeContext>
-#include <QDeclarativeEngine>
-#include <QGraphicsObject>
-#else
 #include <QQmlContext>
 #include <QQmlEngine>
 #include <QQuickItem>
-#endif
-
 #include <util/sys/paths.h>
 #include <util/qml/colorthemeproxy.h>
 #include <util/qml/themeimageprovider.h>
@@ -53,11 +45,7 @@ namespace SB2
 {
 	DeclarativeWindow::DeclarativeWindow (const QUrl& url, QVariantMap params,
 			const QPoint& orig, ViewManager *viewMgr, ICoreProxy_ptr proxy, QWidget *parent)
-#if QT_VERSION < 0x050000
-	: QDeclarativeView (parent)
-#else
 	: QQuickWidget (parent)
-#endif
 	{
 		new Util::AutoResizeMixin (orig, [viewMgr] { return viewMgr->GetFreeCoords (); }, this);
 

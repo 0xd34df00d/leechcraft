@@ -29,15 +29,8 @@
 
 #include "viewmanager.h"
 #include <QStandardItemModel>
-
-#if QT_VERSION < 0x050000
-#include <QDeclarativeEngine>
-#include <QDeclarativeContext>
-#else
 #include <QQmlEngine>
 #include <QQmlContext>
-#endif
-
 #include <QtDebug>
 #include <QDir>
 #include <QSettings>

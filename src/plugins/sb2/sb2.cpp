@@ -32,11 +32,7 @@
 #include <QMainWindow>
 #include <QStatusBar>
 #include <QGraphicsEffect>
-#if QT_VERSION < 0x050000
-#include <QtDeclarative>
-#else
 #include <QtQuick>
-#endif
 #include <QtDebug>
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/util.h>

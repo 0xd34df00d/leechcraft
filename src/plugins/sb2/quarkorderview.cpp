@@ -28,17 +28,9 @@
  **********************************************************************/
 
 #include "quarkorderview.h"
-
-#if QT_VERSION < 0x050000
-#include <QDeclarativeContext>
-#include <QDeclarativeEngine>
-#include <QGraphicsObject>
-#else
 #include <QQmlContext>
 #include <QQmlEngine>
 #include <QQuickItem>
-#endif
-
 #include <QtDebug>
 #include <util/gui/unhoverdeletemixin.h>
 #include <util/sys/paths.h>
@@ -54,11 +46,7 @@ namespace LeechCraft
 namespace SB2
 {
 	QuarkOrderView::QuarkOrderView (ViewManager *manager, ICoreProxy_ptr proxy, QWidget *parent)
-#if QT_VERSION < 0x050000
-	: QDeclarativeView (parent)
-#else
 	: QQuickWidget (parent)
-#endif
 	, Manager_ (manager)
 	, Proxy_ (proxy)
 	, Model_ (new Util::UnhideListModel (this))

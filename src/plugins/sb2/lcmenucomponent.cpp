@@ -29,13 +29,7 @@
 
 #include "lcmenucomponent.h"
 #include <QMenu>
-
-#if QT_VERSION < 0x050000
-#include <QDeclarativeImageProvider>
-#else
 #include <QQuickImageProvider>
-#endif
-
 #include <util/sys/paths.h>
 #include <util/util.h>
 #include <interfaces/imwproxy.h>
@@ -46,19 +40,11 @@ namespace SB2
 {
 	namespace
 	{
-#if QT_VERSION < 0x050000
-		class LCMenuImageProvider : public QDeclarativeImageProvider
-#else
 		class LCMenuImageProvider : public QQuickImageProvider
-#endif
 		{
 		public:
 			LCMenuImageProvider ()
-#if QT_VERSION < 0x050000
-			: QDeclarativeImageProvider (Pixmap)
-#else
 			: QQuickImageProvider (Pixmap)
-#endif
 			{
 			}
 
