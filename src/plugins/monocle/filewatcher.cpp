@@ -73,6 +73,18 @@ namespace Monocle
 		}
 	}
 
+	void FileWatcher::ResetWatcher ()
+	{
+		const auto& existing = Watcher_.directories () + Watcher_.files ();
+		if (!existing.isEmpty ())
+			Watcher_.removePaths (existing);
+
+		Watcher_.addPath (CurrentFile_);
+		Watcher_.addPath (QFileInfo { CurrentFile_ }.dir ().path ());
+
+		LastIdentity_ = MakeIdentity (CurrentFile_);
+	}
+
 	void FileWatcher::checkReload ()
 	{
 		const auto& newIdentity = MakeIdentity (CurrentFile_);
@@ -87,6 +99,7 @@ namespace Monocle
 	void FileWatcher::doReload ()
 	{
 		Tab_->ReloadDoc (CurrentFile_);
+		ResetWatcher ();
 	}
 
 	void FileWatcher::setWatched (const QString& file)
@@ -95,15 +108,7 @@ namespace Monocle
 			return;
 
 		CurrentFile_ = file;
-
-		const auto& existing = Watcher_.directories () + Watcher_.files ();
-		if (!existing.isEmpty ())
-			Watcher_.removePaths (existing);
-
-		Watcher_.addPath (file);
-		Watcher_.addPath (QFileInfo { file }.dir ().path ());
-
-		LastIdentity_ = MakeIdentity (CurrentFile_);
+		ResetWatcher ();
 	}
 }
 }

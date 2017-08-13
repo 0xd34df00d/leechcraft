@@ -57,6 +57,8 @@ namespace Monocle
 		FileIdentity_t LastIdentity_;
 	public:
 		FileWatcher (DocumentTab*);
+	private:
+		void ResetWatcher ();
 	private slots:
 		void checkReload ();
 		void doReload ();
