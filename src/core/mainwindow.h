@@ -112,8 +112,6 @@ namespace LeechCraft
 		void showFirstTime ();
 
 		void handleQuit ();
-
-		void doDelayedInit ();
 	protected:
 		void closeEvent (QCloseEvent*) override;
 		void keyPressEvent (QKeyEvent*) override;
@@ -144,6 +142,7 @@ namespace LeechCraft
 		void handleRestoreActionAdded (QAction*);
 		void handleTrayIconActivated (QSystemTrayIcon::ActivationReason);
 		void handleWorkAreaResized (int);
+		void doDelayedInit ();
 	private:
 		void FillQuickLaunch ();
 		void FillTray ();
