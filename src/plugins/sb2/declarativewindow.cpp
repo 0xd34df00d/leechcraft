@@ -28,7 +28,6 @@
  **********************************************************************/
 
 #include "declarativewindow.h"
-#include <QResizeEvent>
 
 #if QT_VERSION < 0x050000
 #include <QDeclarativeContext>
@@ -40,8 +39,6 @@
 #include <QQuickItem>
 #endif
 
-#include <QtDebug>
-#include <QFile>
 #include <util/sys/paths.h>
 #include <util/qml/colorthemeproxy.h>
 #include <util/qml/themeimageprovider.h>
