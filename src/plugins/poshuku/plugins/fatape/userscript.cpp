@@ -39,13 +39,7 @@
 #include <QNetworkAccessManager>
 #include <QTextCodec>
 #include <QTextStream>
-
-#if QT_VERSION < 0x050000
-#include <QDesktopServices>
-#else
 #include <QStandardPaths>
-#endif
-
 #include <util/util.h>
 #include <util/sys/paths.h>
 #include <util/sll/prelude.h>
@@ -258,11 +252,7 @@ namespace FatApe
 
 	bool UserScript::Install ()
 	{
-#if QT_VERSION < 0x050000
-		const auto& temp = QDesktopServices::storageLocation (QDesktopServices::TempLocation);
-#else
 		const auto& temp = QStandardPaths::writableLocation (QStandardPaths::TempLocation);
-#endif
 
 		if (!ScriptPath_.startsWith (temp))
 			return false;

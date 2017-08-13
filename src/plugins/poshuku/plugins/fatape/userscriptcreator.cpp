@@ -32,13 +32,7 @@
 #include <QMessageBox>
 #include <QFile>
 #include <QInputDialog>
-
-#if QT_VERSION < 0x050000
-#include <QDesktopServices>
-#else
 #include <QStandardPaths>
-#endif
-
 #include "createscriptdialog.h"
 #include "userscript.h"
 #include "fatape.h"
@@ -71,11 +65,7 @@ namespace FatApe
 	{
 		std::shared_ptr<QFile> CreateFile (const QString& scriptName, QWidget *parent)
 		{
-#if QT_VERSION < 0x050000
-			const auto& temp = QDesktopServices::storageLocation (QDesktopServices::TempLocation);
-#else
 			const auto& temp = QStandardPaths::writableLocation (QStandardPaths::TempLocation);
-#endif
 
 			auto filename = scriptName;
 			while (true)
