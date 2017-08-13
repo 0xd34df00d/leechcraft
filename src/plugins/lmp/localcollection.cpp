@@ -478,27 +478,6 @@ namespace LMP
 			}
 		}
 
-		class FuzzyStrComparator
-		{
-			const QString& Str_;
-		public:
-			FuzzyStrComparator (const QString& str)
-			: Str_ (str)
-			{
-			}
-
-			// TODO implement Levenshtein distance comparison
-			bool operator== (const FuzzyStrComparator& other) const
-			{
-				return Str_ == other.Str_;
-			}
-
-			bool operator< (const FuzzyStrComparator& other) const
-			{
-				return Str_ < other.Str_;
-			}
-		};
-
 		bool UniteSplitTryMerge (Collection::Artists_t& artists, const QList<Collection::Album_ptr>& albumsSet)
 		{
 			DumpAlbumsSet (albumsSet, "initial state");
@@ -526,7 +505,7 @@ namespace LMP
 			for (const auto& album : albumsSet)
 			{
 				const auto toTuple = [] (const auto& track)
-						{ return std::make_tuple (track.Number_, FuzzyStrComparator { track.Name_ }, track.Length_); };
+						{ return std::make_tuple (track.Number_, track.Name_, track.Length_); };
 
 				std::sort (album->Tracks_.begin (), album->Tracks_.end (), Util::ComparingBy (toTuple));
 				const auto unique = std::unique (album->Tracks_.begin (), album->Tracks_.end (),
