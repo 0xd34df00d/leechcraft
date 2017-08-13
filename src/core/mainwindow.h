@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#pragma once
+
 #include <QMainWindow>
 #include <QDialog>
 #include <QSettings>
@@ -157,7 +157,4 @@ namespace LeechCraft
 		void hookTrayIconCreated (LeechCraft::IHookProxy_ptr, QSystemTrayIcon*);
 		void hookTrayIconVisibilityChanged (LeechCraft::IHookProxy_ptr, QSystemTrayIcon*, bool);
 	};
-};
-
-#endif
-
+}
