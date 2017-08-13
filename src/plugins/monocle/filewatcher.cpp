@@ -61,7 +61,7 @@ namespace Monocle
 				this,
 				&FileWatcher::doReload);
 		ReloadTimer_.setSingleShot (true);
-		ReloadTimer_.setInterval (2000);
+		ReloadTimer_.setInterval (750);
 	}
 
 	namespace
