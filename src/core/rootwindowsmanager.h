@@ -57,7 +57,7 @@ namespace LeechCraft
 
 		bool IsShuttingDown_ = false;
 	public:
-		RootWindowsManager (QObject* = 0);
+		RootWindowsManager (QObject* = nullptr);
 
 		void Initialize ();
 		void Release ();
