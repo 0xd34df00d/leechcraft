@@ -43,8 +43,6 @@ namespace Monocle
 
 	class FileWatcher : public QObject
 	{
-		Q_OBJECT
-
 		DocumentTab *Tab_;
 
 		QString CurrentFile_;
