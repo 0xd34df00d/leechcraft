@@ -57,10 +57,25 @@ namespace Monocle
 				SLOT (checkReload ()));
 	}
 
+	namespace
+	{
+		auto MakeIdentity (const QString& path)
+		{
+			const QFileInfo fi { path };
+			return FileWatcher::FileIdentity_t { fi.size (), fi.lastModified () };
+		}
+	}
+
 	void FileWatcher::checkReload ()
 	{
 		if (IsScheduled_)
 			return;
+
+		const auto& newIdentity = MakeIdentity (CurrentFile_);
+		if (LastIdentity_ == newIdentity)
+			return;
+
+		LastIdentity_ = newIdentity;
 
 		QTimer::singleShot (2000,
 				this,
@@ -87,6 +102,8 @@ namespace Monocle
 
 		Watcher_.addPath (file);
 		Watcher_.addPath (QFileInfo { file }.dir ().path ());
+
+		LastIdentity_ = MakeIdentity (CurrentFile_);
 	}
 }
 }

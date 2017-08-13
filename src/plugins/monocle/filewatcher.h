@@ -29,7 +29,9 @@
 
 #pragma once
 
+#include <tuple>
 #include <QObject>
+#include <QDateTime>
 #include <QFileSystemWatcher>
 
 namespace LeechCraft
@@ -46,6 +48,10 @@ namespace Monocle
 
 		QString CurrentFile_;
 		QFileSystemWatcher Watcher_;
+	public:
+		using FileIdentity_t = std::tuple<qint64, QDateTime>;
+	private:
+		FileIdentity_t LastIdentity_;
 
 		bool IsScheduled_ = false;
 	public:
