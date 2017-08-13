@@ -51,7 +51,7 @@ namespace Monocle
 	public:
 		FileWatcher (DocumentTab*);
 	private slots:
-		void handleFileChanged (const QString&);
+		void checkReload ();
 		void doReload ();
 		void setWatched (const QString&);
 	};

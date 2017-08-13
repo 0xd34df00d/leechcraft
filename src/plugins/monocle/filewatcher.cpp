@@ -29,6 +29,9 @@
 
 #include "filewatcher.h"
 #include <QTimer>
+#include <QFileInfo>
+#include <QDir>
+#include <QtDebug>
 #include "documenttab.h"
 
 namespace LeechCraft
@@ -45,12 +48,16 @@ namespace Monocle
 				SLOT (setWatched (QString)));
 
 		connect (&Watcher_,
+				SIGNAL (directoryChanged (QString)),
+				this,
+				SLOT (checkReload ()));
+		connect (&Watcher_,
 				SIGNAL (fileChanged (QString)),
 				this,
-				SLOT (handleFileChanged (QString)));
+				SLOT (checkReload ()));
 	}
 
-	void FileWatcher::handleFileChanged (const QString& path)
+	void FileWatcher::checkReload ()
 	{
 		if (IsScheduled_)
 			return;
@@ -74,11 +81,12 @@ namespace Monocle
 
 		CurrentFile_ = file;
 
-		const auto& existing = Watcher_.files ();
+		const auto& existing = Watcher_.directories () + Watcher_.files ();
 		if (!existing.isEmpty ())
 			Watcher_.removePaths (existing);
 
 		Watcher_.addPath (file);
+		Watcher_.addPath (QFileInfo { file }.dir ().path ());
 	}
 }
 }
