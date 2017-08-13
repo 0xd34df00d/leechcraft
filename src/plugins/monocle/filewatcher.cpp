@@ -52,7 +52,7 @@ namespace Monocle
 
 	void FileWatcher::handleFileChanged (const QString& path)
 	{
-		if (IsScheduled_ || path != CurrentFile_)
+		if (IsScheduled_)
 			return;
 
 		QTimer::singleShot (2000,
