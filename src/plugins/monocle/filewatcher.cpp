@@ -55,6 +55,13 @@ namespace Monocle
 				SIGNAL (fileChanged (QString)),
 				this,
 				SLOT (checkReload ()));
+
+		connect (&ReloadTimer_,
+				&QTimer::timeout,
+				this,
+				&FileWatcher::doReload);
+		ReloadTimer_.setSingleShot (true);
+		ReloadTimer_.setInterval (2000);
 	}
 
 	namespace
@@ -68,25 +75,18 @@ namespace Monocle
 
 	void FileWatcher::checkReload ()
 	{
-		if (IsScheduled_)
-			return;
-
 		const auto& newIdentity = MakeIdentity (CurrentFile_);
 		if (LastIdentity_ == newIdentity)
 			return;
 
 		LastIdentity_ = newIdentity;
 
-		QTimer::singleShot (2000,
-				this,
-				SLOT (doReload ()));
-		IsScheduled_ = true;
+		ReloadTimer_.start ();
 	}
 
 	void FileWatcher::doReload ()
 	{
 		Tab_->ReloadDoc (CurrentFile_);
-		IsScheduled_ = false;
 	}
 
 	void FileWatcher::setWatched (const QString& file)

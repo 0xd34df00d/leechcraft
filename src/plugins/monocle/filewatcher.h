@@ -33,6 +33,7 @@
 #include <QObject>
 #include <QDateTime>
 #include <QFileSystemWatcher>
+#include <QTimer>
 
 namespace LeechCraft
 {
@@ -48,12 +49,12 @@ namespace Monocle
 
 		QString CurrentFile_;
 		QFileSystemWatcher Watcher_;
+
+		QTimer ReloadTimer_;
 	public:
 		using FileIdentity_t = std::tuple<qint64, QDateTime>;
 	private:
 		FileIdentity_t LastIdentity_;
-
-		bool IsScheduled_ = false;
 	public:
 		FileWatcher (DocumentTab*);
 	private slots:
