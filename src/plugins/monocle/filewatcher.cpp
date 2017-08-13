@@ -44,21 +44,21 @@ namespace Monocle
 		connect (tab,
 				&DocumentTab::fileLoaded,
 				this,
-				&FileWatcher::setWatched);
+				&FileWatcher::SetWatched);
 
 		connect (&Watcher_,
 				&QFileSystemWatcher::directoryChanged,
 				this,
-				&FileWatcher::checkReload);
+				&FileWatcher::CheckReload);
 		connect (&Watcher_,
 				&QFileSystemWatcher::fileChanged,
 				this,
-				&FileWatcher::checkReload);
+				&FileWatcher::CheckReload);
 
 		connect (&ReloadTimer_,
 				&QTimer::timeout,
 				this,
-				&FileWatcher::doReload);
+				&FileWatcher::DoReload);
 		ReloadTimer_.setSingleShot (true);
 		ReloadTimer_.setInterval (750);
 	}
@@ -84,7 +84,7 @@ namespace Monocle
 		LastIdentity_ = MakeIdentity (CurrentFile_);
 	}
 
-	void FileWatcher::checkReload ()
+	void FileWatcher::CheckReload ()
 	{
 		const auto& newIdentity = MakeIdentity (CurrentFile_);
 		if (LastIdentity_ == newIdentity)
@@ -95,13 +95,13 @@ namespace Monocle
 		ReloadTimer_.start ();
 	}
 
-	void FileWatcher::doReload ()
+	void FileWatcher::DoReload ()
 	{
 		Tab_->ReloadDoc (CurrentFile_);
 		ResetWatcher ();
 	}
 
-	void FileWatcher::setWatched (const QString& file)
+	void FileWatcher::SetWatched (const QString& file)
 	{
 		if (CurrentFile_ == file)
 			return;

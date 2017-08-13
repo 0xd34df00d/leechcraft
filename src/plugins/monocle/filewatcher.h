@@ -59,10 +59,9 @@ namespace Monocle
 		FileWatcher (DocumentTab*);
 	private:
 		void ResetWatcher ();
-	private slots:
-		void checkReload ();
-		void doReload ();
-		void setWatched (const QString&);
+		void CheckReload ();
+		void DoReload ();
+		void SetWatched (const QString&);
 	};
 }
 }
