@@ -42,18 +42,18 @@ namespace Monocle
 	, Tab_ (tab)
 	{
 		connect (tab,
-				SIGNAL (fileLoaded (QString)),
+				&DocumentTab::fileLoaded,
 				this,
-				SLOT (setWatched (QString)));
+				&FileWatcher::setWatched);
 
 		connect (&Watcher_,
-				SIGNAL (directoryChanged (QString)),
+				&QFileSystemWatcher::directoryChanged,
 				this,
-				SLOT (checkReload ()));
+				&FileWatcher::checkReload);
 		connect (&Watcher_,
-				SIGNAL (fileChanged (QString)),
+				&QFileSystemWatcher::fileChanged,
 				this,
-				SLOT (checkReload ()));
+				&FileWatcher::checkReload);
 
 		connect (&ReloadTimer_,
 				&QTimer::timeout,
