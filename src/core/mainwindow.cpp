@@ -45,6 +45,7 @@
 #include <util/xpc/util.h>
 #include <util/xpc/defaulthookproxy.h>
 #include <util/shortcuts/shortcutmanager.h>
+#include <util/sll/delayedexecutor.h>
 #include <interfaces/iactionsexporter.h>
 #include <interfaces/ihavetabs.h>
 #include "core.h"
@@ -115,9 +116,6 @@ void LeechCraft::MainWindow::Init ()
 			SLOT (handleRestoreActionAdded (QAction*)));
 
 	Ui_.ActionFullscreenMode_->setChecked (isFullScreen ());
-	QTimer::singleShot (700,
-			this,
-			SLOT (doDelayedInit ()));
 
 	auto sm = Core::Instance ().GetCoreInstanceObject ()->GetCoreShortcutManager ();
 
@@ -137,6 +135,19 @@ void LeechCraft::MainWindow::Init ()
 
 	sm->RegisterAction ("Settings", Ui_.ActionSettings_);
 	sm->RegisterAction ("Quit", Ui_.ActionQuit_);
+
+	const auto pm = Core::Instance ().GetPluginManager ();
+	if (pm->GetInitStage () == PluginManager::InitStage::Complete)
+		doDelayedInit ();
+	else
+		connect (pm,
+				&PluginManager::initStageChanged,
+				this,
+				[this] (PluginManager::InitStage st)
+				{
+					if (st == PluginManager::InitStage::Complete)
+						Util::ExecuteLater ([this] { doDelayedInit (); });
+				});
 }
 
 void LeechCraft::MainWindow::handleShortcutFullscreenMode ()
