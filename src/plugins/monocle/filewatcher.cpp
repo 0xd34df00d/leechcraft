@@ -31,7 +31,6 @@
 #include <QTimer>
 #include <QFileInfo>
 #include <QDir>
-#include <QtDebug>
 #include "documenttab.h"
 
 namespace LeechCraft
