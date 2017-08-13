@@ -33,13 +33,7 @@
 #include <QFileInfo>
 #include <QMessageBox>
 #include <QMainWindow>
-
-#if QT_VERSION < 0x050000
-#include <QDesktopServices>
-#else
 #include <QStandardPaths>
-#endif
-
 #include <interfaces/core/irootwindowsmanager.h>
 #include <util/util.h>
 #include <util/xpc/util.h>
@@ -312,13 +306,7 @@ namespace GoogleDrive
 			for (const auto& key : exports.keys ())
 			{
 				QUrl url = exports.value (key).toUrl ();
-
-#if QT_VERSION < 0x050000
-				const auto lastQueryPair = url.queryItems ().last ();
-#else
 				const auto lastQueryPair = QUrlQuery { url }.queryItems ().last ();
-#endif
-
 				driveItem.ExportLinks_ [url] = GetLocalMimeTypeFromGoogleMimeType (key, lastQueryPair.second);
 			}
 
