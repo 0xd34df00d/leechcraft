@@ -80,7 +80,8 @@ namespace Monocle
 
 		Bookmark bm (tr ("Page %1").arg (page + 1), page, center);
 		Core::Instance ().GetBookmarksManager ()->AddBookmark (Doc_, bm);
-		AddBMToTree (bm);
+
+		ReloadBookmarks ();
 	}
 
 	void DocumentBookmarksManager::RemoveBookmark (QModelIndex idx)
