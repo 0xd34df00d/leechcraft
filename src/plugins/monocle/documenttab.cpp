@@ -57,6 +57,7 @@
 #include <util/gui/findnotification.h>
 #include <util/sll/slotclosure.h>
 #include <util/sll/prelude.h>
+#include <util/sll/delayedexecutor.h>
 #include <interfaces/imwproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/core/iiconthememanager.h>
@@ -381,10 +382,8 @@ namespace Monocle
 		LayoutManager_->SetScaleMode (ScaleMode::Fixed);
 		LayoutManager_->SetFixedScale (scale);
 		Relayout ();
-		QMetaObject::invokeMethod (this,
-				"delayedCenterOn",
-				Qt::QueuedConnection,
-				Q_ARG (QPoint, point));
+
+		Util::ExecuteLater ([point, this] { delayedCenterOn (point); });
 	}
 
 	void DocumentTab::ReloadDoc (const QString& doc)
