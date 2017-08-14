@@ -404,7 +404,7 @@ namespace Monocle
 					<< "unable to navigate to"
 					<< path;
 			if (!(options & DocumentOpenOption::IgnoreErrors))
-				QMessageBox::warning (this,
+				QMessageBox::critical (this,
 						"LeechCraft",
 						tr ("Unable to open document %1.")
 							.arg ("<em>" + path + "</em>"));
@@ -862,7 +862,7 @@ namespace Monocle
 					<< "unable to navigate to"
 					<< path;
 			if (!(options & DocumentOpenOption::IgnoreErrors))
-				QMessageBox::warning (this,
+				QMessageBox::critical (this,
 						"LeechCraft",
 						tr ("Unable to open document %1.")
 							.arg ("<em>" + path + "</em>"));
@@ -1025,7 +1025,7 @@ namespace Monocle
 		const QFileInfo fi (path);
 		if (!fi.exists ())
 		{
-			QMessageBox::warning (0,
+			QMessageBox::critical (0,
 					"LeechCraft",
 					tr ("Seems like file %1 doesn't exist anymore.")
 						.arg ("<em>" + fi.fileName () + "</em>"));
@@ -1080,7 +1080,7 @@ namespace Monocle
 		const auto& saveResult = saveable->CanSave ();
 		if (!saveResult.CanSave_)
 		{
-			QMessageBox::warning (this,
+			QMessageBox::critical (this,
 					"Monocle",
 					tr ("Can't save document: %1.")
 						.arg (saveResult.Reason_));
