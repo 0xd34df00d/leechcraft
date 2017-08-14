@@ -660,6 +660,13 @@ namespace Monocle
 
 		Toolbar_->addSeparator ();
 
+		auto bmButton = new QToolButton;
+		bmButton->setPopupMode (QToolButton::InstantPopup);
+		bmButton->setMenu (DocBMManager_->GetMenu ());
+		Toolbar_->addWidget (bmButton);
+
+		Toolbar_->addSeparator ();
+
 		ScalesBox_ = new QComboBox ();
 		ScalesBox_->setEditable (true);
 		ScalesBox_->setInsertPolicy (QComboBox::NoInsert);
