@@ -36,11 +36,6 @@ namespace LeechCraft
 {
 namespace Monocle
 {
-	Bookmark::Bookmark ()
-	: Page_ (0)
-	{
-	}
-
 	Bookmark::Bookmark (const QString& name, int page, const QPoint& position)
 	: Name_ (name)
 	, Page_ (page)

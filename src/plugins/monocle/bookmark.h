@@ -46,7 +46,7 @@ namespace Monocle
 		int Page_ = 0;
 		QPoint Position_;
 	public:
-		Bookmark ();
+		Bookmark () = default;
 		Bookmark (const QString&, int page, const QPoint& position);
 
 		QString GetName () const;
