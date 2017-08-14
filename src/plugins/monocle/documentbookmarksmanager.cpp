@@ -29,6 +29,7 @@
 
 #include "documentbookmarksmanager.h"
 #include <QStandardItemModel>
+#include <QMenu>
 #include "core.h"
 #include "bookmarksmanager.h"
 #include "bookmark.h"
@@ -50,12 +51,18 @@ namespace Monocle
 	: QObject { parent }
 	, Tab_ { tab }
 	, Model_ { new QStandardItemModel { this } }
+	, Menu_ { new QMenu }
 	{
 	}
 
 	QAbstractItemModel* DocumentBookmarksManager::GetModel () const
 	{
 		return Model_;
+	}
+
+	QMenu* DocumentBookmarksManager::GetMenu () const
+	{
+		return Menu_;
 	}
 
 	bool DocumentBookmarksManager::HasDoc () const
@@ -67,7 +74,10 @@ namespace Monocle
 	{
 		Doc_ = doc;
 		ReloadBookmarks ();
-		emit docAvailable (HasDoc ());
+
+		const auto hasDoc = HasDoc ();
+		Menu_->setEnabled (hasDoc);
+		emit docAvailable (hasDoc);
 	}
 
 	void DocumentBookmarksManager::AddBookmark ()
@@ -107,6 +117,8 @@ namespace Monocle
 		Model_->clear ();
 		Model_->setHorizontalHeaderLabels ({ tr ("Name") });
 
+		Menu_->clear ();
+
 		if (!Doc_)
 			return;
 
@@ -116,6 +128,10 @@ namespace Monocle
 			item->setEditable (false);
 			item->setData (QVariant::fromValue<Bookmark> (bm), Roles::RBookmark);
 			Model_->appendRow (item);
+
+			Menu_->addAction (bm.GetName (),
+					this,
+					[this, bm] { Tab_->CenterOn (bm.GetPosition ()); });
 		}
 	}
 }

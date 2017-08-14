@@ -34,6 +34,7 @@
 
 class QStandardItemModel;
 class QAbstractItemModel;
+class QMenu;
 
 namespace LeechCraft
 {
@@ -47,12 +48,14 @@ namespace Monocle
 
 		DocumentTab * const Tab_;
 		QStandardItemModel * const Model_;
+		QMenu * const Menu_;
 
 		IDocument_ptr Doc_;
 	public:
 		DocumentBookmarksManager (DocumentTab*, QObject* = nullptr);
 
 		QAbstractItemModel* GetModel () const;
+		QMenu* GetMenu () const;
 
 		void HandleDoc (IDocument_ptr);
 		bool HasDoc () const;
