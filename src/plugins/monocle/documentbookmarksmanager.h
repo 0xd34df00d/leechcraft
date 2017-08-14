@@ -40,7 +40,6 @@ namespace LeechCraft
 namespace Monocle
 {
 	class DocumentTab;
-	class Bookmark;
 
 	class DocumentBookmarksManager : public QObject
 	{
@@ -64,7 +63,6 @@ namespace Monocle
 		void Navigate (const QModelIndex&);
 	private:
 		void ReloadBookmarks ();
-		void AddBMToTree (const Bookmark&);
 	signals:
 		void docAvailable (bool);
 	};

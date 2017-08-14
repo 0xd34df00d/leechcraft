@@ -102,14 +102,6 @@ namespace Monocle
 		Tab_->CenterOn (bm.GetPosition ());
 	}
 
-	void DocumentBookmarksManager::AddBMToTree (const Bookmark& bm)
-	{
-		auto item = new QStandardItem (bm.GetName ());
-		item->setEditable (false);
-		item->setData (QVariant::fromValue<Bookmark> (bm), Roles::RBookmark);
-		Model_->appendRow (item);
-	}
-
 	void DocumentBookmarksManager::ReloadBookmarks ()
 	{
 		Model_->clear ();
@@ -119,7 +111,12 @@ namespace Monocle
 			return;
 
 		for (const auto& bm : Core::Instance ().GetBookmarksManager ()->GetBookmarks (Doc_))
-			AddBMToTree (bm);
+		{
+			auto item = new QStandardItem (bm.GetName ());
+			item->setEditable (false);
+			item->setData (QVariant::fromValue<Bookmark> (bm), Roles::RBookmark);
+			Model_->appendRow (item);
+		}
 	}
 }
 }
