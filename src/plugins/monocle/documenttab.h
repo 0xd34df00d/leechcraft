@@ -113,7 +113,7 @@ namespace Monocle
 			Select
 		} MouseMode_;
 
-		bool SaveStateScheduled_;
+		bool SaveStateScheduled_ = false;
 
 		int PrevCurrentPage_;
 
@@ -122,7 +122,7 @@ namespace Monocle
 			int Num_;
 			double X_;
 			double Y_;
-		} Onload_;
+		} Onload_ { -1, 0, 0 };
 	public:
 		enum class DocumentOpenOption
 		{

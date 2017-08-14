@@ -124,8 +124,6 @@ namespace Monocle
 	, ThumbsWidget_ (new ThumbsWidget ())
 	, OptContentsWidget_ (new QTreeView)
 	, MouseMode_ (MouseMode::Move)
-	, SaveStateScheduled_ (false)
-	, Onload_ ({ -1, 0, 0 })
 	{
 		Ui_.setupUi (this);
 		Ui_.PagesView_->setScene (&Scene_);

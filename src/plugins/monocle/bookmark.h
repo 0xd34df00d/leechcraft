@@ -43,7 +43,7 @@ namespace Monocle
 	class Bookmark
 	{
 		QString Name_;
-		int Page_;
+		int Page_ = 0;
 		QPoint Position_;
 	public:
 		Bookmark ();
