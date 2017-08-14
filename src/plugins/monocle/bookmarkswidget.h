@@ -55,7 +55,7 @@ namespace Monocle
 
 		IDocument_ptr Doc_;
 	public:
-		BookmarksWidget (DocumentTab*, QWidget* = 0);
+		BookmarksWidget (DocumentTab*, QWidget* = nullptr);
 
 		void HandleDoc (IDocument_ptr);
 	private:

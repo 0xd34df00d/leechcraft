@@ -43,7 +43,7 @@ namespace Monocle
 	{
 		QDomDocument BookmarksDOM_;
 	public:
-		BookmarksManager (QObject* = 0);
+		BookmarksManager (QObject* = nullptr);
 
 		void AddBookmark (IDocument_ptr, const Bookmark&);
 		void RemoveBookmark (IDocument_ptr, const Bookmark&);
