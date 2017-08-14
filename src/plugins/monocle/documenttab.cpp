@@ -93,6 +93,7 @@
 #include "coreloadproxy.h"
 #include "core.h"
 #include "searchtabwidget.h"
+#include "documentbookmarksmanager.h"
 
 namespace LeechCraft
 {
@@ -120,7 +121,8 @@ namespace Monocle
 	, Toolbar_ (new QToolBar ("Monocle"))
 	, DockWidget_ (new QDockWidget (tr ("Monocle dock")))
 	, TOCWidget_ (new TOCWidget ())
-	, BMWidget_ (new BookmarksWidget (this))
+	, DocBMManager_ (new DocumentBookmarksManager (this, this))
+	, BMWidget_ (new BookmarksWidget (DocBMManager_))
 	, ThumbsWidget_ (new ThumbsWidget ())
 	, OptContentsWidget_ (new QTreeView)
 	, MouseMode_ (MouseMode::Move)
@@ -924,7 +926,7 @@ namespace Monocle
 					this,
 					SLOT (handlePageContentsChanged (int)));
 
-		BMWidget_->HandleDoc (CurrentDoc_);
+		DocBMManager_->HandleDoc (CurrentDoc_);
 		ThumbsWidget_->HandleDoc (CurrentDoc_);
 		SearchTabWidget_->HandleDoc (CurrentDoc_);
 

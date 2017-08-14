@@ -27,42 +27,46 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "bookmarkswidget.h"
-#include <QToolBar>
-#include "documentbookmarksmanager.h"
+#pragma once
+
+#include <QObject>
+#include "interfaces/monocle/idocument.h"
+
+class QStandardItemModel;
+class QAbstractItemModel;
 
 namespace LeechCraft
 {
 namespace Monocle
 {
-	BookmarksWidget::BookmarksWidget (DocumentBookmarksManager *mgr, QWidget *parent)
-	: QWidget (parent)
-	, Toolbar_ (new QToolBar)
+	class DocumentTab;
+	class Bookmark;
+
+	class DocumentBookmarksManager : public QObject
 	{
-		Ui_.setupUi (this);
-		Ui_.BookmarksView_->setModel (mgr->GetModel ());
-		Ui_.MainLayout_->insertWidget (0, Toolbar_);
+		Q_OBJECT
 
-		setEnabled (mgr->HasDoc ());
-		connect (mgr,
-				&DocumentBookmarksManager::docAvailable,
-				this,
-				&QWidget::setEnabled);
+		DocumentTab * const Tab_;
+		QStandardItemModel * const Model_;
 
-		auto addBm = Toolbar_->addAction (tr ("Add bookmark"),
-				mgr, &DocumentBookmarksManager::AddBookmark);
-		addBm->setProperty ("ActionIcon", "bookmark-new");
+		IDocument_ptr Doc_;
+	public:
+		DocumentBookmarksManager (DocumentTab*, QObject* = nullptr);
 
-		auto removeBookmark = Toolbar_->addAction (tr ("Remove bookmark"),
-				mgr,
-				[mgr, this] { mgr->RemoveBookmark (Ui_.BookmarksView_->currentIndex ()); });
-		removeBookmark->setProperty ("ActionIcon", "list-remove");
-		Ui_.BookmarksView_->addAction (removeBookmark);
+		QAbstractItemModel* GetModel () const;
 
-		connect (Ui_.BookmarksView_,
-				&QTreeView::activated,
-				mgr,
-				&DocumentBookmarksManager::Navigate);
-	}
+		void HandleDoc (IDocument_ptr);
+		bool HasDoc () const;
+
+		void AddBookmark ();
+		void RemoveBookmark (QModelIndex);
+
+		void Navigate (const QModelIndex&);
+	private:
+		void ReloadBookmarks ();
+		void AddBMToTree (const Bookmark&);
+	signals:
+		void docAvailable (bool);
+	};
 }
 }

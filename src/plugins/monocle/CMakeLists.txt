@@ -60,6 +60,7 @@ set (SRCS
 	coreloadproxy.cpp
 	converteddoccleaner.cpp
 	searchtabwidget.cpp
+	documentbookmarksmanager.cpp
 	)
 set (FORMS
 	documenttab.ui

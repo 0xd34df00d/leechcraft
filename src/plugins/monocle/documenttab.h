@@ -60,6 +60,7 @@ namespace Monocle
 	class LinksManager;
 	class AnnManager;
 	class SearchTabWidget;
+	class DocumentBookmarksManager;
 
 	class DocumentTab : public QWidget
 					  , public ITabWidget
@@ -96,6 +97,7 @@ namespace Monocle
 
 		QDockWidget *DockWidget_ = nullptr;
 		TOCWidget *TOCWidget_ = nullptr;
+		DocumentBookmarksManager *DocBMManager_ = nullptr;
 		BookmarksWidget *BMWidget_ = nullptr;
 		ThumbsWidget *ThumbsWidget_ = nullptr;
 		AnnWidget *AnnWidget_ = nullptr;

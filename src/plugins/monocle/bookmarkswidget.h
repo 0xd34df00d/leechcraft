@@ -30,41 +30,24 @@
 #pragma once
 
 #include <QWidget>
-#include "interfaces/monocle/idocument.h"
 #include "ui_bookmarkswidget.h"
 
-class QStandardItemModel;
 class QToolBar;
 
 namespace LeechCraft
 {
 namespace Monocle
 {
-	class DocumentTab;
-	class Bookmark;
+	class DocumentBookmarksManager;
 
 	class BookmarksWidget : public QWidget
 	{
 		Q_OBJECT
 
 		Ui::BookmarksWidget Ui_;
-		DocumentTab *Tab_;
 		QToolBar *Toolbar_;
-
-		QStandardItemModel *BMModel_;
-
-		IDocument_ptr Doc_;
 	public:
-		BookmarksWidget (DocumentTab*, QWidget* = nullptr);
-
-		void HandleDoc (IDocument_ptr);
-	private:
-		void ReloadBookmarks ();
-		void AddBMToTree (const Bookmark&);
-	private slots:
-		void handleAddBookmark ();
-		void handleRemoveBookmark ();
-		void on_BookmarksView__activated (const QModelIndex&);
+		BookmarksWidget (DocumentBookmarksManager*, QWidget* = nullptr);
 	};
 }
 }
