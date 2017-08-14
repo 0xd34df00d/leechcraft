@@ -1025,7 +1025,7 @@ namespace Monocle
 		const QFileInfo fi (path);
 		if (!fi.exists ())
 		{
-			QMessageBox::critical (0,
+			QMessageBox::critical (this,
 					"LeechCraft",
 					tr ("Seems like file %1 doesn't exist anymore.")
 						.arg ("<em>" + fi.fileName () + "</em>"));
