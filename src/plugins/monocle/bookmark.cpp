@@ -102,36 +102,5 @@ namespace Monocle
 		return b1.GetPosition () == b2.GetPosition () &&
 			b1.GetName () == b2.GetName ();
 	}
-
-	QDataStream& operator<< (QDataStream& out, const Bookmark& bm)
-	{
-		return out << static_cast<quint8> (1)
-				<< bm.GetName ()
-				<< bm.GetPage ()
-				<< bm.GetPosition ();
-	}
-
-	QDataStream& operator>> (QDataStream& in, Bookmark& bm)
-	{
-		quint8 version = 0;
-		in >> version;
-		if (version != 1)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unknown version"
-					<< version;
-			return in;
-		}
-
-		QString name;
-		int page = 0;
-		QPoint p;
-
-		in >> name >> page >> p;
-
-		bm = Bookmark (name, page, p);
-
-		return in;
-	}
 }
 }

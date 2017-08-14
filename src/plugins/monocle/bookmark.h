@@ -61,9 +61,6 @@ namespace Monocle
 	};
 
 	bool operator== (const Bookmark&, const Bookmark&);
-
-	QDataStream& operator<< (QDataStream&, const Bookmark&);
-	QDataStream& operator>> (QDataStream&, Bookmark&);
 }
 }
 
