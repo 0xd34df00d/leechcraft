@@ -34,11 +34,7 @@
 #include <QRegExp>
 #include <QFileInfo>
 #include <QDir>
-
-#if QT_VERSION >= 0x050000
 #include <QUrlQuery>
-#endif
-
 #include <util/xpc/util.h>
 
 namespace LeechCraft
@@ -234,11 +230,7 @@ namespace Otzerkalu
 
 		//If file's not a html file, add .html tail to the name
 		const QString& filename = url.hasQuery () ?
-#if QT_VERSION < 0x050000
-				file + "?" + url.encodedQuery () + ".html" :
-#else
 				file + "?" + QUrlQuery { url }.toString (QUrl::FullyDecoded) + ".html" :
-#endif
 				file;
 
 		//If a file's downloaded
