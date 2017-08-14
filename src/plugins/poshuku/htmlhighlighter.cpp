@@ -41,11 +41,7 @@ namespace Poshuku
 	}
 
 	HtmlHighlighter::HtmlHighlighter (QTextEdit *edit)
-#if QT_VERSION < 0x050000
-	: QSyntaxHighlighter (edit)
-#else
 	: QSyntaxHighlighter (edit->document ())
-#endif
 	{
 		Fill ();
 	}
