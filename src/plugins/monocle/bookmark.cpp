@@ -92,9 +92,12 @@ namespace Monocle
 		const auto page = elem.firstChildElement ("page").attribute ("num").toInt ();
 		const auto& posElem = elem.firstChildElement ("pos");
 		const auto& name = elem.attribute ("name");
-		return Bookmark (name,
-				page,
-				{ posElem.attribute ("x").toInt (), posElem.attribute ("y").toInt () });
+		return
+		{
+			name,
+			page,
+			{ posElem.attribute ("x").toInt (), posElem.attribute ("y").toInt () }
+		};
 	}
 
 	bool operator== (const Bookmark& b1, const Bookmark& b2)
