@@ -290,7 +290,6 @@ void LeechCraft::MainWindow::InitializeInterface ()
 
 	MenuButton_ = new QToolButton (this);
 	MenuButton_->setIcon (QIcon (":/resources/images/leechcraft.svg"));
-	MenuButton_->setPopupMode (QToolButton::MenuButtonPopup);
 	MenuButton_->setMenu (MenuManager_->GetMenu ());
 	MenuButton_->setPopupMode (QToolButton::InstantPopup);
 
