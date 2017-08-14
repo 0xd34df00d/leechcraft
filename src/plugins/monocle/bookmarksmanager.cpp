@@ -42,9 +42,6 @@ namespace Monocle
 	BookmarksManager::BookmarksManager (QObject *parent)
 	: QObject (parent)
 	{
-		qRegisterMetaType<Bookmark> ("LeechCraft::Monocle::Bookmark");
-		qRegisterMetaTypeStreamOperators<Bookmark> ("LeechCraft::Monocle::Bookmark");
-
 		Load ();
 	}
 
