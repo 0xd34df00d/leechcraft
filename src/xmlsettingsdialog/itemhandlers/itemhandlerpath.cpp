@@ -32,13 +32,7 @@
 #include <QLabel>
 #include <QGridLayout>
 #include <QtDebug>
-
-#if QT_VERSION < 0x050000
-#include <QDesktopServices>
-#else
 #include <QStandardPaths>
-#endif
-
 #include <util/sys/paths.h>
 #include "../filepicker.h"
 
@@ -95,17 +89,10 @@ namespace LeechCraft
 
 		QString text = item.attribute ("default");
 		QMap<QString, QString> str2loc;
-#if QT_VERSION < 0x050000
-		str2loc ["DOCUMENTS"] = QDesktopServices::storageLocation (QDesktopServices::DocumentsLocation);
-		str2loc ["DESKTOP"] = QDesktopServices::storageLocation (QDesktopServices::DesktopLocation);
-		str2loc ["MUSIC"] = QDesktopServices::storageLocation (QDesktopServices::MusicLocation);
-		str2loc ["MOVIES"] = QDesktopServices::storageLocation (QDesktopServices::MoviesLocation);
-#else
 		str2loc ["DOCUMENTS"] = QStandardPaths::writableLocation (QStandardPaths::DocumentsLocation);
 		str2loc ["DESKTOP"] = QStandardPaths::writableLocation (QStandardPaths::DesktopLocation);
 		str2loc ["MUSIC"] = QStandardPaths::writableLocation (QStandardPaths::MusicLocation);
 		str2loc ["MOVIES"] = QStandardPaths::writableLocation (QStandardPaths::MoviesLocation);
-#endif
 		str2loc ["LCDIR"] = Util::GetUserDir (Util::UserDir::LC, {}).absolutePath ();
 		str2loc ["CACHEDIR"] = Util::GetUserDir (Util::UserDir::Cache, {}).absolutePath ();
 		for (const auto& key : str2loc.keys ())
