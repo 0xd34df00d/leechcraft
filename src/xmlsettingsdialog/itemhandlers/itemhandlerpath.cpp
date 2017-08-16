@@ -88,13 +88,15 @@ namespace LeechCraft
 			return {};
 
 		QString text = item.attribute ("default");
-		QMap<QString, QString> str2loc;
-		str2loc ["DOCUMENTS"] = QStandardPaths::writableLocation (QStandardPaths::DocumentsLocation);
-		str2loc ["DESKTOP"] = QStandardPaths::writableLocation (QStandardPaths::DesktopLocation);
-		str2loc ["MUSIC"] = QStandardPaths::writableLocation (QStandardPaths::MusicLocation);
-		str2loc ["MOVIES"] = QStandardPaths::writableLocation (QStandardPaths::MoviesLocation);
-		str2loc ["LCDIR"] = Util::GetUserDir (Util::UserDir::LC, {}).absolutePath ();
-		str2loc ["CACHEDIR"] = Util::GetUserDir (Util::UserDir::Cache, {}).absolutePath ();
+		static const QMap<QString, QString> str2loc
+		{
+			{ "DOCUMENTS", QStandardPaths::writableLocation (QStandardPaths::DocumentsLocation) },
+			{ "DESKTOP", QStandardPaths::writableLocation (QStandardPaths::DesktopLocation) },
+			{ "MUSIC", QStandardPaths::writableLocation (QStandardPaths::MusicLocation) },
+			{ "MOVIES", QStandardPaths::writableLocation (QStandardPaths::MoviesLocation) },
+			{ "LCDIR", Util::GetUserDir (Util::UserDir::LC, {}).absolutePath () },
+			{ "CACHEDIR", Util::GetUserDir (Util::UserDir::Cache, {}).absolutePath () }
+		};
 		for (const auto& key : str2loc.keys ())
 			if (text.startsWith ("{" + key + "}"))
 			{
