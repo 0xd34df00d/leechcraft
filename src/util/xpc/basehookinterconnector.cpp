@@ -51,7 +51,6 @@ namespace Util
 			return method.parameterTypes ().value (0) == "LeechCraft::IHookProxy_ptr";
 		}
 
-#if QT_VERSION >= 0x050000
 		auto BuildHookSlots (const QObject *obj)
 		{
 			const auto objMo = obj->metaObject ();
@@ -66,11 +65,9 @@ namespace Util
 
 			return hookSlots;
 		}
-#endif
 
 		void CheckMatchingSigs (const QObject *snd, const QObject *rcv)
 		{
-#if QT_VERSION >= 0x050000
 			if (!qEnvironmentVariableIsSet ("LC_VERBOSE_HOOK_CHECKS"))
 				return;
 
@@ -111,10 +108,6 @@ namespace Util
 							<< "and"
 							<< rcv;
 			}
-#else
-			Q_UNUSED (snd)
-			Q_UNUSED (rcv)
-#endif
 		}
 
 #define LC_N(a) (QMetaObject::normalizedSignature(a))
@@ -135,12 +128,7 @@ namespace Util
 				if (!IsHookMethod (method))
 					continue;
 
-#if QT_VERSION >= 0x050000
 				const auto& signature = method.methodSignature ();
-#else
-				const auto& signature = method.signature ();
-#endif
-
 				if (receiver->metaObject ()->indexOfMethod (LC_N (signature)) == -1)
 				{
 					if (!destSlot)
