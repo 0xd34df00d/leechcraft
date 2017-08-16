@@ -34,6 +34,7 @@
 #include <QtDebug>
 #include <QStandardPaths>
 #include <util/sys/paths.h>
+#include <util/sll/qtutil.h>
 #include "../filepicker.h"
 
 namespace LeechCraft
@@ -87,7 +88,6 @@ namespace LeechCraft
 		if (!item.hasAttribute ("default"))
 			return {};
 
-		QString text = item.attribute ("default");
 		static const QMap<QString, QString> str2loc
 		{
 			{ "DOCUMENTS", QStandardPaths::writableLocation (QStandardPaths::DocumentsLocation) },
@@ -97,10 +97,12 @@ namespace LeechCraft
 			{ "LCDIR", Util::GetUserDir (Util::UserDir::LC, {}).absolutePath () },
 			{ "CACHEDIR", Util::GetUserDir (Util::UserDir::Cache, {}).absolutePath () }
 		};
-		for (const auto& key : str2loc.keys ())
-			if (text.startsWith ("{" + key + "}"))
+
+		auto text = item.attribute ("default");
+		for (const auto& pair : Util::Stlize (str2loc))
+			if (text.startsWith ("{" + pair.first + "}"))
 			{
-				text.replace (0, key.length () + 2, str2loc [key]);
+				text.replace (0, pair.first.length () + 2, pair.second);
 				break;
 			}
 
