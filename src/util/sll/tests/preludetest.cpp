@@ -95,44 +95,6 @@ namespace Util
 		QCOMPARE (map, (Util::MakeMap<int, QString> ({ { 0, "aaaa" }, { 1, "bbbb" }, { 2, "cccc" }})));
 	}
 
-#if 0
-	namespace
-	{
-		template<typename F>
-		constexpr bool FailsImpl (typename std::result_of<F (void*)>::type*)
-		{
-			return false;
-		}
-
-		template<typename F>
-		constexpr bool FailsImpl (...)
-		{
-			return true;
-		}
-
-		template<typename F>
-		constexpr bool Fails ()
-		{
-			return FailsImpl<F> (0);
-		}
-	}
-
-	void PreludeTest::testMapMapMutatingVoidConst ()
-	{
-		// TODO postponed until some later C++ version where SFINAE is transitive enough
-		// to produce a soft error in FailsImpl() overload above.
-		auto lambda = [] (const auto&)
-			{
-				const auto& map = GetSimpleMap ();
-				Map (map, [] (QString& v) { v += "a"; });
-			};
-		static_assert (Fails<decltype (lambda)> (),
-			"the code should fail");
-
-		QCOMPARE (true, true);
-	}
-#endif
-
 	void PreludeTest::testMapMapNonMutatingVoid ()
 	{
 		auto map = GetSimpleMap ();
