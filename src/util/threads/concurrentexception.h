@@ -37,11 +37,7 @@ namespace LeechCraft
 {
 namespace Util
 {
-#if QT_VERSION < 0x050000
-	using QtException_t = QtConcurrent::Exception;
-#else
 	using QtException_t = QException;
-#endif
 
 	using QtException_ptr = std::shared_ptr<QtException_t>;
 
