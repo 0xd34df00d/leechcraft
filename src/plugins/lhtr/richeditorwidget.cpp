@@ -58,7 +58,6 @@
 
 #include <util/util.h>
 #include <util/xpc/util.h>
-#include <util/sll/visitor.h>
 #include <util/sll/util.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -80,17 +79,6 @@ namespace LHTR
 
 	namespace
 	{
-		// TODO won't be needed in C++14
-		using Addable = boost::variant<QMenu*, QToolBar*>;
-
-		QAction* AddAction (const Addable& addable,
-				const QString& text, const QObject *receiver, const char *member)
-		{
-			return Util::Visit (addable,
-					[&] (QMenu *obj) { return obj->addAction (text, receiver, member); },
-					[&] (QToolBar *obj) { return obj->addAction (text, receiver, member); });
-		}
-
 		class EditorPage : public QWebPage
 		{
 		public:
@@ -170,10 +158,9 @@ namespace LHTR
 		auto fwdCmd = [this] (const QString& name,
 				const QString& icon,
 				QWebPage::WebAction action,
-				Addable addable) -> QAction*
+				auto addable)
 		{
-			QAction *act = AddAction (addable,
-					name, Ui_.View_->pageAction (action), SLOT (trigger ()));
+			auto act = addable->addAction (name, Ui_.View_->pageAction (action), SLOT (trigger ()));
 			act->setProperty ("ActionIcon", icon);
 			connect (Ui_.View_->pageAction (action),
 					SIGNAL (changed ()),
@@ -185,10 +172,10 @@ namespace LHTR
 		auto addCmd = [this] (const QString& name,
 				const QString& icon,
 				const QString& cmd,
-				Addable addable,
-				const QString& arg) -> QAction*
+				auto addable,
+				const QString& arg)
 		{
-			QAction *act = AddAction (addable, name, this, SLOT (handleCmd ()));
+			auto act = addable->addAction (name, this, SLOT (handleCmd ()));
 			act->setProperty ("ActionIcon", icon);
 			act->setProperty ("Editor/Command", cmd);
 			act->setProperty ("Editor/Args", arg);
@@ -196,49 +183,47 @@ namespace LHTR
 			return act;
 		};
 
-		Addable barAdd (ViewBar_);
-
 		Bold_ = fwdCmd (tr ("Bold"), "format-text-bold",
-				QWebPage::ToggleBold, barAdd);
+				QWebPage::ToggleBold, ViewBar_);
 		Bold_->setCheckable (true);
 		Italic_ = fwdCmd (tr ("Italic"), "format-text-italic",
-				QWebPage::ToggleItalic, barAdd);
+				QWebPage::ToggleItalic, ViewBar_);
 		Italic_->setCheckable (true);
 		Underline_ = fwdCmd (tr ("Underline"), "format-text-underline",
-				QWebPage::ToggleUnderline, barAdd);
+				QWebPage::ToggleUnderline, ViewBar_);
 		Underline_->setCheckable (true);
 
 		addCmd (tr ("Strikethrough"), "format-text-strikethrough",
-				"strikeThrough", barAdd, QString ())->setCheckable (true);
+				"strikeThrough", ViewBar_, QString ())->setCheckable (true);
 		fwdCmd (tr ("Subscript"), "format-text-subscript",
-				QWebPage::ToggleSubscript, barAdd)->setCheckable (true);
+				QWebPage::ToggleSubscript, ViewBar_)->setCheckable (true);
 		fwdCmd (tr ("Superscript"), "format-text-superscript",
-				QWebPage::ToggleSuperscript, barAdd)->setCheckable (true);
+				QWebPage::ToggleSuperscript, ViewBar_)->setCheckable (true);
 
 		auto addInlineCmd = [this] (const QString& name,
 				const QString& icon,
 				const QString& cmd,
-				Addable addable) -> QAction*
+				auto addable)
 		{
-			auto act = AddAction (addable, name, this, SLOT (handleInlineCmd ()));
+			auto act = addable->addAction (name, this, SLOT (handleInlineCmd ()));
 			act->setProperty ("ActionIcon", icon);
 			act->setProperty ("Editor/Command", cmd);
 			return act;
 		};
 
-		addInlineCmd (tr ("Code"), "code-context", "code", barAdd);
+		addInlineCmd (tr ("Code"), "code-context", "code", ViewBar_);
 
 		ViewBar_->addSeparator ();
 
 		QList<QAction*> alignActs;
 		alignActs << fwdCmd (tr ("Align left"), "format-justify-left",
-				QWebPage::AlignLeft, barAdd);
+				QWebPage::AlignLeft, ViewBar_);
 		alignActs << fwdCmd (tr ("Align center"), "format-justify-center",
-				QWebPage::AlignCenter, barAdd);
+				QWebPage::AlignCenter, ViewBar_);
 		alignActs << fwdCmd (tr ("Align right"), "format-justify-right",
-				QWebPage::AlignRight, barAdd);
+				QWebPage::AlignRight, ViewBar_);
 		alignActs << fwdCmd (tr ("Align justify"), "format-justify-fill",
-				QWebPage::AlignJustified, barAdd);
+				QWebPage::AlignJustified, ViewBar_);
 		QActionGroup *alignGroup = new QActionGroup (this);
 		Q_FOREACH (QAction *act, alignActs)
 		{
@@ -254,12 +239,10 @@ namespace LHTR
 		for (int i = 1; i <= 6; ++i)
 		{
 			const auto& num = QString::number (i);
-			addCmd (tr ("Heading %1").arg (i), QString (), "formatBlock",
-					Addable (headMenu), "h" + num);
+			addCmd (tr ("Heading %1").arg (i), QString (), "formatBlock", headMenu, "h" + num);
 		}
 		headMenu->addSeparator ();
-		addCmd (tr ("Paragraph"), QString (), "formatBlock",
-				Addable (headMenu), "p");
+		addCmd (tr ("Paragraph"), QString (), "formatBlock", headMenu, "p");
 
 		ViewBar_->addSeparator ();
 
@@ -279,17 +262,17 @@ namespace LHTR
 		font->setProperty ("ActionIcon", "list-add-font");
 		ViewBar_->addSeparator ();
 
-		addCmd (tr ("Mark as quote"), "mail-reply-sender", "formatBlock", barAdd, "blockquote");
+		addCmd (tr ("Mark as quote"), "mail-reply-sender", "formatBlock", ViewBar_, "blockquote");
 
 		ViewBar_->addSeparator ();
 
-		addCmd (tr ("Indent more"), "format-indent-more", "indent", barAdd, QString ());
-		addCmd (tr ("Indent less"), "format-indent-less", "outdent", barAdd, QString ());
+		addCmd (tr ("Indent more"), "format-indent-more", "indent", ViewBar_, QString ());
+		addCmd (tr ("Indent less"), "format-indent-less", "outdent", ViewBar_, QString ());
 
 		ViewBar_->addSeparator ();
 
-		addCmd (tr ("Ordered list"), "format-list-ordered", "insertOrderedList", barAdd, QString ());
-		addCmd (tr ("Unordered list"), "format-list-unordered", "insertUnorderedList", barAdd, QString ());
+		addCmd (tr ("Ordered list"), "format-list-ordered", "insertOrderedList", ViewBar_, QString ());
+		addCmd (tr ("Unordered list"), "format-list-unordered", "insertUnorderedList", ViewBar_, QString ());
 
 		ViewBar_->addSeparator ();
 
