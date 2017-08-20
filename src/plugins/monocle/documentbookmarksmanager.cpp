@@ -133,6 +133,12 @@ namespace Monocle
 					this,
 					[this, bm] { Tab_->CenterOn (bm.GetPosition ()); });
 		}
+
+		Menu_->addSeparator ();
+		const auto addAct = Menu_->addAction (QIcon::fromTheme ("bookmark-new"),
+				tr ("Add bookmark"),
+				this,
+				&DocumentBookmarksManager::AddBookmark);
 	}
 }
 }
