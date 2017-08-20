@@ -30,6 +30,7 @@
 #include "documentbookmarksmanager.h"
 #include <QStandardItemModel>
 #include <QMenu>
+#include <util/sll/prelude.h>
 #include "core.h"
 #include "bookmarksmanager.h"
 #include "bookmark.h"
@@ -122,7 +123,15 @@ namespace Monocle
 		if (!Doc_)
 			return;
 
-		for (const auto& bm : Core::Instance ().GetBookmarksManager ()->GetBookmarks (Doc_))
+		auto bookmarks = Core::Instance ().GetBookmarksManager ()->GetBookmarks (Doc_);
+		std::sort (bookmarks.begin (), bookmarks.end (),
+				Util::ComparingBy ([] (const Bookmark& bm)
+				{
+					const auto& pos = bm.GetPosition ();
+					return std::make_tuple (pos.x (), pos.y ());
+				}));
+
+		for (const auto& bm : bookmarks)
 		{
 			auto item = new QStandardItem (bm.GetName ());
 			item->setEditable (false);
