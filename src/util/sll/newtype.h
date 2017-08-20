@@ -66,7 +66,6 @@ namespace Util
 		}
 	};
 
-#if __cpp_constexpr >= 201304
 	namespace detail
 	{
 		constexpr size_t NewTypeHash (const char *str)
@@ -83,18 +82,6 @@ namespace Util
 			return hash;
 		}
 	}
-#else
-	namespace detail
-	{
-		template<typename T>
-		constexpr size_t NewTypeHash (T)
-		{
-			static_assert (std::is_same<T, struct Foo>::value,
-					"Sorry, no NewTypeHash, seems like your compiler doesn't support relaxed constexpr.");
-			return 0;
-		}
-	}
-#endif
 }
 }
 
