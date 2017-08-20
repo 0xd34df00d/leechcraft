@@ -108,8 +108,7 @@ namespace TabSessManager
 		const auto plugin = tab->ParentMultiTabs ();
 		new Util::SlotClosure<Util::DeleteLaterPolicy>
 		{
-			// C++14: pass only params.Uncloser_ instead of whole Params_
-			[info, plugin, params, action, winIdx, this]
+			[uncloser = params.Uncloser_, info, plugin, action, winIdx, this]
 			{
 				action->deleteLater ();
 
@@ -123,7 +122,7 @@ namespace TabSessManager
 
 				const auto propsGuard = TabsPropsMgr_->AppendProps (info.DynProperties_);
 				const auto winGuard = TabsPropsMgr_->AppendWindow (winIdx);
-				params.Uncloser_ (plugin, info);
+				uncloser (plugin, info);
 			},
 			action,
 			SIGNAL (triggered ()),
