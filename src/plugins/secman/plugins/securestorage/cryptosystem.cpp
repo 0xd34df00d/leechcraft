@@ -35,6 +35,7 @@
 #include <openssl/rand.h>
 #include <openssl/crypto.h>
 #include <openssl/err.h>
+#include <util/sll/util.h>
 #include "ciphertextformat.h"
 
 namespace LeechCraft
@@ -110,14 +111,16 @@ namespace SecureStorage
 		Check (EVP_EncryptFinal (&cipherCtx, outPtr, &outLength));
 
 		// compute hmac
-		HMAC_CTX hmacCtx;
-		HMAC_CTX_init (&hmacCtx);
-		Check (HMAC_Init_ex (&hmacCtx, Key_.data (), Key_.length (), EVP_sha256 (), 0));
-		Check (HMAC_Update (&hmacCtx, reinterpret_cast<const unsigned char*> (data.data ()), data.length ()));
-		Check (HMAC_Update (&hmacCtx, randomData, RndLength));
-		unsigned hmacLength = 0;
-		Check (HMAC_Final (&hmacCtx, cipherText.Hmac (), &hmacLength));
-		HMAC_CTX_cleanup (&hmacCtx);
+		{
+			HMAC_CTX hmacCtx;
+			HMAC_CTX_init (&hmacCtx);
+			auto cleanup = Util::MakeScopeGuard ([&hmacCtx] { HMAC_CTX_cleanup (&hmacCtx); });
+			Check (HMAC_Init_ex (&hmacCtx, Key_.data (), Key_.length (), EVP_sha256 (), 0));
+			Check (HMAC_Update (&hmacCtx, reinterpret_cast<const unsigned char*> (data.data ()), data.length ()));
+			Check (HMAC_Update (&hmacCtx, randomData, RndLength));
+			unsigned hmacLength = 0;
+			Check (HMAC_Final (&hmacCtx, cipherText.Hmac (), &hmacLength));
+		}
 
 		return result;
 	}
