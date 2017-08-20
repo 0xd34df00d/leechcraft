@@ -505,7 +505,6 @@ namespace Snails
 
 		const auto row = node->GetRow ();
 
-		// TODO can this be reworked?
 		if (const auto childCount = node->GetRowCount ())
 		{
 			const auto& nodeIndex = createIndex (row, 0, node.get ());
