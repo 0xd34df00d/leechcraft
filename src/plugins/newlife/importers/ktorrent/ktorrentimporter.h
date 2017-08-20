@@ -41,8 +41,6 @@ namespace Importers
 
 	class KTorrentImporter : public AbstractImporter
 	{
-		Q_OBJECT
-
 		KTorrentImportPage *ImportPage_;
 	public:
 		KTorrentImporter (QWidget* = 0);
