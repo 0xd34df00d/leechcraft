@@ -34,6 +34,7 @@
 #include <openssl/hmac.h>
 #include <openssl/rand.h>
 #include <openssl/crypto.h>
+#include <openssl/err.h>
 #include "ciphertextformat.h"
 
 namespace LeechCraft
@@ -57,6 +58,27 @@ namespace SecureStorage
 		Key_.fill (0, Key_.length ());
 	}
 
+	namespace
+	{
+		void Check (int retCode)
+		{
+			if (retCode)
+				return;
+
+			const char *file = nullptr;
+			int line = 0;
+			const char *data = nullptr;
+			int flags = ERR_TXT_STRING;
+			ERR_get_error_line_data (&file, &line, &data, &flags);
+			throw std::runtime_error { QString { "encryption failed: %1 at %2:%3 (%4)" }
+					.arg (data)
+					.arg (file)
+					.arg (line)
+					.arg (retCode)
+					.toStdString () };
+		}
+	}
+
 	QByteArray CryptoSystem::Encrypt (const QByteArray& data) const
 	{
 		QByteArray result;
@@ -64,38 +86,37 @@ namespace SecureStorage
 		CipherTextFormat cipherText (result.data (), data.length ());
 
 		// fill IV in cipherText & random block
-		// TODO: check error codes.
-		RAND_bytes (cipherText.Iv (), IVLength);
+		Check (RAND_bytes (cipherText.Iv (), IVLength));
 		unsigned char randomData [RndLength];
-		RAND_bytes (randomData, RndLength);
+		Check (RAND_bytes (randomData, RndLength));
 
 		// init cipher
 		EVP_CIPHER_CTX cipherCtx;
 		EVP_CIPHER_CTX_init (&cipherCtx);
-		EVP_EncryptInit (&cipherCtx, EVP_aes_256_ofb (),
+		Check (EVP_EncryptInit (&cipherCtx, EVP_aes_256_ofb (),
 				reinterpret_cast<const unsigned char*> (Key_.data ()),
-				cipherText.Iv ());
+				cipherText.Iv ()));
 
 		// encrypt
 		int outLength = 0;
 		unsigned char* outPtr = cipherText.Data ();
-		EVP_EncryptUpdate (&cipherCtx, outPtr, &outLength,
+		Check (EVP_EncryptUpdate (&cipherCtx, outPtr, &outLength,
 				reinterpret_cast<const unsigned char*> (data.data ()),
-				data.length ());
+				data.length ()));
 		outPtr += outLength;
-		EVP_EncryptUpdate (&cipherCtx, outPtr, &outLength, randomData, RndLength);
+		Check (EVP_EncryptUpdate (&cipherCtx, outPtr, &outLength, randomData, RndLength));
 		outPtr += outLength;
 		// output last block & cleanup
-		EVP_EncryptFinal (&cipherCtx, outPtr, &outLength);
+		Check (EVP_EncryptFinal (&cipherCtx, outPtr, &outLength));
 
 		// compute hmac
 		HMAC_CTX hmacCtx;
 		HMAC_CTX_init (&hmacCtx);
-		HMAC_Init_ex (&hmacCtx, Key_.data (), Key_.length (), EVP_sha256 (), 0);
-		HMAC_Update (&hmacCtx, reinterpret_cast<const unsigned char*> (data.data ()), data.length ());
-		HMAC_Update (&hmacCtx, randomData, RndLength);
+		Check (HMAC_Init_ex (&hmacCtx, Key_.data (), Key_.length (), EVP_sha256 (), 0));
+		Check (HMAC_Update (&hmacCtx, reinterpret_cast<const unsigned char*> (data.data ()), data.length ()));
+		Check (HMAC_Update (&hmacCtx, randomData, RndLength));
 		unsigned hmacLength = 0;
-		HMAC_Final (&hmacCtx, cipherText.Hmac (), &hmacLength);
+		Check (HMAC_Final (&hmacCtx, cipherText.Hmac (), &hmacLength));
 		HMAC_CTX_cleanup (&hmacCtx);
 
 		return result;
