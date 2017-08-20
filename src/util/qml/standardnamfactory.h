@@ -31,18 +31,10 @@
 
 #include <functional>
 #include <QtGlobal>
-#if QT_VERSION < 0x050000
-#include <QDeclarativeNetworkAccessManagerFactory>
-#else
 #include <QQmlNetworkAccessManagerFactory>
-#endif
 #include "qmlconfig.h"
 
-#if QT_VERSION < 0x050000
-class QDeclarativeEngine;
-#else
 class QQmlEngine;
-#endif
 
 namespace LeechCraft
 {
@@ -63,11 +55,7 @@ namespace Util
 	 *
 	 * @ingroup QmlUtil
 	 */
-#if QT_VERSION < 0x050000
-	class UTIL_QML_API StandardNAMFactory : public QDeclarativeNetworkAccessManagerFactory
-#else
 	class UTIL_QML_API StandardNAMFactory : public QQmlNetworkAccessManagerFactory
-#endif
 	{
 		const QString Subpath_;
 	public:
@@ -92,11 +80,7 @@ namespace Util
 		 */
 		StandardNAMFactory (const QString& subpath,
 				CacheSizeGetter_f getter,
-#if QT_VERSION < 0x050000
-				QDeclarativeEngine *engine = nullptr);
-#else
 				QQmlEngine *engine = nullptr);
-#endif
 
 		/** @brief Creates the network access manager with the given
 		 * \em parent.

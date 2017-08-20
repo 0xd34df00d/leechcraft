@@ -49,20 +49,11 @@ namespace LeechCraft
 {
 namespace Util
 {
-#if QT_VERSION < 0x050000
-	PlotItem::PlotItem (QDeclarativeItem *parent)
-	: QDeclarativeItem { parent }
-#else
 	PlotItem::PlotItem (QQuickItem *parent)
 	: QQuickPaintedItem { parent }
-#endif
 	, Color_ { "#FF4B10" }
 	{
-#if QT_VERSION < 0x050000
-		setFlag (QGraphicsItem::ItemHasNoContents, false);
-#else
 		setFlag (ItemHasContents, true);
-#endif
 	}
 
 	QList<QPointF> PlotItem::GetPoints () const
@@ -312,15 +303,9 @@ namespace Util
 		return YExtent_;
 	}
 
-#if QT_VERSION < 0x050000
-	void PlotItem::paint (QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget*)
-	{
-		const auto& rect = option->rect;
-#else
 	void PlotItem::paint (QPainter *painter)
 	{
 		const auto& rect = contentsBoundingRect ().toRect ();
-#endif
 
 		if (!Plot_)
 		{

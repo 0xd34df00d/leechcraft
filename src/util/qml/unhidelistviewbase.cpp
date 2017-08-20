@@ -28,15 +28,9 @@
  **********************************************************************/
 
 #include "unhidelistviewbase.h"
-#if QT_VERSION < 0x050000
-#include <QDeclarativeContext>
-#include <QDeclarativeEngine>
-#include <QGraphicsObject>
-#else
 #include <QQmlContext>
 #include <QQmlEngine>
 #include <QQuickItem>
-#endif
 #include <QtDebug>
 #include <util/qml/colorthemeproxy.h>
 #include <util/qml/themeimageprovider.h>
@@ -50,11 +44,7 @@ namespace Util
 {
 	UnhideListViewBase::UnhideListViewBase (ICoreProxy_ptr proxy,
 			const std::function<void (UnhideListModel*)>& filler, QWidget *parent)
-#if QT_VERSION < 0x050000
-	: QDeclarativeView (parent)
-#else
 	: QQuickWidget (parent)
-#endif
 	, Model_ (new UnhideListModel (this))
 	{
 		new UnhoverDeleteMixin (this);

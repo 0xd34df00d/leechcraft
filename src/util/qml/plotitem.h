@@ -33,11 +33,7 @@
 #include <functional>
 #include <boost/optional.hpp>
 #include <QtGlobal>
-#if QT_VERSION < 0x050000
-#include <QDeclarativeItem>
-#else
 #include <QQuickPaintedItem>
-#endif
 #include "qmlconfig.h"
 
 class QwtPlot;
@@ -117,11 +113,7 @@ namespace Util
 
 		std::shared_ptr<QwtPlot> Plot_;
 	public:
-#if QT_VERSION < 0x050000
-		PlotItem (QDeclarativeItem* = 0);
-#else
 		PlotItem (QQuickItem* = 0);
-#endif
 
 		QList<QPointF> GetPoints () const;
 		void SetPoints (const QList<QPointF>&);
@@ -172,11 +164,7 @@ namespace Util
 		int GetXExtent () const;
 		int GetYExtent () const;
 
-#if QT_VERSION < 0x050000
-		void paint (QPainter*, const QStyleOptionGraphicsItem*, QWidget*) override;
-#else
 		void paint (QPainter*) override;
-#endif
 	private:
 		template<typename T>
 		void SetNewValue (T val, T& ourVal, const std::function<void ()>& notifier);

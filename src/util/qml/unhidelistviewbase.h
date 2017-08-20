@@ -31,13 +31,7 @@
 
 #include <functional>
 #include <QList>
-
-#if QT_VERSION < 0x050000
-#include <QDeclarativeView>
-#else
 #include <QQuickWidget>
-#endif
-
 #include <interfaces/core/icoreproxy.h>
 #include "qmlconfig.h"
 
@@ -62,11 +56,7 @@ namespace Util
 	 *
 	 * @ingroup QmlUtil
 	 */
-#if QT_VERSION < 0x050000
-	class UTIL_QML_API UnhideListViewBase : public QDeclarativeView
-#else
 	class UTIL_QML_API UnhideListViewBase : public QQuickWidget
-#endif
 	{
 		Q_OBJECT
 	protected:

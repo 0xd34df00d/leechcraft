@@ -30,11 +30,7 @@
 #pragma once
 
 #include <QTimer>
-#if QT_VERSION < 0x050000
-#include <QDeclarativeItem>
-#else
 #include <QQuickItem>
-#endif
 #include "qmlconfig.h"
 
 namespace LeechCraft
@@ -74,11 +70,7 @@ namespace Util
 	 *
 	 * @ingroup QmlUtil
 	 */
-#if QT_VERSION < 0x050000
-	class UTIL_QML_API ToolTipItem : public QDeclarativeItem
-#else
 	class UTIL_QML_API ToolTipItem : public QQuickItem
-#endif
 	{
 		Q_OBJECT
 
@@ -98,11 +90,7 @@ namespace Util
 		 *
 		 * @param[in] parent The parent item for this tooltip.
 		 */
-#if QT_VERSION < 0x050000
-		ToolTipItem (QDeclarativeItem *parent = nullptr);
-#else
 		ToolTipItem (QQuickItem *parent = nullptr);
-#endif
 
 		/** @brief Sets the text contained in this tooltip to \em text.
 		 *
@@ -133,13 +121,8 @@ namespace Util
 		 */
 		void ShowToolTip (const QString& text) const;
 	protected:
-#if QT_VERSION < 0x050000
-		void hoverEnterEvent (QGraphicsSceneHoverEvent*) override;
-		void hoverLeaveEvent (QGraphicsSceneHoverEvent*) override;
-#else
 		void hoverEnterEvent (QHoverEvent*) override;
 		void hoverLeaveEvent (QHoverEvent*) override;
-#endif
 	public slots:
 		/** @brief Shows the tooltip immediately.
 		 */

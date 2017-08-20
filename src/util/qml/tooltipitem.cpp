@@ -35,13 +35,8 @@ namespace LeechCraft
 {
 namespace Util
 {
-#if QT_VERSION < 0x050000
-	ToolTipItem::ToolTipItem (QDeclarativeItem *parent)
-	: QDeclarativeItem (parent)
-#else
 	ToolTipItem::ToolTipItem (QQuickItem *parent)
 	: QQuickItem (parent)
-#endif
 	{
 		setAcceptHoverEvents (true);
 		connect (&ShowTimer_,
@@ -75,36 +70,20 @@ namespace Util
 		QToolTip::showText (cursor ().pos (), text);
 	}
 
-#if QT_VERSION < 0x050000
-	void ToolTipItem::hoverEnterEvent (QGraphicsSceneHoverEvent *event)
-#else
 	void ToolTipItem::hoverEnterEvent (QHoverEvent *event)
-#endif
 	{
 		ShowTimer_.start (1000);
 		ContainsMouse_ = true;
 		emit containsMouseChanged ();
-#if QT_VERSION < 0x050000
-		QDeclarativeItem::hoverEnterEvent (event);
-#else
 		QQuickItem::hoverEnterEvent (event);
-#endif
 	}
 
-#if QT_VERSION < 0x050000
-	void ToolTipItem::hoverLeaveEvent (QGraphicsSceneHoverEvent *event)
-#else
 	void ToolTipItem::hoverLeaveEvent (QHoverEvent *event)
-#endif
 	{
 		ShowTimer_.stop ();
 		ContainsMouse_ = false;
 		emit containsMouseChanged ();
-#if QT_VERSION < 0x050000
-		QDeclarativeItem::hoverLeaveEvent (event);
-#else
 		QQuickItem::hoverLeaveEvent (event);
-#endif
 	}
 
 	void ToolTipItem::showToolTip ()
