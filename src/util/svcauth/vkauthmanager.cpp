@@ -234,14 +234,9 @@ namespace SvcAuth
 			return CheckError (location);
 
 		location = QUrl::fromEncoded (location.toEncoded ().replace ('#', '?'));
-#if QT_VERSION < 0x050000
-		Token_ = location.queryItemValue ("access_token");
-		ValidFor_ = location.queryItemValue ("expires_in").toInt ();
-#else
 		const QUrlQuery query { location };
 		Token_ = query.queryItemValue ("access_token");
 		ValidFor_ = query.queryItemValue ("expires_in").toInt ();
-#endif
 		ReceivedAt_ = QDateTime::currentDateTime ();
 		qDebug () << Q_FUNC_INFO << Token_ << ValidFor_;
 		IsRequesting_ = false;
@@ -258,11 +253,7 @@ namespace SvcAuth
 		if (url.path () != "/error")
 			return false;
 
-#if QT_VERSION < 0x050000
-		const auto errNum = url.queryItemValue ("err").toInt ();
-#else
 		const auto errNum = QUrlQuery { url }.queryItemValue ("err").toInt ();
-#endif
 
 		IsRequesting_ = false;
 
