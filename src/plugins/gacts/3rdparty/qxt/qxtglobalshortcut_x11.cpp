@@ -91,9 +91,6 @@ quint32 QxtGlobalShortcutPrivate::nativeModifiers(Qt::KeyboardModifiers modifier
         native |= Mod1Mask;
     if (modifiers & Qt::MetaModifier)
         native |= Mod4Mask;
-    // TODO: resolve these?
-    //if (modifiers & Qt::KeypadModifier)
-    //if (modifiers & Qt::GroupSwitchModifier)
     return native;
 }
 
