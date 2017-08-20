@@ -52,9 +52,7 @@ namespace Util
 	template<typename Model>
 	class RoleNamesMixin : public Model
 	{
-#if QT_VERSION >= 0x050000
 		QHash<int, QByteArray> RoleNames_;
-#endif
 	protected:
 		/** @brief Default constructor.
 		 *
@@ -77,7 +75,6 @@ namespace Util
 		{
 		}
 
-#if QT_VERSION >= 0x050000
 		/** @brief Sets the role names to \em roleNames.
 		 *
 		 * @param[in] roleNames The mapping from role value to its name.
@@ -102,7 +99,6 @@ namespace Util
 		{
 			return RoleNames_;
 		}
-#endif
 	};
 }
 }

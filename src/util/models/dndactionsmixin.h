@@ -58,10 +58,8 @@ namespace Util
 	template<typename Model>
 	class DndActionsMixin : public Model
 	{
-#if QT_VERSION >= 0x050000
 		Qt::DropActions Drags_;
 		Qt::DropActions Drops_;
-#endif
 	public:
 		/** @brief Constructs the model passing the arguments to the base
 		 * constructor.
@@ -74,14 +72,11 @@ namespace Util
 		template<typename... Args>
 		DndActionsMixin (Args&&... args)
 		: Model { std::forward<Args> (args)... }
-#if QT_VERSION >= 0x050000
 		, Drags_ { Model::supportedDragActions () }
 		, Drops_ { Model::supportedDropActions () }
-#endif
 		{
 		}
 
-#if QT_VERSION >= 0x050000
 		Qt::DropActions supportedDragActions () const override
 		{
 			return Drags_;
@@ -101,7 +96,6 @@ namespace Util
 		{
 			Drops_ = acts;
 		}
-#endif
 	};
 }
 }
