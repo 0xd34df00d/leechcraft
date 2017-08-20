@@ -41,9 +41,9 @@ namespace Importers
 
 	class KTorrentImporter : public AbstractImporter
 	{
-		KTorrentImportPage *ImportPage_;
+		KTorrentImportPage * const ImportPage_;
 	public:
-		KTorrentImporter (QWidget* = 0);
+		KTorrentImporter (QWidget* = nullptr);
 
 		QStringList GetNames () const;
 		QList<QIcon> GetIcons () const;

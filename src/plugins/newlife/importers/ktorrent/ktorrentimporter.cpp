@@ -37,9 +37,9 @@ namespace NewLife
 namespace Importers
 {
 	KTorrentImporter::KTorrentImporter (QWidget *parent)
-	: AbstractImporter (parent)
+	: AbstractImporter { parent }
+	, ImportPage_ { new KTorrentImportPage }
 	{
-		ImportPage_ = new KTorrentImportPage ();
 	}
 
 	QStringList KTorrentImporter::GetNames () const
