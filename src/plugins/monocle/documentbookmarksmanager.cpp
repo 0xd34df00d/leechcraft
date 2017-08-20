@@ -144,7 +144,7 @@ namespace Monocle
 		}
 
 		Menu_->addSeparator ();
-		const auto addAct = Menu_->addAction (QIcon::fromTheme ("bookmark-new"),
+		Menu_->addAction (QIcon::fromTheme ("bookmark-new"),
 				tr ("Add bookmark"),
 				this,
 				&DocumentBookmarksManager::AddBookmark);
