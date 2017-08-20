@@ -47,9 +47,6 @@ namespace Util
 	 * become more or less independent from C++'s type system point of
 	 * view.
 	 *
-	 * @note Using this class (and this header) requires pretty decent
-	 * C++14 support for now provided only by clang 3.4+.
-	 *
 	 * @tparam T The type for which to create the params for.
 	 */
 	template<typename T, size_t, size_t>
