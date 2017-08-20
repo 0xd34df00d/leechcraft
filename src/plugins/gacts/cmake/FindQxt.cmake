@@ -21,21 +21,6 @@
 ##  target_link_libraries(YourTargetNameHere ${QXT_LIBRARIES})
 ## ...or..
 ##  target_link_libraries(YourTargetNameHere ${QT_LIBRARIES} ${QXT_LIBRARIES})
-################### TODO:
-##      The purpose of this cmake file is to find what components
-##  exist, regardless of how libQxt was build or configured, thus
-##  it should search/find all possible options.  As I am not aware
-##  that any module requires anything special to be used, adding all
-##  modules to ${QXT_MODULES} below should be sufficient.
-##      Eventually, there should be version numbers, but
-##  I am still too unfamiliar with cmake to determine how to do
-##  version checks and comparisons.
-##      At the moment, this cmake returns a failure if you
-##  try to use a component that doesn't exist.  I don't know how to
-##  set up warnings.
-##      It would be nice having a FindQxt.cmake and a UseQxt.cmake
-##  file like done for Qt - one to check for everything in advance
-
 ##############
 
 ###### setup
