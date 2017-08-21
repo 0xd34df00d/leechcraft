@@ -30,13 +30,7 @@
 #pragma once
 
 #include <QtGlobal>
-
-#if QT_VERSION >= 0x050000
 #include <QUrlQuery>
-#else
-#include <QUrl>
-#endif
-
 #include "sllconfig.h"
 
 namespace LeechCraft
@@ -45,11 +39,7 @@ namespace Util
 {
 	class UTIL_SLL_API UrlAccessor
 	{
-#if QT_VERSION >= 0x050000
 		const QUrlQuery Url_;
-#else
-		const QUrl Url_;
-#endif
 	public:
 		using value_type = typename decltype (Url_.queryItems ())::value_type;
 

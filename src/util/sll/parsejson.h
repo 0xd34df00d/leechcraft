@@ -33,12 +33,7 @@
 #include <QVariant>
 #include <QIODevice>
 #include <QtDebug>
-
-#if QT_VERSION < 0x050000
-#include <qjson/parser.h>
-#else
 #include <QJsonDocument>
-#endif
 
 namespace LeechCraft
 {
@@ -56,18 +51,6 @@ namespace Util
 	 */
 	inline QVariant ParseJson (const QByteArray& bytes, const char *context)
 	{
-#if QT_VERSION < 0x050000
-		QJson::Parser parser;
-		bool ok;
-		const auto& result = parser.parse (bytes, &ok);
-		if (!ok)
-		{
-			qWarning () << context
-					<< "cannot parse"
-					<< bytes;
-			return {};
-		}
-#else
 		QJsonParseError error;
 		const auto& result = QJsonDocument::fromJson (bytes, &error).toVariant ();
 		if (error.error != QJsonParseError::NoError)
@@ -78,8 +61,6 @@ namespace Util
 					<< bytes;
 			return {};
 		}
-#endif
-
 		return result;
 	}
 

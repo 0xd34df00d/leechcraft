@@ -30,12 +30,7 @@
 #pragma once
 
 #include <QByteArray>
-
-#if QT_VERSION < 0x050000
-#include <qjson/serializer.h>
-#else
 #include <QJsonDocument>
-#endif
 
 namespace LeechCraft
 {
@@ -54,16 +49,8 @@ namespace Util
 	 */
 	inline QByteArray SerializeJson (const QVariant& var, bool compact = true)
 	{
-#if QT_VERSION < 0x050000
-		QJson::Serializer s;
-		s.setIndentMode (compact ?
-				QJson::IndentNone :
-				QJson::IndentFull);
-		return s.serialize (var);
-#else
 		return QJsonDocument::fromVariant (var)
 				.toJson (compact ? QJsonDocument::Compact : QJsonDocument::Indented);
-#endif
 	}
 }
 }

@@ -30,11 +30,7 @@
 #pragma once
 
 #include <QUrl>
-
-#if QT_VERSION >= 0x050000
 #include <QUrlQuery>
-#endif
-
 #include "sllconfig.h"
 
 namespace LeechCraft
@@ -74,9 +70,7 @@ namespace Util
 	{
 		QUrl& Url_;
 
-#if QT_VERSION >= 0x050000
 		QUrlQuery Query_;
-#endif
 	public:
 		/** @brief Constructs the object modifying the query of \em url.
 		 *

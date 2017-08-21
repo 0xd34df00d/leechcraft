@@ -35,9 +35,7 @@ namespace Util
 {
 	UrlOperator::UrlOperator (QUrl& url)
 	: Url_ (url)
-#if QT_VERSION >= 0x050000
 	, Query_ (url)
-#endif
 	{
 	}
 
@@ -48,19 +46,12 @@ namespace Util
 
 	void UrlOperator::Flush ()
 	{
-#if QT_VERSION >= 0x050000
 		Url_.setQuery (Query_);
-#endif
 	}
 
 	UrlOperator& UrlOperator::operator() (const QString& key, const QString& value)
 	{
-#if QT_VERSION >= 0x050000
 		Query_.addQueryItem (key, value);
-#else
-		Url_.addQueryItem (key, value);
-#endif
-
 		return *this;
 	}
 
@@ -81,12 +72,7 @@ namespace Util
 
 	UrlOperator& UrlOperator::operator-= (const QString& key)
 	{
-#if QT_VERSION < 0x050000
-		Url_.removeQueryItem (key);
-#else
 		Query_.removeQueryItem (key);
-#endif
-
 		return *this;
 	}
 
