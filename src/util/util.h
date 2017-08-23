@@ -271,7 +271,7 @@ namespace LeechCraft
 		}
 
 		template<typename K, typename V>
-		QMap<K, V> MakeMap (std::initializer_list<std::pair<K, V>> l)
+		[[deprecated]] QMap<K, V> MakeMap (std::initializer_list<std::pair<K, V>> l)
 		{
 #if QT_VERSION >= 0x050000
 			return QMap<K, V> { std::move (l) };
