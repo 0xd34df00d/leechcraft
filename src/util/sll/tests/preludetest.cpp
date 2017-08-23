@@ -63,11 +63,7 @@ namespace Util
 	{
 		QMap<int, QString> GetSimpleMap ()
 		{
-			QMap<int, QString> someMap;
-			someMap [0] = "aaa";
-			someMap [1] = "bbb";
-			someMap [2] = "ccc";
-			return someMap;
+			return { { 0, "aaa" }, { 1, "bbb" }, { 2, "ccc" }};
 		}
 	}
 
