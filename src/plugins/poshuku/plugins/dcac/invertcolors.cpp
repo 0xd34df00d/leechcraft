@@ -227,7 +227,7 @@ namespace DCAC
 			HandleLoopEnd (width * height, i, handler);
 		}
 
-		__attribute__ ((target ("sse4")))
+		__attribute__ ((target ("sse4.1")))
 		uint64_t GetGraySSE4 (const QImage& image)
 		{
 			uint32_t r = 0;
