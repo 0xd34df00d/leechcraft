@@ -32,7 +32,6 @@
 #include <QWindow>
 #include <QResizeEvent>
 #include <util/gui/util.h>
-#include <util/gui/unhoverdeletemixin.h>
 
 namespace LeechCraft
 {
