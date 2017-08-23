@@ -61,19 +61,11 @@ namespace Util
 	{
 		auto setSubjectInfo = [&cert] (QLabel *label, QSslCertificate::SubjectInfo key)
 		{
-#if QT_VERSION < 0x050000
-			label->setText (cert.subjectInfo (key));
-#else
 			label->setText (cert.subjectInfo (key).join ("; "));
-#endif
 		};
 		auto setIssuerInfo = [&cert] (QLabel *label, QSslCertificate::SubjectInfo key)
 		{
-#if QT_VERSION < 0x050000
-			label->setText (cert.issuerInfo (key));
-#else
 			label->setText (cert.issuerInfo (key).join ("; "));
-#endif
 		};
 
 		setSubjectInfo (Ui_->SubjectCommonName_, QSslCertificate::CommonName);
@@ -92,10 +84,8 @@ namespace Util
 		Ui_->SerialNumber_->setText (cert.serialNumber ());
 		Ui_->Md5_->setText (cert.digest (QCryptographicHash::Md5).toHex ());
 		Ui_->Sha1_->setText (FormatHash (cert.digest (QCryptographicHash::Sha1).toHex ()));
-#if QT_VERSION >= 0x050000
 		Ui_->Sha256_->setText (FormatHash (cert.digest (QCryptographicHash::Sha256).toHex ()));
 		Ui_->Sha512_->setText (FormatHash (cert.digest (QCryptographicHash::Sha512).toHex ()));
-#endif
 
 		Ui_->StartDate_->setText (QLocale {}.toString (cert.effectiveDate ()));
 		Ui_->EndDate_->setText (QLocale {}.toString (cert.expiryDate ()));

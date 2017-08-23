@@ -92,7 +92,6 @@ namespace Util
 		 */
 		UTIL_GUI_API AutoResizeMixin (const QPoint& point, RectGetter_f rect, QWidget *widget);
 
-#if QT_VERSION >= 0x050000
 		/** @brief Constructs the resize mixin.
 		 *
 		 * This function constructs the resize mixin managing the given
@@ -106,7 +105,6 @@ namespace Util
 		 * @param[in] window The widget to fit.
 		 */
 		UTIL_GUI_API AutoResizeMixin (const QPoint& point, RectGetter_f rect, QWindow *window);
-#endif
 
 		/** @brief Listens for resize events and refits the widget.
 		 */
