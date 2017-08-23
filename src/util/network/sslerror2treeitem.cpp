@@ -57,11 +57,7 @@ namespace Util
 			item,
 			{
 				QObject::tr ("Valid:"),
-	#if QT_VERSION < 0x050000
-				cer.isValid () ? QObject::tr ("yes") : QObject::tr ("no")
-	#else
 				!cer.isBlacklisted () ? QObject::tr ("yes") : QObject::tr ("no")
-	#endif
 			}
 		};
 		new QTreeWidgetItem { item, { QObject::tr ("Effective date:"), cer.effectiveDate ().toString () } };
@@ -72,11 +68,7 @@ namespace Util
 		new QTreeWidgetItem { item, { QObject::tr ("SHA1 digest:"), cer.digest (QCryptographicHash::Sha1).toHex () } };
 
 		QString tmpString;
-	#if QT_VERSION >= 0x050000
 		auto cvt = [] (const QStringList& list) { return list.join ("; "); };
-	#else
-		auto cvt = [] (const QString& str) { return str; };
-	#endif
 
 		const auto issuer = new QTreeWidgetItem { item, { QObject::tr ("Issuer info") } };
 		auto mkIssuerItem = [&cvt, &cer, issuer] (const QString& name,
