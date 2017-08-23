@@ -92,7 +92,7 @@ namespace Util
 		auto map = GetSimpleMap ();
 		Map (map, [] (QString& v) { v += v [0]; });
 
-		QCOMPARE (map, (Util::MakeMap<int, QString> ({ { 0, "aaaa" }, { 1, "bbbb" }, { 2, "cccc" }})));
+		QCOMPARE (map, (QMap<int, QString> { { 0, "aaaa" }, { 1, "bbbb" }, { 2, "cccc" }}));
 	}
 
 	void PreludeTest::testMapMapNonMutatingVoid ()
