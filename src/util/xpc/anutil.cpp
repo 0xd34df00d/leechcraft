@@ -43,81 +43,84 @@ namespace AN
 
 	QMap<QString, QString> GetCategoryNameMap ()
 	{
-		static const auto cat2hr = MakeMap<QString, QString> ({
-				{ LAN::CatIM, QObject::tr ("Instant messaging") },
-				{ LAN::CatOrganizer, QObject::tr ("Organizer") },
-				{ LAN::CatDownloads, QObject::tr ("Downloads") },
-				{ LAN::CatPackageManager, QObject::tr ("Package manager") },
-				{ LAN::CatMediaPlayer, QObject::tr ("Media player") },
-				{ LAN::CatTerminal, QObject::tr ("Terminal") },
-				{ LAN::CatGeneric, QObject::tr ("Generic") }
-			});
+		static const QMap<QString, QString> cat2hr
+		{
+			{ LAN::CatIM, QObject::tr ("Instant messaging") },
+			{ LAN::CatOrganizer, QObject::tr ("Organizer") },
+			{ LAN::CatDownloads, QObject::tr ("Downloads") },
+			{ LAN::CatPackageManager, QObject::tr ("Package manager") },
+			{ LAN::CatMediaPlayer, QObject::tr ("Media player") },
+			{ LAN::CatTerminal, QObject::tr ("Terminal") },
+			{ LAN::CatGeneric, QObject::tr ("Generic") }
+		};
 		return cat2hr;
 	}
 
 	QStringList GetKnownEventTypes (const QString& category)
 	{
-		static const auto cat2types = MakeMap<QString, QStringList> ({
-				{ LAN::CatIM,
-					{
-						LAN::TypeIMAttention,
-						LAN::TypeIMIncFile,
-						LAN::TypeIMIncMsg,
-						LAN::TypeIMMUCHighlight,
-						LAN::TypeIMMUCInvite,
-						LAN::TypeIMMUCMsg,
-						LAN::TypeIMStatusChange,
-						LAN::TypeIMSubscrGrant,
-						LAN::TypeIMSubscrRequest,
-						LAN::TypeIMSubscrRevoke,
-						LAN::TypeIMSubscrSub,
-						LAN::TypeIMSubscrUnsub,
-						LAN::TypeIMEventTuneChange,
-						LAN::TypeIMEventMoodChange,
-						LAN::TypeIMEventActivityChange,
-						LAN::TypeIMEventLocationChange
-					}
-				},
+		static const QMap<QString, QStringList> cat2types
+		{
+			{
+				LAN::CatIM,
 				{
-					LAN::CatOrganizer,
-					{
-						LAN::TypeOrganizerEventDue
-					}
-				},
-				{
-					LAN::CatDownloads,
-					{
-						LAN::TypeDownloadError,
-						LAN::TypeDownloadFinished
-					}
-				},
-				{
-					LAN::CatPackageManager,
-					{
-						LAN::TypePackageUpdated
-					}
-				},
-				{
-					LAN::CatMediaPlayer,
-					{
-						LAN::TypeMediaPlaybackStatus
-					}
-				},
-				{
-					LAN::CatTerminal,
-					{
-						LAN::TypeTerminalActivity,
-						LAN::TypeTerminalInactivity,
-						LAN::TypeTerminalBell
-					}
-				},
-				{
-					LAN::CatGeneric,
-					{
-						LAN::TypeGeneric
-					}
+					LAN::TypeIMAttention,
+					LAN::TypeIMIncFile,
+					LAN::TypeIMIncMsg,
+					LAN::TypeIMMUCHighlight,
+					LAN::TypeIMMUCInvite,
+					LAN::TypeIMMUCMsg,
+					LAN::TypeIMStatusChange,
+					LAN::TypeIMSubscrGrant,
+					LAN::TypeIMSubscrRequest,
+					LAN::TypeIMSubscrRevoke,
+					LAN::TypeIMSubscrSub,
+					LAN::TypeIMSubscrUnsub,
+					LAN::TypeIMEventTuneChange,
+					LAN::TypeIMEventMoodChange,
+					LAN::TypeIMEventActivityChange,
+					LAN::TypeIMEventLocationChange
 				}
-			});
+			},
+			{
+				LAN::CatOrganizer,
+				{
+					LAN::TypeOrganizerEventDue
+				}
+			},
+			{
+				LAN::CatDownloads,
+				{
+					LAN::TypeDownloadError,
+					LAN::TypeDownloadFinished
+				}
+			},
+			{
+				LAN::CatPackageManager,
+				{
+					LAN::TypePackageUpdated
+				}
+			},
+			{
+				LAN::CatMediaPlayer,
+				{
+					LAN::TypeMediaPlaybackStatus
+				}
+			},
+			{
+				LAN::CatTerminal,
+				{
+					LAN::TypeTerminalActivity,
+					LAN::TypeTerminalInactivity,
+					LAN::TypeTerminalBell
+				}
+			},
+			{
+				LAN::CatGeneric,
+				{
+					LAN::TypeGeneric
+				}
+			}
+		};
 		return cat2types.value (category);
 	}
 
@@ -128,39 +131,40 @@ namespace AN
 
 	QString GetTypeName (const QString& type)
 	{
-		static const auto type2hr = MakeMap<QString, QString> ({
-				{ LAN::TypeIMAttention, QObject::tr ("Attention request") },
-				{ LAN::TypeIMIncFile, QObject::tr ("Incoming file transfer request") },
-				{ LAN::TypeIMIncMsg, QObject::tr ("Incoming chat message") },
-				{ LAN::TypeIMMUCHighlight, QObject::tr ("MUC highlight") },
-				{ LAN::TypeIMMUCInvite, QObject::tr ("MUC invitation") },
-				{ LAN::TypeIMMUCMsg, QObject::tr ("General MUC message") },
-				{ LAN::TypeIMStatusChange, QObject::tr ("Contact status change") },
-				{ LAN::TypeIMSubscrGrant, QObject::tr ("Authorization granted") },
-				{ LAN::TypeIMSubscrRevoke, QObject::tr ("Authorization revoked") },
-				{ LAN::TypeIMSubscrRequest, QObject::tr ("Authorization requested") },
-				{ LAN::TypeIMSubscrSub, QObject::tr ("Contact subscribed") },
-				{ LAN::TypeIMSubscrUnsub, QObject::tr ("Contact unsubscribed") },
-				{ LAN::TypeIMEventTuneChange, QObject::tr ("Contact's tune changed") },
-				{ LAN::TypeIMEventMoodChange, QObject::tr ("Contact's mood changed") },
-				{ LAN::TypeIMEventActivityChange, QObject::tr ("Contact's activity changed") },
-				{ LAN::TypeIMEventLocationChange, QObject::tr ("Contact's location changed") },
+		static const QMap<QString, QString> type2hr
+		{
+			{ LAN::TypeIMAttention, QObject::tr ("Attention request") },
+			{ LAN::TypeIMIncFile, QObject::tr ("Incoming file transfer request") },
+			{ LAN::TypeIMIncMsg, QObject::tr ("Incoming chat message") },
+			{ LAN::TypeIMMUCHighlight, QObject::tr ("MUC highlight") },
+			{ LAN::TypeIMMUCInvite, QObject::tr ("MUC invitation") },
+			{ LAN::TypeIMMUCMsg, QObject::tr ("General MUC message") },
+			{ LAN::TypeIMStatusChange, QObject::tr ("Contact status change") },
+			{ LAN::TypeIMSubscrGrant, QObject::tr ("Authorization granted") },
+			{ LAN::TypeIMSubscrRevoke, QObject::tr ("Authorization revoked") },
+			{ LAN::TypeIMSubscrRequest, QObject::tr ("Authorization requested") },
+			{ LAN::TypeIMSubscrSub, QObject::tr ("Contact subscribed") },
+			{ LAN::TypeIMSubscrUnsub, QObject::tr ("Contact unsubscribed") },
+			{ LAN::TypeIMEventTuneChange, QObject::tr ("Contact's tune changed") },
+			{ LAN::TypeIMEventMoodChange, QObject::tr ("Contact's mood changed") },
+			{ LAN::TypeIMEventActivityChange, QObject::tr ("Contact's activity changed") },
+			{ LAN::TypeIMEventLocationChange, QObject::tr ("Contact's location changed") },
 
-				{ LAN::TypeOrganizerEventDue, QObject::tr ("Event is due") },
+			{ LAN::TypeOrganizerEventDue, QObject::tr ("Event is due") },
 
-				{ LAN::TypeDownloadError, QObject::tr ("Download error") },
-				{ LAN::TypeDownloadFinished, QObject::tr ("Download finished") },
+			{ LAN::TypeDownloadError, QObject::tr ("Download error") },
+			{ LAN::TypeDownloadFinished, QObject::tr ("Download finished") },
 
-				{ LAN::TypePackageUpdated, QObject::tr ("Package updated") },
+			{ LAN::TypePackageUpdated, QObject::tr ("Package updated") },
 
-				{ LAN::TypeMediaPlaybackStatus, QObject::tr ("Media playback status changed") },
+			{ LAN::TypeMediaPlaybackStatus, QObject::tr ("Media playback status changed") },
 
-				{ LAN::TypeTerminalBell, QObject::tr ("Bell in a terminal") },
-				{ LAN::TypeTerminalActivity, QObject::tr ("Activity in a terminal") },
-				{ LAN::TypeTerminalInactivity, QObject::tr ("Inactivity in a terminal") },
+			{ LAN::TypeTerminalBell, QObject::tr ("Bell in a terminal") },
+			{ LAN::TypeTerminalActivity, QObject::tr ("Activity in a terminal") },
+			{ LAN::TypeTerminalInactivity, QObject::tr ("Inactivity in a terminal") },
 
-				{ LAN::TypeGeneric, QObject::tr ("Generic") }
-			});
+			{ LAN::TypeGeneric, QObject::tr ("Generic") }
+		};
 		return type2hr.value (type, type);
 	}
 }

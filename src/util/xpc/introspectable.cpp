@@ -49,7 +49,7 @@ namespace Util
 		const auto type = variant.userType ();
 
 		if (type < static_cast<int> (QVariant::UserType))
-			return Util::MakeMap<QString, QVariant> ({ { "data", variant } });
+			return { { "data", variant } };
 
 		if (Intros_.contains (type))
 			return Intros_ [type] (variant);

@@ -76,10 +76,11 @@ namespace Util
 		QVariantList result;
 		for (const auto& set : Multipoints_)
 		{
-			auto map = Util::MakeMap<QString, QVariant> ({
-					{ "color", QVariant::fromValue (set.Color_) },
-					{ "points", QVariant::fromValue (set.Points_) }
-				});
+			QVariantMap map
+			{
+				{ "color", QVariant::fromValue (set.Color_) },
+				{ "points", QVariant::fromValue (set.Points_) }
+			};
 
 			if (set.BrushColor_)
 				map ["brushColor"] = *set.BrushColor_;
