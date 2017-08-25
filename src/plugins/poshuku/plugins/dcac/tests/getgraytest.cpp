@@ -42,7 +42,7 @@ namespace DCAC
 	void GetGrayTest::testSSE4 ()
 	{
 #ifdef SSE_ENABLED
-		CHECKFEATURE (SSE41)
+		CHECKFEATURE (SSSE3)
 
 		for (const auto& image : TestImages_)
 		{
@@ -77,7 +77,7 @@ namespace DCAC
 	void GetGrayTest::benchSSE4 ()
 	{
 #ifdef SSE_ENABLED
-		CHECKFEATURE (SSE41)
+		CHECKFEATURE (SSSE3)
 
 		BenchmarkFunction (&GetGraySSE4);
 #endif
