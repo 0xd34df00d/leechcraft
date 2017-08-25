@@ -227,11 +227,12 @@ namespace DCAC
 			HandleLoopEnd (width * height, i, handler);
 		}
 
+		template<int Idx>
 		__attribute__ ((target ("sse2")))
-		int ExtractInt (__m128i reg, int idx)
+		int ExtractInt (__m128i reg)
 		{
-			int low = _mm_extract_epi16 (reg, idx * 2);
-			int high = _mm_extract_epi16 (reg, idx * 2 + 1);
+			int low = _mm_extract_epi16 (reg, Idx * 2);
+			int high = _mm_extract_epi16 (reg, Idx * 2 + 1);
 			return (high << 16) | low;
 		}
 
@@ -280,9 +281,9 @@ namespace DCAC
 
 			HandleLoopEnd (width * height, i, handler);
 
-			r += ExtractInt (sum, 2);
-			g += ExtractInt (sum, 1);
-			b += ExtractInt (sum, 0);
+			r += ExtractInt<2> (sum);
+			g += ExtractInt<1> (sum);
+			b += ExtractInt<0> (sum);
 
 			return CombineGray (r, g, b);
 		}
