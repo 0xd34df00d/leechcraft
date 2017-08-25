@@ -39,7 +39,7 @@ namespace Poshuku
 {
 namespace DCAC
 {
-	void GetGrayTest::testSSE4 ()
+	void GetGrayTest::testSSSE3 ()
 	{
 #ifdef SSE_ENABLED
 		CHECKFEATURE (SSSE3)
@@ -47,7 +47,7 @@ namespace DCAC
 		for (const auto& image : TestImages_)
 		{
 			const auto ref = GetGrayDefault (image);
-			const auto sse4 = GetGraySSE4 (image);
+			const auto sse4 = GetGraySSSE3 (image);
 
 			QCOMPARE (ref, sse4);
 		}
@@ -74,12 +74,12 @@ namespace DCAC
 		BenchmarkFunction (&GetGrayDefault);
 	}
 
-	void GetGrayTest::benchSSE4 ()
+	void GetGrayTest::benchSSSE3 ()
 	{
 #ifdef SSE_ENABLED
 		CHECKFEATURE (SSSE3)
 
-		BenchmarkFunction (&GetGraySSE4);
+		BenchmarkFunction (&GetGraySSSE3);
 #endif
 	}
 

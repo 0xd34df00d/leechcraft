@@ -236,7 +236,7 @@ namespace DCAC
 		}
 
 		__attribute__ ((target ("ssse3")))
-		uint64_t GetGraySSE4 (const QImage& image)
+		uint64_t GetGraySSSE3 (const QImage& image)
 		{
 			uint32_t r = 0;
 			uint32_t g = 0;
@@ -351,7 +351,7 @@ namespace DCAC
 #ifdef SSE_ENABLED
 			static const auto ptr = Util::CpuFeatures::Choose ({
 						{ Util::CpuFeatures::Feature::AVX2, &GetGrayAVX2 },
-						{ Util::CpuFeatures::Feature::SSSE3, &GetGraySSE4 }
+						{ Util::CpuFeatures::Feature::SSSE3, &GetGraySSSE3 }
 					},
 					&GetGrayDefault);
 
