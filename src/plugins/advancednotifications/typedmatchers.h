@@ -99,7 +99,7 @@ namespace AdvancedNotifications
 	class StringMatcher : public StringLikeMatcher
 	{
 	public:
-		StringMatcher (const QStringList& variants = {});
+		using StringLikeMatcher::StringLikeMatcher;
 
 		bool Match (const QVariant&) const;
 

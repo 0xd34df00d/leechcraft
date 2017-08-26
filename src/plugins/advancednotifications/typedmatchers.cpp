@@ -248,11 +248,6 @@ namespace AdvancedNotifications
 		}
 	}
 
-	StringMatcher::StringMatcher (const QStringList& list)
-	: StringLikeMatcher (list)
-	{
-	}
-
 	bool StringMatcher::Match (const QVariant& var) const
 	{
 		if (!var.canConvert<QString> ())
