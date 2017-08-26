@@ -79,8 +79,7 @@ namespace AdvancedNotifications
 	}
 
 	StringLikeMatcher::StringLikeMatcher (const QStringList& variants)
-	: Value_ { {} }
-	, Allowed_ (variants)
+	: Allowed_ (variants)
 	{
 	}
 
@@ -321,8 +320,7 @@ namespace AdvancedNotifications
 	}
 
 	BoolMatcher::BoolMatcher (const QString& fieldName)
-	: Value_ { false }
-	, FieldName_ { fieldName }
+	: FieldName_ { fieldName }
 	{
 	}
 
@@ -403,7 +401,6 @@ namespace AdvancedNotifications
 	}
 
 	IntMatcher::IntMatcher ()
-	: Value_ { 0, ANIntFieldValue::OEqual }
 	{
 		Ops2pos_ [ANIntFieldValue::OGreater] = 0;
 		Ops2pos_ [ANIntFieldValue::OEqual | ANIntFieldValue::OGreater] = 1;

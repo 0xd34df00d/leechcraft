@@ -77,7 +77,7 @@ namespace AdvancedNotifications
 	class StringLikeMatcher : public TypedMatcherBase
 	{
 	protected:
-		ANStringFieldValue Value_;
+		ANStringFieldValue Value_ { {} };
 		const QStringList Allowed_;
 
 		std::shared_ptr<Ui::StringLikeMatcherConfigWidget> Ui_;
@@ -128,7 +128,7 @@ namespace AdvancedNotifications
 
 	class BoolMatcher : public TypedMatcherBase
 	{
-		ANBoolFieldValue Value_;
+		ANBoolFieldValue Value_ { false };
 
 		const QString FieldName_;
 		std::shared_ptr<Ui::BoolMatcherConfigWidget> Ui_;
@@ -152,7 +152,7 @@ namespace AdvancedNotifications
 
 	class IntMatcher : public TypedMatcherBase
 	{
-		ANIntFieldValue Value_;
+		ANIntFieldValue Value_ { 0, ANIntFieldValue::OEqual };
 
 		std::shared_ptr<Ui::IntMatcherConfigWidget> Ui_;
 		QMap<ANIntFieldValue::Operations, int> Ops2pos_;
