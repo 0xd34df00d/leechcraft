@@ -86,10 +86,11 @@ namespace AdvancedNotifications
 
 	QVariantMap StringLikeMatcher::Save () const
 	{
-		QVariantMap result;
-		result ["Rx"] = Value_.Rx_;
-		result ["Cont"] = Value_.Contains_;
-		return result;
+		return
+		{
+			{ "Rx", Value_.Rx_ },
+			{ "Cont", Value_.Contains_ }
+		};
 	}
 
 	void StringLikeMatcher::Load (const QVariantMap& map)
