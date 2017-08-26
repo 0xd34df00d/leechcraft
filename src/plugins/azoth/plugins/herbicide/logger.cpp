@@ -32,6 +32,7 @@
 #include <QSqlError>
 #include <util/db/oral.h>
 #include <util/db/util.h>
+#include <util/sll/unreachable.h>
 #include <util/sys/paths.h>
 #include <util/util.h>
 #include <interfaces/azoth/iclentry.h>
@@ -173,10 +174,7 @@ namespace oral
 				return "failed";
 			}
 
-			qWarning () << Q_FUNC_INFO
-					<< "unknown event type"
-					<< static_cast<int> (event);
-			return {};
+			Util::Unreachable ();
 		}
 	};
 
