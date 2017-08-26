@@ -94,15 +94,15 @@ namespace WebAccess
 	, ItemsModel_ { new Q2WProxyModel { SourceItemModel_, this } }
 	, ItemsFilter_ { new ReadItemsFilter { this }}
 	{
-		ChannelsModel_->SetRoleMappings (Util::MakeMap<int, int> ({
+		ChannelsModel_->SetRoleMappings ({
 				{ ChannelRole::UnreadCount, Aggregator::ChannelRoles::UnreadCount },
 				{ ChannelRole::CID, Aggregator::ChannelRoles::ChannelID }
-			}));
+			});
 
-		ItemsModel_->SetRoleMappings (Util::MakeMap<int, int> ({
+		ItemsModel_->SetRoleMappings ({
 				{ ItemRole::IID, Aggregator::IItemsModel::ItemRole::ItemId },
 				{ ItemRole::IsRead, Aggregator::IItemsModel::ItemRole::IsRead }
-			}));
+			});
 		ItemsModel_->AddDataMorphism ([] (const QModelIndex& idx, int role) -> boost::any
 			{
 				if (role != Wt::StyleClassRole)
