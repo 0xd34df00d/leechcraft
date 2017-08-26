@@ -48,7 +48,7 @@ namespace Azoth
 	{
 		Model_->setColumnCount (3);
 
-		Model_->setHorizontalHeaderLabels ({tr ("Name"), tr ("Status"), tr ("Text") });
+		Model_->setHorizontalHeaderLabels ({ tr ("Name"), tr ("Status"), tr ("Text") });
 
 		Model_->horizontalHeaderItem (0)->setData (DataSources::DataFieldType::String,
 				DataSources::DataSourceRole::FieldType);
@@ -57,11 +57,12 @@ namespace Azoth
 		QVariantList values;
 		auto append = [&values] (State state)
 		{
-			values << Util::MakeMap<QString, QVariant> ({
+			const QVariantMap value {
 					{ "Name", StateToString (state) },
 					{ "Icon", ResourcesManager::Instance ().GetIconForState (state) },
 					{ "ID", QVariant::fromValue (state) }
-				});
+				};
+			values << value;
 		};
 		append (State::SOnline);
 		append (State::SAway);
