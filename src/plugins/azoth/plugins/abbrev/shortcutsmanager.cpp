@@ -69,16 +69,17 @@ namespace Abbrev
 
 	QMap<QString, ActionInfo> ShortcutsManager::GetActionInfo () const
 	{
-		return Util::MakeMap<QString, ActionInfo> ({
+		return
+		{
+			{
+				"org.LeechCraft.Azoth.Abbrev.Expand",
 				{
-					"org.LeechCraft.Azoth.Abbrev.Expand",
-					{
-						tr ("Expand abbreviations in current message edit text."),
-						QKeySequence {},
-						{}
-					}
-				},
-			});
+					tr ("Expand abbreviations in current message edit text."),
+					QKeySequence {},
+					{}
+				}
+			},
+		};
 	}
 
 	void ShortcutsManager::SetShortcut (const QString&, const QKeySequences_t& seqs)
