@@ -321,7 +321,7 @@ namespace AdvancedNotifications
 
 	QVariantMap BoolMatcher::Save () const
 	{
-		return Util::MakeMap<QString, QVariant> ({ { "IsSet", Value_.IsSet_ } });
+		return { { "IsSet", Value_.IsSet_ } };
 	}
 
 	void BoolMatcher::Load (const QVariantMap& map)
