@@ -36,6 +36,7 @@
 #include <util/sll/slotclosure.h>
 #include <util/sll/parsejson.h>
 #include <util/network/lcserviceoverride.h>
+#include <util/network/handlenetworkreply.h>
 
 namespace LeechCraft
 {
@@ -56,7 +57,7 @@ namespace Lastfmscrobble
 	, NAM_ { nam }
 	{
 		const QNetworkRequest req { GetUrl ("artist/photos/pageurl") };
-		HandleReply (NAM_->post (req, "artist=" + QUrl::toPercentEncoding (artist)),
+		Util::HandleNetworkReply (this, NAM_->post (req, "artist=" + QUrl::toPercentEncoding (artist)),
 				[this] (const QByteArray& data) { HandlePageUrl (data); });
 	}
 
@@ -64,22 +65,6 @@ namespace Lastfmscrobble
 	{
 		emit gotImages (Images_);
 		deleteLater ();
-	}
-
-	template<typename F>
-	void ImagesFetcher::HandleReply (QNetworkReply *reply, F f)
-	{
-		new Util::SlotClosure<Util::DeleteLaterPolicy>
-		{
-			[reply, f]
-			{
-				reply->deleteLater ();
-				f (reply->readAll ());
-			},
-			reply,
-			SIGNAL (finished ()),
-			this
-		};
 	}
 
 	void ImagesFetcher::HandlePageUrl (const QByteArray& data)
@@ -96,7 +81,7 @@ namespace Lastfmscrobble
 			return;
 		}
 
-		HandleReply (NAM_->get (QNetworkRequest { url }),
+		Util::HandleNetworkReply (this, NAM_->get (QNetworkRequest { url }),
 				[this] (const QByteArray& data) { HandleImagesPageFetched (data); });
 	}
 
@@ -122,7 +107,7 @@ namespace Lastfmscrobble
 		const auto reply = NAM_->post (QNetworkRequest { GetUrl ("artist/photos/parsepage") }, multipart);
 		multipart->setParent (reply);
 
-		HandleReply (reply,
+		Util::HandleNetworkReply (this, reply,
 				[this] (const QByteArray& data) { HandlePageParsed (data); });
 	}
 

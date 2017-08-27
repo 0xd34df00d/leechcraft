@@ -51,9 +51,6 @@ namespace Lastfmscrobble
 	private:
 		void HandleDone ();
 
-		template<typename F>
-		void HandleReply (QNetworkReply*, F);
-
 		void HandlePageUrl (const QByteArray&);
 		void HandleImagesPageFetched (const QByteArray&);
 		void HandlePageParsed (const QByteArray&);
