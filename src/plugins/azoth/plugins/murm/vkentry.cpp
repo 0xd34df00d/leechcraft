@@ -545,10 +545,11 @@ namespace Murm
 		else
 			name = app.Title_;
 
-		return Util::MakeMap<QString, QVariant> ({
-				{ "client_name", name },
-				{ "client_image", image }
-			});
+		return
+		{
+			{ "client_name", name },
+			{ "client_image", image }
+		};
 	}
 
 	void VkEntry::ChatTabClosed ()
