@@ -183,13 +183,14 @@ namespace oral
 	{
 		Azoth::Herbicide::Logger::Event operator() (const QVariant& var) const
 		{
-			static const auto map = Util::MakeMap<QString, Azoth::Herbicide::Logger::Event> ({
-						{ "granted", Azoth::Herbicide::Logger::Event::Granted },
-						{ "denied", Azoth::Herbicide::Logger::Event::Denied },
-						{ "challenged", Azoth::Herbicide::Logger::Event::Challenged },
-						{ "succeeded", Azoth::Herbicide::Logger::Event::Succeeded },
-						{ "failed", Azoth::Herbicide::Logger::Event::Failed },
-					});
+			static const QMap<QString, Azoth::Herbicide::Logger::Event> map
+			{
+				{ "granted", Azoth::Herbicide::Logger::Event::Granted },
+				{ "denied", Azoth::Herbicide::Logger::Event::Denied },
+				{ "challenged", Azoth::Herbicide::Logger::Event::Challenged },
+				{ "succeeded", Azoth::Herbicide::Logger::Event::Succeeded },
+				{ "failed", Azoth::Herbicide::Logger::Event::Failed },
+			};
 			return map.value (var.toString ());
 		}
 	};
