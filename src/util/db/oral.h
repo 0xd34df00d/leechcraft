@@ -985,10 +985,8 @@ namespace oral
 		static constexpr pos<3> _3 = {};
 		static constexpr pos<4> _4 = {};
 
-#if __cpp_variable_templates >= 201304
 		template<int Idx>
 		static constexpr pos<Idx> _ = {};
-#endif
 	};
 
 	namespace detail
