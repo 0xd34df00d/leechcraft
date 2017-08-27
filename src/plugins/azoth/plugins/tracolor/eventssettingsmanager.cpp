@@ -185,10 +185,11 @@ namespace Tracolor
 		const auto& map = Util::Map (remainingEvents,
 				[] (const QString& eventId) -> QVariant
 				{
-					return Util::MakeMap<QString, QVariant> ({
-							{ "Name", Util::AN::GetTypeName (eventId) },
-							{ "ID", eventId }
-						});
+					return QVariantMap
+					{
+						{ "Name", Util::AN::GetTypeName (eventId) },
+						{ "ID", eventId }
+					};
 				});
 		Model_->setHeaderData (0, Qt::Horizontal,
 				map,
