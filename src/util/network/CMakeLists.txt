@@ -2,6 +2,7 @@ set (NETWORK_SRCS
 	addresses.cpp
 	customcookiejar.cpp
 	customnetworkreply.cpp
+	lcserviceoverride.cpp
 	networkdiskcache.cpp
 	networkdiskcachegc.cpp
 	socketerrorstrings.cpp
