@@ -55,9 +55,8 @@ namespace Util
 
 		QString GetProto (const ServiceInfo& info)
 		{
-
 			static const auto& env = qgetenv (info.EnvPrefix_ + "_NO_HTTPS");
-			return env.isEmpty () ? "https" : "http";
+			return env.isEmpty () && info.UseSslByDefault_ ? "https" : "http";
 		}
 	}
 

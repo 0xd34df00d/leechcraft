@@ -41,6 +41,8 @@ namespace Util
 		QString DefaultHost_;
 		int DefaultPort_;
 		QByteArray EnvPrefix_;
+
+		bool UseSslByDefault_ = true;
 	};
 
 	UTIL_NETWORK_API QString GetServiceUrl (const ServiceInfo& serviceInfo, const QString& path);
