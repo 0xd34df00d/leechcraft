@@ -50,25 +50,6 @@ namespace Media
 		/** @brief The title of the track.
 		 */
 		QString Title_;
-
-		/** @brief Constructs an empty request.
-		 */
-		LyricsQuery ()
-		{
-		}
-
-		/** @brief Constructs a search request for the given track data.
-		 *
-		 * @param[in] artist The artist name.
-		 * @param[in] album The album (or single/EP/etc.) name.
-		 * @param[in] title The title of the track.
-		 */
-		LyricsQuery (const QString& artist, const QString& album, const QString& title)
-		: Artist_ (artist)
-		, Album_ (album)
-		, Title_ (title)
-		{
-		}
 	};
 
 	/** @brief Describes the various lyrics request options.
