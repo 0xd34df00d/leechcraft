@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <boost/optional.hpp>
 #include <QStringList>
 
 namespace Media
@@ -50,6 +51,14 @@ namespace Media
 		/** @brief The title of the track.
 		 */
 		QString Title_;
+
+		/** @brief The year of the album the track is on.
+		 */
+		boost::optional<int> Year_;
+
+		/** @brief The track number.
+		 */
+		boost::optional<int> Track_;
 	};
 
 	/** @brief Describes the various lyrics request options.
