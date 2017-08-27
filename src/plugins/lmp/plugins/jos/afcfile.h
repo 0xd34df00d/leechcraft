@@ -40,7 +40,7 @@ namespace jOS
 {
 	class Connection;
 
-	class AfcFile : public QIODevice
+	class AfcFile final : public QIODevice
 	{
 		const Connection * const Conn_;
 
