@@ -86,6 +86,10 @@ namespace Media
 		Refresh = 0x1
 	};
 
+	/** @brief Typedef for <code>QFlags<QueryOption></code>.
+	 */
+	Q_DECLARE_FLAGS (QueryOptions, QueryOption);
+
 	/** @brief Describes a single lyrics result item.
 	 *
 	 * A result item is the lyrics themselves and the provider name these
@@ -124,10 +128,6 @@ namespace Media
 		 */
 		QList<LyricsResultItem> Items_;
 	};
-
-	/** @brief Typedef for <code>QFlags<QueryOption></code>.
-	 */
-	Q_DECLARE_FLAGS (QueryOptions, QueryOption);
 
 	/** @brief Interface for plugins supporting finding lyrics.
 	 *
