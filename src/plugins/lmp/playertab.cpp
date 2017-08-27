@@ -463,6 +463,24 @@ namespace LMP
 
 		auto finders = Core::Instance ().GetProxy ()->
 					GetPluginsManager ()->GetAllCastableRoots<Media::ILyricsFinder*> ();
+		if (finders.isEmpty ())
+			return;
+
+		auto opt = [] (int val) -> boost::optional<int>
+		{
+			if (val)
+				return val;
+			else
+				return {};
+		};
+		const Media::LyricsQuery query
+		{
+			info.Artist_,
+			info.Album_,
+			info.Title_,
+			opt (info.Year_),
+			opt (info.TrackNumber_)
+		};
 		Q_FOREACH (auto finderObj, finders)
 		{
 			connect (finderObj,
@@ -471,8 +489,7 @@ namespace LMP
 					SLOT (handleGotLyrics (Media::LyricsResults)),
 					Qt::UniqueConnection);
 			auto finder = qobject_cast<Media::ILyricsFinder*> (finderObj);
-			finder->RequestLyrics ({ info.Artist_, info.Album_, info.Title_ },
-					Media::QueryOption::NoOption);
+			finder->RequestLyrics (query, Media::QueryOption::NoOption);
 		}
 	}
 
