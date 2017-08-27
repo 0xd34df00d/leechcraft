@@ -76,14 +76,15 @@ namespace VelvetBird
 
 			void print (PurpleDebugLevel level, const char *cat, const char *msg)
 			{
-				static const auto levels = Util::MakeMap<PurpleDebugLevel, QString> ({
-						{ PURPLE_DEBUG_ALL, "ALL" },
-						{ PURPLE_DEBUG_MISC, "MISC" },
-						{ PURPLE_DEBUG_INFO, "INFO" },
-						{ PURPLE_DEBUG_WARNING, "WARN" },
-						{ PURPLE_DEBUG_ERROR, "ERR" },
-						{ PURPLE_DEBUG_FATAL, "FATAL" }
-					});
+				static const QMap<PurpleDebugLevel, QString> levels
+				{
+					{ PURPLE_DEBUG_ALL, "ALL" },
+					{ PURPLE_DEBUG_MISC, "MISC" },
+					{ PURPLE_DEBUG_INFO, "INFO" },
+					{ PURPLE_DEBUG_WARNING, "WARN" },
+					{ PURPLE_DEBUG_ERROR, "ERR" },
+					{ PURPLE_DEBUG_FATAL, "FATAL" }
+				};
 
 				QString data = "[" + levels [level] + "] " + cat + ": " + msg + "\n";
 				File_.open (QIODevice::WriteOnly);
