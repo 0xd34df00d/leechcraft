@@ -35,6 +35,7 @@
 #include <QtDebug>
 #include <util/sll/slotclosure.h>
 #include <util/sll/parsejson.h>
+#include <util/network/lcserviceoverride.h>
 
 namespace LeechCraft
 {
@@ -42,38 +43,9 @@ namespace Lastfmscrobble
 {
 	namespace
 	{
-		QString GetHost ()
-		{
-			static const auto& env = qgetenv ("LASTFM_IMAGES_SERVER_HOST");
-			if (!env.isEmpty ())
-				return env;
-
-			return "leechcraft.org";
-		}
-
-		int GetPort ()
-		{
-			static const auto& env = qgetenv ("LASTFM_IMAGES_SERVER_PORT");
-			if (!env.isEmpty ())
-				return env.toInt ();
-
-			return 12000;
-		}
-
-		QString GetProto ()
-		{
-
-			static const auto& env = qgetenv ("LASTFM_IMAGES_NO_HTTPS");
-			return env.isEmpty () ? "https" : "http";
-		}
-
 		QString GetUrl (const QString& path)
 		{
-			return QString { "%1://%2:%3/%4" }
-					.arg (GetProto ())
-					.arg (GetHost ())
-					.arg (GetPort ())
-					.arg (path);
+			return Util::GetServiceUrl ({ "leechcraft.org", 12000, "LASTFM_IMAGES" }, path);
 		}
 	}
 
