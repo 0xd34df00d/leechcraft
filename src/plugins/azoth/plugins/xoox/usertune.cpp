@@ -201,7 +201,7 @@ namespace Xoox
 			GetLength (),
 			0,
 			GetTrack ().toInt (),
-			Util::MakeMap<QString, QVariant> ({ { "URL", GetURI () } })
+			{ { "URL", GetURI () } }
 		};
 	}
 }
