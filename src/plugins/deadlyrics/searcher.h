@@ -34,8 +34,6 @@
 #include <QList>
 #include <interfaces/media/ilyricsfinder.h>
 
-class QDataStream;
-
 namespace LeechCraft
 {
 namespace DeadLyrics
