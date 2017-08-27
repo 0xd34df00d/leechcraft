@@ -43,8 +43,8 @@ namespace Util
 
 namespace MusicZombie
 {
-	class PendingTagsFetch : public QObject
-						   , public Media::IPendingTagsFetch
+	class PendingTagsFetch final : public QObject
+								 , public Media::IPendingTagsFetch
 	{
 		Q_OBJECT
 		Q_INTERFACES (Media::IPendingTagsFetch)
