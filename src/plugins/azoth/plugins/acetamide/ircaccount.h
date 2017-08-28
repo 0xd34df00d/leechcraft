@@ -43,12 +43,10 @@ namespace LeechCraft
 {
 namespace Azoth
 {
-
 class IProtocol;
 
 namespace Acetamide
 {
-
 	class ClientConnection;
 	class IrcProtocol;
 	class IrcAccountConfigurationWidget;
@@ -167,6 +165,6 @@ namespace Acetamide
 	};
 
 	typedef std::shared_ptr<IrcAccount> IrcAccount_ptr;
-};
-};
-};
+}
+}
+}
