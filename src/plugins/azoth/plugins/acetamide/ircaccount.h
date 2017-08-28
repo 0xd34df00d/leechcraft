@@ -27,8 +27,7 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCACCOUNT_H
-#define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCACCOUNT_H
+#pragma once
 
 #include <memory>
 #include <QObject>
@@ -171,4 +170,3 @@ namespace Acetamide
 };
 };
 };
-#endif // PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCACCOUNT_H
