@@ -54,11 +54,11 @@ namespace Acetamide
 	class IrcProtocol;
 	class IrcAccountConfigurationWidget;
 
-	class IrcAccount : public QObject
-					 , public IAccount
-					 , public IHaveConsole
-					 , public ISupportBookmarks
-					 , public ICanHaveSslErrors
+	class IrcAccount final : public QObject
+						   , public IAccount
+						   , public IHaveConsole
+						   , public ISupportBookmarks
+						   , public ICanHaveSslErrors
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::IAccount
