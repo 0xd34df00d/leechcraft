@@ -38,36 +38,38 @@ namespace LMP
 {
 	QMap<QString, std::function<QString (MediaInfo)>> GetSubstGetters ()
 	{
-		static const auto map = Util::MakeMap<QString, std::function<QString (MediaInfo)>> ({
-				{ "$artist", [] (const MediaInfo& info) { return info.Artist_; } },
-				{ "$album", [] (const MediaInfo& info) { return info.Album_; } },
-				{ "$title", [] (const MediaInfo& info) { return info.Title_; } },
-				{ "$year", [] (const MediaInfo& info) { return QString::number (info.Year_); } },
-				{ "$trackNumber", [] (const MediaInfo& info) -> QString
-					{
-						auto trackNumStr = QString::number (info.TrackNumber_);
-						if (info.TrackNumber_ < 10)
-							trackNumStr.prepend ('0');
-						return trackNumStr;
-					} }
-			});
+		static const QMap<QString, std::function<QString (MediaInfo)>> map
+		{
+			{ "$artist", [] (const MediaInfo& info) { return info.Artist_; } },
+			{ "$album", [] (const MediaInfo& info) { return info.Album_; } },
+			{ "$title", [] (const MediaInfo& info) { return info.Title_; } },
+			{ "$year", [] (const MediaInfo& info) { return QString::number (info.Year_); } },
+			{ "$trackNumber", [] (const MediaInfo& info) -> QString
+				{
+					auto trackNumStr = QString::number (info.TrackNumber_);
+					if (info.TrackNumber_ < 10)
+						trackNumStr.prepend ('0');
+					return trackNumStr;
+				} }
+		};
 		return map;
 	}
 
 	QMap<QString, std::function<void (MediaInfo&, QString)>> GetSubstSetters ()
 	{
-		static const auto map = Util::MakeMap<QString, std::function<void (MediaInfo&, QString)>> ({
-				{ "$artist", [] (MediaInfo& info, const QString& val) { info.Artist_ = val; } },
-				{ "$album", [] (MediaInfo& info, const QString& val) { info.Album_= val; } },
-				{ "$title", [] (MediaInfo& info, const QString& val) { info.Title_ = val; } },
-				{ "$year", [] (MediaInfo& info, const QString& val) { info.Year_ = val.toInt (); } },
-				{ "$trackNumber", [] (MediaInfo& info, QString val)
-					{
-						if (val.size () == 2 && val.at (0) == '0')
-							val = val.mid (1);
-						info.TrackNumber_ = val.toInt ();
-					} }
-			});
+		static const QMap<QString, std::function<void (MediaInfo&, QString)>> map
+		{
+			{ "$artist", [] (MediaInfo& info, const QString& val) { info.Artist_ = val; } },
+			{ "$album", [] (MediaInfo& info, const QString& val) { info.Album_= val; } },
+			{ "$title", [] (MediaInfo& info, const QString& val) { info.Title_ = val; } },
+			{ "$year", [] (MediaInfo& info, const QString& val) { info.Year_ = val.toInt (); } },
+			{ "$trackNumber", [] (MediaInfo& info, QString val)
+				{
+					if (val.size () == 2 && val.at (0) == '0')
+						val = val.mid (1);
+					info.TrackNumber_ = val.toInt ();
+				} }
+		};
 		return map;
 	}
 

@@ -375,12 +375,13 @@ namespace LMP
 
 	QMap<QString, QList<QAction*>> Plugin::GetMenuActions () const
 	{
-		return Util::MakeMap<QString, QList<QAction*>> ({
-					{
-						GetName (),
-						{ ActionRescan_, ActionCollectionStats_ }
-					}
-				});
+		return
+		{
+			{
+				GetName (),
+				{ ActionRescan_, ActionCollectionStats_ }
+			}
+		};
 	}
 
 	void Plugin::RecoverTabs (const QList<LeechCraft::TabRecoverInfo>& infos)
