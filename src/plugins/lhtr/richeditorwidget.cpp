@@ -106,7 +106,6 @@ namespace LHTR
 	: QWidget (parent)
 	, Proxy_ (proxy)
 	, ViewBar_ (new QToolBar (tr ("Editor bar")))
-	, HTMLDirty_ (false)
 	, FindAction_ (new QAction (tr ("Find"), this))
 	, ReplaceAction_ (new QAction (tr ("Replace"), this))
 	{

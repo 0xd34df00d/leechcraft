@@ -61,7 +61,7 @@ namespace LHTR
 
 		CustomTags_t CustomTags_;
 
-		bool HTMLDirty_;
+		bool HTMLDirty_ = false;
 
 		QAction *FindAction_;
 		QAction *ReplaceAction_;
