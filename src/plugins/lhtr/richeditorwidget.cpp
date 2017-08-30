@@ -223,7 +223,7 @@ namespace LHTR
 		alignActs << fwdCmd (tr ("Align justify"), "format-justify-fill",
 				QWebPage::AlignJustified, ViewBar_);
 		QActionGroup *alignGroup = new QActionGroup (this);
-		Q_FOREACH (QAction *act, alignActs)
+		for (QAction *act : alignActs)
 		{
 			act->setCheckable (true);
 			alignGroup->addAction (act);
