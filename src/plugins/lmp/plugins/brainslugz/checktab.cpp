@@ -52,7 +52,7 @@ namespace BrainSlugz
 {
 	namespace
 	{
-		class MissingModel : public QSortFilterProxyModel
+		class MissingModel final : public QSortFilterProxyModel
 		{
 		public:
 			MissingModel (QAbstractItemModel *source, QObject *parent)
