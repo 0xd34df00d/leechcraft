@@ -43,10 +43,10 @@ namespace LeechCraft
 {
 namespace LHTR
 {
-	class RichEditorWidget : public QWidget
-						   , public IEditorWidget
-						   , public IAdvancedHTMLEditor
-						   , public IWkFontsSettable
+	class RichEditorWidget final : public QWidget
+								 , public IEditorWidget
+								 , public IAdvancedHTMLEditor
+								 , public IWkFontsSettable
 	{
 		Q_OBJECT
 		Q_INTERFACES (IEditorWidget IAdvancedHTMLEditor IWkFontsSettable)
