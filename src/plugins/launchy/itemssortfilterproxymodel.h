@@ -44,7 +44,7 @@ namespace Launchy
 		QStringList CategoryNames_;
 		QString AppFilterText_;
 	public:
-		ItemsSortFilterProxyModel (QAbstractItemModel*, QObject* = 0);
+		ItemsSortFilterProxyModel (QAbstractItemModel*, QObject* = nullptr);
 
 		QString GetAppFilterText () const;
 		void SetAppFilterText (const QString&);
