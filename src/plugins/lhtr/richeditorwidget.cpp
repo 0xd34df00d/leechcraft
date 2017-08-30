@@ -59,6 +59,7 @@
 #include <util/util.h>
 #include <util/xpc/util.h>
 #include <util/sll/util.h>
+#include <util/sll/unreachable.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/iiconthememanager.h>
@@ -311,9 +312,7 @@ namespace LHTR
 			return Ui_.View_->page ()->mainFrame ()->toPlainText ();
 		}
 
-		qWarning () << Q_FUNC_INFO
-				<< "unknown content type";
-		return QString ();
+		Util::Unreachable ();
 	}
 
 	void RichEditorWidget::SetContents (QString contents, ContentType type)
