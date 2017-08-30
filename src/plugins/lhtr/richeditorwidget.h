@@ -54,7 +54,7 @@ namespace LHTR
 		ICoreProxy_ptr Proxy_;
 		Ui::RichEditorWidget Ui_;
 
-		QToolBar *ViewBar_;
+		QToolBar * const ViewBar_;
 
 		QHash<QWebPage::WebAction, QAction*> WebAction2Action_;
 		QHash<QString, QHash<QString, QAction*>> Cmd2Action_;

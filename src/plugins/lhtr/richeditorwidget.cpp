@@ -105,7 +105,7 @@ namespace LHTR
 	RichEditorWidget::RichEditorWidget (ICoreProxy_ptr proxy, QWidget *parent)
 	: QWidget (parent)
 	, Proxy_ (proxy)
-	, ViewBar_ (0)
+	, ViewBar_ (new QToolBar (tr ("Editor bar")))
 	, HTMLDirty_ (false)
 	, FindAction_ (new QAction (tr ("Find"), this))
 	, ReplaceAction_ (new QAction (tr ("Replace"), this))
@@ -152,7 +152,6 @@ namespace LHTR
 				this,
 				SLOT (updateActions ()));
 
-		ViewBar_ = new QToolBar (tr ("Editor bar"));
 		qobject_cast<QVBoxLayout*> (Ui_.ViewTab_->layout ())->insertWidget (0, ViewBar_);
 
 		auto fwdCmd = [this] (const QString& name,
