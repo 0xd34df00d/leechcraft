@@ -37,7 +37,7 @@ namespace LeechCraft
 {
 namespace Launchy
 {
-	class ItemsSortFilterProxyModel : public Util::RoleNamesMixin<QSortFilterProxyModel>
+	class ItemsSortFilterProxyModel final : public Util::RoleNamesMixin<QSortFilterProxyModel>
 	{
 		Q_OBJECT
 
