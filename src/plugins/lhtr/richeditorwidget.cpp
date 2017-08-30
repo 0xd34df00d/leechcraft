@@ -213,15 +213,13 @@ namespace LHTR
 
 		ViewBar_->addSeparator ();
 
-		QList<QAction*> alignActs;
-		alignActs << fwdCmd (tr ("Align left"), "format-justify-left",
-				QWebPage::AlignLeft, ViewBar_);
-		alignActs << fwdCmd (tr ("Align center"), "format-justify-center",
-				QWebPage::AlignCenter, ViewBar_);
-		alignActs << fwdCmd (tr ("Align right"), "format-justify-right",
-				QWebPage::AlignRight, ViewBar_);
-		alignActs << fwdCmd (tr ("Align justify"), "format-justify-fill",
-				QWebPage::AlignJustified, ViewBar_);
+		auto alignActs =
+		{
+			fwdCmd (tr ("Align left"), "format-justify-left", QWebPage::AlignLeft, ViewBar_),
+			fwdCmd (tr ("Align center"), "format-justify-center", QWebPage::AlignCenter, ViewBar_),
+			fwdCmd (tr ("Align right"), "format-justify-right", QWebPage::AlignRight, ViewBar_),
+			fwdCmd (tr ("Align justify"), "format-justify-fill", QWebPage::AlignJustified, ViewBar_)
+		};
 		QActionGroup *alignGroup = new QActionGroup (this);
 		for (QAction *act : alignActs)
 		{
