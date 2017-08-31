@@ -87,7 +87,7 @@ namespace BitTorrent
 {
 	namespace
 	{
-		class ReprProxy : public QSortFilterProxyModel
+		class ReprProxy final : public QSortFilterProxyModel
 		{
 		public:
 			ReprProxy (QAbstractItemModel *model)
