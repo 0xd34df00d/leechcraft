@@ -89,7 +89,6 @@ namespace DeathNote
 		QString GetName () const override;
 		QByteArray GetID () const override;
 		QString GetPassword () const;
-		QByteArray GetHashedChallenge (const QString& password, const QString& challenge);
 
 		QAbstractItemModel* GetCollectionsModel () const override;
 

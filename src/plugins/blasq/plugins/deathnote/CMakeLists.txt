@@ -15,6 +15,7 @@ set (DEATHNOTE_SRCS
 	fotobilderservice.cpp
 	registerpage.cpp
 	selectgroupsdialog.cpp
+	util.cpp
 	)
 
 set (DEATHNOTE_FORMS

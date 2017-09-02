@@ -47,6 +47,7 @@
 #include <util/sll/unreachable.h>
 #include "albumsettingsdialog.h"
 #include "fotobilderservice.h"
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -147,14 +148,6 @@ namespace DeathNote
 	{
 		QString key ("org.LeechCraft.Blasq.PassForAccount/" + GetID ());
 		return Util::GetPassword (key, tr ("Enter password"), Proxy_);
-	}
-
-	QByteArray FotoBilderAccount::GetHashedChallenge (const QString& password, const QString& challenge)
-	{
-		const QByteArray passwordHash = QCryptographicHash::hash (password.toUtf8 (),
-				QCryptographicHash::Md5).toHex ();
-		return QCryptographicHash::hash ((challenge + passwordHash).toUtf8 (),
-				QCryptographicHash::Md5).toHex ();
 	}
 
 	QAbstractItemModel* FotoBilderAccount::GetCollectionsModel () const

@@ -39,6 +39,7 @@
 #include <util/xpc/util.h>
 #include <util/xpc/passutils.h>
 #include "fotobilderaccount.h"
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -234,7 +235,7 @@ namespace DeathNote
 		structElem.appendChild (GetSimpleMemberElement ("username", "string",
 				Login_, doc));
 		structElem.appendChild (GetSimpleMemberElement ("auth_response", "string",
-				Account_->GetHashedChallenge (GetPassword (), challenge), doc));
+				GetHashedChallenge (GetPassword (), challenge), doc));
 		structElem.appendChild (GetSimpleMemberElement ("ver", "int",
 				"1", doc));
 
