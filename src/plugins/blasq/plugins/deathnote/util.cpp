@@ -45,10 +45,12 @@ namespace DeathNote
 		return QCryptographicHash::hash ((challenge + hash).toUtf8 (), QCryptographicHash::Md5).toHex ();
 	}
 
-	QString GetAccountPassword (const QByteArray& accountId, const ICoreProxy_ptr& proxy)
+	QString GetAccountPassword (const QByteArray& accId, const QString& accName, const ICoreProxy_ptr& proxy)
 	{
-		const auto& key = "org.LeechCraft.Blasq.PassForAccount/" + accountId;
-		return Util::GetPassword (key, QObject::tr ("Enter password"), proxy);
+		const auto& key = "org.LeechCraft.Blasq.PassForAccount/" + accId;
+		return Util::GetPassword (key,
+				QObject::tr ("Enter password for LiveJournal FotoBilder account %1:").arg (accName),
+				proxy);
 	}
 }
 }

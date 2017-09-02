@@ -227,7 +227,7 @@ namespace DeathNote
 		structElem.appendChild (GetSimpleMemberElement ("username", "string",
 				Login_, doc));
 
-		const auto& password = GetAccountPassword (Account_->GetID (), Account_->GetProxy ());
+		const auto& password = GetAccountPassword (Account_->GetID (), Account_->GetName (), Account_->GetProxy ());
 		structElem.appendChild (GetSimpleMemberElement ("auth_response", "string",
 				GetHashedChallenge (password, challenge), doc));
 

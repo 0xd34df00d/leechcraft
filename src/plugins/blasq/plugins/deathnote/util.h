@@ -42,7 +42,7 @@ namespace DeathNote
 {
 	QByteArray GetHashedChallenge (const QString& password, const QString& challenge);
 
-	QString GetAccountPassword (const QByteArray& accountId, const ICoreProxy_ptr& proxy);
+	QString GetAccountPassword (const QByteArray& accId, const QString& accName, const ICoreProxy_ptr& proxy);
 }
 }
 }
