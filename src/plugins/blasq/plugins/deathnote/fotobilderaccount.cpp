@@ -73,9 +73,7 @@ namespace DeathNote
 	, Proxy_ (proxy)
 	, ID_ (id.isEmpty () ? QUuid::createUuid ().toByteArray () : id)
 	, Login_ (login)
-	, FirstRequest_ (true)
 	, CollectionsModel_ (new NamedModel<QStandardItemModel> (this))
-	, AllPhotosItem_ (0)
 	{
 		CollectionsModel_->setHorizontalHeaderLabels ({ tr ("Name") });
 	}

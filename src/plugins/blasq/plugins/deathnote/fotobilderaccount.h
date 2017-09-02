@@ -63,11 +63,11 @@ namespace DeathNote
 		const ICoreProxy_ptr Proxy_;
 		QByteArray ID_;
 		QString Login_;
-		bool FirstRequest_;
+		bool FirstRequest_ = true;
 		Quota Quota_;
 
 		QStandardItemModel * const CollectionsModel_;
-		QStandardItem *AllPhotosItem_;
+		QStandardItem *AllPhotosItem_ = nullptr;
 
 		QHash<QByteArray, QStandardItem*> Id2AlbumItem_;
 		QHash<QNetworkReply*, UploadItem> Reply2UploadItem_;
