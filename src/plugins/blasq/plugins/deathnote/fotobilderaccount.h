@@ -88,7 +88,6 @@ namespace DeathNote
 		IService* GetService () const override;
 		QString GetName () const override;
 		QByteArray GetID () const override;
-		QString GetPassword () const;
 
 		QAbstractItemModel* GetCollectionsModel () const override;
 

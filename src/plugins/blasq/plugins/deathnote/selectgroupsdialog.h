@@ -77,9 +77,7 @@ namespace DeathNote
 		void RequestFriendsGroups ();
 		void FriendsGroupsRequest (const QString& challenge);
 		void GenerateChallenge ();
-		QString GetPassword () const;
 		QNetworkRequest CreateNetworkRequest ();
-
 	private slots:
 		void handleChallengeReplyFinished ();
 		void handleNetworkError (QNetworkReply::NetworkError error);

@@ -37,7 +37,6 @@
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/blasq/iservice.h>
 #include <util/xpc/util.h>
-#include <util/xpc/passutils.h>
 #include "fotobilderaccount.h"
 #include "util.h"
 
@@ -71,13 +70,6 @@ namespace DeathNote
 	void SelectGroupsDialog::RequestFriendsGroups ()
 	{
 		GenerateChallenge ();
-	}
-
-	QString SelectGroupsDialog::GetPassword () const
-	{
-		QString key ("org.LeechCraft.Blasq.PassForAccount/" + Account_->GetID ());
-		return Util::GetPassword (key, tr ("Enter password"),
-				Account_->GetProxy ());
 	}
 
 	QNetworkRequest SelectGroupsDialog::CreateNetworkRequest ()
@@ -234,8 +226,11 @@ namespace DeathNote
 				challenge, doc));
 		structElem.appendChild (GetSimpleMemberElement ("username", "string",
 				Login_, doc));
+
+		const auto& password = GetAccountPassword (Account_->GetID (), Account_->GetProxy ());
 		structElem.appendChild (GetSimpleMemberElement ("auth_response", "string",
-				GetHashedChallenge (GetPassword (), challenge), doc));
+				GetHashedChallenge (password, challenge), doc));
+
 		structElem.appendChild (GetSimpleMemberElement ("ver", "int",
 				"1", doc));
 

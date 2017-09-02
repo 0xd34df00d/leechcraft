@@ -41,7 +41,6 @@
 #include <QFileInfo>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/core/ientitymanager.h>
-#include <util/xpc/passutils.h>
 #include <util/util.h>
 #include <util/xpc/util.h>
 #include <util/sll/unreachable.h>
@@ -142,12 +141,6 @@ namespace DeathNote
 	QByteArray FotoBilderAccount::GetID () const
 	{
 		return ID_;
-	}
-
-	QString FotoBilderAccount::GetPassword () const
-	{
-		QString key ("org.LeechCraft.Blasq.PassForAccount/" + GetID ());
-		return Util::GetPassword (key, tr ("Enter password"), Proxy_);
 	}
 
 	QAbstractItemModel* FotoBilderAccount::GetCollectionsModel () const
@@ -383,7 +376,7 @@ namespace DeathNote
 						{ "X-FB-User", Login_.toUtf8 () },
 						{ "X-FB-Mode", "Login" },
 						{ "X-FB-Auth", ("crp:" + challenge + ":" +
-								GetHashedChallenge (GetPassword (), challenge))
+								GetHashedChallenge (GetAccountPassword (GetID (), Proxy_), challenge))
 									.toUtf8 () },
 						{ "X-FB-Login.ClientVersion",
 								"LeechCraft Blasq/" + Proxy_->GetVersion ()
@@ -405,7 +398,7 @@ namespace DeathNote
 						{ "X-FB-User", Login_.toUtf8 () },
 						{ "X-FB-Mode", "GetGals" },
 						{ "X-FB-Auth", ("crp:" + challenge + ":" +
-								GetHashedChallenge (GetPassword (), challenge))
+								GetHashedChallenge (GetAccountPassword (GetID (), Proxy_), challenge))
 									.toUtf8 () } })));
 		connect (reply,
 				SIGNAL (finished ()),
@@ -424,7 +417,7 @@ namespace DeathNote
 						{ "X-FB-User", Login_.toUtf8 () },
 						{ "X-FB-Mode", "GetPics" },
 						{ "X-FB-Auth", ("crp:" + challenge + ":" +
-								GetHashedChallenge (GetPassword (), challenge))
+								GetHashedChallenge (GetAccountPassword (GetID (), Proxy_), challenge))
 									.toUtf8 () } })));
 		connect (reply,
 				SIGNAL (finished ()),
@@ -444,7 +437,7 @@ namespace DeathNote
 						{ "X-FB-User", Login_.toUtf8 () },
 						{ "X-FB-Mode", "CreateGals" },
 						{ "X-FB-Auth", ("crp:" + challenge + ":" +
-								GetHashedChallenge (GetPassword (), challenge))
+								GetHashedChallenge (GetAccountPassword (GetID (), Proxy_), challenge))
 									.toUtf8 () },
 						{ "X-FB-CreateGals.Gallery._size", "1" },
 						{ "X-FB-CreateGals.Gallery.0.ParentID", "0" },
@@ -489,7 +482,7 @@ namespace DeathNote
 							{ "X-FB-User", Login_.toUtf8 () },
 							{ "X-FB-Mode", "UploadPic" },
 							{ "X-FB-Auth", ("crp:" + challenge + ":" +
-									GetHashedChallenge (GetPassword (), challenge))
+									GetHashedChallenge (GetAccountPassword (GetID (), Proxy_), challenge))
 										.toUtf8 () },
 							{ "X-FB-AuthVerifier", "md5=" + md5 + "&mode=UploadPic" },
 							{ "X-FB-UploadPic.ImageData", QDateTime::currentDateTime ()
