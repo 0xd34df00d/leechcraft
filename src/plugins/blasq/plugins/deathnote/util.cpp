@@ -41,10 +41,8 @@ namespace DeathNote
 {
 	QByteArray GetHashedChallenge (const QString& password, const QString& challenge)
 	{
-		const QByteArray passwordHash = QCryptographicHash::hash (password.toUtf8 (),
-				QCryptographicHash::Md5).toHex ();
-		return QCryptographicHash::hash ((challenge + passwordHash).toUtf8 (),
-				QCryptographicHash::Md5).toHex ();
+		const auto& hash = QCryptographicHash::hash (password.toUtf8 (), QCryptographicHash::Md5).toHex ();
+		return QCryptographicHash::hash ((challenge + hash).toUtf8 (), QCryptographicHash::Md5).toHex ();
 	}
 
 	QString GetAccountPassword (const QByteArray& accountId, const ICoreProxy_ptr& proxy)
