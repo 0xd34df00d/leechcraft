@@ -367,15 +367,22 @@ namespace DeathNote
 				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
 	}
 
+	namespace
+	{
+		QByteArray GetAuthHeader (const QByteArray& id, const ICoreProxy_ptr& proxy, const QString& challenge)
+		{
+			const auto& hashed = GetHashedChallenge (GetAccountPassword (id, proxy), challenge);
+			return ("crp:" + challenge + ":" + hashed).toUtf8 ();
+		}
+	}
+
 	void FotoBilderAccount::LoginRequest (const QString& challenge)
 	{
 		auto reply = Proxy_->GetNetworkAccessManager ()->
 				get (CreateRequest (Util::MakeMap<QByteArray, QByteArray> ({
 						{ "X-FB-User", Login_.toUtf8 () },
 						{ "X-FB-Mode", "Login" },
-						{ "X-FB-Auth", ("crp:" + challenge + ":" +
-								GetHashedChallenge (GetAccountPassword (GetID (), Proxy_), challenge))
-									.toUtf8 () },
+						{ "X-FB-Auth", GetAuthHeader (GetID (), Proxy_, challenge) },
 						{ "X-FB-Login.ClientVersion",
 								"LeechCraft Blasq/" + Proxy_->GetVersion ()
 										.toUtf8 () } })));
@@ -395,9 +402,7 @@ namespace DeathNote
 				get (CreateRequest (Util::MakeMap<QByteArray, QByteArray> ({
 						{ "X-FB-User", Login_.toUtf8 () },
 						{ "X-FB-Mode", "GetGals" },
-						{ "X-FB-Auth", ("crp:" + challenge + ":" +
-								GetHashedChallenge (GetAccountPassword (GetID (), Proxy_), challenge))
-									.toUtf8 () } })));
+						{ "X-FB-Auth", GetAuthHeader (GetID (), Proxy_, challenge) } })));
 		connect (reply,
 				SIGNAL (finished ()),
 				this,
@@ -414,9 +419,7 @@ namespace DeathNote
 				get (CreateRequest (Util::MakeMap<QByteArray, QByteArray> ({
 						{ "X-FB-User", Login_.toUtf8 () },
 						{ "X-FB-Mode", "GetPics" },
-						{ "X-FB-Auth", ("crp:" + challenge + ":" +
-								GetHashedChallenge (GetAccountPassword (GetID (), Proxy_), challenge))
-									.toUtf8 () } })));
+						{ "X-FB-Auth", GetAuthHeader (GetID (), Proxy_, challenge) } })));
 		connect (reply,
 				SIGNAL (finished ()),
 				this,
@@ -434,9 +437,7 @@ namespace DeathNote
 				get (CreateRequest (Util::MakeMap<QByteArray, QByteArray> ({
 						{ "X-FB-User", Login_.toUtf8 () },
 						{ "X-FB-Mode", "CreateGals" },
-						{ "X-FB-Auth", ("crp:" + challenge + ":" +
-								GetHashedChallenge (GetAccountPassword (GetID (), Proxy_), challenge))
-									.toUtf8 () },
+						{ "X-FB-Auth", GetAuthHeader (GetID (), Proxy_, challenge) },
 						{ "X-FB-CreateGals.Gallery._size", "1" },
 						{ "X-FB-CreateGals.Gallery.0.ParentID", "0" },
 						{ "X-FB-CreateGals.Gallery.0.GalName", name.toUtf8 () },
@@ -479,9 +480,7 @@ namespace DeathNote
 				put (CreateRequest (Util::MakeMap<QByteArray, QByteArray> ({
 							{ "X-FB-User", Login_.toUtf8 () },
 							{ "X-FB-Mode", "UploadPic" },
-							{ "X-FB-Auth", ("crp:" + challenge + ":" +
-									GetHashedChallenge (GetAccountPassword (GetID (), Proxy_), challenge))
-										.toUtf8 () },
+							{ "X-FB-Auth", GetAuthHeader (GetID (), Proxy_, challenge) },
 							{ "X-FB-AuthVerifier", "md5=" + md5 + "&mode=UploadPic" },
 							{ "X-FB-UploadPic.ImageData", QDateTime::currentDateTime ()
 									.toString (Qt::ISODate).toUtf8 () },
