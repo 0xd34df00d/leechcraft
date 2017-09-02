@@ -353,10 +353,10 @@ namespace DeathNote
 
 	void FotoBilderAccount::GetChallenge ()
 	{
-		auto reply = Proxy_->GetNetworkAccessManager ()->
-				get (CreateRequest (Util::MakeMap<QByteArray, QByteArray> ({
-						{ "X-FB-User", Login_.toUtf8 () },
-						{ "X-FB-Mode", "GetChallenge" } })));
+		auto reply = Proxy_->GetNetworkAccessManager ()->get (CreateRequest ({
+					{ "X-FB-User", Login_.toUtf8 () },
+					{ "X-FB-Mode", "GetChallenge" }
+				}));
 		connect (reply,
 				SIGNAL (finished ()),
 				this,
@@ -378,14 +378,12 @@ namespace DeathNote
 
 	void FotoBilderAccount::LoginRequest (const QString& challenge)
 	{
-		auto reply = Proxy_->GetNetworkAccessManager ()->
-				get (CreateRequest (Util::MakeMap<QByteArray, QByteArray> ({
-						{ "X-FB-User", Login_.toUtf8 () },
-						{ "X-FB-Mode", "Login" },
-						{ "X-FB-Auth", GetAuthHeader (GetID (), Proxy_, challenge) },
-						{ "X-FB-Login.ClientVersion",
-								"LeechCraft Blasq/" + Proxy_->GetVersion ()
-										.toUtf8 () } })));
+		auto reply = Proxy_->GetNetworkAccessManager ()->get (CreateRequest ({
+					{ "X-FB-User", Login_.toUtf8 () },
+					{ "X-FB-Mode", "Login" },
+					{ "X-FB-Auth", GetAuthHeader (GetID (), Proxy_, challenge) },
+					{ "X-FB-Login.ClientVersion", "LeechCraft Blasq/" + Proxy_->GetVersion ().toUtf8 () }
+				}));
 		connect (reply,
 				SIGNAL (finished ()),
 				this,
@@ -398,11 +396,11 @@ namespace DeathNote
 
 	void FotoBilderAccount::GetGalsRequest (const QString& challenge)
 	{
-		auto reply = Proxy_->GetNetworkAccessManager ()->
-				get (CreateRequest (Util::MakeMap<QByteArray, QByteArray> ({
-						{ "X-FB-User", Login_.toUtf8 () },
-						{ "X-FB-Mode", "GetGals" },
-						{ "X-FB-Auth", GetAuthHeader (GetID (), Proxy_, challenge) } })));
+		auto reply = Proxy_->GetNetworkAccessManager ()->get (CreateRequest ({
+					{ "X-FB-User", Login_.toUtf8 () },
+					{ "X-FB-Mode", "GetGals" },
+					{ "X-FB-Auth", GetAuthHeader (GetID (), Proxy_, challenge) }
+				}));
 		connect (reply,
 				SIGNAL (finished ()),
 				this,
@@ -415,11 +413,11 @@ namespace DeathNote
 
 	void FotoBilderAccount::GetPicsRequest (const QString& challenge)
 	{
-		auto reply = Proxy_->GetNetworkAccessManager ()->
-				get (CreateRequest (Util::MakeMap<QByteArray, QByteArray> ({
-						{ "X-FB-User", Login_.toUtf8 () },
-						{ "X-FB-Mode", "GetPics" },
-						{ "X-FB-Auth", GetAuthHeader (GetID (), Proxy_, challenge) } })));
+		auto reply = Proxy_->GetNetworkAccessManager ()->get (CreateRequest ({
+					{ "X-FB-User", Login_.toUtf8 () },
+					{ "X-FB-Mode", "GetPics" },
+					{ "X-FB-Auth", GetAuthHeader (GetID (), Proxy_, challenge) }
+				}));
 		connect (reply,
 				SIGNAL (finished ()),
 				this,
@@ -433,16 +431,15 @@ namespace DeathNote
 	void FotoBilderAccount::CreateGallery (const QString& name, int privacyLevel,
 			const QString& challenge)
 	{
-		auto reply = Proxy_->GetNetworkAccessManager ()->
-				get (CreateRequest (Util::MakeMap<QByteArray, QByteArray> ({
-						{ "X-FB-User", Login_.toUtf8 () },
-						{ "X-FB-Mode", "CreateGals" },
-						{ "X-FB-Auth", GetAuthHeader (GetID (), Proxy_, challenge) },
-						{ "X-FB-CreateGals.Gallery._size", "1" },
-						{ "X-FB-CreateGals.Gallery.0.ParentID", "0" },
-						{ "X-FB-CreateGals.Gallery.0.GalName", name.toUtf8 () },
-						{ "X-FB-CreateGals.Gallery.0.GalSec",
-								QString::number (privacyLevel).toUtf8 () } })));
+		auto reply = Proxy_->GetNetworkAccessManager ()->get (CreateRequest ({
+					{ "X-FB-User", Login_.toUtf8 () },
+					{ "X-FB-Mode", "CreateGals" },
+					{ "X-FB-Auth", GetAuthHeader (GetID (), Proxy_, challenge) },
+					{ "X-FB-CreateGals.Gallery._size", "1" },
+					{ "X-FB-CreateGals.Gallery.0.ParentID", "0" },
+					{ "X-FB-CreateGals.Gallery.0.GalName", name.toUtf8 () },
+					{ "X-FB-CreateGals.Gallery.0.GalSec", QString::number (privacyLevel).toUtf8 () }
+				}));
 		connect (reply,
 				SIGNAL (finished ()),
 				this,
@@ -476,27 +473,27 @@ namespace DeathNote
 		auto content = file.readAll ();
 		QByteArray md5 = QCryptographicHash::hash (content, QCryptographicHash::Md5);
 		file.close ();
-		auto reply = Proxy_->GetNetworkAccessManager ()->
-				put (CreateRequest (Util::MakeMap<QByteArray, QByteArray> ({
-							{ "X-FB-User", Login_.toUtf8 () },
-							{ "X-FB-Mode", "UploadPic" },
-							{ "X-FB-Auth", GetAuthHeader (GetID (), Proxy_, challenge) },
-							{ "X-FB-AuthVerifier", "md5=" + md5 + "&mode=UploadPic" },
-							{ "X-FB-UploadPic.ImageData", QDateTime::currentDateTime ()
-									.toString (Qt::ISODate).toUtf8 () },
-							{ "X-FB-UploadPic.MD5", md5 },
-							//TODO access to images
-							{ "X-FB-UploadPic.PicSec", "255" },
-							{ "X-FB-UploadPic.Meta.Filename", QFileInfo (item.FilePath_)
-									.fileName ().toUtf8 () },
-							{ "X-FB-UploadPic.Meta.Title", QFileInfo (item.FilePath_)
-									.fileName ().toUtf8 () },
-							{ "X-FB-UploadPic.Meta.Description", item.Description_.toUtf8 () },
-							{ "X-FB-UploadPic.Gallery._size", "1" },
-							{ "X-FB-UploadPic.Gallery.0.GalID", id },
-							{ "X-FB-UploadPic.ImageSize", QString::number (QFileInfo (item.FilePath_)
-									.size ()).toUtf8 () } })),
-						content);
+		auto reply = Proxy_->GetNetworkAccessManager ()->put (CreateRequest ({
+					{ "X-FB-User", Login_.toUtf8 () },
+					{ "X-FB-Mode", "UploadPic" },
+					{ "X-FB-Auth", GetAuthHeader (GetID (), Proxy_, challenge) },
+					{ "X-FB-AuthVerifier", "md5=" + md5 + "&mode=UploadPic" },
+					{ "X-FB-UploadPic.ImageData", QDateTime::currentDateTime ()
+							.toString (Qt::ISODate).toUtf8 () },
+					{ "X-FB-UploadPic.MD5", md5 },
+					//TODO access to images
+					{ "X-FB-UploadPic.PicSec", "255" },
+					{ "X-FB-UploadPic.Meta.Filename", QFileInfo (item.FilePath_)
+							.fileName ().toUtf8 () },
+					{ "X-FB-UploadPic.Meta.Title", QFileInfo (item.FilePath_)
+							.fileName ().toUtf8 () },
+					{ "X-FB-UploadPic.Meta.Description", item.Description_.toUtf8 () },
+					{ "X-FB-UploadPic.Gallery._size", "1" },
+					{ "X-FB-UploadPic.Gallery.0.GalID", id },
+					{ "X-FB-UploadPic.ImageSize", QString::number (QFileInfo (item.FilePath_)
+							.size ()).toUtf8 () }
+				}),
+				content);
 		Reply2UploadItem_ [reply] = item;
 		connect (reply,
 				SIGNAL (finished ()),
