@@ -29,6 +29,8 @@
 
 #pragma once
 
+#include <interfaces/core/icoreproxyfwd.h>
+
 class QString;
 class QByteArray;
 
@@ -39,6 +41,8 @@ namespace Blasq
 namespace DeathNote
 {
 	QByteArray GetHashedChallenge (const QString& password, const QString& challenge);
+
+	QString GetAccountPassword (const QByteArray& accountId, const ICoreProxy_ptr& proxy);
 }
 }
 }

@@ -31,6 +31,7 @@
 #include <QString>
 #include <QByteArray>
 #include <QCryptographicHash>
+#include <util/xpc/passutils.h>
 
 namespace LeechCraft
 {
@@ -44,6 +45,12 @@ namespace DeathNote
 				QCryptographicHash::Md5).toHex ();
 		return QCryptographicHash::hash ((challenge + passwordHash).toUtf8 (),
 				QCryptographicHash::Md5).toHex ();
+	}
+
+	QString GetAccountPassword (const QByteArray& accountId, const ICoreProxy_ptr& proxy)
+	{
+		const auto& key = "org.LeechCraft.Blasq.PassForAccount/" + accountId;
+		return Util::GetPassword (key, QObject::tr ("Enter password"), proxy);
 	}
 }
 }
