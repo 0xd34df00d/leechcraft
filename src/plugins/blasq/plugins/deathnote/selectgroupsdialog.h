@@ -64,10 +64,9 @@ namespace DeathNote
 		Q_OBJECT
 
 		Ui::SelectGroupsDialog Ui_;
-		QStandardItemModel *Model_;
+		QStandardItemModel * const Model_;
 		QString Login_;
-		FotoBilderAccount *Account_;
-
+		FotoBilderAccount * const Account_;
 	public:
 		SelectGroupsDialog (const QString& login, FotoBilderAccount *acc,
 				QWidget *parent = nullptr);
