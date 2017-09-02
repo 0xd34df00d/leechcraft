@@ -49,7 +49,8 @@ namespace DeathNote
 	{
 		const auto& key = "org.LeechCraft.Blasq.PassForAccount/" + accId;
 		return Util::GetPassword (key,
-				QObject::tr ("Enter password for LiveJournal FotoBilder account %1:").arg (accName),
+				QObject::tr ("Enter password for LiveJournal FotoBilder account %1:")
+					.arg ("<em>" + accName + "</em>"),
 				proxy);
 	}
 }
