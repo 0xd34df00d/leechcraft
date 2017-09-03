@@ -76,14 +76,14 @@ namespace Sarin
 
 		void Accept (const QString&) override;
 		void Abort () override;
+
+		void HandleFileControl (uint32_t, uint32_t, int);
+		void HandleChunkRequested (uint32_t, uint32_t, uint64_t, size_t);
 	private:
 		void HandleAccept ();
 		void HandleKill ();
 		void HandlePause ();
 		void HandleResume ();
-	private slots:
-		void handleFileControl (uint32_t, uint32_t, int);
-		void handleChunkRequested (uint32_t, uint32_t, uint64_t, size_t);
 	};
 }
 }

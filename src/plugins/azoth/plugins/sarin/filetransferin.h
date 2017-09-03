@@ -67,9 +67,9 @@ namespace Sarin
 
 		void Accept (const QString&) override;
 		void Abort () override;
-	private slots:
-		void handleData (qint32, quint32, const QByteArray&);
-		void handleFileControl (qint32, qint32, int);
+
+		void HandleData (qint32, quint32, const QByteArray&);
+		void HandleFileControl (qint32, qint32, int);
 	};
 }
 }

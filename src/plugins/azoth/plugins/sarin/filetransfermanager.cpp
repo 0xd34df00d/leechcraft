@@ -81,13 +81,13 @@ namespace Sarin
 
 		const auto transfer = new FileTransferOut { id, contact->GetPubKey (), name, toxThread };
 		connect (this,
-				SIGNAL (gotFileControl (uint32_t, uint32_t, int)),
+				&FileTransferManager::gotFileControl,
 				transfer,
-				SLOT (handleFileControl (uint32_t, uint32_t, int)));
+				&FileTransferOut::HandleFileControl);
 		connect (this,
-				SIGNAL (gotChunkRequest (uint32_t, uint32_t, uint64_t, size_t)),
+				&FileTransferManager::gotChunkRequest,
 				transfer,
-				SLOT (handleChunkRequested (uint32_t, uint32_t, uint64_t, size_t)));
+				&FileTransferOut::HandleChunkRequested);
 		return transfer;
 	}
 
@@ -168,13 +168,13 @@ namespace Sarin
 		};
 
 		connect (this,
-				SIGNAL (gotFileControl (qint32, qint32, int)),
+				&FileTransferManager::gotFileControl,
 				transfer,
-				SLOT (handleFileControl (qint32, qint32, int)));
+				&FileTransferIn::HandleFileControl);
 		connect (this,
-				SIGNAL (gotData (qint32, quint32, QByteArray)),
+				&FileTransferManager::gotData,
 				transfer,
-				SLOT (handleData (qint32, quint32, QByteArray)));
+				&FileTransferIn::HandleData);
 
 		emit fileOffered (transfer);
 	}

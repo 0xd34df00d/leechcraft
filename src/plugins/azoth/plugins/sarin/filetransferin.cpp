@@ -103,7 +103,7 @@ namespace Sarin
 				});
 	}
 
-	void FileTransferIn::handleData (qint32 friendNum, quint32 fileNum, const QByteArray& data)
+	void FileTransferIn::HandleData (qint32 friendNum, quint32 fileNum, const QByteArray& data)
 	{
 		if (friendNum != FriendNum_ || fileNum != FileNum_)
 			return;
@@ -112,7 +112,7 @@ namespace Sarin
 		emit transferProgress (File_->pos (), Filesize_);
 	}
 
-	void FileTransferIn::handleFileControl (qint32 friendNum, qint32 fileNum, int type)
+	void FileTransferIn::HandleFileControl (qint32 friendNum, qint32 fileNum, int type)
 	{
 		if (friendNum != FriendNum_ || fileNum != FileNum_)
 			return;
