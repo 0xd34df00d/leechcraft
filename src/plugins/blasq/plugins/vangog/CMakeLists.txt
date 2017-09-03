@@ -29,13 +29,12 @@ set (VANGOG_FORMS
 	)
 # CreateTrs("blasq_vangog" "en;ru_RU" VANGOG_COMPILED_TRANSLATIONS)
 # CreateTrsUpTarget("blasq_vangog" "en;ru_RU" "${VANGOG_SRCS}" "${VANGOG_FORMS}" "")
-
-QT4_WRAP_UI (UIS_H ${VANGOG_FORMS})
+QT4_WRAP_UI (VANGOG_UIS_H ${VANGOG_FORMS})
 
 add_library (leechcraft_blasq_vangog SHARED
 # 	${VANGOG_COMPILED_TRANSLATIONS}
 	${VANGOG_SRCS}
-	${UIS_H}
+    ${VANGOG_UIS_H}
 	)
 target_link_libraries (leechcraft_blasq_vangog
 	${QT_LIBRARIES}
