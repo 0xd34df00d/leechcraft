@@ -44,8 +44,6 @@ namespace Sarin
 
 	class FileTransferOut : public FileTransferBase
 	{
-		Q_OBJECT
-
 		const QString FilePath_;
 
 		uint32_t FriendNum_;

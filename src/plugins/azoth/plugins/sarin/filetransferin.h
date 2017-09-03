@@ -42,8 +42,6 @@ namespace Sarin
 {
 	class FileTransferIn : public FileTransferBase
 	{
-		Q_OBJECT
-
 		const qint32 FriendNum_;
 		const quint32 FileNum_;
 
