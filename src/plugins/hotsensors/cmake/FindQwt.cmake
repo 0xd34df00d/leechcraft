@@ -16,7 +16,7 @@ find_path (QWT_INCLUDE_DIRS
 )
 
 find_library (QWT_LIBRARIES
-	NAMES qwt-qt4 qwt6 qwt
+	NAMES qwt-qt4 qwt6-qt4 qwt6 qwt
 	PATHS
 	/usr/local/lib
 	/usr/lib
