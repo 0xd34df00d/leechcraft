@@ -40,7 +40,7 @@ namespace Azoth
 {
 namespace Sarin
 {
-	class FileTransferIn : public FileTransferBase
+	class FileTransferIn final : public FileTransferBase
 	{
 		const qint32 FriendNum_;
 		const quint32 FileNum_;

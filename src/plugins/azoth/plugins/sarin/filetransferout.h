@@ -42,7 +42,7 @@ namespace Sarin
 {
 	class ToxThread;
 
-	class FileTransferOut : public FileTransferBase
+	class FileTransferOut final : public FileTransferBase
 	{
 		const QString FilePath_;
 
