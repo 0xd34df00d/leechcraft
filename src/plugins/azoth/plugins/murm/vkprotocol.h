@@ -45,9 +45,9 @@ namespace Murm
 	class VkAccount;
 	class PhotoUrlStorage;
 
-	class VkProtocol : public QObject
-					 , public IProtocol
-					 , public IMUCProtocol
+	class VkProtocol final : public QObject
+						   , public IProtocol
+						   , public IMUCProtocol
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::IProtocol LeechCraft::Azoth::IMUCProtocol)
