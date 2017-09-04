@@ -66,7 +66,6 @@ namespace PDF
 	class FormFieldText final : public FormField
 							  , public IFormFieldText
 	{
-		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Monocle::IFormField
 				LeechCraft::Monocle::IFormFieldText)
 
@@ -89,7 +88,6 @@ namespace PDF
 	class FormFieldChoice final : public FormField
 								, public IFormFieldChoice
 	{
-		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Monocle::IFormField
 				LeechCraft::Monocle::IFormFieldChoice)
 
@@ -116,7 +114,6 @@ namespace PDF
 	class FormFieldButton final : public FormField
 						        , public IFormFieldButton
 	{
-		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Monocle::IFormField
 				LeechCraft::Monocle::IFormFieldButton)
 
