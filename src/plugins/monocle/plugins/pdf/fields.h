@@ -63,8 +63,8 @@ namespace PDF
 		QString GetName () const;
 	};
 
-	class FormFieldText : public FormField
-						, public IFormFieldText
+	class FormFieldText final : public FormField
+							  , public IFormFieldText
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Monocle::IFormField
@@ -86,8 +86,8 @@ namespace PDF
 		bool IsRichText () const;
 	};
 
-	class FormFieldChoice : public FormField
-						  , public IFormFieldChoice
+	class FormFieldChoice final : public FormField
+								, public IFormFieldChoice
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Monocle::IFormField
@@ -113,8 +113,8 @@ namespace PDF
 		bool IsEditable () const;
 	};
 
-	class FormFieldButton : public FormField
-						  , public IFormFieldButton
+	class FormFieldButton final : public FormField
+						        , public IFormFieldButton
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Monocle::IFormField
