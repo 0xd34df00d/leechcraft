@@ -118,7 +118,7 @@ namespace PDF
 				LeechCraft::Monocle::IFormFieldButton)
 
 		std::shared_ptr<Poppler::FormFieldButton> Field_;
-		Document *Doc_;
+		Document * const Doc_;
 		QList<int> ButtonGroup_;
 	public:
 		FormFieldButton (std::shared_ptr<Poppler::FormField>, Document*);
