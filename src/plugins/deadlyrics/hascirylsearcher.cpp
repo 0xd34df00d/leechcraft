@@ -81,10 +81,10 @@ namespace DeadLyrics
 		append ("track", (num * query.Track_).value_or (QString {}));
 
 		Util::HandleNetworkReply (this, NAM_->post (req, postData),
-				[this] (const QByteArray& data) { HandleLyricsUrls (data); });
+				[this, query] (const QByteArray& data) { HandleLyricsUrls (query, data); });
 	}
 
-	void HascirylSearcher::HandleLyricsUrls (const QByteArray& data)
+	void HascirylSearcher::HandleLyricsUrls (const Media::LyricsQuery& origQuery,const QByteArray& data)
 	{
 		const auto& urls = Util::ParseJson (data, Q_FUNC_INFO).toList ();
 		for (const auto& varMap : urls)
@@ -94,11 +94,13 @@ namespace DeadLyrics
 			const auto& url = map ["reqUrl"].toString ();
 
 			Util::HandleNetworkReply (this, NAM_->get (QNetworkRequest { QUrl { url } }),
-					[this, prov] (const QByteArray& data) { HandleLyricsPageFetched (prov, data); });
+					[this, origQuery, prov] (const QByteArray& data)
+						{ HandleLyricsPageFetched (origQuery, prov, data); });
 		}
 	}
 
-	void HascirylSearcher::HandleLyricsPageFetched (const QString& provName, const QByteArray& data)
+	void HascirylSearcher::HandleLyricsPageFetched (const Media::LyricsQuery& origQuery,
+			const QString& provName, const QByteArray& data)
 	{
 		QHttpPart servicePart;
 		servicePart.setHeader (QNetworkRequest::ContentDispositionHeader, "form-data; name=\"service\"");

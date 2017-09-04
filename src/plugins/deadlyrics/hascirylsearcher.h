@@ -45,8 +45,8 @@ namespace DeadLyrics
 
 		void Search (const Media::LyricsQuery&, Media::QueryOptions) override;
 	private:
-		void HandleLyricsUrls (const QByteArray&);
-		void HandleLyricsPageFetched (const QString&, const QByteArray&);
+		void HandleLyricsUrls (const Media::LyricsQuery&, const QByteArray&);
+		void HandleLyricsPageFetched (const Media::LyricsQuery&, const QString&, const QByteArray&);
 	};
 }
 }
