@@ -100,6 +100,24 @@ namespace DeadLyrics
 
 	void HascirylSearcher::HandleLyricsPageFetched (const QString& provName, const QByteArray& data)
 	{
+		QHttpPart servicePart;
+		servicePart.setHeader (QNetworkRequest::ContentDispositionHeader, "form-data; name=\"service\"");
+		servicePart.setBody (provName.toUtf8 ());
+
+		QHttpPart contentsPart;
+		contentsPart.setHeader (QNetworkRequest::ContentDispositionHeader,
+				"form-data; name=\"contents\"; filename=\"contents\"");
+		contentsPart.setBody (data);
+
+		auto multipart = new QHttpMultiPart { QHttpMultiPart::FormDataType };
+		multipart->append (servicePart);
+		multipart->append (contentsPart);
+
+		const auto reply = NAM_->post (QNetworkRequest { GetUrl ("lyrics/page/parse") }, multipart);
+		multipart->setParent (reply);
+
+		Util::HandleNetworkReply (this, reply,
+				[] (const QByteArray&) {});
 	}
 }
 }
