@@ -31,7 +31,6 @@
 #include <algorithm>
 #include <QtDebug>
 #include <poppler-form.h>
-#include <poppler-version.h>
 #include <util/sll/unreachable.h>
 #include "links.h"
 
