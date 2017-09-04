@@ -13,6 +13,7 @@ set (SRCS
 	lyricscache.cpp
 	sitessearcher.cpp
 	concretesite.cpp
+	hascirylsearcher.cpp
 	)
 CreateTrs ("deadlyrics" "ar;de;en;eo;es;fr;it;oc;pl;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget ("deadlyrics" "en;ru_RU" "${SRCS}" "" "")
