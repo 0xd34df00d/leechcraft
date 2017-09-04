@@ -44,8 +44,8 @@ namespace Monocle
 {
 namespace PDF
 {
-	class PendingFontInfoRequest : public QObject
-								 , public IPendingFontInfoRequest
+	class PendingFontInfoRequest final : public QObject
+									   , public IPendingFontInfoRequest
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Monocle::IPendingFontInfoRequest)
