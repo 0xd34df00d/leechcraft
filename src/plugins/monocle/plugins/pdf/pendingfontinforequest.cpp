@@ -29,9 +29,8 @@
 
 #include "pendingfontinforequest.h"
 #include <QtConcurrentRun>
-#include <QFutureWatcher>
 #include <poppler-qt5.h>
-#include <util/sll/slotclosure.h>
+#include <util/threads/futures.h>
 
 namespace LeechCraft
 {
@@ -41,26 +40,18 @@ namespace PDF
 {
 	PendingFontInfoRequest::PendingFontInfoRequest (const std::shared_ptr<Poppler::Document>& doc)
 	{
-		const auto watcher = new QFutureWatcher<QList<Poppler::FontInfo>> { this };
-		new Util::SlotClosure<Util::DeleteLaterPolicy>
-		{
-			[this, watcher] () -> void
-			{
-				watcher->deleteLater ();
-				for (const auto& item : watcher->result ())
-					Result_.append ({
-							item.name (),
-							item.file (),
-							item.isEmbedded ()
+		Util::Sequence (this, QtConcurrent::run ([doc] { return doc->fonts (); })) >>
+				[this] (const QList<Poppler::FontInfo>& items)
+				{
+					for (const auto& item : items)
+						Result_.append ({
+								item.name (),
+								item.file (),
+								item.isEmbedded ()
 						});
-				emit ready ();
-				deleteLater ();
-			},
-			watcher,
-			SIGNAL (finished ()),
-			this
-		};
-		watcher->setFuture (QtConcurrent::run ([doc] { return doc->fonts (); }));
+					emit ready ();
+					deleteLater ();
+				};
 	}
 
 	QObject* PendingFontInfoRequest::GetQObject ()
