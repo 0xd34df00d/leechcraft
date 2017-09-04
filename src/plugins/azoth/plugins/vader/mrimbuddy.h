@@ -50,11 +50,11 @@ namespace Vader
 	class MRIMMessage;
 	class SelfAvatarFetcher;
 
-	class MRIMBuddy : public QObject
-					, public ICLEntry
-					, public IHaveAvatars
-					, public IHaveContactTune
-					, public IAdvancedCLEntry
+	class MRIMBuddy final : public QObject
+						  , public ICLEntry
+						  , public IHaveAvatars
+						  , public IHaveContactTune
+						  , public IAdvancedCLEntry
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::ICLEntry
