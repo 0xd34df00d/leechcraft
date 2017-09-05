@@ -50,7 +50,6 @@ namespace PDF
 	class Link : public QObject
 			   , public ILink
 	{
-		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Monocle::ILink)
 
 		Document * const Doc_;
@@ -72,7 +71,6 @@ namespace PDF
 				  , public ILink
 				  , public IPageLink
 	{
-		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Monocle::ILink LeechCraft::Monocle::IPageLink)
 
 		Document * const Doc_;
