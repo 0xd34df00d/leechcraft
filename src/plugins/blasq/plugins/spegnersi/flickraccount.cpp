@@ -172,13 +172,13 @@ namespace Spegnersi
 		UpdateAfterAuth_ = false;
 
 		auto req = MakeRequest (QString ("http://api.flickr.com/services/rest/"), KQOAuthRequest::AuthorizedRequest);
-		req->setAdditionalParameters (Util::MakeMap<QString, QString> ({
+		req->setAdditionalParameters ({
 					{ "method", "flickr.photos.search" },
 					{ "user_id", "me" },
 					{ "format", "rest" },
 					{ "per_page", "500" },
 					{ "extras", "url_o,url_z,url_m" }
-				}));
+				});
 		AuthMgr_->executeRequest (req);
 
 		CollectionsModel_->clear ();
@@ -262,14 +262,14 @@ namespace Spegnersi
 		if (thisPage != photos.attribute ("pages").toInt ())
 		{
 			auto req = MakeRequest (QString ("http://api.flickr.com/services/rest/"), KQOAuthRequest::AuthorizedRequest);
-			req->setAdditionalParameters (Util::MakeMap<QString, QString> ({
+			req->setAdditionalParameters ({
 						{ "method", "flickr.photos.search" },
 						{ "user_id", "me" },
 						{ "format", "rest" },
 						{ "per_page", "500" },
 						{ "page", QString::number (thisPage + 1) },
 						{ "extras", "url_o,url_z,url_m" }
-					}));
+					});
 			AuthMgr_->executeRequest (req);
 		}
 		else
