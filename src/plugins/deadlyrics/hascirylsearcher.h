@@ -47,6 +47,7 @@ namespace DeadLyrics
 	private:
 		void HandleLyricsUrls (const Media::LyricsQuery&, const QByteArray&);
 		void HandleLyricsPageFetched (const Media::LyricsQuery&, const QString&, const QByteArray&);
+		void HandleGotLyricsReply (const Media::LyricsQuery&, const QString&, const QByteArray&);
 	};
 }
 }

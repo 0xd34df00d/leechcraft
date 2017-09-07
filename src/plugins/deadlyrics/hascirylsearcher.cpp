@@ -119,7 +119,20 @@ namespace DeadLyrics
 		multipart->setParent (reply);
 
 		Util::HandleNetworkReply (this, reply,
-				[] (const QByteArray&) {});
+				[this, origQuery, provName] (const QByteArray& data)
+					{ HandleGotLyricsReply (origQuery, provName, data); });
+	}
+
+	void HascirylSearcher::HandleGotLyricsReply (const Media::LyricsQuery& origQuery,
+			const QString& provName, const QByteArray& data)
+	{
+		const auto& reply = Util::ParseJson (data, Q_FUNC_INFO).toMap ();
+		const auto& result = reply ["result"].toString ();
+		if (result != "Success")
+			return;
+
+		const auto& lyrics = reply ["payload"].toString ();
+		emit gotLyrics ({ origQuery, { { provName, lyrics } } });
 	}
 }
 }
