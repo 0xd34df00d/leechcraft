@@ -41,7 +41,6 @@
 #include <util/sll/qtutil.h>
 #include <util/sll/prelude.h>
 #include <util/sll/qstringwrappers.h>
-#include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
 #include "core.h"
