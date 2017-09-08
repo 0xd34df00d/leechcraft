@@ -101,12 +101,10 @@ namespace CSTP
 	, Operation_ (reply->operation ())
 	, Headers_
 	{
-		Util::MakeMap<QString, QVariant> ({
-				{
-					"Content-Type",
-					reply->request ().header (QNetworkRequest::ContentTypeHeader).toByteArray ()
-				}
-		})
+		{
+			"Content-Type",
+			reply->request ().header (QNetworkRequest::ContentTypeHeader).toByteArray ()
+		}
 	}
 	{
 		StartTime_.start ();
