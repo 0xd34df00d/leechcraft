@@ -33,7 +33,6 @@
 #include <QMessageBox>
 #include <util/xpc/util.h>
 #include <util/xpc/downloadhandler.h>
-#include <util/util.h>
 #include "chooseuserpage.h"
 #include "userstatuspage.h"
 #include "reporttypepage.h"
@@ -79,10 +78,10 @@ namespace Dolozhee
 		const auto& pass = ChooseUser_->GetPassword ().toUtf8 ();
 
 		QVariantMap additional;
-		additional ["HttpHeaders"] = Util::MakeMap<QString, QVariant> ({
+		additional ["HttpHeaders"] = QVariantMap {
 					{ "Content-Type", contentType },
 					{ "Authorization", "Basic " + (user + ':' + pass).toBase64 () }
-				});
+				};
 		additional ["UploadData"] = data;
 		additional ["Operation"] = static_cast<int> (QNetworkAccessManager::PostOperation);
 
