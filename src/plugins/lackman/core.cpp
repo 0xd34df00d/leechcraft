@@ -781,7 +781,7 @@ namespace LackMan
 
 		if (settings.value ("AddDefault", true).toBool ())
 		{
-			AddRepo (QUrl ("http://leechcraft.org/repo/"));
+			AddRepo (QUrl ("https://leechcraft.org/repo/"));
 			settings.setValue ("AddDefault", false);
 			WriteSettings ();
 		}
