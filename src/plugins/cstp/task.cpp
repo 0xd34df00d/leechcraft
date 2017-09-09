@@ -29,7 +29,6 @@
 
 #include "task.h"
 #include <algorithm>
-#include <typeinfo>
 #include <stdexcept>
 #include <QUrl>
 #include <QFileInfo>
