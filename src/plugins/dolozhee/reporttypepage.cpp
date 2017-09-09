@@ -73,7 +73,7 @@ namespace Dolozhee
 
 		try
 		{
-			const QUrl url { "http://dev.leechcraft.org/projects/leechcraft.xml?include=issue_categories" };
+			const QUrl url { "https://dev.leechcraft.org/projects/leechcraft.xml?include=issue_categories" };
 			new Util::DownloadHandler (url,
 					Proxy_->GetEntityManager (),
 					{
