@@ -36,6 +36,7 @@
 #include <QtDebug>
 #include <util/xpc/downloadhandler.h>
 #include <util/sll/functional.h>
+#include <util/sll/unreachable.h>
 #include "reportwizard.h"
 
 namespace LeechCraft
@@ -60,9 +61,7 @@ namespace Dolozhee
 			return ReportWizard::PageID::BugDetails;
 		}
 
-		qWarning () << Q_FUNC_INFO
-				<< "invalid report type";
-		return -1;
+		Util::Unreachable ();
 	}
 
 	void ReportTypePage::initializePage ()
