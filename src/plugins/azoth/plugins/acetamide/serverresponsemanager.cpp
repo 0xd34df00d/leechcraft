@@ -292,11 +292,11 @@ namespace Acetamide
 		QString outputMessage;
 		const QString& lcVer = Core::Instance ().GetProxy ()->GetVersion ();
 		const QString version = QString ("LeechCraft %1 (Acetamide 2.0) "
-					"(c) 2006-2012 LeechCraft team")
+					"(c) 2006-2017 LeechCraft team")
 				.arg (lcVer);
 		const QDateTime currentDT = QDateTime::currentDateTime ();
 		const QString firstPartOutput = QString ("LeechCraft %1 (Acetamide 2.0) - "
-					"http://leechcraft.org")
+					"https://leechcraft.org")
 				.arg (lcVer);
 		const QString target = QString::fromStdString (opts.Parameters_.last ());
 
