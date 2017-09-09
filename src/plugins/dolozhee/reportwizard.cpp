@@ -87,7 +87,7 @@ namespace Dolozhee
 
 		new Util::DownloadHandler
 		{
-			QUrl { "http://dev.leechcraft.org" + address },
+			QUrl { "https://dev.leechcraft.org" + address },
 			additional,
 			Proxy_->GetEntityManager (),
 			handler,
