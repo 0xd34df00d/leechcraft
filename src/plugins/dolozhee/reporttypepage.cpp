@@ -99,8 +99,6 @@ namespace Dolozhee
 		case Type::Bug:
 			Ui_.TypeCombo_->setCurrentIndex (0);
 			break;
-		default:
-			return;
 		}
 
 		Ui_.TypeCombo_->setEnabled (false);
