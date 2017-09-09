@@ -585,7 +585,7 @@ namespace WebKitView
 				tr ("Welcome to LeechCraft!"));
 		data.replace ("{body}",
 				tr ("Welcome to LeechCraft, the integrated internet-client.<br />"
-					"More info is available on the <a href='http://leechcraft.org'>"
+					"More info is available on the <a href='https://leechcraft.org'>"
 					"project's site</a>."));
 
 		QBuffer iconBuffer;

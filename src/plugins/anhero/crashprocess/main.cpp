@@ -48,7 +48,7 @@ namespace
 
 	void ShowHelp (const bpo::options_description& desc)
 	{
-		std::cout << "LeechCraft (http://leechcraft.org)" << std::endl;
+		std::cout << "LeechCraft (https://leechcraft.org)" << std::endl;
 		std::cout << std::endl;
 		std::cout << "This is the crash handler process and it is not "
 				<< "intended to be run manually." << std::endl;
