@@ -48,7 +48,7 @@ namespace Poshuku
 	{
 		Q_OBJECT
 
-		QTimer *GarbageTimer_;
+		QTimer * const GarbageTimer_;
 		history_items_t Items_;
 	public:
 		enum Columns

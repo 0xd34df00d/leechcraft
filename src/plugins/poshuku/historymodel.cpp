@@ -106,13 +106,13 @@ namespace Poshuku
 
 	HistoryModel::HistoryModel (QObject *parent)
 	: QStandardItemModel { parent }
+	, GarbageTimer_ { new QTimer { this } }
 	{
 		setHorizontalHeaderLabels ({tr ("Title"), tr ("URL"), tr ("Date") });
 		QTimer::singleShot (0,
 				this,
 				SLOT (loadData ()));
 
-		GarbageTimer_ = new QTimer (this);
 		GarbageTimer_->start (15 * 60 * 1000);
 		connect (GarbageTimer_,
 				SIGNAL (timeout ()),
