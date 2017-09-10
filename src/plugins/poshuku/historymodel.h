@@ -57,7 +57,7 @@ namespace Poshuku
 			, ColumnDate
 		};
 
-		HistoryModel (QObject* = 0);
+		HistoryModel (QObject* = nullptr);
 
 		void HandleStorageReady ();
 	public slots:
