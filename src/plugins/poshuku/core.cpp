@@ -161,6 +161,8 @@ namespace Poshuku
 				SLOT (handleItemRemoved (const FavoritesModel::FavoritesItem&)));
 
 		Initialized_ = true;
+
+		HistoryModel_->HandleStorageReady ();
 	}
 
 	void Core::Release ()

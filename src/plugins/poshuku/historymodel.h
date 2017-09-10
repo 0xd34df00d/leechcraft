@@ -59,6 +59,8 @@ namespace Poshuku
 		};
 
 		HistoryModel (QObject* = 0);
+
+		void HandleStorageReady ();
 	public slots:
 		void addItem (QString title, QString url, QDateTime datetime);
 		QList<QMap<QString, QVariant>> getItemsMap () const;

@@ -109,9 +109,11 @@ namespace Poshuku
 	, GarbageTimer_ { new QTimer { this } }
 	{
 		setHorizontalHeaderLabels ({ tr ("Title"), tr ("URL"), tr ("Date") });
-		QTimer::singleShot (0,
-				this,
-				SLOT (loadData ()));
+	}
+
+	void HistoryModel::HandleStorageReady ()
+	{
+		loadData ();
 
 		GarbageTimer_->start (15 * 60 * 1000);
 		connect (GarbageTimer_,
