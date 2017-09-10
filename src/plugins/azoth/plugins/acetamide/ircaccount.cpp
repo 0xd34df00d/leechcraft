@@ -58,7 +58,6 @@ namespace Acetamide
 	, AccountName_ (name)
 	, ParentProtocol_ (qobject_cast<IrcProtocol*> (parent))
 	, IrcAccountState_ (SOffline)
-	, IsFirstStart_ (true)
 	{
 		connect (this,
 				SIGNAL (scheduleClientDestruction ()),

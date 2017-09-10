@@ -78,7 +78,7 @@ namespace Acetamide
 		State IrcAccountState_;
 
 		std::shared_ptr<ClientConnection> ClientConnection_;
-		bool IsFirstStart_;
+		bool IsFirstStart_ = true;
 		QList<IrcBookmark> ActiveChannels_;
 	public:
 		IrcAccount (const QString&, QObject*);
