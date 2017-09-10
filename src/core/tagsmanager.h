@@ -38,8 +38,8 @@
 
 namespace LeechCraft
 {
-	class TagsManager : public QAbstractItemModel
-					  , public ITagsManager
+	class TagsManager final : public QAbstractItemModel
+							, public ITagsManager
 	{
 		Q_OBJECT
 		Q_INTERFACES (ITagsManager)
