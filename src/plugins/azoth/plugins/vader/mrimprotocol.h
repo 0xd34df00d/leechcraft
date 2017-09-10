@@ -43,8 +43,8 @@ namespace Vader
 {
 	class MRIMAccount;
 
-	class MRIMProtocol : public QObject
-					   , public IProtocol
+	class MRIMProtocol final : public QObject
+							 , public IProtocol
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::IProtocol)
