@@ -120,12 +120,13 @@ namespace PPL
 
 	QMap<QString, QList<QAction*>> Plugin::GetMenuActions () const
 	{
-		return Util::MakeMap<QString, QList<QAction*>> ({
-					{
-						"LMP",
-						{ ActionSync_ }
-					}
-				});
+		return
+		{
+			{
+				"LMP",
+				{ ActionSync_ }
+			}
+		};
 	}
 
 	void Plugin::SetLMPProxy (ILMPProxy_ptr proxy)
