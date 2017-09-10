@@ -108,7 +108,7 @@ namespace Poshuku
 	: QStandardItemModel { parent }
 	, GarbageTimer_ { new QTimer { this } }
 	{
-		setHorizontalHeaderLabels ({tr ("Title"), tr ("URL"), tr ("Date") });
+		setHorizontalHeaderLabels ({ tr ("Title"), tr ("URL"), tr ("Date") });
 		QTimer::singleShot (0,
 				this,
 				SLOT (loadData ()));
