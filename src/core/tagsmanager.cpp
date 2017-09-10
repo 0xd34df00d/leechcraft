@@ -35,6 +35,7 @@
 #include <QCoreApplication>
 #include <QtDebug>
 #include <util/util.h>
+#include <util/sll/prelude.h>
 #include <util/tags/tagscompleter.h>
 
 using namespace LeechCraft;
@@ -109,20 +110,14 @@ QStringList TagsManager::GetAllTags () const
 
 QStringList TagsManager::Split (const QString& string) const
 {
-	const auto& splitted = string.split (";", QString::SkipEmptyParts);
-	QStringList result;
-	std::transform (splitted.begin (), splitted.end (), std::back_inserter (result),
-			[] (const QString& s) { return s.trimmed (); });
-	return result;
+	return Util::Map (string.split (";", QString::SkipEmptyParts),
+			[] (auto&& s) { return s.trimmed (); });
 }
 
 QStringList TagsManager::SplitToIDs (const QString& string)
 {
-	const auto& tags = Split (string);
-	QStringList result;
-	std::transform (tags.begin (), tags.end (), std::back_inserter (result),
-			[this] (const QString& tag) { return GetID (tag.simplified ()); });
-	return result;
+	return Util::Map (Split (string),
+			[this] (auto&& tag) { return GetID (tag.simplified ()); });
 }
 
 QString TagsManager::Join (const QStringList& tags) const
@@ -132,8 +127,7 @@ QString TagsManager::Join (const QStringList& tags) const
 
 QString TagsManager::JoinIDs (const QStringList& tagIDs) const
 {
-	QStringList hr;
-	std::transform (tagIDs.begin (), tagIDs.end (), std::back_inserter (hr),
+	const auto& hr = Util::Map (tagIDs,
 			[this] (const QString& id) { return GetTag (id); });
 	return Join (hr);
 }
