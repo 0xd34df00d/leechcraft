@@ -37,17 +37,17 @@
 namespace LeechCraft
 {
 struct Entity;
+
 namespace Azoth
 {
 namespace Acetamide
 {
-
 	class IrcAccount;
 
-	class IrcProtocol : public QObject
-					  , public IProtocol
-					  , public IMUCProtocol
-					  , public IURIHandler
+	class IrcProtocol final : public QObject
+							, public IProtocol
+							, public IMUCProtocol
+							, public IURIHandler
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::IProtocol
