@@ -29,7 +29,6 @@
 
 #pragma once
 
-#include <deque>
 #include <vector>
 #include <QStringList>
 #include <QDateTime>

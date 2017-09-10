@@ -28,7 +28,7 @@
  **********************************************************************/
 
 #include "historymodel.h"
-#include <algorithm>
+#include <memory>
 #include <QTimer>
 #include <QVariant>
 #include <QAction>
