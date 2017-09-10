@@ -47,8 +47,8 @@ namespace Metida
 	class LJProfile;
 	class FriendsProxyModel;
 
-	class ProfileWidget : public QWidget
-						, public IProfileWidget
+	class ProfileWidget final : public QWidget
+							  , public IProfileWidget
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Blogique::IProfileWidget)
