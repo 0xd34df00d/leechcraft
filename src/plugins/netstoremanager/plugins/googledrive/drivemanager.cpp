@@ -35,7 +35,6 @@
 #include <QMainWindow>
 #include <QStandardPaths>
 #include <interfaces/core/irootwindowsmanager.h>
-#include <util/util.h>
 #include <util/xpc/util.h>
 #include <util/sys/mimedetector.h>
 #include <util/sll/urloperator.h>
@@ -200,7 +199,8 @@ namespace GoogleDrive
 	{
 		QString GetLocalMimeTypeFromGoogleMimeType (const QString& mime, const QString& fileExt)
 		{
-			static const auto mimeMap = Util::MakeMap<QPair<QString, QString>, QString> ({
+			static const QMap<QPair<QString, QString>, QString> mimeMap
+			{
 				{ { "application/vnd.google-apps.audio", "" }, "audio-x-generic" },
 				{ { "application/vnd.google-apps.document", "" }, "application-vnd.oasis.opendocument.spreadsheet" },
 				{ { "application/vnd.google-apps.document", "doc" }, "application-msword" },
@@ -237,7 +237,8 @@ namespace GoogleDrive
 				{ { "application/rar", "rar" }, "application-x-archive" },
 				{ { "image/png", "png" }, "image-x-generic" },
 				{ { "image/jpeg", "jpeg" }, "image-x-generic" },
-				{ { "application/x-iso9660-image", "iso" }, "application-x-cd-image" } });
+				{ { "application/x-iso9660-image", "iso" }, "application-x-cd-image" }
+			};
 
 			QString res;
 			if (mimeMap.contains ({ mime, fileExt }))
