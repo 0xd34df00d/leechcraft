@@ -574,7 +574,7 @@ namespace Metida
 		props.LikeButtons_ = postOptions.value ("likes").toStringList ();
 
 		ljEvent.Props_ = props;
-		ljEvent.Event_.append ("\n<em style=\"font-size: 0.8em;\">Posted via <a href=\"http://leechcraft.org/plugins-blogique\">LeechCraft Blogique</a>.</em>");
+		ljEvent.Event_.append ("\n<em style=\"font-size: 0.8em;\">Posted via <a href=\"https://leechcraft.org/plugins-blogique\">LeechCraft Blogique</a>.</em>");
 
 		QRegExp rxp ("(<lj-like.+(buttons=\"((\\w+,?)+)\"\\s?)?\\/?>).+(</lj-like>)?", Qt::CaseInsensitive);
 		QString buttons = QString ("<lj-like buttons=\"%1\" />")
