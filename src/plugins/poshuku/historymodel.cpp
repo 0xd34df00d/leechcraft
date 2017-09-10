@@ -34,6 +34,7 @@
 #include <QAction>
 #include <QtDebug>
 #include <util/xpc/defaulthookproxy.h>
+#include <util/sll/prelude.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include "core.h"
@@ -149,16 +150,16 @@ namespace Poshuku
 
 	QList<QMap<QString, QVariant>> HistoryModel::getItemsMap () const
 	{
-		QList<QMap<QString, QVariant>> result;
-		for (const auto& item : Items_)
-		{
-			QMap<QString, QVariant> map;
-			map ["Title"] = item.Title_;
-			map ["DateTime"] = item.DateTime_;
-			map ["URL"] = item.URL_;
-			result << map;
-		}
-		return result;
+		return Util::Map (Items_,
+				[] (const auto& item)
+				{
+					return QVariantMap
+					{
+						{ "Title", item.Title_ },
+						{ "DateTime", item.DateTime_ },
+						{ "URL", item.URL_ }
+					};
+				});
 	}
 
 	void HistoryModel::Add (const HistoryItem& histItem, int section)
