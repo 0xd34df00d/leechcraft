@@ -51,7 +51,6 @@ namespace LeechCraft
 		TagsDictionary_t Tags_;
 	public:
 		static TagsManager& Instance ();
-		virtual ~TagsManager ();
 
 		int columnCount (const QModelIndex&) const;
 		QVariant data (const QModelIndex&, int) const;

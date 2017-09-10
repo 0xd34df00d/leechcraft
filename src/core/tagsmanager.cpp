@@ -52,10 +52,6 @@ TagsManager& TagsManager::Instance ()
 	return tm;
 }
 
-TagsManager::~TagsManager ()
-{
-}
-
 int TagsManager::columnCount (const QModelIndex&) const
 {
 	return 1;
