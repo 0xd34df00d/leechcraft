@@ -189,7 +189,7 @@ namespace Poshuku
 			return QModelIndex ();
 		}
 
-		Util::DefaultHookProxy_ptr proxy = Util::DefaultHookProxy_ptr (new Util::DefaultHookProxy ());
+		auto proxy = std::make_shared<Util::DefaultHookProxy> ();
 		emit hookAddedToFavorites (proxy, title, url, visibleTags);
 
 		return createIndex (Items_.size () - 1, 0);
