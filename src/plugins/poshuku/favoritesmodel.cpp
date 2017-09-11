@@ -81,15 +81,13 @@ namespace Poshuku
 			case ColumnURL:
 				return Items_ [index.row ()].URL_;
 			case ColumnTags:
-				return Core::Instance ().GetProxy ()->
-					GetTagsManager ()->Join (GetVisibleTags (index.row ()));
+				return Core::Instance ().GetProxy ()->GetTagsManager ()->Join (GetVisibleTags (index.row ()));
 			default:
 				return {};
 			}
 		case Qt::DecorationRole:
 			if (index.column () == ColumnTitle)
-				return Core::Instance ()
-					.GetIcon (Items_ [index.row ()].URL_);
+				return Core::Instance ().GetIcon (Items_ [index.row ()].URL_);
 			else
 				return QVariant ();
 		case Qt::ToolTipRole:
@@ -216,7 +214,7 @@ namespace Poshuku
 
 	QStringList FavoritesModel::mimeTypes () const
 	{
-		return QStringList ("text/uri-list");
+		return { "text/uri-list" };
 	}
 
 	QMimeData* FavoritesModel::mimeData (const QModelIndexList& indexes) const
@@ -398,8 +396,7 @@ namespace Poshuku
 
 	void FavoritesModel::handleItemUpdated (const FavoritesModel::FavoritesItem& item)
 	{
-		items_t::iterator pos =
-			std::find_if (Items_.begin (), Items_.end (), ItemFinder (item.URL_));
+		const auto pos = std::find_if (Items_.begin (), Items_.end (), ItemFinder (item.URL_));
 		if (pos == Items_.end ())
 		{
 			qWarning () << Q_FUNC_INFO << "not found updated item";
@@ -415,8 +412,7 @@ namespace Poshuku
 
 	void FavoritesModel::handleItemRemoved (const FavoritesModel::FavoritesItem& item)
 	{
-		items_t::iterator pos =
-			std::find (Items_.begin (), Items_.end (), item);
+		const auto pos = std::find (Items_.begin (), Items_.end (), item);
 		if (pos == Items_.end ())
 		{
 			qWarning () << Q_FUNC_INFO << "not found removed item";
@@ -438,13 +434,11 @@ namespace Poshuku
 			return;
 
 		beginInsertRows (QModelIndex (), 0, items.size () - 1);
-		for (items_t::iterator i = items.begin (),
-				end = items.end (); i != end; ++i)
+		for (items_t::iterator i = items.begin (), end = items.end (); i != end; ++i)
 		{
 			Q_FOREACH (const QString& tag, i->Tags_)
 			{
-				QString ut = Core::Instance ().GetProxy ()->
-					GetTagsManager ()->GetTag (tag);
+				const auto& ut = Core::Instance ().GetProxy ()->GetTagsManager ()->GetTag (tag);
 				if (ut.isEmpty ())
 					i->Tags_.removeAll (tag);
 			}

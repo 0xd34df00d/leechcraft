@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_FAVORITESMODEL_H
-#define PLUGINS_POSHUKU_FAVORITESMODEL_H
+#pragma once
+
 #include <QAbstractItemModel>
 #include <QStringList>
 #include <QList>
@@ -110,5 +110,3 @@ namespace Poshuku
 	};
 }
 }
-
-#endif
