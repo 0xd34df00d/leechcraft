@@ -29,14 +29,13 @@
 
 #include "favoritesmodel.h"
 #include <algorithm>
-#include <boost/iterator/zip_iterator.hpp>
-#include <boost/range.hpp>
 #include <QTimer>
 #include <QtDebug>
 #include <QMimeData>
 #include <QFileInfo>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
+#include <util/sll/views.h>
 #include <util/xpc/defaulthookproxy.h>
 #include "filtermodel.h"
 #include "core.h"
@@ -244,17 +243,6 @@ namespace Poshuku
 		return data;
 	}
 
-	namespace
-	{
-		template <typename... T>
-		auto zip (const T&... containers) -> boost::iterator_range<boost::zip_iterator<decltype (boost::make_tuple (std::begin (containers)...))>>
-		{
-			auto zip_begin = boost::make_zip_iterator (boost::make_tuple (std::begin (containers)...));
-			auto zip_end = boost::make_zip_iterator (boost::make_tuple (std::end (containers)...));
-			return boost::make_iterator_range (zip_begin, zip_end);
-		}
-	}
-
 	bool FavoritesModel::dropMimeData (const QMimeData *data, Qt::DropAction, int, int, const QModelIndex&)
 	{
 		const auto& urls = data->urls ();
@@ -294,8 +282,8 @@ namespace Poshuku
 					texts << QFileInfo (url.path ()).fileName ();
 			}
 
-			for (const auto& pair : zip (texts, urls))
-				tryAddUrl (boost::get<0> (pair), boost::get<1> (pair));
+			for (const auto& pair : Util::Views::Zip (texts, urls))
+				tryAddUrl (pair.first, pair.second);
 		}
 
 		return true;
