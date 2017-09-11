@@ -371,7 +371,7 @@ namespace Poshuku
 
 	bool FavoritesModel::IsUrlExists (const QString& url) const
 	{
-		return std::find_if (Items_.begin (), Items_.end (), ItemFinder (url)) != Items_.end ();
+		return std::any_of (Items_.begin (), Items_.end (), ItemFinder (url));
 	}
 
 	QStringList FavoritesModel::GetVisibleTags (int index) const
