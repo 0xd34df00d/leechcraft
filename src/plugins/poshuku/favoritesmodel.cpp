@@ -142,8 +142,6 @@ namespace Poshuku
 		return index.isValid () ? 0 : Items_.size ();
 	}
 
-	/** The passed value is a string list with user-visible tags.
-		*/
 	bool FavoritesModel::setData (const QModelIndex& index,
 			const QVariant& value, int)
 	{
