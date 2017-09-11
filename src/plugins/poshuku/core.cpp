@@ -163,6 +163,7 @@ namespace Poshuku
 		Initialized_ = true;
 
 		HistoryModel_->HandleStorageReady ();
+		FavoritesModel_->HandleStorageReady ();
 	}
 
 	void Core::Release ()

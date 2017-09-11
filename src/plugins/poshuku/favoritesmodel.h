@@ -68,6 +68,8 @@ namespace Poshuku
 
 		FavoritesModel (QObject* = nullptr);
 
+		void HandleStorageReady ();
+
 		int columnCount (const QModelIndex& = QModelIndex ()) const;
 		QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;
 		Qt::ItemFlags flags (const QModelIndex&) const;

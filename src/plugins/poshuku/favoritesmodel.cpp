@@ -58,7 +58,11 @@ namespace Poshuku
 		ItemHeaders_ << tr ("Title")
 			<< tr ("URL")
 			<< tr ("Tags");
-		QTimer::singleShot (0, this, SLOT (loadData ()));
+	}
+
+	void FavoritesModel::HandleStorageReady ()
+	{
+		loadData ();
 	}
 
 	int FavoritesModel::columnCount (const QModelIndex&) const
