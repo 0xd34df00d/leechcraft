@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef TAGSMANAGER_H
-#define TAGSMANAGER_H
+#pragma once
+
 #include <QAbstractItemModel>
 #include <QMap>
 #include <QUuid>
@@ -77,9 +77,6 @@ namespace LeechCraft
 	signals:
 		void tagsUpdated (const QStringList&);
 	};
-};
+}
 
 Q_DECLARE_METATYPE (LeechCraft::TagsManager::TagsDictionary_t)
-
-#endif
-
