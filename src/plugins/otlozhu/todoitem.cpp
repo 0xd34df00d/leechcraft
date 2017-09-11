@@ -76,7 +76,8 @@ namespace Otlozhu
 	QVariantMap TodoItem::ToMap () const
 	{
 		const auto& tags = Core::Instance ().GetProxy ()->GetTagsManager ()->GetTags (TagIDs_);
-		return Util::MakeMap<QString, QVariant> ({
+		return
+		{
 				{ "Title", Title_ },
 				{ "Comment", Comment_ },
 				{ "Tags", tags },
@@ -84,7 +85,7 @@ namespace Otlozhu
 				{ "Created", Created_ },
 				{ "Due", Due_ },
 				{ "Percentage", Percentage_ }
-			});
+		};
 	}
 
 	QVariantMap TodoItem::DiffWith (const TodoItem_ptr item) const
