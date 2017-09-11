@@ -62,11 +62,12 @@ namespace Scroblibre
 		Model_->setHeaderData (Column::CService, Qt::Horizontal,
 				QVariantList
 				{
-					Util::MakeMap<QString, QVariant> ({
-							{ "Icon", {} },
-							{ "Name", "libre.fm" },
-							{ "ID", "libre.fm" }
-						})
+					QVariantMap
+					{
+						{ "Icon", {} },
+						{ "Name", "libre.fm" },
+						{ "ID", "libre.fm" }
+					}
 				},
 				DataSources::DataSourceRole::FieldValues);
 
