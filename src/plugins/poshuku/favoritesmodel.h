@@ -66,7 +66,7 @@ namespace Poshuku
 			, ColumnTags
 		};
 
-		FavoritesModel (QObject* = 0);
+		FavoritesModel (QObject* = nullptr);
 
 		int columnCount (const QModelIndex& = QModelIndex ()) const;
 		QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;

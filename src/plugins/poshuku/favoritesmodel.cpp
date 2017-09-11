@@ -74,31 +74,31 @@ namespace Poshuku
 
 		switch (role)
 		{
-			case Qt::DisplayRole:
-				switch (index.column ())
-				{
-					case ColumnTitle:
-						return Items_ [index.row ()].Title_;
-					case ColumnURL:
-						return Items_ [index.row ()].URL_;
-					case ColumnTags:
-						return Core::Instance ().GetProxy ()->
-							GetTagsManager ()->Join (GetVisibleTags (index.row ()));
-					default:
-						return QVariant ();
-				}
-			case Qt::DecorationRole:
-				if (index.column () == ColumnTitle)
-					return Core::Instance ()
-						.GetIcon (Items_ [index.row ()].URL_);
-				else
-					return QVariant ();
-			case Qt::ToolTipRole:
-				return CheckResults_ [Items_ [index.row ()].URL_];
-			case RoleTags:
-				return Items_ [index.row ()].Tags_;
+		case Qt::DisplayRole:
+			switch (index.column ())
+			{
+			case ColumnTitle:
+				return Items_ [index.row ()].Title_;
+			case ColumnURL:
+				return Items_ [index.row ()].URL_;
+			case ColumnTags:
+				return Core::Instance ().GetProxy ()->
+					GetTagsManager ()->Join (GetVisibleTags (index.row ()));
 			default:
+				return {};
+			}
+		case Qt::DecorationRole:
+			if (index.column () == ColumnTitle)
+				return Core::Instance ()
+					.GetIcon (Items_ [index.row ()].URL_);
+			else
 				return QVariant ();
+		case Qt::ToolTipRole:
+			return CheckResults_ [Items_ [index.row ()].URL_];
+		case RoleTags:
+			return Items_ [index.row ()].Tags_;
+		default:
+			return {};
 		}
 	}
 
@@ -148,31 +148,27 @@ namespace Poshuku
 	{
 		switch (index.column ())
 		{
-			case ColumnTags:
-				{
-					QStringList userTags = value.toStringList ();
-					Items_ [index.row ()].Tags_.clear ();
-					Q_FOREACH (QString ut, userTags)
-						Items_ [index.row ()].Tags_.append (Core::Instance ().GetProxy ()->
-								GetTagsManager ()->GetID (ut));
-					Core::Instance ().GetStorageBackend ()->
-						UpdateFavorites (Items_ [index.row ()]);
-					return true;
-				}
-			case ColumnTitle:
-				{
-					QString title = value.toString ();
-					Items_ [index.row ()].Title_ = title;
-					Core::Instance ().GetStorageBackend ()->
-						UpdateFavorites (Items_ [index.row ()]);
-					return true;
-				}
-			case ColumnURL:
-				{
-					return true;
-				}
-			default:
-				return false;
+		case ColumnTags:
+		{
+			const auto& userTags = value.toStringList ();
+			const auto tm = Core::Instance ().GetProxy ()->GetTagsManager ();
+
+			Items_ [index.row ()].Tags_.clear ();
+			for (const auto& ut : userTags)
+				Items_ [index.row ()].Tags_.append (tm->GetID (ut));
+
+			Core::Instance ().GetStorageBackend ()->UpdateFavorites (Items_ [index.row ()]);
+
+			return true;
+		}
+		case ColumnTitle:
+			Items_ [index.row ()].Title_ = value.toString ();
+			Core::Instance ().GetStorageBackend ()->UpdateFavorites (Items_ [index.row ()]);
+			return true;
+		case ColumnURL:
+			return true;
+		default:
+			return false;
 		}
 	}
 
