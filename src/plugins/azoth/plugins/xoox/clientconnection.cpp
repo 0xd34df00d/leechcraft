@@ -1578,7 +1578,7 @@ namespace Xoox
 		{
 			64,
 			64,
-			QUrl ("http://leechcraft.org/leechcraft.png"),
+			QUrl ("https://leechcraft.org/leechcraft.png"),
 			QString (),
 			"image/png",
 			sysInfo.Name_,
