@@ -152,13 +152,8 @@ namespace Poshuku
 		{
 			const auto& userTags = value.toStringList ();
 			const auto tm = Core::Instance ().GetProxy ()->GetTagsManager ();
-
-			Items_ [index.row ()].Tags_.clear ();
-			for (const auto& ut : userTags)
-				Items_ [index.row ()].Tags_.append (tm->GetID (ut));
-
+			Items_ [index.row ()].Tags_ = tm->GetIDs (userTags);
 			Core::Instance ().GetStorageBackend ()->UpdateFavorites (Items_ [index.row ()]);
-
 			return true;
 		}
 		case ColumnTitle:
@@ -175,10 +170,7 @@ namespace Poshuku
 	QModelIndex FavoritesModel::addItem (const QString& title,
 			const QString& url, const QStringList& visibleTags)
 	{
-		QStringList tags;
-		auto tm = Core::Instance ().GetProxy ()->GetTagsManager ();
-		for (const QString& vt : visibleTags)
-			tags << tm->GetID (vt);
+		const auto& tags = Core::Instance ().GetProxy ()->GetTagsManager ()->GetIDs (visibleTags);
 
 		FavoritesItem item =
 		{
@@ -211,11 +203,7 @@ namespace Poshuku
 			QMap<QString, QVariant> map;
 			map ["Title"] = item.Title_;
 			map ["URL"] = item.URL_;
-			QStringList tags;
-			Q_FOREACH (const QString& id, item.Tags_)
-				tags << Core::Instance ().GetProxy ()->
-						GetTagsManager ()->GetTag (id);
-			map ["Tags"] = tags;
+			map ["Tags"] = Core::Instance ().GetProxy ()->GetTagsManager ()->GetTags (item.Tags_);
 			result << map;
 		}
 
@@ -376,11 +364,7 @@ namespace Poshuku
 
 	QStringList FavoritesModel::GetVisibleTags (int index) const
 	{
-		QStringList user;
-		Q_FOREACH (const QString& id, Items_ [index].Tags_)
-			user.append (Core::Instance ().GetProxy ()->GetTagsManager ()->
-					GetTag (id));
-		return user;
+		return Core::Instance ().GetProxy ()->GetTagsManager ()->GetTags (Items_ [index].Tags_);
 	}
 
 	FavoritesModel::FavoritesItem FavoritesModel::GetItemFromUrl (const QString& url)
