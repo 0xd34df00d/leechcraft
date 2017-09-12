@@ -58,8 +58,8 @@ namespace VelvetBird
 				};
 				add ("name", "LeechCraft VelvetBird");
 				add ("version", "dummy");
-				add ("website", "http://leechcraft.org");
-				add ("dev_website", "http://leechcraft.org");
+				add ("website", "https://leechcraft.org");
+				add ("dev_website", "https://leechcraft.org");
 				add ("client_type", "pc");
 			}
 			return uiInfo;
