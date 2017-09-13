@@ -29,10 +29,10 @@
 
 #include "protomanager.h"
 #include <util/util.h>
-#include <util/sys/paths.h>
 #include <libpurple/purple.h>
 #include <libpurple/core.h>
 #include <libpurple/plugin.h>
+#include <util/sys/paths.h>
 #include "protocol.h"
 #include "account.h"
 #include "buddy.h"
