@@ -270,12 +270,13 @@ namespace TouchStreams
 
 		decltype (CaptchaReplyMaker_) maker;
 		std::swap (maker, CaptchaReplyMaker_);
-		Queue_->Schedule ([cid, value, maker, this] () -> void
+		Queue_->Schedule ([cid, value, maker, this]
 				{
-					const auto& map = Util::MakeMap<QString, QString> ({
-							{ "captcha_sid", cid },
-							{ "captcha_key", value }
-						});
+					const QMap<QString, QString> map
+					{
+						{ "captcha_sid", cid },
+						{ "captcha_key", value }
+					};
 					Reply2Func_ [maker (map)] = maker;
 				},
 				nullptr,
