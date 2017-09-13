@@ -38,13 +38,14 @@ namespace Poshuku
 {
 	QVariantMap ToVariantMap (const ElementData& ed)
 	{
-		return Util::MakeMap<QString, QVariant> ({
+		return
+		{
 				{ "PageURL", ed.PageURL_ },
 				{ "FormID", ed.FormID_ },
 				{ "Name", ed.Name_ },
 				{ "Type", ed.Type_ },
 				{ "Value", ed.Value_ }
-			});
+		};
 	}
 
 	QDataStream& operator<< (QDataStream& out, const ElementData& ed)
