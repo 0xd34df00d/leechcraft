@@ -55,23 +55,25 @@ namespace LMP
 {
 	QList<QFileInfo> RecIterateInfo (const QString& dirPath, bool followSymlinks, std::atomic<bool> *stopFlag)
 	{
-		QStringList nameFilters;
-		nameFilters << "*.aiff"
-				<< "*.ape"
-				<< "*.asf"
-				<< "*.flac"
-				<< "*.m4a"
-				<< "*.mp3"
-				<< "*.mp4"
-				<< "*.mpc"
-				<< "*.mpeg"
-				<< "*.mpg"
-				<< "*.ogg"
-				<< "*.tta"
-				<< "*.wav"
-				<< "*.wma"
-				<< "*.wv"
-				<< "*.wvp";
+		static const QStringList nameFilters
+		{
+			"*.aiff",
+			"*.ape",
+			"*.asf",
+			"*.flac",
+			"*.m4a",
+			"*.mp3",
+			"*.mp4",
+			"*.mpc",
+			"*.mpeg",
+			"*.mpg",
+			"*.ogg",
+			"*.tta",
+			"*.wav",
+			"*.wma",
+			"*.wv",
+			"*.wvp"
+		};
 
 		const QFileInfo dirInfo (dirPath);
 		if (dirInfo.isFile ())
