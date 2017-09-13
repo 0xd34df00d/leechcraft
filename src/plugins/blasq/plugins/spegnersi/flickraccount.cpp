@@ -34,6 +34,7 @@
 #include <QUuid>
 #include <QtDebug>
 #include <QStandardItemModel>
+#include <QDomDocument>
 #include <interfaces/core/ientitymanager.h>
 #include <util/util.h>
 #include <util/xpc/util.h>
