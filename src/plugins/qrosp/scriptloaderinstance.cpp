@@ -131,13 +131,14 @@ namespace Qrosp
 
 		if (interp.isEmpty ())
 		{
-			static const auto knownInterpreters = Util::MakeMap<QString, QString> ({
-						{ "js", "qtscript" },
-						{ "qs", "qtscript" },
-						{ "es", "qtscript" },
-						{ "py", "python" },
-						{ "rb", "ruby" }
-					});
+			static const QMap<QString, QString> knownInterpreters
+			{
+				{ "js", "qtscript" },
+				{ "qs", "qtscript" },
+				{ "es", "qtscript" },
+				{ "py", "python" },
+				{ "rb", "ruby" }
+			};
 
 			interp = knownInterpreters [info.suffix ()];
 			if (!Qross::Manager::self ().interpreters ().contains (interp))
