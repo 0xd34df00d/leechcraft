@@ -82,11 +82,12 @@ namespace Textogroose
 
 	void Plugin::RequestLyrics (const Media::LyricsQuery& query, Media::QueryOptions)
 	{
-		const auto& map = Util::MakeMap<QString, QVariant> ({
-				{ "artist", query.Artist_ },
-				{ "album", query.Album_ },
-				{ "title", query.Title_ }
-			});
+		const QVariantMap map
+		{
+			{ "artist", query.Artist_ },
+			{ "album", query.Album_ },
+			{ "title", query.Title_ }
+		};
 
 		for (const auto ldr : Loaders_)
 			for (const auto& scriptName : ldr->EnumerateScripts ())
