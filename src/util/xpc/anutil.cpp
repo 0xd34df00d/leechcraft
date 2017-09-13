@@ -30,6 +30,7 @@
 #include "anutil.h"
 #include <QString>
 #include <QObject>
+#include <QMap>
 #include <interfaces/an/constants.h>
 #include <util/util.h>
 
