@@ -31,6 +31,7 @@
 #include <QSignalMapper>
 #include <QTextEdit>
 #include <util/util.h>
+#include <QtDebug>
 #include "abbrevsmanager.h"
 
 namespace LeechCraft
