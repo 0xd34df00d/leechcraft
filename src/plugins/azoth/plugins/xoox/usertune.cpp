@@ -31,7 +31,6 @@
 #include <QDomElement>
 #include <QXmppElement.h>
 #include <interfaces/media/audiostructs.h>
-#include <util/util.h>
 
 namespace LeechCraft
 {

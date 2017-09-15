@@ -31,7 +31,6 @@
 #include <QtTest>
 #include <prelude.h>
 #include <qtutil.h>
-#include <util/util.h>
 
 QTEST_MAIN (LeechCraft::Util::PreludeTest)
 

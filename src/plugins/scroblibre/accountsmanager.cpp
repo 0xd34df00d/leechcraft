@@ -33,7 +33,6 @@
 #include <QCoreApplication>
 #include <QUrl>
 #include <xmlsettingsdialog/datasourceroles.h>
-#include <util/util.h>
 #include "util.h"
 
 namespace LeechCraft

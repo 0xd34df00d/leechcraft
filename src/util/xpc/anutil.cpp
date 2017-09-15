@@ -32,7 +32,6 @@
 #include <QObject>
 #include <QMap>
 #include <interfaces/an/constants.h>
-#include <util/util.h>
 
 namespace LeechCraft
 {

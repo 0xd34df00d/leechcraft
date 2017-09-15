@@ -34,7 +34,6 @@
 #include <QWidget>
 #include <QtDebug>
 #include <QUrl>
-#include <util/util.h>
 #include "ui_boolmatcherconfigwidget.h"
 #include "ui_intmatcherconfigwidget.h"
 #include "ui_stringlikematcherconfigwidget.h"

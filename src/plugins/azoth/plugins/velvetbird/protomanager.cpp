@@ -28,7 +28,6 @@
  **********************************************************************/
 
 #include "protomanager.h"
-#include <util/util.h>
 #include <libpurple/purple.h>
 #include <libpurple/core.h>
 #include <libpurple/plugin.h>

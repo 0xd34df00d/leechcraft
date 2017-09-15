@@ -30,7 +30,6 @@
 #include "pageformsdata.h"
 #include <QDataStream>
 #include <QtDebug>
-#include <util/util.h>
 
 namespace LeechCraft
 {

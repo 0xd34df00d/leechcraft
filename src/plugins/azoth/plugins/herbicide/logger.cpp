@@ -34,7 +34,6 @@
 #include <util/db/util.h>
 #include <util/sll/unreachable.h>
 #include <util/sys/paths.h>
-#include <util/util.h>
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/iaccount.h>
 

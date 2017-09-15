@@ -31,7 +31,6 @@
 #include <QStandardItemModel>
 #include <QCoreApplication>
 #include <xmlsettingsdialog/datasourceroles.h>
-#include <util/util.h>
 #include "interfaces/azoth/azothcommon.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"

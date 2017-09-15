@@ -31,7 +31,6 @@
 #include <QStringList>
 #include <QtDebug>
 #include <QTimer>
-#include <util/util.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include <util/sll/delayedexecutor.h>
 #include "xmlsettingsmanager.h"

@@ -31,7 +31,6 @@
 #include <QDir>
 #include <QtDebug>
 #include <qross/core/manager.h>
-#include <util/util.h>
 #include "loadedscript.h"
 
 namespace LeechCraft

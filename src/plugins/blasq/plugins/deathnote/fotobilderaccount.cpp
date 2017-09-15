@@ -41,7 +41,6 @@
 #include <QFileInfo>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/core/ientitymanager.h>
-#include <util/util.h>
 #include <util/xpc/util.h>
 #include <util/sll/unreachable.h>
 #include "albumsettingsdialog.h"

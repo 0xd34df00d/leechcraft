@@ -30,7 +30,6 @@
 #include "introspectable.h"
 #include <string>
 #include <QtDebug>
-#include <util/util.h>
 
 namespace LeechCraft
 {

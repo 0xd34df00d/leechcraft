@@ -33,7 +33,6 @@
 #include <interfaces/iscriptloader.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
-#include <util/util.h>
 #include "apiobject.h"
 
 namespace LeechCraft

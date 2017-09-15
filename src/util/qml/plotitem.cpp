@@ -41,7 +41,6 @@
 #include <qwt_scale_draw.h>
 #include <qwt_text_label.h>
 #include <qwt_plot_canvas.h>
-#include <util.h>
 
 Q_DECLARE_METATYPE (QList<QPointF>)
 

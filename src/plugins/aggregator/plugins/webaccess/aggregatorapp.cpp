@@ -44,7 +44,6 @@
 #include <Wt/WPopupMenu>
 #include <Wt/WCssTheme>
 #include <Wt/WScrollArea>
-#include <util/util.h>
 #include <interfaces/aggregator/iproxyobject.h>
 #include <interfaces/aggregator/channel.h>
 #include <interfaces/aggregator/iitemsmodel.h>

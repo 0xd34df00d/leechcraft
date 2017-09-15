@@ -31,7 +31,6 @@
 #include <QUuid>
 #include <QDataStream>
 #include <QtDebug>
-#include <util/util.h>
 #include <interfaces/core/itagsmanager.h>
 #include "core.h"
 
