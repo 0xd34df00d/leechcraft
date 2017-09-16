@@ -39,11 +39,11 @@ namespace Poshuku
 	{
 		return
 		{
-				{ "PageURL", ed.PageURL_ },
-				{ "FormID", ed.FormID_ },
-				{ "Name", ed.Name_ },
-				{ "Type", ed.Type_ },
-				{ "Value", ed.Value_ }
+			{ "PageURL", ed.PageURL_ },
+			{ "FormID", ed.FormID_ },
+			{ "Name", ed.Name_ },
+			{ "Type", ed.Type_ },
+			{ "Value", ed.Value_ }
 		};
 	}
 
