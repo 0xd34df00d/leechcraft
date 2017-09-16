@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "protomanager.h"
+#include <QDir>
 #include <libpurple/purple.h>
 #include <libpurple/core.h>
 #include <libpurple/plugin.h>
