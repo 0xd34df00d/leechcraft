@@ -78,6 +78,7 @@ set (FORMS
 	historywidget.ui
 	urlframe.ui
 	featurepermnotification.ui
+	dummywebview.ui
 	)
 set (RESOURCES poshukuresources.qrc)
 

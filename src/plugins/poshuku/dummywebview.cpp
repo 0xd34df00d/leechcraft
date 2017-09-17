@@ -38,6 +38,7 @@ namespace Poshuku
 	DummyWebView::DummyWebView ()
 	: DummyAction_ { new QAction { this } }
 	{
+		Ui_.setupUi (this);
 	}
 
 	void DummyWebView::SurroundingsInitialized ()

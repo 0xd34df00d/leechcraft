@@ -31,6 +31,7 @@
 
 #include <QWidget>
 #include "interfaces/poshuku/iwebview.h"
+#include "ui_dummywebview.h"
 
 namespace LeechCraft
 {
@@ -40,6 +41,8 @@ namespace Poshuku
 					   , public IWebView
 	{
 		Q_OBJECT
+
+		Ui::DummyWebView Ui_;
 
 		QAction * const DummyAction_;
 	public:
