@@ -49,28 +49,29 @@ namespace WebEngineView
 	CustomWebView::CustomWebView (IProxyObject *poshukuProxy)
 	: PoshukuProxy_ { poshukuProxy }
 	{
-		setPage (new CustomWebPage { poshukuProxy, this });
+		const auto page = new CustomWebPage { poshukuProxy, this };
+		setPage (page);
 
-		connect (page (),
+		connect (page,
 				SIGNAL (loadFinished (bool)),
 				this,
 				SIGNAL (earliestViewLayout ()));
-		connect (page (),
+		connect (page,
 				SIGNAL (iconChanged (const QIcon&)),
 				this,
 				SIGNAL (iconChanged ()));
-		connect (page (),
+		connect (page,
 				SIGNAL (windowCloseRequested ()),
 				this,
 				SIGNAL (closeRequested ()));
-		connect (page (),
+		connect (page,
 				&QWebEnginePage::linkHovered,
 				this,
 				[this] (const QString& url) { emit linkHovered (url, {}, {}); });
-		connect (page (),
-				SIGNAL (webViewCreated (CustomWebView*, bool)),
+		connect (page,
+				&CustomWebPage::webViewCreated,
 				this,
-				SIGNAL (webViewCreated (CustomWebView*, bool)));
+				&CustomWebView::webViewCreated);
 	}
 
 	void CustomWebView::SurroundingsInitialized ()
