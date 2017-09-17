@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_CSTP_CORE_H
-#define PLUGINS_CSTP_CORE_H
+#pragma once
+
 #include <vector>
 #include <memory>
 #include <QAbstractItemModel>
@@ -169,5 +169,3 @@ namespace CSTP
 	};
 }
 }
-
-#endif
