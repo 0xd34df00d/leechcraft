@@ -81,7 +81,14 @@ namespace Poshuku
 		void closeRequested () override;
 		void contextMenuRequested (const QPoint&, const ContextMenuInfo&) override;
 
+		void loadStarted ();
+		void loadProgress (int);
+		void loadFinished (bool);
+		void iconChanged ();
+		void titleChanged (const QString&);
 		void urlChanged (const QUrl&);
+		void urlChanged (const QString&);
+		void statusBarMessage (const QString&);
 	};
 }
 }
