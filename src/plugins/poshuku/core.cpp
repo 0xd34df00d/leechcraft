@@ -68,6 +68,7 @@
 #include "xbelgenerator.h"
 #include "favoriteschecker.h"
 #include "importentity.h"
+#include "dummywebview.h"
 
 namespace LeechCraft
 {
@@ -584,6 +585,13 @@ namespace Poshuku
 
 	IWebView_ptr Core::CreateWebView ()
 	{
+		if (WebViewProviders_.empty ())
+		{
+			qCritical () << Q_FUNC_INFO
+					<< "no web view providers are available";
+			return std::make_shared<DummyWebView> ();
+		}
+
 		return WebViewProviders_.value (0)->CreateWebView ();
 	}
 
