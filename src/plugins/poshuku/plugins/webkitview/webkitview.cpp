@@ -189,9 +189,9 @@ namespace WebKitView
 	void Plugin::HandleView (CustomWebView *view)
 	{
 		connect (view,
-				SIGNAL (webViewCreated (CustomWebView*, bool)),
+				&CustomWebView::webViewCreated,
 				this,
-				SLOT (handleWebViewCreated (CustomWebView*, bool)));
+				&Plugin::handleWebViewCreated);
 
 		if (WebPluginFactory_)
 			view->page ()->setPluginFactory (WebPluginFactory_);

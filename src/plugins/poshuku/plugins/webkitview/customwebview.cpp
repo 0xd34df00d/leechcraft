@@ -98,9 +98,9 @@ namespace WebKitView
 		setPage (page);
 		page->HandleViewReady ();
 		connect (page,
-				SIGNAL (webViewCreated (CustomWebView*, bool)),
+				&CustomWebPage::webViewCreated,
 				this,
-				SIGNAL (webViewCreated (CustomWebView*, bool)));
+				&CustomWebView::webViewCreated);
 
 		new WebViewSmoothScroller { this };
 		new WebViewRenderSettingsHandler { this };
