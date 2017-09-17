@@ -62,6 +62,7 @@ set (SRCS
 	zoomer.cpp
 	browserwidgetsettingshandler.cpp
 	linkopenmodifier.cpp
+	dummywebview.cpp
 	)
 set (FORMS
 	browserwidget.ui
