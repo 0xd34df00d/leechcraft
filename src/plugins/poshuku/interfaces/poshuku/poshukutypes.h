@@ -34,6 +34,7 @@
 #include <QDateTime>
 #include <QPixmap>
 #include <QMetaType>
+#include <QMap>
 
 namespace LeechCraft
 {
