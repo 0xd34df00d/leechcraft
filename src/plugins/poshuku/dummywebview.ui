@@ -22,7 +22,7 @@
      <property name="sizeHint" stdset="0">
       <size>
        <width>20</width>
-       <height>415</height>
+       <height>391</height>
       </size>
      </property>
     </spacer>
@@ -31,6 +31,7 @@
     <widget class="QLabel" name="label">
      <property name="font">
       <font>
+       <pointsize>20</pointsize>
        <weight>50</weight>
        <bold>false</bold>
       </font>
@@ -54,7 +55,7 @@
      <property name="sizeHint" stdset="0">
       <size>
        <width>20</width>
-       <height>414</height>
+       <height>391</height>
       </size>
      </property>
     </spacer>
