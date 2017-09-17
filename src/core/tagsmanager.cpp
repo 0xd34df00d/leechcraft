@@ -111,13 +111,13 @@ QStringList TagsManager::GetAllTags () const
 QStringList TagsManager::Split (const QString& string) const
 {
 	return Util::Map (string.split (";", QString::SkipEmptyParts),
-			[] (auto&& s) { return s.trimmed (); });
+			[] (const QString& s) { return s.trimmed (); }); // TODO gcc 6
 }
 
 QStringList TagsManager::SplitToIDs (const QString& string)
 {
 	return Util::Map (Split (string),
-			[this] (auto&& tag) { return GetID (tag.simplified ()); });
+			[this] (const QString& tag) { return GetID (tag.simplified ()); }); // TODO gcc 6
 }
 
 QString TagsManager::Join (const QStringList& tags) const
