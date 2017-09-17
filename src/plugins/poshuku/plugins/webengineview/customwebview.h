@@ -114,7 +114,7 @@ namespace WebEngineView
 		void iconChanged ();
 		void statusBarMessage (const QString&);
 
-		void webViewCreated (CustomWebView*, bool);
+		void webViewCreated (const std::shared_ptr<CustomWebView>&, bool);
 	};
 }
 }

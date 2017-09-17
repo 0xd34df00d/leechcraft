@@ -92,7 +92,7 @@ namespace WebKitView
 
 		QString GetDiagInfoString () const override;
 
-		IWebView* CreateWebView () override;
+		IWebView_ptr CreateWebView () override;
 		QIcon GetIconForUrl (const QUrl&) const override;
 		QIcon GetDefaultUrlIcon () const override;
 
@@ -100,7 +100,7 @@ namespace WebKitView
 	private:
 		void HandleView (CustomWebView*);
 	private slots:
-		void handleWebViewCreated (CustomWebView*, bool);
+		void handleWebViewCreated (const std::shared_ptr<CustomWebView>&, bool);
 	public slots:
 		void hookNAMCreateRequest (LeechCraft::IHookProxy_ptr,
 				QNetworkAccessManager*,
@@ -109,7 +109,7 @@ namespace WebKitView
 
 		void initPlugin (QObject*);
 	signals:
-		void webViewCreated (IWebView*, bool) override;
+		void webViewCreated (const std::shared_ptr<IWebView>&, bool) override;
 	};
 }
 }

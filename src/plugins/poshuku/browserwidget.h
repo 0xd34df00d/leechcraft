@@ -120,12 +120,12 @@ namespace Poshuku
 		bool Own_ = true;
 		QMap<QString, QList<QAction*>> WindowMenus_;
 
-		IWebView * const WebView_;
+		const IWebView_ptr WebView_;
 		QLabel *LinkTextItem_;
 
 		static QObject* S_MultiTabsParent_;
 	public:
-		BrowserWidget (IWebView*, Util::ShortcutManager*, QWidget* = nullptr);
+		BrowserWidget (const IWebView_ptr&, Util::ShortcutManager*, QWidget* = nullptr);
 		virtual ~BrowserWidget ();
 		static void SetParentMultiTabs (QObject*);
 

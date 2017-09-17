@@ -62,7 +62,7 @@ namespace WebEngineView
 
 			if (suggestion.NewTab_)
 			{
-				auto view = new CustomWebView { PoshukuProxy_ };
+				auto view = std::make_shared<CustomWebView> (PoshukuProxy_);
 				emit webViewCreated (view, suggestion.Invert_);
 
 				view->Load (url, {});

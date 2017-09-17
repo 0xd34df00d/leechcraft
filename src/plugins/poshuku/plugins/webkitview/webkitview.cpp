@@ -155,11 +155,11 @@ namespace WebKitView
 				.arg (qWebKitVersion ());
 	}
 
-	IWebView* Plugin::CreateWebView ()
+	IWebView_ptr Plugin::CreateWebView ()
 	{
-		const auto view = new CustomWebView { Proxy_, PoshukuProxy_ };
+		const auto view = std::make_shared<CustomWebView> (Proxy_, PoshukuProxy_);
 
-		HandleView (view);
+		HandleView (view.get ());
 
 		return view;
 	}
@@ -200,9 +200,9 @@ namespace WebKitView
 					<< "web plugin factory isn't initialized yet";
 	}
 
-	void Plugin::handleWebViewCreated (CustomWebView *view, bool invert)
+	void Plugin::handleWebViewCreated (const std::shared_ptr<CustomWebView>& view, bool invert)
 	{
-		HandleView (view);
+		HandleView (view.get ());
 		emit webViewCreated (view, invert);
 	}
 

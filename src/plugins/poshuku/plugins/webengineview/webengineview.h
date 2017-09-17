@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <memory>
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
@@ -73,7 +74,7 @@ namespace WebEngineView
 		QIcon GetIcon () const override;
 
 		QSet<QByteArray> GetPluginClasses () const override;
-		IWebView* CreateWebView () override;
+		std::shared_ptr<IWebView> CreateWebView () override;
 		QIcon GetIconForUrl (const QUrl&) const override;
 		QIcon GetDefaultUrlIcon () const override;
 
@@ -83,7 +84,7 @@ namespace WebEngineView
 	public slots:
 		void initPlugin (QObject*);
 	signals:
-		void webViewCreated (IWebView*, bool) override;
+		void webViewCreated (const std::shared_ptr<IWebView>&, bool) override;
 	};
 }
 }

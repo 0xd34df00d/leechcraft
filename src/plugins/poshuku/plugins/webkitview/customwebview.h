@@ -165,7 +165,7 @@ namespace WebKitView
 		void featurePermissionRequested (const IWebView::IFeatureSecurityOrigin_ptr&,
 				IWebView::Feature) override;
 
-		void webViewCreated (CustomWebView*, bool);
+		void webViewCreated (const std::shared_ptr<CustomWebView>&, bool);
 	};
 }
 }

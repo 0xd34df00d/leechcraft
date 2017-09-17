@@ -100,7 +100,7 @@ namespace Poshuku
 
 	QObject *BrowserWidget::S_MultiTabsParent_ = 0;
 
-	BrowserWidget::BrowserWidget (IWebView *view,
+	BrowserWidget::BrowserWidget (const IWebView_ptr& view,
 			Util::ShortcutManager *sm, QWidget *parent)
 	: QWidget (parent)
 	, ReloadTimer_ (new QTimer (this))
@@ -182,7 +182,7 @@ namespace Poshuku
 		Add2Favorites_->setProperty ("ActionIcon", "bookmark-new");
 		Add2Favorites_->setEnabled (false);
 
-		new UrlEditButtonsManager (WebView_,
+		new UrlEditButtonsManager (WebView_.get (),
 				Ui_.URLFrame_->GetEditAsProgressLine (),
 				Add2Favorites_);
 
@@ -507,7 +507,7 @@ namespace Poshuku
 
 	IWebView* BrowserWidget::GetWebView () const
 	{
-		return WebView_;
+		return WebView_.get ();
 	}
 
 	void BrowserWidget::InsertFindAction (QMenu *menu, const QString& text)
@@ -1302,7 +1302,7 @@ namespace Poshuku
 
 		IHookProxy_ptr proxy (new Util::DefaultHookProxy ());
 
-		emit hookWebViewContextMenu (proxy, WebView_, info, menu, WVSStart);
+		emit hookWebViewContextMenu (proxy, WebView_.get (), info, menu, WVSStart);
 
 		auto addAction = [menu] (const QString& text, auto handler)
 		{
@@ -1378,7 +1378,7 @@ namespace Poshuku
 						Core::Instance ().MakeWebView (false)->Load (url);
 					});
 
-		emit hookWebViewContextMenu (proxy, WebView_, info, menu, WVSAfterLink);
+		emit hookWebViewContextMenu (proxy, WebView_.get (), info, menu, WVSAfterLink);
 
 		if (!info.ImageUrl_.isEmpty ())
 		{
@@ -1397,7 +1397,7 @@ namespace Poshuku
 			addWebAction (IWebView::PageAction::CopyImageUrlToClipboard);
 		}
 
-		emit hookWebViewContextMenu (proxy, WebView_, info, menu, WVSAfterImage);
+		emit hookWebViewContextMenu (proxy, WebView_.get (), info, menu, WVSAfterImage);
 
 		bool hasSelected = !info.SelectedPageText_.isEmpty ();
 		if (hasSelected)
@@ -1414,7 +1414,7 @@ namespace Poshuku
 		if (hasSelected)
 			InsertFindAction (menu, info.SelectedPageText_);
 
-		emit hookWebViewContextMenu (proxy, WebView_, info, menu, WVSAfterSelectedText);
+		emit hookWebViewContextMenu (proxy, WebView_.get (), info, menu, WVSAfterSelectedText);
 
 		if (menu->isEmpty ())
 			menu = WebView_->CreateStandardContextMenu ();
@@ -1425,7 +1425,7 @@ namespace Poshuku
 
 		AddStandardActions (menu);
 
-		emit hookWebViewContextMenu (proxy, WebView_, info, menu, WVSAfterFinish);
+		emit hookWebViewContextMenu (proxy, WebView_.get (), info, menu, WVSAfterFinish);
 
 		menu->exec (point);
 

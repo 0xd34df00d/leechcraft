@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <memory>
 #include <QWebEnginePage>
 #include <interfaces/poshuku/ilinkopenmodifier.h>
 
@@ -53,7 +54,7 @@ namespace WebEngineView
 	protected:
 		bool acceptNavigationRequest (const QUrl&, NavigationType, bool) override;
 	signals:
-		void webViewCreated (CustomWebView*, bool);
+		void webViewCreated (const std::shared_ptr<CustomWebView>&, bool);
 	};
 }
 }

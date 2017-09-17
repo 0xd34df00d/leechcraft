@@ -215,6 +215,8 @@ namespace Poshuku
 		virtual void contextMenuRequested (const QPoint& globalPos,
 				const ContextMenuInfo& info) = 0;
 	};
+
+	using IWebView_ptr = std::shared_ptr<IWebView>;
 }
 }
 

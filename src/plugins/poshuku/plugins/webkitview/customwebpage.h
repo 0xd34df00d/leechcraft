@@ -111,7 +111,7 @@ namespace WebKitView
 		void storeFormData (const PageFormsData_t&);
 		void delayedFillForms (QWebFrame*);
 
-		void webViewCreated (CustomWebView*, bool);
+		void webViewCreated (const std::shared_ptr<CustomWebView>&, bool);
 
 		// Hook support signals
 		void hookAcceptNavigationRequest (LeechCraft::IHookProxy_ptr proxy,

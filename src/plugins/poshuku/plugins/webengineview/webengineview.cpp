@@ -129,10 +129,10 @@ namespace WebEngineView
 		return result;
 	}
 
-	IWebView* Plugin::CreateWebView ()
+	IWebView_ptr Plugin::CreateWebView ()
 	{
-		auto view = new CustomWebView { PoshukuProxy_ };
-		HandleView (view);
+		auto view = std::make_shared<CustomWebView> (PoshukuProxy_);
+		HandleView (view.get ());
 		return view;
 	}
 
@@ -158,9 +158,9 @@ namespace WebEngineView
 		connect (view,
 				&CustomWebView::webViewCreated,
 				this,
-				[this] (CustomWebView *view, bool invert)
+				[this] (const std::shared_ptr<CustomWebView>& view, bool invert)
 				{
-					HandleView (view);
+					HandleView (view.get ());
 					emit webViewCreated (view, invert);
 				});
 	}

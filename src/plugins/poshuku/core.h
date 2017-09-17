@@ -150,9 +150,9 @@ namespace Poshuku
 		bool IsUrlInFavourites (const QString&);
 		void RemoveFromFavorites (const QString&);
 
-		IWebView* CreateWebView ();
+		std::shared_ptr<IWebView> CreateWebView ();
 	private:
-		BrowserWidget* CreateBrowserWidget (IWebView*, const QUrl&,
+		BrowserWidget* CreateBrowserWidget (const std::shared_ptr<IWebView>&, const QUrl&,
 				bool, const QList<QPair<QByteArray, QVariant>>&);
 		void HandleHistory (IWebView*);
 		/** Sets up the connections between widget's signals
@@ -172,7 +172,7 @@ namespace Poshuku
 		void handleAddToFavorites (QString, QString);
 		void handleStatusBarChanged (const QString&);
 		void handleTooltipChanged (QWidget*);
-		void handleWebViewCreated (IWebView*, bool);
+		void handleWebViewCreated (const std::shared_ptr<IWebView>&, bool);
 		void favoriteTagsUpdated (const QStringList&);
 	signals:
 		void addNewTab (const QString&, QWidget*);

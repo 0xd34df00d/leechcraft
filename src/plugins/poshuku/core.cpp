@@ -243,9 +243,9 @@ namespace Poshuku
 		{
 			WebViewProviders_ << iwvp;
 			connect (plugin,
-					SIGNAL (webViewCreated (IWebView*, bool)),
+					SIGNAL (webViewCreated (std::shared_ptr<IWebView>, bool)),
 					this,
-					SLOT (handleWebViewCreated (IWebView*, bool)));
+					SLOT (handleWebViewCreated (std::shared_ptr<IWebView>, bool)));
 		}
 	}
 
@@ -319,7 +319,7 @@ namespace Poshuku
 		return result;
 	}
 
-	BrowserWidget* Core::CreateBrowserWidget (IWebView *view, const QUrl& url,
+	BrowserWidget* Core::CreateBrowserWidget (const IWebView_ptr& view, const QUrl& url,
 			bool raise, const QList<QPair<QByteArray, QVariant>>& props)
 	{
 		const auto widget = new BrowserWidget { view, ShortcutMgr_ };
@@ -582,7 +582,7 @@ namespace Poshuku
 		emit gotEntity (e);
 	}
 
-	IWebView* Core::CreateWebView ()
+	IWebView_ptr Core::CreateWebView ()
 	{
 		return WebViewProviders_.value (0)->CreateWebView ();
 	}
@@ -717,7 +717,7 @@ namespace Poshuku
 		emit changeTooltip (static_cast<QWidget*> (sender ()), tip);
 	}
 
-	void Core::handleWebViewCreated (IWebView *view, bool invert)
+	void Core::handleWebViewCreated (const IWebView_ptr& view, bool invert)
 	{
 		CreateBrowserWidget (view, {}, ShouldRaise (invert), {});
 	}

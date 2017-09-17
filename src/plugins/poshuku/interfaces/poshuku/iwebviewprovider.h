@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <memory>
 #include <QIcon>
 #include <QtPlugin>
 
@@ -37,19 +38,20 @@ namespace LeechCraft
 namespace Poshuku
 {
 	class IWebView;
+	using IWebView_ptr = std::shared_ptr<IWebView>;
 
 	class IWebViewProvider
 	{
 	protected:
 		virtual ~IWebViewProvider () = default;
 	public:
-		virtual IWebView* CreateWebView () = 0;
+		virtual IWebView_ptr CreateWebView () = 0;
 
 		virtual QIcon GetIconForUrl (const QUrl&) const = 0;
 
 		virtual QIcon GetDefaultUrlIcon () const = 0;
 	protected:
-		virtual void webViewCreated (IWebView *view, bool invert) = 0;
+		virtual void webViewCreated (const IWebView_ptr& view, bool invert) = 0;
 	};
 }
 }

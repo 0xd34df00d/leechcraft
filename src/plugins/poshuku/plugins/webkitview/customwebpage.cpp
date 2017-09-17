@@ -633,7 +633,7 @@ namespace WebKitView
 
 			if (suggestion.NewTab_)
 			{
-				auto view = new CustomWebView { Proxy_, PoshukuProxy_ };
+				auto view = std::make_shared<CustomWebView> (Proxy_, PoshukuProxy_);
 				emit webViewCreated (view, suggestion.Invert_);
 
 				view->Load (request);
@@ -694,7 +694,7 @@ namespace WebKitView
 		case QWebPage::WebBrowserWindow:
 		case QWebPage::WebModalDialog:
 		{
-			const auto view = new CustomWebView { Proxy_, PoshukuProxy_ };
+			const auto view = std::make_shared<CustomWebView> (Proxy_, PoshukuProxy_);
 			emit webViewCreated (view, false);
 			return view->page ();
 		}
