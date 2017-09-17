@@ -37,17 +37,10 @@
 #include <interfaces/ihavesettings.h>
 #include <interfaces/structures.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include "core.h"
 
 class QTabWidget;
 class QToolBar;
-
-namespace boost
-{
-	namespace logic
-	{
-		class tribool;
-	}
-}
 
 namespace LeechCraft
 {
@@ -94,7 +87,7 @@ namespace CSTP
 		void SetupToolbar ();
 	private slots:
 		void handleTasksTreeSelectionCurrentRowChanged (const QModelIndex&, const QModelIndex&);
-		void handleFileExists (boost::logic::tribool*);
+		void handleFileExists (Core::FileExistsBehaviour*);
 		void handleError (const QString&);
 	signals:
 		void jobFinished (int);

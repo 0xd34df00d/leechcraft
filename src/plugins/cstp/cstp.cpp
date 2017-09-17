@@ -226,7 +226,7 @@ namespace CSTP
 		stopAll->setProperty ("ActionIcon", "media-record");
 	}
 
-	void CSTP::handleFileExists (boost::logic::tribool *remove)
+	void CSTP::handleFileExists (Core::FileExistsBehaviour *remove)
 	{
 		auto rootWM = Core::Instance ().GetCoreProxy ()->GetRootWindowsManager ();
 		auto userReply = QMessageBox::warning (rootWM->GetPreferredWindow (),
@@ -234,11 +234,11 @@ namespace CSTP
 				tr ("File %1 already exists, continue download?"),
 				QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
 		if (userReply == QMessageBox::Yes)
-			*remove = false;
+			*remove = Core::FileExistsBehaviour::Continue;
 		else if (userReply == QMessageBox::No)
-			*remove = true;
+			*remove = Core::FileExistsBehaviour::Remove;
 		else
-			*remove = boost::logic::indeterminate;
+			*remove = Core::FileExistsBehaviour::Abort;
 	}
 
 	void CSTP::handleError (const QString& error)

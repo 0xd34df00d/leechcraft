@@ -46,14 +46,6 @@ class QToolBar;
 
 struct EntityTestHandleResult;
 
-namespace boost
-{
-namespace logic
-{
-	class tribool;
-}
-}
-
 namespace LeechCraft
 {
 namespace CSTP
@@ -95,6 +87,13 @@ namespace CSTP
 			, HSpeed
 			, HRemaining
 			, HDownloading
+		};
+
+		enum class FileExistsBehaviour
+		{
+			Remove,
+			Abort,
+			Continue
 		};
 
 		static Core& Instance ();
@@ -165,7 +164,7 @@ namespace CSTP
 		void taskRemoved (int);
 		void taskError (int, IDownload::Error);
 		void error (const QString&);
-		void fileExists (boost::logic::tribool*);
+		void fileExists (FileExistsBehaviour*);
 	};
 }
 }

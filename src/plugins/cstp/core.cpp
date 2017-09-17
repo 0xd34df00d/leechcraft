@@ -31,7 +31,6 @@
 #include <stdexcept>
 #include <numeric>
 #include <algorithm>
-#include <boost/logic/tribool.hpp>
 #include <QDir>
 #include <QTimer>
 #include <QMetaType>
@@ -293,23 +292,25 @@ namespace CSTP
 
 		if (td.File_->exists ())
 		{
-			boost::logic::tribool remove = false;
-			emit fileExists (&remove);
-			if (remove)
+			auto fileExistsBehaviour = FileExistsBehaviour::Continue;
+			emit fileExists (&fileExistsBehaviour);
+			switch (fileExistsBehaviour)
 			{
+			case FileExistsBehaviour::Abort:
+				CoreProxy_->FreeID (td.ID_);
+				return -1;
+			case FileExistsBehaviour::Remove:
 				if (!td.File_->resize (0))
 				{
 					QString msg = tr ("Could not truncate file ") +
-						td.File_->errorString ();
+								  td.File_->errorString ();
 					qWarning () << Q_FUNC_INFO << msg;
 					emit error (msg);
+					return - 1;
 				}
-			}
-			else if (!remove);
-			else
-			{
-				CoreProxy_->FreeID (td.ID_);
-				return -1;
+				break;
+			case FileExistsBehaviour::Continue:
+				break;
 			}
 		}
 
