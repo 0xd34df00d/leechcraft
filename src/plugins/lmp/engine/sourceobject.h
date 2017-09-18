@@ -74,15 +74,8 @@ namespace LMP
 		Notification
 	};
 
-	class HandlerContainerBase : public QObject
-	{
-		Q_OBJECT
-	protected slots:
-		virtual void objectDestroyed () = 0;
-	};
-
 	template<typename T>
-	class HandlerContainer : public HandlerContainerBase
+	class HandlerContainer : public QObject
 	{
 		QMap<QObject*, QList<T>> Dependents_;
 	public:
@@ -91,9 +84,9 @@ namespace LMP
 			Dependents_ [dependent] << handler;
 
 			connect (dependent,
-					SIGNAL (destroyed (QObject*)),
+					&QObject::destroyed,
 					this,
-					SLOT (objectDestroyed ()));
+					&HandlerContainer::objectDestroyed);
 		}
 
 		template<typename Reducer, typename... Args>
