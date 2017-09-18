@@ -134,16 +134,11 @@ namespace LMP
 	SourceObject::SourceObject (Category cat, QObject *parent)
 	: QObject (parent)
 	, Dec_ (gst_element_factory_make ("playbin", "play"))
-	, Path_ (nullptr)
-	, IsSeeking_ (false)
-	, LastCurrentTime_ (-1)
-	, PrevSoupRank_ (0)
 	, PopThread_ (new MsgPopThread (gst_pipeline_get_bus (GST_PIPELINE (Dec_)),
 				this,
 				cat == Category::Notification ? 0.05 : 1,
 				BusDrainMutex_,
 				BusDrainWC_))
-	, OldState_ (SourceState::Stopped)
 	{
 		g_signal_connect (Dec_, "about-to-finish", G_CALLBACK (CbAboutToFinish), this);
 		g_signal_connect (Dec_, "notify::source", G_CALLBACK (CbSourceChanged), this);

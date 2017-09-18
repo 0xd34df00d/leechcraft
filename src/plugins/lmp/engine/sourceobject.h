@@ -129,7 +129,7 @@ namespace LMP
 
 		GstElement *Dec_;
 
-		Path *Path_;
+		Path *Path_ = nullptr;
 
 		AudioSource CurrentSource_;
 		AudioSource NextSource_;
@@ -139,11 +139,11 @@ namespace LMP
 		QMutex NextSrcMutex_;
 		QWaitCondition NextSrcWC_;
 
-		bool IsSeeking_;
+		bool IsSeeking_ = false;
 
-		qint64 LastCurrentTime_;
+		qint64 LastCurrentTime_ = -1;
 
-		uint PrevSoupRank_;
+		uint PrevSoupRank_ = 0;
 
 		QMutex BusDrainMutex_;
 		QWaitCondition BusDrainWC_;
@@ -167,7 +167,7 @@ namespace LMP
 			MaxBitrate
 		};
 	private:
-		SourceState OldState_;
+		SourceState OldState_ = SourceState::Stopped;
 	public:
 		SourceObject (Category, QObject* = 0);
 		~SourceObject ();
