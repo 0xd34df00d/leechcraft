@@ -144,6 +144,7 @@ namespace LMP
 				cat == Category::Notification ? 0.05 : 1,
 				BusDrainMutex_,
 				BusDrainWC_) }
+	, PathStateGuard_ { [this] { gst_element_set_state (Path_->GetPipeline (), GST_STATE_NULL); } }
 	{
 		g_signal_connect (Dec_.get (), "about-to-finish", G_CALLBACK (CbAboutToFinish), this);
 		g_signal_connect (Dec_.get (), "notify::source", G_CALLBACK (CbSourceChanged), this);
@@ -174,7 +175,6 @@ namespace LMP
 
 	SourceObject::~SourceObject ()
 	{
-		gst_element_set_state (Path_->GetPipeline (), GST_STATE_NULL);
 	}
 
 	QObject* SourceObject::GetQObject ()

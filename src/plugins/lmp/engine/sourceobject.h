@@ -37,6 +37,7 @@
 #include <QMap>
 #include <QMutex>
 #include <QWaitCondition>
+#include <util/sll/util.h>
 #include "interfaces/lmp/isourceobject.h"
 #include "interfaces/lmp/ipath.h"
 #include "util/lmp/gstutil.h"
@@ -147,6 +148,8 @@ namespace LMP
 
 		HandlerContainer<SyncHandler_f> SyncHandlers_;
 		HandlerContainer<AsyncHandler_f> AsyncHandlers_;
+
+		const Util::DefaultScopeGuard PathStateGuard_;
 	public:
 		enum class Metadata
 		{
