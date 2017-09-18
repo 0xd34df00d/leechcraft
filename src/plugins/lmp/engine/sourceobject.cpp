@@ -37,6 +37,7 @@
 #include <QTimer>
 #include <QThread>
 #include <util/sll/unreachable.h>
+#include <util/sll/util.h>
 #include "util/lmp/gstutil.h"
 #include "audiosource.h"
 #include "path.h"
@@ -464,8 +465,7 @@ namespace LMP
 		if (!CurrentSource_.ToUrl ().scheme ().startsWith ("http"))
 			return;
 
-		std::shared_ptr<void> soupRankGuard (nullptr,
-				[&] (void*) -> void
+		const auto soupRankGuard = Util::MakeScopeGuard ([&]
 				{
 					if (PrevSoupRank_)
 					{
