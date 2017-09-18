@@ -150,6 +150,8 @@ namespace LMP
 		HandlerContainer<AsyncHandler_f> AsyncHandlers_;
 
 		const Util::DefaultScopeGuard PathStateGuard_;
+
+		std::vector<Util::DefaultScopeGuard> SignalGuards_;
 	public:
 		enum class Metadata
 		{
