@@ -133,15 +133,15 @@ namespace LMP
 
 	SourceObject::SourceObject (Category cat, QObject *parent)
 	: QObject (parent)
-	, Dec_ (gst_element_factory_make ("playbin", "play"))
-	, PopThread_ (new MsgPopThread (gst_pipeline_get_bus (GST_PIPELINE (Dec_)),
+	, Dec_ (gst_element_factory_make ("playbin", "play"), &gst_object_unref)
+	, PopThread_ (new MsgPopThread (gst_pipeline_get_bus (GST_PIPELINE (Dec_.get ())),
 				this,
 				cat == Category::Notification ? 0.05 : 1,
 				BusDrainMutex_,
 				BusDrainWC_))
 	{
-		g_signal_connect (Dec_, "about-to-finish", G_CALLBACK (CbAboutToFinish), this);
-		g_signal_connect (Dec_, "notify::source", G_CALLBACK (CbSourceChanged), this);
+		g_signal_connect (Dec_.get (), "about-to-finish", G_CALLBACK (CbAboutToFinish), this);
+		g_signal_connect (Dec_.get (), "notify::source", G_CALLBACK (CbSourceChanged), this);
 
 		qRegisterMetaType<GstMessage*> ("GstMessage*");
 		qRegisterMetaType<GstMessage_ptr> ("GstMessage_ptr");
@@ -155,7 +155,7 @@ namespace LMP
 				SLOT (handleTick ()));
 		timer->start (1000);
 
-		gst_bus_set_sync_handler (gst_pipeline_get_bus (GST_PIPELINE (Dec_)),
+		gst_bus_set_sync_handler (gst_pipeline_get_bus (GST_PIPELINE (Dec_.get ())),
 				[] (GstBus *bus, GstMessage *msg, gpointer udata)
 				{
 					return static_cast<GstBusSyncReply> (static_cast<SourceObject*> (udata)->
@@ -175,8 +175,6 @@ namespace LMP
 		PopThread_->wait (1100);
 		if (PopThread_->isRunning ())
 			PopThread_->terminate ();
-
-		gst_object_unref (Dec_);
 	}
 
 	QObject* SourceObject::GetQObject ()
@@ -188,7 +186,7 @@ namespace LMP
 	{
 		std::shared_ptr<GstQuery> query (gst_query_new_seeking (GST_FORMAT_TIME), gst_query_unref);
 
-		if (!gst_element_query (GST_ELEMENT (Dec_), query.get ()))
+		if (!gst_element_query (GST_ELEMENT (Dec_.get ()), query.get ()))
 			return false;
 
 		gboolean seekable = false;
@@ -266,7 +264,7 @@ namespace LMP
 		{
 			auto format = GST_FORMAT_TIME;
 			gint64 position = 0;
-			gst_element_query_position (GST_ELEMENT (Dec_), format, &position);
+			gst_element_query_position (GST_ELEMENT (Dec_.get ()), format, &position);
 			LastCurrentTime_ = position;
 		}
 		return LastCurrentTime_ / GST_MSECOND;
@@ -276,7 +274,7 @@ namespace LMP
 	{
 		auto format = GST_FORMAT_TIME;
 		gint64 duration = 0;
-		if (!gst_element_query_duration (GST_ELEMENT (Dec_), format, &duration))
+		if (!gst_element_query_duration (GST_ELEMENT (Dec_.get ()), format, &duration))
 			return -1;
 
 		return (duration - LastCurrentTime_) / GST_MSECOND;
@@ -286,7 +284,7 @@ namespace LMP
 	{
 		auto format = GST_FORMAT_TIME;
 		gint64 duration = 0;
-		if (gst_element_query_duration (GST_ELEMENT (Dec_), format, &duration))
+		if (gst_element_query_duration (GST_ELEMENT (Dec_.get ()), format, &duration))
 			return duration / GST_MSECOND;
 		return -1;
 	}
@@ -299,7 +297,7 @@ namespace LMP
 		if (OldState_ == SourceState::Playing)
 			IsSeeking_ = true;
 
-		gst_element_seek (GST_ELEMENT (Dec_), 1.0, GST_FORMAT_TIME,
+		gst_element_seek (GST_ELEMENT (Dec_.get ()), 1.0, GST_FORMAT_TIME,
 				GST_SEEK_FLAG_FLUSH, GST_SEEK_TYPE_SET, pos * GST_MSECOND,
 				GST_SEEK_TYPE_NONE, GST_CLOCK_TIME_NONE);
 
@@ -362,7 +360,7 @@ namespace LMP
 			PrevSoupRank_ = SetSoupRank (G_MAXINT / 2);
 
 		auto path = source.ToUrl ().toEncoded ();
-		g_object_set (G_OBJECT (Dec_), "uri", path.constData (), nullptr);
+		g_object_set (G_OBJECT (Dec_.get ()), "uri", path.constData (), nullptr);
 
 		NextSource_.Clear ();
 	}
@@ -455,7 +453,7 @@ namespace LMP
 	void SourceObject::SetupSource ()
 	{
 		GstElement *src;
-		g_object_get (Dec_, "source", &src, nullptr);
+		g_object_get (Dec_.get (), "source", &src, nullptr);
 
 		if (!CurrentSource_.ToUrl ().scheme ().startsWith ("http"))
 			return;
@@ -493,13 +491,13 @@ namespace LMP
 
 	void SourceObject::AddToPath (Path *path)
 	{
-		path->SetPipeline (Dec_);
+		path->SetPipeline (Dec_.get ());
 		Path_ = path;
 	}
 
 	void SourceObject::SetSink (GstElement *bin)
 	{
-		g_object_set (GST_OBJECT (Dec_), "audio-sink", bin, nullptr);
+		g_object_set (GST_OBJECT (Dec_.get ()), "audio-sink", bin, nullptr);
 	}
 
 	void SourceObject::AddSyncHandler (const SyncHandler_f& handler, QObject *dependent)
@@ -596,7 +594,7 @@ namespace LMP
 			qDebug () << Q_FUNC_INFO << "draining bus";
 			IsDrainingMsgs_ = true;
 
-			while (const auto newMsg = gst_bus_pop (gst_pipeline_get_bus (GST_PIPELINE (Dec_))))
+			while (const auto newMsg = gst_bus_pop (gst_pipeline_get_bus (GST_PIPELINE (Dec_.get ()))))
 				handleMessage (std::shared_ptr<GstMessage> (newMsg, gst_message_unref));
 
 			IsDrainingMsgs_ = false;
@@ -799,7 +797,7 @@ namespace LMP
 			HandleWarningMsg (message);
 			break;
 		case GST_MESSAGE_LATENCY:
-			gst_bin_recalculate_latency (GST_BIN (Dec_));
+			gst_bin_recalculate_latency (GST_BIN (Dec_.get ()));
 			break;
 		case GST_MESSAGE_QOS:
 			break;

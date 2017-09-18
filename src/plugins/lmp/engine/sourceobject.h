@@ -120,7 +120,7 @@ namespace LMP
 
 		friend class Path;
 
-		GstElement *Dec_;
+		std::shared_ptr<GstElement> Dec_;
 
 		Path *Path_ = nullptr;
 
