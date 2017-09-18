@@ -142,7 +142,7 @@ namespace LMP
 		QWaitCondition BusDrainWC_;
 		bool IsDrainingMsgs_ = false;
 
-		MsgPopThread *PopThread_;
+		std::shared_ptr<MsgPopThread> PopThread_;
 		GstUtil::TagMap_t Metadata_;
 
 		HandlerContainer<SyncHandler_f> SyncHandlers_;

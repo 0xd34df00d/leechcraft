@@ -98,6 +98,11 @@ namespace LMP
 
 	MsgPopThread::~MsgPopThread ()
 	{
+		Stop ();
+		wait (1100);
+		if (isRunning ())
+			terminate ();
+
 		gst_object_unref (Bus_);
 	}
 
@@ -170,11 +175,6 @@ namespace LMP
 	SourceObject::~SourceObject ()
 	{
 		gst_element_set_state (Path_->GetPipeline (), GST_STATE_NULL);
-
-		PopThread_->Stop ();
-		PopThread_->wait (1100);
-		if (PopThread_->isRunning ())
-			PopThread_->terminate ();
 	}
 
 	QObject* SourceObject::GetQObject ()
