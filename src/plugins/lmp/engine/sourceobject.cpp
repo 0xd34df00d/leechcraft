@@ -137,13 +137,13 @@ namespace LMP
 	}
 
 	SourceObject::SourceObject (Category cat, QObject *parent)
-	: QObject (parent)
-	, Dec_ (gst_element_factory_make ("playbin", "play"), &gst_object_unref)
-	, PopThread_ (new MsgPopThread (gst_pipeline_get_bus (GST_PIPELINE (Dec_.get ())),
+	: QObject { parent }
+	, Dec_ { gst_element_factory_make ("playbin", "play"), &gst_object_unref }
+	, PopThread_ { std::make_shared<MsgPopThread> (gst_pipeline_get_bus (GST_PIPELINE (Dec_.get ())),
 				this,
 				cat == Category::Notification ? 0.05 : 1,
 				BusDrainMutex_,
-				BusDrainWC_))
+				BusDrainWC_) }
 	{
 		g_signal_connect (Dec_.get (), "about-to-finish", G_CALLBACK (CbAboutToFinish), this);
 		g_signal_connect (Dec_.get (), "notify::source", G_CALLBACK (CbSourceChanged), this);
