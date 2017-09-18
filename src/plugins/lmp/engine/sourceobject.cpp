@@ -173,10 +173,6 @@ namespace LMP
 		PopThread_->start (QThread::LowestPriority);
 	}
 
-	SourceObject::~SourceObject ()
-	{
-	}
-
 	QObject* SourceObject::GetQObject ()
 	{
 		return this;

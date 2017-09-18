@@ -166,7 +166,6 @@ namespace LMP
 		SourceState OldState_ = SourceState::Stopped;
 	public:
 		SourceObject (Category, QObject* = 0);
-		~SourceObject ();
 
 		SourceObject (const SourceObject&) = delete;
 		SourceObject& operator= (const SourceObject&) = delete;
