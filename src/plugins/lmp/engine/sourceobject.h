@@ -107,7 +107,7 @@ namespace LMP
 		}
 
 		template<typename... Args>
-		auto operator() (Args... args) -> typename std::enable_if<std::is_same<void, decltype (T {} (args...))>::value, void>::type
+		auto operator() (Args... args) -> std::enable_if_t<std::is_same<void, decltype (T {} (args...))>::value>
 		{
 			for (const auto& sublist : Dependents_)
 				for (const auto& item : sublist)
