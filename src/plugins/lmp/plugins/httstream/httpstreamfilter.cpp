@@ -32,6 +32,7 @@
 #include <QtDebug>
 #include <QTimer>
 #include <gst/gst.h>
+#include <util/sll/delayedexecutor.h>
 #include "interfaces/lmp/ifilterconfigurator.h"
 #include "util/lmp/gstutil.h"
 #include "httpserver.h"
@@ -154,10 +155,7 @@ namespace HttStream
 				<< reason
 				<< "; scheduling readd...";
 
-		QMetaObject::invokeMethod (this,
-				"readdFd",
-				Qt::QueuedConnection,
-				Q_ARG (int, fd));
+		Util::ExecuteLater ([this, fd] { g_signal_emit_by_name (MSS_, "add", fd); });
 	}
 
 	GstElement* HttpStreamFilter::GetElement () const
@@ -270,11 +268,6 @@ namespace HttStream
 			g_signal_emit_by_name (MSS_, "add", sock);
 
 		PendingSockets_.clear ();
-	}
-
-	void HttpStreamFilter::readdFd (int fd)
-	{
-		g_signal_emit_by_name (MSS_, "add", fd);
 	}
 
 	void HttpStreamFilter::handleClient (int socket)

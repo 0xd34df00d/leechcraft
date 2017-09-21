@@ -112,8 +112,6 @@ namespace HttStream
 	private slots:
 		void checkCreatePad (SourceState);
 
-		void readdFd (int);
-
 		void handleClient (int);
 		void handleClientDisconnected (int);
 	};
