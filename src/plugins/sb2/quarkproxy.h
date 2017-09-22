@@ -67,7 +67,6 @@ namespace SB2
 		QPoint mapToGlobal (double, double);
 		void showTextTooltip (int, int, const QString&);
 		void removeQuark (const QUrl&);
-		QVariant openWindow (const QUrl&, const QString&, const QVariant&);
 		QRect getWinRect ();
 
 		QPoint fitRect (const QPoint& src, const QSize& size, const QRect& rect, bool canOverlap);

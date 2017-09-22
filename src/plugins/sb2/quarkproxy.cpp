@@ -84,36 +84,6 @@ namespace SB2
 		Manager_->RemoveQuark (url);
 	}
 
-	QVariant QuarkProxy::openWindow (const QUrl& url, const QString& str, const QVariant& var)
-	{
-#if QT_VERSION >= 0x050000
-		qWarning () << Q_FUNC_INFO
-				<< "this function is deprecated, consider using QtQuick.Window";
-#endif
-		const auto& newUrl = url.resolved (str);
-
-		auto varMap = var.toMap ();
-
-		const auto& existing = varMap.take ("existing").toString ();
-
-		if ((existing == "toggle" || existing.isEmpty ()) &&
-				URL2LastOpened_.value (newUrl))
-		{
-			URL2LastOpened_.take (newUrl)->deleteLater ();
-			return QVariant ();
-		}
-
-		int x = varMap.take ("x").toInt ();
-		int y = varMap.take ("y").toInt ();
-
-		auto window = new DeclarativeWindow (newUrl, varMap, { x, y }, Manager_, Proxy_);
-		window->show ();
-
-		URL2LastOpened_ [newUrl] = window;
-
-		return QVariant::fromValue<QObject*> (window->rootObject ());
-	}
-
 	QRect QuarkProxy::getWinRect ()
 	{
 		return GetFreeCoords ();
