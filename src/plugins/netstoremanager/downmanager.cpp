@@ -97,12 +97,7 @@ namespace NetStoreManager
 	{
 		QString savePath;
 		if (open)
-#if QT_VERSION < 0x050000
-			savePath = QDesktopServices::storageLocation (QDesktopServices::TempLocation) +
-#else
-			savePath = QStandardPaths::writableLocation (QStandardPaths::TempLocation) +
-#endif
-					"/" + filePath;
+			savePath = QStandardPaths::writableLocation (QStandardPaths::TempLocation) + "/" + filePath;
 		else
 			savePath = filePath;
 

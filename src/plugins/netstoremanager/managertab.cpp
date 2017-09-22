@@ -78,11 +78,7 @@ namespace NetStoreManager
 
 		const auto header = Ui_.FilesView_->header ();
 
-#if QT_VERSION < 0x050000
-		header->setResizeMode (Columns::CName, QHeaderView::Interactive);
-#else
 		header->setSectionResizeMode (Columns::CName, QHeaderView::Interactive);
-#endif
 
 		connect (Ui_.FilesView_->header (),
 				SIGNAL (sectionResized (int, int, int)),
