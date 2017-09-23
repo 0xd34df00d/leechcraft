@@ -134,11 +134,7 @@ namespace Krigstask
 		}
 	}
 
-#if QT_VERSION < 0x050000
-	QDeclarativeImageProvider* WindowsModel::GetImageProvider () const
-#else
 	QQuickImageProvider* WindowsModel::GetImageProvider () const
-#endif
 	{
 		return ImageProvider_;
 	}

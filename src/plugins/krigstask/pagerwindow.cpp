@@ -33,15 +33,8 @@
 #include <QDesktopWidget>
 #include <QApplication>
 #include <QSysInfo>
-
-#if QT_VERSION < 0x050000
-#include <QDeclarativeContext>
-#include <QDeclarativeEngine>
-#else
 #include <QQmlContext>
 #include <QQmlEngine>
-#endif
-
 #include <QtDebug>
 #include <util/sys/paths.h>
 #include <util/gui/autoresizemixin.h>
@@ -50,20 +43,15 @@
 #include <util/qml/settableiconprovider.h>
 #include <util/models/rolenamesmixin.h>
 #include <util/x11/xwrapper.h>
-
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/extensions/Xrender.h>
 #include <X11/extensions/Xfixes.h>
 #include <X11/extensions/Xcomposite.h>
-
-#if QT_VERSION >= 0x050000
 #include <xcb/xcb.h>
 #include <xcb/render.h>
 #include <xcb/composite.h>
 #include <xcb/xcb_renderutil.h>
-#endif
-
 #include "pagerwindowproxy.h"
 
 namespace LeechCraft
@@ -114,20 +102,12 @@ namespace Krigstask
 		}
 	};
 
-#if QT_VERSION < 0x050000
-	class ImageProvider : public QDeclarativeImageProvider
-#else
 	class ImageProvider : public QQuickImageProvider
-#endif
 	{
 		QHash<QString, QPixmap> Images_;
 	public:
 		ImageProvider ()
-#if QT_VERSION < 0x050000
-		: QDeclarativeImageProvider (Pixmap)
-#else
 		: QQuickImageProvider (Pixmap)
-#endif
 		{
 		}
 
@@ -150,11 +130,7 @@ namespace Krigstask
 	};
 
 	PagerWindow::PagerWindow (int screen, bool showThumbs, ICoreProxy_ptr proxy, QWidget *parent)
-#if QT_VERSION < 0x050000
-	: QDeclarativeView (parent)
-#else
 	: QQuickWidget (parent)
-#endif
 	, DesktopsModel_ (new DesktopsModel (this))
 	, ShowThumbs_ (showThumbs)
 	, WinIconProv_ (new Util::SettableIconProvider)
@@ -240,62 +216,6 @@ namespace Krigstask
 
 	namespace
 	{
-#if QT_VERSION < 0x050000
-		QImage GrabWindow (ulong wid)
-		{
-			auto disp = Util::XWrapper::Instance ().GetDisplay ();
-
-			XWindowAttributes attrs;
-			if (!XGetWindowAttributes (disp, wid, &attrs))
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "failed to get attributes";
-				return {};
-			}
-
-			auto format = XRenderFindVisualFormat (disp, attrs.visual);
-
-			XRenderPictureAttributes pa;
-			pa.subwindow_mode = IncludeInferiors;
-
-			XCompositeRedirectWindow (disp, wid, CompositeRedirectAutomatic);
-			auto backing = XCompositeNameWindowPixmap (disp, wid);
-			auto picture = XRenderCreatePicture (disp,
-					backing,
-					format,
-					CPSubwindowMode,
-					&pa);
-
-			auto region = XFixesCreateRegionFromWindow (disp, wid, WindowRegionBounding);
-			XFixesTranslateRegion (disp, region, attrs.x, attrs.y);
-			XFixesSetPictureClipRegion (disp, picture, 0, 0, region);
-			XFixesDestroyRegion (disp, region);
-
-			auto xpixmap = XCreatePixmap (disp,
-					Util::XWrapper::Instance ().GetRootWindow (),
-					attrs.width, attrs.height, attrs.depth);
-			auto pixmap = QPixmap::fromX11Pixmap (xpixmap);
-			pixmap.fill ();
-
-			XRenderComposite (disp,
-					PictOpOver,
-					picture,
-					None,
-					xpixmap,
-					0, 0, 0, 0,
-					0, 0, attrs.width, attrs.height);
-
-			const auto& image = pixmap.toImage ();
-
-			XFreePixmap (disp, xpixmap);
-
-			XRenderFreePicture (disp, picture);
-			XFreePixmap (disp, backing);
-			XCompositeUnredirectWindow (disp, wid, CompositeRedirectAutomatic);
-
-			return image;
-		}
-#else
 		const xcb_format_t* GetFormat (uint8_t depth)
 		{
 			const auto setup = xcb_get_setup (QX11Info::connection ());
@@ -537,7 +457,6 @@ namespace Krigstask
 			return {};
 		}
 		*/
-#endif
 	}
 
 	void PagerWindow::FillSubmodel (SingleDesktopModel *model,
