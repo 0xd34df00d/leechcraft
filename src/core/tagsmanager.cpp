@@ -134,12 +134,20 @@ QString TagsManager::JoinIDs (const QStringList& tagIDs) const
 
 ITagsManager::tag_id TagsManager::InsertTag (const QString& tag)
 {
-	beginInsertRows (QModelIndex (), Tags_.size (), Tags_.size ());
-	QUuid uuid = QUuid::createUuid ();
-	Tags_ [uuid] = tag;
+	const auto& uuid = QUuid::createUuid ();
+
+	auto updated = Tags_;
+	auto pos = updated.insert (uuid, tag);
+	const auto dist = std::distance (updated.begin (), pos);
+
+	beginInsertRows ({}, dist, dist);
+	Tags_ = std::move (updated);
 	endInsertRows ();
+
 	WriteSettings ();
+
 	emit tagsUpdated (GetAllTags ());
+
 	return uuid.toString ();
 }
 
