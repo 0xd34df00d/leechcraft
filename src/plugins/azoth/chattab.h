@@ -279,6 +279,7 @@ namespace Azoth
 		void tabRecoverDataChanged ();
 
 		void composingTextChanged (const QString&);
+		void currentVariantChanged (const QString&);
 
 		// Hooks
 		void hookChatTabCreated (LeechCraft::IHookProxy_ptr proxy,

@@ -242,6 +242,11 @@ namespace Azoth
 
 		if (!IsMUC_)
 			new ChatTabPartStateManager { this };
+
+		connect (Ui_.VariantBox_,
+				qOverload<const QString&> (&QComboBox::currentTextChanged),
+				this,
+				&ChatTab::currentVariantChanged);
 	}
 
 	ChatTab::~ChatTab ()
