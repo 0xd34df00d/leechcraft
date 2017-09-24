@@ -154,9 +154,6 @@ namespace Azoth
 
 		Ui_.MsgEdit_->installEventFilter (Util::MakeLambdaEventFilter ([this] (QKeyEvent *ev)
 				{
-					if (ev->type () != QEvent::KeyRelease)
-						return false;
-
 					if (ev->matches (QKeySequence::Copy) &&
 						!Ui_.View_->page ()->selectedText ().isEmpty ())
 					{
