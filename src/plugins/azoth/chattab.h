@@ -115,9 +115,6 @@ namespace Azoth
 
 		ITransferManager *XferManager_;
 
-		QTimer *TypeTimer_;
-
-		ChatPartState PreviousState_ = CPSNone;
 		QString LastLink_;
 
 		Util::FindNotificationWk *ChatFinder_;
@@ -175,6 +172,7 @@ namespace Azoth
 		void SetEnabled (bool);
 
 		QObject* GetCLEntry () const;
+		ICLEntry* GetICLEntry () const;
 		QString GetSelectedVariant () const;
 
 		QString ReformatTitle ();
@@ -226,7 +224,6 @@ namespace Azoth
 		void handleViewLinkClicked (QUrl, bool);
 		void handleHistoryUp ();
 		void handleHistoryDown ();
-		void typeTimeout ();
 
 		void handleGotLastMessages (QObject*, const QList<QObject*>&);
 
@@ -254,7 +251,6 @@ namespace Azoth
 		void RequestLogs (int);
 
 		void UpdateTextHeight ();
-		void SetChatPartState (ChatPartState);
 
 		/** Appends the message to the message view area.
 		 */
@@ -281,6 +277,8 @@ namespace Azoth
 		void entryLostCurrent (QObject*);
 
 		void tabRecoverDataChanged ();
+
+		void composingTextChanged (const QString&);
 
 		// Hooks
 		void hookChatTabCreated (LeechCraft::IHookProxy_ptr proxy,

@@ -141,6 +141,7 @@ set (SRCS
 	avatarsstoragethread.cpp
 	chattabnetworkaccessmanager.cpp
 	historysyncer.cpp
+	chattabpartstatemanager.cpp
 	sslerrorshandler.cpp
 	sslerrorsdialog.cpp
 	sslerrorschoicestorage.cpp

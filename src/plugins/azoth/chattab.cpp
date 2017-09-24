@@ -32,7 +32,6 @@
 #include <QWebFrame>
 #include <QWebElement>
 #include <QTextDocument>
-#include <QTimer>
 #include <QBuffer>
 #include <QPalette>
 #include <QApplication>
@@ -102,6 +101,7 @@
 #include "msgeditautocompleter.h"
 #include "msgsender.h"
 #include "avatarsmanager.h"
+#include "chattabpartstatemanager.h"
 
 namespace LeechCraft
 {
@@ -145,7 +145,6 @@ namespace Azoth
 	, BgColor_ (QApplication::palette ().color (QPalette::Base))
 	, NumUnreadMsgs_ (Core::Instance ().GetUnreadCount (GetEntry<ICLEntry> ()))
 	, CDF_ (new ContactDropFilter (entryId, this))
-	, TypeTimer_ (new QTimer (this))
 	{
 		Ui_.setupUi (this);
 		Ui_.View_->page ()->setNetworkAccessManager (nam);
@@ -210,12 +209,6 @@ namespace Azoth
 				this,
 				SLOT (handleChatWindowSearch (QString)));
 
-		TypeTimer_->setInterval (2000);
-		connect (TypeTimer_,
-				SIGNAL (timeout ()),
-				this,
-				SLOT (typeTimeout ()));
-
 		DummyMsgManager::Instance ().ClearMessages (GetCLEntry ());
 		PrepareTheme ();
 
@@ -246,6 +239,9 @@ namespace Azoth
 				SIGNAL (accountStyleChanged (IAccount*)),
 				this,
 				SLOT (handleAccountStyleChanged (IAccount*)));
+
+		if (!IsMUC_)
+			new ChatTabPartStateManager { this };
 	}
 
 	ChatTab::~ChatTab ()
@@ -254,8 +250,6 @@ namespace Azoth
 
 		if (auto entry = GetEntry<ICLEntry> ())
 			entry->ChatTabClosed ();
-
-		SetChatPartState (CPSGone);
 
 		qDeleteAll (HistoryMessages_);
 		qDeleteAll (CoreMessages_);
@@ -353,9 +347,6 @@ namespace Azoth
 
 	void ChatTab::TabLostCurrent ()
 	{
-		TypeTimer_->stop ();
-		SetChatPartState (CPSInactive);
-
 		emit entryLostCurrent (GetEntry<QObject> ());
 
 		IsCurrent_ = false;
@@ -509,6 +500,11 @@ namespace Azoth
 		return GetEntry<QObject> ();
 	}
 
+	ICLEntry* ChatTab::GetICLEntry () const
+	{
+		return GetEntry<ICLEntry> ();
+	}
+
 	QString ChatTab::GetSelectedVariant () const
 	{
 		return Ui_.VariantBox_->currentText ();
@@ -637,8 +633,6 @@ namespace Azoth
 				MsgFormatter_->GetNormalizedRichText () :
 				QString {};
 
-		SetChatPartState (CPSActive);
-
 		bool clear = true;
 		auto clearGuard = Util::MakeScopeGuard ([&clear, &text, this]
 				{
@@ -697,16 +691,7 @@ namespace Azoth
 	void ChatTab::on_MsgEdit__textChanged ()
 	{
 		UpdateTextHeight ();
-
-		if (!Ui_.MsgEdit_->toPlainText ().isEmpty ())
-		{
-			SetChatPartState (CPSComposing);
-			TypeTimer_->stop ();
-			TypeTimer_->start ();
-		}
-		else
-			TypeTimer_->stop ();
-
+		emit composingTextChanged (Ui_.MsgEdit_->toPlainText ());
 		emit tabRecoverDataChanged ();
 	}
 
@@ -1327,11 +1312,6 @@ namespace Azoth
 						.at (CurrentHistoryPosition_));
 
 		Ui_.MsgEdit_->moveCursor (QTextCursor::End);
-	}
-
-	void ChatTab::typeTimeout ()
-	{
-		SetChatPartState (CPSPaused);
 	}
 
 	void ChatTab::handleGotLastMessages (QObject *entryObj, const QList<QObject*>& messages)
@@ -1997,29 +1977,6 @@ namespace Azoth
 		const int resHeight = std::min (height () / 3, std::max (docHeight, fontHeight));
 		Ui_.MsgEdit_->setMinimumHeight (resHeight);
 		Ui_.MsgEdit_->setMaximumHeight (resHeight);
-	}
-
-	void ChatTab::SetChatPartState (ChatPartState state)
-	{
-		if (state == PreviousState_)
-			return;
-
-		if (IsMUC_)
-			return;
-
-		if (!XmlSettingsManager::Instance ()
-				.property ("SendChatStates").toBool ())
-			return;
-
-		ICLEntry *entry = GetEntry<ICLEntry> ();
-		if (!entry)
-			return;
-
-		PreviousState_ = state;
-
-		if (state != CPSGone ||
-				XmlSettingsManager::Instance ().property ("SendEndConversations").toBool ())
-			entry->SetChatPartState (state, Ui_.VariantBox_->currentText ());
 	}
 
 	void ChatTab::prepareMessageText (const QString& text)
