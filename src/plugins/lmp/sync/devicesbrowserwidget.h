@@ -58,12 +58,12 @@ namespace LMP
 		UnmountableDevManager *UnmountableMgr_;
 		QMap<QAbstractItemModel*, IRemovableDevManager*> Flattener2DevMgr_;
 
-		ISyncPlugin *CurrentSyncer_;
+		ISyncPlugin *CurrentSyncer_ = nullptr;
 
 		QString LastDevice_;
 		QMap<QString, TranscodingParams> Device2Params_;
 	public:
-		DevicesBrowserWidget (QWidget* = 0);
+		DevicesBrowserWidget (QWidget* = nullptr);
 
 		void InitializeDevices ();
 	private:

@@ -97,7 +97,6 @@ namespace LMP
 	, DevUploadModel_ (new UploadModel (this))
 	, Merger_ (new Util::MergeModel (QStringList ("Device name"), this))
 	, UnmountableMgr_ (new UnmountableDevManager (this))
-	, CurrentSyncer_ (0)
 	{
 		LoadLastParams ();
 
