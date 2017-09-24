@@ -51,6 +51,7 @@
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/gui/util.h>
 #include <util/gui/findnotificationwk.h>
+#include <util/sll/lambdaeventfilter.h>
 #include <util/sll/urloperator.h>
 #include <util/sll/util.h>
 #include <util/sll/visitor.h>
@@ -135,33 +136,6 @@ namespace Azoth
 		return S_MUCTabClass_;
 	}
 
-	class CopyFilter : public QObject
-	{
-		QWebView *View_;
-	public:
-		CopyFilter (QWebView *v)
-		: QObject (v)
-		, View_ (v)
-		{
-		}
-	protected:
-		bool eventFilter (QObject*, QEvent *orig)
-		{
-			if (orig->type () != QEvent::KeyRelease)
-				return false;
-
-			QKeyEvent *e = static_cast<QKeyEvent*> (orig);
-			if (e->matches (QKeySequence::Copy) &&
-					!View_->page ()->selectedText ().isEmpty ())
-			{
-				View_->pageAction (QWebPage::Copy)->trigger ();
-				return true;
-			}
-
-			return false;
-		}
-	};
-
 	ChatTab::ChatTab (const QString& entryId, AvatarsManager *am, QNetworkAccessManager *nam, QWidget *parent)
 	: QWidget (parent)
 	, AvatarsManager_ (am)
@@ -177,7 +151,23 @@ namespace Azoth
 		Ui_.View_->page ()->setNetworkAccessManager (nam);
 		Ui_.View_->installEventFilter (new ZoomEventFilter (Ui_.View_));
 		Ui_.View_->settings ()->setAttribute (QWebSettings::DeveloperExtrasEnabled, true);
-		Ui_.MsgEdit_->installEventFilter (new CopyFilter (Ui_.View_));
+
+		Ui_.MsgEdit_->installEventFilter (Util::MakeLambdaEventFilter ([this] (QKeyEvent *ev)
+				{
+					if (ev->type () != QEvent::KeyRelease)
+						return false;
+
+					if (ev->matches (QKeySequence::Copy) &&
+						!Ui_.View_->page ()->selectedText ().isEmpty ())
+					{
+						Ui_.View_->pageAction (QWebPage::Copy)->trigger ();
+						return true;
+					}
+
+					return false;
+				},
+				this));
+
 		MUCEventLog_->installEventFilter (this);
 
 		Ui_.View_->installEventFilter (CDF_);
