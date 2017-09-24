@@ -79,14 +79,13 @@ namespace Azoth
 
 	void ChatTabPartStateManager::HandleComposingText (const QString& text)
 	{
+		TypeTimer_->stop ();
+
 		if (!text.isEmpty ())
 		{
 			SetChatPartState (CPSComposing);
-			TypeTimer_->stop ();
 			TypeTimer_->start ();
 		}
-		else
-			TypeTimer_->stop ();
 	}
 
 	void ChatTabPartStateManager::SetChatPartState (ChatPartState state)
