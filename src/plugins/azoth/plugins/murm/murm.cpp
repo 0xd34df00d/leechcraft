@@ -49,7 +49,6 @@ namespace Murm
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "azothmurmsettings.xml");
 
 		Proxy_ = proxy;
-		Proto_ = nullptr;
 	}
 
 	void Plugin::SecondInit ()

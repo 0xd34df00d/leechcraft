@@ -57,7 +57,7 @@ namespace Murm
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.Murm")
 
-		VkProtocol *Proto_;
+		VkProtocol *Proto_ = nullptr;
 		ICoreProxy_ptr Proxy_;
 		Util::XmlSettingsDialog_ptr XSD_;
 	public:
