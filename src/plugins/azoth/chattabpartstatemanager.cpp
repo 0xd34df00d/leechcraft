@@ -70,6 +70,11 @@ namespace Azoth
 				&ChatTab::entryLostCurrent,
 				TypeTimer_,
 				&QTimer::stop);
+
+		connect (tab,
+				&ChatTab::currentVariantChanged,
+				this,
+				&ChatTabPartStateManager::HandleVariantChanged);
 	}
 
 	ChatTabPartStateManager::~ChatTabPartStateManager ()
@@ -82,8 +87,7 @@ namespace Azoth
 		if (state == PreviousState_)
 			return;
 
-		if (!XmlSettingsManager::Instance ()
-				.property ("SendChatStates").toBool ())
+		if (!XmlSettingsManager::Instance ().property ("SendChatStates").toBool ())
 			return;
 
 		auto entry = Tab_->GetICLEntry ();
@@ -91,10 +95,11 @@ namespace Azoth
 			return;
 
 		PreviousState_ = state;
+		LastVariant_ = Tab_->GetSelectedVariant ();
 
 		if (state != CPSGone ||
 				XmlSettingsManager::Instance ().property ("SendEndConversations").toBool ())
-			entry->SetChatPartState (state, Tab_->GetSelectedVariant ());
+			entry->SetChatPartState (state, LastVariant_);
 	}
 
 	void ChatTabPartStateManager::HandleComposingText (const QString& text)
@@ -106,6 +111,19 @@ namespace Azoth
 			SetChatPartState (CPSComposing);
 			TypeTimer_->start ();
 		}
+	}
+
+	void ChatTabPartStateManager::HandleVariantChanged (const QString& variant)
+	{
+		if (LastVariant_.isEmpty () || variant == LastVariant_)
+			return;
+
+		if (!XmlSettingsManager::Instance ().property ("SendChatStates").toBool ())
+			return;
+
+		auto entry = Tab_->GetICLEntry ();
+		if (entry && entry->GetStatus (LastVariant_).State_ != SOffline)
+			entry->SetChatPartState (CPSInactive, LastVariant_);
 	}
 }
 }

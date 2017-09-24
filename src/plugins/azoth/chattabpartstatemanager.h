@@ -43,7 +43,9 @@ namespace Azoth
 	class ChatTabPartStateManager : public QObject
 	{
 		ChatTab * const Tab_;
+
 		ChatPartState PreviousState_ = CPSNone;
+		QString LastVariant_;
 
 		QTimer * const TypeTimer_;
 	public:
@@ -52,6 +54,7 @@ namespace Azoth
 	private:
 		void SetChatPartState (ChatPartState);
 
+		void HandleVariantChanged (const QString&);
 		void HandleComposingText (const QString&);
 	};
 }
