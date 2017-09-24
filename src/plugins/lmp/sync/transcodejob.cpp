@@ -42,6 +42,8 @@
 #ifdef Q_OS_UNIX
 #include <sys/time.h>
 #include <sys/resource.h>
+#include <unistd.h>
+#include <sys/types.h>
 #endif
 
 namespace LeechCraft
@@ -52,10 +54,20 @@ namespace LMP
 	{
 		QString BuildTranscodedPath (const QString& path, const TranscodingParams& params)
 		{
+			static const auto tmpDirName = []
+			{
+#ifdef Q_OS_UNIX
+				return QString { "lmp_transcode_%1" }
+						.arg (getuid ());
+#else
+				return "lmp_transcode";
+#endif
+			} ();
+
 			QDir dir = QDir::temp ();
-			if (!dir.exists ("lmp_transcode"))
-				dir.mkdir ("lmp_transcode");
-			if (!dir.cd ("lmp_transcode"))
+			if (!dir.exists (tmpDirName))
+				dir.mkdir (tmpDirName);
+			if (!dir.cd (tmpDirName))
 				throw std::runtime_error ("unable to cd into temp dir");
 
 			const QFileInfo fi (path);
