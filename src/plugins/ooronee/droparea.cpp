@@ -29,33 +29,21 @@
 
 #include "droparea.h"
 #include <QCursor>
-#if QT_VERSION < 0x050000
-#include <QGraphicsSceneDragDropEvent>
-#endif
 #include <QMimeData>
 
 namespace LeechCraft
 {
 namespace Ooronee
 {
-#if QT_VERSION < 0x050000
-	DropArea::DropArea (QDeclarativeItem *parent)
-	: QDeclarativeItem { parent }
-#else
 	DropArea::DropArea (QQuickItem *parent)
 	: QQuickItem { parent }
-#endif
 	{
 		SetAcceptingDrops (true);
 	}
 
 	bool DropArea::GetAcceptingDrops () const
 	{
-#if QT_VERSION < 0x050000
-		return acceptDrops ();
-#else
 		return flags () & ItemAcceptsDrops;
-#endif
 	}
 
 	void DropArea::SetAcceptingDrops (bool accepting)
@@ -63,19 +51,11 @@ namespace Ooronee
 		if (accepting == GetAcceptingDrops ())
 			return;
 
-#if QT_VERSION < 0x050000
-		setAcceptDrops (accepting);
-#else
 		setFlag (ItemAcceptsDrops, accepting);
-#endif
 		emit acceptingDropsChanged (accepting);
 	}
 
-#if QT_VERSION < 0x050000
-	void DropArea::dragEnterEvent (QGraphicsSceneDragDropEvent *event)
-#else
 	void DropArea::dragEnterEvent (QDragEnterEvent *event)
-#endif
 	{
 		auto data = event->mimeData ();
 		if (!(data->hasImage () || data->hasText ()))
@@ -89,21 +69,13 @@ namespace Ooronee
 				data->text ());
 	}
 
-#if QT_VERSION < 0x050000
-	void DropArea::dragLeaveEvent (QGraphicsSceneDragDropEvent*)
-#else
 	void DropArea::dragLeaveEvent (QDragLeaveEvent*)
-#endif
 	{
 		unsetCursor ();
 		emit dragLeft ();
 	}
 
-#if QT_VERSION < 0x050000
-	void DropArea::dropEvent (QGraphicsSceneDragDropEvent *event)
-#else
 	void DropArea::dropEvent (QDropEvent *event)
-#endif
 	{
 		unsetCursor ();
 
