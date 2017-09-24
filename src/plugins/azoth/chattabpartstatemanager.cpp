@@ -77,17 +77,6 @@ namespace Azoth
 		SetChatPartState (CPSGone);
 	}
 
-	void ChatTabPartStateManager::HandleComposingText (const QString& text)
-	{
-		TypeTimer_->stop ();
-
-		if (!text.isEmpty ())
-		{
-			SetChatPartState (CPSComposing);
-			TypeTimer_->start ();
-		}
-	}
-
 	void ChatTabPartStateManager::SetChatPartState (ChatPartState state)
 	{
 		if (state == PreviousState_)
@@ -106,6 +95,17 @@ namespace Azoth
 		if (state != CPSGone ||
 				XmlSettingsManager::Instance ().property ("SendEndConversations").toBool ())
 			entry->SetChatPartState (state, Tab_->GetSelectedVariant ());
+	}
+
+	void ChatTabPartStateManager::HandleComposingText (const QString& text)
+	{
+		TypeTimer_->stop ();
+
+		if (!text.isEmpty ())
+		{
+			SetChatPartState (CPSComposing);
+			TypeTimer_->start ();
+		}
 	}
 }
 }
