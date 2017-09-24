@@ -148,10 +148,8 @@ void TagsManager::RemoveTag (const QModelIndex& index)
 	if (!index.isValid ())
 		return;
 
-	TagsDictionary_t::iterator pos = Tags_.begin ();
-	std::advance (pos, index.row ());
 	beginRemoveRows (QModelIndex (), index.row (), index.row ());
-	Tags_.erase (pos);
+	Tags_.erase (Tags_.begin () + index.row ());
 	endRemoveRows ();
 	WriteSettings ();
 	emit tagsUpdated (GetAllTags ());
@@ -162,8 +160,7 @@ void TagsManager::SetTag (const QModelIndex& index, const QString& newTag)
 	if (!index.isValid ())
 		return;
 
-	TagsDictionary_t::iterator pos = Tags_.begin ();
-	std::advance (pos, index.row ());
+	auto pos = Tags_.begin () + index.row ();
 	*pos = newTag;
 
 	emit dataChanged (index, index);
