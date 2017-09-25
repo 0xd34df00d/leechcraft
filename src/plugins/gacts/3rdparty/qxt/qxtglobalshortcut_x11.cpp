@@ -42,7 +42,6 @@ static int qxt_x_errhandler(Display* display, XErrorEvent *event)
                 event->request_code == 34 /* X_UngrabKey */)
             {
                 QxtGlobalShortcutPrivate::error = true;
-                //TODO:
                 //char errstr[256];
                 //XGetErrorText(dpy, err->error_code, errstr, 256);
             }
