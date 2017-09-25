@@ -22,9 +22,6 @@ else ()
 	# in the find_path() and find_library() calls
 	#include(UsePkgConfig)
 
-	#FIXME pkgconfig does not work: return a carriage return that makes compilation failed
-	#pkgconfig(speex _SpeexIncDir _SpeexLinkDir _SpeexLinkFlags _SpeexCflags)
-
 	#set(SPEEX_DEFINITIONS ${_SpeexCflags})
 	set (SPEEX_DEFINITIONS "")
   
