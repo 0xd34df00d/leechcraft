@@ -33,6 +33,7 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/ihavesettings.h>
+#include <interfaces/ihavediaginfo.h>
 #include <interfaces/azoth/iprotocolplugin.h>
 
 namespace LeechCraft
@@ -45,11 +46,12 @@ namespace Sarin
 
 	class Plugin : public QObject
 				 , public IInfo
+				 , public IHaveDiagInfo
 				 , public IPlugin2
 				 , public IProtocolPlugin
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Azoth::IProtocolPlugin)
+		Q_INTERFACES (IInfo IPlugin2 IHaveDiagInfo LeechCraft::Azoth::IProtocolPlugin)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.Sarin")
 
@@ -62,6 +64,8 @@ namespace Sarin
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
+
+		QString GetDiagInfoString () const;
 
 		QSet<QByteArray> GetPluginClasses () const;
 

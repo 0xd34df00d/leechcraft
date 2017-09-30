@@ -30,6 +30,7 @@
 #include "sarin.h"
 #include <QIcon>
 #include <interfaces/azoth/iclentry.h>
+#include <tox/tox.h>
 #include "toxprotocol.h"
 
 namespace LeechCraft
@@ -72,6 +73,17 @@ namespace Sarin
 	QIcon Plugin::GetIcon () const
 	{
 		return {};
+	}
+
+	QString Plugin::GetDiagInfoString () const
+	{
+		return QString { "Built with Tox %1.%2.%3, running with Tox %4.%5.%6" }
+				.arg (TOX_VERSION_MAJOR)
+				.arg (TOX_VERSION_MINOR)
+				.arg (TOX_VERSION_PATCH)
+				.arg (tox_version_major ())
+				.arg (tox_version_minor ())
+				.arg (tox_version_patch ());
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
