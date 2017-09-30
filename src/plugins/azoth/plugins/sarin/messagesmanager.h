@@ -68,8 +68,8 @@ namespace Sarin
 	private slots:
 		void handleReadReceipt (quint32);
 		void handleInMessage (qint32, const QString&);
-
-		void setThread (const std::shared_ptr<ToxThread>&);
+	private:
+		void SetThread (const std::shared_ptr<ToxThread>&);
 	signals:
 		void gotMessage (const QByteArray&, const QString&);
 	};

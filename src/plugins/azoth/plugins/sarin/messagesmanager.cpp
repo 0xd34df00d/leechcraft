@@ -47,9 +47,9 @@ namespace Sarin
 	: QObject { acc }
 	{
 		connect (acc,
-				SIGNAL (threadChanged (std::shared_ptr<ToxThread>)),
+				&ToxAccount::threadChanged,
 				this,
-				SLOT (setThread (std::shared_ptr<ToxThread>)));
+				&MessagesManager::SetThread);
 	}
 
 	void MessagesManager::SendMessage (const QByteArray& privkey, ChatMessage *msg)
@@ -169,7 +169,7 @@ namespace Sarin
 				};
 	}
 
-	void MessagesManager::setThread (const std::shared_ptr<ToxThread>& thread)
+	void MessagesManager::SetThread (const std::shared_ptr<ToxThread>& thread)
 	{
 		Thread_ = thread;
 		if (!thread)
