@@ -49,9 +49,9 @@ namespace Sarin
 	, Acc_ { acc }
 	{
 		connect (this,
-				SIGNAL (requested (int32_t, QByteArray, uint32_t, uint64_t, QString)),
+				&FileTransferManager::requested,
 				this,
-				SLOT (handleRequest (int32_t, QByteArray, uint32_t, uint64_t, QString)));
+				&FileTransferManager::handleRequest);
 	}
 
 	bool FileTransferManager::IsAvailable () const
