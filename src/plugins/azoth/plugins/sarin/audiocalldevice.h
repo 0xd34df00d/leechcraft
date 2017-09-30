@@ -64,9 +64,9 @@ namespace Sarin
 	protected:
 		qint64 readData (char *data, qint64 maxlen) override;
 		qint64 writeData (const char *data, qint64 len) override;
-	private slots:
-		void handleGotFrame (int32_t, const QByteArray&);
-		void handleWriteError (const QString&);
+	private:
+		void HandleGotFrame (int32_t, const QByteArray&);
+		void HandleWriteError (const QString&);
 	};
 }
 }

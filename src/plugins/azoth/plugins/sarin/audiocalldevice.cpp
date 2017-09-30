@@ -45,13 +45,13 @@ namespace Sarin
 	, DataWriter_ { std::make_unique<CallDataWriter> (callIdx, manager) }
 	{
 		connect (Manager_,
-				SIGNAL (gotFrame (int32_t, QByteArray)),
+				&CallManager::gotFrame,
 				this,
-				SLOT (handleGotFrame (int32_t, QByteArray)));
+				&AudioCallDevice::HandleGotFrame);
 		connect (DataWriter_.get (),
-				SIGNAL (gotError (QString)),
+				&CallDataWriter::gotError,
 				this,
-				SLOT (handleWriteError (QString)));
+				&AudioCallDevice::HandleWriteError);
 	}
 
 	void AudioCallDevice::SetWriteFormat (const QAudioFormat& fmt)
@@ -94,7 +94,7 @@ namespace Sarin
 		return DataWriter_->WriteData (*WriteFmt_, { data, static_cast<int> (len) });
 	}
 
-	void AudioCallDevice::handleGotFrame (int32_t callIdx, const QByteArray& data)
+	void AudioCallDevice::HandleGotFrame (int32_t callIdx, const QByteArray& data)
 	{
 		if (callIdx != Idx_)
 			return;
@@ -106,7 +106,7 @@ namespace Sarin
 		emit readyRead ();
 	}
 
-	void AudioCallDevice::handleWriteError (const QString& errStr)
+	void AudioCallDevice::HandleWriteError (const QString& errStr)
 	{
 		setErrorString (errStr);
 	}
