@@ -88,9 +88,7 @@ namespace Sarin
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
 	{
-		QSet<QByteArray> result;
-		result << "org.LeechCraft.Plugins.Azoth.Plugins.IProtocolPlugin";
-		return result;
+		return { "org.LeechCraft.Plugins.Azoth.Plugins.IProtocolPlugin" };
 	}
 
 	QObject* Plugin::GetQObject ()
