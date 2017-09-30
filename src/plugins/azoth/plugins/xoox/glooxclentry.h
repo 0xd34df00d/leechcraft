@@ -87,8 +87,6 @@ namespace Xoox
 		GlooxCLEntry (const QString& bareJID, GlooxAccount*);
 		GlooxCLEntry (OfflineDataSource_ptr, GlooxAccount*);
 
-		void Initialize ();
-
 		OfflineDataSource_ptr ToOfflineDataSource () const;
 		void Convert2ODS ();
 

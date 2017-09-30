@@ -131,17 +131,11 @@ namespace Xoox
 	GlooxCLEntry::GlooxCLEntry (const QString& jid, GlooxAccount *parent)
 	: EntryBase (jid, parent)
 	{
-		Initialize ();
 	}
 
 	GlooxCLEntry::GlooxCLEntry (OfflineDataSource_ptr ods, GlooxAccount *parent)
 	: EntryBase (GetBareJID (ods->ID_, parent), parent)
 	, ODS_ (ods)
-	{
-		Initialize ();
-	}
-
-	void GlooxCLEntry::Initialize ()
 	{
 	}
 
