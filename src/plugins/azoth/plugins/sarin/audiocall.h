@@ -92,9 +92,9 @@ namespace Sarin
 	private:
 		void InitiateCall ();
 		void HandleWriteParams (const CallManager::AudioFormatParams&);
-	private slots:
-		void handleReadFrameParams (int32_t, int, int);
-		void handleCallStateChanged (int32_t, uint32_t);
+
+		void HandleReadFrameParams (int32_t, int, int);
+		void HandleCallStateChanged (int32_t, uint32_t);
 	signals:
 		void stateChanged (LeechCraft::Azoth::IMediaCall::State);
 		void audioModeChanged (QIODevice::OpenMode);

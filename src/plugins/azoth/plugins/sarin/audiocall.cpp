@@ -63,13 +63,13 @@ namespace Sarin
 	, CallMgr_ { callMgr }
 	{
 		connect (CallMgr_,
-				SIGNAL (callStateChanged (int32_t, uint32_t)),
+				&CallManager::callStateChanged,
 				this,
-				SLOT (handleCallStateChanged (int32_t, uint32_t)));
+				&AudioCall::HandleCallStateChanged);
 		connect (CallMgr_,
-				SIGNAL (gotFrameParams (int32_t, int, int)),
+				&CallManager::gotFrameParams,
 				this,
-				SLOT (handleReadFrameParams (int32_t, int, int)));
+				&AudioCall::HandleReadFrameParams);
 
 		InitFormat (ReadFmt_);
 
@@ -178,7 +178,7 @@ namespace Sarin
 	{
 	}
 
-	void AudioCall::handleReadFrameParams (int32_t callIdx, int channels, int sampleRate)
+	void AudioCall::HandleReadFrameParams (int32_t callIdx, int channels, int sampleRate)
 	{
 		if (callIdx != CallIdx_)
 			return;
@@ -193,7 +193,7 @@ namespace Sarin
 		}
 	}
 
-	void AudioCall::handleCallStateChanged (int32_t callIdx, uint32_t state)
+	void AudioCall::HandleCallStateChanged (int32_t callIdx, uint32_t state)
 	{
 		if (callIdx != CallIdx_)
 			return;
