@@ -40,8 +40,8 @@ namespace LeechCraft
 {
 namespace HistoryHolder
 {
-	class FindProxy : public Util::TagsFilterModel
-					, public IFindProxy
+	class FindProxy final : public Util::TagsFilterModel
+						  , public IFindProxy
 	{
 		Q_OBJECT
 		Q_INTERFACES (IFindProxy)
