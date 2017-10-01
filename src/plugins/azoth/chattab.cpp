@@ -1819,13 +1819,11 @@ namespace Azoth
 
 	void ChatTab::AppendMessage (IMessage *msg)
 	{
-		ICLEntry *other = qobject_cast<ICLEntry*> (msg->OtherPart ());
-		if (!other && msg->OtherPart ())
+		auto other = qobject_cast<ICLEntry*> (msg->OtherPart ());
+		if (!other)
 		{
 			qWarning () << Q_FUNC_INFO
-					<< "message's other part doesn't implement ICLEntry"
-					<< msg->GetQObject ()
-					<< msg->OtherPart ();
+					<< "other part is dead";
 			return;
 		}
 
