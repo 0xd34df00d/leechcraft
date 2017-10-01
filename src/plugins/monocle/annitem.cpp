@@ -40,11 +40,7 @@ namespace Monocle
 	AnnBaseItem::AnnBaseItem (const IAnnotation_ptr& ann)
 	: BaseAnn_ { ann }
 	{
-		new Util::DelayedExecutor
-		{
-			[this] { SetSelected (false); },
-			0
-		};
+		Util::ExecuteLater ([this] { SetSelected (false); });
 	}
 
 	QGraphicsItem* AnnBaseItem::GetItem ()
