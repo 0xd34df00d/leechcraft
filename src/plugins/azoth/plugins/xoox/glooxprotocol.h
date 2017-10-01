@@ -49,11 +49,11 @@ namespace Xoox
 	class CapsDatabase;
 	class VCardStorage;
 
-	class GlooxProtocol : public QObject
-						, public IProtocol
-						, public IMUCProtocol
-						, public IURIHandler
-						, public ISupportImport
+	class GlooxProtocol final : public QObject
+							  , public IProtocol
+							  , public IMUCProtocol
+							  , public IURIHandler
+							  , public ISupportImport
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::IProtocol
