@@ -57,10 +57,10 @@ namespace Sarin
 
 		bool IsAvailable () const override;
 		QObject* SendFile (const QString&, const QString&, const QString&, const QString&) override;
-	public slots:
-		void handleToxThreadChanged (const std::shared_ptr<ToxThread>&);
-	private slots:
-		void handleRequest (int32_t, const QByteArray&, uint32_t, uint64_t, const QString&);
+
+		void HandleToxThreadChanged (const std::shared_ptr<ToxThread>&);
+	private:
+		void HandleRequest (int32_t, const QByteArray&, uint32_t, uint64_t, const QString&);
 	signals:
 		void fileOffered (QObject*) override;
 

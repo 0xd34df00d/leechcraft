@@ -65,19 +65,19 @@ namespace Sarin
 	, XferMgr_ { new FileTransferManager { this } }
 	{
 		connect (ActionGetToxId_,
-				SIGNAL (triggered ()),
+				&QAction::triggered,
 				this,
-				SLOT (handleToxIdRequested ()));
+				&ToxAccount::HandleToxIdRequested);
 
 		connect (MsgsMgr_,
-				SIGNAL (gotMessage (QByteArray, QString)),
+				&MessagesManager::gotMessage,
 				this,
-				SLOT (handleInMessage (QByteArray, QString)));
+				&ToxAccount::HandleInMessage);
 
 		connect (this,
-				SIGNAL (threadChanged (std::shared_ptr<ToxThread>)),
+				&ToxAccount::threadChanged,
 				XferMgr_,
-				SLOT (handleToxThreadChanged (std::shared_ptr<ToxThread>)));
+				&FileTransferManager::HandleToxThreadChanged);
 	}
 
 	ToxAccount::ToxAccount (const QString& name, ToxProtocol *parent)
@@ -402,47 +402,51 @@ namespace Sarin
 		Thread_ = std::make_shared<ToxThread> (Nick_, ToxState_, ToxConfig_);
 		Thread_->SetStatus (status);
 		connect (Thread_.get (),
-				SIGNAL (statusChanged (EntryStatus)),
+				&ToxThread::statusChanged,
 				this,
-				SIGNAL (statusChanged (EntryStatus)));
+				&ToxAccount::statusChanged);
 		connect (Thread_.get (),
-				SIGNAL (toxStateChanged (QByteArray)),
+				&ToxThread::toxStateChanged,
 				this,
-				SLOT (handleToxStateChanged (QByteArray)));
+				[this] (const QByteArray& toxState)
+				{
+					ToxState_ = toxState;
+					emit accountChanged (this);
+				});
 		connect (Thread_.get (),
-				SIGNAL (gotFriendRequest (QByteArray, QString)),
+				&ToxThread::gotFriendRequest,
 				this,
-				SLOT (handleGotFriendRequest (QByteArray, QString)));
+				&ToxAccount::HandleGotFriendRequest);
 		connect (Thread_.get (),
-				SIGNAL (gotFriend (qint32)),
+				&ToxThread::gotFriend,
 				this,
-				SLOT (handleGotFriend (qint32)));
+				&ToxAccount::HandleGotFriend);
 		connect (Thread_.get (),
-				SIGNAL (friendNameChanged (QByteArray, QString)),
+				&ToxThread::friendNameChanged,
 				this,
-				SLOT (handleFriendNameChanged (QByteArray, QString)));
+				&ToxAccount::HandleFriendNameChanged);
 		connect (Thread_.get (),
-				SIGNAL (friendStatusChanged (QByteArray, EntryStatus)),
+				&ToxThread::friendStatusChanged,
 				this,
-				SLOT (handleFriendStatusChanged (QByteArray, EntryStatus)));
+				&ToxAccount::HandleFriendStatusChanged);
 		connect (Thread_.get (),
-				SIGNAL (friendTypingChanged (QByteArray, bool)),
+				&ToxThread::friendTypingChanged,
 				this,
-				SLOT (handleFriendTypingChanged (QByteArray, bool)));
+				&ToxAccount::HandleFriendTypingChanged);
 		connect (Thread_.get (),
-				SIGNAL (removedFriend (QByteArray)),
+				&ToxThread::removedFriend,
 				this,
-				SLOT (handleRemovedFriend (QByteArray)));
+				&ToxAccount::HandleRemovedFriend);
 
 		connect (Thread_.get (),
-				SIGNAL (fatalException (LeechCraft::Util::QtException_ptr)),
+				&ToxThread::fatalException,
 				this,
-				SLOT (handleThreadFatalException (LeechCraft::Util::QtException_ptr)));
+				&ToxAccount::HandleThreadFatalException);
 
 		connect (Thread_.get (),
-				SIGNAL (toxCreated ()),
+				&ToxThread::toxCreated,
 				this,
-				SLOT (handleThreadReady ()));
+				&ToxAccount::HandleThreadReady);
 
 		emit threadChanged (Thread_);
 
@@ -467,19 +471,19 @@ namespace Sarin
 		emit accountChanged (this);
 	}
 
-	void ToxAccount::handleThreadReady ()
+	void ToxAccount::HandleThreadReady ()
 	{
 		if (!Thread_)
 			return;
 
 		const auto callManager = Thread_->GetCallManager ();
 		connect (callManager,
-				SIGNAL (gotIncomingCall (QByteArray, int32_t)),
+				&CallManager::gotIncomingCall,
 				this,
-				SLOT (handleIncomingCall (QByteArray, int32_t)));
+				&ToxAccount::HandleIncomingCall);
 	}
 
-	void ToxAccount::handleIncomingCall (const QByteArray& pubkey, int32_t callIdx)
+	void ToxAccount::HandleIncomingCall (const QByteArray& pubkey, int32_t callIdx)
 	{
 		qDebug () << Q_FUNC_INFO << pubkey << callIdx;
 		const auto entry = Contacts_.value (pubkey);
@@ -496,7 +500,7 @@ namespace Sarin
 		emit called (call);
 	}
 
-	void ToxAccount::handleToxIdRequested ()
+	void ToxAccount::HandleToxIdRequested ()
 	{
 		if (!Thread_)
 			return;
@@ -509,13 +513,7 @@ namespace Sarin
 				[dialog] (const QByteArray& id) { dialog->setToxId (QString::fromLatin1 (id)); };
 	}
 
-	void ToxAccount::handleToxStateChanged (const QByteArray& toxState)
-	{
-		ToxState_ = toxState;
-		emit accountChanged (this);
-	}
-
-	void ToxAccount::handleGotFriend (qint32 id)
+	void ToxAccount::HandleGotFriend (qint32 id)
 	{
 		Util::Sequence (this, Thread_->ResolveFriend (id)) >>
 				[this] (const ToxThread::FriendInfo& info)
@@ -540,7 +538,7 @@ namespace Sarin
 				};
 	}
 
-	void ToxAccount::handleGotFriendRequest (const QByteArray& pubkey, const QString& msg)
+	void ToxAccount::HandleGotFriendRequest (const QByteArray& pubkey, const QString& msg)
 	{
 		if (!Contacts_.contains (pubkey))
 			InitEntry (pubkey);
@@ -548,7 +546,7 @@ namespace Sarin
 		emit authorizationRequested (Contacts_.value (pubkey), msg.trimmed ());
 	}
 
-	void ToxAccount::handleRemovedFriend (const QByteArray& pubkey)
+	void ToxAccount::HandleRemovedFriend (const QByteArray& pubkey)
 	{
 		if (!Contacts_.contains (pubkey))
 			return;
@@ -558,7 +556,7 @@ namespace Sarin
 		item->deleteLater ();
 	}
 
-	void ToxAccount::handleFriendNameChanged (const QByteArray& id, const QString& newName)
+	void ToxAccount::HandleFriendNameChanged (const QByteArray& id, const QString& newName)
 	{
 		if (!Contacts_.contains (id))
 		{
@@ -573,7 +571,7 @@ namespace Sarin
 		Contacts_.value (id)->SetEntryName (newName);
 	}
 
-	void ToxAccount::handleFriendStatusChanged (const QByteArray& pubkey, const EntryStatus& status)
+	void ToxAccount::HandleFriendStatusChanged (const QByteArray& pubkey, const EntryStatus& status)
 	{
 		if (!Contacts_.contains (pubkey))
 		{
@@ -586,7 +584,7 @@ namespace Sarin
 		Contacts_.value (pubkey)->SetStatus (status);
 	}
 
-	void ToxAccount::handleFriendTypingChanged (const QByteArray& pubkey, bool isTyping)
+	void ToxAccount::HandleFriendTypingChanged (const QByteArray& pubkey, bool isTyping)
 	{
 		if (!Contacts_.contains (pubkey))
 		{
@@ -599,7 +597,7 @@ namespace Sarin
 		Contacts_.value (pubkey)->SetTyping (isTyping);
 	}
 
-	void ToxAccount::handleInMessage (const QByteArray& pubkey, const QString& body)
+	void ToxAccount::HandleInMessage (const QByteArray& pubkey, const QString& body)
 	{
 		if (!Contacts_.contains (pubkey))
 		{
@@ -615,7 +613,7 @@ namespace Sarin
 		msg->Store ();
 	}
 
-	void ToxAccount::handleThreadFatalException (const Util::QtException_ptr& e)
+	void ToxAccount::HandleThreadFatalException (const Util::QtException_ptr& e)
 	{
 		qWarning () << Q_FUNC_INFO
 				<< e->what ();

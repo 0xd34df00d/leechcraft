@@ -51,7 +51,7 @@ namespace Sarin
 		connect (this,
 				&FileTransferManager::requested,
 				this,
-				&FileTransferManager::handleRequest);
+				&FileTransferManager::HandleRequest);
 	}
 
 	bool FileTransferManager::IsAvailable () const
@@ -91,7 +91,7 @@ namespace Sarin
 		return transfer;
 	}
 
-	void FileTransferManager::handleToxThreadChanged (const std::shared_ptr<ToxThread>& thread)
+	void FileTransferManager::HandleToxThreadChanged (const std::shared_ptr<ToxThread>& thread)
 	{
 		ToxThread_ = thread;
 		if (!thread)
@@ -136,7 +136,7 @@ namespace Sarin
 		cbMgr->Register<tox_callback_file_chunk_request> (this, &FileTransferManager::gotChunkRequest);
 	}
 
-	void FileTransferManager::handleRequest (int32_t friendNum,
+	void FileTransferManager::HandleRequest (int32_t friendNum,
 			const QByteArray& pkey, uint32_t filenum, uint64_t size, const QString& name)
 	{
 		const auto toxThread = ToxThread_.lock ();

@@ -121,25 +121,24 @@ namespace Sarin
 		void InitEntry (const QByteArray&);
 
 		void HandleConfigAccepted (AccountConfigDialog*);
-	private slots:
-		void handleThreadReady ();
 
-		void handleIncomingCall (const QByteArray&, int32_t);
+		void HandleThreadReady ();
 
-		void handleToxIdRequested ();
-		void handleToxStateChanged (const QByteArray&);
+		void HandleIncomingCall (const QByteArray&, int32_t);
 
-		void handleGotFriend (qint32);
-		void handleGotFriendRequest (const QByteArray&, const QString&);
-		void handleRemovedFriend (const QByteArray&);
+		void HandleToxIdRequested ();
 
-		void handleFriendNameChanged (const QByteArray&, const QString&);
-		void handleFriendStatusChanged (const QByteArray&, const EntryStatus&);
-		void handleFriendTypingChanged (const QByteArray&, bool);
+		void HandleGotFriend (qint32);
+		void HandleGotFriendRequest (const QByteArray&, const QString&);
+		void HandleRemovedFriend (const QByteArray&);
 
-		void handleInMessage (const QByteArray&, const QString&);
+		void HandleFriendNameChanged (const QByteArray&, const QString&);
+		void HandleFriendStatusChanged (const QByteArray&, const EntryStatus&);
+		void HandleFriendTypingChanged (const QByteArray&, bool);
 
-		void handleThreadFatalException (const LeechCraft::Util::QtException_ptr&);
+		void HandleInMessage (const QByteArray&, const QString&);
+
+		void HandleThreadFatalException (const LeechCraft::Util::QtException_ptr&);
 	signals:
 		void accountRenamed (const QString&) override;
 		void authorizationRequested (QObject*, const QString&) override;
