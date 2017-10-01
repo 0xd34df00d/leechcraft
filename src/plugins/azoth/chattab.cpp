@@ -1820,12 +1820,6 @@ namespace Azoth
 	void ChatTab::AppendMessage (IMessage *msg)
 	{
 		auto other = qobject_cast<ICLEntry*> (msg->OtherPart ());
-		if (!other)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "other part is dead";
-			return;
-		}
 
 		if (msg->GetQObject ()->property ("Azoth/HiddenMessage").toBool ())
 			return;
@@ -1833,6 +1827,7 @@ namespace Azoth
 		ICLEntry *parent = qobject_cast<ICLEntry*> (msg->ParentCLEntry ());
 
 		if (msg->GetDirection () == IMessage::Direction::Out &&
+				other &&
 				other->GetEntryType () == ICLEntry::EntryType::MUC)
 			return;
 
