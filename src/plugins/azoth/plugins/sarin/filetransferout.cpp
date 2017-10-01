@@ -71,38 +71,34 @@ namespace Sarin
 			return;
 		}
 
-		const auto sendScheduler = [this]
-		{
-			return Thread_->ScheduleFunction ([this] (Tox *tox)
-					{
-						const auto& name = FilePath_.section ('/', -1, -1).toUtf8 ();
+		auto future = Thread_->ScheduleFunction ([this] (Tox *tox)
+				{
+					const auto& name = FilePath_.section ('/', -1, -1).toUtf8 ();
 
-						const auto friendNum = GetFriendId (tox, PubKey_);;
-						if (!friendNum)
-							throw UnknownFriendException {};
-						FriendNum_ = *friendNum;
+					const auto friendNum = GetFriendId (tox, PubKey_);;
+					if (!friendNum)
+						throw UnknownFriendException {};
+					FriendNum_ = *friendNum;
 
-						TOX_ERR_FILE_SEND error {};
-						const auto result = tox_file_send (tox,
-								FriendNum_,
-								TOX_FILE_KIND_DATA,
-								static_cast<uint64_t> (Filesize_),
-								nullptr,
-								reinterpret_cast<const uint8_t*> (name.constData ()),
-								name.size (),
-								&error);
-						if (result == UINT32_MAX)
-							throw MakeCommandCodeException ("tox_file_send", error);
+					TOX_ERR_FILE_SEND error {};
+					const auto result = tox_file_send (tox,
+							FriendNum_,
+							TOX_FILE_KIND_DATA,
+							static_cast<uint64_t> (Filesize_),
+							nullptr,
+							reinterpret_cast<const uint8_t*> (name.constData ()),
+							name.size (),
+							&error);
+					if (result == UINT32_MAX)
+						throw MakeCommandCodeException ("tox_file_send", error);
 
-						return result;
-					});
-		};
-		Util::ExecuteFuture (sendScheduler,
+					return result;
+				});
+		Util::Sequence (this, future) >>
 				[this] (uint32_t)
 				{
 					// TODO
-				},
-				this);
+				};
 
 		Util::ExecuteLater ([this] { emit stateChanged (TransferState::TSOffer); });
 	}
