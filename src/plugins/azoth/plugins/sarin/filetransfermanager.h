@@ -60,16 +60,16 @@ namespace Sarin
 
 		void HandleToxThreadChanged (const std::shared_ptr<ToxThread>&);
 	private:
-		void HandleRequest (int32_t, const QByteArray&, uint32_t, uint64_t, const QString&);
+		void HandleRequest (uint32_t, const QByteArray&, uint32_t, uint64_t, const QString&);
 	signals:
 		void fileOffered (QObject*) override;
 
 		void gotFileControl (uint32_t, uint32_t, int);
-		void gotData (qint32, quint32, const QByteArray&, uint64_t);
+		void gotData (quint32, quint32, const QByteArray&, uint64_t);
 		void gotChunkRequest (uint32_t friendNum, uint32_t fileNum, uint64_t position, size_t length);
 
 		// Internal signal to route file info requests from Tox thread to main thread.
-		void requested (int32_t, const QByteArray&, uint32_t, uint64_t, const QString&);
+		void requested (uint32_t, const QByteArray&, uint32_t, uint64_t, const QString&);
 	};
 }
 }

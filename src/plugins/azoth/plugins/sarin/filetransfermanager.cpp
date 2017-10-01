@@ -135,7 +135,7 @@ namespace Sarin
 		cbMgr->Register<tox_callback_file_chunk_request> (this, &FileTransferManager::gotChunkRequest);
 	}
 
-	void FileTransferManager::HandleRequest (int32_t friendNum,
+	void FileTransferManager::HandleRequest (uint32_t friendNum,
 			const QByteArray& pkey, uint32_t filenum, uint64_t size, const QString& name)
 	{
 		const auto toxThread = ToxThread_.lock ();

@@ -40,7 +40,7 @@ namespace Sarin
 {
 	FileTransferIn::FileTransferIn (const QString& azothId,
 			const QByteArray& pubkey,
-			qint32 friendNum,
+			quint32 friendNum,
 			quint32 fileNum,
 			quint64 filesize,
 			const QString& offeredName,
@@ -103,7 +103,7 @@ namespace Sarin
 				});
 	}
 
-	void FileTransferIn::HandleData (qint32 friendNum, quint32 fileNum, const QByteArray& data, uint64_t position)
+	void FileTransferIn::HandleData (quint32 friendNum, quint32 fileNum, const QByteArray& data, uint64_t position)
 	{
 		if (friendNum != FriendNum_ || fileNum != FileNum_)
 			return;
@@ -120,7 +120,7 @@ namespace Sarin
 		emit transferProgress (File_->pos (), Filesize_);
 	}
 
-	void FileTransferIn::HandleFileControl (qint32 friendNum, qint32 fileNum, int type)
+	void FileTransferIn::HandleFileControl (uint32_t friendNum, uint32_t fileNum, int type)
 	{
 		if (friendNum != FriendNum_ || fileNum != FileNum_)
 			return;

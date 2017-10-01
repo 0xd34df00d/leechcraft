@@ -42,7 +42,7 @@ namespace Sarin
 {
 	class FileTransferIn final : public FileTransferBase
 	{
-		const qint32 FriendNum_;
+		const quint32 FriendNum_;
 		const quint32 FileNum_;
 
 		QString Filename_;
@@ -52,7 +52,7 @@ namespace Sarin
 	public:
 		FileTransferIn (const QString& azothId,
 				const QByteArray& pubkey,
-				qint32 friendNum,
+				quint32 friendNum,
 				quint32 fileNum,
 				quint64 fileSize,
 				const QString& offeredName,
@@ -66,8 +66,8 @@ namespace Sarin
 		void Accept (const QString&) override;
 		void Abort () override;
 
-		void HandleData (qint32, quint32, const QByteArray&, uint64_t);
-		void HandleFileControl (qint32, qint32, int);
+		void HandleData (quint32, quint32, const QByteArray&, uint64_t);
+		void HandleFileControl (uint32_t, uint32_t, int);
 	};
 }
 }
