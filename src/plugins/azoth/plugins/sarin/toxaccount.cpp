@@ -440,7 +440,7 @@ namespace Sarin
 				SLOT (handleThreadFatalException (LeechCraft::Util::QtException_ptr)));
 
 		connect (Thread_.get (),
-				SIGNAL (toxCreated (Tox*)),
+				SIGNAL (toxCreated ()),
 				this,
 				SLOT (handleThreadReady ()));
 

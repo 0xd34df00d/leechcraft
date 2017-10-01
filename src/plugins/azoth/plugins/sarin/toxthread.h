@@ -151,7 +151,7 @@ namespace Sarin
 	signals:
 		void statusChanged (const EntryStatus&);
 
-		void toxCreated (Tox*);
+		void toxCreated ();
 
 		void toxStateChanged (const QByteArray&);
 

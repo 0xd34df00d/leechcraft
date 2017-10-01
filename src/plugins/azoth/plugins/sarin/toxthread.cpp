@@ -540,7 +540,7 @@ namespace Sarin
 
 		SetToxStatus (Tox_.get (), Status_);
 
-		emit toxCreated (Tox_.get ());
+		emit toxCreated ();
 
 		qDebug () << "gonna bootstrap..." << Tox_.get ();
 		const auto pubkey = Hex2Bin ("F404ABAA1C99A9D37D61AB54898F56793E1DEF8BD46B1038B9D822E8460FAB67");
