@@ -221,6 +221,11 @@ namespace Sarin
 				break;
 			}
 			break;
+		case State::Idle:
+			qWarning () << Q_FUNC_INFO
+					<< "not doing anything in idle state, though we got"
+					<< type;
+			break;
 		}
 	}
 
