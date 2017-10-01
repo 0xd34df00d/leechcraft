@@ -44,8 +44,6 @@ namespace Sarin
 
 	class AudioCallDevice : public QIODevice
 	{
-		Q_OBJECT
-
 		const int32_t Idx_;
 		CallManager * const Manager_;
 
