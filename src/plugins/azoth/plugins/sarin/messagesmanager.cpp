@@ -50,6 +50,15 @@ namespace Sarin
 				&ToxAccount::threadChanged,
 				this,
 				&MessagesManager::SetThread);
+
+		connect (this,
+				&MessagesManager::invokeHandleInMessage,
+				this,
+				&MessagesManager::HandleInMessage);
+		connect (this,
+				&MessagesManager::invokeHandleReadReceipt,
+				this,
+				&MessagesManager::HandleReadReceipt);
 	}
 
 	void MessagesManager::SendMessage (const QByteArray& privkey, ChatMessage *msg)
@@ -120,7 +129,7 @@ namespace Sarin
 				};
 	}
 
-	void MessagesManager::handleReadReceipt (quint32 msgId)
+	void MessagesManager::HandleReadReceipt (quint32 msgId)
 	{
 		if (!MsgId2Msg_.contains (msgId))
 		{
@@ -144,7 +153,7 @@ namespace Sarin
 		val->SetDelivered ();
 	}
 
-	void MessagesManager::handleInMessage (qint32 friendId, const QString& msg)
+	void MessagesManager::HandleInMessage (qint32 friendId, const QString& msg)
 	{
 		const auto thread = Thread_.lock ();
 		if (!thread)
@@ -179,19 +188,11 @@ namespace Sarin
 		cbMgr->Register<tox_callback_friend_message> (this,
 				[] (MessagesManager *pThis, uint32_t friendId, TOX_MESSAGE_TYPE, const uint8_t *msgData, size_t)
 				{
-					const auto& msg = QString::fromUtf8 (reinterpret_cast<const char*> (msgData));
-					QMetaObject::invokeMethod (pThis,
-							"handleInMessage",
-							Q_ARG (qint32, friendId),
-							Q_ARG (QString, msg));
+					pThis->invokeHandleInMessage (friendId,
+							QString::fromUtf8 (reinterpret_cast<const char*> (msgData)));
 				});
 		cbMgr->Register<tox_callback_friend_read_receipt> (this,
-				[] (MessagesManager *pThis, uint32_t, uint32_t msgId)
-				{
-					QMetaObject::invokeMethod (pThis,
-							"handleReadReceipt",
-							Q_ARG (quint32, msgId));
-				});
+				[] (MessagesManager *pThis, uint32_t, uint32_t msgId) { pThis->invokeHandleReadReceipt (msgId); });
 	}
 }
 }

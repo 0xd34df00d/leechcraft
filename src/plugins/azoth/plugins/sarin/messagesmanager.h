@@ -65,12 +65,15 @@ namespace Sarin
 		MessagesManager (ToxAccount*);
 
 		void SendMessage (const QByteArray& privkey, ChatMessage*);
-	private slots:
-		void handleReadReceipt (quint32);
-		void handleInMessage (qint32, const QString&);
 	private:
+		void HandleReadReceipt (quint32);
+		void HandleInMessage (qint32, const QString&);
+
 		void SetThread (const std::shared_ptr<ToxThread>&);
 	signals:
+		void invokeHandleInMessage (qint32, const QString&);
+		void invokeHandleReadReceipt (quint32);
+
 		void gotMessage (const QByteArray&, const QString&);
 	};
 }
