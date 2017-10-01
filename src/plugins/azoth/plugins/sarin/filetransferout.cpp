@@ -104,10 +104,7 @@ namespace Sarin
 				},
 				this);
 
-		new Util::DelayedExecutor
-		{
-			[this] { emit stateChanged (TransferState::TSOffer); }
-		};
+		Util::ExecuteLater ([this] { emit stateChanged (TransferState::TSOffer); });
 	}
 
 	QString FileTransferOut::GetName () const
