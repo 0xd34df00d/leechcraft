@@ -161,7 +161,7 @@ namespace Sarin
 			pkey,
 			friendNum,
 			filenum,
-			static_cast<qint64> (size),
+			size,
 			name,
 			toxThread
 		};

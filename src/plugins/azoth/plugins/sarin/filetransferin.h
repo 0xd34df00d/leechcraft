@@ -46,7 +46,7 @@ namespace Sarin
 		const quint32 FileNum_;
 
 		QString Filename_;
-		const qint64 Filesize_;
+		const quint64 Filesize_;
 
 		std::shared_ptr<QFile> File_;
 	public:
@@ -54,7 +54,7 @@ namespace Sarin
 				const QByteArray& pubkey,
 				qint32 friendNum,
 				quint32 fileNum,
-				qint64 fileSize,
+				quint64 fileSize,
 				const QString& offeredName,
 				const std::shared_ptr<ToxThread>& thread,
 				QObject *parent = nullptr);

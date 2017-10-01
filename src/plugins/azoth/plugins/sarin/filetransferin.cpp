@@ -42,7 +42,7 @@ namespace Sarin
 			const QByteArray& pubkey,
 			qint32 friendNum,
 			quint32 fileNum,
-			qint64 filesize,
+			quint64 filesize,
 			const QString& offeredName,
 			const std::shared_ptr<ToxThread>& thread,
 			QObject *parent)
