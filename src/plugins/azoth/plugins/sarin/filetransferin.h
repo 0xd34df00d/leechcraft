@@ -66,7 +66,7 @@ namespace Sarin
 		void Accept (const QString&) override;
 		void Abort () override;
 
-		void HandleData (qint32, quint32, const QByteArray&);
+		void HandleData (qint32, quint32, const QByteArray&, uint64_t);
 		void HandleFileControl (qint32, qint32, int);
 	};
 }

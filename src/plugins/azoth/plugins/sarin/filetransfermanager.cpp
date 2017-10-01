@@ -120,7 +120,6 @@ namespace Sarin
 					Util::Sequence (pThis, thread->GetFriendPubkey (friendNum)) >>
 							[=] (const QByteArray& id) { pThis->requested (friendNum, id, filenum, filesize, name); };
 				});
-		// TODO handle position and conditions.
 		cbMgr->Register<tox_callback_file_recv_chunk> (this,
 				[] (FileTransferManager *pThis,
 						uint32_t friendNum, uint32_t fileNum, uint64_t position,
@@ -131,7 +130,7 @@ namespace Sarin
 						reinterpret_cast<const char*> (rawData),
 						static_cast<int> (rawSize)
 					};
-					pThis->gotData (friendNum, fileNum, data);
+					pThis->gotData (friendNum, fileNum, data, position);
 				});
 		cbMgr->Register<tox_callback_file_chunk_request> (this, &FileTransferManager::gotChunkRequest);
 	}
