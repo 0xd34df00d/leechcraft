@@ -95,10 +95,7 @@ namespace Sarin
 					return result;
 				});
 		Util::Sequence (this, future) >>
-				[this] (uint32_t)
-				{
-					// TODO
-				};
+				[this] (uint32_t filenum) { FileNum_ = filenum; };
 
 		Util::ExecuteLater ([this] { emit stateChanged (TransferState::TSOffer); });
 	}
