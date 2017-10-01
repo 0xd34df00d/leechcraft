@@ -41,8 +41,8 @@ namespace Sarin
 {
 	class ToxAccount;
 
-	class ToxProtocol : public QObject
-					  , public IProtocol
+	class ToxProtocol final : public QObject
+							, public IProtocol
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::IProtocol)
