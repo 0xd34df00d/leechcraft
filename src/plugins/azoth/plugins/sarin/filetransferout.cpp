@@ -31,6 +31,8 @@
 #include <tox/tox.h>
 #include <util/threads/futures.h>
 #include <util/sll/delayedexecutor.h>
+#include <util/sll/either.h>
+#include <util/sll/visitor.h>
 #include "toxthread.h"
 #include "util.h"
 #include "threadexceptions.h"
@@ -71,6 +73,7 @@ namespace Sarin
 			return;
 		}
 
+		using SendFileResult_t = Util::Either<TOX_ERR_FILE_SEND, uint32_t>;
 		auto future = Thread_->ScheduleFunction ([this] (Tox *tox)
 				{
 					const auto& name = FilePath_.section ('/', -1, -1).toUtf8 ();
@@ -89,15 +92,29 @@ namespace Sarin
 							reinterpret_cast<const uint8_t*> (name.constData ()),
 							name.size (),
 							&error);
-					if (result == UINT32_MAX)
-						throw MakeCommandCodeException ("tox_file_send", error);
-
-					return result;
+					return result == UINT32_MAX ?
+							SendFileResult_t::Left (error) :
+							SendFileResult_t::Right (result);
 				});
 		Util::Sequence (this, future) >>
-				[this] (uint32_t filenum) { FileNum_ = filenum; };
-
-		Util::ExecuteLater ([this] { emit stateChanged (TransferState::TSOffer); });
+				[this] (const SendFileResult_t& result)
+				{
+					Util::Visit (result.AsVariant (),
+							[this] (uint32_t filenum)
+							{
+								FileNum_ = filenum;
+								emit stateChanged (TransferState::TSOffer);
+							},
+							[this] (TOX_ERR_FILE_SEND err)
+							{
+								qWarning () << Q_FUNC_INFO
+										<< err;
+								emit errorAppeared (TransferError::TEProtocolError,
+										tr ("Tox file send error: %1")
+												.arg (err));
+								emit stateChanged (TransferState::TSFinished);
+							});
+				};
 	}
 
 	QString FileTransferOut::GetName () const
