@@ -29,7 +29,6 @@
 
 #include "audiocalldevice.h"
 #include <cstring>
-#include <QFuture>
 #include <QtDebug>
 #include "callmanager.h"
 
