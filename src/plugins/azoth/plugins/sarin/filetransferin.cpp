@@ -108,7 +108,7 @@ namespace Sarin
 		if (friendNum != FriendNum_ || fileNum != FileNum_)
 			return;
 
-		if (position == Filesize_)
+		if (position == Filesize_ || data.isEmpty ())
 		{
 			emit transferProgress (Filesize_, Filesize_);
 			emit stateChanged (TSFinished);
