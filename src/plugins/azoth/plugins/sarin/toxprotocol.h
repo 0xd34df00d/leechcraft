@@ -73,8 +73,7 @@ namespace Sarin
 	private:
 		void LoadAccounts ();
 		void InitConnections (ToxAccount*);
-	private slots:
-		void saveAccount (ToxAccount*);
+		void SaveAccount (ToxAccount*);
 	signals:
 		void accountAdded (QObject*) override;
 		void accountRemoved (QObject*) override;

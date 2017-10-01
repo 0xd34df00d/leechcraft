@@ -110,7 +110,7 @@ namespace Sarin
 
 		auto acc = new ToxAccount { name, this };
 		acc->SetNickname (detailsPage->GetNickname ());
-		saveAccount (acc);
+		SaveAccount (acc);
 
 		Accounts_ << acc;
 		emit accountAdded (acc);
@@ -164,12 +164,12 @@ namespace Sarin
 	void ToxProtocol::InitConnections (ToxAccount *acc)
 	{
 		connect (acc,
-				SIGNAL (accountChanged (ToxAccount*)),
+				&ToxAccount::accountChanged,
 				this,
-				SLOT (saveAccount (ToxAccount*)));
+				&ToxProtocol::SaveAccount);
 	}
 
-	void ToxProtocol::saveAccount (ToxAccount *account)
+	void ToxProtocol::SaveAccount (ToxAccount *account)
 	{
 		QSettings settings { QSettings::IniFormat, QSettings::UserScope,
 				QCoreApplication::organizationName (),
