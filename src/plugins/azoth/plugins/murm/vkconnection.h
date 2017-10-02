@@ -219,7 +219,7 @@ namespace Murm
 
 		void HandleCaptcha (const QString& cid, const QString& value);
 
-		bool Q_REQUIRED_RESULT CheckFinishedReply (QNetworkReply*);
+		Q_REQUIRED_RESULT bool CheckFinishedReply (QNetworkReply*);
 		void CheckReplyData (const QVariant&, QNetworkReply*);
 	private:
 		void HandleMessage (const QVariantList&);
