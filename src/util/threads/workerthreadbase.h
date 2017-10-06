@@ -106,7 +106,7 @@ namespace Util
 		};
 
 		template<typename WorkerType, typename... Args>
-		struct Initializer : InitializerBase<WorkerType>
+		struct Initializer final : InitializerBase<WorkerType>
 		{
 			std::tuple<Args...> Args_;
 
@@ -122,7 +122,7 @@ namespace Util
 		};
 
 		template<typename WorkerType>
-		struct Initializer<WorkerType> : InitializerBase<WorkerType>
+		struct Initializer<WorkerType> final : InitializerBase<WorkerType>
 		{
 			std::unique_ptr<WorkerType> Initialize () override
 			{
