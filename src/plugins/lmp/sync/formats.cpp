@@ -76,7 +76,7 @@ namespace LMP
 		}
 	}
 
-	class OggFormat : public Format
+	class OggFormat final : public Format
 	{
 	public:
 		QString GetFormatID () const
@@ -160,7 +160,7 @@ namespace LMP
 		virtual void AppendCodec (QStringList& result) const = 0;
 	};
 
-	class AACFormat : public AACFormatBase
+	class AACFormat final : public AACFormatBase
 	{
 	public:
 		QString GetFormatID () const
@@ -184,7 +184,7 @@ namespace LMP
 		}
 	};
 
-	class FAACFormat : public AACFormatBase
+	class FAACFormat final : public AACFormatBase
 	{
 	public:
 		QString GetFormatID () const
@@ -208,7 +208,7 @@ namespace LMP
 		}
 	};
 
-	class MP3Format : public Format
+	class MP3Format final : public Format
 	{
 	public:
 		QString GetFormatID () const
@@ -245,7 +245,7 @@ namespace LMP
 		}
 	};
 
-	class WMAFormat : public Format
+	class WMAFormat final : public Format
 	{
 	public:
 		QString GetFormatID () const
