@@ -191,7 +191,7 @@ namespace Acetamide
 
 	namespace
 	{
-		class SslErrorsReaction : public ICanHaveSslErrors::ISslErrorsReaction
+		class SslErrorsReaction final : public ICanHaveSslErrors::ISslErrorsReaction
 		{
 			std::weak_ptr<QSslSocket> Sock_;
 		public:

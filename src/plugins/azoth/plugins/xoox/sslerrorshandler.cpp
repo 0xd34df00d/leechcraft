@@ -56,7 +56,7 @@ namespace Xoox
 
 	namespace
 	{
-		class SslErrorsReaction : public ICanHaveSslErrors::ISslErrorsReaction
+		class SslErrorsReaction final : public ICanHaveSslErrors::ISslErrorsReaction
 		{
 			QXmppClient * const Client_;
 
