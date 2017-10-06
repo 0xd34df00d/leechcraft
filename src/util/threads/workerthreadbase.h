@@ -103,6 +103,8 @@ namespace Util
 		struct InitializerBase
 		{
 			virtual std::unique_ptr<WorkerType> Initialize () = 0;
+
+			virtual ~InitializerBase () = default;
 		};
 
 		template<typename WorkerType, typename... Args>
