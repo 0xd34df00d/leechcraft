@@ -49,7 +49,7 @@ namespace Azoth
 		class ISslErrorsReaction
 		{
 		protected:
-			~ISslErrorsReaction () = default;
+			virtual ~ISslErrorsReaction () = default;
 		public:
 			virtual void Ignore () = 0;
 			virtual void Abort () = 0;
