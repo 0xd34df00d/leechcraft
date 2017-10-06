@@ -218,7 +218,7 @@ namespace Murm
 	void VkConnection::SendTyping (qulonglong to)
 	{
 		auto nam = Proxy_->GetNetworkAccessManager ();
-		PreparedCalls_.push_back ([this, nam, to] (const QString& key, const UrlParams_t& params)
+		PreparedCalls_.push_back ([nam, to] (const QString& key, const UrlParams_t& params)
 			{
 				QUrl url ("https://api.vk.com/method/messages.setActivity");
 				Util::UrlOperator { url }
@@ -255,7 +255,7 @@ namespace Murm
 		const auto& joined = CommaJoin (ids);
 
 		auto nam = Proxy_->GetNetworkAccessManager ();
-		PreparedCalls_.push_back ([this, nam, joined] (const QString& key, const UrlParams_t& params)
+		PreparedCalls_.push_back ([nam, joined] (const QString& key, const UrlParams_t& params)
 			{
 				QUrl url ("https://api.vk.com/method/messages.markAsRead");
 				Util::UrlOperator { url }
@@ -593,7 +593,7 @@ namespace Murm
 	{
 		const auto& joined = CommaJoin (newContents);
 		auto nam = Proxy_->GetNetworkAccessManager ();
-		PreparedCalls_.push_back ([this, joined, list, nam] (const QString& key, const UrlParams_t& params)
+		PreparedCalls_.push_back ([joined, list, nam] (const QString& key, const UrlParams_t& params)
 			{
 				QUrl url ("https://api.vk.com/method/friends.editList");
 				Util::UrlOperator { url }
@@ -619,7 +619,7 @@ namespace Murm
 		const auto& joined = CommaJoin (ids);
 		auto nam = Proxy_->GetNetworkAccessManager ();
 
-		PreparedCalls_.push_back ([this, joined, nam] (const QString& key, const UrlParams_t& params)
+		PreparedCalls_.push_back ([joined, nam] (const QString& key, const UrlParams_t& params)
 			{
 				QUrl url ("https://api.vk.com/method/storage.set");
 				Util::UrlOperator { url }
@@ -1116,7 +1116,7 @@ namespace Murm
 			return;
 
 		auto nam = Proxy_->GetNetworkAccessManager ();
-		PreparedCalls_.push_back ([this, nam] (const QString& key, const UrlParams_t& params)
+		PreparedCalls_.push_back ([nam] (const QString& key, const UrlParams_t& params)
 			{
 				QUrl url ("https://api.vk.com/method/account.setOnline");
 				Util::UrlOperator { url } ("access_token", key);
