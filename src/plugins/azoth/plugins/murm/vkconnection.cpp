@@ -63,6 +63,15 @@ namespace Murm
 		}
 
 		const QString CurrentAPIVersion { "5.25" };
+
+		QNetworkReply* Autodelete (QNetworkReply *reply)
+		{
+			QObject::connect (reply,
+					&QNetworkReply::finished,
+					reply,
+					&QObject::deleteLater);
+			return reply;
+		}
 	}
 
 	VkConnection::CommandException::CommandException (const QString& str)
@@ -228,12 +237,7 @@ namespace Murm
 
 				AddParams (url, params);
 
-				auto reply = nam->get (QNetworkRequest (url));
-				connect (reply,
-						SIGNAL (finished ()),
-						reply,
-						SLOT (deleteLater ()));
-				return reply;
+				return Autodelete (nam->get (QNetworkRequest (url)));
 			});
 		AuthMgr_->GetAuthKey ();
 	}
@@ -264,12 +268,7 @@ namespace Murm
 
 				AddParams (url, params);
 
-				auto reply = nam->get (QNetworkRequest (url));
-				connect (reply,
-						SIGNAL (finished ()),
-						reply,
-						SLOT (deleteLater ()));
-				return reply;
+				return Autodelete (nam->get (QNetworkRequest (url)));
 			});
 		AuthMgr_->GetAuthKey ();
 	}
@@ -604,12 +603,7 @@ namespace Murm
 
 				AddParams (url, params);
 
-				auto reply = nam->get (QNetworkRequest (url));
-				connect (reply,
-						SIGNAL (finished ()),
-						reply,
-						SLOT (deleteLater ()));
-				return reply;
+				return Autodelete (nam->get (QNetworkRequest (url)));
 			});
 		AuthMgr_->GetAuthKey ();
 	}
@@ -629,12 +623,7 @@ namespace Murm
 
 				AddParams (url, params);
 
-				auto reply = nam->get (QNetworkRequest (url));
-				connect (reply,
-						SIGNAL (finished ()),
-						reply,
-						SLOT (deleteLater ()));
-				return reply;
+				return Autodelete (nam->get (QNetworkRequest (url)));
 			});
 		AuthMgr_->GetAuthKey ();
 	}
@@ -701,12 +690,7 @@ namespace Murm
 
 				AddParams (url, params);
 
-				auto reply = nam->get (QNetworkRequest (url));
-				connect (reply,
-						SIGNAL (finished ()),
-						reply,
-						SLOT (deleteLater ()));
-				return reply;
+				return Autodelete (nam->get (QNetworkRequest (url)));
 			});
 		AuthMgr_->GetAuthKey ();
 	}
@@ -748,12 +732,7 @@ namespace Murm
 
 				AddParams (url, params);
 
-				auto reply = nam->get (QNetworkRequest (url));
-				connect (reply,
-						SIGNAL (finished ()),
-						reply,
-						SLOT (deleteLater ()));
-				return reply;
+				return Autodelete (nam->get (QNetworkRequest (url)));
 			});
 		AuthMgr_->GetAuthKey ();
 	}
@@ -773,12 +752,7 @@ namespace Murm
 
 				AddParams (url, params);
 
-				auto reply = nam->get (QNetworkRequest (url));
-				connect (reply,
-						SIGNAL (finished ()),
-						reply,
-						SLOT (deleteLater ()));
-				return reply;
+				return Autodelete (nam->get (QNetworkRequest (url)));
 			});
 		AuthMgr_->GetAuthKey ();
 	}
@@ -1121,12 +1095,7 @@ namespace Murm
 				QUrl url ("https://api.vk.com/method/account.setOnline");
 				Util::UrlOperator { url } ("access_token", key);
 				AddParams (url, params);
-				auto reply = nam->get (QNetworkRequest (url));
-				connect (reply,
-						SIGNAL (finished ()),
-						reply,
-						SLOT (deleteLater ()));
-				return reply;
+				return Autodelete (nam->get (QNetworkRequest (url)));
 			});
 		Logger_ (IHaveConsole::PacketDirection::Out) << "markOnline";
 		AuthMgr_->GetAuthKey ();
