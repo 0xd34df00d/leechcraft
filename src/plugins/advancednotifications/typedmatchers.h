@@ -96,7 +96,7 @@ namespace AdvancedNotifications
 		void SyncWidgetTo ();
 	};
 
-	class StringMatcher : public StringLikeMatcher
+	class StringMatcher final : public StringLikeMatcher
 	{
 	public:
 		using StringLikeMatcher::StringLikeMatcher;
@@ -106,7 +106,7 @@ namespace AdvancedNotifications
 		QString GetHRDescription () const;
 	};
 
-	class StringListMatcher : public StringLikeMatcher
+	class StringListMatcher final : public StringLikeMatcher
 	{
 	public:
 		StringListMatcher (const QStringList& variants = {});
@@ -116,7 +116,7 @@ namespace AdvancedNotifications
 		QString GetHRDescription () const;
 	};
 
-	class UrlMatcher : public StringLikeMatcher
+	class UrlMatcher final : public StringLikeMatcher
 	{
 	public:
 		UrlMatcher ();
@@ -126,7 +126,7 @@ namespace AdvancedNotifications
 		QString GetHRDescription () const;
 	};
 
-	class BoolMatcher : public TypedMatcherBase
+	class BoolMatcher final : public TypedMatcherBase
 	{
 		ANBoolFieldValue Value_ { false };
 
@@ -150,7 +150,7 @@ namespace AdvancedNotifications
 		void SyncWidgetTo ();
 	};
 
-	class IntMatcher : public TypedMatcherBase
+	class IntMatcher final : public TypedMatcherBase
 	{
 		ANIntFieldValue Value_ { 0, ANIntFieldValue::OEqual };
 
