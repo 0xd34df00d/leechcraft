@@ -88,7 +88,7 @@ namespace Snails
 			return QString::fromUtf8 (ref->getLeft ().c_str ());
 		}
 
-		class GithubProvider : public MessageListActionsProvider
+		class GithubProvider final : public MessageListActionsProvider
 		{
 		public:
 			QList<MessageListActionInfo> GetMessageActions (const Message_ptr& msg, Account*) const override
@@ -114,7 +114,7 @@ namespace Snails
 			}
 		};
 
-		class BugzillaProvider : public MessageListActionsProvider
+		class BugzillaProvider final : public MessageListActionsProvider
 		{
 		public:
 			QList<MessageListActionInfo> GetMessageActions (const Message_ptr& msg, Account*) const override
@@ -161,7 +161,7 @@ namespace Snails
 			}
 		};
 
-		class RedmineProvider : public MessageListActionsProvider
+		class RedmineProvider final : public MessageListActionsProvider
 		{
 		public:
 			QList<MessageListActionInfo> GetMessageActions (const Message_ptr& msg, Account*) const override
@@ -207,7 +207,7 @@ namespace Snails
 			}
 		};
 
-		class ReviewboardProvider : public MessageListActionsProvider
+		class ReviewboardProvider final : public MessageListActionsProvider
 		{
 		public:
 			QList<MessageListActionInfo> GetMessageActions (const Message_ptr& msg, Account*) const override
@@ -354,7 +354,7 @@ namespace Snails
 			}
 		}
 
-		class UnsubscribeProvider : public MessageListActionsProvider
+		class UnsubscribeProvider final : public MessageListActionsProvider
 		{
 		public:
 			QList<MessageListActionInfo> GetMessageActions (const Message_ptr& msg, Account *acc) const override
@@ -386,7 +386,7 @@ namespace Snails
 			}
 		};
 
-		class AttachmentsProvider : public MessageListActionsProvider
+		class AttachmentsProvider final : public MessageListActionsProvider
 		{
 			Account * const Acc_;
 		public:
