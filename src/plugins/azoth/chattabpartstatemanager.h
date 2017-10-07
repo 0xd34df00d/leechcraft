@@ -42,7 +42,7 @@ namespace Azoth
 
 	class ChatTabPartStateManager : public QObject
 	{
-		ChatTab * const Tab_;
+		const QString EntryID_;
 
 		ChatPartState PreviousState_ = CPSNone;
 		QString LastVariant_;
@@ -56,6 +56,8 @@ namespace Azoth
 
 		void HandleVariantChanged (const QString&);
 		void HandleComposingText (const QString&);
+
+		ICLEntry* GetEntry () const;
 	};
 }
 }

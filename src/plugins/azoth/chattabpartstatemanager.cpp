@@ -32,6 +32,7 @@
 #include "interfaces/azoth/iclentry.h"
 #include "chattab.h"
 #include "xmlsettingsmanager.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -39,7 +40,7 @@ namespace Azoth
 {
 	ChatTabPartStateManager::ChatTabPartStateManager (ChatTab *tab)
 	: QObject { tab }
-	, Tab_ { tab }
+	, EntryID_ { tab->GetEntryID () }
 	, TypeTimer_ { new QTimer { this } }
 	{
 		auto setState = [this] (ChatPartState st)
@@ -90,7 +91,7 @@ namespace Azoth
 		if (!XmlSettingsManager::Instance ().property ("SendChatStates").toBool ())
 			return;
 
-		auto entry = Tab_->GetICLEntry ();
+		auto entry = GetEntry ();
 		if (!entry)
 			return;
 
@@ -122,9 +123,14 @@ namespace Azoth
 		if (!XmlSettingsManager::Instance ().property ("SendChatStates").toBool ())
 			return;
 
-		auto entry = Tab_->GetICLEntry ();
+		auto entry = GetEntry ();
 		if (entry && entry->GetStatus (LastVariant_).State_ != SOffline)
 			entry->SetChatPartState (CPSInactive, LastVariant_);
+	}
+
+	ICLEntry* ChatTabPartStateManager::GetEntry () const
+	{
+		return qobject_cast<ICLEntry*> (Core::Instance ().GetEntry (EntryID_));
 	}
 }
 }
