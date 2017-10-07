@@ -91,7 +91,7 @@ namespace Azoth
 		QAction *EnableEncryption_ = nullptr;
 #endif
 
-		QString EntryID_;
+		const QString EntryID_;
 
 		QColor BgColor_;
 
