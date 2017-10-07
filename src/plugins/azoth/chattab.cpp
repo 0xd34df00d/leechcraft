@@ -505,11 +505,6 @@ namespace Azoth
 		return GetEntry<QObject> ();
 	}
 
-	ICLEntry* ChatTab::GetICLEntry () const
-	{
-		return GetEntry<ICLEntry> ();
-	}
-
 	QString ChatTab::GetEntryID () const
 	{
 		return EntryID_;

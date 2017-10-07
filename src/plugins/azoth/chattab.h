@@ -172,7 +172,6 @@ namespace Azoth
 		void SetEnabled (bool);
 
 		QObject* GetCLEntry () const;
-		ICLEntry* GetICLEntry () const;
 		QString GetEntryID () const;
 		QString GetSelectedVariant () const;
 
