@@ -173,6 +173,7 @@ namespace Azoth
 
 		QObject* GetCLEntry () const;
 		ICLEntry* GetICLEntry () const;
+		QString GetEntryID () const;
 		QString GetSelectedVariant () const;
 
 		QString ReformatTitle ();

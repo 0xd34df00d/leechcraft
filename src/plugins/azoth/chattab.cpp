@@ -510,6 +510,11 @@ namespace Azoth
 		return GetEntry<ICLEntry> ();
 	}
 
+	QString ChatTab::GetEntryID () const
+	{
+		return EntryID_;
+	}
+
 	QString ChatTab::GetSelectedVariant () const
 	{
 		return Ui_.VariantBox_->currentText ();
