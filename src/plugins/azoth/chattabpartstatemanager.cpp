@@ -95,7 +95,6 @@ namespace Azoth
 			return;
 
 		PreviousState_ = state;
-		LastVariant_ = Tab_->GetSelectedVariant ();
 
 		if (state != CPSGone ||
 				XmlSettingsManager::Instance ().property ("SendEndConversations").toBool ())
@@ -124,6 +123,8 @@ namespace Azoth
 		auto entry = Tab_->GetICLEntry ();
 		if (entry && entry->GetStatus (LastVariant_).State_ != SOffline)
 			entry->SetChatPartState (CPSInactive, LastVariant_);
+
+		LastVariant_ = variant;
 	}
 }
 }
