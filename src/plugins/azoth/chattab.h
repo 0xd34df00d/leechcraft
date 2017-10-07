@@ -113,8 +113,6 @@ namespace Azoth
 		ContactDropFilter *CDF_;
 		MsgFormatterWidget *MsgFormatter_ = nullptr;
 
-		ITransferManager *XferManager_;
-
 		QString LastLink_;
 
 		Util::FindNotificationWk *ChatFinder_;
