@@ -117,14 +117,14 @@ namespace Azoth
 		if (LastVariant_.isEmpty () || variant == LastVariant_)
 			return;
 
+		LastVariant_ = variant;
+
 		if (!XmlSettingsManager::Instance ().property ("SendChatStates").toBool ())
 			return;
 
 		auto entry = Tab_->GetICLEntry ();
 		if (entry && entry->GetStatus (LastVariant_).State_ != SOffline)
 			entry->SetChatPartState (CPSInactive, LastVariant_);
-
-		LastVariant_ = variant;
 	}
 }
 }
