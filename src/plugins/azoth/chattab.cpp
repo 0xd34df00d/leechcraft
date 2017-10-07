@@ -55,6 +55,7 @@
 #include <util/sll/util.h>
 #include <util/sll/visitor.h>
 #include <util/sll/prelude.h>
+#include <util/sll/overload.h>
 #include <util/threads/futures.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -244,7 +245,7 @@ namespace Azoth
 			new ChatTabPartStateManager { this };
 
 		connect (Ui_.VariantBox_,
-				qOverload<const QString&> (&QComboBox::currentTextChanged),
+				Util::Overload<const QString&> (&QComboBox::currentTextChanged),
 				this,
 				&ChatTab::currentVariantChanged);
 	}
