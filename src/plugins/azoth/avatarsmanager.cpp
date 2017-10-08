@@ -176,7 +176,7 @@ namespace Azoth
 			Util::Sequence (this, GetAvatar (entry, pair.first)) >>
 					[this, size, entry] (const boost::optional<QImage>& image)
 					{
-						const auto& realImg = image.get_value_or ({});
+						const auto realImg = image.get_value_or ({});
 						for (const auto& handler : Subscriptions_.value (entry).value (size))
 							handler (realImg);
 					};
