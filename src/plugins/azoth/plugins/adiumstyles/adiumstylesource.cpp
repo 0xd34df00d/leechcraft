@@ -540,9 +540,7 @@ namespace AdiumStyles
 			return templ;
 		}
 
-		auto acc = other ?
-				other->GetParentAccount () :
-				0;
+		auto acc = other->GetParentAccount ();
 
 		if (!acc && msg->ParentCLEntry ())
 		{
