@@ -147,7 +147,6 @@ namespace KBSwitch
 
 	void KBCtl::Release ()
 	{
-		XCloseDisplay (Display_);
 	}
 
 	void KBCtl::SetSwitchPolicy (SwitchPolicy policy)
