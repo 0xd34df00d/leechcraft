@@ -56,8 +56,10 @@ namespace KBSwitch
 {
 	KBCtl::KBCtl ()
 	{
+		if (!InitDisplay ())
+			return;
+
 		QAbstractEventDispatcher::instance ()->installNativeEventFilter (this);
-		InitDisplay ();
 
 		Rules_ = new RulesStorage (Display_);
 
@@ -115,7 +117,7 @@ namespace KBSwitch
 				this, "scheduleApply");
 	}
 
-	void KBCtl::InitDisplay ()
+	bool KBCtl::InitDisplay ()
 	{
 		Display_ = QX11Info::display ();
 
@@ -126,7 +128,7 @@ namespace KBSwitch
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "XKB extension not present";
-			return;
+			return false;
 		}
 
 		XkbEventType_ = reply->first_event;
@@ -137,6 +139,7 @@ namespace KBSwitch
 		NetActiveWinAtom_ = Util::XWrapper::Instance ().GetAtom ("_NET_ACTIVE_WINDOW");
 
 		Available_ = true;
+		return true;
 	}
 
 	KBCtl& KBCtl::Instance ()

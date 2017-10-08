@@ -111,7 +111,7 @@ namespace KBSwitch
 
 		void SetWindowLayout (ulong);
 
-		void InitDisplay ();
+		bool InitDisplay ();
 		void CheckExtWM ();
 		void SetupNonExtListeners ();
 
