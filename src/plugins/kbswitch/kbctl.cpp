@@ -126,6 +126,7 @@ namespace KBSwitch
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "XKB extension not present";
+			return;
 		}
 
 		XkbEventType_ = reply->first_event;
