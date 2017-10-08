@@ -49,10 +49,10 @@ namespace KBSwitch
 		Q_OBJECT
 
 		Display *Display_ = 0;
-		int XkbEventType_;
+		int XkbEventType_ = 0;
 
-		ulong Window_;
-		ulong NetActiveWinAtom_;
+		ulong Window_ = 0;
+		ulong NetActiveWinAtom_ = 0;
 
 		bool ExtWM_ = false;
 
@@ -66,6 +66,8 @@ namespace KBSwitch
 		RulesStorage *Rules_;
 
 		bool ApplyScheduled_ = false;
+
+		bool Available_ = false;
 
 		KBCtl ();
 	public:

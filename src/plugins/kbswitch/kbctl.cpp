@@ -135,6 +135,8 @@ namespace KBSwitch
 
 		Window_ = DefaultRootWindow (Display_);
 		NetActiveWinAtom_ = Util::XWrapper::Instance ().GetAtom ("_NET_ACTIVE_WINDOW");
+
+		Available_ = true;
 	}
 
 	KBCtl& KBCtl::Instance ()
@@ -249,6 +251,9 @@ namespace KBSwitch
 
 	bool KBCtl::nativeEventFilter (const QByteArray& eventType, void *msg, long int*)
 	{
+		if (!Available_)
+			return false;
+
 		if (eventType != "xcb_generic_event_t")
 			return false;
 
@@ -316,6 +321,9 @@ namespace KBSwitch
 
 	void KBCtl::CheckExtWM ()
 	{
+		if (!Available_)
+			return;
+
 		Atom type;
 		int format;
 		uchar *prop = nullptr;
@@ -335,6 +343,9 @@ namespace KBSwitch
 
 	void KBCtl::SetupNonExtListeners ()
 	{
+		if (!Available_)
+			return;
+
 		uint count = 0;
 		Window d1, d2;
 		Window *windows = nullptr;
