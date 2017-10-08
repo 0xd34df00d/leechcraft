@@ -49,7 +49,7 @@ namespace Azoth
 		Q_INTERFACES (ITabWidget)
 
 		Ui::ConsoleWidget Ui_;
-		QObject *ParentMultiTabs_;
+		QObject *ParentMultiTabs_ = nullptr;
 		TabClassInfo TabClass_;
 
 		QPointer<QObject> AsObject_;

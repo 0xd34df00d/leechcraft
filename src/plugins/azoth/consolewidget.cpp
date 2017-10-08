@@ -38,7 +38,6 @@ namespace Azoth
 {
 	ConsoleWidget::ConsoleWidget (QObject *obj, QWidget *parent)
 	: QWidget (parent)
-	, ParentMultiTabs_ (0)
 	, AsObject_ (obj)
 	, AsAccount_ (qobject_cast<IAccount*> (obj))
 	, AsConsole_ (qobject_cast<IHaveConsole*> (obj))
