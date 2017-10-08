@@ -67,7 +67,9 @@ namespace Metacontacts
 			}
 
 			const auto account = entry->GetParentAccount ();
-			const auto proto = qobject_cast<IProtocol*> (account->GetParentProtocol ());
+			const auto proto = account ?
+					qobject_cast<IProtocol*> (account->GetParentProtocol ()) :
+					nullptr;
 
 			if (!account || !proto)
 			{
