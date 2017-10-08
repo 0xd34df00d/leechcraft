@@ -321,7 +321,7 @@ namespace Mellonetray
 		default:
 			if (ev->response_type == XCB_DAMAGE_NOTIFY + DamageEvent_)
 			{
-				auto dmg = static_cast<xcb_damage_notify_event_t*> (ev);
+				auto dmg = static_cast<xcb_damage_notify_event_t*> (msg);
 				Update (dmg->drawable);
 			}
 			break;
