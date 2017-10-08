@@ -44,13 +44,6 @@ namespace Azoth
 	, AsConsole_ (qobject_cast<IHaveConsole*> (obj))
 	, Format_ (AsConsole_->GetPacketFormat ())
 	{
-		if (!AsAccount_ || !AsConsole_)
-			qWarning () << Q_FUNC_INFO
-					<< "oh shi~,"
-					<< obj
-					<< "doesn't implement IAccount or IHaveConsole,"
-					<< "we definitely gonna segfault soon";
-
 		Ui_.setupUi (this);
 
 		TabClassInfo temp =
