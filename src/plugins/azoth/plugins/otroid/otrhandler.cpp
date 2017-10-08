@@ -285,8 +285,9 @@ namespace OTRoid
 							GetAccountName (QString::fromUtf8 (acc)).toUtf8 ();
 
 					const char *orig = name.constData ();
-					char *result = static_cast<char*> (malloc (name.size ()));
-					std::strncpy (result, orig, name.size ());
+					char *result = static_cast<char*> (malloc (name.size () + 1));
+					// QByteArray is guaranteed to have a terminating \0
+					std::strncpy (result, orig, name.size () + 1);
 					return result;
 				};
 		OtrOps_.account_name_free = [] (void*, const char *name) { delete [] name; };
