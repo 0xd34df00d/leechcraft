@@ -54,7 +54,7 @@ namespace CleanWeb
 		qint8 version = 0;
 		in >> version;
 
-		if (version < 1 || version > 2)
+		if (version < 1 || version > 3)
 		{
 			qWarning () << Q_FUNC_INFO
 				<< "unknown version"
