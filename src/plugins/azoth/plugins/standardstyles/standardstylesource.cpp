@@ -273,11 +273,12 @@ namespace StandardStyles
 			if (advMsg && advMsg->IsDelivered ())
 				statusIconName = "notification_chat_delivery_ok";
 
-			const auto entry = qobject_cast<IMUCEntry*> (other->GetParentCLEntryObject ());
-			const auto acc = other->GetParentAccount ();
+			const auto entry = other ? qobject_cast<IMUCEntry*> (other->GetParentCLEntryObject ()) : nullptr;
 			const auto& nick = entry ?
 					entry->GetNick () :
-					acc->GetOurNick ();
+					(other ?
+							other->GetParentAccount ()->GetOurNick () :
+							QString {});
 			if (body.startsWith ("/leechcraft "))
 			{
 				body = body.mid (12);
