@@ -317,7 +317,7 @@ namespace Krigstask
 					case QImage::Format_RGB32:
 					case QImage::Format_ARGB32_Premultiplied:
 					{
-						auto px = reinterpret_cast<ushort*> (image.scanLine (i));
+						auto px = reinterpret_cast<QRgb*> (image.scanLine (i));
 						const auto end = px + width;
 						for (; px != end; ++px)
 							*px = ((*px << 24) & 0xff000000) | ((*px << 8) & 0x00ff0000) |
