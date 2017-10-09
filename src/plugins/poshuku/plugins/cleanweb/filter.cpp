@@ -62,19 +62,17 @@ namespace CleanWeb
 			return in;
 		}
 
-		if (version >= 1)
-		{
-			qint8 cs;
-			in >> cs;
-			opt.Case_ = cs ?
-				Qt::CaseInsensitive :
-				Qt::CaseSensitive;
-			qint8 mt;
-			in >> mt;
-			opt.MatchType_ = static_cast<FilterOption::MatchType> (mt);
-			in >> opt.Domains_
-				>> opt.NotDomains_;
-		}
+		qint8 cs;
+		in >> cs;
+		opt.Case_ = cs ?
+			Qt::CaseInsensitive :
+			Qt::CaseSensitive;
+		qint8 mt;
+		in >> mt;
+		opt.MatchType_ = static_cast<FilterOption::MatchType> (mt);
+		in >> opt.Domains_
+			>> opt.NotDomains_;
+
 		if (version == 2)
 		{
 			bool abort = false;
