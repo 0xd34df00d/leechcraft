@@ -133,7 +133,7 @@ namespace Aggregator
 			bool rr = ItemsWidget_->IsItemRead (right.row ());
 			if (lr && !rr)
 				return true;
-			else if ((lr && rr) || (!lr && !rr))
+			else if (lr == rr)
 				return QSortFilterProxyModel::lessThan (left, right);
 			else
 				return false;
