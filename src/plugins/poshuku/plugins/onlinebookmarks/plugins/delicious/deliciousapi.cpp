@@ -113,9 +113,10 @@ namespace Delicious
 			}
 		}
 
-		qWarning () << Q_FUNC_INFO
-				<< "Parsing finished with error"
-				<< xml.errorString ();
+		if (xml.hasError ())
+			qWarning () << Q_FUNC_INFO
+					<< "Parsing finished with error"
+					<< xml.errorString ();
 
 		return list;
 	}
