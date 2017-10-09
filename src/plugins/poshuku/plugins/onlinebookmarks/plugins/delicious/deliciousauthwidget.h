@@ -27,8 +27,7 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_PLUGINS_DELICIOUS_DELICIOUSAUTHWIDGET_H
-#define PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_PLUGINS_DELICIOUS_DELICIOUSAUTHWIDGET_H
+#pragma once
 
 #include <QWidget>
 #include <interfaces/iauthwidget.h>
@@ -58,5 +57,3 @@ namespace Delicious
 }
 }
 }
-
-#endif // PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_PLUGINS_DELICIOUS_DELICIOUSAUTHWIDGET_H

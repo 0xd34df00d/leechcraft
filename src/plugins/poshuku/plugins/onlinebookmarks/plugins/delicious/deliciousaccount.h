@@ -27,8 +27,7 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_PLUGINS_DELICIOUS_DELICIOUSACCOUNT_H
-#define PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_PLUGINS_DELICIOUS_DELICIOUSACCOUNT_H
+#pragma once
 
 #include <QObject>
 #include <QDateTime>
@@ -58,7 +57,6 @@ namespace Delicious
 		QDateTime LastDownload_;
 		QVariantList DownloadedBookmarks_;
 	public:
-
 		enum AuthType
 		{
 			ATHttpAuth,
@@ -95,5 +93,3 @@ namespace Delicious
 }
 }
 }
-
-#endif // PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_PLUGINS_DELICIOUS_DELICIOUSACCOUNT_H
