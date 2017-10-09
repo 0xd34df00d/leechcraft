@@ -218,8 +218,8 @@ namespace Xoox
 					<< ver;
 			return;
 		}
-		if (ver >= 1)
-			stream >> features;
+
+		stream >> features;
 		if (ver >= 2)
 			stream >> identities;
 
