@@ -41,10 +41,6 @@ namespace OnlineBookmarks
 {
 namespace Delicious
 {
-	DeliciousApi::DeliciousApi ()
-	{
-	}
-
 	QString DeliciousApi::GetAuthUrl (const DeliciousAccount::AuthType& at) const
 	{
 		if (at == DeliciousAccount::ATHttpAuth)

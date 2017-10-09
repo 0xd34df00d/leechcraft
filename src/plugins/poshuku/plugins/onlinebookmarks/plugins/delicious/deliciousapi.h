@@ -45,7 +45,7 @@ namespace Delicious
 	{
 		Q_OBJECT
 	public:
-		DeliciousApi ();
+		DeliciousApi () = default;
 
 		QString GetAuthUrl (const DeliciousAccount::AuthType& at = DeliciousAccount::ATHttpAuth) const;
 		QString GetUploadUrl (const DeliciousAccount::AuthType& at = DeliciousAccount::ATHttpAuth) const;
