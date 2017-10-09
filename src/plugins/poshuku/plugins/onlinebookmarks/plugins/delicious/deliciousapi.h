@@ -43,7 +43,6 @@ namespace Delicious
 {
 	class DeliciousApi : public QObject
 	{
-		Q_OBJECT
 	public:
 		DeliciousApi () = default;
 
