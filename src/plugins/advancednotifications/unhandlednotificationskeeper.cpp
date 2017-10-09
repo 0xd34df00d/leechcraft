@@ -115,7 +115,7 @@ namespace AdvancedNotifications
 						result [parent] << item;
 				}
 				else
-					result [item];
+					result.insert (item, {});
 			return result;
 		}
 	}
