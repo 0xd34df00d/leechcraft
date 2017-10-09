@@ -160,7 +160,7 @@ namespace Azoth
 		{
 			const bool leftIsMuc = left.data (Core::CLRIsMUCCategory).toBool ();
 			const bool rightIsMuc = right.data (Core::CLRIsMUCCategory).toBool ();
-			if ((leftIsMuc && rightIsMuc) || (!leftIsMuc && !rightIsMuc))
+			if (leftIsMuc == rightIsMuc)
 				return QSortFilterProxyModel::lessThan (left, right);
 			else
 				return rightIsMuc;
