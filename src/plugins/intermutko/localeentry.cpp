@@ -70,9 +70,8 @@ namespace Intermutko
 		qint32 lang = 0;
 		qint32 country = 0;
 		in >> lang
-				>> country;
-		if (version >= 1)
-				in >> entry.Q_;
+				>> country
+				>> entry.Q_;
 		entry.Language_ = static_cast<QLocale::Language> (lang);
 		entry.Country_ = static_cast<QLocale::Country> (country);
 		return in;
