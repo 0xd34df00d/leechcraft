@@ -29,7 +29,6 @@
 
 #include "deliciousapi.h"
 #include <QtDebug>
-#include <QStringList>
 #include <QDateTime>
 #include <QXmlStreamReader>
 
