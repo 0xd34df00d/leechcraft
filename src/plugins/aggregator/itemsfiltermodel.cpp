@@ -39,10 +39,8 @@ namespace Aggregator
 {
 	ItemsFilterModel::ItemsFilterModel (QObject *parent)
 	: QSortFilterProxyModel (parent)
-	, HideRead_ (false)
 	, UnreadOnTop_ (XmlSettingsManager::Instance ()->
 			property ("UnreadOnTop").toBool ())
-	, ItemsWidget_ (0)
 	{
 		setDynamicSortFilter (true);
 

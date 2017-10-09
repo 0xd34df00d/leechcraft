@@ -45,10 +45,10 @@ namespace Aggregator
 	{
 		Q_OBJECT
 
-		bool HideRead_;
+		bool HideRead_ = false;
 		bool UnreadOnTop_;
 		QSet<QString> ItemCategories_;
-		ItemsWidget *ItemsWidget_;
+		ItemsWidget *ItemsWidget_ = nullptr;
 		QSet<IDType_t> TaggedItems_;
 	public:
 		ItemsFilterModel (QObject* = 0);
