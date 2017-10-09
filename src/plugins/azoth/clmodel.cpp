@@ -188,7 +188,7 @@ namespace Azoth
 				continue;
 
 			const auto serializedMuc = qobject_cast<IMUCEntry*> (serializedObj);
-			if ((targetMuc && serializedMuc) || (!targetMuc && !serializedMuc))
+			if (static_cast<bool> (targetMuc) == static_cast<bool> (serializedMuc))
 				continue;
 
 			auto muc = serializedMuc ? serializedMuc : targetMuc;
