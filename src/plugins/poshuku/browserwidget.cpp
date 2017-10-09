@@ -1132,7 +1132,7 @@ namespace Poshuku
 				}
 
 				bool hasChildren = false;
-				auto childrenize = [this, &hasChildren] () -> void
+				auto childrenize = [this, &hasChildren]
 				{
 					if (hasChildren)
 						return;
