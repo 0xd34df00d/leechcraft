@@ -177,7 +177,13 @@ namespace Util
 	void XmlSettingsDialog::MergeXml (const QByteArray& newXml)
 	{
 		QDomDocument newDoc;
-		newDoc.setContent (newXml);
+		if (!newDoc.setContent (newXml))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to parse XML"
+					<< newXml;
+			return;
+		}
 
 		QList<QByteArray> props = WorkingObject_->dynamicPropertyNames ();
 
