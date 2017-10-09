@@ -50,10 +50,6 @@ namespace Aggregator
 				this, "handleUnreadOnTopChanged");
 	}
 
-	ItemsFilterModel::~ItemsFilterModel ()
-	{
-	}
-
 	void ItemsFilterModel::SetItemsWidget (ItemsWidget *w)
 	{
 		ItemsWidget_ = w;

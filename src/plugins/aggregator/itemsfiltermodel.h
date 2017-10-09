@@ -52,7 +52,6 @@ namespace Aggregator
 		QSet<IDType_t> TaggedItems_;
 	public:
 		ItemsFilterModel (QObject* = 0);
-		virtual ~ItemsFilterModel ();
 
 		void SetItemsWidget (ItemsWidget*);
 		void SetHideRead (bool);
