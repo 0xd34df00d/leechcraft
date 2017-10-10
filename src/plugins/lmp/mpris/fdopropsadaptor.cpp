@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "fdopropsadaptor.h"
+#include <cassert>
 #include <QVariantMap>
 #include <QStringList>
 #include <QMetaMethod>
@@ -43,8 +44,14 @@ namespace LMP
 namespace MPRIS
 {
 	FDOPropsAdaptor::FDOPropsAdaptor (QObject *parent)
-	: QDBusAbstractAdaptor (parent)
+	: QDBusAbstractAdaptor { parent }
+	, Context_ { dynamic_cast<QDBusContext*> (parent) }
 	{
+		if (!Context_)
+			qWarning () << Q_FUNC_INFO
+					<< parent
+					<< "doesn't implement QDBusContext";
+		assert (Context_);
 	}
 
 	void FDOPropsAdaptor::Notify (const QString& iface, const QString& prop, const QVariant& val)
@@ -103,9 +110,8 @@ namespace MPRIS
 
 		if (!prop.isWritable ())
 		{
-			auto context = dynamic_cast<QDBusContext*> (parent ());
-			if (context->calledFromDBus ())
-				context->sendErrorReply (QDBusError::AccessDenied, propName + " isn't writable");
+			if (Context_ && Context_->calledFromDBus ())
+				Context_->sendErrorReply (QDBusError::AccessDenied, propName + " isn't writable");
 			return;
 		}
 
@@ -139,9 +145,8 @@ namespace MPRIS
 			}
 		}
 
-		auto context = dynamic_cast<QDBusContext*> (parent ());
-		if (context->calledFromDBus ())
-			context->sendErrorReply (QDBusError::InvalidMember, "no such property " + prop);
+		if (Context_ && Context_->calledFromDBus ())
+			Context_->sendErrorReply (QDBusError::InvalidMember, "no such property " + prop);
 
 		return false;
 	}

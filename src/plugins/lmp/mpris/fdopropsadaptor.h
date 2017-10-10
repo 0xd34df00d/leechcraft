@@ -32,6 +32,8 @@
 #include <QDBusAbstractAdaptor>
 #include <QDBusVariant>
 
+class QDBusContext;
+
 namespace LeechCraft
 {
 namespace LMP
@@ -43,6 +45,8 @@ namespace MPRIS
 		Q_OBJECT
 
 		Q_CLASSINFO ("D-Bus Interface", "org.freedesktop.DBus.Properties")
+
+		QDBusContext * const Context_;
 	public:
 		FDOPropsAdaptor (QObject*);
 
