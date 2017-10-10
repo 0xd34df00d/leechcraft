@@ -39,7 +39,7 @@ namespace Util
 	struct ServiceInfo
 	{
 		QString DefaultHost_;
-		int DefaultPort_;
+		int DefaultPort_ = 0;
 		QByteArray EnvPrefix_;
 
 		bool UseSslByDefault_ = true;
