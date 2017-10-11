@@ -777,21 +777,21 @@ namespace Util
 
 	bool XWrapper::SendMessage (Window wid, Atom atom, ulong d0, ulong d1, ulong d2, ulong d3, ulong d4)
 	{
-		XClientMessageEvent msg;
-		msg.window = wid;
-		msg.type = ClientMessage;
-		msg.message_type = atom;
-		msg.send_event = true;
-		msg.display = Display_;
-		msg.format = 32;
-		msg.data.l [0] = d0;
-		msg.data.l [1] = d1;
-		msg.data.l [2] = d2;
-		msg.data.l [3] = d3;
-		msg.data.l [4] = d4;
+		XEvent msg;
+		msg.xclient.window = wid;
+		msg.xclient.type = ClientMessage;
+		msg.xclient.message_type = atom;
+		msg.xclient.send_event = true;
+		msg.xclient.display = Display_;
+		msg.xclient.format = 32;
+		msg.xclient.data.l [0] = d0;
+		msg.xclient.data.l [1] = d1;
+		msg.xclient.data.l [2] = d2;
+		msg.xclient.data.l [3] = d3;
+		msg.xclient.data.l [4] = d4;
 
-		return XSendEvent (Display_, AppWin_, false, SubstructureRedirectMask | SubstructureNotifyMask,
-				reinterpret_cast<XEvent*> (&msg)) == Success;
+		auto flags = SubstructureRedirectMask | SubstructureNotifyMask;
+		return XSendEvent (Display_, AppWin_, false, flags, &msg) == Success;
 	}
 
 	void XWrapper::initialize ()
