@@ -35,8 +35,8 @@
 #include <QMainWindow>
 #include <util/xpc/util.h>
 #include <util/sll/parsejson.h>
-#include <interfaces/core/irootwindowsmanager.h>
 #include <util/sll/util.h>
+#include <interfaces/core/irootwindowsmanager.h>
 #include "account.h"
 #include "core.h"
 
