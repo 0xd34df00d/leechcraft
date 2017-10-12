@@ -111,6 +111,9 @@ namespace GoogleDrive
 
 	void AuthManager::handleDialogFinished (int code)
 	{
+		if (!InputDialog_)
+			return;
+
 		InputDialog_->deleteLater ();
 		Account *acc = Dialog2Account_.take (InputDialog_);
 		const auto guard = Util::MakeScopeGuard ([this] { InputDialog_ = nullptr; });
@@ -118,8 +121,7 @@ namespace GoogleDrive
 		if (code == QDialog::Rejected)
 			return;
 
-		if (InputDialog_ &&
-				InputDialog_->textValue ().isEmpty ())
+		if (InputDialog_->textValue ().isEmpty ())
 			return;
 
 		RequestAuthToken (InputDialog_->textValue (), acc);
