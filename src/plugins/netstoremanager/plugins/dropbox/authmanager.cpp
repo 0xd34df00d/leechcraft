@@ -111,7 +111,7 @@ namespace DBox
 
 		InputDialog_->deleteLater ();
 		Account *acc = Dialog2Account_.take (InputDialog_);
-		const auto guard = Util::MakeScopeGuard ([this] { InputDialog_ = nullptr; })
+		const auto guard = Util::MakeScopeGuard ([this] { InputDialog_ = nullptr; });
 
 		if (code == QDialog::Rejected)
 			return;
