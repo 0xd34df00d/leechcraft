@@ -36,6 +36,7 @@
 #include <interfaces/core/irootwindowsmanager.h>
 #include <util/xpc/util.h>
 #include <util/sll/parsejson.h>
+#include <util/sll/util.h>
 #include "account.h"
 #include "core.h"
 
@@ -107,7 +108,7 @@ namespace DBox
 	{
 		InputDialog_->deleteLater ();
 		Account *acc = Dialog2Account_.take (InputDialog_);
-		std::shared_ptr<void> guard (nullptr, [this] (void*) { InputDialog_ = 0; });
+		const auto guard = Util::MakeScopeGuard ([this] { InputDialog_ = nullptr; })
 
 		if (code == QDialog::Rejected)
 			return;
