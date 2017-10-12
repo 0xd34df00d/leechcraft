@@ -77,7 +77,7 @@ namespace KBSwitch
 			PerWindow
 		};
 	private:
-		SwitchPolicy Policy_;
+		SwitchPolicy Policy_ { SwitchPolicy::Global };
 	public:
 		KBCtl (const KBCtl&) = delete;
 		KBCtl& operator= (const KBCtl&) = delete;
