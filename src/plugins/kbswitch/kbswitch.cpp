@@ -100,8 +100,6 @@ namespace KBSwitch
 
 	void Plugin::Release ()
 	{
-		if (QApplication::arguments ().contains ("--desktop"))
-			KBCtl::Instance ().Release ();
 	}
 
 	QString Plugin::GetName () const

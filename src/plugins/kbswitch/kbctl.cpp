@@ -148,10 +148,6 @@ namespace KBSwitch
 		return ctl;
 	}
 
-	void KBCtl::Release ()
-	{
-	}
-
 	void KBCtl::SetSwitchPolicy (SwitchPolicy policy)
 	{
 		Policy_ = policy;

@@ -83,7 +83,6 @@ namespace KBSwitch
 		KBCtl& operator= (const KBCtl&) = delete;
 
 		static KBCtl& Instance ();
-		void Release ();
 
 		void SetSwitchPolicy (SwitchPolicy);
 
