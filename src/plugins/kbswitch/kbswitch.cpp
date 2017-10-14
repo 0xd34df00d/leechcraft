@@ -54,7 +54,7 @@ namespace KBSwitch
 
 		Proxy_ = proxy;
 
-		SettingsDialog_.reset (new Util::XmlSettingsDialog);
+		SettingsDialog_ = std::make_shared<Util::XmlSettingsDialog> ();
 		SettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"kbswitchsettings.xml");
 
@@ -82,7 +82,7 @@ namespace KBSwitch
 				this,
 				SLOT(handleCurrentWindowChanged (int, int)));
 
-		Indicator_.reset (new QuarkComponent ("kbswitch", "IndicatorQuark.qml"));
+		Indicator_ = std::make_shared<QuarkComponent> ("kbswitch", "IndicatorQuark.qml");
 		Indicator_->DynamicProps_.append ({ "KBSwitch_proxy", new QuarkProxy });
 		Indicator_->ImageProviders_.append ({ "KBSwitch_flags", new FlagIconProvider });
 
