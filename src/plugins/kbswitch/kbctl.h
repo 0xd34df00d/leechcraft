@@ -48,7 +48,7 @@ namespace KBSwitch
 	{
 		Q_OBJECT
 
-		Display *Display_ = 0;
+		Display * const Display_;
 		int XkbEventType_ = 0;
 
 		ulong Window_ = 0;

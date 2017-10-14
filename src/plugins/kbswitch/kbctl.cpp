@@ -55,6 +55,7 @@ namespace LeechCraft
 namespace KBSwitch
 {
 	KBCtl::KBCtl ()
+	: Display_ { QX11Info::display () }
 	{
 		if (!InitDisplay ())
 			return;
@@ -119,8 +120,6 @@ namespace KBSwitch
 
 	bool KBCtl::InitDisplay ()
 	{
-		Display_ = QX11Info::display ();
-
 		const auto conn = QX11Info::connection ();
 		const auto reply = xcb_get_extension_data (conn, &xcb_xkb_id);
 
