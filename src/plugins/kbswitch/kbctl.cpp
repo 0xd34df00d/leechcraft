@@ -56,13 +56,12 @@ namespace KBSwitch
 {
 	KBCtl::KBCtl ()
 	: Display_ { QX11Info::display () }
+	, Rules_ { new RulesStorage { Display_ } }
 	{
 		if (!InitDisplay ())
 			return;
 
 		QAbstractEventDispatcher::instance ()->installNativeEventFilter (this);
-
-		Rules_ = new RulesStorage (Display_);
 
 		const auto conn = QX11Info::connection ();
 

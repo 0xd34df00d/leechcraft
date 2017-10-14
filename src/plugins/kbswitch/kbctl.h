@@ -63,7 +63,7 @@ namespace KBSwitch
 
 		QHash<ulong, uchar> Win2Group_;
 
-		RulesStorage *Rules_ = nullptr;
+		RulesStorage * const Rules_;
 
 		bool ApplyScheduled_ = false;
 
