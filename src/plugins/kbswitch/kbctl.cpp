@@ -375,8 +375,8 @@ namespace KBSwitch
 		size_t groupCount = 0;
 		for (; groupCount < XkbNumKbdGroups && group [groupCount]; ++groupCount) ;
 
-		char **result = new char* [groupCount];
-		XGetAtomNames (Display_, group, groupCount, result);
+		std::unique_ptr<char*[]> result { new char* [groupCount] };
+		XGetAtomNames (Display_, group, groupCount, result.get ());
 
 		const auto& layoutsD2N = Rules_->GetLayoutsD2N ();
 		const auto& varredLayouts = Rules_->GetVariantsD2Layouts ();
@@ -406,7 +406,6 @@ namespace KBSwitch
 				continue;
 			}
 		}
-		delete [] result;
 
 		XkbFreeNames (desc, XkbSymbolsNameMask | XkbGroupNamesMask, True);
 	}
