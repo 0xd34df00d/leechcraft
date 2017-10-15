@@ -115,6 +115,7 @@ namespace KBSwitch
 					"RepeatTimeout"
 				},
 				this, "scheduleApply");
+		scheduleApply ();
 	}
 
 	bool KBCtl::InitDisplay ()
