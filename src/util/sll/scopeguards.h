@@ -36,7 +36,7 @@ namespace LeechCraft
 {
 namespace Util
 {
-	auto MakeEndGroupScopeGuard (QSettings& settings)
+	inline auto MakeEndGroupScopeGuard (QSettings& settings)
 	{
 		return MakeScopeGuard ([&settings] { settings.endGroup (); });
 	}
