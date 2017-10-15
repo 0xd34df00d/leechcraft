@@ -16,6 +16,15 @@
 					<label value="Keyboard layout per tab" />
 				</option>
 			</item>
+			<item type="combobox" property="GlobalSwitchingPolicy">
+				<label value="Keyboard layout switching policy (system-wide):" />
+				<option name="global" default="true">
+					<label value="Single global layout" />
+				</option>
+				<option name="perWindow">
+					<label value="Per-window layout" />
+				</option>
+			</item>
 			<item type="groupbox" checkable="true" property="ManageSystemWide" default="false">
 				<label value="Manage keyboard layouts system-wide" />
 				<item type="combobox" property="KeyboardModel" mayHaveDataSource="true">

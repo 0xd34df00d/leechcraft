@@ -109,6 +109,7 @@ namespace KBSwitch
 
 		XmlSettingsManager::Instance ().RegisterObject ({
 					"ManageSystemWide",
+					"GlobalSwitchingPolicy",
 					"KeyboardModel",
 					"ManageKeyRepeat",
 					"RepeatRate",
@@ -452,6 +453,19 @@ namespace KBSwitch
 		XkbGetAutoRepeatRate (Display_, XkbUseCoreKbd, &timeout, &rate);
 	}
 
+	void KBCtl::ApplyGlobalSwitchingPolicy ()
+	{
+		const auto& prop = XmlSettingsManager::Instance ().property ("GlobalSwitchingPolicy").toString ();
+		if (prop == "global")
+			Policy_ = SwitchPolicy::Global;
+		else if (prop == "perWindow")
+			Policy_ = SwitchPolicy::PerWindow;
+		else
+			qWarning () << Q_FUNC_INFO
+					<< "unknown global switching policy"
+					<< prop;
+	}
+
 	void KBCtl::apply ()
 	{
 		ApplyScheduled_ = false;
@@ -463,6 +477,8 @@ namespace KBSwitch
 		settings.setValue ("Groups", Groups_);
 		settings.setValue ("Variants", Variants_);
 		settings.endGroup ();
+
+		ApplyGlobalSwitchingPolicy ();
 
 		if (!XmlSettingsManager::Instance ()
 				.property ("ManageSystemWide").toBool ())

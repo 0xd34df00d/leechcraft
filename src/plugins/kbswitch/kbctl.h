@@ -119,6 +119,7 @@ namespace KBSwitch
 		void AssignWindow (ulong);
 
 		void ApplyKeyRepeat ();
+		void ApplyGlobalSwitchingPolicy ();
 	public slots:
 		void scheduleApply ();
 		void apply ();
