@@ -52,7 +52,7 @@
 #include <util/gui/findnotificationwk.h>
 #include <util/sll/lambdaeventfilter.h>
 #include <util/sll/urloperator.h>
-#include <util/sll/util.h>
+#include <util/sll/scopeguards.h>
 #include <util/sll/visitor.h>
 #include <util/sll/prelude.h>
 #include <util/sll/overload.h>
@@ -1424,7 +1424,7 @@ namespace Azoth
 					QCoreApplication::applicationName () + "_Azoth");
 
 			settings.beginGroup (groupName);
-			auto guard = Util::MakeScopeGuard ([&settings] { settings.endGroup (); });
+			auto guard = Util::MakeEndGroupScopeGuard (settings);
 
 			if (settings.value ("Enabled").toStringList ().contains (entryId))
 				return true;
