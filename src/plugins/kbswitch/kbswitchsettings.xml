@@ -5,7 +5,7 @@
 		<tab>
 			<label value="General settings" />
 			<item type="combobox" property="SwitchingPolicy">
-				<label value="Keboard layout switching policy (LeechCraft window):" />
+				<label value="Keyboard layout switching policy (LeechCraft window):" />
 				<option name="global" default="true">
 					<label value="Use system layout" />
 				</option>
