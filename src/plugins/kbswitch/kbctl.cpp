@@ -375,7 +375,7 @@ namespace KBSwitch
 		size_t groupCount = 0;
 		for (; groupCount < XkbNumKbdGroups && group [groupCount]; ++groupCount) ;
 
-		std::unique_ptr<char*[]> result { new char* [groupCount] };
+		auto result = std::make_unique<char*[]> (groupCount);
 		XGetAtomNames (Display_, group, groupCount, result.get ());
 
 		const auto& layoutsD2N = Rules_->GetLayoutsD2N ();
