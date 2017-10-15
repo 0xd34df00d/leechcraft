@@ -52,9 +52,9 @@ namespace KBSwitch
 		QHash<QWidget*, int> Widget2KBLayoutIndex_;
 		QHash<QByteArray, int> TabClass2KBLayoutIndex_;
 
-		QWidget *LastCurrentWidget_;
+		QWidget *LastCurrentWidget_ = nullptr;
 	public:
-		KeyboardLayoutSwitcher (QObject *parent = 0);
+		KeyboardLayoutSwitcher (QObject *parent = nullptr);
 
 		bool IsGlobalPolicy () const;
 	public slots:

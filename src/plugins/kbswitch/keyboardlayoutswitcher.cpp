@@ -32,11 +32,10 @@
 #include <QWidget>
 #include "xmlsettingsmanager.h"
 #include <interfaces/ihavetabs.h>
-#include "qmetatype.h"
 
 #ifdef Q_OS_LINUX
-	#include <X11/Xlib.h>
-	#include <X11/XKBlib.h>
+#include <X11/Xlib.h>
+#include <X11/XKBlib.h>
 #endif
 
 namespace LeechCraft
@@ -44,8 +43,7 @@ namespace LeechCraft
 namespace KBSwitch
 {
 	KeyboardLayoutSwitcher::KeyboardLayoutSwitcher (QObject *parent)
-	: QObject (parent)
-	, LastCurrentWidget_ (0)
+	: QObject { parent }
 	{
 		XmlSettingsManager::Instance ().RegisterObject ("SwitchingPolicy",
 				this, "setSwitchingPolicy");
@@ -175,6 +173,10 @@ namespace KBSwitch
 			CurrentSwitchingPloicy_ = SwitchingPolicy::Plugin;
 		else if (propStr == "tab")
 			CurrentSwitchingPloicy_ = SwitchingPolicy::Tab;
+		else
+			qWarning () << Q_FUNC_INFO
+					<< "unknown property value"
+					<< propStr;
 	}
 
 	void KeyboardLayoutSwitcher::handleRemoveWidget (QWidget *widget)
