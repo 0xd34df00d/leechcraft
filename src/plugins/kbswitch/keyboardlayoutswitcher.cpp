@@ -31,8 +31,8 @@
 #include <QtDebug>
 #include <QWidget>
 #include <QX11Info>
-#include "xmlsettingsmanager.h"
 #include <interfaces/ihavetabs.h>
+#include "xmlsettingsmanager.h"
 
 #ifdef Q_OS_LINUX
 #include <X11/Xlib.h>
