@@ -168,14 +168,12 @@ namespace KBSwitch
 
 	void KeyboardLayoutSwitcher::setSwitchingPolicy ()
 	{
-		if (XmlSettingsManager::Instance ()
-				.property ("SwitchingPolicy").toString () == "global")
+		const auto& propStr = XmlSettingsManager::Instance ().property ("SwitchingPolicy").toString ();
+		if (propStr == "global")
 			CurrentSwitchingPloicy_ = SwitchingPolicy::Global;
-		else if (XmlSettingsManager::Instance ()
-				.property ("SwitchingPolicy").toString () == "plugin")
+		else if (propStr == "plugin")
 			CurrentSwitchingPloicy_ = SwitchingPolicy::Plugin;
-		else if (XmlSettingsManager::Instance ()
-				.property ("SwitchingPolicy").toString () == "tab")
+		else if (propStr == "tab")
 			CurrentSwitchingPloicy_ = SwitchingPolicy::Tab;
 	}
 
