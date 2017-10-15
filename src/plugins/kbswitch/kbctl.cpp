@@ -404,7 +404,6 @@ namespace KBSwitch
 						<< str
 						<< "not present anywhere";
 				qWarning () << varredLayouts.contains (str);
-				continue;
 			}
 		}
 
