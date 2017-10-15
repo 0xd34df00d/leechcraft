@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <QSettings>
 #include "util.h"
 
 namespace LeechCraft
