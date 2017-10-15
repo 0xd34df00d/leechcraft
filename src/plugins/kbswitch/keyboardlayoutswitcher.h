@@ -29,8 +29,11 @@
 
 #pragma once
 
+#include <boost/optional.hpp>
 #include <QObject>
 #include <QHash>
+
+class ITabWidget;
 
 namespace LeechCraft
 {
@@ -49,7 +52,7 @@ namespace KBSwitch
 
 		SwitchingPolicy CurrentSwitchingPloicy_;
 
-		QHash<QWidget*, int> Widget2KBLayoutIndex_;
+		QHash<ITabWidget*, int> Widget2KBLayoutIndex_;
 		QHash<QByteArray, int> TabClass2KBLayoutIndex_;
 
 		QWidget *LastCurrentWidget_ = nullptr;
@@ -57,6 +60,9 @@ namespace KBSwitch
 		KeyboardLayoutSwitcher (QObject *parent = nullptr);
 
 		bool IsGlobalPolicy () const;
+	private:
+		void UpdateSavedState (ITabWidget*, int);
+		boost::optional<int> GetSavedState (ITabWidget*) const;
 	public slots:
 		void updateKBLayouts (QWidget *current, QWidget *prev);
 	private slots:

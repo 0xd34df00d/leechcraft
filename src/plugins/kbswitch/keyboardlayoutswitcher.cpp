@@ -33,6 +33,7 @@
 #include <QX11Info>
 #include <interfaces/ihavetabs.h>
 #include "xmlsettingsmanager.h"
+
 #include <X11/Xlib.h>
 #include <X11/XKBlib.h>
 
@@ -53,6 +54,43 @@ namespace KBSwitch
 		return CurrentSwitchingPloicy_ == SwitchingPolicy::Global;
 	}
 
+	void KeyboardLayoutSwitcher::UpdateSavedState (ITabWidget *itw, int group)
+	{
+		switch (CurrentSwitchingPloicy_)
+		{
+		case SwitchingPolicy::Global:
+			break;
+		case SwitchingPolicy::Tab:
+			Widget2KBLayoutIndex_ [itw] = group;
+			break;
+		case SwitchingPolicy::Plugin:
+			TabClass2KBLayoutIndex_ [itw->GetTabClassInfo ().TabClass_] = group;
+			break;
+		}
+	}
+
+	boost::optional<int> KeyboardLayoutSwitcher::GetSavedState (ITabWidget *itw) const
+	{
+		using Res_t = boost::optional<int>;
+
+		switch (CurrentSwitchingPloicy_)
+		{
+		case SwitchingPolicy::Global:
+			return {};
+		case SwitchingPolicy::Tab:
+			return Widget2KBLayoutIndex_.contains (itw) ?
+					Res_t { Widget2KBLayoutIndex_ [itw] } :
+					Res_t {};
+		case SwitchingPolicy::Plugin:
+		{
+			const auto& tc = itw->GetTabClassInfo ().TabClass_;
+			return TabClass2KBLayoutIndex_.contains (tc) ?
+					Res_t { TabClass2KBLayoutIndex_ [tc] } :
+					Res_t {};
+		}
+		}
+	}
+
 	void KeyboardLayoutSwitcher::updateKBLayouts (QWidget *current, QWidget *prev)
 	{
 		if (CurrentSwitchingPloicy_ == SwitchingPolicy::Global)
@@ -63,90 +101,28 @@ namespace KBSwitch
 
 		const auto display = QX11Info::display ();
 
-		if (CurrentSwitchingPloicy_ == SwitchingPolicy::Tab)
+		if (const auto prevItw = qobject_cast<ITabWidget*> (prev))
 		{
-			if (prev)
-			{
-				ITabWidget *itw = qobject_cast<ITabWidget*> (prev);
-				if (!itw)
-				{
-					qWarning () << Q_FUNC_INFO
-							<< current
-							<< "is not an ITabWidget class";
-				}
-				else
-				{
-					connect (itw->ParentMultiTabs (),
-							SIGNAL (removeTab (QWidget*)),
-							this,
-							SLOT (removeWidget (QWidget*)),
-							Qt::UniqueConnection);
+			connect (prevItw->ParentMultiTabs (),
+					SIGNAL (removeTab (QWidget*)),
+					this,
+					SLOT (removeWidget (QWidget*)),
+					Qt::UniqueConnection);
 
-					XkbStateRec xkbState;
-					XkbGetState (display, XkbUseCoreKbd, &xkbState);
-					Widget2KBLayoutIndex_ [prev] = xkbState.group;
-
-				}
-			}
-			if (current)
-			{
-				LastCurrentWidget_ = current;
-
-				if (Widget2KBLayoutIndex_.contains (current))
-				{
-					int xkbGroup = Widget2KBLayoutIndex_ [current];
-					if (!XkbLockGroup (display, XkbUseCoreKbd, xkbGroup))
-						qWarning () << Q_FUNC_INFO
-								<< "Request to change layout not send";
-				}
-			}
+			XkbStateRec xkbState;
+			XkbGetState (display, XkbUseCoreKbd, &xkbState);
+			UpdateSavedState (prevItw, xkbState.group);
 		}
-		else if (CurrentSwitchingPloicy_ == SwitchingPolicy::Plugin)
+
+		if (const auto currentItw = qobject_cast<ITabWidget*> (current))
 		{
-			if (prev)
-			{
-				ITabWidget *itw = qobject_cast<ITabWidget*> (prev);
-				if (!itw)
-				{
-					qWarning () << Q_FUNC_INFO
-							<< current
-							<< "is not an ITabWidget class";
-				}
-				else
-				{
-					connect (itw->ParentMultiTabs (),
-							SIGNAL (removeTab (QWidget*)),
-							this,
-							SLOT (handleRemoveWidget (QWidget*)),
-							Qt::UniqueConnection);
+			LastCurrentWidget_ = current;
 
-					XkbStateRec xkbState;
-					XkbGetState (display, XkbUseCoreKbd, &xkbState);
-					TabClass2KBLayoutIndex_ [itw->GetTabClassInfo ().TabClass_] = xkbState.group;
-				}
-			}
-
-			if (current)
-			{
-				ITabWidget *itw = qobject_cast<ITabWidget*> (current);
-				if (!itw)
-				{
-					qWarning () << Q_FUNC_INFO
-							<< current
-							<< "is not an ITabWidget class";
-				}
-				else
-				{
-					LastCurrentWidget_ = current;
-					if (TabClass2KBLayoutIndex_.contains (itw->GetTabClassInfo ().TabClass_))
-					{
-						int xkbGroup = TabClass2KBLayoutIndex_ [itw->GetTabClassInfo ().TabClass_];
-						if (!XkbLockGroup (display, XkbUseCoreKbd, xkbGroup))
-							qWarning () << Q_FUNC_INFO
-									<< "Request to change layout not send";
-					}
-				}
-			}
+			const auto xkbGroup = GetSavedState (currentItw);
+			if (xkbGroup && !XkbLockGroup (display, XkbUseCoreKbd, *xkbGroup))
+				qWarning () << Q_FUNC_INFO
+						<< "failed to change layout for new tab"
+						<< current;
 		}
 	}
 
@@ -167,8 +143,7 @@ namespace KBSwitch
 
 	void KeyboardLayoutSwitcher::handleRemoveWidget (QWidget *widget)
 	{
-		Widget2KBLayoutIndex_.remove (widget);
+		Widget2KBLayoutIndex_.remove (qobject_cast<ITabWidget*> (widget));
 	}
-
 }
 }
