@@ -30,6 +30,7 @@
 #include "keyboardlayoutswitcher.h"
 #include <QtDebug>
 #include <QWidget>
+#include <QX11Info>
 #include "xmlsettingsmanager.h"
 #include <interfaces/ihavetabs.h>
 
@@ -64,15 +65,7 @@ namespace KBSwitch
 			return;
 
 #ifdef Q_OS_LINUX
-		int xkbEventType, xkbError, xkbReason;
-		int mjr = XkbMajorVersion, mnr = XkbMinorVersion;
-		Display *display = NULL;
-		display = XkbOpenDisplay (NULL,
-				&xkbEventType,
-				&xkbError,
-				&mjr,
-				&mnr,
-				&xkbReason);
+		const auto display = QX11Info::display ();
 
 		if (CurrentSwitchingPloicy_ == SwitchingPolicy::Tab)
 		{
@@ -159,8 +152,6 @@ namespace KBSwitch
 				}
 			}
 		}
-
-		XCloseDisplay (display);
 #endif
 	}
 
