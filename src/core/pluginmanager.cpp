@@ -42,7 +42,7 @@
 #include <util/util.h>
 #include <util/exceptions.h>
 #include <util/sll/prelude.h>
-#include <util/sll/util.h>
+#include <util/sll/scopeguards.h>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/ipluginready.h>
@@ -391,7 +391,7 @@ namespace LeechCraft
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "-pg");
 		settings.beginGroup ("Plugins");
-		const auto guard = Util::MakeScopeGuard ([&settings] { settings.endGroup (); });
+		const auto guard = Util::MakeEndGroupScopeGuard (settings);
 
 		for (const auto obj : ordered)
 		{
