@@ -28,9 +28,9 @@
  **********************************************************************/
 
 #include "util.h"
-#include <memory>
 #include <QSettings>
 #include <QCoreApplication>
+#include <util/sll/scopeguards.h>
 
 namespace LeechCraft
 {
@@ -51,8 +51,7 @@ namespace Auscrie
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Auscrie");
 		settings.beginGroup ("Filter");
-		auto endGroup = std::shared_ptr<void> (nullptr,
-				[&settings] (void*) { settings.endGroup (); });
+		auto endGroup = Util::MakeEndGroupScopeGuard (settings);
 
 		return
 		{
