@@ -47,13 +47,11 @@ namespace Xoox
 			const QString& variant,
 			ClientConnection *conn)
 	: Type_ (type)
-	, SubType_ (SubType::Other)
 	, Direction_ (dir)
 	, BareJID_ (jid)
 	, Variant_ (variant)
 	, DateTime_ (QDateTime::currentDateTime ())
 	, Connection_ (conn)
-	, IsDelivered_ (false)
 	{
 		const QString& remoteJid = variant.isEmpty () ?
 				jid :
@@ -69,11 +67,9 @@ namespace Xoox
 	GlooxMessage::GlooxMessage (const QXmppMessage& message,
 			ClientConnection *conn)
 	: Type_ (Type::ChatMessage)
-	, SubType_ (SubType::Other)
 	, Direction_ (Direction::In)
 	, Message_ (message)
 	, Connection_ (conn)
-	, IsDelivered_ (false)
 	{
 		Connection_->Split (message.from (), &BareJID_, &Variant_);
 

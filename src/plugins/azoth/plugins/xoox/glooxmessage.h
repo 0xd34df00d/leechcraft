@@ -55,7 +55,7 @@ namespace Xoox
 				LeechCraft::Azoth::IRichTextMessage)
 
 		Type Type_;
-		SubType SubType_;
+		SubType SubType_ = SubType::Other;
 		Direction Direction_;
 		QString BareJID_;
 		QString Variant_;
@@ -63,7 +63,7 @@ namespace Xoox
 		QXmppMessage Message_;
 		ClientConnection *Connection_;
 
-		bool IsDelivered_;
+		bool IsDelivered_ = false;
 	public:
 		GlooxMessage (IMessage::Type type,
 				IMessage::Direction direction,
