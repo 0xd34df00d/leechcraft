@@ -63,8 +63,8 @@ namespace Util
 		Properties2Object_t ApplyProps_;
 		Properties2Object_t SelectProps_;
 
-		bool IsInitializing_;
-		bool CleanupScheduled_;
+		bool IsInitializing_ = false;
+		bool CleanupScheduled_ = false;
 
 		friend class LeechCraft::SettingsThread;
 	protected:

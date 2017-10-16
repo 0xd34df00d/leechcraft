@@ -38,8 +38,6 @@ namespace Util
 {
 	BaseSettingsManager::BaseSettingsManager (bool readAllKeys, QObject *parent)
 	: QObject (parent)
-	, IsInitializing_ (false)
-	, CleanupScheduled_ (false)
 	, ReadAllKeys_ (readAllKeys)
 	{
 	}
