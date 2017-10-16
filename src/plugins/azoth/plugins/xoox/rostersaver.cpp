@@ -125,21 +125,13 @@ namespace Xoox
 					.firstChildElement ("entry");
 			while (!entry.isNull ())
 			{
-				const auto& entryID = QByteArray::fromPercentEncoding (entry
-								.firstChildElement ("id").text ().toLatin1 ());
+				const auto acc = id2account [id];
 
-				if (entryID.isEmpty ())
-					qWarning () << Q_FUNC_INFO
-							<< "entry ID is empty";
-				else
-				{
-					const auto acc = id2account [id];
+				const auto ods = std::make_shared<OfflineDataSource> ();
+				Load (ods, entry, Proxy_, acc);
 
-					const auto ods = std::make_shared<OfflineDataSource> ();
-					Load (ods, entry, Proxy_, acc);
+				acc->CreateFromODS (ods);
 
-					acc->CreateFromODS (ods);
-				}
 				entry = entry.nextSiblingElement ("entry");
 			}
 
