@@ -31,6 +31,7 @@
 #include <QIcon>
 #include <QMutex>
 #include <QtDebug>
+#include <util/sll/util.h>
 #include <qt_windows.h>
 #include <shellapi.h>
 
@@ -74,9 +75,7 @@ namespace Util
 					&hKey))
 				return false;
 
-			std::shared_ptr<void> regGuard (nullptr,
-					[&] (void*) { RegCloseKey (hKey); });
-			Q_UNUSED (regGuard);
+			const auto regGuard = Util::MakeScopeGuard ([&hKey] { RegCloseKey (hKey); });
 
 			DWORD type { REG_SZ };
 
