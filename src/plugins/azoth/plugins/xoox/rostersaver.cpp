@@ -107,13 +107,6 @@ namespace Xoox
 		while (!account.isNull ())
 		{
 			const auto& id = account.firstChildElement ("id").text ().toUtf8 ();
-			if (id.isEmpty ())
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "empty ID";
-				continue;
-			}
-
 			if (!id2account.contains (id))
 			{
 				account = account.nextSiblingElement ("account");
