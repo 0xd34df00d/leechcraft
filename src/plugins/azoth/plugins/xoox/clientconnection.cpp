@@ -802,6 +802,8 @@ namespace Xoox
 			return SelfContact_;
 		else if (JID2CLEntry_.contains (bareJid))
 			return JID2CLEntry_ [bareJid];
+		else if (ODSEntries_.contains (bareJid))
+			return ODSEntries_ [bareJid];
 		else
 		{
 			QString trueBare, trueVar;
