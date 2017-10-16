@@ -72,17 +72,8 @@ namespace Xoox
 	{
 		QString GetBareJID (const QString& entryId, GlooxAccount * const acc)
 		{
-			const auto& pre = acc->GetAccountID () + '_';
-			if (!entryId.startsWith (pre))
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "entry ID doesn't start with"
-						<< pre
-						<< entryId;
-				return entryId;
-			}
-
-			return entryId.mid (pre.size ());
+			const auto underscoreCount = acc->GetAccountID ().count ('_') + 1;
+			return entryId.section ('_', underscoreCount);
 		}
 
 		void LoadVCard (const QDomElement& vcardElem,
