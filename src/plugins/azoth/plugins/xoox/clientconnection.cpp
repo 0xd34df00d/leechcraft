@@ -809,7 +809,8 @@ namespace Xoox
 			Split (bareJid, &trueBare, &trueVar);
 			if (trueBare != bareJid)
 				return GetCLEntry (trueBare, trueVar);
-			return 0;
+
+			return nullptr;
 		}
 	}
 
