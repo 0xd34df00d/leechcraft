@@ -120,13 +120,13 @@ namespace Xoox
 				continue;
 			}
 
+			const auto acc = id2account [id];
+
 			auto entry = account
 					.firstChildElement ("entries")
 					.firstChildElement ("entry");
 			while (!entry.isNull ())
 			{
-				const auto acc = id2account [id];
-
 				const auto ods = std::make_shared<OfflineDataSource> ();
 				Load (ods, entry, Proxy_, acc);
 
