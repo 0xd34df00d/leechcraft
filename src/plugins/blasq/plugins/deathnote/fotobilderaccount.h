@@ -30,7 +30,6 @@
 #pragma once
 
 #include <functional>
-#include <memory>
 #include <QNetworkReply>
 #include <QObject>
 #include <QSet>
@@ -102,7 +101,7 @@ namespace DeathNote
 		void UpdateCollections () override;
 
 	private:
-		std::shared_ptr<void> MakeRunnerGuard ();
+		auto MakeRunnerGuard ();
 		void CallNextFunctionFromQueue ();
 		bool IsErrorReply (const QByteArray& content);
 		void GetChallenge ();

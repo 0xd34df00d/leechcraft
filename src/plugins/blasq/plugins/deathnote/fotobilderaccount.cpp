@@ -43,6 +43,7 @@
 #include <interfaces/core/ientitymanager.h>
 #include <util/xpc/util.h>
 #include <util/sll/unreachable.h>
+#include <util/sll/util.h>
 #include "albumsettingsdialog.h"
 #include "fotobilderservice.h"
 #include "util.h"
@@ -143,6 +144,16 @@ namespace DeathNote
 	QAbstractItemModel* FotoBilderAccount::GetCollectionsModel () const
 	{
 		return CollectionsModel_;
+	}
+
+	auto FotoBilderAccount::MakeRunnerGuard ()
+	{
+		const bool shouldRun = CallsQueue_.isEmpty ();
+		return Util::MakeScopeGuard ([this, shouldRun]
+				{
+					if (shouldRun)
+						CallsQueue_.dequeue () (QString ());
+				});
 	}
 
 	void FotoBilderAccount::CreateCollection (const QModelIndex&)
@@ -263,16 +274,6 @@ namespace DeathNote
 				return QString ();
 			}
 		}
-	}
-
-	std::shared_ptr<void> FotoBilderAccount::MakeRunnerGuard ()
-	{
-		const bool shouldRun = CallsQueue_.isEmpty ();
-		return std::shared_ptr<void> (nullptr, [this, shouldRun] (void*)
-		{
-			if (shouldRun)
-				CallsQueue_.dequeue () (QString ());
-		});
 	}
 
 	void FotoBilderAccount::CallNextFunctionFromQueue ()
