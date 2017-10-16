@@ -71,7 +71,7 @@ namespace DeathNote
 		QHash<QByteArray, QStandardItem*> Id2AlbumItem_;
 		QHash<QNetworkReply*, UploadItem> Reply2UploadItem_;
 
-		QQueue<std::function <void (const QString&)>> CallsQueue_;
+		QQueue<std::function<void (const QString&)>> CallsQueue_;
 	public:
 		FotoBilderAccount (const QString& name, FotoBilderService *service,
 				ICoreProxy_ptr proxy, const QString& login,
