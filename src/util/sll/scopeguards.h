@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QSettings>
+#include <QDomElement>
 #include "util.h"
 
 namespace LeechCraft
@@ -39,6 +40,11 @@ namespace Util
 	inline auto MakeEndGroupScopeGuard (QSettings& settings)
 	{
 		return MakeScopeGuard ([&settings] { settings.endGroup (); });
+	}
+
+	inline auto MakeNextSiblingScopeGuard (QDomElement& elem)
+	{
+		return MakeScopeGuard ([&elem] { elem = elem.nextSiblingElement (elem.tagName ()); });
 	}
 }
 }
