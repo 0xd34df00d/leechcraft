@@ -57,7 +57,7 @@ namespace Xoox
 	void Save (OfflineDataSource_ptr ods, QXmlStreamWriter *w, IProxyObject *proxy)
 	{
 		w->writeStartElement ("entry");
-			w->writeTextElement ("id", ods->ID_.toUtf8 ().toPercentEncoding ("@"));
+			w->writeTextElement ("idstr", ods->ID_);
 			w->writeTextElement ("name", ods->Name_);
 			w->writeTextElement ("authstatus", proxy->AuthStatusToString (ods->AuthStatus_));
 
@@ -94,6 +94,16 @@ namespace Xoox
 			storage->SetVCard (GetBareJID (entryId, acc),
 					QByteArray::fromBase64 (vcardElem.text ().toLatin1 ()));
 		}
+
+		QString LoadEntryID (const QDomElement& entry)
+		{
+			const auto& idStrElem = entry.firstChildElement ("idstr");
+			if (!idStrElem.isNull ())
+				return idStrElem.text ();
+
+			const auto& idElem = entry.firstChildElement ("id");
+			return QString::fromUtf8 (QByteArray::fromPercentEncoding (idElem.text ().toLatin1 ()));
+		}
 	}
 
 	void Load (OfflineDataSource_ptr ods,
@@ -101,8 +111,7 @@ namespace Xoox
 			IProxyObject *proxy,
 			GlooxAccount * const acc)
 	{
-		const QByteArray& entryID = QByteArray::fromPercentEncoding (entry
-					.firstChildElement ("id").text ().toLatin1 ());
+		const auto& entryID = LoadEntryID (entry);
 		const QString& name = entry.firstChildElement ("name").text ();
 
 		QStringList groups;
@@ -118,7 +127,7 @@ namespace Xoox
 		}
 
 		ods->Name_ = name;
-		ods->ID_ = QString::fromUtf8 (entryID.constData ());
+		ods->ID_ = entryID;
 		ods->Groups_ = groups;
 
 		const auto& authStatusText = entry.firstChildElement ("authstatus").text ();
