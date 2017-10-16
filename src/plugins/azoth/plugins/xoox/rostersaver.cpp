@@ -33,6 +33,7 @@
 #include <QTimer>
 #include <QtDebug>
 #include <util/sys/paths.h>
+#include <util/sll/scopeguards.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include "glooxprotocol.h"
 #include "glooxaccount.h"
@@ -120,12 +121,12 @@ namespace Xoox
 					.firstChildElement ("entry");
 			while (!entry.isNull ())
 			{
+				const auto guard = Util::MakeNextSiblingScopeGuard (entry);
+
 				const auto ods = std::make_shared<OfflineDataSource> ();
 				Load (ods, entry, Proxy_, acc);
 
 				acc->CreateFromODS (ods);
-
-				entry = entry.nextSiblingElement ("entry");
 			}
 
 			account = account.nextSiblingElement ("account");
