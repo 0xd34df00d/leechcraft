@@ -179,9 +179,8 @@ namespace Util
 		 */
 		void run () override
 		{
-			FireDestrPolicy::Invoke (Func_);
-
-			this->Fired ();
+			FireDestrPolicy::Invoke (Func_, this);
+			FireDestrPolicy::Fired (this);
 		}
 	};
 
@@ -190,7 +189,7 @@ namespace Util
 	protected:
 		using Signature_t = void ();
 
-		void Invoke (const std::function<Signature_t>& f)
+		void Invoke (const std::function<Signature_t>& f, SlotClosureBase*)
 		{
 			f ();
 		}
@@ -203,9 +202,9 @@ namespace Util
 	class DeleteLaterPolicy : public BasicDeletePolicy
 	{
 	protected:
-		void Fired ()
+		static void Fired (SlotClosureBase *base)
 		{
-			dynamic_cast<SlotClosureBase*> (this)->deleteLater ();
+			base->deleteLater ();
 		}
 	};
 
@@ -214,7 +213,7 @@ namespace Util
 	class NoDeletePolicy : public BasicDeletePolicy
 	{
 	protected:
-		void Fired ()
+		static void Fired (SlotClosureBase*)
 		{
 		}
 	};
@@ -232,13 +231,13 @@ namespace Util
 
 		using Signature_t = Delete ();
 
-		void Invoke (const std::function<Signature_t>& f)
+		static void Invoke (const std::function<Signature_t>& f, SlotClosureBase *base)
 		{
 			if (f () == Delete::Yes)
-				dynamic_cast<SlotClosureBase*> (this)->deleteLater ();
+				base->deleteLater ();
 		}
 
-		void Fired ()
+		static void Fired (SlotClosureBase*)
 		{
 		}
 	};
