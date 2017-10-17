@@ -218,12 +218,25 @@ namespace Util
 		}
 	};
 
+	/** @brief Delegates the SlotClosure deletion decision to the signal handler.
+	 *
+	 * The signal handler's return value (of enum type ChoiceDeletePolicy::Delete) is used to decide
+	 * whether the SlotClosure should be deleted. This way, the signal handler may be invoked
+	 * multiple times until the necessary conditions are met.
+	 */
 	class ChoiceDeletePolicy
 	{
 	public:
+		/** @brief Whether the SlotClosure shall be deleted.
+		 */
 		enum class Delete
 		{
+			/** @brief Do not delete SlotClosure after this invocation.
+			 */
 			No,
+
+			/** @brief Delete SlotClosure after this invocation.
+			 */
 			Yes
 		};
 	protected:
