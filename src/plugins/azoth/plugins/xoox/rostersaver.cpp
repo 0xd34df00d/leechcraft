@@ -33,7 +33,7 @@
 #include <QTimer>
 #include <QtDebug>
 #include <util/sys/paths.h>
-#include <util/sll/scopeguards.h>
+#include <util/sll/domsiblingsrange.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include "glooxprotocol.h"
 #include "glooxaccount.h"
@@ -104,15 +104,11 @@ namespace Xoox
 			id2account [acc->GetAccountID ()] = acc;
 		}
 
-		auto account = root.firstChildElement ("account");
-		while (!account.isNull ())
+		for (const auto& account : Util::MakeDomSiblingsRange (root, "account"))
 		{
 			const auto& id = account.firstChildElement ("id").text ().toUtf8 ();
 			if (!id2account.contains (id))
-			{
-				account = account.nextSiblingElement ("account");
 				continue;
-			}
 
 			const auto acc = id2account [id];
 
@@ -120,13 +116,8 @@ namespace Xoox
 			// To allow some transition time for duplicates removal.
 			QSet<QString> existingEntries;
 
-			auto entry = account
-					.firstChildElement ("entries")
-					.firstChildElement ("entry");
-			while (!entry.isNull ())
+			for (const auto& entry : Util::MakeDomSiblingsRange (account.firstChildElement ("entries"), "entry"))
 			{
-				const auto guard = Util::MakeNextSiblingScopeGuard (entry);
-
 				const auto ods = std::make_shared<OfflineDataSource> ();
 				Load (ods, entry, Proxy_, acc);
 				if (existingEntries.contains (ods->ID_))
@@ -140,8 +131,6 @@ namespace Xoox
 				existingEntries << ods->ID_;
 				acc->CreateFromODS (ods);
 			}
-
-			account = account.nextSiblingElement ("account");
 		}
 	}
 
