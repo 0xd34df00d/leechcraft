@@ -76,9 +76,9 @@ namespace Util
 		};
 	}
 
-	auto MakeDomSiblingsRange (const QDomElement& elem, const QString& tagName)
+	auto MakeDomSiblingsRange (const QDomElement& parent, const QString& tagName)
 	{
-		auto child = elem.firstChildElement (tagName);
+		auto child = parent.firstChildElement (tagName);
 		return boost::make_iterator_range<detail::DomSiblingsIterator> ({ child, tagName }, {});
 	}
 }
