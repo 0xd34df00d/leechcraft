@@ -27,69 +27,59 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "domsiblingsrangetest.h"
-#include <QDomDocument>
-#include <QString>
-#include <QtTest>
-#include <domsiblingsrange.h>
+#pragma once
 
-QTEST_MAIN (LeechCraft::Util::DomSiblingsRangeTest)
+#include <boost/iterator.hpp>
+#include <boost/iterator/function_input_iterator.hpp>
+#include <boost/range.hpp>
+#include <QDomElement>
+#include <QString>
 
 namespace LeechCraft
 {
 namespace Util
 {
-	namespace
+	namespace detail
 	{
-		auto MakeDocument (const QString& str)
+		class DomSiblingsIterator : public boost::iterator_facade<
+				DomSiblingsIterator,
+				QDomElement,
+				boost::single_pass_traversal_tag,
+				const QDomElement&
+			>
 		{
-			QDomDocument doc;
-			doc.setContent (str);
-			return doc.firstChildElement ("root");
-		}
+			QDomElement Elem_;
+			const QString TagName_;
+		public:
+			DomSiblingsIterator () = default;
+
+			DomSiblingsIterator (const QDomElement& firstChild, const QString& tagName)
+			: Elem_ { firstChild }
+			, TagName_ { tagName }
+			{
+			}
+
+			void increment ()
+			{
+				Elem_ = Elem_.nextSiblingElement (TagName_);
+			}
+
+			const QDomElement& dereference () const
+			{
+				return Elem_;
+			}
+
+			bool equal (const DomSiblingsIterator& other) const
+			{
+				return Elem_ == other.Elem_;
+			}
+		};
 	}
 
-	void DomSiblingsRangeTest::testEmpty ()
+	auto MakeDomChildrenRange (const QDomElement& parent, const QString& tagName)
 	{
-		const auto& parent = MakeDocument (R"(
-				<root>
-				</root>
-				)");
-
-		QStringList texts;
-		for (const auto& elem : MakeDomSiblingsRange (parent, "child"))
-			texts << elem.text ();
-		QCOMPARE (texts, QStringList {});
-	}
-
-	void DomSiblingsRangeTest::testSingle ()
-	{
-		const auto& parent = MakeDocument (R"(
-				<root>
-					<child>foo</child>
-				</root>
-				)");
-
-		QStringList texts;
-		for (const auto& elem : MakeDomSiblingsRange (parent, "child"))
-			texts << elem.text ();
-		QCOMPARE (texts, QStringList { "foo" });
-	}
-
-	void DomSiblingsRangeTest::testMultiple ()
-	{
-		const auto& parent = MakeDocument (R"(
-				<root>
-					<child>foo</child>
-					<child>bar</child>
-					<child>baz</child>
-				</root>
-				)");
-
-		QStringList texts;
-		for (const auto& elem : MakeDomSiblingsRange (parent, "child"))
-			texts << elem.text ();
-		QCOMPARE (texts, (QStringList { "foo", "bar", "baz" }));
+		auto child = parent.firstChildElement (tagName);
+		return boost::make_iterator_range<detail::DomSiblingsIterator> ({ child, tagName }, {});
 	}
 }
 }

@@ -29,57 +29,19 @@
 
 #pragma once
 
-#include <boost/iterator.hpp>
-#include <boost/iterator/function_input_iterator.hpp>
-#include <boost/range.hpp>
-#include <QDomElement>
-#include <QString>
+#include <QObject>
 
 namespace LeechCraft
 {
 namespace Util
 {
-	namespace detail
+	class DomChildrenRangeTest : public QObject
 	{
-		class DomSiblingsIterator : public boost::iterator_facade<
-				DomSiblingsIterator,
-				QDomElement,
-				boost::single_pass_traversal_tag,
-				const QDomElement&
-			>
-		{
-			QDomElement Elem_;
-			const QString TagName_;
-		public:
-			DomSiblingsIterator () = default;
-
-			DomSiblingsIterator (const QDomElement& firstChild, const QString& tagName)
-			: Elem_ { firstChild }
-			, TagName_ { tagName }
-			{
-			}
-
-			void increment ()
-			{
-				Elem_ = Elem_.nextSiblingElement (TagName_);
-			}
-
-			const QDomElement& dereference () const
-			{
-				return Elem_;
-			}
-
-			bool equal (const DomSiblingsIterator& other) const
-			{
-				return Elem_ == other.Elem_;
-			}
-		};
-	}
-
-	auto MakeDomSiblingsRange (const QDomElement& parent, const QString& tagName)
-	{
-		auto child = parent.firstChildElement (tagName);
-		return boost::make_iterator_range<detail::DomSiblingsIterator> ({ child, tagName }, {});
-	}
+		Q_OBJECT
+	private slots:
+		void testEmpty ();
+		void testSingle ();
+		void testMultiple ();
+	};
 }
 }
