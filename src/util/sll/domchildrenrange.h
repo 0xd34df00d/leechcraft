@@ -76,10 +76,36 @@ namespace Util
 		};
 	}
 
-	auto MakeDomChildrenRange (const QDomElement& parent, const QString& tagName)
+	/** @brief Creates a range iterating over direct children named \em tag.
+	 *
+	 * The returned range is suitable for range-based for loops, in particular. For instance, the
+	 * following is correct:
+	 * \code{.cpp}
+	 	QDomDocument doc;
+	 	doc.setContent (R"(
+	 				<root>
+	 					<child num="1">first text</child>
+	 					<child num="2">second text</child>
+	 					<child num="3">third text</child>
+	 				</root>
+	 			)");
+
+	 	for (const auto& elem : MakeDomSiblingsRange (doc.firstChildElement ("root"), "child"))
+	 		qDebug () << elem.text () << elem.attribute ("num");
+	   \endcode
+	 *
+	 * Modifying the underlying DOM tree will result in the same effects as modifying it during the
+	 * canonical Qt-way of repeatedly calling <code>QDomElement::nextSiblingElement()</code> until
+	 * the element becomes null.
+	 *
+	 * @param parent The parent element whose children should be iterated over.
+	 * @param tag The tag name of the child nodes (or an empty string for .
+	 * @return The range object representing the collection of the child nodes.
+	 */
+	auto MakeDomChildrenRange (const QDomElement& parent, const QString& tag)
 	{
-		auto child = parent.firstChildElement (tagName);
-		return boost::make_iterator_range<detail::DomSiblingsIterator> ({ child, tagName }, {});
+		auto child = parent.firstChildElement (tag);
+		return boost::make_iterator_range<detail::DomSiblingsIterator> ({ child, tag }, {});
 	}
 }
 }
