@@ -41,10 +41,5 @@ namespace Util
 	{
 		return MakeScopeGuard ([&settings] { settings.endGroup (); });
 	}
-
-	inline auto MakeNextSiblingScopeGuard (QDomElement& elem)
-	{
-		return MakeScopeGuard ([&elem] { elem = elem.nextSiblingElement (elem.tagName ()); });
-	}
 }
 }
