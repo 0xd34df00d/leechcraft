@@ -906,9 +906,15 @@ namespace Xoox
 		logger->setLoggingType (QXmppLogger::SignalLogging);
 		logger->setMessageTypes (QXmppLogger::AnyMessage);
 		connect (logger,
-				SIGNAL (message (QXmppLogger::MessageType, QString)),
+				&QXmppLogger::message,
 				FileLogSink_,
-				SLOT (log (QXmppLogger::MessageType, QString)));
+				[this] (QXmppLogger::MessageType type, const QString& msg)
+				{
+					const auto& path = FileLogSink_->logFilePath ();
+					if (!QFile::exists (path))
+						FileLogSink_->reopen ();
+					FileLogSink_->log (type, msg);
+				});
 		Client_->setLogger (logger);
 
 		FileLogSink_->setLogFilePath (path);
