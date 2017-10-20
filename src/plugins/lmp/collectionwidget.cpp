@@ -69,14 +69,15 @@ namespace LMP
 
 				const auto type = source.data (LocalCollectionModel::Role::Node).toInt ();
 				const bool isTrack = type == LocalCollectionModel::NodeType::Track;
+				const auto childrenCount = sourceModel ()->rowCount (source);
 				if (!isTrack)
-					for (int i = 0, rc = sourceModel ()->rowCount (source); i < rc; ++i)
+					for (int i = 0; i < childrenCount; ++i)
 						if (filterAcceptsRow (i, source))
 							return true;
 
 				const auto& pattern = filterRegExp ().pattern ();
 
-				if (pattern.isEmpty () && !isTrack)
+				if (pattern.isEmpty () && !isTrack && childrenCount)
 					return false;
 
 				auto check = [&source, &pattern] (int role)
