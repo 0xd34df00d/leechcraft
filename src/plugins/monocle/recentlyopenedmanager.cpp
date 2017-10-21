@@ -49,14 +49,17 @@ namespace Monocle
 		OpenedDocs_ = settings.value ("RecentlyOpened").toStringList ();
 	}
 
-	QMenu* RecentlyOpenedManager::CreateOpenMenu (QWidget *docTab)
+	QMenu* RecentlyOpenedManager::CreateOpenMenu (QWidget *docTab, const PathHandler_t& handler)
 	{
 		if (const auto menu = Menus_ [docTab])
 			return menu;
 
 		auto result = new QMenu (tr ("Recently opened"), docTab);
-		UpdateMenu (result);
 		Menus_ [docTab] = result;
+		Handlers_ [result] = handler;
+
+		UpdateMenu (result);
+
 		connect (docTab,
 				&QObject::destroyed,
 				this,
@@ -89,10 +92,13 @@ namespace Monocle
 	void RecentlyOpenedManager::UpdateMenu (QMenu *menu) const
 	{
 		menu->clear ();
+
+		const auto& handler = Handlers_ [menu];
+
 		for (const auto& path : OpenedDocs_)
 		{
-			auto act = menu->addAction (QFileInfo (path).fileName ());
-			act->setProperty ("Path", path);
+			auto act = menu->addAction (QFileInfo { path }.fileName (),
+					[handler, path] { handler (path); });
 			act->setToolTip (path);
 		}
 	}

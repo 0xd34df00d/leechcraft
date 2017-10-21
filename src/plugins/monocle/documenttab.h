@@ -190,8 +190,6 @@ namespace Monocle
 		void scheduleSaveState ();
 		void saveState ();
 
-		void handleRecentOpenAction (QAction*);
-
 		void selectFile ();
 		void handleSave ();
 		void handleExportPDF ();

@@ -511,11 +511,18 @@ namespace Monocle
 				this,
 				SLOT (selectFile ()));
 
-		auto roMenu = Core::Instance ().GetROManager ()->CreateOpenMenu (this);
-		connect (roMenu,
-				SIGNAL (triggered (QAction*)),
-				this,
-				SLOT (handleRecentOpenAction (QAction*)));
+		auto roMenu = Core::Instance ().GetROManager ()->CreateOpenMenu (this,
+				[this] (const QString& path)
+				{
+					const QFileInfo fi { path };
+					if (!fi.exists ())
+						QMessageBox::critical (this,
+								"LeechCraft",
+								tr ("Seems like file %1 doesn't exist anymore.")
+										.arg ("<em>" + fi.fileName () + "</em>"));
+					else
+						SetDoc (path, DocumentOpenOptions {});
+				});
 
 		auto openButton = new QToolButton ();
 		openButton->setDefaultAction (open);
@@ -1024,22 +1031,6 @@ namespace Monocle
 				this,
 				SLOT (saveState ()));
 		SaveStateScheduled_ = true;
-	}
-
-	void DocumentTab::handleRecentOpenAction (QAction *action)
-	{
-		const auto& path = action->property ("Path").toString ();
-		const QFileInfo fi (path);
-		if (!fi.exists ())
-		{
-			QMessageBox::critical (this,
-					"LeechCraft",
-					tr ("Seems like file %1 doesn't exist anymore.")
-						.arg ("<em>" + fi.fileName () + "</em>"));
-			return;
-		}
-
-		SetDoc (path, DocumentOpenOptions {});
 	}
 
 	void DocumentTab::selectFile ()

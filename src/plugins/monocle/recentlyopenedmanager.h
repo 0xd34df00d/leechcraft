@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <functional>
 #include <QObject>
 #include <QHash>
 #include <QStringList>
@@ -46,9 +47,13 @@ namespace Monocle
 		QStringList OpenedDocs_;
 		QHash<QWidget*, QMenu*> Menus_;
 	public:
-		RecentlyOpenedManager (QObject* = 0);
+		using PathHandler_t = std::function<void (QString)>;
+	private:
+		QHash<QMenu*, PathHandler_t> Handlers_;
+	public:
+		RecentlyOpenedManager (QObject* = nullptr);
 
-		QMenu* CreateOpenMenu (QWidget*);
+		QMenu* CreateOpenMenu (QWidget*, const PathHandler_t&);
 		void RecordOpened (const QString&);
 	private:
 		void UpdateMenu (QMenu*) const;
