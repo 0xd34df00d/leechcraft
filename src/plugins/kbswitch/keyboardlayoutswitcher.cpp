@@ -31,6 +31,7 @@
 #include <QtDebug>
 #include <QWidget>
 #include <QX11Info>
+#include <util/sll/unreachable.h>
 #include <interfaces/ihavetabs.h>
 #include "xmlsettingsmanager.h"
 
@@ -89,6 +90,8 @@ namespace KBSwitch
 					Res_t {};
 		}
 		}
+
+		Util::Unreachable ();
 	}
 
 	void KeyboardLayoutSwitcher::updateKBLayouts (QWidget *current, QWidget *prev)
