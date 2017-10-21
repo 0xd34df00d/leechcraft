@@ -32,7 +32,6 @@
 #include <QCoreApplication>
 #include <QFileInfo>
 #include <QMenu>
-#include <QMessageBox>
 #include <QtDebug>
 #include "xmlsettingsmanager.h"
 #include "core.h"
