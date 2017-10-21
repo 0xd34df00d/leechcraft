@@ -51,7 +51,7 @@ namespace Monocle
 		QMenu* CreateOpenMenu (QWidget*);
 		void RecordOpened (const QString&);
 	private:
-		void UpdateMenu (QMenu*);
+		void UpdateMenu (QMenu*) const;
 	};
 }
 }

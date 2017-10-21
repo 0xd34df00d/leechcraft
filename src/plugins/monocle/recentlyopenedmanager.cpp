@@ -86,7 +86,7 @@ namespace Monocle
 			UpdateMenu (menu);
 	}
 
-	void RecentlyOpenedManager::UpdateMenu (QMenu *menu)
+	void RecentlyOpenedManager::UpdateMenu (QMenu *menu) const
 	{
 		menu->clear ();
 		for (const auto& path : OpenedDocs_)
