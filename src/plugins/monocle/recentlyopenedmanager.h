@@ -53,7 +53,6 @@ namespace Monocle
 	private:
 		void UpdateMenu (QMenu*);
 	private slots:
-		void handleDocTabDestroyed ();
 		void handleActionTriggered ();
 	};
 }

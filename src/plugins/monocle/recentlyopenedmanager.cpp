@@ -58,9 +58,9 @@ namespace Monocle
 		UpdateMenu (result);
 		Menus_ [docTab] = result;
 		connect (docTab,
-				SIGNAL (destroyed (QObject*)),
+				&QObject::destroyed,
 				this,
-				SLOT (handleDocTabDestroyed ()));
+				[this, docTab] { Menus_.remove (docTab); });
 		return result;
 	}
 
@@ -95,11 +95,6 @@ namespace Monocle
 			act->setProperty ("Path", path);
 			act->setToolTip (path);
 		}
-	}
-
-	void RecentlyOpenedManager::handleDocTabDestroyed ()
-	{
-		Menus_.remove (static_cast<QWidget*> (sender ()));
 	}
 
 	void RecentlyOpenedManager::handleActionTriggered ()
