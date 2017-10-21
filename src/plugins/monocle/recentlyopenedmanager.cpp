@@ -51,8 +51,8 @@ namespace Monocle
 
 	QMenu* RecentlyOpenedManager::CreateOpenMenu (QWidget *docTab)
 	{
-		if (Menus_.contains (docTab))
-			return Menus_ [docTab];
+		if (const auto menu = Menus_ [docTab])
+			return menu;
 
 		auto result = new QMenu (tr ("Recently opened"), docTab);
 		UpdateMenu (result);
