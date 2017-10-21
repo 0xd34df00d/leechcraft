@@ -42,8 +42,6 @@ namespace Monocle
 {
 	class RecentlyOpenedManager : public QObject
 	{
-		Q_OBJECT
-
 		QStringList OpenedDocs_;
 		QHash<QWidget*, QMenu*> Menus_;
 	public:
