@@ -52,8 +52,6 @@ namespace Monocle
 		void RecordOpened (const QString&);
 	private:
 		void UpdateMenu (QMenu*);
-	private slots:
-		void handleActionTriggered ();
 	};
 }
 }

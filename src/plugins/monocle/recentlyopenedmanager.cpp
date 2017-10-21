@@ -96,19 +96,5 @@ namespace Monocle
 			act->setToolTip (path);
 		}
 	}
-
-	void RecentlyOpenedManager::handleActionTriggered ()
-	{
-		const auto& path = sender ()->property ("Path").toString ();
-		const QFileInfo fi (path);
-		if (!fi.exists ())
-		{
-			QMessageBox::warning (0,
-					"LeechCraft",
-					tr ("Seems like file %1 doesn't exist anymore.")
-						.arg ("<em>" + fi.fileName () + "</em>"));
-			return;
-		}
-	}
 }
 }
