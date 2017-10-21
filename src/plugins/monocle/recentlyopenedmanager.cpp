@@ -82,7 +82,7 @@ namespace Monocle
 				QCoreApplication::applicationName () + "_Monocle");
 		settings.setValue ("RecentlyOpened", OpenedDocs_);
 
-		for (const auto& menu : Menus_.values ())
+		for (const auto& menu : Menus_)
 			UpdateMenu (menu);
 	}
 
