@@ -152,13 +152,15 @@ namespace BitTorrent
 			if (ver.size () != 4)
 				ver = "1111";
 
+			auto dig = [&ver] (int pos) { return ver.at (pos).digitValue (); };
+
 			return libtorrent::fingerprint
 			{
 				"LC",
-				ver.at (0).digitValue (),
-				ver.at (1).digitValue (),
-				ver.at (2).digitValue (),
-				ver.at (3).digitValue ()
+				dig (0),
+				dig (1),
+				dig (2),
+				dig (3)
 			};
 		}
 
