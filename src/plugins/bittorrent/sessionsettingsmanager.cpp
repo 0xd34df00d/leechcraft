@@ -709,12 +709,11 @@ namespace BitTorrent
 		setBool (libtorrent::settings_pack::enable_natpmp, "EnableNATPMP");
 
 		if (setBool (libtorrent::settings_pack::enable_dht, "DHTEnabled"))
-		{
-			Session_->add_dht_router ({ "router.bittorrent.com", 6881 });
-			Session_->add_dht_router ({ "router.utorrent.com", 6881 });
-			Session_->add_dht_router ({ "dht.transmissionbt.com", 6881 });
-			Session_->add_dht_router ({ "dht.aelitis.com", 6881 });
-		}
+			settings.set_str (libtorrent::settings_pack::dht_bootstrap_nodes,
+					"router.bittorrent.com:6881,"
+					"router.utorrent.com:6881,"
+					"dht.transmissionbt.com:6881,"
+					"dht.aelitis.com:6881");
 #else
 		if (XmlSettingsManager::Instance ()->property ("EnableLSD").toBool ())
 			Session_->start_lsd ();
