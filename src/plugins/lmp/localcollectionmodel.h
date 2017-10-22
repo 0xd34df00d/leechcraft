@@ -39,10 +39,14 @@ namespace LeechCraft
 {
 namespace LMP
 {
+	class LocalCollectionStorage;
+
 	class LocalCollectionModel : public Util::DndActionsMixin<QStandardItemModel>
 							   , public ICollectionModel
 	{
 		Q_OBJECT
+
+		LocalCollectionStorage * const Storage_;
 
 		QIcon ArtistIcon_ = QIcon::fromTheme ("view-media-artist");
 
@@ -73,7 +77,7 @@ namespace LMP
 			IsTrackIgnored
 		};
 
-		LocalCollectionModel (QObject*);
+		LocalCollectionModel (LocalCollectionStorage*, QObject*);
 
 		QStringList mimeTypes () const override;
 		QMimeData* mimeData (const QModelIndexList&) const override;

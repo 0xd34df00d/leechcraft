@@ -35,13 +35,15 @@
 #include <util/sll/prelude.h>
 #include "core.h"
 #include "localcollection.h"
+#include "localcollectionstorage.h"
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	LocalCollectionModel::LocalCollectionModel (QObject *parent)
+	LocalCollectionModel::LocalCollectionModel (LocalCollectionStorage *storage, QObject *parent)
 	: DndActionsMixin<QStandardItemModel> { parent }
+	, Storage_ { storage }
 	{
 		setSupportedDragActions (Qt::CopyAction);
 	}
