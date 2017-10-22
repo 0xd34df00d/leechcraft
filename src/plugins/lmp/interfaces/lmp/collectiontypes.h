@@ -81,6 +81,8 @@ namespace Collection
 		QDateTime LastPlay_;
 		int Score_ = 0;
 		int Rating_ = 0;
+
+		operator bool () const;
 	};
 }
 }

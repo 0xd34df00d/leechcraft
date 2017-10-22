@@ -35,6 +35,10 @@ namespace LMP
 {
 namespace Collection
 {
+	TrackStats::operator bool () const
+	{
+		return TrackID_;
+	}
 }
 }
 }
