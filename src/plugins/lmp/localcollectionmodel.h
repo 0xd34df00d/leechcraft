@@ -74,10 +74,10 @@ namespace LMP
 
 		LocalCollectionModel (QObject*);
 
-		QStringList mimeTypes () const;
-		QMimeData* mimeData (const QModelIndexList&) const;
+		QStringList mimeTypes () const override;
+		QMimeData* mimeData (const QModelIndexList&) const override;
 
-		QList<QUrl> ToSourceUrls (const QList<QModelIndex>&) const;
+		QList<QUrl> ToSourceUrls (const QList<QModelIndex>&) const override;
 
 		void AddArtists (const Collection::Artists_t&);
 		void Clear ();
