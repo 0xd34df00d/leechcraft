@@ -268,10 +268,7 @@ namespace BitTorrent
 		auto percent = [] (auto t1, auto t2)
 		{
 			if (t2)
-				return QString (" (") +
-					   QString::number (static_cast<float> (t1) * 100 /
-								static_cast<float> (t2), 'f', 1) +
-					   "%)";
+				return " (" + QString::number (t1 * 100.0 / t2, 'f', 1) + "%)";
 			else
 				return QString {};
 		};
