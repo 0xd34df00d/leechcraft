@@ -74,13 +74,13 @@ namespace Collection
 
 	struct TrackStats
 	{
-		int TrackID_;
+		int TrackID_ = 0;
 
-		int Playcount_;
+		int Playcount_ = 0;
 		QDateTime Added_;
 		QDateTime LastPlay_;
-		int Score_;
-		int Rating_;
+		int Score_ = 0;
+		int Rating_ = 0;
 	};
 }
 }
