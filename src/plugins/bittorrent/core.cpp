@@ -139,7 +139,7 @@ namespace BitTorrent
 
 	namespace
 	{
-		libtorrent::fingerprint BuildFingerprint (const ICoreProxy_ptr& proxy)
+		auto BuildFingerprint (const ICoreProxy_ptr& proxy)
 		{
 			auto ver = proxy->GetVersion ().section ('-', 0, 0);
 			const auto& vers = ver.split ('.', QString::SkipEmptyParts);
@@ -154,6 +154,9 @@ namespace BitTorrent
 
 			auto dig = [&ver] (int pos) { return ver.at (pos).digitValue (); };
 
+#if LIBTORRENT_VERSION_NUM >= 10100
+			return libtorrent::generate_fingerprint ("LC", dig (0), dig (1), dig (2), dig (3));
+#else
 			return libtorrent::fingerprint
 			{
 				"LC",
@@ -162,6 +165,7 @@ namespace BitTorrent
 				dig (2),
 				dig (3)
 			};
+#endif
 		}
 
 #if LIBTORRENT_VERSION_NUM >= 10100
@@ -201,8 +205,7 @@ namespace BitTorrent
 		{
 #if LIBTORRENT_VERSION_NUM >= 10100
 			libtorrent::settings_pack pack;
-			pack.set_str (libtorrent::settings_pack::peer_fingerprint,
-					BuildFingerprint (Proxy_).to_string ());
+			pack.set_str (libtorrent::settings_pack::peer_fingerprint, BuildFingerprint (Proxy_));
 			Session_ = new libtorrent::session (pack, 0);
 #else
 			Session_ = new libtorrent::session (BuildFingerprint (Proxy_), 0);
