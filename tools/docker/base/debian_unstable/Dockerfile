@@ -1,7 +1,7 @@
 FROM     debian:unstable
 
 RUN apt-get update
-RUN apt-get dist-upgrade -y
+RUN apt-get dist-upgrade -q -y
 
 RUN apt-get install -q -y cmake debhelper libaspell-dev \
         libboost-system-dev libboost-date-time-dev libboost-filesystem-dev \
