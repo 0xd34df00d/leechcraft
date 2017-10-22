@@ -53,16 +53,22 @@ namespace LMP
 
 	namespace
 	{
-		QStringList CollectPaths (const QModelIndex& index, const QAbstractItemModel *model)
+		template<typename T, LocalCollectionModel::Role Role>
+		QList<T> CollectTrackValues (const QModelIndex& index, const QAbstractItemModel *model)
 		{
 			const auto type = index.data (LocalCollectionModel::Role::Node).toInt ();
 			if (type == LocalCollectionModel::NodeType::Track)
-				return { index.data (LocalCollectionModel::Role::TrackPath).toString () };
+				return { index.data (Role).value<T> () };
 
-			QStringList paths;
+			QList<T> result;
 			for (int i = 0; i < model->rowCount (index); ++i)
-				paths += CollectPaths (model->index (i, 0, index), model);
-			return paths;
+				result += CollectTrackValues<T, Role> (model->index (i, 0, index), model);
+			return result;
+		}
+
+		QStringList CollectPaths (const QModelIndex& index, const QAbstractItemModel *model)
+		{
+			return CollectTrackValues<QString, LocalCollectionModel::Role::TrackPath> (index, model);
 		}
 	}
 
