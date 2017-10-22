@@ -258,38 +258,6 @@ namespace BitTorrent
 		UpdateTorrentControl ();
 	}
 
-	namespace
-	{
-		struct Percenter
-		{
-			template<typename T>
-			QString operator() (const T& t1, const T& t2) const
-			{
-				if (t2)
-				{
-					return QString (" (") +
-						QString::number (static_cast<float> (t1) * 100 /
-								static_cast<float> (t2), 'f', 1) +
-						"%)";
-				}
-				else
-					return QString ("");
-			}
-		};
-
-		template<int i>
-		struct Constructor
-		{
-			template<typename T>
-			QString operator() (const T& t1, const T& t2) const
-			{
-				Percenter p;
-				return Util::MakePrettySize (t1) +
-					(i ? QObject::tr ("/s") : "") + p (t1, t2);
-			}
-		};
-	};
-
 	void TorrentTabWidget::UpdateOverallStats ()
 	{
 		libtorrent::session_status stats = Core::Instance ()->GetOverallStats ();
@@ -297,7 +265,21 @@ namespace BitTorrent
 		Ui_.LabelTotalDownloadRate_->setText (Util::MakePrettySize (stats.download_rate) + tr ("/s"));
 		Ui_.LabelTotalUploadRate_->setText (Util::MakePrettySize (stats.upload_rate) + tr ("/s"));
 
-		Constructor<1> speed;
+		auto percent = [] (auto t1, auto t2)
+		{
+			if (t2)
+				return QString (" (") +
+					   QString::number (static_cast<float> (t1) * 100 /
+								static_cast<float> (t2), 'f', 1) +
+					   "%)";
+			else
+				return QString {};
+		};
+
+		auto speed = [percent] (auto t1, auto t2)
+		{
+			return Util::MakePrettySize (t1) + QObject::tr ("/s") + percent (t1, t2);
+		};
 
 		Ui_.LabelOverheadDownloadRate_->setText (speed (stats.ip_overhead_download_rate, stats.download_rate));
 		Ui_.LabelOverheadUploadRate_->setText (speed (stats.ip_overhead_upload_rate, stats.upload_rate));
@@ -309,7 +291,10 @@ namespace BitTorrent
 		Ui_.LabelTotalDownloaded_->setText (Util::MakePrettySize (stats.total_download));
 		Ui_.LabelTotalUploaded_->setText (Util::MakePrettySize (stats.total_upload));
 
-		Constructor<0> simple;
+		auto simple = [percent] (auto t1, auto t2)
+		{
+			return Util::MakePrettySize (t1) + percent (t1, t2);
+		};
 		Ui_.LabelOverheadDownloaded_->setText (simple (stats.total_ip_overhead_download, stats.total_download));
 		Ui_.LabelOverheadUploaded_->setText (simple (stats.total_ip_overhead_upload, stats.total_upload));
 		Ui_.LabelDHTDownloaded_->setText (simple (stats.total_dht_download, stats.total_download));
