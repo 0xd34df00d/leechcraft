@@ -166,6 +166,7 @@ namespace LMP
 					item->setData (album->Year_, Role::AlbumYear);
 					item->setData (album->Name_, Role::AlbumName);
 					item->setData (artist.Name_, Role::ArtistName);
+					item->setData (track.ID_, Role::TrackLength);
 					item->setData (track.Number_, Role::TrackNumber);
 					item->setData (track.Name_, Role::TrackTitle);
 					item->setData (track.FilePath_, Role::TrackPath);
