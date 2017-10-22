@@ -3,7 +3,7 @@ FROM     debian:unstable
 RUN apt-get update
 RUN apt-get dist-upgrade -y
 
-RUN apt-get install -y cmake debhelper libaspell-dev \
+RUN apt-get install -q -y cmake debhelper libaspell-dev \
         libboost-system-dev libboost-date-time-dev libboost-filesystem-dev \
         libboost-program-options-dev libboost-regex-dev libboost-thread-dev libboost-locale-dev \
         libbz2-dev libcurl4-openssl-dev libdjvulibre-dev libgeoip-dev libguess-dev libhunspell-dev \
