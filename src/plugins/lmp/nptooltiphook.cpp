@@ -62,12 +62,11 @@ namespace LMP
 		void SetStatistics (QString& str, const QString& path)
 		{
 			const auto& stats = Core::Instance ().GetLocalCollection ()->GetTrackStats (path);
-			const auto valid = stats.Added_.isValid ();
-			const auto& lastPlayStr = valid ?
+			const auto& lastPlayStr = stats ?
 					QObject::tr ("Last playback at %1")
 						.arg (FormatDateTime (stats.LastPlay_)) :
 					QString {};
-			const auto& countStr = valid ?
+			const auto& countStr = stats ?
 					NPTooltipHook::tr ("Played %n time(s) since %1", 0, stats.Playcount_)
 						.arg (FormatDateTime (stats.Added_)) :
 					QString {};
