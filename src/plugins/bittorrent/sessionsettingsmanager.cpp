@@ -148,15 +148,9 @@ namespace BitTorrent
 
 	namespace
 	{
-#if LIBTORRENT_VERSION_NUM >= 10100
 		using LTSettings_t = libtorrent::settings_pack;
 
-	#define LT_SET_INT_OPT(name, val) settings.set_int (libtorrent::settings_pack::name, val)
-#else
-		using LTSettings_t = libtorrent::session_settings;
-
-	#define LT_SET_INT_OPT(name, val) settings.name = val
-#endif
+#define LT_SET_INT_OPT(name, val) settings.set_int (libtorrent::settings_pack::name, val)
 
 		void SetOverallDownloadRateImpl (LTSettings_t& settings, int val)
 		{
@@ -183,19 +177,9 @@ namespace BitTorrent
 		template<typename F>
 		void WithSettings (libtorrent::session *session, F&& f)
 		{
-#if LIBTORRENT_VERSION_NUM >= 10100
 			auto settings = session->get_settings ();
-#else
-			auto settings = session->settings ();
-#endif
-
 			f (settings);
-
-#if LIBTORRENT_VERSION_NUM >= 10100
 			session->apply_settings (settings);
-#else
-			session->set_settings (settings);
-#endif
 		}
 
 		template<typename F, typename V>
@@ -413,20 +397,15 @@ namespace BitTorrent
 		if (XmlSettingsManager::Instance ()->property ("NotificationIPBlock").toBool ())
 			mask |= libtorrent::alert::ip_block_notification;
 
-#if LIBTORRENT_VERSION_NUM >= 10100
 		auto settings = Session_->get_settings ();
 		settings.set_int (libtorrent::settings_pack::alert_mask, mask);
 		Session_->apply_settings (settings);
-#else
-		Session_->set_alert_mask (mask);
-#endif
 	}
 
 	void SessionSettingsManager::tcpPortRangeChanged ()
 	{
 		const auto& ports = XmlSettingsManager::Instance ()->property ("TCPPortRange").toList ();
 
-#if LIBTORRENT_VERSION_NUM >= 10100
 		auto settings = Session_->get_settings ();
 
 		QStringList portsList;
@@ -436,25 +415,6 @@ namespace BitTorrent
 		settings.set_str (libtorrent::settings_pack::listen_interfaces, portsList.join (",").toStdString ());
 
 		Session_->apply_settings (settings);
-#else
-		boost::system::error_code ec;
-		Session_->listen_on ({ ports.at (0).toInt (), ports.at (1).toInt () }, ec);
-		if (ec)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "error listening on"
-					<< ports.at (0).toInt ()
-					<< ports.at (1).toInt ()
-					<< ec.message ().c_str ();
-
-			const auto& text = tr ("Error listening on ports %1-%2: %3")
-					.arg (ports.at (0).toInt ())
-					.arg (ports.at (1).toInt ())
-					.arg (QString::fromUtf8 (ec.message ().c_str ()));
-			const auto& e = Util::MakeNotification ("BitTorrent", text, PCritical_);
-			Proxy_->GetEntityManager ()->HandleEntity (e);
-		}
-#endif
 	}
 
 	void SessionSettingsManager::sslPortChanged ()
@@ -464,45 +424,27 @@ namespace BitTorrent
 				XmlSettingsManager::Instance ()->property ("SSLPort").toInt () :
 				0;
 
-#if LIBTORRENT_VERSION_NUM >= 10100
 		auto settings = Session_->get_settings ();
 		settings.set_int (libtorrent::settings_pack::ssl_listen, sslPort);
 		Session_->apply_settings (settings);
-#else
-		auto settings = Session_->settings ();
-		settings.ssl_listen = sslPort;
-		Session_->set_settings (settings);
-#endif
 	}
 
 	void SessionSettingsManager::maxUploadsChanged ()
 	{
 		const int maxUps = XmlSettingsManager::Instance ()->property ("MaxUploads").toInt ();
 
-#if LIBTORRENT_VERSION_NUM >= 10100
 		auto settings = Session_->get_settings ();
 		settings.set_int (libtorrent::settings_pack::unchoke_slots_limit, maxUps);
 		Session_->apply_settings (settings);
-#else
-		auto settings = Session_->settings ();
-		settings.unchoke_slots_limit = maxUps;
-		Session_->set_settings (settings);
-#endif
 	}
 
 	void SessionSettingsManager::maxConnectionsChanged ()
 	{
 		const int maxConn = XmlSettingsManager::Instance ()->property ("MaxConnections").toInt ();
 
-#if LIBTORRENT_VERSION_NUM >= 10100
 		auto settings = Session_->get_settings ();
 		settings.set_int (libtorrent::settings_pack::connections_limit, maxConn);
 		Session_->apply_settings (settings);
-#else
-		auto settings = Session_->settings ();
-		settings.connections_limit = maxConn;
-		Session_->set_settings (settings);
-#endif
 	}
 
 	void SessionSettingsManager::setProxySettings ()
@@ -516,7 +458,6 @@ namespace BitTorrent
 		const auto& password = auth.value (1).toStdString ();
 		const auto& pt = xsm->property ("PeerProxyType").toString ();
 
-#if LIBTORRENT_VERSION_NUM >= 10100
 		auto settings = Session_->get_settings ();
 		const auto settingsGuard = Util::MakeScopeGuard ([&settings, this] { Session_->apply_settings (settings); });
 
@@ -549,64 +490,24 @@ namespace BitTorrent
 				return libtorrent::settings_pack::proxy_type_t::none;
 		} ();
 		settings.set_int (libtorrent::settings_pack::proxy_type, proxyType);
-#else
-		libtorrent::proxy_settings peerProxySettings;
-		if (xsm->property ("PeerProxyEnabled").toBool ())
-		{
-			peerProxySettings.hostname = hostname;
-			peerProxySettings.port = port;
-			peerProxySettings.username = username;
-			peerProxySettings.password = password;
-
-			bool passworded = !username.empty ();
-			if (pt == "http")
-				peerProxySettings.type = passworded ?
-					libtorrent::proxy_settings::http_pw :
-					libtorrent::proxy_settings::http;
-			else if (pt == "socks4")
-				peerProxySettings.type = libtorrent::proxy_settings::socks4;
-			else if (pt == "socks5")
-				peerProxySettings.type = passworded ?
-					libtorrent::proxy_settings::socks5_pw :
-					libtorrent::proxy_settings::socks5;
-			else
-				peerProxySettings.type = libtorrent::proxy_settings::none;
-		}
-		else
-			peerProxySettings.type = libtorrent::proxy_settings::none;
-		Session_->set_proxy (peerProxySettings);
-#endif
 	}
 
-#if LIBTORRENT_VERSION_NUM >= 10100
-	#define LT_SET_BOOL_OPT(name, val) settings.set_bool (libtorrent::settings_pack::bool_types::name, \
-				xsm->property (val).toBool ())
-	#define LT_SET_INT_OPT(name, val) settings.set_int (libtorrent::settings_pack::int_types::name, \
-				xsm->property (val).toInt ())
-	#define LT_SET_PERCENT_OPT(name, val) settings.set_int (libtorrent::settings_pack::int_types::name, \
-				std::round (xsm->property (val).toDouble () * 100))
-	#define LT_SET_INT_OPT2(name, val, mod) settings.set_int (libtorrent::settings_pack::int_types::name, \
-				xsm->property (val).toInt () mod)
-	#define LT_SET_BARE_INT_OPT(name, val) settings.set_int (libtorrent::settings_pack::int_types::name, val)
-	#define LT_SET_BARE_STR_OPT(name, val) settings.set_str (libtorrent::settings_pack::string_types::name, val)
-#else
-	#define LT_SET_BOOL_OPT(name, val) settings.name = xsm->property (val).toBool ()
-	#define LT_SET_INT_OPT(name, val) settings.name = xsm->property (val).toInt ()
-	#define LT_SET_PERCENT_OPT(name, val) settings.name = xsm->property (val).toDouble ()
-	#define LT_SET_INT_OPT2(name, val, mod) settings.name = xsm->property (val).toInt () mod
-	#define LT_SET_BARE_INT_OPT(name, val) settings.name = val
-	#define LT_SET_BARE_STR_OPT(name, val) settings.name = val
-#endif
+#define LT_SET_BOOL_OPT(name, val) settings.set_bool (libtorrent::settings_pack::bool_types::name, \
+			xsm->property (val).toBool ())
+#define LT_SET_INT_OPT(name, val) settings.set_int (libtorrent::settings_pack::int_types::name, \
+			xsm->property (val).toInt ())
+#define LT_SET_PERCENT_OPT(name, val) settings.set_int (libtorrent::settings_pack::int_types::name, \
+			std::round (xsm->property (val).toDouble () * 100))
+#define LT_SET_INT_OPT2(name, val, mod) settings.set_int (libtorrent::settings_pack::int_types::name, \
+			xsm->property (val).toInt () mod)
+#define LT_SET_BARE_INT_OPT(name, val) settings.set_int (libtorrent::settings_pack::int_types::name, val)
+#define LT_SET_BARE_STR_OPT(name, val) settings.set_str (libtorrent::settings_pack::string_types::name, val)
 
 	void SessionSettingsManager::setGeneralSettings ()
 	{
 		const auto xsm = XmlSettingsManager::Instance ();
 
-#if LIBTORRENT_VERSION_NUM >= 10100
 		auto settings = Session_->get_settings ();
-#else
-		auto settings = Session_->settings ();
-#endif
 
 		LT_SET_INT_OPT (tracker_completion_timeout, "TrackerCompletionTimeout");
 		LT_SET_INT_OPT (tracker_receive_timeout, "TrackerReceiveTimeout");
@@ -673,29 +574,20 @@ namespace BitTorrent
 
 		const auto& ports = XmlSettingsManager::Instance ()->property ("OutgoingPorts").toList ();
 		if (ports.size () == 2)
-#if LIBTORRENT_VERSION_NUM >= 10100
 		{
 			LT_SET_BARE_INT_OPT (outgoing_port, ports.at (0).toInt ());
 			LT_SET_BARE_INT_OPT (num_outgoing_ports, ports.at (1).toInt () - ports.at (0).toInt () + 1);
 		}
-#else
-			settings.outgoing_ports = std::make_pair (ports.at (0).toInt (), ports.at (1).toInt ());
-#endif
 
 		LT_SET_BARE_INT_OPT (active_limit, 16384);
 		LT_SET_BARE_STR_OPT (announce_ip, xsm->property ("AnnounceIP").toString ().toStdString ());
 		LT_SET_BARE_STR_OPT (user_agent, "LeechCraft BitTorrent/" + Proxy_->GetVersion ().toStdString ());
 
-#if LIBTORRENT_VERSION_NUM >= 10100
 		Session_->apply_settings (settings);
-#else
-		Session_->set_settings (settings);
-#endif
 	}
 
 	void SessionSettingsManager::setDHTSettings ()
 	{
-#if LIBTORRENT_VERSION_NUM >= 10100
 		auto settings = Session_->get_settings ();
 
 		auto setBool = [&settings] (int id, const char *name)
@@ -714,33 +606,6 @@ namespace BitTorrent
 					"router.utorrent.com:6881,"
 					"dht.transmissionbt.com:6881,"
 					"dht.aelitis.com:6881");
-#else
-		if (XmlSettingsManager::Instance ()->property ("EnableLSD").toBool ())
-			Session_->start_lsd ();
-		else
-			Session_->stop_lsd ();
-
-		if (XmlSettingsManager::Instance ()->property ("EnableUPNP").toBool ())
-			Session_->start_upnp ();
-		else
-			Session_->stop_upnp ();
-
-		if (XmlSettingsManager::Instance ()->property ("EnableNATPMP").toBool ())
-			Session_->start_natpmp ();
-		else
-			Session_->stop_natpmp ();
-
-		if (XmlSettingsManager::Instance ()->property ("DHTEnabled").toBool ())
-		{
-			Session_->start_dht ();
-			Session_->add_dht_router ({ "router.bittorrent.com", 6881 });
-			Session_->add_dht_router ({ "router.utorrent.com", 6881 });
-			Session_->add_dht_router ({ "dht.transmissionbt.com", 6881 });
-			Session_->add_dht_router ({ "dht.aelitis.com", 6881 });
-		}
-		else
-			Session_->stop_dht ();
-#endif
 
 		libtorrent::dht_settings dhtSettings;
 

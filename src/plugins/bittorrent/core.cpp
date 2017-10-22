@@ -68,12 +68,8 @@
 #include <libtorrent/ip_filter.hpp>
 #include <libtorrent/version.hpp>
 #include <libtorrent/session.hpp>
-
-#if LIBTORRENT_VERSION_NUM >= 10100
 #include <libtorrent/lazy_entry.hpp>
 #include <libtorrent/announce_entry.hpp>
-#endif
-
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
@@ -154,21 +150,9 @@ namespace BitTorrent
 
 			auto dig = [&ver] (int pos) { return ver.at (pos).digitValue (); };
 
-#if LIBTORRENT_VERSION_NUM >= 10100
 			return libtorrent::generate_fingerprint ("LC", dig (0), dig (1), dig (2), dig (3));
-#else
-			return libtorrent::fingerprint
-			{
-				"LC",
-				dig (0),
-				dig (1),
-				dig (2),
-				dig (3)
-			};
-#endif
 		}
 
-#if LIBTORRENT_VERSION_NUM >= 10100
 		bool DecodeEntry (const QByteArray& data, libtorrent::bdecode_node& e)
 		{
 			boost::system::error_code ec;
@@ -182,34 +166,15 @@ namespace BitTorrent
 
 			return true;
 		}
-#else
-		bool DecodeEntry (const QByteArray& data, libtorrent::lazy_entry& e)
-		{
-			boost::system::error_code ec;
-			if (libtorrent::lazy_bdecode (data.constData (), data.constData () + data.size (), e, ec))
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "bad bencoding in saved torrent data"
-						<< ec.message ().c_str ();
-				return false;
-			}
-
-			return true;
-		}
-#endif
 	}
 
 	void Core::DoDelayedInit ()
 	{
 		try
 		{
-#if LIBTORRENT_VERSION_NUM >= 10100
 			libtorrent::settings_pack pack;
 			pack.set_str (libtorrent::settings_pack::peer_fingerprint, BuildFingerprint (Proxy_));
 			Session_ = new libtorrent::session (pack, 0);
-#else
-			Session_ = new libtorrent::session (BuildFingerprint (Proxy_), 0);
-#endif
 			Session_->set_ip_filter ({});
 
 			SessionSettingsMgr_ = new SessionSettingsManager { Session_, Proxy_, this };
@@ -219,11 +184,7 @@ namespace BitTorrent
 			if (sstateVariant.isValid () &&
 					!sstateVariant.toByteArray ().isEmpty ())
 			{
-#if LIBTORRENT_VERSION_NUM >= 10100
 				libtorrent::bdecode_node state;
-#else
-				libtorrent::lazy_entry state;
-#endif
 				if (DecodeEntry (sstateVariant.toByteArray (), state))
 					Session_->load_state (state);
 			}
@@ -1000,11 +961,7 @@ namespace BitTorrent
 		libtorrent::add_torrent_params atp;
 		try
 		{
-#if LIBTORRENT_VERSION_NUM >= 10100
 			atp.ti = boost::make_shared<libtorrent::torrent_info> (GetTorrentInfo (filename));
-#else
-			atp.ti = new libtorrent::torrent_info (GetTorrentInfo (filename));
-#endif
 			atp.storage_mode = GetCurrentStorageMode ();
 			atp.save_path = std::string (path.toUtf8 ().constData ());
 			if (!autoManaged)
@@ -1627,21 +1584,12 @@ namespace BitTorrent
 
 		QList<FileInfo> result;
 		const auto& handle = Handles_.at (idx).Handle_;
-#if LIBTORRENT_VERSION_NUM >= 10100
 		const auto& infoPtr = StatusKeeper_->GetStatus (handle,
 					libtorrent::torrent_handle::query_torrent_file).torrent_file.lock ();
 		if (!infoPtr)
 			return {};
 
 		const auto& info = *infoPtr;
-#else
-		const auto& infoPtr = StatusKeeper_->GetStatus (handle,
-					libtorrent::torrent_handle::query_torrent_file).torrent_file;
-		if (!infoPtr)
-			return {};
-
-		const auto& info = *infoPtr;
-#endif
 
 		std::vector<boost::int64_t> prbytes;
 
@@ -1654,14 +1602,8 @@ namespace BitTorrent
 		for (int i = 0, numFiles = info.num_files (); i < numFiles; ++i)
 		{
 			FileInfo fi;
-#if LIBTORRENT_VERSION_NUM >= 10100
 			fi.Path_ = info.files ().file_path (i);
 			fi.Size_ = info.files ().file_size (i);
-#else
-			const auto& entry = info.file_at (i);
-			fi.Path_ = boost::filesystem::path (entry.path);
-			fi.Size_ = entry.size;
-#endif
 			fi.Priority_ = Handles_.at (idx).FilePriorities_.at (i);
 			fi.Progress_ = fi.Size_ ?
 					prbytes.at (i) / static_cast<float> (fi.Size_) :
@@ -1773,15 +1715,9 @@ namespace BitTorrent
 
 			if (priorities.empty ())
 			{
-#if LIBTORRENT_VERSION_NUM >= 10100
 				const auto& infoPtr = StatusKeeper_->GetStatus (handle,
 							libtorrent::torrent_handle::query_torrent_file).torrent_file.lock ();
 				const auto numFiles = infoPtr ? infoPtr->num_files () : 0;
-#else
-				const auto& infoPtr = StatusKeeper_->GetStatus (handle,
-							libtorrent::torrent_handle::query_torrent_file).torrent_file;
-				const auto numFiles = infoPtr ? infoPtr->num_files () : 0;
-#endif
 				priorities.resize (numFiles);
 				std::fill (priorities.begin (), priorities.end (), 1);
 			}
@@ -1825,22 +1761,14 @@ namespace BitTorrent
 	{
 		libtorrent::torrent_handle handle;
 
-#if LIBTORRENT_VERSION_NUM >= 10100
 		libtorrent::bdecode_node e;
-#else
-		libtorrent::lazy_entry e;
-#endif
 		if (!DecodeEntry (data, e))
 			return handle;
 
 		try
 		{
 			libtorrent::add_torrent_params atp;
-#if LIBTORRENT_VERSION_NUM >= 10100
 			atp.ti = boost::make_shared<libtorrent::torrent_info> (e);
-#else
-			atp.ti = new libtorrent::torrent_info (e);
-#endif
 			atp.storage_mode = GetCurrentStorageMode ();
 			atp.save_path = path.string ();
 			if (!automanaged)
@@ -1875,11 +1803,7 @@ namespace BitTorrent
 
 		const auto& name = QString::fromStdString (status.name);
 
-#if LIBTORRENT_VERSION_NUM >= 10100
 		const auto filePtr = status.torrent_file.lock ();
-#else
-		const auto filePtr = status.torrent_file;
-#endif
 		if (!filePtr)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -1888,6 +1812,7 @@ namespace BitTorrent
 					<< "has finished, but we don't have its info";
 			return;
 		}
+
 		const auto& info = *filePtr;
 
 		if (LiveStreamManager_->IsEnabledOn (torrent.Handle_) &&
@@ -1911,11 +1836,7 @@ namespace BitTorrent
 		auto nah = new Util::NotificationActionHandler (notifyE);
 		if (info.files ().num_files () == 1)
 		{
-#if LIBTORRENT_VERSION_NUM >= 10100
 			const QByteArray path { (savePath + '/' + info.files ().file_path (0)).c_str () };
-#else
-			const QByteArray path { (savePath + '/' + info.files ().at (0).path).c_str () };
-#endif
 			nah->AddFunction (tr ("Open..."),
 					[iem, path]
 					{
@@ -1941,12 +1862,7 @@ namespace BitTorrent
 
 		for (int i = 0, numFiles = info.num_files (); i < numFiles; ++i)
 		{
-#if LIBTORRENT_VERSION_NUM >= 10100
 			const QByteArray path { (savePath + '/' + info.files ().file_path (i)).c_str () };
-#else
-			const auto& entry = info.file_at (i);
-			const auto& path = QByteArray ((savePath + '/' + entry.path).c_str ());
-#endif
 			e.Entity_ = QUrl::fromLocalFile (localeCodec->toUnicode (path));
 			iem->HandleEntity (e);
 		}
@@ -1964,12 +1880,7 @@ namespace BitTorrent
 			return;
 		}
 
-#if LIBTORRENT_VERSION_NUM >= 10100
 		const auto& newName = QString::fromUtf8 (a.new_name ());
-#else
-		const auto& newName = QString::fromUtf8 (a.name.c_str ());
-#endif
-
 		emit fileRenamed (std::distance (Handles_.begin (), pos), a.index, newName);
 	}
 
@@ -2207,11 +2118,7 @@ namespace BitTorrent
 			const auto& text = QObject::tr ("Storage for torrent:<br />%1"
 						"<br />moved successfully to:<br />%2")
 					.arg (GetTorrentName (a.handle))
-#if LIBTORRENT_VERSION_NUM >= 10100
 					.arg (QString::fromUtf8 (a.storage_path ()));
-#else
-					.arg (QString::fromUtf8 (a.path.c_str ()));
-#endif
 			IEM_->HandleEntity (Util::MakeNotification ("BitTorrent", text, PInfo_));
 		}
 
@@ -2320,11 +2227,7 @@ namespace BitTorrent
 			const auto& text = QObject::tr ("File error for torrent:<br />%1<br />"
 						"file:<br />%2<br />error:<br />%3")
 					.arg (GetTorrentName (a.handle))
-#if LIBTORRENT_VERSION_NUM >= 10100
 					.arg (QString::fromUtf8 (a.filename ()))
-#else
-					.arg (QString::fromUtf8 (a.file.c_str ()))
-#endif
 					.arg (QString::fromUtf8 (a.error.message ().c_str ()));
 			IEM_->HandleEntity (Util::MakeNotification ("BitTorrent", text, PCritical_));
 		}
@@ -2382,18 +2285,8 @@ namespace BitTorrent
 
 	void Core::queryLibtorrentForWarnings ()
 	{
-#if LIBTORRENT_VERSION_NUM >= 10100
 		std::vector<libtorrent::alert*> alerts;
-#else
-		std::deque<libtorrent::alert*> alerts;
-		const auto guard = Util::MakeScopeGuard ([&alerts]
-				{
-					for (const auto elem : alerts)
-						delete elem;
-				});
-#endif
 		Session_->pop_alerts (&alerts);
-
 		for (const auto alert : alerts)
 		{
 			SimpleDispatcher sd { Proxy_ };

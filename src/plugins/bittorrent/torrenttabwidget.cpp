@@ -32,11 +32,7 @@
 #include <QSortFilterProxyModel>
 #include <QUrl>
 #include <libtorrent/session.hpp>
-
-#if LIBTORRENT_VERSION_NUM >= 10100
 #include <libtorrent/lazy_entry.hpp>
-#endif
-
 #include <util/util.h>
 #include <util/xpc/util.h>
 #include <util/tags/tagscompleter.h>
@@ -352,23 +348,10 @@ namespace BitTorrent
 
 	namespace
 	{
-#if LIBTORRENT_VERSION_NUM >= 10100
 		QTime Announce2Time (const libtorrent::time_duration& announce)
 		{
-			return QTime { 0, 0 }
-					.addMSecs (libtorrent::duration_cast<libtorrent::seconds> (announce).count ());
+			return QTime { 0, 0 }.addMSecs (libtorrent::duration_cast<libtorrent::seconds> (announce).count ());
 		}
-#else
-		QTime Announce2Time (const boost::posix_time::time_duration& announce)
-		{
-			return QTime
-			{
-				announce.hours (),
-				announce.minutes (),
-				announce.seconds ()
-			};
-		}
-#endif
 	}
 
 	void TorrentTabWidget::UpdateTorrentControl ()
@@ -394,11 +377,7 @@ namespace BitTorrent
 		}
 
 		if (!i->Info_)
-#if LIBTORRENT_VERSION_NUM >= 10100
 			i->Info_.reset (new libtorrent::torrent_info { libtorrent::bdecode_node {} });
-#else
-			i->Info_.reset (new libtorrent::torrent_info { libtorrent::lazy_entry {} });
-#endif
 
 		Ui_.TorrentControlTab_->setEnabled (true);
 		Ui_.LabelState_->setText (i->State_);

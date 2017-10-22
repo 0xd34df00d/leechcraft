@@ -31,11 +31,7 @@
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>
-
-#if LIBTORRENT_VERSION_NUM >= 10100
 #include <libtorrent/announce_entry.hpp>
-#endif
-
 #include <QHeaderView>
 #include <QFileDialog>
 #include <QMessageBox>
@@ -359,14 +355,9 @@ namespace BitTorrent
 			Ui_.Date_->setText ("<>");
 
 		QList<AddTorrentFilesModel::FileEntry> fileEntries;
-#if LIBTORRENT_VERSION_NUM >= 10100
 		const auto& torrentFiles = info.files ();
 		for (int i = 0; i < torrentFiles.num_files (); ++i)
 			fileEntries.push_back ({ torrentFiles.file_path (i), torrentFiles.file_size (i) });
-#else
-		for (int i = 0, numFiles = info.num_files (); i < numFiles; ++i)
-			fileEntries.push_back ({ info.file_at (i).path, info.file_at (i).size });
-#endif
 		FilesModel_->ResetFiles (fileEntries);
 
 		Ui_.FilesView_->expandAll ();

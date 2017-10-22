@@ -36,11 +36,7 @@
 #include <QToolBar>
 #include <QMenu>
 #include <libtorrent/session.hpp>
-
-#if LIBTORRENT_VERSION_NUM >= 10100
 #include <libtorrent/announce_entry.hpp>
-#endif
-
 #include <util/tags/tagscompleter.h>
 #include <util/gui/clearlineeditaddon.h>
 #include <util/gui/lineeditbuttonmanager.h>

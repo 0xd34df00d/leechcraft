@@ -46,11 +46,7 @@ namespace BitTorrent
 	{
 		[&]
 		{
-#if LIBTORRENT_VERSION_NUM >= 10100
 			const auto tf = keeper->GetStatus (h, th::query_pieces | th::query_torrent_file).torrent_file.lock ();
-#else
-			const auto tf = keeper->GetStatus (h, th::query_pieces | th::query_torrent_file).torrent_file;
-#endif
 			if (!tf)
 				throw std::runtime_error { LiveStreamDevice::tr ("No metadata is available yet.").toStdString () };
 			return *tf;
@@ -58,11 +54,7 @@ namespace BitTorrent
 	}
 	{
 		const auto& tpath = keeper->GetStatus (h, th::query_save_path).save_path;
-#if LIBTORRENT_VERSION_NUM >= 10100
 		const auto& fpath = TI_.files ().file_path (0);
-#else
-		const auto& fpath = TI_.file_at (0).path;
-#endif
 		File_.setFileName (QString::fromStdString (tpath + '/' + fpath));
 
 		if (!QIODevice::open (QIODevice::ReadOnly | QIODevice::Unbuffered))

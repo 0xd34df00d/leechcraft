@@ -31,11 +31,7 @@
 #include <QMessageBox>
 #include <QMainWindow>
 #include <libtorrent/version.hpp>
-
-#if LIBTORRENT_VERSION_NUM >= 10100
 #include <libtorrent/announce_entry.hpp>
-#endif
-
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include "core.h"
@@ -94,7 +90,7 @@ namespace BitTorrent
 		for (int i = 0; i < count; ++i)
 		{
 			QTreeWidgetItem *item = Ui_.Trackers_->topLevelItem (i);
-			result [i].url = (item->text (0).toStdString ());
+			result [i].url = item->text (0).toStdString ();
 			result [i].tier = item->text (1).toInt ();
 		}
 		return result;
