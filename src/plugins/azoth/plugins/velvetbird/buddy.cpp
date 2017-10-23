@@ -32,6 +32,7 @@
 #include <QtDebug>
 #include <util/xpc/util.h>
 #include <interfaces/core/ientitymanager.h>
+#include <interfaces/azoth/azothutil.h>
 #include "account.h"
 #include "util.h"
 #include "convimmessage.h"
@@ -133,7 +134,7 @@ namespace VelvetBird
 
 	void Buddy::PurgeMessages (const QDateTime& before)
 	{
-		// TODO
+		AzothUtil::StandardPurgeMessages (Messages_, before);
 	}
 
 	void Buddy::SetChatPartState (ChatPartState state, const QString& variant)
