@@ -133,21 +133,20 @@ namespace LMP
 				return { stats, GetVisibleName (type, item) };
 			}
 
-			QList<RefreshTooltipState> childStats;
+			RefreshTooltipState latest;
 			for (int i = 0; i < item->rowCount (); ++i)
-				childStats << RefreshTooltip (item->child (i), storage);
 
-			const auto latest = std::max_element (childStats.begin (), childStats.end (),
-					Util::ComparingBy ([] (const auto& state) { return state.LastStats_.LastPlay_; }));
-			if (latest == childStats.end () || !latest->LastStats_)
+				latest = std::max (RefreshTooltip (item->child (i), storage), latest,
+						Util::ComparingBy ([] (const auto& state) { return state.LastStats_.LastPlay_; }));
+			if (!latest.LastStats_)
 				return {};
 
 			const auto& lastStr = LocalCollectionModel::tr ("Last playback at %1 (%2)")
-					.arg (FormatDateTime (latest->LastStats_.LastPlay_))
-					.arg (latest->VisibleName_);
+					.arg (FormatDateTime (latest.LastStats_.LastPlay_))
+					.arg (latest.VisibleName_);
 			item->setToolTip (lastStr);
 
-			return { latest->LastStats_, GetVisibleName (type, item) };
+			return { latest.LastStats_, GetVisibleName (type, item) };
 		}
 	}
 
