@@ -129,17 +129,21 @@ namespace LMP
 							.arg (FormatDateTime (stats.Added_));
 					item->setToolTip (last + "\n" + total);
 				}
+				else
+					item->setToolTip (LocalCollectionModel::tr ("Never has been played"));
 
 				return { stats, GetVisibleName (type, item) };
 			}
 
 			RefreshTooltipState latest;
 			for (int i = 0; i < item->rowCount (); ++i)
-
 				latest = std::max (RefreshTooltip (item->child (i), storage), latest,
 						Util::ComparingBy ([] (const auto& state) { return state.LastStats_.LastPlay_; }));
 			if (!latest.LastStats_)
+			{
+				item->setToolTip (LocalCollectionModel::tr ("Never has been played"));
 				return {};
+			}
 
 			const auto& lastStr = LocalCollectionModel::tr ("Last playback: %1 (%2)")
 					.arg (FormatDateTime (latest.LastStats_.LastPlay_))
