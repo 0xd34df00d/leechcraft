@@ -81,6 +81,7 @@ namespace LMP
 
 		QStringList mimeTypes () const override;
 		QMimeData* mimeData (const QModelIndexList&) const override;
+		QVariant data (const QModelIndex& index, int role) const override;
 
 		QList<QUrl> ToSourceUrls (const QList<QModelIndex>&) const override;
 

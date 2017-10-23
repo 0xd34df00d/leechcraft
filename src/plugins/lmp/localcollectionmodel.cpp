@@ -154,6 +154,18 @@ namespace LMP
 		}
 	}
 
+	QVariant LocalCollectionModel::data (const QModelIndex& index, int role) const
+	{
+		if (role == Qt::ToolTipRole)
+		{
+			const auto item = itemFromIndex (index);
+			if (item->data (role).isNull ())
+				RefreshTooltip (item, Storage_);
+		}
+
+		return QStandardItemModel::data (index, role);
+	}
+
 	QList<QUrl> LocalCollectionModel::ToSourceUrls (const QList<QModelIndex>& indexes) const
 	{
 		const auto& paths = std::accumulate (indexes.begin (), indexes.end (), QStringList {},
