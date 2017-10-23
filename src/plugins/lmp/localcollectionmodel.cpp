@@ -147,7 +147,7 @@ namespace LMP
 
 			const auto& lastStr = LocalCollectionModel::tr ("Last playback: %1 (%2)")
 					.arg (FormatDateTime (latest.LastStats_.LastPlay_))
-					.arg (latest.VisibleName_);
+					.arg ("<em>" + latest.VisibleName_ + "</em>");
 			item->setToolTip (lastStr);
 
 			return { latest.LastStats_, GetVisibleName (type, item) };
