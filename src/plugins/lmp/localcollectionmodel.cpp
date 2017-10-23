@@ -123,7 +123,7 @@ namespace LMP
 
 				if (stats)
 				{
-					const auto& last = LocalCollectionModel::tr ("Last playback at %1")
+					const auto& last = LocalCollectionModel::tr ("Last playback: %1")
 							.arg (FormatDateTime (stats.LastPlay_));
 					const auto& total = LocalCollectionModel::tr ("Played %n time(s) since %1", 0, stats.Playcount_)
 							.arg (FormatDateTime (stats.Added_));
@@ -141,7 +141,7 @@ namespace LMP
 			if (!latest.LastStats_)
 				return {};
 
-			const auto& lastStr = LocalCollectionModel::tr ("Last playback at %1 (%2)")
+			const auto& lastStr = LocalCollectionModel::tr ("Last playback: %1 (%2)")
 					.arg (FormatDateTime (latest.LastStats_.LastPlay_))
 					.arg (latest.VisibleName_);
 			item->setToolTip (lastStr);
