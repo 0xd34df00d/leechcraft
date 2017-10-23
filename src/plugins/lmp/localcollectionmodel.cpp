@@ -91,7 +91,7 @@ namespace LMP
 	QList<QUrl> LocalCollectionModel::ToSourceUrls (const QList<QModelIndex>& indexes) const
 	{
 		const auto& paths = std::accumulate (indexes.begin (), indexes.end (), QStringList {},
-				[this] (const QStringList& paths, decltype (indexes.front ()) item)
+				[this] (const QStringList& paths, const QModelIndex& item)
 					{ return paths + CollectPaths (item, this); });
 
 		QList<QUrl> result;
