@@ -304,5 +304,16 @@ namespace LMP
 		for (const auto item : Album2Item_.value (id))
 			item->setData (path, Role::AlbumArt);
 	}
+
+	void LocalCollectionModel::UpdatePlayStats (int trackId)
+	{
+		auto item = Track2Item_ [trackId];
+
+		while (item)
+		{
+			item->setToolTip ({});
+			item = item->parent ();
+		}
+	}
 }
 }

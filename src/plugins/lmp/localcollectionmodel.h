@@ -96,6 +96,8 @@ namespace LMP
 
 		void SetAlbumArt (int, const QString&);
 		QVariant GetTrackData (int trackId, Role) const;
+
+		void UpdatePlayStats (int);
 	};
 }
 }

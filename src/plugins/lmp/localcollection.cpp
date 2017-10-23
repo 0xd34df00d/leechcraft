@@ -896,6 +896,7 @@ namespace LMP
 	{
 		try
 		{
+			CollectionModel_->UpdatePlayStats (trackId);
 			Storage_->RecordTrackPlayed (trackId, date);
 		}
 		catch (const std::runtime_error& e)
