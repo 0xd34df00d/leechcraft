@@ -33,9 +33,11 @@
 #include <QMimeData>
 #include <interfaces/core/iiconthememanager.h>
 #include <util/sll/prelude.h>
+#include <util/sll/unreachable.h>
 #include "core.h"
 #include "localcollection.h"
 #include "localcollectionstorage.h"
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -86,6 +88,67 @@ namespace LMP
 		auto result = new QMimeData;
 		result->setUrls (urls);
 		return result;
+	}
+
+	namespace
+	{
+		struct RefreshTooltipState
+		{
+			Collection::TrackStats LastStats_;
+			QString VisibleName_;
+		};
+
+		QString GetVisibleName (int type, QStandardItem *item)
+		{
+			switch (type)
+			{
+			case LocalCollectionModel::NodeType::Track:
+				return item->data (LocalCollectionModel::Role::TrackTitle).toString ();
+			case LocalCollectionModel::NodeType::Album:
+				return item->data (LocalCollectionModel::Role::AlbumName).toString ();
+			case LocalCollectionModel::NodeType::Artist:
+				return item->data (LocalCollectionModel::Role::ArtistName).toString ();
+			}
+
+			Util::Unreachable ();
+		}
+
+		RefreshTooltipState RefreshTooltip (QStandardItem *item, LocalCollectionStorage *storage)
+		{
+			const auto type = item->data (LocalCollectionModel::Role::Node).toInt ();
+			if (type == LocalCollectionModel::NodeType::Track)
+			{
+				const auto trackId = item->data (LocalCollectionModel::Role::TrackID).toInt ();
+				const auto& stats = storage->GetTrackStats (trackId);
+
+				if (stats)
+				{
+					const auto& last = LocalCollectionModel::tr ("Last playback at %1")
+							.arg (FormatDateTime (stats.LastPlay_));
+					const auto& total = LocalCollectionModel::tr ("Played %n time(s) since %1", 0, stats.Playcount_)
+							.arg (FormatDateTime (stats.Added_));
+					item->setToolTip (last + "\n" + total);
+				}
+
+				return { stats, GetVisibleName (type, item) };
+			}
+
+			QList<RefreshTooltipState> childStats;
+			for (int i = 0; i < item->rowCount (); ++i)
+				childStats << RefreshTooltip (item->child (i), storage);
+
+			const auto latest = std::max_element (childStats.begin (), childStats.end (),
+					Util::ComparingBy ([] (const auto& state) { return state.LastStats_.LastPlay_; }));
+			if (latest == childStats.end () || !latest->LastStats_)
+				return {};
+
+			const auto& lastStr = LocalCollectionModel::tr ("Last playback at %1 (%2)")
+					.arg (FormatDateTime (latest->LastStats_.LastPlay_))
+					.arg (latest->VisibleName_);
+			item->setToolTip (lastStr);
+
+			return { latest->LastStats_, GetVisibleName (type, item) };
+		}
 	}
 
 	QList<QUrl> LocalCollectionModel::ToSourceUrls (const QList<QModelIndex>& indexes) const
