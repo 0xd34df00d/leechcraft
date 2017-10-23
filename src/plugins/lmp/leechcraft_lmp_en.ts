@@ -342,15 +342,7 @@
 <context>
     <name>LeechCraft::LMP::CollectionWidget</name>
     <message numerus="yes">
-        <location filename="collectionwidget.cpp" line="199"/>
-        <source>Are you sure you want to remove %n track(s) from your collection?&lt;br/&gt;&lt;br/&gt;Please note that if tracks remain on your disk they will be re-added next time collection is scanned, but you will lose the statistics.</source>
-        <translation>
-            <numerusform>Are you sure you want to remove %n track from your collection?&lt;br/&gt;&lt;br/&gt;Please note that if tracks remain on your disk they will be re-added next time collection is scanned, but you will lose the statistics.</numerusform>
-            <numerusform>Are you sure you want to remove %n tracks from your collection?&lt;br/&gt;&lt;br/&gt;Please note that if tracks remain on your disk they will be re-added next time collection is scanned, but you will lose the statistics.</numerusform>
-        </translation>
-    </message>
-    <message numerus="yes">
-        <location filename="collectionwidget.cpp" line="222"/>
+        <location filename="collectionwidget.cpp" line="218"/>
         <source>Are you sure you want to erase %n track(s)? This action cannot be undone.</source>
         <translation>
             <numerusform>Are you sure you want to erase %n track? This action cannot be undone.</numerusform>
@@ -358,42 +350,42 @@
         </translation>
     </message>
     <message>
-        <location filename="collectionwidget.cpp" line="282"/>
+        <location filename="collectionwidget.cpp" line="278"/>
         <source>Add to playlist</source>
         <translation>Add to playlist</translation>
     </message>
     <message>
-        <location filename="collectionwidget.cpp" line="286"/>
+        <location filename="collectionwidget.cpp" line="282"/>
         <source>Replace playlist</source>
         <translation>Replace playlist</translation>
     </message>
     <message>
-        <location filename="collectionwidget.cpp" line="291"/>
+        <location filename="collectionwidget.cpp" line="287"/>
         <source>Show track properties</source>
         <translation>Show track properties</translation>
     </message>
     <message>
-        <location filename="collectionwidget.cpp" line="298"/>
+        <location filename="collectionwidget.cpp" line="294"/>
         <source>Show album art</source>
         <translation>Show album art</translation>
     </message>
     <message>
-        <location filename="collectionwidget.cpp" line="302"/>
+        <location filename="collectionwidget.cpp" line="298"/>
         <source>Album art manager...</source>
         <translation>Album art manager...</translation>
     </message>
     <message>
-        <location filename="collectionwidget.cpp" line="305"/>
+        <location filename="collectionwidget.cpp" line="301"/>
         <source>Show in artist browser</source>
         <translation>Show in artist browser</translation>
     </message>
     <message>
-        <location filename="collectionwidget.cpp" line="311"/>
+        <location filename="collectionwidget.cpp" line="307"/>
         <source>Remove from collection...</source>
         <translation>Remove from collection...</translation>
     </message>
     <message>
-        <location filename="collectionwidget.cpp" line="314"/>
+        <location filename="collectionwidget.cpp" line="310"/>
         <source>Delete from disk...</source>
         <translation>Delete from disk...</translation>
     </message>
@@ -411,17 +403,17 @@
         <translation>mounted at %1</translation>
     </message>
     <message>
-        <location filename="sync/devicesbrowserwidget.cpp" line="243"/>
+        <location filename="sync/devicesbrowserwidget.cpp" line="242"/>
         <source>Select syncer</source>
         <translation>Select syncer</translation>
     </message>
     <message>
-        <location filename="sync/devicesbrowserwidget.cpp" line="244"/>
+        <location filename="sync/devicesbrowserwidget.cpp" line="243"/>
         <source>Multiple different syncers can handle the device %1, what do you want to use?</source>
         <translation>Multiple different syncers can handle the device %1, what do you want to use?</translation>
     </message>
     <message>
-        <location filename="sync/devicesbrowserwidget.cpp" line="326"/>
+        <location filename="sync/devicesbrowserwidget.cpp" line="325"/>
         <source>%1 (%2 available of %3)</source>
         <translation>%1 (%2 available of %3)</translation>
     </message>
@@ -571,7 +563,7 @@
 <context>
     <name>LeechCraft::LMP::LocalCollection</name>
     <message numerus="yes">
-        <location filename="localcollection.cpp" line="910"/>
+        <location filename="localcollection.cpp" line="944"/>
         <source>%n new artist(s)</source>
         <translation>
             <numerusform>%n new artist</numerusform>
@@ -579,7 +571,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="localcollection.cpp" line="911"/>
+        <location filename="localcollection.cpp" line="945"/>
         <source>%n new album(s)</source>
         <translation>
             <numerusform>%n new album</numerusform>
@@ -587,7 +579,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="localcollection.cpp" line="912"/>
+        <location filename="localcollection.cpp" line="946"/>
         <source>%n new track(s)</source>
         <translation>
             <numerusform>%n new track</numerusform>
@@ -595,9 +587,36 @@
         </translation>
     </message>
     <message>
-        <location filename="localcollection.cpp" line="913"/>
+        <location filename="localcollection.cpp" line="947"/>
         <source>Local collection updated: %1, %2, %3.</source>
         <translation>Local collection updated: %1, %2, %3.</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::LMP::LocalCollectionModel</name>
+    <message>
+        <location filename="localcollectionmodel.cpp" line="126"/>
+        <source>Last playback: %1</source>
+        <translation>Last playback: %1</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="localcollectionmodel.cpp" line="128"/>
+        <source>Played %n time(s) since %1</source>
+        <translation>
+            <numerusform>Played %n time since %1</numerusform>
+            <numerusform>Played %n times since %1</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="localcollectionmodel.cpp" line="133"/>
+        <location filename="localcollectionmodel.cpp" line="144"/>
+        <source>Never has been played</source>
+        <translation>Never has been played</translation>
+    </message>
+    <message>
+        <location filename="localcollectionmodel.cpp" line="148"/>
+        <source>Last playback: %1 (%2)</source>
+        <translation>Last playback: %1 (%2)</translation>
     </message>
 </context>
 <context>
@@ -631,7 +650,7 @@
 <context>
     <name>LeechCraft::LMP::NPTooltipHook</name>
     <message numerus="yes">
-        <location filename="nptooltiphook.cpp" line="71"/>
+        <location filename="nptooltiphook.cpp" line="70"/>
         <source>Played %n time(s) since %1</source>
         <oldsource>Played %1 times since %2</oldsource>
         <translation>
@@ -802,7 +821,7 @@
         <translation>Stop after current track</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="498"/>
+        <location filename="playertab.cpp" line="515"/>
         <source>Open effects configuration page...</source>
         <translation>Open effects configuration page...</translation>
     </message>
@@ -1106,7 +1125,7 @@
     <name>LeechCraft::LMP::Plugin</name>
     <message>
         <location filename="lmp.cpp" line="118"/>
-        <location filename="lmp.cpp" line="537"/>
+        <location filename="lmp.cpp" line="538"/>
         <source>Artist browser</source>
         <translation>Artist browser</translation>
     </message>
@@ -1132,58 +1151,58 @@
         <translation>Collection statistics</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="447"/>
-        <location filename="lmp.cpp" line="456"/>
+        <location filename="lmp.cpp" line="448"/>
+        <location filename="lmp.cpp" line="457"/>
         <source>Show artist information</source>
         <translation>Show artist information</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="457"/>
+        <location filename="lmp.cpp" line="458"/>
         <source>Search for artist biography, similar artists, releases and so on.</source>
         <translation>Search for artist biography, similar artists, releases and so on.</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="505"/>
+        <location filename="lmp.cpp" line="506"/>
         <source>Play/pause</source>
         <translation>Play/pause</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="506"/>
+        <location filename="lmp.cpp" line="507"/>
         <source>Previous track</source>
         <translation>Previous track</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="507"/>
+        <location filename="lmp.cpp" line="508"/>
         <source>Next track</source>
         <translation>Next track</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="508"/>
+        <location filename="lmp.cpp" line="509"/>
         <source>Stop playback</source>
         <translation>Stop playback</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="509"/>
+        <location filename="lmp.cpp" line="510"/>
         <source>Stop playback after current track</source>
         <translation>Stop playback after current track</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="510"/>
+        <location filename="lmp.cpp" line="511"/>
         <source>Love track</source>
         <translation>Love track</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="512"/>
+        <location filename="lmp.cpp" line="513"/>
         <source>Notify about current track</source>
         <translation>Notify about current track</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="514"/>
+        <location filename="lmp.cpp" line="515"/>
         <source>Increase volume</source>
         <translation>Increase volume</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="515"/>
+        <location filename="lmp.cpp" line="516"/>
         <source>Decrease volume</source>
         <translation>Decrease volume</translation>
     </message>
@@ -1627,17 +1646,17 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="util.cpp" line="168"/>
+        <location filename="util.cpp" line="170"/>
         <source>Album art</source>
         <translation>Album art</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="200"/>
+        <location filename="util.cpp" line="202"/>
         <source>CD %1:</source>
         <translation>CD %1:</translation>
     </message>
     <message numerus="yes">
-        <location filename="util.cpp" line="259"/>
+        <location filename="util.cpp" line="261"/>
         <source>%n day(s) ago</source>
         <translation>
             <numerusform>%n day ago</numerusform>
@@ -1645,12 +1664,12 @@
         </translation>
     </message>
     <message>
-        <location filename="util.cpp" line="281"/>
+        <location filename="util.cpp" line="283"/>
         <source>Invalid directory</source>
         <translation>Invalid directory</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="282"/>
+        <location filename="util.cpp" line="284"/>
         <source>The audio tracks cannot be downloaded to %1. Do you wish to choose another directory?</source>
         <translation>The audio tracks cannot be downloaded to %1. Do you wish to choose another directory?</translation>
     </message>
@@ -1700,7 +1719,7 @@
         <translation>File name</translation>
     </message>
     <message>
-        <location filename="nptooltiphook.cpp" line="67"/>
+        <location filename="nptooltiphook.cpp" line="66"/>
         <source>Last playback at %1</source>
         <translation>Last playback at %1</translation>
     </message>
