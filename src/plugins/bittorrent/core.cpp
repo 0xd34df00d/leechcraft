@@ -219,7 +219,7 @@ namespace BitTorrent
 		connect (WarningWatchdog_.get (),
 				SIGNAL (timeout ()),
 				this,
-				SLOT (queryLibtorrentForWarnings ()));
+				SLOT (queryLibtorrent ()));
 		WarningWatchdog_->start (2000);
 
 		connect (SessionSettingsMgr_,
@@ -2036,7 +2036,7 @@ namespace BitTorrent
 
 		Session_->wait_for_alert (libtorrent::time_duration (5));
 
-		queryLibtorrentForWarnings ();
+		queryLibtorrent ();
 	}
 
 	void Core::checkFinished ()
@@ -2283,7 +2283,7 @@ namespace BitTorrent
 		}
 	}
 
-	void Core::queryLibtorrentForWarnings ()
+	void Core::queryLibtorrent ()
 	{
 		Session_->post_torrent_updates ();
 

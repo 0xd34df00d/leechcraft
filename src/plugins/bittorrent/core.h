@@ -380,8 +380,7 @@ namespace BitTorrent
 		void writeSettings ();
 		void checkFinished ();
 		void scrape ();
-	public slots:
-		void queryLibtorrentForWarnings ();
+		void queryLibtorrent ();
 	signals:
 		void addToHistory (const QString&, const QString&, quint64,
 				const QDateTime&, const QStringList&);
