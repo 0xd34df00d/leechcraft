@@ -67,7 +67,7 @@ namespace Azoth
 
 		/** @brief Represents the direction of the message.
 		 */
-		enum class Direction
+		enum class Direction : uint8_t
 		{
 			/** @brief The message is from the remote party to us.
 			 */
@@ -80,7 +80,7 @@ namespace Azoth
 
 		/** @brief Represents possible message types.
 		 */
-		enum class Type
+		enum class Type : uint8_t
 		{
 			/** @brief Standard one-to-one message.
 			 */
@@ -123,7 +123,7 @@ namespace Azoth
 		 * required properties used by the Azoth Core and other plugins
 		 * to establish proper context for the events.
 		 */
-		enum class SubType
+		enum class SubType : uint8_t
 		{
 			/** This message is of subtype that doesn't correspond to
 			 * any other subtype of message.
@@ -183,7 +183,7 @@ namespace Azoth
 			RoomSubjectChange
 		};
 
-		enum class EscapePolicy
+		enum class EscapePolicy : uint8_t
 		{
 			Escape,
 			NoEscape
