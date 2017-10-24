@@ -44,7 +44,7 @@ namespace BitTorrent
 	: QAbstractItemModel (parent)
 	, Index_ (index)
 	{
-		Headers_ << tr ("Index") << tr ("Speed") << tr ("State");
+		Headers_ << tr ("Index") << tr ("State");
 		auto timer = new QTimer (this);
 		connect (timer,
 				SIGNAL (timeout ()),
@@ -68,26 +68,12 @@ namespace BitTorrent
 
 		switch (index.column ())
 		{
-			case 0:
-				return QString::number (Pieces_.at (index.row ()).Index_);
-			case 1:
-				switch (Pieces_.at (index.row ()).State_)
-				{
-					case libtorrent::partial_piece_info::none:
-						return tr ("None");
-					case libtorrent::partial_piece_info::slow:
-						return tr ("Slow");
-					case libtorrent::partial_piece_info::medium:
-						return tr ("Medium");
-					case libtorrent::partial_piece_info::fast:
-						return tr ("Fast");
-					default:
-						return QVariant ();
-				}
-			case 2:
-				return QString ("%1/%2").arg (Pieces_.at (index.row ()).FinishedBlocks_).arg (Pieces_.at (index.row ()).TotalBlocks_);
-			default:
-				return QVariant ();
+		case 0:
+			return QString::number (Pieces_.at (index.row ()).Index_);
+		case 1:
+			return QString ("%1/%2").arg (Pieces_.at (index.row ()).FinishedBlocks_).arg (Pieces_.at (index.row ()).TotalBlocks_);
+		default:
+			return QVariant ();
 		}
 	}
 
@@ -174,7 +160,6 @@ namespace BitTorrent
 				if (Pieces_.at (j).Index_ == ppi.piece_index)
 				{
 					index2position.remove (Pieces_.at (j).Index_);
-					Pieces_ [j].State_ = ppi.piece_state;
 					Pieces_ [j].FinishedBlocks_ = ppi.finished;
 					found = true;
 					emit dataChanged (index (j, 1), index (j, 2));
@@ -185,7 +170,6 @@ namespace BitTorrent
 
 			Info info;
 			info.Index_ = ppi.piece_index;
-			info.State_ = ppi.piece_state;
 			info.TotalBlocks_ = ppi.blocks_in_piece;
 			info.FinishedBlocks_ = ppi.finished;
 			pieces2Insert << info;

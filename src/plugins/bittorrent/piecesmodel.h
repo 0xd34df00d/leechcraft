@@ -47,7 +47,6 @@ namespace BitTorrent
 		struct Info
 		{
 			int Index_;
-			libtorrent::partial_piece_info::state_t State_;
 			int FinishedBlocks_;
 			int TotalBlocks_;
 
