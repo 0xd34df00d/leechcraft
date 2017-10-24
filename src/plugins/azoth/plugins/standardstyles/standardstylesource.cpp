@@ -146,9 +146,6 @@ namespace StandardStyles
 		const auto& colors = CreateColors (frame->metaData ().value ("coloring"), frame);
 		auto& formatter = Proxy_->GetFormatterProxy ();
 
-		const bool isHighlightMsg = info.IsHighlightMsg_;
-		const bool isActiveChat = info.IsActiveChat_;
-
 		const QString& msgId = GetMessageID (msgObj);
 
 		const auto msg = qobject_cast<IMessage*> (msgObj);
@@ -243,7 +240,7 @@ namespace StandardStyles
 					string.append (postNick);
 					string.append (' ');
 					if (divClass.isEmpty ())
-						divClass = isHighlightMsg ?
+						divClass = info.IsHighlightMsg_ ?
 								"highlightchatmsg" :
 								"chatmsg";
 				}
@@ -318,7 +315,7 @@ namespace StandardStyles
 			msg->GetMessageType () == IMessage::Type::MUCMessage)
 		{
 			const auto isRead = Proxy_->IsMessageRead (msgObj);
-			if (!isActiveChat &&
+			if (!info.IsActiveChat_ &&
 					!isRead && IsLastMsgRead_.value (frame, false))
 			{
 				auto hr = elem.findFirst ("hr[class=\"lastSeparator\"]");
