@@ -37,6 +37,8 @@ namespace LeechCraft
 {
 namespace Azoth
 {
+	class IAccount;
+
 	/** @brief Defines additional parameters of the message.
 	 */
 	struct ChatMsgAppendInfo
@@ -54,6 +56,10 @@ namespace Azoth
 		/** @brief Whether rich text body should be used (if available).
 		 */
 		bool UseRichTextBody_;
+
+		/** @brief The account corresponding to this message.
+		 */
+		IAccount *Account_;
 	};
 
 	/** @brief Interface for chat style resource loaders and handlers.

@@ -1897,7 +1897,8 @@ namespace Azoth
 			{
 				false,
 				isActiveChat,
-				ToggleRichText_->isChecked ()
+				ToggleRichText_->isChecked (),
+				Account_
 			};
 			Core::Instance ().AppendMessageByTemplate (frame, coreMessage, coreInfo);
 			CoreMessages_ << coreMessage;
@@ -1909,7 +1910,8 @@ namespace Azoth
 		{
 			Core::Instance ().IsHighlightMessage (msg),
 			isActiveChat,
-			ToggleRichText_->isChecked ()
+			ToggleRichText_->isChecked (),
+			Account_
 		};
 
 		const auto& links = FormatterProxyObject {}.FindLinks (msg->GetBody ());
