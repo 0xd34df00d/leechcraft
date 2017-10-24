@@ -955,10 +955,6 @@ namespace BitTorrent
 				SIGNAL (timeout ()),
 				TabWidget_.get (),
 				SLOT (updateTorrentStats ()));
-		connect (statsUpdateTimer,
-				SIGNAL (timeout ()),
-				Core::Instance (),
-				SLOT (updateRows ()));
 		statsUpdateTimer->start (2000);
 
 		FastSpeedControlWidget *fsc = new FastSpeedControlWidget ();

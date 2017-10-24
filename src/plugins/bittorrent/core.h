@@ -382,7 +382,6 @@ namespace BitTorrent
 		void scrape ();
 	public slots:
 		void queryLibtorrentForWarnings ();
-		void updateRows ();
 	signals:
 		void addToHistory (const QString&, const QString&, quint64,
 				const QDateTime&, const QStringList&);

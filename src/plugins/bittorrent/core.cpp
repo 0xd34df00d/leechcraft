@@ -2285,6 +2285,8 @@ namespace BitTorrent
 
 	void Core::queryLibtorrentForWarnings ()
 	{
+		Session_->post_torrent_updates ();
+
 		std::vector<libtorrent::alert*> alerts;
 		Session_->pop_alerts (&alerts);
 		for (const auto alert : alerts)
@@ -2353,17 +2355,6 @@ namespace BitTorrent
 			return false;
 		}
 		return true;
-	}
-
-	void Core::updateRows ()
-	{
-		if (!rowCount ())
-			return;
-
-		Session_->post_torrent_updates ();
-		QTimer::singleShot (200,
-				this,
-				SLOT (queryLibtorrentForWarnings ()));
 	}
 }
 }
