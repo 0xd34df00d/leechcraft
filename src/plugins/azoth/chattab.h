@@ -80,6 +80,7 @@ namespace Azoth
 		static TabClassInfo S_MUCTabClass_;
 
 		AvatarsManager * const AvatarsManager_;
+		IAccount * const Account_;
 
 		Ui::ChatTab Ui_;
 		std::unique_ptr<QToolBar> TabToolbar_;
@@ -130,7 +131,7 @@ namespace Azoth
 		static const TabClassInfo& GetChatTabClassInfo ();
 		static const TabClassInfo& GetMUCTabClassInfo ();
 
-		ChatTab (const QString&, AvatarsManager*, QNetworkAccessManager*, QWidget* = nullptr);
+		ChatTab (const QString&, IAccount*, AvatarsManager*, QNetworkAccessManager*, QWidget* = nullptr);
 		~ChatTab ();
 
 		/** Prepare (or update after it has been changed) the theme.
