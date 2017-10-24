@@ -260,6 +260,7 @@ namespace Xoox
 		void AddCallback (const QString&, const PacketCallback_t&);
 		void SendMessage (GlooxMessage*);
 
+		GlooxAccount* GetAccount () const;
 		QXmppClient* GetClient () const;
 		QObject* GetCLEntry (const QString& fullJid) const;
 		QObject* GetCLEntry (const QString& bareJid, const QString& variant) const;

@@ -774,6 +774,11 @@ namespace Xoox
 		Client_->sendPacket (msg);
 	}
 
+	GlooxAccount* ClientConnection::GetAccount () const
+	{
+		return Account_;
+	}
+
 	QXmppClient* ClientConnection::GetClient () const
 	{
 		return Client_;
