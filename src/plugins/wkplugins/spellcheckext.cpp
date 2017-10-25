@@ -52,8 +52,9 @@ namespace WKPlugins
 
 	SpellcheckerExt::SpellcheckerExt (const ICoreProxy_ptr& proxy)
 	: Proxy_ { proxy }
-	, Spellcheckers_ { GetSpellcheckers (proxy) }
 	{
+		if (Spellcheckers_.empty ())
+			Spellcheckers_ = GetSpellcheckers (proxy);
 	}
 
 	bool SpellcheckerExt::isContinousSpellCheckingEnabled () const

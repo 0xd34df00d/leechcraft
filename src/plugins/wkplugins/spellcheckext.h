@@ -41,7 +41,7 @@ namespace WKPlugins
 	{
 		const ICoreProxy_ptr Proxy_;
 
-		QList<ISpellChecker_ptr> Spellcheckers_;
+		static QList<ISpellChecker_ptr> Spellcheckers_;
 
 		bool ContinousEnabled_ = true;
 
