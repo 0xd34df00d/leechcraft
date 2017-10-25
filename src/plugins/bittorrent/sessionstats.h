@@ -29,6 +29,8 @@
 
 #pragma once
 
+#include <cstdint>
+
 namespace LeechCraft
 {
 namespace BitTorrent
