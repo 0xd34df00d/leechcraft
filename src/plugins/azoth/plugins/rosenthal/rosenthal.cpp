@@ -48,7 +48,7 @@ namespace Rosenthal
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Proxy_ = proxy;
-		Translator_.reset (Util::InstallTranslator ("azoth_rosenthal"));
+		Util::InstallTranslator ("azoth_rosenthal");
 	}
 
 	void Plugin::SecondInit ()

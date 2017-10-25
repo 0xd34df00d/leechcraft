@@ -60,8 +60,6 @@ namespace Rosenthal
 
 		ICoreProxy_ptr Proxy_;
 
-		std::shared_ptr<QTranslator> Translator_;
-
 		ISpellChecker_ptr Checker_;
 
 		QList<Highlighter*> Highlighters_;
