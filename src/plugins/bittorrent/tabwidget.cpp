@@ -44,6 +44,7 @@
 #include "addwebseeddialog.h"
 #include "banpeersdialog.h"
 #include "sessionsettingsmanager.h"
+#include "sessionstats.h"
 
 namespace LeechCraft
 {
@@ -93,9 +94,9 @@ namespace BitTorrent
 
 	void TabWidget::UpdateOverallStats ()
 	{
-		const auto& stats = Core::Instance ()->GetOverallStats ();
-		Ui_.LabelTotalDownloadRate_->setText (Util::MakePrettySize (stats.download_rate) + tr ("/s"));
-		Ui_.LabelTotalUploadRate_->setText (Util::MakePrettySize (stats.upload_rate) + tr ("/s"));
+		const auto& stats = Core::Instance ()->GetSessionStats ();
+		Ui_.LabelTotalDownloadRate_->setText (Util::MakePrettySize (stats.Rate_.Down_) + tr ("/s"));
+		Ui_.LabelTotalUploadRate_->setText (Util::MakePrettySize (stats.Rate_.Up_) + tr ("/s"));
 	}
 
 	void TabWidget::UpdateDashboard ()

@@ -48,6 +48,7 @@
 #include "addwebseeddialog.h"
 #include "banpeersdialog.h"
 #include "sessionsettingsmanager.h"
+#include "sessionstats.h"
 
 namespace LeechCraft
 {
@@ -256,10 +257,16 @@ namespace BitTorrent
 
 	void TorrentTabWidget::UpdateOverallStats ()
 	{
-		libtorrent::session_status stats = Core::Instance ()->GetOverallStats ();
+		const auto& stats = Core::Instance ()->GetSessionStats ();
 
-		Ui_.LabelTotalDownloadRate_->setText (Util::MakePrettySize (stats.download_rate) + tr ("/s"));
-		Ui_.LabelTotalUploadRate_->setText (Util::MakePrettySize (stats.upload_rate) + tr ("/s"));
+		Ui_.LabelTotalDownloadRate_->setText (Util::MakePrettySize (stats.Rate_.Down_) + tr ("/s"));
+		Ui_.LabelTotalUploadRate_->setText (Util::MakePrettySize (stats.Rate_.Up_) + tr ("/s"));
+
+		auto rel = [] (auto fmt, auto num, auto denom, QLabel *down, QLabel *up)
+		{
+			down->setText (fmt (num.Down_, denom.Down_));
+			up->setText (fmt (num.Up_, denom.Up_));
+		};
 
 		auto percent = [] (auto t1, auto t2)
 		{
@@ -273,54 +280,45 @@ namespace BitTorrent
 		{
 			return Util::MakePrettySize (t1) + QObject::tr ("/s") + percent (t1, t2);
 		};
+		rel (speed, stats.IPOverheadRate_, stats.Rate_, Ui_.LabelOverheadDownloadRate_, Ui_.LabelOverheadUploadRate_);
+		rel (speed, stats.DHTRate_, stats.Rate_, Ui_.LabelDHTDownloadRate_, Ui_.LabelDHTUploadRate_);
+		rel (speed, stats.TrackerRate_, stats.Rate_, Ui_.LabelTrackerDownloadRate_, Ui_.LabelTrackerUploadRate_);
 
-		Ui_.LabelOverheadDownloadRate_->setText (speed (stats.ip_overhead_download_rate, stats.download_rate));
-		Ui_.LabelOverheadUploadRate_->setText (speed (stats.ip_overhead_upload_rate, stats.upload_rate));
-		Ui_.LabelDHTDownloadRate_->setText (speed (stats.dht_download_rate, stats.download_rate));
-		Ui_.LabelDHTUploadRate_->setText (speed (stats.dht_upload_rate, stats.upload_rate));
-		Ui_.LabelTrackerDownloadRate_->setText (speed (stats.tracker_download_rate, stats.download_rate));
-		Ui_.LabelTrackerUploadRate_->setText (speed (stats.tracker_upload_rate, stats.upload_rate));
-
-		Ui_.LabelTotalDownloaded_->setText (Util::MakePrettySize (stats.total_download));
-		Ui_.LabelTotalUploaded_->setText (Util::MakePrettySize (stats.total_upload));
+		Ui_.LabelTotalDownloaded_->setText (Util::MakePrettySize (stats.Total_.Down_));
+		Ui_.LabelTotalUploaded_->setText (Util::MakePrettySize (stats.Total_.Up_));
 
 		auto simple = [percent] (auto t1, auto t2)
 		{
 			return Util::MakePrettySize (t1) + percent (t1, t2);
 		};
-		Ui_.LabelOverheadDownloaded_->setText (simple (stats.total_ip_overhead_download, stats.total_download));
-		Ui_.LabelOverheadUploaded_->setText (simple (stats.total_ip_overhead_upload, stats.total_upload));
-		Ui_.LabelDHTDownloaded_->setText (simple (stats.total_dht_download, stats.total_download));
-		Ui_.LabelDHTUploaded_->setText (simple (stats.total_dht_upload, stats.total_upload));
-		Ui_.LabelTrackerDownloaded_->setText (simple (stats.total_tracker_download, stats.total_download));
-		Ui_.LabelTrackerUploaded_->setText (simple (stats.total_tracker_upload, stats.total_upload));
+		rel (simple, stats.IPOverheadTotal_, stats.Total_, Ui_.LabelOverheadDownloaded_, Ui_.LabelOverheadUploaded_);
+		rel (simple, stats.DHTTotal_, stats.Total_, Ui_.LabelDHTDownloaded_, Ui_.LabelDHTUploaded_);
+		rel (simple, stats.TrackerTotal_, stats.Total_, Ui_.LabelTrackerDownloaded_, Ui_.LabelTrackerUploaded_);
 
-		Ui_.LabelTotalPeers_->setText (QString::number (stats.num_peers));
-		Ui_.LabelTotalDHTNodes_->setText (QString ("(") +
-				QString::number (stats.dht_global_nodes) +
-				QString (") ") +
-				QString::number (stats.dht_nodes));
-		Ui_.LabelDHTTorrents_->setText (QString::number (stats.dht_torrents));
+		Ui_.LabelTotalPeers_->setText (QString::number (stats.NumPeers_));
+		Ui_.LabelTotalDHTNodes_->setText ("(" +
+				QString::number (stats.DHTGlobalNodes_) +
+				") " +
+				QString::number (stats.DHTNodes_));
+		Ui_.LabelDHTTorrents_->setText (QString::number (stats.DHTTorrents_));
 		Ui_.LabelListenPort_->setText (QString::number (Core::Instance ()->GetListenPort ()));
-		if (stats.total_payload_download)
-			Ui_.LabelSessionRating_->setText (QString::number (stats.total_payload_upload /
-					static_cast<double> (stats.total_payload_download), 'g', 4));
+		if (stats.PayloadTotal_.Down_)
+			Ui_.LabelSessionRating_->setText (QString::number (stats.PayloadTotal_.Up_ /
+					static_cast<double> (stats.PayloadTotal_.Down_), 'g', 4));
 		else
 			Ui_.LabelSessionRating_->setText (QString::fromUtf8 ("\u221E"));
-		Ui_.LabelTotalFailedData_->setText (Util::MakePrettySize (stats.total_failed_bytes));
-		Ui_.LabelTotalRedundantData_->setText (Util::MakePrettySize (stats.total_redundant_bytes));
+		Ui_.LabelTotalFailedData_->setText (Util::MakePrettySize (stats.TotalFailedBytes_));
+		Ui_.LabelTotalRedundantData_->setText (Util::MakePrettySize (stats.TotalRedundantBytes_));
 		Ui_.LabelExternalAddress_->setText (Core::Instance ()->GetExternalAddress ());
 
-		const auto& cs = Core::Instance ()->GetCacheStats ();
-		Ui_.BlocksWritten_->setText (QString::number (cs.blocks_written));
-		Ui_.Writes_->setText (QString::number (cs.writes));
-		Ui_.WriteHitRatio_->
-			setText (QString::number (static_cast<double> (cs.blocks_written - cs.writes ) / cs.blocks_written));
-		Ui_.CacheSize_->setText (QString::number (cs.cache_size));
-		Ui_.TotalBlocksRead_->setText (QString::number (cs.blocks_read));
-		Ui_.CachedBlockReads_->setText (QString::number (cs.blocks_read_hit));
-		Ui_.ReadHitRatio_->setText (QString::number (static_cast<double> (cs.blocks_read_hit) / cs.blocks_read));
-		Ui_.ReadCacheSize_->setText (QString::number (cs.read_cache_size));
+		Ui_.BlocksWritten_->setText (QString::number (stats.BlocksWritten_));
+		Ui_.Writes_->setText (QString::number (stats.Writes_));
+		Ui_.WriteHitRatio_->setText (QString::number (static_cast<double> (stats.BlocksWritten_ - stats.Writes_) / stats.BlocksWritten_));
+		Ui_.CacheSize_->setText (QString::number (stats.CacheSize_));
+		Ui_.TotalBlocksRead_->setText (QString::number (stats.BlocksRead_));
+		Ui_.CachedBlockReads_->setText (QString::number (stats.BlocksReadHit_));
+		Ui_.ReadHitRatio_->setText (QString::number (static_cast<double> (stats.BlocksReadHit_) / stats.BlocksRead_));
+		Ui_.ReadCacheSize_->setText (QString::number (stats.ReadCacheSize_));
 
 		Core::pertrackerstats_t ptstats;
 		Core::Instance ()->GetPerTracker (ptstats);

@@ -73,6 +73,7 @@
 #include "speedselectoraction.h"
 #include "torrenttab.h"
 #include "sessionsettingsmanager.h"
+#include "sessionstats.h"
 
 using LeechCraft::ActionInfo;
 using namespace LeechCraft::Util;
@@ -183,12 +184,12 @@ namespace BitTorrent
 
 	qint64 TorrentPlugin::GetDownloadSpeed () const
 	{
-		return Core::Instance ()->GetOverallStats ().download_rate;
+		return Core::Instance ()->GetSessionStats ().Rate_.Down_;
 	}
 
 	qint64 TorrentPlugin::GetUploadSpeed () const
 	{
-		return Core::Instance ()->GetOverallStats ().upload_rate;
+		return Core::Instance ()->GetSessionStats ().Rate_.Up_;
 	}
 
 	void TorrentPlugin::StartAll ()

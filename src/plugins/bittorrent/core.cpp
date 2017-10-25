@@ -95,6 +95,7 @@
 #include "sessionsettingsmanager.h"
 #include "cachedstatuskeeper.h"
 #include "geoip.h"
+#include "sessionstats.h"
 
 Q_DECLARE_METATYPE (QMenu*)
 Q_DECLARE_METATYPE (QToolBar*)
@@ -801,9 +802,39 @@ namespace BitTorrent
 		return result;
 	}
 
-	libtorrent::session_status Core::GetOverallStats () const
+	SessionStats Core::GetSessionStats () const
 	{
-		return Session_->status ();
+		const auto& status = Session_->status ();
+		const auto& cacheStatus = Session_->get_cache_status ();
+
+		return
+		{
+			{ status.download_rate, status.upload_rate },
+			{ status.ip_overhead_download_rate, status.ip_overhead_upload_rate },
+			{ status.dht_download_rate, status.dht_upload_rate },
+			{ status.tracker_download_rate, status.tracker_upload_rate },
+
+			{ status.total_download, status.total_upload },
+			{ status.total_ip_overhead_download, status.total_ip_overhead_upload },
+			{ status.total_dht_download, status.total_dht_upload },
+			{ status.total_tracker_download, status.total_tracker_upload },
+			{ status.total_payload_download, status.total_payload_upload },
+
+			status.num_peers,
+			status.dht_global_nodes,
+			status.dht_nodes,
+			status.dht_torrents,
+
+			status.total_failed_bytes,
+			status.total_redundant_bytes,
+
+			cacheStatus.blocks_written,
+			cacheStatus.writes,
+			cacheStatus.blocks_read,
+			cacheStatus.blocks_read_hit,
+			cacheStatus.cache_size,
+			cacheStatus.read_cache_size,
+		};
 	}
 
 	void Core::GetPerTracker (Core::pertrackerstats_t& stats) const
@@ -823,11 +854,6 @@ namespace BitTorrent
 	int Core::GetListenPort () const
 	{
 		return Session_->listen_port ();
-	}
-
-	libtorrent::cache_status Core::GetCacheStats () const
-	{
-		return Session_->get_cache_status ();
 	}
 
 	QList<PeerInfo> Core::GetPeers (int idx) const

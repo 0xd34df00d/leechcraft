@@ -80,6 +80,7 @@ namespace BitTorrent
 	class SessionSettingsManager;
 	class CachedStatusKeeper;
 	class GeoIP;
+	struct SessionStats;
 	struct NewTorrentParams;
 
 	using BanRange_t = QPair<QString, QString>;
@@ -247,10 +248,9 @@ namespace BitTorrent
 		libtorrent::torrent_info GetTorrentInfo (const QByteArray&);
 		bool IsValidTorrent (const QByteArray&) const;
 		std::unique_ptr<TorrentInfo> GetTorrentStats (int) const;
-		libtorrent::session_status GetOverallStats () const;
+		SessionStats GetSessionStats () const;
 		void GetPerTracker (pertrackerstats_t&) const;
 		int GetListenPort () const;
-		libtorrent::cache_status GetCacheStats () const;
 		QList<PeerInfo> GetPeers (int = -1) const;
 		QStringList GetTagsForIndex (int = -1) const;
 		void UpdateTags (const QStringList&, int = -1);
