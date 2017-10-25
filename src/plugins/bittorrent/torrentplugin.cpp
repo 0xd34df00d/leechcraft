@@ -316,16 +316,6 @@ namespace BitTorrent
 		return result;
 	}
 
-	EntityTestHandleResult TorrentPlugin::CouldHandle (const LeechCraft::Entity& e) const
-	{
-		return Core::Instance ()->CouldHandle (e);
-	}
-
-	void TorrentPlugin::Handle (LeechCraft::Entity e)
-	{
-		Core::Instance ()->Handle (e);
-	}
-
 	void TorrentPlugin::KillTask (int id)
 	{
 		Core::Instance ()->KillTask (id);

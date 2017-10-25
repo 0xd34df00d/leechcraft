@@ -223,8 +223,6 @@ namespace BitTorrent
 		SessionSettingsManager* GetSessionSettingsManager () const;
 
 		EntityTestHandleResult CouldDownload (const LeechCraft::Entity&) const;
-		EntityTestHandleResult CouldHandle (const LeechCraft::Entity&) const;
-		void Handle (LeechCraft::Entity);
 		PiecesModel* GetPiecesModel (int);
 		PeersModel* GetPeersModel (int);
 		QAbstractItemModel* GetWebSeedsModel (int);

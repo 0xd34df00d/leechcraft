@@ -323,15 +323,6 @@ namespace BitTorrent
 			return EntityTestHandleResult ();
 	}
 
-	EntityTestHandleResult Core::CouldHandle (const Entity&) const
-	{
-		return EntityTestHandleResult ();
-	}
-
-	void Core::Handle (Entity)
-	{
-	}
-
 	PiecesModel* Core::GetPiecesModel (int idx)
 	{
 		return idx >= 0 ? new PiecesModel (idx) : 0;

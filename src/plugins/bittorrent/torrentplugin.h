@@ -69,7 +69,6 @@ namespace BitTorrent
 	class TorrentPlugin : public QObject
 						, public IInfo
 						, public IDownload
-						, public IEntityHandler
 						, public IJobHolder
 						, public IImportExport
 						, public ITaggableJobs
@@ -84,7 +83,6 @@ namespace BitTorrent
 
 		Q_INTERFACES (IInfo
 				IDownload
-				IEntityHandler
 				IJobHolder
 				IImportExport
 				ITaggableJobs
@@ -171,10 +169,6 @@ namespace BitTorrent
 		EntityTestHandleResult CouldDownload (const LeechCraft::Entity&) const;
 		int AddJob (LeechCraft::Entity);
 		void KillTask (int);
-
-		// IEntityHandler
-		EntityTestHandleResult CouldHandle (const LeechCraft::Entity&) const;
-		void Handle (LeechCraft::Entity);
 
 		// IJobHolder
 		QAbstractItemModel* GetRepresentation () const;
