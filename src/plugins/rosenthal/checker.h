@@ -61,7 +61,7 @@ namespace Rosenthal
 
 		QSet<QString> LearntWords_;
 	public:
-		Checker (const KnownDictsManager*, QObject* = 0);
+		Checker (const KnownDictsManager*);
 
 		QStringList GetPropositions (const QString&) const;
 		bool IsCorrect (const QString&) const;

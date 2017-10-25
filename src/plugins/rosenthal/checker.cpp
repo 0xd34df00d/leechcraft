@@ -43,9 +43,8 @@ namespace LeechCraft
 {
 namespace Rosenthal
 {
-	Checker::Checker (const KnownDictsManager *knownMgr, QObject *parent)
-	: QObject { parent }
-	, KnownMgr_ { knownMgr }
+	Checker::Checker (const KnownDictsManager *knownMgr)
+	: KnownMgr_ { knownMgr }
 	{
 		connect (knownMgr,
 				SIGNAL (languagesChanged (QStringList)),
