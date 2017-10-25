@@ -48,7 +48,7 @@ namespace Rosenthal
 
 		Util::InstallTranslator ("rosenthal");
 
-		SettingsDialog_.reset (new Util::XmlSettingsDialog);
+		SettingsDialog_ = std::make_shared<Util::XmlSettingsDialog> ();
 		SettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"rosenthalsettings.xml");
 
@@ -97,7 +97,7 @@ namespace Rosenthal
 
 	ISpellChecker_ptr Plugin::CreateSpellchecker ()
 	{
-		return std::shared_ptr<Checker> (new Checker (KnownMgr_));
+		return std::make_shared<Checker> (KnownMgr_);
 	}
 
 	void Plugin::handlePushButtonClicked (const QString& name)

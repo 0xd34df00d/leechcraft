@@ -141,11 +141,8 @@ namespace Rosenthal
 		{
 			const auto& primaryPath = KnownMgr_->GetDictPath (language);
 			HunspellItem item;
-			item.Hunspell_.reset (new Hunspell
-					{
-						(primaryPath + ".aff").toLatin1 (),
-						(primaryPath + ".dic").toLatin1 ()
-					});
+			item.Hunspell_ = std::make_unique<Hunspell> ((primaryPath + ".aff").toLatin1 (),
+					(primaryPath + ".dic").toLatin1 ());
 			item.Codec_ = QTextCodec::codecForName (item.Hunspell_->get_dic_encoding ());
 
 			if (item.Codec_)
