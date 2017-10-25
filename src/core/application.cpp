@@ -220,6 +220,8 @@ namespace LeechCraft
 		QTimer::singleShot (50,
 				this,
 				SLOT (finishInit ()));
+
+		InitSessionManager ();
 	}
 
 	const QStringList& Application::Arguments () const
@@ -356,19 +358,6 @@ namespace LeechCraft
 		return false;
 	}
 
-	void Application::commitData (QSessionManager& sm)
-	{
-		if (Arguments_.contains ("-autorestart"))
-			sm.setRestartHint (QSessionManager::RestartImmediately);
-
-		sm.release ();
-	}
-
-	void Application::saveState (QSessionManager& sm)
-	{
-		commitData (sm);
-	}
-
 	bool Application::IsAlreadyRunning () const
 	{
 		QLocalSocket socket;
@@ -503,6 +492,20 @@ namespace LeechCraft
 		XmlSettingsManager::Instance ()->RegisterObject ("Language",
 				this, "handleLanguage");
 		PreviousLangName_ = XmlSettingsManager::Instance ()->property ("Language").toString ();
+	}
+
+	void Application::InitSessionManager ()
+	{
+		setFallbackSessionManagementEnabled (false);
+
+		connect (this,
+				&QGuiApplication::saveStateRequest,
+				this,
+				[this] (QSessionManager& sm)
+				{
+					if (Arguments_.contains ("-autorestart"))
+						sm.setRestartHint (QSessionManager::RestartImmediately);
+				});
 	}
 
 	void Application::finishInit ()

@@ -116,16 +116,6 @@ namespace LeechCraft
 		 * in slots.
 		 */
 		virtual bool notify (QObject*, QEvent*);
-	protected:
-		/** Communicates with the sm according to the settings and
-		 * command line options.
-		 */
-		virtual void commitData (QSessionManager& sm);
-
-		/** Communicates with the sm according to the settings and
-		 * command line options.
-		 */
-		virtual void saveState (QSessionManager& sm);
 	private:
 		/** Parses command line and sets corresponding application-wide
 		 * options.
@@ -141,6 +131,8 @@ namespace LeechCraft
 
 		void CheckStartupPass ();
 		void InitSettings ();
+
+		void InitSessionManager ();
 	private slots:
 		void finishInit ();
 
