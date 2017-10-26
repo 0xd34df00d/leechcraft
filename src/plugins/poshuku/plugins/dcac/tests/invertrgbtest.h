@@ -41,10 +41,7 @@ namespace DCAC
 	{
 		Q_OBJECT
 	private slots:
-		void testAVX ();
-
 		void benchDefault ();
-		void benchAVX ();
 	};
 }
 }

@@ -197,36 +197,6 @@ namespace DCAC
 		}
 
 #ifdef SSE_ENABLED
-		__attribute__ ((target ("avx")))
-		void InvertRgbAVX (QImage& image)
-		{
-			constexpr auto alignment = 32;
-
-			const auto height = image.height ();
-			const auto width = image.width ();
-
-			const __m256 xorMask = _mm256_castsi256_ps (_mm256_set1_epi32 (0x00ffffff));
-
-			uchar * const bits = image.scanLine (0);
-
-			int i = 0;
-			int bytesCount = 0;
-			auto handler = [bits] (int j)
-			{
-				*reinterpret_cast<QRgb*> (&bits [j]) ^= 0x00ffffff;
-			};
-			HandleLoopBegin<alignment> (bits, width * height, i, bytesCount, handler);
-
-			for (; i < bytesCount; i += alignment)
-			{
-				__m256i p0 = _mm256_load_si256 (reinterpret_cast<const __m256i*> (bits + i));
-				p0 = _mm256_castps_si256 (_mm256_xor_ps (_mm256_castsi256_ps (p0), xorMask));
-				_mm256_store_si256 (reinterpret_cast<__m256i*> (bits + i), p0);
-			}
-
-			HandleLoopEnd (width * height, i, handler);
-		}
-
 		template<int Idx>
 		__attribute__ ((target ("sse2")))
 		int ExtractInt (__m128i reg)

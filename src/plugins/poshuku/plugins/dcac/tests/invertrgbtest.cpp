@@ -40,32 +40,9 @@ namespace Poshuku
 {
 namespace DCAC
 {
-	void InvertRgbTest::testAVX ()
-	{
-#ifdef SSE_ENABLED
-		CHECKFEATURE (AVX)
-
-		for (const auto& image : TestImages_)
-		{
-			const auto diff = CompareModifying (image,
-					&InvertRgbDefault, &InvertRgbAVX);
-			QVERIFY2 (diff <= 1, "too big difference");
-		}
-#endif
-	}
-
 	void InvertRgbTest::benchDefault ()
 	{
 		BenchmarkFunction (&InvertRgbDefault);
-	}
-
-	void InvertRgbTest::benchAVX ()
-	{
-#ifdef SSE_ENABLED
-		CHECKFEATURE (AVX)
-
-		BenchmarkFunction (&InvertRgbAVX);
-#endif
 	}
 }
 }
