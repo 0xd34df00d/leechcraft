@@ -1,6 +1,7 @@
 import QtQuick 2.3
 import QtGraphicalEffects 1.0
 import QtQuick.Controls 1.4
+import QtQuick.Layouts 1.3
 import org.LC.common 1.0
 import "."
 
@@ -320,92 +321,94 @@ Rectangle {
                 font.pointSize: 8
             }
 
-            ScrollView {
-                id: flickableBioText
-
-                style: LMPScrollStyle {}
-
-                anchors.leftMargin: 5
+            ColumnLayout {
                 anchors.left: parent.left
-                anchors.rightMargin: 5
+                anchors.leftMargin: 5
                 anchors.right: parent.right
+                anchors.rightMargin: 5
                 anchors.top: artistNameLabel.bottom
-                height: Math.min(parent.height / 3, contentHeight)
-
-                Flickable {
-                    id: flickableBioTextFlickable
-
-                    contentWidth: width
-                    contentHeight: shortDescLabel.height + 16
-
-                    clip: true
-
-                    Text {
-                        id: shortDescLabel
-                        text: artistInfo
-                        textFormat: Text.RichText
-                        clip: true
-                        color: colorProxy.color_TextBox_TextColor
-                        wrapMode: Text.WordWrap
-
-                        anchors.top: parent.top
-                        anchors.topMargin: 8
-                        anchors.left: parent.left
-                        anchors.right: parent.right
-
-                        onLinkActivated: rootRect.linkActivated(link)
-                    }
-                }
-            }
-
-            GridView {
-                id: artistImagesView
-
-                anchors.leftMargin: 5
-                anchors.left: parent.left
-                anchors.rightMargin: 5
-                anchors.right: parent.right
-                anchors.top: flickableBioText.bottom
-                anchors.topMargin: 5
                 anchors.bottom: parent.bottom
 
-                model: artistImagesModel
+                ScrollView {
+                    id: flickableBioText
 
-                cellWidth: cellHeight
-                cellHeight: Math.min(128, Math.max(height / 3, 64))
-                clip: true
+                    style: LMPScrollStyle {}
 
-                keyNavigationWraps: true
+                    Layout.preferredHeight: flickableBioTextFlickable.contentHeight
+                    Layout.fillWidth: true
+                    Layout.alignment: Qt.AlignTop | Qt.AlignLeft
 
-                onCurrentItemChanged: currentItem.updateFullSize()
+                    Flickable {
+                        id: flickableBioTextFlickable
 
-                delegate: Image {
-                    id: delegateItem
-                    source: thumbURL
+                        contentWidth: width
+                        contentHeight: shortDescLabel.implicitHeight
 
-                    height: artistImagesView.cellHeight
-                    width: sourceSize.height > 0 ? Math.min(height, sourceSize.width * height / sourceSize.height) : height
-                    fillMode: Image.PreserveAspectFit
+                        clip: true
 
-                    cache: false
+                        Text {
+                            id: shortDescLabel
+                            text: artistInfo
+                            textFormat: Text.RichText
+                            clip: true
+                            color: colorProxy.color_TextBox_TextColor
+                            wrapMode: Text.WordWrap
 
-                    smooth: true
+                            anchors.top: parent.top
+                            anchors.left: parent.left
+                            anchors.right: parent.right
 
-                    function updateFullSize() {
-                        if (fullSizeArtistImg.state == "visible")
-                            fullSizeArtistImg.source = fullURL
+                            onLinkActivated: rootRect.linkActivated(link)
+                        }
                     }
+                }
 
-                    MouseArea {
-                        anchors.fill: parent
+                GridView {
+                    id: artistImagesView
 
-                        onClicked: {
-                            fullSizeArtistImg.navVisible = true
-                            fullSizeArtistImg.source = fullURL
-                            if (fullSizeArtistImg.status == Image.Ready)
-                                fullSizeArtistImg.state = "visible"
+                    Layout.preferredHeight: 128 * Math.ceil(count / Math.floor(parent.width / 128))
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    Layout.alignment: Qt.AlignTop | Qt.AlignLeft
 
-                            artistImagesView.currentIndex = index
+                    model: artistImagesModel
+
+                    cellWidth: cellHeight
+                    cellHeight: Math.min(128, Math.max(height / 3, 64))
+                    clip: true
+
+                    keyNavigationWraps: true
+
+                    onCurrentItemChanged: currentItem.updateFullSize()
+
+                    delegate: Image {
+                        id: delegateItem
+                        source: thumbURL
+
+                        height: artistImagesView.cellHeight
+                        width: sourceSize.height > 0 ? Math.min(height, sourceSize.width * height / sourceSize.height) : height
+                        fillMode: Image.PreserveAspectFit
+
+                        cache: false
+
+                        smooth: true
+
+                        function updateFullSize() {
+                            if (fullSizeArtistImg.state == "visible")
+                                fullSizeArtistImg.source = fullURL
+                        }
+
+                        MouseArea {
+                            anchors.fill: parent
+
+                            onClicked: {
+                                fullSizeArtistImg.navVisible = true
+                                fullSizeArtistImg.source = fullURL
+                                if (fullSizeArtistImg.status == Image.Ready)
+                                    fullSizeArtistImg.state = "visible"
+
+                                artistImagesView.currentIndex = index
+                            }
                         }
                     }
                 }
