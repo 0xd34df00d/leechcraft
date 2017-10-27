@@ -41,6 +41,7 @@
 #include <util/gui/unhoverdeletemixin.h>
 #include <util/qml/colorthemeproxy.h>
 #include <util/qml/settableiconprovider.h>
+#include <util/qml/util.h>
 #include <util/models/rolenamesmixin.h>
 #include <util/x11/xwrapper.h>
 #include <X11/Xlib.h>
@@ -138,9 +139,8 @@ namespace Krigstask
 	{
 		new Util::UnhoverDeleteMixin (this);
 
-		setStyleSheet ("background: transparent");
 		setWindowFlags (Qt::ToolTip);
-		setAttribute (Qt::WA_TranslucentBackground);
+		Util::EnableTransparency (this);
 
 		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, ""))
 			engine ()->addImportPath (cand);
