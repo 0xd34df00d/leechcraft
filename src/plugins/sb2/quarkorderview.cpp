@@ -37,6 +37,7 @@
 #include <util/qml/colorthemeproxy.h>
 #include <util/qml/themeimageprovider.h>
 #include <util/qml/unhidelistmodel.h>
+#include <util/qml/util.h>
 #include <util/util.h>
 #include "viewmanager.h"
 #include "quarkmanager.h"
@@ -84,9 +85,8 @@ namespace SB2
 			Model_->appendRow (item);
 		}
 
-		setStyleSheet ("background: transparent");
 		setWindowFlags (Qt::ToolTip);
-		setAttribute (Qt::WA_TranslucentBackground);
+		Util::EnableTransparency (this);
 
 		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, ""))
 			engine ()->addImportPath (cand);

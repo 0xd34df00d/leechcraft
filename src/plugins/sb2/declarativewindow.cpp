@@ -34,6 +34,7 @@
 #include <util/sys/paths.h>
 #include <util/qml/colorthemeproxy.h>
 #include <util/qml/themeimageprovider.h>
+#include <util/qml/util.h>
 #include <util/gui/unhoverdeletemixin.h>
 #include <util/gui/autoresizemixin.h>
 #include <util/gui/util.h>
@@ -52,9 +53,8 @@ namespace SB2
 		if (!params.take ("keepOnFocusLeave").toBool ())
 			new Util::UnhoverDeleteMixin (this, SLOT (beforeDelete ()));
 
-		setStyleSheet ("background: transparent");
 		setWindowFlags (Qt::Tool | Qt::FramelessWindowHint);
-		setAttribute (Qt::WA_TranslucentBackground);
+		Util::EnableTransparency (this);
 
 		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, ""))
 			engine ()->addImportPath (cand);

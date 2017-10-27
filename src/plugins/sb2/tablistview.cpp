@@ -38,6 +38,7 @@
 #include <util/sys/paths.h>
 #include <util/qml/colorthemeproxy.h>
 #include <util/qml/themeimageprovider.h>
+#include <util/qml/util.h>
 #include <util/gui/unhoverdeletemixin.h>
 #include <util/models/rolenamesmixin.h>
 #include <interfaces/ihavetabs.h>
@@ -89,9 +90,8 @@ namespace SB2
 			return;
 		}
 
-		setStyleSheet ("background: transparent");
 		setWindowFlags (Qt::ToolTip);
-		setAttribute (Qt::WA_TranslucentBackground);
+		Util::EnableTransparency (this);
 
 		QString longestText;
 
