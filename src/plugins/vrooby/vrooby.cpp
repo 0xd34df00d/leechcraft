@@ -59,10 +59,10 @@ namespace Vrooby
 		QList<std::shared_ptr<DevBackend>> candidates;
 
 #ifdef ENABLE_UDISKS2
-		candidates << std::make_shared<UDisks2::Backend> (this);
+		candidates << std::make_shared<UDisks2::Backend> ();
 #endif
 #ifdef ENABLE_UDISKS
-		candidates << std::make_shared<UDisks::Backend> (this);
+		candidates << std::make_shared<UDisks::Backend> ();
 #endif
 
 		QStringList allBackends;

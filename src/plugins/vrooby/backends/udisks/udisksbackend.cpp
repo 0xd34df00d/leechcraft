@@ -48,8 +48,8 @@ namespace Vrooby
 {
 namespace UDisks
 {
-	Backend::Backend (QObject *parent)
-	: DevBackend (parent)
+	Backend::Backend ()
+	: DevBackend ()
 	, DevicesModel_ (new QStandardItemModel (this))
 	{
 	}

@@ -45,7 +45,7 @@ namespace Vrooby
 		Q_OBJECT
 		Q_INTERFACES (IRemovableDevManager)
 	public:
-		DevBackend (QObject* = 0);
+		DevBackend ();
 
 		virtual QString GetBackendName () const = 0;
 		virtual bool IsAvailable () = 0;

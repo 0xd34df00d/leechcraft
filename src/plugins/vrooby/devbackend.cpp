@@ -33,8 +33,7 @@ namespace LeechCraft
 {
 namespace Vrooby
 {
-	DevBackend::DevBackend (QObject *parent)
-	: QObject (parent)
+	DevBackend::DevBackend ()
 	{
 	}
 }
