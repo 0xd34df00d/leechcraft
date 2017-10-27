@@ -51,8 +51,8 @@ namespace Vrooby
 {
 namespace UDisks2
 {
-	Backend::Backend ()
-	: DevBackend ()
+	Backend::Backend (const ICoreProxy_ptr& proxy)
+	: DevBackend (proxy)
 	, DevicesModel_ (new QStandardItemModel (this))
 	{
 	}
@@ -412,7 +412,7 @@ namespace UDisks2
 
 		if (!reply.isError ())
 		{
-			emit gotEntity (Util::MakeNotification ("Vrooby",
+			HandleEntity (Util::MakeNotification ("Vrooby",
 						tr ("Device has been successfully mounted at %1.")
 							.arg (reply.value ()),
 						PInfo_));
@@ -423,7 +423,7 @@ namespace UDisks2
 		qWarning () << Q_FUNC_INFO
 				<< error.name ()
 				<< error.message ();
-		emit gotEntity (Util::MakeNotification ("Vrooby",
+		HandleEntity (Util::MakeNotification ("Vrooby",
 					tr ("Failed to mount the device: %1 (%2).")
 						.arg (GetErrorText (error.name ()))
 						.arg (error.message ()),
@@ -438,7 +438,7 @@ namespace UDisks2
 
 		if (!reply.isError ())
 		{
-			emit gotEntity (Util::MakeNotification ("Vrooby",
+			HandleEntity (Util::MakeNotification ("Vrooby",
 						tr ("Device has been successfully unmounted."),
 						PInfo_));
 			return;
@@ -448,7 +448,7 @@ namespace UDisks2
 		qWarning () << Q_FUNC_INFO
 				<< error.name ()
 				<< error.message ();
-		emit gotEntity (Util::MakeNotification ("Vrooby",
+		HandleEntity (Util::MakeNotification ("Vrooby",
 					tr ("Failed to unmount the device: %1 (%2).")
 						.arg (GetErrorText (error.name ()))
 						.arg (error.message ()),

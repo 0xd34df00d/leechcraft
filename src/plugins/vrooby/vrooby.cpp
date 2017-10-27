@@ -34,6 +34,8 @@
 #include <util/xpc/util.h>
 #include <util/gui/util.h>
 #include <util/gui/unhoverdeletemixin.h>
+#include <util/sll/delayedexecutor.h>
+#include <interfaces/core/ientitymanager.h>
 
 #ifdef ENABLE_UDISKS
 #include "backends/udisks/udisksbackend.h"
@@ -59,10 +61,10 @@ namespace Vrooby
 		QList<std::shared_ptr<DevBackend>> candidates;
 
 #ifdef ENABLE_UDISKS2
-		candidates << std::make_shared<UDisks2::Backend> ();
+		candidates << std::make_shared<UDisks2::Backend> (proxy);
 #endif
 #ifdef ENABLE_UDISKS
-		candidates << std::make_shared<UDisks::Backend> ();
+		candidates << std::make_shared<UDisks::Backend> (proxy);
 #endif
 
 		QStringList allBackends;
@@ -85,10 +87,7 @@ namespace Vrooby
 					tr ("No backends are available, tried the following: %1.")
 						.arg (allBackends.join ("; ")),
 					PCritical_);
-			QMetaObject::invokeMethod (this,
-					"gotEntity",
-					Qt::QueuedConnection,
-					Q_ARG (LeechCraft::Entity, e));
+			Util::ExecuteLater ([e, proxy] { proxy->GetEntityManager ()->HandleEntity (e); });
 		}
 	}
 
@@ -98,10 +97,6 @@ namespace Vrooby
 			return;
 
 		Backend_->Start ();
-		connect (Backend_.get (),
-				SIGNAL (gotEntity (LeechCraft::Entity)),
-				this,
-				SIGNAL (gotEntity (LeechCraft::Entity)));
 
 		TrayView_->SetBackend (Backend_.get ());
 		connect (TrayView_,

@@ -58,7 +58,7 @@ namespace UDisks
 		QHash<QString, QStandardItem*> Object2Item_;
 		QSet<QString> Unremovables_;
 	public:
-		Backend ();
+		Backend (const ICoreProxy_ptr&);
 
 		QString GetBackendName () const;
 		bool IsAvailable ();

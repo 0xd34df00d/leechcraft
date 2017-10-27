@@ -28,13 +28,22 @@
  **********************************************************************/
 
 #include "devbackend.h"
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ientitymanager.h>
+#include <interfaces/structures.h>
 
 namespace LeechCraft
 {
 namespace Vrooby
 {
-	DevBackend::DevBackend ()
+	DevBackend::DevBackend (const ICoreProxy_ptr& proxy)
+	: Proxy_ { proxy }
 	{
+	}
+
+	void DevBackend::HandleEntity (const Entity& e)
+	{
+		Proxy_->GetEntityManager ()->HandleEntity (e);
 	}
 }
 }
