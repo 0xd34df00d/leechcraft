@@ -55,13 +55,12 @@ Rectangle {
         clip: true
 
         model: devModel
-        spacing: 20
 
         delegate: Rectangle {
             color: "#00000000"
 
             width: devicesView.width
-            height: devNameLabel.height + totalSizeLabel.height + mountedAtLabel.height + availIndicator.height
+            height: childrenRect.height
 
             Rectangle {
                 anchors.top: parent.top
