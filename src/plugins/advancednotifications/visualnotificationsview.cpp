@@ -37,6 +37,7 @@
 #include <util/qml/colorthemeproxy.h>
 #include <util/qml/themeimageprovider.h>
 #include <util/qml/qmlerrorwatcher.h>
+#include <util/qml/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include "eventproxyobject.h"
 #include "generalhandler.h"
@@ -47,9 +48,8 @@ namespace AdvancedNotifications
 {
 	VisualNotificationsView::VisualNotificationsView (const ICoreProxy_ptr& proxy)
 	{
-		setStyleSheet ("background: transparent");
 		setWindowFlags (Qt::WindowStaysOnTopHint | Qt::ToolTip);
-		setAttribute (Qt::WA_TranslucentBackground);
+		Util::EnableTransparency (this);
 
 		new Util::QmlErrorWatcher { this };
 
