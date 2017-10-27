@@ -37,6 +37,7 @@
 #include <util/gui/unhoverdeletemixin.h>
 #include <util/sys/paths.h>
 #include <util/qml/unhidelistmodel.h>
+#include <util/qml/util.h>
 
 namespace LeechCraft
 {
@@ -61,9 +62,8 @@ namespace Util
 			return;
 		}
 
-		setStyleSheet ("background: transparent");
 		setWindowFlags (Qt::ToolTip);
-		setAttribute (Qt::WA_TranslucentBackground);
+		Util::EnableTransparency (this);
 
 		for (const auto& cand : GetPathCandidates (SysPath::QML, ""))
 			engine ()->addImportPath (cand);
