@@ -56,6 +56,20 @@ Rectangle {
 
         model: devModel
 
+        property real removeAnimationDuration: 100
+        property real displaceAnimationDuration: 200
+
+        displaced: Transition {
+            SequentialAnimation {
+                PauseAnimation { duration: devicesView.removeAnimationDuration }
+                NumberAnimation { properties: "x,y"; duration: devicesView.displaceAnimationDuration; easing: Easing.InOutSine }
+            }
+        }
+
+        remove: Transition {
+            NumberAnimation { properties: "opacity"; duration: devicesView.removeAnimationDuration; to: 0 }
+        }
+
         delegate: Rectangle {
             color: "#00000000"
 
