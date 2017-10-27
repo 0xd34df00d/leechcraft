@@ -14,6 +14,7 @@ set (QML_SRCS
 	tooltipitem.cpp
 	unhidelistmodel.cpp
 	unhidelistviewbase.cpp
+	util.cpp
 	widthiconprovider.cpp
 	qmlerrorwatcher.cpp
 	)

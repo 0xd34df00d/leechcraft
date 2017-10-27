@@ -40,6 +40,7 @@
 #include <util/sys/paths.h>
 #include <util/qml/themeimageprovider.h>
 #include <util/qml/colorthemeproxy.h>
+#include <util/qml/util.h>
 #include "flatmountableitems.h"
 #include "devbackend.h"
 
@@ -140,8 +141,7 @@ namespace Vrooby
 		Filtered_->setSourceModel (Flattened_);
 
 		setWindowFlags (Qt::ToolTip);
-		setAttribute (Qt::WA_TranslucentBackground);
-		setClearColor (Qt::transparent);
+		Util::EnableTransparency (this);
 
 		setResizeMode (SizeRootObjectToView);
 		setFixedSize (500, 250);
