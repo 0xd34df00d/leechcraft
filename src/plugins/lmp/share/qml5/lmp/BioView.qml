@@ -8,7 +8,6 @@ Rectangle {
     id: rootRect
 
     smooth: true
-    z: 0
 
     color: colorProxy.color_TextBox_TopColor
 
@@ -106,342 +105,309 @@ Rectangle {
         }
     }
 
-    Rectangle {
+    Item {
         id: artistArea
 
         anchors.fill: parent
-        color: "#00000000"
 
         visible: bioViewBlur.radius == 0
 
-        Text {
-            id: artistNameLabel
-            z: 2
-            text: artistName
-            font.bold: true
-            font.underline: true
-            font.pointSize: 12
-            color: colorProxy.color_TextBox_TitleTextColor
-            anchors.top: parent.top
-            anchors.topMargin: 2
-            anchors.left: artistImageThumb.right
-            anchors.leftMargin: 5
-
-            MouseArea {
-                anchors.fill: parent
-
-                onClicked: rootRect.linkActivated(artistPageURL)
-            }
-        }
-
-        StdArtistActions {
-            id: artistActions
-            z: 2
-            anchors.left: artistNameLabel.right
-            anchors.leftMargin: 8
-            anchors.bottom: artistNameLabel.bottom
-
-            visible: artistName.length > 0
-
-            onBrowseInfo: rootRect.browseInfo(artistName)
-            onBookmarkRequested: rootRect.bookmarkArtistRequested(artistName, artistPageURL, artistTags)
-            onPreviewRequested: rootRect.previewRequested(artistName)
-        }
-
-        Image {
-            id: artistImageThumb
-            z: 2
-            height: 170
-            width: Math.min(height, sourceSize.width * height / sourceSize.height)
-            smooth: true
-            fillMode: Image.PreserveAspectFit
+        Rectangle {
             anchors.left: parent.left
-            anchors.leftMargin: 2
+            anchors.right: parent.right
             anchors.top: parent.top
-            anchors.topMargin: 2
-            source: artistImageURL
-            cache: false
+            anchors.bottom: parent.bottom
 
-            MouseArea {
-                anchors.fill: parent
-
-                onClicked: {
-                    fullSizeArtistImg.source = artistBigImageURL
-                    fullSizeArtistImg.navVisible = false
-                    if (fullSizeArtistImg.status == Image.Ready)
-                        fullSizeArtistImg.state = "visible"
+            gradient: Gradient {
+                GradientStop {
+                    position: 0
+                    color: colorProxy.color_TextBox_TopColor
+                }
+                GradientStop {
+                    position: 1
+                    color: colorProxy.color_TextBox_BottomColor
                 }
             }
         }
 
-        Text {
-            id: artistTagsLabel
-            z: 2
-            text: artistTags
-            color: colorProxy.color_TextBox_Aux1TextColor
-            anchors.left: artistActions.right
-            anchors.leftMargin: 2
-            anchors.bottom: artistNameLabel.bottom
-            anchors.right: parent.right
-            anchors.rightMargin: 2
+        Item {
+            id: leftPane
 
-            elide: Text.ElideRight
-            horizontalAlignment: Text.AlignRight
-            font.pointSize: 8
-        }
-
-        TrackListContainer {
-            id: trackListContainer
-            y: artistDiscoView.y
-            x: artistDiscoView.x + artistDiscoView.width
-        }
-
-        ListView {
-            id: artistDiscoView
-            z: 2
             anchors.left: parent.left
-            anchors.top: artistImageThumb.bottom
-            anchors.topMargin: 2
-            anchors.right: flickableBioText.left
+            anchors.top: parent.top
             anchors.bottom: parent.bottom
-            spacing: 5
+            width: artistImageThumb.width
 
-            clip: true
+            z: 1
 
-            model: artistDiscoModel
-
-            delegate: Item {
-                width: artistDiscoView.width
-                height: contentsRect.height
-
-                Rectangle {
-                    id: contentsRect
-                    anchors.top: parent.top
-                    anchors.left: parent.left
-                    anchors.right: parent.right
-                    height: childrenRect.height + 5
-
-                    color: "transparent"
-
-                    Image {
-                        id: albumArtImage
-                        source: albumImage
-
-                        anchors.top: parent.top
-                        anchors.left: parent.left
-                        anchors.right: parent.right
-                        anchors.leftMargin: 20
-                        anchors.rightMargin: 20
-
-                        smooth: true
-                        fillMode: Image.PreserveAspectFit
-
-                        asynchronous: false
-                    }
-
-                    Text {
-                        id: albumNameLabel
-                        anchors.top: albumArtImage.bottom
-                        anchors.left: parent.left
-                        anchors.right: parent.right
-
-                        text: albumName
-                        color: colorProxy.color_TextBox_TextColor
-                        horizontalAlignment: Text.AlignHCenter
-                        wrapMode: Text.Wrap
-                    }
-
-                    Text {
-                        id: albumYearLabel
-                        anchors.top: albumNameLabel.bottom
-                        anchors.left: parent.left
-                        anchors.right: parent.right
-
-                        text: albumYear
-                        color: colorProxy.color_TextBox_Aux2TextColor
-                        horizontalAlignment: Text.AlignHCenter
-                    }
-
-                    MouseArea {
-                        anchors.top: albumArtImage.top
-                        anchors.left: parent.left
-                        anchors.right: parent.right
-                        anchors.bottom: albumYearLabel.bottom
-                        hoverEnabled: true
-
-                        onEntered: {
-                            trackListContainer.text = albumTrackListTooltip
-                            trackListContainer.state = "visible"
-                            trackListContainer.y = Math.min(artistDiscoView.y + parent.parent.y - artistDiscoView.contentY,
-                                    trackListContainer.parent.height - trackListContainer.targetHeight - 5)
-                        }
-                        onExited: trackListContainer.state = ""
-                    }
-
-                    PreviewAudioButton {
-                        id: previewAudio
-
-                        anchors.top: parent.top
-                        anchors.topMargin: 2
-                        anchors.right: parent.right
-                        anchors.rightMargin: 2
-
-                        onClicked: rootRect.albumPreviewRequested(index)
-                    }
-                }
-            }
-        }
-
-        GridView {
-            id: artistImagesView
-            z: 3
-
-            anchors.leftMargin: 5
-            anchors.left: artistImageThumb.right
-            anchors.rightMargin: 5
-            anchors.right: parent.right
-            anchors.top: flickableBioText.bottom
-            anchors.topMargin: 5
-            anchors.bottom: parent.bottom
-
-            model: artistImagesModel
-
-            cellWidth: cellHeight
-            cellHeight: Math.min(128, Math.max(height / 3, 64))
-            clip: true
-
-            keyNavigationWraps: true
-
-            onCurrentItemChanged: currentItem.updateFullSize()
-
-            delegate: Image {
-                id: delegateItem
-                source: thumbURL
-
-                height: artistImagesView.cellHeight
-                width: sourceSize.height > 0 ? Math.min(height, sourceSize.width * height / sourceSize.height) : height
-                fillMode: Image.PreserveAspectFit
-
-                cache: false
-
+            Image {
+                id: artistImageThumb
+                height: 170
+                width: Math.min(height, sourceSize.width * height / sourceSize.height)
                 smooth: true
-
-                function updateFullSize() {
-                    if (fullSizeArtistImg.state == "visible")
-                        fullSizeArtistImg.source = fullURL
-                }
+                fillMode: Image.PreserveAspectFit
+                anchors.left: parent.left
+                anchors.top: parent.top
+                source: artistImageURL
+                cache: false
 
                 MouseArea {
                     anchors.fill: parent
 
                     onClicked: {
-                        fullSizeArtistImg.navVisible = true
-                        fullSizeArtistImg.source = fullURL
+                        fullSizeArtistImg.source = artistBigImageURL
+                        fullSizeArtistImg.navVisible = false
                         if (fullSizeArtistImg.status == Image.Ready)
                             fullSizeArtistImg.state = "visible"
-
-                        artistImagesView.currentIndex = index
                     }
                 }
             }
-        }
 
-        Rectangle {
-            id: upTextShade
-            z: 3
-            height: 10
-
-            anchors.top: artistNameLabel.bottom
-            anchors.left: artistImageThumb.right
-            anchors.right: parent.right
-
-            gradient: Gradient {
-                GradientStop {
-                    position: 0
-                    color: colorProxy.color_TextBox_TopColor
-                }
-                GradientStop {
-                    position: 1
-                    color: colorProxy.setAlpha(colorProxy.color_TextBox_TopColor, 0)
-                }
-            }
-        }
-
-        ScrollView {
-            id: flickableBioText
-
-            style: LMPScrollStyle {}
-
-            anchors.leftMargin: 5
-            anchors.left: artistImageThumb.right
-            anchors.rightMargin: 5
-            anchors.right: parent.right
-            anchors.top: artistNameLabel.bottom
-            height: Math.min(parent.height / 3, contentHeight)
-
-            Flickable {
-                z: 2
-
-                contentWidth: width
-                contentHeight: shortDescLabel.height + 16
+            ListView {
+                id: artistDiscoView
+                anchors.left: parent.left
+                anchors.top: artistImageThumb.bottom
+                anchors.topMargin: 2
+                anchors.right: artistImageThumb.right
+                anchors.bottom: parent.bottom
+                spacing: 5
 
                 clip: true
 
-                Text {
-                    id: shortDescLabel
-                    text: artistInfo
-                    textFormat: Text.RichText
+                model: artistDiscoModel
+
+                delegate: Item {
+                    width: artistDiscoView.width
+                    height: contentsRect.height
+
+                    Rectangle {
+                        id: contentsRect
+                        anchors.top: parent.top
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        height: childrenRect.height + 5
+
+                        color: "transparent"
+
+                        Image {
+                            id: albumArtImage
+                            source: albumImage
+
+                            anchors.top: parent.top
+                            anchors.left: parent.left
+                            anchors.right: parent.right
+                            anchors.leftMargin: 20
+                            anchors.rightMargin: 20
+
+                            smooth: true
+                            fillMode: Image.PreserveAspectFit
+
+                            asynchronous: false
+                        }
+
+                        Text {
+                            id: albumNameLabel
+                            anchors.top: albumArtImage.bottom
+                            anchors.left: parent.left
+                            anchors.right: parent.right
+
+                            text: albumName
+                            color: colorProxy.color_TextBox_TextColor
+                            horizontalAlignment: Text.AlignHCenter
+                            wrapMode: Text.Wrap
+                        }
+
+                        Text {
+                            id: albumYearLabel
+                            anchors.top: albumNameLabel.bottom
+                            anchors.left: parent.left
+                            anchors.right: parent.right
+
+                            text: albumYear
+                            color: colorProxy.color_TextBox_Aux2TextColor
+                            horizontalAlignment: Text.AlignHCenter
+                        }
+
+                        MouseArea {
+                            anchors.top: albumArtImage.top
+                            anchors.left: parent.left
+                            anchors.right: parent.right
+                            anchors.bottom: albumYearLabel.bottom
+                            hoverEnabled: true
+
+                            onEntered: {
+                                trackListContainer.text = albumTrackListTooltip
+                                trackListContainer.state = "visible"
+                                trackListContainer.y = Math.min(artistDiscoView.y + parent.parent.y - artistDiscoView.contentY,
+                                        trackListContainer.parent.height - trackListContainer.targetHeight - 5)
+                            }
+                            onExited: trackListContainer.state = ""
+                        }
+
+                        PreviewAudioButton {
+                            id: previewAudio
+
+                            anchors.top: parent.top
+                            anchors.topMargin: 2
+                            anchors.right: parent.right
+                            anchors.rightMargin: 2
+
+                            onClicked: rootRect.albumPreviewRequested(index)
+                        }
+                    }
+                }
+            }
+
+            TrackListContainer {
+                id: trackListContainer
+                y: artistDiscoView.y
+                x: artistDiscoView.x + artistDiscoView.width
+            }
+        }
+
+        Item {
+            id: rightPane
+
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
+            anchors.left: leftPane.right
+            anchors.right: parent.right
+
+            Text {
+                id: artistNameLabel
+                text: artistName
+                font.bold: true
+                font.underline: true
+                font.pointSize: 12
+                color: colorProxy.color_TextBox_TitleTextColor
+                anchors.top: parent.top
+                anchors.topMargin: 2
+                anchors.left: parent.left
+                anchors.leftMargin: 5
+
+                MouseArea {
+                    anchors.fill: parent
+
+                    onClicked: rootRect.linkActivated(artistPageURL)
+                }
+            }
+
+            StdArtistActions {
+                id: artistActions
+                anchors.left: artistNameLabel.right
+                anchors.leftMargin: 8
+                anchors.bottom: artistNameLabel.bottom
+
+                visible: artistName.length > 0
+
+                onBrowseInfo: rootRect.browseInfo(artistName)
+                onBookmarkRequested: rootRect.bookmarkArtistRequested(artistName, artistPageURL, artistTags)
+                onPreviewRequested: rootRect.previewRequested(artistName)
+            }
+
+            Text {
+                id: artistTagsLabel
+                text: artistTags
+                color: colorProxy.color_TextBox_Aux1TextColor
+                anchors.left: artistActions.right
+                anchors.leftMargin: 2
+                anchors.bottom: artistNameLabel.bottom
+                anchors.right: parent.right
+                anchors.rightMargin: 2
+
+                elide: Text.ElideRight
+                horizontalAlignment: Text.AlignRight
+                font.pointSize: 8
+            }
+
+            ScrollView {
+                id: flickableBioText
+
+                style: LMPScrollStyle {}
+
+                anchors.leftMargin: 5
+                anchors.left: parent.left
+                anchors.rightMargin: 5
+                anchors.right: parent.right
+                anchors.top: artistNameLabel.bottom
+                height: Math.min(parent.height / 3, contentHeight)
+
+                Flickable {
+                    id: flickableBioTextFlickable
+
+                    contentWidth: width
+                    contentHeight: shortDescLabel.height + 16
+
                     clip: true
-                    color: colorProxy.color_TextBox_TextColor
-                    wrapMode: Text.WordWrap
 
-                    anchors.top: parent.top
-                    anchors.topMargin: 8
-                    anchors.left: parent.left
-                    anchors.right: parent.right
+                    Text {
+                        id: shortDescLabel
+                        text: artistInfo
+                        textFormat: Text.RichText
+                        clip: true
+                        color: colorProxy.color_TextBox_TextColor
+                        wrapMode: Text.WordWrap
 
-                    onLinkActivated: rootRect.linkActivated(link)
+                        anchors.top: parent.top
+                        anchors.topMargin: 8
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+
+                        onLinkActivated: rootRect.linkActivated(link)
+                    }
                 }
             }
-        }
 
-        Rectangle {
-            z: 1
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.top: artistImageThumb.bottom
-            anchors.bottom: parent.bottom
+            GridView {
+                id: artistImagesView
 
-            gradient: Gradient {
-                GradientStop {
-                    position: 0
-                    color: colorProxy.color_TextBox_TopColor
-                }
-                GradientStop {
-                    position: 1
-                    color: colorProxy.color_TextBox_BottomColor
-                }
-            }
-        }
+                anchors.leftMargin: 5
+                anchors.left: parent.left
+                anchors.rightMargin: 5
+                anchors.right: parent.right
+                anchors.top: flickableBioText.bottom
+                anchors.topMargin: 5
+                anchors.bottom: parent.bottom
 
-        Rectangle {
-            id: downTextShade
-            z: 3
-            height: 10
+                model: artistImagesModel
 
-            anchors.bottom: parent.bottom
-            anchors.left: parent.left
-            anchors.right: parent.right
+                cellWidth: cellHeight
+                cellHeight: Math.min(128, Math.max(height / 3, 64))
+                clip: true
 
-            gradient: Gradient {
-                GradientStop {
-                    position: 0
-                    color: colorProxy.setAlpha(colorProxy.color_TextBox_BottomColor, 0)
-                }
+                keyNavigationWraps: true
 
-                GradientStop {
-                    position: 1
-                    color: colorProxy.color_TextBox_BottomColor
+                onCurrentItemChanged: currentItem.updateFullSize()
+
+                delegate: Image {
+                    id: delegateItem
+                    source: thumbURL
+
+                    height: artistImagesView.cellHeight
+                    width: sourceSize.height > 0 ? Math.min(height, sourceSize.width * height / sourceSize.height) : height
+                    fillMode: Image.PreserveAspectFit
+
+                    cache: false
+
+                    smooth: true
+
+                    function updateFullSize() {
+                        if (fullSizeArtistImg.state == "visible")
+                            fullSizeArtistImg.source = fullURL
+                    }
+
+                    MouseArea {
+                        anchors.fill: parent
+
+                        onClicked: {
+                            fullSizeArtistImg.navVisible = true
+                            fullSizeArtistImg.source = fullURL
+                            if (fullSizeArtistImg.status == Image.Ready)
+                                fullSizeArtistImg.state = "visible"
+
+                            artistImagesView.currentIndex = index
+                        }
+                    }
                 }
             }
         }
