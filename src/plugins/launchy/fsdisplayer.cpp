@@ -40,6 +40,7 @@
 #include <util/util.h>
 #include <util/qml/themeimageprovider.h>
 #include <util/qml/colorthemeproxy.h>
+#include <util/qml/util.h>
 #include <util/sys/paths.h>
 #include <util/xdg/itemsfinder.h>
 #include <util/xdg/item.h>
@@ -132,10 +133,8 @@ namespace Launchy
 	, IconsProvider_ (new ItemIconsProvider (proxy))
 	, SysPathHandler_ (new SysPathItemProvider (ItemsModel_, this))
 	{
-		View_->setStyleSheet ("background: transparent");
 		View_->setWindowFlags (Qt::Dialog | Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint);
-		View_->setAttribute (Qt::WA_TranslucentBackground);
-		View_->setAttribute (Qt::WA_OpaquePaintEvent, false);
+		Util::EnableTransparency (View_);
 
 		const auto& rect = qApp->desktop ()->screenGeometry (QCursor::pos ());
 		View_->setGeometry (rect);
