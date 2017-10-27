@@ -139,9 +139,9 @@ namespace Vrooby
 	{
 		Filtered_->setSourceModel (Flattened_);
 
-		setStyleSheet ("background: transparent");
 		setWindowFlags (Qt::ToolTip);
 		setAttribute (Qt::WA_TranslucentBackground);
+		setClearColor (Qt::transparent);
 
 		setResizeMode (SizeRootObjectToView);
 		setFixedSize (500, 250);
