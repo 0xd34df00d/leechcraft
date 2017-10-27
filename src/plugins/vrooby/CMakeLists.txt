@@ -17,6 +17,7 @@ set (SRCS
 set (RESOURCES vroobyresources.qrc)
 QtAddResources (RCCS ${RESOURCES})
 CreateTrs ("vrooby" "en;ru_RU" COMPILED_TRANSLATIONS)
+CreateTrsUpTarget("vrooby" "en;ru_RU" "${SRCS}" "" "")
 
 cmake_dependent_option (ENABLE_VROOBY_UDISKS "Enable UDisks backend for Vrooby" ON "NOT WIN32" OFF)
 cmake_dependent_option (ENABLE_VROOBY_UDISKS2 "Enable UDisks2 backend for Vrooby" ON "NOT WIN32" OFF)
