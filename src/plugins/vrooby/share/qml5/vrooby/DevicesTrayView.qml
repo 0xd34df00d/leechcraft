@@ -154,7 +154,7 @@ Rectangle {
                 anchors.topMargin: 5
                 anchors.right: parent.right
                 anchors.rightMargin: 5
-                anchors.bottom: parent.bottom
+                anchors.bottom: availIndicator.bottom
                 anchors.bottomMargin: 2
 
                 onTriggered: rootRect.toggleMountRequested(devID)
