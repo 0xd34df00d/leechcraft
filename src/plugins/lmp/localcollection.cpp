@@ -559,7 +559,8 @@ namespace LMP
 						<< "ties for albums"
 						<< albumsSet [0]->Name_
 						<< albumsSet [0]->Year_
-						<< "\n"; return false;
+						<< "\n";
+				return false;
 			}
 
 			for (const auto& album : albumsSet)
