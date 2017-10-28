@@ -338,6 +338,8 @@ Rectangle {
                     Layout.fillWidth: true
                     Layout.alignment: Qt.AlignTop | Qt.AlignLeft
 
+                    horizontalScrollBarPolicy: Qt.ScrollBarAlwaysOff
+
                     Flickable {
                         id: flickableBioTextFlickable
 
