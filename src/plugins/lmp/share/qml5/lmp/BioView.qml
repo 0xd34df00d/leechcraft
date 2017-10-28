@@ -392,10 +392,23 @@ Rectangle {
                         cache: false
 
                         smooth: true
+                        opacity: 0
 
                         function updateFullSize() {
                             if (fullSizeArtistImg.state == "visible")
                                 fullSizeArtistImg.source = fullURL
+                        }
+
+                        states: State {
+                            name: "ready"
+                            when: delegateItem.status == Image.Ready
+                            PropertyChanges { target: delegateItem; opacity: 1 }
+                        }
+
+                        transitions: Transition {
+                            from: "*"
+                            to: "ready"
+                            NumberAnimation { target: delegateItem; properties: "opacity"; duration: 400 }
                         }
 
                         MouseArea {
