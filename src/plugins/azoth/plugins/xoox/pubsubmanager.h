@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_PUBSUBMANAGER_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_PUBSUBMANAGER_H
+#pragma once
+
 #include <boost/function.hpp>
 #include <QXmppClientExtension.h>
 #include "pepeventbase.h"
@@ -82,5 +82,3 @@ namespace Xoox
 }
 }
 }
-
-#endif

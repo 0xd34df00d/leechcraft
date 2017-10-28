@@ -27,8 +27,7 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_PEPEVENTBASE_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_PEPEVENTBASE_H
+#pragma once
 
 class QXmppElement;
 class QDomElement;
@@ -62,5 +61,3 @@ namespace Xoox
 }
 }
 }
-
-#endif
