@@ -41,8 +41,7 @@ namespace Xoox
 	const QString NsPubSub = "http://jabber.org/protocol/pubsub";
 	const QString NsPubSubEvent = "http://jabber.org/protocol/pubsub#event";
 
-	void PubSubManager::RegisterCreator (const QString& node,
-			boost::function<PEPEventBase* ()> creator)
+	void PubSubManager::RegisterCreator (const QString& node, const Creator_t& creator)
 	{
 		Node2Creator_ [node] = creator;
 		SetAutosubscribe (node, false);

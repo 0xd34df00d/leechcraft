@@ -44,8 +44,9 @@ namespace Xoox
 	class PubSubManager : public QXmppClientExtension
 	{
 		Q_OBJECT
-
+	public:
 		typedef boost::function<PEPEventBase* ()> Creator_t;
+	private:
 		QMap<QString, Creator_t> Node2Creator_;
 
 		QMap<QString, bool> AutosubscribeNodes_;
@@ -55,7 +56,7 @@ namespace Xoox
 		{
 			RegisterCreator (T::GetNodeString (), StandardCreator<T>);
 		}
-		void RegisterCreator (const QString&, boost::function<PEPEventBase* ()>);
+		void RegisterCreator (const QString&, const Creator_t&);
 
 		template<typename T>
 		void SetAutosubscribe (bool enabled)
