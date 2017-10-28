@@ -440,7 +440,8 @@ namespace Xoox
 		}
 
 		CurrentName_ = active.isEmpty () ? def : active;;
-		QueryList (CurrentName_);
+		if (!CurrentName_.isEmpty ())
+			QueryList (CurrentName_);
 
 		handler.Right (lists, active, def);
 	}
