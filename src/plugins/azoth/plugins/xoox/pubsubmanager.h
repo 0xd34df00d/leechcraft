@@ -29,7 +29,7 @@
 
 #pragma once
 
-#include <boost/function.hpp>
+#include <functional>
 #include <QXmppClientExtension.h>
 #include "pepeventbase.h"
 
@@ -45,7 +45,7 @@ namespace Xoox
 	{
 		Q_OBJECT
 	public:
-		typedef boost::function<PEPEventBase* ()> Creator_t;
+		using Creator_t = std::function<PEPEventBase* ()>;
 	private:
 		QMap<QString, Creator_t> Node2Creator_;
 
