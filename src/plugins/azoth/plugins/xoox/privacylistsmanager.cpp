@@ -84,7 +84,7 @@ namespace Xoox
 			Stanzas_ = STAll;
 	}
 
-	QXmppElement PrivacyListItem::ToXML() const
+	QXmppElement PrivacyListItem::ToXML () const
 	{
 		QXmppElement item;
 		item.setTagName ("item");
