@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_MOODDIALOG_H
-#define PLUGINS_AZOTH_MOODDIALOG_H
+#pragma once
+
 #include <QDialog>
 #include "ui_mooddialog.h"
 
@@ -44,7 +44,7 @@ namespace Azoth
 	public:
 		static QString ToHumanReadable (const QString&);
 
-		MoodDialog (QWidget* = 0);
+		MoodDialog (QWidget* = nullptr);
 		
 		QString GetMood () const;
 		void SetMood (const QString&);
@@ -54,5 +54,3 @@ namespace Azoth
 	};
 }
 }
-
-#endif

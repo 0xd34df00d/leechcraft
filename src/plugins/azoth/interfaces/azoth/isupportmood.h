@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_INTERFACES_ISUPPORTMOOD_H
-#define PLUGINS_AZOTH_INTERFACES_ISUPPORTMOOD_H
+#pragma once
+
 #include <QtGlobal>
 
 class QString;
@@ -51,7 +51,7 @@ namespace Azoth
 	{
 	public:
 		virtual ~ISupportMood () {}
-		
+
 		/** @brief Publishes the current user mood.
 		 * 
 		 * The mood information is divided into two pieces:
@@ -70,5 +70,3 @@ namespace Azoth
 
 Q_DECLARE_INTERFACE (LeechCraft::Azoth::ISupportMood,
 		"org.Deviant.LeechCraft.Azoth.ISupportMood/1.0")
-
-#endif
