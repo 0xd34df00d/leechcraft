@@ -28,7 +28,9 @@
  **********************************************************************/
 
 #include "usermood.h"
+#include <algorithm>
 #include <QDomElement>
+#include <QtDebug>
 #include <QXmppElement.h>
 
 namespace LeechCraft
@@ -216,12 +218,16 @@ namespace Xoox
 			return;
 		}
 
-		for (int m = MoodEmpty + 1; m <= Worried; ++m)
-			if (MoodStr [m] == str)
-			{
-				Mood_ = static_cast<Mood> (m);
-				break;
-			}
+		const auto pos = std::find (std::begin (MoodStr), std::end (MoodStr), str);
+		if (pos == std::end (MoodStr))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< str
+					<< "not found";
+			Mood_ = MoodEmpty;
+		}
+		else
+			Mood_ = static_cast<Mood> (std::distance (std::begin (MoodStr), pos));
 	}
 
 	QString UserMood::GetText () const
