@@ -223,6 +223,7 @@ namespace Azoth
 	void ActivityDialog::on_General__currentIndexChanged (int idx)
 	{
 		Ui_.Specific_->clear ();
+		Ui_.Specific_->addItem (tr ("<clear>"));
 
 		if (!idx)
 			return;
