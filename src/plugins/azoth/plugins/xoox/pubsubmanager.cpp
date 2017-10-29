@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "pubsubmanager.h"
+#include <algorithm>
 #include <QDomElement>
 #include <QtDebug>
 #include <QXmppClient.h>
@@ -47,8 +48,10 @@ namespace Xoox
 		SetAutosubscribe (node, false);
 	}
 
-	void PubSubManager::SetAutosubscribe (const QString& node, bool enabled)
+	void PubSubManager::SetAutosubscribe (QString node, bool enabled)
 	{
+		node += "+notify";
+
 		if (enabled)
 			AutosubscribeNodes_ << node;
 		else
@@ -101,8 +104,7 @@ namespace Xoox
 		result << NsPubSub;
 		Q_FOREACH (const QString& node, Node2Creator_.keys ())
 			result << node;
-		for (const auto& node : AutosubscribeNodes_)
-			result << node + "+notify";
+		std::copy (AutosubscribeNodes_.begin (), AutosubscribeNodes_.end (), std::back_inserter (result));
 		return result;
 	}
 
