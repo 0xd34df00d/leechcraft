@@ -57,8 +57,6 @@ namespace Azoth
 		
 		QString GetText () const;
 		void SetText (const QString&);
-	private slots:
-		void on_General__currentIndexChanged (int);
 	};
 }
 }

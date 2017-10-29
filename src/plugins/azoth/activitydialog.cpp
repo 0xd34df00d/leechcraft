@@ -181,33 +181,47 @@ namespace Azoth
 	{
 		Ui_.setupUi (this);
 
-		Ui_.General_->addItem (tr ("<clear>"));
+		Ui_.ActivityTree_->addTopLevelItem (new QTreeWidgetItem { { tr ("<clear>") } });
 
 		for (const auto& [name, specifics] : Util::Stlize (GetActivityInfos ()))
-			Ui_.General_->addItem (specifics.Icon_, name, specifics.RawName_);
+		{
+			const auto item = new QTreeWidgetItem { { name } };
+			item->setIcon (0, specifics.Icon_);
+			item->setData (0, Qt::UserRole, QVariant::fromValue (ActivityInfo { specifics.RawName_, {}, {} }));
+
+			for (const auto& [specificName, specificInfo] : Util::Stlize (specifics.Payload_))
+			{
+				const auto subItem = new QTreeWidgetItem { { specificName } };
+				subItem->setIcon (0, specificInfo.Icon_);
+				subItem->setData (0, Qt::UserRole,
+						QVariant::fromValue (ActivityInfo { specifics.RawName_, specificInfo.RawName_, {} }));
+				item->addChild (subItem);
+			}
+
+			Ui_.ActivityTree_->addTopLevelItem (item);
+		}
+
+		Ui_.ActivityTree_->expandAll ();
 	}
 
 	QString ActivityDialog::GetGeneral () const
 	{
-		return Ui_.General_->itemData (Ui_.General_->currentIndex ()).toString ();
+		return Ui_.ActivityTree_->currentIndex ().data (Qt::UserRole).value<ActivityInfo> ().General_;
 	}
 
 	void ActivityDialog::SetGeneral (const QString& general)
 	{
-		const int idx = std::max (0, Ui_.General_->findData (general));
-		Ui_.General_->setCurrentIndex (idx);
-		on_General__currentIndexChanged (idx);
+		// TODO
 	}
 
 	QString ActivityDialog::GetSpecific () const
 	{
-		return Ui_.Specific_->itemData (Ui_.Specific_->currentIndex ()).toString ();
+		return Ui_.ActivityTree_->currentIndex ().data (Qt::UserRole).value<ActivityInfo> ().Specific_;
 	}
 
 	void ActivityDialog::SetSpecific (const QString& specific)
 	{
-		const int idx = std::max (0, Ui_.Specific_->findData (specific));
-		Ui_.Specific_->setCurrentIndex (idx);
+		// TODO
 	}
 
 	QString ActivityDialog::GetText () const
@@ -218,21 +232,6 @@ namespace Azoth
 	void ActivityDialog::SetText (const QString& text)
 	{
 		Ui_.Text_->setText (text);
-	}
-
-	void ActivityDialog::on_General__currentIndexChanged (int idx)
-	{
-		Ui_.Specific_->clear ();
-		Ui_.Specific_->addItem (tr ("<clear>"));
-
-		if (!idx)
-			return;
-
-		const auto& general = Ui_.General_->currentText ();
-		const auto& specifics = GetActivityInfos () [general].Payload_;
-
-		for (const auto& [name, info] : Util::Stlize (specifics))
-			Ui_.Specific_->addItem (info.Icon_, name, info.RawName_);
 	}
 }
 }
