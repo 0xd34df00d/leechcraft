@@ -568,7 +568,7 @@ namespace Azoth
 		if (!account)
 			return;
 
-		QObject *obj = sender ()->property ("Azoth/AccountObject").value<QObject*> ();
+		QObject *obj = account->GetQObject ();
 		ISupportActivity *activity = qobject_cast<ISupportActivity*> (obj);
 		if (!activity)
 		{
