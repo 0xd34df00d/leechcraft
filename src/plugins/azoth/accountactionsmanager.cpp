@@ -614,16 +614,12 @@ namespace Azoth
 		MoodDialog dia (MW_);
 
 		InitSelfDialog (account, &IHaveContactMood::GetUserMood,
-				[&dia] (const MoodInfo& info)
-				{
-					dia.SetMood (info.Mood_);
-					dia.SetText (info.Text_);
-				});
+				[&dia] (const MoodInfo& info) { dia.SetMood (info); });
 
 		if (dia.exec () != QDialog::Accepted)
 			return;
 
-		mood->SetMood ({ dia.GetMood (), dia.GetText () });
+		mood->SetMood (dia.GetMood ());
 	}
 
 	void AccountActionsManager::handleAccountSetLocation ()

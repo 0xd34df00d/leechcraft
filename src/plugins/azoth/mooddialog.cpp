@@ -30,6 +30,7 @@
 #include "mooddialog.h"
 #include <util/sys/resourceloader.h>
 #include <util/sll/qtutil.h>
+#include "interfaces/azoth/moodinfo.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "resourcesmanager.h"
@@ -59,13 +60,14 @@ namespace Azoth
 		}
 	}
 
-	QString MoodDialog::GetMood () const
+	MoodInfo MoodDialog::GetMood () const
 	{
-		return Ui_.Mood_->currentIndex ().data (Qt::UserRole).toString ();
+		return { Ui_.Mood_->currentIndex ().data (Qt::UserRole).toString (), Ui_.Text_->text () };
 	}
 
-	void MoodDialog::SetMood (const QString& mood)
+	void MoodDialog::SetMood (const MoodInfo& moodInfo)
 	{
+		const auto& mood = moodInfo.Mood_;
 		const auto& list = BuildHumanReadableList ();
 		const auto pos = std::find_if (list.begin (), list.end (),
 				[&mood] (const auto& pair) { return mood == pair.first; });
@@ -73,16 +75,8 @@ namespace Azoth
 				0 :
 				std::distance (list.begin (), pos) + 1;
 		Ui_.Mood_->setCurrentItem (Ui_.Mood_->topLevelItem (idx));
-	}
 
-	QString MoodDialog::GetText () const
-	{
-		return Ui_.Text_->text ();
-	}
-
-	void MoodDialog::SetText (const QString& text)
-	{
-		Ui_.Text_->setText (text);
+		Ui_.Text_->setText (moodInfo.Text_);
 	}
 
 	QMap<QString, QPair<QVariant, QIcon>> MoodDialog::BuildHumanReadableList ()

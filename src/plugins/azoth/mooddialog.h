@@ -36,6 +36,8 @@ namespace LeechCraft
 {
 namespace Azoth
 {
+	struct MoodInfo;
+
 	class MoodDialog : public QDialog
 	{
 		Q_OBJECT
@@ -46,11 +48,8 @@ namespace Azoth
 
 		MoodDialog (QWidget* = nullptr);
 		
-		QString GetMood () const;
-		void SetMood (const QString&);
-		
-		QString GetText () const;
-		void SetText (const QString&);
+		MoodInfo GetMood () const;
+		void SetMood (const MoodInfo&);
 	private:
 		static QMap<QString, QPair<QVariant, QIcon>> BuildHumanReadableList ();
 	};
