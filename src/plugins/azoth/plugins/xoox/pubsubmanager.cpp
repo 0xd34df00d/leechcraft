@@ -49,7 +49,10 @@ namespace Xoox
 
 	void PubSubManager::SetAutosubscribe (const QString& node, bool enabled)
 	{
-		AutosubscribeNodes_ [node] = enabled;
+		if (enabled)
+			AutosubscribeNodes_ << node;
+		else
+			AutosubscribeNodes_.remove (node);
 	}
 
 	void PubSubManager::PublishEvent (PEPEventBase *event)
@@ -97,11 +100,9 @@ namespace Xoox
 		QStringList result;
 		result << NsPubSub;
 		Q_FOREACH (const QString& node, Node2Creator_.keys ())
-		{
 			result << node;
-			if (AutosubscribeNodes_ [node])
-				result << node + "+notify";
-		}
+		for (const auto& node : AutosubscribeNodes_)
+			result << node + "+notify";
 		return result;
 	}
 

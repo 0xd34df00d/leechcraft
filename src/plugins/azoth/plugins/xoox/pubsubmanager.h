@@ -30,6 +30,7 @@
 #pragma once
 
 #include <functional>
+#include <QSet>
 #include <QXmppClientExtension.h>
 #include "pepeventbase.h"
 
@@ -49,7 +50,7 @@ namespace Xoox
 	private:
 		QMap<QString, Creator_t> Node2Creator_;
 
-		QMap<QString, bool> AutosubscribeNodes_;
+		QSet<QString> AutosubscribeNodes_;
 	public:
 		template<typename T>
 		void RegisterCreator ()
