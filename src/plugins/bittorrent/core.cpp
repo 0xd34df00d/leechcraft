@@ -489,6 +489,8 @@ namespace BitTorrent
 			case libtorrent::torrent_status::seeding:
 				return QIcon::fromTheme ("arrow-up-double");
 			}
+
+			return {};
 		case Roles::SortRole:
 			switch (column)
 			{
