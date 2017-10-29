@@ -4,7 +4,6 @@ case $1 in
 	debian_unstable*)
 		CC=/usr/bin/gcc-7 CXX=/usr/bin/g++-7 cmake ../src \
 			-DEXTRA_WARNINGS=True \
-			-DLC_CXX_STANDARD=17 \
 			-DENABLE_BLASQ=True \
 			-DENABLE_BLASQ_SPEGNERSI=False \
 			-DENABLE_AZOTH_WOODPECKER=False \
@@ -55,7 +54,6 @@ case $1 in
 	fedora_23*)
 		cmake ../src \
 			-DLIB_SUFFIX=64 \
-			-DLC_CXX_STANDARD=17 \
 			-DEXTRA_WARNINGS=True \
 			-DSTRICT_LICENSING=True \
 			-DWITH_PCRE=True \
@@ -170,7 +168,6 @@ case $1 in
 			-DENABLE_ZALIL=True ;;
 	opensuse_factory*)
 		cmake ../src -DLIB_SUFFIX=64 \
-			-DLC_CXX_STANDARD=17 \
 			-DEXTRA_WARNINGS=True \
 			-DCMAKE_INSTALL_PREFIX=/usr \
 			-DSTRICT_LICENSING=True \
