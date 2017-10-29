@@ -12,11 +12,7 @@ project (leechcraft)
 
 set (CMAKE_MACOSX_RPATH OFF)
 
-if (NOT LC_CXX_STANDARD)
-	set (LC_CXX_STANDARD 14)
-endif ()
-
-set (CMAKE_CXX_STANDARD ${LC_CXX_STANDARD})
+set (CMAKE_CXX_STANDARD 17)
 set (CMAKE_CXX_EXTENSIONS OFF)
 
 option (EXTRA_WARNINGS "Enable extra compiler warnings" OFF)
