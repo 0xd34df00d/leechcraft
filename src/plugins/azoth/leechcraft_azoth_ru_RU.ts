@@ -1113,7 +1113,7 @@
     <message>
         <location filename="activitydialog.cpp" line="80"/>
         <source>having_breakfast</source>
-        <translation>завтракую</translation>
+        <translation>завтракаю</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="81"/>
