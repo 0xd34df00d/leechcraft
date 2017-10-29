@@ -102,8 +102,7 @@ namespace Xoox
 	{
 		QStringList result;
 		result << NsPubSub;
-		Q_FOREACH (const QString& node, Node2Creator_.keys ())
-			result << node;
+		std::copy (Node2Creator_.keyBegin (), Node2Creator_.keyEnd (), std::back_inserter (result));
 		std::copy (AutosubscribeNodes_.begin (), AutosubscribeNodes_.end (), std::back_inserter (result));
 		return result;
 	}
