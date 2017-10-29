@@ -31,21 +31,19 @@
 
 #include <QtGlobal>
 
-class QString;
-
 namespace LeechCraft
 {
 namespace Azoth
 {
+	struct MoodInfo;
+
 	/** @brief Interface for accounts supporting user mood.
 	 * 
 	 * This interface can be implemented by account objects to advertise
 	 * the support for publishing current user mood.
-	 * 
-	 * The mood concept in Azoth is based on the XMPP XEP-0107: User
-	 * Mood (http://xmpp.org/extensions/xep-0107.html).
-	 * 
+	 *
 	 * @sa IAccount
+	 * @sa MoodInfo
 	 */
 	class ISupportMood
 	{
@@ -53,17 +51,10 @@ namespace Azoth
 		virtual ~ISupportMood () {}
 
 		/** @brief Publishes the current user mood.
-		 * 
-		 * The mood information is divided into two pieces:
-		 * mood name (required) and an optional text.
-		 * 
-		 * The possible values of the mood name are
-		 * listed in http://xmpp.org/extensions/xep-0107.html.
-		 * 
-		 * @param[in] mood The mood name.
-		 * @param[in] text The additional text message (optional).
+		 *
+		 * @param[in] mood The mood description.
 		 */
-		virtual void SetMood (const QString& mood, const QString& text) = 0;
+		virtual void SetMood (const MoodInfo& mood) = 0;
 	};
 }
 }

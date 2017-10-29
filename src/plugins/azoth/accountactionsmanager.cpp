@@ -623,7 +623,7 @@ namespace Azoth
 		if (dia.exec () != QDialog::Accepted)
 			return;
 
-		mood->SetMood (dia.GetMood (), dia.GetText ());
+		mood->SetMood ({ dia.GetMood (), dia.GetText () });
 	}
 
 	void AccountActionsManager::handleAccountSetLocation ()

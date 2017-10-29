@@ -207,7 +207,7 @@ namespace Xoox
 
 		// ISupportTune, ISupportMood, ISupportActivity
 		void PublishTune (const QMap<QString, QVariant>&);
-		void SetMood (const QString&, const QString&);
+		void SetMood (const MoodInfo&);
 		void SetActivity (const QString&, const QString&, const QString&);
 
 		// ISupportGeolocation

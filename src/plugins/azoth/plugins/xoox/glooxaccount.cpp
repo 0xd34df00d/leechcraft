@@ -448,11 +448,11 @@ namespace Xoox
 		ClientConnection_->GetPubSubManager ()->PublishEvent (&tune);
 	}
 
-	void GlooxAccount::SetMood (const QString& moodStr, const QString& text)
+	void GlooxAccount::SetMood (const MoodInfo& moodInfo)
 	{
 		UserMood mood;
-		mood.SetMoodStr (moodStr);
-		mood.SetText (text);
+		mood.SetMoodStr (moodInfo.Mood_);
+		mood.SetText (moodInfo.Text_);
 
 		ClientConnection_->GetPubSubManager ()->PublishEvent (&mood);
 	}
