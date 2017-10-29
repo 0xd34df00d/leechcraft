@@ -42,6 +42,8 @@ namespace Azoth
 		
 		Ui::ActivityDialog Ui_;
 		QMap<QString, QStringList> Gen2Specific_;
+
+		static auto GetActivityInfos ();
 	public:
 		static QString ToHumanReadable (const QString&);
 

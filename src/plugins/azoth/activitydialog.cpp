@@ -29,6 +29,9 @@
 
 #include "activitydialog.h"
 #include <util/sys/resourceloader.h>
+#include <util/sll/qtutil.h>
+#include <util/sll/void.h>
+#include "interfaces/azoth/activityinfo.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "resourcesmanager.h"
@@ -37,16 +40,16 @@ namespace LeechCraft
 {
 namespace Azoth
 {
-	QString ActivityDialog::ToHumanReadable (const QString& str)
+	template<typename T>
+	struct WithInfo
 	{
-		return tr (str.toLatin1 ());
-	}
+		QIcon Icon_;
+		QString RawName_;
+		T Payload_;
+	};
 
-	ActivityDialog::ActivityDialog (QWidget *parent)
-	: QDialog (parent)
+	auto ActivityDialog::GetActivityInfos ()
 	{
-		Ui_.setupUi (this);
-
 		const char *genAct [] =
 		{
 			QT_TR_NOOP ("doing_chores"),
@@ -134,23 +137,49 @@ namespace Azoth
 			QT_TR_NOOP ("other")
 		};
 
+		auto rl = ResourcesManager::Instance ().GetResourceLoader (ResourcesManager::RLTActivityIconLoader);
+		const auto& theme = XmlSettingsManager::Instance ().property ("ActivityIcons").toString () + '/';
+
+		using SpecificList_t = QMap<QString, WithInfo<Util::Void>>;
+		QMap<QString, WithInfo<SpecificList_t>> infos;
+
 		int sizes [] = { 9, 3, 4, 9, 6, 0, 8, 12, 3, 9, 4 };
 		for (size_t i = 0, pos = 0; pos < sizeof (sizes) / sizeof (sizes [0]); ++pos)
-			for (int j = 0; j < sizes [pos]; ++j, ++i)
-				Gen2Specific_ [genAct [pos]] << specAct [i];
+		{
+			SpecificList_t specifics;
 
-		auto rl = ResourcesManager::Instance ()
-				.GetResourceLoader (ResourcesManager::RLTActivityIconLoader);
-		const QString& theme = XmlSettingsManager::Instance ()
-				.property ("ActivityIcons").toString () + '/';
+			const auto& iconPrefix = theme + genAct [pos] + '_';
+			for (int j = 0; j < sizes [pos]; ++j, ++i)
+			{
+				QIcon icon { rl->GetIconPath (iconPrefix + specAct [i]) };
+				specifics [tr (specAct [i])] = { icon, specAct [i], {} };
+			}
+
+			infos [tr (genAct [pos])] =
+			{
+				QIcon { rl->GetIconPath (theme + genAct [pos]) },
+				genAct [pos],
+				std::move (specifics)
+			};
+		}
+
+		return infos;
+	}
+
+	QString ActivityDialog::ToHumanReadable (const QString& str)
+	{
+		return tr (str.toLatin1 ());
+	}
+
+	ActivityDialog::ActivityDialog (QWidget *parent)
+	: QDialog (parent)
+	{
+		Ui_.setupUi (this);
 
 		Ui_.General_->addItem (tr ("<clear>"));
 
-		for (size_t i = 0; i < sizeof (genAct) / sizeof (genAct [0]); ++i)
-		{
-			QIcon icon (rl->GetIconPath (theme + genAct [i]));
-			Ui_.General_->addItem (icon, tr (genAct [i]), QString (genAct [i]));
-		}
+		for (const auto& [name, specifics] : Util::Stlize (GetActivityInfos ()))
+			Ui_.General_->addItem (specifics.Icon_, name, specifics.RawName_);
 	}
 
 	QString ActivityDialog::GetGeneral () const
@@ -190,19 +219,14 @@ namespace Azoth
 	{
 		Ui_.Specific_->clear ();
 
-		auto rl = ResourcesManager::Instance ()
-				.GetResourceLoader (ResourcesManager::RLTActivityIconLoader);
+		if (!idx)
+			return;
 
-		const QString& general = Ui_.General_->itemData (idx).toString ();
-		const QString& theme = XmlSettingsManager::Instance ()
-				.property ("ActivityIcons").toString () + '/';
-		const QString& prefix = theme + general + '_';
+		const auto& general = Ui_.General_->currentText ();
+		const auto specifics = GetActivityInfos () [general].Payload_;
 
-		for (const auto& value : Gen2Specific_.value (general))
-		{
-			QIcon icon (rl->GetIconPath (prefix + value));
-			Ui_.Specific_->addItem (icon, tr (value.toLatin1 ()), value);
-		}
+		for (const auto& [name, info] : Util::Stlize (specifics))
+			Ui_.Specific_->addItem (info.Icon_, name, info.RawName_);
 	}
 }
 }
