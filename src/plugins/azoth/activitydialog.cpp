@@ -204,34 +204,39 @@ namespace Azoth
 		Ui_.ActivityTree_->expandAll ();
 	}
 
-	QString ActivityDialog::GetGeneral () const
+	ActivityInfo ActivityDialog::GetActivityInfo () const
 	{
-		return Ui_.ActivityTree_->currentIndex ().data (Qt::UserRole).value<ActivityInfo> ().General_;
+		auto result = Ui_.ActivityTree_->currentIndex ().data (Qt::UserRole).value<ActivityInfo> ();
+		result.Text_ = Ui_.Text_->text ();
+		return result;
 	}
 
-	void ActivityDialog::SetGeneral (const QString& general)
+	void ActivityDialog::SetActivityInfo (const ActivityInfo& info)
 	{
-		// TODO
+		SetCurrentActivityItem (info);
+		Ui_.Text_->setText (info.Text_);
 	}
 
-	QString ActivityDialog::GetSpecific () const
+	void ActivityDialog::SetCurrentActivityItem (const ActivityInfo& info)
 	{
-		return Ui_.ActivityTree_->currentIndex ().data (Qt::UserRole).value<ActivityInfo> ().Specific_;
-	}
+		Ui_.ActivityTree_->setCurrentItem (Ui_.ActivityTree_->topLevelItem (0));
+		for (int row = 0; row < Ui_.ActivityTree_->topLevelItemCount (); ++row)
+		{
+			const auto& topLevelItem = Ui_.ActivityTree_->topLevelItem (row);
+			if (topLevelItem->data (0, Qt::UserRole).value<ActivityInfo> ().General_ != info.General_)
+				continue;
 
-	void ActivityDialog::SetSpecific (const QString& specific)
-	{
-		// TODO
-	}
-
-	QString ActivityDialog::GetText () const
-	{
-		return Ui_.Text_->text ();
-	}
-
-	void ActivityDialog::SetText (const QString& text)
-	{
-		Ui_.Text_->setText (text);
+			for (int subRow = 0; subRow < topLevelItem->childCount (); ++subRow)
+			{
+				const auto childItem = topLevelItem->child (subRow);
+				if (childItem->data (0, Qt::UserRole).value<ActivityInfo> ().Specific_ == info.Specific_)
+				{
+					Ui_.ActivityTree_->setCurrentItem (childItem);
+					return;
+				}
+			}
+			return;
+		}
 	}
 }
 }

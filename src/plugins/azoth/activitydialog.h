@@ -36,6 +36,8 @@ namespace LeechCraft
 {
 namespace Azoth
 {
+	struct ActivityInfo;
+
 	class ActivityDialog : public QDialog
 	{
 		Q_OBJECT
@@ -48,15 +50,11 @@ namespace Azoth
 		static QString ToHumanReadable (const QString&);
 
 		ActivityDialog (QWidget* = nullptr);
-		
-		QString GetGeneral () const;
-		void SetGeneral (const QString&);
-		
-		QString GetSpecific () const;
-		void SetSpecific (const QString&);
-		
-		QString GetText () const;
-		void SetText (const QString&);
+
+		ActivityInfo GetActivityInfo () const;
+		void SetActivityInfo (const ActivityInfo&);
+	private:
+		void SetCurrentActivityItem (const ActivityInfo&);
 	};
 }
 }

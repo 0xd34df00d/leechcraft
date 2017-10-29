@@ -583,17 +583,13 @@ namespace Azoth
 		ActivityDialog dia (MW_);
 
 		InitSelfDialog (account, &IHaveContactActivity::GetUserActivity,
-				[&dia] (const ActivityInfo& info)
-				{
-					dia.SetGeneral (info.General_);
-					dia.SetSpecific (info.Specific_);
-					dia.SetGeneral (info.General_);
-				});
+				[&dia] (const ActivityInfo& info) { dia.SetActivityInfo (info); });
 
 		if (dia.exec () != QDialog::Accepted)
 			return;
 
-		activity->SetActivity (dia.GetGeneral (), dia.GetSpecific (), dia.GetText ());
+		const auto& info = dia.GetActivityInfo ();
+		activity->SetActivity (info.General_, info.Specific_, info.Text_);
 	}
 
 	void AccountActionsManager::handleAccountSetMood ()
