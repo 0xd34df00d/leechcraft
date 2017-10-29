@@ -48,6 +48,35 @@ namespace Azoth
 	{
 		Ui_.setupUi (this);
 
+		Ui_.Mood_->addItem (tr ("<clear>"));
+
+		for (const auto& pair : Util::Stlize (BuildHumanReadableList ()))
+			Ui_.Mood_->addItem (pair.second.second, pair.first, pair.second.first);
+	}
+
+	QString MoodDialog::GetMood () const
+	{
+		return Ui_.Mood_->itemData (Ui_.Mood_->currentIndex ()).toString ();
+	}
+
+	void MoodDialog::SetMood (const QString& mood)
+	{
+		const int idx = std::max (0, Ui_.Mood_->findData (mood));
+		Ui_.Mood_->setCurrentIndex (idx);
+	}
+
+	QString MoodDialog::GetText () const
+	{
+		return Ui_.Text_->text ();
+	}
+
+	void MoodDialog::SetText (const QString& text)
+	{
+		Ui_.Text_->setText (text);
+	}
+
+	QMap<QString, QPair<QVariant, QIcon>> MoodDialog::BuildHumanReadableList ()
+	{
 		const char* moodStr[] =
 		{
 			QT_TR_NOOP ("afraid"),
@@ -136,15 +165,10 @@ namespace Azoth
 			QT_TR_NOOP ("worried")
 		};
 
-		const auto rl = ResourcesManager::Instance ()
-				.GetResourceLoader (ResourcesManager::RLTMoodIconLoader);
-		const QString& theme = XmlSettingsManager::Instance ()
-				.property ("MoodIcons").toString () + '/';
-
-		Ui_.Mood_->addItem (tr ("<clear>"));
+		const auto& theme = XmlSettingsManager::Instance ().property ("MoodIcons").toString () + '/';
+		const auto rl = ResourcesManager::Instance ().GetResourceLoader (ResourcesManager::RLTMoodIconLoader);
 
 		QMap<QString, QPair<QVariant, QIcon>> list;
-
 		for (uint i = 0; i < sizeof (moodStr) / sizeof (moodStr [0]); ++i)
 		{
 			QString name (moodStr [i]);
@@ -153,30 +177,7 @@ namespace Azoth
 
 			list [tr (moodStr [i])] = qMakePair<QVariant, QIcon> (QString (moodStr [i]), icon);
 		}
-
-		for (const auto& pair : Util::Stlize (list))
-			Ui_.Mood_->addItem (pair.second.second, pair.first, pair.second.first);
-	}
-
-	QString MoodDialog::GetMood () const
-	{
-		return Ui_.Mood_->itemData (Ui_.Mood_->currentIndex ()).toString ();
-	}
-
-	void MoodDialog::SetMood (const QString& mood)
-	{
-		const int idx = std::max (0, Ui_.Mood_->findData (mood));
-		Ui_.Mood_->setCurrentIndex (idx);
-	}
-
-	QString MoodDialog::GetText () const
-	{
-		return Ui_.Text_->text ();
-	}
-
-	void MoodDialog::SetText (const QString& text)
-	{
-		Ui_.Text_->setText (text);
+		return list;
 	}
 }
 }

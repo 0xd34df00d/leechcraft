@@ -51,6 +51,8 @@ namespace Azoth
 		
 		QString GetText () const;
 		void SetText (const QString&);
+	private:
+		static QMap<QString, QPair<QVariant, QIcon>> BuildHumanReadableList ();
 	};
 }
 }
