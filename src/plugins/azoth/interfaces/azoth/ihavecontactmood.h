@@ -30,12 +30,15 @@
 #pragma once
 
 #include <QtPlugin>
-#include <interfaces/azoth/moodinfo.h>
+
+class QString;
 
 namespace LeechCraft
 {
 namespace Azoth
 {
+	struct MoodInfo;
+
 	/** @brief Interface for contacts announcing their current mood.
 	 *
 	 * This interface should be implemented by those contact list entries
@@ -50,6 +53,7 @@ namespace Azoth
 	 * @sa ICLEntry
 	 * @sa IHaveContactActivity
 	 * @sa IHaveContactTune
+	 * @sa MoodInfo
 	 */
 	class IHaveContactMood
 	{

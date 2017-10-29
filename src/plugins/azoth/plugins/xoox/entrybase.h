@@ -51,6 +51,7 @@
 #include <interfaces/azoth/ihavecontactmood.h>
 #include <interfaces/azoth/ihavecontactactivity.h>
 #include <interfaces/azoth/ihaveavatars.h>
+#include <interfaces/azoth/moodinfo.h>
 
 class QXmppPresence;
 class QXmppVersionIq;

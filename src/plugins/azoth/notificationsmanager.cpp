@@ -50,6 +50,7 @@
 #include "interfaces/azoth/ihavecontacttune.h"
 #include "interfaces/azoth/ihavecontactmood.h"
 #include "interfaces/azoth/ihavecontactactivity.h"
+#include "interfaces/azoth/moodinfo.h"
 #include "xmlsettingsmanager.h"
 #include "util.h"
 #include "core.h"

@@ -55,6 +55,7 @@
 #include "interfaces/azoth/imucprotocol.h"
 #include "interfaces/azoth/ihavecontactmood.h"
 #include "interfaces/azoth/ihavecontactactivity.h"
+#include "interfaces/azoth/moodinfo.h"
 #include "core.h"
 #include "joinconferencedialog.h"
 #include "bookmarksmanagerdialog.h"
