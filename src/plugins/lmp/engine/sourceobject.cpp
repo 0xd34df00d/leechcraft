@@ -227,11 +227,6 @@ namespace LMP
 			qWarning () << Q_FUNC_INFO
 					<< "setting Error state";
 			break;
-		default:
-			qWarning () << Q_FUNC_INFO
-					<< "erroneous state"
-					<< static_cast<int> (state);
-			break;
 		}
 	}
 
