@@ -48,21 +48,31 @@ namespace Azoth
 	{
 		Ui_.setupUi (this);
 
-		Ui_.Mood_->addItem (tr ("<clear>"));
+		Ui_.Mood_->addTopLevelItem (new QTreeWidgetItem { { tr ("<clear>") } });
 
 		for (const auto& pair : Util::Stlize (BuildHumanReadableList ()))
-			Ui_.Mood_->addItem (pair.second.second, pair.first, pair.second.first);
+		{
+			const auto item = new QTreeWidgetItem { { pair.first } };
+			item->setIcon (0, pair.second.second);
+			item->setData (0, Qt::UserRole, pair.second.first);
+			Ui_.Mood_->addTopLevelItem (item);
+		}
 	}
 
 	QString MoodDialog::GetMood () const
 	{
-		return Ui_.Mood_->itemData (Ui_.Mood_->currentIndex ()).toString ();
+		return Ui_.Mood_->currentIndex ().data (Qt::UserRole).toString ();
 	}
 
 	void MoodDialog::SetMood (const QString& mood)
 	{
-		const int idx = std::max (0, Ui_.Mood_->findData (mood));
-		Ui_.Mood_->setCurrentIndex (idx);
+		const auto& list = BuildHumanReadableList ();
+		const auto pos = std::find_if (list.begin (), list.end (),
+				[&mood] (const auto& pair) { return mood == pair.first; });
+		const auto idx = pos == list.end () ?
+				0 :
+				std::distance (list.begin (), pos) + 1;
+		Ui_.Mood_->setCurrentItem (Ui_.Mood_->topLevelItem (idx));
 	}
 
 	QString MoodDialog::GetText () const
