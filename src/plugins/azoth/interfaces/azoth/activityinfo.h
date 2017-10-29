@@ -29,6 +29,8 @@
 
 #pragma once
 
+#include <QMetaType>
+
 namespace LeechCraft
 {
 namespace Azoth
@@ -88,3 +90,5 @@ namespace Azoth
 	}
 }
 }
+
+Q_DECLARE_METATYPE (LeechCraft::Azoth::ActivityInfo)
