@@ -473,17 +473,17 @@ namespace Xoox
 
 	Media::AudioInfo EntryBase::GetUserTune (const QString& variant) const
 	{
-		return Variant2Audio_ [variant];
+		return Variant2Audio_ [GetVariantOrHighest (variant)];
 	}
 
 	MoodInfo EntryBase::GetUserMood (const QString& variant) const
 	{
-		return Variant2Mood_ [variant];
+		return Variant2Mood_ [GetVariantOrHighest (variant)];
 	}
 
 	ActivityInfo EntryBase::GetUserActivity (const QString& variant) const
 	{
-		return Variant2Activity_ [variant];
+		return Variant2Activity_ [GetVariantOrHighest (variant)];
 	}
 
 	void EntryBase::UpdateEntityTime ()
@@ -1013,6 +1013,13 @@ namespace Xoox
 	{
 		const auto vcardStorage = Account_->GetParentProtocol ()->GetVCardStorage ();
 		vcardStorage->SetVCardPhotoHash (GetHumanReadableID (), VCardPhotoHash_);
+	}
+
+	QString EntryBase::GetVariantOrHighest (const QString& var) const
+	{
+		return var.isEmpty () ?
+				Variants ().value (0) :
+				var;
 	}
 
 	void EntryBase::handleTimeReceived (const QXmppEntityTimeIq& iq)

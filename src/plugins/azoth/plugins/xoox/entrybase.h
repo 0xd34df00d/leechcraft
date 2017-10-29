@@ -232,6 +232,8 @@ namespace Xoox
 		void SetNickFromVCard (const QXmppVCardIq&);
 
 		void WriteDownPhotoHash () const;
+
+		QString GetVariantOrHighest (const QString&) const;
 	private slots:
 		void handleTimeReceived (const QXmppEntityTimeIq&);
 
