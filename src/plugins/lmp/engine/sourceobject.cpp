@@ -223,6 +223,10 @@ namespace LMP
 		case SourceState::Playing:
 			Play ();
 			break;
+		case SourceState::Error:
+			qWarning () << Q_FUNC_INFO
+					<< "setting Error state";
+			break;
 		default:
 			qWarning () << Q_FUNC_INFO
 					<< "erroneous state"
