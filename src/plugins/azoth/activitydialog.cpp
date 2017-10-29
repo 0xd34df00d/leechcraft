@@ -50,118 +50,123 @@ namespace Azoth
 
 	auto ActivityDialog::GetActivityInfos ()
 	{
-		const char *genAct [] =
+		static const auto infos = []
 		{
-			QT_TR_NOOP ("doing_chores"),
-			QT_TR_NOOP ("drinking"),
-			QT_TR_NOOP ("eating"),
-			QT_TR_NOOP ("exercising"),
-			QT_TR_NOOP ("grooming"),
-			QT_TR_NOOP ("having_appointment"),
-			QT_TR_NOOP ("inactive"),
-			QT_TR_NOOP ("relaxing"),
-			QT_TR_NOOP ("talking"),
-			QT_TR_NOOP ("traveling"),
-			QT_TR_NOOP ("working")
-		};
-
-		const char *specAct [] =
-		{
-			QT_TR_NOOP ("buying_groceries"),
-			QT_TR_NOOP ("cleaning"),
-			QT_TR_NOOP ("cooking"),
-			QT_TR_NOOP ("doing_maintenance"),
-			QT_TR_NOOP ("doing_the_dishes"),
-			QT_TR_NOOP ("doing_the_laundry"),
-			QT_TR_NOOP ("gardening"),
-			QT_TR_NOOP ("running_an_errand"),
-			QT_TR_NOOP ("walking_the_dog"),
-			QT_TR_NOOP ("having_a_beer"),
-			QT_TR_NOOP ("having_coffee"),
-			QT_TR_NOOP ("having_tea"),
-			QT_TR_NOOP ("having_a_snack"),
-			QT_TR_NOOP ("having_breakfast"),
-			QT_TR_NOOP ("having_dinner"),
-			QT_TR_NOOP ("having_lunch"),
-			QT_TR_NOOP ("cycling"),
-			QT_TR_NOOP ("dancing"),
-			QT_TR_NOOP ("hiking"),
-			QT_TR_NOOP ("jogging"),
-			QT_TR_NOOP ("playing_sports"),
-			QT_TR_NOOP ("running"),
-			QT_TR_NOOP ("skiing"),
-			QT_TR_NOOP ("swimming"),
-			QT_TR_NOOP ("working_out"),
-			QT_TR_NOOP ("at_the_spa"),
-			QT_TR_NOOP ("brushing_teeth"),
-			QT_TR_NOOP ("getting_a_haircut"),
-			QT_TR_NOOP ("shaving"),
-			QT_TR_NOOP ("taking_a_bath"),
-			QT_TR_NOOP ("taking_a_shower"),
-			QT_TR_NOOP ("day_off"),
-			QT_TR_NOOP ("hanging_out"),
-			QT_TR_NOOP ("hiding"),
-			QT_TR_NOOP ("on_vacation"),
-			QT_TR_NOOP ("praying"),
-			QT_TR_NOOP ("scheduled_holiday"),
-			QT_TR_NOOP ("sleeping"),
-			QT_TR_NOOP ("thinking"),
-			QT_TR_NOOP ("fishing"),
-			QT_TR_NOOP ("gaming"),
-			QT_TR_NOOP ("going_out"),
-			QT_TR_NOOP ("partying"),
-			QT_TR_NOOP ("reading"),
-			QT_TR_NOOP ("rehearsing"),
-			QT_TR_NOOP ("shopping"),
-			QT_TR_NOOP ("smoking"),
-			QT_TR_NOOP ("socializing"),
-			QT_TR_NOOP ("sunbathing"),
-			QT_TR_NOOP ("watching_tv"),
-			QT_TR_NOOP ("watching_a_movie"),
-			QT_TR_NOOP ("in_real_life"),
-			QT_TR_NOOP ("on_the_phone"),
-			QT_TR_NOOP ("on_video_phone"),
-			QT_TR_NOOP ("commuting"),
-			QT_TR_NOOP ("cycling"),
-			QT_TR_NOOP ("driving"),
-			QT_TR_NOOP ("in_a_car"),
-			QT_TR_NOOP ("on_a_bus"),
-			QT_TR_NOOP ("on_a_plane"),
-			QT_TR_NOOP ("on_a_train"),
-			QT_TR_NOOP ("on_a_trip"),
-			QT_TR_NOOP ("walking"),
-			QT_TR_NOOP ("coding"),
-			QT_TR_NOOP ("in_a_meeting"),
-			QT_TR_NOOP ("studying"),
-			QT_TR_NOOP ("writing"),
-			QT_TR_NOOP ("other")
-		};
-
-		auto rl = ResourcesManager::Instance ().GetResourceLoader (ResourcesManager::RLTActivityIconLoader);
-		const auto& theme = XmlSettingsManager::Instance ().property ("ActivityIcons").toString () + '/';
-
-		using SpecificList_t = QMap<QString, WithInfo<Util::Void>>;
-		QMap<QString, WithInfo<SpecificList_t>> infos;
-
-		int sizes [] = { 9, 3, 4, 9, 6, 0, 8, 12, 3, 9, 4 };
-		for (size_t i = 0, pos = 0; pos < sizeof (sizes) / sizeof (sizes [0]); ++pos)
-		{
-			SpecificList_t specifics;
-
-			const auto& iconPrefix = theme + genAct [pos] + '_';
-			for (int j = 0; j < sizes [pos]; ++j, ++i)
+			const char *genAct [] =
 			{
-				QIcon icon { rl->GetIconPath (iconPrefix + specAct [i]) };
-				specifics [tr (specAct [i])] = { icon, specAct [i], {} };
+				QT_TR_NOOP ("doing_chores"),
+				QT_TR_NOOP ("drinking"),
+				QT_TR_NOOP ("eating"),
+				QT_TR_NOOP ("exercising"),
+				QT_TR_NOOP ("grooming"),
+				QT_TR_NOOP ("having_appointment"),
+				QT_TR_NOOP ("inactive"),
+				QT_TR_NOOP ("relaxing"),
+				QT_TR_NOOP ("talking"),
+				QT_TR_NOOP ("traveling"),
+				QT_TR_NOOP ("working")
+			};
+
+			const char *specAct [] =
+			{
+				QT_TR_NOOP ("buying_groceries"),
+				QT_TR_NOOP ("cleaning"),
+				QT_TR_NOOP ("cooking"),
+				QT_TR_NOOP ("doing_maintenance"),
+				QT_TR_NOOP ("doing_the_dishes"),
+				QT_TR_NOOP ("doing_the_laundry"),
+				QT_TR_NOOP ("gardening"),
+				QT_TR_NOOP ("running_an_errand"),
+				QT_TR_NOOP ("walking_the_dog"),
+				QT_TR_NOOP ("having_a_beer"),
+				QT_TR_NOOP ("having_coffee"),
+				QT_TR_NOOP ("having_tea"),
+				QT_TR_NOOP ("having_a_snack"),
+				QT_TR_NOOP ("having_breakfast"),
+				QT_TR_NOOP ("having_dinner"),
+				QT_TR_NOOP ("having_lunch"),
+				QT_TR_NOOP ("cycling"),
+				QT_TR_NOOP ("dancing"),
+				QT_TR_NOOP ("hiking"),
+				QT_TR_NOOP ("jogging"),
+				QT_TR_NOOP ("playing_sports"),
+				QT_TR_NOOP ("running"),
+				QT_TR_NOOP ("skiing"),
+				QT_TR_NOOP ("swimming"),
+				QT_TR_NOOP ("working_out"),
+				QT_TR_NOOP ("at_the_spa"),
+				QT_TR_NOOP ("brushing_teeth"),
+				QT_TR_NOOP ("getting_a_haircut"),
+				QT_TR_NOOP ("shaving"),
+				QT_TR_NOOP ("taking_a_bath"),
+				QT_TR_NOOP ("taking_a_shower"),
+				QT_TR_NOOP ("day_off"),
+				QT_TR_NOOP ("hanging_out"),
+				QT_TR_NOOP ("hiding"),
+				QT_TR_NOOP ("on_vacation"),
+				QT_TR_NOOP ("praying"),
+				QT_TR_NOOP ("scheduled_holiday"),
+				QT_TR_NOOP ("sleeping"),
+				QT_TR_NOOP ("thinking"),
+				QT_TR_NOOP ("fishing"),
+				QT_TR_NOOP ("gaming"),
+				QT_TR_NOOP ("going_out"),
+				QT_TR_NOOP ("partying"),
+				QT_TR_NOOP ("reading"),
+				QT_TR_NOOP ("rehearsing"),
+				QT_TR_NOOP ("shopping"),
+				QT_TR_NOOP ("smoking"),
+				QT_TR_NOOP ("socializing"),
+				QT_TR_NOOP ("sunbathing"),
+				QT_TR_NOOP ("watching_tv"),
+				QT_TR_NOOP ("watching_a_movie"),
+				QT_TR_NOOP ("in_real_life"),
+				QT_TR_NOOP ("on_the_phone"),
+				QT_TR_NOOP ("on_video_phone"),
+				QT_TR_NOOP ("commuting"),
+				QT_TR_NOOP ("cycling"),
+				QT_TR_NOOP ("driving"),
+				QT_TR_NOOP ("in_a_car"),
+				QT_TR_NOOP ("on_a_bus"),
+				QT_TR_NOOP ("on_a_plane"),
+				QT_TR_NOOP ("on_a_train"),
+				QT_TR_NOOP ("on_a_trip"),
+				QT_TR_NOOP ("walking"),
+				QT_TR_NOOP ("coding"),
+				QT_TR_NOOP ("in_a_meeting"),
+				QT_TR_NOOP ("studying"),
+				QT_TR_NOOP ("writing"),
+				QT_TR_NOOP ("other")
+			};
+
+			auto rl = ResourcesManager::Instance ().GetResourceLoader (ResourcesManager::RLTActivityIconLoader);
+			const auto& theme = XmlSettingsManager::Instance ().property ("ActivityIcons").toString () + '/';
+
+			using SpecificList_t = QMap<QString, WithInfo<Util::Void>>;
+			QMap<QString, WithInfo<SpecificList_t>> infos;
+
+			int sizes [] = { 9, 3, 4, 9, 6, 0, 8, 12, 3, 9, 4 };
+			for (size_t i = 0, pos = 0; pos < sizeof (sizes) / sizeof (sizes [0]); ++pos)
+			{
+				SpecificList_t specifics;
+
+				const auto& iconPrefix = theme + genAct [pos] + '_';
+				for (int j = 0; j < sizes [pos]; ++j, ++i)
+				{
+					QIcon icon { rl->GetIconPath (iconPrefix + specAct [i]) };
+					specifics [tr (specAct [i])] = { icon, specAct [i], {} };
+				}
+
+				infos [tr (genAct [pos])] =
+				{
+					QIcon { rl->GetIconPath (theme + genAct [pos]) },
+					genAct [pos],
+					std::move (specifics)
+				};
 			}
 
-			infos [tr (genAct [pos])] =
-			{
-				QIcon { rl->GetIconPath (theme + genAct [pos]) },
-				genAct [pos],
-				std::move (specifics)
-			};
-		}
+			return infos;
+		} ();
 
 		return infos;
 	}
@@ -223,7 +228,7 @@ namespace Azoth
 			return;
 
 		const auto& general = Ui_.General_->currentText ();
-		const auto specifics = GetActivityInfos () [general].Payload_;
+		const auto& specifics = GetActivityInfos () [general].Payload_;
 
 		for (const auto& [name, info] : Util::Stlize (specifics))
 			Ui_.Specific_->addItem (info.Icon_, name, info.RawName_);
