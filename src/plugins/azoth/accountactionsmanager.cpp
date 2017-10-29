@@ -37,6 +37,8 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/ipluginsmanager.h>
+#include <interfaces/azoth/iextselfinfoaccount.h>
+#include <interfaces/azoth/ihavecontactmood.h>
 #include "interfaces/azoth/iaccount.h"
 #include "interfaces/azoth/iaccountactionsprovider.h"
 #include "interfaces/azoth/imucjoinwidget.h"
@@ -536,6 +538,27 @@ namespace Azoth
 			return;
 
 		emit gotMicroblogsTab (new MicroblogsTab (account));
+	}
+
+	namespace
+	{
+		template<typename R, typename C, typename F>
+		void InitSelfDialog (IAccount *acc, R (C::*getter) (const QString&) const, F act)
+		{
+			const auto iesi = qobject_cast<IExtSelfInfoAccount*> (acc->GetQObject ());
+			if (!iesi)
+				return;
+
+			const auto selfObj = iesi->GetSelfContact ();
+			if (!selfObj)
+				return;
+
+			const auto iface = qobject_cast<C*> (selfObj);
+			if (!iface)
+				return;
+
+			act ((iface->*getter) ({}));
+		}
 	}
 
 	void AccountActionsManager::handleAccountSetActivity ()
