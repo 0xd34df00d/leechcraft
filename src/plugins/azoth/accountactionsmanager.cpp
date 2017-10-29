@@ -567,7 +567,7 @@ namespace Azoth
 		if (!account)
 			return;
 
-		QObject *obj = sender ()->property ("Azoth/AccountObject").value<QObject*> ();
+		QObject *obj = account->GetQObject ();
 		ISupportMood *mood = qobject_cast<ISupportMood*> (obj);
 		if (!mood)
 		{
