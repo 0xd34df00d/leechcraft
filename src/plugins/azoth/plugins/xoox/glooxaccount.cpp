@@ -457,13 +457,12 @@ namespace Xoox
 		ClientConnection_->GetPubSubManager ()->PublishEvent (&mood);
 	}
 
-	void GlooxAccount::SetActivity (const QString& general,
-			const QString& specific, const QString& text)
+	void GlooxAccount::SetActivity (const ActivityInfo& info)
 	{
 		UserActivity activity;
-		activity.SetGeneralStr (general);
-		activity.SetSpecificStr (specific);
-		activity.SetText (text);
+		activity.SetGeneralStr (info.General_);
+		activity.SetSpecificStr (info.Specific_);
+		activity.SetText (info.Text_);
 
 		ClientConnection_->GetPubSubManager ()->PublishEvent (&activity);
 	}

@@ -35,6 +35,8 @@ namespace LeechCraft
 {
 namespace Azoth
 {
+	struct ActivityInfo;
+
 	/** @brief Interface for accounts supporting user activity.
 	 *
 	 * This interface can be implemented by account objects to advertise
@@ -44,6 +46,7 @@ namespace Azoth
 	 * User Activities (http://xmpp.org/extensions/xep-0108.html).
 	 *
 	 * @sa IAccount
+	 * @sa ActivityInfo
 	 */
 	class ISupportActivity
 	{
@@ -52,19 +55,9 @@ namespace Azoth
 
 		/** @brief Publishes the current user activity.
 		 *
-		 * The activity information is divided into three pieces:
-		 * general activity (required), specific activity (optional) and
-		 * an optional text.
-		 *
-		 * The possible values of the general and specific fields are
-		 * listed in http://xmpp.org/extensions/xep-0108.html.
-		 *
-		 * @param[in] general The general activity.
-		 * @param[in] specific The specific activity (optional).
-		 * @param[in] text The additional text message (optional).
+		 * @param[in] info The activity description.
 		 */
-		virtual void SetActivity (const QString& general,
-				const QString& specific, const QString& text) = 0;
+		virtual void SetActivity (const ActivityInfo& info) = 0;
 	};
 }
 }

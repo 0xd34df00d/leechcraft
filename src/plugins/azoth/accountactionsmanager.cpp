@@ -588,8 +588,7 @@ namespace Azoth
 		if (dia.exec () != QDialog::Accepted)
 			return;
 
-		const auto& info = dia.GetActivityInfo ();
-		activity->SetActivity (info.General_, info.Specific_, info.Text_);
+		activity->SetActivity (dia.GetActivityInfo ());
 	}
 
 	void AccountActionsManager::handleAccountSetMood ()
