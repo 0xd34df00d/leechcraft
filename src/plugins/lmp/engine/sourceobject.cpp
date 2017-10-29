@@ -219,6 +219,7 @@ namespace LMP
 		case SourceState::Buffering:
 			qWarning () << Q_FUNC_INFO
 					<< "`buffering` is quite a bad state to be in, falling through to Playing";
+			[[fallthrough]];
 		case SourceState::Playing:
 			Play ();
 			break;
