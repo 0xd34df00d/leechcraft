@@ -38,7 +38,6 @@
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/azoth/iextselfinfoaccount.h>
-#include <interfaces/azoth/ihavecontactmood.h>
 #include "interfaces/azoth/iaccount.h"
 #include "interfaces/azoth/iaccountactionsprovider.h"
 #include "interfaces/azoth/imucjoinwidget.h"
@@ -54,6 +53,8 @@
 #include "interfaces/azoth/isupportnonroster.h"
 #include "interfaces/azoth/ihaveserverhistory.h"
 #include "interfaces/azoth/imucprotocol.h"
+#include "interfaces/azoth/ihavecontactmood.h"
+#include "interfaces/azoth/ihavecontactactivity.h"
 #include "core.h"
 #include "joinconferencedialog.h"
 #include "bookmarksmanagerdialog.h"
@@ -578,6 +579,15 @@ namespace Azoth
 		}
 
 		ActivityDialog dia (MW_);
+
+		InitSelfDialog (account, &IHaveContactActivity::GetUserActivity,
+				[&dia] (const ActivityInfo& info)
+				{
+					dia.SetGeneral (info.General_);
+					dia.SetSpecific (info.Specific_);
+					dia.SetGeneral (info.General_);
+				});
+
 		if (dia.exec () != QDialog::Accepted)
 			return;
 
@@ -601,6 +611,14 @@ namespace Azoth
 		}
 
 		MoodDialog dia (MW_);
+
+		InitSelfDialog (account, &IHaveContactMood::GetUserMood,
+				[&dia] (const MoodInfo& info)
+				{
+					dia.SetMood (info.Mood_);
+					dia.SetText (info.Text_);
+				});
+
 		if (dia.exec () != QDialog::Accepted)
 			return;
 
