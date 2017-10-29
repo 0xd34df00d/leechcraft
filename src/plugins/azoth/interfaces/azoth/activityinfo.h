@@ -29,64 +29,62 @@
 
 #pragma once
 
-#include <QtPlugin>
-
 namespace LeechCraft
 {
 namespace Azoth
 {
-	struct ActivityInfo;
-
-	/** @brief Interface for contacts announcing their current activity.
+	/** @brief Describes contact activity information.
 	 *
-	 * This interface should be implemented by those contact list entries
-	 * (ICLEntry objects) that support providing information about their
-	 * current activity.
-	 *
-	 * Different variants of an entry (as per ICLEntry::Variants()) can
-	 * have different activities, so exact variant is specified both when
-	 * announcing the activity change via the activityChanged() signal
-	 * and when retrieving the activity via the GetUserActivity()
-	 * function.
-	 *
-	 * @sa ICLEntry
-	 * @sa IHaveContactMood
-	 * @sa IHaveContactTune
-	 * @sa ActivityInfo
+	 * It is modeled after XMPP XEP-0108, so please refer to
+	 * http://xmpp.org/extensions/xep-0108.html for more information.
 	 */
-	class IHaveContactActivity
+	struct ActivityInfo
 	{
-	public:
-		virtual ~IHaveContactActivity () {}
+		/** @brief General activity name as per XEP-0108.
+		 *
+		 * If this field is empty, the entry is considered to have stopped
+		 * publishing activity information.
+		 */
+		QString General_;
 
-		/** @brief Returns the user activity at the given \em variant.
-		 *
-		 * If the contact does not announce any activity on this
-		 * \em variant, an empty ActivityInfo structure is returned, that
-		 * is, with empty ActivityInfo::General_ field.
-		 *
-		 * @param[in] variant The variant to query
-		 * @return The information about the activity of the given
-		 * \em variant.
+		/** @brief Specific activity name within the General_ one.
 		 */
-		virtual ActivityInfo GetUserActivity (const QString& variant) const = 0;
-	protected:
-		/** @brief Notifies that entry's user activity has changed.
-		 *
-		 * The actual activity is obtained via the GetUserActivity()
-		 * method
-		 *
-		 * @note This function is expected to be a signal.
-		 *
-		 * @param[out] variant Variant of the entry whose activity has
-		 * changed.
+		QString Specific_;
+
+		/** @brief Optional contact-set text accompanying the activity.
 		 */
-		virtual void activityChanged (const QString& variant) = 0;
+		QString Text_;
 	};
+
+	/** @brief Checks whether the activity info structures are equal.
+	 *
+	 * Returns true if \em i1 is equal to \em i2, containing the same
+	 * values for all the fields, otherwise returns false.
+	 *
+	 * @param[in] i1 The first activity info structure.
+	 * @param[in] i2 The second activity info structure.
+	 * @return Whether \em i1 and \em i2 are equal.
+	 */
+	inline bool operator== (const ActivityInfo& i1, const ActivityInfo& i2)
+	{
+		return i1.General_ == i2.General_ &&
+			   i1.Specific_ == i2.Specific_ &&
+			   i1.Text_ == i2.Text_;
+	}
+
+	/** @brief Checks whether the activity info structures are not equal.
+	 *
+	 * Returns true if \em i1 is not equal to \em i2, that is, if at
+	 * least one field of \em i1 is not equal to the corresponding one of
+	 * \em i2. Otherwise returns false.
+	 *
+	 * @param[in] i1 The first activity info structure.
+	 * @param[in] i2 The second activity info structure.
+	 * @return Whether \em i1 and \em i2 are not equal.
+	 */
+	inline bool operator!= (const ActivityInfo& i1, const ActivityInfo& i2)
+	{
+		return !(i1 == i2);
+	}
 }
 }
-
-Q_DECLARE_INTERFACE (LeechCraft::Azoth::IHaveContactActivity,
-		"org.LeechCraft.Azoth.IHaveContactActivity/1.0")
-
-

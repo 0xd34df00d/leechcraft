@@ -47,6 +47,7 @@
 #include "interfaces/azoth/ihavecontactmood.h"
 #include "interfaces/azoth/ihavecontactactivity.h"
 #include "interfaces/azoth/moodinfo.h"
+#include "interfaces/azoth/activityinfo.h"
 #include "core.h"
 #include "activitydialog.h"
 #include "mooddialog.h"
