@@ -29,58 +29,59 @@
 
 #pragma once
 
-#include <QtPlugin>
-#include <interfaces/azoth/moodinfo.h>
+#include <QString>
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-	/** @brief Interface for contacts announcing their current mood.
+	/** @brief Describes contact mood information.
 	 *
-	 * This interface should be implemented by those contact list entries
-	 * (ICLEntry objects) that support providing information about their
-	 * current mood.
-	 *
-	 * Different variants of an entry (as per ICLEntry::Variants()) can
-	 * have different moods, so exact variant is specified both when
-	 * announcing the mood change via the moodChanged() signal and when
-	 * retrieving the mood via the GetUserMood() function.
-	 *
-	 * @sa ICLEntry
-	 * @sa IHaveContactActivity
-	 * @sa IHaveContactTune
+	 * It is modeled after XMPP XEP-0107, so please refer to
+	 * http://xmpp.org/extensions/xep-0107.html for more information.
 	 */
-	class IHaveContactMood
+	struct MoodInfo
 	{
-	public:
-		virtual ~IHaveContactMood () {}
+		/** @brief Mood name as per XEP-0107.
+		 *
+		 * If this field is empty, the entry is considered to have stopped
+		 * publishing mood information.
+		 */
+		QString Mood_;
 
-		/** @brief Returns the user mood for the given \em variant.
-		 *
-		 * If the contact does not announce any mood on this \em variant,
-		 * an empty MoodInfo structure is returned, that is, with empty
-		 * MoodInfo::General_ field.
-		 *
-		 * @param[in] variant The variant to query
-		 * @return The information about the mood of the given
-		 * \em variant.
+		/** @brief Optional contact-set text accompanying the mood.
 		 */
-		virtual MoodInfo GetUserMood (const QString& variant) const = 0;
-	protected:
-		/** @brief Notifies that entry's user mood has changed.
-		 *
-		 * The actual mood is obtained via the GetUserMood() method.
-		 *
-		 * @note This function is expected to be a signal.
-		 *
-		 * @param[out] variant Variant of the entry whose mood has
-		 * changed.
-		 */
-		virtual void moodChanged (const QString& variant) = 0;
+		QString Text_;
 	};
-}
-}
 
-Q_DECLARE_INTERFACE (LeechCraft::Azoth::IHaveContactMood,
-		"org.LeechCraft.Azoth.IHaveContactMood/1.0")
+	/** @brief Checks whether the mood info structures are equal.
+	 *
+	 * Returns true if \em i1 is equal to \em i2, containing the same
+	 * values for all the fields, otherwise returns false.
+	 *
+	 * @param[in] i1 The first mood info structure.
+	 * @param[in] i2 The second mood info structure.
+	 * @return Whether \em i1 and \em i2 are equal.
+	 */
+	inline bool operator== (const MoodInfo& i1, const MoodInfo& i2)
+	{
+		return i1.Mood_ == i2.Mood_ &&
+			   i1.Text_ == i2.Text_;
+	}
+
+	/** @brief Checks whether the mood info structures are not equal.
+	 *
+	 * Returns true if \em i1 is not equal to \em i2, that is, if at
+	 * least one field of \em i1 is not equal to the corresponding one of
+	 * \em i2. Otherwise returns false.
+	 *
+	 * @param[in] i1 The first mood info structure.
+	 * @param[in] i2 The second mood info structure.
+	 * @return Whether \em i1 and \em i2 are not equal.
+	 */
+	inline bool operator!= (const MoodInfo& i1, const MoodInfo& i2)
+	{
+		return !(i1 == i2);
+	}
+}
+}
