@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_ACTIVITYDIALOG_H
-#define PLUGINS_AZOTH_ACTIVITYDIALOG_H
+#pragma once
+
 #include <QDialog>
 #include "ui_activitydialog.h"
 
@@ -45,7 +45,7 @@ namespace Azoth
 	public:
 		static QString ToHumanReadable (const QString&);
 
-		ActivityDialog (QWidget* = 0);
+		ActivityDialog (QWidget* = nullptr);
 		
 		QString GetGeneral () const;
 		void SetGeneral (const QString&);
@@ -60,5 +60,3 @@ namespace Azoth
 	};
 }
 }
-
-#endif
