@@ -100,8 +100,7 @@ namespace Xoox
 
 	QStringList PubSubManager::discoveryFeatures () const
 	{
-		QStringList result;
-		result << NsPubSub;
+		QStringList result { NsPubSub };
 		std::copy (Node2Creator_.keyBegin (), Node2Creator_.keyEnd (), std::back_inserter (result));
 		std::copy (AutosubscribeNodes_.begin (), AutosubscribeNodes_.end (), std::back_inserter (result));
 		return result;
