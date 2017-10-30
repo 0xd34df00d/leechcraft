@@ -348,15 +348,6 @@ namespace oral
 
 	namespace detail
 	{
-		struct Types
-		{
-			template<typename T>
-			QStringList operator() (const QStringList& init, const T&) const
-			{
-				return init + QStringList { Type2Name<T> () () };
-			}
-		};
-
 		struct Inserter
 		{
 			/** Whether the PKey values should be bound.
@@ -1344,7 +1335,8 @@ namespace oral
 		template<typename T>
 		QString AdaptCreateTable (const CachedFieldsData& data)
 		{
-			const QList<QString> types = boost::fusion::fold (T {}, QStringList {}, Types {});
+			const QList<QString> types = boost::fusion::fold (T {}, QStringList {},
+					[] (auto init, auto t) { return init << Type2Name<decltype (t)> () (); });
 
 			const auto& constraints = GetConstraintsStringList<ConstraintsType<T>> {} (data);
 			const auto& constraintsStr = constraints.isEmpty () ?
