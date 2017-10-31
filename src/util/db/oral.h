@@ -764,12 +764,6 @@ namespace oral
 		template<ExprType Type>
 		struct IsCompatible<Type, ExprType::LeafData> : std::true_type {};
 
-		template<typename T>
-		constexpr T Ctfy (T t)
-		{
-			return t;
-		}
-
 		template<ExprType T1, ExprType T2>
 		constexpr bool CheckCompatible ()
 		{
