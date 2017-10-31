@@ -34,3 +34,9 @@ set_property (TARGET leechcraft-util-db${LC_LIBSUFFIX} PROPERTY SOVERSION ${LC_S
 install (TARGETS leechcraft-util-db${LC_LIBSUFFIX} DESTINATION ${LIBDIR})
 
 FindQtLibs (leechcraft-util-db${LC_LIBSUFFIX} Concurrent Sql Widgets)
+
+if (ENABLE_UTIL_TESTS)
+	include_directories (${CMAKE_CURRENT_BINARY_DIR}/tests ${CMAKE_CURRENT_SOURCE_DIR})
+
+	AddUtilTest (db_oral tests/oraltest.cpp UtilDbOralTest leechcraft-util-db${LC_LIBSUFFIX})
+endif ()
