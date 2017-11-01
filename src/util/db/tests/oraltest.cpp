@@ -111,11 +111,18 @@ struct AutogenPKeyRecord
 	{
 		return str.left (str.size () - 1);
 	}
+
+	auto AsTuple () const
+	{
+		return std::tie (ID_, Value_);
+	}
 };
 
 BOOST_FUSION_ADAPT_STRUCT (AutogenPKeyRecord,
 		ID_,
 		Value_)
+
+TOSTRING (AutogenPKeyRecord)
 
 namespace LeechCraft
 {
