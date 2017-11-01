@@ -493,27 +493,23 @@ namespace oral
 			{
 			}
 		public:
-			template<bool Autogen = HasAutogenPKey<Seq> ()>
-			AdaptInsert (CachedFieldsData data, std::enable_if_t<Autogen>* = nullptr)
+			AdaptInsert (CachedFieldsData data)
 			: AdaptInsert
 			{
 				{
 					[data] () mutable
 					{
-						constexpr auto index = FindPKey<Seq>::result_type::value;
-						data.Fields_.removeAt (index);
-						data.BoundFields_.removeAt (index);
+						if constexpr (HasAutogenPKey<Seq> ())
+						{
+							constexpr auto index = FindPKey<Seq>::result_type::value;
+							data.Fields_.removeAt (index);
+							data.BoundFields_.removeAt (index);
+						}
 						return data;
 					} ()
 				},
 				PrivateTag {}
 			}
-			{
-			}
-
-			template<bool Autogen = HasAutogenPKey<Seq> ()>
-			AdaptInsert (const CachedFieldsData& data, std::enable_if_t<!Autogen>* = nullptr)
-			: AdaptInsert { data, PrivateTag {} }
 			{
 			}
 
