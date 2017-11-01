@@ -42,6 +42,34 @@ auto operator== (const T& left, const T& right)
 	return left.AsTuple () == right.AsTuple ();
 }
 
+namespace LeechCraft::Util::oral
+{
+	template<typename T, typename... Args>
+	char* toString (const PKey<T, Args...>& pkey)
+	{
+		return QTest::toString (pkey.Val_);
+	}
+}
+
+#define TOSTRING(n) char* toString (const n& rec) { return toString (#n, rec); }
+
+template<typename T, typename TupleType = decltype (T {}.AsTuple ())>
+char* toString (const char *name, const T& t)
+{
+	using QTest::toString;
+
+	QByteArray ba { name };
+	ba.append (" { ");
+
+	std::apply ([&ba] (const auto&... args) { (ba.append (toString (args)).append (", "), ...); }, t.AsTuple ());
+
+	if (std::tuple_size<TupleType>::value >= 1)
+		ba.chop (2);
+	ba.append (" }");
+
+	return qstrdup (ba.data ());
+}
+
 struct SimpleRecord
 {
 	lco::PKey<int, lco::NoAutogen> ID_;
@@ -66,6 +94,8 @@ struct SimpleRecord
 BOOST_FUSION_ADAPT_STRUCT (SimpleRecord,
 		ID_,
 		Value_)
+
+TOSTRING (SimpleRecord)
 
 namespace LeechCraft
 {
