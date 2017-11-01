@@ -42,6 +42,11 @@ namespace Util
 		void testSimpleRecordInsertSelect ();
 		void testSimpleRecordInsertReplaceSelect ();
 		void testSimpleRecordInsertIgnoreSelect ();
+
+		void testSimpleRecordInsertSelectByFields ();
+		void testSimpleRecordInsertSelectByFields2 ();
+		void testSimpleRecordInsertSelectByFields3 ();
+		void testSimpleRecordInsertSelectOneByFields ();
 	};
 }
 }

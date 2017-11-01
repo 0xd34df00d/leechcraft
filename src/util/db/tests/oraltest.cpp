@@ -77,6 +77,8 @@ namespace Util
 		}
 	}
 
+	namespace sph = oral::sph;
+
 	void OralTest::testSimpleRecordInsertSelect ()
 	{
 		auto db = MakeDatabase ();
@@ -114,6 +116,58 @@ namespace Util
 
 		const auto& list = adapted->DoSelectAll_ ();
 		QCOMPARE (list, (QList<SimpleRecord> { { 0, "0" } }));
+	}
+
+	void OralTest::testSimpleRecordInsertSelectByFields ()
+	{
+		auto db = MakeDatabase ();
+
+		auto adapted = Util::oral::AdaptPtr<SimpleRecord> (db);
+
+		for (int i = 0; i < 3; ++i)
+			adapted->DoInsert_ ({ i, QString::number (i) });
+
+		const auto& list = adapted->DoSelectByFields_ (sph::_0 == 1);
+		QCOMPARE (list, (QList<SimpleRecord> { { 1, "1" } }));
+	}
+
+	void OralTest::testSimpleRecordInsertSelectByFields2 ()
+	{
+		auto db = MakeDatabase ();
+
+		auto adapted = Util::oral::AdaptPtr<SimpleRecord> (db);
+
+		for (int i = 0; i < 3; ++i)
+			adapted->DoInsert_ ({ i, QString::number (i) });
+
+		const auto& list = adapted->DoSelectByFields_ (sph::_0 < 2);
+		QCOMPARE (list, (QList<SimpleRecord> { { 0, "0" }, { 1, "1" } }));
+	}
+
+	void OralTest::testSimpleRecordInsertSelectByFields3 ()
+	{
+		auto db = MakeDatabase ();
+
+		auto adapted = Util::oral::AdaptPtr<SimpleRecord> (db);
+
+		for (int i = 0; i < 3; ++i)
+			adapted->DoInsert_ ({ i, QString::number (i) });
+
+		const auto& list = adapted->DoSelectByFields_ (sph::_0 < 2 && sph::_1 == QString { "1" });
+		QCOMPARE (list, (QList<SimpleRecord> { { 1, "1" } }));
+	}
+
+	void OralTest::testSimpleRecordInsertSelectOneByFields ()
+	{
+		auto db = MakeDatabase ();
+
+		auto adapted = Util::oral::AdaptPtr<SimpleRecord> (db);
+
+		for (int i = 0; i < 3; ++i)
+			adapted->DoInsert_ ({ i, QString::number (i) });
+
+		const auto& single = adapted->DoSelectOneByFields_ (sph::_0 == 1);
+		QCOMPARE (single, (boost::optional<SimpleRecord> { { 1, "1" } }));
 	}
 }
 }
