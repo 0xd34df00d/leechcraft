@@ -209,5 +209,12 @@ namespace Util
 		const auto& single = adapted->DoSelectOneByFields_ (sph::_0 == 1);
 		QCOMPARE (single, (boost::optional<SimpleRecord> { { 1, "1" } }));
 	}
+
+	void OralTest::testAutoPKeyRecordInsertSelect ()
+	{
+		auto adapted = PrepareRecords<AutogenPKeyRecord> (MakeDatabase ());
+		const auto& list = adapted->DoSelectAll_ ();
+		QCOMPARE (list, (QList<AutogenPKeyRecord> { { 1, "0" }, { 2, "1" }, { 3, "2" } }));
+	}
 }
 }

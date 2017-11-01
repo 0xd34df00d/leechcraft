@@ -47,6 +47,8 @@ namespace Util
 		void testSimpleRecordInsertSelectByFields2 ();
 		void testSimpleRecordInsertSelectByFields3 ();
 		void testSimpleRecordInsertSelectOneByFields ();
+
+		void testAutoPKeyRecordInsertSelect ();
 	};
 }
 }
