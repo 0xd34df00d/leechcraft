@@ -28,12 +28,19 @@
  **********************************************************************/
 
 #include "oraltest.h"
+#include <tuple>
 #include <QtTest>
 #include <oral.h>
 
 QTEST_MAIN (LeechCraft::Util::OralTest)
 
 namespace lco = LeechCraft::Util::oral;
+
+template<typename T, typename = decltype (T {}.AsTuple ())>
+auto operator== (const T& left, const T& right)
+{
+	return left.AsTuple () == right.AsTuple ();
+}
 
 struct SimpleRecord
 {
@@ -50,10 +57,9 @@ struct SimpleRecord
 		return str.left (str.size () - 1);
 	}
 
-	friend bool operator== (const SimpleRecord& left, const SimpleRecord& right)
+	auto AsTuple () const
 	{
-		return left.ID_ == right.ID_ &&
-				left.Value_ == right.Value_;
+		return std::tie (ID_, Value_);
 	}
 };
 
