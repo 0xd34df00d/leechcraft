@@ -97,6 +97,26 @@ BOOST_FUSION_ADAPT_STRUCT (SimpleRecord,
 
 TOSTRING (SimpleRecord)
 
+struct AutogenPKeyRecord
+{
+	lco::PKey<int> ID_;
+	QString Value_;
+
+	static QString ClassName ()
+	{
+		return "AutogenPKeyRecord";
+	}
+
+	static QString FieldNameMorpher (const QString& str)
+	{
+		return str.left (str.size () - 1);
+	}
+};
+
+BOOST_FUSION_ADAPT_STRUCT (AutogenPKeyRecord,
+		ID_,
+		Value_)
+
 namespace LeechCraft
 {
 namespace Util
