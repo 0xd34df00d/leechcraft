@@ -394,7 +394,7 @@ namespace oral
 		{
 			return [data, insertQuery, bindPrimaryKey] (const T& t)
 			{
-				boost::fusion::fold<T, QStringList, Inserter> (t, data.BoundFields_, Inserter { bindPrimaryKey, insertQuery });
+				boost::fusion::fold (t, data.BoundFields_, Inserter { bindPrimaryKey, insertQuery });
 				if (!insertQuery->exec ())
 				{
 					DBLock::DumpError (*insertQuery);
