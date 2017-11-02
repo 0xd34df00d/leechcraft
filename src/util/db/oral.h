@@ -52,6 +52,7 @@
 #include <QtDebug>
 #include <util/sll/qtutil.h>
 #include <util/sll/prelude.h>
+#include <util/sll/typegetter.h>
 #include <util/sll/unreachable.h>
 #include <util/db/dblock.h>
 #include <util/db/util.h>
@@ -92,22 +93,16 @@ namespace oral
 
 	namespace detail
 	{
-		template<typename T>
-		QString MorphFieldNameImpl (const QString& str, int, decltype (&T::FieldNameMorpher)* = nullptr)
-		{
-			return T::FieldNameMorpher (str);
-		}
-
-		template<typename T>
-		QString MorphFieldNameImpl (const QString& str, float)
-		{
-			return str;
-		}
+		template<typename U>
+		using MorpherDetector = decltype (std::declval<U> ().FieldNameMorpher (QString {}));
 
 		template<typename T>
 		QString MorphFieldName (const QString& str)
 		{
-			return MorphFieldNameImpl<T> (str, 0);
+			if constexpr (IsDetected_v<MorpherDetector, T>)
+				return T::FieldNameMorpher (str);
+			else
+				return str;
 		}
 
 		template<typename Seq, int Idx>
