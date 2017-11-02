@@ -47,6 +47,8 @@ namespace Util
 		void testRetTypeVoid ();
 		void testRetTypeRef ();
 		void testRetTypeConstRef ();
+
+		void testDetectMember ();
 	};
 }
 }
