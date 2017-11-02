@@ -376,14 +376,15 @@ namespace oral
 		{
 			return [data, insertQuery, bindPrimaryKey] (const T& t)
 			{
-				boost::fusion::fold (t, data.BoundFields_,
-						[&] (QStringList bounds, const auto& elem)
+				boost::fusion::fold (t, data.BoundFields_.begin (),
+						[&] (auto pos, const auto& elem)
 						{
 							using Elem = std::decay_t<decltype (elem)>;
 							if (bindPrimaryKey || !IsPKey<Elem>::value)
-								insertQuery->bindValue (bounds.takeFirst (), ToVariant<Elem> {} (elem));
-							return bounds;
+								insertQuery->bindValue (*pos++, ToVariant<Elem> {} (elem));
+							return pos;
 						});
+
 				if (!insertQuery->exec ())
 				{
 					DBLock::DumpError (*insertQuery);
