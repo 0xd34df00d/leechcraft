@@ -482,13 +482,15 @@ namespace oral
 		{
 			const CachedFieldsData Data_;
 			const QString InsertSuffix_;
+
+			constexpr static bool HasAutogen_ = HasAutogenPKey<Seq> ();
 		public:
 			AdaptInsert (CachedFieldsData data)
 			: Data_
 			{
 				[data] () mutable
 				{
-					if constexpr (HasAutogenPKey<Seq> ())
+					if constexpr (HasAutogen_)
 					{
 						constexpr auto index = FindPKey<Seq>::result_type::value;
 						data.Fields_.removeAt (index);
