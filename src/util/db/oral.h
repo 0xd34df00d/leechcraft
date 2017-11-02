@@ -482,34 +482,24 @@ namespace oral
 		{
 			const CachedFieldsData Data_;
 			const QString InsertSuffix_;
-
-			struct PrivateTag {};
-
-			AdaptInsert (const CachedFieldsData& data, const PrivateTag&)
-			: Data_ (data)
-			, InsertSuffix_ (" INTO " + data.Table_ +
-					" (" + QStringList { data.Fields_ }.join (", ") + ") VALUES (" +
-					QStringList { data.BoundFields_ }.join (", ") + ");")
-			{
-			}
 		public:
 			AdaptInsert (CachedFieldsData data)
-			: AdaptInsert
+			: Data_
 			{
+				[data] () mutable
 				{
-					[data] () mutable
+					if constexpr (HasAutogenPKey<Seq> ())
 					{
-						if constexpr (HasAutogenPKey<Seq> ())
-						{
-							constexpr auto index = FindPKey<Seq>::result_type::value;
-							data.Fields_.removeAt (index);
-							data.BoundFields_.removeAt (index);
-						}
-						return data;
-					} ()
-				},
-				PrivateTag {}
+						constexpr auto index = FindPKey<Seq>::result_type::value;
+						data.Fields_.removeAt (index);
+						data.BoundFields_.removeAt (index);
+					}
+					return data;
+				} ()
 			}
+			, InsertSuffix_ { " INTO " + Data_.Table_ +
+					" (" + QStringList { Data_.Fields_ }.join (", ") + ") VALUES (" +
+					QStringList { Data_.BoundFields_ }.join (", ") + ");" }
 			{
 			}
 
