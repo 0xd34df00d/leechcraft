@@ -75,5 +75,17 @@ namespace Util
 			void,
 			detail::RetTypeRaw_t<F>
 		>;
+
+	namespace detail
+	{
+		template<typename Placeholder, template<typename...> class Op, typename... Args>
+		struct IsDetected : std::false_type {};
+
+		template<template<typename...> class Op, typename... Args>
+		struct IsDetected<std::void_t<Op<Args...>>, Op, Args...> : std::true_type {};
+	}
+
+	template<template<typename...> class Op, typename... Args>
+	constexpr bool IsDetected_v = detail::IsDetected<void, Op, Args...>::value;
 }
 }
