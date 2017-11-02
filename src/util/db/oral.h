@@ -541,33 +541,30 @@ namespace oral
 		{
 			std::function<void (Seq)> Updater_;
 		public:
-			template<bool B = HasPKey>
-			AdaptUpdate (const CachedFieldsData& data, std::enable_if_t<B>* = nullptr)
+			AdaptUpdate (const CachedFieldsData& data)
 			{
-				const auto index = FindPKey<Seq>::result_type::value;
+				if constexpr (HasPKey)
+				{
+					const auto index = FindPKey<Seq>::result_type::value;
 
-				auto removedFields = data.Fields_;
-				auto removedBoundFields = data.BoundFields_;
+					auto removedFields = data.Fields_;
+					auto removedBoundFields = data.BoundFields_;
 
-				const auto& fieldName = removedFields.takeAt (index);
-				const auto& boundName = removedBoundFields.takeAt (index);
+					const auto& fieldName = removedFields.takeAt (index);
+					const auto& boundName = removedBoundFields.takeAt (index);
 
-				const auto& statements = Util::ZipWith (removedFields, removedBoundFields,
-						[] (const QString& s1, const QString& s2) -> QString
-							{ return s1 + " = " + s2; });
+					const auto& statements = Util::ZipWith (removedFields, removedBoundFields,
+							[] (const QString& s1, const QString& s2) -> QString
+								{ return s1 + " = " + s2; });
 
-				const auto& update = "UPDATE " + data.Table_ +
-						" SET " + QStringList { statements }.join (", ") +
-						" WHERE " + fieldName + " = " + boundName + ";";
+					const auto& update = "UPDATE " + data.Table_ +
+							" SET " + QStringList { statements }.join (", ") +
+							" WHERE " + fieldName + " = " + boundName + ";";
 
-				const auto updateQuery = std::make_shared<QSqlQuery> (data.DB_);
-				updateQuery->prepare (update);
-				Updater_ = MakeInserter<Seq> (data, updateQuery, true);
-			}
-
-			template<bool B = HasPKey>
-			AdaptUpdate (const CachedFieldsData&, std::enable_if_t<!B>* = nullptr)
-			{
+					const auto updateQuery = std::make_shared<QSqlQuery> (data.DB_);
+					updateQuery->prepare (update);
+					Updater_ = MakeInserter<Seq> (data, updateQuery, true);
+				}
 			}
 
 			template<bool B = HasPKey>
