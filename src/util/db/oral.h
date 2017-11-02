@@ -505,35 +505,34 @@ namespace oral
 			{
 			}
 
-			template<bool Autogen = HasAutogenPKey<Seq> ()>
-			std::enable_if_t<Autogen> operator() (Seq& t, InsertAction action = InsertAction::Default) const
+			auto operator() (Seq& t, InsertAction action = InsertAction::Default) const
 			{
-				auto query = std::make_shared<QSqlQuery> (Data_.DB_);
-				query->prepare (GetInsertPrefix (action) + InsertSuffix_);
-				MakeInserter<Seq> (Data_, query, false) (t);
-
-				constexpr auto index = FindPKey<Seq>::result_type::value;
-				boost::fusion::at_c<index> (t) = FromVariant<ValueAtC_t<Seq, index>> {} (query->lastInsertId ());
+				return Run<true> (t, action);
 			}
 
-			template<typename SeqPrime = Seq, bool Autogen = HasAutogenPKey<SeqPrime> ()>
-			std::enable_if_t<Autogen, ValueAtC_t<SeqPrime, FindPKey<SeqPrime>::result_type::value>>
-				operator() (const Seq& t, InsertAction action = InsertAction::Default) const
+			auto operator() (const Seq& t, InsertAction action = InsertAction::Default) const
 			{
-				auto query = std::make_shared<QSqlQuery> (Data_.DB_);
-				query->prepare (GetInsertPrefix (action) + InsertSuffix_);
-				MakeInserter<Seq> (Data_, query, false) (t);
-
-				constexpr auto index = FindPKey<Seq>::result_type::value;
-				return FromVariant<ValueAtC_t<Seq, index>> {} (query->lastInsertId ());
+				return Run<false> (t, action);
 			}
-
-			template<bool Autogen = HasAutogenPKey<Seq> ()>
-			std::enable_if_t<!Autogen> operator() (const Seq& t, InsertAction action = InsertAction::Default) const
+		private:
+			template<bool UpdatePKey, typename Val>
+			auto Run (Val&& t, InsertAction action) const
 			{
 				auto query = std::make_shared<QSqlQuery> (Data_.DB_);
 				query->prepare (GetInsertPrefix (action) + InsertSuffix_);
-				MakeInserter<Seq> (Data_, query, true) (t);
+
+				MakeInserter<Seq> (Data_, query, !HasAutogen_) (t);
+
+				if constexpr (HasAutogen_)
+				{
+					constexpr auto index = FindPKey<Seq>::result_type::value;
+
+					const auto& lastId = FromVariant<ValueAtC_t<Seq, index>> {} (query->lastInsertId ());
+					if constexpr (UpdatePKey)
+						boost::fusion::at_c<index> (t) = lastId;
+					else
+						return lastId;
+				}
 			}
 		};
 
