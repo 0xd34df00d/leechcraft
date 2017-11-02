@@ -256,5 +256,37 @@ namespace Util
 
 		QCOMPARE (records, (QList<AutogenPKeyRecord> { { 1, "0" }, { 2, "1" }, { 3, "2" } }));
 	}
+
+	void OralTest::benchSimpleRecordAdapt ()
+	{
+		auto db = MakeDatabase ();
+		Util::oral::Adapt<SimpleRecord> (db);
+
+		QBENCHMARK { Util::oral::Adapt<SimpleRecord> (db); }
+	}
+
+	void OralTest::benchBaselineInsert ()
+	{
+		auto db = MakeDatabase ();
+		Util::oral::Adapt<SimpleRecord> (db);
+
+		QSqlQuery query { db };
+		query.prepare ("INSERT OR IGNORE INTO SimpleRecord (ID, Value) VALUES (:id, :val);");
+
+		QBENCHMARK
+		{
+			query.bindValue (":id", 0);
+			query.bindValue (":val", "0");
+			query.exec ();
+		}
+	}
+
+	void OralTest::benchSimpleRecordInsert ()
+	{
+		auto db = MakeDatabase ();
+		const auto& adapted = Util::oral::Adapt<SimpleRecord> (db);
+
+		QBENCHMARK { adapted.DoInsert_ ({ 0, "0" }, lco::InsertAction::Ignore); }
+	}
 }
 }
