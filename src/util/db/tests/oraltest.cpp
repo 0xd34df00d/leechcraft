@@ -216,5 +216,45 @@ namespace Util
 		const auto& list = adapted->DoSelectAll_ ();
 		QCOMPARE (list, (QList<AutogenPKeyRecord> { { 1, "0" }, { 2, "1" }, { 3, "2" } }));
 	}
+
+	void OralTest::testAutoPKeyRecordInsertRvalueReturnsPKey ()
+	{
+		auto adapted = Util::oral::AdaptPtr<AutogenPKeyRecord> (MakeDatabase ());
+
+		QList<int> ids;
+		for (int i = 0; i < 3; ++i)
+			ids << adapted->DoInsert_ ({ 0, QString::number (i) });
+
+		QCOMPARE (ids, (QList<int> { 1, 2, 3 }));
+	}
+
+	void OralTest::testAutoPKeyRecordInsertConstLvalueReturnsPKey ()
+	{
+		auto adapted = Util::oral::AdaptPtr<AutogenPKeyRecord> (MakeDatabase ());
+
+		QList<AutogenPKeyRecord> records;
+		for (int i = 0; i < 3; ++i)
+			records.push_back ({ 0, QString::number (i) });
+
+		QList<int> ids;
+		for (const auto& record : records)
+			ids << adapted->DoInsert_ (record);
+
+		QCOMPARE (ids, (QList<int> { 1, 2, 3 }));
+	}
+
+	void OralTest::testAutoPKeyRecordInsertSetsPKey ()
+	{
+		auto adapted = Util::oral::AdaptPtr<AutogenPKeyRecord> (MakeDatabase ());
+
+		QList<AutogenPKeyRecord> records;
+		for (int i = 0; i < 3; ++i)
+			records.push_back ({ 0, QString::number (i) });
+
+		for (auto& record : records)
+			adapted->DoInsert_ (record);
+
+		QCOMPARE (records, (QList<AutogenPKeyRecord> { { 1, "0" }, { 2, "1" }, { 3, "2" } }));
+	}
 }
 }
