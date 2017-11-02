@@ -110,32 +110,23 @@ namespace oral
 		{
 			static QString value ()
 			{
-				const QString rawName { boost::fusion::extension::struct_member_name<Seq, Idx>::call () };
-				return MorphFieldName<Seq> (rawName);
-			}
-		};
-
-		template<typename S, typename N>
-		struct GetFieldsNames_
-		{
-			QStringList operator() () const
-			{
-				return QStringList { GetFieldName<S, N::value>::value () } + GetFieldsNames_<S, typename boost::mpl::next<N>::type> {} ();
+				return MorphFieldName<Seq> (boost::fusion::extension::struct_member_name<Seq, Idx>::call ());
 			}
 		};
 
 		template<typename S>
-		struct GetFieldsNames_<S, typename boost::fusion::result_of::size<S>::type>
+		struct GetFieldsNames
 		{
 			QStringList operator() () const
 			{
-				return {};
+				return Run (std::make_index_sequence<boost::fusion::result_of::size<S>::type::value> {});
 			}
-		};
-
-		template<typename S>
-		struct GetFieldsNames : GetFieldsNames_<S, boost::mpl::int_<0>>
-		{
+		private:
+			template<size_t... Vals>
+			QStringList Run (std::index_sequence<Vals...>) const
+			{
+				return { GetFieldName<S, Vals>::value ()... };
+			}
 		};
 
 		template<typename Seq, int Idx>
