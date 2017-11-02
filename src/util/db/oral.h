@@ -486,6 +486,8 @@ namespace oral
 			const QString InsertSuffix_;
 
 			constexpr static bool HasAutogen_ = HasAutogenPKey<Seq> ();
+
+			mutable std::array<QSqlQuery_ptr, InsertActionCount> Queries_;
 		public:
 			AdaptInsert (CachedFieldsData data)
 			: Data_
@@ -520,8 +522,7 @@ namespace oral
 			template<bool UpdatePKey, typename Val>
 			auto Run (Val&& t, InsertAction action) const
 			{
-				auto query = std::make_shared<QSqlQuery> (Data_.DB_);
-				query->prepare (GetInsertPrefix (action) + InsertSuffix_);
+				const auto query = GetQuery (action);
 
 				MakeInserter<Seq> (Data_, query, !HasAutogen_) (t);
 
@@ -535,6 +536,17 @@ namespace oral
 					else
 						return lastId;
 				}
+			}
+
+			auto GetQuery (InsertAction action) const
+			{
+				auto& query = Queries_ [static_cast<size_t> (action)];
+				if (!query)
+				{
+					query = std::make_shared<QSqlQuery> (Data_.DB_);
+					query->prepare (GetInsertPrefix (action) + InsertSuffix_);
+				}
+				return query;
 			}
 		};
 
