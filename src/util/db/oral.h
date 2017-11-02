@@ -350,24 +350,6 @@ namespace oral
 
 	namespace detail
 	{
-		struct Inserter
-		{
-			/** Whether the PKey values should be bound.
-			 *
-			 * The NoAutogen tag is not considered.
-			 */
-			const bool BindPrimaryKey_;
-			QSqlQuery_ptr Q_;
-
-			template<typename T>
-			QStringList operator() (QStringList bounds, const T& t) const
-			{
-				if (BindPrimaryKey_ || !IsPKey<T>::value)
-					Q_->bindValue (bounds.takeFirst (), ToVariant<T> {} (t));
-				return bounds;
-			}
-		};
-
 		struct Selector
 		{
 			QSqlQuery_ptr Q_;
@@ -394,7 +376,14 @@ namespace oral
 		{
 			return [data, insertQuery, bindPrimaryKey] (const T& t)
 			{
-				boost::fusion::fold (t, data.BoundFields_, Inserter { bindPrimaryKey, insertQuery });
+				boost::fusion::fold (t, data.BoundFields_,
+						[&] (QStringList bounds, const auto& elem)
+						{
+							using Elem = std::decay_t<decltype (elem)>;
+							if (bindPrimaryKey || !IsPKey<Elem>::value)
+								insertQuery->bindValue (bounds.takeFirst (), ToVariant<Elem> {} (elem));
+							return bounds;
+						});
 				if (!insertQuery->exec ())
 				{
 					DBLock::DumpError (*insertQuery);
