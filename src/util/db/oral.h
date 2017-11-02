@@ -627,7 +627,7 @@ namespace oral
 			while (q->next ())
 			{
 				T t;
-				boost::fusion::fold<T, int, Selector> (t, 0, Selector { q });
+				boost::fusion::fold (t, 0, Selector { q });
 				result << t;
 			}
 			q->finish ();
