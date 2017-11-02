@@ -67,5 +67,31 @@ namespace Util
 		static_assert (std::is_same_v<ArgType_t<decltype (f), 0>, int&&>);
 		static_assert (std::is_same_v<ArgType_t<decltype (f), 1>, const double&&>);
 	}
+
+	void TypeGetterTest::testRetType ()
+	{
+		const auto f = [] (int val, const double) { return val; };
+		static_assert (std::is_same_v<RetType_t<decltype (f)>, int>);
+	}
+
+	void TypeGetterTest::testRetTypeVoid ()
+	{
+		const auto f = [] {};
+		static_assert (std::is_same_v<RetType_t<decltype (f)>, void>);
+	}
+
+	void TypeGetterTest::testRetTypeRef ()
+	{
+		int x;
+		const auto f = [&x] (int, const double) -> int& { return x; };
+		static_assert (std::is_same_v<RetType_t<decltype (f)>, int&>);
+	}
+
+	void TypeGetterTest::testRetTypeConstRef ()
+	{
+		int x;
+		const auto f = [&x] (int, const double) -> const int& { return x; };
+		static_assert (std::is_same_v<RetType_t<decltype (f)>, const int&>);
+	}
 }
 }

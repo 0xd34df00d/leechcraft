@@ -42,6 +42,11 @@ namespace Util
 		void testArgType ();
 		void testArgTypeRef ();
 		void testArgTypeRvalueRef ();
+
+		void testRetType ();
+		void testRetTypeVoid ();
+		void testRetTypeRef ();
+		void testRetTypeConstRef ();
 	};
 }
 }
