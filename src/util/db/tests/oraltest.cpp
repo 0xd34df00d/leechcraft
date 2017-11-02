@@ -288,5 +288,31 @@ namespace Util
 
 		QBENCHMARK { adapted.DoInsert_ ({ 0, "0" }, lco::InsertAction::Ignore); }
 	}
+
+	void OralTest::benchBaselineUpdate ()
+	{
+		auto db = MakeDatabase ();
+		const auto& adapted = Util::oral::Adapt<SimpleRecord> (db);
+		adapted.DoInsert_ ({ 0, "0" });
+
+		QSqlQuery query { db };
+		query.prepare ("UPDATE SimpleRecord SET Value = :val WHERE Id = :id;");
+
+		QBENCHMARK
+		{
+			query.bindValue (":id", 0);
+			query.bindValue (":val", "1");
+			query.exec ();
+		}
+	}
+
+	void OralTest::benchSimpleRecordUpdate ()
+	{
+		auto db = MakeDatabase ();
+		auto adapted = Util::oral::Adapt<SimpleRecord> (db);
+		adapted.DoInsert_ ({ 0, "0" });
+
+		QBENCHMARK { adapted.DoUpdate_ ({ 0, "1" }); }
+	}
 }
 }

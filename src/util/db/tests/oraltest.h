@@ -54,8 +54,12 @@ namespace Util
 		void testAutoPKeyRecordInsertSetsPKey ();
 
 		void benchSimpleRecordAdapt ();
+
 		void benchBaselineInsert ();
 		void benchSimpleRecordInsert ();
+
+		void benchBaselineUpdate ();
+		void benchSimpleRecordUpdate ();
 	};
 }
 }
