@@ -390,7 +390,7 @@ namespace oral
 		};
 
 		template<typename T>
-		auto MakeInserter (CachedFieldsData data, QSqlQuery_ptr insertQuery, bool bindPrimaryKey)
+		auto MakeInserter (const CachedFieldsData& data, const QSqlQuery_ptr& insertQuery, bool bindPrimaryKey)
 		{
 			return [data, insertQuery, bindPrimaryKey] (const T& t)
 			{
