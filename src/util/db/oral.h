@@ -346,6 +346,8 @@ namespace oral
 		Replace
 	};
 
+	constexpr size_t InsertActionCount = 3;
+
 	namespace detail
 	{
 		struct Inserter
