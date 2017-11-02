@@ -54,9 +54,9 @@ namespace Util
 	}
 
 	template<typename F, size_t Idx>
-	using ArgType_t = decltype (std::get<Idx + 1> (detail::TypeGetter (*static_cast<F*> (nullptr))));
+	using ArgType_t = std::tuple_element_t<Idx + 1, decltype (detail::TypeGetter (*static_cast<F*> (nullptr)))>;
 
 	template<typename F>
-	using RetType_t = decltype (std::get<0> (detail::TypeGetter (*static_cast<F*> (nullptr))));
+	using RetType_t = std::tuple_element_t<0, decltype (detail::TypeGetter (*static_cast<F*> (nullptr)))>;
 }
 }
