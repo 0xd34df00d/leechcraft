@@ -392,23 +392,11 @@ namespace oral
 					>::type;
 		};
 
-		template<typename Seq, int Idx = FindPKey<Seq>::result_type::value>
-		constexpr bool HasPKeyImpl (int)
-		{
-			return true;
-		}
+		template<typename Seq>
+		using FindPKeyDetector = typename FindPKey<Seq>::result_type;
 
 		template<typename Seq>
-		constexpr bool HasPKeyImpl (float)
-		{
-			return false;
-		}
-
-		template<typename Seq>
-		constexpr bool HasPKey ()
-		{
-			return HasPKeyImpl<Seq> (0);
-		}
+		constexpr auto HasPKey = IsDetected_v<FindPKeyDetector, Seq>;
 
 		template<typename Seq, int Idx = FindPKey<Seq>::result_type::value>
 		constexpr bool HasAutogenPKeyImpl (int)
@@ -514,7 +502,7 @@ namespace oral
 			}
 		};
 
-		template<typename Seq, bool HasPKey = HasPKey<Seq> ()>
+		template<typename Seq, bool HasPKey = HasPKey<Seq>>
 		class AdaptUpdate
 		{
 			std::function<void (Seq)> Updater_;
@@ -552,7 +540,7 @@ namespace oral
 			}
 		};
 
-		template<typename Seq, bool HasPKey = HasPKey<Seq> ()>
+		template<typename Seq, bool HasPKey = HasPKey<Seq>>
 		struct AdaptDelete
 		{
 			std::function<void (Seq)> Deleter_;
