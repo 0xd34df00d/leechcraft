@@ -385,7 +385,7 @@ namespace oral
 			static_assert ((boost::fusion::result_of::size<Seq>::value) != (MemberIdx::value),
 					"Primary key not found");
 
-			using result_type = std::conditional_t<
+			using result_type = typename std::conditional_t<
 						IsPKey<ValueAt_t<Seq, MemberIdx>>::value,
 						Lazy<MemberIdx>,
 						Lazy<FindPKey<Seq, typename boost::mpl::next<MemberIdx>::type>>
