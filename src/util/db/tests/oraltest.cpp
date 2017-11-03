@@ -124,6 +124,33 @@ BOOST_FUSION_ADAPT_STRUCT (AutogenPKeyRecord,
 
 TOSTRING (AutogenPKeyRecord)
 
+struct NoPKeyRecord
+{
+	int ID_;
+	QString Value_;
+
+	static QString ClassName ()
+	{
+		return "NoPKeyRecord";
+	}
+
+	static QString FieldNameMorpher (const QString& str)
+	{
+		return str.left (str.size () - 1);
+	}
+
+	auto AsTuple () const
+	{
+		return std::tie (ID_, Value_);
+	}
+};
+
+BOOST_FUSION_ADAPT_STRUCT (NoPKeyRecord,
+		ID_,
+		Value_)
+
+TOSTRING (NoPKeyRecord)
+
 namespace LeechCraft
 {
 namespace Util
