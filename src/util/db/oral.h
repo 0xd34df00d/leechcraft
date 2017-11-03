@@ -399,8 +399,13 @@ namespace oral
 		constexpr auto HasPKey = IsDetected_v<FindPKeyDetector, Seq>;
 
 		template<typename Seq>
-		constexpr auto HasAutogenPKey = HasPKey<Seq> &&
-				!HasType<NoAutogen> (AsTypelist_t<ValueAtC_t<Seq, FindPKey<Seq>::result_type::value>> {});
+		constexpr auto HasAutogenPKey ()
+		{
+			if constexpr (HasPKey<Seq>)
+				return !HasType<NoAutogen> (AsTypelist_t<ValueAtC_t<Seq, FindPKey<Seq>::result_type::value>> {});
+			else
+				return false;
+		}
 
 		inline QString GetInsertPrefix (InsertAction action)
 		{
@@ -423,7 +428,7 @@ namespace oral
 			const CachedFieldsData Data_;
 			const QString InsertSuffix_;
 
-			constexpr static bool HasAutogen_ = HasAutogenPKey<Seq>;
+			constexpr static bool HasAutogen_ = HasAutogenPKey<Seq> ();
 
 			mutable std::array<QSqlQuery_ptr, InsertActionCount> Queries_;
 		public:
