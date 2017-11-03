@@ -693,15 +693,6 @@ namespace oral
 			Util::Unreachable ();
 		}
 
-		template<ExprType Type>
-		struct IsLeaf : std::false_type {};
-
-		template<>
-		struct IsLeaf<ExprType::LeafStaticPlaceholder> : std::true_type {};
-
-		template<>
-		struct IsLeaf<ExprType::LeafData> : std::true_type {};
-
 		constexpr bool IsCompatible (ExprType type)
 		{
 			return type == ExprType::And ||
