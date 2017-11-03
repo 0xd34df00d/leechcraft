@@ -697,25 +697,17 @@ namespace oral
 		template<>
 		struct IsLeaf<ExprType::LeafData> : std::true_type {};
 
-		template<ExprType Type1, ExprType Type2>
-		struct IsCompatible : std::false_type {};
-
-		template<ExprType Type>
-		struct IsCompatible<Type, ExprType::And> : std::true_type {};
-
-		template<ExprType Type>
-		struct IsCompatible<Type, ExprType::Or> : std::true_type {};
-
-		template<ExprType Type>
-		struct IsCompatible<Type, ExprType::LeafStaticPlaceholder> : std::true_type {};
-
-		template<ExprType Type>
-		struct IsCompatible<Type, ExprType::LeafData> : std::true_type {};
-
-		template<ExprType T1, ExprType T2>
-		constexpr bool CheckCompatible ()
+		constexpr bool IsCompatible (ExprType type)
 		{
-			return IsCompatible<T1, T2>::value || IsCompatible<T2, T1>::value;
+			return type == ExprType::And ||
+					type == ExprType::Or ||
+					type == ExprType::LeafStaticPlaceholder ||
+					type == ExprType::LeafData;
+		}
+
+		constexpr bool CheckCompatible (ExprType t1, ExprType t2)
+		{
+			return IsCompatible (t1) || IsCompatible (t2);
 		}
 
 		constexpr bool IsRelational (ExprType type)
@@ -835,7 +827,7 @@ namespace oral
 		template<ExprType LType, typename LL, typename LR, ExprType RType, typename RL, typename RR>
 		ExprTree<ExprType::Less, ExprTree<LType, LL, LR>, ExprTree<RType, RL, RR>> operator< (const ExprTree<LType, LL, LR>& left, const ExprTree<RType, RL, RR>& right)
 		{
-			static_assert (CheckCompatible<LType, RType> (), "comparing incompatible subexpressions");
+			static_assert (CheckCompatible (LType, RType), "comparing incompatible subexpressions");
 			return { left, right };
 		}
 
@@ -854,7 +846,7 @@ namespace oral
 		template<ExprType LType, typename LL, typename LR, ExprType RType, typename RL, typename RR>
 		ExprTree<ExprType::Equal, ExprTree<LType, LL, LR>, ExprTree<RType, RL, RR>> operator== (const ExprTree<LType, LL, LR>& left, const ExprTree<RType, RL, RR>& right)
 		{
-			static_assert (CheckCompatible<LType, RType> (), "comparing incompatible subexpressions");
+			static_assert (CheckCompatible (LType, RType), "comparing incompatible subexpressions");
 			return { left, right };
 		}
 
