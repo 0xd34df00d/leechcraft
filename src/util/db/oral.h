@@ -336,18 +336,6 @@ namespace oral
 
 	namespace detail
 	{
-		struct Selector
-		{
-			QSqlQuery_ptr Q_;
-
-			template<typename T>
-			int operator() (int index, T& t) const
-			{
-				t = FromVariant<T> {} (Q_->value (index));
-				return index + 1;
-			}
-		};
-
 		struct CachedFieldsData
 		{
 			QString Table_;
@@ -600,6 +588,18 @@ namespace oral
 			std::enable_if_t<B> operator() (const Seq& seq)
 			{
 				Deleter_ (seq);
+			}
+		};
+
+		struct Selector
+		{
+			QSqlQuery_ptr Q_;
+
+			template<typename T>
+			int operator() (int index, T& t) const
+			{
+				t = FromVariant<T> {} (Q_->value (index));
+				return index + 1;
 			}
 		};
 
