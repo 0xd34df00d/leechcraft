@@ -393,7 +393,7 @@ namespace oral
 		};
 
 		template<typename Seq>
-		using FindPKeyDetector = typename FindPKey<Seq>::result_type;
+		using FindPKeyDetector = boost::mpl::int_<FindPKey<Seq>::result_type::value>;
 
 		template<typename Seq>
 		constexpr auto HasPKey = IsDetected_v<FindPKeyDetector, Seq>;
