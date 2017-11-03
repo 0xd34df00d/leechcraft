@@ -284,6 +284,13 @@ namespace Util
 		QCOMPARE (records, (QList<AutogenPKeyRecord> { { 1, "0" }, { 2, "1" }, { 3, "2" } }));
 	}
 
+	void OralTest::testNoPKeyRecordInsertSelect ()
+	{
+		auto adapted = PrepareRecords<NoPKeyRecord> (MakeDatabase ());
+		const auto& list = adapted->DoSelectAll_ ();
+		QCOMPARE (list, (QList<NoPKeyRecord> { { 0, "0" }, { 1, "1" }, { 2, "2" } }));
+	}
+
 	void OralTest::benchSimpleRecordAdapt ()
 	{
 		auto db = MakeDatabase ();

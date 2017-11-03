@@ -53,6 +53,8 @@ namespace Util
 		void testAutoPKeyRecordInsertConstLvalueReturnsPKey ();
 		void testAutoPKeyRecordInsertSetsPKey ();
 
+		void testNoPKeyRecordInsertSelect ();
+
 		void benchSimpleRecordAdapt ();
 
 		void benchBaselineInsert ();
