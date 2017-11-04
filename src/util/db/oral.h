@@ -724,24 +724,10 @@ namespace oral
 		};
 
 		template<typename Seq, typename L, typename R>
-		constexpr bool AreComparableTypesImpl (int,
-				decltype (std::declval<typename L::template ValueType_t<Seq>> () == std::declval<typename R::template ValueType_t<Seq>> ())* = nullptr)
-		{
-			return true;
-		}
+		using ComparableDetector = decltype (std::declval<typename L::template ValueType_t<Seq>> () == std::declval<typename R::template ValueType_t<Seq>> ());
 
 		template<typename Seq, typename L, typename R>
-		constexpr bool AreComparableTypesImpl (float)
-		{
-			return false;
-		}
-
-		template<typename Seq, typename L, typename R>
-		constexpr bool AreComparableTypes ()
-		{
-			return AreComparableTypesImpl<Seq, L, R> (0) ||
-					AreComparableTypesImpl<Seq, R, L> (0);
-		}
+		constexpr auto AreComparableTypes = IsDetected_v<ComparableDetector, Seq, L, R> || IsDetected_v<ComparableDetector, Seq, R, L>;
 
 		template<ExprType Type, typename Seq, typename L, typename R, typename = void>
 		struct RelationalTypesChecker : std::true_type {};
@@ -750,7 +736,7 @@ namespace oral
 		struct RelationalTypesCheckerBase : std::false_type {};
 
 		template<typename Seq, typename L, typename R>
-		struct RelationalTypesCheckerBase<Seq, L, R, std::enable_if_t<AreComparableTypes<Seq, L, R> ()>> : std::true_type {};
+		struct RelationalTypesCheckerBase<Seq, L, R, std::enable_if_t<AreComparableTypes<Seq, L, R>>> : std::true_type {};
 
 		template<ExprType Type, typename Seq, typename L, typename R>
 		struct RelationalTypesChecker<Type, Seq, L, R, std::enable_if_t<IsRelational (Type)>> : RelationalTypesCheckerBase<Seq, L, R> {};
