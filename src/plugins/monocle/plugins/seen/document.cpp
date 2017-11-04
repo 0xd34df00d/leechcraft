@@ -237,7 +237,6 @@ namespace Seen
 									Qt::KeepAspectRatio);
 
 							QImage img { size, QImage::Format_RGB32 };
-							img.fill (Qt::white);
 
 							ddjvu_rect_s rect
 							{
@@ -263,6 +262,8 @@ namespace Seen
 							if (res == DDJVU_JOB_OK || res == DDJVU_JOB_STARTED || res == DDJVU_JOB_NOTSTARTED)
 							{
 								auto future = pair.second;
+								if (res == DDJVU_JOB_NOTSTARTED)
+									img.fill (Qt::white);
 								Util::ReportFutureResult (future, img);
 							}
 							else
