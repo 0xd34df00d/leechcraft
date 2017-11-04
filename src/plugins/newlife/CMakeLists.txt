@@ -15,6 +15,7 @@ set (SRCS
 	firstpage.cpp
 	abstractimporter.cpp
 	imhistimporterbase.cpp
+	entitygeneratingpage.cpp
 	common/imimporter.cpp
 	common/imimportpage.cpp
 	common/xmlimaccount.cpp
