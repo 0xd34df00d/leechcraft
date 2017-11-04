@@ -814,12 +814,6 @@ namespace oral
 			}
 		};
 
-		template<typename T>
-		struct IsExprTree : std::false_type {};
-
-		template<ExprType Type, typename L, typename R>
-		struct IsExprTree<ExprTree<Type, L, R>> : std::true_type {};
-
 		template<ExprType LType, typename LL, typename LR, ExprType RType, typename RL, typename RR>
 		ExprTree<ExprType::Less, ExprTree<LType, LL, LR>, ExprTree<RType, RL, RR>> operator< (const ExprTree<LType, LL, LR>& left, const ExprTree<RType, RL, RR>& right)
 		{
