@@ -49,8 +49,8 @@ namespace Importers
 		FirefoxImportPage (QWidget* = 0);
 
 		bool CheckValidity (const QString&) const;
-		virtual bool isComplete () const;
-		virtual void initializePage ();
+		bool isComplete () const override;
+		void initializePage () override;
 	private slots:
 		void on_Browse__released ();
 		void on_FileLocation__textEdited (const QString&);

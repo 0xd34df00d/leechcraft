@@ -50,9 +50,9 @@ namespace Importers
 		KTorrentImportPage (const ICoreProxy_ptr&, QWidget* = 0);
 
 		bool CheckValidity (const QString&) const;
-		virtual bool isComplete () const;
-		virtual int nextId () const;
-		virtual void initializePage ();
+		bool isComplete () const override;
+		int nextId () const override;
+		void initializePage () override;
 	private:
 		bool GetTorrentSettings (const QString&, QMap<QString, QVariant>&) const;
 	private slots:

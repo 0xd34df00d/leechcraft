@@ -50,9 +50,9 @@ namespace Common
 
 		IMImporter (const QString&, const QIcon&, IMImportPage*, QObject* = 0);
 	public:
-		QStringList GetNames () const;
-		QList<QIcon> GetIcons () const;
-		QList<QWizardPage*> GetWizardPages () const;
+		QStringList GetNames () const override;
+		QList<QIcon> GetIcons () const override;
+		QList<QWizardPage*> GetWizardPages () const override;
 	};
 }
 }

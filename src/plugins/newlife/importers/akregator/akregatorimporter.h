@@ -48,9 +48,9 @@ namespace Importers
 	public:
 		AkregatorImporter (const ICoreProxy_ptr&, QWidget* = nullptr);
 
-		virtual QStringList GetNames () const;
-		virtual QList<QIcon> GetIcons () const;
-		virtual QList<QWizardPage*> GetWizardPages () const;
+		QStringList GetNames () const override;
+		QList<QIcon> GetIcons () const override;
+		QList<QWizardPage*> GetWizardPages () const override;
 	};
 }
 }

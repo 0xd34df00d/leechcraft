@@ -49,9 +49,9 @@ namespace Importers
 		AkregatorImportPage (const ICoreProxy_ptr&, QWidget* = nullptr);
 
 		bool CheckValidity (const QString&) const;
-		virtual bool isComplete () const;
-		virtual int nextId () const;
-		virtual void initializePage ();
+		bool isComplete () const override;
+		int nextId () const override;
+		void initializePage () override;
 	private slots:
 		void on_Browse__released ();
 		void on_FileLocation__textEdited (const QString&);
