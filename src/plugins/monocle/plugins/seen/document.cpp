@@ -260,7 +260,7 @@ namespace Seen
 										reinterpret_cast<char*> (img.bits ()));
 							} while (res == DDJVU_JOB_STARTED && ++retries < 3);
 							qDebug () << Q_FUNC_INFO << ctx.PageNum_ << res;
-							if (res == DDJVU_JOB_OK || res == DDJVU_JOB_STARTED)
+							if (res == DDJVU_JOB_OK || res == DDJVU_JOB_STARTED || res == DDJVU_JOB_NOTSTARTED)
 							{
 								auto future = pair.second;
 								Util::ReportFutureResult (future, img);
