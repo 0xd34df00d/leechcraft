@@ -47,7 +47,7 @@ namespace Importers
 		FirefoxImportPage *ImportPage_;
 		FirefoxProfileSelectPage *ProfileSelectPage_;
 	public:
-		FirefoxImporter (QWidget* = 0);
+		FirefoxImporter (const ICoreProxy_ptr&, QWidget* = 0);
 
 		QStringList GetNames () const;
 		QList<QIcon> GetIcons () const;

@@ -29,9 +29,9 @@
 
 #pragma once
 
-#include "ui_firefoxprofileselectpage.h"
 #include <memory>
-#include <QWizardPage>
+#include "ui_firefoxprofileselectpage.h"
+#include "entitygeneratingpage.h"
 
 class QSqlDatabase;
 class QSqlQuery;
@@ -44,14 +44,14 @@ namespace NewLife
 {
 namespace Importers
 {
-	class FirefoxProfileSelectPage : public QWizardPage
+	class FirefoxProfileSelectPage : public EntityGeneratingPage
 	{
 		Q_OBJECT
 
 		Ui::FirefoxProfileSelectPage Ui_;
 		std::shared_ptr<QSqlDatabase> DB_;
 	public:
-		FirefoxProfileSelectPage (QWidget* = 0);
+		FirefoxProfileSelectPage (const ICoreProxy_ptr&, QWidget* = nullptr);
 		virtual ~FirefoxProfileSelectPage ();
 
 		virtual int nextId () const;
@@ -66,8 +66,6 @@ namespace Importers
 	private slots:
 		void checkImportDataAvailable (int);
 		void handleAccepted ();
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }

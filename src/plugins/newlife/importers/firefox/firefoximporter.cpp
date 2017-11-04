@@ -37,11 +37,11 @@ namespace NewLife
 {
 namespace Importers
 {
-	FirefoxImporter::FirefoxImporter (QWidget *parent)
+	FirefoxImporter::FirefoxImporter (const ICoreProxy_ptr& proxy, QWidget *parent)
 	: AbstractImporter (parent)
 	{
 		ImportPage_ = new FirefoxImportPage ();
-		ProfileSelectPage_ = new FirefoxProfileSelectPage ();
+		ProfileSelectPage_ = new FirefoxProfileSelectPage (proxy);
 	}
 
 	QStringList FirefoxImporter::GetNames () const

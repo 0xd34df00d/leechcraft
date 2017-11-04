@@ -48,8 +48,8 @@ namespace NewLife
 {
 namespace Importers
 {
-	FirefoxProfileSelectPage::FirefoxProfileSelectPage (QWidget *parent)
-	: QWizardPage (parent)
+	FirefoxProfileSelectPage::FirefoxProfileSelectPage (const ICoreProxy_ptr& proxy, QWidget *parent)
+	: EntityGeneratingPage { proxy, parent }
 	{
 		Ui_.setupUi (this);
 		DB_.reset (new QSqlDatabase (QSqlDatabase::addDatabase ("QSQLITE", "Import connection")));
@@ -298,7 +298,7 @@ namespace Importers
 		file.setAutoRemove (false);
 		if (!file.open ())
 		{
-			emit gotEntity (Util::MakeNotification ("Firefox Import",
+			SendEntity (Util::MakeNotification ("Firefox Import",
 					tr ("OPML file for importing RSS cannot be created: %1")
 							.arg (file.errorString ()),
 					PCritical_));
@@ -352,7 +352,7 @@ namespace Importers
 			qWarning () << Q_FUNC_INFO
 					<< "could not open database"
 					<< DB_->lastError ().text ();
-			emit gotEntity (Util::MakeNotification (tr ("Firefox Import"),
+			SendEntity (Util::MakeNotification (tr ("Firefox Import"),
 						tr ("Could not open Firefox database: %1.")
 							.arg (DB_->lastError ().text ()),
 						PCritical_));
@@ -383,7 +383,7 @@ namespace Importers
 				"x-leechcraft/browser-import-data");
 
 			eHistory.Additional_ ["BrowserHistory"] = GetHistory ();
-			emit gotEntity (eHistory);
+			SendEntity (eHistory);
 		}
 
 		if (Ui_.BookmarksImport_->isEnabled () && Ui_.BookmarksImport_->isChecked ())
@@ -394,7 +394,7 @@ namespace Importers
 					"x-leechcraft/browser-import-data");
 
 			eBookmarks.Additional_ ["BrowserBookmarks"] = GetBookmarks ();
-			emit gotEntity (eBookmarks);
+			SendEntity (eBookmarks);
 		}
 
 		if (Ui_.RssImport_->isEnabled () && Ui_.RssImport_->isChecked ())
@@ -406,7 +406,7 @@ namespace Importers
 					"text/x-opml");
 
 			eRss.Additional_ ["RemoveAfterHandling"] = true;
-			emit gotEntity (eRss);
+			SendEntity (eRss);
 		}
 		DB_->close ();
 	}
