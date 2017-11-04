@@ -48,26 +48,26 @@ namespace Importers
 	{
 		Q_OBJECT
 
-			Ui::FirefoxProfileSelectPage Ui_;
-			std::shared_ptr<QSqlDatabase> DB_;
-		public:
-			FirefoxProfileSelectPage (QWidget* = 0);
-			virtual ~FirefoxProfileSelectPage ();
+		Ui::FirefoxProfileSelectPage Ui_;
+		std::shared_ptr<QSqlDatabase> DB_;
+	public:
+		FirefoxProfileSelectPage (QWidget* = 0);
+		virtual ~FirefoxProfileSelectPage ();
 
-			virtual int nextId () const;
-			virtual void initializePage ();
-			QString GetProfileDirectory (const QString&) const;
-			void GetProfileList (const QString&);
-			QList<QVariant> GetHistory ();
-			QList<QVariant> GetBookmarks ();
-			QString GetImportOpmlFile ();
-			QSqlQuery GetQuery (const QString&);
-			bool IsFirefoxRunning ();
-		private slots:
-			void checkImportDataAvailable (int);
-			void handleAccepted ();
-		signals:
-			void gotEntity (const LeechCraft::Entity&);
+		virtual int nextId () const;
+		virtual void initializePage ();
+		QString GetProfileDirectory (const QString&) const;
+		void GetProfileList (const QString&);
+		QList<QVariant> GetHistory ();
+		QList<QVariant> GetBookmarks ();
+		QString GetImportOpmlFile ();
+		QSqlQuery GetQuery (const QString&);
+		bool IsFirefoxRunning ();
+	private slots:
+		void checkImportDataAvailable (int);
+		void handleAccepted ();
+	signals:
+		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }
