@@ -30,6 +30,7 @@
 #include "kopeteimportpage.h"
 #include <QDir>
 #include <QStandardItemModel>
+#include <util/sll/prelude.h>
 #include "kopeteimportthread.h"
 
 namespace LeechCraft
@@ -46,9 +47,7 @@ namespace Importers
 	void KopeteImportPage::FindAccounts ()
 	{
 		QDir dir = QDir::home ();
-		QStringList path;
-		path << ".kde4" << "share" << "apps" << "kopete" << "logs";
-		Q_FOREACH (const QString& str, path)
+		for (const auto& str : { ".kde4", "share", "apps", "kopete", "logs" })
 			if (!dir.cd (str))
 			{
 				qWarning () << Q_FUNC_INFO
@@ -57,12 +56,12 @@ namespace Importers
 				return;
 			}
 
-		QStringList knownProtos;
-		knownProtos << "JabberProtocol" << "ICQProtocol";
-		Q_FOREACH (const QString& proto, knownProtos)
+		for (QString proto : { "JabberProtocol", "ICQProtocol" })
 			if (dir.exists (proto))
-				ScanProto (dir.filePath (proto),
-						proto.left (proto.size () - QString ("Protocol").size ()));
+			{
+				proto.chop (QByteArray { "Protocol" }.size ());
+				ScanProto (dir.filePath (proto), proto);
+			}
 
 		Ui_.AccountsTree_->expandAll ();
 	}
@@ -77,9 +76,8 @@ namespace Importers
 		const QString& path = data ["LogsPath"].toString ();
 
 		QDir dir (path);
-		QStringList paths;
-		Q_FOREACH (const QString& file, dir.entryList (QDir::Files))
-			paths << dir.absoluteFilePath (file);
+		const auto& paths = Util::Map (dir.entryList (QDir::Files),
+				[&dir] (const QString& file) { return dir.absoluteFilePath (file); });
 
 		KopeteImportThread *thread = new KopeteImportThread (data ["Protocol"].toString (), paths);
 		connect (thread,
@@ -95,17 +93,18 @@ namespace Importers
 		QStandardItem *protoItem = new QStandardItem (proto);
 		AccountsModel_->appendRow (protoItem);
 
-		QMap<QString, QString> kopeteProto2LC;
-		kopeteProto2LC ["Jabber"] = "xmpp";
-		kopeteProto2LC ["ICQ"] = "oscar";
-		kopeteProto2LC ["IRC"] = "irc";
+		static const QMap<QString, QString> kopeteProto2LC
+		{
+			{ "Jabber", "xmpp" },
+			{ "ICQ", "oscar" },
+			{ "IRC", "irc" }
+		};
 
 		if (!kopeteProto2LC.contains (proto))
 			return;
 
 		const QDir dir (path);
-		Q_FOREACH (const QString& accDirName,
-				dir.entryList (QDir::Dirs | QDir::NoDotAndDotDot))
+		for (const auto& accDirName : dir.entryList (QDir::Dirs | QDir::NoDotAndDotDot))
 		{
 			QDir accDir = dir;
 			if (!accDir.cd (accDirName))
@@ -120,10 +119,12 @@ namespace Importers
 			QString accId = accDirName;
 			accId.replace ('-', '.');
 
-			QVariantMap accountData;
-			accountData ["Jid"] = accId;
-			accountData ["Protocol"] = kopeteProto2LC.value (proto);
-			accountData ["LogsPath"] = accDir.absolutePath ();
+			const QVariantMap accountData
+			{
+				{ "Jid", accId },
+				{ "Protocol", kopeteProto2LC.value (proto) },
+				{ "LogsPath", accDir.absolutePath () }
+			};
 
 			QList<QStandardItem*> row;
 			row << new QStandardItem (accId);
