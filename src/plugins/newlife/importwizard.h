@@ -56,9 +56,6 @@ namespace NewLife
 
 		QString GetSelectedName () const;
 		QObject* GetPlugin () const;
-	private slots:
-		void handleAccepted ();
-		void handleRejected ();
 	private:
 		void SetupImporters ();
 	signals:
