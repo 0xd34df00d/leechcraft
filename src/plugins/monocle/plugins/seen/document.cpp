@@ -155,11 +155,14 @@ namespace Seen
 			return;
 		}
 
-		if (ScheduledRedraws_.isEmpty ())
-			QTimer::singleShot (100, this, &Document::RunRedrawQueue);
+		ScheduleRedraw (PendingRendersNums_ [page], 100);
+	}
 
-		auto num = PendingRendersNums_ [page];
-		ScheduledRedraws_ << num;
+	void Document::ScheduleRedraw (int page, int timeoutHint)
+	{
+		if (ScheduledRedraws_.isEmpty ())
+			QTimer::singleShot (timeoutHint, this, &Document::RunRedrawQueue);
+		ScheduledRedraws_ << page;
 	}
 
 	void Document::TryUpdateSizes ()

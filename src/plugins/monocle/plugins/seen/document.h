@@ -92,6 +92,7 @@ namespace Seen
 		void UpdatePageInfo (ddjvu_page_t*);
 		void RedrawPage (ddjvu_page_t*);
 	private:
+		void ScheduleRedraw (int page, int timeoutHint);
 		void TryUpdateSizes ();
 		void TryGetPageInfo (int);
 		void RunRedrawQueue ();
