@@ -36,10 +36,10 @@ namespace NewLife
 {
 namespace Importers
 {
-	AkregatorImporter::AkregatorImporter (QWidget *parent)
+	AkregatorImporter::AkregatorImporter (const ICoreProxy_ptr& proxy, QWidget *parent)
 	: AbstractImporter (parent)
 	{
-		ImportPage_ = new AkregatorImportPage ();
+		ImportPage_ = new AkregatorImportPage { proxy };
 	}
 
 	QStringList AkregatorImporter::GetNames () const

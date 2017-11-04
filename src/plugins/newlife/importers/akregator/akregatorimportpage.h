@@ -29,7 +29,7 @@
 
 #pragma once
 
-#include <QWizardPage>
+#include "entitygeneratingpage.h"
 #include "ui_feedssettingsimportpage.h"
 
 namespace LeechCraft
@@ -40,13 +40,13 @@ namespace NewLife
 {
 namespace Importers
 {
-	class AkregatorImportPage : public QWizardPage
+	class AkregatorImportPage : public EntityGeneratingPage
 	{
 		Q_OBJECT
 
 		Ui::FeedsSettingsImportPage Ui_;
 	public:
-		AkregatorImportPage (QWidget* = 0);
+		AkregatorImportPage (const ICoreProxy_ptr&, QWidget* = nullptr);
 
 		bool CheckValidity (const QString&) const;
 		virtual bool isComplete () const;
@@ -56,8 +56,6 @@ namespace Importers
 		void on_Browse__released ();
 		void on_FileLocation__textEdited (const QString&);
 		void handleAccepted ();
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }

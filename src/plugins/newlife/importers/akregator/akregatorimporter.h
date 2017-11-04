@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <interfaces/core/icoreproxyfwd.h>
 #include "abstractimporter.h"
 
 namespace LeechCraft
@@ -45,7 +46,7 @@ namespace Importers
 
 		AkregatorImportPage *ImportPage_;
 	public:
-		AkregatorImporter (QWidget* = 0);
+		AkregatorImporter (const ICoreProxy_ptr&, QWidget* = nullptr);
 
 		virtual QStringList GetNames () const;
 		virtual QList<QIcon> GetIcons () const;
