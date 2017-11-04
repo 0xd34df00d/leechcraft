@@ -58,14 +58,14 @@ namespace NewLife
 		Importers_ << new Importers::VacuumImporter (this);
 
 		connect (this,
-				SIGNAL (accepted ()),
+				&QDialog::accepted,
 				this,
-				SLOT (handleAccepted ()),
+				&QObject::deleteLater,
 				Qt::QueuedConnection);
 		connect (this,
-				SIGNAL (accepted ()),
+				&QDialog::rejected,
 				this,
-				SLOT (handleRejected ()),
+				&QObject::deleteLater,
 				Qt::QueuedConnection);
 
 		SetupImporters ();
@@ -79,16 +79,6 @@ namespace NewLife
 	QObject* ImportWizard::GetPlugin () const
 	{
 		return Plugin_;
-	}
-
-	void ImportWizard::handleAccepted ()
-	{
-		deleteLater ();
-	}
-
-	void ImportWizard::handleRejected ()
-	{
-		deleteLater ();
 	}
 
 	void ImportWizard::SetupImporters ()
