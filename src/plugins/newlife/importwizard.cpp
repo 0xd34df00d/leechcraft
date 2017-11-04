@@ -48,12 +48,12 @@ namespace NewLife
 	{
 		Ui_.setupUi (this);
 
-		Importers_ << new Importers::AkregatorImporter (this);
-		Importers_ << new Importers::FirefoxImporter (this);
+		Importers_ << new Importers::AkregatorImporter (proxy, this);
+		Importers_ << new Importers::FirefoxImporter (proxy, this);
 		Importers_ << new Importers::OperaImporter (this);
-		Importers_ << new Importers::KTorrentImporter (this);
+		Importers_ << new Importers::KTorrentImporter (proxy, this);
 		Importers_ << new Importers::LifereaImporter (this);
-		Importers_ << new Importers::KopeteImporter (this);
+		Importers_ << new Importers::KopeteImporter (proxy, this);
 		Importers_ << new Importers::PsiPlusImporter (this);
 		Importers_ << new Importers::VacuumImporter (this);
 

@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QWizard>
+#include <interfaces/core/icoreproxyfwd.h>
 #include "ui_importwizard.h"
 
 namespace LeechCraft
