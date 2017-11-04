@@ -42,7 +42,7 @@ namespace LeechCraft
 {
 namespace NewLife
 {
-	ImportWizard::ImportWizard (QObject *plugin, QWidget *parent)
+	ImportWizard::ImportWizard (const ICoreProxy_ptr& proxy, QObject *plugin, QWidget *parent)
 	: QWizard (parent)
 	, Plugin_ (plugin)
 	{

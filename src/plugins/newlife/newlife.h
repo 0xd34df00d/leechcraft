@@ -49,6 +49,8 @@ namespace NewLife
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.NewLife")
 
+		ICoreProxy_ptr Proxy_;
+
 		QAction *ImporterAction_;
 	public:
 		void Init (ICoreProxy_ptr);

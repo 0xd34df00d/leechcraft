@@ -40,9 +40,11 @@ namespace LeechCraft
 {
 namespace NewLife
 {
-	void Plugin::Init (ICoreProxy_ptr)
+	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Util::InstallTranslator ("newlife");
+
+		Proxy_ = proxy;
 
 		Common::IMImportPage::SetPluginInstance (this);
 
@@ -95,7 +97,7 @@ namespace NewLife
 
 	void Plugin::runWizard ()
 	{
-		ImportWizard *wiz = new ImportWizard (this);
+		ImportWizard *wiz = new ImportWizard (Proxy_, this);
 		connect (wiz,
 				SIGNAL (gotEntity (const LeechCraft::Entity&)),
 				this,

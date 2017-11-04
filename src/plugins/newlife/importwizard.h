@@ -52,7 +52,7 @@ namespace NewLife
 		Ui::ImportWizard Ui_;
 		QList<AbstractImporter*> Importers_;
 	public:
-		ImportWizard (QObject*, QWidget* = 0);
+		ImportWizard (const ICoreProxy_ptr&, QObject*, QWidget* = 0);
 
 		QString GetSelectedName () const;
 		QObject* GetPlugin () const;
