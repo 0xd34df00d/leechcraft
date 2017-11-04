@@ -116,6 +116,8 @@ namespace Seen
 			const auto page = ddjvu_page_create_by_pageno (Doc_, pageNum);
 			PendingRenders_ [pageNum] = page;
 			PendingRendersNums_ [page] = pageNum;
+
+			ScheduleRedraw (pageNum, 100);
 		}
 
 		return RenderJobs_ [pageNum] [{ xScale, yScale }].future ();
