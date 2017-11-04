@@ -44,6 +44,12 @@ namespace Seen
 	namespace
 	{
 		static unsigned int FormatMask [4] = { 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000 };
+
+		bool DebugRedraws ()
+		{
+			static bool debug = qgetenv ("LC_MONOCLE_SEEN_DEBUG_REDRAWS") == "1";
+			return debug;
+		}
 	}
 
 	Document::Document (const QString& file, ddjvu_context_t *ctx, QObject *plugin, DocManager *mgr)
@@ -100,7 +106,8 @@ namespace Seen
 
 	QFuture<QImage> Document::RenderPage (int pageNum, double xScale, double yScale)
 	{
-		qDebug () << Q_FUNC_INFO << pageNum << xScale << yScale;
+		if (DebugRedraws ())
+			qDebug () << Q_FUNC_INFO << pageNum << xScale << yScale;
 		const auto& size = Sizes_.value (pageNum);
 
 		if (std::max (xScale, yScale) < 0.01)
@@ -198,7 +205,8 @@ namespace Seen
 
 	void Document::RunRedrawQueue ()
 	{
-		qDebug () << Q_FUNC_INFO << ScheduledRedraws_;
+		if (DebugRedraws ())
+			qDebug () << Q_FUNC_INFO << ScheduledRedraws_;
 		if (ScheduledRedraws_.empty ())
 			return;
 
@@ -258,7 +266,10 @@ namespace Seen
 										img.bytesPerLine (),
 										reinterpret_cast<char*> (img.bits ()));
 							} while (res == DDJVU_JOB_STARTED && ++retries < 3);
-							qDebug () << Q_FUNC_INFO << ctx.PageNum_ << res;
+
+							if (DebugRedraws ())
+								qDebug () << Q_FUNC_INFO << ctx.PageNum_ << res;
+
 							if (res == DDJVU_JOB_OK || res == DDJVU_JOB_STARTED || res == DDJVU_JOB_NOTSTARTED)
 							{
 								auto future = pair.second;
@@ -287,8 +298,12 @@ namespace Seen
 						return finishedPages.subtract (remainingJobs);
 					} ();
 
-					qDebug () << Q_FUNC_INFO << "cleaning up finished" << finishedPages;
-					qDebug () << Q_FUNC_INFO << "remaining pages:" << remainingJobs;
+					if (DebugRedraws ())
+					{
+						qDebug () << Q_FUNC_INFO << "cleaning up finished" << finishedPages;
+						qDebug () << Q_FUNC_INFO << "remaining pages:" << remainingJobs;
+					}
+
 					for (const auto num : finishedPages)
 					{
 						const auto page = PendingRenders_.take (num);
