@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <interfaces/core/icoreproxyfwd.h>
 #include "abstractimporter.h"
 
 namespace LeechCraft
@@ -43,7 +44,7 @@ namespace Importers
 	{
 		KTorrentImportPage * const ImportPage_;
 	public:
-		KTorrentImporter (QWidget* = nullptr);
+		KTorrentImporter (const ICoreProxy_ptr& proxy, QWidget* = nullptr);
 
 		QStringList GetNames () const;
 		QList<QIcon> GetIcons () const;

@@ -36,9 +36,9 @@ namespace NewLife
 {
 namespace Importers
 {
-	KTorrentImporter::KTorrentImporter (QWidget *parent)
+	KTorrentImporter::KTorrentImporter (const ICoreProxy_ptr& proxy, QWidget *parent)
 	: AbstractImporter { parent }
-	, ImportPage_ { new KTorrentImportPage }
+	, ImportPage_ { new KTorrentImportPage { proxy } }
 	{
 	}
 

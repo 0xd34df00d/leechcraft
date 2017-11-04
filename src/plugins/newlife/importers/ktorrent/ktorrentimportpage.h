@@ -29,8 +29,8 @@
 
 #pragma once
 
-#include <QWizardPage>
 #include <QMap>
+#include "entitygeneratingpage.h"
 #include "ui_feedssettingsimportpage.h"
 
 namespace LeechCraft
@@ -41,13 +41,13 @@ namespace NewLife
 {
 namespace Importers
 {
-	class KTorrentImportPage : public QWizardPage
+	class KTorrentImportPage : public EntityGeneratingPage
 	{
 		Q_OBJECT
 
 		Ui::FeedsSettingsImportPage Ui_;
 	public:
-		KTorrentImportPage (QWidget* = 0);
+		KTorrentImportPage (const ICoreProxy_ptr&, QWidget* = 0);
 
 		bool CheckValidity (const QString&) const;
 		virtual bool isComplete () const;
@@ -58,8 +58,6 @@ namespace Importers
 	private slots:
 		void on_Browse__released ();
 		void handleAccepted ();
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }

@@ -43,8 +43,8 @@ namespace NewLife
 {
 namespace Importers
 {
-	KTorrentImportPage::KTorrentImportPage (QWidget *parent)
-	: QWizardPage (parent)
+	KTorrentImportPage::KTorrentImportPage (const ICoreProxy_ptr& proxy, QWidget *parent)
+	: EntityGeneratingPage { proxy, parent }
 	{
 		Ui_.setupUi (this);
 		Ui_.ImportSettings_->setText (Ui_.ImportSettings_->text ().arg ("KTorrent"));
@@ -79,11 +79,6 @@ namespace Importers
 				SIGNAL (accepted ()),
 				this,
 				SLOT (handleAccepted ()));
-
-		connect (this,
-				SIGNAL (gotEntity (const LeechCraft::Entity&)),
-				wizard (),
-				SIGNAL (gotEntity (const LeechCraft::Entity&)));
 
 		QString defaultFile = QDir::homePath () + "/.kde/share/config/ktorrentrc";
 		if (CheckValidity (defaultFile))
@@ -197,7 +192,7 @@ namespace Importers
 						"LeechCraft",
 						tr ("Could not access or parse KTorrent settings."));
 		}
-		emit gotEntity (e);
+		SendEntity (e);
 	}
 }
 }
