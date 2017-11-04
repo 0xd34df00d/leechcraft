@@ -237,6 +237,7 @@ namespace Seen
 									Qt::KeepAspectRatio);
 
 							QImage img { size, QImage::Format_RGB32 };
+							img.fill (Qt::white);
 
 							ddjvu_rect_s rect
 							{
