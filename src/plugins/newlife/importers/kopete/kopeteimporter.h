@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <interfaces/core/icoreproxyfwd.h>
 #include "common/imimporter.h"
 
 namespace LeechCraft
@@ -41,7 +42,7 @@ namespace Importers
 	{
 		Q_OBJECT
 	public:
-		KopeteImporter (QObject* = 0);
+		KopeteImporter (const ICoreProxy_ptr& proxy, QObject* = nullptr);
 	};
 }
 }

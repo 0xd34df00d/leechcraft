@@ -39,8 +39,9 @@ namespace NewLife
 {
 namespace Importers
 {
-	KopeteImportPage::KopeteImportPage (QWidget *parent)
-	: Common::IMImportPage (parent)
+	KopeteImportPage::KopeteImportPage (const ICoreProxy_ptr& proxy, QWidget *parent)
+	: Common::IMImportPage { parent }
+	, Proxy_ { proxy }
 	{
 	}
 
@@ -79,12 +80,7 @@ namespace Importers
 		const auto& paths = Util::Map (dir.entryList (QDir::Files),
 				[&dir] (const QString& file) { return dir.absoluteFilePath (file); });
 
-		KopeteImportThread *thread = new KopeteImportThread (data ["Protocol"].toString (), paths);
-		connect (thread,
-				SIGNAL (gotEntity (LeechCraft::Entity)),
-				S_Plugin_,
-				SIGNAL (gotEntity (LeechCraft::Entity)),
-				Qt::QueuedConnection);
+		const auto thread = new KopeteImportThread (Proxy_, data ["Protocol"].toString (), paths);
 		thread->start (QThread::LowestPriority);
 	}
 

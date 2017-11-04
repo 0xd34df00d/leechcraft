@@ -31,7 +31,7 @@
 
 #include <QThread>
 #include <QStringList>
-#include <interfaces/structures.h>
+#include <interfaces/core/icoreproxyfwd.h>
 
 namespace LeechCraft
 {
@@ -43,16 +43,15 @@ namespace Importers
 	{
 		Q_OBJECT
 
+		const ICoreProxy_ptr Proxy_;
 		QString Proto_;
 		QStringList Files_;
 	public:
-		KopeteImportThread (const QString& proto, const QStringList& files);
+		KopeteImportThread (const ICoreProxy_ptr& proxy, const QString& proto, const QStringList& files);
 	protected:
 		void run ();
 	private:
 		void ParseFile (const QString&);
-	signals:
-		void gotEntity (LeechCraft::Entity);
 	};
 }
 }

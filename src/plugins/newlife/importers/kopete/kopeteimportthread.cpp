@@ -31,6 +31,9 @@
 #include <QFile>
 #include <QDomDocument>
 #include <QDateTime>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ientitymanager.h>
+#include <interfaces/structures.h>
 
 namespace LeechCraft
 {
@@ -38,8 +41,9 @@ namespace NewLife
 {
 namespace Importers
 {
-	KopeteImportThread::KopeteImportThread (const QString& proto, const QStringList& files)
-	: Proto_ (proto)
+	KopeteImportThread::KopeteImportThread (const ICoreProxy_ptr& proxy, const QString& proto, const QStringList& files)
+	: Proxy_ (proxy)
+	, Proto_ (proto)
 	, Files_ (files)
 	{
 		connect (this,
@@ -144,7 +148,7 @@ namespace Importers
 		e.Additional_ ["AccountName"] = ourContact;
 		e.Additional_ ["AccountID"] = ourContact;
 		e.Parameters_ = OnlyHandle | FromUserInitiated;
-		emit gotEntity (e);
+		Proxy_->GetEntityManager ()->HandleEntity (e);
 	}
 }
 }

@@ -36,10 +36,10 @@ namespace NewLife
 {
 namespace Importers
 {
-	KopeteImporter::KopeteImporter (QObject *parent)
+	KopeteImporter::KopeteImporter (const ICoreProxy_ptr& proxy, QObject *parent)
 	: IMImporter ("Kopete",
 				QIcon (":/resources/images/apps/kopete.svg"),
-				new KopeteImportPage,
+				new KopeteImportPage { proxy },
 				parent)
 	{
 	}

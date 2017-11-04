@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <interfaces/core/icoreproxyfwd.h>
 #include "common/imimportpage.h"
 
 namespace LeechCraft
@@ -40,8 +41,10 @@ namespace Importers
 	class KopeteImportPage : public Common::IMImportPage
 	{
 		Q_OBJECT
+
+		const ICoreProxy_ptr Proxy_;
 	public:
-		KopeteImportPage (QWidget*  = 0);
+		KopeteImportPage (const ICoreProxy_ptr&, QWidget* = nullptr);
 	protected:
 		void FindAccounts ();
 		void SendImportAcc (QStandardItem*);
