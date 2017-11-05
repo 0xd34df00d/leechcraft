@@ -49,8 +49,8 @@ namespace NewLife
 {
 namespace Importers
 {
-	OperaImportSelectPage::OperaImportSelectPage (QWidget *parent)
-	: QWizardPage (parent)
+	OperaImportSelectPage::OperaImportSelectPage (const ICoreProxy_ptr& proxy, QWidget *parent)
+	: EntityGeneratingPage { proxy, parent }
 	{
 		Ui_.setupUi (this);
 	}
@@ -66,11 +66,6 @@ namespace Importers
 				SIGNAL (accepted ()),
 				this,
 				SLOT (handleAccepted ()));
-
-		connect (this,
-				SIGNAL (gotEntity (LeechCraft::Entity)),
-				wizard (),
-				SIGNAL (gotEntity (LeechCraft::Entity)));
 	}
 
 	void OperaImportSelectPage::checkImportDataAvailable (int index)
@@ -134,7 +129,7 @@ namespace Importers
 				qWarning () << Q_FUNC_INFO
 						<< "could not open database. Try to close Opera"
 						<< db.lastError ().text ();
-				emit gotEntity (Util::MakeNotification (tr ("Opera Import"),
+				SendEntity (Util::MakeNotification (tr ("Opera Import"),
 						tr ("Could not open Opera database: %1.")
 							.arg (db.lastError ().text ()),
 						PCritical_));
@@ -208,7 +203,7 @@ namespace Importers
 				qWarning () << Q_FUNC_INFO
 						<< "could not open database. Try to close Opera"
 						<< db.lastError ().text ();
-				emit gotEntity (Util::MakeNotification (tr ("Opera Import"),
+				SendEntity (Util::MakeNotification (tr ("Opera Import"),
 						tr ("Could not open Opera database: %1.")
 							.arg (db.lastError ().text ()),
 						PCritical_));
@@ -260,7 +255,7 @@ namespace Importers
 		file.setAutoRemove (false);
 		if (!file.open ())
 		{
-			emit gotEntity (Util::MakeNotification ("Opera Import",
+			SendEntity (Util::MakeNotification ("Opera Import",
 					tr ("OPML file for importing RSS cannot be created: %1")
 							.arg (file.errorString ()),
 					PCritical_));
@@ -309,7 +304,7 @@ namespace Importers
 				"x-leechcraft/browser-import-data");
 
 			eHistory.Additional_ ["BrowserHistory"] = GetHistory ();
-			emit gotEntity (eHistory);
+			SendEntity (eHistory);
 		}
 
 		if (Ui_.BookmarksImport_->isEnabled () && Ui_.BookmarksImport_->isChecked ())
@@ -320,7 +315,7 @@ namespace Importers
 					"x-leechcraft/browser-import-data");
 
 			eBookmarks.Additional_ ["BrowserBookmarks"] = GetBookmarks ();
-			emit gotEntity (eBookmarks);
+			SendEntity (eBookmarks);
 		}
 
 		if (Ui_.RSSImport_->isEnabled () && Ui_.RSSImport_->isChecked ())
@@ -335,7 +330,7 @@ namespace Importers
 					"text/x-opml");
 
 			eRss.Additional_ ["RemoveAfterHandling"] = true;
-			emit gotEntity (eRss);
+			SendEntity (eRss);
 		}
 	}
 }

@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <interfaces/core/icoreproxyfwd.h>
 #include "abstractimporter.h"
 
 namespace LeechCraft
@@ -45,7 +46,7 @@ namespace Importers
 
 		OperaImportSelectPage *ImportSelectPage_;
 	public:
-		OperaImporter (QWidget* = 0);
+		OperaImporter (const ICoreProxy_ptr&, QWidget* = nullptr);
 
 		QStringList GetNames () const;
 		QList<QIcon> GetIcons () const;

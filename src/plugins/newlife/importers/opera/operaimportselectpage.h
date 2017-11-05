@@ -29,8 +29,8 @@
 
 #pragma once
 
+#include "entitygeneratingpage.h"
 #include "ui_operaimportselectpage.h"
-#include <QWizardPage>
 
 namespace LeechCraft
 {
@@ -40,13 +40,13 @@ namespace NewLife
 {
 namespace Importers
 {
-	class OperaImportSelectPage : public QWizardPage
+	class OperaImportSelectPage : public EntityGeneratingPage
 	{
 		Q_OBJECT
 
 		Ui::OperaImportSelectPage Ui_;
 	public:
-		OperaImportSelectPage (QWidget* = 0);
+		OperaImportSelectPage (const ICoreProxy_ptr&, QWidget* = nullptr);
 
 		int nextId () const override;
 		void initializePage () override;
@@ -57,8 +57,6 @@ namespace Importers
 	private slots:
 		void checkImportDataAvailable (int);
 		void handleAccepted ();
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }

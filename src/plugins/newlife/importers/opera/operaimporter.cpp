@@ -36,10 +36,10 @@ namespace NewLife
 {
 namespace Importers
 {
-	OperaImporter::OperaImporter (QWidget *parent)
+	OperaImporter::OperaImporter (const ICoreProxy_ptr& proxy, QWidget *parent)
 	: AbstractImporter (parent)
 	{
-		ImportSelectPage_ = new OperaImportSelectPage ();
+		ImportSelectPage_ = new OperaImportSelectPage (proxy);
 	}
 
 	QStringList OperaImporter::GetNames () const
