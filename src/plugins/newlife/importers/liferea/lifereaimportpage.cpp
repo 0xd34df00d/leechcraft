@@ -42,8 +42,8 @@ namespace NewLife
 {
 namespace Importers
 {
-	LifereaImportPage::LifereaImportPage (QWidget *parent)
-	: QWizardPage (parent)
+	LifereaImportPage::LifereaImportPage (const ICoreProxy_ptr& proxy, QWidget *parent)
+	: EntityGeneratingPage (proxy, parent)
 	{
 		Ui_.setupUi (this);
 		Ui_.ImportSettings_->setText (Ui_.ImportSettings_->text ().arg ("Liferea"));
@@ -101,11 +101,6 @@ namespace Importers
 				SIGNAL (accepted ()),
 				this,
 				SLOT (handleAccepted ()));
-
-		connect (this,
-				SIGNAL (gotEntity (const LeechCraft::Entity&)),
-				wizard (),
-				SIGNAL (gotEntity (const LeechCraft::Entity&)));
 
 		QString defaultFile = GetSuggestion ();
 
@@ -178,7 +173,7 @@ namespace Importers
 		}
 		*/
 
-		emit gotEntity (e);
+		SendEntity (e);
 	}
 
 	QString LifereaImportPage::GetSuggestion () const

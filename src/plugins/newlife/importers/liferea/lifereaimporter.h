@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <interfaces/core/icoreproxyfwd.h>
 #include "abstractimporter.h"
 
 namespace LeechCraft
@@ -45,7 +46,7 @@ namespace Importers
 
 		LifereaImportPage *ImportPage_;
 	public:
-		LifereaImporter (QWidget* = 0);
+		LifereaImporter (const ICoreProxy_ptr&, QWidget* = nullptr);
 
 		QStringList GetNames () const;
 		QList<QIcon> GetIcons () const;

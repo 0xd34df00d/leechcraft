@@ -36,10 +36,10 @@ namespace NewLife
 {
 namespace Importers
 {
-	LifereaImporter::LifereaImporter (QWidget *parent)
+	LifereaImporter::LifereaImporter (const ICoreProxy_ptr& proxy, QWidget *parent)
 	: AbstractImporter (parent)
 	{
-		ImportPage_ = new LifereaImportPage ();
+		ImportPage_ = new LifereaImportPage (proxy);
 	}
 
 	QStringList LifereaImporter::GetNames () const
