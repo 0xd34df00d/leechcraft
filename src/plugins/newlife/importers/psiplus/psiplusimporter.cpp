@@ -36,10 +36,10 @@ namespace NewLife
 {
 namespace Importers
 {
-	PsiPlusImporter::PsiPlusImporter (QObject *parent)
+	PsiPlusImporter::PsiPlusImporter (const ICoreProxy_ptr& proxy, QObject *parent)
 	: Common::IMImporter ("Psi+",
 				QIcon (":/resources/images/apps/psi-plus.svg"),
-				new PsiPlusImportPage,
+				new PsiPlusImportPage (proxy),
 				parent)
 	{
 	}

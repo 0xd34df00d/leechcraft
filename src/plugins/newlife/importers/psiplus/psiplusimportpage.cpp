@@ -34,6 +34,8 @@
 #include <QDateTime>
 #include <QtDebug>
 #include <util/xpc/util.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ientitymanager.h>
 #include "importwizard.h"
 #include "imhistimporterbase.h"
 
@@ -43,8 +45,9 @@ namespace NewLife
 {
 namespace Importers
 {
-	PsiPlusImportPage::PsiPlusImportPage (QWidget *parent)
+	PsiPlusImportPage::PsiPlusImportPage (const ICoreProxy_ptr& proxy, QWidget *parent)
 	: Common::IMImportPage (parent)
+	, Proxy_ (proxy)
 	{
 		auto tfd = [] (const QDomElement& account, const QString& field)
 			{ return account.firstChildElement (field).text (); };
@@ -98,7 +101,7 @@ namespace Importers
 		data.remove ("Contacts");
 		e.Additional_ ["AccountData"] = data;
 
-		emit gotEntity (e);
+		Proxy_->GetEntityManager ()->HandleEntity (e);
 	}
 
 	namespace

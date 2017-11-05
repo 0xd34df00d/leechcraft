@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <interfaces/core/icoreproxyfwd.h>
 #include "common/imimporter.h"
 
 namespace LeechCraft
@@ -41,7 +42,7 @@ namespace Importers
 	{
 		Q_OBJECT
 	public:
-		PsiPlusImporter (QObject* = 0);
+		PsiPlusImporter (const ICoreProxy_ptr&, QObject* = nullptr);
 	};
 }
 }

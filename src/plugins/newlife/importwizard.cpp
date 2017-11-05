@@ -50,11 +50,11 @@ namespace NewLife
 
 		Importers_ << new Importers::AkregatorImporter (proxy, this);
 		Importers_ << new Importers::FirefoxImporter (proxy, this);
-		Importers_ << new Importers::OperaImporter (this);
+		Importers_ << new Importers::OperaImporter (proxy, this);
 		Importers_ << new Importers::KTorrentImporter (proxy, this);
 		Importers_ << new Importers::LifereaImporter (proxy, this);
 		Importers_ << new Importers::KopeteImporter (proxy, this);
-		Importers_ << new Importers::PsiPlusImporter (this);
+		Importers_ << new Importers::PsiPlusImporter (proxy, this);
 		Importers_ << new Importers::VacuumImporter (this);
 
 		connect (this,
