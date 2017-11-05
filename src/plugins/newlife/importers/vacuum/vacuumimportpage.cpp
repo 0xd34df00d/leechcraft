@@ -43,8 +43,7 @@ namespace NewLife
 namespace Importers
 {
 	VacuumImportPage::VacuumImportPage (const ICoreProxy_ptr& proxy, QWidget *parent)
-	: Common::IMImportPage (parent)
-	, Proxy_ (proxy)
+	: Common::IMImportPage (proxy, parent)
 	{
 		auto tfd = [] (const QDomElement& account, const QString& field)
 			{ return account.firstChildElement (field).text (); };
@@ -91,7 +90,7 @@ namespace Importers
 				FromUserInitiated | OnlyHandle,
 				"x-leechcraft/im-account-import");
 		e.Additional_ ["AccountData"] = accItem->data (Roles::AccountData);
-		Proxy_->GetEntityManager ()->HandleEntity (e);
+		SendEntity (e);
 	}
 
 	namespace
@@ -221,7 +220,7 @@ namespace Importers
 			e.Additional_ ["AccountID"] = data ["Jid"];
 			e.Parameters_ = OnlyHandle | FromUserInitiated;
 
-			Proxy_->GetEntityManager ()->HandleEntity (e);
+			SendEntity (e);
 		}
 	}
 }

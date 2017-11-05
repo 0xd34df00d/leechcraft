@@ -30,7 +30,6 @@
 #pragma once
 
 #include <memory>
-#include <interfaces/core/icoreproxyfwd.h>
 #include "common/imimportpage.h"
 #include "common/xmlimaccount.h"
 
@@ -46,7 +45,6 @@ namespace Importers
 	{
 		Q_OBJECT
 
-		const ICoreProxy_ptr Proxy_;
 		std::unique_ptr<Common::XMLIMAccount> XIA_;
 	public:
 		PsiPlusImportPage (const ICoreProxy_ptr& proxy, QWidget* = nullptr);

@@ -36,8 +36,8 @@ namespace NewLife
 {
 namespace Common
 {
-	IMImportPage::IMImportPage (QWidget *parent)
-	: QWizardPage (parent)
+	IMImportPage::IMImportPage (const ICoreProxy_ptr& proxy, QWidget *parent)
+	: EntityGeneratingPage (proxy, parent)
 	, AccountsModel_ (new QStandardItemModel (this))
 	{
 		Ui_.setupUi (this);
@@ -61,10 +61,6 @@ namespace Common
 				this,
 				SLOT (handleAccepted ()),
 				Qt::UniqueConnection);
-		connect (this,
-				SIGNAL (gotEntity (LeechCraft::Entity)),
-				wizard (),
-				SIGNAL (gotEntity (LeechCraft::Entity)));
 
 		AccountsModel_->clear ();
 

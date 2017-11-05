@@ -29,8 +29,8 @@
 
 #pragma once
 
-#include <QWizardPage>
 #include <interfaces/structures.h>
+#include "entitygeneratingpage.h"
 #include "ui_imimportpage.h"
 
 class QStandardItemModel;
@@ -42,7 +42,7 @@ namespace NewLife
 {
 namespace Common
 {
-	class IMImportPage : public QWizardPage
+	class IMImportPage : public EntityGeneratingPage
 	{
 		Q_OBJECT
 	protected:
@@ -63,7 +63,7 @@ namespace Common
 			ImportHist
 		};
 
-		IMImportPage (QWidget* = 0);
+		IMImportPage (const ICoreProxy_ptr&, QWidget* = nullptr);
 
 		bool isComplete () const;
 		int nextId () const;
@@ -74,8 +74,6 @@ namespace Common
 		virtual void SendImportHist (QStandardItem*) = 0;
 	protected slots:
 		virtual void handleAccepted ();
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }

@@ -46,8 +46,7 @@ namespace NewLife
 namespace Importers
 {
 	PsiPlusImportPage::PsiPlusImportPage (const ICoreProxy_ptr& proxy, QWidget *parent)
-	: Common::IMImportPage (parent)
-	, Proxy_ (proxy)
+	: Common::IMImportPage (proxy, parent)
 	{
 		auto tfd = [] (const QDomElement& account, const QString& field)
 			{ return account.firstChildElement (field).text (); };
@@ -101,7 +100,7 @@ namespace Importers
 		data.remove ("Contacts");
 		e.Additional_ ["AccountData"] = data;
 
-		Proxy_->GetEntityManager ()->HandleEntity (e);
+		SendEntity (e);
 	}
 
 	namespace

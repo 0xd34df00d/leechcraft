@@ -40,8 +40,7 @@ namespace NewLife
 namespace Importers
 {
 	KopeteImportPage::KopeteImportPage (const ICoreProxy_ptr& proxy, QWidget *parent)
-	: Common::IMImportPage { parent }
-	, Proxy_ { proxy }
+	: Common::IMImportPage { proxy, parent }
 	{
 	}
 
