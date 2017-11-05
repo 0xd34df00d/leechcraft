@@ -34,9 +34,7 @@
 #include "common/imimportpage.h"
 #include "common/xmlimaccount.h"
 
-class QStandardItemModel;
 class QStandardItem;
-class QDomElement;
 
 namespace LeechCraft
 {
