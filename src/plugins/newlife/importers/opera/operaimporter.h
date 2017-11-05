@@ -30,7 +30,6 @@
 #pragma once
 
 #include "abstractimporter.h"
-#include "operaimportselectpage.h"
 
 namespace LeechCraft
 {
@@ -38,6 +37,8 @@ namespace NewLife
 {
 namespace Importers
 {
+	class OperaImportSelectPage;
+
 	class OperaImporter : public AbstractImporter
 	{
 		Q_OBJECT
