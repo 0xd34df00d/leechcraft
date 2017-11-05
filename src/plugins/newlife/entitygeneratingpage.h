@@ -40,6 +40,7 @@ namespace NewLife
 {
 	class EntityGeneratingPage : public QWizardPage
 	{
+	protected:
 		const ICoreProxy_ptr Proxy_;
 	public:
 		EntityGeneratingPage (const ICoreProxy_ptr&, QWidget* = nullptr);
