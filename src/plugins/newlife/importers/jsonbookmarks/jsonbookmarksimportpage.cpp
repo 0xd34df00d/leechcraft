@@ -30,6 +30,7 @@
 #include "jsonbookmarksimportpage.h"
 #include <QFile>
 #include <QMessageBox>
+#include <QFileDialog>
 #include <QtDebug>
 #include <util/sll/parsejson.h>
 #include <util/xpc/util.h>
@@ -44,6 +45,20 @@ namespace Importers
 	: EntityGeneratingPage { proxy, parent }
 	{
 		Ui_.setupUi (this);
+
+		connect (Ui_.Browse_,
+				&QPushButton::released,
+				this,
+				[this]
+				{
+					const auto& path = QFileDialog::getOpenFileName (this,
+							tr ("Select JSON bookmarks file"),
+							QDir::homePath (),
+							tr ("JSON files (*.json);;All files (*.*)"));
+
+					if (!path.isEmpty ())
+						Ui_.Path_->setText (path);
+				});
 	}
 
 	int JsonBookmarksImportPage::nextId () const
