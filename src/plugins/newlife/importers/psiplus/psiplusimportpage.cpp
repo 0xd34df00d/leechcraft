@@ -55,7 +55,7 @@ namespace Importers
 		auto adapter = Common::XMLIMAccount::ConfigAdapter
 		{
 			AccountsModel_,
-			QStringList (".config") << "Psi+" << "profiles",
+			QStringList { ".config", "Psi+", "profiles" },
 			"accounts.xml",
 			[] (const QDomElement&) { return "xmpp"; },
 			[=] (const QDomElement& acc) { return tfd (acc, "name"); },

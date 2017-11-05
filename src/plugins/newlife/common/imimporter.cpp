@@ -36,8 +36,7 @@ namespace NewLife
 {
 namespace Common
 {
-	IMImporter::IMImporter (const QString& name,
-			const QIcon& icon, IMImportPage *page, QObject *parent)
+	IMImporter::IMImporter (const QString& name, const QIcon& icon, IMImportPage *page, QObject *parent)
 	: AbstractImporter (parent)
 	, Name_ (name)
 	, Icon_ (icon)
@@ -47,19 +46,17 @@ namespace Common
 
 	QStringList IMImporter::GetNames () const
 	{
-		return QStringList (Name_);
+		return { Name_ };
 	}
 
 	QList<QIcon> IMImporter::GetIcons () const
 	{
-		return QList<QIcon> () << Icon_;
+		return { Icon_ };
 	}
 
 	QList<QWizardPage*> IMImporter::GetWizardPages () const
 	{
-		QList<QWizardPage*> result;
-		result << Page_;
-		return result;
+		return { Page_ };
 	}
 }
 }

@@ -56,8 +56,7 @@ namespace Importers
 	bool KTorrentImportPage::CheckValidity (const QString& filename) const
 	{
 		QFile file (filename);
-		if (!file.exists () ||
-				!file.open (QIODevice::ReadOnly))
+		if (!file.open (QIODevice::ReadOnly))
 			return false;
 
 		return true;

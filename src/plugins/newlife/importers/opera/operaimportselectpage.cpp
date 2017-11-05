@@ -79,7 +79,6 @@ namespace Importers
 			Ui_.HistoryImport_->setEnabled (false);
 			Ui_.BookmarksImport_->setEnabled (false);
 			Ui_.RSSImport_->setEnabled (false);
-			return;
 		}
 	}
 
