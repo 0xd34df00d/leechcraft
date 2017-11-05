@@ -245,7 +245,7 @@ namespace Importers
 	{
 		QVariantMap data = accItem->data (Roles::AccountData).toMap ();
 
-		auto hi = new HistImporter (data ["ParentProfile"].toString (),
+		new HistImporter (data ["ParentProfile"].toString (),
 				data ["Name"].toString (),
 				data ["Jid"].toString (),
 				data ["Contacts"].toStringList (),

@@ -38,8 +38,6 @@ namespace NewLife
 {
 namespace Importers
 {
-	class VacuumImportPage;
-
 	class VacuumImporter : public Common::IMImporter
 	{
 	public:

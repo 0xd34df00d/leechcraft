@@ -65,9 +65,9 @@ namespace Common
 
 		IMImportPage (const ICoreProxy_ptr&, QWidget* = nullptr);
 
-		bool isComplete () const;
-		int nextId () const;
-		void initializePage ();
+		bool isComplete () const override;
+		int nextId () const override;
+		void initializePage () override;
 	protected:
 		virtual void FindAccounts () = 0;
 		virtual void SendImportAcc (QStandardItem*) = 0;

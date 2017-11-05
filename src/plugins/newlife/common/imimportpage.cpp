@@ -64,11 +64,13 @@ namespace Common
 
 		AccountsModel_->clear ();
 
-		QStringList labels;
-		labels << tr ("Account name")
-				<< tr ("JID")
-				<< tr ("Import account settings")
-				<< tr ("Import history");
+		const QStringList labels
+		{
+			tr ("Account name"),
+			tr ("JID"),
+			tr ("Import account settings"),
+			tr ("Import history")
+		};
 		AccountsModel_->setHorizontalHeaderLabels (labels);
 
 		FindAccounts ();
