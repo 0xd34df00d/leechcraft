@@ -44,21 +44,21 @@ namespace Importers
 	{
 		Q_OBJECT
 
-			Ui::OperaImportSelectPage Ui_;
-		public:
-			OperaImportSelectPage (QWidget* = 0);
+		Ui::OperaImportSelectPage Ui_;
+	public:
+		OperaImportSelectPage (QWidget* = 0);
 
-			virtual int nextId () const;
-			virtual void initializePage ();
-		private:
-			QList<QVariant> GetHistory ();
-			QList<QVariant> GetBookmarks ();
-			QString GetImportOpmlFile ();
-		private slots:
-			void checkImportDataAvailable (int);
-			void handleAccepted ();
-		signals:
-			void gotEntity (const LeechCraft::Entity&);
+		virtual int nextId () const;
+		virtual void initializePage ();
+	private:
+		QList<QVariant> GetHistory ();
+		QList<QVariant> GetBookmarks ();
+		QString GetImportOpmlFile ();
+	private slots:
+		void checkImportDataAvailable (int);
+		void handleAccepted ();
+	signals:
+		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }
