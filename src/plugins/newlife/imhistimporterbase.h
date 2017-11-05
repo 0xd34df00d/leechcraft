@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QObject>
+#include <interfaces/core/icoreproxyfwd.h>
 
 namespace LeechCraft
 {
@@ -40,14 +41,14 @@ namespace NewLife
 	class IMHistImporterBase : public QObject
 	{
 		Q_OBJECT
+
+		const ICoreProxy_ptr Proxy_;
 	public:
-		IMHistImporterBase (QObject* = 0);
+		IMHistImporterBase (const ICoreProxy_ptr&, QObject* = nullptr);
 	protected:
 		virtual Entity GetEntityChunk () = 0;
 	protected slots:
 		virtual void doChunk ();
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }

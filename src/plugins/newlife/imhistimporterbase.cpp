@@ -30,13 +30,16 @@
 #include "imhistimporterbase.h"
 #include <QTimer>
 #include <interfaces/structures.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ientitymanager.h>
 
 namespace LeechCraft
 {
 namespace NewLife
 {
-	IMHistImporterBase::IMHistImporterBase (QObject *parent)
+	IMHistImporterBase::IMHistImporterBase (const ICoreProxy_ptr& proxy, QObject *parent)
 	: QObject (parent)
+	, Proxy_ (proxy)
 	{
 		QTimer::singleShot (1000,
 				this,
@@ -52,7 +55,7 @@ namespace NewLife
 			return;
 		}
 
-		emit gotEntity (e);
+		Proxy_->GetEntityManager ()->HandleEntity (e);
 		QTimer::singleShot (500,
 				this,
 				SLOT (doChunk ()));

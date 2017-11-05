@@ -116,9 +116,12 @@ namespace Importers
 			QFile CurrentFile_;
 		public:
 			HistImporter (const QString& profile,
-					const QString& accName, const QString& accId,
-					const QStringList& jids, QObject *parent = 0)
-			: IMHistImporterBase (parent)
+					const QString& accName,
+					const QString& accId,
+					const QStringList& jids,
+					const ICoreProxy_ptr& proxy,
+					QObject *parent = nullptr)
+			: IMHistImporterBase (proxy, parent)
 			, Profile_ (profile)
 			, AccName_ (accName)
 			, AccID_ (accId)
@@ -242,14 +245,11 @@ namespace Importers
 	{
 		QVariantMap data = accItem->data (Roles::AccountData).toMap ();
 
-		HistImporter *hi = new HistImporter (data ["ParentProfile"].toString (),
+		auto hi = new HistImporter (data ["ParentProfile"].toString (),
 				data ["Name"].toString (),
 				data ["Jid"].toString (),
-				data ["Contacts"].toStringList ());
-		connect (hi,
-				SIGNAL (gotEntity (LeechCraft::Entity)),
-				qobject_cast<ImportWizard*> (wizard ())->GetPlugin (),
-				SIGNAL (gotEntity (LeechCraft::Entity)));
+				data ["Contacts"].toStringList (),
+				Proxy_);
 	}
 }
 }
