@@ -49,8 +49,6 @@ namespace NewLife
 		virtual QList<QIcon> GetIcons () const;
 		virtual QStringList GetNames () const = 0;
 		virtual QList<QWizardPage*> GetWizardPages () const = 0;
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }

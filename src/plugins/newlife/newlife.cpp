@@ -95,12 +95,7 @@ namespace NewLife
 
 	void Plugin::runWizard ()
 	{
-		ImportWizard *wiz = new ImportWizard (Proxy_, this);
-		connect (wiz,
-				SIGNAL (gotEntity (const LeechCraft::Entity&)),
-				this,
-				SIGNAL (gotEntity (const LeechCraft::Entity&)));
-		wiz->show ();
+		(new ImportWizard (Proxy_, this))->show ();
 	}
 }
 }

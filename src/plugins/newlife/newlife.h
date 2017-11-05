@@ -65,8 +65,6 @@ namespace NewLife
 	private slots:
 		void runWizard ();
 	signals:
-		void gotEntity (const LeechCraft::Entity&);
-
 		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
 	};
 }

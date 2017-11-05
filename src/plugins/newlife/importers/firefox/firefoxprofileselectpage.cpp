@@ -74,11 +74,6 @@ namespace Importers
 				this,
 				SLOT (handleAccepted ()));
 
-		connect (this,
-				SIGNAL (gotEntity (const LeechCraft::Entity&)),
-				wizard (),
-				SIGNAL (gotEntity (const LeechCraft::Entity&)));
-
 		connect (Ui_.ProfileList_,
 				SIGNAL (currentIndexChanged (int)),
 				this,

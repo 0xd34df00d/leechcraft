@@ -35,8 +35,6 @@
 
 namespace LeechCraft
 {
-struct Entity;
-
 namespace NewLife
 {
 	class AbstractImporter;
@@ -59,8 +57,6 @@ namespace NewLife
 		QObject* GetPlugin () const;
 	private:
 		void SetupImporters ();
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }
