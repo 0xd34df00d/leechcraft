@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <interfaces/core/icoreproxyfwd.h>
 #include "common/imimporter.h"
 
 namespace LeechCraft
@@ -42,7 +43,7 @@ namespace Importers
 	class VacuumImporter : public Common::IMImporter
 	{
 	public:
-		VacuumImporter (QObject* = 0);
+		VacuumImporter (const ICoreProxy_ptr& proxy, QObject* = nullptr);
 	};
 }
 }

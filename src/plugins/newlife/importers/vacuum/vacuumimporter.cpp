@@ -36,9 +36,9 @@ namespace NewLife
 {
 namespace Importers
 {
-	VacuumImporter::VacuumImporter (QObject *obj)
+	VacuumImporter::VacuumImporter (const ICoreProxy_ptr& proxy, QObject *obj)
 	: Common::IMImporter ("Vacuum IM",
-			QIcon (":/resources/images/apps/vacuum.svg"), new VacuumImportPage, obj)
+			QIcon (":/resources/images/apps/vacuum.svg"), new VacuumImportPage (proxy), obj)
 	{
 	}
 }

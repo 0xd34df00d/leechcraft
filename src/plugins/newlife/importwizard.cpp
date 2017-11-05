@@ -55,7 +55,7 @@ namespace NewLife
 		Importers_ << new Importers::LifereaImporter (proxy, this);
 		Importers_ << new Importers::KopeteImporter (proxy, this);
 		Importers_ << new Importers::PsiPlusImporter (proxy, this);
-		Importers_ << new Importers::VacuumImporter (this);
+		Importers_ << new Importers::VacuumImporter (proxy, this);
 
 		connect (this,
 				&QDialog::accepted,

@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <interfaces/core/icoreproxyfwd.h>
 #include "common/imimportpage.h"
 #include "common/xmlimaccount.h"
 
@@ -44,9 +45,10 @@ namespace Importers
 	{
 		Q_OBJECT
 
+		const ICoreProxy_ptr Proxy_;
 		std::unique_ptr<Common::XMLIMAccount> XIA_;
 	public:
-		VacuumImportPage (QWidget* = 0);
+		VacuumImportPage (const ICoreProxy_ptr&, QWidget* = nullptr);
 	protected:
 		void FindAccounts ();
 		void SendImportAcc (QStandardItem*);

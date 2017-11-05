@@ -33,6 +33,8 @@
 #include <QDateTime>
 #include <QDir>
 #include <util/xpc/util.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ientitymanager.h>
 
 namespace LeechCraft
 {
@@ -40,8 +42,9 @@ namespace NewLife
 {
 namespace Importers
 {
-	VacuumImportPage::VacuumImportPage (QWidget *parent)
+	VacuumImportPage::VacuumImportPage (const ICoreProxy_ptr& proxy, QWidget *parent)
 	: Common::IMImportPage (parent)
+	, Proxy_ (proxy)
 	{
 		auto tfd = [] (const QDomElement& account, const QString& field)
 			{ return account.firstChildElement (field).text (); };
@@ -88,7 +91,7 @@ namespace Importers
 				FromUserInitiated | OnlyHandle,
 				"x-leechcraft/im-account-import");
 		e.Additional_ ["AccountData"] = accItem->data (Roles::AccountData);
-		emit gotEntity (e);
+		Proxy_->GetEntityManager ()->HandleEntity (e);
 	}
 
 	namespace
@@ -218,7 +221,7 @@ namespace Importers
 			e.Additional_ ["AccountID"] = data ["Jid"];
 			e.Parameters_ = OnlyHandle | FromUserInitiated;
 
-			emit gotEntity (e);
+			Proxy_->GetEntityManager ()->HandleEntity (e);
 		}
 	}
 }
