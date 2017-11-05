@@ -50,9 +50,9 @@ namespace Importers
 	public:
 		VacuumImportPage (const ICoreProxy_ptr&, QWidget* = nullptr);
 	protected:
-		void FindAccounts ();
-		void SendImportAcc (QStandardItem*);
-		void SendImportHist (QStandardItem*);
+		void FindAccounts () override;
+		void SendImportAcc (QStandardItem*) override;
+		void SendImportHist (QStandardItem*) override;
 	};
 }
 }

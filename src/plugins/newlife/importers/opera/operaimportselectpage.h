@@ -48,8 +48,8 @@ namespace Importers
 	public:
 		OperaImportSelectPage (QWidget* = 0);
 
-		virtual int nextId () const;
-		virtual void initializePage ();
+		int nextId () const override;
+		void initializePage () override;
 	private:
 		QList<QVariant> GetHistory ();
 		QList<QVariant> GetBookmarks ();

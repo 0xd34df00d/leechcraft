@@ -51,9 +51,9 @@ namespace Importers
 	public:
 		PsiPlusImportPage (const ICoreProxy_ptr& proxy, QWidget* = nullptr);
 	protected:
-		void FindAccounts ();
-		void SendImportAcc (QStandardItem*);
-		void SendImportHist (QStandardItem*);
+		void FindAccounts () override;
+		void SendImportAcc (QStandardItem*) override;
+		void SendImportHist (QStandardItem*) override;
 	};
 }
 }
