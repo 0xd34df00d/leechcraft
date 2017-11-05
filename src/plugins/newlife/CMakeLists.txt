@@ -37,6 +37,8 @@ set (SRCS
 	importers/vacuum/vacuumimportpage.cpp
 	importers/opera/operaimporter.cpp
 	importers/opera/operaimportselectpage.cpp
+	importers/jsonbookmarks/jsonbookmarksimporter.cpp
+	importers/jsonbookmarks/jsonbookmarksimportpage.cpp
 	)
 set (FORMS
 	importwizard.ui
@@ -45,6 +47,7 @@ set (FORMS
 	common/imimportpage.ui
 	importers/firefox/firefoxprofileselectpage.ui
 	importers/opera/operaimportselectpage.ui
+	importers/jsonbookmarks/jsonbookmarksimportpage.ui
 	)
 set (RESOURCES newliferesources.qrc)
 CreateTrs ("newlife" "ar;be;de;en;fr;it;pl;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
