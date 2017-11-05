@@ -151,21 +151,12 @@ namespace Importers
 							break;
 						}
 
-						try
+						const auto& var = ParseLine (QString::fromUtf8 (CurrentFile_.readLine ()));
+						if (!var.isNull ())
 						{
-							const auto& var = ParseLine (QString::fromUtf8 (CurrentFile_.readLine ()));
-							if (!var.isNull ())
-							{
-								list << var;
-								if (++counter > lim)
-									break;
-							}
-						}
-						catch (const std::exception& e)
-						{
-							qWarning () << Q_FUNC_INFO
-									<< "error parsing line"
-									<< e.what ();
+							list << var;
+							if (++counter > lim)
+								break;
 						}
 					}
 
