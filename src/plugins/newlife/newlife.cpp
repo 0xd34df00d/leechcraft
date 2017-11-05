@@ -46,8 +46,6 @@ namespace NewLife
 
 		Proxy_ = proxy;
 
-		Common::IMImportPage::SetPluginInstance (this);
-
 		ImporterAction_ = new QAction (tr ("Import settings..."), this);
 		ImporterAction_->setProperty ("ActionIcon", "document-import");
 		connect (ImporterAction_,
