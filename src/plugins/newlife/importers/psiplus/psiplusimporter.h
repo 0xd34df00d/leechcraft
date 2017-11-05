@@ -40,7 +40,6 @@ namespace Importers
 {
 	class PsiPlusImporter : public Common::IMImporter
 	{
-		Q_OBJECT
 	public:
 		PsiPlusImporter (const ICoreProxy_ptr&, QObject* = nullptr);
 	};

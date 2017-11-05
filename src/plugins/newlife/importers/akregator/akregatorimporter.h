@@ -42,8 +42,6 @@ namespace Importers
 
 	class AkregatorImporter : public AbstractImporter
 	{
-		Q_OBJECT
-
 		AkregatorImportPage *ImportPage_;
 	public:
 		AkregatorImporter (const ICoreProxy_ptr&, QWidget* = nullptr);

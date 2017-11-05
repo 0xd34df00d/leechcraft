@@ -42,8 +42,6 @@ namespace Importers
 
 	class LifereaImporter : public AbstractImporter
 	{
-		Q_OBJECT
-
 		LifereaImportPage *ImportPage_;
 	public:
 		LifereaImporter (const ICoreProxy_ptr&, QWidget* = nullptr);

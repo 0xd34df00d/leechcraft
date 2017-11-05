@@ -42,8 +42,6 @@ namespace Importers
 
 	class OperaImporter : public AbstractImporter
 	{
-		Q_OBJECT
-
 		OperaImportSelectPage *ImportSelectPage_;
 	public:
 		OperaImporter (const ICoreProxy_ptr&, QWidget* = nullptr);

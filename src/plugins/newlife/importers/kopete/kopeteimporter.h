@@ -40,7 +40,6 @@ namespace Importers
 {
 	class KopeteImporter : public Common::IMImporter
 	{
-		Q_OBJECT
 	public:
 		KopeteImporter (const ICoreProxy_ptr& proxy, QObject* = nullptr);
 	};

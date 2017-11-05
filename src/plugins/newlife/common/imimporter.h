@@ -41,8 +41,6 @@ namespace Common
 
 	class IMImporter : public AbstractImporter
 	{
-		Q_OBJECT
-
 		QString Name_;
 		QIcon Icon_;
 	protected:

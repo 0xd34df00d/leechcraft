@@ -43,8 +43,6 @@ namespace Importers
 {
 	class PsiPlusImportPage : public Common::IMImportPage
 	{
-		Q_OBJECT
-
 		std::unique_ptr<Common::XMLIMAccount> XIA_;
 	public:
 		PsiPlusImportPage (const ICoreProxy_ptr& proxy, QWidget* = nullptr);

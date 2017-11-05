@@ -42,8 +42,6 @@ namespace Importers
 
 	class FirefoxImporter : public AbstractImporter
 	{
-		Q_OBJECT
-
 		FirefoxImportPage *ImportPage_;
 		FirefoxProfileSelectPage *ProfileSelectPage_;
 	public:
