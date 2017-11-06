@@ -33,6 +33,7 @@
 #include <QFileDialog>
 #include <QtDebug>
 #include <util/sll/parsejson.h>
+#include <util/sll/prelude.h>
 #include <util/xpc/util.h>
 
 namespace LeechCraft
@@ -76,10 +77,17 @@ namespace Importers
 
 	namespace
 	{
-		template<typename T>
-		QVariantList CollectBookmarks (const T& roots, const QStringList& tags)
+		struct Bookmark
 		{
-			QVariantList result;
+			QString Title_;
+			QString URL_;
+			QStringList Tags_;
+		};
+
+		template<typename T>
+		QList<Bookmark> CollectBookmarks (const T& roots, const QStringList& tags)
+		{
+			QList<Bookmark> result;
 
 			for (const auto& childVar : roots)
 			{
@@ -100,11 +108,7 @@ namespace Importers
 					result += CollectBookmarks (child.value ("children").toList (), childTags);
 				}
 				else if (type == "url")
-					result.push_back (QVariantMap {
-								{ "Title", name },
-								{ "URL", child.value ("url") },
-								{ "Tags", tags }
-							});
+					result.push_back ({ name, child.value ("url").toString (), tags });
 				else
 					qWarning () << Q_FUNC_INFO
 							<< "unknown element type"
@@ -143,7 +147,16 @@ namespace Importers
 				{},
 				FromUserInitiated,
 				"x-leechcraft/browser-import-data");
-		entity.Additional_ ["BrowserBookmarks"] = bms;
+		entity.Additional_ ["BrowserBookmarks"] = Util::Map (bms,
+				[] (const Bookmark& bm) -> QVariant
+				{
+					return QVariantMap
+					{
+						{ "Title", bm.Title_ },
+						{ "URL", bm.URL_ },
+						{ "Tags", bm.Tags_ }
+					};
+				});
 		SendEntity (entity);
 	}
 }
