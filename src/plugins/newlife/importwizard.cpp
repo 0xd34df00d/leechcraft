@@ -48,14 +48,18 @@ namespace NewLife
 	{
 		Ui_.setupUi (this);
 
-		Importers_ << new Importers::AkregatorImporter (proxy, this);
-		Importers_ << new Importers::FirefoxImporter (proxy, this);
-		Importers_ << new Importers::OperaImporter (proxy, this);
-		Importers_ << new Importers::KTorrentImporter (proxy, this);
-		Importers_ << new Importers::LifereaImporter (proxy, this);
-		Importers_ << new Importers::KopeteImporter (proxy, this);
-		Importers_ << new Importers::PsiPlusImporter (proxy, this);
-		Importers_ << new Importers::VacuumImporter (proxy, this);
+		using namespace Importers;
+		std::apply ([&] (auto... tys) { Importers_ = { new std::remove_pointer_t<decltype (tys)> (proxy, this)... }; },
+				std::tuple<
+						AkregatorImporter*,
+						FirefoxImporter*,
+						OperaImporter*,
+						KTorrentImporter*,
+						LifereaImporter*,
+						KopeteImporter*,
+						PsiPlusImporter*,
+						VacuumImporter*
+					> {});
 
 		connect (this,
 				&QDialog::accepted,
