@@ -117,6 +117,27 @@ namespace Importers
 
 			return result;
 		}
+
+		auto BuildOccurencesMap (const QList<Bookmark>& items)
+		{
+			QHash<QString, int> result;
+			for (const auto& item : items)
+				for (const auto& tag : item.Tags_)
+					++result [tag];
+			return result;
+		}
+
+		QList<Bookmark> FixTags (QList<Bookmark> items)
+		{
+			const auto& occurences = BuildOccurencesMap (items);
+
+			for (auto& item : items)
+				for (const auto& tag : QStringList { item.Tags_ })
+					if (occurences [tag] == items.size ())
+						item.Tags_.removeOne (tag);
+
+			return items;
+		}
 	}
 
 	void JsonBookmarksImportPage::HandleAccepted ()
@@ -141,7 +162,7 @@ namespace Importers
 		const auto& map = Util::ParseJson (&file, Q_FUNC_INFO).toMap ();
 		const auto& roots = map.value ("roots").toMap ();
 
-		const auto& bms = CollectBookmarks (roots, {});
+		const auto& bms = FixTags (CollectBookmarks (roots, {}));
 
 		auto entity = Util::MakeEntity ({},
 				{},
