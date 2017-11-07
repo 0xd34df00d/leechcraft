@@ -57,8 +57,7 @@ namespace Util
 		{
 			qWarning () << context
 					<< "cannot parse"
-					<< error.errorString ()
-					<< bytes;
+					<< error.errorString ();
 			return {};
 		}
 		return result;
