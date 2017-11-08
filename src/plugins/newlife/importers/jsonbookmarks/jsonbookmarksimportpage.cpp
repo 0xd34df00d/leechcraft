@@ -60,6 +60,11 @@ namespace Importers
 					if (!path.isEmpty ())
 						Ui_.Path_->setText (path);
 				});
+
+		connect (Ui_.Path_,
+				&QLineEdit::textChanged,
+				this,
+				&QWizardPage::completeChanged);
 	}
 
 	int JsonBookmarksImportPage::nextId () const
@@ -73,6 +78,17 @@ namespace Importers
 				&QWizard::accepted,
 				this,
 				&JsonBookmarksImportPage::HandleAccepted);
+	}
+
+	bool JsonBookmarksImportPage::isComplete () const
+	{
+		const auto& filePath = Ui_.Path_->text ();
+		QFile file { filePath };
+		if (!file.open (QIODevice::ReadOnly))
+			return false;
+
+		const auto& map = Util::ParseJson (&file, Q_FUNC_INFO).toMap ();
+		return map.value ("roots").toMap ().size ();
 	}
 
 	namespace

@@ -48,6 +48,7 @@ namespace Importers
 
 		int nextId () const override;
 		void initializePage () override;
+		bool isComplete() const override;
 	private:
 		void HandleAccepted ();
 	};
