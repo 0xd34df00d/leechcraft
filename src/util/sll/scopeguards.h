@@ -43,6 +43,10 @@ namespace Util
 	 * ended on scope exit.
 	 * @return The scope guard calling <code>QSettings::endGroup()</code> on the
 	 * \em settings object on scope exit.
+	 *
+	 * @note BeginGroup() is preferable for most use cases.
+	 *
+	 * @sa BeginGroup()
 	 */
 	inline auto MakeEndGroupScopeGuard (QSettings& settings)
 	{
