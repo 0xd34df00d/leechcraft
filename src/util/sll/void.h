@@ -33,6 +33,11 @@ namespace LeechCraft
 {
 namespace Util
 {
+	/** @brief A proper void type, akin to unit (or <code>()</code>) type in
+	 * functional languages.
+	 *
+	 * Because C's <code>void</code> is not a first-class citizen.
+	 */
 	struct Void
 	{
 	};
