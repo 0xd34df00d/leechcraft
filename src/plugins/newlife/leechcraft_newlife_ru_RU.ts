@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="ru_RU">
+<TS version="2.1" language="ru_RU">
 <context>
     <name>FeedsSettingsImportPage</name>
     <message>
@@ -75,24 +75,37 @@
     </message>
 </context>
 <context>
+    <name>JsonBookmarksImportPage</name>
+    <message>
+        <location filename="importers/jsonbookmarks/jsonbookmarksimportpage.ui" line="20"/>
+        <source>File path:</source>
+        <translation>Файл:</translation>
+    </message>
+    <message>
+        <location filename="importers/jsonbookmarks/jsonbookmarksimportpage.ui" line="32"/>
+        <source>Browse...</source>
+        <translation>Обзор...</translation>
+    </message>
+</context>
+<context>
     <name>LeechCraft::NewLife::Common::IMImportPage</name>
     <message>
-        <location filename="common/imimportpage.cpp" line="79"/>
+        <location filename="common/imimportpage.cpp" line="69"/>
         <source>Account name</source>
         <translation>Учётная запись</translation>
     </message>
     <message>
-        <location filename="common/imimportpage.cpp" line="80"/>
+        <location filename="common/imimportpage.cpp" line="70"/>
         <source>JID</source>
         <translation>JID</translation>
     </message>
     <message>
-        <location filename="common/imimportpage.cpp" line="81"/>
+        <location filename="common/imimportpage.cpp" line="71"/>
         <source>Import account settings</source>
         <translation>Импорт настроек учётной записи</translation>
     </message>
     <message>
-        <location filename="common/imimportpage.cpp" line="82"/>
+        <location filename="common/imimportpage.cpp" line="72"/>
         <source>Import history</source>
         <translation>Импорт истории</translation>
     </message>
@@ -110,27 +123,27 @@
         <translation>Выберите файл с лентами Akregator&apos;а и параметры</translation>
     </message>
     <message>
-        <location filename="importers/akregator/akregatorimportpage.cpp" line="114"/>
+        <location filename="importers/akregator/akregatorimportpage.cpp" line="109"/>
         <source>Select Akregator&apos;s OPML file</source>
         <translation>Выбор OPML-файла Akregator&apos;а</translation>
     </message>
     <message>
-        <location filename="importers/akregator/akregatorimportpage.cpp" line="116"/>
+        <location filename="importers/akregator/akregatorimportpage.cpp" line="111"/>
         <source>OPML files (*.opml *.xml);;All files (*.*)</source>
         <translation>Файлы OPML (*.opml *.xml);;Все файлы (*.*)</translation>
     </message>
     <message>
-        <location filename="importers/akregator/akregatorimportpage.cpp" line="123"/>
+        <location filename="importers/akregator/akregatorimportpage.cpp" line="118"/>
         <source>The file you&apos;ve selected is not a valid OPML file.</source>
         <translation>Файл, выбранный вами, не является корректным OPML-файлом.</translation>
     </message>
     <message>
-        <location filename="importers/akregator/akregatorimportpage.cpp" line="166"/>
+        <location filename="importers/akregator/akregatorimportpage.cpp" line="161"/>
         <source>Akregator settings</source>
         <translation>Параметры Akregator</translation>
     </message>
     <message>
-        <location filename="importers/akregator/akregatorimportpage.cpp" line="171"/>
+        <location filename="importers/akregator/akregatorimportpage.cpp" line="166"/>
         <source>Could not access or parse Akregator settings.</source>
         <translation>Невозможно получить доступ либо разобрать параметры Akregator.</translation>
     </message>
@@ -162,29 +175,55 @@
 <context>
     <name>LeechCraft::NewLife::Importers::FirefoxProfileSelectPage</name>
     <message>
-        <location filename="importers/firefox/firefoxprofileselectpage.cpp" line="93"/>
+        <location filename="importers/firefox/firefoxprofileselectpage.cpp" line="89"/>
         <source>Default</source>
         <translation>По умолчанию</translation>
     </message>
     <message>
-        <location filename="importers/firefox/firefoxprofileselectpage.cpp" line="120"/>
+        <location filename="importers/firefox/firefoxprofileselectpage.cpp" line="116"/>
         <source>Please close Firefox before importing.</source>
         <translation>Пожалуйста, закройте Firefox перед импортированием.</translation>
     </message>
     <message>
-        <location filename="importers/firefox/firefoxprofileselectpage.cpp" line="331"/>
+        <location filename="importers/firefox/firefoxprofileselectpage.cpp" line="297"/>
         <source>OPML file for importing RSS cannot be created: %1</source>
         <translation>OPML-файл для импорта RSS не может быть создан: %1</translation>
     </message>
     <message>
-        <location filename="importers/firefox/firefoxprofileselectpage.cpp" line="352"/>
+        <location filename="importers/firefox/firefoxprofileselectpage.cpp" line="350"/>
         <source>Firefox Import</source>
         <translation>Импорт из Firefox</translation>
     </message>
     <message>
-        <location filename="importers/firefox/firefoxprofileselectpage.cpp" line="353"/>
+        <location filename="importers/firefox/firefoxprofileselectpage.cpp" line="351"/>
         <source>Could not open Firefox database: %1.</source>
         <translation>Невозможно открыть базу данных Firefox: %1.</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::NewLife::Importers::JsonBookmarksImportPage</name>
+    <message>
+        <location filename="importers/jsonbookmarks/jsonbookmarksimportpage.cpp" line="167"/>
+        <source>Unable to open file %1: %2.</source>
+        <translation>Невозможно открыть файл %1: %2.</translation>
+    </message>
+    <message>
+        <location filename="importers/jsonbookmarks/jsonbookmarksimportpage.cpp" line="198"/>
+        <source>Select JSON bookmarks file</source>
+        <translation>Выбор JSON-файла с закладками</translation>
+    </message>
+    <message>
+        <location filename="importers/jsonbookmarks/jsonbookmarksimportpage.cpp" line="200"/>
+        <source>JSON files (*.json);;All files (*.*)</source>
+        <translation>JSON-файлы (*.json);;Все файлы (*.*)</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::NewLife::Importers::JsonBookmarksImporter</name>
+    <message>
+        <location filename="importers/jsonbookmarks/jsonbookmarksimporter.cpp" line="47"/>
+        <source>JSON bookmarks</source>
+        <translation>Закладки в формате JSON</translation>
     </message>
 </context>
 <context>
@@ -200,22 +239,22 @@
         <translation>Выберите торренты KTorrent</translation>
     </message>
     <message>
-        <location filename="importers/ktorrent/ktorrentimportpage.cpp" line="96"/>
+        <location filename="importers/ktorrent/ktorrentimportpage.cpp" line="90"/>
         <source>Select KTorrent&apos;s configuration file</source>
         <translation>Выберите конфигурационный файл KTorrent</translation>
     </message>
     <message>
-        <location filename="importers/ktorrent/ktorrentimportpage.cpp" line="106"/>
+        <location filename="importers/ktorrent/ktorrentimportpage.cpp" line="100"/>
         <source>Can&apos;t read KTorrent&apos;s configuration file</source>
         <translation>Невозможно прочитать конфигурационный файл KTorrent</translation>
     </message>
     <message>
-        <location filename="importers/ktorrent/ktorrentimportpage.cpp" line="193"/>
+        <location filename="importers/ktorrent/ktorrentimportpage.cpp" line="187"/>
         <source>KTorrent settings</source>
         <translation>Параметры KTorrent</translation>
     </message>
     <message>
-        <location filename="importers/ktorrent/ktorrentimportpage.cpp" line="198"/>
+        <location filename="importers/ktorrent/ktorrentimportpage.cpp" line="192"/>
         <source>Could not access or parse KTorrent settings.</source>
         <translation>Невозможно прочесть параметры KTorrent.</translation>
     </message>
@@ -233,14 +272,34 @@
         <translation>Выберите базовое положение каталога Liferea и параметры</translation>
     </message>
     <message>
-        <location filename="importers/liferea/lifereaimportpage.cpp" line="119"/>
+        <location filename="importers/liferea/lifereaimportpage.cpp" line="114"/>
         <source>Select Liferea&apos;s directory</source>
         <translation>Выбор каталога Liferea</translation>
     </message>
     <message>
-        <location filename="importers/liferea/lifereaimportpage.cpp" line="128"/>
+        <location filename="importers/liferea/lifereaimportpage.cpp" line="123"/>
         <source>The directory you&apos;ve selected is not Liferea&apos;s directory.</source>
         <translation>Выбранный вами каталог не является каталогом LIferea.</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::NewLife::Importers::OperaImportSelectPage</name>
+    <message>
+        <location filename="importers/opera/operaimportselectpage.cpp" line="131"/>
+        <location filename="importers/opera/operaimportselectpage.cpp" line="205"/>
+        <source>Opera Import</source>
+        <translation>Импорт из Opera</translation>
+    </message>
+    <message>
+        <location filename="importers/opera/operaimportselectpage.cpp" line="132"/>
+        <location filename="importers/opera/operaimportselectpage.cpp" line="206"/>
+        <source>Could not open Opera database: %1.</source>
+        <translation>Невозможно открыть базу данных Opera: %1.</translation>
+    </message>
+    <message>
+        <location filename="importers/opera/operaimportselectpage.cpp" line="258"/>
+        <source>OPML file for importing RSS cannot be created: %1</source>
+        <translation>Невозможно создать OPML-файл для импорта RSS: %1</translation>
     </message>
 </context>
 <context>
@@ -254,6 +313,25 @@
         <location filename="newlife.cpp" line="77"/>
         <source>The settings importer.</source>
         <translation>Импортёр параметров.</translation>
+    </message>
+</context>
+<context>
+    <name>OperaImportSelectPage</name>
+    <message>
+        <location filename="importers/opera/operaimportselectpage.ui" line="24"/>
+        <source>Import history</source>
+        <translation>Импорт истории</translation>
+    </message>
+    <message>
+        <location filename="importers/opera/operaimportselectpage.ui" line="31"/>
+        <source>Import bookmarks</source>
+        <oldsource>Import bookmarks </oldsource>
+        <translation>Импорт закладок</translation>
+    </message>
+    <message>
+        <location filename="importers/opera/operaimportselectpage.ui" line="38"/>
+        <source>Import RSS</source>
+        <translation>Импорт RSS</translation>
     </message>
 </context>
 </TS>
