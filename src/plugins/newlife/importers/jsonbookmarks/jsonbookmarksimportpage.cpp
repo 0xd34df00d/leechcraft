@@ -50,16 +50,7 @@ namespace Importers
 		connect (Ui_.Browse_,
 				&QPushButton::released,
 				this,
-				[this]
-				{
-					const auto& path = QFileDialog::getOpenFileName (this,
-							tr ("Select JSON bookmarks file"),
-							QDir::homePath (),
-							tr ("JSON files (*.json);;All files (*.*)"));
-
-					if (!path.isEmpty ())
-						Ui_.Path_->setText (path);
-				});
+				&JsonBookmarksImportPage::BrowseFile);
 
 		connect (Ui_.Path_,
 				&QLineEdit::textChanged,
@@ -195,6 +186,17 @@ namespace Importers
 					};
 				});
 		SendEntity (entity);
+	}
+
+	void JsonBookmarksImportPage::BrowseFile ()
+	{
+		const auto& path = QFileDialog::getOpenFileName (this,
+				tr ("Select JSON bookmarks file"),
+				QDir::homePath (),
+				tr ("JSON files (*.json);;All files (*.*)"));
+
+		if (!path.isEmpty ())
+			Ui_.Path_->setText (path);
 	}
 }
 }

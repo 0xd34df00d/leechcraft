@@ -51,6 +51,7 @@ namespace Importers
 		bool isComplete() const override;
 	private:
 		void HandleAccepted ();
+		void BrowseFile ();
 	};
 }
 }
