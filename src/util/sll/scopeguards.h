@@ -48,5 +48,11 @@ namespace Util
 	{
 		return MakeScopeGuard ([&settings] { settings.endGroup (); });
 	}
+
+	inline auto BeginGroup (QSettings& settings, const QString& prefix)
+	{
+		settings.beginGroup(prefix);
+		return MakeScopeGuard ([&settings] { settings.endGroup (); });
+	}
 }
 }
