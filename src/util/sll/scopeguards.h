@@ -37,6 +37,13 @@ namespace LeechCraft
 {
 namespace Util
 {
+	/** @brief Creates a scope guard that ends the current group on \em settings.
+	 *
+	 * @param[in] settings The QSettings object whose current group should be
+	 * ended on scope exit.
+	 * @return The scope guard calling <code>QSettings::endGroup()</code> on the
+	 * \em settings object on scope exit.
+	 */
 	inline auto MakeEndGroupScopeGuard (QSettings& settings)
 	{
 		return MakeScopeGuard ([&settings] { settings.endGroup (); });
