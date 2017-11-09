@@ -49,9 +49,19 @@ namespace Util
 		return MakeScopeGuard ([&settings] { settings.endGroup (); });
 	}
 
-	inline auto BeginGroup (QSettings& settings, const QString& prefix)
+	/** @brief Begins the \em group on \em settings and returns a scope guard
+	 * ending that group.
+	 *
+	 * @param[in] settings The QSettings object.
+	 * @param[in] group The name of the group to begin.
+	 * @return The scope guard calling <code>QSettings::endGroup()</code> on the
+	 * \em settings object on scope exit.
+	 *
+	 * @sa MakeEndGroupScopeGuard()
+	 */
+	inline auto BeginGroup (QSettings& settings, const QString& group)
 	{
-		settings.beginGroup(prefix);
+		settings.beginGroup(group);
 		return MakeScopeGuard ([&settings] { settings.endGroup (); });
 	}
 }
