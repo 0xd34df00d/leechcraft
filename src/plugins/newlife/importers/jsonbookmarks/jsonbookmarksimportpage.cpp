@@ -69,6 +69,9 @@ namespace Importers
 				&QWizard::accepted,
 				this,
 				&JsonBookmarksImportPage::HandleAccepted);
+
+		if (!isComplete ())
+			BrowseFile ();
 	}
 
 	bool JsonBookmarksImportPage::isComplete () const
