@@ -37,6 +37,7 @@
 #include "importers/psiplus/psiplusimporter.h"
 #include "importers/vacuum/vacuumimporter.h"
 #include "importers/opera/operaimporter.h"
+#include "importers/jsonbookmarks/jsonbookmarksimporter.h"
 
 namespace LeechCraft
 {
@@ -54,6 +55,7 @@ namespace NewLife
 						AkregatorImporter*,
 						FirefoxImporter*,
 						OperaImporter*,
+						JsonBookmarksImporter*,
 						KTorrentImporter*,
 						LifereaImporter*,
 						KopeteImporter*,
