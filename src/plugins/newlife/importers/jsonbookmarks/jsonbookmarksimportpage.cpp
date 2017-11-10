@@ -77,6 +77,9 @@ namespace Importers
 	bool JsonBookmarksImportPage::isComplete () const
 	{
 		const auto& filePath = Ui_.Path_->text ();
+		if (!QFile::exists (filePath))
+			return false;
+
 		QFile file { filePath };
 		if (!file.open (QIODevice::ReadOnly))
 		{
