@@ -155,21 +155,21 @@ namespace Acetamide
 		if (!index.isValid ())
 			return;
 
-		std::unique_ptr<NewNickServIdentifyDialog> nns (new NewNickServIdentifyDialog (0));
-		nns->SetServer (Model_->item (index.row (), Column::ServerName)->text ());
-		nns->SetNickName (Model_->item (index.row (), Column::Nick)->text ());
-		nns->SetNickServNickName (Model_->item (index.row (), Column::NickServ)->text ());
-		nns->SetAuthString (Model_->item (index.row (), Column::AuthString)->text ());
-		nns->SetAuthMessage (Model_->item (index.row (), Column::AuthMessage)->text ());
+		NewNickServIdentifyDialog nns;
+		nns.SetServer (Model_->item (index.row (), Column::ServerName)->text ());
+		nns.SetNickName (Model_->item (index.row (), Column::Nick)->text ());
+		nns.SetNickServNickName (Model_->item (index.row (), Column::NickServ)->text ());
+		nns.SetAuthString (Model_->item (index.row (), Column::AuthString)->text ());
+		nns.SetAuthMessage (Model_->item (index.row (), Column::AuthMessage)->text ());
 
-		if (nns->exec () == QDialog::Rejected)
+		if (nns.exec () == QDialog::Rejected)
 			return;
 
-		Model_->item (index.row (), Column::ServerName)->setText (nns->GetServer ());
-		Model_->item (index.row (), Column::Nick)->setText (nns->GetNickName ());
-		Model_->item (index.row (), Column::NickServ)->setText (nns->GetNickServNickName ());
-		Model_->item (index.row (), Column::AuthString)->setText (nns->GetAuthString ());
-		Model_->item (index.row (), Column::AuthMessage)->setText (nns->GetAuthMessage ());
+		Model_->item (index.row (), Column::ServerName)->setText (nns.GetServer ());
+		Model_->item (index.row (), Column::Nick)->setText (nns.GetNickName ());
+		Model_->item (index.row (), Column::NickServ)->setText (nns.GetNickServNickName ());
+		Model_->item (index.row (), Column::AuthString)->setText (nns.GetAuthString ());
+		Model_->item (index.row (), Column::AuthMessage)->setText (nns.GetAuthMessage ());
 	}
 
 	void NickServIdentifyWidget::on_Delete__clicked ()
