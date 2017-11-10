@@ -37,6 +37,7 @@
 #include <QFutureWatcher>
 #include <util/sll/oldcppkludges.h>
 #include <util/sll/slotclosure.h>
+#include <util/sll/typegetter.h>
 #include "threadsconfig.h"
 #include "concurrentexception.h"
 
@@ -44,73 +45,48 @@ namespace LeechCraft
 {
 namespace Util
 {
-	template<typename R, typename F, typename... Args>
-	std::enable_if_t<!std::is_same<R, void>::value>
-		ReportFutureResult (QFutureInterface<R>& iface, F&& f, Args&&... args)
-	{
-		try
-		{
-			const auto result = Invoke (std::forward<F> (f), std::forward<Args> (args)...);
-			iface.reportFinished (&result);
-		}
-		catch (const QtException_t& e)
-		{
-			iface.reportException (e);
-			iface.reportFinished ();
-		}
-		catch (const std::exception& e)
-		{
-			iface.reportException (ConcurrentStdException { e });
-			iface.reportFinished ();
-		}
-	}
-
-	template<typename F, typename... Args>
-	void ReportFutureResult (QFutureInterface<void>& iface, F&& f, Args&&... args)
-	{
-		try
-		{
-			Invoke (std::forward<F> (f), std::forward<Args> (args)...);
-		}
-		catch (const QtException_t& e)
-		{
-			iface.reportException (e);
-		}
-		catch (const std::exception& e)
-		{
-			iface.reportException (ConcurrentStdException { e });
-		}
-
-		iface.reportFinished ();
-	}
-
 	namespace detail
 	{
-		template<typename T>
-		constexpr bool IsCallableImpl (int, std::result_of_t<T ()>* = nullptr)
-		{
-			return true;
-		}
-
-		template<typename T>
-		constexpr bool IsCallableImpl (float)
-		{
-			return false;
-		}
-
-		template<typename T>
-		constexpr bool IsCallable ()
-		{
-			return IsCallableImpl<T> (0);
-		}
+		template<typename T, typename... Args>
+		using CallableDetector_t = std::result_of_t<T (Args...)>; // C++17
 	}
 
-	template<typename R, typename U>
-	std::enable_if_t<std::is_constructible<R, U>::value && !detail::IsCallable<U> ()>
-		ReportFutureResult (QFutureInterface<R>& iface, U&& value)
+	template<typename R, typename F, typename... Args>
+	void ReportFutureResult (QFutureInterface<R>& iface, F&& f, Args&&... args)
 	{
-		const R result { std::forward<U> (value) };
-		iface.reportFinished (&result);
+		try
+		{
+			constexpr bool isVoid = std::is_same<R, void> {}; // C++17
+			if constexpr (!isVoid && !IsDetected_v<detail::CallableDetector_t, std::decay_t<F>, Args...>)
+			{
+				static_assert (std::is_constructible<R, F> {}); // C++17
+				static_assert (sizeof... (Args) == 0,
+						"Extra args when a value is passed. Perhaps you wanted to pass in a function?");
+
+				const R result { std::forward<F> (f) };
+				iface.reportFinished (&result);
+			}
+			else if constexpr (!isVoid)
+			{
+				const auto result = Invoke (std::forward<F> (f), std::forward<Args> (args)...);
+				iface.reportFinished (&result);
+			}
+			else
+			{
+				Invoke (std::forward<F> (f), std::forward<Args> (args)...);
+				iface.reportFinished ();
+			}
+		}
+		catch (const QtException_t& e)
+		{
+			iface.reportException (e);
+			iface.reportFinished ();
+		}
+		catch (const std::exception& e)
+		{
+			iface.reportException (ConcurrentStdException { e });
+			iface.reportFinished ();
+		}
 	}
 
 	namespace detail
