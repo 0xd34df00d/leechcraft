@@ -390,8 +390,7 @@ namespace LeechCraft
 	{
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "-pg");
-		settings.beginGroup ("Plugins");
-		const auto guard = Util::MakeEndGroupScopeGuard (settings);
+		const auto guard = Util::BeginGroup (settings, "Plugins");
 
 		for (const auto obj : ordered)
 		{
