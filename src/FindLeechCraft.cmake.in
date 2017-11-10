@@ -107,7 +107,8 @@ else()
 endif()
 
 set (CMAKE_AUTOMOC TRUE)
-set (CMAKE_CXX_STANDARD 14)
+set (CMAKE_CXX_STANDARD 17)
+set (CMAKE_CXX_STANDARD_REQUIRED TRUE)
 set (CMAKE_CXX_EXTENSIONS OFF)
 
 function (CreateTrsUpTarget PlugName Langs Sources Forms Xml)
