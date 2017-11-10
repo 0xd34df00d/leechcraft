@@ -41,7 +41,7 @@ namespace Util
 	{
 		using DefaultScopeGuardDeleter = std::function<void ()>;
 
-		class SharedScopeGuard
+		class [[nodiscard]] SharedScopeGuard
 		{
 			std::shared_ptr<void> Guard_;
 		public:
@@ -61,7 +61,7 @@ namespace Util
 		};
 
 		template<typename F>
-		class ScopeGuard
+		class [[nodiscard]] ScopeGuard
 		{
 			F F_;
 			bool Perform_ = true;
@@ -154,7 +154,7 @@ namespace Util
 	 * @return An object executing \em f on destruction.
 	 */
 	template<typename F>
-	detail::ScopeGuard<F> MakeScopeGuard (const F& f)
+	[[nodiscard]] detail::ScopeGuard<F> MakeScopeGuard (const F& f)
 	{
 		return { f };
 	}
