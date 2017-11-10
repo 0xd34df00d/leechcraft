@@ -79,7 +79,11 @@ namespace Importers
 		const auto& filePath = Ui_.Path_->text ();
 		QFile file { filePath };
 		if (!file.open (QIODevice::ReadOnly))
+		{
+			qDebug () << Q_FUNC_INFO
+					<< file.errorString ();
 			return false;
+		}
 
 		const auto& map = Util::ParseJson (&file, Q_FUNC_INFO).toMap ();
 		return map.value ("roots").toMap ().size ();
