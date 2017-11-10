@@ -93,7 +93,7 @@ namespace NetStoreManager
 
 	void FilesWatcherInotify::HandleNotification (int descriptor)
 	{
-		std::unique_ptr<char[]> buffer (new char [BufferLength_]);
+		const auto buffer = std::make_unique<char []> (BufferLength_);
 		ssize_t length = read (descriptor, buffer.get (), BufferLength_);
 		if (length < 0)
 		{
