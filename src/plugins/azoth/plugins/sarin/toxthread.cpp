@@ -426,7 +426,7 @@ namespace Sarin
 		if (count <= 0)
 			return;
 
-		std::unique_ptr<uint32_t []> friendList { new uint32_t [count] };
+		const auto friendList = std::make_unique<uint32_t []> (count);
 		tox_self_get_friend_list (Tox_.get (), friendList.get ());
 
 		for (uint32_t i = 0; i < count; ++i)
