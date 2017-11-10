@@ -48,7 +48,7 @@ namespace Util
 	 *
 	 * @sa BeginGroup()
 	 */
-	inline auto MakeEndGroupScopeGuard (QSettings& settings)
+	[[nodiscard]] inline auto MakeEndGroupScopeGuard (QSettings& settings)
 	{
 		return MakeScopeGuard ([&settings] { settings.endGroup (); });
 	}
@@ -63,7 +63,7 @@ namespace Util
 	 *
 	 * @sa MakeEndGroupScopeGuard()
 	 */
-	inline auto BeginGroup (QSettings& settings, const QString& group)
+	[[nodiscard]] inline auto BeginGroup (QSettings& settings, const QString& group)
 	{
 		settings.beginGroup(group);
 		return MakeScopeGuard ([&settings] { settings.endGroup (); });
