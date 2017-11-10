@@ -64,29 +64,26 @@ namespace Util
 						"Extra args when a value is passed. Perhaps you wanted to pass in a function?");
 
 				const R result { std::forward<F> (f) };
-				iface.reportFinished (&result);
+				iface.reportResult (result);
 			}
 			else if constexpr (!isVoid)
 			{
 				const auto result = Invoke (std::forward<F> (f), std::forward<Args> (args)...);
-				iface.reportFinished (&result);
+				iface.reportResult (result);
 			}
 			else
-			{
 				Invoke (std::forward<F> (f), std::forward<Args> (args)...);
-				iface.reportFinished ();
-			}
 		}
 		catch (const QtException_t& e)
 		{
 			iface.reportException (e);
-			iface.reportFinished ();
 		}
 		catch (const std::exception& e)
 		{
 			iface.reportException (ConcurrentStdException { e });
-			iface.reportFinished ();
 		}
+
+		iface.reportFinished ();
 	}
 
 	namespace detail
