@@ -18,7 +18,7 @@ data StatsPair = StatsPair { mean :: Double
                            , stddev :: Double
                            } deriving (Eq, Ord, Show)
 
-data Stats = Stats { stats :: StatsPair
+data Stats = Stats { statsWithOutliers :: StatsPair
                    , statsNoOutliers :: StatsPair
                    } deriving (Eq, Ord, Show)
 
