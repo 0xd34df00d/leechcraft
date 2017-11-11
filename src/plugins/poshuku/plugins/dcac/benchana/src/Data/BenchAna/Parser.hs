@@ -23,12 +23,12 @@ parseLine line | Right r <- AT.parseOnly lineParser line = Just r
 
 lineParser :: AT.Parser (BenchConfig, Int)
 lineParser = do
-    "QDEBUG"
+    void "QDEBUG"
     skipIncluding "bench"
     instr <- fmap BS.pack $ AT.manyTill AT.anyChar $ AT.char '('
     skipIncluding "QSize("
     width <- AT.decimal
-    ", "
+    void ", "
     height <- AT.decimal
     time <- skipIncluding' AT.decimal
     pure (BenchConfig { dims = Dims { .. }, .. }, time)
