@@ -14,9 +14,11 @@ cabal-version:       >=1.10
 library
   hs-source-dirs:      src
   exposed-modules:     Data.BenchAna.Types
+                     , Data.BenchAna.Parser
   build-depends:       base >= 4.7 && < 5
                      , bytestring
                      , containers
+                     , attoparsec
   default-language:    Haskell2010
 
 executable benchana-exe
