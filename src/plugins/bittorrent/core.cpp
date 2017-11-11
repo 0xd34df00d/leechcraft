@@ -782,7 +782,7 @@ namespace BitTorrent
 
 		const auto& handle = Handles_.at (idx).Handle_;
 
-		std::unique_ptr<TorrentInfo> result (new TorrentInfo);
+		auto result = std::make_unique<TorrentInfo> ();
 		result->Status_ = StatusKeeper_->GetStatus (handle, 0xffffffff);
 		if (const auto info = handle.torrent_file ())
 			result->Info_.reset (new libtorrent::torrent_info (*info));
