@@ -12,3 +12,11 @@ data BenchConfig = BenchConfig { dims :: Dims
                                } deriving (Eq, Ord, Show)
 
 type BenchResults = M.Map BenchConfig [Int]
+
+data Stats = Stats { mean :: Double
+                   , stddev :: Double
+                   , meanNoOutliers :: Double
+                   , stddevNoOutliers :: Double
+                   } deriving (Eq, Ord, Show)
+
+type BenchStats = M.Map BenchConfig Stats
