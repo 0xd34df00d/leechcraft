@@ -25,6 +25,7 @@ library
                      , statistics
                      , vector
                      , tabular
+                     , interpolate
   default-language:    Haskell2010
 
 executable benchana-exe
