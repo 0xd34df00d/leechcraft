@@ -78,14 +78,22 @@ namespace Util
 
 	namespace detail
 	{
-		template<typename Placeholder, template<typename...> class Op, typename... Args>
-		struct IsDetected : std::false_type {};
+		template<typename Default, typename Placeholder, template<typename...> class Op, typename... Args>
+		struct IsDetected
+		{
+			using value_t = std::false_type;
+			using type = Default;
+		};
 
-		template<template<typename...> class Op, typename... Args>
-		struct IsDetected<std::void_t<Op<Args...>>, Op, Args...> : std::true_type {};
+		template<typename Default, template<typename...> class Op, typename... Args>
+		struct IsDetected<Default, std::void_t<Op<Args...>>, Op, Args...>
+		{
+			using value_t = std::true_type;
+			using type = Op<Args...>;
+		};
 	}
 
 	template<template<typename...> class Op, typename... Args>
-	constexpr bool IsDetected_v = detail::IsDetected<void, Op, Args...>::value;
+	constexpr bool IsDetected_v = detail::IsDetected<void, void, Op, Args...>::value_t::value;
 }
 }
