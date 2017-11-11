@@ -789,8 +789,8 @@ namespace Aggregator
 		if (!index.isValid ())
 			return;
 
-		std::unique_ptr<FeedSettings> dia (new FeedSettings (index, this));
-		dia->exec ();
+		FeedSettings dia { index, this };
+		dia.exec ();
 	}
 
 	void Aggregator::handleFeedsContextMenuRequested (const QPoint& pos)

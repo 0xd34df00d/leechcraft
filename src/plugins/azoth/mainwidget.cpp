@@ -667,17 +667,17 @@ namespace Azoth
 
 	void MainWidget::handleAddContactRequested ()
 	{
-		std::unique_ptr<AddContactDialog> dia (new AddContactDialog (0, this));
-		if (dia->exec () != QDialog::Accepted)
+		AddContactDialog dia { 0, this };
+		if (dia.exec () != QDialog::Accepted)
 			return;
 
-		if (!dia->GetSelectedAccount ())
+		if (!dia.GetSelectedAccount ())
 			return;
 
-		dia->GetSelectedAccount ()->RequestAuth (dia->GetContactID (),
-					dia->GetReason (),
-					dia->GetNick (),
-					dia->GetGroups ());
+		dia.GetSelectedAccount ()->RequestAuth (dia.GetContactID (),
+					dia.GetReason (),
+					dia.GetNick (),
+					dia.GetGroups ());
 	}
 
 	void MainWidget::handleShowOffline (bool show)

@@ -50,8 +50,7 @@ namespace Auscrie
 	{
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Auscrie");
-		settings.beginGroup ("Filter");
-		auto endGroup = Util::MakeEndGroupScopeGuard (settings);
+		const auto guard = Util::BeginGroup (settings, "Filter");
 
 		return
 		{

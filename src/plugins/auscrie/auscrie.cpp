@@ -37,6 +37,7 @@
 #include <xmlsettingsdialog/basesettingsmanager.h>
 #include <util/util.h>
 #include <util/xpc/util.h>
+#include <util/sll/unreachable.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/ientityhandler.h>
@@ -225,9 +226,7 @@ namespace Auscrie
 			return QPixmap::grabWindow (qApp->desktop ()->winId ());
 		}
 
-		qWarning () << Q_FUNC_INFO
-				<< "unknown mode";
-		return QPixmap ();
+		Util::Unreachable ();
 	}
 }
 }

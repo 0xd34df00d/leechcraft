@@ -185,17 +185,17 @@ namespace Metida
 
 	void LJAccount::OpenConfigurationDialog ()
 	{
-		std::unique_ptr<LJAccountConfigurationDialog> dia (new LJAccountConfigurationDialog (0));
+		LJAccountConfigurationDialog dia;
 
 		if (!Login_.isEmpty ())
-			dia->ConfWidget ()->SetLogin (Login_);
+			dia.ConfWidget ()->SetLogin (Login_);
 
-		dia->ConfWidget ()->SetPassword (GetPassword ());
+		dia.ConfWidget ()->SetPassword (GetPassword ());
 
-		if (dia->exec () == QDialog::Rejected)
+		if (dia.exec () == QDialog::Rejected)
 			return;
 
-		FillSettings (dia->ConfWidget ());
+		FillSettings (dia.ConfWidget ());
 	}
 
 	bool LJAccount::IsValid () const

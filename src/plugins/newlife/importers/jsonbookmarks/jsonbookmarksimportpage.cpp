@@ -50,16 +50,12 @@ namespace Importers
 		connect (Ui_.Browse_,
 				&QPushButton::released,
 				this,
-				[this]
-				{
-					const auto& path = QFileDialog::getOpenFileName (this,
-							tr ("Select JSON bookmarks file"),
-							QDir::homePath (),
-							tr ("JSON files (*.json);;All files (*.*)"));
+				&JsonBookmarksImportPage::BrowseFile);
 
-					if (!path.isEmpty ())
-						Ui_.Path_->setText (path);
-				});
+		connect (Ui_.Path_,
+				&QLineEdit::textChanged,
+				this,
+				&QWizardPage::completeChanged);
 	}
 
 	int JsonBookmarksImportPage::nextId () const
@@ -73,6 +69,27 @@ namespace Importers
 				&QWizard::accepted,
 				this,
 				&JsonBookmarksImportPage::HandleAccepted);
+
+		if (!isComplete ())
+			BrowseFile ();
+	}
+
+	bool JsonBookmarksImportPage::isComplete () const
+	{
+		const auto& filePath = Ui_.Path_->text ();
+		if (!QFile::exists (filePath))
+			return false;
+
+		QFile file { filePath };
+		if (!file.open (QIODevice::ReadOnly))
+		{
+			qDebug () << Q_FUNC_INFO
+					<< file.errorString ();
+			return false;
+		}
+
+		const auto& map = Util::ParseJson (&file, Q_FUNC_INFO).toMap ();
+		return map.value ("roots").toMap ().size ();
 	}
 
 	namespace
@@ -117,6 +134,27 @@ namespace Importers
 
 			return result;
 		}
+
+		auto BuildOccurencesMap (const QList<Bookmark>& items)
+		{
+			QHash<QString, int> result;
+			for (const auto& item : items)
+				for (const auto& tag : item.Tags_)
+					++result [tag];
+			return result;
+		}
+
+		QList<Bookmark> FixTags (QList<Bookmark> items)
+		{
+			const auto& occurences = BuildOccurencesMap (items);
+
+			for (auto& item : items)
+				for (const auto& tag : QStringList { item.Tags_ })
+					if (occurences [tag] == items.size ())
+						item.Tags_.removeOne (tag);
+
+			return items;
+		}
 	}
 
 	void JsonBookmarksImportPage::HandleAccepted ()
@@ -141,7 +179,7 @@ namespace Importers
 		const auto& map = Util::ParseJson (&file, Q_FUNC_INFO).toMap ();
 		const auto& roots = map.value ("roots").toMap ();
 
-		const auto& bms = CollectBookmarks (roots, {});
+		const auto& bms = FixTags (CollectBookmarks (roots, {}));
 
 		auto entity = Util::MakeEntity ({},
 				{},
@@ -158,6 +196,17 @@ namespace Importers
 					};
 				});
 		SendEntity (entity);
+	}
+
+	void JsonBookmarksImportPage::BrowseFile ()
+	{
+		const auto& path = QFileDialog::getOpenFileName (this,
+				tr ("Select JSON bookmarks file"),
+				QDir::homePath (),
+				tr ("JSON files (*.json);;All files (*.*)"));
+
+		if (!path.isEmpty ())
+			Ui_.Path_->setText (path);
 	}
 }
 }

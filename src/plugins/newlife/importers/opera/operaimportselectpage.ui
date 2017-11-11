@@ -28,7 +28,7 @@
        <item>
         <widget class="QCheckBox" name="BookmarksImport_">
          <property name="text">
-          <string>Import bookmarks </string>
+          <string>Import bookmarks</string>
          </property>
         </widget>
        </item>

@@ -42,7 +42,7 @@ namespace Util
 
 		template<typename T>
 		using VoidSafe = std::conditional_t<
-				std::is_same_v<T, void>,
+				std::is_same<T, void> {}, // C++17
 				ReturnsVoid,
 				T
 			>;
@@ -71,7 +71,7 @@ namespace Util
 
 	template<typename F>
 	using RetType_t = std::conditional_t<
-			std::is_same_v<detail::RetTypeRaw_t<F>, detail::ReturnsVoid>,
+			std::is_same<detail::RetTypeRaw_t<F>, detail::ReturnsVoid> {}, // C++17
 			void,
 			detail::RetTypeRaw_t<F>
 		>;
