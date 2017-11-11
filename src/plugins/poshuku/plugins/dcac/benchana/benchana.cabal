@@ -16,12 +16,14 @@ library
   exposed-modules:     Data.BenchAna.Types
                      , Data.BenchAna.Parser
                      , Data.BenchAna.Stats
+                     , Data.BenchAna.Pretty
   build-depends:       base >= 4.7 && < 5
                      , bytestring
                      , containers
                      , attoparsec
                      , statistics
                      , vector
+                     , tabular
   default-language:    Haskell2010
 
 executable benchana-exe
