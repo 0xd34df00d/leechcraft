@@ -95,5 +95,8 @@ namespace Util
 
 	template<template<typename...> class Op, typename... Args>
 	constexpr bool IsDetected_v = detail::IsDetected<void, void, Op, Args...>::value_t::value;
+
+	template<typename Type, template<typename...> class Op, typename... Args>
+	using IsDetected_t = typename detail::IsDetected<Type, void, Op, Args...>::type;
 }
 }
