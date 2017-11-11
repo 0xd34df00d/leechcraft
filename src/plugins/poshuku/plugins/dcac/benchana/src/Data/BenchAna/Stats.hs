@@ -14,7 +14,7 @@ stats = fmap singleStats
 singleStats :: V.Vector Int -> Stats
 singleStats vec = Stats { .. }
     where statsWithOutliers = singleStats' vec'
-          statsNoOutliers = singleStats' $ S.sort vec'
+          statsNoOutliers = singleStats' $ V.init $ V.tail $ S.sort vec'
           vec' = V.map fromIntegral vec
 
 singleStats' :: V.Vector Double -> StatsPair
