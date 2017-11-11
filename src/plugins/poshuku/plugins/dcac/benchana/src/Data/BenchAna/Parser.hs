@@ -6,6 +6,7 @@ import qualified Data.ByteString.Char8 as BS
 import qualified Data.Attoparsec.ByteString.Char8 as AT
 import qualified Data.Attoparsec.Combinator as AT
 import qualified Data.Map as M
+import qualified Data.Vector.Unboxed as V
 import Control.Arrow
 import Data.Functor
 import Data.Monoid
@@ -14,7 +15,7 @@ import Data.Maybe
 import Data.BenchAna.Types
 
 parse :: BS.ByteString -> BenchResults
-parse = M.fromListWith (<>) . map (second pure) . mapMaybe parseLine . BS.lines
+parse = M.fromListWith (<>) . map (second V.singleton) . mapMaybe parseLine . BS.lines
 
 parseLine :: BS.ByteString -> Maybe (BenchConfig, Int)
 parseLine line | Right r <- AT.parseOnly lineParser line = Just r

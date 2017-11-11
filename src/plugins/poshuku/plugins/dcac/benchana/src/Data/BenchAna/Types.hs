@@ -2,7 +2,7 @@ module Data.BenchAna.Types where
 
 import qualified Data.ByteString.Char8 as BS
 import qualified Data.Map as M
-import qualified Data.Vector as V
+import qualified Data.Vector.Unboxed as V
 
 data Dims = Dims { width :: Int
                  , height :: Int
