@@ -19,6 +19,8 @@ library
                      , bytestring
                      , containers
                      , attoparsec
+                     , statistics
+                     , vector
   default-language:    Haskell2010
 
 executable benchana-exe
