@@ -112,8 +112,7 @@ namespace FatApe
 	{
 		const QString key { include ? "include" : "exclude" };
 		list = Util::Map (Metadata_.values (key),
-				[] (const QString& pattern)
-					{ return QRegExp { pattern, Qt::CaseInsensitive, QRegExp::Wildcard }; });
+				[] (const QString& pattern) { return QRegExp { pattern, Qt::CaseInsensitive, QRegExp::Wildcard }; });
 	}
 
 	bool UserScript::MatchToPage (const QString& pageUrl) const
