@@ -1,0 +1,52 @@
+name:                benchana
+version:             0.1.0.0
+homepage:            https://github.com/0xd34df00d/benchana#readme
+license:             BSD3
+license-file:        LICENSE
+author:              Georg Rudoy
+maintainer:          0xd34df00d@gmail.com
+copyright:           2017 Georg Rudoy
+category:            Misc
+build-type:          Simple
+extra-source-files:  README.md
+cabal-version:       >=1.10
+
+library
+  hs-source-dirs:      src
+  ghc-options:         -Wall
+  exposed-modules:     Data.BenchAna.Types
+                     , Data.BenchAna.Parser
+                     , Data.BenchAna.Stats
+                     , Data.BenchAna.Pretty
+  build-depends:       base >= 4.7 && < 5
+                     , bytestring
+                     , containers
+                     , attoparsec
+                     , statistics
+                     , vector
+                     , tabular
+                     , interpolate
+  default-language:    Haskell2010
+
+executable benchana-exe
+  hs-source-dirs:      app
+  main-is:             Main.hs
+  ghc-options:         -Wall -threaded -rtsopts -with-rtsopts=-N
+  build-depends:       base
+                     , benchana
+                     , bytestring
+                     , containers
+  default-language:    Haskell2010
+
+test-suite benchana-test
+  type:                exitcode-stdio-1.0
+  hs-source-dirs:      test
+  main-is:             Spec.hs
+  build-depends:       base
+                     , benchana
+  ghc-options:         -threaded -rtsopts -with-rtsopts=-N
+  default-language:    Haskell2010
+
+source-repository head
+  type:     git
+  location: https://github.com/0xd34df00d/benchana
