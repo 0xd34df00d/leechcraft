@@ -362,6 +362,12 @@ namespace Util
 			, DestrHandler_ { destrHandler }
 			{
 			}
+
+			template<typename F1, typename Ret1>
+			using ReturnsFutureDetector_t = UnwrapFutureType_t<std::result_of_t<F1 (Ret1)>>;
+
+			template<typename F, typename... Args>
+			using ReturnsVoidDetector_t = std::result_of_t<F (Args...)>;
 		public:
 			using Ret_t = Ret;
 
@@ -392,56 +398,29 @@ namespace Util
 
 			/** @brief Adds the functor \em f to the chain of actions.
 			 *
-			 * The functor \em f should return <code>QFuture<T0></code>
-			 * when called with a value of type \em Ret. That is, the
-			 * expression <code>f (std::declval<Ret> ())</code> should be
-			 * well-formed, and, moreover, its return type should be
-			 * <code>QFuture<T0></code> for some T0.
-			 *
-			 * @param[in] f The functor to chain.
-			 * @return An object of type
-			 * <code>SequencerProxy<T0, E0, A0></code> ready for chaining
-			 * new functions.
+			 * @param[in] f The functor to add to the chain.
+			 * @return A new SequenceProxy if the chain can be continued further on, \code void otherwise..
 			 * @tparam F The type of the functor to chain.
 			 */
 			template<typename F>
-			auto Then (F&& f) -> SequenceProxy<UnwrapFutureType_t<decltype (f (std::declval<Ret> ()))>, Future, DestructionTag>
+			auto Then (F&& f)
 			{
 				if (ThisFuture_)
 					throw std::runtime_error { "SequenceProxy::Then(): cannot chain more after being converted to a QFuture" };
 
-				Seq_->template Then<UnwrapFutureType_t<decltype (f (std::declval<Ret> ()))>, Ret> (f);
-				return { ExecuteGuard_, Seq_, DestrHandler_ };
-			}
-
-			/** @brief Adds the funtor \em f to the chain of actions and
-			 * closes the chain.
-			 *
-			 * The function \em f should return <code>void</code> when
-			 * called with a value of type \em Ret.
-			 *
-			 * No more functors may be chained after adding a
-			 * <code>void</code>-returning functor.
-			 *
-			 * @param[in] f The functor to chain.
-			 * @tparam F The type of the functor to chain.
-			 */
-			template<typename F>
-			auto Then (F&& f) -> std::enable_if_t<std::is_same<void, decltype (f (std::declval<Ret> ()))>::value>
-			{
-				if (ThisFuture_)
-					throw std::runtime_error { "SequenceProxy::Then(): cannot chain more after being converted to a QFuture" };
-
-				Seq_->template Then<Ret> (f);
-			}
-
-			template<typename F>
-			auto Then (F&& f) -> std::enable_if_t<std::is_same<void, Ret>::value && std::is_same<void, decltype (f ())>::value>
-			{
-				if (ThisFuture_)
-					throw std::runtime_error { "SequenceProxy::Then(): cannot chain more after being converted to a QFuture" };
-
-				Seq_->Then (std::function<void ()> { f });
+				if constexpr (IsDetected_v<ReturnsFutureDetector_t, F, Ret>)
+				{
+					using Next_t = UnwrapFutureType_t<decltype (f (std::declval<Ret> ()))>;
+					Seq_->template Then<Next_t, Ret> (f);
+					return SequenceProxy<Next_t, Future, DestructionTag> { ExecuteGuard_, Seq_, DestrHandler_ };
+				}
+				else if constexpr (std::is_same<IsDetected_t<struct Dummy, ReturnsVoidDetector_t, F, Ret>, void> {})
+					Seq_->template Then<Ret> (f);
+				else if constexpr (std::is_same<void, Ret>::value &&
+						std::is_same<IsDetected_t<struct Dummy, ReturnsVoidDetector_t, F>, void> {})
+					Seq_->Then (std::function<void ()> { f });
+				else
+					static_assert (std::is_same<F, struct Dummy> {}, "Invalid functor passed to SequenceProxy::Then()");
 			}
 
 			template<typename F>
