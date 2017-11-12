@@ -4,6 +4,7 @@ set (WEBENGINEVIEW_SRCS
 	cookiessyncer.cpp
 	customwebpage.cpp
 	customwebview.cpp
+	findnotification.cpp
 	requestinterceptor.cpp
 	webengineview.cpp
 	)
