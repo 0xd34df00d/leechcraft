@@ -544,7 +544,15 @@ namespace WebKitView
 			const QUrl& url, const QString& errorString, ErrorDomain domain) const
 	{
 		QFile file (":/resources/html/generalerror.html");
-		file.open (QIODevice::ReadOnly);
+		if (!file.open (QIODevice::ReadOnly))
+		{
+			qCritical () << Q_FUNC_INFO
+					<< "unable to open file"
+					<< file.fileName ()
+					<< file.errorString ();
+			return errorString;
+		}
+
 		QString data = file.readAll ();
 		data.replace ("{title}",
 				tr ("Error loading %1")
