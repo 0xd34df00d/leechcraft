@@ -39,6 +39,7 @@
 #include <interfaces/poshuku/iwebviewhistory.h>
 #include <interfaces/poshuku/iproxyobject.h>
 #include "customwebpage.h"
+#include "findnotification.h"
 
 namespace LeechCraft
 {
@@ -77,6 +78,8 @@ namespace WebEngineView
 
 	void CustomWebView::SurroundingsInitialized ()
 	{
+		FindDialog_ = new FindNotification { Proxy_, this };
+		FindDialog_->hide ();
 	}
 
 	QWidget* CustomWebView::GetQWidget ()
@@ -305,7 +308,10 @@ namespace WebEngineView
 
 	void CustomWebView::InitiateFind (const QString& text)
 	{
-		// TODO
+		if (!text.isEmpty ())
+			FindDialog_->SetText (text);
+		FindDialog_->show ();
+		FindDialog_->setFocus ();
 	}
 
 	QMenu* CustomWebView::CreateStandardContextMenu ()

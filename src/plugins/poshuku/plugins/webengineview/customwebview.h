@@ -42,6 +42,8 @@ class IProxyObject;
 
 namespace WebEngineView
 {
+	class FindNotification;
+
 	class CustomWebView final : public QWebEngineView
 							  , public IWebView
 							  , public IWkFontsSettable
@@ -51,6 +53,8 @@ namespace WebEngineView
 
 		const ICoreProxy_ptr Proxy_;
 		IProxyObject * const PoshukuProxy_;
+
+		FindNotification *FindDialog_ = nullptr;
 	public:
 		CustomWebView (const ICoreProxy_ptr&, IProxyObject*);
 
