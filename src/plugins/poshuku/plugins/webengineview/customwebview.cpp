@@ -34,6 +34,8 @@
 #include <QWebEngineHistory>
 #include <QWebEngineContextMenuData>
 #include <QWebChannel>
+#include <QPrinter>
+#include <QPrintDialog>
 #include <QContextMenuEvent>
 #include <util/sll/unreachable.h>
 #include <interfaces/poshuku/iwebviewhistory.h>
@@ -256,9 +258,16 @@ namespace WebEngineView
 				{});
 	}
 
-	void CustomWebView::Print (bool withPreview)
+	void CustomWebView::Print (bool preview)
 	{
-		// TODO
+		auto printer = std::make_shared<QPrinter> ();
+		QPrintDialog dialog (printer.get (), this);
+		dialog.setWindowTitle (tr ("Print web page"));
+
+		if (dialog.exec () != QDialog::Accepted)
+			return;
+
+		page ()->print (printer.get (), [printer] (bool) {});
 	}
 
 	QPixmap CustomWebView::MakeFullPageSnapshot ()
