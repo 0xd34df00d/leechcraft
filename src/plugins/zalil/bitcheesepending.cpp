@@ -45,7 +45,14 @@ namespace Zalil
 		QNetworkRequest req { QUrl { "https://dump.bitcheese.net/upload-file" } };
 		req.setRawHeader ("Referer", "https://dump.bitcheese.net/");
 
-		const auto reply = nam->post (req, MakeStandardMultipart ());
+		const auto multipart = MakeStandardMultipart ();
+		if (!multipart)
+		{
+			deleteLater ();
+			return;
+		}
+
+		const auto reply = nam->post (req, multipart);
 		connect (reply,
 				SIGNAL (finished ()),
 				this,
