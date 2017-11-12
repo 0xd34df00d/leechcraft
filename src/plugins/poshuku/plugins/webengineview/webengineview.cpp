@@ -75,6 +75,8 @@ namespace WebEngineView
 
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Proxy_ = proxy;
+
 		const auto prof = QWebEngineProfile::defaultProfile ();
 		const auto& uaParts = prof->httpUserAgent ().split (' ');
 		auto getVer = [&uaParts] (const QByteArray& marker)
@@ -131,7 +133,7 @@ namespace WebEngineView
 
 	IWebView_ptr Plugin::CreateWebView ()
 	{
-		auto view = std::make_shared<CustomWebView> (PoshukuProxy_);
+		auto view = std::make_shared<CustomWebView> (Proxy_, PoshukuProxy_);
 		HandleView (view.get ());
 		return view;
 	}

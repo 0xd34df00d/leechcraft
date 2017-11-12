@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QWebEngineView>
+#include <interfaces/core/icoreproxyfwd.h>
 #include <interfaces/poshuku/iwebview.h>
 #include <interfaces/iwkfontssettable.h>
 
@@ -48,9 +49,10 @@ namespace WebEngineView
 		Q_OBJECT
 		Q_INTERFACES (IWkFontsSettable LeechCraft::Poshuku::IWebView)
 
+		const ICoreProxy_ptr Proxy_;
 		IProxyObject * const PoshukuProxy_;
 	public:
-		CustomWebView (IProxyObject*);
+		CustomWebView (const ICoreProxy_ptr&, IProxyObject*);
 
 		void SurroundingsInitialized () override;
 

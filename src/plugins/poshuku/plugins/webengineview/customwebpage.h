@@ -31,6 +31,7 @@
 
 #include <memory>
 #include <QWebEnginePage>
+#include <interfaces/core/icoreproxyfwd.h>
 #include <interfaces/poshuku/ilinkopenmodifier.h>
 
 namespace LeechCraft
@@ -47,10 +48,11 @@ namespace WebEngineView
 	{
 		Q_OBJECT
 
+		const ICoreProxy_ptr Proxy_;
 		IProxyObject * const PoshukuProxy_;
 		const ILinkOpenModifier_ptr LinkOpenModifier_;
 	public:
-		CustomWebPage (IProxyObject*, QWidget*);
+		CustomWebPage (const ICoreProxy_ptr&, IProxyObject*, QWidget*);
 	protected:
 		bool acceptNavigationRequest (const QUrl&, NavigationType, bool) override;
 	signals:

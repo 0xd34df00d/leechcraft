@@ -46,10 +46,11 @@ namespace Poshuku
 {
 namespace WebEngineView
 {
-	CustomWebView::CustomWebView (IProxyObject *poshukuProxy)
-	: PoshukuProxy_ { poshukuProxy }
+	CustomWebView::CustomWebView (const ICoreProxy_ptr& proxy, IProxyObject *poshukuProxy)
+	: Proxy_ { proxy }
+	, PoshukuProxy_ { poshukuProxy }
 	{
-		const auto page = new CustomWebPage { poshukuProxy, this };
+		const auto page = new CustomWebPage { proxy, poshukuProxy, this };
 		setPage (page);
 
 		connect (page,
