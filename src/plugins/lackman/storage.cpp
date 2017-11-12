@@ -539,8 +539,7 @@ namespace LackMan
 			throw std::runtime_error ("Query execution failed");
 		}
 
-		others.next ();
-		if (!others.value (0).toInt ())
+		if (!others.next () || !others.value (0).toInt ())
 		{
 			qDebug () << Q_FUNC_INFO
 					<< "no other packages"
