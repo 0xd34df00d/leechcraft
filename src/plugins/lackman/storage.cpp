@@ -74,19 +74,7 @@ namespace LackMan
 	: QObject (parent)
 	, DB_ (QSqlDatabase::addDatabase ("QSQLITE", "LackManConnectionAvailable"))
 	{
-		QDir dir;
-		try
-		{
-			dir = Util::CreateIfNotExists ("lackman");
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< e.what ();
-			throw;
-		}
-
-		DB_.setDatabaseName (dir.filePath ("availablepackages.db"));
+		DB_.setDatabaseName (Util::CreateIfNotExists ("lackman").filePath ("availablepackages.db"));
 
 		if (!DB_.open ())
 		{
