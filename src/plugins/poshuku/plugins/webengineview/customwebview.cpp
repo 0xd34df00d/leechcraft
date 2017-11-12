@@ -260,6 +260,10 @@ namespace WebEngineView
 
 	void CustomWebView::Print (bool preview)
 	{
+		if (preview)
+			qWarning () << Q_FUNC_INFO
+					<< "printing with preview is not supported yet";
+
 		auto printer = std::make_shared<QPrinter> ();
 		QPrintDialog dialog (printer.get (), this);
 		dialog.setWindowTitle (tr ("Print web page"));
