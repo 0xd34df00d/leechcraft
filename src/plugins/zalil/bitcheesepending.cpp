@@ -42,8 +42,8 @@ namespace Zalil
 	{
 		const auto nam = proxy->GetNetworkAccessManager ();
 
-		QNetworkRequest req { QUrl { "http://dump.bitcheese.net/upload-file" } };
-		req.setRawHeader ("Referer", "http://dump.bitcheese.net/");
+		QNetworkRequest req { QUrl { "https://dump.bitcheese.net/upload-file" } };
+		req.setRawHeader ("Referer", "https://dump.bitcheese.net/");
 
 		const auto reply = nam->post (req, MakeStandardMultipart ());
 		connect (reply,
