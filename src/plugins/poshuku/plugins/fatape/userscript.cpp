@@ -94,7 +94,14 @@ namespace FatApe
 
 		while ((line = content.readLine ()) != MetadataEnd && !content.atEnd ())
 		{
-			MetadataRX_.indexIn (line);
+			if (MetadataRX_.indexIn (line) == -1)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "incorrect format of"
+						<< line;
+				continue;
+			}
+
 			const auto& key = MetadataRX_.cap (1).trimmed ();
 			const auto& value = MetadataRX_.cap (2).trimmed ();
 			Metadata_.insert (key, value);
