@@ -56,8 +56,7 @@ namespace Zalil
 	}
 	, ProgressRowGuard_
 	{
-		nullptr,
-		[this] (void*)
+		[this]
 		{
 			if (const auto model = ProgressRow_.value (0)->model ())
 				model->removeRow (ProgressRow_.value (0)->row ());
