@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "pendinguploadbase.h"
+#include <memory>
 #include <QNetworkReply>
 #include <QHttpMultiPart>
 #include <QFileInfo>
@@ -80,6 +81,16 @@ namespace Zalil
 
 	QHttpMultiPart* PendingUploadBase::MakeStandardMultipart ()
 	{
+		auto fileDev = std::make_unique<QFile> (Filename_, this);
+		if (!fileDev->open (QIODevice::ReadOnly))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to open"
+					<< Filename_
+					<< fileDev->errorString ();
+			return nullptr;
+		}
+
 		const auto multipart = new QHttpMultiPart { QHttpMultiPart::FormDataType, this };
 
 		QHttpPart textPart;
@@ -88,9 +99,7 @@ namespace Zalil
 				"form-data; name=\"file\"; filename=\"" + fi.fileName () + "\"");
 		textPart.setHeader (QNetworkRequest::ContentTypeHeader, Util::MimeDetector {} (Filename_));
 
-		const auto fileDev = new QFile { Filename_, this };
-		fileDev->open (QIODevice::ReadOnly);
-		textPart.setBodyDevice (fileDev);
+		textPart.setBodyDevice (fileDev.release ());
 
 		multipart->append (textPart);
 
