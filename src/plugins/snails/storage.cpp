@@ -91,7 +91,15 @@ namespace Snails
 				}
 
 				QFile file (msgDir.filePath (msg->GetFolderID ().toHex ()));
-				file.open (QIODevice::WriteOnly);
+				if (!file.open (QIODevice::WriteOnly))
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "unable to open file"
+							<< file.fileName ()
+							<< file.errorString ();
+					continue;
+				}
+
 				file.write (qCompress (msg->Serialize (), 9));
 			}
 
