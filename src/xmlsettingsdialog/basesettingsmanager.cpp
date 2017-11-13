@@ -148,7 +148,7 @@ namespace Util
 		if (e->type () != QEvent::DynamicPropertyChange)
 			return false;
 
-		auto event = dynamic_cast<QDynamicPropertyChangeEvent*> (e);
+		auto event = static_cast<QDynamicPropertyChangeEvent*> (e);
 
 		const QByteArray& name = event->propertyName ();
 		const auto& propName = QString::fromUtf8 (name);
