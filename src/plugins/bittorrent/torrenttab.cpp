@@ -493,7 +493,7 @@ namespace BitTorrent
 		if (confirm.clickedButton () == deleteTorrentsAndFilesButton)
 			roptions |= libtorrent::session::delete_files;
 		else if (confirm.clickedButton () == deleteTorrentsButton)
-			;// do nothing
+			; // go ahead and just delete the torrent
 		else
 			return;
 
