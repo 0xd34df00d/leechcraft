@@ -348,9 +348,7 @@ namespace Poshuku
 			return false;
 		}
 
-		FormsIgnoreGetter_.next ();
-
-		bool ignored = FormsIgnoreGetter_.value (0).toInt ();
+		bool ignored = FormsIgnoreGetter_.next () && FormsIgnoreGetter_.value (0).toInt ();
 		FormsIgnoreGetter_.finish ();
 		return ignored;
 	}
