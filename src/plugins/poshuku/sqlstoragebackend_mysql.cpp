@@ -319,24 +319,11 @@ namespace Poshuku
 
 	void SQLStorageBackendMysql::SetFormsIgnored (const QString& url, bool ignore)
 	{
-		if (ignore)
-		{
-			FormsIgnoreSetter_.bindValue (0, url);
-			if (!FormsIgnoreSetter_.exec ())
-			{
-				LeechCraft::Util::DBLock::DumpError (FormsIgnoreSetter_);
-				return;
-			}
-		}
-		else
-		{
-			FormsIgnoreClearer_.bindValue (0, url);
-			if (!FormsIgnoreClearer_.exec ())
-			{
-				LeechCraft::Util::DBLock::DumpError (FormsIgnoreClearer_);
-				return;
-			}
-		}
+		auto& query = ignore ? FormsIgnoreSetter_ : FormsIgnoreClearer_;
+
+		query.bindValue (0, url);
+		if (!query.exec ())
+			Util::DBLock::DumpError (query);
 	}
 
 	bool SQLStorageBackendMysql::GetFormsIgnored (const QString& url) const
