@@ -180,10 +180,22 @@ namespace LeechCraft
 	void AboutDialog::SetAuthors ()
 	{
 		QFile authorsFile (":/resources/data/authors.xml");
-		authorsFile.open (QIODevice::ReadOnly);
+		if (!authorsFile.open (QIODevice::ReadOnly))
+		{
+			qCritical () << Q_FUNC_INFO
+					<< "unable to open"
+					<< authorsFile.fileName ()
+					<< authorsFile.errorString ();
+			return;
+		}
 
 		QDomDocument authorsDoc;
-		authorsDoc.setContent (&authorsFile);
+		if (!authorsDoc.setContent (&authorsFile))
+		{
+			qCritical () << Q_FUNC_INFO
+					<< "unable to parse authors file";
+			return;
+		}
 
 		auto fmtAuthorInfos = [&authorsDoc] (const QString& type)
 		{
