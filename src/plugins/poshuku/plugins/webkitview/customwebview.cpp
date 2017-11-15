@@ -577,7 +577,15 @@ namespace WebKitView
 	void CustomWebView::NavigateHome ()
 	{
 		QFile file (":/resources/html/home.html");
-		file.open (QIODevice::ReadOnly);
+		if (!file.open (QIODevice::ReadOnly))
+		{
+			qCritical () << Q_FUNC_INFO
+					<< "cannot open"
+					<< file.fileName ()
+					<< file.errorString ();
+			return;
+		}
+
 		QString data = file.readAll ();
 		data.replace ("{pagetitle}",
 				tr ("Welcome to LeechCraft!"));
