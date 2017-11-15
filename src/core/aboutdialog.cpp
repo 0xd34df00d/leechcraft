@@ -173,6 +173,12 @@ namespace LeechCraft
 		Ui_.ProgramName_->setText (QString ("LeechCraft %1")
 				.arg (CoreProxy ().GetVersion ()));
 
+		SetAuthors ();
+		BuildDiagInfo ();
+	}
+
+	void AboutDialog::SetAuthors ()
+	{
 		QFile authorsFile (":/resources/data/authors.xml");
 		authorsFile.open (QIODevice::ReadOnly);
 
@@ -186,8 +192,6 @@ namespace LeechCraft
 
 		Ui_.Authors_->setHtml (fmtAuthorInfos ("author"));
 		Ui_.Contributors_->setHtml (fmtAuthorInfos ("contrib"));
-
-		BuildDiagInfo ();
 	}
 
 	void AboutDialog::BuildDiagInfo ()

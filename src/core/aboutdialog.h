@@ -42,6 +42,7 @@ namespace LeechCraft
 	public:
 		AboutDialog (QWidget* = nullptr);
 	private:
+		void SetAuthors ();
 		void BuildDiagInfo ();
 	};
 }
