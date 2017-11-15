@@ -27,25 +27,21 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef ABOUTDIALOG_H
-#define ABOUTDIALOG_H
+#pragma once
+
 #include <QDialog>
 #include "ui_aboutdialog.h"
 
 namespace LeechCraft
 {
-	/** Shows the About LeechCraft information.
-	 */
 	class AboutDialog : public QDialog
 	{
 		Q_OBJECT
 
 		Ui::AboutDialog Ui_;
 	public:
-		AboutDialog (QWidget* = 0);
+		AboutDialog (QWidget* = nullptr);
 	private:
 		void BuildDiagInfo ();
 	};
 }
-
-#endif
