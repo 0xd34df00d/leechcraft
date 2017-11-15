@@ -287,7 +287,7 @@ namespace WebEngineView
 
 	void CustomWebView::SetScrollPosition (const QPoint& point)
 	{
-		// TODO
+		page ()->runJavaScript (QString { "window.scrollTo(%1, %2);" }.arg (point.x ()).arg (point.y ()));
 	}
 
 	double CustomWebView::GetZoomFactor () const
