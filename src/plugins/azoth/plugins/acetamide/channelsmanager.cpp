@@ -143,7 +143,9 @@ namespace Acetamide
 	{
 		auto handlers = std::move (ChannelHandlers_);
 		ChannelHandlers_.clear ();
-		Util::Map (handlers, [] (const ChannelHandler_ptr& ich) { ich->CloseChannel (); });
+
+		for (const auto& handler : handlers)
+			handler->CloseChannel ();
 	}
 
 	void ChannelsManager::UnregisterChannel (ChannelHandler *ich)
