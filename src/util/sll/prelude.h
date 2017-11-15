@@ -168,28 +168,6 @@ namespace Util
 		return cont;
 	}
 
-	template<
-			typename Container,
-			typename F,
-			typename = std::enable_if_t<detail::DoesReturnVoid<F, Container> ()>
-		>
-	auto Map (const Container& c, F f)
-	{
-		for (auto&& t : c)
-			Invoke (f, t);
-	}
-
-	template<
-			typename Container,
-			typename F,
-			typename = std::enable_if_t<detail::DoesReturnVoid<F, Container> ()>
-		>
-	auto Map (Container& c, F f)
-	{
-		for (auto&& t : c)
-			Invoke (f, t);
-	}
-
 	template<typename T, template<typename U> class Container, typename F>
 	Container<T> Filter (const Container<T>& c, F f)
 	{

@@ -82,30 +82,6 @@ namespace Util
 		QCOMPARE (otherList, (QList<int> { 3, 3, 3 }));
 	}
 
-	void PreludeTest::testMapMapMutatingVoid ()
-	{
-		auto map = GetSimpleMap ();
-		Map (map, [] (QString& v) { v += v [0]; });
-
-		QCOMPARE (map, (QMap<int, QString> { { 0, "aaaa" }, { 1, "bbbb" }, { 2, "cccc" }}));
-	}
-
-	void PreludeTest::testMapMapNonMutatingVoid ()
-	{
-		auto map = GetSimpleMap ();
-		Map (map, [] (const QString&) {});
-
-		QCOMPARE (map, GetSimpleMap ());
-	}
-
-	void PreludeTest::testMapMapNonMutatingVoidConst ()
-	{
-		const auto& map = GetSimpleMap ();
-		Map (map, [] (const QString&) {});
-
-		QCOMPARE (map, GetSimpleMap ());
-	}
-
 	void PreludeTest::testMapStringList ()
 	{
 		const QStringList list { "aaa", "bbb", "ccc" };
