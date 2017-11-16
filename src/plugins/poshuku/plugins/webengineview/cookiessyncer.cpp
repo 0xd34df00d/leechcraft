@@ -48,13 +48,13 @@ namespace WebEngineView
 		handleLCCookiesAdded (LCJar_->allCookies ());
 
 		connect (LCJar_,
-				SIGNAL (cookiesAdded (QList<QNetworkCookie>)),
+				&Util::CustomCookieJar::cookiesAdded,
 				this,
-				SLOT (handleLCCookiesAdded (QList<QNetworkCookie>)));
+				&CookiesSyncer::handleLCCookiesAdded);
 		connect (LCJar_,
-				SIGNAL (cookiesRemoved (QList<QNetworkCookie>)),
+				&Util::CustomCookieJar::cookiesRemoved,
 				this,
-				SLOT (handleLCCookiesRemoved (QList<QNetworkCookie>)));
+				&CookiesSyncer::handleLCCookiesRemoved);
 	}
 
 	void CookiesSyncer::handleLCCookiesAdded (const QList<QNetworkCookie>& cookies)
