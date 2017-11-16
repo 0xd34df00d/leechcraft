@@ -968,14 +968,14 @@ namespace BitTorrent
 			const QVector<bool>& files,
 			TaskParameters params)
 	{
-		if (!QFileInfo (filename).exists () || !QFileInfo (filename).isReadable ())
+		QFile file (filename);
+		if (!file.open (QIODevice::ReadOnly))
 		{
-			ShowError (tr ("File %1 doesn't exist or could not be read").arg (filename));
+			ShowError (tr ("File %1 could not be read: %2.")
+					.arg (filename)
+					.arg (file.errorString ()));
 			return -1;
 		}
-
-		QFile file (filename);
-		file.open (QIODevice::ReadOnly);
 		const auto& contents = file.readAll ();
 
 		libtorrent::torrent_handle handle;
