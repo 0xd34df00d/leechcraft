@@ -64,12 +64,11 @@ namespace SeekThru
 				TypeRSS,
 				TypeAtom,
 				TypeHTML
-			};
+			} Type_ = TypeHTML;
 
-			Type Type_;
-			int TotalResults_;
-			int StartIndex_;
-			int ItemsPerPage_;
+			int TotalResults_ = 0;
+			int StartIndex_ = 0;
+			int ItemsPerPage_ = 0;
 			QString Response_;
 			QString Filename_;
 			QUrl RequestURL_;
