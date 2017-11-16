@@ -94,24 +94,6 @@ namespace Util
 			result.insert (std::forward<T> (val));
 		}
 
-		template<typename T, typename F>
-		constexpr bool IsInvokableWithConstImpl (std::result_of_t<F (const T&)>*)
-		{
-			return true;
-		}
-
-		template<typename T, typename F>
-		constexpr bool IsInvokableWithConstImpl (...)
-		{
-			return false;
-		}
-
-		template<typename T, typename F>
-		constexpr bool IsInvokableWithConst ()
-		{
-			return IsInvokableWithConstImpl<std::decay_t<T>, F> (0);
-		}
-
 		template<typename>
 		struct CountArgs
 		{
