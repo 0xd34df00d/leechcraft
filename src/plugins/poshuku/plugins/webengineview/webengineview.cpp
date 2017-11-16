@@ -37,6 +37,7 @@
 #include "customwebview.h"
 #include "requestinterceptor.h"
 #include "cookiessyncer.h"
+#include "downloaditemhandler.h"
 
 namespace LeechCraft
 {
@@ -89,6 +90,8 @@ namespace WebEngineView
 
 		Interceptor_ = std::make_shared<RequestInterceptor> ();
 		prof->setRequestInterceptor (Interceptor_.get ());
+
+		new DownloadItemHandler (proxy, prof);
 
 		const auto cookieJar = proxy->GetNetworkAccessManager ()->cookieJar ();
 		new CookiesSyncer { qobject_cast<Util::CustomCookieJar*> (cookieJar), prof->cookieStore () };
