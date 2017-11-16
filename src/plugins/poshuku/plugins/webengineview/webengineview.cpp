@@ -50,7 +50,7 @@ namespace WebEngineView
 		QString GetDefaultUserAgent (const ICoreProxy_ptr& proxy,
 				const QString& wkVer, const QString& chromeVer)
 		{
-#if defined(Q_OS_WIN32)
+#if defined (Q_OS_WIN32)
 			const auto platform = "Windows";
 #elif defined (Q_OS_MAC)
 			const auto platform = "Macintosh";
