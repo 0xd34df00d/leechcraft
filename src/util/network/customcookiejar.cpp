@@ -73,13 +73,10 @@ namespace Util
 
 	QByteArray CustomCookieJar::Save () const
 	{
-		QList<QNetworkCookie> cookies = allCookies ();
+		auto cookies = allCookies ();
 		QByteArray result;
 		for (const auto& cookie : cookies)
 		{
-			if (cookie.isSessionCookie ())
-				continue;
-
 			result += cookie.toRawForm ();
 			result += "\n";
 		}
