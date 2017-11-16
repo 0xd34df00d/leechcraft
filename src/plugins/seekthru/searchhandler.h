@@ -83,13 +83,13 @@ namespace SeekThru
 	public:
 		SearchHandler (const Description&);
 
-		virtual int columnCount (const QModelIndex& = QModelIndex ()) const;
-		virtual QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;
-		virtual Qt::ItemFlags flags (const QModelIndex&) const;
-		virtual QVariant headerData (int, Qt::Orientation, int = Qt::DisplayRole) const;
-		virtual QModelIndex index (int, int, const QModelIndex& = QModelIndex()) const;
-		virtual QModelIndex parent (const QModelIndex&) const;
-		virtual int rowCount (const QModelIndex& = QModelIndex ()) const;
+		int columnCount (const QModelIndex& = QModelIndex ()) const override;
+		QVariant data (const QModelIndex&, int = Qt::DisplayRole) const override;
+		Qt::ItemFlags flags (const QModelIndex&) const override;
+		QVariant headerData (int, Qt::Orientation, int = Qt::DisplayRole) const override;
+		QModelIndex index (int, int, const QModelIndex& = QModelIndex()) const override;
+		QModelIndex parent (const QModelIndex&) const override;
+		int rowCount (const QModelIndex& = QModelIndex ()) const override;
 
 		void Start (const LeechCraft::Request&);
 	private slots:
