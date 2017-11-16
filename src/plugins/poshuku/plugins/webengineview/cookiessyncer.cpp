@@ -45,26 +45,26 @@ namespace WebEngineView
 	{
 		WebEngineStore_->loadAllCookies ();
 
-		handleLCCookiesAdded (LCJar_->allCookies ());
+		HandleLCCookiesAdded (LCJar_->allCookies ());
 
 		connect (LCJar_,
 				&Util::CustomCookieJar::cookiesAdded,
 				this,
-				&CookiesSyncer::handleLCCookiesAdded);
+				&CookiesSyncer::HandleLCCookiesAdded);
 		connect (LCJar_,
 				&Util::CustomCookieJar::cookiesRemoved,
 				this,
-				&CookiesSyncer::handleLCCookiesRemoved);
+				&CookiesSyncer::HandleLCCookiesRemoved);
 	}
 
-	void CookiesSyncer::handleLCCookiesAdded (const QList<QNetworkCookie>& cookies)
+	void CookiesSyncer::HandleLCCookiesAdded (const QList<QNetworkCookie>& cookies)
 	{
 		qDebug () << Q_FUNC_INFO << cookies.size ();
 		for (const auto& cookie : cookies)
 			WebEngineStore_->setCookie (cookie);
 	}
 
-	void CookiesSyncer::handleLCCookiesRemoved (const QList<QNetworkCookie>& cookies)
+	void CookiesSyncer::HandleLCCookiesRemoved (const QList<QNetworkCookie>& cookies)
 	{
 		qDebug () << Q_FUNC_INFO << cookies.size ();
 		for (const auto& cookie : cookies)

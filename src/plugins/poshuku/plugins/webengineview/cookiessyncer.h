@@ -47,15 +47,13 @@ namespace WebEngineView
 {
 	class CookiesSyncer : public QObject
 	{
-		Q_OBJECT
-
 		Util::CustomCookieJar * const LCJar_;
 		QWebEngineCookieStore * const WebEngineStore_;
 	public:
 		CookiesSyncer (Util::CustomCookieJar*, QWebEngineCookieStore*);
-	private slots:
-		void handleLCCookiesAdded (const QList<QNetworkCookie>&);
-		void handleLCCookiesRemoved (const QList<QNetworkCookie>&);
+	private:
+		void HandleLCCookiesAdded (const QList<QNetworkCookie>&);
+		void HandleLCCookiesRemoved (const QList<QNetworkCookie>&);
 	};
 }
 }
