@@ -124,7 +124,7 @@ namespace Util
 		 *
 		 * @sa Load()
 		 */
-		QByteArray Save () const;
+		[[nodiscard]] QByteArray Save () const;
 
 		/** Restores the cookies from the array previously obtained
 		 * from Save().
