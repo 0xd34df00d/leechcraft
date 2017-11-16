@@ -39,9 +39,6 @@ namespace Util
 	{
 		Q_OBJECT
 	private slots:
-		void testInvokableWithConst ();
-		void testInvokableWithNonConst ();
-
 		void testMapList ();
 
 		void testMapMap ();

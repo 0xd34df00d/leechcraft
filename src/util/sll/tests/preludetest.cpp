@@ -38,26 +38,6 @@ namespace LeechCraft
 {
 namespace Util
 {
-	void PreludeTest::testInvokableWithConst ()
-	{
-		const auto lambda = [] (const QString&) {};
-		static_assert (detail::IsInvokableWithConst<QString, decltype (lambda)> (), "The lambda should be invokable with T");
-		static_assert (detail::IsInvokableWithConst<QString&, decltype (lambda)> (), "The lambda should be invokable with T&");
-		static_assert (detail::IsInvokableWithConst<const QString&, decltype (lambda)> (), "The lambda should be invokable with const T&");
-		static_assert (detail::IsInvokableWithConst<QString&&, decltype (lambda)> (), "The lambda should be invokable with T&&");
-		QCOMPARE (true, true);
-	}
-
-	void PreludeTest::testInvokableWithNonConst ()
-	{
-		const auto lambda = [] (QString&) {};
-		static_assert (!detail::IsInvokableWithConst<QString, decltype (lambda)> (), "The lambda should not be invokable with T");
-		static_assert (!detail::IsInvokableWithConst<QString&, decltype (lambda)> (), "The lambda should not be invokable with T&");
-		static_assert (!detail::IsInvokableWithConst<const QString&, decltype (lambda)> (), "The lambda should not be invokable with const T&");
-		static_assert (!detail::IsInvokableWithConst<QString&&, decltype (lambda)> (), "The lambda should not be invokable with T&&");
-		QCOMPARE (true, true);
-	}
-
 	namespace
 	{
 		QMap<int, QString> GetSimpleMap ()
