@@ -974,13 +974,17 @@ namespace BitTorrent
 			return -1;
 		}
 
+		QFile file (filename);
+		file.open (QIODevice::ReadOnly);
+		const auto& contents = file.readAll ();
+
 		libtorrent::torrent_handle handle;
 		bool autoManaged = !(params & NoAutostart);
 
 		libtorrent::add_torrent_params atp;
 		try
 		{
-			atp.ti = boost::make_shared<libtorrent::torrent_info> (GetTorrentInfo (filename));
+			atp.ti = boost::make_shared<libtorrent::torrent_info> (GetTorrentInfo (contents));
 			atp.storage_mode = GetCurrentStorageMode ();
 			atp.save_path = std::string (path.toUtf8 ().constData ());
 			if (!autoManaged)
@@ -1011,10 +1015,6 @@ namespace BitTorrent
 
 			handle.prioritize_files (priorities);
 		}
-		QFile file (filename);
-		file.open (QIODevice::ReadOnly);
-		QByteArray contents = file.readAll ();
-		file.close ();
 
 		handle.auto_managed (autoManaged);
 
