@@ -29,6 +29,7 @@
 
 #include "cookiessyncer.h"
 #include <QWebEngineCookieStore>
+#include <QTimer>
 #include <QtDebug>
 #include <util/network/customcookiejar.h>
 
@@ -55,6 +56,15 @@ namespace WebEngineView
 				&Util::CustomCookieJar::cookiesRemoved,
 				this,
 				&CookiesSyncer::HandleLCCookiesRemoved);
+
+		connect (WebEngineStore_,
+				&QWebEngineCookieStore::cookieAdded,
+				this,
+				&CookiesSyncer::HandleWebEngineCookieAdded);
+		connect (WebEngineStore_,
+				&QWebEngineCookieStore::cookieRemoved,
+				this,
+				&CookiesSyncer::HandleWebEngineCookieRemoved);
 	}
 
 	void CookiesSyncer::HandleLCCookiesAdded (const QList<QNetworkCookie>& cookies)
@@ -69,6 +79,26 @@ namespace WebEngineView
 		qDebug () << Q_FUNC_INFO << cookies.size ();
 		for (const auto& cookie : cookies)
 			WebEngineStore_->deleteCookie (cookie);
+	}
+
+	void CookiesSyncer::HandleWebEngineCookieAdded (const QNetworkCookie& cookie)
+	{
+		if (WebEngine2LCQueue_.isEmpty ())
+			QTimer::singleShot (1000, Qt::VeryCoarseTimer, this,
+					[this]
+					{
+						for (const auto& cookie : WebEngine2LCQueue_)
+							LCJar_->insertCookie (cookie);
+						WebEngine2LCQueue_.clear ();
+					});
+
+		WebEngine2LCQueue_.prepend (cookie);
+	}
+
+	void CookiesSyncer::HandleWebEngineCookieRemoved (const QNetworkCookie& cookie)
+	{
+		WebEngine2LCQueue_.removeOne (cookie);
+		LCJar_->deleteCookie (cookie);
 	}
 }
 }

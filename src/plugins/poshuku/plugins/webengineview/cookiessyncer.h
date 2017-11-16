@@ -49,11 +49,16 @@ namespace WebEngineView
 	{
 		Util::CustomCookieJar * const LCJar_;
 		QWebEngineCookieStore * const WebEngineStore_;
+
+		QList<QNetworkCookie> WebEngine2LCQueue_;
 	public:
 		CookiesSyncer (Util::CustomCookieJar*, QWebEngineCookieStore*);
 	private:
 		void HandleLCCookiesAdded (const QList<QNetworkCookie>&);
 		void HandleLCCookiesRemoved (const QList<QNetworkCookie>&);
+
+		void HandleWebEngineCookieAdded (const QNetworkCookie&);
+		void HandleWebEngineCookieRemoved (const QNetworkCookie&);
 	};
 }
 }
