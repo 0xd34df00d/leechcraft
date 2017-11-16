@@ -112,39 +112,32 @@ namespace Util
 			return CountArgs<std::decay_t<C>>::ArgsCount == 1;
 		}
 
-		template<typename F, typename Cont>
-		constexpr bool DoesReturnVoid ()
+		template<typename Container, typename T>
+		struct Replace
 		{
-			using Ret_t = decltype (Invoke (std::declval<F> (), *std::declval<Cont> ().begin ()));
-			return std::is_same<void, Ret_t>::value;
-		}
+			using Type = struct Fail;
+		};
+
+		template<template<typename> class Container, typename U, typename T>
+		struct Replace<Container<U>, T>
+		{
+			using Type = Container<T>;
+		};
 	}
 
-	template<
-			typename T,
-			template<typename U> class Container,
-			typename F,
-			typename = std::enable_if_t<detail::IsSimpleContainer<Container<T>> ()>,
-			typename = std::enable_if_t<!detail::DoesReturnVoid<F, Container<T>> ()>
-		>
-	auto Map (const Container<T>& c, F f)
+	template<typename Container, typename F>
+	auto Map (Container&& c, F f)
 	{
-		WrapType_t<Container<std::decay_t<decltype (Invoke (f, *c.begin ()))>>> result;
-		for (auto&& t : c)
-			detail::Append (result, Invoke (f, t));
-		return result;
-	}
+		using DecayContainer_t = std::decay_t<Container>;
 
-	template<
-			typename Container,
-			typename F,
-			template<typename> class ResultCont = QList,
-			typename = std::enable_if_t<!detail::IsSimpleContainer<Container> ()>,
-			typename = std::enable_if_t<!detail::DoesReturnVoid<F, Container> ()>
-		>
-	auto Map (const Container& c, F f)
-	{
-		WrapType_t<ResultCont<std::decay_t<decltype (Invoke (f, *c.begin ()))>>> cont;
+		using FRet_t = std::decay_t<decltype (Invoke (f, *c.begin ()))>;
+		static_assert (!std::is_same<void, FRet_t> {}, "The function shall not return void.");
+
+		using ResultCont_t = std::conditional_t<detail::IsSimpleContainer<DecayContainer_t> (),
+				typename detail::Replace<DecayContainer_t, FRet_t>::Type,
+				QList<FRet_t>>;
+
+		WrapType_t<ResultCont_t> cont;
 		for (auto&& t : c)
 			detail::Append (cont, Invoke (f, t));
 		return cont;
