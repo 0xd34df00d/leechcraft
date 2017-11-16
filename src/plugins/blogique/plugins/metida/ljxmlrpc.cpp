@@ -1639,8 +1639,7 @@ namespace Metida
 			LJFriendGroup group;
 			for (const auto& field : data)
 			{
-				LJParserTypes::LJParseProfileEntry fieldEntry =
-						field.value<LJParserTypes::LJParseProfileEntry> ();
+				const auto& fieldEntry = field.value<LJParserTypes::LJParseProfileEntry> ();
 				if (fieldEntry.Name () == "public")
 					group.Public_ = fieldEntry.ValueToBool ();
 				else if (fieldEntry.Name () == "name")
@@ -1662,8 +1661,7 @@ namespace Metida
 			LJMood mood;
 			for (const auto& field : data)
 			{
-				LJParserTypes::LJParseProfileEntry fieldEntry =
-						field.value<LJParserTypes::LJParseProfileEntry> ();
+				const auto& fieldEntry = field.value<LJParserTypes::LJParseProfileEntry> ();
 				if (fieldEntry.Name () == "parent")
 					mood.Parent_ = fieldEntry.ValueToLongLong ();
 				else if (fieldEntry.Name () == "name")
