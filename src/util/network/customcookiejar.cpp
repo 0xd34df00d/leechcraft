@@ -99,7 +99,8 @@ namespace Util
 					cookie.name ().startsWith ("__utm"))
 				continue;
 
-			if (cookie.expirationDate () < now)
+			if (!cookie.isSessionCookie () &&
+					cookie.expirationDate () < now)
 				continue;
 
 			filteredCookies << cookie;
