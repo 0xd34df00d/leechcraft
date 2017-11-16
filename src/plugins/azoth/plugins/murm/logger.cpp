@@ -31,6 +31,7 @@
 #include <QDateTime>
 #include <QUrl>
 #include <QDir>
+#include <QtDebug>
 #include <util/sll/serializejson.h>
 #include <util/sys/paths.h>
 
