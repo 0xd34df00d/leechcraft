@@ -47,7 +47,11 @@ namespace Murm
 	{
 		if (L_.FileEnabled_)
 		{
-			File_->open (QIODevice::WriteOnly | QIODevice::Append);
+			if (!File_->open (QIODevice::WriteOnly | QIODevice::Append))
+				qWarning () << Q_FUNC_INFO
+						<< "cannot open log file"
+						<< File_->fileName ()
+						<< File_->errorString ();
 			File_->write ("[" + QDateTime::currentDateTime ().toString (Qt::ISODate).toUtf8 () + "] ");
 		}
 	}
