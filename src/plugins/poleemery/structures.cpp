@@ -29,6 +29,7 @@
 
 #include "structures.h"
 #include <QtDebug>
+#include <util/sll/unreachable.h>
 
 namespace LeechCraft
 {
@@ -44,10 +45,7 @@ namespace Poleemery
 			return QObject::tr ("cash");
 		}
 
-		qWarning () << Q_FUNC_INFO
-				<< "unknown account type"
-				<< static_cast<int> (type);
-		return QString ();
+		Util::Unreachable ();
 	}
 
 	bool operator== (const Account& a1, const Account& a2)
