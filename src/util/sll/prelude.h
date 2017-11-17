@@ -36,6 +36,12 @@
 #include <boost/optional.hpp>
 #include "oldcppkludges.h"
 
+namespace boost
+{
+	template<typename>
+	class iterator_range;
+}
+
 namespace LeechCraft
 {
 namespace Util
@@ -123,17 +129,27 @@ namespace Util
 		{
 			using Type = Container<T>;
 		};
+
+		template<typename>
+		struct IsNotBrokenSFINAE : std::false_type {};
+
+		template<typename T>
+		struct IsNotBrokenSFINAE<boost::iterator_range<T>> : std::true_type {};
+
+		template<typename T>
+		constexpr bool IsNotBrokenSFINAE_v = IsNotBrokenSFINAE<T> {};
 	}
 
 	template<typename Container, typename F>
 	auto Map (Container&& c, F f)
 	{
-		using DecayContainer_t = std::decay_t<Container>;
-
 		using FRet_t = std::decay_t<decltype (Invoke (f, *c.begin ()))>;
 		static_assert (!std::is_same<void, FRet_t> {}, "The function shall not return void.");
 
-		using ResultCont_t = std::conditional_t<detail::IsSimpleContainer<DecayContainer_t> (),
+		using DecayContainer_t = std::decay_t<Container>;
+
+		using ResultCont_t = std::conditional_t<
+				detail::IsSimpleContainer<DecayContainer_t> () && !detail::IsNotBrokenSFINAE_v<DecayContainer_t>,
 				typename detail::Replace<DecayContainer_t, FRet_t>::Type,
 				QList<FRet_t>>;
 
