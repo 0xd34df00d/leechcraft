@@ -59,7 +59,7 @@ namespace DCAC
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Poshuku.DCAC")
 
-		ViewsManager *ViewsManager_;
+		ViewsManager *ViewsManager_ = nullptr;
 		Util::XmlSettingsDialog_ptr XSD_;
 	public:
 		void Init (ICoreProxy_ptr);
