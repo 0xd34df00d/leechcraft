@@ -45,23 +45,23 @@ namespace Metida
 	{
 		bool Public_;
 		QString Name_;
-		uint Id_;
-		uint SortOrder_;
-		uint RealId_;
+		uint Id_ =  0;
+		uint SortOrder_ =  0;
+		uint RealId_ =  0;
 	};
 
 	struct LJMood
 	{
-		qint64 Parent_;
-		qint64 Id_;
+		qint64 Parent_ =  0;
+		qint64 Id_ =  0;
 		QString Name_;
 	};
 
 	struct LJProfileData
 	{
 		QUrl AvatarUrl_;
-		qint64 UserId_;
-		qint64 Caps_;
+		qint64 UserId_ =  0;
+		qint64 Caps_ =  0;
 		QList<LJFriendGroup> FriendGroups_;
 		QList<LJMood> Moods_;
 		QStringList Communities_;
@@ -82,25 +82,17 @@ namespace Metida
 
 	struct LJCommentEntry
 	{
-		int NodeId_;
+		int NodeId_ =  -1;
 		QString Subject_;
-		int PosterId_;
-		CommentState State_;
-		int ReplyId_;
-		int ParentReplyId_;
+		int PosterId_ =  -1;
+		CommentState State_ = CommentState::Active;
+		int ReplyId_ =  -1;
+		int ParentReplyId_ =  -1;
 		QString PosterName_;
 		QString Text_;
 		QDateTime PostingDate_;
 		QString NodeSubject_;
 		QUrl NodeUrl_;
-
-		LJCommentEntry ()
-		: NodeId_ (-1)
-		, PosterId_ (-1)
-		, State_ (CommentState::Active)
-		, ReplyId_ (-1)
-		, ParentReplyId_ (-1)
-		{}
 	};
 
 	namespace LJParserTypes
