@@ -110,6 +110,8 @@ namespace Snails
 	void Plugin::SecondInit ()
 	{
 		XSD_->SetCustomWidget ("TemplatesWidget", new TemplatesEditorWidget { TemplatesMgr_ });
+
+		AccsMgr_->InitWithPlugins ();
 	}
 
 	QByteArray Plugin::GetUniqueID () const

@@ -46,7 +46,6 @@ namespace Snails
 	, Storage_ { st }
 	{
 		AccountsModel_->setHorizontalHeaderLabels ({ tr ("Name"), tr ("Server") });
-		LoadAccounts ();
 	}
 
 	QAbstractItemModel* AccountsManager::GetAccountsModel () const
@@ -80,6 +79,11 @@ namespace Snails
 
 					saveAccounts ();
 				});
+	}
+
+	void AccountsManager::InitWithPlugins ()
+	{
+		LoadAccounts ();
 	}
 
 	void AccountsManager::AddAccountImpl (Account_ptr account)
