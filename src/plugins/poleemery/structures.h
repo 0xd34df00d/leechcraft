@@ -64,10 +64,10 @@ namespace Poleemery
 }
 
 BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Poleemery::Account,
-		(decltype (LeechCraft::Poleemery::Account::ID_), ID_)
-		(LeechCraft::Poleemery::AccType, Type_)
-		(QString, Name_)
-		(QString, Currency_))
+		ID_,
+		Type_,
+		Name_,
+		Currency_)
 
 Q_DECLARE_METATYPE (LeechCraft::Poleemery::Account)
 
@@ -137,16 +137,16 @@ namespace Poleemery
 }
 
 BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Poleemery::NakedExpenseEntry,
-		(decltype (LeechCraft::Poleemery::NakedExpenseEntry::ID_), ID_)
-		(decltype (LeechCraft::Poleemery::NakedExpenseEntry::AccountID_), AccountID_)
-		(double, Amount_)
-		(QString, Name_)
-		(QString, Description_)
-		(QDateTime, Date_)
-		(double, Count_)
-		(QString, Shop_)
-		(QString, EntryCurrency_)
-		(double, Rate_))
+		ID_,
+		AccountID_,
+		Amount_,
+		Name_,
+		Description_,
+		Date_,
+		Count_,
+		Shop_,
+		EntryCurrency_,
+		Rate_)
 
 namespace LeechCraft
 {
@@ -166,8 +166,8 @@ namespace Poleemery
 }
 
 BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Poleemery::Category,
-		(decltype (LeechCraft::Poleemery::Category::ID_), ID_)
-		(decltype (LeechCraft::Poleemery::Category::Name_), Name_))
+		ID_,
+		Name_)
 
 namespace LeechCraft
 {
@@ -188,9 +188,9 @@ namespace Poleemery
 }
 
 BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Poleemery::CategoryLink,
-		(decltype (LeechCraft::Poleemery::CategoryLink::ID_), ID_)
-		(decltype (LeechCraft::Poleemery::CategoryLink::Category_), Category_)
-		(decltype (LeechCraft::Poleemery::CategoryLink::Entry_), Entry_))
+		ID_,
+		Category_,
+		Entry_)
 
 namespace LeechCraft
 {
@@ -208,12 +208,12 @@ namespace Poleemery
 }
 
 BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Poleemery::ReceiptEntry,
-		(decltype (LeechCraft::Poleemery::ReceiptEntry::ID_), ID_)
-		(decltype (LeechCraft::Poleemery::ReceiptEntry::AccountID_), AccountID_)
-		(double, Amount_)
-		(QString, Name_)
-		(QString, Description_)
-		(QDateTime, Date_))
+		ID_,
+		AccountID_,
+		Amount_,
+		Name_,
+		Description_,
+		Date_)
 
 namespace LeechCraft
 {
@@ -233,10 +233,10 @@ namespace Poleemery
 }
 
 BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Poleemery::Rate,
-		(decltype (LeechCraft::Poleemery::Rate::ID_), ID_)
-		(QString, Code_)
-		(QDateTime, SnapshotTime_)
-		(double, Rate_))
+		ID_,
+		Code_,
+		SnapshotTime_,
+		Rate_)
 
 namespace LeechCraft
 {
