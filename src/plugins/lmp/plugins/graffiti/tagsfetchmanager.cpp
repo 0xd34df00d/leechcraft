@@ -64,28 +64,12 @@ namespace Graffiti
 	namespace
 	{
 		template<typename T>
-		bool IsEmptyData (const T&)
+		bool IsEmptyData (const T& val)
 		{
-			static_assert (!sizeof (T), "unknown data type");
-			return false;
-		}
-
-		template<>
-		bool IsEmptyData<QString> (const QString& str)
-		{
-			return str.isEmpty ();
-		}
-
-		template<>
-		bool IsEmptyData<int> (const int& val)
-		{
-			return !val;
-		}
-
-		template<>
-		bool IsEmptyData<QStringList> (const QStringList& list)
-		{
-			return list.isEmpty ();
+			if constexpr (std::is_default_constructible<T> {})
+				return val == T {};
+			else
+				static_assert (std::is_same<T, struct Error> {}, "not a default-constructible data type");
 		}
 
 		template<typename F>
