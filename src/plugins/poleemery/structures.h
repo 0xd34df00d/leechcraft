@@ -64,10 +64,10 @@ namespace Poleemery
 }
 
 BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Poleemery::Account,
-		(decltype (LeechCraft::Poleemery::Account::ID_), ID_)
-		(LeechCraft::Poleemery::AccType, Type_)
-		(QString, Name_)
-		(QString, Currency_))
+		ID_,
+		Type_,
+		Name_,
+		Currency_)
 
 Q_DECLARE_METATYPE (LeechCraft::Poleemery::Account)
 
@@ -83,19 +83,19 @@ namespace Poleemery
 
 	struct EntryBase
 	{
-		Util::oral::PKey<int> ID_;
-		Util::oral::References<Account, 0> AccountID_;
+		Util::oral::PKey<int> ID_ = -1;
+		Util::oral::References<Account, 0> AccountID_ = -1;
 
 		/** This actually price.
 		 */
-		double Amount_;
+		double Amount_ = 0;
 		QString Name_;
 		QString Description_;
 		QDateTime Date_;
 
-		EntryBase ();
+		EntryBase () = default;
 		EntryBase (int accId, double amount, const QString& name, const QString& descr, const QDateTime& dt);
-		virtual ~EntryBase ();
+		virtual ~EntryBase () = default;
 
 		virtual EntryType GetType () const = 0;
 	};
@@ -104,17 +104,17 @@ namespace Poleemery
 
 	struct NakedExpenseEntry : EntryBase
 	{
-		double Count_;
+		double Count_ = 0;
 		QString Shop_;
 
 		QString EntryCurrency_;
-		double Rate_;
+		double Rate_ = 0;
 
 		static QString ClassName () { return "NakedExpenseEntry"; }
 
 		EntryType GetType () const { return EntryType::Expense; }
 
-		NakedExpenseEntry ();
+		NakedExpenseEntry () = default;
 		NakedExpenseEntry (int accId, double amount,
 				const QString& name, const QString& descr, const QDateTime& dt,
 				double count, const QString& shop, const QString& currency, double rate);
@@ -124,7 +124,7 @@ namespace Poleemery
 	{
 		QStringList Categories_;
 
-		ExpenseEntry ();
+		ExpenseEntry () = default;
 		ExpenseEntry (const NakedExpenseEntry&);
 		ExpenseEntry (int accId, double amount,
 				const QString& name, const QString& descr, const QDateTime& dt,
@@ -137,16 +137,16 @@ namespace Poleemery
 }
 
 BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Poleemery::NakedExpenseEntry,
-		(decltype (LeechCraft::Poleemery::NakedExpenseEntry::ID_), ID_)
-		(decltype (LeechCraft::Poleemery::NakedExpenseEntry::AccountID_), AccountID_)
-		(double, Amount_)
-		(QString, Name_)
-		(QString, Description_)
-		(QDateTime, Date_)
-		(double, Count_)
-		(QString, Shop_)
-		(QString, EntryCurrency_)
-		(double, Rate_))
+		ID_,
+		AccountID_,
+		Amount_,
+		Name_,
+		Description_,
+		Date_,
+		Count_,
+		Shop_,
+		EntryCurrency_,
+		Rate_)
 
 namespace LeechCraft
 {
@@ -154,7 +154,7 @@ namespace Poleemery
 {
 	struct Category
 	{
-		Util::oral::PKey<int> ID_;
+		Util::oral::PKey<int> ID_ = -1;
 		Util::oral::Unique<QString> Name_;
 
 		Category ();
@@ -166,8 +166,8 @@ namespace Poleemery
 }
 
 BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Poleemery::Category,
-		(decltype (LeechCraft::Poleemery::Category::ID_), ID_)
-		(decltype (LeechCraft::Poleemery::Category::Name_), Name_))
+		ID_,
+		Name_)
 
 namespace LeechCraft
 {
@@ -175,7 +175,7 @@ namespace Poleemery
 {
 	struct CategoryLink
 	{
-		Util::oral::PKey<int> ID_;
+		Util::oral::PKey<int> ID_ = -1;
 		Util::oral::References<Category, 0> Category_;
 		Util::oral::References<NakedExpenseEntry, 0> Entry_;
 
@@ -188,9 +188,9 @@ namespace Poleemery
 }
 
 BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Poleemery::CategoryLink,
-		(decltype (LeechCraft::Poleemery::CategoryLink::ID_), ID_)
-		(decltype (LeechCraft::Poleemery::CategoryLink::Category_), Category_)
-		(decltype (LeechCraft::Poleemery::CategoryLink::Entry_), Entry_))
+		ID_,
+		Category_,
+		Entry_)
 
 namespace LeechCraft
 {
@@ -198,8 +198,7 @@ namespace Poleemery
 {
 	struct ReceiptEntry : EntryBase
 	{
-		ReceiptEntry ();
-		ReceiptEntry (int accId, double amount, const QString& name, const QString& descr, const QDateTime& dt);
+		using EntryBase::EntryBase;
 
 		static QString ClassName () { return "ReceiptEntry"; }
 
@@ -209,12 +208,12 @@ namespace Poleemery
 }
 
 BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Poleemery::ReceiptEntry,
-		(decltype (LeechCraft::Poleemery::ReceiptEntry::ID_), ID_)
-		(decltype (LeechCraft::Poleemery::ReceiptEntry::AccountID_), AccountID_)
-		(double, Amount_)
-		(QString, Name_)
-		(QString, Description_)
-		(QDateTime, Date_))
+		ID_,
+		AccountID_,
+		Amount_,
+		Name_,
+		Description_,
+		Date_)
 
 namespace LeechCraft
 {
@@ -234,10 +233,10 @@ namespace Poleemery
 }
 
 BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Poleemery::Rate,
-		(decltype (LeechCraft::Poleemery::Rate::ID_), ID_)
-		(QString, Code_)
-		(QDateTime, SnapshotTime_)
-		(double, Rate_))
+		ID_,
+		Code_,
+		SnapshotTime_,
+		Rate_)
 
 namespace LeechCraft
 {

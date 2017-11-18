@@ -31,6 +31,7 @@
 #include <QDateTime>
 #include <QUrl>
 #include <QDir>
+#include <QtDebug>
 #include <util/sll/serializejson.h>
 #include <util/sys/paths.h>
 
@@ -47,7 +48,11 @@ namespace Murm
 	{
 		if (L_.FileEnabled_)
 		{
-			File_->open (QIODevice::WriteOnly | QIODevice::Append);
+			if (!File_->open (QIODevice::WriteOnly | QIODevice::Append))
+				qWarning () << Q_FUNC_INFO
+						<< "cannot open log file"
+						<< File_->fileName ()
+						<< File_->errorString ();
 			File_->write ("[" + QDateTime::currentDateTime ().toString (Qt::ISODate).toUtf8 () + "] ");
 		}
 	}

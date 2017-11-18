@@ -306,7 +306,9 @@ namespace Juick
 	{
 		const QRegExp behind (pattern);
 
-		behind.indexIn (text);
+		if (behind.indexIn (text) == -1)
+			return false;
+
 		const int behindIndex = index - behind.matchedLength ();
 
 		return behindIndex >= 0 &&

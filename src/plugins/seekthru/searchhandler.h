@@ -64,12 +64,11 @@ namespace SeekThru
 				TypeRSS,
 				TypeAtom,
 				TypeHTML
-			};
+			} Type_ = TypeHTML;
 
-			Type Type_;
-			int TotalResults_;
-			int StartIndex_;
-			int ItemsPerPage_;
+			int TotalResults_ = 0;
+			int StartIndex_ = 0;
+			int ItemsPerPage_ = 0;
 			QString Response_;
 			QString Filename_;
 			QUrl RequestURL_;
@@ -84,13 +83,13 @@ namespace SeekThru
 	public:
 		SearchHandler (const Description&);
 
-		virtual int columnCount (const QModelIndex& = QModelIndex ()) const;
-		virtual QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;
-		virtual Qt::ItemFlags flags (const QModelIndex&) const;
-		virtual QVariant headerData (int, Qt::Orientation, int = Qt::DisplayRole) const;
-		virtual QModelIndex index (int, int, const QModelIndex& = QModelIndex()) const;
-		virtual QModelIndex parent (const QModelIndex&) const;
-		virtual int rowCount (const QModelIndex& = QModelIndex ()) const;
+		int columnCount (const QModelIndex& = QModelIndex ()) const override;
+		QVariant data (const QModelIndex&, int = Qt::DisplayRole) const override;
+		Qt::ItemFlags flags (const QModelIndex&) const override;
+		QVariant headerData (int, Qt::Orientation, int = Qt::DisplayRole) const override;
+		QModelIndex index (int, int, const QModelIndex& = QModelIndex()) const override;
+		QModelIndex parent (const QModelIndex&) const override;
+		int rowCount (const QModelIndex& = QModelIndex ()) const override;
 
 		void Start (const LeechCraft::Request&);
 	private slots:

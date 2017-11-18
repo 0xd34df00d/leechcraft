@@ -60,6 +60,8 @@ namespace Snails
 		Account_ptr GetAccount (const QModelIndex&) const;
 
 		void InitiateAccountAddition ();
+
+		void InitWithPlugins ();
 	private:
 		void AddAccountImpl (Account_ptr);
 		void LoadAccounts ();

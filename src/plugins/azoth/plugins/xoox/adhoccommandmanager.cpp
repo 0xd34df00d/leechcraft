@@ -99,7 +99,10 @@ namespace Xoox
 			auto form = state.GetDataForm ();
 			form.setType (QXmppDataForm::Submit);
 			form.toXml (&w);
-			formElem.setContent (ba);
+			if (!formElem.setContent (ba))
+				qWarning () << Q_FUNC_INFO
+						<< "unable to parse XML that was just serialized"
+						<< ba;
 		}
 		command.appendChild (formElem.documentElement ());
 

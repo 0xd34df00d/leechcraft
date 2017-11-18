@@ -61,8 +61,7 @@ namespace Blogique
 		TabClasses_t TabClasses_;
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
 
-		QAction *ExportAction_;
-
+		QAction *ExportAction_ = nullptr;
 	public:
 		void Init (ICoreProxy_ptr proxy);
 		void SecondInit ();

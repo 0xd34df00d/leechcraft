@@ -27,22 +27,43 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QDialog>
-#include "ui_aboutdialog.h"
+#include "downloaditemhandler.h"
+#include <QWebEngineProfile>
+#include <QWebEngineDownloadItem>
+#include <util/xpc/util.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ientitymanager.h>
 
 namespace LeechCraft
 {
-	class AboutDialog : public QDialog
+namespace Poshuku
+{
+namespace WebEngineView
+{
+	DownloadItemHandler::DownloadItemHandler (const ICoreProxy_ptr& proxy, QWebEngineProfile *prof, QObject *parent)
+	: QObject { parent }
+	, Proxy_ { proxy }
 	{
-		Q_OBJECT
+		connect (prof,
+				&QWebEngineProfile::downloadRequested,
+				this,
+				&DownloadItemHandler::HandleDownloadItem);
+	}
 
-		Ui::AboutDialog Ui_;
-	public:
-		AboutDialog (QWidget* = nullptr);
-	private:
-		void SetAuthors ();
-		void BuildDiagInfo ();
-	};
+	void DownloadItemHandler::HandleDownloadItem (QWebEngineDownloadItem *item)
+	{
+		item->cancel ();
+
+		auto e = Util::MakeEntity (item->url (),
+				{},
+				FromUserInitiated,
+				item->mimeType ());
+		e.Additional_ ["IgnorePlugins"] = "org.LeechCraft.Poshuku";
+		e.Additional_ ["AllowedSemantics"] = QStringList { "fetch", "save" };
+
+		auto em = Proxy_->GetEntityManager ();
+		em->HandleEntity (e);
+	}
+}
+}
 }

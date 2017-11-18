@@ -351,7 +351,7 @@ namespace Sarin
 			const auto statusMsgSize = tox_friend_get_status_message_size (tox, id, &stErr);
 			if (statusMsgSize != SIZE_MAX)
 			{
-				std::unique_ptr<uint8_t []> statusMsg { new uint8_t [statusMsgSize] };
+				const auto statusMsg = std::make_unique<uint8_t []> (statusMsgSize);
 				if (tox_friend_get_status_message (tox, id, statusMsg.get (), &stErr))
 					statusStr = QString::fromUtf8 (reinterpret_cast<char*> (statusMsg.get ()), statusMsgSize);
 				else

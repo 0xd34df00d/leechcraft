@@ -56,9 +56,8 @@ namespace LMP
 	{
 		if (params.FormatID_.isEmpty ())
 		{
-			Util::Map (files,
-					[this, &params] (const QString& file)
-						{ emit fileReady (file, file, params.FilePattern_); });
+			for (const auto& file : files)
+				emit fileReady (file, file, params.FilePattern_);
 			return;
 		}
 

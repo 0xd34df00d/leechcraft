@@ -29,20 +29,26 @@
 
 #pragma once
 
-#include <QDialog>
-#include "ui_aboutdialog.h"
+#include <QObject>
+#include <interfaces/core/icoreproxyfwd.h>
+
+class QWebEngineProfile;
+class QWebEngineDownloadItem;
 
 namespace LeechCraft
 {
-	class AboutDialog : public QDialog
+namespace Poshuku
+{
+namespace WebEngineView
+{
+	class DownloadItemHandler : public QObject
 	{
-		Q_OBJECT
-
-		Ui::AboutDialog Ui_;
+		const ICoreProxy_ptr Proxy_;
 	public:
-		AboutDialog (QWidget* = nullptr);
+		DownloadItemHandler (const ICoreProxy_ptr&, QWebEngineProfile*, QObject* = nullptr);
 	private:
-		void SetAuthors ();
-		void BuildDiagInfo ();
+		void HandleDownloadItem (QWebEngineDownloadItem*);
 	};
+}
+}
 }

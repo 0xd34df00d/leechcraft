@@ -33,6 +33,7 @@
 #include <QObject>
 #include <QUrl>
 #include <interfaces/core/icoreproxy.h>
+#include <util/sll/util.h>
 
 class QStandardItem;
 class QStandardItemModel;
@@ -47,7 +48,7 @@ namespace Zalil
 		Q_OBJECT
 
 		const QList<QStandardItem*> ProgressRow_;
-		const std::shared_ptr<void> ProgressRowGuard_;
+		const Util::DefaultScopeGuard ProgressRowGuard_;
 	protected:
 		const QString Filename_;
 		const ICoreProxy_ptr Proxy_;

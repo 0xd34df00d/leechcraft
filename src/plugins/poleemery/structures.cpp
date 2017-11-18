@@ -29,6 +29,7 @@
 
 #include "structures.h"
 #include <QtDebug>
+#include <util/sll/unreachable.h>
 
 namespace LeechCraft
 {
@@ -44,10 +45,7 @@ namespace Poleemery
 			return QObject::tr ("cash");
 		}
 
-		qWarning () << Q_FUNC_INFO
-				<< "unknown account type"
-				<< static_cast<int> (type);
-		return QString ();
+		Util::Unreachable ();
 	}
 
 	bool operator== (const Account& a1, const Account& a2)
@@ -63,30 +61,12 @@ namespace Poleemery
 		return !(a1 == a2);
 	}
 
-	EntryBase::EntryBase ()
-	: ID_ { -1 }
-	, AccountID_ { -1 }
-	, Amount_ { 0 }
-	{
-	}
-
 	EntryBase::EntryBase (int accId, double amount, const QString& name, const QString& descr, const QDateTime& dt)
-	: ID_ { -1 }
-	, AccountID_ { accId }
+	: AccountID_ { accId }
 	, Amount_ { amount }
 	, Name_ { name }
 	, Description_ { descr }
 	, Date_ { dt }
-	{
-	}
-
-	EntryBase::~EntryBase ()
-	{
-	}
-
-	NakedExpenseEntry::NakedExpenseEntry ()
-	: Count_ { 0 }
-	, Rate_ { 0 }
 	{
 	}
 
@@ -98,10 +78,6 @@ namespace Poleemery
 	, Shop_ { shop }
 	, EntryCurrency_ { currency }
 	, Rate_ { rate }
-	{
-	}
-
-	ExpenseEntry::ExpenseEntry ()
 	{
 	}
 
@@ -119,35 +95,14 @@ namespace Poleemery
 	{
 	}
 
-	Category::Category ()
-	: ID_ { -1 }
-	{
-	}
-
 	Category::Category (const QString& name)
-	: ID_ { -1 }
-	, Name_ { name }
-	{
-	}
-
-	CategoryLink::CategoryLink ()
-	: ID_ { -1 }
+	: Name_ { name }
 	{
 	}
 
 	CategoryLink::CategoryLink (const Category& category, const NakedExpenseEntry& entry)
-	: ID_ { -1 }
-	, Category_ { category.ID_ }
+	: Category_ { category.ID_ }
 	, Entry_ { entry.ID_ }
-	{
-	}
-
-	ReceiptEntry::ReceiptEntry ()
-	{
-	}
-
-	ReceiptEntry::ReceiptEntry (int accId, double amount, const QString& name, const QString& descr, const QDateTime& dt)
-	: EntryBase { accId, amount, name, descr, dt }
 	{
 	}
 }

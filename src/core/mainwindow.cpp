@@ -140,14 +140,10 @@ void LeechCraft::MainWindow::Init ()
 	if (pm->GetInitStage () == PluginManager::InitStage::Complete)
 		doDelayedInit ();
 	else
-		connect (pm,
-				&PluginManager::initStageChanged,
+		connect (&Core::Instance (),
+				&Core::initialized,
 				this,
-				[this] (PluginManager::InitStage st)
-				{
-					if (st == PluginManager::InitStage::Complete)
-						Util::ExecuteLater ([this] { doDelayedInit (); });
-				});
+				[this] { Util::ExecuteLater ([this] { doDelayedInit (); }); });
 }
 
 void LeechCraft::MainWindow::handleShortcutFullscreenMode ()

@@ -782,7 +782,7 @@ namespace BitTorrent
 
 		const auto& handle = Handles_.at (idx).Handle_;
 
-		std::unique_ptr<TorrentInfo> result (new TorrentInfo);
+		auto result = std::make_unique<TorrentInfo> ();
 		result->Status_ = StatusKeeper_->GetStatus (handle, 0xffffffff);
 		if (const auto info = handle.torrent_file ())
 			result->Info_.reset (new libtorrent::torrent_info (*info));
@@ -968,11 +968,15 @@ namespace BitTorrent
 			const QVector<bool>& files,
 			TaskParameters params)
 	{
-		if (!QFileInfo (filename).exists () || !QFileInfo (filename).isReadable ())
+		QFile file (filename);
+		if (!file.open (QIODevice::ReadOnly))
 		{
-			ShowError (tr ("File %1 doesn't exist or could not be read").arg (filename));
+			ShowError (tr ("File %1 could not be read: %2.")
+					.arg (filename)
+					.arg (file.errorString ()));
 			return -1;
 		}
+		const auto& contents = file.readAll ();
 
 		libtorrent::torrent_handle handle;
 		bool autoManaged = !(params & NoAutostart);
@@ -980,7 +984,7 @@ namespace BitTorrent
 		libtorrent::add_torrent_params atp;
 		try
 		{
-			atp.ti = boost::make_shared<libtorrent::torrent_info> (GetTorrentInfo (filename));
+			atp.ti = boost::make_shared<libtorrent::torrent_info> (GetTorrentInfo (contents));
 			atp.storage_mode = GetCurrentStorageMode ();
 			atp.save_path = std::string (path.toUtf8 ().constData ());
 			if (!autoManaged)
@@ -1011,10 +1015,6 @@ namespace BitTorrent
 
 			handle.prioritize_files (priorities);
 		}
-		QFile file (filename);
-		file.open (QIODevice::ReadOnly);
-		QByteArray contents = file.readAll ();
-		file.close ();
 
 		handle.auto_managed (autoManaged);
 

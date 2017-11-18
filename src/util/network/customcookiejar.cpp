@@ -73,17 +73,22 @@ namespace Util
 
 	QByteArray CustomCookieJar::Save () const
 	{
-		QList<QNetworkCookie> cookies = allCookies ();
+		auto cookies = allCookies ();
 		QByteArray result;
 		for (const auto& cookie : cookies)
 		{
-			if (cookie.isSessionCookie ())
-				continue;
-
 			result += cookie.toRawForm ();
 			result += "\n";
 		}
 		return result;
+	}
+
+	namespace
+	{
+		bool IsExpired (const QNetworkCookie& cookie, const QDateTime& now)
+		{
+			return !cookie.isSessionCookie () && cookie.expirationDate () < now;
+		}
 	}
 
 	void CustomCookieJar::Load (const QByteArray& data)
@@ -99,7 +104,7 @@ namespace Util
 					cookie.name ().startsWith ("__utm"))
 				continue;
 
-			if (cookie.expirationDate () < now)
+			if (IsExpired (cookie, now))
 				continue;
 
 			filteredCookies << cookie;
@@ -115,8 +120,7 @@ namespace Util
 		const auto& now = QDateTime::currentDateTime ();
 		for (const auto& cookie : cookies)
 		{
-			if (!cookie.isSessionCookie () &&
-					cookie.expirationDate () < now)
+			if (IsExpired (cookie, now))
 				continue;
 
 			if (result.contains (cookie))

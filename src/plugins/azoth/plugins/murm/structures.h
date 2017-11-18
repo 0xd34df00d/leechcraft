@@ -44,15 +44,15 @@ namespace Murm
 {
 	struct ListInfo
 	{
-		qulonglong ID_;
+		qulonglong ID_ = 0;
 		QString Name_;
 	};
 
 	struct AppInfo
 	{
-		qulonglong AppId_;
+		qulonglong AppId_ = 0;
 
-		bool IsMobile_;
+		bool IsMobile_ = false;
 
 		QString Title_;
 		QUrl Icon25_;
@@ -62,7 +62,7 @@ namespace Murm
 
 	struct UserInfo
 	{
-		qulonglong ID_;
+		qulonglong ID_ = 0;
 
 		QString FirstName_;
 		QString LastName_;
@@ -71,21 +71,21 @@ namespace Murm
 		QUrl Photo_;
 		QUrl BigPhoto_;
 
-		int Gender_;
+		int Gender_ = 0;
 
 		QDate Birthday_;
 
 		QString HomePhone_;
 		QString MobilePhone_;
 
-		int Timezone_;
+		int Timezone_ = 0;
 
-		int Country_;
+		int Country_ = 0;
 		QString CountryName_;
-		int City_;
+		int City_ = 0;
 		QString CityName_;
 
-		bool IsOnline_;
+		bool IsOnline_ = false;
 
 		QList<qulonglong> Lists_;
 
@@ -117,8 +117,8 @@ namespace Murm
 
 	struct MessageInfo
 	{
-		qulonglong ID_;
-		qulonglong From_;
+		qulonglong ID_ = 0;
+		qulonglong From_ = 0;
 
 		QString Text_;
 
@@ -131,7 +131,7 @@ namespace Murm
 
 	struct ChatInfo
 	{
-		qulonglong ChatID_;
+		qulonglong ChatID_ = 0;
 
 		QString Title_;
 		QList<UserInfo> Users_;
@@ -145,9 +145,9 @@ namespace Murm
 
 	struct PhotoInfo
 	{
-		qlonglong OwnerID_;
-		qulonglong ID_;
-		qlonglong AlbumID_;
+		qlonglong OwnerID_ = 0;
+		qulonglong ID_ = 0;
+		qlonglong AlbumID_ = 0;
 
 		QString Thumbnail_;
 		QSize ThumbnailSize_;
@@ -159,50 +159,50 @@ namespace Murm
 
 	struct AudioInfo
 	{
-		qlonglong OwnerID_;
-		qulonglong ID_;
+		qlonglong OwnerID_ = 0;
+		qulonglong ID_ = 0;
 
 		QString Artist_;
 		QString Title_;
 
-		int Duration_;
+		int Duration_ = 0;
 
 		QUrl URL_;
 	};
 
 	struct VideoInfo
 	{
-		qlonglong OwnerID_;
-		qulonglong ID_;
+		qlonglong OwnerID_ = 0;
+		qulonglong ID_ = 0;
 
 		QString AccessKey_;
 
 		QString Title_;
 		QString Desc_;
-		qulonglong Duration_;
+		qulonglong Duration_ = 0;
 
-		qlonglong Views_;
+		qlonglong Views_ = 0;
 
 		QUrl Image_;
 	};
 
 	struct DocumentInfo
 	{
-		qlonglong OwnerID_;
-		qulonglong ID_;
+		qlonglong OwnerID_ = 0;
+		qulonglong ID_ = 0;
 
 		QString Title_;
 		QString Extension_;
 
-		qulonglong Size_;
+		qulonglong Size_ = 0;
 
 		QUrl Url_;
 	};
 
 	struct PagePreview
 	{
-		qlonglong OwnerID_;
-		qulonglong ID_;
+		qlonglong OwnerID_ = 0;
+		qulonglong ID_ = 0;
 
 		QString Title_;
 		QUrl Url_;
@@ -210,7 +210,7 @@ namespace Murm
 
 	struct GiftInfo
 	{
-		qulonglong Id_;
+		qulonglong Id_ = 0;
 		QUrl Thumb_;
 	};
 
@@ -227,8 +227,8 @@ namespace Murm
 		QString Text_;
 
 		QDateTime PostDate_;
-		int Likes_;
-		int Reposts_;
+		int Likes_ = 0;
+		int Reposts_ = 0;
 
 		QList<PhotoInfo> Photos_;
 		QList<AudioInfo> Audios_;

@@ -29,20 +29,28 @@
 
 #pragma once
 
-#include <QDialog>
-#include "ui_aboutdialog.h"
+#include <util/gui/findnotification.h>
+
+class QWebEngineView;
 
 namespace LeechCraft
 {
-	class AboutDialog : public QDialog
+namespace Poshuku
+{
+namespace WebEngineView
+{
+	class FindNotification : public Util::FindNotification
 	{
-		Q_OBJECT
-
-		Ui::AboutDialog Ui_;
+		QWebEngineView * const WebView_;
+		QString PreviousFindText_;
 	public:
-		AboutDialog (QWidget* = nullptr);
+		FindNotification (ICoreProxy_ptr, QWebEngineView*);
 	private:
-		void SetAuthors ();
-		void BuildDiagInfo ();
+		void ClearFindResults ();
+	protected:
+		void handleNext (const QString& text, FindFlags flags) override;
+		void reject () override;
 	};
+}
+}
 }

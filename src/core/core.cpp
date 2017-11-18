@@ -255,6 +255,8 @@ namespace LeechCraft
 		QTimer::singleShot (10000,
 				this,
 				SLOT (handlePluginLoadErrors ()));
+
+		emit initialized ();
 	}
 
 	void Core::TryToAddJob (QString name)

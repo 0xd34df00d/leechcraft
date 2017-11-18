@@ -123,7 +123,7 @@ namespace CSTP
 	{
 		QString MakeFilename (const QUrl& entity)
 		{
-			QFileInfo fileInfo (entity.toString (QUrl::RemoveFragment));
+			QFileInfo fileInfo (entity.toString (QUrl::RemoveFragment | QUrl::RemoveQuery));
 			QString file = fileInfo.fileName ();
 			if (file.length () >= LC_FILENAME_MAX)
 			{

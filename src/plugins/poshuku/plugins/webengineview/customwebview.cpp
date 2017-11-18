@@ -34,11 +34,14 @@
 #include <QWebEngineHistory>
 #include <QWebEngineContextMenuData>
 #include <QWebChannel>
+#include <QPrinter>
+#include <QPrintDialog>
 #include <QContextMenuEvent>
 #include <util/sll/unreachable.h>
 #include <interfaces/poshuku/iwebviewhistory.h>
 #include <interfaces/poshuku/iproxyobject.h>
 #include "customwebpage.h"
+#include "findnotification.h"
 
 namespace LeechCraft
 {
@@ -46,10 +49,11 @@ namespace Poshuku
 {
 namespace WebEngineView
 {
-	CustomWebView::CustomWebView (IProxyObject *poshukuProxy)
-	: PoshukuProxy_ { poshukuProxy }
+	CustomWebView::CustomWebView (const ICoreProxy_ptr& proxy, IProxyObject *poshukuProxy)
+	: Proxy_ { proxy }
+	, PoshukuProxy_ { poshukuProxy }
 	{
-		const auto page = new CustomWebPage { poshukuProxy, this };
+		const auto page = new CustomWebPage { proxy, poshukuProxy, this };
 		setPage (page);
 
 		connect (page,
@@ -76,6 +80,8 @@ namespace WebEngineView
 
 	void CustomWebView::SurroundingsInitialized ()
 	{
+		FindDialog_ = new FindNotification { Proxy_, this };
+		FindDialog_->hide ();
 	}
 
 	QWidget* CustomWebView::GetQWidget ()
@@ -252,9 +258,20 @@ namespace WebEngineView
 				{});
 	}
 
-	void CustomWebView::Print (bool withPreview)
+	void CustomWebView::Print (bool preview)
 	{
-		// TODO
+		if (preview)
+			qWarning () << Q_FUNC_INFO
+					<< "printing with preview is not supported yet";
+
+		auto printer = std::make_shared<QPrinter> ();
+		QPrintDialog dialog (printer.get (), this);
+		dialog.setWindowTitle (tr ("Print web page"));
+
+		if (dialog.exec () != QDialog::Accepted)
+			return;
+
+		page ()->print (printer.get (), [printer] (bool) {});
 	}
 
 	QPixmap CustomWebView::MakeFullPageSnapshot ()
@@ -270,7 +287,7 @@ namespace WebEngineView
 
 	void CustomWebView::SetScrollPosition (const QPoint& point)
 	{
-		// TODO
+		page ()->runJavaScript (QString { "window.scrollTo(%1, %2);" }.arg (point.x ()).arg (point.y ()));
 	}
 
 	double CustomWebView::GetZoomFactor () const
@@ -304,7 +321,10 @@ namespace WebEngineView
 
 	void CustomWebView::InitiateFind (const QString& text)
 	{
-		// TODO
+		if (!text.isEmpty ())
+			FindDialog_->SetText (text);
+		FindDialog_->show ();
+		FindDialog_->setFocus ();
 	}
 
 	QMenu* CustomWebView::CreateStandardContextMenu ()

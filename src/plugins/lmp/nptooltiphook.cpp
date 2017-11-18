@@ -35,6 +35,7 @@
 #include <QPixmap>
 #include <QHelpEvent>
 #include <QFile>
+#include <QtDebug>
 #include <util/util.h>
 #include "nowplayingpixmaphandler.h"
 #include "core.h"
@@ -95,7 +96,15 @@ namespace LMP
 		}
 
 		QFile file { ":/lmp/resources/templates/nptooltip.html" };
-		file.open (QIODevice::ReadOnly);
+		if (!file.open (QIODevice::ReadOnly))
+		{
+			qCritical () << Q_FUNC_INFO
+					<< "unable to open"
+					<< file.fileName ()
+					<< file.errorString ();
+			return true;
+		}
+
 		auto str = QString::fromUtf8 (file.readAll ());
 		str.replace ("${TITLE}", Info_.Title_);
 		str.replace ("${ARTIST}", Info_.Artist_);

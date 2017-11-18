@@ -52,7 +52,7 @@ namespace HttHare
 			{
 				const ip::tcp::endpoint endpoint = *resolver.resolve ({ pair.first.toStdString (), pair.second.toStdString () });
 
-				std::unique_ptr<ip::tcp::acceptor> accPtr { new ip::tcp::acceptor { IoService_ } };
+				auto accPtr = std::make_unique<ip::tcp::acceptor> (IoService_);
 				accPtr->open (endpoint.protocol ());
 				accPtr->set_option (ip::tcp::acceptor::reuse_address (true));
 				accPtr->bind (endpoint);

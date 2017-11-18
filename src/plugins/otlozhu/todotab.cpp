@@ -361,7 +361,16 @@ namespace Otlozhu
 				tr ("iCalendar files (*.ics)"));
 
 		QFile file (filename);
-		file.open (QIODevice::ReadOnly);
+		if (!file.open (QIODevice::ReadOnly))
+		{
+			QMessageBox::critical (this,
+					tr ("Tasks import"),
+					tr ("Unable to open %1: %2.")
+						.arg ("<em>" + filename + "</em>")
+						.arg (file.errorString ()));
+			return;
+		}
+
 		const auto& items = ICalParser ().Parse (file.readAll ());
 		if (items.isEmpty ())
 			return;

@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QWebEngineView>
+#include <interfaces/core/icoreproxyfwd.h>
 #include <interfaces/poshuku/iwebview.h>
 #include <interfaces/iwkfontssettable.h>
 
@@ -41,6 +42,8 @@ class IProxyObject;
 
 namespace WebEngineView
 {
+	class FindNotification;
+
 	class CustomWebView final : public QWebEngineView
 							  , public IWebView
 							  , public IWkFontsSettable
@@ -48,9 +51,12 @@ namespace WebEngineView
 		Q_OBJECT
 		Q_INTERFACES (IWkFontsSettable LeechCraft::Poshuku::IWebView)
 
+		const ICoreProxy_ptr Proxy_;
 		IProxyObject * const PoshukuProxy_;
+
+		FindNotification *FindDialog_ = nullptr;
 	public:
-		CustomWebView (IProxyObject*);
+		CustomWebView (const ICoreProxy_ptr&, IProxyObject*);
 
 		void SurroundingsInitialized () override;
 

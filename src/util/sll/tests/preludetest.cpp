@@ -38,26 +38,6 @@ namespace LeechCraft
 {
 namespace Util
 {
-	void PreludeTest::testInvokableWithConst ()
-	{
-		const auto lambda = [] (const QString&) {};
-		static_assert (detail::IsInvokableWithConst<QString, decltype (lambda)> (), "The lambda should be invokable with T");
-		static_assert (detail::IsInvokableWithConst<QString&, decltype (lambda)> (), "The lambda should be invokable with T&");
-		static_assert (detail::IsInvokableWithConst<const QString&, decltype (lambda)> (), "The lambda should be invokable with const T&");
-		static_assert (detail::IsInvokableWithConst<QString&&, decltype (lambda)> (), "The lambda should be invokable with T&&");
-		QCOMPARE (true, true);
-	}
-
-	void PreludeTest::testInvokableWithNonConst ()
-	{
-		const auto lambda = [] (QString&) {};
-		static_assert (!detail::IsInvokableWithConst<QString, decltype (lambda)> (), "The lambda should not be invokable with T");
-		static_assert (!detail::IsInvokableWithConst<QString&, decltype (lambda)> (), "The lambda should not be invokable with T&");
-		static_assert (!detail::IsInvokableWithConst<const QString&, decltype (lambda)> (), "The lambda should not be invokable with const T&");
-		static_assert (!detail::IsInvokableWithConst<QString&&, decltype (lambda)> (), "The lambda should not be invokable with T&&");
-		QCOMPARE (true, true);
-	}
-
 	namespace
 	{
 		QMap<int, QString> GetSimpleMap ()
@@ -80,30 +60,6 @@ namespace Util
 		const auto& otherList = Map (map, [] (const QString& v) { return v.size (); });
 
 		QCOMPARE (otherList, (QList<int> { 3, 3, 3 }));
-	}
-
-	void PreludeTest::testMapMapMutatingVoid ()
-	{
-		auto map = GetSimpleMap ();
-		Map (map, [] (QString& v) { v += v [0]; });
-
-		QCOMPARE (map, (QMap<int, QString> { { 0, "aaaa" }, { 1, "bbbb" }, { 2, "cccc" }}));
-	}
-
-	void PreludeTest::testMapMapNonMutatingVoid ()
-	{
-		auto map = GetSimpleMap ();
-		Map (map, [] (const QString&) {});
-
-		QCOMPARE (map, GetSimpleMap ());
-	}
-
-	void PreludeTest::testMapMapNonMutatingVoidConst ()
-	{
-		const auto& map = GetSimpleMap ();
-		Map (map, [] (const QString&) {});
-
-		QCOMPARE (map, GetSimpleMap ());
 	}
 
 	void PreludeTest::testMapStringList ()

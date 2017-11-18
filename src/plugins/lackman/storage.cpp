@@ -74,27 +74,7 @@ namespace LackMan
 	: QObject (parent)
 	, DB_ (QSqlDatabase::addDatabase ("QSQLITE", "LackManConnectionAvailable"))
 	{
-		if (!DB_.isValid ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "database invalid :(";
-			Util::DBLock::DumpError (DB_.lastError ());
-			throw std::runtime_error ("Unable to add database connection.");
-		}
-
-		QDir dir;
-		try
-		{
-			dir = Util::CreateIfNotExists ("lackman");
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< e.what ();
-			throw;
-		}
-
-		DB_.setDatabaseName (dir.filePath ("availablepackages.db"));
+		DB_.setDatabaseName (Util::CreateIfNotExists ("lackman").filePath ("availablepackages.db"));
 
 		if (!DB_.open ())
 		{
@@ -559,8 +539,7 @@ namespace LackMan
 			throw std::runtime_error ("Query execution failed");
 		}
 
-		others.next ();
-		if (!others.value (0).toInt ())
+		if (!others.next () || !others.value (0).toInt ())
 		{
 			qDebug () << Q_FUNC_INFO
 					<< "no other packages"

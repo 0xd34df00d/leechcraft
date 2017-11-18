@@ -37,6 +37,7 @@
 #include "customwebview.h"
 #include "requestinterceptor.h"
 #include "cookiessyncer.h"
+#include "downloaditemhandler.h"
 
 namespace LeechCraft
 {
@@ -49,7 +50,7 @@ namespace WebEngineView
 		QString GetDefaultUserAgent (const ICoreProxy_ptr& proxy,
 				const QString& wkVer, const QString& chromeVer)
 		{
-#if defined(Q_OS_WIN32)
+#if defined (Q_OS_WIN32)
 			const auto platform = "Windows";
 #elif defined (Q_OS_MAC)
 			const auto platform = "Macintosh";
@@ -75,6 +76,8 @@ namespace WebEngineView
 
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Proxy_ = proxy;
+
 		const auto prof = QWebEngineProfile::defaultProfile ();
 		const auto& uaParts = prof->httpUserAgent ().split (' ');
 		auto getVer = [&uaParts] (const QByteArray& marker)
@@ -87,6 +90,8 @@ namespace WebEngineView
 
 		Interceptor_ = std::make_shared<RequestInterceptor> ();
 		prof->setRequestInterceptor (Interceptor_.get ());
+
+		new DownloadItemHandler (proxy, prof);
 
 		const auto cookieJar = proxy->GetNetworkAccessManager ()->cookieJar ();
 		new CookiesSyncer { qobject_cast<Util::CustomCookieJar*> (cookieJar), prof->cookieStore () };
@@ -131,7 +136,7 @@ namespace WebEngineView
 
 	IWebView_ptr Plugin::CreateWebView ()
 	{
-		auto view = std::make_shared<CustomWebView> (PoshukuProxy_);
+		auto view = std::make_shared<CustomWebView> (Proxy_, PoshukuProxy_);
 		HandleView (view.get ());
 		return view;
 	}

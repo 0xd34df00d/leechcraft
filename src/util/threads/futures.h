@@ -37,6 +37,7 @@
 #include <QFutureWatcher>
 #include <util/sll/oldcppkludges.h>
 #include <util/sll/slotclosure.h>
+#include <util/sll/typegetter.h>
 #include "threadsconfig.h"
 #include "concurrentexception.h"
 
@@ -44,33 +45,34 @@ namespace LeechCraft
 {
 namespace Util
 {
-	template<typename R, typename F, typename... Args>
-	std::enable_if_t<!std::is_same<R, void>::value>
-		ReportFutureResult (QFutureInterface<R>& iface, F&& f, Args&&... args)
+	namespace detail
 	{
-		try
-		{
-			const auto result = Invoke (std::forward<F> (f), std::forward<Args> (args)...);
-			iface.reportFinished (&result);
-		}
-		catch (const QtException_t& e)
-		{
-			iface.reportException (e);
-			iface.reportFinished ();
-		}
-		catch (const std::exception& e)
-		{
-			iface.reportException (ConcurrentStdException { e });
-			iface.reportFinished ();
-		}
+		template<typename T, typename... Args>
+		using CallableDetector_t = std::result_of_t<T (Args...)>; // C++17
 	}
 
-	template<typename F, typename... Args>
-	void ReportFutureResult (QFutureInterface<void>& iface, F&& f, Args&&... args)
+	template<typename R, typename F, typename... Args>
+	void ReportFutureResult (QFutureInterface<R>& iface, F&& f, Args&&... args)
 	{
 		try
 		{
-			Invoke (std::forward<F> (f), std::forward<Args> (args)...);
+			constexpr bool isVoid = std::is_same<R, void> {}; // C++17
+			if constexpr (!isVoid && !IsDetected_v<detail::CallableDetector_t, std::decay_t<F>, Args...>)
+			{
+				static_assert (std::is_constructible<R, F> {}); // C++17
+				static_assert (sizeof... (Args) == 0,
+						"Extra args when a value is passed. Perhaps you wanted to pass in a function?");
+
+				const R result { std::forward<F> (f) };
+				iface.reportResult (result);
+			}
+			else if constexpr (!isVoid)
+			{
+				const auto result = Invoke (std::forward<F> (f), std::forward<Args> (args)...);
+				iface.reportResult (result);
+			}
+			else
+				Invoke (std::forward<F> (f), std::forward<Args> (args)...);
 		}
 		catch (const QtException_t& e)
 		{
@@ -82,35 +84,6 @@ namespace Util
 		}
 
 		iface.reportFinished ();
-	}
-
-	namespace detail
-	{
-		template<typename T>
-		constexpr bool IsCallableImpl (int, std::result_of_t<T ()>* = nullptr)
-		{
-			return true;
-		}
-
-		template<typename T>
-		constexpr bool IsCallableImpl (float)
-		{
-			return false;
-		}
-
-		template<typename T>
-		constexpr bool IsCallable ()
-		{
-			return IsCallableImpl<T> (0);
-		}
-	}
-
-	template<typename R, typename U>
-	std::enable_if_t<std::is_constructible<R, U>::value && !detail::IsCallable<U> ()>
-		ReportFutureResult (QFutureInterface<R>& iface, U&& value)
-	{
-		const R result { std::forward<U> (value) };
-		iface.reportFinished (&result);
 	}
 
 	namespace detail
@@ -132,124 +105,6 @@ namespace Util
 
 	template<typename T>
 	using UnwrapFutureType_t = typename detail::UnwrapFutureType<T>::type;
-
-	namespace detail
-	{
-		template<typename T>
-		struct IsFuture
-		{
-			constexpr static bool Result_ = false;
-		};
-
-		template<typename T>
-		struct IsFuture<QFuture<T>>
-		{
-			constexpr static bool Result_ = true;
-		};
-
-		template<typename RetType, typename ResultHandler>
-		struct HandlerInvoker
-		{
-			void operator() (const ResultHandler& rh, QFutureWatcher<RetType> *watcher) const
-			{
-				rh (watcher->result ());
-			}
-		};
-
-		template<typename ResultHandler>
-		struct HandlerInvoker<void, ResultHandler>
-		{
-			void operator() (const ResultHandler& rh, QFutureWatcher<void>*) const
-			{
-				rh ();
-			}
-		};
-
-		template<typename ResultHandler, typename RetType, typename = std::result_of_t<ResultHandler (RetType)>>
-		constexpr bool IsCompatibleImpl (int)
-		{
-			return true;
-		}
-
-		template<typename, typename>
-		constexpr bool IsCompatibleImpl (float)
-		{
-			return false;
-		}
-
-		template<typename ResultHandler, typename = std::result_of_t<ResultHandler ()>>
-		constexpr bool IsCompatibleImplVoid (int)
-		{
-			return true;
-		}
-
-		template<typename>
-		constexpr bool IsCompatibleImplVoid (float)
-		{
-			return false;
-		}
-
-		template<typename ResultHandler, typename RetType>
-		constexpr bool IsCompatible ()
-		{
-			return std::is_same<void, RetType>::value ?
-					IsCompatibleImplVoid<ResultHandler> (0) :
-					IsCompatibleImpl<ResultHandler, RetType> (0);
-		}
-	}
-
-	/** @brief Runs a QFuture-returning function and feeding the future
-	 * to a handler when it is ready.
-	 *
-	 * This function creates a <code>QFutureWatcher</code> of a type
-	 * compatible with the QFuture type returned from the \em f, makes
-	 * sure that \em rh handler is invoked when the future finishes,
-	 * and then invokes the \em f with the given list of \em args (that
-	 * may be empty).
-	 *
-	 * \em rh should accept a single argument of the same type \em T
-	 * that is wrapped in a <code>QFuture</code> returned by the \em f
-	 * (that is, \em f should return <code>QFuture<T></code>).
-	 *
-	 * @param[in] f A callable that should be executed, taking the
-	 * arguments \em args and returning a <code>QFuture<T></code> for
-	 * some \em T.
-	 * @param[in] rh A callable that will be invoked when the future
-	 * finishes, that should be callable with a single argument of type
-	 * \em T.
-	 * @param[in] parent The parent object for all QObject-derived
-	 * classes created in this function, may be a <code>nullptr</code>.
-	 * @param[in] args The arguments to be passed to the callable \em f.
-	 */
-	template<typename Executor, typename ResultHandler, typename... Args>
-	void ExecuteFuture (Executor f, ResultHandler rh, QObject *parent, Args... args)
-	{
-		static_assert (detail::IsFuture<decltype (f (args...))>::Result_,
-				"The passed functor should return a QFuture.");
-
-		// Don't replace result_of with decltype, this triggers a gcc bug leading to segfault:
-		// http://leechcraft.org:8080/job/leechcraft/=debian_unstable/1998/console
-		using RetType_t = UnwrapFutureType_t<typename std::result_of<Executor (Args...)>::type>;
-
-		static_assert (detail::IsCompatible<ResultHandler, RetType_t> (),
-				"Executor's watcher type and result handler argument type are not compatible.");
-
-		const auto watcher = new QFutureWatcher<RetType_t> { parent };
-
-		new SlotClosure<DeleteLaterPolicy>
-		{
-			[watcher, rh]
-			{
-				watcher->deleteLater ();
-				detail::HandlerInvoker<RetType_t, ResultHandler> {} (rh, watcher);
-			},
-			watcher,
-			SIGNAL (finished ()),
-			watcher
-		};
-
-		watcher->setFuture (f (args...));
-	}
 
 	namespace detail
 	{
@@ -456,21 +311,6 @@ namespace Util
 
 		struct EmptyDestructionTag;
 
-		template<typename T>
-		using IsEmptyDestr_t = std::is_same<EmptyDestructionTag, T>;
-
-		template<typename Ret, typename DestrType, typename = std::enable_if_t<IsEmptyDestr_t<DestrType>::value>>
-		void InvokeDestructionHandler (const std::function<DestrType ()>&, QFutureInterface<Ret>&, float)
-		{
-		}
-
-		template<typename Ret, typename DestrType, typename = std::enable_if_t<!IsEmptyDestr_t<DestrType>::value>>
-		void InvokeDestructionHandler (const std::function<DestrType ()>& handler, QFutureInterface<Ret>& iface, int)
-		{
-			const auto res = handler ();
-			iface.reportFinished (&res);
-		}
-
 		/** @brief A proxy object allowing type-checked sequencing of
 		 * actions and responsible for starting the initial action.
 		 *
@@ -507,6 +347,12 @@ namespace Util
 			, DestrHandler_ { destrHandler }
 			{
 			}
+
+			template<typename F1, typename Ret1>
+			using ReturnsFutureDetector_t = UnwrapFutureType_t<std::result_of_t<F1 (Ret1)>>;
+
+			template<typename F, typename... Args>
+			using ReturnsVoidDetector_t = std::result_of_t<F (Args...)>;
 		public:
 			using Ret_t = Ret;
 
@@ -537,56 +383,29 @@ namespace Util
 
 			/** @brief Adds the functor \em f to the chain of actions.
 			 *
-			 * The functor \em f should return <code>QFuture<T0></code>
-			 * when called with a value of type \em Ret. That is, the
-			 * expression <code>f (std::declval<Ret> ())</code> should be
-			 * well-formed, and, moreover, its return type should be
-			 * <code>QFuture<T0></code> for some T0.
-			 *
-			 * @param[in] f The functor to chain.
-			 * @return An object of type
-			 * <code>SequencerProxy<T0, E0, A0></code> ready for chaining
-			 * new functions.
+			 * @param[in] f The functor to add to the chain.
+			 * @return A new SequenceProxy if the chain can be continued further on, \code void otherwise..
 			 * @tparam F The type of the functor to chain.
 			 */
 			template<typename F>
-			auto Then (F&& f) -> SequenceProxy<UnwrapFutureType_t<decltype (f (std::declval<Ret> ()))>, Future, DestructionTag>
+			auto Then (F&& f)
 			{
 				if (ThisFuture_)
 					throw std::runtime_error { "SequenceProxy::Then(): cannot chain more after being converted to a QFuture" };
 
-				Seq_->template Then<UnwrapFutureType_t<decltype (f (std::declval<Ret> ()))>, Ret> (f);
-				return { ExecuteGuard_, Seq_, DestrHandler_ };
-			}
-
-			/** @brief Adds the funtor \em f to the chain of actions and
-			 * closes the chain.
-			 *
-			 * The function \em f should return <code>void</code> when
-			 * called with a value of type \em Ret.
-			 *
-			 * No more functors may be chained after adding a
-			 * <code>void</code>-returning functor.
-			 *
-			 * @param[in] f The functor to chain.
-			 * @tparam F The type of the functor to chain.
-			 */
-			template<typename F>
-			auto Then (F&& f) -> std::enable_if_t<std::is_same<void, decltype (f (std::declval<Ret> ()))>::value>
-			{
-				if (ThisFuture_)
-					throw std::runtime_error { "SequenceProxy::Then(): cannot chain more after being converted to a QFuture" };
-
-				Seq_->template Then<Ret> (f);
-			}
-
-			template<typename F>
-			auto Then (F&& f) -> std::enable_if_t<std::is_same<void, Ret>::value && std::is_same<void, decltype (f ())>::value>
-			{
-				if (ThisFuture_)
-					throw std::runtime_error { "SequenceProxy::Then(): cannot chain more after being converted to a QFuture" };
-
-				Seq_->Then (std::function<void ()> { f });
+				if constexpr (IsDetected_v<ReturnsFutureDetector_t, F, Ret>)
+				{
+					using Next_t = UnwrapFutureType_t<decltype (f (std::declval<Ret> ()))>;
+					Seq_->template Then<Next_t, Ret> (f);
+					return SequenceProxy<Next_t, Future, DestructionTag> { ExecuteGuard_, Seq_, DestrHandler_ };
+				}
+				else if constexpr (std::is_same<IsDetected_t<struct Dummy, ReturnsVoidDetector_t, F, Ret>, void> {})
+					Seq_->template Then<Ret> (f);
+				else if constexpr (std::is_same<void, Ret>::value &&
+						std::is_same<IsDetected_t<struct Dummy, ReturnsVoidDetector_t, F>, void> {})
+					Seq_->Then (std::function<void ()> { f });
+				else
+					static_assert (std::is_same<F, struct Dummy> {}, "Invalid functor passed to SequenceProxy::Then()");
 			}
 
 			template<typename F>
@@ -638,7 +457,7 @@ namespace Util
 				iface.reportStarted ();
 
 				SlotClosure<DeleteLaterPolicy> *deleteGuard = nullptr;
-				if (!isEmptyDestr)
+				if constexpr (!isEmptyDestr)
 				{
 					deleteGuard = new SlotClosure<DeleteLaterPolicy>
 					{
@@ -647,7 +466,8 @@ namespace Util
 							if (iface.isFinished ())
 								return;
 
-							InvokeDestructionHandler<Ret, DestructionTag> (destrHandler, iface, 0);
+							const auto res = destrHandler ();
+							iface.reportFinished (&res);
 						},
 						Seq_->parent (),
 						SIGNAL (destroyed ()),

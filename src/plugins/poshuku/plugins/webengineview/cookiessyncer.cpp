@@ -29,6 +29,7 @@
 
 #include "cookiessyncer.h"
 #include <QWebEngineCookieStore>
+#include <QTimer>
 #include <QtDebug>
 #include <util/network/customcookiejar.h>
 
@@ -45,30 +46,59 @@ namespace WebEngineView
 	{
 		WebEngineStore_->loadAllCookies ();
 
-		handleLCCookiesAdded (LCJar_->allCookies ());
+		HandleLCCookiesAdded (LCJar_->allCookies ());
 
 		connect (LCJar_,
-				SIGNAL (cookiesAdded (QList<QNetworkCookie>)),
+				&Util::CustomCookieJar::cookiesAdded,
 				this,
-				SLOT (handleLCCookiesAdded (QList<QNetworkCookie>)));
+				&CookiesSyncer::HandleLCCookiesAdded);
 		connect (LCJar_,
-				SIGNAL (cookiesRemoved (QList<QNetworkCookie>)),
+				&Util::CustomCookieJar::cookiesRemoved,
 				this,
-				SLOT (handleLCCookiesRemoved (QList<QNetworkCookie>)));
+				&CookiesSyncer::HandleLCCookiesRemoved);
+
+		connect (WebEngineStore_,
+				&QWebEngineCookieStore::cookieAdded,
+				this,
+				&CookiesSyncer::HandleWebEngineCookieAdded);
+		connect (WebEngineStore_,
+				&QWebEngineCookieStore::cookieRemoved,
+				this,
+				&CookiesSyncer::HandleWebEngineCookieRemoved);
 	}
 
-	void CookiesSyncer::handleLCCookiesAdded (const QList<QNetworkCookie>& cookies)
+	void CookiesSyncer::HandleLCCookiesAdded (const QList<QNetworkCookie>& cookies)
 	{
 		qDebug () << Q_FUNC_INFO << cookies.size ();
 		for (const auto& cookie : cookies)
 			WebEngineStore_->setCookie (cookie);
 	}
 
-	void CookiesSyncer::handleLCCookiesRemoved (const QList<QNetworkCookie>& cookies)
+	void CookiesSyncer::HandleLCCookiesRemoved (const QList<QNetworkCookie>& cookies)
 	{
 		qDebug () << Q_FUNC_INFO << cookies.size ();
 		for (const auto& cookie : cookies)
 			WebEngineStore_->deleteCookie (cookie);
+	}
+
+	void CookiesSyncer::HandleWebEngineCookieAdded (const QNetworkCookie& cookie)
+	{
+		if (WebEngine2LCQueue_.isEmpty ())
+			QTimer::singleShot (1000, Qt::VeryCoarseTimer, this,
+					[this]
+					{
+						for (const auto& cookie : WebEngine2LCQueue_)
+							LCJar_->insertCookie (cookie);
+						WebEngine2LCQueue_.clear ();
+					});
+
+		WebEngine2LCQueue_.prepend (cookie);
+	}
+
+	void CookiesSyncer::HandleWebEngineCookieRemoved (const QNetworkCookie& cookie)
+	{
+		WebEngine2LCQueue_.removeOne (cookie);
+		LCJar_->deleteCookie (cookie);
 	}
 }
 }

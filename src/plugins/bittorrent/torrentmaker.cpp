@@ -106,14 +106,14 @@ namespace BitTorrent
 
 		ct.add_tracker (params.AnnounceURL_.toStdString ());
 
-		std::unique_ptr<QProgressDialog> pd (new QProgressDialog ());
-		pd->setWindowTitle (tr ("Hashing torrent..."));
-		pd->setMaximum (ct.num_pieces ());
+		QProgressDialog pd;
+		pd.setWindowTitle (tr ("Hashing torrent..."));
+		pd.setMaximum (ct.num_pieces ());
 
 		boost::system::error_code hashesError;
 		libtorrent::set_piece_hashes (ct,
 				fullPath,
-				[&pd] (int i) { pd->setValue (i); },
+				[&pd] (int i) { pd.setValue (i); },
 				hashesError);
 		if (hashesError)
 		{

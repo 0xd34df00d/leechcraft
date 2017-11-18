@@ -53,7 +53,7 @@ namespace Rosenthal
 		ICoreProxy_ptr Proxy_;
 
 		Util::XmlSettingsDialog_ptr SettingsDialog_;
-		KnownDictsManager *KnownMgr_;
+		KnownDictsManager *KnownMgr_ = nullptr;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();

@@ -479,12 +479,10 @@ namespace LeechCraft
 					qDebug () << val->Unload ();
 				}
 
-		const auto fstInitProc =
-				std::make_shared<PluginLoadProcess> (tr ("Plugins initialization: first stage..."),
-						ordered.size ());
-		const auto sndInitProc =
-				std::make_shared<PluginLoadProcess> (tr ("Plugins initialization: second stage..."),
-						ordered.size ());
+		const auto fstInitProc = std::make_shared<PluginLoadProcess> (tr ("Plugins initialization: first stage..."),
+					ordered.size ());
+		const auto sndInitProc = std::make_shared<PluginLoadProcess> (tr ("Plugins initialization: second stage..."),
+					ordered.size ());
 
 		const auto& failed = FirstInitAll (fstInitProc.get ());
 

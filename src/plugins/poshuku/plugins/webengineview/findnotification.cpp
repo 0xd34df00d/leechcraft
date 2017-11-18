@@ -27,22 +27,72 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QDialog>
-#include "ui_aboutdialog.h"
+#include "findnotification.h"
+#include <QWebEngineView>
 
 namespace LeechCraft
 {
-	class AboutDialog : public QDialog
+namespace Poshuku
+{
+namespace WebEngineView
+{
+	FindNotification::FindNotification (ICoreProxy_ptr proxy, QWebEngineView *near)
+	: Util::FindNotification { proxy, near }
+	, WebView_ { near }
 	{
-		Q_OBJECT
+		connect (near,
+				&QWebEngineView::loadFinished,
+				this,
+				[this]
+				{
+					if (PreviousFindText_.isEmpty ())
+						return;
 
-		Ui::AboutDialog Ui_;
-	public:
-		AboutDialog (QWidget* = nullptr);
-	private:
-		void SetAuthors ();
-		void BuildDiagInfo ();
-	};
+					ClearFindResults ();
+					findNext ();
+				});
+	}
+
+	void FindNotification::ClearFindResults ()
+	{
+		PreviousFindText_ = "";
+		WebView_->findText ({});
+	}
+
+	namespace
+	{
+		auto ToPageFlags (FindNotification::FindFlags flags)
+		{
+			QWebEnginePage::FindFlags pageFlags;
+			auto check = [&pageFlags, flags] (FindNotification::FindFlag ourFlag, QWebEnginePage::FindFlag pageFlag)
+			{
+				if (flags & ourFlag)
+					pageFlags |= pageFlag;
+			};
+			check (FindNotification::FindCaseSensitively, QWebEnginePage::FindCaseSensitively);
+			check (FindNotification::FindBackwards, QWebEnginePage::FindBackward);
+			return pageFlags;
+		}
+	}
+
+	void FindNotification::handleNext (const QString& text, FindFlags findFlags)
+	{
+		const auto flags = ToPageFlags (findFlags);
+
+		if (PreviousFindText_ != text)
+		{
+			WebView_->findText ({}, flags);
+			PreviousFindText_ = text;
+		}
+
+		WebView_->findText (text, flags, [this] (bool found) { SetSuccessful (found); });
+	}
+
+	void FindNotification::reject ()
+	{
+		Util::FindNotification::reject ();
+		ClearFindResults ();
+	}
+}
+}
 }

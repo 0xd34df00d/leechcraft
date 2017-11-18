@@ -60,7 +60,7 @@ namespace Herbicide
 
 		Util::XmlSettingsDialog_ptr SettingsDialog_;
 
-		Logger *Logger_;
+		Logger *Logger_ = nullptr;
 
 		QSet<QObject*> AskedEntries_;
 		QSet<QObject*> AllowedEntries_;
