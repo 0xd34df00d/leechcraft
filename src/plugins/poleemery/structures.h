@@ -83,19 +83,19 @@ namespace Poleemery
 
 	struct EntryBase
 	{
-		Util::oral::PKey<int> ID_;
-		Util::oral::References<Account, 0> AccountID_;
+		Util::oral::PKey<int> ID_ = -1;
+		Util::oral::References<Account, 0> AccountID_ = -1;
 
 		/** This actually price.
 		 */
-		double Amount_;
+		double Amount_ = 0;
 		QString Name_;
 		QString Description_;
 		QDateTime Date_;
 
-		EntryBase ();
+		EntryBase () = default;
 		EntryBase (int accId, double amount, const QString& name, const QString& descr, const QDateTime& dt);
-		virtual ~EntryBase ();
+		virtual ~EntryBase () = default;
 
 		virtual EntryType GetType () const = 0;
 	};
@@ -104,17 +104,17 @@ namespace Poleemery
 
 	struct NakedExpenseEntry : EntryBase
 	{
-		double Count_;
+		double Count_ = 0;
 		QString Shop_;
 
 		QString EntryCurrency_;
-		double Rate_;
+		double Rate_ = 0;
 
 		static QString ClassName () { return "NakedExpenseEntry"; }
 
 		EntryType GetType () const { return EntryType::Expense; }
 
-		NakedExpenseEntry ();
+		NakedExpenseEntry () = default;
 		NakedExpenseEntry (int accId, double amount,
 				const QString& name, const QString& descr, const QDateTime& dt,
 				double count, const QString& shop, const QString& currency, double rate);
@@ -124,7 +124,7 @@ namespace Poleemery
 	{
 		QStringList Categories_;
 
-		ExpenseEntry ();
+		ExpenseEntry () = default;
 		ExpenseEntry (const NakedExpenseEntry&);
 		ExpenseEntry (int accId, double amount,
 				const QString& name, const QString& descr, const QDateTime& dt,
@@ -154,7 +154,7 @@ namespace Poleemery
 {
 	struct Category
 	{
-		Util::oral::PKey<int> ID_;
+		Util::oral::PKey<int> ID_ = -1;
 		Util::oral::Unique<QString> Name_;
 
 		Category ();
@@ -175,7 +175,7 @@ namespace Poleemery
 {
 	struct CategoryLink
 	{
-		Util::oral::PKey<int> ID_;
+		Util::oral::PKey<int> ID_ = -1;
 		Util::oral::References<Category, 0> Category_;
 		Util::oral::References<NakedExpenseEntry, 0> Entry_;
 
