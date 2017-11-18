@@ -80,7 +80,7 @@ namespace MusicZombie
 		Media::IPendingDisco* GetReleaseInfo (const QString&, const QString&) override;
 
 #ifdef WITH_CHROMAPRINT
-		Media::IPendingTagsFetch* FetchTags (const QString&) override;
+		QFuture<Media::AudioInfo> FetchTags (const QString&) override;
 #endif
 	};
 }

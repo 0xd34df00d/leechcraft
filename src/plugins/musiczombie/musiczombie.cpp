@@ -29,6 +29,7 @@
 
 #include "musiczombie.h"
 #include <QIcon>
+#include <QFuture>
 #include <interfaces/core/icoreproxy.h>
 #include <util/sll/queuemanager.h>
 #include <util/util.h>
@@ -99,10 +100,10 @@ namespace MusicZombie
 	}
 
 #ifdef WITH_CHROMAPRINT
-	Media::IPendingTagsFetch* Plugin::FetchTags (const QString& filename)
+	QFuture<Media::AudioInfo> Plugin::FetchTags (const QString& filename)
 	{
-		return new PendingTagsFetch (AcoustidQueue_,
-				Proxy_->GetNetworkAccessManager (), filename);
+		auto fetcher = new PendingTagsFetch (AcoustidQueue_, Proxy_->GetNetworkAccessManager (), filename);
+		return fetcher->GetFuture ();
 	}
 #endif
 }

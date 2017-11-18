@@ -49,7 +49,6 @@ namespace MusicZombie
 			QNetworkAccessManager *nam, const QString& filename)
 	: Queue_ (queue)
 	, NAM_ (nam)
-	, Filename_ (filename)
 	{
 		auto worker = [filename]
 		{
@@ -72,7 +71,7 @@ namespace MusicZombie
 					const auto& fp = result.FP_;
 					if (fp.isEmpty ())
 					{
-						emit ready (Filename_, {});
+						Util::ReportFutureResult (Promise_, Media::AudioInfo {});
 						deleteLater ();
 					}
 
@@ -80,14 +79,9 @@ namespace MusicZombie
 				};
 	}
 
-	QObject* PendingTagsFetch::GetQObject ()
+	QFuture<Media::AudioInfo> PendingTagsFetch::GetFuture ()
 	{
-		return this;
-	}
-
-	Media::AudioInfo PendingTagsFetch::GetResult () const
-	{
-		return Info_;
+		return Promise_.future ();
 	}
 
 	void PendingTagsFetch::Request (const QByteArray& fp, int duration)
@@ -120,7 +114,7 @@ namespace MusicZombie
 			qWarning () << Q_FUNC_INFO
 					<< "error parsing"
 					<< data;
-			emit ready (Filename_, Media::AudioInfo ());
+			Util::ReportFutureResult (Promise_, Media::AudioInfo {});
 			return;
 		}
 
@@ -130,9 +124,8 @@ namespace MusicZombie
 		if (result.isNull ())
 		{
 			qWarning () << Q_FUNC_INFO
-					<< "no results for"
-					<< Filename_;
-			emit ready (Filename_, Media::AudioInfo ());
+					<< "no results";
+			Util::ReportFutureResult (Promise_, Media::AudioInfo {});
 			return;
 		}
 
@@ -182,7 +175,7 @@ namespace MusicZombie
 		}
 		info.Artist_ = artists.join (" feat ");
 
-		emit ready (Filename_, info);
+		Util::ReportFutureResult (Promise_, info);
 	}
 }
 }

@@ -28,6 +28,8 @@
  **********************************************************************/
 
 #include "tagsfetchmanager.h"
+#include <QFuture>
+#include <util/threads/futures.h>
 #include <interfaces/lmp/mediainfo.h>
 #include <interfaces/media/itagsfetcher.h>
 #include "filesmodel.h"
@@ -46,13 +48,8 @@ namespace Graffiti
 	, TotalTags_ (paths.size ())
 	{
 		for (const auto& path : paths)
-		{
-			auto pending = prov->FetchTags (path);
-			connect (pending->GetQObject (),
-					SIGNAL (ready (QString, Media::AudioInfo)),
-					this,
-					SLOT (handleTagsFetched (QString, Media::AudioInfo)));
-		}
+			Util::Sequence (this, prov->FetchTags (path)) >>
+					[this, path] (const Media::AudioInfo& result) { handleTagsFetched (path, result); };
 
 		QMetaObject::invokeMethod (this,
 				"tagsFetchProgress",

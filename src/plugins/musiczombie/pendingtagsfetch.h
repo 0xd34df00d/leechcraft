@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QObject>
+#include <QFutureInterface>
 #include <interfaces/media/itagsfetcher.h>
 
 class QNetworkAccessManager;
@@ -44,28 +45,21 @@ namespace Util
 namespace MusicZombie
 {
 	class PendingTagsFetch final : public QObject
-								 , public Media::IPendingTagsFetch
 	{
 		Q_OBJECT
-		Q_INTERFACES (Media::IPendingTagsFetch)
 
 		Util::QueueManager * const Queue_;
 		QNetworkAccessManager * const NAM_;
 
-		const QString Filename_;
-
-		Media::AudioInfo Info_;
+		QFutureInterface<Media::AudioInfo> Promise_;
 	public:
 		PendingTagsFetch (Util::QueueManager*, QNetworkAccessManager*, const QString&);
 
-		QObject* GetQObject ();
-		Media::AudioInfo GetResult () const;
+		QFuture<Media::AudioInfo> GetFuture ();
 	private:
 		void Request (const QByteArray&, int);
 	private slots:
 		void handleReplyFinished ();
-	signals:
-		void ready (const QString&, const Media::AudioInfo&);
 	};
 }
 }
