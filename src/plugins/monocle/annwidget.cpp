@@ -31,7 +31,6 @@
 #include <QMenu>
 #include <QClipboard>
 #include <QToolBar>
-#include <util/sll/onetimerunner.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include <interfaces/core/iiconthememanager.h>
 #include "annmanager.h"
@@ -86,19 +85,13 @@ namespace Monocle
 		const auto itm = Core::Instance ().GetProxy ()->GetIconThemeManager ();
 
 		QMenu menu;
-		auto action = menu.addAction (itm->GetIcon ("edit-copy"), tr ("Copy annotation text"));
-		new Util::OneTimeRunner
-		{
-			[&idx] () -> void
-			{
-				const auto& ann = idx.data (AnnManager::Role::Annotation).value<IAnnotation_ptr> ();
-				qApp->clipboard ()->setText (ann->GetText ());
-			},
-			action,
-			SIGNAL (triggered ()),
-			&menu
-		};
-
+		menu.addAction (itm->GetIcon ("edit-copy"),
+				tr ("Copy annotation text"),
+				[&idx]
+				{
+					const auto& ann = idx.data (AnnManager::Role::Annotation).value<IAnnotation_ptr> ();
+					qApp->clipboard ()->setText (ann->GetText ());
+				});
 		menu.exec (Ui_.AnnTree_->viewport ()->mapToGlobal (point));
 	}
 

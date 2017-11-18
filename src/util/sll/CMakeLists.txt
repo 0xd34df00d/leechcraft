@@ -1,6 +1,5 @@
 set (SLL_SRCS
 	delayedexecutor.cpp
-	onetimerunner.cpp
 	queuemanager.cpp
 	regexp.cpp
 	slotclosure.cpp
