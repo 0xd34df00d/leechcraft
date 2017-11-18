@@ -39,7 +39,7 @@
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/lmp/ilmpproxy.h>
 #include <util/util.h>
-#include <util/sll/onetimerunner.h>
+#include <util/sll/slotclosure.h>
 
 namespace LeechCraft
 {
@@ -132,7 +132,7 @@ namespace BrainSlugz
 			if (BioProv_)
 			{
 				const auto proxy = BioProv_->RequestArtistBio (artist.Name_, false);
-				new Util::OneTimeRunner
+				new Util::SlotClosure<Util::DeleteLaterPolicy>
 				{
 					[this, artist, item, proxy]
 					{
@@ -193,7 +193,7 @@ namespace BrainSlugz
 			if (AAProv_)
 			{
 				const auto proxy = AAProv_->RequestAlbumArt ({ artist.Name_, release.Name_ });
-				new Util::OneTimeRunner
+				new Util::SlotClosure<Util::DeleteLaterPolicy>
 				{
 					[item, proxy]
 					{
