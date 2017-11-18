@@ -29,8 +29,8 @@
 
 #include "aboutdialog.h"
 #include <QDomDocument>
-#include <util/sll/util.h>
 #include <util/sll/prelude.h>
+#include <util/sll/domchildrenrange.h>
 #include "util/sys/sysinfo.h"
 #include "interfaces/ihavediaginfo.h"
 #include "core.h"
@@ -81,12 +81,7 @@ namespace LeechCraft
 							.arg (Years_.front ())
 							.arg (Years_.back ());
 				else
-				{
-					QStringList yearsStrs;
-					for (auto year : Years_)
-						yearsStrs << QString::number (year);
-					yearsStr = yearsStrs.join (", ");
-				}
+					yearsStr = Util::Map (Years_, [] (auto year) { return QString::number (year); }).join (", ");
 
 				result += AboutDialog::tr ("Years: %1")
 						.arg (yearsStr);
@@ -97,57 +92,35 @@ namespace LeechCraft
 
 		QStringList ParseRoles (const QDomElement& contribElem)
 		{
-			QStringList result;
-
-			auto roleElem = contribElem
-					.firstChildElement ("roles")
-					.firstChildElement ("role");
-			while (!roleElem.isNull ())
-			{
-				result << roleElem.text ();
-				roleElem = roleElem.nextSiblingElement ("role");
-			}
-
-			return result;
+			return Util::Map (Util::MakeDomChildrenRange (contribElem.firstChildElement ("roles"), "role"),
+					[] (const auto& roleElem) { return roleElem.text (); });
 		}
 
 		QList<int> ParseYears (const QDomElement& contribElem)
 		{
-			QList<int> result;
-
 			auto yearsElem = contribElem
 					.firstChildElement ("years");
 			if (yearsElem.hasAttribute ("start") &&
 					yearsElem.hasAttribute ("end"))
 			{
+				QList<int> result;
 				for (auto start = yearsElem.attribute ("start").toInt (),
 						end = yearsElem.attribute ("end").toInt ();
 						start <= end; ++start)
 					result << start;
-
 				return result;
 			}
 
-			auto yearElem = yearsElem.firstChildElement ("year");
-			while (!yearElem.isNull ())
-			{
-				result << yearElem.text ().toInt ();
-				yearElem = yearElem.nextSiblingElement ("year");
-			}
-
-			return result;
+			return Util::Map (Util::MakeDomChildrenRange (yearsElem, "year"),
+					[] (const auto& yearElem) { return yearElem.text ().toInt (); });
 		}
 
 		QList<ContributorInfo> ParseContributors (const QDomDocument& doc, const QString& type)
 		{
 			QList<ContributorInfo> result;
 
-			auto contribElem = doc.documentElement ().firstChildElement ("contrib");
-			while (!contribElem.isNull ())
+			for (const auto& contribElem : Util::MakeDomChildrenRange (doc.documentElement (), "contrib"))
 			{
-				const auto nextGuard = Util::MakeScopeGuard ([&contribElem]
-						{ contribElem = contribElem.nextSiblingElement ("contrib"); });
-
 				if (!type.isEmpty () && contribElem.attribute ("type") != type)
 					continue;
 
