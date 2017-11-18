@@ -66,21 +66,21 @@ namespace MusicZombie
 		Util::QueueManager *Queue_;
 		Util::QueueManager *AcoustidQueue_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+		void Init (ICoreProxy_ptr) override;
+		void SecondInit () override;
+		QByteArray GetUniqueID () const override;
+		void Release () override;
+		QString GetName () const override;
+		QString GetInfo () const override;
+		QIcon GetIcon () const override;
 
-		QString GetServiceName () const;
+		QString GetServiceName () const override;
 
-		Media::IPendingDisco* GetDiscography (const QString&);
-		Media::IPendingDisco* GetReleaseInfo (const QString&, const QString&);
+		Media::IPendingDisco* GetDiscography (const QString&) override;
+		Media::IPendingDisco* GetReleaseInfo (const QString&, const QString&) override;
 
 #ifdef WITH_CHROMAPRINT
-		Media::IPendingTagsFetch* FetchTags (const QString&);
+		Media::IPendingTagsFetch* FetchTags (const QString&) override;
 #endif
 	};
 }
