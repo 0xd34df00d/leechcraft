@@ -105,10 +105,5 @@ namespace Poleemery
 	, Entry_ { entry.ID_ }
 	{
 	}
-
-	ReceiptEntry::ReceiptEntry (int accId, double amount, const QString& name, const QString& descr, const QDateTime& dt)
-	: EntryBase { accId, amount, name, descr, dt }
-	{
-	}
 }
 }

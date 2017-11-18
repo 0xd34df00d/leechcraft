@@ -198,8 +198,7 @@ namespace Poleemery
 {
 	struct ReceiptEntry : EntryBase
 	{
-		ReceiptEntry ();
-		ReceiptEntry (int accId, double amount, const QString& name, const QString& descr, const QDateTime& dt);
+		using EntryBase::EntryBase;
 
 		static QString ClassName () { return "ReceiptEntry"; }
 
