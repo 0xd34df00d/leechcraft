@@ -96,12 +96,12 @@ namespace MusicZombie
 
 		auto reply = NAM_->get (QNetworkRequest (url));
 		connect (reply,
-				SIGNAL (finished ()),
+				&QNetworkReply::finished,
 				this,
-				SLOT (handleReplyFinished ()));
+				&PendingTagsFetch::HandleReplyFinished);
 	}
 
-	void PendingTagsFetch::handleReplyFinished ()
+	void PendingTagsFetch::HandleReplyFinished ()
 	{
 		auto reply = qobject_cast<QNetworkReply*> (sender ());
 		reply->deleteLater ();

@@ -46,8 +46,6 @@ namespace MusicZombie
 {
 	class PendingTagsFetch final : public QObject
 	{
-		Q_OBJECT
-
 		Util::QueueManager * const Queue_;
 		QNetworkAccessManager * const NAM_;
 
@@ -58,8 +56,7 @@ namespace MusicZombie
 		QFuture<Media::AudioInfo> GetFuture ();
 	private:
 		void Request (const QByteArray&, int);
-	private slots:
-		void handleReplyFinished ();
+		void HandleReplyFinished ();
 	};
 }
 }
