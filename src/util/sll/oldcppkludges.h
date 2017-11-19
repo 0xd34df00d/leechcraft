@@ -60,24 +60,5 @@ namespace Util
 	{
 		return (obj->*mem) (std::forward<Rest> (rest)...);
 	}
-
-	namespace CPP17
-	{
-		namespace detail
-		{
-			template<typename F, typename Tuple, size_t... Is>
-			auto ApplyImpl (F&& f, Tuple&& t, std::index_sequence<Is...>)
-			{
-				return Invoke (std::forward<F> (f), std::get<Is> (std::forward<Tuple> (t))...);
-			}
-		}
-
-		template<typename F, typename Tuple>
-		auto Apply (F&& f, Tuple&& tuple)
-		{
-			return detail::ApplyImpl (std::forward<F> (f), std::forward<Tuple> (tuple),
-					std::make_index_sequence<std::tuple_size<std::decay_t<Tuple>> {}> {});
-		}
-	}
 }
 }
