@@ -31,6 +31,7 @@
 
 #include <thread>
 #include <atomic>
+#include <functional>
 #include <QThread>
 #include <QFuture>
 #include <util/sll/either.h>
@@ -201,7 +202,7 @@ namespace Snails
 					return HandleExceptions<Result_t> (w,
 							[&]
 							{
-								return Result_t::Right (Util::Invoke (f, args...));
+								return Result_t::Right (std::invoke (f, args...));
 							});
 				};
 			}
@@ -220,7 +221,7 @@ namespace Snails
 					return HandleExceptions<Result_t> (w,
 							[&]
 							{
-								Util::Invoke (f, args...);
+								std::invoke (f, args...);
 								return Result_t::Right ({});
 							});
 				};
@@ -251,7 +252,7 @@ namespace Snails
 			{
 				return [=] (auto... args)
 				{
-					return HandleExceptions<Result_t> (w, [&] { return Util::Invoke (f, args...); });
+					return HandleExceptions<Result_t> (w, [&] { return std::invoke (f, args...); });
 				};
 			}
 		};

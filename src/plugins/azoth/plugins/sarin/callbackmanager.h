@@ -31,10 +31,10 @@
 
 #include <tuple>
 #include <memory>
+#include <functional>
 #include <boost/any.hpp>
 #include <QReadWriteLock>
 #include <QtDebug>
-#include <util/sll/oldcppkludges.h>
 
 using Tox = struct Tox;
 
@@ -127,7 +127,7 @@ namespace Sarin
 				{
 					return
 					{
-						std::function<void (Args...)> { [pThis, cb] (Args... args) { Util::Invoke (cb, pThis, args...); } }
+						std::function<void (Args...)> { [pThis, cb] (Args... args) { std::invoke (cb, pThis, args...); } }
 					};
 				}
 			};
@@ -177,14 +177,14 @@ namespace Sarin
 			decltype (auto) WithRead (F&& f) const
 			{
 				QReadLocker locker { &Lock_ };
-				return Util::Invoke (f, Ent_);
+				return std::invoke (f, Ent_);
 			}
 
 			template<typename F>
 			decltype (auto) WithWrite (F&& f)
 			{
 				QWriteLocker locker { &Lock_ };
-				return Util::Invoke (f, Ent_);
+				return std::invoke (f, Ent_);
 			}
 		};
 	}

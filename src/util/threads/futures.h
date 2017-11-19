@@ -35,7 +35,6 @@
 #include <boost/optional.hpp>
 #include <QFutureInterface>
 #include <QFutureWatcher>
-#include <util/sll/oldcppkludges.h>
 #include <util/sll/slotclosure.h>
 #include <util/sll/typegetter.h>
 #include "threadsconfig.h"
@@ -68,11 +67,11 @@ namespace Util
 			}
 			else if constexpr (!isVoid)
 			{
-				const auto result = Invoke (std::forward<F> (f), std::forward<Args> (args)...);
+				const auto result = std::invoke (std::forward<F> (f), std::forward<Args> (args)...);
 				iface.reportResult (result);
 			}
 			else
-				Invoke (std::forward<F> (f), std::forward<Args> (args)...);
+				std::invoke (std::forward<F> (f), std::forward<Args> (args)...);
 		}
 		catch (const QtException_t& e)
 		{

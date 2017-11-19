@@ -94,7 +94,7 @@ namespace Snails
 		template<typename F, typename... Args>
 		void AddThreadInitializer (const F& func, const Args&... args)
 		{
-			auto runner = [=] (AccountThread *thread) { Util::Invoke (func, thread, args...); };
+			auto runner = [=] (AccountThread *thread) { std::invoke (func, thread, args...); };
 			ThreadInitializers_ << runner;
 
 			for (const auto& thread : ExistingThreads_)

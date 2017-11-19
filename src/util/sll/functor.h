@@ -29,8 +29,8 @@
 
 #pragma once
 
+#include <functional>
 #include <boost/optional.hpp>
-#include "oldcppkludges.h"
 #include "typeclassutil.h"
 
 namespace LeechCraft
@@ -223,7 +223,7 @@ namespace Util
 			if (!t)
 				return {};
 
-			return { Invoke (f, *t) };
+			return { std::invoke (f, *t) };
 		}
 	};
 }

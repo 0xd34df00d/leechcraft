@@ -29,12 +29,12 @@
 
 #pragma once
 
+#include <functional>
 #include <type_traits>
 #include <iterator>
 #include <QPair>
 #include <QStringList>
 #include <boost/optional.hpp>
-#include "oldcppkludges.h"
 
 namespace boost
 {
@@ -143,7 +143,7 @@ namespace Util
 	template<typename Container, typename F>
 	auto Map (Container&& c, F f)
 	{
-		using FRet_t = std::decay_t<decltype (Invoke (f, *c.begin ()))>;
+		using FRet_t = std::decay_t<decltype (std::invoke (f, *c.begin ()))>;
 		static_assert (!std::is_same<void, FRet_t> {}, "The function shall not return void.");
 
 		using DecayContainer_t = std::decay_t<Container>;
@@ -155,7 +155,7 @@ namespace Util
 
 		WrapType_t<ResultCont_t> cont;
 		for (auto&& t : c)
-			detail::Append (cont, Invoke (f, t));
+			detail::Append (cont, std::invoke (f, t));
 		return cont;
 	}
 
@@ -164,7 +164,7 @@ namespace Util
 	{
 		Container<T> result;
 		for (const auto& item : c)
-			if (Invoke (f, item))
+			if (std::invoke (f, item))
 				detail::Append (result, item);
 		return result;
 	}
@@ -237,13 +237,13 @@ namespace Util
 	template<typename R>
 	auto ComparingBy (R r)
 	{
-		return [r] (const auto& left, const auto& right) { return Invoke (r, left) < Invoke (r, right); };
+		return [r] (const auto& left, const auto& right) { return std::invoke (r, left) < std::invoke (r, right); };
 	}
 
 	template<typename R>
 	auto EqualityBy (R r)
 	{
-		return [r] (const auto& left, const auto& right) { return Invoke (r, left) == Invoke (r, right); };
+		return [r] (const auto& left, const auto& right) { return std::invoke (r, left) == std::invoke (r, right); };
 	}
 
 	const auto Apply = [] (const auto& t) { return t (); };
@@ -255,13 +255,13 @@ namespace Util
 	template<typename F>
 	auto First (F&& f)
 	{
-		return [f = std::forward<F> (f)] (const auto& pair) { return Invoke (f, pair.first); };
+		return [f = std::forward<F> (f)] (const auto& pair) { return std::invoke (f, pair.first); };
 	}
 
 	template<typename F>
 	auto Second (F&& f)
 	{
-		return [f = std::forward<F> (f)] (const auto& pair) { return Invoke (f, pair.second); };
+		return [f = std::forward<F> (f)] (const auto& pair) { return std::invoke (f, pair.second); };
 	}
 
 	template<typename F>
