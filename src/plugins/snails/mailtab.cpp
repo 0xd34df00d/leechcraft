@@ -179,7 +179,7 @@ namespace Snails
 				{ "MailTab.MarkUnread", { MailTab::tr ("Mark as unread"), { "U" }, "mail-mark-unread" } },
 				{ "MailTab.Remove", { MailTab::tr ("Delete messages"), { "D" }, "list-remove" } },
 				{ "MailTab.ViewHeaders", { MailTab::tr ("View headers"), {}, "text-plain" } },
-				{ "MailTab.MultiSelect", { MailTab::tr ("Select multiple messages mode"), {}, "" } },
+				{ "MailTab.MultiSelect", { MailTab::tr ("Select multiple messages mode"), {}, "document-multiple" } },
 
 				{ "MailTab.SelectAllChildren", { MailTab::tr ("Select all children"), { "S" }, "edit-select-all" } },
 				{ "MailTab.ExpandAllChildren", { MailTab::tr ("Expand all children"), { "E" }, "view-list-tree" } },
