@@ -30,6 +30,7 @@
 #include "tagsfetchmanager.h"
 #include <QFuture>
 #include <util/threads/futures.h>
+#include <util/sll/delayedexecutor.h>
 #include <interfaces/lmp/mediainfo.h>
 #include <interfaces/media/itagsfetcher.h>
 #include "filesmodel.h"
@@ -51,11 +52,7 @@ namespace Graffiti
 			Util::Sequence (this, prov->FetchTags (path)) >>
 					[this, path] (const Media::AudioInfo& result) { handleTagsFetched (path, result); };
 
-		QMetaObject::invokeMethod (this,
-				"tagsFetchProgress",
-				Q_ARG (int, 0),
-				Q_ARG (int, TotalTags_),
-				Q_ARG (QObject*, this));
+		Util::ExecuteLater ([this] { emit tagsFetchProgress (0, TotalTags_, this); });
 	}
 
 	namespace
