@@ -366,8 +366,10 @@ namespace Snails
 		TabToolbar_->addSeparator ();
 
 		const auto viewTypeMenu = new QMenu (tr ("Message view type"));
-		viewTypeMenu->addAction (tr ("Plain text"), this, [this] { SetHtmlViewAllowed (false); });
-		viewTypeMenu->addAction (tr ("HTML"), this, [this] { SetHtmlViewAllowed (true); });
+		const auto viewTypePlain = viewTypeMenu->addAction (tr ("Plain text"), this, [this] { SetHtmlViewAllowed (false); });
+		viewTypePlain->setProperty ("ActionIcon", "text-plain");
+		const auto viewTypeHtml = viewTypeMenu->addAction (tr ("HTML"), this, [this] { SetHtmlViewAllowed (true); });
+		viewTypeHtml->setProperty ("ActionIcon", "text-html");
 
 		const auto viewTypeButton = new QToolButton;
 		viewTypeButton->setMenu (viewTypeMenu);
