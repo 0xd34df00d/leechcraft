@@ -72,8 +72,8 @@ namespace Graffiti
 			static_assert (std::is_lvalue_reference<std::result_of_t<F (MediaInfo&)>> {},
 					"functor doesn't return an lvalue reference");
 
-			auto& data = Util::Invoke (getter, info);
-			const auto& otherData = Util::Invoke (getter, other);
+			auto& data = std::invoke (getter, info);
+			const auto& otherData = std::invoke (getter, other);
 			if (!IsEmptyData (otherData) && IsEmptyData (data))
 				data = otherData;
 		}

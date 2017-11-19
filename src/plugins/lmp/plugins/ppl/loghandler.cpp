@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "loghandler.h"
+#include <functional>
 #include <QFile>
 #include <QtDebug>
 #include <util/sll/prelude.h>
@@ -93,7 +94,7 @@ namespace PPL
 			auto finder = [&] (const auto& checker) -> boost::optional<T>
 			{
 				const auto pos = std::find_if (items.begin (), items.end (),
-						[&] (const auto& item) { return checker (Util::Invoke (attrGetter, item)); });
+						[&] (const auto& item) { return checker (std::invoke (attrGetter, item)); });
 				if (pos == items.end ())
 					return {};
 				return *pos;
