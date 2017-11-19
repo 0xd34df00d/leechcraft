@@ -32,7 +32,7 @@
 #include <tuple>
 #include <memory>
 #include <functional>
-#include <boost/any.hpp>
+#include <any>
 #include <QReadWriteLock>
 #include <QtDebug>
 
@@ -115,7 +115,7 @@ namespace Sarin
 
 		struct CBHolder
 		{
-			boost::any F_;
+			std::any F_;
 
 			template<typename This, typename F, typename Tuple>
 			struct Maker;
@@ -135,7 +135,7 @@ namespace Sarin
 			template<typename... Args>
 			void Invoke (Args... args) const
 			{
-				const auto res = boost::any_cast<std::function<void (Args...)>> (&F_);
+				const auto res = std::any_cast<std::function<void (Args...)>> (&F_);
 				if (!res)
 					qWarning () << Q_FUNC_INFO
 							<< "mismatched parameters, expected typeid:"
