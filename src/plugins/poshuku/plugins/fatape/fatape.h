@@ -61,7 +61,7 @@ namespace FatApe
 		LC_PLUGIN_METADATA ("org.LeechCraft.Poshuku.FatApe")
 
 		QList<UserScript> UserScripts_;
-		IProxyObject *Proxy_;
+		IProxyObject *Proxy_ = nullptr;
 		ICoreProxy_ptr CoreProxy_;
 		Util::XmlSettingsDialog_ptr SettingsDialog_;
 		std::shared_ptr<QStandardItemModel> Model_;
