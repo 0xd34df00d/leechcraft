@@ -362,6 +362,18 @@ namespace Snails
 
 		MakeShortcut ("MailTab.ExpandAllChildren", sm, Proxy_, this, SLOT (expandAllChildren ()));
 		MakeShortcut ("MailTab.SelectAllChildren", sm, Proxy_, this, SLOT (selectAllChildren ()));
+
+		TabToolbar_->addSeparator ();
+
+		const auto viewTypeMenu = new QMenu (tr ("Message view type"));
+		viewTypeMenu->addAction (tr ("Plain text"), this, [this] { SetHtmlViewAllowed (false); });
+		viewTypeMenu->addAction (tr ("HTML"), this, [this] { SetHtmlViewAllowed (true); });
+
+		const auto viewTypeButton = new QToolButton;
+		viewTypeButton->setMenu (viewTypeMenu);
+		viewTypeButton->setProperty ("ActionIcon", "text-enriched");
+		viewTypeButton->setPopupMode (QToolButton::InstantPopup);
+		TabToolbar_->addWidget (viewTypeButton);
 	}
 
 	void MailTab::FillTabToolbarActions (Util::ShortcutManager *sm)
@@ -857,6 +869,16 @@ namespace Snails
 			ComposeMessageTabFactory_->PrepareLinkedTab (type, CurrAcc_, *CurrMsgFetchFuture_);
 		else
 			ComposeMessageTabFactory_->PrepareLinkedTab (type, CurrAcc_, CurrMsg_);
+	}
+
+	void MailTab::SetHtmlViewAllowed (bool allowed)
+	{
+		if (allowed == HtmlViewAllowed_)
+			return;
+
+		HtmlViewAllowed_ = allowed;
+		if (CurrMsg_)
+			SetMessage (CurrMsg_);
 	}
 
 	namespace

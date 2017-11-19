@@ -127,6 +127,8 @@ namespace Snails
 		void SetMessage (const Message_ptr&);
 
 		void HandleLinkedRequested (MsgType);
+
+		void SetHtmlViewAllowed (bool);
 	private slots:
 		void handleCurrentAccountChanged (const QModelIndex&);
 		void handleCurrentTagChanged (const QModelIndex&);
