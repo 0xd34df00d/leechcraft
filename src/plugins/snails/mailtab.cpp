@@ -367,9 +367,16 @@ namespace Snails
 
 		const auto viewTypeMenu = new QMenu (tr ("Message view type"));
 		const auto viewTypePlain = viewTypeMenu->addAction (tr ("Plain text"), this, [this] { SetHtmlViewAllowed (false); });
+		viewTypePlain->setCheckable (true);
+		viewTypePlain->setChecked (!HtmlViewAllowed_);
 		viewTypePlain->setProperty ("ActionIcon", "text-plain");
 		const auto viewTypeHtml = viewTypeMenu->addAction (tr ("HTML"), this, [this] { SetHtmlViewAllowed (true); });
+		viewTypeHtml->setCheckable (true);
+		viewTypeHtml->setChecked (HtmlViewAllowed_);
 		viewTypeHtml->setProperty ("ActionIcon", "text-html");
+		const auto viewTypeGroup = new QActionGroup { viewTypeMenu };
+		viewTypeGroup->addAction (viewTypePlain);
+		viewTypeGroup->addAction (viewTypeHtml);
 
 		const auto viewTypeButton = new QToolButton;
 		viewTypeButton->setMenu (viewTypeMenu);
