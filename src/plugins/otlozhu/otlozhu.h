@@ -68,7 +68,7 @@ namespace Otlozhu
 		Util::XmlSettingsDialog_ptr XSD_;
 
 #ifndef DISABLE_SYNC
-		SyncProxy *SyncProxy_;
+		SyncProxy *SyncProxy_ = nullptr;
 #endif
 	public:
 		void Init (ICoreProxy_ptr);
