@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "callmanager.h"
+#include <functional>
 
 #ifdef ENABLE_MEDIACALLS
 #include <QAudioDeviceInfo>
@@ -36,7 +37,6 @@
 #endif
 
 #include <QtDebug>
-#include <util/sll/oldcppkludges.h>
 #include <util/xpc/util.h>
 #include <util/xpc/notificationactionhandler.h>
 #include "interfaces/azoth/iclentry.h"
@@ -276,7 +276,7 @@ namespace Azoth
 		{
 			const auto callAudioDev = mediaCall->GetAudioDevice ();
 
-			const auto& format = Util::Invoke (fmtGetter, mediaCall);
+			const auto& format = std::invoke (fmtGetter, mediaCall);
 			if (!format.isValid ())
 			{
 				qDebug () << "format is invalid for now, waiting for a better chance";
