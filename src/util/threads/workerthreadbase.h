@@ -37,7 +37,6 @@
 #include <QFutureInterface>
 #include <QFuture>
 #include <QList>
-#include <util/sll/oldcppkludges.h>
 #include "futures.h"
 #include "threadsconfig.h"
 
@@ -82,7 +81,7 @@ namespace Util
 		template<typename F, typename... Args>
 		QFuture<std::result_of_t<F (Args...)>> ScheduleImpl (F f, Args&&... args)
 		{
-			return ScheduleImpl ([f, args...] () mutable { return Invoke (f, args...); });
+			return ScheduleImpl ([f, args...] () mutable { return std::invoke (f, args...); });
 		}
 
 		virtual size_t GetQueueSize ();
@@ -119,7 +118,7 @@ namespace Util
 
 			std::unique_ptr<WorkerType> Initialize () override
 			{
-				return CPP17::Apply ([] (auto&&... args) { return std::make_unique<WorkerType> (std::forward<Args> (args)...); }, Args_);
+				return std::apply ([] (auto&&... args) { return std::make_unique<WorkerType> (std::forward<Args> (args)...); }, Args_);
 			}
 		};
 
@@ -192,7 +191,7 @@ namespace Util
 		template<typename F, typename... Args>
 		QFuture<std::result_of_t<F (WorkerType*, Args...)>> ScheduleImpl (F f, Args&&... args)
 		{
-			const auto fWrapped = [f, this] (auto... args) mutable { return Invoke (f, Worker_.get (), args...); };
+			const auto fWrapped = [f, this] (auto... args) mutable { return std::invoke (f, Worker_.get (), args...); };
 			return WorkerThreadBase::ScheduleImpl (fWrapped, std::forward<Args> (args)...);
 		}
 	protected:
