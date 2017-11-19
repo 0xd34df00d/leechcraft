@@ -61,7 +61,7 @@ namespace FOC
 		Util::XmlSettingsDialog_ptr XSD_;
 
 		std::shared_ptr<FlashOnClickPlugin> FlashOnClickPlugin_;
-		FlashOnClickWhitelist *FlashOnClickWhitelist_;
+		FlashOnClickWhitelist *FlashOnClickWhitelist_ = nullptr;
 	public:
 		void Init (ICoreProxy_ptr) override;
 		void SecondInit () override;
