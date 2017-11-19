@@ -567,7 +567,7 @@ namespace Snails
 			return "<pre>" + lines.join ("\n") + "</pre>";
 		}
 
-		QString ToHtml (const Message_ptr& msg)
+		QString ToHtml (const Message_ptr& msg, bool htmlAllowed)
 		{
 			const auto& headerClass = GenerateId (msg->GetHTMLBody (), "header");
 
@@ -606,7 +606,7 @@ namespace Snails
 			addField ("date", MailTab::tr ("Date"), msg->GetDate ().toString ());
 			html += AttachmentsToHtml (msg, msg->GetAttachments ());
 			html += "</header><div class='body' id='msgBody'>";
-			html += GetMessageContents (msg, true);
+			html += GetMessageContents (msg, htmlAllowed);
 			html += "</div><script language='javascript'>setupResize();</script>";
 			html += "</body></html>";
 
@@ -625,7 +625,7 @@ namespace Snails
 
 	void MailTab::SetMessage (const Message_ptr& msg)
 	{
-		const auto& html = ToHtml (msg);
+		const auto& html = ToHtml (msg, HtmlViewAllowed_);
 
 		Ui_.MailView_->setHtml (html);
 

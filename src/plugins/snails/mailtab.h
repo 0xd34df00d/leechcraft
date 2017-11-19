@@ -98,6 +98,8 @@ namespace Snails
 		std::shared_ptr<Account::FetchWholeMessageResult_t> CurrMsgFetchFuture_;
 
 		std::shared_ptr<MailTabReadMarker> ReadMarker_;
+
+		bool HtmlViewAllowed_ = true;
 	public:
 		MailTab (const ICoreProxy_ptr&, const AccountsManager*, ComposeMessageTabFactory*, Storage*,
 				const TabClassInfo&, Util::ShortcutManager*, QObject*, QWidget* = nullptr);
