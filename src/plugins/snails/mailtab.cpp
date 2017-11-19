@@ -542,6 +542,31 @@ namespace Snails
 			return classId;
 		}
 
+		QString GetMessageContents (const Message_ptr& msg, bool allowHtml)
+		{
+			if (!msg->IsFullyFetched ())
+				return "<em>" + MailTab::tr ("Fetching the message...") + "</em>";
+
+			const auto& htmlBody = msg->GetHTMLBody ();
+			if (allowHtml && !htmlBody.isEmpty ())
+				return htmlBody;
+
+			auto body = msg->GetBody ();
+			body.replace ("\r\n", "\n");
+
+			auto lines = body.split ('\n');
+			for (auto& line : lines)
+			{
+				const auto& escaped = line.toHtmlEscaped ();
+				if (line.startsWith ('>'))
+					line = "<span class='replyPart'>" + escaped + "</span>";
+				else
+					line = escaped;
+			}
+
+			return "<pre>" + lines.join ("\n") + "</pre>";
+		}
+
 		QString ToHtml (const Message_ptr& msg)
 		{
 			const auto& headerClass = GenerateId (msg->GetHTMLBody (), "header");
@@ -580,33 +605,8 @@ namespace Snails
 			addField ("bcc", MailTab::tr ("Blind copy"), HTMLize (msg->GetAddresses (Message::Address::Bcc)));
 			addField ("date", MailTab::tr ("Date"), msg->GetDate ().toString ());
 			html += AttachmentsToHtml (msg, msg->GetAttachments ());
-
-			const auto& htmlBody = msg->IsFullyFetched () ?
-					msg->GetHTMLBody () :
-					"<em>" + MailTab::tr ("Fetching the message...") + "</em>";
-
 			html += "</header><div class='body' id='msgBody'>";
-
-			if (!htmlBody.isEmpty ())
-				html += htmlBody;
-			else
-			{
-				auto body = msg->GetBody ();
-				body.replace ("\r\n", "\n");
-
-				auto lines = body.split ('\n');
-				for (auto& line : lines)
-				{
-					const auto& escaped = line.toHtmlEscaped ();
-					if (line.startsWith ('>'))
-						line = "<span class='replyPart'>" + escaped + "</span>";
-					else
-						line = escaped;
-				}
-
-				html += "<pre>" + lines.join ("\n") + "</pre>";
-			}
-
+			html += GetMessageContents (msg, true);
 			html += "</div><script language='javascript'>setupResize();</script>";
 			html += "</body></html>";
 
