@@ -70,8 +70,8 @@ namespace XDG
 		QString IconName_;
 		mutable boost::optional<QIcon> Icon_;
 
-		bool IsHidden_;
-		Type Type_;
+		bool IsHidden_ = false;
+		Type Type_ = Type::Other;
 	public:
 		/** @brief Checks whether \em left and \em right are equal.
 		 *
