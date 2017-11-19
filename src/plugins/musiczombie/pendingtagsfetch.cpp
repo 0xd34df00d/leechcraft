@@ -28,7 +28,6 @@
  **********************************************************************/
 
 #include "pendingtagsfetch.h"
-#include <functional>
 #include <QtConcurrentRun>
 #include <QNetworkRequest>
 #include <QNetworkAccessManager>
