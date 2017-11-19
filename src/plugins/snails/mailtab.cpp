@@ -365,6 +365,11 @@ namespace Snails
 
 		TabToolbar_->addSeparator ();
 
+		MakeViewTypeButton ();
+	}
+
+	void MailTab::MakeViewTypeButton ()
+	{
 		const auto viewTypeMenu = new QMenu (tr ("Message view type"));
 		const auto viewTypePlain = viewTypeMenu->addAction (tr ("Plain text"), this, [this] { SetHtmlViewAllowed (false); });
 		viewTypePlain->setCheckable (true);

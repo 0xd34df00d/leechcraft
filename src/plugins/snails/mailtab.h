@@ -118,7 +118,9 @@ namespace Snails
 	private:
 		void FillCommonActions (Util::ShortcutManager*);
 		void FillMailActions (Util::ShortcutManager*);
+		void MakeViewTypeButton ();
 		void FillTabToolbarActions (Util::ShortcutManager*);
+
 		QList<QByteArray> GetSelectedIds () const;
 
 		void UpdateMsgActionsStatus ();
