@@ -73,6 +73,7 @@ namespace MusicZombie
 					{
 						Util::ReportFutureResult (Promise_, Media::AudioInfo {});
 						deleteLater ();
+						return;
 					}
 
 					Queue_->Schedule ([this, result] { Request (result.FP_, result.Duration_); }, this);
