@@ -78,11 +78,11 @@ namespace ChatHistory
 
 		std::shared_ptr<LoggingStateKeeper> LoggingStateKeeper_;
 		std::shared_ptr<StorageManager> StorageMgr_;
-		QAction *ActionHistory_;
+		QAction *ActionHistory_ = nullptr;
 		QHash<QObject*, QAction*> Entry2ActionHistory_;
 		QHash<QObject*, QAction*> Entry2ActionEnableHistory_;
 
-		QAction *SeparatorAction_;
+		QAction *SeparatorAction_ = nullptr;
 
 		ICoreProxy_ptr CoreProxy_;
 		IProxyObject *PluginProxy_ = nullptr;
