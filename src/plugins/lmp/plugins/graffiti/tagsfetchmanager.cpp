@@ -69,11 +69,11 @@ namespace Graffiti
 		template<typename F>
 		void UpgradeInfo (MediaInfo& info, MediaInfo& other, F getter)
 		{
-			static_assert (std::is_lvalue_reference<typename std::result_of<F (MediaInfo&)>::type>::value,
+			static_assert (std::is_lvalue_reference<std::result_of_t<F (MediaInfo&)>> {},
 					"functor doesn't return an lvalue reference");
 
-			auto& data = getter (info);
-			const auto& otherData = getter (other);
+			auto& data = Util::Invoke (getter, info);
+			const auto& otherData = Util::Invoke (getter, other);
 			if (!IsEmptyData (otherData) && IsEmptyData (data))
 				data = otherData;
 		}
@@ -90,12 +90,12 @@ namespace Graffiti
 		auto newInfo = MediaInfo::FromAudioInfo (result);
 
 		auto info = index.data (FilesModel::Roles::MediaInfoRole).value<MediaInfo> ();
-		UpgradeInfo (info, newInfo, [] (MediaInfo& info) -> QString& { return info.Title_; });
-		UpgradeInfo (info, newInfo, [] (MediaInfo& info) -> QString& { return info.Artist_; });
-		UpgradeInfo (info, newInfo, [] (MediaInfo& info) -> QString& { return info.Album_; });
-		UpgradeInfo (info, newInfo, [] (MediaInfo& info) -> int& { return info.Year_; });
-		UpgradeInfo (info, newInfo, [] (MediaInfo& info) -> int& { return info.TrackNumber_; });
-		UpgradeInfo (info, newInfo, [] (MediaInfo& info) -> QStringList& { return info.Genres_; });
+		UpgradeInfo (info, newInfo, &MediaInfo::Title_);
+		UpgradeInfo (info, newInfo, &MediaInfo::Artist_);
+		UpgradeInfo (info, newInfo, &MediaInfo::Album_);
+		UpgradeInfo (info, newInfo, &MediaInfo::Year_);
+		UpgradeInfo (info, newInfo, &MediaInfo::TrackNumber_);
+		UpgradeInfo (info, newInfo, &MediaInfo::Genres_);
 		FilesModel_->UpdateInfo (index, info);
 
 		emit tagsFetched (filename);
