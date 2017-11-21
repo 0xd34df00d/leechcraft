@@ -360,7 +360,6 @@ namespace LeechCraft
 
 			const auto jar = static_cast<CustomCookieJar*> (NetworkAccessManager_->cookieJar ());
 			jar->setAllCookies ({});
-			jar->Save ();
 		}
 		else if (name == "SetStartupPassword")
 		{
