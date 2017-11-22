@@ -80,9 +80,10 @@ struct SimpleRecord
 		return "SimpleRecord";
 	}
 
-	static QString FieldNameMorpher (const QString& str)
+	static QString FieldNameMorpher (QString str)
 	{
-		return str.left (str.size () - 1);
+		str.chop (1);
+		return str;
 	}
 
 	auto AsTuple () const
@@ -107,9 +108,10 @@ struct AutogenPKeyRecord
 		return "AutogenPKeyRecord";
 	}
 
-	static QString FieldNameMorpher (const QString& str)
+	static QString FieldNameMorpher (QString str)
 	{
-		return str.left (str.size () - 1);
+		str.chop (1);
+		return str;
 	}
 
 	auto AsTuple () const
@@ -134,9 +136,10 @@ struct NoPKeyRecord
 		return "NoPKeyRecord";
 	}
 
-	static QString FieldNameMorpher (const QString& str)
+	static QString FieldNameMorpher (QString str)
 	{
-		return str.left (str.size () - 1);
+		str.chop (1);
+		return str;
 	}
 
 	auto AsTuple () const
