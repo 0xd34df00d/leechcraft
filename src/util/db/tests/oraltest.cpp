@@ -32,7 +32,7 @@
 #include <QtTest>
 #include <oral.h>
 
-QTEST_MAIN (LeechCraft::Util::OralTest)
+QTEST_APPLESS_MAIN (LeechCraft::Util::OralTest)
 
 namespace lco = LeechCraft::Util::oral;
 
