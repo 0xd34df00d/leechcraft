@@ -578,10 +578,23 @@ namespace oral
 			}
 		};
 
+		template<typename T, typename... Args>
+		using AggregateDetector_t = decltype (new T { std::declval<Args> ()... });
+
 		template<typename T, size_t... Indices>
 		T InitializeFromQuery (const QSqlQuery_ptr& q, std::index_sequence<Indices...>)
 		{
-			return T { FromVariant<ValueAtC_t<T, Indices>> {} (q->value (Indices))... };
+			if constexpr (IsDetected_v<AggregateDetector_t, T, ValueAtC_t<T, Indices>...>)
+				return T { FromVariant<ValueAtC_t<T, Indices>> {} (q->value (Indices))... };
+			else
+			{
+				T t;
+				std::initializer_list<int>
+				{
+					(static_cast<void> (boost::fusion::at_c<Indices> (t) = FromVariant<ValueAtC_t<T, Indices>> {} (q->value (Indices))), 0)...
+				};
+				return t;
+			}
 		}
 
 		template<typename T>
