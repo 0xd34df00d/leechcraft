@@ -1180,7 +1180,7 @@ namespace oral
 		template<typename... Args>
 		QStringList GetConstraintsStringList (Constraints<Args...>, const CachedFieldsData& data)
 		{
-			return QStringList { ConstraintToString<Args> {} (data)... };
+			return { ConstraintToString<Args> {} (data)... };
 		}
 
 		template<typename T, size_t... Indices>
