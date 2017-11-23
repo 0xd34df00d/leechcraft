@@ -1213,11 +1213,16 @@ namespace oral
 			return QStringList { ConstraintToString<Args> {} (data)... };
 		}
 
+		template<typename T, size_t... Indices>
+		QList<QString> GetTypes (std::index_sequence<Indices...>)
+		{
+			return { Type2Name<ValueAtC_t<T, Indices>> {} ()... };
+		}
+
 		template<typename T>
 		QString AdaptCreateTable (const CachedFieldsData& data)
 		{
-			const QList<QString> types = boost::fusion::fold (T {}, QStringList {},
-					[] (auto init, auto t) { return init << Type2Name<decltype (t)> () (); });
+			const auto& types = GetTypes<T> (SeqIndices<T>);
 
 			const auto& constraints = GetConstraintsStringList (ConstraintsType<T> {}, data);
 			const auto& constraintsStr = constraints.isEmpty () ?
