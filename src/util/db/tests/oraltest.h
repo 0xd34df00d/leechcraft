@@ -55,6 +55,8 @@ namespace Util
 
 		void testNoPKeyRecordInsertSelect ();
 
+		void testComplexConstraintsRecordInsertSelect ();
+
 		void benchSimpleRecordAdapt ();
 
 		void benchBaselineInsert ();

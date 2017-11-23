@@ -331,6 +331,39 @@ namespace Util
 		QCOMPARE (list, (QList<NoPKeyRecord> { { 0, "0" }, { 1, "1" }, { 2, "2" } }));
 	}
 
+	namespace
+	{
+		template<typename Ex, typename F>
+		void ShallThrow (F&& f)
+		{
+			bool failed = false;
+			try
+			{
+				f ();
+			}
+			catch (const Ex&)
+			{
+				failed = true;
+			}
+
+			QCOMPARE (failed, true);
+		}
+	}
+
+	void OralTest::testComplexConstraintsRecordInsertSelect ()
+	{
+		auto adapted = Util::oral::AdaptPtr<ComplexConstraintsRecord> (MakeDatabase ());
+
+		adapted->DoInsert_ ({ 0, "first", 1, 2 });
+		ShallThrow<oral::QueryException> ([&] { adapted->DoInsert_ ({ 0, "second", 1, 2 }); });
+		ShallThrow<oral::QueryException> ([&] { adapted->DoInsert_ ({ 0, "first", 1, 3 }); });
+		adapted->DoInsert_ ({ 0, "second", 1, 3 });
+		ShallThrow<oral::QueryException> ([&] { adapted->DoInsert_ ({ 0, "first", 1, 3 }); });
+
+		const auto& list = adapted->DoSelectAll_ ();
+		QCOMPARE (list, (QList<ComplexConstraintsRecord> { { 0, "first", 1, 2 }, { 0, "second", 1, 3 } }));
+	}
+
 	void OralTest::benchSimpleRecordAdapt ()
 	{
 		auto db = MakeDatabase ();
