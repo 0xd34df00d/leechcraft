@@ -1108,22 +1108,6 @@ namespace oral
 			}
 		};
 
-		template<typename T, typename ObjInfo>
-		typename std::enable_if<CollectRefs<T>::type_list::size::value == 1>::type AdaptSelectRef (const CachedFieldsData& data, ObjInfo& info)
-		{
-			using references_list = typename CollectRefs<T>::type_list;
-			const auto& statements = boost::fusion::fold (references_list {}, QStringList {}, Ref2Select {});
-
-			const auto& selectAll = "SELECT " + QStringList { data.Fields_ }.join (", ") +
-					" FROM " + data.Table_ +
-					(statements.isEmpty () ? "" : " WHERE ") + statements.join (" AND ") +
-					";";
-			const auto selectQuery = std::make_shared<QSqlQuery> (data.DB_);
-			selectQuery->prepare (selectAll);
-
-			info.SelectByFKeysActor_ = MakeBinder<T, references_list> { selectQuery };
-		}
-
 		template<typename T, typename Ret>
 		struct WrapAsFunc
 		{
@@ -1160,28 +1144,33 @@ namespace oral
 			}
 		};
 
-		template<typename T, typename ObjInfo>
-		typename std::enable_if<CollectRefs<T>::type_list::size::value >= 2>::type AdaptSelectRef (const CachedFieldsData& data, ObjInfo& info)
-		{
-			using references_list = typename CollectRefs<T>::type_list;
-			const auto& statements = boost::fusion::fold (references_list {}, QStringList {}, Ref2Select {});
-
-			const auto& selectAll = "SELECT " + QStringList { data.Fields_ }.join (", ") +
-					" FROM " + data.Table_ +
-					(statements.isEmpty () ? "" : " WHERE ") + statements.join (" AND ") +
-					";";
-			const auto selectQuery = std::make_shared<QSqlQuery> (data.DB_);
-			selectQuery->prepare (selectAll);
-
-			info.SelectByFKeysActor_ = MakeBinder<T, references_list> { selectQuery };
-
-			auto singleSelectors = boost::fusion::fold (references_list {}, boost::fusion::vector<> {}, MakeSingleBinder<T> { data });
-			info.SingleFKeySelectors_ = boost::fusion::as_vector (singleSelectors);
-		}
 
 		template<typename T, typename ObjInfo>
-		typename std::enable_if<CollectRefs<T>::type_list::size::value <= 0>::type AdaptSelectRef (const CachedFieldsData&, ObjInfo&)
+		void AdaptSelectRef (const CachedFieldsData& data, ObjInfo& info)
 		{
+			constexpr auto refsCount = CollectRefs<T>::type_list::size::value;
+			if constexpr (refsCount > 0)
+			{
+				using references_list = typename CollectRefs<T>::type_list;
+				const auto& statements = boost::fusion::fold (references_list {}, QStringList {}, Ref2Select {});
+
+				const auto& selectAll = "SELECT " + QStringList { data.Fields_ }.join (", ") +
+						" FROM " + data.Table_ +
+						(statements.isEmpty () ? "" : " WHERE ") + statements.join (" AND ") +
+						";";
+				const auto selectQuery = std::make_shared<QSqlQuery> (data.DB_);
+				selectQuery->prepare (selectAll);
+
+				info.SelectByFKeysActor_ = MakeBinder<T, references_list> { selectQuery };
+
+				if constexpr (refsCount > 1)
+				{
+					auto singleSelectors = boost::fusion::fold (references_list {},
+							boost::fusion::vector<> {},
+							MakeSingleBinder<T> { data });
+					info.SingleFKeySelectors_ = boost::fusion::as_vector (singleSelectors);
+				}
+			}
 		}
 
 		template<typename T>
