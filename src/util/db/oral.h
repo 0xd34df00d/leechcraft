@@ -52,6 +52,7 @@
 #include <QtDebug>
 #include <util/sll/qtutil.h>
 #include <util/sll/prelude.h>
+#include <util/sll/typelist.h>
 #include <util/sll/typegetter.h>
 #include <util/sll/unreachable.h>
 #include <util/db/dblock.h>
@@ -144,10 +145,7 @@ namespace oral
 	{
 		QString operator() () const
 		{
-			if constexpr (std::is_same_v<T, int> ||
-					std::is_same_v<T, qulonglong> ||
-					std::is_same_v<T, bool> ||
-					std::is_enum_v<T>)
+			if constexpr (HasType<T> (Typelist<int, qulonglong, bool> {}) || std::is_enum_v<T>)
 				return "INTEGER";
 			else if constexpr (std::is_same_v<T, double>)
 				return "REAL";
