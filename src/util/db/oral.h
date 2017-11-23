@@ -115,11 +115,14 @@ namespace oral
 		};
 
 		template<typename S>
+		constexpr auto SeqIndices = std::make_index_sequence<boost::fusion::result_of::size<S>::type::value> {};
+
+		template<typename S>
 		struct GetFieldsNames
 		{
 			QStringList operator() () const
 			{
-				return Run (std::make_index_sequence<boost::fusion::result_of::size<S>::type::value> {});
+				return Run (SeqIndices<S>);
 			}
 		private:
 			template<size_t... Vals>
