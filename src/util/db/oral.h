@@ -1128,7 +1128,7 @@ namespace oral
 			const CachedFieldsData Data_;
 
 			template<typename Vec, typename OrigObj, typename OrigIdx, typename RefObj, typename RefIdx>
-			auto operator() (Vec vec, const FieldInfo<OrigObj, OrigIdx, RefObj, RefIdx>&) -> decltype (boost::fusion::push_back (vec, WrapAsFunc_t<RefObj, T> {}))
+			auto operator() (Vec vec, const FieldInfo<OrigObj, OrigIdx, RefObj, RefIdx>&)
 			{
 				const auto& boundName = GetBoundName<OrigObj, OrigIdx::value>::value ();
 				const auto& query = "SELECT " + QStringList { Data_.Fields_ }.join (", ") +
