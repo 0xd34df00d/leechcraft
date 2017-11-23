@@ -181,7 +181,7 @@ namespace oral
 	{
 		QString operator() () const
 		{
-			return Type2Name<typename References<Seq, Idx>::value_type> () () +
+			return Type2Name<ReferencesValue_t<Seq, Idx>> () () +
 					" REFERENCES " + Seq::ClassName () + " (" + detail::GetFieldName<Seq, Idx>::value () + ") ON DELETE CASCADE";
 		}
 	};
@@ -218,7 +218,7 @@ namespace oral
 	{
 		QVariant operator() (const Unique<T>& t) const
 		{
-			return static_cast<typename Unique<T>::value_type> (t);
+			return static_cast<UniqueValue_t<T>> (t);
 		}
 	};
 
@@ -227,7 +227,7 @@ namespace oral
 	{
 		QVariant operator() (const PKey<T, Tags...>& t) const
 		{
-			return static_cast<typename PKey<T, Tags...>::value_type> (t);
+			return static_cast<PKeyValue_t<T, Tags...>> (t);
 		}
 	};
 
@@ -236,7 +236,7 @@ namespace oral
 	{
 		QVariant operator() (const References<Seq, Idx>& t) const
 		{
-			return static_cast<typename References<Seq, Idx>::value_type> (t);
+			return static_cast<ReferencesValue_t<Seq, Idx>> (t);
 		}
 	};
 
@@ -288,11 +288,9 @@ namespace oral
 	template<typename Seq, int Idx>
 	struct FromVariant<References<Seq, Idx>>
 	{
-		using value_type = typename References<Seq, Idx>::value_type;
-
-		value_type operator() (const QVariant& var) const
+		auto operator() (const QVariant& var) const
 		{
-			return var.value<value_type> ();
+			return var.value<ReferencesValue_t<Seq, Idx>> ();
 		}
 	};
 
