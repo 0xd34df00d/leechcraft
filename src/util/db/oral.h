@@ -1220,17 +1220,11 @@ namespace oral
 			}
 		};
 
-		template<typename...>
-		struct GetConstraintsStringList;
-
 		template<typename... Args>
-		struct GetConstraintsStringList<Constraints<Args...>>
+		QStringList GetConstraintsStringList (Constraints<Args...>, const CachedFieldsData& data)
 		{
-			QStringList operator() (const CachedFieldsData& data) const
-			{
-				return QStringList { ConstraintToString<Args> {} (data)... };
-			}
-		};
+			return QStringList { ConstraintToString<Args> {} (data)... };
+		}
 
 		template<typename T>
 		QString AdaptCreateTable (const CachedFieldsData& data)
@@ -1238,7 +1232,7 @@ namespace oral
 			const QList<QString> types = boost::fusion::fold (T {}, QStringList {},
 					[] (auto init, auto t) { return init << Type2Name<decltype (t)> () (); });
 
-			const auto& constraints = GetConstraintsStringList<ConstraintsType<T>> {} (data);
+			const auto& constraints = GetConstraintsStringList (ConstraintsType<T> {}, data);
 			const auto& constraintsStr = constraints.isEmpty () ?
 					QString {} :
 					(", " + constraints.join (", "));
