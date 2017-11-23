@@ -578,17 +578,11 @@ namespace oral
 			}
 		};
 
-		struct Selector
+		template<typename T, size_t... Indices>
+		T InitializeFromQuery (const QSqlQuery_ptr& q, std::index_sequence<Indices...>)
 		{
-			QSqlQuery_ptr Q_;
-
-			template<typename T>
-			int operator() (int index, T& t) const
-			{
-				t = FromVariant<T> {} (Q_->value (index));
-				return index + 1;
-			}
-		};
+			return T { FromVariant<ValueAtC_t<T, Indices>> {} (q->value (Indices))... };
+		}
 
 		template<typename T>
 		QList<T> PerformSelect (QSqlQuery_ptr q)
@@ -598,11 +592,7 @@ namespace oral
 
 			QList<T> result;
 			while (q->next ())
-			{
-				T t;
-				boost::fusion::fold (t, 0, Selector { q });
-				result << t;
-			}
+				result << InitializeFromQuery<T> (q, SeqIndices<T>);
 			q->finish ();
 			return result;
 		}
