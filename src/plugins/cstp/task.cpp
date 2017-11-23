@@ -504,7 +504,14 @@ namespace CSTP
 		{
 			To_->close ();
 			To_->resize (FileSizeAtStart_);
-			To_->open (QIODevice::ReadWrite);
+			if (!To_->open (QIODevice::ReadWrite))
+				qWarning () << Q_FUNC_INFO
+						<< "failed to re-open the file after resizing"
+						<< To_->fileName ()
+						<< "to"
+						<< FileSizeAtStart_
+						<< ", error:"
+						<< To_->errorString ();
 		}
 
 		Reply_.reset ();
