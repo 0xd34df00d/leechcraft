@@ -153,6 +153,8 @@ namespace oral
 				return "TEXT";
 			else if constexpr (std::is_same_v<T, QByteArray>)
 				return "BLOB";
+			else
+				static_assert (std::is_same_v<T, struct Dummy>, "Unsupported type");
 		}
 	};
 
