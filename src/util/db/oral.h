@@ -1185,19 +1185,10 @@ namespace oral
 		}
 
 		template<typename T>
-		typename T::Constraints GetConstraintsTypeImpl (int, typename T::Constraints* = nullptr)
-		{
-			return {};
-		}
+		using ConstraintsDetector = typename T::Constraints;
 
 		template<typename T>
-		Constraints<> GetConstraintsTypeImpl (float)
-		{
-			return {};
-		}
-
-		template<typename T>
-		using ConstraintsType = decltype (GetConstraintsTypeImpl<T> (0));
+		using ConstraintsType = Util::IsDetected_t<Constraints<>, ConstraintsDetector, T>;
 
 		template<typename T>
 		struct ConstraintToString;
