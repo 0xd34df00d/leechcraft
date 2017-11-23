@@ -76,6 +76,9 @@ namespace oral
 		}
 	};
 
+	template<typename T, typename... Args>
+	using PKeyValue_t = typename PKey<T, Args...>::value_type;
+
 	template<typename T>
 	struct Unique
 	{
@@ -106,6 +109,9 @@ namespace oral
 			return Val_;
 		}
 	};
+
+	template<typename T>
+	using UniqueValue_t = typename Unique<T>::value_type;
 
 	namespace detail
 	{
@@ -161,6 +167,9 @@ namespace oral
 			return Val_;
 		}
 	};
+
+	template<typename Seq, int Idx>
+	using ReferencesValue_t = typename References<Seq, Idx>::value_type;
 
 	template<int... Fields>
 	struct PrimaryKey;
