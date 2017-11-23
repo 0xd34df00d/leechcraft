@@ -154,6 +154,43 @@ BOOST_FUSION_ADAPT_STRUCT (NoPKeyRecord,
 
 TOSTRING (NoPKeyRecord)
 
+struct NonInPlaceConstructibleRecord
+{
+	int ID_;
+	QString Value_;
+
+	NonInPlaceConstructibleRecord () = default;
+
+	NonInPlaceConstructibleRecord (int id, const QString& value, double someExtraArgument)
+	: ID_ { id }
+	, Value_ { value }
+	{
+		Q_UNUSED (someExtraArgument)
+	}
+
+	static QString ClassName ()
+	{
+		return "NonInPlaceConstructibleRecord";
+	}
+
+	static QString FieldNameMorpher (QString str)
+	{
+		str.chop (1);
+		return str;
+	}
+
+	auto AsTuple () const
+	{
+		return std::tie (ID_, Value_);
+	}
+};
+
+BOOST_FUSION_ADAPT_STRUCT (NonInPlaceConstructibleRecord,
+		ID_,
+		Value_)
+
+TOSTRING (NonInPlaceConstructibleRecord)
+
 struct ComplexConstraintsRecord
 {
 	int ID_;
