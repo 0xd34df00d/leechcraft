@@ -54,6 +54,13 @@ namespace LastSeen
 		{
 		}
 
+		template<typename... Args>
+		Record (const QString& entryId, Args&&... args)
+		: EntryStats { std::forward<Args> (args)... }
+		, EntryID_ { entryId }
+		{
+		}
+
 		static QString ClassName ()
 		{
 			return "EntryStats";
