@@ -336,6 +336,12 @@ namespace oral
 
 	namespace detail
 	{
+		template<typename T>
+		QVariant ToVariantF (const T& t)
+		{
+			return ToVariant<T> {} (t);
+		}
+
 		struct CachedFieldsData
 		{
 			QString Table_;
@@ -355,7 +361,7 @@ namespace oral
 						{
 							using Elem = std::decay_t<decltype (elem)>;
 							if (bindPrimaryKey || !IsPKey<Elem>::value)
-								insertQuery->bindValue (*pos++, ToVariant<Elem> {} (elem));
+								insertQuery->bindValue (*pos++, ToVariantF (elem));
 							return pos;
 						});
 
@@ -551,8 +557,7 @@ namespace oral
 				Deleter_ = [deleteQuery, boundName] (const Seq& t)
 				{
 					constexpr auto index = FindPKey<Seq>::result_type::value;
-					deleteQuery->bindValue (boundName,
-							ToVariant<ValueAtC_t<Seq, index>> {} (boost::fusion::at_c<index> (t)));
+					deleteQuery->bindValue (boundName, ToVariantF (boost::fusion::at_c<index> (t)));
 					if (!deleteQuery->exec ())
 						throw QueryException ("delete query execution failed", deleteQuery);
 				};
@@ -795,7 +800,7 @@ namespace oral
 			QString ToSql (ToSqlState<ObjT>& state) const
 			{
 				const auto& name = ":bound_" + QString::number (++state.LastID_);
-				state.BoundMembers_ [name] = ToVariant<T> {} (Data_);
+				state.BoundMembers_ [name] = ToVariantF (Data_);
 				return name;
 			}
 		};
@@ -1088,7 +1093,7 @@ namespace oral
 			void operator() (const boost::fusion::vector2<ObjType, const FieldInfo<OrigSeq, OrigIdx, RefSeq, RefIdx>&>& pair) const
 			{
 				Q_->bindValue (GetBoundName<RefSeq, RefIdx::value>::value (),
-						ToVariant<typename std::decay<typename boost::fusion::result_of::at<RefSeq, RefIdx>::type>::type> () (boost::fusion::at<RefIdx> (boost::fusion::at_c<0> (pair))));
+						ToVariantF (boost::fusion::at<RefIdx> (boost::fusion::at_c<0> (pair))));
 			}
 		};
 
@@ -1135,8 +1140,7 @@ namespace oral
 
 				auto inserter = [selectQuery, boundName] (const RefObj& obj)
 				{
-					selectQuery->bindValue (boundName,
-							ToVariant<ValueAt_t<RefObj, RefIdx>> {} (boost::fusion::at<RefIdx> (obj)));
+					selectQuery->bindValue (boundName, ToVariantF (boost::fusion::at<RefIdx> (obj)));
 					return PerformSelect<T> (selectQuery);
 				};
 
