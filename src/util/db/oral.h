@@ -1223,22 +1223,12 @@ namespace oral
 		template<typename...>
 		struct GetConstraintsStringList;
 
-		template<>
-		struct GetConstraintsStringList<Constraints<>>
-		{
-			QStringList operator() (const CachedFieldsData&) const
-			{
-				return {};
-			}
-		};
-
-		template<typename Head, typename... Tail>
-		struct GetConstraintsStringList<Constraints<Head, Tail...>>
+		template<typename... Args>
+		struct GetConstraintsStringList<Constraints<Args...>>
 		{
 			QStringList operator() (const CachedFieldsData& data) const
 			{
-				return QStringList { ConstraintToString<Head> {} (data) } +
-						GetConstraintsStringList<Constraints<Tail...>> {} (data);
+				return QStringList { ConstraintToString<Args> {} (data)... };
 			}
 		};
 
