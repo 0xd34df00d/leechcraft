@@ -154,6 +154,43 @@ BOOST_FUSION_ADAPT_STRUCT (NoPKeyRecord,
 
 TOSTRING (NoPKeyRecord)
 
+struct ComplexConstraintsRecord
+{
+	int ID_;
+	QString Value_;
+	int Age_;
+	int Weight_;
+
+	static QString ClassName ()
+	{
+		return "ComplexConstraintsRecord";
+	}
+
+	static QString FieldNameMorpher (QString str)
+	{
+		str.chop (1);
+		return str;
+	}
+
+	auto AsTuple () const
+	{
+		return std::tie (ID_, Value_, Age_, Weight_);
+	}
+
+	using Constraints = lco::Constraints<
+				lco::PrimaryKey<0, 1>,
+				lco::UniqueSubset<2, 3>
+			>;
+};
+
+BOOST_FUSION_ADAPT_STRUCT (ComplexConstraintsRecord,
+		ID_,
+		Value_,
+		Age_,
+		Weight_)
+
+TOSTRING (ComplexConstraintsRecord)
+
 namespace LeechCraft
 {
 namespace Util
