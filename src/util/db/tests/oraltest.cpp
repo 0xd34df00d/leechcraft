@@ -368,6 +368,16 @@ namespace Util
 		QCOMPARE (list, (QList<NoPKeyRecord> { { 0, "0" }, { 1, "1" }, { 2, "2" } }));
 	}
 
+	void OralTest::testNonInPlaceConstructibleRecordInsertSelect ()
+	{
+		auto adapted = Util::oral::AdaptPtr<NonInPlaceConstructibleRecord> (MakeDatabase ());
+		for (int i = 0; i < 3; ++i)
+			adapted->DoInsert_ ({ i, QString::number (i), 0 });
+
+		const auto& list = adapted->DoSelectAll_ ();
+		QCOMPARE (list, (QList<NonInPlaceConstructibleRecord> { { 0, "0", 0 }, { 1, "1", 0 }, { 2, "2", 0 } }));
+	}
+
 	namespace
 	{
 		template<typename Ex, typename F>
