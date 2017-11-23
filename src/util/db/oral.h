@@ -140,54 +140,22 @@ namespace oral
 	}
 
 	template<typename T, typename = void>
-	struct Type2Name;
-
-	template<>
-	struct Type2Name<int>
+	struct Type2Name
 	{
-		QString operator() () const { return "INTEGER"; }
-	};
-
-	template<>
-	struct Type2Name<qulonglong>
-	{
-		QString operator() () const { return "INTEGER"; }
-	};
-
-	template<>
-	struct Type2Name<double>
-	{
-		QString operator() () const { return "REAL"; }
-	};
-
-	template<>
-	struct Type2Name<bool>
-	{
-		QString operator() () const { return "INTEGER"; }
-	};
-
-	template<>
-	struct Type2Name<QString>
-	{
-		QString operator() () const { return "TEXT"; }
-	};
-
-	template<>
-	struct Type2Name<QByteArray>
-	{
-		QString operator() () const { return "BLOB"; }
-	};
-
-	template<>
-	struct Type2Name<QDateTime>
-	{
-		QString operator() () const { return "TEXT"; }
-	};
-
-	template<typename E>
-	struct Type2Name<E, std::enable_if_t<std::is_enum<E>::value>>
-	{
-		QString operator() () const { return "INTEGER"; }
+		QString operator() () const
+		{
+			if constexpr (std::is_same_v<T, int> ||
+					std::is_same_v<T, qulonglong> ||
+					std::is_same_v<T, bool> ||
+					std::is_enum_v<T>)
+				return "INTEGER";
+			else if constexpr (std::is_same_v<T, double>)
+				return "REAL";
+			else if constexpr (std::is_same_v<T, QString> || std::is_same_v<T, QDateTime>)
+				return "TEXT";
+			else if constexpr (std::is_same_v<T, QByteArray>)
+				return "BLOB";
+		}
 	};
 
 	template<typename T>
