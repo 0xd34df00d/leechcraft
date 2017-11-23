@@ -169,7 +169,6 @@ namespace Util
 	template<typename T>
 	using AsTypelist_t = typename AsTypelist<T>::Result_t;
 
-#if __cpp_if_constexpr >= 201606
 	template<typename F, typename G, typename Def, typename Head, typename... Args>
 	auto FirstMatching (F f, G g, Def def, Util::Typelist<Head, Args...>)
 	{
@@ -181,6 +180,5 @@ namespace Util
 		else
 			return def ();
 	}
-#endif
 }
 }
