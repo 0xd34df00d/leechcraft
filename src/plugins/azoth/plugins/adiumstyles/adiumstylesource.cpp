@@ -219,7 +219,14 @@ namespace AdiumStyles
 		else
 		{
 			QFile file (":/plugins/azoth/plugins/adiumstyles/resources/html/Template.html");
-			file.open (QIODevice::ReadOnly);
+			if (!file.open (QIODevice::ReadOnly))
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "failed to open resource file"
+						<< file.fileName ()
+						<< file.errorString ();
+				return {};
+			}
 			result = QString::fromUtf8 (file.readAll ());
 		}
 
