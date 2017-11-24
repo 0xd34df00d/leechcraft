@@ -263,10 +263,20 @@ namespace Importers
 
 		QSqlQuery query (*DB_);
 		query.exec ("SELECT id FROM moz_anno_attributes WHERE name='livemark/siteURI'");
-		query.next ();
+		if (!query.next ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "cannot select 'livemark/siteURI'";
+			return {};
+		}
 		int site = query.value (0).toInt ();
 		query.exec ("SELECT id FROM moz_anno_attributes WHERE name='livemark/feedURI'");
-		query.next ();
+		if (!query.next ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "cannot select 'livemark/feedURI'";
+			return {};
+		}
 		int feed = query.value (0).toInt ();
 
 		QList<QVariant> opmlData;
