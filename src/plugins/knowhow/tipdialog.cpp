@@ -73,7 +73,7 @@ namespace KnowHow
 			return;
 		}
 
-		Doc_.reset (new QDomDocument);
+		Doc_ = std::make_shared<QDomDocument> ();
 		Doc_->setContent (&file);
 
 		const int idx = XmlSettingsManager::Instance ()
