@@ -219,7 +219,10 @@ namespace XooxUtil
 		elem.toXml (&w);
 
 		QDomDocument doc;
-		doc.setContent (arr, true);
+		if (!doc.setContent (arr, true))
+			qCritical () << Q_FUNC_INFO
+					<< "unable to set XML contents"
+					<< arr;
 		return doc.documentElement ();
 	}
 
@@ -229,7 +232,10 @@ namespace XooxUtil
 		QXmlStreamWriter w (&formData);
 		form.toXml (&w);
 		QDomDocument doc;
-		doc.setContent (formData);
+		if (!doc.setContent (formData))
+			qCritical () << Q_FUNC_INFO
+					<< "unable to set XML contents"
+					<< formData;
 		return doc.documentElement ();
 	}
 
