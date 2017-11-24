@@ -187,8 +187,7 @@ namespace XooxUtil
 						PartialMatches_.push_back ({ node, pair.second });
 				}
 
-				std::sort (PartialMatches_.begin (), PartialMatches_.end (),
-						[] (const auto& left, const auto& right) { return left.first < right.first; });
+				std::sort (PartialMatches_.begin (), PartialMatches_.end (), Util::ComparingBy (Util::Fst));
 			}
 
 			StaticClientInfo operator[] (const QString& node) const
