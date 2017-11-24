@@ -329,7 +329,6 @@ namespace Importers
 		streamWriter.writeEndDocument ();
 
 		QString filename = file.fileName ();
-		file.close ();
 		return filename;
 	}
 
