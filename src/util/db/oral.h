@@ -1121,7 +1121,6 @@ namespace oral
 			}
 		};
 
-
 		template<typename T, typename ObjInfo>
 		void AdaptSelectRef (const CachedFieldsData& data, ObjInfo& info)
 		{
