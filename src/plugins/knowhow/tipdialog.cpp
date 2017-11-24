@@ -46,11 +46,13 @@ namespace KnowHow
 		rl.AddGlobalPrefix ();
 		rl.AddLocalPrefix ();
 
-		const QString& pre = "tips_";
-		QStringList vars;
-		vars << (pre + Util::GetLocaleName () + ".xml")
-			<< (pre + Util::GetLocaleName ().left (2) + ".xml")
-			<< (pre + "en.xml");
+		const QString pre { "tips_" };
+		const QStringList vars
+		{
+			pre + Util::GetLocaleName () + ".xml",
+			pre + Util::GetLocaleName ().left (2) + ".xml",
+			pre + "en.xml"
+		};
 
 		const QString& path = rl.GetPath (vars);
 		if (path.isEmpty ())
