@@ -74,7 +74,14 @@ namespace KnowHow
 		}
 
 		Doc_ = std::make_shared<QDomDocument> ();
-		Doc_->setContent (&file);
+		if (!Doc_->setContent (&file))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to parse XML from file"
+					<< path;
+			deleteLater ();
+			return;
+		}
 
 		const int idx = XmlSettingsManager::Instance ()
 				.Property ("StdTipIndex", -1).toInt () + 1;
