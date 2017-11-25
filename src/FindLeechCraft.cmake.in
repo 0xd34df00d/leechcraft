@@ -37,7 +37,6 @@ macro (QtAddResources outfiles)
 endmacro ()
 
 macro (FindQtLibs Target)
-	cmake_policy (SET CMP0043 NEW)
     set (CMAKE_INCLUDE_CURRENT_DIR ON)
     find_package (Qt5Widgets)
     QT5_USE_MODULES (${Target} ${ARGN})
