@@ -125,11 +125,9 @@ namespace SysInfo
 			OsInfo_t *osptr = OsInfo;
 			while (!osptr->path.isEmpty ())
 			{
-				QFileInfo fi (osptr->path);
-				if (fi.exists ())
+				QFile f (osptr->path);
+				if (f.open (QIODevice::ReadOnly))
 				{
-					QFile f (osptr->path);
-					f.open (QIODevice::ReadOnly);
 					QString data = QString (f.read (1024)).trimmed ();
 					if (osptr->name.isEmpty ())
 						return data;
