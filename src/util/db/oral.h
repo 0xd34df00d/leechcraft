@@ -716,13 +716,13 @@ namespace oral
 		}
 
 		template<ExprType LType, typename LL, typename LR, typename R>
-		ExprTree<ExprType::Less, ExprTree<LType, LL, LR>, ExprTree<ExprType::LeafData, R>> operator< (const ExprTree<LType, LL, LR>& left, const R& right)
+		auto operator< (const ExprTree<LType, LL, LR>& left, const R& right)
 		{
 			return left < ExprTree<ExprType::LeafData, R> { right };
 		}
 
 		template<ExprType RType, typename RL, typename RR, typename L>
-		ExprTree<ExprType::Less, ExprTree<ExprType::LeafData, L>, ExprTree<RType, RL, RR>> operator< (const L& left, const ExprTree<RType, RL, RR>& right)
+		auto operator< (const L& left, const ExprTree<RType, RL, RR>& right)
 		{
 			return ExprTree<ExprType::LeafData, L> { left } < right;
 		}
@@ -735,13 +735,13 @@ namespace oral
 		}
 
 		template<ExprType LType, typename LL, typename LR, typename R>
-		ExprTree<ExprType::Equal, ExprTree<LType, LL, LR>, ExprTree<ExprType::LeafData, R>> operator== (const ExprTree<LType, LL, LR>& left, const R& right)
+		auto operator== (const ExprTree<LType, LL, LR>& left, const R& right)
 		{
 			return left == ExprTree<ExprType::LeafData, R> { right };
 		}
 
 		template<ExprType RType, typename RL, typename RR, typename L>
-		ExprTree<ExprType::Equal, ExprTree<ExprType::LeafData, L>, ExprTree<RType, RL, RR>> operator== (const L& left, const ExprTree<RType, RL, RR>& right)
+		auto operator== (const L& left, const ExprTree<RType, RL, RR>& right)
 		{
 			return ExprTree<ExprType::LeafData, L> { left } == right;
 		}
@@ -753,13 +753,13 @@ namespace oral
 		}
 
 		template<ExprType LType, typename LL, typename LR, typename R>
-		ExprTree<ExprType::And, ExprTree<LType, LL, LR>, ExprTree<ExprType::LeafData, R>> operator&& (const ExprTree<LType, LL, LR>& left, const R& right)
+		auto operator&& (const ExprTree<LType, LL, LR>& left, const R& right)
 		{
 			return left && ExprTree<ExprType::LeafData, R> { right };
 		}
 
 		template<ExprType RType, typename RL, typename RR, typename L>
-		ExprTree<ExprType::And, ExprTree<ExprType::LeafData, L>, ExprTree<RType, RL, RR>> operator&& (const L& left, const ExprTree<RType, RL, RR>& right)
+		auto operator&& (const L& left, const ExprTree<RType, RL, RR>& right)
 		{
 			return ExprTree<ExprType::LeafData, L> { left } && right;
 		}
