@@ -207,52 +207,14 @@ namespace oral
 	{
 		T operator() (const QVariant& var) const
 		{
-			return var.value<T> ();
-		}
-	};
-
-	template<>
-	struct FromVariant<QDateTime>
-	{
-		QDateTime operator() (const QVariant& var) const
-		{
-			return QDateTime::fromString (var.toString (), Qt::ISODate);
-		}
-	};
-
-	template<typename E>
-	struct FromVariant<E, std::enable_if_t<std::is_enum<E>::value>>
-	{
-		E operator() (const QVariant& var) const
-		{
-			return static_cast<E> (var.value<qint64> ());
-		}
-	};
-
-	template<typename T>
-	struct FromVariant<Unique<T>>
-	{
-		T operator() (const QVariant& var) const
-		{
-			return var.value<T> ();
-		}
-	};
-
-	template<typename T, typename... Tags>
-	struct FromVariant<PKey<T, Tags...>>
-	{
-		T operator() (const QVariant& var) const
-		{
-			return var.value<T> ();
-		}
-	};
-
-	template<typename Seq, int Idx>
-	struct FromVariant<References<Seq, Idx>>
-	{
-		auto operator() (const QVariant& var) const
-		{
-			return var.value<ReferencesValue_t<Seq, Idx>> ();
+			if constexpr (std::is_same_v<T, QDateTime>)
+				return QDateTime::fromString (var.toString (), Qt::ISODate);
+			else if constexpr (std::is_enum_v<T>)
+				return static_cast<T> (var.value<qint64> ());
+			else if constexpr (IsIndirect<T> {})
+				return FromVariant<typename T::value_type> {} (var);
+			else
+				return var.value<T> ();
 		}
 	};
 
