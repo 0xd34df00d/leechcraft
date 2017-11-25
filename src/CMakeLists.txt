@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.1)
 cmake_policy (SET CMP0042 NEW)
 cmake_policy (SET CMP0043 NEW)
+cmake_policy (SET CMP0071 NEW)
 
 project (leechcraft)
 
