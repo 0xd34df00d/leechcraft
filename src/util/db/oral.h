@@ -708,6 +708,18 @@ namespace oral
 		template<ExprType Type, typename L, typename R>
 		struct IsExprTree<ExprTree<Type, L, R>> : std::true_type {};
 
+		template<typename T>
+		constexpr auto IsExprTree_v = IsExprTree<T> {};
+
+		template<typename T>
+		constexpr auto AsLeafData (const T& node)
+		{
+			if constexpr (IsExprTree<T> {})
+				return node;
+			else
+				return ExprTree<ExprType::LeafData, T> { node };
+		}
+
 		template<ExprType LType, typename LL, typename LR, ExprType RType, typename RL, typename RR>
 		ExprTree<ExprType::Less, ExprTree<LType, LL, LR>, ExprTree<RType, RL, RR>> operator< (const ExprTree<LType, LL, LR>& left, const ExprTree<RType, RL, RR>& right)
 		{
