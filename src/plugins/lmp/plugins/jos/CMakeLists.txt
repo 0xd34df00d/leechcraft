@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 3.3)
 project (leechcraft_lmp_jos)
-include (InitLCPlugin)
+include (InitLCPlugin NO_POLICY_SCOPE)
 
 pkg_check_modules (LIBGPOD libgpod-1.0)
 pkg_check_modules (LIBIMOBILEDEVICE libimobiledevice-1.0)

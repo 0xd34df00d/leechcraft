@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 3.3)
 project (leechcraft_knowhow)
-include (InitLCPlugin)
+include (InitLCPlugin NO_POLICY_SCOPE)
 
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}

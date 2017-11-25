@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 3.3)
 project (leechcraft_poshuku)
-include (InitLCPlugin)
+include (InitLCPlugin NO_POLICY_SCOPE)
 
 option (ENABLE_IDN "Enable support for Internationalized Domain Names" OFF)
 

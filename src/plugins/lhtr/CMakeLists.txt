@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 3.3)
 project (leechcraft_lhtr)
-include (InitLCPlugin)
+include (InitLCPlugin NO_POLICY_SCOPE)
 
 option (WITH_LHTR_HTML "Build extended support for (invalid) HTML" ON)
 option (USE_LIBTIDY_HTML5 "Use the libtidy-html5 fork instead of libtidy" ON)

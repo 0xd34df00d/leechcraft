@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 3.8)
 project (leechcraft_azoth_sarin)
-include (InitLCPlugin)
+include (InitLCPlugin NO_POLICY_SCOPE)
 
 set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake;${CMAKE_MODULE_PATH}")
 

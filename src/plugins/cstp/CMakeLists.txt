@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 3.3)
 project (leechcraft_cstp)
-include (InitLCPlugin)
+include (InitLCPlugin NO_POLICY_SCOPE)
 
 include_directories (${Boost_INCLUDE_DIRS}
 	${CMAKE_CURRENT_BINARY_DIR}

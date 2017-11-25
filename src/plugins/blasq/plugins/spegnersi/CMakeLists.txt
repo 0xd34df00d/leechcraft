@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 3.3)
 project (leechcraft_blasq_spegnersi)
-include (InitLCPlugin)
+include (InitLCPlugin NO_POLICY_SCOPE)
 
 find_package (QtKOAuth REQUIRED)
 

@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 3.3)
 project (leechcraft_azoth_autopaste)
-include (InitLCPlugin)
+include (InitLCPlugin NO_POLICY_SCOPE)
 
 include_directories (${AZOTH_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}

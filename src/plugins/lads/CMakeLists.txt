@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 3.3)
 project (leechcraft_lads)
-include (InitLCPlugin)
+include (InitLCPlugin NO_POLICY_SCOPE)
 
 set (QT_USE_QTDBUS TRUE)
 include (${QT_USE_FILE})

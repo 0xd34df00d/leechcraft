@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 3.3)
 project (leechcraft_eleeminator)
-include (InitLCPlugin)
+include (InitLCPlugin NO_POLICY_SCOPE)
 
 set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 find_package (QTermWidget REQUIRED)
