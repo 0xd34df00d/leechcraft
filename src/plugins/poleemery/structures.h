@@ -157,7 +157,7 @@ namespace Poleemery
 		Util::oral::PKey<int> ID_ = -1;
 		Util::oral::Unique<QString> Name_;
 
-		Category ();
+		Category () = default;
 		explicit Category (const QString&);
 
 		static QString ClassName () { return "Category"; }
@@ -179,7 +179,7 @@ namespace Poleemery
 		Util::oral::References<Category, 0> Category_;
 		Util::oral::References<NakedExpenseEntry, 0> Entry_;
 
-		CategoryLink ();
+		CategoryLink () = default;
 		CategoryLink (const Category&, const NakedExpenseEntry&);
 
 		static QString ClassName () { return "CategoryLink"; }
