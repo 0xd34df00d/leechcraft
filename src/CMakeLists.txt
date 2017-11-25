@@ -3,11 +3,6 @@ cmake_policy (SET CMP0042 NEW)
 cmake_policy (SET CMP0043 NEW)
 
 project (leechcraft)
-#if (NOT DISABLE_RPATH_TRICKS)
-#	set (CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
-#	set (CMAKE_BUILD_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
-#	set (CMAKE_INSTALL_RPATH_USE_LINK_PATH FALSE)
-#endif ()
 
 set (CMAKE_MACOSX_RPATH OFF)
 
