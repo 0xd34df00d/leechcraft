@@ -595,19 +595,6 @@ namespace oral
 			Util::Unreachable ();
 		}
 
-		constexpr bool IsCompatible (ExprType type)
-		{
-			return type == ExprType::And ||
-					type == ExprType::Or ||
-					type == ExprType::LeafStaticPlaceholder ||
-					type == ExprType::LeafData;
-		}
-
-		constexpr bool CheckCompatible (ExprType t1, ExprType t2)
-		{
-			return IsCompatible (t1) || IsCompatible (t2);
-		}
-
 		constexpr bool IsRelational (ExprType type)
 		{
 			return type == ExprType::Greater ||
@@ -723,7 +710,6 @@ namespace oral
 		template<ExprType LType, typename LL, typename LR, ExprType RType, typename RL, typename RR>
 		ExprTree<ExprType::Less, ExprTree<LType, LL, LR>, ExprTree<RType, RL, RR>> operator< (const ExprTree<LType, LL, LR>& left, const ExprTree<RType, RL, RR>& right)
 		{
-			static_assert (CheckCompatible (LType, RType), "comparing incompatible subexpressions");
 			return { left, right };
 		}
 
@@ -736,7 +722,6 @@ namespace oral
 		template<ExprType LType, typename LL, typename LR, ExprType RType, typename RL, typename RR>
 		ExprTree<ExprType::Equal, ExprTree<LType, LL, LR>, ExprTree<RType, RL, RR>> operator== (const ExprTree<LType, LL, LR>& left, const ExprTree<RType, RL, RR>& right)
 		{
-			static_assert (CheckCompatible (LType, RType), "comparing incompatible subexpressions");
 			return { left, right };
 		}
 
