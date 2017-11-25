@@ -242,11 +242,12 @@ namespace LeechCraft
 				{
 					const auto& data = result->readAll ();
 					CachePathContents_.insert (path, new QByteArray { data }, data.size ());
-					result->close ();
+					if (!open)
+						result->close ();
 				}
 			}
 
-			if (open)
+			if (open && !result->isOpen ())
 				result->open (QIODevice::ReadOnly);
 
 			return result;
