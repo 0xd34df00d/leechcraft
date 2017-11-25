@@ -179,6 +179,18 @@ namespace oral
 
 	template<typename... Args>
 	using Constraints = Typelist<Args...>;
+
+	template<typename T>
+	struct IsIndirect : std::false_type {};
+
+	template<typename T, typename... Args>
+	struct IsIndirect<PKey<T, Args...>> : std::true_type {};
+
+	template<typename T>
+	struct IsIndirect<Unique<T>> : std::true_type {};
+
+	template<typename Seq, int Idx>
+	struct IsIndirect<References<Seq, Idx>> : std::true_type {};
 }
 }
 }
