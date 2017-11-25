@@ -248,7 +248,11 @@ namespace LeechCraft
 			}
 
 			if (open && !result->isOpen ())
-				result->open (QIODevice::ReadOnly);
+				if (!result->open (QIODevice::ReadOnly))
+					qWarning () << Q_FUNC_INFO
+							<< "unable to open file"
+							<< path
+							<< result->errorString ();
 
 			return result;
 		}
