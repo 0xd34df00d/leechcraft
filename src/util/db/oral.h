@@ -218,7 +218,7 @@ namespace oral
 	{
 		QVariant operator() (const Unique<T>& t) const
 		{
-			return static_cast<UniqueValue_t<T>> (t);
+			return ToVariant<UniqueValue_t<T>> {} (t);
 		}
 	};
 
@@ -227,7 +227,7 @@ namespace oral
 	{
 		QVariant operator() (const PKey<T, Tags...>& t) const
 		{
-			return static_cast<PKeyValue_t<T, Tags...>> (t);
+			return ToVariant<PKeyValue_t<T>> {} (t);
 		}
 	};
 
@@ -236,7 +236,7 @@ namespace oral
 	{
 		QVariant operator() (const References<Seq, Idx>& t) const
 		{
-			return static_cast<ReferencesValue_t<Seq, Idx>> (t);
+			return ToVariant<ReferencesValue_t<Seq, Idx>> {} (t);
 		}
 	};
 
