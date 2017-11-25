@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 3.3)
 project (leechcraft_gacts)
-include (InitLCPlugin OPTIONAL)
+include (InitLCPlugin)
 
 add_definitions (-DBUILD_QXT_GUI)
 

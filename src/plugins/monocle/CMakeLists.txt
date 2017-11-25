@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 3.3)
 project (leechcraft_monocle)
-include (InitLCPlugin OPTIONAL)
+include (InitLCPlugin)
 
 option (WITH_DOCS "Enable building documentation (requires Doxygen)" OFF)
 option (WITH_DOCS_INSTALL "Install generated documentation (if WITH_DOCS is set)" OFF)

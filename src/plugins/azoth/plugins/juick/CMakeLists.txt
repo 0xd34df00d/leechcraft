@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 3.3)
 project (leechcraft_azoth_juick)
-include (InitLCPlugin OPTIONAL)
+include (InitLCPlugin)
 
 include_directories (${AZOTH_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}

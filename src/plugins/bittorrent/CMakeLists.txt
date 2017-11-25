@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 3.3)
 project (leechcraft_bittorrent)
-include (InitLCPlugin OPTIONAL)
+include (InitLCPlugin)
 
 find_package (Boost REQUIRED COMPONENTS date_time filesystem system thread)
 

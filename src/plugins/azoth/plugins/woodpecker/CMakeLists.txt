@@ -10,7 +10,7 @@ if (ENABLE_AZOTH_WOODPECKER_VERBOSE_LOG)
 endif ()
 
 project (leechcraft_azoth_woodpecker)
-include (InitLCPlugin OPTIONAL)
+include (InitLCPlugin)
 
 find_package (QtKOAuth REQUIRED)
 

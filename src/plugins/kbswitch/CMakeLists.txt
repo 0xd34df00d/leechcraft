@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 3.3)
 project (leechcraft_kbswitch)
-include (InitLCPlugin OPTIONAL)
+include (InitLCPlugin)
 
 find_package (X11 REQUIRED)
 find_package (XCB COMPONENTS XKB REQUIRED)

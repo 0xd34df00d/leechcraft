@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 3.3)
 project (leechcraft_netstoremanager_dbox)
-include (InitLCPlugin OPTIONAL)
+include (InitLCPlugin)
 
 include_directories (${NETSTOREMANAGER_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}

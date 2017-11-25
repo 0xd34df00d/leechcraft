@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 3.3)
 project (leechcraft_twifee)
-include (InitLCPlugin OPTIONAL)
+include (InitLCPlugin)
 
 include (${QT_USE_FILE})
 include_directories (

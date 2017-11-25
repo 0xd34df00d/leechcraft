@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 3.3)
 project (leechcraft_azoth_velvetbird)
-include (InitLCPlugin OPTIONAL)
+include (InitLCPlugin)
 
 set (CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 find_package (GLIB2 REQUIRED)

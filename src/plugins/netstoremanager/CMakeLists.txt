@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 3.3)
 project (leechcraft_netstoremanager)
-include (InitLCPlugin OPTIONAL)
+include (InitLCPlugin)
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 	set (INOTIFY_DEFAULT TRUE)

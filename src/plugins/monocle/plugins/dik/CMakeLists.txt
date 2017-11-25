@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 3.3)
 project (leechcraft_monocle_dik)
-include (InitLCPlugin OPTIONAL)
+include (InitLCPlugin)
 
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}

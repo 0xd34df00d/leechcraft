@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 3.3)
 project (leechcraft_monocle_postrus)
-include (InitLCPlugin OPTIONAL)
+include (InitLCPlugin)
 
 include_directories (
 	${LIBSPECTRE_INCLUDE_DIR}

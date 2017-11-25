@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 3.3)
 project (leechcraft_vrooby)
-include (InitLCPlugin OPTIONAL)
+include (InitLCPlugin)
 include (CMakeDependentOption)
 
 include_directories (

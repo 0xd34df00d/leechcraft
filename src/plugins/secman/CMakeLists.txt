@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 3.3)
 project (leechcraft_secman)
-include (InitLCPlugin OPTIONAL)
+include (InitLCPlugin)
 
 option (TESTS_SECMAN "Enable SecMan tests")
 

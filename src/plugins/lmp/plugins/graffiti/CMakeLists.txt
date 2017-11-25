@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 3.3)
 project (leechcraft_lmp_graffiti)
-include (InitLCPlugin OPTIONAL)
+include (InitLCPlugin)
 
 find_package (Taglib REQUIRED)
 add_definitions (${TAGLIB_CFLAGS})

@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 3.3)
 project (leechcraft_sb2)
-include (InitLCPlugin OPTIONAL)
+include (InitLCPlugin)
 include (CMakeDependentOption)
 
 cmake_dependent_option (WITH_X11 "Enable X11 support on Linux" ON "UNIX AND NOT APPLE" OFF)
