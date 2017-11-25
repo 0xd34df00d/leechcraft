@@ -707,40 +707,37 @@ namespace oral
 				return ExprTree<ExprType::LeafData, T> { node };
 		}
 
-		template<ExprType LType, typename LL, typename LR, ExprType RType, typename RL, typename RR>
-		ExprTree<ExprType::Less, ExprTree<LType, LL, LR>, ExprTree<RType, RL, RR>> operator< (const ExprTree<LType, LL, LR>& left, const ExprTree<RType, RL, RR>& right)
+		template<ExprType Type, typename L, typename R>
+		ExprTree<Type, L, R> MakeExprTree (const L& left, const R& right)
 		{
 			return { left, right };
 		}
 
-		template<typename L, typename R, typename = std::enable_if_t<IsExprTree_v<L> ^ IsExprTree_v<R>>>
+		template<typename L, typename R, typename = std::enable_if_t<IsExprTree_v<L> || IsExprTree_v<R>>>
 		auto operator< (const L& left, const R& right)
 		{
-			return AsLeafData (left) < AsLeafData (right);
+			if constexpr (IsExprTree_v<L> && IsExprTree_v<R>)
+				return MakeExprTree<ExprType::Less> (left, right);
+			else
+				return AsLeafData (left) < AsLeafData (right);
 		}
 
-		template<ExprType LType, typename LL, typename LR, ExprType RType, typename RL, typename RR>
-		ExprTree<ExprType::Equal, ExprTree<LType, LL, LR>, ExprTree<RType, RL, RR>> operator== (const ExprTree<LType, LL, LR>& left, const ExprTree<RType, RL, RR>& right)
-		{
-			return { left, right };
-		}
-
-		template<typename L, typename R, typename = std::enable_if_t<IsExprTree_v<L> ^ IsExprTree_v<R>>>
+		template<typename L, typename R, typename = std::enable_if_t<IsExprTree_v<L> || IsExprTree_v<R>>>
 		auto operator== (const L& left, const R& right)
 		{
-			return AsLeafData (left) == AsLeafData (right);
+			if constexpr (IsExprTree_v<L> && IsExprTree_v<R>)
+				return MakeExprTree<ExprType::Equal> (left, right);
+			else
+				return AsLeafData (left) == AsLeafData (right);
 		}
 
-		template<ExprType LType, typename LL, typename LR, ExprType RType, typename RL, typename RR>
-		ExprTree<ExprType::And, ExprTree<LType, LL, LR>, ExprTree<RType, RL, RR>> operator&& (const ExprTree<LType, LL, LR>& left, const ExprTree<RType, RL, RR>& right)
-		{
-			return { left, right };
-		}
-
-		template<typename L, typename R, typename = std::enable_if_t<IsExprTree_v<L> ^ IsExprTree_v<R>>>
+		template<typename L, typename R, typename = std::enable_if_t<IsExprTree_v<L> || IsExprTree_v<R>>>
 		auto operator&& (const L& left, const R& right)
 		{
-			return AsLeafData (left) && AsLeafData (right);
+			if constexpr (IsExprTree_v<L> && IsExprTree_v<R>)
+				return MakeExprTree<ExprType::And> (left, right);
+			else
+				return AsLeafData (left) && AsLeafData (right);
 		}
 
 		template<typename Seq, ExprType Type, typename L, typename R>
