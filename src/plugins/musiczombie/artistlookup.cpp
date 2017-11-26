@@ -111,7 +111,7 @@ namespace MusicZombie
 			if (beginYearElem.isNull ())
 				continue;
 
-			const auto beginYear = beginYearElem.text ().simplified ().toInt ();
+			const auto beginYear = beginYearElem.text ().left (4).simplified ().toInt ();
 
 			const auto& endYearElem = spanElem.firstChildElement ("end");
 			const auto endYear = endYearElem.isNull () ?
