@@ -290,12 +290,7 @@ namespace XooxUtil
 			return {};
 
 		QXmppMessage original;
-#if QXMPP_VERSION >= 0x000800
 		original.parse (messageElem.sourceDomElement ());
-#else
-#warning "You won't have good forwarded messages, Message Archive Management and Message Carbons will look like crap."
-		original.parse (XmppElem2DomElem (messageElem));
-#endif
 
 		auto delayElem = forwardedElem.firstChildElement ("delay");
 		if (!delayElem.isNull ())

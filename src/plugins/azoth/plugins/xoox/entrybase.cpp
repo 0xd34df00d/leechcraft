@@ -382,13 +382,11 @@ namespace Xoox
 			result.append ({ tr ("Address"), fields });
 		}
 
-#if QXMPP_VERSION >= 0x000800
 		const auto& orgInfo = vcard.organization ();
 		result.append ({ tr ("Organization"), orgInfo.organization () });
 		result.append ({ tr ("Organization unit"), orgInfo.unit () });
 		result.append ({ tr ("Job title"), orgInfo.title () });
 		result.append ({ tr ("Job role"), orgInfo.role () });
-#endif
 		return result;
 	}
 

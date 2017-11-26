@@ -125,13 +125,11 @@ namespace Xoox
 
 		Ui_.About_->setPlainText (vcard.description ());
 
-#if QXMPP_VERSION >= 0x000800
 		const auto& orgInfo = vcard.organization ();
 		Ui_.OrgName_->setText (orgInfo.organization ());
 		Ui_.OrgUnit_->setText (orgInfo.unit ());
 		Ui_.Title_->setText (orgInfo.title ());
 		Ui_.Role_->setText (orgInfo.role ());
-#endif
 	}
 
 	bool VCardDialog::eventFilter (QObject *object, QEvent *event)
@@ -342,14 +340,12 @@ namespace Xoox
 		VCard_.setDescription (Ui_.About_->toPlainText ());
 		VCard_.setEmail (QString ());
 
-#if QXMPP_VERSION >= 0x000800
 		QXmppVCardOrganization orgInfo;
 		orgInfo.setOrganization (Ui_.OrgName_->text ());
 		orgInfo.setUnit (Ui_.OrgUnit_->text ());
 		orgInfo.setTitle (Ui_.Title_->text ());
 		orgInfo.setRole (Ui_.Role_->text ());
 		VCard_.setOrganization (orgInfo);
-#endif
 
 		const auto px = Ui_.LabelPhoto_->pixmap ();
 		if (px)
