@@ -32,6 +32,7 @@
 #include <cmath>
 #include <QtDebug>
 #include <util/sll/visitor.h>
+#include <util/sll/curry.h>
 #include <util/threads/futures.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/lmp/ilmpproxy.h>
@@ -134,12 +135,7 @@ namespace BrainSlugz
 
 		for (const auto& albumPtr : Current_.Albums_)
 		{
-			const auto pos = std::find_if (releases.begin (), releases.end (),
-					[&albumPtr] (const Media::ReleaseInfo& release)
-					{
-						return IsSameRelease (albumPtr, release);
-					});
-
+			const auto pos = std::find_if (releases.begin (), releases.end (), Util::Curry (IsSameRelease) (albumPtr));
 			if (pos == releases.end ())
 				continue;
 
