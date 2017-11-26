@@ -66,10 +66,8 @@ namespace BrainSlugz
 		int GetRemainingCount () const;
 	private:
 		void HandleReady ();
+		void HandleDiscoReady (QList<Media::ReleaseInfo>);
 	private slots:
-		void handleDiscoReady ();
-		void handleDiscoError ();
-
 		void rotateQueue ();
 	signals:
 		void finished ();

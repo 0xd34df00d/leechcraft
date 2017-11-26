@@ -31,6 +31,8 @@
 #include <algorithm>
 #include <cmath>
 #include <QtDebug>
+#include <util/sll/visitor.h>
+#include <util/threads/futures.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/lmp/ilmpproxy.h>
 #include <interfaces/lmp/ilocalcollection.h>
@@ -119,9 +121,8 @@ namespace BrainSlugz
 		}
 	}
 
-	void Checker::handleDiscoReady ()
+	void Checker::HandleDiscoReady (QList<Media::ReleaseInfo> releases)
 	{
-		auto releases = qobject_cast<Media::IPendingDisco*> (sender ())->GetReleases ();
 		releases.erase (std::remove_if (releases.begin (), releases.end (),
 					[this] (const Media::ReleaseInfo& info)
 					{
@@ -163,15 +164,6 @@ namespace BrainSlugz
 		rotateQueue ();
 	}
 
-	void Checker::handleDiscoError ()
-	{
-		qDebug () << Q_FUNC_INFO
-				<< Current_.Name_;
-		Model_->MarkNoNews (Current_);
-
-		rotateQueue ();
-	}
-
 	void Checker::rotateQueue ()
 	{
 		emit progress (Artists_.size ());
@@ -183,15 +175,20 @@ namespace BrainSlugz
 		}
 
 		Current_ = Artists_.takeFirst ();
-		const auto pending = Provider_->GetDiscography (Current_.Name_);
-		connect (pending->GetQObject (),
-				SIGNAL (ready ()),
-				this,
-				SLOT (handleDiscoReady ()));
-		connect (pending->GetQObject (),
-				SIGNAL (error (QString)),
-				this,
-				SLOT (handleDiscoError ()));
+		Util::Sequence (this, Provider_->GetDiscography (Current_.Name_)) >>
+				[=] (const auto& result)
+				{
+					Util::Visit (result.AsVariant (),
+							[&] (const QString&)
+							{
+								qWarning () << Q_FUNC_INFO
+										<< Current_.Name_;
+								Model_->MarkNoNews (Current_);
+							},
+							[&] (const auto& result) { HandleDiscoReady (result); });
+
+					rotateQueue ();
+				};
 	}
 }
 }
