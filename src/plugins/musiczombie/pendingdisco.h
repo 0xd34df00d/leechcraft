@@ -56,7 +56,7 @@ namespace MusicZombie
 		QNetworkAccessManager *NAM_;
 		QList<Media::ReleaseInfo> Releases_;
 	public:
-		PendingDisco (Util::QueueManager*, const QString&, const QString&, QNetworkAccessManager*, QObject* = 0);
+		PendingDisco (Util::QueueManager*, const QString&, const QString&, QNetworkAccessManager*, QObject* = nullptr);
 
 		QObject* GetQObject ();
 
