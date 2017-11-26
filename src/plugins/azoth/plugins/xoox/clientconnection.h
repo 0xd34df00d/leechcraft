@@ -194,6 +194,7 @@ namespace Xoox
 
 		void SetState (const GlooxAccountState&);
 		GlooxAccountState GetLastState () const;
+		bool IsConnected () const;
 
 		void SetPassword (const QString&);
 

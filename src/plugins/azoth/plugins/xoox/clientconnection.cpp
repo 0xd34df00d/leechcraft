@@ -432,6 +432,11 @@ namespace Xoox
 		return LastState_;
 	}
 
+	bool ClientConnection::IsConnected () const
+	{
+		return IsConnected_;
+	}
+
 	void ClientConnection::SetPassword (const QString& pwd)
 	{
 		Password_ = pwd;
