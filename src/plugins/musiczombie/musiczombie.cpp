@@ -87,16 +87,16 @@ namespace MusicZombie
 		return "MusicBrainz.org";
 	}
 
-	Media::IPendingDisco* Plugin::GetDiscography (const QString& artist)
+	QFuture<Plugin::QueryResult_t> Plugin::GetDiscography (const QString& artist)
 	{
-		return new PendingDisco (Queue_, artist, QString (),
-				Proxy_->GetNetworkAccessManager (), this);
+		const auto fetcher = new PendingDisco (Queue_, artist, {}, Proxy_->GetNetworkAccessManager (), this);
+		return fetcher->GetFuture ();
 	}
 
-	Media::IPendingDisco* Plugin::GetReleaseInfo (const QString& artist, const QString& release)
+	QFuture<Plugin::QueryResult_t> Plugin::GetReleaseInfo (const QString& artist, const QString& release)
 	{
-		return new PendingDisco (Queue_, artist, release,
-				Proxy_->GetNetworkAccessManager (), this);
+		const auto fetcher = new PendingDisco (Queue_, artist, release, Proxy_->GetNetworkAccessManager (), this);
+		return fetcher->GetFuture ();
 	}
 
 #ifdef WITH_CHROMAPRINT

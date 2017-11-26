@@ -33,12 +33,14 @@
 #include <QNetworkReply>
 #include <QNetworkAccessManager>
 #include <QDomDocument>
-#include <QtDebug>
+#include <QFuture>
 #include <QPointer>
+#include <QtDebug>
 #include <util/sll/queuemanager.h>
 #include <util/util.h>
 #include <util/sll/util.h>
 #include <util/sll/prelude.h>
+#include <util/threads/futures.h>
 #include "artistlookup.h"
 #include "util.h"
 
@@ -53,6 +55,7 @@ namespace MusicZombie
 	, Queue_ (queue)
 	, NAM_ (nam)
 	{
+		Promise_.reportStarted ();
 		Queue_->Schedule ([this, artist, nam]
 			{
 				auto idLookup = new ArtistLookup (artist, nam, this);
@@ -71,14 +74,9 @@ namespace MusicZombie
 			}, this);
 	}
 
-	QObject* PendingDisco::GetQObject ()
+	QFuture<Media::IDiscographyProvider::QueryResult_t> PendingDisco::GetFuture ()
 	{
-		return this;
-	}
-
-	QList<Media::ReleaseInfo> PendingDisco::GetReleases () const
-	{
-		return Releases_;
+		return Promise_.future ();
 	}
 
 	void PendingDisco::handleGotID (const QString& id)
@@ -104,7 +102,8 @@ namespace MusicZombie
 	{
 		qWarning () << Q_FUNC_INFO
 				<< "error getting MBID";
-		emit error (tr ("Error getting artist MBID."));
+
+		Util::ReportFutureResult (Promise_, QueryResult_t::Left (tr ("Error getting artist MBID.")));
 		deleteLater ();
 	}
 
@@ -180,7 +179,7 @@ namespace MusicZombie
 			qWarning () << Q_FUNC_INFO
 					<< "unable to parse"
 					<< data;
-			emit error (tr ("Unable to parse MusicBrainz reply."));
+			Util::ReportFutureResult (Promise_, QueryResult_t::Left (tr ("Unable to parse MusicBrainz reply.")));
 			deleteLater ();
 		}
 
@@ -227,6 +226,7 @@ namespace MusicZombie
 			infos [title] [elemText ("country")] = info;
 		}
 
+		QList<Media::ReleaseInfo> releases;
 		for (const auto& countries : infos)
 		{
 			Media::ReleaseInfo release;
@@ -235,13 +235,13 @@ namespace MusicZombie
 			else if (!countries.isEmpty ())
 				release = countries.begin ().value ();
 
-			Releases_ << release;
+			releases << release;
 		}
 
-		std::sort (Releases_.begin (), Releases_.end (),
+		std::sort (releases.begin (), releases.end (),
 				Util::ComparingBy (&Media::ReleaseInfo::Year_));
 
-		emit ready ();
+		Util::ReportFutureResult (Promise_, QueryResult_t::Right (releases));
 		deleteLater ();
 	}
 
@@ -253,8 +253,9 @@ namespace MusicZombie
 		qWarning () << Q_FUNC_INFO
 				<< "error looking stuff up"
 				<< reply->errorString ();
-		emit error (tr ("Error performing artist lookup: %1.")
-					.arg (reply->errorString ()));
+		Util::ReportFutureResult (Promise_,
+				QueryResult_t::Left (tr ("Error performing artist lookup: %1.")
+						.arg (reply->errorString ())));
 		deleteLater ();
 	}
 }

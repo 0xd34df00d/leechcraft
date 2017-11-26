@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QObject>
+#include <QFutureInterface>
 #include <interfaces/media/idiscographyprovider.h>
 
 class QNetworkAccessManager;
@@ -44,32 +45,27 @@ namespace Util
 namespace MusicZombie
 {
 	class PendingDisco : public QObject
-					   , public Media::IPendingDisco
 	{
 		Q_OBJECT
-		Q_INTERFACES (Media::IPendingDisco)
 
 		const QString ReleaseName_;
 
 		Util::QueueManager *Queue_;
 
 		QNetworkAccessManager *NAM_;
-		QList<Media::ReleaseInfo> Releases_;
+
+		using QueryResult_t = Media::IDiscographyProvider::QueryResult_t;
+		QFutureInterface<QueryResult_t> Promise_;
 	public:
 		PendingDisco (Util::QueueManager*, const QString&, const QString&, QNetworkAccessManager*, QObject* = nullptr);
 
-		QObject* GetQObject ();
-
-		QList<Media::ReleaseInfo> GetReleases () const;
+		QFuture<Media::IDiscographyProvider::QueryResult_t> GetFuture ();
 	private slots:
 		void handleGotID (const QString&);
 		void handleIDError ();
 
 		void handleLookupFinished ();
 		void handleLookupError ();
-	signals:
-		void ready ();
-		void error (const QString&);
 	};
 }
 }
