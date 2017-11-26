@@ -229,8 +229,8 @@ namespace LMP
 				GetIcon ("media-optical").pixmap (AASize * 2, AASize * 2);
 
 		auto releases = fetcher->GetReleases ();
-		std::sort (releases.begin (), releases.end (),
-				Util::Flip (Util::ComparingBy (&Media::ReleaseInfo::Year_)));
+		std::sort (releases.rbegin (), releases.rend (),
+				Util::ComparingBy (&Media::ReleaseInfo::Year_));
 		for (const auto& release : releases)
 		{
 			if (FindAlbumItem (release.Name_))
