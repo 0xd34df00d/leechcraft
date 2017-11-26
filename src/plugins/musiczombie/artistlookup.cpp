@@ -37,6 +37,7 @@
 #include <QtDebug>
 #include <util/sll/urloperator.h>
 #include <util/sll/util.h>
+#include <util/sll/domchildrenrange.h>
 #include "util.h"
 
 namespace LeechCraft
@@ -99,10 +100,10 @@ namespace MusicZombie
 
 		const auto curYear = QDate::currentDate ().year ();
 
-		auto artist = artists.firstChildElement ("artist");
-		while (!artist.isNull () && artist.attribute ("score").toInt () > 75)
+		for (const auto& artist : Util::MakeDomChildrenRange (artists, "artist"))
 		{
-			const auto guard = Util::MakeScopeGuard ([&artist] { artist = artist.nextSiblingElement ("artist"); });
+			if (artist.attribute ("score").toInt () <= 75)
+				break;
 
 			const auto& spanElem = artist.firstChildElement ("life-span");
 
