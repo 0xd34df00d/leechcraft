@@ -43,6 +43,8 @@
 #include <util/models/rolenamesmixin.h>
 #include <util/sll/slotclosure.h>
 #include <util/sll/prelude.h>
+#include <util/sll/visitor.h>
+#include <util/threads/futures.h>
 #include <interfaces/media/idiscographyprovider.h>
 #include <interfaces/media/ialbumartprovider.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -129,13 +131,13 @@ namespace LMP
 
 		auto pm = Core::Instance ().GetProxy ()->GetPluginsManager ();
 		for (auto prov : pm->GetAllCastableTo<Media::IDiscographyProvider*> ())
-		{
-			auto fetcher = prov->GetDiscography (CurrentArtist_);
-			connect (fetcher->GetQObject (),
-					SIGNAL (ready ()),
-					this,
-					SLOT (handleDiscographyReady ()));
-		}
+			Util::Sequence (this, prov->GetDiscography (CurrentArtist_)) >>
+					[this, artist] (const auto& result)
+					{
+						Util::Visit (result.AsVariant (),
+								[artist] (const QString&) { qWarning () << Q_FUNC_INFO << "error for" << artist; },
+								[this] (const auto& releases) { HandleDiscographyReady (releases); });
+					};
 	}
 
 	QStandardItem* BioViewManager::FindAlbumItem (const QString& albumName) const
@@ -218,17 +220,15 @@ namespace LMP
 		emit gotArtistImage (bio.BasicInfo_.Name_, bio.BasicInfo_.LargeImage_);
 	}
 
-	void BioViewManager::handleDiscographyReady ()
+	void BioViewManager::HandleDiscographyReady (QList<Media::ReleaseInfo> releases)
 	{
 		const auto pm = Core::Instance ().GetProxy ()->GetPluginsManager ();
 		const auto aaProvObj = pm->GetAllCastableRoots<Media::IAlbumArtProvider*> ().value (0);
 		const auto aaProv = qobject_cast<Media::IAlbumArtProvider*> (aaProvObj);
 
-		auto fetcher = qobject_cast<Media::IPendingDisco*> (sender ());
 		const auto& icon = Core::Instance ().GetProxy ()->GetIconThemeManager ()->
 				GetIcon ("media-optical").pixmap (AASize * 2, AASize * 2);
 
-		auto releases = fetcher->GetReleases ();
 		std::sort (releases.rbegin (), releases.rend (),
 				Util::ComparingBy (&Media::ReleaseInfo::Year_));
 		for (const auto& release : releases)

@@ -39,6 +39,8 @@
 #include <util/qml/standardnamfactory.h>
 #include <util/qml/themeimageprovider.h>
 #include <util/sys/paths.h>
+#include <util/sll/visitor.h>
+#include <util/threads/futures.h>
 #include <util/models/rolenamesmixin.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -179,23 +181,19 @@ namespace LMP
 			ReleasesModel_->appendRow (item);
 
 			if (discoProv)
-			{
-				auto pending = discoProv->GetReleaseInfo (release.Artist_, release.Title_);
-				connect (pending->GetQObject (),
-						SIGNAL (ready ()),
-						this,
-						SLOT (handleReleaseInfo ()));
-				Pending2Release_ [pending->GetQObject ()] = { release.Artist_, release.Title_ };
-			}
+				Util::Sequence (this, discoProv->GetReleaseInfo (release.Artist_, release.Title_)) >>
+						[=] (const auto& result)
+						{
+							Util::Visit (result.AsVariant (),
+									[] (const QString&) { qWarning () << Q_FUNC_INFO << "error fetching releases"; },
+									[=] (const auto& infos) { HandleReleaseInfo (release.Artist_, release.Title_, infos); });
+						};
 		}
 	}
 
-	void ReleasesWidget::handleReleaseInfo ()
+	void ReleasesWidget::HandleReleaseInfo (const QString& artist, const QString& title,
+			const QList<Media::ReleaseInfo>& infos)
 	{
-		const auto& pendingRelease = Pending2Release_.take (sender ());
-
-		auto pending = qobject_cast<Media::IPendingDisco*> (sender ());
-		const auto& infos = pending->GetReleases ();
 		if (infos.isEmpty ())
 			return;
 
@@ -205,8 +203,8 @@ namespace LMP
 		for (int i = 0; i < ReleasesModel_->rowCount (); ++i)
 		{
 			auto candidate = ReleasesModel_->item (i);
-			if (candidate->data (ReleasesModel::Role::ArtistName) != pendingRelease.Artist_ ||
-				candidate->data (ReleasesModel::Role::AlbumName) != pendingRelease.Title_)
+			if (candidate->data (ReleasesModel::Role::ArtistName) != artist ||
+				candidate->data (ReleasesModel::Role::AlbumName) != title)
 				continue;
 
 			item = candidate;
@@ -221,8 +219,8 @@ namespace LMP
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "item not found for"
-					<< pendingRelease.Artist_
-					<< pendingRelease.Title_;
+					<< artist
+					<< title;
 			return;
 		}
 
@@ -231,7 +229,6 @@ namespace LMP
 
 	void ReleasesWidget::request ()
 	{
-		Pending2Release_.clear ();
 		TrackLists_.clear ();
 		ReleasesModel_->clear ();
 

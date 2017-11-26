@@ -76,9 +76,9 @@ namespace LMP
 		bool QueryReleaseImageLocal (const Media::AlbumInfo&) const;
 		void QueryReleaseImage (Media::IAlbumArtProvider*, const Media::AlbumInfo&);
 		void SetAlbumImage (const QString&, const QUrl&) const;
+		void HandleDiscographyReady (QList<Media::ReleaseInfo>);
 	private slots:
 		void handleBioReady ();
-		void handleDiscographyReady ();
 
 		void handleAlbumPreviewRequested (int);
 	signals:

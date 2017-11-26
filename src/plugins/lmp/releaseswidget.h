@@ -59,21 +59,15 @@ namespace LMP
 
 		QStandardItemModel * const ReleasesModel_;
 
-		struct PendingRelease
-		{
-			QString Artist_;
-			QString Title_;
-		};
-		QHash<QObject*, PendingRelease> Pending2Release_;
-
 		QVector<QList<Media::ReleaseTrackInfo>> TrackLists_;
 	public:
 		ReleasesWidget (QWidget* = 0);
 
 		void InitializeProviders ();
+	private:
+		void HandleReleaseInfo (const QString&, const QString&, const QList<Media::ReleaseInfo>&);
 	private slots:
 		void handleRecentReleases (const QList<Media::AlbumRelease>&);
-		void handleReleaseInfo ();
 		void request ();
 		void previewAlbum (int);
 		void handleLink (const QString&);
