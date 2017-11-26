@@ -244,6 +244,8 @@ namespace LeechCraft
 					CachePathContents_.insert (path, new QByteArray { data }, data.size ());
 					if (!open)
 						result->close ();
+					else
+						result->seek (0);
 				}
 			}
 
