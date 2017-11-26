@@ -110,23 +110,22 @@ namespace MusicZombie
 
 	namespace
 	{
-		void ParseMediumList (Media::ReleaseInfo& release, QDomElement mediumList)
+		auto ParseMediumList (const QDomElement& mediumList)
 		{
-			for (const auto& mediumElem : Util::MakeDomChildrenRange (mediumList, "medium"))
-			{
-				const auto& trackList = mediumElem.firstChildElement ("track-list");
-				const auto& tracks = Util::Map (Util::MakeDomChildrenRange (trackList, "track"),
-						[] (const auto& trackElem)
-						{
-							const int num = trackElem.firstChildElement ("number").text ().toInt ();
+			return Util::Map (Util::MakeDomChildrenRange (mediumList, "medium"),
+					[] (const auto& medium)
+					{
+						return Util::Map (Util::MakeDomChildrenRange (medium.firstChildElement ("track-list"), "track"),
+								[] (const auto& trackElem)
+								{
+									const int num = trackElem.firstChildElement ("number").text ().toInt ();
 
-							const auto& recElem = trackElem.firstChildElement ("recording");
-							const auto& title = recElem.firstChildElement ("title").text ();
-							const int length = recElem.firstChildElement ("length").text ().toInt () / 1000;
-							return Media::ReleaseTrackInfo { num, title, length };
-						});
-				release.TrackInfos_ << tracks;
-			}
+									const auto& recElem = trackElem.firstChildElement ("recording");
+									const auto& title = recElem.firstChildElement ("title").text ();
+									const int length = recElem.firstChildElement ("length").text ().toInt () / 1000;
+									return Media::ReleaseTrackInfo { num, title, length };
+								});
+					});
 		}
 
 		Media::ReleaseInfo::Type GetReleaseType (const QDomElement& releaseElem)
@@ -208,9 +207,8 @@ namespace MusicZombie
 				title,
 				date,
 				GetReleaseType (releaseElem),
-				{}
+				ParseMediumList (releaseElem.firstChildElement ("medium-list"))
 			};
-			ParseMediumList (info, releaseElem.firstChildElement ("medium-list"));
 
 			infos [title] [elemText ("country")] = info;
 		}
