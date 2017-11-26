@@ -997,6 +997,7 @@ namespace Xoox
 
 	void ClientConnection::handleDisconnected ()
 	{
+		IsConnected_ = false;
 		emit statusChanged (EntryStatus (SOffline, LastState_.Status_));
 	}
 
