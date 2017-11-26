@@ -1,4 +1,6 @@
-cmake_policy (SET CMP0071 NEW)
+if (POLICY CMP0071)
+	cmake_policy (SET CMP0071 NEW)
+endif ()
 if (NOT LEECHCRAFT_LIBRARIES)
 	set (CMAKE_MODULE_PATH "/usr/local/share/leechcraft/cmake;/usr/share/leechcraft/cmake;${CMAKE_MODULE_PATH}")
 	set (CMAKE_MODULE_PATH "/usr/local/share/apps/cmake/modules;/usr/share/apps/cmake/modules;${CMAKE_MODULE_PATH}")
