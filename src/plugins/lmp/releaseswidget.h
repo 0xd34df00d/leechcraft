@@ -64,8 +64,6 @@ namespace LMP
 		ReleasesWidget (QWidget* = 0);
 
 		void InitializeProviders ();
-	private:
-		void HandleReleaseInfo (const QString&, const QString&, const QList<Media::ReleaseInfo>&);
 	private slots:
 		void handleRecentReleases (const QList<Media::AlbumRelease>&);
 		void request ();

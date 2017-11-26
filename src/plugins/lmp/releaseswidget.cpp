@@ -182,49 +182,27 @@ namespace LMP
 
 			if (discoProv)
 				Util::Sequence (this, discoProv->GetReleaseInfo (release.Artist_, release.Title_)) >>
-						[=] (const auto& result)
+						[=, row = ReleasesModel_->rowCount ()] (const auto& result)
 						{
 							Util::Visit (result.AsVariant (),
 									[] (const QString&) { qWarning () << Q_FUNC_INFO << "error fetching releases"; },
-									[=] (const auto& infos) { HandleReleaseInfo (release.Artist_, release.Title_, infos); });
+									[=] (const auto& infos)
+									{
+										if (infos.isEmpty ())
+											return;
+
+										if (row >= ReleasesModel_->rowCount () || ReleasesModel_->item (row) != item)
+										{
+											qWarning () << Q_FUNC_INFO
+													<< "model has been invalidated";
+											return;
+										}
+
+										item->setData (MakeTrackListTooltip (infos [0].TrackInfos_),
+												ReleasesModel::Role::TrackList);
+									});
 						};
 		}
-	}
-
-	void ReleasesWidget::HandleReleaseInfo (const QString& artist, const QString& title,
-			const QList<Media::ReleaseInfo>& infos)
-	{
-		if (infos.isEmpty ())
-			return;
-
-		const auto& info = infos.at (0);
-
-		QStandardItem *item = 0;
-		for (int i = 0; i < ReleasesModel_->rowCount (); ++i)
-		{
-			auto candidate = ReleasesModel_->item (i);
-			if (candidate->data (ReleasesModel::Role::ArtistName) != artist ||
-				candidate->data (ReleasesModel::Role::AlbumName) != title)
-				continue;
-
-			item = candidate;
-			QList<Media::ReleaseTrackInfo> trackList;
-			for (const auto& list : info.TrackInfos_)
-				trackList += list;
-			TrackLists_ [i] = trackList;
-			break;
-		}
-
-		if (!item)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "item not found for"
-					<< artist
-					<< title;
-			return;
-		}
-
-		item->setData (MakeTrackListTooltip (info.TrackInfos_), ReleasesModel::Role::TrackList);
 	}
 
 	void ReleasesWidget::request ()
