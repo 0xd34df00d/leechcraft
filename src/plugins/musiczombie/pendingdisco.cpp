@@ -181,6 +181,7 @@ namespace MusicZombie
 					<< data;
 			Util::ReportFutureResult (Promise_, QueryResult_t::Left (tr ("Unable to parse MusicBrainz reply.")));
 			deleteLater ();
+			return;
 		}
 
 		QMap<QString, QMap<QString, Media::ReleaseInfo>> infos;
