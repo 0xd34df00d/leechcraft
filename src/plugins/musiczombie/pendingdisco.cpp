@@ -166,6 +166,7 @@ namespace MusicZombie
 	{
 		auto reply = qobject_cast<QNetworkReply*> (sender ());
 		reply->deleteLater ();
+		deleteLater ();
 
 		const auto& data = reply->readAll ();
 		QDomDocument doc;
@@ -175,7 +176,6 @@ namespace MusicZombie
 					<< "unable to parse"
 					<< data;
 			Util::ReportFutureResult (Promise_, QueryResult_t::Left (tr ("Unable to parse MusicBrainz reply.")));
-			deleteLater ();
 			return;
 		}
 
@@ -229,9 +229,7 @@ namespace MusicZombie
 
 		std::sort (releases.begin (), releases.end (),
 				Util::ComparingBy (&Media::ReleaseInfo::Year_));
-
 		Util::ReportFutureResult (Promise_, QueryResult_t::Right (releases));
-		deleteLater ();
 	}
 
 	void PendingDisco::handleLookupError ()
