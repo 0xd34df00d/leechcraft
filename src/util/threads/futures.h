@@ -148,6 +148,10 @@ namespace Util
 			 */
 			void Start ()
 			{
+				connect (LastWatcher_,
+						&QFutureWatcherBase::finished,
+						this,
+						&QObject::deleteLater);
 				BaseWatcher_.setFuture (Future_);
 			}
 
@@ -230,10 +234,9 @@ namespace Util
 
 				new SlotClosure<DeleteLaterPolicy>
 				{
-					[last, action, this]
+					[last, action]
 					{
 						action (last->result ());
-						deleteLater ();
 					},
 					LastWatcher_,
 					SIGNAL (finished ()),
@@ -252,11 +255,7 @@ namespace Util
 
 				new SlotClosure<DeleteLaterPolicy>
 				{
-					[action, this]
-					{
-						action ();
-						deleteLater ();
-					},
+					action,
 					LastWatcher_,
 					SIGNAL (finished ()),
 					LastWatcher_
