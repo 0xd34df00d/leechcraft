@@ -446,6 +446,9 @@ namespace Xoox
 		if (maybeVCard && VCardPhotoHash_ == ComputeVCardPhotoHash (*maybeVCard))
 			return Util::MakeReadyFuture (QImage::fromData (maybeVCard->photo ()));
 
+		if (!Account_->GetClientConnection ()->IsConnected ())
+			return Util::MakeReadyFuture (QImage {});
+
 		QFutureInterface<QImage> iface;
 		iface.reportStarted ();
 		Account_->GetClientConnection ()->FetchVCard (GetJID (),
