@@ -33,6 +33,7 @@
 #include <QInputDialog>
 #include <QtDebug>
 #include <QBuffer>
+#include <QTimer>
 #include <QCryptographicHash>
 #include <QXmppVCardIq.h>
 #include <QXmppPresence.h>
@@ -451,14 +452,32 @@ namespace Xoox
 
 		QFutureInterface<QImage> iface;
 		iface.reportStarted ();
-		Account_->GetClientConnection ()->FetchVCard (GetJID (),
-				[iface] (const QXmppVCardIq& iq) mutable
+
+		const auto cancelTimer = new QTimer;
+		cancelTimer->setSingleShot (true);
+		cancelTimer->setTimerType (Qt::VeryCoarseTimer);
+		cancelTimer->start (120 * 1000);
+		connect (cancelTimer,
+				&QTimer::timeout,
+				[iface, cancelTimer] () mutable
 				{
+					if (!iface.isFinished ())
+						Util::ReportFutureResult (iface, QImage {});
+					cancelTimer->deleteLater ();
+				});
+
+		Account_->GetClientConnection ()->FetchVCard (GetJID (),
+				[iface, cancelTimer] (const QXmppVCardIq& iq) mutable
+				{
+					if (iface.isFinished ())
+						return;
+
 					const auto& photo = iq.photo ();
 					const auto image = photo.isEmpty () ?
 							QImage {} :
 							QImage::fromData (photo);
 					iface.reportFinished (&image);
+					delete cancelTimer;
 				});
 
 		return iface.future ();
