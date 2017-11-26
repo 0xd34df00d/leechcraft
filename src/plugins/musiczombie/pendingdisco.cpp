@@ -40,6 +40,7 @@
 #include <util/util.h>
 #include <util/sll/util.h>
 #include <util/sll/prelude.h>
+#include <util/sll/domchildrenrange.h>
 #include <util/threads/futures.h>
 #include "artistlookup.h"
 #include "util.h"
@@ -109,28 +110,22 @@ namespace MusicZombie
 
 	namespace
 	{
-		void ParseMediumList (Media::ReleaseInfo& release, QDomElement mediumElem)
+		void ParseMediumList (Media::ReleaseInfo& release, QDomElement mediumList)
 		{
-			while (!mediumElem.isNull ())
+			for (const auto& mediumElem : Util::MakeDomChildrenRange (mediumList, "medium"))
 			{
-				auto trackElem = mediumElem.firstChildElement ("track-list").firstChildElement ("track");
+				const auto& trackList = mediumElem.firstChildElement ("track-list");
+				const auto& tracks = Util::Map (Util::MakeDomChildrenRange (trackList, "track"),
+						[] (const auto& trackElem)
+						{
+							const int num = trackElem.firstChildElement ("number").text ().toInt ();
 
-				QList<Media::ReleaseTrackInfo> tracks;
-				while (!trackElem.isNull ())
-				{
-					const int num = trackElem.firstChildElement ("number").text ().toInt ();
-
-					const auto& recElem = trackElem.firstChildElement ("recording");
-					const auto& title = recElem.firstChildElement ("title").text ();
-					const int length = recElem.firstChildElement ("length").text ().toInt () / 1000;
-
-					tracks.push_back ({ num, title, length });
-					trackElem = trackElem.nextSiblingElement ("track");
-				}
-
+							const auto& recElem = trackElem.firstChildElement ("recording");
+							const auto& title = recElem.firstChildElement ("title").text ();
+							const int length = recElem.firstChildElement ("length").text ().toInt () / 1000;
+							return Media::ReleaseTrackInfo { num, title, length };
+						});
 				release.TrackInfos_ << tracks;
-
-				mediumElem = mediumElem.nextSiblingElement ("medium");
 			}
 		}
 
@@ -186,15 +181,9 @@ namespace MusicZombie
 
 		QMap<QString, QMap<QString, Media::ReleaseInfo>> infos;
 
-		auto releaseElem = doc
-				.documentElement ()
-				.firstChildElement ("release-list")
-				.firstChildElement ("release");
-		while (!releaseElem.isNull ())
+		const auto& releaseList = doc.documentElement ().firstChildElement ("release-list");
+		for (const auto& releaseElem : Util::MakeDomChildrenRange (releaseList, "release"))
 		{
-			const auto guard = Util::MakeScopeGuard ([&releaseElem]
-						{ releaseElem = releaseElem.nextSiblingElement ("release"); });
-
 			auto elemText = [&releaseElem] (const QString& sub)
 			{
 				return releaseElem.firstChildElement (sub).text ();
@@ -221,8 +210,7 @@ namespace MusicZombie
 				GetReleaseType (releaseElem),
 				{}
 			};
-			const auto& mediumListElem = releaseElem.firstChildElement ("medium-list");
-			ParseMediumList (info, mediumListElem.firstChildElement ("medium"));
+			ParseMediumList (info, releaseElem.firstChildElement ("medium-list"));
 
 			infos [title] [elemText ("country")] = info;
 		}
