@@ -255,6 +255,7 @@ namespace MusicZombie
 				<< reply->errorString ();
 		emit error (tr ("Error performing artist lookup: %1.")
 					.arg (reply->errorString ()));
+		deleteLater ();
 	}
 }
 }
