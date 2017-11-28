@@ -91,7 +91,7 @@ namespace LeechCraft
 	void NewTabMenuManager::SetToolbarActions (QList<QList<QAction*>> lists)
 	{
 		QList<QAction*> ones;
-		Q_FOREACH (QList<QAction*> list, lists)
+		for (const auto& list : decltype (lists) { lists })
 			if (list.size () == 1)
 			{
 				ones += list;
