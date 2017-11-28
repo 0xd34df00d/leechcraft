@@ -86,11 +86,9 @@ namespace Aggregator
 
 	namespace
 	{
-		inline void AppendToList (QList<QDomNode>& nodes,
-				const QDomNodeList& dumbList)
+		void AppendToList (QList<QDomNode>& nodes, const QDomNodeList& dumbList)
 		{
-			for (int i = 0, size = dumbList.size ();
-					i < size; ++i)
+			for (int i = 0, size = dumbList.size (); i < size; ++i)
 				nodes << dumbList.at (i);
 		}
 	};
