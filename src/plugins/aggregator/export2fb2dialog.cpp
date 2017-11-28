@@ -530,14 +530,8 @@ namespace Aggregator
 
 				if (!i->Categories_.isEmpty ())
 				{
-					bool suitable = false;
-					Q_FOREACH (const auto& cat, categories)
-						if (i->Categories_.contains (cat))
-						{
-							suitable = true;
-							break;
-						}
-
+					const auto suitable = std::any_of (categories.begin (), categories.end (),
+							[&i] (const QString& cat) { return i->Categories_.contains (cat); });
 					if (!suitable)
 						continue;
 				}

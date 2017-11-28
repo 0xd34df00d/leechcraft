@@ -89,20 +89,12 @@ namespace Aggregator
 
 		if (!ItemCategories_.isEmpty ())
 		{
-			bool categoryFound = false;
-			const QStringList& itemCategories =
-				ItemsWidget_->GetItemCategories (sourceRow);
+			const auto& itemCategories = ItemsWidget_->GetItemCategories (sourceRow);
 
-			if (!itemCategories.size ())
-				categoryFound = true;
-			else
-				Q_FOREACH (const QString& cat, itemCategories)
-					if (ItemCategories_.contains (cat))
-					{
-						categoryFound = true;
-						break;
-					}
-
+			const bool categoryFound = itemCategories.isEmpty () ?
+					true :
+					std::any_of (itemCategories.begin (), itemCategories.end (),
+							[this] (const QString& cat) { return ItemCategories_.contains (cat); });
 			if (!categoryFound)
 				return false;
 		}
