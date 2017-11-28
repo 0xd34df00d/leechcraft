@@ -118,10 +118,7 @@ namespace Aggregator
 		for (channels_shorts_t::const_iterator i = channels.begin (),
 				end = channels.end (); i != end; ++i)
 		{
-			QStringList sourceTags = i->Tags_;
-			QStringList tags;
-			Q_FOREACH (QString st, sourceTags)
-				tags << Core::Instance ().GetProxy ()->GetTagsManager ()->GetTag (st);
+			auto tags = Core::Instance ().GetProxy ()->GetTagsManager ()->GetTags (i->Tags_);
 			tags.sort ();
 
 			QDomElement inserter;

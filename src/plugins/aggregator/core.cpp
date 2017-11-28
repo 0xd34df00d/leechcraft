@@ -629,16 +629,8 @@ namespace Aggregator
 	{
 		try
 		{
-			QStringList ids = ChannelsModel_->
-				GetChannelForIndex (ChannelsModel_->index (i, 0)).Tags_;
-			QStringList result;
-			Q_FOREACH (QString id, ids)
-			{
-				QString tag = Proxy_->GetTagsManager ()->GetTag (id);
-				if (!tag.isEmpty ())
-					result.append (tag);
-			}
-			return result;
+			const auto& ids = ChannelsModel_->GetChannelForIndex (ChannelsModel_->index (i, 0)).Tags_;
+			return Proxy_->GetTagsManager ()->GetTags (ids);
 		}
 		catch (const std::exception& e)
 		{
@@ -703,11 +695,8 @@ namespace Aggregator
 	{
 		try
 		{
-			ChannelShort channel = ChannelsModel_->GetChannelForIndex (index);
-			QStringList tlist = Proxy_->GetTagsManager ()->Split (tags);
-			channel.Tags_.clear ();
-			Q_FOREACH (QString tag, tlist)
-				channel.Tags_.append (Proxy_->GetTagsManager ()->GetID (tag));
+			auto channel = ChannelsModel_->GetChannelForIndex (index);
+			channel.Tags_ = Proxy_->GetTagsManager ()->GetIDs (Proxy_->GetTagsManager ()->Split (tags));
 			StorageBackend_->UpdateChannel (channel);
 		}
 		catch (const std::exception& e)
