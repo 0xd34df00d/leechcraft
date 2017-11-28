@@ -154,10 +154,7 @@ namespace Aggregator
 			}
 			if (cs.Tags_.size ())
 			{
-				QStringList hrTags;
-				Q_FOREACH (QString id, cs.Tags_)
-					hrTags << Core::Instance ().GetProxy ()->
-						GetTagsManager ()->GetTag (id);
+				const auto& hrTags = Core::Instance ().GetProxy ()->GetTagsManager ()->GetTags (cs.Tags_);
 				result += tr ("<b>Tags</b>: %1").arg (hrTags.join ("; "));
 				result += "<br />";
 			}
