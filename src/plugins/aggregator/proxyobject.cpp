@@ -118,7 +118,7 @@ namespace Aggregator
 
 		channels_shorts_t channels;
 		Core::Instance ().GetChannels (channels);
-		Q_FOREACH (ChannelShort cs, channels)
+		for (const auto& cs : channels)
 			result << sb->GetChannel (cs.ChannelID_, cs.FeedID_);
 
 		return result;

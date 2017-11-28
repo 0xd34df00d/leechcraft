@@ -570,8 +570,7 @@ namespace Aggregator
 		}
 
 		QList<QModelIndex> result;
-		Q_FOREACH (QModelIndex index,
-				Impl_->Ui_.Feeds_->selectionModel ()->selectedRows ())
+		for (auto index : Impl_->Ui_.Feeds_->selectionModel ()->selectedRows ())
 		{
 			if (Impl_->FlatToFolders_->GetSourceModel ())
 				index = Impl_->FlatToFolders_->MapToSource (index);
@@ -630,15 +629,14 @@ namespace Aggregator
 		}
 
 		int row = 0;
-		Q_FOREACH (QModelIndex index, indexes)
+		for (const auto& index : indexes)
 		{
 			if (index.isValid ())
 				Core::Instance ().MarkChannelAsRead (index);
 			else if (Impl_->FlatToFolders_->GetSourceModel ())
 			{
 				const auto& parentIndex = Impl_->FlatToFolders_->index (row++, 0);
-				for (int i = 0, size = model->rowCount (parentIndex);
-						i < size; ++i)
+				for (int i = 0, size = model->rowCount (parentIndex); i < size; ++i)
 				{
 					auto source = Impl_->FlatToFolders_->index (i, 0, parentIndex);
 					source = Impl_->FlatToFolders_->MapToSource (source);
@@ -721,22 +719,18 @@ namespace Aggregator
 
 	void Aggregator::Perform (boost::function<void (const QModelIndex&)> func)
 	{
-		QList<QModelIndex> indexes = GetRelevantIndexes ();
-		Q_FOREACH (QModelIndex index, indexes)
+		for (auto index : GetRelevantIndexes ())
 		{
 			if (index.isValid ())
 				func (index);
 			else if (Impl_->FlatToFolders_->GetSourceModel ())
 			{
-				index = Impl_->Ui_.Feeds_->
-						selectionModel ()->currentIndex ();
-				for (int i = 0, size = Impl_->FlatToFolders_->rowCount (index);
-					i < size; ++i)
-					{
-						QModelIndex source = Impl_->FlatToFolders_->index (i, 0, index);
-						source = Impl_->FlatToFolders_->MapToSource (source);
-						func (source);
-					}
+				index = Impl_->Ui_.Feeds_->selectionModel ()->currentIndex ();
+				for (int i = 0, size = Impl_->FlatToFolders_->rowCount (index); i < size; ++i)
+				{
+					const auto& source = Impl_->FlatToFolders_->index (i, 0, index);
+					func (Impl_->FlatToFolders_->MapToSource (source));
+				}
 			}
 		}
 	}
@@ -803,7 +797,7 @@ namespace Aggregator
 				<< Impl_->ChannelActions_.ActionChannelSettings_
 				<< Impl_->ChannelActions_.ActionUpdateSelectedFeed_;
 
-		Q_FOREACH (QAction *act, toToggle)
+		for (const auto act : toToggle)
 			act->setEnabled (enable);
 
 		QMenu *menu = new QMenu;
@@ -811,7 +805,7 @@ namespace Aggregator
 		menu->addActions (Impl_->Ui_.Feeds_->actions ());
 		menu->exec (Impl_->Ui_.Feeds_->viewport ()->mapToGlobal (pos));
 
-		Q_FOREACH (QAction *act, toToggle)
+		for (const auto act : toToggle)
 			act->setEnabled (true);
 	}
 

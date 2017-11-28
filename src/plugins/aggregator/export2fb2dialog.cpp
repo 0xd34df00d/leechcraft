@@ -202,7 +202,7 @@ namespace Aggregator
 				w.writeEndElement ();
 				w.writeTextElement ("annotation",
 						Export2FB2Dialog::tr ("%n unread item(s)", "", cs.Unread_));
-				Q_FOREACH (Item_ptr item, items)
+				for (const auto item : items)
 				{
 					w.writeStartElement ("title");
 						w.writeStartElement ("p");
@@ -252,9 +252,9 @@ namespace Aggregator
 
 			w.writeStartElement ("description");
 				w.writeStartElement ("title-info");
-					Q_FOREACH (const QString& genre, genres)
+					for (const auto& genre : genres)
 						w.writeTextElement ("genre", genre);
-					Q_FOREACH (QString author, authors)
+					for (const auto& author : authors)
 					{
 						w.writeStartElement ("author");
 							w.writeTextElement ("nickname", author);
@@ -323,7 +323,7 @@ namespace Aggregator
 		QXmlStreamWriter w (&file);
 		WriteBeginning (w, authors, genres, Ui_.Name_->text ());
 
-		Q_FOREACH (const auto& cs, channels)
+		for (const auto& cs : channels)
 			WriteChannel (w, cs, info.Items_ [cs]);
 		w.writeEndElement ();
 		w.writeEndDocument ();
@@ -360,7 +360,7 @@ namespace Aggregator
 			titleFmt.setFontPointSize (baseFontSize * 1.20);
 			auto dateFmt = origCharFmt;
 			dateFmt.setFontItalic (true);
-			Q_FOREACH (Item_ptr item, items)
+			for (const auto& item : items)
 			{
 				cursor.setCharFormat (titleFmt);
 				cursor.insertText (item->Title_ + "\n");
@@ -510,13 +510,12 @@ namespace Aggregator
 	{
 		const auto& sb = Core::Instance ().MakeStorageBackendForThread ();
 
-		const auto& rows = Ui_.ChannelsTree_->selectionModel ()->selectedRows ();
 		bool unreadOnly = Ui_.UnreadOnly_->checkState () == Qt::Checked;
 		const auto& categories = Selector_->GetSelections ();
 
 		QMap<ChannelShort, QList<Item_ptr>> items2write;
 
-		Q_FOREACH (const auto& row, rows)
+		for (const auto& row : Ui_.ChannelsTree_->selectionModel ()->selectedRows ())
 		{
 			const auto& cs = Core::Instance ().GetRawChannelsModel ()->GetChannelForIndex (row);
 

@@ -68,9 +68,9 @@ namespace Aggregator
 			const auto& sb = Core::Instance ().MakeStorageBackendForThread ();
 			TaggedItems_ = QSet<IDType_t>::fromList (sb->GetItemsForTag (tags.takeFirst ()));
 
-			Q_FOREACH (const ITagsManager::tag_id& tag, tags)
+			for (const auto& tag : tags)
 			{
-				const QSet<IDType_t>& set = QSet<IDType_t>::fromList (sb->GetItemsForTag (tag));
+				const auto& set = QSet<IDType_t>::fromList (sb->GetItemsForTag (tag));
 				TaggedItems_.intersect (set);
 				if (TaggedItems_.isEmpty ())
 					TaggedItems_ << -1;
@@ -111,8 +111,7 @@ namespace Aggregator
 				!TaggedItems_.contains (ItemsWidget_->GetItemIDFromRow (sourceRow)))
 			return false;
 
-		return QSortFilterProxyModel::filterAcceptsRow (sourceRow,
-				sourceParent);
+		return QSortFilterProxyModel::filterAcceptsRow (sourceRow, sourceParent);
 	}
 
 	bool ItemsFilterModel::lessThan (const QModelIndex& left,

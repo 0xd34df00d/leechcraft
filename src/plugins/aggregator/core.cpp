@@ -434,13 +434,12 @@ namespace Aggregator
 
 		ids_t feeds;
 		StorageBackend_->GetFeedsIDs (feeds);
-		Q_FOREACH (IDType_t feedId, feeds)
+		for (const auto feedId : feeds)
 		{
 			channels_shorts_t channels;
 			StorageBackend_->GetChannels (channels, feedId);
-			std::for_each (channels.begin (), channels.end (),
-					[this] (ChannelShort chan)
-						{ ChannelsModel_->AddChannel (chan); });
+			for (const auto& chan : channels)
+				ChannelsModel_->AddChannel (chan);
 		}
 
 		for (int type = 0; type < PTMAX; ++type)
@@ -1005,22 +1004,22 @@ namespace Aggregator
 	{
 		ids_t ids;
 		StorageBackend_->GetFeedsIDs (ids);
-		Q_FOREACH (IDType_t id, ids)
+		for (const auto id : ids)
 			StorageBackend_->GetChannels (channels, id);
 	}
 
 	void Core::AddFeeds (const feeds_container_t& feeds,
 			const QString& tagsString)
 	{
-		QStringList tags = Proxy_->GetTagsManager ()->Split (tagsString);
+		auto tags = Proxy_->GetTagsManager ()->Split (tagsString);
+		tags.removeDuplicates ();
 
-		Q_FOREACH (Feed_ptr feed, feeds)
+		for (const auto feed : feeds)
 		{
-			Q_FOREACH (Channel_ptr channel, feed->Channels_)
+			for (const auto channel : feed->Channels_)
 			{
-				Q_FOREACH (QString tag, tags)
-					if (!channel->Tags_.contains (tag))
-						channel->Tags_ << tag;
+				channel->Tags_ += tags;
+				channel->Tags_.removeDuplicates ();
 
 				ChannelsModel_->AddChannel (channel->ToShort ());
 			}
@@ -1192,7 +1191,7 @@ namespace Aggregator
 	{
 		ids_t ids;
 		StorageBackend_->GetFeedsIDs (ids);
-		Q_FOREACH (IDType_t id, ids)
+		for (const auto id : ids)
 		{
 			try
 			{
@@ -1286,7 +1285,7 @@ namespace Aggregator
 		ids_t ids;
 		StorageBackend_->GetFeedsIDs (ids);
 		QDateTime current = QDateTime::currentDateTime ();
-		Q_FOREACH (IDType_t id, ids)
+		for (const auto id : ids)
 		{
 			int ut = 0;
 			try

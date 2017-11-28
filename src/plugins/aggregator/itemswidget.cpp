@@ -871,7 +871,7 @@ namespace Aggregator
 			}
 
 			QString peers;
-			Q_FOREACH (MRSSPeerLink pl, entry->PeerLinks_)
+			for (const auto& pl : entry->PeerLinks_)
 				peers += QString ("<li>Also available in <a href='%1'>P2P (%2)</a></li>")
 					.arg (pl.Link_)
 					.arg (pl.Type_);
@@ -919,7 +919,7 @@ namespace Aggregator
 				num = 3;
 
 			int cur = 1;
-			Q_FOREACH (MRSSThumbnail thumb, entry->Thumbnails_)
+			for (const auto& thumb : entry->Thumbnails_)
 			{
 				if (!thumb.Time_.isEmpty ())
 					result += tr ("<hr />Thumbnail at %1:<br />")
@@ -962,7 +962,7 @@ namespace Aggregator
 			result += "<br />";
 
 			QString scenes;
-			Q_FOREACH (MRSSScene sc, entry->Scenes_)
+			for (const auto sc : entry->Scenes_)
 			{
 				QString current;
 				if (!sc.Title_.isEmpty ())
@@ -1058,12 +1058,12 @@ namespace Aggregator
 					.arg (entry->RatingScheme_.mid (4));
 
 			QMap<QString, QString> comments;
-			Q_FOREACH (MRSSComment cm, entry->Comments_)
+			for (const auto& cm : entry->Comments_)
 				comments [cm.Type_] += QString ("<li>%1</li>")
 					.arg (cm.Comment_);
 
 			QStringList cmTypes = comments.keys ();
-			Q_FOREACH (QString type, cmTypes)
+			for (const auto& type : cmTypes)
 			{
 				result += QString ("<strong>%1:</strong>")
 					.arg (type);
@@ -1089,14 +1089,11 @@ namespace Aggregator
 					.arg (entry->CopyrightText_);
 
 			QString credits;
-			Q_FOREACH (MRSSCredit cr, entry->Credits_)
-			{
-				if (cr.Role_.isEmpty ())
-					continue;
-				credits += QString ("<li>%1: %2</li>")
-					.arg (cr.Role_)
-					.arg (cr.Who_);
-			}
+			for (const auto& cr : entry->Credits_)
+				if (!cr.Role_.isEmpty ())
+					credits += QString ("<li>%1: %2</li>")
+						.arg (cr.Role_)
+						.arg (cr.Who_);
 
 			if (!credits.isEmpty ())
 			{

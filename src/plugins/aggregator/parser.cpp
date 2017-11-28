@@ -493,9 +493,8 @@ namespace Aggregator
 				parents.prepend (parent);
 				parent = parent.parentNode ().toElement ();
 			}
-			Q_FOREACH (QDomElement p, parents)
+			for (const auto& p : parents)
 				result += CollectArbitraryLocatedData (p, mrssId);
-
 			return result;
 		}
 
