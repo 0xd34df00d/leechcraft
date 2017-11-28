@@ -480,9 +480,7 @@ namespace Aggregator
 					NotPersistent |
 					DoNotAnnounceEntity);
 
-		const auto& tagIds = Util::Map (tags,
-				[this] (const QString& tag) { return Proxy_->GetTagsManager ()->GetID (tag); });
-
+		const auto& tagIds = Proxy_->GetTagsManager ()->GetIDs (tags);
 		PendingJob pj =
 		{
 			PendingJob::RFeedAdded,
