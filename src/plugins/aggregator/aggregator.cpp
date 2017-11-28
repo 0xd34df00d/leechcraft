@@ -561,13 +561,10 @@ namespace Aggregator
 	QList<QModelIndex> Aggregator::GetRelevantIndexes () const
 	{
 		if (IsRepr ())
-		{
-			QList<QModelIndex> result;
-			result << Core::Instance ()
-					.GetJobHolderRepresentation ()->
-							mapToSource (Impl_->SelectedRepr_);
-			return result;
-		}
+			return
+			{
+				Core::Instance ().GetJobHolderRepresentation ()->mapToSource (Impl_->SelectedRepr_)
+			};
 
 		QList<QModelIndex> result;
 		for (auto index : Impl_->Ui_.Feeds_->selectionModel ()->selectedRows ())
