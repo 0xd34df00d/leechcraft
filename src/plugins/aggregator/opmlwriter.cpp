@@ -97,15 +97,18 @@ namespace Aggregator
 		}
 	}
 
-	QString TagGetter (const QDomElement& elem)
+	namespace
 	{
-		return elem.attribute ("text");
-	}
+		QString TagGetter (const QDomElement& elem)
+		{
+			return elem.attribute ("text");
+		}
 
-	void TagSetter (QDomElement& result, const QString& tag)
-	{
-		result.setAttribute ("text", tag);
-		result.setAttribute ("isOpen", "true");
+		void TagSetter (QDomElement& result, const QString& tag)
+		{
+			result.setAttribute ("text", tag);
+			result.setAttribute ("isOpen", "true");
+		}
 	}
 
 	void OPMLWriter::WriteBody (QDomElement& root,
