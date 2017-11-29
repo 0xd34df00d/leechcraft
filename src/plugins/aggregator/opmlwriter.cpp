@@ -127,8 +127,8 @@ namespace Aggregator
 			QDomElement inserter;
 			inserter = LeechCraft::Util::GetElementForTags (tags,
 					body, doc, "outline",
-					boost::function<QString (const QDomElement&)> (TagGetter),
-					boost::function<void (QDomElement&, const QString&)> (TagSetter));
+					&TagGetter,
+					&TagSetter);
 			QDomElement item = doc.createElement ("outline");
 			item.setAttribute ("title", i->Title_);
 			Feed_ptr feed = sb->GetFeed (i->FeedID_);
