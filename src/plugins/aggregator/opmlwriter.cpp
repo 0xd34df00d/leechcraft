@@ -28,7 +28,6 @@
  **********************************************************************/
 
 #include "opmlwriter.h"
-#include <boost/function.hpp>
 #include <QByteArray>
 #include <QStringList>
 #include <QDomDocument>
