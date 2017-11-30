@@ -72,6 +72,7 @@ namespace MusicZombie
 	PendingDisco::PendingDisco (Util::QueueManager *queue, const QString& artist, const QString& release,
 			const QStringList& hints, QNetworkAccessManager *nam, QObject *parent)
 	: QObject (parent)
+	, Artist_ (artist)
 	, ReleaseName_ (release.toLower ())
 	, Hints_ (Util::MapAs<QSet> (hints, &NormalizeRelease))
 	, Queue_ (queue)

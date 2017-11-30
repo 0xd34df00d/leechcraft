@@ -49,6 +49,7 @@ namespace MusicZombie
 	{
 		Q_OBJECT
 
+		const QString Artist_;
 		const QString ReleaseName_;
 		const QSet<QString> Hints_;
 
