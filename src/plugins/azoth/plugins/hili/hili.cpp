@@ -49,7 +49,7 @@ namespace HiLi
 	{
 		Translator_.reset (Util::InstallTranslator ("azoth_hili"));
 
-		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
+		XmlSettingsDialog_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"azothhilisettings.xml");
 
