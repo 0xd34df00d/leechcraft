@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QObject>
+#include <QSet>
 #include <QFutureInterface>
 #include <interfaces/media/idiscographyprovider.h>
 
@@ -49,7 +50,7 @@ namespace MusicZombie
 		Q_OBJECT
 
 		const QString ReleaseName_;
-		const QStringList Hints_;
+		const QSet<QString> Hints_;
 
 		Util::QueueManager *Queue_;
 
@@ -62,12 +63,11 @@ namespace MusicZombie
 				const QStringList&, QNetworkAccessManager*, QObject* = nullptr);
 
 		QFuture<Media::IDiscographyProvider::QueryResult_t> GetFuture ();
+	private:
+		void HandleData (const QByteArray&);
+		void HandleGotID (const QString&);
 	private slots:
-		void handleGotID (const QString&);
-		void handleIDError ();
-
 		void handleLookupFinished ();
-		void handleLookupError ();
 	};
 }
 }

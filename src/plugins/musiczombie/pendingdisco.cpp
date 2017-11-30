@@ -41,7 +41,12 @@
 #include <util/sll/util.h>
 #include <util/sll/prelude.h>
 #include <util/sll/domchildrenrange.h>
+#include <util/sll/urloperator.h>
+#include <util/sll/visitor.h>
+#include <util/sll/parsejson.h>
+#include <util/sll/qtutil.h>
 #include <util/threads/futures.h>
+#include <util/network/handlenetworkreply.h>
 #include "artistlookup.h"
 #include "util.h"
 
@@ -51,6 +56,11 @@ namespace MusicZombie
 {
 	namespace
 	{
+		QString NormalizeName (QString name)
+		{
+			return name.remove ('!');
+		}
+
 		QString NormalizeRelease (QString title)
 		{
 			return title
@@ -64,27 +74,34 @@ namespace MusicZombie
 			const QStringList& hints, QNetworkAccessManager *nam, QObject *parent)
 	: QObject (parent)
 	, ReleaseName_ (release.toLower ())
-	, Hints_ (hints)
+	, Hints_ (Util::MapAs<QSet> (hints, &NormalizeRelease))
 	, Queue_ (queue)
 	, NAM_ (nam)
 	{
 		Promise_.reportStarted ();
-		Queue_->Schedule ([this, artist, nam]
-			{
-				auto idLookup = new ArtistLookup (artist, nam, this);
-				connect (idLookup,
-						SIGNAL(gotID (QString)),
-						this,
-						SLOT (handleGotID (QString)));
-				connect (idLookup,
-						SIGNAL (replyError ()),
-						this,
-						SLOT (handleIDError ()));
-				connect (idLookup,
-						SIGNAL (networkError ()),
-						this,
-						SLOT (handleIDError ()));
-			}, this);
+		queue->Schedule ([this, artist, nam]
+				{
+					QUrl url { "https://musicbrainz.org/ws/2/release/" };
+					Util::UrlOperator { url }
+							("status", "official")
+							("fmt", "json")
+							("query", "artist:\"" + NormalizeName (artist) + "\"");
+
+					const auto& req = SetupRequest (QNetworkRequest { url });
+					Util::Sequence (this, Util::HandleReply (nam->get (req), this)) >>
+							[this] (const auto& either)
+							{
+								Util::Visit (either.AsVariant (),
+										[this] (const QByteArray& data) { HandleData (data); },
+										[this] (const auto&)
+										{
+											Util::ReportFutureResult (Promise_,
+													QueryResult_t::Left (tr ("Error getting artist MBID.")));
+											deleteLater ();
+										});
+							};
+				},
+				this);
 	}
 
 	QFuture<Media::IDiscographyProvider::QueryResult_t> PendingDisco::GetFuture ()
@@ -92,7 +109,56 @@ namespace MusicZombie
 		return Promise_.future ();
 	}
 
-	void PendingDisco::handleGotID (const QString& id)
+	void PendingDisco::HandleData (const QByteArray& data)
+	{
+		const auto& releases = Util::ParseJson (data, Q_FUNC_INFO).toMap () ["releases"].toList ();
+
+		QHash<QString, QSet<QString>> artist2releases;
+		for (const auto& releaseVar : releases)
+		{
+			const auto& release = releaseVar.toMap ();
+
+			const auto& title = NormalizeRelease (release ["title"].toString ());
+			for (const auto& artistVar : release ["artist-credit"].toList ())
+			{
+				const auto& id = artistVar.toMap () ["artist"].toMap () ["id"].toString ();
+				artist2releases [id] << title;
+			}
+		}
+
+		if (artist2releases.isEmpty ())
+		{
+			Util::ReportFutureResult (Promise_,
+					QueryResult_t::Left (tr ("No artists were found.")));
+			deleteLater ();
+			return;
+		}
+
+		const auto& xSizes = Util::Map (Util::Stlize (artist2releases),
+				[this] (auto&& pair)
+				{
+					pair.second.intersect (Hints_);
+					return QPair { pair.first, pair.second.size () };
+				});
+
+		const auto maxElem = std::max_element (xSizes.begin (), xSizes.end (), Util::ComparingBy (Util::Snd));
+
+		qDebug () << Q_FUNC_INFO
+				<< "intersections size:"
+				<< maxElem->second;
+
+		if (!maxElem->second)
+		{
+			Util::ReportFutureResult (Promise_,
+					QueryResult_t::Left (tr ("No relevant artists were found.")));
+			deleteLater ();
+			return;
+		}
+
+		HandleGotID (maxElem->first);
+	}
+
+	void PendingDisco::HandleGotID (const QString& id)
 	{
 		static const QString pref { "http://musicbrainz.org/ws/2/release?limit=100&inc=recordings+release-groups&status=official&artist=" };
 		const QUrl url { pref + id };
@@ -109,15 +175,6 @@ namespace MusicZombie
 						this,
 						SLOT (handleLookupError ()));
 			}, this);
-	}
-
-	void PendingDisco::handleIDError ()
-	{
-		qWarning () << Q_FUNC_INFO
-				<< "error getting MBID";
-
-		Util::ReportFutureResult (Promise_, QueryResult_t::Left (tr ("Error getting artist MBID.")));
-		deleteLater ();
 	}
 
 	namespace
@@ -240,20 +297,6 @@ namespace MusicZombie
 		std::sort (releases.begin (), releases.end (),
 				Util::ComparingBy (&Media::ReleaseInfo::Year_));
 		Util::ReportFutureResult (Promise_, QueryResult_t::Right (releases));
-	}
-
-	void PendingDisco::handleLookupError ()
-	{
-		auto reply = qobject_cast<QNetworkReply*> (sender ());
-		reply->deleteLater ();
-
-		qWarning () << Q_FUNC_INFO
-				<< "error looking stuff up"
-				<< reply->errorString ();
-		Util::ReportFutureResult (Promise_,
-				QueryResult_t::Left (tr ("Error performing artist lookup: %1.")
-						.arg (reply->errorString ())));
-		deleteLater ();
 	}
 }
 }
