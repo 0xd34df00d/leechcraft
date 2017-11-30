@@ -47,7 +47,7 @@ namespace HiLi
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-		Translator_.reset (Util::InstallTranslator ("azoth_hili"));
+		Util::InstallTranslator ("azoth_hili");
 
 		XmlSettingsDialog_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),

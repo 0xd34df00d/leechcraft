@@ -36,8 +36,6 @@
 #include <interfaces/ihavesettings.h>
 #include <interfaces/core/ihookproxy.h>
 
-class QTranslator;
-
 namespace LeechCraft
 {
 namespace Azoth
@@ -54,7 +52,6 @@ namespace HiLi
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.HiLi")
 
-		std::shared_ptr<QTranslator> Translator_;
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
 		QList<QRegExp> RegexpsCache_;
 	public:
