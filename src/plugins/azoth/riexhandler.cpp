@@ -58,7 +58,6 @@ namespace RIEX
 						}
 
 						if (item.Action_ == RIEXItem::ADelete &&
-								entry &&
 								!item.Groups_.isEmpty ())
 						{
 							const auto& origGroups = entry->Groups ();
