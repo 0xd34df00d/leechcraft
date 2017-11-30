@@ -47,7 +47,6 @@
 #include <util/sll/qtutil.h>
 #include <util/threads/futures.h>
 #include <util/network/handlenetworkreply.h>
-#include "artistlookup.h"
 #include "util.h"
 
 namespace LeechCraft

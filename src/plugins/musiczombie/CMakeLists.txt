@@ -29,7 +29,6 @@ include_directories (
 	)
 set (SRCS
 	musiczombie.cpp
-	artistlookup.cpp
 	pendingdisco.cpp
 	util.cpp
 	)
