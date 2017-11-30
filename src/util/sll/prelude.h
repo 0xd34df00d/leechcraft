@@ -188,7 +188,7 @@ namespace Util
 	}
 
 	template<typename Cont, typename F>
-	auto ConcatMap (Cont&& c, F&& f) -> decltype (Concat (Map (std::forward<Cont> (c), std::forward<F> (f))))
+	auto ConcatMap (Cont&& c, F&& f)
 	{
 		return Concat (Map (std::forward<Cont> (c), std::forward<F> (f)));
 	}
