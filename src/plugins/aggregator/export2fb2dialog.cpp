@@ -42,6 +42,7 @@
 #include <util/xpc/util.h>
 #include <util/tags/categoryselector.h>
 #include <util/sll/qtutil.h>
+#include <util/sll/prelude.h>
 #include "core.h"
 #include "channelsmodel.h"
 
@@ -477,21 +478,24 @@ namespace Aggregator
 		HasBeenTextModified_ = true;
 	}
 
+	namespace
+	{
+		QStringList CatsFromIndexes (const QItemSelection& selection)
+		{
+			auto result = Util::ConcatMap (selection.indexes (),
+					[] (const QModelIndex& index) { return Core::Instance ().GetCategories (index); });
+			result.removeDuplicates ();
+			return result;
+		}
+	}
+
 	void Export2FB2Dialog::handleChannelsSelectionChanged (const QItemSelection& selected,
 			const QItemSelection& deselected)
 	{
-		QStringList removedCategories;
-		Q_FOREACH (QModelIndex index, deselected.indexes ())
-			removedCategories << Core::Instance ().GetCategories (index);
-		removedCategories.removeDuplicates ();
-		Q_FOREACH (QString removed, removedCategories)
+		for (const auto& removed : CatsFromIndexes (deselected))
 			CurrentCategories_.removeAll (removed);
 
-		QStringList addedCategories;
-		Q_FOREACH (QModelIndex index, selected.indexes ())
-			addedCategories << Core::Instance ().GetCategories (index);
-		CurrentCategories_ << addedCategories;
-
+		CurrentCategories_ += CatsFromIndexes (selected);
 		CurrentCategories_.removeDuplicates ();
 
 		Selector_->setPossibleSelections (CurrentCategories_);
