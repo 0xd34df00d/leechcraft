@@ -33,6 +33,7 @@
 #include <QStringList>
 #include <QObject>
 #include <QtDebug>
+#include <util/sll/prelude.h>
 
 uint qHash (const QDomNode& node)
 {
@@ -97,14 +98,13 @@ namespace Aggregator
 
 	QString Parser::GetDescription (const QDomElement& parent) const
 	{
-		auto nodes = ToList (parent.elementsByTagNameNS (Content_, "encoded")) +
+		auto texts = ToList (parent.elementsByTagNameNS (Content_, "encoded")) +
 				ToList (parent.elementsByTagNameNS (ITunes_, "summary"));
 
-		QString max;
-		for (const auto& repr : nodes)
-			if (repr.size () > max.size ())
-				max = repr;
-		return max;
+		if (texts.isEmpty ())
+			return {};
+
+		return *std::max_element (texts.begin (), texts.end (), Util::ComparingBy (&QString::size));
 	}
 
 	void Parser::GetDescription (const QDomElement& parent,
