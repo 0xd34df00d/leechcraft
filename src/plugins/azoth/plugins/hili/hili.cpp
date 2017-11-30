@@ -108,8 +108,7 @@ namespace HiLi
 		if (msg->GetMessageType () != IMessage::Type::MUCMessage)
 			return;
 
-		bool isHighlight = false;
-		const QString& body = msg->GetBody ();
+		const auto& body = msg->GetBody ();
 		if (body.size () > 1024)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -118,14 +117,8 @@ namespace HiLi
 			return;
 		}
 
-		Q_FOREACH (const QRegExp& rx, RegexpsCache_)
-			if (body.contains (rx))
-			{
-				isHighlight = true;
-				break;
-			}
-
-		if (isHighlight)
+		if (std::any_of (RegexpsCache_.begin (), RegexpsCache_.end (),
+				[&body] (const QRegExp& rx) { return body.contains (rx); }))
 		{
 			proxy->CancelDefault ();
 			proxy->SetReturnValue (true);
