@@ -29,6 +29,7 @@
 
 #include "riexhandler.h"
 #include <QtDebug>
+#include <util/sll/unreachable.h>
 #include "interfaces/azoth/iaccount.h"
 #include "interfaces/azoth/iclentry.h"
 #include "acceptriexdialog.h"
@@ -47,31 +48,25 @@ namespace RIEX
 					[&clEntries] (const RIEXItem& item)
 					{
 						const auto entry = clEntries.value (item.ID_);
-						if (!entry &&
-							(item.Action_ == RIEXItem::AModify ||
-							 item.Action_ == RIEXItem::ADelete))
+
+						switch (item.Action_)
 						{
-							qWarning () << Q_FUNC_INFO
-									<< "skipping non-existent"
-									<< item.ID_;
-							return true;
+						case RIEXItem::AAdd:
+							return entry != nullptr;
+						case RIEXItem::ADelete:
+							if (item.Groups_.isEmpty ())
+								return false;
+							else
+							{
+								const auto& origGroups = entry->Groups ();
+								return std::any_of (item.Groups_.begin (), item.Groups_.end (),
+										[&origGroups] (const auto& group) { return origGroups.contains (group); });
+							}
+						case RIEXItem::AModify:
+							return !entry;
 						}
 
-						if (item.Action_ == RIEXItem::ADelete &&
-								!item.Groups_.isEmpty ())
-						{
-							const auto& origGroups = entry->Groups ();
-							const auto found = std::any_of (item.Groups_.begin (), item.Groups_.end (),
-									[&origGroups] (const auto& group) { return origGroups.contains (group); });
-
-							if (!found)
-								return true;
-						}
-
-						if (item.Action_ == RIEXItem::AAdd && entry)
-							return true;
-
-						return false;
+						Util::Unreachable ();
 					});
 
 			items.erase (end, items.end ());
