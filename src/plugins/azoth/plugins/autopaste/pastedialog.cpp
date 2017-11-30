@@ -38,7 +38,6 @@ namespace Autopaste
 {
 	PasteDialog::PasteDialog (QWidget *parent)
 	: QDialog (parent)
-	, Choice_ (Choice::Cancel)
 	{
 		Ui_.setupUi (this);
 

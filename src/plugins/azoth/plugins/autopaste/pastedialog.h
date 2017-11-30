@@ -54,7 +54,7 @@ namespace Autopaste
 			Cancel
 		};
 	private:
-		Choice Choice_;
+		Choice Choice_ = Choice::Cancel;
 	public:
 		PasteDialog (QWidget* = 0);
 
