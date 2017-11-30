@@ -31,6 +31,10 @@
 
 #include <QNetworkReply>
 #include <util/sll/slotclosure.h>
+#include <util/sll/either.h>
+#include <util/sll/overload.h>
+#include <util/sll/void.h>
+#include <util/threads/futures.h>
 
 namespace LeechCraft
 {
@@ -50,6 +54,40 @@ namespace Util
 			SIGNAL (finished ()),
 			context
 		};
+	}
+
+	template<typename Err = Util::Void>
+	auto HandleReply (QNetworkReply *reply, QObject *context)
+	{
+		using Result_t = Util::Either<Err, QByteArray>;
+		QFutureInterface<Result_t> promise;
+		promise.reportStarted ();
+
+		QObject::connect (reply,
+				&QNetworkReply::finished,
+				context,
+				[promise, reply] () mutable
+				{
+					reply->deleteLater ();
+					Util::ReportFutureResult (promise, Result_t::Right (reply->readAll ()));
+				});
+		QObject::connect (reply,
+				Util::Overload<QNetworkReply::NetworkError> (&QNetworkReply::error),
+				context,
+				[promise, reply] () mutable
+				{
+					reply->deleteLater ();
+					auto report = [&] (const Err& val) { Util::ReportFutureResult (promise, Result_t::Left (val)); };
+
+					if constexpr (std::is_same_v<Err, QString>)
+						report (reply->errorString ());
+					else if constexpr (std::is_same_v<Err, Util::Void>)
+						report ({});
+					else
+						static_assert (std::is_same_v<Err, struct Dummy>, "Unsupported error type");
+				});
+
+		return promise.future ();
 	}
 }
 }
