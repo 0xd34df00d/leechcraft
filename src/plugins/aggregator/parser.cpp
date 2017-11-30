@@ -63,10 +63,6 @@ namespace Aggregator
 	const QString Parser::MediaRSS_ = "http://search.yahoo.com/mrss/";
 	const QString Parser::Content_ = "http://purl.org/rss/1.0/modules/content/";
 
-	Parser::~Parser ()
-	{
-	}
-
 	channels_container_t Parser::ParseFeed (const QDomDocument& recent, const IDType_t& feedId) const
 	{
 		channels_container_t newes = Parse (recent, feedId);

@@ -42,7 +42,7 @@ namespace Aggregator
 	{
 		friend class MRSSParser;
 	public:
-		virtual ~Parser ();
+		virtual ~Parser () = default;
 		/** @brief Indicates whether parser could parse the document.
 			*
 			* @param[in] doc The document to parse.
