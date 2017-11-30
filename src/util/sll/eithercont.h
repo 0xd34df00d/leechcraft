@@ -102,7 +102,7 @@ namespace Util
 		 * @sa Right()
 		 */
 		template<typename... Args>
-		typename Left_f::result_type Left (Args&&... args) const
+		auto Left (Args&&... args) const
 		{
 			return Left_ (std::forward<Args> (args)...);
 		}
@@ -121,7 +121,7 @@ namespace Util
 		 * @sa Left()
 		 */
 		template<typename... Args>
-		typename Right_f::result_type Right (Args&&... args) const
+		auto Right (Args&&... args) const
 		{
 			return Right_ (std::forward<Args> (args)...);
 		}
