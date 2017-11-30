@@ -86,11 +86,11 @@ namespace Aggregator
 
 	namespace
 	{
-		QList<QDomNode> ToList (const QDomNodeList& dumbList)
+		QList<QString> ToList (const QDomNodeList& dumbList)
 		{
-			QList<QDomNode> nodes;
+			QList<QString> nodes;
 			for (int i = 0, size = dumbList.size (); i < size; ++i)
-				nodes << dumbList.at (i);
+				nodes << dumbList.at (i).toElement ().text ();
 			return nodes;
 		}
 	};
@@ -101,14 +101,9 @@ namespace Aggregator
 				ToList (parent.elementsByTagNameNS (ITunes_, "summary"));
 
 		QString max;
-
-		Q_FOREACH (const QDomNode& cand, nodes)
-		{
-			QString repr = cand.toElement ().text ();
+		for (const auto& repr : nodes)
 			if (repr.size () > max.size ())
 				max = repr;
-		}
-
 		return max;
 	}
 
