@@ -131,7 +131,7 @@ namespace LMP
 
 		auto pm = Core::Instance ().GetProxy ()->GetPluginsManager ();
 		for (auto prov : pm->GetAllCastableTo<Media::IDiscographyProvider*> ())
-			Util::Sequence (this, prov->GetDiscography (CurrentArtist_)) >>
+			Util::Sequence (this, prov->GetDiscography (CurrentArtist_, {})) >>
 					[this, artist] (const auto& result)
 					{
 						Util::Visit (result.AsVariant (),

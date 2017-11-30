@@ -76,7 +76,7 @@ namespace MusicZombie
 
 		QString GetServiceName () const override;
 
-		QFuture<QueryResult_t> GetDiscography (const QString&) override;
+		QFuture<QueryResult_t> GetDiscography (const QString&, const QStringList&) override;
 		QFuture<QueryResult_t> GetReleaseInfo (const QString&, const QString&) override;
 
 #ifdef WITH_CHROMAPRINT

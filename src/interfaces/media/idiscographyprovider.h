@@ -156,7 +156,7 @@ namespace Media
 		 * @param[in] artist The artist name.
 		 * @return The pending discography search handle.
 		 */
-		virtual QFuture<QueryResult_t> GetDiscography (const QString& artist) = 0;
+		virtual QFuture<QueryResult_t> GetDiscography (const QString& artist, const QStringList& hints) = 0;
 
 		/** @brief Fetches contents of the given release by the artist.
 		 *

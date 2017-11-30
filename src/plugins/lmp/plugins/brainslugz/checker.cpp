@@ -171,7 +171,7 @@ namespace BrainSlugz
 		}
 
 		Current_ = Artists_.takeFirst ();
-		Util::Sequence (this, Provider_->GetDiscography (Current_.Name_)) >>
+		Util::Sequence (this, Provider_->GetDiscography (Current_.Name_, {})) >>
 				[=] (const auto& result)
 				{
 					Util::Visit (result.AsVariant (),
