@@ -113,7 +113,7 @@ namespace MusicZombie
 	{
 		const auto& releases = Util::ParseJson (data, Q_FUNC_INFO).toMap () ["releases"].toList ();
 
-		QHash<QString, QSet<QString>> artist2releases;
+		Artist2Releases_t artist2releases;
 		for (const auto& releaseVar : releases)
 		{
 			const auto& release = releaseVar.toMap ();
@@ -134,6 +134,26 @@ namespace MusicZombie
 			return;
 		}
 
+		if (Hints_.isEmpty ())
+			HandleDataNoHints (artist2releases);
+		else
+			HandleDataWithHints (artist2releases);
+
+	}
+
+	void PendingDisco::HandleDataNoHints (const Artist2Releases_t& artist2releases)
+	{
+		const auto maxElem = std::max_element (artist2releases.begin (), artist2releases.end (),
+				Util::ComparingBy (&QSet<QString>::size));
+		qDebug () << Q_FUNC_INFO
+				<< "max size:"
+				<< *maxElem;
+
+		HandleGotID (maxElem.key ());
+	}
+
+	void PendingDisco::HandleDataWithHints (Artist2Releases_t& artist2releases)
+	{
 		const auto& xSizes = Util::Map (Util::Stlize (artist2releases),
 				[this] (auto&& pair)
 				{
