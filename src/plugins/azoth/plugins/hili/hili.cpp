@@ -135,13 +135,13 @@ namespace HiLi
 	void Plugin::handleRegexpsChanged ()
 	{
 		RegexpsCache_.clear ();
-		const QStringList& strings = XmlSettingsManager::Instance ()
-				.property ("HighlightRegexps").toStringList ();
-		Q_FOREACH (QString string, strings)
+		const auto& strings = XmlSettingsManager::Instance ().property ("HighlightRegexps").toStringList ();
+		for (auto string : strings)
 		{
 			string = string.trimmed ();
 			if (string.isEmpty ())
 				continue;
+
 			string.prepend (".*");
 			string.append (".*");
 			RegexpsCache_ << QRegExp (string, Qt::CaseInsensitive, QRegExp::RegExp2);
