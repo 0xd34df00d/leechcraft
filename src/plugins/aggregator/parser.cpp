@@ -86,20 +86,19 @@ namespace Aggregator
 
 	namespace
 	{
-		void AppendToList (QList<QDomNode>& nodes, const QDomNodeList& dumbList)
+		QList<QDomNode> ToList (const QDomNodeList& dumbList)
 		{
+			QList<QDomNode> nodes;
 			for (int i = 0, size = dumbList.size (); i < size; ++i)
 				nodes << dumbList.at (i);
+			return nodes;
 		}
 	};
 
 	QString Parser::GetDescription (const QDomElement& parent) const
 	{
-		QList<QDomNode> nodes;
-		AppendToList (nodes,
-				parent.elementsByTagNameNS (Content_, "encoded"));
-		AppendToList (nodes,
-				parent.elementsByTagNameNS (ITunes_, "summary"));
+		auto nodes = ToList (parent.elementsByTagNameNS (Content_, "encoded")) +
+				ToList (parent.elementsByTagNameNS (ITunes_, "summary"));
 
 		QString max;
 
