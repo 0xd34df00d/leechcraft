@@ -43,36 +43,39 @@ namespace RIEX
 	{
 		void FilterRIEXItems (QList<RIEXItem>& items, const QHash<QString, ICLEntry*>& clEntries)
 		{
-			Q_FOREACH (const RIEXItem& item, items)
-			{
-				ICLEntry *entry = clEntries.value (item.ID_);
-				if (!entry &&
-						(item.Action_ == RIEXItem::AModify ||
-						item.Action_ == RIEXItem::ADelete))
-				{
-					qWarning () << Q_FUNC_INFO
-							<< "skipping non-existent"
-							<< item.ID_;
-					items.removeAll (item);
-					continue;
-				}
+			const auto end = std::remove_if (items.begin (), items.end (),
+					[&clEntries] (const RIEXItem& item)
+					{
+						const auto entry = clEntries.value (item.ID_);
+						if (!entry &&
+							(item.Action_ == RIEXItem::AModify ||
+							 item.Action_ == RIEXItem::ADelete))
+						{
+							qWarning () << Q_FUNC_INFO
+									<< "skipping non-existent"
+									<< item.ID_;
+							return true;
+						}
 
-				if (item.Action_ == RIEXItem::ADelete &&
-						entry &&
-						!item.Groups_.isEmpty ())
-				{
-					const auto& origGroups = entry->Groups ();
-					const auto found = std::any_of (item.Groups_.begin (), item.Groups_.end (),
-							[&origGroups] (const auto& group) { return origGroups.contains (group); });
+						if (item.Action_ == RIEXItem::ADelete &&
+								entry &&
+								!item.Groups_.isEmpty ())
+						{
+							const auto& origGroups = entry->Groups ();
+							const auto found = std::any_of (item.Groups_.begin (), item.Groups_.end (),
+									[&origGroups] (const auto& group) { return origGroups.contains (group); });
 
-					if (!found)
-						items.removeAll (item);
-				}
+							if (!found)
+								return true;
+						}
 
-				if (item.Action_ == RIEXItem::AAdd &&
-						entry)
-					items.removeAll (item);
-			}
+						if (item.Action_ == RIEXItem::AAdd && entry)
+							return true;
+
+						return false;
+					});
+
+			items.erase (end, items.end ());
 		}
 
 		void AddRIEX (const RIEXItem& item, const QHash<QString, ICLEntry*> entries, IAccount *acc)
