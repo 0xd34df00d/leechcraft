@@ -49,6 +49,17 @@ namespace LeechCraft
 {
 namespace MusicZombie
 {
+	namespace
+	{
+		QString NormalizeRelease (QString title)
+		{
+			return title
+					.remove (' ')
+					.remove ('.')
+					.toLower ();
+		}
+	}
+
 	PendingDisco::PendingDisco (Util::QueueManager *queue, const QString& artist, const QString& release,
 			const QStringList& hints, QNetworkAccessManager *nam, QObject *parent)
 	: QObject (parent)
