@@ -67,7 +67,9 @@ namespace MusicZombie
 
 		QFuture<Media::IDiscographyProvider::QueryResult_t> GetFuture ();
 	private:
-		void HandleData (const QByteArray&);
+		void RequestArtist (bool);
+
+		void HandleData (const QByteArray&, bool);
 		void HandleDataNoHints (const Artist2Releases_t&);
 		void HandleDataWithHints (Artist2Releases_t&);
 

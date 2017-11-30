@@ -79,20 +79,34 @@ namespace MusicZombie
 	, NAM_ (nam)
 	{
 		Promise_.reportStarted ();
-		queue->Schedule ([this, artist, nam]
+		RequestArtist (true);
+	}
+
+	QFuture<Media::IDiscographyProvider::QueryResult_t> PendingDisco::GetFuture ()
+	{
+		return Promise_.future ();
+	}
+
+	void PendingDisco::RequestArtist (bool strictMatch)
+	{
+		Queue_->Schedule ([this, strictMatch]
 				{
+					const auto& artistQuery = strictMatch ?
+							("artist:\"" + NormalizeName (Artist_) + "\"") :
+							("artist:" + NormalizeName (Artist_));
+
 					QUrl url { "https://musicbrainz.org/ws/2/release/" };
 					Util::UrlOperator { url }
 							("status", "official")
 							("fmt", "json")
-							("query", "artist:\"" + NormalizeName (artist) + "\"");
+							("query", artistQuery);
 
 					const auto& req = SetupRequest (QNetworkRequest { url });
-					Util::Sequence (this, Util::HandleReply (nam->get (req), this)) >>
-							[this] (const auto& either)
+					Util::Sequence (this, Util::HandleReply (NAM_->get (req), this)) >>
+							[this, strictMatch] (const auto& either)
 							{
 								Util::Visit (either.AsVariant (),
-										[this] (const QByteArray& data) { HandleData (data); },
+										[this, strictMatch] (const QByteArray& data) { HandleData (data, strictMatch); },
 										[this] (const auto&)
 										{
 											Util::ReportFutureResult (Promise_,
@@ -104,12 +118,7 @@ namespace MusicZombie
 				this);
 	}
 
-	QFuture<Media::IDiscographyProvider::QueryResult_t> PendingDisco::GetFuture ()
-	{
-		return Promise_.future ();
-	}
-
-	void PendingDisco::HandleData (const QByteArray& data)
+	void PendingDisco::HandleData (const QByteArray& data, bool wasStrict)
 	{
 		const auto& releases = Util::ParseJson (data, Q_FUNC_INFO).toMap () ["releases"].toList ();
 
@@ -128,9 +137,14 @@ namespace MusicZombie
 
 		if (artist2releases.isEmpty ())
 		{
-			Util::ReportFutureResult (Promise_,
-					QueryResult_t::Left (tr ("No artists were found.")));
-			deleteLater ();
+			if (wasStrict)
+				RequestArtist (false);
+			else
+			{
+				Util::ReportFutureResult (Promise_, QueryResult_t::Left (tr ("No artists were found.")));
+				deleteLater ();
+			}
+
 			return;
 		}
 
