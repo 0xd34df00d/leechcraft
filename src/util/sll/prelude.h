@@ -138,25 +138,39 @@ namespace Util
 
 		template<typename T>
 		constexpr bool IsNotBrokenSFINAE_v = IsNotBrokenSFINAE<T> {};
+
+		template<template<typename...> class Fallback, bool ForceFallback, typename Container, typename F>
+		auto MapImpl (Container&& c, F f)
+		{
+			using FRet_t = std::decay_t<decltype (std::invoke (f, *c.begin ()))>;
+			static_assert (!std::is_same<void, FRet_t> {}, "The function shall not return void.");
+
+			using DecayContainer_t = std::decay_t<Container>;
+
+			using ResultCont_t = std::conditional_t<
+					!ForceFallback &&
+						detail::IsSimpleContainer<DecayContainer_t> () &&
+						!detail::IsNotBrokenSFINAE_v<DecayContainer_t>,
+					typename detail::Replace<DecayContainer_t, FRet_t>::Type,
+					Fallback<FRet_t>>;
+
+			WrapType_t<ResultCont_t> cont;
+			for (auto&& t : c)
+				detail::Append (cont, std::invoke (f, t));
+			return cont;
+		}
 	}
 
 	template<typename Container, typename F>
 	auto Map (Container&& c, F f)
 	{
-		using FRet_t = std::decay_t<decltype (std::invoke (f, *c.begin ()))>;
-		static_assert (!std::is_same<void, FRet_t> {}, "The function shall not return void.");
+		return detail::MapImpl<QList, false> (std::forward<Container> (c), std::forward<F> (f));
+	}
 
-		using DecayContainer_t = std::decay_t<Container>;
-
-		using ResultCont_t = std::conditional_t<
-				detail::IsSimpleContainer<DecayContainer_t> () && !detail::IsNotBrokenSFINAE_v<DecayContainer_t>,
-				typename detail::Replace<DecayContainer_t, FRet_t>::Type,
-				QList<FRet_t>>;
-
-		WrapType_t<ResultCont_t> cont;
-		for (auto&& t : c)
-			detail::Append (cont, std::invoke (f, t));
-		return cont;
+	template<template<typename...> class Fallback, typename Container, typename F>
+	auto MapAs (Container&& c, F&& f)
+	{
+		return detail::MapImpl<Fallback, true> (std::forward<Container> (c), std::forward<F> (f));
 	}
 
 	template<typename T, template<typename U> class Container, typename F>
