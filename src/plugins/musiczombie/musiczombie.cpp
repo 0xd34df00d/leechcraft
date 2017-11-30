@@ -89,13 +89,15 @@ namespace MusicZombie
 
 	QFuture<Plugin::QueryResult_t> Plugin::GetDiscography (const QString& artist, const QStringList& hints)
 	{
-		const auto fetcher = new PendingDisco (Queue_, artist, {}, Proxy_->GetNetworkAccessManager (), this);
+		const auto fetcher = new PendingDisco (Queue_, artist, {},
+				hints, Proxy_->GetNetworkAccessManager (), this);
 		return fetcher->GetFuture ();
 	}
 
 	QFuture<Plugin::QueryResult_t> Plugin::GetReleaseInfo (const QString& artist, const QString& release)
 	{
-		const auto fetcher = new PendingDisco (Queue_, artist, release, Proxy_->GetNetworkAccessManager (), this);
+		const auto fetcher = new PendingDisco (Queue_, artist, release,
+				{ release }, Proxy_->GetNetworkAccessManager (), this);
 		return fetcher->GetFuture ();
 	}
 

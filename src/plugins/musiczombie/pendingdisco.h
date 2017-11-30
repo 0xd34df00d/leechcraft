@@ -49,6 +49,7 @@ namespace MusicZombie
 		Q_OBJECT
 
 		const QString ReleaseName_;
+		const QStringList Hints_;
 
 		Util::QueueManager *Queue_;
 
@@ -57,7 +58,8 @@ namespace MusicZombie
 		using QueryResult_t = Media::IDiscographyProvider::QueryResult_t;
 		QFutureInterface<QueryResult_t> Promise_;
 	public:
-		PendingDisco (Util::QueueManager*, const QString&, const QString&, QNetworkAccessManager*, QObject* = nullptr);
+		PendingDisco (Util::QueueManager*, const QString&, const QString&,
+				const QStringList&, QNetworkAccessManager*, QObject* = nullptr);
 
 		QFuture<Media::IDiscographyProvider::QueryResult_t> GetFuture ();
 	private slots:

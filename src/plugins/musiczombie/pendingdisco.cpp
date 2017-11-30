@@ -49,10 +49,11 @@ namespace LeechCraft
 {
 namespace MusicZombie
 {
-	PendingDisco::PendingDisco (Util::QueueManager *queue, const QString& artist,
-			const QString& release, QNetworkAccessManager *nam, QObject *parent)
+	PendingDisco::PendingDisco (Util::QueueManager *queue, const QString& artist, const QString& release,
+			const QStringList& hints, QNetworkAccessManager *nam, QObject *parent)
 	: QObject (parent)
 	, ReleaseName_ (release.toLower ())
+	, Hints_ (hints)
 	, Queue_ (queue)
 	, NAM_ (nam)
 	{
