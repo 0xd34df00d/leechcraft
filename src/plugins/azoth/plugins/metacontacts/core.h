@@ -47,9 +47,9 @@ namespace Metacontacts
 	{
 		Q_OBJECT
 
-		bool SaveEntriesScheduled_;
+		bool SaveEntriesScheduled_ = false;
 
-		MetaAccount *Account_;
+		MetaAccount *Account_ = nullptr;
 		QList<MetaEntry*> Entries_;
 
 		QHash<QString, MetaEntry*> UnavailRealEntries_;

@@ -46,8 +46,6 @@ namespace Azoth
 namespace Metacontacts
 {
 	Core::Core ()
-	: SaveEntriesScheduled_ (false)
-	, Account_ (0)
 	{
 		qRegisterMetaType<QList<QObject*>> ("QList<QObject*>");
 	}
