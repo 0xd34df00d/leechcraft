@@ -76,5 +76,21 @@ namespace Util
 			return from;
 		}
 	};
+
+	template<typename To>
+	struct Upcaster;
+
+	template<typename To>
+	struct Upcaster<To*>
+	{
+		template<typename From, typename = std::enable_if_t<std::is_base_of_v<To, std::decay_t<From>>>>
+		To* operator() (From *from) const
+		{
+			return from;
+		}
+	};
+
+	template<typename To>
+	constexpr auto Upcast = Upcaster<To> {};
 }
 }
