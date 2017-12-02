@@ -184,7 +184,7 @@ namespace Metacontacts
 		const auto& allowed = Util::Filter (Entries_,
 				[real] (MetaEntry *entry) { return !entry->GetRealEntries ().contains (real->GetEntryID ()); });
 
-		AddToMetacontactsDialog dia (real, Entries_);
+		AddToMetacontactsDialog dia (real, allowed);
 		if (dia.exec () != QDialog::Accepted)
 			return;
 
