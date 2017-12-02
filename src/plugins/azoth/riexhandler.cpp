@@ -82,13 +82,8 @@ namespace RIEX
 
 			ICLEntry *entry = entries [item.ID_];
 
-			bool allGroups = true;
-			for (const QString& group : item.Groups_)
-				if (!entry->Groups ().contains (group))
-				{
-					allGroups = false;
-					break;
-				}
+			const auto allGroups = std::all_of (item.Groups_.begin (), item.Groups_.end (),
+					[entry] (const QString& group) { return entry->Groups ().contains (group); });
 
 			if (!allGroups)
 			{
