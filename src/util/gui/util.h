@@ -186,6 +186,8 @@ namespace Util
 			double alpha = 0.5,
 			const QList<QPalette::ColorRole>& roles = { QPalette::ColorRole::Text, QPalette::ColorRole::WindowText });
 
+	UTIL_GUI_API QString FormatName (const QString& name);
+
 	template<typename T>
 	void Save2MimeData (QMimeData *mimeData, const QString& name, const T& t)
 	{

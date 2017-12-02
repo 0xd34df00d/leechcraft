@@ -159,5 +159,10 @@ namespace Util
 			palette.setColor (role, TintColors (palette.color (role), color, alpha));
 		widget->setPalette (palette);
 	}
+
+	QString FormatName (const QString& name)
+	{
+		return "<em>" + name + "</em>";
+	}
 }
 }
