@@ -254,7 +254,7 @@ namespace Metacontacts
 	void Core::RemoveEntry (MetaEntry *entry)
 	{
 		Entries_.removeAll (entry);
-		emit removedCLItems (QObjectList () << entry);
+		emit removedCLItems ({ entry });
 
 		HandleEntriesRemoved (entry->GetAvailEntryObjs (), true);
 
