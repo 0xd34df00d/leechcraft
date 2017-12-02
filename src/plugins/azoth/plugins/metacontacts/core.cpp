@@ -35,6 +35,7 @@
 #include <QInputDialog>
 #include <QtDebug>
 #include <util/sll/prelude.h>
+#include <util/sll/delayedexecutor.h>
 #include <util/gui/util.h>
 #include <interfaces/azoth/imucentry.h>
 #include "metaaccount.h"
@@ -292,11 +293,7 @@ namespace Metacontacts
 	void Core::AddRealToMeta (MetaEntry *existingMeta, ICLEntry *real)
 	{
 		existingMeta->AddRealObject (real);
-		QMetaObject::invokeMethod (this,
-				"removedCLItems",
-				Qt::QueuedConnection,
-				Q_ARG (QList<QObject*>, { real->GetQObject () }));
-
+		Util::ExecuteLater ([this, real] { emit removedCLItems ({ real->GetQObject () }); });
 		ScheduleSaveEntries ();
 	}
 
