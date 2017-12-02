@@ -280,17 +280,10 @@ namespace Metacontacts
 	{
 		Q_FOREACH (QObject *entryObj, entries)
 		{
-			ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
-
+			const auto entry = qobject_cast<ICLEntry*> (entryObj);
 			AvailRealEntries_.remove (entry->GetEntryID ());
-
 			if (readd)
-			{
-				const auto accObj = entry->GetParentAccount ()->GetQObject ();
-				QMetaObject::invokeMethod (accObj,
-						"gotCLItems",
-						Q_ARG (QList<QObject*>, { entryObj }));
-			}
+				entry->GetParentAccount ()->gotCLItems ({ entryObj });
 		}
 
 		ScheduleSaveEntries ();
