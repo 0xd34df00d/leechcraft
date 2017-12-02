@@ -186,6 +186,17 @@ namespace Util
 			double alpha = 0.5,
 			const QList<QPalette::ColorRole>& roles = { QPalette::ColorRole::Text, QPalette::ColorRole::WindowText });
 
+	/** @brief HTML-formats the \em name to let the user know it is not a part of
+	 * the fixed dialog text.
+	 *
+	 * This function is useful to format an account name, a link title and
+	 * similar entities in contexts like a dialog, a label or a tooltip. Using
+	 * this function ensures this formatting is done in an uniform style across
+	 * the whole GUI.
+	 *
+	 * @param[in] name The source string.
+	 * @return HTML-formatted \em name.
+	 */
 	UTIL_GUI_API QString FormatName (const QString& name);
 
 	template<typename T>
