@@ -66,6 +66,7 @@ namespace MusicZombie
 					.remove (QRegExp { "\\([^)]*\\)" })
 					.remove (' ')
 					.remove ('.')
+					.remove (':')
 					.toLower ();
 		}
 	}
