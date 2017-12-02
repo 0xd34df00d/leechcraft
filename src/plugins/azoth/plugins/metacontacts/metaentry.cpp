@@ -409,11 +409,7 @@ namespace Metacontacts
 
 		Messages_ << message;
 		if (shouldSort)
-			std::stable_sort (Messages_.begin (), Messages_.end (),
-					[] (IMessage *left, IMessage *right)
-					{
-						return left->GetDateTime () < right->GetDateTime ();
-					});
+			std::stable_sort (Messages_.begin (), Messages_.end (), Util::ComparingBy (&IMessage::GetDateTime));
 
 		emit gotMessage (message);
 	}
