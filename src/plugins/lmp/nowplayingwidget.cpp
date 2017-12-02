@@ -97,7 +97,7 @@ namespace LMP
 			return;
 
 		if (std::any_of (PossibleLyrics_.begin (), PossibleLyrics_.end (),
-				Util::EqualityBy (&Media::LyricsResultItem::Lyrics_)))
+				[&item] (const auto& ourItem) { return ourItem.Lyrics_ == item.Lyrics_; }))
 			return;
 
 		if (Ui_.LyricsBrowser_->toPlainText ().isEmpty ())
