@@ -97,8 +97,8 @@ namespace LMP
 		if (item.Lyrics_.simplified ().isEmpty ())
 			return;
 
-		if (std::find_if (PossibleLyrics_.begin (), PossibleLyrics_.end (),
-				Util::EqualityBy (&Media::LyricsResultItem::Lyrics_)) != PossibleLyrics_.end ())
+		if (std::any_of (PossibleLyrics_.begin (), PossibleLyrics_.end (),
+				Util::EqualityBy (&Media::LyricsResultItem::Lyrics_)))
 			return;
 
 		if (Ui_.LyricsBrowser_->toPlainText ().isEmpty ())
