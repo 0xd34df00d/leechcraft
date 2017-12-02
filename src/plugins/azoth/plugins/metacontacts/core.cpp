@@ -34,6 +34,7 @@
 #include <QUuid>
 #include <QInputDialog>
 #include <QtDebug>
+#include <util/sll/prelude.h>
 #include <interfaces/azoth/imucentry.h>
 #include "metaaccount.h"
 #include "metaentry.h"
@@ -180,10 +181,8 @@ namespace Metacontacts
 			return;
 		}
 
-		QList<MetaEntry*> allowed = Entries_;
-		Q_FOREACH (MetaEntry *entry, allowed)
-			if (entry->GetRealEntries ().contains (real->GetEntryID ()))
-				allowed.removeAll (entry);
+		const auto& allowed = Util::Filter (Entries_,
+				[real] (MetaEntry *entry) { return !entry->GetRealEntries ().contains (real->GetEntryID ()); });
 
 		AddToMetacontactsDialog dia (real, Entries_);
 		if (dia.exec () != QDialog::Accepted)
