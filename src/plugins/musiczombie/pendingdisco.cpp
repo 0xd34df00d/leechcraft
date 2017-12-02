@@ -181,15 +181,10 @@ namespace MusicZombie
 				<< "intersections size:"
 				<< maxElem->second;
 
-		if (!maxElem->second)
-		{
-			Util::ReportFutureResult (Promise_,
-					QueryResult_t::Left (tr ("No relevant artists were found.")));
-			deleteLater ();
-			return;
-		}
-
-		HandleGotID (maxElem->first);
+		if (maxElem->second)
+			HandleGotID (maxElem->first);
+		else
+			HandleDataNoHints (artist2releases);
 	}
 
 	void PendingDisco::HandleGotID (const QString& id)
