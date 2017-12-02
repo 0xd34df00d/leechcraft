@@ -35,6 +35,7 @@
 #include <QInputDialog>
 #include <QtDebug>
 #include <util/sll/prelude.h>
+#include <util/gui/util.h>
 #include <interfaces/azoth/imucentry.h>
 #include "metaaccount.h"
 #include "metaentry.h"
@@ -235,8 +236,8 @@ namespace Metacontacts
 		const QString& name = QInputDialog::getText (0,
 				"LeechCraft",
 				tr ("Enter the name of the new metacontact uniting %1 and %2:")
-					.arg (source->GetEntryName ())
-					.arg (target->GetEntryName ()),
+					.arg (Util::FormatName (source->GetEntryName ()))
+					.arg (Util::FormatName (target->GetEntryName ())),
 				QLineEdit::Normal,
 				source->GetEntryName ());
 		if (name.isEmpty ())
