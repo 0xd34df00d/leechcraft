@@ -34,6 +34,7 @@
 #include <QUuid>
 #include <QInputDialog>
 #include <QtDebug>
+#include <util/sll/functional.h>
 #include <util/sll/prelude.h>
 #include <util/sll/delayedexecutor.h>
 #include <util/gui/util.h>
@@ -137,10 +138,7 @@ namespace Metacontacts
 
 	QList<QObject*> Core::GetEntries () const
 	{
-		QList<QObject*> result;
-		Q_FOREACH (MetaEntry *entry, Entries_)
-			result << entry;
-		return result;
+		return Util::Map (Entries_, Util::Upcast<QObject*>);
 	}
 
 	bool Core::HandleRealEntryAddBegin (QObject *entryObj)

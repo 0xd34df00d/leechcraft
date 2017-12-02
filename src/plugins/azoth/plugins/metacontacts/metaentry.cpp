@@ -35,6 +35,7 @@
 #include <QAction>
 #include <QtDebug>
 #include <util/sll/qtutil.h>
+#include <util/sll/prelude.h>
 #include <util/util.h>
 #include "metaaccount.h"
 #include "metamessage.h"
@@ -68,10 +69,9 @@ namespace Metacontacts
 
 	QStringList MetaEntry::GetRealEntries () const
 	{
-		QStringList result = UnavailableRealEntries_;
-		Q_FOREACH (QObject *entryObj, AvailableRealEntries_)
-			result << qobject_cast<ICLEntry*> (entryObj)->GetEntryID ();
-		return result;
+		return UnavailableRealEntries_ +
+				Util::Map (AvailableRealEntries_,
+						[] (QObject *entryObj) { return qobject_cast<ICLEntry*> (entryObj)->GetEntryID (); });
 	}
 
 	void MetaEntry::SetRealEntries (const QStringList& ids)
@@ -221,9 +221,8 @@ namespace Metacontacts
 
 	QList<QAction*> MetaEntry::GetActions () const
 	{
-		QList<QAction*> result;
-		Q_FOREACH (QObject *entryObj, AvailableRealEntries_)
-			result << qobject_cast<ICLEntry*> (entryObj)->GetActions ();
+		auto result = Util::ConcatMap (AvailableRealEntries_,
+				[] (QObject *entryObj) { return qobject_cast<ICLEntry*> (entryObj)->GetActions (); });
 
 		if (!result.isEmpty ())
 			result << ActionMCSep_;
@@ -367,11 +366,8 @@ namespace Metacontacts
 		if (newList == AvailableRealEntries_)
 			return;
 
-		QList<QObject*> removedContacts;
-
-		Q_FOREACH (QObject *obj, AvailableRealEntries_)
-			if (!newList.contains (obj))
-				removedContacts << obj;
+		const auto removedContacts = Util::Filter (AvailableRealEntries_,
+				[&newList] (QObject *obj) { return !newList.contains (obj); });
 
 		AvailableRealEntries_ = newList;
 
