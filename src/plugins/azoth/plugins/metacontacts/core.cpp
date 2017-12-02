@@ -127,7 +127,7 @@ namespace Metacontacts
 			entry->SetRealEntries (reals);
 			Entries_ << entry;
 
-			Q_FOREACH (const QString& id, reals)
+			for (const auto& id : reals)
 				UnavailRealEntries_ [id] = entry;
 		}
 		settings.endArray ();
@@ -221,9 +221,9 @@ namespace Metacontacts
 		{
 			if (const auto sourceME = qobject_cast<MetaEntry*> (sourceObj))
 			{
-				const QObjectList& reals = sourceME->GetAvailEntryObjs ();
+				const auto& reals = sourceME->GetAvailEntryObjs ();
 				RemoveEntry (sourceME);
-				Q_FOREACH (QObject *real, reals)
+				for (const auto real : reals)
 					AddRealToMeta (targetME, qobject_cast<ICLEntry*> (real));
 			}
 			else
@@ -277,7 +277,7 @@ namespace Metacontacts
 
 	void Core::HandleEntriesRemoved (const QList<QObject*>& entries, bool readd)
 	{
-		Q_FOREACH (QObject *entryObj, entries)
+		for (const auto entryObj : entries)
 		{
 			const auto entry = qobject_cast<ICLEntry*> (entryObj);
 			AvailRealEntries_.remove (entry->GetEntryID ());
@@ -341,7 +341,7 @@ namespace Metacontacts
 		settings.remove ("Entries");
 		settings.beginWriteArray ("Entries");
 		int i = 0;
-		Q_FOREACH (MetaEntry *entry, Entries_)
+		for (const auto entry : Entries_)
 		{
 			settings.setArrayIndex (i++);
 			settings.setValue ("ID", entry->GetEntryID ());

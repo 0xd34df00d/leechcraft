@@ -49,9 +49,8 @@ namespace Metacontacts
 		
 		Ui_.NewMetaname_->setText (entry->GetEntryName ());
 		
-		Q_FOREACH (MetaEntry *entry, metas)
-			Ui_.ExistingMeta_->addItem (entry->GetEntryName (),
-					QVariant::fromValue<QObject*> (entry));
+		for (const auto entry : metas)
+			Ui_.ExistingMeta_->addItem (entry->GetEntryName (), QVariant::fromValue<QObject*> (entry));
 	}
 	
 	MetaEntry* AddToMetacontactsDialog::GetSelectedMeta () const

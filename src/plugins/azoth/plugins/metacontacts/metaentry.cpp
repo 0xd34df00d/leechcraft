@@ -371,7 +371,7 @@ namespace Metacontacts
 
 		AvailableRealEntries_ = newList;
 
-		Q_FOREACH (QObject *entryObj, removedContacts)
+		for (const auto entryObj : removedContacts)
 			PerformRemoval (entryObj);
 
 		Core::Instance ().HandleEntriesRemoved (removedContacts, readdRemoved);
@@ -432,15 +432,14 @@ namespace Metacontacts
 		if (!variants.contains (QString ()))
 			variants.prepend (QString ());
 
-		Q_FOREACH (const QString& var, variants)
-			Variant2RealVariant_ [entry->GetEntryName () + '/' + var] =
-					qMakePair (obj, var);
+		for (const auto& var : variants)
+			Variant2RealVariant_ [entry->GetEntryName () + '/' + var] = QPair { obj, var };
 
 		emit availableVariantsChanged (Variants ());
 
-		Q_FOREACH (const QString& var, variants)
+		for (const auto& var : variants)
 		{
-			const QString& str = entry->GetEntryName () + '/' + var;
+			const auto& str = entry->GetEntryName () + '/' + var;
 			emit statusChanged (GetStatus (str), str);
 		}
 	}
