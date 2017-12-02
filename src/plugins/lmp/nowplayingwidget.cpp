@@ -83,8 +83,7 @@ namespace LMP
 		{
 			auto col = Core::Instance ().GetLocalCollection ();
 			auto pos = std::remove_if (infos.begin (), infos.end (),
-					[col] (decltype (infos.front ()) item)
-						{ return col->FindArtist (item.Artist_.Name_) >= 0; });
+					[col] (const auto& item) { return col->FindArtist (item.Artist_.Name_) >= 0; });
 			infos.erase (pos, infos.end ());
 		}
 
