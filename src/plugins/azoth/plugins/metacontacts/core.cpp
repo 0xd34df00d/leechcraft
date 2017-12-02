@@ -217,22 +217,17 @@ namespace Metacontacts
 				qobject_cast<IMUCEntry*> (targetObj))
 			return false;
 
-		MetaEntry *targetME = qobject_cast<MetaEntry*> (targetObj);
-		if (targetME)
+		if (const auto targetME = qobject_cast<MetaEntry*> (targetObj))
 		{
-			MetaEntry *sourceME = qobject_cast<MetaEntry*> (sourceObj);
-
-			if (!sourceME)
-				AddRealToMeta (targetME, source);
-			else
+			if (const auto sourceME = qobject_cast<MetaEntry*> (sourceObj))
 			{
 				const QObjectList& reals = sourceME->GetAvailEntryObjs ();
-
 				RemoveEntry (sourceME);
-
 				Q_FOREACH (QObject *real, reals)
 					AddRealToMeta (targetME, qobject_cast<ICLEntry*> (real));
 			}
+			else
+				AddRealToMeta (targetME, source);
 
 			return true;
 		}
