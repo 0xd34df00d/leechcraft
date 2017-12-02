@@ -305,7 +305,7 @@ namespace Azoth
 		{
 			IsShown_ = shown;
 		}
-	protected:
+
 		/** @brief This signal should be emitted when account is renamed.
 		 *
 		 * This signal should be emitted even after an explicit call to
