@@ -423,11 +423,12 @@ namespace Metacontacts
 	void MetaEntry::handleRealVariantsChanged (QStringList variants, QObject *passedObj)
 	{
 		QObject *obj = passedObj ? passedObj : sender ();
-		Q_FOREACH (const QString& var, Variant2RealVariant_.keys ())
+		for (auto it = Variant2RealVariant_.begin (); it != Variant2RealVariant_.end ();)
 		{
-			const QPair<QObject*, QString>& pair = Variant2RealVariant_ [var];
-			if (pair.first == obj)
-				Variant2RealVariant_.remove (var);
+			if (it.value ().first == obj)
+				it = Variant2RealVariant_.erase (it);
+			else
+				++it;
 		}
 
 		ICLEntry *entry = qobject_cast<ICLEntry*> (obj);
