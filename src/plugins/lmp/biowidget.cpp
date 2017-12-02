@@ -97,12 +97,16 @@ namespace LMP
 				SIGNAL (gotArtistImage (QString, QUrl)));
 	}
 
-	void BioWidget::SetCurrentArtist (const QString& artist)
+	void BioWidget::SetCurrentArtist (const QString& artist, const QStringList& hints)
 	{
-		if (artist.isEmpty () || artist == CurrentArtist_)
+		if (artist.isEmpty ())
 			return;
 
-		CurrentArtist_ = artist;
+		if (artist == Current_.Artist_ && hints == Current_.Hints_)
+			return;
+
+		Current_ = { artist, hints };
+
 		requestBiography ();
 	}
 
@@ -119,10 +123,10 @@ namespace LMP
 	void BioWidget::requestBiography ()
 	{
 		const int idx = Ui_.Provider_->currentIndex ();
-		if (idx < 0 || CurrentArtist_.isEmpty ())
+		if (idx < 0 || Current_.Artist_.isEmpty ())
 			return;
 
-		Manager_->Request (Providers_ [idx], CurrentArtist_);
+		Manager_->Request (Providers_ [idx], Current_.Artist_, Current_.Hints_);
 	}
 }
 }

@@ -133,7 +133,7 @@ namespace LMP
 
 		auto artist = Ui_.ArtistNameEdit_->text ().trimmed ();
 
-		BioMgr_->Request (provs.first (), artist);
+		BioMgr_->Request (provs.first (), artist, {});
 		SimilarMgr_->DefaultRequest (artist);
 
 		emit tabRecoverDataChanged ();

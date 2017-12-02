@@ -69,7 +69,7 @@ namespace LMP
 		BioViewManager (const ICoreProxy_ptr&, QQuickWidget*, QObject* = nullptr);
 
 		void InitWithSource ();
-		void Request (Media::IArtistBioFetcher*, const QString&);
+		void Request (Media::IArtistBioFetcher*, const QString&, const QStringList&);
 	private:
 		QStandardItem* FindAlbumItem (const QString&) const;
 

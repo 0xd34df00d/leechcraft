@@ -56,11 +56,16 @@ namespace LMP
 		BioViewManager *Manager_;
 
 		QList<Media::IArtistBioFetcher*> Providers_;
-		QString CurrentArtist_;
+
+		struct Current
+		{
+			QString Artist_;
+			QStringList Hints_;
+		} Current_;
 	public:
 		BioWidget (QWidget* = 0);
 
-		void SetCurrentArtist (const QString&);
+		void SetCurrentArtist (const QString&, const QStringList&);
 	private slots:
 		void saveLastUsedProv ();
 		void requestBiography ();

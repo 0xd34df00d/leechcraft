@@ -116,7 +116,7 @@ namespace LMP
 		new StdArtistActionsManager (Proxy_, View_, this);
 	}
 
-	void BioViewManager::Request (Media::IArtistBioFetcher *fetcher, const QString& artist)
+	void BioViewManager::Request (Media::IArtistBioFetcher *fetcher, const QString& artist, const QStringList& releases)
 	{
 		DiscoModel_->clear ();
 		BioPropProxy_->SetBio ({});
@@ -131,7 +131,7 @@ namespace LMP
 
 		auto pm = Core::Instance ().GetProxy ()->GetPluginsManager ();
 		for (auto prov : pm->GetAllCastableTo<Media::IDiscographyProvider*> ())
-			Util::Sequence (this, prov->GetDiscography (CurrentArtist_, {})) >>
+			Util::Sequence (this, prov->GetDiscography (CurrentArtist_, releases)) >>
 					[this, artist] (const auto& result)
 					{
 						Util::Visit (result.AsVariant (),

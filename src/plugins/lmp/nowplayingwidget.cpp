@@ -114,7 +114,7 @@ namespace LMP
 
 		CurrentInfo_ = info;
 
-		BioWidget_->SetCurrentArtist (info.Artist_);
+		BioWidget_->SetCurrentArtist (info.Artist_, { info.Album_ });
 
 		Ui_.AudioProps_->SetProps (info);
 
