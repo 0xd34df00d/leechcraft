@@ -232,7 +232,7 @@ namespace Snails
 			for (auto& str : plainSplit)
 			{
 				str = str.trimmed ();
-				if (str.at (0) != '>')
+				if (!str.isEmpty () && str.at (0) != '>')
 					str.prepend (' ');
 				str.prepend ('>');
 			}
