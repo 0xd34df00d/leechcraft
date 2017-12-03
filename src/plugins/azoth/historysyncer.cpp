@@ -145,11 +145,10 @@ namespace Azoth
 
 		const auto ihsh = qobject_cast<IHaveServerHistory*> (acc->GetQObject ());
 		Util::Sequence (this, ihsh->FetchServerHistory (from)) >>
-				[this, acc] (const auto& res)
+				Util::Visitor
 				{
-					Util::Visit (res.AsVariant (),
-							[] (const QString& err) { qWarning () << Q_FUNC_INFO << err; },
-							[this, acc] (const auto& map) { this->AppendItems (acc, map); });		// workaround gcc crappiness
+					[] (const QString& err) { qWarning () << Q_FUNC_INFO << err; },
+					[this, acc] (const auto& map) { this->AppendItems (acc, map); }		// workaround gcc crappiness
 				};
 	}
 
