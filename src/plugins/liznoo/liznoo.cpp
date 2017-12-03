@@ -42,6 +42,7 @@
 #include <util/sll/either.h>
 #include <util/sll/visitor.h>
 #include <util/sll/qtutil.h>
+#include <util/sll/unreachable.h>
 #include <util/threads/futures.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
@@ -292,6 +293,21 @@ namespace Liznoo
 
 	namespace
 	{
+		QString GetReasonString (PlatformObjects::ChangeStateFailed::Reason reason)
+		{
+			switch (reason)
+			{
+			case PlatformObjects::ChangeStateFailed::Reason::Unavailable:
+				return Plugin::tr ("No platform backend is available.");
+			case PlatformObjects::ChangeStateFailed::Reason::PlatformFailure:
+				return Plugin::tr ("Platform backend failed.");
+			case PlatformObjects::ChangeStateFailed::Reason::Other:
+				return Plugin::tr ("Unknown reason.");
+			}
+
+			Util::Unreachable ();
+		}
+
 		void HandleChangeStateResult (IEntityManager *iem,
 				const QFuture<PlatformObjects::ChangeStateResult_t>& future)
 		{
@@ -301,20 +317,7 @@ namespace Liznoo
 						[] (PlatformObjects::ChangeStateSucceeded) {},
 						[iem] (PlatformObjects::ChangeStateFailed f)
 						{
-							QString msg;
-							switch (f.Reason_)
-							{
-							case PlatformObjects::ChangeStateFailed::Reason::Unavailable:
-								msg = Plugin::tr ("No platform backend is available.");
-								break;
-							case PlatformObjects::ChangeStateFailed::Reason::PlatformFailure:
-								msg = Plugin::tr ("Platform backend failed.");
-								break;
-							case PlatformObjects::ChangeStateFailed::Reason::Other:
-								msg = Plugin::tr ("Unknown reason.");
-								break;
-							}
-
+							auto msg = GetReasonString (f.Reason_);
 							if (!f.ReasonString_.isEmpty ())
 								msg += " " + f.ReasonString_;
 
