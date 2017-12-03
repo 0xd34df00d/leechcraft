@@ -148,7 +148,7 @@ namespace Azoth
 				Util::Visitor
 				{
 					[] (const QString& err) { qWarning () << Q_FUNC_INFO << err; },
-					[this, acc] (const auto& map) { this->AppendItems (acc, map); }		// workaround gcc crappiness
+					[this, acc] (const auto& map) { AppendItems (acc, map); }
 				};
 	}
 
