@@ -34,6 +34,7 @@
 #include "functor.h"
 #include "applicative.h"
 #include "monad.h"
+#include "visitor.h"
 
 namespace LeechCraft
 {
@@ -202,6 +203,12 @@ namespace Util
 				result.second.push_back (either.GetRight ());
 
 		return result;
+	}
+
+	template<typename Left, typename Right, typename... Args>
+	auto Visit (const Either<Left, Right>& either, Args&&... args)
+	{
+		return Visit (either.AsVariant (), std::forward<Args> (args)...);
 	}
 
 	template<typename L, typename R>
