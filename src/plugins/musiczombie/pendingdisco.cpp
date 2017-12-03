@@ -111,7 +111,7 @@ namespace MusicZombie
 								[this] (const auto&)
 								{
 									Util::ReportFutureResult (Promise_,
-											QueryResult_t::Left (tr ("Error getting artist MBID.")));
+											QueryResult_t::Left (tr ("Error getting candidate releases list.")));
 									deleteLater ();
 								}
 							};
