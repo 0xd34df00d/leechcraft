@@ -277,18 +277,12 @@ namespace Liznoo
 		dialog->setAttribute (Qt::WA_DeleteOnClose);
 		Battery2Dialog_ [id] = dialog;
 		connect (dialog,
-				SIGNAL (destroyed (QObject*)),
+				&QObject::destroyed,
 				this,
-				SLOT (handleBatteryDialogDestroyed ()));
+				[this, id] { Battery2Dialog_.remove (id); });
 		dialog->show ();
 		dialog->activateWindow ();
 		dialog->raise ();
-	}
-
-	void Plugin::handleBatteryDialogDestroyed ()
-	{
-		auto dia = static_cast<BatteryHistoryDialog*> (sender ());
-		Battery2Dialog_.remove (Battery2Dialog_.key (dia));
 	}
 
 	namespace
@@ -320,7 +314,6 @@ namespace Liznoo
 							auto msg = GetReasonString (f.Reason_);
 							if (!f.ReasonString_.isEmpty ())
 								msg += " " + f.ReasonString_;
-
 							const auto& entity = Util::MakeNotification ("Liznoo", msg, PCritical_);
 							iem->HandleEntity (entity);
 						}
