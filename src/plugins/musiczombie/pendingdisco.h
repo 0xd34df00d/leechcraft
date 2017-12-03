@@ -74,8 +74,8 @@ namespace MusicZombie
 		void HandleDataWithHints (Artist2Releases_t&);
 
 		void HandleGotID (const QString&);
-	private slots:
-		void handleLookupFinished ();
+
+		void HandleLookupFinished (const QByteArray&);
 	};
 }
 }

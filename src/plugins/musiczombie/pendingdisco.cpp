@@ -194,17 +194,21 @@ namespace MusicZombie
 		const QUrl url { pref + id };
 
 		Queue_->Schedule ([this, url]
-			{
-				auto reply = NAM_->get (SetupRequest (QNetworkRequest { url }));
-				connect (reply,
-						SIGNAL (finished ()),
-						this,
-						SLOT (handleLookupFinished ()));
-				connect (reply,
-						SIGNAL (error (QNetworkReply::NetworkError)),
-						this,
-						SLOT (handleLookupError ()));
-			}, this);
+				{
+					const auto reply = NAM_->get (SetupRequest (QNetworkRequest { url }));
+					Util::Sequence (this, Util::HandleReply (reply, this)) >>
+							Util::Visitor
+							{
+								[this] (const QByteArray& data) { HandleLookupFinished (data); },
+								[this] (const auto&)
+								{
+									Util::ReportFutureResult (Promise_,
+											QueryResult_t::Left (tr ("Error getting artist releases list.")));
+									deleteLater ();
+								}
+							};
+				},
+				this);
 	}
 
 	namespace
@@ -260,13 +264,10 @@ namespace MusicZombie
 		}
 	}
 
-	void PendingDisco::handleLookupFinished ()
+	void PendingDisco::HandleLookupFinished (const QByteArray& data)
 	{
-		auto reply = qobject_cast<QNetworkReply*> (sender ());
-		reply->deleteLater ();
 		deleteLater ();
 
-		const auto& data = reply->readAll ();
 		QDomDocument doc;
 		if (!doc.setContent (data))
 		{
