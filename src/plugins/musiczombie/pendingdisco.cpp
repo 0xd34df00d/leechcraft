@@ -105,16 +105,15 @@ namespace MusicZombie
 
 					const auto& req = SetupRequest (QNetworkRequest { url });
 					Util::Sequence (this, Util::HandleReply (NAM_->get (req), this)) >>
-							[this, strictMatch] (const auto& either)
+							Util::Visitor
 							{
-								Util::Visit (either.AsVariant (),
-										[this, strictMatch] (const QByteArray& data) { HandleData (data, strictMatch); },
-										[this] (const auto&)
-										{
-											Util::ReportFutureResult (Promise_,
-													QueryResult_t::Left (tr ("Error getting artist MBID.")));
-											deleteLater ();
-										});
+								[this, strictMatch] (const QByteArray& data) { HandleData (data, strictMatch); },
+								[this] (const auto&)
+								{
+									Util::ReportFutureResult (Promise_,
+											QueryResult_t::Left (tr ("Error getting artist MBID.")));
+									deleteLater ();
+								}
 							};
 				},
 				this);
