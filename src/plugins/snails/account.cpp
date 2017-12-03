@@ -162,6 +162,7 @@ namespace Snails
 
 	QString Account::GetName () const
 	{
+		QMutexLocker l (GetMutex ());
 		return AccName_;
 	}
 
@@ -688,6 +689,8 @@ namespace Snails
 
 	QByteArray Account::GetStoreID (Account::Direction dir) const
 	{
+		QMutexLocker l (GetMutex ());
+
 		QByteArray result = GetID ();
 		if (dir == Direction::Out)
 			result += "/out";
