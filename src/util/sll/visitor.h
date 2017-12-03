@@ -63,6 +63,25 @@ namespace Util
 		return boost::apply_visitor (detail::Visitor<R_t, Args...> { std::forward<Args> (args)... }, v);
 	}
 
+	template<typename... Args>
+	class Visitor
+	{
+		std::tuple<Args...> Args_;
+	public:
+		Visitor (Args&&... args)
+		: Args_ { std::forward<Args> (args)... }
+		{
+		}
+
+		template<typename T>
+		decltype (auto) operator() (const T& var)
+		{
+			const auto runner = [&var] (auto&&... args) -> decltype (auto)
+					{ return Visit (var, std::forward<decltype (args)> (args)...); };
+			return std::apply (runner, Args_);
+		}
+	};
+
 	template<typename T, typename... Args>
 	auto InvokeOn (T&& t, Args&&... args)
 	{
