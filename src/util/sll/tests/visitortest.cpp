@@ -98,6 +98,7 @@ namespace Util
 					[NC] (float) { return false; });
 		QCOMPARE (res, true);
 	}
+#undef NC
 
 	void VisitorTest::testLValueRef ()
 	{
