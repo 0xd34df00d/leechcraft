@@ -98,5 +98,14 @@ namespace Util
 					[NC] (float) { return false; });
 		QCOMPARE (res, true);
 	}
+
+	void VisitorTest::testLValueRef ()
+	{
+		Variant_t v { 'a' };
+		int ref = 0;
+		auto& res = Visit (v, [&ref] (auto) -> int& { return ref; });
+		res = 10;
+		QCOMPARE (ref, 10);
+	}
 }
 }
