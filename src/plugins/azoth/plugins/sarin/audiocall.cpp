@@ -124,7 +124,6 @@ namespace Sarin
 										<< "error accepting the call:"
 										<< Util::Visit (err, [] (auto&& e) { return e.what (); });
 								emit stateChanged (SFinished);
-								return;
 							});
 				};
 	}
