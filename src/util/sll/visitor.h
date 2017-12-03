@@ -37,28 +37,15 @@ namespace Util
 {
 	namespace detail
 	{
-		template<typename Head, typename... Tail>
-		struct VisitorBase : std::decay_t<Head>, VisitorBase<Tail...>
+		template<typename... Bases>
+		struct VisitorBase : std::decay_t<Bases>...
 		{
-			using std::decay_t<Head>::operator();
-			using VisitorBase<Tail...>::operator();
-
-			VisitorBase (Head&& head, Tail&&... tail)
-			: std::decay_t<Head> { std::forward<Head> (head) }
-			, VisitorBase<Tail...> { std::forward<Tail> (tail)... }
+			VisitorBase (Bases&&... bases)
+			: std::decay_t<Bases> { std::forward<Bases> (bases) }...
 			{
 			}
-		};
 
-		template<typename Head>
-		struct VisitorBase<Head> : std::decay_t<Head>
-		{
-			using std::decay_t<Head>::operator();
-
-			VisitorBase (Head&& head)
-			: std::decay_t<Head> { std::forward<Head> (head) }
-			{
-			}
+			using std::decay_t<Bases>::operator()...;
 		};
 
 		template<typename R, typename... Args>
