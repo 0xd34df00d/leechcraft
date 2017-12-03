@@ -49,7 +49,8 @@ namespace Util
 		};
 
 		template<typename R, typename... Args>
-		struct Visitor : boost::static_visitor<R>, VisitorBase<Args...>
+		struct Visitor : boost::static_visitor<R>
+					   , VisitorBase<Args...>
 		{
 			using VisitorBase<Args...>::VisitorBase;
 		};
