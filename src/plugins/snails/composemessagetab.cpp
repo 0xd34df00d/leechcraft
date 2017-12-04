@@ -543,9 +543,12 @@ namespace Snails
 		attAct->setIcon (Util::ExtensionsData::Instance ().GetMimeIcon (mime));
 
 		connect (attAct,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleRemoveAttachment ()));
+				&QAction::triggered,
+				[attAct, this]
+				{
+					attAct->deleteLater ();
+					AttachmentsMenu_->removeAction (attAct);
+				});
 
 		const auto& acts = AttachmentsMenu_->actions ();
 		AttachmentsMenu_->insertAction (acts.at (acts.size () - 2), attAct);
@@ -722,13 +725,6 @@ namespace Snails
 				tr ("Enter optional attachment description (you may leave it blank):"));
 
 		AppendAttachment (path, descr);
-	}
-
-	void ComposeMessageTab::handleRemoveAttachment ()
-	{
-		QAction *act = qobject_cast<QAction*> (sender ());
-		act->deleteLater ();
-		AttachmentsMenu_->removeAction (act);
 	}
 
 	void ComposeMessageTab::handleEditorChanged (IEditorWidget *newEditor, IEditorWidget *previous)

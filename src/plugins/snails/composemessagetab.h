@@ -107,7 +107,6 @@ namespace Snails
 	private slots:
 		void handleSend ();
 		void handleAddAttachment ();
-		void handleRemoveAttachment ();
 
 		void handleEditorChanged (IEditorWidget*, IEditorWidget*);
 	signals:
