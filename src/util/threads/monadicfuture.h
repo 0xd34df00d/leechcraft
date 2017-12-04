@@ -45,10 +45,10 @@ namespace Util
 		using FmapResult_t = QFuture<std::decay_t<std::result_of_t<F (T)>>>;
 
 		template<typename F>
-		static FmapResult_t<F> Apply (const QFuture<T>& t, const F& f)
+		static FmapResult_t<F> Apply (const QFuture<T>& fut, const F& func)
 		{
-			return Sequence (nullptr, t) >>
-					[f] (const T& t) { return MakeReadyFuture (f (t)); };
+			return Sequence (nullptr, fut) >>
+					[func] (const T& val) { return MakeReadyFuture (func (val)); };
 		}
 	};
 }
