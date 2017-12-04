@@ -34,6 +34,7 @@
 #include <QInputDialog>
 #include <QMutex>
 #include <QStandardItemModel>
+#include <QTimer>
 #include <util/xpc/util.h>
 #include <util/xpc/passutils.h>
 #include <util/sll/slotclosure.h>
@@ -631,60 +632,66 @@ namespace Snails
 		NoopNotifier_->SetData (KeepAliveInterval_);
 	}
 
-	QString Account::BuildInURL ()
+	QFuture<QString> Account::BuildInURL ()
 	{
-		QMutexLocker l (GetMutex ());
+		using Util::operator*;
+		return GetPassword (Direction::In) *
+				[this] (const QString& pass)
+				{
+					QMutexLocker l (GetMutex ());
 
-		QString result { UseSSL_ ? "imaps://" : "imap://" };
-		result += Login_;
-		result += ":";
-		result.replace ('@', "%40");
+					QString result { UseSSL_ ? "imaps://" : "imap://" };
+					result += Login_;
+					result += ":";
+					result.replace ('@', "%40");
+					result += pass + '@';
+					result += InHost_;
+					qDebug () << Q_FUNC_INFO << result;
 
-		QString pass;
-		getPassword (&pass);
-
-		result += pass + '@';
-
-		result += InHost_;
-
-		qDebug () << Q_FUNC_INFO << result;
-
-		return result;
+					return result;
+				};
 	}
 
-	QString Account::BuildOutURL ()
+	QFuture<QString> Account::BuildOutURL ()
 	{
+		using Util::operator*;
 		QMutexLocker l (GetMutex ());
 
 		if (OutType_ == OutType::Sendmail)
-			return "sendmail://localhost";
+			return Util::MakeReadyFuture (QString { "sendmail://localhost" });
 
-		QString result = OutSecurity_ == SecurityType::SSL ? "smtps://" : "smtp://";
+		QString result { OutSecurity_ == SecurityType::SSL ? "smtps://" : "smtp://" };
 
-		if (SMTPNeedsAuth_)
+		if (!SMTPNeedsAuth_)
+			return Util::MakeReadyFuture (result + OutHost_);
+
+		QFuture<QString> passFuture;
+		if (OutLogin_.isEmpty ())
 		{
-			QString pass;
-			if (OutLogin_.isEmpty ())
-			{
-				result += Login_;
-				getPassword (&pass);
-			}
-			else
-			{
-				result += OutLogin_;
-				getPassword (&pass, Direction::Out);
-			}
-			result += ":" + pass;
-
-			result.replace ('@', "%40");
-			result += '@';
+			result += Login_;
+			passFuture = GetPassword (Direction::In);
 		}
+		else
+		{
+			result += OutLogin_;
+			passFuture = GetPassword (Direction::Out);
+		}
+		auto outHost = OutHost_;
 
-		result += OutHost_;
+		return passFuture *
+				[result, outHost] (const QString& pass)
+				{
+					auto full = result + ":" + pass;
 
-		qDebug () << Q_FUNC_INFO << result;
+					full.replace ('@', "%40");
+					full += '@';
 
-		return result;
+					full += outHost;
+
+					qDebug () << Q_FUNC_INFO << full;
+
+					return full;
+				};
 	}
 
 	QByteArray Account::GetStoreID (Account::Direction dir) const
@@ -721,22 +728,20 @@ namespace Snails
 		FoldersModel_->SetFolderCounts (folder, unreadCount, totalCount);
 	}
 
-	void Account::buildInURL (QString *res)
+	QFuture<QString> Account::GetPassword (Direction dir)
 	{
-		*res = BuildInURL ();
-	}
-
-	void Account::buildOutURL (QString *res)
-	{
-		*res = BuildOutURL ();
-	}
-
-	void Account::getPassword (QString *outPass, Direction dir)
-	{
-		*outPass = Util::GetPassword (GetStoreID (dir),
-				tr ("Enter password for account %1:")
-					.arg (GetName ()),
-				Core::Instance ().GetProxy ());
+		QFutureInterface<QString> promise;
+		promise.reportStarted ();
+		QTimer::singleShot (0, this,
+				[this, dir, promise] () mutable
+				{
+					Util::ReportFutureResult (promise,
+							Util::GetPassword (GetStoreID (dir),
+									tr ("Enter password for account %1:")
+										.arg (GetName ()),
+									Core::Instance ().GetProxy ()));
+				});
+		return promise.future ();
 	}
 
 	void Account::HandleMsgHeaders (const QList<Message_ptr>& messages, const QStringList& folder)

@@ -37,6 +37,7 @@
 #include <QFile>
 #include <QtDebug>
 #include <QTimer>
+#include <QEventLoop>
 #include <QCryptographicHash>
 #include <vmime/security/defaultAuthenticator.hpp>
 #include <vmime/net/transport.hpp>
@@ -74,6 +75,24 @@ namespace Snails
 {
 	namespace
 	{
+		template<typename T>
+		auto WaitForFuture (const QFuture<T>& future)
+		{
+			QFutureWatcher<QString> watcher;
+			QEventLoop loop;
+
+			QObject::connect (&watcher,
+					&QFutureWatcher<QString>::finished,
+					&loop,
+					&QEventLoop::quit);
+
+			watcher.setFuture (future);
+
+			loop.exec ();
+
+			return future.result ();
+		}
+
 		class VMimeAuth : public vmime::security::defaultAuthenticator
 		{
 			Account::Direction Dir_;
@@ -113,14 +132,7 @@ namespace Snails
 
 		const vmime::string VMimeAuth::getPassword () const
 		{
-			QString pass;
-
-			QMetaObject::invokeMethod (Acc_,
-					"getPassword",
-					Qt::BlockingQueuedConnection,
-					Q_ARG (QString*, &pass));
-
-			return pass.toUtf8 ().constData ();
+			return WaitForFuture (Acc_->GetPassword (Account::Direction::In)).toStdString ();
 		}
 	}
 
@@ -166,12 +178,7 @@ namespace Snails
 		if (CachedStore_)
 			return CachedStore_;
 
-		QString url;
-
-		QMetaObject::invokeMethod (A_,
-				"buildInURL",
-				Qt::BlockingQueuedConnection,
-				Q_ARG (QString*, &url));
+		auto url = WaitForFuture (A_->BuildInURL ());
 
 		auto st = Session_->getStore (vmime::utility::url (url.toUtf8 ().constData ()));
 		st->setTracerFactory (vmime::make_shared<TracerFactory> (ThreadName_, A_->GetLogger ()));
@@ -203,12 +210,7 @@ namespace Snails
 
 	vmime::shared_ptr<vmime::net::transport> AccountThreadWorker::MakeTransport ()
 	{
-		QString url;
-
-		QMetaObject::invokeMethod (A_,
-				"buildOutURL",
-				Qt::BlockingQueuedConnection,
-				Q_ARG (QString*, &url));
+		auto url = WaitForFuture (A_->BuildOutURL ());
 
 		QString username;
 		QString password;

@@ -201,14 +201,16 @@ namespace Snails
 		QString GetOutUsername () const;
 
 		ProgressListener_ptr MakeProgressListener (const QString&) const;
+
+		QFuture<QString> BuildInURL ();
+		QFuture<QString> BuildOutURL ();
+		QFuture<QString> GetPassword (Direction);
 	private:
 		QFuture<SynchronizeResult_t> SynchronizeImpl (const QList<QStringList>&, const QByteArray&, TaskPriority);
 		QMutex* GetMutex () const;
 
 		void UpdateNoopInterval ();
 
-		QString BuildInURL ();
-		QString BuildOutURL ();
 		QByteArray GetStoreID (Direction) const;
 
 		void DeleteFromFolder (const QList<QByteArray>& ids, const QStringList& folder);
@@ -225,10 +227,6 @@ namespace Snails
 
 		void HandleGotFolders (const QList<Folder>&);
 	private slots:
-		void buildInURL (QString*);
-		void buildOutURL (QString*);
-		void getPassword (QString*, Direction = Direction::In);
-
 		void handleFoldersUpdated ();
 	signals:
 		void accountChanged ();
