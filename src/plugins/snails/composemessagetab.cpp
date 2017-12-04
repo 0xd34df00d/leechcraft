@@ -44,6 +44,7 @@
 #include <util/sll/visitor.h>
 #include <util/sll/delayedexecutor.h>
 #include <util/xpc/util.h>
+#include <util/gui/util.h>
 #include <interfaces/itexteditor.h>
 #include <interfaces/iadvancedhtmleditor.h>
 #include <interfaces/iadvancedplaintexteditor.h>
@@ -534,18 +535,27 @@ namespace Snails
 	{
 		const QFileInfo fi { path };
 
+		const auto& filename = fi.fileName ();
+
 		const auto& size = Util::MakePrettySize (fi.size ());
-		const auto attAct = new QAction (QString { "%1 (%2)" }.arg (fi.fileName (), size), this);
+		const auto attAct = new QAction (QString { "%1 (%2)" }.arg (filename, size), this);
 		attAct->setProperty ("Snails/AttachmentPath", path);
 		attAct->setProperty ("Snails/Description", descr);
 
-		const auto& mime = Util::MimeDetector {} (fi.fileName ());
+		const auto& mime = Util::MimeDetector {} (filename);
 		attAct->setIcon (Util::ExtensionsData::Instance ().GetMimeIcon (mime));
 
 		connect (attAct,
 				&QAction::triggered,
-				[attAct, this]
+				[filename, attAct, this]
 				{
+					if (QMessageBox::question (this,
+							"LeechCraft",
+							tr ("Are you sure you want to remove attachment %1?")
+								.arg (Util::FormatName (filename)),
+							QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
+						return;
+
 					attAct->deleteLater ();
 					AttachmentsMenu_->removeAction (attAct);
 				});
