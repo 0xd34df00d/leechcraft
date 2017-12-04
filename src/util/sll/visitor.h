@@ -74,7 +74,7 @@ namespace Util
 		}
 
 		template<typename T>
-		decltype (auto) operator() (const T& var)
+		decltype (auto) operator() (const T& var) const
 		{
 			const auto runner = [&var] (auto&&... args) -> decltype (auto)
 					{ return Visit (var, std::forward<decltype (args)> (args)...); };
