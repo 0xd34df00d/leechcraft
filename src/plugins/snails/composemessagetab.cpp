@@ -542,7 +542,7 @@ namespace Snails
 		attAct->setProperty ("Snails/AttachmentPath", path);
 		attAct->setProperty ("Snails/Description", descr);
 
-		const auto& mime = Util::MimeDetector {} (filename);
+		const auto& mime = Util::MimeDetector {} (path);
 		attAct->setIcon (Util::ExtensionsData::Instance ().GetMimeIcon (mime));
 
 		connect (attAct,
