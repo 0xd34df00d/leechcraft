@@ -122,9 +122,9 @@ namespace Snails
 			switch (Dir_)
 			{
 			case Account::Direction::Out:
-				return Acc_->GetOutUsername ().toUtf8 ().constData ();
+				return Acc_->GetOutUsername ().toStdString ();
 			case Account::Direction::In:
-				return Acc_->GetInUsername ().toUtf8 ().constData ();
+				return Acc_->GetInUsername ().toStdString ();
 			}
 
 			Util::Unreachable ();
