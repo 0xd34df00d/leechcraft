@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "utils.h"
+#include <QUrl>
 #include <QtDebug>
 #include <util/sll/visitor.h>
 #include <util/sll/either.h>
@@ -82,27 +83,25 @@ namespace Utils
 			const QString& errorText,
 			const std::function<void (QUrl)>& urlHandler)
 	{
-		return [=] (const ISupportFileListings::RequestUrlResult_t& result)
+		return Util::Visitor
 		{
-			Util::Visit (result.AsVariant (),
-					urlHandler,
-					[&] (const ISupportFileListings::RequestUrlError_t& error)
-					{
-						Util::Visit (error,
-								[] (const ISupportFileListings::UserCancelled&) {},
-								[&] (const ISupportFileListings::InvalidItem&)
-								{
-									qWarning () << Q_FUNC_INFO
-											<< "invalid item";
-								},
-								[&] (const QString& errStr)
-								{
-									const auto& e = Util::MakeNotification ("NetStoreManager",
-											errorText + " " + errStr,
-											PCritical_);
-									entityMgr->HandleEntity (e);
-								});
-					});
+			std::move (urlHandler),
+			Util::Visitor
+			{
+				[] (const ISupportFileListings::UserCancelled&) {},
+				[] (const ISupportFileListings::InvalidItem&)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "invalid item";
+				},
+				[=] (const QString& errStr)
+				{
+					const auto& e = Util::MakeNotification ("NetStoreManager",
+							errorText + " " + errStr,
+							PCritical_);
+					entityMgr->HandleEntity (e);
+				}
+			}
 		};
 	}
 }
