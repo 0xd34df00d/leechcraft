@@ -32,6 +32,7 @@
 #include <QSqlError>
 #include <QSqlRecord>
 #include <util/db/dblock.h>
+#include <util/sll/qtutil.h>
 #include <util/util.h>
 #include "localblogaccount.h"
 
@@ -438,11 +439,11 @@ namespace Hestia
 		lock.Init ();
 
 		const auto& tables = AccountDB_.tables ();
-		Q_FOREACH (const QString& key, table2query.keys ())
+		for (const auto& [key, query] : Util::Stlize (table2query))
 			if (!tables.contains (key))
 			{
 				QSqlQuery q (AccountDB_);
-				if (!q.exec (table2query [key]))
+				if (!q.exec (query))
 				{
 					Util::DBLock::DumpError (q);
 					throw std::runtime_error ("cannot create required tables");
