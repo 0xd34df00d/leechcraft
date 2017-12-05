@@ -47,7 +47,7 @@ namespace Hestia
 		Q_OBJECT
 
 		LocalBlogAccount *Account_;
-		bool Ready_;
+		bool Ready_ = false;
 
 		QSqlDatabase AccountDB_;
 

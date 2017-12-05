@@ -45,7 +45,6 @@ namespace Hestia
 	AccountStorage::AccountStorage (LocalBlogAccount *acc, QObject *parent)
 	: QObject (parent)
 	, Account_ (acc)
-	, Ready_ (false)
 	{
 	}
 
