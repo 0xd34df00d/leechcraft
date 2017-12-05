@@ -113,15 +113,15 @@ namespace Metida
 
 		const auto& tables = MetidaDB_.tables ();
 		Q_FOREACH (const QString& key, table2query.keys ())
-		if (!tables.contains (key))
-		{
-			QSqlQuery q (MetidaDB_);
-			if (!q.exec (table2query [key]))
+			if (!tables.contains (key))
 			{
-				Util::DBLock::DumpError (q);
-				throw std::runtime_error ("cannot create required tables");
+				QSqlQuery q (MetidaDB_);
+				if (!q.exec (table2query [key]))
+				{
+					Util::DBLock::DumpError (q);
+					throw std::runtime_error ("cannot create required tables");
+				}
 			}
-		}
 
 		lock.Good ();
 	}
