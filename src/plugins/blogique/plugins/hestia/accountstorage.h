@@ -44,8 +44,6 @@ namespace Hestia
 
 	class AccountStorage : public QObject
 	{
-		Q_OBJECT
-
 		LocalBlogAccount *Account_;
 
 		QSqlDatabase AccountDB_;
