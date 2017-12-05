@@ -439,15 +439,15 @@ namespace Hestia
 
 		const auto& tables = AccountDB_.tables ();
 		Q_FOREACH (const QString& key, table2query.keys ())
-		if (!tables.contains (key))
-		{
-			QSqlQuery q (AccountDB_);
-			if (!q.exec (table2query [key]))
+			if (!tables.contains (key))
 			{
-				Util::DBLock::DumpError (q);
-				throw std::runtime_error ("cannot create required tables");
+				QSqlQuery q (AccountDB_);
+				if (!q.exec (table2query [key]))
+				{
+					Util::DBLock::DumpError (q);
+					throw std::runtime_error ("cannot create required tables");
+				}
 			}
-		}
 
 		lock.Good ();
 	}
