@@ -87,11 +87,6 @@ namespace Hestia
 		PrepareQueries ();
 	}
 
-	bool AccountStorage::IsReady () const
-	{
-		return Ready_;
-	}
-
 	bool AccountStorage::CheckDatabase (const QString& dbPath)
 	{
 		QSqlDatabase db = QSqlDatabase::addDatabase ("QSQLITE",
