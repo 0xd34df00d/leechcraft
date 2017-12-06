@@ -129,7 +129,7 @@ namespace Lastfmscrobble
 
 			NumTries_ = 0;
 
-			Q_FOREACH (auto track, tracks)
+			for (const auto& track : tracks)
 				lastfm::MutableTrack (track).setSource (lastfm::Track::LastFmRadio);
 
 			Queue_ += tracks;
