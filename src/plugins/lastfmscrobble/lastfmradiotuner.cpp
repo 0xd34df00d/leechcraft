@@ -45,9 +45,9 @@ namespace Lastfmscrobble
 		params << QPair<QString, QString> ("station", station.url ());
 		auto reply = Request ("radio.tune", NAM_, params);
 		connect (reply,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleTuned ()));
+				&QNetworkReply::finished,
+				reply,
+				&QObject::deleteLater);
 	}
 
 	lastfm::Track LastFmRadioTuner::GetNextTrack ()
@@ -78,11 +78,6 @@ namespace Lastfmscrobble
 
 		FetchMoreTracks ();
 		return true;
-	}
-
-	void LastFmRadioTuner::handleTuned ()
-	{
-		sender ()->deleteLater ();
 	}
 
 	void LastFmRadioTuner::handleGotPlaylist ()

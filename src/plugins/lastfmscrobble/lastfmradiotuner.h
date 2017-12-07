@@ -58,7 +58,6 @@ namespace Lastfmscrobble
 		void FetchMoreTracks ();
 		bool TryAgain ();
 	private slots:
-		void handleTuned ();
 		void handleGotPlaylist ();
 	signals:
 		void error (const QString&);
