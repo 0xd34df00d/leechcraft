@@ -32,6 +32,7 @@
 #include <QSqlError>
 #include <QSqlRecord>
 #include <util/db/dblock.h>
+#include <util/sll/qtutil.h>
 #include <util/util.h>
 #include "localblogaccount.h"
 
@@ -44,7 +45,6 @@ namespace Hestia
 	AccountStorage::AccountStorage (LocalBlogAccount *acc, QObject *parent)
 	: QObject (parent)
 	, Account_ (acc)
-	, Ready_ (false)
 	{
 	}
 
@@ -85,11 +85,6 @@ namespace Hestia
 		}
 
 		PrepareQueries ();
-	}
-
-	bool AccountStorage::IsReady () const
-	{
-		return Ready_;
 	}
 
 	bool AccountStorage::CheckDatabase (const QString& dbPath)
@@ -438,16 +433,16 @@ namespace Hestia
 		lock.Init ();
 
 		const auto& tables = AccountDB_.tables ();
-		Q_FOREACH (const QString& key, table2query.keys ())
-		if (!tables.contains (key))
-		{
-			QSqlQuery q (AccountDB_);
-			if (!q.exec (table2query [key]))
+		for (const auto& [key, query] : Util::Stlize (table2query))
+			if (!tables.contains (key))
 			{
-				Util::DBLock::DumpError (q);
-				throw std::runtime_error ("cannot create required tables");
+				QSqlQuery q (AccountDB_);
+				if (!q.exec (query))
+				{
+					Util::DBLock::DumpError (q);
+					throw std::runtime_error ("cannot create required tables");
+				}
 			}
-		}
 
 		lock.Good ();
 	}

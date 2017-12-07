@@ -38,6 +38,8 @@
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <util/xpc/passutils.h>
+#include <util/sll/prelude.h>
+#include <util/sll/functional.h>
 #include "core.h"
 #include "ljaccount.h"
 #include "ljaccountconfigurationwidget.h"
@@ -97,10 +99,7 @@ namespace Metida
 
 	QObjectList LJBloggingPlatform::GetRegisteredAccounts ()
 	{
-		QObjectList result;
-		Q_FOREACH (auto acc, LJAccounts_)
-			result << acc;
-		return result;
+		return Util::Map (LJAccounts_, Util::Upcast<QObject*>);
 	}
 
 	QObject* LJBloggingPlatform::GetParentBloggingPlatformPlugin () const

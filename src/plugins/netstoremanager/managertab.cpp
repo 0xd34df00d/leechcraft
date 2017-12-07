@@ -415,33 +415,32 @@ namespace NetStoreManager
 		}
 
 		Util::Sequence (this, sfl->RefreshListing ())
-				.MultipleResults ([this, acc] (const ISupportFileListings::RefreshResult_t& result)
+				.MultipleResults (Util::Visitor
 						{
-							if (acc != GetCurrentAccount ())
-								return;
+							[this, acc] (const QString& error)
+							{
+								const auto& e = Util::MakeNotification ("LeechCraft",
+										tr ("Unable to get file listing for the account %1: %2.")
+												.arg ("<em>" + acc->GetAccountName () + "</em>")
+												.arg (error),
+										PCritical_);
+								Proxy_->GetEntityManager ()->HandleEntity (e);
+							},
+							[this, acc] (const QList<StorageItem>& items)
+							{
+								if (acc != GetCurrentAccount ())
+									return;
 
-							Util::Visit (result.AsVariant (),
-									[this, acc] (const QString& error)
-									{
-										const auto& e = Util::MakeNotification ("LeechCraft",
-												tr ("Unable to get file listing for the account %1: %2.")
-														.arg ("<em>" + acc->GetAccountName () + "</em>")
-														.arg (error),
-												PCritical_);
-										Proxy_->GetEntityManager ()->HandleEntity (e);
-									},
-									[this] (const QList<StorageItem>& items)
-									{
-										for (auto item : items)
-											Id2Item_ [item.ID_] = item;
+								for (auto item : items)
+									Id2Item_ [item.ID_] = item;
 
-										const auto iconName = GetTrashedFiles ().isEmpty () ?
-											"user-trash-full" :
-											"user-trash";
-										Trash_->setIcon (Proxy_->GetIconThemeManager ()->GetIcon (iconName));
-										ClearModel ();
-										FillListModel ();
-									});
+								const auto iconName = GetTrashedFiles ().isEmpty () ?
+									"user-trash-full" :
+									"user-trash";
+								Trash_->setIcon (Proxy_->GetIconThemeManager ()->GetIcon (iconName));
+								ClearModel ();
+								FillListModel ();
+							}
 						});
 	}
 

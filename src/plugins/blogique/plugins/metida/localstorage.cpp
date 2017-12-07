@@ -34,6 +34,7 @@
 #include <util/util.h>
 #include <util/db/dblock.h>
 #include <util/sys/paths.h>
+#include <util/sll/qtutil.h>
 
 namespace LeechCraft
 {
@@ -112,16 +113,16 @@ namespace Metida
 		lock.Init ();
 
 		const auto& tables = MetidaDB_.tables ();
-		Q_FOREACH (const QString& key, table2query.keys ())
-		if (!tables.contains (key))
-		{
-			QSqlQuery q (MetidaDB_);
-			if (!q.exec (table2query [key]))
+		for (const auto& [key, query] : Util::Stlize (table2query))
+			if (!tables.contains (key))
 			{
-				Util::DBLock::DumpError (q);
-				throw std::runtime_error ("cannot create required tables");
+				QSqlQuery q (MetidaDB_);
+				if (!q.exec (query))
+				{
+					Util::DBLock::DumpError (q);
+					throw std::runtime_error ("cannot create required tables");
+				}
 			}
-		}
 
 		lock.Good ();
 	}

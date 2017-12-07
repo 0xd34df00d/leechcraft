@@ -99,7 +99,7 @@ namespace LMP
 		Ui_.CloudSelector_->clear ();
 
 		Clouds_ = Core::Instance ().GetCloudStoragePlugins ();
-		Q_FOREACH (QObject *cloudObj, Clouds_)
+		for (const auto cloudObj : Clouds_)
 		{
 			auto cloud = qobject_cast<ICloudStoragePlugin*> (cloudObj);
 			Ui_.CloudSelector_->addItem (cloud->GetCloudIcon (), cloud->GetCloudName ());

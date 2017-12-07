@@ -44,10 +44,7 @@ namespace Hestia
 
 	class AccountStorage : public QObject
 	{
-		Q_OBJECT
-
 		LocalBlogAccount *Account_;
-		bool Ready_;
 
 		QSqlDatabase AccountDB_;
 
@@ -67,7 +64,6 @@ namespace Hestia
 		QSqlQuery RemoveEntryTags_;
 		QSqlQuery GetEntryTags_;
 		QSqlQuery GetTags_;
-
 	public:
 		enum class Mode
 		{
@@ -78,7 +74,6 @@ namespace Hestia
 		explicit AccountStorage (LocalBlogAccount *acc, QObject *parent = 0);
 
 		void Init (const QString& dbPath);
-		bool IsReady () const;
 		bool CheckDatabase (const QString& dbPath);
 
 		qint64 SaveNewEntry (const Entry& e);
