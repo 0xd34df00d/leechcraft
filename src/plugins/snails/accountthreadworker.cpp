@@ -53,6 +53,7 @@
 #include <util/util.h>
 #include <util/xpc/util.h>
 #include <util/sll/prelude.h>
+#include <util/sll/unreachable.h>
 #include "message.h"
 #include "account.h"
 #include "core.h"
@@ -103,9 +104,11 @@ namespace Snails
 			{
 			case Account::Direction::Out:
 				return Acc_->GetOutUsername ().toUtf8 ().constData ();
-			default:
+			case Account::Direction::In:
 				return Acc_->GetInUsername ().toUtf8 ().constData ();
 			}
+
+			Util::Unreachable ();
 		}
 
 		const vmime::string VMimeAuth::getPassword () const
