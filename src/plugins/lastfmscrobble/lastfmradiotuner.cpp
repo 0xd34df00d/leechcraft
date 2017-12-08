@@ -103,15 +103,10 @@ namespace Lastfmscrobble
 
 		try
 		{
-#if LASTFM_VERSION < 0x00010000
-			lastfm::Xspf xspf (doc.documentElement ().firstChildElement ("playlist"));
-			auto tracks = xspf.tracks ();
-#else
 			lastfm::Xspf xspf (doc.documentElement ().firstChildElement ("playlist"), this);
 			QList<lastfm::Track> tracks;
 			while (!xspf.isEmpty ())
 				tracks << xspf.takeFirst ();
-#endif
 			if (tracks.isEmpty ())
 			{
 				qWarning () << Q_FUNC_INFO << "no tracks";
@@ -128,15 +123,9 @@ namespace Lastfmscrobble
 		}
 		catch (const lastfm::ws::ParseError& e)
 		{
-#if LASTFM_VERSION < 0x00010000
-			qWarning () << Q_FUNC_INFO << e.what ();
-			if (e.enumValue () != lastfm::ws::TryAgainLater)
-				emit error (e.what ());
-#else
 			qWarning () << Q_FUNC_INFO << e.message ();
 			if (e.enumValue () != lastfm::ws::TryAgainLater)
 				emit error (e.message ());
-#endif
 			if (!TryAgain ())
 				emit error ("out of tries");
 		}
