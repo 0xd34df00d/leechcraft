@@ -41,9 +41,7 @@ namespace Lastfmscrobble
 	, NAM_ (nam)
 	, NumTries_ (0)
 	{
-		QList<QPair<QString, QString>> params;
-		params << QPair<QString, QString> ("station", station.url ());
-		auto reply = Request ("radio.tune", NAM_, params);
+		auto reply = Request ("radio.tune", NAM_, ParamsList_t { { "station", station.url () }});
 		connect (reply,
 				&QNetworkReply::finished,
 				reply,
@@ -62,9 +60,7 @@ namespace Lastfmscrobble
 
 	void LastFmRadioTuner::FetchMoreTracks ()
 	{
-		QList<QPair<QString, QString>> params;
-		params << QPair<QString, QString> ("rtp", "1");
-		auto reply = Request ("radio.getPlaylist", NAM_, params);
+		auto reply = Request ("radio.getPlaylist", NAM_, ParamsList_t { { "rtp", "1" }});
 		connect (reply,
 				SIGNAL (finished ()),
 				this,
