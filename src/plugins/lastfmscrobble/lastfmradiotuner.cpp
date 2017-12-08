@@ -103,10 +103,7 @@ namespace Lastfmscrobble
 
 		try
 		{
-			lastfm::Xspf xspf (doc.documentElement ().firstChildElement ("playlist"), this);
-			QList<lastfm::Track> tracks;
-			while (!xspf.isEmpty ())
-				tracks << xspf.takeFirst ();
+			auto tracks = lastfm::Xspf { doc.documentElement ().firstChildElement ("playlist"), this }.tracks ();
 			if (tracks.isEmpty ())
 			{
 				qWarning () << Q_FUNC_INFO << "no tracks";
