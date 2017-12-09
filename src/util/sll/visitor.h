@@ -64,26 +64,33 @@ namespace Util
 		template<typename T>
 		constexpr T Declval () { throw "shall not be called"; }
 
+		template<typename... Args>
+		constexpr bool AllLValueRefs = AllOf<std::is_lvalue_reference, Args...>;
+
+		template<typename... Args>
+		constexpr bool AllRValueRefs = AllOf<std::is_rvalue_reference, Args...>;
+
+		template<typename... Args>
+		constexpr bool AllConsts = AllOf<std::is_const, Args...>;
+
+		template<typename... Args>
+		constexpr bool AllConstsWithoutRefs = AllOf<std::is_const, std::remove_reference_t<Args>...>;
+
 		template<typename R, typename... Args>
 		constexpr decltype (auto) FixCommonType ()
 		{
-			constexpr bool allLValueRefs = AllOf<std::is_lvalue_reference, Args...>;
-			constexpr bool allRValueRefs = AllOf<std::is_rvalue_reference, Args...>;
-			constexpr bool allConsts = AllOf<std::is_const, Args...>;
-			constexpr bool allConstsWithoutRefs = AllOf<std::is_const, std::remove_reference_t<Args>...>;
-
-			if constexpr (allConsts)
+			if constexpr (AllConsts<Args...>)
 				return Declval<std::add_const_t<R>> ();
-			else if constexpr (allLValueRefs)
+			else if constexpr (AllLValueRefs<Args...>)
 			{
-				if constexpr (allConstsWithoutRefs)
+				if constexpr (AllConstsWithoutRefs<Args...>)
 					return Declval<std::add_lvalue_reference_t<std::add_const_t<R>>> ();
 				else
 					return Declval<std::add_lvalue_reference_t<R>> ();
 			}
-			else if constexpr (allRValueRefs)
+			else if constexpr (AllRValueRefs<Args...>)
 			{
-				static_assert (!allConstsWithoutRefs, "const rvalue references are useless");
+				static_assert (!AllConstsWithoutRefs<Args...>, "const rvalue references are useless");
 				return Declval<std::add_rvalue_reference_t<R>> ();
 			}
 			else
