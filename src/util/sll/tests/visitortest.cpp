@@ -125,5 +125,22 @@ namespace Util
 		const auto& res = visitor (v);
 		QCOMPARE (res, true);
 	}
+
+	void VisitorTest::testPrepareVisitorFinally ()
+	{
+		Variant_t v { 'a' };
+
+		bool fin = false;
+
+		auto visitor = Visitor
+		{
+			[] (char) { return true; },
+			[] (auto) { return false; }
+		}.Finally ([&fin] { fin = true; });
+
+		const auto& res = visitor (v);
+		QCOMPARE (res, true);
+		QCOMPARE (fin, true);
+	}
 }
 }
