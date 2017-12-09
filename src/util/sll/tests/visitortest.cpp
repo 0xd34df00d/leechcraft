@@ -123,6 +123,14 @@ namespace Util
 		QCOMPARE (res2, nullptr);
 	}
 
+	void VisitorTest::testAcceptsRValueRef ()
+	{
+		const auto& res = Visit (Variant_t { 'a' },
+				[] (char) { return true; },
+				[] (auto) { return false; });
+		QCOMPARE (res, true);
+	}
+
 	void VisitorTest::testLValueRef ()
 	{
 		Variant_t v { 'a' };

@@ -48,6 +48,8 @@ namespace Util
 
 		void testDifferentReturnTypes ();
 
+		void testAcceptsRValueRef ();
+
 		void testLValueRef ();
 
 		void testPrepareVisitor ();
