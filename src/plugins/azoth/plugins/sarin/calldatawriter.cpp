@@ -65,7 +65,7 @@ namespace Sarin
 
 					Util::Visit (result.AsVariant (),
 							[this] (const QByteArray& leftover) { Buffer_.prepend (leftover); },
-							[] (auto&& err)
+							[] (const auto& err)
 							{
 								qWarning () << Q_FUNC_INFO
 										<< "error writing frame:"

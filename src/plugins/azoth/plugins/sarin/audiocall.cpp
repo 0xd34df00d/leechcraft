@@ -118,7 +118,7 @@ namespace Sarin
 				{
 					Util::Visit (result.AsVariant (),
 							Util::BindMemFn (&AudioCall::HandleWriteParams, this),
-							[this] (auto&& err)
+							[this] (const auto& err)
 							{
 								qWarning () << Q_FUNC_INFO
 										<< "error accepting the call:"
@@ -163,7 +163,7 @@ namespace Sarin
 								HandleWriteParams (params);
 								emit stateChanged (SConnecting);
 							},
-							[this] (auto&& err)
+							[this] (const auto& err)
 							{
 								qWarning () << Q_FUNC_INFO
 										<< "error initiating the call:"
