@@ -75,11 +75,10 @@ namespace Util
 				return Declval<std::add_const_t<R>> ();
 			else if constexpr (allLValueRefs)
 			{
-				using LValue_t = std::add_lvalue_reference_t<R>;
 				if constexpr (allConstsWithoutRefs)
-					return Declval<std::add_const_t<LValue_t>> ();
+					return Declval<std::add_lvalue_reference_t<std::add_const_t<R>>> ();
 				else
-					return Declval<LValue_t> ();
+					return Declval<std::add_lvalue_reference_t<R>> ();
 			}
 			else if constexpr (allRValueRefs)
 			{
