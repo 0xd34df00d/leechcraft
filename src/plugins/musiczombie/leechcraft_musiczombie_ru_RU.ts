@@ -4,14 +4,19 @@
 <context>
     <name>LeechCraft::MusicZombie::PendingDisco</name>
     <message>
-        <location filename="pendingdisco.cpp" line="115"/>
-        <source>Error getting artist MBID.</source>
-        <translation>Ошибка получения MBID исполнителя.</translation>
+        <location filename="pendingdisco.cpp" line="114"/>
+        <source>Error getting candidate releases list.</source>
+        <translation>Ошибка получения списка возможных релизов.</translation>
     </message>
     <message>
-        <location filename="pendingdisco.cpp" line="146"/>
+        <location filename="pendingdisco.cpp" line="145"/>
         <source>No artists were found.</source>
         <translation>Исполнители не найдены.</translation>
+    </message>
+    <message>
+        <location filename="pendingdisco.cpp" line="206"/>
+        <source>Error getting artist releases list.</source>
+        <translation>Ошибка получения списка релизов исполнителя.</translation>
     </message>
     <message>
         <location filename="pendingdisco.cpp" line="277"/>
