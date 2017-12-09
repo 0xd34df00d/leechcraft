@@ -114,17 +114,16 @@ namespace Sarin
 			return;
 
 		Util::Sequence (this, CallMgr_->AcceptCall (CallIdx_)) >>
-				[this] (auto&& result)
+				Util::Visitor
 				{
-					Util::Visit (result.AsVariant (),
-							Util::BindMemFn (&AudioCall::HandleWriteParams, this),
-							[this] (const auto& err)
-							{
-								qWarning () << Q_FUNC_INFO
-										<< "error accepting the call:"
-										<< Util::Visit (err, [] (auto&& e) { return e.what (); });
-								emit stateChanged (SFinished);
-							});
+					Util::BindMemFn (&AudioCall::HandleWriteParams, this),
+					[this] (const auto& err)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "error accepting the call:"
+								<< Util::Visit (err, [] (auto&& e) { return e.what (); });
+						emit stateChanged (SFinished);
+					}
 				};
 	}
 
@@ -155,21 +154,20 @@ namespace Sarin
 	void AudioCall::InitiateCall ()
 	{
 		Util::Sequence (this, CallMgr_->InitiateCall (SourcePubkey_.toUtf8 ())) >>
-				[this] (auto&& result)
+				Util::Visitor
 				{
-					Util::Visit (result.AsVariant (),
-							[this] (const CallManager::AudioFormatParams& params)
-							{
-								HandleWriteParams (params);
-								emit stateChanged (SConnecting);
-							},
-							[this] (const auto& err)
-							{
-								qWarning () << Q_FUNC_INFO
-										<< "error initiating the call:"
-										<< Util::Visit (err, [] (auto&& e) { return e.what (); });
-								emit stateChanged (SFinished);
-							});
+					[this] (const CallManager::AudioFormatParams& params)
+					{
+						HandleWriteParams (params);
+						emit stateChanged (SConnecting);
+					},
+					[this] (const auto& err)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "error initiating the call:"
+								<< Util::Visit (err, [] (auto&& e) { return e.what (); });
+						emit stateChanged (SFinished);
+					}
 				};
 	}
 

@@ -96,24 +96,24 @@ namespace Sarin
 							SendFileResult_t::Left (error) :
 							SendFileResult_t::Right (result);
 				});
+
 		Util::Sequence (this, future) >>
-				[this] (const SendFileResult_t& result)
+				Util::Visitor
 				{
-					Util::Visit (result.AsVariant (),
-							[this] (uint32_t filenum)
-							{
-								FileNum_ = filenum;
-								emit stateChanged (TransferState::TSOffer);
-							},
-							[this] (TOX_ERR_FILE_SEND err)
-							{
-								qWarning () << Q_FUNC_INFO
-										<< err;
-								emit errorAppeared (TransferError::TEProtocolError,
-										tr ("Tox file send error: %1")
-												.arg (err));
-								emit stateChanged (TransferState::TSFinished);
-							});
+					[this] (uint32_t filenum)
+					{
+						FileNum_ = filenum;
+						emit stateChanged (TransferState::TSOffer);
+					},
+					[this] (TOX_ERR_FILE_SEND err)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< err;
+						emit errorAppeared (TransferError::TEProtocolError,
+								tr ("Tox file send error: %1")
+										.arg (err));
+						emit stateChanged (TransferState::TSFinished);
+					}
 				};
 	}
 
