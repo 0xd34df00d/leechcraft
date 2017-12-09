@@ -56,12 +56,50 @@ namespace Util
 		{
 			using VisitorBase<Args...>::VisitorBase;
 		};
+
+		template<template<typename> class Pred, typename... Args>
+		constexpr auto AllOf = (Pred<Args> {} && ...);
+
+		template<typename T>
+		constexpr T Declval () { throw "shall not be called"; }
+
+		template<typename R, typename... Args>
+		constexpr decltype (auto) FixCommonType ()
+		{
+			constexpr bool allLValueRefs = AllOf<std::is_lvalue_reference, Args...>;
+			constexpr bool allRValueRefs = AllOf<std::is_rvalue_reference, Args...>;
+			constexpr bool allConsts = AllOf<std::is_const, Args...>;
+			constexpr bool allConstsWithoutRefs = AllOf<std::is_const, std::remove_reference_t<Args>...>;
+
+			if constexpr (allConsts)
+				return Declval<std::add_const_t<R>> ();
+			else if constexpr (allLValueRefs)
+			{
+				using LValue_t = std::add_lvalue_reference_t<R>;
+				if constexpr (allConstsWithoutRefs)
+					return Declval<std::add_const_t<LValue_t>> ();
+				else
+					return Declval<LValue_t> ();
+			}
+			else if constexpr (allRValueRefs)
+			{
+				static_assert (!allConstsWithoutRefs, "const rvalue references are useless");
+				return Declval<std::add_rvalue_reference_t<R>> ();
+			}
+			else
+				return Declval<R> ();
+		}
+
+		template<typename R, typename... Args>
+		using FixCommonType_t = decltype (FixCommonType<R, Args...> ());
 	}
 
-	template<typename HeadVar, typename... TailVars, typename... Args>
-	decltype (auto) Visit (const boost::variant<HeadVar, TailVars...>& v, Args&&... args)
+	template<typename... Vars, typename... Args>
+	decltype (auto) Visit (const boost::variant<Vars...>& v, Args&&... args)
 	{
-		using R_t = std::result_of_t<detail::VisitorBase<Args...> (HeadVar)>;
+		using Common_t = std::common_type_t<std::result_of_t<detail::VisitorBase<Args...> (Vars)>...>;
+		using R_t = detail::FixCommonType_t<Common_t, std::result_of_t<detail::VisitorBase<Args...> (Vars)>...>;
+
 		return boost::apply_visitor (detail::Visitor<R_t, Args...> { std::forward<Args> (args)... }, v);
 	}
 
