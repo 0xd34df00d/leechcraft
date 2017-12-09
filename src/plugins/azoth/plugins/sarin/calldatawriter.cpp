@@ -59,19 +59,16 @@ namespace Sarin
 		IsWriting_ = true;
 
 		Util::Sequence (this, Mgr_->WriteData (CallIdx_, fmt, Buffer_ + data)) >>
-				[this] (auto&& result)
+				Util::Visitor
 				{
-					IsWriting_ = false;
-
-					Util::Visit (result.AsVariant (),
-							[this] (const QByteArray& leftover) { Buffer_.prepend (leftover); },
-							[] (const auto& err)
-							{
-								qWarning () << Q_FUNC_INFO
-										<< "error writing frame:"
-										<< Util::Visit (err, [] (auto&& e) { return e.what (); });
-							});
-				};
+					[this] (const QByteArray& leftover) { Buffer_.prepend (leftover); },
+					[] (const auto& err)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "error writing frame:"
+								<< Util::Visit (err, [] (auto&& e) { return e.what (); });
+					}
+				}.Finally ([this] { IsWriting_ = false; });
 
 		Buffer_.clear ();
 
