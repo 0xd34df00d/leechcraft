@@ -51,6 +51,7 @@ namespace Util
 		void testAcceptsRValueRef ();
 
 		void testLValueRef ();
+		void testLValueRef2 ();
 
 		void testPrepareVisitor ();
 		void testPrepareVisitorConst ();

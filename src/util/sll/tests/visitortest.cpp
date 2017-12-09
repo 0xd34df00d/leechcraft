@@ -39,6 +39,20 @@ namespace Util
 {
 	using Variant_t = boost::variant<int, char, std::string, QString, double, float>;
 
+	struct S1
+	{
+		int field1;
+		double field2;
+	};
+
+	struct S2
+	{
+		int field1;
+		double field2;
+	};
+
+	using SVariant_t = boost::variant<S1, S2>;
+
 	void VisitorTest::testBasicVisitor ()
 	{
 		Variant_t v { 'a' };
@@ -138,6 +152,14 @@ namespace Util
 		auto& res = Visit (v, [&ref] (auto) -> int& { return ref; });
 		res = 10;
 		QCOMPARE (ref, 10);
+	}
+
+	void VisitorTest::testLValueRef2 ()
+	{
+		SVariant_t v { S1 { 0, 0 } };
+		Visit (v, [] (auto& s) -> int& { return s.field1; }) = 10;
+		const auto& res = Visit (v, [] (const auto& s) -> const int& { return s.field1; });
+		QCOMPARE (res, 10);
 	}
 
 	void VisitorTest::testPrepareVisitor ()
