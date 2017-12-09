@@ -135,14 +135,14 @@ namespace Util
 		}
 
 		template<typename T>
-		decltype (auto) operator() (const T& var) const
+		decltype (auto) operator() (T&& var) const
 		{
 			if constexpr (std::is_same_v<FinallyFunc, Void>)
-				return Visit (var, Base_);
+				return Visit (std::forward<T> (var), Base_);
 			else
 			{
 				const auto guard = MakeScopeGuard (Finally_);
-				return Visit (var, Base_);
+				return Visit (std::forward<T> (var), Base_);
 			}
 		}
 
