@@ -182,25 +182,24 @@ namespace LMP
 
 			if (discoProv)
 				Util::Sequence (this, discoProv->GetReleaseInfo (release.Artist_, release.Title_)) >>
-						[=, row = ReleasesModel_->rowCount ()] (const auto& result)
+						Util::Visitor
 						{
-							Util::Visit (result.AsVariant (),
-									[] (const QString&) { qWarning () << Q_FUNC_INFO << "error fetching releases"; },
-									[=] (const auto& infos)
-									{
-										if (infos.isEmpty ())
-											return;
+							[] (const QString&) { qWarning () << Q_FUNC_INFO << "error fetching releases"; },
+							[=, row = ReleasesModel_->rowCount ()] (const auto& infos)
+							{
+								if (infos.isEmpty ())
+									return;
 
-										if (row >= ReleasesModel_->rowCount () || ReleasesModel_->item (row) != item)
-										{
-											qWarning () << Q_FUNC_INFO
-													<< "model has been invalidated";
-											return;
-										}
+								if (row >= ReleasesModel_->rowCount () || ReleasesModel_->item (row) != item)
+								{
+									qWarning () << Q_FUNC_INFO
+											<< "model has been invalidated";
+									return;
+								}
 
-										item->setData (MakeTrackListTooltip (infos [0].TrackInfos_),
-												ReleasesModel::Role::TrackList);
-									});
+								item->setData (MakeTrackListTooltip (infos [0].TrackInfos_),
+										ReleasesModel::Role::TrackList);
+							}
 						};
 		}
 	}

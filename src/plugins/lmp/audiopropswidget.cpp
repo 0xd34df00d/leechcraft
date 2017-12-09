@@ -120,7 +120,7 @@ namespace LMP
 
 	void AudioPropsWidget::SetProps (const QString& path)
 	{
-		Util::Visit (Core::Instance ().GetLocalFileResolver ()->ResolveInfo (path).AsVariant (),
+		Util::Visit (Core::Instance ().GetLocalFileResolver ()->ResolveInfo (path),
 				[this] (const MediaInfo& info) { SetProps (info); },
 				[this] (const ResolveError& err)
 				{

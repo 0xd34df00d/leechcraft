@@ -132,11 +132,10 @@ namespace LMP
 		auto pm = Core::Instance ().GetProxy ()->GetPluginsManager ();
 		for (auto prov : pm->GetAllCastableTo<Media::IDiscographyProvider*> ())
 			Util::Sequence (this, prov->GetDiscography (CurrentArtist_, releases)) >>
-					[this, artist] (const auto& result)
+					Util::Visitor
 					{
-						Util::Visit (result.AsVariant (),
-								[artist] (const QString&) { qWarning () << Q_FUNC_INFO << "error for" << artist; },
-								[this] (const auto& releases) { HandleDiscographyReady (releases); });
+						[artist] (const QString&) { qWarning () << Q_FUNC_INFO << "error for" << artist; },
+						[this] (const auto& releases) { HandleDiscographyReady (releases); }
 					};
 	}
 

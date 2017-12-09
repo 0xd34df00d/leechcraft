@@ -919,7 +919,7 @@ namespace LMP
 			if (trackId == -1)
 			{
 				auto resolver = Core::Instance ().GetLocalFileResolver ();
-				return Util::Visit (resolver->ResolveInfo (source.GetLocalPath ()).AsVariant (),
+				return Util::Visit (resolver->ResolveInfo (source.GetLocalPath ()),
 						[&source] (const MediaInfo& resolved) { return ResolvedSource_t { source, resolved }; },
 						[&source, &info] (const ResolveError&)
 						{
