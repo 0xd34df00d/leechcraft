@@ -172,19 +172,16 @@ namespace BrainSlugz
 
 		Current_ = Artists_.takeFirst ();
 		Util::Sequence (this, Provider_->GetDiscography (Current_.Name_, {})) >>
-				[=] (const auto& result)
+				Util::Visitor
 				{
-					Util::Visit (result.AsVariant (),
-							[&] (const QString&)
-							{
-								qWarning () << Q_FUNC_INFO
-										<< Current_.Name_;
-								Model_->MarkNoNews (Current_);
-							},
-							[&] (const auto& result) { HandleDiscoReady (result); });
-
-					rotateQueue ();
-				};
+					[&] (const QString&)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< Current_.Name_;
+						Model_->MarkNoNews (Current_);
+					},
+					[&] (const auto& result) { HandleDiscoReady (result); }
+				}.Finally ([this] { rotateQueue (); });
 	}
 }
 }
