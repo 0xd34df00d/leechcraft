@@ -32,6 +32,7 @@
 #include <boost/variant.hpp>
 #include "void.h"
 #include "util.h"
+#include "typelist.h"
 
 namespace LeechCraft
 {
@@ -91,13 +92,18 @@ namespace Util
 
 		template<typename R, typename... Args>
 		using FixCommonType_t = decltype (FixCommonType<R, Args...> ());
+
+		template<typename... Vars,
+				typename... Args,
+				typename Common = std::common_type_t<std::result_of_t<detail::VisitorBase<Args...> (Vars&)>...>,
+				typename Res = FixCommonType_t<Common, std::result_of_t<detail::VisitorBase<Args...> (Vars&)>...>>
+		constexpr Res DetectCommonType (Typelist<Vars...>, Typelist<Args...>, int);
 	}
 
 	template<typename... Vars, typename... Args>
 	decltype (auto) Visit (const boost::variant<Vars...>& v, Args&&... args)
 	{
-		using Common_t = std::common_type_t<std::result_of_t<detail::VisitorBase<Args...> (Vars)>...>;
-		using R_t = detail::FixCommonType_t<Common_t, std::result_of_t<detail::VisitorBase<Args...> (Vars)>...>;
+		using R_t = decltype (detail::DetectCommonType (Typelist<Vars...> {}, Typelist<Args...> {}, 0));
 
 		return boost::apply_visitor (detail::Visitor<R_t, Args...> { std::forward<Args> (args)... }, v);
 	}
