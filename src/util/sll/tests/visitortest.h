@@ -53,6 +53,7 @@ namespace Util
 		void testLValueRef ();
 
 		void testPrepareVisitor ();
+		void testPrepareVisitorConst ();
 		void testPrepareVisitorFinally ();
 	};
 }
