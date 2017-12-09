@@ -30,6 +30,8 @@
 #pragma once
 
 #include <boost/variant.hpp>
+#include "void.h"
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -63,22 +65,45 @@ namespace Util
 		return boost::apply_visitor (detail::Visitor<R_t, Args...> { std::forward<Args> (args)... }, v);
 	}
 
-	template<typename... Args>
+	template<typename FinallyFunc, typename... Args>
 	class Visitor
 	{
 		detail::VisitorBase<Args...> Base_;
+
+		FinallyFunc Finally_;
 	public:
 		Visitor (Args&&... args)
 		: Base_ { std::forward<Args> (args)... }
 		{
 		}
 
+		Visitor (Args&&... args, FinallyFunc&& func)
+		: Base_ { std::forward<Args> (args)... }
+		, Finally_ { std::forward<FinallyFunc> (func) }
+		{
+		}
+
 		template<typename T>
 		decltype (auto) operator() (const T& var) const
 		{
-			return Visit (var, Base_);
+			if constexpr (std::is_same_v<FinallyFunc, Void>)
+				return Visit (var, Base_);
+			else
+			{
+				const auto guard = MakeScopeGuard (Finally_);
+				return Visit (var, Base_);
+			}
+		}
+
+		template<typename F>
+		Visitor<F, detail::VisitorBase<Args...>> Finally (F&& func)
+		{
+			return { std::move (Base_), std::forward<F> (func) };
 		}
 	};
+
+	template<typename... Args>
+	Visitor (Args&&...) -> Visitor<Void, Args...>;
 
 	template<typename T, typename... Args>
 	auto InvokeOn (T&& t, Args&&... args)
