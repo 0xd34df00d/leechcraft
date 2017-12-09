@@ -1,8 +1,8 @@
 FROM     debian:unstable
 
+RUN apt-get update
 RUN apt-get install -q -y eatmydata
 
-RUN eatmydata apt-get update
 RUN eatmydata apt-get dist-upgrade -q -y
 
 RUN eatmydata apt install -q -y cmake debhelper libaspell-dev \
