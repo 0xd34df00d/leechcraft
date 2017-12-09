@@ -97,13 +97,13 @@ namespace Util
 				typename... Args,
 				typename Common = std::common_type_t<std::result_of_t<detail::VisitorBase<Args...> (Vars&)>...>,
 				typename Res = FixCommonType_t<Common, std::result_of_t<detail::VisitorBase<Args...> (Vars&)>...>>
-		constexpr Res DetectCommonType (Typelist<Vars...>, Typelist<Args...>, int);
+		constexpr Res DetectCommonType (Typelist<Vars...>, Typelist<Args...>);
 	}
 
 	template<typename... Vars, typename... Args>
 	decltype (auto) Visit (const boost::variant<Vars...>& v, Args&&... args)
 	{
-		using R_t = decltype (detail::DetectCommonType (Typelist<Vars...> {}, Typelist<Args...> {}, 0));
+		using R_t = decltype (detail::DetectCommonType (Typelist<Vars...> {}, Typelist<Args...> {}));
 
 		return boost::apply_visitor (detail::Visitor<R_t, Args...> { std::forward<Args> (args)... }, v);
 	}
