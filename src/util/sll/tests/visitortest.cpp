@@ -174,6 +174,22 @@ namespace Util
 		QCOMPARE (res, true);
 	}
 
+	void VisitorTest::testPrepareVisitorRValue ()
+	{
+		Visitor visitor
+		{
+			[] (char) { return true; },
+			[] (int) { return false; },
+			[] (std::string) { return false; },
+			[] (QString) { return false; },
+			[] (double) { return false; },
+			[] (float) { return false; }
+		};
+
+		const auto& res = visitor (Variant_t { 'a' });
+		QCOMPARE (res, true);
+	}
+
 	void VisitorTest::testPrepareVisitorFinally ()
 	{
 		Variant_t v { 'a' };
