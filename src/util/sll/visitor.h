@@ -108,6 +108,14 @@ namespace Util
 		return boost::apply_visitor (detail::Visitor<R_t, Args...> { std::forward<Args> (args)... }, v);
 	}
 
+	template<typename... Vars, typename... Args>
+	decltype (auto) Visit (boost::variant<Vars...>& v, Args&&... args)
+	{
+		using R_t = decltype (detail::DetectCommonType (Typelist<Vars...> {}, Typelist<Args...> {}));
+
+		return boost::apply_visitor (detail::Visitor<R_t, Args...> { std::forward<Args> (args)... }, v);
+	}
+
 	template<typename FinallyFunc, typename... Args>
 	class Visitor
 	{
