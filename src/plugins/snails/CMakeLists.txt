@@ -64,6 +64,7 @@ set (SRCS
 	attachmentsfetcher.cpp
 	accountthreadnotifier.cpp
 	certificateverifier.cpp
+	tracebytecounter.cpp
 	)
 set (FORMS
 	mailtab.ui
