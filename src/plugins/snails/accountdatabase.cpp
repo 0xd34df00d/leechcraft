@@ -34,6 +34,7 @@
 #include <QSqlQuery>
 #include <QtDebug>
 #include <util/db/dblock.h>
+#include <util/db/util.h>
 #include <util/sll/qtutil.h>
 #include "account.h"
 
@@ -71,6 +72,8 @@ namespace Snails
 						.arg (DB_->lastError ().text ())));
 		}
 
+		Util::RunTextQuery (*DB_, "PRAGMA foreign_keys = ON;");
+		Util::RunTextQuery (*DB_, "PRAGMA synchronous = NORMAL;");
 		InitTables ();
 		PrepareQueries ();
 		LoadKnownFolders ();
@@ -275,9 +278,6 @@ namespace Snails
 						Util::DBLock::DumpError (query);
 						throw std::runtime_error ("Query execution failed for storage creation.");
 					}
-
-		query.exec ("PRAGMA foreign_keys = ON;");
-		query.exec ("PRAGMA synchronous = OFF;");
 	}
 
 	void AccountDatabase::PrepareQueries ()
