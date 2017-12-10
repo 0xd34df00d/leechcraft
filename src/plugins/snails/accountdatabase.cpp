@@ -74,6 +74,7 @@ namespace Snails
 
 		Util::RunTextQuery (*DB_, "PRAGMA foreign_keys = ON;");
 		Util::RunTextQuery (*DB_, "PRAGMA synchronous = NORMAL;");
+		Util::RunTextQuery (*DB_, "PRAGMA journal_mode = WAL;");
 		InitTables ();
 		PrepareQueries ();
 		LoadKnownFolders ();
