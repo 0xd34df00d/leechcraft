@@ -62,8 +62,6 @@ namespace Snails
 
 	Storage::Storage (QObject *parent)
 	: QObject (parent)
-	, Settings_ (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_Snails_Storage")
 	{
 		SDir_ = Util::CreateIfNotExists ("snails/storage");
 	}

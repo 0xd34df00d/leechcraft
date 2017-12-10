@@ -50,7 +50,6 @@ namespace Snails
 		Q_OBJECT
 
 		QDir SDir_;
-		QSettings Settings_;
 		QHash<QByteArray, bool> IsMessageRead_;
 
 		QHash<Account*, AccountDatabase_ptr> AccountBases_;
