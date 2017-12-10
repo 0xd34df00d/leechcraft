@@ -42,7 +42,7 @@ namespace Snails
 
 	vmime::shared_ptr<vmime::net::tracer> TracerFactory::create (vmime::shared_ptr<vmime::net::service>, const int connId)
 	{
-		return vmime::make_shared<Tracer> (Context_, connId, AccLogger_);
+		return vmime::make_shared<Tracer> (SentBytes_, ReceivedBytes_, Context_, connId, AccLogger_);
 	}
 }
 }

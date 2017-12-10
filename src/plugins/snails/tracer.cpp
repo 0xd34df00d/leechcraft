@@ -34,8 +34,11 @@ namespace LeechCraft
 {
 namespace Snails
 {
-	Tracer::Tracer (const QString& context, int connId, AccountLogger *logger)
-	: AccLogger_ { logger }
+	Tracer::Tracer (std::atomic<uint64_t>& sent, std::atomic<uint64_t>& received,
+			const QString& context, int connId, AccountLogger *logger)
+	: Sent_ (sent)
+	, Received_ (received)
+	, AccLogger_ { logger }
 	, Context_ { context }
 	, ConnId_ { connId }
 	{

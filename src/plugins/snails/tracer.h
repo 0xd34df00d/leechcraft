@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <atomic>
 #include <QString>
 #include <vmime/net/tracer.hpp>
 
@@ -40,11 +41,14 @@ namespace Snails
 
 	class Tracer : public vmime::net::tracer
 	{
+		std::atomic<uint64_t>& Sent_;
+		std::atomic<uint64_t>& Received_;
+
 		AccountLogger * const AccLogger_;
 		const QString Context_;
 		const int ConnId_;
 	public:
-		Tracer (const QString&, int, AccountLogger*);
+		Tracer (std::atomic<uint64_t>&, std::atomic<uint64_t>&, const QString&, int, AccountLogger*);
 
 		void traceReceiveBytes (const vmime::size_t count, const vmime::string& state) override;
 		void traceSendBytes (const vmime::size_t count, const vmime::string& state) override;
