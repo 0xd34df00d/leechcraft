@@ -63,6 +63,8 @@ namespace Snails
 	using VmimeFolder_ptr = vmime::shared_ptr<vmime::net::folder>;
 	using CertList_t = std::vector<vmime::shared_ptr<vmime::security::cert::X509Certificate>>;
 
+	class TracerFactory;
+
 	class AccountThreadWorker : public QObject
 	{
 		Q_OBJECT
@@ -80,6 +82,7 @@ namespace Snails
 
 		vmime::shared_ptr<vmime::net::session> Session_;
 		vmime::shared_ptr<vmime::net::store> CachedStore_;
+		vmime::shared_ptr<TracerFactory> TracerFactory_;
 
 		Util::AssocCache<QStringList, vmime::shared_ptr<vmime::net::folder>> CachedFolders_;
 

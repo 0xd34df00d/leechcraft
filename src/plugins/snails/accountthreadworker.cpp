@@ -181,7 +181,10 @@ namespace Snails
 		auto url = WaitForFuture (A_->BuildInURL ());
 
 		auto st = Session_->getStore (vmime::utility::url (url.toUtf8 ().constData ()));
-		st->setTracerFactory (vmime::make_shared<TracerFactory> (ThreadName_, A_->GetLogger ()));
+
+		TracerFactory_ = vmime::make_shared<TracerFactory> (ThreadName_, A_->GetLogger ());
+		st->setTracerFactory (TracerFactory_);
+
 		st->setCertificateVerifier (CertVerifier_);
 		st->setAuthenticator (InAuth_);
 
