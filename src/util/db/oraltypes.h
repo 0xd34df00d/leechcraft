@@ -113,6 +113,40 @@ namespace oral
 	template<typename T>
 	using UniqueValue_t = typename Unique<T>::value_type;
 
+	template<typename T>
+	struct NotNull
+	{
+		using value_type = T;
+
+		T Val_;
+
+		NotNull () = default;
+
+		NotNull (T val)
+		: Val_ { val }
+		{
+		}
+
+		NotNull& operator= (T val)
+		{
+			Val_ = val;
+			return *this;
+		}
+
+		operator value_type () const
+		{
+			return Val_;
+		}
+
+		const value_type& operator* () const
+		{
+			return Val_;
+		}
+	};
+
+	template<typename T>
+	using NotNullValue_t = typename NotNull<T>::value_type;
+
 	namespace detail
 	{
 		template<typename T>
@@ -188,6 +222,9 @@ namespace oral
 
 	template<typename T>
 	struct IsIndirect<Unique<T>> : std::true_type {};
+
+	template<typename T>
+	struct IsIndirect<NotNull<T>> : std::true_type {};
 
 	template<typename Seq, int Idx>
 	struct IsIndirect<References<Seq, Idx>> : std::true_type {};
