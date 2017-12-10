@@ -39,6 +39,8 @@ namespace Snails
 {
 	class AccountLogger;
 
+	class TraceByteCounter;
+
 	class TracerFactory : public vmime::net::tracerFactory
 	{
 		AccountLogger * const AccLogger_;
@@ -48,6 +50,8 @@ namespace Snails
 		std::atomic<uint64_t> ReceivedBytes_ { 0 };
 	public:
 		TracerFactory (const QString&, AccountLogger*);
+
+		TraceByteCounter CreateCounter ();
 
 		vmime::shared_ptr<vmime::net::tracer> create (vmime::shared_ptr<vmime::net::service>, const int) override;
 	};

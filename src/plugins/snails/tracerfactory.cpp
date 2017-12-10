@@ -29,6 +29,7 @@
 
 #include "tracerfactory.h"
 #include "tracer.h"
+#include "tracebytecounter.h"
 
 namespace LeechCraft
 {
@@ -38,6 +39,11 @@ namespace Snails
 	: AccLogger_ { logger }
 	, Context_ { context }
 	{
+	}
+
+	TraceByteCounter TracerFactory::CreateCounter ()
+	{
+		return { SentBytes_, ReceivedBytes_ };
 	}
 
 	vmime::shared_ptr<vmime::net::tracer> TracerFactory::create (vmime::shared_ptr<vmime::net::service>, const int connId)
