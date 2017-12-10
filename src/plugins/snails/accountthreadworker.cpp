@@ -68,6 +68,7 @@
 #include "tracerfactory.h"
 #include "accountthreadnotifier.h"
 #include "certificateverifier.h"
+#include "tracebytecounter.h"
 
 namespace LeechCraft
 {
@@ -634,6 +635,8 @@ namespace Snails
 	{
 		const auto changeGuard = ChangeListener_->Disable ();
 
+		const auto bytesCounter = TracerFactory_->CreateCounter ();
+
 		qDebug () << Q_FUNC_INFO << folderName << folder.get () << lastId;
 
 		auto messages = GetMessagesInFolder (folder, lastId);
@@ -681,6 +684,9 @@ namespace Snails
 			else
 				ids << msg->GetFolderID ();
 		}
+
+		qDebug () << "done fetching, sent" << bytesCounter.GetSent ()
+				<< "bytes, received" << bytesCounter.GetReceived () << "bytes";
 
 		return
 		{
