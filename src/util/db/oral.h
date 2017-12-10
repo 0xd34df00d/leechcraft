@@ -1130,13 +1130,13 @@ namespace oral
 		};
 
 		template<typename T>
-		struct ObjectInfoFKeysHelper<T, typename std::enable_if<CollectRefs<T>::type_list::size::value == 1, void>::type>
+		struct ObjectInfoFKeysHelper<T, std::enable_if_t<CollectRefs<T>::type_list::size::value == 1>>
 		{
 			std::function<QList<T> (typename MakeBinder<T, typename CollectRefs<T>::type_list>::objects_vector)> SelectByFKeysActor_;
 		};
 
 		template<typename T>
-		struct ObjectInfoFKeysHelper<T, typename std::enable_if<CollectRefs<T>::type_list::size::value >= 2, void>::type>
+		struct ObjectInfoFKeysHelper<T, std::enable_if_t<CollectRefs<T>::type_list::size::value >= 2>>
 		{
 			using objects_vector = typename MakeBinder<T, typename CollectRefs<T>::type_list>::objects_vector;
 			std::function<QList<T> (objects_vector)> SelectByFKeysActor_;
