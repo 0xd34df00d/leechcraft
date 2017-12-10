@@ -164,6 +164,12 @@ namespace oral
 		QString operator() () const { return Type2Name<T> () () + " UNIQUE"; }
 	};
 
+	template<typename T>
+	struct Type2Name<NotNull<T>>
+	{
+		QString operator() () const { return Type2Name<T> () () + " NOT NULL"; }
+	};
+
 	template<typename T, typename... Tags>
 	struct Type2Name<PKey<T, Tags...>>
 	{
