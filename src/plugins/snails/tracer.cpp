@@ -46,6 +46,8 @@ namespace Snails
 
 	void Tracer::traceReceiveBytes (const vmime::size_t count, const vmime::string& state)
 	{
+		Received_.fetch_add (count, std::memory_order_relaxed);
+
 		AccLogger_->Log (Context_, ConnId_,
 				QString { "received %1 bytes in state %2" }
 					.arg (count)
@@ -54,6 +56,8 @@ namespace Snails
 
 	void Tracer::traceSendBytes (const vmime::size_t count, const vmime::string& state)
 	{
+		Sent_.fetch_add (count, std::memory_order_relaxed);
+
 		AccLogger_->Log (Context_, ConnId_,
 				QString { "sent %1 bytes in state %2" }
 					.arg (count)
