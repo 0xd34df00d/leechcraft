@@ -971,7 +971,7 @@ namespace oral
 		template<typename OrigSeq, typename OrigIdx, typename RefSeq, typename RefIdx>
 		struct ExtractRefSeq<FieldInfo<OrigSeq, OrigIdx, RefSeq, RefIdx>>
 		{
-			using type = typename boost::fusion::result_of::at<RefSeq, RefIdx>::type;
+			using type = typename boost::fusion::result_of::at<const RefSeq, RefIdx>::type;
 		};
 
 		struct SingleBind
@@ -1027,7 +1027,7 @@ namespace oral
 				const auto selectQuery = std::make_shared<QSqlQuery> (Data_.DB_);
 				selectQuery->prepare (query);
 
-				using ReferredType_t = typename boost::fusion::result_of::at<RefObj, RefIdx>::type;
+				using ReferredType_t = typename boost::fusion::result_of::at<const RefObj, RefIdx>::type;
 
 				auto selector = [selectQuery, boundName] (const ReferredType_t& val)
 				{
