@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <atomic>
 #include <QString>
 #include <vmime/net/tracer.hpp>
 
@@ -42,6 +43,9 @@ namespace Snails
 	{
 		AccountLogger * const AccLogger_;
 		const QString Context_;
+
+		std::atomic<uint64_t> SentBytes_ { 0 };
+		std::atomic<uint64_t> ReceivedBytes_ { 0 };
 	public:
 		TracerFactory (const QString&, AccountLogger*);
 
