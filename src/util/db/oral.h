@@ -971,7 +971,7 @@ namespace oral
 		template<typename OrigSeq, typename OrigIdx, typename RefSeq, typename RefIdx>
 		struct ExtractRefSeq<FieldInfo<OrigSeq, OrigIdx, RefSeq, RefIdx>>
 		{
-			using type = RefSeq;
+			using type = typename boost::fusion::result_of::at<RefSeq, RefIdx>::type;
 		};
 
 		struct SingleBind
@@ -982,14 +982,14 @@ namespace oral
 			void operator() (const boost::fusion::vector2<ObjType, const FieldInfo<OrigSeq, OrigIdx, RefSeq, RefIdx>&>& pair) const
 			{
 				Q_->bindValue (GetBoundName<RefSeq, RefIdx::value>::value (),
-						ToVariantF (boost::fusion::at<RefIdx> (boost::fusion::at_c<0> (pair))));
+						ToVariantF (boost::fusion::at_c<0> (pair)));
 			}
 		};
 
-		template<typename T, typename RefSeq>
+		template<typename T, typename RefSeqList>
 		struct MakeBinder
 		{
-			using transform_view = typename boost::mpl::transform<RefSeq, ExtractRefSeq<boost::mpl::_1>>;
+			using transform_view = typename boost::mpl::transform<RefSeqList, ExtractRefSeq<boost::mpl::_1>>;
 			using objects_view = typename transform_view::type;
 			using objects_vector = typename boost::fusion::result_of::as_vector<objects_view>::type;
 
@@ -997,7 +997,7 @@ namespace oral
 
 			QList<T> operator() (const objects_vector& objs)
 			{
-				boost::fusion::for_each (boost::fusion::zip (objs, RefSeq {}), SingleBind { Q_ });
+				boost::fusion::for_each (boost::fusion::zip (objs, RefSeqList {}), SingleBind { Q_ });
 				return PerformSelect<T> (Q_);
 			}
 		};
@@ -1027,13 +1027,15 @@ namespace oral
 				const auto selectQuery = std::make_shared<QSqlQuery> (Data_.DB_);
 				selectQuery->prepare (query);
 
-				auto selector = [selectQuery, boundName] (const RefObj& obj)
+				using ReferredType_t = typename boost::fusion::result_of::at<RefObj, RefIdx>::type;
+
+				auto selector = [selectQuery, boundName] (const ReferredType_t& val)
 				{
-					selectQuery->bindValue (boundName, ToVariantF (boost::fusion::at<RefIdx> (obj)));
+					selectQuery->bindValue (boundName, ToVariantF (val));
 					return PerformSelect<T> (selectQuery);
 				};
 
-				return boost::fusion::push_back (vec, WrapAsFunc_t<RefObj, T> { selector });
+				return boost::fusion::push_back (vec, WrapAsFunc_t<ReferredType_t, T> { selector });
 			}
 		};
 
