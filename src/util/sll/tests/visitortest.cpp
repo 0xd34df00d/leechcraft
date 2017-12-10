@@ -212,21 +212,6 @@ namespace Util
 		QCOMPARE (res, true);
 	}
 
-	void VisitorTest::testPrepareVisitorModifyingLValue ()
-	{
-		Variant_t v { 'a' };
-		Visitor visitor
-		{
-			[] (char& c) { c = 'c'; },
-			[] (int& n) { n = 10; },
-			[] (auto&) {}
-		};
-
-		visitor (v);
-
-		QCOMPARE (v, Variant_t { 'c' });
-	}
-
 	void VisitorTest::testPrepareVisitorFinally ()
 	{
 		Variant_t v { 'a' };
