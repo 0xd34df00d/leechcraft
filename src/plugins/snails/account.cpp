@@ -227,43 +227,42 @@ namespace Snails
 	{
 		const auto& future = WorkerPool_->Schedule (prio,
 				&AccountThreadWorker::Synchronize, folders, last);
-		return future * [=] (const auto& result)
+		return future * Util::Visitor
 				{
-					return Util::Visit (result.AsVariant (),
-							[=] (const AccountThreadWorker::SyncResult& right)
-							{
-								HandleGotFolders (right.AllFolders_);
+					[=] (const AccountThreadWorker::SyncResult& right)
+					{
+						HandleGotFolders (right.AllFolders_);
 
-								SyncStats stats;
+						SyncStats stats;
 
-								for (const auto& pair : Util::Stlize (right.Messages_))
-								{
-									const auto& folder = pair.first;
-									const auto& msgs = pair.second;
+						for (const auto& pair : Util::Stlize (right.Messages_))
+						{
+							const auto& folder = pair.first;
+							const auto& msgs = pair.second;
 
-									HandleMessagesRemoved (msgs.RemovedIds_, folder);
-									HandleGotOtherMessages (msgs.OtherIds_, folder);
-									HandleMsgHeaders (msgs.NewHeaders_, folder);
-									HandleUpdatedMessages (msgs.UpdatedMsgs_, folder);
+							HandleMessagesRemoved (msgs.RemovedIds_, folder);
+							HandleGotOtherMessages (msgs.OtherIds_, folder);
+							HandleMsgHeaders (msgs.NewHeaders_, folder);
+							HandleUpdatedMessages (msgs.UpdatedMsgs_, folder);
 
-									UpdateFolderCount (folder);
+							UpdateFolderCount (folder);
 
-									stats.NewMsgsCount_ += msgs.NewHeaders_.size ();
-								}
+							stats.NewMsgsCount_ += msgs.NewHeaders_.size ();
+						}
 
-								return SynchronizeResult_t::Right (stats);
-							},
-							[=] (auto err)
-							{
-								qWarning () << Q_FUNC_INFO
-										<< "error synchronizing"
-										<< folders
-										<< "to"
-										<< last
-										<< ":"
-										<< Util::Visit (err, [] (auto e) { return e.what (); });
-								return SynchronizeResult_t::Left (err);
-							});
+						return SynchronizeResult_t::Right (stats);
+					},
+					[=] (auto err)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "error synchronizing"
+								<< folders
+								<< "to"
+								<< last
+								<< ":"
+								<< Util::Visit (err, [] (auto e) { return e.what (); });
+						return SynchronizeResult_t::Left (err);
+					}
 				};
 	}
 
@@ -272,20 +271,15 @@ namespace Snails
 		auto future = WorkerPool_->Schedule (TaskPriority::High,
 				&AccountThreadWorker::FetchWholeMessage, msg);
 		Util::Sequence (this, future) >>
-			[this] (const auto& result)
-			{
-				Util::Visit (result.AsVariant (),
-						[this] (const Message_ptr& msg)
-						{
-							for (const auto& folder : msg->GetFolders ())
-								Storage_->SaveMessages (this, folder, { msg });
-						},
-						[] (const auto& e)
-						{
-							Util::Visit (e,
-									[] (auto e) { qWarning () << Q_FUNC_INFO << e.what (); });
-						});
-			};
+				Util::Visitor
+				{
+					[this] (const Message_ptr& msg)
+					{
+						for (const auto& folder : msg->GetFolders ())
+							Storage_->SaveMessages (this, folder, { msg });
+					},
+					Util::Visitor { [] (auto e) { qWarning () << Q_FUNC_INFO << e.what (); } }
+				};
 
 		return future;
 	}
@@ -315,15 +309,14 @@ namespace Snails
 		const auto& future = WorkerPool_->Schedule (TaskPriority::High,
 				&AccountThreadWorker::SetReadStatus, read, ids, folder);
 		Util::Sequence (this, future) >>
-				[=] (const auto& result)
+				Util::Visitor
 				{
-					Util::Visit (result.AsVariant (),
-							[=] (const QList<Message_ptr>& msgs)
-							{
-								HandleUpdatedMessages (msgs, folder);
-								UpdateFolderCount (folder);
-							},
-							[] (auto) {});
+					[=] (const QList<Message_ptr>& msgs)
+					{
+						HandleUpdatedMessages (msgs, folder);
+						UpdateFolderCount (folder);
+					},
+					[] (auto) {}
 				};
 	}
 
@@ -338,15 +331,10 @@ namespace Snails
 			const QStringList& from, const QList<QStringList>& to)
 	{
 		Util::Sequence (this, CopyMessages (ids, from, to)) >>
-				[=] (auto result)
+				Util::Visitor
 				{
-					Util::Visit (result.AsVariant (),
-							[=] (Util::Void) { DeleteFromFolder (ids, from); },
-							[=] (auto err)
-							{
-								Util::Visit (err,
-										[] (auto e) { qWarning () << Q_FUNC_INFO << e.what (); });
-							});
+					[=] (Util::Void) { DeleteFromFolder (ids, from); },
+					Util::Visitor { [] (auto e) { qWarning () << Q_FUNC_INFO << e.what (); } }
 				};
 	}
 
@@ -370,15 +358,10 @@ namespace Snails
 		if (trashPath &&
 				RollupBehaviour (DeleteBehaviour_, InHost_) == DeleteBehaviour::MoveToTrash)
 			Util::Sequence (this, CopyMessages (ids, folder, { *trashPath })) >>
-					[=] (auto result)
+					Util::Visitor
 					{
-						Util::Visit (result.AsVariant (),
-								[=] (Util::Void) { DeleteFromFolder (ids, folder); },
-								[=] (auto err)
-								{
-									Util::Visit (err,
-											[] (auto e) { qWarning () << Q_FUNC_INFO << e.what (); });
-								});
+						[=] (Util::Void) { DeleteFromFolder (ids, folder); },
+						Util::Visitor { [] (auto e) { qWarning () << Q_FUNC_INFO << e.what (); } }
 					};
 		else
 			DeleteFromFolder (ids, folder);
@@ -709,15 +692,14 @@ namespace Snails
 		const auto& future = WorkerPool_->Schedule (TaskPriority::High,
 				&AccountThreadWorker::DeleteMessages, ids, folder);
 		Util::Sequence (this, future) >>
-				[=] (const auto& result)
+				Util::Visitor
 				{
-					Util::Visit (result.AsVariant (),
-							[=] (Util::Void)
-							{
-								HandleMessagesRemoved (ids, folder);
-								UpdateFolderCount (folder);
-							},
-							[] (auto) {});
+					[=] (Util::Void)
+					{
+						HandleMessagesRemoved (ids, folder);
+						UpdateFolderCount (folder);
+					},
+					[] (auto) {}
 				};
 	}
 
@@ -785,16 +767,10 @@ namespace Snails
 		auto future = WorkerPool_->Schedule (TaskPriority::Low,
 				&AccountThreadWorker::GetMessageCount, folder);
 		Util::Sequence (this, future) >>
-				[=] (const auto& counts)
+				Util::Visitor
 				{
-					Util::Visit (counts.AsVariant (),
-							[=] (const QPair<int, int>& counts)
-								{ HandleMessageCountFetched (counts.first, counts.second, folder); },
-							[] (const auto& e)
-							{
-								Util::Visit (e,
-										[] (auto e) { qWarning () << Q_FUNC_INFO << e.what (); });
-							});
+					[=] (QPair<int, int> counts) { HandleMessageCountFetched (counts.first, counts.second, folder); },
+					Util::Visitor { [] (auto e) { qWarning () << Q_FUNC_INFO << e.what (); } }
 				};
 	}
 
