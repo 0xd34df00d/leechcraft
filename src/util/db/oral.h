@@ -98,12 +98,16 @@ namespace oral
 		using MorpherDetector = decltype (std::declval<U> ().FieldNameMorpher (QString {}));
 
 		template<typename T>
-		QString MorphFieldName (const QString& str)
+		QString MorphFieldName (QString str)
 		{
 			if constexpr (IsDetected_v<MorpherDetector, T>)
 				return T::FieldNameMorpher (str);
 			else
+			{
+				if (str.endsWith ('_'))
+					str.chop (1);
 				return str;
+			}
 		}
 
 		template<typename Seq, int Idx>
