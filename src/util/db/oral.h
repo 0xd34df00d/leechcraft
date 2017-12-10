@@ -1023,13 +1023,13 @@ namespace oral
 				const auto selectQuery = std::make_shared<QSqlQuery> (Data_.DB_);
 				selectQuery->prepare (query);
 
-				auto inserter = [selectQuery, boundName] (const RefObj& obj)
+				auto selector = [selectQuery, boundName] (const RefObj& obj)
 				{
 					selectQuery->bindValue (boundName, ToVariantF (boost::fusion::at<RefIdx> (obj)));
 					return PerformSelect<T> (selectQuery);
 				};
 
-				return boost::fusion::push_back (vec, WrapAsFunc_t<RefObj, T> { inserter });
+				return boost::fusion::push_back (vec, WrapAsFunc_t<RefObj, T> { selector });
 			}
 		};
 
