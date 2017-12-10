@@ -966,10 +966,10 @@ namespace oral
 		};
 
 		template<typename T>
-		struct ExtrObj;
+		struct ExtractRefSeq;
 
-		template<typename OrigSeq, typename OrigIdx, typename RefSeq, typename MemberIdx>
-		struct ExtrObj<FieldInfo<OrigSeq, OrigIdx, RefSeq, MemberIdx>>
+		template<typename OrigSeq, typename OrigIdx, typename RefSeq, typename RefIdx>
+		struct ExtractRefSeq<FieldInfo<OrigSeq, OrigIdx, RefSeq, RefIdx>>
 		{
 			using type = RefSeq;
 		};
@@ -989,7 +989,7 @@ namespace oral
 		template<typename T, typename RefSeq>
 		struct MakeBinder
 		{
-			using transform_view = typename boost::mpl::transform<RefSeq, ExtrObj<boost::mpl::_1>>;
+			using transform_view = typename boost::mpl::transform<RefSeq, ExtractRefSeq<boost::mpl::_1>>;
 			using objects_view = typename transform_view::type;
 			using objects_vector = typename boost::fusion::result_of::as_vector<objects_view>::type;
 
