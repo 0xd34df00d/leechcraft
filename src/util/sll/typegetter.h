@@ -71,7 +71,7 @@ namespace Util
 
 	template<typename F>
 	using RetType_t = std::conditional_t<
-			std::is_same<detail::RetTypeRaw_t<F>, detail::ReturnsVoid> {}, // C++17
+			std::is_same_v<detail::RetTypeRaw_t<F>, detail::ReturnsVoid>,
 			void,
 			detail::RetTypeRaw_t<F>
 		>;
