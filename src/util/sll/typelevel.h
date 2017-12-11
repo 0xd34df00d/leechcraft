@@ -50,5 +50,12 @@ namespace Util
 		template<typename T>
 		struct Result_t : Negate<typename Pred<T>::type>::Result_t {};
 	};
+
+	template<typename... Args>
+	void PrintTypes ()
+	{
+		qDebug () << Q_FUNC_INFO;
+	}
+
 }
 }
