@@ -120,7 +120,10 @@ namespace oral
 		};
 
 		template<typename S>
-		constexpr auto SeqIndices = std::make_index_sequence<boost::fusion::result_of::size<S>::type::value> {};
+		constexpr auto SeqSize = boost::fusion::result_of::size<S>::type::value;
+
+		template<typename S>
+		constexpr auto SeqIndices = std::make_index_sequence<SeqSize<S>> {};
 
 		template<typename S>
 		struct GetFieldsNames
