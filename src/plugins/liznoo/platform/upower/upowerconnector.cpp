@@ -32,7 +32,6 @@
 #include <QDBusInterface>
 #include <QDBusReply>
 #include <QDBusConnectionInterface>
-#include <QDBusMetaType>
 #include <QtDebug>
 #include <util/xpc/util.h>
 
@@ -93,7 +92,6 @@ namespace UPower
 			return;
 		}
 
-		qDBusRegisterMetaType<QMap<QString, QVariant>> ();
 		SB_.connect ("org.freedesktop.UPower",
 				{},
 				"org.freedesktop.DBus.Properties",
