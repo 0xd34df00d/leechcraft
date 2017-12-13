@@ -87,22 +87,12 @@ namespace UPower
 			<< HasGlobalDeviceChanged_;
 
 		if (HasGlobalDeviceChanged_)
-		{
 			SB_.connect ("org.freedesktop.UPower",
 					"/org/freedesktop/UPower",
 					"org.freedesktop.UPower",
 					"DeviceChanged",
 					this,
 					SLOT (requeryDevice (QString)));
-			return;
-		}
-
-		SB_.connect ("org.freedesktop.UPower",
-				{},
-				"org.freedesktop.DBus.Properties",
-				"PropertiesChanged",
-				this,
-				SLOT (handlePropertiesChanged (QDBusMessage)));
 	}
 
 	void UPowerConnector::handleGonnaSleep ()
@@ -178,6 +168,17 @@ namespace UPower
 		info.Temperature_ = 0;
 
 		emit batteryInfoUpdated (info);
+
+		if (!HasGlobalDeviceChanged_ && !SubscribedDevices_.contains (id))
+		{
+			SB_.connect ("org.freedesktop.UPower",
+					id,
+					"org.freedesktop.DBus.Properties",
+					"PropertiesChanged",
+					this,
+					SLOT (handlePropertiesChanged (QDBusMessage)));
+			SubscribedDevices_ << id;
+		}
 	}
 
 	void UPowerConnector::handlePropertiesChanged (const QDBusMessage& msg)

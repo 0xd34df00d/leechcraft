@@ -30,6 +30,7 @@
 #pragma once
 
 #include <memory>
+#include <QSet>
 #include "../../batteryinfo.h"
 #include "../common/connectorbase.h"
 
@@ -46,6 +47,7 @@ namespace UPower
 		Q_OBJECT
 
 		bool HasGlobalDeviceChanged_;
+		QSet<QString> SubscribedDevices_;
 	public:
 		UPowerConnector (QObject* = nullptr);
 	private:
