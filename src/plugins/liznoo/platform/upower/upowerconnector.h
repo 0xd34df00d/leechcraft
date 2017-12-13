@@ -44,6 +44,8 @@ namespace UPower
 	class UPowerConnector : public ConnectorBase
 	{
 		Q_OBJECT
+
+		bool HasGlobalDeviceChanged_;
 	public:
 		UPowerConnector (QObject* = nullptr);
 	private:

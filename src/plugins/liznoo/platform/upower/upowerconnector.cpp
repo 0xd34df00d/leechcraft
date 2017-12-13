@@ -81,7 +81,12 @@ namespace UPower
 
 	void UPowerConnector::ConnectChangedNotification ()
 	{
-		if (CheckSignals ("/org/freedesktop/UPower", { "DeviceChanged" }))
+		HasGlobalDeviceChanged_ = CheckSignals ("/org/freedesktop/UPower", { "DeviceChanged" });
+		qDebug () << Q_FUNC_INFO
+			<< "has global DeviceChanged signal?"
+			<< HasGlobalDeviceChanged_;
+
+		if (HasGlobalDeviceChanged_)
 		{
 			SB_.connect ("org.freedesktop.UPower",
 					"/org/freedesktop/UPower",
