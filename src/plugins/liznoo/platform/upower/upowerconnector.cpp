@@ -53,12 +53,8 @@ namespace UPower
 				"DeviceAdded",
 				this,
 				SLOT (requeryDevice (QString)));
-		SB_.connect ("org.freedesktop.UPower",
-				"/org/freedesktop/UPower",
-				"org.freedesktop.UPower",
-				"DeviceChanged",
-				this,
-				SLOT (requeryDevice (QString)));
+
+		ConnectChangedNotification ();
 
 		if (!CheckSignals ("/org/freedesktop/UPower", { "\"Sleeping\"", "\"Resuming\"" }))
 		{
