@@ -147,6 +147,9 @@ namespace UPower
 			case 6:
 				return "NiMh";
 			default:
+				qWarning () << Q_FUNC_INFO
+					<< "unknown technology ID"
+					<< id;
 				return "<unknown>";
 			}
 		}
