@@ -33,6 +33,8 @@
 #include "../../batteryinfo.h"
 #include "../common/connectorbase.h"
 
+class QDBusMessage;
+
 namespace LeechCraft
 {
 namespace Liznoo
@@ -50,6 +52,7 @@ namespace UPower
 		void handleGonnaSleep ();
 		void enumerateDevices ();
 		void requeryDevice (const QString&);
+		void handlePropertiesChanged (const QDBusMessage&);
 	signals:
 		void batteryInfoUpdated (Liznoo::BatteryInfo);
 	};

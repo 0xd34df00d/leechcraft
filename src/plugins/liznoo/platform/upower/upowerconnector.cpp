@@ -32,6 +32,7 @@
 #include <QDBusInterface>
 #include <QDBusReply>
 #include <QDBusConnectionInterface>
+#include <QDBusMetaType>
 #include <QtDebug>
 #include <util/xpc/util.h>
 
@@ -77,6 +78,28 @@ namespace UPower
 				SIGNAL (wokeUp ()));
 
 		PowerEventsAvailable_ = sleepConnected && resumeConnected;
+	}
+
+	void UPowerConnector::ConnectChangedNotification ()
+	{
+		if (CheckSignals ("/org/freedesktop/UPower", { "DeviceChanged" }))
+		{
+			SB_.connect ("org.freedesktop.UPower",
+					"/org/freedesktop/UPower",
+					"org.freedesktop.UPower",
+					"DeviceChanged",
+					this,
+					SLOT (requeryDevice (QString)));
+			return;
+		}
+
+		qDBusRegisterMetaType<QMap<QString, QVariant>> ();
+		SB_.connect ("org.freedesktop.UPower",
+				{},
+				"org.freedesktop.DBus.Properties",
+				"PropertiesChanged",
+				this,
+				SLOT (handlePropertiesChanged (QDBusMessage)));
 	}
 
 	void UPowerConnector::handleGonnaSleep ()
@@ -141,6 +164,16 @@ namespace UPower
 		info.Temperature_ = 0;
 
 		emit batteryInfoUpdated (info);
+	}
+
+	void UPowerConnector::handlePropertiesChanged (const QDBusMessage& msg)
+	{
+		const auto& changedVar = msg.arguments ().value (1);
+		const auto& changedMap = qdbus_cast<QVariantMap> (changedVar.value<QDBusArgument> ());
+		if (!changedMap.contains ("Percentage"))
+			return;
+
+		requeryDevice (msg.path ());
 	}
 }
 }
