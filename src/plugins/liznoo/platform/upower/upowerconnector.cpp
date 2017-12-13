@@ -127,15 +127,23 @@ namespace UPower
 	{
 		QString TechIdToString (int id)
 		{
-			QMap<int, QString> id2str;
-			id2str [1] = "Li-Ion";
-			id2str [2] = "Li-Polymer";
-			id2str [3] = "Li-Iron-Phosphate";
-			id2str [4] = "Lead acid";
-			id2str [5] = "NiCd";
-			id2str [6] = "NiMh";
-
-			return id2str.value (id, "<unknown>");
+			switch (id)
+			{
+			case 1:
+				return "Li-Ion";
+			case 2:
+				return "Li-Polymer";
+			case 3:
+				return "Li-Iron-Phosphate";
+			case 4:
+				return "Lead acid";
+			case 5:
+				return "NiCd";
+			case 6:
+				return "NiMh";
+			default:
+				return "<unknown>";
+			}
 		}
 	}
 
