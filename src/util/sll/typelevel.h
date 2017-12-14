@@ -59,5 +59,8 @@ namespace Util
 
 	template<template<typename> class Pred, typename... Args>
 	constexpr auto AllOf = (Pred<Args> {} && ...);
+
+	template<template<typename> class Pred, typename... Args>
+	constexpr auto AnyOf = (Pred<Args> {} || ...);
 }
 }
