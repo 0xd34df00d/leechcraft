@@ -53,12 +53,8 @@ namespace UPower
 				"DeviceAdded",
 				this,
 				SLOT (requeryDevice (QString)));
-		SB_.connect ("org.freedesktop.UPower",
-				"/org/freedesktop/UPower",
-				"org.freedesktop.UPower",
-				"DeviceChanged",
-				this,
-				SLOT (requeryDevice (QString)));
+
+		ConnectChangedNotification ();
 
 		if (!CheckSignals ("/org/freedesktop/UPower", { "\"Sleeping\"", "\"Resuming\"" }))
 		{
@@ -81,6 +77,22 @@ namespace UPower
 				SIGNAL (wokeUp ()));
 
 		PowerEventsAvailable_ = sleepConnected && resumeConnected;
+	}
+
+	void UPowerConnector::ConnectChangedNotification ()
+	{
+		HasGlobalDeviceChanged_ = CheckSignals ("/org/freedesktop/UPower", { "DeviceChanged" });
+		qDebug () << Q_FUNC_INFO
+			<< "has global DeviceChanged signal?"
+			<< HasGlobalDeviceChanged_;
+
+		if (HasGlobalDeviceChanged_)
+			SB_.connect ("org.freedesktop.UPower",
+					"/org/freedesktop/UPower",
+					"org.freedesktop.UPower",
+					"DeviceChanged",
+					this,
+					SLOT (requeryDevice (QString)));
 	}
 
 	void UPowerConnector::handleGonnaSleep ()
@@ -110,15 +122,26 @@ namespace UPower
 	{
 		QString TechIdToString (int id)
 		{
-			QMap<int, QString> id2str;
-			id2str [1] = "Li-Ion";
-			id2str [2] = "Li-Polymer";
-			id2str [3] = "Li-Iron-Phosphate";
-			id2str [4] = "Lead acid";
-			id2str [5] = "NiCd";
-			id2str [6] = "NiMh";
-
-			return id2str.value (id, "<unknown>");
+			switch (id)
+			{
+			case 1:
+				return "Li-Ion";
+			case 2:
+				return "Li-Polymer";
+			case 3:
+				return "Li-Iron-Phosphate";
+			case 4:
+				return "Lead acid";
+			case 5:
+				return "NiCd";
+			case 6:
+				return "NiMh";
+			default:
+				qWarning () << Q_FUNC_INFO
+					<< "unknown technology ID"
+					<< id;
+				return "<unknown>";
+			}
 		}
 	}
 
@@ -145,6 +168,27 @@ namespace UPower
 		info.Temperature_ = 0;
 
 		emit batteryInfoUpdated (info);
+
+		if (!HasGlobalDeviceChanged_ && !SubscribedDevices_.contains (id))
+		{
+			SB_.connect ("org.freedesktop.UPower",
+					id,
+					"org.freedesktop.DBus.Properties",
+					"PropertiesChanged",
+					this,
+					SLOT (handlePropertiesChanged (QDBusMessage)));
+			SubscribedDevices_ << id;
+		}
+	}
+
+	void UPowerConnector::handlePropertiesChanged (const QDBusMessage& msg)
+	{
+		const auto& changedVar = msg.arguments ().value (1);
+		const auto& changedMap = qdbus_cast<QVariantMap> (changedVar.value<QDBusArgument> ());
+		if (!changedMap.contains ("Percentage"))
+			return;
+
+		requeryDevice (msg.path ());
 	}
 }
 }

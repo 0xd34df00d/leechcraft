@@ -232,8 +232,11 @@ namespace UDisks2
 		}
 
 		QDBusConnection::systemBus ().connect ("org.freedesktop.UDisks2",
-				path.path (), "org.freedesktop.DBus.Properties", "PropertiesChanged",
-				this, SLOT (handleDeviceChanged (QDBusMessage)));
+				path.path (),
+				"org.freedesktop.DBus.Properties",
+				"PropertiesChanged",
+				this,
+				SLOT (handleDeviceChanged (QDBusMessage)));
 
 		auto item = new QStandardItem;
 		Object2Item_ [str] = item;

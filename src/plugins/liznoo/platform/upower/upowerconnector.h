@@ -30,8 +30,11 @@
 #pragma once
 
 #include <memory>
+#include <QSet>
 #include "../../batteryinfo.h"
 #include "../common/connectorbase.h"
+
+class QDBusMessage;
 
 namespace LeechCraft
 {
@@ -42,12 +45,18 @@ namespace UPower
 	class UPowerConnector : public ConnectorBase
 	{
 		Q_OBJECT
+
+		bool HasGlobalDeviceChanged_;
+		QSet<QString> SubscribedDevices_;
 	public:
 		UPowerConnector (QObject* = nullptr);
+	private:
+		void ConnectChangedNotification ();
 	private slots:
 		void handleGonnaSleep ();
 		void enumerateDevices ();
 		void requeryDevice (const QString&);
+		void handlePropertiesChanged (const QDBusMessage&);
 	signals:
 		void batteryInfoUpdated (Liznoo::BatteryInfo);
 	};
