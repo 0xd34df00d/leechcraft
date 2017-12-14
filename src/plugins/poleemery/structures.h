@@ -56,6 +56,8 @@ namespace Poleemery
 		QString Currency_;
 
 		static QString ClassName () { return "Account"; }
+
+		static QString FieldNameMorpher (const QString& str) { return str; }
 	};
 
 	bool operator== (const Account&, const Account&);
@@ -112,6 +114,8 @@ namespace Poleemery
 
 		static QString ClassName () { return "NakedExpenseEntry"; }
 
+		static QString FieldNameMorpher (const QString& str) { return str; }
+
 		EntryType GetType () const { return EntryType::Expense; }
 
 		NakedExpenseEntry () = default;
@@ -161,6 +165,8 @@ namespace Poleemery
 		explicit Category (const QString&);
 
 		static QString ClassName () { return "Category"; }
+
+		static QString FieldNameMorpher (const QString& str) { return str; }
 	};
 }
 }
@@ -183,6 +189,8 @@ namespace Poleemery
 		CategoryLink (const Category&, const NakedExpenseEntry&);
 
 		static QString ClassName () { return "CategoryLink"; }
+
+		static QString FieldNameMorpher (const QString& str) { return str; }
 	};
 }
 }
@@ -201,6 +209,8 @@ namespace Poleemery
 		using EntryBase::EntryBase;
 
 		static QString ClassName () { return "ReceiptEntry"; }
+
+		static QString FieldNameMorpher (const QString& str) { return str; }
 
 		EntryType GetType () const { return EntryType::Receipt; }
 	};
@@ -228,6 +238,8 @@ namespace Poleemery
 		double Rate_;
 
 		static QString ClassName () { return "Rate"; }
+
+		static QString FieldNameMorpher (const QString& str) { return str; }
 	};
 }
 }
