@@ -705,10 +705,10 @@ namespace oral
 		{
 			inline static S Obj_;
 
-			template<typename R>
-			static constexpr R* Ptr (R (S::*ptr))
+			template<auto P>
+			static constexpr auto Ptr ()
 			{
-				return &(Obj_.*ptr);
+				return &(Obj_.*P);
 			}
 
 			template<int Idx>
@@ -718,22 +718,24 @@ namespace oral
 			}
 		};
 
-		template<int Idx, typename R, typename S>
-		constexpr int FieldIndex (R (S::*ptr))
+		template<auto Ptr, int Idx = 0>
+		constexpr int FieldIndex ()
 		{
+			using S = MemberPtrStruct_t<Ptr>;
+
 			if constexpr (Idx == SeqSize<S>)
 				throw std::runtime_error { "wut, no such field?" };
 			else
 			{
-				if constexpr (std::is_same_v<typename boost::fusion::result_of::value_at_c<S, Idx>::type, R>)
+				constexpr auto direct = AddressOf<S>::template Ptr<Ptr> ();
+				constexpr auto indexed = AddressOf<S>::template Index<Idx> ();
+				if constexpr (std::is_same_v<decltype (direct), decltype (indexed)>)
 				{
-					auto direct = AddressOf<S>::Ptr (ptr);
-					auto indexed = AddressOf<S>::template Index<Idx> ();
 					if (indexed == direct)
 						return Idx;
 				}
 
-				return FieldIndex<Idx + 1> (ptr);
+				return FieldIndex<Ptr, Idx + 1> ();
 			}
 		}
 
@@ -747,7 +749,7 @@ namespace oral
 			template<typename T>
 			QString ToSql (ToSqlState<T>&) const
 			{
-				constexpr auto idx = FieldIndex<0> (Ptr);
+				constexpr auto idx = FieldIndex<Ptr> ();
 				return MemberPtrStruct_t<Ptr>::ClassName () + "." + detail::GetFieldName<T, idx>::value ();
 			}
 		};
