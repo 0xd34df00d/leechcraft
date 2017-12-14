@@ -256,31 +256,59 @@ namespace Util
 		QCOMPARE (list, (QList<SimpleRecord> { { 0, "0" } }));
 	}
 
-	void OralTest::testSimpleRecordInsertSelectByFields ()
+	void OralTest::testSimpleRecordInsertSelectByPos ()
 	{
 		auto adapted = PrepareRecords<SimpleRecord> (MakeDatabase ());
 		const auto& list = adapted->DoSelectByFields_ (sph::_0 == 1);
 		QCOMPARE (list, (QList<SimpleRecord> { { 1, "1" } }));
 	}
 
-	void OralTest::testSimpleRecordInsertSelectByFields2 ()
+	void OralTest::testSimpleRecordInsertSelectByPos2 ()
 	{
 		auto adapted = PrepareRecords<SimpleRecord> (MakeDatabase ());
 		const auto& list = adapted->DoSelectByFields_ (sph::_0 < 2);
 		QCOMPARE (list, (QList<SimpleRecord> { { 0, "0" }, { 1, "1" } }));
 	}
 
-	void OralTest::testSimpleRecordInsertSelectByFields3 ()
+	void OralTest::testSimpleRecordInsertSelectByPos3 ()
 	{
 		auto adapted = PrepareRecords<SimpleRecord> (MakeDatabase ());
 		const auto& list = adapted->DoSelectByFields_ (sph::_0 < 2 && sph::_1 == QString { "1" });
 		QCOMPARE (list, (QList<SimpleRecord> { { 1, "1" } }));
 	}
 
-	void OralTest::testSimpleRecordInsertSelectOneByFields ()
+	void OralTest::testSimpleRecordInsertSelectOneByPos ()
 	{
 		auto adapted = PrepareRecords<SimpleRecord> (MakeDatabase ());
 		const auto& single = adapted->DoSelectOneByFields_ (sph::_0 == 1);
+		QCOMPARE (single, (boost::optional<SimpleRecord> { { 1, "1" } }));
+	}
+
+	void OralTest::testSimpleRecordInsertSelectByFields ()
+	{
+		auto adapted = PrepareRecords<SimpleRecord> (MakeDatabase ());
+		const auto& list = adapted->DoSelectByFields_ (sph::f<&SimpleRecord::ID_> == 1);
+		QCOMPARE (list, (QList<SimpleRecord> { { 1, "1" } }));
+	}
+
+	void OralTest::testSimpleRecordInsertSelectByFields2 ()
+	{
+		auto adapted = PrepareRecords<SimpleRecord> (MakeDatabase ());
+		const auto& list = adapted->DoSelectByFields_ (sph::f<&SimpleRecord::ID_> < 2);
+		QCOMPARE (list, (QList<SimpleRecord> { { 0, "0" }, { 1, "1" } }));
+	}
+
+	void OralTest::testSimpleRecordInsertSelectByFields3 ()
+	{
+		auto adapted = PrepareRecords<SimpleRecord> (MakeDatabase ());
+		const auto& list = adapted->DoSelectByFields_ (sph::f<&SimpleRecord::ID_> < 2 && sph::f<&SimpleRecord::Value_> == QString { "1" });
+		QCOMPARE (list, (QList<SimpleRecord> { { 1, "1" } }));
+	}
+
+	void OralTest::testSimpleRecordInsertSelectOneByFields ()
+	{
+		auto adapted = PrepareRecords<SimpleRecord> (MakeDatabase ());
+		const auto& single = adapted->DoSelectOneByFields_ (sph::f<&SimpleRecord::ID_> == 1);
 		QCOMPARE (single, (boost::optional<SimpleRecord> { { 1, "1" } }));
 	}
 
