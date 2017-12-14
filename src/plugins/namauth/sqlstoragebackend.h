@@ -57,6 +57,11 @@ namespace NamAuth
 				return "AuthRecords";
 			}
 
+			static QString FieldNameMorpher (const QString& str)
+			{
+				return str;
+			}
+
 			using Constraints = Util::oral::Constraints<
 					Util::oral::PrimaryKey<0, 1>
 				>;
