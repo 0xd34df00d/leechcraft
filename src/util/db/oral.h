@@ -53,6 +53,7 @@
 #include <util/sll/qtutil.h>
 #include <util/sll/prelude.h>
 #include <util/sll/typelist.h>
+#include <util/sll/typelevel.h>
 #include <util/sll/typegetter.h>
 #include <util/sll/unreachable.h>
 #include <util/db/dblock.h>
@@ -799,6 +800,9 @@ namespace oral
 		{
 			return { left, right };
 		}
+
+		template<typename L, typename R>
+		using AnyTree_t = std::enable_if_t<AnyOf<IsExprTree, L, R>>;
 
 		template<typename L, typename R, typename = std::enable_if_t<IsExprTree_v<L> || IsExprTree_v<R>>>
 		auto operator< (const L& left, const R& right)
