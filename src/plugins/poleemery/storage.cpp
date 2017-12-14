@@ -202,7 +202,7 @@ namespace Poleemery
 	{
 		try
 		{
-			return HandleNaked (Impl_->NakedExpenseEntryInfo_->SelectByFKeysActor_ (boost::fusion::make_vector (parent)));
+			return HandleNaked (Impl_->NakedExpenseEntryInfo_->SelectByFKeysActor_ (boost::fusion::make_vector (parent.ID_)));
 		}
 		catch (const Util::oral::QueryException& e)
 		{
@@ -241,7 +241,7 @@ namespace Poleemery
 
 		auto nowCats = entry.Categories_;
 
-		for (const auto& cat : boost::fusion::at_c<1> (Impl_->CategoryLinkInfo_->SingleFKeySelectors_) (entry))
+		for (const auto& cat : boost::fusion::at_c<1> (Impl_->CategoryLinkInfo_->SingleFKeySelectors_) (entry.ID_))
 		{
 			if (!nowCats.removeAll (Impl_->CatIDCache_.value (cat.Category_).Name_))
 				Impl_->CategoryLinkInfo_->DoDelete_ (cat);
@@ -285,7 +285,7 @@ namespace Poleemery
 	{
 		try
 		{
-			return Impl_->ReceiptEntryInfo_->SelectByFKeysActor_ (boost::fusion::make_vector (account));
+			return Impl_->ReceiptEntryInfo_->SelectByFKeysActor_ (boost::fusion::make_vector (account.ID_));
 		}
 		catch (const Util::oral::QueryException& e)
 		{
@@ -418,7 +418,7 @@ namespace Poleemery
 
 	void Storage::UnlinkEntry2Cat (const ExpenseEntry& entry, const Category& category)
 	{
-		const auto& link = Impl_->CategoryLinkInfo_->SelectByFKeysActor_ (boost::fusion::make_vector (category, entry));
+		const auto& link = Impl_->CategoryLinkInfo_->SelectByFKeysActor_ (boost::fusion::make_vector (category.ID_, entry.ID_));
 		if (!link.isEmpty ())
 			Impl_->CategoryLinkInfo_->DoDelete_ (link.first ());
 	}
@@ -433,7 +433,7 @@ namespace Poleemery
 			{
 				ExpenseEntry entry { naked };
 
-				const auto& cats = boost::fusion::at_c<1> (Impl_->CategoryLinkInfo_->SingleFKeySelectors_) (naked);
+				const auto& cats = boost::fusion::at_c<1> (Impl_->CategoryLinkInfo_->SingleFKeySelectors_) (naked.ID_);
 				for (const auto& cat : cats)
 					entry.Categories_ << Impl_->CatIDCache_ [cat.Category_].Name_;
 
