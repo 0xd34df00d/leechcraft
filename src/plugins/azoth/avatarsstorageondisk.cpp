@@ -52,11 +52,6 @@ namespace Azoth
 			return "Record";
 		}
 
-		static QString FieldNameMorpher (const QString& str)
-		{
-			return str.left (str.size () - 1);
-		}
-
 		using Constraints = Util::oral::Constraints<
 				Util::oral::UniqueSubset<1, 2>
 			>;

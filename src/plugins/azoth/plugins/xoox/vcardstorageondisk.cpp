@@ -51,11 +51,6 @@ namespace Xoox
 		{
 			return "VCards";
 		}
-
-		static QString FieldNameMorpher (const QString& str)
-		{
-			return str.left (str.size () - 1);
-		}
 	};
 
 	struct VCardStorageOnDisk::PhotoHashRecord
@@ -66,11 +61,6 @@ namespace Xoox
 		static QString ClassName ()
 		{
 			return "PhotoHashes";
-		}
-
-		static QString FieldNameMorpher (const QString& str)
-		{
-			return str.left (str.size () - 1);
 		}
 	};
 }

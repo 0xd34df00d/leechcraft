@@ -54,11 +54,6 @@ namespace Herbicide
 		{
 			return "AccountRecord";
 		}
-
-		static QString FieldNameMorpher (const QString& str)
-		{
-			return str.left (str.size () - 1);
-		}
 	};
 }
 }
@@ -87,11 +82,6 @@ namespace Herbicide
 		static QByteArray ClassName ()
 		{
 			return "EntryRecord";
-		}
-
-		static QString FieldNameMorpher (const QString& str)
-		{
-			return str.left (str.size () - 1);
 		}
 	};
 }
@@ -122,11 +112,6 @@ namespace Herbicide
 		static QByteArray ClassName ()
 		{
 			return "EventRecord";
-		}
-
-		static QString FieldNameMorpher (const QString& str)
-		{
-			return str.left (str.size () - 1);
 		}
 	};
 }
