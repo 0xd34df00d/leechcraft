@@ -723,15 +723,27 @@ namespace oral
 		template<auto Ptr>
 		class ExprTree<ExprType::LeafStaticPlaceholder, MemberPtr<Ptr>, void>
 		{
+			template<typename>
+			struct Decompose;
+
+			template<typename R, typename C>
+			struct Decompose<R (C::*)>
+			{
+				using Value_t = R;
+
+				using SeqType_t = C;
+			};
 		public:
 			template<typename T>
-			using ValueType_t = std::result_of_t<decltype (Ptr) (T)>;
+			using ValueType_t = typename Decompose<decltype (Ptr)>::Value_t;
+
+			using SeqType_t = typename Decompose<decltype (Ptr)>::SeqType_t;
 
 			template<typename T>
 			QString ToSql (ToSqlState<T>&) const
 			{
 				constexpr auto idx = FieldIndex<0> (Ptr);
-				return T::ClassName () + "." + detail::GetFieldName<T, idx>::value ();
+				return SeqType_t::ClassName () + "." + detail::GetFieldName<T, idx>::value ();
 			}
 		};
 
