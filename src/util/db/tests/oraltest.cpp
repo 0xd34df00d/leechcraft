@@ -80,12 +80,6 @@ struct SimpleRecord
 		return "SimpleRecord";
 	}
 
-	static QString FieldNameMorpher (QString str)
-	{
-		str.chop (1);
-		return str;
-	}
-
 	auto AsTuple () const
 	{
 		return std::tie (ID_, Value_);
@@ -108,12 +102,6 @@ struct AutogenPKeyRecord
 		return "AutogenPKeyRecord";
 	}
 
-	static QString FieldNameMorpher (QString str)
-	{
-		str.chop (1);
-		return str;
-	}
-
 	auto AsTuple () const
 	{
 		return std::tie (ID_, Value_);
@@ -134,12 +122,6 @@ struct NoPKeyRecord
 	static QString ClassName ()
 	{
 		return "NoPKeyRecord";
-	}
-
-	static QString FieldNameMorpher (QString str)
-	{
-		str.chop (1);
-		return str;
 	}
 
 	auto AsTuple () const
@@ -173,12 +155,6 @@ struct NonInPlaceConstructibleRecord
 		return "NonInPlaceConstructibleRecord";
 	}
 
-	static QString FieldNameMorpher (QString str)
-	{
-		str.chop (1);
-		return str;
-	}
-
 	auto AsTuple () const
 	{
 		return std::tie (ID_, Value_);
@@ -201,12 +177,6 @@ struct ComplexConstraintsRecord
 	static QString ClassName ()
 	{
 		return "ComplexConstraintsRecord";
-	}
-
-	static QString FieldNameMorpher (QString str)
-	{
-		str.chop (1);
-		return str;
 	}
 
 	auto AsTuple () const
