@@ -802,9 +802,9 @@ namespace oral
 		}
 
 		template<typename L, typename R>
-		using AnyTree_t = std::enable_if_t<AnyOf<IsExprTree, L, R>>;
+		using EnableRelOp_t = std::enable_if_t<AnyOf<IsExprTree, L, R>>;
 
-		template<typename L, typename R, typename = AnyTree_t<L, R>>
+		template<typename L, typename R, typename = EnableRelOp_t<L, R>>
 		auto operator< (const L& left, const R& right)
 		{
 			if constexpr (IsExprTree_v<L> && IsExprTree_v<R>)
@@ -813,7 +813,7 @@ namespace oral
 				return AsLeafData (left) < AsLeafData (right);
 		}
 
-		template<typename L, typename R, typename = AnyTree_t<L, R>>
+		template<typename L, typename R, typename = EnableRelOp_t<L, R>>
 		auto operator> (const L& left, const R& right)
 		{
 			if constexpr (IsExprTree_v<L> && IsExprTree_v<R>)
@@ -822,7 +822,7 @@ namespace oral
 				return AsLeafData (left) > AsLeafData (right);
 		}
 
-		template<typename L, typename R, typename = AnyTree_t<L, R>>
+		template<typename L, typename R, typename = EnableRelOp_t<L, R>>
 		auto operator== (const L& left, const R& right)
 		{
 			if constexpr (IsExprTree_v<L> && IsExprTree_v<R>)
@@ -831,7 +831,7 @@ namespace oral
 				return AsLeafData (left) == AsLeafData (right);
 		}
 
-		template<typename L, typename R, typename = AnyTree_t<L, R>>
+		template<typename L, typename R, typename = EnableRelOp_t<L, R>>
 		auto operator&& (const L& left, const R& right)
 		{
 			if constexpr (IsExprTree_v<L> && IsExprTree_v<R>)
@@ -872,6 +872,7 @@ namespace oral
 
 		template<int Idx>
 		static constexpr pos<Idx> _ = {};
+
 	};
 
 	namespace detail
