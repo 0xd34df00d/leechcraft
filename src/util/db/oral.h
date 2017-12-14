@@ -814,6 +814,15 @@ namespace oral
 		}
 
 		template<typename L, typename R, typename = AnyTree_t<L, R>>
+		auto operator> (const L& left, const R& right)
+		{
+			if constexpr (IsExprTree_v<L> && IsExprTree_v<R>)
+				return MakeExprTree<ExprType::Greater> (left, right);
+			else
+				return AsLeafData (left) > AsLeafData (right);
+		}
+
+		template<typename L, typename R, typename = AnyTree_t<L, R>>
 		auto operator== (const L& left, const R& right)
 		{
 			if constexpr (IsExprTree_v<L> && IsExprTree_v<R>)
