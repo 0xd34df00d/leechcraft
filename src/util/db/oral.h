@@ -704,7 +704,7 @@ namespace oral
 		template<typename S>
 		struct AddressOf
 		{
-			inline static S Obj_;
+			inline static S Obj_ {};
 
 			template<auto P>
 			static constexpr auto Ptr ()
