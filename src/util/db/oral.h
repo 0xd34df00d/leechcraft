@@ -731,7 +731,7 @@ namespace oral
 			QString ToSql (ToSqlState<T>&) const
 			{
 				constexpr auto idx = FieldIndex<0> (Ptr);
-				return detail::GetFieldName<T, idx>::value ();
+				return T::ClassName () + "." + detail::GetFieldName<T, idx>::value ();
 			}
 		};
 
