@@ -36,6 +36,7 @@
 #include <util/db/dblock.h>
 #include <util/db/oral.h>
 #include <util/sys/paths.h>
+#include <util/sll/unreachable.h>
 
 namespace LeechCraft
 {
@@ -62,10 +63,7 @@ namespace oral
 				return "Cash";
 			}
 
-			qWarning () << Q_FUNC_INFO
-					<< "unknown type"
-					<< static_cast<int> (type);
-			return {};
+			Util::Unreachable ();
 		}
 	};
 
