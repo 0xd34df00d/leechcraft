@@ -680,6 +680,61 @@ namespace oral
 			}
 		};
 
+		template<auto Ptr>
+		struct MemberPtr {};
+
+		template<typename S>
+		struct AddressOf
+		{
+			inline static S Obj_;
+
+			template<typename R>
+			static constexpr R* Ptr (R (S::*ptr))
+			{
+				return &(Obj_.*ptr);
+			}
+
+			template<int Idx>
+			static constexpr auto Index ()
+			{
+				return &boost::fusion::at_c<Idx> (Obj_);
+			}
+		};
+
+		template<int Idx, typename R, typename S>
+		constexpr int FieldIndex (R (S::*ptr))
+		{
+			if constexpr (Idx == SeqSize<S>)
+				throw std::runtime_error { "wut, no such field?" };
+			else
+			{
+				if constexpr (std::is_same_v<typename boost::fusion::result_of::value_at_c<S, Idx>::type, R>)
+				{
+					auto direct = AddressOf<S>::Ptr (ptr);
+					auto indexed = AddressOf<S>::template Index<Idx> ();
+					if (indexed == direct)
+						return Idx;
+				}
+
+				return FieldIndex<Idx + 1> (ptr);
+			}
+		}
+
+		template<auto Ptr>
+		class ExprTree<ExprType::LeafStaticPlaceholder, MemberPtr<Ptr>, void>
+		{
+		public:
+			template<typename T>
+			using ValueType_t = std::result_of_t<decltype (Ptr) (T)>;
+
+			template<typename T>
+			QString ToSql (ToSqlState<T>&) const
+			{
+				constexpr auto idx = FieldIndex<0> (Ptr);
+				return detail::GetFieldName<T, idx>::value ();
+			}
+		};
+
 		template<typename T>
 		class ExprTree<ExprType::LeafData, T, void>
 		{
