@@ -33,6 +33,7 @@
 #include "void.h"
 #include "util.h"
 #include "typelist.h"
+#include "typelevel.h"
 
 namespace LeechCraft
 {
@@ -57,9 +58,6 @@ namespace Util
 		{
 			using VisitorBase<Args...>::VisitorBase;
 		};
-
-		template<template<typename> class Pred, typename... Args>
-		constexpr auto AllOf = (Pred<Args> {} && ...);
 
 		template<typename T>
 		constexpr T Declval () { throw "shall not be called"; }

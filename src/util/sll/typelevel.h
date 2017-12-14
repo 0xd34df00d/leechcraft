@@ -57,5 +57,7 @@ namespace Util
 		qDebug () << Q_FUNC_INFO;
 	}
 
+	template<template<typename> class Pred, typename... Args>
+	constexpr auto AllOf = (Pred<Args> {} && ...);
 }
 }
