@@ -122,10 +122,7 @@ namespace Poleemery
 			throw std::runtime_error ("Poleemery database creation failed");
 		}
 
-		{
-			QSqlQuery query (Impl_->DB_);
-			query.exec ("PRAGMA foreign_keys = ON;");
-		}
+		Util::RunTextQuery (Impl_->DB_, "PRAGMA foreign_keys = ON;");
 
 		InitializeTables ();
 		LoadCategories ();
