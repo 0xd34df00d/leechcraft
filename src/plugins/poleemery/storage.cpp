@@ -75,8 +75,15 @@ namespace oral
 			const auto& str = var.toString ();
 			if (str == "BankAccount")
 				return Poleemery::AccType::BankAccount;
-			else
+			else if (str == "Cash")
 				return Poleemery::AccType::Cash;
+			else
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "unknown account type"
+						<< str;
+				return Poleemery::AccType::Cash;
+			}
 		}
 	};
 }
