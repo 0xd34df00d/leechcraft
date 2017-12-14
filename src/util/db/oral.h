@@ -683,6 +683,23 @@ namespace oral
 		template<auto Ptr>
 		struct MemberPtr {};
 
+		template<typename>
+		struct DecomposeMemberPtr;
+
+		template<typename R, typename C>
+		struct DecomposeMemberPtr<R (C::*)>
+		{
+			using Value_t = R;
+
+			using StructType_t = C;
+		};
+
+		template<auto Ptr>
+		using MemberPtrType_t = typename DecomposeMemberPtr<decltype (Ptr)>::Value_t;
+
+		template<auto Ptr>
+		using MemberPtrStruct_t = typename DecomposeMemberPtr<decltype (Ptr)>::StructType_t;
+
 		template<typename S>
 		struct AddressOf
 		{
@@ -723,27 +740,15 @@ namespace oral
 		template<auto Ptr>
 		class ExprTree<ExprType::LeafStaticPlaceholder, MemberPtr<Ptr>, void>
 		{
-			template<typename>
-			struct Decompose;
-
-			template<typename R, typename C>
-			struct Decompose<R (C::*)>
-			{
-				using Value_t = R;
-
-				using SeqType_t = C;
-			};
 		public:
-			template<typename T>
-			using ValueType_t = typename Decompose<decltype (Ptr)>::Value_t;
-
-			using SeqType_t = typename Decompose<decltype (Ptr)>::SeqType_t;
+			template<typename>
+			using ValueType_t = MemberPtrType_t<Ptr>;
 
 			template<typename T>
 			QString ToSql (ToSqlState<T>&) const
 			{
 				constexpr auto idx = FieldIndex<0> (Ptr);
-				return SeqType_t::ClassName () + "." + detail::GetFieldName<T, idx>::value ();
+				return MemberPtrStruct_t<Ptr>::ClassName () + "." + detail::GetFieldName<T, idx>::value ();
 			}
 		};
 
