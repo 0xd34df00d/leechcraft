@@ -51,12 +51,6 @@ namespace Util
 		struct Result_t : Negate<typename Pred<T>::type>::Result_t {};
 	};
 
-	template<typename... Args>
-	void PrintTypes ()
-	{
-		qDebug () << Q_FUNC_INFO;
-	}
-
 	template<template<typename> class Pred, typename... Args>
 	constexpr auto AllOf = (Pred<Args> {} && ...);
 
