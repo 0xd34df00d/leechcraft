@@ -125,11 +125,10 @@ namespace Otzerkalu
 
 	QString OtzerkaluDownloader::CSSUrlReplace (const QString& value, const FileData& data)
 	{
-		const QList<QUrl>& urlStack = CSSParser (value);
 		QString d = value;
-		Q_FOREACH (const QUrl& urlCSS, urlStack)
+		for (const auto& urlCSS : CSSParser (value))
 		{
-			const QString& filename = Download (urlCSS, data.RecLevel_ - 1);
+			const auto& filename = Download (urlCSS, data.RecLevel_ - 1);
 			if (!filename.isEmpty ())
 				d.replace (urlCSS.toString (), filename);
 		}
