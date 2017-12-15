@@ -30,7 +30,6 @@
 #pragma once
 
 #include <QSettings>
-#include <QDomElement>
 #include "util.h"
 
 namespace LeechCraft
