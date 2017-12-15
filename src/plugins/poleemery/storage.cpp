@@ -130,105 +130,40 @@ namespace Poleemery
 
 	QList<Account> Storage::GetAccounts () const
 	{
-		try
-		{
-			return Impl_->AccountInfo_->DoSelectAll_ ();
-		}
-		catch (const Util::oral::QueryException& e)
-		{
-			qWarning () << Q_FUNC_INFO;
-			Util::DBLock::DumpError (e.GetQuery ());
-			throw;
-		}
+		return Impl_->AccountInfo_->DoSelectAll_ ();
 	}
 
 	void Storage::AddAccount (Account& acc)
 	{
-		try
-		{
-			Impl_->AccountInfo_->DoInsert_ (acc);
-		}
-		catch (const Util::oral::QueryException& e)
-		{
-			qWarning () << Q_FUNC_INFO;
-			Util::DBLock::DumpError (e.GetQuery ());
-			throw;
-		}
+		Impl_->AccountInfo_->DoInsert_ (acc);
 	}
 
 	void Storage::UpdateAccount (const Account& acc)
 	{
-		try
-		{
-			Impl_->AccountInfo_->DoUpdate_ (acc);
-		}
-		catch (const Util::oral::QueryException& e)
-		{
-			qWarning () << Q_FUNC_INFO;
-			Util::DBLock::DumpError (e.GetQuery ());
-			throw;
-		}
+		Impl_->AccountInfo_->DoUpdate_ (acc);
 	}
 
 	void Storage::DeleteAccount (const Account& acc)
 	{
-		try
-		{
-			Impl_->AccountInfo_->DoDelete_ (acc);
-		}
-		catch (const Util::oral::QueryException& e)
-		{
-			qWarning () << Q_FUNC_INFO;
-			Util::DBLock::DumpError (e.GetQuery ());
-			throw;
-		}
+		Impl_->AccountInfo_->DoDelete_ (acc);
 	}
 
 	QList<ExpenseEntry> Storage::GetExpenseEntries ()
 	{
-		try
-		{
-			return HandleNaked (Impl_->NakedExpenseEntryInfo_->DoSelectAll_ ());
-		}
-		catch (const Util::oral::QueryException& e)
-		{
-			qWarning () << Q_FUNC_INFO;
-			Util::DBLock::DumpError (e.GetQuery ());
-			throw;
-		}
+		return HandleNaked (Impl_->NakedExpenseEntryInfo_->DoSelectAll_ ());
 	}
 
 	QList<ExpenseEntry> Storage::GetExpenseEntries (const Account& parent)
 	{
-		try
-		{
-			return HandleNaked (Impl_->NakedExpenseEntryInfo_->SelectByFKeysActor_ (boost::fusion::make_vector (parent.ID_)));
-		}
-		catch (const Util::oral::QueryException& e)
-		{
-			qWarning () << Q_FUNC_INFO;
-			Util::DBLock::DumpError (e.GetQuery ());
-			throw;
-		}
+		return HandleNaked (Impl_->NakedExpenseEntryInfo_->SelectByFKeysActor_ (boost::fusion::make_vector (parent.ID_)));
 	}
 
 	void Storage::AddExpenseEntry (ExpenseEntry& entry)
 	{
 		Util::DBLock lock (Impl_->DB_);
 		lock.Init ();
-
-		try
-		{
-			Impl_->NakedExpenseEntryInfo_->DoInsert_ (entry);
-			AddNewCategories (entry, entry.Categories_);
-		}
-		catch (const Util::oral::QueryException& e)
-		{
-			qWarning () << Q_FUNC_INFO;
-			Util::DBLock::DumpError (e.GetQuery ());
-			throw;
-		}
-
+		Impl_->NakedExpenseEntryInfo_->DoInsert_ (entry);
+		AddNewCategories (entry, entry.Categories_);
 		lock.Good ();
 	}
 
@@ -242,10 +177,8 @@ namespace Poleemery
 		auto nowCats = entry.Categories_;
 
 		for (const auto& cat : boost::fusion::at_c<1> (Impl_->CategoryLinkInfo_->SingleFKeySelectors_) (entry.ID_))
-		{
 			if (!nowCats.removeAll (Impl_->CatIDCache_.value (cat.Category_).Name_))
 				Impl_->CategoryLinkInfo_->DoDelete_ (cat);
-		}
 
 		if (!nowCats.isEmpty ())
 			AddNewCategories (entry, nowCats);
@@ -255,58 +188,22 @@ namespace Poleemery
 
 	void Storage::DeleteExpenseEntry (const ExpenseEntry& entry)
 	{
-		try
-		{
-			Impl_->NakedExpenseEntryInfo_->DoDelete_ (entry);
-		}
-		catch (const Util::oral::QueryException& e)
-		{
-			qWarning () << Q_FUNC_INFO;
-			Util::DBLock::DumpError (e.GetQuery ());
-			throw;
-		}
+		Impl_->NakedExpenseEntryInfo_->DoDelete_ (entry);
 	}
 
 	QList<ReceiptEntry> Storage::GetReceiptEntries ()
 	{
-		try
-		{
-			return Impl_->ReceiptEntryInfo_->DoSelectAll_ ();
-		}
-		catch (const Util::oral::QueryException& e)
-		{
-			qWarning () << Q_FUNC_INFO;
-			Util::DBLock::DumpError (e.GetQuery ());
-			throw;
-		}
+		return Impl_->ReceiptEntryInfo_->DoSelectAll_ ();
 	}
 
 	QList<ReceiptEntry> Storage::GetReceiptEntries (const Account& account)
 	{
-		try
-		{
-			return Impl_->ReceiptEntryInfo_->SelectByFKeysActor_ (boost::fusion::make_vector (account.ID_));
-		}
-		catch (const Util::oral::QueryException& e)
-		{
-			qWarning () << Q_FUNC_INFO;
-			Util::DBLock::DumpError (e.GetQuery ());
-			throw;
-		}
+		return Impl_->ReceiptEntryInfo_->SelectByFKeysActor_ (boost::fusion::make_vector (account.ID_));
 	}
 
 	void Storage::AddReceiptEntry (ReceiptEntry& entry)
 	{
-		try
-		{
-			Impl_->ReceiptEntryInfo_->DoInsert_ (entry);
-		}
-		catch (const Util::oral::QueryException& e)
-		{
-			qWarning () << Q_FUNC_INFO;
-			Util::DBLock::DumpError (e.GetQuery ());
-			throw;
-		}
+		Impl_->ReceiptEntryInfo_->DoInsert_ (entry);
 	}
 
 	void Storage::UpdateReceiptEntry (const ReceiptEntry& entry)
@@ -321,74 +218,29 @@ namespace Poleemery
 
 	QList<Rate> Storage::GetRates ()
 	{
-		try
-		{
-			return Impl_->RateInfo_->DoSelectAll_ ();
-		}
-		catch (const Util::oral::QueryException& e)
-		{
-			qWarning () << Q_FUNC_INFO;
-			Util::DBLock::DumpError (e.GetQuery ());
-			throw;
-		}
+		return Impl_->RateInfo_->DoSelectAll_ ();
 	}
 
 	namespace sph = Util::oral::sph;
 
 	QList<Rate> Storage::GetRates (const QDateTime& start, const QDateTime& end)
 	{
-		try
-		{
-			return Impl_->RateInfo_->DoSelectByFields_ (start < sph::_2 && sph::_2 < end);
-		}
-		catch (const Util::oral::QueryException& e)
-		{
-			qWarning () << Q_FUNC_INFO;
-			Util::DBLock::DumpError (e.GetQuery ());
-			throw;
-		}
+		return Impl_->RateInfo_->DoSelectByFields_ (start < sph::_2 && sph::_2 < end);
 	}
 
 	QList<Rate> Storage::GetRate (const QString& code)
 	{
-		try
-		{
-			return Impl_->RateInfo_->DoSelectByFields_ (sph::_1 == code);
-		}
-		catch (const Util::oral::QueryException& e)
-		{
-			qWarning () << Q_FUNC_INFO;
-			Util::DBLock::DumpError (e.GetQuery ());
-			throw;
-		}
+		return Impl_->RateInfo_->DoSelectByFields_ (sph::_1 == code);
 	}
 
 	QList<Rate> Storage::GetRate (const QString& code, const QDateTime& start, const QDateTime& end)
 	{
-		try
-		{
-			return Impl_->RateInfo_->DoSelectByFields_ (sph::_1 == code && start < sph::_2 && sph::_2 < end);
-		}
-		catch (const Util::oral::QueryException& e)
-		{
-			qWarning () << Q_FUNC_INFO;
-			Util::DBLock::DumpError (e.GetQuery ());
-			throw;
-		}
+		return Impl_->RateInfo_->DoSelectByFields_ (sph::_1 == code && start < sph::_2 && sph::_2 < end);
 	}
 
 	void Storage::AddRate (Rate& rate)
 	{
-		try
-		{
-			Impl_->RateInfo_->DoInsert_ (rate);
-		}
-		catch (const Util::oral::QueryException& e)
-		{
-			qWarning () << Q_FUNC_INFO;
-			Util::DBLock::DumpError (e.GetQuery ());
-			throw;
-		}
+		Impl_->RateInfo_->DoInsert_ (rate);
 	}
 
 	Category Storage::AddCategory (const QString& name)
@@ -427,24 +279,15 @@ namespace Poleemery
 	{
 		QList<ExpenseEntry> entries;
 
-		try
+		for (const auto& naked : nakedItems)
 		{
-			for (const auto& naked : nakedItems)
-			{
-				ExpenseEntry entry { naked };
+			ExpenseEntry entry { naked };
 
-				const auto& cats = boost::fusion::at_c<1> (Impl_->CategoryLinkInfo_->SingleFKeySelectors_) (naked.ID_);
-				for (const auto& cat : cats)
-					entry.Categories_ << Impl_->CatIDCache_ [cat.Category_].Name_;
+			const auto& cats = boost::fusion::at_c<1> (Impl_->CategoryLinkInfo_->SingleFKeySelectors_) (naked.ID_);
+			for (const auto& cat : cats)
+				entry.Categories_ << Impl_->CatIDCache_ [cat.Category_].Name_;
 
-				entries << entry;
-			}
-		}
-		catch (const Util::oral::QueryException& e)
-		{
-			qWarning () << Q_FUNC_INFO;
-			Util::DBLock::DumpError (e.GetQuery ());
-			throw;
+			entries << entry;
 		}
 
 		return entries;
@@ -467,19 +310,10 @@ namespace Poleemery
 
 	void Storage::LoadCategories ()
 	{
-		try
+		for (const auto& cat : Impl_->CategoryInfo_->DoSelectAll_ ())
 		{
-			for (const auto& cat : Impl_->CategoryInfo_->DoSelectAll_ ())
-			{
-				Impl_->CatCache_ [cat.Name_] = cat;
-				Impl_->CatIDCache_ [cat.ID_] = cat;
-			}
-		}
-		catch (const Util::oral::QueryException& e)
-		{
-			qWarning () << Q_FUNC_INFO;
-			Util::DBLock::DumpError (e.GetQuery ());
-			throw;
+			Impl_->CatCache_ [cat.Name_] = cat;
+			Impl_->CatIDCache_ [cat.ID_] = cat;
 		}
 	}
 }
