@@ -57,6 +57,7 @@ namespace Util
 		void testPrepareVisitorConst ();
 		void testPrepareVisitorRValue ();
 		void testPrepareVisitorFinally ();
+		void testPrepareJustAutoVisitor ();
 	};
 }
 }

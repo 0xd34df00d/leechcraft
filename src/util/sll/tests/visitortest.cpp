@@ -228,5 +228,18 @@ namespace Util
 		QCOMPARE (res, true);
 		QCOMPARE (fin, true);
 	}
+
+	void VisitorTest::testPrepareJustAutoVisitor ()
+	{
+		using Variant_t = boost::variant<int, double, float>;
+
+		Visitor visitor
+		{
+			[] (auto e) { return std::to_string (e); }
+		};
+
+		const auto& res = visitor (Variant_t { 10 });
+		QCOMPARE (res, std::string { "10" });
+	}
 }
 }
