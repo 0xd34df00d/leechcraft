@@ -35,6 +35,7 @@
 #include <interfaces/core/ipluginsmanager.h>
 #include <util/xpc/util.h>
 #include <util/sys/paths.h>
+#include <util/sll/prelude.h>
 #include "workerobject.h"
 
 namespace LeechCraft
@@ -57,11 +58,12 @@ namespace BodyFetch
 			{
 				QDir dir = StorageDir_;
 				dir.cd (name);
-				Q_FOREACH (QString name, dir.entryList ())
-				{
-					name.chop (suffixLength);
-					FetchedItems_ << name.toLongLong ();
-				}
+				FetchedItems_ = Util::MapAs<QSet> (dir.entryList (),
+						[suffixLength] (QString& name)
+						{
+							name.chop (suffixLength);
+							return name.toULongLong ();
+						});
 			}
 		}
 
