@@ -123,16 +123,15 @@ namespace Otzerkalu
 		return urlStack;
 	}
 
-	QString OtzerkaluDownloader::CSSUrlReplace (const QString& value, const FileData& data)
+	QString OtzerkaluDownloader::CSSUrlReplace (QString value, const FileData& data)
 	{
-		QString d = value;
 		for (const auto& urlCSS : CSSParser (value))
 		{
 			const auto& filename = Download (urlCSS, data.RecLevel_ - 1);
 			if (!filename.isEmpty ())
-				d.replace (urlCSS.toString (), filename);
+				value.replace (urlCSS.toString (), filename);
 		}
-		return d;
+		return value;
 	}
 
 	void OtzerkaluDownloader::handleJobFinished (int id)

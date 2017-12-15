@@ -78,7 +78,7 @@ namespace Otzerkalu
 	private:
 		QString Download (const QUrl&, int);
 		QList<QUrl> CSSParser (const QString&) const;
-		QString CSSUrlReplace (const QString&, const FileData&);
+		QString CSSUrlReplace (QString, const FileData&);
 		bool HTMLReplace (QWebElementCollection::iterator element, const FileData& data);
 		bool WriteData (const QString& filename, const QString& data);
 		void HandleProvider (QObject *provider, int id, const QUrl& url,
