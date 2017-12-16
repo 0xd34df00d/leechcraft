@@ -280,19 +280,20 @@ namespace Importers
 		QList<QVariant> opmlData;
 		int prevItemId = -1;
 
-		QMap<QString, QVariant> omplLine;
+		QMap<QString, QVariant> opmlLine;
 		do
 		{
 			if (rssQuery.value (2).toInt () == site)
-				omplLine ["SiteUrl"] = rssQuery.value (3).toString ();
+				opmlLine ["SiteUrl"] = rssQuery.value (3).toString ();
 			if (rssQuery.value (2).toInt () == feed)
-				omplLine ["FeedUrl"] = rssQuery.value (3).toString ();
+				opmlLine ["FeedUrl"] = rssQuery.value (3).toString ();
+
 			if (prevItemId == rssQuery.value (1).toInt ())
-				opmlData.push_back (omplLine);
+				opmlData.push_back (opmlLine);
 			else
 			{
 				prevItemId = rssQuery.value (1).toInt ();
-				omplLine ["Title"] = rssQuery.value (4).toString ();
+				opmlLine ["Title"] = rssQuery.value (4).toString ();
 			}
 		}
 		while (rssQuery.next ());
