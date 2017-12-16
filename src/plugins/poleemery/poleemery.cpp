@@ -61,8 +61,7 @@ namespace Poleemery
 					2,
 					TFOpenableByRequest
 				},
-				[this] (const TabClassInfo& tc)
-					{ MakeTab (new OperationsTab (tc, this), tc); }
+				[this] (const TabClassInfo& tc) { MakeTab<OperationsTab> (tc); }
 			});
 		TabClasses_.append ({
 				{
@@ -73,8 +72,7 @@ namespace Poleemery
 					1,
 					TFOpenableByRequest
 				},
-				[this] (const TabClassInfo& tc)
-					{ MakeTab (new AccountsTab (tc, this), tc); }
+				[this] (const TabClassInfo& tc) { MakeTab<AccountsTab> (tc); }
 			});
 		TabClasses_.append ({
 				{
@@ -85,8 +83,7 @@ namespace Poleemery
 					1,
 					TFOpenableByRequest
 				},
-				[this] (const TabClassInfo& tc)
-					{ MakeTab (new GraphsTab (tc, this), tc); }
+				[this] (const TabClassInfo& tc) { MakeTab<GraphsTab> (tc); }
 			});
 	}
 
@@ -143,8 +140,11 @@ namespace Poleemery
 		return XSD_;
 	}
 
-	void Plugin::MakeTab (QWidget *tab, const TabClassInfo& tc)
+	template<typename T>
+	void Plugin::MakeTab (const TabClassInfo& tc)
 	{
+		const auto tab = new T { tc, this };
+
 		connect (tab,
 				SIGNAL (removeTab (QWidget*)),
 				this,

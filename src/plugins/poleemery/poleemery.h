@@ -66,7 +66,8 @@ namespace Poleemery
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 	private:
-		void MakeTab (QWidget*, const TabClassInfo&);
+		template<typename T>
+		void MakeTab (const TabClassInfo&);
 	signals:
 		void addNewTab (const QString&, QWidget*);
 		void removeTab (QWidget*);
