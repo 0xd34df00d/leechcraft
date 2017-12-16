@@ -684,22 +684,6 @@ namespace oral
 		template<auto Ptr>
 		struct MemberPtr {};
 
-		template<typename>
-		struct DecomposeMemberPtr;
-
-		template<typename R, typename C>
-		struct DecomposeMemberPtr<R (C::*)>
-		{
-			using Value_t = R;
-
-			using StructType_t = C;
-		};
-
-		template<auto Ptr>
-		using MemberPtrType_t = typename DecomposeMemberPtr<decltype (Ptr)>::Value_t;
-
-		template<auto Ptr>
-		using MemberPtrStruct_t = typename DecomposeMemberPtr<decltype (Ptr)>::StructType_t;
 
 		template<typename S>
 		struct AddressOf
