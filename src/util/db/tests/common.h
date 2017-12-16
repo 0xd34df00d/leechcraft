@@ -71,10 +71,10 @@ char* toString (const char *name, const T& t)
 
 namespace LeechCraft::Util
 {
-	QSqlDatabase MakeDatabase ()
+	QSqlDatabase MakeDatabase (const QString& name = ":memory:")
 	{
 		auto db = QSqlDatabase::addDatabase ("QSQLITE", Util::GenConnectionName ("TestConnection"));
-		db.setDatabaseName (":memory:");
+		db.setDatabaseName (name);
 		if (!db.open ())
 			throw std::runtime_error { "cannot create test database" };
 
