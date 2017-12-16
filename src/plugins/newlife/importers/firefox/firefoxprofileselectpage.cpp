@@ -41,6 +41,7 @@
 #include <QTemporaryFile>
 #include <QXmlStreamWriter>
 #include <util/xpc/util.h>
+#include <util/sll/scopeguards.h>
 
 namespace LeechCraft
 {
@@ -161,10 +162,7 @@ namespace Importers
 		QString profilePath;
 		for (const atuo& groupName : settings.childGroups ())
 		{
-			// Call settings.endGroup() on scope exit no matter what.
-			std::shared_ptr<void> guard (static_cast<void*> (0),
-					[&settings] (void*) { settings.endGroup (); });
-			settings.beginGroup (groupName);
+			const auto guard = Util::BeginGroup (settings, groupName);
 			if (settings.value ("Name").toString () == profileName)
 			{
 				profilePath = settings.value ("Path").toString ();
