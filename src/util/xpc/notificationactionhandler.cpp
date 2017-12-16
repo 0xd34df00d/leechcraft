@@ -54,9 +54,9 @@ namespace Util
 
 	void NotificationActionHandler::notificationActionTriggered (int idx)
 	{
-		Q_FOREACH (const QPointer<QObject>& obj, DependentObjects_)
-			if (obj.isNull ())
-				return;
+		if (std::any_of (DependentObjects_.begin (), DependentObjects_.end (),
+				[] (const auto& obj) { return obj.isNull (); }))
+			return;
 
 		ActionName2Callback_.at (idx).second ();
 	}
