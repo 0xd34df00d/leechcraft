@@ -160,7 +160,7 @@ namespace Importers
 		QString profilesFile = field ("ProfileFile").toString ();
 		QSettings settings (profilesFile, QSettings::IniFormat);
 		QString profilePath;
-		for (const atuo& groupName : settings.childGroups ())
+		for (const auto& groupName : settings.childGroups ())
 		{
 			const auto guard = Util::BeginGroup (settings, groupName);
 			if (settings.value ("Name").toString () == profileName)

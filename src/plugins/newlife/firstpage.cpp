@@ -55,10 +55,10 @@ namespace NewLife
 					names.at (i),
 					QVariant::fromValue<QObject*> (ai));
 
-		const auto& pages = ai->GetWizardPages ();
+		auto pages = ai->GetWizardPages ();
 		if (!pages.isEmpty ())
 		{
-			QWizardPage *first = pages.takeFirst ();
+			const auto first = pages.takeFirst ();
 			StartPages_ [ai] = wizard ()->addPage (first);
 			for (const auto page : pages)
 				wizard ()->addPage (page);
