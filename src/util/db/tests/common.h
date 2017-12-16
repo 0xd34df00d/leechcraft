@@ -77,6 +77,9 @@ namespace LeechCraft::Util
 		db.setDatabaseName (":memory:");
 		if (!db.open ())
 			throw std::runtime_error { "cannot create test database" };
+
+		RunTextQuery (db, "PRAGMA foreign_keys = ON;");
+
 		return db;
 	}
 }
