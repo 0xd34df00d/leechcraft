@@ -175,7 +175,7 @@ namespace Summary
 					SLOT (handleTasksTreeSelection##sl (arg1, arg2)));
 
 		auto pm = Core::Instance ().GetProxy ()->GetPluginsManager ();
-		Q_FOREACH (QObject *object, pm->GetAllCastableRoots<IJobHolder*> ())
+		for (const auto object : pm->GetAllCastableRoots<IJobHolder*> ())
 		{
 			const auto *mo = object->metaObject ();
 
@@ -255,7 +255,7 @@ namespace Summary
 
 	void SummaryWidget::ReinitToolbar ()
 	{
-		Q_FOREACH (QAction *action, Toolbar_->actions ())
+		for (const auto action : Toolbar_->actions ())
 		{
 			auto wa = qobject_cast<QWidgetAction*> (action);
 			if (!wa || wa->defaultWidget () != SearchWidget_)
@@ -272,7 +272,7 @@ namespace Summary
 	{
 		QList<QAction*> proxies;
 
-		Q_FOREACH (QAction *action, actions)
+		for (const auto action : actions)
 		{
 			if (qobject_cast<QWidgetAction*> (action))
 			{
@@ -402,7 +402,7 @@ namespace Summary
 		{
 			if (controls)
 			{
-				Q_FOREACH (QAction *action, controls->actions ())
+				for (const auto action : controls->actions ())
 				{
 					QString ai = action->property ("ActionIcon").toString ();
 					if (!ai.isEmpty () &&
