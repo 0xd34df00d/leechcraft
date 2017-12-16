@@ -121,6 +121,11 @@ namespace Util
 		return boost::apply_visitor (detail::Visitor<R_t, Args...> { std::forward<Args> (args)... }, v);
 	}
 
+	namespace detail
+	{
+		struct VisitorFinallyTag {};
+	}
+
 	template<typename FinallyFunc, typename... Args>
 	class Visitor
 	{
@@ -133,7 +138,7 @@ namespace Util
 		{
 		}
 
-		Visitor (Args&&... args, FinallyFunc&& func)
+		Visitor (const detail::VisitorFinallyTag&, Args&&... args, FinallyFunc&& func)
 		: Base_ { std::forward<Args> (args)... }
 		, Finally_ { std::forward<FinallyFunc> (func) }
 		{
@@ -154,7 +159,7 @@ namespace Util
 		template<typename F>
 		Visitor<F, detail::VisitorBase<Args...>> Finally (F&& func)
 		{
-			return { std::move (Base_), std::forward<F> (func) };
+			return { detail::VisitorFinallyTag {}, std::move (Base_), std::forward<F> (func) };
 		}
 	};
 
