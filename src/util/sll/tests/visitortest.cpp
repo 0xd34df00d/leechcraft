@@ -241,5 +241,20 @@ namespace Util
 		const auto& res = visitor (Variant_t { 10 });
 		QCOMPARE (res, std::string { "10" });
 	}
+
+	void VisitorTest::testPrepareRecursiveVisitor ()
+	{
+		using SubVariant_t = boost::variant<int, double, float>;
+		using Variant_t = boost::variant<SubVariant_t, QString>;
+
+		Visitor visitor
+		{
+			[] (const QString& str) { return str; },
+			Visitor { [] (auto e) { return QString::fromStdString (std::to_string (e)); } }
+		};
+
+		const auto& res = visitor (Variant_t { SubVariant_t { 10 } });
+		QCOMPARE (res, QString { "10" });
+	}
 }
 }
