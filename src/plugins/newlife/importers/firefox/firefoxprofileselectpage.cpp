@@ -87,7 +87,7 @@ namespace Importers
 		QSettings settings (filename, QSettings::IniFormat);
 		Ui_.ProfileList_->clear ();
 		Ui_.ProfileList_->addItem (tr ("Default"));
-		Q_FOREACH (const QString& name, settings.childGroups ())
+		for (const auto& name : settings.childGroups ())
 		{
 			settings.beginGroup (name);
 			Ui_.ProfileList_->addItem (settings.value ("Name").toString ());
@@ -159,7 +159,7 @@ namespace Importers
 		QString profilesFile = field ("ProfileFile").toString ();
 		QSettings settings (profilesFile, QSettings::IniFormat);
 		QString profilePath;
-		Q_FOREACH (const QString& groupName, settings.childGroups ())
+		for (const atuo& groupName : settings.childGroups ())
 		{
 			// Call settings.endGroup() on scope exit no matter what.
 			std::shared_ptr<void> guard (static_cast<void*> (0),
@@ -322,7 +322,7 @@ namespace Importers
 		streamWriter.writeStartElement ("body");
 		streamWriter.writeStartElement ("outline");
 		streamWriter.writeAttribute ("text", "Live Bookmarks");
-		Q_FOREACH (const QVariant& hRowVar, opmlData)
+		for (const auto& hRowVar : opmlData)
 		{
 			streamWriter.writeStartElement ("outline");
 			QMap<QString, QVariant> hRow = hRowVar.toMap ();

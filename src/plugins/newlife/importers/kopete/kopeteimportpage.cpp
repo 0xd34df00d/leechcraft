@@ -132,7 +132,7 @@ namespace Importers
 			row [IMImportPage::Column::ImportAcc]->setEnabled (false);
 			row [IMImportPage::Column::ImportHist]->setCheckState (Qt::Checked);
 			row [IMImportPage::Column::ImportHist]->setCheckable (true);
-			Q_FOREACH (auto item, row)
+			for (auto item : row)
 				item->setEditable (false);
 
 			protoItem->appendRow (row);

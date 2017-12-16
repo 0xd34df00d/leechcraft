@@ -273,7 +273,7 @@ namespace Importers
 		streamWriter.writeStartElement ("body");
 		streamWriter.writeStartElement ("outline");
 		streamWriter.writeAttribute ("text", "Live Bookmarks");
-		Q_FOREACH (const QVariant& line, opmlData)
+		for (const auto& line : opmlData)
 		{
 			streamWriter.writeStartElement ("outline");
 			const auto& opmlLine = line.toMap ();

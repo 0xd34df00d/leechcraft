@@ -170,8 +170,7 @@ namespace Importers
 			}
 
 			QVariantList result;
-			Q_FOREACH (const QString& variant,
-					dir.entryList (QDir::Dirs | QDir::NoDotAndDotDot))
+			for (const auto& variant : dir.entryList (QDir::Dirs | QDir::NoDotAndDotDot))
 			{
 				QDir varDir (dir);
 				if (!varDir.cd (variant))
@@ -183,8 +182,7 @@ namespace Importers
 					continue;
 				}
 
-				Q_FOREACH (const QString& logFile,
-						varDir.entryList (QStringList ("*.xml"), QDir::Files))
+				for (const auto& logFile : varDir.entryList (QStringList ("*.xml"), QDir::Files))
 					ParseFile (varDir.absoluteFilePath (logFile), result, data);
 			}
 
@@ -207,7 +205,7 @@ namespace Importers
 		qDebug () << Q_FUNC_INFO << data << path;
 
 		QDir dir (path);
-		Q_FOREACH (const QString& encJid, dir.entryList (QDir::Dirs | QDir::NoDotAndDotDot))
+		for (const auto& encJid : dir.entryList (QDir::Dirs | QDir::NoDotAndDotDot))
 		{
 			const auto& hist = HandleJID (dir, encJid, data);
 			if (hist.isEmpty ())

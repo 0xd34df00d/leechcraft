@@ -60,7 +60,7 @@ namespace NewLife
 		{
 			QWizardPage *first = pages.takeFirst ();
 			StartPages_ [ai] = wizard ()->addPage (first);
-			Q_FOREACH (QWizardPage *page, pages)
+			for (const auto page : pages)
 				wizard ()->addPage (page);
 		}
 	}

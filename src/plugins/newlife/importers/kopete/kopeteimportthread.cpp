@@ -56,7 +56,7 @@ namespace Importers
 	{
 		msleep (300);
 
-		Q_FOREACH (const QString& file, Files_)
+		for (const auto& file : Files_)
 		{
 			ParseFile (file);
 			msleep (100);

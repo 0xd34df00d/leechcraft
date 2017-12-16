@@ -89,7 +89,7 @@ namespace NewLife
 
 	void ImportWizard::SetupImporters ()
 	{
-		Q_FOREACH (AbstractImporter *ai, Importers_)
+		for (const auto ai : Importers_)
 			Ui_.FirstPage_->SetupImporter (ai);
 	}
 }

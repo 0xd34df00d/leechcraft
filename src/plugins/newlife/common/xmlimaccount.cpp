@@ -47,7 +47,7 @@ namespace Common
 	void XMLIMAccount::FindAccounts ()
 	{
 		QDir dir = QDir::home ();
-		Q_FOREACH (QString path, C_.ProfilesPath_)
+		for (auto path : C_.ProfilesPath_)
 		{
 			if (!dir.cd (path))
 			{
@@ -72,8 +72,7 @@ namespace Common
 			}
 		}
 
-		Q_FOREACH (const QString& entry,
-				dir.entryList (QDir::NoDotAndDotDot | QDir::Dirs))
+		for (const auto& entry : dir.entryList (QDir::NoDotAndDotDot | QDir::Dirs))
 			ScanProfile (dir.filePath (entry), entry);
 	}
 
@@ -146,7 +145,7 @@ namespace Common
 		row [IMImportPage::Column::ImportAcc]->setCheckable (true);
 		row [IMImportPage::Column::ImportHist]->setCheckState (Qt::Checked);
 		row [IMImportPage::Column::ImportHist]->setCheckable (true);
-		Q_FOREACH (auto item, row)
+		for (auto item : row)
 			item->setEditable (false);
 
 		item->appendRow (row);
