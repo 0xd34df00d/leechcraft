@@ -62,7 +62,6 @@ namespace Otzerkalu
 			int id, QObject *parent)
 	: QObject (parent)
 	, Param_ (param)
-	, UrlCount_ (0)
 	, ID_ (id)
 	{
 	}
