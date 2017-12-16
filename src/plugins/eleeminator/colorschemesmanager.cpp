@@ -80,8 +80,15 @@ namespace Eleeminator
 
 	void ColorSchemesManager::LoadKonsoleSchemes ()
 	{
-		const auto& filenames = CollectSchemes ("/usr/share/apps/konsole/") +
-				CollectSchemes ("/usr/local/share/apps/konsole/");
+		const QStringList pathCandidates
+		{
+			"/usr/share/apps/konsole/",
+			"/usr/local/share/apps/konsole/",
+			"/usr/share/konsole/",
+			"/usr/local/share/konsole/"
+		};
+
+		const auto& filenames = Util::ConcatMap (pathCandidates, &CollectSchemes);
 		Schemes_ += Util::Map (Util::Filter (Util::Map (filenames, &ParseScheme),
 						[] (const MaybeScheme_t& scheme) { return static_cast<bool> (scheme); }),
 					[] (const MaybeScheme_t& scheme) { return *scheme; });
