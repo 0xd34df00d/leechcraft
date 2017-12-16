@@ -68,3 +68,15 @@ char* toString (const char *name, const T& t)
 
 	return qstrdup (ba.data ());
 }
+
+namespace LeechCraft::Util
+{
+	QSqlDatabase MakeDatabase ()
+	{
+		auto db = QSqlDatabase::addDatabase ("QSQLITE", Util::GenConnectionName ("TestConnection"));
+		db.setDatabaseName (":memory:");
+		if (!db.open ())
+			throw std::runtime_error { "cannot create test database" };
+		return db;
+	}
+}

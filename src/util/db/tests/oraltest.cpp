@@ -166,15 +166,6 @@ namespace Util
 {
 	namespace
 	{
-		QSqlDatabase MakeDatabase ()
-		{
-			auto db = QSqlDatabase::addDatabase ("QSQLITE", Util::GenConnectionName ("TestConnection"));
-			db.setDatabaseName (":memory:");
-			if (!db.open ())
-				throw std::runtime_error { "cannot create test database" };
-			return db;
-		}
-
 		template<typename T>
 		auto PrepareRecords (QSqlDatabase db)
 		{
