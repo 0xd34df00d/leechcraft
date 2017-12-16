@@ -126,8 +126,7 @@ namespace Poleemery
 	void Plugin::TabOpenRequested (const QByteArray& tc)
 	{
 		const auto pos = std::find_if (TabClasses_.begin (), TabClasses_.end (),
-				[&tc] (decltype (TabClasses_.at (0)) pair)
-					{ return pair.first.TabClass_ == tc; });
+				[&tc] (const auto& pair) { return pair.first.TabClass_ == tc; });
 		if (pos == TabClasses_.end ())
 		{
 			qWarning () << Q_FUNC_INFO
