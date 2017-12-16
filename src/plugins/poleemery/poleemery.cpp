@@ -29,6 +29,7 @@
 
 #include "poleemery.h"
 #include <QIcon>
+#include <util/sll/prelude.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "operationstab.h"
 #include "accountstab.h"
@@ -119,10 +120,7 @@ namespace Poleemery
 
 	TabClasses_t Plugin::GetTabClasses () const
 	{
-		TabClasses_t result;
-		for (const auto& item : TabClasses_)
-			result << item.first;
-		return result;
+		return Util::Map (TabClasses_, Util::Fst);
 	}
 
 	void Plugin::TabOpenRequested (const QByteArray& tc)
