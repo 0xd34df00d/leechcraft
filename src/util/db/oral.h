@@ -146,6 +146,45 @@ namespace oral
 		{
 			static QString value () { return ':' + Seq::ClassName () + "_" + GetFieldName<Seq, Idx>::value (); }
 		};
+
+		template<typename S>
+		struct AddressOf
+		{
+			inline static S Obj_ {};
+
+			template<auto P>
+			static constexpr auto Ptr ()
+			{
+				return &(Obj_.*P);
+			}
+
+			template<int Idx>
+			static constexpr auto Index ()
+			{
+				return &boost::fusion::at_c<Idx> (Obj_);
+			}
+		};
+
+		template<auto Ptr, int Idx = 0>
+		constexpr int FieldIndex ()
+		{
+			using S = MemberPtrStruct_t<Ptr>;
+
+			if constexpr (Idx == SeqSize<S>)
+				throw std::runtime_error { "wut, no such field?" };
+			else
+			{
+				constexpr auto direct = AddressOf<S>::template Ptr<Ptr> ();
+				constexpr auto indexed = AddressOf<S>::template Index<Idx> ();
+				if constexpr (std::is_same_v<decltype (direct), decltype (indexed)>)
+				{
+					if (indexed == direct)
+						return Idx;
+				}
+
+				return FieldIndex<Ptr, Idx + 1> ();
+			}
+		}
 	}
 
 	template<typename T, typename = void>
@@ -190,13 +229,15 @@ namespace oral
 		QString operator() () const { return Type2Name<int> () () + " PRIMARY KEY AUTOINCREMENT"; }
 	};
 
-	template<typename Seq, int Idx>
-	struct Type2Name<References<Seq, Idx>>
+	template<auto Ptr>
+	struct Type2Name<References<Ptr>>
 	{
 		QString operator() () const
 		{
-			return Type2Name<ReferencesValue_t<Seq, Idx>> () () +
-					" REFERENCES " + Seq::ClassName () + " (" + detail::GetFieldName<Seq, Idx>::value () + ") ON DELETE CASCADE";
+			using Seq = MemberPtrStruct_t<Ptr>;
+			constexpr auto idx = detail::FieldIndex<Ptr> ();
+			return Type2Name<ReferencesValue_t<Ptr>> () () +
+					" REFERENCES " + Seq::ClassName () + " (" + detail::GetFieldName<Seq, idx>::value () + ") ON DELETE CASCADE";
 		}
 	};
 
@@ -684,46 +725,6 @@ namespace oral
 		template<auto Ptr>
 		struct MemberPtr {};
 
-
-		template<typename S>
-		struct AddressOf
-		{
-			inline static S Obj_ {};
-
-			template<auto P>
-			static constexpr auto Ptr ()
-			{
-				return &(Obj_.*P);
-			}
-
-			template<int Idx>
-			static constexpr auto Index ()
-			{
-				return &boost::fusion::at_c<Idx> (Obj_);
-			}
-		};
-
-		template<auto Ptr, int Idx = 0>
-		constexpr int FieldIndex ()
-		{
-			using S = MemberPtrStruct_t<Ptr>;
-
-			if constexpr (Idx == SeqSize<S>)
-				throw std::runtime_error { "wut, no such field?" };
-			else
-			{
-				constexpr auto direct = AddressOf<S>::template Ptr<Ptr> ();
-				constexpr auto indexed = AddressOf<S>::template Index<Idx> ();
-				if constexpr (std::is_same_v<decltype (direct), decltype (indexed)>)
-				{
-					if (indexed == direct)
-						return Idx;
-				}
-
-				return FieldIndex<Ptr, Idx + 1> ();
-			}
-		}
-
 		template<auto Ptr>
 		class ExprTree<ExprType::LeafStaticPlaceholder, MemberPtr<Ptr>, void>
 		{
@@ -1002,9 +1003,12 @@ namespace oral
 			using value_type = To;
 		};
 
-		template<typename To, typename OrigSeq, typename OrigIdx, typename RefSeq, int RefIdx>
-		struct FieldAppender<To, OrigSeq, OrigIdx, References<RefSeq, RefIdx>>
+		template<typename To, typename OrigSeq, typename OrigIdx, auto Ptr>
+		struct FieldAppender<To, OrigSeq, OrigIdx, References<Ptr>>
 		{
+			using RefSeq = MemberPtrStruct_t<Ptr>;
+			constexpr static int RefIdx = detail::FieldIndex<Ptr> ();
+
 			using value_type = typename boost::fusion::result_of::as_vector<
 					typename boost::fusion::result_of::push_front<
 						To,

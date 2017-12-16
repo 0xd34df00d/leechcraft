@@ -156,10 +156,10 @@ namespace oral
 		struct IsPKey<PKey<U, Tags...>> : std::true_type {};
 	}
 
-	template<typename Seq, int Idx>
+	template<auto Ptr>
 	struct References
 	{
-		using member_type = typename std::decay<typename boost::fusion::result_of::at_c<Seq, Idx>::type>::type;
+		using member_type = MemberPtrType_t<Ptr>;
 		static_assert (detail::IsPKey<member_type>::value, "References<> element must refer to a PKey<> element");
 
 		using value_type = typename member_type::value_type;
@@ -202,8 +202,8 @@ namespace oral
 		}
 	};
 
-	template<typename Seq, int Idx>
-	using ReferencesValue_t = typename References<Seq, Idx>::value_type;
+	template<auto Ptr>
+	using ReferencesValue_t = typename References<Ptr>::value_type;
 
 	template<int... Fields>
 	struct PrimaryKey;
@@ -226,8 +226,8 @@ namespace oral
 	template<typename T>
 	struct IsIndirect<NotNull<T>> : std::true_type {};
 
-	template<typename Seq, int Idx>
-	struct IsIndirect<References<Seq, Idx>> : std::true_type {};
+	template<auto Ptr>
+	struct IsIndirect<References<Ptr>> : std::true_type {};
 }
 }
 }
