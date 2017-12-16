@@ -41,20 +41,12 @@ namespace LeechCraft
 {
 namespace Otzerkalu
 {
-	DownloadParams::DownloadParams ()
-	{
-	}
-
 	DownloadParams::DownloadParams (const QUrl& downloadUrl,
 			const QString& destDir, int recLevel, bool fromOtherSite)
 	: DownloadUrl_ (downloadUrl)
 	, DestDir_ (destDir)
 	, RecLevel_ (recLevel)
 	, FromOtherSite_ (fromOtherSite)
-	{
-	}
-
-	FileData::FileData ()
 	{
 	}
 
