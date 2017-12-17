@@ -49,6 +49,7 @@ namespace BitTorrent
 		QAction *AddWebSeed_;
 		QAction *RemoveWebSeed_;
 		int Index_ = -1;
+		QList<int> SelectedIndices_;
 
 		QSortFilterProxyModel *PeersSorter_;
 	public:
@@ -57,6 +58,7 @@ namespace BitTorrent
 		void SetChangeTrackersAction (QAction*);
 
 		void SetCurrentIndex (int);
+		void SetSelectedIndices (const QList<int>&);
 		void InvalidateSelection ();
 		void SetOverallDownloadRateController (int);
 		void SetOverallUploadRateController (int);

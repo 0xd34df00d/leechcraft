@@ -113,6 +113,9 @@ namespace BitTorrent
 				{
 					Ui_.Tabs_->SetCurrentIndex (ViewFilter_->mapToSource (index).row ());
 				});
+		connect (Ui_.TorrentsView_->selectionModel (),
+				&QItemSelectionModel::selectionChanged,
+				[this] { Ui_.Tabs_->SetSelectedIndices (GetSelectedRows ()); });
 		Ui_.TorrentsView_->sortByColumn (Core::ColumnID, Qt::SortOrder::AscendingOrder);
 
 		const auto& fm = Ui_.TorrentsView_->fontMetrics ();

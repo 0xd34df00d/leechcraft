@@ -228,6 +228,11 @@ namespace BitTorrent
 		qDeleteAll (oldModels);
 	}
 
+	void TorrentTabWidget::SetSelectedIndices (const QList<int>& indices)
+	{
+		SelectedIndices_ = indices;
+	}
+
 	void TorrentTabWidget::InvalidateSelection ()
 	{
 		Ui_.TorrentTags_->setText (Core::Instance ()->GetProxy ()->GetTagsManager ()->
