@@ -913,7 +913,7 @@ namespace oral
 				const auto& treeResult = HandleExprTree<T> (tree);
 
 				const auto& selectAll = "SELECT " + QStringList { Cached_.QualifiedFields_ }.join (", ") +
-						" FROM " + Cached_.Table_ +
+						BuildFromClause (tree) +
 						" WHERE " + treeResult.first + ";";
 
 				const auto query = std::make_shared<QSqlQuery> (Cached_.DB_);
@@ -928,7 +928,7 @@ namespace oral
 				const auto& treeResult = HandleExprTree<T> (tree);
 
 				const auto& selectOne = "SELECT " + Cached_.QualifiedFields_.value (Idx) +
-						" FROM " + Cached_.Table_ +
+						BuildFromClause (tree) +
 						" WHERE " + treeResult.first + ";";
 
 				const auto query = std::make_shared<QSqlQuery> (Cached_.DB_);
@@ -945,6 +945,14 @@ namespace oral
 					result << FromVariant<Type_t> {} (query->value (0));
 				query->finish ();
 				return result;
+			}
+		private:
+			template<ExprType Type, typename L, typename R>
+			QString BuildFromClause (const ExprTree<Type, L, R>& tree) const
+			{
+				const auto& additionalTables = Util::MapAs<QList> (tree.template AdditionalTables<T> (),
+						[] (const QString& table) { return ", " + table; });
+				return " FROM " + Cached_.Table_ + additionalTables.join (QString {});
 			}
 		};
 
