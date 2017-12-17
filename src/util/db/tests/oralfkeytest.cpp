@@ -28,10 +28,57 @@
  **********************************************************************/
 
 #include "oralfkeytest.h"
-#include <QtTest>
-#include <oral.h>
+#include "common.h"
 
-QTEST_APPLESS_MAIN (LeechCraft::Util::OralTest)
+QTEST_APPLESS_MAIN (LeechCraft::Util::OralFKeyTest)
+
+struct Student
+{
+	lco::PKey<int> ID_;
+	QString Name_;
+
+	static QString ClassName ()
+	{
+		return "Student";
+	}
+
+	auto AsTuple () const
+	{
+		return std::tie (ID_, Name_);
+	}
+};
+
+BOOST_FUSION_ADAPT_STRUCT (Student,
+		ID_,
+		Name_)
+
+TOSTRING (Student)
+
+struct StudentInfo
+{
+	lco::PKey<int> ID_;
+	lco::References<&Student::ID_> StudentID_;
+	int Age_;
+	int Year_;
+
+	static QString ClassName ()
+	{
+		return "StudentInfo";
+	}
+
+	auto AsTuple () const
+	{
+		return std::tie (ID_, StudentID_, Age_, Year_);
+	}
+};
+
+BOOST_FUSION_ADAPT_STRUCT (StudentInfo,
+		ID_,
+		StudentID_,
+		Age_,
+		Year_)
+
+TOSTRING (StudentInfo)
 
 namespace LeechCraft
 {
