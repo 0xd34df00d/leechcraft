@@ -1147,7 +1147,7 @@ namespace oral
 		const auto& selectOneByVal = detail::AdaptSelectOneFields<T> (cachedData);
 		const auto& deleteByVal = detail::AdaptDeleteFields<T> (cachedData);
 
-		ObjectInfo<T> info
+		return
 		{
 			selectr,
 			insertr,
@@ -1157,8 +1157,6 @@ namespace oral
 			selectOneByVal,
 			deleteByVal
 		};
-
-		return info;
 	}
 
 	template<typename T>
