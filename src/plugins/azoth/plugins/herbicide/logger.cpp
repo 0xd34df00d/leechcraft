@@ -73,7 +73,7 @@ namespace Herbicide
 	struct Logger::EntryRecord
 	{
 		Util::oral::PKey<int> PKey_;
-		Util::oral::References<AccountRecord, 0> AccountID_;
+		Util::oral::References<&AccountRecord::PKey_> AccountID_;
 
 		Util::oral::Unique<QString> EntryID_;
 		QString EntryHumanReadableId_;
@@ -104,7 +104,7 @@ namespace Herbicide
 	struct Logger::EventRecord
 	{
 		Util::oral::PKey<int> PKey_;
-		Util::oral::References<EntryRecord, 0> EntryID_;
+		Util::oral::References<&EntryRecord::PKey_> EntryID_;
 
 		Logger::Event Event_;
 		QString Reason_;
