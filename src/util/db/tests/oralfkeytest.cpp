@@ -107,17 +107,10 @@ namespace Util
 
 		namespace sph = oral::sph;
 
-		try
-		{
-			const auto& selected = student->DoSelectByFields_ (sph::f<&Student::ID_> == sph::f<&StudentInfo::StudentID_> &&
-					sph::f<&StudentInfo::Age_> > 18);
-			const QList<Student> expected { list [1].first, list [2].first };
-			QCOMPARE (selected, expected);
-		}
-		catch (const lco::QueryException& ex)
-		{
-			DBLock::DumpError (ex.GetQuery ());
-		}
+		const auto& selected = student->DoSelectByFields_ (sph::f<&Student::ID_> == sph::f<&StudentInfo::StudentID_> &&
+				sph::f<&StudentInfo::Age_> > 18);
+		const QList<Student> expected { list [1].first, list [2].first };
+		QCOMPARE (selected, expected);
 	}
 }
 }
