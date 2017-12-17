@@ -44,6 +44,7 @@ FindQtLibs (leechcraft-util-sll${LC_LIBSUFFIX} Core Concurrent)
 if (ENABLE_UTIL_TESTS)
 	include_directories (${CMAKE_CURRENT_BINARY_DIR}/tests ${CMAKE_CURRENT_SOURCE_DIR})
 	AddUtilTest (sll_applicative tests/applicativetest.cpp UtilSllApplicativeTest leechcraft-util-sll${LC_LIBSUFFIX})
+	AddUtilTest (sll_detector tests/detectortest.cpp UtilSllDetectorTest leechcraft-util-sll${LC_LIBSUFFIX})
 
 	AddUtilTest (sll_domchildrenrange tests/domchildrenrangetest.cpp UtilSllDomChildrenRangeTest leechcraft-util-sll${LC_LIBSUFFIX})
 	FindQtLibs(lc_util_sll_domchildrenrange_test Xml)

@@ -35,18 +35,11 @@ namespace LeechCraft
 {
 namespace Util
 {
-	class TypeGetterTest : public QObject
+	class DetectorTest : public QObject
 	{
 		Q_OBJECT
 	private slots:
-		void testArgType ();
-		void testArgTypeRef ();
-		void testArgTypeRvalueRef ();
-
-		void testRetType ();
-		void testRetTypeVoid ();
-		void testRetTypeRef ();
-		void testRetTypeConstRef ();
+		void testDetectMember ();
 	};
 }
 }

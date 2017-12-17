@@ -27,26 +27,33 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
+#include "detectortest.h"
+#include <QtTest>
+#include <detector.h>
 
-#include <QObject>
+QTEST_MAIN (LeechCraft::Util::DetectorTest)
 
 namespace LeechCraft
 {
 namespace Util
 {
-	class TypeGetterTest : public QObject
-	{
-		Q_OBJECT
-	private slots:
-		void testArgType ();
-		void testArgTypeRef ();
-		void testArgTypeRvalueRef ();
+	template<typename T>
+	using DoSmthDetector = decltype (std::declval<T> ().DoSmth (QString {}));
 
-		void testRetType ();
-		void testRetTypeVoid ();
-		void testRetTypeRef ();
-		void testRetTypeConstRef ();
-	};
+	void DetectorTest::testDetectMember ()
+	{
+		struct Foo
+		{
+			int DoSmth (const QString&);
+		};
+
+		struct Bar
+		{
+			void DoSmth (int);
+		};
+
+		static_assert (IsDetected_v<DoSmthDetector, Foo>);
+		static_assert (!IsDetected_v<DoSmthDetector, Bar>);
+	}
 }
 }

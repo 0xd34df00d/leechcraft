@@ -93,24 +93,5 @@ namespace Util
 		const auto f = [&x] (int, const double) -> const int& { return x; };
 		static_assert (std::is_same_v<RetType_t<decltype (f)>, const int&>);
 	}
-
-	template<typename T>
-	using DoSmthDetector = decltype (std::declval<T> ().DoSmth (QString {}));
-
-	void TypeGetterTest::testDetectMember ()
-	{
-		struct Foo
-		{
-			int DoSmth (const QString&);
-		};
-
-		struct Bar
-		{
-			void DoSmth (int);
-		};
-
-		static_assert (IsDetected_v<DoSmthDetector, Foo>);
-		static_assert (!IsDetected_v<DoSmthDetector, Bar>);
-	}
 }
 }
