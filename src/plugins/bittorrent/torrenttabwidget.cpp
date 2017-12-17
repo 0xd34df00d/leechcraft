@@ -508,8 +508,8 @@ namespace BitTorrent
 
 	void TorrentTabWidget::on_TorrentTags__editingFinished ()
 	{
-		Core::Instance ()->UpdateTags (Core::Instance ()->GetProxy ()->
-				GetTagsManager ()->Split (Ui_.TorrentTags_->text ()), Index_);
+		const auto& tags = Core::Instance ()->GetProxy ()->GetTagsManager ()->Split (Ui_.TorrentTags_->text ());
+		ForEachSelected ([&tags] (int idx) { Core::Instance ()->UpdateTags (tags, idx); });
 	}
 
 	void TorrentTabWidget::on_LabelComment__linkActivated (const QString& link)
