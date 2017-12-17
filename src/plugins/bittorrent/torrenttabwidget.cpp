@@ -259,6 +259,13 @@ namespace BitTorrent
 		UpdateTorrentControl ();
 	}
 
+	template<typename F>
+	void TorrentTabWidget::ForEachSelected (F&& f) const
+	{
+		for (const auto& index : SelectedIndices_)
+			f (index);
+	}
+
 	void TorrentTabWidget::UpdateOverallStats ()
 	{
 		const auto& stats = Core::Instance ()->GetSessionStats ();

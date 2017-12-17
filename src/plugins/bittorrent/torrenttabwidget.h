@@ -65,6 +65,9 @@ namespace BitTorrent
 	public slots:
 		void updateTorrentStats ();
 	private:
+		template<typename F>
+		void ForEachSelected (F&&) const;
+
 		void UpdateDashboard ();
 		void UpdateOverallStats ();
 		void UpdateTorrentControl ();
