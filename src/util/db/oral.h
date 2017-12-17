@@ -884,7 +884,7 @@ namespace oral
 			{
 				const auto& treeResult = HandleExprTree<T> (tree);
 
-				const auto& selectAll = "SELECT " + QStringList { Cached_.Fields_ }.join (", ") +
+				const auto& selectAll = "SELECT " + QStringList { Cached_.QualifiedFields_ }.join (", ") +
 						" FROM " + Cached_.Table_ +
 						" WHERE " + treeResult.first + ";";
 
@@ -899,7 +899,7 @@ namespace oral
 			{
 				const auto& treeResult = HandleExprTree<T> (tree);
 
-				const auto& selectOne = "SELECT " + Cached_.Fields_.value (Idx) +
+				const auto& selectOne = "SELECT " + Cached_.QualifiedFields_.value (Idx) +
 						" FROM " + Cached_.Table_ +
 						" WHERE " + treeResult.first + ";";
 
