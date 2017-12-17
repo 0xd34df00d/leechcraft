@@ -84,5 +84,40 @@ namespace LeechCraft
 {
 namespace Util
 {
+	void OralFKeyTest::testBasicFKeys ()
+	{
+		auto db = MakeDatabase ();
+
+		auto student = Util::oral::AdaptPtr<Student> (db);
+		auto studentInfo = Util::oral::AdaptPtr<StudentInfo> (db);
+
+		QList<QPair<Student, StudentInfo>> list
+		{
+			{ { 0, "Student 1" }, { 0, 0, 18, 1 } },
+			{ { 0, "Student 2" }, { 0, 0, 19, 1 } },
+			{ { 0, "Student 3" }, { 0, 0, 19, 2 } },
+		};
+
+		for (auto& [stud, info] : list)
+		{
+			student->DoInsert_ (stud);
+			info.StudentID_ = stud.ID_;
+			studentInfo->DoInsert_ (info);
+		}
+
+		namespace sph = oral::sph;
+
+		try
+		{
+			const auto& selected = student->DoSelectByFields_ (sph::f<&Student::ID_> == sph::f<&StudentInfo::StudentID_> &&
+					sph::f<&StudentInfo::Age_> > 18);
+			const QList<Student> expected { list [1].first, list [2].first };
+			QCOMPARE (selected, expected);
+		}
+		catch (const lco::QueryException& ex)
+		{
+			DBLock::DumpError (ex.GetQuery ());
+		}
+	}
 }
 }

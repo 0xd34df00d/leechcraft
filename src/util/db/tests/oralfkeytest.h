@@ -39,6 +39,7 @@ namespace Util
 	{
 		Q_OBJECT
 	private slots:
+		void testBasicFKeys ();
 	};
 }
 }
