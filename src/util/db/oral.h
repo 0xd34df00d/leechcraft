@@ -706,6 +706,12 @@ namespace oral
 
 				return Left_.ToSql (state) + " " + TypeToSql (Type) + " " + Right_.ToSql (state);
 			}
+
+			template<typename T>
+			QSet<QString> AdditionalTables () const
+			{
+				return Left_.template AdditionalTables<T> () + Right_.template AdditionalTables<T> ();
+			}
 		};
 
 		template<int Idx>
@@ -720,6 +726,12 @@ namespace oral
 			{
 				static_assert (Idx < boost::fusion::result_of::size<T>::type::value, "Index out of bounds.");
 				return detail::GetFieldName<T, Idx>::value ();
+			}
+
+			template<typename>
+			QSet<QString> AdditionalTables () const
+			{
+				return {};
 			}
 		};
 
@@ -739,6 +751,16 @@ namespace oral
 				using Seq = MemberPtrStruct_t<Ptr>;
 				constexpr auto idx = FieldIndex<Ptr> ();
 				return Seq::ClassName () + "." + detail::GetFieldName<Seq, idx>::value ();
+			}
+
+			template<typename T>
+			QSet<QString> AdditionalTables () const
+			{
+				using Seq = MemberPtrStruct_t<Ptr>;
+				if constexpr (std::is_same_v<Seq, T>)
+					return {};
+				else
+					return { Seq::ClassName () };
 			}
 		};
 
@@ -761,6 +783,12 @@ namespace oral
 				const auto& name = ":bound_" + QString::number (++state.LastID_);
 				state.BoundMembers_ [name] = ToVariantF (Data_);
 				return name;
+			}
+
+			template<typename>
+			QSet<QString> AdditionalTables () const
+			{
+				return {};
 			}
 		};
 
