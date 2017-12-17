@@ -56,7 +56,6 @@ namespace BitTorrent
 {
 	TorrentTabWidget::TorrentTabWidget (QWidget *parent)
 	: QTabWidget (parent)
-	, Index_ (-1)
 	, PeersSorter_ (new QSortFilterProxyModel (this))
 	{
 		Ui_.setupUi (this);

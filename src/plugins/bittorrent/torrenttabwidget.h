@@ -48,7 +48,7 @@ namespace BitTorrent
 		QAction *BanPeer_;
 		QAction *AddWebSeed_;
 		QAction *RemoveWebSeed_;
-		int Index_;
+		int Index_ = -1;
 
 		QSortFilterProxyModel *PeersSorter_;
 	public:
