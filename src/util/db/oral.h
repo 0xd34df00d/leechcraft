@@ -55,6 +55,7 @@
 #include <util/sll/typelist.h>
 #include <util/sll/typelevel.h>
 #include <util/sll/typegetter.h>
+#include <util/sll/detector.h>
 #include <util/sll/unreachable.h>
 #include <util/db/dblock.h>
 #include <util/db/util.h>

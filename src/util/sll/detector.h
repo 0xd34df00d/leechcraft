@@ -29,7 +29,6 @@
 
 #pragma once
 
-#include <tuple>
 #include <type_traits>
 
 namespace LeechCraft
@@ -38,61 +37,25 @@ namespace Util
 {
 	namespace detail
 	{
-		struct ReturnsVoid;
-
-		template<typename T>
-		using VoidSafe = std::conditional_t<
-				std::is_same<T, void> {}, // C++17
-				ReturnsVoid,
-				T
-			>;
-
-		template<typename R, typename... Args>
-		std::tuple<VoidSafe<R>, Args...> TypeGetter (R (*) (Args...));
-
-		template<typename F>
-		auto TypeGetter (F&& f) -> decltype (TypeGetter (+f));
-
-		template<typename C, typename R, typename... Args>
-		std::tuple<VoidSafe<R>, Args...> TypeGetter (R (C::*) (Args...) const);
-
-		template<typename C, typename R, typename... Args>
-		std::tuple<VoidSafe<R>, Args...> TypeGetter (R (C::*) (Args...));
-
-		template<typename C>
-		decltype (TypeGetter (&C::operator ())) TypeGetter (const C& c);
-
-		template<typename F>
-		using RetTypeRaw_t = std::tuple_element_t<0, decltype (TypeGetter (*static_cast<F*> (nullptr)))>;
-	}
-
-	template<typename F, size_t Idx>
-	using ArgType_t = std::tuple_element_t<Idx + 1, decltype (detail::TypeGetter (*static_cast<F*> (nullptr)))>;
-
-	template<typename F>
-	using RetType_t = std::conditional_t<
-			std::is_same_v<detail::RetTypeRaw_t<F>, detail::ReturnsVoid>,
-			void,
-			detail::RetTypeRaw_t<F>
-		>;
-
-	namespace detail
-	{
-		template<typename>
-		struct DecomposeMemberPtr;
-
-		template<typename R, typename C>
-		struct DecomposeMemberPtr<R (C::*)>
+		template<typename Default, typename Placeholder, template<typename...> class Op, typename... Args>
+		struct IsDetected
 		{
-			using Value_t = R;
-			using StructType_t = C;
+			using value_t = std::false_type;
+			using type = Default;
+		};
+
+		template<typename Default, template<typename...> class Op, typename... Args>
+		struct IsDetected<Default, std::void_t<Op<Args...>>, Op, Args...>
+		{
+			using value_t = std::true_type;
+			using type = Op<Args...>;
 		};
 	}
 
-	template<auto Ptr>
-	using MemberPtrType_t = typename detail::DecomposeMemberPtr<decltype (Ptr)>::Value_t;
+	template<template<typename...> class Op, typename... Args>
+	constexpr bool IsDetected_v = detail::IsDetected<void, void, Op, Args...>::value_t::value;
 
-	template<auto Ptr>
-	using MemberPtrStruct_t = typename detail::DecomposeMemberPtr<decltype (Ptr)>::StructType_t;
+	template<typename Type, template<typename...> class Op, typename... Args>
+	using IsDetected_t = typename detail::IsDetected<Type, void, Op, Args...>::type;
 }
 }

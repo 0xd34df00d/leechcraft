@@ -36,7 +36,7 @@
 #include <QFutureInterface>
 #include <QFutureWatcher>
 #include <util/sll/slotclosure.h>
-#include <util/sll/typegetter.h>
+#include <util/sll/detector.h>
 #include "threadsconfig.h"
 #include "concurrentexception.h"
 
