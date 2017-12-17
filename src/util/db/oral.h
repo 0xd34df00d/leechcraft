@@ -296,6 +296,7 @@ namespace oral
 			QSqlDatabase DB_;
 
 			QList<QString> Fields_;
+			QList<QString> QualifiedFields_;
 			QList<QString> BoundFields_;
 		};
 
@@ -1236,9 +1237,10 @@ namespace oral
 		CachedFieldsData BuildCachedFieldsData (const QSqlDatabase& db, const QString& table = T::ClassName ())
 		{
 			const auto& fields = detail::GetFieldsNames<T> {} ();
+			const auto& qualified = Util::Map (fields, [&table] (const QString& field) { return table + "." + field; });
 			const auto& boundFields = Util::Map (fields, [] (const QString& str) { return ':' + str; });
 
-			return { table, db, fields, boundFields };
+			return { table, db, fields, qualified, boundFields };
 		}
 	}
 
