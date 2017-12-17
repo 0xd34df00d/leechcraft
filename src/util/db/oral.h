@@ -1030,165 +1030,6 @@ namespace oral
 			return { data };
 		}
 
-		template<typename OrigSeq, typename OrigIdx, typename RefSeq, typename MemberIdx>
-		struct FieldInfo
-		{
-		};
-
-		template<typename To, typename OrigSeq, typename OrigIdx, typename T>
-		struct FieldAppender
-		{
-			using value_type = To;
-		};
-
-		template<typename To, typename OrigSeq, typename OrigIdx, auto Ptr>
-		struct FieldAppender<To, OrigSeq, OrigIdx, References<Ptr>>
-		{
-			using RefSeq = MemberPtrStruct_t<Ptr>;
-			constexpr static int RefIdx = detail::FieldIndex<Ptr> ();
-
-			using value_type = typename boost::fusion::result_of::as_vector<
-					typename boost::fusion::result_of::push_front<
-						To,
-						FieldInfo<OrigSeq, OrigIdx, RefSeq, boost::mpl::int_<RefIdx>>
-					>::type
-				>::type;
-		};
-
-		template<typename Seq, typename MemberIdx>
-		struct CollectRefs_
-		{
-			using type_list = typename FieldAppender<
-					typename CollectRefs_<Seq, typename boost::mpl::next<MemberIdx>::type>::type_list,
-					Seq,
-					MemberIdx,
-					typename std::decay<typename boost::fusion::result_of::at<Seq, MemberIdx>::type>::type
-				>::value_type;
-		};
-
-		template<typename Seq>
-		struct CollectRefs_<Seq, typename boost::fusion::result_of::size<Seq>::type>
-		{
-			using type_list = boost::fusion::vector<>;
-		};
-
-		template<typename Seq>
-		struct CollectRefs : CollectRefs_<Seq, boost::mpl::int_<0>>
-		{
-		};
-
-		struct Ref2Select
-		{
-			template<typename OrigSeq, typename OrigIdx, typename RefSeq, typename RefIdx>
-			QStringList operator() (const QStringList& init, const FieldInfo<OrigSeq, OrigIdx, RefSeq, RefIdx>&) const
-			{
-				const auto& thisQualified = OrigSeq::ClassName () + "." + GetFieldName<OrigSeq, OrigIdx::value>::value ();
-				return init + QStringList { thisQualified + " = " + GetBoundName<RefSeq, RefIdx::value>::value () };
-			}
-		};
-
-		template<typename T>
-		struct ExtractRefSeq;
-
-		template<typename OrigSeq, typename OrigIdx, typename RefSeq, typename RefIdx>
-		struct ExtractRefSeq<FieldInfo<OrigSeq, OrigIdx, RefSeq, RefIdx>>
-		{
-			using type = typename boost::fusion::result_of::at<const RefSeq, RefIdx>::type;
-		};
-
-		struct SingleBind
-		{
-			QSqlQuery_ptr Q_;
-
-			template<typename ObjType, typename OrigSeq, typename OrigIdx, typename RefSeq, typename RefIdx>
-			void operator() (const boost::fusion::vector2<ObjType, const FieldInfo<OrigSeq, OrigIdx, RefSeq, RefIdx>&>& pair) const
-			{
-				Q_->bindValue (GetBoundName<RefSeq, RefIdx::value>::value (),
-						ToVariantF (boost::fusion::at_c<0> (pair)));
-			}
-		};
-
-		template<typename T, typename RefSeqList>
-		struct MakeBinder
-		{
-			using transform_view = typename boost::mpl::transform<RefSeqList, ExtractRefSeq<boost::mpl::_1>>;
-			using objects_view = typename transform_view::type;
-			using objects_vector = typename boost::fusion::result_of::as_vector<objects_view>::type;
-
-			QSqlQuery_ptr Q_;
-
-			QList<T> operator() (const objects_vector& objs)
-			{
-				boost::fusion::for_each (boost::fusion::zip (objs, RefSeqList {}), SingleBind { Q_ });
-				return PerformSelect<T> (Q_);
-			}
-		};
-
-		template<typename T, typename Ret>
-		struct WrapAsFunc
-		{
-			using type = std::function<QList<Ret> (T)>;
-		};
-
-		template<typename T, typename Ret>
-		using WrapAsFunc_t = typename WrapAsFunc<T, Ret>::type;
-
-		template<typename T>
-		struct MakeSingleBinder
-		{
-			const CachedFieldsData Data_;
-
-			template<typename Vec, typename OrigObj, typename OrigIdx, typename RefObj, typename RefIdx>
-			auto operator() (Vec vec, const FieldInfo<OrigObj, OrigIdx, RefObj, RefIdx>&)
-			{
-				const auto& boundName = GetBoundName<OrigObj, OrigIdx::value>::value ();
-				const auto& query = "SELECT " + QStringList { Data_.Fields_ }.join (", ") +
-						" FROM " + Data_.Table_ +
-						" WHERE " + GetFieldName<OrigObj, OrigIdx::value>::value () + " = " + boundName +
-						";";
-				const auto selectQuery = std::make_shared<QSqlQuery> (Data_.DB_);
-				selectQuery->prepare (query);
-
-				using ReferredType_t = typename boost::fusion::result_of::at<const RefObj, RefIdx>::type;
-
-				auto selector = [selectQuery, boundName] (const ReferredType_t& val)
-				{
-					selectQuery->bindValue (boundName, ToVariantF (val));
-					return PerformSelect<T> (selectQuery);
-				};
-
-				return boost::fusion::push_back (vec, WrapAsFunc_t<ReferredType_t, T> { selector });
-			}
-		};
-
-		template<typename T, typename ObjInfo>
-		void AdaptSelectRef (const CachedFieldsData& data, ObjInfo& info)
-		{
-			constexpr auto refsCount = CollectRefs<T>::type_list::size::value;
-			if constexpr (refsCount > 0)
-			{
-				using references_list = typename CollectRefs<T>::type_list;
-				const auto& statements = boost::fusion::fold (references_list {}, QStringList {}, Ref2Select {});
-
-				const auto& selectAll = "SELECT " + QStringList { data.Fields_ }.join (", ") +
-						" FROM " + data.Table_ +
-						(statements.isEmpty () ? "" : " WHERE ") + statements.join (" AND ") +
-						";";
-				const auto selectQuery = std::make_shared<QSqlQuery> (data.DB_);
-				selectQuery->prepare (selectAll);
-
-				info.SelectByFKeysActor_ = MakeBinder<T, references_list> { selectQuery };
-
-				if constexpr (refsCount > 1)
-				{
-					auto singleSelectors = boost::fusion::fold (references_list {},
-							boost::fusion::vector<> {},
-							MakeSingleBinder<T> { data });
-					info.SingleFKeySelectors_ = boost::fusion::as_vector (singleSelectors);
-				}
-			}
-		}
-
 		template<typename T>
 		using ConstraintsDetector = typename T::Constraints;
 
@@ -1248,27 +1089,6 @@ namespace oral
 					");";
 		}
 
-		template<typename T, typename Enable = void>
-		struct ObjectInfoFKeysHelper
-		{
-		};
-
-		template<typename T>
-		struct ObjectInfoFKeysHelper<T, std::enable_if_t<CollectRefs<T>::type_list::size::value == 1>>
-		{
-			std::function<QList<T> (typename MakeBinder<T, typename CollectRefs<T>::type_list>::objects_vector)> SelectByFKeysActor_;
-		};
-
-		template<typename T>
-		struct ObjectInfoFKeysHelper<T, std::enable_if_t<CollectRefs<T>::type_list::size::value >= 2>>
-		{
-			using objects_vector = typename MakeBinder<T, typename CollectRefs<T>::type_list>::objects_vector;
-			std::function<QList<T> (objects_vector)> SelectByFKeysActor_;
-
-			using transform_view = typename boost::mpl::transform<objects_vector, WrapAsFunc<boost::mpl::_1, T>>::type;
-			typename boost::fusion::result_of::as_vector<transform_view>::type SingleFKeySelectors_;
-		};
-
 		template<typename T>
 		CachedFieldsData BuildCachedFieldsData (const QSqlDatabase& db, const QString& table = T::ClassName ())
 		{
@@ -1281,7 +1101,7 @@ namespace oral
 	}
 
 	template<typename T>
-	struct ObjectInfo : detail::ObjectInfoFKeysHelper<T>
+	struct ObjectInfo
 	{
 		std::function<QList<T> ()> DoSelectAll_;
 		detail::AdaptInsert<T> DoInsert_;
@@ -1337,8 +1157,6 @@ namespace oral
 			selectOneByVal,
 			deleteByVal
 		};
-
-		detail::AdaptSelectRef<T> (cachedData, info);
 
 		return info;
 	}
