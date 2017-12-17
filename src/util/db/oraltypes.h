@@ -36,6 +36,7 @@
 #include <boost/fusion/adapted/struct/adapt_struct.hpp>
 #include <boost/fusion/include/adapt_struct.hpp>
 #include <util/sll/typelist.h>
+#include <util/sll/typegetter.h>
 
 namespace LeechCraft
 {
