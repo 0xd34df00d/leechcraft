@@ -108,9 +108,11 @@ namespace BitTorrent
 
 		Ui_.TorrentsView_->setModel (ViewFilter_);
 		connect (Ui_.TorrentsView_->selectionModel (),
-				SIGNAL (currentChanged (QModelIndex, QModelIndex)),
-				this,
-				SLOT (handleTorrentSelected (QModelIndex)));
+				&QItemSelectionModel::currentChanged,
+				[this] (const QModelIndex& index)
+				{
+					Ui_.Tabs_->SetCurrentIndex (ViewFilter_->mapToSource (index).row ());
+				});
 		Ui_.TorrentsView_->sortByColumn (Core::ColumnID, Qt::SortOrder::AscendingOrder);
 
 		const auto& fm = Ui_.TorrentsView_->fontMetrics ();
@@ -346,11 +348,6 @@ namespace BitTorrent
 	{
 		return Util::Map (Ui_.TorrentsView_->selectionModel ()->selectedRows (),
 				[=] (const auto& idx) { return ViewFilter_->mapToSource (idx); });
-	}
-
-	void TorrentTab::handleTorrentSelected (const QModelIndex& index)
-	{
-		Ui_.Tabs_->SetCurrentIndex (ViewFilter_->mapToSource (index).row ());
 	}
 
 	void TorrentTab::setActionsEnabled ()

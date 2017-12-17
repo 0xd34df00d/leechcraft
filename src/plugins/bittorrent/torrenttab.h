@@ -82,7 +82,6 @@ namespace BitTorrent
 		QList<int> GetSelectedRows () const;
 		QModelIndexList GetSelectedRowIndexes () const;
 	private slots:
-		void handleTorrentSelected (const QModelIndex&);
 		void setActionsEnabled ();
 
 		void on_TorrentsView__customContextMenuRequested (const QPoint&);
