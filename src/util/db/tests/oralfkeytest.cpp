@@ -80,6 +80,52 @@ BOOST_FUSION_ADAPT_STRUCT (StudentInfo,
 
 TOSTRING (StudentInfo)
 
+struct Lecturer
+{
+	lco::PKey<int> ID_;
+	QString Name_;
+
+	static QString ClassName ()
+	{
+		return "Lecturer";
+	}
+
+	auto AsTuple () const
+	{
+		return std::tie (ID_, Name_);
+	}
+};
+
+BOOST_FUSION_ADAPT_STRUCT (Lecturer,
+		ID_,
+		Name_)
+
+TOSTRING (Lecturer)
+
+struct Student2Lecturer
+{
+	lco::PKey<int> ID_;
+	lco::References<&Student::ID_> StudentID_;
+	lco::References<&Lecturer::ID_> LecturerID_;
+
+	static QString ClassName ()
+	{
+		return "Student2Lecturer";
+	}
+
+	auto AsTuple () const
+	{
+		return std::tie (ID_, StudentID_, LecturerID_);
+	}
+};
+
+BOOST_FUSION_ADAPT_STRUCT (Student2Lecturer,
+		ID_,
+		StudentID_,
+		LecturerID_)
+
+TOSTRING (Student2Lecturer)
+
 namespace LeechCraft
 {
 namespace Util
