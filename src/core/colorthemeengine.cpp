@@ -83,7 +83,9 @@ namespace LeechCraft
 				{ "ToolTipBase", QPalette::ToolTipBase },
 				{ "ToolTipText", QPalette::ToolTipText },
 				{ "Button", QPalette::Button },
-				{ "ButtonText", QPalette::ButtonText }
+				{ "ButtonText", QPalette::ButtonText },
+				{ "Highlight", QPalette::Highlight },
+				{ "HighlightedText", QPalette::HighlightedText }
 			};
 			auto pres = map.find (str);
 			return pres == map.end () ? QPalette::Window : pres->second;
