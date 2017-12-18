@@ -104,14 +104,55 @@ namespace LeechCraft
 			return pres->second;
 		}
 
+		QString ParseArg (const QString& str)
+		{
+			return str.section ('(', 1, 1).section (')', 0, 0).trimmed ();
+		}
+
+		template<typename F>
+		void WithValue (QColor& color, F&& f)
+		{
+			qreal h, s, v, a;
+			color.getHsvF (&h, &s, &v, &a);
+			v = f (v);
+			color.setHsvF (h, s, v, a);
+		}
+
+		QColor Modify (QColor color, const QString& str)
+		{
+			if (str.isEmpty ())
+				return color;
+
+			if (str.startsWith ("darker"))
+			{
+				const auto coeff = ParseArg (str).toInt () / 100.;
+				WithValue (color, [coeff] (qreal v) { return v * (1 - coeff); });
+				return color;
+			}
+			else if (str.startsWith ("lighter"))
+			{
+				const auto coeff = ParseArg (str).toInt () / 100.;
+				WithValue (color, [coeff] (qreal v) { return v + coeff * (1 - v); });
+				return color;
+			}
+			else
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "unknown function"
+						<< str;
+				return color;
+			}
+		}
+
 		std::optional<QColor> ParsePaletteColor (const QString& str)
 		{
 			static const QString paletteMarker { "Palette." };
 			if (!str.startsWith (paletteMarker))
 				return {};
 
-			const auto role = ColorRoleFromStr (str.mid (paletteMarker.size ()));
-			return QApplication::palette ().color (role);
+			const auto& role = ColorRoleFromStr (str.section ('.', 1, 1));
+			const auto& color = QApplication::palette ().color (role);
+			return Modify (color, str.section ('.', 2, 2));
 		}
 
 		QColor ParseColor (const QVariant& var)
