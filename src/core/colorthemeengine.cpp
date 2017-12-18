@@ -91,10 +91,11 @@ namespace LeechCraft
 
 		std::optional<QColor> ParsePaletteColor (const QString& str)
 		{
-			if (!str.startsWith ("Palette."))
+			static const QString paletteMarker { "Palette." };
+			if (!str.startsWith (paletteMarker))
 				return {};
 
-			const auto role = ColorRoleFromStr (str.mid (QString ("Palette.").size ()));
+			const auto role = ColorRoleFromStr (str.mid (paletteMarker.size ()));
 			return QApplication::palette ().color (role);
 		}
 
