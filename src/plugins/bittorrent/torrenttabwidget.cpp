@@ -473,27 +473,30 @@ namespace BitTorrent
 
 	void TorrentTabWidget::on_TorrentDownloadRateController__valueChanged (int val)
 	{
-		Core::Instance ()->SetTorrentDownloadRate (val, Index_);
+		ForEachSelected ([val] (int idx) { Core::Instance ()->SetTorrentDownloadRate (val, idx); });
 	}
 
 	void TorrentTabWidget::on_TorrentUploadRateController__valueChanged (int val)
 	{
-		Core::Instance ()->SetTorrentUploadRate (val, Index_);
+		ForEachSelected ([val] (int idx) { Core::Instance ()->SetTorrentUploadRate (val, idx); });
 	}
 
 	void TorrentTabWidget::on_TorrentManaged__stateChanged (int state)
 	{
-		Core::Instance ()->SetTorrentManaged (state == Qt::Checked, Index_);
+		const auto enable = state == Qt::Checked;
+		ForEachSelected ([enable] (int idx) { Core::Instance ()->SetTorrentManaged (enable, idx); });
 	}
 
 	void TorrentTabWidget::on_TorrentSequentialDownload__stateChanged (int state)
 	{
-		Core::Instance ()->SetTorrentSequentialDownload (state == Qt::Checked, Index_);
+		const auto enable = state == Qt::Checked;
+		ForEachSelected ([enable] (int idx) { Core::Instance ()->SetTorrentSequentialDownload (enable, idx); });
 	}
 
 	void TorrentTabWidget::on_TorrentSuperSeeding__stateChanged (int state)
 	{
-		Core::Instance ()->SetTorrentSuperSeeding (state == Qt::Checked, Index_);
+		const auto enable = state == Qt::Checked;
+		ForEachSelected ([enable] (int idx) { Core::Instance ()->SetTorrentSuperSeeding (enable, idx); });
 	}
 
 	void TorrentTabWidget::on_DownloadingTorrents__valueChanged (int newValue)
