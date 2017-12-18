@@ -84,6 +84,11 @@ namespace LeechCraft
 				{ "ToolTipText", QPalette::ToolTipText },
 				{ "Button", QPalette::Button },
 				{ "ButtonText", QPalette::ButtonText },
+				{ "Light", QPalette::Light },
+				{ "Midlight", QPalette::Midlight },
+				{ "Dark", QPalette::Dark },
+				{ "Mid", QPalette::Mid },
+				{ "Shadow", QPalette::Shadow },
 				{ "Highlight", QPalette::Highlight },
 				{ "HighlightedText", QPalette::HighlightedText }
 			};
