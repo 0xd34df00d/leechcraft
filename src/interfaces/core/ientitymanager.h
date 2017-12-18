@@ -92,7 +92,7 @@ public:
 	 *
 	 * @sa DelegationResult
 	 */
-	virtual DelegationResult DelegateEntity (LeechCraft::Entity entity, QObject *desired = 0) = 0;
+	virtual DelegationResult DelegateEntity (LeechCraft::Entity entity, QObject *desired = nullptr) = 0;
 
 	/** @brief Handles the given entity.
 	 *
@@ -106,7 +106,7 @@ public:
 	 *
 	 * @return If the entity has been handled successfully.
 	 */
-	virtual bool HandleEntity (LeechCraft::Entity entity, QObject *desired = 0) = 0;
+	virtual bool HandleEntity (LeechCraft::Entity entity, QObject *desired = nullptr) = 0;
 
 	/** @brief Queries whether the given entity can be handled at all.
 	 *
