@@ -87,8 +87,16 @@ namespace LeechCraft
 				{ "Highlight", QPalette::Highlight },
 				{ "HighlightedText", QPalette::HighlightedText }
 			};
-			auto pres = map.find (str);
-			return pres == map.end () ? QPalette::Window : pres->second;
+
+			const auto pres = map.find (str);
+			if (pres == map.end ())
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "unknown color"
+						<< str;
+				return QPalette::Window;
+			}
+			return pres->second;
 		}
 
 		std::optional<QColor> ParsePaletteColor (const QString& str)
