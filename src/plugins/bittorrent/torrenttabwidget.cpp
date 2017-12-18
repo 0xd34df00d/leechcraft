@@ -177,17 +177,18 @@ namespace BitTorrent
 		Ui_.WebSeedsView_->addAction (AddWebSeed_);
 		Ui_.WebSeedsView_->addAction (RemoveWebSeed_);
 
-		QList<QByteArray> tabWidgetSettings;
-		tabWidgetSettings << "ActiveSessionStats"
-			<< "ActiveAdvancedSessionStats"
-			<< "ActiveTrackerStats"
-			<< "ActiveCacheStats"
-			<< "ActiveTorrentStatus"
-			<< "ActiveTorrentAdvancedStatus"
-			<< "ActiveTorrentInfo"
-			<< "ActiveTorrentPeers";
-		XmlSettingsManager::Instance ()->RegisterObject (tabWidgetSettings,
-				this, "setTorrentTabWidgetSettings");
+		const QList<QByteArray> tabWidgetSettings
+		{
+			"ActiveSessionStats",
+			"ActiveAdvancedSessionStats",
+			"ActiveTrackerStats",
+			"ActiveCacheStats",
+			"ActiveTorrentStatus",
+			"ActiveTorrentAdvancedStatus",
+			"ActiveTorrentInfo",
+			"ActiveTorrentPeers"
+		};
+		XmlSettingsManager::Instance ()->RegisterObject (tabWidgetSettings, this, "setTorrentTabWidgetSettings");
 
 		setTabWidgetSettings ();
 	}
