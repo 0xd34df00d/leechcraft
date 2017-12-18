@@ -159,7 +159,7 @@ namespace LeechCraft
 		 * that should be downloaded or handled. For example, contents
 		 * of a torrent file, a magnet link, an RSS document.
 		 *
-		 * Here are some rules:
+		 * Here are some common conventions:
 		 * - Local files should be a QUrl (QUrl::fromLocalFile).
 		 * - URLs should be a QUrl as well.
 		 * - Anything binary like contents of a torrent file should be a
