@@ -10,7 +10,7 @@ Rectangle {
 
     smooth: true
 
-    color: colorProxy.color_TextBox_TopColor
+    color: colorProxy.color_TextView_TopColor
 
     signal bookmarkArtistRequested(string id, string page, string tags)
     signal previewRequested(string artist)
@@ -122,11 +122,11 @@ Rectangle {
             gradient: Gradient {
                 GradientStop {
                     position: 0
-                    color: colorProxy.color_TextBox_TopColor
+                    color: colorProxy.color_TextView_TopColor
                 }
                 GradientStop {
                     position: 1
-                    color: colorProxy.color_TextBox_BottomColor
+                    color: colorProxy.color_TextView_BottomColor
                 }
             }
         }
@@ -213,7 +213,7 @@ Rectangle {
                             anchors.right: parent.right
 
                             text: albumName
-                            color: colorProxy.color_TextBox_TextColor
+                            color: colorProxy.color_TextView_TextColor
                             horizontalAlignment: Text.AlignHCenter
                             wrapMode: Text.Wrap
                         }
@@ -225,7 +225,7 @@ Rectangle {
                             anchors.right: parent.right
 
                             text: albumYear
-                            color: colorProxy.color_TextBox_Aux2TextColor
+                            color: colorProxy.color_TextView_Aux2TextColor
                             horizontalAlignment: Text.AlignHCenter
                         }
 
@@ -280,7 +280,7 @@ Rectangle {
                 font.bold: true
                 font.underline: true
                 font.pointSize: 12
-                color: colorProxy.color_TextBox_TitleTextColor
+                color: colorProxy.color_TextView_TitleTextColor
                 anchors.top: parent.top
                 anchors.topMargin: 2
                 anchors.left: parent.left
@@ -309,7 +309,7 @@ Rectangle {
             Text {
                 id: artistTagsLabel
                 text: artistTags
-                color: colorProxy.color_TextBox_Aux1TextColor
+                color: colorProxy.color_TextView_Aux1TextColor
                 anchors.left: artistActions.right
                 anchors.leftMargin: 2
                 anchors.bottom: artistNameLabel.bottom
@@ -353,7 +353,7 @@ Rectangle {
                             text: artistInfo
                             textFormat: Text.RichText
                             clip: true
-                            color: colorProxy.color_TextBox_TextColor
+                            color: colorProxy.color_TextView_TextColor
                             wrapMode: Text.WordWrap
 
                             anchors.top: parent.top
