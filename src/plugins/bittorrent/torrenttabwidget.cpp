@@ -240,18 +240,6 @@ namespace BitTorrent
 		updateTorrentStats ();
 	}
 
-	void TorrentTabWidget::SetOverallDownloadRateController (int val)
-	{
-		Ui_.OverallDownloadRateController_->setValue (val);
-		on_OverallDownloadRateController__valueChanged (val);
-	}
-
-	void TorrentTabWidget::SetOverallUploadRateController (int val)
-	{
-		Ui_.OverallUploadRateController_->setValue (val);
-		on_OverallUploadRateController__valueChanged (val);
-	}
-
 	void TorrentTabWidget::updateTorrentStats ()
 	{
 		UpdateDashboard ();

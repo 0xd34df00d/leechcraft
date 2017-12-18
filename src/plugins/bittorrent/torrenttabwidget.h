@@ -60,8 +60,6 @@ namespace BitTorrent
 		void SetCurrentIndex (int);
 		void SetSelectedIndices (const QList<int>&);
 		void InvalidateSelection ();
-		void SetOverallDownloadRateController (int);
-		void SetOverallUploadRateController (int);
 	public slots:
 		void updateTorrentStats ();
 	private:
