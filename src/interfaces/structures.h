@@ -109,46 +109,11 @@ namespace LeechCraft
 
 	Q_DECLARE_FLAGS (TaskParameters, TaskParameter);
 
-	/** @brief Describes parameters of an entity.
+	/** @brief A message used for inter-plugin communication.
 	 *
-	 * This struct is used both for addition of new download tasks and
-	 * for announcing about finished/available entities, so its members
-	 * are context-dependent.
+	 * The IEntityManager class is responsible for routing entities between plugins.
 	 *
-	 * This is generally used for communications between different
-	 * plugins. So, it can be thought as a general packet or message.
-	 *
-	 * There are two kinds of messages: notifications and delegation
-	 * requests.
-	 *
-	 * First ones are asynchronous. They are used by plugins to notify
-	 * Core and other plugins about events like download completion. In
-	 * this case plugin that emits this notification doesn't care what
-	 * happens next. For example, a bittorrent client that just finished
-	 * downloading some files would emit a notification about those
-	 * files.
-	 *
-	 * For notification messages the following signal is used:
-	 * gotEntity (const LeechCraft::Entity& entity).
-	 *
-	 * The second type of messages, delegation requests, is used by
-	 * plugins to delegate a given task to other plugins. For example,
-	 * an RSS feed reader uses this kind of messages to delegate the
-	 * downloading of the feeds via HTTP to a plugin that can handle
-	 * HTTP. The signal that is used to emit this messages obviously
-	 * blocks. After emitting the signal one could get the id and
-	 * pointer to object that handles the request.
-	 *
-	 * For delegation requests the following signal is used:
-	 * delegateEntity (const LeechCraft::Entity& entity, int *id, QObject **object);
-	 *
-	 * There is also a third signal related to messaging:
-	 * couldHandle (const LeechCraft::Entity& entity, bool *could);
-	 *
-	 * It queries whether there are plugins that could handle the given
-	 * entity. It also blocks. After emitting this signal the could
-	 * variable would be set up accordingly.
-	 *
+	 * @sa IEntityManager
 	 * @sa LeechCraft::TaskParameter
 	 */
 	struct Entity
