@@ -84,13 +84,13 @@ namespace Lastfmscrobble
 		}
 
 		const auto& recsElem = doc.documentElement ().firstChildElement ("recommendations");
-		for (const auto& artistElem : Util::MakeDomChildrenRange (recsElem, "artist"))
+		for (const auto& artistElem : Util::DomChildren (recsElem, "artist"))
 		{
 			const auto& name = artistElem.firstChildElement ("name").text ();
 			if (name.isEmpty ())
 				continue;
 
-			const auto& similarTo = Util::Map (Util::MakeDomChildrenRange (artistElem.firstChildElement ("context"), "artist"),
+			const auto& similarTo = Util::Map (Util::DomChildren (artistElem.firstChildElement ("context"), "artist"),
 					[] (const auto& elem) { return elem.firstChildElement ("name").text (); });
 
 			++InfosWaiting_;

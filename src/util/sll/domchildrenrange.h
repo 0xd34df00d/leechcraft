@@ -102,7 +102,7 @@ namespace Util
 	 * @param tag The tag name of the child nodes (or an empty string for .
 	 * @return The range object representing the collection of the child nodes.
 	 */
-	inline auto MakeDomChildrenRange (const QDomElement& parent, const QString& tag)
+	inline auto DomChildren (const QDomElement& parent, const QString& tag)
 	{
 		auto child = parent.firstChildElement (tag);
 		return boost::make_iterator_range<detail::DomSiblingsIterator> ({ child, tag }, {});
