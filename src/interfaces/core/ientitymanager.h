@@ -90,6 +90,8 @@ public:
 	 * @param[in] entity The entity to handle.
 	 * @param[in] desired The object to try first.
 	 *
+	 * @return A structure descripting the result of the delegation request.
+	 *
 	 * @sa DelegationResult
 	 */
 	virtual DelegationResult DelegateEntity (LeechCraft::Entity entity, QObject *desired = nullptr) = 0;
