@@ -32,6 +32,7 @@
 #include <QNetworkReply>
 #include <QtDebug>
 #include <util/sll/util.h>
+#include <util/sll/domchildrenrange.h>
 #include "authenticator.h"
 #include "util.h"
 
@@ -81,14 +82,9 @@ namespace Lastfmscrobble
 			return;
 		}
 
-		auto artistElem = doc.documentElement ()
-				.firstChildElement ("recommendations")
-				.firstChildElement ("artist");
-		while (!artistElem.isNull ())
+		const auto& recsElem = doc.documentElement ().firstChildElement ("recommendations");
+		for (const auto& artistElem : Util::MakeDomChildrenRange (recsElem, "artist"))
 		{
-			const auto guard = Util::MakeScopeGuard ([&artistElem]
-					{ artistElem = artistElem.nextSiblingElement ("artist"); });
-
 			const auto& name = artistElem.firstChildElement ("name").text ();
 			if (name.isEmpty ())
 				continue;
