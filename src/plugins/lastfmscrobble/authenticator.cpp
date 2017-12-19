@@ -98,7 +98,7 @@ namespace Lastfmscrobble
 		if (login.isEmpty ())
 			return;
 
-		const auto& text = tr ("Enter password for Last.fm account with login %1:")
+		const auto& text = tr ("Enter password for Last.fm account %1:")
 					.arg (login);
 		const auto& password = Util::GetPassword ("org.LeechCraft.Lastfmscrobble/" + login,
 				text,
