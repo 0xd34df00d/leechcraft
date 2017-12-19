@@ -49,7 +49,7 @@ namespace LeechCraft
 class Q_DECL_EXPORT IEntityManager
 {
 public:
-	/** The result of delegating this entity to another plugin.
+	/** @brief The result of delegating this entity to another plugin.
 	 */
 	struct DelegationResult
 	{
@@ -87,6 +87,8 @@ public:
 	 * first tries to handle the entity with it. Returns a structure
 	 * describing the delegation result.
 	 *
+	 * This function shall only be called from the UI thread.
+	 *
 	 * @param[in] entity The entity to handle.
 	 * @param[in] desired The object to try first.
 	 *
@@ -102,6 +104,8 @@ public:
 	 * chooses one of them (or all of them, according to entity flags and
 	 * plugins' behavior). If the desired object is set, this method
 	 * first tries to handle the entity with it.
+	 *
+	 * It is safe to call this method from non-UI threads.
 	 *
 	 * @param[in] entity The entity to handle.
 	 * @param[in] desired The object to try first.
