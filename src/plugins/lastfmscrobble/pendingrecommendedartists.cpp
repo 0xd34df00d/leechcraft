@@ -33,6 +33,7 @@
 #include <QtDebug>
 #include <util/sll/util.h>
 #include <util/sll/domchildrenrange.h>
+#include <util/sll/prelude.h>
 #include "authenticator.h"
 #include "util.h"
 
@@ -89,13 +90,8 @@ namespace Lastfmscrobble
 			if (name.isEmpty ())
 				continue;
 
-			QStringList similarTo;
-			auto similarElem = artistElem.firstChildElement ("context").firstChildElement ("artist");
-			while (!similarElem.isNull ())
-			{
-				similarTo << similarElem.firstChildElement ("name").text ();
-				similarElem = similarElem.nextSiblingElement ("artist");
-			}
+			const auto& similarTo = Util::Map (Util::MakeDomChildrenRange (artistElem.firstChildElement ("context"), "artist"),
+					[] (const auto& elem) { return elem.firstChildElement ("name").text (); });
 
 			++InfosWaiting_;
 
