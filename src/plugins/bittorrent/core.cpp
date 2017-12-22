@@ -151,7 +151,11 @@ namespace BitTorrent
 
 			auto dig = [&ver] (int pos) { return ver.at (pos).digitValue (); };
 
+#if LIBTORRENT_VERSION_NUM >= 10103
 			return libtorrent::generate_fingerprint ("LC", dig (0), dig (1), dig (2), dig (3));
+#else
+			return libtorrent::fingerprint { "LC", dig (0), dig (1), dig (2), dig (3) }.to_string ();
+#endif
 		}
 
 		bool DecodeEntry (const QByteArray& data, libtorrent::bdecode_node& e)
