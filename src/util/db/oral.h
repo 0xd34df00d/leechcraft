@@ -886,7 +886,7 @@ namespace oral
 			{
 			}
 
-			QList<T> operator() () const
+			auto operator() () const
 			{
 				const auto& fields = Cached_.QualifiedFields_.join (", ");
 				return Select (fields, Cached_.Table_, {}, Void {},
@@ -894,7 +894,7 @@ namespace oral
 			}
 
 			template<ExprType Type, typename L, typename R>
-			QList<T> operator() (const ExprTree<Type, L, R>& tree) const
+			auto operator() (const ExprTree<Type, L, R>& tree) const
 			{
 				const auto& treeResult = HandleExprTree<T> (tree);
 
@@ -904,7 +904,7 @@ namespace oral
 			}
 
 			template<int Idx, ExprType Type, typename L, typename R>
-			QList<ValueAtC_t<T, Idx>> operator() (sph::pos<Idx>, const ExprTree<Type, L, R>& tree) const
+			auto operator() (sph::pos<Idx>, const ExprTree<Type, L, R>& tree) const
 			{
 				using Type_t = ValueAtC_t<T, Idx>;
 
