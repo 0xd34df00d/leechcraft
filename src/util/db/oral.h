@@ -528,16 +528,16 @@ namespace oral
 		using AggregateDetector_t = decltype (new T { std::declval<Args> ()... });
 
 		template<typename T, size_t... Indices>
-		T InitializeFromQuery (const QSqlQuery_ptr& q, std::index_sequence<Indices...>)
+		T InitializeFromQuery (const QSqlQuery& q, std::index_sequence<Indices...>)
 		{
 			if constexpr (IsDetected_v<AggregateDetector_t, T, ValueAtC_t<T, Indices>...>)
-				return T { FromVariant<ValueAtC_t<T, Indices>> {} (q->value (Indices))... };
+				return T { FromVariant<ValueAtC_t<T, Indices>> {} (q.value (Indices))... };
 			else
 			{
 				T t;
 				const auto dummy = std::initializer_list<int>
 				{
-					(static_cast<void> (boost::fusion::at_c<Indices> (t) = FromVariant<ValueAtC_t<T, Indices>> {} (q->value (Indices))), 0)...
+					(static_cast<void> (boost::fusion::at_c<Indices> (t) = FromVariant<ValueAtC_t<T, Indices>> {} (q.value (Indices))), 0)...
 				};
 				Q_UNUSED (dummy);
 				return t;
@@ -837,7 +837,7 @@ namespace oral
 		}
 
 		template<typename Seq, ExprType Type, typename L, typename R>
-		QPair<QString, std::function<void (QSqlQuery_ptr)>> HandleExprTree (const ExprTree<Type, L, R>& tree)
+		QPair<QString, std::function<void (QSqlQuery&)>> HandleExprTree (const ExprTree<Type, L, R>& tree)
 		{
 			ToSqlState<Seq> state { 0, {} };
 
@@ -846,10 +846,10 @@ namespace oral
 			return
 			{
 				sql,
-				[state] (const QSqlQuery_ptr& query)
+				[state] (QSqlQuery& query)
 				{
 					for (const auto& pair : Stlize (state.BoundMembers_))
-						query->bindValue (pair.first, pair.second);
+						query.bindValue (pair.first, pair.second);
 				}
 			};
 		}
@@ -889,7 +889,7 @@ namespace oral
 			{
 				const auto& fields = Cached_.QualifiedFields_.join (", ");
 				return Select (fields, Cached_.Table_, {}, {},
-						[] (const QSqlQuery_ptr& q) { return InitializeFromQuery<T> (q, SeqIndices<T>); });
+						[] (const QSqlQuery& q) { return InitializeFromQuery<T> (q, SeqIndices<T>); });
 			}
 
 			template<ExprType Type, typename L, typename R>
@@ -899,7 +899,7 @@ namespace oral
 
 				const auto& fields = Cached_.QualifiedFields_.join (", ");
 				return Select (fields, BuildFromClause (tree), treeResult.first, treeResult.second,
-						[] (const QSqlQuery_ptr& q) { return InitializeFromQuery<T> (q, SeqIndices<T>); });
+						[] (const QSqlQuery& q) { return InitializeFromQuery<T> (q, SeqIndices<T>); });
 			}
 
 			template<int Idx, ExprType Type, typename L, typename R>
@@ -910,12 +910,12 @@ namespace oral
 				const auto& treeResult = HandleExprTree<T> (tree);
 				return Select (Cached_.QualifiedFields_.value (Idx),
 						BuildFromClause (tree), treeResult.first, treeResult.second,
-						[] (const QSqlQuery_ptr& q) { return FromVariant<Type_t> {} (q->value (0)); });
+						[] (const QSqlQuery& q) { return FromVariant<Type_t> {} (q.value (0)); });
 			}
 		private:
 			template<typename Initializer>
 			auto Select (const QString& fields, const QString& from, QString where,
-					const std::function<void (QSqlQuery_ptr)>& binder, Initializer&& initializer) const
+					const std::function<void (QSqlQuery&)>& binder, Initializer&& initializer) const
 			{
 				if (!where.isEmpty ())
 					where.prepend (" WHERE ");
@@ -924,18 +924,18 @@ namespace oral
 						" FROM " + from +
 						where;
 
-				const auto query = std::make_shared<QSqlQuery> (Cached_.DB_);
-				query->prepare (queryStr);
+				QSqlQuery query { Cached_.DB_ };
+				query.prepare (queryStr);
 				if (binder)
 					binder (query);
 
-				if (!query->exec ())
-					throw QueryException ("fetch query execution failed", query);
+				if (!query.exec ())
+					throw QueryException ("fetch query execution failed", std::make_shared<QSqlQuery> (query));
 
-				QList<std::result_of_t<Initializer (QSqlQuery_ptr)>> result;
-				while (query->next ())
+				QList<std::result_of_t<Initializer (QSqlQuery)>> result;
+				while (query.next ())
 					result << initializer (query);
-				query->finish ();
+				query.finish ();
 				return result;
 			}
 
