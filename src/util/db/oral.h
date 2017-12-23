@@ -978,10 +978,10 @@ namespace oral
 				const auto& selectAll = "DELETE FROM " + Cached_.Table_ +
 						" WHERE " + treeResult.first + ";";
 
-				const auto query = std::make_shared<QSqlQuery> (Cached_.DB_);
-				query->prepare (selectAll);
+				QSqlQuery query { Cached_.DB_ };
+				query.prepare (selectAll);
 				treeResult.second (query);
-				query->exec ();
+				query.exec ();
 			}
 		};
 
