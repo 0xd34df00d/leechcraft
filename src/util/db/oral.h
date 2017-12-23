@@ -167,8 +167,8 @@ namespace oral
 			}
 		};
 
-		template<auto Ptr, int Idx = 0>
-		constexpr int FieldIndex ()
+		template<auto Ptr, size_t Idx = 0>
+		constexpr size_t FieldIndex ()
 		{
 			using S = MemberPtrStruct_t<Ptr>;
 
