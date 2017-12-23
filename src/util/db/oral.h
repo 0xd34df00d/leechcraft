@@ -545,28 +545,6 @@ namespace oral
 			}
 		}
 
-		template<typename T>
-		QList<T> PerformSelect (QSqlQuery_ptr q)
-		{
-			if (!q->exec ())
-				throw QueryException ("fetch query execution failed", q);
-
-			QList<T> result;
-			while (q->next ())
-				result << InitializeFromQuery<T> (q, SeqIndices<T>);
-			q->finish ();
-			return result;
-		}
-
-		template<typename T>
-		std::function<QList<T> ()> AdaptSelectAll (const CachedFieldsData& data)
-		{
-			const auto& selectAll = "SELECT " + QStringList { data.Fields_ }.join (", ") + " FROM " + data.Table_ + ";";
-			const auto selectQuery = std::make_shared<QSqlQuery> (data.DB_);
-			selectQuery->prepare (selectAll);
-			return [selectQuery] { return PerformSelect<T> (selectQuery); };
-		}
-
 		template<int HeadT, int... TailT>
 		struct FieldsUnpacker
 		{
@@ -1131,12 +1109,11 @@ namespace oral
 	template<typename T>
 	struct ObjectInfo
 	{
-		std::function<QList<T> ()> DoSelectAll_;
 		detail::AdaptInsert<T> DoInsert_;
 		detail::AdaptUpdate<T> DoUpdate_;
 		detail::AdaptDelete<T> DoDelete_;
 
-		detail::SelectByFieldsWrapper<T> DoSelectByFields_;
+		detail::SelectByFieldsWrapper<T> DoSelect_;
 		detail::SelectOneByFieldsWrapper<T> DoSelectOneByFields_;
 		detail::DeleteByFieldsWrapper<T> DoDeleteByFields_;
 	};
@@ -1149,7 +1126,6 @@ namespace oral
 		if (db.record (cachedData.Table_).isEmpty ())
 			RunTextQuery (db, detail::AdaptCreateTable<T> (cachedData));
 
-		const auto& selectr = detail::AdaptSelectAll<T> (cachedData);
 		const auto& insertr = detail::AdaptInsert<T> (cachedData);
 		const auto& updater = detail::AdaptUpdate<T> (cachedData);
 		const auto& deleter = detail::AdaptDelete<T> (cachedData);
@@ -1160,7 +1136,6 @@ namespace oral
 
 		return
 		{
-			selectr,
 			insertr,
 			updater,
 			deleter,
