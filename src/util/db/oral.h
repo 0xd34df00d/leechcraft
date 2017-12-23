@@ -467,8 +467,7 @@ namespace oral
 					const auto& boundName = removedBoundFields.takeAt (index);
 
 					const auto& statements = Util::ZipWith (removedFields, removedBoundFields,
-							[] (const QString& s1, const QString& s2) -> QString
-								{ return s1 + " = " + s2; });
+							[] (const QString& s1, const QString& s2) { return s1 + " = " + s2; });
 
 					const auto& update = "UPDATE " + data.Table_ +
 							" SET " + statements.join (", ") +
