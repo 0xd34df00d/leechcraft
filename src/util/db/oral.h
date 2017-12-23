@@ -471,7 +471,7 @@ namespace oral
 								{ return s1 + " = " + s2; });
 
 					const auto& update = "UPDATE " + data.Table_ +
-							" SET " + QStringList { statements }.join (", ") +
+							" SET " + statements.join (", ") +
 							" WHERE " + fieldName + " = " + boundName + ";";
 
 					const auto updateQuery = std::make_shared<QSqlQuery> (data.DB_);
