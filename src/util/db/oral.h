@@ -876,7 +876,9 @@ namespace oral
 
 	namespace detail
 	{
-		template<typename T>
+		enum class SelectBehaviour { Some, One };
+
+		template<typename T, SelectBehaviour SelectBehaviour>
 		class SelectByFieldsWrapper
 		{
 			const CachedFieldsData Cached_;
@@ -933,10 +935,20 @@ namespace oral
 				if (!query.exec ())
 					throw QueryException ("fetch query execution failed", std::make_shared<QSqlQuery> (query));
 
-				QList<std::result_of_t<Initializer (QSqlQuery)>> result;
-				while (query.next ())
-					result << initializer (query);
-				return result;
+				if constexpr (SelectBehaviour == SelectBehaviour::Some)
+				{
+					QList<std::result_of_t<Initializer (QSqlQuery)>> result;
+					while (query.next ())
+						result << initializer (query);
+					return result;
+				}
+				else
+				{
+					using RetType_t = boost::optional<std::result_of_t<Initializer (QSqlQuery)>>;
+					return query.next () ?
+							RetType_t { initializer (query) } :
+							RetType_t {};
+				}
 			}
 
 			template<ExprType Type, typename L, typename R>
@@ -945,39 +957,6 @@ namespace oral
 				const auto& additionalTables = Util::MapAs<QList> (tree.template AdditionalTables<T> (),
 						[] (const QString& table) { return ", " + table; });
 				return Cached_.Table_ + additionalTables.join (QString {});
-			}
-		};
-
-		template<typename T>
-		class SelectOneByFieldsWrapper
-		{
-			const SelectByFieldsWrapper<T> Select_;
-		public:
-			SelectOneByFieldsWrapper (const CachedFieldsData& data)
-			: Select_ { data }
-			{
-			}
-
-			template<ExprType Type, typename L, typename R>
-			boost::optional<T> operator() (const ExprTree<Type, L, R>& tree) const
-			{
-				const auto& result = Select_ (tree);
-				if (result.isEmpty ())
-					return {};
-
-				// TODO do something more optimal
-				return result.value (0);
-			}
-
-			template<int Idx, ExprType Type, typename L, typename R>
-			boost::optional<ValueAtC_t<T, Idx>> operator() (sph::pos<Idx> p, const ExprTree<Type, L, R>& tree) const
-			{
-				const auto& result = Select_ (p, tree);
-				if (result.isEmpty ())
-					return {};
-
-				// TODO ditto
-				return result.value (0);
 			}
 		};
 
@@ -1083,8 +1062,8 @@ namespace oral
 		detail::AdaptUpdate<T> DoUpdate_;
 		detail::AdaptDelete<T> DoDelete_;
 
-		detail::SelectByFieldsWrapper<T> DoSelect_;
-		detail::SelectOneByFieldsWrapper<T> DoSelectOneByFields_;
+		detail::SelectByFieldsWrapper<T, detail::SelectBehaviour::Some> DoSelect_;
+		detail::SelectByFieldsWrapper<T, detail::SelectBehaviour::One> DoSelectOneByFields_;
 		detail::DeleteByFieldsWrapper<T> DoDeleteByFields_;
 	};
 
