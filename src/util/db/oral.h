@@ -933,9 +933,7 @@ namespace oral
 				if (!query->exec ())
 					throw QueryException ("fetch query execution failed", query);
 
-				using ResType = std::result_of_t<Initializer (QSqlQuery_ptr)>;
-
-				QList<ResType> result;
+				QList<std::result_of_t<Initializer (QSqlQuery_ptr)>> result;
 				while (query->next ())
 					result << initializer (query);
 				query->finish ();
