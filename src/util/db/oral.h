@@ -908,6 +908,18 @@ namespace oral
 			{
 			}
 
+			QList<T> operator() () const
+			{
+				const auto& fields = QStringList { Cached_.QualifiedFields_ }.join (", ");
+				const auto& query = Select (fields, Cached_.Table_, {}, {});
+
+				QList<T> result;
+				while (query->next ())
+					result << InitializeFromQuery<T> (query, SeqIndices<T>);
+				query->finish ();
+				return result;
+			}
+
 			template<ExprType Type, typename L, typename R>
 			QList<T> operator() (const ExprTree<Type, L, R>& tree) const
 			{
