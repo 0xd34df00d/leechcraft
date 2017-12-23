@@ -296,9 +296,9 @@ namespace oral
 			QString Table_;
 			QSqlDatabase DB_;
 
-			QList<QString> Fields_;
-			QList<QString> QualifiedFields_;
-			QList<QString> BoundFields_;
+			QStringList Fields_;
+			QStringList QualifiedFields_;
+			QStringList BoundFields_;
 		};
 
 		template<typename T>
@@ -403,8 +403,8 @@ namespace oral
 				} ()
 			}
 			, InsertSuffix_ { " INTO " + Data_.Table_ +
-					" (" + QStringList { Data_.Fields_ }.join (", ") + ") VALUES (" +
-					QStringList { Data_.BoundFields_ }.join (", ") + ");" }
+					" (" + Data_.Fields_.join (", ") + ") VALUES (" +
+					Data_.BoundFields_.join (", ") + ");" }
 			{
 			}
 
@@ -460,8 +460,8 @@ namespace oral
 				{
 					const auto index = FindPKey<Seq>::result_type::value;
 
-					auto removedFields = data.Fields_;
-					auto removedBoundFields = data.BoundFields_;
+					QList<QString> removedFields { data.Fields_ };
+					QList<QString> removedBoundFields { data.BoundFields_ };
 
 					const auto& fieldName = removedFields.takeAt (index);
 					const auto& boundName = removedBoundFields.takeAt (index);
@@ -888,7 +888,7 @@ namespace oral
 
 			QList<T> operator() () const
 			{
-				const auto& fields = QStringList { Cached_.QualifiedFields_ }.join (", ");
+				const auto& fields = Cached_.QualifiedFields_.join (", ");
 				return Select (fields, Cached_.Table_, {}, {},
 						[] (const QSqlQuery_ptr& q) { return InitializeFromQuery<T> (q, SeqIndices<T>); });
 			}
@@ -898,7 +898,7 @@ namespace oral
 			{
 				const auto& treeResult = HandleExprTree<T> (tree);
 
-				const auto& fields = QStringList { Cached_.QualifiedFields_ }.join (", ");
+				const auto& fields = Cached_.QualifiedFields_.join (", ");
 				return Select (fields, BuildFromClause (tree), treeResult.first, treeResult.second,
 						[] (const QSqlQuery_ptr& q) { return InitializeFromQuery<T> (q, SeqIndices<T>); });
 			}
