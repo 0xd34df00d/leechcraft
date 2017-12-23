@@ -913,14 +913,14 @@ namespace oral
 			{
 				const auto& treeResult = HandleExprTree<T> (tree);
 
-				const auto& selectAll = "SELECT " + QStringList { Cached_.QualifiedFields_ }.join (", ") +
-						BuildFromClause (tree) +
-						" WHERE " + treeResult.first + ";";
+				const auto& fields = QStringList { Cached_.QualifiedFields_ }.join (", ");
+				const auto& query = Select (fields, BuildFromClause (tree), treeResult.first, treeResult.second);
 
-				const auto query = std::make_shared<QSqlQuery> (Cached_.DB_);
-				query->prepare (selectAll);
-				treeResult.second (query);
-				return PerformSelect<T> (query);
+				QList<T> result;
+				while (query->next ())
+					result << InitializeFromQuery<T> (query, SeqIndices<T>);
+				query->finish ();
+				return result;
 			}
 
 			template<int Idx, ExprType Type, typename L, typename R>
@@ -928,16 +928,8 @@ namespace oral
 			{
 				const auto& treeResult = HandleExprTree<T> (tree);
 
-				const auto& selectOne = "SELECT " + Cached_.QualifiedFields_.value (Idx) +
-						BuildFromClause (tree) +
-						" WHERE " + treeResult.first + ";";
-
-				const auto query = std::make_shared<QSqlQuery> (Cached_.DB_);
-				query->prepare (selectOne);
-				treeResult.second (query);
-
-				if (!query->exec ())
-					throw QueryException ("fetch query execution failed", query);
+				const auto& query = Select (Cached_.QualifiedFields_.value (Idx),
+						BuildFromClause (tree), treeResult.first, treeResult.second);
 
 				using Type_t = ValueAtC_t<T, Idx>;
 
@@ -948,12 +940,33 @@ namespace oral
 				return result;
 			}
 		private:
+			auto Select (const QString& fields, const QString& from, QString where,
+					const std::function<void (QSqlQuery_ptr)>& binder) const
+			{
+				if (!where.isEmpty ())
+					where.prepend (" WHERE ");
+
+				const auto& queryStr = "SELECT " + fields +
+						" FROM " + from +
+						where;
+
+				const auto query = std::make_shared<QSqlQuery> (Cached_.DB_);
+				query->prepare (queryStr);
+				if (binder)
+					binder (query);
+
+				if (!query->exec ())
+					throw QueryException ("fetch query execution failed", query);
+
+				return query;
+			}
+
 			template<ExprType Type, typename L, typename R>
 			QString BuildFromClause (const ExprTree<Type, L, R>& tree) const
 			{
 				const auto& additionalTables = Util::MapAs<QList> (tree.template AdditionalTables<T> (),
 						[] (const QString& table) { return ", " + table; });
-				return " FROM " + Cached_.Table_ + additionalTables.join (QString {});
+				return Cached_.Table_ + additionalTables.join (QString {});
 			}
 		};
 
