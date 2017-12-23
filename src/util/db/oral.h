@@ -57,6 +57,7 @@
 #include <util/sll/typegetter.h>
 #include <util/sll/detector.h>
 #include <util/sll/unreachable.h>
+#include <util/sll/void.h>
 #include <util/db/dblock.h>
 #include <util/db/util.h>
 #include "oraltypes.h"
@@ -837,13 +838,13 @@ namespace oral
 		}
 
 		template<typename Seq, ExprType Type, typename L, typename R>
-		QPair<QString, std::function<void (QSqlQuery&)>> HandleExprTree (const ExprTree<Type, L, R>& tree)
+		auto HandleExprTree (const ExprTree<Type, L, R>& tree)
 		{
 			ToSqlState<Seq> state { 0, {} };
 
 			const auto& sql = tree.ToSql (state);
 
-			return
+			return QPair
 			{
 				sql,
 				[state] (QSqlQuery& query)
@@ -888,7 +889,7 @@ namespace oral
 			QList<T> operator() () const
 			{
 				const auto& fields = Cached_.QualifiedFields_.join (", ");
-				return Select (fields, Cached_.Table_, {}, {},
+				return Select (fields, Cached_.Table_, {}, Void {},
 						[] (const QSqlQuery& q) { return InitializeFromQuery<T> (q, SeqIndices<T>); });
 			}
 
@@ -913,9 +914,9 @@ namespace oral
 						[] (const QSqlQuery& q) { return FromVariant<Type_t> {} (q.value (0)); });
 			}
 		private:
-			template<typename Initializer>
+			template<typename Binder, typename Initializer>
 			auto Select (const QString& fields, const QString& from, QString where,
-					const std::function<void (QSqlQuery&)>& binder, Initializer&& initializer) const
+					Binder&& binder, Initializer&& initializer) const
 			{
 				if (!where.isEmpty ())
 					where.prepend (" WHERE ");
@@ -926,7 +927,7 @@ namespace oral
 
 				QSqlQuery query { Cached_.DB_ };
 				query.prepare (queryStr);
-				if (binder)
+				if constexpr (!std::is_same_v<Void, std::decay_t<Binder>>)
 					binder (query);
 
 				if (!query.exec ())
