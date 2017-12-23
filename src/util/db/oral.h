@@ -999,6 +999,7 @@ namespace oral
 				if (result.isEmpty ())
 					return {};
 
+				// TODO do something more optimal
 				return result.value (0);
 			}
 
@@ -1009,6 +1010,7 @@ namespace oral
 				if (result.isEmpty ())
 					return {};
 
+				// TODO ditto
 				return result.value (0);
 			}
 		};
