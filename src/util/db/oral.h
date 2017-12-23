@@ -879,11 +879,11 @@ namespace oral
 		enum class SelectBehaviour { Some, One };
 
 		template<typename T, SelectBehaviour SelectBehaviour>
-		class SelectByFieldsWrapper
+		class SelectWrapper
 		{
 			const CachedFieldsData Cached_;
 		public:
-			SelectByFieldsWrapper (const CachedFieldsData& data)
+			SelectWrapper (const CachedFieldsData& data)
 			: Cached_ (data)
 			{
 			}
@@ -1062,8 +1062,8 @@ namespace oral
 		detail::AdaptUpdate<T> DoUpdate_;
 		detail::AdaptDelete<T> DoDelete_;
 
-		detail::SelectByFieldsWrapper<T, detail::SelectBehaviour::Some> DoSelect_;
-		detail::SelectByFieldsWrapper<T, detail::SelectBehaviour::One> DoSelectOneByFields_;
+		detail::SelectWrapper<T, detail::SelectBehaviour::Some> DoSelect_;
+		detail::SelectWrapper<T, detail::SelectBehaviour::One> DoSelectOneByFields_;
 		detail::DeleteByFieldsWrapper<T> DoDeleteByFields_;
 	};
 
