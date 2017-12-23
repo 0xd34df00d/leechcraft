@@ -1010,24 +1010,6 @@ namespace oral
 		};
 
 		template<typename T>
-		SelectByFieldsWrapper<T> AdaptSelectFields (const CachedFieldsData& data)
-		{
-			return { data };
-		}
-
-		template<typename T>
-		SelectOneByFieldsWrapper<T> AdaptSelectOneFields (const CachedFieldsData& data)
-		{
-			return { data };
-		}
-
-		template<typename T>
-		DeleteByFieldsWrapper<T> AdaptDeleteFields (const CachedFieldsData& data)
-		{
-			return { data };
-		}
-
-		template<typename T>
 		using ConstraintsDetector = typename T::Constraints;
 
 		template<typename T>
@@ -1117,22 +1099,14 @@ namespace oral
 		if (db.record (cachedData.Table_).isEmpty ())
 			RunTextQuery (db, detail::AdaptCreateTable<T> (cachedData));
 
-		const auto& insertr = detail::AdaptInsert<T> (cachedData);
-		const auto& updater = detail::AdaptUpdate<T> (cachedData);
-		const auto& deleter = detail::AdaptDelete<T> (cachedData);
-
-		const auto& selectByVal = detail::AdaptSelectFields<T> (cachedData);
-		const auto& selectOneByVal = detail::AdaptSelectOneFields<T> (cachedData);
-		const auto& deleteByVal = detail::AdaptDeleteFields<T> (cachedData);
-
 		return
 		{
-			insertr,
-			updater,
-			deleter,
-			selectByVal,
-			selectOneByVal,
-			deleteByVal
+			{ cachedData },
+			{ cachedData },
+			{ cachedData },
+			{ cachedData },
+			{ cachedData },
+			{ cachedData }
 		};
 	}
 
