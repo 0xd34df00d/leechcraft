@@ -936,7 +936,6 @@ namespace oral
 				QList<std::result_of_t<Initializer (QSqlQuery)>> result;
 				while (query.next ())
 					result << initializer (query);
-				query.finish ();
 				return result;
 			}
 
