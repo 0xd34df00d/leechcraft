@@ -889,13 +889,8 @@ namespace oral
 			QList<T> operator() () const
 			{
 				const auto& fields = QStringList { Cached_.QualifiedFields_ }.join (", ");
-				const auto& query = Select (fields, Cached_.Table_, {}, {});
-
-				QList<T> result;
-				while (query->next ())
-					result << InitializeFromQuery<T> (query, SeqIndices<T>);
-				query->finish ();
-				return result;
+				return Select (fields, Cached_.Table_, {}, {},
+						[] (const QSqlQuery_ptr& q) { return InitializeFromQuery<T> (q, SeqIndices<T>); });
 			}
 
 			template<ExprType Type, typename L, typename R>
@@ -904,34 +899,24 @@ namespace oral
 				const auto& treeResult = HandleExprTree<T> (tree);
 
 				const auto& fields = QStringList { Cached_.QualifiedFields_ }.join (", ");
-				const auto& query = Select (fields, BuildFromClause (tree), treeResult.first, treeResult.second);
-
-				QList<T> result;
-				while (query->next ())
-					result << InitializeFromQuery<T> (query, SeqIndices<T>);
-				query->finish ();
-				return result;
+				return Select (fields, BuildFromClause (tree), treeResult.first, treeResult.second,
+						[] (const QSqlQuery_ptr& q) { return InitializeFromQuery<T> (q, SeqIndices<T>); });
 			}
 
 			template<int Idx, ExprType Type, typename L, typename R>
 			QList<ValueAtC_t<T, Idx>> operator() (sph::pos<Idx>, const ExprTree<Type, L, R>& tree) const
 			{
-				const auto& treeResult = HandleExprTree<T> (tree);
-
-				const auto& query = Select (Cached_.QualifiedFields_.value (Idx),
-						BuildFromClause (tree), treeResult.first, treeResult.second);
-
 				using Type_t = ValueAtC_t<T, Idx>;
 
-				QList<Type_t> result;
-				while (query->next ())
-					result << FromVariant<Type_t> {} (query->value (0));
-				query->finish ();
-				return result;
+				const auto& treeResult = HandleExprTree<T> (tree);
+				return Select (Cached_.QualifiedFields_.value (Idx),
+						BuildFromClause (tree), treeResult.first, treeResult.second,
+						[] (const QSqlQuery_ptr& q) { return FromVariant<Type_t> {} (q->value (0)); });
 			}
 		private:
+			template<typename Initializer>
 			auto Select (const QString& fields, const QString& from, QString where,
-					const std::function<void (QSqlQuery_ptr)>& binder) const
+					const std::function<void (QSqlQuery_ptr)>& binder, Initializer&& initializer) const
 			{
 				if (!where.isEmpty ())
 					where.prepend (" WHERE ");
@@ -948,7 +933,13 @@ namespace oral
 				if (!query->exec ())
 					throw QueryException ("fetch query execution failed", query);
 
-				return query;
+				using ResType = std::result_of_t<Initializer (QSqlQuery_ptr)>;
+
+				QList<ResType> result;
+				while (query->next ())
+					result << initializer (query);
+				query->finish ();
+				return result;
 			}
 
 			template<ExprType Type, typename L, typename R>
