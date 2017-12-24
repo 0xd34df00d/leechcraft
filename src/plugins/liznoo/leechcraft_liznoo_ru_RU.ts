@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="ru_RU">
+<TS version="2.1" language="ru_RU">
 <context>
     <name>BatteryHistoryDialog</name>
     <message>
@@ -145,60 +145,55 @@
 <context>
     <name>LeechCraft::Liznoo::Plugin</name>
     <message>
-        <location filename="liznoo.cpp" line="81"/>
+        <location filename="liznoo.cpp" line="83"/>
         <source>Suspend</source>
         <translation>Ждущий режим</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="88"/>
+        <location filename="liznoo.cpp" line="90"/>
         <source>Hibernate</source>
         <translation>Спящий режим</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="131"/>
+        <location filename="liznoo.cpp" line="138"/>
         <source>UPower/WinAPI-based power manager.</source>
         <translation>Управление энергией, основанное на UPower/WinAPI.</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="366"/>
+        <location filename="liznoo.cpp" line="295"/>
         <source>No platform backend is available.</source>
         <translation>Нет доступных платформ.</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="369"/>
+        <location filename="liznoo.cpp" line="297"/>
         <source>Platform backend failed.</source>
         <translation>Ошибка в платформе электропитания.</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="372"/>
+        <location filename="liznoo.cpp" line="299"/>
         <source>Unknown reason.</source>
         <translation>Неизвестная причина.</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="414"/>
+        <location filename="liznoo.cpp" line="351"/>
         <source>Unable to send test power events.</source>
         <translation>Невозможно отправить тестовые события электропитания.</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="248"/>
+        <location filename="liznoo.cpp" line="212"/>
         <source>Battery charge level is %1%.</source>
         <oldsource>Battery charge level is below %1%.</oldsource>
         <translation>Заряд батареи составляет %1%.</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="261"/>
+        <location filename="liznoo.cpp" line="225"/>
         <source>The device started charging.</source>
         <translation>Устройство начало заряжаться.</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="265"/>
+        <location filename="liznoo.cpp" line="229"/>
         <source>The device started discharging.</source>
         <translation>Устройство начало разряжаться.</translation>
-    </message>
-    <message>
-        <location filename="liznoo.cpp" line="276"/>
-        <source>Battery status</source>
-        <translation>Статус батареи</translation>
     </message>
 </context>
 <context>
