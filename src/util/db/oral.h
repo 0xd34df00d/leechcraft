@@ -894,6 +894,15 @@ namespace oral
 
 	namespace detail
 	{
+		template<auto... Ptrs, size_t... Idxs>
+		auto MakeIndexedQueryHandler (detail::MemberPtrs<Ptrs...>, std::index_sequence<Idxs...>)
+		{
+			return [] (const QSqlQuery& q)
+			{
+				return std::tuple { FromVariant<MemberPtrType_t<Ptrs>> {} (q.value (Idxs))... };
+			};
+		}
+
 		enum class SelectBehaviour { Some, One };
 
 		template<typename T, SelectBehaviour SelectBehaviour>
@@ -934,6 +943,16 @@ namespace oral
 				return Select (Cached_.QualifiedFields_.value (Idx),
 						BuildFromClause (tree), treeResult.first, treeResult.second,
 						[] (const QSqlQuery& q) { return FromVariant<Type_t> {} (q.value (0)); });
+			}
+
+			template<ExprType Type, typename L, typename R, auto... Ptrs>
+			auto operator() (detail::MemberPtrs<Ptrs...> ptrs, const ExprTree<Type, L, R>& tree) const
+			{
+				const auto& treeResult = HandleExprTree<T> (tree);
+				const QStringList names { BuildCachedFieldsData<MemberPtrStruct_t<Ptrs>> ().QualifiedFields_.value (FieldIndex<Ptrs> ())... };
+				return Select (names.join (", "),
+						BuildFromClause (tree), treeResult.first, treeResult.second,
+						MakeIndexedQueryHandler (ptrs, std::make_index_sequence<sizeof... (Ptrs)> {}));
 			}
 		private:
 			template<typename Binder, typename Initializer>
