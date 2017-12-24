@@ -67,7 +67,7 @@ namespace oral
 		const auto& baseName = Record::ClassName ();
 
 		const auto& thisName = "copy" + baseName;
-		const auto& schema = detail::AdaptCreateTable<Record> (detail::BuildCachedFieldsData<Record> (db, thisName));
+		const auto& schema = detail::AdaptCreateTable<Record> (detail::BuildCachedFieldsData<Record> (thisName));
 
 		if (detail::MatchesSchema (baseName, schema, db))
 		{
