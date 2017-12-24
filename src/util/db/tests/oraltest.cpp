@@ -276,7 +276,7 @@ namespace Util
 	{
 		auto adapted = PrepareRecords<SimpleRecord> (MakeDatabase ());
 		const auto& list = adapted->DoSelect_ (sph::fields<&SimpleRecord::ID_, &SimpleRecord::Value_>, sph::f<&SimpleRecord::ID_> < 2);
-		QCOMPARE (list, (QList<std::tuple<oral::PKey<int, oral::NoAutogen>, QString>> { { 0, "0" }, { 1, "1" } }));
+		QCOMPARE (list, (QList<std::tuple<int, QString>> { { 0, "0" }, { 1, "1" } }));
 	}
 
 	void OralTest::testAutoPKeyRecordInsertSelect ()
