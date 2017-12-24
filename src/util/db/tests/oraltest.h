@@ -53,6 +53,7 @@ namespace Util
 		void testSimpleRecordInsertSelectByFields3 ();
 		void testSimpleRecordInsertSelectOneByFields ();
 
+		void testSimpleRecordInsertSelectSingleFieldByFields ();
 		void testSimpleRecordInsertSelectFieldsByFields ();
 
 		void testAutoPKeyRecordInsertSelect ();

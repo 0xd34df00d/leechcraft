@@ -265,6 +265,13 @@ namespace Util
 		QCOMPARE (single, (boost::optional<SimpleRecord> { { 1, "1" } }));
 	}
 
+	void OralTest::testSimpleRecordInsertSelectSingleFieldByFields ()
+	{
+		auto adapted = PrepareRecords<SimpleRecord> (MakeDatabase ());
+		const auto& list = adapted->DoSelect_ (sph::fields<&SimpleRecord::Value_>, sph::f<&SimpleRecord::ID_> < 2);
+		QCOMPARE (list, (QList<QString> { "0", "1" }));
+	}
+
 	void OralTest::testSimpleRecordInsertSelectFieldsByFields ()
 	{
 		auto adapted = PrepareRecords<SimpleRecord> (MakeDatabase ());
