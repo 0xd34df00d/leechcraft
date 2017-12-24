@@ -890,6 +890,9 @@ namespace oral
 
 		template<auto Ptr>
 		constexpr detail::ExprTree<detail::ExprType::LeafStaticPlaceholder, detail::MemberPtrs<Ptr>> f {};
+
+		template<auto... Ptrs>
+		constexpr detail::MemberPtrs<Ptrs...> fields {};
 	};
 
 	namespace detail
