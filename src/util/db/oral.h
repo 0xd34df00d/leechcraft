@@ -1050,13 +1050,20 @@ namespace oral
 		}
 
 		template<typename T>
-		CachedFieldsData BuildCachedFieldsData (const QString& table = T::ClassName ())
+		CachedFieldsData BuildCachedFieldsData (const QString& table)
 		{
 			const auto& fields = detail::GetFieldsNames<T> {} ();
 			const auto& qualified = Util::Map (fields, [&table] (const QString& field) { return table + "." + field; });
 			const auto& boundFields = Util::Map (fields, [] (const QString& str) { return ':' + str; });
 
 			return { table, fields, qualified, boundFields };
+		}
+
+		template<typename T>
+		CachedFieldsData BuildCachedFieldsData ()
+		{
+			static CachedFieldsData result = BuildCachedFieldsData<T> (T::ClassName ());
+			return result;
 		}
 	}
 
