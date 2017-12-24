@@ -295,7 +295,6 @@ namespace oral
 		struct CachedFieldsData
 		{
 			QString Table_;
-			QSqlDatabase DB_;
 
 			QStringList Fields_;
 			QStringList QualifiedFields_;
@@ -382,6 +381,7 @@ namespace oral
 		template<typename Seq>
 		struct AdaptInsert
 		{
+			const QSqlDatabase DB_;
 			const CachedFieldsData Data_;
 			const QString InsertSuffix_;
 
@@ -389,8 +389,9 @@ namespace oral
 
 			mutable std::array<QSqlQuery_ptr, InsertActionCount> Queries_;
 		public:
-			AdaptInsert (CachedFieldsData data)
-			: Data_
+			AdaptInsert (const QSqlDatabase& db, CachedFieldsData data)
+			: DB_ { db }
+			, Data_
 			{
 				[data] () mutable
 				{
@@ -443,7 +444,7 @@ namespace oral
 				auto& query = Queries_ [static_cast<size_t> (action)];
 				if (!query)
 				{
-					query = std::make_shared<QSqlQuery> (Data_.DB_);
+					query = std::make_shared<QSqlQuery> (DB_);
 					query->prepare (GetInsertPrefix (action) + InsertSuffix_);
 				}
 				return query;
@@ -455,7 +456,7 @@ namespace oral
 		{
 			std::function<void (Seq)> Updater_;
 		public:
-			AdaptUpdate (const CachedFieldsData& data)
+			AdaptUpdate (const QSqlDatabase& db, const CachedFieldsData& data)
 			{
 				if constexpr (HasPKey)
 				{
@@ -474,7 +475,7 @@ namespace oral
 							" SET " + statements.join (", ") +
 							" WHERE " + fieldName + " = " + boundName + ";";
 
-					const auto updateQuery = std::make_shared<QSqlQuery> (data.DB_);
+					const auto updateQuery = std::make_shared<QSqlQuery> (db);
 					updateQuery->prepare (update);
 					Updater_ = MakeInserter<Seq> (data, updateQuery, true);
 				}
@@ -493,7 +494,7 @@ namespace oral
 			std::function<void (Seq)> Deleter_;
 		public:
 			template<bool B = HasPKey>
-			AdaptDelete (const CachedFieldsData& data, std::enable_if_t<B>* = nullptr)
+			AdaptDelete (const QSqlDatabase& db, const CachedFieldsData& data, std::enable_if_t<B>* = nullptr)
 			{
 				const auto index = FindPKey<Seq>::result_type::value;
 
@@ -501,7 +502,7 @@ namespace oral
 				const auto& del = "DELETE FROM " + data.Table_ +
 						" WHERE " + data.Fields_.at (index) + " = " + boundName + ";";
 
-				const auto deleteQuery = std::make_shared<QSqlQuery> (data.DB_);
+				const auto deleteQuery = std::make_shared<QSqlQuery> (db);
 				deleteQuery->prepare (del);
 
 				Deleter_ = [deleteQuery, boundName] (const Seq& t)
@@ -514,7 +515,7 @@ namespace oral
 			}
 
 			template<bool B = HasPKey>
-			AdaptDelete (const CachedFieldsData&, std::enable_if_t<!B>* = nullptr)
+			AdaptDelete (const QSqlDatabase&, const CachedFieldsData&, std::enable_if_t<!B>* = nullptr)
 			{
 			}
 
@@ -881,10 +882,12 @@ namespace oral
 		template<typename T, SelectBehaviour SelectBehaviour>
 		class SelectWrapper
 		{
+			const QSqlDatabase DB_;
 			const CachedFieldsData Cached_;
 		public:
-			SelectWrapper (const CachedFieldsData& data)
-			: Cached_ (data)
+			SelectWrapper (const QSqlDatabase& db, const CachedFieldsData& data)
+			: DB_ { db }
+			, Cached_ (data)
 			{
 			}
 
@@ -927,7 +930,7 @@ namespace oral
 						" FROM " + from +
 						where;
 
-				QSqlQuery query { Cached_.DB_ };
+				QSqlQuery query { DB_ };
 				query.prepare (queryStr);
 				if constexpr (!std::is_same_v<Void, std::decay_t<Binder>>)
 					binder (query);
@@ -963,10 +966,12 @@ namespace oral
 		template<typename T>
 		class DeleteByFieldsWrapper
 		{
+			const QSqlDatabase DB_;
 			const CachedFieldsData Cached_;
 		public:
-			DeleteByFieldsWrapper (const CachedFieldsData& data)
-			: Cached_ (data)
+			DeleteByFieldsWrapper (const QSqlDatabase& db, const CachedFieldsData& data)
+			: DB_ { db }
+			, Cached_ (data)
 			{
 			}
 
@@ -978,7 +983,7 @@ namespace oral
 				const auto& selectAll = "DELETE FROM " + Cached_.Table_ +
 						" WHERE " + treeResult.first + ";";
 
-				QSqlQuery query { Cached_.DB_ };
+				QSqlQuery query { DB_ };
 				query.prepare (selectAll);
 				treeResult.second (query);
 				query.exec ();
@@ -1045,13 +1050,13 @@ namespace oral
 		}
 
 		template<typename T>
-		CachedFieldsData BuildCachedFieldsData (const QSqlDatabase& db, const QString& table = T::ClassName ())
+		CachedFieldsData BuildCachedFieldsData (const QString& table = T::ClassName ())
 		{
 			const auto& fields = detail::GetFieldsNames<T> {} ();
 			const auto& qualified = Util::Map (fields, [&table] (const QString& field) { return table + "." + field; });
 			const auto& boundFields = Util::Map (fields, [] (const QString& str) { return ':' + str; });
 
-			return { table, db, fields, qualified, boundFields };
+			return { table, fields, qualified, boundFields };
 		}
 	}
 
@@ -1070,19 +1075,19 @@ namespace oral
 	template<typename T>
 	ObjectInfo<T> Adapt (const QSqlDatabase& db)
 	{
-		const auto& cachedData = detail::BuildCachedFieldsData<T> (db);
+		const auto& cachedData = detail::BuildCachedFieldsData<T> ();
 
 		if (db.record (cachedData.Table_).isEmpty ())
 			RunTextQuery (db, detail::AdaptCreateTable<T> (cachedData));
 
 		return
 		{
-			{ cachedData },
-			{ cachedData },
-			{ cachedData },
-			{ cachedData },
-			{ cachedData },
-			{ cachedData }
+			{ db, cachedData },
+			{ db, cachedData },
+			{ db, cachedData },
+			{ db, cachedData },
+			{ db, cachedData },
+			{ db, cachedData }
 		};
 	}
 
