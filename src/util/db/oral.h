@@ -340,12 +340,6 @@ namespace oral
 			};
 		}
 
-		template<typename T>
-		struct Lazy
-		{
-			using type = T;
-		};
-
 		template<typename Seq, int Idx>
 		using ValueAtC_t = typename boost::fusion::result_of::value_at_c<Seq, Idx>::type;
 
@@ -357,6 +351,12 @@ namespace oral
 		{
 			static_assert ((boost::fusion::result_of::size<Seq>::value) != (MemberIdx::value),
 					"Primary key not found");
+
+			template<typename T>
+			struct Lazy
+			{
+				using type = T;
+			};
 
 			using result_type = typename std::conditional_t<
 						IsPKey<ValueAt_t<Seq, MemberIdx>>::value,
