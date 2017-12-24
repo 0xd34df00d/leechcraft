@@ -57,7 +57,7 @@ namespace Util
 				)");
 
 		QStringList texts;
-		for (const auto& elem : MakeDomChildrenRange (parent, "child"))
+		for (const auto& elem : DomChildren (parent, "child"))
 			texts << elem.text ();
 		QCOMPARE (texts, QStringList {});
 	}
@@ -71,7 +71,7 @@ namespace Util
 				)");
 
 		QStringList texts;
-		for (const auto& elem : MakeDomChildrenRange (parent, "child"))
+		for (const auto& elem : DomChildren (parent, "child"))
 			texts << elem.text ();
 		QCOMPARE (texts, QStringList { "foo" });
 	}
@@ -87,7 +87,7 @@ namespace Util
 				)");
 
 		QStringList texts;
-		for (const auto& elem : MakeDomChildrenRange (parent, "child"))
+		for (const auto& elem : DomChildren (parent, "child"))
 			texts << elem.text ();
 		QCOMPARE (texts, (QStringList { "foo", "bar", "baz" }));
 	}

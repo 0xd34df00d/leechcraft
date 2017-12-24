@@ -92,7 +92,7 @@ namespace LeechCraft
 
 		QStringList ParseRoles (const QDomElement& contribElem)
 		{
-			return Util::Map (Util::MakeDomChildrenRange (contribElem.firstChildElement ("roles"), "role"),
+			return Util::Map (Util::DomChildren (contribElem.firstChildElement ("roles"), "role"),
 					[] (const auto& roleElem) { return roleElem.text (); });
 		}
 
@@ -111,7 +111,7 @@ namespace LeechCraft
 				return result;
 			}
 
-			return Util::Map (Util::MakeDomChildrenRange (yearsElem, "year"),
+			return Util::Map (Util::DomChildren (yearsElem, "year"),
 					[] (const auto& yearElem) { return yearElem.text ().toInt (); });
 		}
 
@@ -119,7 +119,7 @@ namespace LeechCraft
 		{
 			QList<ContributorInfo> result;
 
-			for (const auto& contribElem : Util::MakeDomChildrenRange (doc.documentElement (), "contrib"))
+			for (const auto& contribElem : Util::DomChildren (doc.documentElement (), "contrib"))
 			{
 				if (!type.isEmpty () && contribElem.attribute ("type") != type)
 					continue;

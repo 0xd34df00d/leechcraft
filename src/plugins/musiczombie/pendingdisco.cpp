@@ -215,10 +215,10 @@ namespace MusicZombie
 	{
 		auto ParseMediumList (const QDomElement& mediumList)
 		{
-			return Util::Map (Util::MakeDomChildrenRange (mediumList, "medium"),
+			return Util::Map (Util::DomChildren (mediumList, "medium"),
 					[] (const auto& medium)
 					{
-						return Util::Map (Util::MakeDomChildrenRange (medium.firstChildElement ("track-list"), "track"),
+						return Util::Map (Util::DomChildren (medium.firstChildElement ("track-list"), "track"),
 								[] (const auto& trackElem)
 								{
 									const int num = trackElem.firstChildElement ("number").text ().toInt ();
@@ -281,7 +281,7 @@ namespace MusicZombie
 		QMap<QString, QMap<QString, Media::ReleaseInfo>> infos;
 
 		const auto& releaseList = doc.documentElement ().firstChildElement ("release-list");
-		for (const auto& releaseElem : Util::MakeDomChildrenRange (releaseList, "release"))
+		for (const auto& releaseElem : Util::DomChildren (releaseList, "release"))
 		{
 			auto elemText = [&releaseElem] (const QString& sub)
 			{

@@ -57,6 +57,7 @@
 #include <util/sll/typegetter.h>
 #include <util/sll/detector.h>
 #include <util/sll/unreachable.h>
+#include <util/sll/void.h>
 #include <util/db/dblock.h>
 #include <util/db/util.h>
 #include "oraltypes.h"
@@ -296,9 +297,9 @@ namespace oral
 			QString Table_;
 			QSqlDatabase DB_;
 
-			QList<QString> Fields_;
-			QList<QString> QualifiedFields_;
-			QList<QString> BoundFields_;
+			QStringList Fields_;
+			QStringList QualifiedFields_;
+			QStringList BoundFields_;
 		};
 
 		template<typename T>
@@ -403,8 +404,8 @@ namespace oral
 				} ()
 			}
 			, InsertSuffix_ { " INTO " + Data_.Table_ +
-					" (" + QStringList { Data_.Fields_ }.join (", ") + ") VALUES (" +
-					QStringList { Data_.BoundFields_ }.join (", ") + ");" }
+					" (" + Data_.Fields_.join (", ") + ") VALUES (" +
+					Data_.BoundFields_.join (", ") + ");" }
 			{
 			}
 
@@ -460,18 +461,17 @@ namespace oral
 				{
 					const auto index = FindPKey<Seq>::result_type::value;
 
-					auto removedFields = data.Fields_;
-					auto removedBoundFields = data.BoundFields_;
+					QList<QString> removedFields { data.Fields_ };
+					QList<QString> removedBoundFields { data.BoundFields_ };
 
 					const auto& fieldName = removedFields.takeAt (index);
 					const auto& boundName = removedBoundFields.takeAt (index);
 
 					const auto& statements = Util::ZipWith (removedFields, removedBoundFields,
-							[] (const QString& s1, const QString& s2) -> QString
-								{ return s1 + " = " + s2; });
+							[] (const QString& s1, const QString& s2) { return s1 + " = " + s2; });
 
 					const auto& update = "UPDATE " + data.Table_ +
-							" SET " + QStringList { statements }.join (", ") +
+							" SET " + statements.join (", ") +
 							" WHERE " + fieldName + " = " + boundName + ";";
 
 					const auto updateQuery = std::make_shared<QSqlQuery> (data.DB_);
@@ -529,42 +529,20 @@ namespace oral
 		using AggregateDetector_t = decltype (new T { std::declval<Args> ()... });
 
 		template<typename T, size_t... Indices>
-		T InitializeFromQuery (const QSqlQuery_ptr& q, std::index_sequence<Indices...>)
+		T InitializeFromQuery (const QSqlQuery& q, std::index_sequence<Indices...>)
 		{
 			if constexpr (IsDetected_v<AggregateDetector_t, T, ValueAtC_t<T, Indices>...>)
-				return T { FromVariant<ValueAtC_t<T, Indices>> {} (q->value (Indices))... };
+				return T { FromVariant<ValueAtC_t<T, Indices>> {} (q.value (Indices))... };
 			else
 			{
 				T t;
 				const auto dummy = std::initializer_list<int>
 				{
-					(static_cast<void> (boost::fusion::at_c<Indices> (t) = FromVariant<ValueAtC_t<T, Indices>> {} (q->value (Indices))), 0)...
+					(static_cast<void> (boost::fusion::at_c<Indices> (t) = FromVariant<ValueAtC_t<T, Indices>> {} (q.value (Indices))), 0)...
 				};
 				Q_UNUSED (dummy);
 				return t;
 			}
-		}
-
-		template<typename T>
-		QList<T> PerformSelect (QSqlQuery_ptr q)
-		{
-			if (!q->exec ())
-				throw QueryException ("fetch query execution failed", q);
-
-			QList<T> result;
-			while (q->next ())
-				result << InitializeFromQuery<T> (q, SeqIndices<T>);
-			q->finish ();
-			return result;
-		}
-
-		template<typename T>
-		std::function<QList<T> ()> AdaptSelectAll (const CachedFieldsData& data)
-		{
-			const auto& selectAll = "SELECT " + QStringList { data.Fields_ }.join (", ") + " FROM " + data.Table_ + ";";
-			const auto selectQuery = std::make_shared<QSqlQuery> (data.DB_);
-			selectQuery->prepare (selectAll);
-			return [selectQuery] { return PerformSelect<T> (selectQuery); };
 		}
 
 		template<int HeadT, int... TailT>
@@ -860,19 +838,19 @@ namespace oral
 		}
 
 		template<typename Seq, ExprType Type, typename L, typename R>
-		QPair<QString, std::function<void (QSqlQuery_ptr)>> HandleExprTree (const ExprTree<Type, L, R>& tree)
+		auto HandleExprTree (const ExprTree<Type, L, R>& tree)
 		{
 			ToSqlState<Seq> state { 0, {} };
 
 			const auto& sql = tree.ToSql (state);
 
-			return
+			return QPair
 			{
 				sql,
-				[state] (const QSqlQuery_ptr& query)
+				[state] (QSqlQuery& query)
 				{
 					for (const auto& pair : Stlize (state.BoundMembers_))
-						query->bindValue (pair.first, pair.second);
+						query.bindValue (pair.first, pair.second);
 				}
 			};
 		}
@@ -898,93 +876,87 @@ namespace oral
 
 	namespace detail
 	{
-		template<typename T>
-		class SelectByFieldsWrapper
+		enum class SelectBehaviour { Some, One };
+
+		template<typename T, SelectBehaviour SelectBehaviour>
+		class SelectWrapper
 		{
 			const CachedFieldsData Cached_;
 		public:
-			SelectByFieldsWrapper (const CachedFieldsData& data)
+			SelectWrapper (const CachedFieldsData& data)
 			: Cached_ (data)
 			{
 			}
 
+			auto operator() () const
+			{
+				const auto& fields = Cached_.QualifiedFields_.join (", ");
+				return Select (fields, Cached_.Table_, {}, Void {},
+						[] (const QSqlQuery& q) { return InitializeFromQuery<T> (q, SeqIndices<T>); });
+			}
+
 			template<ExprType Type, typename L, typename R>
-			QList<T> operator() (const ExprTree<Type, L, R>& tree) const
+			auto operator() (const ExprTree<Type, L, R>& tree) const
 			{
 				const auto& treeResult = HandleExprTree<T> (tree);
 
-				const auto& selectAll = "SELECT " + QStringList { Cached_.QualifiedFields_ }.join (", ") +
-						BuildFromClause (tree) +
-						" WHERE " + treeResult.first + ";";
-
-				const auto query = std::make_shared<QSqlQuery> (Cached_.DB_);
-				query->prepare (selectAll);
-				treeResult.second (query);
-				return PerformSelect<T> (query);
+				const auto& fields = Cached_.QualifiedFields_.join (", ");
+				return Select (fields, BuildFromClause (tree), treeResult.first, treeResult.second,
+						[] (const QSqlQuery& q) { return InitializeFromQuery<T> (q, SeqIndices<T>); });
 			}
 
 			template<int Idx, ExprType Type, typename L, typename R>
-			QList<ValueAtC_t<T, Idx>> operator() (sph::pos<Idx>, const ExprTree<Type, L, R>& tree) const
+			auto operator() (sph::pos<Idx>, const ExprTree<Type, L, R>& tree) const
 			{
-				const auto& treeResult = HandleExprTree<T> (tree);
-
-				const auto& selectOne = "SELECT " + Cached_.QualifiedFields_.value (Idx) +
-						BuildFromClause (tree) +
-						" WHERE " + treeResult.first + ";";
-
-				const auto query = std::make_shared<QSqlQuery> (Cached_.DB_);
-				query->prepare (selectOne);
-				treeResult.second (query);
-
-				if (!query->exec ())
-					throw QueryException ("fetch query execution failed", query);
-
 				using Type_t = ValueAtC_t<T, Idx>;
 
-				QList<Type_t> result;
-				while (query->next ())
-					result << FromVariant<Type_t> {} (query->value (0));
-				query->finish ();
-				return result;
+				const auto& treeResult = HandleExprTree<T> (tree);
+				return Select (Cached_.QualifiedFields_.value (Idx),
+						BuildFromClause (tree), treeResult.first, treeResult.second,
+						[] (const QSqlQuery& q) { return FromVariant<Type_t> {} (q.value (0)); });
 			}
 		private:
+			template<typename Binder, typename Initializer>
+			auto Select (const QString& fields, const QString& from, QString where,
+					Binder&& binder, Initializer&& initializer) const
+			{
+				if (!where.isEmpty ())
+					where.prepend (" WHERE ");
+
+				const auto& queryStr = "SELECT " + fields +
+						" FROM " + from +
+						where;
+
+				QSqlQuery query { Cached_.DB_ };
+				query.prepare (queryStr);
+				if constexpr (!std::is_same_v<Void, std::decay_t<Binder>>)
+					binder (query);
+
+				if (!query.exec ())
+					throw QueryException ("fetch query execution failed", std::make_shared<QSqlQuery> (query));
+
+				if constexpr (SelectBehaviour == SelectBehaviour::Some)
+				{
+					QList<std::result_of_t<Initializer (QSqlQuery)>> result;
+					while (query.next ())
+						result << initializer (query);
+					return result;
+				}
+				else
+				{
+					using RetType_t = boost::optional<std::result_of_t<Initializer (QSqlQuery)>>;
+					return query.next () ?
+							RetType_t { initializer (query) } :
+							RetType_t {};
+				}
+			}
+
 			template<ExprType Type, typename L, typename R>
 			QString BuildFromClause (const ExprTree<Type, L, R>& tree) const
 			{
 				const auto& additionalTables = Util::MapAs<QList> (tree.template AdditionalTables<T> (),
 						[] (const QString& table) { return ", " + table; });
-				return " FROM " + Cached_.Table_ + additionalTables.join (QString {});
-			}
-		};
-
-		template<typename T>
-		class SelectOneByFieldsWrapper
-		{
-			const SelectByFieldsWrapper<T> Select_;
-		public:
-			SelectOneByFieldsWrapper (const CachedFieldsData& data)
-			: Select_ { data }
-			{
-			}
-
-			template<ExprType Type, typename L, typename R>
-			boost::optional<T> operator() (const ExprTree<Type, L, R>& tree) const
-			{
-				const auto& result = Select_ (tree);
-				if (result.isEmpty ())
-					return {};
-
-				return result.value (0);
-			}
-
-			template<int Idx, ExprType Type, typename L, typename R>
-			boost::optional<ValueAtC_t<T, Idx>> operator() (sph::pos<Idx> p, const ExprTree<Type, L, R>& tree) const
-			{
-				const auto& result = Select_ (p, tree);
-				if (result.isEmpty ())
-					return {};
-
-				return result.value (0);
+				return Cached_.Table_ + additionalTables.join (QString {});
 			}
 		};
 
@@ -1006,30 +978,12 @@ namespace oral
 				const auto& selectAll = "DELETE FROM " + Cached_.Table_ +
 						" WHERE " + treeResult.first + ";";
 
-				const auto query = std::make_shared<QSqlQuery> (Cached_.DB_);
-				query->prepare (selectAll);
+				QSqlQuery query { Cached_.DB_ };
+				query.prepare (selectAll);
 				treeResult.second (query);
-				query->exec ();
+				query.exec ();
 			}
 		};
-
-		template<typename T>
-		SelectByFieldsWrapper<T> AdaptSelectFields (const CachedFieldsData& data)
-		{
-			return { data };
-		}
-
-		template<typename T>
-		SelectOneByFieldsWrapper<T> AdaptSelectOneFields (const CachedFieldsData& data)
-		{
-			return { data };
-		}
-
-		template<typename T>
-		DeleteByFieldsWrapper<T> AdaptDeleteFields (const CachedFieldsData& data)
-		{
-			return { data };
-		}
 
 		template<typename T>
 		using ConstraintsDetector = typename T::Constraints;
@@ -1080,7 +1034,7 @@ namespace oral
 					QString {} :
 					(", " + constraints.join (", "));
 
-			const auto& statements = Util::ZipWith (types, data.Fields_,
+			const auto& statements = Util::ZipWith (types, static_cast<const QList<QString>&> (data.Fields_),
 					[] (const QString& type, const QString& field) { return field + " " + type; });
 			return "CREATE TABLE " +
 					data.Table_ +
@@ -1104,31 +1058,13 @@ namespace oral
 	template<typename T>
 	struct ObjectInfo
 	{
-		std::function<QList<T> ()> DoSelectAll_;
 		detail::AdaptInsert<T> DoInsert_;
 		detail::AdaptUpdate<T> DoUpdate_;
 		detail::AdaptDelete<T> DoDelete_;
 
-		detail::SelectByFieldsWrapper<T> DoSelectByFields_;
-		detail::SelectOneByFieldsWrapper<T> DoSelectOneByFields_;
+		detail::SelectWrapper<T, detail::SelectBehaviour::Some> DoSelect_;
+		detail::SelectWrapper<T, detail::SelectBehaviour::One> DoSelectOneByFields_;
 		detail::DeleteByFieldsWrapper<T> DoDeleteByFields_;
-
-		ObjectInfo (decltype (DoSelectAll_) doSel,
-				decltype (DoInsert_) doIns,
-				decltype (DoUpdate_) doUpdate,
-				decltype (DoDelete_) doDelete,
-				decltype (DoSelectByFields_) selectByFields,
-				decltype (DoSelectOneByFields_) selectOneByFields,
-				decltype (DoDeleteByFields_) deleteByFields)
-		: DoSelectAll_ (doSel)
-		, DoInsert_ (doIns)
-		, DoUpdate_ (doUpdate)
-		, DoDelete_ (doDelete)
-		, DoSelectByFields_ (selectByFields)
-		, DoSelectOneByFields_ (selectOneByFields)
-		, DoDeleteByFields_ (deleteByFields)
-		{
-		}
 	};
 
 	template<typename T>
@@ -1139,24 +1075,14 @@ namespace oral
 		if (db.record (cachedData.Table_).isEmpty ())
 			RunTextQuery (db, detail::AdaptCreateTable<T> (cachedData));
 
-		const auto& selectr = detail::AdaptSelectAll<T> (cachedData);
-		const auto& insertr = detail::AdaptInsert<T> (cachedData);
-		const auto& updater = detail::AdaptUpdate<T> (cachedData);
-		const auto& deleter = detail::AdaptDelete<T> (cachedData);
-
-		const auto& selectByVal = detail::AdaptSelectFields<T> (cachedData);
-		const auto& selectOneByVal = detail::AdaptSelectOneFields<T> (cachedData);
-		const auto& deleteByVal = detail::AdaptDeleteFields<T> (cachedData);
-
 		return
 		{
-			selectr,
-			insertr,
-			updater,
-			deleter,
-			selectByVal,
-			selectOneByVal,
-			deleteByVal
+			{ cachedData },
+			{ cachedData },
+			{ cachedData },
+			{ cachedData },
+			{ cachedData },
+			{ cachedData }
 		};
 	}
 

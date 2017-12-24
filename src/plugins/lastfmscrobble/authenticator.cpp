@@ -34,6 +34,7 @@
 #include <QtDebug>
 #include <ws.h>
 #include <util/xpc/passutils.h>
+#include <util/gui/util.h>
 #include "xmlsettingsmanager.h"
 #include "codes.h"
 
@@ -98,8 +99,8 @@ namespace Lastfmscrobble
 		if (login.isEmpty ())
 			return;
 
-		const auto& text = tr ("Enter password for Last.fm account with login %1:")
-					.arg (login);
+		const auto& text = tr ("Enter password for Last.fm account %1:")
+					.arg (Util::FormatName (login));
 		const auto& password = Util::GetPassword ("org.LeechCraft.Lastfmscrobble/" + login,
 				text,
 				Proxy_,

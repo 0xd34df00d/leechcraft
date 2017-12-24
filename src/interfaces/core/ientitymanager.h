@@ -49,7 +49,7 @@ namespace LeechCraft
 class Q_DECL_EXPORT IEntityManager
 {
 public:
-	/** The result of delegating this entity to another plugin.
+	/** @brief The result of delegating this entity to another plugin.
 	 */
 	struct DelegationResult
 	{
@@ -87,12 +87,16 @@ public:
 	 * first tries to handle the entity with it. Returns a structure
 	 * describing the delegation result.
 	 *
+	 * This function shall only be called from the UI thread.
+	 *
 	 * @param[in] entity The entity to handle.
 	 * @param[in] desired The object to try first.
 	 *
+	 * @return A structure descripting the result of the delegation request.
+	 *
 	 * @sa DelegationResult
 	 */
-	virtual DelegationResult DelegateEntity (LeechCraft::Entity entity, QObject *desired = 0) = 0;
+	virtual DelegationResult DelegateEntity (LeechCraft::Entity entity, QObject *desired = nullptr) = 0;
 
 	/** @brief Handles the given entity.
 	 *
@@ -101,12 +105,14 @@ public:
 	 * plugins' behavior). If the desired object is set, this method
 	 * first tries to handle the entity with it.
 	 *
+	 * It is safe to call this method from non-UI threads.
+	 *
 	 * @param[in] entity The entity to handle.
 	 * @param[in] desired The object to try first.
 	 *
 	 * @return If the entity has been handled successfully.
 	 */
-	virtual bool HandleEntity (LeechCraft::Entity entity, QObject *desired = 0) = 0;
+	virtual bool HandleEntity (LeechCraft::Entity entity, QObject *desired = nullptr) = 0;
 
 	/** @brief Queries whether the given entity can be handled at all.
 	 *

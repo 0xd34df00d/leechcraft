@@ -104,7 +104,7 @@ namespace Xoox
 			id2account [acc->GetAccountID ()] = acc;
 		}
 
-		for (const auto& account : Util::MakeDomChildrenRange (root, "account"))
+		for (const auto& account : Util::DomChildren (root, "account"))
 		{
 			const auto& id = account.firstChildElement ("id").text ().toUtf8 ();
 			if (!id2account.contains (id))
@@ -116,7 +116,7 @@ namespace Xoox
 			// To allow some transition time for duplicates removal.
 			QSet<QString> existingEntries;
 
-			for (const auto& entry : Util::MakeDomChildrenRange (account.firstChildElement ("entries"), "entry"))
+			for (const auto& entry : Util::DomChildren (account.firstChildElement ("entries"), "entry"))
 			{
 				const auto ods = std::make_shared<OfflineDataSource> ();
 				Load (ods, entry, Proxy_, acc);

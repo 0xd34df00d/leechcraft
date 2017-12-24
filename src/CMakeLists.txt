@@ -12,8 +12,6 @@ set (CMAKE_CXX_STANDARD 17)
 set (CMAKE_CXX_STANDARD_REQUIRED TRUE)
 set (CMAKE_CXX_EXTENSIONS OFF)
 
-option (EXTRA_WARNINGS "Enable extra compiler warnings" OFF)
-
 if (MSVC)
 	set (CMAKE_CXX_FLAGS "/EHa /W3")
 	set (CMAKE_CXX_FLAGS_RELEASE "/Ob2 /O2 /Ot /Oi /Oy /GT /GL /MD /D NDEBUG")
@@ -29,17 +27,13 @@ if (WIN32)
 	add_definitions (-DNTDDI_VERSION=0x0600)
 endif ()
 if (UNIX OR (WIN32 AND MINGW))
-	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden -Wall")
+	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden -Wall -Wextra")
 
 	add_definitions (-DQT_MESSAGELOGCONTEXT)
 
 	if (NOT APPLE)
 		set (CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--as-needed")
 		set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--as-needed")
-	endif ()
-
-	if (EXTRA_WARNINGS)
-		set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wextra")
 	endif ()
 
 	if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")

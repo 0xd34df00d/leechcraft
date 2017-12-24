@@ -181,7 +181,7 @@ namespace Util
 	void OralTest::testSimpleRecordInsertSelect ()
 	{
 		auto adapted = PrepareRecords<SimpleRecord> (MakeDatabase ());
-		const auto& list = adapted->DoSelectAll_ ();
+		const auto& list = adapted->DoSelect_ ();
 		QCOMPARE (list, (QList<SimpleRecord> { { 0, "0" }, { 1, "1" }, { 2, "2" } }));
 	}
 
@@ -193,7 +193,7 @@ namespace Util
 		for (int i = 0; i < 3; ++i)
 			adapted->DoInsert_ ({ 0, QString::number (i) }, lco::InsertAction::Replace);
 
-		const auto& list = adapted->DoSelectAll_ ();
+		const auto& list = adapted->DoSelect_ ();
 		QCOMPARE (list, (QList<SimpleRecord> { { 0, "2" } }));
 	}
 
@@ -205,28 +205,28 @@ namespace Util
 		for (int i = 0; i < 3; ++i)
 			adapted->DoInsert_ ({ 0, QString::number (i) }, lco::InsertAction::Ignore);
 
-		const auto& list = adapted->DoSelectAll_ ();
+		const auto& list = adapted->DoSelect_ ();
 		QCOMPARE (list, (QList<SimpleRecord> { { 0, "0" } }));
 	}
 
 	void OralTest::testSimpleRecordInsertSelectByPos ()
 	{
 		auto adapted = PrepareRecords<SimpleRecord> (MakeDatabase ());
-		const auto& list = adapted->DoSelectByFields_ (sph::_0 == 1);
+		const auto& list = adapted->DoSelect_ (sph::_0 == 1);
 		QCOMPARE (list, (QList<SimpleRecord> { { 1, "1" } }));
 	}
 
 	void OralTest::testSimpleRecordInsertSelectByPos2 ()
 	{
 		auto adapted = PrepareRecords<SimpleRecord> (MakeDatabase ());
-		const auto& list = adapted->DoSelectByFields_ (sph::_0 < 2);
+		const auto& list = adapted->DoSelect_ (sph::_0 < 2);
 		QCOMPARE (list, (QList<SimpleRecord> { { 0, "0" }, { 1, "1" } }));
 	}
 
 	void OralTest::testSimpleRecordInsertSelectByPos3 ()
 	{
 		auto adapted = PrepareRecords<SimpleRecord> (MakeDatabase ());
-		const auto& list = adapted->DoSelectByFields_ (sph::_0 < 2 && sph::_1 == QString { "1" });
+		const auto& list = adapted->DoSelect_ (sph::_0 < 2 && sph::_1 == QString { "1" });
 		QCOMPARE (list, (QList<SimpleRecord> { { 1, "1" } }));
 	}
 
@@ -240,21 +240,21 @@ namespace Util
 	void OralTest::testSimpleRecordInsertSelectByFields ()
 	{
 		auto adapted = PrepareRecords<SimpleRecord> (MakeDatabase ());
-		const auto& list = adapted->DoSelectByFields_ (sph::f<&SimpleRecord::ID_> == 1);
+		const auto& list = adapted->DoSelect_ (sph::f<&SimpleRecord::ID_> == 1);
 		QCOMPARE (list, (QList<SimpleRecord> { { 1, "1" } }));
 	}
 
 	void OralTest::testSimpleRecordInsertSelectByFields2 ()
 	{
 		auto adapted = PrepareRecords<SimpleRecord> (MakeDatabase ());
-		const auto& list = adapted->DoSelectByFields_ (sph::f<&SimpleRecord::ID_> < 2);
+		const auto& list = adapted->DoSelect_ (sph::f<&SimpleRecord::ID_> < 2);
 		QCOMPARE (list, (QList<SimpleRecord> { { 0, "0" }, { 1, "1" } }));
 	}
 
 	void OralTest::testSimpleRecordInsertSelectByFields3 ()
 	{
 		auto adapted = PrepareRecords<SimpleRecord> (MakeDatabase ());
-		const auto& list = adapted->DoSelectByFields_ (sph::f<&SimpleRecord::ID_> < 2 && sph::f<&SimpleRecord::Value_> == QString { "1" });
+		const auto& list = adapted->DoSelect_ (sph::f<&SimpleRecord::ID_> < 2 && sph::f<&SimpleRecord::Value_> == QString { "1" });
 		QCOMPARE (list, (QList<SimpleRecord> { { 1, "1" } }));
 	}
 
@@ -268,7 +268,7 @@ namespace Util
 	void OralTest::testAutoPKeyRecordInsertSelect ()
 	{
 		auto adapted = PrepareRecords<AutogenPKeyRecord> (MakeDatabase ());
-		const auto& list = adapted->DoSelectAll_ ();
+		const auto& list = adapted->DoSelect_ ();
 		QCOMPARE (list, (QList<AutogenPKeyRecord> { { 1, "0" }, { 2, "1" }, { 3, "2" } }));
 	}
 
@@ -315,7 +315,7 @@ namespace Util
 	void OralTest::testNoPKeyRecordInsertSelect ()
 	{
 		auto adapted = PrepareRecords<NoPKeyRecord> (MakeDatabase ());
-		const auto& list = adapted->DoSelectAll_ ();
+		const auto& list = adapted->DoSelect_ ();
 		QCOMPARE (list, (QList<NoPKeyRecord> { { 0, "0" }, { 1, "1" }, { 2, "2" } }));
 	}
 
@@ -325,7 +325,7 @@ namespace Util
 		for (int i = 0; i < 3; ++i)
 			adapted->DoInsert_ ({ i, QString::number (i), 0 });
 
-		const auto& list = adapted->DoSelectAll_ ();
+		const auto& list = adapted->DoSelect_ ();
 		QCOMPARE (list, (QList<NonInPlaceConstructibleRecord> { { 0, "0", 0 }, { 1, "1", 0 }, { 2, "2", 0 } }));
 	}
 
@@ -358,7 +358,7 @@ namespace Util
 		adapted->DoInsert_ ({ 0, "second", 1, 3 });
 		ShallThrow<oral::QueryException> ([&] { adapted->DoInsert_ ({ 0, "first", 1, 3 }); });
 
-		const auto& list = adapted->DoSelectAll_ ();
+		const auto& list = adapted->DoSelect_ ();
 		QCOMPARE (list, (QList<ComplexConstraintsRecord> { { 0, "first", 1, 2 }, { 0, "second", 1, 3 } }));
 	}
 

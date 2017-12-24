@@ -32,6 +32,8 @@
 #include <QNetworkReply>
 #include <QtDebug>
 #include <util/sll/util.h>
+#include <util/sll/domchildrenrange.h>
+#include <util/sll/prelude.h>
 #include "authenticator.h"
 #include "util.h"
 
@@ -81,25 +83,15 @@ namespace Lastfmscrobble
 			return;
 		}
 
-		auto artistElem = doc.documentElement ()
-				.firstChildElement ("recommendations")
-				.firstChildElement ("artist");
-		while (!artistElem.isNull ())
+		const auto& recsElem = doc.documentElement ().firstChildElement ("recommendations");
+		for (const auto& artistElem : Util::DomChildren (recsElem, "artist"))
 		{
-			const auto guard = Util::MakeScopeGuard ([&artistElem]
-					{ artistElem = artistElem.nextSiblingElement ("artist"); });
-
 			const auto& name = artistElem.firstChildElement ("name").text ();
 			if (name.isEmpty ())
 				continue;
 
-			QStringList similarTo;
-			auto similarElem = artistElem.firstChildElement ("context").firstChildElement ("artist");
-			while (!similarElem.isNull ())
-			{
-				similarTo << similarElem.firstChildElement ("name").text ();
-				similarElem = similarElem.nextSiblingElement ("artist");
-			}
+			const auto& similarTo = Util::Map (Util::DomChildren (artistElem.firstChildElement ("context"), "artist"),
+					[] (const auto& elem) { return elem.firstChildElement ("name").text (); });
 
 			++InfosWaiting_;
 
