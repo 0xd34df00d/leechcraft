@@ -302,6 +302,23 @@ namespace oral
 		};
 
 		template<typename T>
+		CachedFieldsData BuildCachedFieldsData (const QString& table)
+		{
+			const auto& fields = detail::GetFieldsNames<T> {} ();
+			const auto& qualified = Util::Map (fields, [&table] (const QString& field) { return table + "." + field; });
+			const auto& boundFields = Util::Map (fields, [] (const QString& str) { return ':' + str; });
+
+			return { table, fields, qualified, boundFields };
+		}
+
+		template<typename T>
+		CachedFieldsData BuildCachedFieldsData ()
+		{
+			static CachedFieldsData result = BuildCachedFieldsData<T> (T::ClassName ());
+			return result;
+		}
+
+		template<typename T>
 		auto MakeInserter (const CachedFieldsData& data, const QSqlQuery_ptr& insertQuery, bool bindPrimaryKey)
 		{
 			return [data, insertQuery, bindPrimaryKey] (const T& t)
@@ -1047,23 +1064,6 @@ namespace oral
 					statements.join (", ") +
 					constraintsStr +
 					");";
-		}
-
-		template<typename T>
-		CachedFieldsData BuildCachedFieldsData (const QString& table)
-		{
-			const auto& fields = detail::GetFieldsNames<T> {} ();
-			const auto& qualified = Util::Map (fields, [&table] (const QString& field) { return table + "." + field; });
-			const auto& boundFields = Util::Map (fields, [] (const QString& str) { return ':' + str; });
-
-			return { table, fields, qualified, boundFields };
-		}
-
-		template<typename T>
-		CachedFieldsData BuildCachedFieldsData ()
-		{
-			static CachedFieldsData result = BuildCachedFieldsData<T> (T::ClassName ());
-			return result;
 		}
 	}
 
