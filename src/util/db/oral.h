@@ -677,7 +677,8 @@ namespace oral
 				WrapDirect<T>>::value_type;
 
 		template<typename Seq, typename L, typename R>
-		using ComparableDetector = decltype (std::declval<typename L::template ValueType_t<Seq>> () == std::declval<typename R::template ValueType_t<Seq>> ());
+		using ComparableDetector = decltype (std::declval<UnwrapIndirect_t<typename L::template ValueType_t<Seq>>> () ==
+				std::declval<UnwrapIndirect_t<typename R::template ValueType_t<Seq>>> ());
 
 		template<typename Seq, typename L, typename R>
 		constexpr auto AreComparableTypes = IsDetected_v<ComparableDetector, Seq, L, R> || IsDetected_v<ComparableDetector, Seq, R, L>;
