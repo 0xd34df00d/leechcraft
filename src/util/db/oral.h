@@ -902,7 +902,10 @@ namespace oral
 		{
 			return [] (const QSqlQuery& q)
 			{
-				return std::tuple { FromVariant<MemberPtrType_t<Ptrs>> {} (q.value (Idxs))... };
+				if constexpr (sizeof... (Ptrs) == 1)
+					return FromVariant<Head_t<Typelist<MemberPtrType_t<Ptrs>...>>> {} (q.value (0));
+				else
+					return std::tuple { FromVariant<MemberPtrType_t<Ptrs>> {} (q.value (Idxs))... };
 			};
 		}
 
