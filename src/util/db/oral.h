@@ -665,6 +665,17 @@ namespace oral
 			QVariantMap BoundMembers_;
 		};
 
+		template<typename T>
+		struct WrapDirect
+		{
+			using value_type = T;
+		};
+
+		template<typename T>
+		using UnwrapIndirect_t = typename std::conditional_t<IsIndirect<T> {},
+				T,
+				WrapDirect<T>>::value_type;
+
 		template<typename Seq, typename L, typename R>
 		using ComparableDetector = decltype (std::declval<typename L::template ValueType_t<Seq>> () == std::declval<typename R::template ValueType_t<Seq>> ());
 
