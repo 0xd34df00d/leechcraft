@@ -732,11 +732,11 @@ namespace oral
 			}
 		};
 
-		template<auto Ptr>
-		struct MemberPtr {};
+		template<auto... Ptr>
+		struct MemberPtrs {};
 
 		template<auto Ptr>
-		class ExprTree<ExprType::LeafStaticPlaceholder, MemberPtr<Ptr>, void>
+		class ExprTree<ExprType::LeafStaticPlaceholder, MemberPtrs<Ptr>, void>
 		{
 		public:
 			template<typename>
@@ -889,7 +889,7 @@ namespace oral
 		static constexpr pos<Idx> _ = {};
 
 		template<auto Ptr>
-		constexpr detail::ExprTree<detail::ExprType::LeafStaticPlaceholder, detail::MemberPtr<Ptr>> f {};
+		constexpr detail::ExprTree<detail::ExprType::LeafStaticPlaceholder, detail::MemberPtrs<Ptr>> f {};
 	};
 
 	namespace detail
