@@ -921,6 +921,12 @@ namespace oral
 			};
 		}
 
+		template<auto... Ptrs>
+		QStringList BuildFieldNames ()
+		{
+			return { BuildCachedFieldsData<MemberPtrStruct_t<Ptrs>> ().QualifiedFields_.value (FieldIndex<Ptrs> ())... };
+		}
+
 		enum class SelectBehaviour { Some, One };
 
 		template<typename T, SelectBehaviour SelectBehaviour>
@@ -967,8 +973,7 @@ namespace oral
 			auto operator() (detail::MemberPtrs<Ptrs...> ptrs, const ExprTree<Type, L, R>& tree) const
 			{
 				const auto& treeResult = HandleExprTree<T> (tree);
-				const QStringList names { BuildCachedFieldsData<MemberPtrStruct_t<Ptrs>> ().QualifiedFields_.value (FieldIndex<Ptrs> ())... };
-				return Select (names.join (", "),
+				return Select (BuildFieldNames<Ptrs...> ().join (", "),
 						BuildFromClause (tree), treeResult.first, treeResult.second,
 						MakeIndexedQueryHandler (ptrs, std::make_index_sequence<sizeof... (Ptrs)> {}));
 			}
