@@ -217,12 +217,12 @@ namespace Herbicide
 
 		const auto& maybeAccPKey = AdaptedAccount_->DoSelectOneByFields_ (sph::_0, sph::_1 == accId);
 		const auto accPKey = maybeAccPKey ?
-				**maybeAccPKey :
+				*maybeAccPKey :
 				InsertAccount (entry->GetParentAccount ());
 
 		const auto maybeEntryPKey = AdaptedEntry_->DoSelectOneByFields_ (sph::_0, sph::_2 == entryId);
 		const auto entryPKey = maybeEntryPKey ?
-				**maybeEntryPKey :
+				*maybeEntryPKey :
 				InsertEntry (accPKey, entry);
 
 		AdaptedEvent_->DoInsert_ ({ {}, entryPKey, event, descr });

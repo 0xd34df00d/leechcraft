@@ -955,7 +955,7 @@ namespace oral
 			template<int Idx, ExprType Type, typename L, typename R>
 			auto operator() (sph::pos<Idx>, const ExprTree<Type, L, R>& tree) const
 			{
-				using Type_t = ValueAtC_t<T, Idx>;
+				using Type_t = UnwrapIndirect_t<ValueAtC_t<T, Idx>>;
 
 				const auto& treeResult = HandleExprTree<T> (tree);
 				return Select (Cached_.QualifiedFields_.value (Idx),
