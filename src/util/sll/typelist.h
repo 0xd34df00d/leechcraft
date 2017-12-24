@@ -40,6 +40,18 @@ namespace Util
 	{
 	};
 
+	template<typename>
+	struct Head;
+
+	template<template<typename...> class List, typename H, typename... T>
+	struct Head<List<H, T...>>
+	{
+		using Head_t = H;
+	};
+
+	template<typename List>
+	using Head_t = typename Head<List>::Head_t;
+
 	template<template<typename...> class List, typename H, typename... T>
 	constexpr List<T...> Tail (List<H, T...>)
 	{
