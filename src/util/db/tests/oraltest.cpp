@@ -279,6 +279,20 @@ namespace Util
 		QCOMPARE (list, (QList<std::tuple<int, QString>> { { 0, "0" }, { 1, "1" } }));
 	}
 
+	void OralTest::testSimpleRecordInsertSelectCount ()
+	{
+		auto adapted = PrepareRecords<SimpleRecord> (MakeDatabase ());
+		const auto count = adapted->DoSelect_ (sph::count);
+		QCOMPARE (count, 3);
+	}
+
+	void OralTest::testSimpleRecordInsertSelectCountByFields ()
+	{
+		auto adapted = PrepareRecords<SimpleRecord> (MakeDatabase ());
+		const auto count = adapted->DoSelect_ (sph::count, sph::f<&SimpleRecord::ID_> < 2);
+		QCOMPARE (count, 2);
+	}
+
 	void OralTest::testAutoPKeyRecordInsertSelect ()
 	{
 		auto adapted = PrepareRecords<AutogenPKeyRecord> (MakeDatabase ());

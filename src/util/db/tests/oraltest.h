@@ -51,10 +51,14 @@ namespace Util
 		void testSimpleRecordInsertSelectByFields ();
 		void testSimpleRecordInsertSelectByFields2 ();
 		void testSimpleRecordInsertSelectByFields3 ();
+
 		void testSimpleRecordInsertSelectOneByFields ();
 
 		void testSimpleRecordInsertSelectSingleFieldByFields ();
 		void testSimpleRecordInsertSelectFieldsByFields ();
+
+		void testSimpleRecordInsertSelectCount ();
+		void testSimpleRecordInsertSelectCountByFields ();
 
 		void testAutoPKeyRecordInsertSelect ();
 		void testAutoPKeyRecordInsertRvalueReturnsPKey ();
