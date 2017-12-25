@@ -938,6 +938,8 @@ namespace oral
 		{
 			const QSqlDatabase DB_;
 			const CachedFieldsData Cached_;
+
+			struct SelectWhole {};
 		public:
 			SelectWrapper (const QSqlDatabase& db, const CachedFieldsData& data)
 			: DB_ { db }
@@ -955,11 +957,7 @@ namespace oral
 			template<ExprType Type, typename L, typename R>
 			auto operator() (const ExprTree<Type, L, R>& tree) const
 			{
-				const auto& treeResult = HandleExprTree<T> (tree);
-
-				const auto& fields = Cached_.QualifiedFields_.join (", ");
-				return Select (fields, BuildFromClause (tree), treeResult.first, treeResult.second,
-						[] (const QSqlQuery& q) { return InitializeFromQuery<T> (q, SeqIndices<T>); });
+				return (*this) (SelectWhole {}, tree);
 			}
 
 			template<typename Selector, ExprType Type, typename L, typename R>
@@ -1011,6 +1009,15 @@ namespace oral
 				const auto& additionalTables = Util::MapAs<QList> (tree.template AdditionalTables<T> (),
 						[] (const QString& table) { return ", " + table; });
 				return Cached_.Table_ + additionalTables.join (QString {});
+			}
+
+			auto HandleSelector (SelectWhole) const
+			{
+				return QPair
+				{
+					Cached_.QualifiedFields_.join (", "),
+					[] (const QSqlQuery& q) { return InitializeFromQuery<T> (q, SeqIndices<T>); }
+				};
 			}
 
 			template<int Idx>
