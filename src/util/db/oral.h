@@ -605,6 +605,8 @@ namespace oral
 
 		enum class ExprType
 		{
+			ConstTrue,
+
 			LeafStaticPlaceholder,
 			LeafData,
 
@@ -642,6 +644,7 @@ namespace oral
 
 			case ExprType::LeafStaticPlaceholder:
 			case ExprType::LeafData:
+			case ExprType::ConstTrue:
 				return "invalid type";
 			}
 
@@ -801,6 +804,11 @@ namespace oral
 			}
 		};
 
+		template<>
+		class ExprTree<ExprType::ConstTrue, void, void> {};
+
+		constexpr auto ConstTrueTree_v = ExprTree<ExprType::ConstTrue> {};
+
 		template<typename T>
 		struct IsExprTree : std::false_type {};
 
@@ -862,6 +870,12 @@ namespace oral
 				return MakeExprTree<ExprType::And> (left, right);
 			else
 				return AsLeafData (left) && AsLeafData (right);
+		}
+
+		template<typename>
+		auto HandleExprTree (const ExprTree<ExprType::ConstTrue>&)
+		{
+			return QPair { QString {}, Void {} };
 		}
 
 		template<typename Seq, ExprType Type, typename L, typename R>
