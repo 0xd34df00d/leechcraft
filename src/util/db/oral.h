@@ -881,6 +881,14 @@ namespace oral
 				}
 			};
 		}
+
+		enum class AggregateFunction
+		{
+			Count
+		};
+
+		template<AggregateFunction>
+		struct AggregateType {};
 	}
 
 	namespace sph
@@ -899,6 +907,8 @@ namespace oral
 
 		template<auto... Ptrs>
 		constexpr detail::MemberPtrs<Ptrs...> fields {};
+
+		constexpr detail::AggregateType<detail::AggregateFunction::Count> count {};
 	};
 
 	namespace detail
@@ -971,6 +981,15 @@ namespace oral
 						BuildFromClause (tree), treeResult.first, treeResult.second,
 						MakeIndexedQueryHandler (ptrs, std::make_index_sequence<sizeof... (Ptrs)> {}));
 			}
+
+			template<AggregateFunction AggFun, ExprType Type, typename L, typename R>
+			auto operator() (AggregateType<AggFun>, const ExprTree<Type, L, R>& tree) const
+			{
+				const auto& treeResult = HandleExprTree<T> (tree);
+				return Select (AggregateQuery<AggFun> (),
+						BuildFromClause (tree), treeResult.first, treeResult.second,
+						AggregateHandler<AggFun> ()).value (0);
+			}
 		private:
 			template<typename Binder, typename Initializer>
 			auto Select (const QString& fields, const QString& from, QString where,
@@ -1013,6 +1032,20 @@ namespace oral
 				const auto& additionalTables = Util::MapAs<QList> (tree.template AdditionalTables<T> (),
 						[] (const QString& table) { return ", " + table; });
 				return Cached_.Table_ + additionalTables.join (QString {});
+			}
+
+			template<AggregateFunction Fun>
+			static auto AggregateQuery ()
+			{
+				if constexpr (Fun == AggregateFunction::Count)
+					return "count(1)";
+			}
+
+			template<AggregateFunction Fun>
+			static auto AggregateHandler ()
+			{
+				if constexpr (Fun == AggregateFunction::Count)
+					return [] (const QSqlQuery& q) { return q.value (0).toLongLong (); };
 			}
 		};
 
