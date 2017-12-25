@@ -33,7 +33,6 @@
 #include <util/db/util.h>
 #include <util/db/oral.h>
 #include <util/sys/paths.h>
-#include <util/sll/functor.h>
 
 namespace LeechCraft
 {
@@ -134,9 +133,8 @@ namespace Azoth
 	boost::optional<QByteArray> AvatarsStorageOnDisk::GetAvatar (const QString& entryId,
 			IHaveAvatars::Size size) const
 	{
-		using Util::operator*;
-		return AdaptedRecord_->SelectOne (sph::_1 == entryId.toUtf8 () && sph::_2 == size) *
-				&Record::ImageData_;
+		return AdaptedRecord_->SelectOne (sph::fields<&Record::ImageData_>,
+				sph::_1 == entryId.toUtf8 () && sph::_2 == size);
 	}
 
 	void AvatarsStorageOnDisk::DeleteAvatars (const QString& entryId) const
