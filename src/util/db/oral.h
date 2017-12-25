@@ -1044,7 +1044,7 @@ namespace oral
 			auto HandleSelector (AggregateType<Fun>) const
 			{
 				if constexpr (Fun == AggregateFunction::Count)
-					return QPair { "count(1)", [] (const QSqlQuery& q) { return q.value (0).toLongLong (); } };
+					return QPair { QString { "count(1)" }, [] (const QSqlQuery& q) { return q.value (0).toLongLong (); } };
 			}
 		};
 
