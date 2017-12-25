@@ -686,14 +686,14 @@ namespace oral
 		template<typename Seq, typename L, typename R>
 		constexpr auto AreComparableTypes = IsDetected_v<ComparableDetector, Seq, L, R> || IsDetected_v<ComparableDetector, Seq, R, L>;
 
-		template<ExprType Type, typename Seq, typename L, typename R, typename = void>
-		struct RelationalTypesChecker : std::true_type {};
-
 		template<typename Seq, typename L, typename R, typename = void>
 		struct RelationalTypesCheckerBase : std::false_type {};
 
 		template<typename Seq, typename L, typename R>
 		struct RelationalTypesCheckerBase<Seq, L, R, std::enable_if_t<AreComparableTypes<Seq, L, R>>> : std::true_type {};
+
+		template<ExprType Type, typename Seq, typename L, typename R, typename = void>
+		struct RelationalTypesChecker : std::true_type {};
 
 		template<ExprType Type, typename Seq, typename L, typename R>
 		struct RelationalTypesChecker<Type, Seq, L, R, std::enable_if_t<IsRelational (Type)>> : RelationalTypesCheckerBase<Seq, L, R> {};
