@@ -808,9 +808,6 @@ namespace oral
 		struct IsExprTree<ExprTree<Type, L, R>> : std::true_type {};
 
 		template<typename T>
-		constexpr auto IsExprTree_v = IsExprTree<T> {};
-
-		template<typename T>
 		constexpr auto AsLeafData (const T& node)
 		{
 			if constexpr (IsExprTree<T> {})
