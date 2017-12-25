@@ -894,9 +894,6 @@ namespace oral
 		static constexpr pos<3> _3 = {};
 		static constexpr pos<4> _4 = {};
 
-		template<int Idx>
-		static constexpr pos<Idx> _ = {};
-
 		template<auto Ptr>
 		constexpr detail::ExprTree<detail::ExprType::LeafStaticPlaceholder, detail::MemberPtrs<Ptr>> f {};
 
