@@ -962,33 +962,12 @@ namespace oral
 						[] (const QSqlQuery& q) { return InitializeFromQuery<T> (q, SeqIndices<T>); });
 			}
 
-			template<int Idx, ExprType Type, typename L, typename R>
-			auto operator() (sph::pos<Idx>, const ExprTree<Type, L, R>& tree) const
+			template<typename Selector, ExprType Type, typename L, typename R>
+			auto operator() (Selector&& selector, const ExprTree<Type, L, R>& tree) const
 			{
-				using Type_t = UnwrapIndirect_t<ValueAtC_t<T, Idx>>;
-
-				const auto& treeResult = HandleExprTree<T> (tree);
-				return Select (Cached_.QualifiedFields_.value (Idx),
-						BuildFromClause (tree), treeResult.first, treeResult.second,
-						[] (const QSqlQuery& q) { return FromVariant<Type_t> {} (q.value (0)); });
-			}
-
-			template<ExprType Type, typename L, typename R, auto... Ptrs>
-			auto operator() (detail::MemberPtrs<Ptrs...> ptrs, const ExprTree<Type, L, R>& tree) const
-			{
-				const auto& treeResult = HandleExprTree<T> (tree);
-				return Select (BuildFieldNames<Ptrs...> ().join (", "),
-						BuildFromClause (tree), treeResult.first, treeResult.second,
-						MakeIndexedQueryHandler (ptrs, std::make_index_sequence<sizeof... (Ptrs)> {}));
-			}
-
-			template<AggregateFunction AggFun, ExprType Type, typename L, typename R>
-			auto operator() (AggregateType<AggFun>, const ExprTree<Type, L, R>& tree) const
-			{
-				const auto& treeResult = HandleExprTree<T> (tree);
-				return Select (AggregateQuery<AggFun> (),
-						BuildFromClause (tree), treeResult.first, treeResult.second,
-						AggregateHandler<AggFun> ()).value (0);
+				const auto& [where, binder] = HandleExprTree<T> (tree);
+				const auto& [fields, initializer] = HandleSelector (std::forward<Selector> (selector));
+				return Select (fields, BuildFromClause (tree), where, binder, initializer);
 			}
 		private:
 			template<typename Binder, typename Initializer>
@@ -1034,18 +1013,31 @@ namespace oral
 				return Cached_.Table_ + additionalTables.join (QString {});
 			}
 
-			template<AggregateFunction Fun>
-			static auto AggregateQuery ()
+			template<int Idx>
+			auto HandleSelector (sph::pos<Idx>) const
 			{
-				if constexpr (Fun == AggregateFunction::Count)
-					return "count(1)";
+				return QPair
+				{
+					Cached_.QualifiedFields_.value (Idx),
+					[] (const QSqlQuery& q) { return FromVariant<UnwrapIndirect_t<ValueAtC_t<T, Idx>>> {} (q.value (0)); }
+				};
+			}
+
+			template<auto... Ptrs>
+			auto HandleSelector (MemberPtrs<Ptrs...> ptrs) const
+			{
+				return QPair
+				{
+					BuildFieldNames<Ptrs...> ().join (", "),
+					MakeIndexedQueryHandler (ptrs, std::make_index_sequence<sizeof... (Ptrs)> {})
+				};
 			}
 
 			template<AggregateFunction Fun>
-			static auto AggregateHandler ()
+			auto HandleSelector (AggregateType<Fun>) const
 			{
 				if constexpr (Fun == AggregateFunction::Count)
-					return [] (const QSqlQuery& q) { return q.value (0).toLongLong (); };
+					return QPair { "count(1)", [] (const QSqlQuery& q) { return q.value (0).toLongLong (); } };
 			}
 		};
 
