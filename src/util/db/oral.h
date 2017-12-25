@@ -979,8 +979,8 @@ namespace oral
 			auto operator() (Selector&& selector, const ExprTree<Type, L, R>& tree) const
 			{
 				const auto& [where, binder] = HandleExprTree<T> (tree);
-				const auto& [fields, initializer] = HandleSelector (std::forward<Selector> (selector));
-				return Select (fields, BuildFromClause (tree), where, binder, initializer);
+				const auto& [fields, initializer, postproc] = HandleSelector (std::forward<Selector> (selector));
+				return postproc (Select (fields, BuildFromClause (tree), where, binder, initializer));
 			}
 		private:
 			template<typename Binder, typename Initializer>
@@ -1033,30 +1033,33 @@ namespace oral
 
 			auto HandleSelector (SelectWhole) const
 			{
-				return QPair
+				return std::tuple
 				{
 					Cached_.QualifiedFields_.join (", "),
-					[] (const QSqlQuery& q) { return InitializeFromQuery<T> (q, SeqIndices<T>); }
+					[] (const QSqlQuery& q) { return InitializeFromQuery<T> (q, SeqIndices<T>); },
+					Id
 				};
 			}
 
 			template<int Idx>
 			auto HandleSelector (sph::pos<Idx>) const
 			{
-				return QPair
+				return std::tuple
 				{
 					Cached_.QualifiedFields_.value (Idx),
-					[] (const QSqlQuery& q) { return FromVariant<UnwrapIndirect_t<ValueAtC_t<T, Idx>>> {} (q.value (0)); }
+					[] (const QSqlQuery& q) { return FromVariant<UnwrapIndirect_t<ValueAtC_t<T, Idx>>> {} (q.value (0)); },
+					Id
 				};
 			}
 
 			template<auto... Ptrs>
 			auto HandleSelector (MemberPtrs<Ptrs...> ptrs) const
 			{
-				return QPair
+				return std::tuple
 				{
 					BuildFieldNames<Ptrs...> ().join (", "),
-					MakeIndexedQueryHandler (ptrs, std::make_index_sequence<sizeof... (Ptrs)> {})
+					MakeIndexedQueryHandler (ptrs, std::make_index_sequence<sizeof... (Ptrs)> {}),
+					Id
 				};
 			}
 
@@ -1064,7 +1067,12 @@ namespace oral
 			auto HandleSelector (AggregateType<Fun>) const
 			{
 				if constexpr (Fun == AggregateFunction::Count)
-					return QPair { QString { "count(1)" }, [] (const QSqlQuery& q) { return q.value (0).toLongLong (); } };
+					return std::tuple
+					{
+						QString { "count(1)" },
+						[] (const QSqlQuery& q) { return q.value (0).toLongLong (); },
+						[] (const QList<long long>& list) { return list.value (0); }
+					};
 			}
 		};
 
