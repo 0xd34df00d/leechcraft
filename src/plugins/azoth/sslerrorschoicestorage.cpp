@@ -96,13 +96,13 @@ namespace Azoth
 	{
 		using Util::operator*;
 
-		return AdaptedRecord_->DoSelectOneByFields_ (sph::_0 == id && sph::_1 == err) * &Record::Action_;
+		return AdaptedRecord_->SelectOne (sph::_0 == id && sph::_1 == err) * &Record::Action_;
 	}
 
 	void SslErrorsChoiceStorage::SetAction (const QByteArray& id,
 			QSslError::SslError err, Action act)
 	{
-		AdaptedRecord_->DoInsert_ ({ id, err, act }, Util::oral::InsertAction::Replace);
+		AdaptedRecord_->Insert ({ id, err, act }, Util::oral::InsertAction::Replace);
 	}
 }
 }

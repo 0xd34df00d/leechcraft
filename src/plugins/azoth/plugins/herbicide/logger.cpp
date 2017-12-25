@@ -197,22 +197,22 @@ namespace Herbicide
 		const QString accId { entry->GetParentAccount ()->GetAccountID () };
 		const auto& entryId = entry->GetEntryID ();
 
-		const auto& maybeAccPKey = AdaptedAccount_->DoSelectOneByFields_ (sph::_0, sph::_1 == accId);
+		const auto& maybeAccPKey = AdaptedAccount_->SelectOne (sph::_0, sph::_1 == accId);
 		const auto accPKey = maybeAccPKey ?
 				*maybeAccPKey :
 				InsertAccount (entry->GetParentAccount ());
 
-		const auto maybeEntryPKey = AdaptedEntry_->DoSelectOneByFields_ (sph::_0, sph::_2 == entryId);
+		const auto maybeEntryPKey = AdaptedEntry_->SelectOne (sph::_0, sph::_2 == entryId);
 		const auto entryPKey = maybeEntryPKey ?
 				*maybeEntryPKey :
 				InsertEntry (accPKey, entry);
 
-		AdaptedEvent_->DoInsert_ ({ {}, entryPKey, event, descr });
+		AdaptedEvent_->Insert ({ {}, entryPKey, event, descr });
 	}
 
 	int Logger::InsertAccount (const IAccount *acc)
 	{
-		return AdaptedAccount_->DoInsert_ ({
+		return AdaptedAccount_->Insert ({
 				{},
 				QString { acc->GetAccountID () },
 				acc->GetAccountName ()
@@ -221,7 +221,7 @@ namespace Herbicide
 
 	int Logger::InsertEntry (int accPKey, const ICLEntry *entry)
 	{
-		return AdaptedEntry_->DoInsert_ ({
+		return AdaptedEntry_->Insert ({
 				{},
 				accPKey,
 				entry->GetEntryID (),

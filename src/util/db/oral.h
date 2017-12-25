@@ -1166,13 +1166,13 @@ namespace oral
 	template<typename T>
 	struct ObjectInfo
 	{
-		detail::AdaptInsert<T> DoInsert_;
-		detail::AdaptUpdate<T> DoUpdate_;
-		detail::AdaptDelete<T> DoDelete_;
+		detail::AdaptInsert<T> Insert;
+		detail::AdaptUpdate<T> Update;
+		detail::AdaptDelete<T> Delete;
 
-		detail::SelectWrapper<T, detail::SelectBehaviour::Some> DoSelect_;
-		detail::SelectWrapper<T, detail::SelectBehaviour::One> DoSelectOneByFields_;
-		detail::DeleteByFieldsWrapper<T> DoDeleteByFields_;
+		detail::SelectWrapper<T, detail::SelectBehaviour::Some> Select;
+		detail::SelectWrapper<T, detail::SelectBehaviour::One> SelectOne;
+		detail::DeleteByFieldsWrapper<T> DeleteBy;
 	};
 
 	template<typename T>

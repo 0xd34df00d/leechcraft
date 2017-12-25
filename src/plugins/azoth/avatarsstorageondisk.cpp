@@ -129,20 +129,20 @@ namespace Azoth
 			IHaveAvatars::Size size, const QByteArray& imageData) const
 	{
 		Record rec { {}, entryId.toUtf8 (), size, imageData };
-		AdaptedRecord_->DoInsert_ (rec, Util::oral::InsertAction::Replace);
+		AdaptedRecord_->Insert (rec, Util::oral::InsertAction::Replace);
 	}
 
 	boost::optional<QByteArray> AvatarsStorageOnDisk::GetAvatar (const QString& entryId,
 			IHaveAvatars::Size size) const
 	{
 		using Util::operator*;
-		return AdaptedRecord_->DoSelectOneByFields_ (sph::_1 == entryId.toUtf8 () && sph::_2 == size) *
+		return AdaptedRecord_->SelectOne (sph::_1 == entryId.toUtf8 () && sph::_2 == size) *
 				&Record::ImageData_;
 	}
 
 	void AvatarsStorageOnDisk::DeleteAvatars (const QString& entryId) const
 	{
-		AdaptedRecord_->DoDeleteByFields_ (sph::_1 == entryId.toUtf8 ());
+		AdaptedRecord_->DeleteBy (sph::_1 == entryId.toUtf8 ());
 	}
 }
 }

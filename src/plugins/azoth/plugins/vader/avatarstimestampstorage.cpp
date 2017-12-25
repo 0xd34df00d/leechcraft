@@ -90,12 +90,12 @@ namespace Vader
 	{
 		namespace sph = Util::oral::sph;
 
-		return Adapted_->DoSelectOneByFields_ (sph::_1, sph::_0 == email);
+		return Adapted_->SelectOne (sph::_1, sph::_0 == email);
 	}
 
 	void AvatarsTimestampStorage::SetTimestamp (const QString& full, const QDateTime& dt)
 	{
-		Adapted_->DoInsert_ ({ full, dt }, Util::oral::InsertAction::Replace);
+		Adapted_->Insert ({ full, dt }, Util::oral::InsertAction::Replace);
 	}
 }
 }

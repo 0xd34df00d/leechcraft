@@ -146,14 +146,14 @@ namespace Util
 
 		for (auto& [stud, info] : list)
 		{
-			student->DoInsert_ (stud);
+			student->Insert (stud);
 			info.StudentID_ = stud.ID_;
-			studentInfo->DoInsert_ (info);
+			studentInfo->Insert (info);
 		}
 
 		namespace sph = oral::sph;
 
-		const auto& selected = student->DoSelect_ (sph::f<&Student::ID_> == sph::f<&StudentInfo::StudentID_> &&
+		const auto& selected = student->Select (sph::f<&Student::ID_> == sph::f<&StudentInfo::StudentID_> &&
 				sph::f<&StudentInfo::Age_> > 18);
 		const QList<Student> expected { list [1].first, list [2].first };
 		QCOMPARE (selected, expected);

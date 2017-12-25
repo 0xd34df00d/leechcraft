@@ -107,23 +107,23 @@ namespace Xoox
 
 	void VCardStorageOnDisk::SetVCard (const QString& jid, const QString& vcard)
 	{
-		AdaptedVCards_->DoInsert_ ({ jid, vcard }, Util::oral::InsertAction::Replace);
+		AdaptedVCards_->Insert ({ jid, vcard }, Util::oral::InsertAction::Replace);
 	}
 
 	boost::optional<QString> VCardStorageOnDisk::GetVCard (const QString& jid) const
 	{
-		return Util::Fmap (AdaptedVCards_->DoSelectOneByFields_ (sph::_0 == jid),
+		return Util::Fmap (AdaptedVCards_->SelectOne (sph::_0 == jid),
 				&VCardRecord::VCardIq_);
 	}
 
 	void VCardStorageOnDisk::SetVCardPhotoHash (const QString& jid, const QByteArray& hash)
 	{
-		AdaptedPhotoHashes_->DoInsert_ ({ jid, hash }, Util::oral::InsertAction::Replace);
+		AdaptedPhotoHashes_->Insert ({ jid, hash }, Util::oral::InsertAction::Replace);
 	}
 
 	boost::optional<QByteArray> VCardStorageOnDisk::GetVCardPhotoHash (const QString& jid) const
 	{
-		return Util::Fmap (AdaptedPhotoHashes_->DoSelectOneByFields_ (sph::_0 == jid),
+		return Util::Fmap (AdaptedPhotoHashes_->SelectOne (sph::_0 == jid),
 				&PhotoHashRecord::Hash_);
 	}
 }
