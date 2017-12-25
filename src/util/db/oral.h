@@ -963,15 +963,16 @@ namespace oral
 
 			auto operator() () const
 			{
-				const auto& fields = Cached_.QualifiedFields_.join (", ");
-				return Select (fields, Cached_.Table_, {}, Void {},
-						[] (const QSqlQuery& q) { return InitializeFromQuery<T> (q, SeqIndices<T>); });
+				return (*this) (ConstTrueTree_v);
 			}
 
-			template<ExprType Type, typename L, typename R>
-			auto operator() (const ExprTree<Type, L, R>& tree) const
+			template<typename Single>
+			auto operator() (Single&& single) const
 			{
-				return (*this) (SelectWhole {}, tree);
+				if constexpr (IsExprTree<std::decay_t<Single>> {})
+					return (*this) (SelectWhole {}, std::forward<Single> (single));
+				else
+					return (*this) (std::forward<Single> (single), ConstTrueTree_v);
 			}
 
 			template<typename Selector, ExprType Type, typename L, typename R>
@@ -1020,9 +1021,14 @@ namespace oral
 			template<ExprType Type, typename L, typename R>
 			QString BuildFromClause (const ExprTree<Type, L, R>& tree) const
 			{
-				const auto& additionalTables = Util::MapAs<QList> (tree.template AdditionalTables<T> (),
-						[] (const QString& table) { return ", " + table; });
-				return Cached_.Table_ + additionalTables.join (QString {});
+				if constexpr (Type != ExprType::ConstTrue)
+				{
+					const auto& additionalTables = Util::MapAs<QList> (tree.template AdditionalTables<T> (),
+							[] (const QString& table) { return ", " + table; });
+					return Cached_.Table_ + additionalTables.join (QString {});
+				}
+				else
+					return Cached_.Table_;
 			}
 
 			auto HandleSelector (SelectWhole) const
