@@ -902,8 +902,9 @@ namespace oral
 			return std::tuple { QString {}, Void {}, lastId };
 		}
 
-		template<typename Seq, ExprType Type, typename L, typename R>
-		auto HandleExprTree (const ExprTree<Type, L, R>& tree, int lastId = 0)
+		template<typename Seq, typename Tree,
+				typename = decltype (std::declval<Tree> ().ToSql (std::declval<ToSqlState<Seq>&> ()))>
+		auto HandleExprTree (const Tree& tree, int lastId = 0)
 		{
 			ToSqlState<Seq> state { lastId, {} };
 
