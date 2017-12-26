@@ -873,26 +873,27 @@ namespace oral
 		}
 
 		template<typename>
-		auto HandleExprTree (const ExprTree<ExprType::ConstTrue>&)
+		auto HandleExprTree (const ExprTree<ExprType::ConstTrue>&, int lastId = 0)
 		{
-			return QPair { QString {}, Void {} };
+			return std::tuple { QString {}, Void {}, lastId };
 		}
 
 		template<typename Seq, ExprType Type, typename L, typename R>
-		auto HandleExprTree (const ExprTree<Type, L, R>& tree)
+		auto HandleExprTree (const ExprTree<Type, L, R>& tree, int lastId = 0)
 		{
-			ToSqlState<Seq> state { 0, {} };
+			ToSqlState<Seq> state { lastId, {} };
 
 			const auto& sql = tree.ToSql (state);
 
-			return QPair
+			return std::tuple
 			{
 				sql,
 				[state] (QSqlQuery& query)
 				{
 					for (const auto& pair : Stlize (state.BoundMembers_))
 						query.bindValue (pair.first, pair.second);
-				}
+				},
+				state.LastID_
 			};
 		}
 
@@ -978,7 +979,7 @@ namespace oral
 			template<typename Selector, ExprType Type, typename L, typename R>
 			auto operator() (Selector&& selector, const ExprTree<Type, L, R>& tree) const
 			{
-				const auto& [where, binder] = HandleExprTree<T> (tree);
+				const auto& [where, binder, _] = HandleExprTree<T> (tree);
 				const auto& [fields, initializer, postproc] = HandleSelector (std::forward<Selector> (selector));
 				return postproc (Select (fields, BuildFromClause (tree), where, binder, initializer));
 			}
@@ -1091,7 +1092,7 @@ namespace oral
 			template<ExprType Type, typename L, typename R>
 			void operator() (const ExprTree<Type, L, R>& tree) const
 			{
-				const auto& [where, binder] = HandleExprTree<T> (tree);
+				const auto& [where, binder, _] = HandleExprTree<T> (tree);
 
 				const auto& selectAll = "DELETE FROM " + Cached_.Table_ +
 						" WHERE " + where + ";";
