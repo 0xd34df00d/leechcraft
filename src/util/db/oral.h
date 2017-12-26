@@ -798,6 +798,9 @@ namespace oral
 				else
 					return { Seq::ClassName () };
 			}
+
+			template<typename R>
+			auto operator= (const R&) const;
 		};
 
 		template<typename T>
@@ -846,6 +849,13 @@ namespace oral
 				return node;
 			else
 				return ExprTree<ExprType::LeafData, T> { node };
+		}
+
+		template<auto Ptr>
+		template<typename R>
+		auto ExprTree<ExprType::LeafStaticPlaceholder, MemberPtrs<Ptr>, void>::operator= (const R& r) const
+		{
+			return AssignList { *this, AsLeafData (r) };
 		}
 
 		template<ExprType Type, typename L, typename R>
