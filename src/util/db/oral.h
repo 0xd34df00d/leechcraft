@@ -779,9 +779,14 @@ namespace oral
 			template<typename T>
 			QString ToSql (ToSqlState<T>&) const
 			{
+				return MemberPtrStruct_t<Ptr>::ClassName () + "." + GetFieldName ();
+			}
+
+			QString GetFieldName () const
+			{
 				using Seq = MemberPtrStruct_t<Ptr>;
 				constexpr auto idx = FieldIndex<Ptr> ();
-				return Seq::ClassName () + "." + detail::GetFieldName<Seq, idx>::value ();
+				return detail::GetFieldName<Seq, idx>::value ();
 			}
 
 			template<typename T>
