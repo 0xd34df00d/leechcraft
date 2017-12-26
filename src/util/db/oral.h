@@ -1091,14 +1091,14 @@ namespace oral
 			template<ExprType Type, typename L, typename R>
 			void operator() (const ExprTree<Type, L, R>& tree) const
 			{
-				const auto& treeResult = HandleExprTree<T> (tree);
+				const auto& [where, binder] = HandleExprTree<T> (tree);
 
 				const auto& selectAll = "DELETE FROM " + Cached_.Table_ +
-						" WHERE " + treeResult.first + ";";
+						" WHERE " + where + ";";
 
 				QSqlQuery query { DB_ };
 				query.prepare (selectAll);
-				treeResult.second (query);
+				binder (query);
 				query.exec ();
 			}
 		};
