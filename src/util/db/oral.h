@@ -698,6 +698,25 @@ namespace oral
 		template<ExprType Type, typename Seq, typename L, typename R>
 		struct RelationalTypesChecker<Type, Seq, L, R, std::enable_if_t<IsRelational (Type)>> : RelationalTypesCheckerBase<Seq, L, R> {};
 
+		template<typename L, typename R>
+		class AssignList
+		{
+			L Left_;
+			R Right_;
+		public:
+			AssignList (const L& l, const R& r)
+			: Left_ { l }
+			, Right_ { r }
+			{
+			}
+
+			template<typename T>
+			QString ToSql (ToSqlState<T>& state) const
+			{
+				return Left_.GetFieldName () + " = " + Right_.ToSql (state);
+			}
+		};
+
 		template<ExprType Type, typename L = void, typename R = void>
 		class ExprTree
 		{
