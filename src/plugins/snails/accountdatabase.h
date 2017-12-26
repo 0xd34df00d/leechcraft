@@ -32,12 +32,10 @@
 #include <boost/optional.hpp>
 #include <memory>
 #include <QObject>
-#include <QSqlQuery>
 #include <QStringList>
 #include <QMap>
-
-class QSqlDatabase;
-typedef std::shared_ptr<QSqlDatabase> QSqlDatabase_ptr;
+#include <QSqlDatabase>
+#include <util/db/oralfwd.h>
 
 class QDir;
 
@@ -52,29 +50,15 @@ namespace Snails
 
 	class AccountDatabase : public QObject
 	{
-		const QSqlDatabase_ptr DB_;
-
-		QSqlQuery QueryGetIds_;
-		QSqlQuery QueryGetCount_;
-		QSqlQuery QueryGetUnreadCount_;
-		QSqlQuery QueryGetTotalCount_;
-		QSqlQuery QueryRemoveMessage_;
-		QSqlQuery QueryAddFolder_;
-
-		/* Returns the primary key of a message by its
-		 * folder-local ID and folder path.
-		 */
-		QSqlQuery QueryGetMsgTableIdByFolder_;
-
-		/* Returns the primary key of a message by its
-		 * global unique ID.
-		 */
-		QSqlQuery QueryGetMsgTableIdByUniqueId_;
-
-		QSqlQuery QuerySetMsgRead_;
-
-		QSqlQuery QueryAddMsgUnfoldered_;
-		QSqlQuery QueryAddMsgToFolder_;
+		QSqlDatabase DB_;
+	public:
+		struct Message;
+		struct Folder;
+		struct Msg2Folder;
+	private:
+		Util::oral::ObjectInfo_ptr<Message> Messages_;
+		Util::oral::ObjectInfo_ptr<Folder> Folders_;
+		Util::oral::ObjectInfo_ptr<Msg2Folder> Msg2Folder_;
 
 		QMap<QStringList, int> KnownFolders_;
 	public:
@@ -95,9 +79,6 @@ namespace Snails
 		int AddMessageUnfoldered (const Message_ptr&);
 		void UpdateMessage (int, const Message_ptr&);
 		void AddMessageToFolder (int msgTableId, int folderTableId, const QByteArray& msgId);
-
-		void InitTables ();
-		void PrepareQueries ();
 
 		int AddFolder (const QStringList&);
 		int GetFolder (const QStringList&) const;

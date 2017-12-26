@@ -35,6 +35,7 @@
 #include <QtDebug>
 #include <util/db/dblock.h>
 #include <util/db/util.h>
+#include <util/db/oral.h>
 #include <util/sll/qtutil.h>
 #include "account.h"
 
@@ -54,86 +55,116 @@ namespace LeechCraft
 {
 namespace Snails
 {
+	namespace oral = Util::oral;
+
+	struct AccountDatabase::Message
+	{
+		oral::PKey<int> Id_;
+		oral::Unique<QByteArray> UniqueId_;
+		oral::NotNull<bool> IsRead_;
+
+		static QString ClassName ()
+		{
+			return "Messages";
+		}
+	};
+
+	struct AccountDatabase::Folder
+	{
+		oral::PKey<int> Id_;
+		oral::Unique<Util::oral::NotNull<QString>> FolderPath_;
+
+		static QString ClassName ()
+		{
+			return "Folders";
+		}
+	};
+
+	struct AccountDatabase::Msg2Folder
+	{
+		oral::PKey<int> Id_;
+		oral::References<&Message::Id_> MsgId_;
+		oral::References<&Folder::Id_> FolderId_;
+		oral::NotNull<QByteArray> FolderMessageId_;
+
+		static QString ClassName ()
+		{
+			return "Msg2Folder";
+		}
+	};
+}
+}
+
+BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Snails::AccountDatabase::Message,
+		Id_,
+		UniqueId_,
+		IsRead_)
+
+BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Snails::AccountDatabase::Folder,
+		Id_,
+		FolderPath_)
+
+BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Snails::AccountDatabase::Msg2Folder,
+		Id_,
+		MsgId_,
+		FolderId_,
+		FolderMessageId_)
+
+namespace LeechCraft
+{
+namespace Snails
+{
 	AccountDatabase::AccountDatabase (const QDir& dir, Account *acc, QObject *parent)
 	: QObject { parent }
-	, DB_ { std::make_shared<QSqlDatabase> (QSqlDatabase::addDatabase ("QSQLITE", "SnailsStorage_" + acc->GetID ())) }
+	, DB_ { QSqlDatabase::addDatabase ("QSQLITE", "SnailsStorage_" + acc->GetID ()) }
 	{
-		if (!DB_->isValid ())
+		DB_.setDatabaseName (dir.filePath ("msgs.db"));
+		if (!DB_.open ())
 		{
-			Util::DBLock::DumpError (DB_->lastError ());
-			throw std::runtime_error ("Unable to add database connection.");
-		}
-
-		DB_->setDatabaseName (dir.filePath ("msgs.db"));
-		if (!DB_->open ())
-		{
-			Util::DBLock::DumpError (DB_->lastError ());
+			Util::DBLock::DumpError (DB_.lastError ());
 			throw std::runtime_error (qPrintable (QString ("Could not initialize database: %1")
-						.arg (DB_->lastError ().text ())));
+						.arg (DB_.lastError ().text ())));
 		}
 
-		Util::RunTextQuery (*DB_, "PRAGMA foreign_keys = ON;");
-		Util::RunTextQuery (*DB_, "PRAGMA synchronous = NORMAL;");
-		Util::RunTextQuery (*DB_, "PRAGMA journal_mode = WAL;");
-		InitTables ();
-		PrepareQueries ();
+		Util::RunTextQuery (DB_, "PRAGMA foreign_keys = ON;");
+		Util::RunTextQuery (DB_, "PRAGMA synchronous = NORMAL;");
+		Util::RunTextQuery (DB_, "PRAGMA journal_mode = WAL;");
+
+		Messages_ = Util::oral::AdaptPtr<Message> (DB_);
+		Folders_ = Util::oral::AdaptPtr<Folder> (DB_);
+		Msg2Folder_ = Util::oral::AdaptPtr<Msg2Folder> (DB_);
+
 		LoadKnownFolders ();
 	}
 
+	namespace sph = oral::sph;
+
 	QList<QByteArray> AccountDatabase::GetIDs (const QStringList& folder)
 	{
-		QueryGetIds_.bindValue (":path", folder.join ("/"));
-		Util::DBLock::Execute (QueryGetIds_);
-
-		QList<QByteArray> result;
-		while (QueryGetIds_.next ())
-			result << QueryGetIds_.value (0).toByteArray ();
-		QueryGetIds_.finish ();
-		return result;
-	}
-
-	namespace
-	{
-		int GetCount (QSqlQuery& query, const QStringList& folder)
-		{
-			query.bindValue (":path", folder.join ("/"));
-			Util::DBLock::Execute (query);
-			if (!query.next ())
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "unable to navigate to result";
-				throw std::runtime_error ("Query execution failed.");
-			}
-
-			const auto result = query.value (0).toInt ();
-			query.finish ();
-			return result;
-		}
+		return Msg2Folder_->Select (sph::fields<&Msg2Folder::FolderMessageId_>,
+				sph::f<&Folder::FolderPath_> == folder.join ("/") &&
+				sph::f<&Folder::Id_> == sph::f<&Msg2Folder::FolderId_>);
 	}
 
 	int AccountDatabase::GetMessageCount (const QStringList& folder)
 	{
-		return GetCount (QueryGetCount_, folder);
+		return Msg2Folder_->Select (sph::count,
+				sph::f<&Folder::FolderPath_> == folder.join ("/") &&
+				sph::f<&Folder::Id_> == sph::f<&Msg2Folder::FolderId_>);
 	}
 
 	int AccountDatabase::GetUnreadMessageCount (const QStringList& folder)
 	{
-		return GetCount (QueryGetUnreadCount_, folder);
+		return Msg2Folder_->Select (sph::count,
+				sph::f<&Folder::FolderPath_> == folder.join ("/") &&
+				sph::f<&Folder::Id_> == sph::f<&Msg2Folder::FolderId_> &&
+				sph::f<&Message::Id_> == sph::f<&Msg2Folder::MsgId_> &&
+				sph::f<&Message::IsRead_> == false);
 	}
 
 	int AccountDatabase::GetMessageCount ()
 	{
-		Util::DBLock::Execute (QueryGetTotalCount_);
-		if (!QueryGetTotalCount_.next ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to navigate to result";
-			throw std::runtime_error ("Query execution failed.");
-		}
-
-		const auto result = QueryGetTotalCount_.value (0).toInt ();
-		QueryGetTotalCount_.finish ();
-		return result;
+		return Messages_->Select (sph::count);
 	}
 
 	boost::optional<int> AccountDatabase::GetMsgTableId (const QByteArray& uniqueId)
@@ -141,31 +172,16 @@ namespace Snails
 		if (uniqueId.isEmpty ())
 			return {};
 
-		QueryGetMsgTableIdByUniqueId_.bindValue (":uniqueId", uniqueId);
-		Util::DBLock::Execute (QueryGetMsgTableIdByUniqueId_);
-
-		const std::shared_ptr<void> finishGuard
-		{
-			nullptr,
-			[this] (void*) { QueryGetMsgTableIdByUniqueId_.finish (); }
-		};
-
-		if (QueryGetMsgTableIdByUniqueId_.next ())
-			return QueryGetMsgTableIdByUniqueId_.value (0).toInt ();
-		else
-			return {};
+		return Messages_->SelectOne (sph::fields<&Message::Id_>,
+				sph::f<&Message::UniqueId_> == uniqueId);
 	}
 
 	boost::optional<int> AccountDatabase::GetMsgTableId (const QByteArray& msgId, const QStringList& folder)
 	{
-		QueryGetMsgTableIdByFolder_.bindValue (":msgId", msgId);
-		QueryGetMsgTableIdByFolder_.bindValue (":path", folder.join ("/"));
-		Util::DBLock::Execute (QueryGetMsgTableIdByFolder_);
-
-		if (QueryGetMsgTableIdByFolder_.next ())
-			return QueryGetMsgTableIdByFolder_.value (0).toInt ();
-		else
-			return {};
+		return Msg2Folder_->SelectOne (sph::fields<&Msg2Folder::MsgId_>,
+				sph::f<&Msg2Folder::FolderId_> == sph::f<&Folder::Id_> &&
+				sph::f<&Folder::FolderPath_> == folder.join ("/") &&
+				sph::f<&Msg2Folder::FolderMessageId_> == msgId);
 	}
 
 	void AccountDatabase::AddMessage (const Message_ptr& msg)
@@ -173,7 +189,7 @@ namespace Snails
 		for (const auto& folder : msg->GetFolders ())
 			AddFolder (folder);
 
-		Util::DBLock lock { *DB_ };
+		Util::DBLock lock { DB_ };
 		lock.Init ();
 
 		for (const auto& folder : msg->GetFolders ())
@@ -197,168 +213,30 @@ namespace Snails
 	void AccountDatabase::RemoveMessage (const QByteArray& msgId, const QStringList& folder,
 			const std::function<void ()>& continuation)
 	{
-		Util::DBLock lock { *DB_ };
-		lock.Init ();
-
-		QueryRemoveMessage_.bindValue (":msgId", msgId);
-		QueryRemoveMessage_.bindValue (":path", folder.join ("/"));
-		Util::DBLock::Execute (QueryRemoveMessage_);
+		const auto id = Msg2Folder_->SelectOne (sph::fields<&Msg2Folder::Id_>,
+				sph::f<&Msg2Folder::FolderMessageId_> == msgId &&
+				sph::f<&Folder::FolderPath_> == folder.join ("/") &&
+				sph::f<&Msg2Folder::FolderId_> == sph::f<&Folder::Id_>);
+		if (id)
+			Msg2Folder_->DeleteBy (sph::f<&Msg2Folder::Id_> == *id);
 
 		if (continuation)
 			continuation ();
-
-		lock.Good ();
 	}
 
 	int AccountDatabase::AddMessageUnfoldered (const Message_ptr& msg)
 	{
-		const auto& uniqueId = msg->GetMessageID ();
-		QueryAddMsgUnfoldered_.bindValue (":uniqueId", uniqueId);
-		QueryAddMsgUnfoldered_.bindValue (":isRead", msg->IsRead ());
-		Util::DBLock::Execute (QueryAddMsgUnfoldered_);
-
-		const auto& idVar = QueryAddMsgUnfoldered_.lastInsertId ();
-		if (!idVar.isValid ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unknown insert ID";
-			throw std::runtime_error ("Unable to obtain last insert ID.");
-		}
-		return idVar.toInt ();
+		return Messages_->Insert ({ {}, msg->GetMessageID (), msg->IsRead () });
 	}
 
 	void AccountDatabase::UpdateMessage (int tableId, const Message_ptr& msg)
 	{
-		QuerySetMsgRead_.bindValue (":id", tableId);
-		QuerySetMsgRead_.bindValue (":isRead", msg->IsRead ());
-		Util::DBLock::Execute (QuerySetMsgRead_);
+		Messages_->Update (sph::f<&Message::IsRead_> = msg->IsRead (), sph::f<&Message::Id_> == tableId);
 	}
 
 	void AccountDatabase::AddMessageToFolder (int msgTableId, int folderTableId, const QByteArray& msgId)
 	{
-		QueryAddMsgToFolder_.bindValue (":msgId", msgId);
-		QueryAddMsgToFolder_.bindValue (":msgTableId", msgTableId);
-		QueryAddMsgToFolder_.bindValue (":folderId", folderTableId);
-		Util::DBLock::Execute (QueryAddMsgToFolder_);
-	}
-
-	void AccountDatabase::InitTables ()
-	{
-		QHash<QString, QStringList> table2queries;
-		table2queries ["messages"] <<
-				R"d(
-					CREATE TABLE messages (
-					Id INTEGER PRIMARY KEY AUTOINCREMENT,
-					UniqueId TEXT UNIQUE,
-					IsRead BOOL NOT NULL
-					);
-				)d";
-		table2queries ["folders"] <<
-				R"d(
-					CREATE TABLE folders (
-					Id INTEGER PRIMARY KEY AUTOINCREMENT,
-					FolderPath TEXT UNIQUE NOT NULL
-					)
-				)d";
-		table2queries ["msg2folder"] <<
-				R"d(
-					CREATE TABLE msg2folder (
-					Id INTEGER PRIMARY KEY AUTOINCREMENT,
-					MsgId INTEGER NOT NULL REFERENCES messages (Id) ON DELETE CASCADE,
-					FolderId INTEGER NOT NULL REFERENCES folders (Id) ON DELETE CASCADE,
-					FolderMessageId TEXT NOT NULL
-					)
-				)d";
-
-		QSqlQuery query { *DB_ };
-		for (const auto& pair : Util::Stlize (table2queries))
-			if (!DB_->tables ().contains (pair.first))
-				for (const auto& queryStr : pair.second)
-					if (!query.exec (queryStr))
-					{
-						Util::DBLock::DumpError (query);
-						throw std::runtime_error ("Query execution failed for storage creation.");
-					}
-	}
-
-	void AccountDatabase::PrepareQueries ()
-	{
-		QueryGetIds_ = QSqlQuery { *DB_ };
-		QueryGetIds_.prepare (R"d(
-					SELECT msg2folder.FolderMessageId FROM msg2folder, folders
-					WHERE folders.FolderPath = :path
-					AND folders.Id = msg2folder.FolderId
-				)d");
-
-		QueryGetCount_ = QSqlQuery { *DB_ };
-		QueryGetCount_.prepare (R"d(
-					SELECT COUNT(1) FROM msg2folder, folders
-					WHERE folders.FolderPath = :path
-					AND folders.Id = msg2folder.FolderId
-				)d");
-
-		QueryGetUnreadCount_ = QSqlQuery { *DB_ };
-		QueryGetUnreadCount_.prepare (R"d(
-					SELECT COUNT(1) FROM msg2folder, folders, messages
-					WHERE folders.FolderPath = :path
-					AND folders.Id = msg2folder.FolderId
-					AND messages.Id = msg2folder.MsgId
-					AND messages.IsRead = 0
-				)d");
-
-		QueryGetTotalCount_ = QSqlQuery { *DB_ };
-		QueryGetTotalCount_.prepare ("SELECT COUNT(1) FROM messages");
-
-		QueryRemoveMessage_ = QSqlQuery { *DB_ };
-		QueryRemoveMessage_.prepare (R"d(
-					DELETE FROM msg2folder
-					WHERE Id =
-						(SELECT msg2folder.Id
-							FROM msg2folder, folders
-							WHERE msg2folder.FolderMessageId = :msgId
-							AND folders.FolderPath = :path
-							AND msg2folder.FolderId = folders.Id)
-				)d");
-
-		QueryAddFolder_ = QSqlQuery { *DB_ };
-		QueryAddFolder_.prepare ("INSERT INTO folders (FolderPath) VALUES (:path);");
-
-		QueryGetMsgTableIdByFolder_ = QSqlQuery { *DB_ };
-		QueryGetMsgTableIdByFolder_.prepare (R"d(
-					SELECT msg2folder.MsgId FROM msg2folder, folders
-					WHERE msg2folder.FolderId = folders.Id
-					AND folders.FolderPath = :path
-					AND msg2folder.FolderMessageId = :msgId
-				)d");
-
-		QueryGetMsgTableIdByUniqueId_ = QSqlQuery { *DB_ };
-		QueryGetMsgTableIdByUniqueId_.prepare (R"d(
-					SELECT Id FROM messages
-					WHERE UniqueId = :uniqueId
-				)d");
-
-		QuerySetMsgRead_ = QSqlQuery { *DB_ };
-		QuerySetMsgRead_.prepare (R"d(
-					UPDATE messages
-					SET IsRead = :isRead
-					WHERE Id = :id
-				)d");
-
-		QueryAddMsgUnfoldered_ = QSqlQuery { *DB_ };
-		QueryAddMsgUnfoldered_.prepare (R"d(
-					INSERT INTO messages
-					(UniqueId, IsRead)
-					VALUES
-					(:uniqueId, :isRead)
-				)d");
-
-		QueryAddMsgToFolder_ = QSqlQuery { *DB_ };
-		QueryAddMsgToFolder_.prepare (R"d(
-					INSERT INTO msg2folder
-					(MsgId, FolderId, FolderMessageId)
-					VALUES
-					(:msgTableId, :folderId, :msgId)
-				)d");
+		Msg2Folder_->Insert ({ {}, msgTableId, folderTableId, msgId });
 	}
 
 	int AccountDatabase::AddFolder (const QStringList& folder)
@@ -366,18 +244,7 @@ namespace Snails
 		if (KnownFolders_.contains (folder))
 			return KnownFolders_.value (folder);
 
-		QueryAddFolder_.bindValue (":path", folder.join ("/"));
-		Util::DBLock::Execute (QueryAddFolder_);
-
-		const auto& idVar = QueryAddFolder_.lastInsertId ();
-		if (!idVar.isValid ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unknown insert ID";
-			throw std::runtime_error ("Unable to obtain last insert ID.");
-		}
-
-		const auto id = idVar.toInt ();
+		const auto id = Folders_->Insert ({ {}, { folder.join ("/") } });
 		KnownFolders_ [folder] = id;
 		return id;
 	}
@@ -392,17 +259,8 @@ namespace Snails
 
 	void AccountDatabase::LoadKnownFolders ()
 	{
-		QSqlQuery query { *DB_ };
-		query.prepare ("SELECT Id, FolderPath FROM folders");
-		Util::DBLock::Execute (query);
-
-		while (query.next ())
-		{
-			const auto id = query.value (0).toInt ();
-			const auto& path = query.value (1).toString ().split ('/');
-
-			KnownFolders_ [path] = id;
-		}
+		for (const auto& folder : Folders_->Select ())
+			KnownFolders_ [(**folder.FolderPath_).split ('/')] = folder.Id_;
 	}
 }
 }
