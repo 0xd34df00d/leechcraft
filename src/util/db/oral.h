@@ -469,43 +469,6 @@ namespace oral
 		};
 
 		template<typename Seq, bool HasPKey = HasPKey<Seq>>
-		class AdaptUpdate
-		{
-			std::function<void (Seq)> Updater_;
-		public:
-			AdaptUpdate (const QSqlDatabase& db, const CachedFieldsData& data)
-			{
-				if constexpr (HasPKey)
-				{
-					const auto index = FindPKey<Seq>::result_type::value;
-
-					QList<QString> removedFields { data.Fields_ };
-					QList<QString> removedBoundFields { data.BoundFields_ };
-
-					const auto& fieldName = removedFields.takeAt (index);
-					const auto& boundName = removedBoundFields.takeAt (index);
-
-					const auto& statements = Util::ZipWith (removedFields, removedBoundFields,
-							[] (const QString& s1, const QString& s2) { return s1 + " = " + s2; });
-
-					const auto& update = "UPDATE " + data.Table_ +
-							" SET " + statements.join (", ") +
-							" WHERE " + fieldName + " = " + boundName + ";";
-
-					const auto updateQuery = std::make_shared<QSqlQuery> (db);
-					updateQuery->prepare (update);
-					Updater_ = MakeInserter<Seq> (data, updateQuery, true);
-				}
-			}
-
-			template<bool B = HasPKey>
-			std::enable_if_t<B> operator() (const Seq& seq)
-			{
-				Updater_ (seq);
-			}
-		};
-
-		template<typename Seq, bool HasPKey = HasPKey<Seq>>
 		struct AdaptDelete
 		{
 			std::function<void (Seq)> Deleter_;
@@ -1135,6 +1098,65 @@ namespace oral
 				QSqlQuery query { DB_ };
 				query.prepare (selectAll);
 				binder (query);
+				query.exec ();
+			}
+		};
+
+		template<typename T, bool HasPKey = HasPKey<T>>
+		class AdaptUpdate
+		{
+			const QSqlDatabase DB_;
+			const CachedFieldsData Cached_;
+
+			std::function<void (T)> Updater_;
+		public:
+			AdaptUpdate (const QSqlDatabase& db, const CachedFieldsData& data)
+			: DB_ { db }
+			, Cached_ { data }
+			{
+				if constexpr (HasPKey)
+				{
+					const auto index = FindPKey<T>::result_type::value;
+
+					QList<QString> removedFields { data.Fields_ };
+					QList<QString> removedBoundFields { data.BoundFields_ };
+
+					const auto& fieldName = removedFields.takeAt (index);
+					const auto& boundName = removedBoundFields.takeAt (index);
+
+					const auto& statements = Util::ZipWith (removedFields, removedBoundFields,
+							[] (const QString& s1, const QString& s2) { return s1 + " = " + s2; });
+
+					const auto& update = "UPDATE " + data.Table_ +
+										 " SET " + statements.join (", ") +
+										 " WHERE " + fieldName + " = " + boundName + ";";
+
+					const auto updateQuery = std::make_shared<QSqlQuery> (db);
+					updateQuery->prepare (update);
+					Updater_ = MakeInserter<T> (data, updateQuery, true);
+				}
+			}
+
+			template<bool B = HasPKey>
+			std::enable_if_t<B> operator() (const T& seq)
+			{
+				Updater_ (seq);
+			}
+
+			template<typename SL, typename SR, ExprType WType, typename WL, typename WR>
+			void operator() (const AssignList<SL, SR>& set, const ExprTree<WType, WL, WR>& where)
+			{
+				const auto& [setClause, setBinder, setLast] = HandleExprTree<T> (set);
+				const auto& [whereClause, whereBinder, _] = HandleExprTree<T> (where, setLast);
+
+				const auto& update = "UPDATE " + Cached_.Table_ +
+						" SET " + setClause +
+						" WHERE " + whereClause;
+
+				QSqlQuery query { DB_ };
+				query.prepare (update);
+				setBinder (query);
+				whereBinder (query);
 				query.exec ();
 			}
 		};
