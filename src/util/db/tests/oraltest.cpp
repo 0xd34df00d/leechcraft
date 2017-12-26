@@ -293,6 +293,14 @@ namespace Util
 		QCOMPARE (count, 2);
 	}
 
+	void OralTest::testSimpleRecordUpdate ()
+	{
+		auto adapted = PrepareRecords<SimpleRecord> (MakeDatabase ());
+		adapted->Update ({ 0, "meh" });
+		const auto updated = adapted->Select (sph::f<&SimpleRecord::ID_> == 0);
+		QCOMPARE (updated, (QList<SimpleRecord> { { 0, "meh" } }));
+	}
+
 	void OralTest::testAutoPKeyRecordInsertSelect ()
 	{
 		auto adapted = PrepareRecords<AutogenPKeyRecord> (MakeDatabase ());
