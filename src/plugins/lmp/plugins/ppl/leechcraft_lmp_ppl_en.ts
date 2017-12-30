@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="en_US">
+<TS version="2.1" language="en_US">
 <context>
     <name>LeechCraft::LMP::PPL::LocalCollectionScrobbler</name>
     <message>
-        <location filename="loghandler.cpp" line="83"/>
+        <location filename="loghandler.cpp" line="84"/>
         <source>Local collection</source>
         <translation>Local collection</translation>
     </message>
@@ -35,28 +35,28 @@
 <context>
     <name>LeechCraft::LMP::PPL::TracksSelectorDialog</name>
     <message>
-        <location filename="tracksselectordialog.cpp" line="106"/>
+        <location filename="tracksselectordialog.cpp" line="118"/>
         <source>Artist</source>
         <translation>Artist</translation>
     </message>
     <message>
-        <location filename="tracksselectordialog.cpp" line="107"/>
+        <location filename="tracksselectordialog.cpp" line="119"/>
         <source>Album</source>
         <translation>Album</translation>
     </message>
     <message>
-        <location filename="tracksselectordialog.cpp" line="108"/>
+        <location filename="tracksselectordialog.cpp" line="120"/>
         <source>Title</source>
         <oldsource>Track</oldsource>
         <translation>Title</translation>
     </message>
     <message>
-        <location filename="tracksselectordialog.cpp" line="109"/>
+        <location filename="tracksselectordialog.cpp" line="121"/>
         <source>Date</source>
         <translation>Date</translation>
     </message>
     <message>
-        <location filename="tracksselectordialog.cpp" line="254"/>
+        <location filename="tracksselectordialog.cpp" line="264"/>
         <source>All</source>
         <translation>All</translation>
     </message>
@@ -67,6 +67,26 @@
         <location filename="tracksselectordialog.ui" line="14"/>
         <source>Listened tracks</source>
         <translation>Listened tracks</translation>
+    </message>
+    <message>
+        <location filename="tracksselectordialog.ui" line="37"/>
+        <source>Mark all</source>
+        <translation>Mark all</translation>
+    </message>
+    <message>
+        <location filename="tracksselectordialog.ui" line="47"/>
+        <source>Unmark all</source>
+        <translation>Unmark all</translation>
+    </message>
+    <message>
+        <location filename="tracksselectordialog.ui" line="57"/>
+        <source>Mark selected</source>
+        <translation>Mark selected</translation>
+    </message>
+    <message>
+        <location filename="tracksselectordialog.ui" line="67"/>
+        <source>Unmark selected</source>
+        <translation>Unmark selected</translation>
     </message>
 </context>
 </TS>
