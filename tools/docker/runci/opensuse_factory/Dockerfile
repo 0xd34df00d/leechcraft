@@ -4,7 +4,7 @@ RUN git clone https://github.com/0xd34df00d/leechcraft.git && \
 	cd leechcraft && \
 	mkdir build && \
 	cd build && \
-	CLICOLOR=0 cmake ../src -DLIB_SUFFIX=64 \
+	cmake ../src -DLIB_SUFFIX=64 \
 		-DCMAKE_INSTALL_PREFIX=/usr \
 		-DSTRICT_LICENSING=True \
 		-DENABLE_ADVANCEDNOTIFICATIONS=True \
@@ -91,4 +91,4 @@ RUN git clone https://github.com/0xd34df00d/leechcraft.git && \
 		-DENABLE_ELEEMINATOR=True \
 		-DENABLE_XPROXY=True \
 		-DENABLE_FONTIAC=True && \
-	CLICOLOR=0 make -j$(nproc) -k
+	make -j$(nproc) -k
