@@ -690,6 +690,12 @@ namespace oral
 				else
 					return Left_.ToSql (state) + ", " + Right_.ToSql (state);
 			}
+
+			template<typename OL, typename OR>
+			auto operator, (const AssignList<OL, OR>& tail)
+			{
+				return AssignList<AssignList<L, R>, AssignList<OL, OR>> { *this, tail };
+			}
 		};
 
 		template<ExprType Type, typename L, typename R>
