@@ -61,6 +61,7 @@ namespace Util
 		void testSimpleRecordInsertSelectCountByFields ();
 
 		void testSimpleRecordUpdate ();
+		void testSimpleRecordUpdateExprTree ();
 
 		void testAutoPKeyRecordInsertSelect ();
 		void testAutoPKeyRecordInsertRvalueReturnsPKey ();
