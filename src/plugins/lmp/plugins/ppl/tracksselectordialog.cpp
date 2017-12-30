@@ -63,9 +63,9 @@ namespace PPL
 		TracksModel (const Media::IAudioScrobbler::BackdatedTracks_t&,
 			const QList<Media::IAudioScrobbler*>&, QObject* = nullptr);
 
-		QModelIndex index (int, int, const QModelIndex&) const override;
+		QModelIndex index (int, int, const QModelIndex& = {}) const override;
 		QModelIndex parent (const QModelIndex&) const override;
-		int rowCount (const QModelIndex&) const override;
+		int rowCount (const QModelIndex& = {}) const override;
 		int columnCount (const QModelIndex&) const override;
 		QVariant data (const QModelIndex&, int) const override;
 
@@ -75,6 +75,9 @@ namespace PPL
 		bool setData (const QModelIndex& index, const QVariant& value, int role) override;
 
 		QList<TracksSelectorDialog::SelectedTrack> GetSelectedTracks () const;
+
+		void MarkAll ();
+		void UnmarkAll ();
 	private:
 		template<typename Summary, typename Specific>
 		auto WithCheckableColumns (const QModelIndex& index, Summary&& summary, Specific&& specific) const
@@ -296,6 +299,18 @@ namespace PPL
 		return result;
 	}
 
+	void TracksSelectorDialog::TracksModel::MarkAll ()
+	{
+		for (int i = 0; i < rowCount (); ++i)
+			MarkRow (index (i, Header::ScrobbleSummary), true);
+	}
+
+	void TracksSelectorDialog::TracksModel::UnmarkAll ()
+	{
+		for (int i = 0; i < rowCount (); ++i)
+			MarkRow (index (i, Header::ScrobbleSummary), false);
+	}
+
 	void TracksSelectorDialog::TracksModel::MarkRow (const QModelIndex& srcIdx, bool shouldScrobble)
 	{
 		WithIndex (srcIdx,
@@ -341,6 +356,13 @@ namespace PPL
 		Ui_.Tracks_->setModel (Model_);
 
 		FixSize ();
+
+		connect (Ui_.MarkAll_,
+				&QPushButton::released,
+				[this] { Model_->MarkAll (); });
+		connect (Ui_.UnmarkAll_,
+				&QPushButton::released,
+				[this] { Model_->UnmarkAll (); });
 	}
 
 	void TracksSelectorDialog::FixSize ()
