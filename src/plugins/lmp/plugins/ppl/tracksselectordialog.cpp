@@ -283,58 +283,39 @@ namespace PPL
 
 		const auto shouldScrobble = value.toInt () == Qt::Checked;
 
-		return WithIndex (srcIdx,
+		WithIndex (srcIdx,
 				[&] (const QModelIndex& index)
 				{
-					const auto emitDataChanged = [this, &index]
-					{
-						const auto lastRow = rowCount (index.parent ()) - 1;
-						const auto lastColumn = columnCount (index.parent ()) - 1;
-						emit dataChanged (createIndex (0, 0), createIndex (lastRow, lastColumn));
-					};
-
-					return WithCheckableColumns (index,
+					WithCheckableColumns (index,
 							[&] (int)
 							{
 								for (auto& subvec : Scrobble_)
 									std::fill (subvec.begin (), subvec.end (), shouldScrobble);
-								emitDataChanged ();
-								return true;
 							},
 							[&] (int, int column)
 							{
 								for (auto& subvec : Scrobble_)
 									subvec [column] = shouldScrobble;
-								emitDataChanged ();
-								return true;
 							});
+
+					const auto lastRow = rowCount (index.parent ()) - 1;
+					const auto lastColumn = columnCount (index.parent ()) - 1;
+					emit dataChanged (createIndex (0, 0), createIndex (lastRow, lastColumn));
 				},
 				[&] (const QModelIndex& index)
 				{
 					auto& scrobbles = Scrobble_ [index.row ()];
 
-					const auto emitDataChanged = [this, &index]
-					{
-						const auto lastColumn = columnCount (index.parent ()) - 1;
-						emit dataChanged (createIndex (0, 0), createIndex (0, lastColumn));
-						emit dataChanged (index.sibling (index.row (), 0),
-								index.sibling (index.row (), lastColumn));
-					};
+					WithCheckableColumns (index,
+							[&] (int) { std::fill (scrobbles.begin (), scrobbles.end (), shouldScrobble); },
+							[&] (int, int column) { scrobbles [column] = shouldScrobble; });
 
-					return WithCheckableColumns (index,
-							[&] (int)
-							{
-								std::fill (scrobbles.begin (), scrobbles.end (), shouldScrobble);
-								emitDataChanged ();
-								return true;
-							},
-							[&] (int, int column)
-							{
-								scrobbles [column] = shouldScrobble;
-								emitDataChanged ();
-								return true;
-							});
+					const auto lastColumn = columnCount (index.parent ()) - 1;
+					emit dataChanged (createIndex (0, 0), createIndex (0, lastColumn));
+					emit dataChanged (index.sibling (index.row (), 0), index.sibling (index.row (), lastColumn));
 				});
+
+		return true;
 	}
 
 	QList<TracksSelectorDialog::SelectedTrack> TracksSelectorDialog::TracksModel::GetSelectedTracks () const
