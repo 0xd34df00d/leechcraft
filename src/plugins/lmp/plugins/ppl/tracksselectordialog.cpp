@@ -64,6 +64,8 @@ namespace PPL
 		TracksModel (const Media::IAudioScrobbler::BackdatedTracks_t&,
 				const QList<Media::IAudioScrobbler*>&, QObject* = nullptr);
 
+		static constexpr uint8_t ColumnSelectAll = Header::ScrobbleSummary;
+
 		QModelIndex index (int, int, const QModelIndex& = {}) const override;
 		QModelIndex parent (const QModelIndex&) const override;
 		int rowCount (const QModelIndex& = {}) const override;
