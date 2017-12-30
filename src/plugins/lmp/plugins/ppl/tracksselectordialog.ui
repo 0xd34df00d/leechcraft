@@ -46,6 +46,20 @@
         </widget>
        </item>
        <item>
+        <widget class="QPushButton" name="MarkSelected_">
+         <property name="text">
+          <string>Mark selected</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="UnmarkSelected_">
+         <property name="text">
+          <string>Unmark selected</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <spacer name="verticalSpacer">
          <property name="orientation">
           <enum>Qt::Vertical</enum>

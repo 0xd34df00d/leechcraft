@@ -32,6 +32,7 @@
 #include <QAbstractItemModel>
 #include <QApplication>
 #include <QDesktopWidget>
+#include <QtDebug>
 #include <util/sll/prelude.h>
 #include <util/sll/views.h>
 #include <util/sll/util.h>
@@ -61,7 +62,7 @@ namespace PPL
 		QVector<QVector<bool>> Scrobble_;
 	public:
 		TracksModel (const Media::IAudioScrobbler::BackdatedTracks_t&,
-			const QList<Media::IAudioScrobbler*>&, QObject* = nullptr);
+				const QList<Media::IAudioScrobbler*>&, QObject* = nullptr);
 
 		QModelIndex index (int, int, const QModelIndex& = {}) const override;
 		QModelIndex parent (const QModelIndex&) const override;
@@ -78,6 +79,7 @@ namespace PPL
 
 		void MarkAll ();
 		void UnmarkAll ();
+		void SetMarked (const QList<QModelIndex>&, bool);
 	private:
 		template<typename Summary, typename Specific>
 		auto WithCheckableColumns (const QModelIndex& index, Summary&& summary, Specific&& specific) const
@@ -311,6 +313,12 @@ namespace PPL
 			MarkRow (index (i, Header::ScrobbleSummary), false);
 	}
 
+	void TracksSelectorDialog::TracksModel::SetMarked (const QList<QModelIndex>& indices, bool shouldScrobble)
+	{
+		for (const auto& idx : indices)
+			MarkRow (idx, shouldScrobble);
+	}
+
 	void TracksSelectorDialog::TracksModel::MarkRow (const QModelIndex& srcIdx, bool shouldScrobble)
 	{
 		WithIndex (srcIdx,
@@ -357,12 +365,45 @@ namespace PPL
 
 		FixSize ();
 
+		auto withSelected = [this] (bool shouldScrobble)
+		{
+			return [this, shouldScrobble]
+			{
+				const auto& current = Ui_.Tracks_->currentIndex ();
+				const auto column = current.isValid () && (current.flags () & Qt::ItemIsUserCheckable) ?
+						current.column () :
+						0;
+
+				auto indices = Ui_.Tracks_->selectionModel ()->selectedIndexes ();
+
+				auto columnEnd = std::partition (indices.begin (), indices.end (),
+						[&column] (const auto& index) { return index.column () == column; });
+
+				std::sort (indices.begin (), columnEnd, Util::ComparingBy (&QModelIndex::row));
+				std::sort (columnEnd, indices.end (), Util::ComparingBy (&QModelIndex::row));
+				indices.erase (std::unique (columnEnd, indices.end (), Util::EqualityBy (&QModelIndex::row)),
+						indices.end ());
+
+				std::inplace_merge (indices.begin (), columnEnd, indices.end (), Util::ComparingBy (&QModelIndex::row));
+				indices.erase (std::unique (indices.begin (), indices.end (), Util::EqualityBy (&QModelIndex::row)),
+						indices.end ());
+
+				Model_->SetMarked (indices, shouldScrobble);
+			};
+		};
+
 		connect (Ui_.MarkAll_,
 				&QPushButton::released,
 				[this] { Model_->MarkAll (); });
 		connect (Ui_.UnmarkAll_,
 				&QPushButton::released,
 				[this] { Model_->UnmarkAll (); });
+		connect (Ui_.MarkSelected_,
+				&QPushButton::released,
+				withSelected (true));
+		connect (Ui_.UnmarkSelected_,
+				&QPushButton::released,
+				withSelected (false));
 	}
 
 	void TracksSelectorDialog::FixSize ()
