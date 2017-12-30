@@ -109,9 +109,7 @@ namespace PPL
 				tr ("Title"),
 				tr ("Date")
 			};
-			const auto& scrobbleNames = Util::Map (scrobblers,
-					[] (Media::IAudioScrobbler *scrob) { return scrob->GetServiceName (); });
-
+			const auto& scrobbleNames = Util::Map (scrobblers, &Media::IAudioScrobbler::GetServiceName);
 			return predefined + scrobbleNames;
 		} ()
 	}
