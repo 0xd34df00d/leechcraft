@@ -96,6 +96,8 @@ namespace PPL
 
 			return specific (index.row (), index.column () - (MaxPredefinedHeader + 1));
 		}
+
+		void MarkRow (const QModelIndex&, bool);
 	};
 
 	TracksSelectorDialog::TracksModel::TracksModel (const Media::IAudioScrobbler::BackdatedTracks_t& tracks,
@@ -281,8 +283,21 @@ namespace PPL
 		if (role != Qt::CheckStateRole)
 			return false;
 
-		const auto shouldScrobble = value.toInt () == Qt::Checked;
+		MarkRow (srcIdx, value.toInt () == Qt::Checked);
+		return true;
+	}
 
+	QList<TracksSelectorDialog::SelectedTrack> TracksSelectorDialog::TracksModel::GetSelectedTracks () const
+	{
+		QList<TracksSelectorDialog::SelectedTrack> result;
+		for (const auto& pair : Util::Views::Zip<std::pair> (Tracks_, Scrobble_))
+			if (std::any_of (pair.second.begin (), pair.second.end (), Util::Id))
+				result.push_back ({ pair.first, pair.second });
+		return result;
+	}
+
+	void TracksSelectorDialog::TracksModel::MarkRow (const QModelIndex& srcIdx, bool shouldScrobble)
+	{
 		WithIndex (srcIdx,
 				[&] (const QModelIndex& index)
 				{
@@ -314,17 +329,6 @@ namespace PPL
 					emit dataChanged (createIndex (0, 0), createIndex (0, lastColumn));
 					emit dataChanged (index.sibling (index.row (), 0), index.sibling (index.row (), lastColumn));
 				});
-
-		return true;
-	}
-
-	QList<TracksSelectorDialog::SelectedTrack> TracksSelectorDialog::TracksModel::GetSelectedTracks () const
-	{
-		QList<TracksSelectorDialog::SelectedTrack> result;
-		for (const auto& pair : Util::Views::Zip<std::pair> (Tracks_, Scrobble_))
-			if (std::any_of (pair.second.begin (), pair.second.end (), Util::Id))
-				result.push_back ({ pair.first, pair.second });
-		return result;
 	}
 
 	TracksSelectorDialog::TracksSelectorDialog (const Media::IAudioScrobbler::BackdatedTracks_t& tracks,
