@@ -86,7 +86,7 @@ namespace Poleemery
 	struct EntryBase
 	{
 		Util::oral::PKey<int> ID_ = -1;
-		Util::oral::References<Account, 0> AccountID_ = -1;
+		Util::oral::References<&Account::ID_> AccountID_ = -1;
 
 		/** This actually price.
 		 */
@@ -182,8 +182,8 @@ namespace Poleemery
 	struct CategoryLink
 	{
 		Util::oral::PKey<int> ID_ = -1;
-		Util::oral::References<Category, 0> Category_;
-		Util::oral::References<NakedExpenseEntry, 0> Entry_;
+		Util::oral::References<&Category::ID_> Category_;
+		Util::oral::References<&NakedExpenseEntry::ID_> Entry_;
 
 		CategoryLink () = default;
 		CategoryLink (const Category&, const NakedExpenseEntry&);
