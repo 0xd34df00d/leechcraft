@@ -125,7 +125,7 @@ namespace PPL
 		} ()
 	}
 	, Tracks_ { tracks }
-	, Scrobble_ { tracks.size (), QVector<bool> (scrobblers.size () + 1, true) }
+	, Scrobble_ { tracks.size (), QVector<bool> (scrobblers.size (), true) }
 	{
 	}
 
