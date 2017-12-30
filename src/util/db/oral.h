@@ -685,7 +685,10 @@ namespace oral
 			template<typename T>
 			QString ToSql (ToSqlState<T>& state) const
 			{
-				return Left_.GetFieldName () + " = " + Right_.ToSql (state);
+				if constexpr (IsExprTree<L> {})
+					return Left_.GetFieldName () + " = " + Right_.ToSql (state);
+				else
+					return Left_.ToSql (state) + ", " + Right_.ToSql (state);
 			}
 		};
 
