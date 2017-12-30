@@ -421,6 +421,8 @@ namespace PPL
 			totalWidth += std::max (header->sectionSize (j),
 					Ui_.Tracks_->sizeHintForIndex (Model_->index (0, j, {})).width ());
 
+		totalWidth += Ui_.ButtonsLayout_->sizeHint ().width ();
+
 		if (totalWidth < size ().width ())
 			return;
 
