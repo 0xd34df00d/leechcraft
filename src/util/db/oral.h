@@ -990,6 +990,7 @@ namespace oral
 			auto operator() (Selector&& selector, const ExprTree<Type, L, R>& tree) const
 			{
 				const auto& [where, binder, _] = HandleExprTree<T> (tree);
+				Q_UNUSED (_);
 				const auto& [fields, initializer, postproc] = HandleSelector (std::forward<Selector> (selector));
 				return postproc (Select (fields, BuildFromClause (tree), where, binder, initializer));
 			}
@@ -1103,6 +1104,7 @@ namespace oral
 			void operator() (const ExprTree<Type, L, R>& tree) const
 			{
 				const auto& [where, binder, _] = HandleExprTree<T> (tree);
+				Q_UNUSED (_);
 
 				const auto& selectAll = "DELETE FROM " + Cached_.Table_ +
 						" WHERE " + where + ";";
