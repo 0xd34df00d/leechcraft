@@ -5,7 +5,6 @@ RUN git clone https://github.com/0xd34df00d/leechcraft.git && \
 	mkdir build && \
 	cd build && \
 	cmake ../src -DLIB_SUFFIX=64 \
-		-DEXTRA_WARNINGS=True \
 		-DCMAKE_INSTALL_PREFIX=/usr \
 		-DSTRICT_LICENSING=True \
 		-DENABLE_ADVANCEDNOTIFICATIONS=True \
@@ -33,9 +32,7 @@ RUN git clone https://github.com/0xd34df00d/leechcraft.git && \
 		-DENABLE_DLNIWE=False \
 		-DENABLE_DOLOZHEE=True \
 		-DENABLE_DUMBEEP=True \
-		-DDUMBEEP_WITH_PHONON=False \
 		-DENABLE_GACTS=True \
-		-DWITH_GACTS_BUNDLED_QXT=True \
 		-DENABLE_GLANCE=True \
 		-DENABLE_GMAILNOTIFIER=True \
 		-DENABLE_HARBINGER=False \
@@ -60,7 +57,6 @@ RUN git clone https://github.com/0xd34df00d/leechcraft.git && \
 		-DENABLE_LMP_LIBGUESS=True \
 		-DENABLE_LMP_MPRIS=True \
 		-DENABLE_LMP_MTPSYNC=True \
-		-DUSE_GSTREAMER_10=True \
 		-DENABLE_MELLONETRAY=True \
 		-DENABLE_MONOCLE=True \
 		-DENABLE_MONOCLE_MU=False \
