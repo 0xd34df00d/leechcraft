@@ -661,6 +661,15 @@ namespace oral
 		template<ExprType Type, typename Seq, typename L, typename R>
 		struct RelationalTypesChecker<Type, Seq, L, R, std::enable_if_t<IsRelational (Type)>> : RelationalTypesCheckerBase<Seq, L, R> {};
 
+		template<ExprType Type, typename L = void, typename R = void>
+		class ExprTree;
+
+		template<typename T>
+		struct IsExprTree : std::false_type {};
+
+		template<ExprType Type, typename L, typename R>
+		struct IsExprTree<ExprTree<Type, L, R>> : std::true_type {};
+
 		template<typename L, typename R>
 		class AssignList
 		{
@@ -680,7 +689,7 @@ namespace oral
 			}
 		};
 
-		template<ExprType Type, typename L = void, typename R = void>
+		template<ExprType Type, typename L, typename R>
 		class ExprTree
 		{
 			L Left_;
@@ -798,12 +807,6 @@ namespace oral
 		class ExprTree<ExprType::ConstTrue, void, void> {};
 
 		constexpr auto ConstTrueTree_v = ExprTree<ExprType::ConstTrue> {};
-
-		template<typename T>
-		struct IsExprTree : std::false_type {};
-
-		template<ExprType Type, typename L, typename R>
-		struct IsExprTree<ExprTree<Type, L, R>> : std::true_type {};
 
 		template<typename T>
 		constexpr auto AsLeafData (const T& node)
