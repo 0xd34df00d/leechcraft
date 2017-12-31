@@ -371,24 +371,22 @@ namespace PPL
 		{
 			return [this, shouldScrobble]
 			{
-				const auto& current = Ui_.Tracks_->currentIndex ();
-				const auto column = current.isValid () && (current.flags () & Qt::ItemIsUserCheckable) ?
-						current.column () :
-						0;
-
 				auto indices = Ui_.Tracks_->selectionModel ()->selectedIndexes ();
+				if (indices.isEmpty ())
+					return;
 
-				auto columnEnd = std::partition (indices.begin (), indices.end (),
-						[&column] (const auto& index) { return index.column () == column; });
+				const auto notCheckable = [] (const auto& idx) { return !(idx.flags () & Qt::ItemIsUserCheckable); };
 
-				std::sort (indices.begin (), columnEnd, Util::ComparingBy (&QModelIndex::row));
-				std::sort (columnEnd, indices.end (), Util::ComparingBy (&QModelIndex::row));
-				indices.erase (std::unique (columnEnd, indices.end (), Util::EqualityBy (&QModelIndex::row)),
-						indices.end ());
+				if (notCheckable (indices.value (0)))
+				{
+					const auto column = indices.value (0).column ();
+					if (std::all_of (indices.begin (), indices.end (),
+							[&column] (const auto& idx) { return idx.column () == column; }))
+						for (auto& idx : indices)
+							idx = idx.sibling (idx.row (), TracksModel::ColumnSelectAll);
+				}
 
-				std::inplace_merge (indices.begin (), columnEnd, indices.end (), Util::ComparingBy (&QModelIndex::row));
-				indices.erase (std::unique (indices.begin (), indices.end (), Util::EqualityBy (&QModelIndex::row)),
-						indices.end ());
+				indices.erase (std::remove_if (indices.begin (), indices.end (), notCheckable), indices.end ());
 
 				Model_->SetMarked (indices, shouldScrobble);
 			};
