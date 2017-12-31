@@ -32,6 +32,7 @@
 #include <QAbstractItemModel>
 #include <QApplication>
 #include <QDesktopWidget>
+#include <QShortcut>
 #include <QtDebug>
 #include <util/sll/prelude.h>
 #include <util/sll/views.h>
@@ -391,6 +392,15 @@ namespace PPL
 				Model_->SetMarked (indices, shouldScrobble);
 			};
 		};
+
+		connect (new QShortcut { QString { "Alt+S" }, this },
+				&QShortcut::activated,
+				Ui_.MarkSelected_,
+				&QPushButton::click);
+		connect (new QShortcut { QString { "Alt+U" }, this },
+				&QShortcut::activated,
+				Ui_.UnmarkSelected_,
+				&QPushButton::click);
 
 		connect (Ui_.MarkAll_,
 				&QPushButton::clicked,
