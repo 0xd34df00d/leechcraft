@@ -55,6 +55,16 @@
         </widget>
        </item>
        <item>
+        <widget class="QPushButton" name="UnmarkRepeats_">
+         <property name="text">
+          <string>Unmark repetitions</string>
+         </property>
+         <property name="icon">
+          <iconset theme="edit-copy"/>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QPushButton" name="MarkSelected_">
          <property name="text">
           <string>Mark selected</string>

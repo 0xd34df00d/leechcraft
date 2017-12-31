@@ -82,6 +82,8 @@ namespace PPL
 		void MarkAll ();
 		void UnmarkAll ();
 		void SetMarked (const QList<QModelIndex>&, bool);
+
+		void UnmarkRepeats ();
 	private:
 		template<typename Summary, typename Specific>
 		auto WithCheckableColumns (const QModelIndex& index, Summary&& summary, Specific&& specific) const
@@ -321,6 +323,26 @@ namespace PPL
 			MarkRow (idx, shouldScrobble);
 	}
 
+	void TracksSelectorDialog::TracksModel::UnmarkRepeats ()
+	{
+		const auto asTuple = [] (const auto& pair)
+		{
+			const auto& media = pair.first;
+			return std::tie (media.Artist_, media.Album_, media.Title_);
+		};
+
+		for (auto pos = Tracks_.begin (); pos != Tracks_.end (); )
+		{
+			pos = std::adjacent_find (pos, Tracks_.end (), Util::EqualityBy (asTuple));
+			if (pos == Tracks_.end ())
+				break;
+
+			const auto& referenceInfo = asTuple (*pos);
+			while (asTuple (*++pos) == referenceInfo)
+				MarkRow (index (std::distance (Tracks_.begin (), pos) + 1, Header::ScrobbleSummary), false);
+		}
+	}
+
 	void TracksSelectorDialog::TracksModel::MarkRow (const QModelIndex& srcIdx, bool shouldScrobble)
 	{
 		WithIndex (srcIdx,
@@ -407,6 +429,9 @@ namespace PPL
 		connect (Ui_.UnmarkAll_,
 				&QPushButton::clicked,
 				[this] { Model_->UnmarkAll (); });
+		connect (Ui_.UnmarkRepeats_,
+				&QPushButton::clicked,
+				[this] { Model_->UnmarkRepeats (); });
 		connect (Ui_.MarkSelected_,
 				&QPushButton::clicked,
 				withSelected (true));
