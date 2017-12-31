@@ -35,28 +35,28 @@
 <context>
     <name>LeechCraft::LMP::PPL::TracksSelectorDialog</name>
     <message>
-        <location filename="tracksselectordialog.cpp" line="118"/>
+        <location filename="tracksselectordialog.cpp" line="122"/>
         <source>Artist</source>
         <translation>Artist</translation>
     </message>
     <message>
-        <location filename="tracksselectordialog.cpp" line="119"/>
+        <location filename="tracksselectordialog.cpp" line="123"/>
         <source>Album</source>
         <translation>Album</translation>
     </message>
     <message>
-        <location filename="tracksselectordialog.cpp" line="120"/>
+        <location filename="tracksselectordialog.cpp" line="124"/>
         <source>Title</source>
         <oldsource>Track</oldsource>
         <translation>Title</translation>
     </message>
     <message>
-        <location filename="tracksselectordialog.cpp" line="121"/>
+        <location filename="tracksselectordialog.cpp" line="125"/>
         <source>Date</source>
         <translation>Date</translation>
     </message>
     <message>
-        <location filename="tracksselectordialog.cpp" line="264"/>
+        <location filename="tracksselectordialog.cpp" line="268"/>
         <source>All</source>
         <translation>All</translation>
     </message>
@@ -69,22 +69,27 @@
         <translation>Listened tracks</translation>
     </message>
     <message>
-        <location filename="tracksselectordialog.ui" line="37"/>
+        <location filename="tracksselectordialog.ui" line="40"/>
         <source>Mark all</source>
         <translation>Mark all</translation>
     </message>
     <message>
-        <location filename="tracksselectordialog.ui" line="47"/>
+        <location filename="tracksselectordialog.ui" line="50"/>
         <source>Unmark all</source>
         <translation>Unmark all</translation>
     </message>
     <message>
-        <location filename="tracksselectordialog.ui" line="57"/>
+        <location filename="tracksselectordialog.ui" line="60"/>
+        <source>Unmark repetitions</source>
+        <translation>Unmark repetitions</translation>
+    </message>
+    <message>
+        <location filename="tracksselectordialog.ui" line="70"/>
         <source>Mark selected</source>
         <translation>Mark selected</translation>
     </message>
     <message>
-        <location filename="tracksselectordialog.ui" line="67"/>
+        <location filename="tracksselectordialog.ui" line="80"/>
         <source>Unmark selected</source>
         <translation>Unmark selected</translation>
     </message>
