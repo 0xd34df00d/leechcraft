@@ -393,16 +393,16 @@ namespace PPL
 		};
 
 		connect (Ui_.MarkAll_,
-				&QPushButton::released,
+				&QPushButton::clicked,
 				[this] { Model_->MarkAll (); });
 		connect (Ui_.UnmarkAll_,
-				&QPushButton::released,
+				&QPushButton::clicked,
 				[this] { Model_->UnmarkAll (); });
 		connect (Ui_.MarkSelected_,
-				&QPushButton::released,
+				&QPushButton::clicked,
 				withSelected (true));
 		connect (Ui_.UnmarkSelected_,
-				&QPushButton::released,
+				&QPushButton::clicked,
 				withSelected (false));
 	}
 
