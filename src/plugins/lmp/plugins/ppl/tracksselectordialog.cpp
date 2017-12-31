@@ -33,7 +33,6 @@
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QShortcut>
-#include <QtDebug>
 #include <util/sll/prelude.h>
 #include <util/sll/views.h>
 #include <util/sll/util.h>
