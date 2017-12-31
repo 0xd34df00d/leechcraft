@@ -18,6 +18,9 @@
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QTableView" name="Tracks_">
+       <property name="alternatingRowColors">
+        <bool>true</bool>
+       </property>
        <attribute name="horizontalHeaderDefaultSectionSize">
         <number>23</number>
        </attribute>
