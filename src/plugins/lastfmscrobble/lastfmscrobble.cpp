@@ -280,10 +280,7 @@ namespace Lastfmscrobble
 			return true;
 		}
 
-		qWarning () << Q_FUNC_INFO
-				<< "unknown hype type"
-				<< static_cast<int> (type);
-		return false;
+		Util::Unreachable ();
 	}
 
 	void Plugin::RequestHype (HypeType type)
