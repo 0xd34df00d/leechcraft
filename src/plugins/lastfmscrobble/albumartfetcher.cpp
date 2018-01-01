@@ -33,6 +33,8 @@
 #include <QNetworkAccessManager>
 #include <QDomDocument>
 #include <QStringList>
+#include <util/sll/visitor.h>
+#include <util/threads/futures.h>
 #include "util.h"
 
 namespace LeechCraft
@@ -50,11 +52,14 @@ namespace Lastfmscrobble
 			{ "album", albumInfo.Album_ },
 			{ "autocorrect", "1" }
 		};
-		auto reply = Request ("album.getInfo", proxy->GetNetworkAccessManager (), params);
-		connect (reply,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleReplyFinished ()));
+
+		const auto reply = Request ("album.getInfo", proxy->GetNetworkAccessManager (), params);
+		Util::Sequence (this, Util::HandleReply<QString> (reply, this)) >>
+				Util::Visitor
+				{
+					[this] (const QString&) { deleteLater (); },
+					[this] (const QByteArray& result) { HandleReplyFinished (result); }
+				};
 	}
 
 	QObject* AlbumArtFetcher::GetQObject ()
@@ -77,13 +82,10 @@ namespace Lastfmscrobble
 		return { Image_ };
 	}
 
-	void AlbumArtFetcher::handleReplyFinished ()
+	void AlbumArtFetcher::HandleReplyFinished (const QByteArray& data)
 	{
-		auto reply = qobject_cast<QNetworkReply*> (sender ());
-		reply->deleteLater ();
-
 		QDomDocument doc;
-		if (!doc.setContent (reply->readAll ()))
+		if (!doc.setContent (data))
 		{
 			emit ready (Info_, {});
 			deleteLater ();

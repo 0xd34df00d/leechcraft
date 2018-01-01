@@ -56,8 +56,9 @@ namespace Lastfmscrobble
 		Media::AlbumInfo GetAlbumInfo () const;
 		QList<QImage> GetImages () const;
 		QList<QUrl> GetImageUrls () const;
+	private:
+		void HandleReplyFinished (const QByteArray&);
 	private slots:
-		void handleReplyFinished ();
 		void handleImageReplyFinished ();
 	signals:
 		void ready (const Media::AlbumInfo&, const QList<QImage>&);
