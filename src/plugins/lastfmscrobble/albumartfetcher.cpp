@@ -117,7 +117,6 @@ namespace Lastfmscrobble
 				QNetworkRequest req (ImageUrl_);
 				req.setPriority (QNetworkRequest::LowPriority);
 				auto imageReply = Proxy_->GetNetworkAccessManager ()->get (req);
-				imageReply->setProperty ("AlbumInfo", reply->property ("AlbumInfo"));
 				connect (imageReply,
 						SIGNAL (finished ()),
 						this,
