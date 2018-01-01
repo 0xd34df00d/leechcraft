@@ -44,10 +44,12 @@ namespace Lastfmscrobble
 	, Proxy_ (proxy)
 	, Info_ (albumInfo)
 	{
-		QMap<QString, QString> params;
-		params ["artist"] = albumInfo.Artist_;
-		params ["album"] = albumInfo.Album_;
-		params ["autocorrect"] = "1";
+		const QMap<QString, QString> params
+		{
+			{ "artist", albumInfo.Artist_ },
+			{ "album", albumInfo.Album_ },
+			{ "autocorrect", "1" }
+		};
 		auto reply = Request ("album.getInfo", proxy->GetNetworkAccessManager (), params);
 		connect (reply,
 				SIGNAL (finished ()),
