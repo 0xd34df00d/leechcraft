@@ -38,18 +38,6 @@
 #include <util/db/oral.h>
 #include "account.h"
 
-bool operator< (const QStringList& left, const QStringList& right)
-{
-	if (left.size () != right.size ())
-		return left.size () < right.size ();
-
-	for (int i = 0; i < left.size (); ++i)
-		if (left.at (i) != right.at (i))
-			return left.at (i) < right.at (i);
-
-	return false;
-}
-
 namespace LeechCraft
 {
 namespace Snails
