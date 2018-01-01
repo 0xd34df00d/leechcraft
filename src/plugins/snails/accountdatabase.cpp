@@ -36,7 +36,6 @@
 #include <util/db/dblock.h>
 #include <util/db/util.h>
 #include <util/db/oral.h>
-#include <util/sll/qtutil.h>
 #include "account.h"
 
 bool operator< (const QStringList& left, const QStringList& right)
