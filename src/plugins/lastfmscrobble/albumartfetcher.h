@@ -50,7 +50,7 @@ namespace Lastfmscrobble
 		QUrl ImageUrl_;
 		QImage Image_;
 	public:
-		AlbumArtFetcher (const Media::AlbumInfo&, ICoreProxy_ptr, QObject* = 0);
+		AlbumArtFetcher (const Media::AlbumInfo&, ICoreProxy_ptr, QObject* = nullptr);
 
 		QObject* GetQObject ();
 		Media::AlbumInfo GetAlbumInfo () const;
