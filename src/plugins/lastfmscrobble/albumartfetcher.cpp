@@ -33,6 +33,8 @@
 #include <QNetworkAccessManager>
 #include <QDomDocument>
 #include <QStringList>
+#include <QFuture>
+#include <util/network/handlenetworkreply.h>
 #include <util/sll/visitor.h>
 #include <util/threads/futures.h>
 #include "util.h"
@@ -57,9 +59,18 @@ namespace Lastfmscrobble
 		Util::Sequence (this, Util::HandleReply<QString> (reply, this)) >>
 				Util::Visitor
 				{
-					[this] (const QString&) { deleteLater (); },
+					[this] (const QString& error)
+					{
+						Util::ReportFutureResult (Promise_, error);
+						deleteLater ();
+					},
 					[this] (const QByteArray& result) { HandleReplyFinished (result); }
 				};
+	}
+
+	QFuture<Media::IAlbumArtProvider::AlbumArtResult_t> AlbumArtFetcher::GetFuture ()
+	{
+		return Promise_.future ();
 	}
 
 	QObject* AlbumArtFetcher::GetQObject ()
@@ -115,6 +126,7 @@ namespace Lastfmscrobble
 
 				ImageUrl_ = QUrl (elem.text ());
 				emit urlsReady (Info_, { ImageUrl_ });
+				Util::ReportFutureResult (Promise_, QList { ImageUrl_ });
 
 				QNetworkRequest req (ImageUrl_);
 				req.setPriority (QNetworkRequest::LowPriority);

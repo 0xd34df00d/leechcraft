@@ -31,6 +31,8 @@
 
 #include <QObject>
 #include <QUrl>
+#include <QFutureInterface>
+#include <util/sll/either.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/media/ialbumartprovider.h>
 
@@ -49,8 +51,12 @@ namespace Lastfmscrobble
 		const Media::AlbumInfo Info_;
 		QUrl ImageUrl_;
 		QImage Image_;
+
+		QFutureInterface<Media::IAlbumArtProvider::AlbumArtResult_t> Promise_;
 	public:
 		AlbumArtFetcher (const Media::AlbumInfo&, ICoreProxy_ptr, QObject* = nullptr);
+
+		QFuture<Media::IAlbumArtProvider::AlbumArtResult_t> GetFuture ();
 
 		QObject* GetQObject ();
 		Media::AlbumInfo GetAlbumInfo () const;
