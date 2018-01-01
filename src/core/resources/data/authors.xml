@@ -5,7 +5,7 @@
 		<roles>
 			<role>Lead developer and original author.</role>
 		</roles>
-		<years start="2006" end="2017" />
+		<years start="2006" end="2018" />
 	</contrib>
 	<contrib type="author" name="Oleg Linkin" nick="magog" jid="magog@gentoo.ru" email="MaledictusDeMagog@gmail.com">
 		<roles>
@@ -84,7 +84,7 @@
 			<role>Azoth user guide.</role>
 			<role>Various patches.</role>
 		</roles>
-		<years start="2012" end="2017" />
+		<years start="2012" end="2018" />
 	</contrib>
 	<contrib type="contrib" name="Dimitriy Ryazantcev" nick="DJm00n" jid="djm00n@jabber.ru" email="dimitriy.ryazantcev@gmail.com">
 		<roles>
