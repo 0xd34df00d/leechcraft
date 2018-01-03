@@ -48,6 +48,8 @@ namespace Lastfmscrobble
 	, Proxy_ (proxy)
 	, Info_ (albumInfo)
 	{
+		Promise_.reportStarted ();
+
 		const QMap<QString, QString> params
 		{
 			{ "artist", albumInfo.Artist_ },
