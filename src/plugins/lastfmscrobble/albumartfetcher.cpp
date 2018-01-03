@@ -104,13 +104,15 @@ namespace Lastfmscrobble
 		}
 
 		const auto& elems = doc.elementsByTagName ("image");
-		QStringList sizes;
-		sizes << "mega"
-				<< "extralarge"
-				<< "large"
-				<< "medium"
-				<< "small"
-				<< "";
+		static QStringList sizes
+		{
+			"mega",
+			"extralarge",
+			"large",
+			"medium",
+			"small",
+			""
+		};
 		while (!sizes.isEmpty ())
 		{
 			const auto& size = sizes.takeFirst ();
