@@ -59,6 +59,7 @@ namespace Util
 		void testPrepareVisitorFinally ();
 		void testPrepareJustAutoVisitor ();
 		void testPrepareRecursiveVisitor ();
+		void testPrepareVisitorMutable ();
 	};
 }
 }

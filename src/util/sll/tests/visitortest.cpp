@@ -256,5 +256,18 @@ namespace Util
 		const auto& res = visitor (Variant_t { SubVariant_t { 10 } });
 		QCOMPARE (res, QString { "10" });
 	}
+
+	void VisitorTest::testPrepareVisitorMutable ()
+	{
+		Variant_t v { 'a' };
+		Visitor visitor
+		{
+			[] (int) mutable { return true; },
+			[] (auto) mutable { return false; }
+		};
+
+		const auto& res = visitor (v);
+		QCOMPARE (res, true);
+	}
 }
 }
