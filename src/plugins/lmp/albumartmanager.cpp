@@ -36,6 +36,7 @@
 #include <QFutureWatcher>
 #include <util/xpc/util.h>
 #include <util/sys/paths.h>
+#include <util/sll/prelude.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/media/ialbumartprovider.h>
@@ -90,10 +91,8 @@ namespace LMP
 
 		--NumRequests_ [info];
 
-		auto imgCmp = [] (const QImage& l, const QImage& r) { return l.width () < r.width (); };
-
 		const auto& image = images.size () > 1 ?
-				*std::max_element (images.begin (), images.end (), imgCmp) :
+				*std::max_element (images.begin (), images.end (), Util::ComparingBy (&QImage::width)) :
 				images.value (0);
 
 		if (BestSizes_.value (info).width () >= image.width ())
