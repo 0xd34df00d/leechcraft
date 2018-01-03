@@ -104,9 +104,6 @@ namespace Util
 				typename Common = std::common_type_t<std::result_of_t<detail::VisitorBase<Args...> (Vars&)>...>,
 				typename Res = FixCommonType_t<Common, std::result_of_t<detail::VisitorBase<Args...> (Vars&)>...>>
 		constexpr Res DetectCommonType (Typelist<Vars...>, Typelist<Args...>);
-
-		template<typename T, typename Param>
-		using ConstDetector = decltype (std::declval<const T&> () (std::declval<Param> ()));
 	}
 
 	template<typename... Vars, typename... Args>
@@ -114,15 +111,8 @@ namespace Util
 	{
 		using R_t = decltype (detail::DetectCommonType (Typelist<Vars...> {}, Typelist<Args...> {}));
 
-		using Visitor_t = detail::Visitor<R_t, Args...>;
-
-		if constexpr (IsDetected_v<detail::ConstDetector, Visitor_t, Head_t<Typelist<Vars...>>>)
-			return boost::apply_visitor ( Visitor_t { std::forward<Args> (args)... }, v);
-		else
-		{
-			Visitor_t visitor { std::forward<Args> (args)... };
-			return boost::apply_visitor (visitor, v);
-		}
+		detail::Visitor<R_t, Args...> visitor { std::forward<Args> (args)... };
+		return boost::apply_visitor (visitor, v);
 	}
 
 	template<typename... Vars, typename... Args>
@@ -130,15 +120,8 @@ namespace Util
 	{
 		using R_t = decltype (detail::DetectCommonType (Typelist<Vars...> {}, Typelist<Args...> {}));
 
-		using Visitor_t = detail::Visitor<R_t, Args...>;
-
-		if constexpr (IsDetected_v<detail::ConstDetector, Visitor_t, Head_t<Typelist<Vars...>>>)
-			return boost::apply_visitor ( Visitor_t { std::forward<Args> (args)... }, v);
-		else
-		{
-			Visitor_t visitor { std::forward<Args> (args)... };
-			return boost::apply_visitor (visitor, v);
-		}
+		detail::Visitor<R_t, Args...> visitor { std::forward<Args> (args)... };
+		return boost::apply_visitor (visitor, v);
 	}
 
 	namespace detail
