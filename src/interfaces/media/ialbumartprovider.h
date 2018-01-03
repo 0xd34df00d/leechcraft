@@ -34,8 +34,12 @@
 #include <QImage>
 #include <QHash>
 #include <QMetaType>
+#include <util/sll/eitherfwd.h>
 
 class QUrl;
+
+template<typename>
+class QFuture;
 
 namespace Media
 {
@@ -192,6 +196,8 @@ namespace Media
 	{
 	public:
 		virtual ~IAlbumArtProvider () {}
+
+		using AlbumArtResult_t = LeechCraft::Util::Either<QString, QList<QUrl>>;
 
 		/** @brief Returns the human-readable name of this provider.
 		 *
