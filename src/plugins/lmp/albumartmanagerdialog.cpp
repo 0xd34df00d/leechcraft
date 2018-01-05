@@ -136,7 +136,7 @@ namespace LMP
 			return;
 
 		const auto& img = FullImages_ [idx.row ()];
-		AAMgr_->handleGotAlbumArt (SourceInfo_, { img });
+		AAMgr_->HandleGotAlbumArt (SourceInfo_, { img });
 	}
 
 	void AlbumArtManagerDialog::on_BrowseButton__released ()

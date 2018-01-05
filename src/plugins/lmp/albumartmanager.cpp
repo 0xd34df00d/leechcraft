@@ -34,9 +34,13 @@
 #include <QtConcurrentRun>
 #include <QFuture>
 #include <QFutureWatcher>
+#include <QFutureSynchronizer>
 #include <util/xpc/util.h>
 #include <util/sys/paths.h>
 #include <util/sll/prelude.h>
+#include <util/sll/either.h>
+#include <util/threads/futures.h>
+#include <util/network/handlenetworkreply.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/media/ialbumartprovider.h>
@@ -76,7 +80,7 @@ namespace LMP
 		Queue_.push_back ({ { artist, album }, preview });
 	}
 
-	void AlbumArtManager::handleGotAlbumArt (const Media::AlbumInfo& info, const QList<QImage>& images)
+	void AlbumArtManager::HandleGotAlbumArt (const Media::AlbumInfo& info, const QList<QImage>& images)
 	{
 		auto collection = Core::Instance ().GetLocalCollection ();
 		const auto id = collection->FindAlbum (info.Artist_, info.Album_);
@@ -122,6 +126,54 @@ namespace LMP
 		watcher->setFuture (QtConcurrent::run ([image, fullPath] () { image.save (fullPath, "PNG", 100); }));
 	}
 
+	void AlbumArtManager::HandleGotUrls (const TaskQueue& task, const QList<QUrl>& urls)
+	{
+		using MaybeImage_t = std::optional<QImage>;
+
+		const auto nam = Core::Instance ().GetProxy ()->GetNetworkAccessManager ();
+
+		auto sync = std::make_shared<QFutureSynchronizer<MaybeImage_t>> ();
+		for (const auto& url : urls)
+		{
+			QFutureInterface<MaybeImage_t> promise;
+			promise.reportStarted ();
+
+			Util::Sequence (this, Util::HandleReply (nam->get (QNetworkRequest { url }), this)) >>
+					Util::Visitor
+					{
+						[promise] (const Util::Void&) mutable { Util::ReportFutureResult (promise, MaybeImage_t {}); },
+						[promise] (const QByteArray& data) mutable
+						{
+							if (QImage image; image.loadFromData (data))
+								Util::ReportFutureResult (promise, image);
+							else
+								Util::ReportFutureResult (promise, MaybeImage_t {});
+						}
+					};
+
+			sync->addFuture (promise.future ());
+		}
+
+		const auto& future = QtConcurrent::run ([sync]
+				{
+					sync->waitForFinished ();
+					return Util::Map (sync->futures (), &QFuture<MaybeImage_t>::result);
+				});
+		Util::Sequence (this, future) >>
+				[this, task] (const QList<MaybeImage_t>& maybeImages)
+				{
+					QList<QImage> images;
+					for (const auto& maybe : maybeImages)
+						if (maybe)
+							images << *maybe;
+
+					if (task.PreviewMode_)
+						emit gotImages (task.Info_, images);
+					else
+						HandleGotAlbumArt (task.Info_, images);
+				};
+	}
+
 	void AlbumArtManager::rotateQueue ()
 	{
 		auto provs = Core::Instance ().GetProxy ()->
@@ -131,12 +183,12 @@ namespace LMP
 		{
 			const auto prov = qobject_cast<Media::IAlbumArtProvider*> (provObj);
 			const auto proxy = prov->RequestAlbumArt (task.Info_);
-			connect (proxy->GetQObject (),
-					SIGNAL (ready (Media::AlbumInfo, QList<QImage>)),
-					this,
-					task.PreviewMode_ ?
-							SIGNAL (gotImages (Media::AlbumInfo, QList<QImage>)) :
-							SLOT (handleGotAlbumArt (Media::AlbumInfo, QList<QImage>)));
+			Util::Sequence (this, prov->RequestAlbumArt (task.Info_)) >>
+					Util::Visitor
+					{
+						[] (const QString&) {},
+						[this, task] (const QList<QUrl>& urls) { HandleGotUrls (task, urls); }
+					};
 		}
 		if (!provs.isEmpty ())
 			NumRequests_ [task.Info_] = provs.size ();

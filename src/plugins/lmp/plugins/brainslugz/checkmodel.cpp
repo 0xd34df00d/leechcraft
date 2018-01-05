@@ -40,6 +40,9 @@
 #include <interfaces/lmp/ilmpproxy.h>
 #include <util/util.h>
 #include <util/sll/slotclosure.h>
+#include <util/sll/visitor.h>
+#include <util/sll/either.h>
+#include <util/threads/futures.h>
 
 namespace LeechCraft
 {
@@ -191,24 +194,16 @@ namespace BrainSlugz
 			model->appendRow (item);
 
 			if (AAProv_)
-			{
-				const auto proxy = AAProv_->RequestAlbumArt ({ artist.Name_, release.Name_ });
-				new Util::SlotClosure<Util::DeleteLaterPolicy>
-				{
-					[item, proxy]
-					{
-						proxy->GetQObject ()->deleteLater ();
-						const auto& url = proxy->GetImageUrls ().value (0);
-						if (url.isEmpty ())
-							return;
-
-						item->setData (url, ReleasesSubmodel::ReleaseArt);
-					},
-					proxy->GetQObject (),
-					SIGNAL (urlsReady (Media::AlbumInfo, QList<QUrl>)),
-					this
-				};
-			}
+				Util::Sequence (this, AAProv_->RequestAlbumArt ({ artist.Name_, release.Name_ })) >>
+						Util::Visitor
+						{
+							[item] (const QList<QUrl>& urls)
+							{
+								if (!urls.isEmpty ())
+									item->setData (urls.value (0), ReleasesSubmodel::ReleaseArt);
+							},
+							[] (const QString&) {}
+						};
 		}
 
 		item->setData (releases.size (), Role::MissingCount);

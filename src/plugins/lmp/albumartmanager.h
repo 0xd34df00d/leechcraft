@@ -58,8 +58,10 @@ namespace LMP
 
 		void CheckAlbumArt (const Collection::Artist&, Collection::Album_ptr);
 		void CheckAlbumArt (const QString& artist, const QString& album, bool preview);
-	public slots:
-		void handleGotAlbumArt (const Media::AlbumInfo&, const QList<QImage>&);
+
+		void HandleGotAlbumArt (const Media::AlbumInfo&, const QList<QImage>&);
+	private:
+		void HandleGotUrls (const TaskQueue&, const QList<QUrl>&);
 	private slots:
 		void rotateQueue ();
 		void handleSaved ();

@@ -32,6 +32,7 @@
 #include <QIcon>
 #include <QStandardItemModel>
 #include <QByteArray>
+#include <QFuture>
 #include <interfaces/core/icoreproxy.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/util.h>
@@ -183,9 +184,9 @@ namespace Lastfmscrobble
 		return GetServiceName ();
 	}
 
-	Media::IPendingAlbumArt* Plugin::RequestAlbumArt (const Media::AlbumInfo& album) const
+	QFuture<Plugin::AlbumArtResult_t> Plugin::RequestAlbumArt (const Media::AlbumInfo& album) const
 	{
-		return new AlbumArtFetcher (album, Proxy_);
+		return (new AlbumArtFetcher (album, Proxy_))->GetFuture ();
 	}
 
 	Media::IPendingSimilarArtists* Plugin::GetSimilarArtists (const QString& name, int num)

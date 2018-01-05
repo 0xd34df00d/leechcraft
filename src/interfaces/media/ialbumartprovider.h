@@ -96,92 +96,6 @@ namespace Media
 	 *
 	 * @sa IAlbumArtProvider
 	 */
-	class IPendingAlbumArt
-	{
-	public:
-		virtual ~IPendingAlbumArt () {}
-
-		/** @brief Returns this object as a QObject.
-		 *
-		 * This function can be used to connect to the signals of this
-		 * class.
-		 *
-		 * @return This object as a QObject.
-		 */
-		virtual QObject* GetQObject () = 0;
-
-		/** @brief Returns the information about the album.
-		 *
-		 * The returned object is invalid if called before the urlsReady()
-		 * signal is emitted.
-		 *
-		 * @return The information about the album.
-		 *
-		 * @sa urlsReady()
-		 * @sa ready()
-		 */
-		virtual AlbumInfo GetAlbumInfo () const = 0;
-
-		/** @brief Returns the fetched cover art for the album.
-		 *
-		 * The returned list is empty if called before the ready() signal
-		 * is emitted.
-		 *
-		 * @return The list of fetched cover art corresponding to this
-		 * album.
-		 *
-		 * @sa ready()
-		 */
-		virtual QList<QImage> GetImages () const = 0;
-
-		/** @brief Returns the URLs of the covert art for the album.
-		 *
-		 * The returned list is empty if called before the urlsReady()
-		 * signal is emitted.
-		 *
-		 * @return The list of covert art images URLs corresponding to
-		 * this album.
-		 */
-		virtual QList<QUrl> GetImageUrls () const = 0;
-	protected:
-		/** @brief Emitted when the album info and the cover art is ready
-		 * and fetched.
-		 *
-		 * The object will be invalid after this signal is emitted and
-		 * the event loop is run.
-		 *
-		 * If you only need the URLs of the images but not the images
-		 * themselves (like if you will show the images by URLs in a QML
-		 * view), consider deleting this object after urlsReady() signal
-		 * instead of waiting for this signal.
-		 *
-		 * @note This function is expected to be a signal.
-		 *
-		 * @param[out] info The information about the album.
-		 * @param[out] images The images corresponding to this album.
-		 *
-		 * @sa urlsReady()
-		 */
-		virtual void ready (const AlbumInfo& info, const QList<QImage>& images) = 0;
-
-		/** @brief Emitted when the album info and the URLs of cover art
-		 * are ready.
-		 *
-		 * After emitting this signal the object will start fetching the
-		 * images at the given \em urls and emit ready() after fetching
-		 * them. If the images themselves are not required, some bandwidth
-		 * and CPU cycles can be saved by deleting the object in a slot
-		 * connected to this signal.
-		 *
-		 * @note This function is expected to be a signal.
-		 *
-		 * @param[out] info The information about the album.
-		 * @param[out] urls The cover art corresponding to this album.
-		 *
-		 * @sa ready()
-		 */
-		virtual void urlsReady (const AlbumInfo& info, const QList<QUrl>& urls) = 0;
-	};
 
 	/** @brief Interface for plugins that can search for album art.
 	 *
@@ -215,10 +129,9 @@ namespace Media
 		 * @return The pending search object that will emit
 		 * IPendingAlbumArt::ready() signal once ready.
 		 */
-		virtual IPendingAlbumArt* RequestAlbumArt (const AlbumInfo& album) const = 0;
+		virtual QFuture<AlbumArtResult_t> RequestAlbumArt (const AlbumInfo& album) const = 0;
 	};
 }
 
 Q_DECLARE_METATYPE (Media::AlbumInfo)
 Q_DECLARE_INTERFACE (Media::IAlbumArtProvider, "org.LeechCraft.Media.IAlbumArtProvider/1.0")
-Q_DECLARE_INTERFACE (Media::IPendingAlbumArt, "org.LeechCraft.Media.IPendingAlbumArt/1.0")

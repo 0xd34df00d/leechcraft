@@ -45,8 +45,6 @@ namespace Lastfmscrobble
 {
 	AlbumArtFetcher::AlbumArtFetcher (const Media::AlbumInfo& albumInfo, ICoreProxy_ptr proxy, QObject *parent)
 	: QObject (parent)
-	, Proxy_ (proxy)
-	, Info_ (albumInfo)
 	{
 		Promise_.reportStarted ();
 
@@ -61,13 +59,9 @@ namespace Lastfmscrobble
 		Util::Sequence (this, Util::HandleReply<QString> (reply, this)) >>
 				Util::Visitor
 				{
-					[this] (const QString& error)
-					{
-						Util::ReportFutureResult (Promise_, error);
-						deleteLater ();
-					},
+					[this] (const QString& error) { Util::ReportFutureResult (Promise_, error); },
 					[this] (const QByteArray& result) { HandleReplyFinished (result); }
-				};
+				}.Finally ([this] { deleteLater (); });
 	}
 
 	QFuture<Media::IAlbumArtProvider::AlbumArtResult_t> AlbumArtFetcher::GetFuture ()
@@ -75,37 +69,17 @@ namespace Lastfmscrobble
 		return Promise_.future ();
 	}
 
-	QObject* AlbumArtFetcher::GetQObject ()
-	{
-		return this;
-	}
-
-	Media::AlbumInfo AlbumArtFetcher::GetAlbumInfo () const
-	{
-		return Info_;
-	}
-
-	QList<QUrl> AlbumArtFetcher::GetImageUrls () const
-	{
-		return { ImageUrl_ };
-	}
-
-	QList<QImage> AlbumArtFetcher::GetImages () const
-	{
-		return { Image_ };
-	}
-
 	void AlbumArtFetcher::HandleReplyFinished (const QByteArray& data)
 	{
 		QDomDocument doc;
 		if (!doc.setContent (data))
 		{
-			emit ready (Info_, {});
-			deleteLater ();
+			Util::ReportFutureResult (Promise_, "Unable to parse reply.");
 			return;
 		}
 
 		const auto& elems = doc.elementsByTagName ("image");
+
 		static const QStringList sizes
 		{
 			"mega",
@@ -117,48 +91,16 @@ namespace Lastfmscrobble
 		};
 
 		for (const auto& size : sizes)
-		{
 			for (int i = 0; i < elems.size (); ++i)
 			{
 				const auto& elem = elems.at (i).toElement ();
-				if (elem.attribute ("size") != size)
-					continue;
-
 				const auto& text = elem.text ();
-				if (text.isEmpty ())
-					continue;
-
-				ImageUrl_ = QUrl (elem.text ());
-				emit urlsReady (Info_, { ImageUrl_ });
-				Util::ReportFutureResult (Promise_, QList { ImageUrl_ });
-
-				QNetworkRequest req (ImageUrl_);
-				req.setPriority (QNetworkRequest::LowPriority);
-				auto imageReply = Proxy_->GetNetworkAccessManager ()->get (req);
-				connect (imageReply,
-						SIGNAL (finished ()),
-						this,
-						SLOT (handleImageReplyFinished ()));
-				connect (this,
-						SIGNAL (destroyed ()),
-						imageReply,
-						SLOT (deleteLater ()));
-				return;
+				if (elem.attribute ("size") == size && !text.isEmpty ())
+				{
+					Util::ReportFutureResult (Promise_, QList { QUrl { elem.text () } });
+					break;
+				}
 			}
-		}
-
-		emit ready (Info_, {});
-		deleteLater ();
-	}
-
-	void AlbumArtFetcher::handleImageReplyFinished ()
-	{
-		auto reply = qobject_cast<QNetworkReply*> (sender ());
-		reply->deleteLater ();
-		deleteLater ();
-
-		Image_.loadFromData (reply->readAll ());
-		emit ready (Info_, { Image_ });
 	}
 }
 }

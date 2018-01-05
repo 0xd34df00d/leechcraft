@@ -175,25 +175,16 @@ namespace LMP
 		if (QueryReleaseImageLocal (info))
 			return;
 
-		const auto proxy = aaProv->RequestAlbumArt (info);
-		new Util::SlotClosure<Util::DeleteLaterPolicy>
-		{
-			[this, proxy]
-			{
-				const auto proxyObj = proxy->GetQObject ();
-				proxyObj->deleteLater ();
-
-				const auto& info = proxy->GetAlbumInfo ();
-				const auto& images = proxy->GetImageUrls ();
-				if (info.Artist_ != CurrentArtist_ || images.isEmpty ())
-					return;
-
-				SetAlbumImage (info.Album_, images.first ());
-			},
-			proxy->GetQObject (),
-			SIGNAL (urlsReady (Media::AlbumInfo, QList<QUrl>)),
-			this
-		};
+		Util::Sequence (this, aaProv->RequestAlbumArt (info)) >>
+				Util::Visitor
+				{
+					[this, info] (const QList<QUrl>& urls)
+					{
+						if (info.Artist_ == CurrentArtist_ && !urls.isEmpty ())
+							SetAlbumImage (info.Album_, urls.first ());
+					},
+					[] (const QString&) {}
+				};
 	}
 
 	void BioViewManager::SetAlbumImage (const QString& album, const QUrl& img) const
