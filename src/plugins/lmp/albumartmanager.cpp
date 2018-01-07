@@ -33,7 +33,6 @@
 #include <QUrl>
 #include <QtConcurrentRun>
 #include <QFuture>
-#include <QFutureWatcher>
 #include <QFutureSynchronizer>
 #include <util/xpc/util.h>
 #include <util/sys/paths.h>
@@ -116,14 +115,8 @@ namespace LMP
 		const auto& filename = QUrl::toPercentEncoding (joined, QByteArray (), "~") + ".png";
 		const auto& fullPath = AADir_.absoluteFilePath (filename);
 
-		auto watcher = new QFutureWatcher<void> ();
-		watcher->setProperty ("ID", id);
-		watcher->setProperty ("FullPath", fullPath);
-		connect (watcher,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleSaved ()));
-		watcher->setFuture (QtConcurrent::run ([image, fullPath] () { image.save (fullPath, "PNG", 100); }));
+		Util::Sequence (this, QtConcurrent::run ([image, fullPath] { image.save (fullPath, "PNG", 100); })) >>
+				[id, fullPath] { Core::Instance ().GetLocalCollection ()->SetAlbumArt (id, fullPath); };
 	}
 
 	void AlbumArtManager::HandleGotUrls (const TaskQueue& task, const QList<QUrl>& urls)
@@ -197,14 +190,6 @@ namespace LMP
 			QTimer::singleShot (500,
 					this,
 					SLOT (rotateQueue ()));
-	}
-
-	void AlbumArtManager::handleSaved ()
-	{
-		const int id = sender ()->property ("ID").toInt ();
-		const auto& fullPath = sender ()->property ("FullPath").toString ();
-		Core::Instance ().GetLocalCollection ()->SetAlbumArt (id, fullPath);
-		sender ()->deleteLater ();
 	}
 
 	void AlbumArtManager::handleCoversPath ()

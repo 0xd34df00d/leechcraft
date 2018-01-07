@@ -64,7 +64,6 @@ namespace LMP
 		void HandleGotUrls (const TaskQueue&, const QList<QUrl>&);
 	private slots:
 		void rotateQueue ();
-		void handleSaved ();
 
 		void handleCoversPath ();
 	signals:
