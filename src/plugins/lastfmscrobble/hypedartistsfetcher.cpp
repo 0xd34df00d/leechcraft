@@ -153,7 +153,7 @@ namespace Lastfmscrobble
 
 		const auto& info = pendingBio->GetArtistBio ();
 		const auto pos = std::find_if (Infos_.begin (), Infos_.end (),
-				[&info] (decltype (Infos_.at (0)) thatInfo) { return thatInfo.Info_.Name_ == info.BasicInfo_.Name_; });
+				[&info] (const auto& thatInfo) { return thatInfo.Info_.Name_ == info.BasicInfo_.Name_; });
 		if (pos != Infos_.end ())
 			pos->Info_ = info.BasicInfo_;
 
