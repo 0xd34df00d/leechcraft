@@ -161,18 +161,11 @@ namespace Media
 		/** @brief Fetches contents of the given release by the artist.
 		 *
 		 * This function initiates a search for the given release of the
-		 * given artist and returns a handle through which the contents
-		 * of the release can be obtained.
-		 *
-		 * Only matching release is returned through the handle, or no
-		 * releases if, well, no releases match.
-		 *
-		 * The handle owns itself and deletes itself after results are
-		 * available — see its documentation for details.
+		 * given artist and returns a release query result future.
 		 *
 		 * @param[in] artist The artist name.
 		 * @param[in] release The release name to search for.
-		 * @return The pending discography search handle.
+		 * @return The pending discography search future.
 		 */
 		virtual QFuture<QueryResult_t> GetReleaseInfo (const QString& artist, const QString& release) = 0;
 	};
