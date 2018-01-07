@@ -71,46 +71,21 @@ namespace Media
 		return qHash (info.Album_.toUtf8 () + '\0' + info.Artist_.toUtf8 ());
 	}
 
-	/** @brief Pending album art search handle.
-	 *
-	 * Interface for a pending album art search in an IAlbumArtProvider.
-	 * An object implementing this interface is returned from
-	 * IAlbumArtProvider::RequestAlbumArt() method and is used to track
-	 * the status of album art requests.
-	 *
-	 * This class has some signals (ready() and urlsReady()), and the
-	 * GetQObject() method can be used to get an object of this class as
-	 * a QObject to connect to those signals.
-	 *
-	 * The urlsReady() signal is emitted as soon as the URLs of the
-	 * album images are fetched, and then the user of this object can
-	 * either wait for the convenience ready() signal after which the
-	 * object would be destroyed, or delete the object himself.
-	 *
-	 * @note The object of this class should schedule its deletion (via
-	 * <code>QObject::deleteLater()</code>, for example) after the ready()
-	 * signal is emitted. Thus the calling code should never delete it
-	 * explicitly after this signal, neither it should use this object
-	 * after ready() signal or connect to its signals via
-	 * <code>Qt::QueuedConnection</code>.
-	 *
-	 * @sa IAlbumArtProvider
-	 */
-
 	/** @brief Interface for plugins that can search for album art.
 	 *
 	 * Plugins that can search for album art (like on Amazon or Last.FM)
 	 * should implement this interface.
-	 *
-	 * Album art lookup is asynchronous in nature: one first initiates a
-	 * search via RequestAlbumArt() method and then listens for the
-	 * gotAlbumArt() signal.
 	 */
 	class Q_DECL_EXPORT IAlbumArtProvider
 	{
 	public:
 		virtual ~IAlbumArtProvider () {}
 
+		/** @brief The result of an album art search query.
+		 *
+		 * The result of an album art search query is either a string with a
+		 * human-readable error text, or a list of URLs matching the album art.
+		 */
 		using AlbumArtResult_t = LeechCraft::Util::Either<QString, QList<QUrl>>;
 
 		/** @brief Returns the human-readable name of this provider.
@@ -122,12 +97,11 @@ namespace Media
 		/** @brief Initiates search for album art of the given album.
 		 *
 		 * This function initiates searching for the album art of the
-		 * given \em album and returns a search proxy that can be used to
-		 * be notified when the search finishes.
+		 * given \em album and returns a future with the album art search
+		 * result.
 		 *
-		 * @param[in] album The information about the album.
-		 * @return The pending search object that will emit
-		 * IPendingAlbumArt::ready() signal once ready.
+		 * @param[in] album The description of the album.
+		 * @return The future with the album art search result.
 		 */
 		virtual QFuture<AlbumArtResult_t> RequestAlbumArt (const AlbumInfo& album) const = 0;
 	};
