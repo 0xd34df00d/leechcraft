@@ -97,6 +97,13 @@ namespace Media
 	public:
 		virtual ~IArtistBioFetcher () {}
 
+		/** @brief The result of an artist biography search query.
+		 *
+		 * The result of an artist biography search query is either a string with a
+		 * human-readable error text, or a ArtistBio object.
+		 *
+		 * @sa ArtistBio
+		 */
 		using ArtistBioResult_t = LeechCraft::Util::Either<QString, ArtistBio>;
 
 		/** @brief Returns the service name.
