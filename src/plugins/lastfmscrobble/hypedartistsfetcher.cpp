@@ -45,7 +45,6 @@ namespace Lastfmscrobble
 	: QObject (parent)
 	, NAM_ (nam)
 	, Type_ (type)
-	, InfoCount_ (0)
 	{
 		QMap<QString, QString> params;
 		params ["limit"] = "20";

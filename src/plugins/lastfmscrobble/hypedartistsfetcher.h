@@ -46,7 +46,7 @@ namespace Lastfmscrobble
 		QList<Media::HypedArtistInfo> Infos_;
 		const Media::IHypesProvider::HypeType Type_;
 
-		int InfoCount_;
+		int InfoCount_ = 0;
 	public:
 		HypedArtistsFetcher (QNetworkAccessManager*, Media::IHypesProvider::HypeType, QObject* = 0);
 	private:
