@@ -54,9 +54,6 @@ namespace Lastfmscrobble
 	private slots:
 		void handleFinished ();
 		void handleError ();
-
-		void pendingBioReady ();
-		void pendingBioError ();
 	signals:
 		void gotHypedArtists (const QList<Media::HypedArtistInfo>&, Media::IHypesProvider::HypeType);
 	};

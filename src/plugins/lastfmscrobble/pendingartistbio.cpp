@@ -32,6 +32,7 @@
 #include <QNetworkReply>
 #include <QDomDocument>
 #include <QtDebug>
+#include <util/network/handlenetworkreply.h>
 #include "util.h"
 #include "imagesfetcher.h"
 
@@ -45,83 +46,64 @@ namespace Lastfmscrobble
 	, NAM_ (nam)
 	, AddImages_ (addImages)
 	{
+		Promise_.reportStarted ();
+
 		QMap<QString, QString> params
 		{
 			{ "artist", name },
 			{ "autocorrect", "1" }
 		};
 		AddLanguageParam (params);
-		auto reply = Request ("artist.getInfo", nam, params);
-		connect (reply,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleFinished ()));
-		connect (reply,
-				SIGNAL (error (QNetworkReply::NetworkError)),
-				this,
-				SLOT (handleError ()));
+		Util::Sequence (this, Util::HandleReply<QString> (Request ("artist.getInfo", nam, params), this)) >>
+				Util::Visitor
+				{
+					[this] (const QString& err)
+					{
+						Util::ReportFutureResult (Promise_, err);
+						deleteLater ();
+					},
+					[this] (const QByteArray& data) { HandleFinished (data); }
+				};
 	}
 
-	QObject* PendingArtistBio::GetQObject ()
+	QFuture<Media::IArtistBioFetcher::ArtistBioResult_t> PendingArtistBio::GetFuture ()
 	{
-		return this;
+		return Promise_.future ();
 	}
 
-	Media::ArtistBio PendingArtistBio::GetArtistBio () const
+	void PendingArtistBio::HandleFinished (const QByteArray& data)
 	{
-		return Bio_;
-	}
-
-	void PendingArtistBio::handleGotImages (const QList<Media::ArtistImage>& images)
-	{
-		Bio_.OtherImages_ = images;
-
-		emit ready ();
-		deleteLater ();
-	}
-
-	void PendingArtistBio::handleFinished ()
-	{
-		auto reply = qobject_cast<QNetworkReply*> (sender ());
-		reply->deleteLater ();
-
 		QDomDocument doc;
-		if (!doc.setContent (reply->readAll ()))
+		if (!doc.setContent (data))
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unable to parse reply";
-			emit error ();
+			Util::ReportFutureResult (Promise_, "unable to parse reply");
 			deleteLater ();
 			return;
 		}
 
-		const auto& artist = doc.documentElement ().firstChildElement ("artist");
-		Bio_.BasicInfo_ = GetArtistInfo (artist);
-		std::reverse (Bio_.BasicInfo_.Tags_.begin (), Bio_.BasicInfo_.Tags_.end ());
+		Media::ArtistBio bio;
+		bio.BasicInfo_ = GetArtistInfo (doc.documentElement ().firstChildElement ("artist"));
+		std::reverse (bio.BasicInfo_.Tags_.begin (), bio.BasicInfo_.Tags_.end ());
 
 		if (!AddImages_)
 		{
-			emit ready ();
+			Util::ReportFutureResult (Promise_, bio);
 			deleteLater ();
 			return;
 		}
 
-		const auto imgFetcher = new ImagesFetcher { Bio_.BasicInfo_.Name_, NAM_, this };
+		const auto imgFetcher = new ImagesFetcher { bio.BasicInfo_.Name_, NAM_, this };
 		connect (imgFetcher,
-				SIGNAL (gotImages (QList<Media::ArtistImage>)),
+				&ImagesFetcher::gotImages,
 				this,
-				SLOT (handleGotImages (QList<Media::ArtistImage>)));
-	}
-
-	void PendingArtistBio::handleError ()
-	{
-		auto reply = qobject_cast<QNetworkReply*> (sender ());
-		qWarning () << Q_FUNC_INFO
-				<< reply->errorString ();
-		reply->deleteLater ();
-		deleteLater ();
-
-		emit error ();
+				[this, bio] (const QList<Media::ArtistImage>& images) mutable
+				{
+					bio.OtherImages_ = images;
+					Util::ReportFutureResult (Promise_, bio);
+					deleteLater ();
+				});
 	}
 }
 }

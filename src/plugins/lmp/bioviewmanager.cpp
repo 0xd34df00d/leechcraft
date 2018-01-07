@@ -123,11 +123,16 @@ namespace LMP
 
 		CurrentArtist_ = artist;
 
-		auto pending = fetcher->RequestArtistBio (CurrentArtist_);
-		connect (pending->GetQObject (),
-				SIGNAL (ready ()),
-				this,
-				SLOT (handleBioReady ()));
+		Util::Sequence (this, fetcher->RequestArtistBio (CurrentArtist_)) >>
+				Util::Visitor
+				{
+					[this] (const QString&) { BioPropProxy_->SetBio ({}); },
+					[this] (const Media::ArtistBio& bio)
+					{
+						BioPropProxy_->SetBio (bio);
+						emit gotArtistImage (bio.BasicInfo_.Name_, bio.BasicInfo_.LargeImage_);
+					}
+				};
 
 		auto pm = Core::Instance ().GetProxy ()->GetPluginsManager ();
 		for (auto prov : pm->GetAllCastableTo<Media::IDiscographyProvider*> ())
@@ -199,15 +204,6 @@ namespace LMP
 		}
 
 		item->setData (img, DiscoModel::Roles::AlbumImage);
-	}
-
-	void BioViewManager::handleBioReady ()
-	{
-		auto pending = qobject_cast<Media::IPendingArtistBio*> (sender ());
-		const auto& bio = pending->GetArtistBio ();
-		BioPropProxy_->SetBio (bio);
-
-		emit gotArtistImage (bio.BasicInfo_.Name_, bio.BasicInfo_.LargeImage_);
 	}
 
 	void BioViewManager::HandleDiscographyReady (QList<Media::ReleaseInfo> releases)

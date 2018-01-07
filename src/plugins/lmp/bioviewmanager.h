@@ -78,8 +78,6 @@ namespace LMP
 		void SetAlbumImage (const QString&, const QUrl&) const;
 		void HandleDiscographyReady (QList<Media::ReleaseInfo>);
 	private slots:
-		void handleBioReady ();
-
 		void handleAlbumPreviewRequested (int);
 	signals:
 		void gotArtistImage (const QString&, const QUrl&);

@@ -133,26 +133,16 @@ namespace BrainSlugz
 			Scheduled_ << artist.ID_;
 
 			if (BioProv_)
-			{
-				const auto proxy = BioProv_->RequestArtistBio (artist.Name_, false);
-				new Util::SlotClosure<Util::DeleteLaterPolicy>
-				{
-					[this, artist, item, proxy]
-					{
-						if (!Artist2Item_.contains (artist.ID_))
-							return;
-
-						const auto& url = proxy->GetArtistBio ().BasicInfo_.LargeImage_;
-						item->setData (url, Role::ArtistImage);
-					},
-					proxy->GetQObject (),
-					{
-						SIGNAL (ready ()),
-						SIGNAL (error ())
-					},
-					this
-				};
-			}
+				Util::Sequence (this, BioProv_->RequestArtistBio (artist.Name_, false)) >>
+						Util::Visitor
+						{
+							[] (const QString&) {},
+							[this, artist, item] (const Media::ArtistBio& bio)
+							{
+								if (Artist2Item_.contains (artist.ID_))
+									item->setData (bio.BasicInfo_.LargeImage_, Role::ArtistImage);
+							}
+						};
 		}
 	}
 

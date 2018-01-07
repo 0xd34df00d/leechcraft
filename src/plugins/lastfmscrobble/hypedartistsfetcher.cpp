@@ -34,6 +34,9 @@
 #include <QNetworkAccessManager>
 #include <QDomDocument>
 #include <QtDebug>
+#include <util/sll/visitor.h>
+#include <util/sll/either.h>
+#include <util/threads/futures.h>
 #include "util.h"
 #include "pendingartistbio.h"
 
@@ -117,14 +120,19 @@ namespace Lastfmscrobble
 			};
 
 			auto pendingBio = new PendingArtistBio (name, NAM_, false, this);
-			connect (pendingBio,
-					SIGNAL (ready ()),
-					this,
-					SLOT (pendingBioReady ()));
-			connect (pendingBio,
-					SIGNAL (error ()),
-					this,
-					SLOT (pendingBioError ()));
+			Util::Sequence (this, pendingBio->GetFuture ()) >>
+					Util::Visitor
+					{
+						[] (const QString&) {},
+						[this] (const Media::ArtistBio& info)
+						{
+							const auto& name = info.BasicInfo_.Name_;
+							const auto pos = std::find_if (Infos_.begin (), Infos_.end (),
+									[&name] (const auto& other) { return other.Info_.Name_ == name; });
+							if (pos != Infos_.end ())
+								pos->Info_ = info.BasicInfo_;
+						}
+					}.Finally ([this] { DecrementWaiting (); });
 
 			artistElem = artistElem.nextSiblingElement ("artist");
 		}
@@ -143,27 +151,6 @@ namespace Lastfmscrobble
 
 		reply->deleteLater ();
 		deleteLater ();
-	}
-
-	void HypedArtistsFetcher::pendingBioReady ()
-	{
-		auto pendingBio = qobject_cast<PendingArtistBio*> (sender ());
-		pendingBio->deleteLater ();
-
-		const auto& info = pendingBio->GetArtistBio ();
-		const auto pos = std::find_if (Infos_.begin (), Infos_.end (),
-				[&info] (const auto& thatInfo) { return thatInfo.Info_.Name_ == info.BasicInfo_.Name_; });
-		if (pos != Infos_.end ())
-			pos->Info_ = info.BasicInfo_;
-
-		DecrementWaiting ();
-	}
-
-	void HypedArtistsFetcher::pendingBioError ()
-	{
-		sender ()->deleteLater ();
-
-		DecrementWaiting ();
 	}
 }
 }

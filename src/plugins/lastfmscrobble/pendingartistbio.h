@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QObject>
+#include <QFutureInterface>
 #include <interfaces/media/iartistbiofetcher.h>
 
 class QNetworkAccessManager;
@@ -39,28 +40,17 @@ namespace LeechCraft
 namespace Lastfmscrobble
 {
 	class PendingArtistBio : public QObject
-						   , public Media::IPendingArtistBio
 	{
-		Q_OBJECT
-		Q_INTERFACES (Media::IPendingArtistBio)
-
 		QNetworkAccessManager * const NAM_;
 		const bool AddImages_;
 
-		Media::ArtistBio Bio_;
+		QFutureInterface<Media::IArtistBioFetcher::ArtistBioResult_t> Promise_;
 	public:
 		PendingArtistBio (QString, QNetworkAccessManager*, bool addImages, QObject* = nullptr);
 
-		QObject* GetQObject ();
-		Media::ArtistBio GetArtistBio () const;
-	private slots:
-		void handleGotImages (const QList<Media::ArtistImage>&);
-
-		void handleFinished ();
-		void handleError ();
-	signals:
-		void ready ();
-		void error ();
+		QFuture<Media::IArtistBioFetcher::ArtistBioResult_t> GetFuture ();
+	private:
+		void HandleFinished (const QByteArray&);
 	};
 }
 }
