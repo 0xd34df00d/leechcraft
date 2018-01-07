@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <boost/functional/hash.hpp>
 #include <QString>
 #include <QList>
 #include <QImage>
@@ -66,9 +67,12 @@ namespace Media
 
 	/** @brief A hash function for AlbumInfo to use it with QHash.
 	 */
-	inline uint qHash (const AlbumInfo& info)
+	inline size_t qHash (const AlbumInfo& info)
 	{
-		return qHash (info.Album_.toUtf8 () + '\0' + info.Artist_.toUtf8 ());
+		size_t seed = 0;
+		boost::hash_combine (seed, qHash (info.Album_));
+		boost::hash_combine (seed, qHash (info.Artist_));
+		return seed;
 	}
 
 	/** @brief Interface for plugins that can search for album art.
