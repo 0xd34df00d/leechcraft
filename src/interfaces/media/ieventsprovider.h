@@ -33,6 +33,7 @@
 #include <QUrl>
 #include <QStringList>
 #include <QtPlugin>
+#include <util/sll/eitherfwd.h>
 
 namespace Media
 {
@@ -163,6 +164,8 @@ namespace Media
 	{
 	public:
 		virtual ~IEventsProvider () {}
+
+		using EventsQueryResult_t = LeechCraft::Util::Either<QString, EventInfos_t>;
 
 		/** @brief Returns the service name.
 		 *
