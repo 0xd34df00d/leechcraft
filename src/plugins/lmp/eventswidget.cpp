@@ -186,10 +186,8 @@ namespace LMP
 
 		Model_->clear ();
 
-		Q_FOREACH (const auto& event_t, events)
+		for (const auto& event : events)
 		{
-			Media::EventInfo event (event_t);
-
 			auto item = new QStandardItem;
 			item->setData (event.ID_, EventsModel::Role::EventID);
 			item->setData (event.Name_, EventsModel::Role::EventName);
