@@ -244,7 +244,7 @@ namespace Lastfmscrobble
 		return (new PendingArtistBio (artist, Proxy_->GetNetworkAccessManager (), addImages, this))->GetFuture ();
 	}
 
-	void Plugin::UpdateRecommendedEvents ()
+	QFuture<Plugin::EventsQueryResult_t> Plugin::UpdateRecommendedEvents ()
 	{
 		auto nam = Proxy_->GetNetworkAccessManager ();
 
@@ -256,6 +256,8 @@ namespace Lastfmscrobble
 				SIGNAL (gotRecommendedEvents (Media::EventInfos_t)),
 				this,
 				SIGNAL (gotRecommendedEvents (Media::EventInfos_t)));
+
+		return aggregator->GetFuture ();
 	}
 
 	void Plugin::AttendEvent (qint64 id, Media::EventAttendType type)

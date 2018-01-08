@@ -40,6 +40,7 @@
 #include <util/qml/standardnamfactory.h>
 #include <util/sys/paths.h>
 #include <util/models/rolenamesmixin.h>
+#include <util/threads/futures.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "util.h"

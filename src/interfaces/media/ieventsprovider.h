@@ -35,6 +35,9 @@
 #include <QtPlugin>
 #include <util/sll/eitherfwd.h>
 
+template<typename>
+class QFuture;
+
 namespace Media
 {
 	/** @brief Enum describing if and how an event is attended by user.
@@ -183,7 +186,7 @@ namespace Media
 		 *
 		 * @sa gotRecommendedEvents().
 		 */
-		virtual void UpdateRecommendedEvents () = 0;
+		virtual QFuture<EventsQueryResult_t> UpdateRecommendedEvents () = 0;
 
 		/** @brief Updates the event attendance status, if possible.
 		 *

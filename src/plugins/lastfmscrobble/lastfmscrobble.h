@@ -123,7 +123,7 @@ namespace Lastfmscrobble
 
 		QFuture<ArtistBioResult_t> RequestArtistBio (const QString&, bool);
 
-		void UpdateRecommendedEvents ();
+		QFuture<EventsQueryResult_t> UpdateRecommendedEvents ();
 		void AttendEvent (qint64, Media::EventAttendType);
 
 		bool SupportsHype (HypeType);
