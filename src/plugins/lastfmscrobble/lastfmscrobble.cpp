@@ -246,13 +246,11 @@ namespace Lastfmscrobble
 
 	void Plugin::UpdateRecommendedEvents ()
 	{
-		auto aggregator = new EventsFetchAggregator (this);
-
 		auto nam = Proxy_->GetNetworkAccessManager ();
-		aggregator->AddFetcher (new RecEventsFetcher (Auth_,
-					nam, RecEventsFetcher::Type::Recommended, this));
-		aggregator->AddFetcher (new RecEventsFetcher (Auth_,
-					nam, RecEventsFetcher::Type::Attending, this));
+
+		auto aggregator = new EventsFetchAggregator (this);
+		aggregator->AddFetcher (new RecEventsFetcher (Auth_, nam, RecEventsFetcher::Type::Recommended, this));
+		aggregator->AddFetcher (new RecEventsFetcher (Auth_, nam, RecEventsFetcher::Type::Attending, this));
 
 		connect (aggregator,
 				SIGNAL (gotRecommendedEvents (Media::EventInfos_t)),
