@@ -29,6 +29,7 @@
 
 #include "eventsfetchaggregator.h"
 #include <algorithm>
+#include <util/sll/prelude.h>
 #include "receventsfetcher.h"
 
 namespace LeechCraft
@@ -57,9 +58,7 @@ namespace Lastfmscrobble
 		if (!PendingFetchers_.isEmpty ())
 			return;
 
-		std::sort (Aggregated_.begin (), Aggregated_.end (),
-				[] (decltype (Aggregated_.at (0)) left, decltype ((Aggregated_.at (0))) right)
-					{ return left.Date_ < right.Date_; });
+		std::sort (Aggregated_.begin (), Aggregated_.end (), Util::ComparingBy (&Media::EventInfo::Date_));
 		emit gotRecommendedEvents (Aggregated_);
 		deleteLater ();
 	}
