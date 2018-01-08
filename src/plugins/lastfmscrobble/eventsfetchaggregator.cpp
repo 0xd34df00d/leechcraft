@@ -30,6 +30,7 @@
 #include "eventsfetchaggregator.h"
 #include <algorithm>
 #include <util/sll/prelude.h>
+#include <util/threads/futures.h>
 #include "receventsfetcher.h"
 
 namespace LeechCraft
@@ -37,8 +38,14 @@ namespace LeechCraft
 namespace Lastfmscrobble
 {
 	EventsFetchAggregator::EventsFetchAggregator (QObject *parent)
-	: QObject (parent)
+	: QObject { parent }
 	{
+		Promise_.reportStarted ();
+	}
+
+	QFuture<Media::IEventsProvider::EventsQueryResult_t> EventsFetchAggregator::GetFuture ()
+	{
+		return Promise_.future ();
 	}
 
 	void EventsFetchAggregator::AddFetcher (RecEventsFetcher *fetcher)
@@ -59,6 +66,7 @@ namespace Lastfmscrobble
 			return;
 
 		std::sort (Aggregated_.begin (), Aggregated_.end (), Util::ComparingBy (&Media::EventInfo::Date_));
+		Util::ReportFutureResult (Promise_, Aggregated_);
 		emit gotRecommendedEvents (Aggregated_);
 		deleteLater ();
 	}

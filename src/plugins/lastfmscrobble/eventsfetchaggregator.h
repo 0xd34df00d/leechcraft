@@ -30,7 +30,9 @@
 #pragma once
 
 #include <QObject>
+#include <QFutureInterface>
 #include <interfaces/media/ieventsprovider.h>
+#include <util/sll/either.h>
 
 namespace LeechCraft
 {
@@ -44,8 +46,12 @@ namespace Lastfmscrobble
 
 		QList<RecEventsFetcher*> PendingFetchers_;
 		Media::EventInfos_t Aggregated_;
+
+		QFutureInterface<Media::IEventsProvider::EventsQueryResult_t> Promise_;
 	public:
 		EventsFetchAggregator (QObject* = nullptr);
+
+		QFuture<Media::IEventsProvider::EventsQueryResult_t> GetFuture ();
 
 		void AddFetcher (RecEventsFetcher*);
 	private slots:
