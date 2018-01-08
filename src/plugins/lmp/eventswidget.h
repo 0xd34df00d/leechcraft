@@ -61,9 +61,10 @@ namespace LMP
 		EventsWidget (QWidget* = 0);
 
 		void InitializeProviders ();
+	private:
+		void HandleEvents (const Media::EventInfos_t&);
 	private slots:
 		void on_Provider__activated (int);
-		void handleEvents (const Media::EventInfos_t&);
 		void handleAttendSure (int);
 		void handleAttendMaybe (int);
 		void handleUnattend (int);

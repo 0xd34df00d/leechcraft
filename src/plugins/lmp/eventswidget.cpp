@@ -149,11 +149,6 @@ namespace LMP
 			Ui_.Provider_->addItem (icon, scrob->GetServiceName ());
 			Providers_ << qobject_cast<Media::IEventsProvider*> (root);
 
-			connect (root,
-					SIGNAL (gotRecommendedEvents (Media::EventInfos_t)),
-					this,
-					SLOT (handleEvents (Media::EventInfos_t)));
-
 			if (scrob->GetServiceName () == lastProv)
 			{
 				const int idx = Providers_.size () - 1;
@@ -172,18 +167,22 @@ namespace LMP
 		Model_->clear ();
 
 		auto prov = Providers_.at (index);
-		prov->UpdateRecommendedEvents ();
+		Util::Sequence (this, prov->UpdateRecommendedEvents ()) >>
+				Util::Visitor
+				{
+					[] (const QString&) { /* TODO */ },
+					[this, index] (const Media::EventInfos_t& events)
+					{
+						if (index == Ui_.Provider_->currentIndex ())
+							HandleEvents (events);
+					}
+				};
 
 		XmlSettingsManager::Instance ().setProperty ("LastUsedEventsProvider", prov->GetServiceName ());
 	}
 
-	void EventsWidget::handleEvents (const Media::EventInfos_t& events)
+	void EventsWidget::HandleEvents (const Media::EventInfos_t& events)
 	{
-		const int provIdx = Ui_.Provider_->currentIndex ();
-		if (provIdx < 0 ||
-			qobject_cast<Media::IEventsProvider*> (sender ()) != Providers_.value (provIdx))
-			return;
-
 		Model_->clear ();
 
 		for (const auto& event : events)
