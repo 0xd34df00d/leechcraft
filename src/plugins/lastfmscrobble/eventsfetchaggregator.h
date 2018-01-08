@@ -45,7 +45,7 @@ namespace Lastfmscrobble
 		QList<RecEventsFetcher*> PendingFetchers_;
 		Media::EventInfos_t Aggregated_;
 	public:
-		EventsFetchAggregator (QObject* = 0);
+		EventsFetchAggregator (QObject* = nullptr);
 
 		void AddFetcher (RecEventsFetcher*);
 	private slots:
