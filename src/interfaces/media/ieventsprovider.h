@@ -157,17 +157,17 @@ namespace Media
 	 *
 	 * Plugins that can provide nearby or recommended events based on
 	 * user's location or musical taste should implement this interface.
-	 *
-	 * Fetching recommended events is asynchronous in nature, so one
-	 * should request updating the list of recommended events via
-	 * UpdateRecommendedEvents() and then listen for the
-	 * gotRecommendedEvents() signal.
 	 */
 	class Q_DECL_EXPORT IEventsProvider
 	{
 	public:
 		virtual ~IEventsProvider () {}
 
+		/** @brief The result of an recommended events query.
+		 *
+		 * The result of an recommended events query is either a string with a
+		 * human-readable error text, or the list of the recommended events.
+		 */
 		using EventsQueryResult_t = LeechCraft::Util::Either<QString, EventInfos_t>;
 
 		/** @brief Returns the service name.
@@ -181,10 +181,7 @@ namespace Media
 
 		/** @brief Requests re-fetching the list of recommended events.
 		 *
-		 * The gotRecommendedEvents() signal will be emitted after new
-		 * recommended events are fetched.
-		 *
-		 * @sa gotRecommendedEvents().
+		 * @return The future with the result of the recommended events query.
 		 */
 		virtual QFuture<EventsQueryResult_t> UpdateRecommendedEvents () = 0;
 
