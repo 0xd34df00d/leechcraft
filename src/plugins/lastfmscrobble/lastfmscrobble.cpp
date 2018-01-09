@@ -251,12 +251,6 @@ namespace Lastfmscrobble
 		auto aggregator = new EventsFetchAggregator (this);
 		aggregator->AddFetcher (new RecEventsFetcher (Auth_, nam, RecEventsFetcher::Type::Recommended, this));
 		aggregator->AddFetcher (new RecEventsFetcher (Auth_, nam, RecEventsFetcher::Type::Attending, this));
-
-		connect (aggregator,
-				SIGNAL (gotRecommendedEvents (Media::EventInfos_t)),
-				this,
-				SIGNAL (gotRecommendedEvents (Media::EventInfos_t)));
-
 		return aggregator->GetFuture ();
 	}
 

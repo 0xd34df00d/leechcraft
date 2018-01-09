@@ -56,8 +56,6 @@ namespace Lastfmscrobble
 		void AddFetcher (RecEventsFetcher*);
 	private slots:
 		void handleGot (const Media::EventInfos_t&);
-	signals:
-		void gotRecommendedEvents (const Media::EventInfos_t&);
 	};
 }
 }

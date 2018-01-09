@@ -133,8 +133,6 @@ namespace Lastfmscrobble
 	signals:
 		void gotRecentReleases (const QList<Media::AlbumRelease>&);
 
-		void gotRecommendedEvents (const Media::EventInfos_t&);
-
 		void gotHypedArtists (const QList<Media::HypedArtistInfo>&, Media::IHypesProvider::HypeType);
 		void gotHypedTracks (const QList<Media::HypedTrackInfo>&, Media::IHypesProvider::HypeType);
 	};

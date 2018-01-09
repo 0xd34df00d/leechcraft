@@ -197,12 +197,6 @@ namespace Media
 		 * @param[in] status The new event attendance status.
 		 */
 		virtual void AttendEvent (qint64 id, EventAttendType status) = 0;
-	protected:
-		/** @brief Emitted when a list of recommended events is fetched.
-		 *
-		 * @param[out] events The current list of recommended events.
-		 */
-		virtual void gotRecommendedEvents (const EventInfos_t& events) = 0;
 	};
 }
 

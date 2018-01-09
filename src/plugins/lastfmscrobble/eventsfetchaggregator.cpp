@@ -67,7 +67,6 @@ namespace Lastfmscrobble
 
 		std::sort (Aggregated_.begin (), Aggregated_.end (), Util::ComparingBy (&Media::EventInfo::Date_));
 		Util::ReportFutureResult (Promise_, Aggregated_);
-		emit gotRecommendedEvents (Aggregated_);
 		deleteLater ();
 	}
 }
