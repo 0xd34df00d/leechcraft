@@ -54,8 +54,6 @@ namespace Lastfmscrobble
 		QFuture<Media::IEventsProvider::EventsQueryResult_t> GetFuture ();
 
 		void AddFetcher (RecEventsFetcher*);
-	private slots:
-		void handleGot (const Media::EventInfos_t&);
 	};
 }
 }

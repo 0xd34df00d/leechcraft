@@ -53,21 +53,19 @@ namespace Lastfmscrobble
 		PendingFetchers_ << fetcher;
 
 		connect (fetcher,
-				SIGNAL (gotRecommendedEvents (Media::EventInfos_t)),
+				&RecEventsFetcher::gotRecommendedEvents,
 				this,
-				SLOT (handleGot (Media::EventInfos_t)));
-	}
+				[this, fetcher] (const Media::EventInfos_t& events)
+				{
+					Aggregated_ << events;
+					PendingFetchers_.removeAll (fetcher);
+					if (!PendingFetchers_.isEmpty ())
+						return;
 
-	void EventsFetchAggregator::handleGot (const Media::EventInfos_t& events)
-	{
-		Aggregated_ << events;
-		PendingFetchers_.removeAll (static_cast<RecEventsFetcher*> (sender ()));
-		if (!PendingFetchers_.isEmpty ())
-			return;
-
-		std::sort (Aggregated_.begin (), Aggregated_.end (), Util::ComparingBy (&Media::EventInfo::Date_));
-		Util::ReportFutureResult (Promise_, Aggregated_);
-		deleteLater ();
+					std::sort (Aggregated_.begin (), Aggregated_.end (), Util::ComparingBy (&Media::EventInfo::Date_));
+					Util::ReportFutureResult (Promise_, Aggregated_);
+					deleteLater ();
+				});
 	}
 }
 }
