@@ -42,8 +42,6 @@ namespace Lastfmscrobble
 
 	class EventsFetchAggregator : public QObject
 	{
-		Q_OBJECT
-
 		QList<RecEventsFetcher*> PendingFetchers_;
 		Media::EventInfos_t Aggregated_;
 
