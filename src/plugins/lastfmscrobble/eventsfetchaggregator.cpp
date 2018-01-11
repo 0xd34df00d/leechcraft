@@ -58,7 +58,7 @@ namespace Lastfmscrobble
 				[this, fetcher] (const Media::EventInfos_t& events)
 				{
 					Aggregated_ << events;
-					PendingFetchers_.removeAll (fetcher);
+					PendingFetchers_.removeOne (fetcher);
 					if (!PendingFetchers_.isEmpty ())
 						return;
 
