@@ -70,14 +70,14 @@ namespace SvcAuth
 
 		QString Token_;
 		QDateTime ReceivedAt_;
-		qint32 ValidFor_;
+		qint32 ValidFor_ = 0;
 
-		bool IsRequesting_;
+		bool IsRequesting_ = false;
 
 		const QString ID_;
 		QUrl URL_;
 
-		bool IsRequestScheduled_;
+		bool IsRequestScheduled_ = false;
 		QTimer * const ScheduleTimer_;
 
 		bool SilentMode_ = false;

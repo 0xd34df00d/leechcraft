@@ -75,11 +75,8 @@ namespace SvcAuth
 	, AuthNAM_ (new QNetworkAccessManager (this))
 	, Cookies_ (new Util::CustomCookieJar (this))
 	, Queue_ (queueMgr)
-	, ValidFor_ (0)
-	, IsRequesting_ (false)
 	, ID_ (id)
 	, URL_ (URLFromClientID (ID_, scope))
-	, IsRequestScheduled_ (false)
 	, ScheduleTimer_ (new QTimer (this))
 	{
 		AuthNAM_->setCookieJar (Cookies_);
