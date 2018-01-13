@@ -58,8 +58,7 @@ namespace LMP
 
 	void PreviewHandler::InitWithPlugins ()
 	{
-		Providers_ = Core::Instance ().GetProxy ()->
-				GetPluginsManager ()->GetAllCastableTo<Media::IAudioPile*> ();
+		Providers_ = Core::Instance ().GetProxy ()->GetPluginsManager ()->GetAllCastableTo<Media::IAudioPile*> ();
 	}
 
 	void PreviewHandler::previewArtist (const QString& artist)
@@ -98,7 +97,7 @@ namespace LMP
 			req.Title_ = pair.first;
 			req.TrackLength_ = pair.second;
 
-			PendingTrackInfo info =
+			PendingTrackInfo info
 			{
 				artist,
 				album,
