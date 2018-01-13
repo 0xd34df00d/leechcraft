@@ -48,14 +48,13 @@ namespace TouchStreams
 	: QObject (parent)
 	, Proxy_ (proxy)
 	, Queue_ (queue)
-	, AuthMgr_ (mgr)
 	, Query_ (query)
 	{
-		connect (AuthMgr_,
+		connect (mgr,
 				SIGNAL (gotAuthKey (QString)),
 				this,
 				SLOT (handleGotAuthKey (QString)));
-		AuthMgr_->GetAuthKey ();
+		mgr->GetAuthKey ();
 	}
 
 	QObject* AudioSearch::GetQObject ()

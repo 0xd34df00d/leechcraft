@@ -58,7 +58,6 @@ namespace TouchStreams
 		ICoreProxy_ptr Proxy_;
 		Util::QueueManager *Queue_;
 
-		Util::SvcAuth::VkAuthManager *AuthMgr_;
 		const Media::AudioSearchRequest Query_;
 
 		QList<Media::IPendingAudioSearch::Result> Result_;
