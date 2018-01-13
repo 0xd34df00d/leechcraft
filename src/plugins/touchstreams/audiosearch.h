@@ -30,6 +30,8 @@
 #pragma once
 
 #include <QObject>
+#include <QFutureInterface>
+#include <util/sll/either.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/media/iaudiopile.h>
 
@@ -50,30 +52,24 @@ namespace TouchStreams
 	class AuthManager;
 
 	class AudioSearch : public QObject
-					  , public Media::IPendingAudioSearch
 	{
 		Q_OBJECT
-		Q_INTERFACES (Media::IPendingAudioSearch)
 
 		ICoreProxy_ptr Proxy_;
 		Util::QueueManager *Queue_;
 
 		const Media::AudioSearchRequest Query_;
 
-		QList<Media::IPendingAudioSearch::Result> Result_;
+		QFutureInterface<Media::IAudioPile::AudioSearchResult_t> Promise_;
 	public:
 		AudioSearch (ICoreProxy_ptr, const Media::AudioSearchRequest&,
-				Util::SvcAuth::VkAuthManager*, Util::QueueManager*, QObject* = 0);
+				Util::SvcAuth::VkAuthManager*, Util::QueueManager*, QObject* = nullptr);
 
-		QObject* GetQObject ();
-		QList<Result> GetResults () const;
+		QFuture<Media::IAudioPile::AudioSearchResult_t> GetFuture ();
+	private:
+		void HandleGotReply (const QByteArray&);
 	private slots:
 		void handleGotAuthKey (const QString&);
-		void handleGotReply ();
-		void handleError ();
-	signals:
-		void ready ();
-		void error ();
 	};
 }
 }

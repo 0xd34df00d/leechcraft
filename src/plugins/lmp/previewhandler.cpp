@@ -29,6 +29,9 @@
 
 #include "previewhandler.h"
 #include <util/xpc/util.h>
+#include <util/sll/visitor.h>
+#include <util/sll/either.h>
+#include <util/threads/futures.h>
 #include <interfaces/media/iaudiopile.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/ientitymanager.h>
@@ -95,38 +98,44 @@ namespace LMP
 				req.Title_
 			};
 
-			const auto& pendings = RequestPreview (req);
-			for (const auto& pending : pendings)
-				Pending2Track_ [pending] = info;
+			const auto& futures = RequestPreview (req);
+			storedAlbumTracks [req.Title_] += futures.size ();
 
-			storedAlbumTracks [req.Title_] += pendings.size ();
+			for (const auto& future : futures)
+				Util::Sequence (this, future) >>
+						[this, info] (const auto& result)
+						{
+							const bool hasResults = Util::Visit (result,
+									[] (const QString&) { return false; },
+									[] (const auto& res) { return !res.isEmpty (); });
+							CheckPendingAlbum (info, hasResults);
+						};
 		}
 	}
 
-	QList<Media::IPendingAudioSearch*> PreviewHandler::RequestPreview (const Media::AudioSearchRequest& req)
+	PreviewHandler::FuturesList_t PreviewHandler::RequestPreview (const Media::AudioSearchRequest& req)
 	{
-		QList<Media::IPendingAudioSearch*> pendings;
+		auto handler = [this] (const Media::IAudioPile::Results_t& list) { HandlePendingReady (list); };
+
+		QList<QFuture<Media::IAudioPile::AudioSearchResult_t>> futures;
 		for (auto prov : Providers_)
 		{
-			auto pending = prov->Search (req);
-			connect (pending->GetQObject (),
-					SIGNAL (ready ()),
-					this,
-					SLOT (handlePendingReady ()));
-			pendings << pending;
+			auto future = prov->Search (req);
+			Util::Sequence (this, future) >>
+					Util::Visitor
+					{
+						[handler] (const QString&) { handler ({}); },
+						handler
+					};
+			futures << future;
 		}
-		return pendings;
+		return futures;
 	}
 
 	/** Checks whether the given album is fully completed or not.
 	 */
-	void PreviewHandler::CheckPendingAlbum (Media::IPendingAudioSearch *pending)
+	void PreviewHandler::CheckPendingAlbum (const PendingTrackInfo& info, bool hasResults)
 	{
-		if (!Pending2Track_.contains (pending))
-			return;
-
-		const auto& info = Pending2Track_.take (pending);
-
 		auto& tracks = Artist2Album2Tracks_ [info.Artist_] [info.Album_];
 
 		/** If we don't have info.Track_ in our pending list it was fulfilled
@@ -140,7 +149,7 @@ namespace LMP
 		 * we reduce the amount of available pending requests by one if this
 		 * track hasn't been fulfilled yet.
 		 */
-		if (!pending->GetResults ().isEmpty ())
+		if (hasResults)
 			tracks.remove (info.Track_);
 		else if (tracks.contains (info.Track_))
 			--tracks [info.Track_];
@@ -175,14 +184,12 @@ namespace LMP
 		Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (e);
 	}
 
-	void PreviewHandler::handlePendingReady ()
+	void PreviewHandler::HandlePendingReady (const Media::IAudioPile::Results_t& results)
 	{
-		auto pending = qobject_cast<Media::IPendingAudioSearch*> (sender ());
-
 		QList<AudioSource> sources;
 		QSet<QUrl> urls;
 		QSet<PreviewCharacteristicInfo> infos;
-		for (const auto& res : pending->GetResults ())
+		for (const auto& res : results)
 		{
 			if (urls.contains (res.Source_))
 				continue;
@@ -199,8 +206,6 @@ namespace LMP
 
 		if (!sources.isEmpty ())
 			Player_->Enqueue (sources, Player::EnqueueNone);
-
-		CheckPendingAlbum (pending);
 	}
 }
 }

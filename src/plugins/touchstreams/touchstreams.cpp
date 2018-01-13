@@ -127,7 +127,7 @@ namespace TouchStreams
 		return icon;
 	}
 
-	Media::IPendingAudioSearch* Plugin::Search (const Media::AudioSearchRequest& req)
+	QFuture<Plugin::AudioSearchResult_t> Plugin::Search (const Media::AudioSearchRequest& req)
 	{
 		auto realReq = req;
 		if (realReq.FreeForm_.isEmpty ())
@@ -137,7 +137,7 @@ namespace TouchStreams
 			realReq.FreeForm_ = parts.join (" - ");
 		}
 
-		return new AudioSearch (Proxy_, realReq, AuthMgr_, Queue_);
+		return (new AudioSearch (Proxy_, realReq, AuthMgr_, Queue_))->GetFuture ();
 	}
 
 	QList<QAbstractItemModel*> Plugin::GetRadioListItems () const

@@ -33,13 +33,7 @@
 #include <QPair>
 #include <QHash>
 #include <QStringList>
-
-namespace Media
-{
-	struct AudioSearchRequest;
-	class IAudioPile;
-	class IPendingAudioSearch;
-}
+#include <interfaces/media/iaudiopile.h>
 
 namespace LeechCraft
 {
@@ -63,7 +57,8 @@ namespace LMP
 			QString Album_;
 			QString Track_;
 		};
-		QHash<Media::IPendingAudioSearch*, PendingTrackInfo> Pending2Track_;
+
+		using FuturesList_t = QList<QFuture<Media::IAudioPile::AudioSearchResult_t>>;
 	public:
 		PreviewHandler (Player*, QObject* = nullptr);
 
@@ -75,10 +70,9 @@ namespace LMP
 		void previewAlbum (const QString& artist, const QString& album,
 				const QList<QPair<QString, int>>& tracks);
 	private:
-		QList<Media::IPendingAudioSearch*> RequestPreview (const Media::AudioSearchRequest&);
-		void CheckPendingAlbum (Media::IPendingAudioSearch*);
-	private slots:
-		void handlePendingReady ();
+		FuturesList_t RequestPreview (const Media::AudioSearchRequest&);
+		void CheckPendingAlbum (const PendingTrackInfo&, bool);
+		void HandlePendingReady (const Media::IAudioPile::Results_t&);
 	};
 }
 }

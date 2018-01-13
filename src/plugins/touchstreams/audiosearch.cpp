@@ -36,6 +36,9 @@
 #include <QtDebug>
 #include <util/sll/queuemanager.h>
 #include <util/sll/urloperator.h>
+#include <util/sll/visitor.h>
+#include <util/threads/futures.h>
+#include <util/network/handlenetworkreply.h>
 #include <util/svcauth/vkauthmanager.h>
 #include "xmlsettingsmanager.h"
 
@@ -50,6 +53,8 @@ namespace TouchStreams
 	, Queue_ (queue)
 	, Query_ (query)
 	{
+		Promise_.reportStarted ();
+
 		connect (mgr,
 				SIGNAL (gotAuthKey (QString)),
 				this,
@@ -57,14 +62,9 @@ namespace TouchStreams
 		mgr->GetAuthKey ();
 	}
 
-	QObject* AudioSearch::GetQObject ()
+	QFuture<Media::IAudioPile::AudioSearchResult_t> AudioSearch::GetFuture ()
 	{
-		return this;
-	}
-
-	QList<Media::IPendingAudioSearch::Result> AudioSearch::GetResults () const
-	{
-		return Result_;
+		return Promise_.future ();
 	}
 
 	void AudioSearch::handleGotAuthKey (const QString& key)
@@ -78,28 +78,24 @@ namespace TouchStreams
 		Queue_->Schedule ([this, url]
 			{
 				auto reply = Proxy_->GetNetworkAccessManager ()->get (QNetworkRequest (url));
-				connect (reply,
-						SIGNAL (finished ()),
-						this,
-						SLOT (handleGotReply ()));
-				connect (reply,
-						SIGNAL (error (QNetworkReply::NetworkError)),
-						this,
-						SLOT (handleError ()));
+				Util::Sequence (this, Util::HandleReply (reply, this)) >>
+						Util::Visitor
+						{
+							[this] (Util::Void) { Util::ReportFutureResult (Promise_, "Unable to request audio search."); },
+							[this] (const QByteArray& data) { HandleGotReply (data); }
+						}.Finally ([this] { deleteLater (); });
 			},
 			this,
 			Util::QueuePriority::High);
 	}
 
-	void AudioSearch::handleGotReply ()
+	void AudioSearch::HandleGotReply (const QByteArray& data)
 	{
-		auto reply = qobject_cast<QNetworkReply*> (sender ());
-		reply->deleteLater ();
-
-		const auto& data = reply->readAll ();
 		std::istringstream istr (data.constData ());
 		boost::property_tree::ptree pt;
 		boost::property_tree::read_json (istr, pt);
+
+		Media::IAudioPile::Results_t results;
 
 		for (const auto& v : pt.get_child ("response"))
 		{
@@ -107,7 +103,7 @@ namespace TouchStreams
 			if (sub.empty ())
 				continue;
 
-			Media::IPendingAudioSearch::Result result;
+			Media::IAudioPile::Result result;
 			try
 			{
 				result.Info_.Length_ = sub.get<qint32> ("duration");
@@ -132,22 +128,10 @@ namespace TouchStreams
 						<< e.what ();
 				continue;
 			}
-			Result_ << result;
+			results << result;
 		}
 
-		emit ready ();
-		emit deleteLater ();
-	}
-
-	void AudioSearch::handleError ()
-	{
-		auto reply = qobject_cast<QNetworkReply*> (sender ());
-		reply->deleteLater ();
-
-		qWarning () << Q_FUNC_INFO
-				<< reply->errorString ();
-		emit error ();
-		deleteLater ();
+		Util::ReportFutureResult (Promise_, results);
 	}
 }
 }

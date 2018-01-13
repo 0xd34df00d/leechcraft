@@ -31,7 +31,9 @@
 #include <QStandardItemModel>
 #include <QInputDialog>
 #include <QtDebug>
-#include <util/sll/slotclosure.h>
+#include <util/sll/visitor.h>
+#include <util/sll/either.h>
+#include <util/threads/futures.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/media/iaudiopile.h>
 #include <interfaces/media/iradiostationprovider.h>
@@ -76,7 +78,7 @@ namespace LMP
 
 	namespace
 	{
-		void AddResults (const QList<Media::IPendingAudioSearch::Result>& results, QStandardItem *item)
+		void AddResults (const Media::IAudioPile::Results_t& results, QStandardItem *item)
 		{
 			const auto& queryText = item->text ();
 			item->setText (RadioPilesManager::tr ("%1 (%n result(s))", 0, results.size ())
@@ -126,28 +128,15 @@ namespace LMP
 		searchItem->setEditable (false);
 		item->appendRow (searchItem);
 
-		const auto pending = pile->Search (req);
-		const auto pendingObj = pending->GetQObject ();
-
-		new Util::SlotClosure<Util::DeleteLaterPolicy>
-		{
-			[]
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "error";
-			},
-			pendingObj,
-			SIGNAL (error ()),
-			pendingObj
-		};
-
-		new Util::SlotClosure<Util::DeleteLaterPolicy>
-		{
-			[pending, searchItem] { AddResults (pending->GetResults (), searchItem); },
-			pendingObj,
-			SIGNAL (ready ()),
-			pendingObj
-		};
+		Util::Sequence (this, pile->Search (req)) >>
+				Util::Visitor
+				{
+					[] (const QString&) { /* TODO */ },
+					[searchItem] (const Media::IAudioPile::Results_t& results)
+					{
+						AddResults (results, searchItem);
+					}
+				};
 	}
 }
 }
