@@ -43,6 +43,13 @@ namespace LeechCraft
 {
 namespace LMP
 {
+	struct PreviewHandler::PendingTrackInfo
+	{
+		QString Artist_;
+		QString Album_;
+		QString Track_;
+	};
+
 	PreviewHandler::PreviewHandler (Player *player, QObject *parent)
 	: QObject (parent)
 	, Player_ (player)

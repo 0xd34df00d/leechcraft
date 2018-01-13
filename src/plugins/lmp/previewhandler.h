@@ -51,12 +51,7 @@ namespace LMP
 
 		QHash<QString, QHash<QString, QHash<QString, int>>> Artist2Album2Tracks_;
 
-		struct PendingTrackInfo
-		{
-			QString Artist_;
-			QString Album_;
-			QString Track_;
-		};
+		struct PendingTrackInfo;
 
 		using FuturesList_t = QList<QFuture<Media::IAudioPile::AudioSearchResult_t>>;
 	public:
