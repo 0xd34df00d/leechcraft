@@ -55,11 +55,18 @@ namespace TouchStreams
 	{
 		Promise_.reportStarted ();
 
-		connect (mgr,
-				SIGNAL (gotAuthKey (QString)),
-				this,
-				SLOT (handleGotAuthKey (QString)));
-		mgr->GetAuthKey ();
+		Util::Sequence (this, mgr->GetAuthKeyFuture ()) >>
+				Util::Visitor
+				{
+					[this] (const QString& key) { HandleGotAuthKey (key); },
+					Util::Visitor
+					{
+						[this] (Util::SvcAuth::VkAuthManager::SilentMode)
+						{
+							Util::ReportFutureResult (Promise_, "VK authenticator is in silent mode.");
+						}
+					}
+				};
 	}
 
 	QFuture<Media::IAudioPile::AudioSearchResult_t> AudioSearch::GetFuture ()
@@ -67,7 +74,7 @@ namespace TouchStreams
 		return Promise_.future ();
 	}
 
-	void AudioSearch::handleGotAuthKey (const QString& key)
+	void AudioSearch::HandleGotAuthKey (const QString& key)
 	{
 		QUrl url ("https://api.vk.com/method/audio.search");
 		Util::UrlOperator { url }

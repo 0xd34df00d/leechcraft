@@ -68,8 +68,7 @@ namespace TouchStreams
 		QFuture<Media::IAudioPile::AudioSearchResult_t> GetFuture ();
 	private:
 		void HandleGotReply (const QByteArray&);
-	private slots:
-		void handleGotAuthKey (const QString&);
+		void HandleGotAuthKey (const QString&);
 	};
 }
 }
