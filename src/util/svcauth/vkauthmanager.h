@@ -30,11 +30,13 @@
 #pragma once
 
 #include <functional>
+#include <boost/variant.hpp>
 #include <QObject>
 #include <QDateTime>
 #include <QUrl>
 #include <interfaces/core/icoreproxy.h>
 #include <util/sll/util.h>
+#include <util/sll/eitherfwd.h>
 #include "svcauthconfig.h"
 
 class QTimer;
@@ -104,7 +106,11 @@ namespace SvcAuth
 
 		void GetAuthKey ();
 
-		[[nodiscard]] QFuture<QString> GetAuthKeyFuture ();
+		struct SilentMode {};
+		using AuthKeyError_t = boost::variant<SilentMode>;
+		using AuthKeyResult_t = Either<AuthKeyError_t, QString>;
+
+		[[nodiscard]] QFuture<AuthKeyResult_t> GetAuthKeyFuture ();
 
 		[[nodiscard]] ScheduleGuard_t ManageQueue (RequestQueue_ptr);
 		[[nodiscard]] ScheduleGuard_t ManageQueue (PrioRequestQueue_ptr);

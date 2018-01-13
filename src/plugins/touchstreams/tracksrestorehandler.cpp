@@ -37,6 +37,8 @@
 #include <util/sll/queuemanager.h>
 #include <util/sll/urlaccessor.h>
 #include <util/sll/urloperator.h>
+#include <util/sll/either.h>
+#include <util/sll/visitor.h>
 #include <util/svcauth/vkauthmanager.h>
 #include <util/threads/futures.h>
 #include "util.h"
@@ -73,7 +75,15 @@ namespace TouchStreams
 		FutureIface_.reportStarted ();
 
 		Util::Sequence (this, AuthMgr_->GetAuthKeyFuture ()) >>
-				Util::BindMemFn (&TracksRestoreHandler::Request, this);
+				Util::Visitor
+				{
+					[this] (const QString& token) { Request (token); },
+					[] (const Util::SvcAuth::VkAuthManager::AuthKeyError_t&)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "error getting auth";
+					}
+				};
 	}
 
 	QFuture<Media::RadiosRestoreResult_t> TracksRestoreHandler::GetFuture ()

@@ -41,6 +41,7 @@
 #include <util/sll/queuemanager.h>
 #include <util/sll/urloperator.h>
 #include <util/sll/slotclosure.h>
+#include <util/sll/either.h>
 #include <util/xpc/util.h>
 #include <util/threads/futures.h>
 #include <interfaces/core/ientitymanager.h>
@@ -135,21 +136,17 @@ namespace SvcAuth
 		emit gotAuthKey (Token_);
 	}
 
-	QFuture<QString> VkAuthManager::GetAuthKeyFuture ()
+	QFuture<VkAuthManager::AuthKeyResult_t> VkAuthManager::GetAuthKeyFuture ()
 	{
-		if (SilentMode_ && !IsAuthenticated ())
-			return {};
-
-		QFutureInterface<QString> iface;
+		QFutureInterface<AuthKeyResult_t> iface;
 		iface.reportStarted ();
 
-		new SlotClosure<DeleteLaterPolicy>
-		{
-			[this, iface] () mutable { ReportFutureResult (iface, Token_); },
-			this,
-			SIGNAL (gotAuthKey (QString)),
-			this
-		};
+		if (SilentMode_ && !IsAuthenticated ())
+			ReportFutureResult (iface, AuthKeyError_t { SilentMode {} });
+		else
+			connect (this,
+					&VkAuthManager::gotAuthKey,
+					[this, iface] () mutable { ReportFutureResult (iface, Token_); });
 
 		return iface.future ();
 	}
