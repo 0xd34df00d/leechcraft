@@ -42,6 +42,7 @@
 #include <util/sll/urloperator.h>
 #include <util/sll/slotclosure.h>
 #include <util/xpc/util.h>
+#include <util/threads/futures.h>
 #include <interfaces/core/ientitymanager.h>
 #include <xmlsettingsdialog/basesettingsmanager.h>
 
@@ -144,7 +145,7 @@ namespace SvcAuth
 
 		new SlotClosure<DeleteLaterPolicy>
 		{
-			[this, iface] () mutable { iface.reportFinished (&Token_); },
+			[this, iface] () mutable { ReportFutureResult (iface, Token_); },
 			this,
 			SIGNAL (gotAuthKey (QString)),
 			this
