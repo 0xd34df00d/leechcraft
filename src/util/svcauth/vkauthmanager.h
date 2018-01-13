@@ -106,8 +106,8 @@ namespace SvcAuth
 
 		QFuture<QString> GetAuthKeyFuture ();
 
-		Q_REQUIRED_RESULT ScheduleGuard_t ManageQueue (RequestQueue_ptr);
-		Q_REQUIRED_RESULT ScheduleGuard_t ManageQueue (PrioRequestQueue_ptr);
+		[[nodiscard]] ScheduleGuard_t ManageQueue (RequestQueue_ptr);
+		[[nodiscard]] ScheduleGuard_t ManageQueue (PrioRequestQueue_ptr);
 
 		void SetSilentMode (bool);
 	private:
