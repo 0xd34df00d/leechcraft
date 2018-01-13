@@ -76,17 +76,17 @@ namespace TouchStreams
 				("count", XmlSettingsManager::Instance ().property ("SearchResultsCount").toInt ());
 
 		Queue_->Schedule ([this, url]
-			{
-				auto reply = Proxy_->GetNetworkAccessManager ()->get (QNetworkRequest (url));
-				Util::Sequence (this, Util::HandleReply (reply, this)) >>
-						Util::Visitor
-						{
-							[this] (Util::Void) { Util::ReportFutureResult (Promise_, "Unable to request audio search."); },
-							[this] (const QByteArray& data) { HandleGotReply (data); }
-						}.Finally ([this] { deleteLater (); });
-			},
-			this,
-			Util::QueuePriority::High);
+				{
+					auto reply = Proxy_->GetNetworkAccessManager ()->get (QNetworkRequest (url));
+					Util::Sequence (this, Util::HandleReply (reply, this)) >>
+							Util::Visitor
+							{
+								[this] (Util::Void) { Util::ReportFutureResult (Promise_, "Unable to request audio search."); },
+								[this] (const QByteArray& data) { HandleGotReply (data); }
+							}.Finally ([this] { deleteLater (); });
+				},
+				this,
+				Util::QueuePriority::High);
 	}
 
 	void AudioSearch::HandleGotReply (const QByteArray& data)
