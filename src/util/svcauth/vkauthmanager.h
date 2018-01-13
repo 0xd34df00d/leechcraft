@@ -104,7 +104,7 @@ namespace SvcAuth
 
 		void GetAuthKey ();
 
-		QFuture<QString> GetAuthKeyFuture ();
+		[[nodiscard]] QFuture<QString> GetAuthKeyFuture ();
 
 		[[nodiscard]] ScheduleGuard_t ManageQueue (RequestQueue_ptr);
 		[[nodiscard]] ScheduleGuard_t ManageQueue (PrioRequestQueue_ptr);
