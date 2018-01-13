@@ -141,9 +141,12 @@ namespace SvcAuth
 		if (SilentMode_ && !IsAuthenticated ())
 			ReportFutureResult (iface, AuthKeyError_t { SilentMode {} });
 		else
+		{
 			connect (this,
 					&VkAuthManager::gotAuthKey,
 					[this, iface] () mutable { ReportFutureResult (iface, Token_); });
+			GetAuthKey ();
+		}
 
 		return iface.future ();
 	}
