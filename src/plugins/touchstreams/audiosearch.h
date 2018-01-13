@@ -53,8 +53,6 @@ namespace TouchStreams
 
 	class AudioSearch : public QObject
 	{
-		Q_OBJECT
-
 		ICoreProxy_ptr Proxy_;
 		Util::QueueManager *Queue_;
 
