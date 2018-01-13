@@ -68,8 +68,6 @@ namespace LMP
 		PreviewHandler (Player*, QObject* = nullptr);
 
 		void InitWithPlugins ();
-
-		void HandlePending (Media::IPendingAudioSearch*);
 	public slots:
 		void previewArtist (const QString& artist);
 		void previewTrack (const QString& track, const QString& artist);
