@@ -150,8 +150,7 @@ namespace LMP
 		 * do anything. In case tracklist is empty we should clear
 		 * Artist2Album2Tracks_.
 		 */
-		if (std::find_if (tracks.begin (), tracks.end (),
-				[] (int c) { return c > 0; }) != tracks.end ())
+		if (std::any_of (tracks.begin (), tracks.end (), [] (int c) { return c > 0; }))
 			return;
 
 		if (tracks.isEmpty ())
