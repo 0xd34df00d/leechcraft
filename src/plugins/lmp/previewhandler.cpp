@@ -137,11 +137,12 @@ namespace LMP
 
 		/** If this pending object has any results then it fulfills this track
 		 * request, and we remove the track from the pending list. Otherwise
-		 * we reduce the amount of available pending requests by one.
+		 * we reduce the amount of available pending requests by one if this
+		 * track hasn't been fulfilled yet.
 		 */
 		if (!pending->GetResults ().isEmpty ())
 			tracks.remove (info.Track_);
-		else
+		else if (tracks.contains (info.Track_))
 			--tracks [info.Track_];
 
 		/** Then we check if all interesting pending requests have finished.
