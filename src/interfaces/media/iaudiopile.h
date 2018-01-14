@@ -131,12 +131,10 @@ namespace Media
 		/** @brief Requests a search by the given request.
 		 *
 		 * This function initiates a search by the given request and
-		 * returns a handle that can be used to track the search result
-		 * state. The handle owns itself and deletes itself after the
-		 * results are available — see its documentation for details.
+		 * returns a future with the search results.
 		 *
 		 * @param[in] request The structure describing the search request.
-		 * @return The pending audio search handle.
+		 * @return The future with the audio search results.
 		 */
 		virtual QFuture<AudioSearchResult_t> Search (const AudioSearchRequest& request) = 0;
 	};
