@@ -72,7 +72,7 @@ namespace Media
 		 *
 		 * Set this to 0 to disable by-track filtering.
 		 */
-		int TrackLength_;
+		int TrackLength_ = 0;
 
 		/** @brief Free form engine-specific request.
 		 *
@@ -80,13 +80,6 @@ namespace Media
 		 * fields if they are not sure what user has entered.
 		 */
 		QString FreeForm_;
-
-		/** @brief Creates an empty audio search request.
-		 */
-		AudioSearchRequest ()
-		: TrackLength_ (0)
-		{
-		}
 	};
 
 	/** @brief Interface for plugins supporting searching for tracks.
