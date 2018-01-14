@@ -308,11 +308,12 @@ namespace SvcAuth
 
 	namespace
 	{
+		template<typename F>
 		class CloseEventFilter : public QObject
 		{
-			const std::function<void ()> Handler_;
+			const F Handler_;
 		public:
-			CloseEventFilter (const std::function<void ()>& handler, QObject *handlee)
+			CloseEventFilter (const F& handler, QObject *handlee)
 			: QObject { handlee }
 			, Handler_ { handler }
 			{
@@ -345,7 +346,7 @@ namespace SvcAuth
 				this,
 				SLOT (handleViewUrlChanged (QUrl)));
 
-		new CloseEventFilter ([this] { emit authCanceled (); }, view);
+		new CloseEventFilter { [this] { emit authCanceled (); }, view };
 	}
 
 	void VkAuthManager::execScheduledRequest ()
