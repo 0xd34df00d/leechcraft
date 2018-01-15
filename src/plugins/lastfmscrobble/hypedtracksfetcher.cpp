@@ -73,6 +73,7 @@ namespace Lastfmscrobble
 			qWarning () << Q_FUNC_INFO
 					<< "error parsing reply"
 					<< data;
+			Util::ReportFutureResult (Promise_, "Unable to parse Last.FM response.");
 			return;
 		}
 
