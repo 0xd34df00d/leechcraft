@@ -58,10 +58,11 @@ namespace LMP
 		HypesWidget (QWidget* = 0);
 
 		void InitializeProviders ();
+	private:
+		void HandleArtists (const QList<Media::HypedArtistInfo>&, Media::IHypesProvider::HypeType);
+		void HandleTracks (const QList<Media::HypedTrackInfo>&, Media::IHypesProvider::HypeType);
 	private slots:
 		void request ();
-		void handleArtists (const QList<Media::HypedArtistInfo>&, Media::IHypesProvider::HypeType);
-		void handleTracks (const QList<Media::HypedTrackInfo>&, Media::IHypesProvider::HypeType);
 		void handleLink (const QString&);
 	signals:
 		void artistPreviewRequested (const QString&);

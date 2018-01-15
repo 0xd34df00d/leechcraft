@@ -39,6 +39,8 @@
 #include <util/qml/themeimageprovider.h>
 #include <util/sys/paths.h>
 #include <util/models/rolenamesmixin.h>
+#include <util/sll/functional.h>
+#include <util/threads/futures.h>
 #include <interfaces/media/ihypesprovider.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -176,6 +178,23 @@ namespace LMP
 			Ui_.InfoProvider_->setCurrentIndex (-1);
 	}
 
+	namespace
+	{
+		template<Media::IHypesProvider::HypeType Type, auto Handler, typename C>
+		void TryHype (C *ctx, Media::IHypesProvider *prov)
+		{
+			if (!prov->SupportsHype (Type))
+				return;
+
+			Util::Sequence (ctx, prov->RequestHype (Type)) >>
+					Util::Visitor
+					{
+						[] (const QString&) { /* TODO */ },
+						[=] (const auto& res) { std::invoke (Handler, ctx, Media::GetHypedInfo<Type> (res), Type); }
+					};
+		}
+	}
+
 	void HypesWidget::request ()
 	{
 		NewArtistsModel_->clear ();
@@ -195,33 +214,12 @@ namespace LMP
 
 		auto provObj = Providers_.at (idx);
 		auto prov = qobject_cast<Media::IHypesProvider*> (provObj);
-		auto tryHype = [this, prov, provObj] (Media::IHypesProvider::HypeType type, const char *signal, const char *slot) -> void
-		{
-			if (!prov->SupportsHype (type))
-				return;
+		TryHype<Media::IHypesProvider::HypeType::NewArtists, &HypesWidget::HandleArtists> (this, prov);
+		TryHype<Media::IHypesProvider::HypeType::TopArtists, &HypesWidget::HandleArtists> (this, prov);
+		TryHype<Media::IHypesProvider::HypeType::NewTracks, &HypesWidget::HandleTracks> (this, prov);
+		TryHype<Media::IHypesProvider::HypeType::TopTracks, &HypesWidget::HandleTracks> (this, prov);
 
-			connect (provObj,
-					signal,
-					this,
-					slot,
-					Qt::UniqueConnection);
-			prov->RequestHype (type);
-		};
-		tryHype (Media::IHypesProvider::HypeType::NewArtists,
-				SIGNAL (gotHypedArtists (QList<Media::HypedArtistInfo>, Media::IHypesProvider::HypeType)),
-				SLOT (handleArtists (QList<Media::HypedArtistInfo>, Media::IHypesProvider::HypeType)));
-		tryHype (Media::IHypesProvider::HypeType::TopArtists,
-				SIGNAL (gotHypedArtists (QList<Media::HypedArtistInfo>, Media::IHypesProvider::HypeType)),
-				SLOT (handleArtists (QList<Media::HypedArtistInfo>, Media::IHypesProvider::HypeType)));
-		tryHype (Media::IHypesProvider::HypeType::NewTracks,
-				SIGNAL (gotHypedTracks (QList<Media::HypedTrackInfo>, Media::IHypesProvider::HypeType)),
-				SLOT (handleTracks (QList<Media::HypedTrackInfo>, Media::IHypesProvider::HypeType)));
-		tryHype (Media::IHypesProvider::HypeType::TopTracks,
-				SIGNAL (gotHypedTracks (QList<Media::HypedTrackInfo>, Media::IHypesProvider::HypeType)),
-				SLOT (handleTracks (QList<Media::HypedTrackInfo>, Media::IHypesProvider::HypeType)));
-
-		XmlSettingsManager::Instance ()
-				.setProperty ("LastUsedHypesProvider", prov->GetServiceName ());
+		XmlSettingsManager::Instance ().setProperty ("LastUsedHypesProvider", prov->GetServiceName ());
 	}
 
 	namespace
@@ -241,7 +239,7 @@ namespace LMP
 		}
 	}
 
-	void HypesWidget::handleArtists (const QList<Media::HypedArtistInfo>& infos, Media::IHypesProvider::HypeType type)
+	void HypesWidget::HandleArtists (const QList<Media::HypedArtistInfo>& infos, Media::IHypesProvider::HypeType type)
 	{
 		auto model = type == Media::IHypesProvider::HypeType::NewArtists ?
 				NewArtistsModel_ :
@@ -261,7 +259,7 @@ namespace LMP
 		}
 	}
 
-	void HypesWidget::handleTracks (const QList<Media::HypedTrackInfo>& infos, Media::IHypesProvider::HypeType type)
+	void HypesWidget::HandleTracks (const QList<Media::HypedTrackInfo>& infos, Media::IHypesProvider::HypeType type)
 	{
 		auto model = type == Media::IHypesProvider::HypeType::NewTracks ?
 				NewTracksModel_ :
