@@ -278,7 +278,7 @@ namespace Lastfmscrobble
 		Util::Unreachable ();
 	}
 
-	void Plugin::RequestHype (HypeType type)
+	QFuture<Plugin::HypeQueryResult_t> Plugin::RequestHype (HypeType type)
 	{
 		auto nam = Proxy_->GetNetworkAccessManager ();
 
@@ -286,22 +286,10 @@ namespace Lastfmscrobble
 		{
 		case HypeType::NewArtists:
 		case HypeType::TopArtists:
-			connect (new HypedArtistsFetcher (nam, type, this),
-					SIGNAL (gotHypedArtists (QList<Media::HypedArtistInfo>,
-							Media::IHypesProvider::HypeType)),
-					this,
-					SIGNAL (gotHypedArtists (QList<Media::HypedArtistInfo>,
-							Media::IHypesProvider::HypeType)));
-			break;
+			return (new HypedArtistsFetcher (nam, type, this))->GetFuture ();
 		case HypeType::NewTracks:
 		case HypeType::TopTracks:
-			connect (new HypedTracksFetcher (nam, type, this),
-					SIGNAL (gotHypedTracks (QList<Media::HypedTrackInfo>,
-							Media::IHypesProvider::HypeType)),
-					this,
-					SIGNAL (gotHypedTracks (QList<Media::HypedTrackInfo>,
-							Media::IHypesProvider::HypeType)));
-			break;
+			return (new HypedTracksFetcher (nam, type, this))->GetFuture ();
 		}
 	}
 

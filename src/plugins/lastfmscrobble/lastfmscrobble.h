@@ -127,14 +127,11 @@ namespace Lastfmscrobble
 		void AttendEvent (qint64, Media::EventAttendType);
 
 		bool SupportsHype (HypeType);
-		void RequestHype (HypeType);
+		QFuture<HypeQueryResult_t> RequestHype (HypeType);
 	private slots:
 		void reloadRecommendedEvents ();
 	signals:
 		void gotRecentReleases (const QList<Media::AlbumRelease>&);
-
-		void gotHypedArtists (const QList<Media::HypedArtistInfo>&, Media::IHypesProvider::HypeType);
-		void gotHypedTracks (const QList<Media::HypedTrackInfo>&, Media::IHypesProvider::HypeType);
 	};
 }
 }

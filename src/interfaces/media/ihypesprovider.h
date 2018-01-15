@@ -218,29 +218,7 @@ namespace Media
 		 *
 		 * @param[in] type The type of the hype to update.
 		 */
-		virtual void RequestHype (HypeType type) = 0;
-	protected:
-		/** @brief Emitted when the list of hyped artists is updated.
-		 *
-		 * This signal is emitted when the list of hyped artists is
-		 * updated for the given hype type.
-		 *
-		 * @param[out] artists The list of the artists for the given
-		 * hype type.
-		 * @param[out] type The type of the hype.
-		 */
-		virtual void gotHypedArtists (const QList<HypedArtistInfo>& artists, HypeType type) = 0;
-
-		/** @brief Emitted when the list of hyped tracks is updated.
-		 *
-		 * This signal is emitted when the list of hyped tracks is
-		 * updated for the given hype type.
-		 *
-		 * @param[out] tracks The list of the tracks for the given
-		 * hype type.
-		 * @param[out] type The type of the hype.
-		 */
-		virtual void gotHypedTracks (const QList<HypedTrackInfo>& tracks, HypeType type) = 0;
+		virtual QFuture<HypeQueryResult_t> RequestHype (HypeType type) = 0;
 	};
 }
 
