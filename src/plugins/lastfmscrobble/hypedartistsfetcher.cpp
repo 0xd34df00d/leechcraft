@@ -35,7 +35,6 @@
 #include <QDomDocument>
 #include <QtDebug>
 #include <util/sll/visitor.h>
-#include <util/sll/either.h>
 #include <util/network/handlenetworkreply.h>
 #include <util/threads/futures.h>
 #include "util.h"
@@ -50,6 +49,8 @@ namespace Lastfmscrobble
 	, NAM_ (nam)
 	, Type_ (type)
 	{
+		Promise_.reportStarted ();
+
 		QMap<QString, QString> params;
 		params ["limit"] = "20";
 		const auto& method = type == Media::IHypesProvider::HypeType::NewArtists ?
@@ -61,6 +62,7 @@ namespace Lastfmscrobble
 				{
 					[this] (Util::Void)
 					{
+						Util::ReportFutureResult (Promise_, "Unable to issue Last.FM API request.");
 						deleteLater ();
 					},
 					[this] (const QByteArray& data) { HandleFinished (data); }
@@ -72,6 +74,7 @@ namespace Lastfmscrobble
 		if (--InfoCount_)
 			return;
 
+		Util::ReportFutureResult (Promise_, Infos_);
 		emit gotHypedArtists (Infos_, Type_);
 		deleteLater ();
 	}

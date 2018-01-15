@@ -30,6 +30,8 @@
 #pragma once
 
 #include <QObject>
+#include <QFutureInterface>
+#include <util/sll/either.h>
 #include <interfaces/media/ihypesprovider.h>
 
 class QNetworkAccessManager;
@@ -47,8 +49,12 @@ namespace Lastfmscrobble
 		const Media::IHypesProvider::HypeType Type_;
 
 		int InfoCount_ = 0;
+
+		QFutureInterface<Media::IHypesProvider::HypeQueryResult_t> Promise_;
 	public:
 		HypedArtistsFetcher (QNetworkAccessManager*, Media::IHypesProvider::HypeType, QObject* = 0);
+
+		QFuture<Media::IHypesProvider::HypeQueryResult_t> GetFuture ();
 	private:
 		void DecrementWaiting ();
 		void HandleFinished (const QByteArray&);
