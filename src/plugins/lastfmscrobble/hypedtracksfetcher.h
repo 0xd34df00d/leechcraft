@@ -42,8 +42,6 @@ namespace Lastfmscrobble
 {
 	class HypedTracksFetcher : public QObject
 	{
-		Q_OBJECT
-
 		QFutureInterface<Media::IHypesProvider::HypeQueryResult_t> Promise_;
 	public:
 		HypedTracksFetcher (QNetworkAccessManager*, Media::IHypesProvider::HypeType, QObject* = 0);

@@ -42,8 +42,6 @@ namespace Lastfmscrobble
 {
 	class HypedArtistsFetcher : public QObject
 	{
-		Q_OBJECT
-
 		QNetworkAccessManager *NAM_;
 		QList<Media::HypedArtistInfo> Infos_;
 
