@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QObject>
+#include <util/sll/either.h>
 #include <interfaces/media/ihypesprovider.h>
 
 class QNetworkAccessManager;
@@ -45,9 +46,9 @@ namespace Lastfmscrobble
 		const Media::IHypesProvider::HypeType Type_;
 	public:
 		HypedTracksFetcher (QNetworkAccessManager*, Media::IHypesProvider::HypeType, QObject* = 0);
-	private slots:
-		void handleFinished ();
-		void handleError ();
+
+	private:
+		void HandleFinished (const QByteArray&);
 	signals:
 		void gotHypedTracks (const QList<Media::HypedTrackInfo>&, Media::IHypesProvider::HypeType);
 	};

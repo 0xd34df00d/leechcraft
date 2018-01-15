@@ -33,6 +33,8 @@
 #include <QNetworkAccessManager>
 #include <QDomDocument>
 #include <QtDebug>
+#include <util/network/handlenetworkreply.h>
+#include <util/threads/futures.h>
 #include "util.h"
 
 namespace LeechCraft
@@ -49,22 +51,16 @@ namespace Lastfmscrobble
 				"chart.getHypedTracks" :
 				"chart.getTopTracks";
 		auto reply = Request (method, nam, params);
-		connect (reply,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleFinished ()));
-		connect (reply,
-				SIGNAL (error (QNetworkReply::NetworkError)),
-				this,
-				SLOT (handleError ()));
+		Util::Sequence (this, Util::HandleReply (reply, this)) >>
+				Util::Visitor
+				{
+					[this] (Util::Void) { Util::ReportFutureResult (Promise_, "Unable to issue Last.FM API request."); },
+					[this] (const QByteArray& data) { HandleFinished (data); }
+				}.Finally ([this] { deleteLater (); });
 	}
 
-	void HypedTracksFetcher::handleFinished ()
+	void HypedTracksFetcher::HandleFinished (const QByteArray& data)
 	{
-		auto reply = qobject_cast<QNetworkReply*> (sender ());
-		deleteLater ();
-
-		const auto& data = reply->readAll ();
 		QDomDocument doc;
 		if (!doc.setContent (data))
 		{
@@ -107,17 +103,6 @@ namespace Lastfmscrobble
 		}
 
 		emit gotHypedTracks (tracks, Type_);
-	}
-
-	void HypedTracksFetcher::handleError ()
-	{
-		auto reply = qobject_cast<QNetworkReply*> (sender ());
-
-		qWarning () << Q_FUNC_INFO
-				<< reply->errorString ();
-
-		reply->deleteLater ();
-		deleteLater ();
 	}
 }
 }
