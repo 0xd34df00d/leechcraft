@@ -55,14 +55,15 @@ namespace Lastfmscrobble
 				"chart.getHypedArtists" :
 				"chart.getTopArtists";
 		auto reply = Request (method, nam, params);
-		connect (reply,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleFinished ()));
-		connect (reply,
-				SIGNAL (error (QNetworkReply::NetworkError)),
-				this,
-				SLOT (handleError ()));
+		Util::Sequence (this, Util::HandleReply (reply, this)) >>
+				Util::Visitor
+				{
+					[this] (const QString& error)
+					{
+						deleteLater ();
+					},
+					[this] (const QByteArray& data) { HandleFinished (data); }
+				};
 	}
 
 	void HypedArtistsFetcher::DecrementWaiting ()
@@ -74,12 +75,8 @@ namespace Lastfmscrobble
 		deleteLater ();
 	}
 
-	void HypedArtistsFetcher::handleFinished ()
+	void HypedArtistsFetcher::HandleFinished (const QByteArray& data)
 	{
-		auto reply = qobject_cast<QNetworkReply*> (sender ());
-		reply->deleteLater ();
-
-		const auto& data = reply->readAll ();
 		QDomDocument doc;
 		if (!doc.setContent (data))
 		{
@@ -140,17 +137,6 @@ namespace Lastfmscrobble
 		InfoCount_ = Infos_.size ();
 		if (!InfoCount_)
 			deleteLater ();
-	}
-
-	void HypedArtistsFetcher::handleError ()
-	{
-		auto reply = qobject_cast<QNetworkReply*> (sender ());
-
-		qWarning () << Q_FUNC_INFO
-				<< reply->errorString ();
-
-		reply->deleteLater ();
-		deleteLater ();
 	}
 }
 }

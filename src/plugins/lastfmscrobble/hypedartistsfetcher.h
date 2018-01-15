@@ -51,9 +51,7 @@ namespace Lastfmscrobble
 		HypedArtistsFetcher (QNetworkAccessManager*, Media::IHypesProvider::HypeType, QObject* = 0);
 	private:
 		void DecrementWaiting ();
-	private slots:
-		void handleFinished ();
-		void handleError ();
+		void HandleFinished (const QByteArray&);
 	signals:
 		void gotHypedArtists (const QList<Media::HypedArtistInfo>&, Media::IHypesProvider::HypeType);
 	};
