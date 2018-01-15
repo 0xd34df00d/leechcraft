@@ -36,6 +36,7 @@
 #include <QtDebug>
 #include <util/sll/visitor.h>
 #include <util/sll/either.h>
+#include <util/network/handlenetworkreply.h>
 #include <util/threads/futures.h>
 #include "util.h"
 #include "pendingartistbio.h"
@@ -58,7 +59,7 @@ namespace Lastfmscrobble
 		Util::Sequence (this, Util::HandleReply (reply, this)) >>
 				Util::Visitor
 				{
-					[this] (const QString& error)
+					[this] (Util::Void)
 					{
 						deleteLater ();
 					},
