@@ -46,7 +46,6 @@ namespace Lastfmscrobble
 
 		QNetworkAccessManager *NAM_;
 		QList<Media::HypedArtistInfo> Infos_;
-		const Media::IHypesProvider::HypeType Type_;
 
 		int InfoCount_ = 0;
 
@@ -58,8 +57,6 @@ namespace Lastfmscrobble
 	private:
 		void DecrementWaiting ();
 		void HandleFinished (const QByteArray&);
-	signals:
-		void gotHypedArtists (const QList<Media::HypedArtistInfo>&, Media::IHypesProvider::HypeType);
 	};
 }
 }

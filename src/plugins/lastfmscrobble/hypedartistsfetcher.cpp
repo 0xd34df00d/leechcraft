@@ -47,7 +47,6 @@ namespace Lastfmscrobble
 	HypedArtistsFetcher::HypedArtistsFetcher (QNetworkAccessManager *nam, Media::IHypesProvider::HypeType type, QObject *parent)
 	: QObject (parent)
 	, NAM_ (nam)
-	, Type_ (type)
 	{
 		Promise_.reportStarted ();
 
@@ -75,7 +74,6 @@ namespace Lastfmscrobble
 			return;
 
 		Util::ReportFutureResult (Promise_, Infos_);
-		emit gotHypedArtists (Infos_, Type_);
 		deleteLater ();
 	}
 

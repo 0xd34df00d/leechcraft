@@ -44,8 +44,6 @@ namespace Lastfmscrobble
 	{
 		Q_OBJECT
 
-		const Media::IHypesProvider::HypeType Type_;
-
 		QFutureInterface<Media::IHypesProvider::HypeQueryResult_t> Promise_;
 	public:
 		HypedTracksFetcher (QNetworkAccessManager*, Media::IHypesProvider::HypeType, QObject* = 0);
@@ -53,8 +51,6 @@ namespace Lastfmscrobble
 		QFuture<Media::IHypesProvider::HypeQueryResult_t> GetFuture ();
 	private:
 		void HandleFinished (const QByteArray&);
-	signals:
-		void gotHypedTracks (const QList<Media::HypedTrackInfo>&, Media::IHypesProvider::HypeType);
 	};
 }
 }
