@@ -291,6 +291,8 @@ namespace Lastfmscrobble
 		case HypeType::TopTracks:
 			return (new HypedTracksFetcher (nam, type, this))->GetFuture ();
 		}
+
+		Util::Unreachable ();
 	}
 
 	void Plugin::reloadRecommendedEvents ()
