@@ -45,6 +45,8 @@ namespace Lastfmscrobble
 	: QObject (parent)
 	, Type_ (type)
 	{
+		Promise_.reportStarted ();
+
 		QMap<QString, QString> params;
 		params ["limit"] = "50";
 		const auto& method = type == Media::IHypesProvider::HypeType::NewTracks ?
@@ -57,6 +59,11 @@ namespace Lastfmscrobble
 					[this] (Util::Void) { Util::ReportFutureResult (Promise_, "Unable to issue Last.FM API request."); },
 					[this] (const QByteArray& data) { HandleFinished (data); }
 				}.Finally ([this] { deleteLater (); });
+	}
+
+	QFuture<Media::IHypesProvider::HypeQueryResult_t> HypedTracksFetcher::GetFuture ()
+	{
+		return Promise_.future ();
 	}
 
 	void HypedTracksFetcher::HandleFinished (const QByteArray& data)
@@ -103,6 +110,7 @@ namespace Lastfmscrobble
 		}
 
 		emit gotHypedTracks (tracks, Type_);
+		Util::ReportFutureResult (Promise_, tracks);
 	}
 }
 }
