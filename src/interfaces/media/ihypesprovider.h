@@ -29,10 +29,15 @@
 
 #pragma once
 
+#include <boost/variant.hpp>
 #include <QString>
 #include <QList>
 #include <QUrl>
+#include <util/sll/eitherfwd.h>
 #include "audiostructs.h"
+
+template<typename>
+class QFuture;
 
 namespace Media
 {
@@ -153,6 +158,8 @@ namespace Media
 		QUrl ArtistPage_;
 	};
 
+	using HypedInfo_t = boost::variant<QList<HypedArtistInfo>, QList<HypedTrackInfo>>;
+
 	/** @brief Interface for plugins that support fetching hypes.
 	 *
 	 * Hypes are either popular tracks and artists or those who gain
@@ -167,6 +174,8 @@ namespace Media
 	{
 	public:
 		virtual ~IHypesProvider () {}
+
+		using HypeQueryResult_t = LeechCraft::Util::Either<QString, HypedInfo_t>;
 
 		/** @brief Returns the service name.
 		 *
