@@ -139,7 +139,10 @@ namespace Lastfmscrobble
 
 		InfoCount_ = Infos_.size ();
 		if (!InfoCount_)
+		{
+			Util::ReportFutureResult (Promise_, Infos_);
 			deleteLater ();
+		}
 	}
 }
 }
