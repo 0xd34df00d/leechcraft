@@ -220,6 +220,16 @@ namespace Media
 		 */
 		virtual QFuture<HypeQueryResult_t> RequestHype (HypeType type) = 0;
 	};
+
+	template<IHypesProvider::HypeType HypeType>
+	auto GetHypedInfo (const HypedInfo_t& info)
+	{
+		if constexpr (HypeType == IHypesProvider::HypeType::NewArtists ||
+				HypeType == IHypesProvider::HypeType::TopArtists)
+			return boost::get<QList<HypedArtistInfo>> (info);
+		else
+			return boost::get<QList<HypedTrackInfo>> (info);
+	}
 }
 
 Q_DECLARE_INTERFACE (Media::IHypesProvider, "org.LeechCraft.Media.IHypesProvider/1.0")
