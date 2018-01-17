@@ -91,6 +91,7 @@ namespace Lastfmscrobble
 					<< "error parsing reply"
 					<< data;
 			Util::ReportFutureResult (Promise_, "Unable to parse Last.FM response.");
+			deleteLater ();
 			return;
 		}
 
