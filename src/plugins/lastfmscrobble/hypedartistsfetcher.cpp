@@ -68,6 +68,11 @@ namespace Lastfmscrobble
 				};
 	}
 
+	QFuture<Media::IHypesProvider::HypeQueryResult_t> HypedArtistsFetcher::GetFuture ()
+	{
+		return Promise_.future ();
+	}
+
 	void HypedArtistsFetcher::DecrementWaiting ()
 	{
 		if (--InfoCount_)
