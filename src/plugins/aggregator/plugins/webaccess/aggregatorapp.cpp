@@ -80,16 +80,15 @@ namespace WebAccess
 		};
 	}
 
-	AggregatorApp::AggregatorApp (IProxyObject *ap, ICoreProxy_ptr cp,
-			const Wt::WEnvironment& environment)
+	AggregatorApp::AggregatorApp (IProxyObject *ap, ICoreProxy_ptr cp, const Wt::WEnvironment& environment)
 	: WApplication { environment }
 	, AP_ { ap }
 	, CP_ { cp }
 	, ObjsThread_ { new WittyThread (this) }
-	, ChannelsModel_ { new Q2WProxyModel { AP_->GetChannelsModel (), this } }
-	, ChannelsFilter_ { std::make_shared<ReadChannelsFilter> (this) }
+	, ChannelsModel_ { std::make_shared<Q2WProxyModel> (AP_->GetChannelsModel (), this) }
+	, ChannelsFilter_ { std::make_shared<ReadChannelsFilter> () }
 	, SourceItemModel_ { AP_->CreateItemsModel () }
-	, ItemsModel_ { new Q2WProxyModel { SourceItemModel_, this } }
+	, ItemsModel_ { std::make_shared<Q2WProxyModel> (SourceItemModel_, this) }
 	, ItemsFilter_ { std::make_shared<ReadItemsFilter> () }
 	{
 		ChannelsModel_->SetRoleMappings ({
@@ -120,9 +119,9 @@ namespace WebAccess
 					obj,
 					SLOT (deleteLater ()));
 		};
-		initThread (ChannelsModel_);
+		initThread (ChannelsModel_.get ());
 		initThread (SourceItemModel_);
-		initThread (ItemsModel_);
+		initThread (ItemsModel_.get ());
 
 		ObjsThread_->start ();
 
