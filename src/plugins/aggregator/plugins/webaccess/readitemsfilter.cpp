@@ -114,7 +114,7 @@ namespace WebAccess
 
 	void ReadItemsFilter::Invalidate ()
 	{
-		setFilterRegExp (".*");
+		setFilterRegExp (std::make_unique<std::regex> (".*"));
 	}
 }
 }
