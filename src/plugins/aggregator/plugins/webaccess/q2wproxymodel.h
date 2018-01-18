@@ -64,7 +64,7 @@ namespace WebAccess
 
 		int LastModelResetRC_ = 0;
 	public:
-		typedef std::function<boost::any (QModelIndex, int)> Morphism_t;
+		using Morphism_t = std::function<Wt::cpp17::any (QModelIndex, Wt::ItemDataRole)>;
 	private:
 		QList<Morphism_t> Morphisms_;
 	public:
@@ -78,14 +78,14 @@ namespace WebAccess
 		int columnCount (const Wt::WModelIndex& parent) const override;
 		int rowCount (const Wt::WModelIndex& parent) const override;
 		Wt::WModelIndex parent (const Wt::WModelIndex& index) const override;
-		boost::any data (const Wt::WModelIndex& index, int role) const override;
+		Wt::cpp17::any data (const Wt::WModelIndex& index, Wt::ItemDataRole role) const override;
 		Wt::WModelIndex index (int row, int column, const Wt::WModelIndex& parent) const override;
-		boost::any headerData (int section, Wt::Orientation orientation, int role) const override;
+		Wt::cpp17::any headerData (int section, Wt::Orientation orientation, Wt::ItemDataRole role) const override;
 
 		void* toRawIndex (const Wt::WModelIndex& index) const override;
 		Wt::WModelIndex fromRawIndex (void* rawIndex) const override;
 	private:
-		int WtRole2Qt (int) const;
+		int WtRole2Qt (Wt::ItemDataRole) const;
 		QModelIndex W2QIdx (const Wt::WModelIndex&) const;
 		Wt::WModelIndex Q2WIdx (const QModelIndex&) const;
 	private Q_SLOTS:

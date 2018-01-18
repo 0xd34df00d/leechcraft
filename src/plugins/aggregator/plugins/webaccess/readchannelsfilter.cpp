@@ -58,7 +58,7 @@ namespace WebAccess
 				const auto data = idx.data (AggregatorApp::ChannelRole::UnreadCount);
 				try
 				{
-					return boost::any_cast<int> (data) > 0;
+					return Wt::cpp17::any_cast<int> (data) > 0;
 				}
 				catch (const std::exception& e)
 				{

@@ -78,11 +78,11 @@ namespace WebAccess
 				try
 				{
 					const auto idAny = idx.data (AggregatorApp::ItemRole::IID);
-					const auto id = boost::any_cast<IDType_t> (idAny);
+					const auto id = Wt::cpp17::any_cast<IDType_t> (idAny);
 					if (id != CurrentId_ && !Prevs_.contains (id))
 					{
 						const auto data = idx.data (AggregatorApp::ItemRole::IsRead);
-						if (boost::any_cast<bool> (data))
+						if (Wt::cpp17::any_cast<bool> (data))
 							return false;
 					}
 				}

@@ -88,7 +88,7 @@ namespace WebAccess
 	: Server_ { new Wt::WServer }
 	, AddrMgr_ { manager }
 	{
-		Server_->addEntryPoint (Wt::Application,
+		Server_->addEntryPoint (Wt::EntryPointType::Application,
 				[proxy, coreProxy] (const Wt::WEnvironment& we)
 					{ return new AggregatorApp (proxy, coreProxy, we); });
 

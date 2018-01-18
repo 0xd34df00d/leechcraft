@@ -71,14 +71,14 @@ namespace WebAccess
 	public:
 		enum ChannelRole
 		{
-			CID = Wt::UserRole + 1,
+			CID = Wt::ItemDataRole::User + 1,
 			FID,
 			UnreadCount
 		};
 
 		enum ItemRole
 		{
-			IID = Wt::UserRole + 1,
+			IID = Wt::ItemDataRole::User + 1,
 			IsRead
 		};
 

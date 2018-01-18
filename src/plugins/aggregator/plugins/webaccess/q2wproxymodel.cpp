@@ -138,7 +138,7 @@ namespace WebAccess
 	{
 		const int IconSize = 16;
 
-		boost::any Variant2Any (const QVariant& var)
+		Wt::cpp17::any Variant2Any (const QVariant& var)
 		{
 			switch (var.type ())
 			{
@@ -174,7 +174,7 @@ namespace WebAccess
 		}
 	}
 
-	boost::any Q2WProxyModel::data (const Wt::WModelIndex& index, int role) const
+	Wt::cpp17::any Q2WProxyModel::data (const Wt::WModelIndex& index, Wt::ItemDataRole role) const
 	{
 		const auto& src = W2QIdx (index);
 
@@ -199,9 +199,9 @@ namespace WebAccess
 		return createIndex (row, column, parentPtr->EnsureChild (row));
 	}
 
-	boost::any Q2WProxyModel::headerData (int section, Wt::Orientation orientation, int role) const
+	Wt::cpp17::any Q2WProxyModel::headerData (int section, Wt::Orientation orientation, Wt::ItemDataRole role) const
 	{
-		if (orientation != Wt::Horizontal || role != Wt::DisplayRole)
+		if (orientation != Wt::Orientation::Horizontal || role != Wt::ItemDataRole::Display)
 			return Wt::WAbstractItemModel::headerData (section, orientation, role);
 
 		return Variant2Any (Src_->headerData (section, Qt::Horizontal, Qt::DisplayRole));
@@ -269,17 +269,17 @@ namespace WebAccess
 		return createIndex (index.row (), index.column (), current.get ());
 	}
 
-	int Q2WProxyModel::WtRole2Qt (int role) const
+	int Q2WProxyModel::WtRole2Qt (Wt::ItemDataRole role) const
 	{
-		switch (role)
+		switch (role.value ())
 		{
-		case Wt::DisplayRole:
+		case Wt::ItemDataRole::Display:
 			return Qt::DisplayRole;
-		case Wt::DecorationRole:
+		case Wt::ItemDataRole::Decoration:
 			return Qt::DecorationRole;
 		}
 
-		return Mapping_.value (role, -1);
+		return Mapping_.value (role.value (), -1);
 	}
 
 	void Q2WProxyModel::handleDataChanged (const QModelIndex& topLeft, const QModelIndex& bottomRight)

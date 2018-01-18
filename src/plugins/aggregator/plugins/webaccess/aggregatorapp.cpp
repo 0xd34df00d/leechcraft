@@ -102,7 +102,7 @@ namespace WebAccess
 				{ ItemRole::IID, Aggregator::IItemsModel::ItemRole::ItemId },
 				{ ItemRole::IsRead, Aggregator::IItemsModel::ItemRole::IsRead }
 			});
-		ItemsModel_->AddDataMorphism ([] (const QModelIndex& idx, int role) -> boost::any
+		ItemsModel_->AddDataMorphism ([] (const QModelIndex& idx, int role) -> Wt::cpp17::any
 			{
 				if (role != Wt::StyleClassRole)
 					return {};
@@ -156,20 +156,19 @@ namespace WebAccess
 	{
 		ItemView_->setText ({});
 
-		const auto cid = boost::any_cast<IDType_t> (idx.data (ChannelRole::CID));
+		const auto cid = Wt::cpp17::any_cast<IDType_t> (idx.data (ChannelRole::CID));
 
 		ItemsFilter_->ClearCurrentItem ();
 		ItemsModelDecorator { SourceItemModel_ }.Reset (cid);
 	}
 
-	void AggregatorApp::HandleItemClicked (const Wt::WModelIndex& idx,
-			const Wt::WMouseEvent& event)
+	void AggregatorApp::HandleItemClicked (const Wt::WModelIndex& idx, const Wt::WMouseEvent& event)
 	{
 		if (!idx.isValid ())
 			return;
 
 		const auto& src = ItemsModel_->MapToSource (ItemsFilter_->mapToSource (idx));
-		const auto itemId = boost::any_cast<IDType_t> (idx.data (ItemRole::IID));
+		const auto itemId = Wt::cpp17::any_cast<IDType_t> (idx.data (ItemRole::IID));
 		const auto& item = AP_->GetItem (itemId);
 		if (!item)
 			return;
