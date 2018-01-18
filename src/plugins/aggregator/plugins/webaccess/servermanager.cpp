@@ -89,8 +89,7 @@ namespace WebAccess
 	, AddrMgr_ { manager }
 	{
 		Server_->addEntryPoint (Wt::EntryPointType::Application,
-				[proxy, coreProxy] (const Wt::WEnvironment& we)
-					{ return new AggregatorApp (proxy, coreProxy, we); });
+				[&] (const Wt::WEnvironment& we) { return std::make_unique<AggregatorApp> (proxy, coreProxy, we); });
 
 		connect (AddrMgr_,
 				SIGNAL (addressesChanged ()),
