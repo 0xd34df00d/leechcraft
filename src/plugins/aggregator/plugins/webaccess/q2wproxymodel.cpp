@@ -34,8 +34,8 @@
 #include <QtDebug>
 #include <QDateTime>
 #include <QIcon>
-#include <Wt/WDateTime>
-#include <Wt/WApplication>
+#include <Wt/WDateTime.h>
+#include <Wt/WApplication.h>
 #include <util/util.h>
 #include "util.h"
 

@@ -29,7 +29,7 @@
 
 #include "util.h"
 #include <QString>
-#include <Wt/WString>
+#include <Wt/WString.h>
 
 namespace LeechCraft
 {

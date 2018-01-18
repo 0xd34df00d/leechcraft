@@ -30,8 +30,8 @@
 #pragma once
 
 #include <QCoreApplication>
-#include <Wt/WApplication>
-#include <Wt/WModelIndex>
+#include <Wt/WApplication.h>
+#include <Wt/WModelIndex.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/aggregator/item.h>
 

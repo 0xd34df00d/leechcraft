@@ -32,7 +32,7 @@
 #include <QStringList>
 #include <QDir>
 #include <QtDebug>
-#include <Wt/WServer>
+#include <Wt/WServer.h>
 #include <util/xsd/addressesmodelmanager.h>
 #include <util/sys/paths.h>
 #include "aggregatorapp.h"

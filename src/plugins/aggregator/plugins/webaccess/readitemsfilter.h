@@ -29,7 +29,7 @@
 
 #pragma once
 
-#include <Wt/WSortFilterProxyModel>
+#include <Wt/WSortFilterProxyModel.h>
 #include <common.h>
 
 namespace LeechCraft

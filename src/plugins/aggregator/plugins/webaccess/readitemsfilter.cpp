@@ -28,7 +28,7 @@
  **********************************************************************/
 
 #include "readitemsfilter.h"
-#include <Wt/WTimer>
+#include <Wt/WTimer.h>
 #include "aggregatorapp.h"
 #include "wf.h"
 
