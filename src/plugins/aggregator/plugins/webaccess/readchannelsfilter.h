@@ -39,7 +39,7 @@ namespace WebAccess
 {
 	class ReadChannelsFilter : public Wt::WSortFilterProxyModel
 	{
-		bool HideRead_;
+		bool HideRead_ = true;
 	public:
 		ReadChannelsFilter (Wt::WObject* = 0);
 

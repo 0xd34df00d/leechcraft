@@ -39,7 +39,6 @@ namespace WebAccess
 {
 	ReadChannelsFilter::ReadChannelsFilter (Wt::WObject *parent)
 	: WSortFilterProxyModel (parent)
-	, HideRead_ (true)
 	{
 		setDynamicSortFilter (true);
 	}
