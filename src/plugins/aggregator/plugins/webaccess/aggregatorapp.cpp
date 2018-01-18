@@ -52,7 +52,6 @@
 #include "util.h"
 #include "q2wproxymodel.h"
 #include "readitemsfilter.h"
-#include "wf.h"
 
 namespace LeechCraft
 {
@@ -206,10 +205,10 @@ namespace WebAccess
 		Wt::WPopupMenu menu;
 		if (item->Unread_)
 			menu.addItem (ToW (tr ("Mark as read")))->
-					triggered ().connect (WF ([this, &item] { AP_->SetItemRead (item->ItemID_, true); }));
+					triggered ().connect ([this, &item] { AP_->SetItemRead (item->ItemID_, true); });
 		else
 			menu.addItem (ToW (tr ("Mark as unread")))->
-					triggered ().connect (WF ([this, &item] { AP_->SetItemRead (item->ItemID_, false); }));
+					triggered ().connect ([this, &item] { AP_->SetItemRead (item->ItemID_, false); });
 		menu.exec (event);
 	}
 
@@ -229,8 +228,8 @@ namespace WebAccess
 		auto showReadChannels = new Wt::WCheckBox (ToW (tr ("Include read channels")));
 		showReadChannels->setToolTip (ToW (tr ("Also display channels that have no unread items.")));
 		showReadChannels->setChecked (false);
-		showReadChannels->checked ().connect (WF ([this] { ChannelsFilter_->SetHideRead (false); }));
-		showReadChannels->unChecked ().connect (WF ([this] { ChannelsFilter_->SetHideRead (true); }));
+		showReadChannels->checked ().connect ([this] { ChannelsFilter_->SetHideRead (false); });
+		showReadChannels->unChecked ().connect ([this] { ChannelsFilter_->SetHideRead (true); });
 		leftPaneLay->addWidget (showReadChannels);
 
 		auto channelsTree = new Wt::WTreeView ();
@@ -245,8 +244,8 @@ namespace WebAccess
 
 		auto showReadItems = new Wt::WCheckBox (ToW (tr ("Show read items")));
 		showReadItems->setChecked (false);
-		showReadItems->checked ().connect (WF ([this] { ItemsFilter_->SetHideRead (false); }));
-		showReadItems->unChecked ().connect (WF ([this] { ItemsFilter_->SetHideRead (true); }));
+		showReadItems->checked ().connect ([this] { ItemsFilter_->SetHideRead (false); });
+		showReadItems->unChecked ().connect ([this] { ItemsFilter_->SetHideRead (true); });
 		rightPaneLay->addWidget (showReadItems);
 
 		ItemsTable_ = new Wt::WTableView ();

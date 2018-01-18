@@ -30,7 +30,6 @@
 #include "readitemsfilter.h"
 #include <Wt/WTimer.h>
 #include "aggregatorapp.h"
-#include "wf.h"
 
 namespace LeechCraft
 {
@@ -38,6 +37,8 @@ namespace Aggregator
 {
 namespace WebAccess
 {
+	using namespace std::chrono_literals;
+
 	ReadItemsFilter::ReadItemsFilter ()
 	{
 		setDynamicSortFilter (true);
@@ -55,7 +56,7 @@ namespace WebAccess
 			return;
 
 		if (Prevs_.isEmpty ())
-			Wt::WTimer::singleShot (500, WF ([this] { PullOnePrev (); }));
+			Wt::WTimer::singleShot (500ms, [this] { PullOnePrev (); });
 
 		Prevs_ << CurrentId_;
 		CurrentId_ = id;
@@ -108,7 +109,7 @@ namespace WebAccess
 		Invalidate ();
 
 		if (!Prevs_.isEmpty ())
-			Wt::WTimer::singleShot (500, WF ([this] { PullOnePrev (); }));
+			Wt::WTimer::singleShot (500ms, [this] { PullOnePrev (); });
 	}
 
 	void ReadItemsFilter::Invalidate ()
