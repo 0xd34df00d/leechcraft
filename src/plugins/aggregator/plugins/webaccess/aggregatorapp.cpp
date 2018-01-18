@@ -151,7 +151,7 @@ namespace WebAccess
 		delete ObjsThread_;
 	}
 
-	void AggregatorApp::HandleChannelClicked (const Wt::WModelIndex& idx)
+	void AggregatorApp::HandleChannelClicked (const Wt::WModelIndex& idx, const Wt::WMouseEvent&)
 	{
 		ItemView_->setText ({});
 

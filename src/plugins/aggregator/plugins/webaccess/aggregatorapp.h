@@ -85,7 +85,7 @@ namespace WebAccess
 		AggregatorApp (IProxyObject*, ICoreProxy_ptr, const Wt::WEnvironment& environment);
 		~AggregatorApp ();
 	private:
-		void HandleChannelClicked (const Wt::WModelIndex&);
+		void HandleChannelClicked (const Wt::WModelIndex&, const Wt::WMouseEvent&);
 		void HandleItemClicked (const Wt::WModelIndex&, const Wt::WMouseEvent&);
 
 		void ShowItem (const QModelIndex&, const Item_ptr&);
