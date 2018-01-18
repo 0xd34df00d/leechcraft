@@ -59,11 +59,11 @@ namespace WebAccess
 		QThread * const ObjsThread_;
 
 		Q2WProxyModel *ChannelsModel_;
-		ReadChannelsFilter *ChannelsFilter_;
+		std::shared_ptr<ReadChannelsFilter> ChannelsFilter_;
 
 		QAbstractItemModel * const SourceItemModel_;
 		Q2WProxyModel *ItemsModel_;
-		ReadItemsFilter *ItemsFilter_;
+		std::shared_ptr<ReadItemsFilter> ItemsFilter_;
 
 		Wt::WTableView *ItemsTable_;
 

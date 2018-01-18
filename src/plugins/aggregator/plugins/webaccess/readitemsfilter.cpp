@@ -38,8 +38,7 @@ namespace Aggregator
 {
 namespace WebAccess
 {
-	ReadItemsFilter::ReadItemsFilter (Wt::WObject *parent)
-	: WSortFilterProxyModel { parent }
+	ReadItemsFilter::ReadItemsFilter ()
 	{
 		setDynamicSortFilter (true);
 	}

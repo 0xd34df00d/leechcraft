@@ -45,7 +45,7 @@ namespace WebAccess
 		QList<IDType_t> Prevs_;
 		IDType_t CurrentId_ = static_cast<IDType_t> (-1);
 	public:
-		ReadItemsFilter (WObject* = nullptr);
+		ReadItemsFilter ();
 
 		void SetHideRead (bool);
 

@@ -41,7 +41,7 @@ namespace WebAccess
 	{
 		bool HideRead_ = true;
 	public:
-		ReadChannelsFilter (Wt::WObject* = 0);
+		ReadChannelsFilter ();
 
 		void SetHideRead (bool);
 	protected:

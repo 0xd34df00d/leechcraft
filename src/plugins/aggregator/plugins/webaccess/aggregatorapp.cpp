@@ -88,10 +88,10 @@ namespace WebAccess
 	, CP_ { cp }
 	, ObjsThread_ { new WittyThread (this) }
 	, ChannelsModel_ { new Q2WProxyModel { AP_->GetChannelsModel (), this } }
-	, ChannelsFilter_ { new ReadChannelsFilter { this } }
+	, ChannelsFilter_ { std::make_shared<ReadChannelsFilter> (this) }
 	, SourceItemModel_ { AP_->CreateItemsModel () }
 	, ItemsModel_ { new Q2WProxyModel { SourceItemModel_, this } }
-	, ItemsFilter_ { new ReadItemsFilter { this }}
+	, ItemsFilter_ { std::make_shared<ReadItemsFilter> () }
 	{
 		ChannelsModel_->SetRoleMappings ({
 				{ ChannelRole::UnreadCount, Aggregator::ChannelRoles::UnreadCount },
@@ -140,9 +140,6 @@ namespace WebAccess
 
 	AggregatorApp::~AggregatorApp ()
 	{
-		delete ChannelsFilter_;
-		delete ItemsFilter_;
-
 		ObjsThread_->quit ();
 		ObjsThread_->wait (1000);
 		if (!ObjsThread_->isFinished ())
