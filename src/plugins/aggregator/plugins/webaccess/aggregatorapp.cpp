@@ -100,9 +100,9 @@ namespace WebAccess
 				{ ItemRole::IID, Aggregator::IItemsModel::ItemRole::ItemId },
 				{ ItemRole::IsRead, Aggregator::IItemsModel::ItemRole::IsRead }
 			});
-		ItemsModel_->AddDataMorphism ([] (const QModelIndex& idx, int role) -> Wt::cpp17::any
+		ItemsModel_->AddDataMorphism ([] (const QModelIndex& idx, Wt::ItemDataRole role) -> Wt::cpp17::any
 			{
-				if (role != Wt::StyleClassRole)
+				if (role != Wt::ItemDataRole::StyleClass)
 					return {};
 
 				if (!idx.data (Aggregator::IItemsModel::ItemRole::IsRead).toBool ())
@@ -129,7 +129,7 @@ namespace WebAccess
 		ItemsFilter_->setSourceModel (ItemsModel_);
 
 		setTitle ("Aggregator WebAccess");
-		setLoadingIndicator (new Wt::WOverlayLoadingIndicator ());
+		setLoadingIndicator (std::make_unique<Wt::WOverlayLoadingIndicator> ());
 
 		SetupUI ();
 
@@ -175,10 +175,10 @@ namespace WebAccess
 
 		switch (event.button ())
 		{
-		case Wt::WMouseEvent::LeftButton:
+		case Wt::MouseButton::Left:
 			ShowItem (src, item);
 			break;
-		case Wt::WMouseEvent::RightButton:
+		case Wt::MouseButton::Right:
 			ShowItemMenu (src, item, event);
 			break;
 		default:
