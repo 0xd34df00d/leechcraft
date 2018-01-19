@@ -46,8 +46,7 @@ namespace Aggregator
 namespace WebAccess
 {
 	Q2WProxyModel::Q2WProxyModel (QAbstractItemModel *src, Wt::WApplication *app)
-	: Wt::WAbstractItemModel { }
-	, Src_ { src }
+	: Src_ { src }
 	, Root_ { new Util::ModelItem { src, {}, {} } }
 	, App_ { app }
 	, Update_ { app }
