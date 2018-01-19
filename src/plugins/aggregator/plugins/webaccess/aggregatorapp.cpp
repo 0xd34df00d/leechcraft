@@ -43,7 +43,6 @@
 #include <Wt/WPanel.h>
 #include <Wt/WPopupMenu.h>
 #include <Wt/WCssTheme.h>
-#include <Wt/WScrollArea.h>
 #include <interfaces/aggregator/iproxyobject.h>
 #include <interfaces/aggregator/channel.h>
 #include <interfaces/aggregator/iitemsmodel.h>
@@ -213,62 +212,50 @@ namespace WebAccess
 
 	void AggregatorApp::SetupUI ()
 	{
-		setTheme (new Wt::WCssTheme ("polished"));
+		setTheme (std::make_shared<Wt::WCssTheme> ("polished"));
 		setLocale ({ QLocale {}.name ().toUtf8 ().constData () });
 
 		styleSheet ().addRule (".unreadItem", "font-weight: bold;");
 
-		auto rootLay = new Wt::WBoxLayout (Wt::WBoxLayout::LeftToRight);
-		root ()->setLayout (rootLay);
+		auto rootLay = root ()->setLayout (std::make_unique<Wt::WBoxLayout> (Wt::LayoutDirection::LeftToRight));
 
-		auto leftPaneLay = new Wt::WBoxLayout (Wt::WBoxLayout::TopToBottom);
-		rootLay->addLayout (leftPaneLay, 2);
+		auto leftPaneLay = rootLay->addLayout (std::make_unique<Wt::WBoxLayout> (Wt::LayoutDirection::TopToBottom), 2);
 
-		auto showReadChannels = new Wt::WCheckBox (ToW (tr ("Include read channels")));
+		auto showReadChannels = leftPaneLay->addWidget (std::make_unique<Wt::WCheckBox> (ToW (tr ("Include read channels"))));
 		showReadChannels->setToolTip (ToW (tr ("Also display channels that have no unread items.")));
 		showReadChannels->setChecked (false);
 		showReadChannels->checked ().connect ([this] { ChannelsFilter_->SetHideRead (false); });
 		showReadChannels->unChecked ().connect ([this] { ChannelsFilter_->SetHideRead (true); });
-		leftPaneLay->addWidget (showReadChannels);
 
-		auto channelsTree = new Wt::WTreeView ();
+		auto channelsTree = leftPaneLay->addWidget (std::make_unique<Wt::WTreeView> (), 1, Wt::AlignmentFlag::Top);
 		channelsTree->setModel (ChannelsFilter_);
-		channelsTree->setSelectionMode (Wt::SingleSelection);
+		channelsTree->setSelectionMode (Wt::SelectionMode::Single);
 		channelsTree->clicked ().connect (this, &AggregatorApp::HandleChannelClicked);
 		channelsTree->setAlternatingRowColors (true);
-		leftPaneLay->addWidget (channelsTree, 1, Wt::AlignTop);
 
-		auto rightPaneLay = new Wt::WBoxLayout (Wt::WBoxLayout::TopToBottom);
-		rootLay->addLayout (rightPaneLay, 7);
+		auto rightPaneLay = rootLay->addLayout (std::make_unique<Wt::WBoxLayout> (Wt::LayoutDirection::TopToBottom), 7);
 
-		auto showReadItems = new Wt::WCheckBox (ToW (tr ("Show read items")));
+		auto showReadItems = rightPaneLay->addWidget (std::make_unique<Wt::WCheckBox> (ToW (tr ("Show read items"))));
 		showReadItems->setChecked (false);
 		showReadItems->checked ().connect ([this] { ItemsFilter_->SetHideRead (false); });
 		showReadItems->unChecked ().connect ([this] { ItemsFilter_->SetHideRead (true); });
-		rightPaneLay->addWidget (showReadItems);
 
-		ItemsTable_ = new Wt::WTableView ();
+		ItemsTable_ = rightPaneLay->addWidget (std::make_unique<Wt::WTableView> (), 2, Wt::AlignmentFlag::Justify);
 		ItemsTable_->setModel (ItemsFilter_);
 		ItemsTable_->mouseWentUp ().connect (this, &AggregatorApp::HandleItemClicked);
 		ItemsTable_->setAlternatingRowColors (true);
-		ItemsTable_->setColumnWidth (0, { 550, Wt::WLength::Pixel });
-		ItemsTable_->setSelectionMode (Wt::SingleSelection);
+		ItemsTable_->setColumnWidth (0, { 550, Wt::LengthUnit::Pixel });
+		ItemsTable_->setSelectionMode (Wt::SelectionMode::Single);
 		ItemsTable_->setAttributeValue ("oncontextmenu",
 				"event.cancelBubble = true; event.returnValue = false; return false;");
-		rightPaneLay->addWidget (ItemsTable_, 2, Wt::AlignJustify);
 
-		ItemView_ = new Wt::WText ();
-		ItemView_->setTextFormat (Wt::XHTMLUnsafeText);
+		auto itemPanel = rightPaneLay->addWidget (std::make_unique<Wt::WPanel> (), 5);
 
-		auto scrollArea = new Wt::WScrollArea;
-		scrollArea->setHorizontalScrollBarPolicy (Wt::WScrollArea::ScrollBarAlwaysOff);
-		scrollArea->setVerticalScrollBarPolicy (Wt::WScrollArea::ScrollBarAsNeeded);
-		scrollArea->setWidget (ItemView_);
+		auto scrollArea = itemPanel->setCentralWidget (std::make_unique<Wt::WContainerWidget> ());
+		scrollArea->setOverflow (Wt::Overflow::Scroll, Wt::Orientation::Vertical);
 
-		auto itemPanel = new Wt::WPanel ();
-		itemPanel->setCentralWidget (scrollArea);
-
-		rightPaneLay->addWidget (itemPanel, 5);
+		ItemView_ = scrollArea->addWidget (std::make_unique<Wt::WText> ());
+		ItemView_->setTextFormat (Wt::TextFormat::UnsafeXHTML);
 	}
 }
 }
