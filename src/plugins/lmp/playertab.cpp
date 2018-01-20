@@ -439,14 +439,14 @@ namespace LMP
 					GetPluginsManager ()->GetAllCastableTo<Media::IAudioScrobbler*> ();
 		if (info.Title_.isEmpty () && info.Artist_.isEmpty ())
 		{
-			std::for_each (scrobblers.begin (), scrobblers.end (),
-					[] (decltype (scrobblers.front ()) s) { s->PlaybackStopped (); });
+			for (const auto& s : scrobblers)
+				s->PlaybackStopped ();
 			return;
 		}
 
 		const Media::AudioInfo aInfo = info;
-		std::for_each (scrobblers.begin (), scrobblers.end (),
-					[&aInfo] (decltype (scrobblers.front ()) s) { s->NowPlaying (aInfo); });
+		for (const auto& s : scrobblers)
+			s->NowPlaying (aInfo);
 	}
 
 	void PlayerTab::FillSimilar (const Media::SimilarityInfos_t& infos)
