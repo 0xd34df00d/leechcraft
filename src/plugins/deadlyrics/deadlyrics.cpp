@@ -87,7 +87,6 @@ namespace DeadLyrics
 		promise.reportStarted ();
 		promise.setExpectedResultCount (Searchers_.size ());
 
-		qDebug () << Q_FUNC_INFO << query.Artist_ << query.Album_;
 		for (auto searcher : Searchers_)
 			searcher->Search (query,
 					[promise] (const LyricsQueryResult_t& result) mutable
