@@ -136,7 +136,6 @@ namespace DeadLyrics
 		}
 
 		const auto& lyrics = reply ["payload"].toString ();
-		emit gotLyrics ({ origQuery, { { provName, lyrics } } });
 		reporter (Media::ILyricsFinder::LyricsQueryResult_t { { origQuery, { { provName, lyrics } } } });
 	}
 }
