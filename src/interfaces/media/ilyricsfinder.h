@@ -147,17 +147,7 @@ namespace Media
 		 * @param[in] query The lyrics query.
 		 * @param[in] options Additional search options.
 		 */
-		virtual void RequestLyrics (const LyricsQuery& query, QueryOptions options = NoOption) = 0;
-	protected:
-		/** @brief Emitted when search for lyrics is complete.
-		 *
-		 * It is OK to emit this signal multiple times for a single
-		 * query.
-		 *
-		 * @param[out] results The results of the lyrics query,
-		 * containing the original query and the actual results.
-		 */
-		virtual void gotLyrics (const LyricsResults& results) = 0;
+		virtual QFuture<LyricsQueryResult_t> RequestLyrics (const LyricsQuery& query, QueryOptions options = NoOption) = 0;
 	};
 }
 
