@@ -75,7 +75,7 @@ namespace DeadLyrics
 		}
 	}
 
-	void SitesSearcher::Search (const Media::LyricsQuery& query, Media::QueryOptions)
+	void SitesSearcher::Search (const Media::LyricsQuery& query)
 	{
 		for (const auto& desc : Descs_)
 			connect (new ConcreteSite (query, desc, Proxy_, this),

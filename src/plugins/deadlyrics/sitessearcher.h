@@ -46,7 +46,7 @@ namespace DeadLyrics
 	public:
 		SitesSearcher (const QString&, ICoreProxy_ptr proxy);
 
-		void Search (const Media::LyricsQuery&, Media::QueryOptions);
+		void Search (const Media::LyricsQuery&);
 	};
 }
 }

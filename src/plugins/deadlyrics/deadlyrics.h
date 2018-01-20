@@ -61,7 +61,7 @@ namespace DeadLyrics
 		QString GetInfo () const;
 		QIcon GetIcon () const;
 
-		QFuture<LyricsQueryResult_t> RequestLyrics (const Media::LyricsQuery&, Media::QueryOptions);
+		QFuture<LyricsQueryResult_t> RequestLyrics (const Media::LyricsQuery&);
 	};
 }
 }

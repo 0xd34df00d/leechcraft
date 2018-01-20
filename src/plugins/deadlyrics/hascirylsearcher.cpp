@@ -57,7 +57,7 @@ namespace DeadLyrics
 	{
 	}
 
-	void HascirylSearcher::Search (const Media::LyricsQuery& query, Media::QueryOptions, const Reporter_t& reporter)
+	void HascirylSearcher::Search (const Media::LyricsQuery& query, const Reporter_t& reporter)
 	{
 		using Util::operator*;
 

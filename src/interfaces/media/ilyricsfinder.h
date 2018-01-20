@@ -65,25 +65,6 @@ namespace Media
 		boost::optional<int> Track_;
 	};
 
-	/** @brief Describes the various lyrics request options.
-	 *
-	 * @sa ILyricsFinder
-	 */
-	enum QueryOption
-	{
-		/** @brief Default lyrics search request.
-		 */
-		NoOption = 0x0,
-
-		/** @brief Refresh any cached data.
-		 */
-		Refresh = 0x1
-	};
-
-	/** @brief Typedef for <code>QFlags<QueryOption></code>.
-	 */
-	Q_DECLARE_FLAGS (QueryOptions, QueryOption);
-
 	/** @brief Describes a single lyrics result item.
 	 *
 	 * A result item is the lyrics themselves and the provider name these
@@ -144,7 +125,7 @@ namespace Media
 		 * @param[in] query The lyrics query.
 		 * @param[in] options Additional search options.
 		 */
-		virtual QFuture<LyricsQueryResult_t> RequestLyrics (const LyricsQuery& query, QueryOptions options = NoOption) = 0;
+		virtual QFuture<LyricsQueryResult_t> RequestLyrics (const LyricsQuery& query) = 0;
 	};
 }
 

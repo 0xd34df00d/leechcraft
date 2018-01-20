@@ -47,7 +47,7 @@ namespace DeadLyrics
 
 		using Reporter_t = std::function<void (Media::ILyricsFinder::LyricsQueryResult_t)>;
 
-		virtual void Search (const Media::LyricsQuery&, Media::QueryOptions, const Reporter_t& reporter) = 0;
+		virtual void Search (const Media::LyricsQuery&, const Reporter_t& reporter) = 0;
 	};
 
 	typedef std::shared_ptr<Searcher> Searcher_ptr;

@@ -484,7 +484,7 @@ namespace LMP
 			opt (info.TrackNumber_)
 		};
 		for (auto finder : finders)
-			Util::Sequence (this, finder->RequestLyrics (query, Media::QueryOption::NoOption))
+			Util::Sequence (this, finder->RequestLyrics (query))
 					.MultipleResults (Util::Visitor
 							{
 								[] (const QString&) {},

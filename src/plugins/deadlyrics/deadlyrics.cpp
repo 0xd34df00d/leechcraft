@@ -78,8 +78,7 @@ namespace DeadLyrics
 		return icon;
 	}
 
-	QFuture<DeadLyRicS::LyricsQueryResult_t> DeadLyRicS::RequestLyrics (const Media::LyricsQuery& query,
-			Media::QueryOptions options)
+	QFuture<DeadLyRicS::LyricsQueryResult_t> DeadLyRicS::RequestLyrics (const Media::LyricsQuery& query)
 	{
 		if (query.Artist_.isEmpty () || query.Title_.isEmpty ())
 			return Util::MakeReadyFuture (LyricsQueryResult_t { tr ("Not enough parameters to build a search query.") });
@@ -90,7 +89,7 @@ namespace DeadLyrics
 
 		qDebug () << Q_FUNC_INFO << query.Artist_ << query.Album_;
 		for (auto searcher : Searchers_)
-			searcher->Search (query, options,
+			searcher->Search (query,
 					[promise] (const LyricsQueryResult_t& result) mutable
 					{
 						const auto currentCount = promise.resultCount ();

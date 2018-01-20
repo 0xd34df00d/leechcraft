@@ -43,7 +43,7 @@ namespace DeadLyrics
 	public:
 		HascirylSearcher (QNetworkAccessManager*);
 
-		void Search (const Media::LyricsQuery&, Media::QueryOptions, const Reporter_t&) override;
+		void Search (const Media::LyricsQuery&, const Reporter_t&) override;
 	private:
 		void HandleLyricsUrls (const Media::LyricsQuery&, const Reporter_t&, const QByteArray&);
 		void HandleLyricsPageFetched (const Media::LyricsQuery&, const Reporter_t&, const QString&, const QByteArray&);
