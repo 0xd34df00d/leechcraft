@@ -490,9 +490,6 @@ namespace LMP
 								[] (const QString&) {},
 								[this] (const Media::LyricsResults& results)
 								{
-									if (results.Items_.isEmpty ())
-										return;
-
 									for (const auto& item : results.Items_)
 										Ui_.NPWidget_->SetLyrics (item);
 								}
