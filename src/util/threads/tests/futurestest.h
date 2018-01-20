@@ -50,6 +50,7 @@ namespace Util
 		void testNoDestrHandlerSetBuildable ();
 
 		void testMulti ();
+		void testMultiRange ();
 	};
 }
 }

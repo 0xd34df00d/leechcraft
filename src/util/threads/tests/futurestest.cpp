@@ -204,6 +204,36 @@ namespace Util
 						[&] { loop.quit (); });
 
 		iface.reportStarted ();
+		iface.setExpectedResultCount (3);
+		while (iface.resultCount () < iface.expectedResultCount ())
+			iface.reportResult (iface.resultCount () + 1, iface.resultCount ());
+		iface.reportFinished ();
+
+		loop.exec ();
+
+		QCoreApplication::processEvents ();
+
+		QCOMPARE (count, 3);
+		QCOMPARE (sum, 6);
+	}
+
+	void FuturesTest::testMultiRange ()
+	{
+		QEventLoop loop;
+
+		QFutureInterface<int> iface;
+
+		int count = 0;
+		int sum = 0;
+		Sequence (nullptr, iface.future ())
+				.MultipleResults ([&] (int sub)
+						{
+							sum += sub;
+							++count;
+						},
+						[&] { loop.quit (); });
+
+		iface.reportStarted ();
 		iface.setProgressRange (0, 2);
 		iface.reportResult (1, 0);
 		iface.reportResult (2, 1);
