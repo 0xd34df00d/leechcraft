@@ -57,7 +57,7 @@ namespace DeadLyrics
 	{
 	}
 
-	void HascirylSearcher::Search (const Media::LyricsQuery& query, Media::QueryOptions)
+	void HascirylSearcher::Search (const Media::LyricsQuery& query, Media::QueryOptions, const Reporter_t& reporter)
 	{
 		using Util::operator*;
 
@@ -81,10 +81,11 @@ namespace DeadLyrics
 		append ("track", (num * query.Track_).value_or (QString {}));
 
 		Util::HandleNetworkReply (this, NAM_->post (req, postData),
-				[this, query] (const QByteArray& data) { HandleLyricsUrls (query, data); });
+				[this, query, reporter] (const QByteArray& data) { HandleLyricsUrls (query, reporter, data); });
 	}
 
-	void HascirylSearcher::HandleLyricsUrls (const Media::LyricsQuery& origQuery,const QByteArray& data)
+	void HascirylSearcher::HandleLyricsUrls (const Media::LyricsQuery& origQuery,
+			const Reporter_t& reporter, const QByteArray& data)
 	{
 		const auto& urls = Util::ParseJson (data, Q_FUNC_INFO).toList ();
 		for (const auto& varMap : urls)
@@ -94,12 +95,12 @@ namespace DeadLyrics
 			const auto& url = map ["reqUrl"].toString ();
 
 			Util::HandleNetworkReply (this, NAM_->get (QNetworkRequest { QUrl { url } }),
-					[this, origQuery, prov] (const QByteArray& data)
-						{ HandleLyricsPageFetched (origQuery, prov, data); });
+					[this, origQuery, reporter, prov] (const QByteArray& data)
+						{ HandleLyricsPageFetched (origQuery, reporter, prov, data); });
 		}
 	}
 
-	void HascirylSearcher::HandleLyricsPageFetched (const Media::LyricsQuery& origQuery,
+	void HascirylSearcher::HandleLyricsPageFetched (const Media::LyricsQuery& origQuery, const Reporter_t& reporter,
 			const QString& provName, const QByteArray& data)
 	{
 		QHttpPart servicePart;
@@ -119,20 +120,24 @@ namespace DeadLyrics
 		multipart->setParent (reply);
 
 		Util::HandleNetworkReply (this, reply,
-				[this, origQuery, provName] (const QByteArray& data)
-					{ HandleGotLyricsReply (origQuery, provName, data); });
+				[this, origQuery, reporter, provName] (const QByteArray& data)
+					{ HandleGotLyricsReply (origQuery, reporter, provName, data); });
 	}
 
-	void HascirylSearcher::HandleGotLyricsReply (const Media::LyricsQuery& origQuery,
+	void HascirylSearcher::HandleGotLyricsReply (const Media::LyricsQuery& origQuery, const Reporter_t& reporter,
 			const QString& provName, const QByteArray& data)
 	{
 		const auto& reply = Util::ParseJson (data, Q_FUNC_INFO).toMap ();
 		const auto& result = reply ["result"].toString ();
 		if (result != "Success")
+		{
+			reporter (Media::ILyricsFinder::LyricsQueryResult_t { tr ("Lyrics not found.") });
 			return;
+		}
 
 		const auto& lyrics = reply ["payload"].toString ();
 		emit gotLyrics ({ origQuery, { { provName, lyrics } } });
+		reporter (Media::ILyricsFinder::LyricsQueryResult_t { { origQuery, { { provName, lyrics } } } });
 	}
 }
 }

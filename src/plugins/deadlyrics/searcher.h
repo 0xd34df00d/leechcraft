@@ -30,6 +30,7 @@
 #pragma once
 
 #include <memory>
+#include <functional>
 #include <QObject>
 #include <QList>
 #include <interfaces/media/ilyricsfinder.h>
@@ -44,7 +45,9 @@ namespace DeadLyrics
 	public:
 		virtual ~Searcher ();
 
-		virtual void Search (const Media::LyricsQuery&, Media::QueryOptions) = 0;
+		using Reporter_t = std::function<void (Media::ILyricsFinder::LyricsQueryResult_t)>;
+
+		virtual void Search (const Media::LyricsQuery&, Media::QueryOptions, const Reporter_t& reporter) = 0;
 	signals:
 		void gotLyrics (const Media::LyricsResults&);
 	};
