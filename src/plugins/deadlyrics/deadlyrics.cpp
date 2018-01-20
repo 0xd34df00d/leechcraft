@@ -29,8 +29,9 @@
 
 #include "deadlyrics.h"
 #include <QIcon>
+#include <interfaces/core/icoreproxy.h>
 #include <util/util.h>
-#include "sitessearcher.h"
+#include "hascirylsearcher.h"
 
 namespace LeechCraft
 {
@@ -42,7 +43,7 @@ namespace DeadLyrics
 
 		Proxy_ = proxy;
 
-		Searchers_ << Searcher_ptr (new SitesSearcher (":/deadlyrics/resources/sites.xml", proxy));
+		Searchers_ << std::make_shared<HascirylSearcher> (proxy->GetNetworkAccessManager ());
 		for (auto searcher : Searchers_)
 			connect (searcher.get (),
 					SIGNAL (gotLyrics (Media::LyricsResults)),
