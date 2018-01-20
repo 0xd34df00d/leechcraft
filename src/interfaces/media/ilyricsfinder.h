@@ -31,6 +31,10 @@
 
 #include <boost/optional.hpp>
 #include <QStringList>
+#include <util/sll/eitherfwd.h>
+
+template<typename>
+class QFuture;
 
 namespace Media
 {
@@ -135,6 +139,8 @@ namespace Media
 	{
 	public:
 		virtual ~ILyricsFinder () {}
+
+		using LyricsQueryResult_t = LeechCraft::Util::Either<QString, LyricsResults>;
 
 		/** @brief Requests searching for lyrics for the given query.
 		 *
