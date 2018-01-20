@@ -623,8 +623,8 @@ namespace LMP
 
 			auto scrobblers = Core::Instance ().GetProxy ()->
 						GetPluginsManager ()->GetAllCastableTo<Media::IAudioScrobbler*> ();
-			std::for_each (scrobblers.begin (), scrobblers.end (),
-					[marker] (decltype (scrobblers.front ()) s) { marker (s); });
+			for (const auto scrobbler : scrobblers)
+				marker (scrobbler);
 		}
 	}
 
