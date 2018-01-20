@@ -42,6 +42,9 @@
 #include <QPainter>
 #include <util/xpc/util.h>
 #include <util/sll/slotclosure.h>
+#include <util/sll/visitor.h>
+#include <util/sll/either.h>
+#include <util/threads/futures.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/media/iaudioscrobbler.h>
 #include <interfaces/media/isimilarartists.h>
@@ -461,8 +464,7 @@ namespace LMP
 		if (!XmlSettingsManager::Instance ().property ("RequestLyrics").toBool ())
 			return;
 
-		auto finders = Core::Instance ().GetProxy ()->
-					GetPluginsManager ()->GetAllCastableRoots<Media::ILyricsFinder*> ();
+		auto finders = Core::Instance ().GetProxy ()->GetPluginsManager ()->GetAllCastableTo<Media::ILyricsFinder*> ();
 		if (finders.isEmpty ())
 			return;
 
@@ -481,16 +483,20 @@ namespace LMP
 			opt (info.Year_),
 			opt (info.TrackNumber_)
 		};
-		Q_FOREACH (auto finderObj, finders)
-		{
-			connect (finderObj,
-					SIGNAL (gotLyrics (Media::LyricsResults)),
-					this,
-					SLOT (handleGotLyrics (Media::LyricsResults)),
-					Qt::UniqueConnection);
-			auto finder = qobject_cast<Media::ILyricsFinder*> (finderObj);
-			finder->RequestLyrics (query, Media::QueryOption::NoOption);
-		}
+		for (auto finder : finders)
+			Util::Sequence (this, finder->RequestLyrics (query, Media::QueryOption::NoOption))
+					.MultipleResults (Util::Visitor
+							{
+								[] (const QString&) {},
+								[this] (const Media::LyricsResults& results)
+								{
+									if (results.Items_.isEmpty ())
+										return;
+
+									for (const auto& item : results.Items_)
+										Ui_.NPWidget_->SetLyrics (item);
+								}
+							});
 	}
 
 	void PlayerTab::updateEffectsList (const QStringList& effectsList)
@@ -658,15 +664,6 @@ namespace LMP
 		LastArtist_ = obj->GetSourceArtistName ();
 		Similars_ [LastArtist_] = similar;
 		FillSimilar (similar);
-	}
-
-	void PlayerTab::handleGotLyrics (const Media::LyricsResults& results)
-	{
-		if (results.Items_.isEmpty ())
-			return;
-
-		for (const auto& item : results.Items_)
-			Ui_.NPWidget_->SetLyrics (item);
 	}
 
 	void PlayerTab::handlePlayerAvailable (bool available)

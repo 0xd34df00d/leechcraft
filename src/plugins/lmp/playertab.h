@@ -122,8 +122,6 @@ namespace LMP
 		void handleSimilarError ();
 		void handleSimilarReady ();
 
-		void handleGotLyrics (const Media::LyricsResults&);
-
 		void handlePlayerAvailable (bool);
 
 		void closeLMP ();
