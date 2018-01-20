@@ -501,28 +501,13 @@ namespace LMP
 		EffectsMenu_->clear ();
 
 		for (int i = 0; i < effectsList.size (); ++i)
-		{
-			auto action = EffectsMenu_->addAction (effectsList.at (i));
-			new Util::SlotClosure<Util::NoDeletePolicy>
-			{
-				[this, i] { emit effectsConfigRequested (i); },
-				action,
-				SIGNAL (triggered ()),
-				action
-			};
-		}
+			EffectsMenu_->addAction (effectsList.at (i), [this, i] { emit effectsConfigRequested (i); });
 
 		if (!effectsList.isEmpty ())
 			EffectsMenu_->addSeparator ();
 
-		auto pageAct = EffectsMenu_->addAction (tr ("Open effects configuration page..."));
-		new Util::SlotClosure<Util::NoDeletePolicy>
-		{
-			[] { XmlSettingsManager::Instance ().ShowSettingsPage ("EffectsView"); },
-			pageAct,
-			SIGNAL (triggered ()),
-			pageAct
-		};
+		EffectsMenu_->addAction (tr ("Open effects configuration page..."),
+				[] { XmlSettingsManager::Instance ().ShowSettingsPage ("EffectsView"); });
 	}
 
 	namespace
