@@ -131,9 +131,6 @@ namespace Media
 	 * Fetching lyrics is asynchronous in nature, so one should request
 	 * fetching the lyrics via RequestLyrics() method and wait for the
 	 * gotLyrics() signal with the corresponding query parameter.
-	 *
-	 * @todo Consider migrating to handle-based results, like for
-	 * IArtistBioFetcher.
 	 */
 	class Q_DECL_EXPORT ILyricsFinder
 	{
