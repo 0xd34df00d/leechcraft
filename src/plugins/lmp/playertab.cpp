@@ -609,9 +609,10 @@ namespace LMP
 
 	namespace
 	{
+		template<typename F>
 		void AddToLovedBanned (const QString& trackPath,
 				LocalCollection::StaticRating rating,
-				std::function<void (Media::IAudioScrobbler*)> marker)
+				F marker)
 		{
 			const int trackId = Core::Instance ().GetLocalCollection ()->FindTrack (trackPath);
 			if (trackId >= 0)
@@ -624,7 +625,7 @@ namespace LMP
 			auto scrobblers = Core::Instance ().GetProxy ()->
 						GetPluginsManager ()->GetAllCastableTo<Media::IAudioScrobbler*> ();
 			for (const auto scrobbler : scrobblers)
-				marker (scrobbler);
+				std::invoke (marker, scrobbler);
 		}
 	}
 
