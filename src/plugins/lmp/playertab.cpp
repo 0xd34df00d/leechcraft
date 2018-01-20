@@ -633,14 +633,14 @@ namespace LMP
 	{
 		AddToLovedBanned (Player_->GetCurrentMediaInfo ().LocalPath_,
 				LocalCollection::StaticRating::Loved,
-				[] (Media::IAudioScrobbler *s) { s->LoveCurrentTrack (); });
+				&Media::IAudioScrobbler::LoveCurrentTrack);
 	}
 
 	void PlayerTab::handleBanTrack ()
 	{
 		AddToLovedBanned (Player_->GetCurrentMediaInfo ().LocalPath_,
 				LocalCollection::StaticRating::Banned,
-				[] (Media::IAudioScrobbler *s) { s->BanCurrentTrack (); });
+				&Media::IAudioScrobbler::BanCurrentTrack);
 	}
 
 	void PlayerTab::handleSimilarError ()
