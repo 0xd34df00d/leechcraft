@@ -291,7 +291,7 @@ namespace DeadLyrics
 		}
 
 		if (str.size () >= 100)
-			emit gotLyrics ({ Query_, { { Desc_.Name_, str } } });
+			emit gotLyrics ({ { Desc_.Name_, str } });
 	}
 
 	void ConcreteSite::handleReplyError ()

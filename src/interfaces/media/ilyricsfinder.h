@@ -85,24 +85,9 @@ namespace Media
 
 	/** @brief Describes the result set for a given lyrics query.
 	 *
-	 * The lyrics searching result set consists of the lyrics query and a
-	 * list of lyrics results items.
-	 *
-	 * @sa LyricsResultItem.
+	 * @sa LyricsResultItem
 	 */
-	struct LyricsResults
-	{
-		/** @brief The original query these results are for.
-		 */
-		LyricsQuery Query_;
-
-		/** @brief The list of found items for the Query_.
-		 *
-		 * This list may be empty or contain duplicate lyrics (though
-		 * with different ProviderName_ fields).
-		 */
-		QList<LyricsResultItem> Items_;
-	};
+	using LyricsResults = QList<LyricsResultItem>;
 
 	/** @brief Interface for plugins supporting finding lyrics.
 	 *

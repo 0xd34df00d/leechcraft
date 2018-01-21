@@ -490,7 +490,7 @@ namespace LMP
 								[] (const QString&) {},
 								[this] (const Media::LyricsResults& results)
 								{
-									for (const auto& item : results.Items_)
+									for (const auto& item : results)
 										Ui_.NPWidget_->SetLyrics (item);
 								}
 							});

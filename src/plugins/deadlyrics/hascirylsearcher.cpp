@@ -81,11 +81,10 @@ namespace DeadLyrics
 		append ("track", (num * query.Track_).value_or (QString {}));
 
 		Util::HandleNetworkReply (this, NAM_->post (req, postData),
-				[this, query, reporter] (const QByteArray& data) { HandleLyricsUrls (query, reporter, data); });
+				[this, reporter] (const QByteArray& data) { HandleLyricsUrls (reporter, data); });
 	}
 
-	void HascirylSearcher::HandleLyricsUrls (const Media::LyricsQuery& origQuery,
-			const Reporter_t& reporter, const QByteArray& data)
+	void HascirylSearcher::HandleLyricsUrls (const Reporter_t& reporter, const QByteArray& data)
 	{
 		const auto& urls = Util::ParseJson (data, Q_FUNC_INFO).toList ();
 		for (const auto& varMap : urls)
@@ -95,12 +94,11 @@ namespace DeadLyrics
 			const auto& url = map ["reqUrl"].toString ();
 
 			Util::HandleNetworkReply (this, NAM_->get (QNetworkRequest { QUrl { url } }),
-					[this, origQuery, reporter, prov] (const QByteArray& data)
-						{ HandleLyricsPageFetched (origQuery, reporter, prov, data); });
+					[this, reporter, prov] (const QByteArray& data) { HandleLyricsPageFetched (reporter, prov, data); });
 		}
 	}
 
-	void HascirylSearcher::HandleLyricsPageFetched (const Media::LyricsQuery& origQuery, const Reporter_t& reporter,
+	void HascirylSearcher::HandleLyricsPageFetched (const Reporter_t& reporter,
 			const QString& provName, const QByteArray& data)
 	{
 		QHttpPart servicePart;
@@ -120,11 +118,10 @@ namespace DeadLyrics
 		multipart->setParent (reply);
 
 		Util::HandleNetworkReply (this, reply,
-				[this, origQuery, reporter, provName] (const QByteArray& data)
-					{ HandleGotLyricsReply (origQuery, reporter, provName, data); });
+				[this, reporter, provName] (const QByteArray& data) { HandleGotLyricsReply (reporter, provName, data); });
 	}
 
-	void HascirylSearcher::HandleGotLyricsReply (const Media::LyricsQuery& origQuery, const Reporter_t& reporter,
+	void HascirylSearcher::HandleGotLyricsReply (const Reporter_t& reporter,
 			const QString& provName, const QByteArray& data)
 	{
 		const auto& reply = Util::ParseJson (data, Q_FUNC_INFO).toMap ();
@@ -136,7 +133,7 @@ namespace DeadLyrics
 		}
 
 		const auto& lyrics = reply ["payload"].toString ();
-		reporter (Media::ILyricsFinder::LyricsQueryResult_t { { origQuery, { { provName, lyrics } } } });
+		reporter (Media::ILyricsFinder::LyricsQueryResult_t { { { provName, lyrics } } });
 	}
 }
 }
