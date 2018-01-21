@@ -102,7 +102,7 @@ namespace Media
 		 * @param[in] withRecommends Whether recommendations or releases
 		 * from user's library should be fetched.
 		 */
-		virtual void RequestRecentReleases (int number, bool withRecommends) = 0;
+		virtual QFuture<Result_t> RequestRecentReleases (int number, bool withRecommends) = 0;
 
 		/** @brief Returns the service name.
 		 *

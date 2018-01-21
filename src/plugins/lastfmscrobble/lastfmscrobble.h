@@ -119,7 +119,7 @@ namespace Lastfmscrobble
 		QList<QAbstractItemModel*> GetRadioListItems () const;
 		void RefreshItems (const QList<QModelIndex>&);
 
-		void RequestRecentReleases (int, bool);
+		QFuture<IRecentReleases::Result_t> RequestRecentReleases (int, bool);
 
 		QFuture<ArtistBioResult_t> RequestArtistBio (const QString&, bool);
 
