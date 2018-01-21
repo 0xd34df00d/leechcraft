@@ -106,8 +106,17 @@ namespace Media
 			QUrl Source_;
 		};
 
+		/** @brief A list of successful audio search results.
+		 */
 		using Results_t = QList<Result>;
 
+		/** @brief The result of an audio search query.
+		 *
+		 * The result of an audio search query is either a string with a
+		 * human-readable error text, or a list of result items.
+		 *
+		 * @sa Results_t
+		 */
 		using AudioSearchResult_t = LeechCraft::Util::Either<QString, Results_t>;
 
 		/** @brief Returns the name of this service.
