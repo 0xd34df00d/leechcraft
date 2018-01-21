@@ -42,11 +42,6 @@ class QStandardItemModel;
 class QListWidget;
 class QTabBar;
 
-namespace Media
-{
-	struct LyricsResults;
-}
-
 namespace LeechCraft
 {
 struct Entity;
