@@ -53,7 +53,7 @@ namespace Textogroose
 			results.append ({ map ["provider"].toString (), map ["lyrics"].toString () });
 		}
 
-		emit finished (this, { Query_, results });
+		emit finished (this, { results });
 	}
 }
 }

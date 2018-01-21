@@ -29,7 +29,9 @@
 
 #include "textogroose.h"
 #include <QIcon>
-#include <QtDebug>
+#include <QFutureInterface>
+#include <util/sll/either.h>
+#include <util/threads/futures.h>
 #include <interfaces/iscriptloader.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -79,7 +81,7 @@ namespace Textogroose
 		return QIcon ();
 	}
 
-	void Plugin::RequestLyrics (const Media::LyricsQuery& query, Media::QueryOptions)
+	QFuture<Plugin::LyricsQueryResult_t> Plugin::RequestLyrics (const Media::LyricsQuery& query)
 	{
 		const QVariantMap map
 		{
@@ -88,27 +90,37 @@ namespace Textogroose
 			{ "title", query.Title_ }
 		};
 
+		QList<IScript_ptr> scripts;
 		for (const auto ldr : Loaders_)
 			for (const auto& scriptName : ldr->EnumerateScripts ())
-			{
-				auto script = ldr->LoadScript (scriptName);
+				scripts << ldr->LoadScript (scriptName);
 
-				auto apiObject = new ApiObject (query, script);
+		QFutureInterface<Plugin::LyricsQueryResult_t> promise;
+		promise.reportStarted ();
+		promise.setExpectedResultCount (scripts.size ());
 
-				script->AddQObject (apiObject, "API");
-				script->InvokeMethod ("searchLyrics", { map });
+		for (const auto& script : scripts)
+		{
+			auto apiObject = new ApiObject (query, script);
 
-				connect (apiObject,
-						SIGNAL (finished (ApiObject*, Media::LyricsResults)),
-						this,
-						SLOT (handleFinished (ApiObject*, Media::LyricsResults)));
-			}
-	}
+			script->AddQObject (apiObject, "API");
+			script->InvokeMethod ("searchLyrics", { map });
 
-	void Plugin::handleFinished (ApiObject *obj, const Media::LyricsResults& results)
-	{
-		emit gotLyrics (results);
-		obj->deleteLater ();
+			connect (apiObject,
+					&ApiObject::finished,
+					this,
+					[promise] (ApiObject *obj, const Media::LyricsResults& lyrics) mutable
+					{
+						obj->deleteLater ();
+
+						const auto current = promise.resultCount ();
+						promise.reportResult (LyricsQueryResult_t { lyrics }, current);
+						if (current + 1 == promise.expectedResultCount ())
+							promise.reportFinished ();
+					});
+		}
+
+		return promise.future ();
 	}
 }
 }

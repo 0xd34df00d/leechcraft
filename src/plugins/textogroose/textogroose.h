@@ -60,11 +60,7 @@ namespace Textogroose
 		QString GetInfo () const;
 		QIcon GetIcon () const;
 
-		void RequestLyrics (const Media::LyricsQuery&, Media::QueryOptions);
-	private slots:
-		void handleFinished (ApiObject*, const Media::LyricsResults&);
-	signals:
-		void gotLyrics (const Media::LyricsResults&);
+		QFuture<LyricsQueryResult_t> RequestLyrics (const Media::LyricsQuery&);
 	};
 }
 }
