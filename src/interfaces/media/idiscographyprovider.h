@@ -130,6 +130,13 @@ namespace Media
 	public:
 		virtual ~IDiscographyProvider () {}
 
+		/** @brief The result of an audio search query.
+		 *
+		 * The result of an audio search query is either a string with a
+		 * human-readable error text, or a list of result items.
+		 *
+		 * @sa Results_t
+		 */
 		using QueryResult_t = LeechCraft::Util::Either<QString, QList<ReleaseInfo>>;
 
 		/** @brief Returns the service name.
