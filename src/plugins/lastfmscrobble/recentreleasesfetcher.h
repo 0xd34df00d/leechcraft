@@ -30,6 +30,9 @@
 #pragma once
 
 #include <QObject>
+#include <QFutureInterface>
+#include <util/sll/either.h>
+#include <interfaces/media/irecentreleases.h>
 
 namespace Media
 {
@@ -45,8 +48,12 @@ namespace Lastfmscrobble
 	class RecentReleasesFetcher : public QObject
 	{
 		Q_OBJECT
+
+		QFutureInterface<Media::IRecentReleases::Result_t> Promise_;
 	public:
 		RecentReleasesFetcher (bool, QNetworkAccessManager*, QObject* = 0);
+
+		QFuture<Media::IRecentReleases::Result_t> GetFuture ();
 	private:
 		void HandleData (const QByteArray&);
 	signals:

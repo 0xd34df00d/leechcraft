@@ -47,6 +47,8 @@ namespace Lastfmscrobble
 	RecentReleasesFetcher::RecentReleasesFetcher (bool withRecs, QNetworkAccessManager *nam, QObject *parent)
 	: QObject (parent)
 	{
+		Promise_.reportStarted ();
+
 		const auto& user = XmlSettingsManager::Instance ()
 				.property ("lastfm.login").toString ();
 		const QList<QPair<QString, QString>> params
@@ -57,9 +59,14 @@ namespace Lastfmscrobble
 		Util::Sequence (this, Util::HandleReply (Request ("user.getNewReleases", nam, params), this)) >>
 				Util::Visitor
 				{
-					[this] (Util::Void) {},
+					[this] (Util::Void) { Util::ReportFutureResult (Promise_, QString { "Unable to send network request." }); },
 					[this] (const QByteArray& data) { HandleData (data); }
 				}.Finally ([this] { deleteLater (); });
+	}
+
+	QFuture<Media::IRecentReleases::Result_t> RecentReleasesFetcher::GetFuture ()
+	{
+		return Promise_.future ();
 	}
 
 	void RecentReleasesFetcher::HandleData (const QByteArray& data)
@@ -69,6 +76,7 @@ namespace Lastfmscrobble
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "error parsing reply";
+			Util::ReportFutureResult (Promise_, QString { "Error parsing reply." });
 			return;
 		}
 
@@ -78,6 +86,7 @@ namespace Lastfmscrobble
 			qWarning () << Q_FUNC_INFO
 					<< "reply is not ok:"
 					<< docElem.attribute ("status");
+			Util::ReportFutureResult (Promise_, QString { "Error parsing reply." });
 			return;
 		}
 
@@ -115,6 +124,7 @@ namespace Lastfmscrobble
 			album = album.nextSiblingElement ("album");
 		}
 
+		Util::ReportFutureResult (Promise_, releases);
 		emit gotRecentReleases (releases);
 	}
 }
