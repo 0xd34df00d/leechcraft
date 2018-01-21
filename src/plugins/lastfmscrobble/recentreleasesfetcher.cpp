@@ -33,6 +33,9 @@
 #include <QNetworkReply>
 #include <QtDebug>
 #include <QDomDocument>
+#include <util/threads/futures.h>
+#include <util/network/handlenetworkreply.h>
+#include <util/sll/visitor.h>
 #include <interfaces/media/irecentreleases.h>
 #include "xmlsettingsmanager.h"
 #include "util.h"
@@ -46,27 +49,21 @@ namespace Lastfmscrobble
 	{
 		const auto& user = XmlSettingsManager::Instance ()
 				.property ("lastfm.login").toString ();
-		QList<QPair<QString, QString>> params;
-		params << QPair<QString, QString> ("user", user);
-		params << QPair<QString, QString> ("userecs", withRecs ? "1" : "0");
-		auto reply = Request ("user.getNewReleases", nam, params);
-		connect (reply,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleReplyFinished ()));
-		connect (reply,
-				SIGNAL (error (QNetworkReply::NetworkError)),
-				this,
-				SLOT (handleReplyError ()));
+		const QList<QPair<QString, QString>> params
+		{
+			{ "user", user },
+			{ "userecs", withRecs ? "1" : "0" }
+		};
+		Util::Sequence (this, Util::HandleReply (Request ("user.getNewReleases", nam, params), this)) >>
+				Util::Visitor
+				{
+					[this] (Util::Void) {},
+					[this] (const QByteArray& data) { HandleData (data); }
+				}.Finally ([this] { deleteLater (); });
 	}
 
-	void RecentReleasesFetcher::handleReplyFinished ()
+	void RecentReleasesFetcher::HandleData (const QByteArray& data)
 	{
-		auto reply = qobject_cast<QNetworkReply*> (sender ());
-		reply->deleteLater ();
-
-		const auto& data = reply->readAll ();
-		qDebug () << data;
 		QDomDocument doc;
 		if (!doc.setContent (data))
 		{
@@ -119,15 +116,6 @@ namespace Lastfmscrobble
 		}
 
 		emit gotRecentReleases (releases);
-		deleteLater ();
-	}
-
-	void RecentReleasesFetcher::handleReplyError ()
-	{
-		auto reply = qobject_cast<QNetworkReply*> (sender ());
-		qWarning () << Q_FUNC_INFO
-				<< reply->errorString ();
-		reply->deleteLater ();
 	}
 }
 }

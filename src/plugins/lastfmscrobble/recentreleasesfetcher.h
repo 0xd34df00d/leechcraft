@@ -47,9 +47,8 @@ namespace Lastfmscrobble
 		Q_OBJECT
 	public:
 		RecentReleasesFetcher (bool, QNetworkAccessManager*, QObject* = 0);
-	private slots:
-		void handleReplyFinished ();
-		void handleReplyError ();
+	private:
+		void HandleData (const QByteArray&);
 	signals:
 		void gotRecentReleases (const QList<Media::AlbumRelease>&);
 	};
