@@ -43,7 +43,6 @@ namespace Lastfmscrobble
 {
 	RecentReleasesFetcher::RecentReleasesFetcher (bool withRecs, int num, QNetworkAccessManager *nam, QObject *parent)
 	: QObject (parent)
-	, MaxNum_ (num)
 	{
 		const auto& user = XmlSettingsManager::Instance ()
 				.property ("lastfm.login").toString ();

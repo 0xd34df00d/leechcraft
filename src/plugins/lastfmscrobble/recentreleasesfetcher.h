@@ -45,8 +45,6 @@ namespace Lastfmscrobble
 	class RecentReleasesFetcher : public QObject
 	{
 		Q_OBJECT
-
-		int MaxNum_;
 	public:
 		RecentReleasesFetcher (bool, int, QNetworkAccessManager*, QObject* = 0);
 	private slots:
