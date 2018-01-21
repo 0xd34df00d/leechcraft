@@ -108,22 +108,28 @@ namespace Media
 	 *
 	 * Plugins that support searching for lyrics should implement this
 	 * interface.
-	 *
-	 * Fetching lyrics is asynchronous in nature, so one should request
-	 * fetching the lyrics via RequestLyrics() method and wait for the
-	 * gotLyrics() signal with the corresponding query parameter.
 	 */
 	class Q_DECL_EXPORT ILyricsFinder
 	{
 	public:
 		virtual ~ILyricsFinder () {}
 
+		/** @brief The result of a lyrics search query.
+		 *
+		 * The result of a lyrics search query is either a string with a
+		 * human-readable error text, or a LyricsResults object.
+		 *
+		 * @sa LyricsResults
+		 */
 		using LyricsQueryResult_t = LeechCraft::Util::Either<QString, LyricsResults>;
 
 		/** @brief Requests searching for lyrics for the given query.
 		 *
+		 * The returned future potentially provides multiple results.
+		 *
 		 * @param[in] query The lyrics query.
-		 * @param[in] options Additional search options.
+		 * @return The future (potentially providing multiple results) with the
+		 * search results.
 		 */
 		virtual QFuture<LyricsQueryResult_t> RequestLyrics (const LyricsQuery& query) = 0;
 	};
