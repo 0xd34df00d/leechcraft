@@ -32,6 +32,10 @@
 #include <QString>
 #include <QDateTime>
 #include <QUrl>
+#include <util/sll/eitherfwd.h>
+
+template<typename>
+class QFuture;
 
 namespace Media
 {
@@ -83,6 +87,8 @@ namespace Media
 	{
 	public:
 		virtual ~IRecentReleases () {}
+
+		using Result_t = LeechCraft::Util::Either<QString, QList<AlbumRelease>>;
 
 		/** @brief Requests the recent releases.
 		 *
