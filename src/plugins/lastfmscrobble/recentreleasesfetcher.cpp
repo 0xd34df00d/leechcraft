@@ -41,7 +41,7 @@ namespace LeechCraft
 {
 namespace Lastfmscrobble
 {
-	RecentReleasesFetcher::RecentReleasesFetcher (bool withRecs, int num, QNetworkAccessManager *nam, QObject *parent)
+	RecentReleasesFetcher::RecentReleasesFetcher (bool withRecs, QNetworkAccessManager *nam, QObject *parent)
 	: QObject (parent)
 	{
 		const auto& user = XmlSettingsManager::Instance ()

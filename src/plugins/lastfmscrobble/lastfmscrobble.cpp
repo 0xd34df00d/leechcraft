@@ -233,7 +233,7 @@ namespace Lastfmscrobble
 	void Plugin::RequestRecentReleases (int num, bool withRecs)
 	{
 		auto nam = Proxy_->GetNetworkAccessManager ();
-		connect (new RecentReleasesFetcher (withRecs, num, nam, this),
+		connect (new RecentReleasesFetcher (withRecs, nam, this),
 				SIGNAL (gotRecentReleases (QList<Media::AlbumRelease>)),
 				this,
 				SIGNAL (gotRecentReleases (QList<Media::AlbumRelease>)));

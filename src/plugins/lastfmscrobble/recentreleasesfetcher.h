@@ -46,7 +46,7 @@ namespace Lastfmscrobble
 	{
 		Q_OBJECT
 	public:
-		RecentReleasesFetcher (bool, int, QNetworkAccessManager*, QObject* = 0);
+		RecentReleasesFetcher (bool, QNetworkAccessManager*, QObject* = 0);
 	private slots:
 		void handleReplyFinished ();
 		void handleReplyError ();
