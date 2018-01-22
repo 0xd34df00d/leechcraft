@@ -36,6 +36,7 @@
 #include <util/threads/futures.h>
 #include <util/network/handlenetworkreply.h>
 #include <util/sll/visitor.h>
+#include <util/sll/domchildrenrange.h>
 #include <interfaces/media/irecentreleases.h>
 #include "xmlsettingsmanager.h"
 #include "util.h"
@@ -98,8 +99,7 @@ namespace Lastfmscrobble
 				"Oct", "Nov", "Dec" };
 		const auto monthsBegin = months.begin ();
 		const auto monthsEnd = months.end ();
-		auto album = docElem.firstChildElement ("albums").firstChildElement ("album");
-		while (!album.isNull ())
+		for (const auto& album : Util::DomChildren (docElem.firstChildElement ("albums"), "album"))
 		{
 			const auto& strs = album.attribute ("releasedate").split (' ', QString::SkipEmptyParts);
 			const int day = strs.value (1).toInt ();
@@ -120,8 +120,6 @@ namespace Lastfmscrobble
 				QUrl (album.firstChildElement ("url").text ())
 			};
 			releases << release;
-
-			album = album.nextSiblingElement ("album");
 		}
 
 		Util::ReportFutureResult (Promise_, releases);
