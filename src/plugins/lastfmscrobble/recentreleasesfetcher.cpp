@@ -37,7 +37,6 @@
 #include <util/network/handlenetworkreply.h>
 #include <util/sll/visitor.h>
 #include <util/sll/domchildrenrange.h>
-#include <interfaces/media/irecentreleases.h>
 #include "xmlsettingsmanager.h"
 #include "util.h"
 
