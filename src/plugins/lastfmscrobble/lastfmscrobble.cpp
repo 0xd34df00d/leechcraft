@@ -230,7 +230,7 @@ namespace Lastfmscrobble
 	{
 	}
 
-	QFuture<Media::IRecentReleases::Result_t> Plugin::RequestRecentReleases (int num, bool withRecs)
+	QFuture<Media::IRecentReleases::Result_t> Plugin::RequestRecentReleases (int, bool withRecs)
 	{
 		auto nam = Proxy_->GetNetworkAccessManager ();
 		return (new RecentReleasesFetcher (withRecs, nam, this))->GetFuture ();
