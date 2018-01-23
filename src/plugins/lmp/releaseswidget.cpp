@@ -162,7 +162,7 @@ namespace LMP
 		DiscoProviders_ = pm->GetAllCastableTo<Media::IDiscographyProvider*> ();
 	}
 
-	void ReleasesWidget::handleRecentReleases (const QList<Media::AlbumRelease>& releases)
+	void ReleasesWidget::HandleRecentReleases (const QList<Media::AlbumRelease>& releases)
 	{
 		TrackLists_.resize (releases.size ());
 
@@ -213,22 +213,16 @@ namespace LMP
 		if (idx < 0)
 			return;
 
-		Q_FOREACH (auto prov, Providers_)
-			disconnect (dynamic_cast<QObject*> (prov),
-					0,
-					this,
-					0);
-
 		const bool withRecs = Ui_.WithRecs_->checkState () == Qt::Checked;
 		auto prov = Providers_.at (idx);
-		connect (dynamic_cast<QObject*> (prov),
-				SIGNAL (gotRecentReleases (QList<Media::AlbumRelease>)),
-				this,
-				SLOT (handleRecentReleases (const QList<Media::AlbumRelease>&)));
-		prov->RequestRecentReleases (15, withRecs);
+		Util::Sequence (this, prov->RequestRecentReleases (15, withRecs)) >>
+				Util::Visitor
+				{
+					[] (const QString&) { /* TODO */ },
+					[this] (const QList<Media::AlbumRelease>& releases) { HandleRecentReleases (releases); }
+				};
 
-		XmlSettingsManager::Instance ()
-				.setProperty ("LastUsedReleasesProvider", prov->GetServiceName ());
+		XmlSettingsManager::Instance ().setProperty ("LastUsedReleasesProvider", prov->GetServiceName ());
 	}
 
 	void ReleasesWidget::previewAlbum (int index)
