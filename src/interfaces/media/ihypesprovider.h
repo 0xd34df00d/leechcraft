@@ -164,17 +164,17 @@ namespace Media
 	 *
 	 * Hypes are either popular tracks and artists or those who gain
 	 * a lot of popularity right now.
-	 *
-	 * Fetching hypes is asynchronous in nature, so one should request
-	 * updating the hypes list via RequestHype() method for each hype
-	 * type one is interesting in, and then listen to gotHypedArtists()
-	 * and gotHypedTracks() signals correspondingly.
 	 */
 	class Q_DECL_EXPORT IHypesProvider
 	{
 	public:
 		virtual ~IHypesProvider () {}
 
+		/** @brief The result of a hyped entity list query result.
+		 *
+		 * The result of a hyped entity list query is either a string with a
+		 * human-readable error text, or the list of the hyped items.
+		 */
 		using HypeQueryResult_t = LeechCraft::Util::Either<QString, HypedInfo_t>;
 
 		/** @brief Returns the service name.
@@ -217,6 +217,7 @@ namespace Media
 		/** @brief Updates the list of hyped artists of the given type.
 		 *
 		 * @param[in] type The type of the hype to update.
+		 * @return The future holding the hype query result.
 		 */
 		virtual QFuture<HypeQueryResult_t> RequestHype (HypeType type) = 0;
 	};
