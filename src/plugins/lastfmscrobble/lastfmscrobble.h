@@ -130,8 +130,6 @@ namespace Lastfmscrobble
 		QFuture<HypeQueryResult_t> RequestHype (HypeType);
 	private slots:
 		void reloadRecommendedEvents ();
-	signals:
-		void gotRecentReleases (const QList<Media::AlbumRelease>&);
 	};
 }
 }

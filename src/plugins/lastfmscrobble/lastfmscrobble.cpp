@@ -233,12 +233,7 @@ namespace Lastfmscrobble
 	QFuture<Media::IRecentReleases::Result_t> Plugin::RequestRecentReleases (int num, bool withRecs)
 	{
 		auto nam = Proxy_->GetNetworkAccessManager ();
-		const auto fetcher = new RecentReleasesFetcher (withRecs, nam, this);
-		connect (fetcher,
-				SIGNAL (gotRecentReleases (QList<Media::AlbumRelease>)),
-				this,
-				SIGNAL (gotRecentReleases (QList<Media::AlbumRelease>)));
-		return fetcher->GetFuture ();
+		return (new RecentReleasesFetcher (withRecs, nam, this))->GetFuture ();
 	}
 
 	QFuture<Plugin::ArtistBioResult_t> Plugin::RequestArtistBio (const QString& artist, bool addImages)

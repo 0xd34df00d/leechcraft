@@ -122,7 +122,6 @@ namespace Lastfmscrobble
 		}
 
 		Util::ReportFutureResult (Promise_, releases);
-		emit gotRecentReleases (releases);
 	}
 }
 }

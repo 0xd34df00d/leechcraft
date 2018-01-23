@@ -56,8 +56,6 @@ namespace Lastfmscrobble
 		QFuture<Media::IRecentReleases::Result_t> GetFuture ();
 	private:
 		void HandleData (const QByteArray&);
-	signals:
-		void gotRecentReleases (const QList<Media::AlbumRelease>&);
 	};
 }
 }

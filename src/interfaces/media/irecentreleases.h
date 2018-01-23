@@ -112,12 +112,6 @@ namespace Media
 		 * @return The human-readable service name.
 		 */
 		virtual QString GetServiceName () const = 0;
-	protected:
-		/** @brief Emitted when the list of recent releases is fetched.
-		 *
-		 * @param[out] releases The list of recent releases.
-		 */
-		virtual void gotRecentReleases (const QList<AlbumRelease>& releases) = 0;
 	};
 }
 
