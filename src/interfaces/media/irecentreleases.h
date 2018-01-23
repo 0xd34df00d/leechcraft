@@ -78,16 +78,17 @@ namespace Media
 	 * This interface should be implemented by plugins providing
 	 * information about recent releases based on user's musical taste
 	 * (like Last.FM's service).
-	 *
-	 * Fetching recent releases is asynchronous in nature, so one should
-	 * request the releases via the RequestRecentReleases() method and
-	 * wait for the gotRecentReleases() signal.
 	 */
 	class Q_DECL_EXPORT IRecentReleases
 	{
 	public:
 		virtual ~IRecentReleases () {}
 
+		/** @brief The result of a recent releases query.
+		 *
+		 * The result of a recent releases query is either a string with a
+		 * human-readable error text, or a list of AlbumRelease objects.
+		 */
 		using Result_t = LeechCraft::Util::Either<QString, QList<AlbumRelease>>;
 
 		/** @brief Requests the recent releases.
@@ -101,6 +102,7 @@ namespace Media
 		 * @param[in] number The number of releases to get.
 		 * @param[in] withRecommends Whether recommendations or releases
 		 * from user's library should be fetched.
+		 * @return The future holding the recent releases query result.
 		 */
 		virtual QFuture<Result_t> RequestRecentReleases (int number, bool withRecommends) = 0;
 
