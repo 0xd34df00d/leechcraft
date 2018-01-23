@@ -47,8 +47,6 @@ namespace Lastfmscrobble
 {
 	class RecentReleasesFetcher : public QObject
 	{
-		Q_OBJECT
-
 		QFutureInterface<Media::IRecentReleases::Result_t> Promise_;
 	public:
 		RecentReleasesFetcher (bool, QNetworkAccessManager*, QObject* = nullptr);
