@@ -170,7 +170,7 @@ namespace Media
 	public:
 		virtual ~IHypesProvider () {}
 
-		/** @brief The result of a hyped entity list query result.
+		/** @brief The result of a hyped entity list query.
 		 *
 		 * The result of a hyped entity list query is either a string with a
 		 * human-readable error text, or the list of the hyped items.
