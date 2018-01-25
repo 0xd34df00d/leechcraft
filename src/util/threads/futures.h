@@ -49,10 +49,10 @@ namespace Util
 	{
 		try
 		{
-			constexpr bool isVoid = std::is_same<R, void> {}; // C++17
+			constexpr bool isVoid = std::is_same_v<R, void>;
 			if constexpr (!isVoid && !std::is_invocable_v<std::decay_t<F>, Args...>)
 			{
-				static_assert (std::is_constructible<R, F> {}); // C++17
+				static_assert (std::is_constructible_v<R, F>);
 				static_assert (sizeof... (Args) == 0,
 						"Extra args when a value is passed. Perhaps you wanted to pass in a function?");
 
