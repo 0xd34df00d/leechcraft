@@ -44,19 +44,13 @@ namespace LeechCraft
 {
 namespace Util
 {
-	namespace detail
-	{
-		template<typename T, typename... Args>
-		using CallableDetector_t = std::result_of_t<T (Args...)>; // C++17
-	}
-
 	template<typename R, typename F, typename... Args>
 	void ReportFutureResult (QFutureInterface<R>& iface, F&& f, Args&&... args)
 	{
 		try
 		{
 			constexpr bool isVoid = std::is_same<R, void> {}; // C++17
-			if constexpr (!isVoid && !IsDetected_v<detail::CallableDetector_t, std::decay_t<F>, Args...>)
+			if constexpr (!isVoid && !std::is_invocable_v<std::decay_t<F>, Args...>)
 			{
 				static_assert (std::is_constructible<R, F> {}); // C++17
 				static_assert (sizeof... (Args) == 0,
