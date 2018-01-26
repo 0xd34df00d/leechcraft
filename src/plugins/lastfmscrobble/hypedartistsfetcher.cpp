@@ -35,6 +35,7 @@
 #include <QDomDocument>
 #include <QtDebug>
 #include <util/sll/visitor.h>
+#include <util/sll/domchildrenrange.h>
 #include <util/network/handlenetworkreply.h>
 #include <util/threads/futures.h>
 #include "util.h"
@@ -95,15 +96,11 @@ namespace Lastfmscrobble
 			return;
 		}
 
-		auto artistElem = doc
-				.documentElement ()
-				.firstChildElement ("artists")
-				.firstChildElement ("artist");
-		while (!artistElem.isNull ())
+		for (const auto& artist : Util::DomChildren (doc.documentElement ().firstChildElement ("artists"), "artist"))
 		{
-			auto getText = [&artistElem] (const QString& name)
+			auto getText = [&artist] (const QString& name)
 			{
-				return artistElem.firstChildElement (name).text ();
+				return artist.firstChildElement (name).text ();
 			};
 
 			const auto& name = getText ("name");
@@ -115,8 +112,8 @@ namespace Lastfmscrobble
 					name,
 					QString (),
 					QString (),
-					GetImage (artistElem, "medium"),
-					GetImage (artistElem, "extralarge"),
+					GetImage (artist, "medium"),
+					GetImage (artist, "extralarge"),
 					getText ("url"),
 					Media::TagInfos_t ()
 				},
@@ -139,8 +136,6 @@ namespace Lastfmscrobble
 								pos->Info_ = info.BasicInfo_;
 						}
 					}.Finally ([this] { DecrementWaiting (); });
-
-			artistElem = artistElem.nextSiblingElement ("artist");
 		}
 
 		InfoCount_ = Infos_.size ();
