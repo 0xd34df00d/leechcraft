@@ -45,7 +45,7 @@ namespace Lastfmscrobble
 	public:
 		PendingSimilarArtists (const QString&, int num, QNetworkAccessManager*, QObject* = 0);
 	private slots:
-		void handleReplyFinished ();
+		void HandleData (const QByteArray&);
 	};
 }
 }

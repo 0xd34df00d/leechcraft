@@ -31,6 +31,7 @@
 #include <QNetworkReply>
 #include <QNetworkAccessManager>
 #include <QDomDocument>
+#include <util/network/handlenetworkreply.h>
 #include "util.h"
 
 namespace LeechCraft
@@ -48,24 +49,18 @@ namespace Lastfmscrobble
 			{ "autocorrect", "1" },
 			{ "limit", QString::number (num) }
 		};
-		auto reply = Request ("artist.getSimilar", nam, params);
-		connect (reply,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleReplyFinished ()));
-		connect (reply,
-				SIGNAL (error (QNetworkReply::NetworkError)),
-				this,
-				SLOT (handleReplyError ()));
+		Util::HandleReplySeq (Request ("artist.getSimilar", nam, params), this) >>
+				Util::Visitor
+				{
+					[this] (Util::Void) { handleReplyError (); },
+					[this] (const QByteArray& data) { HandleData (data); }
+				};
 	}
 
-	void PendingSimilarArtists::handleReplyFinished ()
+	void PendingSimilarArtists::HandleData (const QByteArray& data)
 	{
-		auto reply = qobject_cast<QNetworkReply*> (sender ());
-		reply->deleteLater ();
-
 		QDomDocument doc;
-		if (!doc.setContent (reply->readAll ()))
+		if (!doc.setContent (data))
 		{
 			emit ready ();
 			return;
