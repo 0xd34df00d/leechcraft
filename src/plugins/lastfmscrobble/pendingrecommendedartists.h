@@ -46,9 +46,10 @@ namespace Lastfmscrobble
 		QNetworkAccessManager *NAM_;
 	public:
 		PendingRecommendedArtists (Authenticator*, QNetworkAccessManager*, int, QObject* = 0);
+	private:
+		void HandleData (const QByteArray&);
 	private slots:
 		void request ();
-		void handleReplyFinished ();
 	};
 }
 }

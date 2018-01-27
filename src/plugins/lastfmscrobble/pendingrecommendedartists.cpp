@@ -34,6 +34,7 @@
 #include <util/sll/util.h>
 #include <util/sll/domchildrenrange.h>
 #include <util/sll/prelude.h>
+#include <util/network/handlenetworkreply.h>
 #include "authenticator.h"
 #include "util.h"
 
@@ -58,24 +59,18 @@ namespace Lastfmscrobble
 	void PendingRecommendedArtists::request ()
 	{
 		const ParamsList_t params { { "limit", QString::number (NumGet_) } };
-		auto reply = Request ("user.getRecommendedArtists", NAM_, params);
-		connect (reply,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleReplyFinished ()));
-		connect (reply,
-				SIGNAL (error (QNetworkReply::NetworkError)),
-				this,
-				SLOT (handleReplyError ()));
+		Util::HandleReplySeq (Request ("user.getRecommendedArtists", NAM_, params), this) >>
+				Util::Visitor
+				{
+					[this] (Util::Void) { handleReplyError (); },
+					[this] (const QByteArray& data) { HandleData (data); }
+				};
 	}
 
-	void PendingRecommendedArtists::handleReplyFinished ()
+	void PendingRecommendedArtists::HandleData (const QByteArray& data)
 	{
-		auto reply = qobject_cast<QNetworkReply*> (sender ());
-		reply->deleteLater ();
-
 		QDomDocument doc;
-		if (!doc.setContent (reply->readAll ()))
+		if (!doc.setContent (data))
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unable to parse reply";
