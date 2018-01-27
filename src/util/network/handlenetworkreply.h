@@ -89,5 +89,11 @@ namespace Util
 
 		return promise.future ();
 	}
+
+	template<typename Err = Util::Void>
+	auto HandleReplySeq (QNetworkReply *reply, QObject *context)
+	{
+		return Sequence (context, HandleReply<Err> (reply, context));
+	}
 }
 }
