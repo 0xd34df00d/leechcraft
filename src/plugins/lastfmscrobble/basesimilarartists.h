@@ -46,7 +46,7 @@ namespace Lastfmscrobble
 	protected:
 		QString SourceName_;
 		int NumGet_;
-		int InfosWaiting_;
+		int InfosWaiting_ = 0;
 	public:
 		BaseSimilarArtists (const QString&, int, QObject* = 0);
 

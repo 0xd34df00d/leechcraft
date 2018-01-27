@@ -41,7 +41,6 @@ namespace Lastfmscrobble
 	: QObject (parent)
 	, SourceName_ (name)
 	, NumGet_ (num)
-	, InfosWaiting_ (0)
 	{
 	}
 
