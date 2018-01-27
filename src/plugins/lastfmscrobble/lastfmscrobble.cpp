@@ -184,7 +184,7 @@ namespace Lastfmscrobble
 		return GetServiceName ();
 	}
 
-	QFuture<Plugin::AlbumArtResult_t> Plugin::RequestAlbumArt (const Media::AlbumInfo& album) const
+	QFuture<Media::IAlbumArtProvider::Result_t> Plugin::RequestAlbumArt (const Media::AlbumInfo& album) const
 	{
 		return (new AlbumArtFetcher (album, Proxy_))->GetFuture ();
 	}

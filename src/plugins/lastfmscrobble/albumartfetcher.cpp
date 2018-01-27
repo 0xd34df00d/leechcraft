@@ -64,7 +64,7 @@ namespace Lastfmscrobble
 				}.Finally ([this] { deleteLater (); });
 	}
 
-	QFuture<Media::IAlbumArtProvider::AlbumArtResult_t> AlbumArtFetcher::GetFuture ()
+	QFuture<Media::IAlbumArtProvider::Result_t> AlbumArtFetcher::GetFuture ()
 	{
 		return Promise_.future ();
 	}

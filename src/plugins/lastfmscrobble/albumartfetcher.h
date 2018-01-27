@@ -42,11 +42,11 @@ namespace Lastfmscrobble
 {
 	class AlbumArtFetcher : public QObject
 	{
-		QFutureInterface<Media::IAlbumArtProvider::AlbumArtResult_t> Promise_;
+		QFutureInterface<Media::IAlbumArtProvider::Result_t> Promise_;
 	public:
 		AlbumArtFetcher (const Media::AlbumInfo&, ICoreProxy_ptr, QObject* = nullptr);
 
-		QFuture<Media::IAlbumArtProvider::AlbumArtResult_t> GetFuture ();
+		QFuture<Media::IAlbumArtProvider::Result_t> GetFuture ();
 	private:
 		void HandleReplyFinished (const QByteArray&);
 	};

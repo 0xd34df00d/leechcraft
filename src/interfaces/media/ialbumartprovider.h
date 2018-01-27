@@ -90,7 +90,7 @@ namespace Media
 		 * The result of an album art search query is either a string with a
 		 * human-readable error text, or a list of URLs matching the album art.
 		 */
-		using AlbumArtResult_t = LeechCraft::Util::Either<QString, QList<QUrl>>;
+		using Result_t = LeechCraft::Util::Either<QString, QList<QUrl>>;
 
 		/** @brief Returns the human-readable name of this provider.
 		 *
@@ -107,7 +107,7 @@ namespace Media
 		 * @param[in] album The description of the album.
 		 * @return The future with the album art search result.
 		 */
-		virtual QFuture<AlbumArtResult_t> RequestAlbumArt (const AlbumInfo& album) const = 0;
+		virtual QFuture<Result_t> RequestAlbumArt (const AlbumInfo& album) const = 0;
 	};
 }
 

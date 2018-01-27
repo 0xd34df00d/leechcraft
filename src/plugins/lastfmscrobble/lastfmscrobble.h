@@ -109,7 +109,7 @@ namespace Lastfmscrobble
 		void BanCurrentTrack ();
 
 		QString GetAlbumArtProviderName () const;
-		QFuture<AlbumArtResult_t> RequestAlbumArt (const Media::AlbumInfo& album) const;
+		QFuture<Media::IAlbumArtProvider::Result_t> RequestAlbumArt (const Media::AlbumInfo& album) const;
 
 		Media::IPendingSimilarArtists* GetSimilarArtists (const QString&, int);
 
