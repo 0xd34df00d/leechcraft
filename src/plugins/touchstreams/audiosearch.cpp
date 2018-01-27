@@ -69,7 +69,7 @@ namespace TouchStreams
 				};
 	}
 
-	QFuture<Media::IAudioPile::AudioSearchResult_t> AudioSearch::GetFuture ()
+	QFuture<Media::IAudioPile::Result_t> AudioSearch::GetFuture ()
 	{
 		return Promise_.future ();
 	}

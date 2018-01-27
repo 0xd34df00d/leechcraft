@@ -117,7 +117,7 @@ namespace Media
 		 *
 		 * @sa Results_t
 		 */
-		using AudioSearchResult_t = LeechCraft::Util::Either<QString, Results_t>;
+		using Result_t = LeechCraft::Util::Either<QString, Results_t>;
 
 		/** @brief Returns the name of this service.
 		 *
@@ -145,7 +145,7 @@ namespace Media
 		 * @param[in] request The structure describing the search request.
 		 * @return The future with the audio search results.
 		 */
-		virtual QFuture<AudioSearchResult_t> Search (const AudioSearchRequest& request) = 0;
+		virtual QFuture<Result_t> Search (const AudioSearchRequest& request) = 0;
 	};
 }
 

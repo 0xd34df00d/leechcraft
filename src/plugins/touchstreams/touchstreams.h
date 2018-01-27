@@ -96,7 +96,7 @@ namespace TouchStreams
 
 		QString GetServiceName () const;
 		QIcon GetServiceIcon () const;
-		QFuture<AudioSearchResult_t> Search (const Media::AudioSearchRequest&);
+		QFuture<Media::IAudioPile::Result_t> Search (const Media::AudioSearchRequest&);
 
 		QList<QAbstractItemModel*> GetRadioListItems () const;
 		Media::IRadioStation_ptr GetRadioStation (const QModelIndex&, const QString&);

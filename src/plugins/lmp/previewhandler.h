@@ -51,7 +51,7 @@ namespace LMP
 
 		struct PendingTrackInfo;
 
-		using FuturesList_t = QList<QFuture<Media::IAudioPile::AudioSearchResult_t>>;
+		using FuturesList_t = QList<QFuture<Media::IAudioPile::Result_t>>;
 	public:
 		PreviewHandler (Player*, QObject* = nullptr);
 

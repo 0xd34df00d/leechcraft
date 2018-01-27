@@ -58,12 +58,12 @@ namespace TouchStreams
 
 		const Media::AudioSearchRequest Query_;
 
-		QFutureInterface<Media::IAudioPile::AudioSearchResult_t> Promise_;
+		QFutureInterface<Media::IAudioPile::Result_t> Promise_;
 	public:
 		AudioSearch (ICoreProxy_ptr, const Media::AudioSearchRequest&,
 				Util::SvcAuth::VkAuthManager*, Util::QueueManager*, QObject* = nullptr);
 
-		QFuture<Media::IAudioPile::AudioSearchResult_t> GetFuture ();
+		QFuture<Media::IAudioPile::Result_t> GetFuture ();
 	private:
 		void HandleGotReply (const QByteArray&);
 		void HandleGotAuthKey (const QString&);

@@ -127,7 +127,7 @@ namespace TouchStreams
 		return icon;
 	}
 
-	QFuture<Plugin::AudioSearchResult_t> Plugin::Search (const Media::AudioSearchRequest& req)
+	QFuture<Media::IAudioPile::Result_t> Plugin::Search (const Media::AudioSearchRequest& req)
 	{
 		auto realReq = req;
 		if (realReq.FreeForm_.isEmpty ())

@@ -123,7 +123,7 @@ namespace LMP
 	{
 		auto handler = [this] (const Media::IAudioPile::Results_t& list) { HandlePendingReady (list); };
 
-		QList<QFuture<Media::IAudioPile::AudioSearchResult_t>> futures;
+		QList<QFuture<Media::IAudioPile::Result_t>> futures;
 		for (auto prov : Providers_)
 		{
 			auto future = prov->Search (req);
