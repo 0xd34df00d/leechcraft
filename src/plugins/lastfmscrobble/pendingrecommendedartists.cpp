@@ -105,6 +105,9 @@ namespace Lastfmscrobble
 					this,
 					SLOT (handleInfoReplyError ()));
 		}
+
+		if (!InfosWaiting_)
+			deleteLater ();
 	}
 }
 }
