@@ -60,6 +60,13 @@ namespace Lastfmscrobble
 		return Similar_;
 	}
 
+
+	void BaseSimilarArtists::ReportError (const QString& msg)
+	{
+		emit error ();
+		deleteLater ();
+	}
+
 	void BaseSimilarArtists::HandleReply (QNetworkReply *reply,
 			const std::optional<int>& similarity,
 			const std::optional<QStringList>& similarTo)

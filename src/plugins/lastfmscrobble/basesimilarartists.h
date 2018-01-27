@@ -57,6 +57,8 @@ namespace Lastfmscrobble
 		QString GetSourceArtistName () const;
 		Media::SimilarityInfos_t GetSimilar () const;
 	protected:
+		void ReportError (const QString&);
+
 		void HandleReply (QNetworkReply*, const std::optional<int>&, const std::optional<QStringList>&);
 	private:
 		void DecrementWaiting ();
