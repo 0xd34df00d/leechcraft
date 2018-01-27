@@ -45,7 +45,7 @@ namespace Lastfmscrobble
 		Media::SimilarityInfos_t Similar_;
 	protected:
 		QString SourceName_;
-		int NumGet_;
+		const int NumGet_;
 		int InfosWaiting_ = 0;
 	public:
 		BaseSimilarArtists (const QString&, int, QObject* = 0);
