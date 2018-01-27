@@ -75,6 +75,7 @@ namespace Lastfmscrobble
 			qWarning () << Q_FUNC_INFO
 					<< "unable to parse reply";
 			emit error ();
+			deleteLater ();
 			return;
 		}
 
