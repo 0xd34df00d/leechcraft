@@ -83,8 +83,7 @@ namespace Lastfmscrobble
 
 		auto begin = similar.begin ();
 		auto end = similar.end ();
-		const int distance = std::distance (begin, end);
-		if (distance > NumGet_)
+		if (const auto distance = end - begin; distance > NumGet_)
 			std::advance (begin, distance - NumGet_);
 
 		InfosWaiting_ = std::distance (begin, end);
