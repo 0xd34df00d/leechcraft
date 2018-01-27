@@ -31,6 +31,7 @@
 #include <QNetworkReply>
 #include <QDomDocument>
 #include <QtDebug>
+#include <util/network/handlenetworkreply.h>
 #include "util.h"
 
 namespace LeechCraft
@@ -59,6 +60,18 @@ namespace Lastfmscrobble
 		return Similar_;
 	}
 
+	void BaseSimilarArtists::HandleReply (QNetworkReply *reply,
+			const std::optional<int>& similarity,
+			const std::optional<QStringList>& similarTo)
+	{
+		Util::HandleReplySeq (reply, this) >>
+				Util::Visitor
+				{
+					[this] (Util::Void) { DecrementWaiting (); },
+					[=] (const QByteArray& data) { HandleInfoReplyFinished (data, similarity, similarTo); }
+				};
+	}
+
 	void BaseSimilarArtists::DecrementWaiting ()
 	{
 		--InfosWaiting_;
@@ -67,16 +80,10 @@ namespace Lastfmscrobble
 			emit ready ();
 	}
 
-	void BaseSimilarArtists::handleInfoReplyFinished ()
+	void BaseSimilarArtists::HandleInfoReplyFinished (const QByteArray& data,
+			const std::optional<int>& similarity,
+			const std::optional<QStringList>& similarTo)
 	{
-		auto reply = qobject_cast<QNetworkReply*> (sender ());
-		reply->deleteLater ();
-
-		const int similarity = reply->property ("Similarity").toInt ();
-		const auto& similarTo = reply->property ("SimilarTo").toStringList ();
-
-		const auto& data = reply->readAll ();
-
 		QDomDocument doc;
 		QString errMsg;
 		int errLine = 0, errCol = 0;
@@ -95,18 +102,7 @@ namespace Lastfmscrobble
 		}
 
 		const auto& info = GetArtistInfo (doc.documentElement ().firstChildElement ("artist"));
-		Similar_ << Media::SimilarityInfo { info, similarity, similarTo };
-
-		DecrementWaiting ();
-	}
-
-	void BaseSimilarArtists::handleInfoReplyError ()
-	{
-		auto reply = qobject_cast<QNetworkReply*> (sender ());
-		reply->deleteLater ();
-
-		qWarning () << Q_FUNC_INFO
-				<< reply->errorString ();
+		Similar_ << Media::SimilarityInfo { info, similarity.value_or (0), similarTo.value_or (QStringList {}) };
 
 		DecrementWaiting ();
 	}

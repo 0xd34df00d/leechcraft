@@ -93,17 +93,7 @@ namespace Lastfmscrobble
 
 			QMap<QString, QString> params { { "artist", name } };
 			AddLanguageParam (params);
-			auto infoReply = Request ("artist.getInfo", NAM_, params);
-
-			infoReply->setProperty ("SimilarTo", similarTo);
-			connect (infoReply,
-					SIGNAL (finished ()),
-					this,
-					SLOT (handleInfoReplyFinished ()));
-			connect (infoReply,
-					SIGNAL (error (QNetworkReply::NetworkError)),
-					this,
-					SLOT (handleInfoReplyError ()));
+			HandleReply (Request ("artist.getInfo", NAM_, params), {}, similarTo);
 		}
 
 		if (!InfosWaiting_)

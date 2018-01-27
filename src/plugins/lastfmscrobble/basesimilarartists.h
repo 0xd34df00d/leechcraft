@@ -29,8 +29,11 @@
 
 #pragma once
 
+#include <optional>
 #include <QObject>
 #include <interfaces/media/ipendingsimilarartists.h>
+
+class QNetworkReply;
 
 namespace LeechCraft
 {
@@ -53,12 +56,12 @@ namespace Lastfmscrobble
 		QObject* GetQObject ();
 		QString GetSourceArtistName () const;
 		Media::SimilarityInfos_t GetSimilar () const;
+	protected:
+		void HandleReply (QNetworkReply*, const std::optional<int>&, const std::optional<QStringList>&);
 	private:
 		void DecrementWaiting ();
+		void HandleInfoReplyFinished (const QByteArray&, const std::optional<int>&, const std::optional<QStringList>&);
 	protected slots:
-		void handleInfoReplyFinished ();
-		void handleInfoReplyError ();
-
 		void handleReplyError ();
 	signals:
 		void ready ();
