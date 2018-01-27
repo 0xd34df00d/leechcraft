@@ -85,7 +85,7 @@ namespace TouchStreams
 		Queue_->Schedule ([this, url]
 				{
 					auto reply = Proxy_->GetNetworkAccessManager ()->get (QNetworkRequest (url));
-					Util::Sequence (this, Util::HandleReply (reply, this)) >>
+					Util::HandleReplySeq (reply, this) >>
 							Util::Visitor
 							{
 								[this] (Util::Void) { Util::ReportFutureResult (Promise_, "Unable to request audio search."); },

@@ -56,7 +56,7 @@ namespace Lastfmscrobble
 			{ "user", user },
 			{ "userecs", withRecs ? "1" : "0" }
 		};
-		Util::Sequence (this, Util::HandleReply (Request ("user.getNewReleases", nam, params), this)) >>
+		Util::HandleReplySeq (Request ("user.getNewReleases", nam, params), this) >>
 				Util::Visitor
 				{
 					[this] (Util::Void) { Util::ReportFutureResult (Promise_, QString { "Unable to send network request." }); },

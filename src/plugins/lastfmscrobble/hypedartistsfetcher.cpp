@@ -57,7 +57,7 @@ namespace Lastfmscrobble
 				"chart.getHypedArtists" :
 				"chart.getTopArtists";
 		auto reply = Request (method, nam, params);
-		Util::Sequence (this, Util::HandleReply (reply, this)) >>
+		Util::HandleReplySeq (reply, this) >>
 				Util::Visitor
 				{
 					[this] (Util::Void)

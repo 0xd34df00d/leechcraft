@@ -52,7 +52,7 @@ namespace Lastfmscrobble
 				"chart.getHypedTracks" :
 				"chart.getTopTracks";
 		auto reply = Request (method, nam, params);
-		Util::Sequence (this, Util::HandleReply (reply, this)) >>
+		Util::HandleReplySeq (reply, this) >>
 				Util::Visitor
 				{
 					[this] (Util::Void) { Util::ReportFutureResult (Promise_, "Unable to issue Last.FM API request."); },

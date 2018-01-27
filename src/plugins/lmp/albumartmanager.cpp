@@ -131,7 +131,7 @@ namespace LMP
 			QFutureInterface<MaybeImage_t> promise;
 			promise.reportStarted ();
 
-			Util::Sequence (this, Util::HandleReply (nam->get (QNetworkRequest { url }), this)) >>
+			Util::HandleReplySeq (nam->get (QNetworkRequest { url }), this) >>
 					Util::Visitor
 					{
 						[promise] (const Util::Void&) mutable { Util::ReportFutureResult (promise, MaybeImage_t {}); },

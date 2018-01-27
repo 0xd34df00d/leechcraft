@@ -104,7 +104,7 @@ namespace MusicZombie
 							("query", artistQuery);
 
 					const auto& req = SetupRequest (QNetworkRequest { url });
-					Util::Sequence (this, Util::HandleReply (NAM_->get (req), this)) >>
+					Util::HandleReplySeq (NAM_->get (req), this) >>
 							Util::Visitor
 							{
 								[this, strictMatch] (const QByteArray& data) { HandleData (data, strictMatch); },
@@ -196,7 +196,7 @@ namespace MusicZombie
 		Queue_->Schedule ([this, url]
 				{
 					const auto reply = NAM_->get (SetupRequest (QNetworkRequest { url }));
-					Util::Sequence (this, Util::HandleReply (reply, this)) >>
+					Util::HandleReplySeq (reply, this) >>
 							Util::Visitor
 							{
 								[this] (const QByteArray& data) { HandleLookupFinished (data); },
