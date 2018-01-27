@@ -42,10 +42,12 @@ namespace Lastfmscrobble
 	: BaseSimilarArtists (name, num, parent)
 	, NAM_ (nam)
 	{
-		QMap<QString, QString> params;
-		params ["artist"] = name;
-		params ["autocorrect"] = "1";
-		params ["limit"] = QString::number (num);
+		QMap<QString, QString> params
+		{
+			{ "artist", name },
+			{ "autocorrect", "1" },
+			{ "limit", QString::number (num) }
+		};
 		auto reply = Request ("artist.getSimilar", nam, params);
 		connect (reply,
 				SIGNAL (finished ()),
