@@ -74,8 +74,7 @@ namespace Lastfmscrobble
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unable to parse reply";
-			emit error ();
-			deleteLater ();
+			ReportError ("Unable to parse service reply.");
 			return;
 		}
 
@@ -97,7 +96,7 @@ namespace Lastfmscrobble
 		}
 
 		if (!InfosWaiting_)
-			deleteLater ();
+			ReportError ("No results from last.fm.");
 	}
 }
 }
