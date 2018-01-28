@@ -62,14 +62,14 @@ namespace Lastfmscrobble
 		QDomDocument doc;
 		if (!doc.setContent (data))
 		{
-			emit ready ();
+			ReportError ("Unable to parse last.fm reply.");
 			return;
 		}
 
 		const auto& artistElems = doc.elementsByTagName ("artist");
 		if (artistElems.isEmpty ())
 		{
-			emit ready ();
+			ReportError ("No results from last.fm.");
 			return;
 		}
 
