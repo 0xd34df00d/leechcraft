@@ -34,6 +34,9 @@
 #include <QQmlEngine>
 #include <util/qml/colorthemeproxy.h>
 #include <util/sys/paths.h>
+#include <util/sll/visitor.h>
+#include <util/sll/either.h>
+#include <util/threads/futures.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/media/isimilarartists.h>
 #include <interfaces/media/ipendingsimilarartists.h>
@@ -69,22 +72,13 @@ namespace LMP
 	{
 		auto similars = Core::Instance ().GetProxy ()->
 					GetPluginsManager ()->GetAllCastableTo<Media::ISimilarArtists*> ();
-
-		for (auto *similar : similars)
-		{
-			auto obj = similar->GetSimilarArtists (artist, 20);
-			if (!obj)
-				continue;
-
-			connect (obj->GetQObject (),
-					SIGNAL (error ()),
-					obj->GetQObject (),
-					SLOT (deleteLater ()));
-			connect (obj->GetQObject (),
-					SIGNAL (ready ()),
-					this,
-					SLOT (handleSimilarReady ()));
-		}
+		for (auto similar : similars)
+			Util::Sequence (this, similar->GetSimilarArtists (artist, 20)) >>
+					Util::Visitor
+					{
+						[] (const QString&) {},
+						[this] (const Media::SimilarityInfos_t& infos) { SetInfos (infos); }
+					};
 	}
 
 	void SimilarViewManager::SetInfos (Media::SimilarityInfos_t infos)
@@ -111,15 +105,6 @@ namespace LMP
 
 			Model_->appendRow (item);
 		}
-	}
-
-	void SimilarViewManager::handleSimilarReady ()
-	{
-		sender ()->deleteLater ();
-		auto obj = qobject_cast<Media::IPendingSimilarArtists*> (sender ());
-
-		const auto& similar = obj->GetSimilar ();
-		SetInfos (similar);
 	}
 }
 }

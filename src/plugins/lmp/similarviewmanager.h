@@ -55,8 +55,6 @@ namespace LMP
 
 		void DefaultRequest (const QString&);
 		void SetInfos (Media::SimilarityInfos_t);
-	private slots:
-		void handleSimilarReady ();
 	};
 }
 }

@@ -31,11 +31,13 @@
 
 #include <QString>
 #include <QtPlugin>
+#include "audiostructs.h"
+
+template<typename>
+class QFuture;
 
 namespace Media
 {
-	class IPendingSimilarArtists;
-
 	/** @brief Interface for plugins supporting similar artists.
 	 *
 	 * If a plugin supports fetching artists similar to another one it
@@ -66,7 +68,7 @@ namespace Media
 		 * fetch similar artists.
 		 * @param[in] count The number of recommended artists to fetch.
 		 */
-		virtual IPendingSimilarArtists* GetSimilarArtists (const QString& artistName, int count) = 0;
+		virtual QFuture<SimilarityQueryResult_t> GetSimilarArtists (const QString& artistName, int count) = 0;
 	};
 }
 

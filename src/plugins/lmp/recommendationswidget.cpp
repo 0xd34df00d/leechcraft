@@ -30,7 +30,8 @@
 #include "recommendationswidget.h"
 #include <QtDebug>
 #include <util/sll/prelude.h>
-#include <util/sll/slotclosure.h>
+#include <util/sll/visitor.h>
+#include <util/threads/futures.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/media/irecommendedartists.h>
 #include <interfaces/media/iaudioscrobbler.h>
@@ -60,14 +61,12 @@ namespace LMP
 				GetAllCastableTo<Media::IRecommendedArtists*> ();
 		for (auto prov : provs)
 		{
-			const auto pending = prov->RequestRecommended (10);
-			new Util::SlotClosure<Util::DeleteLaterPolicy>
-			{
-				[this, pending] { HandleInfos (pending->GetSimilar ()); },
-				pending->GetQObject (),
-				SIGNAL (ready ()),
-				pending->GetQObject ()
-			};
+			Util::Sequence (this, prov->RequestRecommended (10)) >>
+					Util::Visitor
+					{
+						[] (const QString&) {},
+						[this] (const Media::SimilarityInfos_t& similars) { HandleInfos (similars); }
+					};
 		}
 	}
 

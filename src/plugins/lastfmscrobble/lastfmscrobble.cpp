@@ -189,15 +189,14 @@ namespace Lastfmscrobble
 		return (new AlbumArtFetcher (album, Proxy_))->GetFuture ();
 	}
 
-	Media::IPendingSimilarArtists* Plugin::GetSimilarArtists (const QString& name, int num)
+	QFuture<Media::SimilarityQueryResult_t> Plugin::GetSimilarArtists (const QString& name, int num)
 	{
-		return new PendingSimilarArtists (name, num, Proxy_->GetNetworkAccessManager (), this);
+		return (new PendingSimilarArtists (name, num, Proxy_->GetNetworkAccessManager (), this))->GetFuture ();
 	}
 
-	Media::IPendingSimilarArtists* Plugin::RequestRecommended (int num)
+	QFuture<Media::SimilarityQueryResult_t> Plugin::RequestRecommended (int num)
 	{
-		return new PendingRecommendedArtists (Auth_,
-				Proxy_->GetNetworkAccessManager (), num, this);
+		return (new PendingRecommendedArtists (Auth_, Proxy_->GetNetworkAccessManager (), num, this))->GetFuture ();
 	}
 
 	Media::IRadioStation_ptr Plugin::GetRadioStation (const QModelIndex& item, const QString& name)

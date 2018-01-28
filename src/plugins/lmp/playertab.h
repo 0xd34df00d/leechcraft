@@ -114,9 +114,6 @@ namespace LMP
 		void handleLoveTrack ();
 		void handleBanTrack ();
 
-		void handleSimilarError ();
-		void handleSimilarReady ();
-
 		void handlePlayerAvailable (bool);
 
 		void closeLMP ();

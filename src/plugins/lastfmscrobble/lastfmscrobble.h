@@ -111,9 +111,9 @@ namespace Lastfmscrobble
 		QString GetAlbumArtProviderName () const;
 		QFuture<Media::IAlbumArtProvider::Result_t> RequestAlbumArt (const Media::AlbumInfo& album) const;
 
-		Media::IPendingSimilarArtists* GetSimilarArtists (const QString&, int);
+		QFuture<Media::SimilarityQueryResult_t> GetSimilarArtists (const QString&, int);
 
-		Media::IPendingSimilarArtists* RequestRecommended (int);
+		QFuture<Media::SimilarityQueryResult_t> RequestRecommended (int);
 
 		Media::IRadioStation_ptr GetRadioStation (const QModelIndex&, const QString&);
 		QList<QAbstractItemModel*> GetRadioListItems () const;

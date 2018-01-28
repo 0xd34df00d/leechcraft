@@ -575,17 +575,17 @@ namespace LMP
 					GetPluginsManager ()->GetAllCastableTo<Media::ISimilarArtists*> ();
 			for (const auto similar : similars)
 			{
-				const auto obj = similar->GetSimilarArtists (info.Artist_, 15);
-				if (!obj)
-					continue;
-				connect (obj->GetQObject (),
-						SIGNAL (error ()),
-						this,
-						SLOT (handleSimilarError ()));
-				connect (obj->GetQObject (),
-						SIGNAL (ready ()),
-						this,
-						SLOT (handleSimilarReady ()));
+				Util::Sequence (this, similar->GetSimilarArtists (info.Artist_, 15)) >>
+						Util::Visitor
+						{
+							[] (const QString& msg) { qWarning () << Q_FUNC_INFO << msg; },
+							[this, artist = LastArtist_] (const Media::SimilarityInfos_t& similar)
+							{
+								LastArtist_ = artist;
+								Similars_ [LastArtist_] = similar;
+								FillSimilar (similar);
+							}
+						};
 			}
 		}
 		else if (info.Artist_ != LastArtist_)
@@ -629,23 +629,6 @@ namespace LMP
 		AddToLovedBanned (Player_->GetCurrentMediaInfo ().LocalPath_,
 				LocalCollection::StaticRating::Banned,
 				&Media::IAudioScrobbler::BanCurrentTrack);
-	}
-
-	void PlayerTab::handleSimilarError ()
-	{
-		qWarning () << Q_FUNC_INFO;
-		sender ()->deleteLater ();
-	}
-
-	void PlayerTab::handleSimilarReady ()
-	{
-		sender ()->deleteLater ();
-		auto obj = qobject_cast<Media::IPendingSimilarArtists*> (sender ());
-
-		const auto& similar = obj->GetSimilar ();
-		LastArtist_ = obj->GetSourceArtistName ();
-		Similars_ [LastArtist_] = similar;
-		FillSimilar (similar);
 	}
 
 	void PlayerTab::handlePlayerAvailable (bool available)

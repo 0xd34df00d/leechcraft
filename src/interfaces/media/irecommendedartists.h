@@ -32,10 +32,11 @@
 #include <QtPlugin>
 #include "audiostructs.h"
 
+template<typename>
+class QFuture;
+
 namespace Media
 {
-	class IPendingSimilarArtists;
-
 	/** @brief Interface for plugins supporting recommended artists.
 	 *
 	 * If a plugin supports fetching information about recommended
@@ -70,7 +71,7 @@ namespace Media
 		 *
 		 * @param[in] count The number of recommended artists to fetch.
 		 */
-		virtual IPendingSimilarArtists* RequestRecommended (int count) = 0;
+		virtual QFuture<SimilarityQueryResult_t> RequestRecommended (int count) = 0;
 	};
 }
 
