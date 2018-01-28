@@ -39,7 +39,6 @@
 #include <util/threads/futures.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/media/isimilarartists.h>
-#include <interfaces/media/ipendingsimilarartists.h>
 #include "similarmodel.h"
 #include "core.h"
 #include "stdartistactionsmanager.h"

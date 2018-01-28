@@ -35,7 +35,6 @@
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/media/irecommendedartists.h>
 #include <interfaces/media/iaudioscrobbler.h>
-#include <interfaces/media/ipendingsimilarartists.h>
 #include <interfaces/iinfo.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
