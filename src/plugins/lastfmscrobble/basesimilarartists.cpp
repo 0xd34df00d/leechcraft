@@ -32,6 +32,7 @@
 #include <QDomDocument>
 #include <QtDebug>
 #include <util/network/handlenetworkreply.h>
+#include <util/sll/util.h>
 #include "util.h"
 
 namespace LeechCraft
@@ -91,6 +92,8 @@ namespace Lastfmscrobble
 			const std::optional<int>& similarity,
 			const std::optional<QStringList>& similarTo)
 	{
+		const auto decrGuard = Util::MakeScopeGuard ([this] { DecrementWaiting (); });
+
 		QDomDocument doc;
 		QString errMsg;
 		int errLine = 0, errCol = 0;
@@ -104,14 +107,11 @@ namespace Lastfmscrobble
 					<< ":"
 					<< errCol
 					<< data;
-			DecrementWaiting ();
 			return;
 		}
 
 		const auto& info = GetArtistInfo (doc.documentElement ().firstChildElement ("artist"));
 		Similar_ << Media::SimilarityInfo { info, similarity.value_or (0), similarTo.value_or (QStringList {}) };
-
-		DecrementWaiting ();
 	}
 }
 }
