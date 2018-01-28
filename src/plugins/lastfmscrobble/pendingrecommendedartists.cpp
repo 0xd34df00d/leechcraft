@@ -62,7 +62,7 @@ namespace Lastfmscrobble
 		Util::HandleReplySeq (Request ("user.getRecommendedArtists", NAM_, params), this) >>
 				Util::Visitor
 				{
-					[this] (Util::Void) { handleReplyError (); },
+					[this] (Util::Void) { ReportError ("Unable to query last.fm."); },
 					[this] (const QByteArray& data) { HandleData (data); }
 				};
 	}
