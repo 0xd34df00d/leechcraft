@@ -39,8 +39,6 @@ namespace Lastfmscrobble
 {
 	class PendingSimilarArtists : public BaseSimilarArtists
 	{
-		Q_OBJECT
-
 		QNetworkAccessManager *NAM_;
 	public:
 		PendingSimilarArtists (const QString&, int num, QNetworkAccessManager*, QObject* = nullptr);
