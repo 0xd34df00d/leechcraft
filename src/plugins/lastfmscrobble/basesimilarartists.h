@@ -32,7 +32,6 @@
 #include <optional>
 #include <QFutureInterface>
 #include <util/sll/either.h>
-#include <interfaces/media/ipendingsimilarartists.h>
 #include <interfaces/media/audiostructs.h>
 
 class QNetworkReply;
@@ -42,24 +41,17 @@ namespace LeechCraft
 namespace Lastfmscrobble
 {
 	class BaseSimilarArtists : public QObject
-							 , public Media::IPendingSimilarArtists
 	{
 		Q_OBJECT
-		Q_INTERFACES (Media::IPendingSimilarArtists)
 
 		Media::SimilarityInfos_t Similar_;
 
 		QFutureInterface<Media::SimilarityQueryResult_t> Promise_;
 	protected:
-		QString SourceName_;
 		const int NumGet_;
 		int InfosWaiting_ = 0;
 	public:
 		BaseSimilarArtists (const QString&, int, QObject* = nullptr);
-
-		QObject* GetQObject ();
-		QString GetSourceArtistName () const;
-		Media::SimilarityInfos_t GetSimilar () const;
 
 		QFuture<Media::SimilarityQueryResult_t> GetFuture ();
 	protected:
@@ -69,9 +61,6 @@ namespace Lastfmscrobble
 	private:
 		void DecrementWaiting ();
 		void HandleInfoReplyFinished (const QByteArray&, const std::optional<int>&, const std::optional<QStringList>&);
-	signals:
-		void ready ();
-		void error ();
 	};
 }
 }

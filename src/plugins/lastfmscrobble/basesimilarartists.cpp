@@ -41,25 +41,9 @@ namespace Lastfmscrobble
 {
 	BaseSimilarArtists::BaseSimilarArtists (const QString& name, int num, QObject *parent)
 	: QObject (parent)
-	, SourceName_ (name)
 	, NumGet_ (num)
 	{
 		Promise_.reportStarted ();
-	}
-
-	QObject* BaseSimilarArtists::GetQObject ()
-	{
-		return this;
-	}
-
-	QString BaseSimilarArtists::GetSourceArtistName () const
-	{
-		return SourceName_;
-	}
-
-	Media::SimilarityInfos_t BaseSimilarArtists::GetSimilar () const
-	{
-		return Similar_;
 	}
 
 	QFuture<Media::SimilarityQueryResult_t> BaseSimilarArtists::GetFuture ()
@@ -69,7 +53,6 @@ namespace Lastfmscrobble
 
 	void BaseSimilarArtists::ReportError (const QString& msg)
 	{
-		emit error ();
 		Util::ReportFutureResult (Promise_, msg);
 		deleteLater ();
 	}
@@ -91,10 +74,7 @@ namespace Lastfmscrobble
 		--InfosWaiting_;
 
 		if (!InfosWaiting_)
-		{
-			emit ready ();
 			Util::ReportFutureResult (Promise_, Similar_);
-		}
 	}
 
 	void BaseSimilarArtists::HandleInfoReplyFinished (const QByteArray& data,
