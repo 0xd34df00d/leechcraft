@@ -44,7 +44,7 @@ namespace Lastfmscrobble
 {
 	PendingRecommendedArtists::PendingRecommendedArtists (Authenticator *auth,
 			QNetworkAccessManager *nam, int num, QObject *obj)
-	: BaseSimilarArtists (QString (), num, obj)
+	: BaseSimilarArtists (num, obj)
 	, NAM_ (nam)
 	{
 		if (auth->IsAuthenticated ())

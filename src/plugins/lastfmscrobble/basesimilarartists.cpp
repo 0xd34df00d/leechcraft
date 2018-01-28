@@ -39,7 +39,7 @@ namespace LeechCraft
 {
 namespace Lastfmscrobble
 {
-	BaseSimilarArtists::BaseSimilarArtists (const QString& name, int num, QObject *parent)
+	BaseSimilarArtists::BaseSimilarArtists (int num, QObject *parent)
 	: QObject (parent)
 	, NumGet_ (num)
 	{

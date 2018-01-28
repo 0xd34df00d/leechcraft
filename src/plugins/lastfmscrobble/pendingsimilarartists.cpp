@@ -40,7 +40,7 @@ namespace Lastfmscrobble
 {
 	PendingSimilarArtists::PendingSimilarArtists (const QString& name,
 			int num, QNetworkAccessManager *nam, QObject *parent)
-	: BaseSimilarArtists (name, num, parent)
+	: BaseSimilarArtists (num, parent)
 	, NAM_ (nam)
 	{
 		QMap<QString, QString> params
