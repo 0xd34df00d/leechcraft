@@ -30,7 +30,6 @@
 #pragma once
 
 #include <QtPlugin>
-#include <util/sll/eitherfwd.h>
 #include "audiostructs.h"
 
 namespace Media
@@ -49,8 +48,6 @@ namespace Media
 	{
 	public:
 		virtual ~IRecommendedArtists () {}
-
-		using Result_t = LeechCraft::Util::Either<QString, SimilarityInfos_t>;
 
 		/** @brief Requests the recommended artists.
 		 *

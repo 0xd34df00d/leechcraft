@@ -32,6 +32,7 @@
 #include <QStringList>
 #include <QVariantMap>
 #include <QUrl>
+#include <util/sll/eitherfwd.h>
 
 namespace Media
 {
@@ -181,7 +182,9 @@ namespace Media
 
 	/** @brief A list of SimilarityInfo structures.
 	 */
-	typedef QList<SimilarityInfo> SimilarityInfos_t;
+	using SimilarityInfos_t = QList<SimilarityInfo>;
+
+	using SimilarityQueryResult_t = LeechCraft::Util::Either<QString, SimilarityInfos_t>;
 }
 
 Q_DECLARE_METATYPE (Media::AudioInfo)
