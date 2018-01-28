@@ -43,8 +43,6 @@ namespace LMP
 {
 	class SimilarViewManager : public QObject
 	{
-		Q_OBJECT
-
 		QQuickWidget * const View_;
 		QStandardItemModel * const Model_;
 		const ICoreProxy_ptr Proxy_;
