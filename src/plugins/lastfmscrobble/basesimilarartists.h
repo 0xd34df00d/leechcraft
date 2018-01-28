@@ -63,8 +63,6 @@ namespace Lastfmscrobble
 	private:
 		void DecrementWaiting ();
 		void HandleInfoReplyFinished (const QByteArray&, const std::optional<int>&, const std::optional<QStringList>&);
-	protected slots:
-		void handleReplyError ();
 	signals:
 		void ready ();
 		void error ();
