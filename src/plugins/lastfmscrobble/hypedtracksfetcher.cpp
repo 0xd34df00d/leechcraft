@@ -55,7 +55,7 @@ namespace Lastfmscrobble
 		Util::HandleReplySeq (reply, this) >>
 				Util::Visitor
 				{
-					[this] (Util::Void) { Util::ReportFutureResult (Promise_, "Unable to issue Last.FM API request."); },
+					[this] (Util::Void) { Util::ReportFutureResult (Promise_, QString { "Unable to issue Last.FM API request." }); },
 					[this] (const QByteArray& data) { HandleFinished (data); }
 				}.Finally ([this] { deleteLater (); });
 	}
@@ -73,7 +73,7 @@ namespace Lastfmscrobble
 			qWarning () << Q_FUNC_INFO
 					<< "error parsing reply"
 					<< data;
-			Util::ReportFutureResult (Promise_, "Unable to parse Last.FM response.");
+			Util::ReportFutureResult (Promise_, QString { "Unable to parse Last.FM response." });
 			return;
 		}
 
