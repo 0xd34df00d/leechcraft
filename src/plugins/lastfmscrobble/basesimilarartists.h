@@ -51,7 +51,7 @@ namespace Lastfmscrobble
 		const int NumGet_;
 		int InfosWaiting_ = 0;
 	public:
-		BaseSimilarArtists (const QString&, int, QObject* = 0);
+		BaseSimilarArtists (const QString&, int, QObject* = nullptr);
 
 		QObject* GetQObject ();
 		QString GetSourceArtistName () const;

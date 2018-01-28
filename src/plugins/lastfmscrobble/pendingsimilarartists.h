@@ -43,7 +43,7 @@ namespace Lastfmscrobble
 
 		QNetworkAccessManager *NAM_;
 	public:
-		PendingSimilarArtists (const QString&, int num, QNetworkAccessManager*, QObject* = 0);
+		PendingSimilarArtists (const QString&, int num, QNetworkAccessManager*, QObject* = nullptr);
 	private slots:
 		void HandleData (const QByteArray&);
 	};
