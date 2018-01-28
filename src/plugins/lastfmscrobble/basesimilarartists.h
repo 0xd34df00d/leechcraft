@@ -30,8 +30,10 @@
 #pragma once
 
 #include <optional>
-#include <QObject>
+#include <QFutureInterface>
+#include <util/sll/either.h>
 #include <interfaces/media/ipendingsimilarartists.h>
+#include <interfaces/media/audiostructs.h>
 
 class QNetworkReply;
 
@@ -46,6 +48,8 @@ namespace Lastfmscrobble
 		Q_INTERFACES (Media::IPendingSimilarArtists)
 
 		Media::SimilarityInfos_t Similar_;
+
+		QFutureInterface<Media::SimilarityQueryResult_t> Promise_;
 	protected:
 		QString SourceName_;
 		const int NumGet_;
@@ -56,6 +60,8 @@ namespace Lastfmscrobble
 		QObject* GetQObject ();
 		QString GetSourceArtistName () const;
 		Media::SimilarityInfos_t GetSimilar () const;
+
+		QFuture<Media::SimilarityQueryResult_t> GetFuture ();
 	protected:
 		void ReportError (const QString&);
 
