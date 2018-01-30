@@ -42,8 +42,6 @@ namespace Lastfmscrobble
 {
 	class BaseSimilarArtists : public QObject
 	{
-		Q_OBJECT
-
 		Media::SimilarityInfos_t Similar_;
 
 		QFutureInterface<Media::SimilarityQueryResult_t> Promise_;
