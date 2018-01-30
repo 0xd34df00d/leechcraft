@@ -580,9 +580,9 @@ namespace LMP
 							[] (const QString& msg) { qWarning () << Q_FUNC_INFO << msg; },
 							[this, artist = LastArtist_] (const Media::SimilarityInfos_t& similar)
 							{
-								LastArtist_ = artist;
-								Similars_ [LastArtist_] = similar;
-								FillSimilar (similar);
+								Similars_ [artist] = similar;
+								if (artist == LastArtist_)
+									FillSimilar (similar);
 							}
 						};
 			}
