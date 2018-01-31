@@ -573,7 +573,6 @@ namespace LMP
 			const auto& similars = Core::Instance ().GetProxy ()->
 					GetPluginsManager ()->GetAllCastableTo<Media::ISimilarArtists*> ();
 			for (const auto similar : similars)
-			{
 				Util::Sequence (this, similar->GetSimilarArtists (info.Artist_, 15)) >>
 						Util::Visitor
 						{
@@ -585,7 +584,6 @@ namespace LMP
 									FillSimilar (similar);
 							}
 						};
-			}
 		}
 		else if (info.Artist_ != LastArtist_)
 		{
