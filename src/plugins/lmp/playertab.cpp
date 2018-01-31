@@ -525,8 +525,8 @@ namespace LMP
 			}
 		}
 
-		template<typename T>
-		void UpdateIcon (T iconable, SourceState state, std::function<QSize (T)> iconSizeGetter)
+		template<typename T, typename F>
+		void UpdateIcon (T iconable, SourceState state, F iconSizeGetter)
 		{
 			const QSize& iconSize = iconSizeGetter (iconable);
 			if (iconSize.isEmpty ())
