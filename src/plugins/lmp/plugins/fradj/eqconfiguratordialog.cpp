@@ -39,6 +39,7 @@
 #include <qwt_curve_fitter.h>
 #endif
 
+#include <util/sll/prelude.h>
 #include "eqbandwidget.h"
 
 namespace LeechCraft
@@ -78,10 +79,7 @@ namespace Fradj
 
 	QList<double> EqConfiguratorDialog::GetGains () const
 	{
-		QList<double> result;
-		for (auto widget : Bands_)
-			result << widget->GetGain ();
-		return result;
+		return Util::Map (Bands_, &EqBandWidget::GetGain);
 	}
 
 	void EqConfiguratorDialog::SetGains (const QList<double>& gains)
