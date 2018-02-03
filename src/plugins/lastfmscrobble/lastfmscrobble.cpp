@@ -235,7 +235,7 @@ namespace Lastfmscrobble
 		return (new RecentReleasesFetcher (withRecs, nam, this))->GetFuture ();
 	}
 
-	QFuture<Plugin::ArtistBioResult_t> Plugin::RequestArtistBio (const QString& artist, bool addImages)
+	QFuture<Media::IArtistBioFetcher::Result_t> Plugin::RequestArtistBio (const QString& artist, bool addImages)
 	{
 		return (new PendingArtistBio (artist, Proxy_->GetNetworkAccessManager (), addImages, this))->GetFuture ();
 	}

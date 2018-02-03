@@ -66,7 +66,7 @@ namespace Lastfmscrobble
 				};
 	}
 
-	QFuture<Media::IArtistBioFetcher::ArtistBioResult_t> PendingArtistBio::GetFuture ()
+	QFuture<Media::IArtistBioFetcher::Result_t> PendingArtistBio::GetFuture ()
 	{
 		return Promise_.future ();
 	}

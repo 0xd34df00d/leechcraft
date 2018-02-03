@@ -104,7 +104,7 @@ namespace Media
 		 *
 		 * @sa ArtistBio
 		 */
-		using ArtistBioResult_t = LeechCraft::Util::Either<QString, ArtistBio>;
+		using Result_t = LeechCraft::Util::Either<QString, ArtistBio>;
 
 		/** @brief Returns the service name.
 		 *
@@ -125,8 +125,7 @@ namespace Media
 		 * ArtistBio::OtherImages_ field should be requested.
 		 * @return The pending biography future.
 		 */
-		virtual QFuture<ArtistBioResult_t> RequestArtistBio (const QString& artist,
-				bool additionalImages = true) = 0;
+		virtual QFuture<Result_t> RequestArtistBio (const QString& artist, bool additionalImages = true) = 0;
 	};
 }
 

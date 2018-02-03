@@ -44,11 +44,11 @@ namespace Lastfmscrobble
 		QNetworkAccessManager * const NAM_;
 		const bool AddImages_;
 
-		QFutureInterface<Media::IArtistBioFetcher::ArtistBioResult_t> Promise_;
+		QFutureInterface<Media::IArtistBioFetcher::Result_t> Promise_;
 	public:
 		PendingArtistBio (QString, QNetworkAccessManager*, bool addImages, QObject* = nullptr);
 
-		QFuture<Media::IArtistBioFetcher::ArtistBioResult_t> GetFuture ();
+		QFuture<Media::IArtistBioFetcher::Result_t> GetFuture ();
 	private:
 		void HandleFinished (const QByteArray&);
 	};

@@ -121,7 +121,7 @@ namespace Lastfmscrobble
 
 		QFuture<IRecentReleases::Result_t> RequestRecentReleases (int, bool);
 
-		QFuture<ArtistBioResult_t> RequestArtistBio (const QString&, bool);
+		QFuture<IArtistBioFetcher::Result_t> RequestArtistBio (const QString&, bool);
 
 		QFuture<EventsQueryResult_t> UpdateRecommendedEvents ();
 		void AttendEvent (qint64, Media::EventAttendType);
