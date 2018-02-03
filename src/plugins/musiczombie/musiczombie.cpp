@@ -87,14 +87,14 @@ namespace MusicZombie
 		return "MusicBrainz.org";
 	}
 
-	QFuture<Plugin::QueryResult_t> Plugin::GetDiscography (const QString& artist, const QStringList& hints)
+	QFuture<Plugin::Result_t> Plugin::GetDiscography (const QString& artist, const QStringList& hints)
 	{
 		const auto fetcher = new PendingDisco (Queue_, artist, {},
 				hints, Proxy_->GetNetworkAccessManager (), this);
 		return fetcher->GetFuture ();
 	}
 
-	QFuture<Plugin::QueryResult_t> Plugin::GetReleaseInfo (const QString& artist, const QString& release)
+	QFuture<Plugin::Result_t> Plugin::GetReleaseInfo (const QString& artist, const QString& release)
 	{
 		const auto fetcher = new PendingDisco (Queue_, artist, release,
 				{ release }, Proxy_->GetNetworkAccessManager (), this);

@@ -84,7 +84,7 @@ namespace MusicZombie
 		RequestArtist (true);
 	}
 
-	QFuture<Media::IDiscographyProvider::QueryResult_t> PendingDisco::GetFuture ()
+	QFuture<Media::IDiscographyProvider::Result_t> PendingDisco::GetFuture ()
 	{
 		return Promise_.future ();
 	}

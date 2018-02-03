@@ -137,7 +137,7 @@ namespace Media
 		 *
 		 * @sa Results_t
 		 */
-		using QueryResult_t = LeechCraft::Util::Either<QString, QList<ReleaseInfo>>;
+		using Result_t = LeechCraft::Util::Either<QString, QList<ReleaseInfo>>;
 
 		/** @brief Returns the service name.
 		 *
@@ -163,7 +163,7 @@ namespace Media
 		 * @param[in] artist The artist name.
 		 * @return The pending discography search handle.
 		 */
-		virtual QFuture<QueryResult_t> GetDiscography (const QString& artist, const QStringList& hints) = 0;
+		virtual QFuture<Result_t> GetDiscography (const QString& artist, const QStringList& hints) = 0;
 
 		/** @brief Fetches contents of the given release by the artist.
 		 *
@@ -174,7 +174,7 @@ namespace Media
 		 * @param[in] release The release name to search for.
 		 * @return The pending discography search future.
 		 */
-		virtual QFuture<QueryResult_t> GetReleaseInfo (const QString& artist, const QString& release) = 0;
+		virtual QFuture<Result_t> GetReleaseInfo (const QString& artist, const QString& release) = 0;
 	};
 }
 

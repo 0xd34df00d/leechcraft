@@ -55,7 +55,7 @@ namespace MusicZombie
 
 		QNetworkAccessManager *NAM_;
 
-		using QueryResult_t = Media::IDiscographyProvider::QueryResult_t;
+		using QueryResult_t = Media::IDiscographyProvider::Result_t;
 		QFutureInterface<QueryResult_t> Promise_;
 
 		using Artist2Releases_t = QHash<QString, QSet<QString>>;
@@ -63,7 +63,7 @@ namespace MusicZombie
 		PendingDisco (Util::QueueManager*, const QString&, const QString&,
 				const QStringList&, QNetworkAccessManager*, QObject* = nullptr);
 
-		QFuture<Media::IDiscographyProvider::QueryResult_t> GetFuture ();
+		QFuture<Media::IDiscographyProvider::Result_t> GetFuture ();
 	private:
 		void RequestArtist (bool);
 
