@@ -552,9 +552,9 @@ namespace Poshuku
 				this,
 				SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)));
 		connect (widget,
-				SIGNAL (urlChanged (QUrl)),
+				&BrowserWidget::urlChanged,
 				this,
-				SLOT (handleURLChanged ()));
+				[this, widget] { HandleHistory (widget->GetWebView ()); });
 	}
 
 	void Core::HandleSearchRequest (const QString& url)
@@ -670,11 +670,6 @@ namespace Poshuku
 		QByteArray data;
 		XbelGenerator g (data);
 		file.write (data);
-	}
-
-	void Core::handleURLChanged ()
-	{
-		HandleHistory (dynamic_cast<BrowserWidget*> (sender ())->GetWebView ());
 	}
 
 	void Core::handleIconChanged (const QIcon& newIcon)
