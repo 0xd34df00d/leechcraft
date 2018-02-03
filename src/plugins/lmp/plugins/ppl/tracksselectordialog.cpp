@@ -338,7 +338,7 @@ namespace PPL
 				break;
 
 			const auto& referenceInfo = asTuple (*pos);
-			while (asTuple (*++pos) == referenceInfo)
+			while (++pos != Tracks_.end () && asTuple (*pos) == referenceInfo)
 				MarkRow (index (std::distance (Tracks_.begin (), pos) + 1, Header::ScrobbleSummary), false);
 		}
 	}
