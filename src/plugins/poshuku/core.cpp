@@ -398,9 +398,9 @@ namespace Poshuku
 	{
 		SetupConnections (widget);
 		connect (widget,
-				SIGNAL (titleChanged (const QString&)),
+				&BrowserWidget::titleChanged,
 				this,
-				SLOT (handleTitleChanged (const QString&)));
+				[this, widget] (const QString& newTitle) { emit changeTabName (widget, newTitle); });
 		connect (widget,
 				SIGNAL (iconChanged (const QIcon&)),
 				this,
@@ -670,11 +670,6 @@ namespace Poshuku
 		QByteArray data;
 		XbelGenerator g (data);
 		file.write (data);
-	}
-
-	void Core::handleTitleChanged (const QString& newTitle)
-	{
-		emit changeTabName (dynamic_cast<QWidget*> (sender ()), newTitle);
 	}
 
 	void Core::handleURLChanged ()
