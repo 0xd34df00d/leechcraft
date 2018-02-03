@@ -42,7 +42,7 @@ namespace Fradj
 	Eq10BandEffect::Eq10BandEffect (const QByteArray& filterId)
 	: FilterId_ { filterId }
 	, Equalizer_ { gst_element_factory_make ("equalizer-10bands", nullptr) }
-	, Configurator_ { new EqConfigurator { this } }
+	, Configurator_ { new EqConfigurator { this, this } }
 	{
 		Configurator_->Restore ();
 	}

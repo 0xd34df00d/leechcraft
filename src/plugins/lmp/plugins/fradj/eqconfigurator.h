@@ -51,7 +51,7 @@ namespace Fradj
 		const QByteArray ID_;
 		BandInfos_t Bands_;
 	public:
-		EqConfigurator (QObject*);
+		EqConfigurator (IEqualizer*, QObject*);
 
 		void Restore ();
 

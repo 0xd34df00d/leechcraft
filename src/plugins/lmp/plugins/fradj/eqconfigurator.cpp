@@ -40,9 +40,9 @@ namespace LMP
 {
 namespace Fradj
 {
-	EqConfigurator::EqConfigurator (QObject *parent)
+	EqConfigurator::EqConfigurator (IEqualizer *eq, QObject *parent)
 	: QObject { parent }
-	, IEq_ { dynamic_cast<IEqualizer*> (parent) }
+	, IEq_ { eq }
 	, ID_ { IEq_->GetEffectId () }
 	, Bands_ { IEq_->GetFixedBands () }
 	{
