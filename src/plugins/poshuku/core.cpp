@@ -406,9 +406,13 @@ namespace Poshuku
 				this,
 				[this, widget] (const QIcon& icon) { emit changeTabIcon (widget, icon); });
 		connect (widget,
-				SIGNAL (needToClose ()),
+				&BrowserWidget::needToClose,
 				this,
-				SLOT (handleNeedToClose ()));
+				[this, widget]
+				{
+					emit removeTab (widget);
+					widget->deleteLater ();
+				});
 		connect (widget,
 				SIGNAL (statusBarChanged (const QString&)),
 				this,
@@ -670,14 +674,6 @@ namespace Poshuku
 		QByteArray data;
 		XbelGenerator g (data);
 		file.write (data);
-	}
-
-	void Core::handleNeedToClose ()
-	{
-		BrowserWidget *w = dynamic_cast<BrowserWidget*> (sender ());
-		emit removeTab (w);
-
-		w->deleteLater ();
 	}
 
 	void Core::handleAddToFavorites (QString title, QString url)
