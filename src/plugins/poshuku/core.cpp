@@ -402,9 +402,9 @@ namespace Poshuku
 				this,
 				[this, widget] (const QString& newTitle) { emit changeTabName (widget, newTitle); });
 		connect (widget,
-				SIGNAL (iconChanged (const QIcon&)),
+				&BrowserWidget::iconChanged,
 				this,
-				SLOT (handleIconChanged (const QIcon&)));
+				[this, widget] (const QIcon& icon) { emit changeTabIcon (widget, icon); });
 		connect (widget,
 				SIGNAL (needToClose ()),
 				this,
@@ -670,11 +670,6 @@ namespace Poshuku
 		QByteArray data;
 		XbelGenerator g (data);
 		file.write (data);
-	}
-
-	void Core::handleIconChanged (const QIcon& newIcon)
-	{
-		emit changeTabIcon (dynamic_cast<QWidget*> (sender ()), newIcon);
 	}
 
 	void Core::handleNeedToClose ()
