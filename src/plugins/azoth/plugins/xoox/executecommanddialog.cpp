@@ -266,17 +266,16 @@ namespace Xoox
 			return;
 
 		const auto prevPage = page (ids.at (pos - 1));
-		if (dynamic_cast<CommandsListPage*> (prevPage))
+		if (const auto listPage = dynamic_cast<CommandsListPage*> (prevPage))
 		{
-			const AdHocCommand& cmd = dynamic_cast<CommandsListPage*> (prevPage)->GetSelectedCommand ();
+			const AdHocCommand& cmd = listPage->GetSelectedCommand ();
 			if (cmd.GetName ().isEmpty ())
 				deleteLater ();
 			else
 				ExecuteCommand (cmd);
 		}
-		else if (dynamic_cast<CommandResultPage*> (prevPage))
+		else if (const auto crp = dynamic_cast<CommandResultPage*> (prevPage))
 		{
-			const auto crp = dynamic_cast<CommandResultPage*> (prevPage);
 			const auto& action = crp->GetSelectedAction ();
 			if (action.isEmpty ())
 				return;
