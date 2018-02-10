@@ -60,7 +60,7 @@ namespace Fradj
 		EqConfiguratorDialog dia { Bands_, gains, IEq_->GetPresets () };
 		connect (&dia,
 				&EqConfiguratorDialog::presetRequested,
-				[this, &dia] (EqConfiguratorDialog*, const QString& preset)
+				[this, &dia] (const QString& preset)
 				{
 					if (!preset.isEmpty ())
 					{

@@ -155,7 +155,7 @@ namespace Fradj
 
 	void EqConfiguratorDialog::on_Preset__currentIndexChanged (const QString& preset)
 	{
-		emit presetRequested (this, preset);
+		emit presetRequested (preset);
 	}
 }
 }

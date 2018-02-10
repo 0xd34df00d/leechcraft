@@ -70,7 +70,7 @@ namespace Fradj
 		void rebuildPlot ();
 		void on_Preset__currentIndexChanged (const QString&);
 	signals:
-		void presetRequested (EqConfiguratorDialog*, const QString&);
+		void presetRequested (const QString&);
 	};
 }
 }
