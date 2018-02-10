@@ -59,8 +59,6 @@ namespace Fradj
 	private:
 		QList<double> ReadGains () const;
 		void SaveGains (const QList<double>&) const;
-	private slots:
-		void handlePresetRequested (EqConfiguratorDialog*, const QString&);
 	};
 }
 }
