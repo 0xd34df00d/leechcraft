@@ -49,7 +49,7 @@ namespace Xoox
 			w->writeTextElement ("authstatus", proxy->AuthStatusToString (ods->AuthStatus_));
 
 			w->writeStartElement ("groups");
-				Q_FOREACH (const QString& group, ods->Groups_)
+				for (const auto& group : ods->Groups_)
 					w->writeTextElement ("group", group);
 			w->writeEndElement ();
 		w->writeEndElement ();
