@@ -53,6 +53,7 @@
 #include <interfaces/azoth/ihaveavatars.h>
 #include <interfaces/azoth/moodinfo.h>
 #include <interfaces/azoth/activityinfo.h>
+#include "glooxaccount.h"
 
 class QXmppPresence;
 class QXmppVersionIq;
@@ -150,7 +151,7 @@ namespace Xoox
 
 		// ICLEntry
 		QObject* GetQObject ();
-		IAccount* GetParentAccount () const;
+		GlooxAccount* GetParentAccount () const;
 		QList<IMessage*> GetAllMessages () const;
 		void PurgeMessages (const QDateTime&);
 		void SetChatPartState (ChatPartState, const QString&);

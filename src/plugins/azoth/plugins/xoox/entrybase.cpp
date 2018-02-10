@@ -123,7 +123,7 @@ namespace Xoox
 		return this;
 	}
 
-	IAccount* EntryBase::GetParentAccount () const
+	GlooxAccount* EntryBase::GetParentAccount () const
 	{
 		return Account_;
 	}
