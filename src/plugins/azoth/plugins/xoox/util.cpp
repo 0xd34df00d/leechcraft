@@ -46,6 +46,7 @@
 #include <util/sll/prelude.h>
 #include "entrybase.h"
 #include "capsdatabase.h"
+#include "glooxaccount.h"
 
 QDataStream& operator<< (QDataStream& out, const QXmppDiscoveryIq::Identity& id)
 {
@@ -324,6 +325,13 @@ namespace XooxUtil
 
 		return pres;
 	}
+
+	QString GetBareJID (const QString& entryId, GlooxAccount *acc)
+	{
+		const auto underscoreCount = acc->GetAccountID ().count ('_') + 1;
+		return entryId.section ('_', underscoreCount);
+	}
+
 }
 }
 }

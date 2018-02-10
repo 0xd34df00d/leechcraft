@@ -46,6 +46,7 @@
 #include "gwoptionsdialog.h"
 #include "privacylistsmanager.h"
 #include "glooxmessage.h"
+#include "util.h"
 #include "vcardstorage.h"
 
 namespace LeechCraft
@@ -70,12 +71,6 @@ namespace Xoox
 
 	namespace
 	{
-		QString GetBareJID (const QString& entryId, GlooxAccount *acc)
-		{
-			const auto underscoreCount = acc->GetAccountID ().count ('_') + 1;
-			return entryId.section ('_', underscoreCount);
-		}
-
 		void LoadVCard (const QDomElement& vcardElem,
 				const QString& entryId, GlooxAccount *acc, VCardStorage *storage)
 		{
@@ -134,7 +129,7 @@ namespace Xoox
 	}
 
 	GlooxCLEntry::GlooxCLEntry (OfflineDataSource_ptr ods, GlooxAccount *parent)
-	: EntryBase (GetBareJID (ods->ID_, parent), parent)
+	: EntryBase (XooxUtil::GetBareJID (ods->ID_, parent), parent)
 	, ODS_ (ods)
 	{
 	}

@@ -42,6 +42,8 @@ class QXmppMessage;
 class QXmppDataForm;
 class QXmppPresence;
 
+class GlooxAccount;
+
 QDataStream& operator<< (QDataStream&, const QXmppDiscoveryIq::Identity&);
 QDataStream& operator>> (QDataStream&, QXmppDiscoveryIq::Identity&);
 
@@ -88,6 +90,8 @@ namespace XooxUtil
 	EntryStatus PresenceToStatus (const QXmppPresence& pres);
 
 	QXmppPresence StatusToPresence (State, const QString&, int);
+
+	QString GetBareJID (const QString& entryId, GlooxAccount *acc);
 }
 }
 }
