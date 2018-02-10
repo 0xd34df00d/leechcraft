@@ -30,6 +30,8 @@
 #include "offlinedatasource.h"
 #include <QXmlStreamWriter>
 #include <QDomElement>
+#include <util/sll/domchildrenrange.h>
+#include <util/sll/prelude.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include "vcardstorage.h"
 #include "util.h"
@@ -84,17 +86,9 @@ namespace Xoox
 	{
 		const auto& entryID = LoadEntryID (entry);
 
-		QStringList groups;
-		QDomElement group = entry
-				.firstChildElement ("groups")
-				.firstChildElement ("group");
-		while (!group.isNull ())
-		{
-			const QString& text = group.text ();
-			if (!text.isEmpty ())
-				groups << text;
-			group = group.nextSiblingElement ("group");
-		}
+		auto groups = Util::Map (Util::DomChildren (entry.firstChildElement ("groups"), "group"),
+				[] (const QDomElement& group) { return group.text (); });
+		groups.removeAll ({});
 
 		ods->Name_ = entry.firstChildElement ("name").text ();
 		ods->ID_ = entryID;
