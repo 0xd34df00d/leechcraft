@@ -53,7 +53,6 @@ namespace Xoox
 	VCardDialog::VCardDialog (GlooxAccount *acc, QWidget *parent)
 	: QDialog (parent)
 	, Account_ (acc)
-	, PhotoChanged_ (false)
 	{
 		Ui_.setupUi (this);
 		connect (this,
@@ -68,7 +67,6 @@ namespace Xoox
 
 	VCardDialog::VCardDialog (EntryBase *entry, QWidget *parent)
 	: QDialog (parent)
-	, PhotoChanged_ (false)
 	{
 		Ui_.setupUi (this);
 		Ui_.EditJID_->setText (entry->GetJID ());

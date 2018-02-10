@@ -58,7 +58,7 @@ namespace Xoox
 
 		QXmppVCardIq VCard_;
 
-		bool PhotoChanged_;
+		bool PhotoChanged_ = false;
 
 		QPixmap ShownPixmap_;
 	public:
