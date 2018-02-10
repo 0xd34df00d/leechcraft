@@ -58,7 +58,7 @@ namespace Xoox
 
 		Ui::RoomConfigWidget Ui_;
 
-		QWidget *FormWidget_;
+		QWidget *FormWidget_ = nullptr;
 		std::shared_ptr<FormBuilder> FB_;
 		RoomCLEntry *Room_;
 		QString JID_;

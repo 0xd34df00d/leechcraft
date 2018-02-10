@@ -46,7 +46,6 @@ namespace Xoox
 {
 	RoomConfigWidget::RoomConfigWidget (RoomCLEntry *room, QWidget *widget)
 	: QWidget (widget)
-	, FormWidget_ (0)
 	, FB_ (new FormBuilder)
 	, Room_ (room)
 	, JID_ (room->GetRoomHandler ()->GetRoomJID ())
