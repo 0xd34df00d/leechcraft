@@ -113,6 +113,7 @@ set (XOOX_SRCS
 	vcardstorageondisk.cpp
 	vcardstorageondiskwriter.cpp
 	sslerrorshandler.cpp
+	offlinedatasource.cpp
 	)
 set (XOOX_FORMS
 	glooxaccountconfigurationdialog.ui

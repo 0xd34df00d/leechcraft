@@ -57,8 +57,8 @@
 #ifdef ENABLE_CRYPT
 #include <interfaces/azoth/isupportpgp.h>
 #endif
-#include "glooxclentry.h"
 #include "glooxprotocol.h"
+#include "offlinedatasource.h"
 
 class QXmppCall;
 
@@ -82,7 +82,9 @@ namespace Xoox
 
 	bool operator== (const GlooxAccountState&, const GlooxAccountState&);
 
+	class GlooxCLEntry;
 	class GlooxProtocol;
+	class GlooxMessage;
 	class TransferManager;
 	class Xep0313ModelManager;
 

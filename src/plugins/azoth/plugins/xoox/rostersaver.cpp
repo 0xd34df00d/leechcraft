@@ -37,6 +37,7 @@
 #include <interfaces/azoth/iproxyobject.h>
 #include "glooxprotocol.h"
 #include "glooxaccount.h"
+#include "glooxclentry.h"
 
 namespace LeechCraft
 {

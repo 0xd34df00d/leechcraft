@@ -42,12 +42,10 @@
 #include "glooxaccount.h"
 #include "core.h"
 #include "clientconnection.h"
-#include "capsmanager.h"
 #include "gwoptionsdialog.h"
 #include "privacylistsmanager.h"
 #include "glooxmessage.h"
 #include "util.h"
-#include "vcardstorage.h"
 
 namespace LeechCraft
 {
@@ -55,74 +53,6 @@ namespace Azoth
 {
 namespace Xoox
 {
-	void Save (OfflineDataSource_ptr ods, QXmlStreamWriter *w, IProxyObject *proxy)
-	{
-		w->writeStartElement ("entry");
-			w->writeTextElement ("idstr", ods->ID_);
-			w->writeTextElement ("name", ods->Name_);
-			w->writeTextElement ("authstatus", proxy->AuthStatusToString (ods->AuthStatus_));
-
-			w->writeStartElement ("groups");
-			Q_FOREACH (const QString& group, ods->Groups_)
-				w->writeTextElement ("group", group);
-			w->writeEndElement ();
-		w->writeEndElement ();
-	}
-
-	namespace
-	{
-		void LoadVCard (const QDomElement& vcardElem,
-				const QString& entryId, GlooxAccount *acc, VCardStorage *storage)
-		{
-			if (vcardElem.isNull ())
-				return;
-
-			storage->SetVCard (GetBareJID (entryId, acc),
-					QByteArray::fromBase64 (vcardElem.text ().toLatin1 ()));
-		}
-
-		QString LoadEntryID (const QDomElement& entry)
-		{
-			const auto& idStrElem = entry.firstChildElement ("idstr");
-			if (!idStrElem.isNull ())
-				return idStrElem.text ();
-
-			const auto& idElem = entry.firstChildElement ("id");
-			return QString::fromUtf8 (QByteArray::fromPercentEncoding (idElem.text ().toLatin1 ()));
-		}
-	}
-
-	void Load (OfflineDataSource_ptr ods,
-			const QDomElement& entry,
-			IProxyObject *proxy,
-			GlooxAccount * const acc)
-	{
-		const auto& entryID = LoadEntryID (entry);
-		const QString& name = entry.firstChildElement ("name").text ();
-
-		QStringList groups;
-		QDomElement group = entry
-				.firstChildElement ("groups")
-				.firstChildElement ("group");
-		while (!group.isNull ())
-		{
-			const QString& text = group.text ();
-			if (!text.isEmpty ())
-				groups << text;
-			group = group.nextSiblingElement ("group");
-		}
-
-		ods->Name_ = name;
-		ods->ID_ = entryID;
-		ods->Groups_ = groups;
-
-		const auto& authStatusText = entry.firstChildElement ("authstatus").text ();
-		ods->AuthStatus_ = proxy->AuthStatusFromString (authStatusText);
-
-		LoadVCard (entry.firstChildElement ("vcard"), entryID,
-				acc, acc->GetParentProtocol ()->GetVCardStorage ());
-	}
-
 	GlooxCLEntry::GlooxCLEntry (const QString& jid, GlooxAccount *parent)
 	: EntryBase (jid, parent)
 	{

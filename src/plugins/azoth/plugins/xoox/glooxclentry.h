@@ -37,6 +37,7 @@
 #include <QXmppPresence.h>
 #include <interfaces/azoth/iauthable.h>
 #include "entrybase.h"
+#include "offlinedatasource.h"
 
 namespace LeechCraft
 {
@@ -50,18 +51,6 @@ namespace Xoox
 	class GlooxAccount;
 	class PrivacyList;
 	class VCardStorage;
-
-	struct OfflineDataSource
-	{
-		QString ID_;
-		QString Name_;
-		QStringList Groups_;
-		AuthStatus AuthStatus_;
-	};
-	typedef std::shared_ptr<OfflineDataSource> OfflineDataSource_ptr;
-
-	void Save (OfflineDataSource_ptr, QXmlStreamWriter*, IProxyObject*);
-	void Load (OfflineDataSource_ptr, const QDomElement&, IProxyObject*, GlooxAccount* const);
 
 	class GlooxCLEntry : public EntryBase
 					   , public IAuthable
