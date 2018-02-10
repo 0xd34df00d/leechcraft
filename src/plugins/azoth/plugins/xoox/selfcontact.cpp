@@ -52,11 +52,6 @@ namespace Xoox
 				SLOT (handleSelfVCardUpdated ()));
 	}
 
-	IAccount* SelfContact::GetParentAccount () const
-	{
-		return Account_;
-	}
-
 	ICLEntry::Features SelfContact::GetEntryFeatures () const
 	{
 		return FSupportsGrouping | FPermanentEntry | FSelfContact;

@@ -96,7 +96,6 @@ namespace Xoox
 		QXmppRosterIq::Item GetRI () const;
 
 		// ICLEntry
-		IAccount* GetParentAccount () const;
 		Features GetEntryFeatures () const;
 		EntryType GetEntryType () const;
 		QString GetEntryName () const;

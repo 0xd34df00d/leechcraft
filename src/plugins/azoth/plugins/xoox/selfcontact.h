@@ -48,7 +48,6 @@ namespace Xoox
 	public:
 		SelfContact (const QString&, GlooxAccount*);
 
-		IAccount* GetParentAccount () const override;
 		Features GetEntryFeatures () const override;
 		EntryType GetEntryType () const override;
 		QString GetEntryName () const override;

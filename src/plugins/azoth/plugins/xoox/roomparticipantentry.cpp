@@ -55,11 +55,6 @@ namespace Xoox
 	{
 	}
 
-	IAccount* RoomParticipantEntry::GetParentAccount () const
-	{
-		return Account_;
-	}
-
 	ICLEntry* RoomParticipantEntry::GetParentCLEntry () const
 	{
 		return RoomHandler_->GetCLEntry ();

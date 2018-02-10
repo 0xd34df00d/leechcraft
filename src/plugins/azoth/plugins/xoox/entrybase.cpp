@@ -123,6 +123,11 @@ namespace Xoox
 		return this;
 	}
 
+	IAccount* EntryBase::GetParentAccount () const
+	{
+		return Account_;
+	}
+
 	QList<IMessage*> EntryBase::GetAllMessages () const
 	{
 		QList<IMessage*> result;

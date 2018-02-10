@@ -150,6 +150,7 @@ namespace Xoox
 
 		// ICLEntry
 		QObject* GetQObject ();
+		IAccount* GetParentAccount () const;
 		QList<IMessage*> GetAllMessages () const;
 		void PurgeMessages (const QDateTime&);
 		void SetChatPartState (ChatPartState, const QString&);

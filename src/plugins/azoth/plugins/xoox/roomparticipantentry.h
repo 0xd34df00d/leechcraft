@@ -59,7 +59,6 @@ namespace Xoox
 	public:
 		RoomParticipantEntry (const QString&, RoomHandler*, GlooxAccount*);
 
-		IAccount* GetParentAccount () const ;
 		ICLEntry* GetParentCLEntry () const;
 		Features GetEntryFeatures () const;
 		EntryType GetEntryType () const;

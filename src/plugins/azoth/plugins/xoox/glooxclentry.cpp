@@ -188,11 +188,6 @@ namespace Xoox
 				rosterManager ().getRosterEntry (HumanReadableId_);
 	}
 
-	IAccount* GlooxCLEntry::GetParentAccount () const
-	{
-		return Account_;
-	}
-
 	ICLEntry::Features GlooxCLEntry::GetEntryFeatures () const
 	{
 		ICLEntry::Features result = FSupportsAuth | FSupportsGrouping;
