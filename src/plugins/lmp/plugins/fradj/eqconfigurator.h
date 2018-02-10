@@ -45,8 +45,6 @@ namespace Fradj
 	class EqConfigurator : public QObject
 						 , public IFilterConfigurator
 	{
-		Q_OBJECT
-
 		IEqualizer * const IEq_;
 		const QByteArray ID_;
 		BandInfos_t Bands_;
