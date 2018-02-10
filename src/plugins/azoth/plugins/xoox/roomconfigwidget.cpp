@@ -101,8 +101,7 @@ namespace Xoox
 		iq.setType (QXmppIq::Set);
 		iq.setItems (items);
 
-		GlooxAccount *account = qobject_cast<GlooxAccount*> (Room_->GetParentAccount ());
-		account->GetClientConnection ()->GetClient ()->sendPacket (iq);
+		Room_->GetParentAccount ()->GetClientConnection ()->GetClient ()->sendPacket (iq);
 	}
 
 	QStandardItem* RoomConfigWidget::GetCurrentItem () const
