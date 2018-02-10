@@ -70,14 +70,14 @@ namespace Xoox
 
 	namespace
 	{
-		QString GetBareJID (const QString& entryId, GlooxAccount * const acc)
+		QString GetBareJID (const QString& entryId, GlooxAccount *acc)
 		{
 			const auto underscoreCount = acc->GetAccountID ().count ('_') + 1;
 			return entryId.section ('_', underscoreCount);
 		}
 
 		void LoadVCard (const QDomElement& vcardElem,
-				const QString& entryId, GlooxAccount * const acc, VCardStorage *storage)
+				const QString& entryId, GlooxAccount *acc, VCardStorage *storage)
 		{
 			if (vcardElem.isNull ())
 				return;
