@@ -83,7 +83,6 @@ namespace Xoox
 			GlooxAccount *acc)
 	{
 		const auto& entryID = LoadEntryID (entry);
-		const QString& name = entry.firstChildElement ("name").text ();
 
 		QStringList groups;
 		QDomElement group = entry
@@ -97,7 +96,7 @@ namespace Xoox
 			group = group.nextSiblingElement ("group");
 		}
 
-		ods->Name_ = name;
+		ods->Name_ = entry.firstChildElement ("name").text ();
 		ods->ID_ = entryID;
 		ods->Groups_ = groups;
 
