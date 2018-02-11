@@ -91,12 +91,10 @@ namespace Xoox
 
 	void RoomConfigWidget::SendItem (const QXmppMucItem& item)
 	{
-		QList<QXmppMucItem> items;
-		items << item;
 		QXmppMucAdminIq iq;
 		iq.setTo (JID_);
 		iq.setType (QXmppIq::Set);
-		iq.setItems (items);
+		iq.setItems ({ item });
 
 		Room_->GetParentAccount ()->GetClientConnection ()->GetClient ()->sendPacket (iq);
 	}
