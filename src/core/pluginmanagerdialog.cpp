@@ -49,9 +49,9 @@ namespace LeechCraft
 		public:
 			using QStyledItemDelegate::QStyledItemDelegate;
 
-			virtual QWidget* createEditor (QWidget *parent,
+			QWidget* createEditor (QWidget *parent,
 					const QStyleOptionViewItem& option,
-					const QModelIndex& index) const
+					const QModelIndex& index) const override
 			{
 				if (index.column () != 2 ||
 						!(index.flags () & Qt::ItemIsEditable))
@@ -72,12 +72,12 @@ namespace LeechCraft
 
 			void updateEditorGeometry (QWidget *editor,
 					const QStyleOptionViewItem& option,
-					const QModelIndex&) const
+					const QModelIndex&) const override
 			{
 				editor->setGeometry (option.rect);
 			}
 
-			QSize sizeHint (const QStyleOptionViewItem& option, const QModelIndex& index) const
+			QSize sizeHint (const QStyleOptionViewItem& option, const QModelIndex& index) const override
 			{
 				return index.column () == 2 ?
 						QSize (32, 32) :
