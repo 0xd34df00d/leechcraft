@@ -62,7 +62,7 @@ namespace Xoox
 		std::shared_ptr<FormBuilder> FB_;
 		RoomCLEntry *Room_;
 		QString JID_;
-		QXmppMucRoom *RoomHandler_;
+		QXmppMucRoom * const RoomHandler_;
 
 		QStandardItemModel *PermsModel_;
 		QMap<QXmppMucItem::Affiliation, QStandardItem*> Aff2Cat_;

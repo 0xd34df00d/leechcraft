@@ -49,16 +49,13 @@ namespace Xoox
 	, FB_ (new FormBuilder)
 	, Room_ (room)
 	, JID_ (room->GetRoomHandler ()->GetRoomJID ())
-	, RoomHandler_ (0)
+	, RoomHandler_ (room->GetParentAccount ()->GetClientConnection ()->GetMUCManager ()->addRoom (JID_))
 	, PermsModel_ (new QStandardItemModel (this))
 	, Aff2Cat_ (InitModel ())
 	{
 		Ui_.setupUi (this);
 		Ui_.PermsTree_->setModel (PermsModel_);
 
-		const auto mgr = room->GetParentAccount ()->GetClientConnection ()->GetMUCManager ();
-
-		RoomHandler_ = mgr->addRoom (JID_);
 		connect (RoomHandler_,
 				SIGNAL (configurationReceived (const QXmppDataForm&)),
 				this,
