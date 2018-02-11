@@ -199,9 +199,9 @@ namespace LeechCraft
 				Button2SettableRoot_ [butt] = obj;
 
 				connect (butt,
-						SIGNAL (released ()),
+						&QToolButton::released,
 						this,
-						SLOT (handleSettingsCalled ()));
+						[this, obj] { showSettingsFor (obj); });
 				group2box [pair.first]->layout ()->addWidget (butt);
 				group2buttons [pair.first] << butt;
 			}
@@ -424,20 +424,6 @@ namespace LeechCraft
 				item->setFlags (flags);
 			}
 		}
-	}
-
-	void SettingsTab::handleSettingsCalled ()
-	{
-		QObject *obj = Button2SettableRoot_.value (static_cast<QToolButton*> (sender ()));
-		if (!obj)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "empty object"
-					<< sender ();
-			return;
-		}
-
-		showSettingsFor (obj);
 	}
 
 	void SettingsTab::handleShowPageRequested (Util::BaseSettingsManager *bsm)
