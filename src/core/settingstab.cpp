@@ -440,20 +440,6 @@ namespace LeechCraft
 		showSettingsFor (obj);
 	}
 
-	void SettingsTab::handleSettingsForObject ()
-	{
-		auto obj = sender ()->property ("SettableObject").value<QObject*> ();
-		if (!obj)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "empty object"
-					<< sender ();
-			return;
-		}
-
-		showSettingsFor (obj);
-	}
-
 	void SettingsTab::handleShowPageRequested (Util::BaseSettingsManager *bsm)
 	{
 		const auto obj = SettingsManager2SettableRoot_.value (bsm);

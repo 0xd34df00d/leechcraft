@@ -81,7 +81,6 @@ namespace LeechCraft
 		void handleSearch (const QString&);
 
 		void handleSettingsCalled ();
-		void handleSettingsForObject ();
 		void handleShowPageRequested (Util::BaseSettingsManager*);
 
 		void handleBackRequested ();
