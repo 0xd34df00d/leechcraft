@@ -47,10 +47,7 @@ namespace LeechCraft
 		class PrefDelegate : public QStyledItemDelegate
 		{
 		public:
-			PrefDelegate (QObject* parent = 0)
-			: QStyledItemDelegate (parent)
-			{
-			}
+			using QStyledItemDelegate::QStyledItemDelegate;
 
 			virtual QWidget* createEditor (QWidget *parent,
 					const QStyleOptionViewItem& option,
