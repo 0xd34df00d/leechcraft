@@ -80,8 +80,6 @@ namespace LeechCraft
 		void addSearchBox ();
 		void handleSearch (const QString&);
 
-		void handleShowPageRequested (Util::BaseSettingsManager*);
-
 		void handleBackRequested ();
 		void handleApply ();
 		void handleCancel ();

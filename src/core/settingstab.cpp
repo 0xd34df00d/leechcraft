@@ -39,6 +39,7 @@
 #include "util/gui/flowlayout.h"
 #include "util/gui/clearlineeditaddon.h"
 #include "xmlsettingsdialog/xmlsettingsdialog.h"
+#include "xmlsettingsdialog/basesettingsmanager.h"
 #include "interfaces/ihavesettings.h"
 #include "interfaces/iplugin2.h"
 #include "interfaces/ipluginready.h"
@@ -207,9 +208,13 @@ namespace LeechCraft
 			SettingsManager2SettableRoot_ [dialog->GetManagerObject ()] = obj;
 
 			connect (dialog.get (),
-					SIGNAL (showPageRequested (Util::BaseSettingsManager*, QString)),
+					&Util::XmlSettingsDialog::showPageRequested,
 					this,
-					SLOT (handleShowPageRequested (Util::BaseSettingsManager*)));
+					[this, obj]
+					{
+						Core::Instance ().GetCoreInstanceObject ()->TabOpenRequested (GetTabClassInfo ().TabClass_);
+						showSettingsFor (obj);
+					});
 		}
 
 		qobject_cast<QBoxLayout*> (Ui_.ListContents_->layout ())->addStretch ();
@@ -420,21 +425,6 @@ namespace LeechCraft
 				item->setFlags (flags);
 			}
 		}
-	}
-
-	void SettingsTab::handleShowPageRequested (Util::BaseSettingsManager *bsm)
-	{
-		const auto obj = SettingsManager2SettableRoot_.value (bsm);
-		if (!obj)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unknown object for manager"
-					<< bsm;
-			return;
-		}
-
-		Core::Instance ().GetCoreInstanceObject ()->TabOpenRequested (GetTabClassInfo ().TabClass_);
-		showSettingsFor (obj);
 	}
 
 	void SettingsTab::handleBackRequested ()
