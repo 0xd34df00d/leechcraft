@@ -61,12 +61,12 @@ namespace LeechCraft
 				button->setIcon (IconThemeEngine::Instance ().GetIcon ("configure", QString ()));
 				button->setToolTip (tr ("Configure..."));
 				button->setMaximumWidth (48);
-				button->setProperty ("SettableObject",
-						index.data (PluginManager::Roles::PluginObject));
+
+				const auto settingsTab = Core::Instance ().GetCoreInstanceObject ()->GetSettingsTab ();
+				const auto pluginObj = index.data (PluginManager::Roles::PluginObject).value<QObject*> ();
 				connect (button,
-						SIGNAL (released ()),
-						Core::Instance ().GetCoreInstanceObject ()->GetSettingsTab (),
-						SLOT (handleSettingsForObject ()));
+						&QPushButton::released,
+						[settingsTab, pluginObj] { settingsTab->showSettingsFor (pluginObj); });
 				return button;
 			}
 
