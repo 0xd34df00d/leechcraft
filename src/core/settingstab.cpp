@@ -164,12 +164,8 @@ namespace LeechCraft
 		}
 
 		QStringList keys = group2box.keys ();
-		if (keys.contains (tr ("General plugins")))
-		{
-			keys.removeAll (tr ("General plugins"));
+		if (keys.removeAll (tr ("General plugins")))
 			keys.prepend (tr ("General plugins"));
-		}
-
 		if (keys.removeAll ("LeechCraft"))
 			keys.prepend ("LeechCraft");
 
