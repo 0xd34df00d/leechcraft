@@ -39,11 +39,6 @@ class QToolButton;
 
 namespace LeechCraft
 {
-	namespace Util
-	{
-		class BaseSettingsManager;
-	}
-
 	class SettingsTab : public QWidget
 					  , public ITabWidget
 	{
@@ -60,8 +55,6 @@ namespace LeechCraft
 		QHash<QToolButton*, QObject*> Button2SettableRoot_;
 		QHash<IHaveSettings*, QList<int>> Obj2SearchMatchingPages_;
 		QHash<QTreeWidgetItem*, QPair<IHaveSettings*, int>> Item2Page_;
-
-		QHash<Util::BaseSettingsManager*, QObject*> SettingsManager2SettableRoot_;
 	public:
 		SettingsTab (QWidget* = 0);
 

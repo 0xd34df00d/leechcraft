@@ -205,7 +205,6 @@ namespace LeechCraft
 
 			const auto ihs = qobject_cast<IHaveSettings*> (obj);
 			const auto& dialog = ihs->GetSettingsDialog ();
-			SettingsManager2SettableRoot_ [dialog->GetManagerObject ()] = obj;
 
 			connect (dialog.get (),
 					&Util::XmlSettingsDialog::showPageRequested,
