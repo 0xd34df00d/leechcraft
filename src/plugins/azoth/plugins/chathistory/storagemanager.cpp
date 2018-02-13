@@ -182,20 +182,17 @@ namespace ChatHistory
 	QFuture<SearchResult_t> StorageManager::Search (const QString& accountId, const QString& entryId,
 			const QString& text, int shift, bool cs)
 	{
-		return StorageThread_->Schedule (&Storage::Search,
-				accountId, entryId, text, shift, cs);
+		return StorageThread_->Schedule (&Storage::Search, accountId, entryId, text, shift, cs);
 	}
 
 	QFuture<SearchResult_t> StorageManager::Search (const QString& accountId, const QString& entryId, const QDateTime& dt)
 	{
-		return StorageThread_->Schedule (&Storage::SearchDate,
-				accountId, entryId, dt);
+		return StorageThread_->Schedule (&Storage::SearchDate, accountId, entryId, dt);
 	}
 
 	QFuture<DaysResult_t> StorageManager::GetDaysForSheet (const QString& accountId, const QString& entryId, int year, int month)
 	{
-		return StorageThread_->Schedule (&Storage::GetDaysForSheet,
-				accountId, entryId, year, month);
+		return StorageThread_->Schedule (&Storage::GetDaysForSheet, accountId, entryId, year, month);
 	}
 
 	void StorageManager::ClearHistory (const QString& accountId, const QString& entryId)
