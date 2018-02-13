@@ -57,30 +57,28 @@ namespace ChatHistory
 
 		auto checker = Util::ConsistencyChecker::Create (Storage::GetDatabasePath (), "Azoth ChatHistory");
 		Util::Sequence (this, checker->StartCheck ()) >>
-				[this] (const Util::ConsistencyChecker::CheckResult_t& result)
+				Util::Visitor
 				{
-					Util::Visit (result,
-							[this] (const Util::ConsistencyChecker::Succeeded&) { StartStorage (); },
-							[this] (const Util::ConsistencyChecker::Failed& failed)
-							{
-								qWarning () << Q_FUNC_INFO
-										<< "db is broken, gonna repair";
-								Util::Sequence (this, failed->DumpReinit ()) >>
-										[this] (const Util::ConsistencyChecker::DumpResult_t& result)
-										{
-											Util::Visit (result,
-													[] (const Util::ConsistencyChecker::DumpError& err)
-													{
-														QMessageBox::critical (nullptr,
-																"Azoth ChatHistory",
-																err.Error_);
-													},
-													[this] (const Util::ConsistencyChecker::DumpFinished& res)
-													{
-														HandleDumpFinished (res.OldFileSize_, res.NewFileSize_);
-													});
-										};
-							});
+					[this] (const Util::ConsistencyChecker::Succeeded&) { StartStorage (); },
+					[this] (const Util::ConsistencyChecker::Failed& failed)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "db is broken, gonna repair";
+						Util::Sequence (this, failed->DumpReinit ()) >>
+								Util::Visitor
+								{
+									[] (const Util::ConsistencyChecker::DumpError& err)
+									{
+										QMessageBox::critical (nullptr,
+												"Azoth ChatHistory",
+												err.Error_);
+									},
+									[this] (const Util::ConsistencyChecker::DumpFinished& res)
+									{
+										HandleDumpFinished (res.OldFileSize_, res.NewFileSize_);
+									}
+								};
+					}
 				};
 	}
 
