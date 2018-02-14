@@ -32,13 +32,13 @@
 #include <QMessageBox>
 #include <util/util.h>
 #include <util/threads/futures.h>
+#include <util/threads/workerthreadbase.h>
 #include <util/sll/visitor.h>
 #include <util/db/consistencychecker.h>
 #include <interfaces/azoth/imessage.h>
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/iaccount.h>
 #include <interfaces/azoth/irichtextmessage.h>
-#include "storagethread.h"
 #include "storage.h"
 #include "loggingstatekeeper.h"
 
@@ -150,7 +150,7 @@ namespace ChatHistory
 	void StorageManager::AddLogItems (const QString& accountId, const QString& entryId,
 			const QString& visibleName, const QList<LogItem>& items, bool fuzzy)
 	{
-		StorageThread_->Schedule (&Storage::AddMessages,
+		StorageThread_->ScheduleImpl (&Storage::AddMessages,
 				accountId,
 				entryId,
 				visibleName,
@@ -160,56 +160,56 @@ namespace ChatHistory
 
 	QFuture<IHistoryPlugin::MaxTimestampResult_t> StorageManager::GetMaxTimestamp (const QString& accId)
 	{
-		return StorageThread_->Schedule (&Storage::GetMaxTimestamp, accId);
+		return StorageThread_->ScheduleImpl (&Storage::GetMaxTimestamp, accId);
 	}
 
 	QFuture<QStringList> StorageManager::GetOurAccounts ()
 	{
-		return StorageThread_->Schedule (&Storage::GetOurAccounts);
+		return StorageThread_->ScheduleImpl (&Storage::GetOurAccounts);
 	}
 
 	QFuture<UsersForAccountResult_t> StorageManager::GetUsersForAccount (const QString& accountID)
 	{
-		return StorageThread_->Schedule (&Storage::GetUsersForAccount, accountID);
+		return StorageThread_->ScheduleImpl (&Storage::GetUsersForAccount, accountID);
 	}
 
 	QFuture<ChatLogsResult_t> StorageManager::GetChatLogs (const QString& accountId,
 			const QString& entryId, int backpages, int amount)
 	{
-		return StorageThread_->Schedule (&Storage::GetChatLogs, accountId, entryId, backpages, amount);
+		return StorageThread_->ScheduleImpl (&Storage::GetChatLogs, accountId, entryId, backpages, amount);
 	}
 
 	QFuture<SearchResult_t> StorageManager::Search (const QString& accountId, const QString& entryId,
 			const QString& text, int shift, bool cs)
 	{
-		return StorageThread_->Schedule (&Storage::Search, accountId, entryId, text, shift, cs);
+		return StorageThread_->ScheduleImpl (&Storage::Search, accountId, entryId, text, shift, cs);
 	}
 
 	QFuture<SearchResult_t> StorageManager::Search (const QString& accountId, const QString& entryId, const QDateTime& dt)
 	{
-		return StorageThread_->Schedule (&Storage::SearchDate, accountId, entryId, dt);
+		return StorageThread_->ScheduleImpl (&Storage::SearchDate, accountId, entryId, dt);
 	}
 
 	QFuture<DaysResult_t> StorageManager::GetDaysForSheet (const QString& accountId, const QString& entryId, int year, int month)
 	{
-		return StorageThread_->Schedule (&Storage::GetDaysForSheet, accountId, entryId, year, month);
+		return StorageThread_->ScheduleImpl (&Storage::GetDaysForSheet, accountId, entryId, year, month);
 	}
 
 	void StorageManager::ClearHistory (const QString& accountId, const QString& entryId)
 	{
-		StorageThread_->Schedule (&Storage::ClearHistory, accountId, entryId);
+		StorageThread_->ScheduleImpl (&Storage::ClearHistory, accountId, entryId);
 	}
 
 	void StorageManager::RegenUsersCache ()
 	{
-		StorageThread_->Schedule (&Storage::RegenUsersCache);
+		StorageThread_->ScheduleImpl (&Storage::RegenUsersCache);
 	}
 
 	void StorageManager::StartStorage ()
 	{
 		StorageThread_->SetPaused (false);
 		StorageThread_->start (QThread::LowestPriority);
-		Util::Sequence (this, StorageThread_->Schedule (&Storage::Initialize)) >>
+		Util::Sequence (this, StorageThread_->ScheduleImpl (&Storage::Initialize)) >>
 				[this] (const Storage::InitializationResult_t& res)
 				{
 					if (res.IsRight ())
@@ -238,7 +238,7 @@ namespace ChatHistory
 	{
 		StartStorage ();
 
-		Util::Sequence (this, StorageThread_->Schedule (&Storage::GetAllHistoryCount)) >>
+		Util::Sequence (this, StorageThread_->ScheduleImpl (&Storage::GetAllHistoryCount)) >>
 				[=] (const boost::optional<int>& count)
 				{
 					const auto& text = QObject::tr ("Finished restoring history database contents. "

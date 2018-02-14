@@ -30,6 +30,7 @@
 #pragma once
 
 #include "storage.h"
+#include <util/threads/workerthreadbasefwd.h>
 
 namespace LeechCraft
 {
@@ -37,7 +38,9 @@ namespace Azoth
 {
 namespace ChatHistory
 {
-	class StorageThread;
+	class Storage;
+	using StorageThread = Util::WorkerThread<Storage>;
+
 	class LoggingStateKeeper;
 
 	class StorageManager : public QObject

@@ -11,7 +11,6 @@ set (CHATHISTORY_SRCS
 	chathistory.cpp
 	storage.cpp
 	chathistorywidget.cpp
-	storagethread.cpp
 	historymessage.cpp
 	chatfindbox.cpp
 	xmlsettingsmanager.cpp
