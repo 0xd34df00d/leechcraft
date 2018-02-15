@@ -55,6 +55,18 @@ namespace ChatHistory
 		StorageThread_->SetPaused (true);
 		StorageThread_->SetAutoQuit (true);
 
+		Util::Sequence (this, StorageThread_->ScheduleImpl (&Storage::Initialize)) >>
+				[this] (const Storage::InitializationResult_t& res)
+				{
+					if (res.IsRight ())
+					{
+						StorageThread_->SetPaused (false);
+						return;
+					}
+
+					HandleStorageError (res.GetLeft ());
+				};
+
 		auto checker = Util::ConsistencyChecker::Create (Storage::GetDatabasePath (), "Azoth ChatHistory");
 		Util::Sequence (this, checker->StartCheck ()) >>
 				Util::Visitor
@@ -209,17 +221,6 @@ namespace ChatHistory
 	{
 		StorageThread_->SetPaused (false);
 		StorageThread_->start (QThread::LowestPriority);
-		Util::Sequence (this, StorageThread_->ScheduleImpl (&Storage::Initialize)) >>
-				[this] (const Storage::InitializationResult_t& res)
-				{
-					if (res.IsRight ())
-					{
-						StorageThread_->SetPaused (false);
-						return;
-					}
-
-					HandleStorageError (res.GetLeft ());
-				};
 	}
 
 	void StorageManager::HandleStorageError (const Storage::InitializationError_t& error)
