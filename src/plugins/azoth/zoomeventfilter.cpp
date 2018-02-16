@@ -29,8 +29,8 @@
 
 #include "zoomeventfilter.h"
 #include <QWheelEvent>
-#include "chattab.h"
 #include <QWebFrame>
+#include "chattab.h"
 
 namespace LeechCraft
 {
