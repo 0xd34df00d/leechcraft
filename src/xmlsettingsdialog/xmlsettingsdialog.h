@@ -132,8 +132,7 @@ namespace Util
 		 * @exception std::runtime_error If there is no or more than
 		 * one name.
 		 */
-		void SetCustomWidget (const QString& name,
-				QWidget *widget);
+		void SetCustomWidget (const QString& name, QWidget *widget);
 
 		/** @brief Sets the source model for the given property.
 		 *
@@ -161,8 +160,7 @@ namespace Util
 		 * @param[in] property The identifier of the property.
 		 * @param[in] source The new datasource.
 		 */
-		void SetDataSource (const QString& property,
-				QAbstractItemModel *source);
+		void SetDataSource (const QString& property, QAbstractItemModel *source);
 
 		/** @brief Sets the current page to page.
 		 *
