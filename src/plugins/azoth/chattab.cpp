@@ -85,7 +85,6 @@
 #include "transferjobmanager.h"
 #include "bookmarksmanagerdialog.h"
 #include "simpledialog.h"
-#include "zoomeventfilter.h"
 #include "callmanager.h"
 #include "callchatwidget.h"
 #include "msgformatterwidget.h"
@@ -151,8 +150,25 @@ namespace Azoth
 	{
 		Ui_.setupUi (this);
 		Ui_.View_->page ()->setNetworkAccessManager (nam);
-		Ui_.View_->installEventFilter (new ZoomEventFilter (Ui_.View_));
 		Ui_.View_->settings ()->setAttribute (QWebSettings::DeveloperExtrasEnabled, true);
+
+		Ui_.View_->installEventFilter (Util::MakeLambdaEventFilter ([this] (QWheelEvent *e)
+				{
+					if (!(e->modifiers () & Qt::ControlModifier))
+						return false;
+
+					int degrees = e->delta () / 8;
+					int steps = static_cast<qreal> (degrees) / 15;
+
+					const auto settings = Ui_.View_->settings ();
+					const auto newFontSize = std::max (6, settings->fontSize (QWebSettings::DefaultFontSize) + steps);
+					settings->setFontSize (QWebSettings::DefaultFontSize, newFontSize);
+
+					Ui_.View_->page ()->mainFrame ()->evaluateJavaScript ("setTimeout(ScrollToBottom,0);");
+
+					return true;
+				},
+				this));
 
 		Ui_.MsgEdit_->installEventFilter (Util::MakeLambdaEventFilter ([this] (QKeyEvent *ev)
 				{

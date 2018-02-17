@@ -90,7 +90,6 @@ set (SRCS
 	util.cpp
 	simpledialog.cpp
 	servicediscoverywidget.cpp
-	zoomeventfilter.cpp
 	drawattentiondialog.cpp
 	consolewidget.cpp
 	activitydialog.cpp
