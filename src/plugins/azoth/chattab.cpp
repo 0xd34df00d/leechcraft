@@ -163,6 +163,8 @@ namespace Azoth
 					const auto settings = Ui_.View_->settings ();
 					const auto newFontSize = std::max (6, settings->fontSize (QWebSettings::DefaultFontSize) + steps);
 					settings->setFontSize (QWebSettings::DefaultFontSize, newFontSize);
+					settings->setFontSize (QWebSettings::DefaultFixedFontSize, newFontSize);
+					settings->setFontSize (QWebSettings::MinimumFontSize, newFontSize);
 
 					Ui_.View_->page ()->mainFrame ()->evaluateJavaScript ("setTimeout(ScrollToBottom,0);");
 
