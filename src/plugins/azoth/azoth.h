@@ -133,8 +133,6 @@ namespace Azoth
 		void handleMWFloating (bool);
 		void handleMoreThisStuff (const QString&);
 		void handleConsoleWidget (ConsoleWidget*);
-
-		void registerTabFonts (const QString&, QWidget*);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);

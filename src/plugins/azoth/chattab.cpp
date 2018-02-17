@@ -154,6 +154,7 @@ namespace Azoth
 	, CDF_ (new ContactDropFilter (entryId, this))
 	{
 		Ui_.setupUi (this);
+		fontsWidget->RegisterSettable (this);
 		Ui_.View_->page ()->setNetworkAccessManager (nam);
 		Ui_.View_->settings ()->setAttribute (QWebSettings::DeveloperExtrasEnabled, true);
 

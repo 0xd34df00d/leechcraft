@@ -535,11 +535,6 @@ namespace Azoth
 				SIGNAL (raiseTab (QWidget*)),
 				this,
 				SIGNAL (raiseTab (QWidget*)));
-
-		connect (Core::Instance ().GetChatTabsManager (),
-				SIGNAL (addNewTab (QString, QWidget*)),
-				this,
-				SLOT (registerTabFonts (QString, QWidget*)));
 	}
 
 	void Plugin::InitTabClasses ()
@@ -710,12 +705,6 @@ namespace Azoth
 				Qt::UniqueConnection);
 		emit addNewTab (cw->GetTitle (), cw);
 		emit raiseTab (cw);
-	}
-
-	void Plugin::registerTabFonts (const QString&, QWidget *w)
-	{
-		if (const auto iwfs = qobject_cast<IWkFontsSettable*> (w))
-			Core::Instance ().GetFontsWidget ()->RegisterSettable (iwfs);
 	}
 }
 }
