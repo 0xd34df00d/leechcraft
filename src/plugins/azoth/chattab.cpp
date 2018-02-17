@@ -157,7 +157,7 @@ namespace Azoth
 		Ui_.View_->page ()->setNetworkAccessManager (nam);
 		Ui_.View_->settings ()->setAttribute (QWebSettings::DeveloperExtrasEnabled, true);
 
-		Ui_.View_->installEventFilter (Util::MakeLambdaEventFilter ([this] (QWheelEvent *e)
+		Ui_.View_->installEventFilter (Util::MakeLambdaEventFilter ([this, fontsWidget] (QWheelEvent *e)
 				{
 					if (!(e->modifiers () & Qt::ControlModifier))
 						return false;
@@ -172,6 +172,13 @@ namespace Azoth
 					settings->setFontSize (QWebSettings::MinimumFontSize, newFontSize);
 
 					Ui_.View_->page ()->mainFrame ()->evaluateJavaScript ("setTimeout(ScrollToBottom,0);");
+
+					if (e->modifiers () & Qt::ShiftModifier)
+					{
+						fontsWidget->SetSize (FontSize::DefaultFontSize, newFontSize);
+						fontsWidget->SetSize (FontSize::DefaultFixedFontSize, newFontSize);
+						fontsWidget->SetSize (FontSize::MinimumFontSize, newFontSize);
+					}
 
 					return true;
 				},
