@@ -180,27 +180,21 @@ namespace Util
 				[] (auto left, auto right) { return left.second.size () < right.second.size (); });
 
 		const auto dialog = new MassFontChangeDialog { maxElem->first, maxElem->second, this };
-
 		dialog->show ();
-		new Util::SlotClosure<Util::DeleteLaterPolicy>
-		{
-			[dialog, this]
-			{
-				dialog->deleteLater ();
-				if (dialog->result () == QDialog::Rejected)
-					return;
-
-				const auto& font = dialog->GetFont ();
-				for (const auto family : dialog->GetFamilies ())
+		connect (dialog,
+				&QDialog::finished,
+				[dialog, this] (int result)
 				{
-					PendingFontChanges_ [family] = font;
-					Family2Chooser_ [family]->SetFont (font);
-				}
-			},
-			dialog,
-			SIGNAL (finished (int)),
-			dialog
-		};
+					if (result == QDialog::Rejected)
+						return;
+
+					const auto& font = dialog->GetFont ();
+					for (const auto family : dialog->GetFamilies ())
+					{
+						PendingFontChanges_ [family] = font;
+						Family2Chooser_ [family]->SetFont (font);
+					}
+				});
 	}
 
 	void WkFontsWidget::accept ()
