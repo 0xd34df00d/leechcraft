@@ -110,13 +110,9 @@ namespace Util
 	void WkFontsWidget::RegisterSettable (IWkFontsSettable *settable)
 	{
 		Settables_ << settable;
-		new Util::SlotClosure<Util::DeleteLaterPolicy>
-		{
-			[settable, this] { Settables_.removeAll (settable); },
-			settable->GetQObject (),
-			SIGNAL (destroyed ()),
-			this
-		};
+		connect (settable->GetQObject (),
+				&QObject::destroyed,
+				[this, settable] { Settables_.removeAll (settable); });
 
 		for (const auto& pair : Util::Stlize (Family2Chooser_))
 			settable->SetFontFamily (pair.first, pair.second->GetFont ());
