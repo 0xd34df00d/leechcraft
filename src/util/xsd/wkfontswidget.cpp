@@ -150,6 +150,20 @@ namespace Util
 		Ui_->Zoom_->setValue (factor * 100);
 	}
 
+	void WkFontsWidget::ApplyPendingSizeChanges ()
+	{
+		for (const auto& pair : Util::Stlize (PendingSizeChanges_))
+		{
+			BSM_->setProperty (Size2Name_ [pair.first], pair.second);
+			emit sizeChanged (pair.first, pair.second);
+
+			for (const auto settable : Settables_)
+				settable->SetFontSize (pair.first, pair.second);
+		}
+
+		PendingSizeChanges_.clear ();
+	}
+
 	void WkFontsWidget::on_ChangeAll__released ()
 	{
 		QHash<QString, QList<IWkFontsSettable::FontFamily>> families;
@@ -186,6 +200,8 @@ namespace Util
 
 	void WkFontsWidget::accept ()
 	{
+		ApplyPendingSizeChanges ();
+
 		for (const auto& pair : Util::Stlize (PendingFontChanges_))
 		{
 			BSM_->setProperty (Family2Name_ [pair.first], pair.second);
@@ -193,15 +209,6 @@ namespace Util
 
 			for (const auto settable : Settables_)
 				settable->SetFontFamily (pair.first, pair.second);
-		}
-
-		for (const auto& pair : Util::Stlize (PendingSizeChanges_))
-		{
-			BSM_->setProperty (Size2Name_ [pair.first], pair.second);
-			emit sizeChanged (pair.first, pair.second);
-
-			for (const auto settable : Settables_)
-				settable->SetFontSize (pair.first, pair.second);
 		}
 
 		if (IsFontZoomDirty_)
@@ -216,7 +223,6 @@ namespace Util
 		}
 
 		PendingFontChanges_.clear ();
-		PendingSizeChanges_.clear ();
 		IsFontZoomDirty_ = false;
 	}
 

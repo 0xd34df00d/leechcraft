@@ -131,6 +131,8 @@ namespace Util
 		void ResetFontChoosers ();
 		void ResetSizeChoosers ();
 		void ResetZoom ();
+
+		void ApplyPendingSizeChanges ();
 	private slots:
 		void on_ChangeAll__released ();
 	public slots:
