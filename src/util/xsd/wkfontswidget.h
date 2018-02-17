@@ -127,6 +127,8 @@ namespace Util
 		 * @sa IWkFontsSettable
 		 */
 		void RegisterSettable (IWkFontsSettable *settable);
+
+		void SetSize (IWkFontsSettable::FontSize type, int size);
 	private:
 		void ResetFontChoosers ();
 		void ResetSizeChoosers ();

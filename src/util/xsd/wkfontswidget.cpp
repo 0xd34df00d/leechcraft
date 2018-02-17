@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "wkfontswidget.h"
+#include <QTimer>
 #include <xmlsettingsdialog/basesettingsmanager.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/slotclosure.h>
@@ -124,6 +125,14 @@ namespace Util
 			settable->SetFontSize (pair.first, pair.second->value ());
 
 		settable->SetFontSizeMultiplier (Ui_->Zoom_->value () / 100.);
+	}
+
+	void WkFontsWidget::SetSize (IWkFontsSettable::FontSize type, int size)
+	{
+		Size2Spinbox_ [type]->setValue (size);
+		PendingSizeChanges_ [type] = size;
+
+		QTimer::singleShot (1000, this, [this] { ApplyPendingSizeChanges (); });
 	}
 
 	void WkFontsWidget::ResetFontChoosers ()
