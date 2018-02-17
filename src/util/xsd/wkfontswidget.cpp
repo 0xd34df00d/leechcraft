@@ -112,7 +112,7 @@ namespace Util
 		Settables_ << settable;
 		connect (settable->GetQObject (),
 				&QObject::destroyed,
-				[this, settable] { Settables_.removeAll (settable); });
+				[this, settable] { Settables_.removeOne (settable); });
 
 		for (const auto& pair : Util::Stlize (Family2Chooser_))
 			settable->SetFontFamily (pair.first, pair.second->GetFont ());
