@@ -32,6 +32,7 @@
 #include <xmlsettingsdialog/basesettingsmanager.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/slotclosure.h>
+#include <util/sll/prelude.h>
 #include <interfaces/iwkfontssettable.h>
 #include "ui_wkfontswidget.h"
 #include "massfontchangedialog.h"
@@ -177,7 +178,7 @@ namespace Util
 
 		const auto& stlized = Util::Stlize (families);
 		const auto& maxElem = std::max_element (stlized.begin (), stlized.end (),
-				[] (auto left, auto right) { return left.second.size () < right.second.size (); });
+				ComparingBy ([] (auto pair) { return pair.second.size (); }));
 
 		const auto dialog = new MassFontChangeDialog { maxElem->first, maxElem->second, this };
 		dialog->show ();
