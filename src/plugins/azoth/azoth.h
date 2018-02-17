@@ -44,11 +44,6 @@
 
 namespace LeechCraft
 {
-namespace Util
-{
-	class WkFontsWidget;
-}
-
 namespace Azoth
 {
 	class ServiceDiscoveryWidget;
@@ -88,8 +83,6 @@ namespace Azoth
 
 		TabClasses_t TabClasses_;
 		TabClassInfo ServerHistoryTC_;
-
-		Util::WkFontsWidget *FontsWidget_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();

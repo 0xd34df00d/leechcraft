@@ -57,6 +57,7 @@ namespace LeechCraft
 namespace Util
 {
 	class ShortcutManager;
+	class WkFontsWidget;
 }
 
 namespace Azoth
@@ -98,6 +99,7 @@ namespace Azoth
 		QList<QAction*> AccountCreatorActions_;
 
 		std::shared_ptr<AvatarsManager> AvatarsManager_;
+		Util::WkFontsWidget * const FontsWidget_;
 		CLTooltipManager * const TooltipManager_;
 		CLModel *CLModel_;
 		ChatTabsManager *ChatTabsManager_;
@@ -185,6 +187,7 @@ namespace Azoth
 		CustomChatStyleManager* GetCustomChatStyleManager () const;
 		UnreadQueueManager* GetUnreadQueueManager () const;
 		AvatarsManager* GetAvatarsManager () const;
+		Util::WkFontsWidget* GetFontsWidget () const;
 
 		void AddPlugin (QObject*);
 		void RegisterHookable (QObject*);

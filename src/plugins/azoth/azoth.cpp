@@ -461,10 +461,10 @@ namespace Azoth
 				&Core::Instance (),
 				SLOT (saveAccountVisibility (IAccount*)));
 
-		FontsWidget_ = new Util::WkFontsWidget { &XmlSettingsManager::Instance () };
-		FontsWidget_->SetFontZoomTooltip (tr ("Some themes have fixed-size font and font size "
+		const auto fontsWidget = Core::Instance ().GetFontsWidget ();
+		fontsWidget->SetFontZoomTooltip (tr ("Some themes have fixed-size font and font size "
 					"setting doesn't affect them. Use this option to change their font size."));
-		XmlSettingsDialog_->SetCustomWidget ("FontsSelector", FontsWidget_);
+		XmlSettingsDialog_->SetCustomWidget ("FontsSelector", fontsWidget);
 
 		XmlSettingsDialog_->SetCustomWidget ("ColorListEditor", new ColorListEditorWidget);
 
@@ -715,7 +715,7 @@ namespace Azoth
 	void Plugin::registerTabFonts (const QString&, QWidget *w)
 	{
 		if (const auto iwfs = qobject_cast<IWkFontsSettable*> (w))
-			FontsWidget_->RegisterSettable (iwfs);
+			Core::Instance ().GetFontsWidget ()->RegisterSettable (iwfs);
 	}
 }
 }

@@ -46,6 +46,7 @@
 #include <util/tags/categoryselector.h>
 #include <util/xpc/defaulthookproxy.h>
 #include <util/xpc/notificationactionhandler.h>
+#include <util/xsd/wkfontswidget.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/sys/resourceloader.h>
 #include <util/sll/urloperator.h>
@@ -177,6 +178,7 @@ namespace Azoth
 	Core::Core ()
 	: Proxy_ (nullptr)
 	, AvatarsManager_ (std::make_shared<AvatarsManager> ())
+	, FontsWidget_ { new Util::WkFontsWidget { &XmlSettingsManager::Instance () } }
 	, TooltipManager_ (new CLTooltipManager (AvatarsManager_.get (), Entry2Items_))
 	, CLModel_ (new CLModel (TooltipManager_, this))
 	, ChatTabsManager_ (new ChatTabsManager (AvatarsManager_.get (), this))
@@ -335,6 +337,11 @@ namespace Azoth
 	AvatarsManager* Core::GetAvatarsManager () const
 	{
 		return AvatarsManager_.get ();
+	}
+
+	Util::WkFontsWidget* Core::GetFontsWidget () const
+	{
+		return FontsWidget_;
 	}
 
 	void Core::AddPlugin (QObject *plugin)
