@@ -261,7 +261,6 @@ namespace Util
 		virtual void accept ();
 		virtual void reject ();
 	private Q_SLOTS:
-		void handleCustomDestroyed ();
 		void handleMoreThisStuffRequested ();
 		void handlePushButtonReleased ();
 		void handleShowPageRequested (Util::BaseSettingsManager*, const QString&);

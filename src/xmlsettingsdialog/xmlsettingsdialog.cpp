@@ -339,9 +339,9 @@ namespace Util
 		widgets.at (0)->layout ()->addWidget (widget);
 		Customs_ << widget;
 		connect (widget,
-				SIGNAL (destroyed (QObject*)),
+				&QWidget::destroyed,
 				this,
-				SLOT (handleCustomDestroyed ()));
+				[this, widget] { Customs_.removeAll (widget); });
 	}
 
 	void XmlSettingsDialog::SetDataSource (const QString& property,
@@ -757,11 +757,6 @@ namespace Util
 
 		for (const auto widget : Customs_)
 			QMetaObject::invokeMethod (widget, "reject");
-	}
-
-	void XmlSettingsDialog::handleCustomDestroyed ()
-	{
-		Customs_.removeAll (qobject_cast<QWidget*> (sender ()));
 	}
 
 	void XmlSettingsDialog::handleMoreThisStuffRequested ()
