@@ -406,7 +406,7 @@ namespace Azoth
 
 	void Plugin::InitSettings ()
 	{
-		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
+		XmlSettingsDialog_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"azothsettings.xml");
 
