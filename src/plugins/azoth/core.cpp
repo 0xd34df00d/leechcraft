@@ -181,7 +181,7 @@ namespace Azoth
 	, FontsWidget_ { new Util::WkFontsWidget { &XmlSettingsManager::Instance () } }
 	, TooltipManager_ (new CLTooltipManager (AvatarsManager_.get (), Entry2Items_))
 	, CLModel_ (new CLModel (TooltipManager_, this))
-	, ChatTabsManager_ (new ChatTabsManager (AvatarsManager_.get (), this))
+	, ChatTabsManager_ (new ChatTabsManager (AvatarsManager_.get (), FontsWidget_, this))
 	, CoreCommandsManager_ (new CoreCommandsManager (this))
 	, ActionsManager_ (new ActionsManager (AvatarsManager_.get (), this))
 	, ItemIconManager_ (new AnimatedIconManager<QStandardItem*> ([] (QStandardItem *it, const QIcon& ic)

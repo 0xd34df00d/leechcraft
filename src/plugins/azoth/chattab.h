@@ -50,6 +50,7 @@ namespace LeechCraft
 namespace Util
 {
 	class FindNotificationWk;
+	class WkFontsWidget;
 }
 
 namespace Azoth
@@ -131,7 +132,12 @@ namespace Azoth
 		static const TabClassInfo& GetChatTabClassInfo ();
 		static const TabClassInfo& GetMUCTabClassInfo ();
 
-		ChatTab (const QString&, IAccount*, AvatarsManager*, QNetworkAccessManager*, QWidget* = nullptr);
+		ChatTab (const QString&,
+				IAccount*,
+				AvatarsManager*,
+				Util::WkFontsWidget*,
+				QNetworkAccessManager*,
+				QWidget* = nullptr);
 		~ChatTab ();
 
 		/** Prepare (or update after it has been changed) the theme.

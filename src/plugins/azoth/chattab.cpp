@@ -47,6 +47,7 @@
 #include <QUrlQuery>
 #include <util/xpc/defaulthookproxy.h>
 #include <util/xpc/util.h>
+#include <util/xsd/wkfontswidget.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/gui/util.h>
 #include <util/gui/findnotificationwk.h>
@@ -136,8 +137,12 @@ namespace Azoth
 		return S_MUCTabClass_;
 	}
 
-	ChatTab::ChatTab (const QString& entryId, IAccount *account,
-			AvatarsManager *am, QNetworkAccessManager *nam, QWidget *parent)
+	ChatTab::ChatTab (const QString& entryId,
+			IAccount *account,
+			AvatarsManager *am,
+			Util::WkFontsWidget *fontsWidget,
+			QNetworkAccessManager *nam,
+			QWidget *parent)
 	: QWidget (parent)
 	, AvatarsManager_ (am)
 	, Account_ (account)

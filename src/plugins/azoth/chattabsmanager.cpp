@@ -38,9 +38,10 @@ namespace LeechCraft
 {
 namespace Azoth
 {
-	ChatTabsManager::ChatTabsManager (AvatarsManager *am, QObject *parent)
+	ChatTabsManager::ChatTabsManager (AvatarsManager *am, Util::WkFontsWidget *fontsWidget, QObject *parent)
 	: QObject { parent }
 	, AvatarsManager_ { am }
+	, FontsWidget_ { fontsWidget }
 	, NAM_ { new ChatTabNetworkAccessManager { am, this } }
 	{
 		XmlSettingsManager::Instance ().RegisterObject ("CustomMUCStyle",
@@ -108,7 +109,7 @@ namespace Azoth
 
 		EverOpened_ << id;
 
-		QPointer<ChatTab> tab (new ChatTab (id, entry->GetParentAccount (), AvatarsManager_, NAM_));
+		QPointer<ChatTab> tab (new ChatTab (id, entry->GetParentAccount (), AvatarsManager_, FontsWidget_, NAM_));
 		tab->installEventFilter (this);
 		Entry2Tab_ [id] = tab;
 

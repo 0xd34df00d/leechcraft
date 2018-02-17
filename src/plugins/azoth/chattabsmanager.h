@@ -38,6 +38,11 @@ class QWidget;
 
 namespace LeechCraft
 {
+namespace Util
+{
+	class WkFontsWidget;
+}
+
 namespace Azoth
 {
 	class ICLEntry;
@@ -49,6 +54,7 @@ namespace Azoth
 		Q_OBJECT
 
 		AvatarsManager * const AvatarsManager_;
+		Util::WkFontsWidget * const FontsWidget_;
 		ChatTabNetworkAccessManager * const NAM_;
 
 		QSet<QString> StyleParams_;
@@ -67,7 +73,7 @@ namespace Azoth
 	private:
 		QHash<QString, RestoreChatInfo> RestoreInfo_;
 	public:
-		ChatTabsManager (AvatarsManager*, QObject* = nullptr);
+		ChatTabsManager (AvatarsManager*, Util::WkFontsWidget*, QObject* = nullptr);
 
 		QWidget* OpenChat (const QModelIndex&);
 		ChatTab* OpenChat (const ICLEntry*, bool fromUser,
