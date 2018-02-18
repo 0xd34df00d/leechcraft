@@ -296,10 +296,8 @@ namespace LeechCraft
 			for (auto settableObj : Core::Instance ().GetPluginManager ()->GetAllCastableRoots<IHaveSettings*> ())
 			{
 				auto ip2 = qobject_cast<IPlugin2*> (settableObj);
-				if (!ip2 || !expected.intersects (ip2->GetPluginClasses ()))
-					continue;
-
-				result << settableObj;
+				if (ip2 && expected.intersects (ip2->GetPluginClasses ()))
+					result << settableObj;
 			}
 			return result;
 		}
