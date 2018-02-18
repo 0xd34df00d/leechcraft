@@ -31,7 +31,7 @@
 #include <QTimer>
 #include <xmlsettingsdialog/basesettingsmanager.h>
 #include <util/sll/qtutil.h>
-#include <util/sll/slotclosure.h>
+#include <util/sll/overload.h>
 #include <util/sll/prelude.h>
 #include <interfaces/iwkfontssettable.h>
 #include "ui_wkfontswidget.h"
@@ -65,13 +65,9 @@ namespace Util
 		ResetFontChoosers ();
 
 		for (const auto& pair : Util::Stlize (Family2Chooser_))
-			new Util::SlotClosure<Util::NoDeletePolicy>
-			{
-				[this, pair] { PendingFontChanges_ [pair.first] = pair.second->GetFont (); },
-				pair.second,
-				SIGNAL (fontChanged (QFont)),
-				this
-			};
+			connect (pair.second,
+					&FontChooserWidget::fontChanged,
+					[this, pair] { PendingFontChanges_ [pair.first] = pair.second->GetFont (); });
 
 		Size2Spinbox_ [IWkFontsSettable::FontSize::DefaultFontSize] = Ui_->SizeDefault_;
 		Size2Spinbox_ [IWkFontsSettable::FontSize::DefaultFixedFontSize] = Ui_->SizeFixedWidth_;
@@ -84,23 +80,15 @@ namespace Util
 		ResetSizeChoosers ();
 
 		for (const auto& pair : Util::Stlize (Size2Spinbox_))
-			new Util::SlotClosure<Util::NoDeletePolicy>
-			{
-				[this, pair] { PendingSizeChanges_ [pair.first] = pair.second->value (); },
-				pair.second,
-				SIGNAL (valueChanged (int)),
-				this
-			};
+			connect (pair.second,
+					Util::Overload<int> (&QSpinBox::valueChanged),
+					[this, pair] { PendingSizeChanges_ [pair.first] = pair.second->value (); });
 
 		ResetZoom ();
 
-		new Util::SlotClosure<Util::NoDeletePolicy>
-		{
-			[this] { IsFontZoomDirty_ = true; },
-			Ui_->Zoom_,
-			SIGNAL (valueChanged (int)),
-			this
-		};
+		connect (Ui_->Zoom_,
+				Util::Overload<int> (&QSpinBox::valueChanged),
+				[this] { IsFontZoomDirty_ = true; });
 	}
 
 	void WkFontsWidget::SetFontZoomTooltip (const QString& label)
