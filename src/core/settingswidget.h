@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <functional>
 #include <QWidget>
 #include "ui_settingswidget.h"
 
