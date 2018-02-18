@@ -69,7 +69,7 @@ namespace Xoox
 
 	void ServerInfoStorage::HandleItems (const QXmppDiscoveryIq& iq)
 	{
-		Q_FOREACH (const auto& item, iq.items ())
+		for (const auto& item : iq.items ())
 			Conn_->GetDiscoManagerWrapper ()->RequestInfo (item.jid (),
 					[this] (const QXmppDiscoveryIq& iq) { HandleItemInfo (iq); },
 					false,
