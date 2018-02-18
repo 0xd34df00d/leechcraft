@@ -798,7 +798,8 @@ namespace Xoox
 	bool GlooxAccount::HasFeature (ServerHistoryFeature feature) const
 	{
 		auto infoStorage = ClientConnection_->GetServerInfoStorage ();
-		const bool supportsMam = Xep0313Manager::Supports0313 (infoStorage->GetServerFeatures ());
+		const bool supportsMam = Xep0313Manager::Supports0313 (infoStorage->GetServerFeatures ()) ||
+				Xep0313Manager::Supports0313 (infoStorage->GetSelfFeatures ());
 		switch (feature)
 		{
 		case ServerHistoryFeature::AccountSupportsHistory:
