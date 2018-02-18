@@ -104,8 +104,6 @@ namespace LeechCraft
 
 	void SettingsWidget::FillPages (QObject *obj, bool sub)
 	{
-		const auto& matches = MatchesGetter_ ();
-
 		IInfo *ii = qobject_cast<IInfo*> (obj);
 		IHaveSettings *ihs = qobject_cast<IHaveSettings*> (obj);
 		auto sd = ihs->GetSettingsDialog ();
@@ -133,16 +131,10 @@ namespace LeechCraft
 			item->setToolTip (0, itemName);
 			Ui_.Cats_->addTopLevelItem (item);
 
-			if (matches.contains (ihs) &&
-				!matches [ihs].contains (pgId))
-			{
-				auto flags = item->flags ();
-				flags &= ~Qt::ItemIsEnabled;
-				item->setFlags (flags);
-			}
-
 			Item2Page_ [item] = qMakePair (ihs, pgId++);
 		}
+
+		UpdateSearchHighlights ();
 	}
 
 	QSet<IHaveSettings*> SettingsWidget::GetUniqueIHS () const
