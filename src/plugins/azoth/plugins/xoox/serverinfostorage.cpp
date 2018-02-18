@@ -86,9 +86,8 @@ namespace Xoox
 		auto hasIdentity = [&iq] (const QString& cat, const QString& type) -> bool
 		{
 			const auto& ids = iq.identities ();
-			return std::find_if (ids.begin (), ids.end (),
-					[&cat, &type] (decltype (ids.front ()) id)
-						{ return id.category () == cat && id.type () == type; }) != ids.end ();
+			return std::any_of (ids.begin (), ids.end (),
+					[&cat, &type] (const auto& id) { return id.category () == cat && id.type () == type; });
 		};
 		if (hasIdentity ("proxy", "bytestreams"))
 		{
