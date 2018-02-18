@@ -239,7 +239,7 @@ namespace LeechCraft
 			tr ("LeechCraft-wide settings dashboard"),
 			Core::Instance ().GetCoreInstanceObject ()->GetIcon (),
 			0,
-			static_cast<TabFeatures> (TFSingle | TFOpenableByRequest)
+			TFSingle | TFOpenableByRequest
 		};
 		return setInfo;
 	}
