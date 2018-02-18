@@ -77,6 +77,7 @@ set (SRCS
 	plugintreebuilder.cpp
 	coreinstanceobject.cpp
 	settingstab.cpp
+	settingswidget.cpp
 	separatetabbar.cpp
 	separatetabwidget.cpp
 	mwproxy.cpp
@@ -120,6 +121,7 @@ set (FORMS
 	aboutdialog.ui
 	wizardtypechoicepage.ui
 	settingstab.ui
+	settingswidget.ui
 	)
 set (RESOURCES mainresources.qrc)
 

@@ -46,6 +46,7 @@
 #include "core.h"
 #include "coreinstanceobject.h"
 #include "coreproxy.h"
+#include "settingswidget.h"
 
 namespace LeechCraft
 {
@@ -60,10 +61,6 @@ namespace LeechCraft
 	{
 		Ui_.setupUi (this);
 		Ui_.ListContents_->setLayout (new QVBoxLayout);
-		Ui_.DialogContents_->setLayout (new QVBoxLayout);
-
-		const auto catsWidth = Ui_.Cats_->minimumSize ().width ();
-		Ui_.CatsSplitter_->setSizes ({ catsWidth, catsWidth * 5 });
 
 		ActionBack_->setProperty ("ActionIcon", "go-previous");
 		connect (ActionBack_,
@@ -257,83 +254,6 @@ namespace LeechCraft
 		return Toolbar_;
 	}
 
-	namespace
-	{
-		QObjectList FindSubplugins (QObject *obj)
-		{
-			QObjectList result;
-
-			auto ihp = qobject_cast<IPluginReady*> (obj);
-			if (!ihp)
-				return result;
-
-			const auto& expected = ihp->GetExpectedPluginClasses ();
-			const auto& settables = Core::Instance ()
-					.GetPluginManager ()->GetAllCastableRoots<IHaveSettings*> ();
-			for (auto settableObj : settables)
-			{
-				auto ip2 = qobject_cast<IPlugin2*> (settableObj);
-				if (!ip2 || QSet<QByteArray> (expected).intersect (ip2->GetPluginClasses ()).isEmpty ())
-					continue;
-
-				result << settableObj;
-			}
-			return result;
-		}
-	}
-
-	void SettingsTab::FillPages (QObject *obj, bool sub)
-	{
-		IInfo *ii = qobject_cast<IInfo*> (obj);
-		IHaveSettings *ihs = qobject_cast<IHaveSettings*> (obj);
-		auto sd = ihs->GetSettingsDialog ();
-
-		const QStringList& pages = sd->GetPages ();
-		int pgId = 0;
-		for (const auto& page : pages)
-		{
-			QString itemName;
-			if (sub)
-				itemName = pages.size () == 1 && ii->GetName ().contains (page) ?
-						ii->GetName () :
-						(ii->GetName () + ": " + page);
-			else
-				itemName = page;
-
-			auto icon = sd->GetPageIcon (pgId);
-			if (icon.isNull ())
-				icon = ii->GetIcon ();
-			if (icon.isNull ())
-				icon = QIcon ("lcicons:/resources/images/defaultpluginicon.svg");
-
-			auto item = new QTreeWidgetItem (QStringList (itemName));
-			item->setIcon (0, icon);
-			item->setToolTip (0, itemName);
-			Ui_.Cats_->addTopLevelItem (item);
-
-			if (Obj2SearchMatchingPages_.contains (ihs) &&
-					!Obj2SearchMatchingPages_ [ihs].contains (pgId))
-			{
-				auto flags = item->flags ();
-				flags &= ~Qt::ItemIsEnabled;
-				item->setFlags (flags);
-			}
-
-			Item2Page_ [item] = qMakePair (ihs, pgId++);
-		}
-
-		for (const auto& sub : FindSubplugins (obj))
-			FillPages (sub, true);
-	}
-
-	QSet<IHaveSettings*> SettingsTab::GetUniqueIHS () const
-	{
-		QSet<IHaveSettings*> uniques;
-		for (const auto& pair : Item2Page_)
-			uniques << pair.first;
-		return uniques;
-	}
-
 	void SettingsTab::addSearchBox ()
 	{
 		auto widget = new QWidget ();
@@ -357,6 +277,44 @@ namespace LeechCraft
 				SLOT (handleSearch (QString)));
 	}
 
+	namespace
+	{
+		QObjectList FindSubplugins (QObject *obj)
+		{
+			QObjectList result;
+
+			auto ihp = qobject_cast<IPluginReady*> (obj);
+			if (!ihp)
+				return result;
+
+			const auto& expected = ihp->GetExpectedPluginClasses ();
+			for (auto settableObj : Core::Instance ().GetPluginManager ()->GetAllCastableRoots<IHaveSettings*> ())
+			{
+				auto ip2 = qobject_cast<IPlugin2*> (settableObj);
+				if (!ip2 || QSet<QByteArray> (expected).intersect (ip2->GetPluginClasses ()).isEmpty ())
+					continue;
+
+				result << settableObj;
+			}
+			return result;
+		}
+
+		QObjectList FindSubpluginsRec (QObject *obj)
+		{
+			QObjectList result;
+
+			auto subs = FindSubplugins (obj);
+			while (!subs.isEmpty ())
+			{
+				auto sub = subs.takeFirst ();
+				subs = FindSubplugins (sub) + subs;
+				result << sub;
+			}
+
+			return result;
+		}
+	}
+
 	void SettingsTab::showSettingsFor (QObject *obj)
 	{
 		auto ihs = qobject_cast<IHaveSettings*> (obj);
@@ -366,17 +324,13 @@ namespace LeechCraft
 		handleBackRequested ();
 		Toolbar_->clear ();
 
-		IInfo *ii = qobject_cast<IInfo*> (obj);
-		Ui_.SectionName_->setText (tr ("Settings for %1")
-				.arg (ii->GetName ()));
+		const auto widget = std::make_shared<SettingsWidget> (obj,
+				FindSubpluginsRec (obj),
+				[this] { return Obj2SearchMatchingPages_; });
+		SettingsWidgets_ << widget;
+		Ui_.StackedWidget_->addWidget (widget.get ());
+		Ui_.StackedWidget_->setCurrentIndex (Ui_.StackedWidget_->count () - 1);
 
-		auto w = ihs->GetSettingsDialog ()->GetWidget ();
-		Ui_.DialogContents_->layout ()->addWidget (w);
-		w->show ();
-
-		FillPages (obj, false);
-
-		Ui_.StackedWidget_->setCurrentIndex (1);
 		Toolbar_->addAction (ActionBack_);
 		Toolbar_->addSeparator ();
 		Toolbar_->addAction (ActionApply_);
@@ -409,70 +363,31 @@ namespace LeechCraft
 			}
 
 			toolButton->setEnabled (foundMatching);
-
-			for (const auto& itemPair : Util::Stlize (Item2Page_))
-			{
-				const auto item = itemPair.first;
-				const auto& page = itemPair.second;
-				const bool enabled = !Obj2SearchMatchingPages_.contains (page.first) ||
-						Obj2SearchMatchingPages_ [page.first].contains (page.second);
-				auto flags = item->flags ();
-				if (enabled)
-					flags |= Qt::ItemIsEnabled;
-				else
-					flags &= ~Qt::ItemIsEnabled;
-				item->setFlags (flags);
-			}
 		}
+
+		for (const auto& widget : SettingsWidgets_)
+			widget->UpdateSearchHighlights ();
 	}
 
 	void SettingsTab::handleBackRequested ()
 	{
 		Toolbar_->clear ();
 		addSearchBox ();
-		Ui_.StackedWidget_->setCurrentIndex (0);
 
-		Ui_.Cats_->clear ();
-		if (Ui_.DialogContents_->layout ()->count ())
-		{
-			const auto item = Ui_.DialogContents_->layout ()->takeAt (0);
-			item->widget ()->hide ();
-			delete item;
-		}
-
-		Item2Page_.clear ();
+		const auto count = Ui_.StackedWidget_->count ();
+		if (count > 1)
+			Ui_.StackedWidget_->removeWidget (Ui_.StackedWidget_->widget (count - 1));
 	}
 
 	void SettingsTab::handleApply ()
 	{
-		for (const auto& ihs : GetUniqueIHS ())
-			ihs->GetSettingsDialog ()->accept ();
+		for (const auto& widget : SettingsWidgets_)
+			widget->Accept ();
 	}
 
 	void SettingsTab::handleCancel ()
 	{
-		for (const auto& ihs : GetUniqueIHS ())
-			ihs->GetSettingsDialog ()->reject ();
-	}
-
-	void SettingsTab::on_Cats__currentItemChanged (QTreeWidgetItem *current)
-	{
-		const auto& pair = Item2Page_ [current];
-		if (!pair.first)
-			return;
-
-		auto sd = pair.first->GetSettingsDialog ();
-		sd->SetPage (pair.second);
-
-		if (Ui_.DialogContents_->layout ()->count ())
-		{
-			const auto item = Ui_.DialogContents_->layout ()->takeAt (0);
-			item->widget ()->hide ();
-			delete item;
-		}
-
-		const auto w = sd->GetWidget ();
-		Ui_.DialogContents_->layout ()->addWidget (w);
-		w->show ();
+		for (const auto& widget : SettingsWidgets_)
+			widget->Reject ();
 	}
 }

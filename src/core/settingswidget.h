@@ -29,56 +29,39 @@
 
 #pragma once
 
-#include <memory>
-#include <QStack>
 #include <QWidget>
-#include "interfaces/ihavetabs.h"
-#include "ui_settingstab.h"
+#include "ui_settingswidget.h"
 
 class IHaveSettings;
-class QLineEdit;
-class QToolButton;
 
 namespace LeechCraft
 {
-	class SettingsWidget;
-
-	class SettingsTab : public QWidget
-					  , public ITabWidget
+	class SettingsWidget : public QWidget
 	{
 		Q_OBJECT
-		Q_INTERFACES (ITabWidget)
 
-		Ui::SettingsTab Ui_;
-		QToolBar *Toolbar_;
-		QAction *ActionBack_;
-		QAction *ActionApply_;
-		QAction *ActionCancel_;
+		Ui::SettingsWidget Ui_;
 
-		QString LastSearch_;
-		QHash<QToolButton*, QObject*> Button2SettableRoot_;
-		QHash<IHaveSettings*, QList<int>> Obj2SearchMatchingPages_;
-
-		QStack<std::shared_ptr<SettingsWidget>> SettingsWidgets_;
+		QHash<QTreeWidgetItem*, QPair<IHaveSettings*, int>> Item2Page_;
 	public:
-		SettingsTab (QWidget* = 0);
+		using MatchesGetter_t = std::function<QHash<IHaveSettings*, QList<int>> ()>;
+	private:
+		const MatchesGetter_t MatchesGetter_;
+	public:
+		SettingsWidget (QObject *settable,
+				const QObjectList& subplugins,
+				const MatchesGetter_t& matchesGetter,
+				QWidget *parent = nullptr);
+		~SettingsWidget ();
 
-		void Initialize ();
+		void Accept ();
+		void Reject ();
 
-		TabClassInfo GetTabClassInfo () const;
-		QObject* ParentMultiTabs ();
-		void Remove ();
-		QToolBar* GetToolBar () const;
-	public slots:
-		void showSettingsFor (QObject*);
+		void UpdateSearchHighlights ();
+	private:
+		void FillPages (QObject*, bool);
+		QSet<IHaveSettings*> GetUniqueIHS () const;
 	private slots:
-		void addSearchBox ();
-		void handleSearch (const QString&);
-
-		void handleBackRequested ();
-		void handleApply ();
-		void handleCancel ();
-	signals:
-		void remove (QWidget*);
+		void on_Cats__currentItemChanged (QTreeWidgetItem*);
 	};
 }
