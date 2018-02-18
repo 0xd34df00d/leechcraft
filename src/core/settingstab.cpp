@@ -326,7 +326,6 @@ namespace LeechCraft
 		if (!ihs)
 			return;
 
-		handleBackRequested ();
 		const auto widget = std::make_shared<SettingsWidget> (obj,
 				FindSubpluginsRec (obj),
 				[this] { return Obj2SearchMatchingPages_; });
