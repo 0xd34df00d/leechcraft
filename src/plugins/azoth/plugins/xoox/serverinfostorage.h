@@ -61,7 +61,6 @@ namespace Xoox
 		QString GetBytestreamsProxy () const;
 	private:
 		void HandleItems (const QXmppDiscoveryIq&);
-		void HandleServerInfo (const QXmppDiscoveryIq&);
 		void HandleItemInfo (const QXmppDiscoveryIq&);
 	private slots:
 		void handleConnected ();

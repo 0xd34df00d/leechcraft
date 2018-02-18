@@ -76,11 +76,6 @@ namespace Xoox
 					item.node ());
 	}
 
-	void ServerInfoStorage::HandleServerInfo (const QXmppDiscoveryIq& iq)
-	{
-		ServerFeatures_ = iq.features ();
-	}
-
 	void ServerInfoStorage::HandleItemInfo (const QXmppDiscoveryIq& iq)
 	{
 		auto hasIdentity = [&iq] (const QString& cat, const QString& type) -> bool
@@ -112,7 +107,7 @@ namespace Xoox
 			return;
 
 		Conn_->GetDiscoManagerWrapper ()->RequestInfo (Server_,
-				[this] (const QXmppDiscoveryIq& iq) { HandleServerInfo (iq); },
+				[this] (const QXmppDiscoveryIq& iq) { ServerFeatures_ = iq.features (); },
 				false);
 		Conn_->GetDiscoManagerWrapper ()->RequestItems (Server_,
 				[this] (const QXmppDiscoveryIq& iq) { HandleItems (iq); },
