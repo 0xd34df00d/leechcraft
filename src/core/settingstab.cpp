@@ -83,6 +83,11 @@ namespace LeechCraft
 		QTimer::singleShot (1000,
 				this,
 				SLOT (addSearchBox ()));
+
+		Toolbar_->addAction (ActionBack_);
+		Toolbar_->addSeparator ();
+		Toolbar_->addAction (ActionApply_);
+		Toolbar_->addAction (ActionCancel_);
 	}
 
 	namespace
@@ -322,20 +327,12 @@ namespace LeechCraft
 			return;
 
 		handleBackRequested ();
-		Toolbar_->clear ();
-
 		const auto widget = std::make_shared<SettingsWidget> (obj,
 				FindSubpluginsRec (obj),
 				[this] { return Obj2SearchMatchingPages_; });
 		SettingsWidgets_ << widget;
 		Ui_.StackedWidget_->addWidget (widget.get ());
 		Ui_.StackedWidget_->setCurrentIndex (Ui_.StackedWidget_->count () - 1);
-
-		Toolbar_->addAction (ActionBack_);
-		Toolbar_->addSeparator ();
-		Toolbar_->addAction (ActionApply_);
-		Toolbar_->addAction (ActionCancel_);
-		addSearchBox ();
 	}
 
 	void SettingsTab::handleSearch (const QString& text)
@@ -371,9 +368,6 @@ namespace LeechCraft
 
 	void SettingsTab::handleBackRequested ()
 	{
-		Toolbar_->clear ();
-		addSearchBox ();
-
 		const auto count = Ui_.StackedWidget_->count ();
 		if (count > 1)
 			Ui_.StackedWidget_->removeWidget (Ui_.StackedWidget_->widget (count - 1));
