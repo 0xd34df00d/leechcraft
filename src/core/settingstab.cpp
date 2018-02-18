@@ -267,7 +267,7 @@ namespace LeechCraft
 		box->setText (LastSearch_);
 		lay->addStretch ();
 		lay->addWidget (box, 0, Qt::AlignRight);
-		new Util::ClearLineEditAddon (ICoreProxy_ptr (new CoreProxy ()), box);
+		new Util::ClearLineEditAddon (std::make_shared<CoreProxy> (), box);
 
 		Toolbar_->addWidget (widget);
 
