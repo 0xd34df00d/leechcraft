@@ -128,6 +128,14 @@ namespace Util
 		 */
 		void RegisterSettable (IWkFontsSettable *settable);
 
+		/** @brief Sets the \em size for the given font size \em type.
+		 *
+		 * The new size is stored in settings and applied to all settables
+		 * registered with this widget via RegisterSettable().
+		 *
+		 * @param type The type of font size to change.
+		 * @param size The new size.
+		 */
 		void SetSize (IWkFontsSettable::FontSize type, int size);
 	private:
 		void ResetFontChoosers ();
