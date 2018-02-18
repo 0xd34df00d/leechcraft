@@ -51,6 +51,7 @@ namespace Xoox
 		QString Server_;
 
 		QStringList ServerFeatures_;
+		QStringList SelfJIDFeatures_;
 
 		QString BytestreamsProxy_;
 	public:
@@ -58,6 +59,10 @@ namespace Xoox
 
 		bool HasServerFeatures () const;
 		QStringList GetServerFeatures () const;
+
+		bool HasSelfFeatures () const;
+		QStringList GetSelfFeatures () const;
+
 		QString GetBytestreamsProxy () const;
 	private:
 		void HandleItems (const QXmppDiscoveryIq&);

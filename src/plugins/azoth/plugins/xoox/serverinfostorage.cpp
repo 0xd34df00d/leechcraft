@@ -62,6 +62,16 @@ namespace Xoox
 		return ServerFeatures_;
 	}
 
+	bool ServerInfoStorage::HasSelfFeatures () const
+	{
+		return !SelfJIDFeatures_.isEmpty ();
+	}
+
+	QStringList ServerInfoStorage::GetSelfFeatures () const
+	{
+		return SelfJIDFeatures_;
+	}
+
 	QString ServerInfoStorage::GetBytestreamsProxy () const
 	{
 		return BytestreamsProxy_;
@@ -111,6 +121,9 @@ namespace Xoox
 				false);
 		Conn_->GetDiscoManagerWrapper ()->RequestItems (Server_,
 				[this] (const QXmppDiscoveryIq& iq) { HandleItems (iq); },
+				false);
+		Conn_->GetDiscoManagerWrapper ()->RequestInfo (Settings_->GetJID (),
+				[this] (const QXmppDiscoveryIq& iq) { SelfJIDFeatures_ = iq.features (); },
 				false);
 	}
 }
