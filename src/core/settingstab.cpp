@@ -88,6 +88,8 @@ namespace LeechCraft
 		Toolbar_->addSeparator ();
 		Toolbar_->addAction (ActionApply_);
 		Toolbar_->addAction (ActionCancel_);
+
+		UpdateButtonsState ();
 	}
 
 	namespace
@@ -259,6 +261,14 @@ namespace LeechCraft
 		return Toolbar_;
 	}
 
+	void SettingsTab::UpdateButtonsState ()
+	{
+		const auto enable = !SettingsWidgets_.isEmpty ();
+		ActionBack_->setEnabled (enable);
+		ActionApply_->setEnabled (enable);
+		ActionCancel_->setEnabled (enable);
+	}
+
 	void SettingsTab::addSearchBox ()
 	{
 		auto widget = new QWidget ();
@@ -330,6 +340,8 @@ namespace LeechCraft
 		SettingsWidgets_ << widget;
 		Ui_.StackedWidget_->addWidget (widget.get ());
 		Ui_.StackedWidget_->setCurrentIndex (Ui_.StackedWidget_->count () - 1);
+
+		UpdateButtonsState ();
 	}
 
 	void SettingsTab::handleSearch (const QString& text)
@@ -370,6 +382,8 @@ namespace LeechCraft
 
 		const auto& widget = SettingsWidgets_.pop ();
 		Ui_.StackedWidget_->removeWidget (widget.get ());
+
+		UpdateButtonsState ();
 	}
 
 	void SettingsTab::handleApply ()
