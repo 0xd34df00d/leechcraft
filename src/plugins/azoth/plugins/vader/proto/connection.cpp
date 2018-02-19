@@ -683,8 +683,8 @@ namespace Proto
 			if (split.size () < 2)
 				throw MsgParseError ("Incorrect message format " + msgStr.toStdString ());
 
-			const QString& hdr = split.takeFirst ();
-			Q_FOREACH (const QString& field, hdr.split ("\n"))
+			const auto& hdr = split.takeFirst ();
+			for (const auto& field : hdr.split ("\n"))
 			{
 				const int idx = field.indexOf (":");
 				if (idx < 0)

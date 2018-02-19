@@ -88,7 +88,7 @@ namespace Proto
 	void TypingManager::checkExpires ()
 	{
 		const auto& cur = QDateTime::currentDateTime ();
-		Q_FOREACH (const QString& from, LastNotDates_.keys ())
+		for (const auto& from : LastNotDates_.keys ())
 		{
 			if (LastNotDates_ [from].secsTo (cur) <= 10)
 				continue;
@@ -103,7 +103,7 @@ namespace Proto
 
 	void TypingManager::sendOut ()
 	{
-		Q_FOREACH (const QString& to, TypingTo_)
+		for (const auto& to : TypingTo_)
 			emit needNotify (to);
 	}
 }
