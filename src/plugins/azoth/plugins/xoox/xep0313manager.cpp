@@ -71,11 +71,14 @@ namespace Xoox
 				HandlePrefs (element);
 				return true;
 			}
-			else if (element.firstChildElement ("query").namespaceURI () == NsMam &&
-					element.attribute ("type") == "result")
+			else if (element.attribute ("type") == "result")
 			{
-				HandleHistoryQueryFinished (element);
-				return true;
+				const auto& fin = element.firstChildElement ("fin");
+				if (fin.namespaceURI () == NsMam && fin.attribute ("complete") == "true")
+				{
+					HandleHistoryQueryFinished (fin);
+					return true;
+				}
 			}
 		}
 		else if (tagName == "message")
