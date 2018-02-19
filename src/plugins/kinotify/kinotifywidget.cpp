@@ -345,7 +345,7 @@ namespace Kinotify
 #undef REPLACE1
 
 		QDir imgDir (themePath + "/img");
-		Q_FOREACH (QString elem, imgDir.entryList (QStringList ("*.png")))
+		for (const auto elem : imgDir.entryList (QStringList ("*.png")))
 			Theme_.replace (QString ("{%1}").arg (elem.left (elem.size () - 4)),
 					MakeImage (themePath + "/img/" + elem));
 
@@ -374,9 +374,9 @@ namespace Kinotify
 			QWebElement button = page ()->mainFrame ()->documentElement ().findFirst ("form");
 			if (!button.isNull ())
 			{
-				QStringList reversed = ActionsNames_;
+				auto reversed = ActionsNames_;
 				std::reverse (reversed.begin (), reversed.end ());
-				Q_FOREACH (const QString& name, reversed)
+				for (const auto& name : reversed)
 					button.appendInside (QString ("<input type=\"button\" id=\"%1\" value=\"%2\""
 							" onclick=\"Action.sendActionOnClick(id)\" />")
 									.arg (ActionsNames_.indexOf (name))
