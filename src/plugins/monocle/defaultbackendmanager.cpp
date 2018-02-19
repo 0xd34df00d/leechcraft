@@ -28,12 +28,12 @@
  **********************************************************************/
 
 #include "defaultbackendmanager.h"
-#include <memory>
 #include <numeric>
 #include <QStandardItemModel>
 #include <QSettings>
 #include <QApplication>
 #include <util/sll/prelude.h>
+#include <util/sll/scopeguards.h>
 #include <interfaces/iinfo.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include "choosebackenddialog.h"
@@ -76,9 +76,7 @@ namespace Monocle
 
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Monocle");
-		settings.beginGroup ("BackendChoices");
-		std::shared_ptr<void> guard (static_cast<void*> (0),
-				[&settings] (void*) { settings.endGroup (); });
+		const auto guard = Util::BeginGroup (settings, "BackendChoices");
 
 		if (ids.contains (settings.value (key).toByteArray ()))
 		{
