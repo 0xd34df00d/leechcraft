@@ -109,17 +109,16 @@ namespace Monocle
 
 	void DefaultBackendManager::AddToModel (const QByteArray& key, const QByteArray& choice)
 	{
-		QList<QByteArray> set = key.split ('|');
-		set.removeAll (QByteArray ());
+		auto set = key.split ('|');
+		set.removeAll ({});
 
 		auto pm = Core::Instance ().GetProxy ()->GetPluginsManager ();
-		auto getName = [pm] (const QByteArray& id) -> QString
+		auto getName = [pm] (const QByteArray& id)
 		{
 			auto plugin = pm->GetPluginByID (id);
 			return plugin ? qobject_cast<IInfo*> (plugin)->GetName () : QString ();
 		};
-		QStringList names;
-		std::transform (set.begin (), set.end (), std::back_inserter (names), getName);
+		const auto& names = Util::Map (set, getName);
 
 		QList<QStandardItem*> row;
 		row << new QStandardItem (names.join ("; "));
