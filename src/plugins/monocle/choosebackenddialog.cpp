@@ -39,7 +39,7 @@ namespace Monocle
 	, Backends_ (backends)
 	{
 		Ui_.setupUi (this);
-		Q_FOREACH (auto backend, backends)
+		for (auto backend : backends)
 		{
 			auto ii = qobject_cast<IInfo*> (backend);
 			Ui_.BackendSelector_->addItem (ii->GetIcon (),

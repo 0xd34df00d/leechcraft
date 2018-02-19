@@ -33,6 +33,7 @@
 #include <QStandardItemModel>
 #include <QSettings>
 #include <QApplication>
+#include <util/sll/prelude.h>
 #include <interfaces/iinfo.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include "choosebackenddialog.h"
@@ -51,10 +52,9 @@ namespace Monocle
 
 	void DefaultBackendManager::LoadSettings ()
 	{
-		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_Monocle");
+		QSettings settings (QCoreApplication::organizationName (), QCoreApplication::applicationName () + "_Monocle");
 		settings.beginGroup ("BackendChoices");
-		Q_FOREACH (const auto& key, settings.childKeys ())
+		for (const auto& key : settings.childKeys ())
 		{
 			const auto& utf8key = key.toUtf8 ();
 			AddToModel (utf8key, settings.value (utf8key).toByteArray ());
@@ -69,13 +69,10 @@ namespace Monocle
 
 	QObject* DefaultBackendManager::GetBackend (const QList<QObject*>& loaders)
 	{
-		QList<QByteArray> ids;
-		Q_FOREACH (auto backend, loaders)
-			ids << qobject_cast<IInfo*> (backend)->GetUniqueID ();
+		auto ids = Util::Map (loaders, [] (auto backend) { return qobject_cast<IInfo*> (backend)->GetUniqueID (); });
 		std::sort (ids.begin (), ids.end ());
 		const auto& key = std::accumulate (ids.begin (), ids.end (), QByteArray (),
-				[] (const QByteArray& left, const QByteArray& right)
-					{ return left + '|' + right; });
+				[] (const QByteArray& left, const QByteArray& right) { return left + '|' + right; });
 
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Monocle");
@@ -131,17 +128,16 @@ namespace Monocle
 	void DefaultBackendManager::removeRequested (const QString&, const QModelIndexList& indices)
 	{
 		QList<QPersistentModelIndex> pidxs;
-		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_Monocle");
+		QSettings settings (QCoreApplication::organizationName (), QCoreApplication::applicationName () + "_Monocle");
 		settings.beginGroup ("BackendChoices");
-		Q_FOREACH (const auto& idx, indices)
+		for (const auto& idx : indices)
 		{
 			settings.remove (idx.sibling (idx.row (), 0).data (Roles::KeyID).toByteArray ());
 			pidxs << idx;
 		}
 		settings.endGroup ();
 
-		Q_FOREACH (const auto& pidx, pidxs)
+		for (const auto& pidx : pidxs)
 			Model_->removeRow (pidx.row ());
 	}
 }
