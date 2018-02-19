@@ -36,6 +36,7 @@
 #include <interfaces/core/irootwindowsmanager.h>
 #include <util/xpc/util.h>
 #include <util/xpc/notificationactionhandler.h>
+#include <util/sll/prelude.h>
 #include "interfaces/blogique/ibloggingplatformplugin.h"
 #include "interfaces/blogique/ibloggingplatform.h"
 #include "commentsmanager.h"
@@ -110,34 +111,23 @@ namespace Blogique
 
 	QList<IBloggingPlatform*> Core::GetBloggingPlatforms () const
 	{
-		QList<IBloggingPlatform*> result;
-		std::for_each (BlogPlatformPlugins_.begin (), BlogPlatformPlugins_.end (),
-				[&result] (decltype (BlogPlatformPlugins_.front ()) bpp)
+		auto result = Util::ConcatMap (BlogPlatformPlugins_,
+				[] (auto bpp)
 				{
-					const auto& protos = qobject_cast<IBloggingPlatformPlugin*> (bpp)->
-							GetBloggingPlatforms ();
-					for (const auto obj : protos)
-						result << qobject_cast<IBloggingPlatform*> (obj);
+					const auto platforms = qobject_cast<IBloggingPlatformPlugin*> (bpp)->GetBloggingPlatforms ();
+					return Util::Map (platforms, [] (auto obj) { return qobject_cast<IBloggingPlatform*> (obj); });
 				});
-
 		result.removeAll (0);
 		return result;
 	}
 
 	QList<IAccount*> Core::GetAccounts () const
 	{
-		auto bloggingPlatforms = GetBloggingPlatforms ();
-		QList<IAccount*> result;
-		std::for_each (bloggingPlatforms.begin (), bloggingPlatforms.end (),
-				[&result] (decltype (bloggingPlatforms.front ()) bp)
+		auto result = Util::ConcatMap (GetBloggingPlatforms (),
+				[] (auto bp)
 				{
-					const auto& accountsObjList = bp->GetRegisteredAccounts ();
-					std::transform (accountsObjList.begin (), accountsObjList.end (),
-							std::back_inserter (result),
-							[] (decltype (accountsObjList.front ()) accountObj)
-							{
-								return qobject_cast<IAccount*> (accountObj);
-							});
+					return Util::Map (bp->GetRegisteredAccounts (),
+							[] (auto obj) { return qobject_cast<IAccount*> (obj); });
 				});
 		result.removeAll (0);
 		return result;
