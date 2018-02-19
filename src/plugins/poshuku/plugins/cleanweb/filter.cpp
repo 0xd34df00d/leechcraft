@@ -30,6 +30,7 @@
 #include "filter.h"
 #include <QDataStream>
 #include <QtDebug>
+#include <util/sll/unreachable.h>
 
 namespace LeechCraft
 {
@@ -105,17 +106,36 @@ namespace CleanWeb
 		return !(f1 == f2);
 	}
 
+	namespace
+	{
+		const char* HumanReadable (FilterOption::ThirdParty opt)
+		{
+			switch (opt)
+			{
+			case FilterOption::ThirdParty::Yes:
+				return "yes";
+			case FilterOption::ThirdParty::No:
+				return "no";
+			case FilterOption::ThirdParty::Unspecified:
+				return "unspecified";
+			}
+
+			Util::Unreachable ();
+		}
+	}
+
 	QDebug operator<< (QDebug dbg, const FilterOption& option)
 	{
-		dbg << "FilterOption {"
-				<< "CS:" << (option.Case_ == Qt::CaseSensitive) << "; "
-				<< "Match type:" << option.MatchType_ << "; "
-				<< "Match objects:" << option.MatchObjects_ << "; "
-				<< "Domains:" << option.Domains_ << "; "
-				<< "!domains:" << option.NotDomains_ << "; "
-				<< "Selector:" << option.HideSelector_ << "; "
-				<< "Third party requests:" << static_cast<int> (option.ThirdParty_)
-				<< "}";
+		QDebugStateSaver saver { dbg };
+		dbg.nospace () << "FilterOption { "
+				<< "CS: " << (option.Case_ == Qt::CaseSensitive) << "; "
+				<< "match type: " << option.MatchType_ << "; "
+				<< "match objects: " << option.MatchObjects_ << "; "
+				<< "domains: " << option.Domains_ << "; "
+				<< "!domains: " << option.NotDomains_ << "; "
+				<< "selector: " << option.HideSelector_ << "; "
+				<< "third party requests: " << HumanReadable (option.ThirdParty_)
+				<< " }";
 		return dbg;
 	}
 
