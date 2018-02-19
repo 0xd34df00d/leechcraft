@@ -347,15 +347,15 @@ namespace Blogique
 
 		const auto& tables = BlogiqueDB_.tables ();
 		Q_FOREACH (const QString& key, table2query.keys ())
-		if (!tables.contains (key))
-		{
-			QSqlQuery q (BlogiqueDB_);
-			if (!q.exec (table2query [key]))
+			if (!tables.contains (key))
 			{
-				Util::DBLock::DumpError (q);
-				throw std::runtime_error ("cannot create required tables");
+				QSqlQuery q (BlogiqueDB_);
+				if (!q.exec (table2query [key]))
+				{
+					Util::DBLock::DumpError (q);
+					throw std::runtime_error ("cannot create required tables");
+				}
 			}
-		}
 
 		lock.Good ();
 	}
