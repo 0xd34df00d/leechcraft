@@ -346,7 +346,7 @@ namespace Blogique
 		lock.Init ();
 
 		const auto& tables = BlogiqueDB_.tables ();
-		Q_FOREACH (const QString& key, table2query.keys ())
+		for (const auto& key : table2query.keys ())
 			if (!tables.contains (key))
 			{
 				QSqlQuery q (BlogiqueDB_);

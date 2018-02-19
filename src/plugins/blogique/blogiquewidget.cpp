@@ -326,7 +326,7 @@ namespace Blogique
 				delete dummy;
 		}
 
-		Q_FOREACH (ITextEditor *plug, plugs)
+		for (const auto plug : plugs)
 		{
 			if (!plug->SupportsEditor (ContentType::PlainText))
 				continue;

@@ -64,10 +64,7 @@ namespace Blogique
 		registerField ("AccountBloggingPlatform", Ui_.BloggingPlatformBox_);
 		registerField ("RegisterNewAccount", Ui_.RegisterAccount_);
 
-		const QList<IBloggingPlatform*>& platforms = Core::Instance ()
-				.GetBloggingPlatforms ();
-
-		Q_FOREACH (IBloggingPlatform *platform, platforms)
+		for (const auto platform : Core::Instance ().GetBloggingPlatforms ())
 			Ui_.BloggingPlatformBox_->addItem (platform->GetBloggingPlatformIcon (),
 					platform->GetBloggingPlatformName (),
 					QVariant::fromValue<QObject*> (platform->GetQObject ()));
@@ -108,7 +105,7 @@ namespace Blogique
 				(IBloggingPlatform::BPFSupportsRegistration));
 
 		const int currentId = wizard ()->currentId ();
-		Q_FOREACH (const int id, wizard ()->pageIds ())
+		for (const int id : wizard ()->pageIds ())
 			if (id > currentId)
 				wizard ()->removePage (id);
 		qDeleteAll (Widgets_);
@@ -121,8 +118,8 @@ namespace Blogique
 		if (!Widgets_.size ())
 			return;
 
-		const QString& platformName = platform->GetBloggingPlatformName ();
-		Q_FOREACH (QWidget *widget, Widgets_)
+		const auto& platformName = platform->GetBloggingPlatformName ();
+		for (const auto widget : Widgets_)
 		{
 			QWizardPage *page = qobject_cast<QWizardPage*> (widget);
 			if (!page)

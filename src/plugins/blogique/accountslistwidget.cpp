@@ -73,7 +73,7 @@ namespace Blogique
 				this,
 				SLOT (handleAccountDoubleClicked (const QModelIndex&)));
 
-		Q_FOREACH (IAccount *acc, Core::Instance ().GetAccounts ())
+		for (const auto acc : Core::Instance ().GetAccounts ())
 			addAccount (acc->GetQObject ());
 
 		AccountsModel_->setHorizontalHeaderLabels ({tr ("Account"), tr ("Validated")});

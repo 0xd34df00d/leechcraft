@@ -116,7 +116,7 @@ namespace Blogique
 				{
 					const auto& protos = qobject_cast<IBloggingPlatformPlugin*> (bpp)->
 							GetBloggingPlatforms ();
-					Q_FOREACH (QObject *obj, protos)
+					for (const auto obj : protos)
 						result << qobject_cast<IBloggingPlatform*> (obj);
 				});
 
@@ -235,12 +235,11 @@ namespace Blogique
 
 	void Core::handleNewBloggingPlatforms (const QObjectList& platforms)
 	{
-		Q_FOREACH (QObject *platformObj, platforms)
+		for (const auto platformObj : platforms)
 		{
-			IBloggingPlatform *platform =
-					qobject_cast<IBloggingPlatform*> (platformObj);
+			const auto platform = qobject_cast<IBloggingPlatform*> (platformObj);
 
-			Q_FOREACH (QObject *accObj, platform->GetRegisteredAccounts ())
+			for (const auto accObj : platform->GetRegisteredAccounts ())
 				addAccount (accObj);
 
 			connect (platform->GetQObject (),
