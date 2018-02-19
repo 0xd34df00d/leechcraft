@@ -310,6 +310,22 @@ namespace CleanWeb
 			}
 		}
 
+		bool IsSameDomain (const QUrl& url1, const QUrl& url2)
+		{
+			const auto& tld1 = url1.topLevelDomain ();
+			const auto& tld2 = url2.topLevelDomain ();
+			if (tld1 != tld2)
+				return false;
+
+			// example.com -> example (section index is -2)
+			// example.co.uk -> example (section index is -3)
+			const auto nextComponentPos = -tld1.count ('.') - 1;
+
+			const auto& nextComponent1 = url1.host ().section ('.', nextComponentPos, nextComponentPos);
+			const auto& nextComponent2 = url1.host ().section ('.', nextComponentPos, nextComponentPos);
+			return nextComponent1 == nextComponent2;
+		}
+
 		bool ShouldReject (const IInterceptableRequests::RequestInfo& req,
 				const QList<QList<FilterItem_ptr>>& exceptions,
 				const QList<QList<FilterItem_ptr>>& filters)
@@ -329,7 +345,7 @@ namespace CleanWeb
 			const auto& cinUrlUtf8 = cinUrlStr.toUtf8 ();
 
 			const QString& domain = req.PageUrl_.host ();
-			const bool isThirdParty = !url.host ().endsWith (domain);
+			const bool isThirdParty = !IsSameDomain (req.PageUrl_, url);
 
 			auto matches = [=] (const QList<QList<FilterItem_ptr>>& chunks)
 			{
