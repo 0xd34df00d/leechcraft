@@ -46,7 +46,7 @@ namespace Monocle
 	: QObject (parent)
 	, Model_ (new QStandardItemModel (this))
 	{
-		Model_->setHorizontalHeaderLabels (QStringList (tr ("Backends")) << tr ("Choice"));
+		Model_->setHorizontalHeaderLabels ({ tr ("Backends"), tr ("Choice") });
 	}
 
 	void DefaultBackendManager::LoadSettings ()
