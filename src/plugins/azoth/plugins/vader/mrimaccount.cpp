@@ -422,7 +422,7 @@ namespace Vader
 
 	void MRIMAccount::handleGotContacts (const QList<Proto::ContactInfo>& contacts)
 	{
-		Q_FOREACH (const Proto::ContactInfo& contact, contacts)
+		for (const auto& contact : contacts)
 		{
 			qDebug () << Q_FUNC_INFO
 					<< GetAccountName ()
@@ -632,7 +632,7 @@ namespace Vader
 	void MRIMAccount::handleOurStatusChanged (const EntryStatus& status)
 	{
 		if (status.State_ == SOffline)
-			Q_FOREACH (MRIMBuddy *buddy, Buddies_.values ())
+			for (auto buddy : Buddies_.values ())
 			{
 				auto info = buddy->GetInfo ();
 				info.StatusID_ = Proto::UserState::Offline;

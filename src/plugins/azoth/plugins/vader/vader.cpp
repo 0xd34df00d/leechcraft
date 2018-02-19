@@ -134,13 +134,13 @@ namespace Vader
 		{
 			auto list = VaderUtil::GetBuddyServices (this,
 					SLOT (entryServiceRequested ()));
-			Q_FOREACH (QAction *act, list)
+			for (const auto act : list)
 				act->setProperty ("Azoth/Vader/Entry", QVariant::fromValue<QObject*> (entry));
 			EntryServices_ [entry] = list;
 		}
 
-		QList<QVariant> list = proxy->GetReturnValue ().toList ();
-		Q_FOREACH (QAction *act, EntryServices_ [entry])
+		auto list = proxy->GetReturnValue ().toList ();
+		for (const auto act : EntryServices_ [entry])
 			list += QVariant::fromValue<QObject*> (act);
 		proxy->SetReturnValue (list);
 	}
