@@ -365,9 +365,11 @@ namespace LeechCraft
 
 	void SettingsTab::handleBackRequested ()
 	{
-		const auto count = Ui_.StackedWidget_->count ();
-		if (count > 1)
-			Ui_.StackedWidget_->removeWidget (Ui_.StackedWidget_->widget (count - 1));
+		if (SettingsWidgets_.isEmpty ())
+			return;
+
+		const auto& widget = SettingsWidgets_.pop ();
+		Ui_.StackedWidget_->removeWidget (widget.get ());
 	}
 
 	void SettingsTab::handleApply ()
