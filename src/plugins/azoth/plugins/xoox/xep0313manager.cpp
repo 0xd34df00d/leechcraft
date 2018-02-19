@@ -74,7 +74,7 @@ namespace Xoox
 			else if (element.attribute ("type") == "result")
 			{
 				const auto& fin = element.firstChildElement ("fin");
-				if (fin.namespaceURI () == NsMam && fin.attribute ("complete") == "true")
+				if (fin.namespaceURI () == NsMam)
 				{
 					HandleHistoryQueryFinished (fin);
 					return true;
