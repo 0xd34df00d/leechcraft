@@ -31,6 +31,8 @@
 #include <QIcon>
 #include <QSettings>
 #include <QtDebug>
+#include <util/sll/functional.h>
+#include <util/sll/prelude.h>
 #include "mrimaccount.h"
 #include "mrimaccountconfigwidget.h"
 
@@ -77,10 +79,7 @@ namespace Vader
 
 	QList<QObject*> MRIMProtocol::GetRegisteredAccounts ()
 	{
-		QList<QObject*> result;
-		Q_FOREACH (auto acc, Accounts_)
-			result << acc;
-		return result;
+		return Util::Map (Accounts_, Util::Upcast<QObject*>);
 	}
 
 	QObject* MRIMProtocol::GetParentProtocolPlugin () const
