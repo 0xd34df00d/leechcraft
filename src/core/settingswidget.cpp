@@ -68,6 +68,7 @@ namespace LeechCraft
 		if (Ui_.DialogContents_->layout ()->count ())
 		{
 			const auto item = Ui_.DialogContents_->layout ()->takeAt (0);
+			item->widget ()->setParent (nullptr);
 			item->widget ()->hide ();
 			delete item;
 		}
@@ -157,6 +158,7 @@ namespace LeechCraft
 		if (Ui_.DialogContents_->layout ()->count ())
 		{
 			const auto item = Ui_.DialogContents_->layout ()->takeAt (0);
+			item->widget ()->setParent (nullptr);
 			item->widget ()->hide ();
 			delete item;
 		}
