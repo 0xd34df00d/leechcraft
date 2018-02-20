@@ -81,10 +81,9 @@ namespace Monocle
 		if (ids.contains (settings.value (key).toByteArray ()))
 		{
 			const auto& id = settings.value (key).toByteArray ();
-			Q_FOREACH (auto backend, loaders)
-				if (qobject_cast<IInfo*> (backend)->GetUniqueID () == id)
-					return backend;
-			return 0;
+			const auto pos = std::find_if (loaders.begin (), loaders.end (),
+					[&id] (auto backend) { return qobject_cast<IInfo*> (backend)->GetUniqueID () == id; });
+			return pos == loaders.end () ? nullptr : *pos;
 		}
 
 		ChooseBackendDialog dia (loaders);
