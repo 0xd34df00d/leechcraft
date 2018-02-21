@@ -151,7 +151,7 @@ namespace Lads
 
 		QMenu *lcMenu = 0;
 		QList<QAction*> firstLevelActions;
-		Q_FOREACH (auto action, menu->actions ())
+		for (auto action : menu->actions ())
 			if (action->menu ())
 			{
 				MenuBar_->addAction (action);
@@ -172,15 +172,13 @@ namespace Lads
 			return;
 		}
 
-		Q_FOREACH (auto act, firstLevelActions)
+		for (auto act : irstLevelActions)
 			lcMenu->addAction (act);
 
 		if (!lcMenu->actions ().isEmpty ())
 			MenuBar_->addMenu (lcMenu);
 
-		const auto& actors = Proxy_->GetPluginsManager ()->
-				GetAllCastableRoots<IActionsExporter*> ();
-		Q_FOREACH (auto actor, actors)
+		for (auto actor : Proxy_->GetPluginsManager ()->GetAllCastableRoots<IActionsExporter*> ())
 			connect (actor,
 					SIGNAL (gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace)),
 					this,
