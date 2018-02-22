@@ -76,25 +76,6 @@ namespace SimpleStorage
 		return icon;
 	}
 
-	QStringList Plugin::Provides () const
-	{
-		return QStringList ();
-	}
-
-	QStringList Plugin::Needs () const
-	{
-		return QStringList ();
-	}
-
-	QStringList Plugin::Uses () const
-	{
-		return QStringList ();
-	}
-
-	void Plugin::SetProvider (QObject*, const QString&)
-	{
-	}
-
 	QSet<QByteArray> Plugin::GetPluginClasses () const
 	{
 		return QSet<QByteArray> () << "org.LeechCraft.SecMan.StoragePlugins/1.0";
