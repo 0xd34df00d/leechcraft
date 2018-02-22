@@ -41,10 +41,10 @@ namespace SimpleStorage
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-		Storage_ .reset (new QSettings (QSettings::IniFormat,
-					QSettings::UserScope,
-					QCoreApplication::organizationName (),
-					QCoreApplication::applicationName () + "_SecMan_SimpleStorage"));
+		Storage_ = std::make_shared<QSettings> (QSettings::IniFormat,
+				QSettings::UserScope,
+				QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_SecMan_SimpleStorage");
 	}
 
 	void Plugin::SecondInit ()
