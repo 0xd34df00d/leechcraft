@@ -31,6 +31,7 @@
 #include <QSet>
 #include <QMimeData>
 #include <QItemSelectionRange>
+#include <util/sll/prelude.h>
 #include <interfaces/iinfo.h>
 #include <interfaces/core/itagsmanager.h>
 
@@ -474,11 +475,8 @@ namespace LeechCraft
 				newTags << QString ();
 
 			QPersistentModelIndex pidx (idx);
-			QList<FlatTreeItem_ptr> items = Items_.values (pidx);
 
-			QSet<QString> oldTags;
-			Q_FOREACH (FlatTreeItem_ptr item, items)
-				oldTags << item->Tag_;
+			const auto& oldTags = Util::MapAs<QSet> (Items_.values (pidx), [] (const auto& item) { return item->Tag_; });
 
 			QSet<QString> added = QSet<QString> (newTags).subtract (oldTags);
 			QSet<QString> removed = QSet<QString> (oldTags).subtract (newTags);
