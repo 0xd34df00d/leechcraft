@@ -78,7 +78,7 @@ namespace SimpleStorage
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
 	{
-		return QSet<QByteArray> () << "org.LeechCraft.SecMan.StoragePlugins/1.0";
+		return { "org.LeechCraft.SecMan.StoragePlugins/1.0" };
 	}
 
 	IStoragePlugin::StorageTypes Plugin::GetStorageTypes () const
