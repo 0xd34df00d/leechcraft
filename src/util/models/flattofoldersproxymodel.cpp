@@ -402,7 +402,7 @@ namespace LeechCraft
 
 			QPersistentModelIndex pidx (idx);
 
-			Q_FOREACH (QString tag, tags)
+			for (auto tag : tags)
 				AddForTag (tag, pidx);
 		}
 
@@ -418,7 +418,7 @@ namespace LeechCraft
 
 			QPersistentModelIndex pidx (idx);
 
-			Q_FOREACH (QString tag, tags)
+			for (const auto tag : tags)
 				RemoveFromTag (tag, pidx);
 		}
 
@@ -478,11 +478,11 @@ namespace LeechCraft
 
 			const auto& oldTags = Util::MapAs<QSet> (Items_.values (pidx), [] (const auto& item) { return item->Tag_; });
 
-			QSet<QString> added = QSet<QString> (newTags).subtract (oldTags);
-			QSet<QString> removed = QSet<QString> (oldTags).subtract (newTags);
-			QSet<QString> changed = QSet<QString> (newTags).intersect (oldTags);
+			const auto& added = QSet<QString> (newTags).subtract (oldTags);
+			const auto& removed = QSet<QString> (oldTags).subtract (newTags);
+			const auto& changed = QSet<QString> (newTags).intersect (oldTags);
 
-			Q_FOREACH (QString ch, changed)
+			for (const auto& ch : changed)
 			{
 				FlatTreeItem_ptr folder = GetFolder (ch);
 
@@ -501,10 +501,10 @@ namespace LeechCraft
 				}
 			}
 
-			Q_FOREACH (QString rem, removed)
+			for (const auto& rem : removed)
 				RemoveFromTag (rem, pidx);
 
-			Q_FOREACH (QString add, added)
+			for (const auto& add : added)
 				AddForTag (add, pidx);
 		}
 
