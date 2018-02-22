@@ -247,25 +247,17 @@ namespace Util
 
 		bool HighlightWidget (QWidget *widget, const QString& query, ItemHandlerFactory *factory)
 		{
-			bool result = false;
-
 			auto allChildren = FindDirectChildren (widget);
 
 			const auto& terms = widget->property ("SearchTerms").toStringList ();
-			if (!terms.isEmpty ())
+			if (std::any_of (terms.begin (), terms.end (),
+					[&query] (const auto& term) { return term.contains (query, Qt::CaseInsensitive); }))
 			{
-				Q_FOREACH (const auto& term, terms)
-					if (term.contains (query, Qt::CaseInsensitive))
-					{
-						result = true;
-						break;
-					}
-				if (result)
-				{
-					EnableChildren (widget);
-					return true;
-				}
+				EnableChildren (widget);
+				return true;
 			}
+
+			bool result = false;
 
 			Q_FOREACH (auto tab, widget->findChildren<QTabWidget*> ())
 				for (int i = 0; i < tab->count (); ++i)
