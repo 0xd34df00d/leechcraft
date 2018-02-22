@@ -69,16 +69,16 @@ namespace Xtazy
 		}
 
 		QVariantMap result;
-		Q_FOREACH (QString line, data.split ('\n', QString::SkipEmptyParts))
+		for (auto line : data.splitRef ('\n', QString::SkipEmptyParts))
 		{
 			line = line.trimmed ();
 			const int idx = line.indexOf (' ');
 			if (idx == -1)
 				continue;
 
-			const QString& key = line.left (idx);
-			const QString& val = line.mid (idx + 1);
-			result [key.toLower ()] = val;
+			const auto& key = line.left (idx);
+			const auto& val = line.mid (idx + 1);
+			result [key.toString ().toLower ()] = val.toString ();
 		}
 
 		EmitChange (FromMPRISMap (result));
@@ -86,12 +86,11 @@ namespace Xtazy
 
 	void FileSource::handleFilePathChanged ()
 	{
-		const QStringList& watched = Watcher_.files ();
+		const auto& watched = Watcher_.files ();
 		if (!watched.isEmpty ())
 			Watcher_.removePaths (watched);
 
-		const QString& path = XmlSettingsManager::Instance ()
-				.property ("FileSourcePath").toString ();
+		const QString& path = XmlSettingsManager::Instance ().property ("FileSourcePath").toString ();
 		if (path.isEmpty ())
 			return;
 
