@@ -237,11 +237,11 @@ namespace Util
 
 		void EnableChildren (QWidget *widget)
 		{
-			Q_FOREACH (auto tab, widget->findChildren<QTabWidget*> ())
+			for (auto tab : widget->findChildren<QTabWidget*> ())
 				for (int i = 0; i < tab->count (); ++i)
 					tab->setTabEnabled (i, true);
 
-			Q_FOREACH (auto child, widget->findChildren<QWidget*> () << widget)
+			for (auto child : widget->findChildren<QWidget*> () << widget)
 				child->setEnabled (true);
 		}
 
@@ -259,7 +259,7 @@ namespace Util
 
 			bool result = false;
 
-			Q_FOREACH (auto tab, widget->findChildren<QTabWidget*> ())
+			for (auto tab : widget->findChildren<QTabWidget*> ())
 				for (int i = 0; i < tab->count (); ++i)
 				{
 					const bool tabTextMatches = tab->tabText (i).contains (query, Qt::CaseInsensitive);
@@ -269,7 +269,7 @@ namespace Util
 					if (tabTextMatches)
 						EnableChildren (tab->widget (i));
 
-					Q_FOREACH (auto tabChild, tab->findChildren<QWidget*> ())
+					for (auto tabChild : tab->findChildren<QWidget*> ())
 						allChildren.removeAll (tabChild);
 
 					if (tabMatches)
@@ -279,7 +279,7 @@ namespace Util
 					}
 				}
 
-			Q_FOREACH (auto child, allChildren)
+			for (auto child : allChildren)
 				if (HighlightWidget (child, query, factory))
 					result = true;
 
