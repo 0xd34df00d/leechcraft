@@ -31,6 +31,7 @@
 #include <QSettings>
 #include <QIcon>
 #include <QCoreApplication>
+#include <util/sll/prelude.h>
 
 namespace LeechCraft
 {
@@ -106,12 +107,9 @@ namespace SimpleStorage
 
 	QList<QByteArray> Plugin::ListKeys (IStoragePlugin::StorageType)
 	{
-		QStringList keys = Storage_->allKeys ();
+		auto keys = Storage_->allKeys ();
 		qDebug () << Q_FUNC_INFO << keys;
-		QList<QByteArray> result;
-		Q_FOREACH (const QString& key, keys)
-			result << key.toUtf8 ();
-		return result;
+		return Util::Map (keys, [] (auto&& str) { return str.toUtf8 (); });
 	}
 
 	void Plugin::Save (const QByteArray& key, const QVariant& value,
