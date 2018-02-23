@@ -73,7 +73,7 @@ namespace
 	bool AllDiffer (const QList<QByteArray>& list)
 	{
 		QList<CipherTextFormat> ctfs;
-		Q_FOREACH (const QByteArray& a, list)
+		for (const auto& a : list)
 			ctfs << CipherTextFormat (const_cast<char*> (a.data ()),
 					CipherTextFormatUtils::DataLengthFor (a.size ()));
 		for (int i = 0, len = ctfs.length (); i < len; ++i)
@@ -92,8 +92,8 @@ namespace
 	QList<QByteArray> allCipherTexts (const QList<CryptoSystem*>& css, const QList<QByteArray*>& datas)
 	{
 		QList<QByteArray> cipherTexts;
-		Q_FOREACH (CryptoSystem *cs, css)
-			Q_FOREACH (QByteArray *data, datas)
+		for (const auto cs : css)
+			for (const auto data : datas)
 				cipherTexts << cs->Encrypt (*data);
 		return cipherTexts;
 	}
@@ -202,7 +202,7 @@ void CryptoSystemTest::testEncryptDecrypt ()
 	QByteArray data3 = QByteArray::fromHex ("bc6f51ff3f474d205f5f6f764278e86012a2ead9f06e47283856fc746e874981");
 	datas << &data1 << &data2 << &data3;
 
-	Q_FOREACH (QByteArray *data, datas)
+	for (const auto data : datas)
 	{
 		QByteArray e1 = cs1.Encrypt (*data);
 		QByteArray e2 = cs2.Encrypt (*data);
