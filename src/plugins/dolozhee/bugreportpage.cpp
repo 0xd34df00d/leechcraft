@@ -47,8 +47,7 @@ namespace Dolozhee
 				this,
 				SIGNAL (completeChanged ()));
 
-		auto list = { Ui_.ShortDesc_, Ui_.AR_, Ui_.STR_ };
-		Q_FOREACH (auto edit, list)
+		for (auto edit : { Ui_.ShortDesc_, Ui_.AR_, Ui_.STR_ })
 			connect (edit,
 					SIGNAL (textChanged ()),
 					this,
