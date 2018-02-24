@@ -100,15 +100,14 @@ namespace Dolozhee
 
 	QList<QPair<QString, QString>> BugReportPage::GetReportSections () const
 	{
-		QList<QPair<QString, QString>> result;
-
-		result.append ({ "Short description", Ui_.ShortDesc_->toPlainText () });
-		result.append ({ "Expected result", Ui_.ER_->toPlainText () });
-		result.append ({ "Actual result", Ui_.AR_->toPlainText () });
-		result.append ({ "STR", Ui_.STR_->toPlainText () });
-		result.append ({ "System information", GetFormattedVersionString (Proxy_) });
-
-		return result;
+		return
+		{
+			{ "Short description", Ui_.ShortDesc_->toPlainText () },
+			{ "Expected result", Ui_.ER_->toPlainText () },
+			{ "Actual result", Ui_.AR_->toPlainText () },
+			{ "STR", Ui_.STR_->toPlainText () },
+			{ "System information", GetFormattedVersionString (Proxy_) }
+		};
 	}
 }
 }
