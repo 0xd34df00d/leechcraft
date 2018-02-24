@@ -60,16 +60,12 @@ namespace LeechCraft
 {
 	SeparateTabWidget::SeparateTabWidget (QWidget *parent)
 	: QWidget (parent)
-	, Window_ (0)
-	, LastContextMenuTab_ (-1)
 	, MainStackedWidget_ (new QStackedWidget)
 	, MainTabBar_ (new SeparateTabBar)
 	, AddTabButton_ (new QToolButton)
 	, LeftToolBar_ (new QToolBar)
 	, RightToolBar_ (new QToolBar)
 	, DefaultTabAction_ (new QAction (QString (), this))
-	, CurrentWidget_ (0)
-	, CurrentIndex_ (-1)
 	, PreviousWidget_ (0)
 	, CurrentToolBar_ (0)
 	{

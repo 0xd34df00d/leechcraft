@@ -59,9 +59,9 @@ namespace LeechCraft
 		Q_OBJECT
 		Q_INTERFACES (ICoreTabWidget)
 
-		MainWindow *Window_;
+		MainWindow *Window_ = 0;
 
-		int LastContextMenuTab_;
+		int LastContextMenuTab_ = -1;
 		QMenu *AddTabButtonContextMenu_;
 		QPointer<QStackedWidget> MainStackedWidget_;
 		QPointer<SeparateTabBar> MainTabBar_;
@@ -74,10 +74,10 @@ namespace LeechCraft
 		QAction *DefaultTabAction_;
 		QList<QPointer<QAction>> TabBarActions_;
 
-		QWidget *CurrentWidget_;
-		int CurrentIndex_;
-		QWidget *PreviousWidget_;
-		QToolBar *CurrentToolBar_;
+		QWidget *CurrentWidget_ = 0;
+		int CurrentIndex_ = -1;
+		QWidget *PreviousWidget_ = 0;
+		QToolBar *CurrentToolBar_ = 0;
 
 		QStringList TabNames_;
 
