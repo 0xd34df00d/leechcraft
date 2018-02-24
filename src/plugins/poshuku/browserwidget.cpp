@@ -72,6 +72,7 @@
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/ishortcutproxy.h>
+#include <util/sll/delayedexecutor.h>
 #include "interfaces/poshuku/iwebview.h"
 #include "interfaces/poshuku/iwebviewhistory.h"
 #include "core.h"
@@ -594,10 +595,11 @@ namespace Poshuku
 		}
 
 		if (!settings.WebHistorySerialized_.isEmpty ())
-		{
-			QDataStream str { settings.WebHistorySerialized_ };
-			WebView_->GetHistory ()->Load (str);
-		}
+			Util::ExecuteLater ([this, hist = settings.WebHistorySerialized_]
+					{
+						QDataStream str { hist };
+						WebView_->GetHistory ()->Load (str);
+					});
 
 		if (!settings.ScrollPosition_.isNull ())
 			SetOnLoadScrollPoint (settings.ScrollPosition_);
