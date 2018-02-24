@@ -94,13 +94,11 @@ namespace NativeEmoticons
 					smiles << smileElem.text ();
 				else if (smileElem.tagName () == "object")
 				{
-					QString name = smileElem.text ();
+					auto name = smileElem.text ();
+					if (name.endsWith (".png") || name.endsWith (".gif"))
+						name.chop (4);
 					Q_FOREACH (const QString& str, smiles)
-					{
-						if (name.endsWith (".png") || name.endsWith (".gif"))
-							name.chop (4);
 						IconCache_ [str] = name;
-					}
 				}
 				chn = chn.nextSibling ();
 			}
