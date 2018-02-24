@@ -43,15 +43,15 @@ namespace Dolozhee
 		Ui_.setupUi (this);
 
 		connect (Ui_.Title_,
-				SIGNAL (textChanged (QString)),
+				&QLineEdit::textChanged,
 				this,
-				SIGNAL (completeChanged ()));
+				&BugReportPage::completeChanged);
 
 		for (auto edit : { Ui_.ShortDesc_, Ui_.AR_, Ui_.STR_ })
 			connect (edit,
-					SIGNAL (textChanged ()),
+					&QPlainTextEdit::textChanged,
 					this,
-					SIGNAL (completeChanged ()));
+					&BugReportPage::completeChanged);
 	}
 
 	int BugReportPage::nextId () const
