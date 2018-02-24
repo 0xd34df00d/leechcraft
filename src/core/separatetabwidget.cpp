@@ -43,11 +43,12 @@
 #include <QtDebug>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/ihaverecoverabletabs.h>
+#include "util/xpc/defaulthookproxy.h"
+#include "util/sll/prelude.h"
 #include "coreproxy.h"
 #include "separatetabbar.h"
 #include "xmlsettingsmanager.h"
 #include "core.h"
-#include "util/xpc/defaulthookproxy.h"
 #include "coreinstanceobject.h"
 #include "coreplugin2manager.h"
 #include "tabmanager.h"
@@ -146,14 +147,7 @@ namespace LeechCraft
 
 	QList<QAction*> SeparateTabWidget::GetPermanentActions () const
 	{
-		QList<QAction*> result;
-		std::transform (TabBarActions_.begin (), TabBarActions_.end (),
-				std::back_inserter (result),
-				[] (decltype (TabBarActions_.front ()) action)
-				{
-					return action.data ();
-				});
-		return result;
+		return Util::Map (TabBarActions_, &QPointer<QAction>::data);
 	}
 
 	QString SeparateTabWidget::TabText (int index) const
