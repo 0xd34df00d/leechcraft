@@ -43,16 +43,16 @@ namespace Dolozhee
 	{
 		Ui_.setupUi (this);
 
-		Q_FOREACH (QRadioButton *but, findChildren<QRadioButton*> ())
+		for (const auto but : findChildren<QRadioButton*> ())
 			connect (but,
-					SIGNAL (toggled (bool)),
+					&QRadioButton::toggled,
 					this,
-					SIGNAL (completeChanged ()));
-		Q_FOREACH (QLineEdit *edit, findChildren<QLineEdit*> ())
+					&ChooseUserPage::completeChanged);
+		for (const auto edit : findChildren<QLineEdit*> ())
 			connect (edit,
-					SIGNAL (textChanged (QString)),
+					&QLineEdit::textChanged,
 					this,
-					SIGNAL (completeChanged ()));
+					&ChooseUserPage::completeChanged);
 	}
 
 	void ChooseUserPage::initializePage ()
