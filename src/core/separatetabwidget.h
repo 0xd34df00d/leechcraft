@@ -62,7 +62,6 @@ namespace LeechCraft
 		MainWindow *Window_;
 
 		int LastContextMenuTab_;
-		QMenu *DefaultContextMenu_;
 		QMenu *AddTabButtonContextMenu_;
 		QPointer<QStackedWidget> MainStackedWidget_;
 		QPointer<SeparateTabBar> MainTabBar_;
@@ -72,7 +71,6 @@ namespace LeechCraft
 		QPointer<QHBoxLayout> MainTabBarLayout_;
 		QPointer<QHBoxLayout> MainToolBarLayout_;
 		QVBoxLayout *MainLayout_;
-		QWidget *DefaultWidget_;
 		QAction *DefaultTabAction_;
 		QList<QPointer<QAction>> TabBarActions_;
 
