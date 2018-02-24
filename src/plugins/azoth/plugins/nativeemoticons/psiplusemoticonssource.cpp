@@ -97,7 +97,7 @@ namespace NativeEmoticons
 					auto name = smileElem.text ();
 					if (name.endsWith (".png") || name.endsWith (".gif"))
 						name.chop (4);
-					Q_FOREACH (const QString& str, smiles)
+					for (const auto& str : smiles)
 						IconCache_ [str] = name;
 				}
 				chn = chn.nextSibling ();
