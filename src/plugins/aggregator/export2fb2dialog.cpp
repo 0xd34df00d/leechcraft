@@ -300,10 +300,8 @@ namespace Aggregator
 			return;
 		}
 
-		QStringList authors;
 		const auto& channels = info.Items_.keys ();
-		std::transform (channels.begin (), channels.end (), std::back_inserter (authors),
-				[] (decltype (channels.front ()) ch) { return ch.Author_; });
+		auto authors = Util::Map (channels, &ChannelShort::Author_);
 		if (!authors.size ())
 			authors << "LeechCraft";
 		else
