@@ -213,16 +213,19 @@ namespace LeechCraft
 		tabs->TabOpenRequested (tabClass);
 
 		const auto& classes = tabs->GetTabClasses ();
-		const auto pos = std::find_if (classes.begin (), classes.end (),
-				[&tabClass] (decltype (classes.front ()) item) { return item.TabClass_ == tabClass; });
 		if (action->property ("Single").toBool ())
 		{
 			NewTabMenu_->removeAction (action);
 			HiddenActions_ [pObj] [tabClass] = action;
 			ToggleHide (pObj, tabClass, false);
 		}
-		else if (pos != classes.end () && pos->Features_ & TFByDefault)
-			ToggleHide (pObj, tabClass, false);
+		else
+		{
+			const auto pos = std::find_if (classes.begin (), classes.end (),
+					[&tabClass] (decltype (classes.front ()) item) { return item.TabClass_ == tabClass; });
+			if (pos != classes.end () && pos->Features_ & TFByDefault)
+				ToggleHide (pObj, tabClass, false);
+		}
 	}
 
 	namespace
