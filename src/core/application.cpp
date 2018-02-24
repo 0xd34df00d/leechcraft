@@ -56,6 +56,11 @@
 #include <QStyleFactory>
 #endif
 
+#ifndef Q_OS_WIN32
+#include <unistd.h>
+#include <fcntl.h>
+#endif
+
 #include <interfaces/isyncable.h>
 #include <interfaces/ihaveshortcuts.h>
 #include <util/util.h>
@@ -605,7 +610,7 @@ namespace LeechCraft
 #ifndef Q_OS_WIN32
 		const auto fdlimit = sysconf (_SC_OPEN_MAX);
 		for (int i = STDERR_FILENO + 1; i < fdlimit; ++i)
-			close (i);
+			fcntl (i, F_SETFD, FD_CLOEXEC);
 #endif
 
 		QProcess::startDetached (applicationFilePath (), Arguments_);
