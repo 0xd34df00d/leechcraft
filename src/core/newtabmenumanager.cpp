@@ -222,7 +222,7 @@ namespace LeechCraft
 		else
 		{
 			const auto pos = std::find_if (classes.begin (), classes.end (),
-					[&tabClass] (decltype (classes.front ()) item) { return item.TabClass_ == tabClass; });
+					[&tabClass] (const auto& item) { return item.TabClass_ == tabClass; });
 			if (pos != classes.end () && pos->Features_ & TFByDefault)
 				ToggleHide (pObj, tabClass, false);
 		}
