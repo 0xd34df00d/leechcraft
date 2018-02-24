@@ -77,7 +77,6 @@ namespace Dolozhee
 
 		const QString& text = tr ("Please enter password for user %1:")
 				.arg (login);
-		qDebug () << Q_FUNC_INFO << GetPassKey ();
 		const QString& pass = Util::GetPassword (GetPassKey (), text, Proxy_);
 		Ui_.Password_->setText (pass);
 	}
