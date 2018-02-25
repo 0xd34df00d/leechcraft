@@ -374,6 +374,8 @@ namespace WebEngineView
 					History_->goToItem (Item_);
 				}
 			};
+
+			static constexpr quint64 Magic_ = 0x62067d73bc85b872;
 		public:
 			HistoryWrapper (QWebEngineHistory *history)
 			: History_ { history }
@@ -382,11 +384,23 @@ namespace WebEngineView
 
 			void Save (QDataStream& out) const override
 			{
-				out << *History_;
+				out << Magic_ << *History_;
 			}
 
 			void Load (QDataStream& in) override
 			{
+				quint64 magic;
+
+				in.startTransaction ();
+				in >> magic;
+				if (magic == Magic_)
+					in.commitTransaction ();
+				else
+				{
+					in.abortTransaction ();
+					return;
+				}
+
 				in >> *History_;
 			}
 

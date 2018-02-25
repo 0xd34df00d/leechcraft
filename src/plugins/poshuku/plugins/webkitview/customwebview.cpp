@@ -430,6 +430,8 @@ namespace WebKitView
 					History_->goToItem (Item_);
 				}
 			};
+
+			static constexpr quint64 Magic_ = 0xfb1cc74ce40369af ;
 		public:
 			HistoryWrapper (QWebHistory *history)
 			: History_ { history }
@@ -438,11 +440,23 @@ namespace WebKitView
 
 			void Save (QDataStream& out) const override
 			{
-				out << *History_;
+				out << Magic_ << *History_;
 			}
 
 			void Load (QDataStream& in) override
 			{
+				quint64 magic;
+
+				in.startTransaction ();
+				in >> magic;
+				if (magic == Magic_)
+					in.commitTransaction ();
+				else
+				{
+					in.abortTransaction ();
+					return;
+				}
+
 				in >> *History_;
 			}
 
