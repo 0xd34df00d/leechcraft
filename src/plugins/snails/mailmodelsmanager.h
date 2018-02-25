@@ -46,8 +46,6 @@ namespace Snails
 
 	class MailModelsManager : public QObject
 	{
-		Q_OBJECT
-
 		Account * const Acc_;
 		Storage * const Storage_;
 		MessageListActionsManager * const MsgListActionsMgr_;
