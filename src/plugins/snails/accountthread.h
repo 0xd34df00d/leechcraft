@@ -109,7 +109,7 @@ namespace Snails
 				{
 					using namespace std::chrono_literals;
 					const auto timeout = RecLevel_ * 3000ms + 1000ms;
-					qWarning () << Q_FUNC_INFO
+					qWarning () << "Snails::detail::ExceptionsHandler::operator():"
 							<< "sleeping for"
 							<< timeout.count ()
 							<< "and retrying for the"
@@ -122,7 +122,7 @@ namespace Snails
 
 				if (RecLevel_ == MaxRetries_)
 				{
-					qWarning () << Q_FUNC_INFO
+					qWarning () << "Snails::detail::ExceptionsHandler::operator():"
 							<< "giving up after"
 							<< RecLevel_
 							<< "retries:"
