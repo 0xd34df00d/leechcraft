@@ -131,6 +131,8 @@ namespace Snails
 		void HandleLinkedRequested (MsgType);
 
 		void SetHtmlViewAllowed (bool);
+
+		void HandleAttachment (const QByteArray&, const QStringList&, const QString&);
 	private slots:
 		void handleCurrentAccountChanged (const QModelIndex&);
 		void handleCurrentTagChanged (const QModelIndex&);
@@ -154,8 +156,6 @@ namespace Snails
 
 		void deselectCurrent (const QList<QByteArray>& ids, const QStringList& folder);
 
-		void handleAttachment ();
-		void handleAttachment (const QByteArray&, const QStringList&, const QString&);
 		void handleFetchNewMail ();
 		void handleRefreshFolder ();
 	signals:
