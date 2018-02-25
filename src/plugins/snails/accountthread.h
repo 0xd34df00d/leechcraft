@@ -107,16 +107,17 @@ namespace Snails
 			{
 				if (RecLevel_)
 				{
-					const auto timeout = RecLevel_ * 3000 + 1000;
+					using namespace std::chrono_literals;
+					const auto timeout = RecLevel_ * 3000ms + 1000ms;
 					qWarning () << Q_FUNC_INFO
 							<< "sleeping for"
-							<< timeout
+							<< timeout.count ()
 							<< "and retrying for the"
 							<< RecLevel_
 							<< "time after getting an exception:"
 							<< ex.what ();
 
-					std::this_thread::sleep_for (std::chrono::milliseconds { timeout });
+					std::this_thread::sleep_for (timeout);
 				}
 
 				if (RecLevel_ == MaxRetries_)
