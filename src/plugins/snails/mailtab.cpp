@@ -1136,9 +1136,6 @@ namespace Snails
 
 	void MailTab::handleAttachment ()
 	{
-		if (!CurrAcc_)
-			return;
-
 		const auto& name = sender ()->property ("Snails/AttName").toString ();
 		const auto& id = sender ()->property ("Snails/MsgId").toByteArray ();
 		const auto& folder = sender ()->property ("Snails/Folder").toStringList ();
@@ -1148,6 +1145,9 @@ namespace Snails
 	void MailTab::handleAttachment (const QByteArray& id,
 			const QStringList& folder, const QString& name)
 	{
+		if (!CurrAcc_)
+			return;
+
 		const auto& path = QFileDialog::getSaveFileName (0,
 				tr ("Save attachment"),
 				QDir::homePath () + '/' + name);
