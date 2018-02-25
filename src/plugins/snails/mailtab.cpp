@@ -660,7 +660,7 @@ namespace Snails
 		for (const auto& att : msg->GetAttachments ())
 		{
 			const auto& name = att.GetName () + " (" + Util::MakePrettySize (att.GetSize ()) + ")";
-			const auto act = MsgAttachments_->addAction (name,
+			MsgAttachments_->addAction (name,
 					this,
 					[this, id = msg->GetFolderID (), folder = msg->GetFolders ().value (0), name = att.GetName ()]
 					{
