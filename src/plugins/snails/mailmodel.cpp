@@ -344,8 +344,7 @@ namespace Snails
 			return;
 
 		std::sort (messages.begin (), messages.end (),
-				[] (const Message_ptr& left, const Message_ptr& right)
-					{ return left->GetDate () < right->GetDate (); });
+				Util::ComparingBy ([] (const auto& msg) { return msg->GetDate (); }));
 
 		Messages_ += messages;
 
