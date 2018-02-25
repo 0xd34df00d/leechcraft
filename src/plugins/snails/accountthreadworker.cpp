@@ -863,12 +863,6 @@ namespace Snails
 		};
 	}
 
-	void AccountThreadWorker::FlushSockets ()
-	{
-		CachedFolders_.clear ();
-		CachedStore_.reset ();
-	}
-
 	void AccountThreadWorker::Disconnect ()
 	{
 		CachedFolders_.clear ();
