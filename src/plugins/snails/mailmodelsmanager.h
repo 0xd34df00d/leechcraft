@@ -63,8 +63,6 @@ namespace Snails
 		void Append (const QList<Message_ptr>&);
 		void Update (const QList<Message_ptr>&);
 		void Remove (const QList<QByteArray>&);
-	private slots:
-		void handleModelDestroyed (QObject*);
 	};
 }
 }
