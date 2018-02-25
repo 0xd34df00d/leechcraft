@@ -108,8 +108,7 @@ namespace Snails
 				{
 					if (!CurrAcc_ || !MailModel_)
 						return {};
-					return Storage_->LoadMessage (CurrAcc_.get (),
-							MailModel_->GetCurrentFolder (), id);
+					return Storage_->LoadMessage (CurrAcc_.get (), MailModel_->GetCurrentFolder (), id);
 				},
 				Ui_.MailTree_,
 				this);

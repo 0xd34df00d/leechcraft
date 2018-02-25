@@ -212,7 +212,7 @@ namespace Snails
 		if (folders.isEmpty ())
 			folders << QStringList ("INBOX");
 
-		return SynchronizeImpl (folders, { }, TaskPriority::Low);
+		return SynchronizeImpl (folders, {}, TaskPriority::Low);
 	}
 
 	QFuture<Account::SynchronizeResult_t> Account::Synchronize (const QStringList& path,
