@@ -141,7 +141,7 @@ namespace Snails
 				{
 					const auto& respStr = QString::fromUtf8 (err.response ().c_str ());
 
-					qWarning () << Q_FUNC_INFO
+					qWarning () << "Snails::detail::ExceptionsHandler::operator():"
 							<< "caught auth error:"
 							<< respStr;
 
