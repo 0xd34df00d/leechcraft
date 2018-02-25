@@ -189,7 +189,7 @@ namespace AdvancedNotifications
 		const auto& fields = Util::GetStdANFields ({}) + GetPluginFields (match.GetPluginID ().toUtf8 (), Proxy_);
 
 		const auto pos = std::find_if (fields.begin (), fields.end (),
-				[&fieldName] (decltype (fields.front ()) field) { return field.ID_ == fieldName; });
+				[&fieldName] (const auto& field) { return field.ID_ == fieldName; });
 		if (pos != fields.end ())
 			fieldName = pos->Name_;
 		else
