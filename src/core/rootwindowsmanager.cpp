@@ -220,7 +220,7 @@ namespace LeechCraft
 	int RootWindowsManager::GetWindowIndex (QMainWindow *w) const
 	{
 		auto pos = std::find_if (Windows_.begin (), Windows_.end (),
-				[w] (decltype (Windows_.at (0)) item) { return item.Window_ == w; });
+				[w] (const auto& item) { return item.Window_ == w; });
 		return pos == Windows_.end () ? -1 : std::distance (Windows_.begin (), pos);
 	}
 
