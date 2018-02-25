@@ -33,6 +33,9 @@
          <verstretch>1</verstretch>
         </sizepolicy>
        </property>
+       <property name="rootIsDecorated">
+        <bool>false</bool>
+       </property>
       </widget>
       <widget class="QTreeView" name="TagsTree_">
        <property name="sizePolicy">
