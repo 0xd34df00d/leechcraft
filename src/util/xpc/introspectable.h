@@ -53,14 +53,14 @@ namespace Util
 		static Introspectable& Instance ();
 
 		template<typename T, typename U>
-		void Register (const U& intro, decltype (std::invoke (intro, std::declval<QVariant> ()))* = nullptr)
+		void Register (const U& intro, std::result_of_t<U (QVariant)>* = nullptr)
 		{
 			const auto id = qMetaTypeId<T> ();
 			Intros_ [id] = intro;
 		}
 
 		template<typename T, typename U>
-		void Register (const U& intro, decltype (std::invoke (intro, std::declval<T> ()))* = nullptr)
+		void Register (const U& intro, std::result_of_t<U (T)>* = nullptr)
 		{
 			Register<T> ([intro] (const QVariant& var) { return std::invoke (intro, var.value<T> ()); });
 		}
