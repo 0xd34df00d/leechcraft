@@ -46,8 +46,7 @@ namespace Util
 		};
 		for (const auto& addr : GetAllAddresses ())
 			if (std::any_of (std::begin (locals), std::end (locals),
-					[&addr] (decltype (*std::begin (locals)) subnet)
-						{ return addr.isInSubnet (subnet); }))
+					[&addr] (const auto& subnet) { return addr.isInSubnet (subnet); }))
 				defaultAddrs.push_back ({ addr.toString (), QString::number (defaultPort) });
 		return defaultAddrs;
 	}
