@@ -268,7 +268,8 @@ namespace TouchStreams
 			return;
 
 		decltype (CaptchaReplyMaker_) maker;
-		std::swap (maker, CaptchaReplyMaker_);
+		using std::swap;
+		swap (maker, CaptchaReplyMaker_);
 		Queue_->Schedule ([cid, value, maker, this]
 				{
 					const QMap<QString, QString> map
