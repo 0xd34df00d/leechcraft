@@ -458,11 +458,7 @@ namespace Snails
 
 			if (const auto& alist = vmime::dynamicCast<const vmime::addressList> (field->getValue ()))
 			{
-				const auto& vec = alist->toMailboxList ()->getMailboxList ();
-
-				Message::Addresses_t addrs;
-				std::transform (vec.begin (), vec.end (), std::back_inserter (addrs),
-						[] (decltype (vec.front ()) add) { return Mailbox2Strings (add); });
+				auto addrs = Util::Map (alist->toMailboxList ()->getMailboxList (), &Mailbox2Strings);
 				msg->SetAddresses (type, addrs);
 			}
 			else
