@@ -87,7 +87,7 @@ namespace LMP
 			connect (dependent,
 					&QObject::destroyed,
 					this,
-					&HandlerContainer::objectDestroyed);
+					[dependent, this] { Dependents_.remove (dependent); });
 		}
 
 		template<typename Reducer, typename... Args>
@@ -106,11 +106,6 @@ namespace LMP
 			for (const auto& sublist : Dependents_)
 				for (const auto& item : sublist)
 					item (args...);
-		}
-	private:
-		void objectDestroyed ()
-		{
-			Dependents_.remove (sender ());
 		}
 	};
 
