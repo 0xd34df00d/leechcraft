@@ -56,11 +56,9 @@ namespace Poleemery
 		{
 			auto begin = pos, end = lastPos;
 			pos = std::lower_bound (begin, end, span.first,
-						[dateGetter] (decltype (*pos) entry, const QDateTime& dt)
-							{ return dateGetter (entry) < dt; });
+					[dateGetter] (const auto& entry, const QDateTime& dt) { return dateGetter (entry) < dt; });
 			lastPos  = std::upper_bound (begin, end, span.second,
-						[dateGetter] (const QDateTime& dt, decltype (*pos) entry)
-							{ return dt < dateGetter (entry); });
+					[dateGetter] (const QDateTime& dt, const auto& entry) { return dt < dateGetter (entry); });
 		}
 
 		QMap<double, BalanceInfo> GetDays2Infos (const DateSpan_t& span)
