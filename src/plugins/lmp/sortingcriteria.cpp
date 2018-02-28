@@ -30,6 +30,7 @@
 #include "sortingcriteria.h"
 #include <QVariant>
 #include <QtDebug>
+#include <util/sll/unreachable.h>
 
 namespace LeechCraft
 {
@@ -96,10 +97,7 @@ namespace LMP
 			return QObject::tr ("File name");
 		}
 
-		qWarning () << Q_FUNC_INFO
-				<< "unknown sorting criteria"
-				<< static_cast<int> (crit);
-		return QString ();
+		Util::Unreachable ();
 	}
 }
 }
