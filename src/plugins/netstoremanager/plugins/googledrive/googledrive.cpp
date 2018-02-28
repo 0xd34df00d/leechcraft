@@ -48,7 +48,7 @@ namespace GoogleDrive
 	{
 		Util::InstallTranslator ("netstoremanager_googledrive");
 
-		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog);
+		XmlSettingsDialog_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"nsmgoogledrivesettings.xml");
 
