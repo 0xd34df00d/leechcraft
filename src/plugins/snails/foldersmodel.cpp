@@ -31,6 +31,7 @@
 #include <algorithm>
 #include <QIcon>
 #include <QFont>
+#include <QMimeData>
 #include <QtDebug>
 #include "account.h"
 #include "core.h"
@@ -92,6 +93,7 @@ namespace Snails
 
 	FoldersModel::FoldersModel (Account *acc)
 	: QAbstractItemModel { acc }
+	, Acc_ { acc }
 	, Headers_ { tr ("Folder"), tr ("Messages") }
 	, RootFolder_ { new FolderDescr {} }
 	{
@@ -164,6 +166,14 @@ namespace Snails
 		}
 	}
 
+	Qt::ItemFlags FoldersModel::flags (const QModelIndex& index) const
+	{
+		auto flags = QAbstractItemModel::flags (index);
+		if (index.isValid ())
+			flags |= Qt::ItemIsDropEnabled;
+		return flags;
+	}
+
 	QModelIndex FoldersModel::index (int row, int column, const QModelIndex& parent) const
 	{
 		if (!hasIndex (row, column, parent))
@@ -196,6 +206,55 @@ namespace Snails
 				static_cast<FolderDescr*> (parent.internalPointer ()) :
 				RootFolder_.get ();
 		return folder->Children_.size ();
+	}
+
+	QStringList FoldersModel::mimeTypes () const
+	{
+		return
+		{
+			Mimes::FolderPath,
+			Mimes::MessageIdList
+		};
+	}
+
+	bool FoldersModel::canDropMimeData (const QMimeData *data, Qt::DropAction action,
+			int, int, const QModelIndex&) const
+	{
+		if (!(action == Qt::MoveAction || action == Qt::CopyAction))
+			return false;
+
+		return data->hasFormat (Mimes::FolderPath) &&
+				data->hasFormat (Mimes::MessageIdList);
+	}
+
+	bool FoldersModel::dropMimeData (const QMimeData *data, Qt::DropAction action,
+			int, int, const QModelIndex& parent)
+	{
+		const auto& srcFolder = QString::fromUtf8 (data->data (Mimes::FolderPath)).split ('/');
+
+		const auto& ids = [data]
+		{
+			QList<QByteArray> ids;
+			QDataStream istr { data->data (Mimes::MessageIdList) };
+			istr >> ids;
+			return ids;
+		} ();
+
+		if (ids.isEmpty () || srcFolder.isEmpty ())
+			return false;
+
+		const auto& thisFolder = parent.data (Role::FolderPath).toStringList ();
+		if (action == Qt::MoveAction)
+			Acc_->MoveMessages (ids, srcFolder, { thisFolder });
+		else if (action == Qt::CopyAction)
+			Acc_->CopyMessages (ids, srcFolder, { thisFolder });
+
+		return true;
+	}
+
+	Qt::DropActions FoldersModel::supportedDropActions () const
+	{
+		return Qt::MoveAction | Qt::CopyAction;
 	}
 
 	void FoldersModel::SetFolders (const QList<Folder>& folders)

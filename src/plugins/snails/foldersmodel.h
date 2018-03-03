@@ -49,6 +49,8 @@ namespace Snails
 
 	class FoldersModel : public QAbstractItemModel
 	{
+		Account * const Acc_;
+
 		const QStringList Headers_;
 
 		FolderDescr_ptr RootFolder_;
@@ -72,9 +74,15 @@ namespace Snails
 		QVariant headerData (int, Qt::Orientation, int) const override;
 		int columnCount (const QModelIndex& = {}) const override;
 		QVariant data (const QModelIndex&, int) const override;
+		Qt::ItemFlags flags (const QModelIndex& index) const override;
 		QModelIndex index (int, int, const QModelIndex& = {}) const override;
 		QModelIndex parent (const QModelIndex&) const override;
 		int rowCount (const QModelIndex& = {}) const override;
+
+		QStringList mimeTypes () const override;
+		bool canDropMimeData (const QMimeData*, Qt::DropAction, int, int, const QModelIndex&) const override;
+		bool dropMimeData (const QMimeData*, Qt::DropAction, int, int, const QModelIndex&) override;
+		Qt::DropActions supportedDropActions () const override;
 
 		void SetFolders (const QList<Folder>& folders);
 		void SetFolderCounts (const QStringList&, int unread, int total);
