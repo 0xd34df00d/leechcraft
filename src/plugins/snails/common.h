@@ -52,5 +52,11 @@ namespace Snails
 		Normal,
 		MultiSelect
 	};
+
+	namespace Mimes
+	{
+		static const QString FolderPath { "x-leechcraft/snails-folder-path" };
+		static const QString MessageIdList { "x-leechcraft/snails-message-id-list" };
+	}
 }
 }
