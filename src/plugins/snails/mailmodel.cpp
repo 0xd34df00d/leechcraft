@@ -573,7 +573,7 @@ namespace Snails
 	void MailModel::EmitRowChanged (const TreeNode_ptr& node)
 	{
 		emit dataChanged (GetIndex (node, 0),
-				GetIndex (node, static_cast<int> (Column::MaxNext)));
+				GetIndex (node, static_cast<int> (MaxColumn)));
 	}
 
 	QModelIndex MailModel::GetIndex (const TreeNode_ptr& node, int column) const

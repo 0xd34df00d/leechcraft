@@ -69,10 +69,9 @@ namespace Snails
 			StatusIcon,
 			Subject,
 			Date,
-			Size,
-
-			MaxNext = Size
+			Size
 		};
+		static const Column MaxColumn = Column::Size;
 
 		enum MailRole
 		{
