@@ -100,6 +100,12 @@ namespace Snails
 		std::shared_ptr<MailTabReadMarker> ReadMarker_;
 
 		bool HtmlViewAllowed_ = true;
+
+		enum class MoveMessagesAction
+		{
+			Copy,
+			Move
+		};
 	public:
 		MailTab (const ICoreProxy_ptr&, const AccountsManager*, ComposeMessageTabFactory*, Storage*,
 				const TabClassInfo&, Util::ShortcutManager*, QObject*, QWidget* = nullptr);
@@ -133,6 +139,8 @@ namespace Snails
 		void SetHtmlViewAllowed (bool);
 
 		void HandleAttachment (const QByteArray&, const QStringList&, const QString&);
+
+		void PerformMoveMessages (const QList<QByteArray>&, const QList<QStringList>&, MoveMessagesAction);
 	private slots:
 		void handleCurrentAccountChanged (const QModelIndex&);
 		void handleCurrentTagChanged (const QModelIndex&);

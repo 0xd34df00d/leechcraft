@@ -923,84 +923,60 @@ namespace Snails
 		}
 	}
 
+	void MailTab::PerformMoveMessages (const QList<QByteArray>& ids,
+			const QList<QStringList>& targets, MoveMessagesAction action)
+	{
+		if (ids.isEmpty () ||
+				targets.isEmpty () ||
+				std::any_of (targets.begin (), targets.end (), [] (const auto& folder) { return folder.isEmpty (); }))
+			return;
+
+		const auto& folder = MailModel_->GetCurrentFolder ();
+		emit willMoveMessages (ids, folder);
+
+		switch (action)
+		{
+		case MoveMessagesAction::Copy:
+			CurrAcc_->CopyMessages (ids, folder, targets);
+			break;
+		case MoveMessagesAction::Move:
+			CurrAcc_->MoveMessages (ids, folder, targets);
+			break;
+		}
+	}
+
 	void MailTab::handleCopyMultipleFolders ()
 	{
-		if (!CurrAcc_)
-			return;
-
 		const auto& ids = GetSelectedIds ();
-		if (ids.isEmpty ())
-			return;
-
 		const auto& selectedPaths = RunSelectFolders (GetActualFolders (),
 				ids.size () == 1 ?
 					tr ("Copy message") :
 					tr ("Copy %n message(s)", 0, ids.size ()));
-
-		if (selectedPaths.isEmpty ())
-			return;
-
-		const auto& folder = MailModel_->GetCurrentFolder ();
-		emit willMoveMessages (ids, folder);
-
-		CurrAcc_->CopyMessages (ids, folder, selectedPaths);
+		PerformMoveMessages (ids, selectedPaths, MoveMessagesAction::Copy);
 	}
 
 	void MailTab::handleCopyMessages (QAction *action)
 	{
-		if (!CurrAcc_)
-			return;
-
-		const auto& folderPath = action->property ("Snails/FolderPath").toStringList ();
-		if (folderPath.isEmpty ())
-			return;
-
-		const auto& ids = GetSelectedIds ();
-
-		const auto& folder = MailModel_->GetCurrentFolder ();
-		emit willMoveMessages (ids, folder);
-
-		CurrAcc_->CopyMessages (ids, folder, { folderPath });
+		PerformMoveMessages (GetSelectedIds (),
+				{ action->property ("Snails/FolderPath").toStringList () },
+				MoveMessagesAction::Copy);
 	}
 
 	void MailTab::handleMoveMultipleFolders ()
 	{
-		if (!CurrAcc_)
-			return;
-
 		const auto& ids = GetSelectedIds ();
-		if (ids.isEmpty ())
-			return;
-
 		const auto& selectedPaths = RunSelectFolders (GetActualFolders (),
 				ids.size () == 1 ?
 					tr ("Move message") :
 					tr ("Move %n message(s)", 0, ids.size ()));
-
-		if (selectedPaths.isEmpty ())
-			return;
-
-		const auto& folder = MailModel_->GetCurrentFolder ();
-		emit willMoveMessages (ids, folder);
-
-		CurrAcc_->MoveMessages (ids, folder, selectedPaths);
+		PerformMoveMessages (ids, selectedPaths, MoveMessagesAction::Move);
 	}
 
 	void MailTab::handleMoveMessages (QAction *action)
 	{
-		if (!CurrAcc_)
-			return;
-
-		const auto& folderPath = action->property ("Snails/FolderPath").toStringList ();
-		if (folderPath.isEmpty ())
-			return;
-
-		const auto& ids = GetSelectedIds ();
-
-		const auto& folder = MailModel_->GetCurrentFolder ();
-		emit willMoveMessages (ids, folder);
-
-		CurrAcc_->MoveMessages (ids, folder, { folderPath });
+		PerformMoveMessages (GetSelectedIds (),
+				{ action->property ("Snails/FolderPath").toStringList () },
+				MoveMessagesAction::Move);
 	}
 
 	void MailTab::handleMarkMsgRead ()
