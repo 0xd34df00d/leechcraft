@@ -228,6 +228,7 @@ namespace Snails
 	Qt::ItemFlags MailModel::flags (const QModelIndex& index) const
 	{
 		auto flags = QAbstractItemModel::flags (index);
+		flags |= Qt::ItemIsDragEnabled;
 		if (index.column () == static_cast<int> (Column::Subject))
 			flags |= Qt::ItemIsEditable;
 
