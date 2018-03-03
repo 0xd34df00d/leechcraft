@@ -147,6 +147,7 @@ namespace Snails
 
 		vmime::shared_ptr<const vmime::header> GetVmimeHeader () const;
 		void SetVmimeHeader (const vmime::shared_ptr<const vmime::header>&);
+		void ForceVmimeHeader ();
 
 		QByteArray Serialize () const;
 		void Deserialize (const QByteArray&);
