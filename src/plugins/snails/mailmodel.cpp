@@ -29,6 +29,7 @@
 
 #include "mailmodel.h"
 #include <QIcon>
+#include <QtConcurrentMap>
 #include <util/util.h>
 #include <util/sll/prelude.h>
 #include <util/models/modelitembase.h>
@@ -345,6 +346,9 @@ namespace Snails
 
 		std::sort (messages.begin (), messages.end (),
 				Util::ComparingBy ([] (const auto& msg) { return msg->GetDate (); }));
+
+		QtConcurrent::map (messages,
+				[] (const Message_ptr& msg) { msg->ForceVmimeHeader (); }).waitForFinished ();
 
 		Messages_ += messages;
 
