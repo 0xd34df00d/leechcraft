@@ -68,7 +68,7 @@ namespace LMP
 		if (diff > 0)
 			std::advance (begin, diff);
 		std::transform (begin, artist.Tags_.end (), std::back_inserter (tags),
-				[] (decltype (artist.Tags_.front ()) tag) { return tag.Name_; });
+				[] (const auto& tag) { return tag.Name_; });
 		std::reverse (tags.begin (), tags.end ());
 		item->setData (tr ("Tags: %1").arg (tags.join ("; ")), SimilarModel::Role::ArtistTags);
 

@@ -1537,8 +1537,7 @@ namespace LMP
 			if (!song.isEmpty ())
 			{
 				const auto pos = std::find_if (CurrentQueue_.begin (), CurrentQueue_.end (),
-						[&song] (decltype (CurrentQueue_.front ()) item)
-							{ return song == item.ToUrl (); });
+						[&song] (const auto& item) { return song == item.ToUrl (); });
 				if (pos != CurrentQueue_.end ())
 					Source_->SetCurrentSource (*pos);
 			}
