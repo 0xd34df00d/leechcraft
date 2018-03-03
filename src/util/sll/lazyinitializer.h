@@ -114,6 +114,11 @@ namespace Util
 			CheckInit ();
 			return *Object_;
 		}
+
+		void Force ()
+		{
+			CheckInit ();
+		}
 	private:
 		void CheckInit ()
 		{
