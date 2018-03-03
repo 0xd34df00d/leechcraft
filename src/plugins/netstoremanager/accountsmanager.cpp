@@ -82,8 +82,7 @@ namespace NetStoreManager
 	{
 		auto accounts = GetAccounts ();
 		auto it = std::find_if (accounts.begin (), accounts.end (),
-				[id] (decltype (accounts.front ()) acc)
-					{ return acc->GetUniqueID () == id; });
+				[id] (const auto& acc) { return acc->GetUniqueID () == id; });
 		return it == accounts.end () ? 0 : *it;
 	}
 

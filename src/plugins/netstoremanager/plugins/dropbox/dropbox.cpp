@@ -132,8 +132,7 @@ namespace DBox
 	void Plugin::RemoveAccount (QObject *accObj)
 	{
 		auto pos = std::find_if (Accounts_.begin (), Accounts_.end (),
-				[accObj] (decltype (Accounts_.front ()) acc)
-					{ return acc.get () == accObj; });
+				[accObj] (const auto& acc) { return acc.get () == accObj; });
 		if (pos == Accounts_.end ())
 			return;
 
