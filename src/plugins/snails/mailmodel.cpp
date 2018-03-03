@@ -29,6 +29,7 @@
 
 #include "mailmodel.h"
 #include <QIcon>
+#include <QMimeData>
 #include <QtConcurrentMap>
 #include <util/util.h>
 #include <util/sll/prelude.h>
@@ -36,6 +37,7 @@
 #include <interfaces/core/iiconthememanager.h>
 #include "core.h"
 #include "messagelistactionsmanager.h"
+#include "common.h"
 
 namespace LeechCraft
 {
@@ -285,6 +287,42 @@ namespace Snails
 		emit messagesSelectionChanged ();
 
 		return true;
+	}
+
+	QStringList MailModel::mimeTypes () const
+	{
+		return
+		{
+			Mimes::FolderPath,
+			Mimes::MessageIdList
+		};
+	}
+
+	QMimeData* MailModel::mimeData (const QModelIndexList& indexes) const
+	{
+		if (indexes.isEmpty ())
+			return nullptr;
+
+		QByteArray idsData;
+		{
+			QList<QByteArray> idsList;
+			for (const auto& index : indexes)
+				idsList << index.data (MailModel::MailRole::ID).toByteArray ();
+
+			QDataStream ostr { &idsData, QIODevice::WriteOnly };
+			ostr << idsList;
+		}
+
+		auto data = new QMimeData;
+		data->setData (Mimes::FolderPath, GetCurrentFolder ().join ('/').toUtf8 ());
+		data->setData (Mimes::MessageIdList, idsData);
+
+		return data;
+	}
+
+	Qt::DropActions MailModel::supportedDragActions () const
+	{
+		return Qt::CopyAction | Qt::MoveAction;
 	}
 
 	void MailModel::SetFolder (const QStringList& folder)

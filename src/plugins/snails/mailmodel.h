@@ -94,6 +94,10 @@ namespace Snails
 		int rowCount (const QModelIndex& = {}) const override;
 		bool setData (const QModelIndex&, const QVariant&, int) override;
 
+		QStringList mimeTypes () const override;
+		QMimeData* mimeData (const QModelIndexList&) const override;
+		Qt::DropActions supportedDragActions () const override;
+
 		void SetFolder (const QStringList&);
 		QStringList GetCurrentFolder () const;
 
