@@ -124,6 +124,13 @@ namespace CleanWeb
 			if (actualLine.startsWith ("||"))
 			{
 				auto spawned = "." + actualLine.mid (2);
+				if (spawned.contains ("||"))
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "buggy double-pipe filter"
+							<< actualLine;
+					return;
+				}
 				if (f.Case_ == Qt::CaseInsensitive)
 					spawned = spawned.toLower ();
 				f.MatchType_ = FilterOption::MTPlain;
