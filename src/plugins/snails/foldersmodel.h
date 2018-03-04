@@ -49,6 +49,8 @@ namespace Snails
 
 	class FoldersModel : public QAbstractItemModel
 	{
+		Q_OBJECT
+
 		Account * const Acc_;
 
 		const QStringList Headers_;
@@ -88,6 +90,9 @@ namespace Snails
 		void SetFolderCounts (const QStringList&, int unread, int total);
 
 		boost::optional<QStringList> GetFolderPath (FolderType) const;
+	signals:
+		void msgMoveRequested (const QList<QByteArray>& ids,
+				const QStringList& from, const QStringList& to, Qt::DropAction action);
 	};
 }
 }

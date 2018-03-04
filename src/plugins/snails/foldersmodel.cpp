@@ -243,12 +243,7 @@ namespace Snails
 		if (ids.isEmpty () || srcFolder.isEmpty ())
 			return false;
 
-		const auto& thisFolder = parent.data (Role::FolderPath).toStringList ();
-		if (action == Qt::MoveAction)
-			Acc_->MoveMessages (ids, srcFolder, { thisFolder });
-		else if (action == Qt::CopyAction)
-			Acc_->CopyMessages (ids, srcFolder, { thisFolder });
-
+		emit msgMoveRequested (ids, srcFolder, parent.data (Role::FolderPath).toStringList (), action);
 		return true;
 	}
 

@@ -702,6 +702,17 @@ namespace Snails
 		connect (this,
 				&MailTab::willMoveMessages,
 				&MailTab::deselectCurrent);
+		connect (CurrAcc_->GetFoldersModel (),
+				&FoldersModel::msgMoveRequested,
+				this,
+				[this] (const QList<QByteArray>& ids, const QStringList& src, const QStringList& to, Qt::DropAction act)
+				{
+					PerformMoveMessages (ids, src, { to },
+							act == Qt::MoveAction ?
+									MoveMessagesAction::Move :
+									MoveMessagesAction::Copy);
+				},
+				Qt::UniqueConnection);
 
 		MailModel_ = CurrAcc_->GetMailModelsManager ()->CreateModel ();
 
