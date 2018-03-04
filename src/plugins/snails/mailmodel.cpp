@@ -110,7 +110,7 @@ namespace Snails
 			if (days == 1)
 				return MailModel::tr ("yesterday, %1")
 						.arg (dt.time ().toString ("HH:mm"));
-			if (days < 7)
+			if (dt.date ().weekNumber () == now.date ().weekNumber ())
 				return dt.toString ("dddd, HH:mm");
 
 			if (days < 365)
