@@ -162,7 +162,7 @@ namespace Snails
 
 		AccountFolderManager* GetFolderManager () const;
 		MailModelsManager* GetMailModelsManager () const;
-		QAbstractItemModel* GetFoldersModel () const;
+		FoldersModel* GetFoldersModel () const;
 
 		struct SyncStats
 		{
