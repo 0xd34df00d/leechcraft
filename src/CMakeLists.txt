@@ -223,7 +223,6 @@ cmake_dependent_option (ENABLE_ELEEMINATOR "Build Leeminal, embedded LeechCraft 
 cmake_dependent_option (ENABLE_FENET "Build Fenet, WM control plugin" ${WITH_PLUGINS} "NOT WIN32 AND NOT APPLE" OFF)
 option (ENABLE_FONTIAC "Build Fontiac for configurable font substitutions" ${WITH_PLUGINS})
 option (ENABLE_GACTS "Build Global Actions provider plugin" ${WITH_PLUGINS})
-option (ENABLE_HARBINGER "Build Harbinger, the collections manager" FALSE)
 cmake_dependent_option (ENABLE_HOTSENSORS "Build HotSensors, temperature sensors quark" ${WITH_PLUGINS} "NOT WIN32" OFF)
 option (ENABLE_HOTSTREAMS "Build HotStreams, radio streams provider module" ${WITH_PLUGINS})
 option (ENABLE_IMGASTE "Build Imgaste, simple image paster plugin" ${WITH_PLUGINS})
