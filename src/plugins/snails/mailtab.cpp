@@ -925,21 +925,26 @@ namespace Snails
 	void MailTab::PerformMoveMessages (const QList<QByteArray>& ids,
 			const QList<QStringList>& targets, MoveMessagesAction action)
 	{
+		PerformMoveMessages (ids, MailModel_->GetCurrentFolder (), targets, action);
+	}
+
+	void MailTab::PerformMoveMessages (const QList<QByteArray>& ids,
+			const QStringList& source, const QList<QStringList>& targets, MoveMessagesAction action)
+	{
 		if (ids.isEmpty () ||
 				targets.isEmpty () ||
 				std::any_of (targets.begin (), targets.end (), [] (const auto& folder) { return folder.isEmpty (); }))
 			return;
 
-		const auto& folder = MailModel_->GetCurrentFolder ();
-		emit willMoveMessages (ids, folder);
+		emit willMoveMessages (ids, source);
 
 		switch (action)
 		{
 		case MoveMessagesAction::Copy:
-			CurrAcc_->CopyMessages (ids, folder, targets);
+			CurrAcc_->CopyMessages (ids, source, targets);
 			break;
 		case MoveMessagesAction::Move:
-			CurrAcc_->MoveMessages (ids, folder, targets);
+			CurrAcc_->MoveMessages (ids, source, targets);
 			break;
 		}
 	}

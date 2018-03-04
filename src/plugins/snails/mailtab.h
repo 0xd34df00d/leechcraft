@@ -141,6 +141,8 @@ namespace Snails
 		void HandleAttachment (const QByteArray&, const QStringList&, const QString&);
 
 		void PerformMoveMessages (const QList<QByteArray>&, const QList<QStringList>&, MoveMessagesAction);
+		void PerformMoveMessages (const QList<QByteArray>&,
+				const QStringList&, const QList<QStringList>&, MoveMessagesAction);
 	private slots:
 		void handleCurrentAccountChanged (const QModelIndex&);
 		void handleCurrentTagChanged (const QModelIndex&);
