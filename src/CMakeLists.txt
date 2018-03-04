@@ -262,7 +262,6 @@ option (ENABLE_ZALIL "Build Zalil for uploading files to accountless filebin ser
 option (ENABLE_BLACKDASH "Build BlackDash, the dashboard plugin for LeechCraft" OFF)
 option (ENABLE_CHOROID "Build Choroid, image viewer" OFF)
 option (ENABLE_SNAILS "Build Snails, LeechCraft mail client" OFF)
-option (ENABLE_TWIFEE "Build Twifee, the Twitter client" OFF)
 option (ENABLE_CEMENTO "Build Cemento, LeechCraft common persistent storage" OFF)
 
 # Dumb alternatives
