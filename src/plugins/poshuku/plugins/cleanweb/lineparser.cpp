@@ -203,7 +203,7 @@ namespace CleanWeb
 				case FilterOption::MTRegexp:
 					break;
 				}
-				actualLine.replace ('^', "[/?=&]");
+				actualLine.replace ('^', "[/?=&:]");
 				f.MatchType_ = FilterOption::MTRegexp;
 			}
 
