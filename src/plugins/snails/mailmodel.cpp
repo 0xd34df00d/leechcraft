@@ -113,7 +113,7 @@ namespace Snails
 			if (dt.date ().weekNumber () == now.date ().weekNumber ())
 				return dt.toString ("dddd, HH:mm");
 
-			if (days < 365)
+			if (dt.date ().year () == now.date ().year ())
 				return dt.date ().toString ("dd MMMM");
 
 			return dt.date ().toString (Qt::DefaultLocaleLongDate);
