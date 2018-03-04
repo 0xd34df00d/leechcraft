@@ -116,7 +116,7 @@ namespace Snails
 			if (dt.date ().year () == now.date ().year ())
 				return dt.date ().toString ("dd MMMM");
 
-			return dt.date ().toString (Qt::DefaultLocaleLongDate);
+			return dt.date ().toString (Qt::DefaultLocaleShortDate);
 		}
 	}
 
