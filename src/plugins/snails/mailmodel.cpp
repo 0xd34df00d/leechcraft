@@ -101,15 +101,17 @@ namespace Snails
 		QString GetNeatDate (QDateTime dt)
 		{
 			dt = dt.toLocalTime ();
-
 			const auto& now = QDateTime::currentDateTime ();
 
 			const auto days = dt.daysTo (now);
+
 			if (!days)
 				return dt.time ().toString ("HH:mm");
+
 			if (days == 1)
 				return MailModel::tr ("yesterday, %1")
 						.arg (dt.time ().toString ("HH:mm"));
+
 			if (dt.date ().weekNumber () == now.date ().weekNumber ())
 				return dt.toString ("dddd, HH:mm");
 
