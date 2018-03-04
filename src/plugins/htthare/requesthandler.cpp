@@ -573,8 +573,7 @@ namespace HttHare
 		std::vector<boost::asio::const_buffer> result;
 
 		const bool hasContentLength = std::find_if (ResponseHeaders_.begin (), ResponseHeaders_.end (),
-				[] (decltype (ResponseHeaders_.at (0)) pair)
-					{ return pair.first.toLower () == "content-length"; }) != ResponseHeaders_.end ();
+				[] (const auto& pair) { return pair.first.toLower () == "content-length"; }) != ResponseHeaders_.end ();
 
 		const auto& splitAe = Headers_.value ("Accept-Encoding").split (',');
 		if (verb == Verb::Get &&
