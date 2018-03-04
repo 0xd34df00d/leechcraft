@@ -696,13 +696,12 @@ namespace Snails
 		ReadMarker_.reset (new MailTabReadMarker { CurrAcc_, this },
 				[] (QObject *obj) { obj->deleteLater (); });
 		connect (this,
-				SIGNAL (willMoveMessages (QList<QByteArray>, QStringList)),
+				&MailTab::willMoveMessages,
 				ReadMarker_.get (),
-				SLOT (handleWillMoveMessages (QList<QByteArray>, QStringList)));
+				&MailTabReadMarker::handleWillMoveMessages);
 		connect (this,
-				SIGNAL (willMoveMessages (QList<QByteArray>, QStringList)),
-				this,
-				SLOT (deselectCurrent (QList<QByteArray>, QStringList)));
+				&MailTab::willMoveMessages,
+				&MailTab::deselectCurrent);
 
 		MailModel_ = CurrAcc_->GetMailModelsManager ()->CreateModel ();
 
