@@ -106,7 +106,7 @@ namespace Snails
 
 			const auto days = dt.daysTo (now);
 			if (!days)
-				return dt.toLocalTime ().time ().toString ("HH:mm");
+				return dt.time ().toString ("HH:mm");
 			if (days < 7)
 				return dt.toString ("dddd, HH:mm");
 
