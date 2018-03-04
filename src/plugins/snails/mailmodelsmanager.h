@@ -46,8 +46,6 @@ namespace Snails
 
 	class MailModelsManager : public QObject
 	{
-		Q_OBJECT
-
 		Account * const Acc_;
 		Storage * const Storage_;
 		MessageListActionsManager * const MsgListActionsMgr_;
@@ -63,8 +61,6 @@ namespace Snails
 		void Append (const QList<Message_ptr>&);
 		void Update (const QList<Message_ptr>&);
 		void Remove (const QList<QByteArray>&);
-	private slots:
-		void handleModelDestroyed (QObject*);
 	};
 }
 }

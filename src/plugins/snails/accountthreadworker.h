@@ -124,7 +124,6 @@ namespace Snails
 	public:
 		void SetNoopTimeoutChangeNotifier (const std::shared_ptr<AccountThreadNotifier<int>>&);
 
-		void FlushSockets ();
 		void Disconnect ();
 
 		void TestConnectivity ();

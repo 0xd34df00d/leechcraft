@@ -107,21 +107,22 @@ namespace Snails
 			{
 				if (RecLevel_)
 				{
-					const auto timeout = RecLevel_ * 3000 + 1000;
-					qWarning () << Q_FUNC_INFO
+					using namespace std::chrono_literals;
+					const auto timeout = RecLevel_ * 3000ms + 1000ms;
+					qWarning () << "Snails::detail::ExceptionsHandler::operator():"
 							<< "sleeping for"
-							<< timeout
+							<< timeout.count ()
 							<< "and retrying for the"
 							<< RecLevel_
 							<< "time after getting an exception:"
 							<< ex.what ();
 
-					std::this_thread::sleep_for (std::chrono::milliseconds { timeout });
+					std::this_thread::sleep_for (timeout);
 				}
 
 				if (RecLevel_ == MaxRetries_)
 				{
-					qWarning () << Q_FUNC_INFO
+					qWarning () << "Snails::detail::ExceptionsHandler::operator():"
 							<< "giving up after"
 							<< RecLevel_
 							<< "retries:"
@@ -140,7 +141,7 @@ namespace Snails
 				{
 					const auto& respStr = QString::fromUtf8 (err.response ().c_str ());
 
-					qWarning () << Q_FUNC_INFO
+					qWarning () << "Snails::detail::ExceptionsHandler::operator():"
 							<< "caught auth error:"
 							<< respStr;
 

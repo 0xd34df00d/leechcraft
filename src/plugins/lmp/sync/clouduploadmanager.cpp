@@ -48,8 +48,7 @@ namespace LMP
 			const QStringList& files, const TranscodingParams& params)
 	{
 		std::for_each (files.begin (), files.end (),
-				[this, cloud, &account] (decltype (files.front ()) file)
-					{ Source2Params_ [file] = { cloud, account }; });
+				[this, cloud, &account] (const auto& file) { Source2Params_ [file] = { cloud, account }; });
 
 		SyncManagerBase::AddFiles (files, params);
 	}

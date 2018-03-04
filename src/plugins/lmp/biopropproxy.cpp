@@ -33,6 +33,7 @@
 #include <QApplication>
 #include <QtDebug>
 #include <util/models/rolenamesmixin.h>
+#include <util/sll/prelude.h>
 #include "xmlsettingsmanager.h"
 
 namespace LeechCraft
@@ -77,11 +78,7 @@ namespace LMP
 	{
 		Bio_ = bio;
 
-		QStringList tags;
-		std::transform (Bio_.BasicInfo_.Tags_.begin (), Bio_.BasicInfo_.Tags_.end (),
-				std::back_inserter (tags),
-				[] (decltype (Bio_.BasicInfo_.Tags_.front ()) item) { return item.Name_; });
-		CachedTags_ = tags.join ("; ");
+		CachedTags_ = Util::Map (Bio_.BasicInfo_.Tags_, &Media::TagInfo::Name_).join ("; ");
 
 		CachedInfo_ = Bio_.BasicInfo_.FullDesc_.isEmpty () ?
 				Bio_.BasicInfo_.ShortDesc_ :

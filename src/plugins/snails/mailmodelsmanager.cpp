@@ -52,9 +52,9 @@ namespace Snails
 		Models_ << model.get ();
 
 		connect (model.get (),
-				SIGNAL (destroyed (QObject*)),
+				&QObject::destroyed,
 				this,
-				SLOT (handleModelDestroyed (QObject*)));
+				[this, obj = model.get ()] { Models_.removeAll (obj); });
 
 		return model;
 	}
@@ -111,11 +111,6 @@ namespace Snails
 		for (const auto model : Models_)
 			for (const auto& id : ids)
 				model->Remove (id);
-	}
-
-	void MailModelsManager::handleModelDestroyed (QObject *modelObj)
-	{
-		Models_.removeAll (static_cast<MailModel*> (modelObj));
 	}
 }
 }

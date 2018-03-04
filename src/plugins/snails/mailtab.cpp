@@ -91,9 +91,9 @@ namespace Snails
 
 		const auto mailWebPage = new MailWebPage { Proxy_, Ui_.MailView_ };
 		connect (mailWebPage,
-				SIGNAL (attachmentSelected (QByteArray, QStringList, QString)),
+				&MailWebPage::attachmentSelected,
 				this,
-				SLOT (handleAttachment (QByteArray, QStringList, QString)));
+				&MailTab::HandleAttachment);
 		Ui_.MailView_->setPage (mailWebPage);
 		Ui_.MailView_->settings ()->setAttribute (QWebSettings::DeveloperExtrasEnabled, true);
 
@@ -108,8 +108,7 @@ namespace Snails
 				{
 					if (!CurrAcc_ || !MailModel_)
 						return {};
-					return Storage_->LoadMessage (CurrAcc_.get (),
-							MailModel_->GetCurrentFolder (), id);
+					return Storage_->LoadMessage (CurrAcc_.get (), MailModel_->GetCurrentFolder (), id);
 				},
 				Ui_.MailTree_,
 				this);
@@ -179,7 +178,7 @@ namespace Snails
 				{ "MailTab.MarkUnread", { MailTab::tr ("Mark as unread"), { "U" }, "mail-mark-unread" } },
 				{ "MailTab.Remove", { MailTab::tr ("Delete messages"), { "D" }, "list-remove" } },
 				{ "MailTab.ViewHeaders", { MailTab::tr ("View headers"), {}, "view-list-text" } },
-				{ "MailTab.MultiSelect", { MailTab::tr ("Select multiple messages mode"), {}, "document-multiple" } },
+				{ "MailTab.MultiSelect", { MailTab::tr ("Select multiple messages mode"), {}, "edit-select" } },
 
 				{ "MailTab.SelectAllChildren", { MailTab::tr ("Select all children"), { "S" }, "edit-select-all" } },
 				{ "MailTab.ExpandAllChildren", { MailTab::tr ("Expand all children"), { "E" }, "view-list-tree" } },
@@ -660,12 +659,12 @@ namespace Snails
 		for (const auto& att : msg->GetAttachments ())
 		{
 			const auto& name = att.GetName () + " (" + Util::MakePrettySize (att.GetSize ()) + ")";
-			const auto act = MsgAttachments_->addAction (name,
+			MsgAttachments_->addAction (name,
 					this,
-					SLOT (handleAttachment ()));
-			act->setProperty ("Snails/MsgId", msg->GetFolderID ());
-			act->setProperty ("Snails/AttName", att.GetName ());
-			act->setProperty ("Snails/Folder", msg->GetFolders ().value (0));
+					[this, id = msg->GetFolderID (), folder = msg->GetFolders ().value (0), name = att.GetName ()]
+					{
+						HandleAttachment (id, folder, name);
+					});
 		}
 	}
 
@@ -1134,20 +1133,11 @@ namespace Snails
 		selModel->clear ();
 	}
 
-	void MailTab::handleAttachment ()
+	void MailTab::HandleAttachment (const QByteArray& id, const QStringList& folder, const QString& name)
 	{
 		if (!CurrAcc_)
 			return;
 
-		const auto& name = sender ()->property ("Snails/AttName").toString ();
-		const auto& id = sender ()->property ("Snails/MsgId").toByteArray ();
-		const auto& folder = sender ()->property ("Snails/Folder").toStringList ();
-		handleAttachment (id, folder, name);
-	}
-
-	void MailTab::handleAttachment (const QByteArray& id,
-			const QStringList& folder, const QString& name)
-	{
 		const auto& path = QFileDialog::getSaveFileName (0,
 				tr ("Save attachment"),
 				QDir::homePath () + '/' + name);

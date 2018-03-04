@@ -289,6 +289,12 @@ namespace Snails
 			VmimeHeader_.reset ();
 	}
 
+	void Message::ForceVmimeHeader ()
+	{
+		if (VmimeHeader_)
+			VmimeHeader_->Force ();
+	}
+
 	QByteArray Message::Serialize () const
 	{
 		QByteArray result;
