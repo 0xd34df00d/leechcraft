@@ -272,7 +272,7 @@ namespace Choroid
 			{
 				QString result;
 				std::copy_if (string.begin (), string.end (), std::back_inserter (result),
-						[] (decltype (string.at (0)) c) { return c.isDigit (); });
+						[] (const auto& c) { return c.isDigit (); });
 				return result.toInt ();
 			};
 			return toNumber (left.fileName ()) < toNumber (right.fileName ());
