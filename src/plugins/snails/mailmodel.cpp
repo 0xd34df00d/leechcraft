@@ -103,10 +103,10 @@ namespace Snails
 			dt = dt.toLocalTime ();
 
 			const auto& now = QDateTime::currentDateTime ();
-			if (dt.secsTo (now) < 60 * 60 * 24)
-				return dt.toLocalTime ().time ().toString ("HH:mm");
 
 			const auto days = dt.daysTo (now);
+			if (!days)
+				return dt.toLocalTime ().time ().toString ("HH:mm");
 			if (days < 7)
 				return dt.toString ("dddd, HH:mm");
 
