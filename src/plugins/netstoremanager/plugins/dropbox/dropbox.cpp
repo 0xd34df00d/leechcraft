@@ -33,6 +33,7 @@
 #include <QCoreApplication>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/util.h>
+#include <util/sll/prelude.h>
 #include "authmanager.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"
@@ -109,12 +110,7 @@ namespace DBox
 
 	QObjectList Plugin::GetAccounts () const
 	{
-		QObjectList result;
-		std::transform (Accounts_.begin (), Accounts_.end (),
-				std::back_inserter (result),
-				[] (decltype (Accounts_.front ()) acc) { return acc.get (); });
-
-		return result;
+		return Util::Map (Accounts_, [] (const auto& acc) -> QObject* { return acc.get (); });
 	}
 
 	QIcon Plugin::GetStorageIcon () const
@@ -136,8 +132,7 @@ namespace DBox
 	void Plugin::RemoveAccount (QObject *accObj)
 	{
 		auto pos = std::find_if (Accounts_.begin (), Accounts_.end (),
-				[accObj] (decltype (Accounts_.front ()) acc)
-					{ return acc.get () == accObj; });
+				[accObj] (const auto& acc) { return acc.get () == accObj; });
 		if (pos == Accounts_.end ())
 			return;
 

@@ -69,10 +69,9 @@ namespace Snails
 			StatusIcon,
 			Subject,
 			Date,
-			Size,
-
-			MaxNext = Size
+			Size
 		};
+		static const Column MaxColumn = Column::Size;
 
 		enum MailRole
 		{
@@ -86,14 +85,18 @@ namespace Snails
 
 		MailModel (const MessageListActionsManager*, QObject* = 0);
 
-		QVariant headerData (int, Qt::Orientation, int) const;
-		int columnCount (const QModelIndex& = {}) const;
-		QVariant data (const QModelIndex&, int) const;
-		Qt::ItemFlags flags (const QModelIndex&) const;
-		QModelIndex index (int, int, const QModelIndex& = {}) const;
-		QModelIndex parent (const QModelIndex&) const;
-		int rowCount (const QModelIndex& = {}) const;
-		bool setData (const QModelIndex&, const QVariant&, int);
+		QVariant headerData (int, Qt::Orientation, int) const override;
+		int columnCount (const QModelIndex& = {}) const override;
+		QVariant data (const QModelIndex&, int) const override;
+		Qt::ItemFlags flags (const QModelIndex&) const override;
+		QModelIndex index (int, int, const QModelIndex& = {}) const override;
+		QModelIndex parent (const QModelIndex&) const override;
+		int rowCount (const QModelIndex& = {}) const override;
+		bool setData (const QModelIndex&, const QVariant&, int) override;
+
+		QStringList mimeTypes () const override;
+		QMimeData* mimeData (const QModelIndexList&) const override;
+		Qt::DropActions supportedDragActions () const override;
 
 		void SetFolder (const QStringList&);
 		QStringList GetCurrentFolder () const;

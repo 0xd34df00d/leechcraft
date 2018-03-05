@@ -29,6 +29,7 @@
 
 #include "mailmodel.h"
 #include <QIcon>
+#include <QMimeData>
 #include <QtConcurrentMap>
 #include <util/util.h>
 #include <util/sll/prelude.h>
@@ -36,6 +37,7 @@
 #include <interfaces/core/iiconthememanager.h>
 #include "core.h"
 #include "messagelistactionsmanager.h"
+#include "common.h"
 
 namespace LeechCraft
 {
@@ -99,19 +101,24 @@ namespace Snails
 		QString GetNeatDate (QDateTime dt)
 		{
 			dt = dt.toLocalTime ();
-
 			const auto& now = QDateTime::currentDateTime ();
-			if (dt.secsTo (now) < 60 * 60 * 24)
-				return dt.toLocalTime ().time ().toString ("HH:mm");
 
 			const auto days = dt.daysTo (now);
-			if (days < 7)
+
+			if (!days)
+				return dt.time ().toString ("HH:mm");
+
+			if (days == 1)
+				return MailModel::tr ("yesterday, %1")
+						.arg (dt.time ().toString ("HH:mm"));
+
+			if (dt.date ().weekNumber () == now.date ().weekNumber ())
 				return dt.toString ("dddd, HH:mm");
 
-			if (days < 365)
+			if (dt.date ().year () == now.date ().year ())
 				return dt.date ().toString ("dd MMMM");
 
-			return dt.date ().toString (Qt::DefaultLocaleLongDate);
+			return dt.date ().toString (Qt::DefaultLocaleShortDate);
 		}
 	}
 
@@ -226,6 +233,7 @@ namespace Snails
 	Qt::ItemFlags MailModel::flags (const QModelIndex& index) const
 	{
 		auto flags = QAbstractItemModel::flags (index);
+		flags |= Qt::ItemIsDragEnabled;
 		if (index.column () == static_cast<int> (Column::Subject))
 			flags |= Qt::ItemIsEditable;
 
@@ -285,6 +293,42 @@ namespace Snails
 		emit messagesSelectionChanged ();
 
 		return true;
+	}
+
+	QStringList MailModel::mimeTypes () const
+	{
+		return
+		{
+			Mimes::FolderPath,
+			Mimes::MessageIdList
+		};
+	}
+
+	QMimeData* MailModel::mimeData (const QModelIndexList& indexes) const
+	{
+		if (indexes.isEmpty ())
+			return nullptr;
+
+		QByteArray idsData;
+		{
+			QList<QByteArray> idsList;
+			for (const auto& index : indexes)
+				idsList << index.data (MailModel::MailRole::ID).toByteArray ();
+
+			QDataStream ostr { &idsData, QIODevice::WriteOnly };
+			ostr << idsList;
+		}
+
+		auto data = new QMimeData;
+		data->setData (Mimes::FolderPath, GetCurrentFolder ().join ('/').toUtf8 ());
+		data->setData (Mimes::MessageIdList, idsData);
+
+		return data;
+	}
+
+	Qt::DropActions MailModel::supportedDragActions () const
+	{
+		return Qt::CopyAction | Qt::MoveAction;
 	}
 
 	void MailModel::SetFolder (const QStringList& folder)
@@ -573,7 +617,7 @@ namespace Snails
 	void MailModel::EmitRowChanged (const TreeNode_ptr& node)
 	{
 		emit dataChanged (GetIndex (node, 0),
-				GetIndex (node, static_cast<int> (Column::MaxNext)));
+				GetIndex (node, static_cast<int> (MaxColumn)));
 	}
 
 	QModelIndex MailModel::GetIndex (const TreeNode_ptr& node, int column) const

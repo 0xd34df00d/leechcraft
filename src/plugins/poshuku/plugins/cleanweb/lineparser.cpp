@@ -106,13 +106,7 @@ namespace CleanWeb
 			{
 				actualLine = actualLine.mid (1, actualLine.size () - 2);
 				f.MatchType_ = FilterOption::MTRegexp;
-				const FilterItem_ptr item (new FilterItem
-						{
-							Util::RegExp (actualLine, f.Case_),
-							{},
-							f
-						});
-				items << item;
+				items << std::make_shared<FilterItem> (FilterItem { Util::RegExp (actualLine, f.Case_), {}, f });
 				return;
 			}
 
@@ -124,6 +118,13 @@ namespace CleanWeb
 			if (actualLine.startsWith ("||"))
 			{
 				auto spawned = "." + actualLine.mid (2);
+				if (spawned.contains ("||"))
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "buggy double-pipe filter"
+							<< actualLine;
+					return;
+				}
 				if (f.Case_ == Qt::CaseInsensitive)
 					spawned = spawned.toLower ();
 				f.MatchType_ = FilterOption::MTPlain;
@@ -196,7 +197,7 @@ namespace CleanWeb
 				case FilterOption::MTRegexp:
 					break;
 				}
-				actualLine.replace ('^', "[/?=&]");
+				actualLine.replace ('^', "[/?=&:]");
 				f.MatchType_ = FilterOption::MTRegexp;
 			}
 
@@ -206,13 +207,7 @@ namespace CleanWeb
 			const auto& itemRx = f.MatchType_ == FilterOption::MTRegexp ?
 					Util::RegExp (actualLine, f.Case_) :
 					Util::RegExp ();
-			const FilterItem_ptr item (new FilterItem
-					{
-						itemRx,
-						casedOrigStr,
-						f
-					});
-			items << item;
+			items << std::make_shared<FilterItem> (FilterItem { itemRx, casedOrigStr, f });
 		}
 	}
 

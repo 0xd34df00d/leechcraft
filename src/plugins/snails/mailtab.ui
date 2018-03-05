@@ -53,6 +53,12 @@
          <verstretch>4</verstretch>
         </sizepolicy>
        </property>
+       <property name="dragDropMode">
+        <enum>QAbstractItemView::DropOnly</enum>
+       </property>
+       <property name="defaultDropAction">
+        <enum>Qt::MoveAction</enum>
+       </property>
       </widget>
      </widget>
      <widget class="QSplitter" name="splitter">
@@ -102,6 +108,15 @@
              <width>300</width>
              <height>0</height>
             </size>
+           </property>
+           <property name="dragEnabled">
+            <bool>true</bool>
+           </property>
+           <property name="dragDropMode">
+            <enum>QAbstractItemView::DragOnly</enum>
+           </property>
+           <property name="defaultDropAction">
+            <enum>Qt::MoveAction</enum>
            </property>
            <property name="selectionMode">
             <enum>QAbstractItemView::ExtendedSelection</enum>

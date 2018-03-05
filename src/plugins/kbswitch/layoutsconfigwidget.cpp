@@ -34,6 +34,7 @@
 #include <QtDebug>
 #include <QSettings>
 #include <util/models/modeliterator.h>
+#include <util/sll/prelude.h>
 #include "kbctl.h"
 #include "flagiconprovider.h"
 #include "rulesstorage.h"
@@ -51,8 +52,7 @@ namespace KBSwitch
 				result.append ({ i.key (), i.value () });
 
 			std::sort (result.begin (), result.end (),
-					[] (decltype (result.at (0)) l, decltype (result.at (0)) r)
-						{ return l.at (0) < r.at (0); });
+					Util::ComparingBy ([] (const auto& list) { return list.at (0); }));
 
 			return result;
 		}

@@ -336,6 +336,8 @@ namespace CleanWeb
 			if (!req.PageUrl_.isValid ())
 				return false;
 
+			static const bool shouldDebug = qgetenv ("LC_POSHUKU_CLEANWEB_DUMP_MATCHES") == "1";
+
 			const auto objs = ResourceType2Objs (req.ResourceType_);
 
 			const QUrl& url = req.RequestUrl_;
@@ -367,7 +369,14 @@ namespace CleanWeb
 
 									const auto& utf8 = item->Option_.Case_ == Qt::CaseSensitive ? urlUtf8 : cinUrlUtf8;
 									if (Matches (item, utf8, domain))
+									{
+										if (shouldDebug)
+											qDebug () << Q_FUNC_INFO
+													<< utf8
+													<< "matches"
+													<< *item;
 										return true;
+									}
 								}
 
 								return false;
