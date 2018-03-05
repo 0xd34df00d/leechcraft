@@ -259,7 +259,6 @@ option (ENABLE_XPROXY "Build XProxy, the advanced proxy manager" ${WITH_PLUGINS}
 option (ENABLE_XTAZY "Build Xtazy, plugin for keeping track of a currently playing song" ${WITH_PLUGINS})
 option (ENABLE_ZALIL "Build Zalil for uploading files to accountless filebin services" ${WITH_PLUGINS})
 
-option (ENABLE_BLACKDASH "Build BlackDash, the dashboard plugin for LeechCraft" OFF)
 option (ENABLE_CHOROID "Build Choroid, image viewer" OFF)
 option (ENABLE_SNAILS "Build Snails, LeechCraft mail client" OFF)
 option (ENABLE_CEMENTO "Build Cemento, LeechCraft common persistent storage" OFF)
