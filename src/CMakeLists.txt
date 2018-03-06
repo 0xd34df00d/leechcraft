@@ -261,7 +261,6 @@ option (ENABLE_ZALIL "Build Zalil for uploading files to accountless filebin ser
 
 option (ENABLE_CHOROID "Build Choroid, image viewer" OFF)
 option (ENABLE_SNAILS "Build Snails, LeechCraft mail client" OFF)
-option (ENABLE_CEMENTO "Build Cemento, LeechCraft common persistent storage" OFF)
 
 # Dumb alternatives
 option (ENABLE_DUMBEEP "Build Dumbeep, a dumb sound notifier for those fearing true LMP power" OFF)
