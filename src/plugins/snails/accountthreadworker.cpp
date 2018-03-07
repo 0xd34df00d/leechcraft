@@ -791,32 +791,6 @@ namespace Snails
 		return folders;
 	}
 
-	QList<Message_ptr> AccountThreadWorker::FetchFullMessages (const std::vector<vmime::shared_ptr<vmime::net::message>>& messages)
-	{
-		const auto pl = A_->MakeProgressListener (tr ("Fetching messages for %1")
-					.arg (A_->GetName ()));
-
-		const auto msgsCount = messages.size ();
-		pl->start (msgsCount);
-
-		int i = 0;
-		QList<Message_ptr> newMessages;
-		Q_FOREACH (auto message, messages)
-		{
-			pl->progress (++i, msgsCount);
-
-			auto msgObj = FromHeaders (message);
-
-			FullifyHeaderMessage (msgObj, message);
-
-			newMessages << msgObj;
-		}
-
-		pl->stop (msgsCount);
-
-		return newMessages;
-	}
-
 	void AccountThreadWorker::handleMessagesChanged (const QStringList& folder, const QList<size_t>& numbers)
 	{
 		qDebug () << Q_FUNC_INFO << folder << numbers;
