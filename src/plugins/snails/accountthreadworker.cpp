@@ -824,13 +824,9 @@ namespace Snails
 	{
 		SetNoopTimeout (notifier->GetData ());
 
-		new Util::SlotClosure<Util::NoDeletePolicy>
-		{
-			[notifier, this] { SetNoopTimeout (notifier->GetData ()); },
-			notifier.get (),
-			SIGNAL (changed ()),
-			this
-		};
+		connect (notifier.get (),
+				&AccountThreadNotifier<int>::changed,
+				[this, notifier] { SetNoopTimeout (notifier->GetData ()); });
 	}
 
 	void AccountThreadWorker::Disconnect ()
