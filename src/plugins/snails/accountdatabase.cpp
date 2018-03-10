@@ -197,8 +197,7 @@ namespace Snails
 		lock.Good ();
 	}
 
-	void AccountDatabase::RemoveMessage (const QByteArray& msgId, const QStringList& folder,
-			const std::function<void ()>& continuation)
+	void AccountDatabase::RemoveMessage (const QByteArray& msgId, const QStringList& folder)
 	{
 		const auto id = Msg2Folder_->SelectOne (sph::fields<&Msg2Folder::Id_>,
 				sph::f<&Msg2Folder::FolderMessageId_> == msgId &&
@@ -206,9 +205,6 @@ namespace Snails
 				sph::f<&Msg2Folder::FolderId_> == sph::f<&Folder::Id_>);
 		if (id)
 			Msg2Folder_->DeleteBy (sph::f<&Msg2Folder::Id_> == *id);
-
-		if (continuation)
-			continuation ();
 	}
 
 	int AccountDatabase::AddMessageUnfoldered (const Message_ptr& msg)
