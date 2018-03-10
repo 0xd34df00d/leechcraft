@@ -47,10 +47,8 @@ namespace Snails
 	class LazyVmimeHeader;
 	using LazyVmimeHeader_ptr = std::shared_ptr<LazyVmimeHeader>;
 
-	class Message : public QObject
+	class Message
 	{
-		Q_OBJECT
-
 		QByteArray FolderID_;
 		QByteArray MessageID_;
 		QList<QStringList> Folders_;
@@ -85,8 +83,6 @@ namespace Snails
 	private:
 		QHash<Address, Addresses_t> Addresses_;
 	public:
-		using QObject::QObject;
-
 		bool IsFullyFetched () const;
 
 		/** @brief Returns folder-specific message ID.
