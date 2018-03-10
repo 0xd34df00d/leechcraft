@@ -48,7 +48,7 @@ namespace Snails
 	class Message;
 	typedef std::shared_ptr<Message> Message_ptr;
 
-	class AccountDatabase : public QObject
+	class AccountDatabase
 	{
 		QSqlDatabase DB_;
 	public:
@@ -62,7 +62,7 @@ namespace Snails
 
 		QMap<QStringList, int> KnownFolders_;
 	public:
-		AccountDatabase (const QDir&, Account*, QObject* = nullptr);
+		AccountDatabase (const QDir&, Account*);
 
 		QList<QByteArray> GetIDs (const QStringList& folder);
 		int GetMessageCount (const QStringList& folder);
