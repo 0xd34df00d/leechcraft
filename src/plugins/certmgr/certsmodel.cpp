@@ -298,57 +298,47 @@ namespace CertMgr
 				issuer = cert.issuerInfo (QSslCertificate::CommonName);
 			return issuer.join ("; ");
 		}
+
+		template<typename T>
+		auto FindIssuer2Certs (T&& vec, const QString& issuer)
+		{
+			const auto pos = std::lower_bound (vec.begin (), vec.end (), issuer,
+					[] (const auto& item, const QString& issuer)
+						{ return QString::localeAwareCompare (item.first.toLower (), issuer.toLower ()) < 0; });
+			if (pos == vec.end ())
+				return std::make_tuple (pos, pos);
+
+			return pos->first.toLower () == issuer.toLower () ?
+					std::make_tuple (pos, pos) :
+					std::make_tuple (vec.end (), pos);
+		}
 	}
 
 	auto CertsModel::GetListPosForCert (const QSslCertificate& cert) -> CertsDict_t::iterator
 	{
-		const auto& issuer = GetIssuerName (cert);
-
-		const auto pos = std::lower_bound (Issuer2Certs_.begin (), Issuer2Certs_.end (), issuer,
-				[] (const auto& item, const QString& issuer)
-					{ return QString::localeAwareCompare (item.first.toLower (), issuer.toLower ()) < 0; });
-
-		if (pos == Issuer2Certs_.end ())
-			return pos;
-
-		return pos->first.toLower () == issuer.toLower () ?
-				pos :
-				Issuer2Certs_.end ();
+		return std::get<0> (FindIssuer2Certs (Issuer2Certs_, GetIssuerName (cert)));
 	}
 
 	auto CertsModel::GetListPosForCert (const QSslCertificate& cert) const -> CertsDict_t::const_iterator
 	{
-		const auto& issuer = GetIssuerName (cert);
-
-		const auto pos = std::lower_bound (Issuer2Certs_.begin (), Issuer2Certs_.end (), issuer,
-				[] (const auto& item, const QString& issuer)
-					{ return QString::localeAwareCompare (item.first.toLower (), issuer.toLower ()) < 0; });
-
-		if (pos == Issuer2Certs_.end ())
-			return pos;
-
-		return pos->first.toLower () == issuer.toLower () ?
-				pos :
-				Issuer2Certs_.end ();
+		return std::get<0> (FindIssuer2Certs (Issuer2Certs_, GetIssuerName (cert)));
 	}
 
 	auto CertsModel::CreateListPosForCert (const QSslCertificate& cert) -> CertsDict_t::iterator
 	{
 		const auto& issuer = GetIssuerName (cert);
 
-		auto pos = std::lower_bound (Issuer2Certs_.begin (), Issuer2Certs_.end (), issuer,
-				[] (const auto& item, const QString& issuer)
-					{ return QString::localeAwareCompare (item.first.toLower (), issuer.toLower ()) < 0; });
+		auto [pos, hint] = FindIssuer2Certs (Issuer2Certs_, issuer);
 
-		if (pos != Issuer2Certs_.end () && pos->first.toLower () == issuer.toLower ())
+		if (pos != Issuer2Certs_.end ())
 			return pos;
 
-		const auto row = std::distance (Issuer2Certs_.begin (), pos);
+		const auto row = std::distance (Issuer2Certs_.begin (), hint);
 		beginInsertRows ({}, row, row);
-		pos = Issuer2Certs_.insert (pos, { issuer, {} });
+		hint = Issuer2Certs_.insert (hint, { issuer, {} });
 		endInsertRows ();
 
-		return pos;
+		return hint;
 	}
 
 	QList<QSslCertificate>& CertsModel::CreateListForCert (const QSslCertificate& cert)
