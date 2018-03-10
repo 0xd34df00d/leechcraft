@@ -153,10 +153,10 @@ namespace Snails
 	typedef QSet<Message_ptr> MessageSet;
 
 	QString GetNiceMail (const Message::Address_t&);
-}
-}
 
-uint qHash (const LeechCraft::Snails::Message_ptr);
+	uint qHash (const Message_ptr);
+}
+}
 
 Q_DECLARE_METATYPE (LeechCraft::Snails::Message_ptr)
 Q_DECLARE_METATYPE (QList<LeechCraft::Snails::Message_ptr>)

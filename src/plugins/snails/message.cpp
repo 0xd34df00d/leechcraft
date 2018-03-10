@@ -354,10 +354,13 @@ namespace Snails
 
 		QByteArray headerBA;
 		str >> headerBA;
+		/*
 		if (!headerBA.isEmpty ())
 			VmimeHeader_ = std::make_shared<LazyVmimeHeader> (headerBA);
 		else
 			VmimeHeader_.reset ();
+		 */
+		VmimeHeader_ = std::make_shared<LazyVmimeHeader> (QByteArray {});
 	}
 
 	QString GetNiceMail (const Message::Address_t& pair)
@@ -367,10 +370,10 @@ namespace Snails
 				pair.second :
 				fromName + " <" + pair.second + ">";
 	}
-}
-}
 
-uint qHash (const LeechCraft::Snails::Message_ptr msg)
-{
-	return qHash (msg->GetFolderID ());
+	uint qHash (const LeechCraft::Snails::Message_ptr msg)
+	{
+		return qHash (msg->GetFolderID ());
+	}
+}
 }
