@@ -33,6 +33,7 @@
 #include <util/xpc/passutils.h>
 #include <util/xpc/util.h>
 #include <util/xpc/notificationactionhandler.h>
+#include <util/sll/prelude.h>
 #include "core.h"
 #include "ljaccountconfigurationwidget.h"
 #include "ljaccountconfigurationdialog.h"
