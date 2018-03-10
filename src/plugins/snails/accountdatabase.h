@@ -55,10 +55,12 @@ namespace Snails
 		struct Message;
 		struct Folder;
 		struct Msg2Folder;
+		struct MsgHeader;
 	private:
 		Util::oral::ObjectInfo_ptr<Message> Messages_;
 		Util::oral::ObjectInfo_ptr<Folder> Folders_;
 		Util::oral::ObjectInfo_ptr<Msg2Folder> Msg2Folder_;
+		Util::oral::ObjectInfo_ptr<MsgHeader> MsgHeader_;
 
 		QMap<QStringList, int> KnownFolders_;
 	public:
@@ -71,6 +73,9 @@ namespace Snails
 
 		void AddMessage (const Message_ptr&);
 		void RemoveMessage (const QByteArray& msgId, const QStringList& folder);
+
+		void SetMessageHeader (const QByteArray& msgId, const QByteArray& header);
+		boost::optional<QByteArray> GetMessageHeader (const QByteArray& msgId) const;
 
 		boost::optional<int> GetMsgTableId (const QByteArray& uniqueId);
 		boost::optional<int> GetMsgTableId (const QByteArray& msgId, const QStringList& folder);

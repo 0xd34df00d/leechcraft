@@ -79,6 +79,18 @@ namespace Snails
 			return "Msg2Folder";
 		}
 	};
+
+	struct AccountDatabase::MsgHeader
+	{
+		oral::PKey<int> Id_;
+		oral::References<&Message::UniqueId_> MsgUniqueId_;
+		oral::NotNull<QByteArray> Header_;
+
+		static QString ClassName ()
+		{
+			return "MsgHeader";
+		}
+	};
 }
 }
 
@@ -96,6 +108,11 @@ BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Snails::AccountDatabase::Msg2Folder,
 		MsgId_,
 		FolderId_,
 		FolderMessageId_)
+
+BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Snails::AccountDatabase::MsgHeader,
+		Id_,
+		MsgUniqueId_,
+		Header_)
 
 namespace LeechCraft
 {
@@ -119,6 +136,7 @@ namespace Snails
 		Messages_ = Util::oral::AdaptPtr<Message> (DB_);
 		Folders_ = Util::oral::AdaptPtr<Folder> (DB_);
 		Msg2Folder_ = Util::oral::AdaptPtr<Msg2Folder> (DB_);
+		MsgHeader_ = Util::oral::AdaptPtr<MsgHeader> (DB_);
 
 		LoadKnownFolders ();
 	}
@@ -204,6 +222,17 @@ namespace Snails
 				sph::f<&Msg2Folder::FolderId_> == sph::f<&Folder::Id_>);
 		if (id)
 			Msg2Folder_->DeleteBy (sph::f<&Msg2Folder::Id_> == *id);
+	}
+
+	void AccountDatabase::SetMessageHeader (const QByteArray& msgId, const QByteArray& header)
+	{
+		MsgHeader_->Insert ({ {}, msgId, header }, oral::InsertAction::Replace);
+	}
+
+	boost::optional<QByteArray> AccountDatabase::GetMessageHeader (const QByteArray& msgId) const
+	{
+		return MsgHeader_->SelectOne (sph::fields<&MsgHeader::Header_>,
+				sph::f<&MsgHeader::MsgUniqueId_> == msgId);
 	}
 
 	int AccountDatabase::AddMessageUnfoldered (const Message_ptr& msg)
