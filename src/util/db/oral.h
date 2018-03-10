@@ -80,7 +80,7 @@ namespace oral
 		{
 		}
 
-		virtual ~QueryException () throw ()
+		virtual ~QueryException () noexcept
 		{
 		}
 
