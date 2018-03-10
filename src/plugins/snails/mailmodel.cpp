@@ -388,7 +388,7 @@ namespace Snails
 		if (messages.isEmpty ())
 			return;
 
-		std::sort (messages.begin (), messages.end (),
+		std::stable_sort (messages.begin (), messages.end (),
 				Util::ComparingBy ([] (const auto& msg) { return msg->GetDate (); }));
 
 		QtConcurrent::map (messages,
