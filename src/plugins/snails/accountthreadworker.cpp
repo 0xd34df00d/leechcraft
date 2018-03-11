@@ -368,7 +368,6 @@ namespace Snails
 		const auto& utf8cs = vmime::charset { vmime::charsets::UTF_8 };
 
 		auto msg = std::make_shared<Message> ();
-		msg->SetVmimeHeader (message->getHeader ());
 		msg->SetFolderID (static_cast<vmime::string> (message->getUID ()).c_str ());
 		msg->SetSize (message->getSize ());
 
@@ -636,6 +635,7 @@ namespace Snails
 		qDebug () << Q_FUNC_INFO << folderName << folder.get () << lastId;
 
 		auto messages = GetMessagesInFolder (folder, lastId);
+
 		qDebug () << "done fetching, sent" << bytesCounter.GetSent ()
 				<< "bytes, received" << bytesCounter.GetReceived () << "bytes";
 		auto newMessages = Util::Map (messages, [this, &folderName] (const auto& msg)
@@ -678,8 +678,6 @@ namespace Snails
 				isUpdated = true;
 			}
 
-			updated->SetVmimeHeader (msg->GetVmimeHeader ());
-
 			if (isUpdated)
 				updatedMessages << updated;
 			else
@@ -702,9 +700,6 @@ namespace Snails
 		void FullifyHeaderMessage (const Message_ptr& msg, const vmime::shared_ptr<vmime::net::message>& full)
 		{
 			vmime::messageParser mp { FromNetMessage (full) };
-
-			if (!msg->GetVmimeHeader ())
-				msg->SetVmimeHeader (full->getHeader ());
 
 			QString html;
 			QStringList plainParts;
