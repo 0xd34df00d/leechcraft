@@ -406,10 +406,9 @@ namespace Snails
 		};
 	}
 
-	MessageListActionsManager::MessageListActionsManager (Account *acc, Storage *storage, QObject *parent)
+	MessageListActionsManager::MessageListActionsManager (Account *acc, QObject *parent)
 	: QObject { parent }
 	, Acc_ { acc }
-	, Storage_ { storage }
 	{
 		Providers_ << std::make_shared<AttachmentsProvider> (acc);
 		Providers_ << std::make_shared<GithubProvider> ();
@@ -421,7 +420,7 @@ namespace Snails
 
 	QList<MessageListActionInfo> MessageListActionsManager::GetMessageActions (const Message_ptr& msg) const
 	{
-		const auto headerText = Storage_->BaseForAccount (Acc_)->GetMessageHeader (msg->GetMessageID ());
+		const auto headerText = Acc_->GetDatabase ()->GetMessageHeader (msg->GetMessageID ());
 		if (!headerText)
 			return {};
 

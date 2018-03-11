@@ -39,17 +39,15 @@ namespace Snails
 {
 	class MessageListActionsProvider;
 	class Account;
-	class Storage;
 
 	class MessageListActionsManager : public QObject
 	{
 		Q_OBJECT
 
 		Account * const Acc_;
-		Storage * const Storage_;
 		QList<std::shared_ptr<MessageListActionsProvider>> Providers_;
 	public:
-		MessageListActionsManager (Account*, Storage*, QObject* = nullptr);
+		MessageListActionsManager (Account*, QObject* = nullptr);
 
 		QList<MessageListActionInfo> GetMessageActions (const Message_ptr&) const;
 	};

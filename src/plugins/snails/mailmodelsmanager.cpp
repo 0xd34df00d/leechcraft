@@ -42,7 +42,7 @@ namespace Snails
 	: QObject { acc }
 	, Acc_ { acc }
 	, Storage_ { st }
-	, MsgListActionsMgr_ { new MessageListActionsManager { Acc_, st, this } }
+	, MsgListActionsMgr_ { new MessageListActionsManager { Acc_, this } }
 	{
 	}
 
