@@ -195,6 +195,11 @@ namespace Snails
 		return Logger_;
 	}
 
+	AccountDatabase_ptr Account::GetDatabase () const
+	{
+		return Storage_->BaseForAccount (this);
+	}
+
 	AccountFolderManager* Account::GetFolderManager () const
 	{
 		return FolderManager_;

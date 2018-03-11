@@ -55,6 +55,7 @@ namespace Snails
 	class AccountThread;
 	class AccountThreadWorker;
 	class AccountFolderManager;
+	class AccountDatabase;
 	class MailModel;
 	class FoldersModel;
 	class MailModelsManager;
@@ -159,6 +160,8 @@ namespace Snails
 
 		bool ShouldLogToFile () const;
 		AccountLogger* GetLogger () const;
+
+		std::shared_ptr<AccountDatabase> GetDatabase () const;
 
 		AccountFolderManager* GetFolderManager () const;
 		MailModelsManager* GetMailModelsManager () const;
