@@ -57,6 +57,7 @@
 #include <Qsci/qscilexerxml.h>
 #include <util/util.h>
 #include <util/xpc/util.h>
+#include <util/sll/prelude.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include "xmlsettingsmanager.h"
@@ -467,7 +468,7 @@ namespace Popishu
 				"x-leechcraft/script-wrap-request");
 		e.Additional_ ["Object"] = QVariant::fromValue<QObject**> (&WrappedObject_);
 
-		Q_FOREACH (QAction *action, DoctypeMenu_->actions ())
+		for (const auto action : DoctypeMenu_->actions ())
 			if (action->isChecked ())
 			{
 				e.Additional_ ["Language"] = FixLanguage (action->text ());
@@ -779,7 +780,7 @@ namespace Popishu
 			return;
 
 		QActionGroup *group = new QActionGroup (this);
-		Q_FOREACH (QAction *action, actions)
+		for (const auto action : actions)
 			group->addAction (action);
 	}
 
@@ -793,7 +794,7 @@ namespace Popishu
 			recent.removeAt (num);
 
 		std::reverse (recent.begin (), recent.end ());
-		Q_FOREACH (const QString& filePath, recent)
+		for (const auto& filePath : recent)
 			PrependRecentFile (filePath, false);
 	}
 
@@ -850,7 +851,7 @@ namespace Popishu
 			RecentFilesMenu_->addAction (action);
 		else
 		{
-			Q_FOREACH (QAction *action, currentActions)
+			for (const auto action : currentActions)
 				if (action->data ().toString () == filePath)
 				{
 					currentActions.removeAll (action);
@@ -866,12 +867,9 @@ namespace Popishu
 
 		if (save)
 		{
-			QStringList recent;
 			currentActions.prepend (action);
-			Q_FOREACH (QAction *action, currentActions)
-				recent << action->data ().toString ();
-			XmlSettingsManager::Instance ()->
-					setProperty ("RecentlyOpenedFiles", recent);
+			const auto& recent = Util::Map (currentActions, [] (QAction *act) { return act->data ().toString (); });
+			XmlSettingsManager::Instance ()->setProperty ("RecentlyOpenedFiles", recent);
 		}
 	}
 
