@@ -57,6 +57,8 @@ namespace Snails
 	public:
 		Storage (QObject* = nullptr);
 
+		AccountDatabase_ptr BaseForAccount (Account*);
+
 		void SaveMessages (Account*, const QStringList& folders, const QList<Message_ptr>&);
 
 		MessageSet LoadMessages (Account*);
@@ -77,7 +79,6 @@ namespace Snails
 		void RemoveMessageFile (Account*, const QStringList&, const QByteArray&);
 	private:
 		QDir DirForAccount (Account*) const;
-		AccountDatabase_ptr BaseForAccount (Account*);
 
 		void AddMessage (Message_ptr, Account*);
 		void UpdateCaches (Message_ptr);
