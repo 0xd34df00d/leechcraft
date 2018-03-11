@@ -391,9 +391,6 @@ namespace Snails
 		std::stable_sort (messages.begin (), messages.end (),
 				Util::ComparingBy ([] (const auto& msg) { return msg->GetDate (); }));
 
-		QtConcurrent::map (messages,
-				[] (const Message_ptr& msg) { msg->ForceVmimeHeader (); }).waitForFinished ();
-
 		Messages_ += messages;
 
 		for (const auto& msg : messages)
