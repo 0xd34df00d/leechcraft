@@ -60,6 +60,13 @@ namespace Snails
 
 	namespace
 	{
+		Header_ptr HeaderFromContents (const QByteArray& contents)
+		{
+			auto header = vmime::make_shared<vmime::header> ();
+			header->parse ({ contents.constData (), static_cast<size_t> (contents.size ()) });
+			return header;
+		}
+
 		vmime::shared_ptr<const vmime::messageId> GetGithubMsgId (const Header_ptr& headers)
 		{
 			const auto& referencesField = headers->References ();
@@ -351,23 +358,29 @@ namespace Snails
 		public:
 			QList<MessageListActionInfo> GetMessageActions (const Message_ptr&, const Header_ptr& headers, Account *acc) const override
 			{
-				const auto header = headers->findField ("List-Unsubscribe");
-				if (!header)
-					return {};
-
-				const auto& vmimeText = header->getValue<vmime::text> ();
-				if (!vmimeText)
-					return {};
-
 				return
 				{
 					{
 						QObject::tr ("Unsubscribe"),
 						QObject::tr ("Try cancelling receiving further messages like this."),
 						QIcon::fromTheme ("news-unsubscribe"),
-						[vmimeText, headers, acc] (const Message_ptr& msg)
+						[acc] (const Message_ptr& msg)
 						{
-							HandleUnsubscribeText (StringizeCT (*vmimeText), msg, headers, acc);
+							const auto raw = acc->GetDatabase ()->GetMessageHeader (msg->GetMessageID ());
+							if (!raw)
+								return;
+
+							const auto& headers = HeaderFromContents (*raw);
+
+							const auto unsub = headers->findField ("List-Unsubscribe");
+							if (!unsub)
+								return;
+
+							const auto& unsubText = unsub->getValue<vmime::text> ();
+							if (!unsubText)
+								return;
+
+							HandleUnsubscribeText (StringizeCT (*unsubText), msg, headers, acc);
 						},
 						{}
 					}
@@ -418,8 +431,7 @@ namespace Snails
 		if (!headerText)
 			return {};
 
-		auto header = vmime::make_shared<vmime::header> ();
-		header->parse ({ headerText->constData (), static_cast<size_t> (headerText->size ()) });
+		auto header = HeaderFromContents (*headerText);
 
 		QList<MessageListActionInfo> result;
 		for (const auto provider : Providers_)
