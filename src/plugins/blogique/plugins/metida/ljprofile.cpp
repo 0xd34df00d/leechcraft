@@ -180,8 +180,7 @@ namespace Metida
 	{
 		ProfileData_ = profile;
 		std::sort (ProfileData_.Moods_.begin (), ProfileData_.Moods_.end (),
-				[] (decltype (ProfileData_.Moods_.at (0)) mood1,
-						decltype (ProfileData_.Moods_.at (0)) mood2)
+				[] (const auto& mood1, const auto& mood2)
 					{ return QString::localeAwareCompare (mood1.Name_, mood2.Name_) < 0; });
 		SaveAvatar ();
 		for (int i = 0; i < ProfileData_.AvatarsID_.count (); ++i)

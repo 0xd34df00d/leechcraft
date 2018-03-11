@@ -305,8 +305,8 @@ namespace Snails
 	{
 		PendingSaveMessages_ [acc].remove (id);
 
-		BaseForAccount (acc)->RemoveMessage (id, folder,
-				[this, acc, folder, id] { RemoveMessageFile (acc, folder, id); });
+		BaseForAccount (acc)->RemoveMessage (id, folder);
+		RemoveMessageFile (acc, folder, id);
 	}
 
 	int Storage::GetNumMessages (Account *acc) const

@@ -388,7 +388,7 @@ namespace Snails
 		if (messages.isEmpty ())
 			return;
 
-		std::sort (messages.begin (), messages.end (),
+		std::stable_sort (messages.begin (), messages.end (),
 				Util::ComparingBy ([] (const auto& msg) { return msg->GetDate (); }));
 
 		QtConcurrent::map (messages,
@@ -425,8 +425,7 @@ namespace Snails
 	bool MailModel::Update (const Message_ptr& msg)
 	{
 		const auto pos = std::find_if (Messages_.begin (), Messages_.end (),
-				[&msg] (const Message_ptr& other)
-					{ return other->GetFolderID () == msg->GetFolderID (); });
+				[&msg] (const Message_ptr& other) { return other->GetFolderID () == msg->GetFolderID (); });
 		if (pos == Messages_.end ())
 			return false;
 
@@ -501,8 +500,7 @@ namespace Snails
 		return std::any_of (FolderId2Nodes_.begin (), FolderId2Nodes_.end (),
 				[] (const auto& list)
 				{
-					return std::any_of (list.begin (), list.end (),
-							[] (const auto& node) { return node->IsChecked_; });
+					return std::any_of (list.begin (), list.end (), [] (const auto& node) { return node->IsChecked_; });
 				});
 	}
 

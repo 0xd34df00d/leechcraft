@@ -48,21 +48,23 @@ namespace Snails
 	class Message;
 	typedef std::shared_ptr<Message> Message_ptr;
 
-	class AccountDatabase : public QObject
+	class AccountDatabase
 	{
 		QSqlDatabase DB_;
 	public:
 		struct Message;
 		struct Folder;
 		struct Msg2Folder;
+		struct MsgHeader;
 	private:
 		Util::oral::ObjectInfo_ptr<Message> Messages_;
 		Util::oral::ObjectInfo_ptr<Folder> Folders_;
 		Util::oral::ObjectInfo_ptr<Msg2Folder> Msg2Folder_;
+		Util::oral::ObjectInfo_ptr<MsgHeader> MsgHeader_;
 
 		QMap<QStringList, int> KnownFolders_;
 	public:
-		AccountDatabase (const QDir&, Account*, QObject* = nullptr);
+		AccountDatabase (const QDir&, Account*);
 
 		QList<QByteArray> GetIDs (const QStringList& folder);
 		int GetMessageCount (const QStringList& folder);
@@ -70,8 +72,10 @@ namespace Snails
 		int GetMessageCount ();
 
 		void AddMessage (const Message_ptr&);
-		void RemoveMessage (const QByteArray& msgId, const QStringList& folder,
-				const std::function<void ()>& continuation = {});
+		void RemoveMessage (const QByteArray& msgId, const QStringList& folder);
+
+		void SetMessageHeader (const QByteArray& msgId, const QByteArray& header);
+		boost::optional<QByteArray> GetMessageHeader (const QByteArray& msgId) const;
 
 		boost::optional<int> GetMsgTableId (const QByteArray& uniqueId);
 		boost::optional<int> GetMsgTableId (const QByteArray& msgId, const QStringList& folder);

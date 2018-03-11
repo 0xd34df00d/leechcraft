@@ -151,17 +151,20 @@ namespace oral
 	namespace detail
 	{
 		template<typename T>
-		struct IsPKey : std::false_type {};
+		struct IsReferencesTarget : std::false_type {};
 
 		template<typename U, typename... Tags>
-		struct IsPKey<PKey<U, Tags...>> : std::true_type {};
+		struct IsReferencesTarget<PKey<U, Tags...>> : std::true_type {};
+
+		template<typename U>
+		struct IsReferencesTarget<Unique<U>> : std::true_type {};
 	}
 
 	template<auto Ptr>
 	struct References
 	{
 		using member_type = MemberPtrType_t<Ptr>;
-		static_assert (detail::IsPKey<member_type>::value, "References<> element must refer to a PKey<> element");
+		static_assert (detail::IsReferencesTarget<member_type>::value, "References<> element must refer to a PKey<> element");
 
 		using value_type = typename member_type::value_type;
 		value_type Val_;

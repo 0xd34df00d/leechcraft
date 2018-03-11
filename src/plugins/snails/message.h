@@ -47,10 +47,8 @@ namespace Snails
 	class LazyVmimeHeader;
 	using LazyVmimeHeader_ptr = std::shared_ptr<LazyVmimeHeader>;
 
-	class Message : public QObject
+	class Message
 	{
-		Q_OBJECT
-
 		QByteArray FolderID_;
 		QByteArray MessageID_;
 		QList<QStringList> Folders_;
@@ -85,8 +83,6 @@ namespace Snails
 	private:
 		QHash<Address, Addresses_t> Addresses_;
 	public:
-		using QObject::QObject;
-
 		bool IsFullyFetched () const;
 
 		/** @brief Returns folder-specific message ID.
@@ -151,18 +147,16 @@ namespace Snails
 
 		QByteArray Serialize () const;
 		void Deserialize (const QByteArray&);
-	signals:
-		void readStatusChanged (const QByteArray&, bool);
 	};
 
 	typedef std::shared_ptr<Message> Message_ptr;
 	typedef QSet<Message_ptr> MessageSet;
 
 	QString GetNiceMail (const Message::Address_t&);
-}
-}
 
-uint qHash (const LeechCraft::Snails::Message_ptr);
+	uint qHash (const Message_ptr);
+}
+}
 
 Q_DECLARE_METATYPE (LeechCraft::Snails::Message_ptr)
 Q_DECLARE_METATYPE (QList<LeechCraft::Snails::Message_ptr>)

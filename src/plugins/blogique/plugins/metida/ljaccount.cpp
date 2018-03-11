@@ -33,6 +33,7 @@
 #include <util/xpc/passutils.h>
 #include <util/xpc/util.h>
 #include <util/xpc/notificationactionhandler.h>
+#include <util/sll/prelude.h>
 #include "core.h"
 #include "ljaccountconfigurationwidget.h"
 #include "ljaccountconfigurationdialog.h"
@@ -752,13 +753,9 @@ namespace Metida
 		if (comments.isEmpty ())
 			return;
 
-		QList<CommentEntry> recentComments;
 		const auto& id = GetAccountID ();
-		std::transform (comments.begin (), comments.end (), std::back_inserter (recentComments),
-				[id] (decltype (comments.first ()) comment)
-				{
-					return LJCommentEntry2RecentComment (comment, id);
-				});
+		auto recentComments = Util::Map (comments,
+				[&id] (const auto& comment) { return LJCommentEntry2RecentComment (comment, id); });
 		emit gotRecentComments (recentComments);
 	}
 

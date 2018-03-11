@@ -80,7 +80,7 @@ namespace oral
 		{
 		}
 
-		virtual ~QueryException () throw ()
+		virtual ~QueryException () noexcept
 		{
 		}
 
@@ -286,6 +286,12 @@ namespace oral
 
 	namespace detail
 	{
+		template<typename T>
+		struct IsPKey : std::false_type {};
+
+		template<typename U, typename... Tags>
+		struct IsPKey<PKey<U, Tags...>> : std::true_type {};
+
 		template<typename T>
 		QVariant ToVariantF (const T& t)
 		{

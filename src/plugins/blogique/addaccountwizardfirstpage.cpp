@@ -79,9 +79,8 @@ namespace Blogique
 	{
 		const auto& accs = Core::Instance ().GetAccounts ();
 		const auto& name = Ui_.NameEdit_->text ();
-		return std::find_if (accs.begin (), accs.end (),
-				[&name] (decltype (accs.front ()) acc)
-					{ return acc->GetAccountName () == name; }) == accs.end ();
+		return std::none_of (accs.begin (), accs.end (),
+				[&name] (const auto& acc) { return acc->GetAccountName () == name; });
 	}
 
 	void AddAccountWizardFirstPage::readdWidgets ()

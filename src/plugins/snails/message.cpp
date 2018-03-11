@@ -225,11 +225,7 @@ namespace Snails
 
 	void Message::SetRead (bool read)
 	{
-		const bool shouldEmit = read != IsRead_;
 		IsRead_ = read;
-
-		if (shouldEmit)
-			emit readStatusChanged (GetFolderID (), read);
 	}
 
 	QList<AttDescr> Message::GetAttachments () const
@@ -300,7 +296,7 @@ namespace Snails
 		QByteArray result;
 
 		QDataStream str (&result, QIODevice::WriteOnly);
-		str.setVersion (QDataStream::Qt_4_8);
+		str.setVersion (QDataStream::Qt_5_6);
 		str << static_cast<quint8> (1)
 			<< FolderID_
 			<< MessageID_
@@ -335,7 +331,7 @@ namespace Snails
 	void Message::Deserialize (const QByteArray& data)
 	{
 		QDataStream str (data);
-		str.setVersion (QDataStream::Qt_4_8);
+		str.setVersion (QDataStream::Qt_5_6);
 		quint8 version = 0;
 		str >> version;
 		if (version != 1)
@@ -358,10 +354,13 @@ namespace Snails
 
 		QByteArray headerBA;
 		str >> headerBA;
+		/*
 		if (!headerBA.isEmpty ())
 			VmimeHeader_ = std::make_shared<LazyVmimeHeader> (headerBA);
 		else
 			VmimeHeader_.reset ();
+		 */
+		VmimeHeader_ = std::make_shared<LazyVmimeHeader> (QByteArray {});
 	}
 
 	QString GetNiceMail (const Message::Address_t& pair)
@@ -371,10 +370,10 @@ namespace Snails
 				pair.second :
 				fromName + " <" + pair.second + ">";
 	}
-}
-}
 
-uint qHash (const LeechCraft::Snails::Message_ptr msg)
-{
-	return qHash (msg->GetFolderID ());
+	uint qHash (const LeechCraft::Snails::Message_ptr msg)
+	{
+		return qHash (msg->GetFolderID ());
+	}
+}
 }
