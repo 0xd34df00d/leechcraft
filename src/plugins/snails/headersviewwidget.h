@@ -30,7 +30,6 @@
 #pragma once
 
 #include <QWidget>
-#include <vmime/header.hpp>
 #include "ui_headersviewwidget.h"
 
 namespace LeechCraft
@@ -43,7 +42,7 @@ namespace Snails
 
 		Ui::HeadersViewWidget Ui_;
 	public:
-		HeadersViewWidget (const vmime::shared_ptr<const vmime::header>&, QWidget* = nullptr);
+		HeadersViewWidget (const QByteArray&, QWidget* = nullptr);
 	};
 }
 }

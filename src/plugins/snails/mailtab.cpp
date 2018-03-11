@@ -48,6 +48,7 @@
 #include <interfaces/core/iiconthememanager.h>
 #include "core.h"
 #include "storage.h"
+#include "accountdatabase.h"
 #include "mailtreedelegate.h"
 #include "mailmodel.h"
 #include "viewcolumnsmanager.h"
@@ -1040,11 +1041,11 @@ namespace Snails
 				continue;
 			}
 
-			const auto& header = msg->GetVmimeHeader ();
+			const auto& header = Storage_->BaseForAccount (CurrAcc_.get ())->GetMessageHeader (msg->GetMessageID ());
 			if (!header)
 				continue;
 
-			auto widget = new HeadersViewWidget { header, this };
+			auto widget = new HeadersViewWidget { *header, this };
 			widget->setAttribute (Qt::WA_DeleteOnClose);
 			widget->setWindowFlags (Qt::Dialog);
 			widget->setWindowTitle (tr ("Headers for %1").arg ('"' + msg->GetSubject () + '"'));

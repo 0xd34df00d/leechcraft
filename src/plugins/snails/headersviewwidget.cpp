@@ -28,24 +28,17 @@
  **********************************************************************/
 
 #include "headersviewwidget.h"
-#include <QBuffer>
-#include "outputiodevadapter.h"
 
 namespace LeechCraft
 {
 namespace Snails
 {
-	HeadersViewWidget::HeadersViewWidget (const vmime::shared_ptr<const vmime::header>& header, QWidget *parent)
+	HeadersViewWidget::HeadersViewWidget (const QByteArray& header, QWidget *parent)
 	: QWidget { parent }
 	{
 		Ui_.setupUi (this);
 
-		QBuffer buffer;
-		buffer.open (QIODevice::WriteOnly);
-		OutputIODevAdapter adapter { &buffer };
-		header->generate (adapter);
-
-		const auto& bufferStr = QString::fromUtf8 (buffer.buffer ());
+		const auto& bufferStr = QString::fromUtf8 (header);
 		const auto& escaped = bufferStr.toHtmlEscaped ();
 		Ui_.Edit_->setHtml ("<pre>" + escaped + "</pre>");
 	}
