@@ -48,6 +48,8 @@ namespace LeechCraft
 {
 namespace Snails
 {
+	using Header_ptr = vmime::shared_ptr<const vmime::header>;
+
 	class MessageListActionsProvider
 	{
 	public:
@@ -56,7 +58,7 @@ namespace Snails
 
 	namespace
 	{
-		vmime::shared_ptr<const vmime::messageId> GetGithubMsgId (const vmime::shared_ptr<const vmime::header>& headers)
+		vmime::shared_ptr<const vmime::messageId> GetGithubMsgId (const Header_ptr& headers)
 		{
 			const auto& referencesField = headers->References ();
 			if (!referencesField)
@@ -76,7 +78,7 @@ namespace Snails
 			return refSeq->getMessageIdAt (0);
 		}
 
-		QString GetGithubAddr (const vmime::shared_ptr<const vmime::header>& headers)
+		QString GetGithubAddr (const Header_ptr& headers)
 		{
 			if (!headers->findField ("X-GitHub-Sender"))
 				return {};
