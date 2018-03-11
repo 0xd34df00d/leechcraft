@@ -57,6 +57,7 @@
 #include <Qsci/qscilexerxml.h>
 #include <util/util.h>
 #include <util/xpc/util.h>
+#include <util/sll/prelude.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include "xmlsettingsmanager.h"
@@ -866,12 +867,9 @@ namespace Popishu
 
 		if (save)
 		{
-			QStringList recent;
 			currentActions.prepend (action);
-			Q_FOREACH (QAction *action, currentActions)
-				recent << action->data ().toString ();
-			XmlSettingsManager::Instance ()->
-					setProperty ("RecentlyOpenedFiles", recent);
+			const auto& recent = Util::Map (currentActions, [] (QAction *act) { return act->data ().toString (); });
+			XmlSettingsManager::Instance ()->setProperty ("RecentlyOpenedFiles", recent);
 		}
 	}
 
