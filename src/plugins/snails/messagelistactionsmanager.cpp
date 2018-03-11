@@ -359,7 +359,7 @@ namespace Snails
 				{
 					{
 						QObject::tr ("Unsubscribe"),
-						QObject::tr ("Try canceling receiving further messages like this."),
+						QObject::tr ("Try cancelling receiving further messages like this."),
 						QIcon::fromTheme ("news-unsubscribe"),
 						[header, headers, acc] (const Message_ptr& msg)
 						{
