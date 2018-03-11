@@ -424,9 +424,10 @@ namespace Snails
 		};
 	}
 
-	MessageListActionsManager::MessageListActionsManager (Account *acc, QObject *parent)
+	MessageListActionsManager::MessageListActionsManager (Account *acc, Storage *storage, QObject *parent)
 	: QObject { parent }
 	, Acc_ { acc }
+	, Storage_ { storage }
 	{
 		Providers_ << std::make_shared<AttachmentsProvider> (acc);
 		Providers_ << std::make_shared<GithubProvider> ();
