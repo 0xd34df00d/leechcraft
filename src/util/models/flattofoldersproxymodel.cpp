@@ -478,9 +478,9 @@ namespace LeechCraft
 
 			const auto& oldTags = Util::MapAs<QSet> (Items_.values (pidx), [] (const auto& item) { return item->Tag_; });
 
-			const auto& added = QSet<QString> (newTags).subtract (oldTags);
-			const auto& removed = QSet<QString> (oldTags).subtract (newTags);
-			const auto& changed = QSet<QString> (newTags).intersect (oldTags);
+			const auto added = QSet<QString> (newTags).subtract (oldTags);
+			const auto removed = QSet<QString> (oldTags).subtract (newTags);
+			const auto changed = QSet<QString> (newTags).intersect (oldTags);
 
 			for (const auto& ch : changed)
 			{
