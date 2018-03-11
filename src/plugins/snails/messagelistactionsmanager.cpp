@@ -99,20 +99,21 @@ namespace Snails
 				if (addrReq.isEmpty ())
 					return {};
 
-				return {
+				return
+				{
+					{
+						QObject::tr ("Open"),
+						QObject::tr ("Open the page on GitHub."),
+						QIcon::fromTheme ("document-open"),
+						[addrReq] (const Message_ptr&)
 						{
-							QObject::tr ("Open"),
-							QObject::tr ("Open the page on GitHub."),
-							QIcon::fromTheme ("document-open"),
-							[addrReq] (const Message_ptr&)
-							{
-								const QUrl fullUrl { "https://github.com/" + addrReq };
-								const auto& entity = Util::MakeEntity (fullUrl, {}, FromUserInitiated | OnlyHandle);
-								Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (entity);
-							},
-							{}
-						}
-					};
+							const QUrl fullUrl { "https://github.com/" + addrReq };
+							const auto& entity = Util::MakeEntity (fullUrl, {}, FromUserInitiated | OnlyHandle);
+							Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (entity);
+						},
+						{}
+					}
+				};
 			}
 		};
 
@@ -146,20 +147,21 @@ namespace Snails
 				const auto& left = QString::fromUtf8 (ref->getLeft ().c_str ());
 				const auto bugId = left.section ('-', 1, 1);
 
-				return {
+				return
+				{
+					{
+						QObject::tr ("Open"),
+						QObject::tr ("Open the bug page on Bugzilla."),
+						QIcon::fromTheme ("tools-report-bug"),
+						[url, bugId] (const Message_ptr&)
 						{
-							QObject::tr ("Open"),
-							QObject::tr ("Open the bug page on Bugzilla."),
-							QIcon::fromTheme ("tools-report-bug"),
-							[url, bugId] (const Message_ptr&)
-							{
-								const QUrl fullUrl { url + "show_bug.cgi?id=" + bugId };
-								const auto& entity = Util::MakeEntity (fullUrl, {}, FromUserInitiated | OnlyHandle);
-								Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (entity);
-							},
-							{}
-						}
-					};
+							const QUrl fullUrl { url + "show_bug.cgi?id=" + bugId };
+							const auto& entity = Util::MakeEntity (fullUrl, {}, FromUserInitiated | OnlyHandle);
+							Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (entity);
+						},
+						{}
+					}
+				};
 			}
 		};
 
@@ -192,20 +194,21 @@ namespace Snails
 
 				const auto& issue = StringizeCT (*issueText);
 
-				return {
+				return
+				{
+					{
+						QObject::tr ("Open"),
+						QObject::tr ("Open the issue page on Redmine."),
+						QIcon::fromTheme ("tools-report-bug"),
+						[url, issue] (const Message_ptr&)
 						{
-							QObject::tr ("Open"),
-							QObject::tr ("Open the issue page on Redmine."),
-							QIcon::fromTheme ("tools-report-bug"),
-							[url, issue] (const Message_ptr&)
-							{
-								const QUrl fullUrl { "http://" + url + "/issues/" + issue };
-								const auto& entity = Util::MakeEntity (fullUrl, {}, FromUserInitiated | OnlyHandle);
-								Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (entity);
-							},
-							{}
-						}
-					};
+							const QUrl fullUrl { "http://" + url + "/issues/" + issue };
+							const auto& entity = Util::MakeEntity (fullUrl, {}, FromUserInitiated | OnlyHandle);
+							Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (entity);
+						},
+						{}
+					}
+				};
 			}
 		};
 
@@ -228,19 +231,20 @@ namespace Snails
 
 				const auto& url = StringizeCT (*urlText);
 
-				return {
+				return
+				{
+					{
+						QObject::tr ("Open"),
+						QObject::tr ("Open the review page on ReviewBoard."),
+						QIcon::fromTheme ("document-open"),
+						[url] (const Message_ptr&)
 						{
-							QObject::tr ("Open"),
-							QObject::tr ("Open the review page on ReviewBoard."),
-							QIcon::fromTheme ("document-open"),
-							[url] (const Message_ptr&)
-							{
-								const auto& entity = Util::MakeEntity (QUrl { url }, {}, FromUserInitiated | OnlyHandle);
-								Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (entity);
-							},
-							{}
-						}
-					};
+							const auto& entity = Util::MakeEntity (QUrl { url }, {}, FromUserInitiated | OnlyHandle);
+							Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (entity);
+						},
+						{}
+					}
+				};
 			}
 		};
 
@@ -369,22 +373,23 @@ namespace Snails
 				if (!header)
 					return {};
 
-				return {
+				return
+				{
+					{
+						QObject::tr ("Unsubscribe"),
+						QObject::tr ("Try canceling receiving further messages like this."),
+						QIcon::fromTheme ("news-unsubscribe"),
+						[header, acc] (const Message_ptr& msg)
 						{
-							QObject::tr ("Unsubscribe"),
-							QObject::tr ("Try canceling receiving further messages like this."),
-							QIcon::fromTheme ("news-unsubscribe"),
-							[header, acc] (const Message_ptr& msg)
-							{
-								const auto& vmimeText = header->getValue<vmime::text> ();
-								if (!vmimeText)
-									return;
+							const auto& vmimeText = header->getValue<vmime::text> ();
+							if (!vmimeText)
+								return;
 
-								HandleUnsubscribeText (StringizeCT (*vmimeText), msg, acc);
-							},
-							{}
-						}
-					};
+							HandleUnsubscribeText (StringizeCT (*vmimeText), msg, acc);
+						},
+						{}
+					}
+				};
 			}
 		};
 
