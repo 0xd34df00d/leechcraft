@@ -269,28 +269,6 @@ namespace Snails
 			att.Dump ();
 	}
 
-	vmime::shared_ptr<const vmime::header> Message::GetVmimeHeader () const
-	{
-		if (!VmimeHeader_)
-			return {};
-
-		return *VmimeHeader_;
-	}
-
-	void Message::SetVmimeHeader (const vmime::shared_ptr<const vmime::header>& header)
-	{
-		if (header)
-			VmimeHeader_ = std::make_shared<LazyVmimeHeader> (header);
-		else
-			VmimeHeader_.reset ();
-	}
-
-	void Message::ForceVmimeHeader ()
-	{
-		if (VmimeHeader_)
-			VmimeHeader_->Force ();
-	}
-
 	QByteArray Message::Serialize () const
 	{
 		QByteArray result;
@@ -312,19 +290,6 @@ namespace Snails
 			<< References_
 			<< Addresses_
 			<< Attachments_;
-
-		if (VmimeHeader_)
-		{
-			QBuffer buffer;
-			buffer.open (QIODevice::WriteOnly);
-			OutputIODevAdapter adapter { &buffer };
-			(*VmimeHeader_)->generate (adapter);
-
-			str << buffer.buffer ();
-		}
-		else
-			str << QByteArray {};
-
 		return result;
 	}
 
@@ -351,16 +316,6 @@ namespace Snails
 			>> References_
 			>> Addresses_
 			>> Attachments_;
-
-		QByteArray headerBA;
-		str >> headerBA;
-		/*
-		if (!headerBA.isEmpty ())
-			VmimeHeader_ = std::make_shared<LazyVmimeHeader> (headerBA);
-		else
-			VmimeHeader_.reset ();
-		 */
-		VmimeHeader_ = std::make_shared<LazyVmimeHeader> (QByteArray {});
 	}
 
 	QString GetNiceMail (const Message::Address_t& pair)

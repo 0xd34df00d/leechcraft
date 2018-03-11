@@ -44,9 +44,6 @@ namespace LeechCraft
 {
 namespace Snails
 {
-	class LazyVmimeHeader;
-	using LazyVmimeHeader_ptr = std::shared_ptr<LazyVmimeHeader>;
-
 	class Message
 	{
 		QByteArray FolderID_;
@@ -66,8 +63,6 @@ namespace Snails
 		bool IsRead_ = false;
 
 		QList<AttDescr> Attachments_;
-
-		LazyVmimeHeader_ptr VmimeHeader_;
 	public:
 		enum class Address
 		{
@@ -140,10 +135,6 @@ namespace Snails
 		void SetAttachmentList (const QList<AttDescr>&);
 
 		void Dump () const;
-
-		vmime::shared_ptr<const vmime::header> GetVmimeHeader () const;
-		void SetVmimeHeader (const vmime::shared_ptr<const vmime::header>&);
-		void ForceVmimeHeader ();
 
 		QByteArray Serialize () const;
 		void Deserialize (const QByteArray&);
