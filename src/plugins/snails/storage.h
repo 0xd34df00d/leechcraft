@@ -52,12 +52,12 @@ namespace Snails
 		QDir SDir_;
 		QHash<QByteArray, bool> IsMessageRead_;
 
-		QHash<Account*, AccountDatabase_ptr> AccountBases_;
-		QHash<Account*, QHash<QByteArray, Message_ptr>> PendingSaveMessages_;
+		QHash<const Account*, AccountDatabase_ptr> AccountBases_;
+		QHash<const Account*, QHash<QByteArray, Message_ptr>> PendingSaveMessages_;
 	public:
 		Storage (QObject* = nullptr);
 
-		AccountDatabase_ptr BaseForAccount (Account*);
+		AccountDatabase_ptr BaseForAccount (const Account*);
 
 		void SaveMessages (Account*, const QStringList& folders, const QList<Message_ptr>&);
 
@@ -78,7 +78,7 @@ namespace Snails
 		Message_ptr LoadMessage (Account*, QDir, const QByteArray&) const;
 		void RemoveMessageFile (Account*, const QStringList&, const QByteArray&);
 	private:
-		QDir DirForAccount (Account*) const;
+		QDir DirForAccount (const Account*) const;
 
 		void AddMessage (Message_ptr, Account*);
 		void UpdateCaches (Message_ptr);

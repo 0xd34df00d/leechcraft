@@ -64,7 +64,7 @@ namespace Snails
 
 		QMap<QStringList, int> KnownFolders_;
 	public:
-		AccountDatabase (const QDir&, Account*);
+		AccountDatabase (const QDir&, const Account*);
 
 		QList<QByteArray> GetIDs (const QStringList& folder);
 		int GetMessageCount (const QStringList& folder);

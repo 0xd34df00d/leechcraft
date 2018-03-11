@@ -391,7 +391,7 @@ namespace Snails
 		}
 	}
 
-	QDir Storage::DirForAccount (Account *acc) const
+	QDir Storage::DirForAccount (const Account *acc) const
 	{
 		const QByteArray& id = acc->GetID ().toHex ();
 
@@ -409,7 +409,7 @@ namespace Snails
 		return dir;
 	}
 
-	AccountDatabase_ptr Storage::BaseForAccount (Account *acc)
+	AccountDatabase_ptr Storage::BaseForAccount (const Account *acc)
 	{
 		if (AccountBases_.contains (acc))
 			return AccountBases_ [acc];
