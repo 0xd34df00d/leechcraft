@@ -43,6 +43,8 @@
 #include "message.h"
 #include "vmimeconversions.h"
 #include "account.h"
+#include "storage.h"
+#include "accountdatabase.h"
 
 namespace LeechCraft
 {
@@ -53,7 +55,7 @@ namespace Snails
 	class MessageListActionsProvider
 	{
 	public:
-		virtual QList<MessageListActionInfo> GetMessageActions (const Message_ptr&, Account*) const = 0;
+		virtual QList<MessageListActionInfo> GetMessageActions (const Message_ptr&, const Header_ptr&, Account*) const = 0;
 	};
 
 	namespace
@@ -93,9 +95,9 @@ namespace Snails
 		class GithubProvider final : public MessageListActionsProvider
 		{
 		public:
-			QList<MessageListActionInfo> GetMessageActions (const Message_ptr& msg, Account*) const override
+			QList<MessageListActionInfo> GetMessageActions (const Message_ptr&, const Header_ptr& headers, Account*) const override
 			{
-				const auto& addrReq = GetGithubAddr (msg->GetVmimeHeader ());
+				const auto& addrReq = GetGithubAddr (headers);
 				if (addrReq.isEmpty ())
 					return {};
 
@@ -120,12 +122,8 @@ namespace Snails
 		class BugzillaProvider final : public MessageListActionsProvider
 		{
 		public:
-			QList<MessageListActionInfo> GetMessageActions (const Message_ptr& msg, Account*) const override
+			QList<MessageListActionInfo> GetMessageActions (const Message_ptr&, const Header_ptr& headers, Account*) const override
 			{
-				const auto& headers = msg->GetVmimeHeader ();
-				if (!headers)
-					return {};
-
 				const auto header = headers->findField ("X-Bugzilla-URL");
 				if (!header)
 					return {};
@@ -168,12 +166,8 @@ namespace Snails
 		class RedmineProvider final : public MessageListActionsProvider
 		{
 		public:
-			QList<MessageListActionInfo> GetMessageActions (const Message_ptr& msg, Account*) const override
+			QList<MessageListActionInfo> GetMessageActions (const Message_ptr&, const Header_ptr& headers, Account*) const override
 			{
-				const auto& headers = msg->GetVmimeHeader ();
-				if (!headers)
-					return {};
-
 				const auto header = headers->findField ("X-Redmine-Host");
 				if (!header)
 					return {};
@@ -215,12 +209,8 @@ namespace Snails
 		class ReviewboardProvider final : public MessageListActionsProvider
 		{
 		public:
-			QList<MessageListActionInfo> GetMessageActions (const Message_ptr& msg, Account*) const override
+			QList<MessageListActionInfo> GetMessageActions (const Message_ptr&, const Header_ptr& headers, Account*) const override
 			{
-				const auto& headers = msg->GetVmimeHeader ();
-				if (!headers)
-					return {};
-
 				const auto header = headers->findField ("X-ReviewRequest-URL");
 				if (!header)
 					return {};
@@ -279,13 +269,9 @@ namespace Snails
 			return email.isValid () ? email : url;
 		}
 
-		QString GetListName (const Message_ptr& msg)
+		QString GetListName (const Message_ptr& msg, const Header_ptr& headers)
 		{
 			const auto& addrString = "<em>" + msg->GetAddressString (Message::Address::From).toHtmlEscaped () + "</em>";
-
-			const auto& headers = msg->GetVmimeHeader ();
-			if (!headers)
-				return addrString;
 
 			const auto header = headers->findField ("List-Id");
 			if (!header)
@@ -298,11 +284,11 @@ namespace Snails
 			return "<em>" + StringizeCT (*vmimeText).toHtmlEscaped () + "</em>";
 		}
 
-		void HandleUnsubscribeText (const QString& text, const Message_ptr& msg, Account *acc)
+		void HandleUnsubscribeText (const QString& text, const Message_ptr& msg, const Header_ptr& headers, Account *acc)
 		{
 			const auto& url = GetUnsubscribeUrl (text);
 
-			const auto& addrString = GetListName (msg);
+			const auto& addrString = GetListName (msg, headers);
 			if (url.scheme () == "mailto")
 			{
 				if (QMessageBox::question (nullptr,
@@ -363,12 +349,8 @@ namespace Snails
 		class UnsubscribeProvider final : public MessageListActionsProvider
 		{
 		public:
-			QList<MessageListActionInfo> GetMessageActions (const Message_ptr& msg, Account *acc) const override
+			QList<MessageListActionInfo> GetMessageActions (const Message_ptr&, const Header_ptr& headers, Account *acc) const override
 			{
-				const auto& headers = msg->GetVmimeHeader ();
-				if (!headers)
-					return {};
-
 				const auto header = headers->findField ("List-Unsubscribe");
 				if (!header)
 					return {};
@@ -379,13 +361,13 @@ namespace Snails
 						QObject::tr ("Unsubscribe"),
 						QObject::tr ("Try canceling receiving further messages like this."),
 						QIcon::fromTheme ("news-unsubscribe"),
-						[header, acc] (const Message_ptr& msg)
+						[header, headers, acc] (const Message_ptr& msg)
 						{
 							const auto& vmimeText = header->getValue<vmime::text> ();
 							if (!vmimeText)
 								return;
 
-							HandleUnsubscribeText (StringizeCT (*vmimeText), msg, acc);
+							HandleUnsubscribeText (StringizeCT (*vmimeText), msg, headers, acc);
 						},
 						{}
 					}
@@ -402,7 +384,7 @@ namespace Snails
 			{
 			}
 
-			QList<MessageListActionInfo> GetMessageActions (const Message_ptr& msg, Account *acc) const override
+			QList<MessageListActionInfo> GetMessageActions (const Message_ptr& msg, const Header_ptr& headers, Account *acc) const override
 			{
 				if (msg->GetAttachments ().isEmpty ())
 					return {};
@@ -439,9 +421,16 @@ namespace Snails
 
 	QList<MessageListActionInfo> MessageListActionsManager::GetMessageActions (const Message_ptr& msg) const
 	{
+		const auto headerText = Storage_->BaseForAccount (Acc_)->GetMessageHeader (msg->GetMessageID ());
+		if (!headerText)
+			return {};
+
+		auto header = vmime::make_shared<vmime::header> ();
+		header->parse ({ headerText->constData (), static_cast<size_t> (headerText->size ()) });
+
 		QList<MessageListActionInfo> result;
 		for (const auto provider : Providers_)
-			result += provider->GetMessageActions (msg, Acc_);
+			result += provider->GetMessageActions (msg, header, Acc_);
 		return result;
 	}
 }
