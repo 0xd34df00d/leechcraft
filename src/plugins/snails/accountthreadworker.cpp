@@ -363,7 +363,7 @@ namespace Snails
 		}
 	}
 
-	Message_ptr AccountThreadWorker::FromHeaders (const vmime::shared_ptr<vmime::net::message>& message) const
+	MessageWHeaders_t AccountThreadWorker::FromHeaders (const vmime::shared_ptr<vmime::net::message>& message) const
 	{
 		const auto& utf8cs = vmime::charset { vmime::charsets::UTF_8 };
 
@@ -531,7 +531,7 @@ namespace Snails
 
 		MessageStructHandler { msg, message } ();
 
-		return msg;
+		return { msg, header };
 	}
 
 	namespace
@@ -636,10 +636,12 @@ namespace Snails
 		qDebug () << Q_FUNC_INFO << folderName << folder.get () << lastId;
 
 		auto messages = GetMessagesInFolder (folder, lastId);
+		qDebug () << "done fetching, sent" << bytesCounter.GetSent ()
+				<< "bytes, received" << bytesCounter.GetReceived () << "bytes";
 		auto newMessages = Util::Map (messages, [this, &folderName] (const auto& msg)
 				{
 					auto res = FromHeaders (msg);
-					res->AddFolder (folderName);
+					res.first->AddFolder (folderName);
 					return res;
 				});
 		auto existing = Storage_->LoadIDs (A_, folderName);
@@ -647,13 +649,16 @@ namespace Snails
 		QList<QByteArray> ids;
 
 		QList<Message_ptr> updatedMessages;
-		Q_FOREACH (const auto& msg, newMessages)
+		for (auto it = newMessages.begin (); it != newMessages.end ();)
 		{
+			const auto& msg = it->first;
 			if (!existing.contains (msg->GetFolderID ()))
+			{
+				++it;
 				continue;
+			}
 
 			existing.removeAll (msg->GetFolderID ());
-			newMessages.removeAll (msg);
 
 			bool isUpdated = false;
 
@@ -679,10 +684,9 @@ namespace Snails
 				updatedMessages << updated;
 			else
 				ids << msg->GetFolderID ();
-		}
 
-		qDebug () << "done fetching, sent" << bytesCounter.GetSent ()
-				<< "bytes, received" << bytesCounter.GetReceived () << "bytes";
+			it = newMessages.erase (it);
+		}
 
 		return
 		{

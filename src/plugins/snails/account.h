@@ -222,7 +222,7 @@ namespace Snails
 
 		void HandleUpdatedMessages (const QList<Message_ptr>&, const QStringList&);
 		void HandleMessagesRemoved (const QList<QByteArray>&, const QStringList&);
-		void HandleMsgHeaders (const QList<Message_ptr>&, const QStringList&);
+		void HandleMsgHeaders (const QList<MessageWHeaders_t>&, const QStringList&);
 		void HandleGotOtherMessages (const QList<QByteArray>&, const QStringList&);
 
 		void HandleGotFolders (const QList<Folder>&);

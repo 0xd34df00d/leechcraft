@@ -155,6 +155,8 @@ namespace Snails
 	QString GetNiceMail (const Message::Address_t&);
 
 	uint qHash (const Message_ptr);
+
+	using MessageWHeaders_t = std::pair<Message_ptr, vmime::shared_ptr<const vmime::header>>;
 }
 }
 

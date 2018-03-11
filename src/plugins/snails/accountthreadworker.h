@@ -100,7 +100,7 @@ namespace Snails
 
 		struct FolderMessages
 		{
-			QList<Message_ptr> NewHeaders_;
+			QList<MessageWHeaders_t> NewHeaders_;
 			QList<Message_ptr> UpdatedMsgs_;
 			QList<QByteArray> OtherIds_;
 			QList<QByteArray> RemovedIds_;
@@ -112,7 +112,7 @@ namespace Snails
 
 		VmimeFolder_ptr GetFolder (const QStringList& folder, FolderMode mode);
 
-		Message_ptr FromHeaders (const vmime::shared_ptr<vmime::net::message>&) const;
+		MessageWHeaders_t FromHeaders (const vmime::shared_ptr<vmime::net::message>&) const;
 
 		Folder2Messages_t FetchMessagesIMAP (const QList<QStringList>&, const QByteArray&);
 		FolderMessages FetchMessagesInFolder (const QStringList&, const VmimeFolder_ptr&, const QByteArray&);

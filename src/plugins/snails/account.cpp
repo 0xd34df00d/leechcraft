@@ -33,6 +33,7 @@
 #include <QDataStream>
 #include <QInputDialog>
 #include <QMutex>
+#include <QBuffer>
 #include <QStandardItemModel>
 #include <QTimer>
 #include <util/xpc/util.h>
@@ -40,6 +41,7 @@
 #include <util/sll/slotclosure.h>
 #include <util/sll/visitor.h>
 #include <util/sll/qtutil.h>
+#include <util/sll/prelude.h>
 #include <util/threads/monadicfuture.h>
 #include <util/xpc/notificationactionhandler.h>
 #include <util/gui/sslcertificateinfowidget.h>
@@ -48,6 +50,7 @@
 #include "accountconfigdialog.h"
 #include "accountthread.h"
 #include "accountthreadworker.h"
+#include "accountdatabase.h"
 #include "storage.h"
 #include "accountfoldermanager.h"
 #include "mailmodel.h"
@@ -59,6 +62,7 @@
 #include "progresslistener.h"
 #include "progressmanager.h"
 #include "vmimeconversions.h"
+#include "outputiodevadapter.h"
 
 Q_DECLARE_METATYPE (QList<QStringList>)
 Q_DECLARE_METATYPE (QList<QByteArray>)
@@ -720,12 +724,24 @@ namespace Snails
 		return promise.future ();
 	}
 
-	void Account::HandleMsgHeaders (const QList<Message_ptr>& messages, const QStringList& folder)
+	void Account::HandleMsgHeaders (const QList<MessageWHeaders_t>& messages, const QStringList& folder)
 	{
 		qDebug () << Q_FUNC_INFO << messages.size ();
-		Storage_->SaveMessages (this, folder, messages);
+		const auto& justMessages = Util::Map (messages, Util::Fst);
+		Storage_->SaveMessages (this, folder, justMessages);
 
-		MailModelsManager_->Append (messages);
+		const auto base = Storage_->BaseForAccount (this);
+		for (const auto& [msg, header] : messages)
+		{
+			QBuffer buffer;
+			buffer.open (QIODevice::WriteOnly);
+			OutputIODevAdapter adapter { &buffer };
+			header->generate (adapter);
+
+			base->SetMessageHeader (msg->GetMessageID (), buffer.buffer ());
+		}
+
+		MailModelsManager_->Append (justMessages);
 	}
 
 	void Account::HandleUpdatedMessages (const QList<Message_ptr>& messages, const QStringList& folder)
