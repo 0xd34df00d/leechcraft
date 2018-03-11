@@ -355,18 +355,18 @@ namespace Snails
 				if (!header)
 					return {};
 
+				const auto& vmimeText = header->getValue<vmime::text> ();
+				if (!vmimeText)
+					return {};
+
 				return
 				{
 					{
 						QObject::tr ("Unsubscribe"),
 						QObject::tr ("Try cancelling receiving further messages like this."),
 						QIcon::fromTheme ("news-unsubscribe"),
-						[header, headers, acc] (const Message_ptr& msg)
+						[vmimeText, headers, acc] (const Message_ptr& msg)
 						{
-							const auto& vmimeText = header->getValue<vmime::text> ();
-							if (!vmimeText)
-								return;
-
 							HandleUnsubscribeText (StringizeCT (*vmimeText), msg, headers, acc);
 						},
 						{}
