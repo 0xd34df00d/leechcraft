@@ -51,7 +51,6 @@ namespace Imgaste
 			QStandardItemModel *reprModel,
 			QObject *parent)
 	: QObject (parent)
-	, Reply_ (0)
 	, Service_ (service)
 	, Worker_ (MakeWorker (service))
 	, Proxy_ (proxy)

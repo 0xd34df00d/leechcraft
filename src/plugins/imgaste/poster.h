@@ -51,7 +51,7 @@ namespace Imgaste
 	{
 		Q_OBJECT
 
-		QNetworkReply *Reply_;
+		QNetworkReply *Reply_ = nullptr;
 		const HostingService Service_;
 		const Worker_ptr Worker_;
 		const ICoreProxy_ptr Proxy_;
