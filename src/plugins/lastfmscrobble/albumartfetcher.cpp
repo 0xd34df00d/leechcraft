@@ -56,7 +56,7 @@ namespace Lastfmscrobble
 		};
 
 		const auto reply = Request ("album.getInfo", proxy->GetNetworkAccessManager (), params);
-		Util::HandleReplySeq<QString> (reply, this) >>
+		Util::HandleReplySeq<Util::ErrorInfo<QString>> (reply, this) >>
 				Util::Visitor
 				{
 					[this] (const QString& error) { Util::ReportFutureResult (Promise_, error); },

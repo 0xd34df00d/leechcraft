@@ -34,6 +34,7 @@
 #include <util/sll/either.h>
 #include <util/sll/overload.h>
 #include <util/sll/void.h>
+#include <util/sll/typelist.h>
 #include <util/threads/futures.h>
 
 namespace LeechCraft
@@ -56,9 +57,14 @@ namespace Util
 		};
 	}
 
-	template<typename Err = Util::Void>
+	template<typename>
+	struct ErrorInfo;
+
+	template<typename... Args>
 	auto HandleReply (QNetworkReply *reply, QObject *context)
 	{
+		using Err = Find<ErrorInfo, Util::Void, Args...>;
+
 		using Result_t = Util::Either<Err, QByteArray>;
 		QFutureInterface<Result_t> promise;
 		promise.reportStarted ();
@@ -90,10 +96,10 @@ namespace Util
 		return promise.future ();
 	}
 
-	template<typename Err = Util::Void>
+	template<typename... Args>
 	auto HandleReplySeq (QNetworkReply *reply, QObject *context)
 	{
-		return Sequence (context, HandleReply<Err> (reply, context));
+		return Sequence (context, HandleReply<Args...> (reply, context));
 	}
 }
 }
