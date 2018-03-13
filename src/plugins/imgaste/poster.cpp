@@ -38,6 +38,7 @@
 #include <interfaces/ijobholder.h>
 #include <util/xpc/util.h>
 #include <util/util.h>
+#include <util/network/handlenetworkreply.h>
 
 namespace LeechCraft
 {
@@ -91,24 +92,32 @@ namespace Imgaste
 				this,
 				setUploadProgress);
 
-		connect (Reply_,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleFinished ()));
-		connect (Reply_,
-				SIGNAL (error (QNetworkReply::NetworkError)),
-				this,
-				SLOT (handleError ()));
+		const auto em = Proxy_->GetEntityManager ();
+		Util::HandleReplySeq<Util::ErrorInfo<QString>, Util::ResultInfo<QNetworkReply*>> (Reply_, this) >>
+				Util::Visitor
+				{
+					[em] (const QString& errorString)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< errorString;
+
+						const auto& text = tr ("Image upload failed: %1")
+								.arg (errorString);
+						em->HandleEntity (Util::MakeNotification ("Imgaste", text, PCritical_));
+					},
+					[this] (QNetworkReply *reply) { HandleReplyFinished (reply); }
+				}.Finally ([this]
+						{
+							deleteLater ();
+						});
 	}
 
-	void Poster::handleFinished ()
+	void Poster::HandleReplyFinished (QNetworkReply *reply)
 	{
-		const auto& result = Reply_->readAll ();
-		Reply_->deleteLater ();
+		const auto em = Proxy_->GetEntityManager ();
 
-		const auto& pasteUrl = Worker_->GetLink (result, Reply_);
+		const auto& pasteUrl = Worker_->GetLink (reply->readAll (), reply);
 
-		auto em = Proxy_->GetEntityManager ();
 		if (pasteUrl.isEmpty ())
 		{
 			em->HandleEntity (Util::MakeNotification ("Imgaste",
@@ -121,26 +130,11 @@ namespace Imgaste
 			QApplication::clipboard ()->setText (pasteUrl, QClipboard::Clipboard);
 
 			auto text = tr ("Image pasted: %1, the URL was copied to the clipboard")
-				.arg ("<em>" + pasteUrl + "</em>");
+					.arg ("<em>" + pasteUrl + "</em>");
 			em->HandleEntity (Util::MakeNotification ("Imgaste", text, PInfo_));
 		}
 		else
 			Callback_ (pasteUrl);
-
-		deleteLater ();
-	}
-
-	void Poster::handleError ()
-	{
-		qWarning () << Q_FUNC_INFO
-			<< Reply_->errorString ();
-		Reply_->deleteLater ();
-
-		QString text = tr ("Image upload failed: %1")
-							.arg (Reply_->errorString ());
-		Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Imgaste", text, PCritical_));
-
-		deleteLater ();
 	}
 }
 }

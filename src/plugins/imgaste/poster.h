@@ -68,9 +68,8 @@ namespace Imgaste
 				DataFilterCallback_f = {},
 				QStandardItemModel* = nullptr,
 				QObject *parent = nullptr);
-	private slots:
-		void handleFinished ();
-		void handleError ();
+	private:
+		void HandleReplyFinished (QNetworkReply*);
 	};
 }
 }
