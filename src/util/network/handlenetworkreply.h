@@ -81,6 +81,8 @@ namespace Util
 					reply->deleteLater ();
 					if constexpr (std::is_same_v<Res, QByteArray>)
 						Util::ReportFutureResult (promise, Result_t::Right (reply->readAll ()));
+					else if constexpr (std::is_same_v<Res, QNetworkReply*>)
+						Util::ReportFutureResult (promise, Result_t::Right (reply));
 					else
 						static_assert (std::is_same_v<Res, struct Dummy>, "Unsupported reply type");
 				});
