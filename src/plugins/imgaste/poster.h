@@ -31,7 +31,6 @@
 
 #include <QObject>
 #include <QMap>
-#include <util/sll/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/idatafilter.h>
 #include "hostingservice.h"
@@ -59,7 +58,6 @@ namespace Imgaste
 
 		QStandardItemModel * const ReprModel_;
 		const QList<QStandardItem*> ReprRow_;
-		const Util::DefaultScopeGuard RowRemoveGuard_;
 	public:
 		Poster (HostingService service,
 				const QByteArray& data,

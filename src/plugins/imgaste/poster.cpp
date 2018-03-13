@@ -68,7 +68,6 @@ namespace Imgaste
 				reprModel->appendRow (result);
 				return result;
 			} ())
-	, RowRemoveGuard_ (Util::MakeScopeGuard ([this] { ReprModel_->removeRow (ReprRow_.first ()->row ()); }))
 	{
 		for (const auto item : ReprRow_)
 		{
@@ -106,9 +105,10 @@ namespace Imgaste
 						em->HandleEntity (Util::MakeNotification ("Imgaste", text, PCritical_));
 					},
 					[this] (QNetworkReply *reply) { HandleReplyFinished (reply); }
-				}.Finally ([this]
+				}.Finally ([this, reprModel]
 						{
 							deleteLater ();
+							reprModel->removeRow (ReprRow_.first ()->row ());
 						});
 	}
 
