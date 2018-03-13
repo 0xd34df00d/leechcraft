@@ -52,11 +52,9 @@ namespace Imgaste
 			QStandardItemModel *reprModel,
 			QObject *parent)
 	: QObject (parent)
-	, Service_ (service)
 	, Worker_ (MakeWorker (service))
 	, Proxy_ (proxy)
 	, Callback_ (callback)
-	, ReprModel_ (reprModel)
 	, ReprRow_ ([reprModel]
 			{
 				const QList<QStandardItem*> result

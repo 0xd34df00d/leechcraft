@@ -51,12 +51,10 @@ namespace Imgaste
 		Q_OBJECT
 
 		QNetworkReply *Reply_ = nullptr;
-		const HostingService Service_;
 		const Worker_ptr Worker_;
 		const ICoreProxy_ptr Proxy_;
 		const DataFilterCallback_f Callback_;
 
-		QStandardItemModel * const ReprModel_;
 		const QList<QStandardItem*> ReprRow_;
 	public:
 		Poster (HostingService service,
