@@ -60,12 +60,16 @@ namespace Util
 	template<typename>
 	struct ErrorInfo;
 
+	template<typename>
+	struct ResultInfo;
+
 	template<typename... Args>
 	auto HandleReply (QNetworkReply *reply, QObject *context)
 	{
 		using Err = Find<ErrorInfo, Util::Void, Args...>;
+		using Res = Find<ResultInfo, QByteArray, Args...>;
 
-		using Result_t = Util::Either<Err, QByteArray>;
+		using Result_t = Util::Either<Err, Res>;
 		QFutureInterface<Result_t> promise;
 		promise.reportStarted ();
 
@@ -75,7 +79,10 @@ namespace Util
 				[promise, reply] () mutable
 				{
 					reply->deleteLater ();
-					Util::ReportFutureResult (promise, Result_t::Right (reply->readAll ()));
+					if constexpr (std::is_same_v<Res, QByteArray>)
+						Util::ReportFutureResult (promise, Result_t::Right (reply->readAll ()));
+					else
+						static_assert (std::is_same_v<Res, struct Dummy>, "Unsupported reply type");
 				});
 		QObject::connect (reply,
 				Util::Overload<QNetworkReply::NetworkError> (&QNetworkReply::error),
