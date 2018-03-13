@@ -75,13 +75,21 @@ namespace Imgaste
 			item->setData (QVariant::fromValue<JobHolderRow> (JobHolderRow::ProcessProgress),
 					CustomDataRoles::RoleJobHolderRow);
 		}
+
+		auto setUploadProgress = [this] (qint64 done, qint64 total)
+		{
+			Util::SetJobHolderProgress (ReprRow_, done, total,
+					tr ("%1 of %2")
+							.arg (Util::MakePrettySize (done))
+							.arg (Util::MakePrettySize (total)));
+		};
 		setUploadProgress (0, data.size ());
 
 		Reply_ = Worker_->Post (data, format, proxy->GetNetworkAccessManager ());
 		connect (Reply_,
-				SIGNAL (uploadProgress (qint64, qint64)),
+				&QNetworkReply::uploadProgress,
 				this,
-				SLOT (setUploadProgress (qint64, qint64)));
+				setUploadProgress);
 
 		connect (Reply_,
 				SIGNAL (finished ()),
@@ -133,14 +141,6 @@ namespace Imgaste
 		Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Imgaste", text, PCritical_));
 
 		deleteLater ();
-	}
-
-	void Poster::setUploadProgress (qint64 done, qint64 total)
-	{
-		Util::SetJobHolderProgress (ReprRow_, done, total,
-				tr ("%1 of %2")
-					.arg (Util::MakePrettySize (done))
-					.arg (Util::MakePrettySize (total)));
 	}
 }
 }

@@ -71,7 +71,6 @@ namespace Imgaste
 	private slots:
 		void handleFinished ();
 		void handleError ();
-		void setUploadProgress (qint64, qint64);
 	};
 }
 }
