@@ -54,8 +54,6 @@ namespace Imgaste
 		const Worker_ptr Worker_;
 		const ICoreProxy_ptr Proxy_;
 		const DataFilterCallback_f Callback_;
-
-		const QList<QStandardItem*> ReprRow_;
 	public:
 		Poster (HostingService service,
 				const QByteArray& data,

@@ -55,28 +55,24 @@ namespace Imgaste
 	, Worker_ (MakeWorker (service))
 	, Proxy_ (proxy)
 	, Callback_ (callback)
-	, ReprRow_ ([reprModel]
-			{
-				const QList<QStandardItem*> result
-				{
-					new QStandardItem { tr ("Image upload") },
-					new QStandardItem { tr ("Uploading...") },
-					new QStandardItem { }
-				};
-				reprModel->appendRow (result);
-				return result;
-			} ())
 	{
-		for (const auto item : ReprRow_)
+		const QList<QStandardItem*> reprRow
+		{
+			new QStandardItem { tr ("Image upload") },
+			new QStandardItem { tr ("Uploading...") },
+			new QStandardItem
+		};
+		for (const auto item : reprRow)
 		{
 			item->setEditable (false);
 			item->setData (QVariant::fromValue<JobHolderRow> (JobHolderRow::ProcessProgress),
 					CustomDataRoles::RoleJobHolderRow);
 		}
+		reprModel->appendRow (reprRow);
 
-		auto setUploadProgress = [this] (qint64 done, qint64 total)
+		auto setUploadProgress = [reprRow] (qint64 done, qint64 total)
 		{
-			Util::SetJobHolderProgress (ReprRow_, done, total,
+			Util::SetJobHolderProgress (reprRow, done, total,
 					tr ("%1 of %2")
 							.arg (Util::MakePrettySize (done))
 							.arg (Util::MakePrettySize (total)));
@@ -103,10 +99,10 @@ namespace Imgaste
 						em->HandleEntity (Util::MakeNotification ("Imgaste", text, PCritical_));
 					},
 					[this] (QNetworkReply *reply) { HandleReplyFinished (reply); }
-				}.Finally ([this, reprModel]
+				}.Finally ([this, reprModel, reprRow]
 						{
 							deleteLater ();
-							reprModel->removeRow (ReprRow_.first ()->row ());
+							reprModel->removeRow (reprRow.first ()->row ());
 						});
 	}
 
