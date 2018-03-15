@@ -48,8 +48,6 @@ namespace Imgaste
 {
 	class Poster : public QObject
 	{
-		Q_OBJECT
-
 		QNetworkReply *Reply_ = nullptr;
 		const Worker_ptr Worker_;
 		const ICoreProxy_ptr Proxy_;
