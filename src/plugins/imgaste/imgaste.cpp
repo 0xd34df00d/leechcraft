@@ -251,12 +251,22 @@ namespace Imgaste
 					{
 						[em] (const Poster::NetworkRequestError& error)
 						{
+							qWarning () << Q_FUNC_INFO
+									<< "original URL:"
+									<< error.OriginalUrl_
+									<< error.NetworkError_
+									<< error.HttpCode_.value_or (-1)
+									<< error.ErrorString_;
+
 							const auto& text = tr ("Image upload failed: %1")
 									.arg (error.ErrorString_);
 							em->HandleEntity (Util::MakeNotification ("Imgaste", text, PCritical_));
 						},
-						[em] (const Poster::ServiceAPIError&)
+						[em] (const Poster::ServiceAPIError& error)
 						{
+							qWarning () << Q_FUNC_INFO
+									<< error.ServiceName_;
+
 							const auto& text = tr ("Image upload failed: service error.");
 							em->HandleEntity (Util::MakeNotification ("Imgaste", text, PCritical_));
 						}
