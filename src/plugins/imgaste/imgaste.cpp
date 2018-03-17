@@ -267,7 +267,8 @@ namespace Imgaste
 							qWarning () << Q_FUNC_INFO
 									<< dataFilter;
 
-							const auto& text = tr ("Image upload failed: service error.");
+							const auto& text = tr ("Image upload to %1 failed: service error.")
+									.arg ("<em>" + dataFilter + "</em>");
 							em->HandleEntity (Util::MakeNotification ("Imgaste", text, PCritical_));
 						}
 					}
