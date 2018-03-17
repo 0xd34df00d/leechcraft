@@ -28,14 +28,12 @@
  **********************************************************************/
 
 #include "poster.h"
-#include <QClipboard>
-#include <QApplication>
 #include <QStandardItemModel>
 #include <QNetworkReply>
 #include <QtDebug>
 #include <interfaces/structures.h>
-#include <interfaces/core/ientitymanager.h>
 #include <interfaces/ijobholder.h>
+#include <interfaces/core/ientitymanager.h>
 #include <util/xpc/util.h>
 #include <util/util.h>
 #include <util/network/handlenetworkreply.h>
@@ -48,14 +46,14 @@ namespace Imgaste
 			const QByteArray& data,
 			const QString& format,
 			ICoreProxy_ptr proxy,
-			DataFilterCallback_f callback,
 			QStandardItemModel *reprModel,
 			QObject *parent)
 	: QObject (parent)
 	, Worker_ (MakeWorker (service))
 	, Proxy_ (proxy)
-	, Callback_ (callback)
 	{
+		Promise_.reportStarted ();
+
 		const QList<QStandardItem*> reprRow
 		{
 			new QStandardItem { tr ("Image upload") },
@@ -86,19 +84,23 @@ namespace Imgaste
 				setUploadProgress);
 
 		const auto em = Proxy_->GetEntityManager ();
-		Util::HandleReplySeq<Util::ErrorInfo<QString>, Util::ResultInfo<QNetworkReply*>> (reply, this) >>
+		Util::HandleReplySeq<Util::ErrorInfo<Util::ReplyError>, Util::ResultInfo<Util::ReplySuccess>> (reply, this) >>
 				Util::Visitor
 				{
-					[em] (const QString& errorString)
+					[this] (Util::ReplyError reply)
 					{
-						qWarning () << Q_FUNC_INFO
-								<< errorString;
-
-						const auto& text = tr ("Image upload failed: %1")
-								.arg (errorString);
-						em->HandleEntity (Util::MakeNotification ("Imgaste", text, PCritical_));
+						const auto& attrVar = reply->attribute (QNetworkRequest::HttpStatusCodeAttribute);
+						const auto& attr = !attrVar.isNull () && attrVar.canConvert<int> () ?
+								std::optional<int> { attrVar.toInt () } :
+								std::optional<int> {};
+						Util::ReportFutureResult (Promise_,
+								NetworkRequestError { reply->error (), attr, reply->errorString () });
 					},
-					[this] (QNetworkReply *reply) { HandleReplyFinished (reply); }
+					[this] (Util::ReplySuccess reply)
+					{
+						const auto& pasteUrl = Worker_->GetLink (reply->readAll (), reply);
+						Util::ReportFutureResult (Promise_, pasteUrl);
+					}
 				}.Finally ([this, reprModel, reprRow]
 						{
 							deleteLater ();
@@ -106,29 +108,9 @@ namespace Imgaste
 						});
 	}
 
-	void Poster::HandleReplyFinished (QNetworkReply *reply)
+	QFuture<Poster::Result_t> Poster::GetFuture ()
 	{
-		const auto em = Proxy_->GetEntityManager ();
-
-		const auto& pasteUrl = Worker_->GetLink (reply->readAll (), reply);
-
-		if (pasteUrl.isEmpty ())
-		{
-			em->HandleEntity (Util::MakeNotification ("Imgaste",
-					tr ("Page parse failed"), PCritical_));
-			return;
-		}
-
-		if (!Callback_)
-		{
-			QApplication::clipboard ()->setText (pasteUrl, QClipboard::Clipboard);
-
-			auto text = tr ("Image pasted: %1, the URL was copied to the clipboard")
-					.arg ("<em>" + pasteUrl + "</em>");
-			em->HandleEntity (Util::MakeNotification ("Imgaste", text, PInfo_));
-		}
-		else
-			Callback_ (pasteUrl);
+		return Promise_.future ();
 	}
 }
 }

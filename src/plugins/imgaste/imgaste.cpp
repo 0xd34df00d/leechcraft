@@ -34,8 +34,15 @@
 #include <QStandardItemModel>
 #include <QMessageBox>
 #include <QImageReader>
-#include <util/util.h>
+#include <QClipboard>
+#include <QApplication>
 #include <util/sys/mimedetector.h>
+#include <util/threads/futures.h>
+#include <util/sll/visitor.h>
+#include <util/sll/either.h>
+#include <util/xpc/util.h>
+#include <util/util.h>
+#include <interfaces/core/ientitymanager.h>
 #include <interfaces/entitytesthandleresult.h>
 #include "hostingservice.h"
 #include "poster.h"
@@ -215,12 +222,44 @@ namespace Imgaste
 			return;
 		}
 
-		new Poster (*type,
+		const auto& callback = e.Additional_ ["DataFilterCallback"].value<DataFilterCallback_f> ();
+
+		const auto em = Proxy_->GetEntityManager ();
+
+		auto poster = new Poster (*type,
 				data,
 				format,
 				Proxy_,
-				e.Additional_ ["DataFilterCallback"].value<DataFilterCallback_f> (),
 				ReprModel_);
+		Util::Sequence (this, poster->GetFuture ()) >>
+				Util::Visitor
+				{
+					[callback, em] (const QString& url)
+					{
+						if (!callback)
+						{
+							QApplication::clipboard ()->setText (url, QClipboard::Clipboard);
+
+							auto text = tr ("Image pasted: %1, the URL was copied to the clipboard")
+									.arg ("<em>" + url + "</em>");
+							em->HandleEntity (Util::MakeNotification ("Imgaste", text, PInfo_));
+						}
+						else
+							callback (url);
+					},
+					Util::Visitor
+					{
+						[em] (const Poster::NetworkRequestError& error)
+						{
+							const auto& text = tr ("Image upload failed: %1")
+									.arg (error.ErrorString_);
+							em->HandleEntity (Util::MakeNotification ("Imgaste", text, PCritical_));
+						},
+						[] (const Poster::ServiceAPIError&)
+						{
+						}
+					}
+				};
 	}
 }
 }
