@@ -159,12 +159,12 @@
                <widget class="QComboBox" name="InSecurityType_">
                 <item>
                  <property name="text">
-                  <string>TLS/STARTTLS</string>
+                  <string notr="true">TLS/STARTTLS</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>SSL</string>
+                  <string notr="true">SSL</string>
                  </property>
                 </item>
                </widget>
@@ -266,12 +266,12 @@
            <widget class="QComboBox" name="OutType_">
             <item>
              <property name="text">
-              <string>SMTP</string>
+              <string notr="true">SMTP</string>
              </property>
             </item>
             <item>
              <property name="text">
-              <string>Sendmail</string>
+              <string notr="true">Sendmail</string>
              </property>
             </item>
            </widget>
@@ -319,12 +319,12 @@
              <widget class="QComboBox" name="OutSecurityType_">
               <item>
                <property name="text">
-                <string>TLS/STARTTLS</string>
+                <string notr="true">TLS/STARTTLS</string>
                </property>
               </item>
               <item>
                <property name="text">
-                <string>SSL</string>
+                <string notr="true">SSL</string>
                </property>
               </item>
              </widget>
