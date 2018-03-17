@@ -63,6 +63,31 @@ namespace Util
 	template<typename>
 	struct ResultInfo;
 
+	namespace detail
+	{
+		template<typename>
+		struct NetworkReplyWrapper
+		{
+			QNetworkReply *Reply_;
+
+			QNetworkReply* operator-> ()
+			{
+				return Reply_;
+			}
+
+			operator QNetworkReply* ()
+			{
+				return Reply_;
+			}
+		};
+
+		struct ErroneousReply;
+		struct SuccessfulReply;
+	}
+
+	using ReplyError = detail::NetworkReplyWrapper<detail::ErroneousReply>;
+	using ReplySuccess = detail::NetworkReplyWrapper<detail::SuccessfulReply>;
+
 	template<typename... Args>
 	auto HandleReply (QNetworkReply *reply, QObject *context)
 	{
@@ -81,8 +106,8 @@ namespace Util
 					reply->deleteLater ();
 					if constexpr (std::is_same_v<Res, QByteArray>)
 						Util::ReportFutureResult (promise, Result_t::Right (reply->readAll ()));
-					else if constexpr (std::is_same_v<Res, QNetworkReply*>)
-						Util::ReportFutureResult (promise, Result_t::Right (reply));
+					else if constexpr (std::is_same_v<Res, ReplySuccess>)
+						Util::ReportFutureResult (promise, Result_t::Right ({ reply }));
 					else
 						static_assert (std::is_same_v<Res, struct Dummy>, "Unsupported reply type");
 				});
@@ -98,8 +123,8 @@ namespace Util
 						report (reply->errorString ());
 					else if constexpr (std::is_same_v<Err, Util::Void>)
 						report ({});
-					else if constexpr (std::is_same_v<Err, QNetworkReply*>)
-						report (reply);
+					else if constexpr (std::is_same_v<Err, ReplyError>)
+						report ({ reply });
 					else
 						static_assert (std::is_same_v<Err, struct Dummy>, "Unsupported error type");
 				});
