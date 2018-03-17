@@ -79,14 +79,14 @@ namespace Imgaste
 		};
 		setUploadProgress (0, data.size ());
 
-		Reply_ = Worker_->Post (data, format, proxy->GetNetworkAccessManager ());
-		connect (Reply_,
+		const auto reply = Worker_->Post (data, format, proxy->GetNetworkAccessManager ());
+		connect (reply,
 				&QNetworkReply::uploadProgress,
 				this,
 				setUploadProgress);
 
 		const auto em = Proxy_->GetEntityManager ();
-		Util::HandleReplySeq<Util::ErrorInfo<QString>, Util::ResultInfo<QNetworkReply*>> (Reply_, this) >>
+		Util::HandleReplySeq<Util::ErrorInfo<QString>, Util::ResultInfo<QNetworkReply*>> (reply, this) >>
 				Util::Visitor
 				{
 					[em] (const QString& errorString)
