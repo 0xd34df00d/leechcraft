@@ -61,7 +61,7 @@ namespace Imgaste
 			std::optional<int> HttpCode_;
 			QString ErrorString_;
 		};
-		struct ServiceAPIError {};
+		using ServiceAPIError = Worker::Error;
 
 		using Error_t = boost::variant<NetworkRequestError, ServiceAPIError>;
 		using Result_t = Util::Either<Error_t, QString>;

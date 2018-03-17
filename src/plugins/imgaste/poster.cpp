@@ -103,8 +103,7 @@ namespace Imgaste
 					},
 					[this] (Util::ReplySuccess reply)
 					{
-						const auto& pasteUrl = Worker_->GetLink (reply->readAll (), reply);
-						Util::ReportFutureResult (Promise_, pasteUrl);
+						Util::ReportFutureResult (Promise_, Worker_->GetLink (reply->readAll (), reply));
 					}
 				}.Finally ([this, reprModel, reprRow]
 						{
