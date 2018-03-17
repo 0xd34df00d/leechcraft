@@ -74,10 +74,7 @@ namespace Imgaste
 	{
 		virtual ~Worker () {}
 
-		struct Error
-		{
-			QString Service_;
-		};
+		struct Error {};
 
 		using Result_t = Util::Either<Error, QString>;
 

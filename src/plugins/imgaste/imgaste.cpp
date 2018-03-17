@@ -262,10 +262,10 @@ namespace Imgaste
 									.arg (error.ErrorString_);
 							em->HandleEntity (Util::MakeNotification ("Imgaste", text, PCritical_));
 						},
-						[em] (const Poster::ServiceAPIError& error)
+						[em, dataFilter] (const Poster::ServiceAPIError&)
 						{
 							qWarning () << Q_FUNC_INFO
-									<< error.Service_;
+									<< dataFilter;
 
 							const auto& text = tr ("Image upload failed: service error.");
 							em->HandleEntity (Util::MakeNotification ("Imgaste", text, PCritical_));
