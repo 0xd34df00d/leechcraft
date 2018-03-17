@@ -98,6 +98,8 @@ namespace Util
 						report (reply->errorString ());
 					else if constexpr (std::is_same_v<Err, Util::Void>)
 						report ({});
+					else if constexpr (std::is_same_v<Err, QNetworkReply*>)
+						report (reply);
 					else
 						static_assert (std::is_same_v<Err, struct Dummy>, "Unsupported error type");
 				});
