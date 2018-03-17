@@ -35,9 +35,7 @@
 #include <interfaces/idatafilter.h>
 #include "hostingservice.h"
 
-class QNetworkReply;
 class QNetworkAccessManager;
-class QStandardItem;
 class QStandardItemModel;
 
 namespace LeechCraft
