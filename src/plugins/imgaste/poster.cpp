@@ -90,11 +90,16 @@ namespace Imgaste
 					[this] (Util::ReplyError reply)
 					{
 						const auto& attrVar = reply->attribute (QNetworkRequest::HttpStatusCodeAttribute);
-						const auto& attr = !attrVar.isNull () && attrVar.canConvert<int> () ?
-								std::optional<int> { attrVar.toInt () } :
-								std::optional<int> {};
 						Util::ReportFutureResult (Promise_,
-								NetworkRequestError { reply->error (), attr, reply->errorString () });
+								NetworkRequestError
+								{
+									reply->request ().url (),
+									reply->error (),
+									!attrVar.isNull () && attrVar.canConvert<int> () ?
+											std::optional<int> { attrVar.toInt () } :
+											std::optional<int> {},
+									reply->errorString ()
+								});
 					},
 					[this] (Util::ReplySuccess reply)
 					{

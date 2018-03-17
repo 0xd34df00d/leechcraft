@@ -56,6 +56,7 @@ namespace Imgaste
 	public:
 		struct NetworkRequestError
 		{
+			QUrl OriginalUrl_;
 			QNetworkReply::NetworkError NetworkError_;
 			std::optional<int> HttpCode_;
 			QString ErrorString_;
