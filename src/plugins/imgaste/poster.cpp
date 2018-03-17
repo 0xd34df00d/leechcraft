@@ -83,7 +83,6 @@ namespace Imgaste
 				this,
 				setUploadProgress);
 
-		const auto em = Proxy_->GetEntityManager ();
 		Util::HandleReplySeq<Util::ErrorInfo<Util::ReplyError>, Util::ResultInfo<Util::ReplySuccess>> (reply, this) >>
 				Util::Visitor
 				{
