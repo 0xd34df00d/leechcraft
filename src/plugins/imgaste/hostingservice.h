@@ -74,7 +74,11 @@ namespace Imgaste
 	{
 		virtual ~Worker () {}
 
-		struct Error {};
+		struct Error
+		{
+			QString Service_;
+		};
+
 		using Result_t = Util::Either<Error, QString>;
 
 		virtual QNetworkReply* Post (const QByteArray& imageData,

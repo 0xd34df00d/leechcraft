@@ -265,7 +265,7 @@ namespace Imgaste
 						[em] (const Poster::ServiceAPIError& error)
 						{
 							qWarning () << Q_FUNC_INFO
-									<< error.ServiceName_;
+									<< error.Service_;
 
 							const auto& text = tr ("Image upload failed: service error.");
 							em->HandleEntity (Util::MakeNotification ("Imgaste", text, PCritical_));
