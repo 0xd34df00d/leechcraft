@@ -264,7 +264,7 @@ namespace Delicious
 
 		QByteArray result = reply->readAll ();
 		Entity e;
-		Priority priority = PInfo_;
+		auto priority = Priority::Info;
 		QString msg;
 		switch (Reply2Request_ [reply].Type_)
 		{
@@ -279,12 +279,12 @@ namespace Delicious
 				saveAccounts ();
 				emit accountAdded (QObjectList () <<  account->GetQObject ());
 				msg = tr ("Authentication successfull.");
-				priority = LeechCraft::PInfo_;
+				priority = Priority::Info;
 			}
 			else
 			{
 				msg = tr ("Invalid login or password.");
-				priority = LeechCraft::PWarning_;
+				priority = Priority::Warning;
 			}
 			e = Util::MakeNotification ("OnlineBookmarks",
 					msg,
@@ -296,7 +296,7 @@ namespace Delicious
 				if (Reply2Request_ [reply].Count_ == Reply2Request_ [reply].Current_ + 1)
 				{
 					msg = tr ("Bookmarks were sent to Del.icio.us.");
-					priority = LeechCraft::PInfo_;
+					priority = Priority::Info;
 					DeliciousAccount *account = GetAccountByName (Reply2Request_ [reply].Login_);
 					if (account)
 						account->SetLastUploadDateTime (QDateTime::currentDateTime ());
@@ -306,7 +306,7 @@ namespace Delicious
 			else
 			{
 				msg = tr ("Error sending bookmarks to Del.icio.us.");
-				priority = LeechCraft::PWarning_;
+				priority = Priority::Warning;
 			}
 			e = Util::MakeNotification ("OnlineBookmarks",
 					msg,
