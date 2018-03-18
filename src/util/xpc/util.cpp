@@ -68,7 +68,7 @@ namespace Util
 			const QString& cat, const QStringList& types, AN::NotifyFlags flags,
 			bool openConfiguration, const QList<QPair<QString, ANFieldValue>>& fields)
 	{
-		auto e = MakeNotification (title, {}, Priority::Log);
+		auto e = MakeNotification (title, {}, {});
 		e.Additional_ [AN::EF::SenderID] = senderID;
 		e.Additional_ [AN::EF::EventID] = "org.LC.AdvNotifications.RuleRegister";
 		e.Additional_ [AN::EF::EventCategory] = cat;
