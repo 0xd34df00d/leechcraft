@@ -34,6 +34,7 @@
 #include <util/sll/either.h>
 #include <util/sll/overload.h>
 #include <util/sll/void.h>
+#include <util/sll/typelist.h>
 #include <util/threads/futures.h>
 
 namespace LeechCraft
@@ -56,10 +57,44 @@ namespace Util
 		};
 	}
 
-	template<typename Err = Util::Void>
+	template<typename>
+	struct ErrorInfo;
+
+	template<typename>
+	struct ResultInfo;
+
+	namespace detail
+	{
+		template<typename>
+		struct NetworkReplyWrapper
+		{
+			QNetworkReply *Reply_;
+
+			QNetworkReply* operator-> ()
+			{
+				return Reply_;
+			}
+
+			operator QNetworkReply* ()
+			{
+				return Reply_;
+			}
+		};
+
+		struct ErroneousReply;
+		struct SuccessfulReply;
+	}
+
+	using ReplyError = detail::NetworkReplyWrapper<detail::ErroneousReply>;
+	using ReplySuccess = detail::NetworkReplyWrapper<detail::SuccessfulReply>;
+
+	template<typename... Args>
 	auto HandleReply (QNetworkReply *reply, QObject *context)
 	{
-		using Result_t = Util::Either<Err, QByteArray>;
+		using Err = Find<ErrorInfo, Util::Void, Args...>;
+		using Res = Find<ResultInfo, QByteArray, Args...>;
+
+		using Result_t = Util::Either<Err, Res>;
 		QFutureInterface<Result_t> promise;
 		promise.reportStarted ();
 
@@ -69,7 +104,12 @@ namespace Util
 				[promise, reply] () mutable
 				{
 					reply->deleteLater ();
-					Util::ReportFutureResult (promise, Result_t::Right (reply->readAll ()));
+					if constexpr (std::is_same_v<Res, QByteArray>)
+						Util::ReportFutureResult (promise, Result_t::Right (reply->readAll ()));
+					else if constexpr (std::is_same_v<Res, ReplySuccess>)
+						Util::ReportFutureResult (promise, Result_t::Right ({ reply }));
+					else
+						static_assert (std::is_same_v<Res, struct Dummy>, "Unsupported reply type");
 				});
 		QObject::connect (reply,
 				Util::Overload<QNetworkReply::NetworkError> (&QNetworkReply::error),
@@ -83,6 +123,8 @@ namespace Util
 						report (reply->errorString ());
 					else if constexpr (std::is_same_v<Err, Util::Void>)
 						report ({});
+					else if constexpr (std::is_same_v<Err, ReplyError>)
+						report ({ reply });
 					else
 						static_assert (std::is_same_v<Err, struct Dummy>, "Unsupported error type");
 				});
@@ -90,10 +132,10 @@ namespace Util
 		return promise.future ();
 	}
 
-	template<typename Err = Util::Void>
+	template<typename... Args>
 	auto HandleReplySeq (QNetworkReply *reply, QObject *context)
 	{
-		return Sequence (context, HandleReply<Err> (reply, context));
+		return Sequence (context, HandleReply<Args...> (reply, context));
 	}
 }
 }

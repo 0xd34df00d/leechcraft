@@ -28,16 +28,15 @@
  **********************************************************************/
 
 #include "poster.h"
-#include <QClipboard>
-#include <QApplication>
 #include <QStandardItemModel>
 #include <QNetworkReply>
 #include <QtDebug>
 #include <interfaces/structures.h>
-#include <interfaces/core/ientitymanager.h>
 #include <interfaces/ijobholder.h>
+#include <interfaces/core/ientitymanager.h>
 #include <util/xpc/util.h>
 #include <util/util.h>
+#include <util/network/handlenetworkreply.h>
 
 namespace LeechCraft
 {
@@ -47,101 +46,74 @@ namespace Imgaste
 			const QByteArray& data,
 			const QString& format,
 			ICoreProxy_ptr proxy,
-			DataFilterCallback_f callback,
 			QStandardItemModel *reprModel,
 			QObject *parent)
 	: QObject (parent)
-	, Reply_ (0)
-	, Service_ (service)
 	, Worker_ (MakeWorker (service))
 	, Proxy_ (proxy)
-	, Callback_ (callback)
-	, ReprModel_ (reprModel)
-	, ReprRow_ ([reprModel]
-			{
-				const QList<QStandardItem*> result
-				{
-					new QStandardItem { tr ("Image upload") },
-					new QStandardItem { tr ("Uploading...") },
-					new QStandardItem { }
-				};
-				reprModel->appendRow (result);
-				return result;
-			} ())
-	, RowRemoveGuard_ (Util::MakeScopeGuard ([this] { ReprModel_->removeRow (ReprRow_.first ()->row ()); }))
 	{
-		for (const auto item : ReprRow_)
+		Promise_.reportStarted ();
+
+		const QList<QStandardItem*> reprRow
+		{
+			new QStandardItem { tr ("Image upload") },
+			new QStandardItem { tr ("Uploading...") },
+			new QStandardItem
+		};
+		for (const auto item : reprRow)
 		{
 			item->setEditable (false);
 			item->setData (QVariant::fromValue<JobHolderRow> (JobHolderRow::ProcessProgress),
 					CustomDataRoles::RoleJobHolderRow);
 		}
+		reprModel->appendRow (reprRow);
+
+		auto setUploadProgress = [reprRow] (qint64 done, qint64 total)
+		{
+			Util::SetJobHolderProgress (reprRow, done, total,
+					tr ("%1 of %2")
+							.arg (Util::MakePrettySize (done))
+							.arg (Util::MakePrettySize (total)));
+		};
 		setUploadProgress (0, data.size ());
 
-		Reply_ = Worker_->Post (data, format, proxy->GetNetworkAccessManager ());
-		connect (Reply_,
-				SIGNAL (uploadProgress (qint64, qint64)),
+		const auto reply = Worker_->Post (data, format, proxy->GetNetworkAccessManager ());
+		connect (reply,
+				&QNetworkReply::uploadProgress,
 				this,
-				SLOT (setUploadProgress (qint64, qint64)));
+				setUploadProgress);
 
-		connect (Reply_,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleFinished ()));
-		connect (Reply_,
-				SIGNAL (error (QNetworkReply::NetworkError)),
-				this,
-				SLOT (handleError ()));
+		Util::HandleReplySeq<Util::ErrorInfo<Util::ReplyError>, Util::ResultInfo<Util::ReplySuccess>> (reply, this) >>
+				Util::Visitor
+				{
+					[this] (Util::ReplyError reply)
+					{
+						const auto& attrVar = reply->attribute (QNetworkRequest::HttpStatusCodeAttribute);
+						Util::ReportFutureResult (Promise_,
+								NetworkRequestError
+								{
+									reply->request ().url (),
+									reply->error (),
+									!attrVar.isNull () && attrVar.canConvert<int> () ?
+											std::optional<int> { attrVar.toInt () } :
+											std::optional<int> {},
+									reply->errorString ()
+								});
+					},
+					[this] (Util::ReplySuccess reply)
+					{
+						Util::ReportFutureResult (Promise_, Worker_->GetLink (reply->readAll (), reply));
+					}
+				}.Finally ([this, reprModel, reprRow]
+						{
+							deleteLater ();
+							reprModel->removeRow (reprRow.first ()->row ());
+						});
 	}
 
-	void Poster::handleFinished ()
+	QFuture<Poster::Result_t> Poster::GetFuture ()
 	{
-		const auto& result = Reply_->readAll ();
-		Reply_->deleteLater ();
-
-		const auto& pasteUrl = Worker_->GetLink (result, Reply_);
-
-		auto em = Proxy_->GetEntityManager ();
-		if (pasteUrl.isEmpty ())
-		{
-			em->HandleEntity (Util::MakeNotification ("Imgaste",
-					tr ("Page parse failed"), PCritical_));
-			return;
-		}
-
-		if (!Callback_)
-		{
-			QApplication::clipboard ()->setText (pasteUrl, QClipboard::Clipboard);
-
-			auto text = tr ("Image pasted: %1, the URL was copied to the clipboard")
-				.arg ("<em>" + pasteUrl + "</em>");
-			em->HandleEntity (Util::MakeNotification ("Imgaste", text, PInfo_));
-		}
-		else
-			Callback_ (pasteUrl);
-
-		deleteLater ();
-	}
-
-	void Poster::handleError ()
-	{
-		qWarning () << Q_FUNC_INFO
-			<< Reply_->errorString ();
-		Reply_->deleteLater ();
-
-		QString text = tr ("Image upload failed: %1")
-							.arg (Reply_->errorString ());
-		Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Imgaste", text, PCritical_));
-
-		deleteLater ();
-	}
-
-	void Poster::setUploadProgress (qint64 done, qint64 total)
-	{
-		Util::SetJobHolderProgress (ReprRow_, done, total,
-				tr ("%1 of %2")
-					.arg (Util::MakePrettySize (done))
-					.arg (Util::MakePrettySize (total)));
+		return Promise_.future ();
 	}
 }
 }

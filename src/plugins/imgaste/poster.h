@@ -29,16 +29,18 @@
 
 #pragma once
 
+#include <optional>
+#include <boost/variant.hpp>
 #include <QObject>
 #include <QMap>
-#include <util/sll/util.h>
+#include <QFutureInterface>
+#include <QNetworkReply>
+#include <util/sll/eitherfwd.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/idatafilter.h>
 #include "hostingservice.h"
 
-class QNetworkReply;
 class QNetworkAccessManager;
-class QStandardItem;
 class QStandardItemModel;
 
 namespace LeechCraft
@@ -49,29 +51,31 @@ namespace Imgaste
 {
 	class Poster : public QObject
 	{
-		Q_OBJECT
-
-		QNetworkReply *Reply_;
-		const HostingService Service_;
 		const Worker_ptr Worker_;
 		const ICoreProxy_ptr Proxy_;
-		const DataFilterCallback_f Callback_;
+	public:
+		struct NetworkRequestError
+		{
+			QUrl OriginalUrl_;
+			QNetworkReply::NetworkError NetworkError_;
+			std::optional<int> HttpCode_;
+			QString ErrorString_;
+		};
+		using ServiceAPIError = Worker::Error;
 
-		QStandardItemModel * const ReprModel_;
-		const QList<QStandardItem*> ReprRow_;
-		const Util::DefaultScopeGuard RowRemoveGuard_;
+		using Error_t = boost::variant<NetworkRequestError, ServiceAPIError>;
+		using Result_t = Util::Either<Error_t, QString>;
+	private:
+		QFutureInterface<Result_t> Promise_;
 	public:
 		Poster (HostingService service,
 				const QByteArray& data,
 				const QString& format,
 				ICoreProxy_ptr coreProxy,
-				DataFilterCallback_f = {},
 				QStandardItemModel* = nullptr,
 				QObject *parent = nullptr);
-	private slots:
-		void handleFinished ();
-		void handleError ();
-		void setUploadProgress (qint64, qint64);
+
+		QFuture<Result_t> GetFuture ();
 	};
 }
 }

@@ -34,6 +34,7 @@
 #include <boost/optional.hpp>
 #include <QSize>
 #include <QString>
+#include <util/sll/eitherfwd.h>
 
 class QByteArray;
 class QNetworkReply;
@@ -73,9 +74,13 @@ namespace Imgaste
 	{
 		virtual ~Worker () {}
 
+		struct Error {};
+
+		using Result_t = Util::Either<Error, QString>;
+
 		virtual QNetworkReply* Post (const QByteArray& imageData,
 				const QString& format, QNetworkAccessManager *am) const = 0;
-		virtual QString GetLink (const QString& contents, QNetworkReply *reply) const = 0;
+		virtual Result_t GetLink (const QString& contents, QNetworkReply *reply) const = 0;
 	};
 
 	typedef std::unique_ptr<Worker> Worker_ptr;

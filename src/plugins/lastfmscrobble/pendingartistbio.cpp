@@ -54,7 +54,7 @@ namespace Lastfmscrobble
 			{ "autocorrect", "1" }
 		};
 		AddLanguageParam (params);
-		Util::HandleReplySeq<QString> (Request ("artist.getInfo", nam, params), this) >>
+		Util::HandleReplySeq<Util::ErrorInfo<QString>> (Request ("artist.getInfo", nam, params), this) >>
 				Util::Visitor
 				{
 					[this] (const QString& err)

@@ -6,75 +6,75 @@
     <message>
         <location filename="accountconfigdialog.ui" line="14"/>
         <source>Account configuration</source>
-        <translation type="unfinished"></translation>
+        <translation>Настройки учётной записи</translation>
     </message>
     <message>
         <location filename="accountconfigdialog.ui" line="24"/>
         <source>General</source>
-        <translation type="unfinished"></translation>
+        <translation>Общие</translation>
     </message>
     <message>
         <location filename="accountconfigdialog.ui" line="30"/>
         <source>General options</source>
-        <translation type="unfinished"></translation>
+        <translation>Общие настройки</translation>
     </message>
     <message>
         <location filename="accountconfigdialog.ui" line="39"/>
         <source>Account name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Имя учётной записи:</translation>
     </message>
     <message>
         <location filename="accountconfigdialog.ui" line="49"/>
         <source>Your name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ваше имя:</translation>
     </message>
     <message>
         <location filename="accountconfigdialog.ui" line="59"/>
         <source>Your address:</source>
-        <translation type="unfinished"></translation>
+        <translation>Адрес:</translation>
     </message>
     <message>
         <location filename="accountconfigdialog.ui" line="86"/>
         <source>Incoming</source>
-        <translation type="unfinished"></translation>
+        <translation>Получение</translation>
     </message>
     <message>
         <location filename="accountconfigdialog.ui" line="92"/>
         <source>Incoming options</source>
-        <translation type="unfinished"></translation>
+        <translation>Настройки получения почты</translation>
     </message>
     <message>
         <location filename="accountconfigdialog.ui" line="101"/>
         <location filename="accountconfigdialog.ui" line="366"/>
         <source>Login:</source>
-        <translation type="unfinished"></translation>
+        <translation>Логин:</translation>
     </message>
     <message>
         <location filename="accountconfigdialog.ui" line="261"/>
         <source>Type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Тип:</translation>
     </message>
     <message>
         <location filename="accountconfigdialog.ui" line="114"/>
         <source>Connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Соединение</translation>
     </message>
     <message>
         <location filename="accountconfigdialog.ui" line="122"/>
         <source>Host:</source>
-        <translation type="unfinished"></translation>
+        <translation>Адрес:</translation>
     </message>
     <message>
         <location filename="accountconfigdialog.ui" line="132"/>
         <location filename="accountconfigdialog.ui" line="292"/>
         <source>Port:</source>
-        <translation type="unfinished"></translation>
+        <translation>Порт:</translation>
     </message>
     <message>
         <location filename="accountconfigdialog.ui" line="152"/>
         <location filename="accountconfigdialog.ui" line="312"/>
         <source>Security:</source>
-        <translation type="unfinished"></translation>
+        <translation>Тип безопасности:</translation>
     </message>
     <message>
         <location filename="accountconfigdialog.ui" line="162"/>

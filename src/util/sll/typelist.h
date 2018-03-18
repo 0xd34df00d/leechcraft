@@ -192,5 +192,29 @@ namespace Util
 		else
 			return def ();
 	}
+
+	namespace detail
+	{
+		template<template<typename> class Name, typename Def, typename... Args>
+		struct Find;
+
+		template<template<typename> class Name, typename Def, typename T, typename... Rest>
+		struct Find<Name, Def, T, Rest...> : Find<Name, Def, Rest...> {};
+
+		template<template<typename> class Name, typename Def, typename T, typename... Rest>
+		struct Find<Name, Def, Name<T>, Rest...>
+		{
+			using type = T;
+		};
+
+		template<template<typename> class Name, typename Def>
+		struct Find<Name, Def>
+		{
+			using type = Def;
+		};
+	}
+
+	template<template<typename> class Name, typename Def, typename... Args>
+	using Find = typename detail::Find<Name, Def, Args...>::type;
 }
 }

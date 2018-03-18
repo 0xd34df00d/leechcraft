@@ -33,6 +33,7 @@
 #include <QUrl>
 #include <QRegExp>
 #include <QStringList>
+#include <util/sll/either.h>
 #include <util/sll/parsejson.h>
 #include <util/sll/unreachable.h>
 #include "requestbuilder.h"
@@ -147,7 +148,7 @@ namespace Imgaste
 				return am->post (request, formed);
 			}
 
-			QString GetLink (const QString& contents, QNetworkReply*) const override
+			Result_t GetLink (const QString& contents, QNetworkReply*) const override
 			{
 				const auto& lines = contents.split ('\n');
 				const auto pos = std::find_if (lines.begin (), lines.end (),
@@ -158,10 +159,10 @@ namespace Imgaste
 					qWarning () << Q_FUNC_INFO
 							<< "no URL:"
 							<< contents;
-					return {};
+					return Result_t::Left ({});
 				}
 
-				return pos->section (':', 1);
+				return Result_t::Right (pos->section (':', 1));
 			}
 		};
 
@@ -194,13 +195,13 @@ namespace Imgaste
 				return am->post (PrefillRequest (url, builder), formed);
 			}
 
-			QString GetLink (const QString& contents, QNetworkReply*) const override
+			Result_t GetLink (const QString& contents, QNetworkReply*) const override
 			{
 				if (!RegExp_.exactMatch (contents))
-					return QString ();
+					return Result_t::Left ({});
 
 				QString imageId = RegExp_.cap (1);
-				return "http://savepic.ru/" + imageId + ".jpg";
+				return Result_t::Right ("http://savepic.ru/" + imageId + ".jpg");
 			}
 		};
 
@@ -219,11 +220,11 @@ namespace Imgaste
 				return am->post (PrefillRequest (url, builder), formed);
 			}
 
-			QString GetLink (const QString&, QNetworkReply *reply) const override
+			Result_t GetLink (const QString&, QNetworkReply *reply) const override
 			{
 				QString str = reply->rawHeader ("Location");
 				str.chop (8);
-				return str;
+				return Result_t::Right (str);
 			}
 		};
 
@@ -247,13 +248,13 @@ namespace Imgaste
 				return am->post (PrefillRequest (UploadUrl_, builder), builder.Build ());
 			}
 
-			QString GetLink (const QString& body, QNetworkReply*) const override
+			Result_t GetLink (const QString& body, QNetworkReply*) const override
 			{
 				const auto& json = Util::ParseJson (body.toUtf8 (), Q_FUNC_INFO);
 				const auto filename = json.toMap () ["files"]
 						.toList ().value (0)
 						.toMap () ["url"].toString ();
-				return Prefix_ + filename;
+				return Result_t::Right (Prefix_ + filename);
 			}
 		};
 	}
