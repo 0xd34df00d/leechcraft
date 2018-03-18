@@ -164,7 +164,7 @@ namespace Acetamide
 		const auto& notify = Util::MakeNotification ("Azoth Acetamide",
 				tr ("Unknown encoding %1.")
 					.arg ("<em>" + encoding + "</em>"),
-				PCritical_);
+				Priority::Critical);
 		Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (notify);
 
 		if (LastCodec_)

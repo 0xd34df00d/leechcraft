@@ -121,7 +121,7 @@ namespace BirthdayNotifier
 		const QString& notify = days ?
 				tr ("%1 has birthday in %n day(s)!", 0, days).arg (hrId) :
 				tr ("%1 has birthday today!").arg (hrId);
-		auto e = Util::MakeNotification (tr ("Birthday reminder"), notify, PInfo_);
+		auto e = Util::MakeNotification (tr ("Birthday reminder"), notify, Priority::Info);
 
 		e.Additional_ ["org.LC.AdvNotifications.SenderID"] = GetUniqueID ();
 		e.Additional_ ["org.LC.AdvNotifications.EventCategory"] = AN::CatOrganizer;

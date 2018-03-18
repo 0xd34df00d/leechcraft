@@ -291,7 +291,7 @@ namespace Scroblibre
 		{
 			const auto& e = Util::MakeNotification ("Scroblibre",
 					tr ("Your system clock is too incorrect."),
-					PCritical_);
+					Priority::Critical);
 			Proxy_->GetEntityManager ()->HandleEntity (e);
 		}
 		else if (status.startsWith ("FAILED"))
@@ -299,7 +299,7 @@ namespace Scroblibre
 			const auto& e = Util::MakeNotification ("Scroblibre",
 					tr ("Temporary server failure for %1, please try again later.")
 						.arg (UrlToService (BaseURL_)),
-					PCritical_);
+					Priority::Critical);
 			Proxy_->GetEntityManager ()->HandleEntity (e);
 		}
 		else if (status == "BANNED")
@@ -307,7 +307,7 @@ namespace Scroblibre
 			const auto& e = Util::MakeNotification ("Scroblibre",
 					tr ("Sorry, the client is banned on %1.")
 						.arg (UrlToService (BaseURL_)),
-					PCritical_);
+					Priority::Critical);
 			Proxy_->GetEntityManager ()->HandleEntity (e);
 		}
 		else if (status == "BADAUTH")
@@ -315,7 +315,7 @@ namespace Scroblibre
 			const auto& e = Util::MakeNotification ("Scroblibre",
 					tr ("Invalid authentication on %1.")
 						.arg (UrlToService (BaseURL_)),
-					PCritical_);
+					Priority::Critical);
 			Proxy_->GetEntityManager ()->HandleEntity (e);
 			reauth (true);
 			return;
@@ -325,7 +325,7 @@ namespace Scroblibre
 			const auto& e = Util::MakeNotification ("Scroblibre",
 					tr ("General server error for %1.")
 						.arg (UrlToService (BaseURL_)),
-					PCritical_);
+					Priority::Critical);
 			Proxy_->GetEntityManager ()->HandleEntity (e);
 		}
 

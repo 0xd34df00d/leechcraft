@@ -294,7 +294,7 @@ namespace BitTorrent
 			iem->HandleEntity (Util::MakeNotification ("BitTorrent",
 					tr ("%1 hasn't finished downloading yet.")
 						.arg ("<em>" + item->Name_ + "</em>"),
-					PWarning_));
+					Priority::Warning));
 		else
 		{
 			const auto& full = BasePath_ / item->GetFullPath ();

@@ -146,7 +146,7 @@ namespace Astrality
 						.arg (Entry_->GetEntryName ())
 						.arg (po->errorName ())
 						.arg (po->errorMessage ()),
-					PCritical_));
+					Priority::Critical));
 			return;
 		}
 	}

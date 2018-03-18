@@ -88,7 +88,7 @@ namespace GmailNotifier
 					tr ("and %1 more").arg (infos.size () - fullShow) +
 					"</em></p>";
 
-		const auto& e = Util::MakeNotification ("GMail", result, PInfo_);
+		const auto& e = Util::MakeNotification ("GMail", result, Priority::Info);
 		Proxy_->GetEntityManager ()->HandleEntity (e);
 	}
 }

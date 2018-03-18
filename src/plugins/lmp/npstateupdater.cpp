@@ -112,7 +112,7 @@ namespace LMP
 			notifyPx = notifyPx.scaledToWidth (width);
 		}
 
-		auto e = Util::MakeNotification ("LMP", text, PInfo_);
+		auto e = Util::MakeNotification ("LMP", text, Priority::Info);
 		e.Additional_ ["NotificationPixmap"] = notifyPx;
 		Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (e);
 	}

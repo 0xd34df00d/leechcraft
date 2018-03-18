@@ -425,7 +425,7 @@ namespace LeechCraft
 	{
 		for (const auto& error : PluginManager_->GetPluginLoadErrors ())
 			handleGotEntity (Util::MakeNotification (tr ("Plugin load error"),
-					error, PCritical_));
+					error, Priority::Critical));
 	}
 
 	void Core::InitDynamicSignals (const QObject *plugin)

@@ -197,12 +197,12 @@ namespace SeekThru
 
 	void SeekThru::handleError (const QString& error)
 	{
-		emit gotEntity (Util::MakeNotification ("SeekThru", error, PCritical_));
+		emit gotEntity (Util::MakeNotification ("SeekThru", error, Priority::Critical));
 	}
 
 	void SeekThru::handleWarning (const QString& error)
 	{
-		emit gotEntity (Util::MakeNotification ("SeekThru", error, PWarning_));
+		emit gotEntity (Util::MakeNotification ("SeekThru", error, Priority::Warning));
 	}
 }
 }

@@ -302,7 +302,7 @@ namespace Spegnersi
 					<< AuthMgr_->lastError ();
 			Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Blasq Spegnersi",
 						tr ("Unable to get temporary auth token."),
-						PCritical_));
+						Priority::Critical));
 
 			QTimer::singleShot (10 * 60 * 1000,
 					this,
@@ -326,7 +326,7 @@ namespace Spegnersi
 					<< AuthMgr_->lastError ();
 			Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Blasq Spegnersi",
 						tr ("Unable to get user authorization."),
-						PCritical_));
+						Priority::Critical));
 
 			QTimer::singleShot (10 * 60 * 1000,
 					this,

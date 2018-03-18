@@ -899,7 +899,7 @@ namespace Blogique
 		Core::Instance ().SendEntity (Util::MakeNotification ("Blogique",
 				tr ("%1 (original message: %2)")
 					.arg (localizedErrorString, errorString),
-				PWarning_));
+				Priority::Warning));
 	}
 
 	void BlogiqueWidget::handleAccountAdded (QObject *acc)

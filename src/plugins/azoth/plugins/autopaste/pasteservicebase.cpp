@@ -76,7 +76,7 @@ namespace Autopaste
 			const Entity& e = Util::MakeNotification (tr ("Text pasted"),
 					tr ("Your text has been pasted: %1. The URL has "
 						"been copied to the clipboard."),
-					PInfo_);
+					Priority::Info);
 			Proxy_->GetEntityManager ()->HandleEntity (e);
 
 			return;

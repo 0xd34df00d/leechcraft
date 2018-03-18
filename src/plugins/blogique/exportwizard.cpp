@@ -499,7 +499,7 @@ namespace Blogique
 		Core::Instance ().GetCoreProxy ()->GetEntityManager ()->
 				HandleEntity (Util::MakeNotification ("Blogique",
 						tr ("Exporting finished"),
-						Priority::PInfo_));
+						Priority::Info));
 		deleteLater ();
 	}
 

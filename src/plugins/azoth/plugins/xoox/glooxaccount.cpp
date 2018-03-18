@@ -496,7 +496,7 @@ namespace Xoox
 		{
 			Core::Instance ().SendEntity (Util::MakeNotification ("LeechCraft",
 						tr ("Why would you call yourself?"),
-						PWarning_));
+						Priority::Warning));
 
 			return 0;
 		}

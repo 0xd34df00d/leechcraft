@@ -75,7 +75,7 @@ namespace LackMan
 				iem->HandleEntity (Util::MakeNotification (RepoInfoFetcher::tr ("Error fetching repository"),
 						RepoInfoFetcher::tr ("Could not find any plugins to fetch %1.")
 							.arg ("<em>" + url.toString () + "</em>"),
-						PCritical_));
+						Priority::Critical));
 				return;
 			}
 
@@ -234,7 +234,7 @@ namespace LackMan
 		Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification (tr ("Error fetching repository"),
 				tr ("Error downloading file from %1.")
 					.arg (pri.URL_.toString ()),
-				PCritical_));
+				Priority::Critical));
 	}
 
 	void RepoInfoFetcher::handleComponentFinished (int id)
@@ -284,7 +284,7 @@ namespace LackMan
 		Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification (tr ("Error fetching component"),
 				tr ("Error downloading file from %1.")
 					.arg (pc.URL_.toString ()),
-				PCritical_));
+				Priority::Critical));
 	}
 
 	void RepoInfoFetcher::handlePackageFinished (int id)
@@ -333,7 +333,7 @@ namespace LackMan
 		Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification (tr ("Error fetching package"),
 				tr ("Error fetching package from %1.")
 					.arg (pp.URL_.toString ()),
-				PCritical_));
+				Priority::Critical));
 	}
 
 	void RepoInfoFetcher::handleRepoUnarchFinished (int exitCode,
@@ -348,7 +348,7 @@ namespace LackMan
 						"Problematic file is at %2.")
 						.arg (exitCode)
 						.arg (sender ()->property ("Filename").toString ()),
-					PCritical_));
+					Priority::Critical));
 			return;
 		}
 
@@ -367,7 +367,7 @@ namespace LackMan
 			Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification (tr ("Repository parse error"),
 					tr ("Unable to parse repository description: %1.")
 						.arg (error),
-					PCritical_));
+					Priority::Critical));
 			return;
 		}
 
@@ -386,7 +386,7 @@ namespace LackMan
 						"Problematic file is at %2.")
 						.arg (exitCode)
 						.arg (sender ()->property ("Filename").toString ()),
-					PCritical_));
+					Priority::Critical));
 			return;
 		}
 
@@ -406,7 +406,7 @@ namespace LackMan
 					tr ("Unable to parse component %1 description file. "
 						"More information is available in logs.")
 						.arg (sender ()->property ("Component").toString ()),
-					PCritical_));
+					Priority::Critical));
 			return;
 		}
 
@@ -430,7 +430,7 @@ namespace LackMan
 						"Problematic file is at %2.")
 						.arg (exitCode)
 						.arg (sender ()->property ("Filename").toString ()),
-					PCritical_));
+					Priority::Critical));
 			return;
 		}
 
@@ -449,7 +449,7 @@ namespace LackMan
 			Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification (tr ("Package parse error"),
 					tr ("Unable to parse package description file. "
 						"More information is available in logs."),
-					PCritical_));
+					Priority::Critical));
 			return;
 		}
 
@@ -472,7 +472,7 @@ namespace LackMan
 						"Problematic file is at %2.")
 						.arg (error)
 						.arg (sender ()->property ("Filename").toString ()),
-					PCritical_));
+					Priority::Critical));
 	}
 }
 }

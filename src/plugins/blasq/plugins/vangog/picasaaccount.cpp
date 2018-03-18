@@ -392,7 +392,7 @@ namespace Vangog
 		AlbumId2AlbumItem_ [album.ID_] = item;
 		CollectionsModel_->appendRow (item);
 		Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Blasq",
-				tr ("Album was created successfully"), PInfo_));
+				tr ("Album was created successfully"), Priority::Info));
 	}
 
 	void PicasaAccount::handleGotPhotos (const QList<Photo>& photos)
@@ -407,7 +407,7 @@ namespace Vangog
 		CreatePhotoItem (photo);
 		emit doneUpdating ();
 		Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Blasq",
-				tr ("Image was uploaded successfully"), PInfo_));
+				tr ("Image was uploaded successfully"), Priority::Info));
 	}
 
 	void PicasaAccount::handleDeletedPhotos (const QByteArray& photoId)
@@ -443,7 +443,7 @@ namespace Vangog
 				tr ("Error during operation: %1 (%2)")
 					.arg (errorCode)
 					.arg (errorString),
-				PWarning_));
+				Priority::Warning));
 	}
 
 }

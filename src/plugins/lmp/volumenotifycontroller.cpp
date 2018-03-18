@@ -71,7 +71,7 @@ namespace LMP
 		auto e = Util::MakeNotification ("LMP",
 				tr ("LMP volume has been changed to %1%.")
 					.arg (static_cast<int> (Output_->GetVolume () * 100)),
-				PInfo_);
+				Priority::Info);
 		e.Additional_ ["org.LC.AdvNotifications.SenderID"] = "org.LeechCraft.LMP";
 		e.Additional_ ["org.LC.AdvNotifications.EventID"] = "VolumeChange";
 		Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (e);

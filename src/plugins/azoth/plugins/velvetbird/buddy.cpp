@@ -180,7 +180,7 @@ namespace VelvetBird
 			const auto& notify = Util::MakeNotification ("Azoth VelvetBird",
 					tr ("Unable to send message: protocol error.")
 						.arg (name),
-					PInfo_);
+					Priority::Info);
 
 			const auto& proxy = Account_->GetParentProtocol ()->GetCoreProxy ();
 			proxy->GetEntityManager ()->HandleEntity (notify);
@@ -202,7 +202,7 @@ namespace VelvetBird
 				const auto& notify = Util::MakeNotification ("Azoth VelvetBird",
 						tr ("Unable to send message to %1: protocol error.")
 							.arg (name),
-						PInfo_);
+						Priority::Info);
 
 				const auto& proxy = Account_->GetParentProtocol ()->GetCoreProxy ();
 				proxy->GetEntityManager ()->HandleEntity (notify);

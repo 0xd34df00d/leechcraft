@@ -197,7 +197,7 @@ namespace NetStoreManager
 			Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification ("NetStoreManager",
 					tr ("No account for service name %1.")
 						.arg ("<em>" + service + "</em>"),
-					PCritical_));
+					Priority::Critical));
 			return;
 		}
 

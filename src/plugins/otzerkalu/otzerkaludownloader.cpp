@@ -178,7 +178,7 @@ namespace Otzerkalu
 			emit gotEntity (Util::MakeNotification ("Otzerkalu",
 					tr ("Finished mirroring <em>%1</em>.")
 						.arg (Param_.DownloadUrl_.toString ()),
-					PInfo_));
+					Priority::Info));
 			emit mirroringFinished (ID_);
 		}
 	}
@@ -249,7 +249,7 @@ namespace Otzerkalu
 			emit gotEntity (Util::MakeNotification ("Otzerkalu",
 					tr ("Could not download %1")
 						.arg (url.toString ()),
-					PCritical_));
+					Priority::Critical));
 			return QString ();
 		}
 		++UrlCount_;

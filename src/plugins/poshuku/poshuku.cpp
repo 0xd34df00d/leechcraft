@@ -393,7 +393,7 @@ namespace Poshuku
 
 	void Poshuku::handleError (const QString& msg)
 	{
-		emit gotEntity (Util::MakeNotification ("Poshuku", msg, PWarning_));
+		emit gotEntity (Util::MakeNotification ("Poshuku", msg, Priority::Warning));
 	}
 
 	void Poshuku::handleSettingsClicked (const QString& name)

@@ -271,7 +271,7 @@ namespace SvcAuth
 					"Report upstream please.")
 					.arg (AccountHR_)
 					.arg (errNum),
-				PCritical_);
+				Priority::Critical);
 		Proxy_->GetEntityManager ()->HandleEntity (e);
 
 		return true;

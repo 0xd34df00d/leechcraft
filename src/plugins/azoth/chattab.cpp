@@ -1270,7 +1270,7 @@ namespace Azoth
 				Core::Instance ().SendEntity (Util::MakeNotification ("Azoth",
 							tr ("%1 isn't present in this conference at the moment.")
 								.arg ("<em>" + nick + "</em>"),
-							PWarning_));
+							Priority::Warning));
 		}
 		else if (host == "sendentities")
 		{

@@ -495,7 +495,7 @@ namespace DBox
 		QString msg = map ["error"].toString ();
 		Core::Instance ().SendEntity (Util::MakeNotification ("NetStoreManager",
 				msg,
-				PWarning_));
+				Priority::Warning));
 	}
 
 	void DriveManager::handleGotAccountInfo ()

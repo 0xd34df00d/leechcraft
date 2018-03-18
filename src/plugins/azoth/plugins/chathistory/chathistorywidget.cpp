@@ -410,7 +410,7 @@ namespace ChatHistory
 				const auto& e = Util::MakeNotification ("Azoth ChatHistory",
 						tr ("No more search results for %1, searching from the beginning now.")
 							.arg ("<em>" + PreviousSearchText_ + "</em>"),
-						PInfo_);
+						Priority::Info);
 				Params_.CoreProxy_->GetEntityManager ()->HandleEntity (e);
 
 				RequestSearch (FindBox_->GetFlags ());

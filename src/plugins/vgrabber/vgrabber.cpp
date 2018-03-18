@@ -165,7 +165,7 @@ namespace vGrabber
 	void vGrabber::handleError (const QString& msg)
 	{
 		qWarning () << Q_FUNC_INFO << sender () << msg;
-		emit gotEntity (Util::MakeNotification ("vGrabber", msg, PWarning_));
+		emit gotEntity (Util::MakeNotification ("vGrabber", msg, Priority::Warning));
 	}
 
 	void vGrabber::handleCategoriesGoingToChange (const QStringList& added,

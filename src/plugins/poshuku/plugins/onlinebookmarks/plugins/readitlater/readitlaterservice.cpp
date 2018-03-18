@@ -271,7 +271,7 @@ namespace ReadItLater
 		const QVariant& result = reply->attribute (QNetworkRequest::HttpStatusCodeAttribute);
 		Entity e;
 		QString msg;
-		Priority priority = PInfo_;
+		Priority priority = Priority::Info;
 		switch (result.toInt ())
 		{
 		case 200:
@@ -288,11 +288,11 @@ namespace ReadItLater
 				switch (Reply2Request_ [reply].Type_)
 				{
 				case OTAuth:
-					priority = PInfo_;
+					priority = Priority::Info;
 					msg = tr ("Authentication has finished successfully.");
 					break;
 				case OTRegister:
-					priority = PInfo_;
+					priority = Priority::Info;
 					msg = tr ("Registration has finished successfully.");
 					break;
 				case OTDownload:
@@ -325,19 +325,19 @@ namespace ReadItLater
 					<< "X-Error contents:"
 					<< reply->rawHeader ("X-Error");
 			msg = tr ("Invalid request. Please report to developers.");
-			priority = PWarning_;
+			priority = Priority::Warning;
 			break;
 		case 401:
 			msg = tr ("Incorrect username or password.");
-			priority = PWarning_;
+			priority = Priority::Warning;
 			break;
 		case 403:
 			msg = tr ("Rate limit exceeded, please wait a little bit before resubmitting.");
-			priority = PWarning_;
+			priority = Priority::Warning;
 			break;
 		case 503:
 			msg = tr ("Read It Later's sync server is down for scheduled maintenance.");
-			priority = PWarning_;
+			priority = Priority::Warning;
 			break;
 		}
 		e = Util::MakeNotification ("OnlineBookmarks",

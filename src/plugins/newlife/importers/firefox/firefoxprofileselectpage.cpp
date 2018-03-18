@@ -305,7 +305,7 @@ namespace Importers
 			SendEntity (Util::MakeNotification ("Firefox Import",
 					tr ("OPML file for importing RSS cannot be created: %1")
 							.arg (file.errorString ()),
-					PCritical_));
+					Priority::Critical));
 			return QString ();
 		}
 
@@ -358,7 +358,7 @@ namespace Importers
 			SendEntity (Util::MakeNotification (tr ("Firefox Import"),
 						tr ("Could not open Firefox database: %1.")
 							.arg (DB_->lastError ().text ()),
-						PCritical_));
+						Priority::Critical));
 		}
 		else
 		{

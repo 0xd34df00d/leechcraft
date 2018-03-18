@@ -68,7 +68,7 @@ namespace Util
 			const QString& cat, const QStringList& types, AN::NotifyFlags flags,
 			bool openConfiguration, const QList<QPair<QString, ANFieldValue>>& fields)
 	{
-		auto e = MakeNotification (title, {}, PLog_);
+		auto e = MakeNotification (title, {}, Priority::Log);
 		e.Additional_ [AN::EF::SenderID] = senderID;
 		e.Additional_ [AN::EF::EventID] = "org.LC.AdvNotifications.RuleRegister";
 		e.Additional_ [AN::EF::EventCategory] = cat;
@@ -123,13 +123,13 @@ namespace Util
 				AutoAccept | OnlyHandle,
 				"x-leechcraft/notification");
 		result.Additional_ ["Text"] = text;
-		result.Additional_ ["Priority"] = priority;
+		result.Additional_ ["Priority"] = QVariant::fromValue (priority);
 		return result;
 	}
 
 	Entity MakeANCancel (const Entity& event)
 	{
-		Entity e = MakeNotification (event.Entity_.toString (), QString (), PInfo_);
+		Entity e = MakeNotification (event.Entity_.toString (), QString (), Priority::Info);
 		e.Additional_ [AN::EF::SenderID] = event.Additional_ [AN::EF::SenderID];
 		e.Additional_ [AN::EF::EventID] = event.Additional_ [AN::EF::EventID];
 		e.Additional_ [AN::EF::EventCategory] = AN::CatEventCancel;
@@ -138,7 +138,7 @@ namespace Util
 
 	Entity MakeANCancel (const QString& senderId, const QString& eventId)
 	{
-		Entity e = MakeNotification (QString (), QString (), PInfo_);
+		Entity e = MakeNotification (QString (), QString (), Priority::Info);
 		e.Additional_ [AN::EF::SenderID] = senderId;
 		e.Additional_ [AN::EF::EventID] = eventId;
 		e.Additional_ [AN::EF::EventCategory] = AN::CatEventCancel;

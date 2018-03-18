@@ -606,7 +606,7 @@ namespace CSTP
 						.arg (To_->errorString ());
 				const auto& e = Util::MakeNotification ("LeechCraft CSTP",
 						errString,
-						PCritical_);
+						Priority::Critical);
 				Core::Instance ().GetCoreProxy ()->GetEntityManager ()->HandleEntity (e);
 				emit done (true);
 			}

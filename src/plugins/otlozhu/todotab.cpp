@@ -432,7 +432,7 @@ namespace Otlozhu
 						tr ("Unable to export to %1: %2.")
 							.arg (filename)
 							.arg (file.errorString ()),
-						PCritical_));
+						Priority::Critical));
 			return;
 		}
 
@@ -446,7 +446,7 @@ namespace Otlozhu
 		emit gotEntity (Util::MakeNotification ("Otlozhu",
 					tr ("Todo items were successfully exported to %1.")
 						.arg (QFileInfo (filename).fileName ()),
-					PInfo_));
+					Priority::Info));
 	}
 }
 }

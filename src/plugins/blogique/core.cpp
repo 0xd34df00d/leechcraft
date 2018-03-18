@@ -345,7 +345,7 @@ namespace Blogique
 				tr ("Entry was posted successfully:") +
 					QString (" <a href=\"%1\">%1</a>\n")
 						.arg (entries.value (0).EntryUrl_.toString ()),
-				Priority::PInfo_);
+				Priority::Info);
 
 		auto nh = new Util::NotificationActionHandler (e, this);
 		nh->AddFunction (tr ("Open Link"),
@@ -370,7 +370,7 @@ namespace Blogique
 
 		SendEntity (Util::MakeNotification ("Blogique",
 				tr ("Entry was removed successfully."),
-				Priority::PInfo_));
+				Priority::Info));
 		acc->RequestStatistics ();
 		acc->RequestTags ();
 		emit entryRemoved ();
@@ -387,7 +387,7 @@ namespace Blogique
 
 		SendEntity (Util::MakeNotification ("Blogique",
 				tr ("Entry was updated successfully."),
-				Priority::PInfo_));
+				Priority::Info));
 		acc->RequestStatistics ();
 		acc->RequestTags ();
 	}

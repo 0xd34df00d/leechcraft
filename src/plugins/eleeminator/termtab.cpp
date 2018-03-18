@@ -549,7 +549,7 @@ namespace Eleeminator
 
 	void TermTab::handleBell (const QString&)
 	{
-		auto e = Util::MakeAN ("Eleeminator", tr ("Bell in terminal."), PInfo_,
+		auto e = Util::MakeAN ("Eleeminator", tr ("Bell in terminal."), Priority::Info,
 				"org.LeechCraft.Eleeminator", AN::CatTerminal, AN::TypeTerminalBell,
 				"org.LeechCraft.Eleeminator.BellEvent",
 				{ "Eleeminator", tr ("Bell") });

@@ -283,31 +283,31 @@ namespace Sarin
 					case ToxThread::AddFriendResult::Added:
 						return;
 					case ToxThread::AddFriendResult::InvalidId:
-						notify (PCritical_, tr ("Friend was not added: invalid Tox ID."));
+						notify (Priority::Critical, tr ("Friend was not added: invalid Tox ID."));
 						return;
 					case ToxThread::AddFriendResult::TooLong:
-						notify (PCritical_, tr ("Friend was not added: too long greeting message."));
+						notify (Priority::Critical, tr ("Friend was not added: too long greeting message."));
 						return;
 					case ToxThread::AddFriendResult::NoMessage:
-						notify (PCritical_, tr ("Friend was not added: no message."));
+						notify (Priority::Critical, tr ("Friend was not added: no message."));
 						return;
 					case ToxThread::AddFriendResult::OwnKey:
-						notify (PCritical_, tr ("Why would you add yourself as friend?"));
+						notify (Priority::Critical, tr ("Why would you add yourself as friend?"));
 						return;
 					case ToxThread::AddFriendResult::AlreadySent:
-						notify (PWarning_, tr ("Friend request has already been sent."));
+						notify (Priority::Warning, tr ("Friend request has already been sent."));
 						return;
 					case ToxThread::AddFriendResult::BadChecksum:
-						notify (PCritical_, tr ("Friend was not added: bad Tox ID checksum."));
+						notify (Priority::Critical, tr ("Friend was not added: bad Tox ID checksum."));
 						return;
 					case ToxThread::AddFriendResult::NoSpam:
-						notify (PCritical_, tr ("Friend was not added: nospam value has been changed. Get a freshier ID!"));
+						notify (Priority::Critical, tr ("Friend was not added: nospam value has been changed. Get a freshier ID!"));
 						return;
 					case ToxThread::AddFriendResult::NoMem:
-						notify (PCritical_, tr ("Friend was not added: no memory (but how do you see this in that case?)."));
+						notify (Priority::Critical, tr ("Friend was not added: no memory (but how do you see this in that case?)."));
 						return;
 					case ToxThread::AddFriendResult::Unknown:
-						notify (PCritical_, tr ("Friend was not added because of some unknown error."));
+						notify (Priority::Critical, tr ("Friend was not added because of some unknown error."));
 						return;
 					}
 				};

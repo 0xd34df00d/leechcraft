@@ -949,7 +949,7 @@ namespace LMP
 					.arg (artistsMsg)
 					.arg (albumsMsg)
 					.arg (tracksMsg);
-			Core::Instance ().SendEntity (Util::MakeNotification ("LMP", msg, PInfo_));
+			Core::Instance ().SendEntity (Util::MakeNotification ("LMP", msg, Priority::Info));
 
 			UpdateNewArtists_ = UpdateNewAlbums_ = UpdateNewTracks_ = 0;
 		}

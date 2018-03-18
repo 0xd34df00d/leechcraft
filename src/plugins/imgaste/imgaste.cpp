@@ -242,7 +242,7 @@ namespace Imgaste
 
 							auto text = tr ("Image pasted: %1, the URL was copied to the clipboard")
 									.arg ("<em>" + url + "</em>");
-							em->HandleEntity (Util::MakeNotification ("Imgaste", text, PInfo_));
+							em->HandleEntity (Util::MakeNotification ("Imgaste", text, Priority::Info));
 						}
 						else
 							callback (url);
@@ -260,7 +260,7 @@ namespace Imgaste
 
 							const auto& text = tr ("Image upload failed: %1")
 									.arg (error.ErrorString_);
-							em->HandleEntity (Util::MakeNotification ("Imgaste", text, PCritical_));
+							em->HandleEntity (Util::MakeNotification ("Imgaste", text, Priority::Critical));
 						},
 						[em, dataFilter] (const Poster::ServiceAPIError&)
 						{
@@ -269,7 +269,7 @@ namespace Imgaste
 
 							const auto& text = tr ("Image upload to %1 failed: service error.")
 									.arg ("<em>" + dataFilter + "</em>");
-							em->HandleEntity (Util::MakeNotification ("Imgaste", text, PCritical_));
+							em->HandleEntity (Util::MakeNotification ("Imgaste", text, Priority::Critical));
 						}
 					}
 				};

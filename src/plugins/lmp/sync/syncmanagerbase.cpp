@@ -84,7 +84,7 @@ namespace LMP
 			const auto& e = Util::MakeNotification ("LMP",
 					tr ("Files were transcoded, but some errors occured. "
 						"Check the upload log for details."),
-					PWarning_);
+					Priority::Warning);
 			Core::Instance ().SendEntity (e);
 			WereTCErrors_ = false;
 		}
@@ -103,7 +103,7 @@ namespace LMP
 
 		const auto& e = Util::MakeNotification ("LMP",
 				tr ("Files finished uploading."),
-				PInfo_);
+				Priority::Info);
 		Core::Instance ().SendEntity (e);
 	}
 
@@ -160,7 +160,7 @@ namespace LMP
 
 		Core::Instance ().SendEntity (Util::MakeNotification ("LMP",
 					text,
-					PWarning_));
+					Priority::Warning));
 		emit uploadLog (text);
 
 		emit uploadProgress (++CopiedCount_, TotalCopyCount_, this);

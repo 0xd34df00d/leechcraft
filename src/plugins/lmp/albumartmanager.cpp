@@ -213,7 +213,7 @@ namespace LMP
 
 			const auto& e = Util::MakeNotification ("LMP",
 					tr ("Path %1 cannot be used as album art storage, default path will be used instead."),
-					PWarning_);
+					Priority::Warning);
 			Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (e);
 
 			AADir_ = Util::GetUserDir (Util::UserDir::Cache, "lmp/covers");

@@ -381,7 +381,7 @@ namespace Xoox
 					<< info;
 			Core::Instance ().SendEntity (Util::MakeNotification ("Azoth",
 						tr ("Unable to import account: malformed import data."),
-						PCritical_));
+						Priority::Critical));
 			return false;
 		}
 
@@ -390,7 +390,7 @@ namespace Xoox
 			{
 				Core::Instance ().SendEntity (Util::MakeNotification ("Azoth",
 							tr ("Account %1 already exists, cannot import another one."),
-							PCritical_));
+							Priority::Critical));
 				return false;
 			}
 

@@ -687,7 +687,7 @@ namespace Metida
 		Entity e = Util::MakeNotification ("Blogique Metida",
 				tr ("You have unread messages in account %1")
 						.arg ("<em>" + GetAccountName () + "</em>"),
-				Priority::PInfo_);
+				Priority::Info);
 		Util::NotificationActionHandler *nh =
 				new Util::NotificationActionHandler (e, this);
 		nh->AddFunction (tr ("Open inbox"),
@@ -711,14 +711,14 @@ namespace Metida
 	{
 		Core::Instance ().SendEntity (Util::MakeNotification ("Blogique Metida",
 				tr ("All unread messages were marked as read"),
-				Priority::PInfo_));
+				Priority::Info));
 	}
 
 	void LJAccount::handleMessageSent ()
 	{
 		Core::Instance ().SendEntity (Util::MakeNotification ("Blogique Metida",
 				tr ("Message has been sent successfully"),
-				Priority::PInfo_));
+				Priority::Info));
 	}
 
 	namespace
@@ -769,7 +769,7 @@ namespace Metida
 		Core::Instance ().SendEntity (Util::MakeNotification ("Blogique Metida",
 				tr ("Reply was posted successfully:") +
 						QString (" <a href=\"%1\">%1</a>\n").arg (url.toString ()),
-				Priority::PInfo_));
+				Priority::Info));
 		LJXmlRpc_->RequestRecentCommments ();
 	}
 

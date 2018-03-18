@@ -80,7 +80,7 @@ namespace Snails
 					Account::tr ("Connection failed for account %1: certificate check failed. %2")
 						.arg ("<em>" + accountName + "</em>")
 						.arg (QString::fromUtf8 (err.what ())),
-					PCritical_);
+					Priority::Critical);
 
 			const auto& qCerts = ToSslCerts (err.getCertificate ());
 			qDebug () << Q_FUNC_INFO
@@ -141,7 +141,7 @@ namespace Snails
 									tr ("Connection failed for account %1: %2")
 										.arg ("<em>" + AccName_ + "</em>")
 										.arg (text),
-									PCritical_));
+									Priority::Critical));
 						};
 
 						Util::Visit (*left,

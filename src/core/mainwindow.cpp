@@ -218,7 +218,7 @@ void LeechCraft::MainWindow::catchError (QString message)
 			AutoAccept | OnlyHandle,
 			"x-leechcraft/notification");
 	e.Additional_ ["Text"] = message;
-	e.Additional_ ["Priority"] = PWarning_;
+	e.Additional_ ["Priority"] = QVariant::fromValue (Priority::Warning);
 	Core::Instance ().handleGotEntity (e);
 }
 

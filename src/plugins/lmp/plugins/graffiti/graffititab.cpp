@@ -694,7 +694,7 @@ namespace Graffiti
 
 	void GraffitiTab::handleCueSplitError (const QString& error)
 	{
-		const auto& e = Util::MakeNotification ("LMP Graffiti", error, PCritical_);
+		const auto& e = Util::MakeNotification ("LMP Graffiti", error, Priority::Critical);
 		CoreProxy_->GetEntityManager ()->HandleEntity (e);
 	}
 
@@ -702,7 +702,7 @@ namespace Graffiti
 	{
 		const auto& e = Util::MakeNotification ("LMP Graffiti",
 				tr ("Finished splitting CUE file"),
-				PInfo_);
+				Priority::Info);
 		CoreProxy_->GetEntityManager ()->HandleEntity (e);
 	}
 }

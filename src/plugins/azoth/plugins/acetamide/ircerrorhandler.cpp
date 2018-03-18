@@ -62,7 +62,7 @@ namespace Acetamide
 				paramsMessage.isEmpty () ?
 						options.Message_ :
 						(paramsMessage + ": " + options.Message_),
-				PWarning_);
+				Priority::Warning);
 		Core::Instance ().SendEntity (e);
 	}
 

@@ -207,7 +207,7 @@ namespace Xoox
 		{
 			Entity e = LeechCraft::Util::MakeNotification ("Azoth",
 					tr ("Can't view info while offline"),
-					PCritical_);
+					Priority::Critical);
 			Core::Instance ().SendEntity (e);
 
 			return;

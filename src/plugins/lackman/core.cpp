@@ -403,7 +403,7 @@ namespace LackMan
 				emit gotEntity (Util::MakeNotification (tr ("Error updating repository"),
 						tr ("Unable to find repository with URL %1.")
 							.arg (url.toString ()),
-						PCritical_));
+						Priority::Critical));
 				return;
 			}
 			ourComponents = Storage_->GetComponents (id);
@@ -421,7 +421,7 @@ namespace LackMan
 			emit gotEntity (Util::MakeNotification (tr ("Error updating repository"),
 					tr ("While trying to update the repository: %1.")
 						.arg (str),
-					PCritical_));
+					Priority::Critical));
 			return;
 		}
 
@@ -451,7 +451,7 @@ namespace LackMan
 								"disappeared from the list of components for repo %2.")
 								.arg (oc)
 								.arg (url.toString ()),
-							PCritical_));
+							Priority::Critical));
 					return;
 				}
 			}
@@ -495,7 +495,7 @@ namespace LackMan
 						<< packageId;
 				emit gotEntity (Util::MakeNotification (tr ("Unable to install package"),
 							str,
-							PCritical_));
+							Priority::Critical));
 				continue;
 			}
 		}
@@ -516,7 +516,7 @@ namespace LackMan
 						<< packageId;
 				emit gotEntity (Util::MakeNotification (tr ("Unable to update package"),
 							str,
-							PCritical_));
+							Priority::Critical));
 				continue;
 			}
 		}
@@ -605,7 +605,7 @@ namespace LackMan
 							tr ("Unable to load package ID for package `%1`-%2")
 								.arg (info.Name_)
 								.arg (version),
-							PCritical_));
+							Priority::Critical));
 					return;
 				}
 
@@ -634,7 +634,7 @@ namespace LackMan
 								.arg (info.Name_)
 								.arg (version)
 								.arg (component),
-							PCritical_));
+							Priority::Critical));
 					return;
 				}
 			}
@@ -658,7 +658,7 @@ namespace LackMan
 					tr ("Got %n new or updated packages, "
 						"open LackMan tab to view them.",
 						0, newPackages),
-					PInfo_));
+					Priority::Info));
 	}
 
 	void Core::PerformRemoval (int packageId)
@@ -677,7 +677,7 @@ namespace LackMan
 					<< packageId;
 			emit gotEntity (Util::MakeNotification (tr ("Unable to remove package"),
 						str,
-						PCritical_));
+						Priority::Critical));
 			return;
 		}
 
@@ -721,7 +721,7 @@ namespace LackMan
 					<< e.what ();
 			emit gotEntity (Util::MakeNotification (tr ("Error installing package"),
 						tr ("Error recording package to the package DB."),
-						PCritical_));
+						Priority::Critical));
 
 			try
 			{
@@ -754,7 +754,7 @@ namespace LackMan
 					<< str;
 			emit gotEntity (Util::MakeNotification (tr ("Unable to remove package"),
 						str,
-						PCritical_));
+						Priority::Critical));
 			return false;
 		}
 
@@ -925,7 +925,7 @@ namespace LackMan
 			emit gotEntity (Util::MakeNotification (tr ("Repository addition error"),
 					tr ("Incorrect URL %1.")
 						.arg (str),
-					PCritical_));
+					Priority::Critical));
 			return;
 		}
 
@@ -957,7 +957,7 @@ namespace LackMan
 			emit gotEntity (Util::MakeNotification (tr ("Error adding/updating repository"),
 					tr ("While trying to add or update the repository: %1.")
 						.arg (str),
-					PCritical_));
+					Priority::Critical));
 		}
 
 		if (repoId == -1)
@@ -996,7 +996,7 @@ namespace LackMan
 			emit gotEntity (Util::MakeNotification (tr ("Error parsing component"),
 					tr ("Unable to load component ID for component %1.")
 						.arg (component),
-					PCritical_));
+					Priority::Critical));
 			return;
 		}
 
@@ -1015,7 +1015,7 @@ namespace LackMan
 			emit gotEntity (Util::MakeNotification (tr ("Error handling component"),
 					tr ("Unable to load packages already present in the component %1.")
 						.arg (component),
-					PCritical_));
+					Priority::Critical));
 			return;
 		}
 
@@ -1034,7 +1034,7 @@ namespace LackMan
 				emit gotEntity (Util::MakeNotification (tr ("Error handling component"),
 						tr ("Unable to load package already present in the component %1.")
 							.arg (component),
-						PCritical_));
+						Priority::Critical));
 				return;
 			}
 
@@ -1069,7 +1069,7 @@ namespace LackMan
 					emit gotEntity (Util::MakeNotification (tr ("Error handling component"),
 							tr ("Unable to remove package which has been removed upstream from %1.")
 								.arg (component),
-							PCritical_));
+							Priority::Critical));
 					return;
 				}
 			}
@@ -1118,7 +1118,7 @@ namespace LackMan
 			emit gotEntity (Util::MakeNotification (tr ("Error retrieving package"),
 					tr ("Unable to save package %1.")
 						.arg (pInfo.Name_),
-					PCritical_));
+					Priority::Critical));
 		}
 
 		if (pInfo.IconURL_.isValid ())
@@ -1136,7 +1136,7 @@ namespace LackMan
 				emit gotEntity (Util::MakeNotification (tr ("Error retrieving package icon"),
 						tr ("Unable to retrieve icon for package %1.")
 							.arg (pInfo.Name_),
-						PCritical_));
+						Priority::Critical));
 			}
 		}
 	}
@@ -1164,7 +1164,7 @@ namespace LackMan
 
 		emit gotEntity (Util::MakeNotification (tr ("Error installing package"),
 					msg,
-					PCritical_));
+					Priority::Critical));
 	}
 
 	void Core::handlePackageInstalled (int packageId)
@@ -1192,7 +1192,7 @@ namespace LackMan
 		emit gotEntity (Util::MakeNotification (tr ("Package installed"),
 					tr ("Package %1 installed successfully.")
 						.arg ("<em>" + packageName + "</em>"),
-					PInfo_));
+					Priority::Info));
 
 		emit packageRowActionFinished (GetPackageRow (packageId));
 	}
@@ -1223,7 +1223,7 @@ namespace LackMan
 		emit gotEntity (Util::MakeNotification (tr ("Package updated"),
 					tr ("Package %1 updated successfully.")
 						.arg ("<em>" + packageName + "</em>"),
-					PInfo_));
+					Priority::Info));
 
 		emit packageRowActionFinished (GetPackageRow (packageId));
 	}

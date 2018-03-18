@@ -506,7 +506,7 @@ namespace Zheet
 				tr ("You have %n unread messages (out of %1) in your %2 inbox.", 0, unread)
 					.arg (total)
 					.arg (ZheetUtil::FromStd (Passport_)),
-				PInfo_);
+				Priority::Info);
 		Core::Instance ().SendEntity (e);
 	}
 
@@ -516,7 +516,7 @@ namespace Zheet
 				tr ("You've got a message from %1: %2.")
 					.arg (from)
 					.arg (subj),
-				PInfo_);
+				Priority::Info);
 		Core::Instance ().SendEntity (e);
 	}
 

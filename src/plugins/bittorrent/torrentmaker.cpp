@@ -150,7 +150,7 @@ namespace BitTorrent
 
 	void TorrentMaker::ReportError (const QString& error)
 	{
-		const auto& entity = Util::MakeNotification ("BitTorrent", error, PCritical_);
+		const auto& entity = Util::MakeNotification ("BitTorrent", error, Priority::Critical);
 		Proxy_->GetEntityManager ()->HandleEntity (entity);
 	}
 }

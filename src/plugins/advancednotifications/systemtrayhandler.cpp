@@ -80,16 +80,16 @@ namespace AdvancedNotifications
 			if (pxVar.canConvert<QImage> ())
 				return Util::MakeReadyFuture (QPixmap::fromImage (pxVar.value<QImage> ()));
 
-			const auto prio = e.Additional_ ["Priority"].toInt ();
+			const auto prio = e.Additional_ ["Priority"].value<Priority> ();
 			auto getDefault = [proxy, prio]
 			{
 				QString mi = "information";
 				switch (prio)
 				{
-				case PWarning_:
+				case Priority::Warning:
 					mi = "warning";
 					break;
-				case PCritical_:
+				case Priority::Critical:
 					mi = "error";
 				default:
 					break;

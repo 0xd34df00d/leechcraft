@@ -236,7 +236,7 @@ namespace Azoth
 
 		auto e = Util::MakeNotification ("Azoth",
 				msgString,
-				PInfo_);
+				Priority::Info);
 
 		if (msgString.isEmpty ())
 			e.Mime_ += "+advanced";
@@ -305,7 +305,7 @@ namespace Azoth
 					.arg (entry->GetHumanReadableID ())
 					.arg (msg);
 
-		auto e = Util::MakeNotification ("Azoth", str, PInfo_);
+		auto e = Util::MakeNotification ("Azoth", str, Priority::Info);
 		e.Additional_ ["org.LC.AdvNotifications.EventType"] = eventType;
 		e.Additional_ ["org.LC.AdvNotifications.FullText"] = str;
 		e.Additional_ ["org.LC.AdvNotifications.Count"] = 1;
@@ -360,7 +360,7 @@ namespace Azoth
 
 		const auto& text = GetStatusChangeText (entry, entrySt, variant, status);
 
-		auto e = Util::MakeNotification ("LeechCraft", text, PInfo_);
+		auto e = Util::MakeNotification ("LeechCraft", text, Priority::Info);
 		e.Mime_ += "+advanced";
 
 		e.Additional_ ["org.LC.AdvNotifications.EventType"] = AN::TypeIMStatusChange;
@@ -384,7 +384,7 @@ namespace Azoth
 
 		const auto& entryID = entry->GetEntryID ();
 
-		auto e = Util::MakeNotification ("Azoth", {}, PInfo_);
+		auto e = Util::MakeNotification ("Azoth", {}, Priority::Info);
 		e.Additional_ ["org.LC.AdvNotifications.SenderID"] = "org.LeechCraft.Azoth";
 		e.Additional_ ["org.LC.AdvNotifications.EventID"] =
 				"org.LC.Plugins.Azoth.IncomingMessageFrom/" + entryID;
@@ -434,7 +434,7 @@ namespace Azoth
 				tr ("%1 unsubscribed from us: %2.")
 					.arg (entryId)
 					.arg (msg);
-		EntityMgr_->HandleEntity (Util::MakeNotification ("Azoth", str, PInfo_));
+		EntityMgr_->HandleEntity (Util::MakeNotification ("Azoth", str, Priority::Info));
 	}
 
 	void NotificationsManager::handleItemCancelledSubscription (QObject *entryObj, const QString& msg)
@@ -506,7 +506,7 @@ namespace Azoth
 		const auto& info = qobject_cast<IHaveContactTune*> (sender ())->GetUserTune (variant);
 		const auto& text = GetTuneHRText (entry, info);
 
-		auto e = Util::MakeNotification ("LeechCraft", text, PInfo_);
+		auto e = Util::MakeNotification ("LeechCraft", text, Priority::Info);
 		e.Mime_ += "+advanced";
 
 		e.Additional_ ["org.LC.AdvNotifications.EventType"] = AN::TypeIMEventTuneChange;
@@ -553,7 +553,7 @@ namespace Azoth
 		const auto& info = ihca->GetUserActivity (variant);
 		const auto& text = GetActivityHRText (entry, info);
 
-		auto e = Util::MakeNotification ("LeechCraft", text, PInfo_);
+		auto e = Util::MakeNotification ("LeechCraft", text, Priority::Info);
 		e.Mime_ += "+advanced";
 
 		e.Additional_ ["org.LC.AdvNotifications.EventType"] = AN::TypeIMEventActivityChange;
@@ -591,7 +591,7 @@ namespace Azoth
 		const auto& info = qobject_cast<IHaveContactMood*> (sender ())->GetUserMood (variant);
 		const auto& text = GetMoodHRText (entry, info);
 
-		auto e = Util::MakeNotification ("LeechCraft", text, PInfo_);
+		auto e = Util::MakeNotification ("LeechCraft", text, Priority::Info);
 		e.Mime_ += "+advanced";
 
 		e.Additional_ ["org.LC.AdvNotifications.EventType"] = AN::TypeIMEventMoodChange;
@@ -678,7 +678,7 @@ namespace Azoth
 
 		const auto& text = GetHRLocationText (entry, info);
 
-		auto e = Util::MakeNotification ("LeechCraft", text, PInfo_);
+		auto e = Util::MakeNotification ("LeechCraft", text, Priority::Info);
 		e.Mime_ += "+advanced";
 
 		e.Additional_ ["org.LC.AdvNotifications.EventType"] = AN::TypeIMEventLocationChange;
@@ -716,7 +716,7 @@ namespace Azoth
 					.arg (entry->GetEntryName ())
 					.arg (text);
 
-		auto e = Util::MakeNotification ("Azoth", str, PInfo_);
+		auto e = Util::MakeNotification ("Azoth", str, Priority::Info);
 		e.Additional_ ["org.LC.AdvNotifications.DeltaCount"] = 1;
 		e.Additional_ ["org.LC.AdvNotifications.EventType"] = AN::TypeIMAttention;
 		e.Additional_ ["org.LC.AdvNotifications.ExtendedText"] = tr ("Attention requested");
@@ -755,7 +755,7 @@ namespace Azoth
 				tr ("Subscription requested by %1: %2.")
 					.arg (entry->GetEntryName ())
 					.arg (msg);
-		auto e = Util::MakeNotification ("Azoth", str, PInfo_);
+		auto e = Util::MakeNotification ("Azoth", str, Priority::Info);
 		e.Additional_ ["org.LC.AdvNotifications.EventType"] = AN::TypeIMSubscrRequest;
 		e.Additional_ ["org.LC.AdvNotifications.FullText"] = str;
 		e.Additional_ ["org.LC.AdvNotifications.Count"] = 1;
@@ -805,7 +805,7 @@ namespace Azoth
 					.arg (inviter)
 					.arg (reason);
 
-		auto e = Util::MakeNotification ("Azoth", str, PInfo_);
+		auto e = Util::MakeNotification ("Azoth", str, Priority::Info);
 		e.Additional_ ["org.LC.AdvNotifications.SenderID"] = "org.LeechCraft.Azoth";
 		e.Additional_ ["org.LC.AdvNotifications.EventCategory"] = AN::CatIM;
 		e.Additional_ ["org.LC.AdvNotifications.VisualPath"] = QStringList (name);
@@ -859,7 +859,7 @@ namespace Azoth
 		auto e = Util::MakeNotification ("Azoth",
 				tr ("%1 started composing a message to you.")
 					.arg (entry->GetEntryName ()),
-				PInfo_);
+				Priority::Info);
 
 		const auto nh = new Util::NotificationActionHandler { e };
 		nh->AddFunction (tr ("Open chat"),

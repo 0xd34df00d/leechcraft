@@ -306,7 +306,7 @@ namespace BitTorrent
 					{
 						const auto& msg = tr ("Rejecting file %1 because it's "
 								"bigger than current auto limit.").arg (str);
-						const auto& entity = Util::MakeNotification ("BitTorrent", msg, PWarning_);
+						const auto& entity = Util::MakeNotification ("BitTorrent", msg, Priority::Warning);
 						Proxy_->GetEntityManager ()->HandleEntity (entity);
 					}
 					return EntityTestHandleResult ();
@@ -1844,7 +1844,7 @@ namespace BitTorrent
 
 		auto notifyE = Util::MakeAN ("BitTorrent",
 				tr ("Torrent finished: %1").arg (name),
-				PInfo_,
+				Priority::Info,
 				"org.LeechCraft.BitTorrent",
 				AN::CatDownloads,
 				AN::TypeDownloadFinished,
@@ -1950,7 +1950,7 @@ namespace BitTorrent
 
 	void Core::ShowError (const QString& msg)
 	{
-		const auto& e = Util::MakeNotification ("BitTorrent", msg, PCritical_);
+		const auto& e = Util::MakeNotification ("BitTorrent", msg, Priority::Critical);
 		Proxy_->GetEntityManager ()->HandleEntity (e);
 	}
 
@@ -2133,7 +2133,7 @@ namespace BitTorrent
 			const auto& text = QObject::tr ("Saving resume data failed for torrent:<br />%1<br />%2")
 					.arg (GetTorrentName (a.handle))
 					.arg (QString::fromUtf8 (a.error.message ().c_str ()));
-			IEM_->HandleEntity (Util::MakeNotification ("BitTorrent", text, PWarning_));
+			IEM_->HandleEntity (Util::MakeNotification ("BitTorrent", text, Priority::Warning));
 		}
 
 		void operator() (const libtorrent::storage_moved_alert& a) const
@@ -2142,7 +2142,7 @@ namespace BitTorrent
 						"<br />moved successfully to:<br />%2")
 					.arg (GetTorrentName (a.handle))
 					.arg (QString::fromUtf8 (a.storage_path ()));
-			IEM_->HandleEntity (Util::MakeNotification ("BitTorrent", text, PInfo_));
+			IEM_->HandleEntity (Util::MakeNotification ("BitTorrent", text, Priority::Info));
 		}
 
 		void operator() (const libtorrent::storage_moved_failed_alert& a) const
@@ -2150,7 +2150,7 @@ namespace BitTorrent
 			const auto& text = QObject::tr ("Storage move failure:<br />%2<br />for torrent:<br />%1")
 					.arg (GetTorrentName (a.handle))
 					.arg (QString::fromUtf8 (a.error.message ().c_str ()));
-			IEM_->HandleEntity (Util::MakeNotification ("BitTorrent", text, PCritical_));
+			IEM_->HandleEntity (Util::MakeNotification ("BitTorrent", text, Priority::Critical));
 		}
 
 		void operator() (const libtorrent::metadata_received_alert& a) const
@@ -2170,7 +2170,7 @@ namespace BitTorrent
 					.arg (GetTorrentName (a.handle))
 					.arg (QString::number (a.index))
 					.arg (QString::fromUtf8 (a.error.message ().c_str ()));
-			IEM_->HandleEntity (Util::MakeNotification ("BitTorrent", text, PCritical_));
+			IEM_->HandleEntity (Util::MakeNotification ("BitTorrent", text, Priority::Critical));
 		}
 
 		void operator() (const libtorrent::torrent_delete_failed_alert& a) const
@@ -2178,7 +2178,7 @@ namespace BitTorrent
 			const auto& text = QObject::tr ("Failed to delete torrent:<br />%1<br />error:<br />%2")
 					.arg (GetTorrentName (a.handle))
 					.arg (QString::fromUtf8 (a.error.message ().c_str ()));
-			IEM_->HandleEntity (Util::MakeNotification ("BitTorrent", text, PCritical_));
+			IEM_->HandleEntity (Util::MakeNotification ("BitTorrent", text, Priority::Critical));
 		}
 
 		void operator() (const libtorrent::read_piece_alert& a) const
@@ -2252,7 +2252,7 @@ namespace BitTorrent
 					.arg (GetTorrentName (a.handle))
 					.arg (QString::fromUtf8 (a.filename ()))
 					.arg (QString::fromUtf8 (a.error.message ().c_str ()));
-			IEM_->HandleEntity (Util::MakeNotification ("BitTorrent", text, PCritical_));
+			IEM_->HandleEntity (Util::MakeNotification ("BitTorrent", text, Priority::Critical));
 		}
 
 		void operator() (const libtorrent::torrent_error_alert& a) const

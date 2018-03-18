@@ -314,7 +314,7 @@ namespace DeathNote
 				tr ("%1 (original message: %2)")
 						.arg (LocalizedErrorFromCode (code.toInt ()))
 						.arg (string),
-				Priority::PWarning_));
+				Priority::Warning));
 
 		return true;
 	}

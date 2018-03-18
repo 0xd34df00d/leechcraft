@@ -105,7 +105,7 @@ namespace Kinotify
 	EntityTestHandleResult Plugin::CouldHandle (const Entity& e) const
 	{
 		const bool could = e.Mime_ == "x-leechcraft/notification" &&
-				e.Additional_ ["Priority"].toInt () != PLog_ &&
+				e.Additional_ ["Priority"].value<Priority> () != Priority::Log &&
 				!e.Additional_ ["Text"].toString ().isEmpty ();
 		return could ?
 				EntityTestHandleResult (EntityTestHandleResult::PHigh) :
@@ -118,9 +118,9 @@ namespace Kinotify
 		{
 			switch (prio)
 			{
-			case PWarning_:
+			case Priority::Warning:
 				return "dialog-warning";
-			case PCritical_:
+			case Priority::Critical:
 				return "dialog-error";
 			default:
 				return "dialog-information";
@@ -174,8 +174,8 @@ namespace Kinotify
 				FSWinWatcher_->IsCurrentFS ())
 			return;
 
-		Priority prio = static_cast<Priority> (e.Additional_ ["Priority"].toInt ());
-		if (prio == PLog_)
+		auto prio = e.Additional_ ["Priority"].value<Priority> ();
+		if (prio == Priority::Log)
 			return;
 
 		const auto& sender = e.Additional_ ["org.LC.AdvNotifications.SenderID"].toString ();

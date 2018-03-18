@@ -285,13 +285,13 @@ namespace Woodpecker
 				{
 					const auto& notification = Util::MakeNotification (twits.first ()->GetAuthor ()->GetUsername (),
 							twits.first ()->GetText (),
-							PInfo_);
+							Priority::Info);
 					EntityManager_->HandleEntity (notification);
 				}
 				else if (!twits.isEmpty ()) {
 					const auto& notification = Util::MakeNotification (tr ("Woodpecker"),
 							tr ("%n new twit(s)", 0, twits.length ()),
-							PInfo_);
+							Priority::Info);
 					EntityManager_->HandleEntity (notification);
 				}
 			}

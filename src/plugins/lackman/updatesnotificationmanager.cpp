@@ -141,7 +141,7 @@ namespace LackMan
 
 		auto entity = Util::MakeAN ("Lackman",
 				bodyText,
-				PInfo_,
+				Priority::Info,
 				"org.LeechCraft.LackMan",
 				AN::CatPackageManager,
 				AN::TypePackageUpdated,

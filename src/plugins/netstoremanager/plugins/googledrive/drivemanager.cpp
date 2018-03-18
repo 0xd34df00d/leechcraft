@@ -756,7 +756,7 @@ namespace GoogleDrive
 // 			msg = tr ("Google Drive API v.2 doesn't support directory copying.");
 		Core::Instance ().SendEntity (Util::MakeNotification ("NetStoreManager",
 				msg,
-				PWarning_));
+				Priority::Warning));
 
 		return msg;
 	}

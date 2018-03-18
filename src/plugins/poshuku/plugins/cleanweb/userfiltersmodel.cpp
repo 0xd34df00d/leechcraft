@@ -268,7 +268,7 @@ namespace CleanWeb
 				tr ("Imported %1 user filters (%2 parsed successfully).")
 					.arg (p.GetSuccess ())
 					.arg (p.GetTotal ()),
-				PInfo_));
+				Priority::Info));
 	}
 
 	void UserFiltersModel::SplitRow (int *row, bool *isException) const

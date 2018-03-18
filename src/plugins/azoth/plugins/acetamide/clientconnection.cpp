@@ -145,7 +145,7 @@ namespace Acetamide
 		{
 			Entity e = Util::MakeNotification ("Azoth",
 				tr ("This channel is already joined."),
-				PCritical_);
+				Priority::Critical);
 			Core::Instance ().SendEntity (e);
 			return;
 		}
@@ -222,7 +222,7 @@ namespace Acetamide
 		if (hadUnknownVersions)
 			Core::Instance ().SendEntity (Util::MakeNotification ("Azoth Acetamide",
 						tr ("Some bookmarks were lost due to unknown storage version."),
-						PWarning_));
+						Priority::Warning));
 
 		return bookmarks;
 	}
@@ -346,7 +346,7 @@ namespace Acetamide
 
 		Entity e = Util::MakeNotification ("Azoth",
 				errorString,
-				PCritical_);
+				Priority::Critical);
 		Core::Instance ().SendEntity (e);
 
 		const auto& serverOpts = ish->GetServerOptions ();

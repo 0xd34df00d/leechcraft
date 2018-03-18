@@ -93,7 +93,7 @@ namespace LMP
 						tr ("Error uploading file %1 to cloud: %2.")
 							.arg (QFileInfo (localPath).fileName ())
 							.arg (errorStr),
-						PWarning_));
+						Priority::Warning));
 	}
 }
 }
