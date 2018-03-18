@@ -305,8 +305,6 @@ namespace Xoox
 			queryItems [split.at (0)] = QUrl::fromPercentEncoding (split.value (1).toLatin1 ());
 		}
 
-		qDebug () << "HANDLE" << queryItems;
-
 		const QString& path = url.path ();
 		if (queryItems.contains ("join"))
 		{
