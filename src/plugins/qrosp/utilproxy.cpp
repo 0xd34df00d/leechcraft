@@ -94,9 +94,7 @@ namespace Qrosp
 		Priority Str2Priority (QString str)
 		{
 			str = str.toLower ();
-			if (str == "log")
-				return Priority::Log;
-			else if (str == "info")
+			if (str == "info")
 				return Priority::Info;
 			else if (str == "warning")
 				return Priority::Warning;

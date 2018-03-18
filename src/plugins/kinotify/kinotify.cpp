@@ -105,7 +105,6 @@ namespace Kinotify
 	EntityTestHandleResult Plugin::CouldHandle (const Entity& e) const
 	{
 		const bool could = e.Mime_ == "x-leechcraft/notification" &&
-				e.Additional_ ["Priority"].value<Priority> () != Priority::Log &&
 				!e.Additional_ ["Text"].toString ().isEmpty ();
 		return could ?
 				EntityTestHandleResult (EntityTestHandleResult::PHigh) :
@@ -175,8 +174,6 @@ namespace Kinotify
 			return;
 
 		auto prio = e.Additional_ ["Priority"].value<Priority> ();
-		if (prio == Priority::Log)
-			return;
 
 		const auto& sender = e.Additional_ ["org.LC.AdvNotifications.SenderID"].toString ();
 		const auto& event = e.Additional_ ["org.LC.AdvNotifications.EventID"].toString ();;

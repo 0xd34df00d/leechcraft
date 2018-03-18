@@ -239,7 +239,6 @@ namespace LeechCraft
 
 	enum class Priority
 	{
-		Log,
 		Info,
 		Warning,
 		Critical
