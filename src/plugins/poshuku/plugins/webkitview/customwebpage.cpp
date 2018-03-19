@@ -231,7 +231,7 @@ namespace WebKitView
 						Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Poshuku",
 								tr ("Unable to send the request to %1. Please try submitting it again.")
 									.arg (error->url.host ()),
-								PCritical_));
+								Priority::Critical));
 						return false;
 					default:
 						return true;

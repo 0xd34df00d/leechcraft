@@ -106,7 +106,6 @@ namespace LeechCraft
 
 		QMenu* createPopupMenu () override;
 	public slots:
-		void catchError (QString);
 		void showHideMain ();
 		void showMain ();
 		void showFirstTime ();

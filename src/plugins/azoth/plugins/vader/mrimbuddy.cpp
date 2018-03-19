@@ -486,7 +486,7 @@ namespace Vader
 		iem->HandleEntity (Util::MakeNotification ("Azoth",
 					tr ("SMS has been sent to %1.")
 						.arg (SentSMS_.take (seq)),
-				PInfo_));
+				Priority::Info));
 	}
 
 	void MRIMBuddy::handleSMSBadParms (quint32 seq)
@@ -498,7 +498,7 @@ namespace Vader
 		iem->HandleEntity (Util::MakeNotification ("Azoth",
 					tr ("Failed to send SMS to %1: bad parameters.")
 						.arg (SentSMS_.take (seq)),
-				PCritical_));
+				Priority::Critical));
 	}
 
 	void MRIMBuddy::handleSMSServUnavail (quint32 seq)
@@ -510,7 +510,7 @@ namespace Vader
 		iem->HandleEntity (Util::MakeNotification ("Azoth",
 					tr ("Failed to send SMS to %1: service unavailable.")
 						.arg (SentSMS_.take (seq)),
-				PCritical_));
+				Priority::Critical));
 	}
 }
 }

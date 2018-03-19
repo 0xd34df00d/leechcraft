@@ -305,7 +305,7 @@ namespace DeathNote
 
 		Account_->GetProxy ()->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Blasq",
 				reply->errorString (),
-				PWarning_));
+				Priority::Warning));
 	}
 
 	void SelectGroupsDialog::handleRequestFriendsGroupsFinished ()

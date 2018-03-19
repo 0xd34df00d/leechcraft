@@ -81,7 +81,6 @@ namespace Sysnotify
 		return Connection_.get () &&
 				Connection_->isValid () &&
 				e.Mime_ == "x-leechcraft/notification" &&
-				e.Additional_ ["Priority"].toInt () != PLog_ &&
 				!e.Additional_ ["Text"].toString ().isEmpty ();
 	}
 
@@ -122,13 +121,9 @@ namespace Sysnotify
 
 	void NotificationManager::DoNotify (const Entity& e, bool hasActions)
 	{
-		const auto& prio = static_cast<Priority> (e.Additional_ ["Priority"].toInt ());
 		const auto& header = e.Entity_.toString ();
 		const auto& text = e.Additional_ ["Text"].toString ();
 		bool uus = e.Additional_ ["UntilUserSees"].toBool ();
-
-		if (prio == PLog_)
-			return;
 
 		QStringList fmtActions;
 		QStringList actions;

@@ -186,7 +186,7 @@ namespace LMP
 						0, tracks.size ())
 					.arg (info.Album_)
 					.arg (info.Artist_),
-				PWarning_);
+				Priority::Warning);
 		Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (e);
 	}
 

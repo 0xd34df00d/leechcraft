@@ -1284,7 +1284,7 @@ namespace Poshuku
 				iem->HandleEntity (Util::MakeNotification ("Poshuku",
 						BrowserWidget::tr ("Unable to save the image. Unable to open file for writing: %1.")
 							.arg (file.errorString ()),
-						PCritical_));
+						Priority::Critical));
 				return;
 			}
 
@@ -1520,7 +1520,7 @@ namespace Poshuku
 			return;
 
 		QString text;
-		Priority prio = PInfo_;
+		Priority prio = Priority::Info;
 
 		const auto& escapedTitle = WebView_->GetTitle ().toHtmlEscaped ();
 		if (ok)
@@ -1530,7 +1530,7 @@ namespace Poshuku
 		{
 			text = tr ("Page load failed: %1")
 					.arg (escapedTitle);
-			prio = PWarning_;
+			prio = Priority::Warning;
 		}
 
 		Entity e = Util::MakeNotification ("Poshuku", text, prio);

@@ -43,7 +43,7 @@ namespace WKPlugins
 	void NotificationsExt::showNotification (const QWebNotificationData *data)
 	{
 		const auto& entity = Util::MakeNotification (data->title (),
-				data->message (), PInfo_);
+				data->message (), Priority::Info);
 		Proxy_->GetEntityManager ()->HandleEntity (entity);
 	}
 }

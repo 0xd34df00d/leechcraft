@@ -288,7 +288,7 @@ namespace OnlineBookmarks
 
 		LeechCraft::Entity e = Util::MakeNotification ("OnlineBookmarks",
 				ibs->GetServiceName () + ": bookmarks downloaded successfully",
-				PInfo_);
+				Priority::Info);
 		emit gotEntity (e);
 		AccountsSettings_->UpdateDates ();
 	}
@@ -301,7 +301,7 @@ namespace OnlineBookmarks
 
 		LeechCraft::Entity e = Util::MakeNotification ("OnlineBookmarks",
 				ibs->GetServiceName () + ": bookmarks uploaded successfully",
-				PInfo_);
+				Priority::Info);
 		emit gotEntity (e);
 		AccountsSettings_->UpdateDates ();
 	}

@@ -416,7 +416,7 @@ namespace Vader
 				tr ("Authentication error for account %1: server reports %2.")
 					.arg ("<em>" + GetAccountName () + "</em>")
 					.arg ("<em>" + errorString + "</em>"),
-				PCritical_);
+				Priority::Critical);
 		Proto_->GetCoreProxy ()->GetEntityManager ()->HandleEntity (e);
 	}
 
@@ -515,7 +515,7 @@ namespace Vader
 				tr ("Unable to add contact %1: %2.")
 					.arg (info.Email_)
 					.arg (reason),
-				PCritical_);
+				Priority::Critical);
 		Proto_->GetCoreProxy ()->GetEntityManager ()->HandleEntity (e);
 	}
 
@@ -543,7 +543,7 @@ namespace Vader
 				tr ("Error fetching user info for %1: %2.")
 					.arg (id)
 					.arg (error),
-				PCritical_);
+				Priority::Critical);
 		Proto_->GetCoreProxy ()->GetEntityManager ()->HandleEntity (e);
 	}
 
@@ -690,7 +690,7 @@ namespace Vader
 				tr ("New mail from %1: %2.")
 					.arg (from)
 					.arg (subj),
-				PInfo_);
+				Priority::Info);
 		Proto_->GetCoreProxy ()->GetEntityManager ()->HandleEntity (e);
 	}
 

@@ -145,7 +145,7 @@ namespace Azoth
 			Core::Instance ().SendEntity (Util::MakeNotification ("Azoth",
 						tr ("Unable to send file to %1.")
 							.arg (Entry_->GetEntryName ()),
-						PCritical_));
+						Priority::Critical));
 			return;
 		}
 		Core::Instance ().GetTransferJobManager ()->HandleJob (job);

@@ -94,20 +94,18 @@ namespace Qrosp
 		Priority Str2Priority (QString str)
 		{
 			str = str.toLower ();
-			if (str == "log")
-				return PLog_;
-			else if (str == "info")
-				return PInfo_;
+			if (str == "info")
+				return Priority::Info;
 			else if (str == "warning")
-				return PWarning_;
+				return Priority::Warning;
 			else if (str == "critical")
-				return PCritical_;
+				return Priority::Critical;
 			else
 			{
 				qWarning () << Q_FUNC_INFO
 						<< "unknown priority"
 						<< str;
-				return PInfo_;
+				return Priority::Info;
 			}
 		}
 	}

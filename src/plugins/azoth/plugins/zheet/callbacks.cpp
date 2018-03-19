@@ -118,7 +118,7 @@ namespace Zheet
 		const QString& str = tr ("Error for MSN account %1: %2.")
 				.arg (QString::fromUtf8 (name.c_str ()))
 				.arg (QString::fromUtf8 (msg.c_str ()));
-		const Entity& e = Util::MakeNotification ("MSN Error", str, PWarning_);
+		const Entity& e = Util::MakeNotification ("MSN Error", str, Priority::Warning);
 		Core::Instance ().SendEntity (e);
 	}
 

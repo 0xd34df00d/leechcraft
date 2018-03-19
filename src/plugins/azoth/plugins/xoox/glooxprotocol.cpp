@@ -305,8 +305,6 @@ namespace Xoox
 			queryItems [split.at (0)] = QUrl::fromPercentEncoding (split.value (1).toLatin1 ());
 		}
 
-		qDebug () << "HANDLE" << queryItems;
-
 		const QString& path = url.path ();
 		if (queryItems.contains ("join"))
 		{
@@ -383,7 +381,7 @@ namespace Xoox
 					<< info;
 			Core::Instance ().SendEntity (Util::MakeNotification ("Azoth",
 						tr ("Unable to import account: malformed import data."),
-						PCritical_));
+						Priority::Critical));
 			return false;
 		}
 
@@ -392,7 +390,7 @@ namespace Xoox
 			{
 				Core::Instance ().SendEntity (Util::MakeNotification ("Azoth",
 							tr ("Account %1 already exists, cannot import another one."),
-							PCritical_));
+							Priority::Critical));
 				return false;
 			}
 

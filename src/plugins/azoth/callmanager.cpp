@@ -138,7 +138,7 @@ namespace Azoth
 
 		auto e = Util::MakeNotification ("Azoth",
 				tr ("Incoming call from %1").arg (name),
-				PInfo_);
+				Priority::Info);
 		const auto nh = new Util::NotificationActionHandler (e, this);
 		nh->AddFunction (tr ("Accept"), [mediaCall] { mediaCall->Accept (); });
 		nh->AddFunction (tr ("Hangup"), [mediaCall] { mediaCall->Hangup (); });

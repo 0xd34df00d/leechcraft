@@ -423,7 +423,7 @@ namespace NetStoreManager
 										tr ("Unable to get file listing for the account %1: %2.")
 												.arg ("<em>" + acc->GetAccountName () + "</em>")
 												.arg (error),
-										PCritical_);
+										Priority::Critical);
 								Proxy_->GetEntityManager ()->HandleEntity (e);
 							},
 							[this, acc] (const QList<StorageItem>& items)
@@ -938,7 +938,7 @@ namespace NetStoreManager
 			qApp->clipboard ()->setText (str, QClipboard::Selection);
 
 			const auto& text = tr ("File URL has been copied to the clipboard.");
-			Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification ("NetStoreManager", text, PInfo_));
+			Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification ("NetStoreManager", text, Priority::Info));
 		};
 
 		const auto& id = GetCurrentID ();

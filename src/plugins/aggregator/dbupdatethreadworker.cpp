@@ -128,7 +128,7 @@ namespace Aggregator
 				"", channel->Items_.size ())
 			.arg (channel->Title_);
 
-		Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Aggregator", str, PInfo_));
+		Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Aggregator", str, Priority::Info));
 	}
 
 	bool DBUpdateThreadWorker::AddItem (const Item_ptr& item, const Channel_ptr& channel,
@@ -220,7 +220,7 @@ namespace Aggregator
 		const auto& str = tr ("Updated channel \"%1\" (%2).")
 				.arg (channel->Title_)
 				.arg (substrs.join (", "));
-		Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Aggregator", str, PInfo_));
+		Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Aggregator", str, Priority::Info));
 	}
 
 	void DBUpdateThreadWorker::toggleChannelUnread (IDType_t channel, bool state)

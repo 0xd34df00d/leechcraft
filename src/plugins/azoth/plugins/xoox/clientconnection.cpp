@@ -462,7 +462,7 @@ namespace Xoox
 		{
 			Entity e = Util::MakeNotification ("Azoth",
 					tr ("This room is already joined."),
-					PCritical_);
+					Priority::Critical);
 			Core::Instance ().SendEntity (e);
 			return 0;
 		}
@@ -1038,7 +1038,7 @@ namespace Xoox
 							const auto& e = Util::MakeNotification ("Azoth",
 									tr ("Using the juick.com service is discouraged. Please consider "
 										"migrating to saner alternatives, like point.im."),
-									PWarning_);
+									Priority::Warning);
 							Core::Instance ().SendEntity (e);
 						},
 						15000

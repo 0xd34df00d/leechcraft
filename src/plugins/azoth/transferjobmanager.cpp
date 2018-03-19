@@ -331,7 +331,7 @@ namespace Azoth
 
 		if (Entry2Incoming_ [job->GetSourceID ()].removeAll (jobObj))
 		{
-			Entity e = Util::MakeNotification ("Azoth", QString (), PInfo_);
+			Entity e = Util::MakeNotification ("Azoth", QString (), Priority::Info);
 			e.Additional_ ["org.LC.AdvNotifications.SenderID"] = "org.LeechCraft.Azoth";
 			e.Additional_ ["org.LC.AdvNotifications.EventID"] =
 					"org.LC.Plugins.Azoth.IncomingFileFrom/" +
@@ -372,7 +372,7 @@ namespace Azoth
 				tr ("Received file from %1: %2.")
 					.arg (entry->GetEntryName ())
 					.arg (QFileInfo { job->GetName () }.fileName ()),
-				PInfo_,
+				Priority::Info,
 				"org.LeechCraft.Azoth",
 				AN::CatDownloads,
 				AN::TypeDownloadFinished,
@@ -406,7 +406,7 @@ namespace Azoth
 					.arg (job->GetName ())
 					.arg (Util::MakePrettySize (job->GetSize ()))
 					.arg (GetContactName (id)),
-				PInfo_);
+				Priority::Info);
 
 		ICLEntry *entry = GetContact (id);
 		if (!entry)
@@ -494,7 +494,7 @@ namespace Azoth
 
 		const Entity& e = Util::MakeNotification ("Azoth",
 				str,
-				error == TEAborted ? PWarning_ : PCritical_);
+				error == TEAborted ? Priority::Warning : Priority::Critical);
 		Core::Instance ().SendEntity (e);
 	}
 
@@ -548,7 +548,7 @@ namespace Azoth
 
 			const Entity& e = Util::MakeNotification ("Azoth",
 					msg,
-					PInfo_);
+					Priority::Info);
 			Core::Instance ().SendEntity (e);
 		}
 		else

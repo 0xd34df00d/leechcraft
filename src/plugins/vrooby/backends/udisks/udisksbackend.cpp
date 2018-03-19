@@ -334,7 +334,7 @@ namespace UDisks
 			HandleEntity (Util::MakeNotification ("Vrooby",
 						tr ("Device has been successfully mounted at %1.")
 							.arg (reply.value ()),
-						PInfo_));
+						Priority::Info));
 			return;
 		}
 
@@ -346,7 +346,7 @@ namespace UDisks
 					tr ("Failed to mount the device: %1 (%2).")
 						.arg (GetErrorText (error.name ()))
 						.arg (error.message ()),
-					PCritical_));
+					Priority::Critical));
 	}
 
 	void Backend::umountCallFinished (QDBusPendingCallWatcher *watcher)
@@ -359,7 +359,7 @@ namespace UDisks
 		{
 			HandleEntity (Util::MakeNotification ("Vrooby",
 						tr ("Device has been successfully unmounted."),
-						PInfo_));
+						Priority::Info));
 			return;
 		}
 
@@ -371,7 +371,7 @@ namespace UDisks
 					tr ("Failed to unmount the device: %1 (%2).")
 						.arg (GetErrorText (error.name ()))
 						.arg (error.message ()),
-					PCritical_));
+					Priority::Critical));
 	}
 
 	void Backend::handleEnumerationFinished (QDBusPendingCallWatcher *watcher)

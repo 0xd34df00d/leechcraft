@@ -66,7 +66,7 @@ namespace Otlozhu
 	void NotificationsManager::handleTimer ()
 	{
 		const QString& notify = tr ("%1 is due now!").arg (NextEvent_->GetTitle ());
-		auto e = Util::MakeNotification ("Otlozhu", notify, PInfo_);
+		auto e = Util::MakeNotification ("Otlozhu", notify, Priority::Info);
 
 		e.Additional_ ["org.LC.AdvNotifications.SenderID"] = "org.LeechCraft.Otlozhu";
 		e.Additional_ ["org.LC.AdvNotifications.EventCategory"] = AN::CatOrganizer;

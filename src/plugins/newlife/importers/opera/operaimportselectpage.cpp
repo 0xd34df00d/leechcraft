@@ -131,7 +131,7 @@ namespace Importers
 				SendEntity (Util::MakeNotification (tr ("Opera Import"),
 						tr ("Could not open Opera database: %1.")
 							.arg (db.lastError ().text ()),
-						PCritical_));
+						Priority::Critical));
 			}
 			else
 			{
@@ -205,7 +205,7 @@ namespace Importers
 				SendEntity (Util::MakeNotification (tr ("Opera Import"),
 						tr ("Could not open Opera database: %1.")
 							.arg (db.lastError ().text ()),
-						PCritical_));
+						Priority::Critical));
 			}
 			else
 			{
@@ -257,7 +257,7 @@ namespace Importers
 			SendEntity (Util::MakeNotification ("Opera Import",
 					tr ("OPML file for importing RSS cannot be created: %1")
 							.arg (file.errorString ()),
-					PCritical_));
+					Priority::Critical));
 			return  QString ();
 		}
 

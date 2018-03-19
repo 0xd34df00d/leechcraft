@@ -548,7 +548,7 @@ namespace Azoth
 							.arg (perms->GetUserString (permClass))
 							.arg ("<em>" + realID + "</em>")
 							.arg (qobject_cast<ICLEntry*> (item)->GetEntryName ());
-					const auto& e = Util::MakeNotification ("Azoth", body, PWarning_);
+					const auto& e = Util::MakeNotification ("Azoth", body, Priority::Warning);
 					Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (e);
 				}
 

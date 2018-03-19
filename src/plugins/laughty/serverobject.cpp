@@ -76,11 +76,11 @@ namespace Laughty
 			switch (hints.value ("urgency", 1).toInt ())
 			{
 			case 0:
-				return PInfo_;
+				return Priority::Info;
 			case 1:
-				return PInfo_;
+				return Priority::Info;
 			default:
-				return PWarning_;
+				return Priority::Warning;
 			}
 		}
 

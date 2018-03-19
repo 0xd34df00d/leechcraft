@@ -391,11 +391,6 @@ namespace Qrosp
 		case ActionsEmbedPlace::LCTray:
 			args << "AEPLCTray";
 			break;
-		default:
-			qWarning () << Q_FUNC_INFO
-					<< "unhandled place"
-					<< static_cast<int> (place);
-			break;
 		}
 		return SCALL (QList<QAction*>) ("GetActions", args);
 	}

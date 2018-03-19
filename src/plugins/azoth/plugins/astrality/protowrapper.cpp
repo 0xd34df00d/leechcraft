@@ -244,7 +244,7 @@ namespace Astrality
 						tr ("Failed to create account: %1 (%2).")
 							.arg (po->errorName ())
 							.arg (po->errorMessage ()),
-						PCritical_));
+						Priority::Critical));
 			return;
 		}
 

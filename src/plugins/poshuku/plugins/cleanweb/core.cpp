@@ -467,7 +467,7 @@ namespace CleanWeb
 			QString str = tr ("The subscription %1 was successfully added.")
 					.arg (subscrName);
 			Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Poshuku CleanWeb",
-					str, PInfo_));
+					str, Priority::Info));
 		}
 		return result;
 	}
@@ -497,7 +497,7 @@ namespace CleanWeb
 			const auto& str = tr ("The subscription %1 wasn't delegated.")
 					.arg (subscrName);
 			iem->HandleEntity (Util::MakeNotification ("Poshuku CleanWeb",
-					str, PCritical_));
+					str, Priority::Critical));
 			return false;
 		}
 

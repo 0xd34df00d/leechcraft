@@ -59,7 +59,7 @@ namespace NetStoreManager
 			auto notif = Util::MakeNotification ("NetStoreManager",
 				tr ("Could not find plugin to download %1.")
 						.arg ("<em>" + e.Entity_.toString () + "</em>"),
-				PCritical_);
+				Priority::Critical);
 			SendEntity (notif);
 			return;
 		}

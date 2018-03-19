@@ -861,7 +861,7 @@ namespace BitTorrent
 					.arg (oldDir)
 					.arg (newDir);
 
-			const auto& e = Util::MakeNotification ("BitTorrent", msg, PCritical_);
+			const auto& e = Util::MakeNotification ("BitTorrent", msg, Priority::Critical);
 			Proxy_->GetEntityManager ()->HandleEntity (e);
 		}
 	}

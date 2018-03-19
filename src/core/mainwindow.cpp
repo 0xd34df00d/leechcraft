@@ -211,17 +211,6 @@ QMenu* LeechCraft::MainWindow::createPopupMenu ()
 	return menu;
 }
 
-void LeechCraft::MainWindow::catchError (QString message)
-{
-	Entity e = Util::MakeEntity ("LeechCraft",
-			QString (),
-			AutoAccept | OnlyHandle,
-			"x-leechcraft/notification");
-	e.Additional_ ["Text"] = message;
-	e.Additional_ ["Priority"] = PWarning_;
-	Core::Instance ().handleGotEntity (e);
-}
-
 void LeechCraft::MainWindow::closeEvent (QCloseEvent *e)
 {
 	e->ignore ();

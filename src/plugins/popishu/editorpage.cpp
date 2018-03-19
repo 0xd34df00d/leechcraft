@@ -619,7 +619,7 @@ namespace Popishu
 		{
 			emit gotEntity (Util::MakeNotification (tr ("File not found"),
 					tr ("The requested file doesn't exist anymore."),
-					PWarning_));
+					Priority::Warning));
 			return;
 		}
 

@@ -653,7 +653,7 @@ namespace CSTP
 
 			auto e = Util::MakeAN ("CSTP",
 					text,
-					err ? PCritical_ : PInfo_,
+					err ? Priority::Critical : Priority::Info,
 					"org.LeechCraft.CSTP",
 					AN::CatDownloads,
 					err ? AN::TypeDownloadError : AN::TypeDownloadFinished,

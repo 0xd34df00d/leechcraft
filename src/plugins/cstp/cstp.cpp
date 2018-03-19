@@ -243,7 +243,7 @@ namespace CSTP
 
 	void CSTP::handleError (const QString& error)
 	{
-		emit gotEntity (Util::MakeNotification ("HTTP error", error, PCritical_));
+		emit gotEntity (Util::MakeNotification ("HTTP error", error, Priority::Critical));
 	}
 }
 }

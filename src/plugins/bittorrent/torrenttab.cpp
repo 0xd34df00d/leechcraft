@@ -695,7 +695,7 @@ namespace BitTorrent
 				const auto& text = tr ("Failed to move torrent's files from %1 to %2.")
 						.arg (it.second)
 						.arg (newDir);
-				const auto& e = Util::MakeNotification ("BitTorrent", text, PCritical_);
+				const auto& e = Util::MakeNotification ("BitTorrent", text, Priority::Critical);
 				Core::Instance ()->GetProxy ()->GetEntityManager ()->HandleEntity (e);
 			}
 		}

@@ -86,7 +86,7 @@ namespace Vrooby
 			const auto& e = Util::MakeNotification ("Vrooby",
 					tr ("No backends are available, tried the following: %1.")
 						.arg (allBackends.join ("; ")),
-					PCritical_);
+					Priority::Critical);
 			Util::ExecuteLater ([e, proxy] { proxy->GetEntityManager ()->HandleEntity (e); });
 		}
 	}

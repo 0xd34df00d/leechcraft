@@ -273,7 +273,7 @@ namespace Astrality
 					.arg (GetEntryName ())
 					.arg (op->errorName ())
 					.arg (op->errorMessage ());
-			emit gotEntity (LeechCraft::Util::MakeNotification ("Azoth", msg, PCritical_));
+			emit gotEntity (LeechCraft::Util::MakeNotification ("Azoth", msg, Priority::Critical));
 			return;
 		}
 

@@ -423,7 +423,7 @@ namespace LeechCraft
 		const QString& str = tr ("Due to licensing issues, some artwork "
 				"may have been removed from this package. Consider "
 				"using the LackMan plugin to install that artwork.");
-		emit gotEntity (Util::MakeNotification ("LeechCraft", str, PWarning_));
+		emit gotEntity (Util::MakeNotification ("LeechCraft", str, Priority::Warning));
 		XmlSettingsManager::Instance ()->setProperty ("NotifiedLicensing", true);
 	}
 #endif

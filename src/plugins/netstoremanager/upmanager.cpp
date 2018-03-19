@@ -124,7 +124,7 @@ namespace NetStoreManager
 					tr ("%1 is already uploading to %2.")
 						.arg (QFileInfo (path).fileName ())
 						.arg (acc->GetAccountName ()),
-					PWarning_);
+					Priority::Warning);
 			Proxy_->GetEntityManager ()->HandleEntity (e);
 			return;
 		}
@@ -172,7 +172,7 @@ namespace NetStoreManager
 				tr ("Failed to upload %1: %2.")
 					.arg (path)
 					.arg (str),
-				PWarning_);
+				Priority::Warning);
 		Proxy_->GetEntityManager ()->HandleEntity (e);
 	}
 
@@ -192,7 +192,7 @@ namespace NetStoreManager
 		const auto& e = Util::MakeNotification ("NetStoreManager",
 				tr ("File %1 was uploaded successfully")
 						.arg ("<em>" + fileName + "</em>"),
-				PInfo_);
+				Priority::Info);
 		Proxy_->GetEntityManager ()->HandleEntity (e);
 
 		if (!Autoshare_.remove (filePath))

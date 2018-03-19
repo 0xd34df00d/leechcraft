@@ -1111,7 +1111,7 @@ namespace LMP
 				.arg (mediaInfo.Artist_)
 				.arg (hrStateStr);
 
-		auto e = Util::MakeAN ("LMP", str, PInfo_,
+		auto e = Util::MakeAN ("LMP", str, Priority::Info,
 				"org.LeechCraft.LMP", AN::CatMediaPlayer, AN::TypeMediaPlaybackStatus,
 				"org.LeechCraft.LMP.PlaybackStatus", {}, 0, 1, str);
 		e.Mime_ += "+advanced";
@@ -1571,7 +1571,7 @@ namespace LMP
 		const auto& e = Util::MakeNotification ("LMP",
 				tr ("Radio station error: %1.")
 					.arg (error),
-				PCritical_);
+				Priority::Critical);
 		Core::Instance ().SendEntity (e);
 	}
 

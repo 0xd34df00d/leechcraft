@@ -98,7 +98,7 @@ namespace Utils
 				{
 					const auto& e = Util::MakeNotification ("NetStoreManager",
 							errorText + " " + errStr,
-							PCritical_);
+							Priority::Critical);
 					entityMgr->HandleEntity (e);
 				}
 			}

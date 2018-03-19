@@ -95,7 +95,7 @@ namespace LHTR
 			const int encounters = html.count (text, csFlag);
 			const auto e = Util::MakeNotification (FindDialog::tr ("Text editor"),
 					FindDialog::tr ("%n replacement(s) have been made", 0, encounters),
-					PInfo_);
+					Priority::Info);
 			Proxy_->GetEntityManager ()->HandleEntity (e);
 
 			html.replace (text, with, csFlag);
@@ -111,7 +111,7 @@ namespace LHTR
 		{
 			const auto& e = Util::MakeNotification (FindDialog::tr ("Text editor"),
 					FindDialog::tr ("No replacements were made"),
-					PWarning_);
+					Priority::Warning);
 			Proxy_->GetEntityManager ()->HandleEntity (e);
 			return;
 		}

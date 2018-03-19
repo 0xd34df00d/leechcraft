@@ -413,7 +413,7 @@ namespace Snails
 										tr ("Attached %n files(s) from the source message.",
 												0,
 												result.Paths_.size ()),
-										PInfo_);
+										Priority::Info);
 								Core::Instance ().GetProxy ()->
 										GetEntityManager ()->HandleEntity (notify);
 							},
@@ -426,7 +426,7 @@ namespace Snails
 													tr ("Unable to create temporary directory to "
 														"fetch the attachments of the source "
 														"message."),
-													PCritical_);
+													Priority::Critical);
 										},
 										[] (const auto& e)
 										{
@@ -435,7 +435,7 @@ namespace Snails
 													tr ("Unable to fetch the attachments of the "
 														"source message: %1.")
 														.arg ("<em>" + msg + "</em>"),
-													PCritical_);
+													Priority::Critical);
 										});
 								Core::Instance ().GetProxy ()->
 										GetEntityManager ()->HandleEntity (notify);
@@ -639,7 +639,7 @@ namespace Snails
 													tr ("Unable to send email: operation timed out.<br/><br/>"
 														"Consider switching between SSL and TLS/STARTSSL or replacing port 465 with 587, or vice versa."
 														"Port 465 is typically used with SSL, while port 587 is used with TLS."),
-													PCritical_);
+													Priority::Critical);
 											Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (notify);
 										},
 										[] (const auto& err)
@@ -649,7 +649,7 @@ namespace Snails
 											const auto& notify = Util::MakeNotification ("Snails",
 													tr ("Unable to send email: %1.")
 															.arg (QString::fromUtf8 (err.what ())),
-													PCritical_);
+													Priority::Critical);
 											Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (notify);
 										});
 							});

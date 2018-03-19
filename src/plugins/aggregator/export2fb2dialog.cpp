@@ -329,7 +329,7 @@ namespace Aggregator
 
 		emit gotEntity (Util::MakeNotification ("Aggregator",
 					tr ("Export complete."),
-					PInfo_));
+					Priority::Info));
 	}
 
 	namespace
@@ -446,7 +446,7 @@ namespace Aggregator
 
 		emit gotEntity (Util::MakeNotification ("Aggregator",
 					tr ("Export complete."),
-					PInfo_));
+					Priority::Info));
 	}
 
 	void Export2FB2Dialog::on_Browse__released ()

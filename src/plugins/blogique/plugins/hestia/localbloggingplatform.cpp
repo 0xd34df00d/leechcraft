@@ -190,7 +190,7 @@ namespace Hestia
 			if (!acc->IsValid ())
 				Core::Instance ().SendEntity (Util::MakeNotification ("Blogique",
 						tr ("You have invalid account data."),
-						PWarning_));
+						Priority::Warning));
 
 			emit accountAdded (acc);
 			acc->Init ();

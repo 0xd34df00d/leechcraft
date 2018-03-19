@@ -94,17 +94,17 @@ namespace OTRoid
 		{
 			auto u = [] (const char *cs) { return QString::fromUtf8 (cs); };
 
-			Priority prio = PInfo_;
+			Priority prio = Priority::Info;
 			switch (level)
 			{
 			case OTRL_NOTIFY_ERROR:
-				prio = PCritical_;
+				prio = Priority::Critical;
 				break;
 			case OTRL_NOTIFY_WARNING:
-				prio = PWarning_;
+				prio = Priority::Warning;
 				break;
 			case OTRL_NOTIFY_INFO:
-				prio = PInfo_;
+				prio = Priority::Info;
 				break;
 			}
 
@@ -655,7 +655,7 @@ namespace OTRoid
 		const auto& notify = Util::MakeNotification ("Azoth OTRoid",
 				tr ("Keys for account %1 are now being generated...")
 					.arg ("<em>" + hrAccName + "</em>"),
-				PInfo_);
+				Priority::Info);
 		CoreProxy_->GetEntityManager ()->HandleEntity (notify);
 
 		IsGenerating_ = true;

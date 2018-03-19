@@ -211,7 +211,7 @@ namespace Liznoo
 			iem->HandleEntity (Util::MakeNotification ("Liznoo",
 						tr ("Battery charge level is %1%.")
 							.arg (static_cast<int> (info.Percentage_)),
-						isLow ? PInfo_ : PWarning_));
+						isLow ? Priority::Info : Priority::Warning));
 
 		if (XmlSettingsManager::Instance ()->property ("NotifyOnPowerTransitions").toBool ())
 		{
@@ -223,11 +223,11 @@ namespace Liznoo
 			if (startedCharging)
 				iem->HandleEntity (Util::MakeNotification ("Liznoo",
 							tr ("The device started charging."),
-							PInfo_));
+							Priority::Info));
 			else if (startedDischarging)
 				iem->HandleEntity (Util::MakeNotification ("Liznoo",
 							tr ("The device started discharging."),
-							PWarning_));
+							Priority::Warning));
 		}
 	}
 
@@ -314,7 +314,7 @@ namespace Liznoo
 							auto msg = GetReasonString (f.Reason_);
 							if (!f.ReasonString_.isEmpty ())
 								msg += " " + f.ReasonString_;
-							const auto& entity = Util::MakeNotification ("Liznoo", msg, PCritical_);
+							const auto& entity = Util::MakeNotification ("Liznoo", msg, Priority::Critical);
 							iem->HandleEntity (entity);
 						}
 					};

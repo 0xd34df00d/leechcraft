@@ -108,7 +108,7 @@ namespace Xoox
 					.arg (error.text ());
 		const auto& e = Util::MakeNotification ("Azoth",
 				text,
-				PCritical_);
+				Priority::Critical);
 		Core::Instance ().SendEntity (e);
 	}
 
@@ -192,7 +192,7 @@ namespace Xoox
 
 		const Entity& e = Util::MakeNotification ("Azoth",
 				typeText,
-				PCritical_);
+				Priority::Critical);
 		Core::Instance ().SendEntity (e);
 
 		const bool dontTryFurther = error.type () == QXmppStanza::Error::Cancel ||
@@ -272,7 +272,7 @@ namespace Xoox
 		const Entity& e = Util::MakeNotification ("Azoth",
 				tr ("Account %1:").arg (ClientConn_->GetOurJID ()) +
 					' ' + str,
-				PCritical_);
+				Priority::Critical);
 		Core::Instance ().SendEntity (e);
 	}
 

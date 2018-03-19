@@ -226,7 +226,7 @@ namespace VelvetBird
 		const auto& eNotify = Util::MakeNotification (GetAccountName (),
 				tr ("Connection error: %1.")
 					.arg (QString::fromUtf8 (text)),
-				PCritical_);
+				Priority::Critical);
 		Proto_->GetCoreProxy ()->GetEntityManager ()->HandleEntity (eNotify);
 
 		if (error == PURPLE_CONNECTION_ERROR_AUTHENTICATION_FAILED)

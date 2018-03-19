@@ -322,7 +322,7 @@ namespace Snails
 										return Util::MakeNotification ("Snails",
 												QObject::tr ("Successfully sent unsubscribe request to %1.")
 													.arg ("<em>" + url.path () + "</em>"),
-												PInfo_);
+												Priority::Info);
 									},
 									[url] (const auto& err)
 									{
@@ -332,7 +332,7 @@ namespace Snails
 												QObject::tr ("Unable to send unsubscribe request to %1: %2.")
 													.arg ("<em>" + url.path () + "</em>")
 													.arg (msg),
-												PWarning_);
+												Priority::Warning);
 									});
 							Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (entity);
 						};

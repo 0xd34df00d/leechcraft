@@ -88,7 +88,7 @@ namespace LMP
 			break;
 		}
 
-		IEM_->HandleEntity (Util::MakeNotification ("LMP", text, PCritical_));
+		IEM_->HandleEntity (Util::MakeNotification ("LMP", text, Priority::Critical));
 	}
 }
 }

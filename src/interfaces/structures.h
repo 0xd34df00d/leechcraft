@@ -237,12 +237,11 @@ namespace LeechCraft
 		RoleMAX
 	};
 
-	enum Priority
+	enum class Priority
 	{
-		PLog_,
-		PInfo_,
-		PWarning_,
-		PCritical_
+		Info,
+		Warning,
+		Critical
 	};
 };
 
@@ -252,4 +251,5 @@ Q_DECLARE_METATYPE (LeechCraft::Entity)
 Q_DECLARE_METATYPE (QIODevice*)
 Q_DECLARE_METATYPE (QObject_ptr)
 Q_DECLARE_METATYPE (LeechCraft::TaskParameters)
+Q_DECLARE_METATYPE (LeechCraft::Priority)
 Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::TaskParameters)

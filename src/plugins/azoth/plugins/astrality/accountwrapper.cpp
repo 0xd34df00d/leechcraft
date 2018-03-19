@@ -381,7 +381,7 @@ namespace Astrality
 					.arg (GetAccountName ())
 					.arg (op->errorName ())
 					.arg (op->errorMessage ());
-			emit gotEntity (Util::MakeNotification ("Azoth", msg, PCritical_));
+			emit gotEntity (Util::MakeNotification ("Azoth", msg, Priority::Critical));
 			return;
 		}
 
@@ -402,7 +402,7 @@ namespace Astrality
 						.arg (A_->displayName ())
 						.arg (po->errorName ())
 						.arg (po->errorMessage ()),
-					PCritical_));
+					Priority::Critical));
 		}
 
 		HandleAuth (false);
@@ -421,7 +421,7 @@ namespace Astrality
 						.arg (A_->displayName ())
 						.arg (po->errorName ())
 						.arg (po->errorMessage ()),
-					PCritical_));
+					Priority::Critical));
 			return;
 		}
 
@@ -440,7 +440,7 @@ namespace Astrality
 						.arg (A_->displayName ())
 						.arg (po->errorName ())
 						.arg (po->errorMessage ()),
-					PCritical_));
+					Priority::Critical));
 			return;
 		}
 
@@ -517,7 +517,7 @@ namespace Astrality
 		if (!dbgMsg.isEmpty ())
 			body += " " + tr ("Backend message: %1.").arg (dbgMsg);
 
-		emit gotEntity (Util::MakeNotification ("Azoth", body, PCritical_));
+		emit gotEntity (Util::MakeNotification ("Azoth", body, Priority::Critical));
 
 		if (reason == Tp::ConnectionStatusReasonAuthenticationFailed)
 			HandleAuth (true);
@@ -571,7 +571,7 @@ namespace Astrality
 						.arg (A_->displayName ())
 						.arg (po->errorName ())
 						.arg (po->errorMessage ()),
-					PCritical_));
+					Priority::Critical));
 			return;
 		}
 
@@ -593,7 +593,7 @@ namespace Astrality
 						.arg (A_->displayName ())
 						.arg (po->errorName ())
 						.arg (po->errorMessage ()),
-					PCritical_));
+					Priority::Critical));
 		}
 	}
 
@@ -697,7 +697,7 @@ namespace Astrality
 				tr ("Failed to request authorization: %1 (%2).")
 					.arg (po->errorName ())
 					.arg (po->errorMessage ()),
-				PCritical_));
+				Priority::Critical));
 	}
 }
 }
