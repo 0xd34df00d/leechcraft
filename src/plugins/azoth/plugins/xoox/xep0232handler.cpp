@@ -55,7 +55,7 @@ namespace XEP0232Handler
 
 		const auto& fields = form.fields ();
 		auto pos = std::find_if (fields.begin (), fields.end (),
-				[] (decltype (fields.front ()) field) { return field.key () == "FORM_TYPE"; });
+				[] (const auto& field) { return field.key () == "FORM_TYPE"; });
 		if (pos == fields.end ())
 		{
 			qWarning () << Q_FUNC_INFO
