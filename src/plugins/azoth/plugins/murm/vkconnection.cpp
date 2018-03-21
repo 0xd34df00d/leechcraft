@@ -932,13 +932,13 @@ namespace Murm
 	auto VkConnection::FindRunning (QNetworkReply *reply) const -> RunningCalls_t::const_iterator
 	{
 		return std::find_if (RunningCalls_.begin (), RunningCalls_.end (),
-				[reply] (decltype (RunningCalls_.at (0)) call) { return call.first == reply; });
+				[reply] (const auto& call) { return call.first == reply; });
 	}
 
 	auto VkConnection::FindRunning (QNetworkReply *reply) -> RunningCalls_t::iterator
 	{
 		return std::find_if (RunningCalls_.begin (), RunningCalls_.end (),
-				[reply] (decltype (RunningCalls_.at (0)) call) { return call.first == reply; });
+				[reply] (const auto& call) { return call.first == reply; });
 	}
 
 	void VkConnection::RescheduleRequest (QNetworkReply *reply)
