@@ -55,9 +55,7 @@ namespace Glance
 {
 	GlanceShower::GlanceShower (QWidget *parent)
 	: QGraphicsView (parent)
-	, TabWidget_ (0)
 	, Scene_ (new QGraphicsScene)
-	, Shown_ (false)
 	{
 		setWindowFlags (Qt::Dialog |
 				Qt::WindowStaysOnTopHint |
