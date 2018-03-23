@@ -42,6 +42,7 @@
 #include <QDesktopWidget>
 #include <QMainWindow>
 #include <QtDebug>
+#include <util/sll/prelude.h>
 #include <interfaces/core/icoretabwidget.h>
 #include <interfaces/ihavetabs.h>
 #include "core.h"
@@ -192,11 +193,8 @@ namespace Glance
 		setGeometry (screenGeom);
 		animGroup->start ();
 
-		Q_FOREACH (QGraphicsItem* item, items ())
-		{
-			GlanceItem *itm = qgraphicsitem_cast<GlanceItem*> (item);
-			itm->SetItemList (items ());
-		}
+		for (const auto item : items ())
+			qgraphicsitem_cast<GlanceItem*> (item)->SetItemList (items ());
 
 		show ();
 	}
@@ -207,9 +205,8 @@ namespace Glance
 			Finalize ();
 		else
 		{
-			QList<GlanceItem*> glanceItemList;
-			Q_FOREACH (QGraphicsItem* item, items ())
-				glanceItemList << qgraphicsitem_cast<GlanceItem*> (item);
+			const auto& glanceItemList = Util::Map (items (),
+					[] (auto item) { return qgraphicsitem_cast<GlanceItem*> (item); });
 
 			int currentItem = -1;
 			const int count = TabWidget_->WidgetCount ();
