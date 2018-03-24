@@ -30,9 +30,11 @@
 #include "vmimeconversions.h"
 #include <QStringList>
 #include <QIcon>
+#include <QBuffer>
 #include <vmime/net/folder.hpp>
 #include <vmime/security/cert/certificate.hpp>
 #include <interfaces/core/iiconthememanager.h>
+#include "outputiodevadapter.h"
 #include "folder.h"
 #include "core.h"
 
@@ -99,5 +101,13 @@ namespace Snails
 		return QSslCertificate::fromData (data, QSsl::Pem);
 	}
 
+	QByteArray SerializeHeader (const vmime::shared_ptr<const vmime::header>& header)
+	{
+		QBuffer buffer;
+		buffer.open (QIODevice::WriteOnly);
+		OutputIODevAdapter adapter { &buffer };
+		header->generate (adapter);
+		return buffer.buffer ();
+	}
 }
 }
