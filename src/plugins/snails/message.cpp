@@ -34,7 +34,6 @@
 #include <QBuffer>
 #include <QDataStream>
 #include <util/sll/qtutil.h>
-#include "lazyvmimeheader.h"
 
 namespace LeechCraft
 {
