@@ -375,82 +375,49 @@ namespace Snails
 			msg->SetRead (true);
 
 		auto header = message->getHeader ();
-		try
+
+		if (const auto& from = header->From ())
 		{
-			if (const auto& from = header->From ())
-			{
-				const auto& mboxVal = from->getValue ();
-				const auto& mbox = vmime::dynamicCast<const vmime::mailbox> (mboxVal);
-				msg->AddAddress (Message::Address::From, Mailbox2Strings (mbox));
-			}
-			else
-				qWarning () << "no 'from' data";
+			const auto& mboxVal = from->getValue ();
+			const auto& mbox = vmime::dynamicCast<const vmime::mailbox> (mboxVal);
+			msg->AddAddress (Message::Address::From, Mailbox2Strings (mbox));
 		}
-		catch (const vmime::exceptions::no_such_field&)
-		{
+		else
 			qWarning () << "no 'from' data";
+
+		if (const auto& replyToHeader = header->ReplyTo ())
+		{
+			const auto& replyToVal = replyToHeader->getValue ();
+			const auto& replyTo = vmime::dynamicCast<const vmime::mailbox> (replyToVal);
+			msg->AddAddress (Message::Address::ReplyTo, Mailbox2Strings (replyTo));
 		}
 
-		try
+		if (const auto& msgIdField = header->MessageId ())
 		{
-			if (const auto& replyToHeader = header->ReplyTo ())
-			{
-				const auto& replyToVal = replyToHeader->getValue ();
-				const auto& replyTo = vmime::dynamicCast<const vmime::mailbox> (replyToVal);
-				msg->AddAddress (Message::Address::ReplyTo, Mailbox2Strings (replyTo));
-			}
-		}
-		catch (const vmime::exceptions::no_such_field&)
-		{
+			const auto& msgIdVal = msgIdField->getValue ();
+			const auto& msgId = vmime::dynamicCast<const vmime::messageId> (msgIdVal);
+			msg->SetMessageID (msgId->getId ().c_str ());
 		}
 
-		try
+		if (const auto& refHeader = header->References ())
 		{
-			if (const auto& msgIdField = header->MessageId ())
-			{
-				const auto& msgIdVal = msgIdField->getValue ();
-				const auto& msgId = vmime::dynamicCast<const vmime::messageId> (msgIdVal);
-				msg->SetMessageID (msgId->getId ().c_str ());
-			}
-		}
-		catch (const vmime::exceptions::no_such_field&)
-		{
+			const auto& seqVal = refHeader->getValue ();
+			const auto& seq = vmime::dynamicCast<const vmime::messageIdSequence> (seqVal);
+
+			for (const auto& id : seq->getMessageIdList ())
+				msg->AddReferences (id->getId ().c_str ());
 		}
 
-		try
+		if (const auto& irt = header->InReplyTo ())
 		{
-			if (const auto& refHeader = header->References ())
-			{
-				const auto& seqVal = refHeader->getValue ();
-				const auto& seq = vmime::dynamicCast<const vmime::messageIdSequence> (seqVal);
+			const auto& seqVal = irt->getValue ();
+			const auto& seq = vmime::dynamicCast<const vmime::messageIdSequence> (seqVal);
 
-				for (const auto& id : seq->getMessageIdList ())
-					msg->AddReferences (id->getId ().c_str ());
-			}
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << e.what ();
+			for (const auto& id : seq->getMessageIdList ())
+				msg->AddInReplyTo (id->getId ().c_str ());
 		}
 
-		try
-		{
-			if (const auto& irt = header->InReplyTo ())
-			{
-				const auto& seqVal = irt->getValue ();
-				const auto& seq = vmime::dynamicCast<const vmime::messageIdSequence> (seqVal);
-
-				for (const auto& id : seq->getMessageIdList ())
-					msg->AddInReplyTo (id->getId ().c_str ());
-			}
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << e.what ();
-		}
-
-		auto setAddresses = [&msg] (Message::Address type,
-				const vmime::shared_ptr<const vmime::headerField>& field) -> void
+		auto setAddresses = [&msg] (Message::Address type, const vmime::shared_ptr<const vmime::headerField>& field)
 		{
 			if (!field)
 				return;
@@ -470,63 +437,29 @@ namespace Snails
 			}
 		};
 
-		try
+		setAddresses (Message::Address::To, header->To ());
+		setAddresses (Message::Address::Cc, header->Cc ());
+		setAddresses (Message::Address::Bcc, header->Bcc ());
+		if (const auto dateHeader = header->Date ())
 		{
-			setAddresses (Message::Address::To, header->To ());
+			const auto& origDateVal = dateHeader->getValue ();
+			const auto& origDate = vmime::dynamicCast<const vmime::datetime> (origDateVal);
+			const auto& date = vmime::utility::datetimeUtils::toUniversalTime (*origDate);
+			QDate qdate (date.getYear (), date.getMonth (), date.getDay ());
+			QTime time (date.getHour (), date.getMinute (), date.getSecond ());
+			msg->SetDate (QDateTime (qdate, time, Qt::UTC));
 		}
-		catch (const vmime::exceptions::no_such_field& nsf)
-		{
-			qWarning () << "no 'to' data" << nsf.what ();
-		}
+		else
+			qWarning () << "no 'date' data";
 
-		try
+		if (const auto subjectHeader = header->Subject ())
 		{
-			setAddresses (Message::Address::Cc, header->Cc ());
+			const auto& strVal = subjectHeader->getValue ();
+			const auto& str = vmime::dynamicCast<const vmime::text> (strVal);
+			msg->SetSubject (QString::fromUtf8 (str->getConvertedText (utf8cs).c_str ()));
 		}
-		catch (const vmime::exceptions::no_such_field& nsf)
-		{
-		}
-
-		try
-		{
-			setAddresses (Message::Address::Bcc, header->Bcc ());
-		}
-		catch (const vmime::exceptions::no_such_field& nsf)
-		{
-		}
-
-		try
-		{
-			if (const auto dateHeader = header->Date ())
-			{
-				const auto& origDateVal = dateHeader->getValue ();
-				const auto& origDate = vmime::dynamicCast<const vmime::datetime> (origDateVal);
-				const auto& date = vmime::utility::datetimeUtils::toUniversalTime (*origDate);
-				QDate qdate (date.getYear (), date.getMonth (), date.getDay ());
-				QTime time (date.getHour (), date.getMinute (), date.getSecond ());
-				msg->SetDate (QDateTime (qdate, time, Qt::UTC));
-			}
-			else
-				qWarning () << "no 'date' data";
-		}
-		catch (const vmime::exceptions::no_such_field&)
-		{
-		}
-
-		try
-		{
-			if (const auto subjectHeader = header->Subject ())
-			{
-				const auto& strVal = subjectHeader->getValue ();
-				const auto& str = vmime::dynamicCast<const vmime::text> (strVal);
-				msg->SetSubject (QString::fromUtf8 (str->getConvertedText (utf8cs).c_str ()));
-			}
-			else
-				qWarning () << "no 'subject' data";
-		}
-		catch (const vmime::exceptions::no_such_field&)
-		{
-		}
+		else
+			qWarning () << "no 'subject' data";
 
 		MessageStructHandler { msg, message } ();
 
