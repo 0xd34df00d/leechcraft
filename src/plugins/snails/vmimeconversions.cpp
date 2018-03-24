@@ -82,8 +82,7 @@ namespace Snails
 
 	QIcon GetFolderIcon (FolderType type)
 	{
-		return Core::Instance ().GetProxy ()->
-				GetIconThemeManager ()->GetIcon (GetFolderIconName (type));
+		return Core::Instance ().GetProxy ()->GetIconThemeManager ()->GetIcon (GetFolderIconName (type));
 	}
 
 	QList<QSslCertificate> ToSslCerts (const vmime::shared_ptr<const vmime::security::cert::certificate>& cert)
