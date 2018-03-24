@@ -48,12 +48,9 @@ namespace net
 	class folder;
 	class messageSet;
 }
-namespace security
-{
-namespace cert
+namespace security::cert
 {
 	class certificate;
-}
 }
 }
 
