@@ -44,8 +44,11 @@
 #include <util/sll/qtutil.h>
 #include <util/sll/visitor.h>
 #include <util/sll/util.h>
+#include <util/xpc/util.h>
+#include <util/gui/util.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include <interfaces/core/iiconthememanager.h>
+#include <interfaces/core/ientitymanager.h>
 #include "core.h"
 #include "storage.h"
 #include "accountdatabase.h"
@@ -1136,8 +1139,28 @@ namespace Snails
 		if (path.isEmpty ())
 			return;
 
+		const auto iem = Proxy_->GetEntityManager ();
+
 		const auto& msg = Storage_->LoadMessage (CurrAcc_.get (), folder, id);
-		CurrAcc_->FetchAttachment (msg, name, path);
+		Util::Sequence (nullptr, CurrAcc_->FetchAttachment (msg, name, path)) >>
+				Util::Visitor
+				{
+					[iem, name] (Util::Void)
+					{
+						iem->HandleEntity (Util::MakeNotification ("LeechCraft Snails",
+									tr ("Attachment %1 fetched successfully.")
+										.arg (Util::FormatName (name)),
+									Priority::Info));
+					},
+					[iem, name] (auto errVar)
+					{
+						iem->HandleEntity (Util::MakeNotification ("LeechCraft Snails",
+									tr ("Unable to fetch %1: %2.")
+											.arg (Util::FormatName (name))
+											.arg (Util::Visit (errVar, [] (auto err) { return err.what (); })),
+									Priority::Critical));
+					}
+				};
 	}
 
 	void MailTab::handleFetchNewMail ()
