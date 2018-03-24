@@ -29,9 +29,6 @@
 
 #include "accountthreadworker.h"
 #include <algorithm>
-#include <boost/fusion/algorithm/iteration/for_each.hpp>
-#include <boost/fusion/include/for_each.hpp>
-#include <boost/fusion/adapted/std_tuple.hpp>
 #include <QMutexLocker>
 #include <QUrl>
 #include <QFile>
