@@ -301,11 +301,8 @@ namespace Snails
 		class MessageStructHandler
 		{
 			const Message_ptr Msg_;
-			const vmime::shared_ptr<vmime::net::message> VmimeMessage_;
 		public:
 			MessageStructHandler (const Message_ptr&, const vmime::shared_ptr<vmime::net::message>&);
-
-			void operator() ();
 		private:
 			void HandlePart (const vmime::shared_ptr<vmime::net::messagePart>&);
 
@@ -316,17 +313,9 @@ namespace Snails
 		MessageStructHandler::MessageStructHandler (const Message_ptr& msg,
 				const vmime::shared_ptr<vmime::net::message>& message)
 		: Msg_ { msg }
-		, VmimeMessage_ { message }
 		{
-		}
-
-		void MessageStructHandler::operator() ()
-		{
-			const auto& structure = VmimeMessage_->getStructure ();
-			if (!structure)
-				return;
-
-			EnumParts (structure);
+			if (const auto& structure = message->getStructure ())
+				EnumParts (structure);
 		}
 
 		void MessageStructHandler::HandlePart (const vmime::shared_ptr<vmime::net::messagePart>& part)
@@ -458,7 +447,7 @@ namespace Snails
 		else
 			qWarning () << "no 'subject' data";
 
-		MessageStructHandler { msg, message } ();
+		MessageStructHandler { msg, message };
 
 		return { msg, header };
 	}
