@@ -1173,7 +1173,6 @@ namespace Monocle
 
 		QPainter painter (&printer);
 		painter.setRenderHint (QPainter::Antialiasing);
-		painter.setRenderHint (QPainter::HighQualityAntialiasing);
 		painter.setRenderHint (QPainter::SmoothPixmapTransform);
 		for (int i = start; i < end; ++i)
 		{
