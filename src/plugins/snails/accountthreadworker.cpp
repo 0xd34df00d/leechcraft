@@ -343,7 +343,7 @@ namespace Snails
 			}
 
 			Msg_->AddAttachment ({
-						{},
+						QString::fromStdString (part->getName ()),
 						{},
 						type.getType ().c_str (),
 						type.getSubType ().c_str (),
