@@ -1112,6 +1112,7 @@ namespace Monocle
 
 		QPainter painter (&printer);
 		painter.setRenderHint (QPainter::Antialiasing);
+		painter.setRenderHint (QPainter::TextAntialiasing);
 		painter.setRenderHint (QPainter::SmoothPixmapTransform);
 
 		for (int i = 0, numPages = CurrentDoc_->GetNumPages (); i < numPages; ++i)
