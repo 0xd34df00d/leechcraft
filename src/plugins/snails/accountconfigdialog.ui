@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>621</width>
-    <height>371</height>
+    <height>446</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -159,12 +159,12 @@
                <widget class="QComboBox" name="InSecurityType_">
                 <item>
                  <property name="text">
-                  <string>TLS/STARTTLS</string>
+                  <string notr="true">TLS/STARTTLS</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>SSL</string>
+                  <string notr="true">SSL</string>
                  </property>
                 </item>
                </widget>
@@ -172,7 +172,7 @@
               <item>
                <widget class="QCheckBox" name="InSecurityRequired_">
                 <property name="text">
-                 <string>Required</string>
+                 <string>Require</string>
                 </property>
                </widget>
               </item>
@@ -190,7 +190,7 @@
           <item>
            <widget class="QCheckBox" name="SASLRequired_">
             <property name="text">
-             <string>SASL required</string>
+             <string>Require SASL</string>
             </property>
            </widget>
           </item>
@@ -266,12 +266,12 @@
            <widget class="QComboBox" name="OutType_">
             <item>
              <property name="text">
-              <string>SMTP</string>
+              <string notr="true">SMTP</string>
              </property>
             </item>
             <item>
              <property name="text">
-              <string>Sendmail</string>
+              <string notr="true">Sendmail</string>
              </property>
             </item>
            </widget>
@@ -319,12 +319,12 @@
              <widget class="QComboBox" name="OutSecurityType_">
               <item>
                <property name="text">
-                <string>TLS/STARTTLS</string>
+                <string notr="true">TLS/STARTTLS</string>
                </property>
               </item>
               <item>
                <property name="text">
-                <string>SSL</string>
+                <string notr="true">SSL</string>
                </property>
               </item>
              </widget>
@@ -332,7 +332,7 @@
             <item>
              <widget class="QCheckBox" name="OutSecurityRequired_">
               <property name="text">
-               <string>Required</string>
+               <string>Require</string>
               </property>
              </widget>
             </item>

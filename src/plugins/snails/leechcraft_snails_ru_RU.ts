@@ -77,132 +77,112 @@
         <translation>Тип безопасности:</translation>
     </message>
     <message>
-        <location filename="accountconfigdialog.ui" line="162"/>
-        <location filename="accountconfigdialog.ui" line="322"/>
-        <source>TLS/STARTTLS</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="accountconfigdialog.ui" line="167"/>
-        <location filename="accountconfigdialog.ui" line="327"/>
-        <source>SSL</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="accountconfigdialog.ui" line="175"/>
         <location filename="accountconfigdialog.ui" line="335"/>
-        <source>Required</source>
-        <translation type="unfinished"></translation>
+        <source>Require</source>
+        <oldsource>Required</oldsource>
+        <translation>Требовать</translation>
     </message>
     <message>
         <location filename="accountconfigdialog.ui" line="186"/>
         <source>Use SASL</source>
-        <translation type="unfinished"></translation>
+        <translation>Использовать SASL</translation>
     </message>
     <message>
         <location filename="accountconfigdialog.ui" line="193"/>
-        <source>SASL required</source>
-        <translation type="unfinished"></translation>
+        <source>Require SASL</source>
+        <oldsource>SASL required</oldsource>
+        <translation>Требовать SASL</translation>
     </message>
     <message>
         <location filename="accountconfigdialog.ui" line="203"/>
         <source>Connection options</source>
-        <translation type="unfinished"></translation>
+        <translation>Настройки соединения</translation>
     </message>
     <message>
         <location filename="accountconfigdialog.ui" line="209"/>
         <source>Keep-alive interval:</source>
-        <translation type="unfinished"></translation>
+        <translation>Интервал поддержания активности:</translation>
     </message>
     <message>
         <location filename="accountconfigdialog.ui" line="216"/>
         <source> s</source>
-        <translation type="unfinished"></translation>
+        <translation> с</translation>
     </message>
     <message>
         <location filename="accountconfigdialog.ui" line="249"/>
         <source>Outgoing</source>
-        <translation type="unfinished"></translation>
+        <translation>Отправка</translation>
     </message>
     <message>
         <location filename="accountconfigdialog.ui" line="255"/>
         <source>Outgoing options</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="accountconfigdialog.ui" line="269"/>
-        <source>SMTP</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="accountconfigdialog.ui" line="274"/>
-        <source>Sendmail</source>
-        <translation type="unfinished"></translation>
+        <translation>Настройки отправки</translation>
     </message>
     <message>
         <location filename="accountconfigdialog.ui" line="282"/>
         <source>Address:</source>
-        <translation type="unfinished"></translation>
+        <translation>Адрес:</translation>
     </message>
     <message>
         <location filename="accountconfigdialog.ui" line="354"/>
         <source>Custom authentication</source>
-        <translation type="unfinished"></translation>
+        <translation>Особая аутентификация</translation>
     </message>
     <message>
         <location filename="accountconfigdialog.ui" line="436"/>
         <source>Deletion behaviour:</source>
-        <translation type="unfinished"></translation>
+        <translation>Поведение при удалении:</translation>
     </message>
     <message>
         <location filename="accountconfigdialog.ui" line="444"/>
         <source>Default (service-dependent)</source>
-        <translation type="unfinished"></translation>
+        <translation>По умолчанию (в зависимости от сервиса)</translation>
     </message>
     <message>
         <location filename="accountconfigdialog.ui" line="449"/>
         <source>Delete and expunge</source>
-        <translation type="unfinished"></translation>
+        <translation>Удалить из ящика</translation>
     </message>
     <message>
         <location filename="accountconfigdialog.ui" line="454"/>
         <source>Move to trash</source>
-        <translation type="unfinished"></translation>
+        <translation>Перенести в корзину</translation>
     </message>
     <message>
         <location filename="accountconfigdialog.ui" line="478"/>
         <source>Misc</source>
-        <translation type="unfinished"></translation>
+        <translation>Разное</translation>
     </message>
     <message>
         <location filename="accountconfigdialog.ui" line="484"/>
         <source>Log connections to file</source>
-        <translation type="unfinished"></translation>
+        <translation>Логгировать соединения в файл</translation>
     </message>
     <message>
         <location filename="accountconfigdialog.ui" line="344"/>
         <source>SMTP needs authentication</source>
-        <translation type="unfinished"></translation>
+        <translation>SMTP требует аутентификации</translation>
     </message>
     <message>
         <location filename="accountconfigdialog.ui" line="393"/>
         <source>Sync options</source>
-        <translation type="unfinished"></translation>
+        <translation>Опции синхронизации</translation>
     </message>
     <message>
         <location filename="accountconfigdialog.ui" line="401"/>
         <source>Folders to sync:</source>
-        <translation type="unfinished"></translation>
+        <translation>Папки для синхронизации:</translation>
     </message>
     <message>
         <location filename="accountconfigdialog.ui" line="417"/>
         <source>Select...</source>
-        <translation type="unfinished"></translation>
+        <translation>Выбрать...</translation>
     </message>
     <message>
         <location filename="accountconfigdialog.ui" line="426"/>
         <source>Outgoing messages folder:</source>
-        <translation type="unfinished"></translation>
+        <translation>Папка для исходящих сообщений:</translation>
     </message>
 </context>
 <context>
@@ -269,7 +249,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="account.cpp" line="720"/>
+        <location filename="account.cpp" line="725"/>
         <source>Enter password for account %1:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -726,76 +706,76 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="messagelistactionsmanager.cpp" line="107"/>
-        <location filename="messagelistactionsmanager.cpp" line="151"/>
-        <location filename="messagelistactionsmanager.cpp" line="194"/>
-        <location filename="messagelistactionsmanager.cpp" line="227"/>
+        <location filename="messagelistactionsmanager.cpp" line="114"/>
+        <location filename="messagelistactionsmanager.cpp" line="158"/>
+        <location filename="messagelistactionsmanager.cpp" line="201"/>
+        <location filename="messagelistactionsmanager.cpp" line="234"/>
         <source>Open</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="messagelistactionsmanager.cpp" line="108"/>
+        <location filename="messagelistactionsmanager.cpp" line="115"/>
         <source>Open the page on GitHub.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="messagelistactionsmanager.cpp" line="152"/>
+        <location filename="messagelistactionsmanager.cpp" line="159"/>
         <source>Open the bug page on Bugzilla.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="messagelistactionsmanager.cpp" line="195"/>
+        <location filename="messagelistactionsmanager.cpp" line="202"/>
         <source>Open the issue page on Redmine.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="messagelistactionsmanager.cpp" line="228"/>
+        <location filename="messagelistactionsmanager.cpp" line="235"/>
         <source>Open the review page on ReviewBoard.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="messagelistactionsmanager.cpp" line="295"/>
-        <location filename="messagelistactionsmanager.cpp" line="336"/>
+        <location filename="messagelistactionsmanager.cpp" line="302"/>
+        <location filename="messagelistactionsmanager.cpp" line="343"/>
         <source>Unsubscription confirmation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="messagelistactionsmanager.cpp" line="296"/>
+        <location filename="messagelistactionsmanager.cpp" line="303"/>
         <source>Are you sure you want to unsubscribe from %1? This will send an email to %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="messagelistactionsmanager.cpp" line="316"/>
+        <location filename="messagelistactionsmanager.cpp" line="323"/>
         <source>Successfully sent unsubscribe request to %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="messagelistactionsmanager.cpp" line="325"/>
+        <location filename="messagelistactionsmanager.cpp" line="332"/>
         <source>Unable to send unsubscribe request to %1: %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="messagelistactionsmanager.cpp" line="337"/>
+        <location filename="messagelistactionsmanager.cpp" line="344"/>
         <source>Are you sure you want to unsubscribe from %1? This will open the following web page in your browser: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="messagelistactionsmanager.cpp" line="365"/>
+        <location filename="messagelistactionsmanager.cpp" line="364"/>
         <source>Unsubscribe</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="messagelistactionsmanager.cpp" line="366"/>
+        <location filename="messagelistactionsmanager.cpp" line="365"/>
         <source>Try cancelling receiving further messages like this.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="messagelistactionsmanager.cpp" line="395"/>
+        <location filename="messagelistactionsmanager.cpp" line="402"/>
         <source>Attachments</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="messagelistactionsmanager.cpp" line="396"/>
+        <location filename="messagelistactionsmanager.cpp" line="403"/>
         <source>Open/save attachments.</source>
         <translation type="unfinished"></translation>
     </message>
