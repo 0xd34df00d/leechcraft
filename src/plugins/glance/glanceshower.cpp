@@ -65,7 +65,7 @@ namespace Glance
 		setStyleSheet ("background: transparent");
 		setOptimizationFlag (DontSavePainterState);
 		Scene_->setItemIndexMethod (QGraphicsScene::NoIndex);
-		setRenderHints (QPainter::HighQualityAntialiasing);
+		setRenderHints (QPainter::Antialiasing);
 	}
 
 	void GlanceShower::SetTabWidget (ICoreTabWidget *tw)

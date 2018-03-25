@@ -122,7 +122,7 @@ namespace Woodpecker
 		const auto& time = currentTweet->GetDateTime ().toString ();
 		QTextDocument* doc = currentTweet->GetDocument ();
 
-		painter->setRenderHints (QPainter::HighQualityAntialiasing | QPainter::Antialiasing);
+		painter->setRenderHints (QPainter::Antialiasing);
 		// Icon
 		QIcon ic = QIcon (index.data (Qt::DecorationRole).value<QPixmap>());
 		if (!ic.isNull ())

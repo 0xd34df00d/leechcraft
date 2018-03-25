@@ -39,9 +39,6 @@
 				<item type="checkbox" property="SmoothPixmapTransform" default="on">
 					<label value="Smooth pixmap transform" />
 				</item>
-				<item type="checkbox" property="HighQualityAntialiasing" default="on">
-					<label value="High-quality antialiasing" />
-				</item>
 			</groupbox>
 		</tab>
 		<tab>

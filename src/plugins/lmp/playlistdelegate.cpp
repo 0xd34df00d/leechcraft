@@ -117,7 +117,6 @@ namespace LMP
 
 		painter->save ();
 		painter->setRenderHint (QPainter::Antialiasing);
-		painter->setRenderHint (QPainter::HighQualityAntialiasing);
 		painter->setBrush (option.palette.brush (drawSelected ?
 					QPalette::Highlight :
 					QPalette::Button));
