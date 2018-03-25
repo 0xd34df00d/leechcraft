@@ -146,7 +146,7 @@ namespace Azoth
 				QApplication::style ();
 
 		painter->save ();
-		painter->setRenderHints (QPainter::Antialiasing);
+		painter->setRenderHints (QPainter::TextAntialiasing | QPainter::Antialiasing);
 
 		style->drawPrimitive (QStyle::PE_PanelButtonCommand,
 				&o, painter, o.widget);
@@ -274,7 +274,7 @@ namespace Azoth
 
 		painter->save ();
 
-		painter->setRenderHints (QPainter::Antialiasing);
+		painter->setRenderHints (QPainter::TextAntialiasing | QPainter::Antialiasing);
 
 		if (rem >= o.fontMetrics.width (str))
 		{
