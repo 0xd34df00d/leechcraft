@@ -1135,6 +1135,7 @@ namespace Monocle
 		const int numPages = CurrentDoc_->GetNumPages ();
 
 		QPrinter printer { QPrinter::HighResolution };
+		printer.setFullPage (true);
 		QPrintDialog dia { &printer, this };
 		dia.setMinMax (1, numPages);
 		dia.setOption (QAbstractPrintDialog::PrintToFile);
