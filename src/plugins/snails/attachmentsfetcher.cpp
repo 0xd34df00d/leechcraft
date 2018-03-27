@@ -76,19 +76,15 @@ namespace Snails
 		const auto& att = AttQueue_.takeFirst ();
 		const auto& filePath = QDir { TempDir_->path () }.filePath (att.GetName ());
 		Util::Sequence (Acc_, Acc_->FetchAttachment (Msg_, att.GetName (), filePath)) >>
-				[=] (const Account::FetchAttachmentResult_t& result)
+				Util::Visitor
 				{
-					Util::Visit (result.AsVariant (),
-							[=] (Util::Void)
-							{
-								Paths_ << filePath;
-								RotateQueue ();
-							},
-							[=] (auto e)
-							{
-								Util::ReportFutureResult (Promise_, Result_t::Left (e));
-							});
+					[=] (Util::Void)
+					{
+						Paths_ << filePath;
+						RotateQueue ();
+					},
+					[=] (auto e) { Util::ReportFutureResult (Promise_, Result_t::Left (e)); }
 				};
-	}
+}
 }
 }
