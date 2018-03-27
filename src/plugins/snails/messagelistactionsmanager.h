@@ -42,8 +42,6 @@ namespace Snails
 
 	class MessageListActionsManager : public QObject
 	{
-		Q_OBJECT
-
 		Account * const Acc_;
 		QList<std::shared_ptr<MessageListActionsProvider>> Providers_;
 	public:
