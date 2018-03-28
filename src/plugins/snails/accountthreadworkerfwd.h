@@ -38,16 +38,15 @@ namespace LeechCraft
 {
 namespace Snails
 {
-	class FolderNotFound : public std::exception
+	struct FolderNotFound
 	{
 	public:
-		const char* what () const noexcept override;
+		const char* what () const;
 	};
 
-	class MessageNotFound : public std::exception
+	struct MessageNotFound
 	{
-	public:
-		const char* what () const noexcept override;
+		const char* what () const;
 	};
 
 	class Message;

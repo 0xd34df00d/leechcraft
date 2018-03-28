@@ -137,12 +137,12 @@ namespace Snails
 		}
 	}
 
-	const char* FolderNotFound::what () const noexcept
+	const char* FolderNotFound::what () const
 	{
 		return "folder not found";
 	}
 
-	const char* MessageNotFound::what () const noexcept
+	const char* MessageNotFound::what () const
 	{
 		return "message not found";
 	}
