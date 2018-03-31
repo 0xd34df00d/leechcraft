@@ -72,10 +72,8 @@ namespace Snails
 					Model_->appendRow (row);
 
 					QMutexLocker locker { &Listener2RowMutex_ };
-					Listener2Row_ [weakPl] = row;
-
-					if (weakPl.expired ())
-						Listener2Row_.remove (weakPl);
+					if (!weakPl.expired ())
+						Listener2Row_ [weakPl] = row;
 				});
 
 		connect (pl.get (),
