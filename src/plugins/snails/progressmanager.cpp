@@ -30,8 +30,6 @@
 #include "progressmanager.h"
 #include <QStandardItemModel>
 #include <QtDebug>
-#include <util/sll/slotclosure.h>
-#include <util/sll/delayedexecutor.h>
 #include <util/xpc/util.h>
 #include "account.h"
 
