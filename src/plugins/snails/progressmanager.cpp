@@ -101,7 +101,7 @@ namespace Snails
 					QList<QStandardItem*> row;
 					{
 						QMutexLocker locker { &Listener2RowMutex_ };
-						row = Listener2Row_.take (weakPl);
+						row = Listener2Row_ [weakPl];
 					}
 
 					if (!row.isEmpty ())
