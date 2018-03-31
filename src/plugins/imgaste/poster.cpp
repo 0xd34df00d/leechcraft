@@ -102,7 +102,7 @@ namespace Imgaste
 					},
 					[this] (Util::ReplySuccess reply)
 					{
-						Util::ReportFutureResult (Promise_, Worker_->GetLink (reply->readAll (), reply));
+						Util::ReportFutureResult (Promise_, Worker_->GetLink (reply->readAll (), reply.Get ()));
 					}
 				}.Finally ([this, reprModel, reprRow]
 						{

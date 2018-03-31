@@ -68,28 +68,33 @@ namespace Util
 		template<typename>
 		struct NetworkReplyWrapper
 		{
-			QNetworkReply *Reply_;
+			std::shared_ptr<QNetworkReply> Reply_;
 
 			QNetworkReply* operator-> ()
 			{
-				return Reply_;
+				return Reply_.get ();
 			}
 
-			operator QNetworkReply* ()
+			QNetworkReply* Get () const
 			{
-				return Reply_;
+				return Reply_.get ();
 			}
 		};
 
 		struct ErroneousReply;
 		struct SuccessfulReply;
+
+		inline auto MakeReplyPtr (QNetworkReply *reply)
+		{
+			return std::shared_ptr<QNetworkReply> { reply, [] (auto r) { r->deleteLater (); } };
+		}
 	}
 
 	using ReplyError = detail::NetworkReplyWrapper<detail::ErroneousReply>;
 	using ReplySuccess = detail::NetworkReplyWrapper<detail::SuccessfulReply>;
 
 	template<typename... Args>
-	auto HandleReply (QNetworkReply *reply, QObject *context)
+	auto HandleReply (QNetworkReply *replyObj, QObject *context)
 	{
 		using Err = Find<ErrorInfo, Util::Void, Args...>;
 		using Res = Find<ResultInfo, QByteArray, Args...>;
@@ -98,12 +103,13 @@ namespace Util
 		QFutureInterface<Result_t> promise;
 		promise.reportStarted ();
 
-		QObject::connect (reply,
+		auto reply = detail::MakeReplyPtr (replyObj);
+
+		QObject::connect (replyObj,
 				&QNetworkReply::finished,
 				context,
 				[promise, reply] () mutable
 				{
-					reply->deleteLater ();
 					if constexpr (std::is_same_v<Res, QByteArray>)
 						Util::ReportFutureResult (promise, Result_t::Right (reply->readAll ()));
 					else if constexpr (std::is_same_v<Res, ReplySuccess>)
@@ -111,12 +117,11 @@ namespace Util
 					else
 						static_assert (std::is_same_v<Res, struct Dummy>, "Unsupported reply type");
 				});
-		QObject::connect (reply,
+		QObject::connect (replyObj,
 				Util::Overload<QNetworkReply::NetworkError> (&QNetworkReply::error),
 				context,
 				[promise, reply] () mutable
 				{
-					reply->deleteLater ();
 					auto report = [&] (const Err& val) { Util::ReportFutureResult (promise, Result_t::Left (val)); };
 
 					if constexpr (std::is_same_v<Err, QString>)
