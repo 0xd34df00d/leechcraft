@@ -56,7 +56,10 @@ namespace Snails
 		const auto pl = std::make_shared<ProgressListener> ();
 		const ProgressListener_wptr weakPl { pl };
 
-		Util::ExecuteLater ([this, weakPl, context]
+		connect (pl.get (),
+				&ProgressListener::started,
+				this,
+				[this, weakPl, context]
 				{
 					const QList<QStandardItem*> row
 					{
