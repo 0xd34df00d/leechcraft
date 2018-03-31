@@ -36,6 +36,7 @@
 #include <util/sll/void.h>
 #include <util/sll/typelist.h>
 #include <util/threads/futures.h>
+#include "networkconfig.h"
 
 namespace LeechCraft
 {
@@ -63,32 +64,22 @@ namespace Util
 	template<typename>
 	struct ResultInfo;
 
-	struct ReplyWithHeaders
+	struct UTIL_NETWORK_API ReplyWithHeaders
 	{
 		QByteArray Data_;
 		QHash<QByteArray, QList<QByteArray>> Headers_;
 
-		explicit ReplyWithHeaders (QNetworkReply *reply)
-		: Data_ { reply->readAll () }
-		{
-			for (const auto& pair : reply->rawHeaderPairs ())
-				Headers_ [pair.first] << pair.second;
-		}
+		explicit ReplyWithHeaders (QNetworkReply*);
 	};
 
-	struct ReplyError
+	struct UTIL_NETWORK_API ReplyError
 	{
 		QNetworkReply::NetworkError Error_;
 		QString ErrorString_;
 
 		QVariant HttpStatusCode_;
 
-		explicit ReplyError (QNetworkReply *reply)
-		: Error_ { reply->error () }
-		, ErrorString_ { reply->errorString () }
-		, HttpStatusCode_ { reply->attribute (QNetworkRequest::HttpStatusCodeAttribute) }
-		{
-		}
+		explicit ReplyError (QNetworkReply*);
 	};
 
 	template<typename... Args>
