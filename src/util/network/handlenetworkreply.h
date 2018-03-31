@@ -63,38 +63,36 @@ namespace Util
 	template<typename>
 	struct ResultInfo;
 
-	namespace detail
+	struct ReplyWithHeaders
 	{
-		template<typename>
-		struct NetworkReplyWrapper
+		QByteArray Data_;
+		QHash<QByteArray, QList<QByteArray>> Headers_;
+
+		explicit ReplyWithHeaders (QNetworkReply *reply)
+		: Data_ { reply->readAll () }
 		{
-			std::shared_ptr<QNetworkReply> Reply_;
-
-			QNetworkReply* operator-> ()
-			{
-				return Reply_.get ();
-			}
-
-			QNetworkReply* Get () const
-			{
-				return Reply_.get ();
-			}
-		};
-
-		struct ErroneousReply;
-		struct SuccessfulReply;
-
-		inline auto MakeReplyPtr (QNetworkReply *reply)
-		{
-			return std::shared_ptr<QNetworkReply> { reply, [] (auto r) { r->deleteLater (); } };
+			for (const auto& pair : reply->rawHeaderPairs ())
+				Headers_ [pair.first] << pair.second;
 		}
-	}
+	};
 
-	using ReplyError = detail::NetworkReplyWrapper<detail::ErroneousReply>;
-	using ReplySuccess = detail::NetworkReplyWrapper<detail::SuccessfulReply>;
+	struct ReplyError
+	{
+		QNetworkReply::NetworkError Error_;
+		QString ErrorString_;
+
+		QVariant HttpStatusCode_;
+
+		explicit ReplyError (QNetworkReply *reply)
+		: Error_ { reply->error () }
+		, ErrorString_ { reply->errorString () }
+		, HttpStatusCode_ { reply->attribute (QNetworkRequest::HttpStatusCodeAttribute) }
+		{
+		}
+	};
 
 	template<typename... Args>
-	auto HandleReply (QNetworkReply *replyObj, QObject *context)
+	auto HandleReply (QNetworkReply *reply, QObject *context)
 	{
 		using Err = Find<ErrorInfo, Util::Void, Args...>;
 		using Res = Find<ResultInfo, QByteArray, Args...>;
@@ -103,25 +101,27 @@ namespace Util
 		QFutureInterface<Result_t> promise;
 		promise.reportStarted ();
 
-		auto reply = detail::MakeReplyPtr (replyObj);
-
-		QObject::connect (replyObj,
+		QObject::connect (reply,
 				&QNetworkReply::finished,
 				context,
 				[promise, reply] () mutable
 				{
+					reply->deleteLater ();
+
 					if constexpr (std::is_same_v<Res, QByteArray>)
 						Util::ReportFutureResult (promise, Result_t::Right (reply->readAll ()));
-					else if constexpr (std::is_same_v<Res, ReplySuccess>)
-						Util::ReportFutureResult (promise, Result_t::Right ({ reply }));
+					else if constexpr (std::is_same_v<Res, ReplyWithHeaders>)
+						Util::ReportFutureResult (promise, Result_t::Right (Res { reply }));
 					else
 						static_assert (std::is_same_v<Res, struct Dummy>, "Unsupported reply type");
 				});
-		QObject::connect (replyObj,
+		QObject::connect (reply,
 				Util::Overload<QNetworkReply::NetworkError> (&QNetworkReply::error),
 				context,
 				[promise, reply] () mutable
 				{
+					reply->deleteLater ();
+
 					auto report = [&] (const Err& val) { Util::ReportFutureResult (promise, Result_t::Left (val)); };
 
 					if constexpr (std::is_same_v<Err, QString>)
@@ -129,7 +129,7 @@ namespace Util
 					else if constexpr (std::is_same_v<Err, Util::Void>)
 						report ({});
 					else if constexpr (std::is_same_v<Err, ReplyError>)
-						report ({ reply });
+						report (Err { reply });
 					else
 						static_assert (std::is_same_v<Err, struct Dummy>, "Unsupported error type");
 				});
