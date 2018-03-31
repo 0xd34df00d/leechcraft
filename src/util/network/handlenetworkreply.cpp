@@ -36,7 +36,10 @@ namespace Util
 	ReplyWithHeaders::ReplyWithHeaders (QNetworkReply *reply)
 	: Data_ { reply->readAll () }
 	{
-		for (const auto& pair : reply->rawHeaderPairs ())
+		const auto& raws = reply->rawHeaderPairs ();
+
+		Headers_.reserve (raws.size ());
+		for (const auto& pair : raws)
 			Headers_ [pair.first] << pair.second;
 	}
 
