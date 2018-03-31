@@ -452,14 +452,6 @@ namespace Snails
 		return { msg, header };
 	}
 
-	namespace
-	{
-		vmime::shared_ptr<vmime::message> FromNetMessage (vmime::shared_ptr<vmime::net::message> msg)
-		{
-			return msg->getParsedMessage ();
-		}
-	}
-
 	auto AccountThreadWorker::FetchMessagesIMAP (const QList<QStringList>& origFolders,
 			const QByteArray& last) -> Folder2Messages_t
 	{
@@ -628,7 +620,7 @@ namespace Snails
 	{
 		void FullifyHeaderMessage (const Message_ptr& msg, const vmime::shared_ptr<vmime::net::message>& full)
 		{
-			vmime::messageParser mp { FromNetMessage (full) };
+			vmime::messageParser mp { full->getParsedMessage () };
 
 			QString html;
 			QStringList plainParts;
