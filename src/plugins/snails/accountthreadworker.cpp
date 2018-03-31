@@ -483,7 +483,8 @@ namespace Snails
 
 	namespace
 	{
-		MessageVector_t GetMessagesInFolder (const VmimeFolder_ptr& folder, const QByteArray& lastId)
+		template<typename F>
+		MessageVector_t GetMessagesInFolder (const VmimeFolder_ptr& folder, const QByteArray& lastId, F progMaker)
 		{
 			const int desiredFlags = vmime::net::fetchAttributes::FLAGS |
 						vmime::net::fetchAttributes::SIZE |
@@ -553,7 +554,12 @@ namespace Snails
 
 		qDebug () << Q_FUNC_INFO << folderName << folder.get () << lastId;
 
-		auto messages = GetMessagesInFolder (folder, lastId);
+		auto messages = GetMessagesInFolder (folder, lastId,
+				[this, folderName]
+				{
+					return A_->MakeProgressListener (tr ("Fetching messages in %1...")
+							.arg (folderName.join ("/")));
+				});
 
 		qDebug () << "done fetching, sent" << bytesCounter.GetSent ()
 				<< "bytes, received" << bytesCounter.GetReceived () << "bytes";
