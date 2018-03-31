@@ -53,7 +53,7 @@ namespace Util
 	 */
 	class UTIL_MODELS_API ModelItem final : public ModelItemBase<ModelItem>
 	{
-		QAbstractItemModel * const Model_;
+		QAbstractItemModel * const Model_ = nullptr;
 		QModelIndex SrcIdx_;
 	public:
 		typedef ModelItemsList_t::iterator iterator;
@@ -62,7 +62,7 @@ namespace Util
 		/** @brief Constructs a default (invalid) ModelItem having no
 		 * model set.
 		 */
-		ModelItem ();
+		ModelItem () = default;
 
 		/** @brief Constructs a ModelItem associated with a given
 		 * \em index in the \em model.

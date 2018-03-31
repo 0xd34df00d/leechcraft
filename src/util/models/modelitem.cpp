@@ -34,11 +34,6 @@ namespace LeechCraft
 {
 namespace Util
 {
-	ModelItem::ModelItem ()
-	: Model_ { nullptr }
-	{
-	}
-
 	ModelItem::ModelItem (QAbstractItemModel *model, const QModelIndex& idx, const ModelItem_wtr& parent)
 	: ModelItemBase { parent }
 	, Model_ { model }
