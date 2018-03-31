@@ -497,6 +497,9 @@ namespace Snails
 			{
 				const auto count = folder->getMessageCount ();
 
+				auto prog = progMaker ();
+				prog->start (count);
+
 				MessageVector_t messages;
 				messages.reserve (count);
 
@@ -521,6 +524,7 @@ namespace Snails
 								<< e.what ();
 						return {};
 					}
+					prog->progress (i, count);
 				}
 
 				return messages;
