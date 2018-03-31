@@ -148,7 +148,7 @@ namespace Imgaste
 				return am->post (request, formed);
 			}
 
-			Result_t GetLink (const QString& contents, QNetworkReply*) const override
+			Result_t GetLink (const QString& contents, const Headers_t&) const override
 			{
 				const auto& lines = contents.split ('\n');
 				const auto pos = std::find_if (lines.begin (), lines.end (),
@@ -195,7 +195,7 @@ namespace Imgaste
 				return am->post (PrefillRequest (url, builder), formed);
 			}
 
-			Result_t GetLink (const QString& contents, QNetworkReply*) const override
+			Result_t GetLink (const QString& contents, const Headers_t&) const override
 			{
 				if (!RegExp_.exactMatch (contents))
 					return Result_t::Left ({});
@@ -220,9 +220,9 @@ namespace Imgaste
 				return am->post (PrefillRequest (url, builder), formed);
 			}
 
-			Result_t GetLink (const QString&, QNetworkReply *reply) const override
+			Result_t GetLink (const QString&, const Headers_t& headers) const override
 			{
-				QString str = reply->rawHeader ("Location");
+				QString str = headers ["Location"].value (0);
 				str.chop (8);
 				return Result_t::Right (str);
 			}
@@ -248,7 +248,7 @@ namespace Imgaste
 				return am->post (PrefillRequest (UploadUrl_, builder), builder.Build ());
 			}
 
-			Result_t GetLink (const QString& body, QNetworkReply*) const override
+			Result_t GetLink (const QString& body, const Headers_t&) const override
 			{
 				const auto& json = Util::ParseJson (body.toUtf8 (), Q_FUNC_INFO);
 				const auto filename = json.toMap () ["files"]
