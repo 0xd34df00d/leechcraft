@@ -46,8 +46,6 @@ namespace Snails
 
 	class ProgressManager : public QObject
 	{
-		Q_OBJECT
-
 		QStandardItemModel *Model_;
 
 		QMutex Listener2RowMutex_;
