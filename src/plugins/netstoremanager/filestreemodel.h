@@ -40,8 +40,6 @@ namespace NetStoreManager
 {
 	class FilesTreeModel : public QStandardItemModel
 	{
-		Q_OBJECT
-
 	public:
 		FilesTreeModel (QObject *parent = 0);
 
