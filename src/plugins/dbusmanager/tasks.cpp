@@ -29,6 +29,7 @@
 
 #include "tasks.h"
 #include <QAbstractItemModel>
+#include <util/sll/prelude.h>
 #include <interfaces/ijobholder.h>
 #include <interfaces/iinfo.h>
 #include <interfaces/core/icoreproxy.h>
@@ -46,12 +47,8 @@ namespace DBusManager
 
 	QStringList Tasks::GetHolders () const
 	{
-		QObjectList plugins = Core::Instance ().GetProxy ()->
-			GetPluginsManager ()->GetAllCastableRoots<IJobHolder*> ();
-		QStringList result;
-		Q_FOREACH (QObject *plugin, plugins)
-			result << qobject_cast<IInfo*> (plugin)->GetName ();
-		return result;
+		return Util::Map (Core::Instance ().GetProxy ()->GetPluginsManager ()->GetAllCastableRoots<IJobHolder*> (),
+				[] (auto plugin) { return qobject_cast<IInfo*> (plugin)->GetName (); });
 	}
 
 	int Tasks::RowCount (const QString& name) const

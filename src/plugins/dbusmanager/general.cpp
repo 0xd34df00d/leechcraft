@@ -31,6 +31,7 @@
 #include <QBuffer>
 #include <QPixmap>
 #include <QIcon>
+#include <util/sll/prelude.h>
 #include <interfaces/iinfo.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
@@ -48,13 +49,8 @@ namespace DBusManager
 
 	QStringList General::GetLoadedPlugins ()
 	{
-		QObjectList plugins = Core::Instance ().GetProxy ()->
-			GetPluginsManager ()->GetAllPlugins ();
-		QStringList result;
-		Q_FOREACH (QObject *plugin, plugins)
-			result << qobject_cast<IInfo*> (plugin)->GetName ();
-
-		return result;
+		return Util::Map (Core::Instance ().GetProxy ()->GetPluginsManager ()->GetAllPlugins (),
+				[] (auto plugin) { return qobject_cast<IInfo*> (plugin)->GetName (); });
 	}
 
 	QString General::GetDescription (const QString& name)
