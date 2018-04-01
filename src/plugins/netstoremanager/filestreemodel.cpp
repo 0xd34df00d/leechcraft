@@ -38,11 +38,6 @@ namespace LeechCraft
 {
 namespace NetStoreManager
 {
-	FilesTreeModel::FilesTreeModel (QObject *parent)
-	: QStandardItemModel (parent)
-	{
-	}
-
 	Qt::DropActions FilesTreeModel::supportedDropActions () const
 	{
 		return Qt::MoveAction | Qt::CopyAction;
