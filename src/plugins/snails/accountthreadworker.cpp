@@ -170,9 +170,8 @@ namespace Snails
 					});
 
 		connect (NoopTimer_,
-				SIGNAL (timeout ()),
-				this,
-				SLOT (sendNoop ()));
+				&QTimer::timeout,
+				[this] { SendNoop (); });
 		NoopTimer_->start (60 * 1000);
 	}
 
@@ -716,7 +715,17 @@ namespace Snails
 		return folders;
 	}
 
-	void AccountThreadWorker::sendNoop ()
+	void AccountThreadWorker::SetNoopTimeout (int timeout)
+	{
+		NoopTimer_->stop ();
+
+		if (timeout > NoopTimer_->interval ())
+			SendNoop ();
+
+		NoopTimer_->start (timeout);
+	}
+
+	void AccountThreadWorker::SendNoop ()
 	{
 		const auto at = static_cast<AccountThread*> (QThread::currentThread ());
 		at->Schedule (TaskPriority::Low,
@@ -725,16 +734,6 @@ namespace Snails
 					if (CachedStore_)
 						CachedStore_->noop ();
 				});
-	}
-
-	void AccountThreadWorker::SetNoopTimeout (int timeout)
-	{
-		NoopTimer_->stop ();
-
-		if (timeout > NoopTimer_->interval ())
-			sendNoop ();
-
-		NoopTimer_->start (timeout);
 	}
 
 	void AccountThreadWorker::SetNoopTimeoutChangeNotifier (const std::shared_ptr<AccountThreadNotifier<int>>& notifier)
@@ -764,7 +763,7 @@ namespace Snails
 		if (!CachedStore_)
 			MakeStore ();
 
-		sendNoop ();
+		SendNoop ();
 	}
 
 	auto AccountThreadWorker::Synchronize (const QList<QStringList>& foldersToFetch, const QByteArray& last) -> SyncResult

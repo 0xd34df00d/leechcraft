@@ -120,6 +120,7 @@ namespace Snails
 		QList<Folder> SyncIMAPFolders (vmime::shared_ptr<vmime::net::store>);
 
 		void SetNoopTimeout (int);
+		void SendNoop ();
 	public:
 		void SetNoopTimeoutChangeNotifier (const std::shared_ptr<AccountThreadNotifier<int>>&);
 
@@ -151,8 +152,6 @@ namespace Snails
 		DeleteResult_t DeleteMessages (const QList<QByteArray>& ids, const QStringList& folder);
 
 		void SendMessage (const Message_ptr&);
-	private slots:
-		void sendNoop ();
 	signals:
 		void error (const QString&);
 	};
