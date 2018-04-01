@@ -67,8 +67,6 @@ namespace Snails
 
 	class AccountThreadWorker : public QObject
 	{
-		Q_OBJECT
-
 		Account * const A_;
 		Storage * const Storage_;
 
