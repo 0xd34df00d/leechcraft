@@ -160,9 +160,14 @@ namespace Snails
 
 		if (IsListening_)
 			connect (ChangeListener_,
-					SIGNAL (messagesChanged (QStringList, QList<size_t>)),
-					this,
-					SLOT (handleMessagesChanged (QStringList, QList<size_t>)));
+					&MessageChangeListener::messagesChanged,
+					[] (const QStringList& folder, const QList<size_t>& numbers)
+					{
+						qDebug () << Q_FUNC_INFO << folder << numbers;
+						auto set = vmime::net::messageSet::empty ();
+						for (const auto& num : numbers)
+							set.addRange (vmime::net::numberMessageRange { num });
+					});
 
 		connect (NoopTimer_,
 				SIGNAL (timeout ()),
@@ -709,14 +714,6 @@ namespace Snails
 				});
 		}
 		return folders;
-	}
-
-	void AccountThreadWorker::handleMessagesChanged (const QStringList& folder, const QList<size_t>& numbers)
-	{
-		qDebug () << Q_FUNC_INFO << folder << numbers;
-		auto set = vmime::net::messageSet::empty ();
-		for (const auto& num : numbers)
-			set.addRange (vmime::net::numberMessageRange { num });
 	}
 
 	void AccountThreadWorker::sendNoop ()
