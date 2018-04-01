@@ -55,7 +55,7 @@ namespace NetStoreManager
 
 		QDataStream stream (&encodedData, QIODevice::WriteOnly);
 
-		Q_FOREACH (const QModelIndex& index, indexes)
+		for (const auto& index : indexes)
 			if (index.isValid () &&
 					index.column () == 0)
 				stream << data (index).toString ()

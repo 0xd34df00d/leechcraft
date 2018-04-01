@@ -39,12 +39,11 @@ namespace NetStoreManager
 	{
 		Ui_.setupUi (this);
 
-		Q_FOREACH (auto plugin, plugins)
+		for (auto plugin : plugins)
 		{
 			const QString& name = plugin->GetStorageName ();
 			const QIcon& icon = plugin->GetStorageIcon ();
-			Ui_.Storage_->addItem (icon, name,
-					QVariant::fromValue<IStoragePlugin*> (plugin));
+			Ui_.Storage_->addItem (icon, name, QVariant::fromValue (plugin));
 		}
 	}
 
