@@ -104,8 +104,7 @@ namespace DBusManager
 		QDBusConnection::sessionBus ().registerObject ("/General", General_.get ());
 		QDBusConnection::sessionBus ().registerObject ("/Tasks", Tasks_.get ());
 
-		auto roots = Proxy_->GetPluginsManager ()->GetAllCastableRoots<IWebFileStorage*> ();
-		Q_FOREACH (QObject *root, roots)
+		for (const auto root : Proxy_->GetPluginsManager ()->GetAllCastableRoots<IWebFileStorage*> ())
 		{
 			new WebFileStorageAdaptor (root);
 
