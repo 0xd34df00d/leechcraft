@@ -67,7 +67,6 @@ namespace NetStoreManager
 	, AM_ (am)
 	, ProxyModel_ (new FilesProxyModel (this))
 	, TreeModel_ (new FilesTreeModel (this))
-	, AccountsBox_ (0)
 	, DownManager_ (new DownManager (proxy, this))
 	{
 		Ui_.setupUi (this);
