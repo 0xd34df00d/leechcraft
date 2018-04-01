@@ -33,6 +33,7 @@
 #include <memory>
 #include <boost/variant.hpp>
 #include <util/sll/either.h>
+#include <util/sll/void.h>
 
 namespace LeechCraft
 {
@@ -63,5 +64,10 @@ namespace Snails
 	using Message_ptr = std::shared_ptr<Message>;
 
 	using FetchWholeMessageResult_t = Util::Either<boost::variant<FolderNotFound, MessageNotFound>, Message_ptr>;
+
+	using FetchAttachmentResult_t = Util::Either<
+			boost::variant<MessageNotFound, FileOpenError, AttachmentNotFound>,
+			Util::Void
+		>;
 }
 }
