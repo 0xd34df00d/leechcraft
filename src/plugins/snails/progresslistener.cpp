@@ -50,6 +50,7 @@ namespace Snails
 
 	void ProgressListener::start (const size_t total)
 	{
+		emit started (total);
 		progress (0, total);
 	}
 

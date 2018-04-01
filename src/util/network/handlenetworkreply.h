@@ -36,6 +36,7 @@
 #include <util/sll/void.h>
 #include <util/sll/typelist.h>
 #include <util/threads/futures.h>
+#include "networkconfig.h"
 
 namespace LeechCraft
 {
@@ -63,30 +64,23 @@ namespace Util
 	template<typename>
 	struct ResultInfo;
 
-	namespace detail
+	struct UTIL_NETWORK_API ReplyWithHeaders
 	{
-		template<typename>
-		struct NetworkReplyWrapper
-		{
-			QNetworkReply *Reply_;
+		QByteArray Data_;
+		QHash<QByteArray, QList<QByteArray>> Headers_;
 
-			QNetworkReply* operator-> ()
-			{
-				return Reply_;
-			}
+		explicit ReplyWithHeaders (QNetworkReply*);
+	};
 
-			operator QNetworkReply* ()
-			{
-				return Reply_;
-			}
-		};
+	struct UTIL_NETWORK_API ReplyError
+	{
+		QNetworkReply::NetworkError Error_;
+		QString ErrorString_;
 
-		struct ErroneousReply;
-		struct SuccessfulReply;
-	}
+		QVariant HttpStatusCode_;
 
-	using ReplyError = detail::NetworkReplyWrapper<detail::ErroneousReply>;
-	using ReplySuccess = detail::NetworkReplyWrapper<detail::SuccessfulReply>;
+		explicit ReplyError (QNetworkReply*);
+	};
 
 	template<typename... Args>
 	auto HandleReply (QNetworkReply *reply, QObject *context)
@@ -104,10 +98,11 @@ namespace Util
 				[promise, reply] () mutable
 				{
 					reply->deleteLater ();
+
 					if constexpr (std::is_same_v<Res, QByteArray>)
 						Util::ReportFutureResult (promise, Result_t::Right (reply->readAll ()));
-					else if constexpr (std::is_same_v<Res, ReplySuccess>)
-						Util::ReportFutureResult (promise, Result_t::Right ({ reply }));
+					else if constexpr (std::is_same_v<Res, ReplyWithHeaders>)
+						Util::ReportFutureResult (promise, Result_t::Right (Res { reply }));
 					else
 						static_assert (std::is_same_v<Res, struct Dummy>, "Unsupported reply type");
 				});
@@ -117,6 +112,7 @@ namespace Util
 				[promise, reply] () mutable
 				{
 					reply->deleteLater ();
+
 					auto report = [&] (const Err& val) { Util::ReportFutureResult (promise, Result_t::Left (val)); };
 
 					if constexpr (std::is_same_v<Err, QString>)
@@ -124,7 +120,7 @@ namespace Util
 					else if constexpr (std::is_same_v<Err, Util::Void>)
 						report ({});
 					else if constexpr (std::is_same_v<Err, ReplyError>)
-						report ({ reply });
+						report (Err { reply });
 					else
 						static_assert (std::is_same_v<Err, struct Dummy>, "Unsupported error type");
 				});

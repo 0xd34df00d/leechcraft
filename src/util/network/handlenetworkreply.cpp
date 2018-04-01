@@ -27,36 +27,27 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <util/sll/lazyinitializer.h>
-#include <vmime/header.hpp>
+#include "handlenetworkreply.h"
 
 namespace LeechCraft
 {
-namespace Snails
+namespace Util
 {
-	class LazyVmimeHeader : public Util::LazyInitializer<QByteArray, vmime::shared_ptr<const vmime::header>>
+	ReplyWithHeaders::ReplyWithHeaders (QNetworkReply *reply)
+	: Data_ { reply->readAll () }
 	{
-	public:
-		LazyVmimeHeader (const QByteArray& data)
-		: LazyInitializer
-		{
-			data,
-			[] (const QByteArray& source)
-			{
-				auto header = vmime::make_shared<vmime::header> ();
-				header->parse ({ source.constData (), static_cast<size_t> (source.size ()) });
-				return header;
-			}
-		}
-		{
-		}
+		const auto& raws = reply->rawHeaderPairs ();
 
-		LazyVmimeHeader (const vmime::shared_ptr<const vmime::header>& header)
-		: LazyInitializer { header }
-		{
-		}
-	};
+		Headers_.reserve (raws.size ());
+		for (const auto& pair : raws)
+			Headers_ [pair.first] << pair.second;
+	}
+
+	ReplyError::ReplyError (QNetworkReply *reply)
+	: Error_ { reply->error () }
+	, ErrorString_ { reply->errorString () }
+	, HttpStatusCode_ { reply->attribute (QNetworkRequest::HttpStatusCodeAttribute) }
+	{
+	}
 }
 }

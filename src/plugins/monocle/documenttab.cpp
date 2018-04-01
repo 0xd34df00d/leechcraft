@@ -1112,7 +1112,7 @@ namespace Monocle
 
 		QPainter painter (&printer);
 		painter.setRenderHint (QPainter::Antialiasing);
-		painter.setRenderHint (QPainter::HighQualityAntialiasing);
+		painter.setRenderHint (QPainter::TextAntialiasing);
 		painter.setRenderHint (QPainter::SmoothPixmapTransform);
 
 		for (int i = 0, numPages = CurrentDoc_->GetNumPages (); i < numPages; ++i)
@@ -1135,9 +1135,12 @@ namespace Monocle
 		const int numPages = CurrentDoc_->GetNumPages ();
 
 		QPrinter printer { QPrinter::HighResolution };
+		printer.setFullPage (true);
 		QPrintDialog dia { &printer, this };
 		dia.setMinMax (1, numPages);
-		dia.addEnabledOption (QAbstractPrintDialog::PrintCurrentPage);
+		dia.setOption (QAbstractPrintDialog::PrintToFile);
+		dia.setOption (QAbstractPrintDialog::PrintCurrentPage);
+		dia.setOption (QAbstractPrintDialog::PrintShowPageSize);
 		if (dia.exec () != QDialog::Accepted)
 			return;
 
@@ -1171,7 +1174,7 @@ namespace Monocle
 
 		QPainter painter (&printer);
 		painter.setRenderHint (QPainter::Antialiasing);
-		painter.setRenderHint (QPainter::HighQualityAntialiasing);
+		painter.setRenderHint (QPainter::TextAntialiasing);
 		painter.setRenderHint (QPainter::SmoothPixmapTransform);
 		for (int i = start; i < end; ++i)
 		{

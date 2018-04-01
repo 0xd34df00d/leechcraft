@@ -40,6 +40,9 @@ class QByteArray;
 class QNetworkReply;
 class QNetworkAccessManager;
 
+template<typename, typename>
+class QHash;
+
 namespace LeechCraft
 {
 namespace Imgaste
@@ -78,9 +81,11 @@ namespace Imgaste
 
 		using Result_t = Util::Either<Error, QString>;
 
+		using Headers_t = QHash<QByteArray, QList<QByteArray>>;
+
 		virtual QNetworkReply* Post (const QByteArray& imageData,
 				const QString& format, QNetworkAccessManager *am) const = 0;
-		virtual Result_t GetLink (const QString& contents, QNetworkReply *reply) const = 0;
+		virtual Result_t GetLink (const QString& contents, const Headers_t& headers) const = 0;
 	};
 
 	typedef std::unique_ptr<Worker> Worker_ptr;

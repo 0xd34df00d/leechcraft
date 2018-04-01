@@ -47,6 +47,12 @@ namespace Util
 		{
 			return f;
 		}
+
+		template<typename R>
+		constexpr auto operator() (R (*f) (Args...)) const
+		{
+			return f;
+		}
 	};
 
 	template<typename... Args>

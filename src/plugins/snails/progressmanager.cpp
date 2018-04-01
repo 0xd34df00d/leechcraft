@@ -30,8 +30,6 @@
 #include "progressmanager.h"
 #include <QStandardItemModel>
 #include <QtDebug>
-#include <util/sll/slotclosure.h>
-#include <util/sll/delayedexecutor.h>
 #include <util/xpc/util.h>
 #include "account.h"
 
@@ -56,7 +54,10 @@ namespace Snails
 		const auto pl = std::make_shared<ProgressListener> ();
 		const ProgressListener_wptr weakPl { pl };
 
-		Util::ExecuteLater ([this, weakPl, context]
+		connect (pl.get (),
+				&ProgressListener::started,
+				this,
+				[this, weakPl, context]
 				{
 					const QList<QStandardItem*> row
 					{
@@ -72,10 +73,8 @@ namespace Snails
 					Model_->appendRow (row);
 
 					QMutexLocker locker { &Listener2RowMutex_ };
-					Listener2Row_ [weakPl] = row;
-
-					if (weakPl.expired ())
-						Listener2Row_.remove (weakPl);
+					if (!weakPl.expired ())
+						Listener2Row_ [weakPl] = row;
 				});
 
 		connect (pl.get (),
@@ -101,7 +100,7 @@ namespace Snails
 					QList<QStandardItem*> row;
 					{
 						QMutexLocker locker { &Listener2RowMutex_ };
-						row = Listener2Row_.take (weakPl);
+						row = Listener2Row_ [weakPl];
 					}
 
 					if (!row.isEmpty ())

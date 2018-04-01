@@ -41,17 +41,16 @@ class QSslCertificate;
 
 namespace vmime
 {
+class header;
+
 namespace net
 {
 	class folder;
 	class messageSet;
 }
-namespace security
-{
-namespace cert
+namespace security::cert
 {
 	class certificate;
-}
 }
 }
 
@@ -112,5 +111,7 @@ namespace Snails
 	QIcon GetFolderIcon (FolderType);
 
 	QList<QSslCertificate> ToSslCerts (const vmime::shared_ptr<const vmime::security::cert::certificate>&);
+
+	QByteArray SerializeHeader (const vmime::shared_ptr<const vmime::header>&);
 }
 }

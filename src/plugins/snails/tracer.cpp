@@ -66,6 +66,7 @@ namespace Snails
 
 	void Tracer::traceReceive (const vmime::string& line)
 	{
+		Received_.fetch_add (line.size (), std::memory_order_relaxed);
 		AccLogger_->Log (Context_, ConnId_,
 				QString { "received:\n%1" }
 					.arg (line.c_str ()));
@@ -73,6 +74,7 @@ namespace Snails
 
 	void Tracer::traceSend (const vmime::string& line)
 	{
+		Sent_.fetch_add (line.size (), std::memory_order_relaxed);
 		AccLogger_->Log (Context_, ConnId_,
 				QString { "sent:\n%1" }
 					.arg (line.c_str ()));

@@ -56,6 +56,7 @@ namespace Snails
 		void progress (const size_t, const size_t) override;
 		void stop (const size_t) override;
 	signals:
+		void started (quint64);
 		void gotProgress (quint64, quint64);
 	};
 

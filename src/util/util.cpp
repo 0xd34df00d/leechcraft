@@ -293,7 +293,6 @@ QPixmap LeechCraft::Util::DrawOverlayText (QPixmap px,
 	p.setPen (pen);
 	p.setRenderHint (QPainter::Antialiasing);
 	p.setRenderHint (QPainter::TextAntialiasing);
-	p.setRenderHint (QPainter::HighQualityAntialiasing);
 	p.drawRoundedRect (textRect, 4, 4);
 	p.drawText (textRect,
 			Qt::AlignCenter,

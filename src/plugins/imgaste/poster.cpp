@@ -83,26 +83,25 @@ namespace Imgaste
 				this,
 				setUploadProgress);
 
-		Util::HandleReplySeq<Util::ErrorInfo<Util::ReplyError>, Util::ResultInfo<Util::ReplySuccess>> (reply, this) >>
+		Util::HandleReplySeq<Util::ErrorInfo<Util::ReplyError>, Util::ResultInfo<Util::ReplyWithHeaders>> (reply, this) >>
 				Util::Visitor
 				{
-					[this] (Util::ReplyError reply)
+					[this, url = reply->request ().url ()] (Util::ReplyError reply)
 					{
-						const auto& attrVar = reply->attribute (QNetworkRequest::HttpStatusCodeAttribute);
 						Util::ReportFutureResult (Promise_,
 								NetworkRequestError
 								{
-									reply->request ().url (),
-									reply->error (),
-									!attrVar.isNull () && attrVar.canConvert<int> () ?
-											std::optional<int> { attrVar.toInt () } :
+									url,
+									reply.Error_,
+									!reply.HttpStatusCode_.isNull () && reply.HttpStatusCode_.canConvert<int> () ?
+											std::optional<int> { reply.HttpStatusCode_.toInt () } :
 											std::optional<int> {},
-									reply->errorString ()
+									reply.ErrorString_
 								});
 					},
-					[this] (Util::ReplySuccess reply)
+					[this] (Util::ReplyWithHeaders reply)
 					{
-						Util::ReportFutureResult (Promise_, Worker_->GetLink (reply->readAll (), reply));
+						Util::ReportFutureResult (Promise_, Worker_->GetLink (reply.Data_, reply.Headers_));
 					}
 				}.Finally ([this, reprModel, reprRow]
 						{

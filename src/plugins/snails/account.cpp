@@ -33,7 +33,6 @@
 #include <QDataStream>
 #include <QInputDialog>
 #include <QMutex>
-#include <QBuffer>
 #include <QStandardItemModel>
 #include <QTimer>
 #include <util/xpc/util.h>
@@ -62,7 +61,6 @@
 #include "progresslistener.h"
 #include "progressmanager.h"
 #include "vmimeconversions.h"
-#include "outputiodevadapter.h"
 
 Q_DECLARE_METATYPE (QList<QStringList>)
 Q_DECLARE_METATYPE (QList<QByteArray>)
@@ -737,14 +735,7 @@ namespace Snails
 
 		const auto base = Storage_->BaseForAccount (this);
 		for (const auto& [msg, header] : messages)
-		{
-			QBuffer buffer;
-			buffer.open (QIODevice::WriteOnly);
-			OutputIODevAdapter adapter { &buffer };
-			header->generate (adapter);
-
-			base->SetMessageHeader (msg->GetMessageID (), buffer.buffer ());
-		}
+			base->SetMessageHeader (msg->GetMessageID (), SerializeHeader (header));
 
 		MailModelsManager_->Append (justMessages);
 	}

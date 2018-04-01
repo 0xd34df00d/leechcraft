@@ -113,7 +113,8 @@ namespace Tracolor
 	void IconsManager::updateCaches ()
 	{
 		decltype (IconsCache_) oldCache;
-		std::swap (oldCache, IconsCache_);
+		using std::swap;
+		swap (oldCache, IconsCache_);
 
 		for (const auto& pair : Util::Stlize (oldCache))
 		{

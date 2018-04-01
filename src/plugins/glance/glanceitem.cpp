@@ -34,6 +34,7 @@
 #include <QPainter>
 #include <QIcon>
 #include <QtDebug>
+#include <util/sll/prelude.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include "core.h"
@@ -79,7 +80,7 @@ namespace Glance
 
 	void GlanceItem::hoverEnterEvent (QGraphicsSceneHoverEvent*)
 	{
-		Q_FOREACH (GlanceItem* item, ItemsList_)
+		for (const auto item : ItemsList_)
 			if (item->IsCurrent () && item != this)
 				item->SetCurrent (false);
 		SetCurrent (true);
@@ -136,8 +137,7 @@ namespace Glance
 
 	void GlanceItem::SetItemList (QList<QGraphicsItem*> list)
 	{
-		Q_FOREACH (QGraphicsItem* item, list)
-			ItemsList_ << qgraphicsitem_cast<GlanceItem*> (item);
+		ItemsList_ = Util::Map (list, [] (auto item) { return qgraphicsitem_cast<GlanceItem*> (item); });
 	}
 
 	void GlanceItem::DrawCloseButton (bool selected)

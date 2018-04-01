@@ -38,6 +38,7 @@
 #include <poppler-form.h>
 #include <poppler-version.h>
 #include <util/sll/util.h>
+#include <util/sll/domchildrenrange.h>
 #include <util/threads/futures.h>
 #include "links.h"
 #include "fields.h"
@@ -330,12 +331,8 @@ namespace PDF
 		{
 			TOCEntryLevel_t result;
 
-			QDomElement elem = levelRoot.firstChildElement ();
-			auto nextGuard = [&elem] (void*) { elem = elem.nextSiblingElement (); };
-			while (!elem.isNull ())
+			for (const auto& elem : Util::DomChildren (levelRoot, {}))
 			{
-				std::shared_ptr<void> guard (static_cast<void*> (0), nextGuard);
-
 				const auto& name = elem.tagName ();
 
 				ILink_ptr link;

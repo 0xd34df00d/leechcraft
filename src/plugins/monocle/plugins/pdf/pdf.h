@@ -47,7 +47,7 @@ namespace PDF
 				 , public IInfo
 				 , public IPlugin2
 				 , public IHaveSettings
-				   , public IHaveDiagInfo
+				 , public IHaveDiagInfo
 				 , public IBackendPlugin
 				 , public IKnowFileExtensions
 	{

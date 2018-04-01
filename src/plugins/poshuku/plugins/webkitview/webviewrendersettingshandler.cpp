@@ -45,7 +45,6 @@ namespace WebKitView
 					"PrimitivesAntialiasing",
 					"TextAntialiasing",
 					"SmoothPixmapTransform",
-					"HighQualityAntialiasing"
 				},
 				this, "renderSettingsChanged");
 		renderSettingsChanged ();
@@ -63,7 +62,6 @@ namespace WebKitView
 		check ("PrimitivesAntialiasing", QPainter::Antialiasing);
 		check ("TextAntialiasing", QPainter::TextAntialiasing);
 		check ("SmoothPixmapTransform", QPainter::SmoothPixmapTransform);
-		check ("HighQualityAntialiasing", QPainter::HighQualityAntialiasing);
 
 		View_->setRenderHints (hints);
 	}
