@@ -152,8 +152,6 @@ namespace Snails
 		DeleteResult_t DeleteMessages (const QList<QByteArray>& ids, const QStringList& folder);
 
 		void SendMessage (const Message_ptr&);
-	signals:
-		void error (const QString&);
 	};
 }
 }
