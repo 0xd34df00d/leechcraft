@@ -49,6 +49,16 @@ namespace Snails
 		const char* what () const;
 	};
 
+	struct FileOpenError
+	{
+		const char* what () const;
+	};
+
+	struct AttachmentNotFound
+	{
+		const char* what () const;
+	};
+
 	class Message;
 	using Message_ptr = std::shared_ptr<Message>;
 

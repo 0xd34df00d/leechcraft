@@ -144,6 +144,16 @@ namespace Snails
 		return "message not found";
 	}
 
+	const char* FileOpenError::what () const
+	{
+		return "file open error";
+	}
+
+	const char* AttachmentNotFound::what () const
+	{
+		return "attachment not found";
+	}
+
 	AccountThreadWorker::AccountThreadWorker (bool isListening,
 			const QString& threadName, Account *parent, Storage *st)
 	: A_ (parent)
