@@ -60,7 +60,7 @@ namespace DBusManager
 				return Description_t::Right (ii->GetInfo ());
 		}
 
-		return Icon_t::Left (IdentifierNotFound { name });
+		return Description_t::Left (IdentifierNotFound { name });
 	}
 
 	General::Icon_t General::GetIcon (const QString& name, int dim)
