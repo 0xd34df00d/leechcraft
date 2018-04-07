@@ -32,6 +32,7 @@
 #include <QPixmap>
 #include <QIcon>
 #include <util/sll/prelude.h>
+#include <util/sll/either.h>
 #include <interfaces/iinfo.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
@@ -48,7 +49,7 @@ namespace DBusManager
 				[] (auto plugin) { return qobject_cast<IInfo*> (plugin)->GetName (); });
 	}
 
-	QString General::GetDescription (const QString& name)
+	General::Description_t General::GetDescription (const QString& name)
 	{
 		QObjectList plugins = Core::Instance ().GetProxy ()->
 			GetPluginsManager ()->GetAllPlugins ();
@@ -56,14 +57,14 @@ namespace DBusManager
 		{
 			IInfo *ii = qobject_cast<IInfo*> (plugin);
 			if (ii->GetName () == name)
-				return ii->GetInfo ();
+				return Description_t::Right (ii->GetInfo ());
 		}
 
 		throw tr ("Not found plugin %1.")
 			.arg (name);
 	}
 
-	QByteArray General::GetIcon (const QString& name, int dim)
+	General::Icon_t General::GetIcon (const QString& name, int dim)
 	{
 		QObjectList plugins = Core::Instance ().GetProxy ()->
 			GetPluginsManager ()->GetAllPlugins ();
@@ -80,7 +81,7 @@ namespace DBusManager
 				throw tr ("Could not save icon for plugin %1 to PNG %2x%2")
 					.arg (name)
 					.arg (dim);
-			return buffer.data ();
+			return Icon_t::Right (buffer.data ());
 		}
 
 		throw tr ("Not found plugin %1.")

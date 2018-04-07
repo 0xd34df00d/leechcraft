@@ -29,8 +29,11 @@
 
 #pragma once
 
+#include <boost/variant.hpp>
 #include <QObject>
 #include <QStringList>
+#include <util/sll/eitherfwd.h>
+#include "common.h"
 
 namespace LeechCraft
 {
@@ -43,8 +46,12 @@ namespace DBusManager
 		using QObject::QObject;
 
 		QStringList GetLoadedPlugins ();
-		QString GetDescription (const QString&);
-		QByteArray GetIcon (const QString&, int);
+
+		using Description_t = Util::Either<boost::variant<IdentifierNotFound>, QString>;
+		Description_t GetDescription (const QString&);
+
+		using Icon_t = Util::Either<boost::variant<IdentifierNotFound>, QByteArray>;
+		Icon_t GetIcon (const QString&, int);
 	};
 }
 }

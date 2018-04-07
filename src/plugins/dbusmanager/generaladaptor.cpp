@@ -30,7 +30,10 @@
 #include "generaladaptor.h"
 #include <QCoreApplication>
 #include <QDBusMessage>
+#include <util/sll/either.h>
+#include <util/sll/visitor.h>
 #include "core.h"
+#include "common.h"
 
 namespace LeechCraft
 {
@@ -59,30 +62,24 @@ namespace DBusManager
 
 	void GeneralAdaptor::GetDescription (const QString& name, const QDBusMessage& msg, QString& result)
 	{
-		try
-		{
-			result = General_->GetDescription (name);
-		}
-		catch (const QString& str)
-		{
-			QDBusConnection::sessionBus ()
-				.send (msg.createErrorReply ("GetDescription() failure",
-							str));
-		}
+		Util::Visit (General_->GetDescription (name),
+				[&result] (const QString& str) { result = str; },
+				[&msg] (auto errs)
+				{
+					const auto& descr = GetErrorDescription (errs);
+					QDBusConnection::sessionBus ().send (msg.createErrorReply ("GetDescription() failure", descr));
+				});
 	}
 
 	void GeneralAdaptor::GetIcon (const QString& name, int dim, const QDBusMessage& msg, QByteArray& result)
 	{
-		try
-		{
-			result = General_->GetIcon (name, dim);
-		}
-		catch (const QString& str)
-		{
-			QDBusConnection::sessionBus ()
-				.send (msg.createErrorReply ("GetDescription() failure",
-							str));
-		}
+		Util::Visit (General_->GetIcon (name, dim),
+				[&result] (const QByteArray& data) { result = data; },
+				[&msg] (auto errs)
+				{
+					const auto& descr = GetErrorDescription (errs);
+					QDBusConnection::sessionBus ().send (msg.createErrorReply ("GetDescription() failure", descr));
+				});
 	}
 }
 }
