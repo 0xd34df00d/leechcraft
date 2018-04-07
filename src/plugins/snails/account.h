@@ -182,7 +182,7 @@ namespace Snails
 		using SendMessageResult_t = Util::Either<InvokeError_t<>, Util::Void>;
 		QFuture<SendMessageResult_t> SendMessage (const Message_ptr&);
 
-		using FetchAttachmentResult_t = Util::Either<InvokeError_t<>, Util::Void>;
+		using FetchAttachmentResult_t = WrapReturnType_t<Snails::FetchAttachmentResult_t>;
 		QFuture<FetchAttachmentResult_t> FetchAttachment (const Message_ptr&,
 				const QString&, const QString&);
 

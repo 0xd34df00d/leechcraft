@@ -856,7 +856,7 @@ namespace Snails
 		return FetchWholeMessageResult_t::Right (origMsg);
 	}
 
-	void AccountThreadWorker::FetchAttachment (Message_ptr msg,
+	FetchAttachmentResult_t AccountThreadWorker::FetchAttachment (Message_ptr msg,
 			const QString& attName, const QString& path)
 	{
 		const auto& msgId = msg->GetFolderID ();
@@ -871,7 +871,7 @@ namespace Snails
 					<< msgId.toHex ()
 					<< "not found in"
 					<< messages.size ();
-			return;
+			return FetchAttachmentResult_t::Left (MessageNotFound {});
 		}
 
 		vmime::messageParser mp (messages.front ()->getParsedMessage ());
@@ -889,7 +889,7 @@ namespace Snails
 						<< "unable to open"
 						<< path
 						<< file.errorString ();
-				return;
+				return FetchAttachmentResult_t::Left (FileOpenError {});
 			}
 
 			OutputIODevAdapter adapter (&file);
@@ -897,8 +897,10 @@ namespace Snails
 						.arg (attName));
 			data->extract (adapter, pl.get ());
 
-			break;
+			return FetchAttachmentResult_t::Right ({});
 		}
+
+		return FetchAttachmentResult_t::Left (AttachmentNotFound {});
 	}
 
 	void AccountThreadWorker::CopyMessages (const QList<QByteArray>& ids,

@@ -271,7 +271,7 @@ namespace Snails
 				};
 	}
 
-	QFuture<WrapReturnType_t<FetchWholeMessageResult_t>> Account::FetchWholeMessage (const Message_ptr& msg)
+	Account::FetchWholeMessageResult_t Account::FetchWholeMessage (const Message_ptr& msg)
 	{
 		auto future = WorkerPool_->Schedule (TaskPriority::High, &AccountThreadWorker::FetchWholeMessage, msg);
 		Util::Sequence (this, future) >>
