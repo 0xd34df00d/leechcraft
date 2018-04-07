@@ -64,8 +64,8 @@ namespace Snails
 			QStringList Paths_;
 		};
 
-		using Errors_t = AddErrors_t<FetchAttachmentResult_t::L_t, TemporaryDirError>;
-		using Result_t = Util::Either<AsInvokeError_t<Errors_t>, FetchResult>;
+		using Errors_t = AsInvokeError_t<AddErrors_t<FetchAttachmentResult_t::L_t, TemporaryDirError>>;
+		using Result_t = Util::Either<Errors_t, FetchResult>;
 	private:
 		QFutureInterface<Result_t> Promise_;
 	public:
