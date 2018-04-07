@@ -50,7 +50,7 @@ namespace DBusManager
 		using Description_t = Util::Either<boost::variant<IdentifierNotFound>, QString>;
 		Description_t GetDescription (const QString&);
 
-		using Icon_t = Util::Either<boost::variant<IdentifierNotFound>, QByteArray>;
+		using Icon_t = Util::Either<boost::variant<IdentifierNotFound, SerializationError>, QByteArray>;
 		Icon_t GetIcon (const QString&, int);
 	};
 }

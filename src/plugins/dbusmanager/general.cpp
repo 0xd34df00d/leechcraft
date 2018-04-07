@@ -60,8 +60,7 @@ namespace DBusManager
 				return Description_t::Right (ii->GetInfo ());
 		}
 
-		throw tr ("Not found plugin %1.")
-			.arg (name);
+		return Icon_t::Left (IdentifierNotFound { name });
 	}
 
 	General::Icon_t General::GetIcon (const QString& name, int dim)
@@ -78,14 +77,11 @@ namespace DBusManager
 			QPixmap pixmap = icon.pixmap (dim, dim);
 			QBuffer buffer;
 			if (!pixmap.save (&buffer, "PNG", 100))
-				throw tr ("Could not save icon for plugin %1 to PNG %2x%2")
-					.arg (name)
-					.arg (dim);
+				return Icon_t::Left (SerializationError {});
 			return Icon_t::Right (buffer.data ());
 		}
 
-		throw tr ("Not found plugin %1.")
-			.arg (name);
+		return Icon_t::Left (IdentifierNotFound { name });
 	}
 }
 }
