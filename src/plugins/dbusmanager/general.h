@@ -40,7 +40,7 @@ namespace DBusManager
 	{
 		Q_OBJECT
 	public:
-		General (QObject* = 0);
+		using QObject::QObject;
 
 		QStringList GetLoadedPlugins ();
 		QString GetDescription (const QString&);

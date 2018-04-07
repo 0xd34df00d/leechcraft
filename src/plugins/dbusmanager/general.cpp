@@ -42,11 +42,6 @@ namespace LeechCraft
 {
 namespace DBusManager
 {
-	General::General (QObject *parent)
-	: QObject (parent)
-	{
-	}
-
 	QStringList General::GetLoadedPlugins ()
 	{
 		return Util::Map (Core::Instance ().GetProxy ()->GetPluginsManager ()->GetAllPlugins (),
