@@ -56,8 +56,8 @@ namespace DBusManager
 		QString GetApplicationName () const;
 	public slots:
 		QStringList GetLoadedPlugins ();
-		QString GetDescription (const QString& name, const QDBusMessage&);
-		QByteArray GetIcon (const QString& name, int dimension, const QDBusMessage&);
+		void GetDescription (const QString& name, const QDBusMessage&, QString&);
+		void GetIcon (const QString& name, int dimension, const QDBusMessage&, QByteArray&);
 	};
 }
 }

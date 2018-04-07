@@ -57,35 +57,31 @@ namespace DBusManager
 		return General_->GetLoadedPlugins ();
 	}
 
-	QString GeneralAdaptor::GetDescription (const QString& name,
-			const QDBusMessage& msg)
+	void GeneralAdaptor::GetDescription (const QString& name, const QDBusMessage& msg, QString& result)
 	{
 		try
 		{
-			return General_->GetDescription (name);
+			result = General_->GetDescription (name);
 		}
 		catch (const QString& str)
 		{
 			QDBusConnection::sessionBus ()
 				.send (msg.createErrorReply ("GetDescription() failure",
 							str));
-			return str;
 		}
 	}
 
-	QByteArray GeneralAdaptor::GetIcon (const QString& name, int dim,
-			const QDBusMessage& msg)
+	void GeneralAdaptor::GetIcon (const QString& name, int dim, const QDBusMessage& msg, QByteArray& result)
 	{
 		try
 		{
-			return General_->GetIcon (name, dim);
+			result = General_->GetIcon (name, dim);
 		}
 		catch (const QString& str)
 		{
 			QDBusConnection::sessionBus ()
 				.send (msg.createErrorReply ("GetDescription() failure",
 							str));
-			return str.toUtf8 ();
 		}
 	}
 }
