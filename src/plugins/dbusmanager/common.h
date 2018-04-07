@@ -35,14 +35,16 @@ namespace LeechCraft::DBusManager
 {
 	struct IdentifierNotFound
 	{
-		QString What_;
-
-		QString What () const { return What_; }
+		QString Ident_;
 	};
+
+	struct SerializationError {};
 
 	template<typename... Errs>
 	QString GetErrorDescription (const boost::variant<Errs...>& errs)
 	{
-		return Util::Visit (errs, [] (auto err) { return err.What (); });
+		return Util::Visit (errs,
+				[] (const IdentifierNotFound& id) { return QString { "Identifier not found: %1" }.arg (id.Ident_); },
+				[] (const SerializationError&) { return QString { "Unable to serialize data" }; });
 	}
 }
