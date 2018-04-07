@@ -394,6 +394,24 @@ namespace Snails
 					{ return TemplatesMgr_->GetTemplatedText (ContentType::HTML, type, acc, rest...); });
 	}
 
+	namespace
+	{
+		QString AttachmentsFetchErrorDescr (const AttachmentsFetcher::Errors_t& err)
+		{
+			return Util::Visit (err,
+					[] (const AttachmentsFetcher::TemporaryDirError&)
+					{
+						return ComposeMessageTab::tr ("Unable to create temporary directory to "
+								"fetch the attachments of the source message.");
+					},
+					[] (const auto& e)
+					{
+						return ComposeMessageTab::tr ("Unable to fetch the attachments of the source message: %1.")
+								.arg ("<em>" + QString::fromUtf8 (e.what ()) + "</em>");
+					});
+		}
+	}
+
 	void ComposeMessageTab::CopyAttachments (const Message_ptr& msg)
 	{
 		if (msg->GetAttachments ().isEmpty ())
@@ -417,24 +435,8 @@ namespace Snails
 					},
 					[] (auto err)
 					{
-						const auto& notify = Util::Visit (err,
-								[] (const AttachmentsFetcher::TemporaryDirError&)
-								{
-									return Util::MakeNotification ("Snails",
-											tr ("Unable to create temporary directory to "
-												"fetch the attachments of the source "
-												"message."),
-											Priority::Critical);
-								},
-								[] (const auto& e)
-								{
-									const auto& msg = QString::fromUtf8 (e.what ());
-									return Util::MakeNotification ("Snails",
-											tr ("Unable to fetch the attachments of the "
-												"source message: %1.")
-												.arg ("<em>" + msg + "</em>"),
-											Priority::Critical);
-								});
+						const auto& text = AttachmentsFetchErrorDescr (err);
+						const auto& notify = Util::MakeNotification ("Snails", text, Priority::Critical);
 						Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (notify);
 					}
 				};
@@ -686,24 +688,7 @@ namespace Snails
 					},
 					[=] (auto err)
 					{
-						Util::Visit (err,
-								[this] (const AttachmentsFetcher::TemporaryDirError&)
-								{
-									QMessageBox::critical (this,
-											"LeechCraft",
-											tr ("Unable to create temporary directory to "
-												"fetch the attachments of the source "
-												"message."));
-								},
-								[this] (const auto& e)
-								{
-									const auto& msg = QString::fromUtf8 (e.what ());
-									QMessageBox::critical (this,
-											"LeechCraft",
-											tr ("Unable to fetch the attachments of the "
-												"source message: %1.")
-												.arg ("<em>" + msg + "</em>"));
-								});
+						QMessageBox::critical (this, "LeechCraft", AttachmentsFetchErrorDescr (err));
 					}
 				};
 	}
