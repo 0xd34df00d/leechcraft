@@ -56,6 +56,21 @@ namespace Snails
 
 	namespace detail
 	{
+		template<typename>
+		struct AsInvokeError;
+
+		template<typename... List>
+		struct AsInvokeError<boost::variant<List...>>
+		{
+			using Type = InvokeError_t<List...>;
+		};
+	}
+
+	template<typename Errs>
+	using AsInvokeError_t = typename detail::AsInvokeError<Errs>::Type;
+
+	namespace detail
+	{
 		template<typename, typename ErrList, typename... Errs>
 		struct AddErrors;
 
