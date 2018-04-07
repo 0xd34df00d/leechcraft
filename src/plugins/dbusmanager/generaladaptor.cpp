@@ -60,26 +60,26 @@ namespace DBusManager
 		return General_->GetLoadedPlugins ();
 	}
 
-	void GeneralAdaptor::GetDescription (const QString& name, const QDBusMessage& msg, QString& result)
+	template<typename L, typename R>
+	void HandleCall (Util::Either<L, R>&& result, const QDBusMessage& msg, R& output)
 	{
-		Util::Visit (General_->GetDescription (name),
-				[&result] (const QString& str) { result = str; },
+		Util::Visit (result,
+				[&output] (const R& str) { output = str; },
 				[&msg] (auto errs)
 				{
 					const auto& descr = GetErrorDescription (errs);
-					QDBusConnection::sessionBus ().send (msg.createErrorReply ("GetDescription() failure", descr));
+					QDBusConnection::sessionBus ().send (msg.createErrorReply ("Method call failure", descr));
 				});
+	}
+
+	void GeneralAdaptor::GetDescription (const QString& name, const QDBusMessage& msg, QString& result)
+	{
+		HandleCall (General_->GetDescription (name), msg, result);
 	}
 
 	void GeneralAdaptor::GetIcon (const QString& name, int dim, const QDBusMessage& msg, QByteArray& result)
 	{
-		Util::Visit (General_->GetIcon (name, dim),
-				[&result] (const QByteArray& data) { result = data; },
-				[&msg] (auto errs)
-				{
-					const auto& descr = GetErrorDescription (errs);
-					QDBusConnection::sessionBus ().send (msg.createErrorReply ("GetDescription() failure", descr));
-				});
+		HandleCall (General_->GetIcon (name, dim), msg, result);
 	}
 }
 }
