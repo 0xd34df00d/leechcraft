@@ -52,11 +52,6 @@ namespace Snails
 	class AccountThreadWorker;
 	class TaskQueueManager;
 
-	struct Task
-	{
-		std::function<void (AccountThreadWorker*)> Executor_;
-	};
-
 	class GenericExceptionWrapper
 	{
 		std::string Msg_;
