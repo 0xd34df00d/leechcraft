@@ -2259,6 +2259,10 @@ namespace BitTorrent
 		{
 			Core::Instance ()->UpdateStatus ({ a.handle.status () });
 		}
+
+		void operator() (const libtorrent::piece_finished_alert&) const
+		{
+		}
 	private:
 		QString GetTorrentName (const libtorrent::torrent_handle& handle) const
 		{
