@@ -2341,6 +2341,7 @@ namespace BitTorrent
 					, libtorrent::dht_bootstrap_alert
 					, libtorrent::dht_get_peers_alert
 					, libtorrent::torrent_error_alert
+					, libtorrent::piece_finished_alert
 					> (alert, sd);
 			}
 			catch (const libtorrent::libtorrent_exception&)
