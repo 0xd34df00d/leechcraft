@@ -32,6 +32,7 @@
 #include <QDBusMessage>
 #include <QDBusConnection>
 #include <util/sll/visitor.h>
+#include <util/sll/either.h>
 
 namespace LeechCraft::DBusManager
 {
