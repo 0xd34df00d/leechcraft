@@ -48,17 +48,12 @@ namespace DBusManager
 
 	int Tasks::RowCount (const QString& name) const
 	{
-		QObjectList plugins = Core::Instance ().GetProxy ()->
-			GetPluginsManager ()->GetAllCastableRoots<IJobHolder*> ();
-		Q_FOREACH (QObject *plugin, plugins)
+		for (auto plugin : Core::Instance ().GetProxy ()->GetPluginsManager ()->GetAllCastableRoots<IJobHolder*> ())
 		{
 			if (qobject_cast<IInfo*> (plugin)->GetName () != name)
 				continue;
 
-			QAbstractItemModel *model =
-				qobject_cast<IJobHolder*> (plugin)->GetRepresentation ();
-
-			return model->rowCount ();
+			return qobject_cast<IJobHolder*> (plugin)->GetRepresentation ()->rowCount ();
 		}
 
 		throw tr ("Not found job holder %1.")
@@ -67,19 +62,15 @@ namespace DBusManager
 
 	QVariantList Tasks::GetData (const QString& name, int r, int role) const
 	{
-		QObjectList plugins = Core::Instance ().GetProxy ()->
-			GetPluginsManager ()->GetAllCastableRoots<IJobHolder*> ();
-		Q_FOREACH (QObject *plugin, plugins)
+		for (auto plugin : Core::Instance ().GetProxy ()->GetPluginsManager ()->GetAllCastableRoots<IJobHolder*> ())
 		{
 			if (qobject_cast<IInfo*> (plugin)->GetName () != name)
 				continue;
 
-			QAbstractItemModel *model =
-				qobject_cast<IJobHolder*> (plugin)->GetRepresentation ();
+			const auto model = qobject_cast<IJobHolder*> (plugin)->GetRepresentation ();
 
 			QVariantList result;
-			for (int i = 0, size = model->columnCount ();
-					i < size; ++i)
+			for (int i = 0, size = model->columnCount (); i < size; ++i)
 				result << model->index (r, i).data (role);
 			return result;
 		}

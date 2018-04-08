@@ -51,9 +51,7 @@ namespace DBusManager
 
 	General::Description_t General::GetDescription (const QString& name)
 	{
-		QObjectList plugins = Core::Instance ().GetProxy ()->
-			GetPluginsManager ()->GetAllPlugins ();
-		Q_FOREACH (QObject *plugin, plugins)
+		for (const auto plugin : Core::Instance ().GetProxy ()->GetPluginsManager ()->GetAllPlugins ())
 		{
 			IInfo *ii = qobject_cast<IInfo*> (plugin);
 			if (ii->GetName () == name)
@@ -65,9 +63,7 @@ namespace DBusManager
 
 	General::Icon_t General::GetIcon (const QString& name, int dim)
 	{
-		QObjectList plugins = Core::Instance ().GetProxy ()->
-			GetPluginsManager ()->GetAllPlugins ();
-		Q_FOREACH (QObject *plugin, plugins)
+		for (const auto plugin : Core::Instance ().GetProxy ()->GetPluginsManager ()->GetAllPlugins ())
 		{
 			IInfo *ii = qobject_cast<IInfo*> (plugin);
 			if (ii->GetName () != name)
