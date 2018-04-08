@@ -11,7 +11,6 @@ set (SRCS
 	dbusmanager.cpp
 	core.cpp
 	iinfoadaptor.cpp
-	xmlsettingsmanager.cpp
 	general.cpp
 	generaladaptor.cpp
 	tasks.cpp
@@ -22,7 +21,7 @@ set (RESOURCES
 	dbusmanagerresources.qrc
 	)
 CreateTrs ("dbusmanager" "ar;de;en;eo;es;fr;it;pl;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
-CreateTrsUpTarget ("dbusmanager" "en;ru_RU" "${SRCS}" "" "dbusmanagersettings.xml")
+CreateTrsUpTarget ("dbusmanager" "en;ru_RU" "${SRCS}" "" "")
 
 QtAddResources (RCCS ${RESOURCES})
 
@@ -35,6 +34,5 @@ target_link_libraries (leechcraft_dbusmanager
 		${LEECHCRAFT_LIBRARIES}
 		)
 install (TARGETS leechcraft_dbusmanager DESTINATION ${LC_PLUGINS_DEST})
-install (FILES dbusmanagersettings.xml DESTINATION ${LC_SETTINGS_DEST})
 
 FindQtLibs (leechcraft_dbusmanager DBus Gui)
