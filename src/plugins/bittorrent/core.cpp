@@ -2001,18 +2001,12 @@ namespace BitTorrent
 
 					const auto& savePath = StatusKeeper_->GetStatus (handle,
 								libtorrent::torrent_handle::query_save_path).save_path;
-					settings.setValue ("SavePath",
-							QString::fromUtf8 (savePath.c_str ()));
-					settings.setValue ("Filename",
-							Handles_.at (i).TorrentFileName_);
-					settings.setValue ("Tags",
-							Handles_.at (i).Tags_);
-					settings.setValue ("ID",
-							Handles_.at (i).ID_);
-					settings.setValue ("Parameters",
-							static_cast<int> (Handles_.at (i).Parameters_));
-					settings.setValue ("AutoManaged",
-							Handles_.at (i).AutoManaged_);
+					settings.setValue ("SavePath", QString::fromUtf8 (savePath.c_str ()));
+					settings.setValue ("Filename", Handles_.at (i).TorrentFileName_);
+					settings.setValue ("Tags", Handles_.at (i).Tags_);
+					settings.setValue ("ID", Handles_.at (i).ID_);
+					settings.setValue ("Parameters", static_cast<int> (Handles_.at (i).Parameters_));
+					settings.setValue ("AutoManaged", Handles_.at (i).AutoManaged_);
 
 					QByteArray prioritiesLine;
 					std::copy (Handles_.at (i).FilePriorities_.begin (),
@@ -2080,26 +2074,26 @@ namespace BitTorrent
 
 			switch (state)
 			{
-				case libtorrent::torrent_status::queued_for_checking:
-				case libtorrent::torrent_status::checking_files:
-				case libtorrent::torrent_status::checking_resume_data:
-				case libtorrent::torrent_status::allocating:
-				case libtorrent::torrent_status::downloading_metadata:
-					Handles_ [i].State_ = TSPreparing;
-					break;
-				case libtorrent::torrent_status::downloading:
-					Handles_ [i].State_ = TSDownloading;
-					break;
-				case libtorrent::torrent_status::finished:
-				case libtorrent::torrent_status::seeding:
-					TorrentState oldState = Handles_ [i].State_;
-					Handles_ [i].State_ = TSSeeding;
-					if (oldState == TSDownloading)
-					{
-						HandleSingleFinished (i);
-						ScheduleSave ();
-					}
-					break;
+			case libtorrent::torrent_status::queued_for_checking:
+			case libtorrent::torrent_status::checking_files:
+			case libtorrent::torrent_status::checking_resume_data:
+			case libtorrent::torrent_status::allocating:
+			case libtorrent::torrent_status::downloading_metadata:
+				Handles_ [i].State_ = TSPreparing;
+				break;
+			case libtorrent::torrent_status::downloading:
+				Handles_ [i].State_ = TSDownloading;
+				break;
+			case libtorrent::torrent_status::finished:
+			case libtorrent::torrent_status::seeding:
+				TorrentState oldState = Handles_ [i].State_;
+				Handles_ [i].State_ = TSSeeding;
+				if (oldState == TSDownloading)
+				{
+					HandleSingleFinished (i);
+					ScheduleSave ();
+				}
+				break;
 			}
 		}
 	}
@@ -2372,9 +2366,8 @@ namespace BitTorrent
 
 	void Core::scrape ()
 	{
-		for (HandleDict_t::iterator i = Handles_.begin (),
-				end = Handles_.end (); i != end; ++i)
-			i->Handle_.scrape_tracker ();
+		for (const auto& item : Handles_)
+			item.Handle_.scrape_tracker ();
 	}
 
 	bool Core::CheckValidity (int pos) const
