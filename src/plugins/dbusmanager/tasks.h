@@ -41,7 +41,7 @@ namespace DBusManager
 	{
 		Q_OBJECT
 	public:
-		Tasks (QObject* = 0);
+		using QObject::QObject;
 
 		QStringList GetHolders () const;
 		int RowCount (const QString& holder) const;

@@ -40,11 +40,6 @@ namespace LeechCraft
 {
 namespace DBusManager
 {
-	Tasks::Tasks (QObject *parent)
-	: QObject (parent)
-	{
-	}
-
 	QStringList Tasks::GetHolders () const
 	{
 		return Util::Map (Core::Instance ().GetProxy ()->GetPluginsManager ()->GetAllCastableRoots<IJobHolder*> (),
