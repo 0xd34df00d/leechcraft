@@ -52,26 +52,12 @@ namespace DBusManager
 
 	void TasksAdaptor::RowCount (const QString& name, const QDBusMessage& msg, int& result) const
 	{
-		try
-		{
-			result = Tasks_->RowCount (name);
-		}
-		catch (const QString& str)
-		{
-			QDBusConnection::sessionBus ().send (msg.createErrorReply ("RowCount() failure", str));
-		}
+		HandleCall (Tasks_->RowCount (name), msg, result);
 	}
 
 	void TasksAdaptor::GetData (const QString& name, int r, int role, const QDBusMessage& msg, QVariantList& result) const
 	{
-		try
-		{
-			result = Tasks_->GetData (name, r, role);
-		}
-		catch (const QString& str)
-		{
-			QDBusConnection::sessionBus ().send (msg.createErrorReply ("GetData() failure", str));
-		}
+		HandleCall (Tasks_->GetData (name, r, role), msg, result);
 	}
 }
 }

@@ -46,21 +46,20 @@ namespace DBusManager
 				[] (auto plugin) { return qobject_cast<IInfo*> (plugin)->GetName (); });
 	}
 
-	int Tasks::RowCount (const QString& name) const
+	Tasks::RowCountResult_t Tasks::RowCount (const QString& name) const
 	{
 		for (auto plugin : Core::Instance ().GetProxy ()->GetPluginsManager ()->GetAllCastableRoots<IJobHolder*> ())
 		{
 			if (qobject_cast<IInfo*> (plugin)->GetName () != name)
 				continue;
 
-			return qobject_cast<IJobHolder*> (plugin)->GetRepresentation ()->rowCount ();
+			return RowCountResult_t::Right (qobject_cast<IJobHolder*> (plugin)->GetRepresentation ()->rowCount ());
 		}
 
-		throw tr ("Not found job holder %1.")
-			.arg (name);
+		return RowCountResult_t::Left (IdentifierNotFound { name });
 	}
 
-	QVariantList Tasks::GetData (const QString& name, int r, int role) const
+	Tasks::GetDataResult_t Tasks::GetData (const QString& name, int r, int role) const
 	{
 		for (auto plugin : Core::Instance ().GetProxy ()->GetPluginsManager ()->GetAllCastableRoots<IJobHolder*> ())
 		{
@@ -72,11 +71,10 @@ namespace DBusManager
 			QVariantList result;
 			for (int i = 0, size = model->columnCount (); i < size; ++i)
 				result << model->index (r, i).data (role);
-			return result;
+			return GetDataResult_t::Right (result);
 		}
 
-		throw tr ("Not found job holder %1.")
-			.arg (name);
+		return GetDataResult_t::Left (IdentifierNotFound { name });
 	}
 }
 }
