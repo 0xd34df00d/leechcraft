@@ -2283,8 +2283,13 @@ namespace BitTorrent
 			const int Info_;
 			Dispatcher& D_;
 
-			void operator() (libtorrent::alert*) const
+			void operator() (libtorrent::alert *alert) const
 			{
+				qDebug () << Q_FUNC_INFO
+						<< "unhandled alert type"
+						<< Info_
+						<< ":"
+						<< alert->message ().c_str ();
 			}
 		};
 
