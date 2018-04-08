@@ -2108,12 +2108,10 @@ namespace BitTorrent
 	{
 		bool NeedToLog_ = true;
 
-		const ICoreProxy_ptr Proxy_;
 		IEntityManager * const IEM_;
 
 		SimpleDispatcher (const ICoreProxy_ptr& proxy)
-		: Proxy_ { proxy }
-		, IEM_ { Proxy_->GetEntityManager () }
+		: IEM_ { proxy->GetEntityManager () }
 		{
 		}
 
