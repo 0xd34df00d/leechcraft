@@ -60,18 +60,6 @@ namespace DBusManager
 		return General_->GetLoadedPlugins ();
 	}
 
-	template<typename L, typename R>
-	void HandleCall (Util::Either<L, R>&& result, const QDBusMessage& msg, R& output)
-	{
-		Util::Visit (result,
-				[&output] (const R& str) { output = str; },
-				[&msg] (auto errs)
-				{
-					const auto& descr = GetErrorDescription (errs);
-					QDBusConnection::sessionBus ().send (msg.createErrorReply ("Method call failure", descr));
-				});
-	}
-
 	void GeneralAdaptor::GetDescription (const QString& name, const QDBusMessage& msg, QString& result)
 	{
 		HandleCall (General_->GetDescription (name), msg, result);

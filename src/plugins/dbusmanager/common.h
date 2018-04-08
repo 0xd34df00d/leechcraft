@@ -29,6 +29,8 @@
 
 #pragma once
 
+#include <QDBusMessage>
+#include <QDBusConnection>
 #include <util/sll/visitor.h>
 
 namespace LeechCraft::DBusManager
@@ -47,4 +49,17 @@ namespace LeechCraft::DBusManager
 				[] (const IdentifierNotFound& id) { return QString { "Identifier not found: %1" }.arg (id.Ident_); },
 				[] (const SerializationError&) { return QString { "Unable to serialize data" }; });
 	}
+
+	template<typename L, typename R>
+	void HandleCall (Util::Either<L, R>&& result, const QDBusMessage& msg, R& output)
+	{
+		Util::Visit (result,
+				[&output] (const R& str) { output = str; },
+				[&msg] (auto errs)
+				{
+					const auto& descr = GetErrorDescription (errs);
+					QDBusConnection::sessionBus ().send (msg.createErrorReply ("Method call failure", descr));
+				});
+	}
+
 }
