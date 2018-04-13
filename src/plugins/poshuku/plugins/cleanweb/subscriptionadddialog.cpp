@@ -121,13 +121,9 @@ namespace CleanWeb
 	QList<QUrl> SubscriptionAddDialog::GetAdditionalSubscriptions() const
 	{
 		QList<QUrl> result;
-		Q_FOREACH (QStandardItem *item, Items_)
+		for (const auto item : Items_)
 			if (item->checkState () == Qt::Checked)
-			{
-				QString data = item->data ().toString ();
-				result << QUrl::fromEncoded (data.toUtf8 ());
-			}
-
+				result << QUrl::fromEncoded (item->data ().toString ().toUtf8 ());
 		return result;
 	}
 
