@@ -246,9 +246,15 @@ namespace Aggregator
 		if (tabClass == "Aggregator")
 		{
 			if (!Impl_->AggregatorTab_)
+			{
 				Impl_->AggregatorTab_ = std::make_unique<AggregatorTab> (Impl_->AppWideActions_,
 						Impl_->ChannelActions_, Impl_->TabInfo_, this);
+				connect (Impl_->AggregatorTab_.get (),
+						&AggregatorTab::removeTabRequested,
+						[this] { emit removeTab (Impl_->AggregatorTab_.get ()); });
+			}
 			emit addNewTab (Impl_->AggregatorTab_->GetTabClassInfo ().VisibleName_, Impl_->AggregatorTab_.get ());
+
 		}
 		else
 			qWarning () << Q_FUNC_INFO
