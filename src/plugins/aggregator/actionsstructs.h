@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AGGREGATOR_ACTIONSSTRUCTS_H
-#define PLUGINS_AGGREGATOR_ACTIONSSTRUCTS_H
+#pragma once
+
 #include <QCoreApplication>
 
 class QAction;
@@ -40,8 +40,6 @@ namespace Aggregator
 {
 	struct AppWideActions
 	{
-		Q_DECLARE_TR_FUNCTIONS (AppWideActions)
-	public:
 		QAction *ActionAddFeed_ = nullptr;
 		QAction *ActionUpdateFeeds_ = nullptr;
 		QAction *ActionImportOPML_ = nullptr;
@@ -52,12 +50,12 @@ namespace Aggregator
 		QAction *ActionMarkAllAsRead_ = nullptr;
 
 		void SetupActionsStruct (QWidget*);
+
+		Q_DECLARE_TR_FUNCTIONS (AppWideActions)
 	};
 
 	struct ChannelActions
 	{
-		Q_DECLARE_TR_FUNCTIONS (ChannelActions)
-	public:
 		QAction *ActionRemoveFeed_ = nullptr;
 		QAction *ActionUpdateSelectedFeed_ = nullptr;
 		QAction *ActionRenameFeed_ = nullptr;
@@ -67,8 +65,8 @@ namespace Aggregator
 		QAction *ActionChannelSettings_ = nullptr;
 
 		void SetupActionsStruct (QWidget*);
+
+		Q_DECLARE_TR_FUNCTIONS (ChannelActions)
 	};
 }
 }
-
-#endif
