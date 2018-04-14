@@ -101,8 +101,6 @@ namespace Aggregator
 
 	void Aggregator::Init (ICoreProxy_ptr proxy)
 	{
-		setProperty ("IsUnremoveable", true);
-
 		Impl_ = new Aggregator_Impl;
 		Impl_->InitFailed_ = false;
 		Util::InstallTranslator ("aggregator");
