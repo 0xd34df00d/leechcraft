@@ -948,12 +948,11 @@ namespace Aggregator
 
 		int version = 1;
 		int magic = 0xd34df00d;
-		data <<
-			magic <<
-			version <<
-			title <<
-			owner <<
-			ownerEmail;
+		data << magic
+				<< version
+				<< title
+				<< owner
+				<< ownerEmail;
 
 		for (channels_shorts_t::const_iterator i = channels.begin (),
 				end = channels.end (); i != end; ++i)

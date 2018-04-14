@@ -67,10 +67,8 @@ namespace Aggregator
 	{
 		std::vector<bool> result (Ui_.FeedsToImport_->topLevelItemCount ());
 	
-		for (int i = 0, items = Ui_.FeedsToImport_->topLevelItemCount ();
-				i < items; ++i)
-			result [i] = (Ui_.FeedsToImport_->topLevelItem (i)->
-					data (0, Qt::CheckStateRole) == Qt::Checked);
+		for (int i = 0, items = Ui_.FeedsToImport_->topLevelItemCount (); i < items; ++i)
+			result [i] = Ui_.FeedsToImport_->topLevelItem (i)->data (0, Qt::CheckStateRole) == Qt::Checked;
 	
 		return result;
 	}
