@@ -43,7 +43,6 @@ namespace Aggregator
 		Ui::ImportOPML Ui_;
 	public:
 		ImportOPML (const QString& = QString (), QWidget* = 0);
-		virtual ~ImportOPML ();
 
 		QString GetFilename () const;
 		QString GetTags () const;

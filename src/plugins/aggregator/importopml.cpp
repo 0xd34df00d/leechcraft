@@ -53,10 +53,6 @@ namespace Aggregator
 		}
 	}
 	
-	ImportOPML::~ImportOPML ()
-	{
-	}
-	
 	QString ImportOPML::GetFilename () const
 	{
 		return Ui_.File_->text ();
