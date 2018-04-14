@@ -32,6 +32,7 @@
 #include <QMenu>
 #include <QSortFilterProxyModel>
 #include <util/models/flattofoldersproxymodel.h>
+#include <util/sll/prelude.h>
 #include <util/tags/tagscompleter.h>
 #include <util/util.h>
 #include "core.h"
@@ -166,14 +167,13 @@ namespace Aggregator
 
 	QList<QModelIndex> AggregatorTab::GetRelevantIndexes () const
 	{
-		QList<QModelIndex> result;
-		for (auto index : Ui_.Feeds_->selectionModel ()->selectedRows ())
-		{
-			if (FlatToFolders_->GetSourceModel ())
-				index = FlatToFolders_->MapToSource (index);
-			result << Core::Instance ().GetChannelsModel ()->mapToSource (index);
-		}
-		return result;
+		return Util::Map (Ui_.Feeds_->selectionModel ()->selectedRows (),
+				[this] (QModelIndex index)
+				{
+					if (FlatToFolders_->GetSourceModel ())
+						index = FlatToFolders_->MapToSource (index);
+					return Core::Instance ().GetChannelsModel ()->mapToSource (index);
+				});
 	}
 
 	void AggregatorTab::keyPressEvent (QKeyEvent *e)
