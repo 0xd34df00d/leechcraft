@@ -128,11 +128,11 @@ namespace Aggregator
 
 		Core::Instance ().SetProxy (proxy);
 
-		Impl_->XmlSettingsDialog_.reset (new LeechCraft::Util::XmlSettingsDialog ());
+		Impl_->XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
 		Impl_->XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
 				"aggregatorsettings.xml");
 		Impl_->XmlSettingsDialog_->SetCustomWidget ("BackendSelector",
-				new LeechCraft::Util::BackendSelector (XmlSettingsManager::Instance ()));
+				new Util::BackendSelector (XmlSettingsManager::Instance ()));
 
 		if (!Core::Instance ().DoDelayedInit ())
 		{
@@ -344,7 +344,7 @@ namespace Aggregator
 		emit removeTab (this);
 	}
 
-	std::shared_ptr<LeechCraft::Util::XmlSettingsDialog> Aggregator::GetSettingsDialog () const
+	Util::XmlSettingsDialog_ptr Aggregator::GetSettingsDialog () const
 	{
 		return Impl_->XmlSettingsDialog_;
 	}
@@ -364,7 +364,7 @@ namespace Aggregator
 		Core::Instance ().GetReprWidget ()->CurrentChannelChanged (si);
 	}
 
-	EntityTestHandleResult Aggregator::CouldHandle (const LeechCraft::Entity& e) const
+	EntityTestHandleResult Aggregator::CouldHandle (const Entity& e) const
 	{
 		EntityTestHandleResult r;
 		if (Core::Instance ().CouldHandle (e))
@@ -372,7 +372,7 @@ namespace Aggregator
 		return r;
 	}
 
-	void Aggregator::Handle (LeechCraft::Entity e)
+	void Aggregator::Handle (Entity e)
 	{
 		Core::Instance ().Handle (e);
 	}
