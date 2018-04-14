@@ -46,12 +46,10 @@
 #include <util/tags/tagscompletionmodel.h>
 #include <util/util.h>
 #include <util/tags/categoryselector.h>
-#include <util/tags/tagscompleter.h>
 #include <util/db/backendselector.h>
 #include <util/models/flattofoldersproxymodel.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
-#include "ui_mainwidget.h"
 #include "itemsfiltermodel.h"
 #include "channelsfiltermodel.h"
 #include "aggregator.h"
@@ -67,34 +65,30 @@
 #include "wizardgenerator.h"
 #include "export2fb2dialog.h"
 #include "actionsstructs.h"
-#include "uistatepersist.h"
 #include "itemswidget.h"
 #include "channelsmodel.h"
+#include "aggregatortab.h"
 
 namespace LeechCraft
 {
 namespace Aggregator
 {
-	using LeechCraft::Util::TagsCompleter;
 	using LeechCraft::Util::CategorySelector;
 	using LeechCraft::ActionInfo;
 
 	struct Aggregator_Impl
 	{
-		Ui::MainWidget Ui_;
-
 		AppWideActions AppWideActions_;
 		ChannelActions ChannelActions_;
 
 		QMenu *ToolMenu_;
 
-		std::shared_ptr<Util::FlatToFoldersProxyModel> FlatToFolders_;
 		std::shared_ptr<Util::XmlSettingsDialog> XmlSettingsDialog_;
-		std::unique_ptr<Util::TagsCompleter> TagsLineCompleter_;
 
 		QModelIndex SelectedRepr_;
 
 		TabClassInfo TabInfo_;
+		std::unique_ptr<AggregatorTab> AggregatorTab_;
 
 		bool InitFailed_;
 	};
@@ -152,11 +146,6 @@ namespace Aggregator
 				<< "core initialization failed";
 		}
 
-		Impl_->Ui_.setupUi (this);
-		Impl_->Ui_.ItemsWidget_->SetAppWideActions (Impl_->AppWideActions_);
-		Impl_->Ui_.ItemsWidget_->SetChannelActions (Impl_->ChannelActions_);
-		Impl_->Ui_.ItemsWidget_->RegisterShortcuts ();
-
 		if (Impl_->InitFailed_)
 		{
 			auto box = new QMessageBox (QMessageBox::Critical,
@@ -169,47 +158,9 @@ namespace Aggregator
 			box->open ();
 		}
 
-		Impl_->Ui_.ItemsWidget_->SetChannelsFilter (Core::Instance ().GetChannelsModel ());
-
-		connect (Impl_->Ui_.ItemsWidget_,
-				SIGNAL (movedToChannel (QModelIndex)),
-				this,
-				SLOT (handleItemsMovedToChannel (QModelIndex)));
-
 		Core::Instance ().GetJobHolderRepresentation ()->setParent (this);
 		Core::Instance ().GetReprWidget ()->SetAppWideActions (Impl_->AppWideActions_);
 		Core::Instance ().GetReprWidget ()->SetChannelActions (Impl_->ChannelActions_);
-
-		Impl_->Ui_.MergeItems_->setChecked (XmlSettingsManager::Instance ()->
-				Property ("MergeItems", false).toBool ());
-
-		Impl_->FlatToFolders_.reset (new Util::FlatToFoldersProxyModel);
-		Impl_->FlatToFolders_->SetTagsManager (Core::Instance ().GetProxy ()->GetTagsManager ());
-		handleGroupChannels ();
-		connect (Impl_->FlatToFolders_.get (),
-				SIGNAL (rowsInserted (QModelIndex, int, int)),
-				Impl_->Ui_.Feeds_,
-				SLOT (expand (QModelIndex)));
-		XmlSettingsManager::Instance ()->RegisterObject ("GroupChannelsByTags",
-				this, "handleGroupChannels");
-
-		Impl_->Ui_.Feeds_->addAction (Impl_->ChannelActions_.ActionMarkChannelAsRead_);
-		Impl_->Ui_.Feeds_->addAction (Impl_->ChannelActions_.ActionMarkChannelAsUnread_);
-		Impl_->Ui_.Feeds_->addAction (Util::CreateSeparator (Impl_->Ui_.Feeds_));
-		Impl_->Ui_.Feeds_->addAction (Impl_->ChannelActions_.ActionRemoveFeed_);
-		Impl_->Ui_.Feeds_->addAction (Impl_->ChannelActions_.ActionUpdateSelectedFeed_);
-		Impl_->Ui_.Feeds_->addAction (Impl_->ChannelActions_.ActionRenameFeed_);
-		Impl_->Ui_.Feeds_->addAction (Util::CreateSeparator (Impl_->Ui_.Feeds_));
-		Impl_->Ui_.Feeds_->addAction (Impl_->ChannelActions_.ActionRemoveChannel_);
-		Impl_->Ui_.Feeds_->addAction (Util::CreateSeparator (Impl_->Ui_.Feeds_));
-		Impl_->Ui_.Feeds_->addAction (Impl_->ChannelActions_.ActionChannelSettings_);
-		Impl_->Ui_.Feeds_->addAction (Util::CreateSeparator (Impl_->Ui_.Feeds_));
-		Impl_->Ui_.Feeds_->addAction (Impl_->AppWideActions_.ActionAddFeed_);
-		connect (Impl_->Ui_.Feeds_,
-				SIGNAL (customContextMenuRequested (const QPoint&)),
-				this,
-				SLOT (handleFeedsContextMenuRequested (const QPoint&)));
-		QHeaderView *channelsHeader = Impl_->Ui_.Feeds_->header ();
 
 		QMenu *contextMenu = new QMenu (tr ("Feeds actions"));
 		contextMenu->addAction (Impl_->ChannelActions_.ActionMarkChannelAsRead_);
@@ -224,49 +175,27 @@ namespace Aggregator
 		contextMenu->addAction (Impl_->AppWideActions_.ActionAddFeed_);
 		Core::Instance ().SetContextMenu (contextMenu);
 
-		QFontMetrics fm = fontMetrics ();
-		int dateTimeSize = fm.width (QDateTime::currentDateTime ()
-				.toString (Qt::SystemLocaleShortDate) + "__");
-		channelsHeader->resizeSection (0, fm.width ("Average channel name"));
-		channelsHeader->resizeSection (1, fm.width ("_9999_"));
-		channelsHeader->resizeSection (2, dateTimeSize);
-		connect (Impl_->Ui_.TagsLine_,
-				SIGNAL (textChanged (const QString&)),
-				Core::Instance ().GetChannelsModel (),
-				SLOT (setFilterFixedString (const QString&)));
 		connect (Impl_->AppWideActions_.ActionUpdateFeeds_,
 				SIGNAL (triggered ()),
 				&Core::Instance (),
 				SLOT (updateFeeds ()));
-
-		Impl_->TagsLineCompleter_.reset (new TagsCompleter (Impl_->Ui_.TagsLine_));
-		Impl_->Ui_.TagsLine_->AddSelector ();
-
-		Impl_->Ui_.MainSplitter_->setStretchFactor (0, 5);
-		Impl_->Ui_.MainSplitter_->setStretchFactor (1, 9);
-
-		currentChannelChanged ();
 
 		BuildID2ActionTupleMap ();
 	}
 
 	void Aggregator::SecondInit ()
 	{
-		LoadColumnWidth (Impl_->Ui_.Feeds_, "feeds");
-
 		if (Impl_->InitFailed_)
 			return;
 
-		Impl_->Ui_.ItemsWidget_->ConstructBrowser ();
-		Impl_->Ui_.ItemsWidget_->LoadUIState ();
+		Impl_->AggregatorTab_ = std::make_unique<AggregatorTab> (Impl_->AppWideActions_,
+				Impl_->ChannelActions_, Impl_->TabInfo_, this);
 
 		Core::Instance ().GetReprWidget ()->ConstructBrowser ();
 	}
 
 	void Aggregator::Release ()
 	{
-		SaveColumnWidth (Impl_->Ui_.Feeds_, "feeds");
-		Impl_->Ui_.ItemsWidget_->SaveUIState ();
 		disconnect (&Core::Instance (), 0, this, 0);
 		if (Core::Instance ().GetChannelsModel ())
 			disconnect (Core::Instance ().GetChannelsModel (), 0, this, 0);
@@ -315,34 +244,14 @@ namespace Aggregator
 		return { Impl_->TabInfo_ };
 	}
 
-	QToolBar* Aggregator::GetToolBar () const
-	{
-		return Impl_->Ui_.ItemsWidget_->GetToolBar ();
-	}
-
 	void Aggregator::TabOpenRequested (const QByteArray& tabClass)
 	{
 		if (tabClass == "Aggregator")
-			emit addNewTab (GetTabClassInfo ().VisibleName_, this);
+			emit addNewTab (Impl_->AggregatorTab_->GetTabClassInfo ().VisibleName_, Impl_->AggregatorTab_.get ());
 		else
 			qWarning () << Q_FUNC_INFO
 					<< "unknown tab class"
 					<< tabClass;
-	}
-
-	TabClassInfo Aggregator::GetTabClassInfo () const
-	{
-		return Impl_->TabInfo_;
-	}
-
-	QObject* Aggregator::ParentMultiTabs ()
-	{
-		return this;
-	}
-
-	void Aggregator::Remove ()
-	{
-		emit removeTab (this);
 	}
 
 	Util::XmlSettingsDialog_ptr Aggregator::GetSettingsDialog () const
@@ -455,87 +364,6 @@ namespace Aggregator
 		return true;
 	}
 
-	QByteArray Aggregator::GetTabRecoverData () const
-	{
-		return "aggregatortab";
-	}
-
-	QIcon Aggregator::GetTabRecoverIcon () const
-	{
-		return GetIcon ();
-	}
-
-	QString Aggregator::GetTabRecoverName () const
-	{
-		return GetName ();
-	}
-
-	void Aggregator::keyPressEvent (QKeyEvent *e)
-	{
-		if (e->modifiers () & Qt::ControlModifier)
-		{
-			QItemSelectionModel *channelSM = Impl_->Ui_.Feeds_->selectionModel ();
-			QModelIndex currentChannel = channelSM->currentIndex ();
-			int numChannels = Impl_->Ui_.Feeds_->
-				model ()->rowCount (currentChannel.parent ());
-
-			QItemSelectionModel::SelectionFlags chanSF =
-				QItemSelectionModel::Select |
-				QItemSelectionModel::Clear |
-				QItemSelectionModel::Rows;
-
-			if (e->key () == Qt::Key_Less &&
-					currentChannel.isValid ())
-			{
-				if (currentChannel.row () > 0)
-				{
-					QModelIndex next = currentChannel
-						.sibling (currentChannel.row () - 1,
-									currentChannel.column ());
-					channelSM->select (next, chanSF);
-					channelSM->setCurrentIndex (next, chanSF);
-				}
-				else
-				{
-					QModelIndex next = currentChannel.sibling (numChannels - 1,
-									currentChannel.column ());
-					channelSM->select (next, chanSF);
-					channelSM->setCurrentIndex (next, chanSF);
-				}
-				return;
-			}
-			else if (e->key () == Qt::Key_Greater &&
-					currentChannel.isValid ())
-			{
-				if (currentChannel.row () < numChannels - 1)
-				{
-					QModelIndex next = currentChannel
-						.sibling (currentChannel.row () + 1,
-									currentChannel.column ());
-					channelSM->select (next, chanSF);
-					channelSM->setCurrentIndex (next, chanSF);
-				}
-				else
-				{
-					QModelIndex next = currentChannel.sibling (0,
-									currentChannel.column ());
-					channelSM->select (next, chanSF);
-					channelSM->setCurrentIndex (next, chanSF);
-				}
-				return;
-			}
-			else if ((e->key () == Qt::Key_Greater ||
-					e->key () == Qt::Key_Less) &&
-					!currentChannel.isValid ())
-			{
-				QModelIndex next = Impl_->Ui_.Feeds_->model ()->index (0, 0);
-				channelSM->select (next, chanSF);
-				channelSM->setCurrentIndex (next, chanSF);
-			}
-		}
-		e->ignore ();
-	}
-
 	bool Aggregator::IsRepr () const
 	{
 		return Core::Instance ().GetReprWidget ()->isVisible ();
@@ -544,35 +372,17 @@ namespace Aggregator
 	QModelIndex Aggregator::GetRelevantIndex () const
 	{
 		if (IsRepr ())
-			return Core::Instance ()
-					.GetJobHolderRepresentation ()->
-							mapToSource (Impl_->SelectedRepr_);
+			return Core::Instance ().GetJobHolderRepresentation ()->mapToSource (Impl_->SelectedRepr_);
 		else
-		{
-			QModelIndex index = Impl_->Ui_.Feeds_->
-					selectionModel ()->currentIndex ();
-			if (Impl_->FlatToFolders_->GetSourceModel ())
-				index = Impl_->FlatToFolders_->MapToSource (index);
-			return Core::Instance ().GetChannelsModel ()->mapToSource (index);
-		}
+			return Impl_->AggregatorTab_->GetRelevantIndex ();
 	}
 
 	QList<QModelIndex> Aggregator::GetRelevantIndexes () const
 	{
 		if (IsRepr ())
-			return
-			{
-				Core::Instance ().GetJobHolderRepresentation ()->mapToSource (Impl_->SelectedRepr_)
-			};
-
-		QList<QModelIndex> result;
-		for (auto index : Impl_->Ui_.Feeds_->selectionModel ()->selectedRows ())
-		{
-			if (Impl_->FlatToFolders_->GetSourceModel ())
-				index = Impl_->FlatToFolders_->MapToSource (index);
-			result << Core::Instance ().GetChannelsModel ()->mapToSource (index);
-		}
-		return result;
+			return { Core::Instance ().GetJobHolderRepresentation ()->mapToSource (Impl_->SelectedRepr_) };
+		else
+			return Impl_->AggregatorTab_->GetRelevantIndexes ();
 	}
 
 	void Aggregator::BuildID2ActionTupleMap ()
@@ -614,6 +424,7 @@ namespace Aggregator
 						setProperty ("ConfirmMarkAllAsRead", false);
 		}
 
+		/* TODO
 		QModelIndexList indexes;
 		QAbstractItemModel *model = Impl_->Ui_.Feeds_->model ();
 		for (int i = 0, size = model->rowCount (); i < size; ++i)
@@ -640,6 +451,7 @@ namespace Aggregator
 				}
 			}
 		}
+		 */
 	}
 
 	void Aggregator::on_ActionAddFeed__triggered ()
@@ -716,19 +528,7 @@ namespace Aggregator
 	void Aggregator::Perform (boost::function<void (const QModelIndex&)> func)
 	{
 		for (auto index : GetRelevantIndexes ())
-		{
-			if (index.isValid ())
-				func (index);
-			else if (Impl_->FlatToFolders_->GetSourceModel ())
-			{
-				index = Impl_->Ui_.Feeds_->selectionModel ()->currentIndex ();
-				for (int i = 0, size = Impl_->FlatToFolders_->rowCount (index); i < size; ++i)
-				{
-					const auto& source = Impl_->FlatToFolders_->index (i, 0, index);
-					func (Impl_->FlatToFolders_->MapToSource (source));
-				}
-			}
-		}
+			func (index);
 	}
 
 	void Aggregator::on_ActionMarkChannelAsRead__triggered ()
@@ -781,28 +581,6 @@ namespace Aggregator
 
 		FeedSettings dia { index, this };
 		dia.exec ();
-	}
-
-	void Aggregator::handleFeedsContextMenuRequested (const QPoint& pos)
-	{
-		bool enable = Impl_->Ui_.Feeds_->indexAt (pos).isValid ();
-		QList<QAction*> toToggle;
-		toToggle << Impl_->ChannelActions_.ActionMarkChannelAsRead_
-				<< Impl_->ChannelActions_.ActionMarkChannelAsUnread_
-				<< Impl_->ChannelActions_.ActionRemoveFeed_
-				<< Impl_->ChannelActions_.ActionChannelSettings_
-				<< Impl_->ChannelActions_.ActionUpdateSelectedFeed_;
-
-		for (const auto act : toToggle)
-			act->setEnabled (enable);
-
-		QMenu *menu = new QMenu;
-		menu->setAttribute (Qt::WA_DeleteOnClose, true);
-		menu->addActions (Impl_->Ui_.Feeds_->actions ());
-		menu->exec (Impl_->Ui_.Feeds_->viewport ()->mapToGlobal (pos));
-
-		for (const auto act : toToggle)
-			act->setEnabled (true);
 	}
 
 	void Aggregator::on_ActionUpdateSelectedFeed__triggered ()
@@ -873,62 +651,6 @@ namespace Aggregator
 				SIGNAL (gotEntity (const LeechCraft::Entity&)));
 		dialog->setAttribute (Qt::WA_DeleteOnClose);
 		dialog->show ();
-	}
-
-	void Aggregator::on_MergeItems__toggled (bool merge)
-	{
-		Impl_->Ui_.ItemsWidget_->SetMergeMode (merge);
-		XmlSettingsManager::Instance ()->setProperty ("MergeItems", merge);
-	}
-
-	void Aggregator::currentChannelChanged ()
-	{
-		const auto& index = Impl_->Ui_.Feeds_->selectionModel ()->currentIndex ();
-		const auto& mapped = Impl_->FlatToFolders_->MapToSource (index);
-		if (!mapped.isValid ())
-		{
-			const auto& tags = index.data (RoleTags).toStringList ();
-			Impl_->Ui_.ItemsWidget_->SetMergeModeTags (tags);
-		}
-		else
-			Impl_->Ui_.ItemsWidget_->CurrentChannelChanged (mapped);
-	}
-
-	void Aggregator::handleItemsMovedToChannel (QModelIndex index)
-	{
-		if (index.column ())
-			index = index.sibling (index.row (), 0);
-
-		if (Impl_->FlatToFolders_->GetSourceModel ())
-		{
-			const auto& sourceIdx = Impl_->FlatToFolders_->MapFromSource (index).value (0);
-			if (sourceIdx.isValid ())
-				index = sourceIdx;
-		}
-
-		Impl_->Ui_.Feeds_->blockSignals (true);
-		Impl_->Ui_.Feeds_->setCurrentIndex (index);
-		Impl_->Ui_.Feeds_->blockSignals (false);
-	}
-
-	void Aggregator::handleGroupChannels ()
-	{
-		if (XmlSettingsManager::Instance ()->
-				property ("GroupChannelsByTags").toBool ())
-		{
-			Impl_->FlatToFolders_->SetSourceModel (Core::Instance ().GetChannelsModel ());
-			Impl_->Ui_.Feeds_->setModel (Impl_->FlatToFolders_.get ());
-		}
-		else
-		{
-			Impl_->FlatToFolders_->SetSourceModel (0);
-			Impl_->Ui_.Feeds_->setModel (Core::Instance ().GetChannelsModel ());
-		}
-		connect (Impl_->Ui_.Feeds_->selectionModel (),
-				SIGNAL (currentChanged (const QModelIndex&, const QModelIndex&)),
-				this,
-				SLOT (currentChannelChanged ()));
-		Impl_->Ui_.Feeds_->expandAll ();
 	}
 }
 }

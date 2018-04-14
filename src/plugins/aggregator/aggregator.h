@@ -61,7 +61,6 @@ namespace Aggregator
 	class Aggregator : public QWidget
 					 , public IInfo
 					 , public IHaveTabs
-					 , public ITabWidget
 					 , public IHaveSettings
 					 , public IJobHolder
 					 , public IEntityHandler
@@ -70,12 +69,10 @@ namespace Aggregator
 					 , public IStartupWizard
 					 , public IPluginReady
 					 , public IHaveRecoverableTabs
-					 , public IRecoverableTab
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo
 				IHaveTabs
-				ITabWidget
 				IHaveSettings
 				IJobHolder
 				IEntityHandler
@@ -83,8 +80,7 @@ namespace Aggregator
 				IStartupWizard
 				IActionsExporter
 				IPluginReady
-				IHaveRecoverableTabs
-				IRecoverableTab)
+				IHaveRecoverableTabs)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Aggregator")
 
@@ -102,11 +98,7 @@ namespace Aggregator
 		QIcon GetIcon () const;
 
 		TabClasses_t GetTabClasses () const;
-		QToolBar* GetToolBar () const;
 		void TabOpenRequested (const QByteArray&);
-		TabClassInfo GetTabClassInfo () const;
-		QObject* ParentMultiTabs ();
-		void Remove ();
 
 		QAbstractItemModel* GetRepresentation () const;
 
@@ -127,12 +119,6 @@ namespace Aggregator
 
 		void RecoverTabs (const QList<TabRecoverInfo>& infos);
 		bool HasSimilarTab (const QByteArray&, const QList<QByteArray>&) const;
-
-		QByteArray GetTabRecoverData () const;
-		QIcon GetTabRecoverIcon () const;
-		QString GetTabRecoverName () const;
-	protected:
-		virtual void keyPressEvent (QKeyEvent*);
 	private:
 		bool IsRepr () const;
 		QModelIndex GetRelevantIndex () const;
@@ -156,15 +142,6 @@ namespace Aggregator
 		void on_ActionMarkChannelAsRead__triggered ();
 		void on_ActionMarkChannelAsUnread__triggered ();
 		void on_ActionChannelSettings__triggered ();
-
-		void handleFeedsContextMenuRequested (const QPoint&);
-
-		void on_MergeItems__toggled (bool);
-
-		void currentChannelChanged ();
-		void handleItemsMovedToChannel (QModelIndex);
-
-		void handleGroupChannels ();
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 		void addNewTab (const QString&, QWidget*);
@@ -176,8 +153,6 @@ namespace Aggregator
 		void raiseTab (QWidget*);
 
 		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
-
-		void tabRecoverDataChanged ();
 	};
 }
 }
