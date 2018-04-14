@@ -42,7 +42,8 @@ namespace Aggregator
 	class ParserFactory
 	{
 		QList<Parser*> Parsers_;
-		ParserFactory ();
+
+		ParserFactory () = default;
 	public:
 		static ParserFactory& Instance ();
 		void Register (Parser*);

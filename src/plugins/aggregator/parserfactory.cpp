@@ -35,10 +35,6 @@ namespace LeechCraft
 {
 namespace Aggregator
 {
-	ParserFactory::ParserFactory ()
-	{
-	}
-	
 	ParserFactory& ParserFactory::Instance ()
 	{
 		static ParserFactory inst;
