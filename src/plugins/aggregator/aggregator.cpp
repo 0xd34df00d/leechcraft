@@ -128,9 +128,8 @@ namespace Aggregator
 
 		Core::Instance ().SetProxy (proxy);
 
-		Impl_->XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
-		Impl_->XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
-				"aggregatorsettings.xml");
+		Impl_->XmlSettingsDialog_ = std::make_shared<Util::XmlSettingsDialog> ();
+		Impl_->XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (), "aggregatorsettings.xml");
 		Impl_->XmlSettingsDialog_->SetCustomWidget ("BackendSelector",
 				new Util::BackendSelector (XmlSettingsManager::Instance ()));
 
