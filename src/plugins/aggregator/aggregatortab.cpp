@@ -167,13 +167,15 @@ namespace Aggregator
 
 	QList<QModelIndex> AggregatorTab::GetRelevantIndexes () const
 	{
-		return Util::Map (Ui_.Feeds_->selectionModel ()->selectedRows (),
+		auto rawList = Util::Map (Ui_.Feeds_->selectionModel ()->selectedRows (),
 				[this] (QModelIndex index)
 				{
 					if (FlatToFolders_->GetSourceModel ())
 						index = FlatToFolders_->MapToSource (index);
 					return Core::Instance ().GetChannelsModel ()->mapToSource (index);
 				});
+		rawList.removeAll ({});
+		return rawList;
 	}
 
 	void AggregatorTab::keyPressEvent (QKeyEvent *e)
