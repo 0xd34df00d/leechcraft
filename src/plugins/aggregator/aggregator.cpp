@@ -105,12 +105,16 @@ namespace Aggregator
 		Impl_->InitFailed_ = false;
 		Util::InstallTranslator ("aggregator");
 
-		Impl_->TabInfo_.TabClass_ = "Aggregator";
-		Impl_->TabInfo_.VisibleName_ = GetName ();
-		Impl_->TabInfo_.Description_ = GetInfo ();
-		Impl_->TabInfo_.Icon_ = GetIcon ();
-		Impl_->TabInfo_.Priority_ = 0;
-		Impl_->TabInfo_.Features_ = TabFeatures (TFSingle | TFOpenableByRequest);
+		Impl_->TabInfo_ = TabClassInfo
+		{
+			"Aggregator",
+			GetName (),
+			GetInfo (),
+			GetIcon (),
+			0,
+			TFSingle | TFOpenableByRequest
+		};
+
 
 		Impl_->ChannelActions_.SetupActionsStruct (this);
 		Impl_->AppWideActions_.SetupActionsStruct (this);
