@@ -266,8 +266,6 @@ namespace Aggregator
 		disconnect (&Core::Instance (), 0, this, 0);
 		if (Core::Instance ().GetChannelsModel ())
 			disconnect (Core::Instance ().GetChannelsModel (), 0, this, 0);
-		if (Impl_->TagsLineCompleter_.get ())
-			disconnect (Impl_->TagsLineCompleter_.get (), 0, this, 0);
 		delete Impl_;
 		Core::Instance ().Release ();
 	}
