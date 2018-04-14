@@ -188,9 +188,6 @@ namespace Aggregator
 		if (Impl_->InitFailed_)
 			return;
 
-		Impl_->AggregatorTab_ = std::make_unique<AggregatorTab> (Impl_->AppWideActions_,
-				Impl_->ChannelActions_, Impl_->TabInfo_, this);
-
 		Core::Instance ().GetReprWidget ()->ConstructBrowser ();
 	}
 
@@ -247,7 +244,12 @@ namespace Aggregator
 	void Aggregator::TabOpenRequested (const QByteArray& tabClass)
 	{
 		if (tabClass == "Aggregator")
+		{
+			if (!Impl_->AggregatorTab_)
+				Impl_->AggregatorTab_ = std::make_unique<AggregatorTab> (Impl_->AppWideActions_,
+						Impl_->ChannelActions_, Impl_->TabInfo_, this);
 			emit addNewTab (Impl_->AggregatorTab_->GetTabClassInfo ().VisibleName_, Impl_->AggregatorTab_.get ());
+		}
 		else
 			qWarning () << Q_FUNC_INFO
 					<< "unknown tab class"
