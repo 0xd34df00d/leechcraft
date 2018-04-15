@@ -78,7 +78,6 @@ namespace Aggregator
 
 		QModelIndex GetUnreadChannelIndex () const;
 		int GetUnreadChannelsNumber () const;
-		int GetUnreadItemsNumber () const;
 
 		void SetMenu (QMenu*);
 	};

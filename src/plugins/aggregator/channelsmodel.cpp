@@ -272,14 +272,6 @@ namespace Aggregator
 		return result;
 	}
 
-	int ChannelsModel::GetUnreadItemsNumber () const
-	{
-		int result = 0;
-		for (int i = 0; i < Channels_.size (); ++i)
-			result += Channels_.at (i).Unread_;
-		return result;
-	}
-
 	void ChannelsModel::SetMenu (QMenu *menu)
 	{
 		Menu_ = menu;
