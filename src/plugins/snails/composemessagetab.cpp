@@ -394,6 +394,24 @@ namespace Snails
 					{ return TemplatesMgr_->GetTemplatedText (ContentType::HTML, type, acc, rest...); });
 	}
 
+	namespace
+	{
+		QString AttachmentsFetchErrorDescr (const AttachmentsFetcher::Errors_t& err)
+		{
+			return Util::Visit (err,
+					[] (const AttachmentsFetcher::TemporaryDirError&)
+					{
+						return ComposeMessageTab::tr ("Unable to create temporary directory to "
+								"fetch the attachments of the source message.");
+					},
+					[] (const auto& e)
+					{
+						return ComposeMessageTab::tr ("Unable to fetch the attachments of the source message: %1.")
+								.arg ("<em>" + QString::fromUtf8 (e.what ()) + "</em>");
+					});
+		}
+	}
+
 	void ComposeMessageTab::CopyAttachments (const Message_ptr& msg)
 	{
 		if (msg->GetAttachments ().isEmpty ())
@@ -401,45 +419,26 @@ namespace Snails
 
 		LinkedAttachmentsFetcher_ = std::make_shared<AttachmentsFetcher> (GetSelectedAccount (), msg);
 		Util::Sequence (this, LinkedAttachmentsFetcher_->GetFuture ()) >>
-				[this] (const AttachmentsFetcher::Result_t& result)
+				Util::Visitor
 				{
-					Util::Visit (result.AsVariant (),
-							[this] (const AttachmentsFetcher::FetchResult& result)
-							{
-								for (const auto& path : result.Paths_)
-									AppendAttachment (path, {});
+					[this] (const AttachmentsFetcher::FetchResult& result)
+					{
+						for (const auto& path : result.Paths_)
+							AppendAttachment (path, {});
 
-								const auto& notify = Util::MakeNotification ("Snails",
-										tr ("Attached %n files(s) from the source message.",
-												0,
-												result.Paths_.size ()),
-										Priority::Info);
-								Core::Instance ().GetProxy ()->
-										GetEntityManager ()->HandleEntity (notify);
-							},
-							[] (auto err)
-							{
-								const auto& notify = Util::Visit (err,
-										[] (const AttachmentsFetcher::TemporaryDirError&)
-										{
-											return Util::MakeNotification ("Snails",
-													tr ("Unable to create temporary directory to "
-														"fetch the attachments of the source "
-														"message."),
-													Priority::Critical);
-										},
-										[] (const auto& e)
-										{
-											const auto& msg = QString::fromUtf8 (e.what ());
-											return Util::MakeNotification ("Snails",
-													tr ("Unable to fetch the attachments of the "
-														"source message: %1.")
-														.arg ("<em>" + msg + "</em>"),
-													Priority::Critical);
-										});
-								Core::Instance ().GetProxy ()->
-										GetEntityManager ()->HandleEntity (notify);
-							});
+						const auto& notify = Util::MakeNotification ("Snails",
+								tr ("Attached %n files(s) from the source message.",
+										0,
+										result.Paths_.size ()),
+								Priority::Info);
+						Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (notify);
+					},
+					[] (auto err)
+					{
+						const auto& text = AttachmentsFetchErrorDescr (err);
+						const auto& notify = Util::MakeNotification ("Snails", text, Priority::Critical);
+						Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (notify);
+					}
 				};
 	}
 
@@ -680,35 +679,17 @@ namespace Snails
 		}
 
 		Util::Sequence (this, LinkedAttachmentsFetcher_->GetFuture ()) >>
-				[=] (const AttachmentsFetcher::Result_t& result)
+				Util::Visitor
 				{
-					Util::Visit (result.AsVariant (),
-							[=] (const AttachmentsFetcher::FetchResult&)
-							{
-								AddAttachments (message);
-								Send (account, message);
-							},
-							[=] (auto err)
-							{
-								Util::Visit (err,
-										[this] (const AttachmentsFetcher::TemporaryDirError&)
-										{
-											QMessageBox::critical (this,
-													"LeechCraft",
-													tr ("Unable to create temporary directory to "
-														"fetch the attachments of the source "
-														"message."));
-										},
-										[this] (const auto& e)
-										{
-											const auto& msg = QString::fromUtf8 (e.what ());
-											QMessageBox::critical (this,
-													"LeechCraft",
-													tr ("Unable to fetch the attachments of the "
-														"source message: %1.")
-														.arg ("<em>" + msg + "</em>"));
-										});
-							});
+					[=] (const AttachmentsFetcher::FetchResult&)
+					{
+						AddAttachments (message);
+						Send (account, message);
+					},
+					[=] (auto err)
+					{
+						QMessageBox::critical (this, "LeechCraft", AttachmentsFetchErrorDescr (err));
+					}
 				};
 	}
 

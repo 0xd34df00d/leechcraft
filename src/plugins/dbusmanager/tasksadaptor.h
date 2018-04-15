@@ -52,10 +52,8 @@ namespace DBusManager
 		TasksAdaptor (Tasks*);
 	public slots:
 		QStringList GetHolders () const;
-		int RowCount (const QString& holder, const QDBusMessage&) const;
-		QVariantList GetData (const QString& holder,
-				int row, int role,
-				const QDBusMessage&) const;
+		void RowCount (const QString& holder, const QDBusMessage&, int&) const;
+		void GetData (const QString& holder, int row, int role, const QDBusMessage&, QVariantList&) const;
 	};
 }
 }

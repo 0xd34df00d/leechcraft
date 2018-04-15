@@ -30,7 +30,10 @@
 #include "generaladaptor.h"
 #include <QCoreApplication>
 #include <QDBusMessage>
+#include <util/sll/either.h>
+#include <util/sll/visitor.h>
 #include "core.h"
+#include "common.h"
 
 namespace LeechCraft
 {
@@ -57,36 +60,14 @@ namespace DBusManager
 		return General_->GetLoadedPlugins ();
 	}
 
-	QString GeneralAdaptor::GetDescription (const QString& name,
-			const QDBusMessage& msg)
+	void GeneralAdaptor::GetDescription (const QString& name, const QDBusMessage& msg, QString& result)
 	{
-		try
-		{
-			return General_->GetDescription (name);
-		}
-		catch (const QString& str)
-		{
-			QDBusConnection::sessionBus ()
-				.send (msg.createErrorReply ("GetDescription() failure",
-							str));
-			return str;
-		}
+		HandleCall (General_->GetDescription (name), msg, result);
 	}
 
-	QByteArray GeneralAdaptor::GetIcon (const QString& name, int dim,
-			const QDBusMessage& msg)
+	void GeneralAdaptor::GetIcon (const QString& name, int dim, const QDBusMessage& msg, QByteArray& result)
 	{
-		try
-		{
-			return General_->GetIcon (name, dim);
-		}
-		catch (const QString& str)
-		{
-			QDBusConnection::sessionBus ()
-				.send (msg.createErrorReply ("GetDescription() failure",
-							str));
-			return str.toUtf8 ();
-		}
+		HandleCall (General_->GetIcon (name, dim), msg, result);
 	}
 }
 }

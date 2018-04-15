@@ -81,17 +81,6 @@ namespace DBusManager
 		return Proxy_;
 	}
 
-	QString Core::Greeter (const QString&)
-	{
-		return tr ("LeechCraft D-Bus general interface");
-	}
-
-	void Core::DumpError ()
-	{
-		qDebug () << Q_FUNC_INFO
-			<< Connection_->lastError ().message ();
-	}
-
 	void Core::doDelayedInit ()
 	{
 		General_.reset (new General);
@@ -104,8 +93,7 @@ namespace DBusManager
 		QDBusConnection::sessionBus ().registerObject ("/General", General_.get ());
 		QDBusConnection::sessionBus ().registerObject ("/Tasks", Tasks_.get ());
 
-		auto roots = Proxy_->GetPluginsManager ()->GetAllCastableRoots<IWebFileStorage*> ();
-		Q_FOREACH (QObject *root, roots)
+		for (const auto root : Proxy_->GetPluginsManager ()->GetAllCastableRoots<IWebFileStorage*> ())
 		{
 			new WebFileStorageAdaptor (root);
 

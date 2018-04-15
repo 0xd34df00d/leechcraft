@@ -32,6 +32,7 @@
 #include <QObject>
 #include <QStringList>
 #include <QVariantList>
+#include "common.h"
 
 namespace LeechCraft
 {
@@ -41,11 +42,15 @@ namespace DBusManager
 	{
 		Q_OBJECT
 	public:
-		Tasks (QObject* = 0);
+		using QObject::QObject;
 
 		QStringList GetHolders () const;
-		int RowCount (const QString& holder) const;
-		QVariantList GetData (const QString&, int, int) const;
+
+		using RowCountResult_t = Util::Either<boost::variant<IdentifierNotFound>, int>;
+		RowCountResult_t RowCount (const QString& holder) const;
+
+		using GetDataResult_t = Util::Either<boost::variant<IdentifierNotFound>, QVariantList>;
+		GetDataResult_t GetData (const QString&, int, int) const;
 	};
 }
 }

@@ -61,7 +61,6 @@ namespace Aggregator
 	class Aggregator : public QWidget
 					 , public IInfo
 					 , public IHaveTabs
-					 , public ITabWidget
 					 , public IHaveSettings
 					 , public IJobHolder
 					 , public IEntityHandler
@@ -70,12 +69,10 @@ namespace Aggregator
 					 , public IStartupWizard
 					 , public IPluginReady
 					 , public IHaveRecoverableTabs
-					 , public IRecoverableTab
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo
 				IHaveTabs
-				ITabWidget
 				IHaveSettings
 				IJobHolder
 				IEntityHandler
@@ -83,56 +80,45 @@ namespace Aggregator
 				IStartupWizard
 				IActionsExporter
 				IPluginReady
-				IHaveRecoverableTabs
-				IRecoverableTab)
+				IHaveRecoverableTabs)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Aggregator")
 
 		Aggregator_Impl *Impl_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		void Release ();
-		QByteArray GetUniqueID () const;
-		QString GetName () const;
-		QString GetInfo () const;
-		QStringList Provides () const;
-		QStringList Needs () const;
-		QStringList Uses () const;
-		QIcon GetIcon () const;
+		void Init (ICoreProxy_ptr) override;
+		void SecondInit () override;
+		void Release () override;
+		QByteArray GetUniqueID () const override;
+		QString GetName () const override;
+		QString GetInfo () const override;
+		QStringList Provides () const override;
+		QStringList Needs () const override;
+		QStringList Uses () const override;
+		QIcon GetIcon () const override;
 
-		TabClasses_t GetTabClasses () const;
-		QToolBar* GetToolBar () const;
-		void TabOpenRequested (const QByteArray&);
-		TabClassInfo GetTabClassInfo () const;
-		QObject* ParentMultiTabs ();
-		void Remove ();
+		TabClasses_t GetTabClasses () const override;
+		void TabOpenRequested (const QByteArray&) override;
 
-		QAbstractItemModel* GetRepresentation () const;
+		QAbstractItemModel* GetRepresentation () const override;
 
-		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const override;
 
-		EntityTestHandleResult CouldHandle (const Entity&) const;
-		void Handle (Entity);
+		EntityTestHandleResult CouldHandle (const Entity&) const override;
+		void Handle (Entity) override;
 
-		void SetShortcut (const QString&, const QKeySequences_t&);
-		QMap<QString, ActionInfo> GetActionInfo () const;
+		void SetShortcut (const QString&, const QKeySequences_t&) override;
+		QMap<QString, ActionInfo> GetActionInfo () const override;
 
-		QList<QWizardPage*> GetWizardPages () const;
+		QList<QWizardPage*> GetWizardPages () const override;
 
-		QList<QAction*> GetActions (ActionsEmbedPlace) const;
+		QList<QAction*> GetActions (ActionsEmbedPlace) const override;
 
-		QSet<QByteArray> GetExpectedPluginClasses () const;
-		void AddPlugin (QObject*);
+		QSet<QByteArray> GetExpectedPluginClasses () const override;
+		void AddPlugin (QObject*) override;
 
-		void RecoverTabs (const QList<TabRecoverInfo>& infos);
-		bool HasSimilarTab (const QByteArray&, const QList<QByteArray>&) const;
-
-		QByteArray GetTabRecoverData () const;
-		QIcon GetTabRecoverIcon () const;
-		QString GetTabRecoverName () const;
-	protected:
-		virtual void keyPressEvent (QKeyEvent*);
+		void RecoverTabs (const QList<TabRecoverInfo>& infos) override;
+		bool HasSimilarTab (const QByteArray&, const QList<QByteArray>&) const override;
 	private:
 		bool IsRepr () const;
 		QModelIndex GetRelevantIndex () const;
@@ -156,28 +142,16 @@ namespace Aggregator
 		void on_ActionMarkChannelAsRead__triggered ();
 		void on_ActionMarkChannelAsUnread__triggered ();
 		void on_ActionChannelSettings__triggered ();
-
-		void handleFeedsContextMenuRequested (const QPoint&);
-
-		void on_MergeItems__toggled (bool);
-
-		void currentChannelChanged ();
-		void handleItemsMovedToChannel (QModelIndex);
-
-		void handleGroupChannels ();
 	signals:
-		void gotEntity (const LeechCraft::Entity&);
-		void addNewTab (const QString&, QWidget*);
-		void removeTab (QWidget*);
-		void changeTabName (QWidget*, const QString&);
-		void changeTabIcon (QWidget*, const QIcon&);
-		void changeTooltip (QWidget*, QWidget*);
-		void statusBarChanged (QWidget*, const QString&);
-		void raiseTab (QWidget*);
+		void gotEntity (const LeechCraft::Entity&) override;
+		void addNewTab (const QString&, QWidget*) override;
+		void removeTab (QWidget*) override;
+		void changeTabName (QWidget*, const QString&) override;
+		void changeTabIcon (QWidget*, const QIcon&) override;
+		void statusBarChanged (QWidget*, const QString&) override;
+		void raiseTab (QWidget*) override;
 
-		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
-
-		void tabRecoverDataChanged ();
+		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace) override;
 	};
 }
 }

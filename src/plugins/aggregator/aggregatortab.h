@@ -29,22 +29,68 @@
 
 #pragma once
 
-#include <xmlsettingsdialog/basesettingsmanager.h>
+#include <memory>
+#include <QWidget>
+#include <util/sll/util.h>
+#include <interfaces/ihavetabs.h>
+#include <interfaces/ihaverecoverabletabs.h>
+#include "ui_mainwidget.h"
+#include "actionsstructs.h"
 
 namespace LeechCraft
 {
-namespace DBusManager
+namespace Util
 {
-	class XmlSettingsManager : public LeechCraft::Util::BaseSettingsManager
+	class FlatToFoldersProxyModel;
+}
+
+namespace Aggregator
+{
+	class AggregatorTab : public QWidget
+						, public ITabWidget
+						, public IRecoverableTab
 	{
 		Q_OBJECT
+		Q_INTERFACES (ITabWidget IRecoverableTab)
 
-		XmlSettingsManager ();
+		const TabClassInfo TabClass_;
+		QObject * const ParentPlugin_;
+
+		const ChannelActions ChannelActions_;
+
+		const std::shared_ptr<Util::FlatToFoldersProxyModel> FlatToFolders_;
+
+		Ui::MainWidget Ui_;
+
+		Util::DefaultScopeGuard UiStateGuard_;
 	public:
-		static XmlSettingsManager* Instance ();
+		AggregatorTab (const AppWideActions&, const ChannelActions&, const TabClassInfo&, QObject*);
+
+		QToolBar* GetToolBar () const override;
+		TabClassInfo GetTabClassInfo () const override;
+		QObject* ParentMultiTabs () override;
+		void Remove () override;
+
+		QByteArray GetTabRecoverData () const override;
+		QIcon GetTabRecoverIcon () const override;
+		QString GetTabRecoverName () const override;
+
+		QModelIndex GetRelevantIndex () const;
+		QList<QModelIndex> GetRelevantIndexes () const;
 	protected:
-		virtual QSettings* BeginSettings () const;
-		virtual void EndSettings (QSettings*) const;
+		void keyPressEvent (QKeyEvent*) override;
+	private slots:
+		void handleItemsMovedToChannel (QModelIndex);
+		void handleFeedsContextMenuRequested (const QPoint&);
+
+		void currentChannelChanged ();
+		void handleGroupChannels ();
+
+		void on_MergeItems__toggled (bool);
+	signals:
+		void tabRecoverDataChanged () override;
+
+		void removeTabRequested ();
 	};
 }
 }

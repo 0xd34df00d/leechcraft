@@ -2001,18 +2001,12 @@ namespace BitTorrent
 
 					const auto& savePath = StatusKeeper_->GetStatus (handle,
 								libtorrent::torrent_handle::query_save_path).save_path;
-					settings.setValue ("SavePath",
-							QString::fromUtf8 (savePath.c_str ()));
-					settings.setValue ("Filename",
-							Handles_.at (i).TorrentFileName_);
-					settings.setValue ("Tags",
-							Handles_.at (i).Tags_);
-					settings.setValue ("ID",
-							Handles_.at (i).ID_);
-					settings.setValue ("Parameters",
-							static_cast<int> (Handles_.at (i).Parameters_));
-					settings.setValue ("AutoManaged",
-							Handles_.at (i).AutoManaged_);
+					settings.setValue ("SavePath", QString::fromUtf8 (savePath.c_str ()));
+					settings.setValue ("Filename", Handles_.at (i).TorrentFileName_);
+					settings.setValue ("Tags", Handles_.at (i).Tags_);
+					settings.setValue ("ID", Handles_.at (i).ID_);
+					settings.setValue ("Parameters", static_cast<int> (Handles_.at (i).Parameters_));
+					settings.setValue ("AutoManaged", Handles_.at (i).AutoManaged_);
 
 					QByteArray prioritiesLine;
 					std::copy (Handles_.at (i).FilePriorities_.begin (),
@@ -2080,26 +2074,26 @@ namespace BitTorrent
 
 			switch (state)
 			{
-				case libtorrent::torrent_status::queued_for_checking:
-				case libtorrent::torrent_status::checking_files:
-				case libtorrent::torrent_status::checking_resume_data:
-				case libtorrent::torrent_status::allocating:
-				case libtorrent::torrent_status::downloading_metadata:
-					Handles_ [i].State_ = TSPreparing;
-					break;
-				case libtorrent::torrent_status::downloading:
-					Handles_ [i].State_ = TSDownloading;
-					break;
-				case libtorrent::torrent_status::finished:
-				case libtorrent::torrent_status::seeding:
-					TorrentState oldState = Handles_ [i].State_;
-					Handles_ [i].State_ = TSSeeding;
-					if (oldState == TSDownloading)
-					{
-						HandleSingleFinished (i);
-						ScheduleSave ();
-					}
-					break;
+			case libtorrent::torrent_status::queued_for_checking:
+			case libtorrent::torrent_status::checking_files:
+			case libtorrent::torrent_status::checking_resume_data:
+			case libtorrent::torrent_status::allocating:
+			case libtorrent::torrent_status::downloading_metadata:
+				Handles_ [i].State_ = TSPreparing;
+				break;
+			case libtorrent::torrent_status::downloading:
+				Handles_ [i].State_ = TSDownloading;
+				break;
+			case libtorrent::torrent_status::finished:
+			case libtorrent::torrent_status::seeding:
+				TorrentState oldState = Handles_ [i].State_;
+				Handles_ [i].State_ = TSSeeding;
+				if (oldState == TSDownloading)
+				{
+					HandleSingleFinished (i);
+					ScheduleSave ();
+				}
+				break;
 			}
 		}
 	}
@@ -2108,24 +2102,24 @@ namespace BitTorrent
 	{
 		bool NeedToLog_ = true;
 
-		const ICoreProxy_ptr Proxy_;
 		IEntityManager * const IEM_;
+		Core& Core_;
 
-		SimpleDispatcher (const ICoreProxy_ptr& proxy)
-		: Proxy_ { proxy }
-		, IEM_ { Proxy_->GetEntityManager () }
+		SimpleDispatcher (Core& core, const ICoreProxy_ptr& proxy)
+		: IEM_ { proxy->GetEntityManager () }
+		, Core_ { core }
 		{
 		}
 
 		void operator() (const libtorrent::external_ip_alert& a) const
 		{
 			const auto& extAddrStr = QString::fromStdString (a.external_address.to_string ());
-			Core::Instance ()->SetExternalAddress (extAddrStr);
+			Core_.SetExternalAddress (extAddrStr);
 		}
 
 		void operator() (const libtorrent::save_resume_data_alert& a) const
 		{
-			Core::Instance ()->SaveResumeData (a);
+			Core_.SaveResumeData (a);
 		}
 
 		void operator() (const libtorrent::save_resume_data_failed_alert& a) const
@@ -2155,12 +2149,12 @@ namespace BitTorrent
 
 		void operator() (const libtorrent::metadata_received_alert& a) const
 		{
-			Core::Instance ()->HandleMetadata (a);
+			Core_.HandleMetadata (a);
 		}
 
 		void operator() (const libtorrent::file_renamed_alert& a) const
 		{
-			Core::Instance ()->HandleFileRenamed (a);
+			Core_.HandleFileRenamed (a);
 		}
 
 		void operator() (const libtorrent::file_rename_failed_alert& a) const
@@ -2183,29 +2177,29 @@ namespace BitTorrent
 
 		void operator() (const libtorrent::read_piece_alert& a) const
 		{
-			Core::Instance ()->PieceRead (a);
+			Core_.PieceRead (a);
 		}
 
 		void operator() (const libtorrent::state_update_alert& a)
 		{
-			Core::Instance ()->UpdateStatus (a.status);
+			Core_.UpdateStatus (a.status);
 			NeedToLog_ = false;
 		}
 
 		void operator() (const libtorrent::torrent_paused_alert& a) const
 		{
-			Core::Instance ()->UpdateStatus ({ a.handle.status () });
+			Core_.UpdateStatus ({ a.handle.status () });
 		}
 
 		void operator() (const libtorrent::torrent_resumed_alert& a) const
 		{
-			Core::Instance ()->UpdateStatus ({ a.handle.status () });
+			Core_.UpdateStatus ({ a.handle.status () });
 		}
 
 		void operator() (const libtorrent::torrent_checked_alert& a) const
 		{
-			Core::Instance ()->HandleTorrentChecked (a.handle);
-			Core::Instance ()->UpdateStatus ({ a.handle.status () });
+			Core_.HandleTorrentChecked (a.handle);
+			Core_.UpdateStatus ({ a.handle.status () });
 		}
 
 		void operator() (const libtorrent::dht_announce_alert& a)
@@ -2257,13 +2251,16 @@ namespace BitTorrent
 
 		void operator() (const libtorrent::torrent_error_alert& a) const
 		{
-			Core::Instance ()->UpdateStatus ({ a.handle.status () });
+			Core_.UpdateStatus ({ a.handle.status () });
+		}
+
+		void operator() (const libtorrent::piece_finished_alert&) const
+		{
 		}
 	private:
 		QString GetTorrentName (const libtorrent::torrent_handle& handle) const
 		{
-			const auto& status = Core::Instance ()->GetStatusKeeper ()->
-					GetStatus (handle, libtorrent::torrent_handle::query_name);
+			const auto& status = Core_.GetStatusKeeper ()->GetStatus (handle, libtorrent::torrent_handle::query_name);
 			return QString::fromStdString (status.name);
 		}
 	};
@@ -2279,8 +2276,13 @@ namespace BitTorrent
 			const int Info_;
 			Dispatcher& D_;
 
-			void operator() (libtorrent::alert*) const
+			void operator() (libtorrent::alert *alert) const
 			{
+				qDebug () << Q_FUNC_INFO
+						<< "unhandled alert type"
+						<< Info_
+						<< ":"
+						<< alert->message ().c_str ();
 			}
 		};
 
@@ -2314,7 +2316,7 @@ namespace BitTorrent
 		Session_->pop_alerts (&alerts);
 		for (const auto alert : alerts)
 		{
-			SimpleDispatcher sd { Proxy_ };
+			SimpleDispatcher sd { *this, Proxy_ };
 			try
 			{
 				HandleAlert<
@@ -2337,6 +2339,7 @@ namespace BitTorrent
 					, libtorrent::dht_bootstrap_alert
 					, libtorrent::dht_get_peers_alert
 					, libtorrent::torrent_error_alert
+					, libtorrent::piece_finished_alert
 					> (alert, sd);
 			}
 			catch (const libtorrent::libtorrent_exception&)
@@ -2363,9 +2366,8 @@ namespace BitTorrent
 
 	void Core::scrape ()
 	{
-		for (HandleDict_t::iterator i = Handles_.begin (),
-				end = Handles_.end (); i != end; ++i)
-			i->Handle_.scrape_tracker ();
+		for (const auto& item : Handles_)
+			item.Handle_.scrape_tracker ();
 	}
 
 	bool Core::CheckValidity (int pos) const

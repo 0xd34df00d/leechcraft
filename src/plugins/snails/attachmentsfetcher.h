@@ -34,6 +34,7 @@
 #include <util/sll/eitherfwd.h>
 #include "attdescr.h"
 #include "accountthreadfwd.h"
+#include "accountthreadworkerfwd.h"
 
 class QTemporaryDir;
 
@@ -63,7 +64,8 @@ namespace Snails
 			QStringList Paths_;
 		};
 
-		using Result_t = Util::Either<InvokeError_t<TemporaryDirError>, FetchResult>;
+		using Errors_t = AsInvokeError_t<AddErrors_t<FetchAttachmentResult_t::L_t, TemporaryDirError>>;
+		using Result_t = Util::Either<Errors_t, FetchResult>;
 	private:
 		QFutureInterface<Result_t> Promise_;
 	public:

@@ -27,33 +27,40 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "xmlsettingsmanager.h"
-#include <QCoreApplication>
+#pragma once
 
-namespace LeechCraft
+#include <QDBusMessage>
+#include <QDBusConnection>
+#include <util/sll/visitor.h>
+#include <util/sll/either.h>
+
+namespace LeechCraft::DBusManager
 {
-namespace DBusManager
-{
-	XmlSettingsManager::XmlSettingsManager ()
+	struct IdentifierNotFound
 	{
-		LeechCraft::Util::BaseSettingsManager::Init ();
+		QString Ident_;
+	};
+
+	struct SerializationError {};
+
+	template<typename... Errs>
+	QString GetErrorDescription (const boost::variant<Errs...>& errs)
+	{
+		return Util::Visit (errs,
+				[] (const IdentifierNotFound& id) { return QString { "Identifier not found: %1" }.arg (id.Ident_); },
+				[] (const SerializationError&) { return QString { "Unable to serialize data" }; });
 	}
 
-	XmlSettingsManager* XmlSettingsManager::Instance ()
+	template<typename L, typename R>
+	void HandleCall (Util::Either<L, R>&& result, const QDBusMessage& msg, R& output)
 	{
-		static XmlSettingsManager manager;
-		return &manager;
+		Util::Visit (result,
+				[&output] (const R& str) { output = str; },
+				[&msg] (auto errs)
+				{
+					const auto& descr = GetErrorDescription (errs);
+					QDBusConnection::sessionBus ().send (msg.createErrorReply ("Method call failure", descr));
+				});
 	}
 
-	QSettings* XmlSettingsManager::BeginSettings () const
-	{
-		QSettings *settings = new QSettings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_DBusManager");
-		return settings;
-	}
-
-	void XmlSettingsManager::EndSettings (QSettings*) const
-	{
-	}
-}
 }

@@ -54,6 +54,52 @@ namespace Snails
 	template<typename R, typename... Rest>
 	using EitherInvokeError_t = Util::Either<InvokeError_t<Rest...>, R>;
 
+	namespace detail
+	{
+		template<typename>
+		struct AsInvokeError;
+
+		template<typename... List>
+		struct AsInvokeError<boost::variant<List...>>
+		{
+			using Type = InvokeError_t<List...>;
+		};
+	}
+
+	template<typename Errs>
+	using AsInvokeError_t = typename detail::AsInvokeError<Errs>::Type;
+
+	namespace detail
+	{
+		template<typename, typename ErrList, typename... Errs>
+		struct AddErrors;
+
+		template<typename Res>
+		struct AddErrors<void, Res>
+		{
+			using Type = Res;
+		};
+
+		template<template<typename...> class ErrCont, typename... Existing, typename Head, typename... Rest>
+		struct AddErrors<
+				std::enable_if_t<(std::is_same_v<Head, Existing> || ...)>,
+				ErrCont<Existing...>,
+				Head,
+				Rest...
+			> : AddErrors<void, ErrCont<Existing...>, Rest...> {};
+
+		template<template<typename...> class ErrCont, typename... Existing, typename Head, typename... Rest>
+		struct AddErrors<
+				std::enable_if_t<!(std::is_same_v<Head, Existing> || ...)>,
+				ErrCont<Existing...>,
+				Head,
+				Rest...
+			> : AddErrors<void, ErrCont<Head, Existing...>, Rest...> {};
+	}
+
+	template<typename ErrList, typename... Errs>
+	using AddErrors_t = typename detail::AddErrors<void, ErrList, Errs...>::Type;
+
 	class AccountThread;
 }
 }

@@ -31,6 +31,8 @@
 #include <QBuffer>
 #include <QPixmap>
 #include <QIcon>
+#include <util/sll/prelude.h>
+#include <util/sll/either.h>
 #include <interfaces/iinfo.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
@@ -41,42 +43,27 @@ namespace LeechCraft
 {
 namespace DBusManager
 {
-	General::General (QObject *parent)
-	: QObject (parent)
-	{
-	}
-
 	QStringList General::GetLoadedPlugins ()
 	{
-		QObjectList plugins = Core::Instance ().GetProxy ()->
-			GetPluginsManager ()->GetAllPlugins ();
-		QStringList result;
-		Q_FOREACH (QObject *plugin, plugins)
-			result << qobject_cast<IInfo*> (plugin)->GetName ();
-
-		return result;
+		return Util::Map (Core::Instance ().GetProxy ()->GetPluginsManager ()->GetAllPlugins (),
+				[] (auto plugin) { return qobject_cast<IInfo*> (plugin)->GetName (); });
 	}
 
-	QString General::GetDescription (const QString& name)
+	General::Description_t General::GetDescription (const QString& name)
 	{
-		QObjectList plugins = Core::Instance ().GetProxy ()->
-			GetPluginsManager ()->GetAllPlugins ();
-		Q_FOREACH (QObject *plugin, plugins)
+		for (const auto plugin : Core::Instance ().GetProxy ()->GetPluginsManager ()->GetAllPlugins ())
 		{
 			IInfo *ii = qobject_cast<IInfo*> (plugin);
 			if (ii->GetName () == name)
-				return ii->GetInfo ();
+				return Description_t::Right (ii->GetInfo ());
 		}
 
-		throw tr ("Not found plugin %1.")
-			.arg (name);
+		return Description_t::Left (IdentifierNotFound { name });
 	}
 
-	QByteArray General::GetIcon (const QString& name, int dim)
+	General::Icon_t General::GetIcon (const QString& name, int dim)
 	{
-		QObjectList plugins = Core::Instance ().GetProxy ()->
-			GetPluginsManager ()->GetAllPlugins ();
-		Q_FOREACH (QObject *plugin, plugins)
+		for (const auto plugin : Core::Instance ().GetProxy ()->GetPluginsManager ()->GetAllPlugins ())
 		{
 			IInfo *ii = qobject_cast<IInfo*> (plugin);
 			if (ii->GetName () != name)
@@ -86,14 +73,11 @@ namespace DBusManager
 			QPixmap pixmap = icon.pixmap (dim, dim);
 			QBuffer buffer;
 			if (!pixmap.save (&buffer, "PNG", 100))
-				throw tr ("Could not save icon for plugin %1 to PNG %2x%2")
-					.arg (name)
-					.arg (dim);
-			return buffer.data ();
+				return Icon_t::Left (SerializationError {});
+			return Icon_t::Right (buffer.data ());
 		}
 
-		throw tr ("Not found plugin %1.")
-			.arg (name);
+		return Icon_t::Left (IdentifierNotFound { name });
 	}
 }
 }

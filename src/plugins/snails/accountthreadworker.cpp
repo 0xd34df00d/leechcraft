@@ -144,6 +144,16 @@ namespace Snails
 		return "message not found";
 	}
 
+	const char* FileOpenError::what () const
+	{
+		return "file open error";
+	}
+
+	const char* AttachmentNotFound::what () const
+	{
+		return "attachment not found";
+	}
+
 	AccountThreadWorker::AccountThreadWorker (bool isListening,
 			const QString& threadName, Account *parent, Storage *st)
 	: A_ (parent)
@@ -170,9 +180,8 @@ namespace Snails
 					});
 
 		connect (NoopTimer_,
-				SIGNAL (timeout ()),
-				this,
-				SLOT (sendNoop ()));
+				&QTimer::timeout,
+				[this] { SendNoop (); });
 		NoopTimer_->start (60 * 1000);
 	}
 
@@ -716,7 +725,17 @@ namespace Snails
 		return folders;
 	}
 
-	void AccountThreadWorker::sendNoop ()
+	void AccountThreadWorker::SetNoopTimeout (int timeout)
+	{
+		NoopTimer_->stop ();
+
+		if (timeout > NoopTimer_->interval ())
+			SendNoop ();
+
+		NoopTimer_->start (timeout);
+	}
+
+	void AccountThreadWorker::SendNoop ()
 	{
 		const auto at = static_cast<AccountThread*> (QThread::currentThread ());
 		at->Schedule (TaskPriority::Low,
@@ -725,16 +744,6 @@ namespace Snails
 					if (CachedStore_)
 						CachedStore_->noop ();
 				});
-	}
-
-	void AccountThreadWorker::SetNoopTimeout (int timeout)
-	{
-		NoopTimer_->stop ();
-
-		if (timeout > NoopTimer_->interval ())
-			sendNoop ();
-
-		NoopTimer_->start (timeout);
 	}
 
 	void AccountThreadWorker::SetNoopTimeoutChangeNotifier (const std::shared_ptr<AccountThreadNotifier<int>>& notifier)
@@ -764,7 +773,7 @@ namespace Snails
 		if (!CachedStore_)
 			MakeStore ();
 
-		sendNoop ();
+		SendNoop ();
 	}
 
 	auto AccountThreadWorker::Synchronize (const QList<QStringList>& foldersToFetch, const QByteArray& last) -> SyncResult
@@ -847,7 +856,7 @@ namespace Snails
 		return FetchWholeMessageResult_t::Right (origMsg);
 	}
 
-	void AccountThreadWorker::FetchAttachment (Message_ptr msg,
+	FetchAttachmentResult_t AccountThreadWorker::FetchAttachment (Message_ptr msg,
 			const QString& attName, const QString& path)
 	{
 		const auto& msgId = msg->GetFolderID ();
@@ -862,7 +871,7 @@ namespace Snails
 					<< msgId.toHex ()
 					<< "not found in"
 					<< messages.size ();
-			return;
+			return FetchAttachmentResult_t::Left (MessageNotFound {});
 		}
 
 		vmime::messageParser mp (messages.front ()->getParsedMessage ());
@@ -880,7 +889,7 @@ namespace Snails
 						<< "unable to open"
 						<< path
 						<< file.errorString ();
-				return;
+				return FetchAttachmentResult_t::Left (FileOpenError {});
 			}
 
 			OutputIODevAdapter adapter (&file);
@@ -888,8 +897,10 @@ namespace Snails
 						.arg (attName));
 			data->extract (adapter, pl.get ());
 
-			break;
+			return FetchAttachmentResult_t::Right ({});
 		}
+
+		return FetchAttachmentResult_t::Left (AttachmentNotFound {});
 	}
 
 	void AccountThreadWorker::CopyMessages (const QList<QByteArray>& ids,

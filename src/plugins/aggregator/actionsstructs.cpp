@@ -37,79 +37,64 @@ namespace Aggregator
 {
 	void AppWideActions::SetupActionsStruct (QWidget *parent)
 	{
-		ActionAddFeed_ = new QAction (tr ("Add feed..."),
-				parent);
+		ActionAddFeed_ = new QAction (tr ("Add feed..."), parent);
 		ActionAddFeed_->setObjectName ("ActionAddFeed_");
 		ActionAddFeed_->setProperty ("ActionIcon", "list-add");
 
-		ActionUpdateFeeds_ = new QAction (tr ("Update all feeds"),
-				parent);
+		ActionUpdateFeeds_ = new QAction (tr ("Update all feeds"), parent);
 		ActionUpdateFeeds_->setProperty ("ActionIcon", "mail-receive");
 
-		ActionImportOPML_ = new QAction (tr ("Import from OPML..."),
-				parent);
+		ActionImportOPML_ = new QAction (tr ("Import from OPML..."), parent);
 		ActionImportOPML_->setObjectName ("ActionImportOPML_");
 		ActionImportOPML_->setProperty ("ActionIcon", "document-import");
 
-		ActionExportOPML_ = new QAction (tr ("Export to OPML..."),
-				parent);
+		ActionExportOPML_ = new QAction (tr ("Export to OPML..."), parent);
 		ActionExportOPML_->setObjectName ("ActionExportOPML_");
 		ActionExportOPML_->setProperty ("ActionIcon", "document-export");
 
-		ActionImportBinary_ = new QAction (tr ("Import from binary..."),
-				parent);
+		ActionImportBinary_ = new QAction (tr ("Import from binary..."), parent);
 		ActionImportBinary_->setObjectName ("ActionImportBinary_");
 		ActionImportBinary_->setProperty ("ActionIcon", "svn-update");
 
-		ActionExportBinary_ = new QAction (tr ("Export to binary..."),
-				parent);
+		ActionExportBinary_ = new QAction (tr ("Export to binary..."), parent);
 		ActionExportBinary_->setObjectName ("ActionExportBinary_");
 		ActionExportBinary_->setProperty ("ActionIcon", "svn-commit");
 
-		ActionExportFB2_ = new QAction (tr ("Export to FB2..."),
-				parent);
+		ActionExportFB2_ = new QAction (tr ("Export to FB2..."), parent);
 		ActionExportFB2_->setObjectName ("ActionExportFB2_");
 		ActionExportFB2_->setProperty ("ActionIcon", "application-xml");
 
-		ActionMarkAllAsRead_ = new QAction (tr ("Mark all channels as read"),
-				parent);
+		ActionMarkAllAsRead_ = new QAction (tr ("Mark all channels as read"), parent);
 		ActionMarkAllAsRead_->setObjectName ("ActionMarkAllAsRead_");
 		ActionMarkAllAsRead_->setProperty ("ActionIcon", "mail-mark-read");
 	}
 
 	void ChannelActions::SetupActionsStruct (QWidget *parent)
 	{
-		ActionRemoveFeed_ = new QAction (tr ("Remove feed"),
-				parent);
+		ActionRemoveFeed_ = new QAction (tr ("Remove feed"), parent);
 		ActionRemoveFeed_->setObjectName ("ActionRemoveFeed_");
 		ActionRemoveFeed_->setProperty ("ActionIcon", "list-remove");
 
-		ActionUpdateSelectedFeed_ = new QAction (tr ("Update selected feed"),
-				parent);
+		ActionUpdateSelectedFeed_ = new QAction (tr ("Update selected feed"), parent);
 		ActionUpdateSelectedFeed_->setObjectName ("ActionUpdateSelectedFeed_");
 		ActionUpdateSelectedFeed_->setProperty ("ActionIcon", "view-refresh");
 
-		ActionRenameFeed_ = new QAction (tr ("Rename feed"),
-				parent);
+		ActionRenameFeed_ = new QAction (tr ("Rename feed"), parent);
 		ActionRenameFeed_->setObjectName ("ActionRenameFeed_");
 		ActionRenameFeed_->setProperty ("ActionIcon", "edit-rename");
 		
-		ActionMarkChannelAsRead_ = new QAction (tr ("Mark channel as read"),
-				parent);
+		ActionMarkChannelAsRead_ = new QAction (tr ("Mark channel as read"), parent);
 		ActionMarkChannelAsRead_->setObjectName ("ActionMarkChannelAsRead_");
 		ActionMarkChannelAsRead_->setProperty ("ActionIcon", "mail-mark-read");
 
-		ActionMarkChannelAsUnread_ = new QAction (tr ("Mark channel as unread"),
-				parent);
+		ActionMarkChannelAsUnread_ = new QAction (tr ("Mark channel as unread"), parent);
 		ActionMarkChannelAsUnread_->setObjectName ("ActionMarkChannelAsUnread_");
 		ActionMarkChannelAsUnread_->setProperty ("ActionIcon", "mail-mark-unread");
 
-		ActionRemoveChannel_ = new QAction (tr ("Remove channel"),
-				parent);
+		ActionRemoveChannel_ = new QAction (tr ("Remove channel"), parent);
 		ActionRemoveChannel_->setObjectName ("ActionRemoveChannel_");
 
-		ActionChannelSettings_ = new QAction (tr ("Settings..."),
-				parent);
+		ActionChannelSettings_ = new QAction (tr ("Settings..."), parent);
 		ActionChannelSettings_->setObjectName ("ActionChannelSettings_");
 		ActionChannelSettings_->setProperty ("ActionIcon", "configure");
 	}

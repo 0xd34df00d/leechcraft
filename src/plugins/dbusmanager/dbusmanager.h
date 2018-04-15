@@ -31,7 +31,6 @@
 
 #include <memory>
 #include <interfaces/iinfo.h>
-#include <interfaces/ihavesettings.h>
 
 namespace LeechCraft
 {
@@ -39,14 +38,11 @@ namespace DBusManager
 {
 	class DBusManager : public QObject
 						, public IInfo
-						, public IHaveSettings
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveSettings)
+		Q_INTERFACES (IInfo)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.DBusManager")
-
-		std::shared_ptr<Util::XmlSettingsDialog> SettingsDialog_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -56,8 +52,6 @@ namespace DBusManager
 		QString GetInfo () const;
 		QStringList Provides () const;
 		QIcon GetIcon () const;
-
-		std::shared_ptr<Util::XmlSettingsDialog> GetSettingsDialog () const;
 	};
 }
 }

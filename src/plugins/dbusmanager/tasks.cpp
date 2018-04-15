@@ -29,6 +29,7 @@
 
 #include "tasks.h"
 #include <QAbstractItemModel>
+#include <util/sll/prelude.h>
 #include <interfaces/ijobholder.h>
 #include <interfaces/iinfo.h>
 #include <interfaces/core/icoreproxy.h>
@@ -39,61 +40,41 @@ namespace LeechCraft
 {
 namespace DBusManager
 {
-	Tasks::Tasks (QObject *parent)
-	: QObject (parent)
-	{
-	}
-
 	QStringList Tasks::GetHolders () const
 	{
-		QObjectList plugins = Core::Instance ().GetProxy ()->
-			GetPluginsManager ()->GetAllCastableRoots<IJobHolder*> ();
-		QStringList result;
-		Q_FOREACH (QObject *plugin, plugins)
-			result << qobject_cast<IInfo*> (plugin)->GetName ();
-		return result;
+		return Util::Map (Core::Instance ().GetProxy ()->GetPluginsManager ()->GetAllCastableRoots<IJobHolder*> (),
+				[] (auto plugin) { return qobject_cast<IInfo*> (plugin)->GetName (); });
 	}
 
-	int Tasks::RowCount (const QString& name) const
+	Tasks::RowCountResult_t Tasks::RowCount (const QString& name) const
 	{
-		QObjectList plugins = Core::Instance ().GetProxy ()->
-			GetPluginsManager ()->GetAllCastableRoots<IJobHolder*> ();
-		Q_FOREACH (QObject *plugin, plugins)
+		for (auto plugin : Core::Instance ().GetProxy ()->GetPluginsManager ()->GetAllCastableRoots<IJobHolder*> ())
 		{
 			if (qobject_cast<IInfo*> (plugin)->GetName () != name)
 				continue;
 
-			QAbstractItemModel *model =
-				qobject_cast<IJobHolder*> (plugin)->GetRepresentation ();
-
-			return model->rowCount ();
+			return RowCountResult_t::Right (qobject_cast<IJobHolder*> (plugin)->GetRepresentation ()->rowCount ());
 		}
 
-		throw tr ("Not found job holder %1.")
-			.arg (name);
+		return RowCountResult_t::Left (IdentifierNotFound { name });
 	}
 
-	QVariantList Tasks::GetData (const QString& name, int r, int role) const
+	Tasks::GetDataResult_t Tasks::GetData (const QString& name, int r, int role) const
 	{
-		QObjectList plugins = Core::Instance ().GetProxy ()->
-			GetPluginsManager ()->GetAllCastableRoots<IJobHolder*> ();
-		Q_FOREACH (QObject *plugin, plugins)
+		for (auto plugin : Core::Instance ().GetProxy ()->GetPluginsManager ()->GetAllCastableRoots<IJobHolder*> ())
 		{
 			if (qobject_cast<IInfo*> (plugin)->GetName () != name)
 				continue;
 
-			QAbstractItemModel *model =
-				qobject_cast<IJobHolder*> (plugin)->GetRepresentation ();
+			const auto model = qobject_cast<IJobHolder*> (plugin)->GetRepresentation ();
 
 			QVariantList result;
-			for (int i = 0, size = model->columnCount ();
-					i < size; ++i)
+			for (int i = 0, size = model->columnCount (); i < size; ++i)
 				result << model->index (r, i).data (role);
-			return result;
+			return GetDataResult_t::Right (result);
 		}
 
-		throw tr ("Not found job holder %1.")
-			.arg (name);
+		return GetDataResult_t::Left (IdentifierNotFound { name });
 	}
 }
 }

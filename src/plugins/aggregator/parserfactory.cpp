@@ -35,10 +35,6 @@ namespace LeechCraft
 {
 namespace Aggregator
 {
-	ParserFactory::ParserFactory ()
-	{
-	}
-	
 	ParserFactory& ParserFactory::Instance ()
 	{
 		static ParserFactory inst;
@@ -52,14 +48,10 @@ namespace Aggregator
 	
 	Parser* ParserFactory::Return (const QDomDocument& doc) const
 	{
-		Parser *result = 0;
-		for (int i = 0; i < Parsers_.size (); ++i)
-			if (Parsers_.at (i)->CouldParse (doc))
-			{
-				result = Parsers_ [i];
-				break;
-			}
-		return result;
+		for (auto parser : Parsers_)
+			if (parser->CouldParse (doc))
+				return parser;
+		return nullptr;
 	}
 }
 }

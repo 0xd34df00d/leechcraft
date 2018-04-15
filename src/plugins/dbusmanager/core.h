@@ -59,9 +59,6 @@ namespace DBusManager
 		void Release ();
 		void SetProxy (ICoreProxy_ptr);
 		ICoreProxy_ptr GetProxy () const;
-		QString Greeter (const QString&);
-	private:
-		void DumpError ();
 	private slots:
 		void doDelayedInit ();
 	};

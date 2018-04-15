@@ -67,8 +67,6 @@ namespace Snails
 
 	class AccountThreadWorker : public QObject
 	{
-		Q_OBJECT
-
 		Account * const A_;
 		Storage * const Storage_;
 
@@ -120,6 +118,7 @@ namespace Snails
 		QList<Folder> SyncIMAPFolders (vmime::shared_ptr<vmime::net::store>);
 
 		void SetNoopTimeout (int);
+		void SendNoop ();
 	public:
 		void SetNoopTimeoutChangeNotifier (const std::shared_ptr<AccountThreadNotifier<int>>&);
 
@@ -143,7 +142,7 @@ namespace Snails
 
 		FetchWholeMessageResult_t FetchWholeMessage (Message_ptr);
 
-		void FetchAttachment (Message_ptr, const QString&, const QString&);
+		FetchAttachmentResult_t FetchAttachment (Message_ptr, const QString&, const QString&);
 
 		void CopyMessages (const QList<QByteArray>& ids, const QStringList& from, const QList<QStringList>& tos);
 
@@ -151,10 +150,6 @@ namespace Snails
 		DeleteResult_t DeleteMessages (const QList<QByteArray>& ids, const QStringList& folder);
 
 		void SendMessage (const Message_ptr&);
-	private slots:
-		void sendNoop ();
-	signals:
-		void error (const QString&);
 	};
 }
 }

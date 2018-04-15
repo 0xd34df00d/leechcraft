@@ -31,8 +31,6 @@
 #include <QIcon>
 #include <interfaces/entitytesthandleresult.h>
 #include <util/util.h>
-#include <xmlsettingsdialog/xmlsettingsdialog.h>
-#include "xmlsettingsmanager.h"
 #include "core.h"
 
 namespace LeechCraft
@@ -44,10 +42,6 @@ namespace DBusManager
 		Util::InstallTranslator ("dbusmanager");
 
 		Core::Instance ().SetProxy (proxy);
-
-		SettingsDialog_.reset (new Util::XmlSettingsDialog ());
-		SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
-				"dbusmanagersettings.xml");
 	}
 
 	void DBusManager::SecondInit ()
@@ -83,11 +77,6 @@ namespace DBusManager
 	{
 		static QIcon icon ("lcicons:/resources/images/dbusmanager.svg");
 		return icon;
-	}
-
-	std::shared_ptr<Util::XmlSettingsDialog> DBusManager::GetSettingsDialog () const
-	{
-		return SettingsDialog_;
 	}
 }
 }
