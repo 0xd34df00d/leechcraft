@@ -61,10 +61,6 @@ namespace Aggregator
 			<< tr ("Last build");
 	}
 
-	ChannelsModel::~ChannelsModel ()
-	{
-	}
-
 	void ChannelsModel::SetWidgets (QToolBar *bar, QWidget *tab)
 	{
 		Toolbar_ = bar;

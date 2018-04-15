@@ -57,7 +57,6 @@ namespace Aggregator
 			ColumnLastBuild
 		};
 		ChannelsModel (QObject *parent = 0);
-		virtual ~ChannelsModel ();
 
 		void SetWidgets (QToolBar*, QWidget*);
 
