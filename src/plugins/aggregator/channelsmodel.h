@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <QCoreApplication>
 #include <QAbstractItemModel>
 #include "channel.h"
 
