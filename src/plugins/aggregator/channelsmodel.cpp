@@ -54,9 +54,6 @@ namespace Aggregator
 {
 	ChannelsModel::ChannelsModel (QObject *parent)
 	: QAbstractItemModel (parent)
-	, Toolbar_ (0)
-	, TabWidget_ (0)
-	, Menu_ (0)
 	{
 		setObjectName ("Aggregator ChannelsModel");
 		Headers_ << tr ("Feed")

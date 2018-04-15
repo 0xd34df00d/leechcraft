@@ -46,9 +46,9 @@ namespace Aggregator
 		QStringList Headers_;
 		typedef QList<ChannelShort> Channels_t;
 		Channels_t Channels_;
-		QToolBar *Toolbar_;
-		QWidget *TabWidget_;
-		QMenu *Menu_;
+		QToolBar *Toolbar_ = nullptr;
+		QWidget *TabWidget_ = nullptr;
+		QMenu *Menu_ = nullptr;
 	public:
 		enum Columns
 		{
