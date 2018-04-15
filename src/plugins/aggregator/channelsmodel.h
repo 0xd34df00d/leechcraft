@@ -76,9 +76,6 @@ namespace Aggregator
 
 		void Clear ();
 
-		QModelIndex GetUnreadChannelIndex () const;
-		int GetUnreadChannelsNumber () const;
-
 		void SetMenu (QMenu*);
 	};
 }

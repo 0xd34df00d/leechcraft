@@ -210,8 +210,6 @@ namespace Aggregator
 		Feed::FeedSettings GetFeedSettings (const QModelIndex&) const;
 		void SetFeedSettings (const Feed::FeedSettings&);
 		void UpdateFeed (const QModelIndex&);
-		QModelIndex GetUnreadChannelIndex () const;
-		int GetUnreadChannelsNumber () const;
 		void AddFromOPML (const QString&,
 				const QString&,
 				const std::vector<bool>&);

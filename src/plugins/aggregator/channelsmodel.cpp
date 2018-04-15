@@ -255,23 +255,6 @@ namespace Aggregator
 		endResetModel ();
 	}
 
-	QModelIndex ChannelsModel::GetUnreadChannelIndex () const
-	{
-		for (int i = 0; i < Channels_.size (); ++i)
-			if (Channels_.at (i).Unread_)
-				return index (i, 0);
-		return QModelIndex ();
-	}
-
-	int ChannelsModel::GetUnreadChannelsNumber () const
-	{
-		int result = 0;
-		for (int i = 0; i < Channels_.size (); ++i)
-			if (Channels_.at (i).Unread_)
-				++result;
-		return result;
-	}
-
 	void ChannelsModel::SetMenu (QMenu *menu)
 	{
 		Menu_ = menu;

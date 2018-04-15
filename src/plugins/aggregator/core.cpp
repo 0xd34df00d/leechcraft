@@ -803,17 +803,6 @@ namespace Aggregator
 		UpdateFeed (channel.FeedID_);
 	}
 
-	QModelIndex Core::GetUnreadChannelIndex () const
-	{
-		return ChannelsFilterModel_->
-			mapFromSource (ChannelsModel_->GetUnreadChannelIndex ());
-	}
-
-	int Core::GetUnreadChannelsNumber () const
-	{
-		return ChannelsModel_->GetUnreadChannelsNumber ();
-	}
-
 	void Core::AddFromOPML (const QString& filename,
 			const QString& tags,
 			const std::vector<bool>& mask)
