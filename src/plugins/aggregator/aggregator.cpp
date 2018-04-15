@@ -307,7 +307,7 @@ namespace Aggregator
 
 	QList<QWizardPage*> Aggregator::GetWizardPages () const
 	{
-		return WizardGenerator ().GetPages ();
+		return CreateWizardPages ();
 	}
 
 	QList<QAction*> Aggregator::GetActions (ActionsEmbedPlace place) const

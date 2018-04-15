@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AGGREGATOR_WIZARDGENERATOR_H
-#define PLUGINS_AGGREGATOR_WIZARDGENERATOR_H
+#pragma once
+
 #include <QList>
 
 class QWizardPage;
@@ -37,12 +37,6 @@ namespace LeechCraft
 {
 namespace Aggregator
 {
-	class WizardGenerator
-	{
-	public:
-		QList<QWizardPage*> GetPages ();
-	};
+	QList<QWizardPage*> CreateWizardPages ();
 }
 }
-
-#endif
