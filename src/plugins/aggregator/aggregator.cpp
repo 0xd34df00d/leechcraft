@@ -351,8 +351,6 @@ namespace Aggregator
 	{
 		for (const auto& recInfo : infos)
 		{
-			qDebug () << Q_FUNC_INFO << recInfo.Data_;
-
 			if (recInfo.Data_ == "aggregatortab")
 			{
 				for (const auto& pair : recInfo.DynProperties_)
