@@ -41,18 +41,19 @@ namespace Aggregator
 
 	void StorageBackendManager::Register (const StorageBackend_ptr& backend)
 	{
-		connect (backend.get (),
-				SIGNAL (channelDataUpdated (Channel_ptr)),
+		auto backendPtr = backend.get ();
+		connect (backendPtr,
+				&StorageBackend::channelDataUpdated,
 				this,
-				SIGNAL (channelDataUpdated (Channel_ptr)));
-		connect (backend.get (),
-				SIGNAL (itemDataUpdated (Item_ptr, Channel_ptr)),
+				&StorageBackendManager::channelDataUpdated);
+		connect (backendPtr,
+				&StorageBackend::itemDataUpdated,
 				this,
-				SIGNAL (itemDataUpdated (Item_ptr, Channel_ptr)));
-		connect (backend.get (),
-				SIGNAL (itemsRemoved (QSet<IDType_t>)),
+				&StorageBackendManager::itemDataUpdated);
+		connect (backendPtr,
+				&StorageBackend::itemsRemoved,
 				this,
-				SIGNAL (itemsRemoved (QSet<IDType_t>)));
+				&StorageBackendManager::itemsRemoved);
 	}
 }
 }
