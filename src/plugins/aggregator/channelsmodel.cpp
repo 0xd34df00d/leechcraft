@@ -55,7 +55,6 @@ namespace Aggregator
 	ChannelsModel::ChannelsModel (QObject *parent)
 	: QAbstractItemModel (parent)
 	{
-		setObjectName ("Aggregator ChannelsModel");
 		Headers_ << tr ("Feed")
 			<< tr ("Unread items")
 			<< tr ("Last build");
