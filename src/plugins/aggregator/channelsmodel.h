@@ -41,7 +41,7 @@ namespace Aggregator
 {
 	class ChannelsModel : public QAbstractItemModel
 	{
-		Q_OBJECT
+		Q_DECLARE_TR_FUNCTIONS (ChannelsModel)
 
 		QStringList Headers_;
 		typedef QList<ChannelShort> Channels_t;
