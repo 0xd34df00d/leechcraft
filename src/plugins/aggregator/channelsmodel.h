@@ -69,7 +69,6 @@ namespace Aggregator
 		int rowCount (const QModelIndex& = QModelIndex ()) const override;
 
 		void AddChannel (const ChannelShort&);
-		void Update (const channels_container_t&);
 		void UpdateChannelData (const ChannelShort&);
 		ChannelShort& GetChannelForIndex (const QModelIndex&);
 		void RemoveChannel (const ChannelShort&);

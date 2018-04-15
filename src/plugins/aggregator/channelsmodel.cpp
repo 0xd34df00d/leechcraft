@@ -204,18 +204,6 @@ namespace Aggregator
 		endInsertRows ();
 	}
 
-	void ChannelsModel::Update (const channels_container_t& channels)
-	{
-		for (size_t i = 0; i < channels.size (); ++i)
-		{
-			Channels_t::const_iterator pos = std::find (Channels_.begin (), Channels_.end (), channels.at (i));
-			if (pos != Channels_.end ())
-				continue;
-
-			Channels_ << channels [i]->ToShort ();
-		}
-	}
-
 	void ChannelsModel::UpdateChannelData (const ChannelShort& cs)
 	{
 		auto idx = std::find (Channels_.begin (), Channels_.end (), cs);
