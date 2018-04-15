@@ -146,8 +146,7 @@ namespace Aggregator
 				result += tr ("<b>Tags</b>: %1").arg (hrTags.join ("; "));
 				result += "<br />";
 			}
-			QString elidedLink = QApplication::fontMetrics ()
-					.elidedText (cs.Link_, Qt::ElideMiddle, 400);
+			QString elidedLink = QApplication::fontMetrics ().elidedText (cs.Link_, Qt::ElideMiddle, 400);
 			result += QString ("<a href='%1'>%2</a>")
 					.arg (cs.Link_)
 					.arg (elidedLink);
@@ -239,8 +238,7 @@ namespace Aggregator
 
 	void ChannelsModel::RemoveChannel (const ChannelShort& channel)
 	{
-		const Channels_t::iterator idx =
-			std::find (Channels_.begin (), Channels_.end (), channel);
+		const Channels_t::iterator idx = std::find (Channels_.begin (), Channels_.end (), channel);
 		if (idx == Channels_.end ())
 			return;
 
