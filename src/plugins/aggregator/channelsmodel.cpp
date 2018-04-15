@@ -216,7 +216,7 @@ namespace Aggregator
 		emit dataChanged (index (pos, 0), index (pos, 2));
 	}
 
-	ChannelShort& ChannelsModel::GetChannelForIndex (const QModelIndex& index)
+	const ChannelShort& ChannelsModel::GetChannelForIndex (const QModelIndex& index) const
 	{
 		if (!index.isValid ())
 			throw std::runtime_error ("Invalid index");

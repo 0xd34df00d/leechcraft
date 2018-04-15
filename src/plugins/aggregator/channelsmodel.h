@@ -71,7 +71,7 @@ namespace Aggregator
 
 		void AddChannel (const ChannelShort&);
 		void UpdateChannelData (const ChannelShort&);
-		ChannelShort& GetChannelForIndex (const QModelIndex&);
+		const ChannelShort& GetChannelForIndex (const QModelIndex&) const;
 		void RemoveChannel (const ChannelShort&);
 
 		void Clear ();
