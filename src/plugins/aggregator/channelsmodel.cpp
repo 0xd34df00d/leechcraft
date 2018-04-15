@@ -73,11 +73,11 @@ namespace Aggregator
 
 	QVariant ChannelsModel::data (const QModelIndex& index, int role) const
 	{
-		if (role == LeechCraft::RoleControls)
+		if (role == RoleControls)
 			return QVariant::fromValue<QToolBar*> (Toolbar_);
-		if (role == LeechCraft::RoleAdditionalInfo)
+		if (role == RoleAdditionalInfo)
 			return QVariant::fromValue<QWidget*> (TabWidget_);
-		if (role == LeechCraft::RoleContextMenu)
+		if (role == RoleContextMenu)
 			return QVariant::fromValue<QMenu*> (Menu_);
 
 		if (!index.isValid ())
@@ -87,16 +87,16 @@ namespace Aggregator
 		if (role == Qt::DisplayRole)
 			switch (index.column ())
 			{
-				case ColumnTitle:
-					return Channels_.at (row).DisplayTitle_.isEmpty () ?
-							Channels_.at (row).Title_ :
-							Channels_.at (row).DisplayTitle_;
-				case ColumnUnread:
-					return Channels_.at (row).Unread_;
-				case ColumnLastBuild:
-					return Channels_.at (row).LastBuild_;
-				default:
-					return QVariant ();
+			case ColumnTitle:
+				return Channels_.at (row).DisplayTitle_.isEmpty () ?
+						Channels_.at (row).Title_ :
+						Channels_.at (row).DisplayTitle_;
+			case ColumnUnread:
+				return Channels_.at (row).Unread_;
+			case ColumnLastBuild:
+				return Channels_.at (row).LastBuild_;
+			default:
+				return QVariant ();
 			}
 		else if (role == Qt::DecorationRole &&
 				index.column () == 0)
@@ -109,14 +109,11 @@ namespace Aggregator
 		//Color mark a channels as read/unread
 		else if (role == Qt::ForegroundRole)
 		{
-			bool palette = XmlSettingsManager::Instance ()->
-					property ("UsePaletteColors").toBool ();
+			bool palette = XmlSettingsManager::Instance ()->property ("UsePaletteColors").toBool ();
 			if (Channels_.at (row).Unread_)
 			{
-				if (XmlSettingsManager::Instance ()->
-						property ("UnreadCustomColor").toBool ())
-					return XmlSettingsManager::Instance ()->
-							property ("UnreadItemsColor").value<QColor> ();
+				if (XmlSettingsManager::Instance ()->property ("UnreadCustomColor").toBool ())
+					return XmlSettingsManager::Instance ()->property ("UnreadItemsColor").value<QColor> ();
 				else
 					return palette ?
 						QApplication::palette ().link ().color () :
@@ -130,8 +127,7 @@ namespace Aggregator
 		else if (role == Qt::FontRole)
 		{
 			if (Channels_.at (row).Unread_)
-				return XmlSettingsManager::Instance ()->
-						property ("UnreadItemsFont");
+				return XmlSettingsManager::Instance ()->property ("UnreadItemsFont");
 			else
 				return QVariant ();
 		}
@@ -213,9 +209,7 @@ namespace Aggregator
 	{
 		for (size_t i = 0; i < channels.size (); ++i)
 		{
-			Channels_t::const_iterator pos =
-				std::find (Channels_.begin (), Channels_.end (),
-					channels.at (i));
+			Channels_t::const_iterator pos = std::find (Channels_.begin (), Channels_.end (), channels.at (i));
 			if (pos != Channels_.end ())
 				continue;
 
