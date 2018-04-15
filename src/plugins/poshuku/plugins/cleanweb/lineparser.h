@@ -42,8 +42,8 @@ namespace CleanWeb
 	class LineParser
 	{
 		Filter *Filter_;
-		int Total_;
-		int Success_;
+		int Total_ = 0;
+		int Success_ = 0;
 	public:
 		LineParser (Filter*);
 

@@ -40,14 +40,12 @@ namespace NetStoreManager
 {
 	class FilesTreeModel : public QStandardItemModel
 	{
-		Q_OBJECT
-
 	public:
-		FilesTreeModel (QObject *parent = 0);
+		using QStandardItemModel::QStandardItemModel;
 
-		Qt::DropActions supportedDropActions () const;
-		QStringList mimeTypes () const;
-		QMimeData* mimeData (const QModelIndexList& indexes) const;
+		Qt::DropActions supportedDropActions () const override;
+		QStringList mimeTypes () const override;
+		QMimeData* mimeData (const QModelIndexList& indexes) const override;
 	};
 }
 }

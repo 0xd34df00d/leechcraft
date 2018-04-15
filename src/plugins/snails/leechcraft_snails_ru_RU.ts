@@ -190,17 +190,17 @@
     <message>
         <location filename="accountslistwidget.ui" line="28"/>
         <source>Add...</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить...</translation>
     </message>
     <message>
         <location filename="accountslistwidget.ui" line="35"/>
         <source>Modify...</source>
-        <translation type="unfinished"></translation>
+        <translation>Изменить...</translation>
     </message>
     <message>
         <location filename="accountslistwidget.ui" line="42"/>
         <source>Remove</source>
-        <translation type="unfinished"></translation>
+        <translation>Удалить</translation>
     </message>
 </context>
 <context>
@@ -208,22 +208,22 @@
     <message>
         <location filename="composemessagetab.ui" line="28"/>
         <source>To:</source>
-        <translation type="unfinished"></translation>
+        <translation>Кому:</translation>
     </message>
     <message>
         <location filename="composemessagetab.ui" line="38"/>
         <source>CC:</source>
-        <translation type="unfinished"></translation>
+        <translation>Копия:</translation>
     </message>
     <message>
         <location filename="composemessagetab.ui" line="48"/>
         <source>BCC:</source>
-        <translation type="unfinished"></translation>
+        <translation>Скрытая:</translation>
     </message>
     <message>
         <location filename="composemessagetab.ui" line="58"/>
         <source>Subject:</source>
-        <translation type="unfinished"></translation>
+        <translation>Тема:</translation>
     </message>
 </context>
 <context>
@@ -231,27 +231,27 @@
     <message>
         <location filename="account.cpp" line="80"/>
         <source>Connection failed for account %1: certificate check failed. %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка соединения для учётной записи %1: сертификат не прошёл проверку. %2</translation>
     </message>
     <message>
         <location filename="account.cpp" line="91"/>
         <source>View certificate...</source>
-        <translation type="unfinished"></translation>
+        <translation>Посмотреть сертификат...</translation>
     </message>
     <message>
         <location filename="account.cpp" line="141"/>
         <source>Connection failed for account %1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка соединения для учётной записи %1: %2</translation>
     </message>
     <message>
         <location filename="account.cpp" line="150"/>
         <source>authentication failed: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>ошибка аутентификации: %1</translation>
     </message>
     <message>
         <location filename="account.cpp" line="725"/>
         <source>Enter password for account %1:</source>
-        <translation type="unfinished"></translation>
+        <translation>Введите пароль для учётной записи %1:</translation>
     </message>
 </context>
 <context>
@@ -259,7 +259,7 @@
     <message>
         <location filename="accountconfigdialog.cpp" line="42"/>
         <source>Folders to sync</source>
-        <translation type="unfinished"></translation>
+        <translation>Папки для синхронизации</translation>
     </message>
 </context>
 <context>
@@ -267,17 +267,17 @@
     <message>
         <location filename="accountthreadworker.cpp" line="549"/>
         <source>Synchronizing messages...</source>
-        <translation type="unfinished"></translation>
+        <translation>Синхронизация сообщений...</translation>
     </message>
     <message>
         <location filename="accountthreadworker.cpp" line="969"/>
         <source>Fetching attachment %1...</source>
-        <translation type="unfinished"></translation>
+        <translation>Получение вложения %1...</translation>
     </message>
     <message>
         <location filename="accountthreadworker.cpp" line="1115"/>
         <source>Sending message %1...</source>
-        <translation type="unfinished"></translation>
+        <translation>Отправка сообщения %1...</translation>
     </message>
 </context>
 <context>
@@ -285,12 +285,12 @@
     <message>
         <location filename="accountsmanager.cpp" line="48"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Имя</translation>
     </message>
     <message>
         <location filename="accountsmanager.cpp" line="48"/>
         <source>Server</source>
-        <translation type="unfinished"></translation>
+        <translation>Сервер</translation>
     </message>
 </context>
 <context>
@@ -397,7 +397,7 @@
     <message>
         <location filename="composemessagetabfactory.cpp" line="90"/>
         <source>Unable to fetch message: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Невозможно получить сообщение: %1.</translation>
     </message>
 </context>
 <context>
@@ -405,12 +405,12 @@
     <message>
         <location filename="foldersmodel.cpp" line="97"/>
         <source>Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Папка</translation>
     </message>
     <message>
         <location filename="foldersmodel.cpp" line="97"/>
         <source>Messages</source>
-        <translation type="unfinished"></translation>
+        <translation>Сообщения</translation>
     </message>
 </context>
 <context>
@@ -418,32 +418,32 @@
     <message>
         <location filename="mailmodel.cpp" line="80"/>
         <source>From</source>
-        <translation type="unfinished"></translation>
+        <translation>От</translation>
     </message>
     <message>
         <location filename="mailmodel.cpp" line="80"/>
         <source>Subject</source>
-        <translation type="unfinished"></translation>
+        <translation>Тема</translation>
     </message>
     <message>
         <location filename="mailmodel.cpp" line="80"/>
         <source>Date</source>
-        <translation type="unfinished"></translation>
+        <translation>Дата</translation>
     </message>
     <message>
         <location filename="mailmodel.cpp" line="80"/>
         <source>Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Размер</translation>
     </message>
     <message>
         <location filename="mailmodel.cpp" line="112"/>
         <source>yesterday, %1</source>
-        <translation type="unfinished"></translation>
+        <translation>вчера, %1</translation>
     </message>
     <message>
         <location filename="mailmodel.cpp" line="203"/>
         <source>No subject</source>
-        <translation type="unfinished"></translation>
+        <translation>Без темы</translation>
     </message>
 </context>
 <context>

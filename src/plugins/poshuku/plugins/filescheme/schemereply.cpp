@@ -173,11 +173,10 @@ namespace FileScheme
 
 		QFileIconProvider iconProvider;
 
-		QFileInfoList list =
-			dir.entryInfoList (QDir::AllEntries | QDir::Hidden,
+		const auto& list = dir.entryInfoList (QDir::AllEntries | QDir::Hidden,
 				QDir::Name | QDir::DirsFirst);
 
-		Q_FOREACH (QFileInfo entry, list)
+		for (const auto& entry : list)
 		{
 			if (entry.fileName () == "." ||
 					entry.fileName () == "..")

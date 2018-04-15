@@ -39,8 +39,6 @@ namespace CleanWeb
 {
 	LineParser::LineParser (Filter *f)
 	: Filter_ (f)
-	, Total_ (0)
-	, Success_ (0)
 	{
 	}
 

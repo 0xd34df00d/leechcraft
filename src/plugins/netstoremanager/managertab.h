@@ -87,7 +87,7 @@ namespace NetStoreManager
 		FilesProxyModel *ProxyModel_;
 		FilesTreeModel *TreeModel_;
 
-		QComboBox *AccountsBox_;
+		QComboBox *AccountsBox_ = nullptr;
 
 		QAction *Refresh_;
 		QAction *Upload_;

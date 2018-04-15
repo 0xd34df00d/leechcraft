@@ -38,11 +38,6 @@ namespace LeechCraft
 {
 namespace NetStoreManager
 {
-	FilesTreeModel::FilesTreeModel (QObject *parent)
-	: QStandardItemModel (parent)
-	{
-	}
-
 	Qt::DropActions FilesTreeModel::supportedDropActions () const
 	{
 		return Qt::MoveAction | Qt::CopyAction;
@@ -60,7 +55,7 @@ namespace NetStoreManager
 
 		QDataStream stream (&encodedData, QIODevice::WriteOnly);
 
-		Q_FOREACH (const QModelIndex& index, indexes)
+		for (const auto& index : indexes)
 			if (index.isValid () &&
 					index.column () == 0)
 				stream << data (index).toString ()

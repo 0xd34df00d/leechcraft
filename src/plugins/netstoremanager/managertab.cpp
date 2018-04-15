@@ -67,7 +67,6 @@ namespace NetStoreManager
 	, AM_ (am)
 	, ProxyModel_ (new FilesProxyModel (this))
 	, TreeModel_ (new FilesTreeModel (this))
-	, AccountsBox_ (0)
 	, DownManager_ (new DownManager (proxy, this))
 	{
 		Ui_.setupUi (this);
@@ -243,7 +242,7 @@ namespace NetStoreManager
 	{
 		AccountsBox_ = new QComboBox (this);
 		AccountsBox_->setSizeAdjustPolicy (QComboBox::AdjustToContents);
-		Q_FOREACH (auto acc, AM_->GetAccounts ())
+		for (auto acc : AM_->GetAccounts ())
 			AppendAccount (acc);
 
 		ToolBar_->addWidget (AccountsBox_);

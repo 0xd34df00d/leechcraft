@@ -49,7 +49,7 @@ namespace NetStoreManager
 	{
 		Plugins_ << plug;
 
-		Q_FOREACH (QObject *acc, plug->GetAccounts ())
+		for (const auto acc : plug->GetAccounts ())
 			handleAccountAdded (acc);
 
 		connect (plug->GetQObject (),
