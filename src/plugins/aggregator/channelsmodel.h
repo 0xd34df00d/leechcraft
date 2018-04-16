@@ -70,7 +70,6 @@ namespace Aggregator
 		int rowCount (const QModelIndex& = QModelIndex ()) const override;
 
 		void AddChannel (const ChannelShort&);
-		void UpdateChannelData (const ChannelShort&);
 		const ChannelShort& GetChannelForIndex (const QModelIndex&) const;
 
 		void Clear ();
@@ -79,6 +78,7 @@ namespace Aggregator
 	private:
 		void RemoveChannel (IDType_t);
 		void RemoveFeed (IDType_t);
+		void UpdateChannelData (const Channel_ptr&);
 	};
 }
 }

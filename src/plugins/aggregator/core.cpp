@@ -310,12 +310,6 @@ namespace Aggregator
 							SIGNAL (hookGotNewItems (LeechCraft::IHookProxy_ptr, QList<Item_cptr>)));
 				});
 
-		connect (&StorageBackendManager::Instance (),
-				SIGNAL (channelDataUpdated (Channel_ptr)),
-				this,
-				SLOT (handleChannelDataUpdated (Channel_ptr)),
-				Qt::QueuedConnection);
-
 		ParserFactory::Instance ().Register (&RSS20Parser::Instance ());
 		ParserFactory::Instance ().Register (&Atom10Parser::Instance ());
 		ParserFactory::Instance ().Register (&RSS091Parser::Instance ());
@@ -1227,14 +1221,6 @@ namespace Aggregator
 
 		HandleProvider (delegateResult.Handler_, delegateResult.ID_);
 		PendingJobs_ [delegateResult.ID_] = pj;
-	}
-
-	void Core::handleChannelDataUpdated (Channel_ptr channel)
-	{
-		ChannelShort cs = channel->ToShort ();
-
-		cs.Unread_ = StorageBackend_->GetUnreadItems (cs.ChannelID_);
-		ChannelsModel_->UpdateChannelData (cs);
 	}
 
 	void Core::updateIntervalChanged ()

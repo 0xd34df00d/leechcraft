@@ -68,6 +68,11 @@ namespace Aggregator
 				&StorageBackendManager::channelRemoved,
 				this,
 				&ChannelsModel::RemoveFeed);
+		connect (&StorageBackendManager::Instance (),
+				&StorageBackendManager::channelDataUpdated,
+				this,
+				&ChannelsModel::UpdateChannelData,
+				Qt::QueuedConnection);
 	}
 
 	void ChannelsModel::SetWidgets (QToolBar *bar, QWidget *tab)
@@ -214,18 +219,6 @@ namespace Aggregator
 		endInsertRows ();
 	}
 
-	void ChannelsModel::UpdateChannelData (const ChannelShort& cs)
-	{
-		auto idx = std::find (Channels_.begin (), Channels_.end (), cs);
-
-		if (idx == Channels_.end ())
-			return;
-
-		*idx = cs;
-		int pos = std::distance (Channels_.begin (), idx);
-		emit dataChanged (index (pos, 0), index (pos, 2));
-	}
-
 	const ChannelShort& ChannelsModel::GetChannelForIndex (const QModelIndex& index) const
 	{
 		if (!index.isValid ())
@@ -274,6 +267,22 @@ namespace Aggregator
 			it = Channels_.erase (it);
 			endRemoveRows ();
 		}
+	}
+
+	void ChannelsModel::UpdateChannelData (const Channel_ptr& channel)
+	{
+		const auto cid = channel->ChannelID_;
+
+		const auto pos = std::find_if (Channels_.begin (), Channels_.end (),
+				[cid] (const ChannelShort& cs) { return cs.ChannelID_ == cid; });
+		if (pos == Channels_.end ())
+			return;
+
+		*pos = channel->ToShort ();
+		pos->Unread_ = Core::Instance ().MakeStorageBackendForThread ()->GetUnreadItems (cid);
+
+		const auto idx = pos - Channels_.begin ();
+		emit dataChanged (index (idx, 0), index (idx, 2));
 	}
 }
 }

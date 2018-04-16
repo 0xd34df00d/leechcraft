@@ -240,7 +240,6 @@ namespace Aggregator
 		void handleJobFinished (int);
 		void handleJobRemoved (int);
 		void handleJobError (int, IDownload::Error);
-		void handleChannelDataUpdated (Channel_ptr);
 		void handleCustomUpdates ();
 		void rotateUpdatesQueue ();
 
