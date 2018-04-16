@@ -523,12 +523,9 @@ namespace Aggregator
 
 		channels_shorts_t shorts;
 		StorageBackend_->GetChannels (shorts, channel.FeedID_);
-
 		for (const auto& item : shorts)
-		{
 			ChannelsModel_->RemoveChannel (item);
-			emit channelRemoved (item.ChannelID_);
-		}
+
 		StorageBackend_->RemoveFeed (channel.FeedID_);
 	}
 
@@ -581,8 +578,6 @@ namespace Aggregator
 		}
 
 		ChannelsModel_->RemoveChannel (channel);
-		emit channelRemoved (channel.ChannelID_);
-
 		StorageBackend_->RemoveChannel (channel.ChannelID_);
 	}
 

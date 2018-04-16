@@ -258,8 +258,6 @@ namespace Aggregator
 		void HandleProvider (QObject*, int);
 		void ErrorNotification (const QString&, const QString&, bool = true) const;
 	signals:
-		void channelRemoved (IDType_t);
-
 		void storageChanged ();
 
 		// Plugin API
