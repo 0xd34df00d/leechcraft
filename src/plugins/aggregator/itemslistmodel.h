@@ -89,7 +89,6 @@ namespace Aggregator
 		void reset (IDType_t, IDType_t) override;
 		void selected (const QModelIndex&) override;
 	private slots:
-		void handleChannelRemoved (IDType_t);
 		void handleItemsRemoved (const QSet<IDType_t>&);
 
 		void handleItemDataUpdated (const Item_ptr&, const Channel_ptr&);

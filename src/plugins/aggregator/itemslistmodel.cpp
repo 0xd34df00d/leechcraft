@@ -50,10 +50,20 @@ namespace Aggregator
 	{
 		ItemHeaders_ << tr ("Name") << tr ("Date");
 
-		connect (&Core::Instance (),
-				SIGNAL (channelRemoved (IDType_t)),
-				this,
-				SLOT (handleChannelRemoved (IDType_t)));
+		connect (&StorageBackendManager::Instance (),
+				&StorageBackendManager::channelRemoved,
+				[this] (IDType_t id)
+				{
+					if (id == CurrentChannel_)
+						Reset (-1, -1);
+				});
+		connect (&StorageBackendManager::Instance (),
+				&StorageBackendManager::feedRemoved,
+				[this] (IDType_t id)
+				{
+					if (id == CurrentFeed_)
+						Reset (-1, -1);
+				});
 
 		connect (&StorageBackendManager::Instance (),
 				SIGNAL (itemsRemoved (QSet<IDType_t>)),
@@ -117,6 +127,7 @@ namespace Aggregator
 		CurrentFeed_ = feed;
 		CurrentRow_ = -1;
 		CurrentItems_.clear ();
+
 		if (channel != static_cast<IDType_t> (-1))
 			GetSB ()->GetItems (CurrentItems_, channel);
 
@@ -429,13 +440,6 @@ namespace Aggregator
 	void ItemsListModel::selected (const QModelIndex& index)
 	{
 		Selected (index);
-	}
-
-	void ItemsListModel::handleChannelRemoved (IDType_t id)
-	{
-		if (id != CurrentChannel_)
-			return;
-		Reset (-1);
 	}
 
 	void ItemsListModel::handleItemsRemoved (const QSet<IDType_t>& items)
