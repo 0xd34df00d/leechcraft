@@ -65,7 +65,6 @@ namespace Aggregator
 
 		int GetSelectedRow () const;
 		const IDType_t& GetCurrentChannel () const;
-		void SetCurrentChannel (const IDType_t&);
 		void Selected (const QModelIndex&);
 		const ItemShort& GetItem (const QModelIndex&) const;
 		const items_shorts_t& GetAllItems () const;

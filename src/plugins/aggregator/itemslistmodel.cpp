@@ -75,13 +75,6 @@ namespace Aggregator
 		return CurrentChannel_;
 	}
 
-	void ItemsListModel::SetCurrentChannel (const IDType_t& channel)
-	{
-		beginResetModel ();
-		CurrentChannel_ = channel;
-		endResetModel ();
-	}
-
 	void ItemsListModel::Selected (const QModelIndex& index)
 	{
 		CurrentRow_ = index.row ();
