@@ -72,11 +72,13 @@ namespace Aggregator
 		void AddChannel (const ChannelShort&);
 		void UpdateChannelData (const ChannelShort&);
 		const ChannelShort& GetChannelForIndex (const QModelIndex&) const;
-		void RemoveChannel (const ChannelShort&);
 
 		void Clear ();
 
 		void SetMenu (QMenu*);
+	private:
+		void RemoveChannel (IDType_t);
+		void RemoveFeed (IDType_t);
 	};
 }
 }

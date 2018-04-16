@@ -44,6 +44,7 @@
 #include "item.h"
 #include "xmlsettingsmanager.h"
 #include "core.h"
+#include "storagebackendmanager.h"
 
 Q_DECLARE_METATYPE (QToolBar*)
 Q_DECLARE_METATYPE (QMenu*)
@@ -58,6 +59,15 @@ namespace Aggregator
 		Headers_ << tr ("Feed")
 			<< tr ("Unread items")
 			<< tr ("Last build");
+
+		connect (&StorageBackendManager::Instance (),
+				&StorageBackendManager::channelRemoved,
+				this,
+				&ChannelsModel::RemoveChannel);
+		connect (&StorageBackendManager::Instance (),
+				&StorageBackendManager::channelRemoved,
+				this,
+				&ChannelsModel::RemoveFeed);
 	}
 
 	void ChannelsModel::SetWidgets (QToolBar *bar, QWidget *tab)
@@ -224,18 +234,6 @@ namespace Aggregator
 			return Channels_ [index.row ()];
 	}
 
-	void ChannelsModel::RemoveChannel (const ChannelShort& channel)
-	{
-		const Channels_t::iterator idx = std::find (Channels_.begin (), Channels_.end (), channel);
-		if (idx == Channels_.end ())
-			return;
-
-		const int pos = std::distance (Channels_.begin (), idx);
-		beginRemoveRows (QModelIndex (), pos, pos);
-		Channels_.erase (idx);
-		endRemoveRows ();
-	}
-
 	void ChannelsModel::Clear ()
 	{
 		beginResetModel ();
@@ -246,6 +244,36 @@ namespace Aggregator
 	void ChannelsModel::SetMenu (QMenu *menu)
 	{
 		Menu_ = menu;
+	}
+
+	void ChannelsModel::RemoveChannel (IDType_t id)
+	{
+		const auto pos = std::find_if (Channels_.begin (), Channels_.end (),
+				[id] (const ChannelShort& cs) { return cs.ChannelID_ == id; });
+		if (pos == Channels_.end ())
+			return;
+
+		const auto idx = pos - Channels_.begin ();
+		beginRemoveRows ({}, idx, idx);
+		Channels_.erase (pos);
+		endRemoveRows ();
+	}
+
+	void ChannelsModel::RemoveFeed (IDType_t id)
+	{
+		for (auto it = Channels_.begin (); it != Channels_.end ();)
+		{
+			if (it->FeedID_ != id)
+			{
+				++it;
+				continue;
+			}
+
+			const auto idx = it - Channels_.begin ();
+			beginRemoveRows ({}, idx, idx);
+			it = Channels_.erase (it);
+			endRemoveRows ();
+		}
 	}
 }
 }
