@@ -133,7 +133,6 @@ namespace Aggregator
 
 		if (!Core::Instance ().DoDelayedInit ())
 		{
-			setEnabled (false);
 			Impl_->AppWideActions_.ActionAddFeed_->setEnabled (false);
 			Impl_->AppWideActions_.ActionUpdateFeeds_->setEnabled (false);
 			Impl_->AppWideActions_.ActionImportOPML_->setEnabled (false);
@@ -417,7 +416,7 @@ namespace Aggregator
 					"LeechCraft",
 					tr ("Do you really want to mark all channels as read?"),
 					QMessageBox::Yes | QMessageBox::No,
-					this);
+					nullptr);
 			mbox.setDefaultButton (QMessageBox::No);
 
 			QPushButton always (tr ("Always"));
@@ -462,7 +461,7 @@ namespace Aggregator
 
 	void Aggregator::on_ActionAddFeed__triggered ()
 	{
-		AddFeed af (QString (), this);
+		AddFeed af (QString (), nullptr);
 		if (af.exec () == QDialog::Accepted)
 			Core::Instance ().AddFeed (af.GetURL (), af.GetTags ());
 	}
@@ -483,7 +482,7 @@ namespace Aggregator
 					"Are you really sure that you want to do it?",
 					"Feed removal confirmation").arg (name),
 				QMessageBox::Ok | QMessageBox::Cancel,
-				this);
+				nullptr);
 		mb.setWindowModality (Qt::WindowModal);
 		if (mb.exec () == QMessageBox::Ok)
 			Core::Instance ().RemoveFeed (ds);
@@ -498,7 +497,7 @@ namespace Aggregator
 
 		const auto& current = ds.sibling (ds.row (), ChannelsModel::ColumnTitle)
 				.data ().toString ();
-		const QString& newName = QInputDialog::getText (this,
+		const QString& newName = QInputDialog::getText (nullptr,
 				tr ("Rename feed"),
 				tr ("New feed name:"),
 				QLineEdit::Normal,
@@ -525,7 +524,7 @@ namespace Aggregator
 					"Are you really sure that you want to do it?",
 					"Channel removal confirmation").arg (name),
 				QMessageBox::Ok | QMessageBox::Cancel,
-				this);
+				nullptr);
 		mb.setWindowModality (Qt::WindowModal);
 		if (mb.exec () == QMessageBox::Ok)
 			Core::Instance ().RemoveChannel (ds);
@@ -585,7 +584,7 @@ namespace Aggregator
 		if (!index.isValid ())
 			return;
 
-		FeedSettings dia { index, this };
+		FeedSettings dia { index, nullptr };
 		dia.exec ();
 	}
 
@@ -605,7 +604,7 @@ namespace Aggregator
 				tr ("Select save file"),
 				tr ("OPML files (*.opml);;"
 					"XML files (*.xml);;"
-					"All files (*.*)"), this);
+					"All files (*.*)"), nullptr);
 		channels_shorts_t channels;
 		Core::Instance ().GetChannels (channels);
 		exportDialog.SetFeeds (channels);
@@ -621,7 +620,7 @@ namespace Aggregator
 
 	void Aggregator::on_ActionImportBinary__triggered ()
 	{
-		ImportBinary import (this);
+		ImportBinary import (nullptr);
 		if (import.exec () == QDialog::Rejected)
 			return;
 
@@ -634,7 +633,7 @@ namespace Aggregator
 		Export exportDialog (tr ("Export to binary file"),
 				tr ("Select save file"),
 				tr ("Aggregator exchange files (*.lcae);;"
-					"All files (*.*)"), this);
+					"All files (*.*)"), nullptr);
 		channels_shorts_t channels;
 		Core::Instance ().GetChannels (channels);
 		exportDialog.SetFeeds (channels);
@@ -650,7 +649,7 @@ namespace Aggregator
 
 	void Aggregator::on_ActionExportFB2__triggered ()
 	{
-		Export2FB2Dialog *dialog = new Export2FB2Dialog (this);
+		Export2FB2Dialog *dialog = new Export2FB2Dialog (nullptr);
 		connect (dialog,
 				SIGNAL (gotEntity (const LeechCraft::Entity&)),
 				this,

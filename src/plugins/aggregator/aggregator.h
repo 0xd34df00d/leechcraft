@@ -58,7 +58,7 @@ namespace Aggregator
 
 	struct Aggregator_Impl;
 
-	class Aggregator : public QWidget
+	class Aggregator : public QObject
 					 , public IInfo
 					 , public IHaveTabs
 					 , public IHaveSettings
