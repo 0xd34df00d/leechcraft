@@ -54,6 +54,14 @@ namespace Aggregator
 				&StorageBackend::itemsRemoved,
 				this,
 				&StorageBackendManager::itemsRemoved);
+		connect (backendPtr,
+				&StorageBackend::channelRemoved,
+				this,
+				&StorageBackendManager::channelRemoved);
+		connect (backendPtr,
+				&StorageBackend::feedRemoved,
+				this,
+				&StorageBackendManager::feedRemoved);
 	}
 }
 }

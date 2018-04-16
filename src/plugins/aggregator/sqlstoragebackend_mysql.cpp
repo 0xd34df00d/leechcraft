@@ -1138,6 +1138,8 @@ namespace Aggregator
 		RemoveChannel_.finish ();
 
 		lock.Good ();
+
+		emit channelRemoved (channelId);
 	}
 
 	void SQLStorageBackendMysql::RemoveFeed (const IDType_t& feedId)
@@ -1164,6 +1166,8 @@ namespace Aggregator
 		RemoveFeed_.finish ();
 
 		lock.Good ();
+
+		emit feedRemoved (feedId);
 	}
 
 	void SQLStorageBackendMysql::ToggleChannelUnread (const IDType_t& channelId,

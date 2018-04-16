@@ -1807,6 +1807,8 @@ namespace Aggregator
 		RemoveChannel_.finish ();
 
 		lock.Good ();
+
+		emit channelRemoved (channelId);
 	}
 
 	void SQLStorageBackend::RemoveFeed (const IDType_t& feedId)
@@ -1833,6 +1835,8 @@ namespace Aggregator
 		RemoveFeed_.finish ();
 
 		lock.Good ();
+
+		emit feedRemoved (feedId);
 	}
 
 	void SQLStorageBackend::ToggleChannelUnread (const IDType_t& channelId,

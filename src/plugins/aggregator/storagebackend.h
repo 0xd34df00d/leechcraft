@@ -499,6 +499,9 @@ namespace Aggregator
 		 * @param[out] item The pointer to the already loaded item.
 		 */
 		void hookItemLoad (LeechCraft::IHookProxy_ptr proxy, Item *item) const;
+
+		void channelRemoved (IDType_t channelId);
+		void feedRemoved (IDType_t feedId);
 	};
 }
 }

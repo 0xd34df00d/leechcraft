@@ -81,6 +81,9 @@ namespace Aggregator
 		 * removed.
 		 */
 		void itemsRemoved (const QSet<IDType_t>&) const;
+
+		void channelRemoved (IDType_t) const;
+		void feedRemoved (IDType_t) const;
 	};
 }
 }
