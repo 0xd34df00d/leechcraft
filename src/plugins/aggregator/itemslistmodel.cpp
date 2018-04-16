@@ -109,11 +109,12 @@ namespace Aggregator
 		return CurrentItems_ [item].Categories_;
 	}
 
-	void ItemsListModel::Reset (const IDType_t& channel)
+	void ItemsListModel::Reset (IDType_t channel, IDType_t feed)
 	{
 		beginResetModel ();
 
 		CurrentChannel_ = channel;
+		CurrentFeed_ = feed;
 		CurrentRow_ = -1;
 		CurrentItems_.clear ();
 		if (channel != static_cast<IDType_t> (-1))
@@ -127,6 +128,7 @@ namespace Aggregator
 		beginResetModel ();
 
 		CurrentChannel_ = -1;
+		CurrentFeed_ = -1;
 		CurrentRow_ = -1;
 		CurrentItems_.clear ();
 
@@ -419,9 +421,9 @@ namespace Aggregator
 		return SB_.localData ();
 	}
 
-	void ItemsListModel::reset (const IDType_t& type)
+	void ItemsListModel::reset (IDType_t channelId, IDType_t feedId)
 	{
-		Reset (type);
+		Reset (channelId, feedId);
 	}
 
 	void ItemsListModel::selected (const QModelIndex& index)

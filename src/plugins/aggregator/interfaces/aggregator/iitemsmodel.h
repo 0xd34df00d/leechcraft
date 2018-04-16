@@ -50,7 +50,7 @@ namespace Aggregator
 			ItemShortDescr
 		};
 
-		virtual void reset (const IDType_t&) = 0;
+		virtual void reset (IDType_t channelId, IDType_t feedId) = 0;
 		virtual void selected (const QModelIndex&) = 0;
 	};
 }

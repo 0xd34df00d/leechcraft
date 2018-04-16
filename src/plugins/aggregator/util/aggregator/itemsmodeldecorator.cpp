@@ -41,12 +41,13 @@ namespace Aggregator
 	{
 	}
 
-	void ItemsModelDecorator::Reset (const IDType_t id)
+	void ItemsModelDecorator::Reset (IDType_t channelId, IDType_t feedId)
 	{
 		QMetaObject::invokeMethod (Model_,
 				"reset",
 				Qt::QueuedConnection,
-				Q_ARG (IDType_t, id));
+				Q_ARG (IDType_t, channelId),
+				Q_ARG (IDType_t, feedId));
 	}
 
 	void ItemsModelDecorator::Selected (const QModelIndex& index)

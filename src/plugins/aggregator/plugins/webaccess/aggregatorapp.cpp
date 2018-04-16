@@ -154,9 +154,10 @@ namespace WebAccess
 		ItemView_->setText ({});
 
 		const auto cid = Wt::cpp17::any_cast<IDType_t> (idx.data (ChannelRole::CID));
+		const auto fid = Wt::cpp17::any_cast<IDType_t> (idx.data (ChannelRole::FID));
 
 		ItemsFilter_->ClearCurrentItem ();
-		ItemsModelDecorator { SourceItemModel_ }.Reset (cid);
+		ItemsModelDecorator { SourceItemModel_ }.Reset (cid, fid);
 	}
 
 	void AggregatorApp::HandleItemClicked (const Wt::WModelIndex& idx, const Wt::WMouseEvent& event)

@@ -422,7 +422,7 @@ namespace Aggregator
 			 */
 			if (!added)
 			{
-				Impl_->CurrentItemsModel_->Reset (cs.ChannelID_);
+				Impl_->CurrentItemsModel_->Reset (cs.ChannelID_, cs.FeedID_);
 				added = true;
 			}
 			else
@@ -534,12 +534,12 @@ namespace Aggregator
 		try
 		{
 			const auto& ch = Core::Instance ().GetRawChannelsModel ()->GetChannelForIndex (index);
-			Impl_->CurrentItemsModel_->Reset (ch.ChannelID_);
+			Impl_->CurrentItemsModel_->Reset (ch.ChannelID_, ch.FeedID_);
 		}
 		catch (const std::exception&)
 		{
 			Impl_->LastSelectedChannel_ = QModelIndex ();
-			Impl_->CurrentItemsModel_->Reset (-1);
+			Impl_->CurrentItemsModel_->Reset (-1, -1);
 		}
 
 		Impl_->Ui_.Items_->scrollToTop ();
@@ -597,7 +597,7 @@ namespace Aggregator
 			return;
 
 		std::shared_ptr<ItemsListModel> ilm (new ItemsListModel);
-		ilm->Reset (cs.ChannelID_);
+		ilm->Reset (cs.ChannelID_, cs.FeedID_);
 		Impl_->SupplementaryModels_ << ilm;
 		Impl_->ItemLists_->AddModel (ilm.get ());
 	}

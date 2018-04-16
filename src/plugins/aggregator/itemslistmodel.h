@@ -54,6 +54,7 @@ namespace Aggregator
 		items_shorts_t CurrentItems_;
 		int CurrentRow_ = -1;
 		IDType_t CurrentChannel_ = -1;
+		IDType_t CurrentFeed_ = -1;
 
 		const QIcon StarredIcon_;
 		const QIcon UnreadIcon_;
@@ -70,7 +71,7 @@ namespace Aggregator
 		const items_shorts_t& GetAllItems () const;
 		bool IsItemRead (int) const;
 		QStringList GetCategories (int) const;
-		void Reset (const IDType_t&);
+		void Reset (IDType_t, IDType_t);
 		void Reset (const QList<IDType_t>&);
 		void RemoveItems (const QSet<IDType_t>&);
 		void ItemDataUpdated (Item_ptr);
@@ -85,7 +86,7 @@ namespace Aggregator
 	private:
 		StorageBackend_ptr GetSB () const;
 	public slots:
-		void reset (const IDType_t&) override;
+		void reset (IDType_t, IDType_t) override;
 		void selected (const QModelIndex&) override;
 	private slots:
 		void handleChannelRemoved (IDType_t);
