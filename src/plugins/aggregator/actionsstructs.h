@@ -49,7 +49,7 @@ namespace Aggregator
 		QAction *ActionExportFB2_ = nullptr;
 		QAction *ActionMarkAllAsRead_ = nullptr;
 
-		void SetupActionsStruct (QWidget*);
+		void SetupActionsStruct (QObject*);
 
 		Q_DECLARE_TR_FUNCTIONS (AppWideActions)
 	};
@@ -64,7 +64,7 @@ namespace Aggregator
 		QAction *ActionRemoveChannel_ = nullptr;
 		QAction *ActionChannelSettings_ = nullptr;
 
-		void SetupActionsStruct (QWidget*);
+		void SetupActionsStruct (QObject*);
 
 		Q_DECLARE_TR_FUNCTIONS (ChannelActions)
 	};
