@@ -180,6 +180,8 @@ namespace Aggregator
 				SLOT (updateFeeds ()));
 
 		BuildID2ActionTupleMap ();
+
+		QMetaObject::connectSlotsByName (this);
 	}
 
 	void Aggregator::SecondInit ()
