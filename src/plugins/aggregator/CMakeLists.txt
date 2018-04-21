@@ -57,6 +57,7 @@ set (SRCS
 	dbupdatethreadworker.cpp
 	dumbstorage.cpp
 	storagebackendmanager.cpp
+	channelsmodelrepresentationproxy.cpp
 	)
 set (FORMS
 	mainwidget.ui
