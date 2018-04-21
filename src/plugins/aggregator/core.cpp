@@ -374,7 +374,7 @@ namespace Aggregator
 
 		StorageBackend_.reset (new DumbStorage);
 
-		const QString& strType = XmlSettingsManager::Instance ()->property ("StorageType").toString ();
+		const auto& strType = XmlSettingsManager::Instance ()->property ("StorageType").toByteArray ();
 		try
 		{
 			StorageBackend_ = StorageBackend::Create (strType);
@@ -391,28 +391,19 @@ namespace Aggregator
 		const int channelsTable = 2;
 		const int itemsTable = 6;
 
-		if (StorageBackend_->UpdateFeedsStorage (XmlSettingsManager::Instance ()->
-				Property (strType + "FeedsTableVersion", feedsTable).toInt (),
-				feedsTable))
-			XmlSettingsManager::Instance ()->setProperty (qPrintable (strType + "FeedsTableVersion"),
-					feedsTable);
-		else
-			return false;
+		auto runUpdate = [this, &strType] (auto updater, const char *suffix, int targetVersion)
+		{
+			const auto curVersion = XmlSettingsManager::Instance ()->Property (strType + suffix, targetVersion).toInt ();
+			if (!std::invoke (updater, StorageBackend_.get (), curVersion, targetVersion))
+				return false;
 
-		if (StorageBackend_->UpdateChannelsStorage (XmlSettingsManager::Instance ()->
-				Property (strType + "ChannelsTableVersion", channelsTable).toInt (),
-				channelsTable))
-			XmlSettingsManager::Instance ()->setProperty (qPrintable (strType + "ChannelsTableVersion"),
-					channelsTable);
-		else
-			return false;
+			XmlSettingsManager::Instance ()->setProperty (strType + suffix, targetVersion);
+			return true;
+		};
 
-		if (StorageBackend_->UpdateItemsStorage (XmlSettingsManager::Instance ()->
-				Property (strType + "ItemsTableVersion", itemsTable).toInt (),
-				itemsTable))
-			XmlSettingsManager::Instance ()->setProperty (qPrintable (strType + "ItemsTableVersion"),
-					itemsTable);
-		else
+		if (!runUpdate (&StorageBackend::UpdateFeedsStorage, "FeedsTableVersion", feedsTable) ||
+			!runUpdate (&StorageBackend::UpdateChannelsStorage, "ChannelsTableVersion", channelsTable) ||
+			!runUpdate (&StorageBackend::UpdateItemsStorage, "ItemsTableVersion", itemsTable))
 			return false;
 
 		StorageBackend_->Prepare ();
