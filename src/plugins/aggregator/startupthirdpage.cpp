@@ -60,11 +60,9 @@ namespace Aggregator
 			{ "ru", 1 }
 		};
 
-		QString language = Util::GetLanguage ();
-		Ui_.LocalizationBox_->setCurrentIndex (languages.contains (language) ?
-				languages [language] :
-				0);
-		handleCurrentIndexChanged (QString ("(") + language + ")");
+		const auto& language = Util::GetLanguage ();
+		Ui_.LocalizationBox_->setCurrentIndex (languages.value (language, 0));
+		handleCurrentIndexChanged ("(" + language + ")");
 
 		setTitle ("Aggregator");
 		setSubTitle (tr ("Select feeds"));
@@ -80,8 +78,7 @@ namespace Aggregator
 		wizard ()->setMinimumWidth (std::max (wizard ()->minimumWidth (), 800));
 		wizard ()->setMinimumHeight (std::max (wizard ()->minimumHeight (), 500));
 
-		XmlSettingsManager::Instance ()->
-				setProperty ("StartupVersion", 3);
+		XmlSettingsManager::Instance ()->setProperty ("StartupVersion", 3);
 	}
 
 	namespace
