@@ -1628,6 +1628,8 @@ namespace Aggregator
 
 		for (const auto& item : channel->Items_)
 			AddItem (item);
+
+		emit channelAdded (channel);
 	}
 
 	void SQLStorageBackend::AddItem (Item_ptr item)

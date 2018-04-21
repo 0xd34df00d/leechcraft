@@ -65,6 +65,8 @@ namespace Aggregator
 
 		void Register (const StorageBackend_ptr&);
 	signals:
+		void channelAdded (Channel_ptr channel) const;
+
 		/** @brief Notifies about updated channel information.
 		 *
 		 * This signal is emitted whenever a channel is updated by any of

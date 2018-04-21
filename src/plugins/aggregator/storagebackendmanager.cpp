@@ -107,6 +107,10 @@ namespace Aggregator
 	{
 		auto backendPtr = backend.get ();
 		connect (backendPtr,
+				&StorageBackend::channelAdded,
+				this,
+				&StorageBackendManager::channelAdded);
+		connect (backendPtr,
 				&StorageBackend::channelDataUpdated,
 				this,
 				&StorageBackendManager::channelDataUpdated);

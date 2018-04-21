@@ -450,6 +450,8 @@ namespace Aggregator
 		 */
 		virtual IDType_t GetHighestID (const PoolType& type) const = 0;
 	signals:
+		void channelAdded (Channel_ptr channel) const;
+
 		/** @brief Notifies about updated channel information.
 		 *
 		 * This signal is emitted when a channel is updated.

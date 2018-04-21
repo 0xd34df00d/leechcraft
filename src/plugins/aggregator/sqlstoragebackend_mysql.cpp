@@ -958,6 +958,8 @@ namespace Aggregator
 
 		std::for_each (channel->Items_.begin (), channel->Items_.end (),
 				[this] (Item_ptr item) { AddItem (item); });
+
+		emit channelAdded (channel);
 	}
 
 	void SQLStorageBackendMysql::AddItem (Item_ptr item)
