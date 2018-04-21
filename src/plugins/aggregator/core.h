@@ -240,8 +240,6 @@ namespace Aggregator
 		void handleJobError (int, IDownload::Error);
 		void handleCustomUpdates ();
 		void rotateUpdatesQueue ();
-
-		void handleDBUpGotNewChannel (const ChannelShort&);
 	private:
 		void FetchPixmap (const Channel_ptr&);
 		void FetchFavicon (const Channel_ptr&);

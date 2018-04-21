@@ -302,11 +302,6 @@ namespace Aggregator
 				[this] (DBUpdateThreadWorker *worker)
 				{
 					connect (worker,
-							SIGNAL (gotNewChannel (ChannelShort)),
-							this,
-							SLOT (handleDBUpGotNewChannel (ChannelShort)),
-							Qt::QueuedConnection);
-					connect (worker,
 							SIGNAL (hookGotNewItems (LeechCraft::IHookProxy_ptr, QList<Item_cptr>)),
 							this,
 							SIGNAL (hookGotNewItems (LeechCraft::IHookProxy_ptr, QList<Item_cptr>)));
@@ -916,8 +911,6 @@ namespace Aggregator
 			{
 				channel->Tags_ += tags;
 				channel->Tags_.removeDuplicates ();
-
-				ChannelsModel_->AddChannel (channel->ToShort ());
 			}
 
 			StorageBackend_->AddFeed (feed);
@@ -1276,11 +1269,6 @@ namespace Aggregator
 		Updates_ [id] = QDateTime::currentDateTime ();
 	}
 
-	void Core::handleDBUpGotNewChannel (const ChannelShort& chSh)
-	{
-		ChannelsModel_->AddChannel (chSh);
-	}
-
 	void Core::FetchPixmap (const Channel_ptr& channel)
 	{
 		if (QUrl (channel->PixmapURL_).isValid () &&
@@ -1367,12 +1355,10 @@ namespace Aggregator
 				item->FixDate ();
 
 			channel->Tags_ = pj.Tags_;
-			ChannelsModel_->AddChannel (channel->ToShort ());
 			StorageBackend_->AddChannel (channel);
 
 			emit hookGotNewItems (std::make_shared<Util::DefaultHookProxy> (),
-					Util::Map (channel->Items_,
-							[] (const Item_ptr& item) { return Item_cptr { item }; }));
+					Util::Map (channel->Items_, [] (const Item_ptr& item) { return Item_cptr { item }; }));
 
 			FetchPixmap (channel);
 			FetchFavicon (channel);

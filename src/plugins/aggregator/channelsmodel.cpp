@@ -69,6 +69,10 @@ namespace Aggregator
 				this,
 				&ChannelsModel::RemoveFeed);
 		connect (&StorageBackendManager::Instance (),
+				&StorageBackendManager::channelAdded,
+				this,
+				[this] (const Channel_ptr& channel) { AddChannel (channel->ToShort ()); });
+		connect (&StorageBackendManager::Instance (),
 				&StorageBackendManager::channelDataUpdated,
 				this,
 				&ChannelsModel::UpdateChannelData,
