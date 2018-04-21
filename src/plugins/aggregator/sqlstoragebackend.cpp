@@ -1382,8 +1382,8 @@ namespace Aggregator
 
 		try
 		{
-			std::for_each (feed->Channels_.begin (), feed->Channels_.end (),
-					[this] (Channel_ptr chan) { AddChannel (chan); });
+			for (const auto chan : feed->Channels_)
+				AddChannel (chan);
 		}
 		catch (const std::runtime_error& e)
 		{
@@ -1626,8 +1626,8 @@ namespace Aggregator
 
 		InsertChannel_.finish ();
 
-		std::for_each (channel->Items_.begin (), channel->Items_.end (),
-				[this] (Item_ptr item) { AddItem (item); });
+		for (const auto& item : channel->Items_)
+			AddItem (item);
 	}
 
 	void SQLStorageBackend::AddItem (Item_ptr item)
