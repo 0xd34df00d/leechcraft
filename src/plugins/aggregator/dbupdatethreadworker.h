@@ -66,8 +66,6 @@ namespace Aggregator
 		void toggleChannelUnread (IDType_t channel, bool state);
 		void updateFeed (channels_container_t channels, QString url);
 	signals:
-		void gotNewChannel (const ChannelShort&);
-
 		void hookGotNewItems (LeechCraft::IHookProxy_ptr proxy, const QList<Item_cptr>& items);
 	};
 }

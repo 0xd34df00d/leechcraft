@@ -122,7 +122,6 @@ namespace Aggregator
 		channel->Items_.resize (truncateAt);
 
 		SB_->AddChannel (channel);
-		emit gotNewChannel (channel->ToShort ());
 
 		QString str = tr ("Added channel \"%1\" (%n item(s))",
 				"", channel->Items_.size ())
