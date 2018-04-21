@@ -28,6 +28,9 @@
  **********************************************************************/
 
 #include "storagebackendmanager.h"
+#include <util/sll/either.h>
+#include "dumbstorage.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -37,6 +40,43 @@ namespace Aggregator
 	{
 		static StorageBackendManager sbm;
 		return sbm;
+	}
+
+	StorageBackendManager::StorageCreationResult_t StorageBackendManager::CreatePrimaryStorage ()
+	{
+		const auto& strType = XmlSettingsManager::Instance ()->property ("StorageType").toByteArray ();
+		try
+		{
+			PrimaryStorageBackend_ = StorageBackend::Create (strType);
+		}
+		catch (const std::runtime_error& s)
+		{
+			PrimaryStorageBackend_ = std::make_shared<DumbStorage> ();
+			return StorageCreationResult_t::Left ({ s.what () });
+		}
+
+		const int feedsTable = 1;
+		const int channelsTable = 2;
+		const int itemsTable = 6;
+
+		auto runUpdate = [this, &strType] (auto updater, const char *suffix, int targetVersion)
+		{
+			const auto curVersion = XmlSettingsManager::Instance ()->Property (strType + suffix, targetVersion).toInt ();
+			if (!std::invoke (updater, PrimaryStorageBackend_.get (), curVersion, targetVersion))
+				return false;
+
+			XmlSettingsManager::Instance ()->setProperty (strType + suffix, targetVersion);
+			return true;
+		};
+
+		if (!runUpdate (&StorageBackend::UpdateFeedsStorage, "FeedsTableVersion", feedsTable) ||
+			!runUpdate (&StorageBackend::UpdateChannelsStorage, "ChannelsTableVersion", channelsTable) ||
+			!runUpdate (&StorageBackend::UpdateItemsStorage, "ItemsTableVersion", itemsTable))
+			return StorageCreationResult_t::Left ({ "Unable to update tables" });
+
+		PrimaryStorageBackend_->Prepare ();
+
+		return StorageCreationResult_t::Right (PrimaryStorageBackend_);
 	}
 
 	void StorageBackendManager::Register (const StorageBackend_ptr& backend)

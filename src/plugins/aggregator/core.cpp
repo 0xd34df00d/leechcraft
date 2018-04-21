@@ -52,6 +52,8 @@
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/sll/prelude.h>
 #include <util/sll/qtutil.h>
+#include <util/sll/visitor.h>
+#include <util/sll/either.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "parserfactory.h"
@@ -372,40 +374,20 @@ namespace Aggregator
 		Pools_.clear ();
 		ChannelsModel_->Clear ();
 
-		const auto& strType = XmlSettingsManager::Instance ()->property ("StorageType").toByteArray ();
-		try
-		{
-			StorageBackend_ = StorageBackend::Create (strType);
-		}
-		catch (const std::runtime_error& s)
-		{
-			StorageBackend_ = std::make_shared<DumbStorage> ();
-			ErrorNotification (tr ("Storage error"), s.what ());
+		const auto result = Util::Visit (StorageBackendManager::Instance ().CreatePrimaryStorage (),
+				[this] (const StorageBackend_ptr& backend)
+				{
+					StorageBackend_ = backend;
+					return true;
+				},
+				[this] (const auto& error)
+				{
+					ErrorNotification (tr ("Storage error"), error.Message_);
+					return false;
+				});
+
+		if (!result)
 			return false;
-		}
-
-		emit storageChanged ();
-
-		const int feedsTable = 1;
-		const int channelsTable = 2;
-		const int itemsTable = 6;
-
-		auto runUpdate = [this, &strType] (auto updater, const char *suffix, int targetVersion)
-		{
-			const auto curVersion = XmlSettingsManager::Instance ()->Property (strType + suffix, targetVersion).toInt ();
-			if (!std::invoke (updater, StorageBackend_.get (), curVersion, targetVersion))
-				return false;
-
-			XmlSettingsManager::Instance ()->setProperty (strType + suffix, targetVersion);
-			return true;
-		};
-
-		if (!runUpdate (&StorageBackend::UpdateFeedsStorage, "FeedsTableVersion", feedsTable) ||
-			!runUpdate (&StorageBackend::UpdateChannelsStorage, "ChannelsTableVersion", channelsTable) ||
-			!runUpdate (&StorageBackend::UpdateItemsStorage, "ItemsTableVersion", itemsTable))
-			return false;
-
-		StorageBackend_->Prepare ();
 
 		ids_t feeds;
 		StorageBackend_->GetFeedsIDs (feeds);

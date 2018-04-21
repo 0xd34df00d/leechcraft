@@ -31,6 +31,7 @@
 
 #include <memory>
 #include <QObject>
+#include <util/sll/eitherfwd.h>
 #include "storagebackend.h"
 
 namespace LeechCraft
@@ -43,12 +44,22 @@ namespace Aggregator
 	{
 		Q_OBJECT
 
+		StorageBackend_ptr PrimaryStorageBackend_;
+
 		StorageBackendManager () = default;
 	public:
 		StorageBackendManager (const StorageBackendManager&) = delete;
 		StorageBackendManager& operator= (const StorageBackendManager&) = delete;
 
 		static StorageBackendManager& Instance ();
+
+		struct StorageCreationError
+		{
+			QString Message_;
+		};
+
+		using StorageCreationResult_t = Util::Either<StorageCreationError, StorageBackend_ptr>;
+		StorageCreationResult_t CreatePrimaryStorage ();
 
 		void Register (const StorageBackend_ptr&);
 	signals:
