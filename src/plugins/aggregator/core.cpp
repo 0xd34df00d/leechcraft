@@ -372,8 +372,6 @@ namespace Aggregator
 		Pools_.clear ();
 		ChannelsModel_->Clear ();
 
-		StorageBackend_.reset (new DumbStorage);
-
 		const auto& strType = XmlSettingsManager::Instance ()->property ("StorageType").toByteArray ();
 		try
 		{
@@ -381,6 +379,7 @@ namespace Aggregator
 		}
 		catch (const std::runtime_error& s)
 		{
+			StorageBackend_ = std::make_shared<DumbStorage> ();
 			ErrorNotification (tr ("Storage error"), s.what ());
 			return false;
 		}
