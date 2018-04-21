@@ -382,15 +382,12 @@ namespace Aggregator
 		}
 		catch (const std::runtime_error& s)
 		{
-			ErrorNotification (tr ("Storage error"),
-					QTextCodec::codecForName ("UTF-8")->
-					toUnicode (s.what ()));
+			ErrorNotification (tr ("Storage error"), s.what ());
 			return false;
 		}
 		catch (...)
 		{
-			ErrorNotification (tr ("Storage error"),
-					tr ("Aggregator: general storage initialization error."));
+			ErrorNotification (tr ("Storage error"), tr ("Aggregator: general storage initialization error."));
 			return false;
 		}
 
