@@ -46,7 +46,6 @@ namespace Aggregator
 		QString Choices_;
 	public:
 		Export (const QString&, const QString&, const QString&, QWidget* = 0);
-		virtual ~Export ();
 
 		QString GetDestination () const;
 		QString GetTitle () const;

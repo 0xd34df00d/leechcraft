@@ -44,9 +44,6 @@ namespace Aggregator
 	class OPMLWriter
 	{
 	public:
-		OPMLWriter ();
-		~OPMLWriter ();
-
 		QString Write (const channels_shorts_t&,
 				const QString&,
 				const QString&,

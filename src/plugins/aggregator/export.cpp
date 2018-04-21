@@ -53,10 +53,6 @@ namespace Aggregator
 		on_Browse__released ();
 	}
 	
-	Export::~Export ()
-	{
-	}
-	
 	QString Export::GetDestination () const
 	{
 		return Ui_.File_->text ();

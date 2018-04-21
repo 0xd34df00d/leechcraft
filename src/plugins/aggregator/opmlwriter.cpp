@@ -42,14 +42,6 @@ namespace LeechCraft
 {
 namespace Aggregator
 {
-	OPMLWriter::OPMLWriter ()
-	{
-	}
-
-	OPMLWriter::~OPMLWriter ()
-	{
-	}
-
 	QString OPMLWriter::Write (const channels_shorts_t& channels,
 			const QString& title,
 			const QString& owner,
