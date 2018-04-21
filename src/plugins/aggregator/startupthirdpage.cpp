@@ -32,6 +32,8 @@
 #include <QTextCodec>
 #include <QDomDocument>
 #include <util/util.h>
+#include <util/sll/domchildrenrange.h>
+#include <util/sll/prelude.h>
 #include "xmlsettingsmanager.h"
 #include "core.h"
 
@@ -81,23 +83,6 @@ namespace Aggregator
 		XmlSettingsManager::Instance ()->setProperty ("StartupVersion", 3);
 	}
 
-	namespace
-	{
-		QStringList ParseTags (const QDomElement& feedElem)
-		{
-			QStringList result;
-
-			auto tagElem = feedElem.firstChildElement ("tags").firstChildElement ("tag");
-			while (!tagElem.isNull ())
-			{
-				result << tagElem.text ();
-				tagElem = tagElem.nextSiblingElement ("tag");
-			}
-
-			return result;
-		}
-	}
-
 	void StartupThirdPage::ParseFeedsSets ()
 	{
 		QFile file (":/resources/data/default_feeds.xml");
@@ -124,26 +109,17 @@ namespace Aggregator
 			return;
 		}
 
-		auto setElem = doc.documentElement ().firstChildElement ("set");
-		while (!setElem.isNull ())
+		for (const auto& setElem : Util::DomChildren (doc.documentElement (), "set"))
 		{
 			auto& set = Sets_ [setElem.attribute ("lang", "general")];
 
-			auto feedElem = setElem.firstChildElement ("feed");
-			while (!feedElem.isNull ())
-			{
-				FeedInfo info
+			for (const auto& feedElem : Util::DomChildren (setElem, "feed"))
+				set << FeedInfo
 				{
 					feedElem.firstChildElement ("name").text (),
-					ParseTags (feedElem),
+					Util::Map (Util::DomChildren (feedElem.firstChildElement ("tags"), "tag"), &QDomElement::text),
 					feedElem.firstChildElement ("url").text ()
 				};
-				set << info;
-
-				feedElem = feedElem.nextSiblingElement ("feed");
-			}
-
-			setElem = setElem.nextSiblingElement ();
 		}
 	}
 
