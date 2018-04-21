@@ -106,6 +106,34 @@
     </message>
 </context>
 <context>
+    <name>ChannelsModel</name>
+    <message>
+        <location filename="channelsmodel.cpp" line="59"/>
+        <source>Feed</source>
+        <translation>Feed</translation>
+    </message>
+    <message>
+        <location filename="channelsmodel.cpp" line="60"/>
+        <source>Unread items</source>
+        <translation>Unread items</translation>
+    </message>
+    <message>
+        <location filename="channelsmodel.cpp" line="61"/>
+        <source>Last build</source>
+        <translation>Last build</translation>
+    </message>
+    <message>
+        <location filename="channelsmodel.cpp" line="163"/>
+        <source>&lt;strong&gt;Author&lt;/strong&gt;: %1</source>
+        <translation>&lt;strong&gt;Author&lt;/strong&gt;: %1</translation>
+    </message>
+    <message>
+        <location filename="channelsmodel.cpp" line="169"/>
+        <source>&lt;b&gt;Tags&lt;/b&gt;: %1</source>
+        <translation>&lt;b&gt;Tags&lt;/b&gt;: %1</translation>
+    </message>
+</context>
+<context>
     <name>Export</name>
     <message>
         <location filename="export.ui" line="14"/>
@@ -1031,331 +1059,297 @@
         <translation>Aggregator</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="153"/>
+        <location filename="aggregator.cpp" line="152"/>
         <source>Aggregator failed to initialize properly. Check logs and talk with the developers. Or, at least, check the storage backend settings and restart LeechCraft.&lt;br /&gt;&lt;br /&gt;If you are using SQLite backend (the default), make sure you have the corresponding Qt driver installed.</source>
         <translation>Aggregator failed to initialize properly. Check logs and talk with the developers. Or, at least, check the storage backend settings and restart LeechCraft.&lt;br /&gt;&lt;br /&gt;If you are using SQLite backend (the default), make sure you have the corresponding Qt driver installed.</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="165"/>
+        <location filename="aggregator.cpp" line="164"/>
         <source>Feeds actions</source>
         <translation>Feeds actions</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="215"/>
+        <location filename="aggregator.cpp" line="216"/>
         <source>RSS/Atom feed reader.</source>
         <translation>RSS/Atom feed reader.</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="420"/>
+        <location filename="aggregator.cpp" line="419"/>
         <source>Do you really want to mark all channels as read?</source>
         <translation>Do you really want to mark all channels as read?</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="425"/>
-        <location filename="aggregator.cpp" line="557"/>
+        <location filename="aggregator.cpp" line="424"/>
+        <location filename="aggregator.cpp" line="556"/>
         <source>Always</source>
         <translation>Always</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="483"/>
+        <location filename="aggregator.cpp" line="482"/>
         <source>You are going to permanently remove the feed:&lt;br /&gt;%1&lt;br /&gt;&lt;br /&gt;Are you really sure that you want to do it?</source>
         <comment>Feed removal confirmation</comment>
         <translation>You are going to permanently remove the feed:&lt;br /&gt;%1&lt;br /&gt;&lt;br /&gt;Are you really sure that you want to do it?</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="504"/>
+        <location filename="aggregator.cpp" line="503"/>
         <source>Rename feed</source>
         <translation>Rename feed</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="505"/>
+        <location filename="aggregator.cpp" line="504"/>
         <source>New feed name:</source>
         <oldsource>New feed name</oldsource>
         <translation>New feed name:</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="525"/>
+        <location filename="aggregator.cpp" line="524"/>
         <source>You are going to remove the channel:&lt;br /&gt;%1&lt;br /&gt;&lt;br /&gt;Are you really sure that you want to do it?</source>
         <comment>Channel removal confirmation</comment>
         <translation>You are going to remove the channel:&lt;br /&gt;%1&lt;br /&gt;&lt;br /&gt;Are you really sure that you want to do it?</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="551"/>
+        <location filename="aggregator.cpp" line="550"/>
         <source>Are you sure you want to mark all items in %1 as read?</source>
         <oldsource>Are you sure you want to mark all items in %n channel(s) %1 as read?</oldsource>
         <translation>Are you sure you want to mark all items in %1 as read?</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="576"/>
+        <location filename="aggregator.cpp" line="575"/>
         <source>Are you sure you want to mark all items in %1 as unread?</source>
         <oldsource>Are you sure you want to mark all items in %n channel(s) %1 as unread?</oldsource>
         <translation>Are you sure you want to mark all items in %1 as unread?</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="606"/>
+        <location filename="aggregator.cpp" line="605"/>
         <source>Export to OPML</source>
         <translation>Export to OPML</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="607"/>
-        <location filename="aggregator.cpp" line="637"/>
+        <location filename="aggregator.cpp" line="606"/>
+        <location filename="aggregator.cpp" line="636"/>
         <source>Select save file</source>
         <translation>Select save file</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="608"/>
+        <location filename="aggregator.cpp" line="607"/>
         <source>OPML files (*.opml);;XML files (*.xml);;All files (*.*)</source>
         <translation>OPML files (*.opml);;XML files (*.xml);;All files (*.*)</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="636"/>
+        <location filename="aggregator.cpp" line="635"/>
         <source>Export to binary file</source>
         <translation>Export to binary file</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="638"/>
+        <location filename="aggregator.cpp" line="637"/>
         <source>Aggregator exchange files (*.lcae);;All files (*.*)</source>
         <translation>Aggregator exchange files (*.lcae);;All files (*.*)</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Aggregator::ChannelsModel</name>
-    <message>
-        <location filename="channelsmodel.cpp" line="62"/>
-        <source>Feed</source>
-        <translation>Feed</translation>
-    </message>
-    <message>
-        <location filename="channelsmodel.cpp" line="63"/>
-        <source>Unread items</source>
-        <translation>Unread items</translation>
-    </message>
-    <message>
-        <location filename="channelsmodel.cpp" line="64"/>
-        <source>Last build</source>
-        <translation>Last build</translation>
-    </message>
-    <message>
-        <location filename="channelsmodel.cpp" line="152"/>
-        <source>&lt;strong&gt;Author&lt;/strong&gt;: %1</source>
-        <translation>&lt;strong&gt;Author&lt;/strong&gt;: %1</translation>
-    </message>
-    <message>
-        <location filename="channelsmodel.cpp" line="158"/>
-        <source>&lt;b&gt;Tags&lt;/b&gt;: %1</source>
-        <translation>&lt;b&gt;Tags&lt;/b&gt;: %1</translation>
-    </message>
-</context>
-<context>
     <name>LeechCraft::Aggregator::Core</name>
     <message>
-        <location filename="core.cpp" line="209"/>
+        <location filename="core.cpp" line="211"/>
         <source>Import error</source>
         <translation>Import error</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="210"/>
+        <location filename="core.cpp" line="212"/>
         <source>Could not find plugin to download OPML %1.</source>
         <translation>Could not find plugin to download OPML %1.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="391"/>
-        <location filename="core.cpp" line="398"/>
+        <location filename="core.cpp" line="372"/>
         <source>Storage error</source>
         <translation>Storage error</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="399"/>
-        <source>Aggregator: general storage initialization error.</source>
-        <translation>Aggregator: general storage initialization error.</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="467"/>
+        <location filename="core.cpp" line="402"/>
         <source>Feed addition error</source>
         <translation>Feed addition error</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="468"/>
+        <location filename="core.cpp" line="403"/>
         <source>The feed %1 is already added</source>
         <translation>The feed %1 is already added</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="495"/>
+        <location filename="core.cpp" line="430"/>
         <source>Plugin error</source>
         <translation>Plugin error</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="496"/>
+        <location filename="core.cpp" line="431"/>
         <source>Could not find plugin to download feed %1.</source>
         <translation>Could not find plugin to download feed %1.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="518"/>
+        <location filename="core.cpp" line="453"/>
         <source>Feed removal error</source>
         <translation>Feed removal error</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="519"/>
+        <location filename="core.cpp" line="454"/>
         <source>Could not remove the feed: %1</source>
         <translation>Could not remove the feed: %1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="547"/>
+        <location filename="core.cpp" line="474"/>
         <source>Feed rename error</source>
         <translation>Feed rename error</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="548"/>
+        <location filename="core.cpp" line="475"/>
         <source>Could not rename the feed: %1</source>
         <translation>Could not rename the feed: %1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="577"/>
+        <location filename="core.cpp" line="504"/>
         <source>Channel removal error</source>
         <translation>Channel removal error</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="578"/>
+        <location filename="core.cpp" line="505"/>
         <source>Could not remove the channel: %1</source>
         <translation>Could not remove the channel: %1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="761"/>
-        <location filename="core.cpp" line="777"/>
-        <location filename="core.cpp" line="1535"/>
+        <location filename="core.cpp" line="685"/>
+        <location filename="core.cpp" line="701"/>
+        <location filename="core.cpp" line="1410"/>
         <source>Aggregator error</source>
         <translation>Aggregator error</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="762"/>
+        <location filename="core.cpp" line="686"/>
         <source>Could not get feed settings: %1</source>
         <translation>Could not get feed settings: %1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="778"/>
+        <location filename="core.cpp" line="702"/>
         <source>Could not update feed settings: %1</source>
         <translation>Could not update feed settings: %1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="798"/>
+        <location filename="core.cpp" line="722"/>
         <source>Feed update error</source>
         <translation>Feed update error</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="799"/>
+        <location filename="core.cpp" line="723"/>
         <source>Could not update feed</source>
         <translation>Could not update feed</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="824"/>
-        <location filename="core.cpp" line="842"/>
-        <location filename="core.cpp" line="854"/>
-        <location filename="core.cpp" line="1154"/>
+        <location filename="core.cpp" line="737"/>
+        <location filename="core.cpp" line="755"/>
+        <location filename="core.cpp" line="767"/>
+        <location filename="core.cpp" line="1044"/>
         <source>OPML import error</source>
         <translation>OPML import error</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="825"/>
+        <location filename="core.cpp" line="738"/>
         <source>Could not open file %1 for reading.</source>
         <translation>Could not open file %1 for reading.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="843"/>
+        <location filename="core.cpp" line="756"/>
         <source>XML error, file %1, line %2, column %3, error:&lt;br /&gt;%4</source>
         <translation>XML error, file %1, line %2, column %3, error:&lt;br /&gt;%4</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="855"/>
+        <location filename="core.cpp" line="768"/>
         <source>OPML from file %1 is not valid.</source>
         <translation>OPML from file %1 is not valid.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="910"/>
+        <location filename="core.cpp" line="823"/>
         <source>OPML export error</source>
         <translation>OPML export error</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="911"/>
-        <location filename="core.cpp" line="942"/>
+        <location filename="core.cpp" line="824"/>
+        <location filename="core.cpp" line="855"/>
         <source>Could not open file %1 for write.</source>
         <translation>Could not open file %1 for write.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="941"/>
+        <location filename="core.cpp" line="854"/>
         <source>Binary export error</source>
         <translation>Binary export error</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1073"/>
-        <location filename="core.cpp" line="1088"/>
-        <location filename="core.cpp" line="1102"/>
-        <location filename="core.cpp" line="1122"/>
-        <location filename="core.cpp" line="1245"/>
+        <location filename="core.cpp" line="963"/>
+        <location filename="core.cpp" line="978"/>
+        <location filename="core.cpp" line="992"/>
+        <location filename="core.cpp" line="1012"/>
+        <location filename="core.cpp" line="1135"/>
         <source>Feed error</source>
         <translation>Feed error</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1074"/>
+        <location filename="core.cpp" line="964"/>
         <source>Downloaded file from url %1 has null size.</source>
         <translation>Downloaded file from url %1 has null size.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1089"/>
+        <location filename="core.cpp" line="979"/>
         <source>XML file parse error: %1, line %2, column %3, filename %4, from %5</source>
         <translation>XML file parse error: %1, line %2, column %3, filename %4, from %5</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1103"/>
+        <location filename="core.cpp" line="993"/>
         <source>Could not find parser to parse file %1 from %2</source>
         <translation>Could not find parser to parse file %1 from %2</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1123"/>
+        <location filename="core.cpp" line="1013"/>
         <source>Feed with url %1 not found.</source>
         <translation>Feed with url %1 not found.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1155"/>
+        <location filename="core.cpp" line="1045"/>
         <source>Unable to download the OPML file.</source>
         <translation>Unable to download the OPML file.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1170"/>
+        <location filename="core.cpp" line="1060"/>
         <source>Address not found:&lt;br /&gt;%1</source>
         <translation>Address not found:&lt;br /&gt;%1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1173"/>
+        <location filename="core.cpp" line="1063"/>
         <source>Access denied:&lt;br /&gt;%1</source>
         <translation>Access denied:&lt;br /&gt;%1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1176"/>
+        <location filename="core.cpp" line="1066"/>
         <source>Local error for:&lt;br /&gt;%1</source>
         <translation>Local error for:&lt;br /&gt;%1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1179"/>
+        <location filename="core.cpp" line="1069"/>
         <source>Unknown error for:&lt;br /&gt;%1</source>
         <translation>Unknown error for:&lt;br /&gt;%1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1182"/>
+        <location filename="core.cpp" line="1072"/>
         <source>Download error</source>
         <translation>Download error</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1246"/>
+        <location filename="core.cpp" line="1136"/>
         <source>Could not find plugin to download external file %1.</source>
         <translation>Could not find plugin to download external file %1.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1536"/>
+        <location filename="core.cpp" line="1411"/>
         <source>Could not mark channel</source>
         <translation>Could not mark channel</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1380"/>
+        <location filename="core.cpp" line="1262"/>
         <source>Could not find plugin for feed with URL %1</source>
         <translation>Could not find plugin for feed with URL %1</translation>
     </message>
@@ -1363,7 +1357,7 @@
 <context>
     <name>LeechCraft::Aggregator::DBUpdateThreadWorker</name>
     <message numerus="yes">
-        <location filename="dbupdatethreadworker.cpp" line="127"/>
+        <location filename="dbupdatethreadworker.cpp" line="126"/>
         <source>Added channel &quot;%1&quot; (%n item(s))</source>
         <translation>
             <numerusform>Added channel &quot;%1&quot; (%n item)</numerusform>
@@ -1371,7 +1365,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="dbupdatethreadworker.cpp" line="217"/>
+        <location filename="dbupdatethreadworker.cpp" line="216"/>
         <source>%n new item(s)</source>
         <comment>Channel update</comment>
         <translation>
@@ -1380,7 +1374,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="dbupdatethreadworker.cpp" line="219"/>
+        <location filename="dbupdatethreadworker.cpp" line="218"/>
         <source>%n updated item(s)</source>
         <comment>Channel update</comment>
         <translation>
@@ -1389,7 +1383,7 @@
         </translation>
     </message>
     <message>
-        <location filename="dbupdatethreadworker.cpp" line="220"/>
+        <location filename="dbupdatethreadworker.cpp" line="219"/>
         <source>Updated channel &quot;%1&quot; (%2).</source>
         <translation>Updated channel &quot;%1&quot; (%2).</translation>
     </message>
@@ -1397,12 +1391,12 @@
 <context>
     <name>LeechCraft::Aggregator::Export2FB2Dialog</name>
     <message>
-        <location filename="export2fb2dialog.cpp" line="455"/>
+        <location filename="export2fb2dialog.cpp" line="456"/>
         <source>Select save file</source>
         <translation>Select save file</translation>
     </message>
     <message numerus="yes">
-        <location filename="export2fb2dialog.cpp" line="205"/>
+        <location filename="export2fb2dialog.cpp" line="206"/>
         <source>%n unread item(s)</source>
         <translation>
             <numerusform>%n unread item</numerusform>
@@ -1410,28 +1404,28 @@
         </translation>
     </message>
     <message>
-        <location filename="export2fb2dialog.cpp" line="222"/>
+        <location filename="export2fb2dialog.cpp" line="223"/>
         <source>Published on %1</source>
         <translation>Published on %1</translation>
     </message>
     <message>
-        <location filename="export2fb2dialog.cpp" line="226"/>
+        <location filename="export2fb2dialog.cpp" line="227"/>
         <source>By %1</source>
         <translation>By %1</translation>
     </message>
     <message>
-        <location filename="export2fb2dialog.cpp" line="297"/>
+        <location filename="export2fb2dialog.cpp" line="298"/>
         <source>Could not open file %1 for write:&lt;br /&gt;%2.</source>
         <translation>Could not open file %1 for write:&lt;br /&gt;%2.</translation>
     </message>
     <message>
-        <location filename="export2fb2dialog.cpp" line="331"/>
-        <location filename="export2fb2dialog.cpp" line="448"/>
+        <location filename="export2fb2dialog.cpp" line="332"/>
+        <location filename="export2fb2dialog.cpp" line="449"/>
         <source>Export complete.</source>
         <translation>Export complete.</translation>
     </message>
     <message>
-        <location filename="export2fb2dialog.cpp" line="457"/>
+        <location filename="export2fb2dialog.cpp" line="458"/>
         <source>fb2 files (*.fb2);;XML files (*.xml);;PDF files (*.pdf);;All files (*.*)</source>
         <translation>fb2 files (*.fb2);;XML files (*.xml);;PDF files (*.pdf);;All files (*.*)</translation>
     </message>
@@ -1519,17 +1513,17 @@
         <translation>Date</translation>
     </message>
     <message>
-        <location filename="itemslistmodel.cpp" line="317"/>
+        <location filename="itemslistmodel.cpp" line="323"/>
         <source>&lt;b&gt;Author&lt;/b&gt;: %1</source>
         <translation>&lt;b&gt;Author&lt;/b&gt;: %1</translation>
     </message>
     <message>
-        <location filename="itemslistmodel.cpp" line="322"/>
+        <location filename="itemslistmodel.cpp" line="328"/>
         <source>&lt;b&gt;Categories&lt;/b&gt;: %1</source>
         <translation>&lt;b&gt;Categories&lt;/b&gt;: %1</translation>
     </message>
     <message numerus="yes">
-        <location filename="itemslistmodel.cpp" line="327"/>
+        <location filename="itemslistmodel.cpp" line="333"/>
         <source>%n comment(s)</source>
         <translation>
             <numerusform>%n comment</numerusform>
@@ -1537,7 +1531,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="itemslistmodel.cpp" line="332"/>
+        <location filename="itemslistmodel.cpp" line="338"/>
         <source>%n enclosure(s)</source>
         <translation>
             <numerusform>%n enclosure</numerusform>
@@ -1545,7 +1539,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="itemslistmodel.cpp" line="337"/>
+        <location filename="itemslistmodel.cpp" line="343"/>
         <source>%n MediaRSS entry(s)</source>
         <translation>
             <numerusform>%n MediaRSS entry</numerusform>
@@ -1553,7 +1547,7 @@
         </translation>
     </message>
     <message>
-        <location filename="itemslistmodel.cpp" line="342"/>
+        <location filename="itemslistmodel.cpp" line="348"/>
         <source>RSS with comments is available</source>
         <translation>RSS with comments is available</translation>
     </message>
