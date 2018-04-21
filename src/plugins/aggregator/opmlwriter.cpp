@@ -37,6 +37,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
 #include "core.h"
+#include "storagebackendmanager.h"
 
 namespace LeechCraft
 {
@@ -106,7 +107,7 @@ namespace Aggregator
 			QDomDocument& doc,
 			const channels_shorts_t& channels) const
 	{
-		const auto& sb = Core::Instance ().MakeStorageBackendForThread ();
+		const auto& sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
 
 		QDomElement body = doc.createElement ("body");
 		for (channels_shorts_t::const_iterator i = channels.begin (),

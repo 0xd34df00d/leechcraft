@@ -29,6 +29,7 @@
 
 #include "proxyobject.h"
 #include "core.h"
+#include "storagebackendmanager.h"
 #include "channelsmodel.h"
 #include "itemslistmodel.h"
 
@@ -88,21 +89,21 @@ namespace Aggregator
 	{
 		FixFeedID (feed);
 
-		Core::Instance ().MakeStorageBackendForThread ()->AddFeed (feed);
+		StorageBackendManager::Instance ().MakeStorageBackendForThread ()->AddFeed (feed);
 	}
 
 	void ProxyObject::AddChannel (Channel_ptr channel)
 	{
 		FixChannelID (channel);
 
-		Core::Instance ().MakeStorageBackendForThread ()->AddChannel (channel);
+		StorageBackendManager::Instance ().MakeStorageBackendForThread ()->AddChannel (channel);
 	}
 
 	void ProxyObject::AddItem (Item_ptr item)
 	{
 		FixItemID (item);
 
-		Core::Instance ().MakeStorageBackendForThread ()->AddItem (item);
+		StorageBackendManager::Instance ().MakeStorageBackendForThread ()->AddItem (item);
 	}
 
 	QAbstractItemModel* ProxyObject::GetChannelsModel () const
@@ -114,7 +115,7 @@ namespace Aggregator
 	{
 		QList<Channel_ptr> result;
 
-		const auto& sb = Core::Instance ().MakeStorageBackendForThread ();
+		const auto& sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
 
 		channels_shorts_t channels;
 		Core::Instance ().GetChannels (channels);
@@ -138,25 +139,25 @@ namespace Aggregator
 
 	int ProxyObject::CountUnreadItems (IDType_t channel) const
 	{
-		return Core::Instance ().MakeStorageBackendForThread ()->GetUnreadItems (channel);
+		return StorageBackendManager::Instance ().MakeStorageBackendForThread ()->GetUnreadItems (channel);
 	}
 
 	QList<Item_ptr> ProxyObject::GetChannelItems (IDType_t channelId) const
 	{
 		// TODO rework when we change items_container_t
 		items_container_t items;
-		Core::Instance ().MakeStorageBackendForThread ()->GetItems (items, channelId);
+		StorageBackendManager::Instance ().MakeStorageBackendForThread ()->GetItems (items, channelId);
 		return QList<Item_ptr>::fromVector (QVector<Item_ptr>::fromStdVector (items));
 	}
 
 	Item_ptr ProxyObject::GetItem (IDType_t id) const
 	{
-		return Core::Instance ().MakeStorageBackendForThread ()->GetItem (id);
+		return StorageBackendManager::Instance ().MakeStorageBackendForThread ()->GetItem (id);
 	}
 
 	void ProxyObject::SetItemRead (IDType_t id, bool read) const
 	{
-		const auto& sb = Core::Instance ().MakeStorageBackendForThread ();
+		const auto& sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
 
 		auto item = sb->GetItem (id);
 		if (!item)

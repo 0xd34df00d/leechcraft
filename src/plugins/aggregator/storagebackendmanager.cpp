@@ -28,6 +28,8 @@
  **********************************************************************/
 
 #include "storagebackendmanager.h"
+#include <QCoreApplication>
+#include <QThread>
 #include <util/sll/either.h>
 #include "dumbstorage.h"
 #include "xmlsettingsmanager.h"
@@ -76,7 +78,29 @@ namespace Aggregator
 
 		PrimaryStorageBackend_->Prepare ();
 
+		emit storageCreated ();
+
 		return StorageCreationResult_t::Right (PrimaryStorageBackend_);
+	}
+
+	StorageBackend_ptr StorageBackendManager::MakeStorageBackendForThread () const
+	{
+		if (QThread::currentThread () == qApp->thread ())
+			return PrimaryStorageBackend_;
+
+		const auto& strType = XmlSettingsManager::Instance ()->property ("StorageType").toString ();
+		try
+		{
+			auto mgr = StorageBackend::Create (strType, "_AuxThread");
+			mgr->Prepare ();
+			return mgr;
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "cannot create storage for auxiliary thread";
+			return {};
+		}
 	}
 
 	void StorageBackendManager::Register (const StorageBackend_ptr& backend)

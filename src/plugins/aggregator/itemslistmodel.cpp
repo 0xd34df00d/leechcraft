@@ -428,7 +428,7 @@ namespace Aggregator
 	StorageBackend_ptr ItemsListModel::GetSB () const
 	{
 		if (!SB_.hasLocalData ())
-			SB_.setLocalData (Core::Instance ().MakeStorageBackendForThread ());
+			SB_.setLocalData (StorageBackendManager::Instance ().MakeStorageBackendForThread ());
 		return SB_.localData ();
 	}
 

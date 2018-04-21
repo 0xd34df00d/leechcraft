@@ -45,6 +45,7 @@
 #include <util/sll/prelude.h>
 #include "core.h"
 #include "channelsmodel.h"
+#include "storagebackendmanager.h"
 
 namespace LeechCraft
 {
@@ -510,7 +511,7 @@ namespace Aggregator
 
 	void Export2FB2Dialog::handleAccepted ()
 	{
-		const auto& sb = Core::Instance ().MakeStorageBackendForThread ();
+		const auto& sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
 
 		bool unreadOnly = Ui_.UnreadOnly_->checkState () == Qt::Checked;
 		const auto& categories = Selector_->GetSelections ();

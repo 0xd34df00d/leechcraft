@@ -61,6 +61,8 @@ namespace Aggregator
 		using StorageCreationResult_t = Util::Either<StorageCreationError, StorageBackend_ptr>;
 		StorageCreationResult_t CreatePrimaryStorage ();
 
+		StorageBackend_ptr MakeStorageBackendForThread () const;
+
 		void Register (const StorageBackend_ptr&);
 	signals:
 		/** @brief Notifies about updated channel information.
@@ -95,6 +97,8 @@ namespace Aggregator
 
 		void channelRemoved (IDType_t) const;
 		void feedRemoved (IDType_t) const;
+
+		void storageCreated ();
 	};
 }
 }

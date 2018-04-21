@@ -33,7 +33,7 @@
 #include <QDir>
 #include <QTimer>
 #include "feed.h"
-#include "core.h"
+#include "storagebackendmanager.h"
 
 namespace LeechCraft
 {
@@ -87,7 +87,7 @@ namespace Aggregator
 	
 	void Export::SetFeeds (const channels_shorts_t& channels)
 	{
-		const auto& sb = Core::Instance ().MakeStorageBackendForThread ();
+		const auto& sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
 		for (channels_shorts_t::const_iterator i = channels.begin (),
 				end = channels.end (); i != end; ++i)
 		{

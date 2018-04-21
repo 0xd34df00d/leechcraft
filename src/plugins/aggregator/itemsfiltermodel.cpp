@@ -27,11 +27,12 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "core.h"
-#include <QtDebug>
 #include "itemsfiltermodel.h"
+#include <QtDebug>
 #include "itemswidget.h"
 #include "xmlsettingsmanager.h"
+#include "core.h"
+#include "storagebackendmanager.h"
 
 namespace LeechCraft
 {
@@ -65,7 +66,7 @@ namespace Aggregator
 			TaggedItems_.clear ();
 		else
 		{
-			const auto& sb = Core::Instance ().MakeStorageBackendForThread ();
+			const auto& sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
 			TaggedItems_ = QSet<IDType_t>::fromList (sb->GetItemsForTag (tags.takeFirst ()));
 
 			for (const auto& tag : tags)
