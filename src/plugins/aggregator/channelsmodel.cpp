@@ -65,7 +65,7 @@ namespace Aggregator
 				this,
 				&ChannelsModel::RemoveChannel);
 		connect (&StorageBackendManager::Instance (),
-				&StorageBackendManager::channelRemoved,
+				&StorageBackendManager::feedRemoved,
 				this,
 				&ChannelsModel::RemoveFeed);
 		connect (&StorageBackendManager::Instance (),
