@@ -366,9 +366,6 @@ namespace Aggregator
 
 	bool Core::ReinitStorage ()
 	{
-		Pools_.clear ();
-		ChannelsModel_->Clear ();
-
 		const auto result = Util::Visit (StorageBackendManager::Instance ().CreatePrimaryStorage (),
 				[this] (const StorageBackend_ptr& backend)
 				{
@@ -384,16 +381,7 @@ namespace Aggregator
 		if (!result)
 			return false;
 
-		ids_t feeds;
-		StorageBackend_->GetFeedsIDs (feeds);
-		for (const auto feedId : feeds)
-		{
-			channels_shorts_t channels;
-			StorageBackend_->GetChannels (channels, feedId);
-			for (const auto& chan : channels)
-				ChannelsModel_->AddChannel (chan);
-		}
-
+		Pools_.clear ();
 		for (int type = 0; type < PTMAX; ++type)
 		{
 			Util::IDPool<IDType_t> pool;

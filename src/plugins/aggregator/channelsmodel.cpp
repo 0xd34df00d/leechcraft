@@ -73,6 +73,10 @@ namespace Aggregator
 				this,
 				&ChannelsModel::UpdateChannelData,
 				Qt::QueuedConnection);
+		connect (&StorageBackendManager::Instance (),
+				&StorageBackendManager::storageCreated,
+				this,
+				&ChannelsModel::PopulateChannels);
 	}
 
 	void ChannelsModel::SetWidgets (QToolBar *bar, QWidget *tab)
@@ -279,10 +283,26 @@ namespace Aggregator
 			return;
 
 		*pos = channel->ToShort ();
-		pos->Unread_ = Core::Instance ().MakeStorageBackendForThread ()->GetUnreadItems (cid);
+		pos->Unread_ = StorageBackendManager::Instance ().MakeStorageBackendForThread ()->GetUnreadItems (cid);
 
 		const auto idx = pos - Channels_.begin ();
 		emit dataChanged (index (idx, 0), index (idx, 2));
+	}
+
+	void ChannelsModel::PopulateChannels ()
+	{
+		auto storage = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
+
+		Clear ();
+		ids_t feeds;
+		storage->GetFeedsIDs (feeds);
+		for (const auto feedId : feeds)
+		{
+			channels_shorts_t channels;
+			storage->GetChannels (channels, feedId);
+			for (const auto& chan : channels)
+				AddChannel (chan);
+		}
 	}
 }
 }

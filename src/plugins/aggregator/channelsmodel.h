@@ -79,6 +79,7 @@ namespace Aggregator
 		void RemoveChannel (IDType_t);
 		void RemoveFeed (IDType_t);
 		void UpdateChannelData (const Channel_ptr&);
+		void PopulateChannels ();
 	};
 }
 }
