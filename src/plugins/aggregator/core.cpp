@@ -374,8 +374,7 @@ namespace Aggregator
 
 		StorageBackend_.reset (new DumbStorage);
 
-		const QString& strType = XmlSettingsManager::Instance ()->
-				property ("StorageType").toString ();
+		const QString& strType = XmlSettingsManager::Instance ()->property ("StorageType").toString ();
 		try
 		{
 			StorageBackend_ = StorageBackend::Create (strType);
@@ -383,11 +382,6 @@ namespace Aggregator
 		catch (const std::runtime_error& s)
 		{
 			ErrorNotification (tr ("Storage error"), s.what ());
-			return false;
-		}
-		catch (...)
-		{
-			ErrorNotification (tr ("Storage error"), tr ("Aggregator: general storage initialization error."));
 			return false;
 		}
 
