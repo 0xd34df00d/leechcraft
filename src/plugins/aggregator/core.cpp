@@ -334,22 +334,18 @@ namespace Aggregator
 
 		UpdateTimer_ = new QTimer (this);
 		UpdateTimer_->setSingleShot (true);
-		QDateTime currentDateTime = QDateTime::currentDateTime ();
-		QDateTime lastUpdated = XmlSettingsManager::Instance ()->
-			Property ("LastUpdateDateTime", currentDateTime).toDateTime ();
 		connect (UpdateTimer_,
 				SIGNAL (timeout ()),
 				this,
 				SLOT (updateFeeds ()));
 
-		int updateDiff = lastUpdated.secsTo (currentDateTime);
-		int interval = XmlSettingsManager::Instance ()->
-			property ("UpdateInterval").toInt ();
-		if (interval)
+		auto now = QDateTime::currentDateTime ();
+		auto lastUpdated = XmlSettingsManager::Instance ()->Property ("LastUpdateDateTime", now).toDateTime ();
+		if (auto interval = XmlSettingsManager::Instance ()->property ("UpdateInterval").toInt ())
 		{
-			if ((XmlSettingsManager::Instance ()->
-						property ("UpdateOnStartup").toBool ()) ||
-					(updateDiff > interval * 60))
+			auto updateDiff = lastUpdated.secsTo (now);
+			if (XmlSettingsManager::Instance ()->property ("UpdateOnStartup").toBool () ||
+					updateDiff > interval * 60)
 				QTimer::singleShot (7000,
 						this,
 						SLOT (updateFeeds ()));
@@ -357,8 +353,7 @@ namespace Aggregator
 				UpdateTimer_->start (updateDiff * 1000);
 		}
 
-		XmlSettingsManager::Instance ()->
-			RegisterObject ("UpdateInterval", this, "updateIntervalChanged");
+		XmlSettingsManager::Instance ()->RegisterObject ("UpdateInterval", this, "updateIntervalChanged");
 		Initialized_ = true;
 
 		PluginManager_ = new PluginManager ();
