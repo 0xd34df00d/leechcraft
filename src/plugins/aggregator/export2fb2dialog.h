@@ -65,8 +65,6 @@ namespace Aggregator
 		void on_Name__textEdited ();
 		void handleChannelsSelectionChanged (const QItemSelection&, const QItemSelection&);
 		void handleAccepted ();
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }

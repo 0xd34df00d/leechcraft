@@ -661,10 +661,6 @@ namespace Aggregator
 	void Aggregator::on_ActionExportFB2__triggered ()
 	{
 		Export2FB2Dialog *dialog = new Export2FB2Dialog (nullptr);
-		connect (dialog,
-				SIGNAL (gotEntity (const LeechCraft::Entity&)),
-				this,
-				SIGNAL (gotEntity (const LeechCraft::Entity&)));
 		dialog->setAttribute (Qt::WA_DeleteOnClose);
 		dialog->show ();
 	}
