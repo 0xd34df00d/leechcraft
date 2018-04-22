@@ -70,7 +70,6 @@
 #include "channelsfiltermodel.h"
 #include "importopml.h"
 #include "addfeed.h"
-#include "itemswidget.h"
 #include "pluginmanager.h"
 #include "dbupdatethread.h"
 #include "dbupdatethreadworker.h"
@@ -313,10 +312,6 @@ namespace Aggregator
 		ParserFactory::Instance ().Register (&Atom03Parser::Instance ());
 		ParserFactory::Instance ().Register (&RSS10Parser::Instance ());
 
-		ReprWidget_ = new ItemsWidget ();
-		ReprWidget_->SetChannelsFilter (JobHolderRepresentation_);
-		ReprWidget_->RegisterShortcuts ();
-
 		JobHolderRepresentation_->setSourceModel (ChannelsModel_);
 
 		CustomUpdateTimer_ = new QTimer (this);
@@ -507,11 +502,6 @@ namespace Aggregator
 		}
 
 		StorageBackend_->RemoveChannel (channel.ChannelID_);
-	}
-
-	ItemsWidget* Core::GetReprWidget () const
-	{
-		return ReprWidget_;
 	}
 
 	Util::ShortcutManager* Core::GetShortcutManager () const

@@ -86,6 +86,7 @@ namespace Aggregator
 
 		std::shared_ptr<Util::XmlSettingsDialog> XmlSettingsDialog_;
 
+		ItemsWidget *ReprWidget_ = nullptr;
 		ChannelsModelRepresentationProxy *ReprModel_ = nullptr;
 		QModelIndex SelectedRepr_;
 
@@ -158,14 +159,15 @@ namespace Aggregator
 			box->open ();
 		}
 
+		Impl_->ReprWidget_ = new ItemsWidget;
+		Impl_->ReprWidget_->SetChannelsFilter (Core::Instance ().GetJobHolderRepresentation ());
+		Impl_->ReprWidget_->RegisterShortcuts ();
+		Impl_->ReprWidget_->SetAppWideActions (Impl_->AppWideActions_);
+		Impl_->ReprWidget_->SetChannelActions (Impl_->ChannelActions_);
+
 		Impl_->ReprModel_ = new ChannelsModelRepresentationProxy { this };
 		Impl_->ReprModel_->setSourceModel (Core::Instance ().GetJobHolderRepresentation ());
-
-		auto reprWidget = Core::Instance ().GetReprWidget ();
-		reprWidget->SetAppWideActions (Impl_->AppWideActions_);
-		reprWidget->SetChannelActions (Impl_->ChannelActions_);
-
-		Impl_->ReprModel_->SetWidgets (reprWidget->GetToolBar (), reprWidget);
+		Impl_->ReprModel_->SetWidgets (Impl_->ReprWidget_->GetToolBar (), Impl_->ReprWidget_);
 
 		QMenu *contextMenu = new QMenu (tr ("Feeds actions"));
 		contextMenu->addAction (Impl_->ChannelActions_.ActionMarkChannelAsRead_);
@@ -195,7 +197,7 @@ namespace Aggregator
 		if (Impl_->InitFailed_)
 			return;
 
-		Core::Instance ().GetReprWidget ()->ConstructBrowser ();
+		Impl_->ReprWidget_->ConstructBrowser ();
 	}
 
 	void Aggregator::Release ()
@@ -287,7 +289,7 @@ namespace Aggregator
 		si = Impl_->ReprModel_->mapToSource (si);
 		si = Core::Instance ().GetJobHolderRepresentation ()->SelectionChanged (si);
 		Impl_->SelectedRepr_ = si;
-		Core::Instance ().GetReprWidget ()->CurrentChannelChanged (si);
+		Impl_->ReprWidget_->CurrentChannelChanged (si);
 	}
 
 	EntityTestHandleResult Aggregator::CouldHandle (const Entity& e) const
@@ -380,7 +382,7 @@ namespace Aggregator
 
 	bool Aggregator::IsRepr () const
 	{
-		return Core::Instance ().GetReprWidget ()->isVisible ();
+		return Impl_->ReprWidget_->isVisible ();
 	}
 
 	QModelIndex Aggregator::GetRelevantIndex () const

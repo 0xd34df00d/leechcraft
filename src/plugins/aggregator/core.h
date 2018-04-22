@@ -66,7 +66,6 @@ namespace Aggregator
 	class ChannelsModel;
 	class JobHolderRepresentation;
 	class ChannelsFilterModel;
-	class ItemsWidget;
 	class PluginManager;
 
 	class Core : public QObject
@@ -123,7 +122,6 @@ namespace Aggregator
 		ICoreProxy_ptr Proxy_;
 		bool Initialized_ = false;
 		AppWideActions AppWideActions_;
-		ItemsWidget *ReprWidget_ = nullptr;
 
 		QList<IDType_t> UpdatesQueue_;
 
@@ -173,7 +171,6 @@ namespace Aggregator
 		void RemoveFeed (const QModelIndex&);
 		void RenameFeed (const QModelIndex& index, const QString& newName);
 		void RemoveChannel (const QModelIndex&);
-		ItemsWidget* GetReprWidget () const;
 
 		Util::ShortcutManager* GetShortcutManager () const;
 
