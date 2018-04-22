@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AGGREGATOR_FEEDSETTINGS_H
-#define PLUGINS_AGGREGATOR_FEEDSETTINGS_H
+#pragma once
+
 #include <memory>
 #include <QDialog>
 #include <QModelIndex>
@@ -47,7 +47,7 @@ namespace Aggregator
 		Ui::FeedSettings Ui_;
 		std::unique_ptr<Util::TagsCompleter> ChannelTagsCompleter_;
 		QModelIndex Index_;
-		IDType_t SettingsID_;
+		IDType_t SettingsID_ = -1;
 	public:
 		FeedSettings (const QModelIndex&, QWidget* = 0);
 	public slots:
@@ -57,5 +57,3 @@ namespace Aggregator
 	};
 }
 }
-
-#endif

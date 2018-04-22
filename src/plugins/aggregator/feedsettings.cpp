@@ -40,7 +40,6 @@ namespace Aggregator
 	FeedSettings::FeedSettings (const QModelIndex& mapped, QWidget *parent)
 	: QDialog (parent)
 	, Index_ (mapped)
-	, SettingsID_ (-1)
 	{
 		Ui_.setupUi (this);
 
