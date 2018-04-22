@@ -163,6 +163,8 @@ namespace Aggregator
 			return Channels_.at (row).Unread_;
 		else if (role == ChannelRoles::ChannelID)
 			return Channels_.at (row).ChannelID_;
+		else if (role == ChannelRoles::HumanReadableTags)
+			return Core::Instance ().GetProxy ()->GetTagsManager ()->GetTags (Channels_.at (row).Tags_);
 		else
 			return QVariant ();
 	}

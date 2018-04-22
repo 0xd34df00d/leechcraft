@@ -62,7 +62,8 @@ namespace Aggregator
 	enum ChannelRoles
 	{
 		UnreadCount = LeechCraft::RoleMAX + 1,
-		ChannelID
+		ChannelID,
+		HumanReadableTags
 	};
 }
 }
