@@ -27,10 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include <QStringList>
-#include <QtDebug>
 #include "channelsfiltermodel.h"
-#include "core.h"
+#include "common.h"
 
 namespace LeechCraft
 {
@@ -45,7 +43,7 @@ namespace Aggregator
 	
 	QStringList ChannelsFilterModel::GetTagsForIndex (int row) const
 	{
-		return Core::Instance ().GetTagsForIndex (row);
+		return sourceModel ()->index (row, 0).data (ChannelRoles::HumanReadableTags).toStringList ();
 	}
 }
 }

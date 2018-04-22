@@ -190,9 +190,6 @@ namespace Aggregator
 		void MarkChannelAsRead (const QModelIndex&);
 		void MarkChannelAsUnread (const QModelIndex&);
 
-		/** Returns user-meaningful tags for the given index.
-			*/
-		QStringList GetTagsForIndex (int) const;
 		ChannelInfo GetChannelInfo (const QModelIndex&) const;
 		QPixmap GetChannelPixmap (const QModelIndex&) const;
 

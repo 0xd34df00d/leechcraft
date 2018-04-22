@@ -534,22 +534,6 @@ namespace Aggregator
 		MarkChannel (i, true);
 	}
 
-	QStringList Core::GetTagsForIndex (int i) const
-	{
-		try
-		{
-			const auto& ids = ChannelsModel_->GetChannelForIndex (ChannelsModel_->index (i, 0)).Tags_;
-			return Proxy_->GetTagsManager ()->GetTags (ids);
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "caught"
-				<< e.what ();
-			return QStringList ();
-		}
-	}
-
 	Core::ChannelInfo Core::GetChannelInfo (const QModelIndex& i) const
 	{
 		ChannelShort channel;

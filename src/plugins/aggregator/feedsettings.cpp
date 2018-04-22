@@ -51,7 +51,7 @@ namespace Aggregator
 				&Core::Instance (),
 				SLOT (openLink (const QString&)));
 
-		QStringList tags = Core::Instance ().GetTagsForIndex (Index_.row ());
+		const auto& tags = Index_.data (ChannelRoles::HumanReadableTags).toStringList ();
 		Ui_.ChannelTags_->setText (Core::Instance ().GetProxy ()->GetTagsManager ()->Join (tags));
 
 		Feed::FeedSettings settings (-1, -1);
