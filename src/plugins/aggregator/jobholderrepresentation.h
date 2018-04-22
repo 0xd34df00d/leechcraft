@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AGGREGATOR_JOBHOLDERREPRESENTATION_H
-#define PLUGINS_AGGREGATOR_JOBHOLDERREPRESENTATION_H
+#pragma once
+
 #include <QSortFilterProxyModel>
 #include <QQueue>
 
@@ -40,12 +40,11 @@ namespace Aggregator
 	{
 		QModelIndex Selected_;
 	public:
-		JobHolderRepresentation (QObject* = 0);
+		JobHolderRepresentation (QObject* = nullptr);
+
 		QModelIndex SelectionChanged (const QModelIndex&);
 	protected:
 		virtual bool filterAcceptsRow (int, const QModelIndex&) const;
 	};
 }
 }
-
-#endif

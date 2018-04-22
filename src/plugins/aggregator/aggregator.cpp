@@ -109,7 +109,6 @@ namespace Aggregator
 			TFSingle | TFOpenableByRequest
 		};
 
-
 		Impl_->ChannelActions_.SetupActionsStruct (this);
 		Impl_->AppWideActions_.SetupActionsStruct (this);
 		Core::Instance ().SetAppWideActions (Impl_->AppWideActions_);
