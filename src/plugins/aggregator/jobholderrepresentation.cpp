@@ -58,7 +58,7 @@ namespace Aggregator
 		// we can just check if it has unread items or selected. Later means
 		// that user's just clicked last unread item there.
 		return sourceModel ()->index (row, 1).data ().toInt () ||
-				(Selected_.isValid () ? row == Selected_.row () : false);
+				(Selected_.isValid () && row == Selected_.row ());
 	}
 }
 }
