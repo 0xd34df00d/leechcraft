@@ -44,7 +44,7 @@ namespace Aggregator
 
 		QModelIndex SelectionChanged (const QModelIndex&);
 	protected:
-		virtual bool filterAcceptsRow (int, const QModelIndex&) const;
+		bool filterAcceptsRow (int, const QModelIndex&) const override;
 	};
 }
 }
