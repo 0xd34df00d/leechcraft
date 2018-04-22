@@ -521,10 +521,7 @@ namespace Aggregator
 
 	IWebBrowser* Core::GetWebBrowser () const
 	{
-		Proxy_->GetPluginsManager ()->
-				GetAllCastableRoots<IWebBrowser*> ();
-		return Proxy_->GetPluginsManager ()->
-				GetAllCastableTo<IWebBrowser*> ().value (0, 0);
+		return Proxy_->GetPluginsManager ()->GetAllCastableTo<IWebBrowser*> ().value (0);
 	}
 
 	void Core::MarkChannelAsRead (const QModelIndex& i)
