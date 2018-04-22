@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AGGREGATOR_EXPORT2FB2DIALOG_H
-#define PLUGINS_AGGREGATOR_EXPORT2FB2DIALOG_H
+#pragma once
+
 #include <QDialog>
 #include "ui_export2fb2dialog.h"
 
@@ -55,7 +55,7 @@ namespace Aggregator
 
 		bool HasBeenTextModified_ = false;
 	public:
-		Export2FB2Dialog (QWidget* = 0);
+		Export2FB2Dialog (QWidget* = nullptr);
 	private:
 		void WriteFB2 (const WriteInfo&);
 		void WritePDF (const WriteInfo&);
@@ -70,5 +70,3 @@ namespace Aggregator
 	};
 }
 }
-
-#endif
