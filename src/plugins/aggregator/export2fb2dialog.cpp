@@ -53,7 +53,6 @@ namespace Aggregator
 {
 	Export2FB2Dialog::Export2FB2Dialog (QWidget *parent)
 	: QDialog (parent)
-	, HasBeenTextModified_ (false)
 	{
 		Ui_.setupUi (this);
 

@@ -53,7 +53,7 @@ namespace Aggregator
 		Util::CategorySelector *Selector_;
 		QStringList CurrentCategories_;
 
-		bool HasBeenTextModified_;
+		bool HasBeenTextModified_ = false;
 	public:
 		Export2FB2Dialog (QWidget* = 0);
 	private:
