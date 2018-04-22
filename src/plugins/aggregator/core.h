@@ -72,8 +72,6 @@ namespace Aggregator
 	{
 		Q_OBJECT
 
-		QMap<QString, QObject*> Providers_;
-
 		enum Columns
 		{
 			ColumnName = 0
