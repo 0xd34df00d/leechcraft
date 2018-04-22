@@ -39,6 +39,7 @@
 #include <QTextCursor>
 #include <QPrinter>
 #include <interfaces/structures.h>
+#include <interfaces/core/ientitymanager.h>
 #include <util/xpc/util.h>
 #include <util/tags/categoryselector.h>
 #include <util/sll/qtutil.h>
@@ -327,7 +328,8 @@ namespace Aggregator
 		w.writeEndElement ();
 		w.writeEndDocument ();
 
-		emit gotEntity (Util::MakeNotification ("Aggregator",
+		const auto iem = Core::Instance ().GetProxy ()->GetEntityManager ();
+		iem->HandleEntity (Util::MakeNotification ("Aggregator",
 					tr ("Export complete."),
 					Priority::Info));
 	}
@@ -444,7 +446,8 @@ namespace Aggregator
 
 		doc.print (&printer);
 
-		emit gotEntity (Util::MakeNotification ("Aggregator",
+		const auto iem = Core::Instance ().GetProxy ()->GetEntityManager ();
+		iem->HandleEntity (Util::MakeNotification ("Aggregator",
 					tr ("Export complete."),
 					Priority::Info));
 	}
