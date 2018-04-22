@@ -68,6 +68,7 @@
 #include "itemswidget.h"
 #include "channelsmodel.h"
 #include "aggregatortab.h"
+#include "channelsmodelrepresentationproxy.h"
 
 namespace LeechCraft
 {
@@ -85,6 +86,7 @@ namespace Aggregator
 
 		std::shared_ptr<Util::XmlSettingsDialog> XmlSettingsDialog_;
 
+		ChannelsModelRepresentationProxy *ReprModel_ = nullptr;
 		QModelIndex SelectedRepr_;
 
 		TabClassInfo TabInfo_;
@@ -156,9 +158,14 @@ namespace Aggregator
 			box->open ();
 		}
 
-		Core::Instance ().GetJobHolderRepresentation ()->setParent (this);
-		Core::Instance ().GetReprWidget ()->SetAppWideActions (Impl_->AppWideActions_);
-		Core::Instance ().GetReprWidget ()->SetChannelActions (Impl_->ChannelActions_);
+		Impl_->ReprModel_ = new ChannelsModelRepresentationProxy { this };
+		Impl_->ReprModel_->setSourceModel (Core::Instance ().GetJobHolderRepresentation ());
+
+		auto reprWidget = Core::Instance ().GetReprWidget ();
+		reprWidget->SetAppWideActions (Impl_->AppWideActions_);
+		reprWidget->SetChannelActions (Impl_->ChannelActions_);
+
+		Impl_->ReprModel_->SetWidgets (reprWidget->GetToolBar (), reprWidget);
 
 		QMenu *contextMenu = new QMenu (tr ("Feeds actions"));
 		contextMenu->addAction (Impl_->ChannelActions_.ActionMarkChannelAsRead_);
@@ -171,7 +178,7 @@ namespace Aggregator
 		contextMenu->addAction (Impl_->ChannelActions_.ActionChannelSettings_);
 		contextMenu->addSeparator ();
 		contextMenu->addAction (Impl_->AppWideActions_.ActionAddFeed_);
-		Core::Instance ().SetContextMenu (contextMenu);
+		Impl_->ReprModel_->SetMenu (contextMenu);
 
 		connect (Impl_->AppWideActions_.ActionUpdateFeeds_,
 				SIGNAL (triggered ()),
@@ -269,7 +276,7 @@ namespace Aggregator
 
 	QAbstractItemModel* Aggregator::GetRepresentation () const
 	{
-		return Core::Instance ().GetJobHolderRepresentation ();
+		return Impl_->ReprModel_;
 	}
 
 	void Aggregator::handleTasksTreeSelectionCurrentRowChanged (const QModelIndex& index, const QModelIndex&)
@@ -277,6 +284,7 @@ namespace Aggregator
 		QModelIndex si = Core::Instance ().GetProxy ()->MapToSource (index);
 		if (si.model () != GetRepresentation ())
 			si = QModelIndex ();
+		si = Impl_->ReprModel_->mapToSource (si);
 		si = Core::Instance ().GetJobHolderRepresentation ()->SelectionChanged (si);
 		Impl_->SelectedRepr_ = si;
 		Core::Instance ().GetReprWidget ()->CurrentChannelChanged (si);

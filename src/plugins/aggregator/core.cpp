@@ -316,7 +316,6 @@ namespace Aggregator
 		ReprWidget_ = new ItemsWidget ();
 		ReprWidget_->SetChannelsFilter (JobHolderRepresentation_);
 		ReprWidget_->RegisterShortcuts ();
-		ChannelsModel_->SetWidgets (ReprWidget_->GetToolBar (), ReprWidget_);
 
 		JobHolderRepresentation_->setSourceModel (ChannelsModel_);
 
@@ -915,11 +914,6 @@ namespace Aggregator
 
 			StorageBackend_->AddFeed (feed);
 		}
-	}
-
-	void Core::SetContextMenu (QMenu *menu)
-	{
-		ChannelsModel_->SetMenu (menu);
 	}
 
 	void Core::openLink (const QString& url)

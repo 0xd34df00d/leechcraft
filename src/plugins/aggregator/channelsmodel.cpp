@@ -35,9 +35,6 @@
 #include <QPalette>
 #include <QIcon>
 #include <QFontMetrics>
-#include <QToolBar>
-#include <QMenu>
-#include <interfaces/structures.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
 #include "channelsmodel.h"
@@ -45,9 +42,6 @@
 #include "xmlsettingsmanager.h"
 #include "core.h"
 #include "storagebackendmanager.h"
-
-Q_DECLARE_METATYPE (QToolBar*)
-Q_DECLARE_METATYPE (QMenu*)
 
 namespace LeechCraft
 {
@@ -83,12 +77,6 @@ namespace Aggregator
 				&ChannelsModel::PopulateChannels);
 	}
 
-	void ChannelsModel::SetWidgets (QToolBar *bar, QWidget *tab)
-	{
-		Toolbar_ = bar;
-		TabWidget_ = tab;
-	}
-
 	int ChannelsModel::columnCount (const QModelIndex&) const
 	{
 		return Headers_.size ();
@@ -96,13 +84,6 @@ namespace Aggregator
 
 	QVariant ChannelsModel::data (const QModelIndex& index, int role) const
 	{
-		if (role == RoleControls)
-			return QVariant::fromValue<QToolBar*> (Toolbar_);
-		if (role == RoleAdditionalInfo)
-			return QVariant::fromValue<QWidget*> (TabWidget_);
-		if (role == RoleContextMenu)
-			return QVariant::fromValue<QMenu*> (Menu_);
-
 		if (!index.isValid ())
 			return QVariant ();
 
@@ -240,11 +221,6 @@ namespace Aggregator
 		beginResetModel ();
 		Channels_.clear ();
 		endResetModel ();
-	}
-
-	void ChannelsModel::SetMenu (QMenu *menu)
-	{
-		Menu_ = menu;
 	}
 
 	void ChannelsModel::RemoveChannel (IDType_t id)

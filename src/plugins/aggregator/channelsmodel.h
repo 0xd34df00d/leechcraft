@@ -47,9 +47,6 @@ namespace Aggregator
 		QStringList Headers_;
 		typedef QList<ChannelShort> Channels_t;
 		Channels_t Channels_;
-		QToolBar *Toolbar_ = nullptr;
-		QWidget *TabWidget_ = nullptr;
-		QMenu *Menu_ = nullptr;
 	public:
 		enum Columns
 		{
@@ -58,8 +55,6 @@ namespace Aggregator
 			ColumnLastBuild
 		};
 		ChannelsModel (QObject *parent = 0);
-
-		void SetWidgets (QToolBar*, QWidget*);
 
 		int columnCount (const QModelIndex& = QModelIndex ()) const override;
 		QVariant data (const QModelIndex&, int = Qt::DisplayRole) const override;
@@ -70,8 +65,6 @@ namespace Aggregator
 		int rowCount (const QModelIndex& = QModelIndex ()) const override;
 
 		const ChannelShort& GetChannelForIndex (const QModelIndex&) const;
-
-		void SetMenu (QMenu*);
 	private:
 		void RemoveChannel (IDType_t);
 		void RemoveFeed (IDType_t);

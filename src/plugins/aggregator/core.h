@@ -227,7 +227,6 @@ namespace Aggregator
 
 		void GetChannels (channels_shorts_t&) const;
 		void AddFeeds (const feeds_container_t&, const QString&);
-		void SetContextMenu (QMenu*);
 	public slots:
 		void openLink (const QString&);
 		void updateFeeds ();
