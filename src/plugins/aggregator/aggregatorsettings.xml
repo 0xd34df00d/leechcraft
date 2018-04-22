@@ -44,9 +44,6 @@
 				<item type="checkbox" property="GroupChannelsByTags" state="on">
 					<label lang="en" value="Group channels by tags" />
 				</item>
-				<item type="checkbox" property="ShowInDashboard" state="on">
-					<label lang="en" value="Show unread channels in summary" />
-				</item>
 				<item type="checkbox" property="ShowCategorySelector" state="on">
 					<label lang="en" value="Show items category selector" />
 				</item>
