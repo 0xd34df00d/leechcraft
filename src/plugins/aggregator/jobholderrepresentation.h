@@ -38,8 +38,6 @@ namespace Aggregator
 {
 	class JobHolderRepresentation : public QSortFilterProxyModel
 	{
-		Q_OBJECT
-
 		QModelIndex Selected_;
 	public:
 		JobHolderRepresentation (QObject* = 0);
