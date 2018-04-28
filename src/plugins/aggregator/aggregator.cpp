@@ -93,13 +93,12 @@ namespace Aggregator
 		TabClassInfo TabInfo_;
 		std::unique_ptr<AggregatorTab> AggregatorTab_;
 
-		bool InitFailed_;
+		bool InitFailed_ = false;
 	};
 
 	void Aggregator::Init (ICoreProxy_ptr proxy)
 	{
 		Impl_ = new Aggregator_Impl;
-		Impl_->InitFailed_ = false;
 		Util::InstallTranslator ("aggregator");
 
 		Impl_->TabInfo_ = TabClassInfo
