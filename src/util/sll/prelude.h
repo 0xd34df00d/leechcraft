@@ -243,7 +243,7 @@ namespace Util
 	Cont Sorted (Cont&& cont)
 	{
 		std::sort (cont.begin (), cont.end ());
-		return cont;
+		return std::move (cont);
 	}
 
 	const auto Id = [] (const auto& t) { return t; };
