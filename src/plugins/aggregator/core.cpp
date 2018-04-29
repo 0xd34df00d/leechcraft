@@ -432,11 +432,6 @@ namespace Aggregator
 		PendingJobs_ [delegateResult.ID_] = pj;
 	}
 
-	void Core::RemoveFeed (IDType_t feedId)
-	{
-		StorageBackend_->RemoveFeed (feedId);
-	}
-
 	void Core::RenameFeed (const QModelIndex& index, const QString& newName)
 	{
 		if (!index.isValid ())
