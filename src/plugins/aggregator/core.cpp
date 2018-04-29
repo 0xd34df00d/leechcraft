@@ -432,25 +432,9 @@ namespace Aggregator
 		PendingJobs_ [delegateResult.ID_] = pj;
 	}
 
-	void Core::RemoveFeed (const QModelIndex& index)
+	void Core::RemoveFeed (IDType_t feedId)
 	{
-		if (!index.isValid ())
-			return;
-
-		ChannelShort channel;
-		try
-		{
-			channel = ChannelsModel_->GetChannelForIndex (index);
-		}
-		catch (const std::exception& e)
-		{
-			ErrorNotification (tr ("Feed removal error"),
-					tr ("Could not remove the feed: %1")
-					.arg (e.what ()));
-			return;
-		}
-
-		StorageBackend_->RemoveFeed (channel.FeedID_);
+		StorageBackend_->RemoveFeed (feedId);
 	}
 
 	void Core::RenameFeed (const QModelIndex& index, const QString& newName)

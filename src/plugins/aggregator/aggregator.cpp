@@ -495,7 +495,7 @@ namespace Aggregator
 				nullptr);
 		mb.setWindowModality (Qt::WindowModal);
 		if (mb.exec () == QMessageBox::Ok)
-			Core::Instance ().RemoveFeed (ds);
+			Core::Instance ().RemoveFeed (ds.data (ChannelRoles::FeedID).value<IDType_t> ());
 	}
 
 	void Aggregator::on_ActionRenameFeed__triggered ()
