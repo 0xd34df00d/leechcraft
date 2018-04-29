@@ -90,7 +90,7 @@ namespace Aggregator
 			if (cs.Unread_)
 			{
 				if (XmlSettingsManager::Instance ()->property ("UnreadCustomColor").toBool ())
-					return XmlSettingsManager::Instance ()->property ("UnreadItemsColor").value<QColor> ();
+					return XmlSettingsManager::Instance ()->property ("UnreadItemsColor");
 				else
 					return palette ?
 							QApplication::palette ().link ().color () :
