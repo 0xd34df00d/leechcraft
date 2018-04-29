@@ -82,6 +82,27 @@ namespace Aggregator
 		return Headers_.size ();
 	}
 
+	namespace
+	{
+		QVariant GetForegroundColor (const ChannelShort& cs)
+		{
+			bool palette = XmlSettingsManager::Instance ()->property ("UsePaletteColors").toBool ();
+			if (cs.Unread_)
+			{
+				if (XmlSettingsManager::Instance ()->property ("UnreadCustomColor").toBool ())
+					return XmlSettingsManager::Instance ()->property ("UnreadItemsColor").value<QColor> ();
+				else
+					return palette ?
+							QApplication::palette ().link ().color () :
+							QVariant ();
+			}
+			else
+				return palette ?
+						QApplication::palette ().linkVisited ().color () :
+						QVariant ();
+		}
+	}
+
 	QVariant ChannelsModel::data (const QModelIndex& index, int role) const
 	{
 		if (!index.isValid ())
@@ -116,22 +137,7 @@ namespace Aggregator
 			else
 				return {};
 		case Qt::ForegroundRole:
-		{
-			bool palette = XmlSettingsManager::Instance ()->property ("UsePaletteColors").toBool ();
-			if (Channels_.at (row).Unread_)
-			{
-				if (XmlSettingsManager::Instance ()->property ("UnreadCustomColor").toBool ())
-					return XmlSettingsManager::Instance ()->property ("UnreadItemsColor").value<QColor> ();
-				else
-					return palette ?
-							QApplication::palette ().link ().color () :
-							QVariant ();
-			}
-			else
-				return palette ?
-						QApplication::palette ().linkVisited ().color () :
-						QVariant ();
-		}
+			return GetForegroundColor (Channels_.at (row));
 		case Qt::FontRole:
 			if (Channels_.at (row).Unread_)
 				return XmlSettingsManager::Instance ()->property ("UnreadItemsFont");
