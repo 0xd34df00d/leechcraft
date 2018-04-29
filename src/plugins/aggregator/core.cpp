@@ -552,8 +552,7 @@ namespace Aggregator
 		ci.ChannelID_ = channel.ChannelID_;
 		ci.Link_ = channel.Link_;
 
-		Channel_ptr rc = StorageBackend_->
-				GetChannel (channel.ChannelID_, channel.FeedID_);
+		Channel_ptr rc = StorageBackend_->GetChannel (channel.ChannelID_, channel.FeedID_);
 		ci.Description_ = rc->Description_;
 		ci.Author_ = rc->Author_;
 
