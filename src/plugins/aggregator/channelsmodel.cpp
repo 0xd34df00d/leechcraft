@@ -103,7 +103,7 @@ namespace Aggregator
 				return QVariant ();
 			}
 		else if (role == Qt::DecorationRole &&
-				index.column () == 0)
+				index.column () == ColumnTitle)
 		{
 			QIcon result = QPixmap::fromImage (Channels_.at (row).Favicon_);
 			if (result.isNull ())
