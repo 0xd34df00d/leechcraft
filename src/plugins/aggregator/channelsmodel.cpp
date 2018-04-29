@@ -87,9 +87,12 @@ namespace Aggregator
 		if (!index.isValid ())
 			return QVariant ();
 
-		int row = index.row ();
-		if (role == Qt::DisplayRole)
-			switch (index.column ())
+		const auto row = index.row ();
+		const auto column = index.column ();
+		switch (role)
+		{
+		case Qt::DisplayRole:
+			switch (column)
 			{
 			case ColumnTitle:
 				return Channels_.at (row).DisplayTitle_.isEmpty () ?
@@ -100,18 +103,19 @@ namespace Aggregator
 			case ColumnLastBuild:
 				return Channels_.at (row).LastBuild_;
 			default:
-				return QVariant ();
+				return {};
 			}
-		else if (role == Qt::DecorationRole &&
-				index.column () == ColumnTitle)
-		{
-			QIcon result = QPixmap::fromImage (Channels_.at (row).Favicon_);
-			if (result.isNull ())
-				result = QIcon (":/resources/images/rss.png");
-			return result;
-		}
-		//Color mark a channels as read/unread
-		else if (role == Qt::ForegroundRole)
+		case Qt::DecorationRole:
+			if (column == ColumnTitle)
+			{
+				QIcon result = QPixmap::fromImage (Channels_.at (row).Favicon_);
+				if (result.isNull ())
+					result = QIcon (":/resources/images/rss.png");
+				return result;
+			}
+			else
+				return {};
+		case Qt::ForegroundRole:
 		{
 			bool palette = XmlSettingsManager::Instance ()->property ("UsePaletteColors").toBool ();
 			if (Channels_.at (row).Unread_)
@@ -120,22 +124,20 @@ namespace Aggregator
 					return XmlSettingsManager::Instance ()->property ("UnreadItemsColor").value<QColor> ();
 				else
 					return palette ?
-						QApplication::palette ().link ().color () :
-						QVariant ();
+							QApplication::palette ().link ().color () :
+							QVariant ();
 			}
 			else
 				return palette ?
-					QApplication::palette ().linkVisited ().color () :
-					QVariant ();
+						QApplication::palette ().linkVisited ().color () :
+						QVariant ();
 		}
-		else if (role == Qt::FontRole)
-		{
+		case Qt::FontRole:
 			if (Channels_.at (row).Unread_)
 				return XmlSettingsManager::Instance ()->property ("UnreadItemsFont");
 			else
-				return QVariant ();
-		}
-		else if (role == Qt::ToolTipRole)
+				return {};
+		case Qt::ToolTipRole:
 		{
 			const ChannelShort& cs = Channels_.at (row);
 			QString result = QString ("<qt><b>%1</b><br />").arg (cs.Title_);
@@ -157,16 +159,17 @@ namespace Aggregator
 			result += "</qt>";
 			return result;
 		}
-		else if (role == LeechCraft::RoleTags)
+		case RoleTags:
 			return Channels_.at (row).Tags_;
-		else if (role == ChannelRoles::UnreadCount)
+		case ChannelRoles::UnreadCount:
 			return Channels_.at (row).Unread_;
-		else if (role == ChannelRoles::ChannelID)
+		case ChannelRoles::ChannelID:
 			return Channels_.at (row).ChannelID_;
-		else if (role == ChannelRoles::HumanReadableTags)
+		case ChannelRoles::HumanReadableTags:
 			return Core::Instance ().GetProxy ()->GetTagsManager ()->GetTags (Channels_.at (row).Tags_);
-		else
-			return QVariant ();
+		default:
+			return {};
+		}
 	}
 
 	Qt::ItemFlags ChannelsModel::flags (const QModelIndex& index) const
