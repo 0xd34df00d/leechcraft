@@ -483,7 +483,7 @@ namespace Aggregator
 		if (!ds.isValid ())
 			return;
 
-		QString name = ds.sibling (ds.row (), 0).data ().toString ();
+		auto name = ds.sibling (ds.row (), ChannelsModel::ColumnTitle).data ().toString ();
 
 		QMessageBox mb (QMessageBox::Warning,
 				"LeechCraft",
