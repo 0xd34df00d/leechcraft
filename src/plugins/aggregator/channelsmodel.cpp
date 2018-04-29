@@ -101,6 +101,28 @@ namespace Aggregator
 						QApplication::palette ().linkVisited ().color () :
 						QVariant ();
 		}
+
+		QVariant GetTooltip (const ChannelShort& cs)
+		{
+			auto result = QString ("<qt><b>%1</b><br />").arg (cs.Title_);
+			if (cs.Author_.size ())
+			{
+				result += ChannelsModel::tr ("<strong>Author</strong>: %1").arg (cs.Author_);
+				result += "<br />";
+			}
+			if (cs.Tags_.size ())
+			{
+				const auto& hrTags = Core::Instance ().GetProxy ()->GetTagsManager ()->GetTags (cs.Tags_);
+				result += ChannelsModel::tr ("<b>Tags</b>: %1").arg (hrTags.join ("; "));
+				result += "<br />";
+			}
+			QString elidedLink = QApplication::fontMetrics ().elidedText (cs.Link_, Qt::ElideMiddle, 400);
+			result += QString ("<a href='%1'>%2</a>")
+					.arg (cs.Link_)
+					.arg (elidedLink);
+			result += "</qt>";
+			return result;
+		}
 	}
 
 	QVariant ChannelsModel::data (const QModelIndex& index, int role) const
@@ -144,27 +166,7 @@ namespace Aggregator
 			else
 				return {};
 		case Qt::ToolTipRole:
-		{
-			const ChannelShort& cs = Channels_.at (row);
-			QString result = QString ("<qt><b>%1</b><br />").arg (cs.Title_);
-			if (cs.Author_.size ())
-			{
-				result += tr ("<strong>Author</strong>: %1").arg (cs.Author_);
-				result += "<br />";
-			}
-			if (cs.Tags_.size ())
-			{
-				const auto& hrTags = Core::Instance ().GetProxy ()->GetTagsManager ()->GetTags (cs.Tags_);
-				result += tr ("<b>Tags</b>: %1").arg (hrTags.join ("; "));
-				result += "<br />";
-			}
-			QString elidedLink = QApplication::fontMetrics ().elidedText (cs.Link_, Qt::ElideMiddle, 400);
-			result += QString ("<a href='%1'>%2</a>")
-					.arg (cs.Link_)
-					.arg (elidedLink);
-			result += "</qt>";
-			return result;
-		}
+			return GetTooltip (Channels_.at (row));
 		case RoleTags:
 			return Channels_.at (row).Tags_;
 		case ChannelRoles::UnreadCount:
