@@ -50,6 +50,7 @@
 #include <util/models/flattofoldersproxymodel.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include <util/gui/util.h>
 #include "itemsfiltermodel.h"
 #include "channelsfiltermodel.h"
 #include "aggregator.h"
@@ -486,11 +487,9 @@ namespace Aggregator
 		auto name = ds.sibling (ds.row (), ChannelsModel::ColumnTitle).data ().toString ();
 
 		if (QMessageBox::question (nullptr,
-					"LeechCraft",
-					tr ("You are going to permanently remove the feed:"
-						"<br />%1<br /><br />"
-						"Are you really sure that you want to do it?",
-						"Feed removal confirmation").arg (name),
+					tr ("Feed deletion"),
+					tr ("Are you sure you want to delete feed %1?")
+						.arg (Util::FormatName (name)),
 					QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
 			return;
 
