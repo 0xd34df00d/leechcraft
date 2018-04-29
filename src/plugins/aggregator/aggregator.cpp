@@ -485,17 +485,16 @@ namespace Aggregator
 
 		auto name = ds.sibling (ds.row (), ChannelsModel::ColumnTitle).data ().toString ();
 
-		QMessageBox mb (QMessageBox::Warning,
-				"LeechCraft",
-				tr ("You are going to permanently remove the feed:"
-					"<br />%1<br /><br />"
-					"Are you really sure that you want to do it?",
-					"Feed removal confirmation").arg (name),
-				QMessageBox::Ok | QMessageBox::Cancel,
-				nullptr);
-		mb.setWindowModality (Qt::WindowModal);
-		if (mb.exec () == QMessageBox::Ok)
-			Core::Instance ().RemoveFeed (ds.data (ChannelRoles::FeedID).value<IDType_t> ());
+		if (QMessageBox::question (nullptr,
+					"LeechCraft",
+					tr ("You are going to permanently remove the feed:"
+						"<br />%1<br /><br />"
+						"Are you really sure that you want to do it?",
+						"Feed removal confirmation").arg (name),
+					QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+			return;
+
+		Core::Instance ().RemoveFeed (ds.data (ChannelRoles::FeedID).value<IDType_t> ());
 	}
 
 	void Aggregator::on_ActionRenameFeed__triggered ()
