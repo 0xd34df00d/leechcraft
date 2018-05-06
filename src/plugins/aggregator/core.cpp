@@ -259,16 +259,6 @@ namespace Aggregator
 				importDialog.GetMask ());
 	}
 
-	void Core::SetAppWideActions (const AppWideActions& aw)
-	{
-		AppWideActions_ = aw;
-	}
-
-	const AppWideActions& Core::GetAppWideActions () const
-	{
-		return AppWideActions_;
-	}
-
 	bool Core::DoDelayedInit ()
 	{
 		bool result = true;

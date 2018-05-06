@@ -115,7 +115,6 @@ namespace Aggregator
 
 		Impl_->ChannelActions_.SetupActionsStruct (this);
 		Impl_->AppWideActions_.SetupActionsStruct (this);
-		Core::Instance ().SetAppWideActions (Impl_->AppWideActions_);
 
 		Impl_->ToolMenu_ = new QMenu (tr ("Aggregator"));
 		Impl_->ToolMenu_->setIcon (GetIcon ());

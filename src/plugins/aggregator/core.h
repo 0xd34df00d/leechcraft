@@ -119,7 +119,6 @@ namespace Aggregator
 		ChannelsFilterModel *ChannelsFilterModel_ = nullptr;
 		ICoreProxy_ptr Proxy_;
 		bool Initialized_ = false;
-		AppWideActions AppWideActions_;
 
 		QList<IDType_t> UpdatesQueue_;
 
@@ -157,8 +156,6 @@ namespace Aggregator
 		bool CouldHandle (const LeechCraft::Entity&);
 		void Handle (LeechCraft::Entity);
 		void StartAddingOPML (const QString&);
-		void SetAppWideActions (const AppWideActions&);
-		const AppWideActions& GetAppWideActions () const;
 
 		bool DoDelayedInit ();
 		bool ReinitStorage ();
