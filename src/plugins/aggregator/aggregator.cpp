@@ -498,13 +498,11 @@ namespace Aggregator
 	void Aggregator::on_ActionRenameFeed__triggered ()
 	{
 		const auto& ds = GetRelevantIndex ();
-
 		if (!ds.isValid ())
 			return;
 
-		const auto& current = ds.sibling (ds.row (), ChannelsModel::ColumnTitle)
-				.data ().toString ();
-		const QString& newName = QInputDialog::getText (nullptr,
+		const auto& current = ds.sibling (ds.row (), ChannelsModel::ColumnTitle).data ().toString ();
+		const auto& newName = QInputDialog::getText (nullptr,
 				tr ("Rename feed"),
 				tr ("New feed name:"),
 				QLineEdit::Normal,

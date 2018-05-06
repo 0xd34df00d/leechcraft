@@ -427,29 +427,9 @@ namespace Aggregator
 		if (!index.isValid ())
 			return;
 
-		ChannelShort channel;
-		try
-		{
-			channel = ChannelsModel_->GetChannelForIndex (index);
-		}
-		catch (const std::exception& e)
-		{
-			ErrorNotification (tr ("Feed rename error"),
-					tr ("Could not rename the feed: %1")
-					.arg (e.what ()));
-			return;
-		}
-
+		auto channel = ChannelsModel_->GetChannelForIndex (index);
 		channel.DisplayTitle_ = newName;
-		try
-		{
-			StorageBackend_->UpdateChannel (channel);
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< e.what ();
-		}
+		StorageBackend_->UpdateChannel (channel);
 	}
 
 	Util::ShortcutManager* Core::GetShortcutManager () const
