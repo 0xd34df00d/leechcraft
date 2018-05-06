@@ -56,6 +56,7 @@
 #include "channelsmodel.h"
 #include "uistatepersist.h"
 #include "storagebackendmanager.h"
+#include "actionsstructs.h"
 
 namespace LeechCraft
 {

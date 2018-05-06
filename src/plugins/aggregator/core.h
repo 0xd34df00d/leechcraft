@@ -44,7 +44,6 @@
 #include "channel.h"
 #include "feed.h"
 #include "storagebackend.h"
-#include "actionsstructs.h"
 #include "dbupdatethreadfwd.h"
 
 class QTimer;
