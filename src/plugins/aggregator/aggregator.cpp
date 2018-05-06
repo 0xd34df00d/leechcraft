@@ -530,7 +530,8 @@ namespace Aggregator
 				QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
 			return;
 
-		Core::Instance ().RemoveChannel (ds);
+		const auto channelId = ds.data (ChannelRoles::ChannelID).value<IDType_t> ();
+		StorageBackendManager::Instance ().MakeStorageBackendForThread ()->RemoveChannel (channelId);
 	}
 
 	void Aggregator::Perform (boost::function<void (const QModelIndex&)> func)
