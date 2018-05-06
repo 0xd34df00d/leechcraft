@@ -518,24 +518,19 @@ namespace Aggregator
 
 	void Aggregator::on_ActionRemoveChannel__triggered ()
 	{
-		QModelIndex ds = GetRelevantIndex ();
-
+		const auto& ds = GetRelevantIndex ();
 		if (!ds.isValid ())
 			return;
 
-		QString name = ds.sibling (ds.row (), 0).data ().toString ();
+		const auto& name = ds.sibling (ds.row (), ChannelsModel::ColumnTitle).data ().toString ();
+		if (QMessageBox::question (nullptr,
+				tr ("Channel deletion"),
+				tr ("Are you sure you want to delete channel %1?")
+					.arg (Util::FormatName (name)),
+				QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+			return;
 
-		QMessageBox mb (QMessageBox::Warning,
-				"LeechCraft",
-				tr ("You are going to remove the channel:"
-					"<br />%1<br /><br />"
-					"Are you really sure that you want to do it?",
-					"Channel removal confirmation").arg (name),
-				QMessageBox::Ok | QMessageBox::Cancel,
-				nullptr);
-		mb.setWindowModality (Qt::WindowModal);
-		if (mb.exec () == QMessageBox::Ok)
-			Core::Instance ().RemoveChannel (ds);
+		Core::Instance ().RemoveChannel (ds);
 	}
 
 	void Aggregator::Perform (boost::function<void (const QModelIndex&)> func)
