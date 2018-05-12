@@ -369,11 +369,8 @@ namespace Acetamide
 		case IMessage::Direction::In:
 			emit gotConsoleLog (msg.toUtf8 (), IHaveConsole::PacketDirection::In, {});
 			break;
-		default:
-			break;
 		}
 	}
-
 };
 };
 };
