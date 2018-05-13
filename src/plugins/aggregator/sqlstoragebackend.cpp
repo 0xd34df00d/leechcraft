@@ -1904,19 +1904,6 @@ namespace Aggregator
 		return oldV == newV;
 	}
 
-	QString SQLStorageBackend::GetBoolType () const
-	{
-		switch (Type_)
-		{
-			case SBSQLite:
-				return "TINYINT";
-			case SBPostgres:
-				return "BOOLEAN";
-			default:
-				return "BOOLEAN";
-		}
-	}
-
 	QString SQLStorageBackend::GetBlobType () const
 	{
 		switch (Type_)
@@ -1949,14 +1936,14 @@ namespace Aggregator
 
 		if (!tables.contains ("feeds_settings"))
 		{
-			if (!query.exec (QString ("CREATE TABLE feeds_settings ("
+			if (!query.exec ("CREATE TABLE feeds_settings ("
 							"settings_id BIGINT PRIMARY KEY, "
 							"feed_id BIGINT UNIQUE REFERENCES feeds ON DELETE CASCADE, "
 							"update_timeout INTEGER NOT NULL, "
 							"num_items INTEGER NOT NULL, "
 							"item_age INTEGER NOT NULL, "
-							"auto_download_enclosures %1 NOT NULL"
-							");").arg (GetBoolType ())))
+							"auto_download_enclosures BOOLEAN NOT NULL"
+							");"))
 			{
 				Util::DBLock::DumpError (query);
 				return false;
@@ -2009,7 +1996,7 @@ namespace Aggregator
 
 		if (!tables.contains ("items"))
 		{
-			if (!query.exec (QString ("CREATE TABLE items ("
+			if (!query.exec ("CREATE TABLE items ("
 					"item_id BIGINT PRIMARY KEY, "
 					"channel_id BIGINT NOT NULL REFERENCES channels ON DELETE CASCADE, "
 					"title TEXT, "
@@ -2019,13 +2006,13 @@ namespace Aggregator
 					"category TEXT, "
 					"guid TEXT, "
 					"pub_date TIMESTAMP, "
-					"unread %1, "
+					"unread BOOLEAN, "
 					"num_comments SMALLINT, "
 					"comments_url TEXT, "
 					"comments_page_url TEXT, "
 					"latitude TEXT, "
 					"longitude TEXT"
-					");").arg (GetBoolType ())))
+					");"))
 			{
 				LeechCraft::Util::DBLock::DumpError (query);
 				return false;
@@ -2076,14 +2063,14 @@ namespace Aggregator
 
 		if (!tables.contains ("mrss"))
 		{
-			if (!query.exec (QString ("CREATE TABLE mrss ("
+			if (!query.exec ("CREATE TABLE mrss ("
 							"mrss_id BIGINT PRIMARY KEY, "
 							"item_id BIGINT NOT NULL REFERENCES items ON DELETE CASCADE, "
 							"url TEXT, "
 							"size BIGINT, "
 							"type TEXT, "
 							"medium TEXT, "
-							"is_default %1, "
+							"is_default BOOLEAN, "
 							"expression TEXT, "
 							"bitrate INTEGER, "
 							"framerate REAL, "
@@ -2111,7 +2098,7 @@ namespace Aggregator
 							"item_parents_hash TEXT, "
 							"item_title TEXT, "
 							"item_url TEXT"
-							");").arg (GetBoolType ())))
+							");"))
 			{
 				Util::DBLock::DumpError (query);
 				return false;

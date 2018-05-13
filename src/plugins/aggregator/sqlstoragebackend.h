@@ -620,7 +620,6 @@ namespace Aggregator
 		virtual IDType_t GetHighestID (const PoolType&) const;
 
 	private:
-		QString GetBoolType () const;
 		QString GetBlobType () const;
 		bool InitializeTables ();
 		QByteArray SerializePixmap (const QImage&) const;
