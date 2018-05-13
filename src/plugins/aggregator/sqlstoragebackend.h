@@ -574,51 +574,47 @@ namespace Aggregator
 							GetItemsForTag_;
 	public:
 		SQLStorageBackend (Type, const QString&);
-		virtual ~SQLStorageBackend ();
+		~SQLStorageBackend ();
 
-		virtual void Prepare ();
+		void Prepare () override;
 
-		virtual void GetFeedsIDs (ids_t&) const;
-		virtual Feed_ptr GetFeed (const IDType_t&) const;
-		virtual IDType_t FindFeed (const QString&) const;
-		virtual Feed::FeedSettings GetFeedSettings (const IDType_t&) const;
-		virtual void SetFeedSettings (const Feed::FeedSettings&);
-		virtual void GetChannels (channels_shorts_t&, const IDType_t&) const;
-		virtual Channel_ptr GetChannel (const IDType_t&,
-				const IDType_t&) const;
-		virtual IDType_t FindChannel (const QString& ,
-				const QString&, const IDType_t&) const;
-		virtual void TrimChannel (const IDType_t&, int, int);
-		virtual void GetItems (items_shorts_t&, const IDType_t&) const;
-		virtual int GetUnreadItems (const IDType_t&) const;
-		virtual Item_ptr GetItem (const IDType_t&) const;
-		virtual boost::optional<IDType_t> FindItem (const QString&, const QString&, const IDType_t&) const;
-		virtual boost::optional<IDType_t> FindItemByLink (const QString&, const IDType_t&) const;
-		virtual boost::optional<IDType_t> FindItemByTitle (const QString&, const IDType_t&) const;
-		virtual void GetItems (items_container_t&,
-				const IDType_t&) const;
+		void GetFeedsIDs (ids_t&) const override;
+		Feed_ptr GetFeed (const IDType_t&) const override;
+		IDType_t FindFeed (const QString&) const override;
+		Feed::FeedSettings GetFeedSettings (const IDType_t&) const override;
+		void SetFeedSettings (const Feed::FeedSettings&) override;
+		void GetChannels (channels_shorts_t&, const IDType_t&) const override;
+		Channel_ptr GetChannel (const IDType_t&, const IDType_t&) const override;
+		IDType_t FindChannel (const QString& , const QString&, const IDType_t&) const override;
+		void TrimChannel (const IDType_t&, int, int) override;
+		void GetItems (items_shorts_t&, const IDType_t&) const override;
+		int GetUnreadItems (const IDType_t&) const override;
+		Item_ptr GetItem (const IDType_t&) const override;
+		boost::optional<IDType_t> FindItem (const QString&, const QString&, const IDType_t&) const override;
+		boost::optional<IDType_t> FindItemByLink (const QString&, const IDType_t&) const override;
+		boost::optional<IDType_t> FindItemByTitle (const QString&, const IDType_t&) const override;
+		void GetItems (items_container_t&, const IDType_t&) const override;
 
-		virtual void AddFeed (Feed_ptr);
-		virtual void UpdateChannel (Channel_ptr);
-		virtual void UpdateChannel (const ChannelShort&);
-		virtual void UpdateItem (Item_ptr);
-		virtual void UpdateItem (const ItemShort&);
-		virtual void AddChannel (Channel_ptr);
-		virtual void AddItem (Item_ptr);
-		virtual void RemoveItems (const QSet<IDType_t>&);
-		virtual void RemoveChannel (const IDType_t&);
-		virtual void RemoveFeed (const IDType_t&);
-		virtual bool UpdateFeedsStorage (int, int);
-		virtual bool UpdateChannelsStorage (int, int);
-		virtual bool UpdateItemsStorage (int, int);
-		virtual void ToggleChannelUnread (const IDType_t&, bool);
+		void AddFeed (Feed_ptr) override;
+		void UpdateChannel (Channel_ptr) override;
+		void UpdateChannel (const ChannelShort&) override;
+		void UpdateItem (Item_ptr) override;
+		void UpdateItem (const ItemShort&) override;
+		void AddChannel (Channel_ptr) override;
+		void AddItem (Item_ptr) override;
+		void RemoveItems (const QSet<IDType_t>&) override;
+		void RemoveChannel (const IDType_t&) override;
+		void RemoveFeed (const IDType_t&) override;
+		bool UpdateFeedsStorage (int, int) override;
+		bool UpdateChannelsStorage (int, int) override;
+		bool UpdateItemsStorage (int, int) override;
+		void ToggleChannelUnread (const IDType_t&, bool) override;
 
-		virtual QList<ITagsManager::tag_id> GetItemTags (const IDType_t&);
-		virtual void SetItemTags (const IDType_t&, const QList<ITagsManager::tag_id>&);
-		virtual QList<IDType_t> GetItemsForTag (const ITagsManager::tag_id&);
+		QList<ITagsManager::tag_id> GetItemTags (const IDType_t&) override;
+		void SetItemTags (const IDType_t&, const QList<ITagsManager::tag_id>&) override;
+		QList<IDType_t> GetItemsForTag (const ITagsManager::tag_id&) override;
 
-		virtual IDType_t GetHighestID (const PoolType&) const;
-
+		IDType_t GetHighestID (const PoolType&) const override;
 	private:
 		QString GetBlobType () const;
 		bool InitializeTables ();
