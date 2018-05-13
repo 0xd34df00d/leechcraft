@@ -401,9 +401,8 @@ namespace Aggregator
 		switch (Type_)
 		{
 			case SBSQLite:
-				cnt = "AND item_id IN (SELECT item_id FROM items "
-						"WHERE channel_id = :channel_id ORDER BY pub_date "
-						"DESC LIMIT 10000 OFFSET :number)";
+				cnt = "AND pub_date IN "
+					"(SELECT pub_date FROM items WHERE channel_id = :channel_id ORDER BY pub_date DESC LIMIT 100000 OFFSET :number)";
 				break;
 			case SBPostgres:
 				cnt = "AND pub_date IN "
