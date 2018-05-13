@@ -85,11 +85,7 @@ namespace Aggregator
 
 		/** @brief Returns all the feeds in the storage.
 		 *
-		 * Puts IDs of all the feeds in the storage into the passed
-		 * container.
-		 *
-		 * @param[out] fids The container with feed IDs. The IDs would be
-		 * appended to the container.
+		 * @return All feed IDs.
 		 */
 		virtual ids_t GetFeedsIDs () const = 0;
 
