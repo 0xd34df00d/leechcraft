@@ -219,23 +219,10 @@ namespace Aggregator
 				"ORDER BY title");
 
 		UnreadItemsCounter_ = QSqlQuery (DB_);
-		switch (Type_)
-		{
-		case SBSQLite:
-			UnreadItemsCounter_.prepare ("SELECT COUNT (unread) "
-					"FROM items "
-					"WHERE channel_id = :channel_id "
-					"AND (unread = 1 OR unread = 'true')");
-			break;
-		case SBPostgres:
-			UnreadItemsCounter_.prepare ("SELECT COUNT (1) "
-					"FROM items "
-					"WHERE channel_id = :channel_id "
-					"AND unread");
-			break;
-		case SBMysql:
-			break;
-		}
+		UnreadItemsCounter_.prepare ("SELECT COUNT (1) "
+				"FROM items "
+				"WHERE channel_id = :channel_id "
+				"AND unread");
 
 		ItemsShortSelector_ = QSqlQuery (DB_);
 		ItemsShortSelector_.prepare ("SELECT "
