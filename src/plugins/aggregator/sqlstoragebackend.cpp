@@ -397,20 +397,23 @@ namespace Aggregator
 		QString commonGet = "SELECT item_id FROM items "
 			"WHERE channel_id = :channel_id ";
 		QString cdt = "AND pub_date < :date";
-		QString cnt;
+
+		QString allLimit;
 		switch (Type_)
 		{
-			case SBSQLite:
-				cnt = "AND pub_date IN "
-					"(SELECT pub_date FROM items WHERE channel_id = :channel_id ORDER BY pub_date DESC LIMIT -1 OFFSET :number)";
-				break;
-			case SBPostgres:
-				cnt = "AND pub_date IN "
-					"(SELECT pub_date FROM items WHERE channel_id = :channel_id ORDER BY pub_date DESC OFFSET :number)";
-				break;
-			case SBMysql:
-				break;
+		case SBSQLite:
+			allLimit = "-1";
+			break;
+		case SBPostgres:
+			allLimit = "ALL";
+			break;
+		case SBMysql:
+			break;
 		}
+		auto cnt = QString ("AND pub_date IN "
+				"(SELECT pub_date FROM items WHERE channel_id = :channel_id "
+				"ORDER BY pub_date DESC LIMIT %1 OFFSET :number)")
+				.arg (allLimit);
 
 		ChannelDateTrimmer_ = QSqlQuery (DB_);
 		ChannelDateTrimmer_.prepare (common + cdt);
