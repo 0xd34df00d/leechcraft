@@ -50,7 +50,6 @@ set (SRCS
 	startupthirdpage.cpp
 	export2fb2dialog.cpp
 	actionsstructs.cpp
-	sqlstoragebackend_mysql.cpp
 	pluginmanager.cpp
 	proxyobject.cpp
 	dbupdatethread.cpp

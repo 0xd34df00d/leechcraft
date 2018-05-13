@@ -32,7 +32,6 @@
 #include <QFile>
 #include <QDebug>
 #include "sqlstoragebackend.h"
-#include "sqlstoragebackend_mysql.h"
 #include "storagebackendmanager.h"
 
 namespace LeechCraft
@@ -83,8 +82,7 @@ namespace Aggregator
 			result = std::make_shared<SQLStorageBackend> (type, id);
 			break;
 		case SBMysql:
-			result = std::make_shared<SQLStorageBackendMysql> (type, id);
-			break;
+			throw std::runtime_error { "MySQL backend not supported yet, sorry" };
 		}
 		qDebug () << Q_FUNC_INFO
 				<< "created connection";
