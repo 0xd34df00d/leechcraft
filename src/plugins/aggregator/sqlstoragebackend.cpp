@@ -762,7 +762,7 @@ namespace Aggregator
 				"WHERE tag = :tag");
 	}
 
-	void SQLStorageBackend::GetFeedsIDs (ids_t& result) const
+	ids_t SQLStorageBackend::GetFeedsIDs () const
 	{
 		QSqlQuery feedSelector (DB_);
 		if (!feedSelector.exec (QString ("SELECT feed_id "
@@ -770,11 +770,13 @@ namespace Aggregator
 					"ORDER BY feed_id")))
 		{
 			Util::DBLock::DumpError (feedSelector);
-			return;
+			return {};
 		}
 
+		ids_t result;
 		while (feedSelector.next ())
 			result.push_back (feedSelector.value (0).toInt ());
+		return result;
 	}
 
 	QList<ITagsManager::tag_id> SQLStorageBackend::GetItemTags (const IDType_t& id)

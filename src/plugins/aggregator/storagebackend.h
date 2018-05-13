@@ -91,7 +91,7 @@ namespace Aggregator
 		 * @param[out] fids The container with feed IDs. The IDs would be
 		 * appended to the container.
 		 */
-		virtual void GetFeedsIDs (ids_t& fids) const = 0;
+		virtual ids_t GetFeedsIDs () const = 0;
 
 		/** @brief Returns the feed identified by its id.
 		 *

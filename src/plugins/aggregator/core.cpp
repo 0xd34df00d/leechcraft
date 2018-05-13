@@ -791,7 +791,7 @@ namespace Aggregator
 	void Core::GetChannels (channels_shorts_t& channels) const
 	{
 		ids_t ids;
-		StorageBackend_->GetFeedsIDs (ids);
+		StorageBackend_->GetFeedsIDs ();
 		for (const auto id : ids)
 			StorageBackend_->GetChannels (channels, id);
 	}
@@ -971,7 +971,7 @@ namespace Aggregator
 	void Core::updateFeeds ()
 	{
 		ids_t ids;
-		StorageBackend_->GetFeedsIDs (ids);
+		StorageBackend_->GetFeedsIDs ();
 		for (const auto id : ids)
 		{
 			try
@@ -1056,7 +1056,7 @@ namespace Aggregator
 	void Core::handleCustomUpdates ()
 	{
 		ids_t ids;
-		StorageBackend_->GetFeedsIDs (ids);
+		StorageBackend_->GetFeedsIDs ();
 		QDateTime current = QDateTime::currentDateTime ();
 		for (const auto id : ids)
 		{

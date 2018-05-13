@@ -286,12 +286,10 @@ namespace Aggregator
 
 	void ChannelsModel::PopulateChannels ()
 	{
-		auto storage = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
-
 		Clear ();
-		ids_t feeds;
-		storage->GetFeedsIDs (feeds);
-		for (const auto feedId : feeds)
+
+		auto storage = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
+		for (const auto feedId : storage->GetFeedsIDs ())
 		{
 			channels_shorts_t channels;
 			storage->GetChannels (channels, feedId);

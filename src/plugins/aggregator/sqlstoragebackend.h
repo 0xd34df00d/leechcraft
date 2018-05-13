@@ -578,7 +578,7 @@ namespace Aggregator
 
 		void Prepare () override;
 
-		void GetFeedsIDs (ids_t&) const override;
+		ids_t GetFeedsIDs () const override;
 		Feed_ptr GetFeed (const IDType_t&) const override;
 		IDType_t FindFeed (const QString&) const override;
 		Feed::FeedSettings GetFeedSettings (const IDType_t&) const override;

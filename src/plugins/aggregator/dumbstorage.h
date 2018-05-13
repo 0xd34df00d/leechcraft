@@ -39,7 +39,7 @@ namespace Aggregator
 	{
 	public:
 		void Prepare ();
-		void GetFeedsIDs (ids_t&) const;
+		ids_t GetFeedsIDs () const;
 		Feed_ptr GetFeed (const IDType_t&) const;
 		IDType_t FindFeed (const QString&) const;
 		Feed::FeedSettings GetFeedSettings (const IDType_t&) const;

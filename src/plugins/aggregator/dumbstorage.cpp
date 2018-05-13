@@ -37,8 +37,9 @@ namespace Aggregator
 	{
 	}
 
-	void DumbStorage::GetFeedsIDs (ids_t&) const
+	ids_t DumbStorage::GetFeedsIDs () const
 	{
+		return {};
 	}
 
 	Feed_ptr DumbStorage::GetFeed (const IDType_t&) const
