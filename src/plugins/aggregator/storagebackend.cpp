@@ -29,7 +29,6 @@
 
 #include "storagebackend.h"
 #include <stdexcept>
-#include <QFile>
 #include <QDebug>
 #include "sqlstoragebackend.h"
 #include "storagebackendmanager.h"
@@ -38,24 +37,6 @@ namespace LeechCraft
 {
 namespace Aggregator
 {
-	QString StorageBackend::LoadQuery (const QString& engine, const QString& name)
-	{
-		QFile file (QString (":/resources/sql/%1/%2.sql")
-				.arg (engine)
-				.arg (name));
-		if (!file.open (QIODevice::ReadOnly))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to open file"
-					<< name
-					<< "for engine"
-					<< engine
-					<< "for reading";
-			return QString ();
-		}
-		return file.readAll ();
-	}
-
 	StorageBackend_ptr StorageBackend::Create (const QString& strType, const QString& id)
 	{
 		StorageBackend::Type type;

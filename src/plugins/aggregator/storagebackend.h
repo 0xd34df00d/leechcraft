@@ -72,8 +72,6 @@ namespace Aggregator
 		static StorageBackend_ptr Create (const QString&, const QString& = QString ());
 		static StorageBackend_ptr Create (Type, const QString& = QString ());
 
-		static QString LoadQuery (const QString&, const QString&);
-
 		/** @brief Do post-initialization.
 		 *
 		 * This function is called by the Core after all the updates are
