@@ -396,18 +396,16 @@ namespace Aggregator
 			"WHERE channel_id = :channel_id ";
 		QString commonGet = "SELECT item_id FROM items "
 			"WHERE channel_id = :channel_id ";
-		QString cdt;
+		QString cdt = "AND pub_date < :date";
 		QString cnt;
 		switch (Type_)
 		{
 			case SBSQLite:
-				cdt = "AND (julianday ('now') - julianday (pub_date) > :age)";
 				cnt = "AND item_id IN (SELECT item_id FROM items "
 						"WHERE channel_id = :channel_id ORDER BY pub_date "
 						"DESC LIMIT 10000 OFFSET :number)";
 				break;
 			case SBPostgres:
-				cdt = "AND (pub_date - now () > :age * interval '1 day')";
 				cnt = "AND pub_date IN "
 					"(SELECT pub_date FROM items WHERE channel_id = :channel_id ORDER BY pub_date DESC OFFSET :number)";
 				break;
@@ -1204,9 +1202,11 @@ namespace Aggregator
 	void SQLStorageBackend::TrimChannel (const IDType_t& channelId,
 			int days, int number)
 	{
+		const auto& cutoff = QDateTime::currentDateTime ().addDays (-days);
+
 		QSet<IDType_t> removedIds;
 		ChannelDateGetter_.bindValue (":channel_id", channelId);
-		ChannelDateGetter_.bindValue (":age", days);
+		ChannelDateGetter_.bindValue (":date", cutoff);
 		if (!ChannelDateGetter_.exec ())
 			LeechCraft::Util::DBLock::DumpError (ChannelDateGetter_);
 
@@ -1224,7 +1224,7 @@ namespace Aggregator
 		emit itemsRemoved (removedIds);
 
 		ChannelDateTrimmer_.bindValue (":channel_id", channelId);
-		ChannelDateTrimmer_.bindValue (":age", days);
+		ChannelDateTrimmer_.bindValue (":date", cutoff);
 		if (!ChannelDateTrimmer_.exec ())
 			LeechCraft::Util::DBLock::DumpError (ChannelDateTrimmer_);
 
