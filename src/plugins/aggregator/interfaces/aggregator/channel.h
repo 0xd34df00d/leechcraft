@@ -74,6 +74,7 @@ namespace Aggregator
 		QImage Favicon_;
 		items_container_t Items_;
 
+		Channel () : Channel { IDNotFound, IDNotFound } {}
 		Channel (const IDType_t& feedId);
 		Channel (const IDType_t& feedId, const IDType_t& channelId);
 		Channel (const Channel&);
