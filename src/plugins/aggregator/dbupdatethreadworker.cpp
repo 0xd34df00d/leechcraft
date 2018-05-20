@@ -108,19 +108,6 @@ namespace Aggregator
 
 	void DBUpdateThreadWorker::AddChannel (const Channel_ptr& channel, const Feed::FeedSettings& settings)
 	{
-		const auto ipc = static_cast<size_t> (settings.NumItems_);
-		const auto days = settings.ItemAge_;
-		size_t truncateAt = (channel->Items_.size () <= ipc) ?
-			channel->Items_.size () :
-			ipc;
-		for (size_t j = 0; j < channel->Items_.size (); j++)
-			if (channel->Items_ [j]->PubDate_.daysTo (QDateTime::currentDateTime ()) > days)
-			{
-				truncateAt = std::min (j, truncateAt);
-				break;
-			}
-		channel->Items_.resize (truncateAt);
-
 		SB_->AddChannel (channel);
 
 		QString str = tr ("Added channel \"%1\" (%n item(s))",
