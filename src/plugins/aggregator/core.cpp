@@ -763,12 +763,7 @@ namespace Aggregator
 				end = channels.end (); i != end; ++i)
 		{
 			auto channel = StorageBackend_->GetChannel (i->ChannelID_, i->FeedID_);
-			items_shorts_t items;
-			StorageBackend_->GetItems (items, channel.ChannelID_);
-
-			for (items_shorts_t::const_iterator j = items.begin (), endJ = items.end (); j != endJ; ++j)
-				channel.Items_.push_back (StorageBackend_->GetItem (j->ItemID_));
-
+			StorageBackend_->GetItems (channel.Items_, channel.ChannelID_);
 			data << channel;
 		}
 
