@@ -871,66 +871,54 @@ namespace Aggregator
 		QString field, table;
 		switch (type)
 		{
-			case PTFeed:
-				field = "feed_id";
-				table = "feeds";
-				break;
-
-			case PTChannel:
-				field = "channel_id";
-				table = "channels";
-				break;
-
-			case PTItem:
-				field = "item_id";
-				table = "items";
-				break;
-
-			case PTFeedSettings:
-				field = "settings_id";
-				table = "feeds_settings";
-				break;
-
-			case PTEnclosure:
-				field = "enclosure_id";
-				table = "enclosures";
-				break;
-
-			case PTMRSSEntry:
-				field = "mrss_id";
-				table = "mrss";
-				break;
-
-			case PTMRSSThumbnail:
-				field = "mrss_thumb_id";
-				table = "mrss_thumbnails";
-				break;
-
-			case PTMRSSCredit:
-				field = "mrss_credits_id";
-				table = "mrss_credits";
-				break;
-
-			case PTMRSSComment:
-				field = "mrss_comment_id";
-				table = "mrss_comments";
-				break;
-
-			case PTMRSSPeerLink:
-				field = "mrss_peerlink_id";
-				table = "mrss_peerlinks";
-				break;
-
-			case PTMRSSScene:
-				field = "mrss_scene_id";
-				table = "mrss_scenes";
-				break;
-
-			default:
-				qWarning () << Q_FUNC_INFO
-						<< "supplied unknown type"
-						<< type;
-				return 0;
+		case PTFeed:
+			field = "feed_id";
+			table = "feeds";
+			break;
+		case PTChannel:
+			field = "channel_id";
+			table = "channels";
+			break;
+		case PTItem:
+			field = "item_id";
+			table = "items";
+			break;
+		case PTFeedSettings:
+			field = "settings_id";
+			table = "feeds_settings";
+			break;
+		case PTEnclosure:
+			field = "enclosure_id";
+			table = "enclosures";
+			break;
+		case PTMRSSEntry:
+			field = "mrss_id";
+			table = "mrss";
+			break;
+		case PTMRSSThumbnail:
+			field = "mrss_thumb_id";
+			table = "mrss_thumbnails";
+			break;
+		case PTMRSSCredit:
+			field = "mrss_credits_id";
+			table = "mrss_credits";
+			break;
+		case PTMRSSComment:
+			field = "mrss_comment_id";
+			table = "mrss_comments";
+			break;
+		case PTMRSSPeerLink:
+			field = "mrss_peerlink_id";
+			table = "mrss_peerlinks";
+		case PTMRSSScene:
+			field = "mrss_scene_id";
+			table = "mrss_scenes";
+			break;
+		default:
+			qWarning () << Q_FUNC_INFO
+					<< "supplied unknown type"
+					<< type;
+			return 0;
 		}
 
 		return GetHighestID (field, table);
