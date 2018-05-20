@@ -107,11 +107,11 @@ namespace BodyFetch
 
 		for (const auto& item : items)
 		{
-			const auto& channelPtr = AggregatorProxy_->GetChannel (item->ChannelID_);
-			if (!channelPtr)
+			const auto& channel = AggregatorProxy_->GetChannel (item->ChannelID_);
+			if (channel.ChannelID_ == IDNotFound)
 				continue;
 
-			const auto& channelLinkStr = channelPtr->Link_;
+			const auto& channelLinkStr = channel.Link_;
 
 			auto script = channel2script.value (channelLinkStr);
 			if (!script)
