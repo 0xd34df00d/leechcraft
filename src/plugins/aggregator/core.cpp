@@ -695,8 +695,7 @@ namespace Aggregator
 			const QString& ownerEmail,
 			const std::vector<bool>& mask) const
 	{
-		channels_shorts_t channels;
-		GetChannels (channels);
+		auto channels = GetChannels ();
 
 		for (std::vector<bool>::const_iterator begin = mask.begin (),
 				i = mask.end () - 1; i >= begin; --i)
@@ -729,8 +728,7 @@ namespace Aggregator
 			const QString& ownerEmail,
 			const std::vector<bool>& mask) const
 	{
-		channels_shorts_t channels;
-		GetChannels (channels);
+		auto channels = GetChannels ();
 
 		for (std::vector<bool>::const_iterator begin = mask.begin (),
 				i = mask.end () - 1; i >= begin; --i)
@@ -782,13 +780,15 @@ namespace Aggregator
 		return JobHolderRepresentation_;
 	}
 
-	void Core::GetChannels (channels_shorts_t& channels) const
+	channels_shorts_t Core::GetChannels () const
 	{
+		channels_shorts_t result;
 		for (const auto id : StorageBackend_->GetFeedsIDs ())
 		{
 			auto feedChannels = StorageBackend_->GetChannels (id);
-			std::move (feedChannels.begin (), feedChannels.end (), std::back_inserter (channels));
+			std::move (feedChannels.begin (), feedChannels.end (), std::back_inserter (result));
 		}
+		return result;
 	}
 
 	void Core::AddFeeds (const feeds_container_t& feeds,

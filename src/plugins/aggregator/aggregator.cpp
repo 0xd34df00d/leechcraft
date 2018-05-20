@@ -606,9 +606,7 @@ namespace Aggregator
 				tr ("OPML files (*.opml);;"
 					"XML files (*.xml);;"
 					"All files (*.*)"), nullptr);
-		channels_shorts_t channels;
-		Core::Instance ().GetChannels (channels);
-		exportDialog.SetFeeds (channels);
+		exportDialog.SetFeeds (Core::Instance ().GetChannels ());
 		if (exportDialog.exec () == QDialog::Rejected)
 			return;
 
@@ -635,9 +633,7 @@ namespace Aggregator
 				tr ("Select save file"),
 				tr ("Aggregator exchange files (*.lcae);;"
 					"All files (*.*)"), nullptr);
-		channels_shorts_t channels;
-		Core::Instance ().GetChannels (channels);
-		exportDialog.SetFeeds (channels);
+		exportDialog.SetFeeds (Core::Instance ().GetChannels ());
 		if (exportDialog.exec () == QDialog::Rejected)
 			return;
 

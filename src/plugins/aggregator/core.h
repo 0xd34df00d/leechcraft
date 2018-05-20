@@ -212,7 +212,7 @@ namespace Aggregator
 				const std::vector<bool>&) const;
 		JobHolderRepresentation* GetJobHolderRepresentation () const;
 
-		void GetChannels (channels_shorts_t&) const;
+		channels_shorts_t GetChannels () const;
 		void AddFeeds (const feeds_container_t&, const QString&);
 	public slots:
 		void openLink (const QString&);

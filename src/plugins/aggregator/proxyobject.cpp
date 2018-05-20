@@ -114,14 +114,9 @@ namespace Aggregator
 	QList<Channel> ProxyObject::GetAllChannels () const
 	{
 		QList<Channel> result;
-
 		const auto& sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
-
-		channels_shorts_t channels;
-		Core::Instance ().GetChannels (channels);
-		for (const auto& cs : channels)
+		for (const auto& cs : Core::Instance ().GetChannels ())
 			result << sb->GetChannel (cs.ChannelID_, cs.FeedID_);
-
 		return result;
 	}
 
