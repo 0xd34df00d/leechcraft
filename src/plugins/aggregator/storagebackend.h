@@ -144,8 +144,7 @@ namespace Aggregator
 		 * @param[in] feedParent Parent feed's ID identifying the feed.
 		 * @return Full information about the requested channel.
 		 */
-		virtual Channel GetChannel (const IDType_t& channelId,
-				const IDType_t& feedParent) const = 0;
+		virtual Channel GetChannel (const IDType_t& channelId, const IDType_t& feedParent) const = 0;
 
 		/** @brief Find channel with the given title, link and
 		 * and given parent and returns its ID or -1 if it's not
@@ -157,8 +156,7 @@ namespace Aggregator
 		 * @return ID of the found channel or -1 if it's not
 		 * found.
 		 */
-		virtual IDType_t FindChannel (const QString& title,
-				const QString& link, const IDType_t& feedId) const = 0;
+		virtual IDType_t FindChannel (const QString& title, const QString& link, const IDType_t& feedId) const = 0;
 
 		/** @brief Trims the channel to remove old items.
 		 *
@@ -168,8 +166,7 @@ namespace Aggregator
 		 * @param[in] days Max number of days.
 		 * @param[in] number Max number of items.
 		 */
-		virtual void TrimChannel (const IDType_t& channelId,
-				int days, int number) = 0;
+		virtual void TrimChannel (const IDType_t& channelId, int days, int number) = 0;
 
 		/** @brief Returns short information about items in a channel.
 		 *
@@ -180,8 +177,7 @@ namespace Aggregator
 		 * the items would be appended.
 		 * @param[in] channelId The ID of the channel.
 		 */
-		virtual void GetItems (items_shorts_t& items,
-				const IDType_t& channelId) const = 0;
+		virtual void GetItems (items_shorts_t& items, const IDType_t& channelId) const = 0;
 
 		/** @brief Counts unread items number in a given channel.
 		 *
@@ -238,8 +234,7 @@ namespace Aggregator
 		 * @sa FindItem()
 		 * @sa FindItemByLink()
 		 */
-		virtual boost::optional<IDType_t> FindItemByTitle (const QString& title,
-				const IDType_t& channel) const = 0;
+		virtual boost::optional<IDType_t> FindItemByTitle (const QString& title, const IDType_t& channel) const = 0;
 
 		/** @brief Finds first item with the given link and parent
 		 * channel.
@@ -257,8 +252,7 @@ namespace Aggregator
 		 * @sa FindItem()
 		 * @sa FindItemByTitle()
 		 */
-		virtual boost::optional<IDType_t> FindItemByLink (const QString& link,
-				const IDType_t& channel) const = 0;
+		virtual boost::optional<IDType_t> FindItemByLink (const QString& link, const IDType_t& channel) const = 0;
 
 		/** @brief Returns all items in the channel.
 		 *
@@ -271,8 +265,7 @@ namespace Aggregator
 		 * @param[out] items The container with items.
 		 * @param[in] id The channel's ID.
 		 */
-		virtual void GetItems (items_container_t& items,
-				const IDType_t& id) const = 0;
+		virtual void GetItems (items_container_t& items, const IDType_t& id) const = 0;
 
 		/** @brief Puts a feed and all its child channels and items into the
 		 * storage.
@@ -429,8 +422,7 @@ namespace Aggregator
 		 * @param[in] id Channel's ID.
 		 * @param[in] state New state of the items.
 		 */
-		virtual void ToggleChannelUnread (const IDType_t& id,
-				bool state) = 0;
+		virtual void ToggleChannelUnread (const IDType_t& id, bool state) = 0;
 
 		virtual QList<ITagsManager::tag_id> GetItemTags (const IDType_t& id) = 0;
 		virtual void SetItemTags (const IDType_t& id, const QList<ITagsManager::tag_id>& tags) = 0;
