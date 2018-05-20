@@ -45,7 +45,7 @@ namespace Aggregator
 		Feed::FeedSettings GetFeedSettings (const IDType_t&) const;
 		void SetFeedSettings (const Feed::FeedSettings&);
 		void GetChannels (channels_shorts_t&, const IDType_t&) const;
-		Channel_ptr GetChannel (const IDType_t&, const IDType_t&) const;
+		Channel GetChannel (const IDType_t&, const IDType_t&) const;
 		IDType_t FindChannel (const QString&, const QString&, const IDType_t&) const;
 		void TrimChannel (const IDType_t&, int, int);
 		void GetItems (items_shorts_t&, const IDType_t&) const;
@@ -56,9 +56,9 @@ namespace Aggregator
 		boost::optional<IDType_t> FindItemByLink (const QString&, const IDType_t&) const;
 		void GetItems (items_container_t&, const IDType_t&) const;
 		void AddFeed (Feed_ptr);
-		void AddChannel (Channel_ptr);
+		void AddChannel (const Channel&);
 		void AddItem (Item_ptr);
-		void UpdateChannel (Channel_ptr);
+		void UpdateChannel (const Channel&);
 		void UpdateChannel (const ChannelShort&);
 		void UpdateItem (Item_ptr);
 		void UpdateItem (const ItemShort&);

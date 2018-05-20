@@ -106,19 +106,18 @@ namespace Aggregator
 		return s;
 	}
 
-	void DBUpdateThreadWorker::AddChannel (const Channel_ptr& channel, const Feed::FeedSettings& settings)
+	void DBUpdateThreadWorker::AddChannel (const Channel& channel, const Feed::FeedSettings& settings)
 	{
 		SB_->AddChannel (channel);
 
 		QString str = tr ("Added channel \"%1\" (%n item(s))",
-				"", channel->Items_.size ())
-			.arg (channel->Title_);
+				"", channel.Items_.size ())
+			.arg (channel.Title_);
 
 		Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Aggregator", str, Priority::Info));
 	}
 
-	bool DBUpdateThreadWorker::AddItem (const Item_ptr& item, const Channel_ptr& channel,
-			const Feed::FeedSettings& settings)
+	bool DBUpdateThreadWorker::AddItem (const Item_ptr& item, const Channel& channel, const Feed::FeedSettings& settings)
 	{
 		if (item->PubDate_.isValid ())
 		{
@@ -128,7 +127,7 @@ namespace Aggregator
 		else
 			item->FixDate ();
 
-		item->ChannelID_ = channel->ChannelID_;
+		item->ChannelID_ = channel.ChannelID_;
 		SB_->AddItem (item);
 
 		emit hookGotNewItems (std::make_shared<Util::DefaultHookProxy> (), { item });
@@ -142,7 +141,7 @@ namespace Aggregator
 							property ("EnclosuresDownloadPath").toString (),
 						0,
 						e.Type_);
-				de.Additional_ [" Tags"] = channel->Tags_;
+				de.Additional_ [" Tags"] = channel.Tags_;
 				iem->HandleEntity (de);
 			}
 
@@ -232,7 +231,7 @@ namespace Aggregator
 
 		for (const auto& channel : channels)
 		{
-			Channel_ptr ourChannel;
+			Channel ourChannel;
 			try
 			{
 				const auto ourChannelID = SB_->FindChannel (channel->Title_,
@@ -241,7 +240,7 @@ namespace Aggregator
 			}
 			catch (const StorageBackend::ChannelNotFoundError&)
 			{
-				AddChannel (channel, feedSettings);
+				AddChannel (*channel, feedSettings);
 				continue;
 			}
 
@@ -252,14 +251,14 @@ namespace Aggregator
 			{
 				auto mkLazy = [] (auto&& f) { return Util::MakeLazyF<boost::optional<IDType_t>> (f); };
 				const auto& ourItemID = Util::Msum ({
-							mkLazy ([&] { return SB_->FindItem (item->Title_, item->Link_, ourChannel->ChannelID_); }),
-							mkLazy ([&] { return SB_->FindItemByLink (item->Link_, ourChannel->ChannelID_); }),
+							mkLazy ([&] { return SB_->FindItem (item->Title_, item->Link_, ourChannel.ChannelID_); }),
+							mkLazy ([&] { return SB_->FindItemByLink (item->Link_, ourChannel.ChannelID_); }),
 							mkLazy ([&]
 									{
 										if (!item->Link_.isEmpty ())
 											return boost::optional<IDType_t> {};
 
-										return SB_->FindItemByTitle (item->Title_, ourChannel->ChannelID_);
+										return SB_->FindItemByTitle (item->Title_, ourChannel.ChannelID_);
 									})
 						}) ();
 				if (ourItemID)
@@ -272,7 +271,7 @@ namespace Aggregator
 					++newItems;
 			}
 
-			SB_->TrimChannel (ourChannel->ChannelID_, days, ipc);
+			SB_->TrimChannel (ourChannel.ChannelID_, days, ipc);
 
 			NotifyUpdates (newItems, updatedItems, channel);
 		}

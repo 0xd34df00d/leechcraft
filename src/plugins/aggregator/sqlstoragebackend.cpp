@@ -838,8 +838,7 @@ namespace Aggregator
 		try
 		{
 			auto item = GetItem (id);
-			emit itemDataUpdated (item,
-					GetChannel (item->ChannelID_, FindParentFeedForChannel (item->ChannelID_)));
+			emit itemDataUpdated (item, GetChannel (item->ChannelID_, FindParentFeedForChannel (item->ChannelID_)));
 		}
 		catch (const std::exception& e)
 		{
@@ -1078,7 +1077,7 @@ namespace Aggregator
 		ChannelsShortSelector_.finish ();
 	}
 
-	Channel_ptr SQLStorageBackend::GetChannel (const IDType_t& channelId,
+	Channel SQLStorageBackend::GetChannel (const IDType_t& channelId,
 			const IDType_t& parentFeed) const
 	{
 		ChannelsFullSelector_.bindValue (":channel_id", channelId);
@@ -1088,22 +1087,22 @@ namespace Aggregator
 		if (!ChannelsFullSelector_.next ())
 			throw ChannelNotFoundError ();
 
-		Channel_ptr channel (new Channel (parentFeed, channelId));
+		Channel channel (parentFeed, channelId);
 
-		channel->Link_ = ChannelsFullSelector_.value (0).toString ();
-		channel->Title_ = ChannelsFullSelector_.value (1).toString ();
-		channel->Description_ = ChannelsFullSelector_.value (2).toString ();
-		channel->LastBuild_ = ChannelsFullSelector_.value (3).toDateTime ();
+		channel.Link_ = ChannelsFullSelector_.value (0).toString ();
+		channel.Title_ = ChannelsFullSelector_.value (1).toString ();
+		channel.Description_ = ChannelsFullSelector_.value (2).toString ();
+		channel.LastBuild_ = ChannelsFullSelector_.value (3).toDateTime ();
 		QString tags = ChannelsFullSelector_.value (4).toString ();
-		channel->Tags_ = Core::Instance ().GetProxy ()->GetTagsManager ()->Split (tags);
-		channel->Language_ = ChannelsFullSelector_.value (5).toString ();
-		channel->Author_ = ChannelsFullSelector_.value (6).toString ();
-		channel->PixmapURL_ = ChannelsFullSelector_.value (7).toString ();
-		channel->Pixmap_ = UnserializePixmap (ChannelsFullSelector_
+		channel.Tags_ = Core::Instance ().GetProxy ()->GetTagsManager ()->Split (tags);
+		channel.Language_ = ChannelsFullSelector_.value (5).toString ();
+		channel.Author_ = ChannelsFullSelector_.value (6).toString ();
+		channel.PixmapURL_ = ChannelsFullSelector_.value (7).toString ();
+		channel.Pixmap_ = UnserializePixmap (ChannelsFullSelector_
 				.value (8).toByteArray ());
-		channel->Favicon_ = UnserializePixmap (ChannelsFullSelector_
+		channel.Favicon_ = UnserializePixmap (ChannelsFullSelector_
 				.value (9).toByteArray ());
-		channel->DisplayTitle_ = ChannelsFullSelector_.value (10).toString ();
+		channel.DisplayTitle_ = ChannelsFullSelector_.value (10).toString ();
 
 		ChannelsFullSelector_.finish ();
 
@@ -1227,8 +1226,7 @@ namespace Aggregator
 
 		try
 		{
-			emit channelDataUpdated (GetChannel (channelId,
-					FindParentFeedForChannel (channelId)));
+			emit channelDataUpdated (GetChannel (channelId, FindParentFeedForChannel (channelId)));
 		}
 		catch (const ChannelNotFoundError&)
 		{
@@ -1356,7 +1354,7 @@ namespace Aggregator
 		try
 		{
 			for (const auto chan : feed->Channels_)
-				AddChannel (chan);
+				AddChannel (*chan);
 		}
 		catch (const std::runtime_error& e)
 		{
@@ -1367,41 +1365,41 @@ namespace Aggregator
 		InsertFeed_.finish ();
 	}
 
-	void SQLStorageBackend::UpdateChannel (Channel_ptr channel)
+	void SQLStorageBackend::UpdateChannel (const Channel& channel)
 	{
-		ChannelFinder_.bindValue (":channel_id", channel->ChannelID_);
+		ChannelFinder_.bindValue (":channel_id", channel.ChannelID_);
 		if (!ChannelFinder_.exec ())
 		{
 			qWarning () << Q_FUNC_INFO;
 			Util::DBLock::DumpError (ChannelFinder_);
 			throw std::runtime_error (qPrintable (QString (
 							"Unable to execute channel finder query for channel {title: %1; url: %2}")
-						.arg (channel->Title_)
-						.arg (channel->Link_)));
+						.arg (channel.Title_)
+						.arg (channel.Link_)));
 		}
 		if (!ChannelFinder_.next ())
 		{
 			qWarning () << Q_FUNC_INFO
 				<< "not found channel"
-				<< channel->Title_
-				<< channel->Link_
+				<< channel.Title_
+				<< channel.Link_
 				<< ", inserting it";
 			AddChannel (channel);
 			return;
 		}
 		ChannelFinder_.finish ();
 
-		UpdateChannel_.bindValue (":channel_id", channel->ChannelID_);
-		UpdateChannel_.bindValue (":description", channel->Description_);
-		UpdateChannel_.bindValue (":last_build", channel->LastBuild_);
+		UpdateChannel_.bindValue (":channel_id", channel.ChannelID_);
+		UpdateChannel_.bindValue (":description", channel.Description_);
+		UpdateChannel_.bindValue (":last_build", channel.LastBuild_);
 		UpdateChannel_.bindValue (":tags",
-				Core::Instance ().GetProxy ()->GetTagsManager ()->Join (channel->Tags_));
-		UpdateChannel_.bindValue (":language", channel->Language_);
-		UpdateChannel_.bindValue (":author", channel->Author_);
-		UpdateChannel_.bindValue (":pixmap_url", channel->PixmapURL_);
-		UpdateChannel_.bindValue (":pixmap", SerializePixmap (channel->Pixmap_));
-		UpdateChannel_.bindValue (":favicon", SerializePixmap (channel->Favicon_));
-		UpdateChannel_.bindValue (":display_title", channel->DisplayTitle_);
+				Core::Instance ().GetProxy ()->GetTagsManager ()->Join (channel.Tags_));
+		UpdateChannel_.bindValue (":language", channel.Language_);
+		UpdateChannel_.bindValue (":author", channel.Author_);
+		UpdateChannel_.bindValue (":pixmap_url", channel.PixmapURL_);
+		UpdateChannel_.bindValue (":pixmap", SerializePixmap (channel.Pixmap_));
+		UpdateChannel_.bindValue (":favicon", SerializePixmap (channel.Favicon_));
+		UpdateChannel_.bindValue (":display_title", channel.DisplayTitle_);
 
 		if (!UpdateChannel_.exec ())
 		{
@@ -1409,8 +1407,8 @@ namespace Aggregator
 			Util::DBLock::DumpError (UpdateChannel_);
 			throw std::runtime_error (qPrintable (QString (
 							"Failed to save channel t %1, u %2")
-						.arg (channel->Title_)
-						.arg (channel->Link_)));
+						.arg (channel.Title_)
+						.arg (channel.Link_)));
 		}
 
 		if (!UpdateChannel_.numRowsAffected ())
@@ -1518,8 +1516,7 @@ namespace Aggregator
 		try
 		{
 			IDType_t cid = item->ChannelID_;
-			Channel_ptr channel = GetChannel (cid,
-					FindParentFeedForChannel (cid));
+			const auto& channel = GetChannel (cid, FindParentFeedForChannel (cid));
 			emit itemDataUpdated (item, channel);
 			emit channelDataUpdated (channel);
 		}
@@ -1568,22 +1565,22 @@ namespace Aggregator
 		}
 	}
 
-	void SQLStorageBackend::AddChannel (Channel_ptr channel)
+	void SQLStorageBackend::AddChannel (const Channel& channel)
 	{
-		InsertChannel_.bindValue (":channel_id", channel->ChannelID_);
-		InsertChannel_.bindValue (":feed_id", channel->FeedID_);
-		InsertChannel_.bindValue (":url", channel->Link_);
-		InsertChannel_.bindValue (":title", channel->Title_);
-		InsertChannel_.bindValue (":display_title", channel->DisplayTitle_);
-		InsertChannel_.bindValue (":description", channel->Description_);
-		InsertChannel_.bindValue (":last_build", channel->LastBuild_);
+		InsertChannel_.bindValue (":channel_id", channel.ChannelID_);
+		InsertChannel_.bindValue (":feed_id", channel.FeedID_);
+		InsertChannel_.bindValue (":url", channel.Link_);
+		InsertChannel_.bindValue (":title", channel.Title_);
+		InsertChannel_.bindValue (":display_title", channel.DisplayTitle_);
+		InsertChannel_.bindValue (":description", channel.Description_);
+		InsertChannel_.bindValue (":last_build", channel.LastBuild_);
 		InsertChannel_.bindValue (":tags",
-				Core::Instance ().GetProxy ()->GetTagsManager ()->Join (channel->Tags_));
-		InsertChannel_.bindValue (":language", channel->Language_);
-		InsertChannel_.bindValue (":author", channel->Author_);
-		InsertChannel_.bindValue (":pixmap_url", channel->PixmapURL_);
-		InsertChannel_.bindValue (":pixmap", SerializePixmap (channel->Pixmap_));
-		InsertChannel_.bindValue (":favicon", SerializePixmap (channel->Favicon_));
+				Core::Instance ().GetProxy ()->GetTagsManager ()->Join (channel.Tags_));
+		InsertChannel_.bindValue (":language", channel.Language_);
+		InsertChannel_.bindValue (":author", channel.Author_);
+		InsertChannel_.bindValue (":pixmap_url", channel.PixmapURL_);
+		InsertChannel_.bindValue (":pixmap", SerializePixmap (channel.Pixmap_));
+		InsertChannel_.bindValue (":favicon", SerializePixmap (channel.Favicon_));
 
 		if (!InsertChannel_.exec ())
 		{
@@ -1591,15 +1588,15 @@ namespace Aggregator
 			Util::DBLock::DumpError (InsertChannel_);
 			throw std::runtime_error (qPrintable (QString (
 							"Failed to save channel {id: %1, title: %2, url: %3, parent: %4}")
-						.arg (channel->ChannelID_)
-						.arg (channel->Title_)
-						.arg (channel->Link_)
-						.arg (channel->FeedID_)));
+						.arg (channel.ChannelID_)
+						.arg (channel.Title_)
+						.arg (channel.Link_)
+						.arg (channel.FeedID_)));
 		}
 
 		InsertChannel_.finish ();
 
-		for (const auto& item : channel->Items_)
+		for (const auto& item : channel.Items_)
 			AddItem (item);
 
 		emit channelAdded (channel);
@@ -1643,8 +1640,7 @@ namespace Aggregator
 		try
 		{
 			IDType_t cid = item->ChannelID_;
-			Channel_ptr channel = GetChannel (cid,
-					FindParentFeedForChannel (cid));
+			const auto& channel = GetChannel (cid, FindParentFeedForChannel (cid));
 			emit itemDataUpdated (item, channel);
 			emit channelDataUpdated (channel);
 		}
@@ -1745,8 +1741,7 @@ namespace Aggregator
 		{
 			try
 			{
-				Channel_ptr channel = GetChannel (cid,
-						FindParentFeedForChannel (cid));
+				const auto& channel = GetChannel (cid, FindParentFeedForChannel (cid));
 				emit channelDataUpdated (channel);
 			}
 			catch (const ChannelNotFoundError&)
@@ -1838,8 +1833,7 @@ namespace Aggregator
 
 		try
 		{
-			Channel_ptr channel = GetChannel (channelId,
-					FindParentFeedForChannel (channelId));
+			const auto& channel = GetChannel (channelId, FindParentFeedForChannel (channelId));
 			emit channelDataUpdated (channel);
 			for (size_t i = 0; i < oldItems.size (); ++i)
 				if (oldItems.at (i)->Unread_ != state)

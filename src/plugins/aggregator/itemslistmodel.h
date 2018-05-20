@@ -91,7 +91,7 @@ namespace Aggregator
 	private slots:
 		void handleItemsRemoved (const QSet<IDType_t>&);
 
-		void handleItemDataUpdated (const Item_ptr&, const Channel_ptr&);
+		void handleItemDataUpdated (const Item_ptr&, const Channel&);
 	};
 }
 }

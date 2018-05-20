@@ -83,7 +83,7 @@ namespace Aggregator
 		 *
 		 * @exception std::exception
 		 */
-		void AddChannel (Channel_ptr channel);
+		void AddChannel (const Channel& channel);
 
 		/** @brief Adds the given item to the storage.
 		 *
@@ -105,8 +105,8 @@ namespace Aggregator
 		void AddItem (Item_ptr item);
 
 		QAbstractItemModel* GetChannelsModel () const;
-		QList<Channel_ptr> GetAllChannels () const;
-		Channel_ptr GetChannel (IDType_t) const;
+		QList<Channel> GetAllChannels () const;
+		Channel GetChannel (IDType_t) const;
 		int CountUnreadItems (IDType_t) const;
 		QList<Item_ptr> GetChannelItems (IDType_t) const;
 

@@ -65,7 +65,7 @@ namespace Aggregator
 		connect (&StorageBackendManager::Instance (),
 				&StorageBackendManager::channelAdded,
 				this,
-				[this] (const Channel_ptr& channel) { AddChannel (channel->ToShort ()); });
+				[this] (const Channel& channel) { AddChannel (channel.ToShort ()); });
 		connect (&StorageBackendManager::Instance (),
 				&StorageBackendManager::channelDataUpdated,
 				this,
@@ -268,16 +268,16 @@ namespace Aggregator
 		}
 	}
 
-	void ChannelsModel::UpdateChannelData (const Channel_ptr& channel)
+	void ChannelsModel::UpdateChannelData (const Channel& channel)
 	{
-		const auto cid = channel->ChannelID_;
+		const auto cid = channel.ChannelID_;
 
 		const auto pos = std::find_if (Channels_.begin (), Channels_.end (),
 				[cid] (const ChannelShort& cs) { return cs.ChannelID_ == cid; });
 		if (pos == Channels_.end ())
 			return;
 
-		*pos = channel->ToShort ();
+		*pos = channel.ToShort ();
 		pos->Unread_ = StorageBackendManager::Instance ().MakeStorageBackendForThread ()->GetUnreadItems (cid);
 
 		const auto idx = pos - Channels_.begin ();

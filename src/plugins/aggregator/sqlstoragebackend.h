@@ -584,7 +584,7 @@ namespace Aggregator
 		Feed::FeedSettings GetFeedSettings (const IDType_t&) const override;
 		void SetFeedSettings (const Feed::FeedSettings&) override;
 		void GetChannels (channels_shorts_t&, const IDType_t&) const override;
-		Channel_ptr GetChannel (const IDType_t&, const IDType_t&) const override;
+		Channel GetChannel (const IDType_t&, const IDType_t&) const override;
 		IDType_t FindChannel (const QString& , const QString&, const IDType_t&) const override;
 		void TrimChannel (const IDType_t&, int, int) override;
 		void GetItems (items_shorts_t&, const IDType_t&) const override;
@@ -596,11 +596,11 @@ namespace Aggregator
 		void GetItems (items_container_t&, const IDType_t&) const override;
 
 		void AddFeed (Feed_ptr) override;
-		void UpdateChannel (Channel_ptr) override;
+		void UpdateChannel (const Channel&) override;
 		void UpdateChannel (const ChannelShort&) override;
 		void UpdateItem (Item_ptr) override;
 		void UpdateItem (const ItemShort&) override;
-		void AddChannel (Channel_ptr) override;
+		void AddChannel (const Channel&) override;
 		void AddItem (Item_ptr) override;
 		void RemoveItems (const QSet<IDType_t>&) override;
 		void RemoveChannel (const IDType_t&) override;

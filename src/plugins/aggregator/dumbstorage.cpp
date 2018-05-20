@@ -65,7 +65,7 @@ namespace Aggregator
 	{
 	}
 
-	Channel_ptr DumbStorage::GetChannel (const IDType_t&, const IDType_t&) const
+	Channel DumbStorage::GetChannel (const IDType_t&, const IDType_t&) const
 	{
 		return {};
 	}
@@ -116,7 +116,7 @@ namespace Aggregator
 	{
 	}
 
-	void DumbStorage::AddChannel (Channel_ptr)
+	void DumbStorage::AddChannel (const Channel&)
 	{
 	}
 
@@ -124,7 +124,7 @@ namespace Aggregator
 	{
 	}
 
-	void DumbStorage::UpdateChannel (Channel_ptr)
+	void DumbStorage::UpdateChannel (const Channel&)
 	{
 	}
 

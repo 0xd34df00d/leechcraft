@@ -65,7 +65,7 @@ namespace Aggregator
 
 		void Register (const StorageBackend_ptr&);
 	signals:
-		void channelAdded (Channel_ptr channel) const;
+		void channelAdded (const Channel& channel) const;
 
 		/** @brief Notifies about updated channel information.
 		 *
@@ -74,7 +74,7 @@ namespace Aggregator
 		 *
 		 * @param[out] channel Pointer to the updated channel.
 		 */
-		void channelDataUpdated (Channel_ptr channel) const;
+		void channelDataUpdated (const Channel& channel) const;
 
 		/** @brief Notifies about updated item information.
 		 *
@@ -85,7 +85,7 @@ namespace Aggregator
 		 * @param[out] channel Pointer to the channel containing updated
 		 * item.
 		 */
-		void itemDataUpdated (Item_ptr item, Channel_ptr channel) const;
+		void itemDataUpdated (Item_ptr item, const Channel& channel) const;
 
 		/** @brief Notifies that a number of items was removed.
 		 *

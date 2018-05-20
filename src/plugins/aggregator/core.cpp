@@ -480,9 +480,9 @@ namespace Aggregator
 		ci.ChannelID_ = channel.ChannelID_;
 		ci.Link_ = channel.Link_;
 
-		Channel_ptr rc = StorageBackend_->GetChannel (channel.ChannelID_, channel.FeedID_);
-		ci.Description_ = rc->Description_;
-		ci.Author_ = rc->Author_;
+		const auto& rc = StorageBackend_->GetChannel (channel.ChannelID_, channel.FeedID_);
+		ci.Description_ = rc.Description_;
+		ci.Author_ = rc.Author_;
 
 		ci.URL_ = StorageBackend_->GetFeed (channel.FeedID_).URL_;
 
@@ -498,9 +498,8 @@ namespace Aggregator
 		try
 		{
 			ChannelShort channel = ChannelsModel_->GetChannelForIndex (i);
-			Channel_ptr rc = StorageBackend_->
-					GetChannel (channel.ChannelID_, channel.FeedID_);
-			return QPixmap::fromImage (rc->Pixmap_);
+			const auto& rc = StorageBackend_->GetChannel (channel.ChannelID_, channel.FeedID_);
+			return QPixmap::fromImage (rc.Pixmap_);
 		}
 		catch (const std::exception& e)
 		{
@@ -530,8 +529,7 @@ namespace Aggregator
 		try
 		{
 			ChannelShort channel = ChannelsModel_->GetChannelForIndex (index);
-			FetchFavicon (StorageBackend_->
-					GetChannel (channel.ChannelID_, channel.FeedID_));
+			FetchFavicon (StorageBackend_->GetChannel (channel.ChannelID_, channel.FeedID_));
 		}
 		catch (const std::exception& e)
 		{
@@ -766,17 +764,14 @@ namespace Aggregator
 		for (channels_shorts_t::const_iterator i = channels.begin (),
 				end = channels.end (); i != end; ++i)
 		{
-			Channel_ptr channel = StorageBackend_->
-					GetChannel (i->ChannelID_, i->FeedID_);
+			auto channel = StorageBackend_->GetChannel (i->ChannelID_, i->FeedID_);
 			items_shorts_t items;
-			StorageBackend_->GetItems (items, channel->ChannelID_);
+			StorageBackend_->GetItems (items, channel.ChannelID_);
 
-			for (items_shorts_t::const_iterator j = items.begin (),
-					endJ = items.end (); j != endJ; ++j)
-				channel->Items_.push_back (StorageBackend_->
-						GetItem (j->ItemID_));
+			for (items_shorts_t::const_iterator j = items.begin (), endJ = items.end (); j != endJ; ++j)
+				channel.Items_.push_back (StorageBackend_->GetItem (j->ItemID_));
 
-			data << (*channel);
+			data << channel;
 		}
 
 		f.write (qCompress (buffer, 9));
@@ -1160,37 +1155,39 @@ namespace Aggregator
 		Updates_ [id] = QDateTime::currentDateTime ();
 	}
 
-	void Core::FetchPixmap (const Channel_ptr& channel)
+	void Core::FetchPixmap (const Channel& channel)
 	{
-		if (QUrl (channel->PixmapURL_).isValid () &&
-				!QUrl (channel->PixmapURL_).isRelative ())
+		if (QUrl (channel.PixmapURL_).isValid () &&
+				!QUrl (channel.PixmapURL_).isRelative ())
 		{
 			ExternalData data;
 			data.Type_ = ExternalData::TImage;
-			data.RelatedChannel_ = channel;
+			data.ChannelId_ = channel.ChannelID_;
+			data.ParentFeedId_ = channel.FeedID_;
 			QString exFName = LeechCraft::Util::GetTemporaryName ();
 			try
 			{
-				fetchExternalFile (channel->PixmapURL_, exFName);
+				fetchExternalFile (channel.PixmapURL_, exFName);
 			}
 			catch (const std::runtime_error& e)
 			{
 				qWarning () << Q_FUNC_INFO << e.what ();
 				return;
 			}
-			PendingJob2ExternalData_ [channel->PixmapURL_] = data;
+			PendingJob2ExternalData_ [channel.PixmapURL_] = data;
 		}
 	}
 
-	void Core::FetchFavicon (const Channel_ptr& channel)
+	void Core::FetchFavicon (const Channel& channel)
 	{
-		QUrl oldUrl (channel->Link_);
+		QUrl oldUrl (channel.Link_);
 		oldUrl.setPath ("/favicon.ico");
 		QString iconUrl = oldUrl.toString ();
 
-		ExternalData iconData;
-		iconData.Type_ = ExternalData::TIcon;
-		iconData.RelatedChannel_ = channel;
+		ExternalData data;
+		data.Type_ = ExternalData::TIcon;
+		data.ChannelId_ = channel.ChannelID_;
+		data.ParentFeedId_ = channel.FeedID_;
 		QString exFName = LeechCraft::Util::GetTemporaryName ();
 		try
 		{
@@ -1201,34 +1198,30 @@ namespace Aggregator
 			qWarning () << Q_FUNC_INFO << e.what ();
 			return;
 		}
-		PendingJob2ExternalData_ [iconUrl] = iconData;
+		PendingJob2ExternalData_ [iconUrl] = data;
 	}
 
 	void Core::HandleExternalData (const QString& url, const QFile& file)
 	{
-		ExternalData data = PendingJob2ExternalData_.take (url);
-		if (!data.RelatedChannel_)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "no related channel for external data"
-					<< url;
-			return;
-		}
+		const auto& data = PendingJob2ExternalData_.take (url);
+
+		// TODO add separate methods for pixmap/favicon updates in StorageBackend.
+		auto channel = StorageBackend_->GetChannel (data.ChannelId_, data.ParentFeedId_);
 
 		const QImage image { file.fileName () };
 		switch (data.Type_)
 		{
 		case ExternalData::TImage:
-			data.RelatedChannel_->Pixmap_ = image;
+			channel.Pixmap_ = image;
 			break;
 		case ExternalData::TIcon:
-			data.RelatedChannel_->Favicon_ = image.scaled (16, 16);
+			channel.Favicon_ = image.scaled (16, 16);
 			break;
 		}
 
 		try
 		{
-			StorageBackend_->UpdateChannel (data.RelatedChannel_);
+			StorageBackend_->UpdateChannel (channel);
 		}
 		catch (const std::exception& e)
 		{
@@ -1246,13 +1239,13 @@ namespace Aggregator
 				item->FixDate ();
 
 			channel->Tags_ = pj.Tags_;
-			StorageBackend_->AddChannel (channel);
+			StorageBackend_->AddChannel (*channel);
 
 			emit hookGotNewItems (std::make_shared<Util::DefaultHookProxy> (),
 					Util::Map (channel->Items_, [] (const Item_ptr& item) { return Item_cptr { item }; }));
 
-			FetchPixmap (channel);
-			FetchFavicon (channel);
+			FetchPixmap (*channel);
+			FetchFavicon (*channel);
 		}
 
 		if (pj.FeedSettings_)

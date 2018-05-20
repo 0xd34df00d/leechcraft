@@ -145,7 +145,7 @@ namespace Aggregator
 		 * @param[in] feedParent Parent feed's ID identifying the feed.
 		 * @return Full information about the requested channel.
 		 */
-		virtual Channel_ptr GetChannel (const IDType_t& channelId,
+		virtual Channel GetChannel (const IDType_t& channelId,
 				const IDType_t& feedParent) const = 0;
 
 		/** @brief Find channel with the given title, link and
@@ -294,7 +294,7 @@ namespace Aggregator
 		 *
 		 * @param[in] channel Pointer to the channel that should be added.
 		 */
-		virtual void AddChannel (Channel_ptr channel) = 0;
+		virtual void AddChannel (const Channel& channel) = 0;
 
 		/** @brief Adds a new item to an already existing channel.
 		 *
@@ -322,7 +322,7 @@ namespace Aggregator
 		 * @param[in] channel Pointer to the new version of the channel
 		 * that should be updated.
 		 */
-		virtual void UpdateChannel (Channel_ptr channel) = 0;
+		virtual void UpdateChannel (const Channel& channel) = 0;
 
 		/** @brief Updates an already existing channel.
 		 *
@@ -444,7 +444,7 @@ namespace Aggregator
 		 */
 		virtual IDType_t GetHighestID (const PoolType& type) const = 0;
 	signals:
-		void channelAdded (Channel_ptr channel) const;
+		void channelAdded (const Channel& channel) const;
 
 		/** @brief Notifies about updated channel information.
 		 *
@@ -458,7 +458,7 @@ namespace Aggregator
 		 *
 		 * @sa StorageBackendManager
 		 */
-		void channelDataUpdated (Channel_ptr channel) const;
+		void channelDataUpdated (const Channel& channel) const;
 
 		/** @brief Notifies about updated item information.
 		 *
@@ -474,7 +474,7 @@ namespace Aggregator
 		 *
 		 * @sa StorageBackendManager
 		 */
-		void itemDataUpdated (Item_ptr item, Channel_ptr channel) const;
+		void itemDataUpdated (Item_ptr item, const Channel& channel) const;
 
 		/** @brief Notifies that a number of items was removed.
 		 *

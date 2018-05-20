@@ -103,7 +103,8 @@ namespace Aggregator
 				TImage
 				, TIcon
 			} Type_;
-			Channel_ptr RelatedChannel_;
+			IDType_t ChannelId_;
+			IDType_t ParentFeedId_;
 		};
 		QMap<int, PendingJob> PendingJobs_;
 		QMap<QString, ExternalData> PendingJob2ExternalData_;
@@ -226,8 +227,8 @@ namespace Aggregator
 		void handleCustomUpdates ();
 		void rotateUpdatesQueue ();
 	private:
-		void FetchPixmap (const Channel_ptr&);
-		void FetchFavicon (const Channel_ptr&);
+		void FetchPixmap (const Channel&);
+		void FetchFavicon (const Channel&);
 		void HandleExternalData (const QString&, const QFile&);
 		void HandleFeedAdded (const channels_container_t&,
 				const PendingJob&);

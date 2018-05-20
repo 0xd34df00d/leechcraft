@@ -55,15 +55,15 @@ namespace Aggregator
 				enc.ItemID_ = item->ItemID_;
 		}
 
-		void FixChannelID (Channel_ptr channel)
+		void FixChannelID (Channel& channel)
 		{
-			if (channel->ChannelID_)
+			if (channel.ChannelID_)
 				return;
 
-			channel->ChannelID_ = Core::Instance ().GetPool (PTChannel).GetID ();
-			for (const auto& item : channel->Items_)
+			channel.ChannelID_ = Core::Instance ().GetPool (PTChannel).GetID ();
+			for (const auto& item : channel.Items_)
 			{
-				item->ChannelID_ = channel->ChannelID_;
+				item->ChannelID_ = channel.ChannelID_;
 
 				FixItemID (item);
 			}
@@ -80,7 +80,7 @@ namespace Aggregator
 			{
 				channel->FeedID_ = feed->FeedID_;
 
-				FixChannelID (channel);
+				FixChannelID (*channel);
 			}
 		}
 	}
@@ -92,11 +92,11 @@ namespace Aggregator
 		StorageBackendManager::Instance ().MakeStorageBackendForThread ()->AddFeed (feed);
 	}
 
-	void ProxyObject::AddChannel (Channel_ptr channel)
+	void ProxyObject::AddChannel (const Channel& channel)
 	{
-		FixChannelID (channel);
-
-		StorageBackendManager::Instance ().MakeStorageBackendForThread ()->AddChannel (channel);
+		auto fixedId = channel;
+		FixChannelID (fixedId);
+		StorageBackendManager::Instance ().MakeStorageBackendForThread ()->AddChannel (fixedId);
 	}
 
 	void ProxyObject::AddItem (Item_ptr item)
@@ -111,9 +111,9 @@ namespace Aggregator
 		return Core::Instance ().GetRawChannelsModel ();
 	}
 
-	QList<Channel_ptr> ProxyObject::GetAllChannels () const
+	QList<Channel> ProxyObject::GetAllChannels () const
 	{
-		QList<Channel_ptr> result;
+		QList<Channel> result;
 
 		const auto& sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
 
@@ -125,16 +125,16 @@ namespace Aggregator
 		return result;
 	}
 
-	Channel_ptr ProxyObject::GetChannel (IDType_t id) const
+	Channel ProxyObject::GetChannel (IDType_t id) const
 	{
 		// TODO rework when StorageBackend::GetChannel()
 		// would be happy with just the channel ID.
 		const auto& channels = GetAllChannels ();
 		const auto pos = std::find_if (channels.begin (), channels.end (),
-				[id] (const Channel_ptr& channel) { return id == channel->ChannelID_; });
+				[id] (const Channel& channel) { return id == channel.ChannelID_; });
 		return pos != channels.end () ?
 				*pos :
-				Channel_ptr {};
+				Channel {};
 	}
 
 	int ProxyObject::CountUnreadItems (IDType_t channel) const
