@@ -47,9 +47,9 @@ namespace Aggregator
 		Ui_.ChannelTags_->AddSelector ();
 
 		connect (Ui_.ChannelLink_,
-				SIGNAL (linkActivated (const QString&)),
+				&QLabel::linkActivated,
 				&Core::Instance (),
-				SLOT (openLink (const QString&)));
+				&Core::openLink);
 
 		const auto& tags = Index_.data (ChannelRoles::HumanReadableTags).toStringList ();
 		Ui_.ChannelTags_->setText (Core::Instance ().GetProxy ()->GetTagsManager ()->Join (tags));

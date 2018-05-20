@@ -58,9 +58,9 @@ namespace Aggregator
 		Ui_.ItemsWidget_->SetChannelsFilter (Core::Instance ().GetChannelsModel ());
 
 		connect (Ui_.ItemsWidget_,
-				SIGNAL (movedToChannel (QModelIndex)),
+				&ItemsWidget::movedToChannel,
 				this,
-				SLOT (handleItemsMovedToChannel (QModelIndex)));
+				&AggregatorTab::handleItemsMovedToChannel);
 
 		Ui_.MergeItems_->setChecked (XmlSettingsManager::Instance ()->Property ("MergeItems", false).toBool ());
 
@@ -78,9 +78,9 @@ namespace Aggregator
 		Ui_.Feeds_->addAction (appWideActions.ActionAddFeed_);
 
 		connect (Ui_.Feeds_,
-				SIGNAL (customContextMenuRequested (const QPoint&)),
+				&QWidget::customContextMenuRequested,
 				this,
-				SLOT (handleFeedsContextMenuRequested (const QPoint&)));
+				&AggregatorTab::handleFeedsContextMenuRequested);
 
 		const auto fm = fontMetrics ();
 		int dateTimeSize = fm.width (QDateTime::currentDateTime ().toString (Qt::SystemLocaleShortDate) + "__");
@@ -90,9 +90,9 @@ namespace Aggregator
 		channelsHeader->resizeSection (2, dateTimeSize);
 
 		connect (Ui_.TagsLine_,
-				SIGNAL (textChanged (const QString&)),
+				&QLineEdit::textChanged,
 				Core::Instance ().GetChannelsModel (),
-				SLOT (setFilterFixedString (const QString&)));
+				&QSortFilterProxyModel::setFilterFixedString);
 
 		new Util::TagsCompleter (Ui_.TagsLine_);
 		Ui_.TagsLine_->AddSelector ();
@@ -101,9 +101,9 @@ namespace Aggregator
 		Ui_.MainSplitter_->setStretchFactor (1, 9);
 
 		connect (FlatToFolders_.get (),
-				SIGNAL (rowsInserted (QModelIndex, int, int)),
+				&QAbstractItemModel::rowsInserted,
 				Ui_.Feeds_,
-				SLOT (expand (QModelIndex)));
+				&QTreeView::expand);
 
 		LoadColumnWidth (Ui_.Feeds_, "feeds");
 		Ui_.ItemsWidget_->ConstructBrowser ();
@@ -301,9 +301,9 @@ namespace Aggregator
 			Ui_.Feeds_->setModel (Core::Instance ().GetChannelsModel ());
 		}
 		connect (Ui_.Feeds_->selectionModel (),
-				SIGNAL (currentChanged (const QModelIndex&, const QModelIndex&)),
+				&QItemSelectionModel::currentChanged,
 				this,
-				SLOT (currentChannelChanged ()));
+				&AggregatorTab::currentChannelChanged);
 		Ui_.Feeds_->expandAll ();
 	}
 

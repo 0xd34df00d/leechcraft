@@ -65,11 +65,9 @@ namespace Aggregator
 		Ui_.VLayout_->addWidget (Selector_);
 
 		connect (Ui_.ChannelsTree_->selectionModel (),
-				SIGNAL (selectionChanged (const QItemSelection&,
-						const QItemSelection&)),
+				&QItemSelectionModel::selectionChanged,
 				this,
-				SLOT (handleChannelsSelectionChanged (const QItemSelection&,
-						const QItemSelection&)));
+				&Export2FB2Dialog::handleChannelsSelectionChanged);
 
 		for (int i = 0; i < Ui_.FB2Genres_->topLevelItemCount (); ++i)
 		{
@@ -83,9 +81,9 @@ namespace Aggregator
 		}
 
 		connect (this,
-				SIGNAL (accepted ()),
+				&Export2FB2Dialog::accepted,
 				this,
-				SLOT (handleAccepted ()));
+				&Export2FB2Dialog::handleAccepted);
 
 		on_File__textChanged (QString ());
 	}

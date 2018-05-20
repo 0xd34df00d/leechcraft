@@ -34,6 +34,7 @@
 #include <util/util.h>
 #include <util/sll/domchildrenrange.h>
 #include <util/sll/prelude.h>
+#include <util/sll/overload.h>
 #include "xmlsettingsmanager.h"
 #include "core.h"
 
@@ -53,9 +54,9 @@ namespace Aggregator
 		header->setSectionResizeMode (1, QHeaderView::ResizeToContents);
 
 		connect (Ui_.LocalizationBox_,
-				SIGNAL (currentIndexChanged (const QString&)),
+				Util::Overload<QString> (&QComboBox::currentIndexChanged),
 				this,
-				SLOT (handleCurrentIndexChanged (const QString&)));
+				&StartupThirdPage::handleCurrentIndexChanged);
 
 		const QMap<QString, int> languages
 		{
@@ -73,9 +74,9 @@ namespace Aggregator
 	void StartupThirdPage::initializePage ()
 	{
 		connect (wizard (),
-				SIGNAL (accepted ()),
+				&QWizard::accepted,
 				this,
-				SLOT (handleAccepted ()),
+				&StartupThirdPage::handleAccepted,
 				Qt::UniqueConnection);
 		wizard ()->setMinimumWidth (std::max (wizard ()->minimumWidth (), 800));
 		wizard ()->setMinimumHeight (std::max (wizard ()->minimumHeight (), 500));

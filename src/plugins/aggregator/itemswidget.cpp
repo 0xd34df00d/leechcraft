@@ -47,6 +47,7 @@
 #include <util/gui/clearlineeditaddon.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/util.h>
+#include <util/sll/overload.h>
 #include <interfaces/core/itagsmanager.h>
 #include <interfaces/core/ientitymanager.h>
 #include "core.h"
@@ -109,9 +110,9 @@ namespace Aggregator
 		Impl_->SelectedChecker_ = new QTimer (this);
 		Impl_->SelectedChecker_->setSingleShot (true);
 		connect (Impl_->SelectedChecker_,
-				SIGNAL (timeout ()),
+				&QTimer::timeout,
 				this,
-				SLOT (checkSelected ()));
+				&ItemsWidget::checkSelected);
 
 		SetupActions ();
 
@@ -140,9 +141,9 @@ namespace Aggregator
 		Impl_->Ui_.Items_->setModel (Impl_->ItemsFilterModel_.get ());
 		Impl_->Ui_.Items_->sortByColumn (1, Qt::DescendingOrder);
 		connect (Impl_->ItemLists_.get (),
-				SIGNAL (dataChanged (const QModelIndex&, const QModelIndex&)),
+				&QAbstractItemModel::dataChanged,
 				Impl_->ItemsFilterModel_.get (),
-				SLOT (invalidate ()));
+				&QSortFilterProxyModel::invalidate);
 
 		Impl_->Ui_.Items_->addAction (Impl_->ActionMarkItemAsUnread_);
 		Impl_->Ui_.Items_->addAction (Impl_->ActionMarkItemAsRead_);
@@ -164,13 +165,13 @@ namespace Aggregator
 			});
 
 		connect (Impl_->Ui_.SearchLine_,
-				SIGNAL (textChanged (const QString&)),
+				&QLineEdit::textChanged,
 				this,
-				SLOT (updateItemsFilter ()));
+				&ItemsWidget::updateItemsFilter);
 		connect (Impl_->Ui_.SearchType_,
-				SIGNAL (currentIndexChanged (int)),
+				Util::Overload<int> (&QComboBox::currentIndexChanged),
 				this,
-				SLOT (updateItemsFilter ()));
+				&ItemsWidget::updateItemsFilter);
 
 		new Util::ClearLineEditAddon (Core::Instance ().GetProxy (), Impl_->Ui_.SearchLine_);
 
@@ -184,9 +185,9 @@ namespace Aggregator
 		itemsHeader->resizeSection (1,
 				dateTimeSize);
 		connect (Impl_->Ui_.Items_->header (),
-				SIGNAL (sectionClicked (int)),
+				&QHeaderView::sectionClicked,
 				this,
-				SLOT (makeCurrentItemVisible ()));
+				&ItemsWidget::makeCurrentItemVisible);
 
 		Impl_->ItemCategorySelector_.reset (new CategorySelector ());
 		Impl_->ItemCategorySelector_->SetCaption (tr ("Items categories"));
@@ -196,19 +197,18 @@ namespace Aggregator
 		Impl_->ItemCategorySelector_->setMinimumHeight (0);
 		Impl_->ItemCategorySelector_->SetButtonsMode (CategorySelector::ButtonsMode::NoButtons);
 		connect (Impl_->ItemCategorySelector_.get (),
-				SIGNAL (tagsSelectionChanged (const QStringList&)),
+				&CategorySelector::tagsSelectionChanged,
 				Impl_->ItemsFilterModel_.get (),
-				SLOT (categorySelectionChanged (const QStringList&)));
+				&ItemsFilterModel::categorySelectionChanged);
 
 		connect (Impl_->Ui_.Items_->selectionModel (),
-				SIGNAL (selectionChanged (const QItemSelection&,
-						const QItemSelection&)),
+				&QItemSelectionModel::selectionChanged,
 				this,
-				SLOT (currentItemChanged ()));
+				&ItemsWidget::currentItemChanged);
 		connect (Impl_->ItemsFilterModel_.get (),
-				SIGNAL (modelReset ()),
+				&ItemsFilterModel::modelReset,
 				this,
-				SLOT (currentItemChanged ()));
+				&ItemsWidget::currentItemChanged);
 
 		currentItemChanged ();
 
@@ -259,13 +259,13 @@ namespace Aggregator
 		Impl_->ChannelsFilter_ = m;
 
 		connect (m,
-				SIGNAL (rowsInserted (QModelIndex, int, int)),
+				&QAbstractItemModel::rowsInserted,
 				this,
-				SLOT (invalidateMergeMode ()));
+				&ItemsWidget::invalidateMergeMode);
 		connect (m,
-				SIGNAL (rowsRemoved (QModelIndex, int, int)),
+				&QAbstractItemModel::rowsRemoved,
 				this,
-				SLOT (invalidateMergeMode ()));
+				&ItemsWidget::invalidateMergeMode);
 	}
 
 	void ItemsWidget::RegisterShortcuts ()
@@ -337,16 +337,14 @@ namespace Aggregator
 		Impl_->TapeMode_ = tape;
 		if (tape)
 			disconnect (Impl_->Ui_.Items_->selectionModel (),
-					SIGNAL (selectionChanged (const QItemSelection&,
-							const QItemSelection&)),
+					&QItemSelectionModel::selectionChanged,
 					this,
-					SLOT (currentItemChanged ()));
+					&ItemsWidget::currentItemChanged);
 		else
 			connect (Impl_->Ui_.Items_->selectionModel (),
-					SIGNAL (selectionChanged (const QItemSelection&,
-							const QItemSelection&)),
+					&QItemSelectionModel::selectionChanged,
 					this,
-					SLOT (currentItemChanged ()));
+					&ItemsWidget::currentItemChanged);
 		currentItemChanged ();
 
 		XmlSettingsManager::Instance ()->

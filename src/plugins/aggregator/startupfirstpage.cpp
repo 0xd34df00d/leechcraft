@@ -45,9 +45,9 @@ namespace Aggregator
 	void StartupFirstPage::initializePage ()
 	{
 		connect (wizard (),
-				SIGNAL (accepted ()),
+				&QWizard::accepted,
 				this,
-				SLOT (handleAccepted ()),
+				&StartupFirstPage::handleAccepted,
 				Qt::UniqueConnection);
 		XmlSettingsManager::Instance ()->
 				setProperty ("StartupVersion", 1);
@@ -55,14 +55,10 @@ namespace Aggregator
 
 	void StartupFirstPage::handleAccepted ()
 	{
-		XmlSettingsManager::Instance ()->setProperty ("ShowIconInTray",
-				Ui_.ShowIconInTray_->isChecked ());
-		XmlSettingsManager::Instance ()->setProperty ("UpdateInterval",
-				Ui_.UpdateInterval_->value ());
-		XmlSettingsManager::Instance ()->setProperty ("ItemsPerChannel",
-				Ui_.ItemsPerChannel_->value ());
-		XmlSettingsManager::Instance ()->setProperty ("ItemsMaxAge",
-				Ui_.ItemsMaxAge_->value ());
+		XmlSettingsManager::Instance ()->setProperty ("ShowIconInTray", Ui_.ShowIconInTray_->isChecked ());
+		XmlSettingsManager::Instance ()->setProperty ("UpdateInterval", Ui_.UpdateInterval_->value ());
+		XmlSettingsManager::Instance ()->setProperty ("ItemsPerChannel", Ui_.ItemsPerChannel_->value ());
+		XmlSettingsManager::Instance ()->setProperty ("ItemsMaxAge", Ui_.ItemsMaxAge_->value ());
 	}
 }
 }

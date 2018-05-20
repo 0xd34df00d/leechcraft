@@ -291,9 +291,9 @@ namespace Aggregator
 				[this] (DBUpdateThreadWorker *worker)
 				{
 					connect (worker,
-							SIGNAL (hookGotNewItems (LeechCraft::IHookProxy_ptr, QList<Item_cptr>)),
+							&DBUpdateThreadWorker::hookGotNewItems,
 							this,
-							SIGNAL (hookGotNewItems (LeechCraft::IHookProxy_ptr, QList<Item_cptr>)));
+							&Core::hookGotNewItems);
 				});
 
 		ParserFactory::Instance ().Register (&RSS20Parser::Instance ());
@@ -307,16 +307,16 @@ namespace Aggregator
 		CustomUpdateTimer_ = new QTimer (this);
 		CustomUpdateTimer_->start (60 * 1000);
 		connect (CustomUpdateTimer_,
-				SIGNAL (timeout ()),
+				&QTimer::timeout,
 				this,
-				SLOT (handleCustomUpdates ()));
+				&Core::handleCustomUpdates);
 
 		UpdateTimer_ = new QTimer (this);
 		UpdateTimer_->setSingleShot (true);
 		connect (UpdateTimer_,
-				SIGNAL (timeout ()),
+				&QTimer::timeout,
 				this,
-				SLOT (updateFeeds ()));
+				&Core::updateFeeds);
 
 		auto now = QDateTime::currentDateTime ();
 		auto lastUpdated = XmlSettingsManager::Instance ()->Property ("LastUpdateDateTime", now).toDateTime ();

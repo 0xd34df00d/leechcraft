@@ -66,13 +66,13 @@ namespace Aggregator
 				});
 
 		connect (&StorageBackendManager::Instance (),
-				SIGNAL (itemsRemoved (QSet<IDType_t>)),
+				&StorageBackendManager::itemsRemoved,
 				this,
-				SLOT (handleItemsRemoved (QSet<IDType_t>)));
+				&ItemsListModel::handleItemsRemoved);
 		connect (&StorageBackendManager::Instance (),
-				SIGNAL (itemDataUpdated (Item_ptr, Channel_ptr)),
+				&StorageBackendManager::itemDataUpdated,
 				this,
-				SLOT (handleItemDataUpdated (Item_ptr, Channel_ptr)));
+				&ItemsListModel::handleItemDataUpdated);
 	}
 
 	int ItemsListModel::GetSelectedRow () const

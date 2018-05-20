@@ -183,9 +183,9 @@ namespace Aggregator
 		Impl_->ReprModel_->SetMenu (contextMenu);
 
 		connect (Impl_->AppWideActions_.ActionUpdateFeeds_,
-				SIGNAL (triggered ()),
+				&QAction::triggered,
 				&Core::Instance (),
-				SLOT (updateFeeds ()));
+				&Core::updateFeeds);
 
 		BuildID2ActionTupleMap ();
 
