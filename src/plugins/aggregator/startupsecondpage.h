@@ -51,8 +51,6 @@ namespace Aggregator
 		StartupSecondPage (QWidget* = 0);
 
 		void initializePage ();
-	private slots:
-		void handleAccepted ();
 	};
 }
 }

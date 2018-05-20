@@ -53,11 +53,6 @@ namespace Aggregator
 	{
 		connect (wizard (),
 				SIGNAL (accepted ()),
-				this,
-				SLOT (handleAccepted ()),
-				Qt::UniqueConnection);
-		connect (wizard (),
-				SIGNAL (accepted ()),
 				Selector_,
 				SLOT (accept ()),
 				Qt::UniqueConnection);
@@ -65,10 +60,6 @@ namespace Aggregator
 				setProperty ("StartupVersion", 2);
 
 		wizard ()->setField ("Aggregator/StorageDirty", true);
-	}
-
-	void StartupSecondPage::handleAccepted ()
-	{
 	}
 }
 }
