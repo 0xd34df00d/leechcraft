@@ -784,9 +784,7 @@ namespace Aggregator
 
 	void Core::GetChannels (channels_shorts_t& channels) const
 	{
-		ids_t ids;
-		StorageBackend_->GetFeedsIDs ();
-		for (const auto id : ids)
+		for (const auto id : StorageBackend_->GetFeedsIDs ())
 			StorageBackend_->GetChannels (channels, id);
 	}
 
