@@ -162,13 +162,11 @@ namespace Aggregator
 		ourItem->Longitude_ = item->Longitude_;
 
 		for (auto& enc : item->Enclosures_)
-		{
 			if (!ourItem->Enclosures_.contains (enc))
 			{
 				enc.ItemID_ = ourItem->ItemID_;
 				ourItem->Enclosures_ << enc;
 			}
-		}
 
 		for (auto& entry : item->MRSSEntries_)
 			if (!ourItem->MRSSEntries_.contains (entry))

@@ -290,12 +290,8 @@ namespace Aggregator
 
 		auto storage = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
 		for (const auto feedId : storage->GetFeedsIDs ())
-		{
-			channels_shorts_t channels;
-			storage->GetChannels (channels, feedId);
-			for (const auto& chan : channels)
+			for (const auto& chan : storage->GetChannels (feedId))
 				AddChannel (chan);
-		}
 	}
 }
 }

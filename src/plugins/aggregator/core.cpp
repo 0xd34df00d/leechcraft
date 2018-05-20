@@ -785,7 +785,10 @@ namespace Aggregator
 	void Core::GetChannels (channels_shorts_t& channels) const
 	{
 		for (const auto id : StorageBackend_->GetFeedsIDs ())
-			StorageBackend_->GetChannels (channels, id);
+		{
+			auto feedChannels = StorageBackend_->GetChannels (id);
+			std::move (feedChannels.begin (), feedChannels.end (), std::back_inserter (channels));
+		}
 	}
 
 	void Core::AddFeeds (const feeds_container_t& feeds,

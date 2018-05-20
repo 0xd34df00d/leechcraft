@@ -61,8 +61,9 @@ namespace Aggregator
 	{
 	}
 
-	void DumbStorage::GetChannels (channels_shorts_t&, const IDType_t&) const
+	channels_shorts_t DumbStorage::GetChannels (const IDType_t&) const
 	{
+		return {};
 	}
 
 	Channel DumbStorage::GetChannel (const IDType_t&, const IDType_t&) const

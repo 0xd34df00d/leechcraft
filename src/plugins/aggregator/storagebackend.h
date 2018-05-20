@@ -131,8 +131,7 @@ namespace Aggregator
 		 * channels to which retrieved info would be appended.
 		 * @param[in] feedParent Parent feed's ID identifying the feed.
 		 */
-		virtual void GetChannels (channels_shorts_t& shorts,
-				const IDType_t& feedParent) const = 0;
+		virtual channels_shorts_t GetChannels (const IDType_t& feedParent) const = 0;
 
 		/** @brief Returns full information about a channel.
 		 *

@@ -44,7 +44,7 @@ namespace Aggregator
 		IDType_t FindFeed (const QString&) const;
 		Feed::FeedSettings GetFeedSettings (const IDType_t&) const;
 		void SetFeedSettings (const Feed::FeedSettings&);
-		void GetChannels (channels_shorts_t&, const IDType_t&) const;
+		channels_shorts_t GetChannels (const IDType_t&) const;
 		Channel GetChannel (const IDType_t&, const IDType_t&) const;
 		IDType_t FindChannel (const QString&, const QString&, const IDType_t&) const;
 		void TrimChannel (const IDType_t&, int, int);

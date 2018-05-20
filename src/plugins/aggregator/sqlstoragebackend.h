@@ -583,7 +583,7 @@ namespace Aggregator
 		IDType_t FindFeed (const QString&) const override;
 		Feed::FeedSettings GetFeedSettings (const IDType_t&) const override;
 		void SetFeedSettings (const Feed::FeedSettings&) override;
-		void GetChannels (channels_shorts_t&, const IDType_t&) const override;
+		channels_shorts_t GetChannels (const IDType_t&) const override;
 		Channel GetChannel (const IDType_t&, const IDType_t&) const override;
 		IDType_t FindChannel (const QString& , const QString&, const IDType_t&) const override;
 		void TrimChannel (const IDType_t&, int, int) override;

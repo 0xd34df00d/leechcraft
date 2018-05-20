@@ -1031,13 +1031,15 @@ namespace Aggregator
 			LeechCraft::Util::DBLock::DumpError (FeedSettingsSetter_);
 	}
 
-	void SQLStorageBackend::GetChannels (channels_shorts_t& shorts, const IDType_t& feedId) const
+	channels_shorts_t SQLStorageBackend::GetChannels (const IDType_t& feedId) const
 	{
+		channels_shorts_t shorts;
+
 		ChannelsShortSelector_.bindValue (":feed_id", feedId);
 		if (!ChannelsShortSelector_.exec ())
 		{
 			LeechCraft::Util::DBLock::DumpError (ChannelsShortSelector_);
-			return;
+			return shorts;
 		}
 
 		while (ChannelsShortSelector_.next ())
@@ -1075,6 +1077,8 @@ namespace Aggregator
 		}
 
 		ChannelsShortSelector_.finish ();
+
+		return shorts;
 	}
 
 	Channel SQLStorageBackend::GetChannel (const IDType_t& channelId,
