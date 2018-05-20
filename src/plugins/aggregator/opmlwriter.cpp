@@ -123,8 +123,8 @@ namespace Aggregator
 					&TagSetter);
 			QDomElement item = doc.createElement ("outline");
 			item.setAttribute ("title", i->Title_);
-			Feed_ptr feed = sb->GetFeed (i->FeedID_);
-			item.setAttribute ("xmlUrl", feed->URL_);
+			const auto& feed = sb->GetFeed (i->FeedID_);
+			item.setAttribute ("xmlUrl", feed.URL_);
 			item.setAttribute ("htmlUrl", i->Link_);
 			inserter.appendChild (item);
 		}

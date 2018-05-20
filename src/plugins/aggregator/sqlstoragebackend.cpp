@@ -955,7 +955,7 @@ namespace Aggregator
 			return 0;
 	}
 
-	Feed_ptr SQLStorageBackend::GetFeed (const IDType_t& feedId) const
+	Feed SQLStorageBackend::GetFeed (const IDType_t& feedId) const
 	{
 		FeedGetter_.bindValue (":feed_id", feedId);
 		if (!FeedGetter_.exec ())
@@ -972,9 +972,9 @@ namespace Aggregator
 			throw FeedNotFoundError ();
 		}
 
-		Feed_ptr feed (new Feed (feedId));
-		feed->URL_ = FeedGetter_.value (0).toString ();
-		feed->LastUpdate_ = FeedGetter_.value (1).toDateTime ();
+		Feed feed (feedId);
+		feed.URL_ = FeedGetter_.value (0).toString ();
+		feed.LastUpdate_ = FeedGetter_.value (1).toDateTime ();
 		FeedGetter_.finish ();
 		return feed;
 	}

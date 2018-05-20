@@ -484,8 +484,7 @@ namespace Aggregator
 		ci.Description_ = rc->Description_;
 		ci.Author_ = rc->Author_;
 
-		Feed_ptr feed = StorageBackend_->GetFeed (channel.FeedID_);
-		ci.URL_ = feed->URL_;
+		ci.URL_ = StorageBackend_->GetFeed (channel.FeedID_).URL_;
 
 		items_shorts_t items;
 		StorageBackend_->GetItems (items, channel.ChannelID_);
@@ -1101,7 +1100,7 @@ namespace Aggregator
 					this,
 					SLOT (rotateUpdatesQueue ()));
 
-		QString url = StorageBackend_->GetFeed (id)->URL_;
+		QString url = StorageBackend_->GetFeed (id).URL_;
 		for (const auto& pair : Util::Stlize (PendingJobs_))
 			if (pair.second.URL_ == url)
 			{

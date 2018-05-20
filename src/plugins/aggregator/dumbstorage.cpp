@@ -42,7 +42,7 @@ namespace Aggregator
 		return {};
 	}
 
-	Feed_ptr DumbStorage::GetFeed (const IDType_t&) const
+	Feed DumbStorage::GetFeed (const IDType_t&) const
 	{
 		return {};
 	}

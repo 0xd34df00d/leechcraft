@@ -91,12 +91,8 @@ namespace Aggregator
 		for (channels_shorts_t::const_iterator i = channels.begin (),
 				end = channels.end (); i != end; ++i)
 		{
-			QStringList strings;
-			Feed_ptr feed = sb->GetFeed (i->FeedID_);
-			strings << i->Title_ << feed->URL_;
-	
-			QTreeWidgetItem *item =
-				new QTreeWidgetItem (Ui_.Channels_, strings);
+			const auto& feed = sb->GetFeed (i->FeedID_);
+			const auto item = new QTreeWidgetItem (Ui_.Channels_, { i->Title_, feed.URL_ });
 			item->setData (0, Qt::CheckStateRole, Qt::Checked);
 		}
 	}
