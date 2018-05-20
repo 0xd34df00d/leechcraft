@@ -52,12 +52,11 @@ namespace Aggregator
 	void StartupSecondPage::initializePage ()
 	{
 		connect (wizard (),
-				SIGNAL (accepted ()),
+				&QWizard::accepted,
 				Selector_,
-				SLOT (accept ()),
+				&Util::BackendSelector::accept,
 				Qt::UniqueConnection);
-		XmlSettingsManager::Instance ()->
-				setProperty ("StartupVersion", 2);
+		XmlSettingsManager::Instance ()->setProperty ("StartupVersion", 2);
 
 		wizard ()->setField ("Aggregator/StorageDirty", true);
 	}
