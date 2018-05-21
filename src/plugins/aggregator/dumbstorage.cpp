@@ -110,8 +110,9 @@ namespace Aggregator
 		return {};
 	}
 
-	void DumbStorage::GetItems (items_container_t&, const IDType_t&) const
+	items_container_t DumbStorage::GetFullItems (const IDType_t&) const
 	{
+		return {};
 	}
 
 	void DumbStorage::AddFeed (Feed_ptr)

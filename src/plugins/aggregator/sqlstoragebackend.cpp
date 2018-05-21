@@ -1320,21 +1320,21 @@ namespace Aggregator
 		return item;
 	}
 
-	void SQLStorageBackend::GetItems (items_container_t& items,
-			const IDType_t& channelId) const
+	items_container_t SQLStorageBackend::GetFullItems (const IDType_t& channelId) const
 	{
 		ItemsFullSelector_.bindValue (":channel_id", channelId);
 		if (!ItemsFullSelector_.exec ())
 		{
 			LeechCraft::Util::DBLock::DumpError (ItemsFullSelector_);
-			return;
+			return {};
 		}
+
+		items_container_t items;
 
 		while (ItemsFullSelector_.next ())
 		{
 			IDType_t itemId = ItemsFullSelector_.value (14 ).value<IDType_t> ();
-			Item_ptr item (new Item (channelId,
-					itemId));
+			Item_ptr item (new Item (channelId, itemId));
 			FillItem (ItemsFullSelector_, item);
 			GetEnclosures (itemId, item->Enclosures_);
 			GetMRSSEntries (itemId, item->MRSSEntries_);
@@ -1344,6 +1344,8 @@ namespace Aggregator
 
 		ItemsFullSelector_.finish ();
 		GetEnclosures_.finish ();
+
+		return items;
 	}
 
 	void SQLStorageBackend::AddFeed (Feed_ptr feed)
@@ -1818,8 +1820,7 @@ namespace Aggregator
 	void SQLStorageBackend::ToggleChannelUnread (const IDType_t& channelId,
 			bool state)
 	{
-		items_container_t oldItems;
-		GetItems (oldItems, channelId);
+		const auto& oldItems = GetFullItems (channelId);
 
 		ToggleChannelUnread_.bindValue (0, state);
 		ToggleChannelUnread_.bindValue (1, channelId);

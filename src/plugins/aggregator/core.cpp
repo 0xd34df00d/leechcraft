@@ -760,7 +760,7 @@ namespace Aggregator
 				end = channels.end (); i != end; ++i)
 		{
 			auto channel = StorageBackend_->GetChannel (i->ChannelID_, i->FeedID_);
-			StorageBackend_->GetItems (channel.Items_, channel.ChannelID_);
+			channel.Items_ = StorageBackend_->GetFullItems (channel.ChannelID_);
 			data << channel;
 		}
 

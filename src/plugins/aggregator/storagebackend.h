@@ -265,7 +265,7 @@ namespace Aggregator
 		 * @param[out] items The container with items.
 		 * @param[in] id The channel's ID.
 		 */
-		virtual void GetItems (items_container_t& items, const IDType_t& id) const = 0;
+		virtual items_container_t GetFullItems (const IDType_t& id) const = 0;
 
 		/** @brief Puts a feed and all its child channels and items into the
 		 * storage.

@@ -140,8 +140,7 @@ namespace Aggregator
 	QList<Item_ptr> ProxyObject::GetChannelItems (IDType_t channelId) const
 	{
 		// TODO rework when we change items_container_t
-		items_container_t items;
-		StorageBackendManager::Instance ().MakeStorageBackendForThread ()->GetItems (items, channelId);
+		const auto& items = StorageBackendManager::Instance ().MakeStorageBackendForThread ()->GetFullItems (channelId);
 		return QList<Item_ptr>::fromVector (QVector<Item_ptr>::fromStdVector (items));
 	}
 
