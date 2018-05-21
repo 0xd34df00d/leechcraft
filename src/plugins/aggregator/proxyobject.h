@@ -63,7 +63,7 @@ namespace Aggregator
 		 *
 		 * @exception std::exception
 		 */
-		void AddFeed (Feed_ptr feed);
+		void AddFeed (Feed feed);
 
 		/** @brief Adds the given channel to the storage.
 		 *
@@ -83,7 +83,7 @@ namespace Aggregator
 		 *
 		 * @exception std::exception
 		 */
-		void AddChannel (const Channel& channel);
+		void AddChannel (Channel channel);
 
 		/** @brief Adds the given item to the storage.
 		 *

@@ -115,7 +115,7 @@ namespace Aggregator
 		return {};
 	}
 
-	void DumbStorage::AddFeed (Feed_ptr)
+	void DumbStorage::AddFeed (const Feed&)
 	{
 	}
 

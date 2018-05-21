@@ -1348,11 +1348,11 @@ namespace Aggregator
 		return items;
 	}
 
-	void SQLStorageBackend::AddFeed (Feed_ptr feed)
+	void SQLStorageBackend::AddFeed (const Feed& feed)
 	{
-		InsertFeed_.bindValue (":feed_id", feed->FeedID_);
-		InsertFeed_.bindValue (":url", feed->URL_);
-		InsertFeed_.bindValue (":last_update", feed->LastUpdate_);
+		InsertFeed_.bindValue (":feed_id", feed.FeedID_);
+		InsertFeed_.bindValue (":url", feed.URL_);
+		InsertFeed_.bindValue (":last_update", feed.LastUpdate_);
 		if (!InsertFeed_.exec ())
 		{
 			LeechCraft::Util::DBLock::DumpError (InsertFeed_);
@@ -1361,7 +1361,7 @@ namespace Aggregator
 
 		try
 		{
-			for (const auto chan : feed->Channels_)
+			for (const auto chan : feed.Channels_)
 				AddChannel (*chan);
 		}
 		catch (const std::runtime_error& e)

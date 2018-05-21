@@ -275,7 +275,7 @@ namespace Aggregator
 		 *
 		 * @param[in] feed Pointer to the feed that should be added.
 		 */
-		virtual void AddFeed (Feed_ptr feed) = 0;
+		virtual void AddFeed (const Feed& feed) = 0;
 
 		/** @brief Adds a new channel to an already existing feed.
 		 *

@@ -51,8 +51,8 @@ namespace Aggregator
 	public:
 		virtual ~IProxyObject () {}
 
-		virtual void AddFeed (Feed_ptr) = 0;
-		virtual void AddChannel (const Channel&) = 0;
+		virtual void AddFeed (Feed) = 0;
+		virtual void AddChannel (Channel) = 0;
 		virtual void AddItem (Item_ptr) = 0;
 
 		virtual QAbstractItemModel* GetChannelsModel () const = 0;

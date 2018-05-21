@@ -595,7 +595,7 @@ namespace Aggregator
 		boost::optional<IDType_t> FindItemByTitle (const QString&, const IDType_t&) const override;
 		items_container_t GetFullItems (const IDType_t&) const override;
 
-		void AddFeed (Feed_ptr) override;
+		void AddFeed (const Feed&) override;
 		void UpdateChannel (const Channel&) override;
 		void UpdateChannel (const ChannelShort&) override;
 		void UpdateItem (Item_ptr) override;

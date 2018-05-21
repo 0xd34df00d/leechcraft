@@ -64,45 +64,40 @@ namespace Aggregator
 			for (const auto& item : channel.Items_)
 			{
 				item->ChannelID_ = channel.ChannelID_;
-
 				FixItemID (item);
 			}
 		}
 
-		void FixFeedID (Feed_ptr feed)
+		void FixFeedID (Feed& feed)
 		{
-			if (feed->FeedID_)
+			if (feed.FeedID_)
 				return;
 
-			feed->FeedID_ = Core::Instance ().GetPool (PTFeed).GetID ();
+			feed.FeedID_ = Core::Instance ().GetPool (PTFeed).GetID ();
 
-			for (const auto& channel : feed->Channels_)
+			for (const auto& channel : feed.Channels_)
 			{
-				channel->FeedID_ = feed->FeedID_;
-
+				channel->FeedID_ = feed.FeedID_;
 				FixChannelID (*channel);
 			}
 		}
 	}
 
-	void ProxyObject::AddFeed (Feed_ptr feed)
+	void ProxyObject::AddFeed (Feed feed)
 	{
 		FixFeedID (feed);
-
 		StorageBackendManager::Instance ().MakeStorageBackendForThread ()->AddFeed (feed);
 	}
 
-	void ProxyObject::AddChannel (const Channel& channel)
+	void ProxyObject::AddChannel (Channel channel)
 	{
-		auto fixedId = channel;
-		FixChannelID (fixedId);
-		StorageBackendManager::Instance ().MakeStorageBackendForThread ()->AddChannel (fixedId);
+		FixChannelID (channel);
+		StorageBackendManager::Instance ().MakeStorageBackendForThread ()->AddChannel (channel);
 	}
 
 	void ProxyObject::AddItem (Item_ptr item)
 	{
 		FixItemID (item);
-
 		StorageBackendManager::Instance ().MakeStorageBackendForThread ()->AddItem (item);
 	}
 

@@ -783,8 +783,7 @@ namespace Aggregator
 		return result;
 	}
 
-	void Core::AddFeeds (const feeds_container_t& feeds,
-			const QString& tagsString)
+	void Core::AddFeeds (const feeds_container_t& feeds, const QString& tagsString)
 	{
 		auto tags = Proxy_->GetTagsManager ()->Split (tagsString);
 		tags.removeDuplicates ();
@@ -797,7 +796,7 @@ namespace Aggregator
 				channel->Tags_.removeDuplicates ();
 			}
 
-			StorageBackend_->AddFeed (feed);
+			StorageBackend_->AddFeed (*feed);
 		}
 	}
 
@@ -878,10 +877,10 @@ namespace Aggregator
 			IDType_t feedId = IDNotFound;
 			if (pj.Role_ == PendingJob::RFeedAdded)
 			{
-				const auto& feed = std::make_shared<Feed> ();
-				feed->URL_ = pj.URL_;
+				Feed feed;
+				feed.URL_ = pj.URL_;
 				StorageBackend_->AddFeed (feed);
-				feedId = feed->FeedID_;
+				feedId = feed.FeedID_;
 			}
 			else
 				feedId = StorageBackend_->FindFeed (pj.URL_);
