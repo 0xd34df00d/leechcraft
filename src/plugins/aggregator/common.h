@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AGGREGATOR_COMMON_H
-#define PLUGINS_AGGREGATOR_COMMON_H
+#pragma once
+
 #include <QList>
 #include <QMetaType>
 #include <interfaces/structures.h>
@@ -71,5 +71,3 @@ namespace Aggregator
 
 Q_DECLARE_METATYPE (LeechCraft::Aggregator::IDType_t)
 Q_DECLARE_METATYPE (QList<LeechCraft::Aggregator::IDType_t>)
-
-#endif
