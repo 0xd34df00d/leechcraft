@@ -212,7 +212,7 @@ namespace Aggregator
 					w.writeEndElement ();
 
 					bool hasDate = item.PubDate_.isValid ();
-					bool hasAuthor = item.Author_.size ();
+					bool hasAuthor = !item.Author_.isEmpty ();
 					if (hasDate || hasAuthor)
 					{
 						w.writeStartElement ("epigraph");
