@@ -239,13 +239,13 @@ namespace Aggregator
 
 	struct Item
 	{
-		/** The unique ID of the item.
-			*/
-		IDType_t ItemID_;
-
 		/** The unique ID of the channel this item belongs to.
 			*/
-		IDType_t ChannelID_;
+		IDType_t ChannelID_ = IDNotFound;
+
+		/** The unique ID of the item.
+			*/
+		IDType_t ItemID_ = IDNotFound;
 
 		/** The title of the item as showed in the item list.
 			*/
@@ -315,6 +315,8 @@ namespace Aggregator
 		/* List of MediaRSS entries.
 			*/
 		QList<MRSSEntry> MRSSEntries_;
+
+		Item () = default;
 
 		/** @brief Constructs the item as belonging to the
 			* given channel.

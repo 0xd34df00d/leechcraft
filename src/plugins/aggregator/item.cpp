@@ -191,14 +191,14 @@ namespace Aggregator
 	}
 
 	Item::Item (const IDType_t& channel)
-	: ItemID_ (Core::Instance ().GetPool (PTItem).GetID ())
-	, ChannelID_ (channel)
+	: ChannelID_ (channel)
+	, ItemID_ (Core::Instance ().GetPool (PTItem).GetID ())
 	{
 	}
 
 	Item::Item (const IDType_t& channel, const IDType_t& item)
-	: ItemID_ (item)
-	, ChannelID_ (channel)
+	: ChannelID_ (channel)
+	, ItemID_ (item)
 	{
 	}
 
