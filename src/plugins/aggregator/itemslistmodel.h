@@ -74,7 +74,7 @@ namespace Aggregator
 		void Reset (IDType_t, IDType_t);
 		void Reset (const QList<IDType_t>&);
 		void RemoveItems (const QSet<IDType_t>&);
-		void ItemDataUpdated (Item_ptr);
+		void ItemDataUpdated (const Item&);
 
 		int columnCount (const QModelIndex& = QModelIndex ()) const override;
 		QVariant data (const QModelIndex&, int = Qt::DisplayRole) const override;
@@ -91,7 +91,7 @@ namespace Aggregator
 	private slots:
 		void handleItemsRemoved (const QSet<IDType_t>&);
 
-		void handleItemDataUpdated (const Item_ptr&, const Channel&);
+		void handleItemDataUpdated (const Item&, const Channel&);
 	};
 }
 }

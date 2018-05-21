@@ -197,7 +197,7 @@ namespace Aggregator
 		 * @param[in] id The item's ID.
 		 * @return Full information about the requested item.
 		 */
-		virtual Item_ptr GetItem (const IDType_t& id) const = 0;
+		virtual Item GetItem (const IDType_t& id) const = 0;
 
 		/** @brief Finds first item with the given title, link and parent
 		 * channel.
@@ -300,7 +300,7 @@ namespace Aggregator
 		 *
 		 * @param[in] item Pointer to the item that should be added.
 		 */
-		virtual void AddItem (Item_ptr item) = 0;
+		virtual void AddItem (const Item& item) = 0;
 
 		/** @brief Updates an already existing channel.
 		 *
@@ -336,7 +336,7 @@ namespace Aggregator
 		 * @param[in] item Pointer to the new version of the item that
 		 * should be updated.
 		 */
-		virtual void UpdateItem (Item_ptr item) = 0;
+		virtual void UpdateItem (const Item& item) = 0;
 
 		/** @brief Updates an already existing item.
 		 *
@@ -465,7 +465,7 @@ namespace Aggregator
 		 *
 		 * @sa StorageBackendManager
 		 */
-		void itemDataUpdated (Item_ptr item, const Channel& channel) const;
+		void itemDataUpdated (const Item& item, const Channel& channel) const;
 
 		/** @brief Notifies that a number of items was removed.
 		 *

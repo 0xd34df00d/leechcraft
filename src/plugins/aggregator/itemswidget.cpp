@@ -281,15 +281,15 @@ namespace Aggregator
 			addAct (static_cast<ItemsWidget::Action> (i));
 	}
 
-	Item_ptr ItemsWidget::GetItem (const QModelIndex& index) const
+	Item ItemsWidget::GetItem (const QModelIndex& index) const
 	{
 		auto mapped = Impl_->ItemLists_->mapToSource (index);
 		if (!mapped.isValid ())
 			return {};
 
 		auto model = static_cast<const ItemsListModel*> (mapped.model ());
-		ItemShort item = model->GetItem (mapped);
-		return StorageBackendManager::Instance ().MakeStorageBackendForThread ()->GetItem (item.ItemID_);
+		const auto& shortItem = model->GetItem (mapped);
+		return StorageBackendManager::Instance ().MakeStorageBackendForThread ()->GetItem (shortItem.ItemID_);
 	}
 
 	QToolBar* ItemsWidget::GetToolBar () const
@@ -507,13 +507,12 @@ namespace Aggregator
 
 	void ItemsWidget::SubscribeToComments (const QModelIndex& index) const
 	{
-		Item_ptr it = GetItem (index);
-		QString commentRSS = it->CommentsLink_;
-		QStringList tags = it->Categories_;
+		const auto& it = GetItem (index);
+		QString commentRSS = it.CommentsLink_;
+		QStringList tags = it.Categories_;
 
-		QStringList addTags = Core::Instance ().GetProxy ()->
-			GetTagsManager ()->Split (XmlSettingsManager::Instance ()->
-					property ("CommentsTags").toString ());
+		const auto& addTags = Core::Instance ().GetProxy ()->GetTagsManager ()->
+				Split (XmlSettingsManager::Instance ()->property ("CommentsTags").toString ());
 		Core::Instance ().AddFeed (commentRSS, tags + addTags);
 	}
 
@@ -693,7 +692,7 @@ namespace Aggregator
 		return result.arg (color, 6, 16, QChar ('0'));
 	}
 
-	QString ItemsWidget::ToHtml (const Item_ptr& item)
+	QString ItemsWidget::ToHtml (const Item& item)
 	{
 		QString headerBg = GetHex (QPalette::Window);
 		QString borderColor = headerBg;
@@ -742,60 +741,60 @@ namespace Aggregator
 
 		// Link
 		result += ("<a href='" +
-				item->Link_ +
+				item.Link_ +
 				"'");
 		if (linw)
 			result += " target='_blank'";
 		result += QString (">");
 		result += (QString ("<strong>") +
-				item->Title_ +
+				item.Title_ +
 				"</strong>" +
 				"</a><br />");
 
 		// Publication date and author
-		if (item->PubDate_.isValid () && !item->Author_.isEmpty ())
+		if (item.PubDate_.isValid () && !item.Author_.isEmpty ())
 			result += tr ("Published on %1 by %2")
-					.arg (item->PubDate_.toString ())
-					.arg (item->Author_) +
+					.arg (item.PubDate_.toString ())
+					.arg (item.Author_) +
 				"<br />";
-		else if (item->PubDate_.isValid ())
+		else if (item.PubDate_.isValid ())
 			result += tr ("Published on %1")
-					.arg (item->PubDate_.toString ()) +
+					.arg (item.PubDate_.toString ()) +
 				"<br />";
-		else if (!item->Author_.isEmpty ())
+		else if (!item.Author_.isEmpty ())
 			result += tr ("Published by %1")
-					.arg (item->Author_) +
+					.arg (item.Author_) +
 				"<br />";
 
 		// Categories
-		if (item->Categories_.size ())
-			result += item->Categories_.join ("; ") +
+		if (item.Categories_.size ())
+			result += item.Categories_.join ("; ") +
 				"<br />";
 
 		// Comments stuff
-		if (item->NumComments_ >= 0 && !item->CommentsPageLink_.isEmpty ())
+		if (item.NumComments_ >= 0 && !item.CommentsPageLink_.isEmpty ())
 			result += tr ("%n comment(s), <a href='%1'%2>view them</a><br />",
-					"", item->NumComments_)
-					.arg (item->CommentsPageLink_)
+					"", item.NumComments_)
+					.arg (item.CommentsPageLink_)
 					.arg (linw ? " target='_blank'" : "");
-		else if (item->NumComments_ >= 0)
-			result += tr ("%n comment(s)", "", item->NumComments_) +
+		else if (item.NumComments_ >= 0)
+			result += tr ("%n comment(s)", "", item.NumComments_) +
 				"<br />";
-		else if (!item->CommentsPageLink_.isEmpty ())
+		else if (!item.CommentsPageLink_.isEmpty ())
 			result += tr ("<a href='%1'%2>View comments</a><br />")
-					.arg (item->CommentsPageLink_)
+					.arg (item.CommentsPageLink_)
 					.arg (linw ? " target='_blank'" : "");
 
-		if (item->Latitude_ ||
-				item->Longitude_)
+		if (item.Latitude_ ||
+				item.Longitude_)
 		{
 			QString link = QString ("http://maps.google.com/maps"
 					"?f=q&source=s_q&hl=en&geocode=&q=%1+%2")
-				.arg (item->Latitude_)
-				.arg (item->Longitude_);
+				.arg (item.Latitude_)
+				.arg (item.Longitude_);
 			result += tr ("Geoposition: <a href='%3'%4 title='Google Maps'>%1 %2</a><br />")
-					.arg (item->Latitude_)
-					.arg (item->Longitude_)
+					.arg (item.Latitude_)
+					.arg (item.Longitude_)
 					.arg (link)
 					.arg (linw ? " target='_blank'" : "");
 		}
@@ -806,11 +805,11 @@ namespace Aggregator
 				"padding-left: 1em; "
 				"padding-right: 1em;'>")
 			.arg (GetHex (QPalette::Text));
-		result += item->Description_;
+		result += item.Description_;
 
 		const auto embedImages = XmlSettingsManager::Instance ()->
 				property ("EmbedMediaRSSImages").toBool ();
-		for (const auto& enclosure : item->Enclosures_)
+		for (const auto& enclosure : item.Enclosures_)
 		{
 			result += inpad.arg (headerBg)
 				.arg (headerText);
@@ -836,8 +835,8 @@ namespace Aggregator
 			result += "</div>";
 		}
 
-		for (QList<MRSSEntry>::const_iterator entry = item->MRSSEntries_.begin (),
-				endEntry = item->MRSSEntries_.end (); entry != endEntry; ++entry)
+		for (QList<MRSSEntry>::const_iterator entry = item.MRSSEntries_.begin (),
+				endEntry = item.MRSSEntries_.end (); entry != endEntry; ++entry)
 		{
 			result += inpad.arg (headerBg)
 				.arg (headerText);
@@ -1365,7 +1364,7 @@ namespace Aggregator
 	{
 		const auto iem = Core::Instance ().GetProxy ()->GetEntityManager ();
 		for (const auto& idx : GetSelected ())
-			iem->HandleEntity (Util::MakeEntity (QUrl { GetItem (idx)->Link_ },
+			iem->HandleEntity (Util::MakeEntity (QUrl { GetItem (idx).Link_ },
 						{},
 						FromUserInitiated | OnlyHandle));
 	}
@@ -1374,10 +1373,10 @@ namespace Aggregator
 	{
 		const auto& idx = GetSelected ().value (0);
 		const auto& item = GetItem (idx);
-		if (!item)
+		if (item.ItemID_ == IDNotFound)
 			return;
 
-		QApplication::clipboard ()->setText (item->Link_);
+		QApplication::clipboard ()->setText (item.Link_);
 	}
 
 	void ItemsWidget::on_CategoriesSplitter__splitterMoved ()
@@ -1395,7 +1394,7 @@ namespace Aggregator
 				mapToSource (Impl_->Ui_.Items_->selectionModel ()->currentIndex ());
 		if (current.isValid ())
 		{
-			const int idx = GetItem (current)->ItemID_;
+			const int idx = GetItem (current).ItemID_;
 			const auto& tags = StorageBackendManager::Instance ().MakeStorageBackendForThread ()->GetItemTags (idx);
 			Impl_->ActionMarkItemAsImportant_->setChecked (tags.contains ("_important"));
 		}
@@ -1412,9 +1411,9 @@ namespace Aggregator
 			{
 				QModelIndex index = Impl_->ItemsFilterModel_->index (i, 0);
 				QModelIndex mapped = Impl_->ItemsFilterModel_->mapToSource (index);
-				Item_ptr item = GetItem (mapped);
+				const auto& item = GetItem (mapped);
 				if (!i)
-					base = item->Link_;
+					base = item.Link_;
 
 				html += ToHtml (item);
 			}
@@ -1434,10 +1433,10 @@ namespace Aggregator
 				if (!sindex.isValid ())
 					continue;
 
-				const Item_ptr item = GetItem (sindex);
+				const auto& item = GetItem (sindex);
 				html += ToHtml (item);
 				if (!link.isValid ())
-					link = item->Link_;
+					link = item.Link_;
 			}
 
 			Impl_->Ui_.ItemView_->SetHtml (QString (), QUrl ());
@@ -1461,7 +1460,7 @@ namespace Aggregator
 
 				Selected (cIndex);
 
-				QString commentsRSS = GetItem (cIndex)->CommentsLink_;
+				QString commentsRSS = GetItem (cIndex).CommentsLink_;
 				Impl_->ActionItemCommentsSubscribe_->setEnabled (!commentsRSS.isEmpty ());
 
 				Impl_->ActionMarkItemAsUnread_->setEnabled (true);

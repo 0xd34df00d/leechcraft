@@ -85,7 +85,7 @@ namespace Aggregator
 		 * @param[out] channel Pointer to the channel containing updated
 		 * item.
 		 */
-		void itemDataUpdated (Item_ptr item, const Channel& channel) const;
+		void itemDataUpdated (const Item& item, const Channel& channel) const;
 
 		/** @brief Notifies that a number of items was removed.
 		 *

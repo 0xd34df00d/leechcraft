@@ -243,7 +243,7 @@ namespace Aggregator
 
 		// Plugin API
 		void hookGotNewItems (LeechCraft::IHookProxy_ptr proxy,
-				const QList<Item_cptr>& items);
+				const QList<Item>& items);
 	};
 }
 }

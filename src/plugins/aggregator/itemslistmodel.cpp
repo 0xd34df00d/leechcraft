@@ -145,7 +145,7 @@ namespace Aggregator
 
 		const auto& sb = GetSB ();
 		for (const IDType_t& itemId : items)
-			CurrentItems_.push_back (sb->GetItem (itemId)->ToShort ());
+			CurrentItems_.push_back (sb->GetItem (itemId).ToShort ());
 
 		endResetModel ();
 	}
@@ -191,22 +191,22 @@ namespace Aggregator
 			endResetModel ();
 	}
 
-	void ItemsListModel::ItemDataUpdated (Item_ptr item)
+	void ItemsListModel::ItemDataUpdated (const Item& item)
 	{
-		const auto& is = item->ToShort ();
+		const auto& is = item.ToShort ();
 
 		const auto pos = std::find_if (CurrentItems_.begin (), CurrentItems_.end (),
 				[&item] (const ItemShort& itemShort)
 				{
-					return item->ItemID_ == itemShort.ItemID_ ||
-							(item->Title_ == itemShort.Title_ && item->Link_ == itemShort.URL_);
+					return item.ItemID_ == itemShort.ItemID_ ||
+							(item.Title_ == itemShort.Title_ && item.Link_ == itemShort.URL_);
 				});
 
 		// Item is new
 		if (pos == CurrentItems_.end ())
 		{
 			auto insertPos = std::find_if (CurrentItems_.begin (), CurrentItems_.end (),
-						[item] (const ItemShort& is) { return item->PubDate_ > is.PubDate_; });
+						[&item] (const ItemShort& is) { return item.PubDate_ > is.PubDate_; });
 
 			int shift = std::distance (CurrentItems_.begin (), insertPos);
 
@@ -316,34 +316,34 @@ namespace Aggregator
 				XmlSettingsManager::Instance ()->property ("ShowItemsTooltips").toBool ())
 		{
 			IDType_t id = CurrentItems_ [index.row ()].ItemID_;
-			Item_ptr item = GetSB ()->GetItem (id);
-			QString result = QString ("<qt><strong>%1</strong><br />").arg (item->Title_);
-			if (item->Author_.size ())
+			const auto& item = GetSB ()->GetItem (id);
+			QString result = QString ("<qt><strong>%1</strong><br />").arg (item.Title_);
+			if (item.Author_.size ())
 			{
-				result += tr ("<b>Author</b>: %1").arg (item->Author_);
+				result += tr ("<b>Author</b>: %1").arg (item.Author_);
 				result += "<br />";
 			}
-			if (item->Categories_.size ())
+			if (item.Categories_.size ())
 			{
-				result += tr ("<b>Categories</b>: %1").arg (item->Categories_.join ("; "));
+				result += tr ("<b>Categories</b>: %1").arg (item.Categories_.join ("; "));
 				result += "<br />";
 			}
-			if (item->NumComments_ > 0)
+			if (item.NumComments_ > 0)
 			{
-				result += tr ("%n comment(s)", "", item->NumComments_);
+				result += tr ("%n comment(s)", "", item.NumComments_);
 				result += "<br />";
 			}
-			if (item->Enclosures_.size () > 0)
+			if (item.Enclosures_.size () > 0)
 			{
-				result += tr ("%n enclosure(s)", "", item->Enclosures_.size ());
+				result += tr ("%n enclosure(s)", "", item.Enclosures_.size ());
 				result += "<br />";
 			}
-			if (item->MRSSEntries_.size () > 0)
+			if (item.MRSSEntries_.size () > 0)
 			{
-				result += tr ("%n MediaRSS entry(s)", "", item->MRSSEntries_.size ());
+				result += tr ("%n MediaRSS entry(s)", "", item.MRSSEntries_.size ());
 				result += "<br />";
 			}
-			if (item->CommentsLink_.size ())
+			if (item.CommentsLink_.size ())
 			{
 				result += tr ("RSS with comments is available");
 				result += "<br />";
@@ -351,7 +351,7 @@ namespace Aggregator
 			result += "<br />";
 
 			const int maxDescriptionSize = 1000;
-			auto descr = item->Description_;
+			auto descr = item.Description_;
 			RemoveTag ("img", descr);
 			RemovePair ("font", descr);
 			RemovePair ("span", descr);
@@ -447,7 +447,7 @@ namespace Aggregator
 		RemoveItems (items);
 	}
 
-	void ItemsListModel::handleItemDataUpdated (const Item_ptr& item, const Channel& channel)
+	void ItemsListModel::handleItemDataUpdated (const Item& item, const Channel& channel)
 	{
 		if (channel.ChannelID_ != CurrentChannel_)
 			return;

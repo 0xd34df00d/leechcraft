@@ -53,7 +53,7 @@ namespace Aggregator
 
 		virtual void AddFeed (Feed) = 0;
 		virtual void AddChannel (Channel) = 0;
-		virtual void AddItem (Item_ptr) = 0;
+		virtual void AddItem (Item) = 0;
 
 		virtual QAbstractItemModel* GetChannelsModel () const = 0;
 		virtual QList<Channel> GetAllChannels () const = 0;
@@ -61,7 +61,7 @@ namespace Aggregator
 		virtual int CountUnreadItems (IDType_t) const = 0;
 		virtual QList<Item_ptr> GetChannelItems (IDType_t) const = 0;
 
-		virtual Item_ptr GetItem (IDType_t) const = 0;
+		virtual Item GetItem (IDType_t) const = 0;
 		virtual void SetItemRead (IDType_t, bool) const = 0;
 
 		virtual QAbstractItemModel* CreateItemsModel () const = 0;

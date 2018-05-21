@@ -102,7 +102,7 @@ namespace Aggregator
 		 *
 		 * @exception std::exception
 		 */
-		void AddItem (Item_ptr item);
+		void AddItem (Item item);
 
 		QAbstractItemModel* GetChannelsModel () const;
 		QList<Channel> GetAllChannels () const;
@@ -110,7 +110,7 @@ namespace Aggregator
 		int CountUnreadItems (IDType_t) const;
 		QList<Item_ptr> GetChannelItems (IDType_t) const;
 
-		Item_ptr GetItem (IDType_t) const;
+		Item GetItem (IDType_t) const;
 		void SetItemRead (IDType_t, bool) const;
 
 		QAbstractItemModel* CreateItemsModel () const;

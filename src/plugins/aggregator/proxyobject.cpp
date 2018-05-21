@@ -39,15 +39,15 @@ namespace Aggregator
 {
 	namespace
 	{
-		void FixItemID (Item_ptr item)
+		void FixItemID (Item& item)
 		{
-			if (item->ItemID_)
+			if (item.ItemID_)
 				return;
 
-			item->ItemID_ = Core::Instance ().GetPool (PTItem).GetID ();
+			item.ItemID_ = Core::Instance ().GetPool (PTItem).GetID ();
 
-			for (auto& enc : item->Enclosures_)
-				enc.ItemID_ = item->ItemID_;
+			for (auto& enc : item.Enclosures_)
+				enc.ItemID_ = item.ItemID_;
 		}
 
 		void FixChannelID (Channel& channel)
@@ -59,7 +59,7 @@ namespace Aggregator
 			for (const auto& item : channel.Items_)
 			{
 				item->ChannelID_ = channel.ChannelID_;
-				FixItemID (item);
+				FixItemID (*item);
 			}
 		}
 
@@ -90,7 +90,7 @@ namespace Aggregator
 		StorageBackendManager::Instance ().MakeStorageBackendForThread ()->AddChannel (channel);
 	}
 
-	void ProxyObject::AddItem (Item_ptr item)
+	void ProxyObject::AddItem (Item item)
 	{
 		FixItemID (item);
 		StorageBackendManager::Instance ().MakeStorageBackendForThread ()->AddItem (item);
@@ -134,7 +134,7 @@ namespace Aggregator
 		return QList<Item_ptr>::fromVector (QVector<Item_ptr>::fromStdVector (items));
 	}
 
-	Item_ptr ProxyObject::GetItem (IDType_t id) const
+	Item ProxyObject::GetItem (IDType_t id) const
 	{
 		return StorageBackendManager::Instance ().MakeStorageBackendForThread ()->GetItem (id);
 	}
@@ -144,10 +144,10 @@ namespace Aggregator
 		const auto& sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
 
 		auto item = sb->GetItem (id);
-		if (!item)
+		if (item.ItemID_ == IDNotFound)
 			return;
 
-		item->Unread_ = !read;
+		item.Unread_ = !read;
 		sb->UpdateItem (item);
 	}
 

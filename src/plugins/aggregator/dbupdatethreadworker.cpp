@@ -117,28 +117,27 @@ namespace Aggregator
 		Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Aggregator", str, Priority::Info));
 	}
 
-	bool DBUpdateThreadWorker::AddItem (const Item_ptr& item, const Channel& channel, const Feed::FeedSettings& settings)
+	bool DBUpdateThreadWorker::AddItem (Item& item, const Channel& channel, const Feed::FeedSettings& settings)
 	{
-		if (item->PubDate_.isValid ())
+		if (item.PubDate_.isValid ())
 		{
-			if (item->PubDate_.daysTo (QDateTime::currentDateTime ()) >= settings.ItemAge_)
+			if (item.PubDate_.daysTo (QDateTime::currentDateTime ()) >= settings.ItemAge_)
 				return false;
 		}
 		else
-			item->FixDate ();
+			item.FixDate ();
 
-		item->ChannelID_ = channel.ChannelID_;
+		item.ChannelID_ = channel.ChannelID_;
 		SB_->AddItem (item);
 
 		emit hookGotNewItems (std::make_shared<Util::DefaultHookProxy> (), { item });
 
 		const auto iem = Proxy_->GetEntityManager ();
 		if (settings.AutoDownloadEnclosures_)
-			for (const auto& e : item->Enclosures_)
+			for (const auto& e : item.Enclosures_)
 			{
 				auto de = Util::MakeEntity (QUrl (e.URL_),
-						XmlSettingsManager::Instance ()->
-							property ("EnclosuresDownloadPath").toString (),
+						XmlSettingsManager::Instance ()->property ("EnclosuresDownloadPath").toString (),
 						0,
 						e.Type_);
 				de.Additional_ [" Tags"] = channel.Tags_;
@@ -148,31 +147,31 @@ namespace Aggregator
 		return true;
 	}
 
-	bool DBUpdateThreadWorker::UpdateItem (const Item_ptr& item, const Item_ptr& ourItem)
+	bool DBUpdateThreadWorker::UpdateItem (const Item& item, Item ourItem)
 	{
 		if (!IsModified (ourItem, item))
 			return false;
 
-		ourItem->Description_ = item->Description_;
-		ourItem->Categories_ = item->Categories_;
-		ourItem->NumComments_ = item->NumComments_;
-		ourItem->CommentsLink_ = item->CommentsLink_;
-		ourItem->CommentsPageLink_ = item->CommentsPageLink_;
-		ourItem->Latitude_ = item->Latitude_;
-		ourItem->Longitude_ = item->Longitude_;
+		ourItem.Description_ = item.Description_;
+		ourItem.Categories_ = item.Categories_;
+		ourItem.NumComments_ = item.NumComments_;
+		ourItem.CommentsLink_ = item.CommentsLink_;
+		ourItem.CommentsPageLink_ = item.CommentsPageLink_;
+		ourItem.Latitude_ = item.Latitude_;
+		ourItem.Longitude_ = item.Longitude_;
 
-		for (auto& enc : item->Enclosures_)
-			if (!ourItem->Enclosures_.contains (enc))
+		for (auto enc : item.Enclosures_)
+			if (!ourItem.Enclosures_.contains (enc))
 			{
-				enc.ItemID_ = ourItem->ItemID_;
-				ourItem->Enclosures_ << enc;
+				enc.ItemID_ = ourItem.ItemID_;
+				ourItem.Enclosures_ << enc;
 			}
 
-		for (auto& entry : item->MRSSEntries_)
-			if (!ourItem->MRSSEntries_.contains (entry))
+		for (auto entry : item.MRSSEntries_)
+			if (!ourItem.MRSSEntries_.contains (entry))
 			{
-				entry.ItemID_ = ourItem->ItemID_;
-				ourItem->MRSSEntries_ << entry;
+				entry.ItemID_ = ourItem.ItemID_;
+				ourItem.MRSSEntries_ << entry;
 			}
 
 		SB_->UpdateItem (ourItem);
@@ -245,24 +244,25 @@ namespace Aggregator
 			int newItems = 0;
 			int updatedItems = 0;
 
-			for (const auto& item : channel->Items_)
+			for (const auto& itemPtr : channel->Items_)
 			{
+				auto& item = *itemPtr;
+
 				auto mkLazy = [] (auto&& f) { return Util::MakeLazyF<boost::optional<IDType_t>> (f); };
 				const auto& ourItemID = Util::Msum ({
-							mkLazy ([&] { return SB_->FindItem (item->Title_, item->Link_, ourChannel.ChannelID_); }),
-							mkLazy ([&] { return SB_->FindItemByLink (item->Link_, ourChannel.ChannelID_); }),
+							mkLazy ([&] { return SB_->FindItem (item.Title_, item.Link_, ourChannel.ChannelID_); }),
+							mkLazy ([&] { return SB_->FindItemByLink (item.Link_, ourChannel.ChannelID_); }),
 							mkLazy ([&]
 									{
-										if (!item->Link_.isEmpty ())
+										if (!item.Link_.isEmpty ())
 											return boost::optional<IDType_t> {};
 
-										return SB_->FindItemByTitle (item->Title_, ourChannel.ChannelID_);
+										return SB_->FindItemByTitle (item.Title_, ourChannel.ChannelID_);
 									})
 						}) ();
 				if (ourItemID)
 				{
-					const auto& ourItem = SB_->GetItem (*ourItemID);
-					if (UpdateItem (item, ourItem))
+					if (UpdateItem (item, SB_->GetItem (*ourItemID)))
 						++updatedItems;
 				}
 				else if (AddItem (item, ourChannel, feedSettings))

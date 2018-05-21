@@ -837,8 +837,8 @@ namespace Aggregator
 
 		try
 		{
-			auto item = GetItem (id);
-			emit itemDataUpdated (item, GetChannel (item->ChannelID_, FindParentFeedForChannel (item->ChannelID_)));
+			const auto& item = GetItem (id);
+			emit itemDataUpdated (item, GetChannel (item.ChannelID_, FindParentFeedForChannel (item.ChannelID_)));
 		}
 		catch (const std::exception& e)
 		{
@@ -1299,7 +1299,7 @@ namespace Aggregator
 		return unread;
 	}
 
-	Item_ptr SQLStorageBackend::GetItem (const IDType_t& itemId) const
+	Item SQLStorageBackend::GetItem (const IDType_t& itemId) const
 	{
 		ItemFullSelector_.bindValue (":item_id", itemId);
 		if (!ItemFullSelector_.exec ())
@@ -1308,14 +1308,14 @@ namespace Aggregator
 		if (!ItemFullSelector_.next ())
 			throw ItemNotFoundError ();
 
-		auto item = std::make_shared<Item> (ItemFullSelector_.value (13).toInt (), itemId);
+		Item item { ItemFullSelector_.value (13).toInt (), itemId };
 		FillItem (ItemFullSelector_, item);
 		ItemFullSelector_.finish ();
 
-		GetEnclosures (itemId, item->Enclosures_);
-		GetMRSSEntries (itemId, item->MRSSEntries_);
+		GetEnclosures (itemId, item.Enclosures_);
+		GetMRSSEntries (itemId, item.MRSSEntries_);
 
-		emit hookItemLoad (Util::DefaultHookProxy_ptr (new Util::DefaultHookProxy), item.get ());
+		emit hookItemLoad (Util::DefaultHookProxy_ptr (new Util::DefaultHookProxy), &item);
 
 		return item;
 	}
@@ -1334,8 +1334,8 @@ namespace Aggregator
 		while (ItemsFullSelector_.next ())
 		{
 			IDType_t itemId = ItemsFullSelector_.value (14 ).value<IDType_t> ();
-			Item_ptr item (new Item (channelId, itemId));
-			FillItem (ItemsFullSelector_, item);
+			auto item = std::make_shared<Item> (channelId, itemId);
+			FillItem (ItemsFullSelector_, *item);
 			GetEnclosures (itemId, item->Enclosures_);
 			GetMRSSEntries (itemId, item->MRSSEntries_);
 
@@ -1487,19 +1487,19 @@ namespace Aggregator
 		}
 	}
 
-	void SQLStorageBackend::UpdateItem (Item_ptr item)
+	void SQLStorageBackend::UpdateItem (const Item& item)
 	{
-		UpdateItem_.bindValue (":item_id", item->ItemID_);
-		UpdateItem_.bindValue (":description", item->Description_);
-		UpdateItem_.bindValue (":author", item->Author_);
-		UpdateItem_.bindValue (":category", item->Categories_.join ("<<<"));
-		UpdateItem_.bindValue (":pub_date", item->PubDate_);
-		UpdateItem_.bindValue (":unread", item->Unread_);
-		UpdateItem_.bindValue (":num_comments", item->NumComments_);
-		UpdateItem_.bindValue (":comments_url", item->CommentsLink_);
-		UpdateItem_.bindValue (":comments_page_url", item->CommentsPageLink_);
-		UpdateItem_.bindValue (":latitude", QString::number (item->Latitude_));
-		UpdateItem_.bindValue (":longitude", QString::number (item->Longitude_));
+		UpdateItem_.bindValue (":item_id", item.ItemID_);
+		UpdateItem_.bindValue (":description", item.Description_);
+		UpdateItem_.bindValue (":author", item.Author_);
+		UpdateItem_.bindValue (":category", item.Categories_.join ("<<<"));
+		UpdateItem_.bindValue (":pub_date", item.PubDate_);
+		UpdateItem_.bindValue (":unread", item.Unread_);
+		UpdateItem_.bindValue (":num_comments", item.NumComments_);
+		UpdateItem_.bindValue (":comments_url", item.CommentsLink_);
+		UpdateItem_.bindValue (":comments_page_url", item.CommentsPageLink_);
+		UpdateItem_.bindValue (":latitude", QString::number (item.Latitude_));
+		UpdateItem_.bindValue (":longitude", QString::number (item.Longitude_));
 
 		if (!UpdateItem_.exec ())
 		{
@@ -1507,9 +1507,9 @@ namespace Aggregator
 			Util::DBLock::DumpError (UpdateItem_);
 			throw std::runtime_error (qPrintable (QString (
 							"Failed to save item {id: %1, title: %2, url: %3}")
-						.arg (item->ItemID_)
-						.arg (item->Title_)
-						.arg (item->Link_)));
+						.arg (item.ItemID_)
+						.arg (item.Title_)
+						.arg (item.Link_)));
 		}
 
 		if (!UpdateItem_.numRowsAffected ())
@@ -1518,12 +1518,12 @@ namespace Aggregator
 
 		UpdateItem_.finish ();
 
-		WriteEnclosures (item->Enclosures_);
-		WriteMRSSEntries (item->MRSSEntries_);
+		WriteEnclosures (item.Enclosures_);
+		WriteMRSSEntries (item.MRSSEntries_);
 
 		try
 		{
-			IDType_t cid = item->ChannelID_;
+			IDType_t cid = item.ChannelID_;
 			const auto& channel = GetChannel (cid, FindParentFeedForChannel (cid));
 			emit itemDataUpdated (item, channel);
 			emit channelDataUpdated (channel);
@@ -1532,7 +1532,7 @@ namespace Aggregator
 		{
 			qWarning () << Q_FUNC_INFO
 				<< "channel not found"
-				<< item->ChannelID_;
+				<< item.ChannelID_;
 		}
 	}
 
@@ -1605,28 +1605,28 @@ namespace Aggregator
 		InsertChannel_.finish ();
 
 		for (const auto& item : channel.Items_)
-			AddItem (item);
+			AddItem (*item);
 
 		emit channelAdded (channel);
 	}
 
-	void SQLStorageBackend::AddItem (Item_ptr item)
+	void SQLStorageBackend::AddItem (const Item& item)
 	{
-		InsertItem_.bindValue (":item_id", item->ItemID_);
-		InsertItem_.bindValue (":channel_id", item->ChannelID_);
-		InsertItem_.bindValue (":title", item->Title_);
-		InsertItem_.bindValue (":url", item->Link_);
-		InsertItem_.bindValue (":description", item->Description_);
-		InsertItem_.bindValue (":author", item->Author_);
-		InsertItem_.bindValue (":category", item->Categories_.join ("<<<"));
-		InsertItem_.bindValue (":guid", item->Guid_);
-		InsertItem_.bindValue (":pub_date", item->PubDate_);
-		InsertItem_.bindValue (":unread", item->Unread_);
-		InsertItem_.bindValue (":num_comments", item->NumComments_);
-		InsertItem_.bindValue (":comments_url", item->CommentsLink_);
-		InsertItem_.bindValue (":comments_page_url", item->CommentsPageLink_);
-		InsertItem_.bindValue (":latitude", QString::number (item->Latitude_));
-		InsertItem_.bindValue (":longitude", QString::number (item->Longitude_));
+		InsertItem_.bindValue (":item_id", item.ItemID_);
+		InsertItem_.bindValue (":channel_id", item.ChannelID_);
+		InsertItem_.bindValue (":title", item.Title_);
+		InsertItem_.bindValue (":url", item.Link_);
+		InsertItem_.bindValue (":description", item.Description_);
+		InsertItem_.bindValue (":author", item.Author_);
+		InsertItem_.bindValue (":category", item.Categories_.join ("<<<"));
+		InsertItem_.bindValue (":guid", item.Guid_);
+		InsertItem_.bindValue (":pub_date", item.PubDate_);
+		InsertItem_.bindValue (":unread", item.Unread_);
+		InsertItem_.bindValue (":num_comments", item.NumComments_);
+		InsertItem_.bindValue (":comments_url", item.CommentsLink_);
+		InsertItem_.bindValue (":comments_page_url", item.CommentsPageLink_);
+		InsertItem_.bindValue (":latitude", QString::number (item.Latitude_));
+		InsertItem_.bindValue (":longitude", QString::number (item.Longitude_));
 
 		if (!InsertItem_.exec ())
 		{
@@ -1634,20 +1634,20 @@ namespace Aggregator
 			LeechCraft::Util::DBLock::DumpError (InsertItem_);
 			throw std::runtime_error (qPrintable (QString (
 							"Failed to save item {id: %1, channel: %2, title: %3, url: %4")
-						.arg (item->ItemID_)
-						.arg (item->ChannelID_)
-						.arg (item->Title_)
-						.arg (item->Link_)));
+						.arg (item.ItemID_)
+						.arg (item.ChannelID_)
+						.arg (item.Title_)
+						.arg (item.Link_)));
 		}
 
 		InsertItem_.finish ();
 
-		WriteEnclosures (item->Enclosures_);
-		WriteMRSSEntries (item->MRSSEntries_);
+		WriteEnclosures (item.Enclosures_);
+		WriteMRSSEntries (item.MRSSEntries_);
 
 		try
 		{
-			IDType_t cid = item->ChannelID_;
+			IDType_t cid = item.ChannelID_;
 			const auto& channel = GetChannel (cid, FindParentFeedForChannel (cid));
 			emit itemDataUpdated (item, channel);
 			emit channelDataUpdated (channel);
@@ -1656,7 +1656,7 @@ namespace Aggregator
 		{
 			qWarning () << Q_FUNC_INFO
 				<< "channel not found"
-				<< item->ChannelID_;
+				<< item.ChannelID_;
 		}
 	}
 
@@ -1696,7 +1696,7 @@ namespace Aggregator
 		{
 			try
 			{
-				const auto cid = GetItem (itemId)->ChannelID_;
+				const auto cid = GetItem (itemId).ChannelID_;
 				if (!modifiedChannels.contains (cid))
 					modifiedChannels << cid;
 			}
@@ -1846,7 +1846,7 @@ namespace Aggregator
 				if (oldItems.at (i)->Unread_ != state)
 				{
 					oldItems.at (i)->Unread_ = state;
-					emit itemDataUpdated (oldItems.at (i), channel);
+					emit itemDataUpdated (*oldItems.at (i), channel);
 				}
 		}
 		catch (const ChannelNotFoundError&)
@@ -2342,22 +2342,22 @@ namespace Aggregator
 		return query.value (0).value<IDType_t> ();
 	}
 
-	void SQLStorageBackend::FillItem (const QSqlQuery& query, Item_ptr& item) const
+	void SQLStorageBackend::FillItem (const QSqlQuery& query, Item& item) const
 	{
-		item->Title_ = query.value (0).toString ();
-		item->Link_ = query.value (1).toString ();
-		item->Description_ = query.value (2).toString ();
-		item->Author_ = query.value (3).toString ();
-		item->Categories_ = query.value (4).toString ().split ("<<<", QString::SkipEmptyParts);
-		item->Guid_ = query.value (5).toString ();
-		item->PubDate_ = query.value (6).toDateTime ();
-		item->Unread_ = query.value (7).toBool ();
-		item->NumComments_ = query.value (8).toInt ();
-		item->CommentsLink_ = query.value (9).toString ();
-		item->CommentsPageLink_ = query.value (10).toString ();
-		item->Latitude_ = query.value (11).toDouble ();
-		item->Longitude_ = query.value (12).toDouble ();
-		item->ChannelID_ = query.value (13).value<IDType_t> ();
+		item.Title_ = query.value (0).toString ();
+		item.Link_ = query.value (1).toString ();
+		item.Description_ = query.value (2).toString ();
+		item.Author_ = query.value (3).toString ();
+		item.Categories_ = query.value (4).toString ().split ("<<<", QString::SkipEmptyParts);
+		item.Guid_ = query.value (5).toString ();
+		item.PubDate_ = query.value (6).toDateTime ();
+		item.Unread_ = query.value (7).toBool ();
+		item.NumComments_ = query.value (8).toInt ();
+		item.CommentsLink_ = query.value (9).toString ();
+		item.CommentsPageLink_ = query.value (10).toString ();
+		item.Latitude_ = query.value (11).toDouble ();
+		item.Longitude_ = query.value (12).toDouble ();
+		item.ChannelID_ = query.value (13).value<IDType_t> ();
 	}
 
 	void SQLStorageBackend::WriteEnclosures (const QList<Enclosure>& enclosures)

@@ -1234,7 +1234,7 @@ namespace Aggregator
 			StorageBackend_->AddChannel (*channel);
 
 			emit hookGotNewItems (std::make_shared<Util::DefaultHookProxy> (),
-					Util::Map (channel->Items_, [] (const Item_ptr& item) { return Item_cptr { item }; }));
+					Util::Map (channel->Items_, [] (const Item_ptr& item) { return *item; }));
 
 			FetchPixmap (*channel);
 			FetchFavicon (*channel);

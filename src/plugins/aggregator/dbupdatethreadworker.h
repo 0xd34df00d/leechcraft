@@ -58,15 +58,14 @@ namespace Aggregator
 	private:
 		Feed::FeedSettings GetFeedSettings (IDType_t);
 		void AddChannel (const Channel& channel, const Feed::FeedSettings& settings);
-		bool AddItem (const Item_ptr& item, const Channel& channel,
-				const Feed::FeedSettings& settings);
-		bool UpdateItem (const Item_ptr& item, const Item_ptr& ourItem);
+		bool AddItem (Item& item, const Channel& channel, const Feed::FeedSettings& settings);
+		bool UpdateItem (const Item& item, Item ourItem);
 		void NotifyUpdates (int newItems, int updatedItems, const Channel_ptr& channel);
 	public slots:
 		void toggleChannelUnread (IDType_t channel, bool state);
 		void updateFeed (channels_container_t channels, QString url);
 	signals:
-		void hookGotNewItems (LeechCraft::IHookProxy_ptr proxy, const QList<Item_cptr>& items);
+		void hookGotNewItems (LeechCraft::IHookProxy_ptr proxy, const QList<Item>& items);
 	};
 }
 }

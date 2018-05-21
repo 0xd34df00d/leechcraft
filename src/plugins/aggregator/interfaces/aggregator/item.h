@@ -379,7 +379,7 @@ namespace Aggregator
 	void Print (const Item&);
 	void Diff (const Item&, const Item&);
 
-	bool IsModified (Item_ptr, Item_ptr);
+	bool IsModified (const Item&, const Item&);
 }
 }
 

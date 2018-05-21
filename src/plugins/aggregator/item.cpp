@@ -603,23 +603,23 @@ namespace Aggregator
 		}
 	}
 
-	bool IsModified (Item_ptr i1, Item_ptr i2)
+	bool IsModified (const Item& i1, const Item& i2)
 	{
-		return !(i1->Title_ == i2->Title_ &&
-				i1->Link_ == i2->Link_ &&
-				i1->Description_ == i2->Description_ &&
-				i1->Author_ == i2->Author_ &&
-				i1->Categories_ == i2->Categories_ &&
-				(!i1->PubDate_.isValid () ||
-					!i2->PubDate_.isValid () ||
-					i1->PubDate_ == i2->PubDate_) &&
-				i1->NumComments_ == i2->NumComments_ &&
-				i1->CommentsLink_ == i2->CommentsLink_ &&
-				i1->CommentsPageLink_ == i2->CommentsPageLink_ &&
-				i1->Latitude_ == i2->Latitude_ &&
-				i1->Longitude_ == i2->Longitude_ &&
-				SameSets (i1->Enclosures_, i2->Enclosures_) &&
-				SameSets (i1->MRSSEntries_, i2->MRSSEntries_));
+		return !(i1.Title_ == i2.Title_ &&
+				i1.Link_ == i2.Link_ &&
+				i1.Description_ == i2.Description_ &&
+				i1.Author_ == i2.Author_ &&
+				i1.Categories_ == i2.Categories_ &&
+				(!i1.PubDate_.isValid () ||
+					!i2.PubDate_.isValid () ||
+					i1.PubDate_ == i2.PubDate_) &&
+				i1.NumComments_ == i2.NumComments_ &&
+				i1.CommentsLink_ == i2.CommentsLink_ &&
+				i1.CommentsPageLink_ == i2.CommentsPageLink_ &&
+				i1.Latitude_ == i2.Latitude_ &&
+				i1.Longitude_ == i2.Longitude_ &&
+				SameSets (i1.Enclosures_, i2.Enclosures_) &&
+				SameSets (i1.MRSSEntries_, i2.MRSSEntries_));
 	}
 
 #ifndef Q_CC_MSVC

@@ -90,7 +90,7 @@ namespace Aggregator
 		return {};
 	}
 
-	Item_ptr DumbStorage::GetItem (const IDType_t&) const
+	Item DumbStorage::GetItem (const IDType_t&) const
 	{
 		return {};
 	}
@@ -123,7 +123,7 @@ namespace Aggregator
 	{
 	}
 
-	void DumbStorage::AddItem (Item_ptr)
+	void DumbStorage::AddItem (const Item&)
 	{
 	}
 
@@ -135,7 +135,7 @@ namespace Aggregator
 	{
 	}
 
-	void DumbStorage::UpdateItem (Item_ptr)
+	void DumbStorage::UpdateItem (const Item&)
 	{
 	}
 

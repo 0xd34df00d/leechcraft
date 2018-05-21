@@ -81,7 +81,7 @@ namespace Aggregator
 
 		void RegisterShortcuts ();
 
-		Item_ptr GetItem (const QModelIndex&) const;
+		Item GetItem (const QModelIndex&) const;
 		QToolBar* GetToolBar () const;
 		void SetTapeMode (bool);
 
@@ -126,7 +126,7 @@ namespace Aggregator
 		QToolBar* SetupToolBar ();
 		QString GetHex (QPalette::ColorRole,
 				QPalette::ColorGroup = QApplication::palette ().currentColorGroup ());
-		QString ToHtml (const Item_ptr&);
+		QString ToHtml (const Item&);
 		void RestoreSplitter ();
 		QList<QPersistentModelIndex> GetSelected () const;
 	private slots:

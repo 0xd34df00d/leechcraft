@@ -91,7 +91,7 @@ namespace Aggregator
 	struct WriteInfo
 	{
 		const QString File_;
-		const QMap<ChannelShort, QList<Item_ptr>> Items_;
+		const QMap<ChannelShort, QList<Item>> Items_;
 	};
 
 	namespace
@@ -193,7 +193,7 @@ namespace Aggregator
 		}
 
 		void WriteChannel (QXmlStreamWriter& w,
-				const ChannelShort& cs, const QList<Item_ptr>& items)
+				const ChannelShort& cs, const QList<Item>& items)
 		{
 			w.writeStartElement ("section");
 				w.writeAttribute ("id", QString::number (cs.ChannelID_));
@@ -207,30 +207,30 @@ namespace Aggregator
 					w.writeStartElement ("title");
 						w.writeStartElement ("p");
 						w.writeComment ("p");
-						w.device ()->write (FixContents (item->Title_).toUtf8 ());
+						w.device ()->write (FixContents (item.Title_).toUtf8 ());
 						w.writeEndElement ();
 					w.writeEndElement ();
 
-					bool hasDate = item->PubDate_.isValid ();
-					bool hasAuthor = item->Author_.size ();
+					bool hasDate = item.PubDate_.isValid ();
+					bool hasAuthor = item.Author_.size ();
 					if (hasDate || hasAuthor)
 					{
 						w.writeStartElement ("epigraph");
 							if (hasDate)
 								w.writeTextElement ("p",
 										Export2FB2Dialog::tr ("Published on %1")
-											.arg (item->PubDate_.toString ()));
+											.arg (item.PubDate_.toString ()));
 							if (hasAuthor)
 								w.writeTextElement ("p",
 										Export2FB2Dialog::tr ("By %1")
-											.arg (item->Author_));
+											.arg (item.Author_));
 						w.writeEndElement ();
 						w.writeEmptyElement ("empty-line");
 					}
 
 					w.writeStartElement ("p");
 						w.writeComment ("p");
-						w.device ()->write (FixContents (item->Description_).toUtf8 ());
+						w.device ()->write (FixContents (item.Description_).toUtf8 ());
 					w.writeEndElement ();
 
 					w.writeEmptyElement ("empty-line");
@@ -335,7 +335,7 @@ namespace Aggregator
 	namespace
 	{
 		void WritePDFChannel (QTextCursor& cursor,
-				const ChannelShort& cs, const QList<Item_ptr>& items,
+				const ChannelShort& cs, const QList<Item>& items,
 				const QTextFrame *topFrame, int baseFontSize, const QFont& font)
 		{
 			auto origCharFmt = cursor.charFormat ();
@@ -362,14 +362,14 @@ namespace Aggregator
 			for (const auto& item : items)
 			{
 				cursor.setCharFormat (titleFmt);
-				cursor.insertText (item->Title_ + "\n");
+				cursor.insertText (item.Title_ + "\n");
 
 				cursor.setCharFormat (dateFmt);
-				cursor.insertText (item->PubDate_.toString ());
+				cursor.insertText (item.PubDate_.toString ());
 
 				cursor.setCharFormat (origCharFmt);
 
-				auto descr = item->Description_;
+				auto descr = item.Description_;
 				QRegExp imgRx ("<img *>", Qt::CaseSensitive, QRegExp::Wildcard);
 				imgRx.setMinimal (true);
 				descr.remove (imgRx);
@@ -516,7 +516,7 @@ namespace Aggregator
 		bool unreadOnly = Ui_.UnreadOnly_->checkState () == Qt::Checked;
 		const auto& categories = Selector_->GetSelections ();
 
-		QMap<ChannelShort, QList<Item_ptr>> items2write;
+		QMap<ChannelShort, QList<Item>> items2write;
 
 		for (const auto& row : Ui_.ChannelsTree_->selectionModel ()->selectedRows ())
 		{
