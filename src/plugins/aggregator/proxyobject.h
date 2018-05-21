@@ -42,7 +42,7 @@ namespace Aggregator
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Aggregator::IProxyObject)
 	public:
-		ProxyObject (QObject* = nullptr);
+		using QObject::QObject;
 
 		/** @brief Adds the given feed to the storage.
 		 *

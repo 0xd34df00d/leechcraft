@@ -37,11 +37,6 @@ namespace LeechCraft
 {
 namespace Aggregator
 {
-	ProxyObject::ProxyObject (QObject *parent)
-	: QObject (parent)
-	{
-	}
-
 	namespace
 	{
 		void FixItemID (Item_ptr item)
