@@ -177,7 +177,7 @@ namespace Aggregator
 		 * the items would be appended.
 		 * @param[in] channelId The ID of the channel.
 		 */
-		virtual void GetItems (items_shorts_t& items, const IDType_t& channelId) const = 0;
+		virtual items_shorts_t GetItems (const IDType_t& channelId) const = 0;
 
 		/** @brief Counts unread items number in a given channel.
 		 *

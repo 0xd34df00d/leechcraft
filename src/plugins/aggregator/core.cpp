@@ -486,9 +486,8 @@ namespace Aggregator
 
 		ci.URL_ = StorageBackend_->GetFeed (channel.FeedID_).URL_;
 
-		items_shorts_t items;
-		StorageBackend_->GetItems (items, channel.ChannelID_);
-		ci.NumItems_ = items.size ();
+		// TODO introduce a method in SB for this
+		ci.NumItems_ = StorageBackend_->GetItems (channel.ChannelID_).size ();
 
 		return ci;
 	}
@@ -550,9 +549,7 @@ namespace Aggregator
 			return QStringList ();
 		}
 
-		items_shorts_t items;
-		StorageBackend_->GetItems (items, cs.ChannelID_);
-		return GetCategories (items);
+		return GetCategories (StorageBackend_->GetItems (cs.ChannelID_));
 	}
 
 	QStringList Core::GetCategories (const items_shorts_t& items) const

@@ -80,8 +80,9 @@ namespace Aggregator
 	{
 	}
 
-	void DumbStorage::GetItems (items_shorts_t&, const IDType_t&) const
+	items_shorts_t DumbStorage::GetItems (const IDType_t&) const
 	{
+		return {};
 	}
 
 	int DumbStorage::GetUnreadItems (const IDType_t&) const

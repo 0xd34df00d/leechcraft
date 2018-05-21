@@ -48,7 +48,7 @@ namespace Aggregator
 		Channel GetChannel (const IDType_t&, const IDType_t&) const override;
 		IDType_t FindChannel (const QString&, const QString&, const IDType_t&) const override;
 		void TrimChannel (const IDType_t&, int, int) override;
-		void GetItems (items_shorts_t&, const IDType_t&) const override;
+		items_shorts_t GetItems (const IDType_t&) const override;
 		int GetUnreadItems (const IDType_t&) const override;
 		Item_ptr GetItem (const IDType_t&) const override;
 		boost::optional<IDType_t> FindItem (const QString&, const QString&, const IDType_t&) const override;

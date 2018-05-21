@@ -522,8 +522,7 @@ namespace Aggregator
 		{
 			const auto& cs = Core::Instance ().GetRawChannelsModel ()->GetChannelForIndex (row);
 
-			items_shorts_t items;
-			sb->GetItems (items, cs.ChannelID_);
+			const auto& items = sb->GetItems (cs.ChannelID_);
 
 			for (auto i = items.begin (), end = items.end (); i != end; ++i)
 			{

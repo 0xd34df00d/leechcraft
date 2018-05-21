@@ -129,7 +129,7 @@ namespace Aggregator
 		CurrentItems_.clear ();
 
 		if (channel != static_cast<IDType_t> (-1))
-			GetSB ()->GetItems (CurrentItems_, channel);
+			CurrentItems_ = GetSB ()->GetItems (channel);
 
 		endResetModel ();
 	}

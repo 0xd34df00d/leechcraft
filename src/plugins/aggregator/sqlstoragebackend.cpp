@@ -1252,17 +1252,17 @@ namespace Aggregator
 		}
 	}
 
-	void SQLStorageBackend::GetItems (items_shorts_t& shorts,
-			const IDType_t& channelId) const
+	items_shorts_t SQLStorageBackend::GetItems (const IDType_t& channelId) const
 	{
 		ItemsShortSelector_.bindValue (":channel_id", channelId);
 
 		if (!ItemsShortSelector_.exec ())
 		{
 			Util::DBLock::DumpError (ItemsShortSelector_);
-			return;
+			return {};
 		}
 
+		items_shorts_t shorts;
 		while (ItemsShortSelector_.next ())
 		{
 			ItemShort sh =
@@ -1281,6 +1281,8 @@ namespace Aggregator
 		}
 
 		ItemsShortSelector_.finish ();
+
+		return shorts;
 	}
 
 	int SQLStorageBackend::GetUnreadItems (const IDType_t& channelId) const
