@@ -946,10 +946,7 @@ namespace Aggregator
 	{
 		FeedGetter_.bindValue (":feed_id", feedId);
 		if (!FeedGetter_.exec ())
-		{
 			Util::DBLock::DumpError (FeedGetter_);
-			throw FeedGettingError ();
-		}
 
 		if (!FeedGetter_.next ())
 		{
@@ -970,10 +967,7 @@ namespace Aggregator
 	{
 		FeedFinderByURL_.bindValue (":url", url);
 		if (!FeedFinderByURL_.exec ())
-		{
 			Util::DBLock::DumpError (FeedFinderByURL_);
-			throw FeedGettingError ();
-		}
 
 		if (!FeedFinderByURL_.next ())
 		{
@@ -1120,10 +1114,7 @@ namespace Aggregator
 		ChannelIDFromTitleURL_.bindValue (":title", title);
 		ChannelIDFromTitleURL_.bindValue (":url", link);
 		if (!ChannelIDFromTitleURL_.exec ())
-		{
 			Util::DBLock::DumpError (ChannelIDFromTitleURL_);
-			throw ChannelGettingError ();
-		}
 
 		if (!ChannelIDFromTitleURL_.next ())
 			throw ChannelNotFoundError ();
@@ -1140,10 +1131,7 @@ namespace Aggregator
 		ItemIDFromTitleURL_.bindValue (":title", title);
 		ItemIDFromTitleURL_.bindValue (":url", link);
 		if (!ItemIDFromTitleURL_.exec ())
-		{
 			Util::DBLock::DumpError (ItemIDFromTitleURL_);
-			throw ItemGettingError ();
-		}
 
 		if (!ItemIDFromTitleURL_.next ())
 			return {};
@@ -1162,10 +1150,7 @@ namespace Aggregator
 		ItemIDFromURL_.bindValue (":channel_id", channelId);
 		ItemIDFromURL_.bindValue (":url", link);
 		if (!ItemIDFromURL_.exec ())
-		{
 			Util::DBLock::DumpError (ItemIDFromURL_);
-			throw ItemGettingError ();
-		}
 
 		if (!ItemIDFromURL_.next ())
 			return {};
@@ -1181,10 +1166,7 @@ namespace Aggregator
 		ItemIDFromTitle_.bindValue (":channel_id", channelId);
 		ItemIDFromTitle_.bindValue (":title", title);
 		if (!ItemIDFromTitle_.exec ())
-		{
 			Util::DBLock::DumpError (ItemIDFromTitle_);
-			throw ItemGettingError ();
-		}
 
 		if (!ItemIDFromTitle_.next ())
 			return {};
