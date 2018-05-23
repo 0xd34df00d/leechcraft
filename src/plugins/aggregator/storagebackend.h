@@ -55,7 +55,6 @@ namespace Aggregator
 		struct ChannelNotFoundError {};
 		struct ItemNotFoundError {};
 		struct FeedSettingsNotFoundError {};
-		struct FeedNotFoundError {};
 
 		enum Type
 		{
