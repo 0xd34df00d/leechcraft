@@ -32,6 +32,7 @@
 #include <functional>
 #include <boost/optional.hpp>
 #include "typeclassutil.h"
+#include "void.h"
 
 namespace LeechCraft
 {
@@ -201,6 +202,24 @@ namespace Util
 		return Fmap (functor, function);
 	}
 
+	namespace detail
+	{
+		template<typename T>
+		struct WrapVoidResult
+		{
+			using Type = T;
+		};
+
+		template<>
+		struct WrapVoidResult<void>
+		{
+			using Type = Void;
+		};
+
+		template<typename T>
+		using WrapVoidResult_t = typename WrapVoidResult<T>::Type;
+	}
+
 	/** @brief Implementation of the Functor class for boost.optional.
 	 *
 	 * The implementation applies the function to the contents of the
@@ -215,7 +234,7 @@ namespace Util
 	struct InstanceFunctor<boost::optional<T>>
 	{
 		template<typename F>
-		using FmapResult_t = boost::optional<std::decay_t<std::result_of_t<F (T)>>>;
+		using FmapResult_t = boost::optional<detail::WrapVoidResult_t<std::decay_t<std::result_of_t<F (T)>>>>;
 
 		template<typename F>
 		static FmapResult_t<F> Apply (const boost::optional<T>& t, const F& f)
@@ -223,7 +242,13 @@ namespace Util
 			if (!t)
 				return {};
 
-			return { std::invoke (f, *t) };
+			if constexpr (std::is_same_v<FmapResult_t<F>, boost::optional<Void>>)
+			{
+				std::invoke (f, *t);
+				return { Void {} };
+			}
+			else
+				return { std::invoke (f, *t) };
 		}
 	};
 }
