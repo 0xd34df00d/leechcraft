@@ -957,9 +957,7 @@ namespace Aggregator
 
 	void Core::updateFeeds ()
 	{
-		ids_t ids;
-		StorageBackend_->GetFeedsIDs ();
-		for (const auto id : ids)
+		for (const auto id : StorageBackend_->GetFeedsIDs ())
 		{
 			try
 			{
