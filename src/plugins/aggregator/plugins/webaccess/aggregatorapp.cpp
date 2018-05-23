@@ -168,7 +168,7 @@ namespace WebAccess
 		const auto& src = ItemsModel_->MapToSource (ItemsFilter_->mapToSource (idx));
 		const auto itemId = Wt::cpp17::any_cast<IDType_t> (idx.data (ItemRole::IID));
 		const auto& item = AP_->GetItem (itemId);
-		if (!item)
+		if (item.ItemID_ == IDNotFound)
 			return;
 
 		ItemsFilter_->SetCurrentItem (itemId);
@@ -186,28 +186,28 @@ namespace WebAccess
 		}
 	}
 
-	void AggregatorApp::ShowItem (const QModelIndex& src, const Item_ptr& item)
+	void AggregatorApp::ShowItem (const QModelIndex& src, const Item& item)
 	{
 		ItemsModelDecorator { SourceItemModel_ }.Selected (src);
 
 		auto text = Wt::WString ("<div><a href='{1}' target='_blank'>{2}</a><br />{3}<br /><hr/>{4}</div>")
-				.arg (ToW (item->Link_))
-				.arg (ToW (item->Title_))
-				.arg (ToW (item->PubDate_.toString ()))
-				.arg (ToW (item->Description_));
+				.arg (ToW (item.Link_))
+				.arg (ToW (item.Title_))
+				.arg (ToW (item.PubDate_.toString ()))
+				.arg (ToW (item.Description_));
 		ItemView_->setText (text);
 	}
 
-	void AggregatorApp::ShowItemMenu (const QModelIndex&,
-			const Item_ptr& item, const Wt::WMouseEvent& event)
+	void AggregatorApp::ShowItemMenu (const QModelIndex&, const Item& item, const Wt::WMouseEvent& event)
 	{
 		Wt::WPopupMenu menu;
-		if (item->Unread_)
+		const auto itemId = item.ItemID_;
+		if (item.Unread_)
 			menu.addItem (ToW (tr ("Mark as read")))->
-					triggered ().connect ([this, &item] { AP_->SetItemRead (item->ItemID_, true); });
+					triggered ().connect ([this, itemId] { AP_->SetItemRead (itemId, true); });
 		else
 			menu.addItem (ToW (tr ("Mark as unread")))->
-					triggered ().connect ([this, &item] { AP_->SetItemRead (item->ItemID_, false); });
+					triggered ().connect ([this, itemId] { AP_->SetItemRead (itemId, false); });
 		menu.exec (event);
 	}
 
