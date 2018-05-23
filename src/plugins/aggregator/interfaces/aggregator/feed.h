@@ -97,13 +97,13 @@ namespace Aggregator
 			FeedSettings (IDType_t feedId, IDType_t settingsId,
 					int ut, int ni, int ia, bool ada);
 
-			/** @brief ID of these settings.
-			 */
-			IDType_t SettingsID_;
-
 			/** @brief ID of the corresponding feed.
 			 */
 			IDType_t FeedID_;
+
+			/** @brief ID of these settings.
+			 */
+			IDType_t SettingsID_;
 
 			/** @brief Update timeout for the feed.
 			 *
