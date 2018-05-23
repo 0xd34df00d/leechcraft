@@ -42,7 +42,7 @@ namespace Aggregator
 		return {};
 	}
 
-	Feed DumbStorage::GetFeed (const IDType_t&) const
+	boost::optional<Feed> DumbStorage::GetFeed (const IDType_t&) const
 	{
 		return {};
 	}

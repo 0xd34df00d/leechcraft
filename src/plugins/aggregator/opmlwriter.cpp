@@ -34,6 +34,7 @@
 #include <QDomElement>
 #include <QtDebug>
 #include <util/util.h>
+#include <util/sll/functor.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
 #include "core.h"
@@ -123,10 +124,14 @@ namespace Aggregator
 					&TagSetter);
 			QDomElement item = doc.createElement ("outline");
 			item.setAttribute ("title", i->Title_);
-			const auto& feed = sb->GetFeed (i->FeedID_);
-			item.setAttribute ("xmlUrl", feed.URL_);
-			item.setAttribute ("htmlUrl", i->Link_);
-			inserter.appendChild (item);
+
+			using Util::operator*;
+			[&] (auto&& feed)
+			{
+				item.setAttribute ("xmlUrl", feed.URL_);
+				item.setAttribute ("htmlUrl", i->Link_);
+				inserter.appendChild (item);
+			} * sb->GetFeed (i->FeedID_);
 		}
 
 		root.appendChild (body);

@@ -91,7 +91,7 @@ namespace Aggregator
 		 * @param[in] id The ID of the feed to be returned.
 		 * @return The full feed information.
 		 */
-		virtual Feed GetFeed (const IDType_t& id) const = 0;
+		virtual boost::optional<Feed> GetFeed (const IDType_t& id) const = 0;
 
 		/** @brief Returns the ID of the feed with the given url
 		 * or -1 if it could not be found.

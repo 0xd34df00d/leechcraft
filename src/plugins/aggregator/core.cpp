@@ -484,7 +484,8 @@ namespace Aggregator
 		ci.Description_ = rc.Description_;
 		ci.Author_ = rc.Author_;
 
-		ci.URL_ = StorageBackend_->GetFeed (channel.FeedID_).URL_;
+		using Util::operator*;
+		[&] (auto&& feed) { ci.URL_ = feed.URL_; } * StorageBackend_->GetFeed (channel.FeedID_);
 
 		// TODO introduce a method in SB for this
 		ci.NumItems_ = StorageBackend_->GetItems (channel.ChannelID_).size ();
@@ -1087,7 +1088,16 @@ namespace Aggregator
 					this,
 					SLOT (rotateUpdatesQueue ()));
 
-		QString url = StorageBackend_->GetFeed (id).URL_;
+		const auto& maybeFeed = StorageBackend_->GetFeed (id);
+		if (!maybeFeed)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no feed for id"
+					<< id;
+			return;
+		}
+
+		const auto& url = maybeFeed->URL_;
 		for (const auto& pair : Util::Stlize (PendingJobs_))
 			if (pair.second.URL_ == url)
 			{
