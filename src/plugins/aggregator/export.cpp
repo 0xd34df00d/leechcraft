@@ -32,6 +32,7 @@
 #include <QFileDialog>
 #include <QDir>
 #include <QTimer>
+#include <util/sll/functor.h>
 #include "feed.h"
 #include "storagebackendmanager.h"
 
