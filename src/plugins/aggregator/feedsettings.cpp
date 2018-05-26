@@ -31,6 +31,8 @@
 #include <util/tags/tagscompletionmodel.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
+#include "storagebackendmanager.h"
+#include "storagebackend.h"
 #include "core.h"
 
 namespace LeechCraft
@@ -54,10 +56,11 @@ namespace Aggregator
 		const auto& tags = Index_.data (ChannelRoles::HumanReadableTags).toStringList ();
 		Ui_.ChannelTags_->setText (Core::Instance ().GetProxy ()->GetTagsManager ()->Join (tags));
 
+		const auto feedId = Core::Instance ().GetChannelInfo (Index_).FeedID_;
 		Feed::FeedSettings settings (-1, -1);
 		try
 		{
-			settings = Core::Instance ().GetFeedSettings (Index_);
+			settings = StorageBackendManager::MakeStorageBackendForThread ()->GetFeedSettings (feedId);
 		}
 		catch (const std::exception& e)
 		{
@@ -69,8 +72,7 @@ namespace Aggregator
 		}
 		catch (const StorageBackend::FeedSettingsNotFoundError&)
 		{
-			settings = Feed::FeedSettings (Core::Instance ()
-					.GetChannelInfo (Index_).FeedID_);
+			settings = Feed::FeedSettings (feedId);
 		}
 
 		SettingsID_ = settings.SettingsID_;
@@ -135,7 +137,7 @@ namespace Aggregator
 				Ui_.NumItems_->value (),
 				Ui_.ItemAge_->value (),
 				Ui_.AutoDownloadEnclosures_->checkState () == Qt::Checked);
-		Core::Instance ().SetFeedSettings (settings);
+		StorageBackendManager::MakeStorageBackendForThread ()->SetFeedSettings (settings);
 
 		QDialog::accept ();
 	}
