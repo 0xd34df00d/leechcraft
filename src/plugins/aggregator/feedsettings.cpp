@@ -105,10 +105,8 @@ namespace Aggregator
 		Ui_.FeedNumItems_->setText (QString::number (ci.NumItems_));
 
 		QPixmap pixmap = Core::Instance ().GetChannelPixmap (Index_);
-		if (pixmap.width () > 400)
-			pixmap = pixmap.scaledToWidth (400, Qt::SmoothTransformation);
-		if (pixmap.height () > 300)
-			pixmap = pixmap.scaledToHeight (300, Qt::SmoothTransformation);
+		if (pixmap.width () > 400 || pixmap.height () > 300)
+			pixmap = pixmap.scaled (400, 300, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 	}
 
 	void FeedSettings::accept ()
