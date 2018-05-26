@@ -192,7 +192,7 @@ namespace Aggregator
 		 * @param[in] id The item's ID.
 		 * @return Full information about the requested item.
 		 */
-		virtual Item GetItem (const IDType_t& id) const = 0;
+		virtual boost::optional<Item> GetItem (const IDType_t& id) const = 0;
 
 		/** @brief Finds first item with the given title, link and parent
 		 * channel.

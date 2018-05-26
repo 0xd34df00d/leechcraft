@@ -145,7 +145,8 @@ namespace Aggregator
 
 		const auto& sb = GetSB ();
 		for (const IDType_t& itemId : items)
-			CurrentItems_.push_back (sb->GetItem (itemId).ToShort ());
+			if (const auto& item = sb->GetItem (itemId))
+				CurrentItems_.push_back (item->ToShort ());
 
 		endResetModel ();
 	}
@@ -316,7 +317,11 @@ namespace Aggregator
 				XmlSettingsManager::Instance ()->property ("ShowItemsTooltips").toBool ())
 		{
 			IDType_t id = CurrentItems_ [index.row ()].ItemID_;
-			const auto& item = GetSB ()->GetItem (id);
+			const auto& maybeItem = GetSB ()->GetItem (id);
+			if (!maybeItem)
+				return {};
+
+			const auto& item = *maybeItem;
 			QString result = QString ("<qt><strong>%1</strong><br />").arg (item.Title_);
 			if (item.Author_.size ())
 			{

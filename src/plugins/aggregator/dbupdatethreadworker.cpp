@@ -249,7 +249,8 @@ namespace Aggregator
 						}) ();
 				if (ourItemID)
 				{
-					if (UpdateItem (item, SB_->GetItem (*ourItemID)))
+					if (const auto& ourItem = SB_->GetItem (*ourItemID);
+						ourItem && UpdateItem (item, *ourItem))
 						++updatedItems;
 				}
 				else if (AddItem (item, ourChannel, feedSettings))

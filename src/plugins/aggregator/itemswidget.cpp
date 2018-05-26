@@ -289,7 +289,8 @@ namespace Aggregator
 
 		auto model = static_cast<const ItemsListModel*> (mapped.model ());
 		const auto& shortItem = model->GetItem (mapped);
-		return StorageBackendManager::Instance ().MakeStorageBackendForThread ()->GetItem (shortItem.ItemID_);
+		const auto sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
+		return sb->GetItem (shortItem.ItemID_).value_or (Item {});
 	}
 
 	QToolBar* ItemsWidget::GetToolBar () const

@@ -538,7 +538,8 @@ namespace Aggregator
 						continue;
 				}
 
-				items2write [cs].prepend (sb->GetItem (i->ItemID_));
+				if (const auto& item = sb->GetItem (i->ItemID_))
+					items2write [cs].prepend (*item);
 			}
 		}
 

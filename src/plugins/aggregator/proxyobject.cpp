@@ -135,7 +135,7 @@ namespace Aggregator
 		return QList<Item_ptr>::fromVector (QVector<Item_ptr>::fromStdVector (items));
 	}
 
-	Item ProxyObject::GetItem (IDType_t id) const
+	boost::optional<Item> ProxyObject::GetItem (IDType_t id) const
 	{
 		return StorageBackendManager::Instance ().MakeStorageBackendForThread ()->GetItem (id);
 	}
@@ -145,11 +145,11 @@ namespace Aggregator
 		const auto& sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
 
 		auto item = sb->GetItem (id);
-		if (item.ItemID_ == IDNotFound)
+		if (!item)
 			return;
 
-		item.Unread_ = !read;
-		sb->UpdateItem (item);
+		item->Unread_ = !read;
+		sb->UpdateItem (*item);
 	}
 
 	QAbstractItemModel* ProxyObject::CreateItemsModel () const

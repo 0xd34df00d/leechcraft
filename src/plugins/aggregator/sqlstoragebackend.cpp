@@ -40,6 +40,7 @@
 #include <util/db/dblock.h>
 #include <util/db/util.h>
 #include <util/xpc/defaulthookproxy.h>
+#include <util/sll/functor.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
 #include "xmlsettingsmanager.h"
@@ -832,10 +833,9 @@ namespace Aggregator
 
 		lock.Good ();
 
-		const auto& item = GetItem (id);
-		const auto& channel = GetChannel (item.ChannelID_, FindParentFeedForChannel (item.ChannelID_));
-		if (channel)
-			emit itemDataUpdated (item, *channel);
+		if (const auto& item = GetItem (id))
+			if (const auto& channel = GetChannel (item->ChannelID_, FindParentFeedForChannel (item->ChannelID_)))
+				emit itemDataUpdated (*item, *channel);
 	}
 
 	QList<IDType_t> SQLStorageBackend::GetItemsForTag (const ITagsManager::tag_id& tag)
@@ -1236,14 +1236,14 @@ namespace Aggregator
 		return unread;
 	}
 
-	Item SQLStorageBackend::GetItem (const IDType_t& itemId) const
+	boost::optional<Item> SQLStorageBackend::GetItem (const IDType_t& itemId) const
 	{
 		ItemFullSelector_.bindValue (":item_id", itemId);
 		if (!ItemFullSelector_.exec ())
 			Util::DBLock::DumpError (ItemFullSelector_);
 
 		if (!ItemFullSelector_.next ())
-			throw ItemNotFoundError ();
+			return {};
 
 		Item item { ItemFullSelector_.value (13).toInt (), itemId };
 		FillItem (ItemFullSelector_, item);
@@ -1478,9 +1478,10 @@ namespace Aggregator
 		UpdateShortItem_.finish ();
 
 		const auto cid = item.ChannelID_;
-		if (const auto& channel = GetChannel (cid, FindParentFeedForChannel (cid)))
+		if (const auto& channel = GetChannel (cid, FindParentFeedForChannel (cid));
+			const auto& fullItem = GetItem (item.ItemID_))
 		{
-			emit itemDataUpdated (GetItem (item.ItemID_), *channel);
+			emit itemDataUpdated (*fullItem, *channel);
 			emit channelDataUpdated (*channel);
 		}
 	}
@@ -1596,31 +1597,17 @@ namespace Aggregator
 			return;
 		}
 
+		using Util::operator*;
+
 		QList<IDType_t> modifiedChannels;
 		for (const auto itemId : items)
 		{
-			try
-			{
-				const auto cid = GetItem (itemId).ChannelID_;
-				if (!modifiedChannels.contains (cid))
-					modifiedChannels << cid;
-			}
-			catch (const ItemNotFoundError&)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "tried to delete item"
-						<< itemId
-						<< ", but it doesn't exist already";
+			const auto& cid = GetItem (itemId) * &Item::ChannelID_;
+			if (!cid)
 				continue;
-			}
-			catch (const std::exception& e)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "unable to obtain more info on"
-						<< itemId
-						<< "so won't update channel data"
-						<< e.what ();
-			}
+
+			if (!modifiedChannels.contains (*cid))
+				modifiedChannels << *cid;
 
 			if (!PerformRemove (RemoveEnclosures_, itemId) ||
 					!PerformRemove (RemoveMediaRSS_, itemId) ||

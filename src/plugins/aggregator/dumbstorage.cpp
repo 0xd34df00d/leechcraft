@@ -90,7 +90,7 @@ namespace Aggregator
 		return {};
 	}
 
-	Item DumbStorage::GetItem (const IDType_t&) const
+	boost::optional<Item> DumbStorage::GetItem (const IDType_t&) const
 	{
 		return {};
 	}
