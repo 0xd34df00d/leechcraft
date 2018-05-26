@@ -1070,7 +1070,6 @@ namespace Aggregator
 			ExternalData data;
 			data.Type_ = ExternalData::TImage;
 			data.ChannelId_ = channel.ChannelID_;
-			data.ParentFeedId_ = channel.FeedID_;
 			QString exFName = LeechCraft::Util::GetTemporaryName ();
 			try
 			{
@@ -1094,7 +1093,6 @@ namespace Aggregator
 		ExternalData data;
 		data.Type_ = ExternalData::TIcon;
 		data.ChannelId_ = channel.ChannelID_;
-		data.ParentFeedId_ = channel.FeedID_;
 		QString exFName = LeechCraft::Util::GetTemporaryName ();
 		try
 		{
