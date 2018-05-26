@@ -83,7 +83,7 @@ namespace Aggregator
 		 *
 		 * @return All feed IDs.
 		 */
-		virtual ids_t GetFeedsIDs () const = 0;
+		[[nodiscard]] virtual ids_t GetFeedsIDs () const = 0;
 
 		/** @brief Returns the feed identified by its id.
 		 *
