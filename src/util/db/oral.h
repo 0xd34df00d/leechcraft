@@ -386,35 +386,63 @@ namespace oral
 				return false;
 		}
 
-		inline QString GetInsertPrefix (InsertAction action)
+		struct SQLite
 		{
-			switch (action)
+			class InsertQueryBuilder
 			{
-			case InsertAction::Default:
-				return "INSERT";
-			case InsertAction::Ignore:
-				return "INSERT OR IGNORE";
-			case InsertAction::Replace:
-				return "INSERT OR REPLACE";
-			}
+				const QSqlDatabase DB_;
 
-			Util::Unreachable ();
-		}
+				std::array<QSqlQuery_ptr, InsertActionCount> Queries_;
+				const QString InsertSuffix_;
+			public:
+				InsertQueryBuilder (const QSqlDatabase& db, const CachedFieldsData& data)
+				: DB_ { db }
+				, InsertSuffix_ { " INTO " + data.Table_ +
+					" (" + data.Fields_.join (", ") + ") VALUES (" +
+					data.BoundFields_.join (", ") + ");" }
+				{
+				}
+
+				QSqlQuery_ptr operator() (InsertAction action)
+				{
+					auto& query = Queries_ [static_cast<size_t> (action)];
+					if (!query)
+					{
+						query = std::make_shared<QSqlQuery> (DB_);
+						query->prepare (GetInsertPrefix (action) + InsertSuffix_);
+					}
+					return query;
+				}
+			private:
+				QString GetInsertPrefix (InsertAction action)
+				{
+					switch (action)
+					{
+					case InsertAction::Default:
+						return "INSERT";
+					case InsertAction::Ignore:
+						return "INSERT OR IGNORE";
+					case InsertAction::Replace:
+						return "INSERT OR REPLACE";
+					}
+
+					Util::Unreachable ();
+				}
+			};
+		};
 
 		template<typename Seq>
 		class AdaptInsert
 		{
 			const QSqlDatabase DB_;
 			const CachedFieldsData Data_;
-			const QString InsertSuffix_;
 
 			constexpr static bool HasAutogen_ = HasAutogenPKey<Seq> ();
 
-			mutable std::array<QSqlQuery_ptr, InsertActionCount> Queries_;
+			mutable SQLite::InsertQueryBuilder QueryBuilder_;
 		public:
 			AdaptInsert (const QSqlDatabase& db, CachedFieldsData data)
-			: DB_ { db }
-			, Data_
+			: Data_
 			{
 				[data] () mutable
 				{
@@ -427,9 +455,7 @@ namespace oral
 					return data;
 				} ()
 			}
-			, InsertSuffix_ { " INTO " + Data_.Table_ +
-					" (" + Data_.Fields_.join (", ") + ") VALUES (" +
-					Data_.BoundFields_.join (", ") + ");" }
+			, QueryBuilder_ { db, Data_ }
 			{
 			}
 
@@ -446,7 +472,7 @@ namespace oral
 			template<bool UpdatePKey, typename Val>
 			auto Run (Val&& t, InsertAction action) const
 			{
-				const auto query = GetQuery (action);
+				const auto query = QueryBuilder_ (action);
 
 				MakeInserter<Seq> (Data_, query, !HasAutogen_) (t);
 
@@ -460,17 +486,6 @@ namespace oral
 					else
 						return lastId;
 				}
-			}
-
-			auto GetQuery (InsertAction action) const
-			{
-				auto& query = Queries_ [static_cast<size_t> (action)];
-				if (!query)
-				{
-					query = std::make_shared<QSqlQuery> (DB_);
-					query->prepare (GetInsertPrefix (action) + InsertSuffix_);
-				}
-				return query;
 			}
 		};
 
