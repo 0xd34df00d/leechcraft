@@ -386,9 +386,19 @@ namespace oral
 				return false;
 		}
 
-		struct SQLite
+		class IInsertQueryBuilder
 		{
-			class InsertQueryBuilder
+		public:
+			virtual ~IInsertQueryBuilder () = default;
+
+			virtual QSqlQuery_ptr GetQuery (InsertAction) = 0;
+		};
+
+		using IInsertQueryBuilder_ptr = std::unique_ptr<IInsertQueryBuilder>;
+
+		namespace SQLite
+		{
+			class InsertQueryBuilder final : public IInsertQueryBuilder
 			{
 				const QSqlDatabase DB_;
 
@@ -403,7 +413,7 @@ namespace oral
 				{
 				}
 
-				QSqlQuery_ptr operator() (InsertAction action)
+				QSqlQuery_ptr GetQuery (InsertAction action) override
 				{
 					auto& query = Queries_ [static_cast<size_t> (action)];
 					if (!query)
@@ -429,6 +439,15 @@ namespace oral
 					Util::Unreachable ();
 				}
 			};
+
+			class ImplFactory
+			{
+			public:
+				auto MakeInsertQueryBuilder (const QSqlDatabase& db, const CachedFieldsData& data) const
+				{
+					return std::make_unique<InsertQueryBuilder> (db, data);
+				}
+			};
 		};
 
 		template<typename Seq>
@@ -439,9 +458,10 @@ namespace oral
 
 			constexpr static bool HasAutogen_ = HasAutogenPKey<Seq> ();
 
-			mutable SQLite::InsertQueryBuilder QueryBuilder_;
+			IInsertQueryBuilder_ptr QueryBuilder_;
 		public:
-			AdaptInsert (const QSqlDatabase& db, CachedFieldsData data)
+			template<typename ImplFactory>
+			AdaptInsert (const QSqlDatabase& db, CachedFieldsData data, ImplFactory&& factory)
 			: Data_
 			{
 				[data] () mutable
@@ -455,7 +475,7 @@ namespace oral
 					return data;
 				} ()
 			}
-			, QueryBuilder_ { db, Data_ }
+			, QueryBuilder_ { factory.MakeInsertQueryBuilder (db, Data_) }
 			{
 			}
 
@@ -472,7 +492,7 @@ namespace oral
 			template<bool UpdatePKey, typename Val>
 			auto Run (Val&& t, InsertAction action) const
 			{
-				const auto query = QueryBuilder_ (action);
+				const auto query = QueryBuilder_->GetQuery (action);
 
 				MakeInserter<Seq> (Data_, query, !HasAutogen_) (t);
 
@@ -1266,9 +1286,12 @@ namespace oral
 		detail::SelectWrapper<T, detail::SelectBehaviour::Some> Select;
 		detail::SelectWrapper<T, detail::SelectBehaviour::One> SelectOne;
 		detail::DeleteByFieldsWrapper<T> DeleteBy;
+
+		ObjectInfo (const ObjectInfo<T>&) = delete;
+		ObjectInfo (ObjectInfo<T>&&) = default;
 	};
 
-	template<typename T>
+	template<typename T, typename ImplFactory = detail::SQLite::ImplFactory>
 	ObjectInfo<T> Adapt (const QSqlDatabase& db)
 	{
 		const auto& cachedData = detail::BuildCachedFieldsData<T> ();
@@ -1276,9 +1299,11 @@ namespace oral
 		if (db.record (cachedData.Table_).isEmpty ())
 			RunTextQuery (db, detail::AdaptCreateTable<T> (cachedData));
 
+		ImplFactory factory;
+
 		return
 		{
-			{ db, cachedData },
+			{ db, cachedData, factory },
 			{ db, cachedData },
 			{ db, cachedData },
 			{ db, cachedData },
@@ -1290,10 +1315,10 @@ namespace oral
 	template<typename T>
 	using ObjectInfo_ptr = std::shared_ptr<ObjectInfo<T>>;
 
-	template<typename T>
+	template<typename T, typename ImplFactory = detail::SQLite::ImplFactory>
 	ObjectInfo_ptr<T> AdaptPtr (const QSqlDatabase& db)
 	{
-		return std::make_shared<ObjectInfo<T>> (Adapt<T> (db));
+		return std::make_shared<ObjectInfo<T>> (Adapt<T, ImplFactory> (db));
 	}
 }
 }
