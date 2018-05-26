@@ -565,37 +565,6 @@ namespace Aggregator
 		return result;
 	}
 
-	Feed::FeedSettings Core::GetFeedSettings (const QModelIndex& index) const
-	{
-		try
-		{
-			return StorageBackend_->GetFeedSettings (ChannelsModel_->
-					GetChannelForIndex (index).FeedID_);
-		}
-		catch (const std::exception& e)
-		{
-			ErrorNotification (tr ("Aggregator error"),
-					tr ("Could not get feed settings: %1")
-					.arg (e.what ()));
-			throw std::runtime_error (QString ("Could not get feed settings, "
-					"inner exception: %1").arg (e.what ()).toStdString ());
-		}
-	}
-
-	void Core::SetFeedSettings (const Feed::FeedSettings& settings)
-	{
-		try
-		{
-			StorageBackend_->SetFeedSettings (settings);
-		}
-		catch (const std::exception& e)
-		{
-			ErrorNotification (tr ("Aggregator error"),
-					tr ("Could not update feed settings: %1")
-					.arg (e.what ()));
-		}
-	}
-
 	void Core::UpdateFeed (const QModelIndex& si)
 	{
 		QModelIndex index = si;
