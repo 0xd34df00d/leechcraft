@@ -136,10 +136,9 @@ namespace Aggregator
 		 * requested by a separate call to GetItems().
 		 *
 		 * @param[in] channelId The ID of the channel.
-		 * @param[in] feedParent Parent feed's ID identifying the feed.
 		 * @return Full information about the requested channel.
 		 */
-		virtual boost::optional<Channel> GetChannel (const IDType_t& channelId, const IDType_t& feedParent) const = 0;
+		virtual boost::optional<Channel> GetChannel (const IDType_t& channelId) const = 0;
 
 		/** @brief Find channel with the given title, link and
 		 * and given parent and returns its ID or -1 if it's not

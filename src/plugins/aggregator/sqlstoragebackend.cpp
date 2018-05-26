@@ -195,6 +195,7 @@ namespace Aggregator
 
 		ChannelsFullSelector_ = QSqlQuery (DB_);
 		ChannelsFullSelector_.prepare ("SELECT "
+				"feed_id, "
 				"url, "
 				"title, "
 				"description, "
@@ -834,7 +835,7 @@ namespace Aggregator
 		lock.Good ();
 
 		if (const auto& item = GetItem (id))
-			if (const auto& channel = GetChannel (item->ChannelID_, FindParentFeedForChannel (item->ChannelID_)))
+			if (const auto& channel = GetChannel (item->ChannelID_))
 				emit itemDataUpdated (*item, *channel);
 	}
 
@@ -1052,8 +1053,7 @@ namespace Aggregator
 		return shorts;
 	}
 
-	boost::optional<Channel> SQLStorageBackend::GetChannel (const IDType_t& channelId,
-			const IDType_t& parentFeed) const
+	boost::optional<Channel> SQLStorageBackend::GetChannel (const IDType_t& channelId) const
 	{
 		ChannelsFullSelector_.bindValue (":channel_id", channelId);
 		if (!ChannelsFullSelector_.exec ())
@@ -1062,20 +1062,20 @@ namespace Aggregator
 		if (!ChannelsFullSelector_.next ())
 			return {};
 
-		Channel channel (parentFeed, channelId);
+		Channel channel (ChannelsFullSelector_.value (0).toInt (), channelId);
 
-		channel.Link_ = ChannelsFullSelector_.value (0).toString ();
-		channel.Title_ = ChannelsFullSelector_.value (1).toString ();
-		channel.Description_ = ChannelsFullSelector_.value (2).toString ();
-		channel.LastBuild_ = ChannelsFullSelector_.value (3).toDateTime ();
-		QString tags = ChannelsFullSelector_.value (4).toString ();
+		channel.Link_ = ChannelsFullSelector_.value (1).toString ();
+		channel.Title_ = ChannelsFullSelector_.value (2).toString ();
+		channel.Description_ = ChannelsFullSelector_.value (3).toString ();
+		channel.LastBuild_ = ChannelsFullSelector_.value (4).toDateTime ();
+		QString tags = ChannelsFullSelector_.value (5).toString ();
 		channel.Tags_ = Core::Instance ().GetProxy ()->GetTagsManager ()->Split (tags);
-		channel.Language_ = ChannelsFullSelector_.value (5).toString ();
-		channel.Author_ = ChannelsFullSelector_.value (6).toString ();
-		channel.PixmapURL_ = ChannelsFullSelector_.value (7).toString ();
-		channel.Pixmap_ = UnserializePixmap (ChannelsFullSelector_.value (8).toByteArray ());
-		channel.Favicon_ = UnserializePixmap (ChannelsFullSelector_.value (9).toByteArray ());
-		channel.DisplayTitle_ = ChannelsFullSelector_.value (10).toString ();
+		channel.Language_ = ChannelsFullSelector_.value (6).toString ();
+		channel.Author_ = ChannelsFullSelector_.value (7).toString ();
+		channel.PixmapURL_ = ChannelsFullSelector_.value (8).toString ();
+		channel.Pixmap_ = UnserializePixmap (ChannelsFullSelector_.value (9).toByteArray ());
+		channel.Favicon_ = UnserializePixmap (ChannelsFullSelector_.value (10).toByteArray ());
+		channel.DisplayTitle_ = ChannelsFullSelector_.value (11).toString ();
 
 		ChannelsFullSelector_.finish ();
 
@@ -1185,7 +1185,7 @@ namespace Aggregator
 		if (!ChannelNumberTrimmer_.exec ())
 			LeechCraft::Util::DBLock::DumpError (ChannelNumberTrimmer_);
 
-		if (const auto channel = GetChannel (channelId, FindParentFeedForChannel (channelId)))
+		if (const auto channel = GetChannel (channelId))
 			emit channelDataUpdated (*channel);
 	}
 
@@ -1409,7 +1409,7 @@ namespace Aggregator
 
 		UpdateShortChannel_.finish ();
 
-		if (const auto full = GetChannel (channel.ChannelID_, channel.FeedID_))
+		if (const auto full = GetChannel (channel.ChannelID_))
 			emit channelDataUpdated (*full);
 	}
 
@@ -1447,8 +1447,7 @@ namespace Aggregator
 		WriteEnclosures (item.Enclosures_);
 		WriteMRSSEntries (item.MRSSEntries_);
 
-		IDType_t cid = item.ChannelID_;
-		if (const auto& channel = GetChannel (cid, FindParentFeedForChannel (cid)))
+		if (const auto& channel = GetChannel (item.ChannelID_))
 		{
 			emit itemDataUpdated (item, *channel);
 			emit channelDataUpdated (*channel);
@@ -1477,8 +1476,7 @@ namespace Aggregator
 
 		UpdateShortItem_.finish ();
 
-		const auto cid = item.ChannelID_;
-		if (const auto& channel = GetChannel (cid, FindParentFeedForChannel (cid));
+		if (const auto& channel = GetChannel (item.ChannelID_);
 			const auto& fullItem = GetItem (item.ItemID_))
 		{
 			emit itemDataUpdated (*fullItem, *channel);
@@ -1558,8 +1556,7 @@ namespace Aggregator
 		WriteEnclosures (item.Enclosures_);
 		WriteMRSSEntries (item.MRSSEntries_);
 
-		IDType_t cid = item.ChannelID_;
-		if (const auto& channel = GetChannel (cid, FindParentFeedForChannel (cid)))
+		if (const auto& channel = GetChannel (item.ChannelID_))
 		{
 			emit itemDataUpdated (item, *channel);
 			emit channelDataUpdated (*channel);
@@ -1638,7 +1635,7 @@ namespace Aggregator
 		emit itemsRemoved ({ items });
 
 		for (const auto& cid : modifiedChannels)
-			if (const auto& channel = GetChannel (cid, FindParentFeedForChannel (cid)))
+			if (const auto& channel = GetChannel (cid))
 				emit channelDataUpdated (*channel);
 	}
 
@@ -1719,7 +1716,7 @@ namespace Aggregator
 
 		ToggleChannelUnread_.finish ();
 
-		if (const auto& channel = GetChannel (channelId, FindParentFeedForChannel (channelId)))
+		if (const auto& channel = GetChannel (channelId))
 		{
 			emit channelDataUpdated (*channel);
 			for (size_t i = 0; i < oldItems.size (); ++i)
@@ -2195,23 +2192,6 @@ namespace Aggregator
 		if (bytes.size ())
 			result.loadFromData (bytes, "PNG");
 		return result;
-	}
-
-	IDType_t SQLStorageBackend::FindParentFeedForChannel (const IDType_t& channel) const
-	{
-		QSqlQuery query (DB_);
-		query.prepare ("SELECT feed_id FROM channels WHERE channel_id = :channel");
-		query.bindValue (":channel", channel);
-		if (!query.exec ())
-		{
-			Util::DBLock::DumpError (query);
-			throw std::runtime_error ("Unable to find parent feed for channel");
-		}
-
-		if (!query.next ())
-			throw ChannelNotFoundError ();
-
-		return query.value (0).value<IDType_t> ();
 	}
 
 	void SQLStorageBackend::FillItem (const QSqlQuery& query, Item& item) const

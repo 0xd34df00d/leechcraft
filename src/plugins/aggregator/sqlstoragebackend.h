@@ -584,7 +584,7 @@ namespace Aggregator
 		boost::optional<Feed::FeedSettings> GetFeedSettings (const IDType_t&) const override;
 		void SetFeedSettings (const Feed::FeedSettings&) override;
 		channels_shorts_t GetChannels (const IDType_t&) const override;
-		boost::optional<Channel> GetChannel (const IDType_t&, const IDType_t&) const override;
+		boost::optional<Channel> GetChannel (const IDType_t&) const override;
 		IDType_t FindChannel (const QString& , const QString&, const IDType_t&) const override;
 		void TrimChannel (const IDType_t&, int, int) override;
 		items_shorts_t GetItems (const IDType_t&) const override;
@@ -621,7 +621,6 @@ namespace Aggregator
 		QByteArray SerializePixmap (const QImage&) const;
 		QImage UnserializePixmap (const QByteArray&) const;
 
-		IDType_t FindParentFeedForChannel (const IDType_t&) const;
 		void FillItem (const QSqlQuery&, Item&) const;
 		void WriteEnclosures (const QList<Enclosure>&);
 		void GetEnclosures (const IDType_t&, QList<Enclosure>&) const;

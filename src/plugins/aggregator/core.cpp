@@ -481,7 +481,7 @@ namespace Aggregator
 
 		using Util::operator*;
 
-		StorageBackend_->GetChannel (channel.ChannelID_, channel.FeedID_) * [&] (auto&& rc)
+		StorageBackend_->GetChannel (channel.ChannelID_) * [&] (auto&& rc)
 		{
 			ci.Description_ = rc.Description_;
 			ci.Author_ = rc.Author_;
@@ -497,8 +497,9 @@ namespace Aggregator
 
 	QPixmap Core::GetChannelPixmap (const QModelIndex& i) const
 	{
+		// TODO introduce a method in SB for this
 		const auto& channelShort = ChannelsModel_->GetChannelForIndex (i);
-		if (const auto& maybeChan = StorageBackend_->GetChannel (channelShort.ChannelID_, channelShort.FeedID_))
+		if (const auto& maybeChan = StorageBackend_->GetChannel (channelShort.ChannelID_))
 			return QPixmap::fromImage (maybeChan->Pixmap_);
 		else
 			return {};
@@ -515,7 +516,7 @@ namespace Aggregator
 	{
 		const auto& channel = ChannelsModel_->GetChannelForIndex (index);
 		// TODO no need to get full channel here
-		if (const auto& maybeChan = StorageBackend_->GetChannel (channel.ChannelID_, channel.FeedID_))
+		if (const auto& maybeChan = StorageBackend_->GetChannel (channel.ChannelID_))
 			FetchFavicon (*maybeChan);
 	}
 
@@ -697,7 +698,7 @@ namespace Aggregator
 				<< ownerEmail;
 
 		for (channels_shorts_t::const_iterator i = channels.begin (), end = channels.end (); i != end; ++i)
-			if (const auto& maybeChannel = StorageBackend_->GetChannel (i->ChannelID_, i->FeedID_))
+			if (const auto& maybeChannel = StorageBackend_->GetChannel (i->ChannelID_))
 			{
 				auto channel = *maybeChannel;
 				channel.Items_ = StorageBackend_->GetFullItems (channel.ChannelID_);
@@ -1112,7 +1113,7 @@ namespace Aggregator
 		const auto& data = PendingJob2ExternalData_.take (url);
 
 		// TODO add separate methods for pixmap/favicon updates in StorageBackend.
-		auto maybeChannel = StorageBackend_->GetChannel (data.ChannelId_, data.ParentFeedId_);
+		auto maybeChannel = StorageBackend_->GetChannel (data.ChannelId_);
 		if (!maybeChannel)
 			return;
 

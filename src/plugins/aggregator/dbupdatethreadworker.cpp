@@ -219,7 +219,7 @@ namespace Aggregator
 		for (const auto& channel : channels)
 		{
 			const auto ourChannelID = SB_->FindChannel (channel->Title_, channel->Link_, feedId);
-			const auto& maybeOurChannel = SB_->GetChannel (ourChannelID, feedId);
+			const auto& maybeOurChannel = SB_->GetChannel (ourChannelID);
 			if (!maybeOurChannel)
 			{
 				AddChannel (*channel, feedSettings);
