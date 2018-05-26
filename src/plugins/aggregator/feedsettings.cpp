@@ -107,6 +107,7 @@ namespace Aggregator
 		QPixmap pixmap = Core::Instance ().GetChannelPixmap (Index_);
 		if (pixmap.width () > 400 || pixmap.height () > 300)
 			pixmap = pixmap.scaled (400, 300, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+		Ui_.ChannelImage_->setPixmap (pixmap);
 	}
 
 	void FeedSettings::accept ()
