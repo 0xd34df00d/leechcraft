@@ -94,7 +94,7 @@ namespace Aggregator
 			QString URL_;
 			QString Filename_;
 			QStringList Tags_;
-			std::shared_ptr<Feed::FeedSettings> FeedSettings_;
+			boost::optional<Feed::FeedSettings> FeedSettings_;
 		};
 		struct ExternalData
 		{
@@ -161,8 +161,7 @@ namespace Aggregator
 		bool ReinitStorage ();
 
 		void AddFeed (const QString&, const QString&);
-		void AddFeed (QString, const QStringList&,
-				FeedSettings_ptr = FeedSettings_ptr ());
+		void AddFeed (QString, const QStringList&, const boost::optional<Feed::FeedSettings>& = {});
 		void RenameFeed (const QModelIndex& index, const QString& newName);
 
 		Util::ShortcutManager* GetShortcutManager () const;

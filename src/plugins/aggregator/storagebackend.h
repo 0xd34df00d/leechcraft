@@ -54,7 +54,6 @@ namespace Aggregator
 	public:
 		struct ChannelNotFoundError {};
 		struct ItemNotFoundError {};
-		struct FeedSettingsNotFoundError {};
 
 		enum Type
 		{
@@ -108,7 +107,7 @@ namespace Aggregator
 		 * @param[in] feed Feed's ID.
 		 * @return FeedSettings for the feed.
 		 */
-		virtual Feed::FeedSettings GetFeedSettings (const IDType_t& feed) const = 0;
+		virtual boost::optional<Feed::FeedSettings> GetFeedSettings (const IDType_t& feed) const = 0;
 
 		/** @brief Sets feed's settings.
 		 *

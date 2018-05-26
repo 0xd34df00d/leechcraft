@@ -29,6 +29,7 @@
 
 #include "feedsettings.h"
 #include <util/tags/tagscompletionmodel.h>
+#include <util/sll/functor.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
 #include "storagebackendmanager.h"
@@ -56,31 +57,15 @@ namespace Aggregator
 		const auto& tags = Index_.data (ChannelRoles::HumanReadableTags).toStringList ();
 		Ui_.ChannelTags_->setText (Core::Instance ().GetProxy ()->GetTagsManager ()->Join (tags));
 
+		using Util::operator*;
 		const auto feedId = Core::Instance ().GetChannelInfo (Index_).FeedID_;
-		Feed::FeedSettings settings (-1, -1);
-		try
+		[&] (auto&& settings)
 		{
-			settings = StorageBackendManager::MakeStorageBackendForThread ()->GetFeedSettings (feedId);
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to get settings for"
-					<< Index_
-					<< e.what ();
-			return;
-		}
-		catch (const StorageBackend::FeedSettingsNotFoundError&)
-		{
-			settings = Feed::FeedSettings (feedId);
-		}
-
-		SettingsID_ = settings.SettingsID_;
-
-		Ui_.UpdateInterval_->setValue (settings.UpdateTimeout_);
-		Ui_.NumItems_->setValue (settings.NumItems_);
-		Ui_.ItemAge_->setValue (settings.ItemAge_);
-		Ui_.AutoDownloadEnclosures_->setChecked (settings.AutoDownloadEnclosures_);
+			Ui_.UpdateInterval_->setValue (settings.UpdateTimeout_);
+			Ui_.NumItems_->setValue (settings.NumItems_);
+			Ui_.ItemAge_->setValue (settings.ItemAge_);
+			Ui_.AutoDownloadEnclosures_->setChecked (settings.AutoDownloadEnclosures_);
+		} * StorageBackendManager::Instance ().MakeStorageBackendForThread ()->GetFeedSettings (feedId);
 
 		Core::ChannelInfo ci = Core::Instance ().GetChannelInfo (Index_);
 		QString link = ci.Link_;
@@ -131,13 +116,13 @@ namespace Aggregator
 		QString tags = Ui_.ChannelTags_->text ();
 		Core::Instance ().SetTagsForIndex (tags, Index_);
 
-		Feed::FeedSettings settings (Core::Instance ().GetChannelInfo (Index_).FeedID_,
-				SettingsID_,
+		StorageBackendManager::Instance ().MakeStorageBackendForThread ()->SetFeedSettings ({
+				Core::Instance ().GetChannelInfo (Index_).FeedID_,
 				Ui_.UpdateInterval_->value (),
 				Ui_.NumItems_->value (),
 				Ui_.ItemAge_->value (),
-				Ui_.AutoDownloadEnclosures_->checkState () == Qt::Checked);
-		StorageBackendManager::MakeStorageBackendForThread ()->SetFeedSettings (settings);
+				Ui_.AutoDownloadEnclosures_->checkState () == Qt::Checked
+			});
 
 		QDialog::accept ();
 	}

@@ -52,9 +52,9 @@ namespace Aggregator
 		return {};
 	}
 
-	Feed::FeedSettings DumbStorage::GetFeedSettings (const IDType_t&) const
+	boost::optional<Feed::FeedSettings> DumbStorage::GetFeedSettings (const IDType_t&) const
 	{
-		return { {} };
+		return {};
 	}
 
 	void DumbStorage::SetFeedSettings (const Feed::FeedSettings&)

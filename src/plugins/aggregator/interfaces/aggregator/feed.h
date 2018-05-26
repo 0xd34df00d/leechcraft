@@ -55,75 +55,29 @@ namespace Aggregator
 		 */
 		struct FeedSettings
 		{
-			/** @brief Returns a default-constructed feed
-			 * settings object.
-			 *
-			 * A default-constructed feed settings has
-			 * everything set to default values - so, no
-			 * settings are overridden.
-			 *
-			 * This constructor requests a new SettingsID_ for
-			 * this feed settings object.
-			 *
-			 * @param[in] feedId ID of the feed that these
-			 * settings relate to.
-			 * @param[in] ut Update interval.
-			 * @param[in] ni Number of items.
-			 * @param[in] ia Max age.
-			 * @param[in] ada Automatically download enclosures.
-			 */
-			FeedSettings (IDType_t feedId,
-					int ut = 0, int ni = 0, int ia = 0, bool ada = false);
-
-			/** @brief Returns a default-constructed feed
-			 * settings object.
-			 *
-			 * A default-constructed feed settings has
-			 * everything set to default values - so, no
-			 * settings are overridden.
-			 *
-			 * This constructor allows one to reuse an existing ID
-			 * for the SettingsID_.
-			 *
-			 * @param[in] feedId ID of the feed that these
-			 * settings relate to.
-			 * @param[in] settingsId ID of the settings object
-			 * to be used.
-			 * @param[in] ut Update interval.
-			 * @param[in] ni Number of items.
-			 * @param[in] ia Max age.
-			 * @param[in] ada Automatically download enclosures.
-			 */
-			FeedSettings (IDType_t feedId, IDType_t settingsId,
-					int ut, int ni, int ia, bool ada);
-
 			/** @brief ID of the corresponding feed.
 			 */
-			IDType_t FeedID_;
-
-			/** @brief ID of these settings.
-			 */
-			IDType_t SettingsID_;
+			IDType_t FeedID_ = IDNotFound;
 
 			/** @brief Update timeout for the feed.
 			 *
 			 * How often the feed should be checked for updates. The default
 			 * value is 0.
 			 */
-			int UpdateTimeout_;
+			int UpdateTimeout_ = 0;
 
 			/** @brief Max number of stored items.
 			 *
 			 * How much items should be stored in the feed's channels. The
 			 * default value is 0.
 			 */
-			int NumItems_;
+			int NumItems_ = 0;
 
 			/** @brief Max item's age.
 			 *
 			 * How old could be items in the feed. The default value is 0.
 			 */
-			int ItemAge_;
+			int ItemAge_ = 0;
 
 			/** @brief Automatically download enclosures.
 			 *
@@ -131,7 +85,7 @@ namespace Aggregator
 			 * gotEntity for each enclosure in each news item it
 			 * fetches.
 			 */
-			bool AutoDownloadEnclosures_;
+			bool AutoDownloadEnclosures_ = false;
 		};
 
 		IDType_t FeedID_;

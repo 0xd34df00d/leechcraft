@@ -78,10 +78,8 @@ namespace Aggregator
 	{
 		std::vector<bool> result (Ui_.Channels_->topLevelItemCount ());
 	
-		for (int i = 0, items = Ui_.Channels_->topLevelItemCount ();
-				i < items; ++i)
-			result [i] = (Ui_.Channels_->topLevelItem (i)->
-					data (0, Qt::CheckStateRole) == Qt::Checked);
+		for (int i = 0, items = Ui_.Channels_->topLevelItemCount (); i < items; ++i)
+			result [i] = (Ui_.Channels_->topLevelItem (i)->data (0, Qt::CheckStateRole) == Qt::Checked);
 	
 		return result;
 	}
@@ -91,8 +89,7 @@ namespace Aggregator
 		using Util::operator*;
 
 		const auto& sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
-		for (channels_shorts_t::const_iterator i = channels.begin (),
-				end = channels.end (); i != end; ++i)
+		for (channels_shorts_t::const_iterator i = channels.begin (), end = channels.end (); i != end; ++i)
 			[&] (auto&& feed)
 			{
 				const auto item = new QTreeWidgetItem (Ui_.Channels_, { i->Title_, feed.URL_ });

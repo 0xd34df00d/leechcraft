@@ -376,8 +376,7 @@ namespace Aggregator
 		AddFeed (url, Proxy_->GetTagsManager ()->Split (tagString));
 	}
 
-	void Core::AddFeed (QString url, const QStringList& tags,
-			std::shared_ptr<Feed::FeedSettings> fs)
+	void Core::AddFeed (QString url, const QStringList& tags, const boost::optional<Feed::FeedSettings>& fs)
 	{
 		const auto& fixedUrl = QUrl::fromUserInput (url);
 		url = fixedUrl.toString ();
@@ -649,10 +648,8 @@ namespace Aggregator
 			int interval = 0;
 			if (i->CustomFetchInterval_)
 				interval = i->FetchInterval_;
-			FeedSettings_ptr s (new Feed::FeedSettings (-1, -1,
-					interval, i->MaxArticleNumber_, i->MaxArticleAge_, false));
-
-			AddFeed (i->URL_, tagsList + i->Categories_, s);
+			AddFeed (i->URL_, tagsList + i->Categories_,
+					{ { IDNotFound, interval, i->MaxArticleNumber_, i->MaxArticleAge_, false } });
 		}
 	}
 
@@ -928,31 +925,14 @@ namespace Aggregator
 	{
 		for (const auto id : StorageBackend_->GetFeedsIDs ())
 		{
-			try
-			{
-				// It's handled by custom timer.
-				if (StorageBackend_->GetFeedSettings (id).UpdateTimeout_)
-					continue;
-			}
-			catch (const StorageBackend::FeedSettingsNotFoundError&)
-			{
-				// That's ok, we have no settings so we update as always.
-			}
-			catch (const std::exception& e)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "error obtaining settings for feed"
-						<< id
-						<< e.what ();
-			}
+			// It's handled by custom timer.
+			if (StorageBackend_->GetFeedSettings (id).value_or (Feed::FeedSettings {}).UpdateTimeout_)
+				continue;
 
 			UpdateFeed (id);
 		}
-		XmlSettingsManager::Instance ()->
-			setProperty ("LastUpdateDateTime", QDateTime::currentDateTime ());
-		int interval = XmlSettingsManager::Instance ()->
-			property ("UpdateInterval").toInt ();
-		if (interval)
+		XmlSettingsManager::Instance ()->setProperty ("LastUpdateDateTime", QDateTime::currentDateTime ());
+		if (int interval = XmlSettingsManager::Instance ()->property ("UpdateInterval").toInt ())
 			UpdateTimer_->start (interval * 60 * 1000);
 	}
 
@@ -971,8 +951,8 @@ namespace Aggregator
 			PendingJob::RFeedExternalData,
 			url,
 			where,
-			QStringList (),
-			std::shared_ptr<Feed::FeedSettings> ()
+			{},
+			{}
 		};
 
 		const auto& delegateResult = Proxy_->GetEntityManager ()->DelegateEntity (e);
@@ -1009,26 +989,12 @@ namespace Aggregator
 
 	void Core::handleCustomUpdates ()
 	{
+		using Util::operator*;
+
 		QDateTime current = QDateTime::currentDateTime ();
 		for (const auto id : StorageBackend_->GetFeedsIDs ())
 		{
-			int ut = 0;
-			try
-			{
-				ut = StorageBackend_->GetFeedSettings (id).UpdateTimeout_;
-			}
-			catch (const StorageBackend::FeedSettingsNotFoundError&)
-			{
-				continue;
-			}
-			catch (const std::exception& e)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "could not get feed settings for"
-						<< id
-						<< e.what ();
-				continue;
-			}
+			const auto ut = (StorageBackend_->GetFeedSettings (id) * &Feed::FeedSettings::UpdateTimeout_).value_or (0);
 
 			// It's handled by normal timer.
 			if (!ut)
@@ -1104,8 +1070,8 @@ namespace Aggregator
 			PendingJob::RFeedUpdated,
 			url,
 			filename,
-			QStringList (),
-			std::shared_ptr<Feed::FeedSettings> ()
+			{},
+			{}
 		};
 
 		const auto& delegateResult = Proxy_->GetEntityManager ()->DelegateEntity (e);
@@ -1217,23 +1183,9 @@ namespace Aggregator
 
 		if (pj.FeedSettings_)
 		{
-			IDType_t feedId = StorageBackend_->FindFeed (pj.URL_);
-			Feed::FeedSettings fs (feedId,
-					pj.FeedSettings_->UpdateTimeout_,
-					pj.FeedSettings_->NumItems_,
-					pj.FeedSettings_->ItemAge_,
-					pj.FeedSettings_->AutoDownloadEnclosures_);
-			try
-			{
-				StorageBackend_->SetFeedSettings (fs);
-			}
-			catch (const std::exception& e)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "unable to set settings for just added feed"
-						<< pj.URL_
-						<< e.what ();
-			}
+			auto fs = *pj.FeedSettings_;
+			fs.FeedID_ = StorageBackend_->FindFeed (pj.URL_);
+			StorageBackend_->SetFeedSettings (fs);
 		}
 	}
 

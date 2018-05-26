@@ -48,7 +48,6 @@ namespace Aggregator
 		PTFeed,
 		PTChannel,
 		PTItem,
-		PTFeedSettings,
 		PTEnclosure,
 		PTMRSSEntry,
 		PTMRSSThumbnail,

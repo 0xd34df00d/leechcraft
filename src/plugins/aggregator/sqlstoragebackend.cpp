@@ -152,7 +152,6 @@ namespace Aggregator
 
 		FeedSettingsGetter_ = QSqlQuery (DB_);
 		FeedSettingsGetter_.prepare ("SELECT "
-				"settings_id, "
 				"update_timeout, "
 				"num_items, "
 				"item_age, "
@@ -167,14 +166,12 @@ namespace Aggregator
 
 		FeedSettingsSetter_.prepare (QString ("INSERT %1 INTO feeds_settings ("
 				"feed_id, "
-				"settings_id, "
 				"update_timeout, "
 				"num_items, "
 				"item_age, "
 				"auto_download_enclosures"
 				") VALUES ("
 				":feed_id, "
-				":settings_id, "
 				":update_timeout, "
 				":num_items, "
 				":item_age, "
@@ -882,10 +879,6 @@ namespace Aggregator
 			field = "item_id";
 			table = "items";
 			break;
-		case PTFeedSettings:
-			field = "settings_id";
-			table = "feeds_settings";
-			break;
 		case PTEnclosure:
 			field = "enclosure_id";
 			table = "enclosures";
@@ -982,25 +975,23 @@ namespace Aggregator
 		return id;
 	}
 
-	Feed::FeedSettings SQLStorageBackend::GetFeedSettings (const IDType_t& feedId) const
+	boost::optional<Feed::FeedSettings> SQLStorageBackend::GetFeedSettings (const IDType_t& feedId) const
 	{
 		FeedSettingsGetter_.bindValue (":feed_id", feedId);
 		if (!FeedSettingsGetter_.exec ())
-		{
 			Util::DBLock::DumpError (FeedSettingsGetter_);
-			throw std::runtime_error (FeedSettingsGetter_
-					.lastError ().text ().toStdString ());
-		}
 
 		if (!FeedSettingsGetter_.next ())
-			throw FeedSettingsNotFoundError ();
+			return {};
 
-		Feed::FeedSettings result (feedId,
-				FeedSettingsGetter_.value (0).value<IDType_t> (),
-				FeedSettingsGetter_.value (1).toInt (),
-				FeedSettingsGetter_.value (2).toInt (),
-				FeedSettingsGetter_.value (3).toInt (),
-				FeedSettingsGetter_.value (4).toBool ());
+		Feed::FeedSettings result
+		{
+			feedId,
+			FeedSettingsGetter_.value (1).toInt (),
+			FeedSettingsGetter_.value (2).toInt (),
+			FeedSettingsGetter_.value (3).toInt (),
+			FeedSettingsGetter_.value (4).toBool ()
+		};
 		FeedSettingsGetter_.finish ();
 
 		return result;
@@ -1008,18 +999,11 @@ namespace Aggregator
 
 	void SQLStorageBackend::SetFeedSettings (const Feed::FeedSettings& settings)
 	{
-		FeedSettingsSetter_.bindValue (":settings_id",
-				settings.SettingsID_);
-		FeedSettingsSetter_.bindValue (":feed_id",
-				settings.FeedID_);
-		FeedSettingsSetter_.bindValue (":update_timeout",
-				settings.UpdateTimeout_);
-		FeedSettingsSetter_.bindValue (":num_items",
-				settings.NumItems_);
-		FeedSettingsSetter_.bindValue (":item_age",
-				settings.ItemAge_);
-		FeedSettingsSetter_.bindValue (":auto_download_enclosures",
-				settings.AutoDownloadEnclosures_);
+		FeedSettingsSetter_.bindValue (":feed_id", settings.FeedID_);
+		FeedSettingsSetter_.bindValue (":update_timeout", settings.UpdateTimeout_);
+		FeedSettingsSetter_.bindValue (":num_items", settings.NumItems_);
+		FeedSettingsSetter_.bindValue (":item_age", settings.ItemAge_);
+		FeedSettingsSetter_.bindValue (":auto_download_enclosures", settings.AutoDownloadEnclosures_);
 
 		if (!FeedSettingsSetter_.exec ())
 			LeechCraft::Util::DBLock::DumpError (FeedSettingsSetter_);
@@ -1893,7 +1877,6 @@ namespace Aggregator
 		if (!tables.contains ("feeds_settings"))
 		{
 			if (!query.exec ("CREATE TABLE feeds_settings ("
-							"settings_id BIGINT PRIMARY KEY, "
 							"feed_id BIGINT UNIQUE REFERENCES feeds ON DELETE CASCADE, "
 							"update_timeout INTEGER NOT NULL, "
 							"num_items INTEGER NOT NULL, "
@@ -1914,7 +1897,6 @@ namespace Aggregator
 											"WHERE feed_id = NEW.feed_id) "
 									"DO INSTEAD "
 										"(UPDATE feeds_settings "
-											"SET settings_id = NEW.settings_id, "
 											"update_timeout = NEW.update_timeout, "
 											"num_items = NEW.num_items, "
 											"item_age = NEW.item_age, "

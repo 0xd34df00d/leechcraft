@@ -37,28 +37,6 @@ namespace LeechCraft
 {
 namespace Aggregator
 {
-	Feed::FeedSettings::FeedSettings (IDType_t feedId,
-			int ut, int ni, int ia, bool ade)
-	: SettingsID_ (Core::Instance ().GetPool (PTFeedSettings).GetID ())
-	, FeedID_ (feedId)
-	, UpdateTimeout_ (ut)
-	, NumItems_ (ni)
-	, ItemAge_ (ia)
-	, AutoDownloadEnclosures_ (ade)
-	{
-	}
-
-	Feed::FeedSettings::FeedSettings (IDType_t feedId, IDType_t settingsId,
-			int ut, int ni, int ia, bool ade)
-	: SettingsID_ (settingsId)
-	, FeedID_ (feedId)
-	, UpdateTimeout_ (ut)
-	, NumItems_ (ni)
-	, ItemAge_ (ia)
-	, AutoDownloadEnclosures_ (ade)
-	{
-	}
-	
 	Feed::Feed ()
 	: FeedID_ (Core::Instance ().GetPool (PTFeed).GetID ())
 	{

@@ -79,24 +79,14 @@ namespace Aggregator
 		const auto itemAge = XmlSettingsManager::Instance ()->property ("ItemsMaxAge").toInt ();
 		const auto items = XmlSettingsManager::Instance ()->property ("ItemsPerChannel").toUInt ();
 
-		try
+		if (const auto& maybeSettings = SB_->GetFeedSettings (feedId))
 		{
-			auto settings = SB_->GetFeedSettings (feedId);
+			auto settings = *maybeSettings;
 			if (!settings.ItemAge_)
 				settings.ItemAge_ = itemAge;
 			if (!settings.NumItems_)
 				settings.NumItems_ = items;
 			return settings;
-		}
-		catch (const StorageBackend::FeedSettingsNotFoundError&)
-		{
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to get feed settings for"
-					<< feedId
-					<< e.what ();
 		}
 
 		Feed::FeedSettings s { feedId };
