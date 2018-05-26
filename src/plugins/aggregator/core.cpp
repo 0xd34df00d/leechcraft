@@ -1009,10 +1009,8 @@ namespace Aggregator
 
 	void Core::handleCustomUpdates ()
 	{
-		ids_t ids;
-		StorageBackend_->GetFeedsIDs ();
 		QDateTime current = QDateTime::currentDateTime ();
-		for (const auto id : ids)
+		for (const auto id : StorageBackend_->GetFeedsIDs ())
 		{
 			int ut = 0;
 			try
