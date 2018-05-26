@@ -168,7 +168,7 @@ namespace WebAccess
 		const auto& src = ItemsModel_->MapToSource (ItemsFilter_->mapToSource (idx));
 		const auto itemId = Wt::cpp17::any_cast<IDType_t> (idx.data (ItemRole::IID));
 		const auto& item = AP_->GetItem (itemId);
-		if (item.ItemID_ == IDNotFound)
+		if (!item)
 			return;
 
 		ItemsFilter_->SetCurrentItem (itemId);
@@ -176,10 +176,10 @@ namespace WebAccess
 		switch (event.button ())
 		{
 		case Wt::MouseButton::Left:
-			ShowItem (src, item);
+			ShowItem (src, *item);
 			break;
 		case Wt::MouseButton::Right:
-			ShowItemMenu (src, item, event);
+			ShowItemMenu (src, *item, event);
 			break;
 		default:
 			break;
