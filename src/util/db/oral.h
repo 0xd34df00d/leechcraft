@@ -402,7 +402,7 @@ namespace oral
 		}
 
 		template<typename Seq>
-		struct AdaptInsert
+		class AdaptInsert
 		{
 			const QSqlDatabase DB_;
 			const CachedFieldsData Data_;
