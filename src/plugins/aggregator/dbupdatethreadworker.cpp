@@ -218,18 +218,15 @@ namespace Aggregator
 
 		for (const auto& channel : channels)
 		{
-			Channel ourChannel;
-			try
-			{
-				const auto ourChannelID = SB_->FindChannel (channel->Title_,
-						channel->Link_, feedId);
-				ourChannel = SB_->GetChannel (ourChannelID, feedId);
-			}
-			catch (const StorageBackend::ChannelNotFoundError&)
+			const auto ourChannelID = SB_->FindChannel (channel->Title_, channel->Link_, feedId);
+			const auto& maybeOurChannel = SB_->GetChannel (ourChannelID, feedId);
+			if (!maybeOurChannel)
 			{
 				AddChannel (*channel, feedSettings);
 				continue;
 			}
+
+			const auto& ourChannel = *maybeOurChannel;
 
 			int newItems = 0;
 			int updatedItems = 0;

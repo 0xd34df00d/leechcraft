@@ -66,7 +66,7 @@ namespace Aggregator
 		return {};
 	}
 
-	Channel DumbStorage::GetChannel (const IDType_t&, const IDType_t&) const
+	boost::optional<Channel> DumbStorage::GetChannel (const IDType_t&, const IDType_t&) const
 	{
 		return {};
 	}

@@ -832,17 +832,10 @@ namespace Aggregator
 
 		lock.Good ();
 
-		try
-		{
-			const auto& item = GetItem (id);
-			emit itemDataUpdated (item, GetChannel (item.ChannelID_, FindParentFeedForChannel (item.ChannelID_)));
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "error notifying about data changes"
-					<< e.what ();
-		}
+		const auto& item = GetItem (id);
+		const auto& channel = GetChannel (item.ChannelID_, FindParentFeedForChannel (item.ChannelID_));
+		if (channel)
+			emit itemDataUpdated (item, *channel);
 	}
 
 	QList<IDType_t> SQLStorageBackend::GetItemsForTag (const ITagsManager::tag_id& tag)
@@ -1059,7 +1052,7 @@ namespace Aggregator
 		return shorts;
 	}
 
-	Channel SQLStorageBackend::GetChannel (const IDType_t& channelId,
+	boost::optional<Channel> SQLStorageBackend::GetChannel (const IDType_t& channelId,
 			const IDType_t& parentFeed) const
 	{
 		ChannelsFullSelector_.bindValue (":channel_id", channelId);
@@ -1067,7 +1060,7 @@ namespace Aggregator
 			Util::DBLock::DumpError (ChannelsFullSelector_);
 
 		if (!ChannelsFullSelector_.next ())
-			throw ChannelNotFoundError ();
+			return {};
 
 		Channel channel (parentFeed, channelId);
 
@@ -1080,10 +1073,8 @@ namespace Aggregator
 		channel.Language_ = ChannelsFullSelector_.value (5).toString ();
 		channel.Author_ = ChannelsFullSelector_.value (6).toString ();
 		channel.PixmapURL_ = ChannelsFullSelector_.value (7).toString ();
-		channel.Pixmap_ = UnserializePixmap (ChannelsFullSelector_
-				.value (8).toByteArray ());
-		channel.Favicon_ = UnserializePixmap (ChannelsFullSelector_
-				.value (9).toByteArray ());
+		channel.Pixmap_ = UnserializePixmap (ChannelsFullSelector_.value (8).toByteArray ());
+		channel.Favicon_ = UnserializePixmap (ChannelsFullSelector_.value (9).toByteArray ());
 		channel.DisplayTitle_ = ChannelsFullSelector_.value (10).toString ();
 
 		ChannelsFullSelector_.finish ();
@@ -1194,28 +1185,8 @@ namespace Aggregator
 		if (!ChannelNumberTrimmer_.exec ())
 			LeechCraft::Util::DBLock::DumpError (ChannelNumberTrimmer_);
 
-		try
-		{
-			emit channelDataUpdated (GetChannel (channelId, FindParentFeedForChannel (channelId)));
-		}
-		catch (const ChannelNotFoundError&)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "channel not found"
-					<< channelId;
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "error updating channel data"
-					<< channelId
-					<< e.what ();
-		}
-		catch (...)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "error updating channel data";
-		}
+		if (const auto channel = GetChannel (channelId, FindParentFeedForChannel (channelId)))
+			emit channelDataUpdated (*channel);
 	}
 
 	items_shorts_t SQLStorageBackend::GetItems (const IDType_t& channelId) const
@@ -1438,19 +1409,8 @@ namespace Aggregator
 
 		UpdateShortChannel_.finish ();
 
-		try
-		{
-			emit channelDataUpdated (GetChannel (channel.ChannelID_,
-					channel.FeedID_));
-		}
-		catch (const ChannelNotFoundError&)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "channel not found"
-				<< channel.Title_
-				<< channel.Link_
-				<< channel.ChannelID_;
-		}
+		if (const auto full = GetChannel (channel.ChannelID_, channel.FeedID_))
+			emit channelDataUpdated (*full);
 	}
 
 	void SQLStorageBackend::UpdateItem (const Item& item)
@@ -1487,18 +1447,11 @@ namespace Aggregator
 		WriteEnclosures (item.Enclosures_);
 		WriteMRSSEntries (item.MRSSEntries_);
 
-		try
+		IDType_t cid = item.ChannelID_;
+		if (const auto& channel = GetChannel (cid, FindParentFeedForChannel (cid)))
 		{
-			IDType_t cid = item.ChannelID_;
-			const auto& channel = GetChannel (cid, FindParentFeedForChannel (cid));
-			emit itemDataUpdated (item, channel);
-			emit channelDataUpdated (channel);
-		}
-		catch (const ChannelNotFoundError&)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "channel not found"
-				<< item.ChannelID_;
+			emit itemDataUpdated (item, *channel);
+			emit channelDataUpdated (*channel);
 		}
 	}
 
@@ -1524,18 +1477,11 @@ namespace Aggregator
 
 		UpdateShortItem_.finish ();
 
-		try
+		const auto cid = item.ChannelID_;
+		if (const auto& channel = GetChannel (cid, FindParentFeedForChannel (cid)))
 		{
-			const auto cid = item.ChannelID_;
-			const auto& channel = GetChannel (cid, FindParentFeedForChannel (cid));
-			emit itemDataUpdated (GetItem (item.ItemID_), channel);
-			emit channelDataUpdated (channel);
-		}
-		catch (const ChannelNotFoundError&)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "channel not found"
-				<< item.ChannelID_;
+			emit itemDataUpdated (GetItem (item.ItemID_), *channel);
+			emit channelDataUpdated (*channel);
 		}
 	}
 
@@ -1611,18 +1557,11 @@ namespace Aggregator
 		WriteEnclosures (item.Enclosures_);
 		WriteMRSSEntries (item.MRSSEntries_);
 
-		try
+		IDType_t cid = item.ChannelID_;
+		if (const auto& channel = GetChannel (cid, FindParentFeedForChannel (cid)))
 		{
-			IDType_t cid = item.ChannelID_;
-			const auto& channel = GetChannel (cid, FindParentFeedForChannel (cid));
-			emit itemDataUpdated (item, channel);
-			emit channelDataUpdated (channel);
-		}
-		catch (const ChannelNotFoundError&)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "channel not found"
-				<< item.ChannelID_;
+			emit itemDataUpdated (item, *channel);
+			emit channelDataUpdated (*channel);
 		}
 	}
 
@@ -1712,19 +1651,8 @@ namespace Aggregator
 		emit itemsRemoved ({ items });
 
 		for (const auto& cid : modifiedChannels)
-		{
-			try
-			{
-				const auto& channel = GetChannel (cid, FindParentFeedForChannel (cid));
-				emit channelDataUpdated (channel);
-			}
-			catch (const ChannelNotFoundError&)
-			{
-				qWarning () << Q_FUNC_INFO
-					<< "channel not found"
-					<< cid;
-			}
-		}
+			if (const auto& channel = GetChannel (cid, FindParentFeedForChannel (cid)))
+				emit channelDataUpdated (*channel);
 	}
 
 	void SQLStorageBackend::RemoveChannel (const IDType_t& channelId)
@@ -1804,22 +1732,15 @@ namespace Aggregator
 
 		ToggleChannelUnread_.finish ();
 
-		try
+		if (const auto& channel = GetChannel (channelId, FindParentFeedForChannel (channelId)))
 		{
-			const auto& channel = GetChannel (channelId, FindParentFeedForChannel (channelId));
-			emit channelDataUpdated (channel);
+			emit channelDataUpdated (*channel);
 			for (size_t i = 0; i < oldItems.size (); ++i)
 				if (oldItems.at (i)->Unread_ != state)
 				{
 					oldItems.at (i)->Unread_ = state;
-					emit itemDataUpdated (*oldItems.at (i), channel);
+					emit itemDataUpdated (*oldItems.at (i), *channel);
 				}
-		}
-		catch (const ChannelNotFoundError&)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "channel not found"
-				<< channelId;
 		}
 	}
 

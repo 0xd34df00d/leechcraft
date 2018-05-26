@@ -479,12 +479,15 @@ namespace Aggregator
 		ci.ChannelID_ = channel.ChannelID_;
 		ci.Link_ = channel.Link_;
 
-		const auto& rc = StorageBackend_->GetChannel (channel.ChannelID_, channel.FeedID_);
-		ci.Description_ = rc.Description_;
-		ci.Author_ = rc.Author_;
-
 		using Util::operator*;
-		[&] (auto&& feed) { ci.URL_ = feed.URL_; } * StorageBackend_->GetFeed (channel.FeedID_);
+
+		StorageBackend_->GetChannel (channel.ChannelID_, channel.FeedID_) * [&] (auto&& rc)
+		{
+			ci.Description_ = rc.Description_;
+			ci.Author_ = rc.Author_;
+		};
+
+		StorageBackend_->GetFeed (channel.FeedID_) * [&] (auto&& feed) { ci.URL_ = feed.URL_; };
 
 		// TODO introduce a method in SB for this
 		ci.NumItems_ = StorageBackend_->GetItems (channel.ChannelID_).size ();
@@ -494,61 +497,31 @@ namespace Aggregator
 
 	QPixmap Core::GetChannelPixmap (const QModelIndex& i) const
 	{
-		try
-		{
-			ChannelShort channel = ChannelsModel_->GetChannelForIndex (i);
-			const auto& rc = StorageBackend_->GetChannel (channel.ChannelID_, channel.FeedID_);
-			return QPixmap::fromImage (rc.Pixmap_);
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< e.what ();
-			return QPixmap ();
-		}
+		const auto& channelShort = ChannelsModel_->GetChannelForIndex (i);
+		if (const auto& maybeChan = StorageBackend_->GetChannel (channelShort.ChannelID_, channelShort.FeedID_))
+			return QPixmap::fromImage (maybeChan->Pixmap_);
+		else
+			return {};
 	}
 
 	void Core::SetTagsForIndex (const QString& tags, const QModelIndex& index)
 	{
-		try
-		{
-			auto channel = ChannelsModel_->GetChannelForIndex (index);
-			channel.Tags_ = Proxy_->GetTagsManager ()->GetIDs (Proxy_->GetTagsManager ()->Split (tags));
-			StorageBackend_->UpdateChannel (channel);
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< e.what ();
-		}
+		auto channel = ChannelsModel_->GetChannelForIndex (index);
+		channel.Tags_ = Proxy_->GetTagsManager ()->GetIDs (Proxy_->GetTagsManager ()->Split (tags));
+		StorageBackend_->UpdateChannel (channel);
 	}
 
 	void Core::UpdateFavicon (const QModelIndex& index)
 	{
-		try
-		{
-			ChannelShort channel = ChannelsModel_->GetChannelForIndex (index);
-			FetchFavicon (StorageBackend_->GetChannel (channel.ChannelID_, channel.FeedID_));
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< e.what ();
-		}
+		const auto& channel = ChannelsModel_->GetChannelForIndex (index);
+		// TODO no need to get full channel here
+		if (const auto& maybeChan = StorageBackend_->GetChannel (channel.ChannelID_, channel.FeedID_))
+			FetchFavicon (*maybeChan);
 	}
 
 	QStringList Core::GetCategories (const QModelIndex& index) const
 	{
-		ChannelShort cs;
-		try
-		{
-			cs = ChannelsModel_->GetChannelForIndex (index);
-		}
-		catch (const std::exception& e)
-		{
-			return QStringList ();
-		}
-
+		const auto& cs = ChannelsModel_->GetChannelForIndex (index);
 		return GetCategories (StorageBackend_->GetItems (cs.ChannelID_));
 	}
 
@@ -723,13 +696,13 @@ namespace Aggregator
 				<< owner
 				<< ownerEmail;
 
-		for (channels_shorts_t::const_iterator i = channels.begin (),
-				end = channels.end (); i != end; ++i)
-		{
-			auto channel = StorageBackend_->GetChannel (i->ChannelID_, i->FeedID_);
-			channel.Items_ = StorageBackend_->GetFullItems (channel.ChannelID_);
-			data << channel;
-		}
+		for (channels_shorts_t::const_iterator i = channels.begin (), end = channels.end (); i != end; ++i)
+			if (const auto& maybeChannel = StorageBackend_->GetChannel (i->ChannelID_, i->FeedID_))
+			{
+				auto channel = *maybeChannel;
+				channel.Items_ = StorageBackend_->GetFullItems (channel.ChannelID_);
+				data << channel;
+			}
 
 		f.write (qCompress (buffer, 9));
 	}
@@ -1139,7 +1112,11 @@ namespace Aggregator
 		const auto& data = PendingJob2ExternalData_.take (url);
 
 		// TODO add separate methods for pixmap/favicon updates in StorageBackend.
-		auto channel = StorageBackend_->GetChannel (data.ChannelId_, data.ParentFeedId_);
+		auto maybeChannel = StorageBackend_->GetChannel (data.ChannelId_, data.ParentFeedId_);
+		if (!maybeChannel)
+			return;
+
+		auto channel = *maybeChannel;
 
 		const QImage image { file.fileName () };
 		switch (data.Type_)
@@ -1152,15 +1129,7 @@ namespace Aggregator
 			break;
 		}
 
-		try
-		{
-			StorageBackend_->UpdateChannel (channel);
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< e.what ();
-		}
+		StorageBackend_->UpdateChannel (channel);
 	}
 
 	void Core::HandleFeedAdded (const channels_container_t& channels,
