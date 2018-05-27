@@ -31,7 +31,7 @@
 #include <QDir>
 #include <QSqlError>
 #include <util/sys/paths.h>
-#include <util/db/oral.h>
+#include <util/db/oral/oral.h>
 #include <util/db/util.h>
 
 namespace LeechCraft

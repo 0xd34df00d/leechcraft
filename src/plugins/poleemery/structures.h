@@ -34,7 +34,7 @@
 #include <QDateTime>
 #include <QMetaType>
 #include <QHash>
-#include <util/db/oraltypes.h>
+#include <util/db/oral/oraltypes.h>
 
 namespace LeechCraft
 {

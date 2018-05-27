@@ -34,8 +34,8 @@
 #include <util/sys/paths.h>
 #include <util/db/util.h>
 #include <util/db/dblock.h>
-#include <util/db/oral.h>
-#include <util/db/migrate.h>
+#include <util/db/oral/oral.h>
+#include <util/db/oral/migrate.h>
 #include <util/sll/functor.h>
 
 namespace LeechCraft

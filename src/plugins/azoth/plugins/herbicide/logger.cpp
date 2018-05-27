@@ -30,7 +30,7 @@
 #include "logger.h"
 #include <QDir>
 #include <QSqlError>
-#include <util/db/oral.h>
+#include <util/db/oral/oral.h>
 #include <util/db/util.h>
 #include <util/sll/unreachable.h>
 #include <util/sys/paths.h>

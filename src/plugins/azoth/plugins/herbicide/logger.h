@@ -31,7 +31,7 @@
 
 #include <QObject>
 #include <QSqlDatabase>
-#include <util/db/oralfwd.h>
+#include <util/db/oral/oralfwd.h>
 
 namespace LeechCraft
 {

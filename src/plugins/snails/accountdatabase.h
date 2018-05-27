@@ -35,7 +35,7 @@
 #include <QStringList>
 #include <QMap>
 #include <QSqlDatabase>
-#include <util/db/oralfwd.h>
+#include <util/db/oral/oralfwd.h>
 
 class QDir;
 

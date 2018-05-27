@@ -35,7 +35,7 @@
 #include <QtDebug>
 #include <util/db/dblock.h>
 #include <util/db/util.h>
-#include <util/db/oral.h>
+#include <util/db/oral/oral.h>
 #include "account.h"
 
 namespace LeechCraft

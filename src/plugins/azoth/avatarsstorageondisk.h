@@ -32,7 +32,7 @@
 #include <boost/optional.hpp>
 #include <QObject>
 #include <QSqlDatabase>
-#include <util/db/oralfwd.h>
+#include <util/db/oral/oralfwd.h>
 #include "interfaces/azoth/ihaveavatars.h"
 
 namespace LeechCraft

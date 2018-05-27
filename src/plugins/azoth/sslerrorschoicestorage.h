@@ -32,7 +32,7 @@
 #include <boost/optional.hpp>
 #include <QSqlDatabase>
 #include <QSslError>
-#include <util/db/oralfwd.h>
+#include <util/db/oral/oralfwd.h>
 
 namespace LeechCraft
 {

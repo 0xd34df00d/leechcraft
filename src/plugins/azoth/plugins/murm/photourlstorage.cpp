@@ -31,7 +31,7 @@
 #include <QUrl>
 #include <QDir>
 #include <QSqlError>
-#include <util/db/oral.h>
+#include <util/db/oral/oral.h>
 #include <util/db/dblock.h>
 #include <util/sll/functor.h>
 #include <util/sys/paths.h>

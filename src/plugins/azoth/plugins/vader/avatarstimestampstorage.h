@@ -31,7 +31,7 @@
 
 #include <boost/optional.hpp>
 #include <QSqlDatabase>
-#include <util/db/oralfwd.h>
+#include <util/db/oral/oralfwd.h>
 #include <util/db/closingdb.h>
 
 class QDateTime;

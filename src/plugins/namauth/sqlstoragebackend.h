@@ -32,8 +32,8 @@
 #include <memory>
 #include <boost/optional.hpp>
 #include <QObject>
-#include <util/db/oralfwd.h>
-#include <util/db/oraltypes.h>
+#include <util/db/oral/oralfwd.h>
+#include <util/db/oral/oraltypes.h>
 
 namespace LeechCraft
 {

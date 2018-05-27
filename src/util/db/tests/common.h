@@ -31,7 +31,7 @@
 
 #include <tuple>
 #include <QtTest>
-#include <oral.h>
+#include <oral/oral.h>
 
 namespace lco = LeechCraft::Util::oral;
 

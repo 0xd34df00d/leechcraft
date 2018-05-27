@@ -30,7 +30,7 @@
 #include "ondiskstorage.h"
 #include <QDir>
 #include <QSqlError>
-#include <util/db/oral.h>
+#include <util/db/oral/oral.h>
 #include <util/sll/functor.h>
 #include <util/sll/functional.h>
 #include <util/sys/paths.h>

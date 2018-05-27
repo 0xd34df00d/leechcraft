@@ -36,7 +36,7 @@
 #include <QtDebug>
 #include <util/db/dblock.h>
 #include <util/db/util.h>
-#include <util/db/oral.h>
+#include <util/db/oral/oral.h>
 #include <util/sys/paths.h>
 
 BOOST_FUSION_ADAPT_STRUCT (LeechCraft::NamAuth::SQLStorageBackend::AuthRecord,
