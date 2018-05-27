@@ -78,6 +78,11 @@ namespace LeechCraft::Util::oral::detail::PostgreSQL
 	class ImplFactory
 	{
 	public:
+		struct TypeLits
+		{
+			inline static const QString IntAutoincrement { "SERIAL PRIMARY KEY" };
+		};
+
 		auto MakeInsertQueryBuilder (const QSqlDatabase& db, const CachedFieldsData& data) const
 		{
 			return std::make_unique<InsertQueryBuilder> (db, data);

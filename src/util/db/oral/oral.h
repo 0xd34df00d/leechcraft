@@ -231,7 +231,7 @@ namespace oral
 	template<typename ImplFactory, typename... Tags>
 	struct Type2Name<ImplFactory, PKey<int, Tags...>>
 	{
-		QString operator() () const { return Type2Name<ImplFactory, T> () () + " PRIMARY KEY AUTOINCREMENT"; }
+		QString operator() () const { return ImplFactory::TypeLits::IntAutoincrement; }
 	};
 
 	template<typename ImplFactory, auto Ptr>
