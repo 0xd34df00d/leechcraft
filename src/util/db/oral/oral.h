@@ -61,8 +61,9 @@
 #include <util/db/dblock.h>
 #include <util/db/util.h>
 #include "oraltypes.h"
-
-using QSqlQuery_ptr = std::shared_ptr<QSqlQuery>;
+#include "oraldetailfwd.h"
+#include "impldefs.h"
+#include "sqliteimpl.h"
 
 namespace LeechCraft
 {
@@ -70,6 +71,8 @@ namespace Util
 {
 namespace oral
 {
+	using QSqlQuery_ptr = std::shared_ptr<QSqlQuery>;
+
 	class QueryException : public std::runtime_error
 	{
 		const QSqlQuery_ptr Query_;
@@ -275,15 +278,6 @@ namespace oral
 		}
 	};
 
-	enum class InsertAction
-	{
-		Default,
-		Ignore,
-		Replace
-	};
-
-	constexpr size_t InsertActionCount = 3;
-
 	namespace detail
 	{
 		template<typename T>
@@ -297,15 +291,6 @@ namespace oral
 		{
 			return ToVariant<T> {} (t);
 		}
-
-		struct CachedFieldsData
-		{
-			QString Table_;
-
-			QStringList Fields_;
-			QStringList QualifiedFields_;
-			QStringList BoundFields_;
-		};
 
 		template<typename T>
 		CachedFieldsData BuildCachedFieldsData (const QString& table)
@@ -385,70 +370,6 @@ namespace oral
 			else
 				return false;
 		}
-
-		class IInsertQueryBuilder
-		{
-		public:
-			virtual ~IInsertQueryBuilder () = default;
-
-			virtual QSqlQuery_ptr GetQuery (InsertAction) = 0;
-		};
-
-		using IInsertQueryBuilder_ptr = std::unique_ptr<IInsertQueryBuilder>;
-
-		namespace SQLite
-		{
-			class InsertQueryBuilder final : public IInsertQueryBuilder
-			{
-				const QSqlDatabase DB_;
-
-				std::array<QSqlQuery_ptr, InsertActionCount> Queries_;
-				const QString InsertSuffix_;
-			public:
-				InsertQueryBuilder (const QSqlDatabase& db, const CachedFieldsData& data)
-				: DB_ { db }
-				, InsertSuffix_ { " INTO " + data.Table_ +
-					" (" + data.Fields_.join (", ") + ") VALUES (" +
-					data.BoundFields_.join (", ") + ");" }
-				{
-				}
-
-				QSqlQuery_ptr GetQuery (InsertAction action) override
-				{
-					auto& query = Queries_ [static_cast<size_t> (action)];
-					if (!query)
-					{
-						query = std::make_shared<QSqlQuery> (DB_);
-						query->prepare (GetInsertPrefix (action) + InsertSuffix_);
-					}
-					return query;
-				}
-			private:
-				QString GetInsertPrefix (InsertAction action)
-				{
-					switch (action)
-					{
-					case InsertAction::Default:
-						return "INSERT";
-					case InsertAction::Ignore:
-						return "INSERT OR IGNORE";
-					case InsertAction::Replace:
-						return "INSERT OR REPLACE";
-					}
-
-					Util::Unreachable ();
-				}
-			};
-
-			class ImplFactory
-			{
-			public:
-				auto MakeInsertQueryBuilder (const QSqlDatabase& db, const CachedFieldsData& data) const
-				{
-					return std::make_unique<InsertQueryBuilder> (db, data);
-				}
-			};
-		};
 
 		template<typename Seq>
 		class AdaptInsert

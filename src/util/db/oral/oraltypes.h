@@ -232,6 +232,15 @@ namespace oral
 
 	template<auto Ptr>
 	struct IsIndirect<References<Ptr>> : std::true_type {};
+
+	enum class InsertAction
+	{
+		Default,
+		Ignore,
+		Replace
+	};
+
+	constexpr size_t InsertActionCount = 3;
 }
 }
 }
