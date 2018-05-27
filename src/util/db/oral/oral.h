@@ -192,7 +192,7 @@ namespace oral
 		}
 	}
 
-	template<typename T, typename = void>
+	template<typename ImplFactory, typename T, typename = void>
 	struct Type2Name
 	{
 		QString operator() () const
@@ -210,38 +210,38 @@ namespace oral
 		}
 	};
 
-	template<typename T>
-	struct Type2Name<Unique<T>>
+	template<typename ImplFactory, typename T>
+	struct Type2Name<ImplFactory, Unique<T>>
 	{
-		QString operator() () const { return Type2Name<T> () () + " UNIQUE"; }
+		QString operator() () const { return Type2Name<ImplFactory, T> () () + " UNIQUE"; }
 	};
 
-	template<typename T>
-	struct Type2Name<NotNull<T>>
+	template<typename ImplFactory, typename T>
+	struct Type2Name<ImplFactory, NotNull<T>>
 	{
-		QString operator() () const { return Type2Name<T> () () + " NOT NULL"; }
+		QString operator() () const { return Type2Name<ImplFactory, T> () () + " NOT NULL"; }
 	};
 
-	template<typename T, typename... Tags>
-	struct Type2Name<PKey<T, Tags...>>
+	template<typename ImplFactory, typename T, typename... Tags>
+	struct Type2Name<ImplFactory, PKey<T, Tags...>>
 	{
-		QString operator() () const { return Type2Name<T> () () + " PRIMARY KEY"; }
+		QString operator() () const { return Type2Name<ImplFactory, T> () () + " PRIMARY KEY"; }
 	};
 
-	template<typename... Tags>
-	struct Type2Name<PKey<int, Tags...>>
+	template<typename ImplFactory, typename... Tags>
+	struct Type2Name<ImplFactory, PKey<int, Tags...>>
 	{
-		QString operator() () const { return Type2Name<int> () () + " PRIMARY KEY AUTOINCREMENT"; }
+		QString operator() () const { return Type2Name<ImplFactory, T> () () + " PRIMARY KEY AUTOINCREMENT"; }
 	};
 
-	template<auto Ptr>
-	struct Type2Name<References<Ptr>>
+	template<typename ImplFactory, auto Ptr>
+	struct Type2Name<ImplFactory, References<Ptr>>
 	{
 		QString operator() () const
 		{
 			using Seq = MemberPtrStruct_t<Ptr>;
 			constexpr auto idx = detail::FieldIndex<Ptr> ();
-			return Type2Name<ReferencesValue_t<Ptr>> () () +
+			return Type2Name<ImplFactory, ReferencesValue_t<Ptr>> () () +
 					" REFERENCES " + Seq::ClassName () + " (" + detail::GetFieldName<Seq, idx>::value () + ") ON DELETE CASCADE";
 		}
 	};
@@ -1170,16 +1170,16 @@ namespace oral
 			return { ConstraintToString<Args> {} (data)... };
 		}
 
-		template<typename T, size_t... Indices>
+		template<typename ImplFactory, typename T, size_t... Indices>
 		QList<QString> GetTypes (std::index_sequence<Indices...>)
 		{
-			return { Type2Name<ValueAtC_t<T, Indices>> {} ()... };
+			return { Type2Name<ImplFactory, ValueAtC_t<T, Indices>> {} ()... };
 		}
 
-		template<typename T>
+		template<typename ImplFactory, typename T>
 		QString AdaptCreateTable (const CachedFieldsData& data)
 		{
-			const auto& types = GetTypes<T> (SeqIndices<T>);
+			const auto& types = GetTypes<ImplFactory, T> (SeqIndices<T>);
 
 			const auto& constraints = GetConstraintsStringList (ConstraintsType<T> {}, data);
 			const auto& constraintsStr = constraints.isEmpty () ?
@@ -1218,7 +1218,7 @@ namespace oral
 		const auto& cachedData = detail::BuildCachedFieldsData<T> ();
 
 		if (db.record (cachedData.Table_).isEmpty ())
-			RunTextQuery (db, detail::AdaptCreateTable<T> (cachedData));
+			RunTextQuery (db, detail::AdaptCreateTable<ImplFactory, T> (cachedData));
 
 		ImplFactory factory;
 
