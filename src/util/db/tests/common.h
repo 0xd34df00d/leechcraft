@@ -117,8 +117,6 @@ namespace LeechCraft::Util
 			throw std::runtime_error { "cannot create test database" };
 		}
 
-		RunTextQuery (db, "SET search_path TO pg_temp;");
-
 		return db;
 #endif
 	}
