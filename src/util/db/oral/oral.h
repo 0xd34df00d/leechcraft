@@ -1236,7 +1236,7 @@ namespace oral
 	template<typename T>
 	using ObjectInfo_ptr = std::shared_ptr<ObjectInfo<T>>;
 
-	template<typename T, typename ImplFactory = detail::SQLite::ImplFactory>
+	template<typename T, typename ImplFactory = SQLiteImplFactory>
 	ObjectInfo_ptr<T> AdaptPtr (const QSqlDatabase& db)
 	{
 		return std::make_shared<ObjectInfo<T>> (Adapt<T, ImplFactory> (db));

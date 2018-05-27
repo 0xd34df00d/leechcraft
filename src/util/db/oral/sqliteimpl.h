@@ -88,3 +88,8 @@ namespace LeechCraft::Util::oral::detail::SQLite
 		}
 	};
 }
+
+namespace LeechCraft::Util::oral
+{
+	using SQLiteImplFactory = detail::SQLite::ImplFactory;
+}
