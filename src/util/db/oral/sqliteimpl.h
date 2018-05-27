@@ -45,10 +45,10 @@ namespace LeechCraft::Util::oral::detail::SQLite
 		const QString InsertSuffix_;
 	public:
 		InsertQueryBuilder (const QSqlDatabase& db, const CachedFieldsData& data)
-			: DB_ { db }
-			, InsertSuffix_ { " INTO " + data.Table_ +
-				" (" + data.Fields_.join (", ") + ") VALUES (" +
-				data.BoundFields_.join (", ") + ");" }
+		: DB_ { db }
+		, InsertSuffix_ { " INTO " + data.Table_ +
+			" (" + data.Fields_.join (", ") + ") VALUES (" +
+			data.BoundFields_.join (", ") + ");" }
 		{
 		}
 
