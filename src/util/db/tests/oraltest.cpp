@@ -169,7 +169,7 @@ namespace Util
 		template<typename T>
 		auto PrepareRecords (QSqlDatabase db)
 		{
-			auto adapted = Util::oral::AdaptPtr<T> (db);
+			auto adapted = Util::oral::AdaptPtr<T, OralFactory> (db);
 			for (int i = 0; i < 3; ++i)
 				adapted->Insert ({ i, QString::number (i) });
 			return adapted;
@@ -189,7 +189,7 @@ namespace Util
 	{
 		auto db = MakeDatabase ();
 
-		auto adapted = Util::oral::AdaptPtr<SimpleRecord> (db);
+		auto adapted = Util::oral::AdaptPtr<SimpleRecord, OralFactory> (db);
 		for (int i = 0; i < 3; ++i)
 			adapted->Insert ({ 0, QString::number (i) }, lco::InsertAction::Replace);
 
@@ -201,7 +201,7 @@ namespace Util
 	{
 		auto db = MakeDatabase ();
 
-		auto adapted = Util::oral::AdaptPtr<SimpleRecord> (db);
+		auto adapted = Util::oral::AdaptPtr<SimpleRecord, OralFactory> (db);
 		for (int i = 0; i < 3; ++i)
 			adapted->Insert ({ 0, QString::number (i) }, lco::InsertAction::Ignore);
 
@@ -327,7 +327,7 @@ namespace Util
 
 	void OralTest::testAutoPKeyRecordInsertRvalueReturnsPKey ()
 	{
-		auto adapted = Util::oral::AdaptPtr<AutogenPKeyRecord> (MakeDatabase ());
+		auto adapted = Util::oral::AdaptPtr<AutogenPKeyRecord, OralFactory> (MakeDatabase ());
 
 		QList<int> ids;
 		for (int i = 0; i < 3; ++i)
@@ -338,7 +338,7 @@ namespace Util
 
 	void OralTest::testAutoPKeyRecordInsertConstLvalueReturnsPKey ()
 	{
-		auto adapted = Util::oral::AdaptPtr<AutogenPKeyRecord> (MakeDatabase ());
+		auto adapted = Util::oral::AdaptPtr<AutogenPKeyRecord, OralFactory> (MakeDatabase ());
 
 		QList<AutogenPKeyRecord> records;
 		for (int i = 0; i < 3; ++i)
@@ -353,7 +353,7 @@ namespace Util
 
 	void OralTest::testAutoPKeyRecordInsertSetsPKey ()
 	{
-		auto adapted = Util::oral::AdaptPtr<AutogenPKeyRecord> (MakeDatabase ());
+		auto adapted = Util::oral::AdaptPtr<AutogenPKeyRecord, OralFactory> (MakeDatabase ());
 
 		QList<AutogenPKeyRecord> records;
 		for (int i = 0; i < 3; ++i)
@@ -374,7 +374,7 @@ namespace Util
 
 	void OralTest::testNonInPlaceConstructibleRecordInsertSelect ()
 	{
-		auto adapted = Util::oral::AdaptPtr<NonInPlaceConstructibleRecord> (MakeDatabase ());
+		auto adapted = Util::oral::AdaptPtr<NonInPlaceConstructibleRecord, OralFactory> (MakeDatabase ());
 		for (int i = 0; i < 3; ++i)
 			adapted->Insert ({ i, QString::number (i), 0 });
 
@@ -403,7 +403,7 @@ namespace Util
 
 	void OralTest::testComplexConstraintsRecordInsertSelect ()
 	{
-		auto adapted = Util::oral::AdaptPtr<ComplexConstraintsRecord> (MakeDatabase ());
+		auto adapted = Util::oral::AdaptPtr<ComplexConstraintsRecord, OralFactory> (MakeDatabase ());
 
 		adapted->Insert ({ 0, "first", 1, 2 });
 		ShallThrow<oral::QueryException> ([&] { adapted->Insert ({ 0, "second", 1, 2 }); });

@@ -134,8 +134,8 @@ namespace Util
 	{
 		auto db = MakeDatabase ();
 
-		auto student = Util::oral::AdaptPtr<Student> (db);
-		auto studentInfo = Util::oral::AdaptPtr<StudentInfo> (db);
+		auto student = Util::oral::AdaptPtr<Student, OralFactory> (db);
+		auto studentInfo = Util::oral::AdaptPtr<StudentInfo, OralFactory> (db);
 
 		QList<QPair<Student, StudentInfo>> list
 		{

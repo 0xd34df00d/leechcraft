@@ -38,6 +38,9 @@ FindQtLibs (leechcraft-util-db${LC_LIBSUFFIX} Concurrent Sql Widgets)
 if (ENABLE_UTIL_TESTS)
 	include_directories (${CMAKE_CURRENT_BINARY_DIR}/tests ${CMAKE_CURRENT_SOURCE_DIR})
 
-	AddUtilTest (db_oral tests/oraltest.cpp UtilDbOralTest leechcraft-util-db${LC_LIBSUFFIX})
-	AddUtilTest (db_oralfkey tests/oralfkeytest.cpp UtilDbOralFKeyTest leechcraft-util-db${LC_LIBSUFFIX})
+	AddUtilTest (db_oral_sqlite tests/oraltest.cpp UtilDbOralTest leechcraft-util-db${LC_LIBSUFFIX})
+	AddUtilTest (db_oralfkey_sqlite tests/oralfkeytest.cpp UtilDbOralFKeyTest leechcraft-util-db${LC_LIBSUFFIX})
+
+	target_compile_definitions (lc_util_db_oral_sqlite_test PUBLIC -DORAL_FACTORY=ORAL_FACTORY_SQLITE)
+	target_compile_definitions (lc_util_db_oralfkey_sqlite_test PUBLIC -DORAL_FACTORY=ORAL_FACTORY_SQLITE)
 endif ()

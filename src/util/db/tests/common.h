@@ -35,6 +35,18 @@
 
 namespace lco = LeechCraft::Util::oral;
 
+#define ORAL_FACTORY_SQLITE 1
+
+#if ORAL_FACTORY == ORAL_FACTORY_SQLITE
+
+using OralFactory = lco::SQLiteImplFactory;
+
+#else
+
+#error "Unknown oral tests factory"
+
+#endif
+
 template<typename T, typename = decltype (T {}.AsTuple ())>
 auto operator== (const T& left, const T& right)
 {
