@@ -43,4 +43,10 @@ if (ENABLE_UTIL_TESTS)
 
 	target_compile_definitions (lc_util_db_oral_sqlite_test PUBLIC -DORAL_FACTORY=ORAL_FACTORY_SQLITE)
 	target_compile_definitions (lc_util_db_oralfkey_sqlite_test PUBLIC -DORAL_FACTORY=ORAL_FACTORY_SQLITE)
+
+	AddUtilTest (db_oral_postgres tests/oraltest.cpp UtilDbOralTest leechcraft-util-db${LC_LIBSUFFIX})
+	AddUtilTest (db_oralfkey_postgres tests/oralfkeytest.cpp UtilDbOralFKeyTest leechcraft-util-db${LC_LIBSUFFIX})
+
+	target_compile_definitions (lc_util_db_oral_postgres_test PUBLIC -DORAL_FACTORY=ORAL_FACTORY_POSTGRES)
+	target_compile_definitions (lc_util_db_oralfkey_postgres_test PUBLIC -DORAL_FACTORY=ORAL_FACTORY_POSTGRES)
 endif ()
