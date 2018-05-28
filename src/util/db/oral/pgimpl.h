@@ -51,7 +51,7 @@ namespace LeechCraft::Util::oral::detail::PostgreSQL
 				" (" + data.Fields_.join (", ") + ") VALUES (" +
 				data.BoundFields_.join (", ") + ") " }
 		, Replacer_ { "ON CONFLICT (" +
-				data.Fields_.at (data.PKeyField_.value_or (0)) +
+				constraining.join (", ") +
 				") DO UPDATE SET " +
 				Map (data.Fields_, [] (const QString& str) { return str + " = EXCLUDED." + str; }).join (", ") }
 		{
