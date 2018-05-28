@@ -45,7 +45,7 @@ namespace LeechCraft::Util::oral::detail::PostgreSQL
 		const QString InsertBase_;
 		const QString Replacer_;
 	public:
-		InsertQueryBuilder (const QSqlDatabase& db, const CachedFieldsData& data)
+		InsertQueryBuilder (const QSqlDatabase& db, const CachedFieldsData& data, const QStringList& constraining)
 		: DB_ { db }
 		, InsertBase_ { "INSERT INTO " + data.Table_ +
 				" (" + data.Fields_.join (", ") + ") VALUES (" +
@@ -92,9 +92,10 @@ namespace LeechCraft::Util::oral::detail::PostgreSQL
 			inline static const QString IntAutoincrement { "SERIAL PRIMARY KEY" };
 		};
 
-		auto MakeInsertQueryBuilder (const QSqlDatabase& db, const CachedFieldsData& data) const
+		auto MakeInsertQueryBuilder (const QSqlDatabase& db,
+				const CachedFieldsData& data, const QStringList& constraining) const
 		{
-			return std::make_unique<InsertQueryBuilder> (db, data);
+			return std::make_unique<InsertQueryBuilder> (db, data, constraining);
 		}
 	};
 }

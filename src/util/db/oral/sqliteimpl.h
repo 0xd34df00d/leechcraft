@@ -87,7 +87,7 @@ namespace LeechCraft::Util::oral::detail::SQLite
 			inline static const QString IntAutoincrement { "INTEGER PRIMARY KEY AUTOINCREMENT" };
 		};
 
-		auto MakeInsertQueryBuilder (const QSqlDatabase& db, const CachedFieldsData& data) const
+		auto MakeInsertQueryBuilder (const QSqlDatabase& db, const CachedFieldsData& data, const QStringList&) const
 		{
 			return std::make_unique<InsertQueryBuilder> (db, data);
 		}

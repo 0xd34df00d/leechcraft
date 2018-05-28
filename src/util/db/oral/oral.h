@@ -386,9 +386,13 @@ namespace oral
 			IInsertQueryBuilder_ptr QueryBuilder_;
 		public:
 			template<typename ImplFactory>
-			AdaptInsert (const QSqlDatabase& db, CachedFieldsData data, ImplFactory&& factory)
+			AdaptInsert (const QSqlDatabase& db, CachedFieldsData data,
+					ImplFactory&& factory, const QList<int>& constraining)
 			: Data_ { RemovePKey (data) }
-			, QueryBuilder_ { factory.MakeInsertQueryBuilder (db, Data_) }
+			, QueryBuilder_ {
+				factory.MakeInsertQueryBuilder (db, Data_,
+						Util::Map (constraining, [&data] (int idx) { return data.Fields_.value (idx); }))
+			}
 			{
 			}
 
@@ -1246,11 +1250,13 @@ namespace oral
 		if (db.record (cachedData.Table_).isEmpty ())
 			RunTextQuery (db, detail::AdaptCreateTable<ImplFactory, T> (cachedData));
 
+		auto constrainingFields = detail::GetConstrainingFields<T> (detail::ConstraintsType<T> {});
+
 		ImplFactory factory;
 
 		return
 		{
-			{ db, cachedData, factory },
+			{ db, cachedData, factory, constrainingFields },
 			{ db, cachedData },
 			{ db, cachedData },
 			{ db, cachedData },
