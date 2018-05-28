@@ -73,7 +73,8 @@ namespace Util
 
 		void testNonInPlaceConstructibleRecordInsertSelect ();
 
-		void testComplexConstraintsRecordInsertSelect ();
+		void testComplexConstraintsRecordInsertSelectDefault ();
+		void testComplexConstraintsRecordInsertSelectIgnore ();
 
 		void benchSimpleRecordAdapt ();
 

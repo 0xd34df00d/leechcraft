@@ -401,7 +401,7 @@ namespace Util
 		}
 	}
 
-	void OralTest::testComplexConstraintsRecordInsertSelect ()
+	void OralTest::testComplexConstraintsRecordInsertSelectDefault ()
 	{
 		auto adapted = Util::oral::AdaptPtr<ComplexConstraintsRecord, OralFactory> (MakeDatabase ());
 
@@ -415,6 +415,19 @@ namespace Util
 		QCOMPARE (list, (QList<ComplexConstraintsRecord> { { 0, "first", 1, 2 }, { 0, "second", 1, 3 } }));
 	}
 
+	void OralTest::testComplexConstraintsRecordInsertSelectIgnore ()
+	{
+		auto adapted = Util::oral::AdaptPtr<ComplexConstraintsRecord, OralFactory> (MakeDatabase ());
+
+		adapted->Insert ({ 0, "first", 1, 2 }, lco::InsertAction::Ignore);
+		adapted->Insert ({ 0, "second", 1, 2 }, lco::InsertAction::Ignore);
+		adapted->Insert ({ 0, "first", 1, 3 }, lco::InsertAction::Ignore);
+		adapted->Insert ({ 0, "second", 1, 3 }, lco::InsertAction::Ignore);
+		adapted->Insert ({ 0, "first", 1, 3 }, lco::InsertAction::Ignore);
+
+		const auto& list = adapted->Select ();
+		QCOMPARE (list, (QList<ComplexConstraintsRecord> { { 0, "first", 1, 2 }, { 0, "second", 1, 3 } }));
+	}
 	void OralTest::benchSimpleRecordAdapt ()
 	{
 		if constexpr (OralBench)
