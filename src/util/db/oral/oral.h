@@ -387,19 +387,7 @@ namespace oral
 		public:
 			template<typename ImplFactory>
 			AdaptInsert (const QSqlDatabase& db, CachedFieldsData data, ImplFactory&& factory)
-			: Data_
-			{
-				[data] () mutable
-				{
-					if constexpr (HasAutogen_)
-					{
-						constexpr auto index = FindPKey<Seq>::result_type::value;
-						data.Fields_.removeAt (index);
-						data.BoundFields_.removeAt (index);
-					}
-					return data;
-				} ()
-			}
+			: Data_ { RemovePKey (data) }
 			, QueryBuilder_ { factory.MakeInsertQueryBuilder (db, Data_) }
 			{
 			}
@@ -431,6 +419,17 @@ namespace oral
 					else
 						return lastId;
 				}
+			}
+
+			static CachedFieldsData RemovePKey (CachedFieldsData data)
+			{
+				if constexpr (HasAutogen_)
+				{
+					constexpr auto index = FindPKey<Seq>::result_type::value;
+					data.Fields_.removeAt (index);
+					data.BoundFields_.removeAt (index);
+				}
+				return data;
 			}
 		};
 
