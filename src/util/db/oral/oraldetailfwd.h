@@ -40,8 +40,6 @@ namespace LeechCraft::Util::oral::detail
 		QStringList Fields_;
 		QStringList QualifiedFields_;
 		QStringList BoundFields_;
-
-		boost::optional<int> PKeyField_;
 	};
 
 }

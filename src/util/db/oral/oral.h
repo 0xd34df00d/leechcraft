@@ -361,11 +361,7 @@ namespace oral
 			const auto& qualified = Util::Map (fields, [&table] (const QString& field) { return table + "." + field; });
 			const auto& boundFields = Util::Map (fields, [] (const QString& str) { return ':' + str; });
 
-			boost::optional<int> pkeyField;
-			if constexpr (HasPKey<T>)
-				pkeyField = FindPKey<T>::result_type::value;
-
-			return { table, fields, qualified, boundFields, pkeyField };
+			return { table, fields, qualified, boundFields };
 		}
 
 		template<typename T>
