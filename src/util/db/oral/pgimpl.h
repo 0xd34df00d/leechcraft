@@ -42,13 +42,18 @@ namespace LeechCraft::Util::oral::detail::PostgreSQL
 		const QSqlDatabase DB_;
 
 		std::array<QSqlQuery_ptr, InsertActionCount> Queries_;
-		const QString InsertSuffix_;
+		const QString InsertBase_;
+		const QString Replacer_;
 	public:
 		InsertQueryBuilder (const QSqlDatabase& db, const CachedFieldsData& data)
 		: DB_ { db }
-		, InsertSuffix_ { " INTO " + data.Table_ +
-			" (" + data.Fields_.join (", ") + ") VALUES (" +
-			data.BoundFields_.join (", ") + ");" }
+		, InsertBase_ { "INSERT INTO " + data.Table_ +
+				" (" + data.Fields_.join (", ") + ") VALUES (" +
+				data.BoundFields_.join (", ") + ") " }
+		, Replacer_ { "ON CONFLICT (" +
+				data.Fields_.at (data.PKeyField_.value_or (0)) +
+				") DO UPDATE SET " +
+				Map (data.Fields_, [] (const QString& str) { return str + " = EXCLUDED." + str; }).join (", ") }
 		{
 		}
 
@@ -58,21 +63,21 @@ namespace LeechCraft::Util::oral::detail::PostgreSQL
 			if (!query)
 			{
 				query = std::make_shared<QSqlQuery> (DB_);
-				query->prepare (GetInsertPrefix (action) + InsertSuffix_);
+				query->prepare (InsertBase_ + GetInsertPostfix (action) + ";");
 			}
 			return query;
 		}
 	private:
-		QString GetInsertPrefix (InsertAction action)
+		QString GetInsertPostfix (InsertAction action)
 		{
 			switch (action)
 			{
 			case InsertAction::Default:
-				return "INSERT";
+				return {};
 			case InsertAction::Ignore:
-				return "INSERT OR IGNORE";
+				return "ON CONFLICT DO NOTHING";
 			case InsertAction::Replace:
-				return "INSERT OR REPLACE";
+				return Replacer_;
 			}
 
 			Util::Unreachable ();
