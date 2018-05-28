@@ -293,23 +293,6 @@ namespace oral
 		}
 
 		template<typename T>
-		CachedFieldsData BuildCachedFieldsData (const QString& table)
-		{
-			const auto& fields = detail::GetFieldsNames<T> {} ();
-			const auto& qualified = Util::Map (fields, [&table] (const QString& field) { return table + "." + field; });
-			const auto& boundFields = Util::Map (fields, [] (const QString& str) { return ':' + str; });
-
-			return { table, fields, qualified, boundFields };
-		}
-
-		template<typename T>
-		CachedFieldsData BuildCachedFieldsData ()
-		{
-			static CachedFieldsData result = BuildCachedFieldsData<T> (T::ClassName ());
-			return result;
-		}
-
-		template<typename T>
 		auto MakeInserter (const CachedFieldsData& data, const QSqlQuery_ptr& insertQuery, bool bindPrimaryKey)
 		{
 			return [data, insertQuery, bindPrimaryKey] (const T& t)
@@ -369,6 +352,27 @@ namespace oral
 				return !HasType<NoAutogen> (AsTypelist_t<ValueAtC_t<Seq, FindPKey<Seq>::result_type::value>> {});
 			else
 				return false;
+		}
+
+		template<typename T>
+		CachedFieldsData BuildCachedFieldsData (const QString& table)
+		{
+			const auto& fields = detail::GetFieldsNames<T> {} ();
+			const auto& qualified = Util::Map (fields, [&table] (const QString& field) { return table + "." + field; });
+			const auto& boundFields = Util::Map (fields, [] (const QString& str) { return ':' + str; });
+
+			boost::optional<int> pkeyField;
+			if constexpr (HasPKey<T>)
+				pkeyField = FindPKey<T>::result_type::value;
+
+			return { table, fields, qualified, boundFields, pkeyField };
+		}
+
+		template<typename T>
+		CachedFieldsData BuildCachedFieldsData ()
+		{
+			static CachedFieldsData result = BuildCachedFieldsData<T> (T::ClassName ());
+			return result;
 		}
 
 		template<typename Seq>
