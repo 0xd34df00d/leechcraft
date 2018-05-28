@@ -70,12 +70,12 @@ namespace Util
 {
 namespace oral
 {
-	template<>
-	struct Type2Name<Azoth::IHaveAvatars::Size>
+	template<typename ImplFactory>
+	struct Type2Name<ImplFactory, Azoth::IHaveAvatars::Size>
 	{
 		QString operator() () const
 		{
-			return Type2Name<int> {} ();
+			return Type2Name<ImplFactory, int> {} ();
 		}
 	};
 

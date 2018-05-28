@@ -112,12 +112,12 @@ namespace Util
 {
 namespace oral
 {
-	template<>
-	struct Type2Name<Azoth::Herbicide::Logger::Event>
+	template<typename ImplFactory>
+	struct Type2Name<ImplFactory, Azoth::Herbicide::Logger::Event>
 	{
 		QString operator() () const
 		{
-			return Type2Name<QString> {} ();
+			return Type2Name<ImplFactory, QString> {} ();
 		}
 	};
 
