@@ -29,6 +29,10 @@
 
 #pragma once
 
+#include "oraltypes.h"
+#include "oraldetailfwd.h"
+#include "impldefs.h"
+
 namespace LeechCraft::Util::oral::detail::PostgreSQL
 {
 	using QSqlQuery_ptr = std::shared_ptr<QSqlQuery>;
