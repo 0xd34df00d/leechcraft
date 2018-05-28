@@ -40,15 +40,12 @@ namespace Util
 	QSqlQuery RunTextQuery (const QSqlDatabase& db, const QString& text)
 	{
 		QSqlQuery query { db };
-		if (!query.prepare (text))
+		if (!query.exec (text))
 		{
-			qDebug () << "unable to prepare query";
+			qDebug () << "unable to execute query";
 			DBLock::DumpError (query);
-			throw std::runtime_error { "unable to prepare query" };
+			throw std::runtime_error { "unable to execute query" };
 		}
-
-		DBLock::Execute (query);
-
 		return query;
 	}
 
