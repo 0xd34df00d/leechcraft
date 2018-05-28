@@ -43,11 +43,15 @@ namespace lco = LeechCraft::Util::oral;
 
 using OralFactory = lco::SQLiteImplFactory;
 
+constexpr bool OralBench = true;
+
 #elif ORAL_FACTORY == ORAL_FACTORY_POSTGRES
 
 #include <oral/pgimpl.h>
 
 using OralFactory = lco::PostgreSQLImplFactory;
+
+constexpr bool OralBench = false;
 
 #else
 

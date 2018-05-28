@@ -417,60 +417,75 @@ namespace Util
 
 	void OralTest::benchSimpleRecordAdapt ()
 	{
-		auto db = MakeDatabase ();
-		Util::oral::Adapt<SimpleRecord> (db);
+		if constexpr (OralBench)
+		{
+			auto db = MakeDatabase ();
+			Util::oral::Adapt<SimpleRecord> (db);
 
-		QBENCHMARK { Util::oral::Adapt<SimpleRecord> (db); }
+			QBENCHMARK { Util::oral::Adapt<SimpleRecord> (db); }
+		}
 	}
 
 	void OralTest::benchBaselineInsert ()
 	{
-		auto db = MakeDatabase ();
-		Util::oral::Adapt<SimpleRecord> (db);
-
-		QSqlQuery query { db };
-		query.prepare ("INSERT OR IGNORE INTO SimpleRecord (ID, Value) VALUES (:id, :val);");
-
-		QBENCHMARK
+		if constexpr (OralBench)
 		{
-			query.bindValue (":id", 0);
-			query.bindValue (":val", "0");
-			query.exec ();
+			auto db = MakeDatabase ();
+			Util::oral::Adapt<SimpleRecord> (db);
+
+			QSqlQuery query { db };
+			query.prepare ("INSERT OR IGNORE INTO SimpleRecord (ID, Value) VALUES (:id, :val);");
+
+			QBENCHMARK
+			{
+				query.bindValue (":id", 0);
+				query.bindValue (":val", "0");
+				query.exec ();
+			}
 		}
 	}
 
 	void OralTest::benchSimpleRecordInsert ()
 	{
-		auto db = MakeDatabase ();
-		const auto& adapted = Util::oral::Adapt<SimpleRecord> (db);
+		if constexpr (OralBench)
+		{
+			auto db = MakeDatabase ();
+			const auto& adapted = Util::oral::Adapt<SimpleRecord> (db);
 
-		QBENCHMARK { adapted.Insert ({ 0, "0" }, lco::InsertAction::Ignore); }
+			QBENCHMARK { adapted.Insert ({ 0, "0" }, lco::InsertAction::Ignore); }
+		}
 	}
 
 	void OralTest::benchBaselineUpdate ()
 	{
-		auto db = MakeDatabase ();
-		const auto& adapted = Util::oral::Adapt<SimpleRecord> (db);
-		adapted.Insert ({ 0, "0" });
-
-		QSqlQuery query { db };
-		query.prepare ("UPDATE SimpleRecord SET Value = :val WHERE Id = :id;");
-
-		QBENCHMARK
+		if constexpr (OralBench)
 		{
-			query.bindValue (":id", 0);
-			query.bindValue (":val", "1");
-			query.exec ();
+			auto db = MakeDatabase ();
+			const auto& adapted = Util::oral::Adapt<SimpleRecord> (db);
+			adapted.Insert ({ 0, "0" });
+
+			QSqlQuery query { db };
+			query.prepare ("UPDATE SimpleRecord SET Value = :val WHERE Id = :id;");
+
+			QBENCHMARK
+			{
+				query.bindValue (":id", 0);
+				query.bindValue (":val", "1");
+				query.exec ();
+			}
 		}
 	}
 
 	void OralTest::benchSimpleRecordUpdate ()
 	{
-		auto db = MakeDatabase ();
-		auto adapted = Util::oral::Adapt<SimpleRecord> (db);
-		adapted.Insert ({ 0, "0" });
+		if constexpr (OralBench)
+		{
+			auto db = MakeDatabase ();
+			auto adapted = Util::oral::Adapt<SimpleRecord> (db);
+			adapted.Insert ({ 0, "0" });
 
-		QBENCHMARK { adapted.Update ({ 0, "1" }); }
+			QBENCHMARK { adapted.Update ({ 0, "1" }); }
+		}
 	}
 }
 }
