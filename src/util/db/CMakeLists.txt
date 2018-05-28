@@ -38,14 +38,14 @@ FindQtLibs (leechcraft-util-db${LC_LIBSUFFIX} Concurrent Sql Widgets)
 if (ENABLE_UTIL_TESTS)
 	include_directories (${CMAKE_CURRENT_BINARY_DIR}/tests ${CMAKE_CURRENT_SOURCE_DIR})
 
-	AddUtilTest (db_oral_sqlite tests/oraltest.cpp UtilDbOralTest leechcraft-util-db${LC_LIBSUFFIX})
-	AddUtilTest (db_oralfkey_sqlite tests/oralfkeytest.cpp UtilDbOralFKeyTest leechcraft-util-db${LC_LIBSUFFIX})
+	AddUtilTest (db_oral_sqlite tests/oraltest.cpp UtilDbOralTestSqlite leechcraft-util-db${LC_LIBSUFFIX})
+	AddUtilTest (db_oralfkey_sqlite tests/oralfkeytest.cpp UtilDbOralFKeyTestSqlite leechcraft-util-db${LC_LIBSUFFIX})
 
 	target_compile_definitions (lc_util_db_oral_sqlite_test PUBLIC -DORAL_FACTORY=ORAL_FACTORY_SQLITE)
 	target_compile_definitions (lc_util_db_oralfkey_sqlite_test PUBLIC -DORAL_FACTORY=ORAL_FACTORY_SQLITE)
 
-	AddUtilTest (db_oral_postgres tests/oraltest.cpp UtilDbOralTest leechcraft-util-db${LC_LIBSUFFIX})
-	AddUtilTest (db_oralfkey_postgres tests/oralfkeytest.cpp UtilDbOralFKeyTest leechcraft-util-db${LC_LIBSUFFIX})
+	AddUtilTest (db_oral_postgres tests/oraltest.cpp UtilDbOralTestPostgres leechcraft-util-db${LC_LIBSUFFIX})
+	AddUtilTest (db_oralfkey_postgres tests/oralfkeytest.cpp UtilDbOralFKeyTestPostgres leechcraft-util-db${LC_LIBSUFFIX})
 
 	target_compile_definitions (lc_util_db_oral_postgres_test PUBLIC -DORAL_FACTORY=ORAL_FACTORY_POSTGRES)
 	target_compile_definitions (lc_util_db_oralfkey_postgres_test PUBLIC -DORAL_FACTORY=ORAL_FACTORY_POSTGRES)
