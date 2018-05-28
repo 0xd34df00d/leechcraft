@@ -1147,19 +1147,24 @@ namespace oral
 		using ConstraintsType = Util::IsDetected_t<Constraints<>, ConstraintsDetector, T>;
 
 		template<typename T>
-		struct ConstraintToString;
+		struct ExtractConstraintFields;
 
 		template<int... Fields>
-		struct ConstraintToString<UniqueSubset<Fields...>>
+		struct ExtractConstraintFields<UniqueSubset<Fields...>>
 		{
 			QString operator() (const CachedFieldsData& data) const
 			{
 				return "UNIQUE (" + QStringList { data.Fields_.value (Fields)... }.join (", ") + ")";
 			}
+
+			QList<int> operator() (ExtractFieldNumbers) const
+			{
+				return { Fields... };
+			}
 		};
 
 		template<int... Fields>
-		struct ConstraintToString<PrimaryKey<Fields...>>
+		struct ExtractConstraintFields<PrimaryKey<Fields...>>
 		{
 			QString operator() (const CachedFieldsData& data) const
 			{
@@ -1170,7 +1175,7 @@ namespace oral
 		template<typename... Args>
 		QStringList GetConstraintsStringList (Constraints<Args...>, const CachedFieldsData& data)
 		{
-			return { ConstraintToString<Args> {} (data)... };
+			return { ExtractConstraintFields<Args> {} (data)... };
 		}
 
 		template<typename ImplFactory, typename T, size_t... Indices>
