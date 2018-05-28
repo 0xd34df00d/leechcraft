@@ -420,7 +420,7 @@ namespace Util
 		if constexpr (OralBench)
 		{
 			auto db = MakeDatabase ();
-			Util::oral::Adapt<SimpleRecord> (db);
+			Util::oral::Adapt<SimpleRecord, OralFactory> (db);
 
 			QBENCHMARK { Util::oral::Adapt<SimpleRecord> (db); }
 		}
@@ -431,7 +431,7 @@ namespace Util
 		if constexpr (OralBench)
 		{
 			auto db = MakeDatabase ();
-			Util::oral::Adapt<SimpleRecord> (db);
+			Util::oral::Adapt<SimpleRecord, OralFactory> (db);
 
 			QSqlQuery query { db };
 			query.prepare ("INSERT OR IGNORE INTO SimpleRecord (ID, Value) VALUES (:id, :val);");
@@ -450,7 +450,7 @@ namespace Util
 		if constexpr (OralBench)
 		{
 			auto db = MakeDatabase ();
-			const auto& adapted = Util::oral::Adapt<SimpleRecord> (db);
+			const auto& adapted = Util::oral::Adapt<SimpleRecord, OralFactory> (db);
 
 			QBENCHMARK { adapted.Insert ({ 0, "0" }, lco::InsertAction::Ignore); }
 		}
@@ -461,7 +461,7 @@ namespace Util
 		if constexpr (OralBench)
 		{
 			auto db = MakeDatabase ();
-			const auto& adapted = Util::oral::Adapt<SimpleRecord> (db);
+			const auto& adapted = Util::oral::Adapt<SimpleRecord, OralFactory> (db);
 			adapted.Insert ({ 0, "0" });
 
 			QSqlQuery query { db };
@@ -481,7 +481,7 @@ namespace Util
 		if constexpr (OralBench)
 		{
 			auto db = MakeDatabase ();
-			auto adapted = Util::oral::Adapt<SimpleRecord> (db);
+			auto adapted = Util::oral::Adapt<SimpleRecord, OralFactory> (db);
 			adapted.Insert ({ 0, "0" });
 
 			QBENCHMARK { adapted.Update ({ 0, "1" }); }
