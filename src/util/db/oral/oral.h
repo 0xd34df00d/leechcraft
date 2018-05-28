@@ -1149,6 +1149,8 @@ namespace oral
 		template<typename T>
 		struct ExtractConstraintFields;
 
+		struct ExtractFieldNumbers {};
+
 		template<int... Fields>
 		struct ExtractConstraintFields<UniqueSubset<Fields...>>
 		{
@@ -1170,7 +1172,23 @@ namespace oral
 			{
 				return "PRIMARY KEY (" + QStringList { data.Fields_.value (Fields)... }.join (", ") + ")";
 			}
+
+			QList<int> operator() (ExtractFieldNumbers) const
+			{
+				return { Fields... };
+			}
 		};
+
+		template<typename Seq, typename... Args>
+		QList<int> GetConstrainingFields (Constraints<Args...>)
+		{
+			auto result = Concat (QList<QList<int>> { ExtractConstraintFields<Args> {} (ExtractFieldNumbers {})... });
+			if constexpr (HasPKey<Seq>)
+				result << FindPKey<Seq>::result_type::value;
+			std::sort (result.begin (), result.end ());
+			result.erase (std::unique (result.begin (), result.end ()), result.end ());
+			return result;
+		}
 
 		template<typename... Args>
 		QStringList GetConstraintsStringList (Constraints<Args...>, const CachedFieldsData& data)
