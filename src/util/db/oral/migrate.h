@@ -61,13 +61,13 @@ namespace oral
 		}
 	}
 
-	template<typename Record>
+	template<typename Record, typename ImplFactory = SQLiteImplFactory>
 	void Migrate (QSqlDatabase& db)
 	{
 		const auto& baseName = Record::ClassName ();
 
 		const auto& thisName = "copy" + baseName;
-		const auto& schema = detail::AdaptCreateTable<Record> (detail::BuildCachedFieldsData<Record> (thisName));
+		const auto& schema = detail::AdaptCreateTable<ImplFactory, Record> (detail::BuildCachedFieldsData<Record> (thisName));
 
 		if (detail::MatchesSchema (baseName, schema, db))
 		{
