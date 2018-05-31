@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="ru">
+<TS version="2.1" language="ru">
 <context>
     <name>AboutDialog</name>
     <message>
@@ -251,22 +251,6 @@
         <source>New window</source>
         <translation>Новое окно</translation>
     </message>
-    <message>
-        <source>View</source>
-        <translation>Вид</translation>
-    </message>
-    <message>
-        <source>Tools</source>
-        <translation>Инструменты</translation>
-    </message>
-    <message>
-        <source>Choose color</source>
-        <translation>Выбрать цвет</translation>
-    </message>
-    <message>
-        <source>Choose...</source>
-        <translation>Выбрать...</translation>
-    </message>
 </context>
 <context>
     <name>LeechCraft::AboutDialog</name>
@@ -304,6 +288,17 @@
     <message>
         <source>This change requires restarting LeechCraft. Do you want to restart now?</source>
         <translation>Это изменение требует перезапуска LeechCraft. Хотите перезапустить сейчас?</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::ColorPicker</name>
+    <message>
+        <source>Choose color</source>
+        <translation>Выбрать цвет</translation>
+    </message>
+    <message>
+        <source>Choose...</source>
+        <translation>Выбрать...</translation>
     </message>
 </context>
 <context>
@@ -480,6 +475,17 @@
     </message>
 </context>
 <context>
+    <name>LeechCraft::MainWindowMenuManager</name>
+    <message>
+        <source>View</source>
+        <translation>Вид</translation>
+    </message>
+    <message>
+        <source>Tools</source>
+        <translation>Инструменты</translation>
+    </message>
+</context>
+<context>
     <name>LeechCraft::NetworkAccessManager</name>
     <message>
         <source>Could not create Core directory.</source>
@@ -621,12 +627,15 @@
         <translation>Панель управления LeechCraft</translation>
     </message>
     <message>
-        <source>Settings for %1</source>
-        <translation>Параметры %1</translation>
-    </message>
-    <message>
         <source>Search...</source>
         <translation>Поиск...</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::SettingsWidget</name>
+    <message>
+        <source>Settings for %1</source>
+        <translation>Параметры %1</translation>
     </message>
 </context>
 <context>
@@ -696,7 +705,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Util</name>
+    <name>LeechCraft::Util::AddressesModelManager</name>
     <message>
         <source>Host</source>
         <translation>Хост</translation>
@@ -1351,6 +1360,53 @@ LeechCraft для Windows — довольно экспериментальна�
     </message>
 </context>
 <context>
+    <name>SslCertificateInfoWidget</name>
+    <message>
+        <source>Common name:</source>
+        <translation>Общее имя:</translation>
+    </message>
+    <message>
+        <source>Organization:</source>
+        <translation>Организация:</translation>
+    </message>
+    <message>
+        <source>Subject</source>
+        <translation>Субъект</translation>
+    </message>
+    <message>
+        <source>Issuer</source>
+        <translation>Издатель</translation>
+    </message>
+    <message>
+        <source>Unit:</source>
+        <translation>Подразделение:</translation>
+    </message>
+    <message>
+        <source>Country:</source>
+        <translation>Страна:</translation>
+    </message>
+    <message>
+        <source>State:</source>
+        <translation>Штат:</translation>
+    </message>
+    <message>
+        <source>City:</source>
+        <translation>Город:</translation>
+    </message>
+    <message>
+        <source>Serial number:</source>
+        <translation>Серийный номер:</translation>
+    </message>
+    <message>
+        <source>Start date:</source>
+        <translation>Начало действия:</translation>
+    </message>
+    <message>
+        <source>End date:</source>
+        <translation>Окончание действия:</translation>
+    </message>
+</context>
+<context>
     <name>SslErrorsDialog</name>
     <message>
         <source>SSL errors occured</source>
@@ -1628,10 +1684,6 @@ LeechCraft для Windows — довольно экспериментальна�
         <translation>Менеджер модулей</translation>
     </message>
     <message>
-        <source>Tab selection behavior: </source>
-        <translation>Поведение выбора вкладки:</translation>
-    </message>
-    <message>
         <source>Select the previously selected tab</source>
         <translation>Предыдущая открытая вкладка</translation>
     </message>
@@ -1754,6 +1806,10 @@ LeechCraft для Windows — довольно экспериментальна�
     <message>
         <source>Collect (anonymized) VKontakte application statistics</source>
         <translation>Собирать (анонимную) статистику ВКонтакте</translation>
+    </message>
+    <message>
+        <source>Tab selection behavior:</source>
+        <translation>Поведение выбора вкладки:</translation>
     </message>
 </context>
 </TS>
