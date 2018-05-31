@@ -459,245 +459,245 @@
 <context>
     <name>LeechCraft::BitTorrent::Core</name>
     <message>
-        <location filename="core.cpp" line="124"/>
+        <location filename="core.cpp" line="123"/>
         <source>Unknown</source>
         <translation>Неизвестно</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="343"/>
+        <location filename="core.cpp" line="346"/>
         <source>URL</source>
         <translation>URL</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="343"/>
+        <location filename="core.cpp" line="346"/>
         <source>Standard</source>
         <translation>Стандарт</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="202"/>
+        <location filename="core.cpp" line="205"/>
         <source>Name</source>
         <translation>Имя</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="204"/>
+        <location filename="core.cpp" line="207"/>
         <source>Progress</source>
         <translation>Прогресс</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="203"/>
+        <location filename="core.cpp" line="206"/>
         <source>State</source>
         <translation>Состояние</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="304"/>
+        <location filename="core.cpp" line="307"/>
         <source>Rejecting file %1 because it&apos;s bigger than current auto limit.</source>
         <translation>Файл %1 отклонён из-за слишком большого размера.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="437"/>
+        <location filename="core.cpp" line="440"/>
         <source>Idle</source>
         <translation>Простаивает</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="553"/>
-        <location filename="core.cpp" line="567"/>
-        <location filename="core.cpp" line="608"/>
-        <location filename="core.cpp" line="610"/>
-        <location filename="core.cpp" line="652"/>
-        <location filename="core.cpp" line="654"/>
+        <location filename="core.cpp" line="556"/>
+        <location filename="core.cpp" line="570"/>
+        <location filename="core.cpp" line="611"/>
+        <location filename="core.cpp" line="613"/>
+        <location filename="core.cpp" line="655"/>
+        <location filename="core.cpp" line="657"/>
         <source>/s</source>
         <translation>/с</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="638"/>
+        <location filename="core.cpp" line="641"/>
         <source>Name:</source>
         <translation>Имя:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="639"/>
+        <location filename="core.cpp" line="642"/>
         <source>Destination:</source>
         <translation>Каталог сохранения:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="641"/>
+        <location filename="core.cpp" line="644"/>
         <source>Progress:</source>
         <translation>Прогресс:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="573"/>
-        <location filename="core.cpp" line="584"/>
-        <location filename="core.cpp" line="600"/>
-        <location filename="core.cpp" line="642"/>
+        <location filename="core.cpp" line="576"/>
+        <location filename="core.cpp" line="587"/>
+        <location filename="core.cpp" line="603"/>
+        <location filename="core.cpp" line="645"/>
         <source>%1% (%2 of %3)</source>
         <translation>%1% (%2 из %3)</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="205"/>
+        <location filename="core.cpp" line="208"/>
         <source>Down speed</source>
         <translation>Скорость скачивания</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="206"/>
+        <location filename="core.cpp" line="209"/>
         <source>Up speed</source>
         <translation>Скорость отдачи</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="207"/>
+        <location filename="core.cpp" line="210"/>
         <source>Leechers</source>
         <translation>Личеры</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="208"/>
+        <location filename="core.cpp" line="211"/>
         <source>Seeders</source>
         <translation>Сидеры</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="211"/>
+        <location filename="core.cpp" line="214"/>
         <source>Total uploaded</source>
         <translation>Всего отдано</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="547"/>
+        <location filename="core.cpp" line="550"/>
         <source>%1% (%2 of %3 at %4 from %5 peers)</source>
         <translation>%1% — %2 из %3 (%4) от %5 пиров</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="563"/>
+        <location filename="core.cpp" line="566"/>
         <source>%1, seeding at %2 to %3 leechers (of around %4)</source>
         <translation>%1, раздается %3 личерам (из ≈%4) на скорости %2</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="594"/>
+        <location filename="core.cpp" line="597"/>
         <source>100% (%1)</source>
         <translation>100% (%1)</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="651"/>
+        <location filename="core.cpp" line="654"/>
         <source>Downloading speed:</source>
         <translation>Скорость закачки:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="653"/>
+        <location filename="core.cpp" line="656"/>
         <source>; uploading speed:</source>
         <translation>; скорость отдачи:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="655"/>
+        <location filename="core.cpp" line="658"/>
         <source>Peers/seeds: %1/%2</source>
         <translation>Пиров/сидов: %1/%2</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="745"/>
+        <location filename="core.cpp" line="748"/>
         <source>Could not open file %1 for read: %2</source>
         <translation>Невозможно открыть файл %1 на чтение: %2</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1006"/>
+        <location filename="core.cpp" line="1009"/>
         <source>Runtime error</source>
         <translation>Ошибка выполнения</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1114"/>
+        <location filename="core.cpp" line="1117"/>
         <source>Torrent %1 could not be reannounced at the moment, try again later.</source>
         <translation>Торрент %1 не может быть ещё раз объявлен прямо сейчас, попробуйте позже.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1848"/>
+        <location filename="core.cpp" line="1846"/>
         <source>Torrent finished: %1</source>
         <translation>Торрент завершён: %1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1865"/>
+        <location filename="core.cpp" line="1863"/>
         <source>Open...</source>
         <translation>Открыть…</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1873"/>
+        <location filename="core.cpp" line="1871"/>
         <source>Show folder</source>
         <translation>Открыть папку</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="393"/>
+        <location filename="core.cpp" line="396"/>
         <source>Queued for checking</source>
         <translation>В очереди на проверку</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="209"/>
+        <location filename="core.cpp" line="212"/>
         <source>Size</source>
         <translation>Размер</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="210"/>
+        <location filename="core.cpp" line="213"/>
         <source>Total downloaded</source>
         <translation>Скачано всего</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="212"/>
+        <location filename="core.cpp" line="215"/>
         <source>Ratio</source>
         <translation>Отношение</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="425"/>
+        <location filename="core.cpp" line="428"/>
         <source>Paused</source>
         <translation>Пауза</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="395"/>
+        <location filename="core.cpp" line="398"/>
         <source>Checking files</source>
         <translation>Проверяются файлы</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="397"/>
+        <location filename="core.cpp" line="400"/>
         <source>Downloading metadata</source>
         <translation>Скачивание метаданных</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="399"/>
+        <location filename="core.cpp" line="402"/>
         <source>Downloading</source>
         <translation>Скачивание</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="401"/>
+        <location filename="core.cpp" line="404"/>
         <source>Finished</source>
         <translation>Закончен</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="403"/>
+        <location filename="core.cpp" line="406"/>
         <source>Seeding</source>
         <translation>Раздача</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="405"/>
+        <location filename="core.cpp" line="408"/>
         <source>Allocating</source>
         <translation>Выделение места</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="407"/>
+        <location filename="core.cpp" line="410"/>
         <source>Checking resume data</source>
         <translation>Проверка данных для продолжения</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="419"/>
+        <location filename="core.cpp" line="422"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="646"/>
+        <location filename="core.cpp" line="649"/>
         <source>Status:</source>
         <translation>Статус:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="975"/>
+        <location filename="core.cpp" line="978"/>
         <source>File %1 could not be read: %2.</source>
         <translation>Файл %1 не может быть прочитан: %2.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1698"/>
+        <location filename="core.cpp" line="1696"/>
         <source>Could not open saved torrent %1 for read.</source>
         <translation>Невозможно открыть сохранённый торрент %1 для чтения.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1944"/>
+        <location filename="core.cpp" line="1942"/>
         <source>Error code %1 of category:&lt;blockquote&gt;%2&lt;/blockquote&gt;error message:&lt;blockquote&gt;%3&lt;/blockquote&gt;raw exception message:&lt;blockquote&gt;%4&lt;/blockquote&gt;</source>
         <translation>Код ошибки %1 категории &lt;blockquote&gt;%2&lt;/blockquote&gt;Сообщение об ошибке:&lt;blockquote&gt;%3&lt;/blockquote&gt;Исходное сообщение исключения:&lt;blockquote&gt;%4&lt;/blockquote&gt;</translation>
     </message>
@@ -1443,38 +1443,38 @@
         <translation>Удалить веб-сида</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.cpp" line="273"/>
-        <location filename="torrenttabwidget.cpp" line="274"/>
-        <location filename="torrenttabwidget.cpp" line="342"/>
-        <location filename="torrenttabwidget.cpp" line="343"/>
-        <location filename="torrenttabwidget.cpp" line="393"/>
-        <location filename="torrenttabwidget.cpp" line="394"/>
+        <location filename="torrenttabwidget.cpp" line="262"/>
+        <location filename="torrenttabwidget.cpp" line="263"/>
+        <location filename="torrenttabwidget.cpp" line="331"/>
+        <location filename="torrenttabwidget.cpp" line="332"/>
+        <location filename="torrenttabwidget.cpp" line="382"/>
+        <location filename="torrenttabwidget.cpp" line="383"/>
         <source>/s</source>
         <translation>/с</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.cpp" line="413"/>
+        <location filename="torrenttabwidget.cpp" line="402"/>
         <source>Wasn&apos;t yet</source>
         <translation>Ещё не было</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.cpp" line="436"/>
+        <location filename="torrenttabwidget.cpp" line="425"/>
         <source>Yes</source>
         <translation>Да</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.cpp" line="437"/>
+        <location filename="torrenttabwidget.cpp" line="426"/>
         <source>No</source>
         <translation>Нет</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.cpp" line="448"/>
+        <location filename="torrenttabwidget.cpp" line="437"/>
         <source>Not tracking</source>
         <translation>Не отслеживается</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.cpp" line="454"/>
-        <location filename="torrenttabwidget.cpp" line="457"/>
+        <location filename="torrenttabwidget.cpp" line="443"/>
+        <location filename="torrenttabwidget.cpp" line="446"/>
         <source>Unknown</source>
         <translation>Неизвестно</translation>
     </message>
@@ -1731,37 +1731,37 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="core.cpp" line="2135"/>
+        <location filename="core.cpp" line="2127"/>
         <source>Saving resume data failed for torrent:&lt;br /&gt;%1&lt;br /&gt;%2</source>
         <translation>Сохранение данных для восстановления для торрента завершилось неудачно:&lt;br /&gt;%1&lt;br /&gt;%2</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2143"/>
+        <location filename="core.cpp" line="2135"/>
         <source>Storage for torrent:&lt;br /&gt;%1&lt;br /&gt;moved successfully to:&lt;br /&gt;%2</source>
         <translation>Файлы торрента:&lt;br /&gt;%1&lt;br /&gt;успешно перемещены в:&lt;br /&gt;%2</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2152"/>
+        <location filename="core.cpp" line="2144"/>
         <source>Storage move failure:&lt;br /&gt;%2&lt;br /&gt;for torrent:&lt;br /&gt;%1</source>
         <translation>Не удалось переместить файлы торрента:&lt;br /&gt;%1&lt;br /&gt;возникла ошибка:&lt;br /&gt;%2</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2252"/>
+        <location filename="core.cpp" line="2244"/>
         <source>File error for torrent:&lt;br /&gt;%1&lt;br /&gt;file:&lt;br /&gt;%2&lt;br /&gt;error:&lt;br /&gt;%3</source>
         <translation>Файловая ошибка для торрента:&lt;br /&gt;%1&lt;br /&gt;файл:&lt;br /&gt;%2&lt;br /&gt;ошибка:&lt;br /&gt;%3</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2170"/>
+        <location filename="core.cpp" line="2162"/>
         <source>File rename failed for torrent:&lt;br /&gt;%1&lt;br /&gt;file %2, error:&lt;br /&gt;%3</source>
         <translation>Не удалось переименовать файл торрента:&lt;br /&gt;%1&lt;br /&gt;%2, ошибка:&lt;br /&gt;%3</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2180"/>
+        <location filename="core.cpp" line="2172"/>
         <source>Failed to delete torrent:&lt;br /&gt;%1&lt;br /&gt;error:&lt;br /&gt;%2</source>
         <translation>Не удалось удалить торрент:&lt;br /&gt;%1&lt;br /&gt;ошибка:&lt;br /&gt;%2</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.cpp" line="292"/>
+        <location filename="torrenttabwidget.cpp" line="281"/>
         <source>/s</source>
         <translation>/с</translation>
     </message>
