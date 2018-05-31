@@ -4,17 +4,17 @@
 <context>
     <name>LeechCraft::Azoth::LastSeen::Plugin</name>
     <message>
-        <location filename="lastseen.cpp" line="98"/>
+        <location filename="lastseen.cpp" line="97"/>
         <source>Azoth LastSeen displays when a contact has been online and available for the last time.</source>
         <translation>Azoth LastSeen displays when a contact has been online and available for the last time.</translation>
     </message>
     <message>
-        <location filename="lastseen.cpp" line="155"/>
+        <location filename="lastseen.cpp" line="154"/>
         <source>Uniting keys</source>
         <translation>Uniting keys</translation>
     </message>
     <message>
-        <location filename="lastseen.cpp" line="178"/>
+        <location filename="lastseen.cpp" line="177"/>
         <source>Writing the database</source>
         <translation>Writing the database</translation>
     </message>
