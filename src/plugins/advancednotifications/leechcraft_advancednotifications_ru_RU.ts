@@ -232,7 +232,7 @@
 <context>
     <name>LeechCraft::AdvancedNotifications::SystemTrayHandler</name>
     <message>
-        <location filename="systemtrayhandler.cpp" line="218"/>
+        <location filename="systemtrayhandler.cpp" line="252"/>
         <source>Dismiss</source>
         <translation>Пропустить</translation>
     </message>
@@ -240,22 +240,22 @@
 <context>
     <name>LeechCraft::AdvancedNotifications::UnhandledNotificationsKeeper</name>
     <message>
-        <location filename="unhandlednotificationskeeper.cpp" line="53"/>
+        <location filename="unhandlednotificationskeeper.cpp" line="52"/>
         <source>Title</source>
         <translation>Название</translation>
     </message>
     <message>
-        <location filename="unhandlednotificationskeeper.cpp" line="53"/>
+        <location filename="unhandlednotificationskeeper.cpp" line="52"/>
         <source>Text</source>
         <translation>Текст</translation>
     </message>
     <message>
-        <location filename="unhandlednotificationskeeper.cpp" line="53"/>
+        <location filename="unhandlednotificationskeeper.cpp" line="52"/>
         <source>Category</source>
         <translation>Категория</translation>
     </message>
     <message>
-        <location filename="unhandlednotificationskeeper.cpp" line="53"/>
+        <location filename="unhandlednotificationskeeper.cpp" line="52"/>
         <source>Type</source>
         <translation>Тип</translation>
     </message>
@@ -456,52 +456,52 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="typedmatchers.cpp" line="271"/>
+        <location filename="typedmatchers.cpp" line="265"/>
         <source>contains pattern `%1`</source>
         <translation>содержит шаблон `%1`</translation>
     </message>
     <message>
-        <location filename="typedmatchers.cpp" line="272"/>
+        <location filename="typedmatchers.cpp" line="266"/>
         <source>doesn&apos;t contain pattern `%1`</source>
         <translation>не содержит шаблон `%1`</translation>
     </message>
     <message>
-        <location filename="typedmatchers.cpp" line="295"/>
+        <location filename="typedmatchers.cpp" line="289"/>
         <source>contains element matching %1</source>
         <translation>содержит элемент, удовлетворяющий `%1`</translation>
     </message>
     <message>
-        <location filename="typedmatchers.cpp" line="296"/>
+        <location filename="typedmatchers.cpp" line="290"/>
         <source>doesn&apos;t contain element matching %1</source>
         <translation>не содержит элемент, удовлетворяющий `%1`</translation>
     </message>
     <message>
-        <location filename="typedmatchers.cpp" line="318"/>
+        <location filename="typedmatchers.cpp" line="312"/>
         <source>matches URL or pattern `%1`</source>
         <translation>совпадает с URL или шаблоном `%1`</translation>
     </message>
     <message>
-        <location filename="typedmatchers.cpp" line="319"/>
+        <location filename="typedmatchers.cpp" line="313"/>
         <source>doesn&apos;t match URL or pattern `%1`</source>
         <translation>не совпадает с URL или шаблоном `%1`</translation>
     </message>
     <message>
-        <location filename="typedmatchers.cpp" line="361"/>
+        <location filename="typedmatchers.cpp" line="354"/>
         <source>yes</source>
         <translation>да</translation>
     </message>
     <message>
-        <location filename="typedmatchers.cpp" line="362"/>
+        <location filename="typedmatchers.cpp" line="355"/>
         <source>no</source>
         <translation>нет</translation>
     </message>
     <message>
-        <location filename="typedmatchers.cpp" line="464"/>
+        <location filename="typedmatchers.cpp" line="456"/>
         <source>equals to %1</source>
         <translation>равняется %1</translation>
     </message>
     <message>
-        <location filename="typedmatchers.cpp" line="474"/>
+        <location filename="typedmatchers.cpp" line="466"/>
         <source>is %1 then %2</source>
         <translation>%1 чем %2</translation>
     </message>
