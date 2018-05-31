@@ -89,7 +89,7 @@
 				<label lang="en" value="Open new tab next to current" />
 			</item>
 			<item type="combobox" property="SelectionBehavior">
-				<label lang="en" value="Tab selection behavior: " />
+				<label lang="en" value="Tab selection behavior:" />
 				<option name="PreviousActive" default="true">
 					<label lang="en" value="Select the previously selected tab" />
 				</option>
