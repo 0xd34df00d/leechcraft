@@ -233,14 +233,26 @@ namespace oral
 	template<auto Ptr>
 	struct IsIndirect<References<Ptr>> : std::true_type {};
 
-	enum class InsertAction
+	struct InsertAction
 	{
-		Default,
-		Ignore,
-		Replace
-	};
+		inline static struct DefaultTag {} Default;
+		inline static struct IgnoreTag {} Ignore;
+		inline static struct ReplaceTag {} Replace;
 
-	constexpr size_t InsertActionCount = 3;
+		constexpr static auto StaticCount ()
+		{
+			return 3;
+		}
+
+		using ActionSelector_t = boost::variant<DefaultTag, IgnoreTag, ReplaceTag>;
+		ActionSelector_t Selector_;
+
+		template<typename Tag>
+		InsertAction (Tag tag)
+		: Selector_ { tag }
+		{
+		}
+	};
 }
 }
 }

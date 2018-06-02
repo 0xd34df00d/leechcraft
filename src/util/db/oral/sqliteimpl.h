@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <util/sll/visitor.h>
 #include "oraltypes.h"
 #include "oraldetailfwd.h"
 #include "impldefs.h"
@@ -41,7 +42,7 @@ namespace LeechCraft::Util::oral::detail::SQLite
 	{
 		const QSqlDatabase DB_;
 
-		std::array<QSqlQuery_ptr, InsertActionCount> Queries_;
+		std::array<QSqlQuery_ptr, InsertAction::StaticCount ()> Queries_;
 		const QString InsertSuffix_;
 	public:
 		InsertQueryBuilder (const QSqlDatabase& db, const CachedFieldsData& data)
@@ -54,7 +55,7 @@ namespace LeechCraft::Util::oral::detail::SQLite
 
 		QSqlQuery_ptr GetQuery (InsertAction action) override
 		{
-			auto& query = Queries_ [static_cast<size_t> (action)];
+			auto& query = Queries_ [action.Selector_.which ()];
 			if (!query)
 			{
 				query = std::make_shared<QSqlQuery> (DB_);
@@ -65,17 +66,10 @@ namespace LeechCraft::Util::oral::detail::SQLite
 	private:
 		QString GetInsertPrefix (InsertAction action)
 		{
-			switch (action)
-			{
-			case InsertAction::Default:
-				return "INSERT";
-			case InsertAction::Ignore:
-				return "INSERT OR IGNORE";
-			case InsertAction::Replace:
-				return "INSERT OR REPLACE";
-			}
-
-			Util::Unreachable ();
+			return Visit (action.Selector_,
+					[] (InsertAction::DefaultTag) { return "INSERT"; },
+					[] (InsertAction::IgnoreTag) { return "INSERT OR IGNORE"; },
+					[] (InsertAction::ReplaceTag) { return "INSERT OR REPLACE"; });
 		}
 	};
 
