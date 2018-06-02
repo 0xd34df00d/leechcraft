@@ -73,7 +73,7 @@ namespace LeechCraft::Util::oral::detail::PostgreSQL
 		{
 			return Visit (action.Selector_,
 					[] (InsertAction::DefaultTag) { return QString {}; },
-					[] (InsertAction::IgnoreTag) { return "INSERT OR IGNORE"; },
+					[] (InsertAction::IgnoreTag) { return "ON CONFLICT DO NOTHING"; },
 					[this] (InsertAction::ReplaceTag) { return Replacer_; });
 		}
 	};
