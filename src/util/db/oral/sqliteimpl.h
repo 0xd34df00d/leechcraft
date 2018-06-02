@@ -42,7 +42,7 @@ namespace LeechCraft::Util::oral::detail::SQLite
 	{
 		const QSqlDatabase DB_;
 
-		std::array<QSqlQuery_ptr, InsertAction::StaticCount ()> Queries_;
+		std::array<QSqlQuery_ptr, InsertAction::StaticCount () + 1> Queries_;
 		const QString InsertSuffix_;
 	public:
 		InsertQueryBuilder (const QSqlDatabase& db, const CachedFieldsData& data)
@@ -55,7 +55,7 @@ namespace LeechCraft::Util::oral::detail::SQLite
 
 		QSqlQuery_ptr GetQuery (InsertAction action) override
 		{
-			auto& query = Queries_ [std::min (action.Selector_.which (), InsertAction::StaticCount () - 1)];
+			auto& query = Queries_ [action.Selector_.which ()];
 			if (!query)
 			{
 				query = std::make_shared<QSqlQuery> (DB_);
@@ -69,8 +69,7 @@ namespace LeechCraft::Util::oral::detail::SQLite
 			return Visit (action.Selector_,
 					[] (InsertAction::DefaultTag) { return "INSERT"; },
 					[] (InsertAction::IgnoreTag) { return "INSERT OR IGNORE"; },
-					[] (InsertAction::ReplaceTag) { return "INSERT OR REPLACE"; },
-					[] (InsertAction::ReplaceByConstraint) { return "INSERT OR REPLACE"; });
+					[] (InsertAction::Replace) { return "INSERT OR REPLACE"; });
 		}
 	};
 

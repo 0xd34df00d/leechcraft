@@ -1196,10 +1196,17 @@ namespace oral
 		}
 	}
 
-	template<template<auto...> typename W, auto... Ptrs>
-	InsertAction::ReplaceByConstraint::ReplaceByConstraint (W<Ptrs...>)
-	: Fields_ { detail::BuildFieldNames<Ptrs...> () }
+	template<auto... Ptrs>
+	InsertAction::Replace::FieldsType<Ptrs...>::operator InsertAction::Replace () const
 	{
+		return { detail::BuildFieldNames<Ptrs...> () };
+	}
+
+	template<typename Seq>
+	InsertAction::Replace::PKeyType<Seq>::operator InsertAction::Replace () const
+	{
+		static_assert (detail::HasPKey<Seq>, "Sequence does not have any primary keys");
+		return { { detail::GetFieldName<Seq, detail::FindPKey<Seq>::result_type::value>::value () } };
 	}
 
 	template<typename T>

@@ -238,22 +238,36 @@ namespace oral
 	{
 		inline static struct DefaultTag {} Default;
 		inline static struct IgnoreTag {} Ignore;
-		inline static struct ReplaceTag {} Replace;
 
-		struct ReplaceByConstraint
+		struct Replace
 		{
 			QStringList Fields_;
 
-			template<template<auto...> typename W, auto... Ptrs>
-			ReplaceByConstraint (W<Ptrs...>);
+			template<auto... Ptrs>
+			struct FieldsType
+			{
+				operator InsertAction::Replace () const;
+			};
+
+			template<auto... Ptrs>
+			inline static FieldsType<Ptrs...> Fields {};
+
+			template<typename Seq>
+			struct PKeyType
+			{
+				operator InsertAction::Replace () const;
+			};
+
+			template<typename Seq>
+			inline static PKeyType<Seq> PKey {};
 		};
 
 		constexpr static auto StaticCount ()
 		{
-			return 3;
+			return 2;
 		}
 
-		using ActionSelector_t = boost::variant<DefaultTag, IgnoreTag, ReplaceTag, ReplaceByConstraint>;
+		using ActionSelector_t = boost::variant<DefaultTag, IgnoreTag, Replace>;
 		ActionSelector_t Selector_;
 
 		template<typename Tag>
