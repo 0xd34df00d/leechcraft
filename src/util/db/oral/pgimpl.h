@@ -44,17 +44,14 @@ namespace LeechCraft::Util::oral::detail::PostgreSQL
 
 		std::array<QSqlQuery_ptr, InsertAction::StaticCount ()> Queries_;
 		const QString InsertBase_;
-		const QString Replacer_;
+		const QString Updater_;
 	public:
-		InsertQueryBuilder (const QSqlDatabase& db, const CachedFieldsData& data, const QStringList& constraining)
+		InsertQueryBuilder (const QSqlDatabase& db, const CachedFieldsData& data)
 		: DB_ { db }
 		, InsertBase_ { "INSERT INTO " + data.Table_ +
 				" (" + data.Fields_.join (", ") + ") VALUES (" +
 				data.BoundFields_.join (", ") + ") " }
-		, Replacer_ { "ON CONFLICT (" +
-				constraining.join (", ") +
-				") DO UPDATE SET " +
-				Map (data.Fields_, [] (const QString& str) { return str + " = EXCLUDED." + str; }).join (", ") }
+		, Updater_ { Map (data.Fields_, [] (auto&& str) { return str + " = EXCLUDED." + str; }).join (", ") }
 		{
 		}
 
@@ -74,7 +71,16 @@ namespace LeechCraft::Util::oral::detail::PostgreSQL
 			return Visit (action.Selector_,
 					[] (InsertAction::DefaultTag) { return QString {}; },
 					[] (InsertAction::IgnoreTag) { return "ON CONFLICT DO NOTHING"; },
-					[this] (InsertAction::ReplaceTag) { return Replacer_; });
+					[] (InsertAction::ReplaceTag) { return QString {}; },
+					[this] (InsertAction::ReplaceByConstraint ct) { return GetReplacer (ct.Fields_); });
+		}
+
+		QString GetReplacer (const QStringList& constraining) const
+		{
+			return "ON CONFLICT (" +
+					constraining.join (", ") +
+					") DO UPDATE SET " +
+					Updater_;
 		}
 	};
 
@@ -89,7 +95,7 @@ namespace LeechCraft::Util::oral::detail::PostgreSQL
 		auto MakeInsertQueryBuilder (const QSqlDatabase& db,
 				const CachedFieldsData& data, const QStringList& constraining) const
 		{
-			return std::make_unique<InsertQueryBuilder> (db, data, constraining);
+			return std::make_unique<InsertQueryBuilder> (db, data);
 		}
 	};
 }
