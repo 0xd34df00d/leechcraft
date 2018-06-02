@@ -382,8 +382,7 @@ namespace oral
 			IInsertQueryBuilder_ptr QueryBuilder_;
 		public:
 			template<typename ImplFactory>
-			AdaptInsert (const QSqlDatabase& db, CachedFieldsData data,
-					ImplFactory&& factory, const QList<int>& constraining)
+			AdaptInsert (const QSqlDatabase& db, CachedFieldsData data, ImplFactory&& factory)
 			: Data_ { RemovePKey (data) }
 			, QueryBuilder_ { factory.MakeInsertQueryBuilder (db, Data_) }
 			{
@@ -1146,19 +1145,12 @@ namespace oral
 		template<typename T>
 		struct ExtractConstraintFields;
 
-		struct ExtractFieldNumbers {};
-
 		template<int... Fields>
 		struct ExtractConstraintFields<UniqueSubset<Fields...>>
 		{
 			QString operator() (const CachedFieldsData& data) const
 			{
 				return "UNIQUE (" + QStringList { data.Fields_.value (Fields)... }.join (", ") + ")";
-			}
-
-			QList<int> operator() (ExtractFieldNumbers) const
-			{
-				return { Fields... };
 			}
 		};
 
@@ -1169,23 +1161,7 @@ namespace oral
 			{
 				return "PRIMARY KEY (" + QStringList { data.Fields_.value (Fields)... }.join (", ") + ")";
 			}
-
-			QList<int> operator() (ExtractFieldNumbers) const
-			{
-				return { Fields... };
-			}
 		};
-
-		template<typename Seq, typename... Args>
-		QList<int> GetConstrainingFields (Constraints<Args...>)
-		{
-			auto result = Concat (QList<QList<int>> { ExtractConstraintFields<Args> {} (ExtractFieldNumbers {})... });
-			if constexpr (HasPKey<Seq>)
-				result << FindPKey<Seq>::result_type::value;
-			std::sort (result.begin (), result.end ());
-			result.erase (std::unique (result.begin (), result.end ()), result.end ());
-			return result;
-		}
 
 		template<typename... Args>
 		QStringList GetConstraintsStringList (Constraints<Args...>, const CachedFieldsData& data)
@@ -1249,13 +1225,11 @@ namespace oral
 		if (db.record (cachedData.Table_).isEmpty ())
 			RunTextQuery (db, detail::AdaptCreateTable<ImplFactory, T> (cachedData));
 
-		auto constrainingFields = detail::GetConstrainingFields<T> (detail::ConstraintsType<T> {});
-
 		ImplFactory factory;
 
 		return
 		{
-			{ db, cachedData, factory, constrainingFields },
+			{ db, cachedData, factory },
 			{ db, cachedData },
 			{ db, cachedData },
 			{ db, cachedData },
