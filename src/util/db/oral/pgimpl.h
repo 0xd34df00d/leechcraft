@@ -42,7 +42,9 @@ namespace LeechCraft::Util::oral::detail::PostgreSQL
 	{
 		const QSqlDatabase DB_;
 
-		std::array<QSqlQuery_ptr, InsertAction::StaticCount ()> Queries_;
+		QSqlQuery_ptr Default_;
+		QSqlQuery_ptr Ignore_;
+
 		const QString InsertBase_;
 		const QString Updater_;
 	public:
@@ -57,22 +59,37 @@ namespace LeechCraft::Util::oral::detail::PostgreSQL
 
 		QSqlQuery_ptr GetQuery (InsertAction action) override
 		{
-			auto& query = Queries_ [action.Selector_.which ()];
-			if (!query)
-			{
-				query = std::make_shared<QSqlQuery> (DB_);
-				query->prepare (InsertBase_ + GetInsertPostfix (action) + ";");
-			}
-			return query;
+			return Visit (action.Selector_,
+					[this] (InsertAction::DefaultTag) { return GetDefaultQuery (); },
+					[this] (InsertAction::IgnoreTag) { return GetIgnoreQuery (); },
+					[this] (InsertAction::Replace ct) { return MakeReplaceQuery (ct.Fields_); });
 		}
 	private:
-		QString GetInsertPostfix (InsertAction action)
+		QSqlQuery_ptr GetDefaultQuery ()
 		{
-			return Visit (action.Selector_,
-					[] (InsertAction::DefaultTag) { return QString {}; },
-					[] (InsertAction::IgnoreTag) { return "ON CONFLICT DO NOTHING"; },
-					[] (InsertAction::ReplaceTag) { return QString {}; },
-					[this] (InsertAction::ReplaceByConstraint ct) { return GetReplacer (ct.Fields_); });
+			if (!Default_)
+			{
+				Default_ = std::make_shared<QSqlQuery> (DB_);
+				Default_->prepare (InsertBase_);
+			}
+			return Default_;
+		}
+
+		QSqlQuery_ptr GetIgnoreQuery ()
+		{
+			if (!Default_)
+			{
+				Default_ = std::make_shared<QSqlQuery> (DB_);
+				Default_->prepare (InsertBase_ + "ON CONFLICT DO NOTHING");
+			}
+			return Default_;
+		}
+
+		QSqlQuery_ptr MakeReplaceQuery (const QStringList& constraining)
+		{
+			auto query = std::make_shared<QSqlQuery> (DB_);
+			query->prepare (InsertBase_ + GetReplacer (constraining));
+			return query;
 		}
 
 		QString GetReplacer (const QStringList& constraining) const
