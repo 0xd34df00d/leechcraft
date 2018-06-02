@@ -191,7 +191,7 @@ namespace Util
 
 		auto adapted = Util::oral::AdaptPtr<SimpleRecord, OralFactory> (db);
 		for (int i = 0; i < 3; ++i)
-			adapted->Insert ({ 0, QString::number (i) }, lco::InsertAction::Replace);
+			adapted->Insert ({ 0, QString::number (i) }, lco::InsertAction::Replace::PKey<SimpleRecord>);
 
 		const auto& list = adapted->Select ();
 		QCOMPARE (list, (QList<SimpleRecord> { { 0, "2" } }));
@@ -433,11 +433,16 @@ namespace Util
 	{
 		auto adapted = Util::oral::AdaptPtr<ComplexConstraintsRecord, OralFactory> (MakeDatabase ());
 
-		adapted->Insert ({ 0, "first", 1, 2 }, lco::InsertAction::Replace);
-		adapted->Insert ({ 0, "second", 1, 2 }, lco::InsertAction::Replace);
-		adapted->Insert ({ 0, "first", 1, 3 }, lco::InsertAction::Replace);
-		adapted->Insert ({ 0, "second", 1, 3 }, lco::InsertAction::Replace);
-		adapted->Insert ({ 0, "first", 1, 3 }, lco::InsertAction::Replace);
+		adapted->Insert ({ 0, "first", 1, 2 },
+				lco::InsertAction::Replace::Fields<&ComplexConstraintsRecord::ID_, &ComplexConstraintsRecord::Value_>);
+		adapted->Insert ({ 0, "second", 1, 2 },
+				lco::InsertAction::Replace::Fields<&ComplexConstraintsRecord::Weight_, &ComplexConstraintsRecord::Age_>);
+		adapted->Insert ({ 0, "first", 1, 3 },
+				lco::InsertAction::Replace::Fields<&ComplexConstraintsRecord::ID_, &ComplexConstraintsRecord::Value_>);
+		adapted->Insert ({ 0, "second", 1, 3 },
+				lco::InsertAction::Replace::Fields<&ComplexConstraintsRecord::ID_, &ComplexConstraintsRecord::Value_>);
+		adapted->Insert ({ 0, "first", 1, 3 },
+				lco::InsertAction::Replace::Fields<&ComplexConstraintsRecord::ID_, &ComplexConstraintsRecord::Value_>);
 
 		const auto& list = adapted->Select ();
 		QCOMPARE (list, (QList<ComplexConstraintsRecord> { { 0, "first", 1, 3 } }));
