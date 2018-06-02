@@ -440,7 +440,7 @@ namespace Util
 		adapted->Insert ({ 0, "first", 1, 3 }, lco::InsertAction::Replace);
 
 		const auto& list = adapted->Select ();
-		QCOMPARE (list, (QList<ComplexConstraintsRecord> { { 0, "first", 1, 2 }, { 0, "second", 1, 3 } }));
+		QCOMPARE (list, (QList<ComplexConstraintsRecord> { { 0, "first", 1, 3 } }));
 	}
 
 	void OralTest::benchSimpleRecordAdapt ()
