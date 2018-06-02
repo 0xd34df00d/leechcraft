@@ -1199,7 +1199,7 @@ namespace oral
 	template<auto... Ptrs>
 	InsertAction::Replace::FieldsType<Ptrs...>::operator InsertAction::Replace () const
 	{
-		return { detail::BuildFieldNames<Ptrs...> () };
+		return { { detail::BuildCachedFieldsData<MemberPtrStruct_t<Ptrs>> ().Fields_.value (detail::FieldIndex<Ptrs> ())... } };
 	}
 
 	template<typename Seq>
