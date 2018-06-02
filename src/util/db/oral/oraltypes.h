@@ -253,7 +253,7 @@ namespace oral
 			return 3;
 		}
 
-		using ActionSelector_t = boost::variant<DefaultTag, IgnoreTag, ReplaceTag>;
+		using ActionSelector_t = boost::variant<DefaultTag, IgnoreTag, ReplaceTag, ReplaceByConstraint>;
 		ActionSelector_t Selector_;
 
 		template<typename Tag>
