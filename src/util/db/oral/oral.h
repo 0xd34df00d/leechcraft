@@ -385,10 +385,7 @@ namespace oral
 			AdaptInsert (const QSqlDatabase& db, CachedFieldsData data,
 					ImplFactory&& factory, const QList<int>& constraining)
 			: Data_ { RemovePKey (data) }
-			, QueryBuilder_ {
-				factory.MakeInsertQueryBuilder (db, Data_,
-						Util::Map (constraining, [&data] (int idx) { return data.Fields_.value (idx); }))
-			}
+			, QueryBuilder_ { factory.MakeInsertQueryBuilder (db, Data_) }
 			{
 			}
 
