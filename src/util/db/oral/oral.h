@@ -1223,6 +1223,12 @@ namespace oral
 		}
 	}
 
+	template<template<auto...> typename W, auto... Ptrs>
+	InsertAction::ReplaceByConstraint::ReplaceByConstraint (W<Ptrs...>)
+	: Fields_ { detail::BuildFieldNames<Ptrs...> () }
+	{
+	}
+
 	template<typename T>
 	struct ObjectInfo
 	{

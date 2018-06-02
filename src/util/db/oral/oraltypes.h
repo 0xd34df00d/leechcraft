@@ -240,6 +240,14 @@ namespace oral
 		inline static struct IgnoreTag {} Ignore;
 		inline static struct ReplaceTag {} Replace;
 
+		struct ReplaceByConstraint
+		{
+			QStringList Fields_;
+
+			template<template<auto...> typename W, auto... Ptrs>
+			ReplaceByConstraint (W<Ptrs...>);
+		};
+
 		constexpr static auto StaticCount ()
 		{
 			return 3;
