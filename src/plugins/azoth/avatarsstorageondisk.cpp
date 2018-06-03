@@ -127,7 +127,8 @@ namespace Azoth
 	void AvatarsStorageOnDisk::SetAvatar (const QString& entryId,
 			IHaveAvatars::Size size, const QByteArray& imageData) const
 	{
-		AdaptedRecord_->Insert ({ {}, entryId.toUtf8 (), size, imageData }, Util::oral::InsertAction::Replace);
+		AdaptedRecord_->Insert ({ {}, entryId.toUtf8 (), size, imageData },
+				Util::oral::InsertAction::Replace::Fields<&Record::EntryID_, &Record::Size_>);
 	}
 
 	boost::optional<QByteArray> AvatarsStorageOnDisk::GetAvatar (const QString& entryId,

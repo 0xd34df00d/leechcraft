@@ -98,7 +98,7 @@ namespace Murm
 
 	void PhotoUrlStorage::SetUserUrl (qulonglong userId, const QUrl& url)
 	{
-		AdaptedRecord_->Insert ({ userId, url.toEncoded () }, Util::oral::InsertAction::Replace);
+		AdaptedRecord_->Insert ({ userId, url.toEncoded () }, Util::oral::InsertAction::Replace::PKey<Record>);
 	}
 }
 }

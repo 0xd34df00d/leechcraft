@@ -102,7 +102,8 @@ namespace Azoth
 	void SslErrorsChoiceStorage::SetAction (const QByteArray& id,
 			QSslError::SslError err, Action act)
 	{
-		AdaptedRecord_->Insert ({ id, err, act }, Util::oral::InsertAction::Replace);
+		AdaptedRecord_->Insert ({ id, err, act },
+				Util::oral::InsertAction::Replace::Fields<&Record::AccountID_, &Record::Error_>);
 	}
 }
 }

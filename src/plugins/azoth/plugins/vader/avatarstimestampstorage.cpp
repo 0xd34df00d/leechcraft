@@ -95,7 +95,7 @@ namespace Vader
 
 	void AvatarsTimestampStorage::SetTimestamp (const QString& full, const QDateTime& dt)
 	{
-		Adapted_->Insert ({ full, dt }, Util::oral::InsertAction::Replace);
+		Adapted_->Insert ({ full, dt }, Util::oral::InsertAction::Replace::PKey<AvatarTimestamp>);
 	}
 }
 }

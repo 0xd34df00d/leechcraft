@@ -226,7 +226,7 @@ namespace Snails
 
 	void AccountDatabase::SetMessageHeader (const QByteArray& msgId, const QByteArray& header)
 	{
-		MsgHeader_->Insert ({ {}, msgId, header }, oral::InsertAction::Replace);
+		MsgHeader_->Insert ({ {}, msgId, header }, oral::InsertAction::Replace::PKey<MsgHeader>);
 	}
 
 	boost::optional<QByteArray> AccountDatabase::GetMessageHeader (const QByteArray& msgId) const
