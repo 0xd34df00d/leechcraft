@@ -439,13 +439,13 @@ namespace Util
 				lco::InsertAction::Replace::Fields<&ComplexConstraintsRecord::Weight_, &ComplexConstraintsRecord::Age_>);
 		adapted->Insert ({ 0, "first", 1, 3 },
 				lco::InsertAction::Replace::Fields<&ComplexConstraintsRecord::ID_, &ComplexConstraintsRecord::Value_>);
-		adapted->Insert ({ 0, "second", 1, 3 },
-				lco::InsertAction::Replace::Fields<&ComplexConstraintsRecord::ID_, &ComplexConstraintsRecord::Value_>);
+		adapted->Insert ({ 0, "third", 1, 3 },
+				lco::InsertAction::Replace::Fields<&ComplexConstraintsRecord::Weight_, &ComplexConstraintsRecord::Age_>);
 		adapted->Insert ({ 0, "first", 1, 3 },
-				lco::InsertAction::Replace::Fields<&ComplexConstraintsRecord::ID_, &ComplexConstraintsRecord::Value_>);
+				lco::InsertAction::Replace::Fields<&ComplexConstraintsRecord::Weight_, &ComplexConstraintsRecord::Age_>);
 
 		const auto& list = adapted->Select ();
-		QCOMPARE (list, (QList<ComplexConstraintsRecord> { { 0, "first", 1, 3 } }));
+		QCOMPARE (list, (QList<ComplexConstraintsRecord> { {0, "second", 1, 2 }, { 0, "first", 1, 3 } }));
 	}
 
 	void OralTest::benchSimpleRecordAdapt ()
