@@ -56,15 +56,20 @@ endforeach ()
 set (XSD_SRCS ${XSD_SRCS} PARENT_SCOPE)
 set (XSD_FORMS ${XSD_FORMS} PARENT_SCOPE)
 
+find_package (Qt5 COMPONENTS Widgets Script Network Sql Xml)
+
 add_library (leechcraft-xsd${LC_LIBSUFFIX} SHARED
 	${SRCS}
 	${UIS_H})
 target_link_libraries (leechcraft-xsd${LC_LIBSUFFIX}
 	${QT_LIBRARIES}
 	leechcraft-util-sys${LC_LIBSUFFIX}
+	Qt5::Xml
+	Qt5::Sql
+	Qt5::Widgets
+	Qt5::Script
+	Qt5::Network
 	)
 
 set_property (TARGET leechcraft-xsd${LC_LIBSUFFIX} PROPERTY SOVERSION ${LC_SOVERSION}.2)
 install (TARGETS leechcraft-xsd${LC_LIBSUFFIX} DESTINATION ${LIBDIR})
-
-QT5_USE_MODULES (leechcraft-xsd${LC_LIBSUFFIX} Xml Sql Widgets Script Network)
