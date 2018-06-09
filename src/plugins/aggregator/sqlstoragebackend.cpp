@@ -981,10 +981,10 @@ namespace Aggregator
 		Feed::FeedSettings result
 		{
 			feedId,
+			FeedSettingsGetter_.value (0).toInt (),
 			FeedSettingsGetter_.value (1).toInt (),
 			FeedSettingsGetter_.value (2).toInt (),
-			FeedSettingsGetter_.value (3).toInt (),
-			FeedSettingsGetter_.value (4).toBool ()
+			FeedSettingsGetter_.value (3).toBool ()
 		};
 		FeedSettingsGetter_.finish ();
 
