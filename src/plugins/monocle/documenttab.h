@@ -41,6 +41,7 @@
 
 class QDockWidget;
 class QTreeView;
+class QMenu;
 
 namespace LeechCraft
 {

@@ -30,6 +30,7 @@
 #pragma once
 
 #include <memory>
+#include <QSet>
 #include <QDialog>
 #include <interfaces/an/ianemitter.h>
 #include "ui_matchconfigdialog.h"

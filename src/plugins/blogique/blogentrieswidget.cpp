@@ -29,6 +29,7 @@
 
 #include "blogentrieswidget.h"
 #include <stdexcept>
+#include <QAction>
 #include <QMessageBox>
 #include <QStandardItemModel>
 #include "entriesfilterproxymodel.h"

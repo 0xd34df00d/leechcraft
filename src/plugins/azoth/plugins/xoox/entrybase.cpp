@@ -34,6 +34,7 @@
 #include <QtDebug>
 #include <QBuffer>
 #include <QTimer>
+#include <QAction>
 #include <QCryptographicHash>
 #include <QXmppVCardIq.h>
 #include <QXmppPresence.h>

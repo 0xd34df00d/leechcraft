@@ -30,6 +30,8 @@
 #include "mrimaccount.h"
 #include <QDataStream>
 #include <QUrl>
+#include <QAction>
+#include <QIcon>
 #include <util/xpc/util.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/azoth/iproxyobject.h>

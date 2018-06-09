@@ -50,6 +50,7 @@
 #include <QCryptographicHash>
 #include <QTextCodec>
 #include <QtQml>
+#include <QStyle>
 
 #ifdef Q_OS_MAC
 #include <QProxyStyle>

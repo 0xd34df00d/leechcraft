@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "roomclentry.h"
+#include <QAction>
 #include <QtDebug>
 #include <QXmppMucManager.h>
 #include <QXmppBookmarkManager.h>

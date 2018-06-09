@@ -37,6 +37,7 @@
 #include <QWebView>
 #include <QDomElement>
 #include <QDomText>
+#include <QButtonGroup>
 #include <interfaces/core/ientitymanager.h>
 #include <util/xpc/util.h>
 #include "interfaces/blogique/ibloggingplatform.h"

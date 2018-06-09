@@ -31,6 +31,7 @@
 #include <QIcon>
 #include <QMessageBox>
 #include <QTextEdit>
+#include <QAction>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/util.h>
 #include <util/sll/util.h>

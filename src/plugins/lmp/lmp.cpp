@@ -33,6 +33,7 @@
 #include <QUrl>
 #include <QGraphicsEffect>
 #include <QMessageBox>
+#include <QAction>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/iiconthememanager.h>

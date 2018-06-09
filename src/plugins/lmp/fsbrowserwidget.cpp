@@ -29,6 +29,7 @@
 
 #include "fsbrowserwidget.h"
 #include <QDir>
+#include <QAction>
 #include <util/util.h>
 #include "fsmodel.h"
 #include "util.h"

@@ -32,6 +32,7 @@
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QtDebug>
+#include <QAction>
 #include <QXmppCallManager.h>
 #include <QXmppMucManager.h>
 #include <util/xpc/util.h>

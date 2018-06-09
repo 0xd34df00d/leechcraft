@@ -33,6 +33,7 @@
 #include <QMessageBox>
 #include <QStandardItemModel>
 #include <QDir>
+#include <QAction>
 #include <util/util.h>
 #include <util/xpc/util.h>
 #include <util/sys/paths.h>

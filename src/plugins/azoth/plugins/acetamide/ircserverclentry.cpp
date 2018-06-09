@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "ircserverclentry.h"
+#include <QAction>
 #include "ircaccount.h"
 #include "ircmessage.h"
 #include "ircserverhandler.h"

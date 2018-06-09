@@ -31,6 +31,7 @@
 #pragma once
 
 #include <QWidget>
+#include <QSet>
 #include "interfaces/blogique/iaccount.h"
 #include "ui_commentswidget.h"
 
