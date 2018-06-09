@@ -60,7 +60,8 @@ namespace WKPlugins
 
 		bool isGrammarCheckingEnabled () override;
 		void toggleGrammarChecking () override;
-		void checkGrammarOfString (const QString&, QList<GrammarDetail>&, int* badGrammarLocation, int* badGrammarLength) override;
+		void checkGrammarOfString (const QString&, QList<GrammarDetail>&,
+				int *badGrammarLocation, int *badGrammarLength) override;
 	};
 }
 }
