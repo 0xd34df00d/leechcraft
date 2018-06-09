@@ -38,6 +38,7 @@
 #include <QClipboard>
 #include <QMutexLocker>
 #include <QFileInfo>
+#include <QAction>
 #include <QtDebug>
 #include <taglib/taglib_config.h>
 #include <taglib/taglib.h>
