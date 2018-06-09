@@ -384,6 +384,7 @@ namespace Aggregator
 }
 
 Q_DECLARE_METATYPE (LeechCraft::Aggregator::Item_ptr)
+Q_DECLARE_METATYPE (LeechCraft::Aggregator::Item)
 Q_DECLARE_METATYPE (LeechCraft::Aggregator::ItemShort)
 
 #endif

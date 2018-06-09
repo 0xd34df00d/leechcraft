@@ -86,10 +86,9 @@ namespace Aggregator
 		qRegisterMetaType<QList<IDType_t>> ("QList<IDType_t>");
 		qRegisterMetaType<QSet<IDType_t>> ("QSet<IDType_t>");
 		qRegisterMetaType<QItemSelection> ("QItemSelection");
-		qRegisterMetaType<Item_ptr> ("Item_ptr");
-		qRegisterMetaType<Item_cptr> ("Item_cptr");
+		qRegisterMetaType<Item> ("Item");
 		qRegisterMetaType<ChannelShort> ("ChannelShort");
-		qRegisterMetaType<Channel_ptr> ("Channel_ptr");
+		qRegisterMetaType<Channel> ("Channel");
 		qRegisterMetaType<channels_container_t> ("channels_container_t");
 		qRegisterMetaTypeStreamOperators<Feed> ("LeechCraft::Plugins::Aggregator::Feed");
 	}
