@@ -50,6 +50,8 @@ namespace WKPlugins
 		}
 	}
 
+	QList<ISpellChecker_ptr> SpellcheckerExt::Spellcheckers_ {};
+
 	SpellcheckerExt::SpellcheckerExt (const ICoreProxy_ptr& proxy)
 	: Proxy_ { proxy }
 	{
