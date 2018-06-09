@@ -896,6 +896,7 @@ namespace Aggregator
 		case PTMRSSPeerLink:
 			field = "mrss_peerlink_id";
 			table = "mrss_peerlinks";
+			break;
 		case PTMRSSScene:
 			field = "mrss_scene_id";
 			table = "mrss_scenes";
