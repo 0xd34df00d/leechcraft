@@ -115,7 +115,7 @@ namespace Murm
 		void beenKicked (const QString& reason) override;
 		void beenBanned (const QString& reason) override;
 
-		void removeEntry (VkChatEntry*);
+		void removeEntry ();
 	};
 }
 }

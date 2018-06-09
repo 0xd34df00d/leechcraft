@@ -148,7 +148,7 @@ namespace Murm
 	void VkChatEntry::HandleRemoved (qulonglong id)
 	{
 		if (id == Account_->GetSelf ()->GetInfo ().ID_)
-			emit removeEntry (this);
+			emit removeEntry ();
 		else if (const auto entry = Account_->GetEntry (id))
 		{
 			const auto pos = EntriesGuards_.find (entry);

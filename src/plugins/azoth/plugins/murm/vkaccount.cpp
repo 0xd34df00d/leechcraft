@@ -823,9 +823,14 @@ namespace Murm
 		{
 			auto entry = new VkChatEntry (info, this);
 			connect (entry,
-					SIGNAL (removeEntry (VkChatEntry*)),
+					&VkChatEntry::removeEntry,
 					this,
-					SLOT (handleRemoveEntry (VkChatEntry*)));
+					[entry, this]
+					{
+						ChatEntries_.remove (ChatEntries_.key (entry));
+						emit removedCLItems ({ entry });
+						entry->deleteLater ();
+					});
 			ChatEntries_ [info.ChatID_] = entry;
 			emit gotCLItems ({ entry });
 
@@ -833,14 +838,6 @@ namespace Murm
 		}
 		else
 			ChatEntries_ [info.ChatID_]->UpdateInfo (info);
-	}
-
-	void VkAccount::handleRemoveEntry (VkChatEntry *entry)
-	{
-		ChatEntries_.remove (ChatEntries_.key (entry));
-
-		emit removedCLItems ({ entry });
-		entry->deleteLater ();
 	}
 
 	void VkAccount::handleChatUserRemoved (qulonglong chat, qulonglong id)

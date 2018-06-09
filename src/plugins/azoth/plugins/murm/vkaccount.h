@@ -201,8 +201,6 @@ namespace Murm
 		void handleGotChatInfo (const ChatInfo&);
 		void handleChatUserRemoved (qulonglong, qulonglong);
 
-		void handleRemoveEntry (VkChatEntry*);
-
 		void handleMarkOnline ();
 
 		void finishOffline ();
