@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="ru_RU">
+<TS version="2.1" language="ru_RU">
 <context>
     <name>LeechCraft::WKPlugins::Plugin</name>
     <message>
-        <location filename="wkplugins.cpp" line="72"/>
+        <location filename="wkplugins.cpp" line="75"/>
         <source>Provides support for spellchecking and HTML5 notifications to WebKit.</source>
         <translation>Обеспечивает поддержку проверки правописания и HTML5-уведомлений в WebKit.</translation>
     </message>
