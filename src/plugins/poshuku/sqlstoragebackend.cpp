@@ -188,21 +188,20 @@ namespace Poshuku
 			break;
 		}
 
-		HistoryTruncater_ = QSqlQuery (DB_);
+		QString allLimit;
 		switch (Type_)
 		{
 		case SBSQLite:
-			HistoryTruncater_.prepare ("DELETE FROM history "
-					"WHERE date IN "
-					"(SELECT date FROM history ORDER BY date DESC "
-					"LIMIT -1 OFFSET :num)");
+			allLimit = "-1";
 			break;
 		case SBPostgres:
-			HistoryTruncater_.prepare ("DELETE FROM history "
-					"WHERE date IN "
-					"	(SELECT date FROM history ORDER BY date DESC OFFSET :num)");
+			allLimit = "ALL";
 			break;
 		}
+		HistoryTruncater_ = QSqlQuery (DB_);
+		HistoryTruncater_.prepare (QString { "DELETE FROM history WHERE date IN "
+				"(SELECT date FROM history ORDER BY date DESC LIMIT %1 OFFSET :num)" }
+				.arg (allLimit));
 
 		FavoritesLoader_ = QSqlQuery (DB_);
 		FavoritesLoader_.prepare ("SELECT "
