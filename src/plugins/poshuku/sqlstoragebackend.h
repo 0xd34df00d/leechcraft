@@ -33,6 +33,7 @@
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <util/sll/util.h>
+#include <util/db/oral/oralfwd.h>
 
 namespace LeechCraft
 {
@@ -108,6 +109,12 @@ namespace Poshuku
 					* - url
 					*/
 				FormsIgnoreClearer_;
+
+		struct History;
+		struct Favorites;
+
+		Util::oral::ObjectInfo_ptr<History> History_;
+		Util::oral::ObjectInfo_ptr<Favorites> Favorites_;
 	public:
 		SQLStorageBackend (Type);
 		~SQLStorageBackend ();
@@ -127,8 +134,6 @@ namespace Poshuku
 		bool GetFormsIgnored (const QString&) const override;
 	private:
 		void InitializeTables ();
-		QString GetSetting (const QString&) const;
-		void SetSetting (const QString&, const QString&);
 	};
 }
 }

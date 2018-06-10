@@ -463,39 +463,6 @@ namespace Poshuku
 			}
 		}
 
-		if (!DB_.tables ().contains ("storage_settings"))
-		{
-			if (!query.exec ("CREATE TABLE storage_settings ("
-						"key TEXT PRIMARY KEY, "
-						"value TEXT"
-						");"))
-			{
-				LeechCraft::Util::DBLock::DumpError (query);
-				return;
-			}
-
-			if (Type_ == SBPostgres)
-			{
-				if (!query.exec ("CREATE RULE \"replace_storage_settings\" AS "
-									"ON INSERT TO \"storage_settings\" "
-									"WHERE "
-										"EXISTS (SELECT 1 FROM storage_settings "
-											"WHERE key = NEW.key) "
-									"DO INSTEAD "
-										"(UPDATE storage_settings "
-											"SET value = NEW.value "
-											"WHERE key = NEW.key)"))
-				{
-					LeechCraft::Util::DBLock::DumpError (query);
-					return;
-				}
-			}
-
-			SetSetting ("historyversion", "1");
-			SetSetting ("favoritesversion", "1");
-			SetSetting ("storagesettingsversion", "1");
-		}
-
 		if (!DB_.tables ().contains ("forms"))
 		{
 			QString binary = "BLOB";
@@ -524,60 +491,6 @@ namespace Poshuku
 				LeechCraft::Util::DBLock::DumpError (query);
 				return;
 			}
-		}
-	}
-
-	QString SQLStorageBackend::GetSetting (const QString& key) const
-	{
-		QSqlQuery query (DB_);
-		query.prepare ("SELECT value "
-				"FROM storage_settings "
-				"WHERE key = :key");
-		query.bindValue (":key", key);
-		if (!query.exec ())
-		{
-			LeechCraft::Util::DBLock::DumpError (query);
-			throw std::runtime_error ("SQLStorageBackend could not query settings");
-		}
-
-		if (!query.next ())
-			return QString ();
-
-		return query.value (0).toString ();
-	}
-
-	void SQLStorageBackend::SetSetting (const QString& key, const QString& value)
-	{
-		QSqlQuery query (DB_);
-		QString r;
-		switch (Type_)
-		{
-		case SBSQLite:
-			r = "INSERT OR REPLACE INTO storage_settings ("
-			"key, "
-			"value"
-			") VALUES ("
-			":key, "
-			":value"
-			")";
-			break;
-		case SBPostgres:
-			r = "INSERT INTO storage_settings ("
-			"key, "
-			"value"
-			") VALUES ("
-			":key, "
-			":value"
-			")";
-			break;
-		}
-		query.prepare (r);
-		query.bindValue (":key", key);
-		query.bindValue (":value", value);
-		if (!query.exec ())
-		{
-			LeechCraft::Util::DBLock::DumpError (query);
-			throw std::runtime_error ("SQLStorageBackend could not query settings");
 		}
 	}
 }
