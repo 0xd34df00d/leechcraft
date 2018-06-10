@@ -204,7 +204,7 @@ namespace oral
 			else if constexpr (std::is_same_v<T, QString> || std::is_same_v<T, QDateTime>)
 				return "TEXT";
 			else if constexpr (std::is_same_v<T, QByteArray>)
-				return "BLOB";
+				return ImplFactory::TypeLits::Binary;
 			else
 				static_assert (std::is_same_v<T, struct Dummy>, "Unsupported type");
 		}

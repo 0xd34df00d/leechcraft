@@ -107,6 +107,7 @@ namespace LeechCraft::Util::oral::detail::PostgreSQL
 		struct TypeLits
 		{
 			inline static const QString IntAutoincrement { "SERIAL PRIMARY KEY" };
+			inline static const QString Binary { "BYTEA" };
 		};
 
 		auto MakeInsertQueryBuilder (const QSqlDatabase& db, const CachedFieldsData& data) const
