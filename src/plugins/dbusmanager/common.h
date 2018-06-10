@@ -34,7 +34,9 @@
 #include <util/sll/visitor.h>
 #include <util/sll/either.h>
 
-namespace LeechCraft::DBusManager
+namespace LeechCraft
+{
+namespace DBusManager
 {
 	struct IdentifierNotFound
 	{
@@ -62,5 +64,5 @@ namespace LeechCraft::DBusManager
 					QDBusConnection::sessionBus ().send (msg.createErrorReply ("Method call failure", descr));
 				});
 	}
-
+}
 }
