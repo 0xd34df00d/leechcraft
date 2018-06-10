@@ -196,7 +196,7 @@ namespace Poshuku
 			HistoryTruncater_.prepare ("DELETE FROM history "
 					"WHERE date IN "
 					"(SELECT date FROM history ORDER BY date DESC "
-					"LIMIT 10000 OFFSET :num)");
+					"LIMIT -1 OFFSET :num)");
 			break;
 		case SBPostgres:
 			HistoryTruncater_.prepare ("DELETE FROM history "
