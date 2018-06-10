@@ -174,19 +174,7 @@ namespace Poshuku
 				")");
 
 		HistoryEraser_ = QSqlQuery (DB_);
-		switch (Type_)
-		{
-		case SBSQLite:
-			HistoryEraser_.prepare ("DELETE FROM history "
-					"WHERE "
-					"(julianday ('now') - julianday (date) > :age)");
-			break;
-		case SBPostgres:
-			HistoryEraser_.prepare ("DELETE FROM history "
-					"WHERE "
-					"(date - now () > :age * interval '1 day')");
-			break;
-		}
+		HistoryEraser_.prepare ("DELETE FROM history WHERE date < :threshold");
 
 		QString allLimit;
 		switch (Type_)
@@ -317,7 +305,9 @@ namespace Poshuku
 	{
 		LeechCraft::Util::DBLock lock (DB_);
 		lock.Init ();
-		HistoryEraser_.bindValue (":age", age);
+
+		auto threshold = QDateTime::currentDateTime ().addDays (-age);
+		HistoryEraser_.bindValue (":threshold", threshold);
 		HistoryTruncater_.bindValue (":num", items);
 
 		if (!HistoryEraser_.exec ())
