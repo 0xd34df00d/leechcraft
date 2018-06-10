@@ -129,7 +129,6 @@ namespace Poshuku
 		virtual bool GetFormsIgnored (const QString&) const;
 	private:
 		void InitializeTables ();
-		void CheckVersions ();
 		QString GetSetting (const QString&) const;
 		void SetSetting (const QString&, const QString&);
 	};

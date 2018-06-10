@@ -94,7 +94,6 @@ namespace Poshuku
 		}
 
 		InitializeTables ();
-		CheckVersions ();
 	}
 
 	SQLStorageBackend::~SQLStorageBackend ()
@@ -537,10 +536,6 @@ namespace Poshuku
 				return;
 			}
 		}
-	}
-
-	void SQLStorageBackend::CheckVersions ()
-	{
 	}
 
 	QString SQLStorageBackend::GetSetting (const QString& key) const
