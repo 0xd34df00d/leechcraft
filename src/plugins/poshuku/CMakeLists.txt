@@ -32,7 +32,6 @@ set (SRCS
 	historymodel.cpp
 	storagebackend.cpp
 	sqlstoragebackend.cpp
-	sqlstoragebackend_mysql.cpp
 	urlcompletionmodel.cpp
 	screenshotsavedialog.cpp
 	cookieseditdialog.cpp

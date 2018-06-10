@@ -54,8 +54,7 @@ namespace Poshuku
 		enum Type
 		{
 			SBSQLite,
-			SBPostgres,
-			SBMysql
+			SBPostgres
 		};
 
 		using QObject::QObject;

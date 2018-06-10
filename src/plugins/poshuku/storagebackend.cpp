@@ -31,7 +31,6 @@
 #include <stdexcept>
 #include <util/sll/unreachable.h>
 #include "sqlstoragebackend.h"
-#include "sqlstoragebackend_mysql.h"
 #include "xmlsettingsmanager.h"
 
 namespace LeechCraft
@@ -45,8 +44,6 @@ namespace Poshuku
 		case SBSQLite:
 		case SBPostgres:
 			return std::make_shared<SQLStorageBackend> (type);
-		case SBMysql:
-			return std::make_shared<SQLStorageBackendMysql> (type);
 		}
 
 		Util::Unreachable ();
@@ -55,14 +52,11 @@ namespace Poshuku
 	std::shared_ptr<StorageBackend> StorageBackend::Create ()
 	{
 		StorageBackend::Type type;
-		QString strType = XmlSettingsManager::Instance ()->
-			property ("StorageType").toString ();
+		const auto& strType = XmlSettingsManager::Instance ()->property ("StorageType").toString ();
 		if (strType == "SQLite")
 			type = StorageBackend::SBSQLite;
 		else if (strType == "PostgreSQL")
 			type = StorageBackend::SBPostgres;
-		else if (strType == "MySQL")
-			type = StorageBackend::SBMysql;
 		else
 			throw std::runtime_error (qPrintable (QString ("Unknown storage type %1")
 						.arg (strType)));

@@ -56,10 +56,6 @@ namespace Poshuku
 		case SBPostgres:
 			strType = "QPSQL";
 			break;
-		case SBMysql:
-			qWarning () << Q_FUNC_INFO
-					<< "it's not MySQL";
-			break;
 		}
 
 		DB_ = QSqlDatabase::addDatabase (strType,
@@ -88,10 +84,6 @@ namespace Poshuku
 					property ("PostgresPassword").toString ());
 			break;
 		}
-		case SBMysql:
-			qWarning () << Q_FUNC_INFO
-					<< "it's not MySQL";
-			break;
 		}
 
 		if (!DB_.open ())
@@ -169,10 +161,6 @@ namespace Poshuku
 					"ORDER BY rating ASC "
 					"LIMIT 100");
 			break;
-		case SBMysql:
-			qWarning () << Q_FUNC_INFO
-					<< "it's not MySQL";
-			break;
 		}
 
 		HistoryAdder_ = QSqlQuery (DB_);
@@ -199,10 +187,6 @@ namespace Poshuku
 					"WHERE "
 					"(date - now () > :age * interval '1 day')");
 			break;
-		case SBMysql:
-			qWarning () << Q_FUNC_INFO
-					<< "it's not MySQL";
-			break;
 		}
 
 		HistoryTruncater_ = QSqlQuery (DB_);
@@ -218,10 +202,6 @@ namespace Poshuku
 			HistoryTruncater_.prepare ("DELETE FROM history "
 					"WHERE date IN "
 					"	(SELECT date FROM history ORDER BY date DESC OFFSET :num)");
-			break;
-		case SBMysql:
-			qWarning () << Q_FUNC_INFO
-					<< "it's not MySQL";
 			break;
 		}
 
@@ -243,10 +223,6 @@ namespace Poshuku
 					"tags "
 					"FROM favorites "
 					"ORDER BY CTID DESC");
-			break;
-		case SBMysql:
-			qWarning () << Q_FUNC_INFO
-					<< "it's not MySQL";
 			break;
 		}
 
@@ -622,10 +598,6 @@ namespace Poshuku
 			":key, "
 			":value"
 			")";
-			break;
-		case SBMysql:
-			qWarning () << Q_FUNC_INFO
-					<< "it's not MySQL";
 			break;
 		}
 		query.prepare (r);
