@@ -30,7 +30,7 @@
 #include "oralfkeytest.h"
 #include "common.h"
 
-QTEST_APPLESS_MAIN (LeechCraft::Util::OralFKeyTest)
+QTEST_GUILESS_MAIN (LeechCraft::Util::OralFKeyTest)
 
 struct Student
 {

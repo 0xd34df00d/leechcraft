@@ -30,7 +30,7 @@
 #include "oraltest.h"
 #include "common.h"
 
-QTEST_APPLESS_MAIN (LeechCraft::Util::OralTest)
+QTEST_GUILESS_MAIN (LeechCraft::Util::OralTest)
 
 struct SimpleRecord
 {
