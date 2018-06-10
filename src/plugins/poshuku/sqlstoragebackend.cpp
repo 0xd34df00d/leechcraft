@@ -206,25 +206,12 @@ namespace Poshuku
 		}
 
 		FavoritesLoader_ = QSqlQuery (DB_);
-		switch (Type_)
-		{
-		case SBSQLite:
-			FavoritesLoader_.prepare ("SELECT "
-					"title, "
-					"url, "
-					"tags "
-					"FROM favorites "
-					"ORDER BY ROWID DESC");
-			break;
-		case SBPostgres:
-			FavoritesLoader_.prepare ("SELECT "
-					"title, "
-					"url, "
-					"tags "
-					"FROM favorites "
-					"ORDER BY CTID DESC");
-			break;
-		}
+		FavoritesLoader_.prepare ("SELECT "
+				"title, "
+				"url, "
+				"tags "
+				"FROM favorites "
+				"ORDER BY title DESC");
 
 		FavoritesAdder_ = QSqlQuery (DB_);
 		FavoritesAdder_.prepare ("INSERT INTO favorites ("
