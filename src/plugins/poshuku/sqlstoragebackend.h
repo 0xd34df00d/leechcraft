@@ -40,8 +40,6 @@ namespace Poshuku
 {
 	class SQLStorageBackend : public StorageBackend
 	{
-		Q_OBJECT
-
 		const Type Type_;
 
 		QSqlDatabase DB_;
