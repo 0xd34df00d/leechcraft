@@ -219,6 +219,12 @@ namespace oral
 	template<typename... Args>
 	using Constraints = Typelist<Args...>;
 
+	template<auto... Fields>
+	struct Index;
+
+	template<typename... Args>
+	using Indices = Typelist<Args...>;
+
 	template<typename T>
 	struct IsIndirect : std::false_type {};
 
