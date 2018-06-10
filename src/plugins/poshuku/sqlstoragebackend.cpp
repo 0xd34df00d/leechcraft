@@ -58,8 +58,7 @@ namespace Poshuku
 			break;
 		}
 
-		DB_ = QSqlDatabase::addDatabase (strType,
-					Util::GenConnectionName ("org.LeechCraft.Poshuku"));
+		DB_ = QSqlDatabase::addDatabase (strType, Util::GenConnectionName ("org.LeechCraft.Poshuku"));
 		switch (Type_)
 		{
 		case SBSQLite:
@@ -72,16 +71,11 @@ namespace Poshuku
 		}
 		case SBPostgres:
 		{
-			DB_.setDatabaseName (XmlSettingsManager::Instance ()->
-					property ("PostgresDBName").toString ());
-			DB_.setHostName (XmlSettingsManager::Instance ()->
-					property ("PostgresHostname").toString ());
-			DB_.setPort (XmlSettingsManager::Instance ()->
-					property ("PostgresPort").toInt ());
-			DB_.setUserName (XmlSettingsManager::Instance ()->
-					property ("PostgresUsername").toString ());
-			DB_.setPassword (XmlSettingsManager::Instance ()->
-					property ("PostgresPassword").toString ());
+			DB_.setDatabaseName (XmlSettingsManager::Instance ()->property ("PostgresDBName").toString ());
+			DB_.setHostName (XmlSettingsManager::Instance ()->property ("PostgresHostname").toString ());
+			DB_.setPort (XmlSettingsManager::Instance ()->property ("PostgresPort").toInt ());
+			DB_.setUserName (XmlSettingsManager::Instance ()->property ("PostgresUsername").toString ());
+			DB_.setPassword (XmlSettingsManager::Instance ()->property ("PostgresPassword").toString ());
 			break;
 		}
 		}
@@ -98,8 +92,7 @@ namespace Poshuku
 
 	SQLStorageBackend::~SQLStorageBackend ()
 	{
-		if (Type_ == SBSQLite &&
-				XmlSettingsManager::Instance ()->property ("SQLiteVacuum").toBool ())
+		if (Type_ == SBSQLite && XmlSettingsManager::Instance ()->property ("SQLiteVacuum").toBool ())
 		{
 			QSqlQuery vacuum (DB_);
 			vacuum.exec ("VACUUM;");
@@ -110,19 +103,14 @@ namespace Poshuku
 	{
 		if (Type_ == SBSQLite)
 		{
+			auto xsm = XmlSettingsManager::Instance ();
 			QSqlQuery pragma (DB_);
-			if (!pragma.exec (QString ("PRAGMA journal_mode = %1;")
-						.arg (XmlSettingsManager::Instance ()->
-							property ("SQLiteJournalMode").toString ())))
-				LeechCraft::Util::DBLock::DumpError (pragma);
-			if (!pragma.exec (QString ("PRAGMA synchronous = %1;")
-						.arg (XmlSettingsManager::Instance ()->
-							property ("SQLiteSynchronous").toString ())))
-				LeechCraft::Util::DBLock::DumpError (pragma);
-			if (!pragma.exec (QString ("PRAGMA temp_store = %1;")
-						.arg (XmlSettingsManager::Instance ()->
-							property ("SQLiteTempStore").toString ())))
-				LeechCraft::Util::DBLock::DumpError (pragma);
+			if (!pragma.exec (QString ("PRAGMA journal_mode = %1;").arg (xsm->property ("SQLiteJournalMode").toString ())))
+				Util::DBLock::DumpError (pragma);
+			if (!pragma.exec (QString ("PRAGMA synchronous = %1;").arg (xsm->property ("SQLiteSynchronous").toString ())))
+				Util::DBLock::DumpError (pragma);
+			if (!pragma.exec (QString ("PRAGMA temp_store = %1;").arg (xsm->property ("SQLiteTempStore").toString ())))
+				Util::DBLock::DumpError (pragma);
 		}
 
 		HistoryLoader_ = QSqlQuery (DB_);
