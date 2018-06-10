@@ -110,21 +110,21 @@ namespace Poshuku
 				FormsIgnoreClearer_;
 	public:
 		SQLStorageBackend (Type);
-		virtual ~SQLStorageBackend ();
+		~SQLStorageBackend ();
 
-		void Prepare ();
+		void Prepare () override;
 
-		virtual void LoadHistory (history_items_t&) const;
-		virtual void LoadResemblingHistory (const QString&,
-				history_items_t&) const;
-		virtual void AddToHistory (const HistoryItem&);
-		virtual void ClearOldHistory (int, int);
-		virtual void LoadFavorites (FavoritesModel::items_t&) const;
-		virtual void AddToFavorites (const FavoritesModel::FavoritesItem&);
-		virtual void RemoveFromFavorites (const FavoritesModel::FavoritesItem&);
-		virtual void UpdateFavorites (const FavoritesModel::FavoritesItem&);
-		virtual void SetFormsIgnored (const QString&, bool);
-		virtual bool GetFormsIgnored (const QString&) const;
+		void LoadHistory (history_items_t&) const override;
+		void LoadResemblingHistory (const QString&,
+				history_items_t&) const override;
+		void AddToHistory (const HistoryItem&) override;
+		void ClearOldHistory (int, int) override;
+		void LoadFavorites (FavoritesModel::items_t&) const override;
+		void AddToFavorites (const FavoritesModel::FavoritesItem&) override;
+		void RemoveFromFavorites (const FavoritesModel::FavoritesItem&) override;
+		void UpdateFavorites (const FavoritesModel::FavoritesItem&) override;
+		void SetFormsIgnored (const QString&, bool) override;
+		bool GetFormsIgnored (const QString&) const override;
 	private:
 		void InitializeTables ();
 		QString GetSetting (const QString&) const;
