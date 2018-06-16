@@ -57,6 +57,12 @@ namespace Util
 		void testSimpleRecordInsertSelectSingleFieldByFields ();
 		void testSimpleRecordInsertSelectFieldsByFields ();
 
+		void testSimpleRecordInsertSelectFieldsByFieldsOrderAsc ();
+		void testSimpleRecordInsertSelectFieldsByFieldsOrderDesc ();
+
+		void testSimpleRecordInsertSelectFieldsByFieldsOrderManyAsc ();
+		void testSimpleRecordInsertSelectFieldsByFieldsOrderManyDesc ();
+
 		void testSimpleRecordInsertSelectCount ();
 		void testSimpleRecordInsertSelectCountByFields ();
 

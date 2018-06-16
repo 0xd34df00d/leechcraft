@@ -279,6 +279,42 @@ namespace Util
 		QCOMPARE (list, (QList<std::tuple<int, QString>> { { 0, "0" }, { 1, "1" } }));
 	}
 
+	void OralTest::testSimpleRecordInsertSelectFieldsByFieldsOrderAsc ()
+	{
+		auto adapted = PrepareRecords<SimpleRecord> (MakeDatabase ());
+		const auto& list = adapted->Select (sph::fields<&SimpleRecord::ID_, &SimpleRecord::Value_>,
+				sph::f<&SimpleRecord::ID_> < 2,
+				oral::OrderBy<sph::asc<&SimpleRecord::Value_>>);
+		QCOMPARE (list, (QList<std::tuple<int, QString>> { { 0, "0" }, { 1, "1" } }));
+	}
+
+	void OralTest::testSimpleRecordInsertSelectFieldsByFieldsOrderDesc ()
+	{
+		auto adapted = PrepareRecords<SimpleRecord> (MakeDatabase ());
+		const auto& list = adapted->Select (sph::fields<&SimpleRecord::ID_, &SimpleRecord::Value_>,
+				sph::f<&SimpleRecord::ID_> < 2,
+				oral::OrderBy<sph::desc<&SimpleRecord::Value_>>);
+		QCOMPARE (list, (QList<std::tuple<int, QString>> { { 1, "1" }, { 0, "0" } }));
+	}
+
+	void OralTest::testSimpleRecordInsertSelectFieldsByFieldsOrderManyAsc ()
+	{
+		auto adapted = PrepareRecords<SimpleRecord> (MakeDatabase ());
+		const auto& list = adapted->Select (sph::fields<&SimpleRecord::ID_, &SimpleRecord::Value_>,
+				sph::f<&SimpleRecord::ID_> < 2,
+				oral::OrderBy<sph::asc<&SimpleRecord::Value_>, sph::desc<&SimpleRecord::ID_>>);
+		QCOMPARE (list, (QList<std::tuple<int, QString>> { { 0, "0" }, { 1, "1" } }));
+	}
+
+	void OralTest::testSimpleRecordInsertSelectFieldsByFieldsOrderManyDesc ()
+	{
+		auto adapted = PrepareRecords<SimpleRecord> (MakeDatabase ());
+		const auto& list = adapted->Select (sph::fields<&SimpleRecord::ID_, &SimpleRecord::Value_>,
+				sph::f<&SimpleRecord::ID_> < 2,
+				oral::OrderBy<sph::desc<&SimpleRecord::Value_>, sph::asc<&SimpleRecord::ID_>>);
+		QCOMPARE (list, (QList<std::tuple<int, QString>> { { 1, "1" }, { 0, "0" } }));
+	}
+
 	void OralTest::testSimpleRecordInsertSelectCount ()
 	{
 		auto adapted = PrepareRecords<SimpleRecord> (MakeDatabase ());
