@@ -936,13 +936,13 @@ namespace oral
 				Tree Tree_;
 
 				template<typename NewSel>
-				auto Select (NewSel&& selector)
+				auto Select (NewSel&& selector) &&
 				{
 					return Builder<NewSel, Tree> { W_, std::forward<NewSel> (selector), Tree_ };
 				}
 
 				template<typename NewTree>
-				auto Where (NewTree&& tree)
+				auto Where (NewTree&& tree) &&
 				{
 					return Builder<Selector, NewTree> { W_, Selector_, std::forward<NewTree> (tree) };
 				}
@@ -959,18 +959,23 @@ namespace oral
 			{
 			}
 
+			auto Build () const
+			{
+				return Builder<SelectWhole, decltype (ConstTrueTree_v)> { *this, SelectWhole {}, ConstTrueTree_v };
+			}
+
 			auto operator() () const
 			{
-				return (*this) (ConstTrueTree_v);
+				return Build () ();
 			}
 
 			template<typename Single>
 			auto operator() (Single&& single) const
 			{
 				if constexpr (IsExprTree<std::decay_t<Single>> {})
-					return (*this) (SelectWhole {}, std::forward<Single> (single));
+					return Build ().Where (std::forward<Single> (single)) ();
 				else
-					return (*this) (std::forward<Single> (single), ConstTrueTree_v);
+					return Build ().Select (std::forward<Single> (single)) ();
 			}
 
 			template<typename Selector, ExprType Type, typename L, typename R>
