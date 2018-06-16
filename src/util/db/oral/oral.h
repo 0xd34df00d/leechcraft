@@ -1004,7 +1004,10 @@ namespace oral
 					binder (query);
 
 				if (!query.exec ())
+				{
+					DBLock::DumpError (query);
 					throw QueryException ("fetch query execution failed", std::make_shared<QSqlQuery> (query));
+				}
 
 				if constexpr (SelectBehaviour == SelectBehaviour::Some)
 				{
