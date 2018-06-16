@@ -957,19 +957,19 @@ namespace oral
 				template<typename NewSel>
 				auto Select (NewSel&& selector) &&
 				{
-					return Builder<NewSel, TreeT, OrderT> { W_, std::forward<NewSel> (selector), Tree_, Order_ };
+					return Builder<NewSel, TreeT, OrderT> { W_, std::forward<NewSel> (selector), std::move (Tree_), std::move (Order_) };
 				}
 
 				template<typename NewTree>
 				auto Where (NewTree&& tree) &&
 				{
-					return Builder<SelectorT, NewTree, OrderT> { W_, Selector_, std::forward<NewTree> (tree), Order_ };
+					return Builder<SelectorT, NewTree, OrderT> { W_, std::move (Selector_), std::forward<NewTree> (tree), std::move (Order_) };
 				}
 
 				template<typename NewOrder>
 				auto Order (NewOrder&& order) &&
 				{
-					return Builder<SelectorT, TreeT, NewOrder> { W_, Selector_, Tree_, std::forward<NewOrder> (order) };
+					return Builder<SelectorT, TreeT, NewOrder> { W_, std::move (Selector_), std::move (Tree_), std::forward<NewOrder> (order) };
 				}
 
 				auto operator() ()
