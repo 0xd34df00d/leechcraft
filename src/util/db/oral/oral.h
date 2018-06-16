@@ -941,29 +941,34 @@ namespace oral
 			const QSqlDatabase DB_;
 			const CachedFieldsData Cached_;
 
-			template<typename Selector, typename Tree>
+			template<
+					typename Selector = SelectWhole,
+					typename Tree = decltype (ConstTrueTree_v),
+					typename Order = OrderNone
+				>
 			struct Builder
 			{
 				const SelectWrapper& W_;
 
 				Selector Selector_;
 				Tree Tree_;
+				Order Order_;
 
 				template<typename NewSel>
 				auto Select (NewSel&& selector) &&
 				{
-					return Builder<NewSel, Tree> { W_, std::forward<NewSel> (selector), Tree_ };
+					return Builder<NewSel, Tree> { W_, std::forward<NewSel> (selector), Tree_, Order_ };
 				}
 
 				template<typename NewTree>
 				auto Where (NewTree&& tree) &&
 				{
-					return Builder<Selector, NewTree> { W_, Selector_, std::forward<NewTree> (tree) };
+					return Builder<Selector, NewTree> { W_, Selector_, std::forward<NewTree> (tree), Order_ };
 				}
 
 				auto operator() ()
 				{
-					return W_ (Selector_, Tree_);
+					return W_ (Selector_, Tree_, Order_);
 				}
 			};
 		public:
@@ -975,7 +980,7 @@ namespace oral
 
 			auto Build () const
 			{
-				return Builder<SelectWhole, decltype (ConstTrueTree_v)> { *this, SelectWhole {}, ConstTrueTree_v };
+				return Builder<> { *this, SelectWhole {}, ConstTrueTree_v, OrderNone {} };
 			}
 
 			auto operator() () const
