@@ -938,13 +938,13 @@ namespace oral
 				template<typename NewSel>
 				auto Select (NewSel&& selector)
 				{
-					return Builder<NewSel, Tree> { W_, selector, Tree_ };
+					return Builder<NewSel, Tree> { W_, std::forward<NewSel> (selector), Tree_ };
 				}
 
 				template<typename NewTree>
 				auto Where (NewTree&& tree)
 				{
-					return Builder<Selector, NewTree> { W_, Selector_, tree };
+					return Builder<Selector, NewTree> { W_, Selector_, std::forward<NewTree> (tree) };
 				}
 
 				auto operator() ()
