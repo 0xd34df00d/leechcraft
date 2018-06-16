@@ -875,6 +875,9 @@ namespace oral
 
 		template<AggregateFunction>
 		struct AggregateType {};
+
+		template<typename... MemberDirectionList>
+		struct OrderBy {};
 	}
 
 	namespace sph
@@ -894,25 +897,17 @@ namespace oral
 		template<auto... Ptrs>
 		constexpr detail::MemberPtrs<Ptrs...> fields {};
 
+		template<auto... Ptrs>
+		struct asc {};
+
+		template<auto... Ptrs>
+		struct desc {};
+
 		constexpr detail::AggregateType<detail::AggregateFunction::Count> count {};
 	};
 
-	enum class Order
-	{
-		Asc,
-		Desc
-	};
-
-	template<typename MemberList>
-	struct OrderBy
-	{
-		Order Dir_;
-
-		OrderBy (MemberList, Order dir = Order::Asc)
-		: Dir_ { dir }
-		{
-		}
-	};
+	template<typename... Orders>
+	constexpr detail::OrderBy<Orders...> OrderBy {};
 
 	namespace detail
 	{
@@ -1115,10 +1110,21 @@ namespace oral
 			}
 
 			template<auto... Ptrs>
-			QString HandleOrder (OrderBy<MemberPtrs<Ptrs...>> order) const
+			QList<QString> HandleSuborder (sph::asc<Ptrs...>) const
 			{
-				const auto orderStr = order.Dir_ == Order::Asc ? " ASC" : " DESC";
-				return " ORDER BY " + BuildFieldNames<Ptrs...> ().join (", ") + orderStr;
+				return { (BuildCachedFieldsData<T> ().Fields_.value (FieldIndex<Ptrs> ()) + " ASC")... };
+			}
+
+			template<auto... Ptrs>
+			QList<QString> HandleSuborder (sph::desc<Ptrs...>) const
+			{
+				return { (BuildCachedFieldsData<T> ().Fields_.value (FieldIndex<Ptrs> ()) + " DESC")... };
+			}
+
+			template<typename... Suborders>
+			QString HandleOrder (OrderBy<Suborders...>) const
+			{
+				return " ORDER BY " + QStringList { Concat (QList { HandleSuborder (Suborders {})... }) }.join (", ");
 			}
 		};
 
