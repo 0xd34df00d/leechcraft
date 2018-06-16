@@ -919,13 +919,14 @@ namespace oral
 
 		enum class SelectBehaviour { Some, One };
 
+		struct SelectWhole {};
+
 		template<typename T, SelectBehaviour SelectBehaviour>
 		class SelectWrapper
 		{
 			const QSqlDatabase DB_;
 			const CachedFieldsData Cached_;
 
-			struct SelectWhole {};
 		public:
 			SelectWrapper (const QSqlDatabase& db, const CachedFieldsData& data)
 			: DB_ { db }
