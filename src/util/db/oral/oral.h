@@ -927,6 +927,31 @@ namespace oral
 			const QSqlDatabase DB_;
 			const CachedFieldsData Cached_;
 
+			template<typename Selector, typename Tree>
+			struct Builder
+			{
+				const SelectWrapper& W_;
+
+				Selector Selector_;
+				Tree Tree_;
+
+				template<typename NewSel>
+				auto Select (NewSel&& selector)
+				{
+					return Builder<NewSel, Tree> { W_, selector, Tree_ };
+				}
+
+				template<typename NewTree>
+				auto Where (NewTree&& tree)
+				{
+					return Builder<Selector, NewTree> { W_, Selector_, tree };
+				}
+
+				auto operator() ()
+				{
+					return W_ (Selector_, Tree_);
+				}
+			};
 		public:
 			SelectWrapper (const QSqlDatabase& db, const CachedFieldsData& data)
 			: DB_ { db }
