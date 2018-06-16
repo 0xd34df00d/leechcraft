@@ -972,9 +972,9 @@ namespace oral
 					return Builder<SelectorT, TreeT, NewOrder> { W_, std::move (Selector_), std::move (Tree_), std::forward<NewOrder> (order) };
 				}
 
-				auto operator() ()
+				auto operator() () &&
 				{
-					return W_ (Selector_, Tree_, Order_);
+					return W_ (std::move (Selector_), std::move (Tree_), std::move (Order_));
 				}
 			};
 		public:
