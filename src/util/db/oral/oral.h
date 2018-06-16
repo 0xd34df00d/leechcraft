@@ -897,6 +897,23 @@ namespace oral
 		constexpr detail::AggregateType<detail::AggregateFunction::Count> count {};
 	};
 
+	enum class Order
+	{
+		Asc,
+		Desc
+	};
+
+	template<typename MemberList>
+	struct OrderBy
+	{
+		Order Dir_;
+
+		OrderBy (MemberList, Order dir = Order::Asc)
+		: Dir_ { dir }
+		{
+		}
+	};
+
 	namespace detail
 	{
 		template<auto... Ptrs, size_t... Idxs>
@@ -920,6 +937,8 @@ namespace oral
 		enum class SelectBehaviour { Some, One };
 
 		struct SelectWhole {};
+
+		struct OrderNone {};
 
 		template<typename T, SelectBehaviour SelectBehaviour>
 		class SelectWrapper
@@ -978,25 +997,33 @@ namespace oral
 					return Build ().Select (std::forward<Single> (single)) ();
 			}
 
-			template<typename Selector, ExprType Type, typename L, typename R>
-			auto operator() (Selector&& selector, const ExprTree<Type, L, R>& tree) const
+			template<
+					typename Selector,
+					ExprType Type, typename L, typename R,
+					typename Order = OrderNone
+				>
+			auto operator() (Selector&& selector,
+					const ExprTree<Type, L, R>& tree,
+					Order&& order = OrderNone {}) const
 			{
 				const auto& [where, binder, _] = HandleExprTree<T> (tree);
 				Q_UNUSED (_);
 				const auto& [fields, initializer, postproc] = HandleSelector (std::forward<Selector> (selector));
-				return postproc (Select (fields, BuildFromClause (tree), where, binder, initializer));
+				const auto& orderStr = HandleOrder (std::forward<Order> (order));
+				return postproc (Select (fields, BuildFromClause (tree), where, binder, initializer, orderStr));
 			}
 		private:
 			template<typename Binder, typename Initializer>
 			auto Select (const QString& fields, const QString& from, QString where,
-					Binder&& binder, Initializer&& initializer) const
+					Binder&& binder, Initializer&& initializer, const QString& orderStr) const
 			{
 				if (!where.isEmpty ())
 					where.prepend (" WHERE ");
 
 				const auto& queryStr = "SELECT " + fields +
 						" FROM " + from +
-						where;
+						where +
+						orderStr;
 
 				QSqlQuery query { DB_ };
 				query.prepare (queryStr);
@@ -1080,6 +1107,18 @@ namespace oral
 						[] (const QSqlQuery& q) { return q.value (0).toLongLong (); },
 						[] (const QList<long long>& list) { return list.value (0); }
 					};
+			}
+
+			QString HandleOrder (OrderNone) const
+			{
+				return {};
+			}
+
+			template<auto... Ptrs>
+			QString HandleOrder (OrderBy<MemberPtrs<Ptrs...>> order) const
+			{
+				const auto orderStr = order.Dir_ == Order::Asc ? " ASC" : " DESC";
+				return " ORDER BY " + BuildFieldNames<Ptrs...> ().join (", ") + orderStr;
 			}
 		};
 
