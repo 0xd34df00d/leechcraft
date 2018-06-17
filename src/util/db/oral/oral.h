@@ -946,8 +946,25 @@ namespace oral
 	template<typename... Orders>
 	constexpr detail::OrderBy<Orders...> OrderBy {};
 
-	struct Limit { uint64_t Count; };
-	struct Offset { uint64_t Offset; };
+	struct Limit
+	{
+		uint64_t Count;
+
+		Limit (uint64_t count)
+		: Count { count }
+		{
+		}
+	};
+
+	struct Offset
+	{
+		uint64_t Count;
+
+		Offset (uint64_t count)
+		: Count { count }
+		{
+		}
+	};
 
 	namespace detail
 	{
@@ -1258,7 +1275,7 @@ namespace oral
 				else
 					limitStr = QString::number (limit.Count);
 				return " LIMIT " + limitStr +
-						" OFFSET " + QString::number (offset.Offset);
+						" OFFSET " + QString::number (offset.Count);
 			}
 		};
 
