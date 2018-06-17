@@ -838,6 +838,38 @@ namespace oral
 				return AsLeafData (left) == AsLeafData (right);
 		}
 
+		template<ExprType Op>
+		struct InfixBinary {};
+	}
+
+	namespace infix
+	{
+		constexpr detail::InfixBinary<detail::ExprType::Like> like {};
+	}
+
+	namespace detail
+	{
+		template<typename L, ExprType Op>
+		struct InfixBinaryProxy
+		{
+			const L& Left_;
+		};
+
+		template<typename L, ExprType Op>
+		auto operator| (const L& left, InfixBinary<Op>)
+		{
+			return InfixBinaryProxy<L, Op> { left };
+		}
+
+		template<typename L, ExprType Op, typename R>
+		auto operator| (const InfixBinaryProxy<L, Op>& left, const R& right)
+		{
+			if constexpr (AllTrees_v<L, R>)
+				return MakeExprTree<Op> (left.Left_, right);
+			else
+				return MakeExprTree<Op> (AsLeafData (left.Left_), AsLeafData (right));
+		}
+
 		template<typename L, typename R, typename = EnableRelOp_t<L, R>>
 		auto operator&& (const L& left, const R& right)
 		{
