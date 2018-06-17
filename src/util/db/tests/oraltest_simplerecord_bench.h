@@ -35,22 +35,17 @@ namespace LeechCraft
 {
 namespace Util
 {
-	class OralTest : public QObject
+	class OralTest_SimpleRecord_Bench : public QObject
 	{
 		Q_OBJECT
 	private slots:
-		void testAutoPKeyRecordInsertSelect ();
-		void testAutoPKeyRecordInsertRvalueReturnsPKey ();
-		void testAutoPKeyRecordInsertConstLvalueReturnsPKey ();
-		void testAutoPKeyRecordInsertSetsPKey ();
+		void benchSimpleRecordAdapt ();
 
-		void testNoPKeyRecordInsertSelect ();
+		void benchBaselineInsert ();
+		void benchSimpleRecordInsert ();
 
-		void testNonInPlaceConstructibleRecordInsertSelect ();
-
-		void testComplexConstraintsRecordInsertSelectDefault ();
-		void testComplexConstraintsRecordInsertSelectIgnore ();
-		void testComplexConstraintsRecordInsertSelectReplace ();
+		void benchBaselineUpdate ();
+		void benchSimpleRecordUpdate ();
 	};
 }
 }

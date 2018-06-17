@@ -35,22 +35,42 @@ namespace LeechCraft
 {
 namespace Util
 {
-	class OralTest : public QObject
+	class OralTest_SimpleRecord : public QObject
 	{
 		Q_OBJECT
 	private slots:
-		void testAutoPKeyRecordInsertSelect ();
-		void testAutoPKeyRecordInsertRvalueReturnsPKey ();
-		void testAutoPKeyRecordInsertConstLvalueReturnsPKey ();
-		void testAutoPKeyRecordInsertSetsPKey ();
+		void testSimpleRecordInsertSelect ();
+		void testSimpleRecordInsertReplaceSelect ();
+		void testSimpleRecordInsertIgnoreSelect ();
 
-		void testNoPKeyRecordInsertSelect ();
+		void testSimpleRecordInsertSelectByPos ();
+		void testSimpleRecordInsertSelectByPos2 ();
+		void testSimpleRecordInsertSelectByPos3 ();
+		void testSimpleRecordInsertSelectOneByPos ();
 
-		void testNonInPlaceConstructibleRecordInsertSelect ();
+		void testSimpleRecordInsertSelectByFields ();
+		void testSimpleRecordInsertSelectByFields2 ();
+		void testSimpleRecordInsertSelectByFields3 ();
 
-		void testComplexConstraintsRecordInsertSelectDefault ();
-		void testComplexConstraintsRecordInsertSelectIgnore ();
-		void testComplexConstraintsRecordInsertSelectReplace ();
+		void testSimpleRecordInsertSelectOneByFields ();
+
+		void testSimpleRecordInsertSelectSingleFieldByFields ();
+		void testSimpleRecordInsertSelectFieldsByFields ();
+
+		void testSimpleRecordInsertSelectFieldsByFieldsOrderAsc ();
+		void testSimpleRecordInsertSelectFieldsByFieldsOrderDesc ();
+
+		void testSimpleRecordInsertSelectFieldsByFieldsOrderManyAsc ();
+		void testSimpleRecordInsertSelectFieldsByFieldsOrderManyDesc ();
+
+		void testSimpleRecordInsertSelectCount ();
+		void testSimpleRecordInsertSelectCountByFields ();
+
+		void testSimpleRecordInsertSelectLike ();
+
+		void testSimpleRecordUpdate ();
+		void testSimpleRecordUpdateExprTree ();
+		void testSimpleRecordUpdateMultiExprTree ();
 	};
 }
 }

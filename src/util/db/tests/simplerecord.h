@@ -29,28 +29,26 @@
 
 #pragma once
 
-#include <QObject>
+#include "common.h"
 
-namespace LeechCraft
+struct SimpleRecord
 {
-namespace Util
-{
-	class OralTest : public QObject
+	lco::PKey<int, lco::NoAutogen> ID_;
+	QString Value_;
+
+	static QString ClassName ()
 	{
-		Q_OBJECT
-	private slots:
-		void testAutoPKeyRecordInsertSelect ();
-		void testAutoPKeyRecordInsertRvalueReturnsPKey ();
-		void testAutoPKeyRecordInsertConstLvalueReturnsPKey ();
-		void testAutoPKeyRecordInsertSetsPKey ();
+		return "SimpleRecord";
+	}
 
-		void testNoPKeyRecordInsertSelect ();
+	auto AsTuple () const
+	{
+		return std::tie (ID_, Value_);
+	}
+};
 
-		void testNonInPlaceConstructibleRecordInsertSelect ();
+BOOST_FUSION_ADAPT_STRUCT (SimpleRecord,
+		ID_,
+		Value_)
 
-		void testComplexConstraintsRecordInsertSelectDefault ();
-		void testComplexConstraintsRecordInsertSelectIgnore ();
-		void testComplexConstraintsRecordInsertSelectReplace ();
-	};
-}
-}
+TOSTRING (SimpleRecord)

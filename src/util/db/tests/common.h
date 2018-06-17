@@ -124,4 +124,13 @@ namespace LeechCraft::Util
 		return db;
 #endif
 	}
+
+	template<typename T>
+	auto PrepareRecords (QSqlDatabase db)
+	{
+		auto adapted = Util::oral::AdaptPtr<T, OralFactory> (db);
+		for (int i = 0; i < 3; ++i)
+			adapted->Insert ({ i, QString::number (i) });
+		return adapted;
+	}
 }
