@@ -541,6 +541,8 @@ namespace oral
 			Leq,
 			Neq,
 
+			Like,
+
 			And,
 			Or
 		};
@@ -561,6 +563,8 @@ namespace oral
 				return "<=";
 			case ExprType::Neq:
 				return "!=";
+			case ExprType::Like:
+				return "LIKE";
 			case ExprType::And:
 				return "AND";
 			case ExprType::Or:
@@ -582,7 +586,8 @@ namespace oral
 					type == ExprType::Equal ||
 					type == ExprType::Geq ||
 					type == ExprType::Leq ||
-					type == ExprType::Neq;
+					type == ExprType::Neq ||
+					type == ExprType::Like;
 		}
 
 		template<typename T>
