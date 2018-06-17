@@ -176,6 +176,27 @@ namespace Util
 		QCOMPARE (list, (QList<std::tuple<int, QString>> { { 1, "1" }, { 0, "0" } }));
 	}
 
+	void OralTest_SimpleRecord::testSimpleRecordInsertSelectNoOffsetLimit ()
+	{
+		auto adapted = PrepareRecords<SimpleRecord> (MakeDatabase (), 10);
+		const auto& list = adapted->Select.Build ().Limit ({ 2 }) ();
+		QCOMPARE (list, (QList<SimpleRecord> { { 0, "0" }, { 1, "1" } }));
+	}
+
+	void OralTest_SimpleRecord::testSimpleRecordInsertSelectOffsetNoLimit ()
+	{
+		auto adapted = PrepareRecords<SimpleRecord> (MakeDatabase (), 10);
+		const auto& list = adapted->Select.Build ().Offset ({ 8 }) ();
+		QCOMPARE (list, (QList<SimpleRecord> { { 8, "8" }, { 9, "9" } }));
+	}
+
+	void OralTest_SimpleRecord::testSimpleRecordInsertSelectOffsetLimit ()
+	{
+		auto adapted = PrepareRecords<SimpleRecord> (MakeDatabase (), 10);
+		const auto& list = adapted->Select.Build ().Offset ({ 5 }).Limit ({ 2 }) ();
+		QCOMPARE (list, (QList<SimpleRecord> { { 5, "5" }, { 6, "6" } }));
+	}
+
 	void OralTest_SimpleRecord::testSimpleRecordInsertSelectCount ()
 	{
 		auto adapted = PrepareRecords<SimpleRecord> (MakeDatabase ());

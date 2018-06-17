@@ -63,6 +63,10 @@ namespace Util
 		void testSimpleRecordInsertSelectFieldsByFieldsOrderManyAsc ();
 		void testSimpleRecordInsertSelectFieldsByFieldsOrderManyDesc ();
 
+		void testSimpleRecordInsertSelectNoOffsetLimit ();
+		void testSimpleRecordInsertSelectOffsetNoLimit ();
+		void testSimpleRecordInsertSelectOffsetLimit ();
+
 		void testSimpleRecordInsertSelectCount ();
 		void testSimpleRecordInsertSelectCountByFields ();
 
