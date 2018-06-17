@@ -74,7 +74,7 @@ namespace LeechCraft::Util::oral
 	}
 }
 
-#define TOSTRING(n) char* toString (const n& rec) { return toString (#n, rec); }
+#define TOSTRING(n) inline char* toString (const n& rec) { return toString (#n, rec); }
 
 template<typename T, typename TupleType = decltype (T {}.AsTuple ())>
 char* toString (const char *name, const T& t)
