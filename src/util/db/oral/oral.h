@@ -1004,6 +1004,8 @@ namespace oral
 			const QSqlDatabase DB_;
 			const CachedFieldsData Cached_;
 
+			const QString LimitNone_;
+
 			template<typename ParamsTuple>
 			struct Builder
 			{
@@ -1040,9 +1042,11 @@ namespace oral
 				}
 			};
 		public:
-			SelectWrapper (const QSqlDatabase& db, const CachedFieldsData& data)
+			template<typename ImplFactory>
+			SelectWrapper (const QSqlDatabase& db, const CachedFieldsData& data, ImplFactory&& factory)
 			: DB_ { db }
-			, Cached_ (data)
+			, Cached_ { data }
+			, LimitNone_ { factory.LimitNone }
 			{
 			}
 
@@ -1392,8 +1396,9 @@ namespace oral
 			{ db, cachedData, factory },
 			{ db, cachedData },
 			{ db, cachedData },
-			{ db, cachedData },
-			{ db, cachedData },
+
+			{ db, cachedData, factory },
+			{ db, cachedData, factory },
 			{ db, cachedData }
 		};
 	}
