@@ -946,6 +946,9 @@ namespace oral
 	template<typename... Orders>
 	constexpr detail::OrderBy<Orders...> OrderBy {};
 
+	struct Limit { uint64_t Count; };
+	struct Offset { uint64_t Offset; };
+
 	namespace detail
 	{
 		template<auto... Ptrs, size_t... Idxs>
@@ -969,8 +972,9 @@ namespace oral
 		enum class SelectBehaviour { Some, One };
 
 		struct SelectWhole {};
-
 		struct OrderNone {};
+		struct LimitNone {};
+		struct OffsetNone {};
 
 		template<size_t RepIdx, size_t TupIdx, typename Tuple, typename NewType>
 		decltype (auto) GetReplaceTupleElem (Tuple&& tuple, NewType&& arg)
@@ -1036,6 +1040,18 @@ namespace oral
 					return RepTuple (ReplaceTupleElem<2> (std::move (Params_), std::forward<U> (order)));
 				}
 
+				template<typename U = Limit>
+				auto Limit (U&& limit) &&
+				{
+					return RepTuple (ReplaceTupleElem<3> (std::move (Params_), std::forward<U> (limit)));
+				}
+
+				template<typename U = Offset>
+				auto Offset (U&& offset) &&
+				{
+					return RepTuple (ReplaceTupleElem<4> (std::move (Params_), std::forward<U> (offset)));
+				}
+
 				auto operator() () &&
 				{
 					return std::apply (W_, Params_);
@@ -1052,7 +1068,14 @@ namespace oral
 
 			auto Build () const
 			{
-				auto defParams = std::tuple { SelectWhole {}, ConstTrueTree_v, OrderNone {} };
+				std::tuple defParams
+				{
+					SelectWhole {},
+					ConstTrueTree_v,
+					OrderNone {},
+					LimitNone {},
+					OffsetNone {}
+				};
 				return Builder<decltype (defParams)> { *this, defParams };
 			}
 
@@ -1073,22 +1096,32 @@ namespace oral
 			template<
 					typename Selector,
 					ExprType Type, typename L, typename R,
-					typename Order = OrderNone
+					typename Order = OrderNone,
+					typename Limit = LimitNone,
+					typename Offset = OffsetNone
 				>
 			auto operator() (Selector&& selector,
 					const ExprTree<Type, L, R>& tree,
-					Order&& order = OrderNone {}) const
+					Order&& order = OrderNone {},
+					Limit&& limit = LimitNone {},
+					Offset&& offset = OffsetNone {}) const
 			{
 				const auto& [where, binder, _] = HandleExprTree<T> (tree);
 				Q_UNUSED (_);
 				const auto& [fields, initializer, postproc] = HandleSelector (std::forward<Selector> (selector));
-				const auto& orderStr = HandleOrder (std::forward<Order> (order));
-				return postproc (Select (fields, BuildFromClause (tree), where, binder, initializer, orderStr));
+				return postproc (Select (fields, BuildFromClause (tree),
+						where, binder,
+						initializer,
+						HandleOrder (std::forward<Order> (order)),
+						HandleLimitOffset (std::forward<Limit> (limit), std::forward<Offset> (offset))));
 			}
 		private:
 			template<typename Binder, typename Initializer>
-			auto Select (const QString& fields, const QString& from, QString where,
-					Binder&& binder, Initializer&& initializer, const QString& orderStr) const
+			auto Select (const QString& fields, const QString& from,
+					QString where, Binder&& binder,
+					Initializer&& initializer,
+					const QString& orderStr,
+					const QString& limitOffsetStr) const
 			{
 				if (!where.isEmpty ())
 					where.prepend (" WHERE ");
@@ -1096,7 +1129,8 @@ namespace oral
 				const auto& queryStr = "SELECT " + fields +
 						" FROM " + from +
 						where +
-						orderStr;
+						orderStr +
+						limitOffsetStr;
 
 				QSqlQuery query { DB_ };
 				query.prepare (queryStr);
@@ -1203,6 +1237,28 @@ namespace oral
 			QString HandleOrder (OrderBy<Suborders...>) const
 			{
 				return " ORDER BY " + QStringList { Concat (QList { HandleSuborder (Suborders {})... }) }.join (", ");
+			}
+
+			QString HandleLimitOffset (LimitNone, OffsetNone) const
+			{
+				return {};
+			}
+
+			QString HandleLimitOffset (Limit limit, OffsetNone) const
+			{
+				return " LIMIT " + QString::number (limit.Count);
+			}
+
+			template<typename L>
+			QString HandleLimitOffset (L limit, Offset offset) const
+			{
+				QString limitStr;
+				if constexpr (std::is_same_v<std::decay_t<L>, LimitNone>)
+					limitStr = LimitNone_;
+				else
+					limitStr = QString::number (limit.Count);
+				return " LIMIT " + limitStr +
+						" OFFSET " + QString::number (offset.Offset);
 			}
 		};
 
