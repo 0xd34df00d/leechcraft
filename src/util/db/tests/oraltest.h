@@ -66,6 +66,8 @@ namespace Util
 		void testSimpleRecordInsertSelectCount ();
 		void testSimpleRecordInsertSelectCountByFields ();
 
+		void testSimpleRecordInsertSelectLike ();
+
 		void testSimpleRecordUpdate ();
 		void testSimpleRecordUpdateExprTree ();
 		void testSimpleRecordUpdateMultiExprTree ();

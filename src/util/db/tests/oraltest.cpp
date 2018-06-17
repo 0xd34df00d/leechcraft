@@ -329,6 +329,18 @@ namespace Util
 		QCOMPARE (count, 2);
 	}
 
+	void OralTest::testSimpleRecordInsertSelectLike ()
+	{
+		using namespace oral::infix;
+
+		auto adapted = Util::oral::AdaptPtr<SimpleRecord, OralFactory> (MakeDatabase ());
+		adapted->Insert ({ 0, "foo" });
+		adapted->Insert ({ 1, "bar" });
+		adapted->Insert ({ 2, "foobar" });
+		const auto& list = adapted->Select (sph::f<&SimpleRecord::Value_> |like| QString { "%oo%" });
+		QCOMPARE (list, (QList<SimpleRecord> { { 0, "foo" }, { 2, "foobar" } }));
+	}
+
 	void OralTest::testSimpleRecordUpdate ()
 	{
 		auto adapted = PrepareRecords<SimpleRecord> (MakeDatabase ());
