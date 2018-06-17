@@ -1004,9 +1004,7 @@ namespace oral
 			const QSqlDatabase DB_;
 			const CachedFieldsData Cached_;
 
-			template<
-					typename ParamsTuple = std::tuple<SelectWhole, decltype (ConstTrueTree_v), OrderNone>
-				>
+			template<typename ParamsTuple>
 			struct Builder
 			{
 				const SelectWrapper& W_;
@@ -1050,7 +1048,8 @@ namespace oral
 
 			auto Build () const
 			{
-				return Builder<> { *this, { SelectWhole {}, ConstTrueTree_v, OrderNone {} } };
+				auto defParams = std::tuple { SelectWhole {}, ConstTrueTree_v, OrderNone {} };
+				return Builder<decltype (defParams)> { *this, defParams };
 			}
 
 			auto operator() () const
