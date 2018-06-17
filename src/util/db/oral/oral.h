@@ -972,6 +972,32 @@ namespace oral
 
 		struct OrderNone {};
 
+		template<size_t RepIdx, size_t TupIdx, typename Tuple, typename NewType>
+		decltype (auto) GetReplaceTupleElem (Tuple&& tuple, NewType&& arg)
+		{
+			if constexpr (RepIdx == TupIdx)
+				return std::forward<NewType> (arg);
+			else
+				return std::get<TupIdx> (tuple);
+		}
+
+		template<size_t RepIdx, typename NewType, typename Tuple, size_t... TupIdxs>
+		auto ReplaceTupleElemImpl (Tuple&& tuple, NewType&& arg, std::index_sequence<TupIdxs...>)
+		{
+			return std::tuple
+			{
+				GetReplaceTupleElem<RepIdx, TupIdxs> (std::forward<Tuple> (tuple), std::forward<NewType> (arg))...
+			};
+		}
+
+		template<size_t RepIdx, typename NewType, typename... TupleArgs>
+		auto ReplaceTupleElem (std::tuple<TupleArgs...>&& tuple, NewType&& arg)
+		{
+			return ReplaceTupleElemImpl<RepIdx> (std::move (tuple),
+					std::forward<NewType> (arg),
+					std::index_sequence_for<TupleArgs...> {});
+		}
+
 		template<typename T, SelectBehaviour SelectBehaviour>
 		class SelectWrapper
 		{
@@ -979,57 +1005,40 @@ namespace oral
 			const CachedFieldsData Cached_;
 
 			template<
-					typename SelectorT = SelectWhole,
-					typename TreeT = decltype (ConstTrueTree_v),
-					typename OrderT = OrderNone
+					typename ParamsTuple = std::tuple<SelectWhole, decltype (ConstTrueTree_v), OrderNone>
 				>
 			struct Builder
 			{
 				const SelectWrapper& W_;
+				ParamsTuple Params_;
 
-				SelectorT Selector_;
-				TreeT Tree_;
-				OrderT Order_;
-
-				template<typename NewSel>
-				auto Select (NewSel&& selector) &&
+				template<typename NewTuple>
+				auto RepTuple (NewTuple&& tuple)
 				{
-					return Builder<NewSel, TreeT, OrderT>
-					{
-						W_,
-						std::forward<NewSel> (selector),
-						std::move (Tree_),
-						std::move (Order_)
-					};
+					return Builder<NewTuple> { W_, tuple };
 				}
 
-				template<typename NewTree>
-				auto Where (NewTree&& tree) &&
+				template<typename U>
+				auto Select (U&& selector) &&
 				{
-					return Builder<SelectorT, NewTree, OrderT>
-					{
-						W_,
-						std::move (Selector_),
-						std::forward<NewTree> (tree),
-						std::move (Order_)
-					};
+					return RepTuple (ReplaceTupleElem<0> (std::move (Params_), std::forward<U> (selector)));
 				}
 
-				template<typename NewOrder>
-				auto Order (NewOrder&& order) &&
+				template<typename U>
+				auto Where (U&& tree) &&
 				{
-					return Builder<SelectorT, TreeT, NewOrder>
-					{
-						W_,
-						std::move (Selector_),
-						std::move (Tree_),
-						std::forward<NewOrder> (order)
-					};
+					return RepTuple (ReplaceTupleElem<1> (std::move (Params_), std::forward<U> (tree)));
+				}
+
+				template<typename U>
+				auto Order (U&& order) &&
+				{
+					return RepTuple (ReplaceTupleElem<2> (std::move (Params_), std::forward<U> (order)));
 				}
 
 				auto operator() () &&
 				{
-					return W_ (std::move (Selector_), std::move (Tree_), std::move (Order_));
+					return std::apply (W_, Params_);
 				}
 			};
 		public:
@@ -1041,7 +1050,7 @@ namespace oral
 
 			auto Build () const
 			{
-				return Builder<> { *this, SelectWhole {}, ConstTrueTree_v, OrderNone {} };
+				return Builder<> { *this, { SelectWhole {}, ConstTrueTree_v, OrderNone {} } };
 			}
 
 			auto operator() () const
