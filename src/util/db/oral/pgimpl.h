@@ -110,6 +110,8 @@ namespace LeechCraft::Util::oral::detail::PostgreSQL
 			inline static const QString Binary { "BYTEA" };
 		};
 
+		inline static const QString LimitNone { "ALL" };
+
 		auto MakeInsertQueryBuilder (const QSqlDatabase& db, const CachedFieldsData& data) const
 		{
 			return std::make_unique<InsertQueryBuilder> (db, data);

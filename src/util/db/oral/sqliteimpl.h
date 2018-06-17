@@ -82,6 +82,8 @@ namespace LeechCraft::Util::oral::detail::SQLite
 			inline static const QString Binary { "BLOB" };
 		};
 
+		inline static const QString LimitNone { "-1" };
+
 		auto MakeInsertQueryBuilder (const QSqlDatabase& db, const CachedFieldsData& data) const
 		{
 			return std::make_unique<InsertQueryBuilder> (db, data);
