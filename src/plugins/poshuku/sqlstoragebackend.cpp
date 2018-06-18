@@ -451,25 +451,6 @@ namespace Poshuku
 			}
 		}
 
-		if (!DB_.tables ().contains ("forms"))
-		{
-			QString binary = "BLOB";
-			if (Type_ == SBPostgres)
-				binary = "BYTEA";
-
-			if (!query.exec (QString ("CREATE TABLE forms ("
-							"url TEXT, "
-							"form_index INTEGER, "
-							"name TEXT, "
-							"type TEXT, "
-							"value %1"
-							");").arg (binary)))
-			{
-				LeechCraft::Util::DBLock::DumpError (query);
-				return;
-			}
-		}
-
 		if (!DB_.tables ().contains ("forms_never"))
 		{
 			if (!query.exec ("CREATE TABLE forms_never ("
