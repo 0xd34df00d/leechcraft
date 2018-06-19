@@ -90,15 +90,6 @@ namespace Poshuku
 		InitializeTables ();
 	}
 
-	SQLStorageBackend::~SQLStorageBackend ()
-	{
-		if (Type_ == SBSQLite && XmlSettingsManager::Instance ()->property ("SQLiteVacuum").toBool ())
-		{
-			QSqlQuery vacuum (DB_);
-			vacuum.exec ("VACUUM;");
-		}
-	}
-
 	void SQLStorageBackend::Prepare ()
 	{
 		if (Type_ == SBSQLite)

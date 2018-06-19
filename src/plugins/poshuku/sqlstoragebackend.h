@@ -117,7 +117,6 @@ namespace Poshuku
 		Util::oral::ObjectInfo_ptr<Favorites> Favorites_;
 	public:
 		SQLStorageBackend (Type);
-		~SQLStorageBackend ();
 
 		void Prepare () override;
 
