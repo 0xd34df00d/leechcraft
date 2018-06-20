@@ -1486,6 +1486,12 @@ namespace oral
 	{
 		return std::make_shared<ObjectInfo<T>> (Adapt<T, ImplFactory> (db));
 	}
+
+	template<typename... Types, typename ImplFactory>
+	std::tuple<ObjectInfo_ptr<Types>...> AdaptPtrs (const QSqlDatabase& db)
+	{
+		return { std::make_shared<ObjectInfo<Types>> (Adapt<Types, ImplFactory> (db))... };
+	}
 }
 }
 }
