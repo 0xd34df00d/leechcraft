@@ -1454,6 +1454,8 @@ namespace oral
 
 		ObjectInfo (const ObjectInfo<T>&) = delete;
 		ObjectInfo (ObjectInfo<T>&&) = default;
+
+		using ObjectType_t = T;
 	};
 
 	template<typename T, typename ImplFactory = detail::SQLite::ImplFactory>
