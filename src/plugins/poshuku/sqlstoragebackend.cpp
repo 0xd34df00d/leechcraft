@@ -36,8 +36,103 @@
 #include <QtDebug>
 #include <util/db/dblock.h>
 #include <util/db/util.h>
+#include <util/db/oral/oral.h>
+#include <util/db/oral/pgimpl.h>
 #include <util/util.h>
 #include "xmlsettingsmanager.h"
+
+namespace LeechCraft
+{
+namespace Poshuku
+{
+	namespace oral = Util::oral;
+	namespace sph = Util::oral::sph;
+
+	struct SQLStorageBackend::History
+	{
+		oral::PKey<QDateTime, oral::NoAutogen> Date_;
+		QString Title_;
+		QString URL_;
+
+		static QString ClassName ()
+		{
+			return "History";
+		}
+
+		using Indices = oral::Indices<
+				oral::Index<&History::Title_, &History::URL_>
+			>;
+
+		HistoryItem ToHistoryItem () const
+		{
+			return { Title_, *Date_, URL_ };
+		}
+
+		static History FromHistoryItem (const HistoryItem& item)
+		{
+			return
+			{
+				item.DateTime_,
+				item.Title_,
+				item.URL_
+			};
+		}
+	};
+
+	struct SQLStorageBackend::Favorites
+	{
+		oral::PKey<QString, oral::NoAutogen> Title_;
+		QString URL_;
+		QString Tags_;
+
+		static QString ClassName ()
+		{
+			return "Favorites";
+		}
+
+		FavoritesModel::FavoritesItem ToFavoritesItem () const
+		{
+			return
+			{
+				Title_,
+				URL_,
+				Tags_.split (" ", QString::SkipEmptyParts)
+			};
+		}
+
+		static Favorites FromFavoritesItem (const FavoritesModel::FavoritesItem& item)
+		{
+			return
+			{
+				item.Title_,
+				item.URL_,
+				item.Tags_.join (" ")
+			};
+		}
+	};
+
+	struct SQLStorageBackend::FormsNever
+	{
+		oral::PKey<QString, oral::NoAutogen> URL_;
+
+		static QString ClassName ()
+		{
+			return "Forms_Never";
+		}
+	};
+}
+}
+
+BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Poshuku::SQLStorageBackend::History,
+		Date_,
+		Title_,
+		URL_)
+BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Poshuku::SQLStorageBackend::Favorites,
+		Title_,
+		URL_,
+		Tags_)
+BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Poshuku::SQLStorageBackend::FormsNever,
+		URL_)
 
 namespace LeechCraft
 {
@@ -87,7 +182,10 @@ namespace Poshuku
 					.arg (DB_.lastError ().text ()).toUtf8 ().constData ());
 		}
 
-		InitializeTables ();
+		auto adaptedPtrs = std::tie (History_, Favorites_, FormsNever_);
+		Type_ == SBSQLite ?
+				oral::AdaptPtrs<oral::SQLiteImplFactory> (DB_, adaptedPtrs) :
+				oral::AdaptPtrs<oral::PostgreSQLImplFactory> (DB_, adaptedPtrs);
 	}
 
 	void SQLStorageBackend::Prepare ()
@@ -103,14 +201,6 @@ namespace Poshuku
 			if (!pragma.exec (QString ("PRAGMA temp_store = %1;").arg (xsm->property ("SQLiteTempStore").toString ())))
 				Util::DBLock::DumpError (pragma);
 		}
-
-		HistoryLoader_ = QSqlQuery (DB_);
-		HistoryLoader_.prepare ("SELECT "
-				"title, "
-				"date, "
-				"url "
-				"FROM history "
-				"ORDER BY date DESC");
 
 		HistoryRatedLoader_ = QSqlQuery (DB_);
 		switch (Type_)
@@ -140,102 +230,12 @@ namespace Poshuku
 					"LIMIT 100");
 			break;
 		}
-
-		HistoryAdder_ = QSqlQuery (DB_);
-		HistoryAdder_.prepare ("INSERT INTO history ("
-				"date, "
-				"title, "
-				"url"
-				") VALUES ("
-				":date, "
-				":title, "
-				":url"
-				")");
-
-		HistoryEraser_ = QSqlQuery (DB_);
-		HistoryEraser_.prepare ("DELETE FROM history WHERE date < :threshold");
-
-		QString allLimit;
-		switch (Type_)
-		{
-		case SBSQLite:
-			allLimit = "-1";
-			break;
-		case SBPostgres:
-			allLimit = "ALL";
-			break;
-		}
-		HistoryTruncater_ = QSqlQuery (DB_);
-		HistoryTruncater_.prepare (QString { "DELETE FROM history WHERE date IN "
-				"(SELECT date FROM history ORDER BY date DESC LIMIT %1 OFFSET :num)" }
-				.arg (allLimit));
-
-		FavoritesLoader_ = QSqlQuery (DB_);
-		FavoritesLoader_.prepare ("SELECT "
-				"title, "
-				"url, "
-				"tags "
-				"FROM favorites "
-				"ORDER BY title DESC");
-
-		FavoritesAdder_ = QSqlQuery (DB_);
-		FavoritesAdder_.prepare ("INSERT INTO favorites ("
-				"title, "
-				"url, "
-				"tags"
-				") VALUES ("
-				":title, "
-				":url, "
-				":tags"
-				")");
-
-		FavoritesUpdater_ = QSqlQuery (DB_);
-		FavoritesUpdater_.prepare ("UPDATE favorites SET "
-				"title = :title, "
-				"tags = :tags "
-				"WHERE url = :url");
-
-		FavoritesRemover_ = QSqlQuery (DB_);
-		FavoritesRemover_.prepare ("DELETE FROM favorites "
-				"WHERE url = :url");
-
-		FormsIgnoreSetter_ = QSqlQuery (DB_);
-		FormsIgnoreSetter_.prepare ("INSERT INTO forms_never ("
-				"url"
-				") VALUES ("
-				":url"
-				")");
-
-		FormsIgnoreGetter_ = QSqlQuery (DB_);
-		FormsIgnoreGetter_.prepare ("SELECT COUNT (url) AS num "
-				"FROM forms_never "
-				"WHERE url = :url");
-
-		FormsIgnoreClearer_ = QSqlQuery (DB_);
-		FormsIgnoreClearer_.prepare ("DELETE FROM forms_never ("
-				"WHERE url = :url");
 	}
 
 	void SQLStorageBackend::LoadHistory (history_items_t& items) const
 	{
-		if (!HistoryLoader_.exec ())
-		{
-			LeechCraft::Util::DBLock::DumpError (HistoryLoader_);
-			return;
-		}
-
-		while (HistoryLoader_.next ())
-		{
-			HistoryItem item =
-			{
-				HistoryLoader_.value (0).toString (),
-				HistoryLoader_.value (1).toDateTime (),
-				HistoryLoader_.value (2).toString ()
-			};
-			items.push_back (item);
-		}
-
-		HistoryLoader_.finish ();
+		for (const auto& item : History_->Select.Build ().Order (oral::OrderBy<sph::desc<&History::Date_>>) ())
+			items.push_back (item.ToHistoryItem ());
 	}
 
 	void SQLStorageBackend::LoadResemblingHistory (const QString& base,
@@ -267,191 +267,63 @@ namespace Poshuku
 
 	void SQLStorageBackend::AddToHistory (const HistoryItem& item)
 	{
-		HistoryAdder_.bindValue (":title", item.Title_);
-		HistoryAdder_.bindValue (":date", item.DateTime_);
-		HistoryAdder_.bindValue (":url", item.URL_);
-
-		if (!HistoryAdder_.exec ())
-		{
-			LeechCraft::Util::DBLock::DumpError (HistoryAdder_);
-			return;
-		}
-
+		History_->Insert (History::FromHistoryItem (item));
 		emit added (item);
 	}
 
 	void SQLStorageBackend::ClearOldHistory (int age, int items)
 	{
-		LeechCraft::Util::DBLock lock (DB_);
-		lock.Init ();
+		const auto& countDateThreshold = History_->SelectOne
+				.Build ()
+				.Select (sph::fields<&History::Date_>)
+				.Order (oral::OrderBy<sph::asc<&History::Date_>>)
+				.Limit (1)
+				.Offset (items)
+				();
 
-		auto threshold = QDateTime::currentDateTime ().addDays (-age);
-		HistoryEraser_.bindValue (":threshold", threshold);
-		HistoryTruncater_.bindValue (":num", items);
+		const auto& ageDateThreshold = QDateTime::currentDateTime ().addDays (-age);
 
-		if (!HistoryEraser_.exec ())
-		{
-			LeechCraft::Util::DBLock::DumpError (HistoryEraser_);
-			return;
-		}
-		if (!HistoryTruncater_.exec ())
-		{
-			LeechCraft::Util::DBLock::DumpError (HistoryTruncater_);
-			return;
-		}
-
-		lock.Good ();
+		const auto& threshold = countDateThreshold ?
+				std::min (*countDateThreshold, ageDateThreshold) :
+				ageDateThreshold;
+		History_->DeleteBy (sph::f<&History::Date_> < threshold);
 	}
 
-	void SQLStorageBackend::LoadFavorites (
-			FavoritesModel::items_t& items
-			) const
+	void SQLStorageBackend::LoadFavorites (FavoritesModel::items_t& items) const
 	{
-		if (!FavoritesLoader_.exec ())
-		{
-			LeechCraft::Util::DBLock::DumpError (FavoritesLoader_);
-			return;
-		}
-
-		while (FavoritesLoader_.next ())
-		{
-			FavoritesModel::FavoritesItem item =
-			{
-				FavoritesLoader_.value (0).toString (),
-				FavoritesLoader_.value (1).toString (),
-				FavoritesLoader_.value (2).toString ().split (" ",
-						QString::SkipEmptyParts)
-			};
-			items.push_back (item);
-		}
-
-		FavoritesLoader_.finish ();
+		for (const auto& fav : Favorites_->Select.Build ().Order (oral::OrderBy<sph::desc<&Favorites::Title_>>) ())
+			items.push_back (fav.ToFavoritesItem ());
 	}
 
 	void SQLStorageBackend::AddToFavorites (const FavoritesModel::FavoritesItem& item)
 	{
-		FavoritesAdder_.bindValue (":title", item.Title_);
-		FavoritesAdder_.bindValue (":url", item.URL_);
-		FavoritesAdder_.bindValue (":tags", item.Tags_.join (" "));
-
-		if (!FavoritesAdder_.exec ())
-		{
-			LeechCraft::Util::DBLock::DumpError (FavoritesAdder_);
-			throw std::runtime_error ("Failed to execute FavoritesAdder query.");
-		}
-
+		Favorites_->Insert (Favorites::FromFavoritesItem (item));
 		emit added (item);
 	}
 
 	void SQLStorageBackend::RemoveFromFavorites (const FavoritesModel::FavoritesItem& item)
 	{
-		FavoritesRemover_.bindValue (":url", item.URL_);
-		if (!FavoritesRemover_.exec ())
-		{
-			LeechCraft::Util::DBLock::DumpError (FavoritesRemover_);
-			return;
-		}
-
+		Favorites_->DeleteBy (sph::f<&Favorites::URL_> == item.URL_);
 		emit removed (item);
 	}
 
 	void SQLStorageBackend::UpdateFavorites (const FavoritesModel::FavoritesItem& item)
 	{
-		FavoritesUpdater_.bindValue (":title", item.Title_);
-		FavoritesUpdater_.bindValue (":url", item.URL_);
-		FavoritesUpdater_.bindValue (":tags", item.Tags_.join (" "));
-
-		if (!FavoritesUpdater_.exec ())
-		{
-			LeechCraft::Util::DBLock::DumpError (FavoritesUpdater_);
-			return;
-		}
-
+		Favorites_->Update (Favorites::FromFavoritesItem (item));
 		emit updated (item);
 	}
 
 	void SQLStorageBackend::SetFormsIgnored (const QString& url, bool ignore)
 	{
 		if (ignore)
-		{
-			FormsIgnoreSetter_.bindValue (":url", url);
-			if (!FormsIgnoreSetter_.exec ())
-			{
-				LeechCraft::Util::DBLock::DumpError (FormsIgnoreSetter_);
-				return;
-			}
-		}
+			FormsNever_->Insert ({ url });
 		else
-		{
-			FormsIgnoreClearer_.bindValue (":url", url);
-			if (!FormsIgnoreClearer_.exec ())
-			{
-				LeechCraft::Util::DBLock::DumpError (FormsIgnoreClearer_);
-				return;
-			}
-		}
+			FormsNever_->Delete ({ url });
 	}
 
 	bool SQLStorageBackend::GetFormsIgnored (const QString& url) const
 	{
-		FormsIgnoreGetter_.bindValue (":url", url);
-		if (!FormsIgnoreGetter_.exec ())
-		{
-			LeechCraft::Util::DBLock::DumpError (FormsIgnoreGetter_);
-			return false;
-		}
-
-		FormsIgnoreGetter_.next ();
-
-		bool ignored = FormsIgnoreGetter_.value (0).toInt ();
-		FormsIgnoreGetter_.finish ();
-		return ignored;
-	}
-
-	void SQLStorageBackend::InitializeTables ()
-	{
-		QSqlQuery query (DB_);
-
-		if (!DB_.tables ().contains ("history"))
-		{
-			if (!query.exec ("CREATE TABLE history ("
-						"date TIMESTAMP PRIMARY KEY, "
-						"title TEXT, "
-						"url TEXT"
-						");"))
-			{
-				LeechCraft::Util::DBLock::DumpError (query);
-				return;
-			}
-
-			if (!query.exec ("CREATE INDEX idx_history_title_url "
-						"ON history (title, url)"))
-				LeechCraft::Util::DBLock::DumpError (query);
-		}
-
-		if (!DB_.tables ().contains ("favorites"))
-		{
-			if (!query.exec ("CREATE TABLE favorites ("
-						"title TEXT PRIMARY KEY, "
-						"url TEXT, "
-						"tags TEXT"
-						");"))
-			{
-				LeechCraft::Util::DBLock::DumpError (query);
-				return;
-			}
-		}
-
-		if (!DB_.tables ().contains ("forms_never"))
-		{
-			if (!query.exec ("CREATE TABLE forms_never ("
-						"url TEXT PRIMARY KEY"
-						");"))
-			{
-				LeechCraft::Util::DBLock::DumpError (query);
-				return;
-			}
-		}
+		return FormsNever_->Select (sph::count, sph::f<&FormsNever::URL_> == url);
 	}
 }
 }

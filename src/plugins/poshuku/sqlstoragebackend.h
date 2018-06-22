@@ -46,75 +46,15 @@ namespace Poshuku
 		QSqlDatabase DB_;
 		const Util::DefaultScopeGuard DBGuard_;
 
-				/** Returns:
-					* - title
-					* - date
-					* - url
-					*/
-		mutable QSqlQuery HistoryLoader_,
-				/** Binds:
-					* - titlebase
-					* - urlbase
-					*
-					* Returns:
-					* - title
-					* - url
-					*/
-				HistoryRatedLoader_,
-				/** Binds:
-					* - date
-					* - title
-					* - url
-					*/
-				HistoryAdder_,
-				/** Binds:
-					* - age
-					*/
-				HistoryEraser_,
-				/** Binds:
-					* - items
-					*/
-				HistoryTruncater_,
-				/** Returns:
-					* - title
-					* - url
-					* - tags
-					*/
-				FavoritesLoader_,
-				/** Binds:
-					* - title
-					* - url
-					* - tags
-					*/
-				FavoritesAdder_,
-				/** Binds:
-					* - title
-					* - url
-					* - tags
-					*/
-				FavoritesUpdater_,
-				/** Binds:
-					* - url
-					*/
-				FavoritesRemover_,
-				/** Binds:
-					* - url
-					*/
-				FormsIgnoreSetter_,
-				/** Binds:
-					* - url
-					*/
-				FormsIgnoreGetter_,
-				/** Binds:
-					* - url
-					*/
-				FormsIgnoreClearer_;
-
+		mutable QSqlQuery HistoryRatedLoader_;
+	public:
 		struct History;
 		struct Favorites;
-
+		struct FormsNever;
+	private:
 		Util::oral::ObjectInfo_ptr<History> History_;
 		Util::oral::ObjectInfo_ptr<Favorites> Favorites_;
+		Util::oral::ObjectInfo_ptr<FormsNever> FormsNever_;
 	public:
 		SQLStorageBackend (Type);
 
@@ -131,8 +71,6 @@ namespace Poshuku
 		void UpdateFavorites (const FavoritesModel::FavoritesItem&) override;
 		void SetFormsIgnored (const QString&, bool) override;
 		bool GetFormsIgnored (const QString&) const override;
-	private:
-		void InitializeTables ();
 	};
 }
 }
