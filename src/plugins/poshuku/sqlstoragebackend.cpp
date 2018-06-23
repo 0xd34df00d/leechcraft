@@ -197,8 +197,6 @@ namespace Poshuku
 		{
 			auto xsm = XmlSettingsManager::Instance ();
 			QSqlQuery pragma (DB_);
-			if (!pragma.exec (QString ("PRAGMA synchronous = %1;").arg (xsm->property ("SQLiteSynchronous").toString ())))
-				Util::DBLock::DumpError (pragma);
 			if (!pragma.exec (QString ("PRAGMA temp_store = %1;").arg (xsm->property ("SQLiteTempStore").toString ())))
 				Util::DBLock::DumpError (pragma);
 		}
