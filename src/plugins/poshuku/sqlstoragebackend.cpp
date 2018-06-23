@@ -267,7 +267,7 @@ namespace Poshuku
 
 	void SQLStorageBackend::AddToHistory (const HistoryItem& item)
 	{
-		History_->Insert (History::FromHistoryItem (item));
+		History_->Insert (History::FromHistoryItem (item), oral::InsertAction::Replace::PKey<History>);
 		emit added (item);
 	}
 
