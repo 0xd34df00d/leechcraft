@@ -117,13 +117,10 @@ namespace oral
 		}
 
 		template<typename Seq, int Idx>
-		struct GetFieldName
+		QString GetFieldName ()
 		{
-			static QString value ()
-			{
-				return MorphFieldName<Seq> (boost::fusion::extension::struct_member_name<Seq, Idx>::call ());
-			}
-		};
+			return MorphFieldName<Seq> (boost::fusion::extension::struct_member_name<Seq, Idx>::call ());
+		}
 
 		template<typename S>
 		constexpr auto SeqSize = boost::fusion::result_of::size<S>::type::value;
@@ -142,14 +139,14 @@ namespace oral
 			template<size_t... Vals>
 			QStringList Run (std::index_sequence<Vals...>) const
 			{
-				return { GetFieldName<S, Vals>::value ()... };
+				return { GetFieldName<S, Vals> ()... };
 			}
 		};
 
 		template<typename Seq, int Idx>
 		struct GetBoundName
 		{
-			static QString value () { return ':' + Seq::ClassName () + "_" + GetFieldName<Seq, Idx>::value (); }
+			static QString value () { return ':' + Seq::ClassName () + "_" + GetFieldName<Seq, Idx> (); }
 		};
 
 		template<typename S>
@@ -194,7 +191,7 @@ namespace oral
 		template<typename Seq, auto Ptr>
 		QString GetFieldNamePtr ()
 		{
-			return GetFieldName<Seq, FieldIndex<Ptr> ()>::value ();
+			return GetFieldName<Seq, FieldIndex<Ptr> ()> ();
 		}
 	}
 
@@ -708,7 +705,7 @@ namespace oral
 			QString ToSql (ToSqlState<T>&) const
 			{
 				static_assert (Idx < boost::fusion::result_of::size<T>::type::value, "Index out of bounds.");
-				return detail::GetFieldName<T, Idx>::value ();
+				return detail::GetFieldName<T, Idx> ();
 			}
 
 			template<typename>
@@ -1450,7 +1447,7 @@ namespace oral
 	InsertAction::Replace::PKeyType<Seq>::operator InsertAction::Replace () const
 	{
 		static_assert (detail::HasPKey<Seq>, "Sequence does not have any primary keys");
-		return { { detail::GetFieldName<Seq, detail::FindPKey<Seq>::result_type::value>::value () } };
+		return { { detail::GetFieldName<Seq, detail::FindPKey<Seq>::result_type::value> () } };
 	}
 
 	template<typename T>
