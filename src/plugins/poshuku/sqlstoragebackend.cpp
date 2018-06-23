@@ -193,14 +193,6 @@ namespace Poshuku
 
 	void SQLStorageBackend::Prepare ()
 	{
-		if (Type_ == SBSQLite)
-		{
-			auto xsm = XmlSettingsManager::Instance ();
-			QSqlQuery pragma (DB_);
-			if (!pragma.exec (QString ("PRAGMA temp_store = %1;").arg (xsm->property ("SQLiteTempStore").toString ())))
-				Util::DBLock::DumpError (pragma);
-		}
-
 		HistoryRatedLoader_ = QSqlQuery (DB_);
 		switch (Type_)
 		{
