@@ -806,7 +806,7 @@ namespace oral
 		}
 
 		template<typename L, typename R>
-		using EnableRelOp_t = std::enable_if_t<AnyOf<IsExprTree, L, R>>;
+		using EnableRelOp_t = std::enable_if_t<static_cast<bool> (IsExprTree<L> {} + IsExprTree<R> {})>;
 
 		template<typename L, typename R>
 		constexpr auto AllTrees_v = AllOf<IsExprTree, L, R>;
