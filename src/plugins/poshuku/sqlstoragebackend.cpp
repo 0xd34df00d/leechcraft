@@ -182,6 +182,9 @@ namespace Poshuku
 					.arg (DB_.lastError ().text ()).toUtf8 ().constData ());
 		}
 
+		if (type == SBSQLite)
+			Util::RunTextQuery (DB_, "PRAGMA journal_model = WAL;");
+
 		auto adaptedPtrs = std::tie (History_, Favorites_, FormsNever_);
 		Type_ == SBSQLite ?
 				oral::AdaptPtrs<oral::SQLiteImplFactory> (DB_, adaptedPtrs) :
@@ -194,8 +197,6 @@ namespace Poshuku
 		{
 			auto xsm = XmlSettingsManager::Instance ();
 			QSqlQuery pragma (DB_);
-			if (!pragma.exec (QString ("PRAGMA journal_mode = %1;").arg (xsm->property ("SQLiteJournalMode").toString ())))
-				Util::DBLock::DumpError (pragma);
 			if (!pragma.exec (QString ("PRAGMA synchronous = %1;").arg (xsm->property ("SQLiteSynchronous").toString ())))
 				Util::DBLock::DumpError (pragma);
 			if (!pragma.exec (QString ("PRAGMA temp_store = %1;").arg (xsm->property ("SQLiteTempStore").toString ())))
