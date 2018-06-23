@@ -108,19 +108,7 @@ namespace Aggregator
 	{
 		if (Type_ == SBSQLite)
 		{
-			QSqlQuery pragma (DB_);
-			if (!pragma.exec (QString ("PRAGMA journal_mode = %1;")
-						.arg (XmlSettingsManager::Instance ()->
-							property ("SQLiteJournalMode").toString ())))
-				Util::DBLock::DumpError (pragma);
-			if (!pragma.exec (QString ("PRAGMA synchronous = %1;")
-						.arg (XmlSettingsManager::Instance ()->
-							property ("SQLiteSynchronous").toString ())))
-				Util::DBLock::DumpError (pragma);
-			if (!pragma.exec (QString ("PRAGMA temp_store = %1;")
-						.arg (XmlSettingsManager::Instance ()->
-							property ("SQLiteTempStore").toString ())))
-				Util::DBLock::DumpError (pragma);
+			Util::RunTextQuery (DB_, "PRAGMA journal_mode = WAL;");
 			Util::RunTextQuery (DB_, "PRAGMA foreign_keys = ON;");
 		}
 
