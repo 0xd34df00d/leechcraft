@@ -913,8 +913,12 @@ namespace oral
 			Count
 		};
 
-		template<AggregateFunction>
+		template<AggregateFunction, auto Ptr>
 		struct AggregateType {};
+
+		struct CountAll {};
+
+		inline constexpr CountAll *CountAllPtr = nullptr;
 
 		template<typename... MemberDirectionList>
 		struct OrderBy {};
@@ -943,7 +947,8 @@ namespace oral
 		template<auto... Ptrs>
 		struct desc {};
 
-		constexpr detail::AggregateType<detail::AggregateFunction::Count> count {};
+		template<auto Ptr = detail::CountAllPtr>
+		constexpr detail::AggregateType<detail::AggregateFunction::Count, Ptr> count {};
 	};
 
 	template<typename... Orders>
@@ -1224,16 +1229,14 @@ namespace oral
 				};
 			}
 
-			template<AggregateFunction Fun>
-			auto HandleSelector (AggregateType<Fun>) const
+			auto HandleSelector (AggregateType<AggregateFunction::Count, CountAllPtr>) const
 			{
-				if constexpr (Fun == AggregateFunction::Count)
-					return std::tuple
-					{
-						QString { "count(1)" },
-						[] (const QSqlQuery& q) { return q.value (0).toLongLong (); },
-						[] (const QList<long long>& list) { return list.value (0); }
-					};
+				return std::tuple
+				{
+					QString { "count(1)" },
+					[] (const QSqlQuery& q) { return q.value (0).toLongLong (); },
+					[] (const QList<long long>& list) { return list.value (0); }
+				};
 			}
 
 			QString HandleOrder (OrderNone) const

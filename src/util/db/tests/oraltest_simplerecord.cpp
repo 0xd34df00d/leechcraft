@@ -200,14 +200,14 @@ namespace Util
 	void OralTest_SimpleRecord::testSimpleRecordInsertSelectCount ()
 	{
 		auto adapted = PrepareRecords<SimpleRecord> (MakeDatabase ());
-		const auto count = adapted->Select (sph::count);
+		const auto count = adapted->Select (sph::count<>);
 		QCOMPARE (count, 3);
 	}
 
 	void OralTest_SimpleRecord::testSimpleRecordInsertSelectCountByFields ()
 	{
 		auto adapted = PrepareRecords<SimpleRecord> (MakeDatabase ());
-		const auto count = adapted->Select (sph::count, sph::f<&SimpleRecord::ID_> < 2);
+		const auto count = adapted->Select (sph::count<>, sph::f<&SimpleRecord::ID_> < 2);
 		QCOMPARE (count, 2);
 	}
 
