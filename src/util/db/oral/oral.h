@@ -143,12 +143,6 @@ namespace oral
 			}
 		};
 
-		template<typename Seq, int Idx>
-		struct GetBoundName
-		{
-			static QString value () { return ':' + Seq::ClassName () + "_" + GetFieldName<Seq, Idx> (); }
-		};
-
 		template<typename S>
 		struct AddressOf
 		{
