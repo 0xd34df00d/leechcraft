@@ -190,6 +190,12 @@ namespace oral
 				return FieldIndex<Ptr, Idx + 1> ();
 			}
 		}
+
+		template<typename Seq, auto Ptr>
+		QString GetFieldNamePtr ()
+		{
+			return GetFieldName<Seq, FieldIndex<Ptr> ()>::value ();
+		}
 	}
 
 	template<typename ImplFactory, typename T, typename = void>
@@ -240,9 +246,8 @@ namespace oral
 		QString operator() () const
 		{
 			using Seq = MemberPtrStruct_t<Ptr>;
-			constexpr auto idx = detail::FieldIndex<Ptr> ();
 			return Type2Name<ImplFactory, ReferencesValue_t<Ptr>> () () +
-					" REFERENCES " + Seq::ClassName () + " (" + detail::GetFieldName<Seq, idx>::value () + ") ON DELETE CASCADE";
+					" REFERENCES " + Seq::ClassName () + " (" + detail::GetFieldNamePtr<Seq, Ptr> () + ") ON DELETE CASCADE";
 		}
 	};
 
@@ -731,9 +736,7 @@ namespace oral
 
 			QString GetFieldName () const
 			{
-				using Seq = MemberPtrStruct_t<Ptr>;
-				constexpr auto idx = FieldIndex<Ptr> ();
-				return detail::GetFieldName<Seq, idx>::value ();
+				return detail::GetFieldNamePtr<MemberPtrStruct_t<Ptr>, Ptr> ();
 			}
 
 			template<typename T>
@@ -1250,13 +1253,13 @@ namespace oral
 			template<auto... Ptrs>
 			QList<QString> HandleSuborder (sph::asc<Ptrs...>) const
 			{
-				return { (BuildCachedFieldsData<T> ().Fields_.value (FieldIndex<Ptrs> ()) + " ASC")... };
+				return { (GetFieldNamePtr<T, Ptrs> () + " ASC")... };
 			}
 
 			template<auto... Ptrs>
 			QList<QString> HandleSuborder (sph::desc<Ptrs...>) const
 			{
-				return { (BuildCachedFieldsData<T> ().Fields_.value (FieldIndex<Ptrs> ()) + " DESC")... };
+				return { (GetFieldNamePtr<T, Ptrs> () + " DESC")... };
 			}
 
 			template<typename... Suborders>
