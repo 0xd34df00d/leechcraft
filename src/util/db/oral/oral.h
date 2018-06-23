@@ -879,6 +879,15 @@ namespace oral
 				return AsLeafData (left) && AsLeafData (right);
 		}
 
+		template<typename L, typename R, typename = EnableRelOp_t<L, R>>
+		auto operator|| (const L& left, const R& right)
+		{
+			if constexpr (AllTrees_v<L, R>)
+				return MakeExprTree<ExprType::Or> (left, right);
+			else
+				return AsLeafData (left) || AsLeafData (right);
+		}
+
 		template<typename>
 		auto HandleExprTree (const ExprTree<ExprType::ConstTrue>&, int lastId = 0)
 		{
