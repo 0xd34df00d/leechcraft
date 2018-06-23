@@ -90,5 +90,9 @@ RUN git clone https://github.com/0xd34df00d/leechcraft.git && \
 		-DENABLE_VROOBY=True \
 		-DENABLE_ELEEMINATOR=True \
 		-DENABLE_XPROXY=True \
-		-DENABLE_FONTIAC=True && \
+		-DENABLE_FONTIAC=True \
+		-DENABLE_AZOTH_MUCOMMANDS_TESTS=True \
+		-DENABLE_POSHUKU_DCAC_TESTS=True \
+		-DENABLE_UTIL_TESTS=True \
+		&& \
 	make -j$(nproc) -k
