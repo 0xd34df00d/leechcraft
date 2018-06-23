@@ -139,31 +139,6 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tab_5">
-      <attribute name="title">
-       <string>Appreciations</string>
-      </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_6">
-       <property name="margin">
-        <number>3</number>
-       </property>
-       <item>
-        <widget class="QTextBrowser" name="textBrowser_4">
-         <property name="html">
-          <string notr="true">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Droid Sans'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'DejaVu Sans';&quot;&gt;Egor Shkorov aka Spo1ler for a couple of patches.&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'DejaVu Sans';&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'DejaVu Sans';&quot;&gt;Alexander Ermolov aka Ronin, Oleg Tsarev aka Zabivator and all the inhabitants of &lt;/span&gt;&lt;a href=&quot;xmpp:c_plus_plus@conference.jabber.ru&quot;&gt;&lt;span style=&quot; font-family:'DejaVu Sans'; text-decoration: underline; color:#154071;&quot;&gt;c_plus_plus@conference.jabber.ru&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:'DejaVu Sans';&quot;&gt; for countless discussions, ideas and such.&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'DejaVu Sans';&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'DejaVu Sans';&quot;&gt;Rasterbar's Libtorrent for their great library, and especially Arvid Norberg for discussions, help and implementations of some of my ideas.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
      <widget class="QWidget" name="tab_7">
       <attribute name="title">
        <string>Licensing</string>
