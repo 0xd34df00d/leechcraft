@@ -574,7 +574,6 @@ namespace Aggregator
 							GetItemsForTag_;
 	public:
 		SQLStorageBackend (Type, const QString&);
-		~SQLStorageBackend ();
 
 		void Prepare () override;
 

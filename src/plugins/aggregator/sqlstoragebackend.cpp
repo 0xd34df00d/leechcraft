@@ -104,16 +104,6 @@ namespace Aggregator
 		DBRemover_ = Util::MakeScopeGuard ([conn = DB_.connectionName ()] { QSqlDatabase::removeDatabase (conn); });
 	}
 
-	SQLStorageBackend::~SQLStorageBackend ()
-	{
-		if (Type_ == SBSQLite &&
-				XmlSettingsManager::Instance ()->property ("SQLiteVacuum").toBool ())
-		{
-			QSqlQuery vacuum (DB_);
-			vacuum.exec ("VACUUM;");
-		}
-	}
-
 	void SQLStorageBackend::Prepare ()
 	{
 		if (Type_ == SBSQLite)
