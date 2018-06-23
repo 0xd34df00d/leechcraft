@@ -121,12 +121,7 @@ namespace Aggregator
 						.arg (XmlSettingsManager::Instance ()->
 							property ("SQLiteTempStore").toString ())))
 				Util::DBLock::DumpError (pragma);
-			if (!pragma.exec ("PRAGMA foreign_keys = ON;"))
-			{
-				Util::DBLock::DumpError (pragma);
-				qWarning () << Q_FUNC_INFO
-						<< "unable to enable foreign keys, DB work may be incorrect";
-			}
+			Util::RunTextQuery (DB_, "PRAGMA foreign_keys = ON;");
 		}
 
 		FeedFinderByURL_ = QSqlQuery (DB_);
