@@ -106,12 +106,7 @@ namespace SeekThru
 		case RoleContact:
 			return d.Contact_;
 		case RoleTags:
-		{
-			QStringList result;
-			Q_FOREACH (QString tag, d.Tags_)
-				result << Proxy_->GetTagsManager ()->GetTag (tag);
-			return result;
-		}
+			return Proxy_->GetTagsManager ()->GetTags (d.Tags_);
 		case RoleLongName:
 			return d.LongName_;
 		case RoleDeveloper:
