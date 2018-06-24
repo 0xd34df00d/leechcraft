@@ -104,40 +104,40 @@ namespace CleanWeb
 
 		switch (index.column ())
 		{
-			case 0:
-				return QString::fromUtf8 (item->PlainMatcher_);
-			case 1:
-				return isException ?
-					tr ("Allowed") :
-					tr ("Blocked");
-			case 2:
-				switch (item->Option_.MatchType_)
-				{
-					case FilterOption::MTWildcard:
-					case FilterOption::MTPlain:
-					case FilterOption::MTBegin:
-					case FilterOption::MTEnd:
-						return tr ("Wildcard");
-					case FilterOption::MTRegexp:
-						return tr ("Regexp");
-				}
-			case 3:
-				return item->Option_.Case_ == Qt::CaseSensitive ?
-					tr ("True") :
-					tr ("False");
-			case 4:
-				{
-					const auto& options = item->Option_;
+		case 0:
+			return QString::fromUtf8 (item->PlainMatcher_);
+		case 1:
+			return isException ?
+				tr ("Allowed") :
+				tr ("Blocked");
+		case 2:
+			switch (item->Option_.MatchType_)
+			{
+			case FilterOption::MWildcard:
+			case FilterOption::MTPlain:
+			case FilterOption::MTBegin:
+			case FilterOption::MTEnd:
+				return tr ("Wildcard");
+			case FilterOption::MTRegexp:
+				return tr ("Regexp");
+			}
+		case 3:
+			return item->Option_.Case_ == Qt::CaseSensitive ?
+				tr ("True") :
+				tr ("False");
+		case 4:
+		{
+			const auto& options = item->Option_;
 
-					QStringList result;
-					for (const auto& domain : options.Domains_)
-						result += "+" + domain;
-					for (const auto& domain : options.NotDomains_)
-						result += "-" + domain;
-					return result.join ("; ");
-				}
-			default:
-				return QVariant ();
+			QStringList result;
+			for (const auto& domain : options.Domains_)
+				result += "+" + domain;
+			for (const auto& domain : options.NotDomains_)
+				result += "-" + domain;
+			return result.join ("; ");
+		}
+		default:
+			return QVariant ();
 		}
 	}
 
