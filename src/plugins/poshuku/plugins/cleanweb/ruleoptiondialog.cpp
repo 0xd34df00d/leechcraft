@@ -92,15 +92,15 @@ namespace CleanWeb
 	FilterOption::MatchType RuleOptionDialog::GetType () const
 	{
 		return Ui_.Wildcard_->isChecked () ?
-			FilterOption::MTWildcard :
-			FilterOption::MTRegexp;
+			FilterOption::MatchType::Wildcard :
+			FilterOption::MatchType::Regexp;
 	}
 
 	void RuleOptionDialog::SetType (FilterOption::MatchType mt)
 	{
 		switch (mt)
 		{
-		case FilterOption::MTRegexp:
+		case FilterOption::MatchType::Regexp:
 			Ui_.Regexp_->setChecked (true);
 			break;
 		default:

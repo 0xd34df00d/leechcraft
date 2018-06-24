@@ -117,8 +117,7 @@ namespace Aggregator
 			auto tags = Core::Instance ().GetProxy ()->GetTagsManager ()->GetTags (i->Tags_);
 			tags.sort ();
 
-			QDomElement inserter;
-			inserter = LeechCraft::Util::GetElementForTags (tags,
+			auto inserter = Util::GetElementForTags (tags,
 					body, doc, "outline",
 					&TagGetter,
 					&TagSetter);

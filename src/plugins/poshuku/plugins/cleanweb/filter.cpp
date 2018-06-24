@@ -129,7 +129,7 @@ namespace CleanWeb
 		QDebugStateSaver saver { dbg };
 		dbg.nospace () << "FilterOption { "
 				<< "CS: " << (option.Case_ == Qt::CaseSensitive) << "; "
-				<< "match type: " << option.MatchType_ << "; "
+				<< "match type: " << static_cast<int> (option.MatchType_) << "; "
 				<< "match objects: " << option.MatchObjects_ << "; "
 				<< "domains: " << option.Domains_ << "; "
 				<< "!domains: " << option.NotDomains_ << "; "

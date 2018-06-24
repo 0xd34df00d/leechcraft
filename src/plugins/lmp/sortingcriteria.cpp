@@ -68,7 +68,7 @@ namespace LMP
 		{
 			const auto val = critVar.value<quint8> ();
 			for (auto crit : GetAllCriteria ())
-				if (static_cast<decltype (val)> (crit) == val)
+				if (static_cast<quint8> (crit) == val)
 				{
 					result << crit;
 					break;
