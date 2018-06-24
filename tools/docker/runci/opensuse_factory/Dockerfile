@@ -95,4 +95,4 @@ RUN git clone https://github.com/0xd34df00d/leechcraft.git && \
 		-DENABLE_POSHUKU_DCAC_TESTS=True \
 		-DENABLE_UTIL_TESTS=True \
 		&& \
-	make -j$(nproc) -k
+	GCC_COLORS= make -j$(nproc) -k
