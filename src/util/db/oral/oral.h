@@ -1239,6 +1239,17 @@ namespace oral
 				};
 			}
 
+			template<auto Ptr>
+			auto HandleSelector (AggregateType<AggregateFunction::Count, Ptr>) const
+			{
+				return std::tuple
+				{
+					"count(" + GetFieldNamePtr<T, Ptr> () + ")",
+					[] (const QSqlQuery& q) { return q.value (0).toLongLong (); },
+					[] (const QList<long long>& list) { return list.value (0); }
+				};
+			}
+
 			QString HandleOrder (OrderNone) const
 			{
 				return {};
