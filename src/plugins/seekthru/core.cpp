@@ -116,13 +116,13 @@ namespace SeekThru
 		case RoleRight:
 			switch (d.Right_)
 			{
-			case Description::SROpen:
+			case Description::SyndicationRight::Open:
 				return tr ("Open");
-			case Description::SRLimited:
+			case Description::SyndicationRight::Limited:
 				return tr ("Limited");
-			case Description::SRPrivate:
+			case Description::SyndicationRight::Private:
 				return tr ("Private");
-			case Description::SRClosed:
+			case Description::SyndicationRight::Closed:
 				return tr ("Closed");
 			}
 		default:
@@ -560,17 +560,17 @@ namespace SeekThru
 		if (!attributionTag.isNull ())
 			descr.Attribution_ = attributionTag.text ();
 
-		descr.Right_ = Description::SROpen;
+		descr.Right_ = Description::SyndicationRight::Open;
 		QDomElement syndicationRightTag = root.firstChildElement ("SyndicationRight");
 		if (!syndicationRightTag.isNull ())
 		{
 			QString sr = syndicationRightTag.text ();
 			if (sr == "limited")
-				descr.Right_ = Description::SRLimited;
+				descr.Right_ = Description::SyndicationRight::Limited;
 			else if (sr == "private")
-				descr.Right_ = Description::SRPrivate;
+				descr.Right_ = Description::SyndicationRight::Private;
 			else if (sr == "closed")
-				descr.Right_ = Description::SRClosed;
+				descr.Right_ = Description::SyndicationRight::Closed;
 		}
 
 		descr.Adult_ = false;
