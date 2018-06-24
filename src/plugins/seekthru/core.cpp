@@ -93,48 +93,45 @@ namespace SeekThru
 		if (!index.isValid ())
 			return QVariant ();
 
+		if (index.column ())
+			return {};
+
 		Description d = Descriptions_.at (index.row ());
-		switch (index.column ())
+		switch (role)
 		{
-			case 0:
-				switch (role)
-				{
-					case Qt::DisplayRole:
-						return d.ShortName_;
-					case RoleDescription:
-						return d.Description_;
-					case RoleContact:
-						return d.Contact_;
-					case RoleTags:
-						{
-							QStringList result;
-							Q_FOREACH (QString tag, d.Tags_)
-								result << Proxy_->GetTagsManager ()->GetTag (tag);
-							return result;
-						}
-					case RoleLongName:
-						return d.LongName_;
-					case RoleDeveloper:
-						return d.Developer_;
-					case RoleAttribution:
-						return d.Attribution_;
-					case RoleRight:
-						switch (d.Right_)
-						{
-							case Description::SROpen:
-								return tr ("Open");
-							case Description::SRLimited:
-								return tr ("Limited");
-							case Description::SRPrivate:
-								return tr ("Private");
-							case Description::SRClosed:
-								return tr ("Closed");
-						}
-					default:
-						return QVariant ();
-				}
-			default:
-				return QVariant ();
+		case Qt::DisplayRole:
+			return d.ShortName_;
+		case RoleDescription:
+			return d.Description_;
+		case RoleContact:
+			return d.Contact_;
+		case RoleTags:
+		{
+			QStringList result;
+			Q_FOREACH (QString tag, d.Tags_)
+				result << Proxy_->GetTagsManager ()->GetTag (tag);
+			return result;
+		}
+		case RoleLongName:
+			return d.LongName_;
+		case RoleDeveloper:
+			return d.Developer_;
+		case RoleAttribution:
+			return d.Attribution_;
+		case RoleRight:
+			switch (d.Right_)
+			{
+			case Description::SROpen:
+				return tr ("Open");
+			case Description::SRLimited:
+				return tr ("Limited");
+			case Description::SRPrivate:
+				return tr ("Private");
+			case Description::SRClosed:
+				return tr ("Closed");
+			}
+		default:
+			return {};
 		}
 	}
 
