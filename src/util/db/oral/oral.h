@@ -910,7 +910,9 @@ namespace oral
 
 		enum class AggregateFunction
 		{
-			Count
+			Count,
+			Min,
+			Max
 		};
 
 		template<AggregateFunction, auto Ptr>
@@ -949,6 +951,12 @@ namespace oral
 
 		template<auto Ptr = detail::CountAllPtr>
 		constexpr detail::AggregateType<detail::AggregateFunction::Count, Ptr> count {};
+
+		template<auto Ptr>
+		constexpr detail::AggregateType<detail::AggregateFunction::Min, Ptr> min {};
+
+		template<auto Ptr>
+		constexpr detail::AggregateType<detail::AggregateFunction::Max, Ptr> max {};
 	};
 
 	template<typename... Orders>
@@ -986,6 +994,12 @@ namespace oral
 				else
 					return std::tuple { FromVariant<UnwrapIndirect_t<MemberPtrType_t<Ptrs>>> {} (q.value (Idxs))... };
 			};
+		}
+
+		template<auto Ptr>
+		auto MakeIndexedQueryHandler ()
+		{
+			return [] (const QSqlQuery& q) { return FromVariant<UnwrapIndirect_t<MemberPtrType_t<Ptr>>> {} (q.value (0)); };
 		}
 
 		template<auto... Ptrs>
@@ -1247,6 +1261,28 @@ namespace oral
 					"count(" + GetFieldNamePtr<T, Ptr> () + ")",
 					[] (const QSqlQuery& q) { return q.value (0).toLongLong (); },
 					[] (const QList<long long>& list) { return list.value (0); }
+				};
+			}
+
+			template<auto Ptr>
+			auto HandleSelector (AggregateType<AggregateFunction::Min, Ptr>) const
+			{
+				return std::tuple
+				{
+					"min(" + GetFieldNamePtr<T, Ptr> () + ")",
+					MakeIndexedQueryHandler<Ptr> (),
+					[] (const auto& list) { return list.value (0); }
+				};
+			}
+
+			template<auto Ptr>
+			auto HandleSelector (AggregateType<AggregateFunction::Max, Ptr>) const
+			{
+				return std::tuple
+				{
+					"max(" + GetFieldNamePtr<T, Ptr> () + ")",
+					MakeIndexedQueryHandler<Ptr> (),
+					[] (const auto& list) { return list.value (0); }
 				};
 			}
 
