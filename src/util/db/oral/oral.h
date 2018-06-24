@@ -977,7 +977,7 @@ namespace oral
 	namespace detail
 	{
 		template<auto... Ptrs, size_t... Idxs>
-		auto MakeIndexedQueryHandler (detail::MemberPtrs<Ptrs...>, std::index_sequence<Idxs...>)
+		auto MakeIndexedQueryHandler (MemberPtrs<Ptrs...>, std::index_sequence<Idxs...>)
 		{
 			return [] (const QSqlQuery& q)
 			{
