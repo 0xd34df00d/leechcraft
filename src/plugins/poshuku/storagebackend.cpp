@@ -61,9 +61,7 @@ namespace Poshuku
 			throw std::runtime_error (qPrintable (QString ("Unknown storage type %1")
 						.arg (strType)));
 
-		const auto& sb = Create (type);
-		sb->Prepare ();
-		return sb;
+		return Create (type);
 	}
 }
 }

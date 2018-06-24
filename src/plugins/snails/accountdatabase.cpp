@@ -152,14 +152,14 @@ namespace Snails
 
 	int AccountDatabase::GetMessageCount (const QStringList& folder)
 	{
-		return Msg2Folder_->Select (sph::count,
+		return Msg2Folder_->Select (sph::count<>,
 				sph::f<&Folder::FolderPath_> == folder.join ("/") &&
 				sph::f<&Folder::Id_> == sph::f<&Msg2Folder::FolderId_>);
 	}
 
 	int AccountDatabase::GetUnreadMessageCount (const QStringList& folder)
 	{
-		return Msg2Folder_->Select (sph::count,
+		return Msg2Folder_->Select (sph::count<>,
 				sph::f<&Folder::FolderPath_> == folder.join ("/") &&
 				sph::f<&Folder::Id_> == sph::f<&Msg2Folder::FolderId_> &&
 				sph::f<&Message::Id_> == sph::f<&Msg2Folder::MsgId_> &&
@@ -168,7 +168,7 @@ namespace Snails
 
 	int AccountDatabase::GetMessageCount ()
 	{
-		return Messages_->Select (sph::count);
+		return Messages_->Select (sph::count<>);
 	}
 
 	boost::optional<int> AccountDatabase::GetMsgTableId (const QByteArray& uniqueId)

@@ -117,13 +117,10 @@ namespace oral
 		}
 
 		template<typename Seq, int Idx>
-		struct GetFieldName
+		QString GetFieldName ()
 		{
-			static QString value ()
-			{
-				return MorphFieldName<Seq> (boost::fusion::extension::struct_member_name<Seq, Idx>::call ());
-			}
-		};
+			return MorphFieldName<Seq> (boost::fusion::extension::struct_member_name<Seq, Idx>::call ());
+		}
 
 		template<typename S>
 		constexpr auto SeqSize = boost::fusion::result_of::size<S>::type::value;
@@ -142,14 +139,8 @@ namespace oral
 			template<size_t... Vals>
 			QStringList Run (std::index_sequence<Vals...>) const
 			{
-				return { GetFieldName<S, Vals>::value ()... };
+				return { GetFieldName<S, Vals> ()... };
 			}
-		};
-
-		template<typename Seq, int Idx>
-		struct GetBoundName
-		{
-			static QString value () { return ':' + Seq::ClassName () + "_" + GetFieldName<Seq, Idx>::value (); }
 		};
 
 		template<typename S>
@@ -189,6 +180,12 @@ namespace oral
 
 				return FieldIndex<Ptr, Idx + 1> ();
 			}
+		}
+
+		template<typename Seq, auto Ptr>
+		QString GetFieldNamePtr ()
+		{
+			return GetFieldName<Seq, FieldIndex<Ptr> ()> ();
 		}
 	}
 
@@ -240,9 +237,8 @@ namespace oral
 		QString operator() () const
 		{
 			using Seq = MemberPtrStruct_t<Ptr>;
-			constexpr auto idx = detail::FieldIndex<Ptr> ();
 			return Type2Name<ImplFactory, ReferencesValue_t<Ptr>> () () +
-					" REFERENCES " + Seq::ClassName () + " (" + detail::GetFieldName<Seq, idx>::value () + ") ON DELETE CASCADE";
+					" REFERENCES " + Seq::ClassName () + " (" + detail::GetFieldNamePtr<Seq, Ptr> () + ") ON DELETE CASCADE";
 		}
 	};
 
@@ -703,7 +699,7 @@ namespace oral
 			QString ToSql (ToSqlState<T>&) const
 			{
 				static_assert (Idx < boost::fusion::result_of::size<T>::type::value, "Index out of bounds.");
-				return detail::GetFieldName<T, Idx>::value ();
+				return detail::GetFieldName<T, Idx> ();
 			}
 
 			template<typename>
@@ -731,9 +727,7 @@ namespace oral
 
 			QString GetFieldName () const
 			{
-				using Seq = MemberPtrStruct_t<Ptr>;
-				constexpr auto idx = FieldIndex<Ptr> ();
-				return detail::GetFieldName<Seq, idx>::value ();
+				return detail::GetFieldNamePtr<MemberPtrStruct_t<Ptr>, Ptr> ();
 			}
 
 			template<typename T>
@@ -806,7 +800,7 @@ namespace oral
 		}
 
 		template<typename L, typename R>
-		using EnableRelOp_t = std::enable_if_t<AnyOf<IsExprTree, L, R>>;
+		using EnableRelOp_t = std::enable_if_t<static_cast<bool> (IsExprTree<L> {} + IsExprTree<R> {})>;
 
 		template<typename L, typename R>
 		constexpr auto AllTrees_v = AllOf<IsExprTree, L, R>;
@@ -879,6 +873,15 @@ namespace oral
 				return AsLeafData (left) && AsLeafData (right);
 		}
 
+		template<typename L, typename R, typename = EnableRelOp_t<L, R>>
+		auto operator|| (const L& left, const R& right)
+		{
+			if constexpr (AllTrees_v<L, R>)
+				return MakeExprTree<ExprType::Or> (left, right);
+			else
+				return AsLeafData (left) || AsLeafData (right);
+		}
+
 		template<typename>
 		auto HandleExprTree (const ExprTree<ExprType::ConstTrue>&, int lastId = 0)
 		{
@@ -907,11 +910,17 @@ namespace oral
 
 		enum class AggregateFunction
 		{
-			Count
+			Count,
+			Min,
+			Max
 		};
 
-		template<AggregateFunction>
+		template<AggregateFunction, auto Ptr>
 		struct AggregateType {};
+
+		struct CountAll {};
+
+		inline constexpr CountAll *CountAllPtr = nullptr;
 
 		template<typename... MemberDirectionList>
 		struct OrderBy {};
@@ -940,7 +949,14 @@ namespace oral
 		template<auto... Ptrs>
 		struct desc {};
 
-		constexpr detail::AggregateType<detail::AggregateFunction::Count> count {};
+		template<auto Ptr = detail::CountAllPtr>
+		constexpr detail::AggregateType<detail::AggregateFunction::Count, Ptr> count {};
+
+		template<auto Ptr>
+		constexpr detail::AggregateType<detail::AggregateFunction::Min, Ptr> min {};
+
+		template<auto Ptr>
+		constexpr detail::AggregateType<detail::AggregateFunction::Max, Ptr> max {};
 	};
 
 	template<typename... Orders>
@@ -969,7 +985,7 @@ namespace oral
 	namespace detail
 	{
 		template<auto... Ptrs, size_t... Idxs>
-		auto MakeIndexedQueryHandler (detail::MemberPtrs<Ptrs...>, std::index_sequence<Idxs...>)
+		auto MakeIndexedQueryHandler (MemberPtrs<Ptrs...>, std::index_sequence<Idxs...>)
 		{
 			return [] (const QSqlQuery& q)
 			{
@@ -978,6 +994,12 @@ namespace oral
 				else
 					return std::tuple { FromVariant<UnwrapIndirect_t<MemberPtrType_t<Ptrs>>> {} (q.value (Idxs))... };
 			};
+		}
+
+		template<auto Ptr>
+		auto MakeIndexedQueryHandler ()
+		{
+			return [] (const QSqlQuery& q) { return FromVariant<UnwrapIndirect_t<MemberPtrType_t<Ptr>>> {} (q.value (0)); };
 		}
 
 		template<auto... Ptrs>
@@ -1221,16 +1243,47 @@ namespace oral
 				};
 			}
 
-			template<AggregateFunction Fun>
-			auto HandleSelector (AggregateType<Fun>) const
+			auto HandleSelector (AggregateType<AggregateFunction::Count, CountAllPtr>) const
 			{
-				if constexpr (Fun == AggregateFunction::Count)
-					return std::tuple
-					{
-						QString { "count(1)" },
-						[] (const QSqlQuery& q) { return q.value (0).toLongLong (); },
-						[] (const QList<long long>& list) { return list.value (0); }
-					};
+				return std::tuple
+				{
+					QString { "count(1)" },
+					[] (const QSqlQuery& q) { return q.value (0).toLongLong (); },
+					[] (const QList<long long>& list) { return list.value (0); }
+				};
+			}
+
+			template<auto Ptr>
+			auto HandleSelector (AggregateType<AggregateFunction::Count, Ptr>) const
+			{
+				return std::tuple
+				{
+					"count(" + GetFieldNamePtr<T, Ptr> () + ")",
+					[] (const QSqlQuery& q) { return q.value (0).toLongLong (); },
+					[] (const QList<long long>& list) { return list.value (0); }
+				};
+			}
+
+			template<auto Ptr>
+			auto HandleSelector (AggregateType<AggregateFunction::Min, Ptr>) const
+			{
+				return std::tuple
+				{
+					"min(" + GetFieldNamePtr<T, Ptr> () + ")",
+					MakeIndexedQueryHandler<Ptr> (),
+					[] (const auto& list) { return list.value (0); }
+				};
+			}
+
+			template<auto Ptr>
+			auto HandleSelector (AggregateType<AggregateFunction::Max, Ptr>) const
+			{
+				return std::tuple
+				{
+					"max(" + GetFieldNamePtr<T, Ptr> () + ")",
+					MakeIndexedQueryHandler<Ptr> (),
+					[] (const auto& list) { return list.value (0); }
+				};
 			}
 
 			QString HandleOrder (OrderNone) const
@@ -1241,13 +1294,13 @@ namespace oral
 			template<auto... Ptrs>
 			QList<QString> HandleSuborder (sph::asc<Ptrs...>) const
 			{
-				return { (BuildCachedFieldsData<T> ().Fields_.value (FieldIndex<Ptrs> ()) + " ASC")... };
+				return { (GetFieldNamePtr<T, Ptrs> () + " ASC")... };
 			}
 
 			template<auto... Ptrs>
 			QList<QString> HandleSuborder (sph::desc<Ptrs...>) const
 			{
-				return { (BuildCachedFieldsData<T> ().Fields_.value (FieldIndex<Ptrs> ()) + " DESC")... };
+				return { (GetFieldNamePtr<T, Ptrs> () + " DESC")... };
 			}
 
 			template<typename... Suborders>
@@ -1438,7 +1491,7 @@ namespace oral
 	InsertAction::Replace::PKeyType<Seq>::operator InsertAction::Replace () const
 	{
 		static_assert (detail::HasPKey<Seq>, "Sequence does not have any primary keys");
-		return { { detail::GetFieldName<Seq, detail::FindPKey<Seq>::result_type::value>::value () } };
+		return { { detail::GetFieldName<Seq, detail::FindPKey<Seq>::result_type::value> () } };
 	}
 
 	template<typename T>

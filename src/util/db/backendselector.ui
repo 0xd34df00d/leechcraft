@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>188</height>
+    <height>228</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -40,103 +40,22 @@
      </property>
      <widget class="QWidget" name="SQLiteSettings_">
       <layout class="QVBoxLayout" name="verticalLayout_2">
-       <property name="margin">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
         <number>0</number>
        </property>
        <item>
-        <layout class="QFormLayout" name="formLayout">
-         <property name="fieldGrowthPolicy">
-          <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-         </property>
-         <item row="0" column="0">
-          <widget class="QLabel" name="label">
-           <property name="text">
-            <string>Journal mode:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QComboBox" name="SQLiteJournalMode_">
-           <item>
-            <property name="text">
-             <string notr="true">TRUNCATE</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string notr="true">DELETE</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string notr="true">PERSIST</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string notr="true">MEMORY</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string notr="true">OFF</string>
-            </property>
-           </item>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="label_2">
-           <property name="text">
-            <string>Temp store:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="QComboBox" name="SQLiteTempStore_">
-           <item>
-            <property name="text">
-             <string notr="true">MEMORY</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string notr="true">FILE</string>
-            </property>
-           </item>
-          </widget>
-         </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="label_3">
-           <property name="text">
-            <string>Synchronous:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1">
-          <widget class="QComboBox" name="SQLiteSynchronous_">
-           <item>
-            <property name="text">
-             <string notr="true">OFF</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string notr="true">NORMAL</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string notr="true">FULL</string>
-            </property>
-           </item>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <widget class="QCheckBox" name="SQLiteVacuum_">
+        <widget class="QLabel" name="label">
          <property name="text">
-          <string>VACUUM on exit</string>
+          <string>Yay, SQLite has no settings worth adjusting!</string>
          </property>
         </widget>
        </item>
@@ -160,7 +79,16 @@
        <property name="fieldGrowthPolicy">
         <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
        </property>
-       <property name="margin">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
         <number>0</number>
        </property>
        <item row="0" column="0">

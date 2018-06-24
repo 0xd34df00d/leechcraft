@@ -104,39 +104,12 @@ namespace Aggregator
 		DBRemover_ = Util::MakeScopeGuard ([conn = DB_.connectionName ()] { QSqlDatabase::removeDatabase (conn); });
 	}
 
-	SQLStorageBackend::~SQLStorageBackend ()
-	{
-		if (Type_ == SBSQLite &&
-				XmlSettingsManager::Instance ()->property ("SQLiteVacuum").toBool ())
-		{
-			QSqlQuery vacuum (DB_);
-			vacuum.exec ("VACUUM;");
-		}
-	}
-
 	void SQLStorageBackend::Prepare ()
 	{
 		if (Type_ == SBSQLite)
 		{
-			QSqlQuery pragma (DB_);
-			if (!pragma.exec (QString ("PRAGMA journal_mode = %1;")
-						.arg (XmlSettingsManager::Instance ()->
-							property ("SQLiteJournalMode").toString ())))
-				Util::DBLock::DumpError (pragma);
-			if (!pragma.exec (QString ("PRAGMA synchronous = %1;")
-						.arg (XmlSettingsManager::Instance ()->
-							property ("SQLiteSynchronous").toString ())))
-				Util::DBLock::DumpError (pragma);
-			if (!pragma.exec (QString ("PRAGMA temp_store = %1;")
-						.arg (XmlSettingsManager::Instance ()->
-							property ("SQLiteTempStore").toString ())))
-				Util::DBLock::DumpError (pragma);
-			if (!pragma.exec ("PRAGMA foreign_keys = ON;"))
-			{
-				Util::DBLock::DumpError (pragma);
-				qWarning () << Q_FUNC_INFO
-						<< "unable to enable foreign keys, DB work may be incorrect";
-			}
+			Util::RunTextQuery (DB_, "PRAGMA journal_mode = WAL;");
+			Util::RunTextQuery (DB_, "PRAGMA foreign_keys = ON;");
 		}
 
 		FeedFinderByURL_ = QSqlQuery (DB_);
