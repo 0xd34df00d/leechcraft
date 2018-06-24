@@ -96,7 +96,7 @@ namespace Aggregator
 		return s;
 	}
 
-	void DBUpdateThreadWorker::AddChannel (const Channel& channel, const Feed::FeedSettings& settings)
+	void DBUpdateThreadWorker::AddChannel (const Channel& channel)
 	{
 		SB_->AddChannel (channel);
 
@@ -222,7 +222,7 @@ namespace Aggregator
 			const auto& maybeOurChannel = SB_->GetChannel (ourChannelID);
 			if (!maybeOurChannel)
 			{
-				AddChannel (*channel, feedSettings);
+				AddChannel (*channel);
 				continue;
 			}
 
