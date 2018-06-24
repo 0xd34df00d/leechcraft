@@ -31,7 +31,6 @@
 
 #include "storagebackend.h"
 #include <QSqlDatabase>
-#include <QSqlQuery>
 #include <util/sll/util.h>
 #include <util/db/oral/oralfwd.h>
 
@@ -41,12 +40,8 @@ namespace Poshuku
 {
 	class SQLStorageBackend : public StorageBackend
 	{
-		const Type Type_;
-
 		QSqlDatabase DB_;
 		const Util::DefaultScopeGuard DBGuard_;
-
-		mutable QSqlQuery HistoryRatedLoader_;
 	public:
 		struct History;
 		struct Favorites;
@@ -57,8 +52,6 @@ namespace Poshuku
 		Util::oral::ObjectInfo_ptr<FormsNever> FormsNever_;
 	public:
 		SQLStorageBackend (Type);
-
-		void Prepare () override;
 
 		void LoadHistory (history_items_t&) const override;
 		void LoadResemblingHistory (const QString&,

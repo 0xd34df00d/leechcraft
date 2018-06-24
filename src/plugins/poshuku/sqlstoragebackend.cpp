@@ -139,11 +139,10 @@ namespace LeechCraft
 namespace Poshuku
 {
 	SQLStorageBackend::SQLStorageBackend (StorageBackend::Type type)
-	: Type_ { type }
-	, DBGuard_ { Util::MakeScopeGuard ([this] { DB_.close (); }) }
+	: DBGuard_ { Util::MakeScopeGuard ([this] { DB_.close (); }) }
 	{
 		QString strType;
-		switch (Type_)
+		switch (type)
 		{
 		case SBSQLite:
 			strType = "QSQLITE";
@@ -154,7 +153,7 @@ namespace Poshuku
 		}
 
 		DB_ = QSqlDatabase::addDatabase (strType, Util::GenConnectionName ("org.LeechCraft.Poshuku"));
-		switch (Type_)
+		switch (type)
 		{
 		case SBSQLite:
 		{
@@ -186,41 +185,9 @@ namespace Poshuku
 			Util::RunTextQuery (DB_, "PRAGMA journal_model = WAL;");
 
 		auto adaptedPtrs = std::tie (History_, Favorites_, FormsNever_);
-		Type_ == SBSQLite ?
+		type == SBSQLite ?
 				oral::AdaptPtrs<oral::SQLiteImplFactory> (DB_, adaptedPtrs) :
 				oral::AdaptPtrs<oral::PostgreSQLImplFactory> (DB_, adaptedPtrs);
-	}
-
-	void SQLStorageBackend::Prepare ()
-	{
-		HistoryRatedLoader_ = QSqlQuery (DB_);
-		switch (Type_)
-		{
-		case SBSQLite:
-			HistoryRatedLoader_.prepare ("SELECT "
-					"SUM (julianday (date)) - julianday (MIN (date)) * COUNT (date) AS rating, "
-					"title, "
-					"url "
-					"FROM history "
-					"WHERE ( title LIKE :titlebase ) "
-					"OR ( url LIKE :urlbase ) "
-					"GROUP BY url "
-					"ORDER BY rating DESC "
-					"LIMIT 100");
-			break;
-		case SBPostgres:
-			HistoryRatedLoader_.prepare ("SELECT "
-					"SUM (AGE (date)) - AGE (MIN (date)) * COUNT (date) AS rating, "
-					"MAX (title) AS title, "
-					"url "
-					"FROM history "
-					"WHERE ( title LIKE :titlebase ) "
-					"OR ( url LIKE :urlbase ) "
-					"GROUP BY url "
-					"ORDER BY rating ASC "
-					"LIMIT 100");
-			break;
-		}
 	}
 
 	void SQLStorageBackend::LoadHistory (history_items_t& items) const
@@ -232,28 +199,14 @@ namespace Poshuku
 	void SQLStorageBackend::LoadResemblingHistory (const QString& base,
 			history_items_t& items) const
 	{
-		QString bound = "%";
-		bound += base;
-		bound += "%";
-		HistoryRatedLoader_.bindValue (":titlebase", bound);
-		HistoryRatedLoader_.bindValue (":urlbase", bound);
-		if (!HistoryRatedLoader_.exec ())
-		{
-			LeechCraft::Util::DBLock::DumpError (HistoryRatedLoader_);
-			throw std::runtime_error ("failed to load ratedly");
-		}
+		using namespace oral::infix;
 
-		while (HistoryRatedLoader_.next ())
-		{
-			HistoryItem item =
-			{
-				HistoryRatedLoader_.value (1).toString (),
-				QDateTime (),
-				HistoryRatedLoader_.value (2).toString ()
-			};
-			items.push_back (item);
-		}
-		HistoryRatedLoader_.finish ();
+		const auto& pat = "%" + base + "%";
+		const auto& allItems = History_->Select.Build ()
+				.Select (sph::fields<&History::Title_, &History::Date_>)
+				.Where (sph::f<&History::Title_> |like| pat || sph::f<&History::URL_> |like| pat)
+				.Order (oral::OrderBy<sph::desc<&History::Date_>>)
+				();
 	}
 
 	void SQLStorageBackend::AddToHistory (const HistoryItem& item)
@@ -314,7 +267,7 @@ namespace Poshuku
 
 	bool SQLStorageBackend::GetFormsIgnored (const QString& url) const
 	{
-		return FormsNever_->Select (sph::count, sph::f<&FormsNever::URL_> == url);
+		return FormsNever_->Select (sph::count<>, sph::f<&FormsNever::URL_> == url);
 	}
 }
 }

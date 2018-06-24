@@ -62,13 +62,6 @@ namespace Poshuku
 		static std::shared_ptr<StorageBackend> Create (Type);
 		static std::shared_ptr<StorageBackend> Create ();
 
-		/** @brief Do post-initialization.
-			*
-			* This function is called by the Core after all the updates are
-			* checked and done, if required.
-			*/
-		virtual void Prepare () = 0;
-
 		/** @brief Get resembling history items from the storage.
 			*
 			* Puts resembling history items (HistoryItem) from the
