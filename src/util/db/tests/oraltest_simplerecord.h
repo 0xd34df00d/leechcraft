@@ -70,6 +70,9 @@ namespace Util
 		void testSimpleRecordInsertSelectCount ();
 		void testSimpleRecordInsertSelectCountByFields ();
 
+		void testSimpleRecordInsertSelectMin ();
+		void testSimpleRecordInsertSelectMax ();
+
 		void testSimpleRecordInsertSelectLike ();
 
 		void testSimpleRecordUpdate ();

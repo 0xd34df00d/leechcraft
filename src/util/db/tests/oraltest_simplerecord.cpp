@@ -211,6 +211,20 @@ namespace Util
 		QCOMPARE (count, 2);
 	}
 
+	void OralTest_SimpleRecord::testSimpleRecordInsertSelectMin ()
+	{
+		auto adapted = PrepareRecords<SimpleRecord> (MakeDatabase ());
+		const auto min = adapted->Select (sph::min<&SimpleRecord::ID_>);
+		QCOMPARE (min, 0);
+	}
+
+	void OralTest_SimpleRecord::testSimpleRecordInsertSelectMax ()
+	{
+		auto adapted = PrepareRecords<SimpleRecord> (MakeDatabase ());
+		const auto max = adapted->Select (sph::max<&SimpleRecord::ID_>);
+		QCOMPARE (max, 2);
+	}
+
 	void OralTest_SimpleRecord::testSimpleRecordInsertSelectLike ()
 	{
 		using namespace oral::infix;
