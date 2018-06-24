@@ -43,6 +43,7 @@
 #include <interfaces/core/itagsmanager.h>
 #include <util/xpc/util.h>
 #include <util/sys/paths.h>
+#include <util/sll/unreachable.h>
 #include "findproxy.h"
 #include "tagsasker.h"
 
@@ -125,6 +126,8 @@ namespace SeekThru
 			case Description::SyndicationRight::Closed:
 				return tr ("Closed");
 			}
+
+			Util::Unreachable ();
 		default:
 			return {};
 		}
