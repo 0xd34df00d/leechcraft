@@ -113,12 +113,12 @@ namespace CleanWeb
 		case 2:
 			switch (item->Option_.MatchType_)
 			{
-			case FilterOption::MWildcard:
-			case FilterOption::MTPlain:
-			case FilterOption::MTBegin:
-			case FilterOption::MTEnd:
+			case FilterOption::MatchType::Wildcard:
+			case FilterOption::MatchType::Plain:
+			case FilterOption::MatchType::Begin:
+			case FilterOption::MatchType::End:
 				return tr ("Wildcard");
-			case FilterOption::MTRegexp:
+			case FilterOption::MatchType::Regexp:
 				return tr ("Regexp");
 			}
 		case 3:
@@ -191,7 +191,7 @@ namespace CleanWeb
 
 	bool UserFiltersModel::Add (const RuleOptionDialog& dia)
 	{
-		const auto& itemRx = dia.GetType () == FilterOption::MTRegexp ?
+		const auto& itemRx = dia.GetType () == FilterOption::MatchType::Regexp ?
 				Util::RegExp (dia.GetString (), dia.GetCase ()) :
 				Util::RegExp ();
 		FilterOption fo;

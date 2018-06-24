@@ -48,14 +48,14 @@ namespace CleanWeb
 	{
 		Qt::CaseSensitivity Case_ = Qt::CaseInsensitive;
 
-		enum MatchType
+		enum class MatchType
 		{
-			MTWildcard,
-			MTRegexp,
-			MTPlain,
-			MTBegin,
-			MTEnd
-		} MatchType_ = MTWildcard;
+			Wildcard,
+			Regexp,
+			Plain,
+			Begin,
+			End
+		} MatchType_ = MatchType::Wildcard;
 
 		enum MatchObject
 		{

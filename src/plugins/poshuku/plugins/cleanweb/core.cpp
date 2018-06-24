@@ -275,15 +275,15 @@ namespace CleanWeb
 
 			switch (opt.MatchType_)
 			{
-			case FilterOption::MTRegexp:
+			case FilterOption::MatchType::Regexp:
 				return item->RegExp_.Matches (urlUtf8);
-			case FilterOption::MTWildcard:
+			case FilterOption::MatchType::Wildcard:
 				return WildcardMatches (item->PlainMatcher_.constData (), urlUtf8.constData ());
-			case FilterOption::MTPlain:
+			case FilterOption::MatchType::Plain:
 				return urlUtf8.indexOf (item->PlainMatcher_) >= 0;
-			case FilterOption::MTBegin:
+			case FilterOption::MatchType::Begin:
 				return urlUtf8.startsWith (item->PlainMatcher_);
-			case FilterOption::MTEnd:
+			case FilterOption::MatchType::End:
 				return urlUtf8.endsWith (item->PlainMatcher_);
 			}
 

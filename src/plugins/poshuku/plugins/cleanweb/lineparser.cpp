@@ -103,7 +103,7 @@ namespace CleanWeb
 					actualLine.endsWith ('/'))
 			{
 				actualLine = actualLine.mid (1, actualLine.size () - 2);
-				f.MatchType_ = FilterOption::MTRegexp;
+				f.MatchType_ = FilterOption::MatchType::Regexp;
 				items << std::make_shared<FilterItem> (FilterItem { Util::RegExp (actualLine, f.Case_), {}, f });
 				return;
 			}
@@ -125,7 +125,7 @@ namespace CleanWeb
 				}
 				if (f.Case_ == Qt::CaseInsensitive)
 					spawned = spawned.toLower ();
-				f.MatchType_ = FilterOption::MTPlain;
+				f.MatchType_ = FilterOption::MatchType::Plain;
 				ParseWithOption (spawned, f, items);
 
 				actualLine = actualLine.mid (2);
@@ -140,10 +140,10 @@ namespace CleanWeb
 				if (actualLine.contains ('*'))
 				{
 					actualLine.prepend ('*');
-					f.MatchType_ = FilterOption::MTWildcard;
+					f.MatchType_ = FilterOption::MatchType::Wildcard;
 				}
 				else
-					f.MatchType_ = FilterOption::MTEnd;
+					f.MatchType_ = FilterOption::MatchType::End;
 			}
 			else if (actualLine.startsWith ('|'))
 			{
@@ -151,10 +151,10 @@ namespace CleanWeb
 				if (actualLine.contains ('*'))
 				{
 					actualLine.append ('*');
-					f.MatchType_ = FilterOption::MTWildcard;
+					f.MatchType_ = FilterOption::MatchType::Wildcard;
 				}
 				else
-					f.MatchType_ = FilterOption::MTBegin;
+					f.MatchType_ = FilterOption::MatchType::Begin;
 			}
 			else
 			{
@@ -162,47 +162,47 @@ namespace CleanWeb
 				{
 					actualLine.prepend ('*');
 					actualLine.append ('*');
-					f.MatchType_ = FilterOption::MTWildcard;
+					f.MatchType_ = FilterOption::MatchType::Wildcard;
 				}
 				else
-					f.MatchType_ = FilterOption::MTPlain;
+					f.MatchType_ = FilterOption::MatchType::Plain;
 			}
 
-			if (f.MatchType_ == FilterOption::MTWildcard)
+			if (f.MatchType_ == FilterOption::MatchType::Wildcard)
 				actualLine.replace ('?', "\\?");
 
-			if (f.MatchType_ != FilterOption::MTRegexp && actualLine.contains ('^'))
+			if (f.MatchType_ != FilterOption::MatchType::Regexp && actualLine.contains ('^'))
 			{
 				if (!Util::RegExp::IsFast ())
 					return;
 
 				actualLine.replace ('*', ".*");
-				if (f.MatchType_ != FilterOption::MTWildcard)
+				if (f.MatchType_ != FilterOption::MatchType::Wildcard)
 					actualLine.replace ('?', "\\?");
 				switch (f.MatchType_)
 				{
-				case FilterOption::MTEnd:
+				case FilterOption::MatchType::End:
 					actualLine.prepend (".*");
 					break;
-				case FilterOption::MTBegin:
+				case FilterOption::MatchType::Begin:
 					actualLine.append (".*");
 					break;
-				case FilterOption::MTPlain:
+				case FilterOption::MatchType::Plain:
 					actualLine.prepend (".*");
 					actualLine.append (".*");
 					break;
-				case FilterOption::MTWildcard:
-				case FilterOption::MTRegexp:
+				case FilterOption::MatchType::Wildcard:
+				case FilterOption::MatchType::Regexp:
 					break;
 				}
 				actualLine.replace ('^', "[/?=&:]");
-				f.MatchType_ = FilterOption::MTRegexp;
+				f.MatchType_ = FilterOption::MatchType::Regexp;
 			}
 
 			const auto& casedOrigStr = (f.Case_ == Qt::CaseSensitive ?
 					actualLine :
 					actualLine.toLower ()).toUtf8 ();
-			const auto& itemRx = f.MatchType_ == FilterOption::MTRegexp ?
+			const auto& itemRx = f.MatchType_ == FilterOption::MatchType::Regexp ?
 					Util::RegExp (actualLine, f.Case_) :
 					Util::RegExp ();
 			items << std::make_shared<FilterItem> (FilterItem { itemRx, casedOrigStr, f });
