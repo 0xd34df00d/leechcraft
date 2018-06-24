@@ -1324,7 +1324,10 @@ namespace oral
 			{
 				QString limitStr;
 				if constexpr (std::is_same_v<std::decay_t<L>, LimitNone>)
+				{
+					Q_UNUSED (limit)
 					limitStr = LimitNone_;
+				}
 				else if constexpr (std::is_integral_v<L>)
 					limitStr = QString::number (limit);
 				else
