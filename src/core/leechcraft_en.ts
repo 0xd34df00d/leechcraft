@@ -26,21 +26,16 @@
     </message>
     <message>
         <location filename="aboutdialog.ui" line="144"/>
-        <source>Appreciations</source>
-        <translation>Appreciations</translation>
-    </message>
-    <message>
-        <location filename="aboutdialog.ui" line="169"/>
         <source>Licensing</source>
         <translation>Licensing</translation>
     </message>
     <message>
-        <location filename="aboutdialog.ui" line="213"/>
+        <location filename="aboutdialog.ui" line="188"/>
         <source>Diagnostic info</source>
         <translation>Diagnostic info</translation>
     </message>
     <message>
-        <location filename="aboutdialog.ui" line="222"/>
+        <location filename="aboutdialog.ui" line="197"/>
         <source>Add this information to your bug reports, if any:</source>
         <translation>Add this information to your bug reports, if any:</translation>
     </message>
@@ -63,52 +58,37 @@
         <translation>MySQL</translation>
     </message>
     <message>
-        <location filename="../util/db/backendselector.ui" line="54"/>
-        <source>Journal mode:</source>
-        <translation>Journal mode:</translation>
+        <location filename="../util/db/backendselector.ui" line="58"/>
+        <source>Yay, SQLite has no settings worth adjusting!</source>
+        <translation>Yay, SQLite has no settings worth adjusting!</translation>
     </message>
     <message>
-        <location filename="../util/db/backendselector.ui" line="90"/>
-        <source>Temp store:</source>
-        <translation>Temp store:</translation>
-    </message>
-    <message>
-        <location filename="../util/db/backendselector.ui" line="111"/>
-        <source>Synchronous:</source>
-        <translation>Synchronous:</translation>
-    </message>
-    <message>
-        <location filename="../util/db/backendselector.ui" line="139"/>
-        <source>VACUUM on exit</source>
-        <translation>VACUUM on exit</translation>
-    </message>
-    <message>
-        <location filename="../util/db/backendselector.ui" line="169"/>
-        <location filename="../util/db/backendselector.ui" line="237"/>
+        <location filename="../util/db/backendselector.ui" line="97"/>
+        <location filename="../util/db/backendselector.ui" line="165"/>
         <source>Hostname:</source>
         <translation>Hostname:</translation>
     </message>
     <message>
-        <location filename="../util/db/backendselector.ui" line="179"/>
-        <location filename="../util/db/backendselector.ui" line="247"/>
+        <location filename="../util/db/backendselector.ui" line="107"/>
+        <location filename="../util/db/backendselector.ui" line="175"/>
         <source>Port:</source>
         <translation>Port:</translation>
     </message>
     <message>
-        <location filename="../util/db/backendselector.ui" line="206"/>
-        <location filename="../util/db/backendselector.ui" line="274"/>
+        <location filename="../util/db/backendselector.ui" line="134"/>
+        <location filename="../util/db/backendselector.ui" line="202"/>
         <source>Username:</source>
         <translation>Username:</translation>
     </message>
     <message>
-        <location filename="../util/db/backendselector.ui" line="216"/>
-        <location filename="../util/db/backendselector.ui" line="284"/>
+        <location filename="../util/db/backendselector.ui" line="144"/>
+        <location filename="../util/db/backendselector.ui" line="212"/>
         <source>Password:</source>
         <translation>Password:</translation>
     </message>
     <message>
-        <location filename="../util/db/backendselector.ui" line="196"/>
-        <location filename="../util/db/backendselector.ui" line="264"/>
+        <location filename="../util/db/backendselector.ui" line="124"/>
+        <location filename="../util/db/backendselector.ui" line="192"/>
         <source>Database name:</source>
         <translation>Database name:</translation>
     </message>
@@ -324,37 +304,37 @@
 <context>
     <name>LeechCraft::Application</name>
     <message>
-        <location filename="application.cpp" line="162"/>
+        <location filename="application.cpp" line="163"/>
         <source>Could not create path %1/.leechcraft</source>
         <translation>Could not create path %1/.leechcraft</translation>
     </message>
     <message>
-        <location filename="application.cpp" line="518"/>
+        <location filename="application.cpp" line="519"/>
         <source>Initializing LeechCraft...</source>
         <translation>Initializing LeechCraft...</translation>
     </message>
     <message>
-        <location filename="application.cpp" line="529"/>
+        <location filename="application.cpp" line="530"/>
         <source>Finalizing...</source>
         <translation>Finalizing...</translation>
     </message>
     <message>
-        <location filename="application.cpp" line="480"/>
+        <location filename="application.cpp" line="481"/>
         <source>Startup password</source>
         <translation>Startup password</translation>
     </message>
     <message>
-        <location filename="application.cpp" line="481"/>
+        <location filename="application.cpp" line="482"/>
         <source>Enter startup password for LeechCraft:</source>
         <translation>Enter startup password for LeechCraft:</translation>
     </message>
     <message>
-        <location filename="application.cpp" line="486"/>
+        <location filename="application.cpp" line="487"/>
         <source>Sorry, incorrect password</source>
         <translation>Sorry, incorrect password</translation>
     </message>
     <message>
-        <location filename="application.cpp" line="591"/>
+        <location filename="application.cpp" line="592"/>
         <source>This change requires restarting LeechCraft. Do you want to restart now?</source>
         <translation>This change requires restarting LeechCraft. Do you want to restart now?</translation>
     </message>
