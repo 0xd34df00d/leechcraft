@@ -4,7 +4,9 @@ RUN git clone https://github.com/0xd34df00d/leechcraft.git && \
 	cd leechcraft && \
 	mkdir build && \
 	cd build && \
-	cmake ../src -DLIB_SUFFIX=64 \
+	cmake ../src \
+		-DCMAKE_COLOR_MAKEFILE=False \
+		-DLIB_SUFFIX=64 \
 		-DCMAKE_INSTALL_PREFIX=/usr \
 		-DSTRICT_LICENSING=True \
 		-DENABLE_ADVANCEDNOTIFICATIONS=True \
