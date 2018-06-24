@@ -794,9 +794,11 @@ namespace oral
 		}
 
 		template<ExprType Type, typename L, typename R>
-		ExprTree<Type, L, R> MakeExprTree (const L& left, const R& right)
+		auto MakeExprTree (const L& left, const R& right)
 		{
-			return { left, right };
+			using EL = decltype (AsLeafData (left));
+			using ER = decltype (AsLeafData (right));
+			return ExprTree<Type, EL, ER> { AsLeafData (left), AsLeafData (right) };
 		}
 
 		template<typename L, typename R>
@@ -812,34 +814,22 @@ namespace oral
 		template<typename L, typename R>
 		using EnableRelOp_t = std::enable_if_t<EitherIsExprTree<L, R> ()>;
 
-		template<typename L, typename R>
-		constexpr auto AllTrees_v = AllOf<IsExprTree, L, R>;
-
 		template<typename L, typename R, typename = EnableRelOp_t<L, R>>
 		auto operator< (const L& left, const R& right)
 		{
-			if constexpr (AllTrees_v<L, R>)
-				return MakeExprTree<ExprType::Less> (left, right);
-			else
-				return AsLeafData (left) < AsLeafData (right);
+			return MakeExprTree<ExprType::Less> (left, right);
 		}
 
 		template<typename L, typename R, typename = EnableRelOp_t<L, R>>
 		auto operator> (const L& left, const R& right)
 		{
-			if constexpr (AllTrees_v<L, R>)
-				return MakeExprTree<ExprType::Greater> (left, right);
-			else
-				return AsLeafData (left) > AsLeafData (right);
+			return MakeExprTree<ExprType::Greater> (left, right);
 		}
 
 		template<typename L, typename R, typename = EnableRelOp_t<L, R>>
 		auto operator== (const L& left, const R& right)
 		{
-			if constexpr (AllTrees_v<L, R>)
-				return MakeExprTree<ExprType::Equal> (left, right);
-			else
-				return AsLeafData (left) == AsLeafData (right);
+			return MakeExprTree<ExprType::Equal> (left, right);
 		}
 
 		template<ExprType Op>
@@ -868,28 +858,19 @@ namespace oral
 		template<typename L, ExprType Op, typename R>
 		auto operator| (const InfixBinaryProxy<L, Op>& left, const R& right)
 		{
-			if constexpr (AllTrees_v<L, R>)
-				return MakeExprTree<Op> (left.Left_, right);
-			else
-				return MakeExprTree<Op> (AsLeafData (left.Left_), AsLeafData (right));
+			return MakeExprTree<Op> (left.Left_, right);
 		}
 
 		template<typename L, typename R, typename = EnableRelOp_t<L, R>>
 		auto operator&& (const L& left, const R& right)
 		{
-			if constexpr (AllTrees_v<L, R>)
-				return MakeExprTree<ExprType::And> (left, right);
-			else
-				return AsLeafData (left) && AsLeafData (right);
+			return MakeExprTree<ExprType::And> (left, right);
 		}
 
 		template<typename L, typename R, typename = EnableRelOp_t<L, R>>
 		auto operator|| (const L& left, const R& right)
 		{
-			if constexpr (AllTrees_v<L, R>)
-				return MakeExprTree<ExprType::Or> (left, right);
-			else
-				return AsLeafData (left) || AsLeafData (right);
+			return MakeExprTree<ExprType::Or> (left, right);
 		}
 
 		template<typename>
