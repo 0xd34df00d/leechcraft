@@ -1069,7 +1069,7 @@ namespace oral
 		template<typename Seq, typename... Args>
 		struct DetectShift<Seq, std::tuple<Args...>>
 		{
-			constexpr static int Value = sizeof... (Args);
+			constexpr static int Value = (DetectShift<Seq, Args>::Value + ...);
 		};
 
 		template<typename Seq>
