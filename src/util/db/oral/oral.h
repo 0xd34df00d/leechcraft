@@ -916,11 +916,16 @@ namespace oral
 		template<typename... MemberDirectionList>
 		struct OrderBy {};
 
+		struct SelectWhole {};
+
 		template<typename L, typename R>
 		struct SelectorUnion {};
 
 		template<typename T>
 		struct IsSelector : std::false_type {};
+
+		template<>
+		struct IsSelector<SelectWhole> : std::true_type {};
 
 		template<AggregateFunction Fun, auto Ptr>
 		struct IsSelector<AggregateType<Fun, Ptr>> : std::true_type {};
@@ -1025,7 +1030,6 @@ namespace oral
 
 		enum class SelectBehaviour { Some, One };
 
-		struct SelectWhole {};
 		struct OrderNone {};
 		struct LimitNone {};
 		struct OffsetNone {};
