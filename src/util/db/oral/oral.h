@@ -918,6 +918,24 @@ namespace oral
 
 		template<typename L, typename R>
 		struct SelectorUnion {};
+
+		template<typename T>
+		struct IsSelector : std::false_type {};
+
+		template<AggregateFunction Fun, auto Ptr>
+		struct IsSelector<AggregateType<Fun, Ptr>> : std::true_type {};
+
+		template<auto... Ptrs>
+		struct IsSelector<MemberPtrs<Ptrs...>> : std::true_type {};
+
+		template<typename L, typename R>
+		struct IsSelector<SelectorUnion<L, R>> : std::true_type {};
+
+		template<typename L, typename R, typename = std::enable_if_t<IsSelector<L> {} && IsSelector<R> {}>>
+		SelectorUnion<L, R> operator+ (const L&, const R&)
+		{
+			return {};
+		}
 	}
 
 	namespace sph
