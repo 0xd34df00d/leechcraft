@@ -228,8 +228,8 @@ namespace Util
 	void OralTest_SimpleRecord::testSimpleRecordInsertSelectMinPlusMax ()
 	{
 		auto adapted = PrepareRecords<SimpleRecord> (MakeDatabase ());
-		const auto min = adapted->Select (sph::min<&SimpleRecord::ID_> + sph::max<&SimpleRecord::ID_>);
-		QCOMPARE (min, (QList { std::tuple { 0, 2 } }));
+		const auto minMax = adapted->Select (sph::min<&SimpleRecord::ID_> + sph::max<&SimpleRecord::ID_>);
+		QCOMPARE (minMax, (std::tuple { 0, 2 }));
 	}
 
 	void OralTest_SimpleRecord::testSimpleRecordInsertSelectLike ()
