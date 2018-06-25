@@ -232,6 +232,13 @@ namespace Util
 		QCOMPARE (minMax, (std::tuple { 0, 2 }));
 	}
 
+	void OralTest_SimpleRecord::testSimpleRecordInsertSelectAllPlusMinPlusMax ()
+	{
+		auto adapted = PrepareRecords<SimpleRecord> (MakeDatabase ());
+		const auto allMinMax = adapted->Select (sph::all + sph::min<&SimpleRecord::ID_> + sph::max<&SimpleRecord::ID_>);
+		QCOMPARE (allMinMax, (QList<std::tuple<SimpleRecord, int, int>> { { { 2, "2" }, 0, 2 } }));
+	}
+
 	void OralTest_SimpleRecord::testSimpleRecordInsertSelectLike ()
 	{
 		using namespace oral::infix;
