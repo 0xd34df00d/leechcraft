@@ -1098,6 +1098,33 @@ namespace oral
 			return std::tuple { left, right };
 		}
 
+		struct ResultBehaviour
+		{
+			struct All {};
+			struct First {};
+		};
+
+		template<typename L, typename R>
+		constexpr auto CombineBehaviour (L, R)
+		{
+			if constexpr (std::is_same_v<L, ResultBehaviour::First> && std::is_same_v<R, ResultBehaviour::First>)
+				return ResultBehaviour::First {};
+			else
+				return ResultBehaviour::All {};
+		}
+
+		template<typename ResList>
+		auto HandleResultBehaviour (ResultBehaviour::All, ResList&& list)
+		{
+			return std::move (list);
+		}
+
+		template<typename ResList>
+		auto HandleResultBehaviour (ResultBehaviour::First, ResList&& list)
+		{
+			return list.value (0);
+		}
+
 		template<typename T, SelectBehaviour SelectBehaviour>
 		class SelectWrapper
 		{
@@ -1204,12 +1231,13 @@ namespace oral
 			{
 				const auto& [where, binder, _] = HandleExprTree<T> (tree);
 				Q_UNUSED (_);
-				const auto& [fields, initializer, postproc] = HandleSelector (std::forward<Selector> (selector));
-				return postproc (Select (fields, BuildFromClause (tree),
-						where, binder,
-						initializer,
-						HandleOrder (std::forward<Order> (order)),
-						HandleLimitOffset (std::forward<Limit> (limit), std::forward<Offset> (offset))));
+				const auto& [fields, initializer, resultBehaviour] = HandleSelector (std::forward<Selector> (selector));
+				return HandleResultBehaviour (resultBehaviour,
+						Select (fields, BuildFromClause (tree),
+								where, binder,
+								initializer,
+								HandleOrder (std::forward<Order> (order)),
+								HandleLimitOffset (std::forward<Limit> (limit), std::forward<Offset> (offset))));
 			}
 		private:
 			template<typename Binder, typename Initializer>
@@ -1277,7 +1305,7 @@ namespace oral
 					{
 						return InitializeFromQuery<T> (q, SeqIndices<T>, startIdx);
 					},
-					Id
+					ResultBehaviour::All {}
 				};
 			}
 
@@ -1291,7 +1319,7 @@ namespace oral
 					{
 						return FromVariant<UnwrapIndirect_t<ValueAtC_t<T, Idx>>> {} (q.value (startIdx));
 					},
-					Id
+					ResultBehaviour::All {}
 				};
 			}
 
@@ -1302,7 +1330,7 @@ namespace oral
 				{
 					BuildFieldNames<Ptrs...> ().join (", "),
 					MakeIndexedQueryHandler (ptrs, std::make_index_sequence<sizeof... (Ptrs)> {}),
-					Id
+					ResultBehaviour::All {}
 				};
 			}
 
@@ -1312,7 +1340,7 @@ namespace oral
 				{
 					QString { "count(1)" },
 					[] (const QSqlQuery& q, int startIdx = 0) { return q.value (startIdx).toLongLong (); },
-					[] (const QList<long long>& list) { return list.value (0); }
+					ResultBehaviour::First {}
 				};
 			}
 
@@ -1323,7 +1351,7 @@ namespace oral
 				{
 					"count(" + GetFieldNamePtr<T, Ptr> () + ")",
 					[] (const QSqlQuery& q, int startIdx = 0) { return q.value (startIdx).toLongLong (); },
-					[] (const QList<long long>& list) { return list.value (0); }
+					ResultBehaviour::First {}
 				};
 			}
 
@@ -1334,7 +1362,7 @@ namespace oral
 				{
 					"min(" + GetFieldNamePtr<T, Ptr> () + ")",
 					MakeIndexedQueryHandler<Ptr> (),
-					[] (const auto& list) { return list.value (0); }
+					ResultBehaviour::First {}
 				};
 			}
 
@@ -1345,7 +1373,7 @@ namespace oral
 				{
 					"max(" + GetFieldNamePtr<T, Ptr> () + ")",
 					MakeIndexedQueryHandler<Ptr> (),
-					[] (const auto& list) { return list.value (0); }
+					ResultBehaviour::First {}
 				};
 			}
 
@@ -1366,7 +1394,7 @@ namespace oral
 						constexpr auto shift = DetectShift<T, decltype (lHandler (q))>::Value;
 						return Combine (lHandler (q, startIdx), rHandler (q, startIdx + shift));
 					},
-					Id
+					CombineBehaviour (std::get<2> (lSel), std::get<2> (rSel))
 				};
 			}
 
