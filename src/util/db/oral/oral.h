@@ -915,6 +915,9 @@ namespace oral
 
 		template<typename... MemberDirectionList>
 		struct OrderBy {};
+
+		template<typename L, typename R>
+		struct SelectorUnion {};
 	}
 
 	namespace sph
@@ -1033,6 +1036,48 @@ namespace oral
 			return ReplaceTupleElemImpl<RepIdx> (std::move (tuple),
 					std::forward<NewType> (arg),
 					std::index_sequence_for<TupleArgs...> {});
+		}
+
+		template<typename Seq, typename T>
+		struct DetectShift
+		{
+			constexpr static int Value = 1;
+		};
+
+		template<typename Seq, typename... Args>
+		struct DetectShift<Seq, std::tuple<Args...>>
+		{
+			constexpr static int Value = sizeof... (Args);
+		};
+
+		template<typename Seq>
+		struct DetectShift<Seq, Seq>
+		{
+			constexpr static int Value = SeqSize<Seq>;
+		};
+
+		template<typename... LArgs, typename... RArgs>
+		auto Combine (std::tuple<LArgs...>&& left, std::tuple<RArgs...>&& right)
+		{
+			return std::tuple_cat (std::move (left), std::move (right));
+		}
+
+		template<typename... LArgs, typename R>
+		auto Combine (std::tuple<LArgs...>&& left, const R& right)
+		{
+			return std::tuple_cat (std::move (left), std::tuple { right });
+		}
+
+		template<typename L, typename... RArgs>
+		auto Combine (const L& left, std::tuple<RArgs...>&& right)
+		{
+			return std::tuple_cat (std::tuple { left }, std::move (right));
+		}
+
+		template<typename L, typename R>
+		auto Combine (const L& left, const R& right)
+		{
+			return std::tuple { left, right };
 		}
 
 		template<typename T, SelectBehaviour SelectBehaviour>
@@ -1283,6 +1328,27 @@ namespace oral
 					"max(" + GetFieldNamePtr<T, Ptr> () + ")",
 					MakeIndexedQueryHandler<Ptr> (),
 					[] (const auto& list) { return list.value (0); }
+				};
+			}
+
+			template<typename L, typename R>
+			auto HandleSelector (SelectorUnion<L, R>) const
+			{
+				const auto& lSel = HandleSelector (L {});
+				const auto& rSel = HandleSelector (R {});
+
+				const auto& lHandler = std::get<1> (lSel);
+				const auto& rHandler = std::get<1> (rSel);
+
+				return std::tuple
+				{
+					std::get<0> (lSel) + ", " + std::get<0> (rSel),
+					[lHandler, rHandler] (const QSqlQuery& q, int startIdx = 0)
+					{
+						constexpr auto shift = DetectShift<T, decltype (lHandler (q))>::Value;
+						return Combine (lHandler (q, startIdx), rHandler (q, startIdx + shift));
+					},
+					Id
 				};
 			}
 
