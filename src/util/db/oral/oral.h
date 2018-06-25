@@ -960,6 +960,8 @@ namespace oral
 		template<auto... Ptrs>
 		constexpr detail::MemberPtrs<Ptrs...> fields {};
 
+		constexpr detail::SelectWhole all {};
+
 		template<auto... Ptrs>
 		struct asc {};
 
