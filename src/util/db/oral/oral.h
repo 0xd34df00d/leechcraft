@@ -467,16 +467,16 @@ namespace oral
 		using AggregateDetector_t = decltype (new T { std::declval<Args> ()... });
 
 		template<typename T, size_t... Indices>
-		T InitializeFromQuery (const QSqlQuery& q, std::index_sequence<Indices...>)
+		T InitializeFromQuery (const QSqlQuery& q, std::index_sequence<Indices...>, int startIdx)
 		{
 			if constexpr (IsDetected_v<AggregateDetector_t, T, ValueAtC_t<T, Indices>...>)
-				return T { FromVariant<ValueAtC_t<T, Indices>> {} (q.value (Indices))... };
+				return T { FromVariant<ValueAtC_t<T, Indices>> {} (q.value (startIdx + Indices))... };
 			else
 			{
 				T t;
 				const auto dummy = std::initializer_list<int>
 				{
-					(static_cast<void> (boost::fusion::at_c<Indices> (t) = FromVariant<ValueAtC_t<T, Indices>> {} (q.value (Indices))), 0)...
+					(static_cast<void> (boost::fusion::at_c<Indices> (t) = FromVariant<ValueAtC_t<T, Indices>> {} (q.value (startIdx + Indices))), 0)...
 				};
 				Q_UNUSED (dummy);
 				return t;
@@ -978,19 +978,22 @@ namespace oral
 		template<auto... Ptrs, size_t... Idxs>
 		auto MakeIndexedQueryHandler (MemberPtrs<Ptrs...>, std::index_sequence<Idxs...>)
 		{
-			return [] (const QSqlQuery& q)
+			return [] (const QSqlQuery& q, int startIdx = 0)
 			{
 				if constexpr (sizeof... (Ptrs) == 1)
-					return FromVariant<UnwrapIndirect_t<Head_t<Typelist<MemberPtrType_t<Ptrs>...>>>> {} (q.value (0));
+					return FromVariant<UnwrapIndirect_t<Head_t<Typelist<MemberPtrType_t<Ptrs>...>>>> {} (q.value (startIdx));
 				else
-					return std::tuple { FromVariant<UnwrapIndirect_t<MemberPtrType_t<Ptrs>>> {} (q.value (Idxs))... };
+					return std::tuple { FromVariant<UnwrapIndirect_t<MemberPtrType_t<Ptrs>>> {} (q.value (startIdx + Idxs))... };
 			};
 		}
 
 		template<auto Ptr>
 		auto MakeIndexedQueryHandler ()
 		{
-			return [] (const QSqlQuery& q) { return FromVariant<UnwrapIndirect_t<MemberPtrType_t<Ptr>>> {} (q.value (0)); };
+			return [] (const QSqlQuery& q, int startIdx = 0)
+			{
+				return FromVariant<UnwrapIndirect_t<MemberPtrType_t<Ptr>>> {} (q.value (startIdx));
+			};
 		}
 
 		template<auto... Ptrs>
@@ -1207,7 +1210,10 @@ namespace oral
 				return std::tuple
 				{
 					Cached_.QualifiedFields_.join (", "),
-					[] (const QSqlQuery& q) { return InitializeFromQuery<T> (q, SeqIndices<T>); },
+					[] (const QSqlQuery& q, int startIdx = 0)
+					{
+						return InitializeFromQuery<T> (q, SeqIndices<T>, startIdx);
+					},
 					Id
 				};
 			}
@@ -1218,7 +1224,10 @@ namespace oral
 				return std::tuple
 				{
 					Cached_.QualifiedFields_.value (Idx),
-					[] (const QSqlQuery& q) { return FromVariant<UnwrapIndirect_t<ValueAtC_t<T, Idx>>> {} (q.value (0)); },
+					[] (const QSqlQuery& q, int startIdx = 0)
+					{
+						return FromVariant<UnwrapIndirect_t<ValueAtC_t<T, Idx>>> {} (q.value (startIdx));
+					},
 					Id
 				};
 			}
@@ -1239,7 +1248,7 @@ namespace oral
 				return std::tuple
 				{
 					QString { "count(1)" },
-					[] (const QSqlQuery& q) { return q.value (0).toLongLong (); },
+					[] (const QSqlQuery& q, int startIdx = 0) { return q.value (startIdx).toLongLong (); },
 					[] (const QList<long long>& list) { return list.value (0); }
 				};
 			}
@@ -1250,7 +1259,7 @@ namespace oral
 				return std::tuple
 				{
 					"count(" + GetFieldNamePtr<T, Ptr> () + ")",
-					[] (const QSqlQuery& q) { return q.value (0).toLongLong (); },
+					[] (const QSqlQuery& q, int startIdx = 0) { return q.value (startIdx).toLongLong (); },
 					[] (const QList<long long>& list) { return list.value (0); }
 				};
 			}
