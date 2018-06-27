@@ -59,7 +59,7 @@ namespace HttStream
 	private:
 		void HandleSocket (QTcpSocket*);
 		void HandleNewConnection ();
-		void HandleDisconnected ();
+		void HandleDisconnected (QTcpSocket*);
 	signals:
 		void gotClient (int);
 		void clientDisconnected (int);

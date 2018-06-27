@@ -164,7 +164,7 @@ namespace HttStream
 		connect (socket,
 				&QTcpSocket::disconnected,
 				this,
-				&HttpServer::HandleDisconnected);
+				[this, socket] { HandleDisconnected (socket); });
 
 		if (socket->canReadLine ())
 			HandleSocket (socket);
@@ -175,9 +175,8 @@ namespace HttStream
 					[this, socket] { HandleSocket (socket); });
 	}
 
-	void HttpServer::HandleDisconnected ()
+	void HttpServer::HandleDisconnected (QTcpSocket *sock)
 	{
-		const auto sock = qobject_cast<QTcpSocket*> (sender ());
 		sock->deleteLater ();
 
 		int sockFd = 0;
