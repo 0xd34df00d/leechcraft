@@ -42,8 +42,6 @@ namespace LMP
 	, SrcObj_ (source)
 	, WholeBin_ (gst_bin_new ("whole_bin"))
 	, Identity_ (gst_element_factory_make ("identity", "effect_placeholder"))
-	, Pipeline_ (nullptr)
-	, OutputBin_ (nullptr)
 	{
 		NextWholeElems_ << Identity_;
 

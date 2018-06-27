@@ -49,8 +49,8 @@ namespace LMP
 		GstElement * const WholeBin_;
 		GstElement * const Identity_;
 
-		GstElement *Pipeline_;
-		GstElement *OutputBin_;
+		GstElement *Pipeline_ = nullptr;
+		GstElement *OutputBin_ = nullptr;
 
 		QList<GstElement*> NextWholeElems_;
 
