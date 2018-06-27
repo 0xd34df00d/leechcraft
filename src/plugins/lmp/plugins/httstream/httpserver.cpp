@@ -42,9 +42,9 @@ namespace HttStream
 	, Server_ { new QTcpServer { this } }
 	{
 		connect (Server_,
-				SIGNAL (newConnection ()),
+				&QTcpServer::newConnection,
 				this,
-				SLOT (handleNewConnection ()));
+				&HttpServer::HandleNewConnection);
 	}
 
 	void HttpServer::SetAddress (const QString& host, int port)
@@ -111,16 +111,20 @@ namespace HttStream
 		auto line = socket->readLine ();
 		line.chop (QString (" HTTP/1.0\r\n").size ());
 
+		auto deleteSocket = [socket]
+		{
+			connect (socket,
+					&QTcpSocket::bytesWritten,
+					&QTcpSocket::deleteLater);
+		};
+
 		if (line.startsWith ("HEAD "))
 		{
 			const auto& str = line.mid (5) == "/" ?
 					"HTTP/1.0 200 OK" :
 					"HTTP/1.0 404 Not Found";
 			Write (socket, { str });
-			connect (socket,
-					SIGNAL (bytesWritten (qint64)),
-					socket,
-					SLOT (deleteLater ()));
+			deleteSocket ();
 		}
 		else if (line.startsWith ("GET "))
 		{
@@ -144,29 +148,23 @@ namespace HttStream
 			else
 			{
 				Write (socket, { "HTTP/1.0 404 Not Found" });
-				connect (socket,
-						SIGNAL (bytesWritten (qint64)),
-						socket,
-						SLOT (deleteLater ()));
+				deleteSocket ();
 			}
 		}
 		else
 		{
 			Write (socket, { "HTTP/1.0 400 Bad Request" });
-			connect (socket,
-					SIGNAL (bytesWritten (qint64)),
-					socket,
-					SLOT (deleteLater ()));
+			deleteSocket ();
 		}
 	}
 
-	void HttpServer::handleNewConnection ()
+	void HttpServer::HandleNewConnection ()
 	{
 		const auto socket = Server_->nextPendingConnection ();
 		connect (socket,
-				SIGNAL (disconnected ()),
+				&QTcpSocket::disconnected,
 				this,
-				SLOT (handleDisconnected ()));
+				&HttpServer::HandleDisconnected);
 
 		if (socket->canReadLine ())
 			HandleSocket (socket);
@@ -177,7 +175,7 @@ namespace HttStream
 					[this, socket] { HandleSocket (socket); });
 	}
 
-	void HttpServer::handleDisconnected ()
+	void HttpServer::HandleDisconnected ()
 	{
 		const auto sock = qobject_cast<QTcpSocket*> (sender ());
 		sock->deleteLater ();

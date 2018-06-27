@@ -58,9 +58,8 @@ namespace HttStream
 		QList<int> GetConnectedFDs () const;
 	private:
 		void HandleSocket (QTcpSocket*);
-	private slots:
-		void handleNewConnection ();
-		void handleDisconnected ();
+		void HandleNewConnection ();
+		void HandleDisconnected ();
 	signals:
 		void gotClient (int);
 		void clientDisconnected (int);
