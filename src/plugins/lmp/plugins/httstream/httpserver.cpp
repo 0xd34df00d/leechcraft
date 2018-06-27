@@ -180,8 +180,8 @@ namespace HttStream
 		sock->deleteLater ();
 
 		int sockFd = 0;
-		QWriteLocker lock { &MapLock_ };
 		{
+			QWriteLocker lock { &MapLock_ };
 			if (!Socket2FD_.contains (sock))
 				return;
 
