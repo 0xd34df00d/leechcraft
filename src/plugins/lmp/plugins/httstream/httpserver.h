@@ -59,8 +59,6 @@ namespace HttStream
 	private:
 		void HandleSocket (QTcpSocket*);
 	private slots:
-		void tryReadLine ();
-
 		void handleNewConnection ();
 		void handleDisconnected ();
 	signals:

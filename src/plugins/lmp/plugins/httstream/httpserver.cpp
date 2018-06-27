@@ -100,19 +100,13 @@ namespace HttStream
 
 	void HttpServer::HandleSocket (QTcpSocket *socket)
 	{
-		disconnect (socket,
-				SIGNAL (readyRead ()),
-				this,
-				0);
-
 		if (!socket->canReadLine ())
-		{
-			connect (socket,
-					SIGNAL (readyRead ()),
-					this,
-					SLOT (tryReadLine ()));
 			return;
-		}
+
+		disconnect (socket,
+				&QTcpSocket::readyRead,
+				this,
+				nullptr);
 
 		auto line = socket->readLine ();
 		line.chop (QString (" HTTP/1.0\r\n").size ());
@@ -166,12 +160,6 @@ namespace HttStream
 		}
 	}
 
-	void HttpServer::tryReadLine ()
-	{
-		auto socket = qobject_cast<QTcpSocket*> (sender ());
-		HandleSocket (socket);
-	}
-
 	void HttpServer::handleNewConnection ()
 	{
 		const auto socket = Server_->nextPendingConnection ();
@@ -179,7 +167,14 @@ namespace HttStream
 				SIGNAL (disconnected ()),
 				this,
 				SLOT (handleDisconnected ()));
-		HandleSocket (socket);
+
+		if (socket->canReadLine ())
+			HandleSocket (socket);
+		else
+			connect (socket,
+					&QTcpSocket::readyRead,
+					this,
+					[this, socket] { HandleSocket (socket); });
 	}
 
 	void HttpServer::handleDisconnected ()
