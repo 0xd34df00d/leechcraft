@@ -72,18 +72,6 @@ namespace HttStream
 		}
 	}
 
-	QList<int> HttpServer::GetConnectedFDs () const
-	{
-		decltype (Socket2FD_) map;
-
-		{
-			QReadLocker locker { &MapLock_};
-			map = Socket2FD_;
-		}
-
-		return map.values ();
-	}
-
 	namespace
 	{
 		void Write (QTcpSocket *socket, const QList<QByteArray>& strings)
