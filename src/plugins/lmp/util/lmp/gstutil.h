@@ -48,7 +48,7 @@ namespace GstUtil
 	typedef QMap<QString, QString> TagMap_t;
 	bool ParseTagMessage (GstMessage *msg, TagMap_t& tags, const QString& region);
 
-	void PerformWProbe (GstPad *srcpad, GstPad *sinkpad, const std::function<void ()>& functor);
+	void PerformWProbe (GstPad *srcpad, const std::function<void ()>& functor);
 
 	void DebugPrintState (GstElement*, GstClockTime = 0.1 * GST_SECOND);
 

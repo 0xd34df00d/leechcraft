@@ -198,9 +198,8 @@ namespace LMP
 			return;
 
 		const auto srcpad = gst_element_get_static_pad (GetOutPlaceholder (), "src");
-		const auto sinkpad = gst_element_get_static_pad (GetOutPlaceholder (), "sink");
 
-		GstUtil::PerformWProbe (srcpad, sinkpad, [this] { FinalizeAction (); });
+		GstUtil::PerformWProbe (srcpad, [this] { FinalizeAction (); });
 	}
 }
 }

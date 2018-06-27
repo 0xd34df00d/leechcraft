@@ -188,8 +188,6 @@ namespace GstUtil
 		struct CallbackData
 		{
 			const std::function<void ()> Functor_;
-			GstPad * const SinkPad_;
-			guint ID_;
 		};
 
 		GstPadProbeReturn ProbeHandler (GstPad*, GstPadProbeInfo*, gpointer cbDataPtr)
@@ -201,11 +199,9 @@ namespace GstUtil
 		}
 	}
 
-	void PerformWProbe (GstPad *srcpad, GstPad *sinkpad, const std::function<void ()>& functor)
+	void PerformWProbe (GstPad *srcpad, const std::function<void ()>& functor)
 	{
-		auto data = new CallbackData { functor, sinkpad, 0 };
-		gst_pad_add_probe (srcpad, GST_PAD_PROBE_TYPE_IDLE,
-				ProbeHandler, data, nullptr);
+		gst_pad_add_probe (srcpad, GST_PAD_PROBE_TYPE_IDLE, ProbeHandler, new CallbackData { functor }, nullptr);
 	}
 
 	void DebugPrintState (GstElement *elem, GstClockTime time)
