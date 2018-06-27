@@ -194,14 +194,6 @@ namespace LMP
 		Queue_.clear ();
 	}
 
-	void Path::PerformWProbe (const std::function<void ()>& f)
-	{
-		const auto srcpad = gst_element_get_static_pad (GetOutPlaceholder (), "src");
-		const auto sinkpad = gst_element_get_static_pad (GetOutPlaceholder (), "sink");
-
-		GstUtil::PerformWProbe (srcpad, sinkpad, f);
-	}
-
 	void Path::RotateQueue ()
 	{
 		if (Queue_.isEmpty ())

@@ -88,8 +88,6 @@ namespace LMP
 		void RemoveElement (GstElement*);
 
 		void FinalizeAction ();
-
-		void PerformWProbe (const std::function<void ()>&);
 	private:
 		void RotateQueue ();
 	};
