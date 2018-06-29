@@ -61,10 +61,6 @@ namespace LMP
 		output->PostAddExposed (this);
 	}
 
-	Path::~Path ()
-	{
-	}
-
 	GstElement* Path::GetPipeline () const
 	{
 		return Pipeline_;

@@ -68,7 +68,6 @@ namespace LMP
 		QList<QueueItem> Queue_;
 	public:
 		Path (SourceObject*, Output*, QObject* = 0);
-		~Path ();
 
 		GstElement* GetPipeline () const;
 		void SetPipeline (GstElement*);
