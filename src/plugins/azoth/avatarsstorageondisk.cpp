@@ -58,11 +58,11 @@ namespace Azoth
 }
 }
 
-BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Azoth::AvatarsStorageOnDisk::Record,
+BOOST_HANA_ADAPT_STRUCT (LeechCraft::Azoth::AvatarsStorageOnDisk::Record,
 		ID_,
 		EntryID_,
 		Size_,
-		ImageData_)
+		ImageData_);
 
 namespace LeechCraft
 {

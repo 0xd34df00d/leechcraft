@@ -94,25 +94,25 @@ namespace Snails
 }
 }
 
-BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Snails::AccountDatabase::Message,
+BOOST_HANA_ADAPT_STRUCT (LeechCraft::Snails::AccountDatabase::Message,
 		Id_,
 		UniqueId_,
-		IsRead_)
+		IsRead_);
 
-BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Snails::AccountDatabase::Folder,
+BOOST_HANA_ADAPT_STRUCT (LeechCraft::Snails::AccountDatabase::Folder,
 		Id_,
-		FolderPath_)
+		FolderPath_);
 
-BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Snails::AccountDatabase::Msg2Folder,
+BOOST_HANA_ADAPT_STRUCT (LeechCraft::Snails::AccountDatabase::Msg2Folder,
 		Id_,
 		MsgId_,
 		FolderId_,
-		FolderMessageId_)
+		FolderMessageId_);
 
-BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Snails::AccountDatabase::MsgHeader,
+BOOST_HANA_ADAPT_STRUCT (LeechCraft::Snails::AccountDatabase::MsgHeader,
 		Id_,
 		MsgUniqueId_,
-		Header_)
+		Header_);
 
 namespace LeechCraft
 {
