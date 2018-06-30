@@ -98,9 +98,7 @@ namespace Autopaste
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
 	{
-		QSet<QByteArray> result;
-		result << "org.LeechCraft.Plugins.Azoth.Plugins.IGeneralPlugin";
-		return result;
+		return { "org.LeechCraft.Plugins.Azoth.Plugins.IGeneralPlugin" };
 	}
 
 	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
