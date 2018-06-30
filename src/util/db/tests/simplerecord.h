@@ -47,8 +47,8 @@ struct SimpleRecord
 	}
 };
 
-BOOST_FUSION_ADAPT_STRUCT (SimpleRecord,
+BOOST_HANA_ADAPT_STRUCT (SimpleRecord,
 		ID_,
-		Value_)
+		Value_);
 
 TOSTRING (SimpleRecord)

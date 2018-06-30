@@ -48,9 +48,9 @@ struct Student
 	}
 };
 
-BOOST_FUSION_ADAPT_STRUCT (Student,
+BOOST_HANA_ADAPT_STRUCT (Student,
 		ID_,
-		Name_)
+		Name_);
 
 TOSTRING (Student)
 
@@ -72,11 +72,11 @@ struct StudentInfo
 	}
 };
 
-BOOST_FUSION_ADAPT_STRUCT (StudentInfo,
+BOOST_HANA_ADAPT_STRUCT (StudentInfo,
 		ID_,
 		StudentID_,
 		Age_,
-		Year_)
+		Year_);
 
 TOSTRING (StudentInfo)
 
@@ -96,9 +96,9 @@ struct Lecturer
 	}
 };
 
-BOOST_FUSION_ADAPT_STRUCT (Lecturer,
+BOOST_HANA_ADAPT_STRUCT (Lecturer,
 		ID_,
-		Name_)
+		Name_);
 
 TOSTRING (Lecturer)
 
@@ -119,10 +119,10 @@ struct Student2Lecturer
 	}
 };
 
-BOOST_FUSION_ADAPT_STRUCT (Student2Lecturer,
+BOOST_HANA_ADAPT_STRUCT (Student2Lecturer,
 		ID_,
 		StudentID_,
-		LecturerID_)
+		LecturerID_);
 
 TOSTRING (Student2Lecturer)
 

@@ -32,14 +32,12 @@
 #include <stdexcept>
 #include <type_traits>
 #include <memory>
-#include <boost/fusion/include/for_each.hpp>
-#include <boost/fusion/include/fold.hpp>
-#include <boost/fusion/include/filter_if.hpp>
-#include <boost/fusion/container/vector.hpp>
-#include <boost/fusion/include/vector.hpp>
-#include <boost/fusion/include/transform.hpp>
-#include <boost/fusion/include/zip.hpp>
-#include <boost/fusion/container/generation/make_vector.hpp>
+
+#ifndef BOOST_HANA_CONFIG_ENABLE_STRING_UDL
+#define BOOST_HANA_CONFIG_ENABLE_STRING_UDL
+#endif
+#include <boost/hana.hpp>
+
 #include <boost/variant/variant.hpp>
 #include <boost/optional.hpp>
 #include <QStringList>
@@ -100,9 +98,12 @@ namespace oral
 
 	namespace detail
 	{
+		namespace hana = boost::hana;
+
 		template<typename U>
 		using MorpherDetector = decltype (std::declval<U> ().FieldNameMorpher (QString {}));
 
+		// TODO work on hana::strings directly.
 		template<typename T>
 		QString MorphFieldName (QString str)
 		{
@@ -119,11 +120,11 @@ namespace oral
 		template<typename Seq, int Idx>
 		QString GetFieldName ()
 		{
-			return MorphFieldName<Seq> (boost::fusion::extension::struct_member_name<Seq, Idx>::call ());
+			return MorphFieldName<Seq> (hana::first (hana::accessors<Seq> () [hana::size_c<Idx>]).c_str ());
 		}
 
 		template<typename S>
-		constexpr auto SeqSize = boost::fusion::result_of::size<S>::type::value;
+		constexpr auto SeqSize = hana::length (hana::accessors<S> ());
 
 		template<typename S>
 		constexpr auto SeqIndices = std::make_index_sequence<SeqSize<S>> {};
@@ -133,6 +134,7 @@ namespace oral
 		{
 			QStringList operator() () const
 			{
+				// TODO use hana::keys directly
 				return Run (SeqIndices<S>);
 			}
 		private:
@@ -157,10 +159,11 @@ namespace oral
 			template<int Idx>
 			static constexpr auto Index ()
 			{
-				return &boost::fusion::at_c<Idx> (Obj_);
+				return &(hana::second (hana::accessors<S> () [hana::size_c<Idx>]) (Obj_));
 			}
 		};
 
+		// TODO replace with searching over hana::range
 		template<auto Ptr, size_t Idx = 0>
 		constexpr size_t FieldIndex ()
 		{
@@ -293,9 +296,10 @@ namespace oral
 		{
 			return [data, insertQuery, bindPrimaryKey] (const T& t)
 			{
-				boost::fusion::fold (t, data.BoundFields_.begin (),
-						[&] (auto pos, const auto& elem)
+				hana::fold (t, data.BoundFields_.begin (),
+						[&] (auto pos, const auto& pair)
 						{
+							const auto& elem = hana::second (pair);
 							using Elem = std::decay_t<decltype (elem)>;
 							if (bindPrimaryKey || !IsPKey<Elem>::value)
 								insertQuery->bindValue (*pos++, ToVariantF (elem));
@@ -311,43 +315,46 @@ namespace oral
 		}
 
 		template<typename Seq, int Idx>
-		using ValueAtC_t = typename boost::fusion::result_of::value_at_c<Seq, Idx>::type;
+		using ValueAtC_t = std::decay_t<decltype (hana::members (std::declval<Seq> ()) [hana::size_c<Idx>])>;
 
-		template<typename Seq, typename Idx>
-		using ValueAt_t = typename boost::fusion::result_of::value_at<Seq, Idx>::type;
-
-		template<typename Seq, typename MemberIdx = boost::mpl::int_<0>>
-		struct FindPKey
+		// TODO can we use non-type template param for accessor here?
+		template<typename Seq>
+		constexpr auto AccType = [] (const auto& accessor)
 		{
-			static_assert ((boost::fusion::result_of::size<Seq>::value) != (MemberIdx::value),
-					"Primary key not found");
-
-			template<typename T>
-			struct Lazy
-			{
-				using type = T;
-			};
-
-			using result_type = typename std::conditional_t<
-						IsPKey<ValueAt_t<Seq, MemberIdx>>::value,
-						Lazy<MemberIdx>,
-						Lazy<FindPKey<Seq, typename boost::mpl::next<MemberIdx>::type>>
-					>::type;
+			return hana::type_c<std::decay_t<decltype (hana::second (accessor) (std::declval<Seq> ()))>>;
 		};
 
 		template<typename Seq>
-		using FindPKeyDetector = boost::mpl::int_<FindPKey<Seq>::result_type::value>;
+		constexpr auto SeqTypes = hana::transform (hana::accessors<Seq> (), AccType<Seq>);
 
 		template<typename Seq>
-		constexpr auto HasPKey = IsDetected_v<FindPKeyDetector, Seq>;
+		constexpr auto FindPKeyPred = [] (const auto& acc)
+		{
+			return hana::bool_c<IsPKey<typename decltype (AccType<Seq> (acc))::type>::value>;
+		};
+
+		// Returns (Maybe accessor) to get the primary key.
+		template<typename Seq>
+		constexpr auto FindPKey = hana::find_if (hana::accessors<Seq> (), FindPKeyPred<Seq>);
+
+		template<typename Seq>
+		constexpr auto FindPKeyGetter = hana::transform (FindPKey<Seq>, hana::second);
+
+		template<typename Seq>
+		constexpr auto FindPKeyIndex = std::decay_t<decltype (*hana::index_if (hana::accessors<Seq> (), FindPKeyPred<Seq>))>::value;
+
+		template<typename Seq>
+		constexpr auto HasPKey = FindPKey<Seq> != hana::nothing;
 
 		template<typename Seq>
 		constexpr auto HasAutogenPKey ()
 		{
-			if constexpr (HasPKey<Seq>)
-				return !HasType<NoAutogen> (AsTypelist_t<ValueAtC_t<Seq, FindPKey<Seq>::result_type::value>> {});
-			else
+			constexpr auto pkey = FindPKey<Seq>;
+
+			if constexpr (pkey == hana::nothing)
 				return false;
+			else
+				return !HasType<NoAutogen> (AsTypelist_t<typename decltype (AccType<Seq> (*pkey))::type> {});
 		}
 
 		template<typename T>
@@ -403,11 +410,11 @@ namespace oral
 
 				if constexpr (HasAutogen_)
 				{
-					constexpr auto index = FindPKey<Seq>::result_type::value;
+					constexpr auto accessor = *FindPKey<Seq>;
 
-					const auto& lastId = FromVariant<ValueAtC_t<Seq, index>> {} (query->lastInsertId ());
+					const auto& lastId = FromVariant<typename decltype (AccType<Seq> (accessor))::type> {} (query->lastInsertId ());
 					if constexpr (UpdatePKey)
-						boost::fusion::at_c<index> (t) = lastId;
+						hana::second (accessor) (t) = lastId;
 					else
 						return lastId;
 				}
@@ -417,7 +424,7 @@ namespace oral
 			{
 				if constexpr (HasAutogen_)
 				{
-					constexpr auto index = FindPKey<Seq>::result_type::value;
+					constexpr auto index = FindPKeyIndex<Seq>;
 					data.Fields_.removeAt (index);
 					data.BoundFields_.removeAt (index);
 				}
@@ -433,7 +440,7 @@ namespace oral
 			template<bool B = HasPKey>
 			AdaptDelete (const QSqlDatabase& db, const CachedFieldsData& data, std::enable_if_t<B>* = nullptr)
 			{
-				const auto index = FindPKey<Seq>::result_type::value;
+				const auto index = FindPKeyIndex<Seq>;
 
 				const auto& boundName = data.BoundFields_.at (index);
 				const auto& del = "DELETE FROM " + data.Table_ +
@@ -444,8 +451,7 @@ namespace oral
 
 				Deleter_ = [deleteQuery, boundName] (const Seq& t)
 				{
-					constexpr auto index = FindPKey<Seq>::result_type::value;
-					deleteQuery->bindValue (boundName, ToVariantF (boost::fusion::at_c<index> (t)));
+					deleteQuery->bindValue (boundName, ToVariantF ((*FindPKeyGetter<Seq>) (t)));
 					if (!deleteQuery->exec ())
 						throw QueryException ("delete query execution failed", deleteQuery);
 				};
@@ -474,9 +480,10 @@ namespace oral
 			else
 			{
 				T t;
+				auto getters = hana::transform (hana::accessors<T> (), hana::second);
 				const auto dummy = std::initializer_list<int>
 				{
-					(static_cast<void> (boost::fusion::at_c<Indices> (t) = FromVariant<ValueAtC_t<T, Indices>> {} (q.value (startIdx + Indices))), 0)...
+					(static_cast<void> (getters [hana::size_c<Indices>] (t) = FromVariant<ValueAtC_t<T, Indices>> {} (q.value (startIdx + Indices))), 0)...
 				};
 				Q_UNUSED (dummy);
 				return t;
@@ -698,7 +705,6 @@ namespace oral
 			template<typename T>
 			QString ToSql (ToSqlState<T>&) const
 			{
-				static_assert (Idx < boost::fusion::result_of::size<T>::type::value, "Index out of bounds.");
 				return detail::GetFieldName<T, Idx> ();
 			}
 
@@ -1497,7 +1503,7 @@ namespace oral
 			{
 				if constexpr (HasPKey)
 				{
-					const auto index = FindPKey<T>::result_type::value;
+					constexpr auto index = FindPKeyIndex<T>;
 
 					QList<QString> removedFields { data.Fields_ };
 					QList<QString> removedBoundFields { data.BoundFields_ };
@@ -1612,7 +1618,7 @@ namespace oral
 	InsertAction::Replace::PKeyType<Seq>::operator InsertAction::Replace () const
 	{
 		static_assert (detail::HasPKey<Seq>, "Sequence does not have any primary keys");
-		return { { detail::GetFieldName<Seq, detail::FindPKey<Seq>::result_type::value> () } };
+		return { { detail::GetFieldName<Seq, detail::FindPKeyIndex<Seq>> () } };
 	}
 
 	template<typename T>

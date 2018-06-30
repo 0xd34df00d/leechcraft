@@ -48,9 +48,9 @@ struct AutogenPKeyRecord
 	}
 };
 
-BOOST_FUSION_ADAPT_STRUCT (AutogenPKeyRecord,
+BOOST_HANA_ADAPT_STRUCT (AutogenPKeyRecord,
 		ID_,
-		Value_)
+		Value_);
 
 TOSTRING (AutogenPKeyRecord)
 
@@ -70,9 +70,9 @@ struct NoPKeyRecord
 	}
 };
 
-BOOST_FUSION_ADAPT_STRUCT (NoPKeyRecord,
+BOOST_HANA_ADAPT_STRUCT (NoPKeyRecord,
 		ID_,
-		Value_)
+		Value_);
 
 TOSTRING (NoPKeyRecord)
 
@@ -101,9 +101,9 @@ struct NonInPlaceConstructibleRecord
 	}
 };
 
-BOOST_FUSION_ADAPT_STRUCT (NonInPlaceConstructibleRecord,
+BOOST_HANA_ADAPT_STRUCT (NonInPlaceConstructibleRecord,
 		ID_,
-		Value_)
+		Value_);
 
 TOSTRING (NonInPlaceConstructibleRecord)
 
@@ -130,11 +130,11 @@ struct ComplexConstraintsRecord
 			>;
 };
 
-BOOST_FUSION_ADAPT_STRUCT (ComplexConstraintsRecord,
+BOOST_HANA_ADAPT_STRUCT (ComplexConstraintsRecord,
 		ID_,
 		Value_,
 		Age_,
-		Weight_)
+		Weight_);
 
 TOSTRING (ComplexConstraintsRecord)
 
