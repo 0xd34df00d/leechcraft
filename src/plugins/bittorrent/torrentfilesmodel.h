@@ -58,7 +58,6 @@ namespace BitTorrent
 		{
 			RoleFullPath = Qt::UserRole + 1,
 			RoleFileName,
-			RoleFileIndex,
 			RoleSize,
 			RoleProgress,
 			RolePriority,
@@ -70,7 +69,6 @@ namespace BitTorrent
 			ColumnPath,
 			ColumnPriority,
 			ColumnProgress,
-			ColumnDynamicMax,
 		};
 
 		TorrentFilesModel (int);
