@@ -29,6 +29,7 @@
 
 #include "addtorrentfilesmodel.h"
 #include <util/util.h>
+#include <util/sll/unreachable.h>
 
 namespace LeechCraft
 {
@@ -59,6 +60,7 @@ namespace BitTorrent
 			case ColumnSize:
 				return Util::MakePrettySize (node->SubtreeSize_);
 			}
+			Util::Unreachable ();
 		case Qt::DecorationRole:
 			return index.column () == ColumnPath ?
 					node->Icon_ :
@@ -71,6 +73,7 @@ namespace BitTorrent
 			case ColumnSize:
 				return node->SubtreeSize_;
 			}
+			Util::Unreachable ();
 		case RoleFullPath:
 			return node->GetFullPathStr ();
 		case RoleFileName:
