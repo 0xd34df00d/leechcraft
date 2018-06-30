@@ -86,13 +86,10 @@ namespace BitTorrent
 		if (!index.isValid ())
 			return 0;
 
+		auto flags = Qt::ItemIsSelectable | Qt::ItemIsEnabled;
 		if (index.column () == ColumnPath)
-			return Qt::ItemIsSelectable |
-				Qt::ItemIsEnabled |
-				Qt::ItemIsUserCheckable;
-		else
-			return Qt::ItemIsSelectable |
-				Qt::ItemIsEnabled;
+			flags |= Qt::ItemIsUserCheckable;
+		return flags;
 	}
 
 	bool AddTorrentFilesModel::setData (const QModelIndex& index, const QVariant& value, int role)
