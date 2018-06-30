@@ -57,8 +57,7 @@ namespace BitTorrent
 		enum
 		{
 			ColumnPath,
-			ColumnSize,
-			ColumnAddListMax
+			ColumnSize
 		};
 
 		struct FileEntry
