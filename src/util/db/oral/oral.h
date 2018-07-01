@@ -98,6 +98,8 @@ namespace oral
 
 	namespace detail
 	{
+	namespace
+	{
 		namespace hana = boost::hana;
 		using namespace hana::literals;
 
@@ -171,6 +173,7 @@ namespace oral
 		{
 			return GetFieldName<Seq, FieldIndex<Ptr> ()> ();
 		}
+	}
 	}
 
 	template<typename ImplFactory, typename T, typename = void>
@@ -259,6 +262,8 @@ namespace oral
 	};
 
 	namespace detail
+	{
+	namespace
 	{
 		template<typename T>
 		struct IsPKey : std::false_type {};
@@ -817,6 +822,7 @@ namespace oral
 		template<ExprType Op>
 		struct InfixBinary {};
 	}
+	}
 
 	namespace infix
 	{
@@ -824,6 +830,8 @@ namespace oral
 	}
 
 	namespace detail
+	{
+	namespace
 	{
 		template<typename L, ExprType Op>
 		struct InfixBinaryProxy
@@ -924,6 +932,7 @@ namespace oral
 			return {};
 		}
 	}
+	}
 
 	namespace sph
 	{
@@ -984,6 +993,8 @@ namespace oral
 	};
 
 	namespace detail
+	{
+	namespace
 	{
 		template<auto... Ptrs, size_t... Idxs>
 		auto MakeIndexedQueryHandler (MemberPtrs<Ptrs...>, std::index_sequence<Idxs...>)
@@ -1587,6 +1598,7 @@ namespace oral
 					");";
 		}
 	}
+	}
 
 	template<auto... Ptrs>
 	InsertAction::Replace::FieldsType<Ptrs...>::operator InsertAction::Replace () const
@@ -1650,6 +1662,8 @@ namespace oral
 
 	namespace detail
 	{
+	namespace
+	{
 		template<size_t Idx, typename Tuple>
 		using UnderlyingObject_t = typename std::decay_t<std::tuple_element_t<Idx, Tuple>>::element_type::ObjectType_t;
 
@@ -1658,6 +1672,7 @@ namespace oral
 		{
 			((std::get<Idxs> (tuple) = AdaptPtr<UnderlyingObject_t<Idxs, Tuple>, ImplFactory> (db)), ...);
 		}
+	}
 	}
 
 	template<typename ImplFactory, typename Tuple>
