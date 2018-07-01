@@ -403,7 +403,7 @@ namespace oral
 			{
 				if constexpr (HasAutogen_)
 				{
-					constexpr auto index = decltype (*FindPKeyIndex<Seq>)::value;
+					constexpr auto index = std::decay_t<decltype (*FindPKeyIndex<Seq>)>::value;
 					data.Fields_.removeAt (index);
 					data.BoundFields_.removeAt (index);
 				}
