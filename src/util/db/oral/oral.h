@@ -103,7 +103,6 @@ namespace oral
 		template<typename U>
 		using MorpherDetector = decltype (std::declval<U> ().FieldNameMorpher (QString {}));
 
-		// TODO work on hana::strings directly.
 		template<typename T>
 		QString MorphFieldName (QString str)
 		{
