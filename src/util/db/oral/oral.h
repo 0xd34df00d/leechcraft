@@ -135,7 +135,7 @@ namespace oral
 			QStringList operator() () const
 			{
 				const auto& keys = hana::transform (hana::accessors<S> (),
-						[] (const auto& accessor) { return MorphFieldName<S> (hana::first (accessor)); });
+						[] (auto accessor) { return MorphFieldName<S> (hana::first (accessor).c_str ()); });
 				return hana::unpack (keys, [] (const auto&... args) { return QStringList { args... }; });
 			}
 		};
@@ -300,7 +300,7 @@ namespace oral
 
 		// TODO can we use non-type template param for accessor here?
 		template<typename Seq>
-		constexpr auto AccType = [] (const auto& accessor)
+		constexpr auto AccType = [] (auto accessor)
 		{
 			return hana::type_c<std::decay_t<decltype (hana::second (accessor) (std::declval<Seq> ()))>>;
 		};
@@ -309,7 +309,7 @@ namespace oral
 		constexpr auto SeqTypes = hana::transform (hana::accessors<Seq> (), AccType<Seq>);
 
 		template<typename Seq>
-		constexpr auto FindPKeyPred = [] (const auto& acc)
+		constexpr auto FindPKeyPred = [] (auto acc)
 		{
 			return hana::bool_c<IsPKey<typename decltype (AccType<Seq> (acc))::type>::value>;
 		};
