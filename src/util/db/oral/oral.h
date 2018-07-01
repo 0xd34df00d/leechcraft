@@ -1202,16 +1202,16 @@ namespace oral
 
 			auto operator() () const
 			{
-				return Build () ();
+				return (*this) (SelectWhole {}, ConstTrueTree_v);
 			}
 
 			template<typename Single>
 			auto operator() (Single&& single) const
 			{
 				if constexpr (IsExprTree<std::decay_t<Single>> {})
-					return Build ().Where (std::forward<Single> (single)) ();
+					return (*this) (SelectWhole {}, std::forward<Single> (single));
 				else
-					return Build ().Select (std::forward<Single> (single)) ();
+					return (*this) (std::forward<Single> (single), ConstTrueTree_v);
 			}
 
 			template<
