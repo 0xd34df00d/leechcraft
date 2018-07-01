@@ -319,9 +319,6 @@ namespace oral
 		constexpr auto FindPKey = hana::find_if (hana::accessors<Seq> (), FindPKeyPred<Seq>);
 
 		template<typename Seq>
-		constexpr auto FindPKeyGetter = hana::transform (FindPKey<Seq>, hana::second);
-
-		template<typename Seq>
 		constexpr auto FindPKeyIndex = std::decay_t<decltype (*hana::index_if (hana::accessors<Seq> (), FindPKeyPred<Seq>))>::value;
 
 		template<typename Seq>
@@ -432,7 +429,7 @@ namespace oral
 
 				Deleter_ = [deleteQuery, boundName] (const Seq& t)
 				{
-					deleteQuery->bindValue (boundName, ToVariantF ((*FindPKeyGetter<Seq>) (t)));
+					deleteQuery->bindValue (boundName, ToVariantF (hana::second (*FindPKey<Seq>) (t)));
 					if (!deleteQuery->exec ())
 						throw QueryException ("delete query execution failed", deleteQuery);
 				};
