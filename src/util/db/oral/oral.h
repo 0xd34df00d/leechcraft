@@ -134,14 +134,9 @@ namespace oral
 		{
 			QStringList operator() () const
 			{
-				// TODO use hana::keys directly
-				return Run (SeqIndices<S>);
-			}
-		private:
-			template<size_t... Vals>
-			QStringList Run (std::index_sequence<Vals...>) const
-			{
-				return { GetFieldName<S, Vals> ()... };
+				const auto& keys = hana::transform (hana::accessors<S> (),
+						[] (const auto& accessor) { return MorphFieldName<S> (hana::first (accessor)); });
+				return hana::unpack (keys, [] (const auto&... args) { return QStringList { args... }; });
 			}
 		};
 
