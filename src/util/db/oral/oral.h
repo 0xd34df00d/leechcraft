@@ -99,6 +99,7 @@ namespace oral
 	namespace detail
 	{
 		namespace hana = boost::hana;
+		using namespace hana::literals;
 
 		template<typename U>
 		using MorpherDetector = decltype (std::declval<U> ().FieldNameMorpher (QString {}));
@@ -140,43 +141,29 @@ namespace oral
 		};
 
 		template<typename S>
-		struct AddressOf
+		struct StaticHolder
 		{
 			inline static S Obj_ {};
-
-			template<auto P>
-			static constexpr auto Ptr ()
-			{
-				return &(Obj_.*P);
-			}
-
-			template<int Idx>
-			static constexpr auto Index ()
-			{
-				return &(hana::second (hana::accessors<S> () [hana::size_c<Idx>]) (Obj_));
-			}
 		};
 
-		// TODO replace with searching over hana::range
-		template<auto Ptr, size_t Idx = 0>
+		template<auto Ptr>
 		constexpr size_t FieldIndex ()
 		{
 			using S = MemberPtrStruct_t<Ptr>;
 
-			if constexpr (Idx == SeqSize<S>)
-				throw std::runtime_error { "wut, no such field?" };
-			else
-			{
-				constexpr auto direct = AddressOf<S>::template Ptr<Ptr> ();
-				constexpr auto indexed = AddressOf<S>::template Index<Idx> ();
-				if constexpr (std::is_same_v<decltype (direct), decltype (indexed)>)
-				{
-					if (indexed == direct)
-						return Idx;
-				}
-
-				return FieldIndex<Ptr, Idx + 1> ();
-			}
+			constexpr auto direct = &(StaticHolder<S>::Obj_.*Ptr);
+			constexpr auto index = *hana::index_if (hana::accessors<S> (),
+					[] (auto accessor)
+					{
+						constexpr auto indexed = &(hana::second (accessor) (StaticHolder<S>::Obj_));
+						if constexpr (!std::is_same_v<decltype (direct), decltype (indexed)>)
+							return hana::false_c;
+						else if constexpr (indexed == direct)
+							return hana::true_c;
+						else
+							return hana::false_c;
+					});
+			return decltype (index)::value;
 		}
 
 		template<typename Seq, auto Ptr>
