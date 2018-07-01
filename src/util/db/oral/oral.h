@@ -303,7 +303,6 @@ namespace oral
 		template<typename Seq, int Idx>
 		using ValueAtC_t = std::decay_t<decltype (hana::members (std::declval<Seq> ()) [hana::size_c<Idx>])>;
 
-		// TODO can we use non-type template param for accessor here?
 		template<typename Seq>
 		constexpr auto AccType = [] (auto accessor)
 		{
