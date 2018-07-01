@@ -319,10 +319,7 @@ namespace oral
 		constexpr auto FindPKey = hana::find_if (hana::accessors<Seq> (), FindPKeyPred<Seq>);
 
 		template<typename Seq>
-		constexpr auto FindPKeyIndex = std::decay_t<decltype (*hana::index_if (hana::accessors<Seq> (), FindPKeyPred<Seq>))>::value;
-
-		template<typename Seq>
-		constexpr auto HasPKey = FindPKey<Seq> != hana::nothing;
+		constexpr auto FindPKeyIndex = hana::index_if (hana::accessors<Seq> (), FindPKeyPred<Seq>);
 
 		template<typename Seq>
 		constexpr auto HasAutogenPKey ()
@@ -402,7 +399,7 @@ namespace oral
 			{
 				if constexpr (HasAutogen_)
 				{
-					constexpr auto index = FindPKeyIndex<Seq>;
+					constexpr auto index = decltype (*FindPKeyIndex<Seq>)::value;
 					data.Fields_.removeAt (index);
 					data.BoundFields_.removeAt (index);
 				}
@@ -410,40 +407,41 @@ namespace oral
 			}
 		};
 
-		template<typename Seq, bool HasPKey = HasPKey<Seq>>
+		template<typename Seq>
 		struct AdaptDelete
 		{
 			std::function<void (Seq)> Deleter_;
+
+			static constexpr auto MaybePKey = FindPKeyIndex<Seq>;
 		public:
-			template<bool B = HasPKey>
-			AdaptDelete (const QSqlDatabase& db, const CachedFieldsData& data, std::enable_if_t<B>* = nullptr)
+			AdaptDelete (const QSqlDatabase& db, const CachedFieldsData& data)
 			{
-				const auto index = FindPKeyIndex<Seq>;
-
-				const auto& boundName = data.BoundFields_.at (index);
-				const auto& del = "DELETE FROM " + data.Table_ +
-						" WHERE " + data.Fields_.at (index) + " = " + boundName + ";";
-
-				const auto deleteQuery = std::make_shared<QSqlQuery> (db);
-				deleteQuery->prepare (del);
-
-				Deleter_ = [deleteQuery, boundName] (const Seq& t)
+				if constexpr (MaybePKey != hana::nothing)
 				{
-					deleteQuery->bindValue (boundName, ToVariantF (hana::second (*FindPKey<Seq>) (t)));
-					if (!deleteQuery->exec ())
-						throw QueryException ("delete query execution failed", deleteQuery);
-				};
+					const auto index = std::decay_t<decltype (*MaybePKey)>::value;
+
+					const auto& boundName = data.BoundFields_.at (index);
+					const auto& del = "DELETE FROM " + data.Table_ +
+							" WHERE " + data.Fields_.at (index) + " = " + boundName + ";";
+
+					const auto deleteQuery = std::make_shared<QSqlQuery> (db);
+					deleteQuery->prepare (del);
+
+					Deleter_ = [deleteQuery, boundName] (const Seq& t)
+					{
+						deleteQuery->bindValue (boundName, ToVariantF (hana::second (*FindPKey<Seq>) (t)));
+						if (!deleteQuery->exec ())
+							throw QueryException ("delete query execution failed", deleteQuery);
+					};
+				}
 			}
 
-			template<bool B = HasPKey>
-			AdaptDelete (const QSqlDatabase&, const CachedFieldsData&, std::enable_if_t<!B>* = nullptr)
+			void operator() (const Seq& seq)
 			{
-			}
-
-			template<bool B = HasPKey>
-			std::enable_if_t<B> operator() (const Seq& seq)
-			{
-				Deleter_ (seq);
+				if constexpr (MaybePKey != hana::nothing)
+					Deleter_ (seq);
+				else
+					static_assert (std::is_same_v<struct Dummy, Seq>, "Record has no primary key");
 			}
 		};
 
@@ -1467,21 +1465,23 @@ namespace oral
 			}
 		};
 
-		template<typename T, bool HasPKey = HasPKey<T>>
+		template<typename T>
 		class AdaptUpdate
 		{
 			const QSqlDatabase DB_;
 			const CachedFieldsData Cached_;
 
 			std::function<void (T)> Updater_;
+
+			static constexpr auto MaybeIndex_ = FindPKeyIndex<T>;
 		public:
 			AdaptUpdate (const QSqlDatabase& db, const CachedFieldsData& data)
 			: DB_ { db }
 			, Cached_ { data }
 			{
-				if constexpr (HasPKey)
+				if constexpr (MaybeIndex_ != hana::nothing)
 				{
-					constexpr auto index = FindPKeyIndex<T>;
+					constexpr auto index = std::decay_t<decltype (*MaybeIndex_)>::value;
 
 					QList<QString> removedFields { data.Fields_ };
 					QList<QString> removedBoundFields { data.BoundFields_ };
@@ -1502,10 +1502,12 @@ namespace oral
 				}
 			}
 
-			template<bool B = HasPKey>
-			std::enable_if_t<B> operator() (const T& seq)
+			void operator() (const T& seq)
 			{
-				Updater_ (seq);
+				if constexpr (MaybeIndex_ != hana::nothing)
+					Updater_ (seq);
+				else
+					static_assert (std::is_same_v<struct Dummy, T>, "Record has no primary key");
 			}
 
 			template<typename SL, typename SR, ExprType WType, typename WL, typename WR>
@@ -1595,8 +1597,7 @@ namespace oral
 	template<typename Seq>
 	InsertAction::Replace::PKeyType<Seq>::operator InsertAction::Replace () const
 	{
-		static_assert (detail::HasPKey<Seq>, "Sequence does not have any primary keys");
-		return { { detail::GetFieldName<Seq, detail::FindPKeyIndex<Seq>> () } };
+		return { { detail::GetFieldName<Seq, std::decay_t<decltype (*detail::FindPKeyIndex<Seq>)>::value> () } };
 	}
 
 	template<typename T>
