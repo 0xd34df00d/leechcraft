@@ -104,7 +104,7 @@ namespace oral
 		using MorpherDetector = decltype (std::declval<U> ().FieldNameMorpher (QString {}));
 
 		template<typename T>
-		QString MorphFieldName (QString str)
+		QString MorphFieldName (QString str) noexcept
 		{
 			if constexpr (IsDetected_v<MorpherDetector, T>)
 				return T::FieldNameMorpher (str);
@@ -117,7 +117,7 @@ namespace oral
 		}
 
 		template<typename Seq, int Idx>
-		QString GetFieldName ()
+		QString GetFieldName () noexcept
 		{
 			return MorphFieldName<Seq> (boost::fusion::extension::struct_member_name<Seq, Idx>::call ());
 		}
@@ -131,13 +131,13 @@ namespace oral
 		template<typename S>
 		struct GetFieldsNames
 		{
-			QStringList operator() () const
+			QStringList operator() () const noexcept
 			{
 				return Run (SeqIndices<S>);
 			}
 		private:
 			template<size_t... Vals>
-			QStringList Run (std::index_sequence<Vals...>) const
+			QStringList Run (std::index_sequence<Vals...>) const noexcept
 			{
 				return { GetFieldName<S, Vals> ()... };
 			}
@@ -149,25 +149,25 @@ namespace oral
 			inline static S Obj_ {};
 
 			template<auto P>
-			static constexpr auto Ptr ()
+			static constexpr auto Ptr () noexcept
 			{
 				return &(Obj_.*P);
 			}
 
 			template<int Idx>
-			static constexpr auto Index ()
+			static constexpr auto Index () noexcept
 			{
 				return &boost::fusion::at_c<Idx> (Obj_);
 			}
 		};
 
 		template<auto Ptr, size_t Idx = 0>
-		constexpr size_t FieldIndex ()
+		constexpr size_t FieldIndex () noexcept
 		{
 			using S = MemberPtrStruct_t<Ptr>;
 
 			if constexpr (Idx == SeqSize<S>)
-				throw std::runtime_error { "wut, no such field?" };
+				return -1;
 			else
 			{
 				constexpr auto direct = AddressOf<S>::template Ptr<Ptr> ();
@@ -183,7 +183,7 @@ namespace oral
 		}
 
 		template<typename Seq, auto Ptr>
-		QString GetFieldNamePtr ()
+		QString GetFieldNamePtr () noexcept
 		{
 			return GetFieldName<Seq, FieldIndex<Ptr> ()> ();
 		}
@@ -192,7 +192,7 @@ namespace oral
 	template<typename ImplFactory, typename T, typename = void>
 	struct Type2Name
 	{
-		QString operator() () const
+		QString operator() () const noexcept
 		{
 			if constexpr (HasType<T> (Typelist<int, qulonglong, bool> {}) || std::is_enum_v<T>)
 				return "INTEGER";
@@ -210,31 +210,31 @@ namespace oral
 	template<typename ImplFactory, typename T>
 	struct Type2Name<ImplFactory, Unique<T>>
 	{
-		QString operator() () const { return Type2Name<ImplFactory, T> () () + " UNIQUE"; }
+		QString operator() () const noexcept { return Type2Name<ImplFactory, T> () () + " UNIQUE"; }
 	};
 
 	template<typename ImplFactory, typename T>
 	struct Type2Name<ImplFactory, NotNull<T>>
 	{
-		QString operator() () const { return Type2Name<ImplFactory, T> () () + " NOT NULL"; }
+		QString operator() () const noexcept { return Type2Name<ImplFactory, T> () () + " NOT NULL"; }
 	};
 
 	template<typename ImplFactory, typename T, typename... Tags>
 	struct Type2Name<ImplFactory, PKey<T, Tags...>>
 	{
-		QString operator() () const { return Type2Name<ImplFactory, T> () () + " PRIMARY KEY"; }
+		QString operator() () const noexcept { return Type2Name<ImplFactory, T> () () + " PRIMARY KEY"; }
 	};
 
 	template<typename ImplFactory, typename... Tags>
 	struct Type2Name<ImplFactory, PKey<int, Tags...>>
 	{
-		QString operator() () const { return ImplFactory::TypeLits::IntAutoincrement; }
+		QString operator() () const noexcept { return ImplFactory::TypeLits::IntAutoincrement; }
 	};
 
 	template<typename ImplFactory, auto Ptr>
 	struct Type2Name<ImplFactory, References<Ptr>>
 	{
-		QString operator() () const
+		QString operator() () const noexcept
 		{
 			using Seq = MemberPtrStruct_t<Ptr>;
 			return Type2Name<ImplFactory, ReferencesValue_t<Ptr>> () () +
@@ -245,7 +245,7 @@ namespace oral
 	template<typename T, typename = void>
 	struct ToVariant
 	{
-		QVariant operator() (const T& t) const
+		QVariant operator() (const T& t) const noexcept
 		{
 			if constexpr (std::is_same_v<T, QDateTime>)
 				return t.toString (Qt::ISODate);
@@ -261,7 +261,7 @@ namespace oral
 	template<typename T, typename = void>
 	struct FromVariant
 	{
-		T operator() (const QVariant& var) const
+		T operator() (const QVariant& var) const noexcept
 		{
 			if constexpr (std::is_same_v<T, QDateTime>)
 				return QDateTime::fromString (var.toString (), Qt::ISODate);
@@ -283,13 +283,13 @@ namespace oral
 		struct IsPKey<PKey<U, Tags...>> : std::true_type {};
 
 		template<typename T>
-		QVariant ToVariantF (const T& t)
+		QVariant ToVariantF (const T& t) noexcept
 		{
 			return ToVariant<T> {} (t);
 		}
 
 		template<typename T>
-		auto MakeInserter (const CachedFieldsData& data, const QSqlQuery_ptr& insertQuery, bool bindPrimaryKey)
+		auto MakeInserter (const CachedFieldsData& data, const QSqlQuery_ptr& insertQuery, bool bindPrimaryKey) noexcept
 		{
 			return [data, insertQuery, bindPrimaryKey] (const T& t)
 			{
@@ -342,7 +342,7 @@ namespace oral
 		constexpr auto HasPKey = IsDetected_v<FindPKeyDetector, Seq>;
 
 		template<typename Seq>
-		constexpr auto HasAutogenPKey ()
+		constexpr auto HasAutogenPKey () noexcept
 		{
 			if constexpr (HasPKey<Seq>)
 				return !HasType<NoAutogen> (AsTypelist_t<ValueAtC_t<Seq, FindPKey<Seq>::result_type::value>> {});
@@ -351,7 +351,7 @@ namespace oral
 		}
 
 		template<typename T>
-		CachedFieldsData BuildCachedFieldsData (const QString& table)
+		CachedFieldsData BuildCachedFieldsData (const QString& table) noexcept
 		{
 			const auto& fields = detail::GetFieldsNames<T> {} ();
 			const auto& qualified = Util::Map (fields, [&table] (const QString& field) { return table + "." + field; });
@@ -361,7 +361,7 @@ namespace oral
 		}
 
 		template<typename T>
-		CachedFieldsData BuildCachedFieldsData ()
+		CachedFieldsData BuildCachedFieldsData () noexcept
 		{
 			static CachedFieldsData result = BuildCachedFieldsData<T> (T::ClassName ());
 			return result;
@@ -378,7 +378,7 @@ namespace oral
 			IInsertQueryBuilder_ptr QueryBuilder_;
 		public:
 			template<typename ImplFactory>
-			AdaptInsert (const QSqlDatabase& db, CachedFieldsData data, ImplFactory&& factory)
+			AdaptInsert (const QSqlDatabase& db, CachedFieldsData data, ImplFactory&& factory) noexcept
 			: Data_ { RemovePKey (data) }
 			, QueryBuilder_ { factory.MakeInsertQueryBuilder (db, Data_) }
 			{
@@ -413,7 +413,7 @@ namespace oral
 				}
 			}
 
-			static CachedFieldsData RemovePKey (CachedFieldsData data)
+			static CachedFieldsData RemovePKey (CachedFieldsData data) noexcept
 			{
 				if constexpr (HasAutogen_)
 				{
@@ -431,7 +431,7 @@ namespace oral
 			std::function<void (Seq)> Deleter_;
 		public:
 			template<bool B = HasPKey>
-			AdaptDelete (const QSqlDatabase& db, const CachedFieldsData& data, std::enable_if_t<B>* = nullptr)
+			AdaptDelete (const QSqlDatabase& db, const CachedFieldsData& data, std::enable_if_t<B>* = nullptr) noexcept
 			{
 				const auto index = FindPKey<Seq>::result_type::value;
 
@@ -452,12 +452,12 @@ namespace oral
 			}
 
 			template<bool B = HasPKey>
-			AdaptDelete (const QSqlDatabase&, const CachedFieldsData&, std::enable_if_t<!B>* = nullptr)
+			AdaptDelete (const QSqlDatabase&, const CachedFieldsData&, std::enable_if_t<!B>* = nullptr) noexcept
 			{
 			}
 
 			template<bool B = HasPKey>
-			std::enable_if_t<B> operator() (const Seq& seq)
+			std::enable_if_t<B> operator() (const Seq& seq) noexcept
 			{
 				Deleter_ (seq);
 			}
@@ -467,7 +467,7 @@ namespace oral
 		using AggregateDetector_t = decltype (new T { std::declval<Args> ()... });
 
 		template<typename T, size_t... Indices>
-		T InitializeFromQuery (const QSqlQuery& q, std::index_sequence<Indices...>, int startIdx)
+		T InitializeFromQuery (const QSqlQuery& q, std::index_sequence<Indices...>, int startIdx) noexcept
 		{
 			if constexpr (IsDetected_v<AggregateDetector_t, T, ValueAtC_t<T, Indices>...>)
 				return T { FromVariant<ValueAtC_t<T, Indices>> {} (q.value (startIdx + Indices))... };
@@ -503,7 +503,7 @@ namespace oral
 			QSqlQuery_ptr Query_;
 			QList<QString> BoundFields_;
 
-			void operator() (const HeadArg& arg, const TailArgs&... tail) const
+			void operator() (const HeadArg& arg, const TailArgs&... tail) const noexcept
 			{
 				Query_->bindValue (BoundFields_.at (FieldsUnpacker::Head), arg);
 
@@ -517,7 +517,7 @@ namespace oral
 			QSqlQuery_ptr Query_;
 			QList<QString> BoundFields_;
 
-			void operator() (const HeadArg& arg) const
+			void operator() (const HeadArg& arg) const noexcept
 			{
 				Query_->bindValue (BoundFields_.at (FieldsUnpacker::Head), arg);
 			}
@@ -543,7 +543,7 @@ namespace oral
 			Or
 		};
 
-		inline QString TypeToSql (ExprType type)
+		inline QString TypeToSql (ExprType type) noexcept
 		{
 			switch (type)
 			{
@@ -575,7 +575,7 @@ namespace oral
 			Util::Unreachable ();
 		}
 
-		constexpr bool IsRelational (ExprType type)
+		constexpr bool IsRelational (ExprType type) noexcept
 		{
 			return type == ExprType::Greater ||
 					type == ExprType::Less ||
@@ -638,14 +638,14 @@ namespace oral
 			L Left_;
 			R Right_;
 		public:
-			AssignList (const L& l, const R& r)
+			AssignList (const L& l, const R& r) noexcept
 			: Left_ { l }
 			, Right_ { r }
 			{
 			}
 
 			template<typename T>
-			QString ToSql (ToSqlState<T>& state) const
+			QString ToSql (ToSqlState<T>& state) const noexcept
 			{
 				if constexpr (IsExprTree<L> {})
 					return Left_.GetFieldName () + " = " + Right_.ToSql (state);
@@ -654,7 +654,7 @@ namespace oral
 			}
 
 			template<typename OL, typename OR>
-			auto operator, (const AssignList<OL, OR>& tail)
+			auto operator, (const AssignList<OL, OR>& tail) noexcept
 			{
 				return AssignList<AssignList<L, R>, AssignList<OL, OR>> { *this, tail };
 			}
@@ -666,14 +666,14 @@ namespace oral
 			L Left_;
 			R Right_;
 		public:
-			ExprTree (const L& l, const R& r)
+			ExprTree (const L& l, const R& r) noexcept
 			: Left_ (l)
 			, Right_ (r)
 			{
 			}
 
 			template<typename T>
-			QString ToSql (ToSqlState<T>& state) const
+			QString ToSql (ToSqlState<T>& state) const noexcept
 			{
 				static_assert (RelationalTypesChecker<Type, T, L, R>::value,
 						"Incompatible types passed to a relational operator.");
@@ -682,7 +682,7 @@ namespace oral
 			}
 
 			template<typename T>
-			QSet<QString> AdditionalTables () const
+			QSet<QString> AdditionalTables () const noexcept
 			{
 				return Left_.template AdditionalTables<T> () + Right_.template AdditionalTables<T> ();
 			}
@@ -696,14 +696,14 @@ namespace oral
 			using ValueType_t = ValueAtC_t<T, Idx>;
 
 			template<typename T>
-			QString ToSql (ToSqlState<T>&) const
+			QString ToSql (ToSqlState<T>&) const noexcept
 			{
 				static_assert (Idx < boost::fusion::result_of::size<T>::type::value, "Index out of bounds.");
 				return detail::GetFieldName<T, Idx> ();
 			}
 
 			template<typename>
-			QSet<QString> AdditionalTables () const
+			QSet<QString> AdditionalTables () const noexcept
 			{
 				return {};
 			}
@@ -720,18 +720,18 @@ namespace oral
 			using ValueType_t = MemberPtrType_t<Ptr>;
 
 			template<typename T>
-			QString ToSql (ToSqlState<T>&) const
+			QString ToSql (ToSqlState<T>&) const noexcept
 			{
 				return MemberPtrStruct_t<Ptr>::ClassName () + "." + GetFieldName ();
 			}
 
-			QString GetFieldName () const
+			QString GetFieldName () const noexcept
 			{
 				return detail::GetFieldNamePtr<MemberPtrStruct_t<Ptr>, Ptr> ();
 			}
 
 			template<typename T>
-			QSet<QString> AdditionalTables () const
+			QSet<QString> AdditionalTables () const noexcept
 			{
 				using Seq = MemberPtrStruct_t<Ptr>;
 				if constexpr (std::is_same_v<Seq, T>)
@@ -741,7 +741,7 @@ namespace oral
 			}
 
 			template<typename R>
-			auto operator= (const R&) const;
+			auto operator= (const R&) const noexcept;
 		};
 
 		template<typename T>
@@ -752,13 +752,13 @@ namespace oral
 			template<typename>
 			using ValueType_t = T;
 
-			ExprTree (const T& t)
+			ExprTree (const T& t) noexcept
 			: Data_ (t)
 			{
 			}
 
 			template<typename ObjT>
-			QString ToSql (ToSqlState<ObjT>& state) const
+			QString ToSql (ToSqlState<ObjT>& state) const noexcept
 			{
 				const auto& name = ":bound_" + QString::number (++state.LastID_);
 				state.BoundMembers_ [name] = ToVariantF (Data_);
@@ -766,7 +766,7 @@ namespace oral
 			}
 
 			template<typename>
-			QSet<QString> AdditionalTables () const
+			QSet<QString> AdditionalTables () const noexcept
 			{
 				return {};
 			}
@@ -778,7 +778,7 @@ namespace oral
 		constexpr auto ConstTrueTree_v = ExprTree<ExprType::ConstTrue> {};
 
 		template<typename T>
-		constexpr auto AsLeafData (const T& node)
+		constexpr auto AsLeafData (const T& node) noexcept
 		{
 			if constexpr (IsExprTree<T> {})
 				return node;
@@ -788,13 +788,13 @@ namespace oral
 
 		template<auto Ptr>
 		template<typename R>
-		auto ExprTree<ExprType::LeafStaticPlaceholder, MemberPtrs<Ptr>, void>::operator= (const R& r) const
+		auto ExprTree<ExprType::LeafStaticPlaceholder, MemberPtrs<Ptr>, void>::operator= (const R& r) const noexcept
 		{
 			return AssignList { *this, AsLeafData (r) };
 		}
 
 		template<ExprType Type, typename L, typename R>
-		auto MakeExprTree (const L& left, const R& right)
+		auto MakeExprTree (const L& left, const R& right) noexcept
 		{
 			using EL = decltype (AsLeafData (left));
 			using ER = decltype (AsLeafData (right));
@@ -802,7 +802,7 @@ namespace oral
 		}
 
 		template<typename L, typename R>
-		constexpr bool EitherIsExprTree ()
+		constexpr bool EitherIsExprTree () noexcept
 		{
 			if (IsExprTree<L> {})
 				return true;
@@ -815,19 +815,19 @@ namespace oral
 		using EnableRelOp_t = std::enable_if_t<EitherIsExprTree<L, R> ()>;
 
 		template<typename L, typename R, typename = EnableRelOp_t<L, R>>
-		auto operator< (const L& left, const R& right)
+		auto operator< (const L& left, const R& right) noexcept
 		{
 			return MakeExprTree<ExprType::Less> (left, right);
 		}
 
 		template<typename L, typename R, typename = EnableRelOp_t<L, R>>
-		auto operator> (const L& left, const R& right)
+		auto operator> (const L& left, const R& right) noexcept
 		{
 			return MakeExprTree<ExprType::Greater> (left, right);
 		}
 
 		template<typename L, typename R, typename = EnableRelOp_t<L, R>>
-		auto operator== (const L& left, const R& right)
+		auto operator== (const L& left, const R& right) noexcept
 		{
 			return MakeExprTree<ExprType::Equal> (left, right);
 		}
@@ -850,38 +850,38 @@ namespace oral
 		};
 
 		template<typename L, ExprType Op>
-		auto operator| (const L& left, InfixBinary<Op>)
+		auto operator| (const L& left, InfixBinary<Op>) noexcept
 		{
 			return InfixBinaryProxy<L, Op> { left };
 		}
 
 		template<typename L, ExprType Op, typename R>
-		auto operator| (const InfixBinaryProxy<L, Op>& left, const R& right)
+		auto operator| (const InfixBinaryProxy<L, Op>& left, const R& right) noexcept
 		{
 			return MakeExprTree<Op> (left.Left_, right);
 		}
 
 		template<typename L, typename R, typename = EnableRelOp_t<L, R>>
-		auto operator&& (const L& left, const R& right)
+		auto operator&& (const L& left, const R& right) noexcept
 		{
 			return MakeExprTree<ExprType::And> (left, right);
 		}
 
 		template<typename L, typename R, typename = EnableRelOp_t<L, R>>
-		auto operator|| (const L& left, const R& right)
+		auto operator|| (const L& left, const R& right) noexcept
 		{
 			return MakeExprTree<ExprType::Or> (left, right);
 		}
 
 		template<typename>
-		auto HandleExprTree (const ExprTree<ExprType::ConstTrue>&, int lastId = 0)
+		auto HandleExprTree (const ExprTree<ExprType::ConstTrue>&, int lastId = 0) noexcept
 		{
 			return std::tuple { QString {}, Void {}, lastId };
 		}
 
 		template<typename Seq, typename Tree,
 				typename = decltype (std::declval<Tree> ().ToSql (std::declval<ToSqlState<Seq>&> ()))>
-		auto HandleExprTree (const Tree& tree, int lastId = 0)
+		auto HandleExprTree (const Tree& tree, int lastId = 0) noexcept
 		{
 			ToSqlState<Seq> state { lastId, {} };
 
@@ -937,7 +937,7 @@ namespace oral
 		struct IsSelector<SelectorUnion<L, R>> : std::true_type {};
 
 		template<typename L, typename R, typename = std::enable_if_t<IsSelector<L> {} && IsSelector<R> {}>>
-		SelectorUnion<L, R> operator+ (const L&, const R&)
+		SelectorUnion<L, R> operator+ (const L&, const R&) noexcept
 		{
 			return {};
 		}
@@ -985,7 +985,7 @@ namespace oral
 	{
 		uint64_t Count;
 
-		Limit (uint64_t count)
+		Limit (uint64_t count) noexcept
 		: Count { count }
 		{
 		}
@@ -995,7 +995,7 @@ namespace oral
 	{
 		uint64_t Count;
 
-		Offset (uint64_t count)
+		Offset (uint64_t count) noexcept
 		: Count { count }
 		{
 		}
@@ -1004,9 +1004,9 @@ namespace oral
 	namespace detail
 	{
 		template<auto... Ptrs, size_t... Idxs>
-		auto MakeIndexedQueryHandler (MemberPtrs<Ptrs...>, std::index_sequence<Idxs...>)
+		auto MakeIndexedQueryHandler (MemberPtrs<Ptrs...>, std::index_sequence<Idxs...>) noexcept
 		{
-			return [] (const QSqlQuery& q, int startIdx = 0)
+			return [] (const QSqlQuery& q, int startIdx = 0) noexcept
 			{
 				if constexpr (sizeof... (Ptrs) == 1)
 					return FromVariant<UnwrapIndirect_t<Head_t<Typelist<MemberPtrType_t<Ptrs>...>>>> {} (q.value (startIdx));
@@ -1016,16 +1016,16 @@ namespace oral
 		}
 
 		template<auto Ptr>
-		auto MakeIndexedQueryHandler ()
+		auto MakeIndexedQueryHandler () noexcept
 		{
-			return [] (const QSqlQuery& q, int startIdx = 0)
+			return [] (const QSqlQuery& q, int startIdx = 0) noexcept
 			{
 				return FromVariant<UnwrapIndirect_t<MemberPtrType_t<Ptr>>> {} (q.value (startIdx));
 			};
 		}
 
 		template<auto... Ptrs>
-		QStringList BuildFieldNames ()
+		QStringList BuildFieldNames () noexcept
 		{
 			return { BuildCachedFieldsData<MemberPtrStruct_t<Ptrs>> ().QualifiedFields_.value (FieldIndex<Ptrs> ())... };
 		}
@@ -1037,7 +1037,7 @@ namespace oral
 		struct OffsetNone {};
 
 		template<size_t RepIdx, size_t TupIdx, typename Tuple, typename NewType>
-		decltype (auto) GetReplaceTupleElem (Tuple&& tuple, NewType&& arg)
+		decltype (auto) GetReplaceTupleElem (Tuple&& tuple, NewType&& arg) noexcept
 		{
 			if constexpr (RepIdx == TupIdx)
 				return std::forward<NewType> (arg);
@@ -1046,7 +1046,7 @@ namespace oral
 		}
 
 		template<size_t RepIdx, typename NewType, typename Tuple, size_t... TupIdxs>
-		auto ReplaceTupleElemImpl (Tuple&& tuple, NewType&& arg, std::index_sequence<TupIdxs...>)
+		auto ReplaceTupleElemImpl (Tuple&& tuple, NewType&& arg, std::index_sequence<TupIdxs...>) noexcept
 		{
 			return std::tuple
 			{
@@ -1055,7 +1055,7 @@ namespace oral
 		}
 
 		template<size_t RepIdx, typename NewType, typename... TupleArgs>
-		auto ReplaceTupleElem (std::tuple<TupleArgs...>&& tuple, NewType&& arg)
+		auto ReplaceTupleElem (std::tuple<TupleArgs...>&& tuple, NewType&& arg) noexcept
 		{
 			return ReplaceTupleElemImpl<RepIdx> (std::move (tuple),
 					std::forward<NewType> (arg),
@@ -1081,25 +1081,25 @@ namespace oral
 		};
 
 		template<typename... LArgs, typename... RArgs>
-		auto Combine (std::tuple<LArgs...>&& left, std::tuple<RArgs...>&& right)
+		auto Combine (std::tuple<LArgs...>&& left, std::tuple<RArgs...>&& right) noexcept
 		{
 			return std::tuple_cat (std::move (left), std::move (right));
 		}
 
 		template<typename... LArgs, typename R>
-		auto Combine (std::tuple<LArgs...>&& left, const R& right)
+		auto Combine (std::tuple<LArgs...>&& left, const R& right) noexcept
 		{
 			return std::tuple_cat (std::move (left), std::tuple { right });
 		}
 
 		template<typename L, typename... RArgs>
-		auto Combine (const L& left, std::tuple<RArgs...>&& right)
+		auto Combine (const L& left, std::tuple<RArgs...>&& right) noexcept
 		{
 			return std::tuple_cat (std::tuple { left }, std::move (right));
 		}
 
 		template<typename L, typename R>
-		auto Combine (const L& left, const R& right)
+		auto Combine (const L& left, const R& right) noexcept
 		{
 			return std::tuple { left, right };
 		}
@@ -1111,7 +1111,7 @@ namespace oral
 		};
 
 		template<typename L, typename R>
-		constexpr auto CombineBehaviour (L, R)
+		constexpr auto CombineBehaviour (L, R) noexcept
 		{
 			if constexpr (std::is_same_v<L, ResultBehaviour::First> && std::is_same_v<R, ResultBehaviour::First>)
 				return ResultBehaviour::First {};
@@ -1120,13 +1120,13 @@ namespace oral
 		}
 
 		template<typename ResList>
-		auto HandleResultBehaviour (ResultBehaviour::All, ResList&& list)
+		auto HandleResultBehaviour (ResultBehaviour::All, ResList&& list) noexcept
 		{
 			return std::move (list);
 		}
 
 		template<typename ResList>
-		auto HandleResultBehaviour (ResultBehaviour::First, ResList&& list)
+		auto HandleResultBehaviour (ResultBehaviour::First, ResList&& list) noexcept
 		{
 			return list.value (0);
 		}
@@ -1146,37 +1146,37 @@ namespace oral
 				ParamsTuple Params_;
 
 				template<typename NewTuple>
-				auto RepTuple (NewTuple&& tuple)
+				auto RepTuple (NewTuple&& tuple) noexcept
 				{
 					return Builder<NewTuple> { W_, tuple };
 				}
 
 				template<typename U>
-				auto Select (U&& selector) &&
+				auto Select (U&& selector) && noexcept
 				{
 					return RepTuple (ReplaceTupleElem<0> (std::move (Params_), std::forward<U> (selector)));
 				}
 
 				template<typename U>
-				auto Where (U&& tree) &&
+				auto Where (U&& tree) && noexcept
 				{
 					return RepTuple (ReplaceTupleElem<1> (std::move (Params_), std::forward<U> (tree)));
 				}
 
 				template<typename U>
-				auto Order (U&& order) &&
+				auto Order (U&& order) && noexcept
 				{
 					return RepTuple (ReplaceTupleElem<2> (std::move (Params_), std::forward<U> (order)));
 				}
 
 				template<typename U = Limit>
-				auto Limit (U&& limit) &&
+				auto Limit (U&& limit) && noexcept
 				{
 					return RepTuple (ReplaceTupleElem<3> (std::move (Params_), std::forward<U> (limit)));
 				}
 
 				template<typename U = Offset>
-				auto Offset (U&& offset) &&
+				auto Offset (U&& offset) && noexcept
 				{
 					return RepTuple (ReplaceTupleElem<4> (std::move (Params_), std::forward<U> (offset)));
 				}
@@ -1188,14 +1188,14 @@ namespace oral
 			};
 		public:
 			template<typename ImplFactory>
-			SelectWrapper (const QSqlDatabase& db, const CachedFieldsData& data, ImplFactory&& factory)
+			SelectWrapper (const QSqlDatabase& db, const CachedFieldsData& data, ImplFactory&& factory) noexcept
 			: DB_ { db }
 			, Cached_ { data }
 			, LimitNone_ { factory.LimitNone }
 			{
 			}
 
-			auto Build () const
+			auto Build () const noexcept
 			{
 				std::tuple defParams
 				{
@@ -1290,7 +1290,7 @@ namespace oral
 			}
 
 			template<ExprType Type, typename L, typename R>
-			QString BuildFromClause (const ExprTree<Type, L, R>& tree) const
+			QString BuildFromClause (const ExprTree<Type, L, R>& tree) const noexcept
 			{
 				if constexpr (Type != ExprType::ConstTrue)
 				{
@@ -1302,7 +1302,7 @@ namespace oral
 					return Cached_.Table_;
 			}
 
-			auto HandleSelector (SelectWhole) const
+			auto HandleSelector (SelectWhole) const noexcept
 			{
 				return std::tuple
 				{
@@ -1316,7 +1316,7 @@ namespace oral
 			}
 
 			template<int Idx>
-			auto HandleSelector (sph::pos<Idx>) const
+			auto HandleSelector (sph::pos<Idx>) const noexcept
 			{
 				return std::tuple
 				{
@@ -1330,7 +1330,7 @@ namespace oral
 			}
 
 			template<auto... Ptrs>
-			auto HandleSelector (MemberPtrs<Ptrs...> ptrs) const
+			auto HandleSelector (MemberPtrs<Ptrs...> ptrs) const noexcept
 			{
 				return std::tuple
 				{
@@ -1340,7 +1340,7 @@ namespace oral
 				};
 			}
 
-			auto HandleSelector (AggregateType<AggregateFunction::Count, CountAllPtr>) const
+			auto HandleSelector (AggregateType<AggregateFunction::Count, CountAllPtr>) const noexcept
 			{
 				return std::tuple
 				{
@@ -1351,7 +1351,7 @@ namespace oral
 			}
 
 			template<auto Ptr>
-			auto HandleSelector (AggregateType<AggregateFunction::Count, Ptr>) const
+			auto HandleSelector (AggregateType<AggregateFunction::Count, Ptr>) const noexcept
 			{
 				return std::tuple
 				{
@@ -1362,7 +1362,7 @@ namespace oral
 			}
 
 			template<auto Ptr>
-			auto HandleSelector (AggregateType<AggregateFunction::Min, Ptr>) const
+			auto HandleSelector (AggregateType<AggregateFunction::Min, Ptr>) const noexcept
 			{
 				return std::tuple
 				{
@@ -1373,7 +1373,7 @@ namespace oral
 			}
 
 			template<auto Ptr>
-			auto HandleSelector (AggregateType<AggregateFunction::Max, Ptr>) const
+			auto HandleSelector (AggregateType<AggregateFunction::Max, Ptr>) const noexcept
 			{
 				return std::tuple
 				{
@@ -1384,7 +1384,7 @@ namespace oral
 			}
 
 			template<typename L, typename R>
-			auto HandleSelector (SelectorUnion<L, R>) const
+			auto HandleSelector (SelectorUnion<L, R>) const noexcept
 			{
 				const auto& lSel = HandleSelector (L {});
 				const auto& rSel = HandleSelector (R {});
@@ -1404,41 +1404,41 @@ namespace oral
 				};
 			}
 
-			QString HandleOrder (OrderNone) const
+			QString HandleOrder (OrderNone) const noexcept
 			{
 				return {};
 			}
 
 			template<auto... Ptrs>
-			QList<QString> HandleSuborder (sph::asc<Ptrs...>) const
+			QList<QString> HandleSuborder (sph::asc<Ptrs...>) const noexcept
 			{
 				return { (GetFieldNamePtr<T, Ptrs> () + " ASC")... };
 			}
 
 			template<auto... Ptrs>
-			QList<QString> HandleSuborder (sph::desc<Ptrs...>) const
+			QList<QString> HandleSuborder (sph::desc<Ptrs...>) const noexcept
 			{
 				return { (GetFieldNamePtr<T, Ptrs> () + " DESC")... };
 			}
 
 			template<typename... Suborders>
-			QString HandleOrder (OrderBy<Suborders...>) const
+			QString HandleOrder (OrderBy<Suborders...>) const noexcept
 			{
 				return " ORDER BY " + QStringList { Concat (QList { HandleSuborder (Suborders {})... }) }.join (", ");
 			}
 
-			QString HandleLimitOffset (LimitNone, OffsetNone) const
+			QString HandleLimitOffset (LimitNone, OffsetNone) const noexcept
 			{
 				return {};
 			}
 
-			QString HandleLimitOffset (Limit limit, OffsetNone) const
+			QString HandleLimitOffset (Limit limit, OffsetNone) const noexcept
 			{
 				return " LIMIT " + QString::number (limit.Count);
 			}
 
 			template<typename L>
-			QString HandleLimitOffset (L limit, Offset offset) const
+			QString HandleLimitOffset (L limit, Offset offset) const noexcept
 			{
 				QString limitStr;
 				if constexpr (std::is_same_v<std::decay_t<L>, LimitNone>)
@@ -1461,14 +1461,14 @@ namespace oral
 			const QSqlDatabase DB_;
 			const CachedFieldsData Cached_;
 		public:
-			DeleteByFieldsWrapper (const QSqlDatabase& db, const CachedFieldsData& data)
+			DeleteByFieldsWrapper (const QSqlDatabase& db, const CachedFieldsData& data) noexcept
 			: DB_ { db }
 			, Cached_ (data)
 			{
 			}
 
 			template<ExprType Type, typename L, typename R>
-			void operator() (const ExprTree<Type, L, R>& tree) const
+			void operator() (const ExprTree<Type, L, R>& tree) const noexcept
 			{
 				const auto& [where, binder, _] = HandleExprTree<T> (tree);
 				Q_UNUSED (_);
@@ -1491,7 +1491,7 @@ namespace oral
 
 			std::function<void (T)> Updater_;
 		public:
-			AdaptUpdate (const QSqlDatabase& db, const CachedFieldsData& data)
+			AdaptUpdate (const QSqlDatabase& db, const CachedFieldsData& data) noexcept
 			: DB_ { db }
 			, Cached_ { data }
 			{
@@ -1519,13 +1519,13 @@ namespace oral
 			}
 
 			template<bool B = HasPKey>
-			std::enable_if_t<B> operator() (const T& seq)
+			std::enable_if_t<B> operator() (const T& seq) noexcept
 			{
 				Updater_ (seq);
 			}
 
 			template<typename SL, typename SR, ExprType WType, typename WL, typename WR>
-			void operator() (const AssignList<SL, SR>& set, const ExprTree<WType, WL, WR>& where)
+			void operator() (const AssignList<SL, SR>& set, const ExprTree<WType, WL, WR>& where) noexcept
 			{
 				const auto& [setClause, setBinder, setLast] = HandleExprTree<T> (set);
 				const auto& [whereClause, whereBinder, _] = HandleExprTree<T> (where, setLast);
@@ -1554,7 +1554,7 @@ namespace oral
 		template<int... Fields>
 		struct ExtractConstraintFields<UniqueSubset<Fields...>>
 		{
-			QString operator() (const CachedFieldsData& data) const
+			QString operator() (const CachedFieldsData& data) const noexcept
 			{
 				return "UNIQUE (" + QStringList { data.Fields_.value (Fields)... }.join (", ") + ")";
 			}
@@ -1563,26 +1563,26 @@ namespace oral
 		template<int... Fields>
 		struct ExtractConstraintFields<PrimaryKey<Fields...>>
 		{
-			QString operator() (const CachedFieldsData& data) const
+			QString operator() (const CachedFieldsData& data) const noexcept
 			{
 				return "PRIMARY KEY (" + QStringList { data.Fields_.value (Fields)... }.join (", ") + ")";
 			}
 		};
 
 		template<typename... Args>
-		QStringList GetConstraintsStringList (Constraints<Args...>, const CachedFieldsData& data)
+		QStringList GetConstraintsStringList (Constraints<Args...>, const CachedFieldsData& data) noexcept
 		{
 			return { ExtractConstraintFields<Args> {} (data)... };
 		}
 
 		template<typename ImplFactory, typename T, size_t... Indices>
-		QList<QString> GetTypes (std::index_sequence<Indices...>)
+		QList<QString> GetTypes (std::index_sequence<Indices...>) noexcept
 		{
 			return { Type2Name<ImplFactory, ValueAtC_t<T, Indices>> {} ()... };
 		}
 
 		template<typename ImplFactory, typename T>
-		QString AdaptCreateTable (const CachedFieldsData& data)
+		QString AdaptCreateTable (const CachedFieldsData& data) noexcept
 		{
 			const auto& types = GetTypes<ImplFactory, T> (SeqIndices<T>);
 
