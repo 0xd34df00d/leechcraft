@@ -65,11 +65,11 @@ namespace Poleemery
 }
 }
 
-BOOST_HANA_ADAPT_STRUCT (LeechCraft::Poleemery::Account,
+BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Poleemery::Account,
 		ID_,
 		Type_,
 		Name_,
-		Currency_);
+		Currency_)
 
 Q_DECLARE_METATYPE (LeechCraft::Poleemery::Account)
 
@@ -140,7 +140,7 @@ namespace Poleemery
 }
 }
 
-BOOST_HANA_ADAPT_STRUCT (LeechCraft::Poleemery::NakedExpenseEntry,
+BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Poleemery::NakedExpenseEntry,
 		ID_,
 		AccountID_,
 		Amount_,
@@ -150,7 +150,7 @@ BOOST_HANA_ADAPT_STRUCT (LeechCraft::Poleemery::NakedExpenseEntry,
 		Count_,
 		Shop_,
 		EntryCurrency_,
-		Rate_);
+		Rate_)
 
 namespace LeechCraft
 {
@@ -171,9 +171,9 @@ namespace Poleemery
 }
 }
 
-BOOST_HANA_ADAPT_STRUCT (LeechCraft::Poleemery::Category,
+BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Poleemery::Category,
 		ID_,
-		Name_);
+		Name_)
 
 namespace LeechCraft
 {
@@ -195,10 +195,10 @@ namespace Poleemery
 }
 }
 
-BOOST_HANA_ADAPT_STRUCT (LeechCraft::Poleemery::CategoryLink,
+BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Poleemery::CategoryLink,
 		ID_,
 		Category_,
-		Entry_);
+		Entry_)
 
 namespace LeechCraft
 {
@@ -217,13 +217,13 @@ namespace Poleemery
 }
 }
 
-BOOST_HANA_ADAPT_STRUCT (LeechCraft::Poleemery::ReceiptEntry,
+BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Poleemery::ReceiptEntry,
 		ID_,
 		AccountID_,
 		Amount_,
 		Name_,
 		Description_,
-		Date_);
+		Date_)
 
 namespace LeechCraft
 {
@@ -244,11 +244,11 @@ namespace Poleemery
 }
 }
 
-BOOST_HANA_ADAPT_STRUCT (LeechCraft::Poleemery::Rate,
+BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Poleemery::Rate,
 		ID_,
 		Code_,
 		SnapshotTime_,
-		Rate_);
+		Rate_)
 
 namespace LeechCraft
 {

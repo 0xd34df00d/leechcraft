@@ -54,9 +54,9 @@ namespace Vader
 }
 }
 
-BOOST_HANA_ADAPT_STRUCT (LeechCraft::Azoth::Vader::AvatarsTimestampStorage::AvatarTimestamp,
+BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Azoth::Vader::AvatarsTimestampStorage::AvatarTimestamp,
 		Email_,
-		TS_);
+		TS_)
 
 namespace LeechCraft
 {

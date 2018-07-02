@@ -32,6 +32,9 @@
 #define BOOST_RESULT_OF_USE_DECLTYPE
 
 #include <type_traits>
+#include <boost/fusion/include/at_c.hpp>
+#include <boost/fusion/adapted/struct/adapt_struct.hpp>
+#include <boost/fusion/include/adapt_struct.hpp>
 #include <boost/variant.hpp>
 #include <util/sll/typelist.h>
 #include <util/sll/typegetter.h>

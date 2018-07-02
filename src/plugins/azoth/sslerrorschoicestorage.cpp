@@ -58,10 +58,10 @@ namespace Azoth
 }
 }
 
-BOOST_HANA_ADAPT_STRUCT (LeechCraft::Azoth::SslErrorsChoiceStorage::Record,
+BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Azoth::SslErrorsChoiceStorage::Record,
 		AccountID_,
 		Error_,
-		Action_);
+		Action_)
 
 namespace LeechCraft
 {

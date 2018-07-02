@@ -66,13 +66,13 @@ namespace Xoox
 }
 }
 
-BOOST_HANA_ADAPT_STRUCT (LeechCraft::Azoth::Xoox::VCardStorageOnDisk::VCardRecord,
+BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Azoth::Xoox::VCardStorageOnDisk::VCardRecord,
 		JID_,
-		VCardIq_);
+		VCardIq_)
 
-BOOST_HANA_ADAPT_STRUCT (LeechCraft::Azoth::Xoox::VCardStorageOnDisk::PhotoHashRecord,
+BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Azoth::Xoox::VCardStorageOnDisk::PhotoHashRecord,
 		JID_,
-		Hash_);
+		Hash_)
 
 namespace LeechCraft
 {

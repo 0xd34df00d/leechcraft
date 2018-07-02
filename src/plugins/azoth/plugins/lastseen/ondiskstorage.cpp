@@ -72,11 +72,11 @@ namespace LastSeen
 
 using StatsRecord = LeechCraft::Azoth::LastSeen::OnDiskStorage::Record;
 
-BOOST_HANA_ADAPT_STRUCT (StatsRecord,
+BOOST_FUSION_ADAPT_STRUCT (StatsRecord,
 		EntryID_,
 		Available_,
 		Online_,
-		StatusChange_);
+		StatusChange_)
 
 namespace LeechCraft
 {
