@@ -937,7 +937,7 @@ namespace oral
 		struct IsSelector<SelectorUnion<L, R>> : std::true_type {};
 
 		template<typename L, typename R, typename = std::enable_if_t<IsSelector<L> {} && IsSelector<R> {}>>
-		SelectorUnion<L, R> operator+ (const L&, const R&) noexcept
+		SelectorUnion<L, R> operator+ (L, R) noexcept
 		{
 			return {};
 		}
@@ -1229,11 +1229,11 @@ namespace oral
 					typename Limit = LimitNone,
 					typename Offset = OffsetNone
 				>
-			auto operator() (Selector&& selector,
+			auto operator() (Selector selector,
 					const ExprTree<Type, L, R>& tree,
-					Order&& order = OrderNone {},
-					Limit&& limit = LimitNone {},
-					Offset&& offset = OffsetNone {}) const
+					Order order = OrderNone {},
+					Limit limit = LimitNone {},
+					Offset offset = OffsetNone {}) const
 			{
 				const auto& [where, binder, _] = HandleExprTree<T> (tree);
 				Q_UNUSED (_);
