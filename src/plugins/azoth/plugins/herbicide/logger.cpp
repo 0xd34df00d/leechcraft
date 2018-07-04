@@ -115,7 +115,7 @@ namespace oral
 	template<typename ImplFactory>
 	struct Type2Name<ImplFactory, Azoth::Herbicide::Logger::Event>
 	{
-		QString operator() () const
+		auto operator() () const
 		{
 			return Type2Name<ImplFactory, QString> {} ();
 		}

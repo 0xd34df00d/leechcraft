@@ -73,7 +73,7 @@ namespace oral
 	template<typename ImplFactory>
 	struct Type2Name<ImplFactory, Azoth::IHaveAvatars::Size>
 	{
-		QString operator() () const
+		auto operator() () const
 		{
 			return Type2Name<ImplFactory, int> {} ();
 		}
