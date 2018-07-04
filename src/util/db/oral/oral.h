@@ -1146,6 +1146,17 @@ namespace oral
 			return list.value (0);
 		}
 
+		template<typename F, typename R>
+		struct HandleSelectorResult
+		{
+			QString Fields_;
+			F Initializer_;
+			R Behaviour_;
+		};
+
+		template<typename F, typename R>
+		HandleSelectorResult (QString, F, R) -> HandleSelectorResult<F, R>;
+
 		template<typename T, SelectBehaviour SelectBehaviour>
 		class SelectWrapper
 		{
@@ -1330,7 +1341,7 @@ namespace oral
 
 			auto HandleSelector (SelectWhole) const noexcept
 			{
-				return std::tuple
+				return HandleSelectorResult
 				{
 					Cached_.QualifiedFields_.join (", "),
 					[] (const QSqlQuery& q, int startIdx = 0)
@@ -1344,7 +1355,7 @@ namespace oral
 			template<int Idx>
 			auto HandleSelector (sph::pos<Idx>) const noexcept
 			{
-				return std::tuple
+				return HandleSelectorResult
 				{
 					Cached_.QualifiedFields_.value (Idx),
 					[] (const QSqlQuery& q, int startIdx = 0)
@@ -1358,7 +1369,7 @@ namespace oral
 			template<auto... Ptrs>
 			auto HandleSelector (MemberPtrs<Ptrs...> ptrs) const noexcept
 			{
-				return std::tuple
+				return HandleSelectorResult
 				{
 					BuildFieldNames<Ptrs...> ().join (", "),
 					MakeIndexedQueryHandler (ptrs, std::make_index_sequence<sizeof... (Ptrs)> {}),
@@ -1368,7 +1379,7 @@ namespace oral
 
 			auto HandleSelector (AggregateType<AggregateFunction::Count, CountAllPtr>) const noexcept
 			{
-				return std::tuple
+				return HandleSelectorResult
 				{
 					QString { "count(1)" },
 					[] (const QSqlQuery& q, int startIdx = 0) { return q.value (startIdx).toLongLong (); },
@@ -1379,7 +1390,7 @@ namespace oral
 			template<auto Ptr>
 			auto HandleSelector (AggregateType<AggregateFunction::Count, Ptr>) const noexcept
 			{
-				return std::tuple
+				return HandleSelectorResult
 				{
 					"count(" + GetFieldNamePtr<T, Ptr> () + ")",
 					[] (const QSqlQuery& q, int startIdx = 0) { return q.value (startIdx).toLongLong (); },
@@ -1390,7 +1401,7 @@ namespace oral
 			template<auto Ptr>
 			auto HandleSelector (AggregateType<AggregateFunction::Min, Ptr>) const noexcept
 			{
-				return std::tuple
+				return HandleSelectorResult
 				{
 					"min(" + GetFieldNamePtr<T, Ptr> () + ")",
 					MakeIndexedQueryHandler<Ptr> (),
@@ -1401,7 +1412,7 @@ namespace oral
 			template<auto Ptr>
 			auto HandleSelector (AggregateType<AggregateFunction::Max, Ptr>) const noexcept
 			{
-				return std::tuple
+				return HandleSelectorResult
 				{
 					"max(" + GetFieldNamePtr<T, Ptr> () + ")",
 					MakeIndexedQueryHandler<Ptr> (),
@@ -1415,18 +1426,18 @@ namespace oral
 				const auto& lSel = HandleSelector (L {});
 				const auto& rSel = HandleSelector (R {});
 
-				const auto& lHandler = std::get<1> (lSel);
-				const auto& rHandler = std::get<1> (rSel);
+				const auto& lHandler = lSel.Initializer_;
+				const auto& rHandler = rSel.Initializer_;
 
-				return std::tuple
+				return HandleSelectorResult
 				{
-					std::get<0> (lSel) + ", " + std::get<0> (rSel),
+					lSel.Fields_ + ", " + rSel.Fields_,
 					[lHandler, rHandler] (const QSqlQuery& q, int startIdx = 0)
 					{
 						constexpr auto shift = DetectShift<T, decltype (lHandler (q))>::Value;
 						return Combine (lHandler (q, startIdx), rHandler (q, startIdx + shift));
 					},
-					CombineBehaviour (std::get<2> (lSel), std::get<2> (rSel))
+					CombineBehaviour (lSel.Behaviour_, rSel.Behaviour_)
 				};
 			}
 
