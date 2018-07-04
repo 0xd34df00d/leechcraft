@@ -1420,7 +1420,7 @@ namespace oral
 			{
 				return HandleSelectorResult
 				{
-					QString { "count(1)" },
+					"count(1)",
 					[] (const QSqlQuery& q, int startIdx = 0) { return q.value (startIdx).toLongLong (); },
 					ResultBehaviour::First {}
 				};
