@@ -1162,9 +1162,11 @@ namespace oral
 		{
 		protected:
 			const QSqlDatabase DB_;
+			const QString LimitNone_;
 
-			SelectWrapperCommon (const QSqlDatabase& db)
+			SelectWrapperCommon (const QSqlDatabase& db, const QString& limitNone)
 			: DB_ { db }
+			, LimitNone_ { limitNone }
 			{
 			}
 
@@ -1195,14 +1197,39 @@ namespace oral
 
 				return query;
 			}
+
+			QString HandleLimitOffset (LimitNone, OffsetNone) const noexcept
+			{
+				return {};
+			}
+
+			QString HandleLimitOffset (Limit limit, OffsetNone) const noexcept
+			{
+				return " LIMIT " + QString::number (limit.Count);
+			}
+
+			template<typename L>
+			QString HandleLimitOffset (L limit, Offset offset) const noexcept
+			{
+				QString limitStr;
+				if constexpr (std::is_same_v<std::decay_t<L>, LimitNone>)
+				{
+					Q_UNUSED (limit)
+					limitStr = LimitNone_;
+				}
+				else if constexpr (std::is_integral_v<L>)
+					limitStr = QString::number (limit);
+				else
+					limitStr = QString::number (limit.Count);
+				return " LIMIT " + limitStr +
+						" OFFSET " + QString::number (offset.Count);
+			}
 		};
 
 		template<typename T, SelectBehaviour SelectBehaviour>
 		class SelectWrapper : SelectWrapperCommon
 		{
 			const CachedFieldsData Cached_;
-
-			const QString LimitNone_;
 
 			template<typename ParamsTuple>
 			struct Builder
@@ -1254,9 +1281,8 @@ namespace oral
 		public:
 			template<typename ImplFactory>
 			SelectWrapper (const QSqlDatabase& db, const CachedFieldsData& data, ImplFactory&& factory) noexcept
-			: SelectWrapperCommon { db }
+			: SelectWrapperCommon { db, factory.LimitNone }
 			, Cached_ { data }
-			, LimitNone_ { factory.LimitNone }
 			{
 			}
 
@@ -1475,33 +1501,6 @@ namespace oral
 			QString HandleOrder (OrderBy<Suborders...>) const noexcept
 			{
 				return " ORDER BY " + QStringList { Concat (QList { HandleSuborder (Suborders {})... }) }.join (", ");
-			}
-
-			QString HandleLimitOffset (LimitNone, OffsetNone) const noexcept
-			{
-				return {};
-			}
-
-			QString HandleLimitOffset (Limit limit, OffsetNone) const noexcept
-			{
-				return " LIMIT " + QString::number (limit.Count);
-			}
-
-			template<typename L>
-			QString HandleLimitOffset (L limit, Offset offset) const noexcept
-			{
-				QString limitStr;
-				if constexpr (std::is_same_v<std::decay_t<L>, LimitNone>)
-				{
-					Q_UNUSED (limit)
-					limitStr = LimitNone_;
-				}
-				else if constexpr (std::is_integral_v<L>)
-					limitStr = QString::number (limit);
-				else
-					limitStr = QString::number (limit.Count);
-				return " LIMIT " + limitStr +
-						" OFFSET " + QString::number (offset.Count);
 			}
 		};
 
