@@ -1158,10 +1158,48 @@ namespace oral
 		template<typename F, typename R>
 		HandleSelectorResult (QString, F, R) -> HandleSelectorResult<F, R>;
 
-		template<typename T, SelectBehaviour SelectBehaviour>
-		class SelectWrapper
+		class SelectWrapperCommon
 		{
+		protected:
 			const QSqlDatabase DB_;
+
+			SelectWrapperCommon (const QSqlDatabase& db)
+			: DB_ { db }
+			{
+			}
+
+			auto RunQuery (const QString& fields, const QString& from,
+					QString where, std::function<void (QSqlQuery&)>&& binder,
+					const QString& orderStr,
+					const QString& limitOffsetStr) const
+			{
+				if (!where.isEmpty ())
+					where.prepend (" WHERE ");
+
+				const auto& queryStr = "SELECT " + fields +
+						" FROM " + from +
+						where +
+						orderStr +
+						limitOffsetStr;
+
+				QSqlQuery query { DB_ };
+				query.prepare (queryStr);
+				if (binder)
+					binder (query);
+
+				if (!query.exec ())
+				{
+					DBLock::DumpError (query);
+					throw QueryException ("fetch query execution failed", std::make_shared<QSqlQuery> (query));
+				}
+
+				return query;
+			}
+		};
+
+		template<typename T, SelectBehaviour SelectBehaviour>
+		class SelectWrapper : SelectWrapperCommon
+		{
 			const CachedFieldsData Cached_;
 
 			const QString LimitNone_;
@@ -1216,7 +1254,7 @@ namespace oral
 		public:
 			template<typename ImplFactory>
 			SelectWrapper (const QSqlDatabase& db, const CachedFieldsData& data, ImplFactory&& factory) noexcept
-			: DB_ { db }
+			: SelectWrapperCommon { db }
 			, Cached_ { data }
 			, LimitNone_ { factory.LimitNone }
 			{
@@ -1299,34 +1337,6 @@ namespace oral
 						RetType_t { initializer (query) } :
 						RetType_t {};
 				}
-			}
-
-			auto RunQuery (const QString& fields, const QString& from,
-					QString where, std::function<void (QSqlQuery&)>&& binder,
-					const QString& orderStr,
-					const QString& limitOffsetStr) const
-			{
-				if (!where.isEmpty ())
-					where.prepend (" WHERE ");
-
-				const auto& queryStr = "SELECT " + fields +
-						" FROM " + from +
-						where +
-						orderStr +
-						limitOffsetStr;
-
-				QSqlQuery query { DB_ };
-				query.prepare (queryStr);
-				if (binder)
-					binder (query);
-
-				if (!query.exec ())
-				{
-					DBLock::DumpError (query);
-					throw QueryException ("fetch query execution failed", std::make_shared<QSqlQuery> (query));
-				}
-
-				return query;
 			}
 
 			template<ExprType Type, typename L, typename R>
