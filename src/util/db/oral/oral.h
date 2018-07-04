@@ -1502,30 +1502,24 @@ namespace oral
 		class AdaptUpdate
 		{
 			const QSqlDatabase DB_;
-			const CachedFieldsData Cached_;
+			const QString Table_;
 
 			std::function<void (T)> Updater_;
 		public:
 			AdaptUpdate (const QSqlDatabase& db, const CachedFieldsData& data) noexcept
 			: DB_ { db }
-			, Cached_ { data }
+			, Table_ { data.Table_ }
 			{
 				if constexpr (HasPKey)
 				{
-					const auto index = FindPKey<T>::result_type::value;
+					constexpr auto index = FindPKey<T>::result_type::value;
 
-					QList<QString> removedFields { data.Fields_ };
-					QList<QString> removedBoundFields { data.BoundFields_ };
-
-					const auto& fieldName = removedFields.takeAt (index);
-					const auto& boundName = removedBoundFields.takeAt (index);
-
-					const auto& statements = Util::ZipWith (removedFields, removedBoundFields,
+					auto statements = Util::ZipWith<QList> (data.Fields_, data.BoundFields_,
 							[] (const QString& s1, const QString& s2) { return s1 + " = " + s2; });
-
+					auto wherePart = statements.takeAt (index);
 					const auto& update = "UPDATE " + data.Table_ +
-										 " SET " + statements.join (", ") +
-										 " WHERE " + fieldName + " = " + boundName + ";";
+										" SET " + statements.join (", ") +
+										" WHERE " + wherePart + ";";
 
 					const auto updateQuery = std::make_shared<QSqlQuery> (db);
 					updateQuery->prepare (update);
@@ -1545,7 +1539,7 @@ namespace oral
 				const auto& [setClause, setBinder, setLast] = HandleExprTree<T> (set);
 				const auto& [whereClause, whereBinder, _] = HandleExprTree<T> (where, setLast);
 
-				const auto& update = "UPDATE " + Cached_.Table_ +
+				const auto& update = "UPDATE " + Table_ +
 						" SET " + setClause +
 						" WHERE " + whereClause;
 
