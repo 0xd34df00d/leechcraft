@@ -1474,11 +1474,11 @@ namespace oral
 		class DeleteByFieldsWrapper
 		{
 			const QSqlDatabase DB_;
-			const CachedFieldsData Cached_;
+			const QString Table_;
 		public:
 			DeleteByFieldsWrapper (const QSqlDatabase& db, const CachedFieldsData& data) noexcept
 			: DB_ { db }
-			, Cached_ (data)
+			, Table_ (data.Table_)
 			{
 			}
 
@@ -1488,7 +1488,7 @@ namespace oral
 				const auto& [where, binder, _] = HandleExprTree<T> (tree);
 				Q_UNUSED (_);
 
-				const auto& selectAll = "DELETE FROM " + Cached_.Table_ +
+				const auto& selectAll = "DELETE FROM " + Table_ +
 						" WHERE " + where;
 
 				QSqlQuery query { DB_ };
