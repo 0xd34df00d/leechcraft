@@ -873,10 +873,25 @@ namespace oral
 			return MakeExprTree<ExprType::Or> (left, right);
 		}
 
+		template<typename F>
+		struct ExprTreeHandler
+		{
+			QString Sql_;
+			F Binder_;
+			int LastID_;
+
+			ExprTreeHandler (const QString& sql, F&& binder, int lastId)
+			: Sql_ { sql }
+			, Binder_ { std::move (binder) }
+			, LastID_ { lastId }
+			{
+			}
+		};
+
 		template<typename>
 		auto HandleExprTree (const ExprTree<ExprType::ConstTrue>&, int lastId = 0) noexcept
 		{
-			return std::tuple { QString {}, Void {}, lastId };
+			return ExprTreeHandler { QString {}, Void {}, lastId };
 		}
 
 		template<typename Seq, typename Tree,
@@ -887,7 +902,7 @@ namespace oral
 
 			const auto& sql = tree.ToSql (state);
 
-			return std::tuple
+			return ExprTreeHandler
 			{
 				sql,
 				[state] (QSqlQuery& query)
