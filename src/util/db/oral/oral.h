@@ -1280,7 +1280,10 @@ namespace oral
 					const QString& orderStr,
 					const QString& limitOffsetStr) const
 			{
-				auto query = RunQuery (fields, from, where, std::forward<Binder> (binder), orderStr, limitOffsetStr);
+				std::function<void (QSqlQuery&)> binderFunc;
+				if constexpr (!std::is_same_v<Void, std::decay_t<Binder>>)
+					binderFunc = binder;
+				auto query = RunQuery (fields, from, where, std::move (binderFunc), orderStr, limitOffsetStr);
 
 				if constexpr (SelectBehaviour == SelectBehaviour::Some)
 				{
@@ -1298,9 +1301,8 @@ namespace oral
 				}
 			}
 
-			template<typename Binder>
 			auto RunQuery (const QString& fields, const QString& from,
-					QString where, Binder&& binder,
+					QString where, std::function<void (QSqlQuery&)>&& binder,
 					const QString& orderStr,
 					const QString& limitOffsetStr) const
 			{
@@ -1315,7 +1317,7 @@ namespace oral
 
 				QSqlQuery query { DB_ };
 				query.prepare (queryStr);
-				if constexpr (!std::is_same_v<Void, std::decay_t<Binder>>)
+				if (binder)
 					binder (query);
 
 				if (!query.exec ())
