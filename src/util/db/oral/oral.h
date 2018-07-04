@@ -182,10 +182,11 @@ namespace oral
 			}
 		}
 
-		template<typename Seq, auto Ptr>
+		template<auto Ptr>
 		QString GetFieldNamePtr () noexcept
 		{
-			return GetFieldName<Seq, FieldIndex<Ptr> ()> ();
+			using S = MemberPtrStruct_t<Ptr>;
+			return GetFieldName<S, FieldIndex<Ptr> ()> ();
 		}
 	}
 
@@ -236,9 +237,9 @@ namespace oral
 	{
 		QString operator() () const noexcept
 		{
-			using Seq = MemberPtrStruct_t<Ptr>;
+			const auto& className = MemberPtrStruct_t<Ptr>::ClassName ();
 			return Type2Name<ImplFactory, ReferencesValue_t<Ptr>> () () +
-					" REFERENCES " + Seq::ClassName () + " (" + detail::GetFieldNamePtr<Seq, Ptr> () + ") ON DELETE CASCADE";
+					" REFERENCES " + className + " (" + detail::GetFieldNamePtr<Ptr> () + ") ON DELETE CASCADE";
 		}
 	};
 
@@ -727,7 +728,7 @@ namespace oral
 
 			QString GetFieldName () const noexcept
 			{
-				return detail::GetFieldNamePtr<MemberPtrStruct_t<Ptr>, Ptr> ();
+				return detail::GetFieldNamePtr<Ptr> ();
 			}
 
 			template<typename T>
@@ -1392,7 +1393,7 @@ namespace oral
 			{
 				return HandleSelectorResult
 				{
-					"count(" + GetFieldNamePtr<T, Ptr> () + ")",
+					"count(" + GetFieldNamePtr<Ptr> () + ")",
 					[] (const QSqlQuery& q, int startIdx = 0) { return q.value (startIdx).toLongLong (); },
 					ResultBehaviour::First {}
 				};
@@ -1403,7 +1404,7 @@ namespace oral
 			{
 				return HandleSelectorResult
 				{
-					"min(" + GetFieldNamePtr<T, Ptr> () + ")",
+					"min(" + GetFieldNamePtr<Ptr> () + ")",
 					MakeIndexedQueryHandler<Ptr> (),
 					ResultBehaviour::First {}
 				};
@@ -1414,7 +1415,7 @@ namespace oral
 			{
 				return HandleSelectorResult
 				{
-					"max(" + GetFieldNamePtr<T, Ptr> () + ")",
+					"max(" + GetFieldNamePtr<Ptr> () + ")",
 					MakeIndexedQueryHandler<Ptr> (),
 					ResultBehaviour::First {}
 				};
@@ -1449,13 +1450,13 @@ namespace oral
 			template<auto... Ptrs>
 			QList<QString> HandleSuborder (sph::asc<Ptrs...>) const noexcept
 			{
-				return { (GetFieldNamePtr<T, Ptrs> () + " ASC")... };
+				return { (GetFieldNamePtr<Ptrs> () + " ASC")... };
 			}
 
 			template<auto... Ptrs>
 			QList<QString> HandleSuborder (sph::desc<Ptrs...>) const noexcept
 			{
-				return { (GetFieldNamePtr<T, Ptrs> () + " DESC")... };
+				return { (GetFieldNamePtr<Ptrs> () + " DESC")... };
 			}
 
 			template<typename... Suborders>
