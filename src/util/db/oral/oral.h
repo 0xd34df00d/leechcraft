@@ -437,7 +437,7 @@ namespace oral
 
 				const auto& boundName = data.BoundFields_.at (index);
 				const auto& del = "DELETE FROM " + data.Table_ +
-						" WHERE " + data.Fields_.at (index) + " = " + boundName + ";";
+						" WHERE " + data.Fields_.at (index) + " = " + boundName;
 
 				const auto deleteQuery = std::make_shared<QSqlQuery> (db);
 				deleteQuery->prepare (del);
@@ -1489,7 +1489,7 @@ namespace oral
 				Q_UNUSED (_);
 
 				const auto& selectAll = "DELETE FROM " + Cached_.Table_ +
-						" WHERE " + where + ";";
+						" WHERE " + where;
 
 				QSqlQuery query { DB_ };
 				query.prepare (selectAll);
@@ -1518,8 +1518,8 @@ namespace oral
 							[] (const QString& s1, const QString& s2) { return s1 + " = " + s2; });
 					auto wherePart = statements.takeAt (index);
 					const auto& update = "UPDATE " + data.Table_ +
-										" SET " + statements.join (", ") +
-										" WHERE " + wherePart + ";";
+							" SET " + statements.join (", ") +
+							" WHERE " + wherePart;
 
 					const auto updateQuery = std::make_shared<QSqlQuery> (db);
 					updateQuery->prepare (update);
