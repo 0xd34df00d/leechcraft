@@ -1263,8 +1263,32 @@ namespace oral
 		private:
 			template<typename Binder, typename Initializer>
 			auto Select (const QString& fields, const QString& from,
-					QString where, Binder&& binder,
+					const QString& where, Binder&& binder,
 					Initializer&& initializer,
+					const QString& orderStr,
+					const QString& limitOffsetStr) const
+			{
+				auto query = RunQuery (fields, from, where, std::forward<Binder> (binder), orderStr, limitOffsetStr);
+
+				if constexpr (SelectBehaviour == SelectBehaviour::Some)
+				{
+					QList<std::result_of_t<Initializer (QSqlQuery)>> result;
+					while (query.next ())
+						result << initializer (query);
+					return result;
+				}
+				else
+				{
+					using RetType_t = boost::optional<std::result_of_t<Initializer (QSqlQuery)>>;
+					return query.next () ?
+						RetType_t { initializer (query) } :
+						RetType_t {};
+				}
+			}
+
+			template<typename Binder>
+			auto RunQuery (const QString& fields, const QString& from,
+					QString where, Binder&& binder,
 					const QString& orderStr,
 					const QString& limitOffsetStr) const
 			{
@@ -1288,20 +1312,7 @@ namespace oral
 					throw QueryException ("fetch query execution failed", std::make_shared<QSqlQuery> (query));
 				}
 
-				if constexpr (SelectBehaviour == SelectBehaviour::Some)
-				{
-					QList<std::result_of_t<Initializer (QSqlQuery)>> result;
-					while (query.next ())
-						result << initializer (query);
-					return result;
-				}
-				else
-				{
-					using RetType_t = boost::optional<std::result_of_t<Initializer (QSqlQuery)>>;
-					return query.next () ?
-							RetType_t { initializer (query) } :
-							RetType_t {};
-				}
+				return query;
 			}
 
 			template<ExprType Type, typename L, typename R>
