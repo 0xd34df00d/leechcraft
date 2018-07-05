@@ -35,11 +35,11 @@ namespace LeechCraft::Util::oral::detail
 {
 	struct CachedFieldsData
 	{
-		QByteArray Table_;
+		QString Table_;
 
-		QByteArrayList Fields_;
-		QByteArrayList QualifiedFields_;
-		QByteArrayList BoundFields_;
+		QStringList Fields_;
+		QStringList QualifiedFields_;
+		QStringList BoundFields_;
 	};
 
 }

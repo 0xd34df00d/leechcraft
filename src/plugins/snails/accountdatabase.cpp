@@ -50,7 +50,7 @@ namespace Snails
 		oral::Unique<QByteArray> UniqueId_;
 		oral::NotNull<bool> IsRead_;
 
-		static QByteArray ClassName ()
+		static QString ClassName ()
 		{
 			return "Messages";
 		}
@@ -61,7 +61,7 @@ namespace Snails
 		oral::PKey<int> Id_;
 		oral::Unique<Util::oral::NotNull<QString>> FolderPath_;
 
-		static QByteArray ClassName ()
+		static QString ClassName ()
 		{
 			return "Folders";
 		}
@@ -74,7 +74,7 @@ namespace Snails
 		oral::References<&Folder::Id_> FolderId_;
 		oral::NotNull<QByteArray> FolderMessageId_;
 
-		static QByteArray ClassName ()
+		static QString ClassName ()
 		{
 			return "Msg2Folder";
 		}
@@ -86,7 +86,7 @@ namespace Snails
 		oral::References<&Message::UniqueId_> MsgUniqueId_;
 		oral::NotNull<QByteArray> Header_;
 
-		static QByteArray ClassName ()
+		static QString ClassName ()
 		{
 			return "MsgHeader";
 		}

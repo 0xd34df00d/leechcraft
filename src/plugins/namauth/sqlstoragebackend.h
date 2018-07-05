@@ -52,12 +52,12 @@ namespace NamAuth
 			QString Login_;
 			QString Password_;
 
-			static QByteArray ClassName ()
+			static QString ClassName ()
 			{
 				return "AuthRecords";
 			}
 
-			static QByteArray FieldNameMorpher (const QByteArray& str)
+			static QString FieldNameMorpher (const QString& str)
 			{
 				return str;
 			}

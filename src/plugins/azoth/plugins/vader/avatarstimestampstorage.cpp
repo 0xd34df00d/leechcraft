@@ -45,7 +45,7 @@ namespace Vader
 		Util::oral::PKey<QString, Util::oral::NoAutogen> Email_;
 		QDateTime TS_;
 
-		static QByteArray ClassName ()
+		static QString ClassName ()
 		{
 			return "AvatarTimestamps";
 		}

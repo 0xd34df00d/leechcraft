@@ -37,7 +37,7 @@ struct Student
 	lco::PKey<int> ID_;
 	QString Name_;
 
-	static QByteArray ClassName ()
+	static QString ClassName ()
 	{
 		return "Student";
 	}
@@ -61,7 +61,7 @@ struct StudentInfo
 	int Age_;
 	int Year_;
 
-	static QByteArray ClassName ()
+	static QString ClassName ()
 	{
 		return "StudentInfo";
 	}
@@ -85,7 +85,7 @@ struct Lecturer
 	lco::PKey<int> ID_;
 	QString Name_;
 
-	static QByteArray ClassName ()
+	static QString ClassName ()
 	{
 		return "Lecturer";
 	}
@@ -108,7 +108,7 @@ struct Student2Lecturer
 	lco::References<&Student::ID_> StudentID_;
 	lco::References<&Lecturer::ID_> LecturerID_;
 
-	static QByteArray ClassName ()
+	static QString ClassName ()
 	{
 		return "Student2Lecturer";
 	}

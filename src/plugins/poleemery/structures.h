@@ -55,9 +55,9 @@ namespace Poleemery
 		QString Name_;
 		QString Currency_;
 
-		static QByteArray ClassName () { return "Account"; }
+		static QString ClassName () { return "Account"; }
 
-		static QByteArray FieldNameMorpher (const QByteArray& str) { return str; }
+		static QString FieldNameMorpher (const QString& str) { return str; }
 	};
 
 	bool operator== (const Account&, const Account&);
@@ -112,9 +112,9 @@ namespace Poleemery
 		QString EntryCurrency_;
 		double Rate_ = 0;
 
-		static QByteArray ClassName () { return "NakedExpenseEntry"; }
+		static QString ClassName () { return "NakedExpenseEntry"; }
 
-		static QByteArray FieldNameMorpher (const QByteArray& str) { return str; }
+		static QString FieldNameMorpher (const QString& str) { return str; }
 
 		EntryType GetType () const { return EntryType::Expense; }
 
@@ -164,9 +164,9 @@ namespace Poleemery
 		Category () = default;
 		explicit Category (const QString&);
 
-		static QByteArray ClassName () { return "Category"; }
+		static QString ClassName () { return "Category"; }
 
-		static QByteArray FieldNameMorpher (const QByteArray& str) { return str; }
+		static QString FieldNameMorpher (const QString& str) { return str; }
 	};
 }
 }
@@ -188,9 +188,9 @@ namespace Poleemery
 		CategoryLink () = default;
 		CategoryLink (const Category&, const NakedExpenseEntry&);
 
-		static QByteArray ClassName () { return "CategoryLink"; }
+		static QString ClassName () { return "CategoryLink"; }
 
-		static QByteArray FieldNameMorpher (const QByteArray& str) { return str; }
+		static QString FieldNameMorpher (const QString& str) { return str; }
 	};
 }
 }
@@ -208,9 +208,9 @@ namespace Poleemery
 	{
 		using EntryBase::EntryBase;
 
-		static QByteArray ClassName () { return "ReceiptEntry"; }
+		static QString ClassName () { return "ReceiptEntry"; }
 
-		static QByteArray FieldNameMorpher (const QByteArray& str) { return str; }
+		static QString FieldNameMorpher (const QString& str) { return str; }
 
 		EntryType GetType () const { return EntryType::Receipt; }
 	};
@@ -237,9 +237,9 @@ namespace Poleemery
 		QDateTime SnapshotTime_;
 		double Rate_;
 
-		static QByteArray ClassName () { return "Rate"; }
+		static QString ClassName () { return "Rate"; }
 
-		static QByteArray FieldNameMorpher (const QByteArray& str) { return str; }
+		static QString FieldNameMorpher (const QString& str) { return str; }
 	};
 }
 }

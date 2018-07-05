@@ -101,10 +101,10 @@ namespace oral
 	namespace detail
 	{
 		template<typename U>
-		using MorpherDetector = decltype (std::declval<U> ().FieldNameMorpher (QByteArray {}));
+		using MorpherDetector = decltype (std::declval<U> ().FieldNameMorpher (QString {}));
 
 		template<typename T>
-		QByteArray MorphFieldName (QByteArray str) noexcept
+		QString MorphFieldName (QString str) noexcept
 		{
 			if constexpr (IsDetected_v<MorpherDetector, T>)
 				return T::FieldNameMorpher (str);
@@ -117,7 +117,7 @@ namespace oral
 		}
 
 		template<typename Seq, int Idx>
-		QByteArray GetFieldName () noexcept
+		QString GetFieldName () noexcept
 		{
 			return MorphFieldName<Seq> (boost::fusion::extension::struct_member_name<Seq, Idx>::call ());
 		}
@@ -131,13 +131,13 @@ namespace oral
 		template<typename S>
 		struct GetFieldsNames
 		{
-			QByteArrayList operator() () const noexcept
+			QStringList operator() () const noexcept
 			{
 				return Run (SeqIndices<S>);
 			}
 		private:
 			template<size_t... Vals>
-			QByteArrayList Run (std::index_sequence<Vals...>) const noexcept
+			QStringList Run (std::index_sequence<Vals...>) const noexcept
 			{
 				return { GetFieldName<S, Vals> ()... };
 			}
@@ -183,7 +183,7 @@ namespace oral
 		}
 
 		template<auto Ptr>
-		QByteArray GetFieldNamePtr () noexcept
+		QString GetFieldNamePtr () noexcept
 		{
 			using S = MemberPtrStruct_t<Ptr>;
 			return GetFieldName<S, FieldIndex<Ptr> ()> ();
@@ -193,7 +193,7 @@ namespace oral
 	template<typename ImplFactory, typename T, typename = void>
 	struct Type2Name
 	{
-		QByteArray operator() () const noexcept
+		QString operator() () const noexcept
 		{
 			if constexpr (HasType<T> (Typelist<int, qulonglong, bool> {}) || std::is_enum_v<T>)
 				return "INTEGER";
@@ -211,31 +211,31 @@ namespace oral
 	template<typename ImplFactory, typename T>
 	struct Type2Name<ImplFactory, Unique<T>>
 	{
-		auto operator() () const noexcept { return Type2Name<ImplFactory, T> () () + " UNIQUE"; }
+		QString operator() () const noexcept { return Type2Name<ImplFactory, T> () () + " UNIQUE"; }
 	};
 
 	template<typename ImplFactory, typename T>
 	struct Type2Name<ImplFactory, NotNull<T>>
 	{
-		auto operator() () const noexcept { return Type2Name<ImplFactory, T> () () + " NOT NULL"; }
+		QString operator() () const noexcept { return Type2Name<ImplFactory, T> () () + " NOT NULL"; }
 	};
 
 	template<typename ImplFactory, typename T, typename... Tags>
 	struct Type2Name<ImplFactory, PKey<T, Tags...>>
 	{
-		auto operator() () const noexcept { return Type2Name<ImplFactory, T> () () + " PRIMARY KEY"; }
+		QString operator() () const noexcept { return Type2Name<ImplFactory, T> () () + " PRIMARY KEY"; }
 	};
 
 	template<typename ImplFactory, typename... Tags>
 	struct Type2Name<ImplFactory, PKey<int, Tags...>>
 	{
-		auto operator() () const noexcept { return ImplFactory::TypeLits::IntAutoincrement; }
+		QString operator() () const noexcept { return ImplFactory::TypeLits::IntAutoincrement; }
 	};
 
 	template<typename ImplFactory, auto Ptr>
 	struct Type2Name<ImplFactory, References<Ptr>>
 	{
-		auto operator() () const noexcept
+		QString operator() () const noexcept
 		{
 			const auto& className = MemberPtrStruct_t<Ptr>::ClassName ();
 			return Type2Name<ImplFactory, ReferencesValue_t<Ptr>> () () +
@@ -299,7 +299,7 @@ namespace oral
 						{
 							using Elem = std::decay_t<decltype (elem)>;
 							if (bindPrimaryKey || !IsPKey<Elem>::value)
-								insertQuery->bindValue (QString::fromLatin1 (*pos++), ToVariantF (elem));
+								insertQuery->bindValue (*pos++, ToVariantF (elem));
 							return pos;
 						});
 
@@ -352,11 +352,11 @@ namespace oral
 		}
 
 		template<typename T>
-		CachedFieldsData BuildCachedFieldsData (const QByteArray& table) noexcept
+		CachedFieldsData BuildCachedFieldsData (const QString& table) noexcept
 		{
 			const auto& fields = detail::GetFieldsNames<T> {} ();
-			const auto& qualified = Util::Map (fields, [&table] (const QByteArray& field) { return table + "." + field; });
-			const auto& boundFields = Util::Map (fields, [] (const QByteArray& str) { return ':' + str; });
+			const auto& qualified = Util::Map (fields, [&table] (const QString& field) { return table + "." + field; });
+			const auto& boundFields = Util::Map (fields, [] (const QString& str) { return ':' + str; });
 
 			return { table, fields, qualified, boundFields };
 		}
@@ -446,7 +446,7 @@ namespace oral
 				Deleter_ = [deleteQuery, boundName] (const Seq& t)
 				{
 					constexpr auto index = FindPKey<Seq>::result_type::value;
-					deleteQuery->bindValue (QString::fromLatin1 (boundName), ToVariantF (boost::fusion::at_c<index> (t)));
+					deleteQuery->bindValue (boundName, ToVariantF (boost::fusion::at_c<index> (t)));
 					if (!deleteQuery->exec ())
 						throw QueryException ("delete query execution failed", deleteQuery);
 				};
@@ -502,7 +502,7 @@ namespace oral
 		struct ValueBinder
 		{
 			QSqlQuery_ptr Query_;
-			QList<QByteArray> BoundFields_;
+			QList<QString> BoundFields_;
 
 			void operator() (const HeadArg& arg, const TailArgs&... tail) const noexcept
 			{
@@ -516,7 +516,7 @@ namespace oral
 		struct ValueBinder<FieldsUnpacker, HeadArg>
 		{
 			QSqlQuery_ptr Query_;
-			QList<QByteArray> BoundFields_;
+			QList<QString> BoundFields_;
 
 			void operator() (const HeadArg& arg) const noexcept
 			{
@@ -544,7 +544,7 @@ namespace oral
 			Or
 		};
 
-		inline QByteArray TypeToSql (ExprType type) noexcept
+		inline QString TypeToSql (ExprType type) noexcept
 		{
 			switch (type)
 			{
@@ -646,7 +646,7 @@ namespace oral
 			}
 
 			template<typename T>
-			QByteArray ToSql (ToSqlState<T>& state) const noexcept
+			QString ToSql (ToSqlState<T>& state) const noexcept
 			{
 				if constexpr (IsExprTree<L> {})
 					return Left_.GetFieldName () + " = " + Right_.ToSql (state);
@@ -674,7 +674,7 @@ namespace oral
 			}
 
 			template<typename T>
-			QByteArray ToSql (ToSqlState<T>& state) const noexcept
+			QString ToSql (ToSqlState<T>& state) const noexcept
 			{
 				static_assert (RelationalTypesChecker<Type, T, L, R>::value,
 						"Incompatible types passed to a relational operator.");
@@ -683,7 +683,7 @@ namespace oral
 			}
 
 			template<typename T>
-			QSet<QByteArray> AdditionalTables () const noexcept
+			QSet<QString> AdditionalTables () const noexcept
 			{
 				return Left_.template AdditionalTables<T> () + Right_.template AdditionalTables<T> ();
 			}
@@ -697,14 +697,14 @@ namespace oral
 			using ValueType_t = ValueAtC_t<T, Idx>;
 
 			template<typename T>
-			QByteArray ToSql (ToSqlState<T>&) const noexcept
+			QString ToSql (ToSqlState<T>&) const noexcept
 			{
 				static_assert (Idx < boost::fusion::result_of::size<T>::type::value, "Index out of bounds.");
 				return detail::GetFieldName<T, Idx> ();
 			}
 
 			template<typename>
-			QSet<QByteArray> AdditionalTables () const noexcept
+			QSet<QString> AdditionalTables () const noexcept
 			{
 				return {};
 			}
@@ -721,18 +721,18 @@ namespace oral
 			using ValueType_t = MemberPtrType_t<Ptr>;
 
 			template<typename T>
-			QByteArray ToSql (ToSqlState<T>&) const noexcept
+			QString ToSql (ToSqlState<T>&) const noexcept
 			{
 				return MemberPtrStruct_t<Ptr>::ClassName () + "." + GetFieldName ();
 			}
 
-			QByteArray GetFieldName () const noexcept
+			QString GetFieldName () const noexcept
 			{
 				return detail::GetFieldNamePtr<Ptr> ();
 			}
 
 			template<typename T>
-			QSet<QByteArray> AdditionalTables () const noexcept
+			QSet<QString> AdditionalTables () const noexcept
 			{
 				using Seq = MemberPtrStruct_t<Ptr>;
 				if constexpr (std::is_same_v<Seq, T>)
@@ -759,15 +759,15 @@ namespace oral
 			}
 
 			template<typename ObjT>
-			QByteArray ToSql (ToSqlState<ObjT>& state) const noexcept
+			QString ToSql (ToSqlState<ObjT>& state) const noexcept
 			{
-				const auto& name = ":bound_" + QByteArray::number (++state.LastID_);
+				const auto& name = ":bound_" + QString::number (++state.LastID_);
 				state.BoundMembers_ [name] = ToVariantF (Data_);
 				return name;
 			}
 
 			template<typename>
-			QSet<QByteArray> AdditionalTables () const noexcept
+			QSet<QString> AdditionalTables () const noexcept
 			{
 				return {};
 			}
@@ -877,11 +877,11 @@ namespace oral
 		template<typename F>
 		struct ExprTreeHandler
 		{
-			QByteArray Sql_;
+			QString Sql_;
 			F Binder_;
 			int LastID_;
 
-			ExprTreeHandler (const QByteArray& sql, F&& binder, int lastId)
+			ExprTreeHandler (const QString& sql, F&& binder, int lastId)
 			: Sql_ { sql }
 			, Binder_ { std::move (binder) }
 			, LastID_ { lastId }
@@ -892,7 +892,7 @@ namespace oral
 		template<typename>
 		auto HandleExprTree (const ExprTree<ExprType::ConstTrue>&, int lastId = 0) noexcept
 		{
-			return ExprTreeHandler { QByteArray {}, Void {}, lastId };
+			return ExprTreeHandler { QString {}, Void {}, lastId };
 		}
 
 		template<typename Seq, typename Tree,
@@ -999,9 +999,9 @@ namespace oral
 
 	struct Limit
 	{
-		quint64 Count;
+		uint64_t Count;
 
-		Limit (quint64 count) noexcept
+		Limit (uint64_t count) noexcept
 		: Count { count }
 		{
 		}
@@ -1009,9 +1009,9 @@ namespace oral
 
 	struct Offset
 	{
-		quint64 Count;
+		uint64_t Count;
 
-		Offset (quint64 count) noexcept
+		Offset (uint64_t count) noexcept
 		: Count { count }
 		{
 		}
@@ -1041,7 +1041,7 @@ namespace oral
 		}
 
 		template<auto... Ptrs>
-		QByteArrayList BuildFieldNames () noexcept
+		QStringList BuildFieldNames () noexcept
 		{
 			return { BuildCachedFieldsData<MemberPtrStruct_t<Ptrs>> ().QualifiedFields_.value (FieldIndex<Ptrs> ())... };
 		}
@@ -1150,30 +1150,30 @@ namespace oral
 		template<typename F, typename R>
 		struct HandleSelectorResult
 		{
-			QByteArray Fields_;
+			QString Fields_;
 			F Initializer_;
 			R Behaviour_;
 		};
 
 		template<typename F, typename R>
-		HandleSelectorResult (QByteArray, F, R) -> HandleSelectorResult<F, R>;
+		HandleSelectorResult (QString, F, R) -> HandleSelectorResult<F, R>;
 
 		class SelectWrapperCommon
 		{
 		protected:
 			const QSqlDatabase DB_;
-			const QByteArray LimitNone_;
+			const QString LimitNone_;
 
-			SelectWrapperCommon (const QSqlDatabase& db, const QByteArray& limitNone)
+			SelectWrapperCommon (const QSqlDatabase& db, const QString& limitNone)
 			: DB_ { db }
 			, LimitNone_ { limitNone }
 			{
 			}
 
-			auto RunQuery (const QByteArray& fields, const QByteArray& from,
-					QByteArray where, std::function<void (QSqlQuery&)>&& binder,
-					const QByteArray& orderStr,
-					const QByteArray& limitOffsetStr) const
+			auto RunQuery (const QString& fields, const QString& from,
+					QString where, std::function<void (QSqlQuery&)>&& binder,
+					const QString& orderStr,
+					const QString& limitOffsetStr) const
 			{
 				if (!where.isEmpty ())
 					where.prepend (" WHERE ");
@@ -1185,7 +1185,7 @@ namespace oral
 						limitOffsetStr;
 
 				QSqlQuery query { DB_ };
-				query.prepare (QString::fromLatin1 (queryStr));
+				query.prepare (queryStr);
 				if (binder)
 					binder (query);
 
@@ -1198,31 +1198,31 @@ namespace oral
 				return query;
 			}
 
-			QByteArray HandleLimitOffset (LimitNone, OffsetNone) const noexcept
+			QString HandleLimitOffset (LimitNone, OffsetNone) const noexcept
 			{
 				return {};
 			}
 
-			QByteArray HandleLimitOffset (Limit limit, OffsetNone) const noexcept
+			QString HandleLimitOffset (Limit limit, OffsetNone) const noexcept
 			{
-				return " LIMIT " + QByteArray::number (limit.Count);
+				return " LIMIT " + QString::number (limit.Count);
 			}
 
 			template<typename L>
-			QByteArray HandleLimitOffset (L limit, Offset offset) const noexcept
+			QString HandleLimitOffset (L limit, Offset offset) const noexcept
 			{
-				QByteArray limitStr;
+				QString limitStr;
 				if constexpr (std::is_same_v<std::decay_t<L>, LimitNone>)
 				{
 					Q_UNUSED (limit)
 					limitStr = LimitNone_;
 				}
 				else if constexpr (std::is_integral_v<L>)
-					limitStr = QByteArray::number (limit);
+					limitStr = QString::number (limit);
 				else
-					limitStr = QByteArray::number (limit.Count);
+					limitStr = QString::number (limit.Count);
 				return " LIMIT " + limitStr +
-						" OFFSET " + QByteArray::number (offset.Count);
+						" OFFSET " + QString::number (offset.Count);
 			}
 		};
 
@@ -1338,11 +1338,11 @@ namespace oral
 			}
 		private:
 			template<typename Binder, typename Initializer>
-			auto Select (const QByteArray& fields, const QByteArray& from,
-					const QByteArray& where, Binder&& binder,
+			auto Select (const QString& fields, const QString& from,
+					const QString& where, Binder&& binder,
 					Initializer&& initializer,
-					const QByteArray& orderStr,
-					const QByteArray& limitOffsetStr) const
+					const QString& orderStr,
+					const QString& limitOffsetStr) const
 			{
 				std::function<void (QSqlQuery&)> binderFunc;
 				if constexpr (!std::is_same_v<Void, std::decay_t<Binder>>)
@@ -1366,13 +1366,13 @@ namespace oral
 			}
 
 			template<ExprType Type, typename L, typename R>
-			QByteArray BuildFromClause (const ExprTree<Type, L, R>& tree) const noexcept
+			QString BuildFromClause (const ExprTree<Type, L, R>& tree) const noexcept
 			{
 				if constexpr (Type != ExprType::ConstTrue)
 				{
 					const auto& additionalTables = Util::MapAs<QList> (tree.template AdditionalTables<T> (),
-							[] (const QByteArray& table) { return ", " + table; });
-					return Cached_.Table_ + additionalTables.join ();
+							[] (const QString& table) { return ", " + table; });
+					return Cached_.Table_ + additionalTables.join (QString {});
 				}
 				else
 					return Cached_.Table_;
@@ -1382,7 +1382,7 @@ namespace oral
 			{
 				return HandleSelectorResult
 				{
-					Cached_.QualifiedFields_.join (','),
+					Cached_.QualifiedFields_.join (", "),
 					[] (const QSqlQuery& q, int startIdx = 0)
 					{
 						return InitializeFromQuery<T> (q, SeqIndices<T>, startIdx);
@@ -1410,7 +1410,7 @@ namespace oral
 			{
 				return HandleSelectorResult
 				{
-					BuildFieldNames<Ptrs...> ().join (','),
+					BuildFieldNames<Ptrs...> ().join (", "),
 					MakeIndexedQueryHandler (ptrs, std::make_index_sequence<sizeof... (Ptrs)> {}),
 					ResultBehaviour::All {}
 				};
@@ -1480,27 +1480,27 @@ namespace oral
 				};
 			}
 
-			QByteArray HandleOrder(OrderNone) const noexcept
+			QString HandleOrder (OrderNone) const noexcept
 			{
 				return {};
 			}
 
 			template<auto... Ptrs>
-			QList<QByteArray> HandleSuborder (sph::asc<Ptrs...>) const noexcept
+			QList<QString> HandleSuborder (sph::asc<Ptrs...>) const noexcept
 			{
 				return { (GetFieldNamePtr<Ptrs> () + " ASC")... };
 			}
 
 			template<auto... Ptrs>
-			QList<QByteArray> HandleSuborder (sph::desc<Ptrs...>) const noexcept
+			QList<QString> HandleSuborder (sph::desc<Ptrs...>) const noexcept
 			{
 				return { (GetFieldNamePtr<Ptrs> () + " DESC")... };
 			}
 
 			template<typename... Suborders>
-			QByteArray HandleOrder (OrderBy<Suborders...>) const noexcept
+			QString HandleOrder (OrderBy<Suborders...>) const noexcept
 			{
-				return " ORDER BY " + QByteArrayList { Concat (QList { HandleSuborder (Suborders {})... }) }.join (',');
+				return " ORDER BY " + QStringList { Concat (QList { HandleSuborder (Suborders {})... }) }.join (", ");
 			}
 		};
 
@@ -1508,7 +1508,7 @@ namespace oral
 		class DeleteByFieldsWrapper
 		{
 			const QSqlDatabase DB_;
-			const QByteArray Table_;
+			const QString Table_;
 		public:
 			DeleteByFieldsWrapper (const QSqlDatabase& db, const CachedFieldsData& data) noexcept
 			: DB_ { db }
@@ -1526,7 +1526,7 @@ namespace oral
 						" WHERE " + where;
 
 				QSqlQuery query { DB_ };
-				query.prepare (QString::fromLatin1 (selectAll));
+				query.prepare (selectAll);
 				binder (query);
 				query.exec ();
 			}
@@ -1536,7 +1536,7 @@ namespace oral
 		class AdaptUpdate
 		{
 			const QSqlDatabase DB_;
-			const QByteArray Table_;
+			const QString Table_;
 
 			std::function<void (T)> Updater_;
 		public:
@@ -1549,14 +1549,14 @@ namespace oral
 					constexpr auto index = FindPKey<T>::result_type::value;
 
 					auto statements = Util::ZipWith<QList> (data.Fields_, data.BoundFields_,
-							[] (const QByteArray& s1, const QByteArray& s2) { return s1 + " = " + s2; });
+							[] (const QString& s1, const QString& s2) { return s1 + " = " + s2; });
 					auto wherePart = statements.takeAt (index);
 					const auto& update = "UPDATE " + data.Table_ +
-							" SET " + statements.join (',') +
+							" SET " + statements.join (", ") +
 							" WHERE " + wherePart;
 
 					const auto updateQuery = std::make_shared<QSqlQuery> (db);
-					updateQuery->prepare (QString::fromLatin1 (update));
+					updateQuery->prepare (update);
 					Updater_ = MakeInserter<T> (data, updateQuery, true);
 				}
 			}
@@ -1578,7 +1578,7 @@ namespace oral
 						" WHERE " + whereClause;
 
 				QSqlQuery query { DB_ };
-				query.prepare (QString::fromLatin1 (update));
+				query.prepare (update);
 				setBinder (query);
 				whereBinder (query);
 				query.exec ();
@@ -1597,49 +1597,49 @@ namespace oral
 		template<int... Fields>
 		struct ExtractConstraintFields<UniqueSubset<Fields...>>
 		{
-			auto operator() (const CachedFieldsData& data) const noexcept
+			QString operator() (const CachedFieldsData& data) const noexcept
 			{
-				return "UNIQUE (" + QByteArrayList { data.Fields_.value (Fields)... }.join (',') + ")";
+				return "UNIQUE (" + QStringList { data.Fields_.value (Fields)... }.join (", ") + ")";
 			}
 		};
 
 		template<int... Fields>
 		struct ExtractConstraintFields<PrimaryKey<Fields...>>
 		{
-			auto operator() (const CachedFieldsData& data) const noexcept
+			QString operator() (const CachedFieldsData& data) const noexcept
 			{
-				return "PRIMARY KEY (" + QByteArrayList { data.Fields_.value (Fields)... }.join (',') + ")";
+				return "PRIMARY KEY (" + QStringList { data.Fields_.value (Fields)... }.join (", ") + ")";
 			}
 		};
 
 		template<typename... Args>
-		QByteArrayList GetConstraintsStringList (Constraints<Args...>, const CachedFieldsData& data) noexcept
+		QStringList GetConstraintsStringList (Constraints<Args...>, const CachedFieldsData& data) noexcept
 		{
 			return { ExtractConstraintFields<Args> {} (data)... };
 		}
 
 		template<typename ImplFactory, typename T, size_t... Indices>
-		QByteArrayList GetTypes (std::index_sequence<Indices...>) noexcept
+		QList<QString> GetTypes (std::index_sequence<Indices...>) noexcept
 		{
 			return { Type2Name<ImplFactory, ValueAtC_t<T, Indices>> {} ()... };
 		}
 
 		template<typename ImplFactory, typename T>
-		QByteArray AdaptCreateTable (const CachedFieldsData& data) noexcept
+		QString AdaptCreateTable (const CachedFieldsData& data) noexcept
 		{
 			const auto& types = GetTypes<ImplFactory, T> (SeqIndices<T>);
 
 			const auto& constraints = GetConstraintsStringList (ConstraintsType<T> {}, data);
 			const auto& constraintsStr = constraints.isEmpty () ?
-					QByteArray {} :
-					(", " + constraints.join (','));
+					QString {} :
+					(", " + constraints.join (", "));
 
 			const auto& statements = Util::ZipWith<QList> (types, data.Fields_,
-					[] (const QByteArray& type, const QByteArray& field) { return field + " " + type; });
+					[] (const QString& type, const QString& field) { return field + " " + type; });
 			return "CREATE TABLE " +
 					data.Table_ +
 					" (" +
-					statements.join (',') +
+					statements.join (", ") +
 					constraintsStr +
 					");";
 		}
