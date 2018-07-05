@@ -178,7 +178,7 @@ namespace Snails
 		}
 		const auto& date = GetString (index, MailModel::Column::Date);
 
-		y += std::max ({ stringHeight (from), stringHeight (date) });
+		y += std::max (stringHeight (from), stringHeight (date));
 
 		painter->setFont (option.font);
 
