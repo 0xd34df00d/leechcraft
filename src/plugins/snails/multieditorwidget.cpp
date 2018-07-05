@@ -28,6 +28,8 @@
  **********************************************************************/
 
 #include "multieditorwidget.h"
+#include <QAction>
+#include <QActionGroup>
 #include <QSignalMapper>
 #include <util/sll/prelude.h>
 #include <interfaces/core/ipluginsmanager.h>
