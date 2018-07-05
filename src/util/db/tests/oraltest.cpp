@@ -37,7 +37,7 @@ struct AutogenPKeyRecord
 	lco::PKey<int> ID_;
 	QString Value_;
 
-	static QString ClassName ()
+	static QByteArray ClassName ()
 	{
 		return "AutogenPKeyRecord";
 	}
@@ -59,7 +59,7 @@ struct NoPKeyRecord
 	int ID_;
 	QString Value_;
 
-	static QString ClassName ()
+	static QByteArray ClassName ()
 	{
 		return "NoPKeyRecord";
 	}
@@ -90,7 +90,7 @@ struct NonInPlaceConstructibleRecord
 		Q_UNUSED (someExtraArgument)
 	}
 
-	static QString ClassName ()
+	static QByteArray ClassName ()
 	{
 		return "NonInPlaceConstructibleRecord";
 	}
@@ -114,7 +114,7 @@ struct ComplexConstraintsRecord
 	int Age_;
 	int Weight_;
 
-	static QString ClassName ()
+	static QByteArray ClassName ()
 	{
 		return "ComplexConstraintsRecord";
 	}

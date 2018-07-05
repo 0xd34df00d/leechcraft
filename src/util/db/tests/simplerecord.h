@@ -36,7 +36,7 @@ struct SimpleRecord
 	lco::PKey<int, lco::NoAutogen> ID_;
 	QString Value_;
 
-	static QString ClassName ()
+	static QByteArray ClassName ()
 	{
 		return "SimpleRecord";
 	}

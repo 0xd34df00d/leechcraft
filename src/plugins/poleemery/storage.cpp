@@ -47,7 +47,7 @@ namespace oral
 	template<>
 	struct Type2Name<Poleemery::AccType>
 	{
-		QString operator() () const { return "TEXT"; }
+		QByteArray operator() () const { return "TEXT"; }
 	};
 
 	template<>

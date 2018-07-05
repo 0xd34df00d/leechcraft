@@ -46,7 +46,7 @@ namespace Xoox
 		Util::oral::PKey<QString, Util::oral::NoAutogen> JID_;
 		QString VCardIq_;
 
-		static QString ClassName ()
+		static QByteArray ClassName ()
 		{
 			return "VCards";
 		}
@@ -57,7 +57,7 @@ namespace Xoox
 		Util::oral::PKey<QString, Util::oral::NoAutogen> JID_;
 		QByteArray Hash_;
 
-		static QString ClassName ()
+		static QByteArray ClassName ()
 		{
 			return "PhotoHashes";
 		}

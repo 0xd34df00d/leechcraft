@@ -54,7 +54,7 @@ namespace Poshuku
 		QString Title_;
 		QString URL_;
 
-		static QString ClassName ()
+		static QByteArray ClassName ()
 		{
 			return "History";
 		}
@@ -85,7 +85,7 @@ namespace Poshuku
 		QString URL_;
 		QString Tags_;
 
-		static QString ClassName ()
+		static QByteArray ClassName ()
 		{
 			return "Favorites";
 		}
@@ -115,7 +115,7 @@ namespace Poshuku
 	{
 		oral::PKey<QString, oral::NoAutogen> URL_;
 
-		static QString ClassName ()
+		static QByteArray ClassName ()
 		{
 			return "Forms_Never";
 		}

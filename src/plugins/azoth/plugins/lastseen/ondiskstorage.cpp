@@ -61,7 +61,7 @@ namespace LastSeen
 		{
 		}
 
-		static QString ClassName ()
+		static QByteArray ClassName ()
 		{
 			return "EntryStats";
 		}

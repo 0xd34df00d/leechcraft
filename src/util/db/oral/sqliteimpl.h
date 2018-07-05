@@ -78,11 +78,11 @@ namespace LeechCraft::Util::oral::detail::SQLite
 	public:
 		struct TypeLits
 		{
-			inline static const QString IntAutoincrement { "INTEGER PRIMARY KEY AUTOINCREMENT" };
-			inline static const QString Binary { "BLOB" };
+			inline static const QByteArray IntAutoincrement { "INTEGER PRIMARY KEY AUTOINCREMENT" };
+			inline static const QByteArray Binary { "BLOB" };
 		};
 
-		inline static const QString LimitNone { "-1" };
+		inline static const QByteArray LimitNone { "-1" };
 
 		auto MakeInsertQueryBuilder (const QSqlDatabase& db, const CachedFieldsData& data) const
 		{

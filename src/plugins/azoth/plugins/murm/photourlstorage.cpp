@@ -47,7 +47,7 @@ namespace Murm
 		Util::oral::PKey<qulonglong, Util::oral::NoAutogen> UserNum_;
 		QByteArray BigPhotoUrl_;
 
-		static QString ClassName ()
+		static QByteArray ClassName ()
 		{
 			return "PhotoUrls";
 		}
