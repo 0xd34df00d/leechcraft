@@ -5,7 +5,6 @@ RUN git clone https://github.com/0xd34df00d/leechcraft.git && \
 	mkdir build && \
 	cd build && \
 	cmake ../src \
-		-DCMAKE_COLOR_MAKEFILE=False \
 		-DLIB_SUFFIX=64 \
 		-DCMAKE_INSTALL_PREFIX=/usr \
 		-DSTRICT_LICENSING=True \
@@ -97,4 +96,4 @@ RUN git clone https://github.com/0xd34df00d/leechcraft.git && \
 		-DENABLE_POSHUKU_DCAC_TESTS=True \
 		-DENABLE_UTIL_TESTS=True \
 		&& \
-	GCC_COLORS= make -j$(nproc) -k
+	make -j$(nproc) -k
