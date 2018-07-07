@@ -1292,6 +1292,12 @@ namespace oral
 				{
 					return std::apply (W_, Params_);
 				}
+
+				template<auto... Ptrs>
+				auto Group () && noexcept
+				{
+					return std::move (*this).Group (GroupBy<Ptrs...> {});
+				}
 			};
 		public:
 			template<typename ImplFactory>
