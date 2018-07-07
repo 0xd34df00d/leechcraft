@@ -932,6 +932,9 @@ namespace oral
 		template<typename... MemberDirectionList>
 		struct OrderBy {};
 
+		template<auto... Ptrs>
+		struct GroupBy {};
+
 		struct SelectWhole {};
 
 		template<typename L, typename R>
@@ -997,6 +1000,9 @@ namespace oral
 	template<typename... Orders>
 	constexpr detail::OrderBy<Orders...> OrderBy {};
 
+	template<auto... Ptrs>
+	constexpr detail::GroupBy<Ptrs...> GroupBy {};
+
 	struct Limit
 	{
 		uint64_t Count;
@@ -1049,6 +1055,7 @@ namespace oral
 		enum class SelectBehaviour { Some, One };
 
 		struct OrderNone {};
+		struct GroupNone {};
 		struct LimitNone {};
 		struct OffsetNone {};
 
@@ -1173,6 +1180,7 @@ namespace oral
 			auto RunQuery (const QString& fields, const QString& from,
 					QString where, std::function<void (QSqlQuery&)>&& binder,
 					const QString& orderStr,
+					const QString& groupStr,
 					const QString& limitOffsetStr) const
 			{
 				if (!where.isEmpty ())
@@ -1182,6 +1190,7 @@ namespace oral
 						" FROM " + from +
 						where +
 						orderStr +
+						groupStr +
 						limitOffsetStr;
 
 				QSqlQuery query { DB_ };
@@ -1261,16 +1270,22 @@ namespace oral
 					return RepTuple (ReplaceTupleElem<2> (std::move (Params_), std::forward<U> (order)));
 				}
 
+				template<typename U>
+				auto Group (U&& group) && noexcept
+				{
+					return RepTuple (ReplaceTupleElem<3> (std::move (Params_), std::forward<U> (group)));
+				}
+
 				template<typename U = Limit>
 				auto Limit (U&& limit) && noexcept
 				{
-					return RepTuple (ReplaceTupleElem<3> (std::move (Params_), std::forward<U> (limit)));
+					return RepTuple (ReplaceTupleElem<4> (std::move (Params_), std::forward<U> (limit)));
 				}
 
 				template<typename U = Offset>
 				auto Offset (U&& offset) && noexcept
 				{
-					return RepTuple (ReplaceTupleElem<4> (std::move (Params_), std::forward<U> (offset)));
+					return RepTuple (ReplaceTupleElem<5> (std::move (Params_), std::forward<U> (offset)));
 				}
 
 				auto operator() () &&
@@ -1293,6 +1308,7 @@ namespace oral
 					SelectWhole {},
 					ConstTrueTree_v,
 					OrderNone {},
+					GroupNone {},
 					LimitNone {},
 					OffsetNone {}
 				};
@@ -1317,12 +1333,14 @@ namespace oral
 					typename Selector,
 					ExprType Type, typename L, typename R,
 					typename Order = OrderNone,
+					typename Group = GroupNone,
 					typename Limit = LimitNone,
 					typename Offset = OffsetNone
 				>
 			auto operator() (Selector selector,
 					const ExprTree<Type, L, R>& tree,
 					Order order = OrderNone {},
+					Group group = GroupNone {},
 					Limit limit = LimitNone {},
 					Offset offset = OffsetNone {}) const
 			{
@@ -1334,6 +1352,7 @@ namespace oral
 								where, binder,
 								initializer,
 								HandleOrder (std::forward<Order> (order)),
+								HandleGroup (std::forward<Group> (group)),
 								HandleLimitOffset (std::forward<Limit> (limit), std::forward<Offset> (offset))));
 			}
 		private:
@@ -1342,12 +1361,13 @@ namespace oral
 					const QString& where, Binder&& binder,
 					Initializer&& initializer,
 					const QString& orderStr,
+					const QString& groupStr,
 					const QString& limitOffsetStr) const
 			{
 				std::function<void (QSqlQuery&)> binderFunc;
 				if constexpr (!std::is_same_v<Void, std::decay_t<Binder>>)
 					binderFunc = binder;
-				auto query = RunQuery (fields, from, where, std::move (binderFunc), orderStr, limitOffsetStr);
+				auto query = RunQuery (fields, from, where, std::move (binderFunc), orderStr, groupStr, limitOffsetStr);
 
 				if constexpr (SelectBehaviour == SelectBehaviour::Some)
 				{
@@ -1501,6 +1521,17 @@ namespace oral
 			QString HandleOrder (OrderBy<Suborders...>) const noexcept
 			{
 				return " ORDER BY " + QStringList { Concat (QList { HandleSuborder (Suborders {})... }) }.join (", ");
+			}
+
+			QString HandleGroup (GroupNone) const noexcept
+			{
+				return {};
+			}
+
+			template<auto... Ptrs>
+			QString HandleGroup (GroupBy<Ptrs...>) const noexcept
+			{
+				return " GROUP BY " + QStringList { GetFieldNamePtr<Ptrs> ()... }.join (", ");
 			}
 		};
 
