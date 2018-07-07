@@ -76,6 +76,11 @@ namespace oral
 		{
 			return Val_;
 		}
+
+		const value_type* operator-> () const
+		{
+			return &Val_;
+		}
 	};
 
 	template<typename T, typename... Tags>
