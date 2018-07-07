@@ -38,6 +38,7 @@
 #include <util/db/util.h>
 #include <util/db/oral/oral.h>
 #include <util/db/oral/pgimpl.h>
+#include <util/sll/util.h>
 #include <util/util.h>
 #include "xmlsettingsmanager.h"
 
@@ -196,6 +197,19 @@ namespace Poshuku
 			items.push_back (item.ToHistoryItem ());
 	}
 
+	namespace
+	{
+		double Score (const QList<int>& diffs)
+		{
+			const auto k = 86400.; // decay rate should be the same order of magnitude as a day
+
+			double result = 0;
+			for (auto diff : diffs)
+				result += std::exp (-k * diff);
+			return result;
+		}
+	}
+
 	void SQLStorageBackend::LoadResemblingHistory (const QString& base,
 			history_items_t& items) const
 	{
@@ -203,10 +217,34 @@ namespace Poshuku
 
 		const auto& pat = "%" + base + "%";
 		const auto& allItems = History_->Select.Build ()
-				.Select (sph::fields<&History::Title_, &History::Date_>)
+				.Select (sph::all)
 				.Where (sph::f<&History::Title_> |like| pat || sph::f<&History::URL_> |like| pat)
 				.Order (oral::OrderBy<sph::desc<&History::Date_>>)
 				();
+
+		const auto& now = QDateTime::currentDateTime ();
+
+		QHash<QString, QString> url2title;
+		QHash<QString, QList<int>> url2diffs;
+		for (const auto& item : allItems)
+		{
+			if (!url2title.contains (item.URL_))
+				url2title [item.URL_] = item.Title_;
+
+			url2diffs [item.URL_] << item.Date_->secsTo (now);
+		}
+
+		auto scored = Util::Map (Util::Stlize (url2diffs),
+				[] (const auto& pair) { return QPair { pair.first, Score (pair.second) }; });
+		std::sort (scored.rbegin (), scored.rend (), Util::ComparingBy (Util::Snd));
+
+		for (const auto& pair : scored)
+		{
+			const auto& url = pair.first;
+			const auto& title = url2title [url];
+
+			items.push_back ({ title, {}, url });
+		}
 	}
 
 	void SQLStorageBackend::AddToHistory (const HistoryItem& item)
