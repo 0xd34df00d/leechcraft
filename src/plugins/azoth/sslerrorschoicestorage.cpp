@@ -36,7 +36,6 @@
 #include <util/db/dblock.h>
 #include <util/db/oral/oral.h>
 #include <util/db/oral/migrate.h>
-#include <util/sll/functor.h>
 
 namespace LeechCraft
 {
@@ -94,9 +93,8 @@ namespace Azoth
 	auto SslErrorsChoiceStorage::GetAction (const QByteArray& id,
 			QSslError::SslError err) const -> boost::optional<Action>
 	{
-		using Util::operator*;
-
-		return AdaptedRecord_->SelectOne (sph::f<&Record::AccountID_> == id && sph::f<&Record::Error_> == err) * &Record::Action_;
+		return AdaptedRecord_->SelectOne (sph::fields<&Record::Action_>,
+				sph::f<&Record::AccountID_> == id && sph::f<&Record::Error_> == err);
 	}
 
 	void SslErrorsChoiceStorage::SetAction (const QByteArray& id,
