@@ -72,13 +72,13 @@ namespace NamAuth
 
 	boost::optional<SQLStorageBackend::AuthRecord> SQLStorageBackend::GetAuth (const QString& realm, const QString& context)
 	{
-		return AdaptedRecord_->SelectOne (sph::_0 == realm && sph::_1 == context);
+		return AdaptedRecord_->SelectOne (sph::f<&AuthRecord::RealmName_> == realm && sph::f<&AuthRecord::Context_> == context);
 	}
 
 	void SQLStorageBackend::SetAuth (const AuthRecord& record)
 	{
 		AdaptedRecord_->Insert (record,
-			Util::oral::InsertAction::Replace::Fields<&AuthRecord::RealmName_, &AuthRecord::Context_>);
+				Util::oral::InsertAction::Replace::Fields<&AuthRecord::RealmName_, &AuthRecord::Context_>);
 	}
 }
 }
