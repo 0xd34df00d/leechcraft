@@ -96,7 +96,7 @@ namespace Azoth
 	{
 		using Util::operator*;
 
-		return AdaptedRecord_->SelectOne (sph::_0 == id && sph::_1 == err) * &Record::Action_;
+		return AdaptedRecord_->SelectOne (sph::f<&Record::AccountID_> == id && sph::f<&Record::Error_> == err) * &Record::Action_;
 	}
 
 	void SslErrorsChoiceStorage::SetAction (const QByteArray& id,
