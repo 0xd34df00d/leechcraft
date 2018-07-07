@@ -166,12 +166,13 @@ namespace Poshuku
 
 		Valid_ = true;
 
-		int size = Items_.size () - 1;
-		if (size > 0)
-			beginRemoveRows ({}, 0, size);
-		Items_.clear ();
-		if (size > 0)
+		if (!Items_.isEmpty ())
+		{
+			int finalIdx = Items_.size () - 1;
+			beginRemoveRows ({}, 0, finalIdx);
+			Items_.clear ();
 			endRemoveRows ();
+		}
 
 		if (Base_.startsWith ('!'))
 		{
