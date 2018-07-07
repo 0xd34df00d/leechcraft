@@ -232,11 +232,19 @@ namespace Util
 		QCOMPARE (minMax, (std::tuple { 0, 2 }));
 	}
 
-	void OralTest_SimpleRecord::testSimpleRecordInsertSelectAllPlusMinPlusMax ()
+	void OralTest_SimpleRecord::testSimpleRecordInsertSelectValuePlusMinPlusMax ()
 	{
-		auto adapted = PrepareRecords<SimpleRecord> (MakeDatabase ());
-		const auto allMinMax = adapted->Select (sph::all + sph::min<&SimpleRecord::ID_> + sph::max<&SimpleRecord::ID_>);
-		QCOMPARE (allMinMax, (QList<std::tuple<SimpleRecord, int, int>> { { { 2, "2" }, 0, 2 } }));
+		auto adapted = oral::AdaptPtr<SimpleRecord, OralFactory> (MakeDatabase ());
+		for (int i = 0; i < 3; ++i)
+			adapted->Insert ({ i, "0" });
+		for (int i = 3; i < 6; ++i)
+			adapted->Insert ({ i, "1" });
+
+		const auto allMinMax = adapted->Select.Build ()
+				.Select (sph::fields<&SimpleRecord::Value_> + sph::min<&SimpleRecord::ID_> + sph::max<&SimpleRecord::ID_>)
+				.Group (oral::GroupBy<&SimpleRecord::Value_>)
+				();
+		QCOMPARE (allMinMax, (QList<std::tuple<QString, int, int>> { { { "0" }, 0, 2 }, { { "1" }, 3, 5 } }));
 	}
 
 	void OralTest_SimpleRecord::testSimpleRecordInsertSelectLike ()
