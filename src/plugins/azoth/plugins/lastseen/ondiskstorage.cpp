@@ -110,7 +110,7 @@ namespace LastSeen
 
 	boost::optional<EntryStats> OnDiskStorage::GetEntryStats (const QString& entryId)
 	{
-		return Util::Fmap (AdaptedRecord_->SelectOne (sph::_0 == entryId),
+		return Util::Fmap (AdaptedRecord_->SelectOne (sph::f<&Record::EntryID_> == entryId),
 				Util::Caster<EntryStats> {});
 	}
 
