@@ -75,6 +75,7 @@ namespace Util
 
 		void testSimpleRecordInsertSelectMinPlusMax ();
 		void testSimpleRecordInsertSelectValuePlusMinPlusMax ();
+		void testSimpleRecordInsertSelectAllPlusMinPlusMax ();
 
 		void testSimpleRecordInsertSelectLike ();
 
