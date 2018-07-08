@@ -170,18 +170,19 @@ namespace Poshuku
 			endRemoveRows ();
 		}
 
+		history_items_t newItems;
 		if (Base_.startsWith ('!'))
 		{
 			auto cats = Core::Instance ().GetProxy ()->GetSearchCategories ();
 			cats.sort ();
 			for (const auto& cat : cats)
-				Items_.push_back ({ cat, {}, "!" + cat });
+				newItems.push_back ({ cat, {}, "!" + cat });
 		}
 		else
 		{
 			try
 			{
-				Core::Instance ().GetStorageBackend ()->LoadResemblingHistory (Base_, Items_);
+				Core::Instance ().GetStorageBackend ()->LoadResemblingHistory (Base_, newItems);
 			}
 			catch (const std::runtime_error& e)
 			{
@@ -190,12 +191,12 @@ namespace Poshuku
 			}
 		}
 
-		size = Items_.size () - 1;
-		if (size >= 0)
-		{
-			beginInsertRows ({}, 0, size);
-			endInsertRows ();
-		}
+		if (newItems.isEmpty ())
+			return;
+
+		beginInsertRows ({}, 0, newItems.size () - 1);
+		Items_ = std::move (newItems);
+		endInsertRows ();
 	}
 }
 }
