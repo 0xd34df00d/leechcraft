@@ -689,27 +689,6 @@ namespace oral
 			}
 		};
 
-		template<int Idx>
-		class ExprTree<ExprType::LeafStaticPlaceholder, boost::mpl::int_<Idx>, void>
-		{
-		public:
-			template<typename T>
-			using ValueType_t = ValueAtC_t<T, Idx>;
-
-			template<typename T>
-			QString ToSql (ToSqlState<T>&) const noexcept
-			{
-				static_assert (Idx < boost::fusion::result_of::size<T>::type::value, "Index out of bounds.");
-				return detail::GetFieldName<T, Idx> ();
-			}
-
-			template<typename>
-			QSet<QString> AdditionalTables () const noexcept
-			{
-				return {};
-			}
-		};
-
 		template<auto... Ptr>
 		struct MemberPtrs {};
 
@@ -964,15 +943,6 @@ namespace oral
 
 	namespace sph
 	{
-		template<int Idx>
-		using pos = detail::ExprTree<detail::ExprType::LeafStaticPlaceholder, boost::mpl::int_<Idx>>;
-
-		static constexpr pos<0> _0 = {};
-		static constexpr pos<1> _1 = {};
-		static constexpr pos<2> _2 = {};
-		static constexpr pos<3> _3 = {};
-		static constexpr pos<4> _4 = {};
-
 		template<auto Ptr>
 		constexpr detail::ExprTree<detail::ExprType::LeafStaticPlaceholder, detail::MemberPtrs<Ptr>> f {};
 
@@ -1412,20 +1382,6 @@ namespace oral
 					[] (const QSqlQuery& q, int startIdx = 0)
 					{
 						return InitializeFromQuery<T> (q, SeqIndices<T>, startIdx);
-					},
-					ResultBehaviour::All {}
-				};
-			}
-
-			template<int Idx>
-			auto HandleSelector (sph::pos<Idx>) const noexcept
-			{
-				return HandleSelectorResult
-				{
-					Cached_.QualifiedFields_.value (Idx),
-					[] (const QSqlQuery& q, int startIdx = 0)
-					{
-						return FromVariant<UnwrapIndirect_t<ValueAtC_t<T, Idx>>> {} (q.value (startIdx));
 					},
 					ResultBehaviour::All {}
 				};

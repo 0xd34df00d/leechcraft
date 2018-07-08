@@ -73,28 +73,28 @@ namespace Util
 	void OralTest_SimpleRecord::testSimpleRecordInsertSelectByPos ()
 	{
 		auto adapted = PrepareRecords<SimpleRecord> (MakeDatabase ());
-		const auto& list = adapted->Select (sph::_0 == 1);
+		const auto& list = adapted->Select (sph::f<&SimpleRecord::ID_> == 1);
 		QCOMPARE (list, (QList<SimpleRecord> { { 1, "1" } }));
 	}
 
 	void OralTest_SimpleRecord::testSimpleRecordInsertSelectByPos2 ()
 	{
 		auto adapted = PrepareRecords<SimpleRecord> (MakeDatabase ());
-		const auto& list = adapted->Select (sph::_0 < 2);
+		const auto& list = adapted->Select (sph::f<&SimpleRecord::ID_> < 2);
 		QCOMPARE (list, (QList<SimpleRecord> { { 0, "0" }, { 1, "1" } }));
 	}
 
 	void OralTest_SimpleRecord::testSimpleRecordInsertSelectByPos3 ()
 	{
 		auto adapted = PrepareRecords<SimpleRecord> (MakeDatabase ());
-		const auto& list = adapted->Select (sph::_0 < 2 && sph::_1 == QString { "1" });
+		const auto& list = adapted->Select (sph::f<&SimpleRecord::ID_> < 2 && sph::f<&SimpleRecord::Value_> == QString { "1" });
 		QCOMPARE (list, (QList<SimpleRecord> { { 1, "1" } }));
 	}
 
 	void OralTest_SimpleRecord::testSimpleRecordInsertSelectOneByPos ()
 	{
 		auto adapted = PrepareRecords<SimpleRecord> (MakeDatabase ());
-		const auto& single = adapted->SelectOne (sph::_0 == 1);
+		const auto& single = adapted->SelectOne (sph::f<&SimpleRecord::ID_> == 1);
 		QCOMPARE (single, (boost::optional<SimpleRecord> { { 1, "1" } }));
 	}
 
