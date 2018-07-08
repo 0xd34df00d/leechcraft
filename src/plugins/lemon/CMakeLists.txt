@@ -6,12 +6,14 @@ set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake;${CMAKE_MODULE_PATH}")
 find_package (Libnl REQUIRED)
 find_package (Qwt REQUIRED)
 
-include_directories (
-	${CMAKE_CURRENT_BINARY_DIR}
+include_directories (SYSTEM
 	${Boost_INCLUDE_DIR}
-	${LEECHCRAFT_INCLUDE_DIR}
 	${LIBNL_INCLUDE_DIR}
 	${QWT_INCLUDE_DIRS}
+	)
+include_directories (
+	${CMAKE_CURRENT_BINARY_DIR}
+	${LEECHCRAFT_INCLUDE_DIR}
 	)
 set (SRCS
 	lemon.cpp
