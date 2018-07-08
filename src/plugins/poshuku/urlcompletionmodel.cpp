@@ -142,15 +142,11 @@ namespace Poshuku
 		if (!proxy->IsCancelled ())
 			return;
 
-		int newSize = Items_.size ();
-		if (newSize == size)
-			Items_.clear ();
-		else
+		if (size)
 		{
-			history_items_t newItems;
-			std::copy (Items_.begin (), Items_.begin () + newSize - size,
-					std::back_inserter (newItems));
-			Items_ = newItems;
+			beginRemoveRows ({}, 0, size - 1);
+			Items_.erase (Items_.begin (), Items_.begin () + size);
+			endRemoveRows ();
 		}
 	}
 
