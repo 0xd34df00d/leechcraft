@@ -55,7 +55,7 @@ namespace Poshuku
 	public:
 		enum
 		{
-			RoleURL = 45
+			RoleURL = Qt::UserRole + 1
 		};
 		URLCompletionModel (QObject* = 0);
 
