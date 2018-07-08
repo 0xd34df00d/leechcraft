@@ -59,17 +59,15 @@ namespace Poshuku
 		};
 		URLCompletionModel (QObject* = 0);
 
-		virtual int columnCount (const QModelIndex& = QModelIndex ()) const;
-		virtual QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;
-		virtual Qt::ItemFlags flags (const QModelIndex&) const;
-		virtual QVariant headerData (int, Qt::Orientation,
-				int = Qt::DisplayRole) const;
-		virtual QModelIndex index (int, int,
-				const QModelIndex& = QModelIndex()) const;
-		virtual QModelIndex parent (const QModelIndex&) const;
-		virtual int rowCount (const QModelIndex& = QModelIndex ()) const;
+		int columnCount (const QModelIndex& = QModelIndex ()) const override;
+		QVariant data (const QModelIndex&, int = Qt::DisplayRole) const override;
+		Qt::ItemFlags flags (const QModelIndex&) const override;
+		QVariant headerData (int, Qt::Orientation, int = Qt::DisplayRole) const override;
+		QModelIndex index (int, int, const QModelIndex& = {}) const override;
+		QModelIndex parent (const QModelIndex&) const override;
+		int rowCount (const QModelIndex& = {}) const override;
 
-		void AddItem (const QString& title, const QString& url, size_t pos);
+		void AddItem (const QString& title, const QString& url, size_t pos) override;
 	private:
 		void PopulateNonHook ();
 	private slots:
