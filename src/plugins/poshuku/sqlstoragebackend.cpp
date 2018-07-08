@@ -228,6 +228,9 @@ namespace Poshuku
 		QHash<QString, QList<int>> url2diffs;
 		for (const auto& item : allItems)
 		{
+			if (item.URL_.startsWith ("data:"))
+				continue;
+
 			if (!url2title.contains (item.URL_))
 				url2title [item.URL_] = item.Title_;
 
