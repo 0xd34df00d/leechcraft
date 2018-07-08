@@ -178,8 +178,7 @@ namespace Poshuku
 		if (!DB_.open ())
 		{
 			Util::DBLock::DumpError (DB_.lastError ());
-			throw std::runtime_error (QString ("Could not initialize database: %1")
-					.arg (DB_.lastError ().text ()).toUtf8 ().constData ());
+			throw std::runtime_error ("Could not initialize database");
 		}
 
 		if (type == SBSQLite)
