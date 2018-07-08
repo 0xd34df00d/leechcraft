@@ -7,7 +7,6 @@ find_package (Libnl REQUIRED)
 find_package (Qwt REQUIRED)
 
 include_directories (SYSTEM
-	${Boost_INCLUDE_DIR}
 	${LIBNL_INCLUDE_DIR}
 	${QWT_INCLUDE_DIRS}
 	)
