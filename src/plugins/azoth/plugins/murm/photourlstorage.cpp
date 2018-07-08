@@ -93,7 +93,7 @@ namespace Murm
 		using namespace Util;
 
 		return [] (const QByteArray& ba) { return QUrl::fromEncoded (ba); } *
-				AdaptedRecord_->SelectOne (_1, _0 == userId);
+				AdaptedRecord_->SelectOne (fields<&Record::BigPhotoUrl_>, f<&Record::UserNum_> == userId);
 	}
 
 	void PhotoUrlStorage::SetUserUrl (qulonglong userId, const QUrl& url)
