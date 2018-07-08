@@ -201,7 +201,7 @@ namespace Poshuku
 	{
 		double Score (const QList<int>& diffs)
 		{
-			const auto k = 86400.; // decay rate should be the same order of magnitude as a day
+			const auto k = 1 / 86400.; // decay rate should be the same order of magnitude as a day
 
 			double result = 0;
 			for (auto diff : diffs)
