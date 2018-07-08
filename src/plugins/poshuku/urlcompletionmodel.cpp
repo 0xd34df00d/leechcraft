@@ -182,7 +182,7 @@ namespace Poshuku
 		{
 			try
 			{
-				Core::Instance ().GetStorageBackend ()->LoadResemblingHistory (Base_, newItems);
+				newItems = Core::Instance ().GetStorageBackend ()->LoadResemblingHistory (Base_);
 			}
 			catch (const std::runtime_error& e)
 			{

@@ -70,12 +70,10 @@ namespace Poshuku
 			* resembling items container should be sorted by date in descending
 			* order.
 			*
-			* @param[in] base The base string .
-			* @param[out] items The container with items. They would be
-			* appended to the container.
+			* @param[in] base The base string.
+			* @return The similar history items.
 			*/
-		virtual void LoadResemblingHistory (const QString& base,
-				history_items_t& items) const = 0;
+		virtual history_items_t LoadResemblingHistory (const QString& base) const = 0;
 
 		/** @brief Add an item to history.
 			*

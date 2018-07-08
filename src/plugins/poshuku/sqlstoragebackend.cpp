@@ -210,8 +210,7 @@ namespace Poshuku
 		}
 	}
 
-	void SQLStorageBackend::LoadResemblingHistory (const QString& base,
-			history_items_t& items) const
+	history_items_t SQLStorageBackend::LoadResemblingHistory (const QString& base) const
 	{
 		using namespace oral::infix;
 
@@ -241,13 +240,12 @@ namespace Poshuku
 				[] (const auto& pair) { return QPair { pair.first, Score (pair.second) }; });
 		std::sort (scored.rbegin (), scored.rend (), Util::ComparingBy (Util::Snd));
 
-		for (const auto& pair : scored)
-		{
-			const auto& url = pair.first;
-			const auto& title = url2title [url];
-
-			items.push_back ({ title, {}, url });
-		}
+		return Util::Map (scored,
+				[&url2title] (const auto& pair)
+				{
+					const auto& url = pair.first;
+					return HistoryItem { url2title [url], {}, url };
+				});
 	}
 
 	void SQLStorageBackend::AddToHistory (const HistoryItem& item)

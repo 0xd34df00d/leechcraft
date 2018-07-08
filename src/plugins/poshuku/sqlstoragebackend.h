@@ -54,8 +54,7 @@ namespace Poshuku
 		SQLStorageBackend (Type);
 
 		void LoadHistory (history_items_t&) const override;
-		void LoadResemblingHistory (const QString&,
-				history_items_t&) const override;
+		history_items_t LoadResemblingHistory (const QString&) const override;
 		void AddToHistory (const HistoryItem&) override;
 		void ClearOldHistory (int, int) override;
 		void LoadFavorites (FavoritesModel::items_t&) const override;
