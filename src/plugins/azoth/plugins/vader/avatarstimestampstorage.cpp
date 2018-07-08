@@ -90,7 +90,7 @@ namespace Vader
 	{
 		namespace sph = Util::oral::sph;
 
-		return Adapted_->SelectOne (sph::_1, sph::_0 == email);
+		return Adapted_->SelectOne (sph::fields<&AvatarTimestamp::TS_>, sph::f<&AvatarTimestamp::Email_> == email);
 	}
 
 	void AvatarsTimestampStorage::SetTimestamp (const QString& full, const QDateTime& dt)
