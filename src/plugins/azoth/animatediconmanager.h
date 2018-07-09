@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_ANIMATEDICONMANAGER_H
-#define PLUGINS_AZOTH_ANIMATEDICONMANAGER_H
+#pragma once
+
 #include <boost/function.hpp>
 #include <QObject>
 #include <QImage>
@@ -178,4 +178,3 @@ namespace Azoth
 }
 }
 
-#endif
