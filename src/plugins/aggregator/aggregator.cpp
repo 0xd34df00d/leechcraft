@@ -531,7 +531,8 @@ namespace Aggregator
 		StorageBackendManager::Instance ().MakeStorageBackendForThread ()->RemoveChannel (channelId);
 	}
 
-	void Aggregator::Perform (boost::function<void (const QModelIndex&)> func)
+	template<typename F>
+	void Aggregator::Perform (F&& func)
 	{
 		for (auto index : GetRelevantIndexes ())
 			func (index);

@@ -30,7 +30,6 @@
 #pragma once
 
 #include <memory>
-#include <boost/function.hpp>
 #include <QWidget>
 #include <QItemSelection>
 #include <interfaces/iinfo.h>
@@ -124,7 +123,9 @@ namespace Aggregator
 		QModelIndex GetRelevantIndex () const;
 		QList<QModelIndex> GetRelevantIndexes () const;
 		void BuildID2ActionTupleMap ();
-		void Perform (boost::function<void (const QModelIndex&)>);
+
+		template<typename F>
+		void Perform (F&&);
 	public slots:
 		void handleTasksTreeSelectionCurrentRowChanged (const QModelIndex&, const QModelIndex&);
 	private slots:
