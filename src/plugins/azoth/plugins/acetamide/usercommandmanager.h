@@ -27,8 +27,7 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef LEECHCRAFT_AZOTH_PLUGINS_ACETAMIDE_USERCOMMANDMANAGER_H
-#define LEECHCRAFT_AZOTH_PLUGINS_ACETAMIDE_USERCOMMANDMANAGER_H
+#pragma once
 
 #include <boost/function.hpp>
 #include <QObject>
@@ -61,4 +60,3 @@ namespace Acetamide
 }
 }
 
-#endif // LEECHCRAFT_AZOTH_PLUGINS_ACETAMIDE_USERCOMMANDMANAGER_H
