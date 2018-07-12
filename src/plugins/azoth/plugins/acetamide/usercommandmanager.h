@@ -45,7 +45,6 @@ namespace Acetamide
 	class UserCommandManager : public QObject
 	{
 		IrcServerHandler *ISH_;
-		IrcParser *Parser_;
 		QHash<QString, std::function<void (QStringList)>> Command2Action_;
 	public:
 		UserCommandManager (IrcServerHandler*, IrcParser *parser);

@@ -43,7 +43,6 @@ namespace Acetamide
 			IrcParser *parser)
 	: QObject (ish)
 	, ISH_ (ish)
-	, Parser_ (parser)
 	{
 		auto bind = [=] (auto funPtr)
 		{
@@ -53,6 +52,7 @@ namespace Acetamide
 			if constexpr (std::is_same_v<Obj_t, IrcServerHandler>)
 				return [funPtr, ish] (const QStringList& list) { (ish->*funPtr) (list); };
 		};
+
 		Command2Action_ ["join"] = bind (&IrcParser::JoinCommand);
 		Command2Action_ ["part"] = bind (&IrcParser::PartCommand);
 		Command2Action_ ["quit"] = bind (&IrcParser::QuitCommand);
