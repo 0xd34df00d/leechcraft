@@ -29,7 +29,7 @@
 
 #pragma once
 
-#include <boost/function.hpp>
+#include <functional>
 #include <QObject>
 #include <QHash>
 
@@ -49,7 +49,7 @@ namespace Acetamide
 
 		IrcServerHandler *ISH_;
 		IrcParser *Parser_;
-		QHash<QString, boost::function<void (const QStringList&)>> Command2Action_;
+		QHash<QString, std::function<void (QStringList)>> Command2Action_;
 	public:
 		UserCommandManager (IrcServerHandler*, IrcParser *parser);
 		QString VerifyMessage (const QString&, const QString&);
