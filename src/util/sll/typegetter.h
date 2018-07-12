@@ -89,10 +89,16 @@ namespace Util
 		};
 	}
 
-	template<auto Ptr>
-	using MemberPtrType_t = typename detail::DecomposeMemberPtr<decltype (Ptr)>::Value_t;
+	template<typename PtrType>
+	using MemberTypeType_t = typename detail::DecomposeMemberPtr<PtrType>::Value_t;
+
+	template<typename PtrType>
+	using MemberTypeStruct_t = typename detail::DecomposeMemberPtr<PtrType>::StructType_t;
 
 	template<auto Ptr>
-	using MemberPtrStruct_t = typename detail::DecomposeMemberPtr<decltype (Ptr)>::StructType_t;
+	using MemberPtrType_t = MemberTypeType_t<decltype (Ptr)>;
+
+	template<auto Ptr>
+	using MemberPtrStruct_t = MemberTypeStruct_t<decltype (Ptr)>;
 }
 }
