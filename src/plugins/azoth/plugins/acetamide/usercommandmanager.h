@@ -53,8 +53,6 @@ namespace Acetamide
 	public:
 		UserCommandManager (IrcServerHandler*, IrcParser *parser);
 		QString VerifyMessage (const QString&, const QString&);
-	private:
-		void Init ();
 	};
 }
 }
