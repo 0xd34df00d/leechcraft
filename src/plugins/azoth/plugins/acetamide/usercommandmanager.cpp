@@ -128,7 +128,7 @@ namespace Acetamide
 			messageList << channelName; //TODO message for part
 		else if (cmd == "join" && !message.isEmpty ())
 		{
-			QStringList channelList = messageList.first ().split (',');
+			QStringList channelList = messageList.value (0).split (',');
 
 			for (int i = 0; i < channelList.count (); ++i)
 			{
