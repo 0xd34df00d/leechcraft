@@ -29,6 +29,7 @@
 
 #include "sqlstoragebackend.h"
 #include <stdexcept>
+#include <cmath>
 #include <QDir>
 #include <QSqlQuery>
 #include <QSqlError>
