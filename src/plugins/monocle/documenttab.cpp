@@ -55,7 +55,6 @@
 #include <util/util.h>
 #include <util/xpc/stddatafiltermenucreator.h>
 #include <util/gui/findnotification.h>
-#include <util/sll/slotclosure.h>
 #include <util/sll/prelude.h>
 #include <util/sll/delayedexecutor.h>
 #include <interfaces/imwproxy.h>
@@ -172,16 +171,9 @@ namespace Monocle
 		dockTabWidget->addTab (OptContentsWidget_,
 				mgr->GetIcon ("configure"), tr ("Optional contents"));
 
-		new Util::SlotClosure<Util::NoDeletePolicy>
-		{
-			[this, dockTabWidget]
-			{
-				dockTabWidget->setCurrentWidget (AnnWidget_);
-			},
-			AnnManager_,
-			SIGNAL (annotationSelected (QModelIndex)),
-			this
-		};
+		connect (AnnManager_,
+				&AnnManager::annotationSelected,
+				[this, dockTabWidget] { dockTabWidget->setCurrentWidget (AnnWidget_); });
 
 		connect (ThumbsWidget_,
 				SIGNAL (pageClicked (int)),
