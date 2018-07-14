@@ -28,7 +28,7 @@
  **********************************************************************/
 
 #include "usercommandmanager.h"
-#include <boost/bind.hpp>
+#include <util/sll/typegetter.h>
 #include "ircserverhandler.h"
 #include "ircparser.h"
 #include "ircaccount.h"
@@ -43,9 +43,59 @@ namespace Acetamide
 			IrcParser *parser)
 	: QObject (ish)
 	, ISH_ (ish)
-	, Parser_ (parser)
 	{
-		Init ();
+		auto bind = [=] (auto funPtr)
+		{
+			using Obj_t = Util::MemberTypeStruct_t<decltype (funPtr)>;
+			if constexpr (std::is_same_v<Obj_t, IrcParser>)
+				return [funPtr, parser] (const QStringList& list) { (parser->*funPtr) (list); };
+			if constexpr (std::is_same_v<Obj_t, IrcServerHandler>)
+				return [funPtr, ish] (const QStringList& list) { (ish->*funPtr) (list); };
+		};
+
+		Command2Action_ ["join"] = bind (&IrcParser::JoinCommand);
+		Command2Action_ ["part"] = bind (&IrcParser::PartCommand);
+		Command2Action_ ["quit"] = bind (&IrcParser::QuitCommand);
+		Command2Action_ ["privmsg"] = bind (&IrcServerHandler::SendMessage);
+		Command2Action_ ["msg"] = bind (&IrcServerHandler::SendMessage);
+		Command2Action_ ["nick"] = bind (&IrcParser::NickCommand);
+		Command2Action_ ["ping"] = bind (&IrcParser::PingCommand);
+		Command2Action_ ["pong"] = bind (&IrcParser::PongCommand);
+		Command2Action_ ["topic"] = bind (&IrcParser::TopicCommand);
+		Command2Action_ ["kick"] = bind (&IrcParser::KickCommand);
+		Command2Action_ ["invite"] = bind (&IrcParser::InviteCommand);
+		Command2Action_ ["ctcp"] = bind (&IrcParser::CTCPRequest);
+		Command2Action_ ["names"] = bind (&IrcParser::NamesCommand);
+		Command2Action_ ["away"] = bind (&IrcParser::AwayCommand);
+		Command2Action_ ["userhost"] = bind (&IrcParser::UserhostCommand);
+		Command2Action_ ["ison"] = bind (&IrcParser::IsonCommand);
+		Command2Action_ ["whois"] = bind (&IrcParser::WhoisCommand);
+		Command2Action_ ["whowas"] = bind (&IrcParser::WhowasCommand);
+		Command2Action_ ["who"] = bind (&IrcParser::WhoCommand);
+		Command2Action_ ["summon"] = bind (&IrcParser::SummonCommand);
+		Command2Action_ ["version"] = bind (&IrcParser::VersionCommand);
+		Command2Action_ ["links"] = bind (&IrcParser::LinksCommand);
+		Command2Action_ ["info"] = bind (&IrcParser::InfoCommand);
+		Command2Action_ ["motd"] = bind (&IrcParser::MOTDCommand);
+		Command2Action_ ["time"] = bind (&IrcParser::TimeCommand);
+		Command2Action_ ["oper"] = bind (&IrcParser::OperCommand);
+		Command2Action_ ["rehash"] = bind (&IrcParser::RehashCommand);
+		Command2Action_ ["lusers"] = bind (&IrcParser::LusersCommand);
+		Command2Action_ ["users"] = bind (&IrcParser::UsersCommand);
+		Command2Action_ ["wallops"] = bind (&IrcParser::WallopsCommand);
+		Command2Action_ ["quote"] = bind (&IrcParser::RawCommand);
+		Command2Action_ ["me"] = bind (&IrcParser::CTCPRequest);
+		Command2Action_ ["squit"] = bind (&IrcParser::SQuitCommand);
+		Command2Action_ ["stats"] = bind (&IrcParser::StatsCommand);
+		Command2Action_ ["connect"] = bind (&IrcParser::ConnectCommand);
+		Command2Action_ ["trace"] = bind (&IrcParser::TraceCommand);
+		Command2Action_ ["admin"] = bind (&IrcParser::AdminCommand);
+		Command2Action_ ["kill"] = bind (&IrcParser::KillCommand);
+		Command2Action_ ["die"] = bind (&IrcParser::DieCommand);
+		Command2Action_ ["restart"] = bind (&IrcParser::RestartCommand);
+		Command2Action_ ["mode"] = bind (&IrcParser::ChanModeCommand);
+		Command2Action_ ["say"] = bind (&IrcServerHandler::SayCommand);
+		Command2Action_ ["list"] = bind (&IrcServerHandler::showChannels);
 	}
 
 	QString UserCommandManager::VerifyMessage (const QString& msg,
@@ -78,7 +128,7 @@ namespace Acetamide
 			messageList << channelName; //TODO message for part
 		else if (cmd == "join" && !message.isEmpty ())
 		{
-			QStringList channelList = messageList.first ().split (',');
+			QStringList channelList = messageList.value (0).split (',');
 
 			for (int i = 0; i < channelList.count (); ++i)
 			{
@@ -112,96 +162,6 @@ namespace Acetamide
 
 		Command2Action_ [cmd] (messageList);
 		return cmd;
-	}
-
-	void UserCommandManager::Init ()
-	{
-		Command2Action_ ["join"] = boost::bind (&IrcParser::JoinCommand,
-				Parser_, _1);
-		Command2Action_ ["part"] = boost::bind (&IrcParser::PartCommand,
-				Parser_, _1);
-		Command2Action_ ["quit"] = boost::bind (&IrcParser::QuitCommand,
-				Parser_, _1);
-		Command2Action_ ["privmsg"] = boost::bind (&IrcServerHandler::SendMessage,
-				ISH_, _1);
-		Command2Action_ ["msg"] = boost::bind (&IrcServerHandler::SendMessage,
-				ISH_, _1);
-		Command2Action_ ["nick"] = boost::bind (&IrcParser::NickCommand,
-				Parser_, _1);
-		Command2Action_ ["ping"] = boost::bind (&IrcParser::PingCommand,
-				Parser_, _1);
-		Command2Action_ ["pong"] = boost::bind (&IrcParser::PongCommand,
-				Parser_, _1);
-		Command2Action_ ["topic"] = boost::bind (&IrcParser::TopicCommand,
-				Parser_, _1);
-		Command2Action_ ["kick"] = boost::bind (&IrcParser::KickCommand,
-				Parser_, _1);
-		Command2Action_ ["invite"] = boost::bind (&IrcParser::InviteCommand,
-				Parser_, _1);
-		Command2Action_ ["ctcp"] = boost::bind (&IrcParser::CTCPRequest,
-				Parser_, _1);
-		Command2Action_ ["names"] = boost::bind (&IrcParser::NamesCommand,
-				Parser_, _1);
-		Command2Action_ ["away"] = boost::bind (&IrcParser::AwayCommand,
-				Parser_, _1);
-		Command2Action_ ["userhost"] = boost::bind (&IrcParser::UserhostCommand,
-				Parser_, _1);
-		Command2Action_ ["ison"] = boost::bind (&IrcParser::IsonCommand,
-				Parser_, _1);
-		Command2Action_ ["whois"] = boost::bind (&IrcParser::WhoisCommand,
-				Parser_, _1);
-		Command2Action_ ["whowas"] = boost::bind (&IrcParser::WhowasCommand,
-				Parser_, _1);
-		Command2Action_ ["who"] = boost::bind (&IrcParser::WhoCommand,
-				Parser_, _1);
-		Command2Action_ ["summon"] = boost::bind (&IrcParser::SummonCommand,
-				Parser_, _1);
-		Command2Action_ ["version"] = boost::bind (&IrcParser::VersionCommand,
-				Parser_, _1);
-		Command2Action_ ["links"] = boost::bind (&IrcParser::LinksCommand,
-				Parser_, _1);
-		Command2Action_ ["info"] = boost::bind (&IrcParser::InfoCommand,
-				Parser_, _1);
-		Command2Action_ ["motd"] = boost::bind (&IrcParser::MOTDCommand,
-				Parser_, _1);
-		Command2Action_ ["time"] = boost::bind (&IrcParser::TimeCommand,
-				Parser_, _1);
-		Command2Action_ ["oper"] = boost::bind (&IrcParser::OperCommand,
-				Parser_, _1);
-		Command2Action_ ["rehash"] = boost::bind (&IrcParser::RehashCommand,
-				Parser_, _1);
-		Command2Action_ ["lusers"] = boost::bind (&IrcParser::LusersCommand,
-				Parser_, _1);
-		Command2Action_ ["users"] = boost::bind (&IrcParser::UsersCommand,
-				Parser_, _1);
-		Command2Action_ ["wallops"] = boost::bind (&IrcParser::WallopsCommand,
-				Parser_, _1);
-		Command2Action_ ["quote"] = boost::bind (&IrcParser::RawCommand,
-				Parser_, _1);
-		Command2Action_ ["me"] = boost::bind (&IrcParser::CTCPRequest,
-				Parser_, _1);
-		Command2Action_ ["squit"] = boost::bind (&IrcParser::SQuitCommand,
-				Parser_, _1);
-		Command2Action_ ["stats"] = boost::bind (&IrcParser::StatsCommand,
-				Parser_, _1);
-		Command2Action_ ["connect"] = boost::bind (&IrcParser::ConnectCommand,
-				Parser_, _1);
-		Command2Action_ ["trace"] = boost::bind (&IrcParser::TraceCommand,
-				Parser_, _1);
-		Command2Action_ ["admin"] = boost::bind (&IrcParser::AdminCommand,
-				Parser_, _1);
-		Command2Action_ ["kill"] = boost::bind (&IrcParser::KillCommand,
-				Parser_, _1);
-		Command2Action_ ["die"] = boost::bind (&IrcParser::DieCommand,
-				Parser_, _1);
-		Command2Action_ ["restart"] = boost::bind (&IrcParser::RestartCommand,
-				Parser_, _1);
-		Command2Action_ ["mode"] = boost::bind (&IrcParser::ChanModeCommand,
-				Parser_, _1);
-		Command2Action_ ["say"] = boost::bind (&IrcServerHandler::SayCommand,
-				ISH_, _1);
-		Command2Action_ ["list"] = boost::bind (&IrcServerHandler::showChannels,
-				ISH_, _1);
 	}
 }
 }

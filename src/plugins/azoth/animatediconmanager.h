@@ -27,9 +27,9 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_ANIMATEDICONMANAGER_H
-#define PLUGINS_AZOTH_ANIMATEDICONMANAGER_H
-#include <boost/function.hpp>
+#pragma once
+
+#include <functional>
 #include <QObject>
 #include <QImage>
 #include <QHash>
@@ -57,7 +57,7 @@ namespace Azoth
 
 		QCache<QByteArray, QIcon> IconCache_;
 	public:
-		typedef boost::function<void (T, const QIcon&)> IconSetter_t;
+		typedef std::function<void (T, QIcon)> IconSetter_t;
 	private:
 		IconSetter_t Setter_;
 	public:
@@ -178,4 +178,3 @@ namespace Azoth
 }
 }
 
-#endif

@@ -27,10 +27,9 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef LEECHCRAFT_AZOTH_PLUGINS_ACETAMIDE_USERCOMMANDMANAGER_H
-#define LEECHCRAFT_AZOTH_PLUGINS_ACETAMIDE_USERCOMMANDMANAGER_H
+#pragma once
 
-#include <boost/function.hpp>
+#include <functional>
 #include <QObject>
 #include <QHash>
 
@@ -40,25 +39,18 @@ namespace Azoth
 {
 namespace Acetamide
 {
-
 	class IrcServerHandler;
 	class IrcParser;
 
 	class UserCommandManager : public QObject
 	{
-		Q_OBJECT
-
 		IrcServerHandler *ISH_;
-		IrcParser *Parser_;
-		QHash<QString, boost::function<void (const QStringList&)>> Command2Action_;
+		QHash<QString, std::function<void (QStringList)>> Command2Action_;
 	public:
 		UserCommandManager (IrcServerHandler*, IrcParser *parser);
 		QString VerifyMessage (const QString&, const QString&);
-	private:
-		void Init ();
 	};
 }
 }
 }
 
-#endif // LEECHCRAFT_AZOTH_PLUGINS_ACETAMIDE_USERCOMMANDMANAGER_H
