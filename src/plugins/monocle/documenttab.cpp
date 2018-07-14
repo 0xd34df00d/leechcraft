@@ -1356,7 +1356,6 @@ namespace Monocle
 		if (!enable)
 			return;
 
-		MouseMode_ = MouseMode::Move;
 		Ui_.PagesView_->SetShowReleaseMenu (false);
 		Ui_.PagesView_->setDragMode (QGraphicsView::ScrollHandDrag);
 	}
@@ -1366,7 +1365,6 @@ namespace Monocle
 		if (!enable)
 			return;
 
-		MouseMode_ = MouseMode::Select;
 		Ui_.PagesView_->SetShowReleaseMenu (true);
 		Ui_.PagesView_->setDragMode (QGraphicsView::RubberBandDrag);
 	}

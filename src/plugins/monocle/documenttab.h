@@ -110,12 +110,6 @@ namespace Monocle
 		QList<PageGraphicsItem*> Pages_;
 		QGraphicsScene Scene_;
 
-		enum class MouseMode
-		{
-			Move,
-			Select
-		} MouseMode_ = MouseMode::Move;
-
 		bool SaveStateScheduled_ = false;
 
 		int PrevCurrentPage_;
