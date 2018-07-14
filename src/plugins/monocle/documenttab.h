@@ -114,7 +114,7 @@ namespace Monocle
 		{
 			Move,
 			Select
-		} MouseMode_;
+		} MouseMode_ = MouseMode::Move;
 
 		bool SaveStateScheduled_ = false;
 
