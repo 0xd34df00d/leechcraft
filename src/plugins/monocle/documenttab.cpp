@@ -157,18 +157,12 @@ namespace Monocle
 
 		auto dockTabWidget = new QTabWidget;
 		dockTabWidget->setTabPosition (QTabWidget::West);
-		dockTabWidget->addTab (TOCWidget_,
-				tocIcon, tr ("Table of contents"));
-		dockTabWidget->addTab (BMWidget_,
-				mgr->GetIcon ("favorites"), tr ("Bookmarks"));
-		dockTabWidget->addTab (ThumbsWidget_,
-				mgr->GetIcon ("view-preview"), tr ("Thumbnails"));
-		dockTabWidget->addTab (AnnWidget_,
-				mgr->GetIcon ("view-pim-notes"), tr ("Annotations"));
-		dockTabWidget->addTab (SearchTabWidget_,
-				mgr->GetIcon ("edit-find"), tr ("Search"));
-		dockTabWidget->addTab (OptContentsWidget_,
-				mgr->GetIcon ("configure"), tr ("Optional contents"));
+		dockTabWidget->addTab (TOCWidget_, tocIcon, tr ("Table of contents"));
+		dockTabWidget->addTab (BMWidget_, mgr->GetIcon ("favorites"), tr ("Bookmarks"));
+		dockTabWidget->addTab (ThumbsWidget_, mgr->GetIcon ("view-preview"), tr ("Thumbnails"));
+		dockTabWidget->addTab (AnnWidget_, mgr->GetIcon ("view-pim-notes"), tr ("Annotations"));
+		dockTabWidget->addTab (SearchTabWidget_, mgr->GetIcon ("edit-find"), tr ("Search"));
+		dockTabWidget->addTab (OptContentsWidget_, mgr->GetIcon ("configure"), tr ("Optional contents"));
 
 		connect (AnnManager_,
 				&AnnManager::annotationSelected,
