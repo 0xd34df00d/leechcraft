@@ -135,8 +135,7 @@ namespace Monocle
 		SearchHandler_ = new TextSearchHandler (Ui_.PagesView_, LayoutManager_, this);
 		connect (SearchHandler_,
 				&TextSearchHandler::navigateRequested,
-				this,
-				&DocumentTab::handleNavigateRequested);
+				[this] (int page, double x, double y) { handleNavigateRequested ({}, page, x, y); });
 
 		FormManager_ = new FormManager (Ui_.PagesView_, this);
 		AnnManager_ = new AnnManager (Ui_.PagesView_, this);
