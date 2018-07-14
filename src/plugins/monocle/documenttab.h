@@ -178,10 +178,14 @@ namespace Monocle
 		QString GetSelectionText () const;
 
 		void RegenPageVisibility ();
+
+		void NavigateToPath (QString, const OnloadData&);
+		void NavigateWithinDocument (int, double, double);
 	private slots:
+		void handleNavigateRequested (const QString&, int, double, double);
+
 		void handleLoaderReady (DocumentOpenOptions, const IDocument_ptr&, const QString&);
 
-		void handleNavigateRequested (QString, int, double, double);
 		void handlePrintRequested ();
 
 		void handleThumbnailClicked (int);

@@ -777,7 +777,7 @@ namespace Monocle
 
 		if (Onload_.Num_ >= 0)
 		{
-			handleNavigateRequested (QString (), Onload_.Num_, Onload_.X_, Onload_.Y_);
+			NavigateWithinDocument (Onload_.Num_, Onload_.X_, Onload_.Y_);
 			Onload_.Num_ = -1;
 		}
 
@@ -856,6 +856,40 @@ namespace Monocle
 		}
 
 		emit pagesVisibilityChanged (rects);
+	}
+
+	void DocumentTab::NavigateToPath (QString path, const OnloadData& onload)
+	{
+		if (QFileInfo { path }.isRelative ())
+			path = QFileInfo (CurrentDocPath_).dir ().absoluteFilePath (path);
+
+		Onload_ = onload;
+		if (!SetDoc (path, DocumentOpenOptions {}))
+			Onload_.Num_ = -1;
+	}
+
+	void DocumentTab::NavigateWithinDocument (int num, double x, double y)
+	{
+		SetCurrentPage (num);
+
+		auto page = Pages_.value (num);
+		if (!page)
+			return;
+
+		if (x > 0 && y > 0)
+		{
+			const auto& size = page->boundingRect ().size ();
+			const auto& mapped = page->mapToScene (size.width () * x, size.height () * y);
+			Ui_.PagesView_->SmoothCenterOn (mapped.x (), mapped.y ());
+		}
+	}
+
+	void DocumentTab::handleNavigateRequested (const QString& path, int num, double x, double y)
+	{
+		if (!path.isEmpty ())
+			NavigateToPath (path, { num, x, y });
+		else
+			NavigateWithinDocument (num, x, y);
 	}
 
 	void DocumentTab::handleLoaderReady (DocumentOpenOptions options,
@@ -947,34 +981,6 @@ namespace Monocle
 		SaveAction_->setEnabled (saveable && saveable->CanSave ().CanSave_);
 
 		ExportPDFAction_->setEnabled (qobject_cast<ISupportPainting*> (docObj));
-	}
-
-	void DocumentTab::handleNavigateRequested (QString path, int num, double x, double y)
-	{
-		if (!path.isEmpty ())
-		{
-			if (QFileInfo (path).isRelative ())
-				path = QFileInfo (CurrentDocPath_).dir ().absoluteFilePath (path);
-
-			Onload_ = { num, x, y };
-
-			if (!SetDoc (path, DocumentOpenOptions {}))
-				Onload_.Num_ = -1;
-			return;
-		}
-
-		SetCurrentPage (num);
-
-		auto page = Pages_.value (num);
-		if (!page)
-			return;
-
-		if (x > 0 && y > 0)
-		{
-			const auto& size = page->boundingRect ().size ();
-			const auto& mapped = page->mapToScene (size.width () * x, size.height () * y);
-			Ui_.PagesView_->SmoothCenterOn (mapped.x (), mapped.y ());
-		}
 	}
 
 	void DocumentTab::handlePrintRequested ()
