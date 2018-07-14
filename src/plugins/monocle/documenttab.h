@@ -188,8 +188,6 @@ namespace Monocle
 
 		void handlePrintRequested ();
 
-		void handleThumbnailClicked (int);
-
 		void handlePageContentsChanged (int);
 
 		void scheduleSaveState ();
@@ -202,14 +200,9 @@ namespace Monocle
 		void handlePrint ();
 		void handlePresentation ();
 
-		void handleGoPrev ();
-		void handleGoNext ();
 		void navigateNumLabel ();
 		void updateNumLabel ();
 		void checkCurrentPageChange (bool force = false);
-
-		void rotateCCW ();
-		void rotateCW ();
 
 		void zoomOut ();
 		void zoomIn ();

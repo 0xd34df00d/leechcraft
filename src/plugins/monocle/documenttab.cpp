@@ -135,7 +135,8 @@ namespace Monocle
 		SearchHandler_ = new TextSearchHandler (Ui_.PagesView_, LayoutManager_, this);
 		connect (SearchHandler_,
 				&TextSearchHandler::navigateRequested,
-				[this] (int page, double x, double y) { handleNavigateRequested ({}, page, x, y); });
+				this,
+				&DocumentTab::NavigateWithinDocument);
 
 		FormManager_ = new FormManager (Ui_.PagesView_, this);
 		AnnManager_ = new AnnManager (Ui_.PagesView_, this);
@@ -169,9 +170,8 @@ namespace Monocle
 				[this, dockTabWidget] { dockTabWidget->setCurrentWidget (AnnWidget_); });
 
 		connect (ThumbsWidget_,
-				SIGNAL (pageClicked (int)),
-				this,
-				SLOT (handleThumbnailClicked (int)));
+				&ThumbsWidget::pageClicked,
+				[this] (int num) { SetCurrentPage (num); });
 
 		DockWidget_->setFeatures (QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetClosable);
 		DockWidget_->setAllowedAreas (Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
@@ -521,11 +521,11 @@ namespace Monocle
 		auto rotateMenu = new QMenu ();
 
 		auto ccwAction = rotateMenu->addAction (tr ("Rotate 90 degrees counter-clockwise"),
-				this, SLOT (rotateCCW ()));
+				[this] { LayoutManager_->AddRotation (-90); });
 		ccwAction->setProperty ("ActionIcon", "object-rotate-left");
 
 		auto cwAction = rotateMenu->addAction (tr ("Rotate 90 degrees clockwise"),
-				this, SLOT (rotateCW ()));
+				[this] { LayoutManager_->AddRotation (90); });
 		cwAction->setProperty ("ActionIcon", "object-rotate-right");
 
 		auto arbAction = rotateMenu->addAction (tr ("Rotate arbitrarily..."));
@@ -616,9 +616,12 @@ namespace Monocle
 		auto prev = new QAction (tr ("Previous page"), this);
 		prev->setProperty ("ActionIcon", "go-previous-view-page");
 		connect (prev,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleGoPrev ()));
+				&QAction::triggered,
+				[this]
+				{
+					SetCurrentPage (GetCurrentPage () - LayoutManager_->GetLayoutModeCount ());
+					scheduleSaveState ();
+				});
 		Toolbar_->addAction (prev);
 
 		PageNumLabel_ = new QLineEdit ();
@@ -644,6 +647,13 @@ namespace Monocle
 
 		auto next = new QAction (tr ("Next page"), this);
 		next->setProperty ("ActionIcon", "go-next-view-page");
+		connect (next,
+				&QAction::triggered,
+				[this]
+				{
+					SetCurrentPage (GetCurrentPage () + LayoutManager_->GetLayoutModeCount ());
+					scheduleSaveState ();
+				});
 		connect (next,
 				SIGNAL (triggered ()),
 				this,
@@ -982,11 +992,6 @@ namespace Monocle
 		handlePrint ();
 	}
 
-	void DocumentTab::handleThumbnailClicked (int num)
-	{
-		SetCurrentPage (num);
-	}
-
 	void DocumentTab::handlePageContentsChanged (int idx)
 	{
 		auto pageItem = Pages_.at (idx);
@@ -1196,20 +1201,6 @@ namespace Monocle
 		presenter->NavigateTo (GetCurrentPage ());
 	}
 
-	void DocumentTab::handleGoPrev ()
-	{
-		SetCurrentPage (GetCurrentPage () - LayoutManager_->GetLayoutModeCount ());
-
-		scheduleSaveState ();
-	}
-
-	void DocumentTab::handleGoNext ()
-	{
-		SetCurrentPage (GetCurrentPage () + LayoutManager_->GetLayoutModeCount ());
-
-		scheduleSaveState ();
-	}
-
 	void DocumentTab::navigateNumLabel ()
 	{
 		auto text = PageNumLabel_->text ();
@@ -1243,16 +1234,6 @@ namespace Monocle
 
 		PrevCurrentPage_ = current;
 		emit currentPageChanged (current);
-	}
-
-	void DocumentTab::rotateCCW ()
-	{
-		LayoutManager_->AddRotation (-90);
-	}
-
-	void DocumentTab::rotateCW ()
-	{
-		LayoutManager_->AddRotation (90);
 	}
 
 	void DocumentTab::zoomOut ()
