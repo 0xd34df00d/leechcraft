@@ -337,7 +337,7 @@ namespace PDF
 				ILink_ptr link;
 				const auto& destStr = elem.attribute ("Destination");
 				if (!destStr.isEmpty ())
-					link.reset (new TOCLink (doc, std::make_unique<Poppler::LinkDestination> (destStr)));
+					link = std::make_shared<TOCLink> (doc, std::make_unique<Poppler::LinkDestination> (destStr));
 				else
 				{
 					const auto& destName = elem.attribute ("DestinationName");
@@ -356,7 +356,7 @@ namespace PDF
 								<< destName;
 						continue;
 					}
-					link.reset (new TOCLink (doc, std::move (dest)));
+					link = std::make_shared<TOCLink> (doc, std::move (dest));
 				}
 
 				TOCEntry entry =
