@@ -115,7 +115,7 @@ namespace oral
 	template<typename ImplFactory>
 	struct Type2Name<ImplFactory, Azoth::Herbicide::Logger::Event>
 	{
-		QString operator() () const
+		auto operator() () const
 		{
 			return Type2Name<ImplFactory, QString> {} ();
 		}
@@ -197,12 +197,14 @@ namespace Herbicide
 		const QString accId { entry->GetParentAccount ()->GetAccountID () };
 		const auto& entryId = entry->GetEntryID ();
 
-		const auto& maybeAccPKey = AdaptedAccount_->SelectOne (sph::_0, sph::_1 == accId);
+		const auto& maybeAccPKey = AdaptedAccount_->SelectOne (sph::fields<&AccountRecord::PKey_>,
+				sph::f<&AccountRecord::AccountID_> == accId);
 		const auto accPKey = maybeAccPKey ?
 				*maybeAccPKey :
 				InsertAccount (entry->GetParentAccount ());
 
-		const auto maybeEntryPKey = AdaptedEntry_->SelectOne (sph::_0, sph::_2 == entryId);
+		const auto maybeEntryPKey = AdaptedEntry_->SelectOne (sph::fields<&EntryRecord::PKey_>,
+				sph::f<&AccountRecord::AccountID_> == entryId);
 		const auto entryPKey = maybeEntryPKey ?
 				*maybeEntryPKey :
 				InsertEntry (accPKey, entry);

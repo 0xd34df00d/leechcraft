@@ -142,15 +142,11 @@ namespace Poshuku
 		if (!proxy->IsCancelled ())
 			return;
 
-		int newSize = Items_.size ();
-		if (newSize == size)
-			Items_.clear ();
-		else
+		if (size)
 		{
-			history_items_t newItems;
-			std::copy (Items_.begin (), Items_.begin () + newSize - size,
-					std::back_inserter (newItems));
-			Items_ = newItems;
+			beginRemoveRows ({}, 0, size - 1);
+			Items_.erase (Items_.begin (), Items_.begin () + size);
+			endRemoveRows ();
 		}
 	}
 
@@ -166,25 +162,27 @@ namespace Poshuku
 
 		Valid_ = true;
 
-		int size = Items_.size () - 1;
-		if (size > 0)
-			beginRemoveRows ({}, 0, size);
-		Items_.clear ();
-		if (size > 0)
+		if (!Items_.isEmpty ())
+		{
+			int finalIdx = Items_.size () - 1;
+			beginRemoveRows ({}, 0, finalIdx);
+			Items_.clear ();
 			endRemoveRows ();
+		}
 
+		history_items_t newItems;
 		if (Base_.startsWith ('!'))
 		{
 			auto cats = Core::Instance ().GetProxy ()->GetSearchCategories ();
 			cats.sort ();
 			for (const auto& cat : cats)
-				Items_.push_back ({ cat, {}, "!" + cat });
+				newItems.push_back ({ cat, {}, "!" + cat });
 		}
 		else
 		{
 			try
 			{
-				Core::Instance ().GetStorageBackend ()->LoadResemblingHistory (Base_, Items_);
+				newItems = Core::Instance ().GetStorageBackend ()->LoadResemblingHistory (Base_);
 			}
 			catch (const std::runtime_error& e)
 			{
@@ -193,12 +191,12 @@ namespace Poshuku
 			}
 		}
 
-		size = Items_.size () - 1;
-		if (size >= 0)
-		{
-			beginInsertRows ({}, 0, size);
-			endInsertRows ();
-		}
+		if (newItems.isEmpty ())
+			return;
+
+		beginInsertRows ({}, 0, newItems.size () - 1);
+		Items_ = std::move (newItems);
+		endInsertRows ();
 	}
 }
 }

@@ -111,7 +111,7 @@ namespace Xoox
 
 	boost::optional<QString> VCardStorageOnDisk::GetVCard (const QString& jid) const
 	{
-		return AdaptedVCards_->SelectOne (sph::fields<&VCardRecord::VCardIq_>, sph::_0 == jid);
+		return AdaptedVCards_->SelectOne (sph::fields<&VCardRecord::VCardIq_>, sph::f<&VCardRecord::JID_> == jid);
 	}
 
 	void VCardStorageOnDisk::SetVCardPhotoHash (const QString& jid, const QByteArray& hash)
@@ -121,7 +121,7 @@ namespace Xoox
 
 	boost::optional<QByteArray> VCardStorageOnDisk::GetVCardPhotoHash (const QString& jid) const
 	{
-		return AdaptedPhotoHashes_->SelectOne (sph::fields<&PhotoHashRecord::Hash_>, sph::_0 == jid);
+		return AdaptedPhotoHashes_->SelectOne (sph::fields<&PhotoHashRecord::Hash_>, sph::f<&PhotoHashRecord::JID_> == jid);
 	}
 }
 }

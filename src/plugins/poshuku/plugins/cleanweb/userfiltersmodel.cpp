@@ -111,16 +111,9 @@ namespace CleanWeb
 				tr ("Allowed") :
 				tr ("Blocked");
 		case 2:
-			switch (item->Option_.MatchType_)
-			{
-			case FilterOption::MatchType::Wildcard:
-			case FilterOption::MatchType::Plain:
-			case FilterOption::MatchType::Begin:
-			case FilterOption::MatchType::End:
-				return tr ("Wildcard");
-			case FilterOption::MatchType::Regexp:
-				return tr ("Regexp");
-			}
+			return item->Option_.MatchType_ == FilterOption::MatchType::Regexp ?
+				tr ("Regexp") :
+				tr ("Wildcard");
 		case 3:
 			return item->Option_.Case_ == Qt::CaseSensitive ?
 				tr ("True") :

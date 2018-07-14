@@ -16,10 +16,12 @@ if (WITH_LHTR_HTML)
 	endif ()
 endif (WITH_LHTR_HTML)
 
-include_directories (
-	${CMAKE_CURRENT_BINARY_DIR}
+include_directories (SYSTEM
 	${Boost_INCLUDE_DIR}
 	${LIBTIDY_INCLUDE_DIRS}
+	)
+include_directories (
+	${CMAKE_CURRENT_BINARY_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
 set (SRCS

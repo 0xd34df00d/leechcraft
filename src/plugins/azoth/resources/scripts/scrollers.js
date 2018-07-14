@@ -2,10 +2,10 @@
 
 function ScrollToBottom() {
 	if (window.ShouldScroll)
-		document.body.scrollTop = document.height - window.innerHeight;
+		document.body.scrollTop = document.documentElement.scrollHeight - window.innerHeight;
 }
 function TestScroll() {
-	window.ShouldScroll = document.height <= (window.innerHeight + window.pageYOffset + window.innerHeight / 5);
+	window.ShouldScroll = document.documentElement.scrollHeight <= (window.innerHeight + window.pageYOffset + window.innerHeight / 5);
 }
 function InstallEventListeners() {
 	window.ShouldScroll = true;

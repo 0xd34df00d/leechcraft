@@ -47,24 +47,24 @@ namespace oral
 {
 	struct NoAutogen;
 
-	template<typename T, typename... Tags>
-	struct PKey
+	template<typename T, typename Concrete>
+	struct IndirectHolderBase
 	{
 		using value_type = T;
 
 		T Val_;
 
-		PKey () = default;
+		IndirectHolderBase () = default;
 
-		PKey (T val)
+		IndirectHolderBase (T val)
 		: Val_ { val }
 		{
 		}
 
-		PKey& operator= (T val)
+		Concrete& operator= (T val)
 		{
 			Val_ = val;
-			return *this;
+			return static_cast<Concrete&> (*this);
 		}
 
 		operator value_type () const
@@ -76,74 +76,35 @@ namespace oral
 		{
 			return Val_;
 		}
+
+		const value_type* operator-> () const
+		{
+			return &Val_;
+		}
+	};
+
+	template<typename T, typename... Tags>
+	struct PKey : IndirectHolderBase<T, PKey<T, Tags...>>
+	{
+		using PKey::IndirectHolderBase::IndirectHolderBase;
 	};
 
 	template<typename T, typename... Args>
 	using PKeyValue_t = typename PKey<T, Args...>::value_type;
 
 	template<typename T>
-	struct Unique
+	struct Unique : IndirectHolderBase<T, Unique<T>>
 	{
-		using value_type = T;
-
-		T Val_;
-
-		Unique () = default;
-
-		Unique (T val)
-		: Val_ { val }
-		{
-		}
-
-		Unique& operator= (T val)
-		{
-			Val_ = val;
-			return *this;
-		}
-
-		operator value_type () const
-		{
-			return Val_;
-		}
-
-		const value_type& operator* () const
-		{
-			return Val_;
-		}
+		using Unique::IndirectHolderBase::IndirectHolderBase;
 	};
 
 	template<typename T>
 	using UniqueValue_t = typename Unique<T>::value_type;
 
 	template<typename T>
-	struct NotNull
+	struct NotNull : IndirectHolderBase<T, NotNull<T>>
 	{
-		using value_type = T;
-
-		T Val_;
-
-		NotNull () = default;
-
-		NotNull (T val)
-		: Val_ { val }
-		{
-		}
-
-		NotNull& operator= (T val)
-		{
-			Val_ = val;
-			return *this;
-		}
-
-		operator value_type () const
-		{
-			return Val_;
-		}
-
-		const value_type& operator* () const
-		{
-			return Val_;
-		}
+		using NotNull::IndirectHolderBase::IndirectHolderBase;
 	};
 
 	template<typename T>
@@ -162,48 +123,24 @@ namespace oral
 	}
 
 	template<auto Ptr>
-	struct References
+	struct References : IndirectHolderBase<typename MemberPtrType_t<Ptr>::value_type, References<Ptr>>
 	{
 		using member_type = MemberPtrType_t<Ptr>;
 		static_assert (detail::IsReferencesTarget<member_type>::value, "References<> element must refer to a PKey<> element");
 
-		using value_type = typename member_type::value_type;
-		value_type Val_;
-
-		References () = default;
-
-		References (value_type t)
-		: Val_ { t }
-		{
-		}
+		using References::IndirectHolderBase::IndirectHolderBase;
 
 		template<typename T, typename... Tags>
 		References (const PKey<T, Tags...>& key)
-		: Val_ (static_cast<T> (key))
+		: References::IndirectHolderBase (key)
 		{
-		}
-
-		References& operator= (const value_type& val)
-		{
-			Val_ = val;
-			return *this;
 		}
 
 		template<typename T, typename... Tags>
 		References& operator= (const PKey<T, Tags...>& key)
 		{
-			Val_ = key;
+			this->Val_ = key;
 			return *this;
-		}
-
-		operator value_type () const
-		{
-			return Val_;
-		}
-
-		const value_type& operator* () const
-		{
-			return Val_;
 		}
 	};
 

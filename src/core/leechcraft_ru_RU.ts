@@ -16,10 +16,6 @@
         <translation>Помощники</translation>
     </message>
     <message>
-        <source>Appreciations</source>
-        <translation>Благодарности</translation>
-    </message>
-    <message>
         <source>Licensing</source>
         <translation>Лицензии</translation>
     </message>
@@ -47,22 +43,6 @@
         <translation>PostgreSQL</translation>
     </message>
     <message>
-        <source>Journal mode:</source>
-        <translation>Режим журналирования:</translation>
-    </message>
-    <message>
-        <source>Temp store:</source>
-        <translation>Временное хранилище:</translation>
-    </message>
-    <message>
-        <source>Synchronous:</source>
-        <translation>Синхронный режим:</translation>
-    </message>
-    <message>
-        <source>VACUUM on exit</source>
-        <translation>VACUUM при выходе</translation>
-    </message>
-    <message>
         <source>Hostname:</source>
         <translation>Хост:</translation>
     </message>
@@ -85,6 +65,10 @@
     <message>
         <source>MySQL</source>
         <translation>MySQL</translation>
+    </message>
+    <message>
+        <source>Yay, SQLite has no settings worth adjusting!</source>
+        <translation>Ура, у SQLite нет опций, которые стоило бы настраивать!</translation>
     </message>
 </context>
 <context>

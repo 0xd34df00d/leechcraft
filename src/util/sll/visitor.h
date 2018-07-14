@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <variant>
 #include <boost/variant.hpp>
 #include "void.h"
 #include "util.h"
@@ -104,6 +105,12 @@ namespace Util
 				typename Common = std::common_type_t<std::result_of_t<detail::VisitorBase<Args...> (Vars&)>...>,
 				typename Res = FixCommonType_t<Common, std::result_of_t<detail::VisitorBase<Args...> (Vars&)>...>>
 		constexpr Res DetectCommonType (Typelist<Vars...>, Typelist<Args...>);
+
+		template<class... Ts> struct Overloaded : Ts...
+		{
+			using Ts::operator()...;
+		};
+		template<class... Ts> Overloaded (Ts...) -> Overloaded<Ts...>;
 	}
 
 	template<typename... Vars, typename... Args>
@@ -122,6 +129,12 @@ namespace Util
 
 		detail::Visitor<R_t, Args...> visitor { std::forward<Args> (args)... };
 		return boost::apply_visitor (visitor, v);
+	}
+
+	template<typename... Vars, typename... Args>
+	decltype (auto) Visit (const std::variant<Vars...>& v, Args&&... args)
+	{
+		return std::visit (detail::Overloaded { std::forward<Args> (args)... }, v);
 	}
 
 	namespace detail

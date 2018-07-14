@@ -50,7 +50,6 @@ namespace BitTorrent
 		{
 			RoleFullPath = Qt::UserRole + 1,
 			RoleFileName,
-			RoleFileIndex,
 			RoleSize,
 			RoleSort
 		};
@@ -58,8 +57,7 @@ namespace BitTorrent
 		enum
 		{
 			ColumnPath,
-			ColumnSize,
-			ColumnAddListMax
+			ColumnSize
 		};
 
 		struct FileEntry

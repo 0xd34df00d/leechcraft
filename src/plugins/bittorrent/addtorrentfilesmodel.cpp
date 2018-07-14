@@ -29,6 +29,7 @@
 
 #include "addtorrentfilesmodel.h"
 #include <util/util.h>
+#include <util/sll/unreachable.h>
 
 namespace LeechCraft
 {
@@ -59,6 +60,7 @@ namespace BitTorrent
 			case ColumnSize:
 				return Util::MakePrettySize (node->SubtreeSize_);
 			}
+			Util::Unreachable ();
 		case Qt::DecorationRole:
 			return index.column () == ColumnPath ?
 					node->Icon_ :
@@ -71,6 +73,7 @@ namespace BitTorrent
 			case ColumnSize:
 				return node->SubtreeSize_;
 			}
+			Util::Unreachable ();
 		case RoleFullPath:
 			return node->GetFullPathStr ();
 		case RoleFileName:
@@ -86,13 +89,10 @@ namespace BitTorrent
 		if (!index.isValid ())
 			return 0;
 
+		auto flags = Qt::ItemIsSelectable | Qt::ItemIsEnabled;
 		if (index.column () == ColumnPath)
-			return Qt::ItemIsSelectable |
-				Qt::ItemIsEnabled |
-				Qt::ItemIsUserCheckable;
-		else
-			return Qt::ItemIsSelectable |
-				Qt::ItemIsEnabled;
+			flags |= Qt::ItemIsUserCheckable;
+		return flags;
 	}
 
 	bool AddTorrentFilesModel::setData (const QModelIndex& index, const QVariant& value, int role)

@@ -35,6 +35,7 @@
 #include <QtDebug>
 #include <util/util.h>
 #include <util/xpc/util.h>
+#include <util/sll/unreachable.h>
 #include <util/sys/extensionsdata.h>
 #include <util/models/modelitembase.h>
 #include <interfaces/core/ientitymanager.h>
@@ -91,6 +92,7 @@ namespace BitTorrent
 			case ColumnProgress:
 				return node->Progress_;
 			}
+			Util::Unreachable ();
 		case Qt::DecorationRole:
 			return index.column () == ColumnPath ?
 					node->Icon_ :
@@ -115,6 +117,7 @@ namespace BitTorrent
 			case ColumnProgress:
 				return node->Progress_;
 			}
+			Util::Unreachable ();
 		}
 		return {};
 	}

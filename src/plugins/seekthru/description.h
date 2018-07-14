@@ -81,12 +81,12 @@ namespace SeekThru
 
 	struct Description
 	{
-		enum SyndicationRight
+		enum class SyndicationRight
 		{
-			SROpen,
-			SRLimited,
-			SRPrivate,
-			SRClosed
+			Open,
+			Limited,
+			Private,
+			Closed
 		};
 
 		QString ShortName_;

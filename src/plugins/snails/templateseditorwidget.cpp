@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "templateseditorwidget.h"
+#include <QAction>
 #include <QMessageBox>
 #include <util/sll/either.h>
 #include <util/sll/visitor.h>

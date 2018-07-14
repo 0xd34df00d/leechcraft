@@ -43,6 +43,7 @@
 #include <interfaces/core/itagsmanager.h>
 #include <util/xpc/util.h>
 #include <util/sys/paths.h>
+#include <util/sll/unreachable.h>
 #include "findproxy.h"
 #include "tagsasker.h"
 
@@ -93,48 +94,42 @@ namespace SeekThru
 		if (!index.isValid ())
 			return QVariant ();
 
+		if (index.column ())
+			return {};
+
 		Description d = Descriptions_.at (index.row ());
-		switch (index.column ())
+		switch (role)
 		{
-			case 0:
-				switch (role)
-				{
-					case Qt::DisplayRole:
-						return d.ShortName_;
-					case RoleDescription:
-						return d.Description_;
-					case RoleContact:
-						return d.Contact_;
-					case RoleTags:
-						{
-							QStringList result;
-							Q_FOREACH (QString tag, d.Tags_)
-								result << Proxy_->GetTagsManager ()->GetTag (tag);
-							return result;
-						}
-					case RoleLongName:
-						return d.LongName_;
-					case RoleDeveloper:
-						return d.Developer_;
-					case RoleAttribution:
-						return d.Attribution_;
-					case RoleRight:
-						switch (d.Right_)
-						{
-							case Description::SROpen:
-								return tr ("Open");
-							case Description::SRLimited:
-								return tr ("Limited");
-							case Description::SRPrivate:
-								return tr ("Private");
-							case Description::SRClosed:
-								return tr ("Closed");
-						}
-					default:
-						return QVariant ();
-				}
-			default:
-				return QVariant ();
+		case Qt::DisplayRole:
+			return d.ShortName_;
+		case RoleDescription:
+			return d.Description_;
+		case RoleContact:
+			return d.Contact_;
+		case RoleTags:
+			return Proxy_->GetTagsManager ()->GetTags (d.Tags_);
+		case RoleLongName:
+			return d.LongName_;
+		case RoleDeveloper:
+			return d.Developer_;
+		case RoleAttribution:
+			return d.Attribution_;
+		case RoleRight:
+			switch (d.Right_)
+			{
+			case Description::SyndicationRight::Open:
+				return tr ("Open");
+			case Description::SyndicationRight::Limited:
+				return tr ("Limited");
+			case Description::SyndicationRight::Private:
+				return tr ("Private");
+			case Description::SyndicationRight::Closed:
+				return tr ("Closed");
+			}
+
+			Util::Unreachable ();
+		default:
+			return {};
 		}
 	}
 
@@ -568,17 +563,17 @@ namespace SeekThru
 		if (!attributionTag.isNull ())
 			descr.Attribution_ = attributionTag.text ();
 
-		descr.Right_ = Description::SROpen;
+		descr.Right_ = Description::SyndicationRight::Open;
 		QDomElement syndicationRightTag = root.firstChildElement ("SyndicationRight");
 		if (!syndicationRightTag.isNull ())
 		{
 			QString sr = syndicationRightTag.text ();
 			if (sr == "limited")
-				descr.Right_ = Description::SRLimited;
+				descr.Right_ = Description::SyndicationRight::Limited;
 			else if (sr == "private")
-				descr.Right_ = Description::SRPrivate;
+				descr.Right_ = Description::SyndicationRight::Private;
 			else if (sr == "closed")
-				descr.Right_ = Description::SRClosed;
+				descr.Right_ = Description::SyndicationRight::Closed;
 		}
 
 		descr.Adult_ = false;

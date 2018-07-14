@@ -49,8 +49,8 @@ namespace LMP
 		GstElement * const WholeBin_;
 		GstElement * const Identity_;
 
-		GstElement *Pipeline_;
-		GstElement *OutputBin_;
+		GstElement *Pipeline_ = nullptr;
+		GstElement *OutputBin_ = nullptr;
 
 		QList<GstElement*> NextWholeElems_;
 
@@ -68,7 +68,6 @@ namespace LMP
 		QList<QueueItem> Queue_;
 	public:
 		Path (SourceObject*, Output*, QObject* = 0);
-		~Path ();
 
 		GstElement* GetPipeline () const;
 		void SetPipeline (GstElement*);
@@ -88,8 +87,6 @@ namespace LMP
 		void RemoveElement (GstElement*);
 
 		void FinalizeAction ();
-
-		void PerformWProbe (const std::function<void ()>&);
 	private:
 		void RotateQueue ();
 	};

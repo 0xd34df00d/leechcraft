@@ -79,7 +79,9 @@ namespace Util
 	namespace detail
 	{
 		template<typename>
-		struct DecomposeMemberPtr;
+		struct DecomposeMemberPtr
+		{
+		};
 
 		template<typename R, typename C>
 		struct DecomposeMemberPtr<R (C::*)>

@@ -29,6 +29,7 @@
 
 #include "sqlstoragebackend.h"
 #include <stdexcept>
+#include <cmath>
 #include <QDir>
 #include <QSqlQuery>
 #include <QSqlError>
@@ -38,6 +39,7 @@
 #include <util/db/util.h>
 #include <util/db/oral/oral.h>
 #include <util/db/oral/pgimpl.h>
+#include <util/sll/util.h>
 #include <util/util.h>
 #include "xmlsettingsmanager.h"
 
@@ -177,8 +179,7 @@ namespace Poshuku
 		if (!DB_.open ())
 		{
 			Util::DBLock::DumpError (DB_.lastError ());
-			throw std::runtime_error (QString ("Could not initialize database: %1")
-					.arg (DB_.lastError ().text ()).toUtf8 ().constData ());
+			throw std::runtime_error ("Could not initialize database");
 		}
 
 		if (type == SBSQLite)
@@ -196,17 +197,55 @@ namespace Poshuku
 			items.push_back (item.ToHistoryItem ());
 	}
 
-	void SQLStorageBackend::LoadResemblingHistory (const QString& base,
-			history_items_t& items) const
+	namespace
+	{
+		double Score (const QList<int>& diffs)
+		{
+			const auto k = 1 / 86400.; // decay rate should be the same order of magnitude as a day
+
+			double result = 0;
+			for (auto diff : diffs)
+				result += std::exp (-k * diff);
+			return result;
+		}
+	}
+
+	history_items_t SQLStorageBackend::LoadResemblingHistory (const QString& base) const
 	{
 		using namespace oral::infix;
 
 		const auto& pat = "%" + base + "%";
 		const auto& allItems = History_->Select.Build ()
-				.Select (sph::fields<&History::Title_, &History::Date_>)
+				.Select (sph::all)
 				.Where (sph::f<&History::Title_> |like| pat || sph::f<&History::URL_> |like| pat)
 				.Order (oral::OrderBy<sph::desc<&History::Date_>>)
 				();
+
+		const auto& now = QDateTime::currentDateTime ();
+
+		QHash<QString, QString> url2title;
+		QHash<QString, QList<int>> url2diffs;
+		for (const auto& item : allItems)
+		{
+			if (item.URL_.startsWith ("data:"))
+				continue;
+
+			if (!url2title.contains (item.URL_))
+				url2title [item.URL_] = item.Title_;
+
+			url2diffs [item.URL_] << item.Date_->secsTo (now);
+		}
+
+		auto scored = Util::Map (Util::Stlize (url2diffs),
+				[] (const auto& pair) { return QPair { pair.first, Score (pair.second) }; });
+		std::sort (scored.rbegin (), scored.rend (), Util::ComparingBy (Util::Snd));
+
+		return Util::Map (scored,
+				[&url2title] (const auto& pair)
+				{
+					const auto& url = pair.first;
+					return HistoryItem { url2title [url], {}, url };
+				});
 	}
 
 	void SQLStorageBackend::AddToHistory (const HistoryItem& item)

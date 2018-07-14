@@ -70,6 +70,22 @@ namespace LeechCraft::Util::oral
 	}
 }
 
+template<typename... Args>
+char* toString (const std::tuple<Args...>& tuple)
+{
+	using QTest::toString;
+
+	QByteArray ba { "std::tuple { "};
+
+	std::apply ([&ba] (const auto&... args) { (ba.append (toString (args)).append (", "), ...); }, tuple);
+
+	if (sizeof... (Args) >= 1)
+		ba.chop (2);
+	ba.append (" }");
+
+	return qstrdup (ba.data ());
+}
+
 #define TOSTRING(n) inline char* toString (const n& rec) { return toString (#n, rec); }
 
 template<typename T, typename TupleType = decltype (T {}.AsTuple ())>

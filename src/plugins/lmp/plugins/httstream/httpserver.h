@@ -54,15 +54,10 @@ namespace HttStream
 		HttpServer (QObject* = nullptr);
 
 		void SetAddress (const QString&, int);
-
-		QList<int> GetConnectedFDs () const;
 	private:
 		void HandleSocket (QTcpSocket*);
-	private slots:
-		void tryReadLine ();
-
-		void handleNewConnection ();
-		void handleDisconnected ();
+		void HandleNewConnection ();
+		void HandleDisconnected (QTcpSocket*);
 	signals:
 		void gotClient (int);
 		void clientDisconnected (int);

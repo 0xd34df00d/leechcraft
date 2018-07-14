@@ -73,28 +73,28 @@ namespace Util
 	void OralTest_SimpleRecord::testSimpleRecordInsertSelectByPos ()
 	{
 		auto adapted = PrepareRecords<SimpleRecord> (MakeDatabase ());
-		const auto& list = adapted->Select (sph::_0 == 1);
+		const auto& list = adapted->Select (sph::f<&SimpleRecord::ID_> == 1);
 		QCOMPARE (list, (QList<SimpleRecord> { { 1, "1" } }));
 	}
 
 	void OralTest_SimpleRecord::testSimpleRecordInsertSelectByPos2 ()
 	{
 		auto adapted = PrepareRecords<SimpleRecord> (MakeDatabase ());
-		const auto& list = adapted->Select (sph::_0 < 2);
+		const auto& list = adapted->Select (sph::f<&SimpleRecord::ID_> < 2);
 		QCOMPARE (list, (QList<SimpleRecord> { { 0, "0" }, { 1, "1" } }));
 	}
 
 	void OralTest_SimpleRecord::testSimpleRecordInsertSelectByPos3 ()
 	{
 		auto adapted = PrepareRecords<SimpleRecord> (MakeDatabase ());
-		const auto& list = adapted->Select (sph::_0 < 2 && sph::_1 == QString { "1" });
+		const auto& list = adapted->Select (sph::f<&SimpleRecord::ID_> < 2 && sph::f<&SimpleRecord::Value_> == QString { "1" });
 		QCOMPARE (list, (QList<SimpleRecord> { { 1, "1" } }));
 	}
 
 	void OralTest_SimpleRecord::testSimpleRecordInsertSelectOneByPos ()
 	{
 		auto adapted = PrepareRecords<SimpleRecord> (MakeDatabase ());
-		const auto& single = adapted->SelectOne (sph::_0 == 1);
+		const auto& single = adapted->SelectOne (sph::f<&SimpleRecord::ID_> == 1);
 		QCOMPARE (single, (boost::optional<SimpleRecord> { { 1, "1" } }));
 	}
 
@@ -223,6 +223,38 @@ namespace Util
 		auto adapted = PrepareRecords<SimpleRecord> (MakeDatabase ());
 		const auto max = adapted->Select (sph::max<&SimpleRecord::ID_>);
 		QCOMPARE (max, 2);
+	}
+
+	void OralTest_SimpleRecord::testSimpleRecordInsertSelectMinPlusMax ()
+	{
+		auto adapted = PrepareRecords<SimpleRecord> (MakeDatabase ());
+		const auto minMax = adapted->Select (sph::min<&SimpleRecord::ID_> + sph::max<&SimpleRecord::ID_>);
+		QCOMPARE (minMax, (std::tuple { 0, 2 }));
+	}
+
+	void OralTest_SimpleRecord::testSimpleRecordInsertSelectValuePlusMinPlusMax ()
+	{
+		auto adapted = oral::AdaptPtr<SimpleRecord, OralFactory> (MakeDatabase ());
+		for (int i = 0; i < 3; ++i)
+			adapted->Insert ({ i, "0" });
+		for (int i = 3; i < 6; ++i)
+			adapted->Insert ({ i, "1" });
+
+		const auto allMinMax = adapted->Select.Build ()
+				.Select (sph::fields<&SimpleRecord::Value_> + sph::min<&SimpleRecord::ID_> + sph::max<&SimpleRecord::ID_>)
+				.Group (oral::GroupBy<&SimpleRecord::Value_>)
+				();
+		QCOMPARE (allMinMax, (QList<std::tuple<QString, int, int>> { { { "0" }, 0, 2 }, { { "1" }, 3, 5 } }));
+	}
+
+	void OralTest_SimpleRecord::testSimpleRecordInsertSelectAllPlusMinPlusMax ()
+	{
+		auto adapted = PrepareRecords<SimpleRecord> (MakeDatabase (), 2);
+		const auto allMinMax = adapted->Select.Build ()
+				.Select (sph::all + sph::min<&SimpleRecord::ID_> + sph::max<&SimpleRecord::ID_>)
+				.Group<&SimpleRecord::ID_, &SimpleRecord::Value_> ()
+				();
+		QCOMPARE (allMinMax, (QList<std::tuple<SimpleRecord, int, int>> { { { 0, "0" }, 0, 0 }, { { 1, "1" }, 1, 1 } }));
 	}
 
 	void OralTest_SimpleRecord::testSimpleRecordInsertSelectLike ()

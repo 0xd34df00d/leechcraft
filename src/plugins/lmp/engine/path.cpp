@@ -42,8 +42,6 @@ namespace LMP
 	, SrcObj_ (source)
 	, WholeBin_ (gst_bin_new ("whole_bin"))
 	, Identity_ (gst_element_factory_make ("identity", "effect_placeholder"))
-	, Pipeline_ (nullptr)
-	, OutputBin_ (nullptr)
 	{
 		NextWholeElems_ << Identity_;
 
@@ -61,10 +59,6 @@ namespace LMP
 
 		source->SetSink (WholeBin_);
 		output->PostAddExposed (this);
-	}
-
-	Path::~Path ()
-	{
 	}
 
 	GstElement* Path::GetPipeline () const
@@ -194,23 +188,14 @@ namespace LMP
 		Queue_.clear ();
 	}
 
-	void Path::PerformWProbe (const std::function<void ()>& f)
-	{
-		const auto srcpad = gst_element_get_static_pad (GetOutPlaceholder (), "src");
-		const auto sinkpad = gst_element_get_static_pad (GetOutPlaceholder (), "sink");
-
-		GstUtil::PerformWProbe (srcpad, sinkpad, f);
-	}
-
 	void Path::RotateQueue ()
 	{
 		if (Queue_.isEmpty ())
 			return;
 
 		const auto srcpad = gst_element_get_static_pad (GetOutPlaceholder (), "src");
-		const auto sinkpad = gst_element_get_static_pad (GetOutPlaceholder (), "sink");
 
-		GstUtil::PerformWProbe (srcpad, sinkpad, [this] { FinalizeAction (); });
+		GstUtil::PerformWProbe (srcpad, [this] { FinalizeAction (); });
 	}
 }
 }

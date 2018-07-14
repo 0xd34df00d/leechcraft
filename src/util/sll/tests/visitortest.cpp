@@ -267,7 +267,7 @@ namespace Util
 		};
 
 		const auto& res = visitor (v);
-		QCOMPARE (res, true);
+		QCOMPARE (res, false);
 	}
 }
 }
