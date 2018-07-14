@@ -107,9 +107,9 @@ namespace PDF
 		}
 	}
 
-	TOCLink::TOCLink (Document *doc, Poppler::LinkDestination *dest)
+	TOCLink::TOCLink (Document *doc, std::unique_ptr<Poppler::LinkDestination> dest)
 	: Doc_ (doc)
-	, Dest_ (dest)
+	, Dest_ (std::move (dest))
 	{
 	}
 

@@ -337,7 +337,7 @@ namespace PDF
 				ILink_ptr link;
 				const auto& destStr = elem.attribute ("Destination");
 				if (!destStr.isEmpty ())
-					link.reset (new TOCLink (doc, new Poppler::LinkDestination (destStr)));
+					link.reset (new TOCLink (doc, std::make_unique<Poppler::LinkDestination> (destStr)));
 				else
 				{
 					const auto& destName = elem.attribute ("DestinationName");
@@ -348,7 +348,7 @@ namespace PDF
 						continue;
 					}
 
-					const auto dest = pDoc->linkDestination (destName);
+					std::unique_ptr<Poppler::LinkDestination> dest { pDoc->linkDestination (destName) };
 					if (!dest)
 					{
 						qWarning () << Q_FUNC_INFO
@@ -356,7 +356,7 @@ namespace PDF
 								<< destName;
 						continue;
 					}
-					link.reset (new TOCLink (doc, dest));
+					link.reset (new TOCLink (doc, std::move (dest)));
 				}
 
 				TOCEntry entry =

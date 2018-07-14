@@ -70,7 +70,7 @@ namespace PDF
 		Document * const Doc_;
 		std::unique_ptr<Poppler::LinkDestination> Dest_;
 	public:
-		TOCLink (Document*, Poppler::LinkDestination*);
+		TOCLink (Document*, std::unique_ptr<Poppler::LinkDestination>);
 
 		LinkType GetLinkType () const override;
 		QRectF GetArea () const override;
