@@ -778,10 +778,10 @@ namespace Monocle
 
 		LayoutManager_->Relayout ();
 
-		if (Onload_.Num_ >= 0)
+		if (Onload_.Page_ >= 0)
 		{
-			NavigateWithinDocument (Onload_.Num_, Onload_.X_, Onload_.Y_);
-			Onload_.Num_ = -1;
+			NavigateWithinDocument (Onload_);
+			Onload_.Page_ = -1;
 		}
 
 		checkCurrentPageChange (true);
@@ -861,38 +861,39 @@ namespace Monocle
 		emit pagesVisibilityChanged (rects);
 	}
 
-	void DocumentTab::NavigateToPath (QString path, const OnloadData& onload)
+	void DocumentTab::NavigateToPath (QString path, const IDocument::Position& onload)
 	{
 		if (QFileInfo { path }.isRelative ())
 			path = QFileInfo (CurrentDocPath_).dir ().absoluteFilePath (path);
 
 		Onload_ = onload;
 		if (!SetDoc (path, DocumentOpenOptions {}))
-			Onload_.Num_ = -1;
+			Onload_.Page_ = -1;
 	}
 
-	void DocumentTab::NavigateWithinDocument (int num, double x, double y)
+	void DocumentTab::NavigateWithinDocument (const IDocument::Position& position)
 	{
-		SetCurrentPage (num);
+		SetCurrentPage (position.Page_);
 
-		auto page = Pages_.value (num);
+		auto page = Pages_.value (position.Page_);
 		if (!page)
 			return;
 
-		if (x > 0 && y > 0)
+		const auto& point = position.PagePosition_;
+		if (!point.isNull ())
 		{
 			const auto& size = page->boundingRect ().size ();
-			const auto& mapped = page->mapToScene (size.width () * x, size.height () * y);
+			const auto& mapped = page->mapToScene (size.width () * point.x (), size.height () * point.y ());
 			Ui_.PagesView_->SmoothCenterOn (mapped.x (), mapped.y ());
 		}
 	}
 
-	void DocumentTab::handleNavigateRequested (const QString& path, int num, double x, double y)
+	void DocumentTab::handleNavigateRequested (const QString& path, const IDocument::Position& pos)
 	{
 		if (!path.isEmpty ())
-			NavigateToPath (path, { num, x, y });
+			NavigateToPath (path, pos);
 		else
-			NavigateWithinDocument (num, x, y);
+			NavigateWithinDocument (pos);
 	}
 
 	void DocumentTab::handleLoaderReady (DocumentOpenOptions options,
@@ -949,9 +950,9 @@ namespace Monocle
 		TOCWidget_->SetTOC (toc ? toc->GetTOC () : TOCEntryLevel_t ());
 
 		connect (docObj,
-				SIGNAL (navigateRequested (QString, int, double, double)),
+				SIGNAL (navigateRequested (QString, IDocument::Position)),
 				this,
-				SLOT (handleNavigateRequested (QString, int, double, double)),
+				SLOT (handleNavigateRequested (QString, IDocument::Position)),
 				Qt::QueuedConnection);
 		connect (docObj,
 				SIGNAL (printRequested (QList<int>)),

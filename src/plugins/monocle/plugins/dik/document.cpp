@@ -143,7 +143,7 @@ namespace Dik
 
 	void Document::RequestNavigation (int page)
 	{
-		emit navigateRequested (QString (), page, 0, 0.4);
+		emit navigateRequested ({}, { page, { 0, 0.4 } });
 	}
 }
 }

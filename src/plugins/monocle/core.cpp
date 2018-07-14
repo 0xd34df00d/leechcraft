@@ -51,6 +51,7 @@ namespace Monocle
 	, DocStateManager_ (new DocStateManager (this))
 	, BookmarksManager_ (new BookmarksManager (this))
 	{
+		qRegisterMetaType<IDocument::Position> ("IDocument::Position");
 	}
 
 	Core& Core::Instance ()

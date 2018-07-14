@@ -313,15 +313,14 @@ namespace PDF
 		}
 	}
 
-	void Document::RequestNavigation (const QString& filename,
-			int page, double x, double y)
+	void Document::RequestNavigation (const QString& filename, int page, double x, double y)
 	{
-		emit navigateRequested (filename, page, x, y);
+		emit navigateRequested (filename, { page, { x, y } });
 	}
 
 	void Document::RequestPrinting ()
 	{
-		emit printRequested (QList<int> ());
+		emit printRequested ({});
 	}
 
 	namespace

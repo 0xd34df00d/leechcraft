@@ -114,12 +114,7 @@ namespace Monocle
 
 		int PrevCurrentPage_;
 
-		struct OnloadData
-		{
-			int Num_;
-			double X_;
-			double Y_;
-		} Onload_ { -1, 0, 0 };
+		IDocument::Position Onload_ { -1, {} };
 	public:
 		enum class DocumentOpenOption
 		{
@@ -173,10 +168,10 @@ namespace Monocle
 
 		void RegenPageVisibility ();
 
-		void NavigateToPath (QString, const OnloadData&);
-		void NavigateWithinDocument (int, double, double);
+		void NavigateToPath (QString, const IDocument::Position&);
+		void NavigateWithinDocument (const IDocument::Position&);
 	private slots:
-		void handleNavigateRequested (const QString&, int, double, double);
+		void handleNavigateRequested (const QString&, const IDocument::Position&);
 
 		void handleLoaderReady (DocumentOpenOptions, const IDocument_ptr&, const QString&);
 

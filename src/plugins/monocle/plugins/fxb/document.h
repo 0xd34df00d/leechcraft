@@ -69,7 +69,7 @@ namespace FXB
 	private:
 		void SetSettings ();
 	signals:
-		void navigateRequested (const QString&, int pageNum, double x, double y);
+		void navigateRequested (const QString&, const IDocument::Position&);
 		void printRequested (const QList<int>&);
 	};
 }

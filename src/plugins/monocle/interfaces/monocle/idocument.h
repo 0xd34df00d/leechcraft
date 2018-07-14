@@ -203,6 +203,22 @@ namespace Monocle
 		 */
 		virtual QUrl GetDocURL () const = 0;
 
+		/** @brief Describes a position within a document.
+		 */
+		struct Position
+		{
+			/** @brief The index of the page in question.
+			 */
+			int Page_;
+
+			/** @brief The position within the page.
+			 *
+			 * The position is absolute, that is, between 0 and the bottom right
+			 * corner of the page as returned by IDocument::GetPageSize().
+			 */
+			QPointF PagePosition_;
+		};
+
 		/** @brief Emitted when navigation is requested.
 		 *
 		 * For example, this signal is emitted when a navigation link in
@@ -212,17 +228,14 @@ namespace Monocle
 		 * related to he current document. Otherwise \em filename should
 		 * be loaded first.
 		 *
-		 * \em x and \em y coordinates are absolute, that is, between 0
-		 * and <code>GetPageSize (pageNum).width ()</code> and
-		 * <code>GetPageSize (pageNum).height ()</code> correspondingly.
-		 *
 		 * @param[out] filename The filename of the document to navigate
-		 * to, or an empty string if current document should be used.
-		 * @param[out] pageNum The index of the page to navigate to.
-		 * @param[out] x The new \em x coordinate of the viewport.
-		 * @param[out] y The new \em y coordinate of the viewport.
+		 * to, or an empty string if the current document should be used.
+		 * @param[out] position The position within the document described by
+		 * \em filename.
+		 *
+		 * @sa Position
 		 */
-		virtual void navigateRequested (const QString& filename, int pageNum, double x, double y) = 0;
+		virtual void navigateRequested (const QString& filename, const Position& position) = 0;
 
 		/** @brief Emitted when printing is requested.
 		 *
@@ -243,3 +256,4 @@ namespace Monocle
 
 Q_DECLARE_INTERFACE (LeechCraft::Monocle::IDocument,
 		"org.LeechCraft.Monocle.IDocument/1.0")
+Q_DECLARE_METATYPE (LeechCraft::Monocle::IDocument::Position)

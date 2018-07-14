@@ -66,7 +66,7 @@ namespace Dik
 
 		void RequestNavigation (int);
 	signals:
-		void navigateRequested (const QString&, int pageNum, double x, double y);
+		void navigateRequested (const QString&, const IDocument::Position&);
 		void printRequested (const QList<int>&);
 	};
 }

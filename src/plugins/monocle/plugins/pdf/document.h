@@ -122,7 +122,7 @@ namespace PDF
 	private:
 		void BuildTOC ();
 	signals:
-		void navigateRequested (const QString&, int, double, double);
+		void navigateRequested (const QString&, const IDocument::Position&);
 		void printRequested (const QList<int>&);
 	};
 }

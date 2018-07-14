@@ -82,7 +82,7 @@ namespace Monocle
 
 		void SelectItem (int);
 	signals:
-		void navigateRequested (int, double, double);
+		void navigateRequested (const IDocument::Position&);
 
 		void gotSearchResults (const TextSearchHandlerResults&);
 	};

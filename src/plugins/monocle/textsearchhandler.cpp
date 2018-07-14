@@ -187,7 +187,7 @@ namespace Monocle
 			const auto& bounding = pageItem->boundingRect ();
 			const auto x = item->rect ().x () / bounding.width ();
 			const auto y = item->rect ().y () / bounding.height ();
-			emit navigateRequested (pageIdx, x, y);
+			emit navigateRequested ({ pageIdx, { x, y } });
 		}
 	}
 }
