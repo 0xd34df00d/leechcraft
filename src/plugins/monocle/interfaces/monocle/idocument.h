@@ -202,7 +202,7 @@ namespace Monocle
 		 * @return The URL of this document.
 		 */
 		virtual QUrl GetDocURL () const = 0;
-	protected:
+
 		/** @brief Emitted when navigation is requested.
 		 *
 		 * For example, this signal is emitted when a navigation link in
