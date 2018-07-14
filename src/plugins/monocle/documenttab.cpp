@@ -653,10 +653,6 @@ namespace Monocle
 					SetCurrentPage (GetCurrentPage () + LayoutManager_->GetLayoutModeCount ());
 					scheduleSaveState ();
 				});
-		connect (next,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleGoNext ()));
 		Toolbar_->addAction (next);
 
 		Toolbar_->addSeparator ();
