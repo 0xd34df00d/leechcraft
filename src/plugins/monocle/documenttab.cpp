@@ -57,6 +57,7 @@
 #include <util/gui/findnotification.h>
 #include <util/sll/prelude.h>
 #include <util/sll/delayedexecutor.h>
+#include <util/sll/overload.h>
 #include <interfaces/imwproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/core/iiconthememanager.h>
@@ -93,6 +94,7 @@
 #include "core.h"
 #include "searchtabwidget.h"
 #include "documentbookmarksmanager.h"
+#include "pagenumlabel.h"
 
 namespace LeechCraft
 {
@@ -212,9 +214,9 @@ namespace Monocle
 				SLOT (handleDockVisibility (bool)));
 
 		connect (this,
-				SIGNAL (currentPageChanged (int)),
-				this,
-				SLOT (updateNumLabel ()));
+				&DocumentTab::currentPageChanged,
+				PageNumLabel_,
+				&PageNumLabel::SetCurrentPage);
 		connect (this,
 				SIGNAL (currentPageChanged (int)),
 				ThumbsWidget_,
@@ -653,13 +655,17 @@ namespace Monocle
 				});
 		Toolbar_->addAction (prev);
 
-		PageNumLabel_ = new QLineEdit ();
-		PageNumLabel_->setMaximumWidth (fontMetrics ().width (" 1500 / 1500 "));
-		PageNumLabel_->setAlignment (Qt::AlignCenter);
+		PageNumLabel_ = new PageNumLabel;
 		connect (PageNumLabel_,
-				SIGNAL (returnPressed ()),
-				this,
-				SLOT (navigateNumLabel ()));
+				Util::Overload<int> (&QSpinBox::valueChanged),
+				[this] (int value)
+				{
+					SetCurrentPage (value - 1);
+					scheduleSaveState ();
+				});
+		connect (LayoutManager_,
+				&PagesLayoutManager::layoutModeChanged,
+				[this] { PageNumLabel_->setSingleStep (LayoutManager_->GetLayoutModeCount ()); });
 		connect (Ui_.PagesView_->verticalScrollBar (),
 				SIGNAL (valueChanged (int)),
 				this,
@@ -963,6 +969,7 @@ namespace Monocle
 		FormManager_->HandleDoc (CurrentDoc_, Pages_);
 		AnnManager_->HandleDoc (CurrentDoc_, Pages_);
 		LinksManager_->HandleDoc (CurrentDoc_, Pages_);
+		PageNumLabel_->SetTotalPageCount (CurrentDoc_->GetNumPages ());
 
 		recoverDocState (state);
 		Relayout ();
@@ -1225,29 +1232,6 @@ namespace Monocle
 
 		auto presenter = new PresenterWidget (CurrentDoc_);
 		presenter->NavigateTo (GetCurrentPage ());
-	}
-
-	void DocumentTab::navigateNumLabel ()
-	{
-		auto text = PageNumLabel_->text ();
-		const int pos = text.indexOf ('/');
-		if (pos >= 0)
-			text = text.left (pos - 1);
-
-		SetCurrentPage (text.trimmed ().toInt () - 1);
-
-		scheduleSaveState ();
-	}
-
-	void DocumentTab::updateNumLabel ()
-	{
-		if (!CurrentDoc_)
-			return;
-
-		const auto& str = QString::number (GetCurrentPage () + 1) +
-				" / " +
-				QString::number (CurrentDoc_->GetNumPages ());
-		PageNumLabel_->setText (str);
 	}
 
 	void DocumentTab::checkCurrentPageChange (bool force)

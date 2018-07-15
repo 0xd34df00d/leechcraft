@@ -63,6 +63,7 @@ namespace Monocle
 	class AnnManager;
 	class SearchTabWidget;
 	class DocumentBookmarksManager;
+	class PageNumLabel;
 
 	class DocumentTab : public QWidget
 					  , public ITabWidget
@@ -81,7 +82,7 @@ namespace Monocle
 		QComboBox *ScalesBox_ = nullptr;
 		QAction *ZoomOut_ = nullptr;
 		QAction *ZoomIn_ = nullptr;
-		QLineEdit *PageNumLabel_ = nullptr;
+		PageNumLabel *PageNumLabel_ = nullptr;
 
 		QAction *LayOnePage_ = nullptr;
 		QAction *LayTwoPages_ = nullptr;
@@ -193,8 +194,6 @@ namespace Monocle
 		void handlePrint ();
 		void handlePresentation ();
 
-		void navigateNumLabel ();
-		void updateNumLabel ();
 		void checkCurrentPageChange (bool force = false);
 
 		void zoomOut ();
