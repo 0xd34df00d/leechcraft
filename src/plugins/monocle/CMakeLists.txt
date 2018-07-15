@@ -62,6 +62,7 @@ set (SRCS
 	searchtabwidget.cpp
 	documentbookmarksmanager.cpp
 	navigationhistory.cpp
+	pagenumlabel.cpp
 	)
 set (FORMS
 	documenttab.ui
