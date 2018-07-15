@@ -367,7 +367,7 @@ namespace Monocle
 		LayoutManager_->SetFixedScale (scale);
 		Relayout ();
 
-		Util::ExecuteLater ([point, this] { delayedCenterOn (point); });
+		Util::ExecuteLater ([point, this] { CenterOn (point); });
 	}
 
 	void DocumentTab::ReloadDoc (const QString& doc)
@@ -1411,11 +1411,6 @@ namespace Monocle
 		auto dia = new DocInfoDialog (CurrentDocPath_, CurrentDoc_, this);
 		dia->setAttribute (Qt::WA_DeleteOnClose);
 		dia->show ();
-	}
-
-	void DocumentTab::delayedCenterOn (const QPoint& point)
-	{
-		Ui_.PagesView_->SmoothCenterOn (point.x (), point.y ());
 	}
 
 	void DocumentTab::handleScaleChosen (int idx)

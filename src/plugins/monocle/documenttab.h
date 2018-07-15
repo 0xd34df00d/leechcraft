@@ -211,8 +211,6 @@ namespace Monocle
 
 		void showDocInfo ();
 
-		void delayedCenterOn (const QPoint&);
-
 		void handleScaleChosen (int);
 		void handleCustomScale (QString);
 
