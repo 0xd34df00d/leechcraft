@@ -61,6 +61,7 @@ set (SRCS
 	converteddoccleaner.cpp
 	searchtabwidget.cpp
 	documentbookmarksmanager.cpp
+	navigationhistory.cpp
 	)
 set (FORMS
 	documenttab.ui
