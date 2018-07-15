@@ -37,6 +37,7 @@
 #include <util/sll/bitflags.h>
 #include "interfaces/monocle/idocument.h"
 #include "docstatemanager.h"
+#include "navigationhistory.h"
 #include "ui_documenttab.h"
 
 class QDockWidget;
@@ -105,6 +106,8 @@ namespace Monocle
 		SearchTabWidget *SearchTabWidget_ = nullptr;
 		QTreeView *OptContentsWidget_ = nullptr;
 
+		NavigationHistory * const NavHistory_;
+
 		IDocument_ptr CurrentDoc_;
 		QString CurrentDocPath_;
 		QList<PageGraphicsItem*> Pages_;
@@ -168,6 +171,7 @@ namespace Monocle
 
 		void RegenPageVisibility ();
 
+		NavigationHistory::Entry GetNavigationHistoryEntry () const;
 		void NavigateToPath (QString, const IDocument::Position&);
 		void NavigateWithinDocument (const IDocument::Position&);
 	private slots:

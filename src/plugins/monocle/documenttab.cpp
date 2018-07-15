@@ -124,6 +124,7 @@ namespace Monocle
 	, BMWidget_ (new BookmarksWidget (DocBMManager_))
 	, ThumbsWidget_ (new ThumbsWidget ())
 	, OptContentsWidget_ (new QTreeView)
+	, NavHistory_ (new NavigationHistory ([this] { return GetNavigationHistoryEntry (); }, this))
 	{
 		Ui_.setupUi (this);
 		Ui_.PagesView_->setScene (&Scene_);
@@ -226,6 +227,35 @@ namespace Monocle
 				SIGNAL (pagesVisibilityChanged (QMap<int, QRect>)),
 				ThumbsWidget_,
 				SLOT (updatePagesVisibility (QMap<int, QRect>)));
+	}
+
+	NavigationHistory::Entry DocumentTab::GetNavigationHistoryEntry () const
+	{
+		QPointF position;
+		auto pageNum = GetCurrentPage ();
+		if (pageNum >= 0)
+		{
+			const auto page = Pages_.value (pageNum);
+			const auto& size = page->boundingRect ().size ();
+			position = page->mapFromScene (Ui_.PagesView_->GetCurrentCenter ());
+			position.rx () /= size.width ();
+			position.ry () /= size.height ();
+
+			if (position.rx () > 1 && LayoutManager_->GetLayoutMode () == LayoutMode::TwoPages)
+			{
+				--position.rx ();
+				++pageNum;
+			}
+		}
+
+		return
+		{
+			CurrentDocPath_,
+			{
+				pageNum,
+				position
+			}
+		};
 	}
 
 	TabClassInfo DocumentTab::GetTabClassInfo () const
