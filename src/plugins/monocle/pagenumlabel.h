@@ -37,7 +37,6 @@ namespace Monocle
 {
 	class PageNumLabel : public QSpinBox
 	{
-		int TotalPageCount_ = 0;
 	public:
 		PageNumLabel (QWidget* = nullptr);
 
