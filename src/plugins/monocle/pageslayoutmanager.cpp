@@ -92,6 +92,7 @@ namespace Monocle
 			return;
 
 		LayMode_ = layMode;
+		emit layoutModeChanged ();
 	}
 
 	int PagesLayoutManager::GetLayoutModeCount () const

@@ -112,6 +112,7 @@ namespace Monocle
 		void scheduledRelayoutFinished ();
 		void rotationUpdated (double);
 		void rotationUpdated (double, int);
+		void layoutModeChanged ();
 	};
 }
 }
