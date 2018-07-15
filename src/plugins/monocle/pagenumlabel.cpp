@@ -36,7 +36,7 @@ namespace Monocle
 	PageNumLabel::PageNumLabel (QWidget *parent)
 	: QSpinBox { parent }
 	{
-		setSpecialValueText ("");
+		setSpecialValueText (" ");
 	}
 
 	void PageNumLabel::SetTotalPageCount (int count)
