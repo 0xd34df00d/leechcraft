@@ -1,4 +1,4 @@
-FROM opensuse:tumbleweed
+FROM opensuse/tumbleweed
 
 RUN zypper ar 'https://download.opensuse.org/source/tumbleweed/repo/oss/' oss-src
 
