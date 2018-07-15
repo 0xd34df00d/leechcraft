@@ -41,6 +41,7 @@ namespace Monocle
 
 	void PageNumLabel::SetTotalPageCount (int count)
 	{
+		setSpecialValueText ({});
 		setRange (1, count);
 		setSuffix (" / " + QString::number (count));
 	}
