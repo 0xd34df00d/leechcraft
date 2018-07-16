@@ -132,6 +132,8 @@ namespace Monocle
 
 		if (CurrentAction_)
 			to.push_front (*CurrentAction_);
+		else
+			to.push_front (MakeCurrentPositionAction ());
 
 		BackwardMenu_->clear ();
 		BackwardMenu_->addActions (backActions);
