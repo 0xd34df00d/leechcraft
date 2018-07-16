@@ -600,6 +600,50 @@ namespace Monocle
 		Toolbar_->addWidget (rotateButton);
 	}
 
+	void DocumentTab::SetupToolbarNavigation ()
+	{
+		auto backButton = new QToolButton;
+		const auto backAction = new QAction { tr ("Go back") };
+		backAction->setProperty ("ActionIcon", "go-previous");
+		backButton->setDefaultAction (backAction);
+		backButton->setMenu (NavHistory_->GetBackwardMenu ());
+		backButton->setPopupMode (QToolButton::MenuButtonPopup);
+		Toolbar_->addWidget (backButton);
+
+		PageNumLabel_ = new PageNumLabel;
+		connect (PageNumLabel_,
+				Util::Overload<int> (&QSpinBox::valueChanged),
+				[this] (int value)
+				{
+					SetCurrentPage (value - 1);
+					scheduleSaveState ();
+				});
+		connect (LayoutManager_,
+				&PagesLayoutManager::layoutModeChanged,
+				[this] { PageNumLabel_->setSingleStep (LayoutManager_->GetLayoutModeCount ()); });
+		connect (Ui_.PagesView_->verticalScrollBar (),
+				SIGNAL (valueChanged (int)),
+				this,
+				SLOT (checkCurrentPageChange ()));
+		connect (Ui_.PagesView_->verticalScrollBar (),
+				SIGNAL (valueChanged (int)),
+				this,
+				SIGNAL (tabRecoverDataChanged ()));
+		connect (Ui_.PagesView_->verticalScrollBar (),
+				SIGNAL (valueChanged (int)),
+				this,
+				SLOT (scheduleSaveState ()));
+		Toolbar_->addWidget (PageNumLabel_);
+
+		auto fwdButton = new QToolButton;
+		const auto fwdAction = new QAction { tr ("Go forward") };
+		fwdAction->setProperty ("ActionIcon", "go-next");
+		fwdButton->setDefaultAction (fwdAction);
+		fwdButton->setMenu (NavHistory_->GetForwardMenu ());
+		fwdButton->setPopupMode (QToolButton::MenuButtonPopup);
+		Toolbar_->addWidget (fwdButton);
+	}
+
 	void DocumentTab::SetupToolbar ()
 	{
 		SetupToolbarOpen ();
@@ -658,46 +702,7 @@ namespace Monocle
 
 		Toolbar_->addSeparator ();
 
-		auto backButton = new QToolButton;
-		const auto backAction = new QAction { tr ("Go back") };
-		backAction->setProperty ("ActionIcon", "go-previous");
-		backButton->setDefaultAction (backAction);
-		backButton->setMenu (NavHistory_->GetBackwardMenu ());
-		backButton->setPopupMode (QToolButton::MenuButtonPopup);
-		Toolbar_->addWidget (backButton);
-
-		PageNumLabel_ = new PageNumLabel;
-		connect (PageNumLabel_,
-				Util::Overload<int> (&QSpinBox::valueChanged),
-				[this] (int value)
-				{
-					SetCurrentPage (value - 1);
-					scheduleSaveState ();
-				});
-		connect (LayoutManager_,
-				&PagesLayoutManager::layoutModeChanged,
-				[this] { PageNumLabel_->setSingleStep (LayoutManager_->GetLayoutModeCount ()); });
-		connect (Ui_.PagesView_->verticalScrollBar (),
-				SIGNAL (valueChanged (int)),
-				this,
-				SLOT (checkCurrentPageChange ()));
-		connect (Ui_.PagesView_->verticalScrollBar (),
-				SIGNAL (valueChanged (int)),
-				this,
-				SIGNAL (tabRecoverDataChanged ()));
-		connect (Ui_.PagesView_->verticalScrollBar (),
-				SIGNAL (valueChanged (int)),
-				this,
-				SLOT (scheduleSaveState ()));
-		Toolbar_->addWidget (PageNumLabel_);
-
-		auto fwdButton = new QToolButton;
-		const auto fwdAction = new QAction { tr ("Go forward") };
-		fwdAction->setProperty ("ActionIcon", "go-next");
-		fwdButton->setDefaultAction (fwdAction);
-		fwdButton->setMenu (NavHistory_->GetForwardMenu ());
-		fwdButton->setPopupMode (QToolButton::MenuButtonPopup);
-		Toolbar_->addWidget (fwdButton);
+		SetupToolbarNavigation ();
 
 		Toolbar_->addSeparator ();
 

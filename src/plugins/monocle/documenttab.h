@@ -162,6 +162,7 @@ namespace Monocle
 	private:
 		void SetupToolbarOpen ();
 		void SetupToolbarRotate ();
+		void SetupToolbarNavigation ();
 		void SetupToolbar ();
 
 		QPoint GetViewportCenter () const;
