@@ -40,10 +40,7 @@ namespace Monocle
 {
 	PagesView::PagesView (QWidget *parent)
 	: QGraphicsView (parent)
-	, ShowReleaseMenu_ (false)
-	, ShowOnNextRelease_ (false)
 	, ScrollTimeline_ (new QTimeLine (400, this))
-	, DocTab_ (0)
 	{
 		ScrollTimeline_->setFrameRange (0, 100);
 		connect (ScrollTimeline_,

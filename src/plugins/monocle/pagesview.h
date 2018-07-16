@@ -43,16 +43,16 @@ namespace Monocle
 	{
 		Q_OBJECT
 
-		bool ShowReleaseMenu_;
-		bool ShowOnNextRelease_;
+		bool ShowReleaseMenu_ = false;
+		bool ShowOnNextRelease_ = false;
 
 		QTimeLine *ScrollTimeline_;
-		DocumentTab *DocTab_;
+		DocumentTab *DocTab_ = nullptr;
 
 		QPair<qreal, qreal> XPath_;
 		QPair<qreal, qreal> YPath_;
 	public:
-		PagesView (QWidget* = 0);
+		PagesView (QWidget* = nullptr);
 
 		void SetDocumentTab (DocumentTab*);
 		void SetShowReleaseMenu (bool);
