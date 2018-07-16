@@ -622,17 +622,17 @@ namespace Monocle
 				&PagesLayoutManager::layoutModeChanged,
 				[this] { PageNumLabel_->setSingleStep (LayoutManager_->GetLayoutModeCount ()); });
 		connect (Ui_.PagesView_->verticalScrollBar (),
-				SIGNAL (valueChanged (int)),
+				&QScrollBar::valueChanged,
 				this,
-				SLOT (checkCurrentPageChange ()));
+				&DocumentTab::checkCurrentPageChange);
 		connect (Ui_.PagesView_->verticalScrollBar (),
-				SIGNAL (valueChanged (int)),
+				&QScrollBar::valueChanged,
 				this,
-				SIGNAL (tabRecoverDataChanged ()));
+				&DocumentTab::tabRecoverDataChanged);
 		connect (Ui_.PagesView_->verticalScrollBar (),
-				SIGNAL (valueChanged (int)),
+				&QScrollBar::valueChanged,
 				this,
-				SLOT (scheduleSaveState ()));
+				&DocumentTab::scheduleSaveState);
 		Toolbar_->addWidget (PageNumLabel_);
 
 		auto fwdButton = new QToolButton;
