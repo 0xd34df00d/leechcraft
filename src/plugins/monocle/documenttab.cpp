@@ -604,17 +604,26 @@ namespace Monocle
 
 	void DocumentTab::SetupToolbarNavigation ()
 	{
-		auto backButton = new QToolButton;
-		const auto backAction = new QAction { tr ("Go back") };
-		backAction->setProperty ("ActionIcon", "go-previous");
-		connect (backAction,
-				&QAction::triggered,
-				NavHistory_,
-				&NavigationHistory::GoBack);
-		backButton->setDefaultAction (backAction);
-		backButton->setMenu (NavHistory_->GetBackwardMenu ());
-		backButton->setPopupMode (QToolButton::MenuButtonPopup);
-		Toolbar_->addWidget (backButton);
+		{
+			auto backButton = new QToolButton;
+
+			const auto backAction = new QAction { tr ("Go back") };
+			backAction->setProperty ("ActionIcon", "go-previous");
+			backAction->setEnabled (false);
+			connect (backAction,
+					&QAction::triggered,
+					NavHistory_,
+					&NavigationHistory::GoBack);
+			connect (NavHistory_,
+					&NavigationHistory::backwardHistoryAvailabilityChanged,
+					backAction,
+					&QAction::setEnabled);
+
+			backButton->setDefaultAction (backAction);
+			backButton->setMenu (NavHistory_->GetBackwardMenu ());
+			backButton->setPopupMode (QToolButton::MenuButtonPopup);
+			Toolbar_->addWidget (backButton);
+		}
 
 		PageNumLabel_ = new PageNumLabel;
 		connect (PageNumLabel_,
@@ -641,17 +650,26 @@ namespace Monocle
 				&DocumentTab::scheduleSaveState);
 		Toolbar_->addWidget (PageNumLabel_);
 
-		auto fwdButton = new QToolButton;
-		const auto fwdAction = new QAction { tr ("Go forward") };
-		fwdAction->setProperty ("ActionIcon", "go-next");
-		connect (fwdAction,
-				&QAction::triggered,
-				NavHistory_,
-				&NavigationHistory::GoForward);
-		fwdButton->setDefaultAction (fwdAction);
-		fwdButton->setMenu (NavHistory_->GetForwardMenu ());
-		fwdButton->setPopupMode (QToolButton::MenuButtonPopup);
-		Toolbar_->addWidget (fwdButton);
+		{
+			auto fwdButton = new QToolButton;
+
+			const auto fwdAction = new QAction { tr ("Go forward") };
+			fwdAction->setProperty ("ActionIcon", "go-next");
+			fwdAction->setEnabled (false);
+			connect (fwdAction,
+					&QAction::triggered,
+					NavHistory_,
+					&NavigationHistory::GoForward);
+			connect (NavHistory_,
+					&NavigationHistory::forwardHistoryAvailabilityChanged,
+					fwdAction,
+					&QAction::setEnabled);
+
+			fwdButton->setDefaultAction (fwdAction);
+			fwdButton->setMenu (NavHistory_->GetForwardMenu ());
+			fwdButton->setPopupMode (QToolButton::MenuButtonPopup);
+			Toolbar_->addWidget (fwdButton);
+		}
 	}
 
 	void DocumentTab::SetupToolbar ()
