@@ -605,6 +605,10 @@ namespace Monocle
 		auto backButton = new QToolButton;
 		const auto backAction = new QAction { tr ("Go back") };
 		backAction->setProperty ("ActionIcon", "go-previous");
+		connect (backAction,
+				&QAction::triggered,
+				NavHistory_,
+				&NavigationHistory::GoBack);
 		backButton->setDefaultAction (backAction);
 		backButton->setMenu (NavHistory_->GetBackwardMenu ());
 		backButton->setPopupMode (QToolButton::MenuButtonPopup);
@@ -638,6 +642,10 @@ namespace Monocle
 		auto fwdButton = new QToolButton;
 		const auto fwdAction = new QAction { tr ("Go forward") };
 		fwdAction->setProperty ("ActionIcon", "go-next");
+		connect (fwdAction,
+				&QAction::triggered,
+				NavHistory_,
+				&NavigationHistory::GoForward);
 		fwdButton->setDefaultAction (fwdAction);
 		fwdButton->setMenu (NavHistory_->GetForwardMenu ());
 		fwdButton->setPopupMode (QToolButton::MenuButtonPopup);
