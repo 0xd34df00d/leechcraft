@@ -72,6 +72,7 @@ namespace Monocle
 		void GoSingleAction (QMenu*) const;
 
 		void AppendHistoryEntry ();
+		QAction* MakeCurrentPositionAction ();
 		void GoTo (QAction*, const Entry&);
 	public slots:
 		void handleDocumentNavigationRequested ();

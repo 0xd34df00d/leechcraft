@@ -89,12 +89,7 @@ namespace Monocle
 	{
 		CurrentAction_.reset ();
 
-		const auto& entry = EntryGetter_ ();
-
-		const auto action = new QAction { GetEntryText (entry), this };
-		connect (action,
-				&QAction::triggered,
-				[entry, action, this] { GoTo (action, entry); });
+		const auto action = MakeCurrentPositionAction ();
 
 		const auto& backActions = BackwardMenu_->actions ();
 		if (backActions.isEmpty ())
@@ -110,6 +105,16 @@ namespace Monocle
 			ForwardMenu_->clear ();
 			emit forwardHistoryAvailabilityChanged (false);
 		}
+	}
+
+	QAction* NavigationHistory::MakeCurrentPositionAction ()
+	{
+		const auto& entry = EntryGetter_ ();
+		const auto action = new QAction { GetEntryText (entry), this };
+		connect (action,
+				&QAction::triggered,
+				[entry, action, this] { GoTo (action, entry); });
+		return action;
 	}
 
 	void NavigationHistory::GoTo (QAction *action, const Entry& entry)
