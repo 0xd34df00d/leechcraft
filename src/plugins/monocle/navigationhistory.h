@@ -33,6 +33,8 @@
 #include <QList>
 #include "interfaces/monocle/idocument.h"
 
+class QMenu;
+
 namespace LeechCraft
 {
 namespace Monocle
@@ -51,14 +53,28 @@ namespace Monocle
 	private:
 		const EntryGetter_f EntryGetter_;
 
-		QList<Entry> Backward_;
-		QList<Entry> Forward_;
+		QMenu * const BackwardMenu_;
+		QMenu * const ForwardMenu_;
 	public:
 		NavigationHistory (const EntryGetter_f&, QObject* = nullptr);
 
+		QMenu* GetBackwardMenu () const;
+		QMenu* GetForwardMenu () const;
+
+		void GoBack () const;
+		void GoForward () const;
+
 		void HandleSearchNavigationRequested ();
+	private:
+		void AppendHistoryEntry ();
+		void GoTo (QAction*, const Entry&);
 	public slots:
 		void handleDocumentNavigationRequested ();
+	signals:
+		void entryNavigationRequested (const Entry&);
+
+		void backwardHistoryAvailabilityChanged (bool);
+		void forwardHistoryAvailabilityChanged (bool);
 	};
 }
 }
