@@ -624,7 +624,7 @@ namespace Monocle
 		connect (Ui_.PagesView_->verticalScrollBar (),
 				&QScrollBar::valueChanged,
 				this,
-				&DocumentTab::checkCurrentPageChange);
+				&DocumentTab::CheckCurrentPageChange);
 		connect (Ui_.PagesView_->verticalScrollBar (),
 				&QScrollBar::valueChanged,
 				this,
@@ -829,7 +829,7 @@ namespace Monocle
 			Onload_.Page_ = -1;
 		}
 
-		checkCurrentPageChange ();
+		CheckCurrentPageChange ();
 		emit currentPageChanged (PrevCurrentPage_);
 	}
 
@@ -989,7 +989,7 @@ namespace Monocle
 		Relayout ();
 		SetCurrentPage (state.CurrentPage_, true);
 
-		checkCurrentPageChange ();
+		CheckCurrentPageChange ();
 		emit currentPageChanged (PrevCurrentPage_);
 
 		auto docObj = CurrentDoc_->GetQObject ();
@@ -1253,7 +1253,7 @@ namespace Monocle
 		presenter->NavigateTo (GetCurrentPage ());
 	}
 
-	void DocumentTab::checkCurrentPageChange ()
+	void DocumentTab::CheckCurrentPageChange ()
 	{
 		RegenPageVisibility ();
 

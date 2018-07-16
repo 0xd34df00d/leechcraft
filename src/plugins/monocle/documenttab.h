@@ -176,6 +176,8 @@ namespace Monocle
 		NavigationHistory::Entry GetNavigationHistoryEntry () const;
 		void NavigateToPath (QString, const IDocument::Position&);
 		void NavigateWithinDocument (const IDocument::Position&);
+
+		void CheckCurrentPageChange ();
 	private slots:
 		void handleNavigateRequested (const QString&, const IDocument::Position&);
 
@@ -194,8 +196,6 @@ namespace Monocle
 
 		void handlePrint ();
 		void handlePresentation ();
-
-		void checkCurrentPageChange ();
 
 		void zoomOut ();
 		void zoomIn ();
