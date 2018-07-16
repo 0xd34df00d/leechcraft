@@ -829,7 +829,8 @@ namespace Monocle
 			Onload_.Page_ = -1;
 		}
 
-		checkCurrentPageChange (true);
+		checkCurrentPageChange ();
+		emit currentPageChanged (PrevCurrentPage_);
 	}
 
 	QImage DocumentTab::GetSelectionImg ()
@@ -988,7 +989,8 @@ namespace Monocle
 		Relayout ();
 		SetCurrentPage (state.CurrentPage_, true);
 
-		checkCurrentPageChange (true);
+		checkCurrentPageChange ();
+		emit currentPageChanged (PrevCurrentPage_);
 
 		auto docObj = CurrentDoc_->GetQObject ();
 
@@ -1251,16 +1253,15 @@ namespace Monocle
 		presenter->NavigateTo (GetCurrentPage ());
 	}
 
-	void DocumentTab::checkCurrentPageChange (bool force)
+	void DocumentTab::checkCurrentPageChange ()
 	{
 		RegenPageVisibility ();
 
 		auto current = GetCurrentPage ();
-		if (PrevCurrentPage_ == current && !force)
+		if (PrevCurrentPage_ == current)
 			return;
 
 		PrevCurrentPage_ = current;
-		emit currentPageChanged (current);
 	}
 
 	void DocumentTab::zoomOut ()

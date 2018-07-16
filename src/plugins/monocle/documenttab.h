@@ -195,7 +195,7 @@ namespace Monocle
 		void handlePrint ();
 		void handlePresentation ();
 
-		void checkCurrentPageChange (bool force = false);
+		void checkCurrentPageChange ();
 
 		void zoomOut ();
 		void zoomIn ();
