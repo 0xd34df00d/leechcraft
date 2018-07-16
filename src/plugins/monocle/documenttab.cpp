@@ -209,13 +209,15 @@ namespace Monocle
 		if (!XmlSettingsManager::Instance ().Property ("DockWidgetVisible", true).toBool ())
 			mw->SetDockWidgetVisibility (DockWidget_, false);
 		connect (DockWidget_,
-				SIGNAL (dockLocationChanged (Qt::DockWidgetArea)),
-				this,
-				SLOT (handleDockLocation (Qt::DockWidgetArea)));
+				&QDockWidget::dockLocationChanged,
+				[] (Qt::DockWidgetArea area)
+				{
+					if (area != Qt::AllDockWidgetAreas && area != Qt::NoDockWidgetArea)
+						XmlSettingsManager::Instance ().setProperty ("DockWidgetArea", area);
+				});
 		connect (DockWidget_,
-				SIGNAL (visibilityChanged (bool)),
-				this,
-				SLOT (handleDockVisibility (bool)));
+				&QDockWidget::visibilityChanged,
+				[] (bool visible) { XmlSettingsManager::Instance ().setProperty ("DockWidgetVisible", visible); });
 
 		connect (this,
 				&DocumentTab::currentPageChanged,
@@ -1501,18 +1503,6 @@ namespace Monocle
 		Relayout ();
 		scheduleSaveState ();
 		emit tabRecoverDataChanged ();
-	}
-
-	void DocumentTab::handleDockLocation (Qt::DockWidgetArea area)
-	{
-		if (area != Qt::AllDockWidgetAreas &&
-				area != Qt::NoDockWidgetArea)
-			XmlSettingsManager::Instance ().setProperty ("DockWidgetArea", area);
-	}
-
-	void DocumentTab::handleDockVisibility (bool visible)
-	{
-		XmlSettingsManager::Instance ().setProperty ("DockWidgetVisible", visible);
 	}
 }
 }
