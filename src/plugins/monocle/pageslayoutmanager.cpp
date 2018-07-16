@@ -32,6 +32,7 @@
 #include <QScrollBar>
 #include <QTimer>
 #include <QtDebug>
+#include <util/sll/unreachable.h>
 #include "interfaces/monocle/idynamicdocument.h"
 #include "pagesview.h"
 #include "pagegraphicsitem.h"
@@ -197,10 +198,7 @@ namespace Monocle
 			return FixedScale_;
 		}
 
-		qWarning () << Q_FUNC_INFO
-				<< "unknown scale mode"
-				<< static_cast<int> (ScaleMode_);
-		return 1;
+		Util::Unreachable ();
 	}
 
 	void PagesLayoutManager::SetRotation (double angle)
