@@ -84,6 +84,8 @@ namespace Monocle
 
 	void NavigationHistory::AppendHistoryEntry ()
 	{
+		CurrentAction_.reset ();
+
 		const auto& entry = EntryGetter_ ();
 
 		const auto action = new QAction { GetEntryText (entry), this };
@@ -109,8 +111,6 @@ namespace Monocle
 
 	void NavigationHistory::GoTo (QAction *action, const Entry& entry)
 	{
-		emit entryNavigationRequested (entry);
-
 		auto backActions = BackwardMenu_->actions ();
 		auto fwdActions = ForwardMenu_->actions ();
 
@@ -120,7 +120,10 @@ namespace Monocle
 
 		auto fromIdx = from.indexOf (action);
 		std::copy (from.begin (), from.begin () + fromIdx, std::front_inserter (to));
-		from.erase (from.begin (), from.begin () + fromIdx);
+		from.erase (from.begin (), from.begin () + fromIdx + 1);
+
+		if (CurrentAction_)
+			to.push_front (*CurrentAction_);
 
 		BackwardMenu_->clear ();
 		BackwardMenu_->addActions (backActions);
@@ -129,6 +132,10 @@ namespace Monocle
 
 		emit backwardHistoryAvailabilityChanged (!backActions.isEmpty ());
 		emit forwardHistoryAvailabilityChanged (!fwdActions.isEmpty ());
+
+		CurrentAction_ = action;
+
+		emit entryNavigationRequested (entry);
 	}
 
 	void NavigationHistory::handleDocumentNavigationRequested ()

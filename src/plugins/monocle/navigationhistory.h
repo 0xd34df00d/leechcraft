@@ -30,6 +30,7 @@
 #pragma once
 
 #include <functional>
+#include <optional>
 #include <QList>
 #include "interfaces/monocle/idocument.h"
 
@@ -55,6 +56,8 @@ namespace Monocle
 
 		QMenu * const BackwardMenu_;
 		QMenu * const ForwardMenu_;
+
+		std::optional<QAction*> CurrentAction_;
 	public:
 		NavigationHistory (const EntryGetter_f&, QObject* = nullptr);
 
