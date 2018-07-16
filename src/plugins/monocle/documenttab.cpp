@@ -137,6 +137,10 @@ namespace Monocle
 		SearchHandler_ = new TextSearchHandler (Ui_.PagesView_, LayoutManager_, this);
 		connect (SearchHandler_,
 				&TextSearchHandler::navigateRequested,
+				NavHistory_,
+				&NavigationHistory::HandleSearchNavigationRequested);
+		connect (SearchHandler_,
+				&TextSearchHandler::navigateRequested,
 				this,
 				&DocumentTab::NavigateWithinDocument);
 
@@ -229,6 +233,16 @@ namespace Monocle
 				SIGNAL (pagesVisibilityChanged (QMap<int, QRect>)),
 				ThumbsWidget_,
 				SLOT (updatePagesVisibility (QMap<int, QRect>)));
+
+		connect (NavHistory_,
+				&NavigationHistory::entryNavigationRequested,
+				[this] (const NavigationHistory::Entry& entry)
+				{
+					if (entry.Document_ == CurrentDocPath_)
+						NavigateWithinDocument (entry.Position_);
+					else
+						NavigateToPath (entry.Document_, entry.Position_);
+				});
 	}
 
 	NavigationHistory::Entry DocumentTab::GetNavigationHistoryEntry () const
@@ -644,16 +658,13 @@ namespace Monocle
 
 		Toolbar_->addSeparator ();
 
-		auto prev = new QAction (tr ("Previous page"), this);
-		prev->setProperty ("ActionIcon", "go-previous-view-page");
-		connect (prev,
-				&QAction::triggered,
-				[this]
-				{
-					SetCurrentPage (GetCurrentPage () - LayoutManager_->GetLayoutModeCount ());
-					scheduleSaveState ();
-				});
-		Toolbar_->addAction (prev);
+		auto backButton = new QToolButton;
+		const auto backAction = new QAction { tr ("Go back") };
+		backAction->setProperty ("ActionIcon", "go-previous");
+		backButton->setDefaultAction (backAction);
+		backButton->setMenu (NavHistory_->GetBackwardMenu ());
+		backButton->setPopupMode (QToolButton::MenuButtonPopup);
+		Toolbar_->addWidget (backButton);
 
 		PageNumLabel_ = new PageNumLabel;
 		connect (PageNumLabel_,
@@ -680,16 +691,13 @@ namespace Monocle
 				SLOT (scheduleSaveState ()));
 		Toolbar_->addWidget (PageNumLabel_);
 
-		auto next = new QAction (tr ("Next page"), this);
-		next->setProperty ("ActionIcon", "go-next-view-page");
-		connect (next,
-				&QAction::triggered,
-				[this]
-				{
-					SetCurrentPage (GetCurrentPage () + LayoutManager_->GetLayoutModeCount ());
-					scheduleSaveState ();
-				});
-		Toolbar_->addAction (next);
+		auto fwdButton = new QToolButton;
+		const auto fwdAction = new QAction { tr ("Go forward") };
+		fwdAction->setProperty ("ActionIcon", "go-next");
+		fwdButton->setDefaultAction (fwdAction);
+		fwdButton->setMenu (NavHistory_->GetForwardMenu ());
+		fwdButton->setPopupMode (QToolButton::MenuButtonPopup);
+		Toolbar_->addWidget (fwdButton);
 
 		Toolbar_->addSeparator ();
 
@@ -982,6 +990,10 @@ namespace Monocle
 		auto toc = qobject_cast<IHaveTOC*> (docObj);
 		TOCWidget_->SetTOC (toc ? toc->GetTOC () : TOCEntryLevel_t ());
 
+		connect (docObj,
+				SIGNAL (navigateRequested (QString, IDocument::Position)),
+				NavHistory_,
+				SLOT (handleDocumentNavigationRequested ()));
 		connect (docObj,
 				SIGNAL (navigateRequested (QString, IDocument::Position)),
 				this,
