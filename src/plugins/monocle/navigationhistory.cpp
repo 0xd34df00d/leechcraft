@@ -55,21 +55,24 @@ namespace Monocle
 
 	void NavigationHistory::GoBack () const
 	{
-		const auto& actions = BackwardMenu_->actions ();
-		if (!actions.isEmpty ())
-			actions.front ()->trigger ();
+		GoSingleAction (BackwardMenu_);
 	}
 
 	void NavigationHistory::GoForward () const
 	{
-		const auto& actions = ForwardMenu_->actions ();
-		if (!actions.isEmpty ())
-			actions.front ()->trigger ();
+		GoSingleAction (ForwardMenu_);
 	}
 
 	void NavigationHistory::HandleSearchNavigationRequested ()
 	{
 		AppendHistoryEntry ();
+	}
+
+	void NavigationHistory::GoSingleAction (QMenu *menu) const
+	{
+		const auto& actions = menu->actions ();
+		if (!actions.isEmpty ())
+			actions.front ()->trigger ();
 	}
 
 	namespace

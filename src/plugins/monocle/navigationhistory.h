@@ -69,6 +69,8 @@ namespace Monocle
 
 		void HandleSearchNavigationRequested ();
 	private:
+		void GoSingleAction (QMenu*) const;
+
 		void AppendHistoryEntry ();
 		void GoTo (QAction*, const Entry&);
 	public slots:
