@@ -44,9 +44,9 @@ namespace Monocle
 	{
 		ScrollTimeline_->setFrameRange (0, 100);
 		connect (ScrollTimeline_,
-				SIGNAL (frameChanged (int)),
+				&QTimeLine::frameChanged,
 				this,
-				SLOT (handleSmoothScroll (int)));
+				&PagesView::HandleSmoothScroll);
 	}
 
 	void PagesView::SetDocumentTab (DocumentTab *tab)
@@ -83,6 +83,14 @@ namespace Monocle
 		ScrollTimeline_->start ();
 	}
 
+	void PagesView::HandleSmoothScroll (int frame)
+	{
+		const int endFrame = ScrollTimeline_->endFrame ();
+		auto interp = [frame, endFrame] (const QPair<qreal, qreal>& pair)
+				{ return pair.first + (pair.second - pair.first) * frame / endFrame; };
+		centerOn (interp (XPath_), interp (YPath_));
+	}
+
 	void PagesView::mouseMoveEvent (QMouseEvent *event)
 	{
 		if (event->buttons () != Qt::NoButton && ShowReleaseMenu_)
@@ -111,14 +119,6 @@ namespace Monocle
 	{
 		QGraphicsView::resizeEvent (e);
 		emit sizeChanged ();
-	}
-
-	void PagesView::handleSmoothScroll (int frame)
-	{
-		const int endFrame = ScrollTimeline_->endFrame ();
-		auto interp = [frame, endFrame] (const QPair<qreal, qreal>& pair)
-				{ return pair.first + (pair.second - pair.first) * frame / endFrame; };
-		centerOn (interp (XPath_), interp (YPath_));
 	}
 }
 }

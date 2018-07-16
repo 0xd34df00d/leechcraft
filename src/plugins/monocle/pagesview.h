@@ -59,12 +59,12 @@ namespace Monocle
 
 		QPointF GetCurrentCenter () const;
 		void SmoothCenterOn (qreal, qreal);
+	private:
+		void HandleSmoothScroll (int);
 	protected:
 		void mouseMoveEvent (QMouseEvent*);
 		void mouseReleaseEvent (QMouseEvent*);
 		void resizeEvent (QResizeEvent*);
-	private slots:
-		void handleSmoothScroll (int);
 	signals:
 		void sizeChanged ();
 	};
