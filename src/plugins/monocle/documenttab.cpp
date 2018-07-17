@@ -858,7 +858,6 @@ namespace Monocle
 		}
 
 		CheckCurrentPageChange ();
-		emit currentPageChanged (PrevCurrentPage_);
 	}
 
 	QImage DocumentTab::GetSelectionImg ()
@@ -1018,7 +1017,6 @@ namespace Monocle
 		SetCurrentPage (state.CurrentPage_, true);
 
 		CheckCurrentPageChange ();
-		emit currentPageChanged (PrevCurrentPage_);
 
 		auto docObj = CurrentDoc_->GetQObject ();
 
@@ -1290,6 +1288,7 @@ namespace Monocle
 			return;
 
 		PrevCurrentPage_ = current;
+		emit currentPageChanged (current);
 	}
 
 	void DocumentTab::zoomOut ()
