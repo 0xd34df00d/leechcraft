@@ -41,9 +41,11 @@ namespace Monocle
 
 	void PageNumLabel::SetTotalPageCount (int count)
 	{
+		blockSignals (true);
 		setSpecialValueText ({});
-		setRange (1, count);
 		setSuffix (" / " + QString::number (count));
+		setRange (1, count);
+		blockSignals (false);
 	}
 
 	void PageNumLabel::SetCurrentPage (int page)
