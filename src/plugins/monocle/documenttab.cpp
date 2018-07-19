@@ -223,6 +223,15 @@ namespace Monocle
 				&DocumentTab::currentPageChanged,
 				PageNumLabel_,
 				&PageNumLabel::SetCurrentPage);
+		connect (Ui_.PagesView_->verticalScrollBar (),
+				&QScrollBar::valueChanged,
+				this,
+				&DocumentTab::CheckCurrentPageChange);
+		connect (this,
+				&DocumentTab::currentPageChanged,
+				this,
+				&DocumentTab::scheduleSaveState);
+
 		connect (this,
 				SIGNAL (currentPageChanged (int)),
 				ThumbsWidget_,
@@ -636,14 +645,6 @@ namespace Monocle
 		connect (LayoutManager_,
 				&PagesLayoutManager::layoutModeChanged,
 				[this] { PageNumLabel_->setSingleStep (LayoutManager_->GetLayoutModeCount ()); });
-		connect (Ui_.PagesView_->verticalScrollBar (),
-				&QScrollBar::valueChanged,
-				this,
-				&DocumentTab::CheckCurrentPageChange);
-		connect (this,
-				&DocumentTab::currentPageChanged,
-				this,
-				&DocumentTab::scheduleSaveState);
 		Toolbar_->addWidget (PageNumLabel_);
 
 		{
