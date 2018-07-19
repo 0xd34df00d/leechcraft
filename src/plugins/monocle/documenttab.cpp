@@ -643,10 +643,6 @@ namespace Monocle
 		connect (Ui_.PagesView_->verticalScrollBar (),
 				&QScrollBar::valueChanged,
 				this,
-				&DocumentTab::tabRecoverDataChanged);
-		connect (Ui_.PagesView_->verticalScrollBar (),
-				&QScrollBar::valueChanged,
-				this,
 				&DocumentTab::scheduleSaveState);
 		Toolbar_->addWidget (PageNumLabel_);
 
@@ -1083,6 +1079,8 @@ namespace Monocle
 
 		SaveStateScheduled_ = false;
 
+		emit tabRecoverDataChanged ();
+
 		if (CurrentDocPath_.isEmpty ())
 			return;
 
@@ -1355,8 +1353,6 @@ namespace Monocle
 		LayoutManager_->SetLayoutMode (LayoutMode::OnePage);
 		Relayout ();
 
-		emit tabRecoverDataChanged ();
-
 		scheduleSaveState ();
 	}
 
@@ -1364,8 +1360,6 @@ namespace Monocle
 	{
 		LayoutManager_->SetLayoutMode (LayoutMode::TwoPages);
 		Relayout ();
-
-		emit tabRecoverDataChanged ();
 
 		scheduleSaveState ();
 	}
@@ -1490,7 +1484,6 @@ namespace Monocle
 
 		Relayout ();
 		scheduleSaveState ();
-		emit tabRecoverDataChanged ();
 	}
 
 	void DocumentTab::handleCustomScale (QString str)
@@ -1519,7 +1512,6 @@ namespace Monocle
 
 		Relayout ();
 		scheduleSaveState ();
-		emit tabRecoverDataChanged ();
 	}
 }
 }
