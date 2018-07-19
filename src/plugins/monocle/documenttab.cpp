@@ -640,8 +640,8 @@ namespace Monocle
 				&QScrollBar::valueChanged,
 				this,
 				&DocumentTab::CheckCurrentPageChange);
-		connect (Ui_.PagesView_->verticalScrollBar (),
-				&QScrollBar::valueChanged,
+		connect (this,
+				&DocumentTab::currentPageChanged,
 				this,
 				&DocumentTab::scheduleSaveState);
 		Toolbar_->addWidget (PageNumLabel_);
