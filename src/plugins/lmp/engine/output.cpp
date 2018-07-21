@@ -94,12 +94,10 @@ namespace LMP
 		g_signal_connect (Volume_, "notify::volume", G_CALLBACK (CbVolumeChanged), this);
 		g_signal_connect (Volume_, "notify::mute", G_CALLBACK (CbMuteChanged), this);
 
-		const auto volume = XmlSettingsManager::Instance ()
-				.Property ("AudioVolume", 1).toDouble ();
+		const auto volume = XmlSettingsManager::Instance ().Property ("AudioVolume", 1).toDouble ();
 		setVolume (volume);
 
-		const auto isMuted = XmlSettingsManager::Instance ()
-				.Property ("AudioMuted", false).toBool ();
+		const auto isMuted = XmlSettingsManager::Instance ().Property ("AudioMuted", false).toBool ();
 		g_object_set (G_OBJECT (Volume_), "mute", static_cast<gboolean> (isMuted), nullptr);
 	}
 
