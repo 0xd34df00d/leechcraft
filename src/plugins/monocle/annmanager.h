@@ -38,7 +38,6 @@ class QAbstractItemModel;
 class QModelIndex;
 class QStandardItemModel;
 class QStandardItem;
-class QGraphicsScene;
 
 namespace LeechCraft
 {
@@ -53,7 +52,6 @@ namespace Monocle
 		Q_OBJECT
 
 		PagesView * const View_;
-		QGraphicsScene * const Scene_;
 
 		QStandardItemModel * const AnnModel_;
 		QMap<IAnnotation_ptr, QStandardItem*> Ann2Item_;

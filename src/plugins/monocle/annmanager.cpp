@@ -28,7 +28,6 @@
  **********************************************************************/
 
 #include "annmanager.h"
-#include <QGraphicsScene>
 #include <QStandardItemModel>
 #include <QtDebug>
 #include "interfaces/monocle/isupportannotations.h"
@@ -44,7 +43,6 @@ namespace Monocle
 	AnnManager::AnnManager (PagesView *view, QObject *parent)
 	: QObject { parent }
 	, View_ { view }
-	, Scene_ { view->scene () }
 	, AnnModel_ { new QStandardItemModel { this } }
 	{
 	}
