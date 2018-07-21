@@ -238,6 +238,13 @@ namespace Monocle
 				&QScrollBar::valueChanged,
 				this,
 				&DocumentTab::CheckCurrentPageChange);
+		connect (Scroller_,
+				&SmoothScroller::isCurrentlyScrollingChanged,
+				[this] (bool isScrolling)
+				{
+					if (!isScrolling)
+						CheckCurrentPageChange ();
+				});
 		connect (this,
 				&DocumentTab::currentPageChanged,
 				this,
