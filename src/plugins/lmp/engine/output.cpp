@@ -80,7 +80,6 @@ namespace LMP
 	, Volume_ (gst_element_factory_make ("volume", "volume"))
 	, Converter_ (gst_element_factory_make ("audioconvert", "convert"))
 	, Sink_ (gst_element_factory_make ("autoaudiosink", "audio_sink"))
-	, SaveVolumeScheduled_ (false)
 	{
 		gst_bin_add_many (GST_BIN (Bin_), Volume_, Converter_, Sink_, nullptr);
 		gst_element_link_many (Volume_, Converter_, Sink_, nullptr);

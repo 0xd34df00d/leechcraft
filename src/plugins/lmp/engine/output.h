@@ -51,7 +51,7 @@ namespace LMP
 		GstElement *Converter_;
 		GstElement *Sink_;
 
-		bool SaveVolumeScheduled_;
+		bool SaveVolumeScheduled_ = false;
 	public:
 		Output (QObject* = 0);
 
