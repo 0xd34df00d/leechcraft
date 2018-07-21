@@ -46,6 +46,10 @@ namespace Monocle
 				&QTimeLine::frameChanged,
 				this,
 				&SmoothScroller::HandleSmoothScroll);
+
+		connect (ScrollTimeline_,
+				&QTimeLine::finished,
+				[this] { emit isCurrentlyScrollingChanged (false); });
 	}
 
 	bool SmoothScroller::IsCurrentlyScrolling () const
@@ -67,6 +71,8 @@ namespace Monocle
 
 		if (ScrollTimeline_->state () != QTimeLine::NotRunning)
 			ScrollTimeline_->stop ();
+
+		emit isCurrentlyScrollingChanged (true);
 		ScrollTimeline_->start ();
 	}
 

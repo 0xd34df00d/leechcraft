@@ -41,6 +41,8 @@ namespace Monocle
 
 	class SmoothScroller : public QObject
 	{
+		Q_OBJECT
+
 		PagesView * const View_;
 		QTimeLine * const ScrollTimeline_;
 
@@ -54,6 +56,8 @@ namespace Monocle
 		void SmoothCenterOn (qreal, qreal);
 	private:
 		void HandleSmoothScroll (int);
+	signals:
+		void isCurrentlyScrollingChanged (bool);
 	};
 }
 }
