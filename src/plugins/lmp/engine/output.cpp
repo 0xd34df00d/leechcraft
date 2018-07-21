@@ -78,11 +78,12 @@ namespace LMP
 	: QObject (parent)
 	, Bin_ (gst_bin_new ("audio_sink_bin"))
 	, Volume_ (gst_element_factory_make ("volume", "volume"))
-	, Converter_ (gst_element_factory_make ("audioconvert", "convert"))
-	, Sink_ (gst_element_factory_make ("autoaudiosink", "audio_sink"))
 	{
-		gst_bin_add_many (GST_BIN (Bin_), Volume_, Converter_, Sink_, nullptr);
-		gst_element_link_many (Volume_, Converter_, Sink_, nullptr);
+		auto converter = gst_element_factory_make ("audioconvert", "convert");
+		auto sink = gst_element_factory_make ("autoaudiosink", "audio_sink");
+
+		gst_bin_add_many (GST_BIN (Bin_), Volume_, converter, sink, nullptr);
+		gst_element_link_many (Volume_, converter, sink, nullptr);
 
 		auto pad = gst_element_get_static_pad (Volume_, "sink");
 		auto ghostPad = gst_ghost_pad_new ("sink", pad);

@@ -48,8 +48,6 @@ namespace LMP
 
 		GstElement *Bin_;
 		GstElement *Volume_;
-		GstElement *Converter_;
-		GstElement *Sink_;
 
 		bool SaveVolumeScheduled_ = false;
 	public:
