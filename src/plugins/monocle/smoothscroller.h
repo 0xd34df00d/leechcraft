@@ -30,65 +30,28 @@
 #pragma once
 
 #include <QObject>
-#include <QMap>
-#include "interfaces/monocle/idocument.h"
-#include "interfaces/monocle/iannotation.h"
 
-class QAbstractItemModel;
-class QModelIndex;
-class QStandardItemModel;
-class QStandardItem;
+class QTimeLine;
 
 namespace LeechCraft
 {
 namespace Monocle
 {
-	class SmoothScroller;
-	class PageGraphicsItem;
-	class AnnBaseItem;
+	class PagesView;
 
-	class AnnManager : public QObject
+	class SmoothScroller : public QObject
 	{
-		Q_OBJECT
+		PagesView * const View_;
+		QTimeLine * const ScrollTimeline_;
 
-		SmoothScroller * const Scroller_;
-
-		QStandardItemModel * const AnnModel_;
-		QMap<IAnnotation_ptr, QStandardItem*> Ann2Item_;
-
-		QMap<IAnnotation_ptr, AnnBaseItem*> Ann2GraphicsItem_;
-
-		QList<IAnnotation_ptr> Annotations_;
-		int CurrentAnn_ = -1;
+		QPair<qreal, qreal> XPath_;
+		QPair<qreal, qreal> YPath_;
 	public:
-		enum Role
-		{
-			ItemType = Qt::UserRole + 1,
-			Annotation
-		};
+		SmoothScroller (PagesView*, QObject* = nullptr);
 
-		enum ItemTypes
-		{
-			PageItem,
-			AnnHeaderItem,
-			AnnItem
-		};
-
-		AnnManager (SmoothScroller*, QObject* = nullptr);
-
-		void HandleDoc (IDocument_ptr, const QList<PageGraphicsItem*>&);
-
-		QAbstractItemModel* GetModel () const;
+		void SmoothCenterOn (qreal, qreal);
 	private:
-		void EmitSelected (const IAnnotation_ptr&);
-		void CenterOn (const IAnnotation_ptr&);
-		void SelectAnnotation (const IAnnotation_ptr&);
-	public slots:
-		void selectPrev ();
-		void selectNext ();
-		void selectAnnotation (const QModelIndex&);
-	signals:
-		void annotationSelected (const QModelIndex&);
+		void HandleSmoothScroll (int);
 	};
 }
 }

@@ -34,15 +34,15 @@
 #include "interfaces/monocle/iannotation.h"
 #include "pagegraphicsitem.h"
 #include "annitem.h"
-#include "pagesview.h"
+#include "smoothscroller.h"
 
 namespace LeechCraft
 {
 namespace Monocle
 {
-	AnnManager::AnnManager (PagesView *view, QObject *parent)
+	AnnManager::AnnManager (SmoothScroller *scroller, QObject *parent)
 	: QObject { parent }
-	, View_ { view }
+	, Scroller_ { scroller }
 	, AnnModel_ { new QStandardItemModel { this } }
 	{
 	}
@@ -148,7 +148,7 @@ namespace Monocle
 
 		const auto graphicsItem = item->GetItem ();
 		const auto& mapped = graphicsItem->scenePos ();
-		View_->SmoothCenterOn (mapped.x (), mapped.y ());
+		Scroller_->SmoothCenterOn (mapped.x (), mapped.y ());
 	}
 
 	void AnnManager::SelectAnnotation (const IAnnotation_ptr& ann)

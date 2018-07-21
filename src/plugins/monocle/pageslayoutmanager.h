@@ -43,6 +43,7 @@ namespace Monocle
 	enum class ScaleMode;
 
 	class PagesView;
+	class SmoothScroller;
 	class PageGraphicsItem;
 
 	class PagesLayoutManager : public QObject
@@ -50,6 +51,7 @@ namespace Monocle
 		Q_OBJECT
 
 		PagesView * const View_;
+		SmoothScroller * const Scroller_;
 		QGraphicsScene * const Scene_;
 
 		IDocument_ptr CurrentDoc_;
@@ -69,7 +71,7 @@ namespace Monocle
 
 		double Rotation_ = 0;
 	public:
-		PagesLayoutManager (PagesView*, QObject* = 0);
+		PagesLayoutManager (PagesView*, SmoothScroller*, QObject* = nullptr);
 
 		void HandleDoc (IDocument_ptr, const QList<PageGraphicsItem*>&);
 		const QList<PageGraphicsItem*>& GetPages () const;

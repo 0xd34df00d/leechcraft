@@ -64,6 +64,7 @@ namespace Monocle
 	class SearchTabWidget;
 	class DocumentBookmarksManager;
 	class PageNumLabel;
+	class SmoothScroller;
 
 	class DocumentTab : public QWidget
 					  , public ITabWidget
@@ -91,6 +92,8 @@ namespace Monocle
 		QAction *ExportPDFAction_ = nullptr;
 		QAction *FindAction_ = nullptr;
 		FindDialog *FindDialog_ = nullptr;
+
+		SmoothScroller *Scroller_ = nullptr;
 
 		PagesLayoutManager *LayoutManager_ = nullptr;
 		TextSearchHandler *SearchHandler_ = nullptr;

@@ -27,68 +27,50 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <QMap>
-#include "interfaces/monocle/idocument.h"
-#include "interfaces/monocle/iannotation.h"
-
-class QAbstractItemModel;
-class QModelIndex;
-class QStandardItemModel;
-class QStandardItem;
+#include "smoothscroller.h"
+#include <QTimeLine>
+#include "pagesview.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
 namespace Monocle
 {
-	class SmoothScroller;
-	class PageGraphicsItem;
-	class AnnBaseItem;
-
-	class AnnManager : public QObject
+	SmoothScroller::SmoothScroller (PagesView *view, QObject *parent)
+	: QObject { parent }
+	, View_ { view }
+	, ScrollTimeline_ { new QTimeLine { 400, this } }
 	{
-		Q_OBJECT
+		ScrollTimeline_->setFrameRange (0, 100);
+		connect (ScrollTimeline_,
+				&QTimeLine::frameChanged,
+				this,
+				&SmoothScroller::HandleSmoothScroll);
+	}
 
-		SmoothScroller * const Scroller_;
-
-		QStandardItemModel * const AnnModel_;
-		QMap<IAnnotation_ptr, QStandardItem*> Ann2Item_;
-
-		QMap<IAnnotation_ptr, AnnBaseItem*> Ann2GraphicsItem_;
-
-		QList<IAnnotation_ptr> Annotations_;
-		int CurrentAnn_ = -1;
-	public:
-		enum Role
+	void SmoothScroller::SmoothCenterOn (qreal x, qreal y)
+	{
+		if (!XmlSettingsManager::Instance ().property ("SmoothScrolling").toBool ())
 		{
-			ItemType = Qt::UserRole + 1,
-			Annotation
-		};
+			View_->centerOn (x, y);
+			return;
+		}
 
-		enum ItemTypes
-		{
-			PageItem,
-			AnnHeaderItem,
-			AnnItem
-		};
+		const auto& current = View_->GetCurrentCenter ();
+		XPath_ = qMakePair (current.x (), x);
+		YPath_ = qMakePair (current.y (), y);
 
-		AnnManager (SmoothScroller*, QObject* = nullptr);
+		if (ScrollTimeline_->state () != QTimeLine::NotRunning)
+			ScrollTimeline_->stop ();
+		ScrollTimeline_->start ();
+	}
 
-		void HandleDoc (IDocument_ptr, const QList<PageGraphicsItem*>&);
-
-		QAbstractItemModel* GetModel () const;
-	private:
-		void EmitSelected (const IAnnotation_ptr&);
-		void CenterOn (const IAnnotation_ptr&);
-		void SelectAnnotation (const IAnnotation_ptr&);
-	public slots:
-		void selectPrev ();
-		void selectNext ();
-		void selectAnnotation (const QModelIndex&);
-	signals:
-		void annotationSelected (const QModelIndex&);
-	};
+	void SmoothScroller::HandleSmoothScroll (int frame)
+	{
+		const int endFrame = ScrollTimeline_->endFrame ();
+		auto interp = [frame, endFrame] (const QPair<qreal, qreal>& pair)
+				{ return pair.first + (pair.second - pair.first) * frame / endFrame; };
+		View_->centerOn (interp (XPath_), interp (YPath_));
+	}
 }
 }

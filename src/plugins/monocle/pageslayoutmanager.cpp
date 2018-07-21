@@ -36,6 +36,7 @@
 #include "interfaces/monocle/idynamicdocument.h"
 #include "pagesview.h"
 #include "pagegraphicsitem.h"
+#include "smoothscroller.h"
 #include "common.h"
 
 namespace LeechCraft
@@ -44,9 +45,10 @@ namespace Monocle
 {
 	const int Margin = 10;
 
-	PagesLayoutManager::PagesLayoutManager (PagesView *view, QObject *parent)
+	PagesLayoutManager::PagesLayoutManager (PagesView *view, SmoothScroller *scroller, QObject *parent)
 	: QObject (parent)
 	, View_ (view)
+	, Scroller_ (scroller)
 	, Scene_ (view->scene ())
 	, LayMode_ (LayoutMode::OnePage)
 	, ScaleMode_ (ScaleMode::FitWidth)
@@ -132,7 +134,7 @@ namespace Monocle
 		if (immediate)
 			View_->centerOn (xCenter, yCenter);
 		else
-			View_->SmoothCenterOn (xCenter, yCenter);
+			Scroller_->SmoothCenterOn (xCenter, yCenter);
 	}
 
 	void PagesLayoutManager::SetScaleMode (ScaleMode mode)

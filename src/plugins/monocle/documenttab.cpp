@@ -95,6 +95,7 @@
 #include "searchtabwidget.h"
 #include "documentbookmarksmanager.h"
 #include "pagenumlabel.h"
+#include "smoothscroller.h"
 
 namespace LeechCraft
 {
@@ -133,7 +134,9 @@ namespace Monocle
 		Ui_.PagesView_->setBackgroundBrush (palette ().brush (QPalette::Dark));
 		Ui_.PagesView_->SetDocumentTab (this);
 
-		LayoutManager_ = new PagesLayoutManager (Ui_.PagesView_, this);
+		Scroller_ = new SmoothScroller { Ui_.PagesView_, this };
+
+		LayoutManager_ = new PagesLayoutManager (Ui_.PagesView_, Scroller_, this);
 		SearchHandler_ = new TextSearchHandler (Ui_.PagesView_, LayoutManager_, this);
 		connect (SearchHandler_,
 				&TextSearchHandler::navigateRequested,
@@ -145,7 +148,7 @@ namespace Monocle
 				&DocumentTab::NavigateWithinDocument);
 
 		FormManager_ = new FormManager (Ui_.PagesView_, this);
-		AnnManager_ = new AnnManager (Ui_.PagesView_, this);
+		AnnManager_ = new AnnManager (Scroller_, this);
 		LinksManager_ = new LinksManager (Ui_.PagesView_, this);
 
 		AnnWidget_ = new AnnWidget (AnnManager_);
@@ -507,7 +510,7 @@ namespace Monocle
 
 	void DocumentTab::CenterOn (const QPoint& point)
 	{
-		Ui_.PagesView_->SmoothCenterOn (point.x (), point.y ());
+		Scroller_->SmoothCenterOn (point.x (), point.y ());
 	}
 
 	bool DocumentTab::eventFilter (QObject*, QEvent *event)
@@ -954,7 +957,7 @@ namespace Monocle
 		{
 			const auto& size = page->boundingRect ().size ();
 			const auto& mapped = page->mapToScene (size.width () * point.x (), size.height () * point.y ());
-			Ui_.PagesView_->SmoothCenterOn (mapped.x (), mapped.y ());
+			Scroller_->SmoothCenterOn (mapped.x (), mapped.y ());
 		}
 	}
 

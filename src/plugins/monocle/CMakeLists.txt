@@ -63,6 +63,7 @@ set (SRCS
 	documentbookmarksmanager.cpp
 	navigationhistory.cpp
 	pagenumlabel.cpp
+	smoothscroller.cpp
 	)
 set (FORMS
 	documenttab.ui
