@@ -1283,6 +1283,9 @@ namespace Monocle
 
 	void DocumentTab::CheckCurrentPageChange ()
 	{
+		if (Scroller_->IsCurrentlyScrolling ())
+			return;
+
 		RegenPageVisibility ();
 
 		auto current = GetCurrentPage ();
