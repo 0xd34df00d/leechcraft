@@ -126,8 +126,7 @@ namespace Monocle
 		const auto& rect = page->boundingRect ();
 		const auto& pos = page->scenePos ();
 		int xCenter = pos.x () + rect.width () / 2;
-		const auto visibleHeight = std::min (static_cast<int> (rect.height ()),
-				View_->viewport ()->contentsRect ().height ());
+		const auto visibleHeight = std::min<int> (rect.height (), View_->viewport ()->contentsRect ().height ());
 		int yCenter = pos.y () + visibleHeight / 2;
 
 		if (immediate)
