@@ -2,10 +2,12 @@ cmake_minimum_required (VERSION 3.3)
 project (leechcraft_monocle_postrus)
 include (InitLCPlugin NO_POLICY_SCOPE)
 
-include_directories (
+include_directories (SYSTEM
 	${LIBSPECTRE_INCLUDE_DIR}
-	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
+)
+include_directories (
+	${CMAKE_CURRENT_BINARY_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
 set (SRCS
