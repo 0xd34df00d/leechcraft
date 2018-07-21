@@ -47,7 +47,6 @@ namespace LMP
 		Q_OBJECT
 
 		GstElement *Bin_;
-		GstElement *Equalizer_;
 		GstElement *Volume_;
 		GstElement *Converter_;
 		GstElement *Sink_;

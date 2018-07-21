@@ -77,16 +77,15 @@ namespace LMP
 	Output::Output (QObject *parent)
 	: QObject (parent)
 	, Bin_ (gst_bin_new ("audio_sink_bin"))
-	, Equalizer_ (gst_element_factory_make ("equalizer-3bands", "equalizer"))
 	, Volume_ (gst_element_factory_make ("volume", "volume"))
 	, Converter_ (gst_element_factory_make ("audioconvert", "convert"))
 	, Sink_ (gst_element_factory_make ("autoaudiosink", "audio_sink"))
 	, SaveVolumeScheduled_ (false)
 	{
-		gst_bin_add_many (GST_BIN (Bin_), Equalizer_, Volume_, Converter_, Sink_, nullptr);
-		gst_element_link_many (Equalizer_, Volume_, Converter_, Sink_, nullptr);
+		gst_bin_add_many (GST_BIN (Bin_), Volume_, Converter_, Sink_, nullptr);
+		gst_element_link_many (Volume_, Converter_, Sink_, nullptr);
 
-		auto pad = gst_element_get_static_pad (Equalizer_, "sink");
+		auto pad = gst_element_get_static_pad (Volume_, "sink");
 		auto ghostPad = gst_ghost_pad_new ("sink", pad);
 		gst_pad_set_active (ghostPad, TRUE);
 		gst_element_add_pad (Bin_, ghostPad);
