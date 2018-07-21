@@ -49,6 +49,8 @@ namespace Monocle
 	public:
 		SmoothScroller (PagesView*, QObject* = nullptr);
 
+		bool IsCurrentlyScrolling () const;
+
 		void SmoothCenterOn (qreal, qreal);
 	private:
 		void HandleSmoothScroll (int);

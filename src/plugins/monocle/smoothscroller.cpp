@@ -48,6 +48,11 @@ namespace Monocle
 				&SmoothScroller::HandleSmoothScroll);
 	}
 
+	bool SmoothScroller::IsCurrentlyScrolling () const
+	{
+		return ScrollTimeline_->state () == QTimeLine::Running;
+	}
+
 	void SmoothScroller::SmoothCenterOn (qreal x, qreal y)
 	{
 		if (!XmlSettingsManager::Instance ().property ("SmoothScrolling").toBool ())
