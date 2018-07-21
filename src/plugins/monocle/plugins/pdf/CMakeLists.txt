@@ -6,11 +6,13 @@ set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 find_package (PopplerQt5 REQUIRED)
 
-include_directories (
+include_directories (SYSTEM
 	${POPPLER_QT5_INCLUDE_DIR}
 	${POPPLER_CPP_INCLUDE_DIR}
-	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
+)
+include_directories (
+	${CMAKE_CURRENT_BINARY_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
 set (SRCS
