@@ -50,6 +50,8 @@ namespace Monocle
 	{
 		Q_OBJECT
 
+		bool IsRenderingEnabled_ = true;
+
 		IDocument_ptr Doc_;
 		const int PageNum_;
 
@@ -94,6 +96,8 @@ namespace Monocle
 
 		bool IsDisplayed () const;
 
+		void SetRenderingEnabled (bool);
+
 		QRectF boundingRect () const;
 		QPainterPath shape () const;
 	protected:
@@ -102,6 +106,7 @@ namespace Monocle
 		void mouseReleaseEvent (QGraphicsSceneMouseEvent*);
 		void contextMenuEvent (QGraphicsSceneContextMenuEvent*);
 	private:
+		bool ShouldRender () const;
 		QPixmap GetEmptyPixmap (bool fill) const;
 	private slots:
 		void rotateCCW ();

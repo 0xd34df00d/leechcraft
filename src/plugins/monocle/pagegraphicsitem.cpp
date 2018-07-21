@@ -88,7 +88,7 @@ namespace Monocle
 
 		Invalid_ = true;
 
-		if (IsDisplayed ())
+		if (ShouldRender ())
 			update ();
 		else
 			prepareGeometryChange ();
@@ -146,7 +146,7 @@ namespace Monocle
 	void PageGraphicsItem::UpdatePixmap ()
 	{
 		Invalid_ = true;
-		if (IsDisplayed ())
+		if (ShouldRender ())
 			update ();
 	}
 
@@ -155,21 +155,23 @@ namespace Monocle
 	{
 		if (Invalid_ && IsDisplayed ())
 		{
-			Invalid_ = false;
-
 			setPixmap (GetEmptyPixmap (true));
 
-			Util::Sequence (this, Doc_->RenderPage (PageNum_, XScale_, YScale_)) >>
-					[&, prevXScale = XScale_, prevYScale = YScale_] (const QImage& img)
-					{
-						setPixmap (QPixmap::fromImage (img));
+			if (ShouldRender ())
+			{
+				Invalid_ = false;
+				Util::Sequence (this, Doc_->RenderPage (PageNum_, XScale_, YScale_)) >>
+						[&, prevXScale = XScale_, prevYScale = YScale_] (const QImage& img)
+						{
+							setPixmap (QPixmap::fromImage (img));
 
-						if (std::abs (prevXScale - XScale_) > std::numeric_limits<double>::epsilon () * XScale_ ||
-							std::abs (prevYScale - YScale_) > std::numeric_limits<double>::epsilon () * YScale_)
-							UpdatePixmap ();
-						else
-							Core::Instance ().GetPixmapCacheManager ()->PixmapChanged (this);
-					};
+							if (std::abs (prevXScale - XScale_) > std::numeric_limits<double>::epsilon () * XScale_ ||
+								std::abs (prevYScale - YScale_) > std::numeric_limits<double>::epsilon () * YScale_)
+								UpdatePixmap ();
+							else
+								Core::Instance ().GetPixmapCacheManager ()->PixmapChanged (this);
+						};
+			}
 		}
 
 		QGraphicsPixmapItem::paint (painter, option, w);
@@ -252,6 +254,21 @@ namespace Monocle
 		}
 
 		return false;
+	}
+
+	void PageGraphicsItem::SetRenderingEnabled (bool enabled)
+	{
+		if (IsRenderingEnabled_ == enabled)
+			return;
+
+		IsRenderingEnabled_ = enabled;
+		if (ShouldRender ())
+			update ();
+	}
+
+	bool PageGraphicsItem::ShouldRender () const
+	{
+		return IsRenderingEnabled_ && IsDisplayed ();
 	}
 
 	QRectF PageGraphicsItem::boundingRect () const
