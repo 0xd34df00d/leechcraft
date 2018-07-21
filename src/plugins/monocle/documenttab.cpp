@@ -135,6 +135,14 @@ namespace Monocle
 		Ui_.PagesView_->SetDocumentTab (this);
 
 		Scroller_ = new SmoothScroller { Ui_.PagesView_, this };
+		connect (Scroller_,
+				&SmoothScroller::isCurrentlyScrollingChanged,
+				this,
+				[this] (bool isScrolling)
+				{
+					for (const auto page : Pages_)
+						page->SetRenderingEnabled (!isScrolling);
+				});
 
 		LayoutManager_ = new PagesLayoutManager (Ui_.PagesView_, Scroller_, this);
 		SearchHandler_ = new TextSearchHandler (Ui_.PagesView_, LayoutManager_, this);
