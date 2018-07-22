@@ -46,7 +46,7 @@ namespace Util
 		IEntityManager * const IEM_;
 		const QString ContextID_;
 	public:
-		ScreensaverProhibitor (const QString&, IEntityManager*);
+		ScreensaverProhibitor (IEntityManager*);
 		~ScreensaverProhibitor ();
 
 		void SetProhibited (bool);

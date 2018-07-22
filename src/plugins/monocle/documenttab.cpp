@@ -128,7 +128,7 @@ namespace Monocle
 	, ThumbsWidget_ (new ThumbsWidget ())
 	, OptContentsWidget_ (new QTreeView)
 	, NavHistory_ (new NavigationHistory ([this] { return GetNavigationHistoryEntry (); }, this))
-	, ScreensaverProhibitor_ ("Monocle", Core::Instance ().GetProxy ()->GetEntityManager ())
+	, ScreensaverProhibitor_ (Core::Instance ().GetProxy ()->GetEntityManager ())
 	{
 		Ui_.setupUi (this);
 		Ui_.PagesView_->setScene (&Scene_);

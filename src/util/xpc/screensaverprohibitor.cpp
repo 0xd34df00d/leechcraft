@@ -28,6 +28,8 @@
  **********************************************************************/
 
 #include "screensaverprohibitor.h"
+#include <QString>
+#include <QUuid>
 #include <interfaces/core/ientitymanager.h>
 #include "util.h"
 
@@ -35,9 +37,9 @@ namespace LeechCraft
 {
 namespace Util
 {
-	ScreensaverProhibitor::ScreensaverProhibitor (const QString& context, IEntityManager *iem)
+	ScreensaverProhibitor::ScreensaverProhibitor (IEntityManager *iem)
 	: IEM_ { iem }
-	, ContextID_ { context }
+	, ContextID_ { QUuid::createUuid ().toString () }
 	{
 	}
 
