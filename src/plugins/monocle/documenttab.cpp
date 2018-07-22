@@ -128,6 +128,7 @@ namespace Monocle
 	, ThumbsWidget_ (new ThumbsWidget ())
 	, OptContentsWidget_ (new QTreeView)
 	, NavHistory_ (new NavigationHistory ([this] { return GetNavigationHistoryEntry (); }, this))
+	, ScreensaverProhibitor_ ("Monocle", Core::Instance ().GetProxy ()->GetEntityManager ())
 	{
 		Ui_.setupUi (this);
 		Ui_.PagesView_->setScene (&Scene_);
@@ -331,6 +332,16 @@ namespace Monocle
 	QToolBar* DocumentTab::GetToolBar () const
 	{
 		return Toolbar_;
+	}
+
+	void DocumentTab::TabMadeCurrent ()
+	{
+		ScreensaverProhibitor_.SetProhibited (true);
+	}
+
+	void DocumentTab::TabLostCurrent ()
+	{
+		ScreensaverProhibitor_.SetProhibited (false);
 	}
 
 	QString DocumentTab::GetTabRecoverName () const

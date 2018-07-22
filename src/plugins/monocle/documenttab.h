@@ -35,6 +35,7 @@
 #include <interfaces/ihaverecoverabletabs.h>
 #include <interfaces/idndtab.h>
 #include <util/sll/bitflags.h>
+#include <util/xpc/screensaverprohibitor.h>
 #include "interfaces/monocle/idocument.h"
 #include "docstatemanager.h"
 #include "navigationhistory.h"
@@ -122,6 +123,8 @@ namespace Monocle
 		int PrevCurrentPage_;
 
 		IDocument::Position Onload_ { -1, {} };
+
+		Util::ScreensaverProhibitor ScreensaverProhibitor_;
 	public:
 		enum class DocumentOpenOption
 		{
@@ -136,6 +139,8 @@ namespace Monocle
 		QObject* ParentMultiTabs () override;
 		void Remove () override;
 		QToolBar* GetToolBar () const override;
+		void TabMadeCurrent () override;
+		void TabLostCurrent () override;
 
 		QString GetTabRecoverName () const override;
 		QIcon GetTabRecoverIcon () const override;
