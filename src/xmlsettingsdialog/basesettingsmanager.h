@@ -59,7 +59,7 @@ namespace Util
 		Q_OBJECT
 
 		using ObjectElement_t = QPair<QPointer<QObject>, QByteArray>;
-		using Properties2Object_t = QMultiMap<QByteArray, ObjectElement_t>;
+		using Properties2Object_t = QHash<QByteArray, QList<ObjectElement_t>>;
 		Properties2Object_t ApplyProps_;
 		Properties2Object_t SelectProps_;
 

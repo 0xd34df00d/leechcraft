@@ -68,9 +68,9 @@ namespace Util
 			QObject *object, const QByteArray& funcName, EventFlags flags)
 	{
 		if (flags & EventFlag::Apply)
-			ApplyProps_.insertMulti (propName, { object, funcName });
+			ApplyProps_ [propName].append ({ object, funcName });
 		if (flags & EventFlag::Select)
-			SelectProps_.insertMulti (propName, { object, funcName });
+			SelectProps_ [propName].append ({ object, funcName });
 
 		connect (object,
 				SIGNAL (destroyed (QObject*)),
@@ -118,7 +118,7 @@ namespace Util
 		if (!SelectProps_.contains (prop))
 			return;
 
-		for (const auto& object : SelectProps_.values (prop))
+		for (const auto& object : SelectProps_.value (prop))
 		{
 			if (!object.first)
 				continue;
@@ -162,8 +162,7 @@ namespace Util
 
 		if (ApplyProps_.contains (name))
 		{
-			const auto& objects = ApplyProps_.values (name);
-			for (const auto& object : objects)
+			for (const auto& object : ApplyProps_.value (name))
 			{
 				if (!object.first)
 					continue;
@@ -209,17 +208,24 @@ namespace Util
 	void BaseSettingsManager::cleanupObjects ()
 	{
 		CleanupScheduled_= false;
-		auto cleanupMap = [] (Properties2Object_t& map) -> void
-		{
-			for (const auto& key : map.keys ())
-			{
-				decltype (map.values (key)) vals2remove;
-				for (const auto& val : map.values (key))
-					if (!val.first)
-						vals2remove << val;
 
-				for (const auto& val : vals2remove)
-					map.remove (key, val);
+		auto cleanupMap = [] (Properties2Object_t& map)
+		{
+			for (auto it = map.begin (); it != map.end (); )
+			{
+				auto& subscribers = it.value ();
+				for (auto lit = subscribers.begin (); lit != subscribers.end (); )
+				{
+					if (!lit->first)
+						lit = subscribers.erase (lit);
+					else
+						++lit;
+				}
+
+				if (subscribers.isEmpty ())
+					it = map.erase (it);
+				else
+					++it;
 			}
 		};
 
