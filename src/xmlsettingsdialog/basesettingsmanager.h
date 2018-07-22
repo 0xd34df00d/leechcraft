@@ -58,8 +58,8 @@ namespace Util
 	{
 		Q_OBJECT
 
-		typedef QPair<QPointer<QObject>, QByteArray> ObjectElement_t;
-		typedef QMultiMap<QByteArray, ObjectElement_t> Properties2Object_t;
+		using ObjectElement_t = QPair<QPointer<QObject>, QByteArray>;
+		using Properties2Object_t = QMultiMap<QByteArray, ObjectElement_t>;
 		Properties2Object_t ApplyProps_;
 		Properties2Object_t SelectProps_;
 
