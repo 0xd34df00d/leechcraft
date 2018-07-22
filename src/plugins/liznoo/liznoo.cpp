@@ -171,10 +171,7 @@ namespace Liznoo
 
 	QMap<QString, QList<QAction*>> Plugin::GetMenuActions () const
 	{
-		QMap<QString, QList<QAction*>> result;
-		result ["System"] << Suspend_;
-		result ["System"] << Hibernate_;
-		return result;
+		return { { "System", { Suspend_, Hibernate_ } } };
 	}
 
 	QuarkComponents_t Plugin::GetComponents () const
