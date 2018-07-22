@@ -30,6 +30,8 @@
 #pragma once
 
 #include <memory>
+#include <functional>
+#include <boost/variant.hpp>
 #include <QMap>
 #include <QPair>
 #include <QObject>
@@ -57,8 +59,11 @@ namespace Util
 	class XMLSETTINGSMANAGER_API BaseSettingsManager : public QObject
 	{
 		Q_OBJECT
-
-		using ObjectElement_t = QPair<QPointer<QObject>, QByteArray>;
+	public:
+		using VariantHandler_f = std::function<void (QVariant)>;
+	private:
+		using PropHandler_t = boost::variant<QByteArray, VariantHandler_f>;
+		using ObjectElement_t = QPair<QPointer<QObject>, PropHandler_t>;
 		using Properties2Object_t = QHash<QByteArray, QList<ObjectElement_t>>;
 		Properties2Object_t ApplyProps_;
 		Properties2Object_t SelectProps_;
@@ -112,6 +117,9 @@ namespace Util
 		 */
 		void RegisterObject (const QByteArray& propName,
 				QObject* object, const QByteArray& funcName, EventFlags flags = EventFlag::Apply);
+
+		void RegisterObject (const QByteArray& propName,
+				QObject* object, const VariantHandler_f&, EventFlags flags = EventFlag::Apply);
 
 		/** @brief Subscribes object to property changes.
 		 *

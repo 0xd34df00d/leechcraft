@@ -30,6 +30,7 @@
 #include "basesettingsmanager.h"
 #include <QtDebug>
 #include <QTimer>
+#include <util/sll/visitor.h>
 #include "settingsthreadmanager.h"
 
 namespace LeechCraft
@@ -71,6 +72,21 @@ namespace Util
 			ApplyProps_ [propName].append ({ object, funcName });
 		if (flags & EventFlag::Select)
 			SelectProps_ [propName].append ({ object, funcName });
+
+		connect (object,
+				SIGNAL (destroyed (QObject*)),
+				this,
+				SLOT (scheduleCleanup ()),
+				Qt::UniqueConnection);
+	}
+
+	void BaseSettingsManager::RegisterObject (const QByteArray& propName,
+			QObject *object, const VariantHandler_f& func, EventFlags flags)
+	{
+		if (flags & EventFlag::Apply)
+			ApplyProps_ [propName].append ({ object, func });
+		if (flags & EventFlag::Select)
+			SelectProps_ [propName].append ({ object, func });
 
 		connect (object,
 				SIGNAL (destroyed (QObject*)),
@@ -123,14 +139,19 @@ namespace Util
 			if (!object.first)
 				continue;
 
-			if (!QMetaObject::invokeMethod (object.first,
-						object.second,
-						Q_ARG (QVariant, val)))
-				qWarning () << Q_FUNC_INFO
-					<< "could not find method in the metaobject"
-					<< prop
-					<< object.first
-					<< object.second;
+			Visit (object.second,
+					[&val] (const VariantHandler_f& func) { func (val); },
+					[&] (const QByteArray& methodName)
+					{
+						if (!QMetaObject::invokeMethod (object.first,
+								methodName,
+								Q_ARG (QVariant, val)))
+							qWarning () << Q_FUNC_INFO
+									<< "could not find method in the metaobject"
+									<< prop
+									<< object.first
+									<< methodName;
+					});
 		}
 	}
 
@@ -167,12 +188,17 @@ namespace Util
 				if (!object.first)
 					continue;
 
-				if (!QMetaObject::invokeMethod (object.first, object.second))
-					qWarning () << Q_FUNC_INFO
-						<< "could not find method in the metaobject"
-						<< name
-						<< object.first
-						<< object.second;
+				Visit (object.second,
+						[&propValue] (const VariantHandler_f& func) { func (propValue); },
+						[&] (const QByteArray& methodName)
+						{
+							if (!QMetaObject::invokeMethod (object.first, methodName))
+								qWarning () << Q_FUNC_INFO
+										<< "could not find method in the metaobject"
+										<< name
+										<< object.first
+										<< methodName;
+						});
 			}
 		}
 
