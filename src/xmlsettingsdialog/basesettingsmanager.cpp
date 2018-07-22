@@ -131,9 +131,6 @@ namespace Util
 
 	void BaseSettingsManager::OptionSelected (const QByteArray& prop, const QVariant& val)
 	{
-		if (!SelectProps_.contains (prop))
-			return;
-
 		for (const auto& object : SelectProps_.value (prop))
 		{
 			if (!object.first)
@@ -181,25 +178,22 @@ namespace Util
 
 		PropertyChanged (propName, propValue);
 
-		if (ApplyProps_.contains (name))
+		for (const auto& object : ApplyProps_.value (name))
 		{
-			for (const auto& object : ApplyProps_.value (name))
-			{
-				if (!object.first)
-					continue;
+			if (!object.first)
+				continue;
 
-				Visit (object.second,
-						[&propValue] (const VariantHandler_f& func) { func (propValue); },
-						[&] (const QByteArray& methodName)
-						{
-							if (!QMetaObject::invokeMethod (object.first, methodName))
-								qWarning () << Q_FUNC_INFO
-										<< "could not find method in the metaobject"
-										<< name
-										<< object.first
-										<< methodName;
-						});
-			}
+			Visit (object.second,
+					[&propValue] (const VariantHandler_f& func) { func (propValue); },
+					[&] (const QByteArray& methodName)
+					{
+						if (!QMetaObject::invokeMethod (object.first, methodName))
+							qWarning () << Q_FUNC_INFO
+									<< "could not find method in the metaobject"
+									<< name
+									<< object.first
+									<< methodName;
+					});
 		}
 
 		event->accept ();
