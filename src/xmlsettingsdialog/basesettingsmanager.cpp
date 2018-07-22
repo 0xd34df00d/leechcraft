@@ -68,31 +68,13 @@ namespace Util
 	void BaseSettingsManager::RegisterObject (const QByteArray& propName,
 			QObject *object, const QByteArray& funcName, EventFlags flags)
 	{
-		if (flags & EventFlag::Apply)
-			ApplyProps_ [propName].append ({ object, funcName });
-		if (flags & EventFlag::Select)
-			SelectProps_ [propName].append ({ object, funcName });
-
-		connect (object,
-				SIGNAL (destroyed (QObject*)),
-				this,
-				SLOT (scheduleCleanup ()),
-				Qt::UniqueConnection);
+		RegisterObjectImpl (propName, object, funcName, flags);
 	}
 
 	void BaseSettingsManager::RegisterObject (const QByteArray& propName,
 			QObject *object, const VariantHandler_f& func, EventFlags flags)
 	{
-		if (flags & EventFlag::Apply)
-			ApplyProps_ [propName].append ({ object, func });
-		if (flags & EventFlag::Select)
-			SelectProps_ [propName].append ({ object, func });
-
-		connect (object,
-				SIGNAL (destroyed (QObject*)),
-				this,
-				SLOT (scheduleCleanup ()),
-				Qt::UniqueConnection);
+		RegisterObjectImpl (propName, object, func, flags);
 	}
 
 	void BaseSettingsManager::RegisterObject (const QList<QByteArray>& propNames,
@@ -212,6 +194,21 @@ namespace Util
 					EndSettings (settings);
 					delete settings;
 				});
+	}
+
+	void BaseSettingsManager::RegisterObjectImpl (const QByteArray& propName,
+			QObject *object, const PropHandler_t& handler, EventFlags flags)
+	{
+		if (flags & EventFlag::Apply)
+			ApplyProps_ [propName].append ({ object, handler });
+		if (flags & EventFlag::Select)
+			SelectProps_ [propName].append ({ object, handler });
+
+		connect (object,
+				SIGNAL (destroyed (QObject*)),
+				this,
+				SLOT (scheduleCleanup ()),
+				Qt::UniqueConnection);
 	}
 
 	void BaseSettingsManager::scheduleCleanup ()

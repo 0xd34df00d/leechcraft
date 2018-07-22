@@ -206,6 +206,8 @@ namespace Util
 		virtual void PropertyChanged (const QString&, const QVariant&);
 
 		virtual Settings_ptr GetSettings () const;
+	private:
+		void RegisterObjectImpl (const QByteArray&, QObject*, const PropHandler_t&, EventFlags);
 	private Q_SLOTS:
 		void scheduleCleanup ();
 		void cleanupObjects ();
