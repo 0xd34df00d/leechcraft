@@ -116,10 +116,10 @@ namespace Util
 		 * it should be a (public) slot.
 		 */
 		void RegisterObject (const QByteArray& propName,
-				QObject* object, const QByteArray& funcName, EventFlags flags = EventFlag::Apply);
+				QObject *object, const QByteArray& funcName, EventFlags flags = EventFlag::Apply);
 
 		void RegisterObject (const QByteArray& propName,
-				QObject* object, const VariantHandler_f&, EventFlags flags = EventFlag::Apply);
+				QObject *object, const VariantHandler_f&, EventFlags flags = EventFlag::Apply);
 
 		/** @brief Subscribes object to property changes.
 		 *
@@ -134,7 +134,7 @@ namespace Util
 		 * it should be a (public) slot.
 		 */
 		void RegisterObject (const QList<QByteArray>& propNames,
-				QObject* object, const QByteArray& funcName, EventFlags flags = EventFlag::Apply);
+				QObject *object, const QByteArray& funcName, EventFlags flags = EventFlag::Apply);
 
 		/** @brief Gets a property with default value.
 		 *
