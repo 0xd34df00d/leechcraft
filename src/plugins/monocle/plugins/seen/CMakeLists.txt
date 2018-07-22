@@ -6,11 +6,13 @@ set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 find_package (DjVuLibre REQUIRED)
 
+include_directories (SYSTEM
+	${Boost_INCLUDE_DIR}
+	${DJVULIBRE_INCLUDE_DIR}
+)
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
-	${Boost_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
-	${DJVULIBRE_INCLUDE_DIR}
 	)
 set (SRCS
 	seen.cpp
