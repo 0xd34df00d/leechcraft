@@ -40,6 +40,7 @@ namespace Util
 {
 	class UTIL_XPC_API ScreensaverProhibitor final
 	{
+		bool Enabled_ = true;
 		bool Prohibited_ = false;
 
 		IEntityManager * const IEM_;
@@ -49,6 +50,9 @@ namespace Util
 		~ScreensaverProhibitor ();
 
 		void SetProhibited (bool);
+		void SetProhibitionsEnabled (bool);
+	private:
+		void SendEntity (bool);
 	};
 }
 }

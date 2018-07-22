@@ -53,9 +53,26 @@ namespace Util
 
 		Prohibited_ = prohibited;
 
+		if (Enabled_)
+			SendEntity (Prohibited_);
+	}
+
+	void ScreensaverProhibitor::SetProhibitionsEnabled (bool enabled)
+	{
+		if (Enabled_ == enabled)
+			return;
+
+		Enabled_ = enabled;
+
+		if (Prohibited_)
+			SendEntity (Enabled_);
+	}
+
+	void ScreensaverProhibitor::SendEntity (bool prohibit)
+	{
 		auto e = MakeEntity ("ScreensaverProhibition", {}, {}, "x-leechcraft/power-management");
 		e.Additional_ = {
-				{ "Enable", Prohibited_ },
+				{ "Enable", prohibit },
 				{ "ContextID", ContextID_ }
 			};
 		IEM_->HandleEntity (e);
