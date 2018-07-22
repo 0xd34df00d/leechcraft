@@ -49,6 +49,11 @@ namespace Util
 		ScreensaverProhibitor (IEntityManager*);
 		~ScreensaverProhibitor ();
 
+		ScreensaverProhibitor (const ScreensaverProhibitor&) = delete;
+		ScreensaverProhibitor (ScreensaverProhibitor&&) = delete;
+		ScreensaverProhibitor& operator= (const ScreensaverProhibitor&) = delete;
+		ScreensaverProhibitor& operator= (ScreensaverProhibitor&&) = delete;
+
 		void SetProhibited (bool);
 		void SetProhibitionsEnabled (bool);
 	private:
