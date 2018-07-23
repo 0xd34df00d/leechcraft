@@ -28,16 +28,6 @@
  **********************************************************************/
 
 #include "settingsthread.h"
-
-#ifndef Q_OS_WIN32
-#include <stdio.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <sys/file.h>
-#include <fcntl.h>
-#include <unistd.h>
-#endif
-
 #include <QMutexLocker>
 #include <QFile>
 #include <QTimer>
@@ -64,90 +54,6 @@ namespace LeechCraft
 		if (Pendings_.isEmpty ())
 			QTimer::singleShot (0, this, SLOT (saveScheduled ()));
 		Pendings_ [bsm].push_back ({ name, value });
-	}
-
-	namespace
-	{
-		class FlushRAII
-		{
-			Util::DefaultScopeGuard SyncGuard_;
-		public:
-			FlushRAII (const QString& name)
-			{
-#ifndef Q_OS_WIN32
-				const Util::FDGuard fd { name.toUtf8 ().constData (), O_WRONLY | O_APPEND };
-
-				struct flock fl;
-				fl.l_whence = SEEK_SET;
-				fl.l_start = 0;
-				fl.l_len = 0;
-				fl.l_type = F_WRLCK;
-				if (fcntl (fd, F_SETLKW, &fl))
-					throw std::runtime_error
-					{
-						QString { "cannot lock the settings file %1: %2 (%3)" }
-								.arg (name)
-								.arg (strerror (errno))
-								.arg (errno)
-								.toStdString ()
-					};
-
-				const auto& backup = name + ".bak";
-#if 0
-				if (rename (name.toUtf8 ().constData (), backup.toUtf8 ().constData ()))
-					throw std::runtime_error
-					{
-						QString { "cannot rename %1 to %2: %3 (%4)" }
-								.arg (name)
-								.arg (backup)
-								.arg (strerror (errno))
-								.arg (errno)
-								.toStdString ()
-					};
-#else
-				QFile nameFile { name };
-				if (!nameFile.copy (backup))
-					throw std::runtime_error
-					{
-						QString { "cannot copy %1 to %2: %3 (%4)" }
-								.arg (name)
-								.arg (backup)
-								.arg (nameFile.errorString ())
-								.arg (nameFile.error ())
-								.toStdString ()
-					};
-#endif
-
-				SyncGuard_ = Util::MakeScopeGuard ([name, backup]
-						{
-							const Util::FDGuard fd { name.toUtf8 ().constData (), O_WRONLY | O_APPEND };
-							if (!fd)
-							{
-								qWarning () << Q_FUNC_INFO
-										<< "cannot open(2) settings file"
-										<< name
-										<< "; error:"
-										<< strerror (errno);
-								return;
-							}
-
-							if (fsync (fd))
-							{
-								qWarning () << Q_FUNC_INFO
-										<< "cannot fsync(2) backup file"
-										<< name
-										<< "; error:"
-										<< strerror (errno);
-								return;
-							}
-
-							if (!QFile::remove (backup))
-								qWarning () << Q_FUNC_INFO
-										<< "oops! cannot remove backup";
-						});
-#endif
-			}
-		};
 	}
 
 	void SettingsThread::saveScheduled ()
