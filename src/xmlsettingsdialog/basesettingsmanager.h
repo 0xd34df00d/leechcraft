@@ -120,7 +120,8 @@ namespace Util
 				QObject *object, const QByteArray& funcName, EventFlags flags = EventFlag::Apply);
 
 		void RegisterObject (const QByteArray& propName,
-				QObject *object, const VariantHandler_f&, EventFlags flags = EventFlag::Apply);
+				QObject *object, const VariantHandler_f&,
+				EventFlags flags = EventFlags { EventFlag::Apply } | EventFlag::ImmediateUpdate);
 
 		/** @brief Subscribes object to property changes.
 		 *
