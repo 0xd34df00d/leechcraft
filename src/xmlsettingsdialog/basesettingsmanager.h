@@ -97,8 +97,9 @@ namespace Util
 
 		enum EventFlag
 		{
-			Apply = 0x01,
-			Select = 0x02
+			Apply 				= 0b001,
+			Select 				= 0b010,
+			ImmediateUpdate		= 0b100
 		};
 		Q_DECLARE_FLAGS (EventFlags, EventFlag)
 

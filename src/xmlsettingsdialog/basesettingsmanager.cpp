@@ -204,6 +204,22 @@ namespace Util
 		if (flags & EventFlag::Select)
 			SelectProps_ [propName].append ({ object, handler });
 
+		if (flags & EventFlag::ImmediateUpdate)
+		{
+			const auto& propValue = property (propName);
+			Visit (handler,
+					[&propValue] (const VariantHandler_f& func) { func (propValue); },
+					[&] (const QByteArray& methodName)
+					{
+						if (!QMetaObject::invokeMethod (object, methodName))
+							qWarning () << Q_FUNC_INFO
+								<< "could not find method in the metaobject"
+								<< propName
+								<< object
+								<< methodName;
+					});
+		}
+
 		connect (object,
 				SIGNAL (destroyed (QObject*)),
 				this,
