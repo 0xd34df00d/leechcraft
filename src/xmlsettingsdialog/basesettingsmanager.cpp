@@ -171,14 +171,13 @@ namespace Util
 		auto event = static_cast<QDynamicPropertyChangeEvent*> (e);
 
 		const QByteArray& name = event->propertyName ();
-		const auto& propName = QString::fromUtf8 (name);
+		const auto& nameStr = QString::fromUtf8 (name);
 		const auto& propValue = property (name);
 
 		if (!IsInitializing_)
-			SettingsThreadManager::Instance ().Add (this,
-					propName, propValue);
+			SettingsThreadManager::Instance ().Add (this, nameStr, propValue);
 
-		PropertyChanged (propName, propValue);
+		PropertyChanged (nameStr, propValue);
 
 		for (const auto& object : ApplyProps_.value (name))
 		{
