@@ -143,6 +143,26 @@ namespace Util
 		return std::shared_ptr<void> (nullptr, [this] (void*) { IsInitializing_ = false; });
 	}
 
+	namespace
+	{
+		template<typename H>
+		void PerformApply (const QByteArray& propName,
+				const QVariant& propValue, QObject *propContext, const H& handler)
+		{
+			Visit (handler,
+					[&propValue] (const BaseSettingsManager::VariantHandler_f& func) { func (propValue); },
+					[&] (const QByteArray& methodName)
+					{
+						if (!QMetaObject::invokeMethod (propContext, methodName))
+							qWarning () << Q_FUNC_INFO
+								<< "could not find method in the metaobject"
+								<< propName
+								<< propContext
+								<< methodName;
+					});
+		}
+	}
+
 	bool BaseSettingsManager::event (QEvent *e)
 	{
 		if (e->type () != QEvent::DynamicPropertyChange)
@@ -165,17 +185,7 @@ namespace Util
 			if (!object.first)
 				continue;
 
-			Visit (object.second,
-					[&propValue] (const VariantHandler_f& func) { func (propValue); },
-					[&] (const QByteArray& methodName)
-					{
-						if (!QMetaObject::invokeMethod (object.first, methodName))
-							qWarning () << Q_FUNC_INFO
-									<< "could not find method in the metaobject"
-									<< name
-									<< object.first
-									<< methodName;
-					});
+			PerformApply (name, propValue, object.first, object.second);
 		}
 
 		event->accept ();
@@ -205,20 +215,7 @@ namespace Util
 			SelectProps_ [propName].append ({ object, handler });
 
 		if (flags & EventFlag::ImmediateUpdate)
-		{
-			const auto& propValue = property (propName);
-			Visit (handler,
-					[&propValue] (const VariantHandler_f& func) { func (propValue); },
-					[&] (const QByteArray& methodName)
-					{
-						if (!QMetaObject::invokeMethod (object, methodName))
-							qWarning () << Q_FUNC_INFO
-								<< "could not find method in the metaobject"
-								<< propName
-								<< object
-								<< methodName;
-					});
-		}
+			PerformApply (propName, property (propName), object, handler);
 
 		connect (object,
 				SIGNAL (destroyed (QObject*)),
