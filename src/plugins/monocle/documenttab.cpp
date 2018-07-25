@@ -96,6 +96,7 @@
 #include "documentbookmarksmanager.h"
 #include "pagenumlabel.h"
 #include "smoothscroller.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -155,6 +156,9 @@ namespace Monocle
 				&TextSearchHandler::navigateRequested,
 				this,
 				&DocumentTab::NavigateWithinDocument);
+
+		XmlSettingsManager::Instance ().RegisterObject ("InhibitScreensaver", this,
+				[this] (const QVariant& val) { ScreensaverProhibitor_.SetProhibitionsEnabled (val.toBool ()); });
 
 		FormManager_ = new FormManager (Ui_.PagesView_, this);
 		AnnManager_ = new AnnManager (Scroller_, this);

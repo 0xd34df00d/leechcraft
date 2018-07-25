@@ -9,6 +9,12 @@
 			</item>
 		</tab>
 		<tab>
+			<label value="Behaviour" />
+			<item type="checkbox" property="InhibitScreensaver" default="true">
+				<label value="Inhibit screensaver while a Monocle tab is active" />
+			</item>
+		</tab>
+		<tab>
 			<label value="Performance" />
 			<item type="spinbox" property="PixmapCacheSize" default="128" minimum="0" maximum="1024">
 				<label value="Pixmap cache size:" />
