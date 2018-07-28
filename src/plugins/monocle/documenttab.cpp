@@ -102,7 +102,7 @@ namespace LeechCraft
 {
 namespace Monocle
 {
-	class FindDialog : public Util::FindNotification
+	class FindDialog final : public Util::FindNotification
 	{
 		TextSearchHandler * const SearchHandler_;
 	public:
