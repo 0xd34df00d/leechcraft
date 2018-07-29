@@ -266,10 +266,6 @@ namespace LackMan
 				PackagesToInstall_ << fg [vertex].PackageId_;
 	}
 
-	DepTreeBuilder::~DepTreeBuilder ()
-	{
-	}
-
 	bool DepTreeBuilder::IsFulfilled () const
 	{
 		return Graph_ [*boost::vertices (Graph_).first].IsFulfilled_;

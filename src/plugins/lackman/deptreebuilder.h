@@ -147,7 +147,6 @@ namespace LackMan
 		QList<int> PackagesToInstall_;
 	public:
 		DepTreeBuilder (int);
-		virtual ~DepTreeBuilder ();
 
 		/** Whether it is possible to install the package for
 			* which this graph is being built.
