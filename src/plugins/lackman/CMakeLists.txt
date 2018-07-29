@@ -4,9 +4,11 @@ include (InitLCPlugin NO_POLICY_SCOPE)
 
 option (TESTS_LACKMAN "Enable LackMan tests" OFF)
 
+include_directories (SYSTEM
+	${Boost_INCLUDE_DIR}
+)
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
-	${Boost_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
 set (SRCS
