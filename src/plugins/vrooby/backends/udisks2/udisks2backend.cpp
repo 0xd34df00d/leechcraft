@@ -380,14 +380,16 @@ namespace UDisks2
 	{
 		QString GetErrorText (const QString& errorCode)
 		{
-			QMap<QString, QString> texts;
-			texts ["org.freedesktop.UDisks.Error.PermissionDenied"] = Backend::tr ("permission denied");
-			texts ["org.freedesktop.PolicyKit.Error.NotAuthorized"] = Backend::tr ("not authorized");
-			texts ["org.freedesktop.PolicyKit.Error.Busy"] = Backend::tr ("the device is busy");
-			texts ["org.freedesktop.PolicyKit.Error.Failed"] = Backend::tr ("the operation has failed");
-			texts ["org.freedesktop.PolicyKit.Error.Cancelled"] = Backend::tr ("the operation has been cancelled");
-			texts ["org.freedesktop.PolicyKit.Error.InvalidOption"] = Backend::tr ("invalid mount options were given");
-			texts ["org.freedesktop.PolicyKit.Error.FilesystemDriverMissing"] = Backend::tr ("unsupported filesystem");
+			static const QMap<QString, QString> texts
+			{
+				{ "org.freedesktop.UDisks.Error.PermissionDenied", Backend::tr ("permission denied") },
+				{ "org.freedesktop.PolicyKit.Error.NotAuthorized", Backend::tr ("not authorized") },
+				{ "org.freedesktop.PolicyKit.Error.Busy", Backend::tr ("the device is busy") },
+				{ "org.freedesktop.PolicyKit.Error.Failed", Backend::tr ("the operation has failed") },
+				{ "org.freedesktop.PolicyKit.Error.Cancelled", Backend::tr ("the operation has been cancelled") },
+				{ "org.freedesktop.PolicyKit.Error.InvalidOption", Backend::tr ("invalid mount options were given") },
+				{ "org.freedesktop.PolicyKit.Error.FilesystemDriverMissing", Backend::tr ("unsupported filesystem") }
+			};
 			return texts.value (errorCode, Backend::tr ("unknown error"));
 		}
 	}
