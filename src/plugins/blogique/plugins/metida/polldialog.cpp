@@ -31,7 +31,6 @@
 #include <QMessageBox>
 #include <QStandardItemModel>
 #include <QtDebug>
-#include <boost/graph/graph_concepts.hpp>
 
 namespace LeechCraft
 {
