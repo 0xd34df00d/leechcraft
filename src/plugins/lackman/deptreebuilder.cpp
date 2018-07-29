@@ -48,11 +48,6 @@ namespace LeechCraft
 {
 namespace LackMan
 {
-	DepTreeBuilder::VertexInfo::VertexInfo (DepTreeBuilder::VertexInfo::Type type)
-	: Type_ (type)
-	{
-	}
-
 	DepTreeBuilder::VertexInfo::VertexInfo (int packageId)
 	: PackageId_ (packageId)
 	, Type_ (TAll)

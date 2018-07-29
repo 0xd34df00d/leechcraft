@@ -87,13 +87,6 @@ namespace LackMan
 				*/
 			VertexInfo () = default;
 
-			/** Constructs a not identified vertex with the
-				* given type.
-				*
-				* @param[in] type The type of this vertex.
-				*/
-			VertexInfo (Type type);
-
 			/** @brief Constructs vertex with type TAll and
 				* given packageId used to identify this vertex.
 				*
