@@ -44,7 +44,7 @@ namespace LackMan
 	struct FulfillableChecker;
 	struct VertexPredicate;
 
-	class DepTreeBuilder
+	class DepTreeBuilder final
 	{
 		struct VertexInfo
 		{
