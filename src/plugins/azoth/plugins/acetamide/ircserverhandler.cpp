@@ -28,7 +28,6 @@
  **********************************************************************/
 
 #include "ircserverhandler.h"
-#include <boost/bind.hpp>
 #include <QTextCodec>
 #include <QTimer>
 #include <QMessageBox>

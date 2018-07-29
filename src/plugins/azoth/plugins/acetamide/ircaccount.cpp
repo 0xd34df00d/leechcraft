@@ -28,7 +28,6 @@
 **********************************************************************/
 
 #include "ircaccount.h"
-#include <boost/bind.hpp>
 #include <QInputDialog>
 #include <QSettings>
 #include <QTimer>

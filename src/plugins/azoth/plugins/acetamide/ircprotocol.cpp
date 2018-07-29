@@ -28,7 +28,6 @@
  **********************************************************************/
 
 #include "ircprotocol.h"
-#include <boost/bind.hpp>
 #include <boost/spirit/include/classic_core.hpp>
 #include <boost/spirit/include/classic_loops.hpp>
 #include <boost/spirit/include/classic_push_back_actor.hpp>
