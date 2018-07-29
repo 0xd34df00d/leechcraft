@@ -34,7 +34,6 @@
 #include <boost/serialization/vector.hpp>
 #include <boost/serialization/string.hpp>
 #include <boost/serialization/variant.hpp>
-#include <boost/lexical_cast.hpp>
 #include <QTimer>
 #include <QTcpSocket>
 #include <QSettings>
@@ -259,7 +258,7 @@ namespace Syncer
 		{
 			const auto reasonPos = reply.fields.find ("ErrorCode");
 			const auto reason = reasonPos != reply.fields.end () ?
-					boost::lexical_cast<int> (reasonPos->second) :
+					std::stoi (reasonPos->second) :
 					-1;
 
 			auto defErr = [this, reason]
