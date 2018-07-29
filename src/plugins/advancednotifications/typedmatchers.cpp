@@ -28,12 +28,11 @@
  **********************************************************************/
 
 #include "typedmatchers.h"
-#include <boost/variant/static_visitor.hpp>
-#include <boost/variant/apply_visitor.hpp>
 #include <QStringList>
 #include <QWidget>
 #include <QtDebug>
 #include <QUrl>
+#include <util/sll/visitor.h>
 #include "ui_boolmatcherconfigwidget.h"
 #include "ui_intmatcherconfigwidget.h"
 #include "ui_stringlikematcherconfigwidget.h"
@@ -100,30 +99,17 @@ namespace AdvancedNotifications
 	namespace
 	{
 		template<typename T>
-		struct ValueSetVisitor : public boost::static_visitor<void>
+		void SetValueFromVariant (T& value, const ANFieldValue& variant)
 		{
-			T& Value_;
-
-			ValueSetVisitor (T& val)
-			: Value_ (val)
-			{
-			}
-
-			void operator() (const T& val) const
-			{
-				Value_ = val;
-			}
-
-			template<typename U>
-			void operator() (const U&) const
-			{
-			}
-		};
+			Util::Visit (variant,
+					[&value] (const T& val) { value = val; },
+					[] (const auto&) {});
+		}
 	}
 
-	void StringLikeMatcher::SetValue (const ANFieldValue& value)
+	void StringLikeMatcher::SetValue (const ANFieldValue& variant)
 	{
-		boost::apply_visitor (ValueSetVisitor<ANStringFieldValue> { Value_ }, value);
+		SetValueFromVariant (Value_, variant);
 	}
 
 	void StringLikeMatcher::SetValue (const QVariant& variant)
@@ -328,9 +314,9 @@ namespace AdvancedNotifications
 		Value_.IsSet_ = map.value ("IsSet").toBool ();
 	}
 
-	void BoolMatcher::SetValue (const ANFieldValue& value)
+	void BoolMatcher::SetValue (const ANFieldValue& variant)
 	{
-		boost::apply_visitor (ValueSetVisitor<ANBoolFieldValue> { Value_ }, value);
+		SetValueFromVariant (Value_, variant);
 	}
 
 	void BoolMatcher::SetValue (const QVariant& variant)
@@ -417,9 +403,9 @@ namespace AdvancedNotifications
 		Value_.Ops_ = static_cast<ANIntFieldValue::Operations> (map ["Ops"].value<quint16> ());
 	}
 
-	void IntMatcher::SetValue (const ANFieldValue& value)
+	void IntMatcher::SetValue (const ANFieldValue& variant)
 	{
-		boost::apply_visitor (ValueSetVisitor<ANIntFieldValue> { Value_ }, value);
+		SetValueFromVariant (Value_, variant);
 	}
 
 	void IntMatcher::SetValue (const QVariant& variant)
