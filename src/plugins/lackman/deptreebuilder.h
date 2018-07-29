@@ -52,14 +52,14 @@ namespace LackMan
 				* packages, not any-typed dependencies, like
 				* interfaces.
 				*/
-			int PackageId_;
+			int PackageId_ = -1;
 
 			/** Makes sense only for vertices representing any-
 				* typed dependencies, like interfaces.
 				*/
 			QString Dependency_;
 
-			bool IsFulfilled_;
+			bool IsFulfilled_ = false;
 
 			/** Wheter this graph vertex is considered to be
 				* "fulfilled" when any of its dependencies is
@@ -81,11 +81,11 @@ namespace LackMan
 			{
 				TAny,//!< TAny It's enough for any child vertex to be fulfilled.
 				TAll //!< TAll All child vertices should be fulfilled.
-			} Type_;
+			} Type_ = TAny;
 
 			/** Constructs an empty VertexInfo of type TAny.
 				*/
-			VertexInfo ();
+			VertexInfo () = default;
 
 			/** Constructs a not identified vertex with the
 				* given type.
