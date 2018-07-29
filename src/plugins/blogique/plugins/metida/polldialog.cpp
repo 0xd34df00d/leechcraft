@@ -48,7 +48,6 @@ namespace Metida
 	, RadioModel_ (new QStandardItemModel (this))
 	, DropModel_ (new QStandardItemModel (this))
 	, PollTypeModel_ (new QStandardItemModel (this))
-	, ItemIsChanged_ (false)
 	{
 		Ui_.setupUi (this);
 
@@ -351,23 +350,23 @@ namespace Metida
 	{
 		switch (Ui_.PollType_->currentIndex ())
 		{
-			case CheckBoxes:
-				Type2Question_ ["check"] = text;
-				break;
-			case RadioButtons:
-				Type2Question_ ["radio"] = text;
-				break;
-			case DropdownBox:
-				Type2Question_ ["drop"] = text;
-				break;
-			case TextEntry:
-				Type2Question_ ["text"] = text;
-				break;
-			case Scale:
-				Type2Question_ ["scale"] = text;
-				break;
-			default:
-				break;
+		case CheckBoxes:
+			Type2Question_ ["check"] = text;
+			break;
+		case RadioButtons:
+			Type2Question_ ["radio"] = text;
+			break;
+		case DropdownBox:
+			Type2Question_ ["drop"] = text;
+			break;
+		case TextEntry:
+			Type2Question_ ["text"] = text;
+			break;
+		case Scale:
+			Type2Question_ ["scale"] = text;
+			break;
+		default:
+			break;
 		}
 	}
 }

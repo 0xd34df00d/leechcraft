@@ -51,7 +51,7 @@ namespace Metida
 		QStandardItemModel *RadioModel_;
 		QStandardItemModel *DropModel_;
 		QStandardItemModel *PollTypeModel_;
-		bool ItemIsChanged_;
+		bool ItemIsChanged_ = false;
 		QHash<QString, QString> Type2Question_;
 
 		enum PollCanView
