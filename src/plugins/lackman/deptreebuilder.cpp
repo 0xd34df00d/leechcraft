@@ -29,17 +29,7 @@
 
 #include "deptreebuilder.h"
 #include <boost/graph/visitors.hpp>
-
-#ifdef __clang__
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wunused-variable"
-#pragma clang diagnostic ignored "-Wunneeded-internal-declaration"
-#endif
 #include <boost/graph/depth_first_search.hpp>
-#ifdef __clang__
-#pragma clang diagnostic pop
-#endif
-
 #include <boost/graph/filtered_graph.hpp>
 #include <boost/graph/topological_sort.hpp>
 #include "core.h"
