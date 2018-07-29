@@ -146,14 +146,10 @@ namespace LackMan
 
 	struct VertexPredicate
 	{
-		DepTreeBuilder::Graph_t *G_;
-		DepTreeBuilder::Edge2Vertices_t *E2V_;
+		DepTreeBuilder::Graph_t *G_ = nullptr;
+		DepTreeBuilder::Edge2Vertices_t *E2V_ = nullptr;
 
-		VertexPredicate ()
-		: G_ (0)
-		, E2V_ (0)
-		{
-		}
+		VertexPredicate () = default;
 
 		VertexPredicate (DepTreeBuilder::Edge2Vertices_t& e2v,
 				DepTreeBuilder::Graph_t& g)
