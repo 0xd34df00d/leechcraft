@@ -29,8 +29,7 @@
 
 #include "udisksbackend.h"
 #include <memory>
-#include <boost/filesystem/path.hpp>
-#include <boost/filesystem/operations.hpp>
+#include <QStorageInfo>
 #include <QStandardItemModel>
 #include <QDBusConnection>
 #include <QDBusConnectionInterface>
@@ -254,10 +253,7 @@ namespace UDisks
 
 		const auto& mountPaths = iface->property ("DeviceMountPaths").toStringList ();
 		if (!mountPaths.isEmpty ())
-		{
-			const auto& space = boost::filesystem::space (mountPaths.value (0).toStdWString ()).free;
-			item->setData (static_cast<qint64> (space), MassStorageRole::AvailableSize);
-		}
+			item->setData (QStorageInfo { mountPaths.value (0) }.bytesAvailable (), MassStorageRole::AvailableSize);
 		else
 			item->setData (-1, MassStorageRole::AvailableSize);
 
@@ -414,10 +410,9 @@ namespace UDisks
 			if (mountPaths.isEmpty ())
 				continue;
 
-			const auto& space = boost::filesystem::space (mountPaths.value (0).toStdWString ());
-			const auto free = static_cast<qint64> (space.free);
+			const auto free = QStorageInfo { mountPaths.value (0) }.bytesAvailable ();
 			if (free != item->data (MassStorageRole::AvailableSize).value<qint64> ())
-				item->setData (static_cast<qint64> (free), MassStorageRole::AvailableSize);
+				item->setData (free, MassStorageRole::AvailableSize);
 		}
 	}
 }

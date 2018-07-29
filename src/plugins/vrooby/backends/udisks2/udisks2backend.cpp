@@ -29,13 +29,12 @@
 
 #include "udisks2backend.h"
 #include <memory>
-#include <boost/filesystem/path.hpp>
-#include <boost/filesystem/operations.hpp>
 #include <QStandardItemModel>
 #include <QDBusConnection>
 #include <QDBusConnectionInterface>
 #include <QDBusInterface>
 #include <QDBusMetaType>
+#include <QStorageInfo>
 #include <QTimer>
 #include <QtDebug>
 #include <QMetaMethod>
@@ -327,21 +326,7 @@ namespace UDisks2
 				mountPaths << QString::fromUtf8 (point);
 
 		if (!mountPaths.isEmpty ())
-		{
-			qint64 space = -1;
-			try
-			{
-				const auto& wstrMount = mountPaths.value (0).toStdWString ();
-				space = static_cast<qint64> (boost::filesystem::space (wstrMount).free);
-			}
-			catch (const std::exception& e)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "error obtaining free space info:"
-						<< QString::fromUtf8 (e.what ());
-			}
-			item->setData (static_cast<qint64> (space), MassStorageRole::AvailableSize);
-		}
+			item->setData (QStorageInfo { mountPaths.value (0) }.bytesAvailable (), MassStorageRole::AvailableSize);
 		else
 			item->setData (-1, MassStorageRole::AvailableSize);
 
@@ -515,10 +500,9 @@ namespace UDisks2
 			if (mountPaths.isEmpty ())
 				continue;
 
-			const auto& space = boost::filesystem::space (mountPaths.value (0).toStdWString ());
-			const auto free = static_cast<qint64> (space.free);
+			const auto free = QStorageInfo { mountPaths.value (0) }.bytesAvailable ();
 			if (free != item->data (MassStorageRole::AvailableSize).value<qint64> ())
-				item->setData (static_cast<qint64> (free), MassStorageRole::AvailableSize);
+				item->setData (free, MassStorageRole::AvailableSize);
 		}
 	}
 }
