@@ -110,42 +110,42 @@ namespace UDisks2
 	{
 		QDBusInterface_ptr GetBlockInterface (const QString& path)
 		{
-			return QDBusInterface_ptr (new QDBusInterface ("org.freedesktop.UDisks2",
-						path,
-						"org.freedesktop.UDisks2.Block",
-						QDBusConnection::systemBus ()));
+			return std::make_shared<QDBusInterface> ("org.freedesktop.UDisks2",
+					path,
+					"org.freedesktop.UDisks2.Block",
+					QDBusConnection::systemBus ());
 		}
 
 		QDBusInterface_ptr GetPartitionInterface (const QString& path)
 		{
-			return QDBusInterface_ptr (new QDBusInterface ("org.freedesktop.UDisks2",
-						path,
-						"org.freedesktop.UDisks2.Partition",
-						QDBusConnection::systemBus ()));
+			return std::make_shared<QDBusInterface> ("org.freedesktop.UDisks2",
+					path,
+					"org.freedesktop.UDisks2.Partition",
+					QDBusConnection::systemBus ());
 		}
 
 		QDBusInterface_ptr GetFSInterface (const QString& path)
 		{
-			return QDBusInterface_ptr (new QDBusInterface ("org.freedesktop.UDisks2",
-						path,
-						"org.freedesktop.UDisks2.Filesystem",
-						QDBusConnection::systemBus ()));
+			return std::make_shared<QDBusInterface> ("org.freedesktop.UDisks2",
+					path,
+					"org.freedesktop.UDisks2.Filesystem",
+					QDBusConnection::systemBus ());
 		}
 
 		QDBusInterface_ptr GetDevInterface (const QString& path)
 		{
-			return QDBusInterface_ptr (new QDBusInterface ("org.freedesktop.UDisks2",
-						path,
-						"org.freedesktop.UDisks2.Drive",
-						QDBusConnection::systemBus ()));
+			return std::make_shared<QDBusInterface> ("org.freedesktop.UDisks2",
+					path,
+					"org.freedesktop.UDisks2.Drive",
+					QDBusConnection::systemBus ());
 		}
 
 		QDBusInterface_ptr GetPropsInterface (const QString& path)
 		{
-			return QDBusInterface_ptr (new QDBusInterface ("org.freedesktop.UDisks2",
-						path,
-						"org.freedesktop.DBus.Properties",
-						QDBusConnection::systemBus ()));
+			return std::make_shared<QDBusInterface> ("org.freedesktop.UDisks2",
+					path,
+					"org.freedesktop.DBus.Properties",
+					QDBusConnection::systemBus ());
 		}
 	}
 
