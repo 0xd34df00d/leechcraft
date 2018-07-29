@@ -28,8 +28,6 @@
  **********************************************************************/
 
 #include "audiosearch.h"
-#include <boost/property_tree/ptree.hpp>
-#include <boost/property_tree/json_parser.hpp>
 #include <QUrl>
 #include <QNetworkRequest>
 #include <QNetworkReply>
@@ -37,6 +35,7 @@
 #include <util/sll/queuemanager.h>
 #include <util/sll/urloperator.h>
 #include <util/sll/visitor.h>
+#include <util/sll/parsejson.h>
 #include <util/threads/futures.h>
 #include <util/network/handlenetworkreply.h>
 #include <util/svcauth/vkauthmanager.h>
@@ -98,43 +97,29 @@ namespace TouchStreams
 
 	void AudioSearch::HandleGotReply (const QByteArray& data)
 	{
-		std::istringstream istr (data.constData ());
-		boost::property_tree::ptree pt;
-		boost::property_tree::read_json (istr, pt);
-
 		Media::IAudioPile::Results_t results;
 
-		for (const auto& v : pt.get_child ("response"))
+		for (const auto& mapVar : Util::ParseJson (data, Q_FUNC_INFO).toMap () ["response"].toList ())
 		{
-			const auto& sub = v.second;
-			if (sub.empty ())
+			const auto& map = mapVar.toMap ();
+			if (map.isEmpty ())
 				continue;
 
 			Media::IAudioPile::Result result;
-			try
-			{
-				result.Info_.Length_ = sub.get<qint32> ("duration");
+			result.Info_.Length_ = map ["duration"].value<qint32> ();
 
-				if (Query_.TrackLength_ > 0 && result.Info_.Length_ != Query_.TrackLength_)
-				{
-					qDebug () << Q_FUNC_INFO
-							<< "skipping track due to track length mismatch"
-							<< result.Info_.Length_
-							<< Query_.TrackLength_;
-					continue;
-				}
-
-				result.Info_.Artist_ = QString::fromUtf8 (sub.get<std::string> ("artist").c_str ());
-				result.Info_.Title_ = QString::fromUtf8 (sub.get<std::string> ("title").c_str ());
-				result.Source_ = QUrl::fromEncoded (sub.get<std::string> ("url").c_str ());
-			}
-			catch (const std::exception& e)
+			if (Query_.TrackLength_ > 0 && result.Info_.Length_ != Query_.TrackLength_)
 			{
-				qWarning () << Q_FUNC_INFO
-						<< "unable to get props"
-						<< e.what ();
+				qDebug () << Q_FUNC_INFO
+						<< "skipping track due to track length mismatch"
+						<< result.Info_.Length_
+						<< Query_.TrackLength_;
 				continue;
 			}
+
+			result.Info_.Artist_ = map ["artist"].toString ();
+			result.Info_.Title_ = map ["title"].toString ();
+			result.Source_ = map ["url"].toString ();
 			results << result;
 		}
 
