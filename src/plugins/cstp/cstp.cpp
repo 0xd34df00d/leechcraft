@@ -29,7 +29,6 @@
 
 #include "cstp.h"
 #include <algorithm>
-#include <boost/logic/tribool.hpp>
 #include <QMenu>
 #include <QTranslator>
 #include <QLocale>
