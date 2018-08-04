@@ -46,7 +46,7 @@ namespace Xoox
 	{
 		QWidget *Widget_;
 
-		typedef boost::function<void (QWidget*, const QXmppElement&)> ElementActor_t;
+		using ElementActor_t = std::function<void (QWidget*, const QXmppElement&)>;
 		QHash<QString, ElementActor_t> Tag2Actor_;
 	public:
 		LegacyFormBuilder ();
