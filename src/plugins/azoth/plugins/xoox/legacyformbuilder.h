@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_LEGACYFORMBUILDER_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_LEGACYFORMBUILDER_H
+#pragma once
+
 #include <boost/function.hpp>
 #include <QObject>
 #include <QHash>
@@ -62,5 +62,3 @@ namespace Xoox
 }
 }
 }
-
-#endif
