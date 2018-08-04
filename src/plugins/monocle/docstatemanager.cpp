@@ -28,9 +28,10 @@
  **********************************************************************/
 
 #include "docstatemanager.h"
-#include <boost/version.hpp>
-#include <boost/property_tree/ptree.hpp>
-#include <boost/property_tree/json_parser.hpp>
+#include <util/sll/serializejson.h>
+#include <util/sll/parsejson.h>
+#include <util/sll/either.h>
+#include <util/sll/typegetter.h>
 #include <util/util.h>
 #include <util/sys/paths.h>
 #include "common.h"
@@ -53,20 +54,20 @@ namespace Monocle
 	{
 	}
 
-	namespace bp = boost::property_tree;
-
 	void DocStateManager::SetState (const QString& id, const State& state)
 	{
 		const auto& filename = DocDir_.absoluteFilePath (GetFileName (id));
 		if (!DocDir_.exists (id.at (0)))
 			DocDir_.mkdir (id.at (0));
 
-		bp::ptree pt;
-		pt.put ("page", state.CurrentPage_);
-		pt.put ("scale", state.CurrentScale_);
-		pt.put ("layout", state.Lay_ == LayoutMode::OnePage ? "one" : "two");
+		QVariantMap stateMap
+		{
+			{ "page", state.CurrentPage_ },
+			{ "scale", state.CurrentScale_ },
+			{ "layout", state.Lay_ == LayoutMode::OnePage ? "one" : "two" }
+		};
 
-		std::string scaleModeStr;
+		auto& scaleModeStr = stateMap ["scaleMode"];
 		switch (state.ScaleMode_)
 		{
 		case ScaleMode::FitWidth:
@@ -79,9 +80,8 @@ namespace Monocle
 			scaleModeStr = "fixed";
 			break;
 		}
-		pt.put ("scaleMode", scaleModeStr);
 
-		bp::write_json (filename.toUtf8 ().constData (), pt);
+		Util::SerializeJsonToFile (filename, stateMap);
 	}
 
 	auto DocStateManager::GetState (const QString& id) const -> State
@@ -91,35 +91,48 @@ namespace Monocle
 		if (!QFile::exists (filename))
 			return result;
 
-		bp::ptree pt;
-		try
-		{
-			bp::read_json (filename.toUtf8 ().constData (), pt);
-		}
-		catch (const std::exception& e)
+		QFile file { filename };
+		if (!file.open (QIODevice::ReadOnly))
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "error reading"
 					<< filename
-					<< e.what ();
+					<< file.errorString ();
 			return result;
 		}
 
-		if (auto page = pt.get_optional<int> ("page"))
-			result.CurrentPage_ = *page;
-		if (auto scale = pt.get_optional<double> ("scale"))
-			result.CurrentScale_ = *scale;
-		if (auto layout = pt.get_optional<std::string> ("layout"))
-			result.Lay_ = *layout == "one" ? LayoutMode::OnePage : LayoutMode::TwoPages;
-		if (auto scaleMode = pt.get_optional<std::string> ("scaleMode"))
+		const auto& map = Util::ParseJson (&file, Q_FUNC_INFO).toMap ();
+
+		auto set = [&map] (auto& field, const QString& name)
 		{
-			if (*scaleMode == "fitWidth")
-				result.ScaleMode_ = ScaleMode::FitWidth;
-			else if (*scaleMode == "fitPage")
-				result.ScaleMode_ = ScaleMode::FitPage;
-			else
-				result.ScaleMode_ = ScaleMode::Fixed;
-		}
+			using Type_t = std::decay_t<decltype (field)>;
+			const auto& var = map.value (name);
+			if (var.canConvert<Type_t> ())
+				field = var.value<Type_t> ();
+		};
+
+		set (result.CurrentPage_, "page");
+		set (result.CurrentScale_, "scale");
+
+		auto setF = [&set] (auto& field, const QString& name, auto cvt)
+		{
+			Util::ArgType_t<decltype (cvt), 0> storedValue;
+			set (storedValue, name);
+			field = cvt (std::move (storedValue));
+		};
+		setF (result.Lay_, "layout",
+				[] (QString str) { return str == "one" ? LayoutMode::OnePage : LayoutMode::TwoPages; });
+		setF (result.ScaleMode_, "scaleMode",
+				[] (QString str)
+				{
+					if (str == "fitWidth")
+						return ScaleMode::FitWidth;
+					else if (str == "fitPage")
+						return ScaleMode::FitPage;
+					else
+						return ScaleMode::Fixed;
+				});
+
 		return result;
 	}
 }
