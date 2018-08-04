@@ -29,6 +29,8 @@
 
 #include "serializejson.h"
 #include <QJsonDocument>
+#include <QFile>
+#include "either.h"
 
 namespace LeechCraft
 {
@@ -38,6 +40,20 @@ namespace Util
 	{
 		return QJsonDocument::fromVariant (var)
 				.toJson (compact ? QJsonDocument::Compact : QJsonDocument::Indented);
+	}
+
+	using SerializeResult_t = Either<QString, Void>;
+
+	UTIL_SLL_API SerializeResult_t SerializeJsonToFile (const QString& filename, const QVariant& var, bool compact)
+	{
+		QFile file { filename };
+		if (!file.open (QIODevice::WriteOnly))
+			return SerializeResult_t::Left (file.errorString ());
+
+		if (!file.write (SerializeJson (var, compact)))
+			return SerializeResult_t::Left (file.errorString ());
+
+		return SerializeResult_t::Right ({});
 	}
 }
 }

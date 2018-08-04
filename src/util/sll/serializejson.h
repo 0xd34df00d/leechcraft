@@ -29,10 +29,13 @@
 
 #pragma once
 
+#include "eitherfwd.h"
+#include "void.h"
 #include "sllconfig.h"
 
 class QByteArray;
 class QVariant;
+class QString;
 
 namespace LeechCraft
 {
@@ -50,6 +53,9 @@ namespace Util
 	 * @return The serialized representation of \em var.
 	 */
 	UTIL_SLL_API QByteArray SerializeJson (const QVariant& var, bool compact = true);
+
+	UTIL_SLL_API Either<QString, Void> SerializeJsonToFile (const QString& filename,
+			const QVariant& var, bool compact = true);
 }
 }
 
