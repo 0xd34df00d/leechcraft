@@ -6,6 +6,7 @@ set (SLL_SRCS
 	urloperator.cpp
 	qtutil.cpp
 	urlaccessor.cpp
+	serializejson.cpp
 	)
 
 option (WITH_PCRE "Use PCRE regular expression engine for instead of Qt's one (recommended since QRegExps are slow)." ON)
