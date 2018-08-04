@@ -35,14 +35,6 @@
 #include <util/sys/paths.h>
 #include "common.h"
 
-#if BOOST_VERSION >= 105000
-#define SANE_JSON
-#endif
-
-#ifndef SANE_JSON
-#pragma warning("Boost 1.50 or higher is NOT available, state management will not work.")
-#endif
-
 namespace LeechCraft
 {
 namespace Monocle
@@ -65,7 +57,6 @@ namespace Monocle
 
 	void DocStateManager::SetState (const QString& id, const State& state)
 	{
-#ifdef SANE_JSON
 		const auto& filename = DocDir_.absoluteFilePath (GetFileName (id));
 		if (!DocDir_.exists (id.at (0)))
 			DocDir_.mkdir (id.at (0));
@@ -91,13 +82,11 @@ namespace Monocle
 		pt.put ("scaleMode", scaleModeStr);
 
 		bp::write_json (filename.toUtf8 ().constData (), pt);
-#endif
 	}
 
 	auto DocStateManager::GetState (const QString& id) const -> State
 	{
 		State result = { 0, LayoutMode::OnePage, -1, ScaleMode::FitWidth };
-#ifdef SANE_JSON
 		const auto& filename = DocDir_.absoluteFilePath (GetFileName (id));
 		if (!QFile::exists (filename))
 			return result;
@@ -131,7 +120,6 @@ namespace Monocle
 			else
 				result.ScaleMode_ = ScaleMode::Fixed;
 		}
-#endif
 		return result;
 	}
 }
