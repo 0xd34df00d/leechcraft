@@ -491,7 +491,11 @@ namespace FXB
 	void FB2Converter::HandleLink (const QDomElement& tagElem)
 	{
 		HandleMangleCharFormat (tagElem,
-				[] (QTextCharFormat& fmt) { fmt.setFontUnderline (true); },
+				[this] (QTextCharFormat& fmt)
+				{
+					fmt.setFontUnderline (true);
+					fmt.setForeground (Config_.LinkColor_);
+				},
 				[this] (const QDomElement& p) { HandleParaWONL (p); });
 	}
 
