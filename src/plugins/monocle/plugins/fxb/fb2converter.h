@@ -104,6 +104,7 @@ namespace FXB
 		void HandlePoem (const QDomElement&);
 		void HandleStanza (const QDomElement&);
 		void HandleEmptyLine (const QDomElement&);
+		void HandleLink (const QDomElement&);
 
 		void HandleChildren (const QDomElement&);
 		void Handle (const QDomElement&);

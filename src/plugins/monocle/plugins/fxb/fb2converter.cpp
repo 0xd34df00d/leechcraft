@@ -213,6 +213,7 @@ namespace FXB
 		};
 		Handlers_ ["style"] = [this] (const QDomElement& p) { HandleParaWONL (p); };
 		Handlers_ ["coverpage"] = [this] (const QDomElement& p) { HandleChildren (p); };
+		Handlers_ ["a"] = [this] (const QDomElement& p) { HandleLink (p); };
 
 		TOCEntry entry =
 		{
@@ -489,6 +490,11 @@ namespace FXB
 	void FB2Converter::HandleEmptyLine (const QDomElement&)
 	{
 		CursorCacher_->insertText ("\n\n");
+	}
+
+	void FB2Converter::HandleLink (const QDomElement& tagElem)
+	{
+		HandleChildren (tagElem);
 	}
 
 	void FB2Converter::HandleChildren (const QDomElement& tagElem)
