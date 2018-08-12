@@ -37,8 +37,6 @@
 #include <QTextFrame>
 #include <QUrl>
 #include <QImage>
-#include <QApplication>
-#include <QPalette>
 #include <QVariant>
 #include <QStringList>
 #include <QtDebug>
@@ -133,7 +131,7 @@ namespace FXB
 		Text_.clear ();
 	}
 
-	FB2Converter::FB2Converter (Document *doc, const QDomDocument& fb2)
+	FB2Converter::FB2Converter (Document *doc, const QDomDocument& fb2, const Config& config)
 	: ParentDoc_ (doc)
 	, FB2_ (fb2)
 	, Result_ (std::make_shared<QTextDocument> ())
@@ -154,8 +152,7 @@ namespace FXB
 
 		auto frameFmt = rootFrame->frameFormat ();
 		frameFmt.setMargin (20);
-		const auto& pal = qApp->palette ();
-		frameFmt.setBackground (pal.brush (QPalette::Base));
+		frameFmt.setBackground (config.BackgroundColor_);
 		rootFrame->setFrameFormat (frameFmt);
 
 		Handlers_ ["section"] = [this] (const QDomElement& p) { HandleSection (p); };

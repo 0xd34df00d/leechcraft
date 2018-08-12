@@ -76,7 +76,12 @@ namespace FXB
 
 		QString Error_;
 	public:
-		FB2Converter (Document*, const QDomDocument&);
+		struct Config
+		{
+			QColor BackgroundColor_;
+		};
+
+		FB2Converter (Document*, const QDomDocument&, const Config&);
 		~FB2Converter ();
 
 		QString GetError () const;

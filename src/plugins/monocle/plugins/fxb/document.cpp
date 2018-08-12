@@ -30,8 +30,10 @@
 #include "document.h"
 #include <QFile>
 #include <QDomDocument>
-#include <QtDebug>
 #include <QTextDocument>
+#include <QApplication>
+#include <QPalette>
+#include <QtDebug>
 #include "fb2converter.h"
 #include "xmlsettingsmanager.h"
 
@@ -66,7 +68,10 @@ namespace FXB
 			return;
 		}
 
-		FB2Converter conv (this, doc);
+		FB2Converter::Config cfg {};
+		cfg.BackgroundColor_ = qApp->palette ().color (QPalette::Base);
+
+		FB2Converter conv { this, doc, cfg };
 		auto textDoc = conv.GetResult ();
 
 		const auto& defaultFont = XmlSettingsManager::Instance ()
