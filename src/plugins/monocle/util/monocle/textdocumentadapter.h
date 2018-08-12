@@ -68,8 +68,6 @@ namespace Monocle
 		QPainter::RenderHints Hints_;
 	public:
 		/** @brief Constructs the TextDocumentAdapter over the \em document.
-		 *
-		 * The ownership of the \em document is passed to the adapter.
 		 */
 		TextDocumentAdapter (const std::shared_ptr<QTextDocument>& document = {});
 
@@ -165,8 +163,6 @@ namespace Monocle
 		void SetRenderHint (QPainter::RenderHint hint, bool enable = true);
 	protected:
 		/** @brief Sets the underlying document to \em doc.
-		 *
-		 * Ownership is passed to the TextDocumentAdapter object.
 		 *
 		 * @param[in] doc The document to use.
 		 */
