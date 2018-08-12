@@ -424,12 +424,7 @@ namespace FXB
 
 	void FB2Converter::HandleEpigraph (const QDomElement& tagElem)
 	{
-		auto child = tagElem.firstChildElement ();
-		while (!child.isNull ())
-		{
-			Handle (child);
-			child = child.nextSiblingElement ();
-		}
+		HandleChildren (tagElem);
 	}
 
 	void FB2Converter::HandleImage (const QDomElement& imageElem)
