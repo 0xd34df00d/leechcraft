@@ -70,6 +70,7 @@ namespace FXB
 
 		FB2Converter::Config cfg {};
 		cfg.BackgroundColor_ = qApp->palette ().color (QPalette::Base);
+		cfg.LinkColor_ = qApp->palette ().color (QPalette::Link);
 
 		FB2Converter conv { this, doc, cfg };
 		auto textDoc = conv.GetResult ();

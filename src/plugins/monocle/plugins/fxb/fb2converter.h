@@ -79,6 +79,7 @@ namespace FXB
 		struct Config
 		{
 			QColor BackgroundColor_;
+			QColor LinkColor_;
 		};
 	private:
 		const Config Config_;
