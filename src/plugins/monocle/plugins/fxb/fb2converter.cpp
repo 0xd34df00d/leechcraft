@@ -489,7 +489,9 @@ namespace FXB
 
 	void FB2Converter::HandleLink (const QDomElement& tagElem)
 	{
-		HandleChildren (tagElem);
+		HandleMangleCharFormat (tagElem,
+				[] (QTextCharFormat& fmt) { fmt.setFontUnderline (true); },
+				[this] (const QDomElement& p) { HandleParaWONL (p); });
 	}
 
 	void FB2Converter::HandleChildren (const QDomElement& tagElem)
