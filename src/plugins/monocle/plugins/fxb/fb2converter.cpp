@@ -137,8 +137,8 @@ namespace FXB
 	: ParentDoc_ (doc)
 	, FB2_ (fb2)
 	, Result_ (new QTextDocument)
-	, Cursor_ (new QTextCursor (Result_))
-	, CursorCacher_ (new CursorCacher (Cursor_))
+	, Cursor_ (std::make_unique<QTextCursor> (Result_))
+	, CursorCacher_ (std::make_unique<CursorCacher> (Cursor_.get ()))
 	{
 		Result_->setPageSize (QSize (600, 800));
 		Result_->setUndoRedoEnabled (false);
@@ -242,11 +242,7 @@ namespace FXB
 		CursorCacher_->Flush ();
 	}
 
-	FB2Converter::~FB2Converter ()
-	{
-		delete CursorCacher_;
-		delete Cursor_;
-	}
+	FB2Converter::~FB2Converter () = default;
 
 	QString FB2Converter::GetError () const
 	{

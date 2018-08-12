@@ -66,8 +66,8 @@ namespace FXB
 
 		QStack<TOCEntry*> CurrentTOCStack_;
 
-		QTextCursor *Cursor_;
-		CursorCacher *CursorCacher_;
+		std::unique_ptr<QTextCursor> Cursor_;
+		std::unique_ptr<CursorCacher> CursorCacher_;
 
 		int SectionLevel_ = 0;
 
