@@ -80,7 +80,9 @@ namespace FXB
 		{
 			QColor BackgroundColor_;
 		};
-
+	private:
+		const Config Config_;
+	public:
 		FB2Converter (Document*, const QDomDocument&, const Config&);
 		~FB2Converter ();
 

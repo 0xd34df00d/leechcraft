@@ -137,6 +137,7 @@ namespace FXB
 	, Result_ { std::make_shared<QTextDocument> () }
 	, Cursor_ { std::make_unique<QTextCursor> (Result_.get ()) }
 	, CursorCacher_ { std::make_unique<CursorCacher> (Cursor_.get ()) }
+	, Config_ { config }
 	{
 		Result_->setPageSize (QSize (600, 800));
 		Result_->setUndoRedoEnabled (false);
