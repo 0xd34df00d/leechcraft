@@ -132,11 +132,11 @@ namespace FXB
 	}
 
 	FB2Converter::FB2Converter (Document *doc, const QDomDocument& fb2, const Config& config)
-	: ParentDoc_ (doc)
-	, FB2_ (fb2)
-	, Result_ (std::make_shared<QTextDocument> ())
-	, Cursor_ (std::make_unique<QTextCursor> (Result_.get ()))
-	, CursorCacher_ (std::make_unique<CursorCacher> (Cursor_.get ()))
+	: ParentDoc_ { doc }
+	, FB2_ { fb2 }
+	, Result_ { std::make_shared<QTextDocument> () }
+	, Cursor_ { std::make_unique<QTextCursor> (Result_.get ()) }
+	, CursorCacher_ { std::make_unique<CursorCacher> (Cursor_.get ()) }
 	{
 		Result_->setPageSize (QSize (600, 800));
 		Result_->setUndoRedoEnabled (false);
