@@ -71,7 +71,7 @@ namespace Monocle
 		 *
 		 * The ownership of the \em document is passed to the adapter.
 		 */
-		TextDocumentAdapter (QTextDocument *document = nullptr);
+		TextDocumentAdapter (const std::shared_ptr<QTextDocument>& document = {});
 
 		/** @brief Checks if a document is set.
 		 */
@@ -170,7 +170,7 @@ namespace Monocle
 		 *
 		 * @param[in] doc The document to use.
 		 */
-		void SetDocument (QTextDocument *doc);
+		void SetDocument (const std::shared_ptr<QTextDocument>& doc);
 	};
 }
 }

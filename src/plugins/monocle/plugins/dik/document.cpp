@@ -104,7 +104,7 @@ namespace Dik
 			return;
 		}
 
-		auto doc = new MobiTextDocument (Parser_);
+		auto doc = std::make_shared<MobiTextDocument> (Parser_);
 		doc->setPageSize (QSize (600, 800));
 		doc->setUndoRedoEnabled (false);
 

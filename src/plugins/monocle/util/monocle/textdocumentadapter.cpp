@@ -40,7 +40,7 @@ namespace LeechCraft
 {
 namespace Monocle
 {
-	TextDocumentAdapter::TextDocumentAdapter (QTextDocument *doc)
+	TextDocumentAdapter::TextDocumentAdapter (const std::shared_ptr<QTextDocument>& doc)
 	{
 		SetDocument (doc);
 	}
@@ -109,9 +109,9 @@ namespace Monocle
 		painter->restore ();
 	}
 
-	void TextDocumentAdapter::SetDocument (QTextDocument *doc)
+	void TextDocumentAdapter::SetDocument (const std::shared_ptr<QTextDocument>& doc)
 	{
-		Doc_.reset (doc);
+		Doc_ = doc;
 	}
 
 	void TextDocumentAdapter::SetRenderHint (QPainter::RenderHint hint, bool enable)

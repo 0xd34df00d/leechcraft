@@ -60,7 +60,7 @@ namespace FXB
 
 		const QDomDocument& FB2_;
 
-		QTextDocument *Result_;
+		std::shared_ptr<QTextDocument> Result_;
 		DocumentInfo DocInfo_;
 		TOCEntryLevel_t TOC_;
 
@@ -80,7 +80,7 @@ namespace FXB
 		~FB2Converter ();
 
 		QString GetError () const;
-		QTextDocument* GetResult () const;
+		std::shared_ptr<QTextDocument> GetResult () const;
 		DocumentInfo GetDocumentInfo () const;
 		TOCEntryLevel_t GetTOC () const;
 	private:
