@@ -84,7 +84,7 @@ namespace FXB
 				XmlSettingsManager::Instance ().property ("PageHeight").toInt ()
 			});
 
-		SetDocument (textDoc);
+		SetDocument (textDoc, conv.GetLinks ());
 		Info_ = conv.GetDocumentInfo ();
 		TOC_ = conv.GetTOC ();
 	}
