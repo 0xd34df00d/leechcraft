@@ -41,6 +41,7 @@
 #include <QStringList>
 #include <QtDebug>
 #include <util/sll/util.h>
+#include <util/sll/domchildrenrange.h>
 #include "toclink.h"
 
 namespace LeechCraft
@@ -224,16 +225,13 @@ namespace FXB
 		};
 		CurrentTOCStack_.push (&entry);
 
-		auto elem = docElem.firstChildElement ();
-		while (!elem.isNull ())
+		for (const auto& elem : Util::DomChildren (docElem, {}))
 		{
 			const auto& tagName = elem.tagName ();
 			if (tagName == "description")
 				HandleDescription (elem);
 			else if (tagName == "body")
 				HandleBody (elem);
-
-			elem = elem.nextSiblingElement ();
 		}
 
 		TOC_ = entry.ChildLevel_;
@@ -314,15 +312,9 @@ namespace FXB
 
 		FillPreamble ();
 
-		const auto& titleInfo = elem.firstChildElement ("title-info");
-
-		auto childElem = titleInfo.firstChildElement ();
-		while (!childElem.isNull ())
-		{
+		for (const auto& childElem : Util::DomChildren (elem.firstChildElement ("title-info"), {}))
 			if (!handledChildren.contains (childElem.tagName ()))
 				Handle (childElem);
-			childElem = childElem.nextSiblingElement ();
-		}
 	}
 
 	void FB2Converter::HandleBody (const QDomElement& bodyElem)
@@ -348,14 +340,9 @@ namespace FXB
 	{
 		boost::optional<QString> GetTitleName (const QDomElement& tagElem)
 		{
-			auto child = tagElem.firstChildElement ();
-			while (!child.isNull ())
-			{
+			for (const auto& child : Util::DomChildren (tagElem, {}))
 				if (child.tagName () == "p")
 					return child.text ();
-
-				child = child.nextSiblingElement ();
-			}
 
 			return {};
 		}
@@ -367,18 +354,12 @@ namespace FXB
 		int GetEmptyLinesCount (const QDomElement& elem)
 		{
 			int emptyCount = 0;
-
-			auto child = elem.firstChildElement ();
-			while (!child.isNull ())
+			for (const auto& child : Util::DomChildren (elem, {}))
 			{
 				if (child.tagName () != "empty-line")
 					return 0;
-
 				++emptyCount;
-
-				child = child.nextSiblingElement ();
 			}
-
 			return emptyCount;
 		}
 	}
@@ -496,12 +477,8 @@ namespace FXB
 
 	void FB2Converter::HandleChildren (const QDomElement& tagElem)
 	{
-		auto child = tagElem.firstChildElement ();
-		while (!child.isNull ())
-		{
-			Handle (child);
-			child = child.nextSiblingElement ();
-		}
+		for (const auto& elem : Util::DomChildren (tagElem, {}))
+			Handle (elem);
 	}
 
 	void FB2Converter::Handle (const QDomElement& child)
