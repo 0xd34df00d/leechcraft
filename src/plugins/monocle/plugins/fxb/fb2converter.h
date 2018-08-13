@@ -36,6 +36,7 @@
 #include <QStack>
 #include <interfaces/monocle/idocument.h>
 #include <interfaces/monocle/ihavetoc.h>
+#include <util/monocle/textdocumentadapter.h>
 
 class QTextCharFormat;
 class QTextBlockFormat;
@@ -82,6 +83,15 @@ namespace FXB
 	private:
 		const Config Config_;
 	public:
+		struct LinkCtx
+		{
+			QString Anchor_;
+			QPair<int, int> Span_;
+		};
+	private:
+		QList<LinkCtx> LinkSources_;
+		QList<LinkCtx> LinkTargets_;
+	public:
 		FB2Converter (Document*, const QDomDocument&, const Config&);
 		~FB2Converter ();
 
@@ -89,6 +99,8 @@ namespace FXB
 		std::shared_ptr<QTextDocument> GetResult () const;
 		DocumentInfo GetDocumentInfo () const;
 		TOCEntryLevel_t GetTOC () const;
+
+		QList<TextDocumentAdapter::InternalLink> GetLinks () const;
 	private:
 		QDomElement FindBinary (const QString&) const;
 

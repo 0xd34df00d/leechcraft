@@ -261,6 +261,35 @@ namespace FXB
 		return TOC_;
 	}
 
+	QList<TextDocumentAdapter::InternalLink> FB2Converter::GetLinks () const
+	{
+		QHash<QString, QPair<int, int>> targetsHash;
+		for (const auto& target : LinkTargets_)
+		{
+			if (targetsHash.contains (target.Anchor_))
+				qWarning () << Q_FUNC_INFO
+						<< target.Anchor_
+						<< "is already present";
+
+			targetsHash [target.Anchor_] = target.Span_;
+		}
+
+		QList<TextDocumentAdapter::InternalLink> result;
+		for (const auto& source : LinkSources_)
+		{
+			if (!targetsHash.contains (source.Anchor_))
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "unknown target"
+						<< source.Anchor_;
+				continue;
+			}
+
+			result.push_back ({ source.Span_, targetsHash [source.Anchor_] });
+		}
+		return result;
+	}
+
 	QDomElement FB2Converter::FindBinary (const QString& refId) const
 	{
 		const auto& binaries = FB2_.elementsByTagName ("binary");
@@ -322,8 +351,60 @@ namespace FXB
 		HandleChildren (bodyElem);
 	}
 
+	namespace
+	{
+		class CursorSpanKeeper
+		{
+			CursorCacher& Cacher_;
+			const QTextCursor& Cursor_;
+
+			int StartPosition_;
+		public:
+			CursorSpanKeeper (CursorCacher& cacher, const QTextCursor& cursor)
+			: Cacher_ { cacher }
+			, Cursor_ { cursor }
+			{
+				Cacher_.Flush ();
+				StartPosition_ = Cursor_.position ();
+			}
+
+			QPair<int, int> GetSpan () const
+			{
+				Cacher_.Flush ();
+				return { StartPosition_, Cursor_.position () };
+			}
+		};
+
+		class LinkCtxHandler
+		{
+			const QString Anchor_;
+			QList<FB2Converter::LinkCtx>& LinkCtxList_;
+
+			std::optional<CursorSpanKeeper> SpanKeeper_;
+		public:
+			LinkCtxHandler (const QString& anchor, QList<FB2Converter::LinkCtx>& list,
+					CursorCacher& cacher, const QTextCursor& cursor)
+			: Anchor_ { anchor }
+			, LinkCtxList_ { list }
+			{
+				if (!anchor.isEmpty ())
+					SpanKeeper_.emplace (cacher, cursor);
+			}
+
+			~LinkCtxHandler ()
+			{
+				if (!SpanKeeper_)
+					return;
+
+				LinkCtxList_ << FB2Converter::LinkCtx { Anchor_, SpanKeeper_->GetSpan () };
+			}
+		};
+	}
+
 	void FB2Converter::HandleSection (const QDomElement& tagElem)
 	{
+		LinkCtxHandler linkHandler { tagElem.attribute ("id"), LinkTargets_, *CursorCacher_, *Cursor_ };
+
 		CurrentTOCStack_.top ()->ChildLevel_.append (TOCEntry ());
 		CurrentTOCStack_.push (&CurrentTOCStack_.top ()->ChildLevel_.last ());
 
@@ -462,6 +543,11 @@ namespace FXB
 
 	void FB2Converter::HandleLink (const QDomElement& tagElem)
 	{
+		auto target = tagElem.attribute ("href");
+		if (target.size () > 1 && target [0] == '#')
+			target = target.mid (1);
+		LinkCtxHandler linkHandler { target, LinkSources_, *CursorCacher_, *Cursor_ };
+
 		HandleMangleCharFormat (tagElem,
 				[this] (QTextCharFormat& fmt)
 				{
