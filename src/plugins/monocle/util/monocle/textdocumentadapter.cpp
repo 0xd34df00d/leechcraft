@@ -31,7 +31,6 @@
 #include <cmath>
 #include <QTextDocument>
 #include <QTextBlock>
-#include <QAbstractTextDocumentLayout>
 #include <QTextEdit>
 #include <QtDebug>
 #include <util/threads/futures.h>
@@ -124,8 +123,7 @@ namespace Monocle
 
 	namespace
 	{
-		QMap<int, QList<QRectF>> GetCursorsPositions (QTextDocument *doc,
-				const QList<QPair<QTextCursor, QTextCursor>>& cursors)
+		auto GetCursorsPositions (QTextDocument *doc, const QList<QPair<QTextCursor, QTextCursor>>& cursors)
 		{
 			const auto& pageSize = doc->pageSize ();
 			const auto pageHeight = pageSize.height ();
@@ -137,7 +135,7 @@ namespace Monocle
 			hackyEdit.setDocument (doc);
 			doc->setPageSize (pageSize);
 
-			QMap<int, QList<QRectF>> result;
+			QList<QPair<int, QRectF>> result;
 			for (const auto& pair : cursors)
 			{
 				auto rect = hackyEdit.cursorRect (pair.first);
@@ -154,8 +152,16 @@ namespace Monocle
 				}
 				auto bounding = rect | endRect;
 
-				result [pageNum] << bounding;
+				result << QPair { pageNum, bounding };
 			}
+			return result;
+		}
+
+		QMap<int, QList<QRectF>> ListToMap (const QList<QPair<int, QRectF>>& list)
+		{
+			QMap<int, QList<QRectF>> result;
+			for (const auto& [page, rect] : list)
+				result [page] << rect;
 			return result;
 		}
 	}
@@ -176,7 +182,7 @@ namespace Monocle
 			cursor = Doc_->find (text, cursor, tdFlags);
 		}
 
-		return GetCursorsPositions (Doc_.get (), cursors);
+		return ListToMap (GetCursorsPositions (Doc_.get (), cursors));
 	}
 }
 }
