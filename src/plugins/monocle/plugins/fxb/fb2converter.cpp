@@ -337,12 +337,7 @@ namespace FXB
 		CurrentTOCStack_.top ()->ChildLevel_.append (TOCEntry ());
 		CurrentTOCStack_.push (&CurrentTOCStack_.top ()->ChildLevel_.last ());
 
-		auto child = tagElem.firstChildElement ();
-		while (!child.isNull ())
-		{
-			Handle (child);
-			child = child.nextSiblingElement ();
-		}
+		HandleChildren (tagElem);
 
 		CurrentTOCStack_.pop ();
 
