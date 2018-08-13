@@ -67,6 +67,12 @@ namespace Monocle
 		 */
 		QPainter::RenderHints Hints_;
 	public:
+		struct InternalLink
+		{
+			QPair<int, int> FromSpan_;
+			QPair<int, int> ToSpan_;
+		};
+
 		/** @brief Constructs the TextDocumentAdapter over the \em document.
 		 */
 		TextDocumentAdapter (const std::shared_ptr<QTextDocument>& document = {});
