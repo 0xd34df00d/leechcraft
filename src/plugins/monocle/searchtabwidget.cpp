@@ -71,7 +71,6 @@ namespace Monocle
 				[] (const QList<QRectF>& list) { return list.isEmpty (); }))
 			return;
 
-
 		QList<QStandardItem*> pageItems;
 		int globalPosIdx = 0;
 		for (const auto& pair : Util::Stlize (results.Positions_))
