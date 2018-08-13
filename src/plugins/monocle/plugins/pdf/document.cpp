@@ -261,6 +261,11 @@ namespace PDF
 			{
 				std::unique_ptr<Poppler::Page> p (doc->page (i));
 				resVec [i] = p->search (text, searchFlags);
+
+				const auto& size = p->pageSizeF ();
+				auto scaleMat = QMatrix {}.scale (1 / size.width (), 1 / size.height ());
+				for (auto& res : resVec [i])
+					res = scaleMat.mapRect (res);
 			}
 		};
 		const auto threadCount = QThread::idealThreadCount ();

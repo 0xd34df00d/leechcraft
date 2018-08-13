@@ -150,7 +150,9 @@ namespace Monocle
 					rect.setWidth (pageSize.width () - rect.x ());
 					endRect.setX (0);
 				}
-				auto bounding = rect | endRect;
+				QRectF bounding { rect | endRect };
+
+				bounding = QMatrix {}.scale (1 / pageSize.width (), 1 / pageSize.height ()).mapRect (bounding);
 
 				result << QPair { pageNum, bounding };
 			}

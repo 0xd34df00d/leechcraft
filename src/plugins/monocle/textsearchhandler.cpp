@@ -147,7 +147,13 @@ namespace Monocle
 				item->setOpacity (0.2);
 				CurrentHighlights_ << item;
 
-				page->RegisterChildRect (item, rect,
+				const auto& docRect = page->MapToDoc (page->boundingRect ());
+				QRectF targetRect (rect.x () * docRect.width (),
+						rect.y () * docRect.height (),
+						rect.width () * docRect.width (),
+						rect.height () * docRect.height ());
+
+				page->RegisterChildRect (item, targetRect,
 						[item] (const QRectF& rect) { item->setRect (rect); });
 			}
 		}
