@@ -132,6 +132,8 @@ namespace Monocle
 			hackyEdit.setDocument (doc);
 			doc->setPageSize (pageSize);
 
+			const QMatrix scale = QMatrix {}.scale (1 / pageSize.width (), 1 / pageSize.height ());
+
 			QList<QPair<int, QRectF>> result;
 			for (const auto& pair : cursors)
 			{
@@ -149,7 +151,7 @@ namespace Monocle
 				}
 				QRectF bounding { rect | endRect };
 
-				bounding = QMatrix {}.scale (1 / pageSize.width (), 1 / pageSize.height ()).mapRect (bounding);
+				bounding = scale.mapRect (bounding);
 
 				result << QPair { pageNum, bounding };
 			}
