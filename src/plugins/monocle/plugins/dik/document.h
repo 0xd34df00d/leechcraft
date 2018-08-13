@@ -63,8 +63,6 @@ namespace Dik
 		QObject* GetQObject ();
 		DocumentInfo GetDocumentInfo () const;
 		QUrl GetDocURL () const;
-
-		void RequestNavigation (int);
 	signals:
 		void navigateRequested (const QString&, const IDocument::Position&);
 		void printRequested (const QList<int>&);

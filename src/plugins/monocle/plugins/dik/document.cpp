@@ -140,11 +140,6 @@ namespace Dik
 	{
 		return DocURL_;
 	}
-
-	void Document::RequestNavigation (int page)
-	{
-		emit navigateRequested ({}, { page, { 0, 0.4 } });
-	}
 }
 }
 }
