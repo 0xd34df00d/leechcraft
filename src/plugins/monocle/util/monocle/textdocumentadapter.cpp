@@ -193,11 +193,14 @@ namespace Monocle
 
 			const int TargetPage_;
 			const QRectF TargetArea_;
+
+			IDocument * const Doc_;
 		public:
-			Link (const QRectF& area, int targetPage, const QRectF& targetArea)
+			Link (const QRectF& area, int targetPage, const QRectF& targetArea, IDocument *doc)
 			: LinkArea_ { area }
 			, TargetPage_ { targetPage }
 			, TargetArea_ { targetArea }
+			, Doc_ { doc }
 			{
 			}
 
@@ -213,6 +216,7 @@ namespace Monocle
 
 			void Execute () override
 			{
+				Doc_->navigateRequested ({}, { TargetPage_, TargetArea_.topLeft () });
 			}
 
 			QString GetDocumentFilename () const override
@@ -271,7 +275,7 @@ namespace Monocle
 		const auto& dstPositions = GetCursorsPositions (Doc_.get (), dstCursors);
 
 		for (const auto& [srcPos, dstPos] : Util::Views::Zip (srcPositions, dstPositions))
-			Links_ [srcPos.first] << std::make_shared<Link> (srcPos.second, dstPos.first, dstPos.second);
+			Links_ [srcPos.first] << std::make_shared<Link> (srcPos.second, dstPos.first, dstPos.second, this);
 	}
 }
 }
