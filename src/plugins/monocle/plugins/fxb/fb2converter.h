@@ -69,8 +69,6 @@ namespace FXB
 		std::unique_ptr<QTextCursor> Cursor_;
 		std::unique_ptr<CursorCacher> CursorCacher_;
 
-		int SectionLevel_ = 0;
-
 		typedef std::function<void (QDomElement)> Handler_f;
 		QHash<QString, Handler_f> Handlers_;
 

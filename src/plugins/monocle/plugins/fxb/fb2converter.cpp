@@ -324,16 +324,12 @@ namespace FXB
 
 	void FB2Converter::HandleSection (const QDomElement& tagElem)
 	{
-		++SectionLevel_;
-
 		CurrentTOCStack_.top ()->ChildLevel_.append (TOCEntry ());
 		CurrentTOCStack_.push (&CurrentTOCStack_.top ()->ChildLevel_.last ());
 
 		HandleChildren (tagElem);
 
 		CurrentTOCStack_.pop ();
-
-		--SectionLevel_;
 	}
 
 	namespace
@@ -383,7 +379,7 @@ namespace FXB
 			return;
 		}
 
-		const auto currentSectionLevel = SectionLevel_;
+		const auto currentSectionLevel = CurrentTOCStack_.size () - 1;
 		HandleMangleBlockFormat (tagElem,
 				[] (QTextBlockFormat&) {},
 				[=] (const QDomElement& e)
