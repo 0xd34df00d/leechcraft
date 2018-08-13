@@ -132,6 +132,12 @@ namespace FXB
 		Text_.clear ();
 	}
 
+	struct FB2Converter::LinkCtx
+	{
+		QString Anchor_;
+		QPair<QTextCursor, QTextCursor> Span_;
+	};
+
 	FB2Converter::FB2Converter (Document *doc, const QDomDocument& fb2, const Config& config)
 	: ParentDoc_ { doc }
 	, FB2_ { fb2 }
@@ -263,7 +269,7 @@ namespace FXB
 
 	QList<TextDocumentAdapter::InternalLink> FB2Converter::GetLinks () const
 	{
-		QHash<QString, QPair<int, int>> targetsHash;
+		QHash<QString, QPair<QTextCursor, QTextCursor>> targetsHash;
 		for (const auto& target : LinkTargets_)
 		{
 			if (targetsHash.contains (target.Anchor_))
@@ -358,20 +364,20 @@ namespace FXB
 			CursorCacher& Cacher_;
 			const QTextCursor& Cursor_;
 
-			int StartPosition_;
+			QTextCursor StartPosition_;
 		public:
 			CursorSpanKeeper (CursorCacher& cacher, const QTextCursor& cursor)
 			: Cacher_ { cacher }
 			, Cursor_ { cursor }
 			{
 				Cacher_.Flush ();
-				StartPosition_ = Cursor_.position ();
+				StartPosition_ = Cursor_;
 			}
 
-			QPair<int, int> GetSpan () const
+			QPair<QTextCursor, QTextCursor> GetSpan () const
 			{
 				Cacher_.Flush ();
-				return { StartPosition_, Cursor_.position () };
+				return { StartPosition_, Cursor_ };
 			}
 		};
 

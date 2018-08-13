@@ -255,24 +255,8 @@ namespace Monocle
 		if (!Doc_ || links.isEmpty ())
 			return;
 
-		const auto& srcCursors = Util::Map (links,
-				[this] (const InternalLink& link)
-				{
-					QTextCursor start { Doc_.get () };
-					start.setPosition (link.FromSpan_.first);
-					QTextCursor end { Doc_.get () };
-					end.setPosition (link.FromSpan_.second);
-					return QPair { start, end };
-				});
-		const auto& dstCursors = Util::Map (links,
-				[this] (const InternalLink& link)
-				{
-					QTextCursor start { Doc_.get () };
-					start.setPosition (link.ToSpan_.first);
-					QTextCursor end { Doc_.get () };
-					end.setPosition (link.ToSpan_.second);
-					return QPair { start, end };
-				});
+		const auto& srcCursors = Util::Map (links, [] (const InternalLink& link) { return link.FromSpan_; });
+		const auto& dstCursors = Util::Map (links, [] (const InternalLink& link) { return link.ToSpan_; });
 		const auto& srcPositions = GetCursorsPositions (Doc_.get (), srcCursors);
 		const auto& dstPositions = GetCursorsPositions (Doc_.get (), dstCursors);
 

@@ -83,11 +83,7 @@ namespace FXB
 	private:
 		const Config Config_;
 	public:
-		struct LinkCtx
-		{
-			QString Anchor_;
-			QPair<int, int> Span_;
-		};
+		struct LinkCtx;
 	private:
 		QList<LinkCtx> LinkSources_;
 		QList<LinkCtx> LinkTargets_;
