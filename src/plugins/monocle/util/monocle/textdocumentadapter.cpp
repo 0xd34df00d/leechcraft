@@ -122,47 +122,61 @@ namespace Monocle
 			Hints_ &= ~hint;
 	}
 
+	namespace
+	{
+		QMap<int, QList<QRectF>> GetCursorsPositions (QTextDocument *doc,
+				const QList<QPair<QTextCursor, QTextCursor>>& cursors)
+		{
+			const auto& pageSize = doc->pageSize ();
+			const auto pageHeight = pageSize.height ();
+
+			QTextEdit hackyEdit;
+			hackyEdit.setHorizontalScrollBarPolicy (Qt::ScrollBarAlwaysOff);
+			hackyEdit.setVerticalScrollBarPolicy (Qt::ScrollBarAlwaysOff);
+			hackyEdit.setFixedSize (doc->pageSize ().toSize ());
+			hackyEdit.setDocument (doc);
+			doc->setPageSize (pageSize);
+
+			QMap<int, QList<QRectF>> result;
+			for (const auto& pair : cursors)
+			{
+				auto rect = hackyEdit.cursorRect (pair.first);
+				auto endRect = hackyEdit.cursorRect (pair.second);
+
+				const int pageNum = rect.y () / pageHeight;
+				rect.moveTop (rect.y () - pageHeight * pageNum);
+				endRect.moveTop (endRect.y () - pageHeight * pageNum);
+
+				if (rect.y () != endRect.y ())
+				{
+					rect.setWidth (pageSize.width () - rect.x ());
+					endRect.setX (0);
+				}
+				auto bounding = rect | endRect;
+
+				result [pageNum] << bounding;
+			}
+			return result;
+		}
+	}
+
 	QMap<int, QList<QRectF>> TextDocumentAdapter::GetTextPositions (const QString& text, Qt::CaseSensitivity cs)
 	{
-		const auto& pageSize = Doc_->pageSize ();
-		const auto pageHeight = pageSize.height ();
-
-		QTextEdit hackyEdit;
-		hackyEdit.setHorizontalScrollBarPolicy (Qt::ScrollBarAlwaysOff);
-		hackyEdit.setVerticalScrollBarPolicy (Qt::ScrollBarAlwaysOff);
-		hackyEdit.setFixedSize (Doc_->pageSize ().toSize ());
-		hackyEdit.setDocument (Doc_.get ());
-		Doc_->setPageSize (pageSize);
+		QList<QPair<QTextCursor, QTextCursor>> cursors;
 
 		const auto tdFlags = cs == Qt::CaseSensitive ?
 				QTextDocument::FindCaseSensitively :
 				QTextDocument::FindFlags ();
-
-		QMap<int, QList<QRectF>> result;
 		auto cursor = Doc_->find (text, 0, tdFlags);
 		while (!cursor.isNull ())
 		{
-			auto endRect = hackyEdit.cursorRect (cursor);
 			auto startCursor = cursor;
 			startCursor.setPosition (cursor.selectionStart ());
-			auto rect = hackyEdit.cursorRect (startCursor);
-
-			const int pageNum = rect.y () / pageHeight;
-			rect.moveTop (rect.y () - pageHeight * pageNum);
-			endRect.moveTop (endRect.y () - pageHeight * pageNum);
-
-			if (rect.y () != endRect.y ())
-			{
-				rect.setWidth (pageSize.width () - rect.x ());
-				endRect.setX (0);
-			}
-			auto bounding = rect | endRect;
-
-			result [pageNum] << bounding;
-
+			cursors << QPair { startCursor, cursor };
 			cursor = Doc_->find (text, cursor, tdFlags);
 		}
-		return result;
+
+		return GetCursorsPositions (Doc_.get (), cursors);
 	}
 }
 }
