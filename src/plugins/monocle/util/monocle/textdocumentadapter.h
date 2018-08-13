@@ -66,6 +66,8 @@ namespace Monocle
 		 * RenderPage() and PaintPage() implementations.
 		 */
 		QPainter::RenderHints Hints_;
+
+		QMap<int, QList<ILink_ptr>> Links_;
 	public:
 		struct InternalLink
 		{
@@ -172,7 +174,7 @@ namespace Monocle
 		 *
 		 * @param[in] doc The document to use.
 		 */
-		void SetDocument (const std::shared_ptr<QTextDocument>& doc);
+		void SetDocument (const std::shared_ptr<QTextDocument>& doc, const QList<InternalLink>& links = {});
 	};
 }
 }

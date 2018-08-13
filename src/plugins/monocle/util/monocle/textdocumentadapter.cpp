@@ -34,6 +34,8 @@
 #include <QTextEdit>
 #include <QtDebug>
 #include <util/threads/futures.h>
+#include <util/sll/views.h>
+#include <util/sll/prelude.h>
 
 namespace LeechCraft
 {
@@ -85,9 +87,9 @@ namespace Monocle
 		return Util::MakeReadyFuture (image);
 	}
 
-	QList<ILink_ptr> TextDocumentAdapter::GetPageLinks (int)
+	QList<ILink_ptr> TextDocumentAdapter::GetPageLinks (int page)
 	{
-		return QList<ILink_ptr> ();
+		return Links_.value (page);
 	}
 
 	void TextDocumentAdapter::PaintPage (QPainter *painter, int page, double xScale, double yScale)
@@ -106,11 +108,6 @@ namespace Monocle
 
 		painter->setRenderHints (oldHints);
 		painter->restore ();
-	}
-
-	void TextDocumentAdapter::SetDocument (const std::shared_ptr<QTextDocument>& doc)
-	{
-		Doc_ = doc;
 	}
 
 	void TextDocumentAdapter::SetRenderHint (QPainter::RenderHint hint, bool enable)
@@ -185,6 +182,96 @@ namespace Monocle
 		}
 
 		return ListToMap (GetCursorsPositions (Doc_.get (), cursors));
+	}
+
+	namespace
+	{
+		class Link : public ILink
+				   , public IPageLink
+		{
+			const QRectF LinkArea_;
+
+			const int TargetPage_;
+			const QRectF TargetArea_;
+		public:
+			Link (const QRectF& area, int targetPage, const QRectF& targetArea)
+			: LinkArea_ { area }
+			, TargetPage_ { targetPage }
+			, TargetArea_ { targetArea }
+			{
+			}
+
+			LinkType GetLinkType () const override
+			{
+				return LinkType::PageLink;
+			}
+
+			QRectF GetArea () const override
+			{
+				return LinkArea_;
+			}
+
+			void Execute () override
+			{
+			}
+
+			QString GetDocumentFilename () const override
+			{
+				return {};
+			}
+
+			int GetPageNumber () const override
+			{
+				return TargetPage_;
+			}
+
+			double NewX () const override
+			{
+				return TargetArea_.left ();
+			}
+
+			double NewY () const override
+			{
+				return TargetArea_.top ();
+			}
+
+			double NewZoom () const override
+			{
+				return 0;
+			}
+		};
+	}
+
+	void TextDocumentAdapter::SetDocument (const std::shared_ptr<QTextDocument>& doc, const QList<InternalLink>& links)
+	{
+		Doc_ = doc;
+		Links_.clear ();
+		if (!Doc_ || links.isEmpty ())
+			return;
+
+		const auto& srcCursors = Util::Map (links,
+				[this] (const InternalLink& link)
+				{
+					QTextCursor start { Doc_.get () };
+					start.setPosition (link.FromSpan_.first);
+					QTextCursor end { Doc_.get () };
+					end.setPosition (link.FromSpan_.second);
+					return QPair { start, end };
+				});
+		const auto& dstCursors = Util::Map (links,
+				[this] (const InternalLink& link)
+				{
+					QTextCursor start { Doc_.get () };
+					start.setPosition (link.ToSpan_.first);
+					QTextCursor end { Doc_.get () };
+					end.setPosition (link.ToSpan_.second);
+					return QPair { start, end };
+				});
+		const auto& srcPositions = GetCursorsPositions (Doc_.get (), srcCursors);
+		const auto& dstPositions = GetCursorsPositions (Doc_.get (), dstCursors);
+
+		for (const auto& [srcPos, dstPos] : Util::Views::Zip (srcPositions, dstPositions))
+			Links_ [srcPos.first] << std::make_shared<Link> (srcPos.second, dstPos.first, dstPos.second);
 	}
 }
 }
