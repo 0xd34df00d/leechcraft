@@ -69,21 +69,16 @@ namespace FXB
 		}
 
 		FB2Converter::Config cfg {};
+		cfg.DefaultFont_ = XmlSettingsManager::Instance ().property ("DefaultFont").value<QFont> ();
+		cfg.PageSize_ = {
+				XmlSettingsManager::Instance ().property ("PageWidth").toInt (),
+				XmlSettingsManager::Instance ().property ("PageHeight").toInt ()
+			};
 		cfg.BackgroundColor_ = qApp->palette ().color (QPalette::Base);
 		cfg.LinkColor_ = qApp->palette ().color (QPalette::Link);
 
 		FB2Converter conv { this, doc, cfg };
 		auto textDoc = conv.GetResult ();
-
-		const auto& defaultFont = XmlSettingsManager::Instance ()
-				.property ("DefaultFont").value<QFont> ();
-		textDoc->setDefaultFont (defaultFont);
-
-		textDoc->setPageSize (QSize {
-				XmlSettingsManager::Instance ().property ("PageWidth").toInt (),
-				XmlSettingsManager::Instance ().property ("PageHeight").toInt ()
-			});
-
 		SetDocument (textDoc, conv.GetLinks ());
 		Info_ = conv.GetDocumentInfo ();
 		TOC_ = conv.GetTOC ();

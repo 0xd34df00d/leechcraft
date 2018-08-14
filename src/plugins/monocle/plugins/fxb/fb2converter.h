@@ -77,6 +77,9 @@ namespace FXB
 	public:
 		struct Config
 		{
+			QFont DefaultFont_;
+			QSize PageSize_;
+
 			QColor BackgroundColor_;
 			QColor LinkColor_;
 		};

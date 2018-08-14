@@ -146,7 +146,8 @@ namespace FXB
 	, CursorCacher_ { std::make_unique<CursorCacher> (Cursor_.get ()) }
 	, Config_ { config }
 	{
-		Result_->setPageSize (QSize (600, 800));
+		Result_->setDefaultFont (config.DefaultFont_);
+		Result_->setPageSize (config.PageSize_);
 		Result_->setUndoRedoEnabled (false);
 
 		const auto& docElem = FB2_.documentElement ();
