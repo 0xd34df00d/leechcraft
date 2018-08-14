@@ -479,7 +479,7 @@ namespace FXB
 								fmt.setFontPointSize (newSize);
 								fmt.setFontWeight (currentSectionLevel <= 1 ? QFont::Bold : QFont::DemiBold);
 							},
-							[this] (const QDomElement& e) { HandleChildren (e); });
+							[this] (const QDomElement& e) { HandleParaWONL (e); });
 				});
 	}
 
