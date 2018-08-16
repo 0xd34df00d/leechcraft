@@ -101,7 +101,11 @@ namespace EmbedMedia
 	void Plugin::hookChatTabCreated (LeechCraft::IHookProxy_ptr,
 			QObject*, QObject*, QWebView *webView)
 	{
-		webView->page ()->mainFrame ()->evaluateJavaScript (ScriptContent_);
+		const auto frame = webView->page ()->mainFrame ();
+		frame->evaluateJavaScript (ScriptContent_);
+		connect (frame,
+				&QWebFrame::initialLayoutCompleted,
+				[frame, this] { frame->evaluateJavaScript (ScriptContent_); });
 	}
 }
 }
