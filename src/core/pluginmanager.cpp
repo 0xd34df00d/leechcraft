@@ -511,6 +511,7 @@ namespace LeechCraft
 			const auto ii = qobject_cast<IInfo*> (obj);
 			try
 			{
+				qDebug () << "second init" << ii->GetName ();
 				ii->SecondInit ();
 			}
 			catch (const std::exception& e)
