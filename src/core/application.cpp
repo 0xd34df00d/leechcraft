@@ -516,18 +516,9 @@ namespace LeechCraft
 
 	void Application::finishInit ()
 	{
-		handleLoadProgress (tr ("Initializing LeechCraft..."));
-
-		connect (Core::Instance ().GetPluginManager (),
-				SIGNAL (loadProgress (const QString&)),
-				this,
-				SLOT (handleLoadProgress (const QString&)));
-
 		auto rwm = Core::Instance ().GetRootWindowsManager ();
 		rwm->Initialize ();
 		Core::Instance ().DelayedInit ();
-
-		handleLoadProgress (tr ("Finalizing..."));
 
 		const auto win = rwm->GetMainWindow (0);
 		win->showFirstTime ();
@@ -595,12 +586,6 @@ namespace LeechCraft
 			return;
 
 		InitiateRestart ();
-	}
-
-	void Application::handleLoadProgress (const QString& str)
-	{
-		Splash_->showMessage (str, Qt::AlignLeft | Qt::AlignBottom, QColor ("#FF3000"));
-		Splash_->repaint ();
 	}
 
 	void Application::checkStillRunning ()

@@ -139,8 +139,6 @@ namespace LeechCraft
 		void handleAppStyle ();
 		void handleLanguage ();
 
-		void handleLoadProgress (const QString&);
-
 		/** Checks whether another copy of LeechCraft is still running
 		 * via a call to IsAlreadyRunning(), and if it isn't, starts a
 		 * new leechcraft process with the corresponding arguments.

@@ -400,7 +400,6 @@ namespace LeechCraft
 			try
 			{
 				qDebug () << "Initializing" << ii->GetName ();
-				emit loadProgress (tr ("Initializing %1: stage one...").arg (ii->GetName ()));
 				ii->Init (std::make_shared<CoreProxy> ());
 
 				const auto& path = GetPluginLibraryPath (obj);
@@ -512,7 +511,6 @@ namespace LeechCraft
 			const auto ii = qobject_cast<IInfo*> (obj);
 			try
 			{
-				emit loadProgress (tr ("Initializing %1: stage two...").arg (ii->GetName ()));
 				ii->SecondInit ();
 			}
 			catch (const std::exception& e)
