@@ -31,7 +31,6 @@
 
 #include <memory>
 #include <QPainter>
-#include <QTextCursor>
 #include <interfaces/monocle/idocument.h>
 #include <interfaces/monocle/isupportpainting.h>
 #include <interfaces/monocle/isearchabledocument.h>
@@ -72,8 +71,8 @@ namespace Monocle
 	public:
 		struct InternalLink
 		{
-			QPair<QTextCursor, QTextCursor> FromSpan_;
-			QPair<QTextCursor, QTextCursor> ToSpan_;
+			QPair<int, int> FromSpan_;
+			QPair<int, int> ToSpan_;
 		};
 
 		/** @brief Constructs the TextDocumentAdapter over the \em document.
