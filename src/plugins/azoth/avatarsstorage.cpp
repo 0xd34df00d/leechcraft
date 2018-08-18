@@ -147,20 +147,17 @@ namespace Azoth
 					if (!data || data->isEmpty ())
 						return Util::MakeReadyFuture<MaybeImage> ({});
 
-					return QtConcurrent::run ([=] () -> MaybeImage
-							{
-								QImage image;
-								if (!image.loadFromData (*data))
-								{
-									qWarning () << Q_FUNC_INFO
-											<< "unable to load image from data for"
-											<< entryId
-											<< hrId;
-									return {};
-								}
+					QImage image;
+					if (!image.loadFromData (*data))
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "unable to load image from data for"
+								<< entryId
+								<< hrId;
+						return Util::MakeReadyFuture<MaybeImage> ({});
+					}
 
-								return image;
-							});
+					return Util::MakeReadyFuture<MaybeImage> (image);
 				};
 	}
 
