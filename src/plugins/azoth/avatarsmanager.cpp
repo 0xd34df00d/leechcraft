@@ -90,10 +90,11 @@ namespace Azoth
 		if (!iha)
 			return Util::MakeReadyFuture (defaultAvatarGetter ());
 
-		if (const auto requestSize = ChooseSize (iha, size))
-			size = *requestSize;
-		else
+		const auto maybeSupportedSize = ChooseSize (iha, size);
+		if (!maybeSupportedSize)
 			return Util::MakeReadyFuture (defaultAvatarGetter ());
+
+		const auto supportedSize = *maybeSupportedSize;
 
 		const auto& sizes = PendingRequests_.value (entryObj);
 		if (sizes.contains (size))
@@ -107,11 +108,14 @@ namespace Azoth
 					if (image)
 						return Util::MakeReadyFuture (*image);
 
-					auto refreshFuture = iha->RefreshAvatar (size);
-
+					auto refreshFuture = iha->RefreshAvatar (supportedSize);
 					Util::Sequence (this, refreshFuture) >>
-							[=] (const QImage& img) { Storage_->SetAvatar (entryId, size, img); };
-
+							[=] (QImage img)
+							{
+								if (auto tgtDim = Size2Dim (size); tgtDim < Size2Dim (supportedSize))
+									img = img.scaled (tgtDim, tgtDim, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+								Storage_->SetAvatar (entryId, size, img);
+							};
 					return refreshFuture;
 				} >>
 				[=] (QImage image)
