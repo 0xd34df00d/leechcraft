@@ -97,15 +97,7 @@ namespace Monocle
 							SelectAnnotation (ann);
 						});
 
-				const auto& docRect = page->MapToDoc (page->boundingRect ());
-				const auto& rect = ann->GetBoundary ();
-
-				QRectF targetRect (rect.x () * docRect.width (),
-						rect.y () * docRect.height (),
-						rect.width () * docRect.width (),
-						rect.height () * docRect.height ());
-
-				page->RegisterChildRect (item->GetItem (), targetRect,
+				page->RegisterChildRect (item->GetItem (), ann->GetBoundary (),
 						[item] (const QRectF& rect) { item->UpdateRect (rect); });
 
 				auto annItem = new QStandardItem (ann->GetText ());

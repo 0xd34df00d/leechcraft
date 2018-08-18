@@ -35,6 +35,7 @@
 #include <QFutureWatcher>
 #include <QGraphicsSceneMouseEvent>
 #include <QCursor>
+#include <QMatrix>
 #include <QApplication>
 #include <QGraphicsScene>
 #include <QGraphicsView>
@@ -125,8 +126,12 @@ namespace Monocle
 	}
 
 	void PageGraphicsItem::RegisterChildRect (QGraphicsItem *item,
-			const QRectF& docRect, RectSetter_f setter)
+			const QRectF& srcRect, RectSetter_f setter)
 	{
+		const auto& pageRect = MapToDoc (boundingRect ());
+
+		const auto& docRect = QMatrix {}.scale (pageRect.width (), pageRect.height ()).mapRect (srcRect);
+
 		Item2RectInfo_ [item] = { docRect, setter };
 		setter (MapFromDoc (docRect));
 	}

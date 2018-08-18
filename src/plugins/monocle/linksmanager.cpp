@@ -50,16 +50,7 @@ namespace Monocle
 			for (const auto& link : doc->GetPageLinks (page->GetPageNum ()))
 			{
 				auto item = new LinkItem (link, page);
-
-				const auto& docRect = page->MapToDoc (page->boundingRect ());
-				const auto& rect = link->GetArea ();
-
-				QRectF targetRect (rect.x () * docRect.width (),
-						rect.y () * docRect.height (),
-						rect.width () * docRect.width (),
-						rect.height () * docRect.height ());
-
-				page->RegisterChildRect (item, targetRect,
+				page->RegisterChildRect (item, link->GetArea (),
 						[item] (const QRectF& rect) { item->setRect (rect); });
 			}
 	}

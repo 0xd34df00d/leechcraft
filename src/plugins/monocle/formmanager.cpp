@@ -100,17 +100,9 @@ namespace Monocle
 				if (!proxy)
 					continue;
 
-				const auto& docRect = page->MapToDoc (page->boundingRect ());
-				const auto& formRect = field->GetRect ();
-
-				QRectF targetRect (formRect.x () * docRect.width (),
-						formRect.y () * docRect.height (),
-						formRect.width () * docRect.width (),
-						formRect.height () * docRect.height ());
-
 				proxy->setParentItem (page);
-				page->RegisterChildRect (proxy, targetRect,
-						[proxy] (const QRectF& rect) -> void
+				page->RegisterChildRect (proxy, field->GetRect (),
+						[proxy] (const QRectF& rect)
 						{
 							proxy->setGeometry (rect);
 							proxy->setMinimumSize (rect.size ());
