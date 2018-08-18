@@ -112,7 +112,7 @@ namespace Azoth
 					Util::Sequence (this, refreshFuture) >>
 							[=] (QImage img)
 							{
-								if (auto tgtDim = Size2Dim (size); tgtDim < Size2Dim (supportedSize))
+								if (auto tgtDim = Size2Dim (size); tgtDim < Size2Dim (supportedSize) && !img.isNull ())
 									img = img.scaled (tgtDim, tgtDim, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 								Storage_->SetAvatar (entryId, size, img);
 							};
