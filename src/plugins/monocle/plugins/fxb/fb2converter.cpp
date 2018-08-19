@@ -30,7 +30,6 @@
 #include "fb2converter.h"
 #include <functional>
 #include <memory>
-#include <boost/optional.hpp>
 #include <QDomDocument>
 #include <QTextDocument>
 #include <QTextCursor>
@@ -417,7 +416,7 @@ namespace FXB
 
 	namespace
 	{
-		boost::optional<QString> GetTitleName (const QDomElement& tagElem)
+		std::optional<QString> GetTitleName (const QDomElement& tagElem)
 		{
 			for (const auto& child : Util::DomChildren (tagElem, {}))
 				if (child.tagName () == "p")
