@@ -97,7 +97,7 @@ namespace FXB
 
 	IDocument_ptr Plugin::LoadDocument (const QString& file)
 	{
-		return IDocument_ptr (new Document (file, this));
+		return std::make_shared<Document> (file, this);
 	}
 
 	QStringList Plugin::GetSupportedMimes () const
