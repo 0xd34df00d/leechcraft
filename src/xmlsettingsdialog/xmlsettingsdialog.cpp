@@ -434,7 +434,7 @@ namespace Util
 			ParseEntity (gbox, box);
 
 			const auto lay = qobject_cast<QGridLayout*> (baseWidget->layout ());
-			lay->addWidget (box, lay->rowCount (), 0);
+			lay->addWidget (box, lay->rowCount (), 0, 1, 2);
 
 			gbox = gbox.nextSiblingElement ("groupbox");
 		}
