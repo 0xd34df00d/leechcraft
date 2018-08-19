@@ -252,19 +252,15 @@ namespace FXB
 		return Error_;
 	}
 
-	std::shared_ptr<QTextDocument> FB2Converter::GetResult () const
+	FB2Converter::ConversionResult FB2Converter::GetResult () const
 	{
-		return Result_;
-	}
-
-	DocumentInfo FB2Converter::GetDocumentInfo () const
-	{
-		return DocInfo_;
-	}
-
-	TOCEntryLevel_t FB2Converter::GetTOC () const
-	{
-		return TOC_;
+		return
+		{
+			Result_,
+			DocInfo_,
+			TOC_,
+			GetLinks ()
+		};
 	}
 
 	QList<TextDocumentAdapter::InternalLink> FB2Converter::GetLinks () const

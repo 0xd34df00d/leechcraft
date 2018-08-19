@@ -100,12 +100,18 @@ namespace FXB
 		~FB2Converter ();
 
 		QString GetError () const;
-		std::shared_ptr<QTextDocument> GetResult () const;
-		DocumentInfo GetDocumentInfo () const;
-		TOCEntryLevel_t GetTOC () const;
 
-		QList<TextDocumentAdapter::InternalLink> GetLinks () const;
+		struct ConversionResult
+		{
+			std::shared_ptr<QTextDocument> Doc_;
+			DocumentInfo Info_;
+			TOCEntryLevel_t TOC_;
+			QList<TextDocumentAdapter::InternalLink> Links_;
+		};
+		ConversionResult GetResult () const;
 	private:
+		QList<TextDocumentAdapter::InternalLink> GetLinks () const;
+
 		QDomElement FindBinary (const QString&) const;
 
 		void HandleDescription (const QDomElement&);

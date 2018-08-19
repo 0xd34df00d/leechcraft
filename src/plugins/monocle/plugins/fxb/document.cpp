@@ -84,10 +84,10 @@ namespace FXB
 		cfg.LinkColor_ = qApp->palette ().color (QPalette::Link);
 
 		FB2Converter conv { this, doc, cfg };
-		auto textDoc = conv.GetResult ();
-		SetDocument (textDoc, conv.GetLinks ());
-		Info_ = conv.GetDocumentInfo ();
-		TOC_ = conv.GetTOC ();
+		const auto& result = conv.GetResult ();
+		SetDocument (result.Doc_, result.Links_);
+		Info_ = result.Info_;
+		TOC_ = result.TOC_;
 	}
 
 	QObject* Document::GetBackendPlugin () const
