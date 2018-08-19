@@ -34,6 +34,7 @@
 #include <QApplication>
 #include <QPalette>
 #include <QtDebug>
+#include <util/sll/either.h>
 #include "fb2converter.h"
 #include "xmlsettingsmanager.h"
 
@@ -84,10 +85,17 @@ namespace FXB
 		cfg.LinkColor_ = qApp->palette ().color (QPalette::Link);
 
 		FB2Converter conv { this, doc, cfg };
-		const auto& result = conv.GetResult ();
-		SetDocument (result.Doc_, result.Links_);
-		Info_ = result.Info_;
-		TOC_ = result.TOC_;
+		Util::Visit (conv.GetResult (),
+				[this] (const FB2Converter::ConvertedDocument& result)
+				{
+					SetDocument (result.Doc_, result.Links_);
+					Info_ = result.Info_;
+					TOC_ = result.TOC_;
+				},
+				Util::Visitor
+				{
+					[] (auto) {}
+				});
 	}
 
 	QObject* Document::GetBackendPlugin () const

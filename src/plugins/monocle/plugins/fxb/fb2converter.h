@@ -30,10 +30,13 @@
 #pragma once
 
 #include <functional>
+#include <optional>
+#include <boost/variant.hpp>
 #include <QString>
 #include <QObject>
 #include <QHash>
 #include <QStack>
+#include <util/sll/eitherfwd.h>
 #include <interfaces/monocle/idocument.h>
 #include <interfaces/monocle/ihavetoc.h>
 #include <util/monocle/textdocumentadapter.h>
@@ -72,8 +75,6 @@ namespace FXB
 
 		typedef std::function<void (QDomElement)> Handler_f;
 		QHash<QString, Handler_f> Handlers_;
-
-		QString Error_;
 	public:
 		struct Config
 		{
@@ -99,16 +100,22 @@ namespace FXB
 		FB2Converter (Document*, const QDomDocument&, const Config&);
 		~FB2Converter ();
 
-		QString GetError () const;
+		struct NotAnFBDocument {};
+		struct UnsupportedVersion {};
 
-		struct ConversionResult
+		using Error_t = boost::variant<NotAnFBDocument, UnsupportedVersion>;
+	private:
+		std::optional<Error_t> Error_;
+	public:
+		struct ConvertedDocument
 		{
 			std::shared_ptr<QTextDocument> Doc_;
 			DocumentInfo Info_;
 			TOCEntryLevel_t TOC_;
 			QList<TextDocumentAdapter::InternalLink> Links_;
 		};
-		ConversionResult GetResult () const;
+		using ConversionResult_t = Util::Either<Error_t, ConvertedDocument>;
+		ConversionResult_t GetResult () const;
 	private:
 		QList<TextDocumentAdapter::InternalLink> GetLinks () const;
 

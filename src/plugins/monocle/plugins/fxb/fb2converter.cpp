@@ -40,6 +40,7 @@
 #include <QStringList>
 #include <QtDebug>
 #include <util/sll/util.h>
+#include <util/sll/either.h>
 #include <util/sll/domchildrenrange.h>
 #include "toclink.h"
 
@@ -146,7 +147,7 @@ namespace FXB
 		const auto& docElem = FB2_.documentElement ();
 		if (docElem.tagName () != "FictionBook")
 		{
-			Error_ = tr ("Invalid FictionBook document.");
+			Error_ = NotAnFBDocument {};
 			return;
 		}
 
@@ -246,20 +247,17 @@ namespace FXB
 
 	FB2Converter::~FB2Converter () = default;
 
-	QString FB2Converter::GetError () const
+	FB2Converter::ConversionResult_t FB2Converter::GetResult () const
 	{
-		return Error_;
-	}
-
-	FB2Converter::ConversionResult FB2Converter::GetResult () const
-	{
-		return
-		{
-			Result_,
-			DocInfo_,
-			TOC_,
-			GetLinks ()
-		};
+		if (Error_)
+			return ConversionResult_t::Left (*Error_);
+		else
+			return ConversionResult_t::Right ({
+					Result_,
+					DocInfo_,
+					TOC_,
+					GetLinks ()
+				});
 	}
 
 	QList<TextDocumentAdapter::InternalLink> FB2Converter::GetLinks () const
