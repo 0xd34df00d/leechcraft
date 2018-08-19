@@ -79,6 +79,7 @@ namespace FXB
 		{
 			QFont DefaultFont_;
 			QSize PageSize_;
+			QMargins Margins_;
 
 			QColor BackgroundColor_;
 			QColor LinkColor_;

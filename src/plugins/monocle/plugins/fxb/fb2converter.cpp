@@ -154,7 +154,12 @@ namespace FXB
 		const auto rootFrame = Result_->rootFrame ();
 
 		auto frameFmt = rootFrame->frameFormat ();
-		frameFmt.setMargin (20);
+
+		frameFmt.setLeftMargin (config.Margins_.left ());
+		frameFmt.setRightMargin (config.Margins_.right ());
+		frameFmt.setTopMargin (config.Margins_.top ());
+		frameFmt.setBottomMargin (config.Margins_.bottom ());
+
 		frameFmt.setBackground (config.BackgroundColor_);
 		rootFrame->setFrameFormat (frameFmt);
 

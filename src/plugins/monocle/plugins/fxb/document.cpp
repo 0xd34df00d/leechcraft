@@ -74,6 +74,12 @@ namespace FXB
 				XmlSettingsManager::Instance ().property ("PageWidth").toInt (),
 				XmlSettingsManager::Instance ().property ("PageHeight").toInt ()
 			};
+		cfg.Margins_ = {
+				XmlSettingsManager::Instance ().property ("LeftMargin").toInt (),
+				XmlSettingsManager::Instance ().property ("TopMargin").toInt (),
+				XmlSettingsManager::Instance ().property ("RightMargin").toInt (),
+				XmlSettingsManager::Instance ().property ("BottomMargin").toInt ()
+			};
 		cfg.BackgroundColor_ = qApp->palette ().color (QPalette::Base);
 		cfg.LinkColor_ = qApp->palette ().color (QPalette::Link);
 
