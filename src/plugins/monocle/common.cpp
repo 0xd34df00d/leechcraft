@@ -27,28 +27,33 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
+#include "common.h"
+#include <QByteArray>
+#include <QtDebug>
 
-class QByteArray;
-
-namespace LeechCraft
+namespace LeechCraft::Monocle
 {
-namespace Monocle
-{
-	enum class LayoutMode
+	QByteArray LayoutMode2Name (LayoutMode mode)
 	{
-		OnePage,
-		TwoPages
-	};
+		switch (mode)
+		{
+		case LayoutMode::OnePage:
+			return "one";
+		case LayoutMode::TwoPages:
+			return "two";
+		}
+	}
 
-	enum class ScaleMode
+	LayoutMode Name2LayoutMode (QByteArray name)
 	{
-		Fixed,
-		FitWidth,
-		FitPage
-	};
+		if (name == "one")
+			return LayoutMode::OnePage;
+		if (name == "two")
+			return LayoutMode::TwoPages;
 
-	QByteArray LayoutMode2Name (LayoutMode mode);
-	LayoutMode Name2LayoutMode (const QByteArray&);
-}
+		qWarning () << Q_FUNC_INFO
+				<< "unknown layout mode"
+				<< name;
+		return LayoutMode::OnePage;
+	}
 }

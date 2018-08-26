@@ -64,6 +64,7 @@ set (SRCS
 	navigationhistory.cpp
 	pagenumlabel.cpp
 	smoothscroller.cpp
+	common.cpp
 	)
 set (FORMS
 	documenttab.ui
