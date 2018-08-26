@@ -291,7 +291,7 @@ namespace Monocle
 			position.rx () /= size.width ();
 			position.ry () /= size.height ();
 
-			if (position.rx () > 1 && LayoutManager_->GetLayoutMode () == LayoutMode::TwoPages)
+			if (position.rx () > 1 && LayoutManager_->GetLayoutModeCount () == 2)
 			{
 				--position.rx ();
 				++pageNum;
