@@ -38,7 +38,8 @@ namespace Monocle
 	enum class LayoutMode
 	{
 		OnePage,
-		TwoPages
+		TwoPages,
+		TwoPagesShifted
 	};
 
 	enum class ScaleMode

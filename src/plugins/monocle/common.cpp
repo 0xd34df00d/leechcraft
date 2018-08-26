@@ -41,6 +41,8 @@ namespace LeechCraft::Monocle
 			return "one";
 		case LayoutMode::TwoPages:
 			return "two";
+		case LayoutMode::TwoPagesShifted:
+			return "twoshifted";
 		}
 	}
 
@@ -50,6 +52,8 @@ namespace LeechCraft::Monocle
 			return LayoutMode::OnePage;
 		if (name == "two")
 			return LayoutMode::TwoPages;
+		if (name == "twoshifted")
+			return LayoutMode::TwoPagesShifted;
 
 		qWarning () << Q_FUNC_INFO
 				<< "unknown layout mode"

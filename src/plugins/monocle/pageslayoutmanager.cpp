@@ -287,7 +287,12 @@ namespace Monocle
 				currentY += size.height () + Margin;
 				break;
 			case LayoutMode::TwoPages:
-				if (i % 2)
+			case LayoutMode::TwoPagesShifted:
+			{
+				bool isLeftPage = LayMode_ == LayoutMode::TwoPages ?
+						i % 2 :
+						!(i % 2);
+				if (isLeftPage)
 				{
 					page->setPos (lastWidth + Margin / 3, currentY + yDiff);
 					currentY += std::max (lastHeight, size.height ()) + Margin;
@@ -299,6 +304,7 @@ namespace Monocle
 					lastHeight = size.height ();
 				}
 				break;
+			}
 			}
 		}
 

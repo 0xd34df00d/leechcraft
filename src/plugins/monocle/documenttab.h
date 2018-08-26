@@ -88,6 +88,7 @@ namespace Monocle
 
 		QAction *LayOnePage_ = nullptr;
 		QAction *LayTwoPages_ = nullptr;
+		QAction *LayTwoPagesShifted_ = nullptr;
 
 		QAction *SaveAction_ = nullptr;
 		QAction *ExportPDFAction_ = nullptr;

@@ -819,6 +819,15 @@ namespace Monocle
 				[this] { SetLayoutMode (LayoutMode::TwoPages); });
 		Toolbar_->addAction (LayTwoPages_);
 
+		LayTwoPagesShifted_ = new QAction (tr ("Two pages (first page separate)"), this);
+		LayTwoPagesShifted_->setProperty ("ActionIcon", "page-3sides");
+		LayTwoPagesShifted_->setCheckable (true);
+		LayTwoPagesShifted_->setActionGroup (viewGroup);
+		connect (LayTwoPagesShifted_,
+				&QAction::triggered,
+				[this] { SetLayoutMode (LayoutMode::TwoPagesShifted); });
+		Toolbar_->addAction (LayTwoPagesShifted_);
+
 		Toolbar_->addSeparator ();
 
 		auto mouseModeGroup = new QActionGroup (this);
@@ -1412,6 +1421,8 @@ namespace Monocle
 				return LayOnePage_;
 			case LayoutMode::TwoPages:
 				return LayTwoPages_;
+			case LayoutMode::TwoPagesShifted:
+				return LayTwoPagesShifted_;
 			}
 		} ();
 		action->setChecked (true);
