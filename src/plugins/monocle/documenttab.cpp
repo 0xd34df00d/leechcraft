@@ -370,18 +370,8 @@ namespace Monocle
 		out << static_cast<quint8> (1)
 			<< CurrentDocPath_
 			<< LayoutManager_->GetCurrentScale ()
-			<< Ui_.PagesView_->mapToScene (GetViewportCenter ()).toPoint ();
-
-		switch (LayoutManager_->GetLayoutMode ())
-		{
-		case LayoutMode::OnePage:
-			out << QByteArray ("one");
-			break;
-		case LayoutMode::TwoPages:
-			out << QByteArray ("two");
-			break;
-		}
-
+			<< Ui_.PagesView_->mapToScene (GetViewportCenter ()).toPoint ()
+			<< LayoutMode2Name (LayoutManager_->GetLayoutMode ());
 		return result;
 	}
 
@@ -447,10 +437,7 @@ namespace Monocle
 			>> point
 			>> modeStr;
 
-		if (modeStr == "one")
-			LayoutManager_->SetLayoutMode (LayoutMode::OnePage);
-		else if (modeStr == "two")
-			LayoutManager_->SetLayoutMode (LayoutMode::TwoPages);
+		LayoutManager_->SetLayoutMode (Name2LayoutMode (modeStr));
 
 		SetDoc (path, DocumentOpenOptions {});
 		LayoutManager_->SetScaleMode (ScaleMode::Fixed);

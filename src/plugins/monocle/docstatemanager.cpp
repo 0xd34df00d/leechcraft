@@ -64,7 +64,7 @@ namespace Monocle
 		{
 			{ "page", state.CurrentPage_ },
 			{ "scale", state.CurrentScale_ },
-			{ "layout", state.Lay_ == LayoutMode::OnePage ? "one" : "two" }
+			{ "layout", LayoutMode2Name (state.Lay_) }
 		};
 
 		auto& scaleModeStr = stateMap ["scaleMode"];
@@ -120,8 +120,7 @@ namespace Monocle
 			set (storedValue, name);
 			field = cvt (std::move (storedValue));
 		};
-		setF (result.Lay_, "layout",
-				[] (QString str) { return str == "one" ? LayoutMode::OnePage : LayoutMode::TwoPages; });
+		setF (result.Lay_, "layout", &Name2LayoutMode);
 		setF (result.ScaleMode_, "scaleMode",
 				[] (QString str)
 				{
