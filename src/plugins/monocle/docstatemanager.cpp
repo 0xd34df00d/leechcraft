@@ -116,7 +116,7 @@ namespace Monocle
 
 		auto setF = [&set] (auto& field, const QString& name, auto cvt)
 		{
-			Util::ArgType_t<decltype (cvt), 0> storedValue;
+			std::decay_t<Util::ArgType_t<decltype (cvt), 0>> storedValue;
 			set (storedValue, name);
 			field = cvt (std::move (storedValue));
 		};
