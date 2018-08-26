@@ -209,8 +209,6 @@ namespace Monocle
 		void zoomOut ();
 		void zoomIn ();
 
-		void syncUIToLayMode ();
-
 		void recoverDocState (DocStateManager::State);
 
 		void setMoveMode (bool);

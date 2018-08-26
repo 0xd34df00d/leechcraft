@@ -1391,14 +1391,6 @@ namespace Monocle
 		ZoomIn_->setEnabled (newIndex < maxIdx);
 	}
 
-	void DocumentTab::syncUIToLayMode ()
-	{
-		auto action = LayoutManager_->GetLayoutMode () == LayoutMode::OnePage ?
-				LayOnePage_ :
-				LayTwoPages_;
-		action->setChecked (true);
-	}
-
 	void DocumentTab::recoverDocState (DocStateManager::State state)
 	{
 		if (state.CurrentScale_ <= 0)
@@ -1425,7 +1417,17 @@ namespace Monocle
 		}
 		}
 
-		syncUIToLayMode ();
+		const auto action = [this]
+		{
+			switch (LayoutManager_->GetLayoutMode ())
+			{
+			case LayoutMode::OnePage:
+				return LayOnePage_;
+			case LayoutMode::TwoPages:
+				return LayTwoPages_;
+			}
+		} ();
+		action->setChecked (true);
 	}
 
 	void DocumentTab::setMoveMode (bool enable)
