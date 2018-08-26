@@ -819,19 +819,17 @@ namespace Monocle
 		LayOnePage_->setChecked (true);
 		LayOnePage_->setActionGroup (viewGroup);
 		connect (LayOnePage_,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (showOnePage ()));
+				&QAction::triggered,
+				[this] { SetLayoutMode (LayoutMode::OnePage); });
 		Toolbar_->addAction (LayOnePage_);
 
 		LayTwoPages_ = new QAction (tr ("Two pages"), this);
 		LayTwoPages_->setProperty ("ActionIcon", "page-2sides");
 		LayTwoPages_->setCheckable (true);
 		LayTwoPages_->setActionGroup (viewGroup);
-		connect (LayTwoPages_,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (showTwoPages ()));
+		connect (LayOnePage_,
+				&QAction::triggered,
+				[this] { SetLayoutMode (LayoutMode::TwoPages); });
 		Toolbar_->addAction (LayTwoPages_);
 
 		Toolbar_->addSeparator ();
@@ -888,6 +886,14 @@ namespace Monocle
 		}
 
 		CheckCurrentPageChange ();
+	}
+
+	void DocumentTab::SetLayoutMode (LayoutMode mode)
+	{
+		LayoutManager_->SetLayoutMode (mode);
+		Relayout ();
+
+		scheduleSaveState ();
 	}
 
 	QImage DocumentTab::GetSelectionImg ()
@@ -1383,22 +1389,6 @@ namespace Monocle
 
 		ZoomOut_->setEnabled (true);
 		ZoomIn_->setEnabled (newIndex < maxIdx);
-	}
-
-	void DocumentTab::showOnePage ()
-	{
-		LayoutManager_->SetLayoutMode (LayoutMode::OnePage);
-		Relayout ();
-
-		scheduleSaveState ();
-	}
-
-	void DocumentTab::showTwoPages ()
-	{
-		LayoutManager_->SetLayoutMode (LayoutMode::TwoPages);
-		Relayout ();
-
-		scheduleSaveState ();
 	}
 
 	void DocumentTab::syncUIToLayMode ()

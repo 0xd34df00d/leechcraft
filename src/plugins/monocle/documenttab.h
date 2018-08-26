@@ -175,6 +175,7 @@ namespace Monocle
 
 		QPoint GetViewportCenter () const;
 		void Relayout ();
+		void SetLayoutMode (LayoutMode);
 
 		QImage GetSelectionImg ();
 		QString GetSelectionText () const;
@@ -208,8 +209,6 @@ namespace Monocle
 		void zoomOut ();
 		void zoomIn ();
 
-		void showOnePage ();
-		void showTwoPages ();
 		void syncUIToLayMode ();
 
 		void recoverDocState (DocStateManager::State);
