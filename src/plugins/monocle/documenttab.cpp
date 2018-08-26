@@ -814,7 +814,7 @@ namespace Monocle
 		LayTwoPages_->setProperty ("ActionIcon", "page-2sides");
 		LayTwoPages_->setCheckable (true);
 		LayTwoPages_->setActionGroup (viewGroup);
-		connect (LayOnePage_,
+		connect (LayTwoPages_,
 				&QAction::triggered,
 				[this] { SetLayoutMode (LayoutMode::TwoPages); });
 		Toolbar_->addAction (LayTwoPages_);
