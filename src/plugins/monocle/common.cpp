@@ -46,7 +46,7 @@ namespace LeechCraft::Monocle
 		}
 	}
 
-	LayoutMode Name2LayoutMode (QByteArray name)
+	LayoutMode Name2LayoutMode (const QByteArray& name)
 	{
 		if (name == "one")
 			return LayoutMode::OnePage;
