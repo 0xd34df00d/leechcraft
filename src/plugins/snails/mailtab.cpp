@@ -600,7 +600,7 @@ namespace Snails
 		{
 			const auto& headerClass = GenerateId (msg->GetHTMLBody (), "header");
 
-			QString html = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">";
+			QString html = R"(<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">)";
 			html += "<html xmlns='http://www.w3.org/1999/xhtml'><head><title>Message</title><style>";
 			html += GetStyle (headerClass);
 			html += "</style>";
@@ -644,7 +644,7 @@ namespace Snails
 
 		QString ToHtmlError (const QString& err)
 		{
-			QString html = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">";
+			QString html = R"(<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">)";
 			html += "<html xmlns='http://www.w3.org/1999/xhtml'><head><title>Message</title><style>";
 			html += GetStyle (".header");
 			html += "</style><body><div style='errormessage'>" + err + "</div></body></html>";
