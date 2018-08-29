@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "pagenumlabel.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -37,6 +38,9 @@ namespace Monocle
 	: QSpinBox { parent }
 	{
 		setSpecialValueText (" ");
+
+		XmlSettingsManager::Instance ().RegisterObject ("InvertedPageNumLabel",
+				this, [this] (const auto& invertedVar) { Inverted_ = invertedVar.toBool (); });
 	}
 
 	void PageNumLabel::SetTotalPageCount (int count)
@@ -53,6 +57,13 @@ namespace Monocle
 		blockSignals (true);
 		setValue (page + 1);
 		blockSignals (false);
+	}
+
+	void PageNumLabel::stepBy (int steps)
+	{
+		if (Inverted_)
+			steps = -steps;
+		QAbstractSpinBox::stepBy (steps);
 	}
 }
 }

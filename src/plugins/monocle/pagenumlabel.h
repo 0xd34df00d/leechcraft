@@ -37,11 +37,14 @@ namespace Monocle
 {
 	class PageNumLabel : public QSpinBox
 	{
+		bool Inverted_ = false;
 	public:
 		PageNumLabel (QWidget* = nullptr);
 
 		void SetTotalPageCount (int);
 		void SetCurrentPage (int);
+	private:
+		void stepBy (int) override;
 	};
 }
 }

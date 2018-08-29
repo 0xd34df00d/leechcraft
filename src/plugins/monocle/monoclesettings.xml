@@ -10,6 +10,9 @@
 		</tab>
 		<tab>
 			<label value="Behaviour" />
+			<item type="checkbox" property="InvertedPageNumLabel" default="true">
+				<label value="Inverted page number label behaviour" />
+			</item>
 			<item type="checkbox" property="InhibitScreensaver" default="true">
 				<label value="Inhibit screensaver while a Monocle tab is active" />
 			</item>
