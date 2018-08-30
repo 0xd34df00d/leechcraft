@@ -91,7 +91,6 @@ namespace Poshuku
 
 		Util::WkFontsWidget *FontsWidget_;
 	public:
-		virtual ~Poshuku ();
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
 		void Release ();

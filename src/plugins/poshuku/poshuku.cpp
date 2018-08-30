@@ -57,11 +57,6 @@ namespace Poshuku
 {
 	using LeechCraft::Util::TagsCompletionModel;
 
-	Poshuku::~Poshuku ()
-	{
-		Core::Instance ().setParent (0);
-	}
-
 	void Poshuku::Init (ICoreProxy_ptr coreProxy)
 	{
 		Util::InstallTranslator ("poshuku");
