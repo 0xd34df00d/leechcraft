@@ -34,6 +34,7 @@
 #include <util/sll/visitor.h>
 #include <util/network/customnetworkreply.h>
 #include "customwebview.h"
+#include "customwebpage.h"
 
 Q_DECLARE_METATYPE (QNetworkReply*)
 
@@ -108,6 +109,9 @@ namespace WebKitView
 
 		if (frame == page->mainFrame () &&
 				frame->requestedUrl () == reqUrl)
+			return;
+
+		if (reqUrl == qobject_cast<CustomWebPage*> (page)->GetLoadingURL ())
 			return;
 
 		const auto view = qobject_cast<CustomWebView*> (page->view ());
