@@ -155,6 +155,11 @@ namespace WebKitView
 		LinkOpenModifier_->InstallOn (view ());
 	}
 
+	QUrl CustomWebPage::GetLoadingURL () const
+	{
+		return LoadingURL_;
+	}
+
 	bool CustomWebPage::supportsExtension (QWebPage::Extension e) const
 	{
 		auto proxy = std::make_shared<Util::DefaultHookProxy> ();

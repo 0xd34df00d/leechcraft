@@ -71,6 +71,8 @@ namespace WebKitView
 
 		void HandleViewReady ();
 
+		QUrl GetLoadingURL () const;
+
 		bool supportsExtension (Extension) const;
 		bool extension (Extension, const ExtensionOption*, ExtensionReturn*);
 	private slots:
