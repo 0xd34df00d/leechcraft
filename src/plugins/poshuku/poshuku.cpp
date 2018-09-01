@@ -62,7 +62,6 @@ namespace Poshuku
 		Util::InstallTranslator ("poshuku");
 
 		BrowserWidget::SetParentMultiTabs (this);
-		Core::Instance ().setParent (this);
 		Core::Instance ().SetProxy (coreProxy);
 
 		ShortcutMgr_ = new Util::ShortcutManager { coreProxy };
@@ -156,7 +155,6 @@ namespace Poshuku
 
 	void Poshuku::Release ()
 	{
-		Core::Instance ().setParent (0);
 		Core::Instance ().Release ();
 		XmlSettingsDialog_.reset ();
 	}
