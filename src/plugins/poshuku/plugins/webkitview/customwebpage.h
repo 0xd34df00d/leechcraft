@@ -73,8 +73,8 @@ namespace WebKitView
 
 		QUrl GetLoadingURL () const;
 
-		bool supportsExtension (Extension) const;
-		bool extension (Extension, const ExtensionOption*, ExtensionReturn*);
+		bool supportsExtension (Extension) const override;
+		bool extension (Extension, const ExtensionOption*, ExtensionReturn*) override;
 	private slots:
 		void handleContentsChanged ();
 		void handleDatabaseQuotaExceeded (QWebFrame*, QString);
@@ -89,17 +89,15 @@ namespace WebKitView
 		void handleWindowCloseRequested ();
 		void fillForms (QWebFrame*);
 	protected:
-		virtual bool acceptNavigationRequest (QWebFrame*,
-				const QNetworkRequest&, QWebPage::NavigationType);
-		virtual QString chooseFile (QWebFrame*, const QString&);
-		virtual QObject* createPlugin (const QString&, const QUrl&,
-				const QStringList&, const QStringList&);
-		virtual QWebPage* createWindow (WebWindowType);
-		virtual void javaScriptAlert (QWebFrame*, const QString&);
-		virtual bool javaScriptConfirm (QWebFrame*, const QString&);
-		virtual void javaScriptConsoleMessage (const QString&, int, const QString&);
-		virtual bool javaScriptPrompt (QWebFrame*, const QString&, const QString&, QString*);
-		virtual QString userAgentForUrl (const QUrl&) const;
+		bool acceptNavigationRequest (QWebFrame*, const QNetworkRequest&, QWebPage::NavigationType) override;
+		QString chooseFile (QWebFrame*, const QString&) override;
+		QObject* createPlugin (const QString&, const QUrl&, const QStringList&, const QStringList&) override;
+		QWebPage* createWindow (WebWindowType) override;
+		void javaScriptAlert (QWebFrame*, const QString&) override;
+		bool javaScriptConfirm (QWebFrame*, const QString&) override;
+		void javaScriptConsoleMessage (const QString&, int, const QString&) override;
+		bool javaScriptPrompt (QWebFrame*, const QString&, const QString&, QString*) override;
+		QString userAgentForUrl (const QUrl&) const override;
 	private:
 		bool HandleExtensionProtocolUnknown (const ErrorPageExtensionOption*);
 		void FillErrorSuggestions ();
