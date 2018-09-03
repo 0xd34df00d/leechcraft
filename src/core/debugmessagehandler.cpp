@@ -406,32 +406,45 @@ namespace
 		return file;
 	}
 
+	auto MakeColorTable ()
+	{
+		static const auto colorfgbg = QString::fromLatin1 (qgetenv ("COLORFGBG")).section (';', 1);
+
+		bool dark = false;
+		bool light = false;
+
+		if (!colorfgbg.isEmpty ())
+		{
+			bool ok;
+			if (const auto num = colorfgbg.toInt (&ok); ok)
+			{
+				dark = num >= 0 && num <= 8 && num != 7;
+				light = !dark;
+			}
+		}
+
+		QList<QByteArray> result;
+		for (int i = 30; i <= 37; ++i)
+		{
+			if ((i == 30 && dark) || (i == 37 && light))
+				continue;
+
+			auto str = QByteArray::number (i);
+			result << str
+					<< "1;" + str;
+		}
+
+		return result;
+	}
+
 	QByteArray Colorize (bool shouldColorize, const QByteArray& str)
 	{
 		if (!shouldColorize)
 			return str;
 
-		static const QByteArray table [] =
-		{
-			"31",
-			"32",
-			"33",
-			"34",
-			"35",
-			"36",
-			"37",
-			"1;31",
-			"1;32",
-			"1;33",
-			"1;34",
-			"1;35",
-			"1;36",
-			"1;37"
-		};
+		static const auto table = MakeColorTable ();
 
-		constexpr auto tableSize = sizeof (table) / sizeof (table [0]);
-
-		const auto hash = qHash (str) % tableSize;
+		const auto hash = qHash (str) % table.size ();
 		return "\x1b[" + table [hash] + "m" + str + "\x1b[0m";
 	}
 }
