@@ -67,11 +67,8 @@ namespace Snails
 		QPair<QFont, QFontMetrics> GetSubjectFont (const QModelIndex& index,
 				const QStyleOptionViewItem& option)
 		{
-			const bool isRead = index.data (MailModel::MailRole::IsRead).toBool ();
-			const bool isEnabled = index.flags () & Qt::ItemIsEnabled;
-
 			auto subjectFont = option.font;
-			if (!isRead && isEnabled)
+			if (!index.data (MailModel::MailRole::IsRead).toBool ())
 				subjectFont.setBold (true);
 
 			return { subjectFont, QFontMetrics { subjectFont } };
@@ -139,11 +136,7 @@ namespace Snails
 	void MailTreeDelegate::paint (QPainter *painter,
 			const QStyleOptionViewItem& stockItem, const QModelIndex& index) const
 	{
-		const bool isEnabled = index.flags () & Qt::ItemIsEnabled;
-
 		auto option = stockItem;
-		if (!isEnabled)
-			option.font.setStrikeOut (true);
 
 		const auto style = GetStyle (option);
 
