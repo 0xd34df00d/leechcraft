@@ -146,23 +146,12 @@ namespace Snails
 		case Qt::DecorationRole:
 		{
 			QString iconName;
-
-			switch (column)
-			{
-			case Column::StatusIcon:
-				if (!msg->IsRead ())
-					iconName = "mail-unread-new";
-				else if (structItem->UnreadChildren_.size ())
-					iconName = "mail-unread";
-				else
-					iconName = "mail-read";
-				break;
-			default:
-				break;
-			}
-
-			if (iconName.isEmpty ())
-				return {};
+			if (!msg->IsRead ())
+				iconName = "mail-unread-new";
+			else if (structItem->UnreadChildren_.size ())
+				iconName = "mail-unread";
+			else
+				iconName = "mail-read";
 
 			return Core::Instance ().GetProxy ()->GetIconThemeManager ()->GetIcon (iconName);
 		}
