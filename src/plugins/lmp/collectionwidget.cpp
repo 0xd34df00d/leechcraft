@@ -59,6 +59,7 @@ namespace LMP
 			: QSortFilterProxyModel { parent }
 			{
 				setDynamicSortFilter (true);
+				setRecursiveFilteringEnabled (true);
 			}
 		protected:
 			bool filterAcceptsRow (int sourceRow, const QModelIndex& sourceParent) const
