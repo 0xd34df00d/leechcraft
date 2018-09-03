@@ -93,6 +93,8 @@ namespace Snails
 	{
 		Ui_.setupUi (this);
 
+		Ui_.TreeViewSplitter_->setSizes ({ Ui_.MailTree_->minimumWidth (), Ui_.MailView_->minimumWidth () });
+
 		const auto mailWebPage = new MailWebPage { Proxy_, Ui_.MailView_ };
 		connect (mailWebPage,
 				&MailWebPage::attachmentSelected,

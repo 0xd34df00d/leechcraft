@@ -92,7 +92,7 @@
          <number>0</number>
         </property>
         <item>
-         <widget class="QSplitter" name="splitter_4">
+         <widget class="QSplitter" name="TreeViewSplitter_">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
