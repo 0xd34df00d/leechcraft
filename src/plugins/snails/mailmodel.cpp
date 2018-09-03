@@ -49,8 +49,6 @@ namespace Snails
 
 		QSet<QByteArray> UnreadChildren_;
 
-		bool IsAvailable_ = true;
-
 		bool IsChecked_ = false;
 
 		TreeNode () = default;
@@ -214,11 +212,6 @@ namespace Snails
 		flags |= Qt::ItemIsDragEnabled;
 		if (index.column () == static_cast<int> (Column::Subject))
 			flags |= Qt::ItemIsEditable;
-
-		const auto structItem = static_cast<TreeNode*> (index.internalPointer ());
-		if (!structItem->IsAvailable_)
-			flags &= ~Qt::ItemIsEnabled;
-
 		return flags;
 	}
 
@@ -445,14 +438,7 @@ namespace Snails
 	void MailModel::MarkUnavailable (const QList<QByteArray>& ids)
 	{
 		for (const auto& id : ids)
-			for (const auto& node : FolderId2Nodes_.value (id))
-			{
-				if (!node->IsAvailable_)
-					continue;
-
-				node->IsAvailable_ = false;
-				EmitRowChanged (node);
-			}
+			Remove (id);
 	}
 
 	QList<QByteArray> MailModel::GetCheckedIds () const
