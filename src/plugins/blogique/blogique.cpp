@@ -108,6 +108,7 @@ namespace Blogique
 
 	void Plugin::Release ()
 	{
+		Core::Instance ().Release ();
 	}
 
 	QString Plugin::GetName () const

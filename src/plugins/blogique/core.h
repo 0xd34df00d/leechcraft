@@ -73,6 +73,8 @@ namespace Blogique
 		void SetCoreProxy (ICoreProxy_ptr proxy);
 		ICoreProxy_ptr GetCoreProxy ();
 
+		void Release ();
+
 		void AddPlugin (QObject *plugin);
 
 		QList<IBloggingPlatform*> GetBloggingPlatforms () const;

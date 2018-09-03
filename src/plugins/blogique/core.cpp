@@ -87,6 +87,11 @@ namespace Blogique
 		return Proxy_;
 	}
 
+	void Core::Release ()
+	{
+		BlogPlatformPlugins_.clear ();
+	}
+
 	void Core::AddPlugin (QObject *plugin)
 	{
 		IPlugin2 *plugin2 = qobject_cast<IPlugin2*> (plugin);
