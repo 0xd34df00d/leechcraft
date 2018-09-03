@@ -143,17 +143,6 @@ namespace Snails
 			return structItem->IsChecked_ ?
 					Qt::Checked :
 					Qt::Unchecked;
-		case Qt::TextAlignmentRole:
-		{
-			switch (column)
-			{
-			case Column::StatusIcon:
-			case Column::UnreadChildren:
-				return Qt::AlignHCenter;
-			default:
-				return {};
-			}
-		}
 		case Qt::DecorationRole:
 		{
 			QString iconName;
