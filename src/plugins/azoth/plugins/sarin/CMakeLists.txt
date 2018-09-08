@@ -74,8 +74,7 @@ add_library (leechcraft_azoth_sarin SHARED
 	)
 target_link_libraries (leechcraft_azoth_sarin
 	${LEECHCRAFT_LIBRARIES}
-	${TOXCORE_LIBRARY}
-	${TOXAV_LIBRARY}
+	PkgConfig::TOX
 	${EXTRA_LIBRARIES}
 	)
 set_property(TARGET leechcraft_azoth_sarin PROPERTY CXX_STANDARD 17)
