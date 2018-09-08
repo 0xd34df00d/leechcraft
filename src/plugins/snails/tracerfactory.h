@@ -53,7 +53,7 @@ namespace Snails
 
 		TraceByteCounter CreateCounter ();
 
-		vmime::shared_ptr<vmime::net::tracer> create (vmime::shared_ptr<vmime::net::service>, const int) override;
+		vmime::shared_ptr<vmime::net::tracer> create (const vmime::shared_ptr<vmime::net::service>&, const int) override;
 	};
 }
 }

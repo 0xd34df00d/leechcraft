@@ -46,7 +46,7 @@ namespace Snails
 		return { SentBytes_, ReceivedBytes_ };
 	}
 
-	vmime::shared_ptr<vmime::net::tracer> TracerFactory::create (vmime::shared_ptr<vmime::net::service>, const int connId)
+	vmime::shared_ptr<vmime::net::tracer> TracerFactory::create (const vmime::shared_ptr<vmime::net::service>&, const int connId)
 	{
 		return vmime::make_shared<Tracer> (SentBytes_, ReceivedBytes_, Context_, connId, AccLogger_);
 	}

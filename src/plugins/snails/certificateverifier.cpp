@@ -40,7 +40,7 @@ namespace LeechCraft
 {
 namespace Snails
 {
-	void CertificateVerifier::verify (vmime::shared_ptr<vmime::security::cert::certificateChain> chain,
+	void CertificateVerifier::verify (const vmime::shared_ptr<vmime::security::cert::certificateChain>& chain,
 			const vmime::string& host)
 	{
 		namespace vsc = vmime::security::cert;

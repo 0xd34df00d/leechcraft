@@ -47,7 +47,7 @@ namespace Snails
 
 		std::shared_ptr<void> Disable ();
 	protected:
-		void messageChanged (vmime::shared_ptr<vmime::net::events::messageChangedEvent>) override;
+		void messageChanged (const vmime::shared_ptr<vmime::net::events::messageChangedEvent>&) override;
 	signals:
 		void messagesChanged (const QStringList& folder, const QList<size_t>& numbers);
 	};

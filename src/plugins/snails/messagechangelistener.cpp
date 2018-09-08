@@ -51,7 +51,7 @@ namespace Snails
 		return std::shared_ptr<void> (nullptr, [this] (void*) { IsEnabled_ = true; });
 	}
 
-	void MessageChangeListener::messageChanged (vmime::shared_ptr<vmime::net::events::messageChangedEvent> event)
+	void MessageChangeListener::messageChanged (const vmime::shared_ptr<vmime::net::events::messageChangedEvent>& event)
 	{
 		if (!IsEnabled_)
 			return;
