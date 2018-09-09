@@ -176,7 +176,7 @@ namespace Kinotify
 		auto prio = e.Additional_ ["Priority"].value<Priority> ();
 
 		const auto& sender = e.Additional_ ["org.LC.AdvNotifications.SenderID"].toString ();
-		const auto& event = e.Additional_ ["org.LC.AdvNotifications.EventID"].toString ();;
+		const auto& event = e.Additional_ ["org.LC.AdvNotifications.EventID"].toString ();
 		const auto& notifyId = sender + event;
 
 		auto sameIdPos = notifyId.isEmpty () ?
