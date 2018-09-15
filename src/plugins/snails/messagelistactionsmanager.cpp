@@ -358,6 +358,10 @@ namespace Snails
 		public:
 			QList<MessageListActionInfo> GetMessageActions (const Message_ptr&, const Header_ptr& headers, Account *acc) const override
 			{
+				const auto unsub = headers->findField ("List-Unsubscribe");
+				if (!unsub)
+					return {};
+
 				return
 				{
 					{
