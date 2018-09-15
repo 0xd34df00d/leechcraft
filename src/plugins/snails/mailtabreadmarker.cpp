@@ -64,6 +64,7 @@ namespace Snails
 			return;
 
 		Acc_->SetReadStatus (true, { curMsgId }, folder);
+		CurrMsg_.reset ();
 	}
 }
 }
