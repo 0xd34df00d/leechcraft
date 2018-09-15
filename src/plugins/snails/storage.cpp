@@ -381,7 +381,6 @@ namespace Snails
 		if (!file.exists ())
 			return;
 
-		qDebug () << "removing" << file.fileName () << file.size ();
 		if (!file.remove ())
 		{
 			qWarning () << Q_FUNC_INFO
