@@ -690,7 +690,6 @@ namespace Snails
 			MailSortFilterModel_->setSourceModel (nullptr);
 			MailModel_.reset ();
 			CurrAcc_.reset ();
-			ReadMarker_.reset ();
 
 			rebuildOpsToFolders ();
 		}
@@ -699,12 +698,6 @@ namespace Snails
 		if (!CurrAcc_)
 			return;
 
-		ReadMarker_.reset (new MailTabReadMarker { CurrAcc_, this },
-				[] (QObject *obj) { obj->deleteLater (); });
-		connect (this,
-				&MailTab::willMoveMessages,
-				ReadMarker_.get (),
-				&MailTabReadMarker::handleWillMoveMessages);
 		connect (this,
 				&MailTab::willMoveMessages,
 				&MailTab::deselectCurrent);
@@ -786,7 +779,6 @@ namespace Snails
 		}
 
 		const auto& folder = MailModel_->GetCurrentFolder ();
-		ReadMarker_->HandleDeselectingMessage (folder);
 
 		CurrMsg_.reset ();
 		CurrMsgFetchFuture_.reset ();
@@ -851,7 +843,7 @@ namespace Snails
 
 		CurrMsg_ = msg;
 
-		ReadMarker_->SetCurrentMessage (CurrMsg_);
+		CurrAcc_->SetReadStatus (true, { id }, folder);
 	}
 
 	void MailTab::rebuildOpsToFolders ()
@@ -1014,7 +1006,6 @@ namespace Snails
 			return;
 
 		CurrAcc_->SetReadStatus (false, GetSelectedIds (), MailModel_->GetCurrentFolder ());
-		ReadMarker_->SetCurrentMessage ({});
 	}
 
 	void MailTab::handleRemoveMsgs ()

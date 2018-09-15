@@ -51,7 +51,6 @@ namespace Util
 namespace Snails
 {
 	class MessageListEditorManager;
-	class MailTabReadMarker;
 	class ComposeMessageTabFactory;
 	class AccountsManager;
 	class Storage;
@@ -96,8 +95,6 @@ namespace Snails
 		Message_ptr CurrMsg_;
 
 		std::shared_ptr<Account::FetchWholeMessageResult_t> CurrMsgFetchFuture_;
-
-		std::shared_ptr<MailTabReadMarker> ReadMarker_;
 
 		bool HtmlViewAllowed_ = true;
 
