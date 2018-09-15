@@ -63,12 +63,12 @@ namespace Snails
 								Util::Visit (err,
 										[this] (const vmime::exceptions::authentication_error& err)
 										{
-											qWarning () << Q_FUNC_INFO
+											qWarning () << "Snails::ThreadPool::TestConnectivity():"
 													<< "initial thread authentication failed:"
 													<< err.what ();
 											HitLimit_ = true;
 										},
-										[] (const auto& e) { qWarning () << Q_FUNC_INFO << e.what (); });
+										[] (const auto& e) { qWarning () << "Snails::ThreadPool::TestConnectivity():" << e.what (); });
 							});
 
 					return result;
@@ -116,7 +116,7 @@ namespace Snails
 							Util::Visit (err,
 									[this, thread] (const vmime::exceptions::authentication_error& err)
 									{
-										qWarning () << Q_FUNC_INFO
+										qWarning () << "Snails::ThreadPool::RunThreads():"
 												<< "got auth error:"
 												<< err.what ()
 												<< "; seems like connections limit at"
@@ -128,7 +128,7 @@ namespace Snails
 										while (!Scheduled_.isEmpty ())
 											Scheduled_.takeFirst () (GetNextThread ());
 									},
-									[] (const auto& e) { qWarning () << Q_FUNC_INFO << e.what (); });
+									[] (const auto& e) { qWarning () << "Snails::ThreadPool::RunThreads():" << e.what (); });
 						});
 			};
 	}
@@ -178,7 +178,7 @@ namespace Snails
 				[thread] (const auto& ptr) { return ptr.get () == thread; });
 		if (pos == ExistingThreads_.end ())
 		{
-			qWarning () << Q_FUNC_INFO
+			qWarning () << "Snails::ThreadPool::HandleThreadOverflow():"
 					<< "thread"
 					<< thread
 					<< "is not found among existing threads";

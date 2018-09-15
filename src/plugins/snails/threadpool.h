@@ -119,7 +119,7 @@ namespace Snails
 									const auto& respStr = QString::fromStdString (e.response ());
 									if (respStr.contains ("simultaneous"))
 									{
-										qWarning () << Q_FUNC_INFO
+										qWarning () << "Snails::ThreadPool::PerformScheduledFunc():"
 												<< "seems like a thread has died, rescheduling...";
 										HandleThreadOverflow (thread);
 										PerformScheduledFunc (GetNextThread (), iface, prio, func, args...);
