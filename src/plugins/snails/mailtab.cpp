@@ -63,7 +63,6 @@
 #include "foldersmodel.h"
 #include "mailmodelsmanager.h"
 #include "messagelisteditormanager.h"
-#include "mailtabreadmarker.h"
 #include "composemessagetabfactory.h"
 #include "accountsmanager.h"
 #include "structures.h"
