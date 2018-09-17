@@ -1117,7 +1117,7 @@ namespace Snails
 		if (!ids.contains (currentId))
 			return;
 
-		selModel->clear ();
+		selModel->clearCurrentIndex ();
 	}
 
 	void MailTab::HandleAttachment (const QByteArray& id, const QStringList& folder, const QString& name)
