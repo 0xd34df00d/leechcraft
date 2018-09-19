@@ -58,8 +58,7 @@ namespace MPRIS
 		Player *Player_;
 	public:
 		PlayerAdaptor (FDOPropsAdaptor *fdo, Player*);
-		virtual ~PlayerAdaptor ();
-	public: // PROPERTIES
+	public:
 		Q_PROPERTY (bool CanControl READ GetCanControl)
 		bool GetCanControl () const;
 

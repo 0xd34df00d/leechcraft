@@ -71,10 +71,6 @@ namespace MPRIS
 				SLOT (handleVolumeChanged ()));
 	}
 
-	PlayerAdaptor::~PlayerAdaptor ()
-	{
-	}
-
 	bool PlayerAdaptor::GetCanControl () const
 	{
 		return true;
