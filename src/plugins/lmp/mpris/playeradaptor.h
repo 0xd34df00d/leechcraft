@@ -119,11 +119,6 @@ namespace MPRIS
 		void Seek (qlonglong Offset);
 		void SetPosition (const QDBusObjectPath& TrackId, qlonglong Position);
 		void Stop ();
-	private slots:
-		void handleSongChanged ();
-		void handlePlayModeChanged ();
-		void handleStateChanged ();
-		void handleVolumeChanged ();
 	signals:
 		void Seeked (qlonglong Position);
 	};

@@ -55,21 +55,21 @@ namespace MPRIS
 		setAutoRelaySignals (true);
 
 		connect (Player_,
-				SIGNAL (songChanged (MediaInfo)),
-				this,
-				SLOT (handleSongChanged ()));
+				&Player::songChanged,
+				[this] { Notify ("Metadata"); });
 		connect (Player_,
-				SIGNAL (playModeChanged (Player::PlayMode)),
-				this,
-				SLOT (handlePlayModeChanged ()));
+				&Player::playModeChanged,
+				[this]
+				{
+					Notify ("LoopStatus");
+					Notify ("Shuffle");
+				});
 		connect (Player_->GetSourceObject (),
-				SIGNAL (stateChanged (SourceState, SourceState)),
-				this,
-				SLOT (handleStateChanged ()));
+				&SourceObject::stateChanged,
+				[this] { Notify ("PlaybackStatus"); });
 		connect (Player_->GetAudioOutput (),
-				SIGNAL (volumeChanged (int)),
-				this,
-				SLOT (handleVolumeChanged ()));
+				&Output::volumeChanged,
+				[this] { Notify ("Volume"); });
 	}
 
 	bool PlayerAdaptor::GetCanControl () const
@@ -271,27 +271,6 @@ namespace MPRIS
 	void PlayerAdaptor::Stop ()
 	{
 		Player_->stop ();
-	}
-
-	void PlayerAdaptor::handleSongChanged ()
-	{
-		Notify ("Metadata");
-	}
-
-	void PlayerAdaptor::handlePlayModeChanged ()
-	{
-		Notify ("LoopStatus");
-		Notify ("Shuffle");
-	}
-
-	void PlayerAdaptor::handleStateChanged ()
-	{
-		Notify ("PlaybackStatus");
-	}
-
-	void PlayerAdaptor::handleVolumeChanged ()
-	{
-		Notify ("Volume");
 	}
 }
 }
