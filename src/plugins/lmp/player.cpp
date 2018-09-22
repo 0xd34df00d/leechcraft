@@ -143,8 +143,6 @@ namespace LMP
 	, Path_ (new Path (Source_, Output_))
 	, PRG_ { QDateTime::currentDateTime ().toTime_t () }
 	, RulesManager_ (new PlayerRulesManager (PlaylistModel_, this))
-	, FirstPlaylistRestore_ (true)
-	, PlayMode_ (PlayMode::Sequential)
 	{
 		qRegisterMetaType<QList<AudioSource>> ("QList<AudioSource>");
 		qRegisterMetaType<StringPair_t> ("StringPair_t");

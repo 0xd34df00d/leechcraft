@@ -97,7 +97,7 @@ namespace LMP
 
 		MediaInfo LastPhononMediaInfo_;
 
-		bool FirstPlaylistRestore_;
+		bool FirstPlaylistRestore_ = true;
 		bool IgnoreNextSaves_;
 	public:
 		enum class PlayMode
@@ -111,7 +111,7 @@ namespace LMP
 			RepeatWhole
 		};
 	private:
-		PlayMode PlayMode_;
+		PlayMode PlayMode_ = PlayMode::Sequential;
 
 		struct ResolveJobResult;
 
