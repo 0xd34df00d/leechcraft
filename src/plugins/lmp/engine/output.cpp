@@ -53,9 +53,6 @@ namespace LMP
 
 			QMetaObject::invokeMethod (output,
 					"volumeChanged",
-					Q_ARG (qreal, volume));
-			QMetaObject::invokeMethod (output,
-					"volumeChanged",
 					Q_ARG (int, std::round (volume * 100)));
 
 			return true;

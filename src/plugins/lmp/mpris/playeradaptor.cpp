@@ -67,7 +67,7 @@ namespace MPRIS
 				this,
 				SLOT (handleStateChanged ()));
 		connect (Player_->GetAudioOutput (),
-				SIGNAL (volumeChanged (qreal)),
+				SIGNAL (volumeChanged (int)),
 				this,
 				SLOT (handleVolumeChanged ()));
 	}

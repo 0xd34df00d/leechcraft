@@ -68,7 +68,6 @@ namespace LMP
 	private slots:
 		void saveVolume ();
 	signals:
-		void volumeChanged (qreal);
 		void volumeChanged (int);
 
 		void mutedChanged (bool);
