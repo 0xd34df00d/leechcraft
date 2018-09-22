@@ -35,6 +35,7 @@
 #include <QString>
 #include <QStringList>
 #include <QVariant>
+#include <util/sll/unreachable.h>
 #include "../player.h"
 #include "../engine/sourceobject.h"
 #include "../engine/output.h"
@@ -116,7 +117,8 @@ namespace MPRIS
 		case Player::PlayMode::ShuffleArtists:
 			return "None";
 		}
-		return "None";
+
+		Util::Unreachable ();
 	}
 
 	void PlayerAdaptor::SetLoopStatus (const QString& value)
