@@ -806,7 +806,7 @@ namespace Snails
 	auto AccountThreadWorker::Synchronize (const QList<QStringList>& foldersToFetch, const QByteArray& last) -> SyncResult
 	{
 		auto folders = SyncIMAPFolders ();
-		const auto& fetchResult = FetchMessagesIMAP (foldersToFetch, last);
+		auto fetchResult = FetchMessagesIMAP (foldersToFetch, last);
 		return { folders, fetchResult };
 	}
 
