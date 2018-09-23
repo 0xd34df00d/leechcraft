@@ -1420,7 +1420,7 @@ namespace oral
 			{
 				return HandleSelectorResult
 				{
-					"count(" + GetFieldNamePtr<Ptr> () + ")",
+					"count(" + GetQualifiedFieldNamePtr<Ptr> () + ")",
 					[] (const QSqlQuery& q, int startIdx = 0) { return q.value (startIdx).toLongLong (); },
 					ResultBehaviour::First {}
 				};
@@ -1431,7 +1431,7 @@ namespace oral
 			{
 				return HandleSelectorResult
 				{
-					"min(" + GetFieldNamePtr<Ptr> () + ")",
+					"min(" + GetQualifiedFieldNamePtr<Ptr> () + ")",
 					MakeIndexedQueryHandler<Ptr> (),
 					ResultBehaviour::First {}
 				};
@@ -1442,7 +1442,7 @@ namespace oral
 			{
 				return HandleSelectorResult
 				{
-					"max(" + GetFieldNamePtr<Ptr> () + ")",
+					"max(" + GetQualifiedFieldNamePtr<Ptr> () + ")",
 					MakeIndexedQueryHandler<Ptr> (),
 					ResultBehaviour::First {}
 				};
@@ -1477,13 +1477,13 @@ namespace oral
 			template<auto... Ptrs>
 			QList<QString> HandleSuborder (sph::asc<Ptrs...>) const noexcept
 			{
-				return { (GetFieldNamePtr<Ptrs> () + " ASC")... };
+				return { (GetQualifiedFieldNamePtr<Ptrs> () + " ASC")... };
 			}
 
 			template<auto... Ptrs>
 			QList<QString> HandleSuborder (sph::desc<Ptrs...>) const noexcept
 			{
-				return { (GetFieldNamePtr<Ptrs> () + " DESC")... };
+				return { (GetQualifiedFieldNamePtr<Ptrs> () + " DESC")... };
 			}
 
 			template<typename... Suborders>
@@ -1500,7 +1500,7 @@ namespace oral
 			template<auto... Ptrs>
 			QString HandleGroup (GroupBy<Ptrs...>) const noexcept
 			{
-				return " GROUP BY " + QStringList { GetFieldNamePtr<Ptrs> ()... }.join (", ");
+				return " GROUP BY " + QStringList { GetQualifiedFieldNamePtr<Ptrs> ()... }.join (", ");
 			}
 		};
 
