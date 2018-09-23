@@ -111,7 +111,8 @@ namespace WebKitView
 				frame->requestedUrl () == reqUrl)
 			return;
 
-		if (reqUrl == qobject_cast<CustomWebPage*> (page)->GetLoadingURL ())
+		if (auto cwp = qobject_cast<CustomWebPage*> (page);
+			cwp && reqUrl == cwp->GetLoadingURL ())
 			return;
 
 		const auto view = qobject_cast<CustomWebView*> (page->view ());
