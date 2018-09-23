@@ -115,7 +115,7 @@ namespace Snails
 		Folder2Messages_t FetchMessagesIMAP (const QList<QStringList>&, const QByteArray&);
 		FolderMessages FetchMessagesInFolder (const QStringList&, const VmimeFolder_ptr&, const QByteArray&);
 
-		QList<Folder> SyncIMAPFolders (vmime::shared_ptr<vmime::net::store>);
+		QList<Folder> SyncIMAPFolders ();
 
 		void SetNoopTimeout (int);
 		void SendNoop ();

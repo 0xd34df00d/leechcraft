@@ -706,8 +706,10 @@ namespace Snails
 		}
 	}
 
-	QList<Folder> AccountThreadWorker::SyncIMAPFolders (vmime::shared_ptr<vmime::net::store> store)
+	QList<Folder> AccountThreadWorker::SyncIMAPFolders ()
 	{
+		auto store = MakeStore ();
+
 		const auto& root = store->getRootFolder ();
 		const auto& inbox = store->getDefaultFolder ();
 
@@ -778,8 +780,7 @@ namespace Snails
 
 	auto AccountThreadWorker::Synchronize (const QList<QStringList>& foldersToFetch, const QByteArray& last) -> SyncResult
 	{
-		const auto& store = MakeStore ();
-		const auto& folders = SyncIMAPFolders (store);
+		auto folders = SyncIMAPFolders ();
 		const auto& fetchResult = FetchMessagesIMAP (foldersToFetch, last);
 		return { folders, fetchResult };
 	}
