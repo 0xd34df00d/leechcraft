@@ -188,6 +188,13 @@ namespace oral
 			using S = MemberPtrStruct_t<Ptr>;
 			return GetFieldName<S, FieldIndex<Ptr> ()> ();
 		}
+
+		template<auto Ptr>
+		QString GetQualifiedFieldNamePtr () noexcept
+		{
+			using S = MemberPtrStruct_t<Ptr>;
+			return S::ClassName () + "." + GetFieldName<S, FieldIndex<Ptr> ()> ();
+		}
 	}
 
 	template<typename ImplFactory, typename T, typename = void>
