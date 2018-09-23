@@ -66,7 +66,7 @@ namespace Snails
 		AccountThread* GetThread ();
 
 		template<typename F, typename... Args>
-		QFuture<WrapFunctionType_t<F, Args...>> Schedule (TaskPriority prio, const F& func, const Args&... args)
+		auto Schedule (TaskPriority prio, const F& func, const Args&... args)
 		{
 			QFutureInterface<WrapFunctionType_t<F, Args...>> iface;
 
