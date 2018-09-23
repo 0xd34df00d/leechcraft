@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "composemessagetab.h"
+#include <optional>
 #include <QToolBar>
 #include <QWebFrame>
 #include <QMenu>
@@ -157,7 +158,7 @@ namespace Snails
 			return subj;
 		}
 
-		boost::optional<QString> CreateSubj (MsgType type, const Message_ptr& msg)
+		std::optional<QString> CreateSubj (MsgType type, const Message_ptr& msg)
 		{
 			switch (type)
 			{

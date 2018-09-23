@@ -318,7 +318,7 @@ namespace Snails
 		emit dataChanged (first, second);
 	}
 
-	boost::optional<QStringList> FoldersModel::GetFolderPath (FolderType type) const
+	std::optional<QStringList> FoldersModel::GetFolderPath (FolderType type) const
 	{
 		if (type == FolderType::Other)
 			return {};

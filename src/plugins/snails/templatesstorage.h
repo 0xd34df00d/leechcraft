@@ -30,7 +30,7 @@
 #pragma once
 
 #include <exception>
-#include <boost/optional.hpp>
+#include <optional>
 #include <QDir>
 #include <QString>
 #include <util/sll/eitherfwd.h>
@@ -54,7 +54,7 @@ namespace Snails
 		using LoadError_t = std::runtime_error;
 		using SaveError_t = std::runtime_error;
 
-		using LoadResult_t = Util::Either<LoadError_t, boost::optional<QString>>;
+		using LoadResult_t = Util::Either<LoadError_t, std::optional<QString>>;
 		using SaveResult_t = Util::Either<SaveError_t, Util::Void>;
 
 		LoadResult_t LoadTemplate (ContentType, MsgType, const Account*);

@@ -222,8 +222,7 @@ namespace Snails
 		return SynchronizeImpl (folders, {}, TaskPriority::Low);
 	}
 
-	QFuture<Account::SynchronizeResult_t> Account::Synchronize (const QStringList& path,
-			const QByteArray& last)
+	QFuture<Account::SynchronizeResult_t> Account::Synchronize (const QStringList& path, const QByteArray& last)
 	{
 		return SynchronizeImpl ({ path }, last, TaskPriority::High);
 	}
