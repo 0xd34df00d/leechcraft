@@ -466,6 +466,27 @@ namespace Snails
 		return { msg, header };
 	}
 
+	namespace
+	{
+		template<typename F, typename D>
+		auto TryOrDie (F&& func, D&& disconnect, int retries = 3)
+		{
+			try
+			{
+				return std::invoke (std::forward<F> (func));
+			}
+			catch (const std::exception& e)
+			{
+				std::invoke (std::forward<D> (disconnect));
+
+				if (retries)
+					return TryOrDie (std::forward<F> (func), std::forward<D> (disconnect), --retries);
+				else
+					throw;
+			}
+		}
+	}
+
 	auto AccountThreadWorker::FetchMessagesIMAP (const QList<QStringList>& origFolders,
 			const QByteArray& last) -> Folder2Messages_t
 	{
