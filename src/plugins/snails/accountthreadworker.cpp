@@ -497,8 +497,12 @@ namespace Snails
 
 		for (const auto& folder : origFolders)
 		{
-			if (const auto& netFolder = GetFolder (folder, FolderMode::ReadOnly))
-				result [folder] = FetchMessagesInFolder (folder, netFolder, last);
+			TryOrDie ([this] { Disconnect (); },
+					[&]
+					{
+						if (const auto& netFolder = GetFolder (folder, FolderMode::ReadOnly))
+							result [folder] = FetchMessagesInFolder (folder, netFolder, last);
+					});
 
 			pl->Increment ();
 		}
