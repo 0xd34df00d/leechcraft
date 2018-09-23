@@ -528,7 +528,7 @@ namespace Snails
 								<< endVal
 								<< "because:"
 								<< e.what ();
-						return {};
+						throw;
 					}
 					prog->progress (i, count);
 				}
@@ -549,7 +549,7 @@ namespace Snails
 							<< lastId
 							<< "because:"
 							<< e.what ();
-					return {};
+					throw;
 				}
 			}
 		}
