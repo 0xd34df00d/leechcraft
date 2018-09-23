@@ -132,8 +132,7 @@ namespace FXB
 	{
 		auto setRenderHint = [this] (const QByteArray& option, QPainter::RenderHint hint)
 		{
-			SetRenderHint (hint,
-					XmlSettingsManager::Instance ().property (option).toBool ());
+			SetRenderHint (hint, XmlSettingsManager::Instance ().property (option).toBool ());
 		};
 
 		setRenderHint ("EnableAntialiasing", QPainter::Antialiasing);
