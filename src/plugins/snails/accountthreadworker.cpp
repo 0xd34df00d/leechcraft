@@ -469,7 +469,7 @@ namespace Snails
 	namespace
 	{
 		template<typename F, typename D>
-		auto TryOrDie (F&& func, D&& disconnect, int retries = 3)
+		auto TryOrDie (D&& disconnect, F&& func, int retries = 3)
 		{
 			try
 			{
