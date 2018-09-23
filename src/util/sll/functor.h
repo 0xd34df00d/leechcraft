@@ -30,6 +30,7 @@
 #pragma once
 
 #include <functional>
+#include <optional>
 #include <boost/optional.hpp>
 #include "typeclassutil.h"
 #include "void.h"
@@ -243,6 +244,28 @@ namespace Util
 				return {};
 
 			if constexpr (std::is_same_v<FmapResult_t<F>, boost::optional<Void>>)
+			{
+				std::invoke (f, *t);
+				return { Void {} };
+			}
+			else
+				return { std::invoke (f, *t) };
+		}
+	};
+
+	template<typename T>
+	struct InstanceFunctor<std::optional<T>>
+	{
+		template<typename F>
+		using FmapResult_t = std::optional<detail::WrapVoidResult_t<std::decay_t<std::result_of_t<F (T)>>>>;
+
+		template<typename F>
+		static FmapResult_t<F> Apply (const std::optional<T>& t, const F& f)
+		{
+			if (!t)
+				return {};
+
+			if constexpr (std::is_same_v<FmapResult_t<F>, std::optional<Void>>)
 			{
 				std::invoke (f, *t);
 				return { Void {} };

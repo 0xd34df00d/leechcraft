@@ -30,6 +30,7 @@
 #pragma once
 
 #include <numeric>
+#include <optional>
 #include <boost/optional.hpp>
 
 namespace LeechCraft
@@ -113,6 +114,20 @@ namespace Util
 		}
 
 		static boost::optional<T> Mplus (const boost::optional<T>& t1, const boost::optional<T>& t2)
+		{
+			return t1 ? t1 : t2;
+		}
+	};
+
+	template<typename T>
+	struct InstanceMonadPlus<std::optional<T>>
+	{
+		static std::optional<T> Mzero ()
+		{
+			return {};
+		}
+
+		static std::optional<T> Mplus (const std::optional<T>& t1, const std::optional<T>& t2)
 		{
 			return t1 ? t1 : t2;
 		}

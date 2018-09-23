@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <optional>
 #include <boost/optional.hpp>
 
 namespace LeechCraft
@@ -82,6 +83,36 @@ namespace Util
 
 		template<typename U>
 		static boost::optional<U> Pure (const U& v)
+		{
+			return { v };
+		}
+
+		template<typename AV>
+		static GSLResult_t<Type_t, AV> GSL (const Type_t& f, const AV& v)
+		{
+			if (!f || !v)
+				return {};
+
+			return { (*f) (*v) };
+		}
+	};
+
+	template<typename T>
+	struct InstanceApplicative<std::optional<T>>
+	{
+		using Type_t = std::optional<T>;
+
+		template<typename>
+		struct GSLResult;
+
+		template<typename V>
+		struct GSLResult<std::optional<V>>
+		{
+			using Type_t = std::optional<std::result_of_t<T (V)>>;
+		};
+
+		template<typename U>
+		static std::optional<U> Pure (const U& v)
 		{
 			return { v };
 		}

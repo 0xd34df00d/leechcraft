@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <optional>
 #include <boost/optional.hpp>
 #include "typelist.h"
 #include "applicative.h"
@@ -114,6 +115,22 @@ namespace Util
 
 		template<typename F>
 		static BindResult_t<F> Bind (const boost::optional<T>& value, const F& f)
+		{
+			if (!value)
+				return {};
+
+			return f (*value);
+		}
+	};
+
+	template<typename T>
+	struct InstanceMonad<std::optional<T>>
+	{
+		template<typename F>
+		using BindResult_t = std::result_of_t<F (T)>;
+
+		template<typename F>
+		static BindResult_t<F> Bind (const std::optional<T>& value, const F& f)
 		{
 			if (!value)
 				return {};
