@@ -151,7 +151,7 @@ namespace MPRIS
 						.arg (info.Title_) :
 					QString ("/local/%1")
 						.arg (info.LocalPath_);
-		result ["mpris:length"] = info.Length_ * 1000;
+		result ["mpris:length"] = info.Length_ * 1000000;
 		result ["mpris:artUrl"] = QUrl (Player_->GetCurrentAAPath ()).toLocalFile ();
 		result ["xesam:album"] = info.Album_;
 		result ["xesam:artist"] = QStringList { info.Artist_ };
