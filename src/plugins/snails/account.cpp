@@ -779,17 +779,6 @@ namespace Snails
 
 	void Account::HandleMessageCountFetched (int count, int unread, const QStringList& folder)
 	{
-		const auto storedCount = Storage_->GetNumMessages (this, folder);
-		if (storedCount && count != storedCount)
-		{
-			qDebug () << Q_FUNC_INFO
-					<< "outdated local stored count"
-					<< storedCount
-					<< "vs"
-					<< count;
-			Synchronize (folder, {});
-		}
-
 		FoldersModel_->SetFolderCounts (folder, unread, count);
 	}
 
