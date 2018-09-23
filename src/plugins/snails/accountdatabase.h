@@ -67,6 +67,7 @@ namespace Snails
 		AccountDatabase (const QDir&, const Account*);
 
 		QList<QByteArray> GetIDs (const QStringList& folder);
+		boost::optional<QByteArray> GetLastID (const QStringList& folder);
 		int GetMessageCount (const QStringList& folder);
 		int GetUnreadMessageCount (const QStringList& folder);
 		int GetMessageCount ();

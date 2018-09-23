@@ -33,6 +33,7 @@
 #include <QSqlError>
 #include <QSqlQuery>
 #include <QtDebug>
+#include <util/sll/functor.h>
 #include <util/db/dblock.h>
 #include <util/db/util.h>
 #include <util/db/oral/oral.h>
@@ -148,6 +149,19 @@ namespace Snails
 		return Msg2Folder_->Select (sph::fields<&Msg2Folder::FolderMessageId_>,
 				sph::f<&Folder::FolderPath_> == folder.join ("/") &&
 				sph::f<&Folder::Id_> == sph::f<&Msg2Folder::FolderId_>);
+	}
+
+	boost::optional<QByteArray> AccountDatabase::GetLastID (const QStringList& folder)
+	{
+		using Util::operator*;
+		return [] (auto tup) { return std::get<0> (tup); } *
+			Msg2Folder_->SelectOne.Build ()
+				.Select (sph::fields<&Msg2Folder::FolderMessageId_, &Msg2Folder::Id_>)
+				.Where (sph::f<&Folder::FolderPath_> == folder.join ("/") &&
+						sph::f<&Folder::Id_> == sph::f<&Msg2Folder::FolderId_>)
+				.Order (oral::OrderBy<sph::desc<&Msg2Folder::Id_>>)
+				.Limit (1)
+				();
 	}
 
 	int AccountDatabase::GetMessageCount (const QStringList& folder)

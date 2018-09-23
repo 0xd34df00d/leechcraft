@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <boost/optional.hpp>
 #include <QObject>
 #include <QDir>
 #include <QSettings>
@@ -66,6 +67,7 @@ namespace Snails
 		QList<Message_ptr> LoadMessages (Account*, const QStringList& folder, const QList<QByteArray>& ids);
 
 		QList<QByteArray> LoadIDs (Account*, const QStringList& folder);
+		boost::optional<QByteArray> GetLastID (Account*, const QStringList& folder);
 		void RemoveMessage (Account*, const QStringList&, const QByteArray&);
 
 		int GetNumMessages (Account*) const;

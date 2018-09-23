@@ -301,6 +301,11 @@ namespace Snails
 		return BaseForAccount (acc)->GetIDs (folder);
 	}
 
+	boost::optional<QByteArray> Storage::GetLastID (Account *acc, const QStringList& folder)
+	{
+		return BaseForAccount (acc)->GetLastID (folder);
+	}
+
 	void Storage::RemoveMessage (Account *acc, const QStringList& folder, const QByteArray& id)
 	{
 		PendingSaveMessages_ [acc].remove (id);
