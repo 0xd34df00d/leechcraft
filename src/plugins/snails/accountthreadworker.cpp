@@ -606,7 +606,7 @@ namespace Snails
 					res.first->AddFolder (folderName);
 					return res;
 				});
-		auto existing = Storage_->LoadIDs (A_, folderName);
+		const auto& existing = QSet<QByteArray>::fromList (Storage_->LoadIDs (A_, folderName));
 
 		QList<QByteArray> ids;
 
@@ -619,8 +619,6 @@ namespace Snails
 				++it;
 				continue;
 			}
-
-			existing.removeAll (msg->GetFolderID ());
 
 			bool isUpdated = false;
 
