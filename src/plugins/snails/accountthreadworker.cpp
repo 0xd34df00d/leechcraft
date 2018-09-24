@@ -515,6 +515,44 @@ namespace Snails
 	namespace
 	{
 		template<typename F>
+		auto GetAllMessagesInFolder (const VmimeFolder_ptr& folder, int desiredFlags, F progMaker)
+		{
+			const auto count = folder->getMessageCount ();
+
+			auto prog = progMaker ();
+			prog->start (count);
+
+			MessageVector_t messages;
+			messages.reserve (count);
+
+			const auto chunkSize = 100;
+			for (vmime::size_t i = 0; i < count; i += chunkSize)
+			{
+				const auto endVal = i + chunkSize;
+				const auto& set = vmime::net::messageSet::byNumber (i + 1, std::min (count, endVal));
+				try
+				{
+					auto theseMessages = folder->getAndFetchMessages (set, desiredFlags);
+					std::move (theseMessages.begin (), theseMessages.end (), std::back_inserter (messages));
+				}
+				catch (const std::exception& e)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "cannot get messages from"
+							<< i + 1
+							<< "to"
+							<< endVal
+							<< "because:"
+							<< e.what ();
+					throw;
+				}
+				prog->progress (i, count);
+			}
+
+			return messages;
+		}
+
+		template<typename F>
 		MessageVector_t GetMessagesInFolder (const VmimeFolder_ptr& folder, const QByteArray& lastId, F progMaker)
 		{
 			const int desiredFlags = vmime::net::fetchAttributes::FLAGS |
@@ -525,57 +563,21 @@ namespace Snails
 						vmime::net::fetchAttributes::ENVELOPE;
 
 			if (lastId.isEmpty ())
+				return GetAllMessagesInFolder (folder, desiredFlags, progMaker);
+
+			const auto& set = vmime::net::messageSet::byUID (lastId.constData (), "*");
+			try
 			{
-				const auto count = folder->getMessageCount ();
-
-				auto prog = progMaker ();
-				prog->start (count);
-
-				MessageVector_t messages;
-				messages.reserve (count);
-
-				const auto chunkSize = 100;
-				for (vmime::size_t i = 0; i < count; i += chunkSize)
-				{
-					const auto endVal = i + chunkSize;
-					const auto& set = vmime::net::messageSet::byNumber (i + 1, std::min (count, endVal));
-					try
-					{
-						auto theseMessages = folder->getAndFetchMessages (set, desiredFlags);
-						std::move (theseMessages.begin (), theseMessages.end (), std::back_inserter (messages));
-					}
-					catch (const std::exception& e)
-					{
-						qWarning () << Q_FUNC_INFO
-								<< "cannot get messages from"
-								<< i + 1
-								<< "to"
-								<< endVal
-								<< "because:"
-								<< e.what ();
-						throw;
-					}
-					prog->progress (i, count);
-				}
-
-				return messages;
+				return folder->getAndFetchMessages (set, desiredFlags);
 			}
-			else
+			catch (const std::exception& e)
 			{
-				const auto& set = vmime::net::messageSet::byUID (lastId.constData (), "*");
-				try
-				{
-					return folder->getAndFetchMessages (set, desiredFlags);
-				}
-				catch (const std::exception& e)
-				{
-					qWarning () << Q_FUNC_INFO
-							<< "cannot get messages from"
-							<< lastId
-							<< "because:"
-							<< e.what ();
-					throw;
-				}
+				qWarning () << Q_FUNC_INFO
+						<< "cannot get messages from"
+						<< lastId
+						<< "because:"
+						<< e.what ();
+				throw;
 			}
 		}
 	}
