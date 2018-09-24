@@ -1659,8 +1659,11 @@ namespace Poshuku
 		if (userText.isEmpty ())
 			return;
 
-		Ui_.URLFrame_->GetEdit ()->setText (userText);
-		Ui_.URLFrame_->GetEdit ()->repaint ();
+		if (value.scheme () != "data")
+		{
+			Ui_.URLFrame_->GetEdit ()->setText (userText);
+			Ui_.URLFrame_->GetEdit ()->repaint ();
+		}
 
 		emit urlChanged (value);
 	}
