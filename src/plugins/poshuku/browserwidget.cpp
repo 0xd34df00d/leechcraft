@@ -1357,7 +1357,7 @@ namespace Poshuku
 				}
 			}
 
-			addAction (tr ("Open &here"), [&] { WebView_->Load (info.LinkUrl_, {}); });
+			addAction (tr ("Open &here"), [&] { SetURL (info.LinkUrl_); });
 			addAction (tr ("Open in new &tab"),
 					[&] { Core::Instance ().MakeWebView (false)->Load (info.LinkUrl_); });
 			menu->addSeparator ();
@@ -1386,7 +1386,7 @@ namespace Poshuku
 		{
 			if (!menu->isEmpty ())
 				menu->addSeparator ();
-			addAction (tr ("Open image here"), [&] { WebView_->Load (info.ImageUrl_, {}); });
+			addAction (tr ("Open image here"), [&] { SetURL (info.ImageUrl_); });
 			addWebAction (IWebView::PageAction::OpenImageInNewWindow);
 			menu->addSeparator ();
 			addWebAction (IWebView::PageAction::DownloadImageToDisk);
