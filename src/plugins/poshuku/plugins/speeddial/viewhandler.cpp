@@ -38,6 +38,7 @@
 #include <util/sll/qtutil.h>
 #include <util/sll/prelude.h>
 #include <util/threads/futures.h>
+#include <interfaces/iwebbrowser.h>
 #include <interfaces/poshuku/istoragebackend.h>
 #include <interfaces/poshuku/iproxyobject.h>
 #include <interfaces/poshuku/ibrowserwidget.h>
@@ -221,7 +222,7 @@ namespace SpeedDial
 			w.writeEndElement ();
 		w.writeEndElement ();
 
-		View_->SetContent (html.toUtf8 (), "text/html;charset=UTF-8");
+		dynamic_cast<IWebWidget*> (BrowserWidget_)->SetHtml (html);
 
 		const QPointer<QLineEdit> edit { BrowserWidget_->GetURLEdit () };
 		Util::ExecuteLater ([edit]
