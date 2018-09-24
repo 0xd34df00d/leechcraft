@@ -652,8 +652,7 @@ namespace Snails
 		{
 			newMessages,
 			updatedMessages,
-			ids,
-			lastId.isEmpty () ? existing : QList<QByteArray> {}
+			ids
 		};
 	}
 

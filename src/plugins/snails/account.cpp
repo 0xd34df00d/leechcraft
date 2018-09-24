@@ -245,7 +245,6 @@ namespace Snails
 							const auto& folder = pair.first;
 							const auto& msgs = pair.second;
 
-							HandleMessagesRemoved (msgs.RemovedIds_, folder);
 							HandleGotOtherMessages (msgs.OtherIds_, folder);
 							HandleMsgHeaders (msgs.NewHeaders_, folder);
 							HandleUpdatedMessages (msgs.UpdatedMsgs_, folder);

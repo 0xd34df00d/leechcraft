@@ -101,7 +101,6 @@ namespace Snails
 			QList<MessageWHeaders_t> NewHeaders_;
 			QList<Message_ptr> UpdatedMsgs_;
 			QList<QByteArray> OtherIds_;
-			QList<QByteArray> RemovedIds_;
 		};
 		using Folder2Messages_t = QHash<QStringList, FolderMessages>;
 	private:
