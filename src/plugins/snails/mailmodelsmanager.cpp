@@ -90,7 +90,7 @@ namespace Snails
 					<< e.what ();
 		}
 
-		Acc_->Synchronize (path, ids.isEmpty () ? QByteArray {} : ids.last ());
+		Acc_->Synchronize (path);
 	}
 
 	void MailModelsManager::Append (const QList<Message_ptr>& messages)

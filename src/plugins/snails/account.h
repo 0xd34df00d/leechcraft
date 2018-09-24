@@ -174,7 +174,7 @@ namespace Snails
 		using SynchronizeResult_t = Util::Either<InvokeError_t<>, SyncStats>;
 
 		QFuture<SynchronizeResult_t> Synchronize ();
-		QFuture<SynchronizeResult_t> Synchronize (const QStringList&, const QByteArray&);
+		QFuture<SynchronizeResult_t> Synchronize (const QStringList&);
 
 		using FetchWholeMessageResult_t = QFuture<WrapReturnType_t<Snails::FetchWholeMessageResult_t>>;
 		FetchWholeMessageResult_t FetchWholeMessage (const Message_ptr&);

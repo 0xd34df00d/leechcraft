@@ -1166,7 +1166,7 @@ namespace Snails
 		if (!CurrAcc_)
 			return;
 
-		CurrAcc_->Synchronize (MailModel_->GetCurrentFolder (), {});
+		CurrAcc_->Synchronize (MailModel_->GetCurrentFolder ());
 	}
 }
 }
