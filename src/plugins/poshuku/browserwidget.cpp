@@ -633,7 +633,7 @@ namespace Poshuku
 	{
 		Ui_.URLFrame_->GetEdit ()->clear ();
 		HtmlMode_ = true;
-		WebView_->SetContent (html.toUtf8 (), "text/html", base);
+		WebView_->SetContent (html.toUtf8 (), "text/html;charset=UTF-8", base);
 	}
 
 	void BrowserWidget::SetNavBarVisible (bool visible)
