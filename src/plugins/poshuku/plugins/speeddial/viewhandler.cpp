@@ -34,7 +34,6 @@
 #include <QXmlStreamWriter>
 #include <QLineEdit>
 #include <util/util.h>
-#include <util/sll/delayedexecutor.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/prelude.h>
 #include <util/threads/futures.h>
@@ -223,20 +222,6 @@ namespace SpeedDial
 		w.writeEndElement ();
 
 		dynamic_cast<IWebWidget*> (BrowserWidget_)->SetHtml (html);
-
-		const QPointer<QLineEdit> edit { BrowserWidget_->GetURLEdit () };
-		Util::ExecuteLater ([edit]
-				{
-					if (!edit)
-						return;
-
-					const auto& text = edit->text ();
-					if (text == "about:blank")
-						edit->clear ();
-
-					if (text == "about:blank" || text.isEmpty ())
-						edit->setFocus (Qt::OtherFocusReason);
-				});
 	}
 
 	void ViewHandler::WriteTable (QXmlStreamWriter& w, const TopList_t& items,
