@@ -180,7 +180,6 @@ namespace Poshuku
 		void focusLineEdit ();
 		void handleShortcutHistory ();
 		void handleShortcutBookmarks ();
-		void loadURL (const QUrl&);
 		QLineEdit* getAddressBar () const;
 		QWidget* getSideBar () const;
 	private slots:
