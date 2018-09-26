@@ -480,7 +480,7 @@ namespace Snails
 				std::invoke (std::forward<D> (disconnect));
 
 				if (retries)
-					return TryOrDie (std::forward<F> (func), std::forward<D> (disconnect), --retries);
+					return TryOrDie (std::forward<D> (disconnect), std::forward<F> (func), --retries);
 				else
 					throw;
 			}
