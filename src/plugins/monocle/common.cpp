@@ -30,6 +30,7 @@
 #include "common.h"
 #include <QByteArray>
 #include <QtDebug>
+#include <util/sll/unreachable.h>
 
 namespace LeechCraft::Monocle
 {
@@ -44,6 +45,8 @@ namespace LeechCraft::Monocle
 		case LayoutMode::TwoPagesShifted:
 			return "twoshifted";
 		}
+
+		Util::Unreachable ();
 	}
 
 	LayoutMode Name2LayoutMode (const QByteArray& name)

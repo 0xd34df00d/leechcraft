@@ -1424,6 +1424,8 @@ namespace Monocle
 			case LayoutMode::TwoPagesShifted:
 				return LayTwoPagesShifted_;
 			}
+
+			Util::Unreachable ();
 		} ();
 		action->setChecked (true);
 	}
