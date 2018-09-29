@@ -210,6 +210,7 @@ namespace Snails
 		QFuture<QString> GetPassword (Direction);
 	private:
 		QFuture<SynchronizeResult_t> SynchronizeImpl (const QList<QStringList>&, const QByteArray&, TaskPriority);
+		void SyncStatuses (const QStringList&, TaskPriority);
 		QMutex* GetMutex () const;
 
 		void UpdateNoopInterval ();

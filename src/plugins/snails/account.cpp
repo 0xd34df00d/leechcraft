@@ -231,8 +231,11 @@ namespace Snails
 	QFuture<Account::SynchronizeResult_t> Account::SynchronizeImpl (const QList<QStringList>& folders,
 			const QByteArray& last, TaskPriority prio)
 	{
-		const auto& future = WorkerPool_->Schedule (prio, &AccountThreadWorker::Synchronize, folders, last);
-		return future * Util::Visitor
+		for (const auto& folder : folders)
+			SyncStatuses (folder, prio);
+
+		const auto& newFuture = WorkerPool_->Schedule (prio, &AccountThreadWorker::Synchronize, folders, last);
+		return newFuture * Util::Visitor
 				{
 					[=] (const AccountThreadWorker::SyncResult& right)
 					{
@@ -246,7 +249,6 @@ namespace Snails
 							const auto& msgs = pair.second;
 
 							HandleMsgHeaders (msgs.NewHeaders_, folder);
-							HandleUpdatedMessages (msgs.UpdatedMsgs_, folder);
 
 							UpdateFolderCount (folder);
 
@@ -265,6 +267,28 @@ namespace Snails
 								<< ":"
 								<< Util::Visit (err, [] (auto e) { return e.what (); });
 						return SynchronizeResult_t::Left (err);
+					}
+				};
+	}
+
+	void Account::SyncStatuses (const QStringList& folder, TaskPriority prio)
+	{
+		Util::Sequence (this, WorkerPool_->Schedule (prio, &AccountThreadWorker::SyncMessagesStatuses, folder)) >>
+				Util::Visitor
+				{
+					[=] (const AccountThreadWorker::SyncStatusesResult& result)
+					{
+						HandleMessagesRemoved (result.RemovedIds_, folder);
+
+						UpdateFolderCount (folder);
+					},
+					[=] (auto err)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "error synchronizing"
+								<< folder
+								<< ":"
+								<< Util::Visit (err, [] (auto e) { return e.what (); });
 					}
 				};
 	}

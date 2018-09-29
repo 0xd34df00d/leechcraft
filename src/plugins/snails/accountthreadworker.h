@@ -99,10 +99,14 @@ namespace Snails
 		struct FolderMessages
 		{
 			QList<MessageWHeaders_t> NewHeaders_;
-			QList<Message_ptr> UpdatedMsgs_;
-			QList<QByteArray> OtherIds_;
 		};
 		using Folder2Messages_t = QHash<QStringList, FolderMessages>;
+
+		struct SyncStatusesResult
+		{
+			QList<QByteArray> RemovedIds_;
+			QMap<QByteArray, bool> ReadStatusChanges_;
+		};
 	private:
 		vmime::shared_ptr<vmime::net::store> MakeStore ();
 		vmime::shared_ptr<vmime::net::transport> MakeTransport ();
@@ -113,6 +117,8 @@ namespace Snails
 
 		Folder2Messages_t FetchMessagesIMAP (const QList<QStringList>&, const QByteArray&);
 		FolderMessages FetchMessagesInFolder (const QStringList&, const VmimeFolder_ptr&, const QByteArray&);
+
+		SyncStatusesResult SyncMessagesStatusesImpl (const QStringList&, const VmimeFolder_ptr&);
 
 		QList<Folder> SyncIMAPFolders ();
 
@@ -131,6 +137,8 @@ namespace Snails
 			Folder2Messages_t Messages_;
 		};
 		SyncResult Synchronize (const QList<QStringList>&, const QByteArray& last);
+
+		SyncStatusesResult SyncMessagesStatuses (const QStringList&);
 
 		using MsgCountError_t = boost::variant<FolderNotFound>;
 		using MsgCountResult_t = Util::Either<MsgCountError_t, QPair<int, int>>;

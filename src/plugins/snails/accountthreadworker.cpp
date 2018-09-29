@@ -512,6 +512,19 @@ namespace Snails
 		return result;
 	}
 
+	auto AccountThreadWorker::SyncMessagesStatuses (const QStringList& folderName) -> SyncStatusesResult
+	{
+		return TryOrDie ([this] { Disconnect (); },
+				[&]
+				{
+					const auto& netFolder = GetFolder (folderName, FolderMode::ReadOnly);
+					if (!netFolder)
+						throw vmime::exceptions::not_connected {};
+
+					return SyncMessagesStatusesImpl (folderName, netFolder);
+				});
+	}
+
 	namespace
 	{
 		template<typename F>
@@ -607,6 +620,7 @@ namespace Snails
 
 		qDebug () << "done fetching, sent" << bytesCounter.GetSent ()
 				<< "bytes, received" << bytesCounter.GetReceived () << "bytes";
+
 		auto newMessages = Util::Map (messages, [this, &folderName] (const auto& msg)
 				{
 					auto res = FromHeaders (msg);
@@ -615,50 +629,47 @@ namespace Snails
 				});
 		const auto& existing = QSet<QByteArray>::fromList (Storage_->LoadIDs (A_, folderName));
 
-		QList<QByteArray> ids;
+		newMessages.erase (std::remove_if (newMessages.begin (), newMessages.end (),
+					[&existing] (const auto& pair) { return existing.contains (pair.first->GetFolderID ()); }),
+				newMessages.end ());
 
-		QList<Message_ptr> updatedMessages;
-		for (auto it = newMessages.begin (); it != newMessages.end ();)
+		return { newMessages };
+	}
+
+	auto AccountThreadWorker::SyncMessagesStatusesImpl (const QStringList& folderName,
+			const VmimeFolder_ptr& folder) -> SyncStatusesResult
+	{
+		const auto bytesCounter = TracerFactory_->CreateCounter ();
+
+		qDebug () << Q_FUNC_INFO << folderName << folder.get ();
+
+		auto remoteIds = GetAllMessageIdsInFolder (folder,
+				[this, folderName]
+				{
+					return A_->MakeProgressListener (tr ("Fetching messages in %1...")
+							.arg (folderName.join ("/")));
+				});
+
+		qDebug () << "done fetching, sent" << bytesCounter.GetSent ()
+				<< "bytes, received" << bytesCounter.GetReceived () << "bytes";
+
+		auto localIds = QSet<QByteArray>::fromList (Storage_->LoadIDs (A_, folderName));
+
+		SyncStatusesResult result;
+		for (const auto& msg : remoteIds)
 		{
-			const auto& msg = it->first;
-			if (!existing.contains (msg->GetFolderID ()))
-			{
-				++it;
+			const auto& uid = QByteArray::fromStdString (msg->getUID ());
+			if (!localIds.remove (uid))
 				continue;
-			}
 
-			bool isUpdated = false;
+			const auto isStoredRead = Storage_->IsMessageRead (A_, folderName, uid);
+			const auto isRemoteRead = msg->getFlags () & vmime::net::message::FLAG_SEEN;
 
-			auto updated = Storage_->LoadMessage (A_, folderName, msg->GetFolderID ());
-
-			if (updated->IsRead () != msg->IsRead ())
-			{
-				updated->SetRead (msg->IsRead ());
-				isUpdated = true;
-			}
-
-			auto sumFolders = updated->GetFolders ();
-			if (!folderName.isEmpty () &&
-					!sumFolders.contains (folderName))
-			{
-				updated->AddFolder (folderName);
-				isUpdated = true;
-			}
-
-			if (isUpdated)
-				updatedMessages << updated;
-			else
-				ids << msg->GetFolderID ();
-
-			it = newMessages.erase (it);
+			if (isStoredRead != isRemoteRead)
+				result.ReadStatusChanges_ [uid] = isRemoteRead;
 		}
-
-		return
-		{
-			newMessages,
-			updatedMessages,
-			ids
-		};
+		result.RemovedIds_ = localIds.toList ();
+		return result;
 	}
 
 	namespace
