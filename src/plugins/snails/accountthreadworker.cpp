@@ -580,6 +580,13 @@ namespace Snails
 				throw;
 			}
 		}
+
+		template<typename F>
+		MessageVector_t GetAllMessageIdsInFolder (const VmimeFolder_ptr& folder, F progMaker)
+		{
+			const int desiredFlags = vmime::net::fetchAttributes::FLAGS;
+			return GetAllMessagesInFolder (folder, desiredFlags, progMaker);
+		}
 	}
 
 	auto AccountThreadWorker::FetchMessagesInFolder (const QStringList& folderName,
