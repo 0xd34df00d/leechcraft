@@ -245,7 +245,6 @@ namespace Snails
 							const auto& folder = pair.first;
 							const auto& msgs = pair.second;
 
-							HandleGotOtherMessages (msgs.OtherIds_, folder);
 							HandleMsgHeaders (msgs.NewHeaders_, folder);
 							HandleUpdatedMessages (msgs.UpdatedMsgs_, folder);
 
@@ -744,17 +743,6 @@ namespace Snails
 		Storage_->SaveMessages (this, folder, messages);
 
 		MailModelsManager_->Update (messages);
-	}
-
-	void Account::HandleGotOtherMessages (const QList<QByteArray>& ids, const QStringList& folder)
-	{
-		qDebug () << Q_FUNC_INFO << ids.size () << folder;
-		if (ids.isEmpty ())
-			return;
-
-		const auto& msgs = Storage_->LoadMessages (this, folder, ids);
-
-		MailModelsManager_->Append (msgs);
 	}
 
 	void Account::HandleMessagesRemoved (const QList<QByteArray>& ids, const QStringList& folder)
