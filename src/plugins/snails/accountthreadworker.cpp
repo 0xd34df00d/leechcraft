@@ -528,41 +528,10 @@ namespace Snails
 	namespace
 	{
 		template<typename F>
-		auto GetAllMessagesInFolder (const VmimeFolder_ptr& folder, int desiredFlags, F progMaker)
+		auto GetAllMessagesInFolder (const VmimeFolder_ptr& folder, int desiredFlags, F)
 		{
-			const auto count = folder->getMessageCount ();
-
-			auto prog = progMaker ();
-			prog->start (count);
-
-			MessageVector_t messages;
-			messages.reserve (count);
-
-			const auto chunkSize = 100;
-			for (vmime::size_t i = 0; i < count; i += chunkSize)
-			{
-				const auto endVal = i + chunkSize;
-				const auto& set = vmime::net::messageSet::byNumber (i + 1, std::min (count, endVal));
-				try
-				{
-					auto theseMessages = folder->getAndFetchMessages (set, desiredFlags);
-					std::move (theseMessages.begin (), theseMessages.end (), std::back_inserter (messages));
-				}
-				catch (const std::exception& e)
-				{
-					qWarning () << Q_FUNC_INFO
-							<< "cannot get messages from"
-							<< i + 1
-							<< "to"
-							<< endVal
-							<< "because:"
-							<< e.what ();
-					throw;
-				}
-				prog->progress (i, count);
-			}
-
-			return messages;
+			const auto& set = vmime::net::messageSet::byNumber (1, -1);
+			return folder->getAndFetchMessages (set, desiredFlags);
 		}
 
 		template<typename F>
