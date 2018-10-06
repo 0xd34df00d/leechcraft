@@ -646,7 +646,7 @@ namespace Snails
 		auto remoteIds = GetAllMessageIdsInFolder (folder,
 				[this, folderName]
 				{
-					return A_->MakeProgressListener (tr ("Fetching messages in %1...")
+					return A_->MakeProgressListener (tr ("Fetching message IDs in %1...")
 							.arg (folderName.join ("/")));
 				});
 
