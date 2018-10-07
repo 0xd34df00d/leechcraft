@@ -694,6 +694,12 @@ namespace oral
 			{
 				return Left_.template AdditionalTables<T> () + Right_.template AdditionalTables<T> ();
 			}
+
+			template<typename T>
+			constexpr static bool HasAdditionalTables () noexcept
+			{
+				return L::template HasAdditionalTables<T> () || R::template HasAdditionalTables<T> ();
+			}
 		};
 
 		template<auto... Ptr>
@@ -727,6 +733,12 @@ namespace oral
 					return { Seq::ClassName () };
 			}
 
+			template<typename T>
+			constexpr static bool HasAdditionalTables () noexcept
+			{
+				return !std::is_same_v<MemberPtrStruct_t<Ptr>, T>;
+			}
+
 			template<typename R>
 			auto operator= (const R&) const noexcept;
 		};
@@ -756,6 +768,12 @@ namespace oral
 			QSet<QString> AdditionalTables () const noexcept
 			{
 				return {};
+			}
+
+			template<typename>
+			constexpr static bool HasAdditionalTables () noexcept
+			{
+				return false;
 			}
 		};
 
