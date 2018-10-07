@@ -141,7 +141,6 @@ namespace Snails
 				continue;
 
 			AddMessage (msg, acc);
-			UpdateCaches (msg);
 		}
 	}
 
@@ -187,15 +186,11 @@ namespace Snails
 					continue;
 				}
 				result << msg;
-				UpdateCaches (msg);
 			}
 		}
 
 		for (const auto& msg : PendingSaveMessages_ [acc])
-		{
 			result << msg;
-			UpdateCaches (msg);
-		}
 
 		return result;
 	}
@@ -218,9 +213,7 @@ namespace Snails
 			}
 		}
 
-		const auto& msg = LoadMessage (acc, dir, id);
-		UpdateCaches (msg);
-		return msg;
+		return LoadMessage (acc, dir, id);
 	}
 
 	Message_ptr Storage::LoadMessage (Account *acc, QDir dir, const QByteArray& id) const
@@ -290,9 +283,6 @@ namespace Snails
 		for (const auto& item : future.results ())
 			result << item;
 
-		for (const auto& msg : result)
-			UpdateCaches (msg);
-
 		return result;
 	}
 
@@ -353,9 +343,6 @@ namespace Snails
 
 	bool Storage::IsMessageRead (Account *acc, const QStringList& folder, const QByteArray& id)
 	{
-		if (IsMessageRead_.contains (id))
-			return IsMessageRead_ [id];
-
 		return LoadMessage (acc, folder, id)->IsRead ();
 	}
 
@@ -428,11 +415,6 @@ namespace Snails
 	{
 		const auto& base = BaseForAccount (acc);
 		base->AddMessage (msg);
-	}
-
-	void Storage::UpdateCaches (Message_ptr msg)
-	{
-		IsMessageRead_ [msg->GetFolderID ()] = msg->IsRead ();
 	}
 }
 }

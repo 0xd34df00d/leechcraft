@@ -51,7 +51,6 @@ namespace Snails
 		Q_OBJECT
 
 		QDir SDir_;
-		QHash<QByteArray, bool> IsMessageRead_;
 
 		QHash<const Account*, AccountDatabase_ptr> AccountBases_;
 		QHash<const Account*, QHash<QByteArray, Message_ptr>> PendingSaveMessages_;
@@ -83,7 +82,6 @@ namespace Snails
 		QDir DirForAccount (const Account*) const;
 
 		void AddMessage (Message_ptr, Account*);
-		void UpdateCaches (Message_ptr);
 	};
 }
 }
