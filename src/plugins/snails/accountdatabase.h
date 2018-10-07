@@ -41,6 +41,11 @@ class QDir;
 
 namespace LeechCraft
 {
+namespace Util
+{
+	class DBLock;
+}
+
 namespace Snails
 {
 	class Account;
@@ -65,6 +70,8 @@ namespace Snails
 		QMap<QStringList, int> KnownFolders_;
 	public:
 		AccountDatabase (const QDir&, const Account*);
+
+		Util::DBLock BeginTransaction ();
 
 		QList<QByteArray> GetIDs (const QStringList& folder);
 		boost::optional<QByteArray> GetLastID (const QStringList& folder);

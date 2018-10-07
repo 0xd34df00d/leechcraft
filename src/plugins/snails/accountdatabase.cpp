@@ -142,6 +142,13 @@ namespace Snails
 		LoadKnownFolders ();
 	}
 
+	Util::DBLock AccountDatabase::BeginTransaction ()
+	{
+		Util::DBLock lock { DB_ };
+		lock.Init ();
+		return lock;
+	}
+
 	namespace sph = oral::sph;
 
 	QList<QByteArray> AccountDatabase::GetIDs (const QStringList& folder)
