@@ -304,28 +304,6 @@ namespace Snails
 		RemoveMessageFile (acc, folder, id);
 	}
 
-	int Storage::GetNumMessages (Account *acc) const
-	{
-		int result = 0;
-
-		const QDir& dir = DirForAccount (acc);
-		for (const auto& str : dir.entryList (QDir::NoDotAndDotDot | QDir::Dirs))
-		{
-			QDir subdir = dir;
-			if (!subdir.cd (str))
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "unable to cd to"
-						<< str;
-				continue;
-			}
-
-			result += subdir.entryList (QDir::NoDotAndDotDot | QDir::Files).size ();
-		}
-
-		return result;
-	}
-
 	int Storage::GetNumMessages (Account *acc, const QStringList& folder)
 	{
 		return BaseForAccount (acc)->GetMessageCount (folder);
@@ -334,11 +312,6 @@ namespace Snails
 	int Storage::GetNumUnread (Account *acc, const QStringList& folder)
 	{
 		return BaseForAccount (acc)->GetUnreadMessageCount (folder);
-	}
-
-	bool Storage::HasMessagesIn (Account *acc) const
-	{
-		return GetNumMessages (acc);
 	}
 
 	bool Storage::IsMessageRead (Account *acc, const QStringList& folder, const QByteArray& id)
@@ -354,10 +327,12 @@ namespace Snails
 
 		auto base = BaseForAccount (acc);
 
+		qDebug () << "SetRead" << folderIds.size ();
 		auto ts = base->BeginTransaction ();
 		for (const auto& id : folderIds)
 			base->SetMessageRead (id, folder, read);
 		ts.Good ();
+		qDebug () << "done";
 	}
 
 	void Storage::RemoveMessageFile (Account *acc, const QStringList& folder, const QByteArray& id)
