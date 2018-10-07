@@ -352,8 +352,12 @@ namespace Snails
 		if (folderIds.isEmpty ())
 			return;
 
+		auto base = BaseForAccount (acc);
+
+		auto ts = base->BeginTransaction ();
 		for (const auto& id : folderIds)
-			BaseForAccount (acc)->SetMessageRead (id, folder, read);
+			base->SetMessageRead (id, folder, read);
+		ts.Good ();
 	}
 
 	void Storage::RemoveMessageFile (Account *acc, const QStringList& folder, const QByteArray& id)
