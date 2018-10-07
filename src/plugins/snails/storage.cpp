@@ -343,7 +343,7 @@ namespace Snails
 
 	bool Storage::IsMessageRead (Account *acc, const QStringList& folder, const QByteArray& id)
 	{
-		return LoadMessage (acc, folder, id)->IsRead ();
+		return *BaseForAccount (acc)->IsMessageRead (id, folder);
 	}
 
 	void Storage::RemoveMessageFile (Account *acc, const QStringList& folder, const QByteArray& id)
