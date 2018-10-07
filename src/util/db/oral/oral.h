@@ -1568,7 +1568,7 @@ namespace oral
 			}
 
 			template<typename SL, typename SR, ExprType WType, typename WL, typename WR>
-			int operator() (const AssignList<SL, SR>& set, const ExprTree<WType, WL, WR>& where) noexcept
+			int operator() (const AssignList<SL, SR>& set, const ExprTree<WType, WL, WR>& where)
 			{
 				const auto& [setClause, setBinder, setLast] = HandleExprTree<T> (set);
 				const auto& [whereClause, whereBinder, _] = HandleExprTree<T> (where, setLast);
@@ -1581,7 +1581,11 @@ namespace oral
 				query.prepare (update);
 				setBinder (query);
 				whereBinder (query);
-				query.exec ();
+				if (!query.exec ())
+				{
+					DBLock::DumpError (query);
+					throw QueryException ("update query execution failed", std::make_shared<QSqlQuery> (query));
+				}
 
 				return query.numRowsAffected ();
 			}
