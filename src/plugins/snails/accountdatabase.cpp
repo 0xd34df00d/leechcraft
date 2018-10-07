@@ -212,9 +212,13 @@ namespace Snails
 
 		for (const auto& folder : msg->GetFolders ())
 		{
-			if (const auto existing = GetMsgTableId (msg->GetFolderID (), folder))
+			if (GetMsgTableId (msg->GetFolderID (), folder))
 			{
-				UpdateMessage (*existing, msg);
+				qWarning () << Q_FUNC_INFO
+						<< "skipping existing message"
+						<< msg->GetFolderID ()
+						<< "in folder"
+						<< folder;
 				continue;
 			}
 
@@ -261,11 +265,6 @@ namespace Snails
 	int AccountDatabase::AddMessageUnfoldered (const Message_ptr& msg)
 	{
 		return Messages_->Insert ({ {}, msg->GetMessageID (), msg->IsRead () });
-	}
-
-	void AccountDatabase::UpdateMessage (int tableId, const Message_ptr& msg)
-	{
-		Messages_->Update (sph::f<&Message::IsRead_> = msg->IsRead (), sph::f<&Message::Id_> == tableId);
 	}
 
 	void AccountDatabase::AddMessageToFolder (int msgTableId, int folderTableId, const QByteArray& msgId)

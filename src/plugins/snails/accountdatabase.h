@@ -84,7 +84,6 @@ namespace Snails
 		boost::optional<int> GetMsgTableId (const QByteArray& msgId, const QStringList& folder);
 	private:
 		int AddMessageUnfoldered (const Message_ptr&);
-		void UpdateMessage (int, const Message_ptr&);
 		void AddMessageToFolder (int msgTableId, int folderTableId, const QByteArray& msgId);
 
 		int AddFolder (const QStringList&);
