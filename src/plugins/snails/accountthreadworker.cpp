@@ -185,6 +185,16 @@ namespace Snails
 		NoopTimer_->start (60 * 1000);
 	}
 
+	namespace
+	{
+		auto getFolderTracer (const VmimeFolder_ptr& folder)
+		{
+			const auto& store = folder->getStore ();
+			const auto& tracer = store->getTracerFactory ();
+			return vmime::dynamic_pointer_cast<TracerFactory> (tracer);
+		}
+	}
+
 	vmime::shared_ptr<vmime::net::store> AccountThreadWorker::MakeStore ()
 	{
 		if (CachedStore_)
@@ -194,8 +204,7 @@ namespace Snails
 
 		auto st = Session_->getStore (vmime::utility::url (url.toUtf8 ().constData ()));
 
-		TracerFactory_ = vmime::make_shared<TracerFactory> (ThreadName_, A_->GetLogger ());
-		st->setTracerFactory (TracerFactory_);
+		st->setTracerFactory (vmime::make_shared<TracerFactory> (ThreadName_, A_->GetLogger ()));
 
 		st->setCertificateVerifier (CertVerifier_);
 		st->setAuthenticator (InAuth_);
@@ -576,7 +585,7 @@ namespace Snails
 	{
 		const auto changeGuard = ChangeListener_->Disable ();
 
-		const auto bytesCounter = TracerFactory_->CreateCounter ();
+		const auto bytesCounter = getFolderTracer (folder)->CreateCounter ();
 
 		qDebug () << Q_FUNC_INFO << folderName << folder.get () << lastId;
 
@@ -608,7 +617,7 @@ namespace Snails
 	auto AccountThreadWorker::SyncMessagesStatusesImpl (const QStringList& folderName,
 			const VmimeFolder_ptr& folder) -> SyncStatusesResult
 	{
-		const auto bytesCounter = TracerFactory_->CreateCounter ();
+		const auto bytesCounter = getFolderTracer (folder)->CreateCounter ();
 
 		qDebug () << Q_FUNC_INFO << folderName << folder.get ();
 
