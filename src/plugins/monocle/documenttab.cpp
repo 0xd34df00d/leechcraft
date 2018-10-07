@@ -58,6 +58,7 @@
 #include <util/sll/prelude.h>
 #include <util/sll/delayedexecutor.h>
 #include <util/sll/overload.h>
+#include <util/sll/unreachable.h>
 #include <interfaces/imwproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/core/iiconthememanager.h>
