@@ -76,6 +76,7 @@ namespace Snails
 		void RemoveMessage (const QByteArray& msgId, const QStringList& folder);
 
 		boost::optional<bool> IsMessageRead (const QByteArray& msgId, const QStringList& folder);
+		void SetMessageRead (const QByteArray& msgId, const QStringList& folder, bool read);
 
 		void SetMessageHeader (const QByteArray& msgId, const QByteArray& header);
 		boost::optional<QByteArray> GetMessageHeader (const QByteArray& msgId) const;

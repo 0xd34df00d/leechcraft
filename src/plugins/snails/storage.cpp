@@ -346,6 +346,16 @@ namespace Snails
 		return BaseForAccount (acc)->IsMessageRead (id, folder).value ();
 	}
 
+	void Storage::SetMessagesRead (Account *acc,
+			const QStringList& folder, const QList<QByteArray>& folderIds, bool read)
+	{
+		if (folderIds.isEmpty ())
+			return;
+
+		for (const auto& id : folderIds)
+			BaseForAccount (acc)->SetMessageRead (id, folder, read);
+	}
+
 	void Storage::RemoveMessageFile (Account *acc, const QStringList& folder, const QByteArray& id)
 	{
 		auto dir = DirForAccount (acc);

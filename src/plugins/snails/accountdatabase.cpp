@@ -251,6 +251,22 @@ namespace Snails
 				sph::f<&Message::Id_> == sph::f<&Msg2Folder::MsgId_>);
 	}
 
+	void AccountDatabase::SetMessageRead (const QByteArray& msgId, const QStringList& folder, bool read)
+	{
+		auto msgTableId = GetMsgTableId (msgId, folder);
+		if (!msgTableId)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown message"
+					<< msgId
+					<< "in folder"
+					<< folder;
+			return;
+		}
+		Messages_->Update (sph::f<&Message::IsRead_> = read,
+				sph::f<&Message::Id_> == *msgTableId);
+	}
+
 	void AccountDatabase::SetMessageHeader (const QByteArray& msgId, const QByteArray& header)
 	{
 		MsgHeader_->Insert ({ {}, msgId, header }, oral::InsertAction::Replace::PKey<MsgHeader>);
