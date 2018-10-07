@@ -644,7 +644,10 @@ namespace Snails
 			const auto isRemoteRead = msg->getFlags () & vmime::net::message::FLAG_SEEN;
 
 			if (isStoredRead != isRemoteRead)
-				result.ReadStatusChanges_ [uid] = isRemoteRead;
+			{
+				auto& list = isRemoteRead ? result.RemoteBecameRead_ : result.RemoteBecameUnread_;
+				list << uid;
+			}
 		}
 		result.RemovedIds_ = localIds.toList ();
 		return result;

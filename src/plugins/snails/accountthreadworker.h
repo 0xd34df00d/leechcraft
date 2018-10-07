@@ -102,7 +102,9 @@ namespace Snails
 		struct SyncStatusesResult
 		{
 			QList<QByteArray> RemovedIds_;
-			QMap<QByteArray, bool> ReadStatusChanges_;
+
+			QList<QByteArray> RemoteBecameRead_;
+			QList<QByteArray> RemoteBecameUnread_;
 		};
 	private:
 		vmime::shared_ptr<vmime::net::store> MakeStore ();
