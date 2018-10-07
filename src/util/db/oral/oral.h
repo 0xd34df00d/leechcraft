@@ -1588,6 +1588,9 @@ namespace oral
 			template<typename SL, typename SR, ExprType WType, typename WL, typename WR>
 			int operator() (const AssignList<SL, SR>& set, const ExprTree<WType, WL, WR>& where)
 			{
+				static_assert (!ExprTree<WType, WL, WR>::template HasAdditionalTables<T> (),
+						"joins in update statements are not supported by SQL");
+
 				const auto& [setClause, setBinder, setLast] = HandleExprTree<T> (set);
 				const auto& [whereClause, whereBinder, _] = HandleExprTree<T> (where, setLast);
 
