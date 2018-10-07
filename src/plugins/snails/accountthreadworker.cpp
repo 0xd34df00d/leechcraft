@@ -517,9 +517,9 @@ namespace Snails
 		return TryOrDie ([this] { Disconnect (); },
 				[&]
 				{
-					const auto& netFolder = GetFolder (folderName, FolderMode::ReadOnly);
-					if (!netFolder)
-						throw vmime::exceptions::not_connected {};
+					auto store = MakeStore ();
+					auto netFolder = store->getFolder (Folder2Path (folderName));
+					netFolder->open (vmime::net::folder::MODE_READ_ONLY);
 
 					return SyncMessagesStatusesImpl (folderName, netFolder);
 				});
