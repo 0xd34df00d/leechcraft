@@ -1568,7 +1568,7 @@ namespace oral
 			}
 
 			template<typename SL, typename SR, ExprType WType, typename WL, typename WR>
-			void operator() (const AssignList<SL, SR>& set, const ExprTree<WType, WL, WR>& where) noexcept
+			int operator() (const AssignList<SL, SR>& set, const ExprTree<WType, WL, WR>& where) noexcept
 			{
 				const auto& [setClause, setBinder, setLast] = HandleExprTree<T> (set);
 				const auto& [whereClause, whereBinder, _] = HandleExprTree<T> (where, setLast);
@@ -1582,6 +1582,8 @@ namespace oral
 				setBinder (query);
 				whereBinder (query);
 				query.exec ();
+
+				return query.numRowsAffected ();
 			}
 		};
 
