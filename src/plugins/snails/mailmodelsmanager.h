@@ -61,6 +61,8 @@ namespace Snails
 		void Append (const QList<Message_ptr>&);
 		void Update (const QList<Message_ptr>&);
 		void Remove (const QList<QByteArray>&);
+
+		void UpdateReadStatus (const QStringList& folderId, const QList<QByteArray>& msgIds, bool read);
 	};
 }
 }

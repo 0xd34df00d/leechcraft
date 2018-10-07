@@ -110,6 +110,8 @@ namespace Snails
 		bool Update (const Message_ptr&);
 		bool Remove (const QByteArray&);
 
+		void UpdateReadStatus (const QList<QByteArray>& msgIds, bool read);
+
 		void MarkUnavailable (const QList<QByteArray>&);
 
 		QList<QByteArray> GetCheckedIds () const;
