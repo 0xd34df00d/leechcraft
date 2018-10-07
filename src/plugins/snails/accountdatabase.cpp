@@ -238,6 +238,15 @@ namespace Snails
 			Msg2Folder_->DeleteBy (sph::f<&Msg2Folder::Id_> == *id);
 	}
 
+	boost::optional<bool> AccountDatabase::IsMessageRead (const QByteArray& msgId, const QStringList& folder)
+	{
+		return Messages_->SelectOne (sph::fields<&Message::IsRead_>,
+				sph::f<&Folder::FolderPath_> == folder.join ("/") &&
+				sph::f<&Folder::Id_> == sph::f<&Msg2Folder::FolderId_> &&
+				sph::f<&Msg2Folder::FolderMessageId_> == msgId &&
+				sph::f<&Message::Id_> == sph::f<&Msg2Folder::MsgId_>);
+	}
+
 	void AccountDatabase::SetMessageHeader (const QByteArray& msgId, const QByteArray& header)
 	{
 		MsgHeader_->Insert ({ {}, msgId, header }, oral::InsertAction::Replace::PKey<MsgHeader>);
