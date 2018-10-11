@@ -81,7 +81,7 @@ namespace Azoth
 
 	namespace
 	{
-		struct ToByteArray : boost::static_visitor<QByteArray>
+		struct ToByteArray
 		{
 			QByteArray operator() (const QByteArray& array) const
 			{
@@ -101,7 +101,7 @@ namespace Azoth
 			}
 		};
 
-		struct ToImage : boost::static_visitor<QImage>
+		struct ToImage
 		{
 			QImage operator() (const QImage& image) const
 			{
