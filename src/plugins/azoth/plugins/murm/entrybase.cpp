@@ -168,7 +168,7 @@ namespace Murm
 
 		QString GetImageTemplate (const ImageInfo& imageInfo)
 		{
-			struct EmbedVisitor : boost::static_visitor<QString>
+			struct EmbedVisitor
 			{
 				QString operator() (const SimpleImageInfo& info) const
 				{
@@ -211,7 +211,7 @@ namespace Murm
 				}
 			};
 
-			struct LinkVisitor : boost::static_visitor<QString>
+			struct LinkVisitor
 			{
 				QString operator() (const SimpleImageInfo& info) const
 				{
