@@ -61,6 +61,7 @@
 #include "progresslistener.h"
 #include "progressmanager.h"
 #include "vmimeconversions.h"
+#include "outgoingmessage.h"
 
 Q_DECLARE_METATYPE (QList<QStringList>)
 Q_DECLARE_METATYPE (QList<QByteArray>)
@@ -311,15 +312,8 @@ namespace Snails
 		return future;
 	}
 
-	QFuture<Account::SendMessageResult_t> Account::SendMessage (const Message_ptr& msg)
+	QFuture<Account::SendMessageResult_t> Account::SendMessage (const OutgoingMessage& msg)
 	{
-		auto addr = msg->GetAddress (AddressType::From);
-		if (addr.Name_.isEmpty ())
-			addr.Name_ = UserName_;
-		if (addr.Email_.isEmpty ())
-			addr.Email_ = UserEmail_;
-		msg->SetAddress (AddressType::From, addr);
-
 		return WorkerPool_->Schedule (TaskPriority::High, &AccountThreadWorker::SendMessage, msg);
 	}
 

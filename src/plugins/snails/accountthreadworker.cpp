@@ -66,6 +66,7 @@
 #include "accountthreadnotifier.h"
 #include "certificateverifier.h"
 #include "tracebytecounter.h"
+#include "outgoingmessage.h"
 
 namespace LeechCraft
 {
@@ -987,11 +988,11 @@ namespace Snails
 			return result;
 		}
 
-		vmime::messageId GenerateMsgId (const Message_ptr& msg)
+		vmime::messageId GenerateMsgId (const OutgoingMessage& msg)
 		{
-			const auto& senderAddress = msg->GetAddress (AddressType::From).Email_;
+			const auto& senderAddress = msg.From_.Email_;
 
-			const auto& contents = msg->GetBody ().toUtf8 ();
+			const auto& contents = msg.Body_.toUtf8 ();
 			const auto& contentsHash = QCryptographicHash::hash (contents, QCryptographicHash::Sha1).toBase64 ();
 
 			const auto& now = QDateTime::currentDateTime ();
@@ -1002,24 +1003,21 @@ namespace Snails
 		}
 	}
 
-	void AccountThreadWorker::SendMessage (const Message_ptr& msg)
+	void AccountThreadWorker::SendMessage (const OutgoingMessage& msg)
 	{
-		if (!msg)
-			return;
-
 		vmime::messageBuilder mb;
-		mb.setSubject (vmime::text (msg->GetSubject ().toUtf8 ().constData ()));
-		mb.setExpeditor (*FromAddress (msg->GetAddress (AddressType::From)));
-		mb.setRecipients (ToAddressList (msg->GetAddresses (AddressType::To)));
-		mb.setCopyRecipients (ToAddressList (msg->GetAddresses (AddressType::Cc)));
-		mb.setBlindCopyRecipients (ToAddressList (msg->GetAddresses (AddressType::Bcc)));
+		mb.setSubject (vmime::text (msg.Subject_.toUtf8 ().constData ()));
+		mb.setExpeditor (*FromAddress (msg.From_));
+		mb.setRecipients (ToAddressList (msg.To_));
+		mb.setCopyRecipients (ToAddressList (msg.Cc_));
+		mb.setBlindCopyRecipients (ToAddressList (msg.Bcc_));
 
-		const auto& html = msg->GetHTMLBody ();
+		const auto& html = msg.HTMLBody_;
 
 		if (html.isEmpty ())
 		{
 			mb.getTextPart ()->setCharset (vmime::charsets::UTF_8);
-			mb.getTextPart ()->setText (vmime::make_shared<vmime::stringContentHandler> (msg->GetBody ().toUtf8 ().constData ()));
+			mb.getTextPart ()->setText (vmime::make_shared<vmime::stringContentHandler> (msg.Body_.toUtf8 ().constData ()));
 		}
 		else
 		{
@@ -1027,10 +1025,10 @@ namespace Snails
 			const auto& textPart = vmime::dynamicCast<vmime::htmlTextPart> (mb.getTextPart ());
 			textPart->setCharset (vmime::charsets::UTF_8);
 			textPart->setText (vmime::make_shared<vmime::stringContentHandler> (html.toUtf8 ().constData ()));
-			textPart->setPlainText (vmime::make_shared<vmime::stringContentHandler> (msg->GetBody ().toUtf8 ().constData ()));
+			textPart->setPlainText (vmime::make_shared<vmime::stringContentHandler> (msg.Body_.toUtf8 ().constData ()));
 		}
 
-		for (const auto& descr : msg->GetAttachments ())
+		for (const auto& descr : msg.Attachments_)
 		{
 			try
 			{
@@ -1058,14 +1056,14 @@ namespace Snails
 		const auto& header = vMsg->getHeader ();
 		header->UserAgent ()->setValue (userAgent.toUtf8 ().constData ());
 
-		if (!msg->GetInReplyTo ().isEmpty ())
-			header->InReplyTo ()->setValue (ToMessageIdSequence (msg->GetInReplyTo ()));
-		if (!msg->GetReferences ().isEmpty ())
-			header->References ()->setValue (ToMessageIdSequence (msg->GetReferences ()));
+		if (!msg.InReplyTo_.isEmpty ())
+			header->InReplyTo ()->setValue (ToMessageIdSequence (msg.InReplyTo_));
+		if (!msg.References_.isEmpty ())
+			header->References ()->setValue (ToMessageIdSequence (msg.References_));
 
 		header->MessageId ()->setValue (GenerateMsgId (msg));
 
-		auto pl = A_->MakeProgressListener (tr ("Sending message %1...").arg (msg->GetSubject ()));
+		auto pl = A_->MakeProgressListener (tr ("Sending message %1...").arg (msg.Subject_));
 		auto transport = MakeTransport ();
 		try
 		{

@@ -62,6 +62,7 @@ namespace Snails
 	class ThreadPool;
 	class Storage;
 	struct Folder;
+	struct OutgoingMessage;
 
 	enum class TaskPriority;
 
@@ -180,7 +181,7 @@ namespace Snails
 		FetchWholeMessageResult_t FetchWholeMessage (const Message_ptr&);
 
 		using SendMessageResult_t = Util::Either<InvokeError_t<>, Util::Void>;
-		QFuture<SendMessageResult_t> SendMessage (const Message_ptr&);
+		QFuture<SendMessageResult_t> SendMessage (const OutgoingMessage&);
 
 		using FetchAttachmentResult_t = WrapReturnType_t<Snails::FetchAttachmentResult_t>;
 		QFuture<FetchAttachmentResult_t> FetchAttachment (const Message_ptr&,

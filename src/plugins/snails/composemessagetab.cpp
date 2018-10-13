@@ -61,6 +61,7 @@
 #include "structures.h"
 #include "util.h"
 #include "attachmentsfetcher.h"
+#include "outgoingmessage.h"
 
 namespace LeechCraft
 {
@@ -501,7 +502,7 @@ namespace Snails
 				SLOT (handleEditorChanged (IEditorWidget*, IEditorWidget*)));
 	}
 
-	void ComposeMessageTab::SetMessageReferences (const Message_ptr& message) const
+	void ComposeMessageTab::SetMessageReferences (OutgoingMessage& message) const
 	{
 		if (!ReplyMessage_)
 			return;
@@ -510,14 +511,13 @@ namespace Snails
 		if (id.isEmpty ())
 			return;
 
-		message->SetInReplyTo ({ id });
+		message.InReplyTo_ = QList { id };
 
 		auto references = ReplyMessage_->GetReferences ();
 		while (references.size () > 20)
 			references.removeAt (1);
-
 		references << id;
-		message->SetReferences (references);
+		message.References_ = references;
 	}
 
 	Account* ComposeMessageTab::GetSelectedAccount () const
@@ -595,7 +595,7 @@ namespace Snails
 		}
 	}
 
-	void ComposeMessageTab::AddAttachments (const Message_ptr& message)
+	void ComposeMessageTab::AddAttachments (OutgoingMessage& message)
 	{
 		Util::MimeDetector detector;
 
@@ -611,11 +611,11 @@ namespace Snails
 			const auto& type = split.value (0);
 			const auto& subtype = split.value (1);
 
-			message->AddAttachment ({ path, descr, type, subtype, QFileInfo (path).size () });
+			message.Attachments_ << AttDescr { path, descr, type, subtype, QFileInfo (path).size () };
 		}
 	}
 
-	void ComposeMessageTab::Send (Account *account, const Message_ptr& message)
+	void ComposeMessageTab::Send (Account *account, const OutgoingMessage& message)
 	{
 		Util::Sequence (nullptr, account->SendMessage (message)) >>
 				[safeThis = QPointer<ComposeMessageTab> { this }] (const auto& result)
@@ -662,18 +662,19 @@ namespace Snails
 
 		const auto editor = Ui_.Editor_->GetCurrentEditor ();
 
-		const auto& message = std::make_shared<Message> ();
-		message->SetAddresses (AddressType::To, FromUserInput (Ui_.To_->text ()));
-		message->SetSubject (Ui_.Subject_->text ());
-		message->SetBody (editor->GetContents (ContentType::PlainText));
-		message->SetHTMLBody (editor->GetContents (ContentType::HTML));
+		auto message = std::make_shared<OutgoingMessage> ();
+		message->From_ = Address { account->GetUserName (), account->GetUserEmail () };
+		message->To_ = FromUserInput (Ui_.To_->text ());
+		message->Subject_ = Ui_.Subject_->text ();
+		message->Body_ = editor->GetContents (ContentType::PlainText);
+		message->HTMLBody_ = editor->GetContents (ContentType::HTML);
 
-		SetMessageReferences (message);
+		SetMessageReferences (*message);
 
 		if (!LinkedAttachmentsFetcher_)
 		{
-			AddAttachments (message);
-			Send (account, message);
+			AddAttachments (*message);
+			Send (account, *message);
 			return;
 		}
 
@@ -682,8 +683,8 @@ namespace Snails
 				{
 					[=] (const AttachmentsFetcher::FetchResult&)
 					{
-						AddAttachments (message);
-						Send (account, message);
+						AddAttachments (*message);
+						Send (account, *message);
 					},
 					[=] (auto err)
 					{

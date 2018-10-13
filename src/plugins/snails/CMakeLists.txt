@@ -65,6 +65,7 @@ set (SRCS
 	certificateverifier.cpp
 	tracebytecounter.cpp
 	address.cpp
+	outgoingmessage.cpp
 	)
 set (FORMS
 	mailtab.ui

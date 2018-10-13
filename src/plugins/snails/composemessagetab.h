@@ -44,6 +44,7 @@ namespace Snails
 	class AccountsManager;
 	class MsgTemplatesManager;
 	class AttachmentsFetcher;
+	struct OutgoingMessage;
 
 	enum class MsgType;
 
@@ -96,14 +97,14 @@ namespace Snails
 		void SetupToolbar ();
 		void SetupEditors ();
 
-		void SetMessageReferences (const Message_ptr&) const;
+		void SetMessageReferences (OutgoingMessage&) const;
 
 		Account* GetSelectedAccount () const;
 
 		void AppendAttachment (const QString& path, const QString& descr);
 
-		void AddAttachments (const Message_ptr&);
-		void Send (Account*, const Message_ptr&);
+		void AddAttachments (OutgoingMessage&);
+		void Send (Account*, const OutgoingMessage&);
 	private slots:
 		void handleSend ();
 		void handleAddAttachment ();

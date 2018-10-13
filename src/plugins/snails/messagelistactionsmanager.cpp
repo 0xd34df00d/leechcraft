@@ -45,6 +45,7 @@
 #include "account.h"
 #include "storage.h"
 #include "accountdatabase.h"
+#include "outgoingmessage.h"
 
 namespace LeechCraft
 {
@@ -307,11 +308,11 @@ namespace Snails
 						QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
 					return;
 
-				const auto& msg = std::make_shared<Message> ();
-				msg->SetAddress (AddressType::To, { {}, url.path () });
-
+				OutgoingMessage msg;
+				msg.From_.Email_ = acc->GetUserEmail ();
+				msg.To_ = Addresses_t { { {}, url.path () } };
 				const auto& subjQuery = Util::UrlAccessor { url } ["subject"];
-				msg->SetSubject (subjQuery.isEmpty () ? "unsubscribe" : subjQuery);
+				msg.Subject_ = subjQuery.isEmpty () ? "unsubscribe" : subjQuery;
 
 				Util::Sequence (nullptr, acc->SendMessage (msg)) >>
 						[url] (const auto& result)

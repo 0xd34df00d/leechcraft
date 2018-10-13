@@ -59,6 +59,8 @@ namespace Snails
 
 	struct Folder;
 
+	struct OutgoingMessage;
+
 	using MessageVector_t = std::vector<vmime::shared_ptr<vmime::net::message>>;
 	using VmimeFolder_ptr = vmime::shared_ptr<vmime::net::folder>;
 	using CertList_t = std::vector<vmime::shared_ptr<vmime::security::cert::X509Certificate>>;
@@ -155,7 +157,7 @@ namespace Snails
 		using DeleteResult_t = Util::Either<boost::variant<FolderNotFound>, Util::Void>;
 		DeleteResult_t DeleteMessages (const QList<QByteArray>& ids, const QStringList& folder);
 
-		void SendMessage (const Message_ptr&);
+		void SendMessage (const OutgoingMessage&);
 	};
 }
 }
