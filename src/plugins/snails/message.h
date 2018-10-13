@@ -39,6 +39,7 @@
 #include <QSet>
 #include <vmime/header.hpp>
 #include "attdescr.h"
+#include "address.h"
 
 namespace LeechCraft
 {
@@ -63,20 +64,8 @@ namespace Snails
 		bool IsRead_ = false;
 
 		QList<AttDescr> Attachments_;
-	public:
-		enum class Address
-		{
-			To,
-			Cc,
-			Bcc,
-			From,
-			ReplyTo
-		};
-
-		typedef QPair<QString, QString> Address_t;
-		typedef QList<Address_t> Addresses_t;
 	private:
-		QHash<Address, Addresses_t> Addresses_;
+		QHash<AddressType, Addresses_t> Addresses_;
 	public:
 		bool IsFullyFetched () const;
 
@@ -98,14 +87,14 @@ namespace Snails
 		quint64 GetSize () const;
 		void SetSize (quint64);
 
-		Address_t GetAddress (Address) const;
-		Addresses_t GetAddresses (Address) const;
-		bool HasAddress (Address) const;
-		void AddAddress (Address, const Address_t&);
-		void SetAddress (Address, const Address_t&);
-		void SetAddresses (Address, const Addresses_t&);
+		Address_t GetAddress (AddressType) const;
+		Addresses_t GetAddresses (AddressType) const;
+		bool HasAddress (AddressType) const;
+		void AddAddress (AddressType, const Address_t&);
+		void SetAddress (AddressType, const Address_t&);
+		void SetAddresses (AddressType, const Addresses_t&);
 
-		QString GetAddressString (Address) const;
+		QString GetAddressString (AddressType) const;
 
 		QDateTime GetDate () const;
 		void SetDate (const QDateTime&);
@@ -142,8 +131,6 @@ namespace Snails
 
 	typedef std::shared_ptr<Message> Message_ptr;
 	typedef QSet<Message_ptr> MessageSet;
-
-	QString GetNiceMail (const Message::Address_t&);
 
 	uint qHash (const Message_ptr);
 

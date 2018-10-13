@@ -66,7 +66,7 @@ namespace Snails
 					};
 		}
 
-		QString FormatNameAndEmail (ContentType ct, const Message::Address_t& addr)
+		QString FormatNameAndEmail (ContentType ct, const Address_t& addr)
 		{
 			const auto& result = (addr.first.isEmpty () ? "" : addr.first + " ") + "<" + addr.second + ">";
 			return ct == ContentType::HTML ? result.toHtmlEscaped () : result;
@@ -91,11 +91,11 @@ namespace Snails
 			},
 			{
 				"ONAME",
-				Wrap ([] (const Message *msg) { return msg->GetAddress (Message::Address::From).first; })
+				Wrap ([] (const Message *msg) { return msg->GetAddress (AddressType::From).first; })
 			},
 			{
 				"OEMAIL",
-				Wrap ([] (const Message *msg) { return msg->GetAddress (Message::Address::From).second; })
+				Wrap ([] (const Message *msg) { return msg->GetAddress (AddressType::From).second; })
 			},
 			{
 				"OSUBJECT",
@@ -105,7 +105,7 @@ namespace Snails
 				"ONAMEOREMAIL",
 				Wrap ([] (const Message *msg)
 						{
-							const auto& addr = msg->GetAddress (Message::Address::From);
+							const auto& addr = msg->GetAddress (AddressType::From);
 							return addr.first.isEmpty () ? "<" + addr.second + ">" : addr.first;
 						})
 			},
@@ -113,14 +113,14 @@ namespace Snails
 				"ONAMEANDEMAIL",
 				Wrap ([] (const Message *msg, ContentType ct)
 						{
-							return FormatNameAndEmail (ct, msg->GetAddress (Message::Address::From));
+							return FormatNameAndEmail (ct, msg->GetAddress (AddressType::From));
 						})
 			},
 			{
 				"TONAMEANDEMAIL",
 				Wrap ([] (const Message *msg, ContentType ct)
 						{
-							return Util::Map (msg->GetAddresses (Message::Address::To),
+							return Util::Map (msg->GetAddresses (AddressType::To),
 									Util::Curry (&FormatNameAndEmail) (ct))
 								.join ("; ");
 						})
@@ -129,7 +129,7 @@ namespace Snails
 				"CCNAMEANDEMAIL",
 				Wrap ([] (const Message *msg, ContentType ct)
 						{
-							return Util::Map (msg->GetAddresses (Message::Address::Cc),
+							return Util::Map (msg->GetAddresses (AddressType::Cc),
 									Util::Curry (&FormatNameAndEmail) (ct))
 								.join ("; ");
 						})

@@ -170,7 +170,7 @@ namespace Snails
 		{
 		case Column::From:
 		{
-			const auto& addr = msg->GetAddress (Message::Address::From);
+			const auto& addr = msg->GetAddress (AddressType::From);
 			return addr.first.isEmpty () ? addr.second : addr.first;
 		}
 		case Column::Subject:

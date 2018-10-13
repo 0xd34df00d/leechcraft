@@ -313,12 +313,12 @@ namespace Snails
 
 	QFuture<Account::SendMessageResult_t> Account::SendMessage (const Message_ptr& msg)
 	{
-		auto pair = msg->GetAddress (Message::Address::From);
+		auto pair = msg->GetAddress (AddressType::From);
 		if (pair.first.isEmpty ())
 			pair.first = UserName_;
 		if (pair.second.isEmpty ())
 			pair.second = UserEmail_;
-		msg->SetAddress (Message::Address::From, pair);
+		msg->SetAddress (AddressType::From, pair);
 
 		return WorkerPool_->Schedule (TaskPriority::High, &AccountThreadWorker::SendMessage, msg);
 	}

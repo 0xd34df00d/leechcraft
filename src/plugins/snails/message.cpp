@@ -39,25 +39,6 @@ namespace LeechCraft
 {
 namespace Snails
 {
-	uint qHash (Message::Address a)
-	{
-		return static_cast<uint> (a);
-	}
-
-	QDataStream& operator<< (QDataStream& out, Message::Address a)
-	{
-		out << static_cast<quint16> (a);
-		return out;
-	}
-
-	QDataStream& operator>> (QDataStream& in, Message::Address& a)
-	{
-		quint16 t = 0;
-		in >> t;
-		a = static_cast<Message::Address> (t);
-		return in;
-	}
-
 	bool Message::IsFullyFetched () const
 	{
 		return !Body_.isEmpty () || !HTMLBody_.isEmpty ();
@@ -108,37 +89,37 @@ namespace Snails
 		Size_ = size;
 	}
 
-	Message::Address_t Message::GetAddress (Message::Address a) const
+	Address_t Message::GetAddress (AddressType a) const
 	{
 		return GetAddresses (a).value (0);
 	}
 
-	Message::Addresses_t Message::GetAddresses (Message::Address a) const
+	Addresses_t Message::GetAddresses (AddressType a) const
 	{
 		return Addresses_ [a];
 	}
 
-	bool Message::HasAddress (Message::Address a) const
+	bool Message::HasAddress (AddressType a) const
 	{
 		return Addresses_.contains (a);
 	}
 
-	void Message::AddAddress (Message::Address a, const Message::Address_t& pair)
+	void Message::AddAddress (AddressType a, const Address_t& pair)
 	{
 		Addresses_ [a] << pair;
 	}
 
-	void Message::SetAddress (Message::Address a, const Message::Address_t& pair)
+	void Message::SetAddress (AddressType a, const Address_t& pair)
 	{
 		SetAddresses (a, { pair });
 	}
 
-	void Message::SetAddresses (Message::Address a, const Message::Addresses_t& list)
+	void Message::SetAddresses (AddressType a, const Addresses_t& list)
 	{
 		Addresses_ [a] = list;
 	}
 
-	QString Message::GetAddressString (Message::Address addr) const
+	QString Message::GetAddressString (AddressType addr) const
 	{
 		const auto& pair = GetAddress (addr);
 		if (pair.first.isEmpty ())
@@ -315,14 +296,6 @@ namespace Snails
 			>> References_
 			>> Addresses_
 			>> Attachments_;
-	}
-
-	QString GetNiceMail (const Message::Address_t& pair)
-	{
-		const QString& fromName = pair.first;
-		return fromName.isEmpty () ?
-				pair.second :
-				fromName + " <" + pair.second + ">";
 	}
 
 	uint qHash (const LeechCraft::Snails::Message_ptr msg)

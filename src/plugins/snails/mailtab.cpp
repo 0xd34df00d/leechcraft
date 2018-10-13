@@ -628,11 +628,11 @@ namespace Snails
 			};
 
 			addField ("subject", MailTab::tr ("Subject"), msg->GetSubject ());
-			addField ("from", MailTab::tr ("From"), HTMLize ({ msg->GetAddress (Message::Address::From) }));
-			addField ("replyTo", MailTab::tr ("Reply to"), HTMLize ({ msg->GetAddress (Message::Address::ReplyTo) }));
-			addField ("to", MailTab::tr ("To"), HTMLize (msg->GetAddresses (Message::Address::To)));
-			addField ("cc", MailTab::tr ("Copy"), HTMLize (msg->GetAddresses (Message::Address::Cc)));
-			addField ("bcc", MailTab::tr ("Blind copy"), HTMLize (msg->GetAddresses (Message::Address::Bcc)));
+			addField ("from", MailTab::tr ("From"), HTMLize ({ msg->GetAddress (AddressType::From) }));
+			addField ("replyTo", MailTab::tr ("Reply to"), HTMLize ({ msg->GetAddress (AddressType::ReplyTo) }));
+			addField ("to", MailTab::tr ("To"), HTMLize (msg->GetAddresses (AddressType::To)));
+			addField ("cc", MailTab::tr ("Copy"), HTMLize (msg->GetAddresses (AddressType::Cc)));
+			addField ("bcc", MailTab::tr ("Blind copy"), HTMLize (msg->GetAddresses (AddressType::Bcc)));
 			addField ("date", MailTab::tr ("Date"), msg->GetDate ().toString ());
 			html += AttachmentsToHtml (msg, msg->GetAttachments ());
 			html += "</header><div class='body' id='msgBody'>";

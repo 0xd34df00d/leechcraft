@@ -64,6 +64,7 @@ set (SRCS
 	accountthreadnotifier.cpp
 	certificateverifier.cpp
 	tracebytecounter.cpp
+	address.cpp
 	)
 set (FORMS
 	mailtab.ui

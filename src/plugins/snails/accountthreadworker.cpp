@@ -389,7 +389,7 @@ namespace Snails
 		{
 			const auto& mboxVal = from->getValue ();
 			const auto& mbox = vmime::dynamicCast<const vmime::mailbox> (mboxVal);
-			msg->AddAddress (Message::Address::From, Mailbox2Strings (mbox));
+			msg->AddAddress (AddressType::From, Mailbox2Strings (mbox));
 		}
 		else
 			qWarning () << "no 'from' data";
@@ -398,7 +398,7 @@ namespace Snails
 		{
 			const auto& replyToVal = replyToHeader->getValue ();
 			const auto& replyTo = vmime::dynamicCast<const vmime::mailbox> (replyToVal);
-			msg->AddAddress (Message::Address::ReplyTo, Mailbox2Strings (replyTo));
+			msg->AddAddress (AddressType::ReplyTo, Mailbox2Strings (replyTo));
 		}
 
 		if (const auto& msgIdField = header->MessageId ())
@@ -426,7 +426,7 @@ namespace Snails
 				msg->AddInReplyTo (id->getId ().c_str ());
 		}
 
-		auto setAddresses = [&msg] (Message::Address type, const vmime::shared_ptr<const vmime::headerField>& field)
+		auto setAddresses = [&msg] (AddressType type, const vmime::shared_ptr<const vmime::headerField>& field)
 		{
 			if (!field)
 				return;
@@ -446,9 +446,9 @@ namespace Snails
 			}
 		};
 
-		setAddresses (Message::Address::To, header->To ());
-		setAddresses (Message::Address::Cc, header->Cc ());
-		setAddresses (Message::Address::Bcc, header->Bcc ());
+		setAddresses (AddressType::To, header->To ());
+		setAddresses (AddressType::Cc, header->Cc ());
+		setAddresses (AddressType::Bcc, header->Bcc ());
 		if (const auto dateHeader = header->Date ())
 		{
 			const auto& origDateVal = dateHeader->getValue ();
@@ -971,7 +971,7 @@ namespace Snails
 					pair.second.toUtf8 ().constData ());
 		}
 
-		vmime::addressList ToAddressList (const Message::Addresses_t& addresses)
+		vmime::addressList ToAddressList (const Addresses_t& addresses)
 		{
 			vmime::addressList result;
 			for (const auto& pair : addresses)
@@ -989,7 +989,7 @@ namespace Snails
 
 		vmime::messageId GenerateMsgId (const Message_ptr& msg)
 		{
-			const auto& senderAddress = msg->GetAddress (Message::Address::From).second;
+			const auto& senderAddress = msg->GetAddress (AddressType::From).second;
 
 			const auto& contents = msg->GetBody ().toUtf8 ();
 			const auto& contentsHash = QCryptographicHash::hash (contents, QCryptographicHash::Sha1).toBase64 ();
@@ -1009,10 +1009,10 @@ namespace Snails
 
 		vmime::messageBuilder mb;
 		mb.setSubject (vmime::text (msg->GetSubject ().toUtf8 ().constData ()));
-		mb.setExpeditor (*FromPair (msg->GetAddress (Message::Address::From)));
-		mb.setRecipients (ToAddressList (msg->GetAddresses (Message::Address::To)));
-		mb.setCopyRecipients (ToAddressList (msg->GetAddresses (Message::Address::Cc)));
-		mb.setBlindCopyRecipients (ToAddressList (msg->GetAddresses (Message::Address::Bcc)));
+		mb.setExpeditor (*FromPair (msg->GetAddress (AddressType::From)));
+		mb.setRecipients (ToAddressList (msg->GetAddresses (AddressType::To)));
+		mb.setCopyRecipients (ToAddressList (msg->GetAddresses (AddressType::Cc)));
+		mb.setBlindCopyRecipients (ToAddressList (msg->GetAddresses (AddressType::Bcc)));
 
 		const auto& html = msg->GetHTMLBody ();
 

@@ -181,9 +181,9 @@ namespace Snails
 	{
 		if (type == MsgType::Reply)
 		{
-			auto address = msg->GetAddress (Message::Address::ReplyTo);
+			auto address = msg->GetAddress (AddressType::ReplyTo);
 			if (address.second.isEmpty ())
-				address = msg->GetAddress (Message::Address::From);
+				address = msg->GetAddress (AddressType::From);
 			Ui_.To_->setText (GetNiceMail (address));
 		}
 		else if (type == MsgType::Forward)
@@ -566,9 +566,9 @@ namespace Snails
 
 	namespace
 	{
-		Message::Addresses_t FromUserInput (const QString& text)
+		Addresses_t FromUserInput (const QString& text)
 		{
-			Message::Addresses_t result;
+			Addresses_t result;
 
 			for (auto address : text.split (',', QString::SkipEmptyParts))
 			{
@@ -665,7 +665,7 @@ namespace Snails
 		const auto editor = Ui_.Editor_->GetCurrentEditor ();
 
 		const auto& message = std::make_shared<Message> ();
-		message->SetAddresses (Message::Address::To, FromUserInput (Ui_.To_->text ()));
+		message->SetAddresses (AddressType::To, FromUserInput (Ui_.To_->text ()));
 		message->SetSubject (Ui_.Subject_->text ());
 		message->SetBody (editor->GetContents (ContentType::PlainText));
 		message->SetHTMLBody (editor->GetContents (ContentType::HTML));

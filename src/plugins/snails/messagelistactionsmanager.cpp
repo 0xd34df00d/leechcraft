@@ -278,7 +278,7 @@ namespace Snails
 
 		QString GetListName (const Message_ptr& msg, const Header_ptr& headers)
 		{
-			const auto& addrString = "<em>" + msg->GetAddressString (Message::Address::From).toHtmlEscaped () + "</em>";
+			const auto& addrString = "<em>" + msg->GetAddressString (AddressType::From).toHtmlEscaped () + "</em>";
 
 			const auto header = headers->findField ("List-Id");
 			if (!header)
@@ -308,7 +308,7 @@ namespace Snails
 					return;
 
 				const auto& msg = std::make_shared<Message> ();
-				msg->SetAddress (Message::Address::To, { {}, url.path () });
+				msg->SetAddress (AddressType::To, { {}, url.path () });
 
 				const auto& subjQuery = Util::UrlAccessor { url } ["subject"];
 				msg->SetSubject (subjQuery.isEmpty () ? "unsubscribe" : subjQuery);
