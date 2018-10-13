@@ -121,11 +121,7 @@ namespace Snails
 
 	QString Message::GetAddressString (AddressType addr) const
 	{
-		const auto& pair = GetAddress (addr);
-		if (pair.first.isEmpty ())
-			return pair.second;
-
-		return pair.first + " <" + pair.second + ">";
+		return GetNiceMail (GetAddress (addr));
 	}
 
 	QDateTime Message::GetDate () const
