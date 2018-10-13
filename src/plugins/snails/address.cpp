@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "address.h"
+#include <QDebug>
 
 namespace LeechCraft::Snails
 {
@@ -45,12 +46,45 @@ namespace LeechCraft::Snails
 		return in;
 	}
 
-	QString GetNiceMail (const Address_t& pair)
+	QString GetNiceMail (const Address& addr)
 	{
-		const auto& fromName = pair.first;
-		return fromName.isEmpty () ?
-				pair.second :
-				fromName + " <" + pair.second + ">";
+		return addr.Name_.isEmpty () ?
+				addr.Email_ :
+				addr.Name_ + " <" + addr.Email_ + ">";
 	}
 
+	QDebug operator<< (QDebug dbg, const Address& addr)
+	{
+		QDebugStateSaver saver { dbg };
+		dbg.nospace () << "Addr { name: `" << addr.Name_
+				<< "`, email: `" << addr.Email_
+				<< "` }";
+		return dbg;
+	}
+
+	QDataStream& operator<< (QDataStream& out, const Address& addr)
+	{
+		out << static_cast<quint8> (1);
+		out << addr.Name_
+				<< addr.Email_;
+		return out;
+	}
+
+	QDataStream& operator>> (QDataStream& in, Address& addr)
+	{
+		quint8 version;
+		in >> version;
+		if (version != 1)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown version"
+					<< version;
+			return in;
+		}
+
+		in >> addr.Name_
+			>> addr.Email_;
+
+		return in;
+	}
 }

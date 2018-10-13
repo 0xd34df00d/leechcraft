@@ -52,8 +52,17 @@ namespace LeechCraft::Snails
 	QDataStream& operator<< (QDataStream&, AddressType);
 	QDataStream& operator>> (QDataStream&, AddressType&);
 
-	using Address_t = QPair<QString, QString>;
-	using Addresses_t = QList<Address_t>;
+	struct Address
+	{
+		QString Name_;
+		QString Email_;
+	};
+	using Addresses_t = QList<Address>;
 
-	QString GetNiceMail (const Address_t&);
+	QDebug operator<< (QDebug, const Address&);
+
+	QDataStream& operator<< (QDataStream&, const Address&);
+	QDataStream& operator>> (QDataStream&, Address&);
+
+	QString GetNiceMail (const Address&);
 }

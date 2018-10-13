@@ -442,24 +442,24 @@ namespace Snails
 
 	namespace
 	{
-		QString HTMLize (const QList<QPair<QString, QString>>& adds)
+		QString HTMLize (const Addresses_t& adds)
 		{
 			QStringList result;
 
-			for (const auto& pair : adds)
+			for (const auto& addr : adds)
 			{
-				if (pair.second.isEmpty ())
+				if (addr.Email_.isEmpty ())
 					continue;
 
-				const bool hasName = !pair.first.isEmpty ();
+				const bool hasName = !addr.Name_.isEmpty ();
 
 				QString thisStr;
 
 				if (hasName)
-					thisStr += "<span style='address_name'>" + pair.first + "</span> &lt;";
+					thisStr += "<span style='address_name'>" + addr.Name_ + "</span> &lt;";
 
 				thisStr += QString ("<span style='address_email'><a href='mailto:%1'>%1</a></span>")
-						.arg (pair.second);
+						.arg (addr.Email_);
 
 				if (hasName)
 					thisStr += '>';

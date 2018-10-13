@@ -89,7 +89,7 @@ namespace Snails
 		Size_ = size;
 	}
 
-	Address_t Message::GetAddress (AddressType a) const
+	Address Message::GetAddress (AddressType a) const
 	{
 		return GetAddresses (a).value (0);
 	}
@@ -104,14 +104,14 @@ namespace Snails
 		return Addresses_.contains (a);
 	}
 
-	void Message::AddAddress (AddressType a, const Address_t& pair)
+	void Message::AddAddress (AddressType a, const Address& addr)
 	{
-		Addresses_ [a] << pair;
+		Addresses_ [a] << addr;
 	}
 
-	void Message::SetAddress (AddressType a, const Address_t& pair)
+	void Message::SetAddress (AddressType a, const Address& addr)
 	{
-		SetAddresses (a, { pair });
+		SetAddresses (a, { addr });
 	}
 
 	void Message::SetAddresses (AddressType a, const Addresses_t& list)

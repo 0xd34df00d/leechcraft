@@ -66,9 +66,9 @@ namespace Snails
 					};
 		}
 
-		QString FormatNameAndEmail (ContentType ct, const Address_t& addr)
+		QString FormatNameAndEmail (ContentType ct, const Address& addr)
 		{
-			const auto& result = (addr.first.isEmpty () ? "" : addr.first + " ") + "<" + addr.second + ">";
+			const auto& result = (addr.Name_.isEmpty () ? "" : addr.Name_ + " ") + "<" + addr.Email_ + ">";
 			return ct == ContentType::HTML ? result.toHtmlEscaped () : result;
 		}
 	}
@@ -91,11 +91,11 @@ namespace Snails
 			},
 			{
 				"ONAME",
-				Wrap ([] (const Message *msg) { return msg->GetAddress (AddressType::From).first; })
+				Wrap ([] (const Message *msg) { return msg->GetAddress (AddressType::From).Name_; })
 			},
 			{
 				"OEMAIL",
-				Wrap ([] (const Message *msg) { return msg->GetAddress (AddressType::From).second; })
+				Wrap ([] (const Message *msg) { return msg->GetAddress (AddressType::From).Email_; })
 			},
 			{
 				"OSUBJECT",
@@ -106,7 +106,7 @@ namespace Snails
 				Wrap ([] (const Message *msg)
 						{
 							const auto& addr = msg->GetAddress (AddressType::From);
-							return addr.first.isEmpty () ? "<" + addr.second + ">" : addr.first;
+							return addr.Name_.isEmpty () ? "<" + addr.Email_ + ">" : addr.Name_;
 						})
 			},
 			{

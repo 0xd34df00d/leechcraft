@@ -87,11 +87,11 @@ namespace Snails
 		quint64 GetSize () const;
 		void SetSize (quint64);
 
-		Address_t GetAddress (AddressType) const;
+		Address GetAddress (AddressType) const;
 		Addresses_t GetAddresses (AddressType) const;
 		bool HasAddress (AddressType) const;
-		void AddAddress (AddressType, const Address_t&);
-		void SetAddress (AddressType, const Address_t&);
+		void AddAddress (AddressType, const Address&);
+		void SetAddress (AddressType, const Address&);
 		void SetAddresses (AddressType, const Addresses_t&);
 
 		QString GetAddressString (AddressType) const;

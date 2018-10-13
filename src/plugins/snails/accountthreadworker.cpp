@@ -965,17 +965,17 @@ namespace Snails
 
 	namespace
 	{
-		vmime::shared_ptr<vmime::mailbox> FromPair (const QPair<QString, QString>& pair)
+		vmime::shared_ptr<vmime::mailbox> FromAddress (const Address& addr)
 		{
-			return vmime::make_shared<vmime::mailbox> (vmime::text (pair.first.toUtf8 ().constData ()),
-					pair.second.toUtf8 ().constData ());
+			return vmime::make_shared<vmime::mailbox> (vmime::text (addr.Name_.toUtf8 ().constData ()),
+					addr.Email_.toUtf8 ().constData ());
 		}
 
 		vmime::addressList ToAddressList (const Addresses_t& addresses)
 		{
 			vmime::addressList result;
 			for (const auto& pair : addresses)
-				result.appendAddress (FromPair (pair));
+				result.appendAddress (FromAddress (pair));
 			return result;
 		}
 
@@ -989,7 +989,7 @@ namespace Snails
 
 		vmime::messageId GenerateMsgId (const Message_ptr& msg)
 		{
-			const auto& senderAddress = msg->GetAddress (AddressType::From).second;
+			const auto& senderAddress = msg->GetAddress (AddressType::From).Email_;
 
 			const auto& contents = msg->GetBody ().toUtf8 ();
 			const auto& contentsHash = QCryptographicHash::hash (contents, QCryptographicHash::Sha1).toBase64 ();
@@ -1009,7 +1009,7 @@ namespace Snails
 
 		vmime::messageBuilder mb;
 		mb.setSubject (vmime::text (msg->GetSubject ().toUtf8 ().constData ()));
-		mb.setExpeditor (*FromPair (msg->GetAddress (AddressType::From)));
+		mb.setExpeditor (*FromAddress (msg->GetAddress (AddressType::From)));
 		mb.setRecipients (ToAddressList (msg->GetAddresses (AddressType::To)));
 		mb.setCopyRecipients (ToAddressList (msg->GetAddresses (AddressType::Cc)));
 		mb.setBlindCopyRecipients (ToAddressList (msg->GetAddresses (AddressType::Bcc)));

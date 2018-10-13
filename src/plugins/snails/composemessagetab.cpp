@@ -180,7 +180,7 @@ namespace Snails
 		if (type == MsgType::Reply)
 		{
 			auto address = msg->GetAddress (AddressType::ReplyTo);
-			if (address.second.isEmpty ())
+			if (address.Email_.isEmpty ())
 				address = msg->GetAddress (AddressType::From);
 			Ui_.To_->setText (GetNiceMail (address));
 		}
