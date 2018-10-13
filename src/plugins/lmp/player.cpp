@@ -682,7 +682,7 @@ namespace LMP
 			syncer->addFuture (future);
 		}
 
-		struct RestoreVisitor : boost::static_visitor<NativePlaylist_t>
+		struct RestoreVisitor
 		{
 			NativePlaylist_t operator() (const QList<Media::AudioInfo>& infos) const
 			{
