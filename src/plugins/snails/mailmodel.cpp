@@ -435,6 +435,20 @@ namespace Snails
 		return true;
 	}
 
+	void MailModel::UpdateReadStatus (const QList<QByteArray>& msgIds, bool read)
+	{
+		const auto& updateSet = QSet<QByteArray>::fromList (msgIds);
+
+		for (const auto& msg : Messages_)
+			if (updateSet.contains (msg->GetFolderID ()))
+			{
+				msg->SetRead (read);
+
+				for (const auto& indexPair : GetIndexes (msg->GetFolderID (), { 0, columnCount () - 1 }))
+					emit dataChanged (indexPair.value (0), indexPair.value (1));
+			}
+	}
+
 	void MailModel::MarkUnavailable (const QList<QByteArray>& ids)
 	{
 		for (const auto& id : ids)

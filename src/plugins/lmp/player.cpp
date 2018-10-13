@@ -682,22 +682,6 @@ namespace LMP
 			syncer->addFuture (future);
 		}
 
-		struct RestoreVisitor
-		{
-			NativePlaylist_t operator() (const QList<Media::AudioInfo>& infos) const
-			{
-				return Util::Map (infos,
-						[] (const Media::AudioInfo& info)
-						{
-							return NativePlaylistItem_t
-							{
-								info.Other_ ["URL"].toUrl (),
-								MediaInfo::FromAudioInfo (info)
-							};
-						});
-			}
-		};
-
 		NativePlaylist_t HandleRestored (const NativePlaylist_t& playlist,
 				const QHash<QPair<QString, QString>, Media::RadioRestoreVariant_t>& restored)
 		{
@@ -722,8 +706,19 @@ namespace LMP
 					continue;
 				}
 
-				auto restoredPlaylist = boost::apply_visitor (RestoreVisitor {},
-						restored.value ({ pluginID, radioID }, QList<Media::AudioInfo> {})); // WORKAROUND boost 1.54
+				auto restoredPlaylist = Util::Visit (restored.value ({ pluginID, radioID }),
+						[] (const QList<Media::AudioInfo>& infos)
+						{
+							return Util::Map (infos,
+									[] (const Media::AudioInfo& info)
+									{
+										return NativePlaylistItem_t
+										{
+											info.Other_ ["URL"].toUrl (),
+											MediaInfo::FromAudioInfo (info)
+										};
+									});
+						});
 
 				for (auto& pair : restoredPlaylist)
 					if (pair.second)

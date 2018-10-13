@@ -63,8 +63,6 @@ namespace Snails
 	using VmimeFolder_ptr = vmime::shared_ptr<vmime::net::folder>;
 	using CertList_t = std::vector<vmime::shared_ptr<vmime::security::cert::X509Certificate>>;
 
-	class TracerFactory;
-
 	class AccountThreadWorker : public QObject
 	{
 		Account * const A_;
@@ -80,7 +78,6 @@ namespace Snails
 
 		vmime::shared_ptr<vmime::net::session> Session_;
 		vmime::shared_ptr<vmime::net::store> CachedStore_;
-		vmime::shared_ptr<TracerFactory> TracerFactory_;
 
 		Util::AssocCache<QStringList, vmime::shared_ptr<vmime::net::folder>> CachedFolders_;
 
@@ -105,7 +102,9 @@ namespace Snails
 		struct SyncStatusesResult
 		{
 			QList<QByteArray> RemovedIds_;
-			QMap<QByteArray, bool> ReadStatusChanges_;
+
+			QList<QByteArray> RemoteBecameRead_;
+			QList<QByteArray> RemoteBecameUnread_;
 		};
 	private:
 		vmime::shared_ptr<vmime::net::store> MakeStore ();

@@ -41,6 +41,11 @@ class QDir;
 
 namespace LeechCraft
 {
+namespace Util
+{
+	class DBLock;
+}
+
 namespace Snails
 {
 	class Account;
@@ -66,6 +71,8 @@ namespace Snails
 	public:
 		AccountDatabase (const QDir&, const Account*);
 
+		Util::DBLock BeginTransaction ();
+
 		QList<QByteArray> GetIDs (const QStringList& folder);
 		boost::optional<QByteArray> GetLastID (const QStringList& folder);
 		int GetMessageCount (const QStringList& folder);
@@ -75,6 +82,9 @@ namespace Snails
 		void AddMessage (const Message_ptr&);
 		void RemoveMessage (const QByteArray& msgId, const QStringList& folder);
 
+		boost::optional<bool> IsMessageRead (const QByteArray& msgId, const QStringList& folder);
+		void SetMessageRead (const QByteArray& msgId, const QStringList& folder, bool read);
+
 		void SetMessageHeader (const QByteArray& msgId, const QByteArray& header);
 		boost::optional<QByteArray> GetMessageHeader (const QByteArray& msgId) const;
 
@@ -82,7 +92,6 @@ namespace Snails
 		boost::optional<int> GetMsgTableId (const QByteArray& msgId, const QStringList& folder);
 	private:
 		int AddMessageUnfoldered (const Message_ptr&);
-		void UpdateMessage (int, const Message_ptr&);
 		void AddMessageToFolder (int msgTableId, int folderTableId, const QByteArray& msgId);
 
 		int AddFolder (const QStringList&);

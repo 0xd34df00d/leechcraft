@@ -51,7 +51,6 @@ namespace Snails
 		Q_OBJECT
 
 		QDir SDir_;
-		QHash<QByteArray, bool> IsMessageRead_;
 
 		QHash<const Account*, AccountDatabase_ptr> AccountBases_;
 		QHash<const Account*, QHash<QByteArray, Message_ptr>> PendingSaveMessages_;
@@ -70,12 +69,11 @@ namespace Snails
 		boost::optional<QByteArray> GetLastID (Account*, const QStringList& folder);
 		void RemoveMessage (Account*, const QStringList&, const QByteArray&);
 
-		int GetNumMessages (Account*) const;
 		int GetNumMessages (Account*, const QStringList& folder);
 		int GetNumUnread (Account*, const QStringList& folder);
-		bool HasMessagesIn (Account*) const;
 
 		bool IsMessageRead (Account*, const QStringList& folder, const QByteArray&);
+		void SetMessagesRead (Account*, const QStringList& folder, const QList<QByteArray>& folderIds, bool read);
 	private:
 		Message_ptr LoadMessage (Account*, QDir, const QByteArray&) const;
 		void RemoveMessageFile (Account*, const QStringList&, const QByteArray&);
@@ -83,7 +81,6 @@ namespace Snails
 		QDir DirForAccount (const Account*) const;
 
 		void AddMessage (Message_ptr, Account*);
-		void UpdateCaches (Message_ptr);
 	};
 }
 }

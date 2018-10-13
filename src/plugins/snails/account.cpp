@@ -278,6 +278,7 @@ namespace Snails
 				{
 					[=] (const AccountThreadWorker::SyncStatusesResult& result)
 					{
+						HandleReadStatusChanged (result.RemoteBecameRead_, result.RemoteBecameUnread_, folder);
 						HandleMessagesRemoved (result.RemovedIds_, folder);
 
 						UpdateFolderCount (folder);
@@ -759,6 +760,16 @@ namespace Snails
 			base->SetMessageHeader (msg->GetMessageID (), SerializeHeader (header));
 
 		MailModelsManager_->Append (justMessages);
+	}
+
+	void Account::HandleReadStatusChanged (const QList<QByteArray>& read,
+			const QList<QByteArray>& unread, const QStringList& folder)
+	{
+		Storage_->SetMessagesRead (this, folder, read, true);
+		MailModelsManager_->UpdateReadStatus (folder, read, true);
+
+		Storage_->SetMessagesRead (this, folder, unread, false);
+		MailModelsManager_->UpdateReadStatus (folder, unread, false);
 	}
 
 	void Account::HandleUpdatedMessages (const QList<Message_ptr>& messages, const QStringList& folder)

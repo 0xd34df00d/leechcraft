@@ -112,5 +112,12 @@ namespace Snails
 			for (const auto& id : ids)
 				model->Remove (id);
 	}
+
+	void MailModelsManager::UpdateReadStatus (const QStringList& folderId, const QList<QByteArray>& msgIds, bool read)
+	{
+		for (const auto model : Models_)
+			if (model->GetCurrentFolder () == folderId)
+				model->UpdateReadStatus (msgIds, read);
+	}
 }
 }

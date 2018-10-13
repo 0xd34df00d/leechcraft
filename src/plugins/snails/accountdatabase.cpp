@@ -142,6 +142,13 @@ namespace Snails
 		LoadKnownFolders ();
 	}
 
+	Util::DBLock AccountDatabase::BeginTransaction ()
+	{
+		Util::DBLock lock { DB_ };
+		lock.Init ();
+		return lock;
+	}
+
 	namespace sph = oral::sph;
 
 	QList<QByteArray> AccountDatabase::GetIDs (const QStringList& folder)
@@ -212,9 +219,13 @@ namespace Snails
 
 		for (const auto& folder : msg->GetFolders ())
 		{
-			if (const auto existing = GetMsgTableId (msg->GetFolderID (), folder))
+			if (GetMsgTableId (msg->GetFolderID (), folder))
 			{
-				UpdateMessage (*existing, msg);
+				qWarning () << Q_FUNC_INFO
+						<< "skipping existing message"
+						<< msg->GetFolderID ()
+						<< "in folder"
+						<< folder;
 				continue;
 			}
 
@@ -238,6 +249,31 @@ namespace Snails
 			Msg2Folder_->DeleteBy (sph::f<&Msg2Folder::Id_> == *id);
 	}
 
+	boost::optional<bool> AccountDatabase::IsMessageRead (const QByteArray& msgId, const QStringList& folder)
+	{
+		return Messages_->SelectOne (sph::fields<&Message::IsRead_>,
+				sph::f<&Folder::FolderPath_> == folder.join ("/") &&
+				sph::f<&Folder::Id_> == sph::f<&Msg2Folder::FolderId_> &&
+				sph::f<&Msg2Folder::FolderMessageId_> == msgId &&
+				sph::f<&Message::Id_> == sph::f<&Msg2Folder::MsgId_>);
+	}
+
+	void AccountDatabase::SetMessageRead (const QByteArray& msgId, const QStringList& folder, bool read)
+	{
+		auto msgTableId = GetMsgTableId (msgId, folder);
+		if (!msgTableId)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown message"
+					<< msgId
+					<< "in folder"
+					<< folder;
+			return;
+		}
+		Messages_->Update (sph::f<&Message::IsRead_> = read,
+				sph::f<&Message::Id_> == *msgTableId);
+	}
+
 	void AccountDatabase::SetMessageHeader (const QByteArray& msgId, const QByteArray& header)
 	{
 		MsgHeader_->Insert ({ {}, msgId, header }, oral::InsertAction::Replace::PKey<MsgHeader>);
@@ -252,11 +288,6 @@ namespace Snails
 	int AccountDatabase::AddMessageUnfoldered (const Message_ptr& msg)
 	{
 		return Messages_->Insert ({ {}, msg->GetMessageID (), msg->IsRead () });
-	}
-
-	void AccountDatabase::UpdateMessage (int tableId, const Message_ptr& msg)
-	{
-		Messages_->Update (sph::f<&Message::IsRead_> = msg->IsRead (), sph::f<&Message::Id_> == tableId);
 	}
 
 	void AccountDatabase::AddMessageToFolder (int msgTableId, int folderTableId, const QByteArray& msgId)

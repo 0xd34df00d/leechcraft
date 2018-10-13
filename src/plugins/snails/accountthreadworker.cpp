@@ -185,6 +185,16 @@ namespace Snails
 		NoopTimer_->start (60 * 1000);
 	}
 
+	namespace
+	{
+		auto getFolderTracer (const VmimeFolder_ptr& folder)
+		{
+			const auto& store = folder->getStore ();
+			const auto& tracer = store->getTracerFactory ();
+			return vmime::dynamic_pointer_cast<TracerFactory> (tracer);
+		}
+	}
+
 	vmime::shared_ptr<vmime::net::store> AccountThreadWorker::MakeStore ()
 	{
 		if (CachedStore_)
@@ -194,8 +204,7 @@ namespace Snails
 
 		auto st = Session_->getStore (vmime::utility::url (url.toUtf8 ().constData ()));
 
-		TracerFactory_ = vmime::make_shared<TracerFactory> (ThreadName_, A_->GetLogger ());
-		st->setTracerFactory (TracerFactory_);
+		st->setTracerFactory (vmime::make_shared<TracerFactory> (ThreadName_, A_->GetLogger ()));
 
 		st->setCertificateVerifier (CertVerifier_);
 		st->setAuthenticator (InAuth_);
@@ -517,9 +526,9 @@ namespace Snails
 		return TryOrDie ([this] { Disconnect (); },
 				[&]
 				{
-					const auto& netFolder = GetFolder (folderName, FolderMode::ReadOnly);
-					if (!netFolder)
-						throw vmime::exceptions::not_connected {};
+					auto store = MakeStore ();
+					auto netFolder = store->getFolder (Folder2Path (folderName));
+					netFolder->open (vmime::net::folder::MODE_READ_ONLY);
 
 					return SyncMessagesStatusesImpl (folderName, netFolder);
 				});
@@ -528,41 +537,10 @@ namespace Snails
 	namespace
 	{
 		template<typename F>
-		auto GetAllMessagesInFolder (const VmimeFolder_ptr& folder, int desiredFlags, F progMaker)
+		auto GetAllMessagesInFolder (const VmimeFolder_ptr& folder, int desiredFlags, F)
 		{
-			const auto count = folder->getMessageCount ();
-
-			auto prog = progMaker ();
-			prog->start (count);
-
-			MessageVector_t messages;
-			messages.reserve (count);
-
-			const auto chunkSize = 100;
-			for (vmime::size_t i = 0; i < count; i += chunkSize)
-			{
-				const auto endVal = i + chunkSize;
-				const auto& set = vmime::net::messageSet::byNumber (i + 1, std::min (count, endVal));
-				try
-				{
-					auto theseMessages = folder->getAndFetchMessages (set, desiredFlags);
-					std::move (theseMessages.begin (), theseMessages.end (), std::back_inserter (messages));
-				}
-				catch (const std::exception& e)
-				{
-					qWarning () << Q_FUNC_INFO
-							<< "cannot get messages from"
-							<< i + 1
-							<< "to"
-							<< endVal
-							<< "because:"
-							<< e.what ();
-					throw;
-				}
-				prog->progress (i, count);
-			}
-
-			return messages;
+			const auto& set = vmime::net::messageSet::byNumber (1, -1);
+			return folder->getAndFetchMessages (set, desiredFlags);
 		}
 
 		template<typename F>
@@ -607,7 +585,7 @@ namespace Snails
 	{
 		const auto changeGuard = ChangeListener_->Disable ();
 
-		const auto bytesCounter = TracerFactory_->CreateCounter ();
+		const auto bytesCounter = getFolderTracer (folder)->CreateCounter ();
 
 		qDebug () << Q_FUNC_INFO << folderName << folder.get () << lastId;
 
@@ -639,14 +617,14 @@ namespace Snails
 	auto AccountThreadWorker::SyncMessagesStatusesImpl (const QStringList& folderName,
 			const VmimeFolder_ptr& folder) -> SyncStatusesResult
 	{
-		const auto bytesCounter = TracerFactory_->CreateCounter ();
+		const auto bytesCounter = getFolderTracer (folder)->CreateCounter ();
 
 		qDebug () << Q_FUNC_INFO << folderName << folder.get ();
 
 		auto remoteIds = GetAllMessageIdsInFolder (folder,
 				[this, folderName]
 				{
-					return A_->MakeProgressListener (tr ("Fetching messages in %1...")
+					return A_->MakeProgressListener (tr ("Fetching message IDs in %1...")
 							.arg (folderName.join ("/")));
 				});
 
@@ -666,7 +644,10 @@ namespace Snails
 			const auto isRemoteRead = msg->getFlags () & vmime::net::message::FLAG_SEEN;
 
 			if (isStoredRead != isRemoteRead)
-				result.ReadStatusChanges_ [uid] = isRemoteRead;
+			{
+				auto& list = isRemoteRead ? result.RemoteBecameRead_ : result.RemoteBecameUnread_;
+				list << uid;
+			}
 		}
 		result.RemovedIds_ = localIds.toList ();
 		return result;

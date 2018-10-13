@@ -694,6 +694,12 @@ namespace oral
 			{
 				return Left_.template AdditionalTables<T> () + Right_.template AdditionalTables<T> ();
 			}
+
+			template<typename T>
+			constexpr static bool HasAdditionalTables () noexcept
+			{
+				return L::template HasAdditionalTables<T> () || R::template HasAdditionalTables<T> ();
+			}
 		};
 
 		template<auto... Ptr>
@@ -727,6 +733,12 @@ namespace oral
 					return { Seq::ClassName () };
 			}
 
+			template<typename T>
+			constexpr static bool HasAdditionalTables () noexcept
+			{
+				return !std::is_same_v<MemberPtrStruct_t<Ptr>, T>;
+			}
+
 			template<typename R>
 			auto operator= (const R&) const noexcept;
 		};
@@ -756,6 +768,12 @@ namespace oral
 			QSet<QString> AdditionalTables () const noexcept
 			{
 				return {};
+			}
+
+			template<typename>
+			constexpr static bool HasAdditionalTables () noexcept
+			{
+				return false;
 			}
 		};
 
@@ -1568,8 +1586,11 @@ namespace oral
 			}
 
 			template<typename SL, typename SR, ExprType WType, typename WL, typename WR>
-			void operator() (const AssignList<SL, SR>& set, const ExprTree<WType, WL, WR>& where) noexcept
+			int operator() (const AssignList<SL, SR>& set, const ExprTree<WType, WL, WR>& where)
 			{
+				static_assert (!ExprTree<WType, WL, WR>::template HasAdditionalTables<T> (),
+						"joins in update statements are not supported by SQL");
+
 				const auto& [setClause, setBinder, setLast] = HandleExprTree<T> (set);
 				const auto& [whereClause, whereBinder, _] = HandleExprTree<T> (where, setLast);
 
@@ -1581,7 +1602,13 @@ namespace oral
 				query.prepare (update);
 				setBinder (query);
 				whereBinder (query);
-				query.exec ();
+				if (!query.exec ())
+				{
+					DBLock::DumpError (query);
+					throw QueryException ("update query execution failed", std::make_shared<QSqlQuery> (query));
+				}
+
+				return query.numRowsAffected ();
 			}
 		};
 
