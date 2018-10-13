@@ -43,6 +43,7 @@
 #include <QFinalState>
 #include <QWebHitTestResult>
 #include <QMainWindow>
+#include <util/sll/visitor.h>
 #include <util/sys/resourceloader.h>
 #include <util/xpc/util.h>
 #include <util/gui/util.h>
@@ -188,28 +189,6 @@ namespace Kinotify
 			return {};
 
 		return QByteArray ("data:image/png;base64,") + file.readAll ().toBase64 ();
-	}
-
-	namespace
-	{
-		struct ImageSaver : boost::static_visitor<QByteArray>
-		{
-			QByteArray operator() (boost::blank) const
-			{
-				return {};
-			}
-
-			template<typename T>
-			QByteArray operator() (const T& pixmap) const
-			{
-				QBuffer iconBuffer;
-				iconBuffer.open (QIODevice::ReadWrite);
-				pixmap.save (&iconBuffer, "PNG");
-
-				return QByteArray ("data:image/png;base64,") +
-						iconBuffer.buffer ().toBase64 ();
-			}
-		};
 	}
 
 	void KinotifyWidget::mousePressEvent (QMouseEvent *event)
@@ -361,7 +340,16 @@ namespace Kinotify
 		data.replace ("{title}", Title_);
 		data.replace ("{body}", Body_);
 
-		const auto& overrideData = boost::apply_visitor (ImageSaver {}, OverridePixmap_);
+		const auto& overrideData = Util::Visit (OverridePixmap_,
+				[] (boost::blank) { return QByteArray {}; },
+				[] (auto pixmap)
+				{
+					QBuffer iconBuffer;
+					iconBuffer.open (QIODevice::ReadWrite);
+					pixmap.save (&iconBuffer, "PNG");
+					return "data:image/png;base64," + iconBuffer.buffer ().toBase64 ();
+				});
+
 		if (overrideData.isNull ())
 			data.replace ("{imagepath}", MakeImage (ImagePath_));
 		else
