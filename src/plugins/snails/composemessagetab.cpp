@@ -44,6 +44,7 @@
 #include <util/sll/qtutil.h>
 #include <util/sll/visitor.h>
 #include <util/sll/delayedexecutor.h>
+#include <util/sll/unreachable.h>
 #include <util/xpc/util.h>
 #include <util/gui/util.h>
 #include <interfaces/itexteditor.h>
@@ -170,10 +171,7 @@ namespace Snails
 				return MakeLinkedSubject (msg->GetSubject (), "Fwd");
 			}
 
-			qWarning () << Q_FUNC_INFO
-					<< "unknown message type"
-					<< static_cast<int> (type);
-			return {};
+			Util::Unreachable ();
 		}
 	}
 
