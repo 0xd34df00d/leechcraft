@@ -218,9 +218,6 @@ namespace Snails
 
 	Message_ptr Storage::LoadMessage (Account *acc, QDir dir, const QByteArray& id) const
 	{
-		if (PendingSaveMessages_ [acc].contains (id))
-			return PendingSaveMessages_ [acc] [id];
-
 		if (!dir.cd (id.toHex ().right (3)))
 		{
 			qWarning () << Q_FUNC_INFO
