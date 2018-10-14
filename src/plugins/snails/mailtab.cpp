@@ -1025,25 +1025,17 @@ namespace Snails
 		if (!CurrAcc_)
 			return;
 
+		const auto& folder = MailModel_->GetCurrentFolder ();
 		for (const auto& id : GetSelectedIds ())
 		{
-			const auto& msg = MailModel_->GetMessage (id);
-			if (!msg)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "no message for id"
-						<< id;
-				continue;
-			}
-
-			const auto& header = Storage_->BaseForAccount (CurrAcc_.get ())->GetMessageHeader (msg->GetMessageID ());
+			const auto& header = Storage_->BaseForAccount (CurrAcc_.get ())->GetMessageHeader (folder, id);
 			if (!header)
 				continue;
 
 			auto widget = new HeadersViewWidget { *header, this };
 			widget->setAttribute (Qt::WA_DeleteOnClose);
 			widget->setWindowFlags (Qt::Dialog);
-			widget->setWindowTitle (tr ("Headers for %1").arg ('"' + msg->GetSubject () + '"'));
+			widget->setWindowTitle (tr ("Message headers"));
 			widget->show ();
 		}
 	}
