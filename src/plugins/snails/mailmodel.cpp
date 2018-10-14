@@ -314,10 +314,11 @@ namespace Snails
 
 	void MailModel::Clear ()
 	{
-		if (Messages_.isEmpty ())
+		auto rc = rowCount ();
+		if (!rc)
 			return;
 
-		beginRemoveRows ({}, 0, Messages_.size () - 1);
+		beginRemoveRows ({}, 0, rc - 1);
 		Messages_.clear ();
 		Root_->EraseChildren (Root_->begin (), Root_->end ());
 		FolderId2Nodes_.clear ();
