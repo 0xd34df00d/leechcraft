@@ -348,8 +348,7 @@ namespace Snails
 
 	void Storage::AddMessage (Message_ptr msg, Account *acc)
 	{
-		const auto& base = BaseForAccount (acc);
-		base->AddMessage (msg);
+		BaseForAccount (acc)->AddMessage (FromMessage (*msg));
 	}
 }
 }
