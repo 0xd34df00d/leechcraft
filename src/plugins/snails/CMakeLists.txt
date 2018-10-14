@@ -66,6 +66,7 @@ set (SRCS
 	tracebytecounter.cpp
 	address.cpp
 	outgoingmessage.cpp
+	messageinfo.cpp
 	)
 set (FORMS
 	mailtab.ui
