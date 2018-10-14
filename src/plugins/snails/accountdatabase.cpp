@@ -297,10 +297,17 @@ namespace Snails
 		MsgHeader_->Insert ({ {}, msgId, header }, oral::InsertAction::Replace::PKey<MsgHeader>);
 	}
 
-	boost::optional<QByteArray> AccountDatabase::GetMessageHeader (const QByteArray& msgId) const
+	boost::optional<QByteArray> AccountDatabase::GetMessageHeader (const QByteArray& uniqueMsgId) const
 	{
 		return MsgHeader_->SelectOne (sph::fields<&MsgHeader::Header_>,
-				sph::f<&MsgHeader::MsgUniqueId_> == msgId);
+				sph::f<&MsgHeader::MsgUniqueId_> == uniqueMsgId);
+	}
+
+	boost::optional<QByteArray> AccountDatabase::GetMessageHeader (const QStringList& folderId, const QByteArray& msgId) const
+	{
+		return MsgHeader_->SelectOne (sph::fields<&MsgHeader::Header_>,
+		        FolderMessageIdSelector (msgId, folderId, WithMessages) &&
+		        sph::f<&MsgHeader::MsgUniqueId_> == sph::f<&Message::UniqueId_>);
 	}
 
 	int AccountDatabase::AddMessageUnfoldered (const Message_ptr& msg)

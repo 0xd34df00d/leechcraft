@@ -86,7 +86,8 @@ namespace Snails
 		void SetMessageRead (const QByteArray& msgId, const QStringList& folder, bool read);
 
 		void SetMessageHeader (const QByteArray& msgId, const QByteArray& header);
-		boost::optional<QByteArray> GetMessageHeader (const QByteArray& msgId) const;
+		boost::optional<QByteArray> GetMessageHeader (const QByteArray& uniqueMsgId) const;
+		boost::optional<QByteArray> GetMessageHeader (const QStringList& folderId, const QByteArray& msgId) const;
 
 		boost::optional<int> GetMsgTableId (const QByteArray& uniqueId);
 		boost::optional<int> GetMsgTableId (const QByteArray& msgId, const QStringList& folder);
