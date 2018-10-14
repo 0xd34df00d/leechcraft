@@ -99,13 +99,6 @@ namespace Snails
 			model->Append (messages);
 	}
 
-	void MailModelsManager::Update (const QList<Message_ptr>& messages)
-	{
-		for (const auto model : Models_)
-			for (const auto& msg : messages)
-				model->Update (msg);
-	}
-
 	void MailModelsManager::Remove (const QList<QByteArray>& ids)
 	{
 		for (const auto model : Models_)

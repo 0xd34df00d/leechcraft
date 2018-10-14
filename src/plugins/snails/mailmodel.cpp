@@ -386,32 +386,6 @@ namespace Snails
 		emit messageListUpdated ();
 	}
 
-	bool MailModel::Update (const Message_ptr& msg)
-	{
-		const auto pos = std::find_if (Messages_.begin (), Messages_.end (),
-				[&msg] (const Message_ptr& other) { return other->GetFolderID () == msg->GetFolderID (); });
-		if (pos == Messages_.end ())
-			return false;
-
-		if (*pos != msg)
-		{
-			const auto readChanged = (*pos)->IsRead () != msg->IsRead ();
-
-			*pos = msg;
-			for (const auto& indexPair : GetIndexes (msg->GetFolderID (), { 0, columnCount () - 1 }))
-			{
-				for (const auto& index : indexPair)
-					static_cast<TreeNode*> (index.internalPointer ())->Msg_ = msg;
-				emit dataChanged (indexPair.value (0), indexPair.value (1));
-			}
-
-			if (readChanged)
-				UpdateParentReadCount (msg->GetFolderID (), !msg->IsRead ());
-		}
-
-		return true;
-	}
-
 	bool MailModel::Remove (const QByteArray& id)
 	{
 		const auto msgPos = std::find_if (Messages_.begin (), Messages_.end (),

@@ -772,7 +772,8 @@ namespace Snails
 		qDebug () << Q_FUNC_INFO << messages.size ();
 		Storage_->SaveMessages (this, folder, messages);
 
-		MailModelsManager_->Update (messages);
+		// TODO remove
+		//MailModelsManager_->Update (messages);
 	}
 
 	void Account::HandleMessagesRemoved (const QList<QByteArray>& ids, const QStringList& folder)
