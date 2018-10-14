@@ -414,10 +414,12 @@ namespace Snails
 
 	void ComposeMessageTab::CopyAttachments (const Message_ptr& msg)
 	{
-		if (msg->GetAttachments ().isEmpty ())
+		const auto& attachments = msg->GetAttachments ();
+		if (attachments.isEmpty ())
 			return;
 
-		LinkedAttachmentsFetcher_ = std::make_shared<AttachmentsFetcher> (GetSelectedAccount (), msg);
+		LinkedAttachmentsFetcher_ = std::make_shared<AttachmentsFetcher> (GetSelectedAccount (),
+				msg->GetFolders ().value (0), msg->GetFolderID (), attachments);
 		Util::Sequence (this, LinkedAttachmentsFetcher_->GetFuture ()) >>
 				Util::Visitor
 				{

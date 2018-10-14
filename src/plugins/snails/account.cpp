@@ -317,10 +317,11 @@ namespace Snails
 		return WorkerPool_->Schedule (TaskPriority::High, &AccountThreadWorker::SendMessage, msg);
 	}
 
-	auto Account::FetchAttachment (const Message_ptr& msg,
+	auto Account::FetchAttachment (const QStringList& folder, const QByteArray& msgId,
 			const QString& attName, const QString& path) -> QFuture<FetchAttachmentResult_t>
 	{
-		return WorkerPool_->Schedule (TaskPriority::Low, &AccountThreadWorker::FetchAttachment, msg, attName, path);
+		return WorkerPool_->Schedule (TaskPriority::Low,
+				&AccountThreadWorker::FetchAttachment, folder, msgId, attName, path);
 	}
 
 	void Account::SetReadStatus (bool read, const QList<QByteArray>& ids, const QStringList& folder)

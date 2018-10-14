@@ -43,13 +43,12 @@ namespace LeechCraft
 namespace Snails
 {
 	class Account;
-	class Message;
-	using Message_ptr = std::shared_ptr<Message>;
 
 	class AttachmentsFetcher
 	{
 		Account * const Acc_;
-		const Message_ptr Msg_;
+		const QStringList Folder_;
+		const QByteArray MsgId_;
 
 		QList<AttDescr> AttQueue_;
 
@@ -69,7 +68,8 @@ namespace Snails
 	private:
 		QFutureInterface<Result_t> Promise_;
 	public:
-		AttachmentsFetcher (Account*, const Message_ptr&);
+		AttachmentsFetcher (Account*,
+				const QStringList& folder, const QByteArray& msgId, const QList<AttDescr>& attachments);
 
 		QFuture<Result_t> GetFuture ();
 	private:

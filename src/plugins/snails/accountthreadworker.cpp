@@ -881,12 +881,10 @@ namespace Snails
 		return FetchWholeMessageResult_t::Right (origMsg);
 	}
 
-	FetchAttachmentResult_t AccountThreadWorker::FetchAttachment (Message_ptr msg,
-			const QString& attName, const QString& path)
+	FetchAttachmentResult_t AccountThreadWorker::FetchAttachment (const QStringList& folderId,
+			const QByteArray& msgId, const QString& attName, const QString& path)
 	{
-		const auto& msgId = msg->GetFolderID ();
-
-		const auto& folder = GetFolder (msg->GetFolders ().value (0), FolderMode::ReadWrite);
+		const auto& folder = GetFolder (folderId, FolderMode::ReadWrite);
 		const auto& msgSet = vmime::net::messageSet::byUID (msgId.constData ());
 		const auto& messages = folder->getAndFetchMessages (msgSet, vmime::net::fetchAttributes::STRUCTURE);
 		if (messages.empty ())

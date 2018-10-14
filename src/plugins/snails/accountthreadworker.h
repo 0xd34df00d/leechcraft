@@ -150,7 +150,8 @@ namespace Snails
 
 		FetchWholeMessageResult_t FetchWholeMessage (Message_ptr);
 
-		FetchAttachmentResult_t FetchAttachment (Message_ptr, const QString&, const QString&);
+		FetchAttachmentResult_t FetchAttachment (const QStringList& folder,
+				const QByteArray& msgId, const QString& attName, const QString& path);
 
 		void CopyMessages (const QList<QByteArray>& ids, const QStringList& from, const QList<QStringList>& tos);
 

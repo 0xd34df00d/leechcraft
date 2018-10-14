@@ -1125,8 +1125,7 @@ namespace Snails
 
 		const auto iem = Proxy_->GetEntityManager ();
 
-		const auto& msg = Storage_->LoadMessage (CurrAcc_.get (), folder, id);
-		Util::Sequence (nullptr, CurrAcc_->FetchAttachment (msg, name, path)) >>
+		Util::Sequence (nullptr, CurrAcc_->FetchAttachment (folder, id, name, path)) >>
 				Util::Visitor
 				{
 					[iem, name] (Util::Void)

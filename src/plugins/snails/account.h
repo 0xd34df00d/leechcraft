@@ -184,8 +184,8 @@ namespace Snails
 		QFuture<SendMessageResult_t> SendMessage (const OutgoingMessage&);
 
 		using FetchAttachmentResult_t = WrapReturnType_t<Snails::FetchAttachmentResult_t>;
-		QFuture<FetchAttachmentResult_t> FetchAttachment (const Message_ptr&,
-				const QString&, const QString&);
+		QFuture<FetchAttachmentResult_t> FetchAttachment (const QStringList& folder,
+				const QByteArray& msgId, const QString& attName, const QString& path);
 
 		void SetReadStatus (bool, const QList<QByteArray>&, const QStringList&);
 
