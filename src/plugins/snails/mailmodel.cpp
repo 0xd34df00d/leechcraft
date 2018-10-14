@@ -312,11 +312,6 @@ namespace Snails
 		return Folder_;
 	}
 
-	Message_ptr MailModel::GetMessage (const QByteArray& id) const
-	{
-		return GetMessageByFolderId (id);
-	}
-
 	void MailModel::Clear ()
 	{
 		if (Messages_.isEmpty ())
@@ -612,16 +607,6 @@ namespace Snails
 					return Util::Map (columns,
 							[this, &node] (auto column) { return GetIndex (node, column); });
 				});
-	}
-
-	Message_ptr MailModel::GetMessageByFolderId (const QByteArray& id) const
-	{
-		const auto pos = std::find_if (Messages_.begin (), Messages_.end (),
-				[&id] (const Message_ptr& msg) { return msg->GetFolderID () == id; });
-		if (pos == Messages_.end ())
-			return {};
-
-		return *pos;
 	}
 }
 }

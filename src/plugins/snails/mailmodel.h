@@ -101,8 +101,6 @@ namespace Snails
 		void SetFolder (const QStringList&);
 		QStringList GetCurrentFolder () const;
 
-		Message_ptr GetMessage (const QByteArray&) const;
-
 		void Clear ();
 
 		void Append (QList<Message_ptr>);
@@ -127,7 +125,6 @@ namespace Snails
 		QModelIndex GetIndex (const TreeNode_ptr& node, int column) const;
 		QList<QModelIndex> GetIndexes (const QByteArray& folderId, int column) const;
 		QList<QList<QModelIndex>> GetIndexes (const QByteArray& folderId, const QList<int>& columns) const;
-		Message_ptr GetMessageByFolderId (const QByteArray&) const;
 	signals:
 		void messageListUpdated ();
 		void messagesSelectionChanged ();
