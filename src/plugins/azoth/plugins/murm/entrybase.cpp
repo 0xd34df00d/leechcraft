@@ -279,7 +279,8 @@ namespace Murm
 						LeechCraft::Util::GetAsBase64Src (icon.pixmap (16, 16).toImage ()),
 						name,
 						{ 16, 16 }
-					});
+					},
+					ImageTemplateMode::Embed);
 		}
 
 		QString Audio2Replacement (const AudioInfo& info, const ICoreProxy_ptr& proxy)
