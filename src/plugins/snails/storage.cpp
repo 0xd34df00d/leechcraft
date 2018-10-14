@@ -144,57 +144,6 @@ namespace Snails
 		}
 	}
 
-	MessageSet Storage::LoadMessages (Account *acc)
-	{
-		MessageSet result;
-
-		const QDir& dir = DirForAccount (acc);
-		for (const auto& str : dir.entryList (QDir::NoDotAndDotDot | QDir::Dirs))
-		{
-			QDir subdir = dir;
-			if (!subdir.cd (str))
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "unable to cd to"
-						<< str;
-				continue;
-			}
-
-			for (const auto& str : subdir.entryList (QDir::NoDotAndDotDot | QDir::Files))
-			{
-				QFile file (subdir.filePath (str));
-				if (!file.open (QIODevice::ReadOnly))
-				{
-					qWarning () << Q_FUNC_INFO
-							<< "unable to open"
-							<< str
-							<< file.errorString ();
-					continue;
-				}
-
-				const auto& msg = std::make_shared<Message> ();
-				try
-				{
-					msg->Deserialize (qUncompress (file.readAll ()));
-				}
-				catch (const std::exception& e)
-				{
-					qWarning () << Q_FUNC_INFO
-							<< "error deserializing the message from"
-							<< file.fileName ()
-							<< e.what ();
-					continue;
-				}
-				result << msg;
-			}
-		}
-
-		for (const auto& msg : PendingSaveMessages_ [acc])
-			result << msg;
-
-		return result;
-	}
-
 	Message_ptr Storage::LoadMessage (Account *acc, const QStringList& folder, const QByteArray& id)
 	{
 		if (PendingSaveMessages_ [acc].contains (id))
