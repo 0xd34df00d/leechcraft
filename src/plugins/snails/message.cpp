@@ -99,6 +99,11 @@ namespace Snails
 		return Addresses_ [a];
 	}
 
+	QHash<AddressType, Addresses_t> Message::GetAddresses () const
+	{
+		return Addresses_;
+	}
+
 	bool Message::HasAddress (AddressType a) const
 	{
 		return Addresses_.contains (a);

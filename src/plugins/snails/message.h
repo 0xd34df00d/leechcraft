@@ -89,6 +89,7 @@ namespace Snails
 
 		Address GetAddress (AddressType) const;
 		Addresses_t GetAddresses (AddressType) const;
+		QHash<AddressType, Addresses_t> GetAddresses () const;
 		bool HasAddress (AddressType) const;
 		void AddAddress (AddressType, const Address&);
 		void SetAddress (AddressType, const Address&);
