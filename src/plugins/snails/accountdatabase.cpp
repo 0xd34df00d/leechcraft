@@ -151,6 +151,31 @@ namespace Snails
 
 	namespace sph = oral::sph;
 
+	namespace
+	{
+		struct WithMessagesType {};
+		struct WithoutMessagesType {};
+
+		constexpr WithMessagesType WithMessages {};
+		constexpr WithoutMessagesType WithoutMessages {};
+
+		template<typename MessageTableSelector>
+		auto FolderMessageIdSelector (const QByteArray& msgId, const QStringList& folder, MessageTableSelector)
+		{
+			using A = AccountDatabase;
+
+			auto common = sph::f<&A::Folder::FolderPath_> == folder.join ("/") &&
+					sph::f<&A::Msg2Folder::FolderMessageId_> == msgId &&
+					sph::f<&A::Folder::Id_> == sph::f<&A::Msg2Folder::FolderId_>;
+
+			if constexpr (std::is_same_v<MessageTableSelector, WithMessagesType>)
+				return common &&
+						sph::f<&A::Message::Id_> == sph::f<&A::Msg2Folder::MsgId_>;
+			else
+				return common;
+		}
+	}
+
 	QList<QByteArray> AccountDatabase::GetIDs (const QStringList& folder)
 	{
 		return Msg2Folder_->Select (sph::fields<&Msg2Folder::FolderMessageId_>,
@@ -204,9 +229,7 @@ namespace Snails
 	boost::optional<int> AccountDatabase::GetMsgTableId (const QByteArray& msgId, const QStringList& folder)
 	{
 		return Msg2Folder_->SelectOne (sph::fields<&Msg2Folder::MsgId_>,
-				sph::f<&Msg2Folder::FolderId_> == sph::f<&Folder::Id_> &&
-				sph::f<&Folder::FolderPath_> == folder.join ("/") &&
-				sph::f<&Msg2Folder::FolderMessageId_> == msgId);
+				FolderMessageIdSelector (msgId, folder, WithoutMessages));
 	}
 
 	void AccountDatabase::AddMessage (const Message_ptr& msg)
@@ -242,9 +265,7 @@ namespace Snails
 	void AccountDatabase::RemoveMessage (const QByteArray& msgId, const QStringList& folder)
 	{
 		const auto id = Msg2Folder_->SelectOne (sph::fields<&Msg2Folder::Id_>,
-				sph::f<&Msg2Folder::FolderMessageId_> == msgId &&
-				sph::f<&Folder::FolderPath_> == folder.join ("/") &&
-				sph::f<&Msg2Folder::FolderId_> == sph::f<&Folder::Id_>);
+				FolderMessageIdSelector (msgId, folder, WithoutMessages));
 		if (id)
 			Msg2Folder_->DeleteBy (sph::f<&Msg2Folder::Id_> == *id);
 	}
@@ -252,10 +273,7 @@ namespace Snails
 	boost::optional<bool> AccountDatabase::IsMessageRead (const QByteArray& msgId, const QStringList& folder)
 	{
 		return Messages_->SelectOne (sph::fields<&Message::IsRead_>,
-				sph::f<&Folder::FolderPath_> == folder.join ("/") &&
-				sph::f<&Folder::Id_> == sph::f<&Msg2Folder::FolderId_> &&
-				sph::f<&Msg2Folder::FolderMessageId_> == msgId &&
-				sph::f<&Message::Id_> == sph::f<&Msg2Folder::MsgId_>);
+				FolderMessageIdSelector (msgId, folder, WithMessages));
 	}
 
 	void AccountDatabase::SetMessageRead (const QByteArray& msgId, const QStringList& folder, bool read)
