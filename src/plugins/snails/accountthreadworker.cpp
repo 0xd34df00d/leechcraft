@@ -884,7 +884,7 @@ namespace Snails
 	FetchAttachmentResult_t AccountThreadWorker::FetchAttachment (const QStringList& folderId,
 			const QByteArray& msgId, const QString& attName, const QString& path)
 	{
-		const auto& folder = GetFolder (folderId, FolderMode::ReadWrite);
+		const auto& folder = GetFolder (folderId, FolderMode::ReadOnly);
 		const auto& msgSet = vmime::net::messageSet::byUID (msgId.constData ());
 		const auto& messages = folder->getAndFetchMessages (msgSet, vmime::net::fetchAttributes::STRUCTURE);
 		if (messages.empty ())
