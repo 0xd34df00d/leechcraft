@@ -202,7 +202,7 @@ namespace oral
 	{
 		QString operator() () const noexcept
 		{
-			if constexpr (HasType<T> (Typelist<int, qulonglong, bool> {}) || std::is_enum_v<T>)
+			if constexpr (HasType<T> (Typelist<int, qlonglong, qulonglong, bool> {}) || std::is_enum_v<T>)
 				return "INTEGER";
 			else if constexpr (std::is_same_v<T, double>)
 				return "REAL";
