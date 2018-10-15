@@ -334,7 +334,9 @@ namespace Snails
 				{
 					[=] (const QList<Message_ptr>& msgs)
 					{
-						HandleUpdatedMessages (msgs, folder);
+						auto becameRead = read ? ids : QList<QByteArray> {};
+						auto becameUnread = read ? QList<QByteArray> {} : ids;
+						HandleReadStatusChanged (becameRead, becameUnread, folder);
 						UpdateFolderCount (folder);
 					},
 					[] (auto) {}
