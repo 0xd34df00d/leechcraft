@@ -792,7 +792,7 @@ namespace Snails
 		}
 
 		const auto& idx = MailSortFilterModel_->mapToSource (sidx);
-		const auto& id = idx.sibling (idx.row (), 0).data (MailModel::MailRole::ID).toByteArray ();
+		const auto& id = idx.data (MailModel::MailRole::ID).toByteArray ();
 
 		Message_ptr msg;
 		try
