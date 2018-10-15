@@ -52,7 +52,6 @@ namespace Snails
 		QList<QStringList> Folders_;
 		quint64 Size_ = 0;
 		QDateTime Date_;
-		QStringList Recipients_;
 		QString Subject_;
 
 		QString Body_;

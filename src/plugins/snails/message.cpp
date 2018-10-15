@@ -232,7 +232,6 @@ namespace Snails
 				<< Folders_
 				<< Size_
 				<< Date_
-				<< Recipients_
 				<< Subject_
 				<< IsRead_
 				<< Body_
@@ -262,7 +261,6 @@ namespace Snails
 			<< Folders_
 			<< Size_
 			<< Date_
-			<< Recipients_
 			<< Subject_
 			<< IsRead_
 			<< Body_
@@ -288,7 +286,6 @@ namespace Snails
 			>> Folders_
 			>> Size_
 			>> Date_
-			>> Recipients_
 			>> Subject_
 			>> IsRead_
 			>> Body_
