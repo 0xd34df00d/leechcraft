@@ -59,3 +59,5 @@ namespace LeechCraft::Snails
 	class Message;
 	MessageInfo FromMessage (const Message&);
 }
+
+Q_DECLARE_METATYPE (LeechCraft::Snails::MessageInfo)
