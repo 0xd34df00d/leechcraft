@@ -189,11 +189,6 @@ namespace Snails
 			else
 				return GetNeatDate (date);
 		}
-		case Column::Size:
-			if (role == Sort)
-				return msg->GetSize ();
-			else
-				return Util::MakePrettySize (msg->GetSize ());
 		case Column::UnreadChildren:
 			if (const auto unread = structItem->UnreadChildren_.size ())
 				return unread;
