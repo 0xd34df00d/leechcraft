@@ -99,8 +99,8 @@ namespace Snails
 		public:
 			VMimeAuth (Account::Direction, Account*);
 
-			const vmime::string getUsername () const;
-			const vmime::string getPassword () const;
+			const vmime::string getUsername () const override;
+			const vmime::string getPassword () const override;
 		private:
 			QByteArray GetID () const
 			{
