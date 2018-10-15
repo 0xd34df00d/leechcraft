@@ -176,8 +176,9 @@ namespace Snails
 		}
 	}
 
-	void ComposeMessageTab::PrepareLinked (MsgType type, const Message_ptr& msg)
+	void ComposeMessageTab::PrepareLinked (MsgType type, const MessageInfo& info, const MessageBodies& bodies)
 	{
+		/* TODO
 		if (type == MsgType::Reply)
 		{
 			auto address = msg->GetAddress (AddressType::ReplyTo);
@@ -199,6 +200,7 @@ namespace Snails
 				{
 					Ui_.Editor_->GetCurrentEditor ()->GetWidget ()->setFocus ();
 				});
+				*/
 	}
 
 	void ComposeMessageTab::PrepareLinkedEditor (const Message_ptr& msg)

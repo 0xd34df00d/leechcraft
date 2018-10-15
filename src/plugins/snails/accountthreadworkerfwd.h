@@ -32,8 +32,11 @@
 #include <stdexcept>
 #include <memory>
 #include <boost/variant.hpp>
+#include <vmime/net/message.hpp>
 #include <util/sll/either.h>
 #include <util/sll/void.h>
+#include "attdescr.h"
+#include "messageinfo.h"
 
 namespace LeechCraft
 {
@@ -60,14 +63,19 @@ namespace Snails
 		const char* what () const;
 	};
 
-	class Message;
-	using Message_ptr = std::shared_ptr<Message>;
+	struct MessageBodies;
 
-	using FetchWholeMessageResult_t = Util::Either<boost::variant<FolderNotFound, MessageNotFound>, Message_ptr>;
+	using FetchWholeMessageResult_t = Util::Either<boost::variant<FolderNotFound, MessageNotFound>, MessageBodies>;
 
 	using FetchAttachmentResult_t = Util::Either<
 			boost::variant<MessageNotFound, FileOpenError, AttachmentNotFound>,
 			Util::Void
 		>;
+
+	struct FetchedMessageInfo
+	{
+		MessageInfo Info_;
+		vmime::shared_ptr<const vmime::header> Headers_;
+	};
 }
 }

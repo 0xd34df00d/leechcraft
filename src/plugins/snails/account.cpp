@@ -63,6 +63,7 @@
 #include "vmimeconversions.h"
 #include "outgoingmessage.h"
 #include "messageinfo.h"
+#include "messagebodies.h"
 
 Q_DECLARE_METATYPE (QList<QStringList>)
 Q_DECLARE_METATYPE (QList<QByteArray>)
@@ -250,11 +251,11 @@ namespace Snails
 							const auto& folder = pair.first;
 							const auto& msgs = pair.second;
 
-							HandleMsgHeaders (msgs.NewHeaders_, folder);
+							HandleMsgHeaders (msgs, folder);
 
 							UpdateFolderCount (folder);
 
-							stats.NewMsgsCount_ += msgs.NewHeaders_.size ();
+							stats.NewMsgsCount_ += msgs.size ();
 						}
 
 						return SynchronizeResult_t::Right (stats);
@@ -296,17 +297,13 @@ namespace Snails
 				};
 	}
 
-	Account::FetchWholeMessageResult_t Account::FetchWholeMessage (const Message_ptr& msg)
+	Account::FetchWholeMessageResult_t Account::FetchWholeMessage (const QStringList& folder, const QByteArray& msgId)
 	{
-		auto future = WorkerPool_->Schedule (TaskPriority::High, &AccountThreadWorker::FetchWholeMessage, msg);
+		auto future = WorkerPool_->Schedule (TaskPriority::High, &AccountThreadWorker::FetchWholeMessage, folder, msgId);
 		Util::Sequence (this, future) >>
 				Util::Visitor
 				{
-					[this] (const Message_ptr& msg)
-					{
-						for (const auto& folder : msg->GetFolders ())
-							Storage_->SaveMessages (this, folder, { msg });
-					},
+					[=] (const MessageBodies& bodies) { Storage_->SaveMessageBodies (this, folder, msgId, bodies); },
 					Util::Visitor { [] (auto e) { qWarning () << Q_FUNC_INFO << e.what (); } }
 				};
 
@@ -747,17 +744,17 @@ namespace Snails
 		return promise.future ();
 	}
 
-	void Account::HandleMsgHeaders (const QList<MessageWHeaders_t>& messages, const QStringList& folder)
+	void Account::HandleMsgHeaders (const QList<FetchedMessageInfo>& messages, const QStringList& folder)
 	{
 		qDebug () << Q_FUNC_INFO << messages.size ();
-		const auto& justMessages = Util::Map (messages, Util::Fst);
-		Storage_->SaveMessages (this, folder, justMessages);
+		const auto& infos = Util::Map (messages, &FetchedMessageInfo::Info_);
+		Storage_->SaveMessageInfos (this, infos);
 
 		const auto base = Storage_->BaseForAccount (this);
 		for (const auto& [msg, header] : messages)
-			base->SetMessageHeader (msg->GetMessageID (), SerializeHeader (header));
+			base->SetMessageHeader (msg.MessageId_, SerializeHeader (header));
 
-		MailModelsManager_->Append (Util::Map (justMessages, [] (const auto& msg) { return FromMessage (*msg); }));
+		MailModelsManager_->Append (infos);
 	}
 
 	void Account::HandleReadStatusChanged (const QList<QByteArray>& read,

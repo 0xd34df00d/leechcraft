@@ -35,6 +35,8 @@
 #include <interfaces/iwkfontssettable.h>
 #include "ui_mailtab.h"
 #include "account.h"
+#include "messageinfo.h"
+#include "messagebodies.h"
 
 class QStandardItemModel;
 class QStandardItem;
@@ -92,7 +94,8 @@ namespace Snails
 		std::shared_ptr<MailModel> MailModel_;
 		QSortFilterProxyModel *MailSortFilterModel_;
 		Account_ptr CurrAcc_;
-		Message_ptr CurrMsg_;
+		std::optional<MessageInfo> CurrMsgInfo_;
+		std::optional<MessageBodies> CurrMsgBodies_;
 
 		std::shared_ptr<Account::FetchWholeMessageResult_t> CurrMsgFetchFuture_;
 
@@ -129,7 +132,7 @@ namespace Snails
 		void UpdateMsgActionsStatus ();
 		QList<Folder> GetActualFolders () const;
 
-		void SetMessage (const Message_ptr&);
+		void SetMessage (const MessageInfo&, const std::optional<MessageBodies>&);
 
 		void HandleLinkedRequested (MsgType);
 

@@ -57,8 +57,8 @@ namespace Snails
 		ComposeMessageTab* MakeTab () const;
 
 		void PrepareComposeTab (const Account_ptr&);
-		void PrepareLinkedTab (MsgType, const Account_ptr&,
-				const boost::variant<Message_ptr, Account::FetchWholeMessageResult_t>&);
+		void PrepareLinkedTab (MsgType, const Account_ptr&, const MessageInfo&,
+				const boost::variant<MessageBodies, Account::FetchWholeMessageResult_t>&);
 	signals:
 		void gotTab (const QString&, QWidget*);
 	};

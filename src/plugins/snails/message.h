@@ -133,8 +133,6 @@ namespace Snails
 	typedef QSet<Message_ptr> MessageSet;
 
 	uint qHash (const Message_ptr);
-
-	using MessageWHeaders_t = std::pair<Message_ptr, vmime::shared_ptr<const vmime::header>>;
 }
 }
 

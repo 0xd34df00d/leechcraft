@@ -178,7 +178,7 @@ namespace Snails
 		QFuture<SynchronizeResult_t> Synchronize (const QStringList&);
 
 		using FetchWholeMessageResult_t = QFuture<WrapReturnType_t<Snails::FetchWholeMessageResult_t>>;
-		FetchWholeMessageResult_t FetchWholeMessage (const Message_ptr&);
+		FetchWholeMessageResult_t FetchWholeMessage (const QStringList&, const QByteArray&);
 
 		using SendMessageResult_t = Util::Either<InvokeError_t<>, Util::Void>;
 		QFuture<SendMessageResult_t> SendMessage (const OutgoingMessage&);
@@ -227,7 +227,7 @@ namespace Snails
 
 		void HandleReadStatusChanged (const QList<QByteArray>&, const QList<QByteArray>&, const QStringList&);
 		void HandleMessagesRemoved (const QList<QByteArray>&, const QStringList&);
-		void HandleMsgHeaders (const QList<MessageWHeaders_t>&, const QStringList&);
+		void HandleMsgHeaders (const QList<FetchedMessageInfo>&, const QStringList&);
 
 		void HandleGotFolders (const QList<Folder>&);
 	private slots:

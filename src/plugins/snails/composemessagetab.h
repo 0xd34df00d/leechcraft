@@ -88,7 +88,7 @@ namespace Snails
 		void SetFontSizeMultiplier (qreal);
 
 		void SelectAccount (const Account_ptr&);
-		void PrepareLinked (MsgType, const Message_ptr&);
+		void PrepareLinked (MsgType, const MessageInfo&, const MessageBodies&);
 	private:
 		void PrepareLinkedEditor (const Message_ptr&);
 		void PrepareLinkedBody (MsgType, const Message_ptr&);

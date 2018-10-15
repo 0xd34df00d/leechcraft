@@ -39,6 +39,7 @@
 #include <util/db/oral/oral.h>
 #include "account.h"
 #include "messageinfo.h"
+#include "messagebodies.h"
 
 namespace LeechCraft
 {
@@ -90,6 +91,19 @@ namespace Snails
 		static QString ClassName ()
 		{
 			return "Attachments";
+		}
+	};
+
+	struct AccountDatabase::MessageBodies
+	{
+		oral::PKey<int> Id_;
+		oral::References<&Message::Id_> MsgId_;
+		QString PlainText_;
+		QString HTML_;
+
+		static QString ClassName ()
+		{
+			return "MessagesBodies";
 		}
 	};
 
@@ -157,6 +171,12 @@ BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Snails::AccountDatabase::Attachment,
 		Type_,
 		SubType_)
 
+BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Snails::AccountDatabase::MessageBodies,
+		Id_,
+		MsgId_,
+		PlainText_,
+		HTML_)
+
 BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Snails::AccountDatabase::Folder,
 		Id_,
 		FolderPath_)
@@ -194,6 +214,9 @@ namespace Snails
 		Messages_ = Util::oral::AdaptPtr<Message> (DB_);
 		Addresses_ = Util::oral::AdaptPtr<Address> (DB_);
 		Attachments_ = Util::oral::AdaptPtr<Attachment> (DB_);
+
+		MessagesBodies_ = Util::oral::AdaptPtr<MessageBodies> (DB_);
+
 		Folders_ = Util::oral::AdaptPtr<Folder> (DB_);
 		Msg2Folder_ = Util::oral::AdaptPtr<Msg2Folder> (DB_);
 		MsgHeader_ = Util::oral::AdaptPtr<MsgHeader> (DB_);
@@ -242,7 +265,7 @@ namespace Snails
 				sph::f<&Folder::Id_> == sph::f<&Msg2Folder::FolderId_>);
 	}
 
-	boost::optional<QByteArray> AccountDatabase::GetLastID (const QStringList& folder)
+	std::optional<QByteArray> AccountDatabase::GetLastID (const QStringList& folder)
 	{
 		using Util::operator*;
 		return [] (auto tup) { return std::get<0> (tup); } *
@@ -276,7 +299,7 @@ namespace Snails
 		return Messages_->Select (sph::count<>);
 	}
 
-	boost::optional<int> AccountDatabase::GetMsgTableId (const QByteArray& uniqueId)
+	std::optional<int> AccountDatabase::GetMsgTableId (const QByteArray& uniqueId)
 	{
 		if (uniqueId.isEmpty ())
 			return {};
@@ -285,7 +308,7 @@ namespace Snails
 				sph::f<&Message::UniqueId_> == uniqueId);
 	}
 
-	boost::optional<int> AccountDatabase::GetMsgTableId (const QByteArray& msgId, const QStringList& folder)
+	std::optional<int> AccountDatabase::GetMsgTableId (const QByteArray& msgId, const QStringList& folder)
 	{
 		return Msg2Folder_->SelectOne (sph::fields<&Msg2Folder::MsgId_>,
 				FolderMessageIdSelector (msgId, folder, WithoutMessages));
@@ -381,7 +404,36 @@ namespace Snails
 			Msg2Folder_->DeleteBy (sph::f<&Msg2Folder::Id_> == *id);
 	}
 
-	boost::optional<bool> AccountDatabase::IsMessageRead (const QByteArray& msgId, const QStringList& folder)
+	void AccountDatabase::SaveMessageBodies (const QStringList& folder,
+			const QByteArray& msgId, const Snails::MessageBodies& bodies)
+	{
+		auto msgPKey = GetMsgTableId (msgId, folder);
+		if (!msgPKey)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown message"
+					<< folder
+					<< msgId;
+			return;
+		}
+
+		MessagesBodies_->Insert ({ {}, *msgPKey, bodies.PlainText_, bodies.HTML_ });
+	}
+
+	std::optional<MessageBodies> AccountDatabase::GetMessageBodies (const QStringList& folder, const QByteArray& msgId)
+	{
+		auto msgPKey = GetMsgTableId (msgId, folder);
+		if (!msgPKey)
+			return {};
+
+		using Util::operator*;
+
+		return MessagesBodies_->SelectOne (sph::fields<&MessageBodies::PlainText_, &MessageBodies::HTML_>,
+				sph::f<&MessageBodies::MsgId_> == *msgPKey) *
+				[] (auto&& tup) { return Snails::MessageBodies { std::get<0> (tup), std::get<1> (tup) }; };
+	}
+
+	std::optional<bool> AccountDatabase::IsMessageRead (const QByteArray& msgId, const QStringList& folder)
 	{
 		return Messages_->SelectOne (sph::fields<&Message::IsRead_>,
 				FolderMessageIdSelector (msgId, folder, WithMessages));
@@ -408,13 +460,13 @@ namespace Snails
 		MsgHeader_->Insert ({ {}, msgId, header }, oral::InsertAction::Replace::PKey<MsgHeader>);
 	}
 
-	boost::optional<QByteArray> AccountDatabase::GetMessageHeader (const QByteArray& uniqueMsgId) const
+	std::optional<QByteArray> AccountDatabase::GetMessageHeader (const QByteArray& uniqueMsgId) const
 	{
 		return MsgHeader_->SelectOne (sph::fields<&MsgHeader::Header_>,
 				sph::f<&MsgHeader::MsgUniqueId_> == uniqueMsgId);
 	}
 
-	boost::optional<QByteArray> AccountDatabase::GetMessageHeader (const QStringList& folderId, const QByteArray& msgId) const
+	std::optional<QByteArray> AccountDatabase::GetMessageHeader (const QStringList& folderId, const QByteArray& msgId) const
 	{
 		return MsgHeader_->SelectOne (sph::fields<&MsgHeader::Header_>,
 		        FolderMessageIdSelector (msgId, folderId, WithMessages) &&

@@ -33,6 +33,8 @@
 #include "composemessagetab.h"
 #include "core.h"
 #include "structures.h"
+#include "messageinfo.h"
+#include "messagebodies.h"
 
 namespace LeechCraft
 {
@@ -56,32 +58,33 @@ namespace Snails
 		const auto cmt = MakeTab ();
 
 		cmt->SelectAccount (account);
-		cmt->PrepareLinked (MsgType::New, {});
+		cmt->PrepareLinked (MsgType::New, {}, {});
 
 		emit gotTab (cmt->GetTabClassInfo ().VisibleName_, cmt);
 	}
 
-	void ComposeMessageTabFactory::PrepareLinkedTab (MsgType type, const Account_ptr& account,
-			const boost::variant<Message_ptr, Account::FetchWholeMessageResult_t>& message)
+	void ComposeMessageTabFactory::PrepareLinkedTab (MsgType type,
+			const Account_ptr& account, const MessageInfo& msgInfo,
+			const boost::variant<MessageBodies, Account::FetchWholeMessageResult_t>& bodiesVar)
 	{
 		const auto cmt = MakeTab ();
 
 		cmt->SelectAccount (account);
 
-		Util::Visit (message,
-				[cmt, type] (const Message_ptr& msg) { cmt->PrepareLinked (type, msg); },
-				[cmt, type] (const Account::FetchWholeMessageResult_t& future)
+		Util::Visit (bodiesVar,
+				[cmt, type, msgInfo] (const MessageBodies& bodies) { cmt->PrepareLinked (type, msgInfo, bodies); },
+				[cmt, type, msgInfo] (const Account::FetchWholeMessageResult_t& future)
 				{
 					cmt->setEnabled (false);
 
 					Util::Sequence (cmt, future) >>
-							[cmt, type] (const auto& result)
+							[cmt, type, msgInfo] (const auto& result)
 							{
 								Util::Visit (result.AsVariant (),
-										[cmt, type] (const Message_ptr& msg)
+										[cmt, type, msgInfo] (const MessageBodies& bodies)
 										{
 											cmt->setEnabled (true);
-											cmt->PrepareLinked (type, msg);
+											cmt->PrepareLinked (type, msgInfo, bodies);
 										},
 										[cmt] (const auto& err)
 										{
