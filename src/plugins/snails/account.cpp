@@ -770,15 +770,6 @@ namespace Snails
 		MailModelsManager_->UpdateReadStatus (folder, unread, false);
 	}
 
-	void Account::HandleUpdatedMessages (const QList<Message_ptr>& messages, const QStringList& folder)
-	{
-		qDebug () << Q_FUNC_INFO << messages.size ();
-		Storage_->SaveMessages (this, folder, messages);
-
-		// TODO remove
-		//MailModelsManager_->Update (messages);
-	}
-
 	void Account::HandleMessagesRemoved (const QList<QByteArray>& ids, const QStringList& folder)
 	{
 		qDebug () << Q_FUNC_INFO << ids.size () << folder;
