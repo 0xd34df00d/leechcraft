@@ -67,6 +67,7 @@ set (SRCS
 	address.cpp
 	outgoingmessage.cpp
 	messageinfo.cpp
+	messagebodies.cpp
 	)
 set (FORMS
 	mailtab.ui
