@@ -163,6 +163,8 @@ namespace Snails
 		case TotalChildrenCount:
 			return structItem->Fold ([] (const TreeNode *n) { return n->GetRowCount (); },
 					[] (int a, int b) { return a + b; });
+		case MsgInfo:
+			return QVariant::fromValue (msg);
 		default:
 			return {};
 		}

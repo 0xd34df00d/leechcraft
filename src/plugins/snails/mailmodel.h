@@ -78,7 +78,8 @@ namespace Snails
 			IsRead,
 			UnreadChildrenCount,
 			TotalChildrenCount,
-			MessageActions
+			MessageActions,
+			MsgInfo
 		};
 
 		MailModel (const MessageListActionsManager*, QObject* = 0);
