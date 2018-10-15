@@ -57,12 +57,15 @@ namespace Snails
 	public:
 		struct Message;
 		struct Address;
+		struct Attachment;
 		struct Folder;
 		struct Msg2Folder;
 		struct MsgHeader;
 	private:
 		Util::oral::ObjectInfo_ptr<Message> Messages_;
 		Util::oral::ObjectInfo_ptr<Address> Addresses_;
+		Util::oral::ObjectInfo_ptr<Attachment> Attachments_;
+
 		Util::oral::ObjectInfo_ptr<Folder> Folders_;
 		Util::oral::ObjectInfo_ptr<Msg2Folder> Msg2Folder_;
 		Util::oral::ObjectInfo_ptr<MsgHeader> MsgHeader_;

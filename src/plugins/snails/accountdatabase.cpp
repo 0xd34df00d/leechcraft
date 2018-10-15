@@ -77,6 +77,22 @@ namespace Snails
 		}
 	};
 
+	struct AccountDatabase::Attachment
+	{
+		oral::PKey<int> Id_;
+		oral::References<&Message::Id_> MsgId_;
+		QString Name_;
+		QString Descr_;
+		qint64 Size_;
+		QByteArray Type_;
+		QByteArray SubType_;
+
+		static QString ClassName ()
+		{
+			return "Attachments";
+		}
+	};
+
 	struct AccountDatabase::Folder
 	{
 		oral::PKey<int> Id_;
@@ -132,6 +148,15 @@ BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Snails::AccountDatabase::Address,
 		Name_,
 		Email_)
 
+BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Snails::AccountDatabase::Attachment,
+		Id_,
+		MsgId_,
+		Name_,
+		Descr_,
+		Size_,
+		Type_,
+		SubType_)
+
 BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Snails::AccountDatabase::Folder,
 		Id_,
 		FolderPath_)
@@ -168,6 +193,7 @@ namespace Snails
 
 		Messages_ = Util::oral::AdaptPtr<Message> (DB_);
 		Addresses_ = Util::oral::AdaptPtr<Address> (DB_);
+		Attachments_ = Util::oral::AdaptPtr<Attachment> (DB_);
 		Folders_ = Util::oral::AdaptPtr<Folder> (DB_);
 		Msg2Folder_ = Util::oral::AdaptPtr<Msg2Folder> (DB_);
 		MsgHeader_ = Util::oral::AdaptPtr<MsgHeader> (DB_);
@@ -288,7 +314,8 @@ namespace Snails
 						item.Size_,
 						{},
 						item.Refs_.split ('\n'),
-						item.InReplyTos_.split ('\n')
+						item.InReplyTos_.split ('\n'),
+						{}
 					};
 		}
 
@@ -299,6 +326,21 @@ namespace Snails
 
 			for (const auto& addr : res)
 				result [addr.MsgId_].Addresses_ [addr.AddressType_].push_back ({ addr.Name_, addr.Email_ });
+		}
+
+		{
+			auto res = Attachments_->Select (sph::all,
+					sph::f<&Attachment::MsgId_> == sph::f<&Message::Id_> &&
+					byFolderQuery);
+
+			for (const auto& att : res)
+				result [att.MsgId_].Attachments_.push_back ({
+						att.Name_,
+						att.Descr_,
+						att.Type_,
+						att.SubType_,
+						att.Size_
+					});
 		}
 
 		return result.values ();
@@ -419,6 +461,17 @@ namespace Snails
 		for (const auto& [type, addrs] : Util::Stlize (msg.Addresses_))
 			for (const auto& addr : addrs)
 				Addresses_->Insert ({ {}, id, type, addr.Name_, addr.Email_ });
+
+		for (const auto& att : msg.Attachments_)
+			Attachments_->Insert ({
+					{},
+					id,
+					att.GetName (),
+					att.GetDescr (),
+					att.GetSize (),
+					att.GetType (),
+					att.GetSubType ()
+				});
 
 		return id;
 	}
