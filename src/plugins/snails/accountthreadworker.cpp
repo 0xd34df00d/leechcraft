@@ -835,16 +835,7 @@ namespace Snails
 						vmime::net::message::FLAG_MODE_ADD :
 						vmime::net::message::FLAG_MODE_REMOVE);
 
-		QList<Message_ptr> messages;
-		for (const auto& id : ids)
-		{
-			const auto& message = Storage_->LoadMessage (A_, folderPath, id);
-			message->SetRead (read);
-
-			messages << message;
-		}
-
-		return SetReadStatusResult_t::Right (messages);
+		return SetReadStatusResult_t::Right ({});
 	}
 
 	FetchWholeMessageResult_t AccountThreadWorker::FetchWholeMessage (Message_ptr origMsg)

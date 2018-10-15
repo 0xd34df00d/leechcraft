@@ -332,7 +332,7 @@ namespace Snails
 		Util::Sequence (this, future) >>
 				Util::Visitor
 				{
-					[=] (const QList<Message_ptr>& msgs)
+					[=] (Util::Void)
 					{
 						auto becameRead = read ? ids : QList<QByteArray> {};
 						auto becameUnread = read ? QList<QByteArray> {} : ids;

@@ -145,7 +145,7 @@ namespace Snails
 		using MsgCountResult_t = Util::Either<MsgCountError_t, QPair<int, int>>;
 		MsgCountResult_t GetMessageCount (const QStringList& folder);
 
-		using SetReadStatusResult_t = Util::Either<boost::variant<FolderNotFound>, QList<Message_ptr>>;
+		using SetReadStatusResult_t = Util::Either<boost::variant<FolderNotFound>, Util::Void>;
 		SetReadStatusResult_t SetReadStatus (bool read, const QList<QByteArray>& ids, const QStringList& folder);
 
 		FetchWholeMessageResult_t FetchWholeMessage (Message_ptr);
