@@ -43,6 +43,7 @@
 #include "xmlsettingsmanager.h"
 #include "account.h"
 #include "accountdatabase.h"
+#include "messageinfo.h"
 
 namespace LeechCraft
 {
@@ -202,34 +203,9 @@ namespace Snails
 		return msg;
 	}
 
-	QList<Message_ptr> Storage::LoadMessages (Account *acc, const QStringList& folder, const QList<QByteArray>& ids)
+	QList<MessageInfo> Storage::GetMessageInfos (Account *acc, const QStringList& folder)
 	{
-		auto rootDir = DirForAccount (acc);
-		for (const auto& elem : folder)
-		{
-			const auto& subdir = elem.toUtf8 ().toHex ();
-			if (!rootDir.cd (subdir) &&
-					!(rootDir.mkpath (subdir) && rootDir.cd (subdir)))
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "unable to cd to"
-						<< rootDir.filePath (subdir);
-				throw std::runtime_error ("Unable to cd to the directory");
-			}
-		}
-
-		QList<Message_ptr> result;
-		auto future = QtConcurrent::mapped (ids,
-				std::function<Message_ptr (QByteArray)>
-				{
-					[this, acc, rootDir] (const QByteArray& id)
-						{ return LoadMessage (acc, rootDir, id); }
-				});
-
-		for (const auto& item : future.results ())
-			result << item;
-
-		return result;
+		return BaseForAccount (acc)->GetMessageInfos (folder);
 	}
 
 	QList<QByteArray> Storage::LoadIDs (Account *acc, const QStringList& folder)

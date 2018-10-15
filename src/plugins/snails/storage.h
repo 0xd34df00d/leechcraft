@@ -46,6 +46,8 @@ namespace Snails
 	class AccountDatabase;
 	typedef std::shared_ptr<AccountDatabase> AccountDatabase_ptr;
 
+	struct MessageInfo;
+
 	class Storage : public QObject
 	{
 		Q_OBJECT
@@ -62,7 +64,7 @@ namespace Snails
 		void SaveMessages (Account*, const QStringList& folders, const QList<Message_ptr>&);
 
 		Message_ptr LoadMessage (Account*, const QStringList& folder, const QByteArray& id);
-		QList<Message_ptr> LoadMessages (Account*, const QStringList& folder, const QList<QByteArray>& ids);
+		QList<MessageInfo> GetMessageInfos (Account*, const QStringList& folder);
 
 		QList<QByteArray> LoadIDs (Account*, const QStringList& folder);
 		boost::optional<QByteArray> GetLastID (Account*, const QStringList& folder);

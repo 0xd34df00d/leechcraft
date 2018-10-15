@@ -62,6 +62,7 @@
 #include "progressmanager.h"
 #include "vmimeconversions.h"
 #include "outgoingmessage.h"
+#include "messageinfo.h"
 
 Q_DECLARE_METATYPE (QList<QStringList>)
 Q_DECLARE_METATYPE (QList<QByteArray>)
@@ -754,7 +755,7 @@ namespace Snails
 		for (const auto& [msg, header] : messages)
 			base->SetMessageHeader (msg->GetMessageID (), SerializeHeader (header));
 
-		MailModelsManager_->Append (justMessages);
+		MailModelsManager_->Append (Util::Map (justMessages, [] (const auto& msg) { return FromMessage (*msg); }));
 	}
 
 	void Account::HandleReadStatusChanged (const QList<QByteArray>& read,

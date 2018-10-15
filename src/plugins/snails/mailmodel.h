@@ -32,7 +32,6 @@
 #include <QStringList>
 #include <QAbstractItemModel>
 #include <QList>
-#include "message.h"
 #include "messagelistactioninfo.h"
 
 namespace LeechCraft
@@ -40,6 +39,7 @@ namespace LeechCraft
 namespace Snails
 {
 	class MessageListActionsManager;
+	struct MessageInfo;
 
 	class MailModel : public QAbstractItemModel
 	{
@@ -56,7 +56,6 @@ namespace Snails
 		typedef std::weak_ptr<TreeNode> TreeNode_wptr;
 		const TreeNode_ptr Root_;
 
-		QList<Message_ptr> Messages_;
 		QHash<QByteArray, QList<TreeNode_ptr>> FolderId2Nodes_;
 		QHash<QByteArray, QByteArray> MsgId2FolderId_;
 
@@ -102,7 +101,7 @@ namespace Snails
 
 		void Clear ();
 
-		void Append (QList<Message_ptr>);
+		void Append (QList<MessageInfo>);
 		bool Remove (const QByteArray&);
 
 		void UpdateReadStatus (const QList<QByteArray>& msgIds, bool read);
@@ -115,7 +114,7 @@ namespace Snails
 		void UpdateParentReadCount (const QByteArray&, bool);
 
 		void RemoveNode (const TreeNode_ptr&);
-		bool AppendStructured (const Message_ptr&);
+		bool AppendStructured (const MessageInfo&);
 
 		void EmitRowChanged (const TreeNode_ptr&);
 

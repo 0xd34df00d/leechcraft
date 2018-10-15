@@ -32,6 +32,7 @@
 #include "mailmodel.h"
 #include "core.h"
 #include "storage.h"
+#include "messageinfo.h"
 #include "messagelistactionsmanager.h"
 
 namespace LeechCraft
@@ -78,11 +79,9 @@ namespace Snails
 
 		mailModel->SetFolder (path);
 
-		const auto& ids = Storage_->LoadIDs (Acc_, path);
-
 		try
 		{
-			mailModel->Append (Storage_->LoadMessages (Acc_, path, ids));
+			mailModel->Append (Storage_->GetMessageInfos (Acc_, path));
 		}
 		catch (const std::exception& e)
 		{
@@ -93,7 +92,7 @@ namespace Snails
 		Acc_->Synchronize (path);
 	}
 
-	void MailModelsManager::Append (const QList<Message_ptr>& messages)
+	void MailModelsManager::Append (const QList<MessageInfo>& messages)
 	{
 		for (const auto model : Models_)
 			model->Append (messages);
