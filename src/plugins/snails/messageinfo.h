@@ -31,6 +31,7 @@
 
 #include <QDateTime>
 #include "address.h"
+#include "attdescr.h"
 
 namespace LeechCraft::Snails
 {
@@ -51,6 +52,8 @@ namespace LeechCraft::Snails
 
 		QList<QByteArray> References_;
 		QList<QByteArray> InReplyTo_;
+
+		QList<AttDescr> Attachments_;
 	};
 
 	class Message;
