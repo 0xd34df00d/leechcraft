@@ -39,7 +39,7 @@ namespace Azoth
 		return ScheduleImpl (&W::SetAvatar, entryId, size, imageData);
 	}
 
-	QFuture<boost::optional<QByteArray>> AvatarsStorageThread::GetAvatar (const QString& entryId, IHaveAvatars::Size size)
+	QFuture<std::optional<QByteArray>> AvatarsStorageThread::GetAvatar (const QString& entryId, IHaveAvatars::Size size)
 	{
 		return ScheduleImpl (&W::GetAvatar, entryId, size);
 	}

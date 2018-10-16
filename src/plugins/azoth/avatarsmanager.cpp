@@ -135,7 +135,7 @@ namespace Azoth
 		return future;
 	}
 
-	QFuture<boost::optional<QByteArray>> AvatarsManager::GetStoredAvatarData (const QString& entryId, IHaveAvatars::Size size)
+	QFuture<std::optional<QByteArray>> AvatarsManager::GetStoredAvatarData (const QString& entryId, IHaveAvatars::Size size)
 	{
 		return Storage_->GetAvatar (entryId, size);
 	}

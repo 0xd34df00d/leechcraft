@@ -29,7 +29,7 @@
 
 #pragma once
 
-#include <boost/optional.hpp>
+#include <optional>
 #include <QObject>
 #include <QSqlDatabase>
 #include <util/db/oral/oralfwd.h>
@@ -52,7 +52,7 @@ namespace Murm
 	public:
 		PhotoUrlStorage (QObject* = nullptr);
 
-		boost::optional<QUrl> GetUserUrl (qulonglong);
+		std::optional<QUrl> GetUserUrl (qulonglong);
 		void SetUserUrl (qulonglong, const QUrl&);
 	};
 }

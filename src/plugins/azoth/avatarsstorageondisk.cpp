@@ -131,8 +131,7 @@ namespace Azoth
 				Util::oral::InsertAction::Replace::Fields<&Record::EntryID_, &Record::Size_>);
 	}
 
-	boost::optional<QByteArray> AvatarsStorageOnDisk::GetAvatar (const QString& entryId,
-			IHaveAvatars::Size size) const
+	std::optional<QByteArray> AvatarsStorageOnDisk::GetAvatar (const QString& entryId, IHaveAvatars::Size size) const
 	{
 		return AdaptedRecord_->SelectOne (sph::fields<&Record::ImageData_>,
 				sph::f<&Record::EntryID_> == entryId.toUtf8 () && sph::f<&Record::Size_> == size);

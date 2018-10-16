@@ -87,7 +87,7 @@ namespace Murm
 		AdaptedRecord_ = Util::oral::AdaptPtr<Record> (DB_);
 	}
 
-	boost::optional<QUrl> PhotoUrlStorage::GetUserUrl (qulonglong userId)
+	std::optional<QUrl> PhotoUrlStorage::GetUserUrl (qulonglong userId)
 	{
 		using namespace Util::oral::sph;
 		using namespace Util;

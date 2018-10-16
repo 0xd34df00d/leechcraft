@@ -75,7 +75,7 @@ namespace Xoox
 		SetVCard (jid, serialized);
 	}
 
-	boost::optional<QXmppVCardIq> VCardStorage::GetVCard (const QString& jid) const
+	std::optional<QXmppVCardIq> VCardStorage::GetVCard (const QString& jid) const
 	{
 		if (const auto vcard = VCardCache_.object (jid))
 			return *vcard;
@@ -109,7 +109,7 @@ namespace Xoox
 				[this, jid] { PendingHashes_.remove (jid); };
 	}
 
-	boost::optional<QByteArray> VCardStorage::GetVCardPhotoHash (const QString& jid) const
+	std::optional<QByteArray> VCardStorage::GetVCardPhotoHash (const QString& jid) const
 	{
 		if (PendingHashes_.contains (jid))
 			return PendingHashes_.value (jid);
@@ -117,7 +117,7 @@ namespace Xoox
 		return DB_->GetVCardPhotoHash (jid);
 	}
 
-	boost::optional<QString> VCardStorage::GetVCardString (const QString& jid) const
+	std::optional<QString> VCardStorage::GetVCardString (const QString& jid) const
 	{
 		if (PendingVCards_.contains (jid))
 			return PendingVCards_.value (jid);

@@ -71,7 +71,7 @@ namespace Vader
 	, Timer_ { new QTimer { this } }
 	, FullAddress_ { full }
 	, Urls_ { full }
-	, PreviousDateTime_ { AvatarsTimestampStorage {}.GetTimestamp (full).get_value_or ({}) }
+	, PreviousDateTime_ { AvatarsTimestampStorage {}.GetTimestamp (full).value_or (QDateTime {}) }
 	{
 		if (!IsValid ())
 			return;

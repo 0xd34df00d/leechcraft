@@ -29,7 +29,7 @@
 
 #pragma once
 
-#include <boost/optional.hpp>
+#include <optional>
 #include <QString>
 #include "azothcommon.h"
 #include "ihaveavatars.h"
@@ -144,7 +144,7 @@ namespace Azoth
 	public:
 		virtual QFuture<QImage> GetAvatar (QObject *entryObj, IHaveAvatars::Size size) = 0;
 
-		virtual QFuture<boost::optional<QByteArray>> GetStoredAvatarData (const QString& entryId, IHaveAvatars::Size size) = 0;
+		virtual QFuture<std::optional<QByteArray>> GetStoredAvatarData (const QString& entryId, IHaveAvatars::Size size) = 0;
 	};
 
 	class IProxyObject
@@ -338,11 +338,11 @@ namespace Azoth
 		 *
 		 * @param[in] name The name of the custom status.
 		 * @return A custom status if it's found, or an empty
-		 * boost::optional object otherwise.
+		 * std::optional object otherwise.
 		 *
 		 * @sa GetCustomStatusNames()
 		 */
-		virtual boost::optional<CustomStatus> FindCustomStatus (const QString& name) const = 0;
+		virtual std::optional<CustomStatus> FindCustomStatus (const QString& name) const = 0;
 
 		/** @brief Returns the names of all available custom statuses.
 		 *

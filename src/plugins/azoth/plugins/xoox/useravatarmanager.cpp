@@ -86,7 +86,7 @@ namespace Xoox
 		const auto& id = mdEvent->GetID ();
 
 		Util::Sequence (this, AvatarsMgr_->GetStoredAvatarData (entry->GetEntryID (), IHaveAvatars::Size::Full)) >>
-				[this, id, from] (const boost::optional<QByteArray>& data)
+				[this, id, from] (const std::optional<QByteArray>& data)
 				{
 					if (!data || data->isEmpty ())
 						return;

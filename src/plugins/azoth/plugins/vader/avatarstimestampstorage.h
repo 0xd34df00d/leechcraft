@@ -29,7 +29,7 @@
 
 #pragma once
 
-#include <boost/optional.hpp>
+#include <optional>
 #include <QSqlDatabase>
 #include <util/db/oral/oralfwd.h>
 #include <util/db/closingdb.h>
@@ -53,7 +53,7 @@ namespace Vader
 	public:
 		AvatarsTimestampStorage ();
 
-		boost::optional<QDateTime> GetTimestamp (const QString&);
+		std::optional<QDateTime> GetTimestamp (const QString&);
 		void SetTimestamp (const QString&, const QDateTime&);
 	};
 }

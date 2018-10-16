@@ -95,7 +95,7 @@ namespace Azoth
 
 		QString PrettyPrintDateTime (const QDateTime&) override;
 
-		boost::optional<CustomStatus> FindCustomStatus (const QString&) const override;
+		std::optional<CustomStatus> FindCustomStatus (const QString&) const override;
 		QStringList GetCustomStatusNames () const override;
 
 		QImage GetDefaultAvatar (int) const override;

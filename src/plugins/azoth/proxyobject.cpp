@@ -352,7 +352,7 @@ namespace Azoth
 		return Azoth::PrettyPrintDateTime (dt);
 	}
 
-	boost::optional<CustomStatus> ProxyObject::FindCustomStatus (const QString& name) const
+	std::optional<CustomStatus> ProxyObject::FindCustomStatus (const QString& name) const
 	{
 		const auto mgr = Core::Instance ().GetCustomStatusesManager ();
 		const auto& statuses = mgr->GetStates ();

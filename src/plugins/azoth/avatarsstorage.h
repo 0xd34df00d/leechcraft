@@ -29,7 +29,7 @@
 
 #pragma once
 
-#include <boost/optional.hpp>
+#include <optional>
 #include <boost/variant.hpp>
 #include <QObject>
 #include <QCache>
@@ -45,8 +45,8 @@ namespace Azoth
 	class ICLEntry;
 	class AvatarsStorageThread;
 
-	using MaybeImage = boost::optional<QImage>;
-	using MaybeByteArray = boost::optional<QByteArray>;
+	using MaybeImage = std::optional<QImage>;
+	using MaybeByteArray = std::optional<QByteArray>;
 
 	class AvatarsStorage : public QObject
 	{

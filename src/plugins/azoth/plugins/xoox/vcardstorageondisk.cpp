@@ -109,7 +109,7 @@ namespace Xoox
 		AdaptedVCards_->Insert ({ jid, vcard }, Util::oral::InsertAction::Replace::PKey<VCardRecord>);
 	}
 
-	boost::optional<QString> VCardStorageOnDisk::GetVCard (const QString& jid) const
+	std::optional<QString> VCardStorageOnDisk::GetVCard (const QString& jid) const
 	{
 		return AdaptedVCards_->SelectOne (sph::fields<&VCardRecord::VCardIq_>, sph::f<&VCardRecord::JID_> == jid);
 	}
@@ -119,7 +119,7 @@ namespace Xoox
 		AdaptedPhotoHashes_->Insert ({ jid, hash }, Util::oral::InsertAction::Replace::PKey<PhotoHashRecord>);
 	}
 
-	boost::optional<QByteArray> VCardStorageOnDisk::GetVCardPhotoHash (const QString& jid) const
+	std::optional<QByteArray> VCardStorageOnDisk::GetVCardPhotoHash (const QString& jid) const
 	{
 		return AdaptedPhotoHashes_->SelectOne (sph::fields<&PhotoHashRecord::Hash_>, sph::f<&PhotoHashRecord::JID_> == jid);
 	}
