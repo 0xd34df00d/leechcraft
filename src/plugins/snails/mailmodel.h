@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <memory>
 #include <QStringList>
 #include <QAbstractItemModel>
 #include <QList>
