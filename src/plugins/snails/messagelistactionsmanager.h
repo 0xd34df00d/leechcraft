@@ -47,7 +47,7 @@ namespace Snails
 	public:
 		MessageListActionsManager (Account*, QObject* = nullptr);
 
-		QList<MessageListActionInfo> GetMessageActions (const Message_ptr&) const;
+		QList<MessageListActionInfo> GetMessageActions (const MessageInfo&) const;
 	};
 }
 }

@@ -291,20 +291,11 @@ namespace Snails
 				{
 					[loader, handler = actInfo.Handler_]
 					{
-						Message_ptr msg;
-						try
-						{
-							msg = loader ();
-						}
-						catch (const std::exception& e)
-						{
+						if (auto item = loader ())
+							handler (*item);
+						else
 							qWarning () << Q_FUNC_INFO
-									<< "unable to load message:"
-									<< e.what ();
-							return;
-						}
-
-						handler (msg);
+									<< "unable to load message";
 					},
 					action,
 					SIGNAL (triggered ()),

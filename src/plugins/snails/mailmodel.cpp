@@ -354,11 +354,9 @@ namespace Snails
 			if (!msgId.isEmpty ())
 				MsgId2FolderId_ [msgId] = msg.FolderId_;
 
-			/* TODO
 			const auto& acts = ActionsMgr_->GetMessageActions (msg);
 			if (!acts.isEmpty ())
 				MsgId2Actions_ [msg.FolderId_] = acts;
-			 */
 		}
 
 		for (const auto& msg : messages)

@@ -42,10 +42,9 @@ namespace Snails
 {
 	enum class MailListMode;
 
-	class Message;
-	using Message_ptr = std::shared_ptr<Message>;
+	struct MessageInfo;
 
-	using MessageLoader_f = std::function<Message_ptr (QByteArray)>;
+	using MessageLoader_f = std::function<std::optional<MessageInfo> (QByteArray)>;
 
 	class MailTreeDelegate : public QStyledItemDelegate
 	{

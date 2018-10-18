@@ -109,14 +109,12 @@ namespace Snails
 		MailSortFilterModel_->sort (static_cast<int> (MailModel::Column::Date),
 				Qt::DescendingOrder);
 
-		MailTreeDelegate_ = new MailTreeDelegate ([this] (const QByteArray& id) -> Message_ptr
+		MailTreeDelegate_ = new MailTreeDelegate ([this] (const QByteArray& id) -> std::optional<MessageInfo>
 				{
 					if (!CurrAcc_ || !MailModel_)
 						return {};
 
-					// TODO
-					//return Storage_->LoadMessage (CurrAcc_.get (), MailModel_->GetCurrentFolder (), id);
-					return {};
+					return Storage_->GetMessageInfo (CurrAcc_.get (), MailModel_->GetCurrentFolder (), id);
 				},
 				Ui_.MailTree_,
 				this);
