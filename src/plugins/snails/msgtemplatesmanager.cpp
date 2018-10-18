@@ -37,7 +37,6 @@
 #include <util/sll/curry.h>
 #include <util/sys/paths.h>
 #include <util/util.h>
-#include "message.h"
 #include "account.h"
 #include "structures.h"
 #include "templatesstorage.h"

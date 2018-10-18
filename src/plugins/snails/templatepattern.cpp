@@ -32,7 +32,6 @@
 #include <util/sll/prelude.h>
 #include <util/sll/curry.h>
 #include <interfaces/itexteditor.h>
-#include "message.h"
 #include "account.h"
 #include "util.h"
 #include "messagebodies.h"

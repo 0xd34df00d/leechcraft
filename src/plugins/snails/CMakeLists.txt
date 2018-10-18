@@ -20,7 +20,6 @@ set (SRCS
 	accountslistwidget.cpp
 	account.cpp
 	accountconfigdialog.cpp
-	message.cpp
 	accountthread.cpp
 	accountthreadworker.cpp
 	progresslistener.cpp

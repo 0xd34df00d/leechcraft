@@ -40,7 +40,6 @@
 #include <util/sll/either.h>
 #include <interfaces/structures.h>
 #include "progresslistener.h"
-#include "message.h"
 #include "messageinfo.h"
 #include "account.h"
 #include "accountthreadworkerfwd.h"

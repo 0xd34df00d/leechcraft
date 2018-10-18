@@ -33,7 +33,6 @@
 #include <functional>
 #include <QObject>
 #include <QHash>
-#include "message.h"
 #include "accountthread.h"
 #include "accountthreadworkerfwd.h"
 #include "progressfwd.h"

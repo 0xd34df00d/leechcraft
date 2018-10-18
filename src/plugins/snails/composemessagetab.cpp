@@ -52,7 +52,6 @@
 #include <interfaces/iadvancedplaintexteditor.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/ientitymanager.h>
-#include "message.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "accountsmanager.h"

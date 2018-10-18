@@ -39,7 +39,6 @@
 
 #include <util/sys/resourceloader.h>
 #include <interfaces/core/ientitymanager.h>
-#include "message.h"
 #include "progressmanager.h"
 #include "accountfoldermanager.h"
 #include "composemessagetab.h"
@@ -62,10 +61,6 @@ namespace Snails
 		MsgView_->AddLocalPrefix ();
 
 		qRegisterMetaType<size_t> ("size_t");
-		qRegisterMetaType<Message_ptr> ("LeechCraft::Snails::Message_ptr");
-		qRegisterMetaType<Message_ptr> ("Message_ptr");
-		qRegisterMetaType<QList<Message_ptr>> ("QList<LeechCraft::Snails::Message_ptr>");
-		qRegisterMetaType<QList<Message_ptr>> ("QList<Message_ptr>");
 		qRegisterMetaType<AttDescr> ("LeechCraft::Snails::AttDescr");
 		qRegisterMetaType<AttDescr> ("AttDescr");
 		qRegisterMetaType<QList<QStringList>> ("QList<QStringList>");

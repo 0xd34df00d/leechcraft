@@ -32,7 +32,6 @@
 #include <util/threads/futures.h>
 #include <util/sll/visitor.h>
 #include "account.h"
-#include "message.h"
 
 namespace LeechCraft
 {
