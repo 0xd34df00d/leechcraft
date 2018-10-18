@@ -80,6 +80,11 @@ namespace Snails
 		return BaseForAccount (acc)->GetMessageInfos (folder);
 	}
 
+	std::optional<MessageInfo> Storage::GetMessageInfo (Account *acc, const QStringList& folder, const QByteArray& msgId)
+	{
+		return BaseForAccount (acc)->GetMessageInfo (folder, msgId);
+	}
+
 	void Storage::SaveMessageBodies (Account *acc,
 			const QStringList& folder,
 			const QByteArray& msgId,

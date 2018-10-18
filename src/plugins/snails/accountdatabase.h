@@ -89,6 +89,7 @@ namespace Snails
 		int GetMessageCount ();
 
 		QList<MessageInfo> GetMessageInfos (const QStringList& folder);
+		std::optional<MessageInfo> GetMessageInfo (const QStringList& folder, const QByteArray& msgId);
 
 		void AddMessage (const MessageInfo&);
 		void RemoveMessage (const QByteArray& msgId, const QStringList& folder);

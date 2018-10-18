@@ -387,6 +387,33 @@ namespace Snails
 		return result.values ();
 	}
 
+	std::optional<MessageInfo> AccountDatabase::GetMessageInfo (const QStringList& folder, const QByteArray& msgId)
+	{
+		auto maybeMsg = Messages_->SelectOne (sph::all, FolderMessageIdSelector (msgId, folder, WithMessages));
+		if (!maybeMsg)
+			return {};
+
+		const auto& msg = *maybeMsg;
+
+		auto msgInfo = MakeMessageInfo (msg, folder, msgId);
+
+		{
+			auto res = Addresses_->Select (sph::all,
+					sph::f<&Address::MsgId_> == *msg.Id_);
+			for (const auto& addr : res)
+				AddAddress (msgInfo, addr);
+		}
+
+		{
+			auto res = Attachments_->Select (sph::all,
+					sph::f<&Attachment::MsgId_> == *msg.Id_);
+			for (const auto& att : res)
+				AddAttachment (msgInfo, att);
+		}
+
+		return msgInfo;
+	}
+
 	void AccountDatabase::AddMessage (const MessageInfo& msg)
 	{
 		const auto& folder = msg.Folder_;
