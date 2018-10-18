@@ -314,6 +314,44 @@ namespace Snails
 				FolderMessageIdSelector (msgId, folder, WithoutMessages));
 	}
 
+	namespace
+	{
+		MessageInfo MakeMessageInfo (const AccountDatabase::Message& item,
+				const QStringList& folder, const QByteArray& msgId)
+		{
+			return
+			{
+				item.IsRead_,
+				item.UniqueId_,
+				msgId,
+				folder,
+				item.Subject_,
+				item.Date_,
+				item.Size_,
+				{},
+				item.Refs_.split ('\n'),
+				item.InReplyTos_.split ('\n'),
+				{}
+			};
+		}
+
+		void AddAddress (MessageInfo& info, const AccountDatabase::Address& addr)
+		{
+			info.Addresses_ [addr.AddressType_].push_back ({ addr.Name_, addr.Email_ });
+		}
+
+		void AddAttachment (MessageInfo& info, const AccountDatabase::Attachment& att)
+		{
+			info.Attachments_.push_back ({
+					att.Name_,
+					att.Descr_,
+					att.Type_,
+					att.SubType_,
+					att.Size_
+				});
+		}
+	}
+
 	QList<MessageInfo> AccountDatabase::GetMessageInfos (const QStringList& folder)
 	{
 		QHash<int, MessageInfo> result;
@@ -326,44 +364,24 @@ namespace Snails
 			auto res = Messages_->Select (sph::all + sph::fields<&Msg2Folder::FolderMessageId_>,
 					byFolderQuery);
 			result.reserve (res.size ());
-			for (const auto& [item, folderId] : res)
-				result [item.Id_] = MessageInfo {
-						item.IsRead_,
-						item.UniqueId_,
-						folderId,
-						folder,
-						item.Subject_,
-						item.Date_,
-						item.Size_,
-						{},
-						item.Refs_.split ('\n'),
-						item.InReplyTos_.split ('\n'),
-						{}
-					};
+			for (const auto& [item, msgId] : res)
+				result [item.Id_] = MakeMessageInfo (item, folder, msgId);
 		}
 
 		{
 			auto res = Addresses_->Select (sph::all,
 					sph::f<&Address::MsgId_> == sph::f<&Message::Id_> &&
 					byFolderQuery);
-
 			for (const auto& addr : res)
-				result [addr.MsgId_].Addresses_ [addr.AddressType_].push_back ({ addr.Name_, addr.Email_ });
+				AddAddress (result [addr.MsgId_], addr);
 		}
 
 		{
 			auto res = Attachments_->Select (sph::all,
 					sph::f<&Attachment::MsgId_> == sph::f<&Message::Id_> &&
 					byFolderQuery);
-
 			for (const auto& att : res)
-				result [att.MsgId_].Attachments_.push_back ({
-						att.Name_,
-						att.Descr_,
-						att.Type_,
-						att.SubType_,
-						att.Size_
-					});
+				AddAttachment (result [att.MsgId_], att);
 		}
 
 		return result.values ();
