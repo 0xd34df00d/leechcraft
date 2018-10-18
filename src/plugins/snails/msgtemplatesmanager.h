@@ -44,8 +44,9 @@ enum class ContentType;
 namespace Snails
 {
 	class Account;
-	class Message;
 	class TemplatesStorage;
+	struct MessageInfo;
+	struct MessageBodies;
 
 	enum class MsgType;
 
@@ -58,7 +59,7 @@ namespace Snails
 		using LoadResult_t = Util::Either<std::runtime_error, QString>;
 
 		LoadResult_t GetTemplate (ContentType, MsgType, const Account*) const;
-		QString GetTemplatedText (ContentType, MsgType, const Account*, const QString&, const Message* = nullptr) const;
+		QString GetTemplatedText (ContentType, MsgType, const Account*, const MessageInfo&, const MessageBodies&) const;
 
 		using SaveResult_t = Util::Either<std::runtime_error, Util::Void>;
 		SaveResult_t SaveTemplate (ContentType, MsgType, const Account*, const QString&);

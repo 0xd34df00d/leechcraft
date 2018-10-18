@@ -62,6 +62,7 @@
 #include "util.h"
 #include "attachmentsfetcher.h"
 #include "outgoingmessage.h"
+#include "messagebodies.h"
 
 namespace LeechCraft
 {
@@ -160,16 +161,16 @@ namespace Snails
 			return subj;
 		}
 
-		std::optional<QString> CreateSubj (MsgType type, const Message_ptr& msg)
+		std::optional<QString> CreateSubj (MsgType type, const MessageInfo& info)
 		{
 			switch (type)
 			{
 			case MsgType::New:
 				return {};
 			case MsgType::Reply:
-				return MakeLinkedSubject (msg->GetSubject (), "Re");
+				return MakeLinkedSubject (info.Subject_, "Re");
 			case MsgType::Forward:
-				return MakeLinkedSubject (msg->GetSubject (), "Fwd");
+				return MakeLinkedSubject (info.Subject_, "Fwd");
 			}
 
 			Util::Unreachable ();
@@ -178,42 +179,40 @@ namespace Snails
 
 	void ComposeMessageTab::PrepareLinked (MsgType type, const MessageInfo& info, const MessageBodies& bodies)
 	{
-		/* TODO
 		if (type == MsgType::Reply)
 		{
-			auto address = msg->GetAddress (AddressType::ReplyTo);
+			auto address = info.Addresses_ [AddressType::ReplyTo].value (0);
 			if (address.Email_.isEmpty ())
-				address = msg->GetAddress (AddressType::From);
+				address = info.Addresses_ [AddressType::From].value (0);
 			Ui_.To_->setText (GetNiceMail (address));
 		}
 		else if (type == MsgType::Forward)
-			CopyAttachments (msg);
+			CopyAttachments (info);
 
-		if (const auto& subj = CreateSubj (type, msg))
+		if (const auto& subj = CreateSubj (type, info))
 			Ui_.Subject_->setText (*subj);
 
-		PrepareLinkedBody (type, msg);
+		PrepareLinkedBody (type, info, bodies);
 
-		ReplyMessage_ = msg;
+		OrigReferences_ = info.References_;
+		OrigMessageId_ = info.MessageId_;
 
 		Util::ExecuteLater ([=]
 				{
 					Ui_.Editor_->GetCurrentEditor ()->GetWidget ()->setFocus ();
 				});
-				*/
 	}
 
-	void ComposeMessageTab::PrepareLinkedEditor (const Message_ptr& msg)
+	void ComposeMessageTab::PrepareLinkedEditor (const MessageBodies& bodies)
 	{
-		const auto& replyOpt = XmlSettingsManager::Instance ()
-				.property ("ReplyMessageFormat").toString ();
+		const auto& replyOpt = XmlSettingsManager::Instance ().property ("ReplyMessageFormat").toString ();
 		if (replyOpt == "Plain")
 			Ui_.Editor_->SelectEditor (ContentType::PlainText);
 		else if (replyOpt == "HTML")
 			Ui_.Editor_->SelectEditor (ContentType::HTML);
 		else if (replyOpt == "Orig")
 		{
-			if (msg && msg->GetHTMLBody ().isEmpty ())
+			if (bodies.HTML_.isEmpty ())
 				Ui_.Editor_->SelectEditor (ContentType::PlainText);
 			else
 				Ui_.Editor_->SelectEditor (ContentType::HTML);
@@ -226,22 +225,9 @@ namespace Snails
 
 	namespace
 	{
-		template<typename Templater>
-		void SetupReplyPlaintextContents (const Message_ptr& msg, IEditorWidget *editor, Templater&& tpl)
+		void SetupReplyPlaintextContents (IEditorWidget *editor, const QString& text)
 		{
-			auto plainSplit = msg ?
-					msg->GetBody ().split ('\n') :
-					QStringList {};
-			for (auto& str : plainSplit)
-			{
-				str = str.trimmed ();
-				if (!str.isEmpty () && str.at (0) != '>')
-					str.prepend (' ');
-				str.prepend ('>');
-			}
-
-			const auto& plainContent = plainSplit.join ("\n") + "\n\n";
-			editor->SetContents (tpl (plainContent, msg.get ()), ContentType::PlainText);
+			editor->SetContents (text, ContentType::PlainText);
 
 			if (const auto iape = dynamic_cast<IAdvancedPlainTextEditor*> (editor))
 				if (iape->FindText ("${CURSOR}"))
@@ -352,9 +338,9 @@ namespace Snails
 				}());
 			)delim";
 
-		void SetReplyHTMLContents (const QString& contents, IEditorWidget *editor)
+		void SetupReplyRichContents (IEditorWidget *editor, const QString& text)
 		{
-			editor->SetContents (contents, ContentType::HTML);
+			editor->SetContents (text, ContentType::HTML);
 
 			if (const auto iahe = dynamic_cast<IAdvancedHTMLEditor*> (editor))
 			{
@@ -362,38 +348,20 @@ namespace Snails
 				iahe->ExecJS (DeleteCursorJS);
 			}
 		}
-
-		template<typename Templater>
-		void SetupReplyRichContents (const Message_ptr& msg, IEditorWidget *editor, Templater&& tpl)
-		{
-			if (!msg)
-			{
-				SetReplyHTMLContents (tpl (QString {}, nullptr), editor);
-				return;
-			}
-
-			const auto& htmlBody = msg->GetHTMLBody ();
-			if (!htmlBody.isEmpty ())
-				SetReplyHTMLContents (tpl (htmlBody, msg.get ()), editor);
-			else
-				SetReplyHTMLContents (tpl (PlainBody2HTML (msg->GetBody ()), msg.get ()), editor);
-		}
 	}
 
-	void ComposeMessageTab::PrepareLinkedBody (MsgType type, const Message_ptr& msg)
+	void ComposeMessageTab::PrepareLinkedBody (MsgType type, const MessageInfo& info, const MessageBodies& bodies)
 	{
-		PrepareLinkedEditor (msg);
+		PrepareLinkedEditor (bodies);
 
 		const auto editor = Ui_.Editor_->GetCurrentEditor ();
 
 		const auto acc = GetSelectedAccount ();
 
-		SetupReplyPlaintextContents (msg, editor,
-				[&] (auto... rest)
-					{ return TemplatesMgr_->GetTemplatedText (ContentType::PlainText, type, acc, rest...); });
-		SetupReplyRichContents (msg, editor,
-				[&] (auto... rest)
-					{ return TemplatesMgr_->GetTemplatedText (ContentType::HTML, type, acc, rest...); });
+		auto tpl = [&] (ContentType cty) { return TemplatesMgr_->GetTemplatedText (cty, type, acc, info, bodies); };
+
+		SetupReplyPlaintextContents (editor, tpl (ContentType::PlainText));
+		SetupReplyRichContents (editor, tpl (ContentType::HTML));
 	}
 
 	namespace
@@ -414,14 +382,14 @@ namespace Snails
 		}
 	}
 
-	void ComposeMessageTab::CopyAttachments (const Message_ptr& msg)
+	void ComposeMessageTab::CopyAttachments (const MessageInfo& info)
 	{
-		const auto& attachments = msg->GetAttachments ();
+		const auto& attachments = info.Attachments_;
 		if (attachments.isEmpty ())
 			return;
 
 		LinkedAttachmentsFetcher_ = std::make_shared<AttachmentsFetcher> (GetSelectedAccount (),
-				msg->GetFolders ().value (0), msg->GetFolderID (), attachments);
+				info.Folder_, info.FolderId_, attachments);
 		Util::Sequence (this, LinkedAttachmentsFetcher_->GetFuture ()) >>
 				Util::Visitor
 				{
@@ -508,19 +476,15 @@ namespace Snails
 
 	void ComposeMessageTab::SetMessageReferences (OutgoingMessage& message) const
 	{
-		if (!ReplyMessage_)
+		if (OrigMessageId_.isEmpty ())
 			return;
 
-		const auto& id = ReplyMessage_->GetMessageID ();
-		if (id.isEmpty ())
-			return;
+		message.InReplyTo_ = QList { OrigMessageId_ };
 
-		message.InReplyTo_ = QList { id };
-
-		auto references = ReplyMessage_->GetReferences ();
+		auto references = OrigReferences_;
 		while (references.size () > 20)
 			references.removeAt (1);
-		references << id;
+		references << OrigMessageId_;
 		message.References_ = references;
 	}
 
@@ -729,7 +693,7 @@ namespace Snails
 
 		newEditor->SetContents (currentPlain, ContentType::PlainText);
 		if (!currentHtml.isEmpty ())
-			SetReplyHTMLContents (currentHtml, newEditor);
+			SetupReplyRichContents (newEditor, currentHtml);
 	}
 }
 }

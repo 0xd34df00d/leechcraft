@@ -42,6 +42,7 @@
 #include "structures.h"
 #include "templatesstorage.h"
 #include "templatepattern.h"
+#include "messagebodies.h"
 
 namespace LeechCraft
 {
@@ -73,7 +74,7 @@ namespace Snails
 		static const QString CloseMarker = "}";
 
 		QString PerformSubstitutions (const Account *acc,
-				const Message *msg, ContentType type, const QString& body, QString text)
+				const MessageInfo& info, const MessageBodies& bodies, ContentType type, QString text)
 		{
 			const auto functions = GetKnownPatternsHash ();
 
@@ -90,7 +91,7 @@ namespace Snails
 
 				if (functions.contains (variable))
 				{
-					const auto& subst = functions [variable] (acc, msg, type, body);
+					const auto& subst = functions [variable] (acc, info, bodies, type);
 					text.replace (pos, closing - pos + 1, subst);
 					pos += subst.size ();
 				}
@@ -103,11 +104,11 @@ namespace Snails
 	}
 
 	QString MsgTemplatesManager::GetTemplatedText (ContentType type,
-			MsgType msgType, const Account *acc, const QString& body, const Message *msg) const
+			MsgType msgType, const Account *acc, const MessageInfo& info, const MessageBodies& bodies) const
 	{
-		return Util::RightOr (Util::Curry (&PerformSubstitutions) (acc) (msg) (type) (body) *
+		return Util::RightOr (Util::Curry (&PerformSubstitutions) (acc) (info) (bodies) (type) *
 					GetTemplate (type, msgType, acc),
-				body);
+				QString {});
 	}
 
 	auto MsgTemplatesManager::SaveTemplate (ContentType type,
