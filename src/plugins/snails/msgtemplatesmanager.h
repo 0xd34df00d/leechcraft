@@ -51,8 +51,6 @@ namespace Snails
 
 	class MsgTemplatesManager : public QObject
 	{
-		Q_OBJECT
-
 		const std::shared_ptr<TemplatesStorage> Storage_;
 	public:
 		MsgTemplatesManager (QObject* = nullptr);
