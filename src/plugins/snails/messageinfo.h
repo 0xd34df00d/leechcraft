@@ -55,9 +55,6 @@ namespace LeechCraft::Snails
 
 		QList<AttDescr> Attachments_;
 	};
-
-	class Message;
-	MessageInfo FromMessage (const Message&);
 }
 
 Q_DECLARE_METATYPE (LeechCraft::Snails::MessageInfo)

@@ -28,24 +28,7 @@
  **********************************************************************/
 
 #include "messageinfo.h"
-#include "message.h"
 
 namespace LeechCraft::Snails
 {
-	MessageInfo FromMessage (const Message& msg)
-	{
-		return
-		{
-			msg.IsRead (),
-			msg.GetMessageID (),
-			msg.GetFolderID (),
-			msg.GetFolders ().value (0),
-			msg.GetSubject (),
-			msg.GetDate (),
-			msg.GetSize (),
-			msg.GetAddresses (),
-			msg.GetReferences (),
-			msg.GetInReplyTo ()
-		};
-	}
 }
