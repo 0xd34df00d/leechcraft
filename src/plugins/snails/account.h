@@ -33,7 +33,6 @@
 #include <functional>
 #include <QObject>
 #include <QHash>
-#include "message.h"
 #include "accountthread.h"
 #include "accountthreadworkerfwd.h"
 #include "progressfwd.h"
@@ -62,6 +61,7 @@ namespace Snails
 	class ThreadPool;
 	class Storage;
 	struct Folder;
+	struct OutgoingMessage;
 
 	enum class TaskPriority;
 
@@ -177,14 +177,14 @@ namespace Snails
 		QFuture<SynchronizeResult_t> Synchronize (const QStringList&);
 
 		using FetchWholeMessageResult_t = QFuture<WrapReturnType_t<Snails::FetchWholeMessageResult_t>>;
-		FetchWholeMessageResult_t FetchWholeMessage (const Message_ptr&);
+		FetchWholeMessageResult_t FetchWholeMessage (const QStringList&, const QByteArray&);
 
 		using SendMessageResult_t = Util::Either<InvokeError_t<>, Util::Void>;
-		QFuture<SendMessageResult_t> SendMessage (const Message_ptr&);
+		QFuture<SendMessageResult_t> SendMessage (const OutgoingMessage&);
 
 		using FetchAttachmentResult_t = WrapReturnType_t<Snails::FetchAttachmentResult_t>;
-		QFuture<FetchAttachmentResult_t> FetchAttachment (const Message_ptr&,
-				const QString&, const QString&);
+		QFuture<FetchAttachmentResult_t> FetchAttachment (const QStringList& folder,
+				const QByteArray& msgId, const QString& attName, const QString& path);
 
 		void SetReadStatus (bool, const QList<QByteArray>&, const QStringList&);
 
@@ -225,9 +225,8 @@ namespace Snails
 		void HandleMessageCountFetched (int, int, const QStringList&);
 
 		void HandleReadStatusChanged (const QList<QByteArray>&, const QList<QByteArray>&, const QStringList&);
-		void HandleUpdatedMessages (const QList<Message_ptr>&, const QStringList&);
 		void HandleMessagesRemoved (const QList<QByteArray>&, const QStringList&);
-		void HandleMsgHeaders (const QList<MessageWHeaders_t>&, const QStringList&);
+		void HandleMsgHeaders (const QList<FetchedMessageInfo>&, const QStringList&);
 
 		void HandleGotFolders (const QList<Folder>&);
 	private slots:

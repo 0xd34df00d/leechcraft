@@ -40,11 +40,12 @@
 #include <util/sll/visitor.h>
 #include <interfaces/core/ientitymanager.h>
 #include "core.h"
-#include "message.h"
+#include "messageinfo.h"
 #include "vmimeconversions.h"
 #include "account.h"
 #include "storage.h"
 #include "accountdatabase.h"
+#include "outgoingmessage.h"
 
 namespace LeechCraft
 {
@@ -55,7 +56,7 @@ namespace Snails
 	class MessageListActionsProvider
 	{
 	public:
-		virtual QList<MessageListActionInfo> GetMessageActions (const Message_ptr&, const Header_ptr&, Account*) const = 0;
+		virtual QList<MessageListActionInfo> GetMessageActions (const MessageInfo&, const Header_ptr&, Account*) const = 0;
 	};
 
 	namespace
@@ -102,7 +103,7 @@ namespace Snails
 		class GithubProvider final : public MessageListActionsProvider
 		{
 		public:
-			QList<MessageListActionInfo> GetMessageActions (const Message_ptr&, const Header_ptr& headers, Account*) const override
+			QList<MessageListActionInfo> GetMessageActions (const MessageInfo&, const Header_ptr& headers, Account*) const override
 			{
 				const auto& addrReq = GetGithubAddr (headers);
 				if (addrReq.isEmpty ())
@@ -114,7 +115,7 @@ namespace Snails
 						QObject::tr ("Open"),
 						QObject::tr ("Open the page on GitHub."),
 						QIcon::fromTheme ("document-open"),
-						[addrReq] (const Message_ptr&)
+						[addrReq] (const MessageInfo&)
 						{
 							const QUrl fullUrl { "https://github.com/" + addrReq };
 							const auto& entity = Util::MakeEntity (fullUrl, {}, FromUserInitiated | OnlyHandle);
@@ -129,7 +130,7 @@ namespace Snails
 		class BugzillaProvider final : public MessageListActionsProvider
 		{
 		public:
-			QList<MessageListActionInfo> GetMessageActions (const Message_ptr&, const Header_ptr& headers, Account*) const override
+			QList<MessageListActionInfo> GetMessageActions (const MessageInfo&, const Header_ptr& headers, Account*) const override
 			{
 				const auto header = headers->findField ("X-Bugzilla-URL");
 				if (!header)
@@ -158,7 +159,7 @@ namespace Snails
 						QObject::tr ("Open"),
 						QObject::tr ("Open the bug page on Bugzilla."),
 						QIcon::fromTheme ("tools-report-bug"),
-						[url, bugId] (const Message_ptr&)
+						[url, bugId] (const MessageInfo&)
 						{
 							const QUrl fullUrl { url + "show_bug.cgi?id=" + bugId };
 							const auto& entity = Util::MakeEntity (fullUrl, {}, FromUserInitiated | OnlyHandle);
@@ -173,7 +174,7 @@ namespace Snails
 		class RedmineProvider final : public MessageListActionsProvider
 		{
 		public:
-			QList<MessageListActionInfo> GetMessageActions (const Message_ptr&, const Header_ptr& headers, Account*) const override
+			QList<MessageListActionInfo> GetMessageActions (const MessageInfo&, const Header_ptr& headers, Account*) const override
 			{
 				const auto header = headers->findField ("X-Redmine-Host");
 				if (!header)
@@ -201,7 +202,7 @@ namespace Snails
 						QObject::tr ("Open"),
 						QObject::tr ("Open the issue page on Redmine."),
 						QIcon::fromTheme ("tools-report-bug"),
-						[url, issue] (const Message_ptr&)
+						[url, issue] (const MessageInfo&)
 						{
 							const QUrl fullUrl { "http://" + url + "/issues/" + issue };
 							const auto& entity = Util::MakeEntity (fullUrl, {}, FromUserInitiated | OnlyHandle);
@@ -216,7 +217,7 @@ namespace Snails
 		class ReviewboardProvider final : public MessageListActionsProvider
 		{
 		public:
-			QList<MessageListActionInfo> GetMessageActions (const Message_ptr&, const Header_ptr& headers, Account*) const override
+			QList<MessageListActionInfo> GetMessageActions (const MessageInfo&, const Header_ptr& headers, Account*) const override
 			{
 				const auto header = headers->findField ("X-ReviewRequest-URL");
 				if (!header)
@@ -234,7 +235,7 @@ namespace Snails
 						QObject::tr ("Open"),
 						QObject::tr ("Open the review page on ReviewBoard."),
 						QIcon::fromTheme ("document-open"),
-						[url] (const Message_ptr&)
+						[url] (const MessageInfo&)
 						{
 							const auto& entity = Util::MakeEntity (QUrl { url }, {}, FromUserInitiated | OnlyHandle);
 							Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (entity);
@@ -276,9 +277,11 @@ namespace Snails
 			return email.isValid () ? email : url;
 		}
 
-		QString GetListName (const Message_ptr& msg, const Header_ptr& headers)
+		QString GetListName (const MessageInfo& info, const Header_ptr& headers)
 		{
-			const auto& addrString = "<em>" + msg->GetAddressString (Message::Address::From).toHtmlEscaped () + "</em>";
+			const auto& addrString = "<em>" +
+					GetNiceMail (info.Addresses_ [AddressType::From].value (0)).toHtmlEscaped () +
+					"</em>";
 
 			const auto header = headers->findField ("List-Id");
 			if (!header)
@@ -291,11 +294,11 @@ namespace Snails
 			return "<em>" + StringizeCT (*vmimeText).toHtmlEscaped () + "</em>";
 		}
 
-		void HandleUnsubscribeText (const QString& text, const Message_ptr& msg, const Header_ptr& headers, Account *acc)
+		void HandleUnsubscribeText (const QString& text, const MessageInfo& info, const Header_ptr& headers, Account *acc)
 		{
 			const auto& url = GetUnsubscribeUrl (text);
 
-			const auto& addrString = GetListName (msg, headers);
+			const auto& addrString = GetListName (info, headers);
 			if (url.scheme () == "mailto")
 			{
 				if (QMessageBox::question (nullptr,
@@ -307,11 +310,11 @@ namespace Snails
 						QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
 					return;
 
-				const auto& msg = std::make_shared<Message> ();
-				msg->SetAddress (Message::Address::To, { {}, url.path () });
-
+				OutgoingMessage msg;
+				msg.From_.Email_ = acc->GetUserEmail ();
+				msg.To_ = Addresses_t { { {}, url.path () } };
 				const auto& subjQuery = Util::UrlAccessor { url } ["subject"];
-				msg->SetSubject (subjQuery.isEmpty () ? "unsubscribe" : subjQuery);
+				msg.Subject_ = subjQuery.isEmpty () ? "unsubscribe" : subjQuery;
 
 				Util::Sequence (nullptr, acc->SendMessage (msg)) >>
 						[url] (const auto& result)
@@ -356,7 +359,7 @@ namespace Snails
 		class UnsubscribeProvider final : public MessageListActionsProvider
 		{
 		public:
-			QList<MessageListActionInfo> GetMessageActions (const Message_ptr&, const Header_ptr& headers, Account *acc) const override
+			QList<MessageListActionInfo> GetMessageActions (const MessageInfo&, const Header_ptr& headers, Account *acc) const override
 			{
 				const auto unsub = headers->findField ("List-Unsubscribe");
 				if (!unsub)
@@ -368,9 +371,9 @@ namespace Snails
 						QObject::tr ("Unsubscribe"),
 						QObject::tr ("Try unsubscribing from this maillist."),
 						QIcon::fromTheme ("news-unsubscribe"),
-						[acc] (const Message_ptr& msg)
+						[acc] (const MessageInfo& info)
 						{
-							const auto raw = acc->GetDatabase ()->GetMessageHeader (msg->GetMessageID ());
+							const auto raw = acc->GetDatabase ()->GetMessageHeader (info.MessageId_);
 							if (!raw)
 								return;
 
@@ -384,7 +387,7 @@ namespace Snails
 							if (!unsubText)
 								return;
 
-							HandleUnsubscribeText (StringizeCT (*unsubText), msg, headers, acc);
+							HandleUnsubscribeText (StringizeCT (*unsubText), info, headers, acc);
 						},
 						{}
 					}
@@ -395,9 +398,9 @@ namespace Snails
 		class AttachmentsProvider final : public MessageListActionsProvider
 		{
 		public:
-			QList<MessageListActionInfo> GetMessageActions (const Message_ptr& msg, const Header_ptr& headers, Account *acc) const override
+			QList<MessageListActionInfo> GetMessageActions (const MessageInfo& info, const Header_ptr& headers, Account *acc) const override
 			{
-				if (msg->GetAttachments ().isEmpty ())
+				if (info.Attachments_.isEmpty ())
 					return {};
 
 				return
@@ -406,8 +409,9 @@ namespace Snails
 						QObject::tr ("Attachments"),
 						QObject::tr ("Open/save attachments."),
 						QIcon::fromTheme ("mail-attachment"),
-						[acc] (const Message_ptr& msg)
+						[acc] (const MessageInfo&)
 						{
+							// TODO
 							//new MessageAttachmentsDialog { acc, msg };
 						},
 						{}
@@ -429,9 +433,9 @@ namespace Snails
 		Providers_ << std::make_shared<UnsubscribeProvider> ();
 	}
 
-	QList<MessageListActionInfo> MessageListActionsManager::GetMessageActions (const Message_ptr& msg) const
+	QList<MessageListActionInfo> MessageListActionsManager::GetMessageActions (const MessageInfo& info) const
 	{
-		const auto headerText = Acc_->GetDatabase ()->GetMessageHeader (msg->GetMessageID ());
+		const auto headerText = Acc_->GetDatabase ()->GetMessageHeader (info.MessageId_);
 		if (!headerText)
 			return {};
 
@@ -439,7 +443,7 @@ namespace Snails
 
 		QList<MessageListActionInfo> result;
 		for (const auto provider : Providers_)
-			result += provider->GetMessageActions (msg, header, Acc_);
+			result += provider->GetMessageActions (info, header, Acc_);
 		return result;
 	}
 }

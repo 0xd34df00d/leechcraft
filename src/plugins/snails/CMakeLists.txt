@@ -20,7 +20,6 @@ set (SRCS
 	accountslistwidget.cpp
 	account.cpp
 	accountconfigdialog.cpp
-	message.cpp
 	accountthread.cpp
 	accountthreadworker.cpp
 	progresslistener.cpp
@@ -64,6 +63,10 @@ set (SRCS
 	accountthreadnotifier.cpp
 	certificateverifier.cpp
 	tracebytecounter.cpp
+	address.cpp
+	outgoingmessage.cpp
+	messageinfo.cpp
+	messagebodies.cpp
 	)
 set (FORMS
 	mailtab.ui

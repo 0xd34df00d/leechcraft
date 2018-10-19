@@ -109,11 +109,12 @@ namespace Snails
 		MailSortFilterModel_->sort (static_cast<int> (MailModel::Column::Date),
 				Qt::DescendingOrder);
 
-		MailTreeDelegate_ = new MailTreeDelegate ([this] (const QByteArray& id) -> Message_ptr
+		MailTreeDelegate_ = new MailTreeDelegate ([this] (const QByteArray& id) -> std::optional<MessageInfo>
 				{
 					if (!CurrAcc_ || !MailModel_)
 						return {};
-					return Storage_->LoadMessage (CurrAcc_.get (), MailModel_->GetCurrentFolder (), id);
+
+					return Storage_->GetMessageInfo (CurrAcc_.get (), MailModel_->GetCurrentFolder (), id);
 				},
 				Ui_.MailTree_,
 				this);
@@ -442,24 +443,24 @@ namespace Snails
 
 	namespace
 	{
-		QString HTMLize (const QList<QPair<QString, QString>>& adds)
+		QString HTMLize (const Addresses_t& adds)
 		{
 			QStringList result;
 
-			for (const auto& pair : adds)
+			for (const auto& addr : adds)
 			{
-				if (pair.second.isEmpty ())
+				if (addr.Email_.isEmpty ())
 					continue;
 
-				const bool hasName = !pair.first.isEmpty ();
+				const bool hasName = !addr.Name_.isEmpty ();
 
 				QString thisStr;
 
 				if (hasName)
-					thisStr += "<span style='address_name'>" + pair.first + "</span> &lt;";
+					thisStr += "<span style='address_name'>" + addr.Name_ + "</span> &lt;";
 
 				thisStr += QString ("<span style='address_email'><a href='mailto:%1'>%1</a></span>")
-						.arg (pair.second);
+						.arg (addr.Email_);
 
 				if (hasName)
 					thisStr += '>';
@@ -509,8 +510,9 @@ namespace Snails
 			return result;
 		}
 
-		QString AttachmentsToHtml (const Message_ptr& msg, const QList<AttDescr>& attachments)
+		QString AttachmentsToHtml (const MessageInfo& msgInfo)
 		{
+			const auto& attachments = msgInfo.Attachments_;
 			if (attachments.isEmpty ())
 				return {};
 
@@ -524,8 +526,8 @@ namespace Snails
 
 				QUrl linkUrl { "snails://attachment/" };
 				Util::UrlOperator { linkUrl }
-						("msgId", msg->GetFolderID ())
-						("folderId", msg->GetFolders ().value (0).join ("/"))
+						("msgId", msgInfo.FolderId_)
+						("folderId", msgInfo.Folder_.join ("/"))
 						("attName", attach.GetName ());
 				const auto& link = linkUrl.toEncoded ();
 
@@ -572,16 +574,16 @@ namespace Snails
 			return classId;
 		}
 
-		QString GetMessageContents (const Message_ptr& msg, bool allowHtml)
+		QString GetMessageContents (const std::optional<MessageBodies>& bodies, bool allowHtml)
 		{
-			if (!msg->IsFullyFetched ())
+			if (!bodies)
 				return "<em>" + MailTab::tr ("Fetching the message...") + "</em>";
 
-			const auto& htmlBody = msg->GetHTMLBody ();
+			const auto& htmlBody = bodies->HTML_;
 			if (allowHtml && !htmlBody.isEmpty ())
 				return htmlBody;
 
-			auto body = msg->GetBody ();
+			auto body = bodies->PlainText_;
 			body.replace ("\r\n", "\n");
 
 			auto lines = body.split ('\n');
@@ -597,9 +599,9 @@ namespace Snails
 			return "<pre>" + lines.join ("\n") + "</pre>";
 		}
 
-		QString ToHtml (const Message_ptr& msg, bool htmlAllowed)
+		QString ToHtml (const MessageInfo& msgInfo, const std::optional<MessageBodies>& bodies, bool htmlAllowed)
 		{
-			const auto& headerClass = GenerateId (msg->GetHTMLBody (), "header");
+			const auto& headerClass = GenerateId (bodies.value_or (MessageBodies {}).HTML_, "header");
 
 			QString html = R"(<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">)";
 			html += "<html xmlns='http://www.w3.org/1999/xhtml'><head><title>Message</title><style>";
@@ -627,16 +629,16 @@ namespace Snails
 							name + ": </span>" + text + "</span><br />";
 			};
 
-			addField ("subject", MailTab::tr ("Subject"), msg->GetSubject ());
-			addField ("from", MailTab::tr ("From"), HTMLize ({ msg->GetAddress (Message::Address::From) }));
-			addField ("replyTo", MailTab::tr ("Reply to"), HTMLize ({ msg->GetAddress (Message::Address::ReplyTo) }));
-			addField ("to", MailTab::tr ("To"), HTMLize (msg->GetAddresses (Message::Address::To)));
-			addField ("cc", MailTab::tr ("Copy"), HTMLize (msg->GetAddresses (Message::Address::Cc)));
-			addField ("bcc", MailTab::tr ("Blind copy"), HTMLize (msg->GetAddresses (Message::Address::Bcc)));
-			addField ("date", MailTab::tr ("Date"), msg->GetDate ().toString ());
-			html += AttachmentsToHtml (msg, msg->GetAttachments ());
+			addField ("subject", MailTab::tr ("Subject"), msgInfo.Subject_);
+			addField ("from", MailTab::tr ("From"), HTMLize (msgInfo.Addresses_ [AddressType::From]));
+			addField ("replyTo", MailTab::tr ("Reply to"), HTMLize (msgInfo.Addresses_ [AddressType::ReplyTo]));
+			addField ("to", MailTab::tr ("To"), HTMLize (msgInfo.Addresses_ [AddressType::To]));
+			addField ("cc", MailTab::tr ("Copy"), HTMLize (msgInfo.Addresses_ [AddressType::Cc]));
+			addField ("bcc", MailTab::tr ("Blind copy"), HTMLize (msgInfo.Addresses_ [AddressType::Bcc]));
+			addField ("date", MailTab::tr ("Date"), msgInfo.Date_.toString ());
+			html += AttachmentsToHtml (msgInfo);
 			html += "</header><div class='body' id='msgBody'>";
-			html += GetMessageContents (msg, htmlAllowed);
+			html += GetMessageContents (bodies, htmlAllowed);
 			html += "</div><script language='javascript'>setupResize();</script>";
 			html += "</body></html>";
 
@@ -653,23 +655,23 @@ namespace Snails
 		}
 	}
 
-	void MailTab::SetMessage (const Message_ptr& msg)
+	void MailTab::SetMessage (const MessageInfo& msgInfo, const std::optional<MessageBodies>& bodies)
 	{
-		const auto& html = ToHtml (msg, HtmlViewAllowed_);
+		const auto& html = ToHtml (msgInfo, bodies, HtmlViewAllowed_);
 
 		Ui_.MailView_->setHtml (html);
 
 		MsgAttachments_->clear ();
-		MsgAttachmentsButton_->setEnabled (!msg->GetAttachments ().isEmpty ());
-		for (const auto& att : msg->GetAttachments ())
+		MsgAttachmentsButton_->setEnabled (!msgInfo.Attachments_.isEmpty ());
+
+		const auto& msgId = msgInfo.FolderId_;
+		const auto& folder = msgInfo.Folder_;
+		for (const auto& att : msgInfo.Attachments_)
 		{
 			const auto& name = att.GetName () + " (" + Util::MakePrettySize (att.GetSize ()) + ")";
 			MsgAttachments_->addAction (name,
 					this,
-					[this, id = msg->GetFolderID (), folder = msg->GetFolders ().value (0), name = att.GetName ()]
-					{
-						HandleAttachment (id, folder, name);
-					});
+					[this, msgId, folder, name = att.GetName ()] { HandleAttachment (msgId, folder, name); });
 		}
 	}
 
@@ -760,7 +762,7 @@ namespace Snails
 		switch (MailListMode_)
 		{
 		case MailListMode::Normal:
-			emit mailActionsEnabledChanged (static_cast<bool> (CurrMsg_));
+			emit mailActionsEnabledChanged (static_cast<bool> (CurrMsgInfo_));
 			break;
 		case MailListMode::MultiSelect:
 			emit mailActionsEnabledChanged (MailModel_->HasCheckedIds ());
@@ -779,7 +781,8 @@ namespace Snails
 
 		const auto& folder = MailModel_->GetCurrentFolder ();
 
-		CurrMsg_.reset ();
+		CurrMsgInfo_.reset ();
+		CurrMsgBodies_.reset ();
 		CurrMsgFetchFuture_.reset ();
 
 		const auto& sidx = Ui_.MailTree_->currentIndex ();
@@ -792,34 +795,19 @@ namespace Snails
 		}
 
 		const auto& idx = MailSortFilterModel_->mapToSource (sidx);
-		const auto& id = idx.sibling (idx.row (), 0).data (MailModel::MailRole::ID).toByteArray ();
+		const auto& id = idx.data (MailModel::MailRole::ID).toByteArray ();
 
-		Message_ptr msg;
-		try
+		const auto& msgInfo = idx.data (MailModel::MailRole::MsgInfo).value<MessageInfo> ();
+		auto bodies = Storage_->GetMessageBodies (CurrAcc_.get (), folder, id);
+
+		SetMessage (msgInfo, bodies);
+
+		if (!bodies)
 		{
-			msg = Storage_->LoadMessage (CurrAcc_.get (), folder, id);
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to load message"
-					<< CurrAcc_->GetID ().toHex ()
-					<< id.toHex ()
-					<< e.what ();
-
-			const QString& html = tr ("<h2>Unable to load mail</h2><em>%1</em>").arg (e.what ());
-			Ui_.MailView_->setHtml (html);
-			return;
-		}
-
-		SetMessage (msg);
-
-		if (!msg->IsFullyFetched ())
-		{
-			auto future = CurrAcc_->FetchWholeMessage (msg);
+			auto future = CurrAcc_->FetchWholeMessage (folder, id);
 			CurrMsgFetchFuture_ = std::make_shared<Account::FetchWholeMessageResult_t> (future);
 			Util::Sequence (this, future) >>
-					[this, thisFolderId = msg->GetFolderID ()] (const auto& result)
+					[this, thisFolderId = id] (const auto& result)
 					{
 						const auto& cur = Ui_.MailTree_->currentIndex ();
 						const auto& curId = cur.data (MailModel::MailRole::ID).toByteArray ();
@@ -828,7 +816,11 @@ namespace Snails
 
 						CurrMsgFetchFuture_.reset ();
 						Util::Visit (result.AsVariant (),
-								[this] (const Message_ptr& msg) { SetMessage (msg); },
+								[this] (const MessageBodies& bodies)
+								{
+									CurrMsgBodies_ = bodies;
+									SetMessage (*CurrMsgInfo_, CurrMsgBodies_);
+								},
 								[this] (auto err)
 								{
 									const auto& errMsg = Util::Visit (err,
@@ -840,7 +832,8 @@ namespace Snails
 					};
 		}
 
-		CurrMsg_ = msg;
+		CurrMsgInfo_ = msgInfo;
+		CurrMsgBodies_ = std::move (bodies);
 
 		CurrAcc_->SetReadStatus (true, { id }, folder);
 	}
@@ -882,13 +875,13 @@ namespace Snails
 
 	void MailTab::HandleLinkedRequested (MsgType type)
 	{
-		if (!CurrAcc_ || !CurrMsg_)
+		if (!CurrAcc_ || !CurrMsgInfo_)
 			return;
 
 		if (CurrMsgFetchFuture_)
-			ComposeMessageTabFactory_->PrepareLinkedTab (type, CurrAcc_, *CurrMsgFetchFuture_);
-		else
-			ComposeMessageTabFactory_->PrepareLinkedTab (type, CurrAcc_, CurrMsg_);
+			ComposeMessageTabFactory_->PrepareLinkedTab (type, CurrAcc_, *CurrMsgInfo_, *CurrMsgFetchFuture_);
+		else if (CurrMsgBodies_)
+			ComposeMessageTabFactory_->PrepareLinkedTab (type, CurrAcc_, *CurrMsgInfo_, *CurrMsgBodies_);
 	}
 
 	void MailTab::SetHtmlViewAllowed (bool allowed)
@@ -897,8 +890,8 @@ namespace Snails
 			return;
 
 		HtmlViewAllowed_ = allowed;
-		if (CurrMsg_)
-			SetMessage (CurrMsg_);
+		if (CurrMsgInfo_)
+			SetMessage (*CurrMsgInfo_, CurrMsgBodies_);
 	}
 
 	namespace
@@ -1025,25 +1018,17 @@ namespace Snails
 		if (!CurrAcc_)
 			return;
 
+		const auto& folder = MailModel_->GetCurrentFolder ();
 		for (const auto& id : GetSelectedIds ())
 		{
-			const auto& msg = MailModel_->GetMessage (id);
-			if (!msg)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "no message for id"
-						<< id;
-				continue;
-			}
-
-			const auto& header = Storage_->BaseForAccount (CurrAcc_.get ())->GetMessageHeader (msg->GetMessageID ());
+			const auto& header = Storage_->BaseForAccount (CurrAcc_.get ())->GetMessageHeader (folder, id);
 			if (!header)
 				continue;
 
 			auto widget = new HeadersViewWidget { *header, this };
 			widget->setAttribute (Qt::WA_DeleteOnClose);
 			widget->setWindowFlags (Qt::Dialog);
-			widget->setWindowTitle (tr ("Headers for %1").arg ('"' + msg->GetSubject () + '"'));
+			widget->setWindowTitle (tr ("Message headers"));
 			widget->show ();
 		}
 	}
@@ -1133,8 +1118,7 @@ namespace Snails
 
 		const auto iem = Proxy_->GetEntityManager ();
 
-		const auto& msg = Storage_->LoadMessage (CurrAcc_.get (), folder, id);
-		Util::Sequence (nullptr, CurrAcc_->FetchAttachment (msg, name, path)) >>
+		Util::Sequence (nullptr, CurrAcc_->FetchAttachment (folder, id, name, path)) >>
 				Util::Visitor
 				{
 					[iem, name] (Util::Void)

@@ -29,7 +29,6 @@
 
 #pragma once
 
-#include <memory>
 #include <functional>
 #include <QString>
 #include <QIcon>
@@ -40,8 +39,7 @@ namespace LeechCraft
 {
 namespace Snails
 {
-	class Message;
-	typedef std::shared_ptr<Message> Message_ptr;
+	struct MessageInfo;
 
 	struct MessageListActionInfo
 	{
@@ -49,7 +47,7 @@ namespace Snails
 		QString Description_;
 		QIcon Icon_;
 
-		std::function<void (Message_ptr)> Handler_;
+		std::function<void (MessageInfo)> Handler_;
 
 		QList<MessageListActionInfo> Children_;
 	};

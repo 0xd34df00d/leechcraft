@@ -30,51 +30,28 @@
 #pragma once
 
 #include <memory>
-#include <QFutureInterface>
-#include <util/sll/eitherfwd.h>
+#include "address.h"
 #include "attdescr.h"
-#include "accountthreadfwd.h"
-#include "accountthreadworkerfwd.h"
 
-class QTemporaryDir;
-
-namespace LeechCraft
+namespace LeechCraft::Snails
 {
-namespace Snails
-{
-	class Account;
-
-	class AttachmentsFetcher
+	struct OutgoingMessage
 	{
-		Account * const Acc_;
-		const QStringList Folder_;
-		const QByteArray MsgId_;
+		Address From_;
+		Addresses_t To_;
+		Addresses_t Cc_;
+		Addresses_t Bcc_;
 
-		QList<AttDescr> AttQueue_;
+		QList<QByteArray> InReplyTo_;
+		QList<QByteArray> References_;
 
-		std::shared_ptr<QTemporaryDir> TempDir_;
-		QStringList Paths_;
-	public:
-		struct TemporaryDirError {};
+		QString Subject_;
 
-		struct FetchResult
-		{
-			std::shared_ptr<QTemporaryDir> TempDirGuard_;
-			QStringList Paths_;
-		};
+		QString Body_;
+		QString HTMLBody_;
 
-		using Errors_t = AsInvokeError_t<AddErrors_t<FetchAttachmentResult_t::L_t, TemporaryDirError>>;
-		using Result_t = Util::Either<Errors_t, FetchResult>;
-	private:
-		QFutureInterface<Result_t> Promise_;
-	public:
-		AttachmentsFetcher (Account*,
-				const QStringList& folder, const QByteArray& msgId, const QList<AttDescr>& attachments);
-
-		QFuture<Result_t> GetFuture ();
-	private:
-		void RotateQueue ();
+		QList<AttDescr> Attachments_;
 	};
-}
-}
 
+	using OutgoingMessage_ptr = std::shared_ptr<OutgoingMessage>;
+}

@@ -29,13 +29,13 @@
 
 #pragma once
 
-#include <boost/optional.hpp>
+#include <memory>
+#include <optional>
 #include <QObject>
 #include <QDir>
 #include <QSettings>
 #include <QHash>
 #include <QSet>
-#include "message.h"
 
 namespace LeechCraft
 {
@@ -44,29 +44,30 @@ namespace Snails
 	class Account;
 
 	class AccountDatabase;
-	typedef std::shared_ptr<AccountDatabase> AccountDatabase_ptr;
+	using AccountDatabase_ptr = std::shared_ptr<AccountDatabase>;
+
+	struct MessageInfo;
+	struct MessageBodies;
 
 	class Storage : public QObject
 	{
-		Q_OBJECT
-
 		QDir SDir_;
 
 		QHash<const Account*, AccountDatabase_ptr> AccountBases_;
-		QHash<const Account*, QHash<QByteArray, Message_ptr>> PendingSaveMessages_;
 	public:
 		Storage (QObject* = nullptr);
 
 		AccountDatabase_ptr BaseForAccount (const Account*);
 
-		void SaveMessages (Account*, const QStringList& folders, const QList<Message_ptr>&);
+		void SaveMessageInfos (Account*, const QList<MessageInfo>&);
+		QList<MessageInfo> GetMessageInfos (Account*, const QStringList& folder);
+		std::optional<MessageInfo> GetMessageInfo (Account*, const QStringList& folder, const QByteArray& msgId);
 
-		MessageSet LoadMessages (Account*);
-		Message_ptr LoadMessage (Account*, const QStringList& folder, const QByteArray& id);
-		QList<Message_ptr> LoadMessages (Account*, const QStringList& folder, const QList<QByteArray>& ids);
+		void SaveMessageBodies (Account*, const QStringList& folder, const QByteArray& msgId, const MessageBodies&);
+		std::optional<MessageBodies> GetMessageBodies (Account*, const QStringList& folder, const QByteArray& msgId);
 
 		QList<QByteArray> LoadIDs (Account*, const QStringList& folder);
-		boost::optional<QByteArray> GetLastID (Account*, const QStringList& folder);
+		std::optional<QByteArray> GetLastID (Account*, const QStringList& folder);
 		void RemoveMessage (Account*, const QStringList&, const QByteArray&);
 
 		int GetNumMessages (Account*, const QStringList& folder);
@@ -75,12 +76,7 @@ namespace Snails
 		bool IsMessageRead (Account*, const QStringList& folder, const QByteArray&);
 		void SetMessagesRead (Account*, const QStringList& folder, const QList<QByteArray>& folderIds, bool read);
 	private:
-		Message_ptr LoadMessage (Account*, QDir, const QByteArray&) const;
-		void RemoveMessageFile (Account*, const QStringList&, const QByteArray&);
-	private:
 		QDir DirForAccount (const Account*) const;
-
-		void AddMessage (Message_ptr, Account*);
 	};
 }
 }

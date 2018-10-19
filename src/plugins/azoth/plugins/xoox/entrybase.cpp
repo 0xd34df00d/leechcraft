@@ -95,7 +95,7 @@ namespace Xoox
 	, DetectNick_ (new QAction (tr ("Detect nick"), this))
 	, StdSep_ (Util::CreateSeparator (this))
 	, VCardPhotoHash_ (parent->GetParentProtocol ()->GetVCardStorage ()->
-				GetVCardPhotoHash (humanReadableId).get_value_or ({}))
+				GetVCardPhotoHash (humanReadableId).value_or (QByteArray {}))
 	{
 		connect (this,
 				SIGNAL (locationChanged (const QString&, QObject*)),
@@ -774,7 +774,7 @@ namespace Xoox
 	QXmppVCardIq EntryBase::GetVCard () const
 	{
 		const auto storage = Account_->GetParentProtocol ()->GetVCardStorage ();
-		return storage->GetVCard (GetHumanReadableID ()).get_value_or ({});
+		return storage->GetVCard (GetHumanReadableID ()).value_or (QXmppVCardIq {});
 	}
 
 	void EntryBase::SetVCard (const QXmppVCardIq& vcard)

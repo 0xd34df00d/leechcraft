@@ -29,7 +29,7 @@
 
 #pragma once
 
-#include <boost/optional.hpp>
+#include <optional>
 #include <QObject>
 #include <QSqlDatabase>
 #include <util/db/oral/oralfwd.h>
@@ -54,10 +54,10 @@ namespace Xoox
 		VCardStorageOnDisk (QObject* = nullptr);
 
 		void SetVCard (const QString& jid, const QString& vcard);
-		boost::optional<QString> GetVCard (const QString& jid) const;
+		std::optional<QString> GetVCard (const QString& jid) const;
 
 		void SetVCardPhotoHash (const QString& jid, const QByteArray& hash);
-		boost::optional<QByteArray> GetVCardPhotoHash (const QString& jid) const;
+		std::optional<QByteArray> GetVCardPhotoHash (const QString& jid) const;
 	};
 }
 }

@@ -29,7 +29,7 @@
 
 #pragma once
 
-#include <boost/optional.hpp>
+#include <optional>
 #include <QSqlDatabase>
 #include <QSslError>
 #include <util/db/oral/oralfwd.h>
@@ -55,7 +55,7 @@ namespace Azoth
 			Abort
 		};
 
-		boost::optional<Action> GetAction (const QByteArray&, QSslError::SslError) const;
+		std::optional<Action> GetAction (const QByteArray&, QSslError::SslError) const;
 		void SetAction (const QByteArray&, QSslError::SslError, Action);
 	};
 }

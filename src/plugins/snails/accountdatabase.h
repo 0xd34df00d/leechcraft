@@ -29,7 +29,7 @@
 
 #pragma once
 
-#include <boost/optional.hpp>
+#include <optional>
 #include <memory>
 #include <QObject>
 #include <QStringList>
@@ -49,20 +49,29 @@ namespace Util
 namespace Snails
 {
 	class Account;
-
-	class Message;
-	typedef std::shared_ptr<Message> Message_ptr;
+	struct MessageInfo;
+	struct MessageBodies;
 
 	class AccountDatabase
 	{
 		QSqlDatabase DB_;
 	public:
 		struct Message;
+		struct Address;
+		struct Attachment;
+
+		struct MessageBodies;
+
 		struct Folder;
 		struct Msg2Folder;
 		struct MsgHeader;
 	private:
 		Util::oral::ObjectInfo_ptr<Message> Messages_;
+		Util::oral::ObjectInfo_ptr<Address> Addresses_;
+		Util::oral::ObjectInfo_ptr<Attachment> Attachments_;
+
+		Util::oral::ObjectInfo_ptr<MessageBodies> MessagesBodies_;
+
 		Util::oral::ObjectInfo_ptr<Folder> Folders_;
 		Util::oral::ObjectInfo_ptr<Msg2Folder> Msg2Folder_;
 		Util::oral::ObjectInfo_ptr<MsgHeader> MsgHeader_;
@@ -74,24 +83,31 @@ namespace Snails
 		Util::DBLock BeginTransaction ();
 
 		QList<QByteArray> GetIDs (const QStringList& folder);
-		boost::optional<QByteArray> GetLastID (const QStringList& folder);
+		std::optional<QByteArray> GetLastID (const QStringList& folder);
 		int GetMessageCount (const QStringList& folder);
 		int GetUnreadMessageCount (const QStringList& folder);
 		int GetMessageCount ();
 
-		void AddMessage (const Message_ptr&);
+		QList<MessageInfo> GetMessageInfos (const QStringList& folder);
+		std::optional<MessageInfo> GetMessageInfo (const QStringList& folder, const QByteArray& msgId);
+
+		void AddMessage (const MessageInfo&);
 		void RemoveMessage (const QByteArray& msgId, const QStringList& folder);
 
-		boost::optional<bool> IsMessageRead (const QByteArray& msgId, const QStringList& folder);
+		void SaveMessageBodies (const QStringList& folder, const QByteArray& msgId, const Snails::MessageBodies&);
+		std::optional<Snails::MessageBodies> GetMessageBodies (const QStringList& folder, const QByteArray& msgId);
+
+		std::optional<bool> IsMessageRead (const QByteArray& msgId, const QStringList& folder);
 		void SetMessageRead (const QByteArray& msgId, const QStringList& folder, bool read);
 
 		void SetMessageHeader (const QByteArray& msgId, const QByteArray& header);
-		boost::optional<QByteArray> GetMessageHeader (const QByteArray& msgId) const;
+		std::optional<QByteArray> GetMessageHeader (const QByteArray& uniqueMsgId) const;
+		std::optional<QByteArray> GetMessageHeader (const QStringList& folderId, const QByteArray& msgId) const;
 
-		boost::optional<int> GetMsgTableId (const QByteArray& uniqueId);
-		boost::optional<int> GetMsgTableId (const QByteArray& msgId, const QStringList& folder);
+		std::optional<int> GetMsgTableId (const QByteArray& uniqueId);
+		std::optional<int> GetMsgTableId (const QByteArray& msgId, const QStringList& folder);
 	private:
-		int AddMessageUnfoldered (const Message_ptr&);
+		int AddMessageUnfoldered (const MessageInfo&);
 		void AddMessageToFolder (int msgTableId, int folderTableId, const QByteArray& msgId);
 
 		int AddFolder (const QStringList&);

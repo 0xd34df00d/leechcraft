@@ -29,52 +29,32 @@
 
 #pragma once
 
-#include <memory>
-#include <QFutureInterface>
-#include <util/sll/eitherfwd.h>
+#include <QDateTime>
+#include "address.h"
 #include "attdescr.h"
-#include "accountthreadfwd.h"
-#include "accountthreadworkerfwd.h"
 
-class QTemporaryDir;
-
-namespace LeechCraft
+namespace LeechCraft::Snails
 {
-namespace Snails
-{
-	class Account;
-
-	class AttachmentsFetcher
+	struct MessageInfo
 	{
-		Account * const Acc_;
-		const QStringList Folder_;
-		const QByteArray MsgId_;
+		bool IsRead_;
 
-		QList<AttDescr> AttQueue_;
+		QByteArray MessageId_;
+		QByteArray FolderId_;
+		QStringList Folder_;
 
-		std::shared_ptr<QTemporaryDir> TempDir_;
-		QStringList Paths_;
-	public:
-		struct TemporaryDirError {};
+		QString Subject_;
 
-		struct FetchResult
-		{
-			std::shared_ptr<QTemporaryDir> TempDirGuard_;
-			QStringList Paths_;
-		};
+		QDateTime Date_;
+		quint64 Size_;
 
-		using Errors_t = AsInvokeError_t<AddErrors_t<FetchAttachmentResult_t::L_t, TemporaryDirError>>;
-		using Result_t = Util::Either<Errors_t, FetchResult>;
-	private:
-		QFutureInterface<Result_t> Promise_;
-	public:
-		AttachmentsFetcher (Account*,
-				const QStringList& folder, const QByteArray& msgId, const QList<AttDescr>& attachments);
+		QHash<AddressType, Addresses_t> Addresses_;
 
-		QFuture<Result_t> GetFuture ();
-	private:
-		void RotateQueue ();
+		QList<QByteArray> References_;
+		QList<QByteArray> InReplyTo_;
+
+		QList<AttDescr> Attachments_;
 	};
 }
-}
 
+Q_DECLARE_METATYPE (LeechCraft::Snails::MessageInfo)

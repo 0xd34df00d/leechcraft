@@ -219,7 +219,7 @@ namespace LastSeen
 
 		const auto& now = QDateTime::currentDateTime ();
 
-		auto stats = Storage_->GetEntryStats (id).get_value_or ({});
+		auto stats = Storage_->GetEntryStats (id).value_or (EntryStats {});
 		stats.StatusChange_ = now;
 
 		switch (oldState)

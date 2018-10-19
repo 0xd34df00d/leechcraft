@@ -46,8 +46,10 @@ namespace Snails
 {
 	class Message;
 	class Account;
+	struct MessageInfo;
+	struct MessageBodies;
 
-	using PatternFunction_t = std::function<QString (const Account*, const Message*, ContentType, QString)>;
+	using PatternFunction_t = std::function<QString (const Account*, MessageInfo, MessageBodies, ContentType)>;
 
 	struct TemplatePattern
 	{

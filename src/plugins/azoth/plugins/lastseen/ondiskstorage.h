@@ -29,7 +29,7 @@
 
 #pragma once
 
-#include <boost/optional.hpp>
+#include <optional>
 #include <QObject>
 #include <QSqlDatabase>
 #include <util/db/oral/oralfwd.h>
@@ -58,7 +58,7 @@ namespace LastSeen
 	public:
 		OnDiskStorage (QObject* = nullptr);
 
-		boost::optional<EntryStats> GetEntryStats (const QString&);
+		std::optional<EntryStats> GetEntryStats (const QString&);
 		void SetEntryStats (const QString&, const EntryStats&);
 
 		Util::DBLock BeginTransaction ();

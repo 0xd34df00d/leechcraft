@@ -43,6 +43,8 @@
 #include "xmlsettingsmanager.h"
 #include "account.h"
 #include "accountdatabase.h"
+#include "messageinfo.h"
+#include "messagebodies.h"
 
 namespace LeechCraft
 {
@@ -66,224 +68,35 @@ namespace Snails
 		SDir_ = Util::CreateIfNotExists ("snails/storage");
 	}
 
-	namespace
+	void Storage::SaveMessageInfos (Account *acc, const QList<MessageInfo>& infos)
 	{
-		QList<Message_ptr> MessageSaverProc (QList<Message_ptr> msgs, const QDir& dir)
-		{
-			for (const auto& msg : msgs)
-			{
-				if (msg->GetFolderID ().isEmpty ())
-					continue;
-
-				const QString dirName = msg->GetFolderID ().toHex ().right (3);
-
-				QDir msgDir = dir;
-				if (!dir.exists (dirName))
-					msgDir.mkdir (dirName);
-				if (!msgDir.cd (dirName))
-				{
-					qWarning () << Q_FUNC_INFO
-							<< "unable to cd into"
-							<< msgDir.filePath (dirName);
-					continue;
-				}
-
-				QFile file (msgDir.filePath (msg->GetFolderID ().toHex ()));
-				if (!file.open (QIODevice::WriteOnly))
-				{
-					qWarning () << Q_FUNC_INFO
-							<< "unable to open file"
-							<< file.fileName ()
-							<< file.errorString ();
-					continue;
-				}
-
-				file.write (qCompress (msg->Serialize (), 9));
-			}
-
-			return msgs;
-		}
+		const auto& base = BaseForAccount (acc);
+		for (const auto& info : infos)
+			base->AddMessage (info);
 	}
 
-	void Storage::SaveMessages (Account *acc, const QStringList& folder, const QList<Message_ptr>& msgs)
+	QList<MessageInfo> Storage::GetMessageInfos (Account *acc, const QStringList& folder)
 	{
-		auto dir = DirForAccount (acc);
-		for (const auto& elem : folder)
-		{
-			const auto& subdir = elem.toUtf8 ().toHex ();
-			if (!dir.exists (subdir))
-				dir.mkdir (subdir);
-
-			if (!dir.cd (subdir))
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "unable to cd to"
-						<< dir.filePath (subdir);
-				throw std::runtime_error ("Unable to cd to the directory");
-			}
-		}
-
-		for (const auto& msg : msgs)
-			PendingSaveMessages_ [acc] [msg->GetFolderID ()] = msg;
-
-		Util::Sequence (this, QtConcurrent::run (MessageSaverProc, msgs, dir)) >>
-				[this, acc] (const QList<Message_ptr>& messages)
-				{
-					auto& hash = PendingSaveMessages_ [acc];
-
-					for (const auto& msg : messages)
-						hash.remove (msg->GetFolderID ());
-				};
-
-		for (const auto& msg : msgs)
-		{
-			if (msg->GetFolderID ().isEmpty ())
-				continue;
-
-			AddMessage (msg, acc);
-		}
+		return BaseForAccount (acc)->GetMessageInfos (folder);
 	}
 
-	MessageSet Storage::LoadMessages (Account *acc)
+	std::optional<MessageInfo> Storage::GetMessageInfo (Account *acc, const QStringList& folder, const QByteArray& msgId)
 	{
-		MessageSet result;
-
-		const QDir& dir = DirForAccount (acc);
-		for (const auto& str : dir.entryList (QDir::NoDotAndDotDot | QDir::Dirs))
-		{
-			QDir subdir = dir;
-			if (!subdir.cd (str))
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "unable to cd to"
-						<< str;
-				continue;
-			}
-
-			for (const auto& str : subdir.entryList (QDir::NoDotAndDotDot | QDir::Files))
-			{
-				QFile file (subdir.filePath (str));
-				if (!file.open (QIODevice::ReadOnly))
-				{
-					qWarning () << Q_FUNC_INFO
-							<< "unable to open"
-							<< str
-							<< file.errorString ();
-					continue;
-				}
-
-				const auto& msg = std::make_shared<Message> ();
-				try
-				{
-					msg->Deserialize (qUncompress (file.readAll ()));
-				}
-				catch (const std::exception& e)
-				{
-					qWarning () << Q_FUNC_INFO
-							<< "error deserializing the message from"
-							<< file.fileName ()
-							<< e.what ();
-					continue;
-				}
-				result << msg;
-			}
-		}
-
-		for (const auto& msg : PendingSaveMessages_ [acc])
-			result << msg;
-
-		return result;
+		return BaseForAccount (acc)->GetMessageInfo (folder, msgId);
 	}
 
-	Message_ptr Storage::LoadMessage (Account *acc, const QStringList& folder, const QByteArray& id)
+	void Storage::SaveMessageBodies (Account *acc,
+			const QStringList& folder,
+			const QByteArray& msgId,
+			const MessageBodies& bodies)
 	{
-		if (PendingSaveMessages_ [acc].contains (id))
-			return PendingSaveMessages_ [acc] [id];
-
-		auto dir = DirForAccount (acc);
-		for (const auto& elem : folder)
-		{
-			const auto& subdir = elem.toUtf8 ().toHex ();
-			if (!dir.cd (subdir))
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "unable to cd to"
-						<< dir.filePath (subdir);
-				throw std::runtime_error ("Unable to cd to the directory");
-			}
-		}
-
-		return LoadMessage (acc, dir, id);
+		BaseForAccount (acc)->SaveMessageBodies (folder, msgId, bodies);
 	}
 
-	Message_ptr Storage::LoadMessage (Account *acc, QDir dir, const QByteArray& id) const
+	std::optional<MessageBodies> Storage::GetMessageBodies (Account *acc,
+			const QStringList& folder, const QByteArray& msgId)
 	{
-		if (PendingSaveMessages_ [acc].contains (id))
-			return PendingSaveMessages_ [acc] [id];
-
-		if (!dir.cd (id.toHex ().right (3)))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to cd to"
-					<< dir.filePath (id.toHex ().right (3));
-			throw std::runtime_error ("Unable to cd to the directory");
-		}
-
-		QFile file (dir.filePath (id.toHex ()));
-		if (!file.open (QIODevice::ReadOnly))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to open"
-					<< file.fileName ()
-					<< file.errorString ();
-			throw std::runtime_error ("Unable to open the message file");
-		}
-
-		const auto& msg = std::make_shared<Message> ();
-		try
-		{
-			msg->Deserialize (qUncompress (file.readAll ()));
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "error deserializing the message from"
-					<< file.fileName ()
-					<< e.what ();
-			throw;
-		}
-
-		return msg;
-	}
-
-	QList<Message_ptr> Storage::LoadMessages (Account *acc, const QStringList& folder, const QList<QByteArray>& ids)
-	{
-		auto rootDir = DirForAccount (acc);
-		for (const auto& elem : folder)
-		{
-			const auto& subdir = elem.toUtf8 ().toHex ();
-			if (!rootDir.cd (subdir) &&
-					!(rootDir.mkpath (subdir) && rootDir.cd (subdir)))
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "unable to cd to"
-						<< rootDir.filePath (subdir);
-				throw std::runtime_error ("Unable to cd to the directory");
-			}
-		}
-
-		QList<Message_ptr> result;
-		auto future = QtConcurrent::mapped (ids,
-				std::function<Message_ptr (QByteArray)>
-				{
-					[this, acc, rootDir] (const QByteArray& id)
-						{ return LoadMessage (acc, rootDir, id); }
-				});
-
-		for (const auto& item : future.results ())
-			result << item;
-
-		return result;
+		return BaseForAccount (acc)->GetMessageBodies (folder, msgId);
 	}
 
 	QList<QByteArray> Storage::LoadIDs (Account *acc, const QStringList& folder)
@@ -291,17 +104,14 @@ namespace Snails
 		return BaseForAccount (acc)->GetIDs (folder);
 	}
 
-	boost::optional<QByteArray> Storage::GetLastID (Account *acc, const QStringList& folder)
+	std::optional<QByteArray> Storage::GetLastID (Account *acc, const QStringList& folder)
 	{
 		return BaseForAccount (acc)->GetLastID (folder);
 	}
 
 	void Storage::RemoveMessage (Account *acc, const QStringList& folder, const QByteArray& id)
 	{
-		PendingSaveMessages_ [acc].remove (id);
-
 		BaseForAccount (acc)->RemoveMessage (id, folder);
-		RemoveMessageFile (acc, folder, id);
 	}
 
 	int Storage::GetNumMessages (Account *acc, const QStringList& folder)
@@ -335,42 +145,6 @@ namespace Snails
 		qDebug () << "done";
 	}
 
-	void Storage::RemoveMessageFile (Account *acc, const QStringList& folder, const QByteArray& id)
-	{
-		auto dir = DirForAccount (acc);
-		for (const auto& elem : folder)
-		{
-			const auto& subdir = elem.toUtf8 ().toHex ();
-			if (!dir.cd (subdir))
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "unable to cd to"
-						<< dir.filePath (subdir);
-				throw std::runtime_error ("Unable to cd to the directory");
-			}
-		}
-
-		if (!dir.cd (id.toHex ().right (3)))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to cd to"
-					<< dir.filePath (id.toHex ().right (3));
-			throw std::runtime_error ("Unable to cd to the directory");
-		}
-
-		QFile file (dir.filePath (id.toHex ()));
-		if (!file.exists ())
-			return;
-
-		if (!file.remove ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to remove the file:"
-					<< file.errorString ();
-			throw std::runtime_error ("Unable to remove the file");
-		}
-	}
-
 	QDir Storage::DirForAccount (const Account *acc) const
 	{
 		const QByteArray& id = acc->GetID ().toHex ();
@@ -398,12 +172,6 @@ namespace Snails
 		const auto& base = std::make_shared<AccountDatabase> (dir, acc);
 		AccountBases_ [acc] = base;
 		return base;
-	}
-
-	void Storage::AddMessage (Message_ptr msg, Account *acc)
-	{
-		const auto& base = BaseForAccount (acc);
-		base->AddMessage (msg);
 	}
 }
 }

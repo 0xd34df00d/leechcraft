@@ -32,6 +32,7 @@
 #include <stdexcept>
 #include <type_traits>
 #include <memory>
+#include <optional>
 #include <boost/fusion/include/for_each.hpp>
 #include <boost/fusion/include/fold.hpp>
 #include <boost/fusion/include/filter_if.hpp>
@@ -41,7 +42,6 @@
 #include <boost/fusion/include/zip.hpp>
 #include <boost/fusion/container/generation/make_vector.hpp>
 #include <boost/variant/variant.hpp>
-#include <boost/optional.hpp>
 #include <QStringList>
 #include <QDateTime>
 #include <QPair>
@@ -202,7 +202,7 @@ namespace oral
 	{
 		QString operator() () const noexcept
 		{
-			if constexpr (HasType<T> (Typelist<int, qulonglong, bool> {}) || std::is_enum_v<T>)
+			if constexpr (HasType<T> (Typelist<int, qlonglong, qulonglong, bool> {}) || std::is_enum_v<T>)
 				return "INTEGER";
 			else if constexpr (std::is_same_v<T, double>)
 				return "REAL";
@@ -1379,7 +1379,7 @@ namespace oral
 				}
 				else
 				{
-					using RetType_t = boost::optional<std::result_of_t<Initializer (QSqlQuery)>>;
+					using RetType_t = std::optional<std::result_of_t<Initializer (QSqlQuery)>>;
 					return query.next () ?
 						RetType_t { initializer (query) } :
 						RetType_t {};

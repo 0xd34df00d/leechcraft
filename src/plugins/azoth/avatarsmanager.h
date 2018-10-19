@@ -62,7 +62,7 @@ namespace Azoth
 		AvatarsManager (QObject* = nullptr);
 
 		QFuture<QImage> GetAvatar (QObject*, IHaveAvatars::Size) override;
-		QFuture<boost::optional<QByteArray>> GetStoredAvatarData (const QString&, IHaveAvatars::Size) override;
+		QFuture<std::optional<QByteArray>> GetStoredAvatarData (const QString&, IHaveAvatars::Size) override;
 
 		bool HasAvatar (QObject*) const;
 

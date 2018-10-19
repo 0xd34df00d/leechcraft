@@ -27,54 +27,64 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
+#include "address.h"
+#include <QDebug>
 
-#include <memory>
-#include <QFutureInterface>
-#include <util/sll/eitherfwd.h>
-#include "attdescr.h"
-#include "accountthreadfwd.h"
-#include "accountthreadworkerfwd.h"
-
-class QTemporaryDir;
-
-namespace LeechCraft
+namespace LeechCraft::Snails
 {
-namespace Snails
-{
-	class Account;
-
-	class AttachmentsFetcher
+	QDataStream& operator<< (QDataStream& out, AddressType a)
 	{
-		Account * const Acc_;
-		const QStringList Folder_;
-		const QByteArray MsgId_;
+		out << static_cast<quint16> (a);
+		return out;
+	}
 
-		QList<AttDescr> AttQueue_;
+	QDataStream& operator>> (QDataStream& in, AddressType& a)
+	{
+		quint16 t = 0;
+		in >> t;
+		a = static_cast<AddressType> (t);
+		return in;
+	}
 
-		std::shared_ptr<QTemporaryDir> TempDir_;
-		QStringList Paths_;
-	public:
-		struct TemporaryDirError {};
+	QString GetNiceMail (const Address& addr)
+	{
+		return addr.Name_.isEmpty () ?
+				addr.Email_ :
+				addr.Name_ + " <" + addr.Email_ + ">";
+	}
 
-		struct FetchResult
+	QDebug operator<< (QDebug dbg, const Address& addr)
+	{
+		QDebugStateSaver saver { dbg };
+		dbg.nospace () << "Addr { name: `" << addr.Name_
+				<< "`, email: `" << addr.Email_
+				<< "` }";
+		return dbg;
+	}
+
+	QDataStream& operator<< (QDataStream& out, const Address& addr)
+	{
+		out << static_cast<quint8> (1);
+		out << addr.Name_
+				<< addr.Email_;
+		return out;
+	}
+
+	QDataStream& operator>> (QDataStream& in, Address& addr)
+	{
+		quint8 version;
+		in >> version;
+		if (version != 1)
 		{
-			std::shared_ptr<QTemporaryDir> TempDirGuard_;
-			QStringList Paths_;
-		};
+			qWarning () << Q_FUNC_INFO
+					<< "unknown version"
+					<< version;
+			return in;
+		}
 
-		using Errors_t = AsInvokeError_t<AddErrors_t<FetchAttachmentResult_t::L_t, TemporaryDirError>>;
-		using Result_t = Util::Either<Errors_t, FetchResult>;
-	private:
-		QFutureInterface<Result_t> Promise_;
-	public:
-		AttachmentsFetcher (Account*,
-				const QStringList& folder, const QByteArray& msgId, const QList<AttDescr>& attachments);
+		in >> addr.Name_
+			>> addr.Email_;
 
-		QFuture<Result_t> GetFuture ();
-	private:
-		void RotateQueue ();
-	};
+		return in;
+	}
 }
-}
-

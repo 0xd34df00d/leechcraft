@@ -44,6 +44,7 @@ namespace Snails
 	class AccountsManager;
 	class MsgTemplatesManager;
 	class AttachmentsFetcher;
+	struct OutgoingMessage;
 
 	enum class MsgType;
 
@@ -67,7 +68,8 @@ namespace Snails
 		QMenu *AttachmentsMenu_;
 		QMenu *EditorsMenu_;
 
-		Message_ptr ReplyMessage_;
+		QList<QByteArray> OrigReferences_;
+		QByteArray OrigMessageId_;
 
 		std::shared_ptr<AttachmentsFetcher> LinkedAttachmentsFetcher_;
 	public:
@@ -87,23 +89,23 @@ namespace Snails
 		void SetFontSizeMultiplier (qreal);
 
 		void SelectAccount (const Account_ptr&);
-		void PrepareLinked (MsgType, const Message_ptr&);
+		void PrepareLinked (MsgType, const MessageInfo&, const MessageBodies&);
 	private:
-		void PrepareLinkedEditor (const Message_ptr&);
-		void PrepareLinkedBody (MsgType, const Message_ptr&);
-		void CopyAttachments (const Message_ptr&);
+		void PrepareLinkedEditor (const MessageBodies&);
+		void PrepareLinkedBody (MsgType, const MessageInfo&, const MessageBodies&);
+		void CopyAttachments (const MessageInfo&);
 
 		void SetupToolbar ();
 		void SetupEditors ();
 
-		void SetMessageReferences (const Message_ptr&) const;
+		void SetMessageReferences (OutgoingMessage&) const;
 
 		Account* GetSelectedAccount () const;
 
 		void AppendAttachment (const QString& path, const QString& descr);
 
-		void AddAttachments (const Message_ptr&);
-		void Send (Account*, const Message_ptr&);
+		void AddAttachments (OutgoingMessage&);
+		void Send (Account*, const OutgoingMessage&);
 	private slots:
 		void handleSend ();
 		void handleAddAttachment ();

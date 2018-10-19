@@ -70,7 +70,7 @@ namespace NamAuth
 
 	namespace sph = Util::oral::sph;
 
-	boost::optional<SQLStorageBackend::AuthRecord> SQLStorageBackend::GetAuth (const QString& realm, const QString& context)
+	std::optional<SQLStorageBackend::AuthRecord> SQLStorageBackend::GetAuth (const QString& realm, const QString& context)
 	{
 		return AdaptedRecord_->SelectOne (sph::f<&AuthRecord::RealmName_> == realm && sph::f<&AuthRecord::Context_> == context);
 	}

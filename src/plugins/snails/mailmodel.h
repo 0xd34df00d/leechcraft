@@ -29,10 +29,10 @@
 
 #pragma once
 
+#include <memory>
 #include <QStringList>
 #include <QAbstractItemModel>
 #include <QList>
-#include "message.h"
 #include "messagelistactioninfo.h"
 
 namespace LeechCraft
@@ -40,6 +40,7 @@ namespace LeechCraft
 namespace Snails
 {
 	class MessageListActionsManager;
+	struct MessageInfo;
 
 	class MailModel : public QAbstractItemModel
 	{
@@ -56,7 +57,6 @@ namespace Snails
 		typedef std::weak_ptr<TreeNode> TreeNode_wptr;
 		const TreeNode_ptr Root_;
 
-		QList<Message_ptr> Messages_;
 		QHash<QByteArray, QList<TreeNode_ptr>> FolderId2Nodes_;
 		QHash<QByteArray, QByteArray> MsgId2FolderId_;
 
@@ -68,10 +68,9 @@ namespace Snails
 			UnreadChildren,
 			StatusIcon,
 			Subject,
-			Date,
-			Size
+			Date
 		};
-		static const Column MaxColumn = Column::Size;
+		static const Column MaxColumn = Column::Date;
 
 		enum MailRole
 		{
@@ -80,7 +79,8 @@ namespace Snails
 			IsRead,
 			UnreadChildrenCount,
 			TotalChildrenCount,
-			MessageActions
+			MessageActions,
+			MsgInfo
 		};
 
 		MailModel (const MessageListActionsManager*, QObject* = 0);
@@ -101,13 +101,9 @@ namespace Snails
 		void SetFolder (const QStringList&);
 		QStringList GetCurrentFolder () const;
 
-		Message_ptr GetMessage (const QByteArray&) const;
-
 		void Clear ();
 
-		void Append (QList<Message_ptr>);
-
-		bool Update (const Message_ptr&);
+		void Append (QList<MessageInfo>);
 		bool Remove (const QByteArray&);
 
 		void UpdateReadStatus (const QList<QByteArray>& msgIds, bool read);
@@ -120,14 +116,13 @@ namespace Snails
 		void UpdateParentReadCount (const QByteArray&, bool);
 
 		void RemoveNode (const TreeNode_ptr&);
-		bool AppendStructured (const Message_ptr&);
+		bool AppendStructured (const MessageInfo&);
 
 		void EmitRowChanged (const TreeNode_ptr&);
 
 		QModelIndex GetIndex (const TreeNode_ptr& node, int column) const;
 		QList<QModelIndex> GetIndexes (const QByteArray& folderId, int column) const;
 		QList<QList<QModelIndex>> GetIndexes (const QByteArray& folderId, const QList<int>& columns) const;
-		Message_ptr GetMessageByFolderId (const QByteArray&) const;
 	signals:
 		void messageListUpdated ();
 		void messagesSelectionChanged ();

@@ -39,10 +39,9 @@ namespace Snails
 	class MailModel;
 	class Account;
 	class Storage;
-	class Message;
 	class MessageListActionsManager;
 
-	using Message_ptr = std::shared_ptr<Message>;
+	struct MessageInfo;
 
 	class MailModelsManager : public QObject
 	{
@@ -58,8 +57,7 @@ namespace Snails
 
 		void ShowFolder (const QStringList&, MailModel*);
 
-		void Append (const QList<Message_ptr>&);
-		void Update (const QList<Message_ptr>&);
+		void Append (const QList<MessageInfo>&);
 		void Remove (const QList<QByteArray>&);
 
 		void UpdateReadStatus (const QStringList& folderId, const QList<QByteArray>& msgIds, bool read);

@@ -29,7 +29,7 @@
 
 #pragma once
 
-#include <boost/optional.hpp>
+#include <optional>
 #include <util/threads/workerthreadbase.h>
 #include "interfaces/azoth/ihaveavatars.h"
 #include "avatarsstorageondisk.h"
@@ -45,10 +45,8 @@ namespace Azoth
 	public:
 		using WorkerThread::WorkerThread;
 
-		QFuture<void> SetAvatar (const QString& entryId,
-				IHaveAvatars::Size size, const QByteArray& imageData);
-		QFuture<boost::optional<QByteArray>> GetAvatar (const QString& entryId,
-				IHaveAvatars::Size size);
+		QFuture<void> SetAvatar (const QString& entryId, IHaveAvatars::Size size, const QByteArray& imageData);
+		QFuture<std::optional<QByteArray>> GetAvatar (const QString& entryId, IHaveAvatars::Size size);
 		QFuture<void> DeleteAvatars (const QString& entryId);
 	};
 }

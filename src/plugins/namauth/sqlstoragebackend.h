@@ -30,7 +30,7 @@
 #pragma once
 
 #include <memory>
-#include <boost/optional.hpp>
+#include <optional>
 #include <QObject>
 #include <util/db/oral/oralfwd.h>
 #include <util/db/oral/oraltypes.h>
@@ -73,7 +73,7 @@ namespace NamAuth
 
 		static QString GetDBPath ();
 
-		boost::optional<AuthRecord> GetAuth (const QString&, const QString&);
+		std::optional<AuthRecord> GetAuth (const QString&, const QString&);
 		void SetAuth (const AuthRecord&);
 	};
 }

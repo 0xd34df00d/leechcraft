@@ -166,107 +166,93 @@ namespace Murm
 			w.writeAttribute ("height", QString::number (size->height ()));
 		}
 
-		QString GetImageTemplate (const ImageInfo& imageInfo)
+		enum class ImageTemplateMode
 		{
-			struct EmbedVisitor
+			Embed,
+			Link
+		};
+
+		QString GetImageTemplate (const SimpleImageInfo& info, ImageTemplateMode mode)
+		{
+			QString result;
+			QXmlStreamWriter w { &result };
+
+			switch (mode)
 			{
-				QString operator() (const SimpleImageInfo& info) const
-				{
-					QString result;
+			case ImageTemplateMode::Embed:
+				w.writeStartElement ("img");
+				w.writeAttribute ("src", info.Url_);
+				w.writeAttribute ("alt", info.Alt_);
+				w.writeAttribute ("title", info.Alt_);
+				WriteImgDims (w, info.Size_);
+				w.writeEndElement ();
+				break;
+			case ImageTemplateMode::Link:
+				w.writeStartElement ("a");
+				w.writeAttribute ("href", info.Url_);
 
-					QXmlStreamWriter w { &result };
-					w.writeStartElement ("img");
-					w.writeAttribute ("src", info.Url_);
-					w.writeAttribute ("alt", info.Alt_);
-					w.writeAttribute ("title", info.Alt_);
-					WriteImgDims (w, info.Size_);
-					w.writeEndElement ();
+				if (!info.Alt_.isEmpty ())
+					w.writeCharacters (info.Alt_);
+				else if (info.Size_)
+					w.writeCharacters (QObject::tr ("Image, %1 by %2 pixels.")
+							.arg (info.Size_->width ())
+							.arg (info.Size_->height ()));
+				else
+					w.writeCharacters (QObject::tr ("Image"));
 
-					return result;
-				}
+				w.writeEndElement ();
+				break;
+			}
 
-				QString operator() (const LinkImageInfo& info) const
-				{
-					QString result;
+			return result;
+		}
 
-					const auto& alt = (info.Alt_.isEmpty () && info.FullSize_) ?
-							QString::number (info.FullSize_->width ()) +
-									QString::fromUtf8 ("×") +
-									QString::number (info.FullSize_->height ()) :
-							info.Alt_;
+		QString GetImageTemplate (const LinkImageInfo& info, ImageTemplateMode mode)
+		{
+			QString result;
+			QXmlStreamWriter w { &result };
 
-					QXmlStreamWriter w { &result };
-					w.writeStartElement ("a");
-					w.writeAttribute ("href", info.FullUrl_);
-					w.writeAttribute ("target", "_blank");
-						w.writeStartElement ("img");
-						w.writeAttribute ("src", info.ThumbUrl_);
-						w.writeAttribute ("alt", alt);
-						w.writeAttribute ("title", alt);
-						WriteImgDims (w, info.ThumbSize_);
-						w.writeEndElement ();
-					w.writeEndElement ();
+			const auto& alt = (info.Alt_.isEmpty () && info.FullSize_) ?
+					QObject::tr ("Image, %1 by %2 pixels.")
+							.arg (info.FullSize_->width ())
+							.arg (info.FullSize_->height ()) :
+					info.Alt_;
 
-					return result;
-				}
-			};
-
-			struct LinkVisitor
+			switch (mode)
 			{
-				QString operator() (const SimpleImageInfo& info) const
-				{
-					QString result;
+			case ImageTemplateMode::Embed:
+				w.writeStartElement ("a");
+				w.writeAttribute ("href", info.FullUrl_);
+				w.writeAttribute ("target", "_blank");
+				w.writeStartElement ("img");
+				w.writeAttribute ("src", info.ThumbUrl_);
+				w.writeAttribute ("alt", alt);
+				w.writeAttribute ("title", alt);
+				WriteImgDims (w, info.ThumbSize_);
+				w.writeEndElement ();
+				w.writeEndElement ();
+				break;
+			case ImageTemplateMode::Link:
+				w.writeStartElement ("a");
+				w.writeAttribute ("href", info.FullUrl_);
+				w.writeAttribute ("target", "_blank");
+				w.writeCharacters (alt);
+				w.writeEndElement ();
+				break;
+			}
 
-					QXmlStreamWriter w { &result };
-					w.writeStartElement ("a");
-					w.writeAttribute ("href", info.Url_);
+			return result;
+		}
 
-					if (!info.Alt_.isEmpty ())
-						w.writeCharacters (info.Alt_);
-					else if (info.Size_)
-						w.writeCharacters (QObject::tr ("Image, %1 by %2 pixels.")
-								.arg (info.Size_->width ())
-								.arg (info.Size_->height ()));
-					else
-						w.writeCharacters (QObject::tr ("Image"));
-
-					w.writeEndElement ();
-
-					return result;
-				}
-
-				QString operator() (const LinkImageInfo& info) const
-				{
-					QString result;
-
-					const auto& alt = (info.Alt_.isEmpty () && info.FullSize_) ?
-							QObject::tr ("Image, %1 by %2 pixels.")
-									.arg (info.FullSize_->width ())
-									.arg (info.FullSize_->height ()) :
-							info.Alt_;
-
-					QXmlStreamWriter w { &result };
-					w.writeStartElement ("a");
-					w.writeAttribute ("href", info.FullUrl_);
-					w.writeAttribute ("target", "_blank");
-					w.writeCharacters (alt);
-					w.writeEndElement ();
-
-					return result;
-				}
-			};
-
+		template<typename T>
+		QString GetImageTemplate (T&& info)
+		{
 			const auto& showOpt = XmlSettingsManager::Instance ()
 					.property ("ShowImagesInChat").toString ();
-			if (showOpt == "Embedded")
-				return boost::apply_visitor (EmbedVisitor {}, imageInfo);
-			else if (showOpt == "Links")
-				return boost::apply_visitor (LinkVisitor {}, imageInfo);
-
-			qWarning () << Q_FUNC_INFO
-					<< "unknown show option type"
-					<< showOpt;
-			return {};
+			auto mode = showOpt == "Embedded" ?
+					ImageTemplateMode::Embed :
+					ImageTemplateMode::Link;
+			return GetImageTemplate (std::forward<T> (info), mode);
 		}
 
 		QString Gift2Replacement (const GiftInfo& info)
@@ -293,7 +279,8 @@ namespace Murm
 						LeechCraft::Util::GetAsBase64Src (icon.pixmap (16, 16).toImage ()),
 						name,
 						{ 16, 16 }
-					});
+					},
+					ImageTemplateMode::Embed);
 		}
 
 		QString Audio2Replacement (const AudioInfo& info, const ICoreProxy_ptr& proxy)

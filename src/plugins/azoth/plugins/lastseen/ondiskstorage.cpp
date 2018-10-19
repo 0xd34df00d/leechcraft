@@ -108,10 +108,11 @@ namespace LastSeen
 		AdaptedRecord_ = Util::oral::AdaptPtr<Record> (DB_);
 	}
 
-	boost::optional<EntryStats> OnDiskStorage::GetEntryStats (const QString& entryId)
+	std::optional<EntryStats> OnDiskStorage::GetEntryStats (const QString& entryId)
 	{
-		return Util::Fmap (AdaptedRecord_->SelectOne (sph::f<&Record::EntryID_> == entryId),
-				Util::Caster<EntryStats> {});
+		using Util::operator*;
+		return AdaptedRecord_->SelectOne (sph::f<&Record::EntryID_> == entryId) *
+				Util::Caster<EntryStats> {};
 	}
 
 	void OnDiskStorage::SetEntryStats (const QString& entryId, const EntryStats& stats)

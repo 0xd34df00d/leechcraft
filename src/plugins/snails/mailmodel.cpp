@@ -38,6 +38,7 @@
 #include "core.h"
 #include "messagelistactionsmanager.h"
 #include "common.h"
+#include "messageinfo.h"
 
 namespace LeechCraft
 {
@@ -45,7 +46,7 @@ namespace Snails
 {
 	struct MailModel::TreeNode : Util::ModelItemBase<MailModel::TreeNode>
 	{
-		Message_ptr Msg_;
+		MessageInfo Msg_;
 
 		QSet<QByteArray> UnreadChildren_;
 
@@ -53,7 +54,7 @@ namespace Snails
 
 		TreeNode () = default;
 
-		TreeNode (const Message_ptr& msg, const TreeNode_ptr& parent)
+		TreeNode (const MessageInfo& msg, const TreeNode_ptr& parent)
 		: Util::ModelItemBase<TreeNode> { parent }
 		, Msg_ { msg }
 		{
@@ -133,7 +134,7 @@ namespace Snails
 		switch (role)
 		{
 		case MessageActions:
-			return QVariant::fromValue (MsgId2Actions_.value (msg->GetFolderID ()));
+			return QVariant::fromValue (MsgId2Actions_.value (msg.FolderId_));
 		case Qt::DisplayRole:
 		case Sort:
 			break;
@@ -144,7 +145,7 @@ namespace Snails
 		case Qt::DecorationRole:
 		{
 			QString iconName;
-			if (!msg->IsRead ())
+			if (!msg.IsRead_)
 				iconName = "mail-unread-new";
 			else if (structItem->UnreadChildren_.size ())
 				iconName = "mail-unread";
@@ -154,14 +155,16 @@ namespace Snails
 			return Core::Instance ().GetProxy ()->GetIconThemeManager ()->GetIcon (iconName);
 		}
 		case ID:
-			return msg->GetFolderID ();
+			return msg.FolderId_;
 		case IsRead:
-			return msg->IsRead ();
+			return msg.IsRead_;
 		case UnreadChildrenCount:
 			return structItem->UnreadChildren_.size ();
 		case TotalChildrenCount:
 			return structItem->Fold ([] (const TreeNode *n) { return n->GetRowCount (); },
 					[] (int a, int b) { return a + b; });
+		case MsgInfo:
+			return QVariant::fromValue (msg);
 		default:
 			return {};
 		}
@@ -170,30 +173,25 @@ namespace Snails
 		{
 		case Column::From:
 		{
-			const auto& addr = msg->GetAddress (Message::Address::From);
-			return addr.first.isEmpty () ? addr.second : addr.first;
+			const auto& addr = msg.Addresses_ [AddressType::From].value (0);
+			return addr.Name_.isEmpty () ? addr.Email_ : addr.Name_;
 		}
 		case Column::Subject:
 		{
-			const auto& subject = msg->GetSubject ();
+			const auto& subject = msg.Subject_;
 			return subject.isEmpty () ? "<" + tr ("No subject") + ">" : subject;
 		}
 		case Column::Date:
 		{
 			const auto& date = role != Sort || index.parent ().isValid () ?
-						msg->GetDate () :
-						structItem->Fold ([] (const TreeNode *n) { return n->Msg_->GetDate (); },
+						msg.Date_ :
+						structItem->Fold ([] (const TreeNode *n) { return n->Msg_.Date_; },
 								[] (auto d1, auto d2) { return std::max (d1, d2); });
 			if (role == Sort)
 				return date;
 			else
 				return GetNeatDate (date);
 		}
-		case Column::Size:
-			if (role == Sort)
-				return msg->GetSize ();
-			else
-				return Util::MakePrettySize (msg->GetSize ());
 		case Column::UnreadChildren:
 			if (const auto unread = structItem->UnreadChildren_.size ())
 				return unread;
@@ -312,18 +310,13 @@ namespace Snails
 		return Folder_;
 	}
 
-	Message_ptr MailModel::GetMessage (const QByteArray& id) const
-	{
-		return GetMessageByFolderId (id);
-	}
-
 	void MailModel::Clear ()
 	{
-		if (Messages_.isEmpty ())
+		auto rc = rowCount ();
+		if (!rc)
 			return;
 
-		beginRemoveRows ({}, 0, Messages_.size () - 1);
-		Messages_.clear ();
+		beginRemoveRows ({}, 0, rc - 1);
 		Root_->EraseChildren (Root_->begin (), Root_->end ());
 		FolderId2Nodes_.clear ();
 		MsgId2FolderId_.clear ();
@@ -332,7 +325,7 @@ namespace Snails
 		MsgId2Actions_.clear ();
 	}
 
-	void MailModel::Append (QList<Message_ptr> messages)
+	void MailModel::Append (QList<MessageInfo> messages)
 	{
 		if (messages.isEmpty ())
 			return;
@@ -341,13 +334,7 @@ namespace Snails
 		{
 			const auto& msg = *i;
 
-			if (!msg->GetFolders ().contains (Folder_))
-			{
-				i = messages.erase (i);
-				continue;
-			}
-
-			if (Update (msg))
+			if (msg.Folder_ != Folder_)
 			{
 				i = messages.erase (i);
 				continue;
@@ -359,20 +346,17 @@ namespace Snails
 		if (messages.isEmpty ())
 			return;
 
-		std::stable_sort (messages.begin (), messages.end (),
-				Util::ComparingBy ([] (const auto& msg) { return msg->GetDate (); }));
-
-		Messages_ += messages;
+		std::stable_sort (messages.begin (), messages.end (), Util::ComparingBy (&MessageInfo::Date_));
 
 		for (const auto& msg : messages)
 		{
-			const auto& msgId = msg->GetMessageID ();
+			const auto& msgId = msg.MessageId_;
 			if (!msgId.isEmpty ())
-				MsgId2FolderId_ [msgId] = msg->GetFolderID ();
+				MsgId2FolderId_ [msgId] = msg.FolderId_;
 
 			const auto& acts = ActionsMgr_->GetMessageActions (msg);
 			if (!acts.isEmpty ())
-				MsgId2Actions_ [msg->GetFolderID ()] = acts;
+				MsgId2Actions_ [msg.FolderId_] = acts;
 		}
 
 		for (const auto& msg : messages)
@@ -383,70 +367,38 @@ namespace Snails
 				const auto childrenCount = Root_->GetRowCount ();
 				beginInsertRows ({}, childrenCount, childrenCount);
 				Root_->AppendExisting (node);
-				FolderId2Nodes_ [msg->GetFolderID ()] << node;
+				FolderId2Nodes_ [msg.FolderId_] << node;
 				endInsertRows ();
 			}
 
 		emit messageListUpdated ();
 	}
 
-	bool MailModel::Update (const Message_ptr& msg)
-	{
-		const auto pos = std::find_if (Messages_.begin (), Messages_.end (),
-				[&msg] (const Message_ptr& other) { return other->GetFolderID () == msg->GetFolderID (); });
-		if (pos == Messages_.end ())
-			return false;
-
-		if (*pos != msg)
-		{
-			const auto readChanged = (*pos)->IsRead () != msg->IsRead ();
-
-			*pos = msg;
-			for (const auto& indexPair : GetIndexes (msg->GetFolderID (), { 0, columnCount () - 1 }))
-			{
-				for (const auto& index : indexPair)
-					static_cast<TreeNode*> (index.internalPointer ())->Msg_ = msg;
-				emit dataChanged (indexPair.value (0), indexPair.value (1));
-			}
-
-			if (readChanged)
-				UpdateParentReadCount (msg->GetFolderID (), !msg->IsRead ());
-		}
-
-		return true;
-	}
-
 	bool MailModel::Remove (const QByteArray& id)
 	{
-		const auto msgPos = std::find_if (Messages_.begin (), Messages_.end (),
-				[&id] (const Message_ptr& other) { return other->GetFolderID () == id; });
-		if (msgPos == Messages_.end ())
-			return false;
-
 		UpdateParentReadCount (id, false);
 
 		for (const auto& node : FolderId2Nodes_.value (id))
 			RemoveNode (node);
 
 		FolderId2Nodes_.remove (id);
-		MsgId2FolderId_.remove ((*msgPos)->GetMessageID ());
-		Messages_.erase (msgPos);
+		MsgId2FolderId_.remove (MsgId2FolderId_.key (id));
 
 		return true;
 	}
 
 	void MailModel::UpdateReadStatus (const QList<QByteArray>& msgIds, bool read)
 	{
-		const auto& updateSet = QSet<QByteArray>::fromList (msgIds);
-
-		for (const auto& msg : Messages_)
-			if (updateSet.contains (msg->GetFolderID ()))
+		for (const auto& msgId : msgIds)
+		{
+			for (const auto& indexPair : GetIndexes (msgId, { 0, columnCount () - 1 }))
 			{
-				msg->SetRead (read);
+				for (const auto& index : indexPair)
+					static_cast<TreeNode*> (index.internalPointer ())->Msg_.IsRead_ = read;
 
-				for (const auto& indexPair : GetIndexes (msg->GetFolderID (), { 0, columnCount () - 1 }))
-					emit dataChanged (indexPair.value (0), indexPair.value (1));
+				emit dataChanged (indexPair.value (0), indexPair.value (1));
 			}
+		}
 	}
 
 	void MailModel::MarkUnavailable (const QList<QByteArray>& ids)
@@ -462,7 +414,7 @@ namespace Snails
 		for (const auto& list : FolderId2Nodes_)
 			for (const auto& node : list)
 				if (node->IsChecked_)
-					result << node->Msg_->GetFolderID ();
+					result << node->Msg_.FolderId_;
 
 		std::sort (result.begin (), result.end ());
 		result.erase (std::unique (result.begin (), result.end ()), result.end ());
@@ -548,10 +500,10 @@ namespace Snails
 		endRemoveRows ();
 	}
 
-	bool MailModel::AppendStructured (const Message_ptr& msg)
+	bool MailModel::AppendStructured (const MessageInfo& msg)
 	{
-		auto refs = msg->GetReferences ();
-		for (const auto& replyTo : msg->GetInReplyTo ())
+		auto refs = msg.References_;
+		for (const auto& replyTo : msg.InReplyTo_)
 			if (!refs.contains (replyTo))
 				refs << replyTo;
 
@@ -577,12 +529,12 @@ namespace Snails
 			const auto node = std::make_shared<TreeNode> (msg, parentNode->shared_from_this ());
 			beginInsertRows (parentIndex, row, row);
 			parentNode->AppendExisting (node);
-			FolderId2Nodes_ [msg->GetFolderID ()] << node;
+			FolderId2Nodes_ [msg.FolderId_] << node;
 			endInsertRows ();
 		}
 
-		if (!msg->IsRead ())
-			UpdateParentReadCount (msg->GetFolderID (), true);
+		if (!msg.IsRead_)
+			UpdateParentReadCount (msg.FolderId_, true);
 
 		return !indexes.isEmpty ();
 	}
@@ -612,16 +564,6 @@ namespace Snails
 					return Util::Map (columns,
 							[this, &node] (auto column) { return GetIndex (node, column); });
 				});
-	}
-
-	Message_ptr MailModel::GetMessageByFolderId (const QByteArray& id) const
-	{
-		const auto pos = std::find_if (Messages_.begin (), Messages_.end (),
-				[&id] (const Message_ptr& msg) { return msg->GetFolderID () == id; });
-		if (pos == Messages_.end ())
-			return {};
-
-		return *pos;
 	}
 }
 }

@@ -32,16 +32,17 @@
 #include <util/threads/futures.h>
 #include <util/sll/visitor.h>
 #include "account.h"
-#include "message.h"
 
 namespace LeechCraft
 {
 namespace Snails
 {
-	AttachmentsFetcher::AttachmentsFetcher (Account *acc, const Message_ptr& msg)
+	AttachmentsFetcher::AttachmentsFetcher (Account *acc,
+			const QStringList& folder, const QByteArray& msgId, const QList<AttDescr>& attachments)
 	: Acc_ { acc }
-	, Msg_ { msg }
-	, AttQueue_ { msg->GetAttachments () }
+	, Folder_ { folder }
+	, MsgId_ { msgId }
+	, AttQueue_ { attachments }
 	{
 		Promise_.reportStarted ();
 
@@ -75,7 +76,7 @@ namespace Snails
 
 		const auto& att = AttQueue_.takeFirst ();
 		const auto& filePath = QDir { TempDir_->path () }.filePath (att.GetName ());
-		Util::Sequence (Acc_, Acc_->FetchAttachment (Msg_, att.GetName (), filePath)) >>
+		Util::Sequence (Acc_, Acc_->FetchAttachment (Folder_, MsgId_, att.GetName (), filePath)) >>
 				Util::Visitor
 				{
 					[=] (Util::Void)

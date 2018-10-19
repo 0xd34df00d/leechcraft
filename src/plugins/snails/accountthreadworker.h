@@ -40,7 +40,7 @@
 #include <util/sll/either.h>
 #include <interfaces/structures.h>
 #include "progresslistener.h"
-#include "message.h"
+#include "messageinfo.h"
 #include "account.h"
 #include "accountthreadworkerfwd.h"
 
@@ -58,6 +58,8 @@ namespace Snails
 	class AccountThreadNotifier;
 
 	struct Folder;
+
+	struct OutgoingMessage;
 
 	using MessageVector_t = std::vector<vmime::shared_ptr<vmime::net::message>>;
 	using VmimeFolder_ptr = vmime::shared_ptr<vmime::net::folder>;
@@ -93,11 +95,7 @@ namespace Snails
 	public:
 		AccountThreadWorker (bool, const QString&, Account*, Storage*);
 
-		struct FolderMessages
-		{
-			QList<MessageWHeaders_t> NewHeaders_;
-		};
-		using Folder2Messages_t = QHash<QStringList, FolderMessages>;
+		using Folder2Messages_t = QHash<QStringList, QList<FetchedMessageInfo>>;
 
 		struct SyncStatusesResult
 		{
@@ -112,10 +110,10 @@ namespace Snails
 
 		VmimeFolder_ptr GetFolder (const QStringList& folder, FolderMode mode);
 
-		MessageWHeaders_t FromHeaders (const vmime::shared_ptr<vmime::net::message>&) const;
+		FetchedMessageInfo FromHeaders (const vmime::shared_ptr<vmime::net::message>&) const;
 
 		Folder2Messages_t FetchMessagesIMAP (const QList<QStringList>&, const QByteArray&);
-		FolderMessages FetchMessagesInFolder (const QStringList&, const VmimeFolder_ptr&, const QByteArray&);
+		QList<FetchedMessageInfo> FetchMessagesInFolder (const QStringList&, const VmimeFolder_ptr&, const QByteArray&);
 
 		SyncStatusesResult SyncMessagesStatusesImpl (const QStringList&, const VmimeFolder_ptr&);
 
@@ -143,19 +141,20 @@ namespace Snails
 		using MsgCountResult_t = Util::Either<MsgCountError_t, QPair<int, int>>;
 		MsgCountResult_t GetMessageCount (const QStringList& folder);
 
-		using SetReadStatusResult_t = Util::Either<boost::variant<FolderNotFound>, QList<Message_ptr>>;
+		using SetReadStatusResult_t = Util::Either<boost::variant<FolderNotFound>, Util::Void>;
 		SetReadStatusResult_t SetReadStatus (bool read, const QList<QByteArray>& ids, const QStringList& folder);
 
-		FetchWholeMessageResult_t FetchWholeMessage (Message_ptr);
+		FetchWholeMessageResult_t FetchWholeMessage (const QStringList& folder, const QByteArray& msgId);
 
-		FetchAttachmentResult_t FetchAttachment (Message_ptr, const QString&, const QString&);
+		FetchAttachmentResult_t FetchAttachment (const QStringList& folder,
+				const QByteArray& msgId, const QString& attName, const QString& path);
 
 		void CopyMessages (const QList<QByteArray>& ids, const QStringList& from, const QList<QStringList>& tos);
 
 		using DeleteResult_t = Util::Either<boost::variant<FolderNotFound>, Util::Void>;
 		DeleteResult_t DeleteMessages (const QList<QByteArray>& ids, const QStringList& folder);
 
-		void SendMessage (const Message_ptr&);
+		void SendMessage (const OutgoingMessage&);
 	};
 }
 }

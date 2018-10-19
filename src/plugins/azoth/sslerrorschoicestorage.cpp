@@ -91,7 +91,7 @@ namespace Azoth
 	namespace sph = Util::oral::sph;
 
 	auto SslErrorsChoiceStorage::GetAction (const QByteArray& id,
-			QSslError::SslError err) const -> boost::optional<Action>
+			QSslError::SslError err) const -> std::optional<Action>
 	{
 		return AdaptedRecord_->SelectOne (sph::fields<&Record::Action_>,
 				sph::f<&Record::AccountID_> == id && sph::f<&Record::Error_> == err);

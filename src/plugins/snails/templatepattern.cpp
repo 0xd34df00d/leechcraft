@@ -32,9 +32,9 @@
 #include <util/sll/prelude.h>
 #include <util/sll/curry.h>
 #include <interfaces/itexteditor.h>
-#include "message.h"
 #include "account.h"
 #include "util.h"
+#include "messagebodies.h"
 
 namespace LeechCraft
 {
@@ -43,33 +43,72 @@ namespace Snails
 	namespace
 	{
 		template<typename F>
-		PatternFunction_t Wrap (const F& f, std::result_of_t<F (const Message*)>* = nullptr)
+		PatternFunction_t Wrap (const F& f, std::result_of_t<F (MessageInfo)>* = nullptr)
 		{
-			return [f] (const Account*, const Message *msg, ContentType, const QString&)
-					{
-						if (!msg)
-							return QString {};
+			return [f] (const Account*, const MessageInfo& info, const MessageBodies&, ContentType)
+			{
+				return f (info);
+			};
+		}
 
-						return f (msg);
+		template<typename F>
+		PatternFunction_t Wrap (const F& f, std::result_of_t<F (MessageInfo, MessageBodies)>* = nullptr)
+		{
+			return [f] (const Account*, const MessageInfo& info, const MessageBodies& bodies, ContentType)
+					{
+						return f (info, bodies);
 					};
 		}
 
 		template<typename F>
-		PatternFunction_t Wrap (const F& f, std::result_of_t<F (const Message*, ContentType)>* = nullptr)
+		PatternFunction_t Wrap (const F& f, std::result_of_t<F (MessageInfo, ContentType)>* = nullptr)
 		{
-			return [f] (const Account*, const Message *msg, ContentType ct, const QString&)
-					{
-						if (!msg)
-							return QString {};
+			return [f] (const Account*, const MessageInfo& info, const MessageBodies&, ContentType ct)
+			{
+				return f (info, ct);
+			};
+		}
 
-						return f (msg, ct);
+		template<typename F>
+		PatternFunction_t Wrap (const F& f, std::result_of_t<F (MessageInfo, MessageBodies, ContentType)>* = nullptr)
+		{
+			return [f] (const Account*, const MessageInfo& info, const MessageBodies& bodies, ContentType ct)
+					{
+						return f (info, bodies, ct);
 					};
 		}
 
-		QString FormatNameAndEmail (ContentType ct, const Message::Address_t& addr)
+		QString FormatNameAndEmail (ContentType ct, const Address& addr)
 		{
-			const auto& result = (addr.first.isEmpty () ? "" : addr.first + " ") + "<" + addr.second + ">";
+			const auto& result = (addr.Name_.isEmpty () ? "" : addr.Name_ + " ") + "<" + addr.Email_ + ">";
 			return ct == ContentType::HTML ? result.toHtmlEscaped () : result;
+		}
+
+		QString MakePlainQuote (const QString& plainText)
+		{
+			auto plainSplit = plainText.split ('\n');
+			for (auto& str : plainSplit)
+			{
+				str = str.trimmed ();
+				if (!str.isEmpty () && str.at (0) != '>')
+					str.prepend (' ');
+				str.prepend ('>');
+			}
+
+			return plainSplit.join ("\n") + "\n\n";
+		}
+
+		QString MakeQuote (ContentType ct, const MessageBodies& bodies)
+		{
+			switch (ct)
+			{
+			case ContentType::PlainText:
+				return MakePlainQuote (bodies.PlainText_);
+			case ContentType::HTML:
+				return !bodies.HTML_.isEmpty () ?
+						bodies.HTML_ :
+						PlainBody2HTML (bodies.PlainText_);
+			}
 		}
 	}
 
@@ -79,86 +118,86 @@ namespace Snails
 		{
 			{
 				"ODATE",
-				Wrap ([] (const Message *msg) { return msg->GetDate ().date ().toString (Qt::DefaultLocaleShortDate); })
+				Wrap ([] (const MessageInfo& info) { return info.Date_.date ().toString (Qt::DefaultLocaleShortDate); })
 			},
 			{
 				"OTIME",
-				Wrap ([] (const Message *msg) { return msg->GetDate ().time ().toString (Qt::DefaultLocaleShortDate); })
+				Wrap ([] (const MessageInfo& info) { return info.Date_.time ().toString (Qt::DefaultLocaleShortDate); })
 			},
 			{
 				"ODATETIME",
-				Wrap ([] (const Message *msg) { return msg->GetDate ().toString (Qt::DefaultLocaleShortDate); })
+				Wrap ([] (const MessageInfo& info) { return info.Date_.toString (Qt::DefaultLocaleShortDate); })
 			},
 			{
 				"ONAME",
-				Wrap ([] (const Message *msg) { return msg->GetAddress (Message::Address::From).first; })
+				Wrap ([] (const MessageInfo& info) { return info.Addresses_ [AddressType::From].value (0).Name_; })
 			},
 			{
 				"OEMAIL",
-				Wrap ([] (const Message *msg) { return msg->GetAddress (Message::Address::From).second; })
+				Wrap ([] (const MessageInfo& info) { return info.Addresses_ [AddressType::From].value (0).Email_; })
 			},
 			{
 				"OSUBJECT",
-				Wrap ([] (const Message *msg) { return msg->GetSubject (); })
+				Wrap ([] (const MessageInfo& info) { return info.Subject_; })
 			},
 			{
 				"ONAMEOREMAIL",
-				Wrap ([] (const Message *msg)
+				Wrap ([] (const MessageInfo& info)
 						{
-							const auto& addr = msg->GetAddress (Message::Address::From);
-							return addr.first.isEmpty () ? "<" + addr.second + ">" : addr.first;
+							const auto& addr = info.Addresses_ [AddressType::From].value (0);
+							return addr.Name_.isEmpty () ? "<" + addr.Email_ + ">" : addr.Name_;
 						})
 			},
 			{
 				"ONAMEANDEMAIL",
-				Wrap ([] (const Message *msg, ContentType ct)
+				Wrap ([] (const MessageInfo& info, ContentType ct)
 						{
-							return FormatNameAndEmail (ct, msg->GetAddress (Message::Address::From));
+							return FormatNameAndEmail (ct, info.Addresses_ [AddressType::From].value (0));
 						})
 			},
 			{
 				"TONAMEANDEMAIL",
-				Wrap ([] (const Message *msg, ContentType ct)
+				Wrap ([] (const MessageInfo& info, ContentType ct)
 						{
-							return Util::Map (msg->GetAddresses (Message::Address::To),
+							return Util::Map (info.Addresses_ [AddressType::To],
 									Util::Curry (&FormatNameAndEmail) (ct))
 								.join ("; ");
 						})
 			},
 			{
 				"CCNAMEANDEMAIL",
-				Wrap ([] (const Message *msg, ContentType ct)
+				Wrap ([] (const MessageInfo& info, ContentType ct)
 						{
-							return Util::Map (msg->GetAddresses (Message::Address::Cc),
+							return Util::Map (info.Addresses_ [AddressType::Cc],
 									Util::Curry (&FormatNameAndEmail) (ct))
 								.join ("; ");
 						})
 			},
 			{
 				"OBODY",
-				Wrap ([] (const Message *msg, ContentType type)
-						{
-							switch (type)
-							{
-							case ContentType::PlainText:
-								return msg->GetBody ();
-							case ContentType::HTML:
-							{
-								const auto& html = msg->GetHTMLBody ();
-								return !html.isEmpty () ?
-										html :
-										PlainBody2HTML (msg->GetBody ());
-							}
-							}
-						})
+				[] (const Account*, const MessageInfo&, const MessageBodies& bodies, ContentType type)
+				{
+					switch (type)
+					{
+					case ContentType::PlainText:
+						return bodies.PlainText_;
+					case ContentType::HTML:
+						return !bodies.HTML_.isEmpty () ?
+								bodies.HTML_ :
+								PlainBody2HTML (bodies.PlainText_);
+					}
+				}
 			},
 			{
 				"QUOTE",
-				[] (const Account*, const Message*, ContentType, const QString& body) { return body; }
+				[] (const Account*, const MessageInfo&, const MessageBodies& bodies, ContentType ct)
+				{
+					return MakeQuote (ct, bodies);
+				}
 			},
 			{
 				"SIGNATURE",
-				[] (const Account *acc, const Message*, ContentType type, const QString&)
+				[] (const Account *acc, const MessageInfo&, const MessageBodies&, ContentType type)
 				{
 					switch (type)
 					{
@@ -171,7 +210,7 @@ namespace Snails
 			},
 			{
 				"CURSOR",
-				[] (const Account*, const Message*, ContentType type, const QString&)
+				[] (const Account*, const MessageInfo&, const MessageBodies&, ContentType type)
 				{
 					switch (type)
 					{

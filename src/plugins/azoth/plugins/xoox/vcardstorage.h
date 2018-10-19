@@ -30,7 +30,7 @@
 #pragma once
 
 #include <memory>
-#include <boost/optional.hpp>
+#include <optional>
 #include <QObject>
 #include <QCache>
 #include <QXmppVCardIq.h>
@@ -59,12 +59,12 @@ namespace Xoox
 		void SetVCard (const QString& jid, const QString& vcard);
 		void SetVCard (const QString& jid, const QXmppVCardIq& vcard);
 
-		boost::optional<QXmppVCardIq> GetVCard (const QString& jid) const;
+		std::optional<QXmppVCardIq> GetVCard (const QString& jid) const;
 
 		void SetVCardPhotoHash (const QString& jid, const QByteArray& hash);
-		boost::optional<QByteArray> GetVCardPhotoHash (const QString& jid) const;
+		std::optional<QByteArray> GetVCardPhotoHash (const QString& jid) const;
 	private:
-		boost::optional<QString> GetVCardString (const QString& jid) const;
+		std::optional<QString> GetVCardString (const QString& jid) const;
 	};
 }
 }

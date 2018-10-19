@@ -38,6 +38,8 @@
 #include <util/db/util.h>
 #include <util/db/oral/oral.h>
 #include "account.h"
+#include "messageinfo.h"
+#include "messagebodies.h"
 
 namespace LeechCraft
 {
@@ -50,10 +52,58 @@ namespace Snails
 		oral::PKey<int> Id_;
 		oral::Unique<QByteArray> UniqueId_;
 		oral::NotNull<bool> IsRead_;
+		QString Subject_;
+		oral::NotNull<QDateTime> Date_;
+		quint64 Size_;
+		QByteArray Refs_;
+		QByteArray InReplyTos_;
 
 		static QString ClassName ()
 		{
 			return "Messages";
+		}
+	};
+
+	struct AccountDatabase::Address
+	{
+		oral::PKey<int> Id_;
+		oral::References<&Message::Id_> MsgId_;
+		oral::NotNull<AddressType> AddressType_;
+		QString Name_;
+		oral::NotNull<QString> Email_;
+
+		static QString ClassName ()
+		{
+			return "Addresses";
+		}
+	};
+
+	struct AccountDatabase::Attachment
+	{
+		oral::PKey<int> Id_;
+		oral::References<&Message::Id_> MsgId_;
+		QString Name_;
+		QString Descr_;
+		qint64 Size_;
+		QByteArray Type_;
+		QByteArray SubType_;
+
+		static QString ClassName ()
+		{
+			return "Attachments";
+		}
+	};
+
+	struct AccountDatabase::MessageBodies
+	{
+		oral::PKey<int> Id_;
+		oral::References<&Message::Id_> MsgId_;
+		QString PlainText_;
+		QString HTML_;
+
+		static QString ClassName ()
+		{
+			return "MessagesBodies";
 		}
 	};
 
@@ -98,7 +148,34 @@ namespace Snails
 BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Snails::AccountDatabase::Message,
 		Id_,
 		UniqueId_,
-		IsRead_)
+		IsRead_,
+		Subject_,
+		Date_,
+		Size_,
+		Refs_,
+		InReplyTos_)
+
+BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Snails::AccountDatabase::Address,
+		Id_,
+		MsgId_,
+		AddressType_,
+		Name_,
+		Email_)
+
+BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Snails::AccountDatabase::Attachment,
+		Id_,
+		MsgId_,
+		Name_,
+		Descr_,
+		Size_,
+		Type_,
+		SubType_)
+
+BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Snails::AccountDatabase::MessageBodies,
+		Id_,
+		MsgId_,
+		PlainText_,
+		HTML_)
 
 BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Snails::AccountDatabase::Folder,
 		Id_,
@@ -135,6 +212,11 @@ namespace Snails
 		Util::RunTextQuery (DB_, "PRAGMA journal_mode = WAL;");
 
 		Messages_ = Util::oral::AdaptPtr<Message> (DB_);
+		Addresses_ = Util::oral::AdaptPtr<Address> (DB_);
+		Attachments_ = Util::oral::AdaptPtr<Attachment> (DB_);
+
+		MessagesBodies_ = Util::oral::AdaptPtr<MessageBodies> (DB_);
+
 		Folders_ = Util::oral::AdaptPtr<Folder> (DB_);
 		Msg2Folder_ = Util::oral::AdaptPtr<Msg2Folder> (DB_);
 		MsgHeader_ = Util::oral::AdaptPtr<MsgHeader> (DB_);
@@ -151,6 +233,31 @@ namespace Snails
 
 	namespace sph = oral::sph;
 
+	namespace
+	{
+		struct WithMessagesType {};
+		struct WithoutMessagesType {};
+
+		constexpr WithMessagesType WithMessages {};
+		constexpr WithoutMessagesType WithoutMessages {};
+
+		template<typename MessageTableSelector>
+		auto FolderMessageIdSelector (const QByteArray& msgId, const QStringList& folder, MessageTableSelector)
+		{
+			using A = AccountDatabase;
+
+			auto common = sph::f<&A::Folder::FolderPath_> == folder.join ("/") &&
+					sph::f<&A::Msg2Folder::FolderMessageId_> == msgId &&
+					sph::f<&A::Folder::Id_> == sph::f<&A::Msg2Folder::FolderId_>;
+
+			if constexpr (std::is_same_v<MessageTableSelector, WithMessagesType>)
+				return common &&
+						sph::f<&A::Message::Id_> == sph::f<&A::Msg2Folder::MsgId_>;
+			else
+				return common;
+		}
+	}
+
 	QList<QByteArray> AccountDatabase::GetIDs (const QStringList& folder)
 	{
 		return Msg2Folder_->Select (sph::fields<&Msg2Folder::FolderMessageId_>,
@@ -158,7 +265,7 @@ namespace Snails
 				sph::f<&Folder::Id_> == sph::f<&Msg2Folder::FolderId_>);
 	}
 
-	boost::optional<QByteArray> AccountDatabase::GetLastID (const QStringList& folder)
+	std::optional<QByteArray> AccountDatabase::GetLastID (const QStringList& folder)
 	{
 		using Util::operator*;
 		return [] (auto tup) { return std::get<0> (tup); } *
@@ -192,7 +299,7 @@ namespace Snails
 		return Messages_->Select (sph::count<>);
 	}
 
-	boost::optional<int> AccountDatabase::GetMsgTableId (const QByteArray& uniqueId)
+	std::optional<int> AccountDatabase::GetMsgTableId (const QByteArray& uniqueId)
 	{
 		if (uniqueId.isEmpty ())
 			return {};
@@ -201,40 +308,135 @@ namespace Snails
 				sph::f<&Message::UniqueId_> == uniqueId);
 	}
 
-	boost::optional<int> AccountDatabase::GetMsgTableId (const QByteArray& msgId, const QStringList& folder)
+	std::optional<int> AccountDatabase::GetMsgTableId (const QByteArray& msgId, const QStringList& folder)
 	{
 		return Msg2Folder_->SelectOne (sph::fields<&Msg2Folder::MsgId_>,
-				sph::f<&Msg2Folder::FolderId_> == sph::f<&Folder::Id_> &&
-				sph::f<&Folder::FolderPath_> == folder.join ("/") &&
-				sph::f<&Msg2Folder::FolderMessageId_> == msgId);
+				FolderMessageIdSelector (msgId, folder, WithoutMessages));
 	}
 
-	void AccountDatabase::AddMessage (const Message_ptr& msg)
+	namespace
 	{
-		for (const auto& folder : msg->GetFolders ())
-			AddFolder (folder);
+		MessageInfo MakeMessageInfo (const AccountDatabase::Message& item,
+				const QStringList& folder, const QByteArray& msgId)
+		{
+			return
+			{
+				item.IsRead_,
+				item.UniqueId_,
+				msgId,
+				folder,
+				item.Subject_,
+				item.Date_,
+				item.Size_,
+				{},
+				item.Refs_.split ('\n'),
+				item.InReplyTos_.split ('\n'),
+				{}
+			};
+		}
+
+		void AddAddress (MessageInfo& info, const AccountDatabase::Address& addr)
+		{
+			info.Addresses_ [addr.AddressType_].push_back ({ addr.Name_, addr.Email_ });
+		}
+
+		void AddAttachment (MessageInfo& info, const AccountDatabase::Attachment& att)
+		{
+			info.Attachments_.push_back ({
+					att.Name_,
+					att.Descr_,
+					att.Type_,
+					att.SubType_,
+					att.Size_
+				});
+		}
+	}
+
+	QList<MessageInfo> AccountDatabase::GetMessageInfos (const QStringList& folder)
+	{
+		QHash<int, MessageInfo> result;
+
+		const auto byFolderQuery = sph::f<&Folder::FolderPath_> == folder.join ("/") &&
+					sph::f<&Folder::Id_> == sph::f<&Msg2Folder::FolderId_> &&
+					sph::f<&Message::Id_> == sph::f<&Msg2Folder::MsgId_>;
+
+		{
+			auto res = Messages_->Select (sph::all + sph::fields<&Msg2Folder::FolderMessageId_>,
+					byFolderQuery);
+			result.reserve (res.size ());
+			for (const auto& [item, msgId] : res)
+				result [item.Id_] = MakeMessageInfo (item, folder, msgId);
+		}
+
+		{
+			auto res = Addresses_->Select (sph::all,
+					sph::f<&Address::MsgId_> == sph::f<&Message::Id_> &&
+					byFolderQuery);
+			for (const auto& addr : res)
+				AddAddress (result [addr.MsgId_], addr);
+		}
+
+		{
+			auto res = Attachments_->Select (sph::all,
+					sph::f<&Attachment::MsgId_> == sph::f<&Message::Id_> &&
+					byFolderQuery);
+			for (const auto& att : res)
+				AddAttachment (result [att.MsgId_], att);
+		}
+
+		return result.values ();
+	}
+
+	std::optional<MessageInfo> AccountDatabase::GetMessageInfo (const QStringList& folder, const QByteArray& msgId)
+	{
+		auto maybeMsg = Messages_->SelectOne (sph::all, FolderMessageIdSelector (msgId, folder, WithMessages));
+		if (!maybeMsg)
+			return {};
+
+		const auto& msg = *maybeMsg;
+
+		auto msgInfo = MakeMessageInfo (msg, folder, msgId);
+
+		{
+			auto res = Addresses_->Select (sph::all,
+					sph::f<&Address::MsgId_> == *msg.Id_);
+			for (const auto& addr : res)
+				AddAddress (msgInfo, addr);
+		}
+
+		{
+			auto res = Attachments_->Select (sph::all,
+					sph::f<&Attachment::MsgId_> == *msg.Id_);
+			for (const auto& att : res)
+				AddAttachment (msgInfo, att);
+		}
+
+		return msgInfo;
+	}
+
+	void AccountDatabase::AddMessage (const MessageInfo& msg)
+	{
+		const auto& folder = msg.Folder_;
+		AddFolder (folder);
+
+		if (GetMsgTableId (msg.FolderId_, folder))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "skipping existing message"
+					<< msg.FolderId_
+					<< "in folder"
+					<< folder;
+			return;
+		}
 
 		Util::DBLock lock { DB_ };
 		lock.Init ();
 
-		for (const auto& folder : msg->GetFolders ())
-		{
-			if (GetMsgTableId (msg->GetFolderID (), folder))
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "skipping existing message"
-						<< msg->GetFolderID ()
-						<< "in folder"
-						<< folder;
-				continue;
-			}
-
-			const auto existing = GetMsgTableId (msg->GetMessageID ());
-			const auto msgTableId = existing ?
-					*existing :
-					AddMessageUnfoldered (msg);
-			AddMessageToFolder (msgTableId, GetFolder (folder), msg->GetFolderID ());
-		}
+		const auto existing = GetMsgTableId (msg.MessageId_);
+		const auto msgTableId = existing ?
+				*existing :
+				AddMessageUnfoldered (msg);
+		AddMessageToFolder (msgTableId, GetFolder (folder), msg.FolderId_);
 
 		lock.Good ();
 	}
@@ -242,20 +444,44 @@ namespace Snails
 	void AccountDatabase::RemoveMessage (const QByteArray& msgId, const QStringList& folder)
 	{
 		const auto id = Msg2Folder_->SelectOne (sph::fields<&Msg2Folder::Id_>,
-				sph::f<&Msg2Folder::FolderMessageId_> == msgId &&
-				sph::f<&Folder::FolderPath_> == folder.join ("/") &&
-				sph::f<&Msg2Folder::FolderId_> == sph::f<&Folder::Id_>);
+				FolderMessageIdSelector (msgId, folder, WithoutMessages));
 		if (id)
 			Msg2Folder_->DeleteBy (sph::f<&Msg2Folder::Id_> == *id);
 	}
 
-	boost::optional<bool> AccountDatabase::IsMessageRead (const QByteArray& msgId, const QStringList& folder)
+	void AccountDatabase::SaveMessageBodies (const QStringList& folder,
+			const QByteArray& msgId, const Snails::MessageBodies& bodies)
+	{
+		auto msgPKey = GetMsgTableId (msgId, folder);
+		if (!msgPKey)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown message"
+					<< folder
+					<< msgId;
+			return;
+		}
+
+		MessagesBodies_->Insert ({ {}, *msgPKey, bodies.PlainText_, bodies.HTML_ });
+	}
+
+	std::optional<MessageBodies> AccountDatabase::GetMessageBodies (const QStringList& folder, const QByteArray& msgId)
+	{
+		auto msgPKey = GetMsgTableId (msgId, folder);
+		if (!msgPKey)
+			return {};
+
+		using Util::operator*;
+
+		return MessagesBodies_->SelectOne (sph::fields<&MessageBodies::PlainText_, &MessageBodies::HTML_>,
+				sph::f<&MessageBodies::MsgId_> == *msgPKey) *
+				[] (auto&& tup) { return Snails::MessageBodies { std::get<0> (tup), std::get<1> (tup) }; };
+	}
+
+	std::optional<bool> AccountDatabase::IsMessageRead (const QByteArray& msgId, const QStringList& folder)
 	{
 		return Messages_->SelectOne (sph::fields<&Message::IsRead_>,
-				sph::f<&Folder::FolderPath_> == folder.join ("/") &&
-				sph::f<&Folder::Id_> == sph::f<&Msg2Folder::FolderId_> &&
-				sph::f<&Msg2Folder::FolderMessageId_> == msgId &&
-				sph::f<&Message::Id_> == sph::f<&Msg2Folder::MsgId_>);
+				FolderMessageIdSelector (msgId, folder, WithMessages));
 	}
 
 	void AccountDatabase::SetMessageRead (const QByteArray& msgId, const QStringList& folder, bool read)
@@ -279,15 +505,72 @@ namespace Snails
 		MsgHeader_->Insert ({ {}, msgId, header }, oral::InsertAction::Replace::PKey<MsgHeader>);
 	}
 
-	boost::optional<QByteArray> AccountDatabase::GetMessageHeader (const QByteArray& msgId) const
+	std::optional<QByteArray> AccountDatabase::GetMessageHeader (const QByteArray& uniqueMsgId) const
 	{
 		return MsgHeader_->SelectOne (sph::fields<&MsgHeader::Header_>,
-				sph::f<&MsgHeader::MsgUniqueId_> == msgId);
+				sph::f<&MsgHeader::MsgUniqueId_> == uniqueMsgId);
 	}
 
-	int AccountDatabase::AddMessageUnfoldered (const Message_ptr& msg)
+	std::optional<QByteArray> AccountDatabase::GetMessageHeader (const QStringList& folderId, const QByteArray& msgId) const
 	{
-		return Messages_->Insert ({ {}, msg->GetMessageID (), msg->IsRead () });
+		return MsgHeader_->SelectOne (sph::fields<&MsgHeader::Header_>,
+		        FolderMessageIdSelector (msgId, folderId, WithMessages) &&
+		        sph::f<&MsgHeader::MsgUniqueId_> == sph::f<&Message::UniqueId_>);
+	}
+
+	namespace
+	{
+		template<char Ch>
+		auto Join (const QList<QByteArray>& arrs)
+		{
+			if (arrs.isEmpty ())
+				return QByteArray {};
+
+			QByteArray result;
+			const auto totalLength = std::accumulate (arrs.begin (), arrs.end (), 0,
+					[] (int acc, const auto& arr) { return acc + arr.size (); });
+			result.reserve (arrs.size () - 1 + totalLength);
+			bool isFirst = true;
+			for (const auto& arr : arrs)
+			{
+				if (!isFirst)
+					result += Ch;
+				isFirst = false;
+				result += arr;
+			}
+			return result;
+		}
+	}
+
+	int AccountDatabase::AddMessageUnfoldered (const MessageInfo& msg)
+	{
+		auto id = Messages_->Insert ({
+				{},
+				msg.MessageId_,
+				msg.IsRead_,
+				msg.Subject_,
+				msg.Date_,
+				msg.Size_,
+				Join<'\n'> (msg.References_),
+				Join<'\n'> (msg.InReplyTo_)
+			});
+
+		for (const auto& [type, addrs] : Util::Stlize (msg.Addresses_))
+			for (const auto& addr : addrs)
+				Addresses_->Insert ({ {}, id, type, addr.Name_, addr.Email_ });
+
+		for (const auto& att : msg.Attachments_)
+			Attachments_->Insert ({
+					{},
+					id,
+					att.GetName (),
+					att.GetDescr (),
+					att.GetSize (),
+					att.GetType (),
+					att.GetSubType ()
+				});
+
+		return id;
 	}
 
 	void AccountDatabase::AddMessageToFolder (int msgTableId, int folderTableId, const QByteArray& msgId)

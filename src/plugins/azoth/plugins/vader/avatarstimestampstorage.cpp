@@ -86,7 +86,7 @@ namespace Vader
 		Adapted_ = Util::oral::AdaptPtr<AvatarTimestamp> (DB_);
 	}
 
-	boost::optional<QDateTime> AvatarsTimestampStorage::GetTimestamp (const QString& email)
+	std::optional<QDateTime> AvatarsTimestampStorage::GetTimestamp (const QString& email)
 	{
 		namespace sph = Util::oral::sph;
 
