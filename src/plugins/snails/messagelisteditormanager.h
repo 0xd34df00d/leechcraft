@@ -38,18 +38,14 @@ namespace LeechCraft
 {
 namespace Snails
 {
-	class MailTreeDelegate;
-
 	enum class MailListMode;
 
 	class MessageListEditorManager : public QObject
 	{
 		QTreeView * const View_;
-		MailTreeDelegate * const Delegate_;
-
 		MailListMode Mode_;
 	public:
-		MessageListEditorManager (QTreeView*, MailTreeDelegate*, QObject* = nullptr);
+		MessageListEditorManager (QTreeView*, QObject* = nullptr);
 
 		void SetMailListMode (MailListMode);
 		void HandleMessageListUpdated ();

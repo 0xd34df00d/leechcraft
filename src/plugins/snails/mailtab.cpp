@@ -121,7 +121,7 @@ namespace Snails
 		Ui_.MailTree_->setItemDelegate (MailTreeDelegate_);
 		Ui_.MailTree_->setModel (MailSortFilterModel_);
 
-		MsgListEditorMgr_ = new MessageListEditorManager { Ui_.MailTree_, MailTreeDelegate_, this };
+		MsgListEditorMgr_ = new MessageListEditorManager { Ui_.MailTree_, this };
 
 		connect (Ui_.AccountsTree_->selectionModel (),
 				SIGNAL (currentChanged (QModelIndex, QModelIndex)),

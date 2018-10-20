@@ -30,7 +30,6 @@
 #include "messagelisteditormanager.h"
 #include <QTreeView>
 #include "common.h"
-#include "mailtreedelegate.h"
 #include "mailmodel.h"
 
 namespace LeechCraft
@@ -64,11 +63,9 @@ namespace Snails
 		}
 	}
 
-	MessageListEditorManager::MessageListEditorManager (QTreeView *view,
-			MailTreeDelegate *delegate, QObject *parent)
+	MessageListEditorManager::MessageListEditorManager (QTreeView *view, QObject *parent)
 	: QObject { parent }
 	, View_ { view }
-	, Delegate_ { delegate }
 	, Mode_ { MailListMode::Normal }
 	{
 		connect (View_,
