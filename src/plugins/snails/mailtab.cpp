@@ -1148,7 +1148,29 @@ namespace Snails
 		if (!CurrAcc_)
 			return;
 
-		CurrAcc_->Synchronize (MailModel_->GetCurrentFolder ());
+		auto future = CurrAcc_->Synchronize (MailModel_->GetCurrentFolder ());
+
+		auto proxy = Proxy_;
+		Util::Sequence (nullptr, future) >>
+				Util::Visitor
+				{
+					[proxy] (const Account::SyncStats& stats)
+					{
+						const auto& text = stats.NewMsgsCount_ ?
+								tr ("Got %n new messages.", 0, stats.NewMsgsCount_) :
+								tr ("No new messages.");
+						const auto& e = Util::MakeNotification ("Snails", text, Priority::Info);
+						proxy->GetEntityManager ()->HandleEntity (e);
+					},
+					[proxy] (const auto& err)
+					{
+						qDebug () << "!!";
+						const auto& text = tr ("Error fetching new mail: %1")
+								.arg (Util::Visit (err, [] (auto e) { return e.what (); }));
+						const auto& e = Util::MakeNotification ("Snails", text, Priority::Critical);
+						proxy->GetEntityManager ()->HandleEntity (e);
+					}
+				};
 	}
 }
 }
