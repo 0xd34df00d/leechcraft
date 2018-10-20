@@ -76,10 +76,10 @@ namespace Snails
 			return;
 
 		Mode_ = mode;
-		handleMessageListUpdated ();
+		HandleMessageListUpdated ();
 	}
 
-	void MessageListEditorManager::handleMessageListUpdated ()
+	void MessageListEditorManager::HandleMessageListUpdated ()
 	{
 		switch (Mode_)
 		{

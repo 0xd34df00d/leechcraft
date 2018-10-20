@@ -717,7 +717,7 @@ namespace Snails
 		connect (MailModel_.get (),
 				&MailModel::messageListUpdated,
 				MsgListEditorMgr_,
-				&MessageListEditorManager::handleMessageListUpdated);
+				&MessageListEditorManager::HandleMessageListUpdated);
 		connect (MailModel_.get (),
 				&MailModel::messagesSelectionChanged,
 				this,
