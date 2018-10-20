@@ -715,9 +715,9 @@ namespace Snails
 		MailModel_ = CurrAcc_->GetMailModelsManager ()->CreateModel ();
 
 		connect (MailModel_.get (),
-				SIGNAL (messageListUpdated ()),
+				&MailModel::messageListUpdated,
 				MsgListEditorMgr_,
-				SLOT (handleMessageListUpdated ()));
+				&MessageListEditorManager::handleMessageListUpdated);
 		connect (MailModel_.get (),
 				&MailModel::messagesSelectionChanged,
 				this,
