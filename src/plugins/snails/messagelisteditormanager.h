@@ -44,8 +44,6 @@ namespace Snails
 
 	class MessageListEditorManager : public QObject
 	{
-		Q_OBJECT
-
 		QTreeView * const View_;
 		MailTreeDelegate * const Delegate_;
 
