@@ -117,8 +117,6 @@ namespace Snails
 
 		SyncStatusesResult SyncMessagesStatusesImpl (const QStringList&, const VmimeFolder_ptr&);
 
-		QList<Folder> SyncIMAPFolders ();
-
 		void SetNoopTimeout (int);
 		void SendNoop ();
 	public:
@@ -130,9 +128,9 @@ namespace Snails
 
 		struct SyncResult
 		{
-			QList<Folder> AllFolders_;
 			Folder2Messages_t Messages_;
 		};
+		QList<Folder> SyncFolders ();
 		SyncResult Synchronize (const QList<QStringList>&, const QByteArray& last);
 
 		SyncStatusesResult SyncMessagesStatuses (const QStringList&);

@@ -218,6 +218,18 @@ namespace Snails
 
 	QFuture<Account::SynchronizeResult_t> Account::Synchronize ()
 	{
+		Util::Sequence (this, WorkerPool_->Schedule (TaskPriority::High, &AccountThreadWorker::SyncFolders)) >>
+				Util::Visitor
+				{
+					[this] (const QList<Folder>& folders) { HandleGotFolders (folders); },
+					[] (auto err)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "error synchronizing folders list"
+								<< Util::Visit (err, [] (auto e) { return e.what (); });
+					}
+				};
+
 		auto folders = FolderManager_->GetSyncFolders ();
 		if (folders.isEmpty ())
 			folders << QStringList ("INBOX");
@@ -242,8 +254,6 @@ namespace Snails
 				{
 					[=] (const AccountThreadWorker::SyncResult& right)
 					{
-						HandleGotFolders (right.AllFolders_);
-
 						SyncStats stats;
 
 						for (const auto& pair : Util::Stlize (right.Messages_))
