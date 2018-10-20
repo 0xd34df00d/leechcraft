@@ -112,7 +112,6 @@ namespace Snails
 
 		FetchedMessageInfo FromHeaders (const vmime::shared_ptr<vmime::net::message>&) const;
 
-		Folder2Messages_t FetchMessagesIMAP (const QList<QStringList>&, const QByteArray&);
 		QList<FetchedMessageInfo> FetchMessagesInFolder (const QStringList&, const VmimeFolder_ptr&, const QByteArray&);
 
 		SyncStatusesResult SyncMessagesStatusesImpl (const QStringList&, const VmimeFolder_ptr&);

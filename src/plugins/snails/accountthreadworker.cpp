@@ -501,31 +501,6 @@ namespace Snails
 		}
 	}
 
-	auto AccountThreadWorker::FetchMessagesIMAP (const QList<QStringList>& origFolders,
-			const QByteArray& last) -> Folder2Messages_t
-	{
-		Folder2Messages_t result;
-
-		const auto pl = A_->MakeProgressListener (tr ("Synchronizing messages..."));
-		pl->start (origFolders.size ());
-
-		for (const auto& folder : origFolders)
-		{
-			TryOrDie ([this] { Disconnect (); },
-					[&]
-					{
-						if (const auto& netFolder = GetFolder (folder, FolderMode::ReadOnly))
-							result [folder] = FetchMessagesInFolder (folder, netFolder, last);
-					});
-
-			pl->Increment ();
-		}
-
-		pl->stop (origFolders.size ());
-
-		return result;
-	}
-
 	auto AccountThreadWorker::SyncMessagesStatuses (const QStringList& folderName) -> SyncStatusesResult
 	{
 		return TryOrDie ([this] { Disconnect (); },
@@ -794,7 +769,26 @@ namespace Snails
 
 	auto AccountThreadWorker::Synchronize (const QList<QStringList>& foldersToFetch, const QByteArray& last) -> SyncResult
 	{
-		return { FetchMessagesIMAP (foldersToFetch, last) };
+		Folder2Messages_t result;
+
+		const auto pl = A_->MakeProgressListener (tr ("Synchronizing messages..."));
+		pl->start (foldersToFetch.size ());
+
+		for (const auto& folder : foldersToFetch)
+		{
+			TryOrDie ([this] { Disconnect (); },
+					[&]
+					{
+						if (const auto& netFolder = GetFolder (folder, FolderMode::ReadOnly))
+							result [folder] = FetchMessagesInFolder (folder, netFolder, last);
+					});
+
+			pl->Increment ();
+		}
+
+		pl->stop (foldersToFetch.size ());
+
+		return { result };
 	}
 
 	auto AccountThreadWorker::GetMessageCount (const QStringList& folder) -> MsgCountResult_t
