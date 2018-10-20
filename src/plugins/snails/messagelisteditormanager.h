@@ -56,8 +56,6 @@ namespace Snails
 		void setMailListMode (MailListMode);
 
 		void handleMessageListUpdated ();
-	private slots:
-		void handleExpanded (const QModelIndex&);
 	};
 }
 }

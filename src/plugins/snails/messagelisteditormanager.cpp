@@ -37,19 +37,6 @@ namespace LeechCraft
 {
 namespace Snails
 {
-	MessageListEditorManager::MessageListEditorManager (QTreeView *view,
-			MailTreeDelegate *delegate, QObject *parent)
-	: QObject { parent }
-	, View_ { view }
-	, Delegate_ { delegate }
-	, Mode_ { MailListMode::Normal }
-	{
-		connect (View_,
-				SIGNAL (expanded (QModelIndex)),
-				this,
-				SLOT (handleExpanded (QModelIndex)));
-	}
-
 	namespace
 	{
 		void OpenEditors (QTreeView *view, const QModelIndex& parent)
@@ -65,6 +52,22 @@ namespace Snails
 			for (int i = 0, rc = model->rowCount (parent); i < rc; ++i)
 				view->closePersistentEditor (model->index (i, 0, parent));
 		}
+	}
+
+	MessageListEditorManager::MessageListEditorManager (QTreeView *view,
+			MailTreeDelegate *delegate, QObject *parent)
+	: QObject { parent }
+	, View_ { view }
+	, Delegate_ { delegate }
+	, Mode_ { MailListMode::Normal }
+	{
+		connect (View_,
+				&QTreeView::expanded,
+				[this] (const QModelIndex& index)
+				{
+					if (Mode_ == MailListMode::Normal)
+						OpenEditors (View_, index);
+				});
 	}
 
 	void MessageListEditorManager::setMailListMode (MailListMode mode)
@@ -87,12 +90,6 @@ namespace Snails
 			CloseEditors (View_, {});
 			break;
 		}
-	}
-
-	void MessageListEditorManager::handleExpanded (const QModelIndex& index)
-	{
-		if (Mode_ == MailListMode::Normal)
-			OpenEditors (View_, index);
 	}
 }
 }
