@@ -43,14 +43,24 @@ namespace Snails
 		{
 			const auto model = view->model ();
 			for (int i = 0, rc = model->rowCount (parent); i < rc; ++i)
-				view->openPersistentEditor (model->index (i, 0, parent));
+			{
+				const auto& index = model->index (i, 0, parent);
+				view->openPersistentEditor (index);
+				if (view->isExpanded (index))
+					OpenEditors (view, index);
+			}
 		}
 
 		void CloseEditors (QTreeView *view, const QModelIndex& parent)
 		{
 			const auto model = view->model ();
 			for (int i = 0, rc = model->rowCount (parent); i < rc; ++i)
-				view->closePersistentEditor (model->index (i, 0, parent));
+			{
+				const auto& index = model->index (i, 0, parent);
+				view->closePersistentEditor (index);
+				if (view->isExpanded (index))
+					CloseEditors (view, index);
+			}
 		}
 	}
 
