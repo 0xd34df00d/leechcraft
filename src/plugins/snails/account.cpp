@@ -251,8 +251,7 @@ namespace Snails
 							const auto& folder = pair.first;
 							const auto& msgs = pair.second;
 
-							HandleMsgHeaders (msgs, folder);
-
+							HandleMsgHeaders (msgs);
 							UpdateFolderCount (folder);
 
 							stats.NewMsgsCount_ += msgs.size ();
@@ -744,7 +743,7 @@ namespace Snails
 		return promise.future ();
 	}
 
-	void Account::HandleMsgHeaders (const QList<FetchedMessageInfo>& messages, const QStringList& folder)
+	void Account::HandleMsgHeaders (const QList<FetchedMessageInfo>& messages)
 	{
 		qDebug () << Q_FUNC_INFO << messages.size ();
 		const auto& infos = Util::Map (messages, &FetchedMessageInfo::Info_);
