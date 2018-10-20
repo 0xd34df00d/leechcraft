@@ -70,7 +70,7 @@ namespace Snails
 				});
 	}
 
-	void MessageListEditorManager::setMailListMode (MailListMode mode)
+	void MessageListEditorManager::SetMailListMode (MailListMode mode)
 	{
 		if (mode == Mode_)
 			return;

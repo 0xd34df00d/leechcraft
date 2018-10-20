@@ -1040,7 +1040,7 @@ namespace Snails
 		MailListMode_ = mode;
 
 		MailTreeDelegate_->setMailListMode (mode);
-		MsgListEditorMgr_->setMailListMode (mode);
+		MsgListEditorMgr_->SetMailListMode (mode);
 
 		UpdateMsgActionsStatus ();
 	}

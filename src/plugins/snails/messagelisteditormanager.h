@@ -52,9 +52,9 @@ namespace Snails
 		MailListMode Mode_;
 	public:
 		MessageListEditorManager (QTreeView*, MailTreeDelegate*, QObject* = nullptr);
-	public slots:
-		void setMailListMode (MailListMode);
 
+		void SetMailListMode (MailListMode);
+	public slots:
 		void handleMessageListUpdated ();
 	};
 }
