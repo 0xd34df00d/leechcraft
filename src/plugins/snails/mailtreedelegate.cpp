@@ -115,7 +115,7 @@ namespace Snails
 			option.rect.setLeft (option.rect.left () + checkboxWidth);
 		}
 
-		void DrawIcon (QPainter *painter, QStyle *style, QStyleOptionViewItem& option, const QModelIndex& index)
+		void DrawIcon (QPainter *painter, QStyleOptionViewItem& option, const QModelIndex& index)
 		{
 			const auto height = option.rect.height ();
 
@@ -150,7 +150,7 @@ namespace Snails
 		if (Mode_ == MailListMode::MultiSelect)
 			DrawCheckbox (painter, style, option, index);
 
-		DrawIcon (painter, style, option, index);
+		DrawIcon (painter, option, index);
 
 		const auto& subject = GetString (index, MailModel::Column::Subject);
 
