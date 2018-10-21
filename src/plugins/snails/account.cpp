@@ -218,6 +218,18 @@ namespace Snails
 
 	QFuture<Account::SynchronizeResult_t> Account::Synchronize ()
 	{
+		Util::Sequence (this, WorkerPool_->Schedule (TaskPriority::High, &AccountThreadWorker::SyncFolders)) >>
+				Util::Visitor
+				{
+					[this] (const QList<Folder>& folders) { HandleGotFolders (folders); },
+					[] (auto err)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "error synchronizing folders list"
+								<< Util::Visit (err, [] (auto e) { return e.what (); });
+					}
+				};
+
 		auto folders = FolderManager_->GetSyncFolders ();
 		if (folders.isEmpty ())
 			folders << QStringList ("INBOX");
@@ -242,8 +254,6 @@ namespace Snails
 				{
 					[=] (const AccountThreadWorker::SyncResult& right)
 					{
-						HandleGotFolders (right.AllFolders_);
-
 						SyncStats stats;
 
 						for (const auto& pair : Util::Stlize (right.Messages_))
@@ -251,8 +261,7 @@ namespace Snails
 							const auto& folder = pair.first;
 							const auto& msgs = pair.second;
 
-							HandleMsgHeaders (msgs, folder);
-
+							HandleMsgHeaders (msgs);
 							UpdateFolderCount (folder);
 
 							stats.NewMsgsCount_ += msgs.size ();
@@ -744,7 +753,7 @@ namespace Snails
 		return promise.future ();
 	}
 
-	void Account::HandleMsgHeaders (const QList<FetchedMessageInfo>& messages, const QStringList& folder)
+	void Account::HandleMsgHeaders (const QList<FetchedMessageInfo>& messages)
 	{
 		qDebug () << Q_FUNC_INFO << messages.size ();
 		const auto& infos = Util::Map (messages, &FetchedMessageInfo::Info_);

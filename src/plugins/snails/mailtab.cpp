@@ -121,7 +121,7 @@ namespace Snails
 		Ui_.MailTree_->setItemDelegate (MailTreeDelegate_);
 		Ui_.MailTree_->setModel (MailSortFilterModel_);
 
-		MsgListEditorMgr_ = new MessageListEditorManager { Ui_.MailTree_, MailTreeDelegate_, this };
+		MsgListEditorMgr_ = new MessageListEditorManager { Ui_.MailTree_, this };
 
 		connect (Ui_.AccountsTree_->selectionModel (),
 				SIGNAL (currentChanged (QModelIndex, QModelIndex)),
@@ -404,25 +404,23 @@ namespace Snails
 
 	QList<QByteArray> MailTab::GetSelectedIds () const
 	{
-		QList<QByteArray> ids;
 		switch (MailListMode_)
 		{
 		case MailListMode::Normal:
+		{
+			QList<QByteArray> ids;
 			for (const auto& index : Ui_.MailTree_->selectionModel ()->selectedRows ())
 				ids << index.data (MailModel::MailRole::ID).toByteArray ();
-			break;
-		case MailListMode::MultiSelect:
-			if (MailModel_)
-				ids = MailModel_->GetCheckedIds ();
-			break;
+
+			const auto& currentId = Ui_.MailTree_->currentIndex ()
+					.data (MailModel::MailRole::ID).toByteArray ();
+			if (!currentId.isEmpty () && !ids.contains (currentId))
+				ids << currentId;
+			return ids;
 		}
-
-		const auto& currentId = Ui_.MailTree_->currentIndex ()
-				.data (MailModel::MailRole::ID).toByteArray ();
-		if (!currentId.isEmpty () && !ids.contains (currentId))
-			ids << currentId;
-
-		return ids;
+		case MailListMode::MultiSelect:
+			return MailModel_->GetCheckedIds ();
+		}
 	}
 
 	QList<Folder> MailTab::GetActualFolders () const
@@ -717,9 +715,9 @@ namespace Snails
 		MailModel_ = CurrAcc_->GetMailModelsManager ()->CreateModel ();
 
 		connect (MailModel_.get (),
-				SIGNAL (messageListUpdated ()),
+				&MailModel::messageListUpdated,
 				MsgListEditorMgr_,
-				SLOT (handleMessageListUpdated ()));
+				&MessageListEditorManager::HandleMessageListUpdated);
 		connect (MailModel_.get (),
 				&MailModel::messagesSelectionChanged,
 				this,
@@ -1042,7 +1040,7 @@ namespace Snails
 		MailListMode_ = mode;
 
 		MailTreeDelegate_->setMailListMode (mode);
-		MsgListEditorMgr_->setMailListMode (mode);
+		MsgListEditorMgr_->SetMailListMode (mode);
 
 		UpdateMsgActionsStatus ();
 	}
@@ -1150,7 +1148,29 @@ namespace Snails
 		if (!CurrAcc_)
 			return;
 
-		CurrAcc_->Synchronize (MailModel_->GetCurrentFolder ());
+		auto future = CurrAcc_->Synchronize (MailModel_->GetCurrentFolder ());
+
+		auto proxy = Proxy_;
+		Util::Sequence (nullptr, future) >>
+				Util::Visitor
+				{
+					[proxy] (const Account::SyncStats& stats)
+					{
+						const auto& text = stats.NewMsgsCount_ ?
+								tr ("Got %n new messages.", 0, stats.NewMsgsCount_) :
+								tr ("No new messages.");
+						const auto& e = Util::MakeNotification ("Snails", text, Priority::Info);
+						proxy->GetEntityManager ()->HandleEntity (e);
+					},
+					[proxy] (const auto& err)
+					{
+						qDebug () << "!!";
+						const auto& text = tr ("Error fetching new mail: %1")
+								.arg (Util::Visit (err, [] (auto e) { return e.what (); }));
+						const auto& e = Util::MakeNotification ("Snails", text, Priority::Critical);
+						proxy->GetEntityManager ()->HandleEntity (e);
+					}
+				};
 	}
 }
 }

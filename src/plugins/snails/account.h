@@ -226,7 +226,7 @@ namespace Snails
 
 		void HandleReadStatusChanged (const QList<QByteArray>&, const QList<QByteArray>&, const QStringList&);
 		void HandleMessagesRemoved (const QList<QByteArray>&, const QStringList&);
-		void HandleMsgHeaders (const QList<FetchedMessageInfo>&, const QStringList&);
+		void HandleMsgHeaders (const QList<FetchedMessageInfo>&);
 
 		void HandleGotFolders (const QList<Folder>&);
 	private slots:

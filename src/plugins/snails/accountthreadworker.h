@@ -112,12 +112,9 @@ namespace Snails
 
 		FetchedMessageInfo FromHeaders (const vmime::shared_ptr<vmime::net::message>&) const;
 
-		Folder2Messages_t FetchMessagesIMAP (const QList<QStringList>&, const QByteArray&);
 		QList<FetchedMessageInfo> FetchMessagesInFolder (const QStringList&, const VmimeFolder_ptr&, const QByteArray&);
 
 		SyncStatusesResult SyncMessagesStatusesImpl (const QStringList&, const VmimeFolder_ptr&);
-
-		QList<Folder> SyncIMAPFolders ();
 
 		void SetNoopTimeout (int);
 		void SendNoop ();
@@ -130,9 +127,9 @@ namespace Snails
 
 		struct SyncResult
 		{
-			QList<Folder> AllFolders_;
 			Folder2Messages_t Messages_;
 		};
+		QList<Folder> SyncFolders ();
 		SyncResult Synchronize (const QList<QStringList>&, const QByteArray& last);
 
 		SyncStatusesResult SyncMessagesStatuses (const QStringList&);
