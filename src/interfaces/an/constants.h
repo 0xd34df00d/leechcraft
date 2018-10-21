@@ -45,15 +45,19 @@ namespace AN
 	/** @brief Category of Instant Messaging-related events.
 	 */
 	const QString CatIM = "org.LC.AdvNotifications.IM";
+
 	/** @brief Another user has requested our user's attention.
 	 */
 	const QString TypeIMAttention = CatIM + ".AttentionDrawn";
+
 	/** @brief Another user has sent our user a file.
 	 */
 	const QString TypeIMIncFile = CatIM + ".IncomingFile";
+
 	/** @brief User has received a message in a standard one-to-one chat.
 	 */
 	const QString TypeIMIncMsg = CatIM + ".IncomingMessage";
+
 	/** @brief User has been highlighted in a multiuser chat.
 	 *
 	 * The primary difference from TypeIMMUCMsg is that our user must be
@@ -62,9 +66,11 @@ namespace AN
 	 * @sa TypeIMMUCMsg
 	 */
 	const QString TypeIMMUCHighlight = CatIM + ".MUCHighlightMessage";
+
 	/** @brief User has been invited to a multiuser chat.
 	 */
 	const QString TypeIMMUCInvite = CatIM + ".MUCInvitation";
+
 	/** @brief A message has been sent to a multiuser chat.
 	 *
 	 * This event should be emitted for each MUC message, even for those
@@ -73,34 +79,44 @@ namespace AN
 	 * @sa TypeIMMUCHighlight
 	 */
 	const QString TypeIMMUCMsg = CatIM + ".MUCMessage";
+
 	/** @brief Another user in our user's contact list has changed its
 	 * status.
 	 */
 	const QString TypeIMStatusChange = CatIM + ".StatusChange";
+
 	/** @brief Another user has granted subscription to our user.
 	 */
 	const QString TypeIMSubscrGrant = CatIM + ".Subscr.Granted";
+
 	/** @brief Another user has revoked subscription from our user.
 	 */
 	const QString TypeIMSubscrRevoke = CatIM + ".Subscr.Revoked";
+
 	/** @brief Another user has requested subscription from our user.
 	 */
 	const QString TypeIMSubscrRequest = CatIM + ".Subscr.Requested";
+
 	/** @brief Another user has subscribed to our user.
 	 */
 	const QString TypeIMSubscrSub = CatIM + ".Subscr.Subscribed";
+
 	/** @brief Another user has unsubscribed from our user.
 	 */
 	const QString TypeIMSubscrUnsub = CatIM + ".Subscr.Unsubscribed";
+
 	/** @brief User's tune has changed.
 	 */
 	const QString TypeIMEventTuneChange = CatIM + ".Event.Tune";
+
 	/** @brief User's mood has changed.
 	 */
 	const QString TypeIMEventMoodChange = CatIM + ".Event.Mood";
+
 	/** @brief User's activity has changed.
 	 */
 	const QString TypeIMEventActivityChange = CatIM + ".Event.Activity";
+
 	/** @brief User's location has changed.
 	 */
 	const QString TypeIMEventLocationChange = CatIM + ".Event.Location";
@@ -108,6 +124,7 @@ namespace AN
 	/** @brief Category of Organizer-related events.
 	 */
 	const QString CatOrganizer = "org.LC.AdvNotifications.Organizer";
+
 	/** @brief An event due date is coming.
 	 */
 	const QString TypeOrganizerEventDue = CatOrganizer + ".EventDue";
@@ -115,9 +132,11 @@ namespace AN
 	/** @brief Category of Downloads-related events.
 	 */
 	const QString CatDownloads = "org.LC.AdvNotifications.Downloads";
+
 	/** @brief A download has been finished successfully without errors.
 	 */
 	const QString TypeDownloadFinished = CatDownloads + ".DownloadFinished";
+
 	/** @brief A download has been failed.
 	 */
 	const QString TypeDownloadError = CatDownloads + ".DownloadError";
@@ -125,6 +144,7 @@ namespace AN
 	/** @brief Category of package manager-related events.
 	 */
 	const QString CatPackageManager = "org.LC.AdvNotifications.PackageManager";
+
 	/** @brief A package has been updated.
 	 */
 	const QString TypePackageUpdated = CatPackageManager + ".PackageUpdated";
@@ -244,9 +264,11 @@ namespace AN
 		/** @brief General activity name of a contact (QString).
 		 */
 		const QString IMActivityGeneral = CatIM + ".Fields.Activity.General";
+
 		/** @brief Specific activity name of a contact (QString).
 		 */
 		const QString IMActivitySpecific = CatIM + ".Fields.Activity.Specific";
+
 		/** @brief Accompanying activity text entered by a contact (QString).
 		 */
 		const QString IMActivityText = CatIM + ".Fields.Activity.Text";
@@ -254,6 +276,7 @@ namespace AN
 		/** @brief General mood name of a contact (QString).
 		 */
 		const QString IMMoodGeneral = CatIM + ".Fields.Mood.General";
+
 		/** @brief Accompanying mood text entered by a contact (QString).
 		 */
 		const QString IMMoodText = CatIM + ".Fields.Mood.Text";
@@ -261,12 +284,15 @@ namespace AN
 		/** @brief Longitude of a contact's position (double).
 		 */
 		const QString IMLocationLongitude = CatIM + ".Fields.Location.Longitude";
+
 		/** @brief Latitude of a contact's position (double).
 		 */
 		const QString IMLocationLatitude = CatIM + ".Fields.Location.Latitude";
+
 		/** @brief Country a contact is currently in (QString).
 		 */
 		const QString IMLocationCountry = CatIM + ".Fields.Location.Country";
+
 		/** @brief Exact locality, like a town or a city, a contact is
 		 * currently in (QString).
 		 */
