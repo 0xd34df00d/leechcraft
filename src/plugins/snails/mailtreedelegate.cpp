@@ -328,9 +328,10 @@ namespace Snails
 		const auto& id = index.data (MailModel::MailRole::ID).toByteArray ();
 
 		const auto container = new QToolBar { parent };
-		auto style = new NullMarginsStyle;
-		style->setParent (container);
+
+		static auto style = new NullMarginsStyle;
 		container->setStyle (style);
+
 		for (const auto& actInfo : actionInfos)
 			BuildAction (std::bind (Loader_, id), container, actInfo);
 
