@@ -40,23 +40,23 @@ namespace AN
 	 *
 	 * This category is used to cancel an event by a given event ID.
 	 */
-	extern const QString CatEventCancel;
+	Q_DECL_IMPORT extern const QString CatEventCancel;
 
 	/** @brief Category of Instant Messaging-related events.
 	 */
-	extern const QString CatIM;
+	Q_DECL_IMPORT extern const QString CatIM;
 
 	/** @brief Another user has requested our user's attention.
 	 */
-	extern const QString TypeIMAttention;
+	Q_DECL_IMPORT extern const QString TypeIMAttention;
 
 	/** @brief Another user has sent our user a file.
 	 */
-	extern const QString TypeIMIncFile;
+	Q_DECL_IMPORT extern const QString TypeIMIncFile;
 
 	/** @brief User has received a message in a standard one-to-one chat.
 	 */
-	extern const QString TypeIMIncMsg;
+	Q_DECL_IMPORT extern const QString TypeIMIncMsg;
 
 	/** @brief User has been highlighted in a multiuser chat.
 	 *
@@ -65,11 +65,11 @@ namespace AN
 	 *
 	 * @sa TypeIMMUCMsg
 	 */
-	extern const QString TypeIMMUCHighlight;
+	Q_DECL_IMPORT extern const QString TypeIMMUCHighlight;
 
 	/** @brief User has been invited to a multiuser chat.
 	 */
-	extern const QString TypeIMMUCInvite;
+	Q_DECL_IMPORT extern const QString TypeIMMUCInvite;
 
 	/** @brief A message has been sent to a multiuser chat.
 	 *
@@ -78,108 +78,108 @@ namespace AN
 	 *
 	 * @sa TypeIMMUCHighlight
 	 */
-	extern const QString TypeIMMUCMsg;
+	Q_DECL_IMPORT extern const QString TypeIMMUCMsg;
 
 	/** @brief Another user in our user's contact list has changed its
 	 * status.
 	 */
-	extern const QString TypeIMStatusChange;
+	Q_DECL_IMPORT extern const QString TypeIMStatusChange;
 
 	/** @brief Another user has granted subscription to our user.
 	 */
-	extern const QString TypeIMSubscrGrant;
+	Q_DECL_IMPORT extern const QString TypeIMSubscrGrant;
 
 	/** @brief Another user has revoked subscription from our user.
 	 */
-	extern const QString TypeIMSubscrRevoke;
+	Q_DECL_IMPORT extern const QString TypeIMSubscrRevoke;
 
 	/** @brief Another user has requested subscription from our user.
 	 */
-	extern const QString TypeIMSubscrRequest;
+	Q_DECL_IMPORT extern const QString TypeIMSubscrRequest;
 
 	/** @brief Another user has subscribed to our user.
 	 */
-	extern const QString TypeIMSubscrSub;
+	Q_DECL_IMPORT extern const QString TypeIMSubscrSub;
 
 	/** @brief Another user has unsubscribed from our user.
 	 */
-	extern const QString TypeIMSubscrUnsub;
+	Q_DECL_IMPORT extern const QString TypeIMSubscrUnsub;
 
 	/** @brief User's tune has changed.
 	 */
-	extern const QString TypeIMEventTuneChange;
+	Q_DECL_IMPORT extern const QString TypeIMEventTuneChange;
 
 	/** @brief User's mood has changed.
 	 */
-	extern const QString TypeIMEventMoodChange;
+	Q_DECL_IMPORT extern const QString TypeIMEventMoodChange;
 
 	/** @brief User's activity has changed.
 	 */
-	extern const QString TypeIMEventActivityChange;
+	Q_DECL_IMPORT extern const QString TypeIMEventActivityChange;
 
 	/** @brief User's location has changed.
 	 */
-	extern const QString TypeIMEventLocationChange;
+	Q_DECL_IMPORT extern const QString TypeIMEventLocationChange;
 
 	/** @brief Category of Organizer-related events.
 	 */
-	extern const QString CatOrganizer;
+	Q_DECL_IMPORT extern const QString CatOrganizer;
 
 	/** @brief An event due date is coming.
 	 */
-	extern const QString TypeOrganizerEventDue;
+	Q_DECL_IMPORT extern const QString TypeOrganizerEventDue;
 
 	/** @brief Category of Downloads-related events.
 	 */
-	extern const QString CatDownloads;
+	Q_DECL_IMPORT extern const QString CatDownloads;
 
 	/** @brief A download has been finished successfully without errors.
 	 */
-	extern const QString TypeDownloadFinished;
+	Q_DECL_IMPORT extern const QString TypeDownloadFinished;
 
 	/** @brief A download has been failed.
 	 */
-	extern const QString TypeDownloadError;
+	Q_DECL_IMPORT extern const QString TypeDownloadError;
 
 	/** @brief Category of package manager-related events.
 	 */
-	extern const QString CatPackageManager;
+	Q_DECL_IMPORT extern const QString CatPackageManager;
 
 	/** @brief A package has been updated.
 	 */
-	extern const QString TypePackageUpdated;
+	Q_DECL_IMPORT extern const QString TypePackageUpdated;
 
 	/** @brief Category of media player-related events.
 	 */
-	extern const QString CatMediaPlayer;
+	Q_DECL_IMPORT extern const QString CatMediaPlayer;
 
 	/** @brief A media file playback status has been changed.
 	 */
-	extern const QString TypeMediaPlaybackStatus;
+	Q_DECL_IMPORT extern const QString TypeMediaPlaybackStatus;
 
 	/** @brief Category for terminal emulation events.
 	 */
-	extern const QString CatTerminal;
+	Q_DECL_IMPORT extern const QString CatTerminal;
 
 	/** @brief A bell has ringed in a terminal window.
 	 */
-	extern const QString TypeTerminalBell;
+	Q_DECL_IMPORT extern const QString TypeTerminalBell;
 
 	/** @brief Activity in terminal window.
 	 */
-	extern const QString TypeTerminalActivity;
+	Q_DECL_IMPORT extern const QString TypeTerminalActivity;
 
 	/** @brief Inactivity in terminal window.
 	 */
-	extern const QString TypeTerminalInactivity;
+	Q_DECL_IMPORT extern const QString TypeTerminalInactivity;
 
 	/** @brief Generic notifications that don't fit into any other category.
 	 */
-	extern const QString CatGeneric;
+	Q_DECL_IMPORT extern const QString CatGeneric;
 
 	/** @brief Generic type for generic notifications.
 	 */
-	extern const QString TypeGeneric;
+	Q_DECL_IMPORT extern const QString TypeGeneric;
 
 	/** @brief Describes the notification parameters.
 	 */
@@ -230,7 +230,7 @@ namespace AN
 	{
 		/** @brief The URL to the file being played.
 		*/
-		extern const QString MediaPlayerURL;
+		Q_DECL_IMPORT extern const QString MediaPlayerURL;
 
 		/** @brief Playback status of the URL (QString).
 		 *
@@ -239,64 +239,64 @@ namespace AN
 		 * - Paused
 		 * - Stopped
 		 */
-		extern const QString MediaPlaybackStatus;
+		Q_DECL_IMPORT extern const QString MediaPlaybackStatus;
 
 		/** @brief The title of the currently playing media (QString).
 		 */
-		extern const QString MediaTitle;
+		Q_DECL_IMPORT extern const QString MediaTitle;
 
 		/** @brief The artist of the currently playing media (QString).
 		 */
-		extern const QString MediaArtist;
+		Q_DECL_IMPORT extern const QString MediaArtist;
 
 		/** @brief The album of the currently playing media (QString).
 		 */
-		extern const QString MediaAlbum;
+		Q_DECL_IMPORT extern const QString MediaAlbum;
 
 		/** @brief The length of the currently playing media (int).
 		 */
-		extern const QString MediaLength;
+		Q_DECL_IMPORT extern const QString MediaLength;
 
 		/** @brief Whether the terminal window is active (bool).
 		 */
-		extern const QString TerminalActive;
+		Q_DECL_IMPORT extern const QString TerminalActive;
 
 		/** @brief General activity name of a contact (QString).
 		 */
-		extern const QString IMActivityGeneral;
+		Q_DECL_IMPORT extern const QString IMActivityGeneral;
 
 		/** @brief Specific activity name of a contact (QString).
 		 */
-		extern const QString IMActivitySpecific;
+		Q_DECL_IMPORT extern const QString IMActivitySpecific;
 
 		/** @brief Accompanying activity text entered by a contact (QString).
 		 */
-		extern const QString IMActivityText;
+		Q_DECL_IMPORT extern const QString IMActivityText;
 
 		/** @brief General mood name of a contact (QString).
 		 */
-		extern const QString IMMoodGeneral;
+		Q_DECL_IMPORT extern const QString IMMoodGeneral;
 
 		/** @brief Accompanying mood text entered by a contact (QString).
 		 */
-		extern const QString IMMoodText;
+		Q_DECL_IMPORT extern const QString IMMoodText;
 
 		/** @brief Longitude of a contact's position (double).
 		 */
-		extern const QString IMLocationLongitude;
+		Q_DECL_IMPORT extern const QString IMLocationLongitude;
 
 		/** @brief Latitude of a contact's position (double).
 		 */
-		extern const QString IMLocationLatitude;
+		Q_DECL_IMPORT extern const QString IMLocationLatitude;
 
 		/** @brief Country a contact is currently in (QString).
 		 */
-		extern const QString IMLocationCountry;
+		Q_DECL_IMPORT extern const QString IMLocationCountry;
 
 		/** @brief Exact locality, like a town or a city, a contact is
 		 * currently in (QString).
 		 */
-		extern const QString IMLocationLocality;
+		Q_DECL_IMPORT extern const QString IMLocationLocality;
 	}
 }
 }

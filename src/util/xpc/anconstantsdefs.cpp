@@ -33,82 +33,82 @@
 
 namespace LeechCraft::AN
 {
-	UTIL_XPC_API const QString CatEventCancel { "org.LC.AdvNotifications.Cancel" };
+	const QString CatEventCancel { "org.LC.AdvNotifications.Cancel" };
 
-	UTIL_XPC_API const QString CatIM { "org.LC.AdvNotifications.IM" };
-	UTIL_XPC_API const QString TypeIMAttention { CatIM + ".AttentionDrawn" };
-	UTIL_XPC_API const QString TypeIMIncFile { CatIM + ".IncomingFile" };
-	UTIL_XPC_API const QString TypeIMIncMsg { CatIM + ".IncomingMessage" };
-	UTIL_XPC_API const QString TypeIMMUCHighlight { CatIM + ".MUCHighlightMessage" };
-	UTIL_XPC_API const QString TypeIMMUCInvite { CatIM + ".MUCInvitation" };
-	UTIL_XPC_API const QString TypeIMMUCMsg { CatIM + ".MUCMessage" };
-	UTIL_XPC_API const QString TypeIMStatusChange { CatIM + ".StatusChange" };
-	UTIL_XPC_API const QString TypeIMSubscrGrant { CatIM + ".Subscr.Granted" };
-	UTIL_XPC_API const QString TypeIMSubscrRevoke { CatIM + ".Subscr.Revoked" };
-	UTIL_XPC_API const QString TypeIMSubscrRequest { CatIM + ".Subscr.Requested" };
-	UTIL_XPC_API const QString TypeIMSubscrSub { CatIM + ".Subscr.Subscribed" };
-	UTIL_XPC_API const QString TypeIMSubscrUnsub { CatIM + ".Subscr.Unsubscribed" };
-	UTIL_XPC_API const QString TypeIMEventTuneChange { CatIM + ".Event.Tune" };
-	UTIL_XPC_API const QString TypeIMEventMoodChange { CatIM + ".Event.Mood" };
-	UTIL_XPC_API const QString TypeIMEventActivityChange { CatIM + ".Event.Activity" };
-	UTIL_XPC_API const QString TypeIMEventLocationChange { CatIM + ".Event.Location" };
+	const QString CatIM { "org.LC.AdvNotifications.IM" };
+	const QString TypeIMAttention { CatIM + ".AttentionDrawn" };
+	const QString TypeIMIncFile { CatIM + ".IncomingFile" };
+	const QString TypeIMIncMsg { CatIM + ".IncomingMessage" };
+	const QString TypeIMMUCHighlight { CatIM + ".MUCHighlightMessage" };
+	const QString TypeIMMUCInvite { CatIM + ".MUCInvitation" };
+	const QString TypeIMMUCMsg { CatIM + ".MUCMessage" };
+	const QString TypeIMStatusChange { CatIM + ".StatusChange" };
+	const QString TypeIMSubscrGrant { CatIM + ".Subscr.Granted" };
+	const QString TypeIMSubscrRevoke { CatIM + ".Subscr.Revoked" };
+	const QString TypeIMSubscrRequest { CatIM + ".Subscr.Requested" };
+	const QString TypeIMSubscrSub { CatIM + ".Subscr.Subscribed" };
+	const QString TypeIMSubscrUnsub { CatIM + ".Subscr.Unsubscribed" };
+	const QString TypeIMEventTuneChange { CatIM + ".Event.Tune" };
+	const QString TypeIMEventMoodChange { CatIM + ".Event.Mood" };
+	const QString TypeIMEventActivityChange { CatIM + ".Event.Activity" };
+	const QString TypeIMEventLocationChange { CatIM + ".Event.Location" };
 
-	UTIL_XPC_API const QString CatOrganizer { "org.LC.AdvNotifications.Organizer" };
-	UTIL_XPC_API const QString TypeOrganizerEventDue { CatOrganizer + ".EventDue" };
+	const QString CatOrganizer { "org.LC.AdvNotifications.Organizer" };
+	const QString TypeOrganizerEventDue { CatOrganizer + ".EventDue" };
 
-	UTIL_XPC_API const QString CatDownloads { "org.LC.AdvNotifications.Downloads" };
-	UTIL_XPC_API const QString TypeDownloadFinished { CatDownloads + ".DownloadFinished" };
-	UTIL_XPC_API const QString TypeDownloadError { CatDownloads + ".DownloadError" };
+	const QString CatDownloads { "org.LC.AdvNotifications.Downloads" };
+	const QString TypeDownloadFinished { CatDownloads + ".DownloadFinished" };
+	const QString TypeDownloadError { CatDownloads + ".DownloadError" };
 
-	UTIL_XPC_API const QString CatPackageManager { "org.LC.AdvNotifications.PackageManager" };
-	UTIL_XPC_API const QString TypePackageUpdated { CatPackageManager + ".PackageUpdated" };
+	const QString CatPackageManager { "org.LC.AdvNotifications.PackageManager" };
+	const QString TypePackageUpdated { CatPackageManager + ".PackageUpdated" };
 
-	UTIL_XPC_API const QString CatMediaPlayer { "org.LC.AdvNotifications.MediaPlayer" };
-	UTIL_XPC_API const QString TypeMediaPlaybackStatus { CatMediaPlayer + ".PlaybackStatus" };
+	const QString CatMediaPlayer { "org.LC.AdvNotifications.MediaPlayer" };
+	const QString TypeMediaPlaybackStatus { CatMediaPlayer + ".PlaybackStatus" };
 
-	UTIL_XPC_API const QString CatTerminal { "org.LC.AdvNotifications.Terminal" };
-	UTIL_XPC_API const QString TypeTerminalBell { CatTerminal + ".Bell" };
-	UTIL_XPC_API const QString TypeTerminalActivity { CatTerminal + ".Activity" };
-	UTIL_XPC_API const QString TypeTerminalInactivity { CatTerminal + ".Inactivity" };
+	const QString CatTerminal { "org.LC.AdvNotifications.Terminal" };
+	const QString TypeTerminalBell { CatTerminal + ".Bell" };
+	const QString TypeTerminalActivity { CatTerminal + ".Activity" };
+	const QString TypeTerminalInactivity { CatTerminal + ".Inactivity" };
 
-	UTIL_XPC_API const QString CatGeneric { "org.LC.AdvNotifications.Generic" };
-	UTIL_XPC_API const QString TypeGeneric { CatGeneric + ".Generic" };
+	const QString CatGeneric { "org.LC.AdvNotifications.Generic" };
+	const QString TypeGeneric { CatGeneric + ".Generic" };
 
 	namespace Field
 	{
-		UTIL_XPC_API const QString MediaPlayerURL { CatMediaPlayer + ".Fields.URL" };
-		UTIL_XPC_API const QString MediaPlaybackStatus { CatMediaPlayer + ".Fields.PlaybackStatus" };
-		UTIL_XPC_API const QString MediaTitle { CatMediaPlayer + ".Fields.Title" };
-		UTIL_XPC_API const QString MediaArtist { CatMediaPlayer + ".Fields.Artist" };
-		UTIL_XPC_API const QString MediaAlbum { CatMediaPlayer + ".Fields.Album" };
-		UTIL_XPC_API const QString MediaLength { CatMediaPlayer + ".Fields.Length" };
-		UTIL_XPC_API const QString TerminalActive { CatTerminal + ".Fields.Active" };
-		UTIL_XPC_API const QString IMActivityGeneral { CatIM + ".Fields.Activity.General" };
-		UTIL_XPC_API const QString IMActivitySpecific { CatIM + ".Fields.Activity.Specific" };
-		UTIL_XPC_API const QString IMActivityText { CatIM + ".Fields.Activity.Text" };
-		UTIL_XPC_API const QString IMMoodGeneral { CatIM + ".Fields.Mood.General" };
-		UTIL_XPC_API const QString IMMoodText { CatIM + ".Fields.Mood.Text" };
-		UTIL_XPC_API const QString IMLocationLongitude { CatIM + ".Fields.Location.Longitude" };
-		UTIL_XPC_API const QString IMLocationLatitude { CatIM + ".Fields.Location.Latitude" };
-		UTIL_XPC_API const QString IMLocationCountry { CatIM + ".Fields.Location.Country" };
-		UTIL_XPC_API const QString IMLocationLocality { CatIM + ".Fields.Location.Locality" };
+		const QString MediaPlayerURL { CatMediaPlayer + ".Fields.URL" };
+		const QString MediaPlaybackStatus { CatMediaPlayer + ".Fields.PlaybackStatus" };
+		const QString MediaTitle { CatMediaPlayer + ".Fields.Title" };
+		const QString MediaArtist { CatMediaPlayer + ".Fields.Artist" };
+		const QString MediaAlbum { CatMediaPlayer + ".Fields.Album" };
+		const QString MediaLength { CatMediaPlayer + ".Fields.Length" };
+		const QString TerminalActive { CatTerminal + ".Fields.Active" };
+		const QString IMActivityGeneral { CatIM + ".Fields.Activity.General" };
+		const QString IMActivitySpecific { CatIM + ".Fields.Activity.Specific" };
+		const QString IMActivityText { CatIM + ".Fields.Activity.Text" };
+		const QString IMMoodGeneral { CatIM + ".Fields.Mood.General" };
+		const QString IMMoodText { CatIM + ".Fields.Mood.Text" };
+		const QString IMLocationLongitude { CatIM + ".Fields.Location.Longitude" };
+		const QString IMLocationLatitude { CatIM + ".Fields.Location.Latitude" };
+		const QString IMLocationCountry { CatIM + ".Fields.Location.Country" };
+		const QString IMLocationLocality { CatIM + ".Fields.Location.Locality" };
 	}
 
 	namespace EF
 	{
-		UTIL_XPC_API const QString SenderID { "org.LC.AdvNotifications.SenderID" };
-		UTIL_XPC_API const QString EventCategory { "org.LC.AdvNotifications.EventCategory" };
-		UTIL_XPC_API const QString EventID { "org.LC.AdvNotifications.EventID" };
-		UTIL_XPC_API const QString VisualPath { "org.LC.AdvNotifications.VisualPath" };
-		UTIL_XPC_API const QString EventType { "org.LC.AdvNotifications.EventType" };
-		UTIL_XPC_API const QString FullText { "org.LC.AdvNotifications.FullText" };
-		UTIL_XPC_API const QString ExtendedText { "org.LC.AdvNotifications.ExtendedText" };
-		UTIL_XPC_API const QString DeltaCount { "org.LC.AdvNotifications.DeltaCount" };
-		UTIL_XPC_API const QString Count { "org.LC.AdvNotifications.Count" };
-		UTIL_XPC_API const QString OpenConfiguration { "org.LC.AdvNotifications.OpenConfiguration" };
-		UTIL_XPC_API const QString IsSingleShot { "org.LC.AdvNotifications.SingleShot" };
-		UTIL_XPC_API const QString NotifyTransient { "org.LC.AdvNotifications.NotifyTransient" };
-		UTIL_XPC_API const QString NotifyPersistent { "org.LC.AdvNotifications.NotifyPersistent" };
-		UTIL_XPC_API const QString NotifyAudio { "org.LC.AdvNotifications.NotifyAudio" };
+		const QString SenderID { "org.LC.AdvNotifications.SenderID" };
+		const QString EventCategory { "org.LC.AdvNotifications.EventCategory" };
+		const QString EventID { "org.LC.AdvNotifications.EventID" };
+		const QString VisualPath { "org.LC.AdvNotifications.VisualPath" };
+		const QString EventType { "org.LC.AdvNotifications.EventType" };
+		const QString FullText { "org.LC.AdvNotifications.FullText" };
+		const QString ExtendedText { "org.LC.AdvNotifications.ExtendedText" };
+		const QString DeltaCount { "org.LC.AdvNotifications.DeltaCount" };
+		const QString Count { "org.LC.AdvNotifications.Count" };
+		const QString OpenConfiguration { "org.LC.AdvNotifications.OpenConfiguration" };
+		const QString IsSingleShot { "org.LC.AdvNotifications.SingleShot" };
+		const QString NotifyTransient { "org.LC.AdvNotifications.NotifyTransient" };
+		const QString NotifyPersistent { "org.LC.AdvNotifications.NotifyPersistent" };
+		const QString NotifyAudio { "org.LC.AdvNotifications.NotifyAudio" };
 	}
 }

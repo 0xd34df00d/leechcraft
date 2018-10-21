@@ -50,7 +50,7 @@ namespace EF
 	 * @note This field is required for rule creation entities and should
 	 * be equal to <em>org.LC.AdvNotifications.RuleRegister</em>.
 	 */
-	extern const QString SenderID;
+	Q_DECL_IMPORT extern const QString SenderID;
 
 	/** @brief The category of the event (QString).
 	 *
@@ -64,7 +64,7 @@ namespace EF
 	 *
 	 * @note This field is required for rule creation entities.
 	 */
-	extern const QString EventCategory;
+	Q_DECL_IMPORT extern const QString EventCategory;
 
 	/** @brief The ID of the event (QString).
 	 *
@@ -75,7 +75,7 @@ namespace EF
 	 *
 	 * @note This field is required for rule creation entities.
 	 */
-	extern const QString EventID;
+	Q_DECL_IMPORT extern const QString EventID;
 
 	/** @brief Visual path to this event (QStringList).
 	 *
@@ -84,7 +84,7 @@ namespace EF
 	 *
 	 * @note This field is required for event notification entities.
 	 */
-	extern const QString VisualPath;
+	Q_DECL_IMPORT extern const QString VisualPath;
 
 	/** @brief The type of the event (QString).
 	 *
@@ -100,19 +100,19 @@ namespace EF
 	 *
 	 * @note This field is required for rule creation entities.
 	 */
-	extern const QString EventType;
+	Q_DECL_IMPORT extern const QString EventType;
 
 	/** @brief The detailed text of the event (QString).
 	 *
 	 * @note This field is optional for event notification entities.
 	 */
-	extern const QString FullText;
+	Q_DECL_IMPORT extern const QString FullText;
 
 	/** @brief The even more detailed text than FullText (QString).
 	 *
 	 * @note This field is optional for event notification entities.
 	 */
-	extern const QString ExtendedText;
+	Q_DECL_IMPORT extern const QString ExtendedText;
 
 	/** @brief The change in event count (int).
 	 *
@@ -125,7 +125,7 @@ namespace EF
 	 * @note Either this field or the Count field should be present for
 	 * event notification entities.
 	 */
-	extern const QString DeltaCount;
+	Q_DECL_IMPORT extern const QString DeltaCount;
 
 	/** @brief The new total event count (int).
 	 *
@@ -135,7 +135,7 @@ namespace EF
 	 * @note Either this field or the DeltaCount field should be present
 	 * for event notification entities.
 	 */
-	extern const QString Count;
+	Q_DECL_IMPORT extern const QString Count;
 
 	/** @brief Whether configuration dialog should be opened (bool).
 	 *
@@ -143,34 +143,34 @@ namespace EF
 	 *
 	 * @note This field is optional for rule creation entities.
 	 */
-	extern const QString OpenConfiguration;
+	Q_DECL_IMPORT extern const QString OpenConfiguration;
 
 	/** @brief Whether the created rule should be single-shot (bool).
 	 *
 	 * @note This field is optional for rule creation entities.
 	 */
-	extern const QString IsSingleShot;
+	Q_DECL_IMPORT extern const QString IsSingleShot;
 
 	/** @brief Whether a transient notifier should be enabled by default
 	 * in the rule being created (bool).
 	 *
 	 * @note This field is optional for rule creation entities.
 	 */
-	extern const QString NotifyTransient;
+	Q_DECL_IMPORT extern const QString NotifyTransient;
 
 	/** @brief Whether a persistent notifier should be enabled by default
 	 * in the rule being created (bool).
 	 *
 	 * @note This field is optional for rule creation entities.
 	 */
-	extern const QString NotifyPersistent;
+	Q_DECL_IMPORT extern const QString NotifyPersistent;
 
 	/** @brief Whether an audio notifier should be enabled by default in
 	 * the rule being created (bool).
 	 *
 	 * @note This field is optional for rule creation entities.
 	 */
-	extern const QString NotifyAudio;
+	Q_DECL_IMPORT extern const QString NotifyAudio;
 }
 }
 }
