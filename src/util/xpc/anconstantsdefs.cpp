@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include <interfaces/an/constants.h>
+#include <interfaces/an/entityfields.h>
 #include "xpcconfig.h"
 
 namespace LeechCraft::AN
@@ -91,5 +92,23 @@ namespace LeechCraft::AN
 		UTIL_XPC_API const QString IMLocationLatitude { CatIM + ".Fields.Location.Latitude" };
 		UTIL_XPC_API const QString IMLocationCountry { CatIM + ".Fields.Location.Country" };
 		UTIL_XPC_API const QString IMLocationLocality { CatIM + ".Fields.Location.Locality" };
+	}
+
+	namespace EF
+	{
+		UTIL_XPC_API const QString SenderID { "org.LC.AdvNotifications.SenderID" };
+		UTIL_XPC_API const QString EventCategory { "org.LC.AdvNotifications.EventCategory" };
+		UTIL_XPC_API const QString EventID { "org.LC.AdvNotifications.EventID" };
+		UTIL_XPC_API const QString VisualPath { "org.LC.AdvNotifications.VisualPath" };
+		UTIL_XPC_API const QString EventType { "org.LC.AdvNotifications.EventType" };
+		UTIL_XPC_API const QString FullText { "org.LC.AdvNotifications.FullText" };
+		UTIL_XPC_API const QString ExtendedText { "org.LC.AdvNotifications.ExtendedText" };
+		UTIL_XPC_API const QString DeltaCount { "org.LC.AdvNotifications.DeltaCount" };
+		UTIL_XPC_API const QString Count { "org.LC.AdvNotifications.Count" };
+		UTIL_XPC_API const QString OpenConfiguration { "org.LC.AdvNotifications.OpenConfiguration" };
+		UTIL_XPC_API const QString IsSingleShot { "org.LC.AdvNotifications.SingleShot" };
+		UTIL_XPC_API const QString NotifyTransient { "org.LC.AdvNotifications.NotifyTransient" };
+		UTIL_XPC_API const QString NotifyPersistent { "org.LC.AdvNotifications.NotifyPersistent" };
+		UTIL_XPC_API const QString NotifyAudio { "org.LC.AdvNotifications.NotifyAudio" };
 	}
 }

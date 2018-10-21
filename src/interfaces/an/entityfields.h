@@ -50,7 +50,7 @@ namespace EF
 	 * @note This field is required for rule creation entities and should
 	 * be equal to <em>org.LC.AdvNotifications.RuleRegister</em>.
 	 */
-	const QString SenderID { "org.LC.AdvNotifications.SenderID" };
+	extern const QString SenderID;
 
 	/** @brief The category of the event (QString).
 	 *
@@ -64,7 +64,7 @@ namespace EF
 	 *
 	 * @note This field is required for rule creation entities.
 	 */
-	const QString EventCategory { "org.LC.AdvNotifications.EventCategory" };
+	extern const QString EventCategory;
 
 	/** @brief The ID of the event (QString).
 	 *
@@ -75,7 +75,7 @@ namespace EF
 	 *
 	 * @note This field is required for rule creation entities.
 	 */
-	const QString EventID { "org.LC.AdvNotifications.EventID" };
+	extern const QString EventID;
 
 	/** @brief Visual path to this event (QStringList).
 	 *
@@ -84,7 +84,7 @@ namespace EF
 	 *
 	 * @note This field is required for event notification entities.
 	 */
-	const QString VisualPath { "org.LC.AdvNotifications.VisualPath" };
+	extern const QString VisualPath;
 
 	/** @brief The type of the event (QString).
 	 *
@@ -100,19 +100,19 @@ namespace EF
 	 *
 	 * @note This field is required for rule creation entities.
 	 */
-	const QString EventType { "org.LC.AdvNotifications.EventType" };
+	extern const QString EventType;
 
 	/** @brief The detailed text of the event (QString).
 	 *
 	 * @note This field is optional for event notification entities.
 	 */
-	const QString FullText { "org.LC.AdvNotifications.FullText" };
+	extern const QString FullText;
 
 	/** @brief The even more detailed text than FullText (QString).
 	 *
 	 * @note This field is optional for event notification entities.
 	 */
-	const QString ExtendedText { "org.LC.AdvNotifications.ExtendedText" };
+	extern const QString ExtendedText;
 
 	/** @brief The change in event count (int).
 	 *
@@ -125,7 +125,7 @@ namespace EF
 	 * @note Either this field or the Count field should be present for
 	 * event notification entities.
 	 */
-	const QString DeltaCount { "org.LC.AdvNotifications.DeltaCount" };
+	extern const QString DeltaCount;
 
 	/** @brief The new total event count (int).
 	 *
@@ -135,7 +135,7 @@ namespace EF
 	 * @note Either this field or the DeltaCount field should be present
 	 * for event notification entities.
 	 */
-	const QString Count { "org.LC.AdvNotifications.Count" };
+	extern const QString Count;
 
 	/** @brief Whether configuration dialog should be opened (bool).
 	 *
@@ -143,34 +143,34 @@ namespace EF
 	 *
 	 * @note This field is optional for rule creation entities.
 	 */
-	const QString OpenConfiguration { "org.LC.AdvNotifications.OpenConfiguration" };
+	extern const QString OpenConfiguration;
 
 	/** @brief Whether the created rule should be single-shot (bool).
 	 *
 	 * @note This field is optional for rule creation entities.
 	 */
-	const QString IsSingleShot { "org.LC.AdvNotifications.SingleShot" };
+	extern const QString IsSingleShot;
 
 	/** @brief Whether a transient notifier should be enabled by default
 	 * in the rule being created (bool).
 	 *
 	 * @note This field is optional for rule creation entities.
 	 */
-	const QString NotifyTransient { "org.LC.AdvNotifications.NotifyTransient" };
+	extern const QString NotifyTransient;
 
 	/** @brief Whether a persistent notifier should be enabled by default
 	 * in the rule being created (bool).
 	 *
 	 * @note This field is optional for rule creation entities.
 	 */
-	const QString NotifyPersistent { "org.LC.AdvNotifications.NotifyPersistent" };
+	extern const QString NotifyPersistent;
 
 	/** @brief Whether an audio notifier should be enabled by default in
 	 * the rule being created (bool).
 	 *
 	 * @note This field is optional for rule creation entities.
 	 */
-	const QString NotifyAudio { "org.LC.AdvNotifications.NotifyAudio" };
+	extern const QString NotifyAudio;
 }
 }
 }
