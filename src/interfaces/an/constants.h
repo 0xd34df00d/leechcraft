@@ -40,23 +40,23 @@ namespace AN
 	 *
 	 * This category is used to cancel an event by a given event ID.
 	 */
-	const QString CatEventCancel = "org.LC.AdvNotifications.Cancel";
+	extern const QString CatEventCancel;
 
 	/** @brief Category of Instant Messaging-related events.
 	 */
-	const QString CatIM = "org.LC.AdvNotifications.IM";
+	extern const QString CatIM;
 
 	/** @brief Another user has requested our user's attention.
 	 */
-	const QString TypeIMAttention = CatIM + ".AttentionDrawn";
+	extern const QString TypeIMAttention;
 
 	/** @brief Another user has sent our user a file.
 	 */
-	const QString TypeIMIncFile = CatIM + ".IncomingFile";
+	extern const QString TypeIMIncFile;
 
 	/** @brief User has received a message in a standard one-to-one chat.
 	 */
-	const QString TypeIMIncMsg = CatIM + ".IncomingMessage";
+	extern const QString TypeIMIncMsg;
 
 	/** @brief User has been highlighted in a multiuser chat.
 	 *
@@ -65,11 +65,11 @@ namespace AN
 	 *
 	 * @sa TypeIMMUCMsg
 	 */
-	const QString TypeIMMUCHighlight = CatIM + ".MUCHighlightMessage";
+	extern const QString TypeIMMUCHighlight;
 
 	/** @brief User has been invited to a multiuser chat.
 	 */
-	const QString TypeIMMUCInvite = CatIM + ".MUCInvitation";
+	extern const QString TypeIMMUCInvite;
 
 	/** @brief A message has been sent to a multiuser chat.
 	 *
@@ -78,108 +78,108 @@ namespace AN
 	 *
 	 * @sa TypeIMMUCHighlight
 	 */
-	const QString TypeIMMUCMsg = CatIM + ".MUCMessage";
+	extern const QString TypeIMMUCMsg;
 
 	/** @brief Another user in our user's contact list has changed its
 	 * status.
 	 */
-	const QString TypeIMStatusChange = CatIM + ".StatusChange";
+	extern const QString TypeIMStatusChange;
 
 	/** @brief Another user has granted subscription to our user.
 	 */
-	const QString TypeIMSubscrGrant = CatIM + ".Subscr.Granted";
+	extern const QString TypeIMSubscrGrant;
 
 	/** @brief Another user has revoked subscription from our user.
 	 */
-	const QString TypeIMSubscrRevoke = CatIM + ".Subscr.Revoked";
+	extern const QString TypeIMSubscrRevoke;
 
 	/** @brief Another user has requested subscription from our user.
 	 */
-	const QString TypeIMSubscrRequest = CatIM + ".Subscr.Requested";
+	extern const QString TypeIMSubscrRequest;
 
 	/** @brief Another user has subscribed to our user.
 	 */
-	const QString TypeIMSubscrSub = CatIM + ".Subscr.Subscribed";
+	extern const QString TypeIMSubscrSub;
 
 	/** @brief Another user has unsubscribed from our user.
 	 */
-	const QString TypeIMSubscrUnsub = CatIM + ".Subscr.Unsubscribed";
+	extern const QString TypeIMSubscrUnsub;
 
 	/** @brief User's tune has changed.
 	 */
-	const QString TypeIMEventTuneChange = CatIM + ".Event.Tune";
+	extern const QString TypeIMEventTuneChange;
 
 	/** @brief User's mood has changed.
 	 */
-	const QString TypeIMEventMoodChange = CatIM + ".Event.Mood";
+	extern const QString TypeIMEventMoodChange;
 
 	/** @brief User's activity has changed.
 	 */
-	const QString TypeIMEventActivityChange = CatIM + ".Event.Activity";
+	extern const QString TypeIMEventActivityChange;
 
 	/** @brief User's location has changed.
 	 */
-	const QString TypeIMEventLocationChange = CatIM + ".Event.Location";
+	extern const QString TypeIMEventLocationChange;
 
 	/** @brief Category of Organizer-related events.
 	 */
-	const QString CatOrganizer = "org.LC.AdvNotifications.Organizer";
+	extern const QString CatOrganizer;
 
 	/** @brief An event due date is coming.
 	 */
-	const QString TypeOrganizerEventDue = CatOrganizer + ".EventDue";
+	extern const QString TypeOrganizerEventDue;
 
 	/** @brief Category of Downloads-related events.
 	 */
-	const QString CatDownloads = "org.LC.AdvNotifications.Downloads";
+	extern const QString CatDownloads;
 
 	/** @brief A download has been finished successfully without errors.
 	 */
-	const QString TypeDownloadFinished = CatDownloads + ".DownloadFinished";
+	extern const QString TypeDownloadFinished;
 
 	/** @brief A download has been failed.
 	 */
-	const QString TypeDownloadError = CatDownloads + ".DownloadError";
+	extern const QString TypeDownloadError;
 
 	/** @brief Category of package manager-related events.
 	 */
-	const QString CatPackageManager = "org.LC.AdvNotifications.PackageManager";
+	extern const QString CatPackageManager;
 
 	/** @brief A package has been updated.
 	 */
-	const QString TypePackageUpdated = CatPackageManager + ".PackageUpdated";
+	extern const QString TypePackageUpdated;
 
 	/** @brief Category of media player-related events.
 	 */
-	const QString CatMediaPlayer = "org.LC.AdvNotifications.MediaPlayer";
+	extern const QString CatMediaPlayer;
 
 	/** @brief A media file playback status has been changed.
 	 */
-	const QString TypeMediaPlaybackStatus = CatMediaPlayer + ".PlaybackStatus";
+	extern const QString TypeMediaPlaybackStatus;
 
 	/** @brief Category for terminal emulation events.
 	 */
-	const QString CatTerminal = "org.LC.AdvNotifications.Terminal";
+	extern const QString CatTerminal;
 
 	/** @brief A bell has ringed in a terminal window.
 	 */
-	const QString TypeTerminalBell = CatTerminal + ".Bell";
+	extern const QString TypeTerminalBell;
 
 	/** @brief Activity in terminal window.
 	 */
-	const QString TypeTerminalActivity = CatTerminal + ".Activity";
+	extern const QString TypeTerminalActivity;
 
 	/** @brief Inactivity in terminal window.
 	 */
-	const QString TypeTerminalInactivity = CatTerminal + ".Inactivity";
+	extern const QString TypeTerminalInactivity;
 
 	/** @brief Generic notifications that don't fit into any other category.
 	 */
-	const QString CatGeneric = "org.LC.AdvNotifications.Generic";
+	extern const QString CatGeneric;
 
 	/** @brief Generic type for generic notifications.
 	 */
-	const QString TypeGeneric = CatGeneric + ".Generic";
+	extern const QString TypeGeneric;
 
 	/** @brief Describes the notification parameters.
 	 */
@@ -230,7 +230,7 @@ namespace AN
 	{
 		/** @brief The URL to the file being played.
 		*/
-		const QString MediaPlayerURL = CatMediaPlayer + ".Fields.URL";
+		extern const QString MediaPlayerURL;
 
 		/** @brief Playback status of the URL (QString).
 		 *
@@ -239,64 +239,64 @@ namespace AN
 		 * - Paused
 		 * - Stopped
 		 */
-		const QString MediaPlaybackStatus = CatMediaPlayer + ".Fields.PlaybackStatus";
+		extern const QString MediaPlaybackStatus;
 
 		/** @brief The title of the currently playing media (QString).
 		 */
-		const QString MediaTitle = CatMediaPlayer + ".Fields.Title";
+		extern const QString MediaTitle;
 
 		/** @brief The artist of the currently playing media (QString).
 		 */
-		const QString MediaArtist = CatMediaPlayer + ".Fields.Artist";
+		extern const QString MediaArtist;
 
 		/** @brief The album of the currently playing media (QString).
 		 */
-		const QString MediaAlbum = CatMediaPlayer + ".Fields.Album";
+		extern const QString MediaAlbum;
 
 		/** @brief The length of the currently playing media (int).
 		 */
-		const QString MediaLength = CatMediaPlayer + ".Fields.Length";
+		extern const QString MediaLength;
 
 		/** @brief Whether the terminal window is active (bool).
 		 */
-		const QString TerminalActive = CatTerminal + ".Fields.Active";
+		extern const QString TerminalActive;
 
 		/** @brief General activity name of a contact (QString).
 		 */
-		const QString IMActivityGeneral = CatIM + ".Fields.Activity.General";
+		extern const QString IMActivityGeneral;
 
 		/** @brief Specific activity name of a contact (QString).
 		 */
-		const QString IMActivitySpecific = CatIM + ".Fields.Activity.Specific";
+		extern const QString IMActivitySpecific;
 
 		/** @brief Accompanying activity text entered by a contact (QString).
 		 */
-		const QString IMActivityText = CatIM + ".Fields.Activity.Text";
+		extern const QString IMActivityText;
 
 		/** @brief General mood name of a contact (QString).
 		 */
-		const QString IMMoodGeneral = CatIM + ".Fields.Mood.General";
+		extern const QString IMMoodGeneral;
 
 		/** @brief Accompanying mood text entered by a contact (QString).
 		 */
-		const QString IMMoodText = CatIM + ".Fields.Mood.Text";
+		extern const QString IMMoodText;
 
 		/** @brief Longitude of a contact's position (double).
 		 */
-		const QString IMLocationLongitude = CatIM + ".Fields.Location.Longitude";
+		extern const QString IMLocationLongitude;
 
 		/** @brief Latitude of a contact's position (double).
 		 */
-		const QString IMLocationLatitude = CatIM + ".Fields.Location.Latitude";
+		extern const QString IMLocationLatitude;
 
 		/** @brief Country a contact is currently in (QString).
 		 */
-		const QString IMLocationCountry = CatIM + ".Fields.Location.Country";
+		extern const QString IMLocationCountry;
 
 		/** @brief Exact locality, like a town or a city, a contact is
 		 * currently in (QString).
 		 */
-		const QString IMLocationLocality = CatIM + ".Fields.Location.Locality";
+		extern const QString IMLocationLocality;
 	}
 }
 }
