@@ -129,19 +129,22 @@ namespace Snails
 			if (actionInfos.isEmpty ())
 				return;
 
+			height -= Padding * 2;
+
 			painter->save ();
 			painter->setRenderHint (QPainter::Antialiasing);
 
 			painter->setPen (Qt::NoPen);
 
 			auto rect = option.rect;
-			rect.setLeft (rect.right () - height);
-			rect.setHeight (height);
+			rect.setLeft (rect.right () - height - Padding);
+			rect.setSize ({ height, height });
+			rect.moveTop (rect.top () + Padding);
 			for (const auto& item : actionInfos)
 			{
 				painter->setBrush (QBrush { item.ReprColor_ });
 				painter->drawEllipse (rect);
-				rect.moveLeft (rect.left () - height);
+				rect.moveLeft (rect.left () - height - Padding);
 			}
 
 			painter->restore ();
