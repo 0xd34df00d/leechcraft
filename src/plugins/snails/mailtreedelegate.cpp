@@ -142,7 +142,15 @@ namespace Snails
 			rect.moveTop (rect.top () + Padding);
 			for (const auto& item : actionInfos)
 			{
-				painter->setBrush (QBrush { item.ReprColor_ });
+				QRadialGradient gradient;
+				gradient.setCoordinateMode (QGradient::ObjectBoundingMode);
+				gradient.setFocalPoint ({ 0.3, 0.3 });
+				gradient.setCenter ({ 0.5, 0.5 });
+				gradient.setRadius (0.5);
+				gradient.setColorAt (0, item.ReprColor_.lighter (200));
+				gradient.setColorAt (1, item.ReprColor_.darker (120));
+
+				painter->setBrush (gradient);
 				painter->drawEllipse (rect);
 				rect.moveLeft (rect.left () - height - Padding);
 			}
