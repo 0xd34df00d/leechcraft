@@ -170,6 +170,14 @@ namespace Azoth
 
 	QList<QColor> GenerateColors (const QString& coloring, QColor bg)
 	{
+		QList<QColor> result;
+		if (XmlSettingsManager::Instance ().property ("OverrideHashColors").toBool ())
+		{
+			result = XmlSettingsManager::Instance ().property ("OverrideColorsList").value<decltype (result)> ();
+			if (!result.isEmpty ())
+				return result;
+		}
+
 		auto compatibleColors = [] (const QColor& c1, const QColor& c2) -> bool
 		{
 			int dR = c1.red () - c2.red ();
@@ -186,15 +194,6 @@ namespace Azoth
 
 			return true;
 		};
-
-		QList<QColor> result;
-		if (XmlSettingsManager::Instance ().property ("OverrideHashColors").toBool ())
-		{
-			result = XmlSettingsManager::Instance ()
-					.property ("OverrideColorsList").value<decltype (result)> ();
-			if (!result.isEmpty ())
-				return result;
-		}
 
 		if (coloring == "hash" || coloring.isEmpty ())
 		{
