@@ -405,7 +405,7 @@ namespace Snails
 		return res;
 	}
 
-	void MailTreeDelegate::setMailListMode (MailListMode mode)
+	void MailTreeDelegate::SetMailListMode (MailListMode mode)
 	{
 		if (Mode_ == mode)
 			return;
