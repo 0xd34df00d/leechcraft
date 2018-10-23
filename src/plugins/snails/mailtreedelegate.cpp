@@ -330,6 +330,7 @@ namespace Snails
 		const auto& id = index.data (MailModel::MailRole::ID).toByteArray ();
 
 		const auto container = new QToolBar { parent };
+		container->setStyleSheet ("QToolButton { margin: 0; padding: 0; border-width: 1px; }");
 
 		static auto style = new NullMarginsStyle;
 		container->setStyle (style);
