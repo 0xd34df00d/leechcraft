@@ -115,6 +115,38 @@ namespace Snails
 			option.rect.setLeft (option.rect.left () + checkboxWidth);
 		}
 
+		void DrawMessageActionIcons (QPainter *painter,
+				const QStyleOptionViewItem& option, const QModelIndex& index, int height)
+		{
+			if (option.state & QStyle::State_MouseOver)
+				return;
+
+			const auto& actionsVar = index.data (MailModel::MailRole::MessageActions);
+			if (actionsVar.isNull ())
+				return;
+
+			const auto& actionInfos = actionsVar.value<QList<MessageListActionInfo>> ();
+			if (actionInfos.isEmpty ())
+				return;
+
+			painter->save ();
+			painter->setRenderHint (QPainter::Antialiasing);
+
+			painter->setPen (Qt::NoPen);
+
+			auto rect = option.rect;
+			rect.setLeft (rect.right () - height);
+			rect.setHeight (height);
+			for (const auto& item : actionInfos)
+			{
+				painter->setBrush (QBrush { item.ReprColor_ });
+				painter->drawEllipse (rect);
+				rect.moveLeft (rect.left () - height);
+			}
+
+			painter->restore ();
+		}
+
 		void DrawIcon (QPainter *painter, QStyleOptionViewItem& option, const QModelIndex& index)
 		{
 			const auto height = option.rect.height ();
@@ -157,6 +189,8 @@ namespace Snails
 		const auto& subjFontInfo = GetSubjectFont (index, option);
 		const auto subjHeight = subjFontInfo.second.boundingRect (subject).height ();
 		auto y = option.rect.top () + subjHeight;
+
+		DrawMessageActionIcons (painter, option, index, subjHeight);
 
 		const auto actionsWidth = GetActionsBarWidth (index, option, subjHeight);
 
