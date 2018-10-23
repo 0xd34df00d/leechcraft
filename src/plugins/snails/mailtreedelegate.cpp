@@ -115,49 +115,6 @@ namespace Snails
 			option.rect.setLeft (option.rect.left () + checkboxWidth);
 		}
 
-		void DrawMessageActionIcons (QPainter *painter,
-				const QStyleOptionViewItem& option, const QModelIndex& index, int height)
-		{
-			if (option.state & QStyle::State_MouseOver)
-				return;
-
-			const auto& actionsVar = index.data (MailModel::MailRole::MessageActions);
-			if (actionsVar.isNull ())
-				return;
-
-			const auto& actionInfos = actionsVar.value<QList<MessageListActionInfo>> ();
-			if (actionInfos.isEmpty ())
-				return;
-
-			height -= Padding * 2;
-
-			painter->save ();
-			painter->setRenderHint (QPainter::Antialiasing);
-
-			painter->setPen (Qt::NoPen);
-
-			auto rect = option.rect;
-			rect.setLeft (rect.right () - height - Padding);
-			rect.setSize ({ height, height });
-			rect.moveTop (rect.top () + Padding);
-			for (const auto& item : actionInfos)
-			{
-				QRadialGradient gradient;
-				gradient.setCoordinateMode (QGradient::ObjectBoundingMode);
-				gradient.setFocalPoint ({ 0.3, 0.3 });
-				gradient.setCenter ({ 0.5, 0.5 });
-				gradient.setRadius (0.5);
-				gradient.setColorAt (0, item.ReprColor_.lighter (200));
-				gradient.setColorAt (1, item.ReprColor_.darker (120));
-
-				painter->setBrush (gradient);
-				painter->drawEllipse (rect);
-				rect.moveLeft (rect.left () - height - Padding);
-			}
-
-			painter->restore ();
-		}
-
 		void DrawIcon (QPainter *painter, QStyleOptionViewItem& option, const QModelIndex& index)
 		{
 			const auto height = option.rect.height ();
@@ -418,6 +375,49 @@ namespace Snails
 			View_->update (idx);
 			idx = View_->indexBelow (idx);
 		}
+	}
+
+	void MailTreeDelegate::DrawMessageActionIcons (QPainter *painter,
+			const QStyleOptionViewItem& option, const QModelIndex& index, int height) const
+	{
+		if (option.state & QStyle::State_MouseOver)
+			return;
+
+		const auto& actionsVar = index.data (MailModel::MailRole::MessageActions);
+		if (actionsVar.isNull ())
+			return;
+
+		auto actionInfos = actionsVar.value<QList<MessageListActionInfo>> ();
+		if (actionInfos.isEmpty ())
+			return;
+
+		height -= Padding * 2;
+
+		painter->save ();
+		painter->setRenderHint (QPainter::Antialiasing);
+
+		painter->setPen (Qt::NoPen);
+
+		auto rect = option.rect;
+		rect.setLeft (rect.right () - height - Padding);
+		rect.setSize ({ height, height });
+		rect.moveTop (rect.top () + Padding);
+		for (const auto& item : actionInfos)
+		{
+			QRadialGradient gradient;
+			gradient.setCoordinateMode (QGradient::ObjectBoundingMode);
+			gradient.setFocalPoint ({ 0.3, 0.3 });
+			gradient.setCenter ({ 0.5, 0.5 });
+			gradient.setRadius (0.5);
+			gradient.setColorAt (0, item.ReprColor_.lighter (200));
+			gradient.setColorAt (1, item.ReprColor_.darker (120));
+
+			painter->setBrush (gradient);
+			painter->drawEllipse (rect);
+			rect.moveLeft (rect.left () - height - Padding);
+		}
+
+		painter->restore ();
 	}
 }
 }

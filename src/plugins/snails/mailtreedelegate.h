@@ -67,6 +67,8 @@ namespace Snails
 		bool eventFilter (QObject*, QEvent*) override;
 
 		void SetMailListMode (MailListMode);
+	private:
+		void DrawMessageActionIcons (QPainter*, const QStyleOptionViewItem&, const QModelIndex&, int) const;
 	};
 }
 }
