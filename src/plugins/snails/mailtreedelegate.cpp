@@ -275,7 +275,11 @@ namespace Snails
 
 			int pixelMetric (PixelMetric metric, const QStyleOption *option, const QWidget *widget) const override
 			{
-				if (metric == QStyle::PM_ToolBarItemMargin || metric == QStyle::PM_ToolBarFrameWidth)
+				if (metric == QStyle::PM_ToolBarItemMargin ||
+					metric == QStyle::PM_ToolBarFrameWidth ||
+					metric == QStyle::PM_ToolBarHandleExtent ||
+					metric == QStyle::PM_ToolBarExtensionExtent ||
+					metric == QStyle::PM_ToolBarItemSpacing)
 					return 0;
 
 				return QProxyStyle::pixelMetric (metric, option, widget);
