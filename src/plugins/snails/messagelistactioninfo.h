@@ -46,6 +46,7 @@ namespace Snails
 		QString Name_;
 		QString Description_;
 		QIcon Icon_;
+		QColor ReprColor_;
 
 		std::function<void (MessageInfo)> Handler_;
 
