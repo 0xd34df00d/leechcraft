@@ -43,12 +43,15 @@ namespace Snails
 	class MessageListEditorManager : public QObject
 	{
 		QTreeView * const View_;
+		QModelIndex LastEdited_;
 		MailListMode Mode_;
 	public:
 		MessageListEditorManager (QTreeView*, QObject* = nullptr);
 
 		void SetMailListMode (MailListMode);
 		void HandleMessageListUpdated ();
+	private:
+		void CloseCurrent ();
 	};
 }
 }

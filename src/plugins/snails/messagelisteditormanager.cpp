@@ -29,6 +29,7 @@
 
 #include "messagelisteditormanager.h"
 #include <QTreeView>
+#include <util/sll/lambdaeventfilter.h>
 #include "common.h"
 #include "mailmodel.h"
 
@@ -36,45 +37,31 @@ namespace LeechCraft
 {
 namespace Snails
 {
-	namespace
-	{
-		void OpenEditors (QTreeView *view, const QModelIndex& parent)
-		{
-			const auto model = view->model ();
-			for (int i = 0, rc = model->rowCount (parent); i < rc; ++i)
-			{
-				const auto& index = model->index (i, 0, parent);
-				view->openPersistentEditor (index);
-				if (view->isExpanded (index))
-					OpenEditors (view, index);
-			}
-		}
-
-		void CloseEditors (QTreeView *view, const QModelIndex& parent)
-		{
-			const auto model = view->model ();
-			for (int i = 0, rc = model->rowCount (parent); i < rc; ++i)
-			{
-				const auto& index = model->index (i, 0, parent);
-				view->closePersistentEditor (index);
-				if (view->isExpanded (index))
-					CloseEditors (view, index);
-			}
-		}
-	}
-
 	MessageListEditorManager::MessageListEditorManager (QTreeView *view, QObject *parent)
 	: QObject { parent }
 	, View_ { view }
 	, Mode_ { MailListMode::Normal }
 	{
+		View_->setMouseTracking (true);
+
 		connect (View_,
-				&QTreeView::expanded,
+				&QTreeView::entered,
 				[this] (const QModelIndex& index)
 				{
-					if (Mode_ == MailListMode::Normal)
-						OpenEditors (View_, index);
+					CloseCurrent ();
+
+					View_->openPersistentEditor (index);
+					LastEdited_ = index;
 				});
+
+		const auto ef = Util::MakeLambdaEventFilter ([this] (QEvent *event)
+				{
+					if (event->type () == QEvent::Leave)
+						CloseCurrent ();
+					return false;
+				},
+				this);
+		View_->installEventFilter (ef);
 	}
 
 	void MessageListEditorManager::SetMailListMode (MailListMode mode)
@@ -88,14 +75,16 @@ namespace Snails
 
 	void MessageListEditorManager::HandleMessageListUpdated ()
 	{
-		switch (Mode_)
+		if (Mode_ == MailListMode::MultiSelect)
+			CloseCurrent ();
+	}
+
+	void MessageListEditorManager::CloseCurrent ()
+	{
+		if (LastEdited_.isValid ())
 		{
-		case MailListMode::Normal:
-			OpenEditors (View_, {});
-			break;
-		case MailListMode::MultiSelect:
-			CloseEditors (View_, {});
-			break;
+			View_->closePersistentEditor (LastEdited_);
+			LastEdited_ = {};
 		}
 	}
 }
