@@ -382,19 +382,19 @@ namespace Snails
 		}
 	}
 
-	void MailTreeDelegate::DrawMessageActionIcons (QPainter *painter,
+	int MailTreeDelegate::DrawMessageActionIcons (QPainter *painter,
 			const QStyleOptionViewItem& option, const QModelIndex& index, int height) const
 	{
 		if (option.state & QStyle::State_MouseOver)
-			return;
+			return 0;
 
 		const auto& actionsVar = index.data (MailModel::MailRole::MessageActions);
 		if (actionsVar.isNull ())
-			return;
+			return 0;
 
 		auto actionInfos = actionsVar.value<QList<MessageListActionInfo>> ();
 		if (actionInfos.isEmpty ())
-			return;
+			return 0;
 
 		height -= Padding * 2;
 
@@ -423,6 +423,8 @@ namespace Snails
 		}
 
 		painter->restore ();
+
+		return option.rect.right () - rect.right ();
 	}
 }
 }
