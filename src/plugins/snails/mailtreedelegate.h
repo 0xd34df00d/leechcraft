@@ -48,8 +48,6 @@ namespace Snails
 
 	class MailTreeDelegate : public QStyledItemDelegate
 	{
-		Q_OBJECT
-
 		const MessageLoader_f Loader_;
 		QTreeView * const View_;
 
