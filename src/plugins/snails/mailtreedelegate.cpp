@@ -82,6 +82,8 @@ namespace Snails
 			if (acts.isEmpty ())
 				return 0;
 
+			subjHeight += 5; // seems like a common extra size for QToolButtons that's impossible to figure out otherwise
+
 			const auto spacing = style->pixelMetric (QStyle::PM_ToolBarItemSpacing, &option);
 
 			return acts.size () * subjHeight +
