@@ -74,16 +74,14 @@ namespace Snails
 			return { subjectFont, QFontMetrics { subjectFont } };
 		}
 
-		int GetActionsBarWidth (const QModelIndex& index, const QStyleOptionViewItem& option, int subjHeight)
+		int GetActionsBarWidth (const QModelIndex& index,
+				QStyle *style, const QStyleOptionViewItem& option, int subjHeight)
 		{
 			const auto& acts = index.data (MailModel::MailRole::MessageActions)
 					.value<QList<MessageListActionInfo>> ();
 			if (acts.isEmpty ())
 				return 0;
 
-			const auto style = option.widget ?
-					option.widget->style () :
-					QApplication::style ();
 			const auto spacing = style->pixelMetric (QStyle::PM_ToolBarItemSpacing, &option);
 
 			return acts.size () * subjHeight +
@@ -158,15 +156,17 @@ namespace Snails
 		const auto subjHeight = subjFontInfo.second.boundingRect (subject).height ();
 		auto y = option.rect.top () + subjHeight;
 
-		DrawMessageActionIcons (painter, option, index, subjHeight);
+		const auto actionsWidth = View_->isPersistentEditorOpen (index) ?
+				GetActionsBarWidth (index, style, option, subjHeight) :
+				0;
 
-		const auto actionsWidth = GetActionsBarWidth (index, option, subjHeight);
+		const auto actionsHintWidth = DrawMessageActionIcons (painter, option, index, subjHeight);
 
 		painter->setFont (subjFontInfo.first);
 		painter->drawText (option.rect.left (),
 				y,
 				subjFontInfo.second.elidedText (subject, Qt::ElideRight,
-						option.rect.width () - actionsWidth));
+						option.rect.width () - actionsHintWidth - actionsWidth));
 
 		const QFontMetrics fontFM { option.font };
 
