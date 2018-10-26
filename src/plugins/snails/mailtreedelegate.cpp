@@ -394,6 +394,8 @@ namespace Snails
 		if (actionInfos.isEmpty ())
 			return 0;
 
+		std::reverse (actionInfos.begin (), actionInfos.end ());
+
 		height -= Padding * 2;
 
 		painter->save ();
