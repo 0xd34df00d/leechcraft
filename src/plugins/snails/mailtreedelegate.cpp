@@ -361,10 +361,8 @@ namespace Snails
 
 	bool MailTreeDelegate::eventFilter (QObject *object, QEvent *event)
 	{
-		blockSignals (true);
-		const auto res = QStyledItemDelegate::eventFilter (object, event);
-		blockSignals (false);
-		return res;
+		QSignalBlocker blocker { this };
+		return QStyledItemDelegate::eventFilter (object, event);
 	}
 
 	void MailTreeDelegate::SetMailListMode (MailListMode mode)
