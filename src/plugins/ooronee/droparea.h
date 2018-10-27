@@ -30,43 +30,25 @@
 #pragma once
 
 #include <QtGlobal>
-#if QT_VERSION < 0x050000
-#include <QDeclarativeItem>
-#else
 #include <QQuickItem>
-#endif
 
 namespace LeechCraft
 {
 namespace Ooronee
 {
-#if QT_VERSION < 0x050000
-	class DropArea : public QDeclarativeItem
-#else
 	class DropArea : public QQuickItem
-#endif
 	{
 		Q_OBJECT
 		Q_PROPERTY (bool acceptingDrops READ GetAcceptingDrops WRITE SetAcceptingDrops NOTIFY acceptingDropsChanged)
 	public:
-#if QT_VERSION < 0x050000
-		DropArea (QDeclarativeItem* = 0);
-#else
 		DropArea (QQuickItem* = 0);
-#endif
 
 		bool GetAcceptingDrops () const;
 		void SetAcceptingDrops (bool);
 	protected:
-#if QT_VERSION < 0x050000
-		void dragEnterEvent (QGraphicsSceneDragDropEvent*) override;
-		void dragLeaveEvent (QGraphicsSceneDragDropEvent*) override;
-		void dropEvent (QGraphicsSceneDragDropEvent*) override;
-#else
 		void dragEnterEvent (QDragEnterEvent*) override;
 		void dragLeaveEvent (QDragLeaveEvent*) override;
 		void dropEvent (QDropEvent*) override;
-#endif
 	signals:
 		void acceptingDropsChanged (bool);
 
