@@ -45,6 +45,14 @@ namespace Snails
 	, Storage_ { st }
 	, MsgListActionsMgr_ { new MessageListActionsManager { Acc_, this } }
 	{
+		connect (acc,
+				&Account::willMoveMessages,
+				[this] (const QList<QByteArray>& ids, const QStringList& folder)
+				{
+					for (const auto model : Models_)
+						if (model->GetCurrentFolder () == folder)
+							model->MarkUnavailable (ids);
+				});
 	}
 
 	std::unique_ptr<MailModel> MailModelsManager::CreateModel ()

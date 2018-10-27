@@ -1087,8 +1087,6 @@ namespace Snails
 		if (folder != MailModel_->GetCurrentFolder ())
 			return;
 
-		MailModel_->MarkUnavailable (ids);
-
 		const auto selModel = Ui_.MailTree_->selectionModel ();
 		if (!selModel)
 			return;
