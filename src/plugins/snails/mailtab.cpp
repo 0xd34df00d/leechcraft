@@ -954,7 +954,7 @@ namespace Snails
 		const auto& selectedPaths = RunSelectFolders (GetActualFolders (),
 				ids.size () == 1 ?
 					tr ("Copy message") :
-					tr ("Copy %n message(s)", 0, ids.size ()));
+					tr ("Copy %n message(s)", nullptr, ids.size ()));
 		PerformMoveMessages (ids, selectedPaths, MoveMessagesAction::Copy);
 	}
 
@@ -971,7 +971,7 @@ namespace Snails
 		const auto& selectedPaths = RunSelectFolders (GetActualFolders (),
 				ids.size () == 1 ?
 					tr ("Move message") :
-					tr ("Move %n message(s)", 0, ids.size ()));
+					tr ("Move %n message(s)", nullptr, ids.size ()));
 		PerformMoveMessages (ids, selectedPaths, MoveMessagesAction::Move);
 	}
 
@@ -1108,7 +1108,7 @@ namespace Snails
 		if (!CurrAcc_)
 			return;
 
-		const auto& path = QFileDialog::getSaveFileName (0,
+		const auto& path = QFileDialog::getSaveFileName (nullptr,
 				tr ("Save attachment"),
 				QDir::homePath () + '/' + name);
 		if (path.isEmpty ())
@@ -1139,7 +1139,7 @@ namespace Snails
 
 	void MailTab::handleFetchNewMail ()
 	{
-		for (const auto acc : AccsMgr_->GetAccounts ())
+		for (const auto& acc : AccsMgr_->GetAccounts ())
 			acc->Synchronize ();
 	}
 
