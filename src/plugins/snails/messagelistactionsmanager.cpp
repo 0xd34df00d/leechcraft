@@ -457,13 +457,13 @@ namespace Snails
 	: QObject { parent }
 	, Acc_ { acc }
 	{
-		Providers_ << std::make_shared<DeleteProvider> ();
 		Providers_ << std::make_shared<AttachmentsProvider> ();
 		Providers_ << std::make_shared<GithubProvider> ();
 		Providers_ << std::make_shared<RedmineProvider> ();
 		Providers_ << std::make_shared<BugzillaProvider> ();
 		Providers_ << std::make_shared<ReviewboardProvider> ();
 		Providers_ << std::make_shared<UnsubscribeProvider> ();
+		Providers_ << std::make_shared<DeleteProvider> ();
 	}
 
 	QList<MessageListActionInfo> MessageListActionsManager::GetMessageActions (const MessageInfo& info) const
