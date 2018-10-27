@@ -34,12 +34,7 @@
 #include <QIcon>
 #include <util/x11/winflags.h>
 #include <util/models/rolenamesmixin.h>
-
-#if QT_VERSION < 0x050000
-class QDeclarativeImageProvider;
-#else
 class QQuickImageProvider;
-#endif
 
 namespace LeechCraft
 {
@@ -88,11 +83,7 @@ namespace Krigstask
 	public:
 		WindowsModel (QObject* = 0);
 
-#if QT_VERSION < 0x050000
-		QDeclarativeImageProvider* GetImageProvider () const;
-#else
 		QQuickImageProvider* GetImageProvider () const;
-#endif
 
 		int columnCount (const QModelIndex& parent = QModelIndex()) const;
 		int rowCount (const QModelIndex& parent = QModelIndex()) const;
