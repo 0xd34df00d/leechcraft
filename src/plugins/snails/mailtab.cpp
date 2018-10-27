@@ -935,14 +935,13 @@ namespace Snails
 				std::any_of (targets.begin (), targets.end (), [] (const auto& folder) { return folder.isEmpty (); }))
 			return;
 
-		emit willMoveMessages (ids, source);
-
 		switch (action)
 		{
 		case MoveMessagesAction::Copy:
 			CurrAcc_->CopyMessages (ids, source, targets);
 			break;
 		case MoveMessagesAction::Move:
+			emit willMoveMessages (ids, source);
 			CurrAcc_->MoveMessages (ids, source, targets);
 			break;
 		}
