@@ -83,11 +83,11 @@ namespace Util
 }
 
 #define DECLARE_BIT_FLAGS(F) \
-		LeechcRaft::Util::BitFlags<F> operator& (F left, F right) \
+		inline LeechCraft::Util::BitFlags<F> operator& (F left, F right) \
 		{ \
-			return LeechcRaft::Util::BitFlags<F> { left } & right; \
+			return LeechCraft::Util::BitFlags<F> { left } & right; \
 		} \
-		LeechcRaft::Util::BitFlags<F> operator| (F left, F right) \
+		inline LeechCraft::Util::BitFlags<F> operator| (F left, F right) \
 		{ \
-			return LeechcRaft::Util::BitFlags<F> { left } | right; \
+			return LeechCraft::Util::BitFlags<F> { left } | right; \
 		}
