@@ -697,8 +697,9 @@ namespace Snails
 		if (!CurrAcc_)
 			return;
 
-		connect (this,
-				&MailTab::willMoveMessages,
+		connect (CurrAcc_.get (),
+				&Account::willMoveMessages,
+				this,
 				&MailTab::deselectCurrent);
 		connect (CurrAcc_->GetFoldersModel (),
 				&FoldersModel::msgMoveRequested,
@@ -941,7 +942,6 @@ namespace Snails
 			CurrAcc_->CopyMessages (ids, source, targets);
 			break;
 		case MoveMessagesAction::Move:
-			emit willMoveMessages (ids, source);
 			CurrAcc_->MoveMessages (ids, source, targets);
 			break;
 		}
@@ -1005,7 +1005,6 @@ namespace Snails
 		const auto& ids = GetSelectedIds ();
 
 		const auto& folder = MailModel_->GetCurrentFolder ();
-		emit willMoveMessages (ids, folder);
 
 		CurrAcc_->DeleteMessages (ids, folder);
 	}

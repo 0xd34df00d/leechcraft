@@ -358,6 +358,8 @@ namespace Snails
 	void Account::MoveMessages (const QList<QByteArray>& ids,
 			const QStringList& from, const QList<QStringList>& to)
 	{
+		emit willMoveMessages (ids, from);
+
 		Util::Sequence (this, CopyMessages (ids, from, to)) >>
 				Util::Visitor
 				{
@@ -382,6 +384,8 @@ namespace Snails
 
 	void Account::DeleteMessages (const QList<QByteArray>& ids, const QStringList& folder)
 	{
+		emit willMoveMessages (ids, folder);
+
 		const auto& trashPath = FoldersModel_->GetFolderPath (FolderType::Trash);
 		if (trashPath &&
 				RollupBehaviour (DeleteBehaviour_, InHost_) == DeleteBehaviour::MoveToTrash)

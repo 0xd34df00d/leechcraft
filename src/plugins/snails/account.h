@@ -233,6 +233,7 @@ namespace Snails
 		void handleFoldersUpdated ();
 	signals:
 		void accountChanged ();
+		void willMoveMessages (const QList<QByteArray>& ids, const QStringList& folder);
 	};
 
 	typedef std::shared_ptr<Account> Account_ptr;
