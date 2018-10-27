@@ -280,7 +280,8 @@ namespace Snails
 		}
 
 		template<typename F, typename... Args>
-		QFuture<WrapFunctionType_t<F, Args...>> Schedule (QFutureInterface<WrapFunctionType_t<F, Args...>> iface, TaskPriority, const F& func, const Args&... args)
+		QFuture<WrapFunctionType_t<F, Args...>> Schedule (QFutureInterface<WrapFunctionType_t<F, Args...>> iface,
+				TaskPriority, const F& func, const Args&... args)
 		{
 			auto reporting = [this, func, iface, args...] (AccountThreadWorker *w) mutable
 			{

@@ -116,6 +116,7 @@ namespace Snails
 						QObject::tr ("Open the page on GitHub."),
 						QIcon::fromTheme ("document-open"),
 						QColor { "red" },
+						MessageListActionFlag::None,
 						[addrReq] (const MessageInfo&)
 						{
 							const QUrl fullUrl { "https://github.com/" + addrReq };
@@ -161,6 +162,7 @@ namespace Snails
 						QObject::tr ("Open the bug page on Bugzilla."),
 						QIcon::fromTheme ("tools-report-bug"),
 						QColor { "red" },
+						MessageListActionFlag::None,
 						[url, bugId] (const MessageInfo&)
 						{
 							const QUrl fullUrl { url + "show_bug.cgi?id=" + bugId };
@@ -205,6 +207,7 @@ namespace Snails
 						QObject::tr ("Open the issue page on Redmine."),
 						QIcon::fromTheme ("tools-report-bug"),
 						QColor { "red" },
+						MessageListActionFlag::None,
 						[url, issue] (const MessageInfo&)
 						{
 							const QUrl fullUrl { "http://" + url + "/issues/" + issue };
@@ -239,6 +242,7 @@ namespace Snails
 						QObject::tr ("Open the review page on ReviewBoard."),
 						QIcon::fromTheme ("document-open"),
 						QColor { "red" },
+						MessageListActionFlag::None,
 						[url] (const MessageInfo&)
 						{
 							const auto& entity = Util::MakeEntity (QUrl { url }, {}, FromUserInitiated | OnlyHandle);
@@ -376,6 +380,7 @@ namespace Snails
 						QObject::tr ("Try unsubscribing from this maillist."),
 						QIcon::fromTheme ("news-unsubscribe"),
 						QColor { "blue" },
+						MessageListActionFlag::None,
 						[acc] (const MessageInfo& info)
 						{
 							const auto raw = acc->GetDatabase ()->GetMessageHeader (info.MessageId_);
@@ -415,6 +420,7 @@ namespace Snails
 						QObject::tr ("Open/save attachments."),
 						QIcon::fromTheme ("mail-attachment"),
 						QColor { "green" },
+						MessageListActionFlag::None,
 						[acc] (const MessageInfo&)
 						{
 							// TODO

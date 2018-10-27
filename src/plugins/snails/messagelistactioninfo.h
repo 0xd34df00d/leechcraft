@@ -34,6 +34,7 @@
 #include <QIcon>
 #include <QList>
 #include <QMetaType>
+#include <util/sll/bitflags.h>
 
 namespace LeechCraft
 {
@@ -41,12 +42,19 @@ namespace Snails
 {
 	struct MessageInfo;
 
+	enum class MessageListActionFlag
+	{
+		None 			= 0b00,
+		AlwaysPresent 	= 0b01
+	};
+
 	struct MessageListActionInfo
 	{
 		QString Name_;
 		QString Description_;
 		QIcon Icon_;
 		QColor ReprColor_;
+		Util::BitFlags<MessageListActionFlag> Flags_;
 
 		std::function<void (MessageInfo)> Handler_;
 
@@ -54,6 +62,8 @@ namespace Snails
 	};
 }
 }
+
+DECLARE_BIT_FLAGS (LeechCraft::Snails::MessageListActionFlag)
 
 Q_DECLARE_METATYPE (LeechCraft::Snails::MessageListActionInfo)
 Q_DECLARE_METATYPE (QList<LeechCraft::Snails::MessageListActionInfo>)
