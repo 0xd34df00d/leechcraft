@@ -48,11 +48,6 @@ namespace Mellonetray
 		setFlag (QQuickItem::ItemHasContents);
 	}
 
-	IconHandler::~IconHandler ()
-	{
-		Free ();
-	}
-
 	ulong IconHandler::GetWID () const
 	{
 		return WID_;
@@ -63,7 +58,7 @@ namespace Mellonetray
 		if (wid == WID_)
 			return;
 
-		Free ();
+		Proxy_.reset ();
 
 		WID_ = wid;
 		emit widChanged ();
@@ -90,12 +85,6 @@ namespace Mellonetray
 			const auto& scenePoint = mapToScene ({ 0, 0 }).toPoint ();
 			Proxy_->setPosition (window ()->mapToGlobal (scenePoint));
 		}
-	}
-
-	void IconHandler::Free ()
-	{
-		if (Proxy_)
-			Proxy_.reset ();
 	}
 }
 }

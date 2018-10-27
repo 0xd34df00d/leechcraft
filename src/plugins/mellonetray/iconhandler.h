@@ -46,14 +46,11 @@ namespace Mellonetray
 		unsigned long WID_ = 0;
 	public:
 		IconHandler (QQuickItem* = 0);
-		~IconHandler ();
 
 		ulong GetWID () const;
 		void SetWID (const ulong&);
 	protected:
 		void geometryChanged (const QRectF&, const QRectF&) override;
-	private:
-		void Free ();
 	signals:
 		void widChanged ();
 	};
