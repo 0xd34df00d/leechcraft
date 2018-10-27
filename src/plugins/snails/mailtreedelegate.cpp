@@ -385,6 +385,9 @@ namespace Snails
 	int MailTreeDelegate::DrawMessageActionIcons (QPainter *painter,
 			const QStyleOptionViewItem& option, const QModelIndex& index, int height) const
 	{
+		if (Mode_ != MailListMode::Normal)
+			return 0;
+
 		if (option.state & QStyle::State_MouseOver)
 			return 0;
 
