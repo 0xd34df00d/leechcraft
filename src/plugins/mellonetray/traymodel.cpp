@@ -31,17 +31,13 @@
 #include <QAbstractEventDispatcher>
 #include <QtDebug>
 #include <util/x11/xwrapper.h>
-
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/Xatom.h>
 #include <X11/extensions/Xrender.h>
 #include <X11/extensions/Xdamage.h>
-
-#if QT_VERSION >= 0x050000
 #include <xcb/xcb.h>
 #include <xcb/damage.h>
-#endif
 
 namespace LeechCraft
 {
@@ -78,23 +74,11 @@ namespace Mellonetray
 
 			return result;
 		}
-
-#if QT_VERSION < 0x050000
-		bool EvFilter (void *event)
-		{
-			return TrayModel::Instance ().Filter (static_cast<XEvent*> (event));
-		}
-#endif
 	}
 
 	TrayModel::TrayModel ()
-#if QT_VERSION < 0x050000
-	: PrevFilter_ (QAbstractEventDispatcher::instance ()->setEventFilter (EvFilter))
-#endif
 	{
-#if QT_VERSION >= 0x050000
 		QAbstractEventDispatcher::instance ()->installNativeEventFilter (this);
-#endif
 
 		QHash<int, QByteArray> roleNames;
 		roleNames [Role::ItemID] = "itemID";
@@ -214,23 +198,6 @@ namespace Mellonetray
 		return {};
 	}
 
-#if QT_VERSION < 0x050000
-	template<>
-	void TrayModel::HandleClientMsg<XClientMessageEvent*> (XClientMessageEvent *ev)
-	{
-		if (ev->message_type != Util::XWrapper::Instance ().GetAtom ("_NET_SYSTEM_TRAY_OPCODE"))
-			return;
-
-		switch (ev->data.l [1])
-		{
-		case 0:
-			if (auto id = ev->data.l [2])
-				Add (id);
-		default:
-			break;
-		}
-	}
-#else
 	template<>
 	void TrayModel::HandleClientMsg<xcb_client_message_event_t*> (xcb_client_message_event_t *ev)
 	{
@@ -246,7 +213,6 @@ namespace Mellonetray
 			break;
 		}
 	}
-#endif
 
 	void TrayModel::Add (ulong wid)
 	{
@@ -275,34 +241,6 @@ namespace Mellonetray
 		emit updateRequired (wid);
 	}
 
-#if QT_VERSION < 0x050000
-	bool TrayModel::Filter (XEvent *ev)
-	{
-		auto invokePrev = [this, ev] { return PrevFilter_ ? PrevFilter_ (ev) : false; };
-
-		if (!IsValid_)
-			return invokePrev ();
-
-		switch (ev->type)
-		{
-		case ClientMessage:
-			HandleClientMsg (&ev->xclient);
-			break;
-		case DestroyNotify:
-			Remove (ev->xany.window);
-			break;
-		default:
-			if (ev->type == XDamageNotify + DamageEvent_)
-			{
-				auto dmg = reinterpret_cast<XDamageNotifyEvent*> (ev);
-				Update (dmg->drawable);
-			}
-			break;
-		}
-
-		return invokePrev ();
-	}
-#else
 	bool TrayModel::nativeEventFilter (const QByteArray& eventType, void *msg, long int*)
 	{
 		if (eventType != "xcb_generic_event_t")
@@ -329,7 +267,6 @@ namespace Mellonetray
 
 		return false;
 	}
-#endif
 
 	auto TrayModel::FindItem (ulong wid) -> QList<TrayItem>::iterator
 	{

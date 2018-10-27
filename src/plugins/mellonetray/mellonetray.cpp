@@ -29,13 +29,7 @@
 
 #include "mellonetray.h"
 #include <QIcon>
-
-#if QT_VERSION < 0x050000
-#include <QtDeclarative>
-#else
 #include <QtQuick>
-#endif
-
 #include <util/util.h>
 #include "traymodel.h"
 #include "iconhandler.h"
