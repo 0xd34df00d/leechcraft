@@ -414,6 +414,9 @@ namespace Snails
 		rect.moveTop (rect.top () + Padding);
 		for (const auto& item : actionInfos)
 		{
+			if (item.Flags_ & MessageListActionFlag::AlwaysPresent)
+				continue;
+
 			QRadialGradient gradient;
 			gradient.setCoordinateMode (QGradient::ObjectBoundingMode);
 			gradient.setFocalPoint ({ 0.3, 0.3 });
