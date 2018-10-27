@@ -32,13 +32,7 @@
 #include <QLabel>
 #include <QPainter>
 #include <QStyleOption>
-
-#if QT_VERSION < 0x050000
-#include <QX11EmbedContainer>
-#else
 #include <QQuickWindow>
-#endif
-
 #include <QGraphicsScene>
 #include <QGraphicsView>
 #include <QtDebug>
@@ -48,19 +42,11 @@ namespace LeechCraft
 {
 namespace Mellonetray
 {
-#if QT_VERSION < 0x050000
-	IconHandler::IconHandler (QGraphicsItem *item)
-	: QGraphicsWidget (item)
-	{
-		setFlag (QGraphicsItem::ItemSendsScenePositionChanges);
-	}
-#else
 	IconHandler::IconHandler (QQuickItem *item)
 	: QQuickItem (item)
 	{
 		setFlag (QQuickItem::ItemHasContents);
 	}
-#endif
 
 	IconHandler::~IconHandler ()
 	{
@@ -81,47 +67,8 @@ namespace Mellonetray
 
 		WID_ = wid;
 		emit widChanged ();
-
-#if QT_VERSION < 0x050000
-		setGeometry (rect ());
-#else
-
-#endif
 	}
 
-#if QT_VERSION < 0x050000
-	void IconHandler::setGeometry (const QRectF& rect)
-	{
-		QGraphicsWidget::setGeometry (rect);
-
-		if (!scene ())
-			return;
-
-		auto view = scene ()->views ().value (0);
-
-		if (!Proxy_ && WID_)
-		{
-			Proxy_.reset (new QX11EmbedContainer (view));
-			Proxy_->move (-1024, -1024);
-			Proxy_->show ();
-			Proxy_->embedClient (WID_);
-		}
-
-		if (Proxy_ && rect.width () * rect.height () > 0)
-		{
-			Proxy_->resize (rect.width (), rect.height ());
-			Proxy_->move (scenePos ().toPoint ());
-		}
-	}
-
-	QVariant IconHandler::itemChange (GraphicsItemChange change, const QVariant& value)
-	{
-		if (change == QGraphicsItem::ItemSceneHasChanged || change == QGraphicsItem::ItemScenePositionHasChanged)
-			setGeometry (rect ());
-
-		return QGraphicsWidget::itemChange (change, value);
-	}
-#else
 	void IconHandler::geometryChanged (const QRectF& rect, const QRectF& oldRect)
 	{
 		QQuickItem::geometryChanged (rect, oldRect);
@@ -144,20 +91,11 @@ namespace Mellonetray
 			Proxy_->setPosition (window ()->mapToGlobal (scenePoint));
 		}
 	}
-#endif
 
 	void IconHandler::Free ()
 	{
-#if QT_VERSION < 0x050000
-		if (Proxy_ && Proxy_->clientWinId ())
-		{
-			Proxy_->discardClient ();
-			Proxy_.reset ();
-		}
-#else
 		if (Proxy_)
 			Proxy_.reset ();
-#endif
 	}
 }
 }
