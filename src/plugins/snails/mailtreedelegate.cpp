@@ -155,7 +155,7 @@ namespace Snails
 		const auto& subject = GetString (index, MailModel::Column::Subject);
 
 		const auto& subjFontInfo = GetSubjectFont (index, option);
-		const auto subjHeight = subjFontInfo.second.boundingRect (subject).height ();
+		const auto subjHeight = subjFontInfo.second.height ();
 		auto y = option.rect.top () + subjHeight;
 
 		const auto actionsWidth = View_->isPersistentEditorOpen (index) ?
@@ -172,9 +172,9 @@ namespace Snails
 
 		const QFontMetrics fontFM { option.font };
 
-		auto stringHeight = [&fontFM] (const QString& str)
+		auto stringHeight = [&fontFM] (const QString&)
 		{
-			return fontFM.boundingRect (str).height ();
+			return fontFM.height ();
 		};
 
 		auto from = GetString (index, MailModel::Column::From);
@@ -210,8 +210,8 @@ namespace Snails
 
 		const auto width = View_->viewport ()->width ();
 		const auto height = 2 * Padding +
-				subjFontInfo.second.boundingRect (GetString (index, MailModel::Column::Subject)).height () +
-				plainFM.boundingRect (GetString (index, MailModel::Column::From)).height ();
+				subjFontInfo.second.height () +
+				plainFM.height ();
 
 		return { width, height };
 	}
@@ -355,8 +355,7 @@ namespace Snails
 	void MailTreeDelegate::updateEditorGeometry (QWidget *editor,
 			const QStyleOptionViewItem& option, const QModelIndex& index) const
 	{
-		const auto& subjFM = GetSubjectFont (index, option).second;
-		auto height = subjFM.boundingRect (GetString (index, MailModel::Column::Subject)).height ();
+		auto height = GetSubjectFont (index, option).second.height ();
 
 		qobject_cast<QToolBar*> (editor)->setIconSize ({ height, height });
 
