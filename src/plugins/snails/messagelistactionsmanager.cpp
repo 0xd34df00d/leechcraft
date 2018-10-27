@@ -405,6 +405,26 @@ namespace Snails
 			}
 		};
 
+		class DeleteProvider final : public MessageListActionsProvider
+		{
+		public:
+			QList<MessageListActionInfo> GetMessageActions (const MessageInfo&, const Header_ptr&, Account *acc) const override
+			{
+				return
+				{
+					{
+						QObject::tr ("Delete"),
+						QObject::tr ("Delete the message"),
+						QIcon::fromTheme ("edit-delete"),
+						QColor {},
+						MessageListActionFlag::AlwaysPresent,
+						[acc] (const MessageInfo& info) { acc->DeleteMessages ({ info.FolderId_ }, info.Folder_); },
+						{}
+					}
+				};
+			}
+		};
+
 		class AttachmentsProvider final : public MessageListActionsProvider
 		{
 		public:
@@ -437,6 +457,7 @@ namespace Snails
 	: QObject { parent }
 	, Acc_ { acc }
 	{
+		Providers_ << std::make_shared<DeleteProvider> ();
 		Providers_ << std::make_shared<AttachmentsProvider> ();
 		Providers_ << std::make_shared<GithubProvider> ();
 		Providers_ << std::make_shared<RedmineProvider> ();
