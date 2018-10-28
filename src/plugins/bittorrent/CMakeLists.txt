@@ -7,7 +7,6 @@ find_package (Boost REQUIRED COMPONENTS date_time filesystem system thread)
 set (CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 find_package (LibtorrentRasterbar REQUIRED)
-find_package (OpenSSL REQUIRED)
 
 option (ENABLE_BITTORRENT_GEOIP "Enable support for GeoIP in BitTorrent (requires building libtorrent with GeoIP support)" OFF)
 
@@ -24,7 +23,6 @@ include_directories (${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
 	${LibtorrentRasterbar_INCLUDE_DIRS}
 	${LEECHCRAFT_INCLUDE_DIR}
-	${OPENSSL_INCLUDE_DIR}
 	${GEOIP_INCLUDE_DIRS}
 	)
 
@@ -163,9 +161,6 @@ add_library (leechcraft_bittorrent SHARED
 	${RCCS}
 	)
 
-if (APPLE)
-	set (CRYPTOLIB "crypto")
-endif ()
 target_link_libraries (leechcraft_bittorrent
 	${Boost_SYSTEM_LIBRARY}
 	${Boost_THREAD_LIBRARY}
@@ -174,7 +169,6 @@ target_link_libraries (leechcraft_bittorrent
 	${QT_LIBRARIES}
 	${LibtorrentRasterbar_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
-	${CRYPTOLIB}
 	${GEOIP_LIBRARIES}
 )
 install (TARGETS leechcraft_bittorrent DESTINATION ${LC_PLUGINS_DEST})
