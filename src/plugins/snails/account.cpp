@@ -420,6 +420,8 @@ namespace Snails
 		in >> fstate;
 		acc->FolderManager_->Deserialize (fstate);
 		acc->handleFoldersUpdated ();
+
+		return acc;
 	}
 
 	void Account::OpenConfigDialog (const std::function<void ()>& onAccepted)
