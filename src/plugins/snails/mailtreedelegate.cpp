@@ -41,6 +41,7 @@
 #include "mailtab.h"
 #include "mailmodel.h"
 #include "messagelistactioninfo.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -53,6 +54,8 @@ namespace Snails
 	, View_ { view }
 	, Mode_ { MailListMode::Normal }
 	{
+		XmlSettingsManager::Instance ().RegisterObject ("MessageActionsHintsStyle", this,
+				[this] (const QVariant& var) { ActionsHintsBalls_ = var.toString () == "Ball"; });
 	}
 
 	const int Padding = 2;
@@ -403,7 +406,8 @@ namespace Snails
 
 		std::reverse (actionInfos.begin (), actionInfos.end ());
 
-		height -= Padding * 2;
+		if (ActionsHintsBalls_)
+			height -= Padding * 2;
 
 		painter->save ();
 		painter->setRenderHint (QPainter::Antialiasing);
@@ -419,16 +423,22 @@ namespace Snails
 			if (item.Flags_ & MessageListActionFlag::AlwaysPresent)
 				continue;
 
-			QRadialGradient gradient;
-			gradient.setCoordinateMode (QGradient::ObjectBoundingMode);
-			gradient.setFocalPoint ({ 0.3, 0.3 });
-			gradient.setCenter ({ 0.5, 0.5 });
-			gradient.setRadius (0.5);
-			gradient.setColorAt (0, item.ReprColor_.lighter (200));
-			gradient.setColorAt (1, item.ReprColor_.darker (120));
+			if (ActionsHintsBalls_)
+			{
+				QRadialGradient gradient;
+				gradient.setCoordinateMode (QGradient::ObjectBoundingMode);
+				gradient.setFocalPoint ({ 0.3, 0.3 });
+				gradient.setCenter ({ 0.5, 0.5 });
+				gradient.setRadius (0.5);
+				gradient.setColorAt (0, item.ReprColor_.lighter (200));
+				gradient.setColorAt (1, item.ReprColor_.darker (120));
 
-			painter->setBrush (gradient);
-			painter->drawEllipse (rect);
+				painter->setBrush (gradient);
+				painter->drawEllipse (rect);
+			}
+			else
+				item.Icon_.paint (painter, rect);
+
 			rect.moveLeft (rect.left () - height - Padding);
 		}
 

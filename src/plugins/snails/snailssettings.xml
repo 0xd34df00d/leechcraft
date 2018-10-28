@@ -2,10 +2,25 @@
 <settings>
 	<page>
 		<label value="Appearance" />
-		<groupbox>
-			<label value="Fonts" />
-			<item type="customwidget" label="own" name="FontsSelector" />
-		</groupbox>
+		<tab>
+			<label value="Message viewer" />
+			<groupbox>
+				<label value="Fonts" />
+				<item type="customwidget" label="own" name="FontsSelector" />
+			</groupbox>
+		</tab>
+		<tab>
+			<label value="Mail list" />
+			<item type="combobox" property="MessageActionsHintsStyle">
+				<label value="Message actions hints style:" />
+				<option name="Icon" default="true">
+					<label value="icons" />
+				</option>
+				<option name="Ball">
+					<label value="balls" />
+				</option>
+			</item>
+		</tab>
 	</page>
 	<page>
 		<label value="Behavior" />

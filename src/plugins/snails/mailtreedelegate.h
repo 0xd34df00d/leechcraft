@@ -52,6 +52,8 @@ namespace Snails
 		QTreeView * const View_;
 
 		MailListMode Mode_;
+
+		bool ActionsHintsBalls_;
 	public:
 		MailTreeDelegate (const MessageLoader_f&, QTreeView*, QObject* = nullptr);
 
