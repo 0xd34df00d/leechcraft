@@ -212,7 +212,7 @@ namespace Snails
 
 		if (A_->UseTLS_)
 		{
-			st->setProperty ("connection.tls", A_->UseTLS_);
+			st->setProperty ("connection.tls", true);
 			st->setProperty ("connection.tls.required", A_->InSecurityRequired_);
 		}
 		st->setProperty ("options.sasl", A_->UseSASL_);
