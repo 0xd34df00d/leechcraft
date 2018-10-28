@@ -48,6 +48,65 @@ namespace Snails
 				SLOT (resetInPort ()));
 	}
 
+	AccountConfig AccountConfigDialog::GetConfig () const
+	{
+		return
+		{
+			GetName (),
+			GetUserName (),
+			GetUserEmail (),
+			GetLogin (),
+
+			GetUseSASL (),
+			GetSASLRequired (),
+			GetInSecurity (),
+			GetInSecurityRequired (),
+			GetOutSecurity (),
+			GetOutSecurityRequired (),
+
+			GetSMTPAuth (),
+			GetInHost (),
+			GetInPort (),
+			GetOutHost (),
+			GetOutPort (),
+			GetOutLogin (),
+			GetOutType (),
+
+			GetKeepAliveInterval (),
+			GetLogConnectionsToFile (),
+
+			GetDeleteBehaviour ()
+		};
+	}
+
+	void AccountConfigDialog::SetConfig (const AccountConfig& cfg)
+	{
+		SetName (cfg.AccName_);
+		SetUserName (cfg.UserName_);
+		SetUserEmail (cfg.UserEmail_);
+		SetLogin (cfg.Login_);
+
+		SetUseSASL (cfg.UseSASL_);
+		SetSASLRequired (cfg.SASLRequired_);
+		SetInSecurity (cfg.InSecurity_);
+		SetInSecurityRequired (cfg.InSecurityRequired_);
+		SetOutSecurity (cfg.OutSecurity_);
+		SetOutSecurityRequired (cfg.OutSecurityRequired_);
+
+		SetSMTPAuth (cfg.SMTPNeedsAuth_);
+		SetInHost (cfg.InHost_);
+		SetInPort (cfg.InPort_);
+		SetOutHost (cfg.OutHost_);
+		SetOutPort (cfg.OutPort_);
+		SetOutLogin (cfg.OutLogin_);
+		SetOutType (cfg.OutType_);
+
+		SetKeepAliveInterval (cfg.KeepAliveInterval_);
+		SetLogConnectionsToFile (cfg.LogToFile_);
+
+		SetDeleteBehaviour (cfg.DeleteBehaviour_);
+	}
+
 	QString AccountConfigDialog::GetName () const
 	{
 		return Ui_.AccName_->text ();
@@ -108,12 +167,12 @@ namespace Snails
 		Ui_.InPort_->setValue (port);
 	}
 
-	Account::OutType AccountConfigDialog::GetOutType () const
+	AccountConfig::OutType AccountConfigDialog::GetOutType () const
 	{
-		return static_cast<Account::OutType> (Ui_.OutType_->currentIndex ());
+		return static_cast<AccountConfig::OutType> (Ui_.OutType_->currentIndex ());
 	}
 
-	void AccountConfigDialog::SetOutType (Account::OutType type)
+	void AccountConfigDialog::SetOutType (AccountConfig::OutType type)
 	{
 		Ui_.OutType_->setCurrentIndex (static_cast<int> (type));
 	}
@@ -171,12 +230,12 @@ namespace Snails
 		Ui_.SASLRequired_->setCheckState (req ? Qt::Checked : Qt::Unchecked);
 	}
 
-	Account::SecurityType AccountConfigDialog::GetInSecurity () const
+	AccountConfig::SecurityType AccountConfigDialog::GetInSecurity () const
 	{
-		return static_cast<Account::SecurityType> (Ui_.InSecurityType_->currentIndex ());
+		return static_cast<AccountConfig::SecurityType> (Ui_.InSecurityType_->currentIndex ());
 	}
 
-	void AccountConfigDialog::SetInSecurity (Account::SecurityType type)
+	void AccountConfigDialog::SetInSecurity (AccountConfig::SecurityType type)
 	{
 		Ui_.InSecurityType_->setCurrentIndex (static_cast<int> (type));
 	}
@@ -191,12 +250,12 @@ namespace Snails
 		Ui_.InSecurityRequired_->setCheckState (req ? Qt::Checked : Qt::Unchecked);
 	}
 
-	Account::SecurityType AccountConfigDialog::GetOutSecurity () const
+	AccountConfig::SecurityType AccountConfigDialog::GetOutSecurity () const
 	{
-		return static_cast<Account::SecurityType> (Ui_.OutSecurityType_->currentIndex ());
+		return static_cast<AccountConfig::SecurityType> (Ui_.OutSecurityType_->currentIndex ());
 	}
 
-	void AccountConfigDialog::SetOutSecurity (Account::SecurityType type)
+	void AccountConfigDialog::SetOutSecurity (AccountConfig::SecurityType type)
 	{
 		Ui_.OutSecurityType_->setCurrentIndex (static_cast<int> (type));
 	}
@@ -310,12 +369,12 @@ namespace Snails
 		Ui_.FoldersToSync_->setText (folders.join ("; "));
 	}
 
-	Account::DeleteBehaviour AccountConfigDialog::GetDeleteBehaviour () const
+	AccountConfig::DeleteBehaviour AccountConfigDialog::GetDeleteBehaviour () const
 	{
-		return static_cast<Account::DeleteBehaviour> (Ui_.DeletionBehaviour_->currentIndex ());
+		return static_cast<AccountConfig::DeleteBehaviour> (Ui_.DeletionBehaviour_->currentIndex ());
 	}
 
-	void AccountConfigDialog::SetDeleteBehaviour (Account::DeleteBehaviour behaviour)
+	void AccountConfigDialog::SetDeleteBehaviour (AccountConfig::DeleteBehaviour behaviour)
 	{
 		Ui_.DeletionBehaviour_->setCurrentIndex (static_cast<int> (behaviour));
 	}

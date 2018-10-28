@@ -199,12 +199,13 @@ namespace Snails
 				"SIGNATURE",
 				[] (const Account *acc, const MessageInfo&, const MessageBodies&, ContentType type)
 				{
+					const auto& userName = acc->GetConfig ().UserName_;
 					switch (type)
 					{
 					case ContentType::PlainText:
-						return "-- \n  " + acc->GetUserName () + "\n";
+						return "-- \n  " + userName + "\n";
 					case ContentType::HTML:
-						return "--&nbsp;<br/>&nbsp;" + acc->GetUserName () + "<br/>";
+						return "--&nbsp;<br/>&nbsp;" + userName + "<br/>";
 					}
 				}
 			},

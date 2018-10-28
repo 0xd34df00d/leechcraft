@@ -140,7 +140,7 @@ namespace Snails
 
 							iem->HandleEntity (Util::MakeNotification ("Snails",
 									tr ("Connection failed for account %1: %2")
-										.arg ("<em>" + AccName_ + "</em>")
+										.arg ("<em>" + Config_.AccName_ + "</em>")
 										.arg (text),
 									Priority::Critical));
 						};
@@ -153,42 +153,22 @@ namespace Snails
 								},
 								[&] (const vmime::security::cert::certificateException& err)
 								{
-									HandleCertificateException (iem, AccName_, err);
+									HandleCertificateException (iem, Config_.AccName_, err);
 								},
 								[] (const auto& e) { qWarning () << Q_FUNC_INFO << e.what (); });
 					}
 				};
 	}
 
+	AccountConfig Account::GetConfig () const
+	{
+		QMutexLocker l (GetMutex ());
+		return Config_;
+	}
+
 	QByteArray Account::GetID () const
 	{
 		return ID_;
-	}
-
-	QString Account::GetName () const
-	{
-		QMutexLocker l (GetMutex ());
-		return AccName_;
-	}
-
-	QString Account::GetServer () const
-	{
-		return InHost_ + ':' + QString::number (InPort_);
-	}
-
-	QString Account::GetUserName () const
-	{
-		return UserName_;
-	}
-
-	QString Account::GetUserEmail () const
-	{
-		return UserEmail_;
-	}
-
-	bool Account::ShouldLogToFile () const
-	{
-		return LogToFile_;
 	}
 
 	AccountLogger* Account::GetLogger () const
@@ -370,15 +350,15 @@ namespace Snails
 
 	namespace
 	{
-		Account::DeleteBehaviour RollupBehaviour (Account::DeleteBehaviour behaviour, const QString& service)
+		AccountConfig::DeleteBehaviour RollupBehaviour (AccountConfig::DeleteBehaviour behaviour, const QString& service)
 		{
-			if (behaviour != Account::DeleteBehaviour::Default)
+			if (behaviour != AccountConfig::DeleteBehaviour::Default)
 				return behaviour;
 
 			static const QStringList knownTrashes { "imap.gmail.com" };
 			return knownTrashes.contains (service) ?
-					Account::DeleteBehaviour::MoveToTrash :
-					Account::DeleteBehaviour::Expunge;
+					AccountConfig::DeleteBehaviour::MoveToTrash :
+					AccountConfig::DeleteBehaviour::Expunge;
 		}
 	}
 
@@ -387,8 +367,8 @@ namespace Snails
 		emit willMoveMessages (ids, folder);
 
 		const auto& trashPath = FoldersModel_->GetFolderPath (FolderType::Trash);
-		if (trashPath &&
-				RollupBehaviour (DeleteBehaviour_, InHost_) == DeleteBehaviour::MoveToTrash)
+		const auto rollupBehaviour = RollupBehaviour (Config_.DeleteBehaviour_, Config_.InHost_);
+		if (trashPath && rollupBehaviour == AccountConfig::DeleteBehaviour::MoveToTrash)
 			Util::Sequence (this, CopyMessages (ids, folder, { *trashPath })) >>
 					Util::Visitor
 					{
@@ -406,30 +386,10 @@ namespace Snails
 		QByteArray result;
 
 		QDataStream out { &result, QIODevice::WriteOnly };
-		out << static_cast<quint8> (4);
-		out << ID_
-			<< AccName_
-			<< Login_
-			<< UseSASL_
-			<< SASLRequired_
-			<< UseTLS_
-			<< UseSSL_
-			<< InSecurityRequired_
-			<< static_cast<qint8> (OutSecurity_)
-			<< OutSecurityRequired_
-			<< SMTPNeedsAuth_
-			<< InHost_
-			<< InPort_
-			<< OutHost_
-			<< OutPort_
-			<< OutLogin_
-			<< static_cast<quint8> (OutType_)
-			<< UserName_
-			<< UserEmail_
-			<< FolderManager_->Serialize ()
-			<< KeepAliveInterval_
-			<< LogToFile_
-			<< static_cast<quint8> (DeleteBehaviour_);
+		out << static_cast<quint8> (1)
+			<< ID_
+			<< Config_
+			<< FolderManager_->Serialize ();
 
 		return result;
 	}
@@ -440,59 +400,20 @@ namespace Snails
 		quint8 version = 0;
 		in >> version;
 
-		if (version < 1 || version > 4)
+		if (version != 1)
 			throw std::runtime_error { "Unknown version " + std::to_string (version) };
 
-		quint8 outType = 0;
-		qint8 type = 0;
+		in >> ID_;
 
 		{
 			QMutexLocker l (GetMutex ());
-			in >> ID_
-				>> AccName_
-				>> Login_
-				>> UseSASL_
-				>> SASLRequired_
-				>> UseTLS_
-				>> UseSSL_
-				>> InSecurityRequired_
-				>> type
-				>> OutSecurityRequired_;
-
-			OutSecurity_ = static_cast<SecurityType> (type);
-
-			in >> SMTPNeedsAuth_
-				>> InHost_
-				>> InPort_
-				>> OutHost_
-				>> OutPort_
-				>> OutLogin_
-				>> outType;
-
-			OutType_ = static_cast<OutType> (outType);
-
-			in >> UserName_
-				>> UserEmail_;
-
-			QByteArray fstate;
-			in >> fstate;
-			FolderManager_->Deserialize (fstate);
-
-			handleFoldersUpdated ();
-
-			if (version >= 2)
-				in >> KeepAliveInterval_;
-
-			if (version >= 3)
-				in >> LogToFile_;
-
-			if (version >= 4)
-			{
-				quint8 deleteBehaviour = 0;
-				in >> deleteBehaviour;
-				DeleteBehaviour_ = static_cast<DeleteBehaviour> (deleteBehaviour);
-			}
+			in >> Config_;
 		}
+
+		QByteArray fstate;
+		in >> fstate;
+		FolderManager_->Deserialize (fstate);
+		handleFoldersUpdated ();
 	}
 
 	void Account::OpenConfigDialog (const std::function<void ()>& onAccepted)
@@ -500,51 +421,15 @@ namespace Snails
 		auto dia = new AccountConfigDialog;
 		dia->setAttribute (Qt::WA_DeleteOnClose);
 
+		dia->SetConfig (GetConfig ());
+		dia->SetAllFolders (FolderManager_->GetFoldersPaths ());
+		for (const auto& folder : FolderManager_->GetFoldersPaths ())
 		{
-			QMutexLocker l (GetMutex ());
-			dia->SetName (AccName_);
-			dia->SetUserName (UserName_);
-			dia->SetUserEmail (UserEmail_);
-			dia->SetLogin (Login_);
-			dia->SetUseSASL (UseSASL_);
-			dia->SetSASLRequired (SASLRequired_);
-
-			if (UseSSL_)
-				dia->SetInSecurity (SecurityType::SSL);
-			else if (UseTLS_)
-				dia->SetInSecurity (SecurityType::TLS);
-			else
-				dia->SetInSecurity (SecurityType::No);
-
-			dia->SetInSecurityRequired (InSecurityRequired_);
-
-			dia->SetOutSecurity (OutSecurity_);
-			dia->SetOutSecurityRequired (OutSecurityRequired_);
-
-			dia->SetSMTPAuth (SMTPNeedsAuth_);
-			dia->SetInHost (InHost_);
-			dia->SetInPort (InPort_);
-			dia->SetOutHost (OutHost_);
-			dia->SetOutPort (OutPort_);
-			dia->SetOutLogin (OutLogin_);
-			dia->SetOutType (OutType_);
-
-			dia->SetKeepAliveInterval (KeepAliveInterval_);
-			dia->SetLogConnectionsToFile (LogToFile_);
-
-			const auto& folders = FolderManager_->GetFoldersPaths ();
-			dia->SetAllFolders (folders);
-			const auto& toSync = FolderManager_->GetSyncFolders ();
-			for (const auto& folder : folders)
-			{
-				const auto flags = FolderManager_->GetFolderFlags (folder);
-				if (flags & AccountFolderManager::FolderOutgoing)
-					dia->SetOutFolder (folder);
-			}
-			dia->SetFoldersToSync (toSync);
-
-			dia->SetDeleteBehaviour (DeleteBehaviour_);
+			const auto flags = FolderManager_->GetFolderFlags (folder);
+			if (flags & AccountFolderManager::FolderOutgoing)
+				dia->SetOutFolder (folder);
 		}
+		dia->SetFoldersToSync (FolderManager_->GetSyncFolders ());
 
 		dia->show ();
 
@@ -552,49 +437,10 @@ namespace Snails
 		{
 			[this, onAccepted, dia]
 			{
-				QMutexLocker l (GetMutex ());
-				AccName_ = dia->GetName ();
-				UserName_ = dia->GetUserName ();
-				UserEmail_ = dia->GetUserEmail ();
-				Login_ = dia->GetLogin ();
-				UseSASL_ = dia->GetUseSASL ();
-				SASLRequired_ = dia->GetSASLRequired ();
-
-				UseSSL_ = false;
-				UseTLS_ = false;
-				switch (dia->GetInSecurity ())
 				{
-				case SecurityType::SSL:
-					UseSSL_ = true;
-					break;
-				case SecurityType::TLS:
-					UseTLS_ = true;
-					break;
-				case SecurityType::No:
-					break;
+					QMutexLocker l (GetMutex ());
+					Config_ = dia->GetConfig ();
 				}
-
-				InSecurityRequired_ = dia->GetInSecurityRequired ();
-
-				OutSecurity_ = dia->GetOutSecurity ();
-				OutSecurityRequired_ = dia->GetOutSecurityRequired ();
-
-				SMTPNeedsAuth_ = dia->GetSMTPAuth ();
-				InHost_ = dia->GetInHost ();
-				InPort_ = dia->GetInPort ();
-				OutHost_ = dia->GetOutHost ();
-				OutPort_ = dia->GetOutPort ();
-				OutLogin_ = dia->GetOutLogin ();
-				OutType_ = dia->GetOutType ();
-
-				if (KeepAliveInterval_ != dia->GetKeepAliveInterval ())
-				{
-					KeepAliveInterval_ = dia->GetKeepAliveInterval ();
-					UpdateNoopInterval ();
-				}
-
-				LogToFile_ = dia->GetLogConnectionsToFile ();
-
 				FolderManager_->ClearFolderFlags ();
 				const auto& out = dia->GetOutFolder ();
 				if (!out.isEmpty ())
@@ -602,8 +448,6 @@ namespace Snails
 
 				for (const auto& sync : dia->GetFoldersToSync ())
 					FolderManager_->AppendFolderFlags (sync, AccountFolderManager::FolderSyncable);
-
-				DeleteBehaviour_ = dia->GetDeleteBehaviour ();
 
 				emit accountChanged ();
 
@@ -618,18 +462,8 @@ namespace Snails
 
 	bool Account::IsNull () const
 	{
-		return AccName_.isEmpty () ||
-			Login_.isEmpty ();
-	}
-
-	QString Account::GetInUsername () const
-	{
-		return Login_;
-	}
-
-	QString Account::GetOutUsername () const
-	{
-		return OutLogin_;
+		return Config_.AccName_.isEmpty () ||
+			Config_.Login_.isEmpty ();
 	}
 
 	ProgressListener_ptr Account::MakeProgressListener (const QString& context) const
@@ -644,7 +478,7 @@ namespace Snails
 
 	void Account::UpdateNoopInterval ()
 	{
-		NoopNotifier_->SetData (KeepAliveInterval_);
+		NoopNotifier_->SetData (Config_.KeepAliveInterval_);
 	}
 
 	QFuture<QString> Account::BuildInURL ()
@@ -653,14 +487,15 @@ namespace Snails
 		return GetPassword (Direction::In) *
 				[this] (const QString& pass)
 				{
-					QMutexLocker l (GetMutex ());
+					const auto& cfg = GetConfig ();
 
-					QString result { UseSSL_ ? "imaps://" : "imap://" };
-					result += Login_;
+					const auto isSsl = cfg.InSecurity_ == AccountConfig::SecurityType::SSL;
+					QString result { isSsl ? "imaps://" : "imap://" };
+					result += cfg.Login_;
 					result += ":";
 					result.replace ('@', "%40");
 					result += pass + '@';
-					result += InHost_;
+					result += cfg.InHost_;
 
 					return result;
 				};
@@ -669,28 +504,30 @@ namespace Snails
 	QFuture<QString> Account::BuildOutURL ()
 	{
 		using Util::operator*;
-		QMutexLocker l (GetMutex ());
 
-		if (OutType_ == OutType::Sendmail)
+		const auto& cfg = GetConfig ();
+
+		if (cfg.OutType_ == AccountConfig::OutType::Sendmail)
 			return Util::MakeReadyFuture (QString { "sendmail://localhost" });
 
-		QString result { OutSecurity_ == SecurityType::SSL ? "smtps://" : "smtp://" };
+		const auto isSsl = cfg.OutSecurity_ == AccountConfig::SecurityType::SSL;
+		QString result { isSsl ? "smtps://" : "smtp://" };
 
-		if (!SMTPNeedsAuth_)
-			return Util::MakeReadyFuture (result + OutHost_);
+		if (!cfg.SMTPNeedsAuth_)
+			return Util::MakeReadyFuture (result + cfg.OutHost_);
 
 		QFuture<QString> passFuture;
-		if (OutLogin_.isEmpty ())
+		if (cfg.OutLogin_.isEmpty ())
 		{
-			result += Login_;
+			result += cfg.Login_;
 			passFuture = GetPassword (Direction::In);
 		}
 		else
 		{
-			result += OutLogin_;
+			result += cfg.OutLogin_;
 			passFuture = GetPassword (Direction::Out);
 		}
-		auto outHost = OutHost_;
+		auto outHost = cfg.OutHost_;
 
 		return passFuture *
 				[result, outHost] (const QString& pass)
@@ -751,7 +588,7 @@ namespace Snails
 					Util::ReportFutureResult (promise,
 							Util::GetPassword (GetStoreID (dir),
 									tr ("Enter password for account %1:")
-										.arg (GetName ()),
+										.arg (Config_.AccName_),
 									Core::Instance ().GetProxy ()));
 				});
 		return promise.future ();

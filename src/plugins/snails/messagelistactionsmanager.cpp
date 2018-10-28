@@ -319,7 +319,7 @@ namespace Snails
 					return;
 
 				OutgoingMessage msg;
-				msg.From_.Email_ = acc->GetUserEmail ();
+				msg.From_.Email_ = acc->GetConfig ().UserEmail_;
 				msg.To_ = Addresses_t { { {}, url.path () } };
 				const auto& subjQuery = Util::UrlAccessor { url } ["subject"];
 				msg.Subject_ = subjQuery.isEmpty () ? "unsubscribe" : subjQuery;

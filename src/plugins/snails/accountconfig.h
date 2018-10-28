@@ -27,66 +27,63 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "accountlogger.h"
-#include <QFile>
-#include <QDateTime>
-#include <QtDebug>
-#include <QDir>
-#include <util/sys/paths.h>
-#include "account.h"
+#pragma once
 
-namespace LeechCraft
+#include <QString>
+
+namespace LeechCraft::Snails
 {
-namespace Snails
-{
-	AccountLogger::AccountLogger (Account *acc)
-	: QObject { acc }
-	, Acc_ { acc }
+	struct AccountConfig
 	{
-	}
+		QString AccName_;
+		QString UserName_;
+		QString UserEmail_;
 
-	void AccountLogger::Log (const QString& context, int connId, const QString& msg)
-	{
-		const auto& now = QDateTime::currentDateTime ();
-		const auto& str = QString { "[%1] [%2] [%3]: %4" }
-				.arg (now.toString ("dd.MM.yyyy HH:mm:ss.zzz"))
-				.arg (context)
-				.arg (connId)
-				.arg (msg);
+		QString Login_;
+		bool UseSASL_ = false;
+		bool SASLRequired_ = false;
 
-		QMetaObject::invokeMethod (this,
-				"writeLog",
-				Qt::QueuedConnection,
-				Q_ARG (QString, str));
-
-		emit gotLog (now, context, connId, msg);
-	}
-
-	void AccountLogger::writeLog (const QString& log)
-	{
-		if (!Acc_->GetConfig ().LogToFile_)
-			return;
-
-		if (!File_)
+		enum class SecurityType
 		{
-			const auto& path = Util::CreateIfNotExists ("snails/logs").filePath (Acc_->GetConfig ().AccName_ + ".log");
-			File_ = std::make_shared<QFile> (path);
-			if (!File_->open (QIODevice::WriteOnly))
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "unable to open"
-						<< path
-						<< "for writing, error:"
-						<< File_->errorString ();
-				return;
-			}
-		}
+			TLS,
+			SSL,
+			No
+		};
+		SecurityType InSecurity_ = SecurityType::TLS;
+		bool InSecurityRequired_ = false;
+		SecurityType OutSecurity_ = SecurityType::SSL;
+		bool OutSecurityRequired_ = false;
 
-		if (File_->isOpen ())
+		bool SMTPNeedsAuth_ = true;
+
+		QString InHost_;
+		int InPort_;
+
+		QString OutHost_;
+		int OutPort_;
+
+		QString OutLogin_;
+
+		enum class OutType
 		{
-			File_->write (log.toUtf8 () + "\n");
-			File_->flush ();
-		}
-	}
-}
+			SMTP,
+			Sendmail
+		};
+		OutType OutType_;
+
+		int KeepAliveInterval_ = 90 * 1000;
+		bool LogToFile_ = true;
+
+		enum class DeleteBehaviour
+		{
+			Default,
+			Expunge,
+			MoveToTrash
+		};
+
+		DeleteBehaviour DeleteBehaviour_ = DeleteBehaviour::Default;
+	};
+
+	QDataStream& operator<< (QDataStream&, const AccountConfig&);
+	QDataStream& operator>> (QDataStream&, AccountConfig&);
 }

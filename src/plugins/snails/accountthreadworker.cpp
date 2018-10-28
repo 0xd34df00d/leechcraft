@@ -118,12 +118,13 @@ namespace Snails
 
 		const vmime::string VMimeAuth::getUsername () const
 		{
+			const auto& cfg = Acc_->GetConfig ();
 			switch (Dir_)
 			{
 			case Account::Direction::Out:
-				return Acc_->GetOutUsername ().toStdString ();
+				return cfg.OutLogin_.toStdString ();
 			case Account::Direction::In:
-				return Acc_->GetInUsername ().toStdString ();
+				return cfg.Login_.toStdString ();
 			}
 
 			Util::Unreachable ();
@@ -202,6 +203,7 @@ namespace Snails
 			return CachedStore_;
 
 		auto url = WaitForFuture (A_->BuildInURL ());
+		const auto& cfg = A_->GetConfig ();
 
 		auto st = Session_->getStore (vmime::utility::url (url.toUtf8 ().constData ()));
 
@@ -210,14 +212,14 @@ namespace Snails
 		st->setCertificateVerifier (CertVerifier_);
 		st->setAuthenticator (InAuth_);
 
-		if (A_->UseTLS_)
+		if (cfg.InSecurity_ == AccountConfig::SecurityType::TLS)
 		{
 			st->setProperty ("connection.tls", true);
-			st->setProperty ("connection.tls.required", A_->InSecurityRequired_);
+			st->setProperty ("connection.tls.required", cfg.InSecurityRequired_);
 		}
-		st->setProperty ("options.sasl", A_->UseSASL_);
-		st->setProperty ("options.sasl.fallback", A_->SASLRequired_);
-		st->setProperty ("server.port", A_->InPort_);
+		st->setProperty ("options.sasl", cfg.UseSASL_);
+		st->setProperty ("options.sasl.fallback", cfg.SASLRequired_);
+		st->setProperty ("server.port", cfg.InPort_);
 
 		st->connect ();
 
@@ -236,12 +238,13 @@ namespace Snails
 	vmime::shared_ptr<vmime::net::transport> AccountThreadWorker::MakeTransport ()
 	{
 		auto url = WaitForFuture (A_->BuildOutURL ());
+		const auto& cfg = A_->GetConfig ();
 
 		QString username;
 		QString password;
 		bool setAuth = false;
-		if (A_->SMTPNeedsAuth_ &&
-				A_->OutType_ == Account::OutType::SMTP)
+		if (cfg.SMTPNeedsAuth_ &&
+				cfg.OutType_ == AccountConfig::OutType::SMTP)
 		{
 			setAuth = true;
 
@@ -264,12 +267,12 @@ namespace Snails
 			trp->setProperty ("auth.username", username.toUtf8 ().constData ());
 			trp->setProperty ("auth.password", password.toUtf8 ().constData ());
 		}
-		trp->setProperty ("server.port", A_->OutPort_);
+		trp->setProperty ("server.port", cfg.OutPort_);
 
-		if (A_->OutSecurity_ == Account::SecurityType::TLS)
+		if (cfg.OutSecurity_ == AccountConfig::SecurityType::TLS)
 		{
 			trp->setProperty ("connection.tls", true);
-			trp->setProperty ("connection.tls.required", A_->OutSecurityRequired_);
+			trp->setProperty ("connection.tls.required", cfg.OutSecurityRequired_);
 		}
 
 		return trp;

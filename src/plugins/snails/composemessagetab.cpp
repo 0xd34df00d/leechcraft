@@ -427,7 +427,7 @@ namespace Snails
 		auto accsGroup = new QActionGroup (this);
 		for (const auto& account : AccsMgr_->GetAccounts ())
 		{
-			QAction *act = new QAction (account->GetName (), this);
+			QAction *act = new QAction (account->GetConfig ().AccName_, this);
 			accsGroup->addAction (act);
 			act->setCheckable (true);
 			act->setChecked (true);
@@ -630,7 +630,10 @@ namespace Snails
 		const auto editor = Ui_.Editor_->GetCurrentEditor ();
 
 		auto message = std::make_shared<OutgoingMessage> ();
-		message->From_ = Address { account->GetUserName (), account->GetUserEmail () };
+
+		const auto& config = account->GetConfig ();
+		message->From_ = Address { config.UserName_, config.UserEmail_ };
+
 		message->To_ = FromUserInput (Ui_.To_->text ());
 		message->Subject_ = Ui_.Subject_->text ();
 		message->Body_ = editor->GetContents (ContentType::PlainText);

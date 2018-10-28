@@ -36,6 +36,7 @@
 #include "accountthread.h"
 #include "accountthreadworkerfwd.h"
 #include "progressfwd.h"
+#include "accountconfig.h"
 
 class QMutex;
 class QAbstractItemModel;
@@ -80,64 +81,7 @@ namespace Snails
 		QMutex * const AccMutex_;
 
 		QByteArray ID_;
-
-		QString AccName_;
-		QString UserName_;
-		QString UserEmail_;
-
-		QString Login_;
-		bool UseSASL_ = false;
-		bool SASLRequired_ = false;
-	public:
-		enum class SecurityType
-		{
-			TLS,
-			SSL,
-			No
-		};
-	private:
-		bool UseTLS_ = true;
-		bool UseSSL_ = false;
-		bool InSecurityRequired_ = false;
-
-		SecurityType OutSecurity_ = SecurityType::SSL;
-		bool OutSecurityRequired_ = false;
-
-		bool SMTPNeedsAuth_ = true;
-
-		QString InHost_;
-		int InPort_;
-
-		QString OutHost_;
-		int OutPort_;
-
-		QString OutLogin_;
-
-		int KeepAliveInterval_ = 90 * 1000;
-
-		bool LogToFile_ = true;
-	public:
-		enum class Direction
-		{
-			In,
-			Out
-		};
-
-		enum class OutType
-		{
-			SMTP,
-			Sendmail
-		};
-
-		enum class DeleteBehaviour
-		{
-			Default,
-			Expunge,
-			MoveToTrash
-		};
-	private:
-		OutType OutType_;
-		DeleteBehaviour DeleteBehaviour_ = DeleteBehaviour::Default;
+		AccountConfig Config_;
 
 		AccountFolderManager *FolderManager_;
 		FoldersModel *FoldersModel_;
@@ -149,16 +93,18 @@ namespace Snails
 		ProgressManager * const ProgressMgr_;
 		Storage * const Storage_;
 	public:
+		enum class Direction
+		{
+			In,
+			Out
+		};
+
 		Account (Storage *st, ProgressManager*, QObject* = nullptr);
 
+		AccountConfig GetConfig () const;
+
 		QByteArray GetID () const;
-		QString GetName () const;
-		QString GetServer () const;
 
-		QString GetUserName () const;
-		QString GetUserEmail () const;
-
-		bool ShouldLogToFile () const;
 		AccountLogger* GetLogger () const;
 
 		std::shared_ptr<AccountDatabase> GetDatabase () const;
@@ -199,9 +145,6 @@ namespace Snails
 		void OpenConfigDialog (const std::function<void ()>& onAccepted = {});
 
 		bool IsNull () const;
-
-		QString GetInUsername () const;
-		QString GetOutUsername () const;
 
 		ProgressListener_ptr MakeProgressListener (const QString&) const;
 

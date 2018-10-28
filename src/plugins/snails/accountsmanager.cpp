@@ -90,10 +90,11 @@ namespace Snails
 	{
 		Accounts_ << account;
 
+		const auto& config = account->GetConfig ();
 		const QList<QStandardItem*> row
 		{
-			new QStandardItem { account->GetName () },
-			new QStandardItem { account->GetServer () }
+			new QStandardItem { config.AccName_ },
+			new QStandardItem { config.InHost_ + ':' + QString::number (config.InPort_) }
 		};
 		AccountsModel_->appendRow (row);
 

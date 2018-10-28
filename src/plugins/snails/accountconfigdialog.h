@@ -31,7 +31,7 @@
 
 #include <QDialog>
 #include "ui_accountconfigdialog.h"
-#include "account.h"
+#include "accountconfig.h"
 
 namespace LeechCraft
 {
@@ -44,6 +44,9 @@ namespace Snails
 		Ui::AccountConfigDialog Ui_;
 	public:
 		AccountConfigDialog (QWidget* = 0);
+
+		AccountConfig GetConfig () const;
+		void SetConfig (const AccountConfig&);
 
 		QString GetName () const;
 		void SetName (const QString&);
@@ -63,8 +66,8 @@ namespace Snails
 		int GetInPort () const;
 		void SetInPort (int);
 
-		Account::OutType GetOutType () const;
-		void SetOutType (Account::OutType);
+		AccountConfig::OutType GetOutType () const;
+		void SetOutType (AccountConfig::OutType);
 
 		QString GetOutHost () const;
 		void SetOutHost (const QString&);
@@ -81,14 +84,14 @@ namespace Snails
 		bool GetSASLRequired () const;
 		void SetSASLRequired (bool);
 
-		Account::SecurityType GetInSecurity () const;
-		void SetInSecurity (Account::SecurityType);
+		AccountConfig::SecurityType GetInSecurity () const;
+		void SetInSecurity (AccountConfig::SecurityType);
 
 		bool GetInSecurityRequired () const;
 		void SetInSecurityRequired (bool);
 
-		Account::SecurityType GetOutSecurity () const;
-		void SetOutSecurity (Account::SecurityType);
+		AccountConfig::SecurityType GetOutSecurity () const;
+		void SetOutSecurity (AccountConfig::SecurityType);
 
 		bool GetOutSecurityRequired () const;
 		void SetOutSecurityRequired (bool);
@@ -110,8 +113,8 @@ namespace Snails
 		bool GetLogConnectionsToFile () const;
 		void SetLogConnectionsToFile (bool);
 
-		Account::DeleteBehaviour GetDeleteBehaviour () const;
-		void SetDeleteBehaviour (Account::DeleteBehaviour);
+		AccountConfig::DeleteBehaviour GetDeleteBehaviour () const;
+		void SetDeleteBehaviour (AccountConfig::DeleteBehaviour);
 	private slots:
 		void resetInPort ();
 		void rebuildFoldersToSyncLine ();
