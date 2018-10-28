@@ -102,18 +102,19 @@ namespace Snails
 		}
 	}
 
-	Account::Account (Storage *st, ProgressManager *pm, QObject *parent)
-	: QObject (parent)
+	Account::Account (const QByteArray& id, const AccountConfig& cfg, const Dependencies& deps)
+	: QObject (deps.Parent_)
 	, Logger_ (new AccountLogger (this))
-	, WorkerPool_ (new ThreadPool (this, st))
+	, WorkerPool_ (new ThreadPool (this, deps.Storage_))
 	, AccMutex_ (new QMutex (QMutex::Recursive))
-	, ID_ (QUuid::createUuid ().toByteArray ())
+	, ID_ (id)
+	, Config_ (cfg)
 	, FolderManager_ (new AccountFolderManager (this))
 	, FoldersModel_ (new FoldersModel (this))
-	, MailModelsManager_ (new MailModelsManager (this, st))
+	, MailModelsManager_ (new MailModelsManager (this, deps.Storage_))
 	, NoopNotifier_ (std::make_shared<AccountThreadNotifier<int>> ())
-	, ProgressMgr_ (pm)
-	, Storage_ (st)
+	, ProgressMgr_ (deps.PM_)
+	, Storage_ (deps.Storage_)
 	{
 		connect (FolderManager_,
 				SIGNAL (foldersUpdated ()),
@@ -158,6 +159,11 @@ namespace Snails
 								[] (const auto& e) { qWarning () << Q_FUNC_INFO << e.what (); });
 					}
 				};
+	}
+
+	Account::Account (const AccountConfig& cfg, const Dependencies& deps)
+	: Account { QUuid::createUuid ().toByteArray (), cfg, deps }
+	{
 	}
 
 	AccountConfig Account::GetConfig () const
@@ -394,7 +400,7 @@ namespace Snails
 		return result;
 	}
 
-	void Account::Deserialize (const QByteArray& arr)
+	Account_ptr Account::Deserialize (const QByteArray& arr, const Dependencies& deps)
 	{
 		QDataStream in (arr);
 		quint8 version = 0;
@@ -403,17 +409,17 @@ namespace Snails
 		if (version != 1)
 			throw std::runtime_error { "Unknown version " + std::to_string (version) };
 
-		in >> ID_;
+		QByteArray id;
+		AccountConfig cfg;
+		in >> id;
+		in >> cfg;
 
-		{
-			QMutexLocker l (GetMutex ());
-			in >> Config_;
-		}
+		auto acc = std::make_shared<Account> (id, cfg, deps);
 
 		QByteArray fstate;
 		in >> fstate;
-		FolderManager_->Deserialize (fstate);
-		handleFoldersUpdated ();
+		acc->FolderManager_->Deserialize (fstate);
+		acc->handleFoldersUpdated ();
 	}
 
 	void Account::OpenConfigDialog (const std::function<void ()>& onAccepted)

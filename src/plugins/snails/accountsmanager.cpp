@@ -34,6 +34,7 @@
 #include <QtDebug>
 #include <util/sll/prelude.h>
 #include "accountfoldermanager.h"
+#include "accountconfigdialog.h"
 
 namespace LeechCraft
 {
@@ -68,7 +69,7 @@ namespace Snails
 
 	void AccountsManager::InitiateAccountAddition ()
 	{
-		const auto acc = std::make_shared<Account> (Storage_, ProgressMgr_);
+		const auto acc = std::make_shared<Account> (AccountConfig {}, Account::Dependencies { Storage_, ProgressMgr_ });
 
 		acc->OpenConfigDialog ([acc, this]
 				{
@@ -114,19 +115,17 @@ namespace Snails
 				QCoreApplication::applicationName () + "_Snails_Accounts");
 		for (const auto& var : settings.value ("Accounts").toList ())
 		{
-			const auto acc = std::make_shared<Account> (Storage_, ProgressMgr_);
 			try
 			{
-				acc->Deserialize (var.toByteArray ());
+				const auto acc = Account::Deserialize (var.toByteArray (), { Storage_, ProgressMgr_ });
+				AddAccountImpl (acc);
 			}
 			catch (const std::exception& e)
 			{
 				qWarning () << Q_FUNC_INFO
 						<< "unable to deserialize account, sorry :("
 						<< e.what ();
-				continue;
 			}
-			AddAccountImpl (acc);
 		}
 	}
 

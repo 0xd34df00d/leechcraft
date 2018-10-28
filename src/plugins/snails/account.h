@@ -99,7 +99,15 @@ namespace Snails
 			Out
 		};
 
-		Account (Storage *st, ProgressManager*, QObject* = nullptr);
+		struct Dependencies
+		{
+			Storage *Storage_;
+			ProgressManager *PM_;
+			QObject *Parent_ = nullptr;
+		};
+
+		Account (const QByteArray&, const AccountConfig&, const Dependencies&);
+		Account (const AccountConfig&, const Dependencies&);
 
 		AccountConfig GetConfig () const;
 
@@ -140,7 +148,7 @@ namespace Snails
 		void DeleteMessages (const QList<QByteArray>& ids, const QStringList& folder);
 
 		QByteArray Serialize () const;
-		void Deserialize (const QByteArray&);
+		static std::shared_ptr<Account> Deserialize (const QByteArray&, const Dependencies&);
 
 		void OpenConfigDialog (const std::function<void ()>& onAccepted = {});
 
