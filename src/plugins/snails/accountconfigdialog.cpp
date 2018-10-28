@@ -52,232 +52,62 @@ namespace Snails
 	{
 		return
 		{
-			GetName (),
-			GetUserName (),
-			GetUserEmail (),
-			GetLogin (),
+			Ui_.AccName_->text (),
+			Ui_.UserName_->text (),
+			Ui_.UserEmail_->text (),
+			Ui_.InLogin_->text (),
 
-			GetUseSASL (),
-			GetSASLRequired (),
-			GetInSecurity (),
-			GetInSecurityRequired (),
-			GetOutSecurity (),
-			GetOutSecurityRequired (),
+			Ui_.UseSASL_->checkState () == Qt::Checked,
+			Ui_.SASLRequired_->checkState () == Qt::Checked,
+			static_cast<AccountConfig::SecurityType> (Ui_.InSecurityType_->currentIndex ()),
+			Ui_.InSecurityRequired_->checkState () == Qt::Checked,
+			static_cast<AccountConfig::SecurityType> (Ui_.OutSecurityType_->currentIndex ()),
+			Ui_.OutSecurityRequired_->checkState () == Qt::Checked,
 
-			GetSMTPAuth (),
-			GetInHost (),
-			GetInPort (),
-			GetOutHost (),
-			GetOutPort (),
-			GetOutLogin (),
-			GetOutType (),
+			Ui_.SMTPAuthRequired_->checkState () == Qt::Checked,
+			Ui_.InHost_->text (),
+			Ui_.InPort_->value (),
+			Ui_.OutAddress_->text (),
+			Ui_.OutPort_->value (),
+			Ui_.CustomOut_->isChecked () ? Ui_.OutLogin_->text () : QString {},
+			static_cast<AccountConfig::OutType> (Ui_.OutType_->currentIndex ()),
 
-			GetKeepAliveInterval (),
-			GetLogConnectionsToFile (),
+			Ui_.KeepAliveInterval_->value () * 1000,
+			Ui_.LogConnectionsToFile_->checkState () == Qt::Checked,
 
-			GetDeleteBehaviour ()
+			static_cast<AccountConfig::DeleteBehaviour> (Ui_.DeletionBehaviour_->currentIndex ())
 		};
 	}
 
 	void AccountConfigDialog::SetConfig (const AccountConfig& cfg)
 	{
-		SetName (cfg.AccName_);
-		SetUserName (cfg.UserName_);
-		SetUserEmail (cfg.UserEmail_);
-		SetLogin (cfg.Login_);
+		Ui_.AccName_->setText (cfg.AccName_);
+		Ui_.UserName_->setText (cfg.UserName_);
+		Ui_.UserEmail_->setText (cfg.UserEmail_);
+		Ui_.InLogin_->setText (cfg.Login_);
 
-		SetUseSASL (cfg.UseSASL_);
-		SetSASLRequired (cfg.SASLRequired_);
-		SetInSecurity (cfg.InSecurity_);
-		SetInSecurityRequired (cfg.InSecurityRequired_);
-		SetOutSecurity (cfg.OutSecurity_);
-		SetOutSecurityRequired (cfg.OutSecurityRequired_);
+		Ui_.UseSASL_->setCheckState (cfg.UseSASL_ ? Qt::Checked : Qt::Unchecked);
+		Ui_.SASLRequired_->setCheckState (cfg.SASLRequired_ ? Qt::Checked : Qt::Unchecked);
+		Ui_.InSecurityType_->setCurrentIndex (static_cast<int> (cfg.InSecurity_));
+		Ui_.InSecurityRequired_->setCheckState (cfg.InSecurityRequired_ ? Qt::Checked : Qt::Unchecked);
+		Ui_.OutSecurityType_->setCurrentIndex (static_cast<int> (cfg.OutSecurity_));
+		Ui_.OutSecurityRequired_->setCheckState (cfg.OutSecurityRequired_ ? Qt::Checked : Qt::Unchecked);
 
-		SetSMTPAuth (cfg.SMTPNeedsAuth_);
-		SetInHost (cfg.InHost_);
-		SetInPort (cfg.InPort_);
-		SetOutHost (cfg.OutHost_);
-		SetOutPort (cfg.OutPort_);
-		SetOutLogin (cfg.OutLogin_);
-		SetOutType (cfg.OutType_);
+		Ui_.SMTPAuthRequired_->setCheckState (cfg.SMTPNeedsAuth_ ? Qt::Checked : Qt::Unchecked);
+		Ui_.InHost_->setText (cfg.InHost_);
+		Ui_.InPort_->setValue (cfg.InPort_);
+		Ui_.OutAddress_->setText (cfg.OutHost_);
+		Ui_.OutPort_->setValue (cfg.OutPort_);
 
-		SetKeepAliveInterval (cfg.KeepAliveInterval_);
-		SetLogConnectionsToFile (cfg.LogToFile_);
+		Ui_.CustomOut_->setChecked (!cfg.OutLogin_.isEmpty ());
+		Ui_.OutLogin_->setText (cfg.OutLogin_);
 
-		SetDeleteBehaviour (cfg.DeleteBehaviour_);
-	}
+		Ui_.OutType_->setCurrentIndex (static_cast<int> (cfg.OutType_));
 
-	QString AccountConfigDialog::GetName () const
-	{
-		return Ui_.AccName_->text ();
-	}
+		Ui_.KeepAliveInterval_->setValue (cfg.KeepAliveInterval_ / 1000);
+		Ui_.LogConnectionsToFile_->setCheckState (cfg.LogToFile_ ? Qt::Checked : Qt::Unchecked);
 
-	void AccountConfigDialog::SetName (const QString& name)
-	{
-		Ui_.AccName_->setText (name);
-	}
-
-	QString AccountConfigDialog::GetUserName () const
-	{
-		return Ui_.UserName_->text ();
-	}
-
-	void AccountConfigDialog::SetUserName (const QString& name)
-	{
-		Ui_.UserName_->setText (name);
-	}
-
-	QString AccountConfigDialog::GetUserEmail () const
-	{
-		return Ui_.UserEmail_->text ();
-	}
-
-	void AccountConfigDialog::SetUserEmail (const QString& email)
-	{
-		Ui_.UserEmail_->setText (email);
-	}
-
-	QString AccountConfigDialog::GetLogin () const
-	{
-		return Ui_.InLogin_->text ();
-	}
-
-	void AccountConfigDialog::SetLogin (const QString& login)
-	{
-		Ui_.InLogin_->setText (login);
-	}
-
-	QString AccountConfigDialog::GetInHost () const
-	{
-		return Ui_.InHost_->text ();
-	}
-
-	void AccountConfigDialog::SetInHost (const QString& host)
-	{
-		Ui_.InHost_->setText (host);
-	}
-
-	int AccountConfigDialog::GetInPort () const
-	{
-		return Ui_.InPort_->value ();
-	}
-
-	void AccountConfigDialog::SetInPort (int port)
-	{
-		Ui_.InPort_->setValue (port);
-	}
-
-	AccountConfig::OutType AccountConfigDialog::GetOutType () const
-	{
-		return static_cast<AccountConfig::OutType> (Ui_.OutType_->currentIndex ());
-	}
-
-	void AccountConfigDialog::SetOutType (AccountConfig::OutType type)
-	{
-		Ui_.OutType_->setCurrentIndex (static_cast<int> (type));
-	}
-
-	QString AccountConfigDialog::GetOutHost () const
-	{
-		return Ui_.OutAddress_->text ();
-	}
-
-	void AccountConfigDialog::SetOutHost (const QString& host)
-	{
-		Ui_.OutAddress_->setText (host);
-	}
-
-	int AccountConfigDialog::GetOutPort () const
-	{
-		return Ui_.OutPort_->value ();
-	}
-
-	void AccountConfigDialog::SetOutPort (int port)
-	{
-		Ui_.OutPort_->setValue (port);
-	}
-
-	QString AccountConfigDialog::GetOutLogin () const
-	{
-		return Ui_.CustomOut_->isChecked () ?
-				Ui_.OutLogin_->text () :
-				QString ();
-	}
-
-	void AccountConfigDialog::SetOutLogin (const QString& login)
-	{
-		Ui_.CustomOut_->setChecked (!login.isEmpty ());
-		Ui_.OutLogin_->setText (login);
-	}
-
-	bool AccountConfigDialog::GetUseSASL () const
-	{
-		return Ui_.UseSASL_->checkState () == Qt::Checked;
-	}
-
-	void AccountConfigDialog::SetUseSASL (bool use)
-	{
-		Ui_.UseSASL_->setCheckState (use ? Qt::Checked : Qt::Unchecked);
-	}
-
-	bool AccountConfigDialog::GetSASLRequired () const
-	{
-		return Ui_.SASLRequired_->checkState () == Qt::Checked;
-	}
-
-	void AccountConfigDialog::SetSASLRequired (bool req)
-	{
-		Ui_.SASLRequired_->setCheckState (req ? Qt::Checked : Qt::Unchecked);
-	}
-
-	AccountConfig::SecurityType AccountConfigDialog::GetInSecurity () const
-	{
-		return static_cast<AccountConfig::SecurityType> (Ui_.InSecurityType_->currentIndex ());
-	}
-
-	void AccountConfigDialog::SetInSecurity (AccountConfig::SecurityType type)
-	{
-		Ui_.InSecurityType_->setCurrentIndex (static_cast<int> (type));
-	}
-
-	bool AccountConfigDialog::GetInSecurityRequired () const
-	{
-		return Ui_.InSecurityRequired_->checkState () == Qt::Checked;
-	}
-
-	void AccountConfigDialog::SetInSecurityRequired (bool req)
-	{
-		Ui_.InSecurityRequired_->setCheckState (req ? Qt::Checked : Qt::Unchecked);
-	}
-
-	AccountConfig::SecurityType AccountConfigDialog::GetOutSecurity () const
-	{
-		return static_cast<AccountConfig::SecurityType> (Ui_.OutSecurityType_->currentIndex ());
-	}
-
-	void AccountConfigDialog::SetOutSecurity (AccountConfig::SecurityType type)
-	{
-		Ui_.OutSecurityType_->setCurrentIndex (static_cast<int> (type));
-	}
-
-	bool AccountConfigDialog::GetOutSecurityRequired () const
-	{
-		return Ui_.OutSecurityRequired_->checkState () == Qt::Checked;
-	}
-
-	void AccountConfigDialog::SetOutSecurityRequired (bool req)
-	{
-		Ui_.OutSecurityRequired_->setCheckState (req ? Qt::Checked : Qt::Unchecked);
-	}
-
-	bool AccountConfigDialog::GetSMTPAuth () const
-	{
-		return Ui_.SMTPAuthRequired_->checkState () == Qt::Checked;
-	}
-
-	void AccountConfigDialog::SetSMTPAuth (bool smtp)
-	{
-		Ui_.SMTPAuthRequired_->setCheckState (smtp ? Qt::Checked : Qt::Unchecked);
+		Ui_.DeletionBehaviour_->setCurrentIndex (static_cast<int> (cfg.DeleteBehaviour_));
 	}
 
 	void AccountConfigDialog::SetAllFolders (const QList<QStringList>& folders)
@@ -333,26 +163,6 @@ namespace Snails
 		Ui_.OutgoingFolder_->setCurrentIndex (-1);
 	}
 
-	int AccountConfigDialog::GetKeepAliveInterval () const
-	{
-		return Ui_.KeepAliveInterval_->value () * 1000;
-	}
-
-	void AccountConfigDialog::SetKeepAliveInterval (int interval)
-	{
-		Ui_.KeepAliveInterval_->setValue (interval / 1000);
-	}
-
-	bool AccountConfigDialog::GetLogConnectionsToFile () const
-	{
-		return Ui_.LogConnectionsToFile_->checkState () == Qt::Checked;
-	}
-
-	void AccountConfigDialog::SetLogConnectionsToFile (bool log)
-	{
-		Ui_.LogConnectionsToFile_->setCheckState (log ? Qt::Checked : Qt::Unchecked);
-	}
-
 	void AccountConfigDialog::resetInPort ()
 	{
 		const QList<int> values { 465, 993, 143 };
@@ -367,16 +177,6 @@ namespace Snails
 		const auto& folders = std::accumulate (sync.begin (), sync.end (), QStringList (),
 				[] (QStringList fs, const QStringList& f) { return fs << f.join ("/"); });
 		Ui_.FoldersToSync_->setText (folders.join ("; "));
-	}
-
-	AccountConfig::DeleteBehaviour AccountConfigDialog::GetDeleteBehaviour () const
-	{
-		return static_cast<AccountConfig::DeleteBehaviour> (Ui_.DeletionBehaviour_->currentIndex ());
-	}
-
-	void AccountConfigDialog::SetDeleteBehaviour (AccountConfig::DeleteBehaviour behaviour)
-	{
-		Ui_.DeletionBehaviour_->setCurrentIndex (static_cast<int> (behaviour));
 	}
 }
 }

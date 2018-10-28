@@ -48,73 +48,11 @@ namespace Snails
 		AccountConfig GetConfig () const;
 		void SetConfig (const AccountConfig&);
 
-		QString GetName () const;
-		void SetName (const QString&);
-
-		QString GetUserName () const;
-		void SetUserName (const QString&);
-
-		QString GetUserEmail () const;
-		void SetUserEmail (const QString&);
-
-		QString GetLogin () const;
-		void SetLogin (const QString&);
-
-		QString GetInHost () const;
-		void SetInHost (const QString&);
-
-		int GetInPort () const;
-		void SetInPort (int);
-
-		AccountConfig::OutType GetOutType () const;
-		void SetOutType (AccountConfig::OutType);
-
-		QString GetOutHost () const;
-		void SetOutHost (const QString&);
-
-		int GetOutPort () const;
-		void SetOutPort (int);
-
-		QString GetOutLogin () const;
-		void SetOutLogin (const QString&);
-
-		bool GetUseSASL () const;
-		void SetUseSASL (bool);
-
-		bool GetSASLRequired () const;
-		void SetSASLRequired (bool);
-
-		AccountConfig::SecurityType GetInSecurity () const;
-		void SetInSecurity (AccountConfig::SecurityType);
-
-		bool GetInSecurityRequired () const;
-		void SetInSecurityRequired (bool);
-
-		AccountConfig::SecurityType GetOutSecurity () const;
-		void SetOutSecurity (AccountConfig::SecurityType);
-
-		bool GetOutSecurityRequired () const;
-		void SetOutSecurityRequired (bool);
-
-		bool GetSMTPAuth () const;
-		void SetSMTPAuth (bool);
-
 		void SetAllFolders (const QList<QStringList>&);
-
 		QList<QStringList> GetFoldersToSync () const;
 		void SetFoldersToSync (const QList<QStringList>&);
-
 		QStringList GetOutFolder () const;
 		void SetOutFolder (const QStringList&);
-
-		int GetKeepAliveInterval () const;
-		void SetKeepAliveInterval (int);
-
-		bool GetLogConnectionsToFile () const;
-		void SetLogConnectionsToFile (bool);
-
-		AccountConfig::DeleteBehaviour GetDeleteBehaviour () const;
-		void SetDeleteBehaviour (AccountConfig::DeleteBehaviour);
 	private slots:
 		void resetInPort ();
 		void rebuildFoldersToSyncLine ();
