@@ -69,15 +69,17 @@ namespace Snails
 
 	void AccountsManager::InitiateAccountAddition ()
 	{
-		const auto acc = std::make_shared<Account> (AccountConfig {}, Account::Dependencies { Storage_, ProgressMgr_ });
+		auto dia = new AccountConfigDialog;
+		dia->setAttribute (Qt::WA_DeleteOnClose);
+		dia->show ();
 
-		acc->OpenConfigDialog ([acc, this]
+		connect (dia,
+				&QDialog::accepted,
+				this,
+				[this, dia]
 				{
-					if (acc->IsNull ())
-						return;
-
-					AddAccountImpl (acc);
-
+					AddAccountImpl (std::make_shared<Account> (dia->GetConfig (),
+							Account::Dependencies { Storage_, ProgressMgr_ }));
 					SaveAccounts ();
 				});
 	}
