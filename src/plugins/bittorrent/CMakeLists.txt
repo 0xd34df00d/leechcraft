@@ -6,7 +6,7 @@ find_package (Boost REQUIRED COMPONENTS date_time filesystem system thread)
 
 set (CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
-find_package (RBTorrent REQUIRED)
+find_package (LibtorrentRasterbar REQUIRED)
 find_package (OpenSSL REQUIRED)
 
 option (ENABLE_BITTORRENT_GEOIP "Enable support for GeoIP in BitTorrent (requires building libtorrent with GeoIP support)" OFF)
@@ -22,15 +22,11 @@ endif ()
 include_directories (${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${Boost_INCLUDE_DIR}
-	${RBTorrent_INCLUDE_DIR}
+	${LibtorrentRasterbar_INCLUDE_DIRS}
 	${LEECHCRAFT_INCLUDE_DIR}
 	${OPENSSL_INCLUDE_DIR}
 	${GEOIP_INCLUDE_DIRS}
 	)
-
-if (WIN32)
-	include_directories (${RBTorrent_INCLUDE_DIR}/../zlib)
-endif ()
 
 set (SRCS
 	torrentplugin.cpp
@@ -174,7 +170,7 @@ target_link_libraries (leechcraft_bittorrent
 	${Boost_DATE_TIME_LIBRARY}
 	${Boost_FILESYSTEM_LIBRARY}
 	${QT_LIBRARIES}
-	${RBTorrent_LIBRARY}
+	${LibtorrentRasterbar_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	${CRYPTOLIB}
 	${GEOIP_LIBRARIES}
