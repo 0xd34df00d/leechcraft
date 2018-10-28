@@ -9,12 +9,6 @@
 # Added more introspection for WIN32 (c) 2011 DZhon (TheDZhon@gmail.com)
 
 if (WIN32)
-	if (MSVC)
-		#MSVS 2010
-		if (MSVC_VERSION LESS 1600)
-			message(FATAL_ERROR "We currently support only MSVC 2010 version")
-		endif ()
-	endif ()
 	if (NOT DEFINED RBTorrent_DIR)
 		if (RBTorrent_FIND_REQUIRED)
 			message(FATAL_ERROR "Please set RBTorrent_DIR variable")
