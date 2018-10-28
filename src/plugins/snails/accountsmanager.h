@@ -65,8 +65,7 @@ namespace Snails
 	private:
 		void AddAccountImpl (Account_ptr);
 		void LoadAccounts ();
-	private slots:
-		void saveAccounts () const;
+		void SaveAccounts () const;
 	};
 }
 }

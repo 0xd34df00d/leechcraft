@@ -77,7 +77,7 @@ namespace Snails
 
 					AddAccountImpl (acc);
 
-					saveAccounts ();
+					SaveAccounts ();
 				});
 	}
 
@@ -99,13 +99,13 @@ namespace Snails
 		AccountsModel_->appendRow (row);
 
 		connect (account.get (),
-				SIGNAL (accountChanged ()),
+				&Account::accountChanged,
 				this,
-				SLOT (saveAccounts ()));
+				&AccountsManager::SaveAccounts);
 		connect (account->GetFolderManager (),
-				SIGNAL (foldersUpdated ()),
+				&AccountFolderManager::foldersUpdated,
 				this,
-				SLOT (saveAccounts ()));
+				&AccountsManager::SaveAccounts);
 	}
 
 	void AccountsManager::LoadAccounts ()
@@ -130,7 +130,7 @@ namespace Snails
 		}
 	}
 
-	void AccountsManager::saveAccounts () const
+	void AccountsManager::SaveAccounts () const
 	{
 		const auto& serialized = Util::Map (Accounts_,
 				[] (const Account_ptr& acc) -> QVariant { return acc->Serialize (); });
