@@ -45,8 +45,6 @@ namespace Snails
 
 	class AccountsManager : public QObject
 	{
-		Q_OBJECT
-
 		QStandardItemModel * const AccountsModel_;
 		QList<Account_ptr> Accounts_;
 
