@@ -97,10 +97,6 @@ set (RESOURCES bittorrentresources.qrc)
 CreateTrs ("bittorrent" "ar;be;de;en;eo;es;fr;it;oc;pl;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget ("bittorrent" "en;ru_RU" "${SRCS}" "${FORMS}" "torrentsettings.xml")
 
-if (APPLE)
-	add_definitions (-DWITH_SHIPPED_GEOIP_H -DBOOST_ASIO_DISABLE_STD_CHRONO)
-endif ()
-
 if (UNIX)
 	find_program (LPKGC_CMD pkg-config)
 
@@ -123,19 +119,12 @@ endif ()
 add_definitions (${LibtorrentRasterbar_DEFINITIONS})
 
 if (WIN32)
-	add_definitions (-DTORRENT_DISABLE_GEO_IP )
-	add_definitions (-DTORRENT_USE_I2P=1 )
-	add_definitions (-DTORRENT_USE_OPENSSL)
 	add_definitions (-DWIN32)
 	add_definitions (-D_WIN32_WINNT=0x0500)
 	add_definitions (-DWIN32_LEAN_AND_MEAN)
 	add_definitions (-DBOOST_ASIO_DYN_LINK)
 	add_definitions (-DBOOST_ALL_NO_LIB)
 endif ()
-
-add_definitions (-DBOOST_ASIO_HEADER_ONLY)
-
-add_definitions (-DTORRENT_LINKING_SHARED)
 
 QtWrapUi (UIS_H ${FORMS})
 QtAddResources (RCCS ${RESOURCES})
