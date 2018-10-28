@@ -27,6 +27,9 @@
        <property name="text">
         <string>Add...</string>
        </property>
+       <property name="icon">
+        <iconset theme="list-add"/>
+       </property>
       </widget>
      </item>
      <item>
@@ -34,12 +37,18 @@
        <property name="text">
         <string>Modify...</string>
        </property>
+       <property name="icon">
+        <iconset theme="document-edit"/>
+       </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="RemoveButton_">
        <property name="text">
         <string>Remove</string>
+       </property>
+       <property name="icon">
+        <iconset theme="list-remove"/>
        </property>
       </widget>
      </item>
