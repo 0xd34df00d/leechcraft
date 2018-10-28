@@ -122,6 +122,8 @@ if (UNIX)
 	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${RB_LT_CFLAGS}")
 endif ()
 
+add_definitions (${LibtorrentRasterbar_DEFINITIONS})
+
 if (WIN32)
 	add_definitions (-DTORRENT_DISABLE_GEO_IP )
 	add_definitions (-DTORRENT_USE_I2P=1 )
