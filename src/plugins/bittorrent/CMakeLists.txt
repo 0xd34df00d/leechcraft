@@ -129,19 +129,6 @@ endif ()
 QtWrapUi (UIS_H ${FORMS})
 QtAddResources (RCCS ${RESOURCES})
 
-if (NOT OVERRIDE_CHRONO_PROVIDER_CHECK)
-	include (cmake/CheckChrono.cmake)
-
-	if ((LIBTORRENT_BUILT_WITH_STD_CHRONO AND LIBTORRENT_BUILT_WITH_BOOST_CHRONO) OR
-		(NOT LIBTORRENT_BUILT_WITH_STD_CHRONO AND NOT LIBTORRENT_BUILT_WITH_BOOST_CHRONO))
-		message (FATAL "Unable to determine chrono provider")
-	else ()
-		if (LIBTORRENT_BUILT_WITH_BOOST_CHRONO)
-			add_definitions (-DBOOST_ASIO_DISABLE_STD_CHRONO)
-		endif ()
-	endif ()
-endif ()
-
 add_library (leechcraft_bittorrent SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
