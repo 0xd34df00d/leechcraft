@@ -68,6 +68,7 @@ set (SRCS
 	messageinfo.cpp
 	messagebodies.cpp
 	accountconfig.cpp
+	accountaddwizard.cpp
 	)
 set (FORMS
 	mailtab.ui
@@ -77,6 +78,8 @@ set (FORMS
 	headersviewwidget.ui
 	templateseditorwidget.ui
 	multieditorwidget.ui
+	accountaddwizardemailpage.ui
+	accountaddwizardtemplatepage.ui
 	)
 set (RESOURCES snailsresources.qrc)
 CreateTrs ("snails" "en;ru_RU" COMPILED_TRANSLATIONS)
