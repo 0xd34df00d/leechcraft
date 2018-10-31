@@ -31,6 +31,7 @@
 #include <QUrl>
 #include <QMessageBox>
 #include <QTextDocument>
+#include <QMenu>
 #include <QtDebug>
 #include <vmime/messageIdSequence.hpp>
 #include <util/xpc/util.h>
@@ -46,6 +47,7 @@
 #include "storage.h"
 #include "accountdatabase.h"
 #include "outgoingmessage.h"
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -428,7 +430,7 @@ namespace Snails
 		class AttachmentsProvider final : public MessageListActionsProvider
 		{
 		public:
-			QList<MessageListActionInfo> GetMessageActions (const MessageInfo& info, const Header_ptr& headers, Account *acc) const override
+			QList<MessageListActionInfo> GetMessageActions (const MessageInfo& info, const Header_ptr&, Account *acc) const override
 			{
 				if (info.Attachments_.isEmpty ())
 					return {};
@@ -441,10 +443,20 @@ namespace Snails
 						QIcon::fromTheme ("mail-attachment"),
 						QColor { "green" },
 						MessageListActionFlag::None,
-						[acc] (const MessageInfo&)
+						[acc] (const MessageInfo& info)
 						{
-							// TODO
-							//new MessageAttachmentsDialog { acc, msg };
+							const auto iem = Core::Instance ().GetProxy ()->GetEntityManager ();
+
+							const auto menu = new QMenu;
+							menu->setAttribute (Qt::WA_DeleteOnClose);
+							for (const auto& att : info.Attachments_)
+								menu->addAction (att.GetName (),
+										[=]
+										{
+											RunAttachmentSaveDialog (acc, iem,
+													info.FolderId_, info.Folder_, att.GetName ());
+										});
+							menu->popup (QCursor::pos ());
 						},
 						{}
 					}
