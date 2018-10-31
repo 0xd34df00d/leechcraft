@@ -73,7 +73,6 @@ namespace Snails
 	{
 		Q_OBJECT
 
-		friend class AccountThreadWorker;
 		AccountLogger * const Logger_;
 
 		ThreadPool * const WorkerPool_;
