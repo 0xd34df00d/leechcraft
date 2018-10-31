@@ -147,7 +147,7 @@ namespace Snails
 			QString iconName;
 			if (!msg.IsRead_)
 				iconName = "mail-unread-new";
-			else if (structItem->UnreadChildren_.size ())
+			else if (!structItem->UnreadChildren_.empty ())
 				iconName = "mail-unread";
 			else
 				iconName = "mail-read";
