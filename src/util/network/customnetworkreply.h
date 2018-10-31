@@ -122,21 +122,21 @@ namespace Util
 		 *
 		 * This function does nothing.
 		 */
-		void abort ();
+		void abort () override;
 
 		/** @brief Reimplemented from QNetworkReply::bytesAvailable().
 		 *
 		 * This function returns the number of bytes left unread.
 		 */
-		qint64 bytesAvailable () const;
+		qint64 bytesAvailable () const override;
 
 		/** @brief Reimplemented from QNetworkReply::isSequential().
 		 *
 		 * This function always returns <code>true</code>.
 		 */
-		bool isSequential () const;
+		bool isSequential () const override;
 	protected:
-		qint64 readData (char*, qint64);
+		qint64 readData (char*, qint64) override;
 	};
 }
 }
