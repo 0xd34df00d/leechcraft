@@ -48,8 +48,6 @@ namespace Util
 	 */
 	class UTIL_NETWORK_API CustomNetworkReply : public QNetworkReply
 	{
-		Q_OBJECT
-
 		QByteArray Content_;
 		qint64 Offset_ = 0;
 	public:
