@@ -61,26 +61,8 @@ namespace Util
 		 */
 		CustomNetworkReply (const QUrl& url, QObject *parent = 0);
 
-		/** @brief Sets the network error of this reply.
-		 *
-		 * This function can be used to set the given network error with
-		 * an optional reason string.
-		 *
-		 * @param[in] error The network error.
-		 * @param[in] reason The additional reason string.
-		 */
-		void SetError (NetworkError error, const QString& reason = QString ());
-
-		/** @brief Sets the given header to the given value.
-		 *
-		 * This function sets the given \em header to the given \em value.
-		 *
-		 * @param[in] header The known standard header to set.
-		 * @param[in] value The value of the header.
-		 *
-		 * @sa SetContentType()
-		 */
-		void SetHeader (QNetworkRequest::KnownHeaders header, const QVariant& value);
+		using QNetworkReply::setError;
+		using QNetworkReply::setHeader;
 
 		/** @brief Sets the content type of this reply.
 		 *
