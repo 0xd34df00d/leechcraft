@@ -69,6 +69,7 @@ set (SRCS
 	messagebodies.cpp
 	accountconfig.cpp
 	accountaddwizard.cpp
+	mailwebpagenam.cpp
 	)
 set (FORMS
 	mailtab.ui
