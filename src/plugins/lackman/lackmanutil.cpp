@@ -31,6 +31,7 @@
 #include <QString>
 #include <QFileInfo>
 #include <QDir>
+#include <QCoreApplication>
 #include <QtDebug>
 #include "repoinfo.h"
 
