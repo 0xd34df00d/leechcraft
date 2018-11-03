@@ -57,6 +57,7 @@ namespace Snails
 	class AccountsManager;
 	class Storage;
 	class MailTreeDelegate;
+	class MailWebPage;
 
 	enum class MsgType;
 
@@ -68,6 +69,8 @@ namespace Snails
 		Q_INTERFACES (ITabWidget IWkFontsSettable)
 
 		Ui::MailTab Ui_;
+
+		MailWebPage *MailWebPage_;
 
 		const ICoreProxy_ptr Proxy_;
 		ComposeMessageTabFactory * const ComposeMessageTabFactory_;

@@ -50,7 +50,7 @@ namespace Snails
 		const QStringList Folder_;
 		const QByteArray MsgId_;
 
-		QList<AttDescr> AttQueue_;
+		QStringList AttQueue_;
 
 		std::shared_ptr<QTemporaryDir> TempDir_;
 		QStringList Paths_;
@@ -69,7 +69,7 @@ namespace Snails
 		QFutureInterface<Result_t> Promise_;
 	public:
 		AttachmentsFetcher (Account*,
-				const QStringList& folder, const QByteArray& msgId, const QList<AttDescr>& attachments);
+				const QStringList& folder, const QByteArray& msgId, const QStringList& attNames);
 
 		QFuture<Result_t> GetFuture ();
 	private:

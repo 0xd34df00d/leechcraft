@@ -48,6 +48,7 @@
 #include <vmime/stringContentHandler.hpp>
 #include <vmime/fileAttachment.hpp>
 #include <vmime/messageIdSequence.hpp>
+#include <vmime/attachmentHelper.hpp>
 #include <util/util.h>
 #include <util/xpc/util.h>
 #include <util/sll/prelude.h>
@@ -325,63 +326,62 @@ namespace Snails
 
 	namespace
 	{
+		template<typename F>
 		class MessageStructHandler
 		{
-			QList<AttDescr> Attachments_;
+			F Handler_;
 		public:
-			MessageStructHandler (const vmime::shared_ptr<vmime::net::message>&);
-
-			const QList<AttDescr>& GetAttachments () const
+			MessageStructHandler (const vmime::shared_ptr<vmime::net::message>& msg, const F& handler)
+			: Handler_ { handler }
 			{
-				return Attachments_;
+				if (const auto& structure = msg->getStructure ())
+					EnumParts (structure);
 			}
 		private:
-			void HandlePart (const vmime::shared_ptr<vmime::net::messagePart>&);
-
-			template<typename T>
-			void EnumParts (const T&);
-		};
-
-		MessageStructHandler::MessageStructHandler (const vmime::shared_ptr<vmime::net::message>& message)
-		{
-			if (const auto& structure = message->getStructure ())
-				EnumParts (structure);
-		}
-
-		void MessageStructHandler::HandlePart (const vmime::shared_ptr<vmime::net::messagePart>& part)
-		{
-			const auto& type = part->getType ();
-
-			if (type.getType () == "text")
-				return;
-
-			if (type.getType () == "multipart")
+			void HandlePart (const vmime::shared_ptr<vmime::net::messagePart>& part)
 			{
-				EnumParts (part);
-				return;
+				const auto& type = part->getType ();
+
+				if (type.getType () == "text")
+					return;
+
+				if (type.getType () == "multipart")
+				{
+					EnumParts (part);
+					return;
+				}
+
+				Handler_ (part);
 			}
 
-			Attachments_ << AttDescr {
-					QString::fromStdString (part->getName ()),
-					{},
-					type.getType ().c_str (),
-					type.getSubType ().c_str (),
-					static_cast<qlonglong> (part->getSize ())
-				};
-		}
-
-		template<typename T>
-		void MessageStructHandler::EnumParts (const T& enumable)
-		{
-			const auto pc = enumable->getPartCount ();
-			for (vmime::size_t i = 0; i < pc; ++i)
-				HandlePart (enumable->getPartAt (i));
-		}
+			template<typename T>
+			void EnumParts (const T& enumable)
+			{
+				const auto pc = enumable->getPartCount ();
+				for (vmime::size_t i = 0; i < pc; ++i)
+					HandlePart (enumable->getPartAt (i));
+			}
+		};
 
 		QList<AttDescr> CollectAttachments (const vmime::shared_ptr<vmime::net::message>& message)
 		{
-			MessageStructHandler handler { message };
-			return handler.GetAttachments ();
+			QList<AttDescr> atts;
+			MessageStructHandler
+			{
+				message,
+				[&atts] (const auto& part)
+				{
+					const auto& type = part->getType ();
+					atts << AttDescr {
+							QString::fromStdString (part->getName ()),
+							{},
+							type.getType ().c_str (),
+							type.getSubType ().c_str (),
+							static_cast<qlonglong> (part->getSize ())
+						};
+				}
+			};
+			return atts;
 		}
 	}
 
@@ -867,15 +867,16 @@ namespace Snails
 			return FetchAttachmentResult_t::Left (MessageNotFound {});
 		}
 
-		vmime::messageParser mp (messages.front ()->getParsedMessage ());
-		for (const auto& att : mp.getAttachmentList ())
+		const auto& parsedMsg = messages.front ()->getParsedMessage ();
+		const auto& attachments = vmime::attachmentHelper::findAttachmentsInMessage (parsedMsg,
+				vmime::attachmentHelper::INLINE_OBJECTS);
+		for (const auto& att : attachments)
 		{
 			if (StringizeCT (att->getName ()) != attName)
 				continue;
 
-			auto data = att->getData ();
-
-			QFile file (path);
+			const auto& data = att->getData ();
+			QFile file { path };
 			if (!file.open (QIODevice::WriteOnly))
 			{
 				qWarning () << Q_FUNC_INFO
@@ -887,11 +888,15 @@ namespace Snails
 
 			OutputIODevAdapter adapter (&file);
 			const auto pl = A_->MakeProgressListener (tr ("Fetching attachment %1...")
-						.arg (attName));
+					.arg (attName));
 			data->extract (adapter, pl.get ());
 
 			return FetchAttachmentResult_t::Right ({});
 		}
+
+		qWarning () << Q_FUNC_INFO
+				<< "attachment not found"
+				<< attName;
 
 		return FetchAttachmentResult_t::Left (AttachmentNotFound {});
 	}

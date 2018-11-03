@@ -160,7 +160,7 @@ namespace WebKitView
 
 		const auto result = new Util::CustomNetworkReply { reqUrl, frame };
 		result->SetContent (QObject::tr ("Blocked"));
-		result->SetError (QNetworkReply::ContentAccessDenied,
+		result->setError (QNetworkReply::ContentAccessDenied,
 				QObject::tr ("Blocked: %1")
 						.arg (reqUrl.toString ()));
 		hook->SetReturnValue (QVariant::fromValue<QNetworkReply*> (result));

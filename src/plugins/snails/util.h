@@ -30,11 +30,17 @@
 #pragma once
 
 class QString;
+class QStringList;
+class QByteArray;
 
-namespace LeechCraft
+class IEntityManager;
+
+namespace LeechCraft::Snails
 {
-namespace Snails
-{
+	class Account;
+
 	QString PlainBody2HTML (const QString&);
-}
+
+	void RunAttachmentSaveDialog (Account*, IEntityManager*,
+			const QByteArray& id, const QStringList& folder, const QString& name);
 }

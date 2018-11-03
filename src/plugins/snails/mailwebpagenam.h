@@ -29,39 +29,25 @@
 
 #pragma once
 
-#include <QWebPage>
-#include <interfaces/core/icoreproxy.h>
-#include "messageinfo.h"
+#include <functional>
+#include <QNetworkAccessManager>
 
-namespace LeechCraft
+namespace LeechCraft::Snails
 {
-namespace Snails
-{
-	class Account;
+	struct MessagePageContext;
 
-	struct MessagePageContext
+	class MailWebPageNAM : public QNetworkAccessManager
 	{
-		Account *Acc_ = nullptr;
-		MessageInfo MsgInfo_;
-	};
-
-	class MailWebPage : public QWebPage
-	{
-		Q_OBJECT
-
-		const ICoreProxy_ptr Proxy_;
-		MessagePageContext Ctx_;
 	public:
-		MailWebPage (const ICoreProxy_ptr&, QObject* = nullptr);
-
-		void SetMessageContext (const MessagePageContext&);
-	protected:
-		bool acceptNavigationRequest (QWebFrame*, const QNetworkRequest&, NavigationType);
+		using ContextGetter = std::function<MessagePageContext ()>;
 	private:
-		void HandleAttachment (const QUrl&);
-	signals:
-		void attachmentSelected (const QByteArray& msgId,
-				const QStringList& folder, const QString& attName);
+		ContextGetter CtxGetter_;
+	public:
+		MailWebPageNAM (ContextGetter, QObject* = nullptr);
+	protected:
+		QNetworkReply* createRequest (QNetworkAccessManager::Operation, const QNetworkRequest&, QIODevice*);
+	private:
+		QNetworkReply* HandleNetworkRequest (QNetworkAccessManager::Operation, const QNetworkRequest&, QIODevice*);
+		QNetworkReply* HandleCIDRequest (QNetworkAccessManager::Operation, const QNetworkRequest&, QIODevice*);
 	};
-}
 }

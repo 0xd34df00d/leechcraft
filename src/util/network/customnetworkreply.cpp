@@ -41,16 +41,6 @@ namespace Util
 		setUrl (url);
 	}
 
-	void CustomNetworkReply::SetError (QNetworkReply::NetworkError error, const QString& text)
-	{
-		setError (error, text);
-	}
-
-	void CustomNetworkReply::SetHeader (QNetworkRequest::KnownHeaders header, const QVariant& value)
-	{
-		setHeader (header, value);
-	}
-
 	void CustomNetworkReply::SetContentType (const QByteArray& ct)
 	{
 		setHeader (QNetworkRequest::ContentTypeHeader, ct);
@@ -68,7 +58,7 @@ namespace Util
 
 		open (ReadOnly | Unbuffered);
 
-		SetHeader (QNetworkRequest::ContentLengthHeader, QVariant (Content_.size ()));
+		setHeader (QNetworkRequest::ContentLengthHeader, Content_.size ());
 
 		QTimer::singleShot (0,
 				this,

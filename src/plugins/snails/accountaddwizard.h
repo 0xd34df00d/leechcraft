@@ -29,39 +29,20 @@
 
 #pragma once
 
-#include <QWebPage>
-#include <interfaces/core/icoreproxy.h>
-#include "messageinfo.h"
+#include <QWizard>
 
 namespace LeechCraft
 {
 namespace Snails
 {
-	class Account;
+	struct AccountConfig;
 
-	struct MessagePageContext
+	class AccountAddWizard final : public QWizard
 	{
-		Account *Acc_ = nullptr;
-		MessageInfo MsgInfo_;
-	};
-
-	class MailWebPage : public QWebPage
-	{
-		Q_OBJECT
-
-		const ICoreProxy_ptr Proxy_;
-		MessagePageContext Ctx_;
 	public:
-		MailWebPage (const ICoreProxy_ptr&, QObject* = nullptr);
+		AccountAddWizard (QWidget* = nullptr);
 
-		void SetMessageContext (const MessagePageContext&);
-	protected:
-		bool acceptNavigationRequest (QWebFrame*, const QNetworkRequest&, NavigationType);
-	private:
-		void HandleAttachment (const QUrl&);
-	signals:
-		void attachmentSelected (const QByteArray& msgId,
-				const QStringList& folder, const QString& attName);
+		AccountConfig GetConfig () const;
 	};
 }
 }

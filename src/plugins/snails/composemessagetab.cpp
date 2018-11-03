@@ -45,6 +45,7 @@
 #include <util/sll/visitor.h>
 #include <util/sll/delayedexecutor.h>
 #include <util/sll/unreachable.h>
+#include <util/sll/prelude.h>
 #include <util/xpc/util.h>
 #include <util/gui/util.h>
 #include <interfaces/itexteditor.h>
@@ -388,7 +389,7 @@ namespace Snails
 			return;
 
 		LinkedAttachmentsFetcher_ = std::make_shared<AttachmentsFetcher> (GetSelectedAccount (),
-				info.Folder_, info.FolderId_, attachments);
+				info.Folder_, info.FolderId_, Util::Map (attachments, &AttDescr::GetName));
 		Util::Sequence (this, LinkedAttachmentsFetcher_->GetFuture ()) >>
 				Util::Visitor
 				{

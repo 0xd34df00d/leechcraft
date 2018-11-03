@@ -38,11 +38,11 @@ namespace LeechCraft
 namespace Snails
 {
 	AttachmentsFetcher::AttachmentsFetcher (Account *acc,
-			const QStringList& folder, const QByteArray& msgId, const QList<AttDescr>& attachments)
+			const QStringList& folder, const QByteArray& msgId, const QStringList& attNames)
 	: Acc_ { acc }
 	, Folder_ { folder }
 	, MsgId_ { msgId }
-	, AttQueue_ { attachments }
+	, AttQueue_ { attNames }
 	{
 		Promise_.reportStarted ();
 
@@ -74,9 +74,9 @@ namespace Snails
 			}
 		}
 
-		const auto& att = AttQueue_.takeFirst ();
-		const auto& filePath = QDir { TempDir_->path () }.filePath (att.GetName ());
-		Util::Sequence (Acc_, Acc_->FetchAttachment (Folder_, MsgId_, att.GetName (), filePath)) >>
+		const auto& attName = AttQueue_.takeFirst ();
+		const auto& filePath = QDir { TempDir_->path () }.filePath (attName);
+		Util::Sequence (Acc_, Acc_->FetchAttachment (Folder_, MsgId_, attName, filePath)) >>
 				Util::Visitor
 				{
 					[=] (Util::Void)

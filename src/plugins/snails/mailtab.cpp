@@ -66,6 +66,7 @@
 #include "composemessagetabfactory.h"
 #include "accountsmanager.h"
 #include "structures.h"
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -94,12 +95,12 @@ namespace Snails
 
 		Ui_.TreeViewSplitter_->setSizes ({ Ui_.MailTree_->minimumWidth (), Ui_.MailView_->minimumWidth () });
 
-		const auto mailWebPage = new MailWebPage { Proxy_, Ui_.MailView_ };
-		connect (mailWebPage,
+		MailWebPage_ = new MailWebPage { Proxy_, Ui_.MailView_ };
+		connect (MailWebPage_,
 				&MailWebPage::attachmentSelected,
 				this,
 				&MailTab::HandleAttachment);
-		Ui_.MailView_->setPage (mailWebPage);
+		Ui_.MailView_->setPage (MailWebPage_);
 		Ui_.MailView_->settings ()->setAttribute (QWebSettings::DeveloperExtrasEnabled, true);
 
 		Ui_.AccountsTree_->setModel (AccsMgr_->GetAccountsModel ());
@@ -657,6 +658,7 @@ namespace Snails
 	{
 		const auto& html = ToHtml (msgInfo, bodies, HtmlViewAllowed_);
 
+		MailWebPage_->SetMessageContext ({ CurrAcc_.get (), msgInfo });
 		Ui_.MailView_->setHtml (html);
 
 		MsgAttachments_->clear ();
@@ -1104,33 +1106,7 @@ namespace Snails
 		if (!CurrAcc_)
 			return;
 
-		const auto& path = QFileDialog::getSaveFileName (nullptr,
-				tr ("Save attachment"),
-				QDir::homePath () + '/' + name);
-		if (path.isEmpty ())
-			return;
-
-		const auto iem = Proxy_->GetEntityManager ();
-
-		Util::Sequence (nullptr, CurrAcc_->FetchAttachment (folder, id, name, path)) >>
-				Util::Visitor
-				{
-					[iem, name] (Util::Void)
-					{
-						iem->HandleEntity (Util::MakeNotification ("LeechCraft Snails",
-									tr ("Attachment %1 fetched successfully.")
-										.arg (Util::FormatName (name)),
-									Priority::Info));
-					},
-					[iem, name] (auto errVar)
-					{
-						iem->HandleEntity (Util::MakeNotification ("LeechCraft Snails",
-									tr ("Unable to fetch %1: %2.")
-											.arg (Util::FormatName (name))
-											.arg (Util::Visit (errVar, [] (auto err) { return err.what (); })),
-									Priority::Critical));
-					}
-				};
+		RunAttachmentSaveDialog (CurrAcc_.get (), Proxy_->GetEntityManager (), id, folder, name);
 	}
 
 	void MailTab::handleFetchNewMail ()

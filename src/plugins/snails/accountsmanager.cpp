@@ -35,6 +35,7 @@
 #include <util/sll/prelude.h>
 #include "accountfoldermanager.h"
 #include "accountconfigdialog.h"
+#include "accountaddwizard.h"
 
 namespace LeechCraft
 {
@@ -69,18 +70,29 @@ namespace Snails
 
 	void AccountsManager::InitiateAccountAddition ()
 	{
-		auto dia = new AccountConfigDialog;
-		dia->setAttribute (Qt::WA_DeleteOnClose);
-		dia->show ();
+		auto wiz = new AccountAddWizard;
+		wiz->setAttribute (Qt::WA_DeleteOnClose);
+		wiz->show ();
 
-		connect (dia,
+		connect (wiz,
 				&QDialog::accepted,
 				this,
-				[this, dia]
+				[this, wiz]
 				{
-					AddAccountImpl (std::make_shared<Account> (dia->GetConfig (),
-							Account::Dependencies { Storage_, ProgressMgr_ }));
-					SaveAccounts ();
+					auto dia = new AccountConfigDialog;
+					dia->setAttribute (Qt::WA_DeleteOnClose);
+					dia->SetConfig (wiz->GetConfig ());
+					dia->show ();
+
+					connect (dia,
+							&QDialog::accepted,
+							this,
+							[this, dia]
+							{
+								AddAccountImpl (std::make_shared<Account> (dia->GetConfig (),
+										Account::Dependencies { Storage_, ProgressMgr_ }));
+								SaveAccounts ();
+							});
 				});
 	}
 
