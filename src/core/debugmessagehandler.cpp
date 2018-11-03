@@ -327,7 +327,7 @@ namespace
 	class AddrInfoGetter
 	{
 	public:
-		boost::optional<AddrInfo> operator() (const char *str)
+		boost::optional<AddrInfo> operator() (const char*)
 		{
 			return {};
 		}
