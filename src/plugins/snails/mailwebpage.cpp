@@ -33,6 +33,7 @@
 #include <QUrlQuery>
 #include <util/xpc/util.h>
 #include <interfaces/core/ientitymanager.h>
+#include "mailwebpagenam.h"
 
 namespace LeechCraft
 {
@@ -42,6 +43,7 @@ namespace Snails
 	: QWebPage { parent }
 	, Proxy_ { proxy }
 	{
+		setNetworkAccessManager (new MailWebPageNAM { [this] { return Ctx_; }, this });
 	}
 
 	void MailWebPage::SetMessageContext (const MessagePageContext& ctx)
