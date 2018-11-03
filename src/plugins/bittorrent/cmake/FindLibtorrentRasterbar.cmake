@@ -74,7 +74,7 @@ list(FIND LibtorrentRasterbar_DEFINITIONS -DTORRENT_USE_OPENSSL LibtorrentRaster
 if(LibtorrentRasterbar_ENCRYPTION_INDEX GREATER -1)
     find_package(OpenSSL REQUIRED)
     set(LibtorrentRasterbar_LIBRARIES ${LibtorrentRasterbar_LIBRARIES} ${OPENSSL_LIBRARIES})
-    set(LibtorrentRasterbar_INCLUDE_DIRS ${LibtorrentRasterbar_INCLUDE_DIRS} ${OPENSSL_INCLUDE_DIRS})
+    set(LibtorrentRasterbar_INCLUDE_DIRS ${LibtorrentRasterbar_INCLUDE_DIRS} ${OPENSSL_INCLUDE_DIR})
     set(LibtorrentRasterbar_OPENSSL_ENABLED ON)
 endif()
 
