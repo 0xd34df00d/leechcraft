@@ -54,7 +54,7 @@ namespace LackManUtil
 
 		QFileInfoList infoEntries;
 #if defined(Q_OS_WIN32)
-		infoEntries += QDir (QApplication::applicationDirPath () + "/share/installed")
+		infoEntries += QDir (QCoreApplication::applicationDirPath () + "/share/installed")
 				.entryInfoList (QDir::NoDotAndDotDot | QDir::Dirs | QDir::Files);
 #elif defined(Q_OS_MAC) && !defined(USE_UNIX_LAYOUT)
 		infoEntries += QDir (QCoreApplication::applicationDirPath () + "/../installed")
