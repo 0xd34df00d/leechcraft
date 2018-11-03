@@ -130,7 +130,8 @@ namespace LeechCraft::Snails
 						qDebug () << Q_FUNC_INFO << "done fetching attachment into" << result.Paths_;
 
 						QFile file { result.Paths_.value (0) };
-						reply->SetContent (QFile { result.Paths_.value (0) }.readAll ());
+						file.open (QIODevice::ReadOnly);
+						reply->SetContent (file.readAll ());
 					},
 					[reply, af] (auto)
 					{
