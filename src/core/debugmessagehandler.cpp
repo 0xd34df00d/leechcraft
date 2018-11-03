@@ -142,7 +142,6 @@ namespace
 		return ostr;
 	}
 
-#if defined (_GNU_SOURCE)
 	struct AddrInfo
 	{
 		std::string ObjectPath_;
@@ -150,6 +149,7 @@ namespace
 		std::string Symbol_;
 	};
 
+#if defined (_GNU_SOURCE)
 	using StrRange_t = std::pair<const char*, const char*>;
 
 	boost::optional<StrRange_t> FindStrRange (const char *str, char open, char close)
