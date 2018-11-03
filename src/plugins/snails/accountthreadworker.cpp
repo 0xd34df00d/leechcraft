@@ -866,33 +866,36 @@ namespace Snails
 			return FetchAttachmentResult_t::Left (MessageNotFound {});
 		}
 
-		vmime::messageParser mp (messages.front ()->getParsedMessage ());
-		for (const auto& att : mp.getAttachmentList ())
+		vmime::shared_ptr<vmime::net::messagePart> attPart;
+		MessageStructHandler
 		{
-			if (StringizeCT (att->getName ()) != attName)
-				continue;
-
-			auto data = att->getData ();
-
-			QFile file (path);
-			if (!file.open (QIODevice::WriteOnly))
+			messages.front (),
+			[&attPart, attName = attName.toStdString ()] (const auto& part)
 			{
-				qWarning () << Q_FUNC_INFO
-						<< "unable to open"
-						<< path
-						<< file.errorString ();
-				return FetchAttachmentResult_t::Left (FileOpenError {});
+				if (part->getName () == attName)
+					attPart = part;
 			}
+		};
 
-			OutputIODevAdapter adapter (&file);
-			const auto pl = A_->MakeProgressListener (tr ("Fetching attachment %1...")
-						.arg (attName));
-			data->extract (adapter, pl.get ());
+		if (!attPart)
+			return FetchAttachmentResult_t::Left (AttachmentNotFound {});
 
-			return FetchAttachmentResult_t::Right ({});
+		QFile file (path);
+		if (!file.open (QIODevice::WriteOnly))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to open"
+					<< path
+					<< file.errorString ();
+			return FetchAttachmentResult_t::Left (FileOpenError {});
 		}
 
-		return FetchAttachmentResult_t::Left (AttachmentNotFound {});
+		OutputIODevAdapter adapter (&file);
+		const auto pl = A_->MakeProgressListener (tr ("Fetching attachment %1...")
+				.arg (attName));
+		messages.front ()->extractPart (attPart, adapter, pl.get (), 0, -1, true);
+
+		return FetchAttachmentResult_t::Right ({});
 	}
 
 	void AccountThreadWorker::CopyMessages (const QList<QByteArray>& ids,
