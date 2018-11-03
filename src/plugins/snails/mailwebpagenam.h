@@ -29,17 +29,25 @@
 
 #pragma once
 
+#include <functional>
 #include <QNetworkAccessManager>
 
 namespace LeechCraft::Snails
 {
+	struct MessagePageContext;
+
 	class MailWebPageNAM : public QNetworkAccessManager
 	{
 	public:
-		using QNetworkAccessManager::QNetworkAccessManager;
+		using ContextGetter = std::function<MessagePageContext ()>;
+	private:
+		ContextGetter CtxGetter_;
+	public:
+		MailWebPageNAM (ContextGetter, QObject* = nullptr);
 	protected:
 		QNetworkReply* createRequest (QNetworkAccessManager::Operation, const QNetworkRequest&, QIODevice*);
 	private:
 		QNetworkReply* HandleNetworkRequest (QNetworkAccessManager::Operation, const QNetworkRequest&, QIODevice*);
+		QNetworkReply* HandleCIDRequest (QNetworkAccessManager::Operation, const QNetworkRequest&, QIODevice*);
 	};
 }
