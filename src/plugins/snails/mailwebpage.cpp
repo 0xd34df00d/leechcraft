@@ -44,6 +44,11 @@ namespace Snails
 	{
 	}
 
+	void MailWebPage::SetMessageContext (const MessagePageContext& ctx)
+	{
+		Ctx_ = ctx;
+	}
+
 	bool MailWebPage::acceptNavigationRequest (QWebFrame*, const QNetworkRequest& req, QWebPage::NavigationType type)
 	{
 		const auto& url = req.url ();

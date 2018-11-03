@@ -36,13 +36,25 @@ namespace LeechCraft
 {
 namespace Snails
 {
+	class Account;
+
+	struct MessagePageContext
+	{
+		Account *Acc_ = nullptr;
+		QStringList Folder_;
+		QByteArray FolderId_;
+	};
+
 	class MailWebPage : public QWebPage
 	{
 		Q_OBJECT
 
 		const ICoreProxy_ptr Proxy_;
+		MessagePageContext Ctx_;
 	public:
 		MailWebPage (const ICoreProxy_ptr&, QObject* = nullptr);
+
+		void SetMessageContext (const MessagePageContext&);
 	protected:
 		bool acceptNavigationRequest (QWebFrame*, const QNetworkRequest&, NavigationType);
 	private:
