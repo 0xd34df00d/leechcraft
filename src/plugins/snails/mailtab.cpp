@@ -658,7 +658,7 @@ namespace Snails
 	{
 		const auto& html = ToHtml (msgInfo, bodies, HtmlViewAllowed_);
 
-		MailWebPage_->SetMessageContext ({ CurrAcc_.get (), msgInfo.Folder_, msgInfo.FolderId_ });
+		MailWebPage_->SetMessageContext ({ CurrAcc_.get (), msgInfo });
 		Ui_.MailView_->setHtml (html);
 
 		MsgAttachments_->clear ();

@@ -31,6 +31,7 @@
 
 #include <QWebPage>
 #include <interfaces/core/icoreproxy.h>
+#include "messageinfo.h"
 
 namespace LeechCraft
 {
@@ -41,8 +42,7 @@ namespace Snails
 	struct MessagePageContext
 	{
 		Account *Acc_ = nullptr;
-		QStringList Folder_;
-		QByteArray FolderId_;
+		MessageInfo MsgInfo_;
 	};
 
 	class MailWebPage : public QWebPage
