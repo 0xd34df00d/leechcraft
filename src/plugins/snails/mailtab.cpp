@@ -95,12 +95,12 @@ namespace Snails
 
 		Ui_.TreeViewSplitter_->setSizes ({ Ui_.MailTree_->minimumWidth (), Ui_.MailView_->minimumWidth () });
 
-		const auto mailWebPage = new MailWebPage { Proxy_, Ui_.MailView_ };
-		connect (mailWebPage,
+		MailWebPage_ = new MailWebPage { Proxy_, Ui_.MailView_ };
+		connect (MailWebPage_,
 				&MailWebPage::attachmentSelected,
 				this,
 				&MailTab::HandleAttachment);
-		Ui_.MailView_->setPage (mailWebPage);
+		Ui_.MailView_->setPage (MailWebPage_);
 		Ui_.MailView_->settings ()->setAttribute (QWebSettings::DeveloperExtrasEnabled, true);
 
 		Ui_.AccountsTree_->setModel (AccsMgr_->GetAccountsModel ());
