@@ -73,6 +73,7 @@ namespace Liznoo
 {
 	namespace
 	{
+#if defined(Q_OS_LINUX)
 		class LogindEventsChecker final : public IChecker<Events::PlatformLayer>
 		{
 			const ICoreProxy_ptr Proxy_;
@@ -96,6 +97,7 @@ namespace Liznoo
 				return Events::MakeUPowerLike (Thread_, Proxy_);
 			}
 		};
+#endif
 
 		template<typename T>
 		class PowerActionsChecker final : public IChecker<PowerActions::Platform>
