@@ -48,6 +48,7 @@
 #include <vmime/stringContentHandler.hpp>
 #include <vmime/fileAttachment.hpp>
 #include <vmime/messageIdSequence.hpp>
+#include <vmime/attachmentHelper.hpp>
 #include <util/util.h>
 #include <util/xpc/util.h>
 #include <util/sll/prelude.h>
@@ -866,36 +867,38 @@ namespace Snails
 			return FetchAttachmentResult_t::Left (MessageNotFound {});
 		}
 
-		vmime::shared_ptr<vmime::net::messagePart> attPart;
-		MessageStructHandler
+		const auto& parsedMsg = messages.front ()->getParsedMessage ();
+		const auto& attachments = vmime::attachmentHelper::findAttachmentsInMessage (parsedMsg,
+				vmime::attachmentHelper::INLINE_OBJECTS);
+		for (const auto& att : attachments)
 		{
-			messages.front (),
-			[&attPart, attName = attName.toStdString ()] (const auto& part)
+			if (StringizeCT (att->getName ()) != attName)
+				continue;
+
+			const auto& data = att->getData ();
+			QFile file { path };
+			if (!file.open (QIODevice::WriteOnly))
 			{
-				if (part->getName () == attName)
-					attPart = part;
+				qWarning () << Q_FUNC_INFO
+						<< "unable to open"
+						<< path
+						<< file.errorString ();
+				return FetchAttachmentResult_t::Left (FileOpenError {});
 			}
-		};
 
-		if (!attPart)
-			return FetchAttachmentResult_t::Left (AttachmentNotFound {});
+			OutputIODevAdapter adapter (&file);
+			const auto pl = A_->MakeProgressListener (tr ("Fetching attachment %1...")
+					.arg (attName));
+			data->extract (adapter, pl.get ());
 
-		QFile file (path);
-		if (!file.open (QIODevice::WriteOnly))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to open"
-					<< path
-					<< file.errorString ();
-			return FetchAttachmentResult_t::Left (FileOpenError {});
+			return FetchAttachmentResult_t::Right ({});
 		}
 
-		OutputIODevAdapter adapter (&file);
-		const auto pl = A_->MakeProgressListener (tr ("Fetching attachment %1...")
-				.arg (attName));
-		messages.front ()->extractPart (attPart, adapter, pl.get (), 0, -1, true);
+		qWarning () << Q_FUNC_INFO
+				<< "attachment not found"
+				<< attName;
 
-		return FetchAttachmentResult_t::Right ({});
+		return FetchAttachmentResult_t::Left (AttachmentNotFound {});
 	}
 
 	void AccountThreadWorker::CopyMessages (const QList<QByteArray>& ids,
