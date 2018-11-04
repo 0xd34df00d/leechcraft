@@ -156,10 +156,12 @@ QTranslator* LeechCraft::Util::LoadTranslator (const QString& baseName,
 
 	auto transl = new QTranslator;
 #ifdef Q_OS_WIN32
+	Q_UNUSED (appName)
 	if (transl->load (filename, ":/") ||
 			transl->load (filename,
 					QCoreApplication::applicationDirPath () + "/translations"))
 #elif defined (Q_OS_MAC) && !defined (USE_UNIX_LAYOUT)
+	Q_UNUSED (appName)
 	if (transl->load (filename, ":/") ||
 			transl->load (filename,
 					QCoreApplication::applicationDirPath () + "/../Resources/translations"))

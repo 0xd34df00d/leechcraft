@@ -126,6 +126,10 @@ if (WIN32)
 	add_definitions (-DBOOST_ALL_NO_LIB)
 endif ()
 
+if (APPLE)
+	add_definitions (-D_LIBCPP_ENABLE_CXX17_REMOVED_AUTO_PTR)
+endif ()
+
 QtWrapUi (UIS_H ${FORMS})
 QtAddResources (RCCS ${RESOURCES})
 

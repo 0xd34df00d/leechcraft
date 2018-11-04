@@ -283,7 +283,7 @@ namespace HotSensors
 		{
 			const auto temp = smc.GetTemp (sensor);
 			if (temp > std::numeric_limits<double>::epsilon ())
-				readings.append ({ name, smc.GetTemp (sensor), 105, 120 });
+				readings.push_back ({ name, smc.GetTemp (sensor), 105, 120 });
 		};
 		append ("CPU", "TC0P");
 		append ("CPU diode", "TC0D");

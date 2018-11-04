@@ -35,6 +35,7 @@
 #include "interfaces/monocle/idocument.h"
 
 class QMenu;
+class QAction;
 
 namespace LeechCraft
 {

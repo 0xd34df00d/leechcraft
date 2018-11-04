@@ -74,7 +74,7 @@ list(FIND LibtorrentRasterbar_DEFINITIONS -DTORRENT_USE_OPENSSL LibtorrentRaster
 if(LibtorrentRasterbar_ENCRYPTION_INDEX GREATER -1)
     find_package(OpenSSL REQUIRED)
     set(LibtorrentRasterbar_LIBRARIES ${LibtorrentRasterbar_LIBRARIES} ${OPENSSL_LIBRARIES})
-    set(LibtorrentRasterbar_INCLUDE_DIRS ${LibtorrentRasterbar_INCLUDE_DIRS} ${OPENSSL_INCLUDE_DIRS})
+    set(LibtorrentRasterbar_INCLUDE_DIRS ${LibtorrentRasterbar_INCLUDE_DIRS} ${OPENSSL_INCLUDE_DIR})
     set(LibtorrentRasterbar_OPENSSL_ENABLED ON)
 endif()
 
@@ -83,12 +83,12 @@ include(FindPackageHandleStandardArgs)
 # if all listed variables are TRUE
 find_package_handle_standard_args(LibtorrentRasterbar DEFAULT_MSG
                                   LibtorrentRasterbar_LIBRARY
-                                  LibtorrentRasterbar_INCLUDE_DIR
+                                  LibtorrentRasterbar_INCLUDE_DIRS
                                   Boost_SYSTEM_FOUND
                                   Boost_THREAD_FOUND
                                   Boost_DATE_TIME_FOUND
                                   Boost_CHRONO_FOUND)
 
-mark_as_advanced(LibtorrentRasterbar_INCLUDE_DIR LibtorrentRasterbar_LIBRARY
+mark_as_advanced(LibtorrentRasterbar_INCLUDE_DIRS LibtorrentRasterbar_LIBRARY
     LibtorrentRasterbar_ORIG_CMAKE_FIND_LIBRARY_SUFFIXES
     LibtorrentRasterbar_ENCRYPTION_INDEX)
