@@ -32,6 +32,7 @@
 #include <QDir>
 #include <QSettings>
 #include <QSet>
+#include <QStandardPaths>
 #include <qtermwidget.h>
 #include <util/sll/prelude.h>
 
@@ -80,13 +81,8 @@ namespace Eleeminator
 
 	void ColorSchemesManager::LoadKonsoleSchemes ()
 	{
-		const QStringList pathCandidates
-		{
-			"/usr/share/apps/konsole/",
-			"/usr/local/share/apps/konsole/",
-			"/usr/share/konsole/",
-			"/usr/local/share/konsole/"
-		};
+		const auto& pathCandidates = Util::Map (QStandardPaths::standardLocations (QStandardPaths::GenericDataLocation),
+				[] (const QString& str) { return str + "/konsole/"; });
 
 		const auto& filenames = Util::ConcatMap (pathCandidates, &CollectSchemes);
 		Schemes_ += Util::Map (Util::Filter (Util::Map (filenames, &ParseScheme),
