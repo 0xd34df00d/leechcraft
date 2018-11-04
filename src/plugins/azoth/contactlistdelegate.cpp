@@ -294,8 +294,6 @@ namespace Azoth
 	void ContactListDelegate::DrawContact (QPainter *painter,
 			QStyleOptionViewItem option, const QModelIndex& index) const
 	{
-		option.rect.adjust (-1.2 * View_->indentation (), 0, 0, 0);
-
 		QObject *entryObj = index.data (Core::CLREntryObject).value<QObject*> ();
 		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
 
