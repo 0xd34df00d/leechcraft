@@ -77,7 +77,7 @@ static const int kFontSize = 24;
 
 	[[NSApp applicationIconImage] drawInRect: boundary
 									fromRect: NSZeroRect
-								   operation: NSCompositeCopy
+								   operation: NSCompositingOperationCopy
 									fraction: 1.0];
 
 	if (badges == nil)
@@ -190,7 +190,7 @@ static const int kFontSize = 24;
 			[gradient release];
 
 			NSMutableParagraphStyle* paragraphStyle = [[[NSMutableParagraphStyle alloc] init] autorelease];
-			[paragraphStyle setAlignment: NSCenterTextAlignment];
+			[paragraphStyle setAlignment: NSTextAlignmentCenter];
 
 			const CGFloat brightness =
 					0.30 * [badgeColor redComponent] +
