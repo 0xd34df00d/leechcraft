@@ -64,6 +64,10 @@ endif ()
 
 option (USE_UNIX_LAYOUT "Install LeechCraft with a UNIX layout on OS X" OFF)
 
+if (APPLE AND NOT USE_UNIX_LAYOUT)
+	set (CMAKE_INSTALL_RPATH "@loader_path/../Frameworks")
+endif ()
+
 if (UNIX AND (NOT APPLE OR USE_UNIX_LAYOUT))
 	if (NOT LIBDIR)
 		set (LIBDIR "lib${LIB_SUFFIX}")
