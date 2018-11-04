@@ -6,8 +6,6 @@ endif ()
 
 project (leechcraft)
 
-set (CMAKE_MACOSX_RPATH OFF)
-
 set (CMAKE_CXX_STANDARD 17)
 set (CMAKE_CXX_STANDARD_REQUIRED TRUE)
 set (CMAKE_CXX_EXTENSIONS OFF)
