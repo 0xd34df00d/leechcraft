@@ -9,7 +9,7 @@ QTVERSION=qt5
 BASEDIR=$(dirname $0)
 echo $BASEDIR
 
-sudo rm -rf $TARGET/leechcraft.app/Contents/Resources/qt.conf $TARGET/leechcraft.app/Contents/Frameworks $TARGET/leechcraft.app/Contents/PlugIns
+rm -rf $TARGET/leechcraft.app/Contents/Resources/qt.conf $TARGET/leechcraft.app/Contents/Frameworks $TARGET/leechcraft.app/Contents/PlugIns
 make -j8 install
 
 # Kludge
