@@ -105,8 +105,8 @@ static const int kFontSize = 24;
 
 		for (NSUInteger i = 0; i < [badges count]; ++i)
 		{
-			__strong NSString* const badgeSrc = [badges objectAtIndex: i];
-			__strong NSColor* const badgeColor = [colors objectAtIndex: i];
+			__strong NSString* const badgeSrc = badges [i];
+			__strong NSColor* const badgeColor = colors [i];
 
 			if (i % kRowsInOneColumn == 0)
 				yOffset = boundary.size.height;
@@ -183,8 +183,8 @@ static const int kFontSize = 24;
 																 yRadius: badgeSize.height / 2.0];
 
 			NSArray* gradientColors = [self getGradientColorsForColor: badgeColor];
-			NSGradient* gradient = [[NSGradient alloc] initWithStartingColor: [gradientColors objectAtIndex: 0]
-																 endingColor: [gradientColors objectAtIndex: 1]];
+			NSGradient* gradient = [[NSGradient alloc] initWithStartingColor: gradientColors [0]
+																 endingColor: gradientColors [1]];
 
 			[gradient drawInBezierPath: path angle: -90.0];
 			[gradient release];
