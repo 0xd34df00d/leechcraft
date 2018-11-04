@@ -1,5 +1,8 @@
 #! /bin/sh
 
+set -e
+set -x
+
 TARGET=/usr/local
 QTVERSION=qt5
 
