@@ -98,6 +98,7 @@ int main (int argc, char **argv)
 #endif
 
 	QCoreApplication::setAttribute (Qt::AA_ShareOpenGLContexts);
+	QApplication::setAttribute (Qt::AA_UseHighDpiPixmaps);
 
 	LeechCraft::Application app (argc, argv);
 	return app.exec ();
