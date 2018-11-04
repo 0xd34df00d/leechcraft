@@ -51,7 +51,7 @@ cp -Rv /usr/local/lib/libboost_chrono*dylib $TARGET/leechcraft.app/Contents/Fram
 cp -Rv /usr/local/lib/qca/crypto $TARGET/leechcraft.app/Contents/PlugIns
 CDIR=$TARGET/leechcraft.app/Contents/PlugIns/crypto; for PLUG in `ls $CDIR`; do sudo install_name_tool -change $(dyldinfo -dylibs $CDIR/$PLUG | grep qca) @executable_path/../Frameworks/qca.framework/qca $CDIR/$PLUG; done
 
-sudo macdeployqt $TARGET/leechcraft.app -verbose=2 -executable=$TARGET/leechcraft.app/Contents/MacOs/lc_anhero_crashprocess -qmldir=/usr/local/leechcraft.app/Contents/Resources/share/qml5
+macdeployqt $TARGET/leechcraft.app -verbose=2 -executable=$TARGET/leechcraft.app/Contents/MacOs/lc_anhero_crashprocess -qmldir=$TARGET/leechcraft.app/Contents/Resources/share/qml5
 
 # Kludge
 sudo rm /usr/lib/libleechcraft-*
