@@ -29,6 +29,7 @@
 
 #include "player.h"
 #include <algorithm>
+#include <random>
 #include <QStandardItemModel>
 #include <QFileInfo>
 #include <QDir>
@@ -1390,7 +1391,7 @@ namespace LMP
 		SetPlayMode (PlayMode::Sequential);
 
 		auto queue = GetQueue ();
-		std::random_shuffle (queue.begin (), queue.end ());
+		std::shuffle (queue.begin (), queue.end (), std::mt19937 { std::random_device {} () });
 		Enqueue (queue, EnqueueReplace);
 	}
 
