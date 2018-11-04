@@ -14,7 +14,6 @@ make -j8 install
 
 # Kludge
 install_name_tool -change libqtermwidget5.0.dylib /usr/local/lib/libqtermwidget5.0.6.0.dylib $TARGET/leechcraft.app/Contents/PlugIns/libleechcraft_eleeminator.dylib
-sudo cp /usr/local/leechcraft.app/Contents/Frameworks/libleechcraft-* /usr/lib
 
 cp -Rv /usr/local/Cellar/$QTVERSION/*/plugins/* $TARGET/leechcraft.app/Contents/PlugIns
 mkdir $TARGET/leechcraft.app/Contents/PlugIns/quick
@@ -52,9 +51,6 @@ cp -Rv /usr/local/lib/qca/crypto $TARGET/leechcraft.app/Contents/PlugIns
 CDIR=$TARGET/leechcraft.app/Contents/PlugIns/crypto; for PLUG in `ls $CDIR`; do sudo install_name_tool -change $(dyldinfo -dylibs $CDIR/$PLUG | grep qca) @executable_path/../Frameworks/qca.framework/qca $CDIR/$PLUG; done
 
 macdeployqt $TARGET/leechcraft.app -verbose=2 -executable=$TARGET/leechcraft.app/Contents/MacOs/lc_anhero_crashprocess -qmldir=$TARGET/leechcraft.app/Contents/Resources/share/qml5
-
-# Kludge
-sudo rm /usr/lib/libleechcraft-*
 
 cd $BASEDIR
 cat Makefile.in | sed s/LC_VERSION/$(git describe)/ > Makefile
