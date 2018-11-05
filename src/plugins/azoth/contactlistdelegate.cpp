@@ -385,8 +385,7 @@ namespace Azoth
 
 		for (const auto& icon : clientIcons)
 		{
-			const auto& px = icon.pixmap (clientIconSize, clientIconSize);
-			painter->drawPixmap (QPoint { currentShift, (sHeight - px.size ().height ()) / 2 }, px);
+			icon.paint (painter, currentShift, (sHeight - clientIconSize) / 2, clientIconSize, clientIconSize);
 			currentShift += clientIconSize + CPadding;
 		}
 	}
