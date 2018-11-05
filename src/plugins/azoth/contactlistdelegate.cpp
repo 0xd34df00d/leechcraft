@@ -257,8 +257,6 @@ namespace Azoth
 
 		QStyledItemDelegate::paint (painter, o, index);
 
-		o.state &= ~(QStyle::State_Selected | QStyle::State_MouseOver);
-
 		const int textWidth = o.fontMetrics.width (index.data ().value<QString> () + " ");
 		const int rem = r.width () - textWidth;
 
