@@ -108,7 +108,6 @@ namespace Azoth
 			DrawCategory (painter, o, index);
 			break;
 		case Core::CLETContact:
-			o.rect.adjust (-1.2 * View_->indentation (), 0, 0, 0);
 			DrawContact (painter, o, index);
 			break;
 		}
@@ -354,42 +353,34 @@ namespace Azoth
 				(isMUC || !ShowAvatars_ ? 0 : (iconSize + 2 * CPadding)) -
 				clientsIconsWidth;
 
-		QPixmap pixmap (r.size ());
-		pixmap.fill (option.palette.color (QPalette::Base));
-		QPainter p (&pixmap);
-
 		if (selected ||
 				(option.state & QStyle::State_MouseOver))
-		{
-			auto bgOpt = option;
-			bgOpt.rect.moveTopLeft (QPoint (0, 0));
 			style->drawPrimitive (QStyle::PE_PanelItemViewItem,
-					&bgOpt, &p, option.widget);
-		}
+					&option, painter, option.widget);
 
-		p.setPen (fgColor);
+		painter->setPen (fgColor);
 
+		painter->translate (option.rect.topLeft ());
 		if (unreadNum)
 		{
-			p.setFont (unreadFont);
-			p.drawText (textShift - unreadSpace, CPadding,
+			painter->setFont (unreadFont);
+			painter->drawText (textShift - unreadSpace, CPadding,
 					textWidth, r.height () - 2 * CPadding,
 					Qt::AlignVCenter | Qt::AlignLeft,
 					unreadStr);
 		}
 
-		p.setFont (option.font);
-		p.drawText (textShift, CPadding,
+		painter->drawText (textShift, CPadding,
 				textWidth, r.height () - 2 * CPadding,
 				Qt::AlignVCenter | Qt::AlignLeft,
 				option.fontMetrics.elidedText (name, Qt::ElideRight, textWidth));
 
 		const QPixmap& stateIconPx = stateIcon.pixmap (iconSize, iconSize);
-		p.drawPixmap (QPoint (CPadding, (sHeight - stateIconPx.height ()) / 2),
+		painter->drawPixmap (QPoint (CPadding, (sHeight - stateIconPx.height ()) / 2),
 				stateIconPx);
 
 		if (!avatarImg.isNull ())
-			p.drawPixmap (QPoint (textShift + textWidth + clientsIconsWidth + CPadding, CPadding),
+			painter->drawPixmap (QPoint (textShift + textWidth + clientsIconsWidth + CPadding, CPadding),
 					QPixmap::fromImage (avatarImg));
 
 		int currentShift = textShift + textWidth + CPadding;
@@ -397,11 +388,9 @@ namespace Azoth
 		for (const auto& icon : clientIcons)
 		{
 			const auto& px = icon.pixmap (clientIconSize, clientIconSize);
-			p.drawPixmap (QPoint { currentShift, (sHeight - px.size ().height ()) / 2 }, px);
+			painter->drawPixmap (QPoint { currentShift, (sHeight - px.size ().height ()) / 2 }, px);
 			currentShift += clientIconSize + CPadding;
 		}
-
-		painter->drawPixmap (option.rect, pixmap);
 	}
 
 	QList<QIcon> ContactListDelegate::GetContactIcons (const QModelIndex& index,
