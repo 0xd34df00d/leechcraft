@@ -383,9 +383,7 @@ namespace Azoth
 				Qt::AlignVCenter | Qt::AlignLeft,
 				option.fontMetrics.elidedText (name, Qt::ElideRight, textWidth));
 
-		const QPixmap& stateIconPx = stateIcon.pixmap (iconSize, iconSize);
-		painter->drawPixmap (QPoint (CPadding, (sHeight - stateIconPx.height ()) / 2),
-				stateIconPx);
+		stateIcon.paint (painter, CPadding, CPadding, iconSize, iconSize);
 
 		if (!avatarImg.isNull ())
 			painter->drawPixmap (QPoint (textShift + textWidth + clientsIconsWidth + CPadding, CPadding),
