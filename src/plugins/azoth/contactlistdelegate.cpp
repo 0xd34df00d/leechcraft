@@ -234,16 +234,15 @@ namespace Azoth
 
 		if (HighlightGroups_)
 			o.features |= QStyleOptionViewItem::Alternate;
+
 		style->drawPrimitive (QStyle::PE_PanelItemViewItem,
 				&o, painter, o.widget);
 
 		{
-			const auto isOpen = o.state & QStyle::State_Open;
-			auto indicatorOpt = o;
+			QStyleOptionViewItem indicatorOpt { o };
 			const auto width = indicatorOpt.rect.height ();
 			indicatorOpt.rect.setWidth (width);
-			style->drawPrimitive (isOpen ? QStyle::PE_IndicatorArrowDown : QStyle::PE_IndicatorArrowRight,
-					&indicatorOpt, painter, o.widget);
+			style->drawPrimitive (QStyle::PE_IndicatorBranch, &indicatorOpt, painter, o.widget);
 			o.rect.setLeft (o.rect.left () + width);
 		}
 
