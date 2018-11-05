@@ -238,8 +238,6 @@ namespace Azoth
 		const int unread = index.data (Core::CLRUnreadMsgCount).toInt ();
 		if (unread)
 		{
-			painter->save ();
-
 			const QString& text = QString (" %1 :: ").arg (unread);
 
 			QFont unreadFont = o.font;
@@ -252,8 +250,7 @@ namespace Azoth
 					unreadSpace, r.height () - 2 * CPadding,
 					Qt::AlignVCenter | Qt::AlignLeft,
 					text);
-
-			painter->restore ();
+			painter->setFont (o.font);
 
 			o.rect.setLeft (unreadSpace + o.rect.left ());
 		}
