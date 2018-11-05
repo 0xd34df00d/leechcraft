@@ -232,14 +232,27 @@ namespace Azoth
 				o.widget->style () :
 				QApplication::style ();
 
-		style->drawPrimitive (HighlightGroups_ ? QStyle::PE_PanelButtonCommand : QStyle::PE_PanelItemViewRow,
+		if (HighlightGroups_)
+			o.features |= QStyleOptionViewItem::Alternate;
+		style->drawPrimitive (QStyle::PE_PanelItemViewItem,
 				&o, painter, o.widget);
+
+		{
+			const auto isOpen = o.state & QStyle::State_Open;
+			auto indicatorOpt = o;
+			const auto width = indicatorOpt.rect.height ();
+			indicatorOpt.rect.setWidth (width);
+			style->drawPrimitive (isOpen ? QStyle::PE_IndicatorArrowDown : QStyle::PE_IndicatorArrowRight,
+					&indicatorOpt, painter, o.widget);
+			o.rect.setLeft (o.rect.left () + width);
+		}
+
+		if (o.state & QStyle::State_Selected)
+			painter->setPen (o.palette.color (QPalette::HighlightedText));
 
 		const int unread = index.data (Core::CLRUnreadMsgCount).toInt ();
 		if (unread)
 		{
-			painter->save ();
-
 			const QString& text = QString (" %1 :: ").arg (unread);
 
 			QFont unreadFont = o.font;
@@ -252,17 +265,14 @@ namespace Azoth
 					unreadSpace, r.height () - 2 * CPadding,
 					Qt::AlignVCenter | Qt::AlignLeft,
 					text);
-
-			painter->restore ();
+			painter->setFont (o.font);
 
 			o.rect.setLeft (unreadSpace + o.rect.left ());
 		}
 
-		QStyledItemDelegate::paint (painter, o, index);
-
-		o.state &= ~(QStyle::State_Selected | QStyle::State_MouseOver);
-
-		const int textWidth = o.fontMetrics.width (index.data ().value<QString> () + " ");
+		const auto& groupName = index.data ().toString ();
+		painter->drawText (r, Qt::AlignVCenter | Qt::AlignLeft, groupName);
+		const int textWidth = o.fontMetrics.width (groupName);
 		const int rem = r.width () - textWidth;
 
 		const auto& counts = GetCounts (index);
@@ -277,8 +287,6 @@ namespace Azoth
 
 		if (rem >= o.fontMetrics.width (str))
 		{
-			if (o.state & QStyle::State_Selected)
-				painter->setPen (o.palette.color (QPalette::HighlightedText));
 
 			QFont font = painter->font ();
 			font.setItalic (true);
