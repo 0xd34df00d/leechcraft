@@ -94,11 +94,8 @@ namespace Azoth
 	void ContactListDelegate::paint (QPainter *painter,
 			const QStyleOptionViewItem& sopt, const QModelIndex& index) const
 	{
-		Core::CLEntryType type = index.data (Core::CLREntryType).value<Core::CLEntryType> ();
-
 		painter->save ();
-
-		switch (type)
+		switch (index.data (Core::CLREntryType).value<Core::CLEntryType> ())
 		{
 		case Core::CLETAccount:
 			DrawAccount (painter, sopt, index);
@@ -110,7 +107,6 @@ namespace Azoth
 			DrawContact (painter, sopt, index);
 			break;
 		}
-
 		painter->restore ();
 	}
 
