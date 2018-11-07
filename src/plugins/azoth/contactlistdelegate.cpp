@@ -174,7 +174,7 @@ namespace Azoth
 			avatarImg = avatarImg.scaled (iconSize, iconSize,
 					Qt::KeepAspectRatio, Qt::SmoothTransformation);
 
-		QPoint pxDraw = o.rect.topRight () - QPoint (CPadding, 0);
+		QPoint pxDraw = r.topRight () - QPoint (CPadding, 0);
 
 		if (!avatarImg.isNull ())
 		{
