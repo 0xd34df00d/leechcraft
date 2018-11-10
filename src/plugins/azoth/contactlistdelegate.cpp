@@ -255,8 +255,8 @@ namespace Azoth
 			int unreadSpace = CPadding + QFontMetrics (unreadFont).width (text);
 
 			painter->setFont (unreadFont);
-			painter->drawText (r.left () + CPadding, r.top () + CPadding,
-					unreadSpace, r.height () - 2 * CPadding,
+			painter->drawText (r.left () + CPadding, r.top (),
+					unreadSpace, r.height (),
 					Qt::AlignVCenter | Qt::AlignLeft,
 					text);
 			painter->setFont (o.font);
@@ -285,8 +285,8 @@ namespace Azoth
 			QFont font = painter->font ();
 			font.setItalic (true);
 			painter->setFont (font);
-			const QRect numRect (r.left () + textWidth - 1, r.top () + CPadding,
-					rem - 1, r.height () - 2 * CPadding);
+			const QRect numRect (r.left () + textWidth - 1, r.top (),
+					rem - 1, r.height ());
 			painter->drawText (numRect, Qt::AlignVCenter | Qt::AlignRight, str);
 		}
 
