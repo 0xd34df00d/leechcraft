@@ -180,14 +180,8 @@ namespace MusicZombie
 					length))
 				throw std::runtime_error ("cannot feed data");
 
-			bool finished = false;
-			if (maxLength)
-			{
-				remaining -= length;
-				if (remaining <= 0)
-					finished = true;
-			}
-			if (finished)
+			remaining -= length;
+			if (remaining <= 0)
 				break;
 		}
 
