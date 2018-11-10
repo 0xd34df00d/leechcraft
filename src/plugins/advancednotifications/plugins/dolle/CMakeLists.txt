@@ -22,7 +22,6 @@ add_library (leechcraft_advancednotifications_dolle SHARED
 	${DOLLE_SRCS}
 	)
 target_link_libraries (leechcraft_advancednotifications_dolle
-	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	"-framework AppKit"
 	)

@@ -174,27 +174,11 @@ namespace SysInfo
 			return OSInfo { "x86_64", "Mac OS X", version };
 		};
 
-		switch (QSysInfo::MacintoshVersion)
-		{
-		case QSysInfo::MV_10_3:
-			return retVer ("10.3");
-		case QSysInfo::MV_10_4:
-			return retVer ("10.4");
-		case QSysInfo::MV_10_5:
-			return retVer ("10.5");
-		case QSysInfo::MV_10_6:
-			return retVer ("10.6");
-		case QSysInfo::MV_10_7:
-			return retVer ("10.7");
-		case QSysInfo::MV_10_8:
-			return retVer ("10.8");
-		case QSysInfo::MV_10_9:
-			return retVer ("10.9");
-		case 0x000C:
-			return retVer ("10.10");
-		default:
-			return retVer ("Unknown version");
-		}
+		for (auto minor = 7; minor < 16; ++minor)
+			if (QSysInfo::MacintoshVersion == Q_MV_OSX (10, minor))
+				return retVer ("10." + QString::number (minor));
+
+		return retVer ("Unknown version");
 #elif defined(Q_OS_WIN32)
 		const auto retVer = [] (const QString& version)
 		{

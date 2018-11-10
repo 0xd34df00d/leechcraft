@@ -54,7 +54,7 @@ namespace
 		return view;
 	}
 
-	static NSString* toNsString (const QString& text)
+	NSString* toNsString (const QString& text)
 	{
 		const auto& ba = text.toUtf8 ();
 		return [NSString stringWithUTF8String: ba.constData ()];
@@ -117,7 +117,7 @@ namespace DU
 															  alpha:b.second.alphaF ()]];
 		}
 
-		return [view displayBadges: labelsArray andColors: colorsArray] == YES;
+		return [view displayBadges: labelsArray andColors: colorsArray];
 	}
 }
 }
