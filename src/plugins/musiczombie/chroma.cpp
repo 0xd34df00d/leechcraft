@@ -68,7 +68,7 @@ namespace MusicZombie
 		template<typename T>
 		auto AdaptDeleter (void (*f) (T**))
 		{
-			return [&f] (T *item) { f (&item); };
+			return [f] (T *item) { f (&item); };
 		}
 	}
 
