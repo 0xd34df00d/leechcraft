@@ -275,8 +275,6 @@ namespace Azoth
 				.arg (counts.first)
 				.arg (counts.second);
 
-		painter->save ();
-
 		if (rem >= o.fontMetrics.width (str))
 		{
 
@@ -287,8 +285,6 @@ namespace Azoth
 					rem - 1, r.height ());
 			painter->drawText (numRect, Qt::AlignVCenter | Qt::AlignRight, str);
 		}
-
-		painter->restore ();
 	}
 
 	void ContactListDelegate::DrawContact (QPainter *painter,
