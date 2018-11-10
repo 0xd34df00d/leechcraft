@@ -43,7 +43,6 @@ namespace MusicZombie
 	{
 		ChromaprintContext *Ctx_;
 
-		static QMutex RegisterMutex_;
 		static QMutex CodecMutex_;
 	public:
 		struct Result

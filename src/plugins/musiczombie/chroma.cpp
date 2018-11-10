@@ -49,13 +49,16 @@ namespace LeechCraft
 namespace MusicZombie
 {
 	QMutex Chroma::CodecMutex_ (QMutex::NonRecursive);
-	QMutex Chroma::RegisterMutex_ (QMutex::NonRecursive);
 
 	Chroma::Chroma ()
 	: Ctx_ (chromaprint_new (CHROMAPRINT_ALGORITHM_DEFAULT))
 	{
-		QMutexLocker locker (&RegisterMutex_);
-		av_register_all ();
+		static const auto registerGuard = []
+			{
+				av_register_all ();
+				return 0;
+			} ();
+		static_cast<void> (registerGuard);
 	}
 
 	Chroma::~Chroma ()
