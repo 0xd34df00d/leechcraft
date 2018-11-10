@@ -277,8 +277,6 @@ namespace Azoth
 
 		painter->save ();
 
-		painter->setRenderHints (QPainter::TextAntialiasing | QPainter::Antialiasing);
-
 		if (rem >= o.fontMetrics.width (str))
 		{
 
