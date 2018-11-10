@@ -94,24 +94,19 @@ namespace Azoth
 	void ContactListDelegate::paint (QPainter *painter,
 			const QStyleOptionViewItem& sopt, const QModelIndex& index) const
 	{
-		auto o = sopt;
-		Core::CLEntryType type = index.data (Core::CLREntryType).value<Core::CLEntryType> ();
-
 		painter->save ();
-
-		switch (type)
+		switch (index.data (Core::CLREntryType).value<Core::CLEntryType> ())
 		{
 		case Core::CLETAccount:
-			DrawAccount (painter, o, index);
+			DrawAccount (painter, sopt, index);
 			break;
 		case Core::CLETCategory:
-			DrawCategory (painter, o, index);
+			DrawCategory (painter, sopt, index);
 			break;
 		case Core::CLETContact:
-			DrawContact (painter, o, index);
+			DrawContact (painter, sopt, index);
 			break;
 		}
-
 		painter->restore ();
 	}
 
@@ -179,7 +174,7 @@ namespace Azoth
 			avatarImg = avatarImg.scaled (iconSize, iconSize,
 					Qt::KeepAspectRatio, Qt::SmoothTransformation);
 
-		QPoint pxDraw = o.rect.topRight () - QPoint (CPadding, 0);
+		QPoint pxDraw = r.topRight () - QPoint (CPadding, 0);
 
 		if (!avatarImg.isNull ())
 		{
@@ -260,8 +255,8 @@ namespace Azoth
 			int unreadSpace = CPadding + QFontMetrics (unreadFont).width (text);
 
 			painter->setFont (unreadFont);
-			painter->drawText (r.left () + CPadding, r.top () + CPadding,
-					unreadSpace, r.height () - 2 * CPadding,
+			painter->drawText (r.left () + CPadding, r.top (),
+					unreadSpace, r.height (),
 					Qt::AlignVCenter | Qt::AlignLeft,
 					text);
 			painter->setFont (o.font);
@@ -280,22 +275,16 @@ namespace Azoth
 				.arg (counts.first)
 				.arg (counts.second);
 
-		painter->save ();
-
-		painter->setRenderHints (QPainter::TextAntialiasing | QPainter::Antialiasing);
-
 		if (rem >= o.fontMetrics.width (str))
 		{
 
 			QFont font = painter->font ();
 			font.setItalic (true);
 			painter->setFont (font);
-			const QRect numRect (r.left () + textWidth - 1, r.top () + CPadding,
-					rem - 1, r.height () - 2 * CPadding);
+			const QRect numRect (r.left () + textWidth - 1, r.top (),
+					rem - 1, r.height ());
 			painter->drawText (numRect, Qt::AlignVCenter | Qt::AlignRight, str);
 		}
-
-		painter->restore ();
 	}
 
 	void ContactListDelegate::DrawContact (QPainter *painter,
