@@ -33,12 +33,10 @@
 
 namespace
 {
-
-static const int kMaxBadgesDisplayed = 6;
-static const int kRowsInOneColumn = 3;
-static const CGFloat kLabelsDyOffset = 10;
-static const int kFontSize = 24;
-
+	const int kMaxBadgesDisplayed = 6;
+	const int kRowsInOneColumn = 3;
+	const CGFloat kLabelsDyOffset = 10;
+	const int kFontSize = 24;
 }
 
 @implementation LCBadgeView
