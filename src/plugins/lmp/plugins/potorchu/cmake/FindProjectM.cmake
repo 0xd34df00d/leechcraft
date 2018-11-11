@@ -13,7 +13,10 @@ find_library(ProjectM_LIBRARIES
 	PATHS ${PC_PROJECTM_LIBRARY_DIRS}
 	)
 
+set (ProjectM_VERSION ${PC_PROJECTM_VERSION})
+
 if (ProjectM_INCLUDE_DIR AND ProjectM_LIBRARIES)
+	message (STATUS "Found ProjectM version: ${ProjectM_VERSION}")
 	message (STATUS "Found ProjectM includes at: ${ProjectM_INCLUDE_DIR}")
 	message (STATUS "Found ProjectM libraries at: ${ProjectM_LIBRARIES}")
 else ()
