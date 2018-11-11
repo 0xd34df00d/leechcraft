@@ -5,6 +5,8 @@ include (InitLCPlugin NO_POLICY_SCOPE)
 set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 find_package (ProjectM)
 
+add_definitions (-DFETCHED_PROJECTM_VERSION="${ProjectM_VERSION}")
+
 include_directories (${LMP_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
