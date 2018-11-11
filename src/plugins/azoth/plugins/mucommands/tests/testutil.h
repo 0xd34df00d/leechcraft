@@ -56,18 +56,13 @@ namespace
 		}
 
 		template<typename T>
-		typename std::enable_if<TestDebuggable<T> (0), QString>::type operator() (const T& t) const
+		QString operator() (const T& t) const
 		{
 			QString result;
-			QDebug { &result } << t;
-			return result;
-		}
-
-		template<typename T>
-		typename std::enable_if<!TestDebuggable<T> (0), QString>::type operator() (const T& t) const
-		{
-			QString result;
-			QDebug { &result } << typeid (t).name ();
+			if constexpr (TestDebuggable<T> (0))
+				QDebug { &result } << t;
+			else
+				QDebug { &result } << typeid (t).name ();
 			return result;
 		}
 
