@@ -58,7 +58,7 @@ QDebug operator<< (QDebug dbg, const LeechCraft::Azoth::MuCommands::UrlRange& r)
 QDebug operator<< (QDebug dbg, const LeechCraft::Azoth::MuCommands::UrlComposite& c)
 {
 	dbg.nospace () << "UrlComposite { "
-			<< boost::apply_visitor (LeechCraft::Azoth::MuCommands::PrintVisitor {}, c.Range_).toUtf8 ()
+			<< LeechCraft::Azoth::MuCommands::PrintVisitor {} (c.Range_).toUtf8 ()
 			<< "; rx: `"
 			<< boost::get_optional_value_or (c.Pat_, "").c_str ()
 			<< "` }";
