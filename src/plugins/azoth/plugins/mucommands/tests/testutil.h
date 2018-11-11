@@ -37,7 +37,7 @@
 namespace LeechCraft::Azoth::MuCommands
 {
 	template<typename T>
-	constexpr bool TestDebuggable (typename std::add_pointer<decltype (std::declval<QDebug> () << T {})>::type)
+	constexpr bool TestDebuggable (decltype (std::declval<QDebug> () << T {})*)
 	{
 		return true;
 	}
