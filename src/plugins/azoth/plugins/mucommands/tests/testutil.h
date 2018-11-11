@@ -48,7 +48,7 @@ namespace
 		return false;
 	}
 
-	struct PrintVisitor : boost::static_visitor<QString>
+	struct PrintVisitor
 	{
 		QString operator() (const std::string& str) const
 		{
