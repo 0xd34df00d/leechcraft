@@ -91,33 +91,30 @@ namespace MuCommands
 		return { true, body };
 	}
 
-	namespace
+	using UrlIndex_t = int;
+
+	struct UrlRange
 	{
-		using UrlIndex_t = int;
+		boost::optional<int> Start_;
+		boost::optional<int> End_;
+	};
 
-		struct UrlRange
-		{
-			boost::optional<int> Start_;
-			boost::optional<int> End_;
-		};
+	struct SinceLast {};
+	struct All {};
 
-		struct SinceLast {};
-		struct All {};
+	struct JustLast {};
 
-		struct JustLast {};
+	using RxableRanges_t = boost::variant<SinceLast, UrlRange, All>;
 
-		using RxableRanges_t = boost::variant<SinceLast, UrlRange, All>;
+	using RegExpStr_t = std::string;
 
-		using RegExpStr_t = std::string;
+	struct UrlComposite
+	{
+		RxableRanges_t Range_;
+		boost::optional<RegExpStr_t> Pat_;
+	};
 
-		struct UrlComposite
-		{
-			RxableRanges_t Range_;
-			boost::optional<RegExpStr_t> Pat_;
-		};
-
-		using OpenUrlParams_t = boost::variant<UrlIndex_t, UrlComposite, RegExpStr_t, JustLast>;
-	}
+	using OpenUrlParams_t = boost::variant<UrlIndex_t, UrlComposite, RegExpStr_t, JustLast>;
 }
 }
 }

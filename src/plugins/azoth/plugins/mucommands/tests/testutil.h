@@ -34,7 +34,7 @@
 #include <QtDebug>
 #include <boost/variant.hpp>
 
-namespace
+namespace LeechCraft::Azoth::MuCommands
 {
 	template<typename T>
 	constexpr bool TestDebuggable (typename std::add_pointer<decltype (std::declval<QDebug> () << T {})>::type)

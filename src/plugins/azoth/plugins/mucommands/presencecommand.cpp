@@ -46,25 +46,22 @@ namespace Azoth
 {
 namespace MuCommands
 {
-	namespace
+	struct AllAccounts {};
+
+	struct CurrentAccount {};
+
+	typedef boost::variant<AllAccounts, std::string, CurrentAccount> AccName_t;
+
+	struct ClearStatus {};
+	typedef boost::variant<State, std::string> State_t;
+	typedef std::pair<State, std::string> FullState_t;
+	typedef boost::variant<FullState_t, State_t, ClearStatus, std::string> Status_t;
+
+	struct PresenceParams
 	{
-		struct AllAccounts {};
-
-		struct CurrentAccount {};
-
-		typedef boost::variant<AllAccounts, std::string, CurrentAccount> AccName_t;
-
-		struct ClearStatus {};
-		typedef boost::variant<State, std::string> State_t;
-		typedef std::pair<State, std::string> FullState_t;
-		typedef boost::variant<FullState_t, State_t, ClearStatus, std::string> Status_t;
-
-		struct PresenceParams
-		{
-			AccName_t AccName_;
-			Status_t Status_;
-		};
-	}
+		AccName_t AccName_;
+		Status_t Status_;
+	};
 }
 }
 }

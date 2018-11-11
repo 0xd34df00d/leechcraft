@@ -40,7 +40,7 @@ namespace QTest
 	template<>
 	char* toString (const LeechCraft::Azoth::MuCommands::Status_t& acc)
 	{
-		return PrintVar (acc);
+		return LeechCraft::Azoth::MuCommands::PrintVar (acc);
 	}
 }
 
@@ -50,12 +50,9 @@ namespace Azoth
 {
 namespace MuCommands
 {
-	namespace
-	{
-		bool operator== (const AllAccounts&, const AllAccounts&) { return true; }
-		bool operator== (const CurrentAccount&, const CurrentAccount&) { return true; }
-		bool operator== (const ClearStatus&, const ClearStatus&) { return true; }
-	}
+	bool operator== (const AllAccounts&, const AllAccounts&) { return true; }
+	bool operator== (const CurrentAccount&, const CurrentAccount&) { return true; }
+	bool operator== (const ClearStatus&, const ClearStatus&) { return true; }
 
 	void PresenceCommandTest::accStateChange ()
 	{

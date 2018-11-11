@@ -58,7 +58,7 @@ QDebug operator<< (QDebug dbg, const LeechCraft::Azoth::MuCommands::UrlRange& r)
 QDebug operator<< (QDebug dbg, const LeechCraft::Azoth::MuCommands::UrlComposite& c)
 {
 	dbg.nospace () << "UrlComposite { "
-			<< boost::apply_visitor (PrintVisitor {}, c.Range_).toUtf8 ()
+			<< boost::apply_visitor (LeechCraft::Azoth::MuCommands::PrintVisitor {}, c.Range_).toUtf8 ()
 			<< "; rx: `"
 			<< boost::get_optional_value_or (c.Pat_, "").c_str ()
 			<< "` }";
@@ -70,7 +70,7 @@ namespace QTest
 	template<>
 	char* toString (const LeechCraft::Azoth::MuCommands::OpenUrlParams_t& var)
 	{
-		return PrintVar (var);
+		return LeechCraft::Azoth::MuCommands::PrintVar (var);
 	}
 }
 
@@ -80,34 +80,31 @@ namespace Azoth
 {
 namespace MuCommands
 {
-	namespace
+	bool operator== (const UrlRange& r1, const UrlRange& r2)
 	{
-		bool operator== (const UrlRange& r1, const UrlRange& r2)
-		{
-			return r1.Start_ == r2.Start_ &&
-					r1.End_ == r2.End_;
-		}
+		return r1.Start_ == r2.Start_ &&
+				r1.End_ == r2.End_;
+	}
 
-		bool operator== (const UrlComposite& r1, const UrlComposite& r2)
-		{
-			return r1.Pat_ == r2.Pat_ &&
-					r1.Range_ == r2.Range_;
-		}
+	bool operator== (const UrlComposite& r1, const UrlComposite& r2)
+	{
+		return r1.Pat_ == r2.Pat_ &&
+				r1.Range_ == r2.Range_;
+	}
 
-		bool operator== (const SinceLast&, const SinceLast&)
-		{
-			return true;
-		}
+	bool operator== (const SinceLast&, const SinceLast&)
+	{
+		return true;
+	}
 
-		bool operator== (const JustLast&, const JustLast&)
-		{
-			return true;
-		}
+	bool operator== (const JustLast&, const JustLast&)
+	{
+		return true;
+	}
 
-		bool operator== (const All&, const All&)
-		{
-			return true;
-		}
+	bool operator== (const All&, const All&)
+	{
+		return true;
 	}
 
 	void OpenUrlCommandTest::parseSinceLast ()
