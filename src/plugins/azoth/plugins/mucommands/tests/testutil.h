@@ -29,6 +29,11 @@
 
 #pragma once
 
+#include <type_traits>
+#include <QString>
+#include <QtDebug>
+#include <boost/variant.hpp>
+
 namespace
 {
 	template<typename T>
