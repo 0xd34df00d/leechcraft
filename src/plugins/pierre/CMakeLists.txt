@@ -16,7 +16,6 @@ set (SRCS
 add_library (leechcraft_pierre SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
-	${MOC_SRCS}
 	)
 target_link_libraries (leechcraft_pierre
 	${LEECHCRAFT_LIBRARIES}
