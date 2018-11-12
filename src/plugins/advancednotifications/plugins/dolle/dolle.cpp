@@ -73,14 +73,12 @@ namespace Dolle
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
 	{
-		QSet<QByteArray> result;
-		result << "org.LeechCraft.AdvancedNotifications.NotificationsBackend";
-		return result;
+		return { "org.LeechCraft.AdvancedNotifications.NotificationsBackend" };
 	}
 
 	QList<INotificationHandler_ptr> Plugin::GetNotificationHandlers () const
 	{
-		return { INotificationHandler_ptr { new NotificationHandler } };
+		return { std::make_shared<NotificationHandler> () };
 	}
 }
 }
