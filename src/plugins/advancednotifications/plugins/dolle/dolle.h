@@ -51,18 +51,19 @@ namespace Dolle
 				LeechCraft::AdvancedNotifications::INotificationBackendPlugin
 				)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.AdvancedNotifications.Dolle")
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		void Release ();
-		QByteArray GetUniqueID () const;
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+		void Init (ICoreProxy_ptr) override;
+		void SecondInit () override;
+		void Release () override;
+		QByteArray GetUniqueID () const override;
+		QString GetName () const override;
+		QString GetInfo () const override;
+		QIcon GetIcon () const override;
 
-		QSet<QByteArray> GetPluginClasses () const;
+		QSet<QByteArray> GetPluginClasses () const override;
 
-		QList<INotificationHandler_ptr> GetNotificationHandlers () const;
+		QList<INotificationHandler_ptr> GetNotificationHandlers () const override;
 	};
 }
 }
