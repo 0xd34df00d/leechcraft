@@ -29,10 +29,15 @@
 
 #pragma once
 
-namespace
+#include <type_traits>
+#include <QString>
+#include <QtDebug>
+#include <boost/variant.hpp>
+
+namespace LeechCraft::Azoth::MuCommands
 {
 	template<typename T>
-	constexpr bool TestDebuggable (typename std::add_pointer<decltype (std::declval<QDebug> () << T {})>::type)
+	constexpr bool TestDebuggable (decltype (std::declval<QDebug> () << T {})*)
 	{
 		return true;
 	}
@@ -43,7 +48,7 @@ namespace
 		return false;
 	}
 
-	struct PrintVisitor : boost::static_visitor<QString>
+	struct PrintVisitor
 	{
 		QString operator() (const std::string& str) const
 		{
@@ -51,18 +56,13 @@ namespace
 		}
 
 		template<typename T>
-		typename std::enable_if<TestDebuggable<T> (0), QString>::type operator() (const T& t) const
+		QString operator() (const T& t) const
 		{
 			QString result;
-			QDebug { &result } << t;
-			return result;
-		}
-
-		template<typename T>
-		typename std::enable_if<!TestDebuggable<T> (0), QString>::type operator() (const T& t) const
-		{
-			QString result;
-			QDebug { &result } << typeid (t).name ();
+			if constexpr (TestDebuggable<T> (0))
+				QDebug { &result } << t;
+			else
+				QDebug { &result } << typeid (t).name ();
 			return result;
 		}
 

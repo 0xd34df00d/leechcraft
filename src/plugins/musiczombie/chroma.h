@@ -29,11 +29,13 @@
 
 #pragma once
 
+#include <memory>
 #include <QByteArray>
 #include <QMutex>
-#include <chromaprint.h>
 
 class QString;
+
+using ChromaprintContext = struct ChromaprintContextPrivate;
 
 namespace LeechCraft
 {
@@ -41,9 +43,8 @@ namespace MusicZombie
 {
 	class Chroma
 	{
-		ChromaprintContext *Ctx_;
+		std::shared_ptr<ChromaprintContext> Ctx_;
 
-		static QMutex RegisterMutex_;
 		static QMutex CodecMutex_;
 	public:
 		struct Result
@@ -53,9 +54,9 @@ namespace MusicZombie
 		};
 
 		Chroma ();
-		~Chroma ();
 
 		Chroma (const Chroma&) = delete;
+		Chroma (Chroma&&) = delete;
 
 		Result operator() (const QString&);
 	};

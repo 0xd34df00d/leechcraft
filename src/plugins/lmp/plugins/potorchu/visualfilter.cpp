@@ -154,35 +154,40 @@ namespace Potorchu
 		return Elem_;
 	}
 
+	namespace
+	{
+		projectM::Settings makeSettings (const QRect& sceneRect)
+		{
+			std::unique_ptr<QTemporaryFile> fontFile
+			{
+				QTemporaryFile::createLocalFile (":/lmp/potorchu/resources/data/blank.ttf")
+			};
+			const std::string fontFileNameStr { fontFile->fileName ().toUtf8 ().constData () };
+
+			projectM::Settings settings {};
+			settings.meshX = 32;
+			settings.meshY = 24;
+			settings.fps = 30;
+			settings.textureSize = 512;
+			settings.windowWidth = sceneRect.width ();
+			settings.windowHeight = sceneRect.height ();
+			settings.presetURL = "/usr/share/projectM/presets";
+			settings.titleFontURL = fontFileNameStr;
+			settings.menuFontURL = fontFileNameStr;
+			settings.smoothPresetDuration = 5;
+			settings.presetDuration = 15;
+			settings.beatSensitivity = 10;
+			settings.aspectCorrection = false;
+			settings.easterEgg = 0;
+			settings.shuffleEnabled = true;
+			settings.softCutRatingsEnabled = false;
+			return settings;
+		}
+	}
+
 	void VisualFilter::InitProjectM ()
 	{
-		std::unique_ptr<QTemporaryFile> fontFile
-		{
-			QTemporaryFile::createLocalFile (":/lmp/potorchu/resources/data/blank.ttf")
-		};
-		const std::string fontFileNameStr { fontFile->fileName ().toUtf8 ().constData () };
-
-		const auto& sceneRect = Scene_->sceneRect ().toRect ();
-
-		projectM::Settings settings
-		{
-			32,
-			24,
-			30,
-			512,
-			sceneRect.width (),
-			sceneRect.height (),
-			"/usr/share/projectM/presets",
-			fontFileNameStr,
-			fontFileNameStr,
-			5,
-			15,
-			0,
-			false,
-			false,
-			true,
-			false
-		};
+		auto settings = makeSettings (Scene_->sceneRect ().toRect ());
 		ProjectM_.reset (new projectM { settings });
 	}
 

@@ -44,23 +44,25 @@ extern "C"
 #include <libswresample/swresample.h>
 }
 
+#include <chromaprint.h>
+
 namespace LeechCraft
 {
 namespace MusicZombie
 {
 	QMutex Chroma::CodecMutex_ (QMutex::NonRecursive);
-	QMutex Chroma::RegisterMutex_ (QMutex::NonRecursive);
 
 	Chroma::Chroma ()
-	: Ctx_ (chromaprint_new (CHROMAPRINT_ALGORITHM_DEFAULT))
+	: Ctx_ (chromaprint_new (CHROMAPRINT_ALGORITHM_DEFAULT), &chromaprint_free)
 	{
-		QMutexLocker locker (&RegisterMutex_);
-		av_register_all ();
-	}
-
-	Chroma::~Chroma ()
-	{
-		chromaprint_free (Ctx_);
+#if LIBAVFORMAT_VERSION_INT <= AV_VERSION_INT (58, 9, 100)
+		static const auto registerGuard = []
+			{
+				av_register_all ();
+				return 0;
+			} ();
+		static_cast<void> (registerGuard);
+#endif
 	}
 
 	namespace
@@ -68,7 +70,7 @@ namespace MusicZombie
 		template<typename T>
 		auto AdaptDeleter (void (*f) (T**))
 		{
-			return [&f] (T *item) { f (&item); };
+			return [f] (T *item) { f (&item); };
 		}
 	}
 
@@ -125,7 +127,7 @@ namespace MusicZombie
 
 		const int maxLength = 120;
 		auto remaining = maxLength * stream->codecpar->channels * stream->codecpar->sample_rate;
-		chromaprint_start (Ctx_, stream->codecpar->sample_rate, stream->codecpar->channels);
+		chromaprint_start (Ctx_.get (), stream->codecpar->sample_rate, stream->codecpar->channels);
 
 		std::shared_ptr<AVFrame> frame (av_frame_alloc (), AdaptDeleter (&av_frame_free));
 		auto maxDstNbSamples = 0;
@@ -173,31 +175,21 @@ namespace MusicZombie
 				data = frame->data;
 
 			auto length = std::min (remaining, frame->nb_samples * stream->codecpar->channels);
-			if (!chromaprint_feed (Ctx_,
-#if CHROMAPRINT_VERSION_MAJOR > 1 || CHROMAPRINT_VERSION_MINOR >= 4
+			if (!chromaprint_feed (Ctx_.get (),
 					reinterpret_cast<const int16_t*> (data [0]),
-#else
-					data [0],
-#endif
 					length))
 				throw std::runtime_error ("cannot feed data");
 
-			bool finished = false;
-			if (maxLength)
-			{
-				remaining -= length;
-				if (remaining <= 0)
-					finished = true;
-			}
-			if (finished)
+			remaining -= length;
+			if (remaining <= 0)
 				break;
 		}
 
-		if (!chromaprint_finish (Ctx_))
+		if (!chromaprint_finish (Ctx_.get ()))
 			throw std::runtime_error ("fingerprint calculation failed");
 
 		char *fingerprint = 0;
-		if (!chromaprint_get_fingerprint (Ctx_, &fingerprint))
+		if (!chromaprint_get_fingerprint (Ctx_.get (), &fingerprint))
 			throw std::runtime_error ("unable to get fingerprint");
 
 		QByteArray result (fingerprint);
