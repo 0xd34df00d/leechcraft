@@ -139,13 +139,7 @@ namespace Azoth
 				o.widget->style () :
 				QApplication::style ();
 
-		painter->save ();
-		painter->setRenderHints (QPainter::TextAntialiasing | QPainter::Antialiasing);
-
-		style->drawPrimitive (QStyle::PE_PanelButtonCommand,
-				&o, painter, o.widget);
-
-		painter->restore ();
+		style->drawPrimitive (QStyle::PE_PanelButtonCommand, &o, painter, o.widget);
 
 		o.font.setBold (true);
 
