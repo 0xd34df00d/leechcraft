@@ -51,6 +51,7 @@ namespace Dolle
 				LeechCraft::AdvancedNotifications::INotificationBackendPlugin
 				)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.AdvancedNotifications.Dolle")
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
