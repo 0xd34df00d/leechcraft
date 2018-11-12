@@ -364,6 +364,7 @@ namespace Azoth
 					textWidth, r.height () - 2 * CPadding,
 					Qt::AlignVCenter | Qt::AlignLeft,
 					unreadStr);
+			painter->setFont (option.font);
 		}
 
 		painter->drawText (textShift, CPadding,
