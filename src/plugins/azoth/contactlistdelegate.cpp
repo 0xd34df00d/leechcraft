@@ -121,7 +121,7 @@ namespace Azoth
 				size.setHeight (ContactHeight_);
 			break;
 		case Core::CLETAccount:
-			size.setHeight (size.height () * 1.5);
+			size.setHeight (size.height () * 1.1);
 			break;
 		case Core::CLETCategory:
 			const int textHeight = option.fontMetrics.height ();
@@ -139,7 +139,7 @@ namespace Azoth
 				o.widget->style () :
 				QApplication::style ();
 
-		style->drawPrimitive (QStyle::PE_PanelButtonCommand, &o, painter, o.widget);
+		style->drawPrimitive (QStyle::PE_PanelButtonBevel, &o, painter, o.widget);
 
 		o.font.setBold (true);
 
