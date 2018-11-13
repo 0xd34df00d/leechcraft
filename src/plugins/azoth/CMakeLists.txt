@@ -144,6 +144,7 @@ set (SRCS
 	sslerrorshandler.cpp
 	sslerrorsdialog.cpp
 	sslerrorschoicestorage.cpp
+	contactslistview.cpp
 	)
 set (FORMS
 	mainwidget.ui
