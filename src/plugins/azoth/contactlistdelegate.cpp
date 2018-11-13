@@ -224,16 +224,7 @@ namespace Azoth
 		if (HighlightGroups_)
 			o.features |= QStyleOptionViewItem::Alternate;
 
-		style->drawPrimitive (QStyle::PE_PanelItemViewItem,
-				&o, painter, o.widget);
-
-		{
-			QStyleOptionViewItem indicatorOpt { o };
-			const auto width = indicatorOpt.rect.height ();
-			indicatorOpt.rect.setWidth (width);
-			style->drawPrimitive (QStyle::PE_IndicatorBranch, &indicatorOpt, painter, o.widget);
-			o.rect.setLeft (o.rect.left () + width);
-		}
+		style->drawPrimitive (QStyle::PE_PanelItemViewItem, &o, painter, o.widget);
 
 		if (o.state & QStyle::State_Selected)
 			painter->setPen (o.palette.color (QPalette::HighlightedText));
@@ -284,6 +275,8 @@ namespace Azoth
 	void ContactListDelegate::DrawContact (QPainter *painter,
 			QStyleOptionViewItem option, const QModelIndex& index) const
 	{
+		option.rect.setLeft (0);
+
 		QObject *entryObj = index.data (Core::CLREntryObject).value<QObject*> ();
 		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
 

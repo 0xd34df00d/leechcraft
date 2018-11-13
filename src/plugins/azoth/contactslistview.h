@@ -37,5 +37,7 @@ namespace LeechCraft::Azoth
 	{
 	public:
 		using QTreeView::QTreeView;
+
+		QRect visualRect (const QModelIndex&) const override;
 	};
 }

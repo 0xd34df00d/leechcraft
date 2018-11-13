@@ -28,3 +28,15 @@
  **********************************************************************/
 
 #include "contactslistview.h"
+#include "core.h"
+
+namespace LeechCraft::Azoth
+{
+	QRect ContactsListView::visualRect (const QModelIndex& index) const
+	{
+		auto rect = QTreeView::visualRect (index);
+		if (index.data (Core::CLREntryType).value<Core::CLEntryType> () == Core::CLETContact)
+			rect.setLeft (0);
+		return rect;
+	}
+}
