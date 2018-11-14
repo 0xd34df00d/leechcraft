@@ -121,7 +121,7 @@ namespace Azoth
 				size.setHeight (ContactHeight_);
 			break;
 		case Core::CLETAccount:
-			size.setHeight (size.height () * 1.5);
+			size.setHeight (size.height () * 1.1);
 			break;
 		case Core::CLETCategory:
 			const int textHeight = option.fontMetrics.height ();
@@ -139,13 +139,7 @@ namespace Azoth
 				o.widget->style () :
 				QApplication::style ();
 
-		painter->save ();
-		painter->setRenderHints (QPainter::TextAntialiasing | QPainter::Antialiasing);
-
-		style->drawPrimitive (QStyle::PE_PanelButtonCommand,
-				&o, painter, o.widget);
-
-		painter->restore ();
+		style->drawPrimitive (QStyle::PE_PanelButtonBevel, &o, painter, o.widget);
 
 		o.font.setBold (true);
 
@@ -230,16 +224,7 @@ namespace Azoth
 		if (HighlightGroups_)
 			o.features |= QStyleOptionViewItem::Alternate;
 
-		style->drawPrimitive (QStyle::PE_PanelItemViewItem,
-				&o, painter, o.widget);
-
-		{
-			QStyleOptionViewItem indicatorOpt { o };
-			const auto width = indicatorOpt.rect.height ();
-			indicatorOpt.rect.setWidth (width);
-			style->drawPrimitive (QStyle::PE_IndicatorBranch, &indicatorOpt, painter, o.widget);
-			o.rect.setLeft (o.rect.left () + width);
-		}
+		style->drawPrimitive (QStyle::PE_PanelItemViewItem, &o, painter, o.widget);
 
 		if (o.state & QStyle::State_Selected)
 			painter->setPen (o.palette.color (QPalette::HighlightedText));
@@ -290,6 +275,8 @@ namespace Azoth
 	void ContactListDelegate::DrawContact (QPainter *painter,
 			QStyleOptionViewItem option, const QModelIndex& index) const
 	{
+		option.rect.setLeft (0);
+
 		QObject *entryObj = index.data (Core::CLREntryObject).value<QObject*> ();
 		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
 
@@ -364,6 +351,7 @@ namespace Azoth
 					textWidth, r.height () - 2 * CPadding,
 					Qt::AlignVCenter | Qt::AlignLeft,
 					unreadStr);
+			painter->setFont (option.font);
 		}
 
 		painter->drawText (textShift, CPadding,

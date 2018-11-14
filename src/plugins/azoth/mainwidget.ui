@@ -24,7 +24,7 @@
     <widget class="QLineEdit" name="FilterLine_"/>
    </item>
    <item>
-    <widget class="QTreeView" name="CLTree_">
+    <widget class="LeechCraft::Azoth::ContactsListView" name="CLTree_">
      <property name="contextMenuPolicy">
       <enum>Qt::CustomContextMenu</enum>
      </property>
@@ -54,9 +54,6 @@
        <height>32</height>
       </size>
      </property>
-     <property name="indentation">
-      <number>0</number>
-     </property>
      <property name="rootIsDecorated">
       <bool>false</bool>
      </property>
@@ -75,6 +72,13 @@
    </property>
   </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>LeechCraft::Azoth::ContactsListView</class>
+   <extends>QTreeView</extends>
+   <header>contactslistview.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
