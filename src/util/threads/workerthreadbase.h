@@ -86,7 +86,7 @@ namespace Util
 
 		virtual size_t GetQueueSize ();
 	protected:
-		void run () override final;
+		void run () final;
 
 		virtual void Initialize () = 0;
 		virtual void Cleanup () = 0;
