@@ -28,7 +28,6 @@
  **********************************************************************/
 
 #include "workerthreadbase.h"
-#include <util/sll/slotclosure.h>
 
 namespace LeechCraft
 {
@@ -52,13 +51,9 @@ namespace Util
 
 	void WorkerThreadBase::run ()
 	{
-		SlotClosure<NoDeletePolicy> rotator
-		{
-			[this] { RotateFuncs (); },
-			this,
-			SIGNAL (rotateFuncs ()),
-			nullptr
-		};
+		connect (this,
+				&WorkerThreadBase::rotateFuncs,
+				&WorkerThreadBase::RotateFuncs);
 
 		Initialize ();
 
