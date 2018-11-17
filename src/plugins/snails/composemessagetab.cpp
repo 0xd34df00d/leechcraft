@@ -675,7 +675,7 @@ namespace Snails
 		{
 			QMessageBox::critical (this,
 					tr ("Error attaching file"),
-					tr ("Error attaching file: %1 cannot be read")
+					tr ("Error attaching file: %1 cannot be read.")
 						.arg (Util::FormatName (path)));
 			return;
 		}
