@@ -6,17 +6,17 @@
     <message>
         <location filename="accountaddwizardemailpage.ui" line="23"/>
         <source>Your email:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ваш адрес:</translation>
     </message>
     <message>
         <location filename="accountaddwizardemailpage.ui" line="33"/>
         <source>Your name:</source>
-        <translation type="unfinished">Ваше имя:</translation>
+        <translation>Ваше имя:</translation>
     </message>
     <message>
         <location filename="accountaddwizardemailpage.ui" line="46"/>
         <source>Account name:</source>
-        <translation type="unfinished">Имя учётной записи:</translation>
+        <translation>Имя учётной записи:</translation>
     </message>
 </context>
 <context>
@@ -24,7 +24,7 @@
     <message>
         <location filename="accountaddwizardtemplatepage.ui" line="17"/>
         <source>Mail service:</source>
-        <translation type="unfinished"></translation>
+        <translation>Почтовый сервис:</translation>
     </message>
 </context>
 <context>
@@ -234,7 +234,7 @@
     <message>
         <location filename="accountaddwizard.cpp" line="158"/>
         <source>That&apos;s it for the wizard! The account configuration dialog will now open where you will be able to further configure the account.</source>
-        <translation type="unfinished"></translation>
+        <translation>На этом всё! Теперь откроется окно настройки учётной записи, где вы сможете её более глубоко настроить.</translation>
     </message>
 </context>
 <context>
@@ -265,7 +265,7 @@
     <message>
         <location filename="accountaddwizard.cpp" line="54"/>
         <source>Basic account information</source>
-        <translation type="unfinished"></translation>
+        <translation>Основная информация</translation>
     </message>
 </context>
 <context>
@@ -273,7 +273,7 @@
     <message>
         <location filename="accountthreadworker.cpp" line="578"/>
         <source>Fetching messages in %1...</source>
-        <translation type="unfinished"></translation>
+        <translation>Получение сообщений в %1...</translation>
     </message>
 </context>
 <context>
@@ -309,7 +309,7 @@
     <message>
         <location filename="accountaddwizard.cpp" line="279"/>
         <source>Account creation wizard</source>
-        <translation type="unfinished"></translation>
+        <translation>Мастер создания учётной записи</translation>
     </message>
 </context>
 <context>
@@ -325,7 +325,7 @@
     <message>
         <location filename="accountthreadworker.cpp" line="610"/>
         <source>Fetching message IDs in %1...</source>
-        <translation type="unfinished"></translation>
+        <translation>Получение идентификаторов сообщений в %1...</translation>
     </message>
     <message>
         <location filename="accountthreadworker.cpp" line="777"/>
@@ -358,99 +358,94 @@
 </context>
 <context>
     <name>LeechCraft::Snails::ComposeMessageTab</name>
-    <message>
-        <location filename="composemessagetab.cpp" line="89"/>
-        <source>Compose tab bar</source>
-        <translation type="unfinished"></translation>
-    </message>
     <message numerus="yes">
         <location filename="composemessagetab.cpp" line="402"/>
         <source>Attached %n files(s) from the source message.</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Прикреплено %n вложение из исходного сообщения.</numerusform>
+            <numerusform>Прикреплено %n вложения из исходного сообщения.</numerusform>
+            <numerusform>Прикреплено %n вложений из исходного сообщения.</numerusform>
         </translation>
     </message>
     <message>
         <location filename="composemessagetab.cpp" line="374"/>
         <source>Unable to create temporary directory to fetch the attachments of the source message.</source>
-        <translation type="unfinished"></translation>
+        <translation>Невозможно создать временную директорию для получения вложений исходного сообщения.</translation>
     </message>
     <message>
         <location filename="composemessagetab.cpp" line="379"/>
         <source>Unable to fetch the attachments of the source message: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Невозможно получить вложения исходного сообщения: %1.</translation>
     </message>
     <message>
         <location filename="composemessagetab.cpp" line="419"/>
         <source>Send</source>
-        <translation type="unfinished"></translation>
+        <translation>Отправить</translation>
     </message>
     <message>
         <location filename="composemessagetab.cpp" line="427"/>
         <source>Accounts</source>
-        <translation type="unfinished"></translation>
+        <translation>Учётные записи</translation>
     </message>
     <message>
         <location filename="composemessagetab.cpp" line="446"/>
         <source>Attachments</source>
-        <translation type="unfinished"></translation>
+        <translation>Вложения</translation>
     </message>
     <message>
         <location filename="composemessagetab.cpp" line="449"/>
         <source>Add...</source>
-        <translation type="unfinished">Добавить...</translation>
+        <translation>Добавить...</translation>
     </message>
     <message>
         <location filename="composemessagetab.cpp" line="458"/>
         <source>Editors</source>
-        <translation type="unfinished"></translation>
+        <translation>Редакторы</translation>
     </message>
     <message>
         <location filename="composemessagetab.cpp" line="520"/>
         <source>Are you sure you want to remove attachment %1?</source>
-        <translation type="unfinished"></translation>
+        <translation>Вы уверены, что хотите удалить вложение %1?</translation>
     </message>
     <message>
         <location filename="composemessagetab.cpp" line="599"/>
         <source>Unable to send the message: authorization failure. Server reports: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Невозможно отправить сообщение: ошибка авторизации. Сервер сообщает: %1.</translation>
     </message>
     <message>
         <location filename="composemessagetab.cpp" line="605"/>
-        <source>Unable to send email: operation timed out.&lt;br/&gt;&lt;br/&gt;Consider switching between SSL and TLS/STARTSSL or replacing port 465 with 587, or vice versa.Port 465 is typically used with SSL, while port 587 is used with TLS.</source>
-        <translation type="unfinished"></translation>
+        <source>Unable to send email: operation timed out.</source>
+        <translation>Невозможно отправить письмо: время ожидания истекло.</translation>
     </message>
     <message>
-        <location filename="composemessagetab.cpp" line="616"/>
+        <location filename="composemessagetab.cpp" line="678"/>
+        <source>Error attaching file: %1 cannot be read.</source>
+        <translation>Невозможно отправить письмо: %1 не может быть прочитан.</translation>
+    </message>
+    <message>
+        <location filename="composemessagetab.cpp" line="614"/>
         <source>Unable to send email: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Невозможно отправить письмо: %1.</translation>
     </message>
     <message>
-        <location filename="composemessagetab.cpp" line="670"/>
+        <location filename="composemessagetab.cpp" line="668"/>
         <source>Select file to attach</source>
-        <translation type="unfinished"></translation>
+        <translation>Выберите файл для вложения</translation>
     </message>
     <message>
-        <location filename="composemessagetab.cpp" line="679"/>
+        <location filename="composemessagetab.cpp" line="677"/>
         <source>Error attaching file</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка прикрепления файла</translation>
     </message>
     <message>
-        <location filename="composemessagetab.cpp" line="680"/>
-        <source>Error attaching file: %1 cannot be read</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="composemessagetab.cpp" line="686"/>
+        <location filename="composemessagetab.cpp" line="684"/>
         <source>Attachment description</source>
-        <translation type="unfinished"></translation>
+        <translation>Описание вложения</translation>
     </message>
     <message>
-        <location filename="composemessagetab.cpp" line="687"/>
+        <location filename="composemessagetab.cpp" line="685"/>
         <source>Enter optional attachment description (you may leave it blank):</source>
-        <translation type="unfinished"></translation>
+        <translation>Введите опциональное описание вложения (можно оставить пустым):</translation>
     </message>
 </context>
 <context>
@@ -479,7 +474,7 @@
     <message>
         <location filename="accountaddwizard.cpp" line="214"/>
         <source>Login:</source>
-        <translation type="unfinished">Логин:</translation>
+        <translation>Логин:</translation>
     </message>
 </context>
 <context>
@@ -580,7 +575,7 @@
     <message>
         <location filename="mailtab.cpp" line="312"/>
         <source>Attachments</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Вложения</translation>
     </message>
     <message>
         <location filename="mailtab.cpp" line="321"/>
@@ -860,7 +855,7 @@
     <message>
         <location filename="messagelistactionsmanager.cpp" line="441"/>
         <source>Attachments</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Вложения</translation>
     </message>
     <message>
         <location filename="messagelistactionsmanager.cpp" line="442"/>
@@ -1005,7 +1000,7 @@
     <message>
         <location filename="dummy.cpp" line="19"/>
         <source>Accounts</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Учётные записи</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="20"/>
