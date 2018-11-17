@@ -94,11 +94,11 @@ int main (int argc, char **argv)
 #endif
 
 #ifndef Q_OS_MAC
-	LeechCraft::Application::setAttribute (Qt::AA_X11InitThreads);
+	QCoreApplication::setAttribute (Qt::AA_X11InitThreads);
 #endif
 
 	QCoreApplication::setAttribute (Qt::AA_ShareOpenGLContexts);
-	QApplication::setAttribute (Qt::AA_UseHighDpiPixmaps);
+	QCoreApplication::setAttribute (Qt::AA_UseHighDpiPixmaps);
 
 	LeechCraft::Application app (argc, argv);
 	return app.exec ();

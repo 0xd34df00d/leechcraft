@@ -42,8 +42,6 @@
 #include "fullscreen.h"
 #include "reopenhandler.h"
 
-extern void qt_mac_set_dock_menu (QMenu*);
-
 namespace LeechCraft
 {
 namespace Pierre
@@ -111,7 +109,7 @@ namespace Pierre
 	void Plugin::hookTrayIconCreated (IHookProxy_ptr proxy, QSystemTrayIcon *icon)
 	{
 		TrayIconMenu_ = icon->contextMenu ();
-		qt_mac_set_dock_menu (TrayIconMenu_);
+		TrayIconMenu_->setAsDockMenu ();
 	}
 
 	void Plugin::hookTrayIconVisibilityChanged (IHookProxy_ptr proxy, QSystemTrayIcon*, bool)
