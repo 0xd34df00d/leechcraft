@@ -602,9 +602,7 @@ namespace Snails
 										[] (const vmime::exceptions::connection_error&)
 										{
 											const auto& notify = Util::MakeNotification ("Snails",
-													tr ("Unable to send email: operation timed out.<br/><br/>"
-														"Consider switching between SSL and TLS/STARTSSL or replacing port 465 with 587, or vice versa."
-														"Port 465 is typically used with SSL, while port 587 is used with TLS."),
+													tr ("Unable to send email: operation timed out."),
 													Priority::Critical);
 											Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (notify);
 										},
