@@ -358,11 +358,6 @@
 </context>
 <context>
     <name>LeechCraft::Snails::ComposeMessageTab</name>
-    <message>
-        <location filename="composemessagetab.cpp" line="89"/>
-        <source>Compose tab bar</source>
-        <translation type="unfinished"></translation>
-    </message>
     <message numerus="yes">
         <location filename="composemessagetab.cpp" line="402"/>
         <source>Attached %n files(s) from the source message.</source>
@@ -418,36 +413,36 @@
     </message>
     <message>
         <location filename="composemessagetab.cpp" line="605"/>
-        <source>Unable to send email: operation timed out.&lt;br/&gt;&lt;br/&gt;Consider switching between SSL and TLS/STARTSSL or replacing port 465 with 587, or vice versa.Port 465 is typically used with SSL, while port 587 is used with TLS.</source>
+        <source>Unable to send email: operation timed out.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="composemessagetab.cpp" line="616"/>
+        <location filename="composemessagetab.cpp" line="678"/>
+        <source>Error attaching file: %1 cannot be read.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="composemessagetab.cpp" line="614"/>
         <source>Unable to send email: %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="composemessagetab.cpp" line="670"/>
+        <location filename="composemessagetab.cpp" line="668"/>
         <source>Select file to attach</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="composemessagetab.cpp" line="679"/>
+        <location filename="composemessagetab.cpp" line="677"/>
         <source>Error attaching file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="composemessagetab.cpp" line="680"/>
-        <source>Error attaching file: %1 cannot be read</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="composemessagetab.cpp" line="686"/>
+        <location filename="composemessagetab.cpp" line="684"/>
         <source>Attachment description</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="composemessagetab.cpp" line="687"/>
+        <location filename="composemessagetab.cpp" line="685"/>
         <source>Enter optional attachment description (you may leave it blank):</source>
         <translation type="unfinished"></translation>
     </message>
