@@ -181,12 +181,12 @@ namespace Util
 						<< "thread is still running";
 		}
 
-		using WorkerThreadBase::ScheduleImpl;
-
 		void SetAutoQuit (bool autoQuit)
 		{
 			IsAutoQuit_ = autoQuit;
 		}
+
+		using WorkerThreadBase::ScheduleImpl;
 
 		template<typename F, typename... Args>
 		QFuture<std::result_of_t<F (WorkerType*, Args...)>> ScheduleImpl (F f, Args&&... args)
