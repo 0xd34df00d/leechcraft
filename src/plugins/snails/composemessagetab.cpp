@@ -86,7 +86,7 @@ namespace Snails
 	: QWidget (parent)
 	, AccsMgr_ (accsMgr)
 	, TemplatesMgr_ (templatesMgr)
-	, Toolbar_ (new QToolBar (tr ("Compose tab bar")))
+	, Toolbar_ (new QToolBar)
 	{
 		Ui_.setupUi (this);
 
