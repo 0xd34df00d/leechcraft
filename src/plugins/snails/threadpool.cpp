@@ -75,11 +75,6 @@ namespace Snails
 				};
 	}
 
-	AccountThread* ThreadPool::GetThread ()
-	{
-		return GetNextThread ();
-	}
-
 	void ThreadPool::RunThreads ()
 	{
 		if (CheckingNext_)

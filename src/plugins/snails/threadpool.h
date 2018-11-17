@@ -63,8 +63,6 @@ namespace Snails
 
 		QFuture<EitherInvokeError_t<Util::Void>> TestConnectivity ();
 
-		AccountThread* GetThread ();
-
 		template<typename F, typename... Args>
 		auto Schedule (TaskPriority prio, const F& func, const Args&... args)
 		{
