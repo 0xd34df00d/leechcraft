@@ -136,6 +136,7 @@ namespace Util
 	class WorkerThread : public WorkerThreadBase
 	{
 		std::atomic_bool IsAutoQuit_ { false };
+		unsigned long QuitWait_ = 2000;
 	protected:
 		using W = WorkerType;
 
@@ -174,7 +175,7 @@ namespace Util
 				return;
 
 			quit ();
-			wait (2000);
+			wait (QuitWait_);
 
 			if (isRunning ())
 				qWarning () << Q_FUNC_INFO
@@ -184,6 +185,11 @@ namespace Util
 		void SetAutoQuit (bool autoQuit)
 		{
 			IsAutoQuit_ = autoQuit;
+		}
+
+		void SetQuitWait (unsigned long wait)
+		{
+			QuitWait_ = wait;
 		}
 
 		using WorkerThreadBase::ScheduleImpl;
