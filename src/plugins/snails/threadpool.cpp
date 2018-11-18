@@ -131,6 +131,7 @@ namespace Snails
 		const auto& threadName = "PooledThread_" + QString::number (ExistingThreads_.size ());
 		const auto thread = std::make_shared<AccountThread> (false,
 				threadName, Acc_, Storage_);
+		thread->SetAutoQuit (true);
 
 		new Util::SlotClosure<Util::DeleteLaterPolicy>
 		{
