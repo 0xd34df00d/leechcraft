@@ -116,6 +116,8 @@ namespace Snails
 	, ProgressMgr_ (deps.PM_)
 	, Storage_ (deps.Storage_)
 	{
+		Logger_->SetEnabled (cfg.LogToFile_);
+
 		connect (FolderManager_,
 				SIGNAL (foldersUpdated ()),
 				this,
@@ -449,6 +451,7 @@ namespace Snails
 					QMutexLocker l (GetMutex ());
 					Config_ = dia->GetConfig ();
 				}
+				Logger_->SetEnabled (Config_.LogToFile_);
 				FolderManager_->ClearFolderFlags ();
 				const auto& out = dia->GetOutFolder ();
 				if (!out.isEmpty ())

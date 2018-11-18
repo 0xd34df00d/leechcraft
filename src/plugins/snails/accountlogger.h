@@ -30,6 +30,7 @@
 #pragma once
 
 #include <memory>
+#include <atomic>
 #include <QObject>
 
 class QFile;
@@ -45,10 +46,13 @@ namespace Snails
 	{
 		Q_OBJECT
 
+		std::atomic_bool Enabled_ { false };
 		Account * const Acc_;
 		std::shared_ptr<QFile> File_;
 	public:
 		AccountLogger (Account*, QObject* = nullptr);
+
+		void SetEnabled (bool);
 
 		void Log (const QString& context, int connId, const QString& msg);
 	private slots:

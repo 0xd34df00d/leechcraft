@@ -45,6 +45,11 @@ namespace Snails
 	{
 	}
 
+	void AccountLogger::SetEnabled (bool enabled)
+	{
+		Enabled_ = enabled;
+	}
+
 	void AccountLogger::Log (const QString& context, int connId, const QString& msg)
 	{
 		const auto& now = QDateTime::currentDateTime ();
@@ -64,7 +69,7 @@ namespace Snails
 
 	void AccountLogger::writeLog (const QString& log)
 	{
-		if (!Acc_->GetConfig ().LogToFile_)
+		if (!Enabled_)
 			return;
 
 		if (!File_)
