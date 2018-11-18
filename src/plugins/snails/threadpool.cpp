@@ -49,8 +49,6 @@ namespace Snails
 	QFuture<EitherInvokeError_t<Util::Void>> ThreadPool::TestConnectivity ()
 	{
 		auto thread = CreateThread ();
-		ExistingThreads_ << thread;
-
 		auto future = thread->Schedule (TaskPriority::High, &AccountThreadWorker::TestConnectivity);
 		Util::Sequence (nullptr, future) >>
 				[thread] (const auto&) {};
