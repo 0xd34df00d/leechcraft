@@ -696,8 +696,8 @@ namespace Aggregator
 				<< owner
 				<< ownerEmail;
 
-		for (channels_shorts_t::const_iterator i = channels.begin (), end = channels.end (); i != end; ++i)
-			if (const auto& maybeChannel = StorageBackend_->GetChannel (i->ChannelID_))
+		for (const auto& cs : channels)
+			if (const auto& maybeChannel = StorageBackend_->GetChannel (cs.ChannelID_))
 			{
 				auto channel = *maybeChannel;
 				channel.Items_ = StorageBackend_->GetFullItems (channel.ChannelID_);
