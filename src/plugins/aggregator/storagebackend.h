@@ -150,7 +150,8 @@ namespace Aggregator
 		 * @return ID of the found channel or -1 if it's not
 		 * found.
 		 */
-		virtual IDType_t FindChannel (const QString& title, const QString& link, const IDType_t& feedId) const = 0;
+		virtual boost::optional<IDType_t> FindChannel (const QString& title,
+				const QString& link, const IDType_t& feedId) const = 0;
 
 		/** @brief Trims the channel to remove old items.
 		 *

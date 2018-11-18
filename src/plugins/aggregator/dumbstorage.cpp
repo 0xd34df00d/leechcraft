@@ -71,7 +71,7 @@ namespace Aggregator
 		return {};
 	}
 
-	IDType_t DumbStorage::FindChannel (const QString&, const QString&, const IDType_t&) const
+	boost::optional<IDType_t> DumbStorage::FindChannel (const QString&, const QString&, const IDType_t&) const
 	{
 		return {};
 	}

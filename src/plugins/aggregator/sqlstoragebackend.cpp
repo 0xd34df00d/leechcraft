@@ -1056,7 +1056,7 @@ namespace Aggregator
 		return channel;
 	}
 
-	IDType_t SQLStorageBackend::FindChannel (const QString& title,
+	boost::optional<IDType_t> SQLStorageBackend::FindChannel (const QString& title,
 			const QString& link, const IDType_t& feedId) const
 	{
 		ChannelIDFromTitleURL_.bindValue (":feed_id", feedId);
@@ -1066,7 +1066,7 @@ namespace Aggregator
 			Util::DBLock::DumpError (ChannelIDFromTitleURL_);
 
 		if (!ChannelIDFromTitleURL_.next ())
-			throw ChannelNotFoundError ();
+			return {};
 
 		IDType_t result = ChannelIDFromTitleURL_.value (0).value<IDType_t> ();
 		ChannelIDFromTitleURL_.finish ();

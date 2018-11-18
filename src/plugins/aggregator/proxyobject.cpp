@@ -106,8 +106,7 @@ namespace Aggregator
 		QList<Channel> result;
 		const auto& sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
 		for (const auto& cs : Core::Instance ().GetChannels ())
-			if (const auto channel = sb->GetChannel (cs.ChannelID_))
-				result << *channel;
+			result << sb->GetChannel (cs.ChannelID_);
 		return result;
 	}
 
