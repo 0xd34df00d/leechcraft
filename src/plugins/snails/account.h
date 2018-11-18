@@ -73,7 +73,7 @@ namespace Snails
 	{
 		Q_OBJECT
 
-		AccountLogger * const Logger_;
+		std::shared_ptr<AccountLogger> Logger_;
 
 		ThreadPool * const WorkerPool_;
 
@@ -112,7 +112,7 @@ namespace Snails
 
 		QByteArray GetID () const;
 
-		AccountLogger* GetLogger () const;
+		std::shared_ptr<AccountLogger> GetLogger () const;
 
 		std::shared_ptr<AccountDatabase> GetDatabase () const;
 

@@ -35,7 +35,7 @@ namespace LeechCraft
 {
 namespace Snails
 {
-	TracerFactory::TracerFactory (const QString& context, AccountLogger *logger)
+	TracerFactory::TracerFactory (const QString& context, const std::shared_ptr<AccountLogger>& logger)
 	: AccLogger_ { logger }
 	, Context_ { context }
 	{

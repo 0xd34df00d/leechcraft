@@ -43,13 +43,13 @@ namespace Snails
 
 	class TracerFactory : public vmime::net::tracerFactory
 	{
-		AccountLogger * const AccLogger_;
+		const std::shared_ptr<AccountLogger> AccLogger_;
 		const QString Context_;
 
 		std::atomic<uint64_t> SentBytes_ { 0 };
 		std::atomic<uint64_t> ReceivedBytes_ { 0 };
 	public:
-		TracerFactory (const QString&, AccountLogger*);
+		TracerFactory (const QString&, const std::shared_ptr<AccountLogger>&);
 
 		TraceByteCounter CreateCounter ();
 

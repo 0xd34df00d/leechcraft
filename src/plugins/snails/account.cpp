@@ -104,7 +104,7 @@ namespace Snails
 
 	Account::Account (const QByteArray& id, const AccountConfig& cfg, const Dependencies& deps)
 	: QObject (deps.Parent_)
-	, Logger_ (new AccountLogger (cfg.AccName_, this))
+	, Logger_ (std::make_shared<AccountLogger> (cfg.AccName_))
 	, WorkerPool_ (new ThreadPool (this, deps.Storage_, this))
 	, AccMutex_ (new QMutex (QMutex::Recursive))
 	, ID_ (id)
@@ -179,7 +179,7 @@ namespace Snails
 		return ID_;
 	}
 
-	AccountLogger* Account::GetLogger () const
+	std::shared_ptr<AccountLogger> Account::GetLogger () const
 	{
 		return Logger_;
 	}
