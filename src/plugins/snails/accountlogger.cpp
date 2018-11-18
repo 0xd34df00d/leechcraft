@@ -39,9 +39,9 @@ namespace LeechCraft
 {
 namespace Snails
 {
-	AccountLogger::AccountLogger (Account *acc, QObject *parent)
+	AccountLogger::AccountLogger (const QString& accName, QObject *parent)
 	: QObject { parent }
-	, Acc_ { acc }
+	, AccName_ { accName }
 	{
 	}
 
@@ -74,7 +74,7 @@ namespace Snails
 
 		if (!File_)
 		{
-			const auto& path = Util::CreateIfNotExists ("snails/logs").filePath (Acc_->GetConfig ().AccName_ + ".log");
+			const auto& path = Util::CreateIfNotExists ("snails/logs").filePath (AccName_ + ".log");
 			File_ = std::make_shared<QFile> (path);
 			if (!File_->open (QIODevice::WriteOnly))
 			{

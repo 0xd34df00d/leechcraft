@@ -40,17 +40,15 @@ namespace LeechCraft
 {
 namespace Snails
 {
-	class Account;
-
 	class AccountLogger : public QObject
 	{
 		Q_OBJECT
 
 		std::atomic_bool Enabled_ { false };
-		Account * const Acc_;
+		const QString AccName_;
 		std::shared_ptr<QFile> File_;
 	public:
-		AccountLogger (Account*, QObject* = nullptr);
+		AccountLogger (const QString&, QObject* = nullptr);
 
 		void SetEnabled (bool);
 

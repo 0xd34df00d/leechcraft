@@ -104,7 +104,7 @@ namespace Snails
 
 	Account::Account (const QByteArray& id, const AccountConfig& cfg, const Dependencies& deps)
 	: QObject (deps.Parent_)
-	, Logger_ (new AccountLogger (this, this))
+	, Logger_ (new AccountLogger (cfg.AccName_, this))
 	, WorkerPool_ (new ThreadPool (this, deps.Storage_, this))
 	, AccMutex_ (new QMutex (QMutex::Recursive))
 	, ID_ (id)
