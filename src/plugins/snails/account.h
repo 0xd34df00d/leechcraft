@@ -75,7 +75,7 @@ namespace Snails
 
 		std::shared_ptr<AccountLogger> Logger_;
 
-		ThreadPool * const WorkerPool_;
+		std::shared_ptr<ThreadPool> WorkerPool_;
 
 		QMutex * const AccMutex_;
 
