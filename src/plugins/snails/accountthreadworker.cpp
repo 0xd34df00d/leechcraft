@@ -78,11 +78,11 @@ namespace Snails
 		template<typename T>
 		auto WaitForFuture (const QFuture<T>& future)
 		{
-			QFutureWatcher<QString> watcher;
+			QFutureWatcher<T> watcher;
 			QEventLoop loop;
 
 			QObject::connect (&watcher,
-					&QFutureWatcher<QString>::finished,
+					&QFutureWatcher<T>::finished,
 					&loop,
 					&QEventLoop::quit);
 
