@@ -140,7 +140,7 @@ namespace Snails
 			Scheduled_.takeFirst () (thread);
 
 		if (!Scheduled_.isEmpty ())
-			Util::ExecuteLater ([this] { RunThreads (); }, 500);
+			Util::ExecuteLater ([this] { RunThreads (); });
 	}
 
 	AccountThread* ThreadPool::GetNextThread ()
