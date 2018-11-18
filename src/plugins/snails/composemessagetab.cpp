@@ -399,7 +399,7 @@ namespace Snails
 							AppendAttachment (path, {});
 
 						const auto& notify = Util::MakeNotification ("Snails",
-								tr ("Attached %n files(s) from the source message.",
+								tr ("Attached %n file(s) from the source message.",
 										0,
 										result.Paths_.size ()),
 								Priority::Info);
