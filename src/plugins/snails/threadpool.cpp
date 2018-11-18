@@ -40,8 +40,9 @@ namespace LeechCraft
 {
 namespace Snails
 {
-	ThreadPool::ThreadPool (Account *acc, Storage *st)
-	: Acc_ { acc }
+	ThreadPool::ThreadPool (Account *acc, Storage *st, QObject *parent)
+	: QObject { parent }
+	, Acc_ { acc }
 	, Storage_ { st }
 	{
 	}

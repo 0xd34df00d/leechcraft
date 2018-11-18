@@ -59,7 +59,7 @@ namespace Snails
 
 		QList<std::function<void (AccountThread*)>> ThreadInitializers_;
 	public:
-		ThreadPool (Account*, Storage*);
+		ThreadPool (Account*, Storage*, QObject* = nullptr);
 
 		QFuture<EitherInvokeError_t<Util::Void>> TestConnectivity ();
 
