@@ -51,26 +51,10 @@ namespace Snails
 		auto thread = CreateThread ();
 		ExistingThreads_ << thread;
 
-		return thread->Schedule (TaskPriority::High, &AccountThreadWorker::TestConnectivity) *
-				[this, thread] (const auto& result)
-				{
-					Util::Visit (result.AsVariant (),
-							[] (Util::Void) {},
-							[this] (const auto& err)
-							{
-								Util::Visit (err,
-										[this] (const vmime::exceptions::authentication_error& err)
-										{
-											qWarning () << "Snails::ThreadPool::TestConnectivity():"
-													<< "initial thread authentication failed:"
-													<< err.what ();
-											HitLimit_ = true;
-										},
-										[] (const auto& e) { qWarning () << "Snails::ThreadPool::TestConnectivity():" << e.what (); });
-							});
-
-					return result;
-				};
+		auto future = thread->Schedule (TaskPriority::High, &AccountThreadWorker::TestConnectivity);
+		Util::Sequence (nullptr, future) >>
+				[thread] (const auto&) {};
+		return future;
 	}
 
 	void ThreadPool::RunThreads ()
