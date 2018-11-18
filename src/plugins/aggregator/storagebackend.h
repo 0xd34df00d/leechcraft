@@ -140,15 +140,12 @@ namespace Aggregator
 		 */
 		virtual boost::optional<Channel> GetChannel (const IDType_t& channelId) const = 0;
 
-		/** @brief Find channel with the given title, link and
-		 * and given parent and returns its ID or -1 if it's not
-		 * found.
+		/** @brief Find channel with the given identifying information.
 		 *
 		 * @param[in] title The channel's title.
 		 * @param[in] link The channel's link.
 		 * @param[in] feedId ID of the parent feed.
-		 * @return ID of the found channel or -1 if it's not
-		 * found.
+		 * @return ID of the channel or an empty optional if no such channel exists.
 		 */
 		virtual boost::optional<IDType_t> FindChannel (const QString& title,
 				const QString& link, const IDType_t& feedId) const = 0;
