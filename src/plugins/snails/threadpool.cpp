@@ -115,6 +115,7 @@ namespace Snails
 		const auto thread = std::make_shared<AccountThread> (false,
 				threadName, Acc_, Storage_);
 		thread->SetAutoQuit (true);
+		thread->SetQuitWait (ULONG_MAX);
 
 		new Util::SlotClosure<Util::DeleteLaterPolicy>
 		{
