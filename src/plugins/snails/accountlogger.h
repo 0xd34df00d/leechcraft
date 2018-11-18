@@ -48,7 +48,7 @@ namespace Snails
 		Account * const Acc_;
 		std::shared_ptr<QFile> File_;
 	public:
-		AccountLogger (Account*);
+		AccountLogger (Account*, QObject* = nullptr);
 
 		void Log (const QString& context, int connId, const QString& msg);
 	private slots:

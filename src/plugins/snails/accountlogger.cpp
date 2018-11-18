@@ -39,8 +39,8 @@ namespace LeechCraft
 {
 namespace Snails
 {
-	AccountLogger::AccountLogger (Account *acc)
-	: QObject { acc }
+	AccountLogger::AccountLogger (Account *acc, QObject *parent)
+	: QObject { parent }
 	, Acc_ { acc }
 	{
 	}
