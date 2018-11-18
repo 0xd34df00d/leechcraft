@@ -54,8 +54,6 @@ namespace Snails
 		return thread->Schedule (TaskPriority::High, &AccountThreadWorker::TestConnectivity) *
 				[this, thread] (const auto& result)
 				{
-					RunScheduled (thread.get ());
-
 					Util::Visit (result.AsVariant (),
 							[] (Util::Void) {},
 							[this] (const auto& err)
