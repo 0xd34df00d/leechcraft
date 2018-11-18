@@ -160,6 +160,9 @@ namespace Snails
 
 	AccountThread* ThreadPool::GetNextThread ()
 	{
+		if (ExistingThreads_.isEmpty ())
+			ExistingThreads_ << CreateThread ();
+
 		const auto min = std::min_element (ExistingThreads_.begin (), ExistingThreads_.end (),
 				Util::ComparingBy ([] (const auto& ptr) { return ptr->GetQueueSize (); }));
 		return min->get ();
