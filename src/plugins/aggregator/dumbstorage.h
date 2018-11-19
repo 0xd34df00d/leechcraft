@@ -45,7 +45,7 @@ namespace Aggregator
 		boost::optional<Feed::FeedSettings> GetFeedSettings (const IDType_t&) const override;
 		void SetFeedSettings (const Feed::FeedSettings&) override;
 		channels_shorts_t GetChannels (const IDType_t&) const override;
-		boost::optional<Channel> GetChannel (const IDType_t&) const override;
+		Channel GetChannel (const IDType_t&) const override;
 		boost::optional<IDType_t> FindChannel (const QString&, const QString&, const IDType_t&) const override;
 		void TrimChannel (const IDType_t&, int, int) override;
 		items_shorts_t GetItems (const IDType_t&) const override;

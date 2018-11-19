@@ -138,7 +138,7 @@ namespace Aggregator
 		 * @param[in] channelId The ID of the channel.
 		 * @return Full information about the requested channel.
 		 */
-		virtual boost::optional<Channel> GetChannel (const IDType_t& channelId) const = 0;
+		virtual Channel GetChannel (const IDType_t& channelId) const = 0;
 
 		/** @brief Find channel with the given identifying information.
 		 *

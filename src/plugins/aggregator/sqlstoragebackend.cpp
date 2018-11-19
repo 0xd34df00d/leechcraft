@@ -808,8 +808,7 @@ namespace Aggregator
 		lock.Good ();
 
 		if (const auto& item = GetItem (id))
-			if (const auto& channel = GetChannel (item->ChannelID_))
-				emit itemDataUpdated (*item, *channel);
+			emit itemDataUpdated (*item, GetChannel (item->ChannelID_));
 	}
 
 	QList<IDType_t> SQLStorageBackend::GetItemsForTag (const ITagsManager::tag_id& tag)
@@ -1027,14 +1026,19 @@ namespace Aggregator
 		return shorts;
 	}
 
-	boost::optional<Channel> SQLStorageBackend::GetChannel (const IDType_t& channelId) const
+	Channel SQLStorageBackend::GetChannel (const IDType_t& channelId) const
 	{
 		ChannelsFullSelector_.bindValue (":channel_id", channelId);
 		if (!ChannelsFullSelector_.exec ())
 			Util::DBLock::DumpError (ChannelsFullSelector_);
 
 		if (!ChannelsFullSelector_.next ())
-			return {};
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to find"
+					<< channelId;
+			throw ChannelNotFoundError {};
+		}
 
 		Channel channel (ChannelsFullSelector_.value (0).toInt (), channelId);
 
@@ -1159,8 +1163,7 @@ namespace Aggregator
 		if (!ChannelNumberTrimmer_.exec ())
 			LeechCraft::Util::DBLock::DumpError (ChannelNumberTrimmer_);
 
-		if (const auto channel = GetChannel (channelId))
-			emit channelDataUpdated (*channel);
+		emit channelDataUpdated (GetChannel (channelId));
 	}
 
 	items_shorts_t SQLStorageBackend::GetItems (const IDType_t& channelId) const
@@ -1383,8 +1386,7 @@ namespace Aggregator
 
 		UpdateShortChannel_.finish ();
 
-		if (const auto full = GetChannel (channel.ChannelID_))
-			emit channelDataUpdated (*full);
+		emit channelDataUpdated (GetChannel (channel.ChannelID_));
 	}
 
 	void SQLStorageBackend::UpdateItem (const Item& item)
@@ -1421,11 +1423,9 @@ namespace Aggregator
 		WriteEnclosures (item.Enclosures_);
 		WriteMRSSEntries (item.MRSSEntries_);
 
-		if (const auto& channel = GetChannel (item.ChannelID_))
-		{
-			emit itemDataUpdated (item, *channel);
-			emit channelDataUpdated (*channel);
-		}
+		const auto& channel = GetChannel (item.ChannelID_);
+		emit itemDataUpdated (item, channel);
+		emit channelDataUpdated (channel);
 	}
 
 	void SQLStorageBackend::UpdateItem (const ItemShort& item)
@@ -1450,11 +1450,11 @@ namespace Aggregator
 
 		UpdateShortItem_.finish ();
 
-		if (const auto& channel = GetChannel (item.ChannelID_);
-			const auto& fullItem = GetItem (item.ItemID_))
+		const auto& channel = GetChannel (item.ChannelID_);
+		if (const auto& fullItem = GetItem (item.ItemID_))
 		{
-			emit itemDataUpdated (*fullItem, *channel);
-			emit channelDataUpdated (*channel);
+			emit itemDataUpdated (*fullItem, channel);
+			emit channelDataUpdated (channel);
 		}
 	}
 
@@ -1530,11 +1530,9 @@ namespace Aggregator
 		WriteEnclosures (item.Enclosures_);
 		WriteMRSSEntries (item.MRSSEntries_);
 
-		if (const auto& channel = GetChannel (item.ChannelID_))
-		{
-			emit itemDataUpdated (item, *channel);
-			emit channelDataUpdated (*channel);
-		}
+		const auto& channel = GetChannel (item.ChannelID_);
+		emit itemDataUpdated (item, channel);
+		emit channelDataUpdated (channel);
 	}
 
 	namespace
@@ -1609,8 +1607,7 @@ namespace Aggregator
 		emit itemsRemoved ({ items });
 
 		for (const auto& cid : modifiedChannels)
-			if (const auto& channel = GetChannel (cid))
-				emit channelDataUpdated (*channel);
+			emit channelDataUpdated (GetChannel (cid));
 	}
 
 	void SQLStorageBackend::RemoveChannel (const IDType_t& channelId)
@@ -1690,16 +1687,14 @@ namespace Aggregator
 
 		ToggleChannelUnread_.finish ();
 
-		if (const auto& channel = GetChannel (channelId))
-		{
-			emit channelDataUpdated (*channel);
-			for (size_t i = 0; i < oldItems.size (); ++i)
-				if (oldItems.at (i)->Unread_ != state)
-				{
-					oldItems.at (i)->Unread_ = state;
-					emit itemDataUpdated (*oldItems.at (i), *channel);
-				}
-		}
+		const auto& channel = GetChannel (channelId);
+		emit channelDataUpdated (channel);
+		for (size_t i = 0; i < oldItems.size (); ++i)
+			if (oldItems.at (i)->Unread_ != state)
+			{
+				oldItems.at (i)->Unread_ = state;
+				emit itemDataUpdated (*oldItems.at (i), channel);
+			}
 	}
 
 	bool SQLStorageBackend::UpdateFeedsStorage (int, int)

@@ -478,14 +478,11 @@ namespace Aggregator
 		ci.ChannelID_ = channel.ChannelID_;
 		ci.Link_ = channel.Link_;
 
+		const auto& fullChannel = StorageBackend_->GetChannel (channel.ChannelID_);
+		ci.Description_ = fullChannel.Description_;
+		ci.Author_ = fullChannel.Author_;
+
 		using Util::operator*;
-
-		StorageBackend_->GetChannel (channel.ChannelID_) * [&] (auto&& rc)
-		{
-			ci.Description_ = rc.Description_;
-			ci.Author_ = rc.Author_;
-		};
-
 		StorageBackend_->GetFeed (channel.FeedID_) * [&] (auto&& feed) { ci.URL_ = feed.URL_; };
 
 		// TODO introduce a method in SB for this
@@ -498,10 +495,7 @@ namespace Aggregator
 	{
 		// TODO introduce a method in SB for this
 		const auto& channelShort = ChannelsModel_->GetChannelForIndex (i);
-		if (const auto& maybeChan = StorageBackend_->GetChannel (channelShort.ChannelID_))
-			return QPixmap::fromImage (maybeChan->Pixmap_);
-		else
-			return {};
+		return QPixmap::fromImage (StorageBackend_->GetChannel (channelShort.ChannelID_).Pixmap_);
 	}
 
 	void Core::SetTagsForIndex (const QString& tags, const QModelIndex& index)
@@ -515,8 +509,7 @@ namespace Aggregator
 	{
 		const auto& channel = ChannelsModel_->GetChannelForIndex (index);
 		// TODO no need to get full channel here
-		if (const auto& maybeChan = StorageBackend_->GetChannel (channel.ChannelID_))
-			FetchFavicon (*maybeChan);
+		FetchFavicon (StorageBackend_->GetChannel (channel.ChannelID_));
 	}
 
 	QStringList Core::GetCategories (const QModelIndex& index) const
@@ -697,12 +690,11 @@ namespace Aggregator
 				<< ownerEmail;
 
 		for (const auto& cs : channels)
-			if (const auto& maybeChannel = StorageBackend_->GetChannel (cs.ChannelID_))
-			{
-				auto channel = *maybeChannel;
-				channel.Items_ = StorageBackend_->GetFullItems (channel.ChannelID_);
-				data << channel;
-			}
+		{
+			auto channel = StorageBackend_->GetChannel (cs.ChannelID_);
+			channel.Items_ = StorageBackend_->GetFullItems (channel.ChannelID_);
+			data << channel;
+		}
 
 		f.write (qCompress (buffer, 9));
 	}
@@ -1110,11 +1102,7 @@ namespace Aggregator
 		const auto& data = PendingJob2ExternalData_.take (url);
 
 		// TODO add separate methods for pixmap/favicon updates in StorageBackend.
-		auto maybeChannel = StorageBackend_->GetChannel (data.ChannelId_);
-		if (!maybeChannel)
-			return;
-
-		auto channel = *maybeChannel;
+		auto channel = StorageBackend_->GetChannel (data.ChannelId_);
 
 		const QImage image { file.fileName () };
 		switch (data.Type_)

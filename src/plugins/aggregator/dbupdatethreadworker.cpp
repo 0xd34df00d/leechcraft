@@ -226,14 +226,7 @@ namespace Aggregator
 			}
 
 			const auto ourChannelID = *maybeOurChannelID;
-			const auto& maybeOurChannel = SB_->GetChannel (ourChannelID);
-			if (!maybeOurChannel)
-			{
-				AddChannel (*channel);
-				continue;
-			}
-
-			const auto& ourChannel = *maybeOurChannel;
+			const auto& ourChannel = SB_->GetChannel (ourChannelID);
 
 			int newItems = 0;
 			int updatedItems = 0;
