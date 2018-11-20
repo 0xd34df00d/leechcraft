@@ -806,7 +806,7 @@ namespace Aggregator
 				return;
 			}
 
-			IDType_t feedId = IDNotFound;
+			boost::optional<IDType_t> feedId;
 			if (pj.Role_ == PendingJob::RFeedAdded)
 			{
 				Feed feed;
@@ -817,14 +817,14 @@ namespace Aggregator
 			else
 				feedId = StorageBackend_->FindFeed (pj.URL_);
 
-			if (feedId == IDNotFound)
+			if (!feedId)
 			{
 				ErrorNotification (tr ("Feed error"),
 						tr ("Feed with url %1 not found.").arg (pj.URL_));
 				return;
 			}
-
-			channels = parser->ParseFeed (doc, feedId);
+			else
+				channels = parser->ParseFeed (doc, *feedId);
 		}
 
 		if (pj.Role_ == PendingJob::RFeedAdded)
@@ -1139,8 +1139,15 @@ namespace Aggregator
 		if (pj.FeedSettings_)
 		{
 			auto fs = *pj.FeedSettings_;
-			fs.FeedID_ = StorageBackend_->FindFeed (pj.URL_);
-			StorageBackend_->SetFeedSettings (fs);
+			if (const auto maybeFeedID = StorageBackend_->FindFeed (pj.URL_))
+			{
+				fs.FeedID_ = *maybeFeedID;
+				StorageBackend_->SetFeedSettings (fs);
+			}
+			else
+				qWarning () << Q_FUNC_INFO
+						<< "unable to find feed ID for the feed that's just been added"
+						<< pj.URL_;
 		}
 	}
 

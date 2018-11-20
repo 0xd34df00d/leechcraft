@@ -202,8 +202,8 @@ namespace Aggregator
 
 	void DBUpdateThreadWorker::updateFeed (channels_container_t channels, QString url)
 	{
-		auto feedId = SB_->FindFeed (url);
-		if (feedId == static_cast<decltype (feedId)> (-1))
+		const auto maybeFeedId = SB_->FindFeed (url);
+		if (!maybeFeedId)
 		{
 			qWarning () << Q_FUNC_INFO
 				<< "skipping"
@@ -211,6 +211,7 @@ namespace Aggregator
 				<< "cause seems like it's not in storage yet";
 			return;
 		}
+		const auto feedId = *maybeFeedId;
 
 		const auto& feedSettings = GetFeedSettings (feedId);
 		const auto ipc = feedSettings.NumItems_;

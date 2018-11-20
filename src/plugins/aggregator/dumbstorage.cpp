@@ -47,7 +47,7 @@ namespace Aggregator
 		return {};
 	}
 
-	IDType_t DumbStorage::FindFeed (const QString&) const
+	boost::optional<IDType_t> DumbStorage::FindFeed (const QString&) const
 	{
 		return {};
 	}

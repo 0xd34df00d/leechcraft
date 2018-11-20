@@ -923,7 +923,7 @@ namespace Aggregator
 		return feed;
 	}
 
-	IDType_t SQLStorageBackend::FindFeed (const QString& url) const
+	boost::optional<IDType_t> SQLStorageBackend::FindFeed (const QString& url) const
 	{
 		FeedFinderByURL_.bindValue (":url", url);
 		if (!FeedFinderByURL_.exec ())
@@ -934,10 +934,10 @@ namespace Aggregator
 			qWarning () << Q_FUNC_INFO
 					<< "no feed for"
 					<< url;
-			return -1;
+			return {};
 		}
 
-		IDType_t id = FeedFinderByURL_.value (0).value<IDType_t> ();
+		auto id = FeedFinderByURL_.value (0).value<IDType_t> ();
 		FeedFinderByURL_.finish ();
 		return id;
 	}

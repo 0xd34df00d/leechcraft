@@ -579,7 +579,7 @@ namespace Aggregator
 
 		ids_t GetFeedsIDs () const override;
 		boost::optional<Feed> GetFeed (const IDType_t&) const override;
-		IDType_t FindFeed (const QString&) const override;
+		boost::optional<IDType_t> FindFeed (const QString&) const override;
 		boost::optional<Feed::FeedSettings> GetFeedSettings (const IDType_t&) const override;
 		void SetFeedSettings (const Feed::FeedSettings&) override;
 		channels_shorts_t GetChannels (const IDType_t&) const override;
