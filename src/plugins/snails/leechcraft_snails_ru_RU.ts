@@ -515,193 +515,193 @@
     <message>
         <location filename="mailtab.cpp" line="179"/>
         <source>Fetch new mail</source>
-        <translation type="unfinished"></translation>
+        <translation>Проверить почту</translation>
     </message>
     <message>
         <location filename="mailtab.cpp" line="180"/>
         <source>Refresh the folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Обновить папку</translation>
     </message>
     <message>
         <location filename="mailtab.cpp" line="181"/>
         <source>Compose a message...</source>
-        <translation type="unfinished"></translation>
+        <translation>Создать сообщение...</translation>
     </message>
     <message>
         <location filename="mailtab.cpp" line="182"/>
         <source>Reply...</source>
-        <translation type="unfinished"></translation>
+        <translation>Ответить...</translation>
     </message>
     <message>
         <location filename="mailtab.cpp" line="183"/>
         <source>Forward...</source>
-        <translation type="unfinished"></translation>
+        <translation>Переслать...</translation>
     </message>
     <message>
         <location filename="mailtab.cpp" line="184"/>
         <source>Mark as read</source>
-        <translation type="unfinished"></translation>
+        <translation>Отметить как прочитанное</translation>
     </message>
     <message>
         <location filename="mailtab.cpp" line="185"/>
         <source>Mark as unread</source>
-        <translation type="unfinished"></translation>
+        <translation>Отметить как непрочитанное</translation>
     </message>
     <message>
         <location filename="mailtab.cpp" line="186"/>
         <source>Delete messages</source>
-        <translation type="unfinished"></translation>
+        <translation>Удалить сообщения</translation>
     </message>
     <message>
         <location filename="mailtab.cpp" line="187"/>
         <source>View headers</source>
-        <translation type="unfinished"></translation>
+        <translation>Просмотреть заголовки</translation>
     </message>
     <message>
         <location filename="mailtab.cpp" line="188"/>
         <source>Select multiple messages mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Режим выбора нескольких сообщений</translation>
     </message>
     <message>
         <location filename="mailtab.cpp" line="190"/>
         <source>Select all children</source>
-        <translation type="unfinished"></translation>
+        <translation>Выбрать всех детей</translation>
     </message>
     <message>
         <location filename="mailtab.cpp" line="191"/>
         <source>Expand all children</source>
-        <translation type="unfinished"></translation>
+        <translation>Развернуть всех детей</translation>
     </message>
     <message>
         <location filename="mailtab.cpp" line="312"/>
         <source>Attachments</source>
-        <translation type="unfinished">Вложения</translation>
+        <translation>Вложения</translation>
     </message>
     <message>
         <location filename="mailtab.cpp" line="321"/>
         <source>Copy messages</source>
-        <translation type="unfinished"></translation>
+        <translation>Копировать сообщения</translation>
     </message>
     <message>
         <location filename="mailtab.cpp" line="331"/>
         <source>Move messages</source>
-        <translation type="unfinished"></translation>
+        <translation>Переместить сообщения</translation>
     </message>
     <message>
         <location filename="mailtab.cpp" line="379"/>
         <source>Message view type</source>
-        <translation type="unfinished"></translation>
+        <translation>Режим просмотра сообщений</translation>
     </message>
     <message>
         <location filename="mailtab.cpp" line="380"/>
         <source>Plain text</source>
-        <translation type="unfinished"></translation>
+        <translation>Обычный текст</translation>
     </message>
     <message>
         <location filename="mailtab.cpp" line="384"/>
         <source>HTML</source>
-        <translation type="unfinished"></translation>
+        <translation>HTML</translation>
     </message>
     <message>
         <location filename="mailtab.cpp" line="631"/>
         <source>Subject</source>
-        <translation type="unfinished">Тема</translation>
+        <translation>Тема</translation>
     </message>
     <message>
         <location filename="mailtab.cpp" line="632"/>
         <source>From</source>
-        <translation type="unfinished">От</translation>
+        <translation>От</translation>
     </message>
     <message>
         <location filename="mailtab.cpp" line="633"/>
         <source>Reply to</source>
-        <translation type="unfinished"></translation>
+        <translation>Ответить</translation>
     </message>
     <message>
         <location filename="mailtab.cpp" line="634"/>
         <source>To</source>
-        <translation type="unfinished"></translation>
+        <translation>Кому</translation>
     </message>
     <message>
         <location filename="mailtab.cpp" line="635"/>
         <source>Copy</source>
-        <translation type="unfinished"></translation>
+        <translation>Копия</translation>
     </message>
     <message>
         <location filename="mailtab.cpp" line="636"/>
         <source>Blind copy</source>
-        <translation type="unfinished"></translation>
+        <translation>Невидимая копия</translation>
     </message>
     <message>
         <location filename="mailtab.cpp" line="637"/>
         <source>Date</source>
-        <translation type="unfinished">Дата</translation>
+        <translation>Дата</translation>
     </message>
     <message>
         <location filename="mailtab.cpp" line="1029"/>
         <source>Message headers</source>
-        <translation type="unfinished"></translation>
+        <translation>Заголовки сообщения</translation>
     </message>
     <message numerus="yes">
         <location filename="mailtab.cpp" line="1132"/>
         <source>Got %n new messages.</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Получено %n новое письмо.</numerusform>
+            <numerusform>Получено %n новых письма.</numerusform>
+            <numerusform>Получено %n новых писем.</numerusform>
         </translation>
     </message>
     <message>
         <location filename="mailtab.cpp" line="1133"/>
         <source>No new messages.</source>
-        <translation type="unfinished"></translation>
+        <translation>Нет новых писем.</translation>
     </message>
     <message>
         <location filename="mailtab.cpp" line="1140"/>
         <source>Error fetching new mail: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка проверки почты: %1</translation>
     </message>
     <message>
         <location filename="mailtab.cpp" line="579"/>
         <source>Fetching the message...</source>
-        <translation type="unfinished"></translation>
+        <translation>Скачивание письма...</translation>
     </message>
     <message>
         <location filename="mailtab.cpp" line="829"/>
         <source>Unable to fetch whole message: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Невозможно скачать всё письмо: %1.</translation>
     </message>
     <message>
         <location filename="mailtab.cpp" line="904"/>
         <source>Folders</source>
-        <translation type="unfinished"></translation>
+        <translation>Папки</translation>
     </message>
     <message>
         <location filename="mailtab.cpp" line="957"/>
         <source>Copy message</source>
-        <translation type="unfinished"></translation>
+        <translation>Скопировать письмо</translation>
     </message>
     <message numerus="yes">
         <location filename="mailtab.cpp" line="958"/>
         <source>Copy %n message(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Скопировать %n письмо</numerusform>
+            <numerusform>Скопировать %n письма</numerusform>
+            <numerusform>Скопировать %n писем</numerusform>
         </translation>
     </message>
     <message>
         <location filename="mailtab.cpp" line="974"/>
         <source>Move message</source>
-        <translation type="unfinished"></translation>
+        <translation>Переместить сообщение</translation>
     </message>
     <message numerus="yes">
         <location filename="mailtab.cpp" line="975"/>
         <source>Move %n message(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Переместить %n сообщение</numerusform>
+            <numerusform>Переместить %n сообщения</numerusform>
+            <numerusform>Переместить %n сообщений</numerusform>
         </translation>
     </message>
 </context>
