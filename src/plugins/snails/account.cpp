@@ -104,8 +104,8 @@ namespace Snails
 
 	Account::Account (const QByteArray& id, const AccountConfig& cfg, const Dependencies& deps)
 	: QObject (deps.Parent_)
-	, Logger_ (new AccountLogger (this))
-	, WorkerPool_ (new ThreadPool (this, deps.Storage_))
+	, Logger_ (std::make_shared<AccountLogger> (cfg.AccName_))
+	, WorkerPool_ (std::make_shared<ThreadPool> (this, deps.Storage_))
 	, AccMutex_ (new QMutex (QMutex::Recursive))
 	, ID_ (id)
 	, Config_ (cfg)
@@ -116,6 +116,8 @@ namespace Snails
 	, ProgressMgr_ (deps.PM_)
 	, Storage_ (deps.Storage_)
 	{
+		Logger_->SetEnabled (cfg.LogToFile_);
+
 		connect (FolderManager_,
 				SIGNAL (foldersUpdated ()),
 				this,
@@ -177,7 +179,7 @@ namespace Snails
 		return ID_;
 	}
 
-	AccountLogger* Account::GetLogger () const
+	std::shared_ptr<AccountLogger> Account::GetLogger () const
 	{
 		return Logger_;
 	}
@@ -449,6 +451,7 @@ namespace Snails
 					QMutexLocker l (GetMutex ());
 					Config_ = dia->GetConfig ();
 				}
+				Logger_->SetEnabled (Config_.LogToFile_);
 				FolderManager_->ClearFolderFlags ();
 				const auto& out = dia->GetOutFolder ();
 				if (!out.isEmpty ())

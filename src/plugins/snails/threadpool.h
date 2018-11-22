@@ -59,11 +59,9 @@ namespace Snails
 
 		QList<std::function<void (AccountThread*)>> ThreadInitializers_;
 	public:
-		ThreadPool (Account*, Storage*);
+		ThreadPool (Account*, Storage*, QObject* = nullptr);
 
 		QFuture<EitherInvokeError_t<Util::Void>> TestConnectivity ();
-
-		AccountThread* GetThread ();
 
 		template<typename F, typename... Args>
 		auto Schedule (TaskPriority prio, const F& func, const Args&... args)

@@ -86,7 +86,7 @@ namespace Util
 
 		virtual size_t GetQueueSize ();
 	protected:
-		void run () override final;
+		void run () final;
 
 		virtual void Initialize () = 0;
 		virtual void Cleanup () = 0;
@@ -136,6 +136,7 @@ namespace Util
 	class WorkerThread : public WorkerThreadBase
 	{
 		std::atomic_bool IsAutoQuit_ { false };
+		unsigned long QuitWait_ = 2000;
 	protected:
 		using W = WorkerType;
 
@@ -174,19 +175,24 @@ namespace Util
 				return;
 
 			quit ();
-			wait (2000);
+			wait (QuitWait_);
 
 			if (isRunning ())
 				qWarning () << Q_FUNC_INFO
 						<< "thread is still running";
 		}
 
-		using WorkerThreadBase::ScheduleImpl;
-
 		void SetAutoQuit (bool autoQuit)
 		{
 			IsAutoQuit_ = autoQuit;
 		}
+
+		void SetQuitWait (unsigned long wait)
+		{
+			QuitWait_ = wait;
+		}
+
+		using WorkerThreadBase::ScheduleImpl;
 
 		template<typename F, typename... Args>
 		QFuture<std::result_of_t<F (WorkerType*, Args...)>> ScheduleImpl (F f, Args&&... args)

@@ -2,207 +2,213 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="en_US">
 <context>
+    <name>AccountAddWizardEmailPage</name>
+    <message>
+        <location filename="accountaddwizardemailpage.ui" line="23"/>
+        <source>Your email:</source>
+        <translation>Your email:</translation>
+    </message>
+    <message>
+        <location filename="accountaddwizardemailpage.ui" line="33"/>
+        <source>Your name:</source>
+        <translation>Your name:</translation>
+    </message>
+    <message>
+        <location filename="accountaddwizardemailpage.ui" line="46"/>
+        <source>Account name:</source>
+        <translation>Account name:</translation>
+    </message>
+</context>
+<context>
+    <name>AccountAddWizardTemplatePage</name>
+    <message>
+        <location filename="accountaddwizardtemplatepage.ui" line="17"/>
+        <source>Mail service:</source>
+        <translation>Mail service:</translation>
+    </message>
+</context>
+<context>
     <name>AccountConfigDialog</name>
     <message>
         <location filename="accountconfigdialog.ui" line="14"/>
         <source>Account configuration</source>
-        <translation type="unfinished"></translation>
+        <translation>Account configuration</translation>
     </message>
     <message>
         <location filename="accountconfigdialog.ui" line="24"/>
         <source>General</source>
-        <translation type="unfinished"></translation>
+        <translation>General</translation>
     </message>
     <message>
         <location filename="accountconfigdialog.ui" line="30"/>
         <source>General options</source>
-        <translation type="unfinished"></translation>
+        <translation>General options</translation>
     </message>
     <message>
         <location filename="accountconfigdialog.ui" line="39"/>
         <source>Account name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Account name:</translation>
     </message>
     <message>
         <location filename="accountconfigdialog.ui" line="49"/>
         <source>Your name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Your name:</translation>
     </message>
     <message>
         <location filename="accountconfigdialog.ui" line="59"/>
         <source>Your address:</source>
-        <translation type="unfinished"></translation>
+        <translation>Your address:</translation>
     </message>
     <message>
         <location filename="accountconfigdialog.ui" line="86"/>
         <source>Incoming</source>
-        <translation type="unfinished"></translation>
+        <translation>Incoming</translation>
     </message>
     <message>
         <location filename="accountconfigdialog.ui" line="92"/>
         <source>Incoming options</source>
-        <translation type="unfinished"></translation>
+        <translation>Incoming options</translation>
     </message>
     <message>
         <location filename="accountconfigdialog.ui" line="101"/>
         <location filename="accountconfigdialog.ui" line="366"/>
         <source>Login:</source>
-        <translation type="unfinished"></translation>
+        <translation>Login:</translation>
     </message>
     <message>
         <location filename="accountconfigdialog.ui" line="261"/>
         <source>Type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Type:</translation>
     </message>
     <message>
         <location filename="accountconfigdialog.ui" line="114"/>
         <source>Connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Connection</translation>
     </message>
     <message>
         <location filename="accountconfigdialog.ui" line="122"/>
         <source>Host:</source>
-        <translation type="unfinished"></translation>
+        <translation>Host:</translation>
     </message>
     <message>
         <location filename="accountconfigdialog.ui" line="132"/>
         <location filename="accountconfigdialog.ui" line="292"/>
         <source>Port:</source>
-        <translation type="unfinished"></translation>
+        <translation>Port:</translation>
     </message>
     <message>
         <location filename="accountconfigdialog.ui" line="152"/>
         <location filename="accountconfigdialog.ui" line="312"/>
         <source>Security:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="accountconfigdialog.ui" line="162"/>
-        <location filename="accountconfigdialog.ui" line="322"/>
-        <source>TLS/STARTTLS</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="accountconfigdialog.ui" line="167"/>
-        <location filename="accountconfigdialog.ui" line="327"/>
-        <source>SSL</source>
-        <translation type="unfinished"></translation>
+        <translation>Security:</translation>
     </message>
     <message>
         <location filename="accountconfigdialog.ui" line="175"/>
         <location filename="accountconfigdialog.ui" line="335"/>
-        <source>Required</source>
-        <translation type="unfinished"></translation>
+        <source>Require</source>
+        <oldsource>Required</oldsource>
+        <translation>Require</translation>
     </message>
     <message>
         <location filename="accountconfigdialog.ui" line="186"/>
         <source>Use SASL</source>
-        <translation type="unfinished"></translation>
+        <translation>Use SASL</translation>
     </message>
     <message>
         <location filename="accountconfigdialog.ui" line="193"/>
-        <source>SASL required</source>
-        <translation type="unfinished"></translation>
+        <source>Require SASL</source>
+        <oldsource>SASL required</oldsource>
+        <translation>Require SASL</translation>
     </message>
     <message>
         <location filename="accountconfigdialog.ui" line="203"/>
         <source>Connection options</source>
-        <translation type="unfinished"></translation>
+        <translation>Connection options</translation>
     </message>
     <message>
         <location filename="accountconfigdialog.ui" line="209"/>
         <source>Keep-alive interval:</source>
-        <translation type="unfinished"></translation>
+        <translation>Keep-alive interval:</translation>
     </message>
     <message>
         <location filename="accountconfigdialog.ui" line="216"/>
         <source> s</source>
-        <translation type="unfinished"></translation>
+        <translation> s</translation>
     </message>
     <message>
         <location filename="accountconfigdialog.ui" line="249"/>
         <source>Outgoing</source>
-        <translation type="unfinished"></translation>
+        <translation>Outgoing</translation>
     </message>
     <message>
         <location filename="accountconfigdialog.ui" line="255"/>
         <source>Outgoing options</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="accountconfigdialog.ui" line="269"/>
-        <source>SMTP</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="accountconfigdialog.ui" line="274"/>
-        <source>Sendmail</source>
-        <translation type="unfinished"></translation>
+        <translation>Outgoing options</translation>
     </message>
     <message>
         <location filename="accountconfigdialog.ui" line="282"/>
         <source>Address:</source>
-        <translation type="unfinished"></translation>
+        <translation>Address:</translation>
     </message>
     <message>
         <location filename="accountconfigdialog.ui" line="354"/>
         <source>Custom authentication</source>
-        <translation type="unfinished"></translation>
+        <translation>Custom authentication</translation>
     </message>
     <message>
         <location filename="accountconfigdialog.ui" line="436"/>
         <source>Deletion behaviour:</source>
-        <translation type="unfinished"></translation>
+        <translation>Deletion behaviour:</translation>
     </message>
     <message>
         <location filename="accountconfigdialog.ui" line="444"/>
         <source>Default (service-dependent)</source>
-        <translation type="unfinished"></translation>
+        <translation>Default (service-dependent)</translation>
     </message>
     <message>
         <location filename="accountconfigdialog.ui" line="449"/>
         <source>Delete and expunge</source>
-        <translation type="unfinished"></translation>
+        <translation>Delete and expunge</translation>
     </message>
     <message>
         <location filename="accountconfigdialog.ui" line="454"/>
         <source>Move to trash</source>
-        <translation type="unfinished"></translation>
+        <translation>Move to trash</translation>
     </message>
     <message>
         <location filename="accountconfigdialog.ui" line="478"/>
         <source>Misc</source>
-        <translation type="unfinished"></translation>
+        <translation>Misc</translation>
     </message>
     <message>
         <location filename="accountconfigdialog.ui" line="484"/>
         <source>Log connections to file</source>
-        <translation type="unfinished"></translation>
+        <translation>Log connections to file</translation>
     </message>
     <message>
         <location filename="accountconfigdialog.ui" line="344"/>
         <source>SMTP needs authentication</source>
-        <translation type="unfinished"></translation>
+        <translation>SMTP needs authentication</translation>
     </message>
     <message>
         <location filename="accountconfigdialog.ui" line="393"/>
         <source>Sync options</source>
-        <translation type="unfinished"></translation>
+        <translation>Sync options</translation>
     </message>
     <message>
         <location filename="accountconfigdialog.ui" line="401"/>
         <source>Folders to sync:</source>
-        <translation type="unfinished"></translation>
+        <translation>Folders to sync:</translation>
     </message>
     <message>
         <location filename="accountconfigdialog.ui" line="417"/>
         <source>Select...</source>
-        <translation type="unfinished"></translation>
+        <translation>Select...</translation>
     </message>
     <message>
         <location filename="accountconfigdialog.ui" line="426"/>
         <source>Outgoing messages folder:</source>
-        <translation type="unfinished"></translation>
+        <translation>Outgoing messages folder:</translation>
     </message>
 </context>
 <context>
@@ -210,17 +216,25 @@
     <message>
         <location filename="accountslistwidget.ui" line="28"/>
         <source>Add...</source>
-        <translation type="unfinished"></translation>
+        <translation>Add...</translation>
     </message>
     <message>
-        <location filename="accountslistwidget.ui" line="35"/>
+        <location filename="accountslistwidget.ui" line="38"/>
         <source>Modify...</source>
-        <translation type="unfinished"></translation>
+        <translation>Modify...</translation>
     </message>
     <message>
-        <location filename="accountslistwidget.ui" line="42"/>
+        <location filename="accountslistwidget.ui" line="48"/>
         <source>Remove</source>
-        <translation type="unfinished"></translation>
+        <translation>Remove</translation>
+    </message>
+</context>
+<context>
+    <name>CommonServicePage</name>
+    <message>
+        <location filename="accountaddwizard.cpp" line="158"/>
+        <source>That&apos;s it for the wizard! The account configuration dialog will now open where you will be able to further configure the account.</source>
+        <translation>That&apos;s it for the wizard! The account configuration dialog will now open where you will be able to further configure the account.</translation>
     </message>
 </context>
 <context>
@@ -228,50 +242,74 @@
     <message>
         <location filename="composemessagetab.ui" line="28"/>
         <source>To:</source>
-        <translation type="unfinished"></translation>
+        <translation>To:</translation>
     </message>
     <message>
         <location filename="composemessagetab.ui" line="38"/>
         <source>CC:</source>
-        <translation type="unfinished"></translation>
+        <translation>CC:</translation>
     </message>
     <message>
         <location filename="composemessagetab.ui" line="48"/>
         <source>BCC:</source>
-        <translation type="unfinished"></translation>
+        <translation>BCC:</translation>
     </message>
     <message>
         <location filename="composemessagetab.ui" line="58"/>
         <source>Subject:</source>
-        <translation type="unfinished"></translation>
+        <translation>Subject:</translation>
+    </message>
+</context>
+<context>
+    <name>EmailPage</name>
+    <message>
+        <location filename="accountaddwizard.cpp" line="54"/>
+        <source>Basic account information</source>
+        <translation>Basic account information</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::Snails</name>
+    <message>
+        <location filename="accountthreadworker.cpp" line="578"/>
+        <source>Fetching messages in %1...</source>
+        <translation>Fetching messages in %1...</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Snails::Account</name>
     <message>
-        <location filename="account.cpp" line="80"/>
+        <location filename="account.cpp" line="81"/>
         <source>Connection failed for account %1: certificate check failed. %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Connection failed for account %1: certificate check failed. %2</translation>
     </message>
     <message>
-        <location filename="account.cpp" line="91"/>
+        <location filename="account.cpp" line="92"/>
         <source>View certificate...</source>
-        <translation type="unfinished"></translation>
+        <translation>View certificate...</translation>
     </message>
     <message>
-        <location filename="account.cpp" line="141"/>
+        <location filename="account.cpp" line="143"/>
         <source>Connection failed for account %1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Connection failed for account %1: %2</translation>
     </message>
     <message>
-        <location filename="account.cpp" line="150"/>
+        <location filename="account.cpp" line="152"/>
         <source>authentication failed: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>authentication failed: %1</translation>
     </message>
     <message>
-        <location filename="account.cpp" line="720"/>
+        <location filename="account.cpp" line="598"/>
         <source>Enter password for account %1:</source>
-        <translation type="unfinished"></translation>
+        <translation>Enter password for account %1:</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::Snails::AccountAddWizard</name>
+    <message>
+        <location filename="accountaddwizard.cpp" line="279"/>
+        <source>Account creation wizard</source>
+        <translation>Account creation wizard</translation>
     </message>
 </context>
 <context>
@@ -279,144 +317,142 @@
     <message>
         <location filename="accountconfigdialog.cpp" line="42"/>
         <source>Folders to sync</source>
-        <translation type="unfinished"></translation>
+        <translation>Folders to sync</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Snails::AccountThreadWorker</name>
     <message>
-        <location filename="accountthreadworker.cpp" line="549"/>
+        <location filename="accountthreadworker.cpp" line="610"/>
+        <source>Fetching message IDs in %1...</source>
+        <translation>Fetching message IDs in %1...</translation>
+    </message>
+    <message>
+        <location filename="accountthreadworker.cpp" line="777"/>
         <source>Synchronizing messages...</source>
-        <translation type="unfinished"></translation>
+        <translation>Synchronizing messages...</translation>
     </message>
     <message>
-        <location filename="accountthreadworker.cpp" line="969"/>
+        <location filename="accountthreadworker.cpp" line="890"/>
         <source>Fetching attachment %1...</source>
-        <translation type="unfinished"></translation>
+        <translation>Fetching attachment %1...</translation>
     </message>
     <message>
-        <location filename="accountthreadworker.cpp" line="1115"/>
+        <location filename="accountthreadworker.cpp" line="1039"/>
         <source>Sending message %1...</source>
-        <translation type="unfinished"></translation>
+        <translation>Sending message %1...</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Snails::AccountsManager</name>
     <message>
-        <location filename="accountsmanager.cpp" line="48"/>
+        <location filename="accountsmanager.cpp" line="50"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Name</translation>
     </message>
     <message>
-        <location filename="accountsmanager.cpp" line="48"/>
+        <location filename="accountsmanager.cpp" line="50"/>
         <source>Server</source>
-        <translation type="unfinished"></translation>
+        <translation>Server</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Snails::ComposeMessageTab</name>
-    <message>
-        <location filename="composemessagetab.cpp" line="85"/>
-        <source>Compose tab bar</source>
-        <translation type="unfinished"></translation>
-    </message>
     <message numerus="yes">
-        <location filename="composemessagetab.cpp" line="413"/>
+        <location filename="composemessagetab.cpp" line="402"/>
         <source>Attached %n files(s) from the source message.</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Attached %n file from the source message.</numerusform>
+            <numerusform>Attached %n files from the source message.</numerusform>
         </translation>
     </message>
     <message>
-        <location filename="composemessagetab.cpp" line="426"/>
-        <location filename="composemessagetab.cpp" line="698"/>
+        <location filename="composemessagetab.cpp" line="374"/>
         <source>Unable to create temporary directory to fetch the attachments of the source message.</source>
-        <translation type="unfinished"></translation>
+        <translation>Unable to create temporary directory to fetch the attachments of the source message.</translation>
     </message>
     <message>
-        <location filename="composemessagetab.cpp" line="435"/>
-        <location filename="composemessagetab.cpp" line="707"/>
+        <location filename="composemessagetab.cpp" line="379"/>
         <source>Unable to fetch the attachments of the source message: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Unable to fetch the attachments of the source message: %1.</translation>
     </message>
     <message>
-        <location filename="composemessagetab.cpp" line="448"/>
+        <location filename="composemessagetab.cpp" line="419"/>
         <source>Send</source>
-        <translation type="unfinished"></translation>
+        <translation>Send</translation>
     </message>
     <message>
-        <location filename="composemessagetab.cpp" line="456"/>
+        <location filename="composemessagetab.cpp" line="427"/>
         <source>Accounts</source>
-        <translation type="unfinished"></translation>
+        <translation>Accounts</translation>
     </message>
     <message>
-        <location filename="composemessagetab.cpp" line="475"/>
+        <location filename="composemessagetab.cpp" line="446"/>
         <source>Attachments</source>
-        <translation type="unfinished"></translation>
+        <translation>Attachments</translation>
     </message>
     <message>
-        <location filename="composemessagetab.cpp" line="478"/>
+        <location filename="composemessagetab.cpp" line="449"/>
         <source>Add...</source>
-        <translation type="unfinished"></translation>
+        <translation>Add...</translation>
     </message>
     <message>
-        <location filename="composemessagetab.cpp" line="487"/>
+        <location filename="composemessagetab.cpp" line="458"/>
         <source>Editors</source>
-        <translation type="unfinished"></translation>
+        <translation>Editors</translation>
     </message>
     <message>
-        <location filename="composemessagetab.cpp" line="554"/>
+        <location filename="composemessagetab.cpp" line="520"/>
         <source>Are you sure you want to remove attachment %1?</source>
-        <translation type="unfinished"></translation>
+        <translation>Are you sure you want to remove attachment %1?</translation>
     </message>
     <message>
-        <location filename="composemessagetab.cpp" line="633"/>
+        <location filename="composemessagetab.cpp" line="599"/>
         <source>Unable to send the message: authorization failure. Server reports: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Unable to send the message: authorization failure. Server reports: %1.</translation>
     </message>
     <message>
-        <location filename="composemessagetab.cpp" line="639"/>
-        <source>Unable to send email: operation timed out.&lt;br/&gt;&lt;br/&gt;Consider switching between SSL and TLS/STARTSSL or replacing port 465 with 587, or vice versa.Port 465 is typically used with SSL, while port 587 is used with TLS.</source>
-        <translation type="unfinished"></translation>
+        <location filename="composemessagetab.cpp" line="605"/>
+        <source>Unable to send email: operation timed out.</source>
+        <translation>Unable to send email: operation timed out.</translation>
     </message>
     <message>
-        <location filename="composemessagetab.cpp" line="650"/>
+        <location filename="composemessagetab.cpp" line="678"/>
+        <source>Error attaching file: %1 cannot be read.</source>
+        <translation>Error attaching file: %1 cannot be read.</translation>
+    </message>
+    <message>
+        <location filename="composemessagetab.cpp" line="614"/>
         <source>Unable to send email: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Unable to send email: %1.</translation>
     </message>
     <message>
-        <location filename="composemessagetab.cpp" line="718"/>
+        <location filename="composemessagetab.cpp" line="668"/>
         <source>Select file to attach</source>
-        <translation type="unfinished"></translation>
+        <translation>Select file to attach</translation>
     </message>
     <message>
-        <location filename="composemessagetab.cpp" line="727"/>
+        <location filename="composemessagetab.cpp" line="677"/>
         <source>Error attaching file</source>
-        <translation type="unfinished"></translation>
+        <translation>Error attaching file</translation>
     </message>
     <message>
-        <location filename="composemessagetab.cpp" line="728"/>
-        <source>Error attaching file: %1 cannot be read</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="composemessagetab.cpp" line="734"/>
+        <location filename="composemessagetab.cpp" line="684"/>
         <source>Attachment description</source>
-        <translation type="unfinished"></translation>
+        <translation>Attachment description</translation>
     </message>
     <message>
-        <location filename="composemessagetab.cpp" line="735"/>
+        <location filename="composemessagetab.cpp" line="685"/>
         <source>Enter optional attachment description (you may leave it blank):</source>
-        <translation type="unfinished"></translation>
+        <translation>Enter optional attachment description (you may leave it blank):</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Snails::ComposeMessageTabFactory</name>
     <message>
-        <location filename="composemessagetabfactory.cpp" line="90"/>
+        <location filename="composemessagetabfactory.cpp" line="93"/>
         <source>Unable to fetch message: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Unable to fetch message: %1.</translation>
     </message>
 </context>
 <context>
@@ -424,201 +460,227 @@
     <message>
         <location filename="foldersmodel.cpp" line="97"/>
         <source>Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Folder</translation>
     </message>
     <message>
         <location filename="foldersmodel.cpp" line="97"/>
         <source>Messages</source>
-        <translation type="unfinished"></translation>
+        <translation>Messages</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::Snails::GMailServicePage</name>
+    <message>
+        <location filename="accountaddwizard.cpp" line="214"/>
+        <source>Login:</source>
+        <translation>Login:</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Snails::MailModel</name>
     <message>
-        <location filename="mailmodel.cpp" line="80"/>
+        <location filename="mailmodel.cpp" line="79"/>
         <source>From</source>
-        <translation type="unfinished"></translation>
+        <translation>From</translation>
     </message>
     <message>
-        <location filename="mailmodel.cpp" line="80"/>
+        <location filename="mailmodel.cpp" line="79"/>
         <source>Subject</source>
-        <translation type="unfinished"></translation>
+        <translation>Subject</translation>
     </message>
     <message>
-        <location filename="mailmodel.cpp" line="80"/>
+        <location filename="mailmodel.cpp" line="79"/>
         <source>Date</source>
-        <translation type="unfinished"></translation>
+        <translation>Date</translation>
     </message>
     <message>
-        <location filename="mailmodel.cpp" line="80"/>
+        <location filename="mailmodel.cpp" line="79"/>
         <source>Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Size</translation>
     </message>
     <message>
-        <location filename="mailmodel.cpp" line="112"/>
+        <location filename="mailmodel.cpp" line="111"/>
         <source>yesterday, %1</source>
-        <translation type="unfinished"></translation>
+        <translation>yesterday, %1</translation>
     </message>
     <message>
-        <location filename="mailmodel.cpp" line="203"/>
+        <location filename="mailmodel.cpp" line="182"/>
         <source>No subject</source>
-        <translation type="unfinished"></translation>
+        <translation>No subject</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Snails::MailTab</name>
     <message>
-        <location filename="mailtab.cpp" line="173"/>
+        <location filename="mailtab.cpp" line="179"/>
         <source>Fetch new mail</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mailtab.cpp" line="174"/>
+        <location filename="mailtab.cpp" line="180"/>
         <source>Refresh the folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mailtab.cpp" line="175"/>
+        <location filename="mailtab.cpp" line="181"/>
         <source>Compose a message...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mailtab.cpp" line="176"/>
+        <location filename="mailtab.cpp" line="182"/>
         <source>Reply...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mailtab.cpp" line="177"/>
+        <location filename="mailtab.cpp" line="183"/>
         <source>Forward...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mailtab.cpp" line="178"/>
+        <location filename="mailtab.cpp" line="184"/>
         <source>Mark as read</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mailtab.cpp" line="179"/>
+        <location filename="mailtab.cpp" line="185"/>
         <source>Mark as unread</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mailtab.cpp" line="180"/>
+        <location filename="mailtab.cpp" line="186"/>
         <source>Delete messages</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mailtab.cpp" line="181"/>
+        <location filename="mailtab.cpp" line="187"/>
         <source>View headers</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mailtab.cpp" line="182"/>
+        <location filename="mailtab.cpp" line="188"/>
         <source>Select multiple messages mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mailtab.cpp" line="184"/>
+        <location filename="mailtab.cpp" line="190"/>
         <source>Select all children</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mailtab.cpp" line="185"/>
+        <location filename="mailtab.cpp" line="191"/>
         <source>Expand all children</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mailtab.cpp" line="306"/>
+        <location filename="mailtab.cpp" line="312"/>
         <source>Attachments</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mailtab.cpp" line="315"/>
+        <location filename="mailtab.cpp" line="321"/>
         <source>Copy messages</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mailtab.cpp" line="325"/>
+        <location filename="mailtab.cpp" line="331"/>
         <source>Move messages</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mailtab.cpp" line="373"/>
+        <location filename="mailtab.cpp" line="379"/>
         <source>Message view type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mailtab.cpp" line="374"/>
+        <location filename="mailtab.cpp" line="380"/>
         <source>Plain text</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mailtab.cpp" line="378"/>
+        <location filename="mailtab.cpp" line="384"/>
         <source>HTML</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mailtab.cpp" line="626"/>
+        <location filename="mailtab.cpp" line="631"/>
         <source>Subject</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mailtab.cpp" line="627"/>
+        <location filename="mailtab.cpp" line="632"/>
         <source>From</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mailtab.cpp" line="628"/>
+        <location filename="mailtab.cpp" line="633"/>
         <source>Reply to</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mailtab.cpp" line="629"/>
+        <location filename="mailtab.cpp" line="634"/>
         <source>To</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mailtab.cpp" line="630"/>
+        <location filename="mailtab.cpp" line="635"/>
         <source>Copy</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mailtab.cpp" line="631"/>
+        <location filename="mailtab.cpp" line="636"/>
         <source>Blind copy</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mailtab.cpp" line="632"/>
+        <location filename="mailtab.cpp" line="637"/>
         <source>Date</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mailtab.cpp" line="814"/>
-        <source>&lt;h2&gt;Unable to load mail&lt;/h2&gt;&lt;em&gt;%1&lt;/em&gt;</source>
+        <location filename="mailtab.cpp" line="1029"/>
+        <source>Message headers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message numerus="yes">
+        <location filename="mailtab.cpp" line="1132"/>
+        <source>Got %n new messages.</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="mailtab.cpp" line="1133"/>
+        <source>No new messages.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mailtab.cpp" line="574"/>
+        <location filename="mailtab.cpp" line="1140"/>
+        <source>Error fetching new mail: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="mailtab.cpp" line="579"/>
         <source>Fetching the message...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mailtab.cpp" line="840"/>
+        <location filename="mailtab.cpp" line="829"/>
         <source>Unable to fetch whole message: %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mailtab.cpp" line="914"/>
+        <location filename="mailtab.cpp" line="904"/>
         <source>Folders</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mailtab.cpp" line="969"/>
+        <location filename="mailtab.cpp" line="957"/>
         <source>Copy message</source>
         <translation type="unfinished"></translation>
     </message>
     <message numerus="yes">
-        <location filename="mailtab.cpp" line="970"/>
+        <location filename="mailtab.cpp" line="958"/>
         <source>Copy %n message(s)</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -626,38 +688,28 @@
         </translation>
     </message>
     <message>
-        <location filename="mailtab.cpp" line="986"/>
+        <location filename="mailtab.cpp" line="974"/>
         <source>Move message</source>
         <translation type="unfinished"></translation>
     </message>
     <message numerus="yes">
-        <location filename="mailtab.cpp" line="987"/>
+        <location filename="mailtab.cpp" line="975"/>
         <source>Move %n message(s)</source>
         <translation type="unfinished">
             <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
-    <message>
-        <location filename="mailtab.cpp" line="1051"/>
-        <source>Headers for %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="mailtab.cpp" line="1134"/>
-        <source>Save attachment</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>LeechCraft::Snails::MultiEditorWidget</name>
     <message>
-        <location filename="multieditorwidget.cpp" line="75"/>
+        <location filename="multieditorwidget.cpp" line="77"/>
         <source>Plain text (internal)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="multieditorwidget.cpp" line="95"/>
+        <location filename="multieditorwidget.cpp" line="97"/>
         <source>Rich text (%1)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -693,7 +745,7 @@
 <context>
     <name>LeechCraft::Snails::ProgressManager</name>
     <message>
-        <location filename="progressmanager.cpp" line="64"/>
+        <location filename="progressmanager.cpp" line="65"/>
         <source>Running</source>
         <oldsource>Running...</oldsource>
         <translation type="unfinished"></translation>
@@ -702,12 +754,12 @@
 <context>
     <name>LeechCraft::Snails::TemplatesEditorWidget</name>
     <message>
-        <location filename="templateseditorwidget.cpp" line="106"/>
+        <location filename="templateseditorwidget.cpp" line="107"/>
         <source>Unable to save template: %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="templateseditorwidget.cpp" line="155"/>
+        <location filename="templateseditorwidget.cpp" line="156"/>
         <source>Unable to load template: %1.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -715,7 +767,7 @@
 <context>
     <name>MailTab</name>
     <message>
-        <location filename="mailtab.ui" line="140"/>
+        <location filename="mailtab.ui" line="134"/>
         <source>about:blank</source>
         <translation type="unfinished"></translation>
     </message>
@@ -723,77 +775,110 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="messagelistactionsmanager.cpp" line="107"/>
-        <location filename="messagelistactionsmanager.cpp" line="151"/>
-        <location filename="messagelistactionsmanager.cpp" line="194"/>
-        <location filename="messagelistactionsmanager.cpp" line="227"/>
+        <location filename="messagelistactionsmanager.cpp" line="117"/>
+        <location filename="messagelistactionsmanager.cpp" line="163"/>
+        <location filename="messagelistactionsmanager.cpp" line="208"/>
+        <location filename="messagelistactionsmanager.cpp" line="243"/>
         <source>Open</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="messagelistactionsmanager.cpp" line="108"/>
+        <location filename="messagelistactionsmanager.cpp" line="118"/>
         <source>Open the page on GitHub.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="messagelistactionsmanager.cpp" line="152"/>
+        <location filename="messagelistactionsmanager.cpp" line="164"/>
         <source>Open the bug page on Bugzilla.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="messagelistactionsmanager.cpp" line="195"/>
+        <location filename="messagelistactionsmanager.cpp" line="209"/>
         <source>Open the issue page on Redmine.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="messagelistactionsmanager.cpp" line="228"/>
+        <location filename="messagelistactionsmanager.cpp" line="244"/>
         <source>Open the review page on ReviewBoard.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="messagelistactionsmanager.cpp" line="295"/>
-        <location filename="messagelistactionsmanager.cpp" line="336"/>
+        <location filename="messagelistactionsmanager.cpp" line="315"/>
+        <location filename="messagelistactionsmanager.cpp" line="356"/>
         <source>Unsubscription confirmation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="messagelistactionsmanager.cpp" line="296"/>
+        <location filename="messagelistactionsmanager.cpp" line="316"/>
         <source>Are you sure you want to unsubscribe from %1? This will send an email to %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="messagelistactionsmanager.cpp" line="316"/>
+        <location filename="messagelistactionsmanager.cpp" line="336"/>
         <source>Successfully sent unsubscribe request to %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="messagelistactionsmanager.cpp" line="325"/>
+        <location filename="messagelistactionsmanager.cpp" line="345"/>
         <source>Unable to send unsubscribe request to %1: %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="messagelistactionsmanager.cpp" line="337"/>
+        <location filename="messagelistactionsmanager.cpp" line="357"/>
         <source>Are you sure you want to unsubscribe from %1? This will open the following web page in your browser: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="messagelistactionsmanager.cpp" line="365"/>
+        <location filename="messagelistactionsmanager.cpp" line="381"/>
         <source>Unsubscribe</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="messagelistactionsmanager.cpp" line="366"/>
-        <source>Try cancelling receiving further messages like this.</source>
+        <location filename="messagelistactionsmanager.cpp" line="382"/>
+        <source>Try unsubscribing from this maillist.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="messagelistactionsmanager.cpp" line="395"/>
+        <location filename="messagelistactionsmanager.cpp" line="418"/>
+        <source>Delete</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="messagelistactionsmanager.cpp" line="419"/>
+        <source>Delete the message</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="messagelistactionsmanager.cpp" line="441"/>
         <source>Attachments</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="messagelistactionsmanager.cpp" line="396"/>
+        <location filename="messagelistactionsmanager.cpp" line="442"/>
         <source>Open/save attachments.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="util.cpp" line="58"/>
+        <source>Save attachment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="util.cpp" line="69"/>
+        <source>Attachment %1 fetched successfully.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="util.cpp" line="76"/>
+        <source>Unable to fetch %1: %2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>TemplatePage</name>
+    <message>
+        <location filename="accountaddwizard.cpp" line="117"/>
+        <source>Choose a service template</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -833,67 +918,88 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="3"/>
+        <location filename="dummy.cpp" line="4"/>
         <source>Fonts</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="4"/>
+        <location filename="dummy.cpp" line="9"/>
         <source>Behavior</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="5"/>
+        <location filename="dummy.cpp" line="10"/>
         <source>Mail list</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="dummy.cpp" line="3"/>
+        <source>Message viewer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="dummy.cpp" line="6"/>
-        <source>Sorting</source>
+        <source>Message actions hints style:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="7"/>
-        <source>Consider read status when sorting threads roots</source>
+        <source>icons</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="8"/>
-        <source>Consider read status of children as well</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="9"/>
-        <source>Editor</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="10"/>
-        <source>Default format of a reply:</source>
+        <source>balls</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="11"/>
-        <source>As original message</source>
+        <source>Sorting</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="12"/>
-        <source>Plain text</source>
+        <source>Consider read status when sorting threads roots</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="13"/>
-        <source>HTML</source>
+        <source>Consider read status of children as well</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="14"/>
-        <source>Accounts</source>
+        <source>Editor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="15"/>
+        <source>Default format of a reply:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="16"/>
+        <source>As original message</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="17"/>
+        <source>Plain text</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="18"/>
+        <source>HTML</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="19"/>
+        <source>Accounts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="20"/>
         <source>Templates</source>
         <translation type="unfinished"></translation>
     </message>

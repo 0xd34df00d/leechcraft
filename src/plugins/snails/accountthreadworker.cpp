@@ -78,11 +78,11 @@ namespace Snails
 		template<typename T>
 		auto WaitForFuture (const QFuture<T>& future)
 		{
-			QFutureWatcher<QString> watcher;
+			QFutureWatcher<T> watcher;
 			QEventLoop loop;
 
 			QObject::connect (&watcher,
-					&QFutureWatcher<QString>::finished,
+					&QFutureWatcher<T>::finished,
 					&loop,
 					&QEventLoop::quit);
 
@@ -710,13 +710,8 @@ namespace Snails
 
 	void AccountThreadWorker::SendNoop ()
 	{
-		const auto at = static_cast<AccountThread*> (QThread::currentThread ());
-		at->Schedule (TaskPriority::Low,
-				[this] (AccountThreadWorker*)
-				{
-					if (CachedStore_)
-						CachedStore_->noop ();
-				});
+		if (CachedStore_)
+			CachedStore_->noop ();
 	}
 
 	void AccountThreadWorker::SetNoopTimeoutChangeNotifier (const std::shared_ptr<AccountThreadNotifier<int>>& notifier)

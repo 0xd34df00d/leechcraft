@@ -40,8 +40,9 @@ namespace LeechCraft
 {
 namespace Snails
 {
-	ThreadPool::ThreadPool (Account *acc, Storage *st)
-	: Acc_ { acc }
+	ThreadPool::ThreadPool (Account *acc, Storage *st, QObject *parent)
+	: QObject { parent }
+	, Acc_ { acc }
 	, Storage_ { st }
 	{
 	}
@@ -49,35 +50,10 @@ namespace Snails
 	QFuture<EitherInvokeError_t<Util::Void>> ThreadPool::TestConnectivity ()
 	{
 		auto thread = CreateThread ();
-		ExistingThreads_ << thread;
-
-		return thread->Schedule (TaskPriority::High, &AccountThreadWorker::TestConnectivity) *
-				[this, thread] (const auto& result)
-				{
-					RunScheduled (thread.get ());
-
-					Util::Visit (result.AsVariant (),
-							[] (Util::Void) {},
-							[this] (const auto& err)
-							{
-								Util::Visit (err,
-										[this] (const vmime::exceptions::authentication_error& err)
-										{
-											qWarning () << "Snails::ThreadPool::TestConnectivity():"
-													<< "initial thread authentication failed:"
-													<< err.what ();
-											HitLimit_ = true;
-										},
-										[] (const auto& e) { qWarning () << "Snails::ThreadPool::TestConnectivity():" << e.what (); });
-							});
-
-					return result;
-				};
-	}
-
-	AccountThread* ThreadPool::GetThread ()
-	{
-		return GetNextThread ();
+		auto future = thread->Schedule (TaskPriority::High, &AccountThreadWorker::TestConnectivity);
+		Util::Sequence (nullptr, future) >>
+				[thread] (const auto&) {};
+		return future;
 	}
 
 	void ThreadPool::RunThreads ()
@@ -138,6 +114,8 @@ namespace Snails
 		const auto& threadName = "PooledThread_" + QString::number (ExistingThreads_.size ());
 		const auto thread = std::make_shared<AccountThread> (false,
 				threadName, Acc_, Storage_);
+		thread->SetAutoQuit (true);
+		thread->SetQuitWait (ULONG_MAX);
 
 		new Util::SlotClosure<Util::DeleteLaterPolicy>
 		{
@@ -162,11 +140,14 @@ namespace Snails
 			Scheduled_.takeFirst () (thread);
 
 		if (!Scheduled_.isEmpty ())
-			Util::ExecuteLater ([this] { RunThreads (); }, 500);
+			Util::ExecuteLater ([this] { RunThreads (); });
 	}
 
 	AccountThread* ThreadPool::GetNextThread ()
 	{
+		if (ExistingThreads_.isEmpty ())
+			ExistingThreads_ << CreateThread ();
+
 		const auto min = std::min_element (ExistingThreads_.begin (), ExistingThreads_.end (),
 				Util::ComparingBy ([] (const auto& ptr) { return ptr->GetQueueSize (); }));
 		return min->get ();

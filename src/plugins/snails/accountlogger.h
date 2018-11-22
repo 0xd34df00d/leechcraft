@@ -30,6 +30,7 @@
 #pragma once
 
 #include <memory>
+#include <atomic>
 #include <QObject>
 
 class QFile;
@@ -39,16 +40,17 @@ namespace LeechCraft
 {
 namespace Snails
 {
-	class Account;
-
 	class AccountLogger : public QObject
 	{
 		Q_OBJECT
 
-		Account * const Acc_;
+		std::atomic_bool Enabled_ { false };
+		const QString AccName_;
 		std::shared_ptr<QFile> File_;
 	public:
-		AccountLogger (Account*);
+		AccountLogger (const QString&, QObject* = nullptr);
+
+		void SetEnabled (bool);
 
 		void Log (const QString& context, int connId, const QString& msg);
 	private slots:

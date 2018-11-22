@@ -44,11 +44,12 @@ namespace Snails
 		std::atomic<uint64_t>& Sent_;
 		std::atomic<uint64_t>& Received_;
 
-		AccountLogger * const AccLogger_;
 		const QString Context_;
 		const int ConnId_;
+		const std::shared_ptr<AccountLogger> AccLogger_;
 	public:
-		Tracer (std::atomic<uint64_t>&, std::atomic<uint64_t>&, const QString&, int, AccountLogger*);
+		Tracer (std::atomic<uint64_t>&, std::atomic<uint64_t>&,
+		        const QString&, int, const std::shared_ptr<AccountLogger>&);
 
 		void traceReceiveBytes (const vmime::size_t count, const vmime::string& state) override;
 		void traceSendBytes (const vmime::size_t count, const vmime::string& state) override;

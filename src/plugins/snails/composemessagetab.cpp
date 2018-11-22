@@ -86,7 +86,7 @@ namespace Snails
 	: QWidget (parent)
 	, AccsMgr_ (accsMgr)
 	, TemplatesMgr_ (templatesMgr)
-	, Toolbar_ (new QToolBar (tr ("Compose tab bar")))
+	, Toolbar_ (new QToolBar)
 	{
 		Ui_.setupUi (this);
 
@@ -399,7 +399,7 @@ namespace Snails
 							AppendAttachment (path, {});
 
 						const auto& notify = Util::MakeNotification ("Snails",
-								tr ("Attached %n files(s) from the source message.",
+								tr ("Attached %n file(s) from the source message.",
 										0,
 										result.Paths_.size ()),
 								Priority::Info);
@@ -602,9 +602,7 @@ namespace Snails
 										[] (const vmime::exceptions::connection_error&)
 										{
 											const auto& notify = Util::MakeNotification ("Snails",
-													tr ("Unable to send email: operation timed out.<br/><br/>"
-														"Consider switching between SSL and TLS/STARTSSL or replacing port 465 with 587, or vice versa."
-														"Port 465 is typically used with SSL, while port 587 is used with TLS."),
+													tr ("Unable to send email: operation timed out."),
 													Priority::Critical);
 											Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (notify);
 										},
@@ -677,8 +675,8 @@ namespace Snails
 		{
 			QMessageBox::critical (this,
 					tr ("Error attaching file"),
-					tr ("Error attaching file: %1 cannot be read")
-						.arg (path));
+					tr ("Error attaching file: %1 cannot be read.")
+						.arg (Util::FormatName (path)));
 			return;
 		}
 

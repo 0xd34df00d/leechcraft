@@ -273,14 +273,14 @@ namespace Snails
 		using WorkerThread::WorkerThread;
 
 		template<typename F, typename... Args>
-		QFuture<WrapFunctionType_t<F, Args...>> Schedule (TaskPriority prio, const F& func, const Args&... args)
+		auto Schedule (TaskPriority prio, const F& func, const Args&... args)
 		{
 			QFutureInterface<WrapFunctionType_t<F, Args...>> iface;
 			return Schedule (iface, prio, func, args...);
 		}
 
 		template<typename F, typename... Args>
-		QFuture<WrapFunctionType_t<F, Args...>> Schedule (QFutureInterface<WrapFunctionType_t<F, Args...>> iface,
+		auto Schedule (QFutureInterface<WrapFunctionType_t<F, Args...>> iface,
 				TaskPriority, const F& func, const Args&... args)
 		{
 			auto reporting = [this, func, iface, args...] (AccountThreadWorker *w) mutable
