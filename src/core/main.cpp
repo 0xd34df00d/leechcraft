@@ -44,6 +44,9 @@ namespace
 {
 	void SetupLibraryPaths ()
 	{
+		if (qgetenv ("LC_BUNDLE_DIRECT_LOAD") == "1")
+			return;
+
 		char path [1024] = { 0 };
 		uint32_t pathLength = sizeof (path);
 		if (const auto rc = _NSGetExecutablePath (path, &pathLength))
