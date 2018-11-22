@@ -196,16 +196,6 @@ namespace Aggregator
 		void AddFromOPML (const QString&,
 				const QString&,
 				const std::vector<bool>&);
-		void ExportToOPML (const QString&,
-				const QString&,
-				const QString&,
-				const QString&,
-				const QSet<IDType_t>&) const;
-		void ExportToBinary (const QString&,
-				const QString&,
-				const QString&,
-				const QString&,
-				const QSet<IDType_t>&) const;
 		JobHolderRepresentation* GetJobHolderRepresentation () const;
 
 		channels_shorts_t GetChannels () const;

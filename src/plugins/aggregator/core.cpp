@@ -37,9 +37,8 @@
 #include <QUrl>
 #include <QTimer>
 #include <QTextCodec>
-#include <QXmlStreamWriter>
+#include <QXmlStreamReader>
 #include <QNetworkReply>
-#include <QMessageBox>
 #include <interfaces/iwebbrowser.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
@@ -616,79 +615,6 @@ namespace Aggregator
 			AddFeed (i->URL_, tagsList + i->Categories_,
 					{ { IDNotFound, interval, i->MaxArticleNumber_, i->MaxArticleAge_, false } });
 		}
-	}
-
-	namespace
-	{
-		auto FilterChannels (channels_shorts_t channels, const QSet<IDType_t>& selected)
-		{
-			const auto removedPos = std::remove_if (channels.begin (), channels.end (),
-					[&selected] (const ChannelShort& ch) { return !selected.contains (ch.ChannelID_); });
-			channels.erase (removedPos, channels.end ());
-			return channels;
-		}
-	}
-
-	void Core::ExportToOPML (const QString& where,
-			const QString& title,
-			const QString& owner,
-			const QString& ownerEmail,
-			const QSet<IDType_t>& selected) const
-	{
-		auto channels = FilterChannels (GetChannels (), selected);
-
-		OPMLWriter writer;
-		auto data = writer.Write (channels, title, owner, ownerEmail);
-
-		QFile f { where };
-		if (!f.open (QIODevice::WriteOnly))
-		{
-			QMessageBox::critical (nullptr,
-					tr ("OPML export error"),
-					tr ("Could not open file %1 for write.")
-						.arg (where));
-			return;
-		}
-		f.write (data.toUtf8 ());
-	}
-
-	void Core::ExportToBinary (const QString& where,
-			const QString& title,
-			const QString& owner,
-			const QString& ownerEmail,
-			const QSet<IDType_t>& selected) const
-	{
-		auto channels = FilterChannels (GetChannels (), selected);
-
-		QFile f (where);
-		if (!f.open (QIODevice::WriteOnly))
-		{
-			QMessageBox::critical (nullptr,
-					tr ("Binary export error"),
-					tr ("Could not open file %1 for write.")
-						.arg (where));
-			return;
-		}
-
-		QByteArray buffer;
-		QDataStream data (&buffer, QIODevice::WriteOnly);
-
-		int version = 1;
-		int magic = 0xd34df00d;
-		data << magic
-				<< version
-				<< title
-				<< owner
-				<< ownerEmail;
-
-		for (const auto& cs : channels)
-		{
-			auto channel = StorageBackend_->GetChannel (cs.ChannelID_);
-			channel.Items_ = StorageBackend_->GetFullItems (channel.ChannelID_);
-			data << channel;
-		}
-
-		f.write (qCompress (buffer, 9));
 	}
 
 	JobHolderRepresentation* Core::GetJobHolderRepresentation () const

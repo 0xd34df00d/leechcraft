@@ -59,7 +59,6 @@
 #include "itemsfiltermodel.h"
 #include "channelsfiltermodel.h"
 #include "xmlsettingsmanager.h"
-#include "export.h"
 #include "importbinary.h"
 #include "feedsettings.h"
 #include "jobholderrepresentation.h"
@@ -71,6 +70,7 @@
 #include "aggregatortab.h"
 #include "channelsmodelrepresentationproxy.h"
 #include "storagebackendmanager.h"
+#include "exportutils.h"
 
 namespace LeechCraft
 {
@@ -602,20 +602,7 @@ namespace Aggregator
 
 	void Aggregator::on_ActionExportOPML__triggered ()
 	{
-		Export exportDialog (tr ("Export to OPML"),
-				tr ("Select save file"),
-				tr ("OPML files (*.opml);;"
-					"XML files (*.xml);;"
-					"All files (*.*)"), nullptr);
-		exportDialog.SetFeeds (Core::Instance ().GetChannels ());
-		if (exportDialog.exec () == QDialog::Rejected)
-			return;
-
-		Core::Instance ().ExportToOPML (exportDialog.GetDestination (),
-				exportDialog.GetTitle (),
-				exportDialog.GetOwner (),
-				exportDialog.GetOwnerEmail (),
-				exportDialog.GetSelectedFeeds ());
+		ExportUtils::RunExportOPML ();
 	}
 
 	void Aggregator::on_ActionImportBinary__triggered ()
@@ -630,19 +617,7 @@ namespace Aggregator
 
 	void Aggregator::on_ActionExportBinary__triggered ()
 	{
-		Export exportDialog (tr ("Export to binary file"),
-				tr ("Select save file"),
-				tr ("Aggregator exchange files (*.lcae);;"
-					"All files (*.*)"), nullptr);
-		exportDialog.SetFeeds (Core::Instance ().GetChannels ());
-		if (exportDialog.exec () == QDialog::Rejected)
-			return;
-
-		Core::Instance ().ExportToBinary (exportDialog.GetDestination (),
-				exportDialog.GetTitle (),
-				exportDialog.GetOwner (),
-				exportDialog.GetOwnerEmail (),
-				exportDialog.GetSelectedFeeds ());
+		ExportUtils::RunExportBinary ();
 	}
 
 	void Aggregator::on_ActionExportFB2__triggered ()
