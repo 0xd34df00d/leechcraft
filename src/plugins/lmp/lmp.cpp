@@ -64,28 +64,35 @@ namespace LeechCraft
 {
 namespace LMP
 {
+	namespace
+	{
+		void FixGstPaths ()
+		{
+#if defined (Q_OS_MAC) && !defined (USE_UNIX_LAYOUT)
+			auto updateEnv = [] (const char *name, const QByteArray& relpath)
+			{
+				if (qgetenv (name).isEmpty ())
+					qputenv (name, QCoreApplication::applicationDirPath ().toUtf8 () + relpath);
+			};
+
+			updateEnv ("GST_PLUGIN_SYSTEM_PATH", "/../PlugIns/gstreamer");
+			updateEnv ("GST_PLUGIN_SCANNER", "gst-plugin-scanner");
+			updateEnv ("GTK_PATH", "/../Frameworks");
+			updateEnv ("GIO_EXTRA_MODULES", "/../PlugIns/gstreamer");
+			updateEnv ("GSETTINGS_SCHEMA_DIR", "/../Frameworks/schemas");
+
+			qputenv ("GST_REGISTRY_FORK", "no");
+#endif
+		}
+	}
+
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Proxy_ = proxy;
 
 		Util::InstallTranslator ("lmp");
 
-#if defined (Q_OS_MAC) && !defined (USE_UNIX_LAYOUT)
-		auto updateEnv = [] (const char *name, const QByteArray& relpath)
-		{
-			if (qgetenv (name).isEmpty ())
-				qputenv (name,
-						QCoreApplication::applicationDirPath ().toUtf8 () + relpath);
-		};
-
-		updateEnv ("GST_PLUGIN_SYSTEM_PATH", "/../PlugIns/gstreamer");
-		updateEnv ("GST_PLUGIN_SCANNER", "gst-plugin-scanner");
-		updateEnv ("GTK_PATH", "/../Frameworks");
-		updateEnv ("GIO_EXTRA_MODULES", "/../PlugIns/gstreamer");
-		updateEnv ("GSETTINGS_SCHEMA_DIR", "/../Frameworks/schemas");
-
-		qputenv ("GST_REGISTRY_FORK", "no");
-#endif
+		FixGstPaths ();
 
 		gint argc = 1;
 		gchar *argvarr [] = { g_strdup ("leechcraft"), nullptr };
