@@ -32,7 +32,6 @@
 #include <QFileDialog>
 #include <QDir>
 #include <QTimer>
-#include <util/sll/functor.h>
 #include "feed.h"
 #include "storagebackendmanager.h"
 
@@ -86,8 +85,6 @@ namespace Aggregator
 	
 	void Export::SetFeeds (const channels_shorts_t& channels)
 	{
-		using Util::operator*;
-
 		const auto& sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
 		for (const auto& cs : channels)
 			{

@@ -34,7 +34,6 @@
 #include <QDomElement>
 #include <QtDebug>
 #include <util/util.h>
-#include <util/sll/functor.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
 #include "core.h"
