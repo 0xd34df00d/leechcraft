@@ -52,6 +52,7 @@ namespace Aggregator
 	{
 		Q_OBJECT
 	public:
+		struct FeedNotFoundError {};
 		struct ChannelNotFoundError {};
 		struct ItemNotFoundError {};
 
