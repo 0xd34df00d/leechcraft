@@ -195,6 +195,36 @@ namespace Aggregator
 		Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Aggregator", str, Priority::Info));
 	}
 
+	std::optional<IDType_t> DBUpdateThreadWorker::MatchChannel (const Channel& channel, IDType_t feedId,
+			const channels_container_t& allRemoteChannels) const
+	{
+		if (const auto directMatch = SB_->FindChannel (channel.Title_, channel.Link_, feedId))
+			return directMatch;
+
+		qDebug () << Q_FUNC_INFO
+				<< "unable to find a channel directly matching"
+				<< channel.Title_
+				<< channel.Link_
+				<< feedId;
+
+		const auto& allLocalChannels = SB_->GetChannels (feedId);
+		if (allLocalChannels.size () != 1 || allRemoteChannels.size () != 1)
+			return {};
+
+		auto localChannel = allLocalChannels.at (0);
+
+		qDebug () << "correcting local channel with params"
+				<< localChannel.Title_
+				<< localChannel.Link_;
+
+		localChannel.Title_ = channel.Title_;
+		localChannel.Link_ = channel.Link_;
+
+		SB_->UpdateChannel (localChannel);
+
+		return localChannel.ChannelID_;
+	}
+
 	void DBUpdateThreadWorker::toggleChannelUnread (IDType_t channel, bool state)
 	{
 		SB_->ToggleChannelUnread (channel, state);
@@ -219,7 +249,7 @@ namespace Aggregator
 
 		for (const auto& channel : channels)
 		{
-			const auto maybeOurChannelID = SB_->FindChannel (channel->Title_, channel->Link_, feedId);
+			const auto maybeOurChannelID = MatchChannel (*channel, feedId, channels);
 			if (!maybeOurChannelID)
 			{
 				AddChannel (*channel);
