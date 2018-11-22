@@ -710,9 +710,9 @@ namespace Aggregator
 		auto tags = Proxy_->GetTagsManager ()->Split (tagsString);
 		tags.removeDuplicates ();
 
-		for (const auto feed : feeds)
+		for (const auto& feed : feeds)
 		{
-			for (const auto channel : feed->Channels_)
+			for (const auto& channel : feed->Channels_)
 			{
 				channel->Tags_ += tags;
 				channel->Tags_.removeDuplicates ();
