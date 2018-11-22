@@ -92,11 +92,10 @@ namespace Aggregator
 		 */
 		virtual Feed GetFeed (const IDType_t& id) const = 0;
 
-		/** @brief Returns the ID of the feed with the given url
-		 * or -1 if it could not be found.
+		/** @brief Returns the ID of the feed with the given url.
 		 *
 		 * @param[in] url The URL of the feed to be found.
-		 * @return The ID of the feed or -1 if there is no such feed.
+		 * @return The ID of the feed or an empty optional if there is no such feed.
 		 */
 		virtual boost::optional<IDType_t> FindFeed (const QString& url) const = 0;
 
