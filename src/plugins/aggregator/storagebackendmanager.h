@@ -36,8 +36,6 @@
 
 namespace LeechCraft
 {
-class StorageBackend;
-
 namespace Aggregator
 {
 	class StorageBackendManager : public QObject
