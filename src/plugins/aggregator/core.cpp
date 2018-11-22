@@ -618,22 +618,24 @@ namespace Aggregator
 		}
 	}
 
+	namespace
+	{
+		auto FilterChannels (channels_shorts_t channels, const QSet<IDType_t>& selected)
+		{
+			const auto removedPos = std::remove_if (channels.begin (), channels.end (),
+					[&selected] (const ChannelShort& ch) { return !selected.contains (ch.ChannelID_); });
+			channels.erase (removedPos, channels.end ());
+			return channels;
+		}
+	}
+
 	void Core::ExportToOPML (const QString& where,
 			const QString& title,
 			const QString& owner,
 			const QString& ownerEmail,
-			const std::vector<bool>& mask) const
+			const QSet<IDType_t>& selected) const
 	{
-		auto channels = GetChannels ();
-
-		for (auto begin = mask.begin (), i = mask.end () - 1; i >= begin; --i)
-			if (!*i)
-			{
-				auto distance = std::distance (mask.begin (), i);
-				auto eraser = channels.begin ();
-				std::advance (eraser, distance);
-				channels.erase (eraser);
-			}
+		auto channels = FilterChannels (GetChannels (), selected);
 
 		OPMLWriter writer;
 		auto data = writer.Write (channels, title, owner, ownerEmail);
@@ -654,19 +656,9 @@ namespace Aggregator
 			const QString& title,
 			const QString& owner,
 			const QString& ownerEmail,
-			const std::vector<bool>& mask) const
+			const QSet<IDType_t>& selected) const
 	{
-		auto channels = GetChannels ();
-
-		for (std::vector<bool>::const_iterator begin = mask.begin (),
-				i = mask.end () - 1; i >= begin; --i)
-			if (!*i)
-			{
-				size_t distance = std::distance (mask.begin (), i);
-				channels_shorts_t::iterator eraser = channels.begin ();
-				std::advance (eraser, distance);
-				channels.erase (eraser);
-			}
+		auto channels = FilterChannels (GetChannels (), selected);
 
 		QFile f (where);
 		if (!f.open (QIODevice::WriteOnly))

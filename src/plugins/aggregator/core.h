@@ -200,12 +200,12 @@ namespace Aggregator
 				const QString&,
 				const QString&,
 				const QString&,
-				const std::vector<bool>&) const;
+				const QSet<IDType_t>&) const;
 		void ExportToBinary (const QString&,
 				const QString&,
 				const QString&,
 				const QString&,
-				const std::vector<bool>&) const;
+				const QSet<IDType_t>&) const;
 		JobHolderRepresentation* GetJobHolderRepresentation () const;
 
 		channels_shorts_t GetChannels () const;
