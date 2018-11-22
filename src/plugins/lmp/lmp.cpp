@@ -41,6 +41,7 @@
 #include <util/xpc/util.h>
 #include <util/sll/prelude.h>
 #include <util/sll/slotclosure.h>
+#include <util/sys/util.h>
 #include "gstfix.h"
 #include "playertab.h"
 #include "player.h"
@@ -69,6 +70,9 @@ namespace LMP
 		void FixGstPaths ()
 		{
 #if defined (Q_OS_MAC) && !defined (USE_UNIX_LAYOUT)
+			if (!Util::IsOSXLoadFromBundle ())
+				return;
+
 			auto updateEnv = [] (const char *name, const QByteArray& relpath)
 			{
 				if (qgetenv (name).isEmpty ())
