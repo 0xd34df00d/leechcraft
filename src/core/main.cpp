@@ -40,11 +40,13 @@
 #if defined(Q_OS_MAC) && !defined(USE_UNIX_LAYOUT)
 #include <mach-o/dyld.h>
 
+#include "util/sys/util.h"
+
 namespace
 {
 	void SetupLibraryPaths ()
 	{
-		if (qgetenv ("LC_BUNDLE_DIRECT_LOAD") == "1")
+		if (!LeechCraft::Util::IsOSXLoadFromBundle ())
 			return;
 
 		char path [1024] = { 0 };

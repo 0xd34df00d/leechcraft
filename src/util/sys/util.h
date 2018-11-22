@@ -46,5 +46,7 @@ namespace Util
 	 * @return Whether the \em filename has a known image suffix.
 	 */
 	UTIL_SYS_API bool HasSupportedImageExtension (const QString& filename);
+
+	UTIL_SYS_API bool IsOSXLoadFromBundle ();
 }
 }

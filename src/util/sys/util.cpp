@@ -46,5 +46,14 @@ namespace Util
 				[&ext] (const QByteArray& format)
 					{ return !QString::compare (ext, format, Qt::CaseInsensitive); });
 	}
+
+	bool IsOSXLoadFromBundle ()
+	{
+#if defined (Q_OS_MAC) && !defined (USE_UNIX_LAYOUT)
+		return qgetenv ("LC_BUNDLE_DIRECT_LOAD") != "1";
+#else
+		return false;
+#endif
+	}
 }
 }
