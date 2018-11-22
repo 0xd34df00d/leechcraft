@@ -202,7 +202,7 @@ namespace Aggregator
 				w.writeEndElement ();
 				w.writeTextElement ("annotation",
 						Export2FB2Dialog::tr ("%n unread item(s)", "", cs.Unread_));
-				for (const auto item : items)
+				for (const auto& item : items)
 				{
 					w.writeStartElement ("title");
 						w.writeStartElement ("p");
@@ -469,7 +469,7 @@ namespace Aggregator
 
 	void Export2FB2Dialog::on_File__textChanged (const QString& name)
 	{
-		Ui_.ButtonBox_->button (QDialogButtonBox::Ok)->setEnabled (name.size ());
+		Ui_.ButtonBox_->button (QDialogButtonBox::Ok)->setEnabled (!name.isEmpty ());
 	}
 
 	void Export2FB2Dialog::on_Name__textEdited ()
@@ -524,22 +524,22 @@ namespace Aggregator
 
 			const auto& items = sb->GetItems (cs.ChannelID_);
 
-			for (auto i = items.begin (), end = items.end (); i != end; ++i)
+			for (const auto& item : items)
 			{
 				if (unreadOnly &&
-						!i->Unread_)
+						!item.Unread_)
 					continue;
 
-				if (!i->Categories_.isEmpty ())
+				if (!item.Categories_.isEmpty ())
 				{
 					const auto suitable = std::any_of (categories.begin (), categories.end (),
-							[&i] (const QString& cat) { return i->Categories_.contains (cat); });
+							[&item] (const QString& cat) { return item.Categories_.contains (cat); });
 					if (!suitable)
 						continue;
 				}
 
-				if (const auto& item = sb->GetItem (i->ItemID_))
-					items2write [cs].prepend (*item);
+				if (const auto& fullItem = sb->GetItem (item.ItemID_))
+					items2write [cs].prepend (*fullItem);
 			}
 		}
 
