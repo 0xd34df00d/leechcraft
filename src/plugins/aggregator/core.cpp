@@ -39,6 +39,7 @@
 #include <QTextCodec>
 #include <QXmlStreamWriter>
 #include <QNetworkReply>
+#include <QMessageBox>
 #include <interfaces/iwebbrowser.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
@@ -625,29 +626,28 @@ namespace Aggregator
 	{
 		auto channels = GetChannels ();
 
-		for (std::vector<bool>::const_iterator begin = mask.begin (),
-				i = mask.end () - 1; i >= begin; --i)
+		for (auto begin = mask.begin (), i = mask.end () - 1; i >= begin; --i)
 			if (!*i)
 			{
-				size_t distance = std::distance (mask.begin (), i);
-				channels_shorts_t::iterator eraser = channels.begin ();
+				auto distance = std::distance (mask.begin (), i);
+				auto eraser = channels.begin ();
 				std::advance (eraser, distance);
 				channels.erase (eraser);
 			}
 
 		OPMLWriter writer;
-		QString data = writer.Write (channels, title, owner, ownerEmail);
+		auto data = writer.Write (channels, title, owner, ownerEmail);
 
-		QFile f (where);
+		QFile f { where };
 		if (!f.open (QIODevice::WriteOnly))
 		{
-			ErrorNotification (tr ("OPML export error"),
-					tr ("Could not open file %1 for write.").arg (where));
+			QMessageBox::critical (nullptr,
+					tr ("OPML export error"),
+					tr ("Could not open file %1 for write.")
+						.arg (where));
 			return;
 		}
-
 		f.write (data.toUtf8 ());
-		f.close ();
 	}
 
 	void Core::ExportToBinary (const QString& where,
