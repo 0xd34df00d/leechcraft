@@ -40,10 +40,15 @@
 #if defined(Q_OS_MAC) && !defined(USE_UNIX_LAYOUT)
 #include <mach-o/dyld.h>
 
+#include "util/sys/util.h"
+
 namespace
 {
 	void SetupLibraryPaths ()
 	{
+		if (!LeechCraft::Util::IsOSXLoadFromBundle ())
+			return;
+
 		char path [1024] = { 0 };
 		uint32_t pathLength = sizeof (path);
 		if (const auto rc = _NSGetExecutablePath (path, &pathLength))
