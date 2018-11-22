@@ -110,21 +110,20 @@ namespace Aggregator
 	{
 		const auto& sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
 
-		QDomElement body = doc.createElement ("body");
-		for (channels_shorts_t::const_iterator i = channels.begin (),
-				end = channels.end (); i != end; ++i)
+		auto body = doc.createElement ("body");
+		for (const auto& cs : channels)
 		{
-			auto tags = Core::Instance ().GetProxy ()->GetTagsManager ()->GetTags (i->Tags_);
+			auto tags = Core::Instance ().GetProxy ()->GetTagsManager ()->GetTags (cs.Tags_);
 			tags.sort ();
 
 			auto inserter = Util::GetElementForTags (tags,
 					body, doc, "outline",
 					&TagGetter,
 					&TagSetter);
-			QDomElement item = doc.createElement ("outline");
-			item.setAttribute ("title", i->Title_);
-			item.setAttribute ("xmlUrl", sb->GetFeed (i->FeedID_).URL_);
-			item.setAttribute ("htmlUrl", i->Link_);
+			auto item = doc.createElement ("outline");
+			item.setAttribute ("title", cs.Title_);
+			item.setAttribute ("xmlUrl", sb->GetFeed (cs.FeedID_).URL_);
+			item.setAttribute ("htmlUrl", cs.Link_);
 			inserter.appendChild (item);
 		}
 

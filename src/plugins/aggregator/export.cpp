@@ -89,10 +89,10 @@ namespace Aggregator
 		using Util::operator*;
 
 		const auto& sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
-		for (channels_shorts_t::const_iterator i = channels.begin (), end = channels.end (); i != end; ++i)
+		for (const auto& cs : channels)
 			{
-				const auto& feed = sb->GetFeed (i->FeedID_);
-				const auto item = new QTreeWidgetItem (Ui_.Channels_, { i->Title_, feed.URL_ });
+				const auto& feed = sb->GetFeed (cs.FeedID_);
+				const auto item = new QTreeWidgetItem (Ui_.Channels_, { cs.Title_, feed.URL_ });
 				item->setData (0, Qt::CheckStateRole, Qt::Checked);
 			}
 	}
