@@ -663,8 +663,10 @@ namespace Aggregator
 		QFile f (where);
 		if (!f.open (QIODevice::WriteOnly))
 		{
-			ErrorNotification (tr ("Binary export error"),
-					tr ("Could not open file %1 for write.").arg (where));
+			QMessageBox::critical (nullptr,
+					tr ("Binary export error"),
+					tr ("Could not open file %1 for write.")
+						.arg (where));
 			return;
 		}
 
