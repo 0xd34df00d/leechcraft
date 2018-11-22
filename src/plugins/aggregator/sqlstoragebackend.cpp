@@ -348,7 +348,9 @@ namespace Aggregator
 		UpdateShortChannel_.prepare ("UPDATE channels SET "
 				"tags = :tags, "
 				"last_build = :last_build, "
-				"display_title = :display_title "
+				"display_title = :display_title, "
+				"title = :title, "
+				"url = :url "
 				"WHERE channel_id = :channel_id");
 
 		UpdateChannel_ = QSqlQuery (DB_);
@@ -1369,6 +1371,8 @@ namespace Aggregator
 		UpdateShortChannel_.bindValue (":last_build", channel.LastBuild_);
 		UpdateShortChannel_.bindValue (":tags", Core::Instance ().GetProxy ()->GetTagsManager ()->Join (channel.Tags_));
 		UpdateShortChannel_.bindValue (":display_title", channel.DisplayTitle_);
+		UpdateShortChannel_.bindValue (":title", channel.Title_);
+		UpdateShortChannel_.bindValue (":url", channel.Link_);
 
 		if (!UpdateShortChannel_.exec ())
 		{
