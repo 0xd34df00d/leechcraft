@@ -512,8 +512,7 @@ namespace Aggregator
 
 	QStringList Core::GetCategories (const QModelIndex& index) const
 	{
-		const auto& cs = ChannelsModel_->GetChannelForIndex (index);
-		return GetCategories (StorageBackend_->GetItems (cs.ChannelID_));
+		return GetCategories (StorageBackend_->GetItems (index.data (ChannelRoles::ChannelID).value<IDType_t> ()));
 	}
 
 	QStringList Core::GetCategories (const items_shorts_t& items) const
