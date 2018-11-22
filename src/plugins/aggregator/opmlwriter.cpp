@@ -123,14 +123,9 @@ namespace Aggregator
 					&TagSetter);
 			QDomElement item = doc.createElement ("outline");
 			item.setAttribute ("title", i->Title_);
-
-			using Util::operator*;
-			[&] (auto&& feed)
-			{
-				item.setAttribute ("xmlUrl", feed.URL_);
-				item.setAttribute ("htmlUrl", i->Link_);
-				inserter.appendChild (item);
-			} * sb->GetFeed (i->FeedID_);
+			item.setAttribute ("xmlUrl", sb->GetFeed (i->FeedID_).URL_);
+			item.setAttribute ("htmlUrl", i->Link_);
+			inserter.appendChild (item);
 		}
 
 		root.appendChild (body);

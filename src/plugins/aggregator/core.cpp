@@ -481,9 +481,7 @@ namespace Aggregator
 		const auto& fullChannel = StorageBackend_->GetChannel (channel.ChannelID_);
 		ci.Description_ = fullChannel.Description_;
 		ci.Author_ = fullChannel.Author_;
-
-		using Util::operator*;
-		StorageBackend_->GetFeed (channel.FeedID_) * [&] (auto&& feed) { ci.URL_ = feed.URL_; };
+		ci.URL_ = StorageBackend_->GetFeed (channel.FeedID_).URL_;
 
 		// TODO introduce a method in SB for this
 		ci.NumItems_ = StorageBackend_->GetItems (channel.ChannelID_).size ();
@@ -984,16 +982,7 @@ namespace Aggregator
 					this,
 					SLOT (rotateUpdatesQueue ()));
 
-		const auto& maybeFeed = StorageBackend_->GetFeed (id);
-		if (!maybeFeed)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "no feed for id"
-					<< id;
-			return;
-		}
-
-		const auto& url = maybeFeed->URL_;
+		const auto& url = StorageBackend_->GetFeed (id).URL_;
 		for (const auto& pair : Util::Stlize (PendingJobs_))
 			if (pair.second.URL_ == url)
 			{

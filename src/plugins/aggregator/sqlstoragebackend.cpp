@@ -902,7 +902,7 @@ namespace Aggregator
 			return 0;
 	}
 
-	boost::optional<Feed> SQLStorageBackend::GetFeed (const IDType_t& feedId) const
+	Feed SQLStorageBackend::GetFeed (const IDType_t& feedId) const
 	{
 		FeedGetter_.bindValue (":feed_id", feedId);
 		if (!FeedGetter_.exec ())
@@ -913,7 +913,7 @@ namespace Aggregator
 			qWarning () << Q_FUNC_INFO
 					<< "no feed found with"
 					<< feedId;
-			return {};
+			throw FeedNotFoundError {};
 		}
 
 		Feed feed (feedId);
