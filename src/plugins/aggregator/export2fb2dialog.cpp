@@ -479,23 +479,18 @@ namespace Aggregator
 
 	namespace
 	{
-		QStringList CatsFromIndexes (const QItemSelection& selection)
+		QStringList CatsFromIndexes (const QList<QModelIndex>& indices)
 		{
-			auto result = Util::ConcatMap (selection.indexes (),
+			auto result = Util::ConcatMap (indices,
 					[] (const QModelIndex& index) { return Core::Instance ().GetCategories (index); });
 			result.removeDuplicates ();
 			return result;
 		}
 	}
 
-	void Export2FB2Dialog::handleChannelsSelectionChanged (const QItemSelection& selected,
-			const QItemSelection& deselected)
+	void Export2FB2Dialog::handleChannelsSelectionChanged ()
 	{
-		for (const auto& removed : CatsFromIndexes (deselected))
-			CurrentCategories_.removeAll (removed);
-
-		CurrentCategories_ += CatsFromIndexes (selected);
-		CurrentCategories_.removeDuplicates ();
+		CurrentCategories_ = CatsFromIndexes (Ui_.ChannelsTree_->selectionModel ()->selectedRows ());
 
 		Selector_->setPossibleSelections (CurrentCategories_);
 		Selector_->selectAll ();
