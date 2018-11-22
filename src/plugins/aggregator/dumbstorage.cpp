@@ -47,12 +47,12 @@ namespace Aggregator
 		return {};
 	}
 
-	boost::optional<IDType_t> DumbStorage::FindFeed (const QString&) const
+	std::optional<IDType_t> DumbStorage::FindFeed (const QString&) const
 	{
 		return {};
 	}
 
-	boost::optional<Feed::FeedSettings> DumbStorage::GetFeedSettings (const IDType_t&) const
+	std::optional<Feed::FeedSettings> DumbStorage::GetFeedSettings (const IDType_t&) const
 	{
 		return {};
 	}
@@ -71,7 +71,7 @@ namespace Aggregator
 		return {};
 	}
 
-	boost::optional<IDType_t> DumbStorage::FindChannel (const QString&, const QString&, const IDType_t&) const
+	std::optional<IDType_t> DumbStorage::FindChannel (const QString&, const QString&, const IDType_t&) const
 	{
 		return {};
 	}
@@ -90,22 +90,22 @@ namespace Aggregator
 		return {};
 	}
 
-	boost::optional<Item> DumbStorage::GetItem (const IDType_t&) const
+	std::optional<Item> DumbStorage::GetItem (const IDType_t&) const
 	{
 		return {};
 	}
 
-	boost::optional<IDType_t> DumbStorage::FindItem (const QString&, const QString&, const IDType_t&) const
+	std::optional<IDType_t> DumbStorage::FindItem (const QString&, const QString&, const IDType_t&) const
 	{
 		return {};
 	}
 
-	boost::optional<IDType_t> DumbStorage::FindItemByTitle (const QString&, const IDType_t&) const
+	std::optional<IDType_t> DumbStorage::FindItemByTitle (const QString&, const IDType_t&) const
 	{
 		return {};
 	}
 
-	boost::optional<IDType_t> DumbStorage::FindItemByLink (const QString&, const IDType_t&) const
+	std::optional<IDType_t> DumbStorage::FindItemByLink (const QString&, const IDType_t&) const
 	{
 		return {};
 	}

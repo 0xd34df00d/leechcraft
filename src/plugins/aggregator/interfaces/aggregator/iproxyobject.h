@@ -30,7 +30,7 @@
 #pragma once
 
 #include <memory>
-#include <boost/optional.hpp>
+#include <optional>
 #include "common.h"
 
 class QAbstractItemModel;
@@ -62,7 +62,7 @@ namespace Aggregator
 		virtual int CountUnreadItems (IDType_t) const = 0;
 		virtual QList<Item_ptr> GetChannelItems (IDType_t) const = 0;
 
-		virtual boost::optional<Item> GetItem (IDType_t) const = 0;
+		virtual std::optional<Item> GetItem (IDType_t) const = 0;
 		virtual void SetItemRead (IDType_t, bool) const = 0;
 
 		virtual QAbstractItemModel* CreateItemsModel () const = 0;

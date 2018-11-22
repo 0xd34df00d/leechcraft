@@ -923,7 +923,7 @@ namespace Aggregator
 		return feed;
 	}
 
-	boost::optional<IDType_t> SQLStorageBackend::FindFeed (const QString& url) const
+	std::optional<IDType_t> SQLStorageBackend::FindFeed (const QString& url) const
 	{
 		FeedFinderByURL_.bindValue (":url", url);
 		if (!FeedFinderByURL_.exec ())
@@ -942,7 +942,7 @@ namespace Aggregator
 		return id;
 	}
 
-	boost::optional<Feed::FeedSettings> SQLStorageBackend::GetFeedSettings (const IDType_t& feedId) const
+	std::optional<Feed::FeedSettings> SQLStorageBackend::GetFeedSettings (const IDType_t& feedId) const
 	{
 		FeedSettingsGetter_.bindValue (":feed_id", feedId);
 		if (!FeedSettingsGetter_.exec ())
@@ -1060,7 +1060,7 @@ namespace Aggregator
 		return channel;
 	}
 
-	boost::optional<IDType_t> SQLStorageBackend::FindChannel (const QString& title,
+	std::optional<IDType_t> SQLStorageBackend::FindChannel (const QString& title,
 			const QString& link, const IDType_t& feedId) const
 	{
 		ChannelIDFromTitleURL_.bindValue (":feed_id", feedId);
@@ -1077,7 +1077,7 @@ namespace Aggregator
 		return result;
 	}
 
-	boost::optional<IDType_t> SQLStorageBackend::FindItem (const QString& title,
+	std::optional<IDType_t> SQLStorageBackend::FindItem (const QString& title,
 			const QString& link, const IDType_t& channelId) const
 	{
 		ItemIDFromTitleURL_.bindValue (":channel_id", channelId);
@@ -1094,7 +1094,7 @@ namespace Aggregator
 		return result;
 	}
 
-	boost::optional<IDType_t> SQLStorageBackend::FindItemByLink (const QString& link,
+	std::optional<IDType_t> SQLStorageBackend::FindItemByLink (const QString& link,
 			const IDType_t& channelId) const
 	{
 		if (link.isEmpty ())
@@ -1113,7 +1113,7 @@ namespace Aggregator
 		return result;
 	}
 
-	boost::optional<IDType_t> SQLStorageBackend::FindItemByTitle (const QString& title,
+	std::optional<IDType_t> SQLStorageBackend::FindItemByTitle (const QString& title,
 			const IDType_t& channelId) const
 	{
 		ItemIDFromTitle_.bindValue (":channel_id", channelId);
@@ -1213,7 +1213,7 @@ namespace Aggregator
 		return unread;
 	}
 
-	boost::optional<Item> SQLStorageBackend::GetItem (const IDType_t& itemId) const
+	std::optional<Item> SQLStorageBackend::GetItem (const IDType_t& itemId) const
 	{
 		ItemFullSelector_.bindValue (":item_id", itemId);
 		if (!ItemFullSelector_.exec ())

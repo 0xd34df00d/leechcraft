@@ -29,7 +29,7 @@
 
 #pragma once
 
-#include <boost/optional.hpp>
+#include <optional>
 #include <QObject>
 #include <QSet>
 #include <interfaces/core/ihookproxy.h>
@@ -97,7 +97,7 @@ namespace Aggregator
 		 * @param[in] url The URL of the feed to be found.
 		 * @return The ID of the feed or an empty optional if there is no such feed.
 		 */
-		virtual boost::optional<IDType_t> FindFeed (const QString& url) const = 0;
+		virtual std::optional<IDType_t> FindFeed (const QString& url) const = 0;
 
 		/** @brief Returns feed's settings.
 		 *
@@ -107,7 +107,7 @@ namespace Aggregator
 		 * @param[in] feed Feed's ID.
 		 * @return FeedSettings for the feed.
 		 */
-		virtual boost::optional<Feed::FeedSettings> GetFeedSettings (const IDType_t& feed) const = 0;
+		virtual std::optional<Feed::FeedSettings> GetFeedSettings (const IDType_t& feed) const = 0;
 
 		/** @brief Sets feed's settings.
 		 *
@@ -147,7 +147,7 @@ namespace Aggregator
 		 * @param[in] feedId ID of the parent feed.
 		 * @return ID of the channel or an empty optional if no such channel exists.
 		 */
-		virtual boost::optional<IDType_t> FindChannel (const QString& title,
+		virtual std::optional<IDType_t> FindChannel (const QString& title,
 				const QString& link, const IDType_t& feedId) const = 0;
 
 		/** @brief Trims the channel to remove old items.
@@ -189,7 +189,7 @@ namespace Aggregator
 		 * @param[in] id The item's ID.
 		 * @return Full information about the requested item.
 		 */
-		virtual boost::optional<Item> GetItem (const IDType_t& id) const = 0;
+		virtual std::optional<Item> GetItem (const IDType_t& id) const = 0;
 
 		/** @brief Finds first item with the given title, link and parent
 		 * channel.
@@ -210,7 +210,7 @@ namespace Aggregator
 		 * @sa FindItemByLink()
 		 * @sa FindItemByTitle()
 		 */
-		virtual boost::optional<IDType_t> FindItem (const QString& title,
+		virtual std::optional<IDType_t> FindItem (const QString& title,
 				const QString& link, const IDType_t& channel) const = 0;
 
 		/** @brief Finds first item with the given title and parent
@@ -226,7 +226,7 @@ namespace Aggregator
 		 * @sa FindItem()
 		 * @sa FindItemByLink()
 		 */
-		virtual boost::optional<IDType_t> FindItemByTitle (const QString& title, const IDType_t& channel) const = 0;
+		virtual std::optional<IDType_t> FindItemByTitle (const QString& title, const IDType_t& channel) const = 0;
 
 		/** @brief Finds first item with the given link and parent
 		 * channel.
@@ -244,7 +244,7 @@ namespace Aggregator
 		 * @sa FindItem()
 		 * @sa FindItemByTitle()
 		 */
-		virtual boost::optional<IDType_t> FindItemByLink (const QString& link, const IDType_t& channel) const = 0;
+		virtual std::optional<IDType_t> FindItemByLink (const QString& link, const IDType_t& channel) const = 0;
 
 		/** @brief Returns all items in the channel.
 		 *

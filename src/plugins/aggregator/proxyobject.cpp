@@ -134,7 +134,7 @@ namespace Aggregator
 		return QList<Item_ptr>::fromVector (QVector<Item_ptr>::fromStdVector (items));
 	}
 
-	boost::optional<Item> ProxyObject::GetItem (IDType_t id) const
+	std::optional<Item> ProxyObject::GetItem (IDType_t id) const
 	{
 		return StorageBackendManager::Instance ().MakeStorageBackendForThread ()->GetItem (id);
 	}

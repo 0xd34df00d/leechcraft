@@ -29,7 +29,7 @@
 
 #include "dbupdatethreadworker.h"
 #include <stdexcept>
-#include <boost/optional.hpp>
+#include <optional>
 #include <QUrl>
 #include <QtDebug>
 #include <util/xpc/util.h>
@@ -236,14 +236,14 @@ namespace Aggregator
 			{
 				auto& item = *itemPtr;
 
-				auto mkLazy = [] (auto&& f) { return Util::MakeLazyF<boost::optional<IDType_t>> (f); };
+				auto mkLazy = [] (auto&& f) { return Util::MakeLazyF<std::optional<IDType_t>> (f); };
 				const auto& ourItemID = Util::Msum ({
 							mkLazy ([&] { return SB_->FindItem (item.Title_, item.Link_, ourChannel.ChannelID_); }),
 							mkLazy ([&] { return SB_->FindItemByLink (item.Link_, ourChannel.ChannelID_); }),
 							mkLazy ([&]
 									{
 										if (!item.Link_.isEmpty ())
-											return boost::optional<IDType_t> {};
+											return std::optional<IDType_t> {};
 
 										return SB_->FindItemByTitle (item.Title_, ourChannel.ChannelID_);
 									})

@@ -375,7 +375,7 @@ namespace Aggregator
 		AddFeed (url, Proxy_->GetTagsManager ()->Split (tagString));
 	}
 
-	void Core::AddFeed (QString url, const QStringList& tags, const boost::optional<Feed::FeedSettings>& fs)
+	void Core::AddFeed (QString url, const QStringList& tags, const std::optional<Feed::FeedSettings>& fs)
 	{
 		const auto& fixedUrl = QUrl::fromUserInput (url);
 		url = fixedUrl.toString ();
@@ -804,7 +804,7 @@ namespace Aggregator
 				return;
 			}
 
-			boost::optional<IDType_t> feedId;
+			std::optional<IDType_t> feedId;
 			if (pj.Role_ == PendingJob::RFeedAdded)
 			{
 				Feed feed;
