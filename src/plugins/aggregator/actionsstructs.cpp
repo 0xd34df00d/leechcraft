@@ -91,6 +91,7 @@ namespace Aggregator
 		ActionImportBinary_->setEnabled (enabled);
 		ActionExportBinary_->setEnabled (enabled);
 		ActionExportFB2_->setEnabled (enabled);
+		ActionMarkAllAsRead_->setEnabled (enabled);
 	}
 
 	void ChannelActions::SetupActionsStruct (QObject *parent)
