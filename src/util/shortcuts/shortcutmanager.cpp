@@ -87,6 +87,12 @@ namespace Util
 					CoreProxy_->GetShortcutProxy ()->GetShortcuts (ContextObj_, id));
 	}
 
+	void ShortcutManager::RegisterActions (const std::initializer_list<IDPair_t>& pairs)
+	{
+		for (const auto& [id, act] : pairs)
+			RegisterAction (id, act);
+	}
+
 	void ShortcutManager::RegisterShortcut (const QString& id, const ActionInfo& info, QShortcut *shortcut)
 	{
 		Shortcuts_ [id] << shortcut;
