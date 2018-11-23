@@ -197,7 +197,8 @@ namespace Util
 	{
 		std::decay_t<decltype (*containers.begin ())> result;
 		for (const auto& cont : containers)
-			std::copy (cont.begin (), cont.end (), std::back_inserter (result));
+			for (const auto& item : cont)
+				detail::Append (result, item);
 		return result;
 	}
 
