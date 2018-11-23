@@ -109,5 +109,18 @@ namespace Util
 
 		QCOMPARE (ints, (QList<int> { 1, 2, 3 }));
 	}
+
+	void PreludeTest::testConcatLists ()
+	{
+		QList<QList<int>> listOfLists
+		{
+			{ 1, 2 },
+			{ 3 },
+			{ 4, 5, 6 }
+		};
+
+		const auto& concat = Concat (listOfLists);
+		QCOMPARE (concat, (QList<int> { 1, 2, 3, 4, 5, 6 }));
+	}
 }
 }
