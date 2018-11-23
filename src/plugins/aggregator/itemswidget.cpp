@@ -58,6 +58,7 @@
 #include "uistatepersist.h"
 #include "storagebackendmanager.h"
 #include "actionsstructs.h"
+#include "itemutils.h"
 
 namespace LeechCraft
 {
@@ -548,7 +549,7 @@ namespace Aggregator
 			return;
 
 		const auto& items = Impl_->CurrentItemsModel_->GetAllItems ();
-		const auto& allCategories = Core::Instance ().GetCategories (items);
+		const auto& allCategories = ItemUtils::GetCategories (items).toList ();
 		Impl_->ItemsFilterModel_->categorySelectionChanged (allCategories);
 
 		if (!allCategories.isEmpty ())

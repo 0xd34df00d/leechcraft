@@ -58,6 +58,7 @@ set (SRCS
 	storagebackendmanager.cpp
 	channelsmodelrepresentationproxy.cpp
 	exportutils.cpp
+	itemutils.cpp
 	)
 set (FORMS
 	mainwidget.ui

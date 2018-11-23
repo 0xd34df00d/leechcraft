@@ -47,6 +47,7 @@
 #include "core.h"
 #include "channelsmodel.h"
 #include "storagebackendmanager.h"
+#include "itemutils.h"
 
 namespace LeechCraft
 {
@@ -481,18 +482,20 @@ namespace Aggregator
 	{
 		QStringList CatsFromIndexes (const QList<QModelIndex>& indices)
 		{
-			auto result = Util::ConcatMap (indices,
-					[] (const QModelIndex& index) { return Core::Instance ().GetCategories (index); });
-			result.removeDuplicates ();
-			return result;
+			const auto& sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
+
+			return Util::ConcatMap (indices,
+					[&sb] (const QModelIndex& index)
+					{
+						const auto channelId = index.data (ChannelRoles::ChannelID).value<IDType_t> ();
+						return ItemUtils::GetCategories (sb->GetItems (channelId));
+					}).toList ();
 		}
 	}
 
 	void Export2FB2Dialog::handleChannelsSelectionChanged ()
 	{
-		CurrentCategories_ = CatsFromIndexes (Ui_.ChannelsTree_->selectionModel ()->selectedRows ());
-
-		Selector_->setPossibleSelections (CurrentCategories_);
+		Selector_->setPossibleSelections (CatsFromIndexes (Ui_.ChannelsTree_->selectionModel ()->selectedRows ()));
 		Selector_->selectAll ();
 
 		if (!HasBeenTextModified_ &&

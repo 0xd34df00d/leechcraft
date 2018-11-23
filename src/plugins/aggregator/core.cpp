@@ -510,23 +510,6 @@ namespace Aggregator
 		FetchFavicon (StorageBackend_->GetChannel (channel.ChannelID_));
 	}
 
-	QStringList Core::GetCategories (const QModelIndex& index) const
-	{
-		return GetCategories (StorageBackend_->GetItems (index.data (ChannelRoles::ChannelID).value<IDType_t> ()));
-	}
-
-	QStringList Core::GetCategories (const items_shorts_t& items) const
-	{
-		QSet<QString> unique;
-		for (const auto& item : items)
-			for (const auto& category : item.Categories_)
-				unique << category;
-
-		auto result = unique.toList ();
-		std::sort (result.begin (), result.end ());
-		return result;
-	}
-
 	void Core::UpdateFeed (const QModelIndex& si)
 	{
 		QModelIndex index = si;
