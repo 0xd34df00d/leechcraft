@@ -43,17 +43,15 @@
 #include <interfaces/istartupwizard.h>
 #include <interfaces/ipluginready.h>
 #include <interfaces/ihaverecoverabletabs.h>
-
-class QSystemTrayIcon;
-class QTranslator;
-class QToolBar;
-class IDownload;
+#include "actionsstructs.h"
 
 namespace LeechCraft
 {
 namespace Aggregator
 {
-	struct Aggregator_Impl;
+	class ItemsWidget;
+	class ChannelsModelRepresentationProxy;
+	class AggregatorTab;
 
 	class Aggregator : public QObject
 					 , public IInfo
@@ -81,7 +79,21 @@ namespace Aggregator
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Aggregator")
 
-		Aggregator_Impl *Impl_;
+		AppWideActions AppWideActions_;
+		ChannelActions ChannelActions_;
+
+		QMenu *ToolMenu_;
+
+		std::shared_ptr<Util::XmlSettingsDialog> XmlSettingsDialog_;
+
+		ItemsWidget *ReprWidget_ = nullptr;
+		ChannelsModelRepresentationProxy *ReprModel_ = nullptr;
+		QModelIndex SelectedRepr_;
+
+		TabClassInfo TabInfo_;
+		std::shared_ptr<AggregatorTab> AggregatorTab_;
+
+		bool InitFailed_ = false;
 	public:
 		void Init (ICoreProxy_ptr) override;
 		void SecondInit () override;
