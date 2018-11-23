@@ -76,9 +76,6 @@ namespace LeechCraft
 {
 namespace Aggregator
 {
-	using LeechCraft::Util::CategorySelector;
-	using LeechCraft::ActionInfo;
-
 	struct Aggregator_Impl
 	{
 		AppWideActions AppWideActions_;

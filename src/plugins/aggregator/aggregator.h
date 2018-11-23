@@ -53,8 +53,6 @@ namespace LeechCraft
 {
 namespace Aggregator
 {
-	struct Enclosure;
-
 	struct Aggregator_Impl;
 
 	class Aggregator : public QObject
