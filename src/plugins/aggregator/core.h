@@ -189,7 +189,7 @@ namespace Aggregator
 		void SetTagsForIndex (const QString&, const QModelIndex&);
 		void UpdateFavicon (const QModelIndex&);
 
-		void UpdateFeed (const QModelIndex&);
+		void UpdateFeed (const IDType_t&);
 		void AddFromOPML (const QString&,
 				const QString&,
 				const std::vector<bool>&);
@@ -218,7 +218,6 @@ namespace Aggregator
 		void HandleFeedUpdated (const channels_container_t&,
 				const PendingJob&);
 		void MarkChannel (const QModelIndex&, bool);
-		void UpdateFeed (const IDType_t&);
 		void HandleProvider (QObject*, int);
 		void ErrorNotification (const QString&, const QString&, bool = true) const;
 	signals:

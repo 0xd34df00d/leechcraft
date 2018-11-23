@@ -592,7 +592,11 @@ namespace Aggregator
 
 	void Aggregator::on_ActionUpdateSelectedFeed__triggered ()
 	{
-		Perform ([] (const QModelIndex& mi) { Core::Instance ().UpdateFeed (mi); });
+		Perform ([] (const QModelIndex& mi)
+				{
+					const auto feedId = mi.data (ChannelRoles::FeedID).value<IDType_t> ();
+					Core::Instance ().UpdateFeed (feedId);
+				});
 	}
 
 	void Aggregator::on_ActionImportOPML__triggered ()

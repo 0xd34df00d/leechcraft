@@ -510,29 +510,6 @@ namespace Aggregator
 		FetchFavicon (StorageBackend_->GetChannel (channel.ChannelID_));
 	}
 
-	void Core::UpdateFeed (const QModelIndex& si)
-	{
-		QModelIndex index = si;
-
-		ChannelShort channel;
-		try
-		{
-			channel = ChannelsModel_->GetChannelForIndex (index);
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< e.what ()
-				<< si
-				<< index;
-			ErrorNotification (tr ("Feed update error"),
-					tr ("Could not update feed"),
-					false);
-			return;
-		}
-		UpdateFeed (channel.FeedID_);
-	}
-
 	void Core::AddFromOPML (const QString& filename,
 			const QString& tags,
 			const std::vector<bool>& mask)
