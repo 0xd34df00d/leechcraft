@@ -33,6 +33,7 @@
 
 class QAction;
 class QWidget;
+class QMenu;
 
 namespace LeechCraft
 {
@@ -51,6 +52,9 @@ namespace Aggregator
 
 		void SetupActionsStruct (QObject*);
 
+		QMenu* CreateToolMenu () const;
+		void SetEnabled (bool);
+
 		Q_DECLARE_TR_FUNCTIONS (AppWideActions)
 	};
 
@@ -68,5 +72,7 @@ namespace Aggregator
 
 		Q_DECLARE_TR_FUNCTIONS (ChannelActions)
 	};
+
+	QMenu* CreateFeedsContextMenu (const ChannelActions&, const AppWideActions&);
 }
 }

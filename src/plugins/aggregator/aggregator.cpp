@@ -92,15 +92,8 @@ namespace Aggregator
 		ChannelActions_.SetupActionsStruct (this);
 		AppWideActions_.SetupActionsStruct (this);
 
-		ToolMenu_ = new QMenu (tr ("Aggregator"));
+		ToolMenu_ = AppWideActions_.CreateToolMenu ();
 		ToolMenu_->setIcon (GetIcon ());
-		ToolMenu_->addAction (AppWideActions_.ActionMarkAllAsRead_);
-		ToolMenu_->addSeparator ();
-		ToolMenu_->addAction (AppWideActions_.ActionImportOPML_);
-		ToolMenu_->addAction (AppWideActions_.ActionExportOPML_);
-		ToolMenu_->addAction (AppWideActions_.ActionImportBinary_);
-		ToolMenu_->addAction (AppWideActions_.ActionExportBinary_);
-		ToolMenu_->addAction (AppWideActions_.ActionExportFB2_);
 
 		Core::Instance ().SetProxy (proxy);
 
@@ -111,16 +104,10 @@ namespace Aggregator
 
 		if (!Core::Instance ().DoDelayedInit ())
 		{
-			AppWideActions_.ActionAddFeed_->setEnabled (false);
-			AppWideActions_.ActionUpdateFeeds_->setEnabled (false);
-			AppWideActions_.ActionImportOPML_->setEnabled (false);
-			AppWideActions_.ActionExportOPML_->setEnabled (false);
-			AppWideActions_.ActionImportBinary_->setEnabled (false);
-			AppWideActions_.ActionExportBinary_->setEnabled (false);
-			AppWideActions_.ActionExportFB2_->setEnabled (false);
+			AppWideActions_.SetEnabled (false);
 			InitFailed_ = true;
 			qWarning () << Q_FUNC_INFO
-				<< "core initialization failed";
+					<< "core initialization failed";
 		}
 
 		if (InitFailed_)
@@ -144,19 +131,7 @@ namespace Aggregator
 		ReprModel_ = new ChannelsModelRepresentationProxy { this };
 		ReprModel_->setSourceModel (Core::Instance ().GetJobHolderRepresentation ());
 		ReprModel_->SetWidgets (ReprWidget_->GetToolBar (), ReprWidget_);
-
-		QMenu *contextMenu = new QMenu (tr ("Feeds actions"));
-		contextMenu->addAction (ChannelActions_.ActionMarkChannelAsRead_);
-		contextMenu->addAction (ChannelActions_.ActionMarkChannelAsUnread_);
-		contextMenu->addSeparator ();
-		contextMenu->addAction (ChannelActions_.ActionRemoveFeed_);
-		contextMenu->addAction (ChannelActions_.ActionUpdateSelectedFeed_);
-		contextMenu->addAction (ChannelActions_.ActionRenameFeed_);
-		contextMenu->addSeparator ();
-		contextMenu->addAction (ChannelActions_.ActionChannelSettings_);
-		contextMenu->addSeparator ();
-		contextMenu->addAction (AppWideActions_.ActionAddFeed_);
-		ReprModel_->SetMenu (contextMenu);
+		ReprModel_->SetMenu (CreateFeedsContextMenu (ChannelActions_, AppWideActions_));
 
 		connect (AppWideActions_.ActionUpdateFeeds_,
 				&QAction::triggered,

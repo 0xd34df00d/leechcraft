@@ -29,7 +29,7 @@
 
 #include "actionsstructs.h"
 #include <QAction>
-#include "aggregator.h"
+#include <QMenu>
 
 namespace LeechCraft
 {
@@ -69,6 +69,30 @@ namespace Aggregator
 		ActionMarkAllAsRead_->setProperty ("ActionIcon", "mail-mark-read");
 	}
 
+	QMenu* AppWideActions::CreateToolMenu () const
+	{
+		const auto menu = new QMenu (tr ("Aggregator"));
+		menu->addAction (ActionMarkAllAsRead_);
+		menu->addSeparator ();
+		menu->addAction (ActionImportOPML_);
+		menu->addAction (ActionExportOPML_);
+		menu->addAction (ActionImportBinary_);
+		menu->addAction (ActionExportBinary_);
+		menu->addAction (ActionExportFB2_);
+		return menu;
+	}
+
+	void AppWideActions::SetEnabled (bool enabled)
+	{
+		ActionAddFeed_->setEnabled (enabled);
+		ActionUpdateFeeds_->setEnabled (enabled);
+		ActionImportOPML_->setEnabled (enabled);
+		ActionExportOPML_->setEnabled (enabled);
+		ActionImportBinary_->setEnabled (enabled);
+		ActionExportBinary_->setEnabled (enabled);
+		ActionExportFB2_->setEnabled (enabled);
+	}
+
 	void ChannelActions::SetupActionsStruct (QObject *parent)
 	{
 		ActionRemoveFeed_ = new QAction (tr ("Remove feed"), parent);
@@ -97,6 +121,22 @@ namespace Aggregator
 		ActionChannelSettings_ = new QAction (tr ("Settings..."), parent);
 		ActionChannelSettings_->setObjectName ("ActionChannelSettings_");
 		ActionChannelSettings_->setProperty ("ActionIcon", "configure");
+	}
+
+	QMenu* CreateFeedsContextMenu (const ChannelActions& channelActions, const AppWideActions& appWideActions)
+	{
+		const auto result = new QMenu (ChannelActions::tr ("Feeds actions"));
+		result->addAction (channelActions.ActionMarkChannelAsRead_);
+		result->addAction (channelActions.ActionMarkChannelAsUnread_);
+		result->addSeparator ();
+		result->addAction (channelActions.ActionRemoveFeed_);
+		result->addAction (channelActions.ActionUpdateSelectedFeed_);
+		result->addAction (channelActions.ActionRenameFeed_);
+		result->addSeparator ();
+		result->addAction (channelActions.ActionChannelSettings_);
+		result->addSeparator ();
+		result->addAction (appWideActions.ActionAddFeed_);
+		return result;
 	}
 }
 }
