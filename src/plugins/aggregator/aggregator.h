@@ -43,7 +43,6 @@
 #include <interfaces/istartupwizard.h>
 #include <interfaces/ipluginready.h>
 #include <interfaces/ihaverecoverabletabs.h>
-#include "actionsstructs.h"
 
 namespace LeechCraft
 {
@@ -57,6 +56,8 @@ namespace Aggregator
 	class ItemsWidget;
 	class ChannelsModelRepresentationProxy;
 	class AggregatorTab;
+	struct AppWideActions;
+	struct ChannelActions;
 
 	class Aggregator : public QObject
 					 , public IInfo
@@ -84,8 +85,8 @@ namespace Aggregator
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Aggregator")
 
-		AppWideActions AppWideActions_;
-		ChannelActions ChannelActions_;
+		std::shared_ptr<AppWideActions> AppWideActions_;
+		std::shared_ptr<ChannelActions> ChannelActions_;
 
 		QMenu *ToolMenu_;
 

@@ -70,6 +70,7 @@
 #include "channelsmodelrepresentationproxy.h"
 #include "storagebackendmanager.h"
 #include "exportutils.h"
+#include "actionsstructs.h"
 
 namespace LeechCraft
 {
@@ -91,10 +92,13 @@ namespace Aggregator
 
 		ShortcutMgr_ = new Util::ShortcutManager (proxy, this);
 
-		ChannelActions_.SetupActionsStruct (this);
-		AppWideActions_.SetupActionsStruct (this);
+		ChannelActions_ = std::make_shared<ChannelActions> ();
+		AppWideActions_ = std::make_shared<AppWideActions> ();
 
-		ToolMenu_ = AppWideActions_.CreateToolMenu ();
+		ChannelActions_->SetupActionsStruct (this);
+		AppWideActions_->SetupActionsStruct (this);
+
+		ToolMenu_ = AppWideActions_->CreateToolMenu ();
 		ToolMenu_->setIcon (GetIcon ());
 
 		Core::Instance ().SetProxy (proxy);
@@ -106,7 +110,7 @@ namespace Aggregator
 
 		if (!Core::Instance ().DoDelayedInit ())
 		{
-			AppWideActions_.SetEnabled (false);
+			AppWideActions_->SetEnabled (false);
 			InitFailed_ = true;
 			qWarning () << Q_FUNC_INFO
 					<< "core initialization failed";
@@ -127,15 +131,15 @@ namespace Aggregator
 		ReprWidget_ = new ItemsWidget;
 		ReprWidget_->SetChannelsFilter (Core::Instance ().GetJobHolderRepresentation ());
 		ReprWidget_->RegisterShortcuts (ShortcutMgr_);
-		ReprWidget_->SetAppWideActions (AppWideActions_);
-		ReprWidget_->SetChannelActions (ChannelActions_);
+		ReprWidget_->SetAppWideActions (*AppWideActions_);
+		ReprWidget_->SetChannelActions (*ChannelActions_);
 
 		ReprModel_ = new ChannelsModelRepresentationProxy { this };
 		ReprModel_->setSourceModel (Core::Instance ().GetJobHolderRepresentation ());
 		ReprModel_->SetWidgets (ReprWidget_->GetToolBar (), ReprWidget_);
-		ReprModel_->SetMenu (CreateFeedsContextMenu (ChannelActions_, AppWideActions_));
+		ReprModel_->SetMenu (CreateFeedsContextMenu (*ChannelActions_, *AppWideActions_));
 
-		connect (AppWideActions_.ActionUpdateFeeds_,
+		connect (AppWideActions_->ActionUpdateFeeds_,
 				&QAction::triggered,
 				&Core::Instance (),
 				&Core::updateFeeds);
@@ -209,8 +213,8 @@ namespace Aggregator
 		{
 			if (!AggregatorTab_)
 			{
-				AggregatorTab_ = std::make_unique<AggregatorTab> (AppWideActions_,
-						ChannelActions_, TabInfo_, ShortcutMgr_, this);
+				AggregatorTab_ = std::make_unique<AggregatorTab> (*AppWideActions_, *ChannelActions_,
+						TabInfo_, ShortcutMgr_, this);
 				connect (AggregatorTab_.get (),
 						&AggregatorTab::removeTabRequested,
 						[this] { emit removeTab (AggregatorTab_.get ()); });
@@ -283,13 +287,13 @@ namespace Aggregator
 			result << ToolMenu_->menuAction ();
 			break;
 		case ActionsEmbedPlace::CommonContextMenu:
-			result << AppWideActions_.ActionAddFeed_;
-			result << AppWideActions_.ActionUpdateFeeds_;
+			result << AppWideActions_->ActionAddFeed_;
+			result << AppWideActions_->ActionUpdateFeeds_;
 			break;
 		case ActionsEmbedPlace::TrayMenu:
-			result << AppWideActions_.ActionMarkAllAsRead_;
-			result << AppWideActions_.ActionAddFeed_;
-			result << AppWideActions_.ActionUpdateFeeds_;
+			result << AppWideActions_->ActionMarkAllAsRead_;
+			result << AppWideActions_->ActionAddFeed_;
+			result << AppWideActions_->ActionUpdateFeeds_;
 			break;
 		default:
 			break;
@@ -357,18 +361,18 @@ namespace Aggregator
 	void Aggregator::BuildID2ActionTupleMap ()
 	{
 		ShortcutMgr_->RegisterActions ({
-					{ "ActionAddFeed", AppWideActions_.ActionAddFeed_ },
-					{ "ActionUpdateFeeds_", AppWideActions_.ActionUpdateFeeds_ },
-					{ "ActionImportOPML_", AppWideActions_.ActionImportOPML_ },
-					{ "ActionExportOPML_", AppWideActions_.ActionExportOPML_ },
-					{ "ActionImportBinary_", AppWideActions_.ActionImportBinary_ },
-					{ "ActionExportBinary_", AppWideActions_.ActionExportBinary_ },
-					{ "ActionExportFB2_", AppWideActions_.ActionExportFB2_ },
-					{ "ActionRemoveFeed_", ChannelActions_.ActionRemoveFeed_ },
-					{ "ActionUpdateSelectedFeed_", ChannelActions_.ActionUpdateSelectedFeed_ },
-					{ "ActionMarkChannelAsRead_", ChannelActions_.ActionMarkChannelAsRead_ },
-					{ "ActionMarkChannelAsUnread_", ChannelActions_.ActionMarkChannelAsUnread_ },
-					{ "ActionChannelSettings_", ChannelActions_.ActionChannelSettings_ }
+					{ "ActionAddFeed", AppWideActions_->ActionAddFeed_ },
+					{ "ActionUpdateFeeds_", AppWideActions_->ActionUpdateFeeds_ },
+					{ "ActionImportOPML_", AppWideActions_->ActionImportOPML_ },
+					{ "ActionExportOPML_", AppWideActions_->ActionExportOPML_ },
+					{ "ActionImportBinary_", AppWideActions_->ActionImportBinary_ },
+					{ "ActionExportBinary_", AppWideActions_->ActionExportBinary_ },
+					{ "ActionExportFB2_", AppWideActions_->ActionExportFB2_ },
+					{ "ActionRemoveFeed_", ChannelActions_->ActionRemoveFeed_ },
+					{ "ActionUpdateSelectedFeed_", ChannelActions_->ActionUpdateSelectedFeed_ },
+					{ "ActionMarkChannelAsRead_", ChannelActions_->ActionMarkChannelAsRead_ },
+					{ "ActionMarkChannelAsUnread_", ChannelActions_->ActionMarkChannelAsUnread_ },
+					{ "ActionChannelSettings_", ChannelActions_->ActionChannelSettings_ }
 				});
 	}
 
