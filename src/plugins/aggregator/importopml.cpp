@@ -98,19 +98,13 @@ namespace Aggregator
 					"All files (*.*)"));
 	
 		if (filename.isEmpty ())
-		{
-			QTimer::singleShot (0,
-					this,
-					SLOT (reject ()));
 			return;
-		}
-	
+
 		Reset ();
 	
 		Ui_.File_->setText (filename);
 	
-		Ui_.ButtonBox_->button (QDialogButtonBox::Open)->
-			setEnabled (HandleFile (filename));
+		Ui_.ButtonBox_->button (QDialogButtonBox::Open)->setEnabled (HandleFile (filename));
 	}
 	
 	bool ImportOPML::HandleFile (const QString& filename)
