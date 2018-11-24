@@ -92,11 +92,8 @@ namespace Aggregator
 
 		ShortcutMgr_ = new Util::ShortcutManager (proxy, this);
 
-		ChannelActions_ = std::make_shared<ChannelActions> ();
-		AppWideActions_ = std::make_shared<AppWideActions> ();
-
-		ChannelActions_->SetupActionsStruct (this);
-		AppWideActions_->SetupActionsStruct (this);
+		ChannelActions_ = std::make_shared<ChannelActions> (this);
+		AppWideActions_ = std::make_shared<AppWideActions> (this);
 
 		ToolMenu_ = AppWideActions_->CreateToolMenu ();
 		ToolMenu_->setIcon (GetIcon ());

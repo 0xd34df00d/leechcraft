@@ -50,7 +50,7 @@ namespace Aggregator
 		QAction *ActionExportFB2_ = nullptr;
 		QAction *ActionMarkAllAsRead_ = nullptr;
 
-		void SetupActionsStruct (QObject*);
+		explicit AppWideActions (QObject*);
 
 		QMenu* CreateToolMenu () const;
 		void SetEnabled (bool);
@@ -68,7 +68,7 @@ namespace Aggregator
 		QAction *ActionRemoveChannel_ = nullptr;
 		QAction *ActionChannelSettings_ = nullptr;
 
-		void SetupActionsStruct (QObject*);
+		explicit ChannelActions (QObject*);
 
 		Q_DECLARE_TR_FUNCTIONS (ChannelActions)
 	};

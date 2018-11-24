@@ -35,7 +35,7 @@ namespace LeechCraft
 {
 namespace Aggregator
 {
-	void AppWideActions::SetupActionsStruct (QObject *parent)
+	AppWideActions::AppWideActions (QObject *parent)
 	{
 		ActionAddFeed_ = new QAction (tr ("Add feed..."), parent);
 		ActionAddFeed_->setObjectName ("ActionAddFeed_");
@@ -94,7 +94,7 @@ namespace Aggregator
 		ActionMarkAllAsRead_->setEnabled (enabled);
 	}
 
-	void ChannelActions::SetupActionsStruct (QObject *parent)
+	ChannelActions::ChannelActions (QObject *parent)
 	{
 		ActionRemoveFeed_ = new QAction (tr ("Remove feed"), parent);
 		ActionRemoveFeed_->setObjectName ("ActionRemoveFeed_");
