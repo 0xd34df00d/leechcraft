@@ -44,7 +44,7 @@ namespace LeechCraft
 namespace Aggregator
 {
 	AggregatorTab::AggregatorTab (const AppWideActions& appWideActions,
-			const ChannelActions& channelActions,
+			const std::shared_ptr<const ChannelActions>& channelActions,
 			const TabClassInfo& tc,
 			Util::ShortcutManager *shortcutMgr,
 			QObject *plugin)
@@ -55,7 +55,7 @@ namespace Aggregator
 	{
 		Ui_.setupUi (this);
 		Ui_.ItemsWidget_->SetAppWideActions (appWideActions);
-		Ui_.ItemsWidget_->SetChannelActions (channelActions);
+		Ui_.ItemsWidget_->SetChannelActions (*channelActions);
 		Ui_.ItemsWidget_->RegisterShortcuts (shortcutMgr);
 
 		Ui_.ItemsWidget_->SetChannelsFilter (Core::Instance ().GetChannelsModel ());
@@ -67,16 +67,16 @@ namespace Aggregator
 
 		Ui_.MergeItems_->setChecked (XmlSettingsManager::Instance ()->Property ("MergeItems", false).toBool ());
 
-		Ui_.Feeds_->addAction (channelActions.ActionMarkChannelAsRead_);
-		Ui_.Feeds_->addAction (channelActions.ActionMarkChannelAsUnread_);
+		Ui_.Feeds_->addAction (channelActions->ActionMarkChannelAsRead_);
+		Ui_.Feeds_->addAction (channelActions->ActionMarkChannelAsUnread_);
 		Ui_.Feeds_->addAction (Util::CreateSeparator (Ui_.Feeds_));
-		Ui_.Feeds_->addAction (channelActions.ActionRemoveFeed_);
-		Ui_.Feeds_->addAction (channelActions.ActionUpdateSelectedFeed_);
-		Ui_.Feeds_->addAction (channelActions.ActionRenameFeed_);
+		Ui_.Feeds_->addAction (channelActions->ActionRemoveFeed_);
+		Ui_.Feeds_->addAction (channelActions->ActionUpdateSelectedFeed_);
+		Ui_.Feeds_->addAction (channelActions->ActionRenameFeed_);
 		Ui_.Feeds_->addAction (Util::CreateSeparator (Ui_.Feeds_));
-		Ui_.Feeds_->addAction (channelActions.ActionRemoveChannel_);
+		Ui_.Feeds_->addAction (channelActions->ActionRemoveChannel_);
 		Ui_.Feeds_->addAction (Util::CreateSeparator (Ui_.Feeds_));
-		Ui_.Feeds_->addAction (channelActions.ActionChannelSettings_);
+		Ui_.Feeds_->addAction (channelActions->ActionChannelSettings_);
 		Ui_.Feeds_->addAction (Util::CreateSeparator (Ui_.Feeds_));
 		Ui_.Feeds_->addAction (appWideActions.ActionAddFeed_);
 
@@ -259,12 +259,14 @@ namespace Aggregator
 	void AggregatorTab::handleFeedsContextMenuRequested (const QPoint& pos)
 	{
 		bool enable = Ui_.Feeds_->indexAt (pos).isValid ();
-		QList<QAction*> toToggle;
-		toToggle << ChannelActions_.ActionMarkChannelAsRead_
-				<< ChannelActions_.ActionMarkChannelAsUnread_
-				<< ChannelActions_.ActionRemoveFeed_
-				<< ChannelActions_.ActionChannelSettings_
-				<< ChannelActions_.ActionUpdateSelectedFeed_;
+		const QList<QAction*> toToggle
+		{
+			ChannelActions_->ActionMarkChannelAsRead_,
+			ChannelActions_->ActionMarkChannelAsUnread_,
+			ChannelActions_->ActionRemoveFeed_,
+			ChannelActions_->ActionChannelSettings_,
+			ChannelActions_->ActionUpdateSelectedFeed_
+		};
 
 		for (const auto act : toToggle)
 			act->setEnabled (enable);

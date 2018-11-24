@@ -57,7 +57,7 @@ namespace Aggregator
 		const TabClassInfo TabClass_;
 		QObject * const ParentPlugin_;
 
-		const ChannelActions ChannelActions_;
+		const std::shared_ptr<const ChannelActions> ChannelActions_;
 
 		const std::shared_ptr<Util::FlatToFoldersProxyModel> FlatToFolders_;
 
@@ -65,7 +65,7 @@ namespace Aggregator
 
 		Util::DefaultScopeGuard UiStateGuard_;
 	public:
-		AggregatorTab (const AppWideActions&, const ChannelActions&,
+		AggregatorTab (const AppWideActions&, const std::shared_ptr<const ChannelActions>&,
 				const TabClassInfo&, Util::ShortcutManager*, QObject*);
 
 		QToolBar* GetToolBar () const override;
