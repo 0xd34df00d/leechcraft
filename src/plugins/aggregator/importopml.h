@@ -46,7 +46,7 @@ namespace Aggregator
 
 		QString GetFilename () const;
 		QString GetTags () const;
-		std::vector<bool> GetMask () const;
+		QSet<QString> GetSelectedUrls () const;
 	private slots:
 		void on_File__textEdited (const QString&);
 		void on_Browse__released ();

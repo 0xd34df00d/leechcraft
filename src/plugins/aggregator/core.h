@@ -181,9 +181,7 @@ namespace Aggregator
 		void UpdateFavicon (const QModelIndex&);
 
 		void UpdateFeed (const IDType_t&);
-		void AddFromOPML (const QString&,
-				const QString&,
-				const std::vector<bool>&);
+		void AddFromOPML (const QString&, const QString&, const QSet<QString>&);
 		JobHolderRepresentation* GetJobHolderRepresentation () const;
 
 		channels_shorts_t GetChannels () const;

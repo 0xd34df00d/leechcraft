@@ -39,6 +39,11 @@ namespace LeechCraft
 {
 namespace Aggregator
 {
+	namespace
+	{
+		constexpr auto ItemUrlRole = Qt::UserRole;
+	}
+
 	ImportOPML::ImportOPML (const QString& file, QWidget *parent)
 	: QDialog (parent)
 	{
@@ -64,13 +69,17 @@ namespace Aggregator
 		return Ui_.AdditionalTags_->text ().trimmed ();
 	}
 	
-	std::vector<bool> ImportOPML::GetMask () const
+	QSet<QString> ImportOPML::GetSelectedUrls () const
 	{
-		std::vector<bool> result (Ui_.FeedsToImport_->topLevelItemCount ());
+		QSet<QString> result;
 	
 		for (int i = 0, items = Ui_.FeedsToImport_->topLevelItemCount (); i < items; ++i)
-			result [i] = Ui_.FeedsToImport_->topLevelItem (i)->data (0, Qt::CheckStateRole) == Qt::Checked;
-	
+		{
+			const auto item = Ui_.FeedsToImport_->topLevelItem (i);
+			if (item->data (0, Qt::CheckStateRole) == Qt::Checked)
+				result << item->data (0, ItemUrlRole).toString ();
+		}
+
 		return result;
 	}
 	
@@ -168,6 +177,7 @@ namespace Aggregator
 		{
 			const auto item = new QTreeWidgetItem (Ui_.FeedsToImport_, { opmlItem.Title_, opmlItem.URL_ });
 			item->setData (0, Qt::CheckStateRole, Qt::Checked);
+			item->setData (0, ItemUrlRole, opmlItem.URL_);
 		}
 	
 		return true;

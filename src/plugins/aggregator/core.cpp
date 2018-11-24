@@ -254,7 +254,7 @@ namespace Aggregator
 
 		AddFromOPML (importDialog.GetFilename (),
 				importDialog.GetTags (),
-				importDialog.GetMask ());
+				importDialog.GetSelectedUrls ());
 	}
 
 	bool Core::DoDelayedInit ()
@@ -503,31 +503,23 @@ namespace Aggregator
 		FetchFavicon (StorageBackend_->GetChannel (channel.ChannelID_));
 	}
 
-	void Core::AddFromOPML (const QString& filename,
-			const QString& tags,
-			const std::vector<bool>& mask)
+	void Core::AddFromOPML (const QString& filename, const QString& tags, const QSet<QString>& selectedUrls)
 	{
 		Util::Visit (ParseOPMLItems (filename),
 				[this] (const QString& error) { ErrorNotification (tr ("OPML import error"), error); },
-				[&] (OPMLParser::items_container_t items)
+				[&] (const OPMLParser::items_container_t& items)
 				{
-					for (auto begin = mask.begin (), i = mask.end () - 1; i >= begin; --i)
-						if (!*i)
-						{
-							auto distance = std::distance (mask.begin (), i);
-							auto eraser = items.begin ();
-							std::advance (eraser, distance);
-							items.erase (eraser);
-						}
-
-					QStringList tagsList = Proxy_->GetTagsManager ()->Split (tags);
-					for (auto i = items.begin (), end = items.end (); i != end; ++i)
+					const auto& tagsList = Proxy_->GetTagsManager ()->Split (tags);
+					for (const auto& item : items)
 					{
+						if (!selectedUrls.contains (item.URL_))
+							continue;
+
 						int interval = 0;
-						if (i->CustomFetchInterval_)
-							interval = i->FetchInterval_;
-						AddFeed (i->URL_, tagsList + i->Categories_,
-								{ { IDNotFound, interval, i->MaxArticleNumber_, i->MaxArticleAge_, false } });
+						if (item.CustomFetchInterval_)
+							interval = item.FetchInterval_;
+						AddFeed (item.URL_, tagsList + item.Categories_,
+								{ { IDNotFound, interval, item.MaxArticleNumber_, item.MaxArticleAge_, false } });
 					}
 				});
 	}
