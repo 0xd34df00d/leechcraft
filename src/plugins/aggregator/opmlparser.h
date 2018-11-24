@@ -29,7 +29,7 @@
 
 #ifndef PLUGINS_AGGREGATOR_OPMLPARSER_H
 #define PLUGINS_AGGREGATOR_OPMLPARSER_H
-#include <vector>
+#include <QList>
 #include <QHash>
 #include <QString>
 #include <QDomDocument>
@@ -44,7 +44,7 @@ namespace Aggregator
 	class OPMLParser
 	{
 	public:
-		typedef std::vector<OPMLItem> items_container_t;
+		typedef QList<OPMLItem> items_container_t;
 		typedef QHash<QString, QString> OPMLinfo_t;
 	private:
 		items_container_t Items_;
