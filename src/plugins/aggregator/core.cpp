@@ -507,7 +507,7 @@ namespace Aggregator
 			const QString& tags,
 			const std::vector<bool>& mask)
 	{
-		Util::Visit (ParseOPML (filename),
+		Util::Visit (ParseOPMLItems (filename),
 				[this] (const QString& error) { ErrorNotification (tr ("OPML import error"), error); },
 				[&] (OPMLParser::items_container_t items)
 				{

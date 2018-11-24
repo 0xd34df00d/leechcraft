@@ -119,11 +119,11 @@ namespace Aggregator
 			ParseOutline (outline, previousStrings);
 	}
 
-	Util::Either<QString, QList<OPMLItem>> ParseOPML (const QString& filename)
+	OPMLItemsResult_t ParseOPMLItems (const QString& filename)
 	{
 		QFile file { filename };
 		if (!file.open (QIODevice::ReadOnly))
-			return OPMLParseResult_t::Left (QObject::tr ("Could not open file %1 for reading.")
+			return OPMLItemsResult_t::Left (QObject::tr ("Could not open file %1 for reading.")
 							.arg (filename));
 
 		QString errorMsg;
@@ -134,7 +134,7 @@ namespace Aggregator
 				&errorMsg,
 				&errorLine,
 				&errorColumn))
-			return OPMLParseResult_t::Left (QObject::tr ("XML error, file %1, line %2, column %3, error:<br />%4")
+			return OPMLItemsResult_t::Left (QObject::tr ("XML error, file %1, line %2, column %3, error:<br />%4")
 						.arg (filename)
 						.arg (errorLine)
 						.arg (errorColumn)
@@ -142,10 +142,10 @@ namespace Aggregator
 
 		OPMLParser parser { document };
 		if (!parser.IsValid ())
-			return OPMLParseResult_t::Left (QObject::tr ("OPML from file %1 is not valid.")
+			return OPMLItemsResult_t::Left (QObject::tr ("OPML from file %1 is not valid.")
 							.arg (filename));
 
-		return OPMLParseResult_t::Right (parser.Parse ());
+		return OPMLItemsResult_t::Right (parser.Parse ());
 	}
 }
 }
