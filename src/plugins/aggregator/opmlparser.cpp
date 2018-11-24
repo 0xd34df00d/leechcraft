@@ -41,12 +41,6 @@ namespace Aggregator
 	{
 	}
 	
-	void OPMLParser::Reset (const QDomDocument& document)
-	{
-		Document_ = document;
-		CacheValid_ = false;
-	}
-	
 	bool OPMLParser::IsValid ()
 	{
 		auto root = Document_.documentElement ();

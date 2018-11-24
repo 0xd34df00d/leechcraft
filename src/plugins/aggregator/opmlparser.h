@@ -49,11 +49,10 @@ namespace Aggregator
 	private:
 		items_container_t Items_;
 		bool CacheValid_ = false;
-		QDomDocument Document_;
+		const QDomDocument Document_;
 	public:
 		OPMLParser (const QDomDocument&);
 
-		void Reset (const QDomDocument&);
 		bool IsValid ();
 		OPMLinfo_t GetInfo ();
 		items_container_t Parse ();
