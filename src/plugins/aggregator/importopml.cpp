@@ -32,6 +32,7 @@
 #include <QMessageBox>
 #include <QDomDocument>
 #include <QTimer>
+#include <util/sll/qtutil.h>
 #include "opmlparser.h"
 
 namespace LeechCraft
@@ -77,26 +78,22 @@ namespace Aggregator
 	{
 		Reset ();
 	
-		if (QFile (newFilename).exists ())
-			Ui_.ButtonBox_->button (QDialogButtonBox::Open)->
-				setEnabled (HandleFile (newFilename));
-		else
-			Reset ();
+		if (QFile::exists (newFilename))
+			Ui_.ButtonBox_->button (QDialogButtonBox::Open)->setEnabled (HandleFile (newFilename));
 	}
 	
 	void ImportOPML::on_Browse__released ()
 	{
-		QString startingPath = QFileInfo (Ui_.File_->text ()).path ();
+		auto startingPath = QFileInfo (Ui_.File_->text ()).path ();
 		if (startingPath.isEmpty ())
 			startingPath = QDir::homePath ();
 	
-		QString filename = QFileDialog::getOpenFileName (this,
+		const auto& filename = QFileDialog::getOpenFileName (this,
 				tr ("Select OPML file"),
 				startingPath,
 				tr ("OPML files (*.opml);;"
 					"XML files (*.xml);;"
 					"All files (*.*)"));
-	
 		if (filename.isEmpty ())
 			return;
 
@@ -151,14 +148,8 @@ namespace Aggregator
 			return false;
 		}
 	
-		OPMLParser::OPMLinfo_t info = parser.GetInfo ();
-	
-		for (OPMLParser::OPMLinfo_t::const_iterator i = info.begin (),
-				end = info.end (); i != end; ++i)
+		for (const auto& [name, value] : Util::Stlize (parser.GetInfo ()))
 		{
-			QString name = i.key ();
-			QString value = i.value ();
-	
 			if (name == "title")
 				Ui_.Title_->setText (value);
 			else if (name == "dateCreated")
@@ -170,21 +161,12 @@ namespace Aggregator
 			else if (name == "ownerEmail")
 				Ui_.OwnerEmail_->setText (value);
 			else
-			{
-				QStringList strings;
-				strings << name << value;
-				new QTreeWidgetItem (Ui_.OtherFields_, strings);
-			}
+				new QTreeWidgetItem (Ui_.OtherFields_, { name, value });
 		}
 	
-		OPMLParser::items_container_t items = parser.Parse ();
-		for (OPMLParser::items_container_t::const_iterator i = items.begin (),
-				end = items.end (); i != end; ++i)
+		for (const auto& opmlItem : parser.Parse ())
 		{
-			QStringList strings;
-			strings << i->Title_ << i->URL_;
-			QTreeWidgetItem *item =
-				new QTreeWidgetItem (Ui_.FeedsToImport_, strings);
+			const auto item = new QTreeWidgetItem (Ui_.FeedsToImport_, { opmlItem.Title_, opmlItem.URL_ });
 			item->setData (0, Qt::CheckStateRole, Qt::Checked);
 		}
 	
