@@ -31,6 +31,7 @@
 #include <QDomDocument>
 #include <QDomElement>
 #include <util/sll/domchildrenrange.h>
+#include <util/sll/either.h>
 
 namespace LeechCraft
 {
@@ -116,6 +117,35 @@ namespace Aggregator
 
 		for (const auto& outline : Util::DomChildren (parentOutline, "outline"))
 			ParseOutline (outline, previousStrings);
+	}
+
+	Util::Either<QString, QList<OPMLItem>> ParseOPML (const QString& filename)
+	{
+		QFile file { filename };
+		if (!file.open (QIODevice::ReadOnly))
+			return OPMLParseResult_t::Left (QObject::tr ("Could not open file %1 for reading.")
+							.arg (filename));
+
+		QString errorMsg;
+		int errorLine, errorColumn;
+		QDomDocument document;
+		if (!document.setContent (&file,
+				true,
+				&errorMsg,
+				&errorLine,
+				&errorColumn))
+			return OPMLParseResult_t::Left (QObject::tr ("XML error, file %1, line %2, column %3, error:<br />%4")
+						.arg (filename)
+						.arg (errorLine)
+						.arg (errorColumn)
+						.arg (errorMsg));
+
+		OPMLParser parser { document };
+		if (!parser.IsValid ())
+			return OPMLParseResult_t::Left (QObject::tr ("OPML from file %1 is not valid.")
+							.arg (filename));
+
+		return OPMLParseResult_t::Right (parser.Parse ());
 	}
 }
 }

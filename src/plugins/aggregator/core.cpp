@@ -507,66 +507,29 @@ namespace Aggregator
 			const QString& tags,
 			const std::vector<bool>& mask)
 	{
-		QFile file (filename);
-		if (!file.open (QIODevice::ReadOnly))
-		{
-			ErrorNotification (tr ("OPML import error"),
-					tr ("Could not open file %1 for reading.")
-						.arg (filename));
-			return;
-		}
+		Util::Visit (ParseOPML (filename),
+				[this] (const QString& error) { ErrorNotification (tr ("OPML import error"), error); },
+				[&] (OPMLParser::items_container_t items)
+				{
+					for (auto begin = mask.begin (), i = mask.end () - 1; i >= begin; --i)
+						if (!*i)
+						{
+							auto distance = std::distance (mask.begin (), i);
+							auto eraser = items.begin ();
+							std::advance (eraser, distance);
+							items.erase (eraser);
+						}
 
-		QByteArray data = file.readAll ();
-		file.close ();
-
-		QString errorMsg;
-		int errorLine, errorColumn;
-		QDomDocument document;
-		if (!document.setContent (data,
-					true,
-					&errorMsg,
-					&errorLine,
-					&errorColumn))
-		{
-			ErrorNotification (tr ("OPML import error"),
-					tr ("XML error, file %1, line %2, column %3, error:<br />%4")
-						.arg (filename)
-						.arg (errorLine)
-						.arg (errorColumn)
-						.arg (errorMsg));
-			return;
-		}
-
-		OPMLParser parser (document);
-		if (!parser.IsValid ())
-		{
-			ErrorNotification (tr ("OPML import error"),
-					tr ("OPML from file %1 is not valid.")
-						.arg (filename));
-			return;
-		}
-
-		OPMLParser::items_container_t items = parser.Parse ();
-		for (std::vector<bool>::const_iterator begin = mask.begin (),
-				i = mask.end () - 1; i >= begin; --i)
-			if (!*i)
-			{
-				size_t distance = std::distance (mask.begin (), i);
-				OPMLParser::items_container_t::iterator eraser = items.begin ();
-				std::advance (eraser, distance);
-				items.erase (eraser);
-			}
-
-		QStringList tagsList = Proxy_->GetTagsManager ()->Split (tags);
-		for (OPMLParser::items_container_t::const_iterator i = items.begin (),
-				end = items.end (); i != end; ++i)
-		{
-			int interval = 0;
-			if (i->CustomFetchInterval_)
-				interval = i->FetchInterval_;
-			AddFeed (i->URL_, tagsList + i->Categories_,
-					{ { IDNotFound, interval, i->MaxArticleNumber_, i->MaxArticleAge_, false } });
-		}
+					QStringList tagsList = Proxy_->GetTagsManager ()->Split (tags);
+					for (auto i = items.begin (), end = items.end (); i != end; ++i)
+					{
+						int interval = 0;
+						if (i->CustomFetchInterval_)
+							interval = i->FetchInterval_;
+						AddFeed (i->URL_, tagsList + i->Categories_,
+								{ { IDNotFound, interval, i->MaxArticleNumber_, i->MaxArticleAge_, false } });
+					}
+				});
 	}
 
 	JobHolderRepresentation* Core::GetJobHolderRepresentation () const

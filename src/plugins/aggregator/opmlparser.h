@@ -33,6 +33,7 @@
 #include <QHash>
 #include <QString>
 #include <QDomDocument>
+#include <util/sll/eitherfwd.h>
 #include "opmlitem.h"
 
 class QDomElement;
@@ -59,6 +60,9 @@ namespace Aggregator
 	private:
 		void ParseOutline (const QDomElement&, QStringList = {});
 	};
+
+	using OPMLParseResult_t = Util::Either<QString, QList<OPMLItem>>;
+	OPMLParseResult_t ParseOPML (const QString& filename);
 }
 }
 
