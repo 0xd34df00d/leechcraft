@@ -47,19 +47,18 @@ namespace Aggregator
 		typedef std::vector<OPMLItem> items_container_t;
 		typedef QHash<QString, QString> OPMLinfo_t;
 	private:
-		mutable items_container_t Items_;
-		mutable bool CacheValid_;
+		items_container_t Items_;
+		bool CacheValid_ = false;
 		QDomDocument Document_;
 	public:
 		OPMLParser (const QDomDocument&);
 
 		void Reset (const QDomDocument&);
-		bool IsValid () const;
-		OPMLinfo_t GetInfo () const;
-		items_container_t Parse () const;
+		bool IsValid ();
+		OPMLinfo_t GetInfo ();
+		items_container_t Parse ();
 	private:
-		void ParseOutline (const QDomElement&,
-				QStringList = QStringList ()) const;
+		void ParseOutline (const QDomElement&, QStringList = {});
 	};
 }
 }

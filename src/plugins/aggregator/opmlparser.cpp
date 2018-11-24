@@ -36,8 +36,7 @@ namespace LeechCraft
 namespace Aggregator
 {
 	OPMLParser::OPMLParser (const QDomDocument& document)
-	: CacheValid_ (false)
-	, Document_ (document)
+	: Document_ (document)
 	{
 	}
 	
@@ -47,7 +46,7 @@ namespace Aggregator
 		CacheValid_ = false;
 	}
 	
-	bool OPMLParser::IsValid () const
+	bool OPMLParser::IsValid ()
 	{
 		QDomElement root = Document_.documentElement ();
 		if (root.tagName () != "opml")
@@ -67,7 +66,7 @@ namespace Aggregator
 		return true;
 	}
 	
-	OPMLParser::OPMLinfo_t OPMLParser::GetInfo () const
+	OPMLParser::OPMLinfo_t OPMLParser::GetInfo ()
 	{
 		OPMLinfo_t result;
 	
@@ -85,7 +84,7 @@ namespace Aggregator
 		return result;
 	}
 	
-	OPMLParser::items_container_t OPMLParser::Parse () const
+	OPMLParser::items_container_t OPMLParser::Parse ()
 	{
 		if (!CacheValid_)
 		{
@@ -106,8 +105,7 @@ namespace Aggregator
 		return Items_;
 	}
 	
-	void OPMLParser::ParseOutline (const QDomElement& parentOutline,
-			QStringList previousStrings) const
+	void OPMLParser::ParseOutline (const QDomElement& parentOutline, QStringList previousStrings)
 	{
 		if (parentOutline.hasAttribute ("xmlUrl"))
 		{
