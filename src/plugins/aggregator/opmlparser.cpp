@@ -32,6 +32,7 @@
 #include <QDomElement>
 #include <util/sll/domchildrenrange.h>
 #include <util/sll/either.h>
+#include <util/sll/functor.h>
 
 namespace LeechCraft
 {
@@ -119,12 +120,12 @@ namespace Aggregator
 			ParseOutline (outline, previousStrings);
 	}
 
-	OPMLItemsResult_t ParseOPMLItems (const QString& filename)
+	OPMLParseResult_t ParseOPML (const QString& filename)
 	{
 		QFile file { filename };
 		if (!file.open (QIODevice::ReadOnly))
-			return OPMLItemsResult_t::Left (QObject::tr ("Could not open file %1 for reading.")
-							.arg (filename));
+			return OPMLParseResult_t::Left (QObject::tr ("Could not open file %1 for reading.")
+					.arg (filename));
 
 		QString errorMsg;
 		int errorLine, errorColumn;
@@ -134,18 +135,23 @@ namespace Aggregator
 				&errorMsg,
 				&errorLine,
 				&errorColumn))
-			return OPMLItemsResult_t::Left (QObject::tr ("XML error, file %1, line %2, column %3, error:<br />%4")
-						.arg (filename)
-						.arg (errorLine)
-						.arg (errorColumn)
-						.arg (errorMsg));
+			return OPMLParseResult_t::Left (QObject::tr ("XML error, file %1, line %2, column %3, error:<br />%4")
+					.arg (filename)
+					.arg (errorLine)
+					.arg (errorColumn)
+					.arg (errorMsg));
 
 		OPMLParser parser { document };
 		if (!parser.IsValid ())
-			return OPMLItemsResult_t::Left (QObject::tr ("OPML from file %1 is not valid.")
-							.arg (filename));
+			return OPMLParseResult_t::Left (QObject::tr ("OPML from file %1 is not valid.")
+					.arg (filename));
 
-		return OPMLItemsResult_t::Right (parser.Parse ());
+		return OPMLParseResult_t::Right (parser);
+	}
+
+	OPMLItemsResult_t ParseOPMLItems (const QString& filename)
+	{
+		return ParseOPML (filename) * [] (auto parser) { return parser.Parse (); };
 	}
 }
 }

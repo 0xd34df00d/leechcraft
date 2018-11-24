@@ -61,6 +61,9 @@ namespace Aggregator
 		void ParseOutline (const QDomElement&, QStringList = {});
 	};
 
+	using OPMLParseResult_t = Util::Either<QString, OPMLParser>;
+	OPMLParseResult_t ParseOPML (const QString& filename);
+
 	using OPMLItemsResult_t = Util::Either<QString, QList<OPMLItem>>;
 	OPMLItemsResult_t ParseOPMLItems (const QString& filename);
 }
