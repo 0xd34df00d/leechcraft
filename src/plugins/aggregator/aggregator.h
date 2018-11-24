@@ -47,6 +47,11 @@
 
 namespace LeechCraft
 {
+namespace Util
+{
+	class ShortcutManager;
+}
+
 namespace Aggregator
 {
 	class ItemsWidget;
@@ -92,6 +97,8 @@ namespace Aggregator
 
 		TabClassInfo TabInfo_;
 		std::shared_ptr<AggregatorTab> AggregatorTab_;
+
+		Util::ShortcutManager *ShortcutMgr_ = nullptr;
 
 		bool InitFailed_ = false;
 	public:

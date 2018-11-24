@@ -44,7 +44,10 @@ namespace LeechCraft
 namespace Aggregator
 {
 	AggregatorTab::AggregatorTab (const AppWideActions& appWideActions,
-			const ChannelActions& channelActions, const TabClassInfo& tc, QObject *plugin)
+			const ChannelActions& channelActions,
+			const TabClassInfo& tc,
+			Util::ShortcutManager *shortcutMgr,
+			QObject *plugin)
 	: TabClass_ { tc }
 	, ParentPlugin_ { plugin }
 	, ChannelActions_ { channelActions }
@@ -53,7 +56,7 @@ namespace Aggregator
 		Ui_.setupUi (this);
 		Ui_.ItemsWidget_->SetAppWideActions (appWideActions);
 		Ui_.ItemsWidget_->SetChannelActions (channelActions);
-		Ui_.ItemsWidget_->RegisterShortcuts ();
+		Ui_.ItemsWidget_->RegisterShortcuts (shortcutMgr);
 
 		Ui_.ItemsWidget_->SetChannelsFilter (Core::Instance ().GetChannelsModel ());
 

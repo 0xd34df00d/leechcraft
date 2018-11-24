@@ -41,6 +41,11 @@ class QSortFilterProxyModel;
 
 namespace LeechCraft
 {
+namespace Util
+{
+	class ShortcutManager;
+}
+
 namespace Aggregator
 {
 	struct ItemsWidget_Impl;
@@ -79,7 +84,7 @@ namespace Aggregator
 		void SetChannelActions (const ChannelActions&);
 		void SetChannelsFilter (QSortFilterProxyModel*);
 
-		void RegisterShortcuts ();
+		void RegisterShortcuts (Util::ShortcutManager*);
 
 		Item GetItem (const QModelIndex&) const;
 		QToolBar* GetToolBar () const;

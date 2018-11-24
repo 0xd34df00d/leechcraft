@@ -42,6 +42,7 @@ namespace LeechCraft
 namespace Util
 {
 	class FlatToFoldersProxyModel;
+	class ShortcutManager;
 }
 
 namespace Aggregator
@@ -64,7 +65,8 @@ namespace Aggregator
 
 		Util::DefaultScopeGuard UiStateGuard_;
 	public:
-		AggregatorTab (const AppWideActions&, const ChannelActions&, const TabClassInfo&, QObject*);
+		AggregatorTab (const AppWideActions&, const ChannelActions&,
+				const TabClassInfo&, Util::ShortcutManager*, QObject*);
 
 		QToolBar* GetToolBar () const override;
 		TabClassInfo GetTabClassInfo () const override;

@@ -269,10 +269,9 @@ namespace Aggregator
 				&ItemsWidget::invalidateMergeMode);
 	}
 
-	void ItemsWidget::RegisterShortcuts ()
+	void ItemsWidget::RegisterShortcuts (Util::ShortcutManager *mgr)
 	{
-		auto mgr = Core::Instance ().GetShortcutManager ();
-		auto addAct = [this, mgr] (ItemsWidget::Action actId) -> void
+		auto addAct = [this, mgr] (ItemsWidget::Action actId)
 		{
 			auto act = GetAction (actId);
 			mgr->RegisterAction (act->objectName (), act);

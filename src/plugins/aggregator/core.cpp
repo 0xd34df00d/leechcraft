@@ -49,7 +49,6 @@
 #include <util/sys/fileremoveguard.h>
 #include <util/sys/paths.h>
 #include <util/xpc/defaulthookproxy.h>
-#include <util/shortcuts/shortcutmanager.h>
 #include <util/sll/prelude.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/visitor.h>
@@ -261,7 +260,6 @@ namespace Aggregator
 	bool Core::DoDelayedInit ()
 	{
 		bool result = true;
-		ShortcutMgr_ = new Util::ShortcutManager (Proxy_, this);
 
 		QDir dir = QDir::home ();
 		if (!dir.cd (".leechcraft/aggregator") &&
@@ -428,11 +426,6 @@ namespace Aggregator
 		auto channel = ChannelsModel_->GetChannelForIndex (index);
 		channel.DisplayTitle_ = newName;
 		StorageBackend_->UpdateChannel (channel);
-	}
-
-	Util::ShortcutManager* Core::GetShortcutManager () const
-	{
-		return ShortcutMgr_;
 	}
 
 	ChannelsModel* Core::GetRawChannelsModel () const

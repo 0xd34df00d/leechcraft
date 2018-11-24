@@ -89,6 +89,8 @@ namespace Aggregator
 			TFSingle | TFOpenableByRequest
 		};
 
+		ShortcutMgr_ = new Util::ShortcutManager (proxy, this);
+
 		ChannelActions_.SetupActionsStruct (this);
 		AppWideActions_.SetupActionsStruct (this);
 
@@ -124,7 +126,7 @@ namespace Aggregator
 
 		ReprWidget_ = new ItemsWidget;
 		ReprWidget_->SetChannelsFilter (Core::Instance ().GetJobHolderRepresentation ());
-		ReprWidget_->RegisterShortcuts ();
+		ReprWidget_->RegisterShortcuts (ShortcutMgr_);
 		ReprWidget_->SetAppWideActions (AppWideActions_);
 		ReprWidget_->SetChannelActions (ChannelActions_);
 
@@ -208,7 +210,7 @@ namespace Aggregator
 			if (!AggregatorTab_)
 			{
 				AggregatorTab_ = std::make_unique<AggregatorTab> (AppWideActions_,
-						ChannelActions_, TabInfo_, this);
+						ChannelActions_, TabInfo_, ShortcutMgr_, this);
 				connect (AggregatorTab_.get (),
 						&AggregatorTab::removeTabRequested,
 						[this] { emit removeTab (AggregatorTab_.get ()); });
@@ -258,12 +260,12 @@ namespace Aggregator
 
 	void Aggregator::SetShortcut (const QString& name, const QKeySequences_t& shortcuts)
 	{
-		Core::Instance ().GetShortcutManager ()->SetShortcut (name, shortcuts);
+		ShortcutMgr_->SetShortcut (name, shortcuts);
 	}
 
 	QMap<QString, ActionInfo> Aggregator::GetActionInfo () const
 	{
-		return Core::Instance ().GetShortcutManager ()->GetActionInfo ();
+		return ShortcutMgr_->GetActionInfo ();
 	}
 
 	QList<QWizardPage*> Aggregator::GetWizardPages () const
@@ -354,8 +356,7 @@ namespace Aggregator
 
 	void Aggregator::BuildID2ActionTupleMap ()
 	{
-		auto mgr = Core::Instance ().GetShortcutManager ();
-		mgr->RegisterActions ({
+		ShortcutMgr_->RegisterActions ({
 					{ "ActionAddFeed", AppWideActions_.ActionAddFeed_ },
 					{ "ActionUpdateFeeds_", AppWideActions_.ActionUpdateFeeds_ },
 					{ "ActionImportOPML_", AppWideActions_.ActionImportOPML_ },
