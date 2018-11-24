@@ -30,6 +30,7 @@
 #include "opmlparser.h"
 #include <QDomDocument>
 #include <QDomElement>
+#include <util/sll/domchildrenrange.h>
 
 namespace LeechCraft
 {
@@ -89,16 +90,11 @@ namespace Aggregator
 		if (!CacheValid_)
 		{
 			Items_.clear ();
-	
-			QDomElement body = Document_.documentElement ()
-				.firstChildElement ("body");
-			QDomElement outline = body.firstChildElement ("outline");
-			while (!outline.isNull ())
-			{ 
+
+			auto body = Document_.documentElement ().firstChildElement ("body");
+			for (const auto& outline : Util::DomChildren (body, "outline"))
 				ParseOutline (outline);
-				outline = outline.nextSiblingElement ("outline");
-			}
-	
+
 			CacheValid_ = true;
 		}
 	
@@ -129,13 +125,9 @@ namespace Aggregator
 	
 		if (parentOutline.attribute ("text").size ())
 			previousStrings << parentOutline.attribute ("text");
-	
-		QDomElement outline = parentOutline.firstChildElement ("outline");
-		while (!outline.isNull ())
-		{
+
+		for (const auto& outline : Util::DomChildren (parentOutline, "outline"))
 			ParseOutline (outline, previousStrings);
-			outline = outline.nextSiblingElement ("outline");
-		}
 	}
 }
 }
