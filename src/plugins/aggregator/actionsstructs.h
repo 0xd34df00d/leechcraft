@@ -52,6 +52,12 @@ namespace Aggregator
 
 		explicit AppWideActions (QObject*);
 
+		AppWideActions () = delete;
+		AppWideActions (const AppWideActions&) = delete;
+		AppWideActions (AppWideActions&&) = delete;
+		AppWideActions& operator= (const AppWideActions&) = delete;
+		AppWideActions& operator= (AppWideActions&&) = delete;
+
 		QMenu* CreateToolMenu () const;
 		void SetEnabled (bool);
 
@@ -69,6 +75,12 @@ namespace Aggregator
 		QAction *ActionChannelSettings_ = nullptr;
 
 		explicit ChannelActions (QObject*);
+
+		ChannelActions () = delete;
+		ChannelActions (const ChannelActions&) = delete;
+		ChannelActions (ChannelActions&&) = delete;
+		ChannelActions& operator= (const ChannelActions&) = delete;
+		ChannelActions& operator= (ChannelActions&&) = delete;
 
 		Q_DECLARE_TR_FUNCTIONS (ChannelActions)
 	};
