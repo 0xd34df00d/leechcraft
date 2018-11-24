@@ -354,20 +354,21 @@ namespace Aggregator
 
 	void Aggregator::BuildID2ActionTupleMap ()
 	{
-		typedef Util::ShortcutManager::IDPair_t ID_t;
 		auto mgr = Core::Instance ().GetShortcutManager ();
-		*mgr << ID_t ("ActionAddFeed", AppWideActions_.ActionAddFeed_)
-				<< ID_t ("ActionUpdateFeeds_", AppWideActions_.ActionUpdateFeeds_)
-				<< ID_t ("ActionImportOPML_", AppWideActions_.ActionImportOPML_)
-				<< ID_t ("ActionExportOPML_", AppWideActions_.ActionExportOPML_)
-				<< ID_t ("ActionImportBinary_", AppWideActions_.ActionImportBinary_)
-				<< ID_t ("ActionExportBinary_", AppWideActions_.ActionExportBinary_)
-				<< ID_t ("ActionExportFB2_", AppWideActions_.ActionExportFB2_)
-				<< ID_t ("ActionRemoveFeed_", ChannelActions_.ActionRemoveFeed_)
-				<< ID_t ("ActionUpdateSelectedFeed_", ChannelActions_.ActionUpdateSelectedFeed_)
-				<< ID_t ("ActionMarkChannelAsRead_", ChannelActions_.ActionMarkChannelAsRead_)
-				<< ID_t ("ActionMarkChannelAsUnread_", ChannelActions_.ActionMarkChannelAsUnread_)
-				<< ID_t ("ActionChannelSettings_", ChannelActions_.ActionChannelSettings_);
+		mgr->RegisterActions ({
+					{ "ActionAddFeed", AppWideActions_.ActionAddFeed_ },
+					{ "ActionUpdateFeeds_", AppWideActions_.ActionUpdateFeeds_ },
+					{ "ActionImportOPML_", AppWideActions_.ActionImportOPML_ },
+					{ "ActionExportOPML_", AppWideActions_.ActionExportOPML_ },
+					{ "ActionImportBinary_", AppWideActions_.ActionImportBinary_ },
+					{ "ActionExportBinary_", AppWideActions_.ActionExportBinary_ },
+					{ "ActionExportFB2_", AppWideActions_.ActionExportFB2_ },
+					{ "ActionRemoveFeed_", ChannelActions_.ActionRemoveFeed_ },
+					{ "ActionUpdateSelectedFeed_", ChannelActions_.ActionUpdateSelectedFeed_ },
+					{ "ActionMarkChannelAsRead_", ChannelActions_.ActionMarkChannelAsRead_ },
+					{ "ActionMarkChannelAsUnread_", ChannelActions_.ActionMarkChannelAsUnread_ },
+					{ "ActionChannelSettings_", ChannelActions_.ActionChannelSettings_ }
+				});
 	}
 
 	void Aggregator::on_ActionMarkAllAsRead__triggered ()
