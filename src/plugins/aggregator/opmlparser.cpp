@@ -49,33 +49,31 @@ namespace Aggregator
 	
 	bool OPMLParser::IsValid ()
 	{
-		QDomElement root = Document_.documentElement ();
+		auto root = Document_.documentElement ();
 		if (root.tagName () != "opml")
 			return false;
 	
-		QDomNodeList heads = root.elementsByTagName ("head");
+		auto heads = root.elementsByTagName ("head");
 		if (heads.size () != 1 || !heads.at (0).isElement ())
 			return false;
 	
-		QDomNodeList bodies = root.elementsByTagName ("body");
+		auto bodies = root.elementsByTagName ("body");
 		if (bodies.size () != 1 || !bodies.at (0).isElement ())
 			return false;
-	
-		if (!bodies.at (0).toElement ().elementsByTagName ("outline").size ())
-			return false;
-	
-		return true;
+
+		return !bodies.at (0).toElement ().elementsByTagName ("outline").isEmpty ();
+
 	}
 	
 	OPMLParser::OPMLinfo_t OPMLParser::GetInfo ()
 	{
 		OPMLinfo_t result;
 	
-		QDomNodeList entries = Document_.documentElement ().firstChildElement ("head").childNodes ();
+		auto entries = Document_.documentElement ().firstChildElement ("head").childNodes ();
 	
 		for (int i = 0; i < entries.size (); ++i)
 		{
-			QDomElement elem = entries.at (i).toElement ();
+			auto elem = entries.at (i).toElement ();
 			if (elem.isNull ())
 				continue;
 	
@@ -109,14 +107,10 @@ namespace Aggregator
 			item.URL_ = parentOutline.attribute ("xmlUrl");
 			item.HTMLUrl_ = parentOutline.attribute ("htmlUrl");
 			item.Title_ = parentOutline.attribute ("title");
-			item.CustomFetchInterval_ = (parentOutline
-				.attribute ("useCustomFetchInterval") == "true");
-			item.MaxArticleAge_ = parentOutline
-				.attribute ("maxArticleAge").toInt ();
-			item.FetchInterval_ = parentOutline
-				.attribute ("fetchInterval").toInt ();
-			item.MaxArticleNumber_ = parentOutline
-				.attribute ("maxArticleNumber").toInt ();
+			item.CustomFetchInterval_ = parentOutline.attribute ("useCustomFetchInterval") == "true";
+			item.MaxArticleAge_ = parentOutline.attribute ("maxArticleAge").toInt ();
+			item.FetchInterval_ = parentOutline.attribute ("fetchInterval").toInt ();
+			item.MaxArticleNumber_ = parentOutline.attribute ("maxArticleNumber").toInt ();
 			item.Description_ = parentOutline.attribute ("description");
 			item.Categories_ = previousStrings;
 	
