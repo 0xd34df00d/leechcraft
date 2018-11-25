@@ -58,7 +58,6 @@ namespace LeechCraft
 namespace Aggregator
 {
 	class ChannelsModel;
-	class JobHolderRepresentation;
 	class ChannelsFilterModel;
 	class PluginManager;
 
@@ -108,7 +107,6 @@ namespace Aggregator
 		ChannelsModel *ChannelsModel_ = nullptr;
 		QTimer *UpdateTimer_ = nullptr, *CustomUpdateTimer_ = nullptr;
 		std::shared_ptr<StorageBackend> StorageBackend_;
-		JobHolderRepresentation *JobHolderRepresentation_ = nullptr;
 		QMap<IDType_t, QDateTime> Updates_;
 		ChannelsFilterModel *ChannelsFilterModel_ = nullptr;
 		ICoreProxy_ptr Proxy_;
@@ -182,7 +180,6 @@ namespace Aggregator
 
 		void UpdateFeed (const IDType_t&);
 		void AddFromOPML (const QString&, const QString&, const QSet<QString>&);
-		JobHolderRepresentation* GetJobHolderRepresentation () const;
 
 		void AddFeeds (const feeds_container_t&, const QString&);
 	public slots:

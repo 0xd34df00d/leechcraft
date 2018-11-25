@@ -125,14 +125,17 @@ namespace Aggregator
 			box->open ();
 		}
 
+		JobHolderRepresentation_ = new JobHolderRepresentation ();
+		JobHolderRepresentation_->setSourceModel (Core::Instance ().GetRawChannelsModel ());
+
 		ReprWidget_ = new ItemsWidget;
-		ReprWidget_->SetChannelsFilter (Core::Instance ().GetJobHolderRepresentation ());
+		ReprWidget_->SetChannelsFilter (JobHolderRepresentation_);
 		ReprWidget_->RegisterShortcuts (ShortcutMgr_);
 		ReprWidget_->SetAppWideActions (*AppWideActions_);
 		ReprWidget_->SetChannelActions (*ChannelActions_);
 
 		ReprModel_ = new ChannelsModelRepresentationProxy { this };
-		ReprModel_->setSourceModel (Core::Instance ().GetJobHolderRepresentation ());
+		ReprModel_->setSourceModel (JobHolderRepresentation_);
 		ReprModel_->SetWidgets (ReprWidget_->GetToolBar (), ReprWidget_);
 		ReprModel_->SetMenu (CreateFeedsContextMenu (*ChannelActions_, *AppWideActions_));
 
@@ -238,7 +241,7 @@ namespace Aggregator
 		if (si.model () != GetRepresentation ())
 			si = QModelIndex ();
 		si = ReprModel_->mapToSource (si);
-		si = Core::Instance ().GetJobHolderRepresentation ()->SelectionChanged (si);
+		si = JobHolderRepresentation_->SelectionChanged (si);
 		SelectedRepr_ = si;
 		ReprWidget_->CurrentChannelChanged (si);
 	}
@@ -339,7 +342,7 @@ namespace Aggregator
 	QModelIndex Aggregator::GetRelevantIndex () const
 	{
 		if (IsRepr ())
-			return Core::Instance ().GetJobHolderRepresentation ()->mapToSource (SelectedRepr_);
+			return JobHolderRepresentation_->mapToSource (SelectedRepr_);
 		else
 			return AggregatorTab_->GetRelevantIndex ();
 	}
@@ -347,7 +350,7 @@ namespace Aggregator
 	QList<QModelIndex> Aggregator::GetRelevantIndexes () const
 	{
 		if (IsRepr ())
-			return { Core::Instance ().GetJobHolderRepresentation ()->mapToSource (SelectedRepr_) };
+			return { JobHolderRepresentation_->mapToSource (SelectedRepr_) };
 		else
 			return AggregatorTab_->GetRelevantIndexes ();
 	}

@@ -102,7 +102,6 @@ namespace Aggregator
 	{
 		DBUpThread_.reset ();
 
-		delete JobHolderRepresentation_;
 		delete ChannelsFilterModel_;
 		delete ChannelsModel_;
 
@@ -279,8 +278,6 @@ namespace Aggregator
 		ChannelsFilterModel_->setSourceModel (ChannelsModel_);
 		ChannelsFilterModel_->setFilterKeyColumn (0);
 
-		JobHolderRepresentation_ = new JobHolderRepresentation ();
-
 		DBUpThread_ = std::make_shared<DBUpdateThread> (Proxy_);
 		DBUpThread_->SetAutoQuit (true);
 		DBUpThread_->start (QThread::LowestPriority);
@@ -298,8 +295,6 @@ namespace Aggregator
 		ParserFactory::Instance ().Register (&RSS091Parser::Instance ());
 		ParserFactory::Instance ().Register (&Atom03Parser::Instance ());
 		ParserFactory::Instance ().Register (&RSS10Parser::Instance ());
-
-		JobHolderRepresentation_->setSourceModel (ChannelsModel_);
 
 		CustomUpdateTimer_ = new QTimer (this);
 		CustomUpdateTimer_->start (60 * 1000);
@@ -522,11 +517,6 @@ namespace Aggregator
 								{ { IDNotFound, interval, item.MaxArticleNumber_, item.MaxArticleAge_, false } });
 					}
 				});
-	}
-
-	JobHolderRepresentation* Core::GetJobHolderRepresentation () const
-	{
-		return JobHolderRepresentation_;
 	}
 
 	void Core::AddFeeds (const feeds_container_t& feeds, const QString& tagsString)

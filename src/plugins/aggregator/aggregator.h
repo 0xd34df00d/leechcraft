@@ -54,6 +54,7 @@ namespace Util
 namespace Aggregator
 {
 	class ItemsWidget;
+	class JobHolderRepresentation;
 	class ChannelsModelRepresentationProxy;
 	class AggregatorTab;
 	struct AppWideActions;
@@ -93,6 +94,7 @@ namespace Aggregator
 		std::shared_ptr<Util::XmlSettingsDialog> XmlSettingsDialog_;
 
 		ItemsWidget *ReprWidget_ = nullptr;
+		JobHolderRepresentation *JobHolderRepresentation_ = nullptr;
 		ChannelsModelRepresentationProxy *ReprModel_ = nullptr;
 		QModelIndex SelectedRepr_;
 
