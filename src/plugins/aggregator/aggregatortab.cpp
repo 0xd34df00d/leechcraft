@@ -38,6 +38,8 @@
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "uistatepersist.h"
+#include "channelsmodel.h"
+#include "channelsfiltermodel.h"
 
 namespace LeechCraft
 {
@@ -52,13 +54,17 @@ namespace Aggregator
 	, ParentPlugin_ { plugin }
 	, ChannelActions_ { channelActions }
 	, FlatToFolders_ { std::make_shared<Util::FlatToFoldersProxyModel> () }
+	, ChannelsFilterModel_ { new ChannelsFilterModel { this } }
 	{
+		ChannelsFilterModel_->setSourceModel (Core::Instance ().GetRawChannelsModel ());
+		ChannelsFilterModel_->setFilterKeyColumn (0);
+
 		Ui_.setupUi (this);
 		Ui_.ItemsWidget_->SetAppWideActions (appWideActions);
 		Ui_.ItemsWidget_->SetChannelActions (*channelActions);
 		Ui_.ItemsWidget_->RegisterShortcuts (shortcutMgr);
 
-		Ui_.ItemsWidget_->SetChannelsFilter (Core::Instance ().GetChannelsModel ());
+		Ui_.ItemsWidget_->SetChannelsFilter (ChannelsFilterModel_);
 
 		connect (Ui_.ItemsWidget_,
 				&ItemsWidget::movedToChannel,
@@ -94,7 +100,7 @@ namespace Aggregator
 
 		connect (Ui_.TagsLine_,
 				&QLineEdit::textChanged,
-				Core::Instance ().GetChannelsModel (),
+				ChannelsFilterModel_,
 				&QSortFilterProxyModel::setFilterFixedString);
 
 		new Util::TagsCompleter (Ui_.TagsLine_);
@@ -165,7 +171,7 @@ namespace Aggregator
 		auto index = Ui_.Feeds_->selectionModel ()->currentIndex ();
 		if (FlatToFolders_->GetSourceModel ())
 			index = FlatToFolders_->MapToSource (index);
-		return Core::Instance ().GetChannelsModel ()->mapToSource (index);
+		return ChannelsFilterModel_->mapToSource (index);
 	}
 
 	QList<QModelIndex> AggregatorTab::GetRelevantIndexes () const
@@ -175,7 +181,7 @@ namespace Aggregator
 				{
 					if (FlatToFolders_->GetSourceModel ())
 						index = FlatToFolders_->MapToSource (index);
-					return Core::Instance ().GetChannelsModel ()->mapToSource (index);
+					return ChannelsFilterModel_->mapToSource (index);
 				});
 		rawList.removeAll ({});
 		return rawList;
@@ -297,13 +303,13 @@ namespace Aggregator
 	{
 		if (XmlSettingsManager::Instance ()->property ("GroupChannelsByTags").toBool ())
 		{
-			FlatToFolders_->SetSourceModel (Core::Instance ().GetChannelsModel ());
+			FlatToFolders_->SetSourceModel (ChannelsFilterModel_);
 			Ui_.Feeds_->setModel (FlatToFolders_.get ());
 		}
 		else
 		{
-			FlatToFolders_->SetSourceModel (0);
-			Ui_.Feeds_->setModel (Core::Instance ().GetChannelsModel ());
+			FlatToFolders_->SetSourceModel (nullptr);
+			Ui_.Feeds_->setModel (ChannelsFilterModel_);
 		}
 		connect (Ui_.Feeds_->selectionModel (),
 				&QItemSelectionModel::currentChanged,

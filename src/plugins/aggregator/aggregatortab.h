@@ -47,6 +47,8 @@ namespace Util
 
 namespace Aggregator
 {
+	class ChannelsFilterModel;
+
 	class AggregatorTab : public QWidget
 						, public ITabWidget
 						, public IRecoverableTab
@@ -54,14 +56,15 @@ namespace Aggregator
 		Q_OBJECT
 		Q_INTERFACES (ITabWidget IRecoverableTab)
 
+		Ui::MainWidget Ui_;
+
 		const TabClassInfo TabClass_;
 		QObject * const ParentPlugin_;
 
 		const std::shared_ptr<const ChannelActions> ChannelActions_;
-
 		const std::shared_ptr<Util::FlatToFoldersProxyModel> FlatToFolders_;
 
-		Ui::MainWidget Ui_;
+		ChannelsFilterModel * const ChannelsFilterModel_;
 
 		Util::DefaultScopeGuard UiStateGuard_;
 	public:

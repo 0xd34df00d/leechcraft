@@ -61,7 +61,6 @@
 #include "opmlwriter.h"
 #include "sqlstoragebackend.h"
 #include "jobholderrepresentation.h"
-#include "channelsfiltermodel.h"
 #include "importopml.h"
 #include "addfeed.h"
 #include "pluginmanager.h"
@@ -98,7 +97,6 @@ namespace Aggregator
 	{
 		DBUpThread_.reset ();
 
-		delete ChannelsFilterModel_;
 		delete ChannelsModel_;
 
 		StorageBackend_.reset ();
@@ -266,10 +264,6 @@ namespace Aggregator
 		if (!ReinitStorage ())
 			result = false;
 
-		ChannelsFilterModel_ = new ChannelsFilterModel ();
-		ChannelsFilterModel_->setSourceModel (ChannelsModel_);
-		ChannelsFilterModel_->setFilterKeyColumn (0);
-
 		DBUpThread_ = std::make_shared<DBUpdateThread> (Proxy_);
 		DBUpThread_->SetAutoQuit (true);
 		DBUpThread_->start (QThread::LowestPriority);
@@ -414,11 +408,6 @@ namespace Aggregator
 	ChannelsModel* Core::GetRawChannelsModel () const
 	{
 		return ChannelsModel_;
-	}
-
-	QSortFilterProxyModel* Core::GetChannelsModel () const
-	{
-		return ChannelsFilterModel_;
 	}
 
 	IWebBrowser* Core::GetWebBrowser () const

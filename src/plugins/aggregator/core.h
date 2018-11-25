@@ -58,7 +58,6 @@ namespace LeechCraft
 namespace Aggregator
 {
 	class ChannelsModel;
-	class ChannelsFilterModel;
 	class PluginManager;
 
 	class Core : public QObject
@@ -108,7 +107,6 @@ namespace Aggregator
 		QTimer *UpdateTimer_ = nullptr, *CustomUpdateTimer_ = nullptr;
 		std::shared_ptr<StorageBackend> StorageBackend_;
 		QMap<IDType_t, QDateTime> Updates_;
-		ChannelsFilterModel *ChannelsFilterModel_ = nullptr;
 		ICoreProxy_ptr Proxy_;
 		bool Initialized_ = false;
 
@@ -154,18 +152,8 @@ namespace Aggregator
 		void AddFeed (QString, const QStringList&, const std::optional<Feed::FeedSettings>& = {});
 		void RenameFeed (const QModelIndex& index, const QString& newName);
 
-		/** Returns the channels model as it is.
-			*
-			* @sa GetRawChannelsModel
-			*/
 		ChannelsModel* GetRawChannelsModel () const;
 
-		/** Returns the filter model with the
-			* GetRawChannelsModel as a source.
-			*
-			* @sa GetRawChannelsModel.
-			*/
-		QSortFilterProxyModel* GetChannelsModel () const;
 		IWebBrowser* GetWebBrowser () const;
 		void MarkChannelAsRead (const QModelIndex&);
 		void MarkChannelAsUnread (const QModelIndex&);
