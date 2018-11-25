@@ -772,11 +772,6 @@ namespace Aggregator
 			UpdateTimer_->stop ();
 	}
 
-	void Core::handleSslError (QNetworkReply *reply)
-	{
-		reply->ignoreSslErrors ();
-	}
-
 	void Core::handleCustomUpdates ()
 	{
 		using Util::operator*;

@@ -190,7 +190,6 @@ namespace Aggregator
 		void openLink (const QString&);
 		void updateFeeds ();
 		void updateIntervalChanged ();
-		void handleSslError (QNetworkReply*);
 	private slots:
 		void fetchExternalFile (const QString&, const QString&);
 		void handleJobFinished (int);
