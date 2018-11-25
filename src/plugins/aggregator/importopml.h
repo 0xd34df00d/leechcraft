@@ -51,7 +51,7 @@ namespace Aggregator
 		void on_File__textEdited (const QString&);
 		void on_Browse__released ();
 	private:
-		bool HandleFile (const QString&);
+		void HandleFile (const QString&);
 		void Reset ();
 	};
 }

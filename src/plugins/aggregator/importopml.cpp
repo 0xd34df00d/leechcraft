@@ -87,10 +87,10 @@ namespace Aggregator
 	
 	void ImportOPML::on_File__textEdited (const QString& newFilename)
 	{
-		Reset ();
-	
 		if (QFile::exists (newFilename))
-			Ui_.ButtonBox_->button (QDialogButtonBox::Open)->setEnabled (HandleFile (newFilename));
+			HandleFile (newFilename);
+		else
+			Reset ();
 	}
 	
 	void ImportOPML::on_Browse__released ()
@@ -112,16 +112,16 @@ namespace Aggregator
 	
 		Ui_.File_->setText (filename);
 	
-		Ui_.ButtonBox_->button (QDialogButtonBox::Open)->setEnabled (HandleFile (filename));
+		HandleFile (filename);
 	}
 	
-	bool ImportOPML::HandleFile (const QString& filename)
+	void ImportOPML::HandleFile (const QString& filename)
 	{
-		return Util::Visit (ParseOPML (filename),
+		Util::Visit (ParseOPML (filename),
 				[this] (const QString& error)
 				{
 					QMessageBox::critical (this, tr ("LeechCraft"), error);
-					return false;
+					Reset ();
 				},
 				[this] (OPMLParser parser)
 				{
@@ -148,7 +148,7 @@ namespace Aggregator
 						item->setData (0, ItemUrlRole, opmlItem.URL_);
 					}
 
-					return true;
+					Ui_.ButtonBox_->button (QDialogButtonBox::Open)->setEnabled (true);
 				});
 	}
 	
