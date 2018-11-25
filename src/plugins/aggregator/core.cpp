@@ -56,11 +56,6 @@
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "parserfactory.h"
-#include "rss20parser.h"
-#include "rss10parser.h"
-#include "rss091parser.h"
-#include "atom10parser.h"
-#include "atom03parser.h"
 #include "channelsmodel.h"
 #include "opmlparser.h"
 #include "opmlwriter.h"
@@ -74,6 +69,7 @@
 #include "dbupdatethreadworker.h"
 #include "dumbstorage.h"
 #include "storagebackendmanager.h"
+#include "parser.h"
 
 namespace LeechCraft
 {
@@ -286,11 +282,7 @@ namespace Aggregator
 							&Core::hookGotNewItems);
 				});
 
-		ParserFactory::Instance ().Register (&RSS20Parser::Instance ());
-		ParserFactory::Instance ().Register (&Atom10Parser::Instance ());
-		ParserFactory::Instance ().Register (&RSS091Parser::Instance ());
-		ParserFactory::Instance ().Register (&Atom03Parser::Instance ());
-		ParserFactory::Instance ().Register (&RSS10Parser::Instance ());
+		ParserFactory::Instance ().RegisterDefaultParsers ();
 
 		CustomUpdateTimer_ = new QTimer (this);
 		CustomUpdateTimer_->start (60 * 1000);

@@ -30,6 +30,11 @@
 #include <QtDebug>
 #include "parserfactory.h"
 #include "parser.h"
+#include "rss20parser.h"
+#include "rss10parser.h"
+#include "rss091parser.h"
+#include "atom10parser.h"
+#include "atom03parser.h"
 
 namespace LeechCraft
 {
@@ -44,6 +49,15 @@ namespace Aggregator
 	void ParserFactory::Register (Parser *parser)
 	{
 		Parsers_.append (parser);
+	}
+
+	void ParserFactory::RegisterDefaultParsers ()
+	{
+		Register (&RSS20Parser::Instance ());
+		Register (&Atom10Parser::Instance ());
+		Register (&RSS091Parser::Instance ());
+		Register (&Atom03Parser::Instance ());
+		Register (&RSS10Parser::Instance ());
 	}
 	
 	Parser* ParserFactory::Return (const QDomDocument& doc) const

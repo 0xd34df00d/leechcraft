@@ -46,7 +46,10 @@ namespace Aggregator
 		ParserFactory () = default;
 	public:
 		static ParserFactory& Instance ();
+
 		void Register (Parser*);
+		void RegisterDefaultParsers ();
+
 		Parser* Return (const QDomDocument&) const;
 	};
 }
