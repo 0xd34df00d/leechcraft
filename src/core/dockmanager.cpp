@@ -73,6 +73,7 @@ namespace LeechCraft
 	{
 		auto win = static_cast<MainWindow*> (RootWM_->GetPreferredWindow ());
 		win->addDockWidget (area, dw);
+		win->resizeDocks ({ dw }, { 1 }, Qt::Horizontal);		// https://bugreports.qt.io/browse/QTBUG-65592
 		Dock2Info_ [dw].Window_ = win;
 
 		connect (dw,
