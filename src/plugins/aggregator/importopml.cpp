@@ -33,6 +33,8 @@
 #include <QDomDocument>
 #include <QTimer>
 #include <util/sll/qtutil.h>
+#include <util/sll/visitor.h>
+#include <util/sll/either.h>
 #include "opmlparser.h"
 
 namespace LeechCraft
@@ -115,72 +117,39 @@ namespace Aggregator
 	
 	bool ImportOPML::HandleFile (const QString& filename)
 	{
-		QFile file (filename);
-		if (!file.open (QIODevice::ReadOnly))
-		{
-			QMessageBox::critical (this,
-					tr ("LeechCraft"),
-					tr ("Could not open file %1 for reading.")
-						.arg (filename));
-			return false;
-		}
-	
-		QByteArray data = file.readAll ();
-		file.close ();
-	
-		QString errorMsg;
-		int errorLine, errorColumn;
-		QDomDocument document;
-		if (!document.setContent (data,
-					true,
-					&errorMsg,
-					&errorLine,
-					&errorColumn))
-		{
-			QMessageBox::critical (this,
-					tr ("LeechCraft"),
-					tr ("XML error, file %1, line %2, column %3, error:<br />%4")
-						.arg (filename)
-						.arg (errorLine)
-						.arg (errorColumn)
-						.arg (errorMsg));
-			return false;
-		}
-	
-		OPMLParser parser (document);
-		if (!parser.IsValid ())
-		{
-			QMessageBox::critical (this,
-					tr ("LeechCraft"),
-					tr ("OPML from file %1 is not valid.")
-						.arg (filename));
-			return false;
-		}
-	
-		for (const auto& [name, value] : Util::Stlize (parser.GetInfo ()))
-		{
-			if (name == "title")
-				Ui_.Title_->setText (value);
-			else if (name == "dateCreated")
-				Ui_.Created_->setText (value);
-			else if (name == "dateModified")
-				Ui_.Edited_->setText (value);
-			else if (name == "ownerName")
-				Ui_.Owner_->setText (value);
-			else if (name == "ownerEmail")
-				Ui_.OwnerEmail_->setText (value);
-			else
-				new QTreeWidgetItem (Ui_.OtherFields_, { name, value });
-		}
-	
-		for (const auto& opmlItem : parser.Parse ())
-		{
-			const auto item = new QTreeWidgetItem (Ui_.FeedsToImport_, { opmlItem.Title_, opmlItem.URL_ });
-			item->setData (0, Qt::CheckStateRole, Qt::Checked);
-			item->setData (0, ItemUrlRole, opmlItem.URL_);
-		}
-	
-		return true;
+		return Util::Visit (ParseOPML (filename),
+				[this] (const QString& error)
+				{
+					QMessageBox::critical (this, tr ("LeechCraft"), error);
+					return false;
+				},
+				[this] (OPMLParser parser)
+				{
+					for (const auto& [name, value] : Util::Stlize (parser.GetInfo ()))
+					{
+						if (name == "title")
+							Ui_.Title_->setText (value);
+						else if (name == "dateCreated")
+							Ui_.Created_->setText (value);
+						else if (name == "dateModified")
+							Ui_.Edited_->setText (value);
+						else if (name == "ownerName")
+							Ui_.Owner_->setText (value);
+						else if (name == "ownerEmail")
+							Ui_.OwnerEmail_->setText (value);
+						else
+							new QTreeWidgetItem (Ui_.OtherFields_, { name, value });
+					}
+
+					for (const auto& opmlItem : parser.Parse ())
+					{
+						const auto item = new QTreeWidgetItem (Ui_.FeedsToImport_, { opmlItem.Title_, opmlItem.URL_ });
+						item->setData (0, Qt::CheckStateRole, Qt::Checked);
+						item->setData (0, ItemUrlRole, opmlItem.URL_);
+					}
+
+					return true;
+				});
 	}
 	
 	void ImportOPML::Reset ()
