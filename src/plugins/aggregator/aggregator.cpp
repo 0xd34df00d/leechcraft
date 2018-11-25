@@ -156,9 +156,6 @@ namespace Aggregator
 
 	void Aggregator::Release ()
 	{
-		disconnect (&Core::Instance (), 0, this, 0);
-		if (Core::Instance ().GetChannelsModel ())
-			disconnect (Core::Instance ().GetChannelsModel (), 0, this, 0);
 		AggregatorTab_.reset ();
 		Core::Instance ().Release ();
 	}
