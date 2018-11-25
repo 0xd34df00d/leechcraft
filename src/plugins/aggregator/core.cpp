@@ -377,7 +377,7 @@ namespace Aggregator
 	{
 		const auto& fixedUrl = QUrl::fromUserInput (url);
 		url = fixedUrl.toString ();
-		if (StorageBackend_->FindFeed (url) != static_cast<IDType_t> (-1))
+		if (StorageBackend_->FindFeed (url))
 		{
 			ErrorNotification (tr ("Feed addition error"),
 					tr ("The feed %1 is already added")
