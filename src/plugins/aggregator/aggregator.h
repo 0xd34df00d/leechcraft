@@ -135,7 +135,6 @@ namespace Aggregator
 	private:
 		QModelIndex GetRelevantIndex () const;
 		QList<QModelIndex> GetRelevantIndexes () const;
-		void BuildID2ActionTupleMap ();
 
 		template<typename F>
 		void Perform (F&&);

@@ -37,6 +37,11 @@ class QMenu;
 
 namespace LeechCraft
 {
+namespace Util
+{
+	class ShortcutManager;
+}
+
 namespace Aggregator
 {
 	struct AppWideActions
@@ -50,7 +55,7 @@ namespace Aggregator
 		QAction *ActionExportFB2_ = nullptr;
 		QAction *ActionMarkAllAsRead_ = nullptr;
 
-		explicit AppWideActions (QObject*);
+		explicit AppWideActions (Util::ShortcutManager*, QObject*);
 
 		AppWideActions () = delete;
 		AppWideActions (const AppWideActions&) = delete;
@@ -74,7 +79,7 @@ namespace Aggregator
 		QAction *ActionRemoveChannel_ = nullptr;
 		QAction *ActionChannelSettings_ = nullptr;
 
-		explicit ChannelActions (QObject*);
+		explicit ChannelActions (Util::ShortcutManager*, QObject*);
 
 		ChannelActions () = delete;
 		ChannelActions (const ChannelActions&) = delete;

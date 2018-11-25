@@ -30,12 +30,13 @@
 #include "actionsstructs.h"
 #include <QAction>
 #include <QMenu>
+#include <util/shortcuts/shortcutmanager.h>
 
 namespace LeechCraft
 {
 namespace Aggregator
 {
-	AppWideActions::AppWideActions (QObject *parent)
+	AppWideActions::AppWideActions (Util::ShortcutManager *shortcutMgr, QObject *parent)
 	{
 		ActionAddFeed_ = new QAction (tr ("Add feed..."), parent);
 		ActionAddFeed_->setObjectName ("ActionAddFeed_");
@@ -67,6 +68,16 @@ namespace Aggregator
 		ActionMarkAllAsRead_ = new QAction (tr ("Mark all channels as read"), parent);
 		ActionMarkAllAsRead_->setObjectName ("ActionMarkAllAsRead_");
 		ActionMarkAllAsRead_->setProperty ("ActionIcon", "mail-mark-read");
+
+		shortcutMgr->RegisterActions ({
+					{ "ActionAddFeed", ActionAddFeed_ },
+					{ "ActionUpdateFeeds_", ActionUpdateFeeds_ },
+					{ "ActionImportOPML_", ActionImportOPML_ },
+					{ "ActionExportOPML_", ActionExportOPML_ },
+					{ "ActionImportBinary_", ActionImportBinary_ },
+					{ "ActionExportBinary_", ActionExportBinary_ },
+					{ "ActionExportFB2_", ActionExportFB2_ }
+				});
 	}
 
 	QMenu* AppWideActions::CreateToolMenu () const
@@ -94,7 +105,7 @@ namespace Aggregator
 		ActionMarkAllAsRead_->setEnabled (enabled);
 	}
 
-	ChannelActions::ChannelActions (QObject *parent)
+	ChannelActions::ChannelActions (Util::ShortcutManager *shortcutMgr, QObject *parent)
 	{
 		ActionRemoveFeed_ = new QAction (tr ("Remove feed"), parent);
 		ActionRemoveFeed_->setObjectName ("ActionRemoveFeed_");
@@ -122,6 +133,14 @@ namespace Aggregator
 		ActionChannelSettings_ = new QAction (tr ("Settings..."), parent);
 		ActionChannelSettings_->setObjectName ("ActionChannelSettings_");
 		ActionChannelSettings_->setProperty ("ActionIcon", "configure");
+
+		shortcutMgr->RegisterActions ({
+					{ "ActionRemoveFeed_", ActionRemoveFeed_ },
+					{ "ActionUpdateSelectedFeed_", ActionUpdateSelectedFeed_ },
+					{ "ActionMarkChannelAsRead_", ActionMarkChannelAsRead_ },
+					{ "ActionMarkChannelAsUnread_", ActionMarkChannelAsUnread_ },
+					{ "ActionChannelSettings_", ActionChannelSettings_ }
+				});
 	}
 
 	QMenu* CreateFeedsContextMenu (const ChannelActions& channelActions, const AppWideActions& appWideActions)

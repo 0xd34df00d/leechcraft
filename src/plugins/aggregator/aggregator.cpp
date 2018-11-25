@@ -90,8 +90,8 @@ namespace Aggregator
 
 		ShortcutMgr_ = new Util::ShortcutManager (proxy, this);
 
-		ChannelActions_ = std::make_shared<ChannelActions> (this);
-		AppWideActions_ = std::make_shared<AppWideActions> (this);
+		ChannelActions_ = std::make_shared<ChannelActions> (ShortcutMgr_, this);
+		AppWideActions_ = std::make_shared<AppWideActions> (ShortcutMgr_, this);
 
 		ToolMenu_ = AppWideActions_->CreateToolMenu ();
 		ToolMenu_->setIcon (GetIcon ());
@@ -120,13 +120,10 @@ namespace Aggregator
 			box->open ();
 		}
 
-
 		connect (AppWideActions_->ActionUpdateFeeds_,
 				&QAction::triggered,
 				&Core::Instance (),
 				&Core::updateFeeds);
-
-		BuildID2ActionTupleMap ();
 
 		QMetaObject::connectSlotsByName (this);
 	}
@@ -329,24 +326,6 @@ namespace Aggregator
 			return { *idx };
 		else
 			return AggregatorTab_->GetRelevantIndexes ();
-	}
-
-	void Aggregator::BuildID2ActionTupleMap ()
-	{
-		ShortcutMgr_->RegisterActions ({
-					{ "ActionAddFeed", AppWideActions_->ActionAddFeed_ },
-					{ "ActionUpdateFeeds_", AppWideActions_->ActionUpdateFeeds_ },
-					{ "ActionImportOPML_", AppWideActions_->ActionImportOPML_ },
-					{ "ActionExportOPML_", AppWideActions_->ActionExportOPML_ },
-					{ "ActionImportBinary_", AppWideActions_->ActionImportBinary_ },
-					{ "ActionExportBinary_", AppWideActions_->ActionExportBinary_ },
-					{ "ActionExportFB2_", AppWideActions_->ActionExportFB2_ },
-					{ "ActionRemoveFeed_", ChannelActions_->ActionRemoveFeed_ },
-					{ "ActionUpdateSelectedFeed_", ChannelActions_->ActionUpdateSelectedFeed_ },
-					{ "ActionMarkChannelAsRead_", ChannelActions_->ActionMarkChannelAsRead_ },
-					{ "ActionMarkChannelAsUnread_", ChannelActions_->ActionMarkChannelAsUnread_ },
-					{ "ActionChannelSettings_", ChannelActions_->ActionChannelSettings_ }
-				});
 	}
 
 	void Aggregator::on_ActionMarkAllAsRead__triggered ()
