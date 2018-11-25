@@ -60,6 +60,7 @@ set (SRCS
 	exportutils.cpp
 	itemutils.cpp
 	channelutils.cpp
+	representationmanager.cpp
 	)
 set (FORMS
 	mainwidget.ui

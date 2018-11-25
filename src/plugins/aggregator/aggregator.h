@@ -53,10 +53,8 @@ namespace Util
 
 namespace Aggregator
 {
-	class ItemsWidget;
-	class JobHolderRepresentation;
-	class ChannelsModelRepresentationProxy;
 	class AggregatorTab;
+	class RepresentationManager;
 	struct AppWideActions;
 	struct ChannelActions;
 
@@ -91,14 +89,10 @@ namespace Aggregator
 
 		QMenu *ToolMenu_;
 
-		std::shared_ptr<Util::XmlSettingsDialog> XmlSettingsDialog_;
-
-		ItemsWidget *ReprWidget_ = nullptr;
-		JobHolderRepresentation *JobHolderRepresentation_ = nullptr;
-		ChannelsModelRepresentationProxy *ReprModel_ = nullptr;
-		QModelIndex SelectedRepr_;
-
 		TabClassInfo TabInfo_;
+
+		std::shared_ptr<Util::XmlSettingsDialog> XmlSettingsDialog_;
+		std::shared_ptr<RepresentationManager> ReprManager_;
 		std::shared_ptr<AggregatorTab> AggregatorTab_;
 
 		Util::ShortcutManager *ShortcutMgr_ = nullptr;
@@ -139,7 +133,6 @@ namespace Aggregator
 		void RecoverTabs (const QList<TabRecoverInfo>& infos) override;
 		bool HasSimilarTab (const QByteArray&, const QList<QByteArray>&) const override;
 	private:
-		bool IsRepr () const;
 		QModelIndex GetRelevantIndex () const;
 		QList<QModelIndex> GetRelevantIndexes () const;
 		void BuildID2ActionTupleMap ();

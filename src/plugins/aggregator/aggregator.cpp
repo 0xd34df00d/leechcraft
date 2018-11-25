@@ -61,16 +61,14 @@
 #include "xmlsettingsmanager.h"
 #include "importbinary.h"
 #include "feedsettings.h"
-#include "jobholderrepresentation.h"
 #include "wizardgenerator.h"
 #include "export2fb2dialog.h"
-#include "itemswidget.h"
 #include "channelsmodel.h"
 #include "aggregatortab.h"
-#include "channelsmodelrepresentationproxy.h"
 #include "storagebackendmanager.h"
 #include "exportutils.h"
 #include "actionsstructs.h"
+#include "representationmanager.h"
 
 namespace LeechCraft
 {
@@ -122,19 +120,6 @@ namespace Aggregator
 			box->open ();
 		}
 
-		JobHolderRepresentation_ = new JobHolderRepresentation ();
-		JobHolderRepresentation_->setSourceModel (Core::Instance ().GetRawChannelsModel ());
-
-		ReprWidget_ = new ItemsWidget;
-		ReprWidget_->SetChannelsFilter (JobHolderRepresentation_);
-		ReprWidget_->RegisterShortcuts (ShortcutMgr_);
-		ReprWidget_->SetAppWideActions (*AppWideActions_);
-		ReprWidget_->SetChannelActions (*ChannelActions_);
-
-		ReprModel_ = new ChannelsModelRepresentationProxy { this };
-		ReprModel_->setSourceModel (JobHolderRepresentation_);
-		ReprModel_->SetWidgets (ReprWidget_->GetToolBar (), ReprWidget_);
-		ReprModel_->SetMenu (CreateFeedsContextMenu (*ChannelActions_, *AppWideActions_));
 
 		connect (AppWideActions_->ActionUpdateFeeds_,
 				&QAction::triggered,
@@ -151,11 +136,16 @@ namespace Aggregator
 		if (InitFailed_)
 			return;
 
-		ReprWidget_->ConstructBrowser ();
+		ReprManager_ = std::make_shared<RepresentationManager> (RepresentationManager::InitParams {
+					ShortcutMgr_,
+					*AppWideActions_,
+					*ChannelActions_
+				});
 	}
 
 	void Aggregator::Release ()
 	{
+		ReprManager_.reset ();
 		AggregatorTab_.reset ();
 		Core::Instance ().Release ();
 	}
@@ -229,18 +219,12 @@ namespace Aggregator
 
 	QAbstractItemModel* Aggregator::GetRepresentation () const
 	{
-		return ReprModel_;
+		return ReprManager_->GetRepresentation ();
 	}
 
 	void Aggregator::handleTasksTreeSelectionCurrentRowChanged (const QModelIndex& index, const QModelIndex&)
 	{
-		QModelIndex si = Core::Instance ().GetProxy ()->MapToSource (index);
-		if (si.model () != GetRepresentation ())
-			si = QModelIndex ();
-		si = ReprModel_->mapToSource (si);
-		si = JobHolderRepresentation_->SelectionChanged (si);
-		SelectedRepr_ = si;
-		ReprWidget_->CurrentChannelChanged (si);
+		ReprManager_->HandleRowChanged (index);
 	}
 
 	EntityTestHandleResult Aggregator::CouldHandle (const Entity& e) const
@@ -331,23 +315,18 @@ namespace Aggregator
 		return true;
 	}
 
-	bool Aggregator::IsRepr () const
-	{
-		return ReprWidget_->isVisible ();
-	}
-
 	QModelIndex Aggregator::GetRelevantIndex () const
 	{
-		if (IsRepr ())
-			return JobHolderRepresentation_->mapToSource (SelectedRepr_);
+		if (const auto idx = ReprManager_->GetRelevantIndex ())
+			return *idx;
 		else
 			return AggregatorTab_->GetRelevantIndex ();
 	}
 
 	QList<QModelIndex> Aggregator::GetRelevantIndexes () const
 	{
-		if (IsRepr ())
-			return { JobHolderRepresentation_->mapToSource (SelectedRepr_) };
+		if (const auto idx = ReprManager_->GetRelevantIndex ())
+			return { *idx };
 		else
 			return AggregatorTab_->GetRelevantIndexes ();
 	}
