@@ -32,6 +32,7 @@
 #include "storagebackendmanager.h"
 #include "channelsmodel.h"
 #include "itemslistmodel.h"
+#include "channelutils.h"
 
 namespace LeechCraft
 {
@@ -105,7 +106,7 @@ namespace Aggregator
 	{
 		QList<Channel> result;
 		const auto& sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
-		for (const auto& cs : Core::Instance ().GetChannels ())
+		for (const auto& cs : ChannelUtils::GetAllChannels ())
 			result << sb->GetChannel (cs.ChannelID_);
 		return result;
 	}

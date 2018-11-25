@@ -529,17 +529,6 @@ namespace Aggregator
 		return JobHolderRepresentation_;
 	}
 
-	channels_shorts_t Core::GetChannels () const
-	{
-		channels_shorts_t result;
-		for (const auto id : StorageBackend_->GetFeedsIDs ())
-		{
-			auto feedChannels = StorageBackend_->GetChannels (id);
-			std::move (feedChannels.begin (), feedChannels.end (), std::back_inserter (result));
-		}
-		return result;
-	}
-
 	void Core::AddFeeds (const feeds_container_t& feeds, const QString& tagsString)
 	{
 		auto tags = Proxy_->GetTagsManager ()->Split (tagsString);

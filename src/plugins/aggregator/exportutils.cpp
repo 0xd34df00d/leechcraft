@@ -37,6 +37,7 @@
 #include "opmlwriter.h"
 #include "storagebackendmanager.h"
 #include "storagebackend.h"
+#include "channelutils.h"
 
 namespace LeechCraft::Aggregator::ExportUtils
 {
@@ -53,17 +54,18 @@ namespace LeechCraft::Aggregator::ExportUtils
 
 	void RunExportOPML (QWidget *parent)
 	{
+		const auto& allChannels = ChannelUtils::GetAllChannels ();
 		Export exportDialog (QObject::tr ("Export to OPML"),
 				QObject::tr ("Select save file"),
 				QObject::tr ("OPML files (*.opml);;"
 					"XML files (*.xml);;"
 					"All files (*.*)"),
 				parent);
-		exportDialog.SetFeeds (Core::Instance ().GetChannels ());
+		exportDialog.SetFeeds (allChannels);
 		if (exportDialog.exec () == QDialog::Rejected)
 			return;
 
-		auto channels = FilterChannels (Core::Instance ().GetChannels (), exportDialog.GetSelectedFeeds ());
+		auto channels = FilterChannels (allChannels, exportDialog.GetSelectedFeeds ());
 
 		OPMLWriter writer;
 		auto data = writer.Write (channels,
@@ -83,16 +85,17 @@ namespace LeechCraft::Aggregator::ExportUtils
 
 	void RunExportBinary (QWidget *parent)
 	{
+		const auto& allChannels = ChannelUtils::GetAllChannels ();
 		Export exportDialog (QObject::tr ("Export to binary file"),
 				QObject::tr ("Select save file"),
 				QObject::tr ("Aggregator exchange files (*.lcae);;"
 					"All files (*.*)"),
 				parent);
-		exportDialog.SetFeeds (Core::Instance ().GetChannels ());
+		exportDialog.SetFeeds (allChannels);
 		if (exportDialog.exec () == QDialog::Rejected)
 			return;
 
-		auto channels = FilterChannels (Core::Instance ().GetChannels (), exportDialog.GetSelectedFeeds ());
+		auto channels = FilterChannels (allChannels, exportDialog.GetSelectedFeeds ());
 
 		QFile f { exportDialog.GetDestination () };
 		if (!f.open (QIODevice::WriteOnly))

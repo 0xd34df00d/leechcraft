@@ -184,7 +184,6 @@ namespace Aggregator
 		void AddFromOPML (const QString&, const QString&, const QSet<QString>&);
 		JobHolderRepresentation* GetJobHolderRepresentation () const;
 
-		channels_shorts_t GetChannels () const;
 		void AddFeeds (const feeds_container_t&, const QString&);
 	public slots:
 		void openLink (const QString&);
