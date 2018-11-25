@@ -30,9 +30,7 @@
 #pragma once
 
 #include <memory>
-#ifndef Q_MOC_RUN // see https://bugreports.qt-project.org/browse/QTBUG-22829
 #include <boost/program_options.hpp>
-#endif
 #include <QLocalServer>
 
 namespace LeechCraft
