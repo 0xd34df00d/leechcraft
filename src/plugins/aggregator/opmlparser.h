@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AGGREGATOR_OPMLPARSER_H
-#define PLUGINS_AGGREGATOR_OPMLPARSER_H
+#pragma once
+
 #include <QList>
 #include <QHash>
 #include <QString>
@@ -68,5 +68,3 @@ namespace Aggregator
 	OPMLItemsResult_t ParseOPMLItems (const QString& filename);
 }
 }
-
-#endif

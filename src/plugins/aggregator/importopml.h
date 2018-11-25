@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AGGREGATOR_IMPORTOPML_H
-#define PLUGINS_AGGREGATOR_IMPORTOPML_H
+#pragma once
+
 #include <QDialog>
 #include "ui_importopml.h"
 
@@ -56,5 +56,3 @@ namespace Aggregator
 	};
 }
 }
-
-#endif

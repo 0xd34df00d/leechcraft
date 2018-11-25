@@ -216,17 +216,13 @@ namespace Aggregator
 
 			const auto& s = e.Additional_;
 			if (s.contains ("UpdateOnStartup"))
-				XmlSettingsManager::Instance ()->setProperty ("UpdateOnStartup",
-						s.value ("UpdateOnStartup").toBool ());
+				XmlSettingsManager::Instance ()->setProperty ("UpdateOnStartup", s.value ("UpdateOnStartup").toBool ());
 			if (s.contains ("UpdateTimeout"))
-				XmlSettingsManager::Instance ()->setProperty ("UpdateInterval",
-						s.value ("UpdateTimeout").toInt ());
+				XmlSettingsManager::Instance ()->setProperty ("UpdateInterval", s.value ("UpdateTimeout").toInt ());
 			if (s.contains ("MaxArticles"))
-				XmlSettingsManager::Instance ()->setProperty ("ItemsPerChannel",
-						s.value ("MaxArticles").toInt ());
+				XmlSettingsManager::Instance ()->setProperty ("ItemsPerChannel", s.value ("MaxArticles").toInt ());
 			if (s.contains ("MaxAge"))
-				XmlSettingsManager::Instance ()->setProperty ("ItemsMaxAge",
-						s.value ("MaxAge").toInt ());
+				XmlSettingsManager::Instance ()->setProperty ("ItemsMaxAge", s.value ("MaxAge").toInt ());
 		}
 		else
 		{

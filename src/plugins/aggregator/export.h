@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AGGREGATOR_EXPORT_H
-#define PLUGINS_AGGREGATOR_EXPORT_H
+#pragma once
+
 #include <QDialog>
 #include <QSet>
 #include "ui_export.h"
@@ -61,5 +61,3 @@ namespace Aggregator
 	};
 }
 }
-
-#endif

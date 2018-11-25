@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AGGREGATOR_OPMLITEM_H
-#define PLUGINS_AGGREGATOR_OPMLITEM_H
+#pragma once
+
 #include <QString>
 #include <QStringList>
 
@@ -56,5 +56,3 @@ namespace Aggregator
 	};
 }
 }
-
-#endif

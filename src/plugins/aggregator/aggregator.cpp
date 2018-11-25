@@ -111,10 +111,7 @@ namespace Aggregator
 			InitFailed_ = true;
 			qWarning () << Q_FUNC_INFO
 					<< "core initialization failed";
-		}
 
-		if (InitFailed_)
-		{
 			auto box = new QMessageBox (QMessageBox::Critical,
 					"LeechCraft",
 					tr ("Aggregator failed to initialize properly. Check logs and talk with "
@@ -250,7 +247,7 @@ namespace Aggregator
 	{
 		EntityTestHandleResult r;
 		if (Core::Instance ().CouldHandle (e))
-			r.HandlePriority_ = 1000;
+			r.HandlePriority_ = EntityTestHandleResult::PIdeal;
 		return r;
 	}
 
@@ -390,8 +387,7 @@ namespace Aggregator
 			if (mbox.exec () == QMessageBox::No)
 				return;
 			else if (mbox.clickedButton () == &always)
-				XmlSettingsManager::Instance ()->
-						setProperty ("ConfirmMarkAllAsRead", false);
+				XmlSettingsManager::Instance ()->setProperty ("ConfirmMarkAllAsRead", false);
 		}
 
 		/* TODO
