@@ -59,6 +59,7 @@ set (SRCS
 	channelsmodelrepresentationproxy.cpp
 	exportutils.cpp
 	itemutils.cpp
+	channelutils.cpp
 	)
 set (FORMS
 	mainwidget.ui
