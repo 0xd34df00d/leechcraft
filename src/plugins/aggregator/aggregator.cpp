@@ -76,6 +76,8 @@ namespace Aggregator
 {
 	void Aggregator::Init (ICoreProxy_ptr proxy)
 	{
+		Proxy_ = proxy;
+
 		Util::InstallTranslator ("aggregator");
 
 		qRegisterMetaType<IDType_t> ("IDType_t");

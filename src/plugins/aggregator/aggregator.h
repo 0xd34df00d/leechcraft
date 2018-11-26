@@ -84,6 +84,7 @@ namespace Aggregator
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Aggregator")
 
+		ICoreProxy_ptr Proxy_;
 		std::shared_ptr<AppWideActions> AppWideActions_;
 		std::shared_ptr<ChannelActions> ChannelActions_;
 
