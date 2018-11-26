@@ -926,22 +926,10 @@ namespace Aggregator
 				pj.URL_);
 	}
 
-	void Core::MarkChannel (const QModelIndex& i, bool state)
+	void Core::MarkChannel (const QModelIndex& idx, bool state)
 	{
-		try
-		{
-			ChannelShort cs = ChannelsModel_->GetChannelForIndex (i);
-			DBUpThread_->ScheduleImpl (&DBUpdateThreadWorker::toggleChannelUnread,
-					cs.ChannelID_,
-					state);
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< e.what ();
-			ErrorNotification (tr ("Aggregator error"),
-					tr ("Could not mark channel"));
-		}
+		const auto cid = idx.data (ChannelRoles::ChannelID).value<IDType_t> ();
+		DBUpThread_->ScheduleImpl (&DBUpdateThreadWorker::toggleChannelUnread, cid, state);
 	}
 
 	void Core::UpdateFeed (const IDType_t& id)
