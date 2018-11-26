@@ -279,9 +279,7 @@ namespace Aggregator
 
 	QSet<QByteArray> Aggregator::GetExpectedPluginClasses () const
 	{
-		QSet<QByteArray> result;
-		result << "org.LeechCraft.Aggregator.GeneralPlugin/1.0";
-		return result;
+		return { "org.LeechCraft.Aggregator.GeneralPlugin/1.0" };
 	}
 
 	void Aggregator::AddPlugin (QObject *plugin)
