@@ -58,7 +58,7 @@ namespace Aggregator
 		Ui_.ChannelTags_->setText (Core::Instance ().GetProxy ()->GetTagsManager ()->Join (tags));
 
 		using Util::operator*;
-		const auto feedId = Core::Instance ().GetChannelInfo (Index_).FeedID_;
+		const auto feedId = Index_.data (ChannelRoles::FeedID).toInt ();
 		[&] (auto&& settings)
 		{
 			Ui_.UpdateInterval_->setValue (settings.UpdateTimeout_);
@@ -116,7 +116,7 @@ namespace Aggregator
 		Core::Instance ().SetTagsForIndex (tags, Index_);
 
 		StorageBackendManager::Instance ().MakeStorageBackendForThread ()->SetFeedSettings ({
-				Core::Instance ().GetChannelInfo (Index_).FeedID_,
+				Index_.data (ChannelRoles::FeedID).value<IDType_t> (),
 				Ui_.UpdateInterval_->value (),
 				Ui_.NumItems_->value (),
 				Ui_.ItemAge_->value (),
