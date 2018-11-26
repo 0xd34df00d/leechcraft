@@ -34,6 +34,7 @@
 #include <util/sll/functor.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
+#include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/iwebbrowser.h>
 #include "storagebackendmanager.h"
 #include "storagebackend.h"
@@ -57,7 +58,7 @@ namespace Aggregator
 				&QLabel::linkActivated,
 				[proxy] (const QString& url)
 				{
-					const auto browser = Core::Instance ().GetWebBrowser ();
+					const auto browser = proxy->GetPluginsManager ()->GetAllCastableTo<IWebBrowser*> ().value (0);
 					if (!browser || XmlSettingsManager::Instance ()->property ("AlwaysUseExternalBrowser").toBool ())
 						QDesktopServices::openUrl ({ url });
 					else

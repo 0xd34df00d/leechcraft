@@ -401,11 +401,6 @@ namespace Aggregator
 		return ChannelsModel_;
 	}
 
-	IWebBrowser* Core::GetWebBrowser () const
-	{
-		return Proxy_->GetPluginsManager ()->GetAllCastableTo<IWebBrowser*> ().value (0);
-	}
-
 	void Core::MarkChannelAsRead (const QModelIndex& i)
 	{
 		MarkChannel (i, false);

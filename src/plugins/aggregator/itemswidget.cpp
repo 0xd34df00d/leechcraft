@@ -49,6 +49,7 @@
 #include <util/util.h>
 #include <util/sll/overload.h>
 #include <interfaces/core/itagsmanager.h>
+#include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/ientitymanager.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
@@ -567,7 +568,9 @@ namespace Aggregator
 
 	void ItemsWidget::ConstructBrowser ()
 	{
-		Impl_->Ui_.ItemView_->Construct (Core::Instance ().GetWebBrowser ());
+		const auto proxy = Core::Instance ().GetProxy ();
+		const auto browser = proxy->GetPluginsManager ()->GetAllCastableTo<IWebBrowser*> ().value (0);
+		Impl_->Ui_.ItemView_->Construct (browser);
 		navBarVisibilityChanged ();
 	}
 

@@ -51,7 +51,6 @@ class QNetworkReply;
 class QFile;
 class QSortFilterProxyModel;
 class QToolBar;
-class IWebBrowser;
 
 namespace LeechCraft
 {
@@ -154,7 +153,6 @@ namespace Aggregator
 
 		ChannelsModel* GetRawChannelsModel () const;
 
-		IWebBrowser* GetWebBrowser () const;
 		void MarkChannelAsRead (const QModelIndex&);
 		void MarkChannelAsUnread (const QModelIndex&);
 
