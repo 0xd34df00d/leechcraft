@@ -55,7 +55,7 @@ namespace Aggregator
 				&Core::openLink);
 
 		const auto& tags = Index_.data (ChannelRoles::HumanReadableTags).toStringList ();
-		Ui_.ChannelTags_->setText (Core::Instance ().GetProxy ()->GetTagsManager ()->Join (tags));
+		Ui_.ChannelTags_->setText (proxy->GetTagsManager ()->Join (tags));
 
 		using Util::operator*;
 		const auto feedId = Index_.data (ChannelRoles::FeedID).value<IDType_t> ();
