@@ -504,7 +504,7 @@ namespace Aggregator
 		if (!index.isValid ())
 			return;
 
-		FeedSettings dia { index, nullptr };
+		FeedSettings dia { index, Proxy_ };
 		dia.exec ();
 	}
 

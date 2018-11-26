@@ -40,7 +40,7 @@ namespace LeechCraft
 {
 namespace Aggregator
 {
-	FeedSettings::FeedSettings (const QModelIndex& mapped, QWidget *parent)
+	FeedSettings::FeedSettings (const QModelIndex& mapped, const ICoreProxy_ptr& proxy, QWidget *parent)
 	: QDialog (parent)
 	, Index_ (mapped)
 	{

@@ -33,6 +33,7 @@
 #include <QDialog>
 #include <QModelIndex>
 #include <util/tags/tagscompleter.h>
+#include <interfaces/core/icoreproxyfwd.h>
 #include "ui_feedsettings.h"
 #include "common.h"
 
@@ -48,7 +49,7 @@ namespace Aggregator
 		std::unique_ptr<Util::TagsCompleter> ChannelTagsCompleter_;
 		QModelIndex Index_;
 	public:
-		explicit FeedSettings (const QModelIndex&, QWidget* = nullptr);
+		explicit FeedSettings (const QModelIndex&, const ICoreProxy_ptr&, QWidget* = nullptr);
 	public slots:
 		void accept () override;
 	private slots:
