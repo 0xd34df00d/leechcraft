@@ -78,6 +78,16 @@ namespace Aggregator
 	{
 		Util::InstallTranslator ("aggregator");
 
+		qRegisterMetaType<IDType_t> ("IDType_t");
+		qRegisterMetaType<QList<IDType_t>> ("QList<IDType_t>");
+		qRegisterMetaType<QSet<IDType_t>> ("QSet<IDType_t>");
+		qRegisterMetaType<QItemSelection> ("QItemSelection");
+		qRegisterMetaType<Item> ("Item");
+		qRegisterMetaType<ChannelShort> ("ChannelShort");
+		qRegisterMetaType<Channel> ("Channel");
+		qRegisterMetaType<channels_container_t> ("channels_container_t");
+		qRegisterMetaTypeStreamOperators<Feed> ("LeechCraft::Plugins::Aggregator::Feed");
+
 		TabInfo_ = TabClassInfo
 		{
 			"Aggregator",
