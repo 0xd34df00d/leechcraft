@@ -171,7 +171,6 @@ namespace Aggregator
 
 		void AddFeeds (const feeds_container_t&, const QString&);
 	public slots:
-		void openLink (const QString&);
 		void updateFeeds ();
 		void updateIntervalChanged ();
 	private slots:

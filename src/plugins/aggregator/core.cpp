@@ -504,20 +504,6 @@ namespace Aggregator
 		}
 	}
 
-	void Core::openLink (const QString& url)
-	{
-		IWebBrowser *browser = GetWebBrowser ();
-		if (!browser ||
-				XmlSettingsManager::Instance ()->
-					property ("AlwaysUseExternalBrowser").toBool ())
-		{
-			QDesktopServices::openUrl (QUrl (url));
-			return;
-		}
-
-		browser->Open (url);
-	}
-
 	void Core::handleJobFinished (int id)
 	{
 		if (!PendingJobs_.contains (id))

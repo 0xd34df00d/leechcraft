@@ -28,13 +28,16 @@
  **********************************************************************/
 
 #include "feedsettings.h"
+#include <QDesktopServices>
 #include <util/tags/tagscompletionmodel.h>
 #include <util/sll/functor.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
+#include <interfaces/iwebbrowser.h>
 #include "storagebackendmanager.h"
 #include "storagebackend.h"
 #include "core.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -51,8 +54,14 @@ namespace Aggregator
 
 		connect (Ui_.ChannelLink_,
 				&QLabel::linkActivated,
-				&Core::Instance (),
-				&Core::openLink);
+				[proxy] (const QString& url)
+				{
+					const auto browser = Core::Instance ().GetWebBrowser ();
+					if (!browser || XmlSettingsManager::Instance ()->property ("AlwaysUseExternalBrowser").toBool ())
+						QDesktopServices::openUrl ({ url });
+					else
+						browser->Open (url);
+				});
 
 		const auto& tags = Index_.data (ChannelRoles::HumanReadableTags).toStringList ();
 		Ui_.ChannelTags_->setText (proxy->GetTagsManager ()->Join (tags));
