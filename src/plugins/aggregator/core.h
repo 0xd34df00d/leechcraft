@@ -63,12 +63,6 @@ namespace Aggregator
 	{
 		Q_OBJECT
 
-		enum Columns
-		{
-			ColumnName = 0
-			, ColumnDate = 1
-		};
-
 		struct PendingOPML
 		{
 			QString Filename_;
