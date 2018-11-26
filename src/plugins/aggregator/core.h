@@ -184,8 +184,6 @@ namespace Aggregator
 		void HandleProvider (QObject*, int);
 		void ErrorNotification (const QString&, const QString&, bool = true) const;
 	signals:
-		void storageChanged ();
-
 		// Plugin API
 		void hookGotNewItems (LeechCraft::IHookProxy_ptr proxy,
 				const QList<Item>& items);
