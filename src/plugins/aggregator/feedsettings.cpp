@@ -29,6 +29,7 @@
 
 #include "feedsettings.h"
 #include <QDesktopServices>
+#include <util/tags/tagscompleter.h>
 #include <util/tags/tagscompletionmodel.h>
 #include <util/sll/functor.h>
 #include <interfaces/core/icoreproxy.h>
@@ -49,7 +50,7 @@ namespace Aggregator
 	{
 		Ui_.setupUi (this);
 
-		ChannelTagsCompleter_.reset (new Util::TagsCompleter (Ui_.ChannelTags_));
+		ChannelTagsCompleter_ = std::make_shared<Util::TagsCompleter> (Ui_.ChannelTags_);
 		Ui_.ChannelTags_->AddSelector ();
 
 		connect (Ui_.ChannelLink_,
