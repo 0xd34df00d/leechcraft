@@ -48,9 +48,9 @@ namespace Aggregator
 		std::unique_ptr<Util::TagsCompleter> ChannelTagsCompleter_;
 		QModelIndex Index_;
 	public:
-		explicit FeedSettings (const QModelIndex&, QWidget* = 0);
+		explicit FeedSettings (const QModelIndex&, QWidget* = nullptr);
 	public slots:
-		virtual void accept ();
+		void accept () override;
 	private slots:
 		void on_UpdateFavicon__released ();
 	};
