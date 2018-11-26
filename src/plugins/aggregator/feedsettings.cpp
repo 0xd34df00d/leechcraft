@@ -58,7 +58,7 @@ namespace Aggregator
 		Ui_.ChannelTags_->setText (Core::Instance ().GetProxy ()->GetTagsManager ()->Join (tags));
 
 		using Util::operator*;
-		const auto feedId = Index_.data (ChannelRoles::FeedID).toInt ();
+		const auto feedId = Index_.data (ChannelRoles::FeedID).value<IDType_t> ();
 		[&] (auto&& settings)
 		{
 			Ui_.UpdateInterval_->setValue (settings.UpdateTimeout_);
