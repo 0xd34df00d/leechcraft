@@ -61,6 +61,12 @@ namespace oral
 		{
 		}
 
+		template<typename U = T, typename Sub = typename U::value_type>
+		IndirectHolderBase (Sub val)
+		: Val_ { val }
+		{
+		}
+
 		Concrete& operator= (T val)
 		{
 			Val_ = val;
