@@ -59,7 +59,6 @@
 #include "channelsmodel.h"
 #include "opmlparser.h"
 #include "opmlwriter.h"
-#include "sqlstoragebackend.h"
 #include "jobholderrepresentation.h"
 #include "importopml.h"
 #include "addfeed.h"
