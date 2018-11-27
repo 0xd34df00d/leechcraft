@@ -991,18 +991,9 @@ namespace Aggregator
 
 		while (ChannelsShortSelector_.next ())
 		{
-			int unread = 0;
-
 			IDType_t id = ChannelsShortSelector_.value (0).value<IDType_t> ();
 
-			UnreadItemsCounter_.bindValue (":channel_id", id);
-			if (!UnreadItemsCounter_.exec () ||
-					!UnreadItemsCounter_.next ())
-				Util::DBLock::DumpError (UnreadItemsCounter_);
-			else
-				unread = UnreadItemsCounter_.value (0).toInt ();
-
-			UnreadItemsCounter_.finish ();
+			const auto unread = GetUnreadItems (id);
 
 			QStringList tags = Core::Instance ().GetProxy ()->
 				GetTagsManager ()->Split (ChannelsShortSelector_.value (4).toString ());
