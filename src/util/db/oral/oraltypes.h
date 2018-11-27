@@ -110,6 +110,9 @@ namespace oral
 	template<typename T>
 	using NotNullValue_t = typename NotNull<T>::value_type;
 
+	template<typename T>
+	using UniqueNotNull = Unique<NotNull<T>>;
+
 	namespace detail
 	{
 		template<typename T>
