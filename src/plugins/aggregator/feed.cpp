@@ -38,12 +38,19 @@ namespace LeechCraft
 namespace Aggregator
 {
 	Feed::Feed ()
-	: FeedID_ (Core::Instance ().GetPool (PTFeed).GetID ())
+	: FeedID_ { Core::Instance ().GetPool (PTFeed).GetID () }
 	{
 	}
 	
-	Feed::Feed (const IDType_t& feedId)
-	: FeedID_ (feedId)
+	Feed::Feed (IDType_t feedId)
+	: FeedID_ { feedId }
+	{
+	}
+
+	Feed::Feed (IDType_t id, const QString& url, const QDateTime& lastUpdate)
+	: FeedID_ { id }
+	, URL_ { url }
+	, LastUpdate_ { lastUpdate }
 	{
 	}
 

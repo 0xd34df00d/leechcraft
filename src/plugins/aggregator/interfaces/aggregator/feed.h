@@ -94,7 +94,8 @@ namespace Aggregator
 		channels_container_t Channels_;
 
 		Feed ();
-		Feed (const IDType_t& id);
+		Feed (IDType_t id);
+		Feed (IDType_t, const QString&, const QDateTime&);
 	};
 
 	typedef std::shared_ptr<Feed::FeedSettings> FeedSettings_ptr;
