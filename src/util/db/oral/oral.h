@@ -195,6 +195,12 @@ namespace oral
 			using S = MemberPtrStruct_t<Ptr>;
 			return S::ClassName () + "." + GetFieldName<S, FieldIndex<Ptr> ()> ();
 		}
+
+		template<typename T>
+		using TypeNameDetector = decltype (T::TypeName);
+
+		template<typename T>
+		constexpr bool TypeNameCustomized = IsDetected_v<TypeNameDetector, T>;
 	}
 
 	template<typename ImplFactory, typename T, typename = void>
@@ -210,6 +216,8 @@ namespace oral
 				return "TEXT";
 			else if constexpr (std::is_same_v<T, QByteArray>)
 				return ImplFactory::TypeLits::Binary;
+			else if constexpr (detail::TypeNameCustomized<T>)
+				return T::TypeName;
 			else
 				static_assert (std::is_same_v<T, struct Dummy>, "Unsupported type");
 		}
@@ -261,6 +269,8 @@ namespace oral
 				return static_cast<qint64> (t);
 			else if constexpr (IsIndirect<T> {})
 				return ToVariant<typename T::value_type> {} (t);
+			else if constexpr (detail::TypeNameCustomized<T>)
+				return t.ToVariant ();
 			else
 				return t;
 		}
@@ -277,6 +287,8 @@ namespace oral
 				return static_cast<T> (var.value<qint64> ());
 			else if constexpr (IsIndirect<T> {})
 				return FromVariant<typename T::value_type> {} (var);
+			else if constexpr (detail::TypeNameCustomized<T>)
+				return T::FromVariant (var);
 			else
 				return var.value<T> ();
 		}
