@@ -45,8 +45,8 @@ namespace Aggregator
 {
 	struct ChannelShort
 	{
-		IDType_t ChannelID_;
-		IDType_t FeedID_;
+		IDType_t ChannelID_ = IDNotFound;
+		IDType_t FeedID_ = IDNotFound;
 		QString Author_;
 		QString Title_;
 		QString DisplayTitle_;
@@ -54,7 +54,7 @@ namespace Aggregator
 		QStringList Tags_;
 		QDateTime LastBuild_;
 		QImage Favicon_;
-		int Unread_;
+		int Unread_ = 0;
 	};
 
 	struct Channel
