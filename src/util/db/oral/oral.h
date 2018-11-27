@@ -201,6 +201,12 @@ namespace oral
 
 		template<typename T>
 		constexpr bool TypeNameCustomized = IsDetected_v<TypeNameDetector, T>;
+
+		template<typename T>
+		using BaseTypeDetector = typename T::BaseType;
+
+		template<typename T>
+		constexpr bool BaseTypeCustomized = IsDetected_v<BaseTypeDetector, T>;
 	}
 
 	template<typename ImplFactory, typename T, typename = void>
@@ -218,6 +224,8 @@ namespace oral
 				return ImplFactory::TypeLits::Binary;
 			else if constexpr (detail::TypeNameCustomized<T>)
 				return T::TypeName;
+			else if constexpr (detail::BaseTypeCustomized<T>)
+				return Type2Name<ImplFactory, typename T::BaseType> {} ();
 			else
 				static_assert (std::is_same_v<T, struct Dummy>, "Unsupported type");
 		}
@@ -271,6 +279,8 @@ namespace oral
 				return ToVariant<typename T::value_type> {} (t);
 			else if constexpr (detail::TypeNameCustomized<T>)
 				return t.ToVariant ();
+			else if constexpr (detail::BaseTypeCustomized<T>)
+				return ToVariant<typename T::BaseType> {} (t.ToBaseType ());
 			else
 				return t;
 		}
@@ -289,6 +299,8 @@ namespace oral
 				return FromVariant<typename T::value_type> {} (var);
 			else if constexpr (detail::TypeNameCustomized<T>)
 				return T::FromVariant (var);
+			else if constexpr (detail::BaseTypeCustomized<T>)
+				return T::FromBaseType (FromVariant<typename T::BaseType> {} (var));
 			else
 				return var.value<T> ();
 		}
