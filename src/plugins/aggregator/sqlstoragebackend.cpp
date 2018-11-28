@@ -50,6 +50,29 @@ namespace LeechCraft
 {
 namespace Aggregator
 {
+	namespace
+	{
+		QByteArray SerializePixmap (const QImage& pixmap)
+		{
+			QByteArray bytes;
+			if (!pixmap.isNull ())
+			{
+				QBuffer buffer (&bytes);
+				buffer.open (QIODevice::WriteOnly);
+				pixmap.save (&buffer, "PNG");
+			}
+			return bytes;
+		}
+
+		QImage UnserializePixmap (const QByteArray& bytes)
+		{
+			QImage result;
+			if (bytes.size ())
+				result.loadFromData (bytes, "PNG");
+			return result;
+		}
+	}
+
 	SQLStorageBackend::SQLStorageBackend (StorageBackend::Type t, const QString& id)
 	: Type_ (t)
 	{
@@ -2136,26 +2159,6 @@ namespace Aggregator
 		}
 
 		return true;
-	}
-
-	QByteArray SQLStorageBackend::SerializePixmap (const QImage& pixmap) const
-	{
-		QByteArray bytes;
-		if (!pixmap.isNull ())
-		{
-			QBuffer buffer (&bytes);
-			buffer.open (QIODevice::WriteOnly);
-			pixmap.save (&buffer, "PNG");
-		}
-		return bytes;
-	}
-
-	QImage SQLStorageBackend::UnserializePixmap (const QByteArray& bytes) const
-	{
-		QImage result;
-		if (bytes.size ())
-			result.loadFromData (bytes, "PNG");
-		return result;
 	}
 
 	void SQLStorageBackend::FillItem (const QSqlQuery& query, Item& item) const

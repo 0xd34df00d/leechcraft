@@ -617,8 +617,6 @@ namespace Aggregator
 	private:
 		QString GetBlobType () const;
 		bool InitializeTables ();
-		QByteArray SerializePixmap (const QImage&) const;
-		QImage UnserializePixmap (const QByteArray&) const;
 
 		void FillItem (const QSqlQuery&, Item&) const;
 		void WriteEnclosures (const QList<Enclosure>&);
