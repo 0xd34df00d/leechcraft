@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AGGREGATOR_INTERFACES_AGGREGATOR_CHANNEL_H
-#define PLUGINS_AGGREGATOR_INTERFACES_AGGREGATOR_CHANNEL_H
+#pragma once
+
 #include <memory>
 #include <vector>
 #include <QString>
@@ -98,5 +98,3 @@ Q_DECLARE_METATYPE (LeechCraft::Aggregator::ChannelShort)
 Q_DECLARE_METATYPE (LeechCraft::Aggregator::Channel)
 Q_DECLARE_METATYPE (LeechCraft::Aggregator::Channel_ptr)
 Q_DECLARE_METATYPE (LeechCraft::Aggregator::channels_container_t)
-
-#endif
