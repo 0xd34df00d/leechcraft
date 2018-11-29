@@ -1245,8 +1245,7 @@ namespace Aggregator
 		GetEnclosures (itemId, item.Enclosures_);
 		GetMRSSEntries (itemId, item.MRSSEntries_);
 
-		emit hookItemLoad (Util::DefaultHookProxy_ptr (new Util::DefaultHookProxy), &item);
-
+		emit hookItemLoad (std::make_shared<Util::DefaultHookProxy> (), &item);
 		return item;
 	}
 
