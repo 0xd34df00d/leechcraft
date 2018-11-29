@@ -81,7 +81,6 @@ namespace Aggregator
 		Channel& operator= (const Channel&);
 
 		int CountUnreadItems () const;
-		void Equalify (const Channel&);
 		ChannelShort ToShort () const;
 	};
 

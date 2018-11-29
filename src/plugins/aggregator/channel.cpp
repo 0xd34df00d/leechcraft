@@ -73,23 +73,6 @@ namespace Aggregator
 		return result;
 	}
 
-	void Channel::Equalify (const Channel& channel)
-	{
-		ChannelID_ = channel.ChannelID_;
-		FeedID_ = channel.FeedID_;
-		Title_ = channel.Title_;
-		DisplayTitle_ = channel.Title_;
-		Link_ = channel.Link_;
-		Description_ = channel.Description_;
-		LastBuild_ = channel.LastBuild_;
-		Tags_ = channel.Tags_;
-		Language_ = channel.Language_;
-		Author_ = channel.Author_;
-		PixmapURL_ = channel.PixmapURL_;
-		Pixmap_ = channel.Pixmap_;
-		Favicon_ = channel.Favicon_;
-	}
-
 	ChannelShort Channel::ToShort () const
 	{
 		ChannelShort cs =
