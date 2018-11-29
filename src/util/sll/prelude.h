@@ -247,7 +247,7 @@ namespace Util
 		return std::move (cont);
 	}
 
-	const auto Id = [] (const auto& t) { return t; };
+	const auto Id = [] (auto&& t) ->decltype (auto) { return std::forward<decltype (t)> (t); };
 
 	template<typename R>
 	auto ComparingBy (R r)
