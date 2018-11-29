@@ -1268,7 +1268,7 @@ namespace Aggregator
 			GetEnclosures (itemId, item->Enclosures_);
 			GetMRSSEntries (itemId, item->MRSSEntries_);
 
-			items.push_back (item);
+			items.push_back (std::move (item));
 		}
 
 		ItemsFullSelector_.finish ();
