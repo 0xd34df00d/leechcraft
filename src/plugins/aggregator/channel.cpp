@@ -40,29 +40,12 @@ namespace LeechCraft
 {
 namespace Aggregator
 {
-	Channel::Channel (const IDType_t& id)
-	: ChannelID_ (Core::Instance ().GetPool (PTChannel).GetID ())
-	, FeedID_ (id)
+	Channel Channel::CreateForFeed (IDType_t feedId)
 	{
-	}
-
-	Channel::Channel (const IDType_t& id, const IDType_t& chId)
-	: ChannelID_ (chId)
-	, FeedID_ (id)
-	{
-	}
-
-	Channel::Channel (const Channel& channel)
-	: Items_ (channel.Items_)
-	{
-		Equalify (channel);
-	}
-
-	Channel& Channel::operator= (const Channel& channel)
-	{
-		Equalify (channel);
-		Items_ = channel.Items_;
-		return *this;
+		Channel ch;
+		ch.ChannelID_ = Core::Instance ().GetPool (PTChannel).GetID ();
+		ch.FeedID_ = feedId;
+		return ch;
 	}
 
 	int Channel::CountUnreadItems () const

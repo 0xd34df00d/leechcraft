@@ -61,7 +61,7 @@ namespace Aggregator
 			const IDType_t& feedId) const
 	{
 		channels_container_t channels;
-		Channel_ptr chan (new Channel (feedId));
+		auto chan = std::make_shared<Channel> (Channel::CreateForFeed (feedId));
 		channels.push_back (chan);
 	
 		QDomElement root = doc.documentElement ();

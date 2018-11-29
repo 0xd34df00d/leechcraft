@@ -64,7 +64,7 @@ namespace Aggregator
 		QDomElement channelDescr = root.firstChildElement ("channel");
 		while (!channelDescr.isNull ())
 		{
-			Channel_ptr channel (new Channel (feedId));
+			auto channel = std::make_shared<Channel> (Channel::CreateForFeed (feedId));
 			channel->Title_ = channelDescr.firstChildElement ("title").text ().trimmed ();
 			channel->Link_ = channelDescr.firstChildElement ("link").text ();
 			channel->Description_ =

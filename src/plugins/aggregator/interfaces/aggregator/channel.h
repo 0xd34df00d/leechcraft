@@ -59,8 +59,8 @@ namespace Aggregator
 
 	struct Channel
 	{
-		IDType_t ChannelID_;
-		IDType_t FeedID_;
+		IDType_t ChannelID_ = IDNotFound;
+		IDType_t FeedID_ = IDNotFound;
 		QString Title_;
 		QString DisplayTitle_;
 		QString Link_;
@@ -74,11 +74,7 @@ namespace Aggregator
 		QImage Favicon_;
 		items_container_t Items_;
 
-		Channel () : Channel { IDNotFound, IDNotFound } {}
-		Channel (const IDType_t& feedId);
-		Channel (const IDType_t& feedId, const IDType_t& channelId);
-		Channel (const Channel&);
-		Channel& operator= (const Channel&);
+		static Channel CreateForFeed (IDType_t feedId);
 
 		int CountUnreadItems () const;
 		ChannelShort ToShort () const;
