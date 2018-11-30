@@ -39,10 +39,6 @@ namespace LeechCraft
 {
 namespace Aggregator
 {
-	Atom03Parser::Atom03Parser ()
-	{
-	}
-	
 	Atom03Parser& Atom03Parser::Instance ()
 	{
 		static Atom03Parser inst;
@@ -86,8 +82,7 @@ namespace Aggregator
 		return channels;
 	}
 	
-	Item* Atom03Parser::ParseItem (const QDomElement& entry,
-			const IDType_t& channelId) const
+	Item* Atom03Parser::ParseItem (const QDomElement& entry, const IDType_t& channelId) const
 	{
 		Item *item = new Item (channelId);
 	

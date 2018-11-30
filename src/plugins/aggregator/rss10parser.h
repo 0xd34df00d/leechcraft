@@ -38,14 +38,12 @@ namespace Aggregator
 {
 	class RSS10Parser : public RSSParser
 	{
-		RSS10Parser ();
+		RSS10Parser () = default;
 	public:
-		virtual ~RSS10Parser ();
 		static RSS10Parser& Instance ();
-		virtual bool CouldParse (const QDomDocument&) const;
+		bool CouldParse (const QDomDocument&) const override;
 	private:
-		channels_container_t Parse (const QDomDocument&,
-				const IDType_t&) const;
+		channels_container_t Parse (const QDomDocument&, const IDType_t&) const override;
 	};
 }
 }

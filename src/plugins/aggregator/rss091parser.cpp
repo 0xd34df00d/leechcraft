@@ -34,14 +34,6 @@ namespace LeechCraft
 {
 namespace Aggregator
 {
-	RSS091Parser::RSS091Parser ()
-	{
-	}
-
-	RSS091Parser::~RSS091Parser ()
-	{
-	}
-
 	RSS091Parser& RSS091Parser::Instance ()
 	{
 		static RSS091Parser inst;

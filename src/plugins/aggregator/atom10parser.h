@@ -39,15 +39,13 @@ namespace Aggregator
 {
 	class Atom10Parser : public AtomParser
 	{
-		Atom10Parser ();
+		Atom10Parser () = default;
 	public:
 		static Atom10Parser& Instance ();
-		virtual bool CouldParse (const QDomDocument&) const;
+		bool CouldParse (const QDomDocument&) const override;
 	private:
-		channels_container_t Parse (const QDomDocument&,
-				const IDType_t&) const;
-		Item* ParseItem (const QDomElement&,
-				const IDType_t&) const;
+		channels_container_t Parse (const QDomDocument&, const IDType_t&) const override;
+		Item* ParseItem (const QDomElement&, const IDType_t&) const;
 	};
 }
 }

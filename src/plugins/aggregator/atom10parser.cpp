@@ -37,10 +37,6 @@ namespace LeechCraft
 {
 namespace Aggregator
 {
-	Atom10Parser::Atom10Parser ()
-	{
-	}
-	
 	Atom10Parser& Atom10Parser::Instance ()
 	{
 		static Atom10Parser inst;
