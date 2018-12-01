@@ -81,18 +81,18 @@ namespace Aggregator
 		QDomElement entry = root.firstChildElement ("entry");
 		while (!entry.isNull ())
 		{
-			chan->Items_.push_back (Item_ptr (ParseItem (entry, chan->ChannelID_)));
+			chan->Items_.push_back (ParseItem (entry, chan->ChannelID_));
 			entry = entry.nextSiblingElement ("entry");
 		}
 	
 		return channels;
 	}
 	
-	Item* Atom10Parser::ParseItem (const QDomElement& entry,
+	Item_ptr Atom10Parser::ParseItem (const QDomElement& entry,
 			const IDType_t& channelId) const
 	{
-		Item *item = new Item (channelId);
-	
+		auto item = std::make_shared<Item> (Item::CreateForChannel (channelId));
+
 		item->Title_ = entry.firstChildElement ("title").text ();
 		item->Link_ = GetLink (entry);
 		item->Guid_ = entry.firstChildElement ("id").text ();

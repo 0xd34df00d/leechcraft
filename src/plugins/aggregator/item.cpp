@@ -202,6 +202,14 @@ namespace Aggregator
 	{
 	}
 
+	Item Item::CreateForChannel (IDType_t channelId)
+	{
+		Item item;
+		item.ChannelID_ = channelId;
+		item.ItemID_ = Core::Instance ().GetPool (PTItem).GetID ();
+		return item;
+	}
+
 	ItemShort Item::ToShort () const
 	{
 		return

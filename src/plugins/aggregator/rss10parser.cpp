@@ -46,8 +46,7 @@ namespace Aggregator
 		return root.tagName () == "RDF";
 	}
 	
-	channels_container_t RSS10Parser::Parse (const QDomDocument& doc,
-			const IDType_t& feedId) const
+	channels_container_t RSS10Parser::Parse (const QDomDocument& doc, const IDType_t& feedId) const
 	{
 		channels_container_t result;
 	
@@ -88,7 +87,7 @@ namespace Aggregator
 			QString about = itemDescr.attributeNS (RDF_, "about");
 			if (item2Channel.contains (about))
 			{
-				Item_ptr item (new Item (item2Channel [about]->ChannelID_));
+				auto item = std::make_shared<Item> (Item::CreateForChannel (item2Channel [about]->ChannelID_));
 				item->Title_ = itemDescr.firstChildElement ("title").text ();
 				item->Link_ = itemDescr.firstChildElement ("link").text ();
 				item->Description_ = itemDescr.firstChildElement ("description").text ();

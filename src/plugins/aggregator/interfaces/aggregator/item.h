@@ -316,6 +316,7 @@ namespace Aggregator
 			*/
 		QList<MRSSEntry> MRSSEntries_;
 
+		static Item CreateForChannel (IDType_t channelId);
 		Item () = default;
 
 		/** @brief Constructs the item as belonging to the

@@ -45,7 +45,7 @@ namespace Aggregator
 		bool CouldParse (const QDomDocument&) const override;
 	private:
 		channels_container_t Parse (const QDomDocument&, const IDType_t&) const override;
-		Item* ParseItem (const QDomElement&, const IDType_t&) const;
+		Item_ptr ParseItem (const QDomElement&, const IDType_t&) const;
 	};
 }
 }
