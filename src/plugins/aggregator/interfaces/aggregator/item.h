@@ -317,27 +317,6 @@ namespace Aggregator
 		QList<MRSSEntry> MRSSEntries_;
 
 		static Item CreateForChannel (IDType_t channelId);
-		Item () = default;
-
-		/** @brief Constructs the item as belonging to the
-			* given channel.
-			*
-			* Item ID is automatically requested from the Core.
-			*
-			* @param[in] channel The parent channel of this item.
-			*/
-		Item (const IDType_t& channel);
-
-		/** @brief Constructs the item as belonging to the
-			* given channel and having given ID.
-			*
-			* This way item ID isn't generated, itemId is used
-			* instead.
-			*
-			* @param[in] channel The parent channel of this item.
-			* @param[in] itemId The item ID of this channel.
-			*/
-		Item (const IDType_t& channel, const IDType_t& itemId);
 
 		/** Returns the simplified (short) representation of this item.
 			*
