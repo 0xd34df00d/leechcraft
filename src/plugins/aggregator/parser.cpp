@@ -261,7 +261,7 @@ namespace Aggregator
 		{
 			QDomElement link = nodes.at (i).toElement ();
 
-			Enclosure e (itemId);
+			auto e = Enclosure::CreateForItem (itemId);
 			e.URL_ = link.attributeNS (RDF_, "resource");
 			e.Type_ = link.attributeNS (Enc_, "type");
 			e.Length_ = link.attributeNS (Enc_, "length", "-1").toLongLong ();

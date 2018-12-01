@@ -114,8 +114,8 @@ namespace Aggregator
 		for (int i = 0; i < links.size (); ++i)
 		{
 			QDomElement link = links.at (i).toElement ();
-	
-			Enclosure e (item);
+
+			auto e = Enclosure::CreateForItem (item);
 			e.URL_ = link.attribute ("url");
 			e.Type_ = link.attribute ("type");
 			e.Length_ = link.attribute ("length", "-1").toLongLong ();
