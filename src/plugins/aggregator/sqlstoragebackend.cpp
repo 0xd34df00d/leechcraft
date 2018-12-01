@@ -2210,7 +2210,9 @@ namespace Aggregator
 
 		while (GetEnclosures_.next ())
 		{
-			Enclosure e (itemId, GetEnclosures_.value (0).value<IDType_t> ());
+			Enclosure e;
+			e.EnclosureID_ = GetEnclosures_.value (0).value<IDType_t> ();
+			e.ItemID_ = itemId;
 			e.URL_ = GetEnclosures_.value (1).toString ();
 			e.Type_ = GetEnclosures_.value (2).toString ();
 			e.Length_ = GetEnclosures_.value (3).toLongLong ();
