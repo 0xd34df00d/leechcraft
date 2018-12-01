@@ -80,28 +80,8 @@ namespace Aggregator
 			*/
 		QString Lang_;
 
-		/** @brief Constructs the enclosure with given parent.
-			*
-			* The given enclosure requests a new ID for it from the
-			* Core.
-			*
-			* @param[in] itemId The ID of the parent item.
-			*/
-		Enclosure (const IDType_t& itemId);
-
-		/** @brief Constructs the enclosure with given parent.
-			*
-			* The enclosure doesn't request a new ID from the Core
-			* and uses encId instead.
-			*
-			* @param[in] itemId The ID of the parent item.
-			* @param[in] encId The ID of the enclosure.
-			*/
-		Enclosure (const IDType_t& itemId, const IDType_t& encId);
-
 		static Enclosure CreateForItem (IDType_t itemId);
 	private:
-		Enclosure ();
 		friend QDataStream& operator>> (QDataStream&, QList<Enclosure>&);
 	};
 

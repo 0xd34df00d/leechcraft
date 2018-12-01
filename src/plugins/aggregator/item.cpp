@@ -127,24 +127,6 @@ namespace Aggregator
 			SameSets (e1.Scenes_, e2.Scenes_);
 	}
 
-	Enclosure::Enclosure (const IDType_t& item)
-	: EnclosureID_ (Core::Instance ().GetPool (PTEnclosure).GetID ())
-	, ItemID_ (item)
-	{
-	}
-
-	Enclosure::Enclosure (const IDType_t& item, const IDType_t& enclosure)
-	: EnclosureID_ (enclosure)
-	, ItemID_ (item)
-	{
-	}
-
-	Enclosure::Enclosure ()
-	: EnclosureID_ (0)
-	, ItemID_ (0)
-	{
-	}
-
 	Enclosure Enclosure::CreateForItem (IDType_t itemId)
 	{
 		Enclosure enc;
