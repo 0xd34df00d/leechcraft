@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AGGREGATOR_RSS20PARSER_H
-#define PLUGINS_AGGREGATOR_RSS20PARSER_H
+#pragma once
+
 #include "rssparser.h"
 #include "channel.h"
 
@@ -48,5 +48,3 @@ namespace Aggregator
 	};
 }
 }
-
-#endif

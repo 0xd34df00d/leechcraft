@@ -27,9 +27,6 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AGGREGATOR_ITEM_H
-#define PLUGINS_AGGREGATOR_ITEM_H
+#pragma once
 
 #include "interfaces/aggregator/item.h"
-
-#endif

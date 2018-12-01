@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AGGREGATOR_RSS091PARSER_H
-#define PLUGINS_AGGREGATOR_RSS091PARSER_H
+#pragma once
+
 #include "rssparser.h"
 
 namespace LeechCraft
@@ -47,5 +47,3 @@ namespace Aggregator
 	};
 }
 }
-
-#endif

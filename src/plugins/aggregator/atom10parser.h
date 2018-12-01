@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AGGREGATOR_ATOM10PARSER_H
-#define PLUGINS_AGGREGATOR_ATOM10PARSER_H
+#pragma once
+
 #include <QPair>
 #include <QDateTime>
 #include "atomparser.h"
@@ -49,5 +49,3 @@ namespace Aggregator
 	};
 }
 }
-
-#endif
