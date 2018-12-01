@@ -58,11 +58,11 @@ namespace Aggregator
 	{
 		/** @brief Enclosure ID.
 			*/
-		IDType_t EnclosureID_;
+		IDType_t EnclosureID_ = 0;
 
 		/** @brief Parent item's ID.
 			*/
-		IDType_t ItemID_;
+		IDType_t ItemID_ = 0;
 
 		/** @brief The URL this enclosure refers to.
 			*/
