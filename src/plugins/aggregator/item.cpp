@@ -145,6 +145,14 @@ namespace Aggregator
 	{
 	}
 
+	Enclosure Enclosure::CreateForItem (IDType_t itemId)
+	{
+		Enclosure enc;
+		enc.ItemID_ = itemId;
+		enc.EnclosureID_ = Core::Instance ().GetPool (PTEnclosure).GetID ();
+		return enc;
+	}
+
 #define MRSS_CN(a) MRSS##a
 #define MRSS_ENUM(a) PTMRSS##a
 #define MRSS_IDMEM(a) MRSS##a##ID_

@@ -98,6 +98,8 @@ namespace Aggregator
 			* @param[in] encId The ID of the enclosure.
 			*/
 		Enclosure (const IDType_t& itemId, const IDType_t& encId);
+
+		static Enclosure CreateForItem (IDType_t itemId);
 	private:
 		Enclosure ();
 		friend QDataStream& operator>> (QDataStream&, QList<Enclosure>&);
