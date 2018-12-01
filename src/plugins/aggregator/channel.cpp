@@ -153,7 +153,7 @@ namespace Aggregator
 			in >> size;
 			for (size_t i = 0; i < size; ++i)
 			{
-				Item_ptr it (new Item (chan.ChannelID_));
+				auto it = std::make_shared<Item> ();
 				in >> *it;
 				chan.Items_.push_back (it);
 			}
@@ -176,7 +176,7 @@ namespace Aggregator
 			in >> size;
 			for (size_t i = 0; i < size; ++i)
 			{
-				Item_ptr it (new Item (chan.ChannelID_));
+				auto it = std::make_shared<Item> ();
 				in >> *it;
 				chan.Items_.push_back (it);
 			}
