@@ -552,14 +552,10 @@ namespace Aggregator
 			for (int i = 0; i < thumbs.size (); ++i)
 			{
 				QDomElement thumbNode = thumbs.at (i).toElement ();
-				boost::optional<int> widthOpt = GetInt (thumbNode, "width");
-				int width = widthOpt ? *widthOpt : 0;
-				boost::optional<int> heightOpt = GetInt (thumbNode, "height");
-				int height = heightOpt ? *heightOpt : 0;
 				MRSSThumbnail thumb (mrssId);
 				thumb.URL_ = thumbNode.attribute ("url");
-				thumb.Width_ = width;
-				thumb.Height_ = height;
+				thumb.Width_ = GetInt (thumbNode, "width").value_or (0);
+				thumb.Height_ = GetInt (thumbNode, "height").value_or (0);
 				thumb.Time_ = thumbNode.attribute ("time");
 				result << thumb;
 			}
