@@ -180,6 +180,14 @@ namespace Aggregator
 	{
 	}
 
+	MRSSEntry MRSSEntry::CreateForItem (IDType_t itemId)
+	{
+		MRSSEntry entry;
+		entry.MRSSEntryID_ = Core::Instance ().GetPool (PTMRSSEntry).GetID ();
+		entry.ItemID_ = itemId;
+		return entry;
+	}
+
 	Item Item::CreateForChannel (IDType_t channelId)
 	{
 		Item item;

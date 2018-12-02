@@ -210,6 +210,7 @@ namespace Aggregator
 		QList<MRSSPeerLink> PeerLinks_;
 		QList<MRSSScene> Scenes_;
 
+		static MRSSEntry CreateForItem (IDType_t itemId);
 		MRSSEntry (const IDType_t& itemId);
 		MRSSEntry (const IDType_t& itemId, const IDType_t& entryId);
 	private:
