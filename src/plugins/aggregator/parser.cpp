@@ -413,7 +413,7 @@ namespace Aggregator
 					"content");
 			for (int i = 0; i < entries.size (); ++i)
 			{
-				MRSSEntry entry (ItemID_);
+				auto entry = MRSSEntry::CreateForItem (ItemID_);
 
 				QDomElement en = entries.at (i).toElement ();
 				ArbitraryLocatedData d = GetArbitraryLocatedDataFor (en, entry.MRSSEntryID_);

@@ -2352,7 +2352,10 @@ namespace Aggregator
 		while (GetMediaRSSs_.next ())
 		{
 			IDType_t mrssId = GetMediaRSSs_.value (0).value<IDType_t> ();
-			MRSSEntry e (itemId, mrssId);
+
+			MRSSEntry e;
+			e.ItemID_ = itemId;
+			e.MRSSEntryID_ = mrssId;
 			e.URL_ = GetMediaRSSs_.value (1).toString ();
 			e.Size_ = GetMediaRSSs_.value (2).toLongLong ();
 			e.Type_ = GetMediaRSSs_.value (3).toString ();
