@@ -58,11 +58,11 @@ namespace Aggregator
 	{
 		/** @brief Enclosure ID.
 			*/
-		IDType_t EnclosureID_ = 0;
+		IDType_t EnclosureID_ = IDNotFound;
 
 		/** @brief Parent item's ID.
 			*/
-		IDType_t ItemID_ = 0;
+		IDType_t ItemID_ = IDNotFound;
 
 		/** @brief The URL this enclosure refers to.
 			*/
@@ -174,8 +174,8 @@ namespace Aggregator
 
 	struct MRSSEntry
 	{
-		IDType_t MRSSEntryID_ = 0;
-		IDType_t ItemID_ = 0;
+		IDType_t MRSSEntryID_ = IDNotFound;
+		IDType_t ItemID_ = IDNotFound;
 		QString URL_;
 		qint64 Size_ = 0;
 		QString Type_;
