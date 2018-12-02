@@ -889,12 +889,9 @@ namespace Aggregator
 		}
 	}
 
-	void Core::HandleFeedUpdated (const channels_container_t& channels,
-			const Core::PendingJob& pj)
+	void Core::HandleFeedUpdated (const channels_container_t& channels, const Core::PendingJob& pj)
 	{
-		DBUpThread_->ScheduleImpl (&DBUpdateThreadWorker::updateFeed,
-				channels,
-				pj.URL_);
+		DBUpThread_->ScheduleImpl (&DBUpdateThreadWorker::updateFeed, channels, pj.URL_);
 	}
 
 	void Core::MarkChannel (const QModelIndex& idx, bool state)

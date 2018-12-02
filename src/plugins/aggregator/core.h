@@ -176,10 +176,8 @@ namespace Aggregator
 		void FetchPixmap (const Channel&);
 		void FetchFavicon (const Channel&);
 		void HandleExternalData (const QString&, const QFile&);
-		void HandleFeedAdded (const channels_container_t&,
-				const PendingJob&);
-		void HandleFeedUpdated (const channels_container_t&,
-				const PendingJob&);
+		void HandleFeedAdded (const channels_container_t&, const PendingJob&);
+		void HandleFeedUpdated (const channels_container_t&, const PendingJob&);
 		void MarkChannel (const QModelIndex&, bool);
 		void HandleProvider (QObject*, int);
 		void ErrorNotification (const QString&, const QString&, bool = true) const;
