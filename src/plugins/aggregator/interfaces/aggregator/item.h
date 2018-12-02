@@ -89,8 +89,8 @@ namespace Aggregator
 
 	struct MRSSThumbnail
 	{
-		IDType_t MRSSThumbnailID_;
-		IDType_t MRSSEntryID_;
+		IDType_t MRSSThumbnailID_ = IDNotFound;
+		IDType_t MRSSEntryID_ = IDNotFound;
 		QString URL_;
 		int Width_ = 0;
 		int Height_ = 0;
