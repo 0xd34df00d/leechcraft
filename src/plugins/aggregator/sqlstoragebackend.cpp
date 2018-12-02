@@ -1056,8 +1056,9 @@ namespace Aggregator
 			throw ChannelNotFoundError {};
 		}
 
-		Channel channel (ChannelsFullSelector_.value (0).toInt (), channelId);
-
+		Channel channel;
+		channel.ChannelID_ = channelId;
+		channel.FeedID_ = ChannelsFullSelector_.value (0).toInt ();
 		channel.Link_ = ChannelsFullSelector_.value (1).toString ();
 		channel.Title_ = ChannelsFullSelector_.value (2).toString ();
 		channel.Description_ = ChannelsFullSelector_.value (3).toString ();
@@ -1238,7 +1239,9 @@ namespace Aggregator
 		if (!ItemFullSelector_.next ())
 			return {};
 
-		Item item { ItemFullSelector_.value (13).toInt (), itemId };
+		Item item;
+		item.ItemID_ = itemId;
+		item.ChannelID_ = ItemFullSelector_.value (13).value<IDType_t> ();
 		FillItem (ItemFullSelector_, item);
 		ItemFullSelector_.finish ();
 
@@ -1263,7 +1266,9 @@ namespace Aggregator
 		while (ItemsFullSelector_.next ())
 		{
 			IDType_t itemId = ItemsFullSelector_.value (14 ).value<IDType_t> ();
-			auto item = std::make_shared<Item> (channelId, itemId);
+			auto item = std::make_shared<Item> ();
+			item->ChannelID_ = channelId;
+			item->ItemID_ = itemId;
 			FillItem (ItemsFullSelector_, *item);
 			GetEnclosures (itemId, item->Enclosures_);
 			GetMRSSEntries (itemId, item->MRSSEntries_);
