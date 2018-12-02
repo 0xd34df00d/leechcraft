@@ -2393,8 +2393,9 @@ namespace Aggregator
 			{
 				while (GetMediaRSSThumbnails_.next ())
 				{
-					MRSSThumbnail th (mrssId,
-							GetMediaRSSThumbnails_.value (0).value<IDType_t> ());
+					MRSSThumbnail th;
+					th.MRSSEntryID_ = mrssId;
+					th.MRSSThumbnailID_ = GetMediaRSSThumbnails_.value (0).value<IDType_t> ();
 					th.URL_ = GetMediaRSSThumbnails_.value (1).toString ();
 					th.Width_ = GetMediaRSSThumbnails_.value (2).toInt ();
 					th.Height_ = GetMediaRSSThumbnails_.value (3).toInt ();

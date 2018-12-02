@@ -552,7 +552,8 @@ namespace Aggregator
 			for (int i = 0; i < thumbs.size (); ++i)
 			{
 				QDomElement thumbNode = thumbs.at (i).toElement ();
-				MRSSThumbnail thumb (mrssId);
+
+				auto thumb = MRSSThumbnail::CreateForEntry (mrssId);
 				thumb.URL_ = thumbNode.attribute ("url");
 				thumb.Width_ = GetInt (thumbNode, "width").value_or (0);
 				thumb.Height_ = GetInt (thumbNode, "height").value_or (0);

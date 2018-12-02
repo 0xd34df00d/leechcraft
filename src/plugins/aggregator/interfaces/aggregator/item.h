@@ -97,10 +97,7 @@ namespace Aggregator
 		QString Time_;
 
 		static MRSSThumbnail CreateForEntry (IDType_t entryId);
-		MRSSThumbnail (const IDType_t& entryId);
-		MRSSThumbnail (const IDType_t& entryId, const IDType_t& thisId);
 	private:
-		MRSSThumbnail ();
 		friend QDataStream& operator>> (QDataStream&, QList<MRSSThumbnail>&);
 	};
 
