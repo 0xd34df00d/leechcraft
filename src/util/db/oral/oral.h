@@ -83,9 +83,7 @@ namespace oral
 		{
 		}
 
-		virtual ~QueryException () noexcept
-		{
-		}
+		~QueryException () noexcept = default;
 
 		const QSqlQuery_ptr& GetQueryPtr () const
 		{
