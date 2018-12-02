@@ -96,6 +96,7 @@ namespace Aggregator
 		int Height_ = 0;
 		QString Time_;
 
+		static MRSSThumbnail CreateForEntry (IDType_t entryId);
 		MRSSThumbnail (const IDType_t& entryId);
 		MRSSThumbnail (const IDType_t& entryId, const IDType_t& thisId);
 	private:

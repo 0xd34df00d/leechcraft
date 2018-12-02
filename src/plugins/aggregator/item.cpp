@@ -168,6 +168,14 @@ namespace Aggregator
 #undef MRSS_TRAVERSER
 #undef MRSS_EXPANDER
 
+	MRSSThumbnail MRSSThumbnail::CreateForEntry (IDType_t entryId)
+	{
+		MRSSThumbnail thumbnail;
+		thumbnail.MRSSThumbnailID_ = Core::Instance ().GetPool (PTMRSSThumbnail).GetID ();
+		thumbnail.MRSSEntryID_ = entryId;
+		return thumbnail;
+	}
+
 	MRSSEntry MRSSEntry::CreateForItem (IDType_t itemId)
 	{
 		MRSSEntry entry;
