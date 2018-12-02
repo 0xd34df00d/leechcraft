@@ -211,10 +211,7 @@ namespace Aggregator
 		QList<MRSSScene> Scenes_;
 
 		static MRSSEntry CreateForItem (IDType_t itemId);
-		MRSSEntry (const IDType_t& itemId);
-		MRSSEntry (const IDType_t& itemId, const IDType_t& entryId);
 	private:
-		MRSSEntry () = default;
 		friend QDataStream& operator>> (QDataStream&, QList<MRSSEntry>&);
 	};
 

@@ -168,18 +168,6 @@ namespace Aggregator
 #undef MRSS_TRAVERSER
 #undef MRSS_EXPANDER
 
-	MRSSEntry::MRSSEntry (const IDType_t& itemId)
-	: MRSSEntryID_ (Core::Instance ().GetPool (PTMRSSEntry).GetID ())
-	, ItemID_ (itemId)
-	{
-	}
-
-	MRSSEntry::MRSSEntry (const IDType_t& itemId, const IDType_t& thisId)
-	: MRSSEntryID_ (thisId)
-	, ItemID_ (itemId)
-	{
-	}
-
 	MRSSEntry MRSSEntry::CreateForItem (IDType_t itemId)
 	{
 		MRSSEntry entry;
