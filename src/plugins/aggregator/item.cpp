@@ -135,39 +135,6 @@ namespace Aggregator
 		return enc;
 	}
 
-#define MRSS_CN(a) MRSS##a
-#define MRSS_ENUM(a) PTMRSS##a
-#define MRSS_IDMEM(a) MRSS##a##ID_
-#define MRSS_DEFINE_CTORS(a) \
-	MRSS_CN(a)::MRSS_CN(a) (const IDType_t& mrssEntry) \
-	: MRSS_IDMEM(a) (Core::Instance ().GetPool (MRSS_ENUM(a)).GetID ()) \
-	, MRSSEntryID_ (mrssEntry) \
-	{ \
-	} \
-\
-	MRSS_CN(a)::MRSS_CN(a) (const IDType_t& mrssEntry, \
-			const IDType_t& mrssThis) \
-	: MRSS_IDMEM(a) (mrssThis) \
-	, MRSSEntryID_ (mrssEntry) \
-	{ \
-	} \
-\
-	MRSS_CN(a)::MRSS_CN(a) () \
-	: MRSS_IDMEM(a) (0) \
-	, MRSSEntryID_ (0) \
-	{ \
-	}
-#define MRSS_TRAVERSER(z,i,array) MRSS_DEFINE_CTORS (BOOST_PP_SEQ_ELEM(i, array))
-#define MRSS_EXPANDER(Classes) BOOST_PP_REPEAT (BOOST_PP_SEQ_SIZE (Classes), MRSS_TRAVERSER, Classes)
-#define MRSS_CLASSES_LIST (Scene)
-
-	MRSS_EXPANDER (MRSS_CLASSES_LIST);
-
-#undef CLASSES_LIST
-#undef MRSS_DEFINE_REGISTER
-#undef MRSS_TRAVERSER
-#undef MRSS_EXPANDER
-
 	MRSSThumbnail MRSSThumbnail::CreateForEntry (IDType_t entryId)
 	{
 		MRSSThumbnail thumbnail;

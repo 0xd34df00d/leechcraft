@@ -155,10 +155,7 @@ namespace Aggregator
 		QString EndTime_;
 
 		static MRSSScene CreateForEntry (IDType_t entryId);
-		MRSSScene (const IDType_t& entryId);
-		MRSSScene (const IDType_t& entryId, const IDType_t& thisId);
 	private:
-		MRSSScene ();
 		friend QDataStream& operator>> (QDataStream&, QList<MRSSScene>&);
 	};
 

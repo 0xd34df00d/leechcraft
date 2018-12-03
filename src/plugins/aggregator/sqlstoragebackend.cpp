@@ -2468,8 +2468,9 @@ namespace Aggregator
 			{
 				while (GetMediaRSSScenes_.next ())
 				{
-					MRSSScene th (mrssId,
-							GetMediaRSSScenes_.value (0).value<IDType_t> ());
+					MRSSScene th;
+					th.MRSSEntryID_ = mrssId;
+					th.MRSSSceneID_ = GetMediaRSSScenes_.value (0).value<IDType_t> ();
 					th.Title_ = GetMediaRSSScenes_.value (1).toString ();
 					th.Description_ = GetMediaRSSScenes_.value (2).toString ();
 					th.StartTime_ = GetMediaRSSScenes_.value (3).toString ();

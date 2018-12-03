@@ -666,7 +666,7 @@ namespace Aggregator
 				for (int i = 0; i < scenesNodes.size (); ++i)
 				{
 					QDomElement sceneNode = scenesNodes.at (i).toElement ();
-					MRSSScene scene (mrssId);
+					auto scene = MRSSScene::CreateForEntry (mrssId);
 					scene.Title_ = sceneNode.firstChildElement ("sceneTitle").text ();
 					scene.Description_ = sceneNode.firstChildElement ("sceneDescription").text ();
 					scene.StartTime_ = sceneNode.firstChildElement ("sceneStartTime").text ();
