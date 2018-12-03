@@ -574,7 +574,7 @@ namespace Aggregator
 				QDomElement creditNode = credits.at (i).toElement ();
 				if (!creditNode.hasAttribute ("role"))
 					continue;
-				MRSSCredit credit (mrssId);
+				auto credit = MRSSCredit::CreateForEntry (mrssId);
 				credit.Role_ = creditNode.attribute ("role");
 				credit.Who_ = creditNode.text ();
 				result << credit;

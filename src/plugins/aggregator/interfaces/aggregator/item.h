@@ -111,10 +111,7 @@ namespace Aggregator
 		QString Who_;
 
 		static MRSSCredit CreateForEntry (IDType_t entryId);
-		MRSSCredit (const IDType_t& entryId);
-		MRSSCredit (const IDType_t& entryId, const IDType_t& thisId);
 	private:
-		MRSSCredit ();
 		friend QDataStream& operator>> (QDataStream&, QList<MRSSCredit>&);
 	};
 

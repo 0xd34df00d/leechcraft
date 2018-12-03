@@ -2417,8 +2417,9 @@ namespace Aggregator
 			{
 				while (GetMediaRSSCredits_.next ())
 				{
-					MRSSCredit cr (mrssId,
-							GetMediaRSSCredits_.value (0).value<IDType_t> ());
+					MRSSCredit cr;
+					cr.MRSSEntryID_ = mrssId;
+					cr.MRSSCreditID_ = GetMediaRSSCredits_.value (0).value<IDType_t> ();
 					cr.Role_ = GetMediaRSSCredits_.value (1).toString ();
 					cr.Who_ = GetMediaRSSCredits_.value (2).toString ();
 					e.Credits_ << cr;
