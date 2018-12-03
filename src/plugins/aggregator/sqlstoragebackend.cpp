@@ -639,10 +639,7 @@ namespace LeechCraft::Aggregator
 
 	Channel SQLStorageBackend::GetChannel (const IDType_t& channelId) const
 	{
-		const auto maybeChannel = Channels_->SelectOne.Build ()
-				.Where (sph::f<&ChannelR::ChannelID_> == channelId)
-				.Order (oral::OrderBy<sph::asc<&ChannelR::Title_>>)
-				();
+		const auto maybeChannel = Channels_->SelectOne (sph::f<&ChannelR::ChannelID_> == channelId);
 		if (!maybeChannel)
 		{
 			qWarning () << Q_FUNC_INFO
