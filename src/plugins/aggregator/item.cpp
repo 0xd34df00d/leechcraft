@@ -159,7 +159,7 @@ namespace Aggregator
 	}
 #define MRSS_TRAVERSER(z,i,array) MRSS_DEFINE_CTORS (BOOST_PP_SEQ_ELEM(i, array))
 #define MRSS_EXPANDER(Classes) BOOST_PP_REPEAT (BOOST_PP_SEQ_SIZE (Classes), MRSS_TRAVERSER, Classes)
-#define MRSS_CLASSES_LIST (PeerLink)(Scene)
+#define MRSS_CLASSES_LIST (Scene)
 
 	MRSS_EXPANDER (MRSS_CLASSES_LIST);
 

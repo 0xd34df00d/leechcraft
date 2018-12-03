@@ -645,7 +645,7 @@ namespace Aggregator
 			for (int i = 0; i < links.size (); ++i)
 			{
 				QDomElement linkNode = links.at (i).toElement ();
-				MRSSPeerLink pl (mrssId);
+				auto pl = MRSSPeerLink::CreateForEntry (mrssId);
 				pl.Link_ = linkNode.attribute ("href");
 				pl.Type_ = linkNode.attribute ("type");
 				result << pl;

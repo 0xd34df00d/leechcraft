@@ -2451,8 +2451,9 @@ namespace Aggregator
 			{
 				while (GetMediaRSSPeerLinks_.next ())
 				{
-					MRSSPeerLink pl (mrssId,
-							GetMediaRSSPeerLinks_.value (0).value<IDType_t> ());
+					MRSSPeerLink pl;
+					pl.MRSSEntryID_ = mrssId;
+					pl.MRSSPeerLinkID_ = GetMediaRSSPeerLinks_.value (0).value<IDType_t> ();
 					pl.Type_ = GetMediaRSSPeerLinks_.value (1).toString ();
 					pl.Link_ = GetMediaRSSPeerLinks_.value (2).toString ();
 					e.PeerLinks_ << pl;
