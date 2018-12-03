@@ -119,8 +119,8 @@ namespace Aggregator
 
 	struct MRSSComment
 	{
-		IDType_t MRSSCommentID_;
-		IDType_t MRSSEntryID_;
+		IDType_t MRSSCommentID_ = IDNotFound;
+		IDType_t MRSSEntryID_ = IDNotFound;
 		QString Type_;
 		QString Comment_;
 
@@ -135,8 +135,8 @@ namespace Aggregator
 
 	struct MRSSPeerLink
 	{
-		IDType_t MRSSPeerLinkID_;
-		IDType_t MRSSEntryID_;
+		IDType_t MRSSPeerLinkID_ = IDNotFound;
+		IDType_t MRSSEntryID_ = IDNotFound;
 		QString Type_;
 		QString Link_;
 
@@ -151,8 +151,8 @@ namespace Aggregator
 
 	struct MRSSScene
 	{
-		IDType_t MRSSSceneID_;
-		IDType_t MRSSEntryID_;
+		IDType_t MRSSSceneID_ = IDNotFound;
+		IDType_t MRSSEntryID_ = IDNotFound;
 		QString Title_;
 		QString Description_;
 		QString StartTime_;
