@@ -895,7 +895,7 @@ namespace LeechCraft::Aggregator
 	{
 		const auto& oldItems = GetFullItems (channelId);
 
-		Items_->Update ((sph::f<&ItemR::Unread_> = state),
+		Items_->Update (sph::f<&ItemR::Unread_> = state,
 				sph::f<&ItemR::ChannelID_> == channelId);
 
 		const auto& channel = GetChannel (channelId);
