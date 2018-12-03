@@ -154,6 +154,7 @@ namespace Aggregator
 		QString StartTime_;
 		QString EndTime_;
 
+		static MRSSScene CreateForEntry (IDType_t entryId);
 		MRSSScene (const IDType_t& entryId);
 		MRSSScene (const IDType_t& entryId, const IDType_t& thisId);
 	private:

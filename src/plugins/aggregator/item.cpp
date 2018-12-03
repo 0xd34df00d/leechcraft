@@ -200,6 +200,14 @@ namespace Aggregator
 		return link;
 	}
 
+	MRSSScene MRSSScene::CreateForEntry (IDType_t entryId)
+	{
+		MRSSScene scene;
+		scene.MRSSSceneID_ = Core::Instance ().GetPool (PTMRSSScene).GetID ();
+		scene.MRSSEntryID_ = entryId;
+		return scene;
+	}
+
 	MRSSEntry MRSSEntry::CreateForItem (IDType_t itemId)
 	{
 		MRSSEntry entry;
