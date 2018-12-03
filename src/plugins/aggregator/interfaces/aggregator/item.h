@@ -105,8 +105,8 @@ namespace Aggregator
 
 	struct MRSSCredit
 	{
-		IDType_t MRSSCreditID_;
-		IDType_t MRSSEntryID_;
+		IDType_t MRSSCreditID_ = IDNotFound;
+		IDType_t MRSSEntryID_ = IDNotFound;
 		QString Role_;
 		QString Who_;
 
