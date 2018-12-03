@@ -192,6 +192,14 @@ namespace Aggregator
 		return comment;
 	}
 
+	MRSSPeerLink MRSSPeerLink::CreateForEntry (IDType_t entryId)
+	{
+		MRSSPeerLink link;
+		link.MRSSPeerLinkID_ = Core::Instance ().GetPool (PTMRSSPeerLink).GetID ();
+		link.MRSSEntryID_ = entryId;
+		return link;
+	}
+
 	MRSSEntry MRSSEntry::CreateForItem (IDType_t itemId)
 	{
 		MRSSEntry entry;

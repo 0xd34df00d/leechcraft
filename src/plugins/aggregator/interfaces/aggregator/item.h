@@ -138,6 +138,7 @@ namespace Aggregator
 		QString Type_;
 		QString Link_;
 
+		static MRSSPeerLink CreateForEntry (IDType_t entryId);
 		MRSSPeerLink (const IDType_t& entryId);
 		MRSSPeerLink (const IDType_t& entryId, const IDType_t& thisId);
 	private:
