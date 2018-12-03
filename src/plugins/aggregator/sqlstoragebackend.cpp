@@ -855,8 +855,7 @@ namespace LeechCraft::Aggregator
 		QList<IDType_t> modifiedChannels;
 		for (const auto itemId : items)
 		{
-			// TODO no need to query full item here
-			const auto& cid = GetItem (itemId) * &Item::ChannelID_;
+			const auto& cid = Items_->SelectOne (sph::fields<&Item::ChannelID_>, sph::f<&Item::ItemID_> == itemId);
 			if (!cid)
 				continue;
 
