@@ -2434,8 +2434,9 @@ namespace Aggregator
 			{
 				while (GetMediaRSSComments_.next ())
 				{
-					MRSSComment cm (mrssId,
-							GetMediaRSSComments_.value (0).value<IDType_t> ());
+					MRSSComment cm;
+					cm.MRSSEntryID_ = mrssId;
+					cm.MRSSCommentID_ = GetMediaRSSComments_.value (0).value<IDType_t> ();
 					cm.Type_ = GetMediaRSSComments_.value (1).toString ();
 					cm.Comment_ = GetMediaRSSComments_.value (2).toString ();
 					e.Comments_ << cm;

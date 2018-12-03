@@ -595,7 +595,7 @@ namespace Aggregator
 						"comment");
 				for (int i = 0; i < comments.size (); ++i)
 				{
-					MRSSComment comment (mrssId);
+					auto comment = MRSSComment::CreateForEntry (mrssId);
 					comment.Type_ = QObject::tr ("Comments");
 					comment.Comment_ = comments.at (i).toElement ().text ();
 					result << comment;
@@ -611,7 +611,7 @@ namespace Aggregator
 						"response");
 				for (int i = 0; i < responses.size (); ++i)
 				{
-					MRSSComment comment (mrssId);
+					auto comment = MRSSComment::CreateForEntry (mrssId);
 					comment.Type_ = QObject::tr ("Responses");
 					comment.Comment_ = responses.at (i).toElement ().text ();
 					result << comment;
@@ -627,7 +627,7 @@ namespace Aggregator
 						"backLink");
 				for (int i = 0; i < backlinks.size (); ++i)
 				{
-					MRSSComment comment (mrssId);
+					auto comment = MRSSComment::CreateForEntry (mrssId);
 					comment.Type_ = QObject::tr ("Backlinks");
 					comment.Comment_ = backlinks.at (i).toElement ().text ();
 					result << comment;
