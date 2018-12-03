@@ -124,6 +124,7 @@ namespace Aggregator
 		QString Type_;
 		QString Comment_;
 
+		static MRSSComment CreateForEntry (IDType_t entryId);
 		MRSSComment (const IDType_t& entryId);
 		MRSSComment (const IDType_t& entryId, const IDType_t& thisId);
 	private:

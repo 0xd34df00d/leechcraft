@@ -184,6 +184,14 @@ namespace Aggregator
 		return credit;
 	}
 
+	MRSSComment MRSSComment::CreateForEntry (IDType_t entryId)
+	{
+		MRSSComment comment;
+		comment.MRSSCommentID_ = Core::Instance ().GetPool (PTMRSSComment).GetID ();
+		comment.MRSSEntryID_ = entryId;
+		return comment;
+	}
+
 	MRSSEntry MRSSEntry::CreateForItem (IDType_t itemId)
 	{
 		MRSSEntry entry;
