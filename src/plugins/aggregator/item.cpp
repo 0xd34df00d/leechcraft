@@ -176,6 +176,14 @@ namespace Aggregator
 		return thumbnail;
 	}
 
+	MRSSCredit MRSSCredit::CreateForEntry (IDType_t entryId)
+	{
+		MRSSCredit credit;
+		credit.MRSSCreditID_ = Core::Instance ().GetPool (PTMRSSCredit).GetID ();
+		credit.MRSSEntryID_ = entryId;
+		return credit;
+	}
+
 	MRSSEntry MRSSEntry::CreateForItem (IDType_t itemId)
 	{
 		MRSSEntry entry;

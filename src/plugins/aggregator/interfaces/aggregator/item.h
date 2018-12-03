@@ -110,6 +110,7 @@ namespace Aggregator
 		QString Role_;
 		QString Who_;
 
+		static MRSSCredit CreateForEntry (IDType_t entryId);
 		MRSSCredit (const IDType_t& entryId);
 		MRSSCredit (const IDType_t& entryId, const IDType_t& thisId);
 	private:
