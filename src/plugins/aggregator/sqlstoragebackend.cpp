@@ -817,7 +817,7 @@ namespace LeechCraft::Aggregator
 	// TODO rename this method
 	void SQLStorageBackend::UpdateItem (const ItemShort& item)
 	{
-		Items_->Update ((sph::f<&ItemR::Unread_> = item.Unread_), sph::f<&ItemR::ItemID_> == item.ItemID_);
+		Items_->Update (sph::f<&ItemR::Unread_> = item.Unread_, sph::f<&ItemR::ItemID_> == item.ItemID_);
 
 		const auto& channel = GetChannel (item.ChannelID_);
 		if (const auto& fullItem = GetItem (item.ItemID_))
