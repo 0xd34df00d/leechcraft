@@ -91,18 +91,18 @@ namespace HotSensors
 	void LmSensorsBackend::EnumerateSensors ()
 	{
 		int nr = 0;
-		const sensors_chip_name *chipName = 0;
+		const sensors_chip_name *chipName = nullptr;
 		while ((chipName = sensors_get_detected_chips (nullptr, &nr)))
 		{
 			int fnr = 0;
-			const sensors_feature *feature = 0;
+			const sensors_feature *feature = nullptr;
 			while ((feature = sensors_get_features (chipName, &fnr)))
 			{
 				if (feature->type != SENSORS_FEATURE_TEMP)
 					continue;
 
 				int sfnr = 0;
-				const sensors_subfeature *subfeature = 0;
+				const sensors_subfeature *subfeature = nullptr;
 
 				StoredTemp temp
 				{
