@@ -38,7 +38,7 @@ namespace HotSensors
 	struct StoredChipName
 	{
 		QByteArray Prefix_;
-		sensors_bus_id Bus_;
+		sensors_bus_id Bus_ = {};
 		int Addr_ = 0;
 		QByteArray Path_;
 
