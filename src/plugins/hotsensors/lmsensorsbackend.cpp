@@ -43,7 +43,7 @@ namespace HotSensors
 		QByteArray Path_;
 
 		StoredChipName () = default;
-		StoredChipName (const sensors_chip_name*);
+		explicit StoredChipName (const sensors_chip_name*);
 
 		sensors_chip_name ToSensorsChip ();
 	};
@@ -124,7 +124,7 @@ namespace HotSensors
 						sensors_get_value (chipName, subfeature->number, &temp.Crit_);
 						break;
 					case SENSORS_SUBFEATURE_TEMP_INPUT:
-						temp.SF_ = StoredSubfeature { { chipName }, subfeature->number };
+						temp.SF_ = StoredSubfeature { StoredChipName { chipName }, subfeature->number };
 						break;
 					default:
 						break;
