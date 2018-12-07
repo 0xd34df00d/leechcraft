@@ -48,7 +48,7 @@ namespace HotSensors
 	private:
 		void EnumerateSensors ();
 	public slots:
-		void update ();
+		void update () override;
 	};
 }
 }
