@@ -480,13 +480,15 @@ namespace Azoth
 		dw->setWindowIcon (GetIcon ());
 		dw->toggleViewAction ()->setIcon (GetIcon ());
 
-		const int dockArea = XmlSettingsManager::Instance ()
-				.Property ("MWDockArea", Qt::RightDockWidgetArea).toInt ();
-		const bool floating = XmlSettingsManager::Instance ()
-				.Property ("MWFloating", false).toBool ();
+		const int dockArea = XmlSettingsManager::Instance ().Property ("MWDockArea", Qt::RightDockWidgetArea).toInt ();
+		const bool floating = XmlSettingsManager::Instance ().Property ("MWFloating", false).toBool ();
 
 		auto rootWM = Core::Instance ().GetProxy ()->GetRootWindowsManager ();
-		rootWM->GetMWProxy (0)->AddDockWidget (dw, { .Area_ = static_cast<Qt::DockWidgetArea> (dockArea) });
+		rootWM->GetMWProxy (0)->AddDockWidget (dw,
+				{
+					.Area_ = static_cast<Qt::DockWidgetArea> (dockArea),
+					.SizeContext_ = "AzothDockWidget"
+				});
 		rootWM->GetMWProxy (0)->SetViewActionShortcut (dw, QString ("Ctrl+J,A"));
 
 		dw->setFloating (floating);
