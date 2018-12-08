@@ -57,6 +57,7 @@ public:
 	struct DockWidgetParams
 	{
 		Qt::DockWidgetArea Area_ = Qt::NoDockWidgetArea;
+		std::optional<QByteArray> SizeContext_ = {};
 	};
 
 	/** @brief Adds the given dock widget to the main window

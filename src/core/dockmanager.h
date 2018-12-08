@@ -58,6 +58,8 @@ namespace LeechCraft
 			QWidget *Associated_ = nullptr;
 			MainWindow *Window_ = nullptr;
 			int Width_ = -1;
+
+			std::optional<QByteArray> SizeContext_ = {};
 		};
 		QHash<QDockWidget*, DockInfo> Dock2Info_;
 		QHash<QAction*, QDockWidget*> ToggleAct2Dock_;
@@ -81,6 +83,8 @@ namespace LeechCraft
 	protected:
 		bool eventFilter (QObject*, QEvent*);
 	private:
+		void SetupDockAction (QDockWidget*);
+		void SetupSizing (QDockWidget*, const QByteArray&);
 		void HandleDockToggled (QDockWidget*, bool);
 	public slots:
 		void handleTabMove (int, int, int);

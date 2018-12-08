@@ -42,6 +42,7 @@
 #include "mainwindow.h"
 #include "docktoolbarmanager.h"
 #include "mainwindowmenumanager.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -64,6 +65,7 @@ namespace LeechCraft
 		win->addDockWidget (params.Area_, dw);
 		win->resizeDocks ({ dw }, { 1 }, Qt::Horizontal);		// https://bugreports.qt.io/browse/QTBUG-65592
 		Dock2Info_ [dw].Window_ = win;
+		Dock2Info_ [dw].SizeContext_ = params.SizeContext_;
 
 		connect (dw,
 				SIGNAL (destroyed (QObject*)),
@@ -74,12 +76,9 @@ namespace LeechCraft
 
 		dw->installEventFilter (this);
 
-		auto toggleAct = dw->toggleViewAction ();
-		ToggleAct2Dock_ [toggleAct] = dw;
-		connect (toggleAct,
-				&QAction::triggered,
-				this,
-				[this, dw] (bool isVisible) { HandleDockToggled (dw, isVisible); });
+		SetupDockAction (dw);
+		if (params.SizeContext_)
+			SetupSizing (dw, *params.SizeContext_);
 	}
 
 	void DockManager::AssociateDockWidget (QDockWidget *dock, QWidget *tab)
@@ -157,6 +156,14 @@ namespace LeechCraft
 		case QEvent::Hide:
 			Dock2Info_ [dock].Width_ = dock->width ();
 			break;
+		case QEvent::Resize:
+			if (const auto ctx = Dock2Info_ [dock].SizeContext_)
+			{
+				auto resizeEv = static_cast<QResizeEvent *> (event);
+				const auto width = resizeEv->size ().width ();
+				XmlSettingsManager::Instance ()->setProperty (*ctx, width);
+			}
+			break;
 		case QEvent::Show:
 		{
 			const auto width = Dock2Info_ [dock].Width_;
@@ -184,6 +191,23 @@ namespace LeechCraft
 		}
 
 		return false;
+	}
+
+	void DockManager::SetupDockAction (QDockWidget *dw)
+	{
+		auto toggleAct = dw->toggleViewAction ();
+		ToggleAct2Dock_ [toggleAct] = dw;
+		connect (toggleAct,
+				&QAction::triggered,
+				this,
+				[this, dw] (bool isVisible) { HandleDockToggled (dw, isVisible); });
+	}
+
+	void DockManager::SetupSizing (QDockWidget *dw, const QByteArray& sizingContext)
+	{
+		const auto& storedWidth = XmlSettingsManager::Instance ()->property (sizingContext);
+		if (storedWidth.isValid ())
+			Dock2Info_ [dw].Width_ = storedWidth.toInt ();
 	}
 
 	void DockManager::HandleDockToggled (QDockWidget *dock, bool isVisible)
