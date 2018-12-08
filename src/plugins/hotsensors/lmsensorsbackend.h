@@ -39,8 +39,6 @@ namespace HotSensors
 
 	class LmSensorsBackend : public Backend
 	{
-		Q_OBJECT
-
 		QList<StoredTemp> Features_;
 	public:
 		LmSensorsBackend (QObject* = 0);
