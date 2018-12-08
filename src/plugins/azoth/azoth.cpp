@@ -486,7 +486,7 @@ namespace Azoth
 				.Property ("MWFloating", false).toBool ();
 
 		auto rootWM = Core::Instance ().GetProxy ()->GetRootWindowsManager ();
-		rootWM->GetMWProxy (0)->AddDockWidget (static_cast<Qt::DockWidgetArea> (dockArea), dw);
+		rootWM->GetMWProxy (0)->AddDockWidget (dw, { .Area_ = static_cast<Qt::DockWidgetArea> (dockArea) });
 		rootWM->GetMWProxy (0)->SetViewActionShortcut (dw, QString ("Ctrl+J,A"));
 
 		dw->setFloating (floating);

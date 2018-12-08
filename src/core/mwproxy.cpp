@@ -42,9 +42,9 @@ namespace LeechCraft
 	{
 	}
 
-	void MWProxy::AddDockWidget (Qt::DockWidgetArea area, QDockWidget *w)
+	void MWProxy::AddDockWidget (QDockWidget *w, const DockWidgetParams& params)
 	{
-		Core::Instance ().GetDockManager ()->AddDockWidget (w, area);
+		Core::Instance ().GetDockManager ()->AddDockWidget (w, params);
 		ToggleViewActionVisiblity (w, true);
 	}
 

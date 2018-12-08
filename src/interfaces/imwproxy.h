@@ -54,20 +54,23 @@ public:
 
 	virtual ~IMWProxy () {}
 
-	/** @brief Adds the given dock widget to the given area.
-	 *
-	 * This function merely calls QMainWindow::addDockWidget().
+	struct DockWidgetParams
+	{
+		Qt::DockWidgetArea Area_ = Qt::NoDockWidgetArea;
+	};
+
+	/** @brief Adds the given dock widget to the main window
 	 *
 	 * The action for toggling the visibility of this dock widget is
 	 * also added to the corresponding menus by default. The
 	 * ToggleViewActionVisiblity() method could be used to change that.
 	 *
-	 * @param[in] area The area to add widget to.
 	 * @param[in] widget The dock widget to add.
+	 * @param[in] params The parameters of the newly added dock widget.
 	 *
 	 * @sa AssociateDockWidget(), ToggleViewActionVisiblity()
 	 */
-	virtual void AddDockWidget (Qt::DockWidgetArea area, QDockWidget *widget) = 0;
+	virtual void AddDockWidget (QDockWidget *widget, const DockWidgetParams& params) = 0;
 
 	/** @brief Connects the given dock widget with the given tab.
 	 *

@@ -46,7 +46,7 @@ namespace LeechCraft
 	public:
 		explicit MWProxy (MainWindow*, QObject* = nullptr);
 
-		void AddDockWidget (Qt::DockWidgetArea, QDockWidget*) override;
+		void AddDockWidget (QDockWidget*, const DockWidgetParams&) override;
 		void AssociateDockWidget (QDockWidget*, QWidget*) override;
 		void SetDockWidgetVisibility (QDockWidget*, bool) override;
 		void ToggleViewActionVisiblity (QDockWidget*, bool) override;

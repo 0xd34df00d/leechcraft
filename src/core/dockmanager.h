@@ -35,6 +35,7 @@
 #include <QSet>
 #include <QPointer>
 #include <interfaces/core/ihookproxy.h>
+#include <interfaces/imwproxy.h>
 
 class QMainWindow;
 class QDockWidget;
@@ -66,7 +67,7 @@ namespace LeechCraft
 	public:
 		DockManager (RootWindowsManager*, QObject* = 0);
 
-		void AddDockWidget (QDockWidget*, Qt::DockWidgetArea);
+		void AddDockWidget (QDockWidget*, const IMWProxy::DockWidgetParams&);
 		void AssociateDockWidget (QDockWidget*, QWidget*);
 
 		void ToggleViewActionVisiblity (QDockWidget*, bool);

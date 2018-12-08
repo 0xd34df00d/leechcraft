@@ -58,10 +58,10 @@ namespace LeechCraft
 				SLOT (handleWindow (int)));
 	}
 
-	void DockManager::AddDockWidget (QDockWidget *dw, Qt::DockWidgetArea area)
+	void DockManager::AddDockWidget (QDockWidget *dw, const IMWProxy::DockWidgetParams& params)
 	{
 		auto win = static_cast<MainWindow*> (RootWM_->GetPreferredWindow ());
-		win->addDockWidget (area, dw);
+		win->addDockWidget (params.Area_, dw);
 		win->resizeDocks ({ dw }, { 1 }, Qt::Horizontal);		// https://bugreports.qt.io/browse/QTBUG-65592
 		Dock2Info_ [dw].Window_ = win;
 
@@ -70,7 +70,7 @@ namespace LeechCraft
 				this,
 				SLOT (handleDockDestroyed ()));
 
-		Window2DockToolbarMgr_ [win]->AddDock (dw, area);
+		Window2DockToolbarMgr_ [win]->AddDock (dw, params.Area_);
 
 		dw->installEventFilter (this);
 
