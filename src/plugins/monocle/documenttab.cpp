@@ -212,7 +212,7 @@ namespace Monocle
 			dwa = Qt::RightDockWidgetArea;
 
 		auto mw = Core::Instance ().GetProxy ()->GetRootWindowsManager ()->GetMWProxy (0);
-		mw->AddDockWidget (DockWidget_, { .Area_ = dwa });
+		mw->AddDockWidget (DockWidget_, { .Area_ = dwa, .SizeContext_ = "MonocleDockWidget" });
 		mw->AssociateDockWidget (DockWidget_, this);
 		mw->ToggleViewActionVisiblity (DockWidget_, false);
 		if (!XmlSettingsManager::Instance ().Property ("DockWidgetVisible", true).toBool ())
