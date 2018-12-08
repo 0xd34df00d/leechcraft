@@ -43,9 +43,6 @@
 #include "docktoolbarmanager.h"
 #include "mainwindowmenumanager.h"
 
-Q_DECLARE_METATYPE (QDockWidget*)
-Q_DECLARE_METATYPE (QPointer<QDockWidget>)
-
 namespace LeechCraft
 {
 	DockManager::DockInfo::DockInfo ()
@@ -53,8 +50,6 @@ namespace LeechCraft
 	, Window_ (0)
 	, Width_ (-1)
 	{
-		qRegisterMetaType<QDockWidget*> ("QDockWidget*");
-		qRegisterMetaType<QPointer<QDockWidget>> ("QPointer<QDockWidget>");
 	}
 
 	DockManager::DockManager (RootWindowsManager *rootWM, QObject *parent)
