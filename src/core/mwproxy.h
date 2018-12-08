@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef MWPROXY_H
-#define MWPROXY_H
+#pragma once
+
 #include <QObject>
 #include "interfaces/imwproxy.h"
 
@@ -44,22 +44,20 @@ namespace LeechCraft
 
 		MainWindow *Win_;
 	public:
-		MWProxy (MainWindow*, QObject* = 0);
+		explicit MWProxy (MainWindow*, QObject* = nullptr);
 
-		void AddDockWidget (Qt::DockWidgetArea, QDockWidget*);
-		void AssociateDockWidget (QDockWidget*, QWidget*);
-		void SetDockWidgetVisibility (QDockWidget*, bool);
-		void ToggleViewActionVisiblity (QDockWidget*, bool);
-		void SetViewActionShortcut (QDockWidget*, const QKeySequence&);
-		void AddToolbar (QToolBar*, Qt::ToolBarArea);
-		void AddSideWidget (QWidget*, WidgetArea);
+		void AddDockWidget (Qt::DockWidgetArea, QDockWidget*) override;
+		void AssociateDockWidget (QDockWidget*, QWidget*) override;
+		void SetDockWidgetVisibility (QDockWidget*, bool) override;
+		void ToggleViewActionVisiblity (QDockWidget*, bool) override;
+		void SetViewActionShortcut (QDockWidget*, const QKeySequence&) override;
+		void AddToolbar (QToolBar*, Qt::ToolBarArea) override;
+		void AddSideWidget (QWidget*, WidgetArea) override;
 
-		void ToggleVisibility ();
-		void ShowMain ();
+		void ToggleVisibility () override;
+		void ShowMain () override;
 
-		QMenu* GetMainMenu ();
-		void HideMainMenu ();
+		QMenu* GetMainMenu () override;
+		void HideMainMenu () override;
 	};
 }
-
-#endif
