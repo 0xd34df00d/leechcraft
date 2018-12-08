@@ -204,8 +204,8 @@ namespace LeechCraft
 	{
 		auto rootWM = Core::Instance ().GetRootWindowsManager ();
 
-		auto fromWin = static_cast<MainWindow*> (rootWM->GetMainWindow (from));
-		auto toWin = static_cast<MainWindow*> (rootWM->GetMainWindow (to));
+		auto fromWin = rootWM->GetMainWindow (from);
+		auto toWin = rootWM->GetMainWindow (to);
 		auto widget = fromWin->GetTabWidget ()->Widget (tab);
 
 		for (auto i = Dock2Info_.begin (), end = Dock2Info_.end (); i != end; ++i)
@@ -242,7 +242,7 @@ namespace LeechCraft
 	void DockManager::handleTabChanged (QWidget *tabWidget)
 	{
 		auto thisWindowIdx = RootWM_->GetWindowForTab (qobject_cast<ITabWidget*> (tabWidget));
-		auto thisWindow = static_cast<MainWindow*> (RootWM_->GetMainWindow (thisWindowIdx));
+		auto thisWindow = RootWM_->GetMainWindow (thisWindowIdx);
 		auto toolbarMgr = Window2DockToolbarMgr_ [thisWindow];
 
 		QList<QDockWidget*> toShowAssoc;
@@ -280,7 +280,7 @@ namespace LeechCraft
 
 	void DockManager::handleWindow (int index)
 	{
-		auto win = static_cast<MainWindow*> (RootWM_->GetMainWindow (index));
+		auto win = RootWM_->GetMainWindow (index);
 		Window2DockToolbarMgr_ [win] = new DockToolbarManager (win, this);
 		connect (win,
 				&QObject::destroyed,
