@@ -125,23 +125,6 @@ public:
 	 */
 	virtual void SetViewActionShortcut (QDockWidget *widget, const QKeySequence& seq) = 0;
 
-	/** @brief Adds the given toolbar at the given area.
-	 *
-	 * If the toolbar is already added, it will be just moved to the
-	 * area.
-	 *
-	 * @param[in] toolbar The toolbar to add.
-	 * @param[in] area The area where the toolbar should be added.
-	 */
-	virtual void AddToolbar (QToolBar *toolbar, Qt::ToolBarArea area = Qt::TopToolBarArea) = 0;
-
-	/** @brief Adds the given widget at the given area.
-	 *
-	 * @param[in] widget The widget to add.
-	 * @param[in] area The area where the widget should be added.
-	 */
-	virtual void AddSideWidget (QWidget *widget, WidgetArea area = WALeft) = 0;
-
 	/** @brief Toggles the visibility of the main window.
 	 */
 	virtual void ToggleVisibility () = 0;

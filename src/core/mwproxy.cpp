@@ -68,31 +68,6 @@ namespace LeechCraft
 		w->toggleViewAction ()->setShortcut (seq);
 	}
 
-	void MWProxy::AddToolbar (QToolBar *bar, Qt::ToolBarArea area)
-	{
-		bar->setParent (Win_);
-		Win_->addToolBar (area, bar);
-	}
-
-	void MWProxy::AddSideWidget (QWidget *w, WidgetArea area)
-	{
-		auto splitter = Win_->GetMainSplitter ();
-
-		switch (area)
-		{
-		case WALeft:
-			splitter->insertWidget (0, w);
-			break;
-		case WARight:
-			splitter->addWidget (w);
-			break;
-		case WABottom:
-			qWarning () << Q_FUNC_INFO
-					<< "not implemented yet";
-			break;
-		}
-	}
-
 	void MWProxy::ToggleVisibility ()
 	{
 		Win_->showHideMain ();

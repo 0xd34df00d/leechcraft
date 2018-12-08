@@ -51,8 +51,6 @@ namespace LeechCraft
 		void SetDockWidgetVisibility (QDockWidget*, bool) override;
 		void ToggleViewActionVisiblity (QDockWidget*, bool) override;
 		void SetViewActionShortcut (QDockWidget*, const QKeySequence&) override;
-		void AddToolbar (QToolBar*, Qt::ToolBarArea) override;
-		void AddSideWidget (QWidget*, WidgetArea) override;
 
 		void ToggleVisibility () override;
 		void ShowMain () override;
