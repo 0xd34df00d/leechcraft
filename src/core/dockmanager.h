@@ -86,8 +86,6 @@ namespace LeechCraft
 	public slots:
 		void handleTabMove (int, int, int);
 	private slots:
-		void revertDockSizes (QPointer<QDockWidget>, int, int);
-
 		void handleDockDestroyed ();
 		void handleDockToggled (bool);
 		void handleTabChanged (QWidget*);

@@ -34,6 +34,7 @@
 #include <QMenu>
 #include <util/xpc/defaulthookproxy.h>
 #include <util/sll/qtutil.h>
+#include <util/sll/delayedexecutor.h>
 #include <interfaces/ihavetabs.h>
 #include "tabmanager.h"
 #include "core.h"
@@ -179,12 +180,14 @@ namespace LeechCraft
 				dock->setMinimumWidth (width);
 				dock->setMaximumWidth (width);
 
-				QMetaObject::invokeMethod (this,
-						"revertDockSizes",
-						Qt::QueuedConnection,
-						Q_ARG (QPointer<QDockWidget>, dock),
-						Q_ARG (int, prevMin),
-						Q_ARG (int, prevMax));
+				Util::ExecuteLater ([dock = QPointer<QDockWidget> { dock }, prevMin, prevMax]
+						{
+							if (!dock)
+								return;
+
+							dock->setMinimumWidth (prevMin);
+							dock->setMaximumWidth (prevMax);
+						});
 			}
 			break;
 		}
@@ -220,15 +223,6 @@ namespace LeechCraft
 		for (auto i = Dock2Info_.begin (), end = Dock2Info_.end (); i != end; ++i)
 			if (i->Associated_ == widget)
 				MoveDock (i.key (), fromWin, toWin);
-	}
-
-	void DockManager::revertDockSizes (QPointer<QDockWidget> dock, int min, int max)
-	{
-		if (!dock)
-			return;
-
-		dock->setMinimumWidth (min);
-		dock->setMaximumWidth (max);
 	}
 
 	void DockManager::handleDockDestroyed ()
