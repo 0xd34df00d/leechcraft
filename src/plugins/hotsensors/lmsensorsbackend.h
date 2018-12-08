@@ -45,10 +45,10 @@ namespace HotSensors
 	public:
 		LmSensorsBackend (QObject* = 0);
 		~LmSensorsBackend ();
+
+		void update () override;
 	private:
 		void EnumerateSensors ();
-	public slots:
-		void update () override;
 	};
 }
 }
