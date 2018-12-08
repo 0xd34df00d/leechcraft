@@ -77,9 +77,9 @@ namespace LeechCraft
 		auto toggleAct = dw->toggleViewAction ();
 		ToggleAct2Dock_ [toggleAct] = dw;
 		connect (toggleAct,
-				SIGNAL (triggered (bool)),
+				&QAction::triggered,
 				this,
-				SLOT (handleDockToggled (bool)));
+				[this, dw] (bool isVisible) { HandleDockToggled (dw, isVisible); });
 	}
 
 	void DockManager::AssociateDockWidget (QDockWidget *dock, QWidget *tab)
@@ -223,20 +223,6 @@ namespace LeechCraft
 		Dock2Info_.remove (dock);
 		ToggleAct2Dock_.remove (toggleAct);
 		ForcefullyClosed_.remove (dock);
-	}
-
-	void DockManager::handleDockToggled (bool isVisible)
-	{
-		auto dock = ToggleAct2Dock_ [static_cast<QAction*> (sender ())];
-		if (!dock)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unknown toggler"
-					<< sender ();
-			return;
-		}
-
-		HandleDockToggled (dock, isVisible);
 	}
 
 	void DockManager::handleTabChanged (QWidget *tabWidget)

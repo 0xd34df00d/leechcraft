@@ -86,7 +86,6 @@ namespace LeechCraft
 		void handleTabMove (int, int, int);
 	private slots:
 		void handleDockDestroyed ();
-		void handleDockToggled (bool);
 		void handleTabChanged (QWidget*);
 
 		void handleWindow (int);
