@@ -54,11 +54,9 @@ namespace LeechCraft
 
 		struct DockInfo
 		{
-			QWidget *Associated_;
-			MainWindow *Window_;
-			int Width_;
-
-			DockInfo ();
+			QWidget *Associated_ = nullptr;
+			MainWindow *Window_ = nullptr;
+			int Width_ = -1;
 		};
 		QHash<QDockWidget*, DockInfo> Dock2Info_;
 		QHash<QAction*, QDockWidget*> ToggleAct2Dock_;

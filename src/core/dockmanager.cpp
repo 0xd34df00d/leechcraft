@@ -45,13 +45,6 @@
 
 namespace LeechCraft
 {
-	DockManager::DockInfo::DockInfo ()
-	: Associated_ (0)
-	, Window_ (0)
-	, Width_ (-1)
-	{
-	}
-
 	DockManager::DockManager (RootWindowsManager *rootWM, QObject *parent)
 	: QObject (parent)
 	, RootWM_ (rootWM)
