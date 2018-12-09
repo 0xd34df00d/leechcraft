@@ -278,7 +278,7 @@ namespace Aggregator
 			return;
 
 		*pos = channel.ToShort ();
-		pos->Unread_ = StorageBackendManager::Instance ().MakeStorageBackendForThread ()->GetUnreadItems (cid);
+		pos->Unread_ = StorageBackendManager::Instance ().MakeStorageBackendForThread ()->GetUnreadItemsCount (cid);
 
 		const auto idx = pos - Channels_.begin ();
 		emit dataChanged (index (idx, 0), index (idx, 2));

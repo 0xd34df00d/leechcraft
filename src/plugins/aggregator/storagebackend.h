@@ -179,7 +179,7 @@ namespace Aggregator
 		 * @param[in] id Channel's ID.
 		 * @return Unread items count.
 		 */
-		virtual int GetUnreadItems (const IDType_t& id) const = 0;
+		virtual int GetUnreadItemsCount (const IDType_t& id) const = 0;
 
 		/** @brief Returns full information about an item.
 		 *

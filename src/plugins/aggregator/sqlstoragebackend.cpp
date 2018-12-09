@@ -630,7 +630,7 @@ namespace LeechCraft::Aggregator
 			const auto cid = std::get<0> (shortTuple);
 
 			auto cs = AggregateFromTuple<ChannelShort> (std::move (shortTuple));
-			cs.Unread_ = GetUnreadItems (cid);
+			cs.Unread_ = GetUnreadItemsCount (cid);
 			shorts.push_back (std::move (cs));
 		}
 
@@ -731,7 +731,7 @@ namespace LeechCraft::Aggregator
 				[] (auto&& tup) { return AggregateFromTuple<ItemShort> (std::forward<decltype (tup)> (tup)); });
 	}
 
-	int SQLStorageBackend::GetUnreadItems (const IDType_t& channelId) const
+	int SQLStorageBackend::GetUnreadItemsCount (const IDType_t& channelId) const
 	{
 		return Items_->Select (sph::count<>,
 				sph::f<&ItemR::ChannelID_> == channelId && sph::f<&ItemR::Unread_> == true);

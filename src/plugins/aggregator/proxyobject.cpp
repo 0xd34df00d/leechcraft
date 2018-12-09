@@ -119,7 +119,7 @@ namespace Aggregator
 
 	int ProxyObject::CountUnreadItems (IDType_t channel) const
 	{
-		return StorageBackendManager::Instance ().MakeStorageBackendForThread ()->GetUnreadItems (channel);
+		return StorageBackendManager::Instance ().MakeStorageBackendForThread ()->GetUnreadItemsCount (channel);
 	}
 
 	QList<Item_ptr> ProxyObject::GetChannelItems (IDType_t channelId) const
