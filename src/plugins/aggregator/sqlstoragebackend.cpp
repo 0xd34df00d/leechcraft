@@ -715,6 +715,11 @@ namespace LeechCraft::Aggregator
 		emit channelDataUpdated (GetChannel (channelId));
 	}
 
+	std::optional<QImage> SQLStorageBackend::GetChannelPixmap (IDType_t channelId) const
+	{
+		return Channels_->SelectOne (sph::fields<&ChannelR::Pixmap_>, sph::f<&ChannelR::ChannelID_> == channelId);
+	}
+
 	items_shorts_t SQLStorageBackend::GetItems (const IDType_t& channelId) const
 	{
 		constexpr auto shortFields = sph::fields<

@@ -150,6 +150,8 @@ namespace Aggregator
 		virtual std::optional<IDType_t> FindChannel (const QString& title,
 				const QString& link, const IDType_t& feedId) const = 0;
 
+		virtual std::optional<QImage> GetChannelPixmap (IDType_t channelId) const = 0;
+
 		/** @brief Trims the channel to remove old items.
 		 *
 		 * Emits channelDataUpdated() after that.

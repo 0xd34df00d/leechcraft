@@ -48,6 +48,7 @@ namespace Aggregator
 		Channel GetChannel (const IDType_t&) const override { return {}; }
 		std::optional<IDType_t> FindChannel (const QString&, const QString&, const IDType_t&) const override { return {}; }
 		void TrimChannel (const IDType_t&, int, int) override {}
+		std::optional<QImage> GetChannelPixmap (IDType_t) const override { return {}; }
 		items_shorts_t GetItems (const IDType_t&) const override { return {}; }
 		int GetUnreadItemsCount (const IDType_t&) const override { return {}; }
 		int GetTotalItemsCount (IDType_t) const override { return {}; }
