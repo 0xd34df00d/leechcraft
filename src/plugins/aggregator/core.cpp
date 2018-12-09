@@ -432,9 +432,7 @@ namespace Aggregator
 		ci.Description_ = fullChannel.Description_;
 		ci.Author_ = fullChannel.Author_;
 		ci.URL_ = StorageBackend_->GetFeed (channel.FeedID_).URL_;
-
-		// TODO introduce a method in SB for this
-		ci.NumItems_ = StorageBackend_->GetItems (channel.ChannelID_).size ();
+		ci.NumItems_ = StorageBackend_->GetTotalItemsCount (channel.ChannelID_);
 
 		return ci;
 	}
