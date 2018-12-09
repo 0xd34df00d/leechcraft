@@ -254,8 +254,8 @@ namespace Aggregator
 		 *
 		 * Usually you will use this only inside handleJobFinished().
 		 *
-		 * @param[out] items The container with items.
 		 * @param[in] id The channel's ID.
+		 * @return The container with items.
 		 */
 		virtual items_container_t GetFullItems (const IDType_t& id) const = 0;
 
