@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AGGREGATOR_INTERFACES_AGGREGATOR_ITEM_H
-#define PLUGINS_AGGREGATOR_INTERFACES_AGGREGATOR_ITEM_H
+#pragma once
+
 #include <vector>
 #include <memory>
 #include <QString>
@@ -336,5 +336,3 @@ namespace Aggregator
 Q_DECLARE_METATYPE (LeechCraft::Aggregator::Item_ptr)
 Q_DECLARE_METATYPE (LeechCraft::Aggregator::Item)
 Q_DECLARE_METATYPE (LeechCraft::Aggregator::ItemShort)
-
-#endif
