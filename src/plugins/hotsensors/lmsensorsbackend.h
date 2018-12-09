@@ -41,7 +41,7 @@ namespace HotSensors
 	{
 		QList<StoredTemp> Features_;
 	public:
-		LmSensorsBackend (QObject* = 0);
+		LmSensorsBackend (QObject* = nullptr);
 		~LmSensorsBackend ();
 
 		void update () override;
