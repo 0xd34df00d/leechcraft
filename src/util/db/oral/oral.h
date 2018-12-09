@@ -1413,9 +1413,10 @@ namespace oral
 			{
 				if constexpr (Type != ExprType::ConstTrue)
 				{
-					const auto& additionalTables = Util::MapAs<QList> (tree.template AdditionalTables<T> (),
-							[] (const QString& table) { return ", " + table; });
-					return Cached_.Table_ + additionalTables.join (QString {});
+					auto result = Cached_.Table_;
+					for (const auto& item : tree.template AdditionalTables<T> ())
+						result += ", " + item;
+					return result;
 				}
 				else
 					return Cached_.Table_;
