@@ -61,7 +61,7 @@ namespace Aggregator
 		void UpdateChannel (const Channel&) override {}
 		void UpdateChannel (const ChannelShort&) override {}
 		void UpdateItem (const Item&) override {}
-		void UpdateItem (const ItemShort&) override {}
+		void SetItemUnread (IDType_t, bool) override {}
 		void RemoveItems (const QSet<IDType_t>&) override {}
 		void RemoveChannel (const IDType_t&) override {}
 		void RemoveFeed (const IDType_t&) override {}

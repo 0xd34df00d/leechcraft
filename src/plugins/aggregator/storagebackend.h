@@ -330,13 +330,12 @@ namespace Aggregator
 		 */
 		virtual void UpdateItem (const Item& item) = 0;
 
-		/** @brief Updates an already existing item.
+		/** @brief Changes the read status of the \em item.
 		 *
-		 * This is an overloaded function provided for convenience.
-		 *
-		 * @param[in] item Short new version of the item.
+		 * @param[in] item The unique ID of the item.
+		 * @param[in] unread Whether the item is unread.
 		 */
-		virtual void UpdateItem (const ItemShort& item) = 0;
+		virtual void SetItemUnread (IDType_t item, bool unread) = 0;
 
 		/** @brief Removes an already existing item.
 		 *

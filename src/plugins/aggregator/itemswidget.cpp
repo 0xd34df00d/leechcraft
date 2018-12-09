@@ -456,9 +456,8 @@ namespace Aggregator
 
 	void ItemsWidget::MarkItemReadStatus (const QModelIndex& idx, bool read)
 	{
-		auto is = idx.data (ItemsListModel::ItemShortDescr).value<ItemShort> ();
-		is.Unread_ = !read;
-		StorageBackendManager::Instance ().MakeStorageBackendForThread ()->UpdateItem (is);
+		const auto& sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
+		sb->SetItemUnread (idx.data (ItemsListModel::ItemId).value<IDType_t> (), !read);
 	}
 
 	bool ItemsWidget::IsItemRead (int item) const
