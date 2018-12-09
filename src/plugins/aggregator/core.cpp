@@ -437,11 +437,12 @@ namespace Aggregator
 		return ci;
 	}
 
-	QPixmap Core::GetChannelPixmap (const QModelIndex& i) const
+	QPixmap Core::GetChannelPixmap (const QModelIndex& idx) const
 	{
-		// TODO introduce a method in SB for this
-		const auto& channelShort = ChannelsModel_->GetChannelForIndex (i);
-		return QPixmap::fromImage (StorageBackend_->GetChannel (channelShort.ChannelID_).Pixmap_);
+		const auto& img = StorageBackend_->GetChannelPixmap (idx.data (ChannelRoles::ChannelID).value<IDType_t> ());
+		return img ?
+				QPixmap::fromImage (*img) :
+				QPixmap {};
 	}
 
 	void Core::SetTagsForIndex (const QString& tags, const QModelIndex& index)
