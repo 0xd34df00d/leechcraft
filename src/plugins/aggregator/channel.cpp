@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include <QtDebug>
+#include <numeric>
 #include <QDataStream>
 #include <QVariant>
 #include <QStringList>
@@ -50,10 +51,8 @@ namespace Aggregator
 
 	int Channel::CountUnreadItems () const
 	{
-		int result = 0;
-		for (size_t i = 0; i < Items_.size (); ++i)
-			result += (Items_ [i]->Unread_);
-		return result;
+		return std::accumulate (Items_.begin (), Items_.end (),
+				0, [] (int cnt, const auto& item) { return cnt + item->Unread_; });
 	}
 
 	ChannelShort Channel::ToShort () const
