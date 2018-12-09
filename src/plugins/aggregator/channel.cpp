@@ -114,8 +114,8 @@ namespace Aggregator
 			<< chan.Pixmap_
 			<< chan.Favicon_
 			<< static_cast<quint32> (chan.Items_.size ());
-		for (size_t i = 0; i < chan.Items_.size (); ++i)
-			out << *chan.Items_ [i];
+		for (const auto& item : chan.Items_)
+			out << *item;
 		return out;
 	}
 

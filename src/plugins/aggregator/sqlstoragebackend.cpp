@@ -900,11 +900,11 @@ namespace LeechCraft::Aggregator
 
 		const auto& channel = GetChannel (channelId);
 		emit channelDataUpdated (channel);
-		for (size_t i = 0; i < oldItems.size (); ++i)
-			if (oldItems.at (i)->Unread_ != state)
+		for (auto& oldItem : oldItems)
+			if (oldItem->Unread_ != state)
 			{
-				oldItems.at (i)->Unread_ = state;
-				emit itemDataUpdated (*oldItems.at (i), channel);
+				oldItem->Unread_ = state;
+				emit itemDataUpdated (*oldItem, channel);
 			}
 	}
 
