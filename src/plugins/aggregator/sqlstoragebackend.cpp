@@ -726,10 +726,9 @@ namespace LeechCraft::Aggregator
 					&ItemR::PubDate_,
 					&ItemR::Unread_
 				>;
-		auto rawShorts = Items_->Select (shortFields, sph::f<&ItemR::ChannelID_> == channelId);
-
-		return Util::MapAs<std::vector> (rawShorts,
-				[] (auto& rawShort) { return AggregateFromTuple<ItemShort> (std::move (rawShort)); });
+		auto rawTuples = Items_->Select (shortFields, sph::f<&ItemR::ChannelID_> == channelId);
+		return Util::Map (std::move (rawTuples),
+				[] (auto&& tup) { return AggregateFromTuple<ItemShort> (std::forward<decltype (tup)> (tup); });
 	}
 
 	int SQLStorageBackend::GetUnreadItems (const IDType_t& channelId) const

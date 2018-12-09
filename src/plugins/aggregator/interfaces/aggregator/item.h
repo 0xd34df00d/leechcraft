@@ -304,8 +304,8 @@ namespace Aggregator
 	using Item_ptr = std::shared_ptr<Item>;
 	using Item_cptr = std::shared_ptr<const Item>;
 
-	typedef std::vector<Item_ptr> items_container_t;
-	typedef std::vector<ItemShort> items_shorts_t;
+	using items_container_t = QList<Item_ptr>;
+	using items_shorts_t = QList<ItemShort>;
 
 	bool operator== (const Item&, const Item&);
 	QDataStream& operator<< (QDataStream&, const Enclosure&);
