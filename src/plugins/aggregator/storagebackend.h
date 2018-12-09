@@ -181,6 +181,13 @@ namespace Aggregator
 		 */
 		virtual int GetUnreadItemsCount (const IDType_t& id) const = 0;
 
+		/** @brief Returns the total items count in the \em channel.
+		 *
+		 * @param[in] channel Channel ID.
+		 * @return Total items count.
+		 */
+		virtual int GetTotalItemsCount (IDType_t channel) const = 0;
+
 		/** @brief Returns full information about an item.
 		 *
 		 * Returns full information about the item identified by

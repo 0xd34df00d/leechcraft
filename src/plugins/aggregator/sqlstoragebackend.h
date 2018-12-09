@@ -92,6 +92,7 @@ namespace Aggregator
 		void TrimChannel (const IDType_t&, int, int) override;
 		items_shorts_t GetItems (const IDType_t&) const override;
 		int GetUnreadItemsCount (const IDType_t&) const override;
+		int GetTotalItemsCount (IDType_t) const override;
 		std::optional<Item> GetItem (const IDType_t&) const override;
 		std::optional<IDType_t> FindItem (const QString&, const QString&, const IDType_t&) const override;
 		std::optional<IDType_t> FindItemByLink (const QString&, const IDType_t&) const override;

@@ -736,6 +736,10 @@ namespace LeechCraft::Aggregator
 		return Items_->Select (sph::count<>,
 				sph::f<&ItemR::ChannelID_> == channelId && sph::f<&ItemR::Unread_> == true);
 	}
+	int SQLStorageBackend::GetTotalItemsCount (IDType_t channelId) const
+	{
+		return Items_->Select (sph::count<>, sph::f<&ItemR::ChannelID_> == channelId);
+	}
 
 	std::optional<Item> SQLStorageBackend::GetItem (const IDType_t& itemId) const
 	{
