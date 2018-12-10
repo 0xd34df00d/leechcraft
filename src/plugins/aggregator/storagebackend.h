@@ -175,9 +175,6 @@ namespace Aggregator
 
 		/** @brief Counts unread items number in a given channel.
 		 *
-		 * A possibly optimized version of getting items via
-		 * GetItems() and counting unread items by hand.
-		 *
 		 * @param[in] id Channel's ID.
 		 * @return Unread items count.
 		 */
