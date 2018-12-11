@@ -151,6 +151,8 @@ namespace Aggregator
 				const QString& link, const IDType_t& feedId) const = 0;
 
 		virtual std::optional<QImage> GetChannelPixmap (IDType_t channelId) const = 0;
+		virtual void SetChannelPixmap (IDType_t channelId, const std::optional<QImage>& img) const = 0;
+		virtual void SetChannelFavicon (IDType_t channelId, const std::optional<QImage>& img) const = 0;
 
 		/** @brief Trims the channel to remove old items.
 		 *

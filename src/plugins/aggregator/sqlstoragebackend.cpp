@@ -720,6 +720,16 @@ namespace LeechCraft::Aggregator
 		return Channels_->SelectOne (sph::fields<&ChannelR::Pixmap_>, sph::f<&ChannelR::ChannelID_> == channelId);
 	}
 
+	std::optional<QImage> SQLStorageBackend::GetChannelFavicon (IDType_t channelId) const
+	{
+		return Channels_->SelectOne (sph::fields<&ChannelR::Favicon_>, sph::f<&ChannelR::ChannelID_> == channelId);
+	}
+
+	void SQLStorageBackend::SetChannelPixmap (IDType_t id, const std::optional<QImage>& img) const
+	{
+		Channels_->Update (sph::f<&ChannelR::Pixmap_> = img.value_or (QImage {}), sph::f<&ChannelR::ChannelID_> == id);
+	}
+
 	items_shorts_t SQLStorageBackend::GetItems (const IDType_t& channelId) const
 	{
 		constexpr auto shortFields = sph::fields<
