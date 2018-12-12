@@ -836,23 +836,19 @@ namespace Aggregator
 
 	void Core::HandleExternalData (const QString& url, const QFile& file)
 	{
+		const QImage image { file.fileName () };
+
 		const auto& data = PendingJob2ExternalData_.take (url);
 
-		// TODO add separate methods for pixmap/favicon updates in StorageBackend.
-		auto channel = StorageBackend_->GetChannel (data.ChannelId_);
-
-		const QImage image { file.fileName () };
 		switch (data.Type_)
 		{
 		case ExternalData::TImage:
-			channel.Pixmap_ = image;
+			StorageBackend_->SetChannelPixmap (data.ChannelId_, image);
 			break;
 		case ExternalData::TIcon:
-			channel.Favicon_ = image.scaled (16, 16);
+			StorageBackend_->SetChannelFavicon (data.ChannelId_, image);
 			break;
 		}
-
-		StorageBackend_->UpdateChannel (channel);
 	}
 
 	void Core::HandleFeedAdded (const channels_container_t& channels,
