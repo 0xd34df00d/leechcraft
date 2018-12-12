@@ -549,7 +549,7 @@ namespace LeechCraft::Aggregator
 		}
 
 		if (findHighestID.first ())
-			return findHighestID.value (0).toInt ();
+			return findHighestID.value (0).value<IDType_t> ();
 		else
 			return 0;
 	}
