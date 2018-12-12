@@ -80,13 +80,10 @@ namespace Aggregator
 				itemsList.push_back (ParseItem (item, chan->ChannelID_));
 				item = item.nextSiblingElement ("item");
 			}
+
 			if (!chan->LastBuild_.isValid ())
-			{
-				if (!itemsList.empty ())
-					chan->LastBuild_ = itemsList.at (0)->PubDate_;
-				else
-					chan->LastBuild_ = QDateTime::currentDateTime ();
-			}
+				chan->LastBuild_ = itemsList.isEmpty () ? QDateTime::currentDateTime () : itemsList.front ()->PubDate_;
+
 			channels.push_back (chan);
 			channel = channel.nextSiblingElement ("channel");
 		}
