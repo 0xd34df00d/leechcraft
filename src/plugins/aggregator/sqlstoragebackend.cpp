@@ -794,7 +794,7 @@ namespace LeechCraft::Aggregator
 
 		try
 		{
-			for (const auto chan : feed.Channels_)
+			for (const auto& chan : feed.Channels_)
 				AddChannel (*chan);
 		}
 		catch (const std::runtime_error& e)
