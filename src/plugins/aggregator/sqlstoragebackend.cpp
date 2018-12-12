@@ -454,12 +454,12 @@ namespace LeechCraft::Aggregator
 				();
 	}
 
-	QList<ITagsManager::tag_id> SQLStorageBackend::GetItemTags (const IDType_t& id)
+	QList<ITagsManager::tag_id> SQLStorageBackend::GetItemTags (IDType_t id)
 	{
 		return Items2Tags_->Select (sph::fields<&Item2TagsR::Tag_>, sph::f<&Item2TagsR::ItemID_> == id);
 	}
 
-	void SQLStorageBackend::SetItemTags (const IDType_t& id, const QList<ITagsManager::tag_id>& tags)
+	void SQLStorageBackend::SetItemTags (IDType_t id, const QList<ITagsManager::tag_id>& tags)
 	{
 		Util::DBLock lock (DB_);
 		lock.Init ();
@@ -554,7 +554,7 @@ namespace LeechCraft::Aggregator
 			return 0;
 	}
 
-	Feed SQLStorageBackend::GetFeed (const IDType_t& feedId) const
+	Feed SQLStorageBackend::GetFeed (IDType_t feedId) const
 	{
 		const auto maybeFeed = Feeds_->SelectOne (sph::f<&FeedR::FeedID_> == feedId);
 		if (!maybeFeed)
@@ -574,7 +574,7 @@ namespace LeechCraft::Aggregator
 		        sph::f<&FeedR::URL_> == url);
 	}
 
-	std::optional<Feed::FeedSettings> SQLStorageBackend::GetFeedSettings (const IDType_t& feedId) const
+	std::optional<Feed::FeedSettings> SQLStorageBackend::GetFeedSettings (IDType_t feedId) const
 	{
 		return FeedsSettings_->SelectOne (sph::f<&FeedSettingsR::FeedID_> == feedId) * &FeedSettingsR::ToOrig;
 	}
@@ -604,7 +604,7 @@ namespace LeechCraft::Aggregator
 		}
 	}
 
-	channels_shorts_t SQLStorageBackend::GetChannels (const IDType_t& feedId) const
+	channels_shorts_t SQLStorageBackend::GetChannels (IDType_t feedId) const
 	{
 		constexpr auto shortFields = sph::fields<
 					&ChannelR::ChannelID_,
@@ -637,7 +637,7 @@ namespace LeechCraft::Aggregator
 		return shorts;
 	}
 
-	Channel SQLStorageBackend::GetChannel (const IDType_t& channelId) const
+	Channel SQLStorageBackend::GetChannel (IDType_t channelId) const
 	{
 		const auto maybeChannel = Channels_->SelectOne (sph::f<&ChannelR::ChannelID_> == channelId);
 		if (!maybeChannel)
@@ -651,7 +651,7 @@ namespace LeechCraft::Aggregator
 	}
 
 	std::optional<IDType_t> SQLStorageBackend::FindChannel (const QString& title,
-			const QString& link, const IDType_t& feedId) const
+			const QString& link, IDType_t feedId) const
 	{
 		return Channels_->SelectOne (sph::fields<&ChannelR::ChannelID_>,
 				sph::f<&ChannelR::Title_> == title &&
@@ -660,7 +660,7 @@ namespace LeechCraft::Aggregator
 	}
 
 	std::optional<IDType_t> SQLStorageBackend::FindItem (const QString& title,
-			const QString& link, const IDType_t& channelId) const
+			const QString& link, IDType_t channelId) const
 	{
 		return Items_->SelectOne (sph::fields<&ItemR::ItemID_>,
 				sph::f<&ItemR::ChannelID_> == channelId &&
@@ -669,7 +669,7 @@ namespace LeechCraft::Aggregator
 	}
 
 	std::optional<IDType_t> SQLStorageBackend::FindItemByLink (const QString& link,
-			const IDType_t& channelId) const
+			IDType_t channelId) const
 	{
 		if (link.isEmpty ())
 			return {};
@@ -680,14 +680,14 @@ namespace LeechCraft::Aggregator
 	}
 
 	std::optional<IDType_t> SQLStorageBackend::FindItemByTitle (const QString& title,
-			const IDType_t& channelId) const
+			IDType_t channelId) const
 	{
 		return Items_->SelectOne (sph::fields<&ItemR::ItemID_>,
 				sph::f<&ItemR::ChannelID_> == channelId &&
 				sph::f<&ItemR::Title_> == title);
 	}
 
-	void SQLStorageBackend::TrimChannel (const IDType_t& channelId,
+	void SQLStorageBackend::TrimChannel (IDType_t channelId,
 			int days, int number)
 	{
 		const auto& cutoff = QDateTime::currentDateTime ().addDays (-days);
@@ -731,7 +731,7 @@ namespace LeechCraft::Aggregator
 		Channels_->Update (sph::f<&ChannelR::Favicon_> = img.value_or (QImage {}), sph::f<&ChannelR::ChannelID_> == id);
 	}
 
-	items_shorts_t SQLStorageBackend::GetItems (const IDType_t& channelId) const
+	items_shorts_t SQLStorageBackend::GetItems (IDType_t channelId) const
 	{
 		constexpr auto shortFields = sph::fields<
 					&ItemR::ItemID_,
@@ -747,7 +747,7 @@ namespace LeechCraft::Aggregator
 				[] (auto&& tup) { return AggregateFromTuple<ItemShort> (std::forward<decltype (tup)> (tup)); });
 	}
 
-	int SQLStorageBackend::GetUnreadItemsCount (const IDType_t& channelId) const
+	int SQLStorageBackend::GetUnreadItemsCount (IDType_t channelId) const
 	{
 		return Items_->Select (sph::count<>,
 				sph::f<&ItemR::ChannelID_> == channelId && sph::f<&ItemR::Unread_> == true);
@@ -757,7 +757,7 @@ namespace LeechCraft::Aggregator
 		return Items_->Select (sph::count<>, sph::f<&ItemR::ChannelID_> == channelId);
 	}
 
-	std::optional<Item> SQLStorageBackend::GetItem (const IDType_t& itemId) const
+	std::optional<Item> SQLStorageBackend::GetItem (IDType_t itemId) const
 	{
 		const auto maybeItem = Items_->SelectOne (sph::f<&ItemR::ItemID_> == itemId);
 		if (!maybeItem)
@@ -770,7 +770,7 @@ namespace LeechCraft::Aggregator
 		return item;
 	}
 
-	items_container_t SQLStorageBackend::GetFullItems (const IDType_t& channelId) const
+	items_container_t SQLStorageBackend::GetFullItems (IDType_t channelId) const
 	{
 		auto rawItems = Items_->Select (sph::f<&ItemR::ChannelID_> == channelId);
 
@@ -892,7 +892,7 @@ namespace LeechCraft::Aggregator
 			emit channelDataUpdated (GetChannel (cid));
 	}
 
-	void SQLStorageBackend::RemoveChannel (const IDType_t& channelId)
+	void SQLStorageBackend::RemoveChannel (IDType_t channelId)
 	{
 		Util::DBLock lock (DB_);
 		lock.Init ();
@@ -901,7 +901,7 @@ namespace LeechCraft::Aggregator
 		emit channelRemoved (channelId);
 	}
 
-	void SQLStorageBackend::RemoveFeed (const IDType_t& feedId)
+	void SQLStorageBackend::RemoveFeed (IDType_t feedId)
 	{
 		Util::DBLock lock (DB_);
 		lock.Init ();
@@ -910,7 +910,7 @@ namespace LeechCraft::Aggregator
 		emit feedRemoved (feedId);
 	}
 
-	void SQLStorageBackend::ToggleChannelUnread (const IDType_t& channelId, bool state)
+	void SQLStorageBackend::ToggleChannelUnread (IDType_t channelId, bool state)
 	{
 		const auto& oldItems = GetFullItems (channelId);
 
@@ -954,7 +954,7 @@ namespace LeechCraft::Aggregator
 			Enclosures_->Insert (EnclosureR::FromOrig (enclosure));
 	}
 
-	void SQLStorageBackend::GetEnclosures (const IDType_t& itemId, QList<Enclosure>& enclosures) const
+	void SQLStorageBackend::GetEnclosures (IDType_t itemId, QList<Enclosure>& enclosures) const
 	{
 		enclosures = Util::Map (Enclosures_->Select (sph::f<&EnclosureR::ItemID_> == itemId), &EnclosureR::ToOrig);
 	}
@@ -991,7 +991,7 @@ namespace LeechCraft::Aggregator
 		}
 	}
 
-	void SQLStorageBackend::GetMRSSEntries (const IDType_t& itemId, QList<MRSSEntry>& entries) const
+	void SQLStorageBackend::GetMRSSEntries (IDType_t itemId, QList<MRSSEntry>& entries) const
 	{
 		entries = SelectMapping<&MRSSEntryR::ItemID_> (MRSSEntries_, itemId);
 		for (auto& entry : entries)

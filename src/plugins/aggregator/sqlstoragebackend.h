@@ -82,27 +82,27 @@ namespace Aggregator
 		void Prepare () override;
 
 		ids_t GetFeedsIDs () const override;
-		Feed GetFeed (const IDType_t&) const override;
+		Feed GetFeed (IDType_t) const override;
 		std::optional<IDType_t> FindFeed (const QString&) const override;
-		std::optional<Feed::FeedSettings> GetFeedSettings (const IDType_t&) const override;
+		std::optional<Feed::FeedSettings> GetFeedSettings (IDType_t) const override;
 		void SetFeedSettings (const Feed::FeedSettings&) override;
 
-		channels_shorts_t GetChannels (const IDType_t&) const override;
-		Channel GetChannel (const IDType_t&) const override;
-		std::optional<IDType_t> FindChannel (const QString& , const QString&, const IDType_t&) const override;
-		void TrimChannel (const IDType_t&, int, int) override;
+		channels_shorts_t GetChannels (IDType_t) const override;
+		Channel GetChannel (IDType_t) const override;
+		std::optional<IDType_t> FindChannel (const QString& , const QString&, IDType_t) const override;
+		void TrimChannel (IDType_t, int, int) override;
 		std::optional<QImage> GetChannelPixmap (IDType_t) const override;
 		void SetChannelPixmap (IDType_t, const std::optional<QImage>&) const override;
 		void SetChannelFavicon (IDType_t, const std::optional<QImage>&) const override;
 
-		items_shorts_t GetItems (const IDType_t&) const override;
-		int GetUnreadItemsCount (const IDType_t&) const override;
+		items_shorts_t GetItems (IDType_t) const override;
+		int GetUnreadItemsCount (IDType_t) const override;
 		int GetTotalItemsCount (IDType_t) const override;
-		std::optional<Item> GetItem (const IDType_t&) const override;
-		std::optional<IDType_t> FindItem (const QString&, const QString&, const IDType_t&) const override;
-		std::optional<IDType_t> FindItemByLink (const QString&, const IDType_t&) const override;
-		std::optional<IDType_t> FindItemByTitle (const QString&, const IDType_t&) const override;
-		items_container_t GetFullItems (const IDType_t&) const override;
+		std::optional<Item> GetItem (IDType_t) const override;
+		std::optional<IDType_t> FindItem (const QString&, const QString&, IDType_t) const override;
+		std::optional<IDType_t> FindItemByLink (const QString&, IDType_t) const override;
+		std::optional<IDType_t> FindItemByTitle (const QString&, IDType_t) const override;
+		items_container_t GetFullItems (IDType_t) const override;
 
 		void AddFeed (const Feed&) override;
 		void UpdateChannel (const Channel&) override;
@@ -112,23 +112,23 @@ namespace Aggregator
 		void AddChannel (const Channel&) override;
 		void AddItem (const Item&) override;
 		void RemoveItems (const QSet<IDType_t>&) override;
-		void RemoveChannel (const IDType_t&) override;
-		void RemoveFeed (const IDType_t&) override;
+		void RemoveChannel (IDType_t) override;
+		void RemoveFeed (IDType_t) override;
 		bool UpdateFeedsStorage (int, int) override;
 		bool UpdateChannelsStorage (int, int) override;
 		bool UpdateItemsStorage (int, int) override;
-		void ToggleChannelUnread (const IDType_t&, bool) override;
+		void ToggleChannelUnread (IDType_t, bool) override;
 
-		QList<ITagsManager::tag_id> GetItemTags (const IDType_t&) override;
-		void SetItemTags (const IDType_t&, const QList<ITagsManager::tag_id>&) override;
+		QList<ITagsManager::tag_id> GetItemTags (IDType_t) override;
+		void SetItemTags (IDType_t, const QList<ITagsManager::tag_id>&) override;
 		QList<IDType_t> GetItemsForTag (const ITagsManager::tag_id&) override;
 
 		IDType_t GetHighestID (const PoolType&) const override;
 	private:
 		void WriteEnclosures (const QList<Enclosure>&);
-		void GetEnclosures (const IDType_t&, QList<Enclosure>&) const;
+		void GetEnclosures (IDType_t, QList<Enclosure>&) const;
 		void WriteMRSSEntries (const QList<MRSSEntry>&);
-		void GetMRSSEntries (const IDType_t&, QList<MRSSEntry>&) const;
+		void GetMRSSEntries (IDType_t, QList<MRSSEntry>&) const;
 		IDType_t GetHighestID (const QString&, const QString&) const;
 	};
 }

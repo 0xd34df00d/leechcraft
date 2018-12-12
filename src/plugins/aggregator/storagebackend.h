@@ -90,7 +90,7 @@ namespace Aggregator
 		 * @param[in] id The ID of the feed to be returned.
 		 * @return The full feed information.
 		 */
-		virtual Feed GetFeed (const IDType_t& id) const = 0;
+		virtual Feed GetFeed (IDType_t id) const = 0;
 
 		/** @brief Returns the ID of the feed with the given url.
 		 *
@@ -107,7 +107,7 @@ namespace Aggregator
 		 * @param[in] feed Feed's ID.
 		 * @return FeedSettings for the feed.
 		 */
-		virtual std::optional<Feed::FeedSettings> GetFeedSettings (const IDType_t& feed) const = 0;
+		virtual std::optional<Feed::FeedSettings> GetFeedSettings (IDType_t feed) const = 0;
 
 		/** @brief Sets feed's settings.
 		 *
@@ -126,7 +126,7 @@ namespace Aggregator
 		 * channels to which retrieved info would be appended.
 		 * @param[in] feedParent Parent feed's ID identifying the feed.
 		 */
-		virtual channels_shorts_t GetChannels (const IDType_t& feedParent) const = 0;
+		virtual channels_shorts_t GetChannels (IDType_t feedParent) const = 0;
 
 		/** @brief Returns full information about a channel.
 		 *
@@ -138,7 +138,7 @@ namespace Aggregator
 		 * @param[in] channelId The ID of the channel.
 		 * @return Full information about the requested channel.
 		 */
-		virtual Channel GetChannel (const IDType_t& channelId) const = 0;
+		virtual Channel GetChannel (IDType_t channelId) const = 0;
 
 		/** @brief Find channel with the given identifying information.
 		 *
@@ -148,7 +148,7 @@ namespace Aggregator
 		 * @return ID of the channel or an empty optional if no such channel exists.
 		 */
 		virtual std::optional<IDType_t> FindChannel (const QString& title,
-				const QString& link, const IDType_t& feedId) const = 0;
+				const QString& link, IDType_t feedId) const = 0;
 
 		virtual std::optional<QImage> GetChannelPixmap (IDType_t channelId) const = 0;
 		virtual void SetChannelPixmap (IDType_t channelId, const std::optional<QImage>& img) const = 0;
@@ -162,7 +162,7 @@ namespace Aggregator
 		 * @param[in] days Max number of days.
 		 * @param[in] number Max number of items.
 		 */
-		virtual void TrimChannel (const IDType_t& channelId, int days, int number) = 0;
+		virtual void TrimChannel (IDType_t channelId, int days, int number) = 0;
 
 		/** @brief Returns short information about items in a channel.
 		 *
@@ -173,14 +173,14 @@ namespace Aggregator
 		 * the items would be appended.
 		 * @param[in] channelId The ID of the channel.
 		 */
-		virtual items_shorts_t GetItems (const IDType_t& channelId) const = 0;
+		virtual items_shorts_t GetItems (IDType_t channelId) const = 0;
 
 		/** @brief Counts unread items number in a given channel.
 		 *
 		 * @param[in] id Channel's ID.
 		 * @return Unread items count.
 		 */
-		virtual int GetUnreadItemsCount (const IDType_t& id) const = 0;
+		virtual int GetUnreadItemsCount (IDType_t id) const = 0;
 
 		/** @brief Returns the total items count in the \em channel.
 		 *
@@ -197,7 +197,7 @@ namespace Aggregator
 		 * @param[in] id The item's ID.
 		 * @return Full information about the requested item.
 		 */
-		virtual std::optional<Item> GetItem (const IDType_t& id) const = 0;
+		virtual std::optional<Item> GetItem (IDType_t id) const = 0;
 
 		/** @brief Finds first item with the given title, link and parent
 		 * channel.
@@ -219,7 +219,7 @@ namespace Aggregator
 		 * @sa FindItemByTitle()
 		 */
 		virtual std::optional<IDType_t> FindItem (const QString& title,
-				const QString& link, const IDType_t& channel) const = 0;
+				const QString& link, IDType_t channel) const = 0;
 
 		/** @brief Finds first item with the given title and parent
 		 * channel.
@@ -234,7 +234,7 @@ namespace Aggregator
 		 * @sa FindItem()
 		 * @sa FindItemByLink()
 		 */
-		virtual std::optional<IDType_t> FindItemByTitle (const QString& title, const IDType_t& channel) const = 0;
+		virtual std::optional<IDType_t> FindItemByTitle (const QString& title, IDType_t channel) const = 0;
 
 		/** @brief Finds first item with the given link and parent
 		 * channel.
@@ -252,7 +252,7 @@ namespace Aggregator
 		 * @sa FindItem()
 		 * @sa FindItemByTitle()
 		 */
-		virtual std::optional<IDType_t> FindItemByLink (const QString& link, const IDType_t& channel) const = 0;
+		virtual std::optional<IDType_t> FindItemByLink (const QString& link, IDType_t channel) const = 0;
 
 		/** @brief Returns all items in the channel.
 		 *
@@ -265,7 +265,7 @@ namespace Aggregator
 		 * @param[in] id The channel's ID.
 		 * @return The container with items.
 		 */
-		virtual items_container_t GetFullItems (const IDType_t& id) const = 0;
+		virtual items_container_t GetFullItems (IDType_t id) const = 0;
 
 		/** @brief Puts a feed and all its child channels and items into the
 		 * storage.
@@ -367,7 +367,7 @@ namespace Aggregator
 		 *
 		 * @param[in] id Channel ID.
 		 */
-		virtual void RemoveChannel (const IDType_t& id) = 0;
+		virtual void RemoveChannel (IDType_t id) = 0;
 
 		/** @brief Removes an already existing feed.
 		 *
@@ -376,7 +376,7 @@ namespace Aggregator
 		 *
 		 * @param[in] feedId The ID of the feed that should be removed.
 		 */
-		virtual void RemoveFeed (const IDType_t& feedId) = 0;
+		virtual void RemoveFeed (IDType_t feedId) = 0;
 
 		/** @brief Update feeds storage section.
 		 *
@@ -421,10 +421,10 @@ namespace Aggregator
 		 * @param[in] id Channel's ID.
 		 * @param[in] state New state of the items.
 		 */
-		virtual void ToggleChannelUnread (const IDType_t& id, bool state) = 0;
+		virtual void ToggleChannelUnread (IDType_t id, bool state) = 0;
 
-		virtual QList<ITagsManager::tag_id> GetItemTags (const IDType_t& id) = 0;
-		virtual void SetItemTags (const IDType_t& id, const QList<ITagsManager::tag_id>& tags) = 0;
+		virtual QList<ITagsManager::tag_id> GetItemTags (IDType_t id) = 0;
+		virtual void SetItemTags (IDType_t id, const QList<ITagsManager::tag_id>& tags) = 0;
 		virtual QList<IDType_t> GetItemsForTag (const ITagsManager::tag_id& tag) = 0;
 
 		/** @brief Searches for highest id of given type in the database

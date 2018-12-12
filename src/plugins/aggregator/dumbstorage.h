@@ -40,25 +40,25 @@ namespace Aggregator
 	public:
 		void Prepare () override {}
 		ids_t GetFeedsIDs () const override { return {}; }
-		Feed GetFeed (const IDType_t&) const override { return {}; }
+		Feed GetFeed (IDType_t) const override { return {}; }
 		std::optional<IDType_t> FindFeed (const QString&) const override { return {}; }
-		std::optional<Feed::FeedSettings> GetFeedSettings (const IDType_t&) const override { return {}; }
+		std::optional<Feed::FeedSettings> GetFeedSettings (IDType_t) const override { return {}; }
 		void SetFeedSettings (const Feed::FeedSettings&) override {}
-		channels_shorts_t GetChannels (const IDType_t&) const override { return {}; }
-		Channel GetChannel (const IDType_t&) const override { return {}; }
-		std::optional<IDType_t> FindChannel (const QString&, const QString&, const IDType_t&) const override { return {}; }
-		void TrimChannel (const IDType_t&, int, int) override {}
+		channels_shorts_t GetChannels (IDType_t) const override { return {}; }
+		Channel GetChannel (IDType_t) const override { return {}; }
+		std::optional<IDType_t> FindChannel (const QString&, const QString&, IDType_t) const override { return {}; }
+		void TrimChannel (IDType_t, int, int) override {}
 		std::optional<QImage> GetChannelPixmap (IDType_t) const override { return {}; }
 		void SetChannelPixmap (IDType_t, const std::optional<QImage>&) const override {}
 		void SetChannelFavicon (IDType_t, const std::optional<QImage>&) const override {}
-		items_shorts_t GetItems (const IDType_t&) const override { return {}; }
-		int GetUnreadItemsCount (const IDType_t&) const override { return {}; }
+		items_shorts_t GetItems (IDType_t) const override { return {}; }
+		int GetUnreadItemsCount (IDType_t) const override { return {}; }
 		int GetTotalItemsCount (IDType_t) const override { return {}; }
-		std::optional<Item> GetItem (const IDType_t&) const override { return {}; }
-		std::optional<IDType_t> FindItem (const QString&, const QString&, const IDType_t&) const override { return {}; }
-		std::optional<IDType_t> FindItemByTitle (const QString&, const IDType_t&) const override { return {}; }
-		std::optional<IDType_t> FindItemByLink (const QString&, const IDType_t&) const override { return {}; }
-		items_container_t GetFullItems (const IDType_t&) const override { return {}; }
+		std::optional<Item> GetItem (IDType_t) const override { return {}; }
+		std::optional<IDType_t> FindItem (const QString&, const QString&, IDType_t) const override { return {}; }
+		std::optional<IDType_t> FindItemByTitle (const QString&, IDType_t) const override { return {}; }
+		std::optional<IDType_t> FindItemByLink (const QString&, IDType_t) const override { return {}; }
+		items_container_t GetFullItems (IDType_t) const override { return {}; }
 		void AddFeed (const Feed&) override {}
 		void AddChannel (const Channel&) override {}
 		void AddItem (const Item&) override {}
@@ -67,14 +67,14 @@ namespace Aggregator
 		void UpdateItem (const Item&) override {}
 		void SetItemUnread (IDType_t, bool) override {}
 		void RemoveItems (const QSet<IDType_t>&) override {}
-		void RemoveChannel (const IDType_t&) override {}
-		void RemoveFeed (const IDType_t&) override {}
+		void RemoveChannel (IDType_t) override {}
+		void RemoveFeed (IDType_t) override {}
 		bool UpdateFeedsStorage (int, int) override { return {}; }
 		bool UpdateChannelsStorage (int, int) override { return {}; }
 		bool UpdateItemsStorage (int, int) override { return {}; }
-		void ToggleChannelUnread (const IDType_t&, bool) override {}
-		QList<ITagsManager::tag_id> GetItemTags (const IDType_t&) override { return {}; }
-		void SetItemTags (const IDType_t&, const QList<ITagsManager::tag_id>&) override {}
+		void ToggleChannelUnread (IDType_t, bool) override {}
+		QList<ITagsManager::tag_id> GetItemTags (IDType_t) override { return {}; }
+		void SetItemTags (IDType_t, const QList<ITagsManager::tag_id>&) override {}
 		QList<IDType_t> GetItemsForTag (const ITagsManager::tag_id&) override { return {}; }
 		IDType_t GetHighestID (const PoolType&) const override { return {}; }
 	};
