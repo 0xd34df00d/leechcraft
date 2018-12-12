@@ -31,6 +31,8 @@
 #include <QDomElement>
 #include <QString>
 #include <QtDebug>
+#include <util/sll/domchildrenrange.h>
+#include <util/sll/prelude.h>
 #include "channel.h"
 #include "item.h"
 #include "atom03parser.h"
@@ -71,14 +73,9 @@ namespace Aggregator
 		chan->Description_ = root.firstChildElement ("tagline").text ();
 		chan->Language_ = "<>";
 		chan->Author_ = GetAuthor (root);
-	
-		QDomElement entry = root.firstChildElement ("entry");
-		while (!entry.isNull ())
-		{
-			chan->Items_.push_back (ParseItem (entry, chan->ChannelID_));
-			entry = entry.nextSiblingElement ("entry");
-		}
-	
+		chan->Items_ = Util::Map (Util::DomChildren (root, "entry"),
+				[this, cid = chan->ChannelID_] (const QDomElement& entry) { return ParseItem (entry, cid); });
+
 		return channels;
 	}
 	
