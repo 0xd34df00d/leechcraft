@@ -27,11 +27,11 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
+#include "rss20parser.h"
 #include <QDomDocument>
 #include <QDomElement>
 #include <QStringList>
 #include <QtDebug>
-#include "rss20parser.h"
 
 namespace LeechCraft
 {

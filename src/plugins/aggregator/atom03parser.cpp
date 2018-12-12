@@ -27,6 +27,7 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
+#include "atom03parser.h"
 #include <QDomDocument>
 #include <QDomElement>
 #include <QString>
@@ -35,7 +36,6 @@
 #include <util/sll/prelude.h>
 #include "channel.h"
 #include "item.h"
-#include "atom03parser.h"
 
 namespace LeechCraft
 {

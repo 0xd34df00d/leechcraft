@@ -27,11 +27,11 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
+#include "atom10parser.h"
 #include <QDomDocument>
 #include <QDomElement>
 #include <QString>
 #include <QtDebug>
-#include "atom10parser.h"
 
 namespace LeechCraft
 {

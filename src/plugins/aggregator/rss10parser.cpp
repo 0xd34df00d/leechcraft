@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include <QtDebug>
 #include "rss10parser.h"
+#include <QtDebug>
 
 namespace LeechCraft
 {
