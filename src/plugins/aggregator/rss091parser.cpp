@@ -70,7 +70,7 @@ namespace Aggregator
 				itemsList.push_back (ParseItem (item, chan->ChannelID_));
 				item = item.nextSiblingElement ("item");
 			}
-			if (!chan->LastBuild_.isValid () || chan->LastBuild_.isNull ())
+			if (!chan->LastBuild_.isValid ())
 			{
 				if (!itemsList.empty ())
 					chan->LastBuild_ = itemsList.at (0)->PubDate_;
