@@ -79,30 +79,30 @@ namespace Aggregator
 		for (const auto& itemDescr : Util::DomChildren (root, "item"))
 		{
 			QString about = itemDescr.attributeNS (RDF_, "about");
-			if (item2Channel.contains (about))
-			{
-				auto item = std::make_shared<Item> (Item::CreateForChannel (item2Channel [about]->ChannelID_));
-				item->Title_ = itemDescr.firstChildElement ("title").text ();
-				item->Link_ = itemDescr.firstChildElement ("link").text ();
-				item->Description_ = itemDescr.firstChildElement ("description").text ();
-				GetDescription (itemDescr, item->Description_);
-	
-				item->Categories_ = GetAllCategories (itemDescr);
-				item->Author_ = GetAuthor (itemDescr);
-				item->PubDate_ = GetDCDateTime (itemDescr);
-				item->Unread_ = true;
-				item->NumComments_ = GetNumComments (itemDescr);
-				item->CommentsLink_ = GetCommentsRSS (itemDescr);
-				item->CommentsPageLink_ = GetCommentsLink (itemDescr);
-				item->Enclosures_ = GetEncEnclosures (itemDescr, item->ItemID_);
-				QPair<double, double> point = GetGeoPoint (itemDescr);
-				item->Latitude_ = point.first;
-				item->Longitude_ = point.second;
-				if (item->Guid_.isEmpty ())
-					item->Guid_ = "empty";
-	
-				item2Channel [about]->Items_.push_back (item);
-			}
+			if (!item2Channel.contains (about))
+				continue;
+
+			auto item = std::make_shared<Item> (Item::CreateForChannel (item2Channel [about]->ChannelID_));
+			item->Title_ = itemDescr.firstChildElement ("title").text ();
+			item->Link_ = itemDescr.firstChildElement ("link").text ();
+			item->Description_ = itemDescr.firstChildElement ("description").text ();
+			GetDescription (itemDescr, item->Description_);
+
+			item->Categories_ = GetAllCategories (itemDescr);
+			item->Author_ = GetAuthor (itemDescr);
+			item->PubDate_ = GetDCDateTime (itemDescr);
+			item->Unread_ = true;
+			item->NumComments_ = GetNumComments (itemDescr);
+			item->CommentsLink_ = GetCommentsRSS (itemDescr);
+			item->CommentsPageLink_ = GetCommentsLink (itemDescr);
+			item->Enclosures_ = GetEncEnclosures (itemDescr, item->ItemID_);
+			QPair<double, double> point = GetGeoPoint (itemDescr);
+			item->Latitude_ = point.first;
+			item->Longitude_ = point.second;
+			if (item->Guid_.isEmpty ())
+				item->Guid_ = "empty";
+
+			item2Channel [about]->Items_.push_back (item);
 		}
 	
 		return result;
