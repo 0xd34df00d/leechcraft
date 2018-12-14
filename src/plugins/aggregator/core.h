@@ -174,7 +174,7 @@ namespace Aggregator
 		void rotateUpdatesQueue ();
 	private:
 		void FetchPixmap (const Channel&);
-		void FetchFavicon (const Channel&);
+		void FetchFavicon (IDType_t, const QString&);
 		void HandleExternalData (const QString&, const QFile&);
 		void HandleFeedAdded (const channels_container_t&, const PendingJob&);
 		void HandleFeedUpdated (const channels_container_t&, const PendingJob&);

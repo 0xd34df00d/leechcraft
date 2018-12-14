@@ -454,9 +454,8 @@ namespace Aggregator
 
 	void Core::UpdateFavicon (const QModelIndex& index)
 	{
-		const auto& channel = ChannelsModel_->GetChannelForIndex (index);
-		// TODO no need to get full channel here
-		FetchFavicon (StorageBackend_->GetChannel (channel.ChannelID_));
+		FetchFavicon (index.data (ChannelRoles::ChannelID).value<IDType_t> (),
+				index.data (ChannelRoles::ChannelLink).toString ());
 	}
 
 	void Core::AddFromOPML (const QString& filename, const QString& tags, const QSet<QString>& selectedUrls)
@@ -812,15 +811,15 @@ namespace Aggregator
 		}
 	}
 
-	void Core::FetchFavicon (const Channel& channel)
+	void Core::FetchFavicon (IDType_t channelId, const QString& link)
 	{
-		QUrl oldUrl (channel.Link_);
+		QUrl oldUrl { link };
 		oldUrl.setPath ("/favicon.ico");
 		QString iconUrl = oldUrl.toString ();
 
 		ExternalData data;
 		data.Type_ = ExternalData::TIcon;
-		data.ChannelId_ = channel.ChannelID_;
+		data.ChannelId_ = channelId;
 		QString exFName = LeechCraft::Util::GetTemporaryName ();
 		try
 		{
@@ -866,7 +865,7 @@ namespace Aggregator
 					Util::Map (channel->Items_, [] (const Item_ptr& item) { return *item; }));
 
 			FetchPixmap (*channel);
-			FetchFavicon (*channel);
+			FetchFavicon (channel->ChannelID_, channel->Link_);
 		}
 
 		if (pj.FeedSettings_)
