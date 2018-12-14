@@ -87,25 +87,25 @@ namespace Aggregator
 		item->Link_ = GetLink (entry);
 		item->Guid_ = entry.firstChildElement ("id").text ();
 		item->Unread_ = true;
-	
+
 		QDomElement date = entry.firstChildElement ("modified");
 		if (date.isNull ())
 			date = entry.firstChildElement ("issued");
 		item->PubDate_ = FromRFC3339 (date.text ());
-	
+
 		QDomElement summary = entry.firstChildElement ("content");
 		if (summary.isNull ())
 			summary = entry.firstChildElement ("summary");
 		item->Description_ = ParseEscapeAware (summary);
 		GetDescription (entry, item->Description_);
-	
+
 		item->Categories_ += GetAllCategories (entry);
 		item->Author_ = GetAuthor (entry);
-	
+
 		item->NumComments_ = GetNumComments (entry);
 		item->CommentsLink_ = GetCommentsRSS (entry);
 		item->CommentsPageLink_ = GetCommentsLink (entry);
-	
+
 		item->Enclosures_ = GetEnclosures (entry, item->ItemID_);
 		item->Enclosures_ += GetEncEnclosures (entry, item->ItemID_);
 
@@ -113,7 +113,7 @@ namespace Aggregator
 		item->Latitude_ = point.first;
 		item->Longitude_ = point.second;
 		item->MRSSEntries_ = GetMediaRSS (entry, item->ItemID_);
-	
+
 		return item;
 	}
 }
