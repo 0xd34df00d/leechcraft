@@ -94,6 +94,7 @@ namespace Aggregator
 		std::optional<QImage> GetChannelPixmap (IDType_t) const override;
 		void SetChannelPixmap (IDType_t, const std::optional<QImage>&) const override;
 		void SetChannelFavicon (IDType_t, const std::optional<QImage>&) const override;
+		void SetChannelTags (IDType_t, const QStringList&) override;
 
 		items_shorts_t GetItems (IDType_t) const override;
 		int GetUnreadItemsCount (IDType_t) const override;

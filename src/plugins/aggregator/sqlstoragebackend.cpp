@@ -731,6 +731,11 @@ namespace LeechCraft::Aggregator
 		Channels_->Update (sph::f<&ChannelR::Favicon_> = img.value_or (QImage {}), sph::f<&ChannelR::ChannelID_> == id);
 	}
 
+	void SQLStorageBackend::SetChannelTags (IDType_t id, const QStringList& tagIds)
+	{
+		Channels_->Update (sph::f<&ChannelR::Tags_> = tagIds, sph::f<&ChannelR::ChannelID_> == id);
+	}
+
 	items_shorts_t SQLStorageBackend::GetItems (IDType_t channelId) const
 	{
 		constexpr auto shortFields = sph::fields<
