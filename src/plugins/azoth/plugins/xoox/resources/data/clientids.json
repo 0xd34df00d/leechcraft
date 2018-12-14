@@ -29,6 +29,11 @@
       "node": "http://tkabber.jabber.ru",
       "id": "tkabber",
       "name": "Tkabber"
+    },
+    {
+      "node": "http://psi-im.org",
+      "id": "psi",
+      "name": "Psi"
     }
   ],
   "fullMatches": [
@@ -176,11 +181,6 @@
       "node": "http://pda.qip.ru/caps",
       "id": "qippda",
       "name": "QIP PDA"
-    },
-    {
-      "node": "http://psi-im.org/caps",
-      "id": "psi",
-      "name": "Psi"
     },
     {
       "node": [ "http://psi-dev.googlecode.com/caps", "http://psi-plus.com" ],
