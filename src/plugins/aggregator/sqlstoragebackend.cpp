@@ -736,6 +736,11 @@ namespace LeechCraft::Aggregator
 		Channels_->Update (sph::f<&ChannelR::Tags_> = tagIds, sph::f<&ChannelR::ChannelID_> == id);
 	}
 
+	void SQLStorageBackend::SetChannelDisplayTitle (IDType_t id, const QString& title)
+	{
+		Channels_->Update (sph::f<&ChannelR::DisplayTitle_> = title, sph::f<&ChannelR::ChannelID_> == id);
+	}
+
 	items_shorts_t SQLStorageBackend::GetItems (IDType_t channelId) const
 	{
 		constexpr auto shortFields = sph::fields<

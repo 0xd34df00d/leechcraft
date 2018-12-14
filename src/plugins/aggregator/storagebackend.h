@@ -156,6 +156,8 @@ namespace Aggregator
 
 		virtual void SetChannelTags (IDType_t channelId, const QStringList& tagIds) = 0;
 
+		virtual void SetChannelDisplayTitle (IDType_t channelId, const QString& title) = 0;
+
 		/** @brief Trims the channel to remove old items.
 		 *
 		 * Emits channelDataUpdated() after that.
