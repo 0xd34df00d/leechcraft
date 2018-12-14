@@ -32,6 +32,8 @@
 #include <QDomElement>
 #include <QStringList>
 #include <QtDebug>
+#include <util/sll/domchildrenrange.h>
+#include <util/sll/prelude.h>
 
 namespace LeechCraft
 {
@@ -55,8 +57,7 @@ namespace Aggregator
 	{
 		channels_container_t channels;
 		QDomElement root = doc.documentElement ();
-		QDomElement channel = root.firstChildElement ("channel");
-		while (!channel.isNull ())
+		for (const auto& channel : Util::DomChildren (root, "channel"))
 		{
 			auto chan = std::make_shared<Channel> (Channel::CreateForFeed (feedId));
 			chan->Title_ = channel.firstChildElement ("title").text ().trimmed ();
@@ -70,22 +71,15 @@ namespace Aggregator
 			if (chan->Author_.isEmpty ())
 				chan->Author_ = channel.firstChildElement ("webMaster").text ();
 			chan->PixmapURL_ = channel.firstChildElement ("image").attribute ("url");
-
-			auto& itemsList = chan->Items_;
-			itemsList.reserve (20);
-
-			QDomElement item = channel.firstChildElement ("item");
-			while (!item.isNull ())
-			{
-				itemsList.push_back (ParseItem (item, chan->ChannelID_));
-				item = item.nextSiblingElement ("item");
-			}
+			chan->Items_ = Util::Map (Util::DomChildren (channel, "item"),
+					[this, cid = chan->ChannelID_] (const QDomElement& item) { return ParseItem (item, cid); });
 
 			if (!chan->LastBuild_.isValid ())
-				chan->LastBuild_ = itemsList.isEmpty () ? QDateTime::currentDateTime () : itemsList.front ()->PubDate_;
+				chan->LastBuild_ = chan->Items_.isEmpty () ?
+						QDateTime::currentDateTime () :
+						chan->Items_.front ()->PubDate_;
 
 			channels.push_back (chan);
-			channel = channel.nextSiblingElement ("channel");
 		}
 		return channels;
 	}

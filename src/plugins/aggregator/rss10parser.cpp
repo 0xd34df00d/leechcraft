@@ -29,6 +29,8 @@
 
 #include "rss10parser.h"
 #include <QtDebug>
+#include <util/sll/domchildrenrange.h>
+#include <util/sll/prelude.h>
 
 namespace LeechCraft
 {
@@ -52,25 +54,18 @@ namespace Aggregator
 	
 		QMap<QString, Channel_ptr> item2Channel;
 		QDomElement root = doc.documentElement ();
-		QDomElement channelDescr = root.firstChildElement ("channel");
-		while (!channelDescr.isNull ())
+		for (const auto& channelDescr : Util::DomChildren (root, "channel"))
 		{
 			auto channel = std::make_shared<Channel> (Channel::CreateForFeed (feedId));
 			channel->Title_ = channelDescr.firstChildElement ("title").text ().trimmed ();
 			channel->Link_ = channelDescr.firstChildElement ("link").text ();
-			channel->Description_ =
-				channelDescr.firstChildElement ("description").text ();
-			channel->PixmapURL_ =
-				channelDescr.firstChildElement ("image")
-				.firstChildElement ("url").text ();
+			channel->Description_ = channelDescr.firstChildElement ("description").text ();
+			channel->PixmapURL_ = channelDescr.firstChildElement ("image").firstChildElement ("url").text ();
 			channel->LastBuild_ = GetDCDateTime (channelDescr);
 	
 			QDomElement itemsRoot = channelDescr.firstChildElement ("items");
 			QDomNodeList seqs = itemsRoot.elementsByTagNameNS (RDF_, "Seq");
-	
-			channelDescr = channelDescr.nextSiblingElement ("channel");
-	
-			if (!seqs.size ())
+			if (seqs.isEmpty ())
 				continue;
 	
 			QDomElement seqElem = seqs.at (0).toElement ();
@@ -80,9 +75,8 @@ namespace Aggregator
 	
 			result.push_back (channel);
 		}
-	
-		QDomElement itemDescr = root.firstChildElement ("item");
-		while (!itemDescr.isNull ())
+
+		for (const auto& itemDescr : Util::DomChildren (root, "item"))
 		{
 			QString about = itemDescr.attributeNS (RDF_, "about");
 			if (item2Channel.contains (about))
@@ -109,7 +103,6 @@ namespace Aggregator
 	
 				item2Channel [about]->Items_.push_back (item);
 			}
-			itemDescr = itemDescr.nextSiblingElement ("item");
 		}
 	
 		return result;

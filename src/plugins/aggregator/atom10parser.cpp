@@ -32,6 +32,8 @@
 #include <QDomElement>
 #include <QString>
 #include <QtDebug>
+#include <util/sll/domchildrenrange.h>
+#include <util/sll/prelude.h>
 
 namespace LeechCraft
 {
@@ -77,14 +79,9 @@ namespace Aggregator
 				")";
 		}
 		chan->Language_ = "<>";
-	
-		QDomElement entry = root.firstChildElement ("entry");
-		while (!entry.isNull ())
-		{
-			chan->Items_.push_back (ParseItem (entry, chan->ChannelID_));
-			entry = entry.nextSiblingElement ("entry");
-		}
-	
+		chan->Items_ = Util::Map (Util::DomChildren (root, "entry"),
+				[this, cid = chan->ChannelID_] (const QDomElement& entry) { return ParseItem (entry, cid); });
+
 		return channels;
 	}
 	
