@@ -151,8 +151,8 @@ namespace Aggregator
 				const QString& link, IDType_t feedId) const = 0;
 
 		virtual std::optional<QImage> GetChannelPixmap (IDType_t channelId) const = 0;
-		virtual void SetChannelPixmap (IDType_t channelId, const std::optional<QImage>& img) const = 0;
-		virtual void SetChannelFavicon (IDType_t channelId, const std::optional<QImage>& img) const = 0;
+		virtual void SetChannelPixmap (IDType_t channelId, const std::optional<QImage>& img) = 0;
+		virtual void SetChannelFavicon (IDType_t channelId, const std::optional<QImage>& img) = 0;
 
 		virtual void SetChannelTags (IDType_t channelId, const QStringList& tagIds) = 0;
 

@@ -720,13 +720,13 @@ namespace LeechCraft::Aggregator
 		return Channels_->SelectOne (sph::fields<&ChannelR::Pixmap_>, sph::f<&ChannelR::ChannelID_> == channelId);
 	}
 
-	void SQLStorageBackend::SetChannelPixmap (IDType_t id, const std::optional<QImage>& img) const
+	void SQLStorageBackend::SetChannelPixmap (IDType_t id, const std::optional<QImage>& img)
 	{
 		// TODO no need for value_or when oral will support setting NULL
 		Channels_->Update (sph::f<&ChannelR::Pixmap_> = img.value_or (QImage {}), sph::f<&ChannelR::ChannelID_> == id);
 	}
 
-	void SQLStorageBackend::SetChannelFavicon (IDType_t id, const std::optional<QImage>& img) const
+	void SQLStorageBackend::SetChannelFavicon (IDType_t id, const std::optional<QImage>& img)
 	{
 		Channels_->Update (sph::f<&ChannelR::Favicon_> = img.value_or (QImage {}), sph::f<&ChannelR::ChannelID_> == id);
 	}
