@@ -177,6 +177,8 @@ namespace Aggregator
 			return Channels_.at (row).FeedID_;
 		case ChannelRoles::HumanReadableTags:
 			return Core::Instance ().GetProxy ()->GetTagsManager ()->GetTags (Channels_.at (row).Tags_);
+		case ChannelRoles::ChannelLink:
+			return Channels_.at (row).Link_;
 		default:
 			return {};
 		}
