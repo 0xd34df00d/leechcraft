@@ -281,6 +281,11 @@
       "node": "https://www.jappix.com/",
       "id": "jappix",
       "name": "Jappix"
+    },
+    {
+      "node": "https://www.xabber.com/",
+      "id": "xabber",
+      "name": "Xabber"
     }
   ]
 }
