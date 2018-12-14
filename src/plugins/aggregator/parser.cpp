@@ -34,6 +34,7 @@
 #include <QObject>
 #include <QtDebug>
 #include <util/sll/prelude.h>
+#include <util/sll/domchildrenrange.h>
 
 uint qHash (const QDomNode& node)
 {
@@ -113,21 +114,17 @@ namespace Aggregator
 
 	QString Parser::GetLink (const QDomElement& parent) const
 	{
-		QString result;
-		QDomElement link = parent.firstChildElement ("link");
-		while (!link.isNull ())
+		for (const auto& link : Util::DomChildren (parent, "link"))
 		{
 			if (!link.hasAttribute ("rel") || link.attribute ("rel") == "alternate")
 			{
 				if (!link.hasAttribute ("href"))
-					result = link.text ();
+					return link.text ();
 				else
-					result = link.attribute ("href");
-				break;
+					return link.attribute ("href");
 			}
-			link = link.nextSiblingElement ("link");
 		}
-		return result;
+		return {};
 	}
 
 	QString Parser::GetAuthor (const QDomElement& parent) const
