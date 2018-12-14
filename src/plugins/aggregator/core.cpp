@@ -447,9 +447,8 @@ namespace Aggregator
 
 	void Core::SetTagsForIndex (const QString& tags, const QModelIndex& index)
 	{
-		auto channel = ChannelsModel_->GetChannelForIndex (index);
-		channel.Tags_ = Proxy_->GetTagsManager ()->GetIDs (Proxy_->GetTagsManager ()->Split (tags));
-		StorageBackend_->UpdateChannel (channel);
+		StorageBackend_->SetChannelTags (index.data (ChannelRoles::ChannelID).value<IDType_t> (),
+				Proxy_->GetTagsManager ()->GetIDs (Proxy_->GetTagsManager ()->Split (tags)));
 	}
 
 	void Core::UpdateFavicon (const QModelIndex& index)
