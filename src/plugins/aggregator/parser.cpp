@@ -116,13 +116,12 @@ namespace Aggregator
 	{
 		for (const auto& link : Util::DomChildren (parent, "link"))
 		{
-			if (!link.hasAttribute ("rel") || link.attribute ("rel") == "alternate")
-			{
-				if (!link.hasAttribute ("href"))
-					return link.text ();
-				else
-					return link.attribute ("href");
-			}
+			if (link.hasAttribute ("rel") && link.attribute ("rel") != "alternate")
+				continue;
+
+			return link.hasAttribute ("href") ?
+					link.attribute ("href") :
+					link.text ();
 		}
 		return {};
 	}
