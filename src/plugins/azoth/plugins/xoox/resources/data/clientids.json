@@ -286,6 +286,11 @@
       "node": "https://www.xabber.com/",
       "id": "xabber",
       "name": "Xabber"
+    },
+    {
+      "node": "https://poez.io",
+      "id": "poezio",
+      "name": "Poezio"
     }
   ]
 }
