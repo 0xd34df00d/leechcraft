@@ -216,9 +216,6 @@ namespace Aggregator
 				<< localChannel.Title_
 				<< localChannel.Link_;
 
-		localChannel.Title_ = channel.Title_;
-		localChannel.Link_ = channel.Link_;
-
 		if (localChannel.Title_ != channel.Title_)
 			SB_->SetChannelTitle (localChannel.ChannelID_, channel.Title_);
 		if (localChannel.Link_ != channel.Link_)
