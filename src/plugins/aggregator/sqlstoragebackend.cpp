@@ -823,17 +823,6 @@ namespace LeechCraft::Aggregator
 		}
 	}
 
-	void SQLStorageBackend::UpdateChannel (const ChannelShort& channel)
-	{
-		Channels_->Update ((sph::f<&ChannelR::LastBuild_> = channel.LastBuild_,
-				sph::f<&ChannelR::Tags_> = channel.Tags_,
-				sph::f<&ChannelR::DisplayTitle_> = channel.DisplayTitle_,
-				sph::f<&ChannelR::Title_> = channel.Title_,
-				sph::f<&ChannelR::URL_> = channel.Link_),
-				sph::f<&ChannelR::ChannelID_> == channel.ChannelID_);
-		emit channelDataUpdated (GetChannel (channel.ChannelID_));
-	}
-
 	void SQLStorageBackend::UpdateItem (const Item& item)
 	{
 		Items_->Update (ItemR::FromOrig (item));

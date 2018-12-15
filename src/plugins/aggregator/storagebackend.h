@@ -309,14 +309,6 @@ namespace Aggregator
 		 */
 		virtual void AddItem (const Item& item) = 0;
 
-		/** @brief Updates an already existing channel.
-		 *
-		 * This is an overloaded function provided for convenience.
-		 *
-		 * @param[in] channel Short information about channel.
-		 */
-		virtual void UpdateChannel (const ChannelShort& channel) = 0;
-
 		/** @brief Updates an already existing item.
 		 *
 		 * If the specified item doesn't exist in the storage, it should be
