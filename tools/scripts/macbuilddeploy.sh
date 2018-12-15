@@ -65,6 +65,9 @@ cp -LRv /usr/local/opt/qca/lib/qt5/plugins/crypto $TARGET/leechcraft.app/Content
 chmod 644 $TARGET/leechcraft.app/Contents/PlugIns/crypto/*
 CDIR=$TARGET/leechcraft.app/Contents/PlugIns/crypto; for PLUG in `ls $CDIR`; do install_name_tool -change $($DYLDINFO -dylibs $CDIR/$PLUG | grep qca) @executable_path/../Frameworks/qca.framework/qca $CDIR/$PLUG; done
 
+#install_name_tool -change @rpath/QtWebKit.framework/Versions/5/QtWebKit @loader_path/../../../QtWebKit.framework/Versions/5/QtWebKit leechcraft.app/Contents/Frameworks/QtWebKitWidgets.framework/Versions/5/QtWebKitWidgets
+#install_name_tool -delete_rpath /usr/local/opt/qtwebkit/lib leechcraft.app/Contents/Frameworks/QtWebKitWidgets.framework/Versions/5/QtWebKitWidgets
+
 macdeployqt $TARGET/leechcraft.app -verbose=2 -executable=$TARGET/leechcraft.app/Contents/MacOs/lc_anhero_crashprocess -qmldir=$TARGET/leechcraft.app/Contents/Resources/share/qml5
 
 cd $BASEDIR
