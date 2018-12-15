@@ -279,12 +279,12 @@ QPixmap LeechCraft::Util::DrawOverlayText (QPixmap px,
 {
 	const auto& iconSize = px.size ();
 
-	const auto fontHeight = px.height () * 0.45;
+	const auto fontHeight = iconSize.height () * 0.45;
 	font.setPixelSize (std::max (6., fontHeight));
 
 	const QFontMetrics fm (font);
-	const auto width = fm.width (text) + 2. * px.width () / 10.;
-	const auto height = fm.height () + 2. * px.height () / 10.;
+	const auto width = fm.width (text) + 2. * iconSize.width () / 10.;
+	const auto height = fm.height () + 2. * iconSize.height () / 10.;
 	const bool tooSmall = width > iconSize.width ();
 
 	const QRect textRect (iconSize.width () - width, iconSize.height () - height, width, height);
