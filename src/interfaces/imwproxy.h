@@ -150,7 +150,7 @@ public:
 	 *
 	 * Calling this function hides the main LeechCraft menu in the
 	 * tabbar. There is no way of showing it back again after that. The
-	 * menu is still accessable via GetMainMenu() and can be shown via
+	 * menu is still accessible via GetMainMenu() and can be shown via
 	 * other means.
 	 *
 	 * @sa GetMainMenu().
