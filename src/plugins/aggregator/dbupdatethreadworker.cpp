@@ -220,7 +220,10 @@ namespace Aggregator
 		localChannel.Title_ = channel.Title_;
 		localChannel.Link_ = channel.Link_;
 
-		SB_->UpdateChannel (localChannel);
+		if (localChannel.Title_ != channel.Title_)
+			SB_->SetChannelTitle (localChannel.ChannelID_, channel.Title_);
+		if (localChannel.Link_ != channel.Link_)
+			SB_->SetChannelLink (localChannel.ChannelID_, channel.Link_);
 
 		return localChannel.ChannelID_;
 	}
