@@ -74,19 +74,6 @@ namespace LeechCraft
 		Window_ = win;
 	}
 
-	void SeparateTabBar::SetTabData (int index)
-	{
-		if (index < 0 || index >= count () - 1)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "invalid index "
-					<< index;
-			return;
-		}
-
-		setTabData (index, ++Id_);
-	}
-
 	void SeparateTabBar::SetTabClosable (int index, bool closable, QWidget *closeButton)
 	{
 		if (index < 0 ||

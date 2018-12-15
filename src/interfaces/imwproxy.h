@@ -27,8 +27,9 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef INTERFACES_IMWPROXY_H
-#define INTERFACES_IMWPROXY_H
+#pragma once
+
+#include <optional>
 #include <Qt>
 
 class QDockWidget;
@@ -149,7 +150,7 @@ public:
 	 *
 	 * Calling this function hides the main LeechCraft menu in the
 	 * tabbar. There is no way of showing it back again after that. The
-	 * menu is still accessable via GetMainMenu() and can be shown via
+	 * menu is still accessible via GetMainMenu() and can be shown via
 	 * other means.
 	 *
 	 * @sa GetMainMenu().
@@ -158,5 +159,3 @@ public:
 };
 
 Q_DECLARE_INTERFACE (IMWProxy, "org.Deviant.LeechCraft.IMWProxy/1.0")
-
-#endif

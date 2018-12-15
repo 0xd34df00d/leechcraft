@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <optional>
 #include <QObject>
 #include <QModelIndex>
 

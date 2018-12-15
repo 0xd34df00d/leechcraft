@@ -29,6 +29,7 @@
 
 #include "exportutils.h"
 #include <algorithm>
+#include <QFile>
 #include <QByteArray>
 #include <QDataStream>
 #include <QMessageBox>
