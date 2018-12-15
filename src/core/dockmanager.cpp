@@ -32,6 +32,7 @@
 #include <QToolButton>
 #include <QToolBar>
 #include <QMenu>
+#include <QResizeEvent>
 #include <util/xpc/defaulthookproxy.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/delayedexecutor.h>
