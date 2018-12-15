@@ -54,7 +54,7 @@ namespace Aggregator
 		QModelIndex Index_;
 	public:
 		explicit FeedSettings (const QModelIndex&, const ICoreProxy_ptr&, QWidget* = nullptr);
-	public slots:
+	public:
 		void accept () override;
 	private slots:
 		void on_UpdateFavicon__released ();
