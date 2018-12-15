@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef INTERFACES_IMWPROXY_H
-#define INTERFACES_IMWPROXY_H
+#pragma once
+
 #include <Qt>
 
 class QDockWidget;
@@ -158,5 +158,3 @@ public:
 };
 
 Q_DECLARE_INTERFACE (IMWProxy, "org.Deviant.LeechCraft.IMWProxy/1.0")
-
-#endif
