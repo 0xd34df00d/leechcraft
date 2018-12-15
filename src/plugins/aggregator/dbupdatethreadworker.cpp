@@ -29,7 +29,6 @@
 
 #include "dbupdatethreadworker.h"
 #include <stdexcept>
-#include <optional>
 #include <QUrl>
 #include <QtDebug>
 #include <util/xpc/util.h>

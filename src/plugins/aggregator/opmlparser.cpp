@@ -28,6 +28,8 @@
  **********************************************************************/
 
 #include "opmlparser.h"
+#include <QFile>
+#include <QObject>
 #include <QDomDocument>
 #include <QDomElement>
 #include <util/sll/domchildrenrange.h>

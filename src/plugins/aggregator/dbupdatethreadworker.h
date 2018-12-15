@@ -31,6 +31,7 @@
 
 #include <memory>
 #include <functional>
+#include <optional>
 #include <QObject>
 #include <QVariantList>
 #include <interfaces/core/ihookproxy.h>
