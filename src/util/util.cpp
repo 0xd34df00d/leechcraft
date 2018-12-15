@@ -277,7 +277,7 @@ QAction* LeechCraft::Util::CreateSeparator (QObject *parent)
 QPixmap LeechCraft::Util::DrawOverlayText (QPixmap px,
 		const QString& text, QFont font, const QPen& pen, const QBrush& brush)
 {
-	const auto& iconSize = px.size ();
+	const auto& iconSize = px.size () / px.devicePixelRatio ();
 
 	const auto fontHeight = iconSize.height () * 0.45;
 	font.setPixelSize (std::max (6., fontHeight));
