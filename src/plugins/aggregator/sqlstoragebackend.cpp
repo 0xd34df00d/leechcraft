@@ -720,13 +720,13 @@ namespace LeechCraft::Aggregator
 		return Channels_->SelectOne (sph::fields<&ChannelR::Pixmap_>, sph::f<&ChannelR::ChannelID_> == channelId);
 	}
 
-	void SQLStorageBackend::SetChannelPixmap (IDType_t id, const std::optional<QImage>& img) const
+	void SQLStorageBackend::SetChannelPixmap (IDType_t id, const std::optional<QImage>& img)
 	{
 		// TODO no need for value_or when oral will support setting NULL
 		Channels_->Update (sph::f<&ChannelR::Pixmap_> = img.value_or (QImage {}), sph::f<&ChannelR::ChannelID_> == id);
 	}
 
-	void SQLStorageBackend::SetChannelFavicon (IDType_t id, const std::optional<QImage>& img) const
+	void SQLStorageBackend::SetChannelFavicon (IDType_t id, const std::optional<QImage>& img)
 	{
 		Channels_->Update (sph::f<&ChannelR::Favicon_> = img.value_or (QImage {}), sph::f<&ChannelR::ChannelID_> == id);
 	}
@@ -734,6 +734,21 @@ namespace LeechCraft::Aggregator
 	void SQLStorageBackend::SetChannelTags (IDType_t id, const QStringList& tagIds)
 	{
 		Channels_->Update (sph::f<&ChannelR::Tags_> = tagIds, sph::f<&ChannelR::ChannelID_> == id);
+	}
+
+	void SQLStorageBackend::SetChannelDisplayTitle (IDType_t id, const QString& displayTitle)
+	{
+		Channels_->Update (sph::f<&ChannelR::DisplayTitle_> = displayTitle, sph::f<&ChannelR::ChannelID_> == id);
+	}
+
+	void SQLStorageBackend::SetChannelTitle (IDType_t id, const QString& title)
+	{
+		Channels_->Update (sph::f<&ChannelR::Title_> = title, sph::f<&ChannelR::ChannelID_> == id);
+	}
+
+	void SQLStorageBackend::SetChannelLink (IDType_t id, const QString& link)
+	{
+		Channels_->Update (sph::f<&ChannelR::URL_> = link, sph::f<&ChannelR::ChannelID_> == id);
 	}
 
 	items_shorts_t SQLStorageBackend::GetItems (IDType_t channelId) const
@@ -806,23 +821,6 @@ namespace LeechCraft::Aggregator
 		{
 			qWarning () << Q_FUNC_INFO << e.what ();
 		}
-	}
-
-	void SQLStorageBackend::UpdateChannel (const Channel& channel)
-	{
-		Channels_->Insert (ChannelR::FromOrig (channel), oral::InsertAction::Replace::PKey<ChannelR>);
-		emit channelDataUpdated (channel);
-	}
-
-	void SQLStorageBackend::UpdateChannel (const ChannelShort& channel)
-	{
-		Channels_->Update ((sph::f<&ChannelR::LastBuild_> = channel.LastBuild_,
-				sph::f<&ChannelR::Tags_> = channel.Tags_,
-				sph::f<&ChannelR::DisplayTitle_> = channel.DisplayTitle_,
-				sph::f<&ChannelR::Title_> = channel.Title_,
-				sph::f<&ChannelR::URL_> = channel.Link_),
-				sph::f<&ChannelR::ChannelID_> == channel.ChannelID_);
-		emit channelDataUpdated (GetChannel (channel.ChannelID_));
 	}
 
 	void SQLStorageBackend::UpdateItem (const Item& item)

@@ -151,10 +151,15 @@ namespace Aggregator
 				const QString& link, IDType_t feedId) const = 0;
 
 		virtual std::optional<QImage> GetChannelPixmap (IDType_t channelId) const = 0;
-		virtual void SetChannelPixmap (IDType_t channelId, const std::optional<QImage>& img) const = 0;
-		virtual void SetChannelFavicon (IDType_t channelId, const std::optional<QImage>& img) const = 0;
+		virtual void SetChannelPixmap (IDType_t channelId, const std::optional<QImage>& img) = 0;
+		virtual void SetChannelFavicon (IDType_t channelId, const std::optional<QImage>& img) = 0;
 
 		virtual void SetChannelTags (IDType_t channelId, const QStringList& tagIds) = 0;
+
+		virtual void SetChannelDisplayTitle (IDType_t channelId, const QString& title) = 0;
+
+		virtual void SetChannelTitle (IDType_t, const QString& title) = 0;
+		virtual void SetChannelLink (IDType_t, const QString& link) = 0;
 
 		/** @brief Trims the channel to remove old items.
 		 *
@@ -303,28 +308,6 @@ namespace Aggregator
 		 * @param[in] item Pointer to the item that should be added.
 		 */
 		virtual void AddItem (const Item& item) = 0;
-
-		/** @brief Updates an already existing channel.
-		 *
-		 * If the specified channel doesn't exist in the storage, it should
-		 * be inserted to the storage, so this function should behave like
-		 * AddChannel() in this case.
-		 *
-		 * This function would emit channelDataUpdated() signal after it
-		 * finishes.
-		 *
-		 * @param[in] channel Pointer to the new version of the channel
-		 * that should be updated.
-		 */
-		virtual void UpdateChannel (const Channel& channel) = 0;
-
-		/** @brief Updates an already existing channel.
-		 *
-		 * This is an overloaded function provided for convenience.
-		 *
-		 * @param[in] channel Short information about channel.
-		 */
-		virtual void UpdateChannel (const ChannelShort& channel) = 0;
 
 		/** @brief Updates an already existing item.
 		 *

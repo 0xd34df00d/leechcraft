@@ -49,9 +49,12 @@ namespace Aggregator
 		std::optional<IDType_t> FindChannel (const QString&, const QString&, IDType_t) const override { return {}; }
 		void TrimChannel (IDType_t, int, int) override {}
 		std::optional<QImage> GetChannelPixmap (IDType_t) const override { return {}; }
-		void SetChannelPixmap (IDType_t, const std::optional<QImage>&) const override {}
-		void SetChannelFavicon (IDType_t, const std::optional<QImage>&) const override {}
+		void SetChannelPixmap (IDType_t, const std::optional<QImage>&) override {}
+		void SetChannelFavicon (IDType_t, const std::optional<QImage>&) override {}
 		void SetChannelTags (IDType_t, const QStringList&) override {}
+		void SetChannelDisplayTitle (IDType_t, const QString&) override {}
+		void SetChannelTitle (IDType_t, const QString&) override {}
+		void SetChannelLink (IDType_t, const QString&) override {}
 		items_shorts_t GetItems (IDType_t) const override { return {}; }
 		int GetUnreadItemsCount (IDType_t) const override { return {}; }
 		int GetTotalItemsCount (IDType_t) const override { return {}; }
@@ -63,8 +66,6 @@ namespace Aggregator
 		void AddFeed (const Feed&) override {}
 		void AddChannel (const Channel&) override {}
 		void AddItem (const Item&) override {}
-		void UpdateChannel (const Channel&) override {}
-		void UpdateChannel (const ChannelShort&) override {}
 		void UpdateItem (const Item&) override {}
 		void SetItemUnread (IDType_t, bool) override {}
 		void RemoveItems (const QSet<IDType_t>&) override {}

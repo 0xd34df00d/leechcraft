@@ -387,12 +387,7 @@ namespace Aggregator
 
 	void Core::RenameFeed (const QModelIndex& index, const QString& newName)
 	{
-		if (!index.isValid ())
-			return;
-
-		auto channel = ChannelsModel_->GetChannelForIndex (index);
-		channel.DisplayTitle_ = newName;
-		StorageBackend_->UpdateChannel (channel);
+		StorageBackend_->SetChannelDisplayTitle (index.data (ChannelRoles::ChannelID).value<IDType_t> (), newName);
 	}
 
 	ChannelsModel* Core::GetRawChannelsModel () const

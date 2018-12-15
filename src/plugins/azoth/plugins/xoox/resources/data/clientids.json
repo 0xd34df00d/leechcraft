@@ -29,6 +29,11 @@
       "node": "http://tkabber.jabber.ru",
       "id": "tkabber",
       "name": "Tkabber"
+    },
+    {
+      "node": "http://psi-im.org",
+      "id": "psi",
+      "name": "Psi"
     }
   ],
   "fullMatches": [
@@ -178,11 +183,6 @@
       "name": "QIP PDA"
     },
     {
-      "node": "http://psi-im.org/caps",
-      "id": "psi",
-      "name": "Psi"
-    },
-    {
       "node": [ "http://psi-dev.googlecode.com/caps", "http://psi-plus.com" ],
       "id": "psiplus",
       "name": "Psi+"
@@ -281,6 +281,16 @@
       "node": "https://www.jappix.com/",
       "id": "jappix",
       "name": "Jappix"
+    },
+    {
+      "node": "https://www.xabber.com/",
+      "id": "xabber",
+      "name": "Xabber"
+    },
+    {
+      "node": "https://poez.io",
+      "id": "poezio",
+      "name": "Poezio"
     }
   ]
 }
