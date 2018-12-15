@@ -736,9 +736,19 @@ namespace LeechCraft::Aggregator
 		Channels_->Update (sph::f<&ChannelR::Tags_> = tagIds, sph::f<&ChannelR::ChannelID_> == id);
 	}
 
-	void SQLStorageBackend::SetChannelDisplayTitle (IDType_t id, const QString& title)
+	void SQLStorageBackend::SetChannelDisplayTitle (IDType_t id, const QString& displayTitle)
 	{
-		Channels_->Update (sph::f<&ChannelR::DisplayTitle_> = title, sph::f<&ChannelR::ChannelID_> == id);
+		Channels_->Update (sph::f<&ChannelR::DisplayTitle_> = displayTitle, sph::f<&ChannelR::ChannelID_> == id);
+	}
+
+	void SQLStorageBackend::SetChannelTitle (IDType_t id, const QString& title)
+	{
+		Channels_->Update (sph::f<&ChannelR::Title_> = title, sph::f<&ChannelR::ChannelID_> == id);
+	}
+
+	void SQLStorageBackend::SetChannelLink (IDType_t id, const QString& link)
+	{
+		Channels_->Update (sph::f<&ChannelR::URL_> = link, sph::f<&ChannelR::ChannelID_> == id);
 	}
 
 	items_shorts_t SQLStorageBackend::GetItems (IDType_t channelId) const

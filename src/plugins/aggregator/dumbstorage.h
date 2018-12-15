@@ -53,6 +53,8 @@ namespace Aggregator
 		void SetChannelFavicon (IDType_t, const std::optional<QImage>&) override {}
 		void SetChannelTags (IDType_t, const QStringList&) override {}
 		void SetChannelDisplayTitle (IDType_t, const QString&) override {}
+		void SetChannelTitle (IDType_t, const QString&) override {}
+		void SetChannelLink (IDType_t, const QString&) override {}
 		items_shorts_t GetItems (IDType_t) const override { return {}; }
 		int GetUnreadItemsCount (IDType_t) const override { return {}; }
 		int GetTotalItemsCount (IDType_t) const override { return {}; }
