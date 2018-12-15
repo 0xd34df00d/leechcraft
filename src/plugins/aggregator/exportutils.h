@@ -29,35 +29,10 @@
 
 #pragma once
 
-#include <memory>
-#include <QDialog>
-#include <QModelIndex>
-#include <interfaces/core/icoreproxyfwd.h>
-#include "ui_feedsettings.h"
-#include "common.h"
+class QWidget;
 
-namespace LeechCraft
+namespace LeechCraft::Aggregator::ExportUtils
 {
-namespace Util
-{
-	class TagsCompleter;
-}
-
-namespace Aggregator
-{
-	class FeedSettings : public QDialog
-	{
-		Q_OBJECT
-
-		Ui::FeedSettings Ui_;
-		std::shared_ptr<Util::TagsCompleter> ChannelTagsCompleter_;
-		QModelIndex Index_;
-	public:
-		explicit FeedSettings (const QModelIndex&, const ICoreProxy_ptr&, QWidget* = nullptr);
-	public slots:
-		void accept () override;
-	private slots:
-		void on_UpdateFavicon__released ();
-	};
-}
+	void RunExportOPML (QWidget* = nullptr);
+	void RunExportBinary (QWidget* = nullptr);
 }

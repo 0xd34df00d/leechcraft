@@ -32,7 +32,6 @@
 #include <QFileDialog>
 #include <QDir>
 #include <QTimer>
-#include <util/sll/functor.h>
 #include "feed.h"
 #include "storagebackendmanager.h"
 
@@ -40,6 +39,11 @@ namespace LeechCraft
 {
 namespace Aggregator
 {
+	namespace
+	{
+		constexpr auto IDRole = Qt::UserRole;
+	}
+
 	Export::Export (const QString& title,
 			const QString& exportTitle,
 			const QString& choices,
@@ -74,27 +78,28 @@ namespace Aggregator
 		return Ui_.OwnerEmail_->text ();
 	}
 	
-	std::vector<bool> Export::GetSelectedFeeds () const
+	QSet<IDType_t> Export::GetSelectedFeeds () const
 	{
-		std::vector<bool> result (Ui_.Channels_->topLevelItemCount ());
-	
+		QSet<IDType_t> result;
 		for (int i = 0, items = Ui_.Channels_->topLevelItemCount (); i < items; ++i)
-			result [i] = (Ui_.Channels_->topLevelItem (i)->data (0, Qt::CheckStateRole) == Qt::Checked);
-	
+		{
+			const auto item = Ui_.Channels_->topLevelItem (i);
+			if (item->data (0, Qt::CheckStateRole) == Qt::Checked)
+				result << item->data (0, IDRole).value<IDType_t> ();
+		}
 		return result;
 	}
 	
 	void Export::SetFeeds (const channels_shorts_t& channels)
 	{
-		using Util::operator*;
-
 		const auto& sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
-		for (channels_shorts_t::const_iterator i = channels.begin (), end = channels.end (); i != end; ++i)
-			[&] (auto&& feed)
+		for (const auto& cs : channels)
 			{
-				const auto item = new QTreeWidgetItem (Ui_.Channels_, { i->Title_, feed.URL_ });
+				const auto& feed = sb->GetFeed (cs.FeedID_);
+				const auto item = new QTreeWidgetItem (Ui_.Channels_, { cs.Title_, feed.URL_ });
 				item->setData (0, Qt::CheckStateRole, Qt::Checked);
-			} * sb->GetFeed (i->FeedID_);
+				item->setData (0, IDRole, cs.ChannelID_);
+			}
 	}
 	
 	void Export::on_File__textEdited (const QString& text)

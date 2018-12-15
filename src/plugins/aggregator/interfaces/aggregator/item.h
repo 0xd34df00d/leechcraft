@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AGGREGATOR_INTERFACES_AGGREGATOR_ITEM_H
-#define PLUGINS_AGGREGATOR_INTERFACES_AGGREGATOR_ITEM_H
+#pragma once
+
 #include <vector>
 #include <memory>
 #include <QString>
@@ -58,11 +58,11 @@ namespace Aggregator
 	{
 		/** @brief Enclosure ID.
 			*/
-		IDType_t EnclosureID_;
+		IDType_t EnclosureID_ = IDNotFound;
 
 		/** @brief Parent item's ID.
 			*/
-		IDType_t ItemID_;
+		IDType_t ItemID_ = IDNotFound;
 
 		/** @brief The URL this enclosure refers to.
 			*/
@@ -80,26 +80,8 @@ namespace Aggregator
 			*/
 		QString Lang_;
 
-		/** @brief Constructs the enclosure with given parent.
-			*
-			* The given enclosure requests a new ID for it from the
-			* Core.
-			*
-			* @param[in] itemId The ID of the parent item.
-			*/
-		Enclosure (const IDType_t& itemId);
-
-		/** @brief Constructs the enclosure with given parent.
-			*
-			* The enclosure doesn't request a new ID from the Core
-			* and uses encId instead.
-			*
-			* @param[in] itemId The ID of the parent item.
-			* @param[in] encId The ID of the enclosure.
-			*/
-		Enclosure (const IDType_t& itemId, const IDType_t& encId);
+		static Enclosure CreateForItem (IDType_t itemId);
 	private:
-		Enclosure ();
 		friend QDataStream& operator>> (QDataStream&, QList<Enclosure>&);
 	};
 
@@ -107,17 +89,15 @@ namespace Aggregator
 
 	struct MRSSThumbnail
 	{
-		IDType_t MRSSThumbnailID_;
-		IDType_t MRSSEntryID_;
+		IDType_t MRSSThumbnailID_ = IDNotFound;
+		IDType_t MRSSEntryID_ = IDNotFound;
 		QString URL_;
 		int Width_ = 0;
 		int Height_ = 0;
 		QString Time_;
 
-		MRSSThumbnail (const IDType_t& entryId);
-		MRSSThumbnail (const IDType_t& entryId, const IDType_t& thisId);
+		static MRSSThumbnail CreateForEntry (IDType_t entryId);
 	private:
-		MRSSThumbnail ();
 		friend QDataStream& operator>> (QDataStream&, QList<MRSSThumbnail>&);
 	};
 
@@ -125,15 +105,13 @@ namespace Aggregator
 
 	struct MRSSCredit
 	{
-		IDType_t MRSSCreditID_;
-		IDType_t MRSSEntryID_;
+		IDType_t MRSSCreditID_ = IDNotFound;
+		IDType_t MRSSEntryID_ = IDNotFound;
 		QString Role_;
 		QString Who_;
 
-		MRSSCredit (const IDType_t& entryId);
-		MRSSCredit (const IDType_t& entryId, const IDType_t& thisId);
+		static MRSSCredit CreateForEntry (IDType_t entryId);
 	private:
-		MRSSCredit ();
 		friend QDataStream& operator>> (QDataStream&, QList<MRSSCredit>&);
 	};
 
@@ -141,15 +119,13 @@ namespace Aggregator
 
 	struct MRSSComment
 	{
-		IDType_t MRSSCommentID_;
-		IDType_t MRSSEntryID_;
+		IDType_t MRSSCommentID_ = IDNotFound;
+		IDType_t MRSSEntryID_ = IDNotFound;
 		QString Type_;
 		QString Comment_;
 
-		MRSSComment (const IDType_t& entryId);
-		MRSSComment (const IDType_t& entryId, const IDType_t& thisId);
+		static MRSSComment CreateForEntry (IDType_t entryId);
 	private:
-		MRSSComment ();
 		friend QDataStream& operator>> (QDataStream&, QList<MRSSComment>&);
 	};
 
@@ -157,15 +133,13 @@ namespace Aggregator
 
 	struct MRSSPeerLink
 	{
-		IDType_t MRSSPeerLinkID_;
-		IDType_t MRSSEntryID_;
+		IDType_t MRSSPeerLinkID_ = IDNotFound;
+		IDType_t MRSSEntryID_ = IDNotFound;
 		QString Type_;
 		QString Link_;
 
-		MRSSPeerLink (const IDType_t& entryId);
-		MRSSPeerLink (const IDType_t& entryId, const IDType_t& thisId);
+		static MRSSPeerLink CreateForEntry (IDType_t entryId);
 	private:
-		MRSSPeerLink ();
 		friend QDataStream& operator>> (QDataStream&, QList<MRSSPeerLink>&);
 	};
 
@@ -173,17 +147,15 @@ namespace Aggregator
 
 	struct MRSSScene
 	{
-		IDType_t MRSSSceneID_;
-		IDType_t MRSSEntryID_;
+		IDType_t MRSSSceneID_ = IDNotFound;
+		IDType_t MRSSEntryID_ = IDNotFound;
 		QString Title_;
 		QString Description_;
 		QString StartTime_;
 		QString EndTime_;
 
-		MRSSScene (const IDType_t& entryId);
-		MRSSScene (const IDType_t& entryId, const IDType_t& thisId);
+		static MRSSScene CreateForEntry (IDType_t entryId);
 	private:
-		MRSSScene ();
 		friend QDataStream& operator>> (QDataStream&, QList<MRSSScene>&);
 	};
 
@@ -191,8 +163,8 @@ namespace Aggregator
 
 	struct MRSSEntry
 	{
-		IDType_t MRSSEntryID_ = 0;
-		IDType_t ItemID_ = 0;
+		IDType_t MRSSEntryID_ = IDNotFound;
+		IDType_t ItemID_ = IDNotFound;
 		QString URL_;
 		qint64 Size_ = 0;
 		QString Type_;
@@ -228,10 +200,8 @@ namespace Aggregator
 		QList<MRSSPeerLink> PeerLinks_;
 		QList<MRSSScene> Scenes_;
 
-		MRSSEntry (const IDType_t& itemId);
-		MRSSEntry (const IDType_t& itemId, const IDType_t& entryId);
+		static MRSSEntry CreateForItem (IDType_t itemId);
 	private:
-		MRSSEntry () = default;
 		friend QDataStream& operator>> (QDataStream&, QList<MRSSEntry>&);
 	};
 
@@ -316,27 +286,7 @@ namespace Aggregator
 			*/
 		QList<MRSSEntry> MRSSEntries_;
 
-		Item () = default;
-
-		/** @brief Constructs the item as belonging to the
-			* given channel.
-			*
-			* Item ID is automatically requested from the Core.
-			*
-			* @param[in] channel The parent channel of this item.
-			*/
-		Item (const IDType_t& channel);
-
-		/** @brief Constructs the item as belonging to the
-			* given channel and having given ID.
-			*
-			* This way item ID isn't generated, itemId is used
-			* instead.
-			*
-			* @param[in] channel The parent channel of this item.
-			* @param[in] itemId The item ID of this channel.
-			*/
-		Item (const IDType_t& channel, const IDType_t& itemId);
+		static Item CreateForChannel (IDType_t channelId);
 
 		/** Returns the simplified (short) representation of this item.
 			*
@@ -354,8 +304,8 @@ namespace Aggregator
 	using Item_ptr = std::shared_ptr<Item>;
 	using Item_cptr = std::shared_ptr<const Item>;
 
-	typedef std::vector<Item_ptr> items_container_t;
-	typedef std::vector<ItemShort> items_shorts_t;
+	using items_container_t = QList<Item_ptr>;
+	using items_shorts_t = QList<ItemShort>;
 
 	bool operator== (const Item&, const Item&);
 	QDataStream& operator<< (QDataStream&, const Enclosure&);
@@ -386,5 +336,3 @@ namespace Aggregator
 Q_DECLARE_METATYPE (LeechCraft::Aggregator::Item_ptr)
 Q_DECLARE_METATYPE (LeechCraft::Aggregator::Item)
 Q_DECLARE_METATYPE (LeechCraft::Aggregator::ItemShort)
-
-#endif

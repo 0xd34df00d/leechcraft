@@ -29,13 +29,14 @@
 
 #include "actionsstructs.h"
 #include <QAction>
-#include "aggregator.h"
+#include <QMenu>
+#include <util/shortcuts/shortcutmanager.h>
 
 namespace LeechCraft
 {
 namespace Aggregator
 {
-	void AppWideActions::SetupActionsStruct (QObject *parent)
+	AppWideActions::AppWideActions (Util::ShortcutManager *shortcutMgr, QObject *parent)
 	{
 		ActionAddFeed_ = new QAction (tr ("Add feed..."), parent);
 		ActionAddFeed_->setObjectName ("ActionAddFeed_");
@@ -67,9 +68,44 @@ namespace Aggregator
 		ActionMarkAllAsRead_ = new QAction (tr ("Mark all channels as read"), parent);
 		ActionMarkAllAsRead_->setObjectName ("ActionMarkAllAsRead_");
 		ActionMarkAllAsRead_->setProperty ("ActionIcon", "mail-mark-read");
+
+		shortcutMgr->RegisterActions ({
+					{ "ActionAddFeed", ActionAddFeed_ },
+					{ "ActionUpdateFeeds_", ActionUpdateFeeds_ },
+					{ "ActionImportOPML_", ActionImportOPML_ },
+					{ "ActionExportOPML_", ActionExportOPML_ },
+					{ "ActionImportBinary_", ActionImportBinary_ },
+					{ "ActionExportBinary_", ActionExportBinary_ },
+					{ "ActionExportFB2_", ActionExportFB2_ }
+				});
 	}
 
-	void ChannelActions::SetupActionsStruct (QObject *parent)
+	QMenu* AppWideActions::CreateToolMenu () const
+	{
+		const auto menu = new QMenu (tr ("Aggregator"));
+		menu->addAction (ActionMarkAllAsRead_);
+		menu->addSeparator ();
+		menu->addAction (ActionImportOPML_);
+		menu->addAction (ActionExportOPML_);
+		menu->addAction (ActionImportBinary_);
+		menu->addAction (ActionExportBinary_);
+		menu->addAction (ActionExportFB2_);
+		return menu;
+	}
+
+	void AppWideActions::SetEnabled (bool enabled)
+	{
+		ActionAddFeed_->setEnabled (enabled);
+		ActionUpdateFeeds_->setEnabled (enabled);
+		ActionImportOPML_->setEnabled (enabled);
+		ActionExportOPML_->setEnabled (enabled);
+		ActionImportBinary_->setEnabled (enabled);
+		ActionExportBinary_->setEnabled (enabled);
+		ActionExportFB2_->setEnabled (enabled);
+		ActionMarkAllAsRead_->setEnabled (enabled);
+	}
+
+	ChannelActions::ChannelActions (Util::ShortcutManager *shortcutMgr, QObject *parent)
 	{
 		ActionRemoveFeed_ = new QAction (tr ("Remove feed"), parent);
 		ActionRemoveFeed_->setObjectName ("ActionRemoveFeed_");
@@ -97,6 +133,30 @@ namespace Aggregator
 		ActionChannelSettings_ = new QAction (tr ("Settings..."), parent);
 		ActionChannelSettings_->setObjectName ("ActionChannelSettings_");
 		ActionChannelSettings_->setProperty ("ActionIcon", "configure");
+
+		shortcutMgr->RegisterActions ({
+					{ "ActionRemoveFeed_", ActionRemoveFeed_ },
+					{ "ActionUpdateSelectedFeed_", ActionUpdateSelectedFeed_ },
+					{ "ActionMarkChannelAsRead_", ActionMarkChannelAsRead_ },
+					{ "ActionMarkChannelAsUnread_", ActionMarkChannelAsUnread_ },
+					{ "ActionChannelSettings_", ActionChannelSettings_ }
+				});
+	}
+
+	QMenu* CreateFeedsContextMenu (const ChannelActions& channelActions, const AppWideActions& appWideActions)
+	{
+		const auto result = new QMenu (ChannelActions::tr ("Feeds actions"));
+		result->addAction (channelActions.ActionMarkChannelAsRead_);
+		result->addAction (channelActions.ActionMarkChannelAsUnread_);
+		result->addSeparator ();
+		result->addAction (channelActions.ActionRemoveFeed_);
+		result->addAction (channelActions.ActionUpdateSelectedFeed_);
+		result->addAction (channelActions.ActionRenameFeed_);
+		result->addSeparator ();
+		result->addAction (channelActions.ActionChannelSettings_);
+		result->addSeparator ();
+		result->addAction (appWideActions.ActionAddFeed_);
+		return result;
 	}
 }
 }

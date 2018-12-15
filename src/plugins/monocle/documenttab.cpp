@@ -211,16 +211,8 @@ namespace Monocle
 		if (dwa == Qt::NoDockWidgetArea)
 			dwa = Qt::RightDockWidgetArea;
 
-		const auto& widthVar = XmlSettingsManager::Instance ().property ("DockWidgetWidth");
-		if (widthVar.isValid ())
-		{
-			DockWidget_->setMinimumWidth (widthVar.toInt ());
-			DockWidget_->setMaximumWidth (widthVar.toInt ());
-		}
-		DockWidget_->installEventFilter (this);
-
 		auto mw = Core::Instance ().GetProxy ()->GetRootWindowsManager ()->GetMWProxy (0);
-		mw->AddDockWidget (dwa, DockWidget_);
+		mw->AddDockWidget (DockWidget_, { .Area_ = dwa, .SizeContext_ = "MonocleDockWidget" });
 		mw->AssociateDockWidget (DockWidget_, this);
 		mw->ToggleViewActionVisiblity (DockWidget_, false);
 		if (!XmlSettingsManager::Instance ().Property ("DockWidgetVisible", true).toBool ())
@@ -529,28 +521,6 @@ namespace Monocle
 	void DocumentTab::CenterOn (const QPoint& point)
 	{
 		Scroller_->SmoothCenterOn (point.x (), point.y ());
-	}
-
-	bool DocumentTab::eventFilter (QObject*, QEvent *event)
-	{
-		switch (event->type ())
-		{
-		case QEvent::Resize:
-		{
-			auto resizeEv = static_cast<QResizeEvent*> (event);
-			const auto width = resizeEv->size ().width ();
-			XmlSettingsManager::Instance ().setProperty ("DockWidgetWidth", width);
-			break;
-		}
-		case QEvent::Show:
-			DockWidget_->setMinimumWidth (0);
-			DockWidget_->setMaximumWidth (QWIDGETSIZE_MAX);
-			break;
-		default:
-			break;
-		}
-
-		return false;
 	}
 
 	void DocumentTab::dragEnterEvent (QDragEnterEvent *event)

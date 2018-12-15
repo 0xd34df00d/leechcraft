@@ -59,51 +59,38 @@
 #include "itemsfiltermodel.h"
 #include "channelsfiltermodel.h"
 #include "xmlsettingsmanager.h"
-#include "export.h"
 #include "importbinary.h"
 #include "feedsettings.h"
-#include "jobholderrepresentation.h"
 #include "wizardgenerator.h"
 #include "export2fb2dialog.h"
-#include "actionsstructs.h"
-#include "itemswidget.h"
 #include "channelsmodel.h"
 #include "aggregatortab.h"
-#include "channelsmodelrepresentationproxy.h"
 #include "storagebackendmanager.h"
+#include "exportutils.h"
+#include "actionsstructs.h"
+#include "representationmanager.h"
 
 namespace LeechCraft
 {
 namespace Aggregator
 {
-	using LeechCraft::Util::CategorySelector;
-	using LeechCraft::ActionInfo;
-
-	struct Aggregator_Impl
-	{
-		AppWideActions AppWideActions_;
-		ChannelActions ChannelActions_;
-
-		QMenu *ToolMenu_;
-
-		std::shared_ptr<Util::XmlSettingsDialog> XmlSettingsDialog_;
-
-		ItemsWidget *ReprWidget_ = nullptr;
-		ChannelsModelRepresentationProxy *ReprModel_ = nullptr;
-		QModelIndex SelectedRepr_;
-
-		TabClassInfo TabInfo_;
-		std::unique_ptr<AggregatorTab> AggregatorTab_;
-
-		bool InitFailed_ = false;
-	};
-
 	void Aggregator::Init (ICoreProxy_ptr proxy)
 	{
-		Impl_ = new Aggregator_Impl;
+		Proxy_ = proxy;
+
 		Util::InstallTranslator ("aggregator");
 
-		Impl_->TabInfo_ = TabClassInfo
+		qRegisterMetaType<IDType_t> ("IDType_t");
+		qRegisterMetaType<QList<IDType_t>> ("QList<IDType_t>");
+		qRegisterMetaType<QSet<IDType_t>> ("QSet<IDType_t>");
+		qRegisterMetaType<QItemSelection> ("QItemSelection");
+		qRegisterMetaType<Item> ("Item");
+		qRegisterMetaType<ChannelShort> ("ChannelShort");
+		qRegisterMetaType<Channel> ("Channel");
+		qRegisterMetaType<channels_container_t> ("channels_container_t");
+		qRegisterMetaTypeStreamOperators<Feed> ("LeechCraft::Plugins::Aggregator::Feed");
+
+		TabInfo_ = TabClassInfo
 		{
 			"Aggregator",
 			GetName (),
@@ -113,42 +100,28 @@ namespace Aggregator
 			TFSingle | TFOpenableByRequest
 		};
 
-		Impl_->ChannelActions_.SetupActionsStruct (this);
-		Impl_->AppWideActions_.SetupActionsStruct (this);
+		ShortcutMgr_ = new Util::ShortcutManager (proxy, this);
 
-		Impl_->ToolMenu_ = new QMenu (tr ("Aggregator"));
-		Impl_->ToolMenu_->setIcon (GetIcon ());
-		Impl_->ToolMenu_->addAction (Impl_->AppWideActions_.ActionMarkAllAsRead_);
-		Impl_->ToolMenu_->addSeparator ();
-		Impl_->ToolMenu_->addAction (Impl_->AppWideActions_.ActionImportOPML_);
-		Impl_->ToolMenu_->addAction (Impl_->AppWideActions_.ActionExportOPML_);
-		Impl_->ToolMenu_->addAction (Impl_->AppWideActions_.ActionImportBinary_);
-		Impl_->ToolMenu_->addAction (Impl_->AppWideActions_.ActionExportBinary_);
-		Impl_->ToolMenu_->addAction (Impl_->AppWideActions_.ActionExportFB2_);
+		ChannelActions_ = std::make_shared<ChannelActions> (ShortcutMgr_, this);
+		AppWideActions_ = std::make_shared<AppWideActions> (ShortcutMgr_, this);
+
+		ToolMenu_ = AppWideActions_->CreateToolMenu ();
+		ToolMenu_->setIcon (GetIcon ());
 
 		Core::Instance ().SetProxy (proxy);
 
-		Impl_->XmlSettingsDialog_ = std::make_shared<Util::XmlSettingsDialog> ();
-		Impl_->XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (), "aggregatorsettings.xml");
-		Impl_->XmlSettingsDialog_->SetCustomWidget ("BackendSelector",
+		XmlSettingsDialog_ = std::make_shared<Util::XmlSettingsDialog> ();
+		XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (), "aggregatorsettings.xml");
+		XmlSettingsDialog_->SetCustomWidget ("BackendSelector",
 				new Util::BackendSelector (XmlSettingsManager::Instance ()));
 
 		if (!Core::Instance ().DoDelayedInit ())
 		{
-			Impl_->AppWideActions_.ActionAddFeed_->setEnabled (false);
-			Impl_->AppWideActions_.ActionUpdateFeeds_->setEnabled (false);
-			Impl_->AppWideActions_.ActionImportOPML_->setEnabled (false);
-			Impl_->AppWideActions_.ActionExportOPML_->setEnabled (false);
-			Impl_->AppWideActions_.ActionImportBinary_->setEnabled (false);
-			Impl_->AppWideActions_.ActionExportBinary_->setEnabled (false);
-			Impl_->AppWideActions_.ActionExportFB2_->setEnabled (false);
-			Impl_->InitFailed_ = true;
+			AppWideActions_->SetEnabled (false);
+			InitFailed_ = true;
 			qWarning () << Q_FUNC_INFO
-				<< "core initialization failed";
-		}
+					<< "core initialization failed";
 
-		if (Impl_->InitFailed_)
-		{
 			auto box = new QMessageBox (QMessageBox::Critical,
 					"LeechCraft",
 					tr ("Aggregator failed to initialize properly. Check logs and talk with "
@@ -159,53 +132,30 @@ namespace Aggregator
 			box->open ();
 		}
 
-		Impl_->ReprWidget_ = new ItemsWidget;
-		Impl_->ReprWidget_->SetChannelsFilter (Core::Instance ().GetJobHolderRepresentation ());
-		Impl_->ReprWidget_->RegisterShortcuts ();
-		Impl_->ReprWidget_->SetAppWideActions (Impl_->AppWideActions_);
-		Impl_->ReprWidget_->SetChannelActions (Impl_->ChannelActions_);
-
-		Impl_->ReprModel_ = new ChannelsModelRepresentationProxy { this };
-		Impl_->ReprModel_->setSourceModel (Core::Instance ().GetJobHolderRepresentation ());
-		Impl_->ReprModel_->SetWidgets (Impl_->ReprWidget_->GetToolBar (), Impl_->ReprWidget_);
-
-		QMenu *contextMenu = new QMenu (tr ("Feeds actions"));
-		contextMenu->addAction (Impl_->ChannelActions_.ActionMarkChannelAsRead_);
-		contextMenu->addAction (Impl_->ChannelActions_.ActionMarkChannelAsUnread_);
-		contextMenu->addSeparator ();
-		contextMenu->addAction (Impl_->ChannelActions_.ActionRemoveFeed_);
-		contextMenu->addAction (Impl_->ChannelActions_.ActionUpdateSelectedFeed_);
-		contextMenu->addAction (Impl_->ChannelActions_.ActionRenameFeed_);
-		contextMenu->addSeparator ();
-		contextMenu->addAction (Impl_->ChannelActions_.ActionChannelSettings_);
-		contextMenu->addSeparator ();
-		contextMenu->addAction (Impl_->AppWideActions_.ActionAddFeed_);
-		Impl_->ReprModel_->SetMenu (contextMenu);
-
-		connect (Impl_->AppWideActions_.ActionUpdateFeeds_,
+		connect (AppWideActions_->ActionUpdateFeeds_,
 				&QAction::triggered,
 				&Core::Instance (),
 				&Core::updateFeeds);
-
-		BuildID2ActionTupleMap ();
 
 		QMetaObject::connectSlotsByName (this);
 	}
 
 	void Aggregator::SecondInit ()
 	{
-		if (Impl_->InitFailed_)
+		if (InitFailed_)
 			return;
 
-		Impl_->ReprWidget_->ConstructBrowser ();
+		ReprManager_ = std::make_shared<RepresentationManager> (RepresentationManager::InitParams {
+					ShortcutMgr_,
+					*AppWideActions_,
+					*ChannelActions_
+				});
 	}
 
 	void Aggregator::Release ()
 	{
-		disconnect (&Core::Instance (), 0, this, 0);
-		if (Core::Instance ().GetChannelsModel ())
-			disconnect (Core::Instance ().GetChannelsModel (), 0, this, 0);
-		delete Impl_;
+		ReprManager_.reset ();
+		AggregatorTab_.reset ();
 		Core::Instance ().Release ();
 	}
 
@@ -247,22 +197,22 @@ namespace Aggregator
 
 	TabClasses_t Aggregator::GetTabClasses () const
 	{
-		return { Impl_->TabInfo_ };
+		return { TabInfo_ };
 	}
 
 	void Aggregator::TabOpenRequested (const QByteArray& tabClass)
 	{
 		if (tabClass == "Aggregator")
 		{
-			if (!Impl_->AggregatorTab_)
+			if (!AggregatorTab_)
 			{
-				Impl_->AggregatorTab_ = std::make_unique<AggregatorTab> (Impl_->AppWideActions_,
-						Impl_->ChannelActions_, Impl_->TabInfo_, this);
-				connect (Impl_->AggregatorTab_.get (),
+				AggregatorTab_ = std::make_unique<AggregatorTab> (*AppWideActions_, ChannelActions_,
+						TabInfo_, ShortcutMgr_, this);
+				connect (AggregatorTab_.get (),
 						&AggregatorTab::removeTabRequested,
-						[this] { emit removeTab (Impl_->AggregatorTab_.get ()); });
+						[this] { emit removeTab (AggregatorTab_.get ()); });
 			}
-			emit addNewTab (Impl_->AggregatorTab_->GetTabClassInfo ().VisibleName_, Impl_->AggregatorTab_.get ());
+			emit addNewTab (AggregatorTab_->GetTabClassInfo ().VisibleName_, AggregatorTab_.get ());
 
 		}
 		else
@@ -273,30 +223,24 @@ namespace Aggregator
 
 	Util::XmlSettingsDialog_ptr Aggregator::GetSettingsDialog () const
 	{
-		return Impl_->XmlSettingsDialog_;
+		return XmlSettingsDialog_;
 	}
 
 	QAbstractItemModel* Aggregator::GetRepresentation () const
 	{
-		return Impl_->ReprModel_;
+		return ReprManager_->GetRepresentation ();
 	}
 
 	void Aggregator::handleTasksTreeSelectionCurrentRowChanged (const QModelIndex& index, const QModelIndex&)
 	{
-		QModelIndex si = Core::Instance ().GetProxy ()->MapToSource (index);
-		if (si.model () != GetRepresentation ())
-			si = QModelIndex ();
-		si = Impl_->ReprModel_->mapToSource (si);
-		si = Core::Instance ().GetJobHolderRepresentation ()->SelectionChanged (si);
-		Impl_->SelectedRepr_ = si;
-		Impl_->ReprWidget_->CurrentChannelChanged (si);
+		ReprManager_->HandleRowChanged (index);
 	}
 
 	EntityTestHandleResult Aggregator::CouldHandle (const Entity& e) const
 	{
 		EntityTestHandleResult r;
 		if (Core::Instance ().CouldHandle (e))
-			r.HandlePriority_ = 1000;
+			r.HandlePriority_ = EntityTestHandleResult::PIdeal;
 		return r;
 	}
 
@@ -307,12 +251,12 @@ namespace Aggregator
 
 	void Aggregator::SetShortcut (const QString& name, const QKeySequences_t& shortcuts)
 	{
-		Core::Instance ().GetShortcutManager ()->SetShortcut (name, shortcuts);
+		ShortcutMgr_->SetShortcut (name, shortcuts);
 	}
 
 	QMap<QString, ActionInfo> Aggregator::GetActionInfo () const
 	{
-		return Core::Instance ().GetShortcutManager ()->GetActionInfo ();
+		return ShortcutMgr_->GetActionInfo ();
 	}
 
 	QList<QWizardPage*> Aggregator::GetWizardPages () const
@@ -327,16 +271,16 @@ namespace Aggregator
 		switch (place)
 		{
 		case ActionsEmbedPlace::ToolsMenu:
-			result << Impl_->ToolMenu_->menuAction ();
+			result << ToolMenu_->menuAction ();
 			break;
 		case ActionsEmbedPlace::CommonContextMenu:
-			result << Impl_->AppWideActions_.ActionAddFeed_;
-			result << Impl_->AppWideActions_.ActionUpdateFeeds_;
+			result << AppWideActions_->ActionAddFeed_;
+			result << AppWideActions_->ActionUpdateFeeds_;
 			break;
 		case ActionsEmbedPlace::TrayMenu:
-			result << Impl_->AppWideActions_.ActionMarkAllAsRead_;
-			result << Impl_->AppWideActions_.ActionAddFeed_;
-			result << Impl_->AppWideActions_.ActionUpdateFeeds_;
+			result << AppWideActions_->ActionMarkAllAsRead_;
+			result << AppWideActions_->ActionAddFeed_;
+			result << AppWideActions_->ActionUpdateFeeds_;
 			break;
 		default:
 			break;
@@ -347,9 +291,7 @@ namespace Aggregator
 
 	QSet<QByteArray> Aggregator::GetExpectedPluginClasses () const
 	{
-		QSet<QByteArray> result;
-		result << "org.LeechCraft.Aggregator.GeneralPlugin/1.0";
-		return result;
+		return { "org.LeechCraft.Aggregator.GeneralPlugin/1.0" };
 	}
 
 	void Aggregator::AddPlugin (QObject *plugin)
@@ -366,7 +308,7 @@ namespace Aggregator
 				for (const auto& pair : recInfo.DynProperties_)
 					setProperty (pair.first, pair.second);
 
-				TabOpenRequested (Impl_->TabInfo_.TabClass_);
+				TabOpenRequested (TabInfo_.TabClass_);
 			}
 			else
 				qWarning () << Q_FUNC_INFO
@@ -380,43 +322,20 @@ namespace Aggregator
 		return true;
 	}
 
-	bool Aggregator::IsRepr () const
-	{
-		return Impl_->ReprWidget_->isVisible ();
-	}
-
 	QModelIndex Aggregator::GetRelevantIndex () const
 	{
-		if (IsRepr ())
-			return Core::Instance ().GetJobHolderRepresentation ()->mapToSource (Impl_->SelectedRepr_);
+		if (const auto idx = ReprManager_->GetRelevantIndex ())
+			return *idx;
 		else
-			return Impl_->AggregatorTab_->GetRelevantIndex ();
+			return AggregatorTab_->GetRelevantIndex ();
 	}
 
 	QList<QModelIndex> Aggregator::GetRelevantIndexes () const
 	{
-		if (IsRepr ())
-			return { Core::Instance ().GetJobHolderRepresentation ()->mapToSource (Impl_->SelectedRepr_) };
+		if (const auto idx = ReprManager_->GetRelevantIndex ())
+			return { *idx };
 		else
-			return Impl_->AggregatorTab_->GetRelevantIndexes ();
-	}
-
-	void Aggregator::BuildID2ActionTupleMap ()
-	{
-		typedef Util::ShortcutManager::IDPair_t ID_t;
-		auto mgr = Core::Instance ().GetShortcutManager ();
-		*mgr << ID_t ("ActionAddFeed", Impl_->AppWideActions_.ActionAddFeed_)
-				<< ID_t ("ActionUpdateFeeds_", Impl_->AppWideActions_.ActionUpdateFeeds_)
-				<< ID_t ("ActionImportOPML_", Impl_->AppWideActions_.ActionImportOPML_)
-				<< ID_t ("ActionExportOPML_", Impl_->AppWideActions_.ActionExportOPML_)
-				<< ID_t ("ActionImportBinary_", Impl_->AppWideActions_.ActionImportBinary_)
-				<< ID_t ("ActionExportBinary_", Impl_->AppWideActions_.ActionExportBinary_)
-				<< ID_t ("ActionExportFB2_", Impl_->AppWideActions_.ActionExportFB2_)
-				<< ID_t ("ActionRemoveFeed_", Impl_->ChannelActions_.ActionRemoveFeed_)
-				<< ID_t ("ActionUpdateSelectedFeed_", Impl_->ChannelActions_.ActionUpdateSelectedFeed_)
-				<< ID_t ("ActionMarkChannelAsRead_", Impl_->ChannelActions_.ActionMarkChannelAsRead_)
-				<< ID_t ("ActionMarkChannelAsUnread_", Impl_->ChannelActions_.ActionMarkChannelAsUnread_)
-				<< ID_t ("ActionChannelSettings_", Impl_->ChannelActions_.ActionChannelSettings_);
+			return AggregatorTab_->GetRelevantIndexes ();
 	}
 
 	void Aggregator::on_ActionMarkAllAsRead__triggered ()
@@ -436,18 +355,17 @@ namespace Aggregator
 			if (mbox.exec () == QMessageBox::No)
 				return;
 			else if (mbox.clickedButton () == &always)
-				XmlSettingsManager::Instance ()->
-						setProperty ("ConfirmMarkAllAsRead", false);
+				XmlSettingsManager::Instance ()->setProperty ("ConfirmMarkAllAsRead", false);
 		}
 
 		/* TODO
 		QModelIndexList indexes;
-		QAbstractItemModel *model = Impl_->Ui_.Feeds_->model ();
+		QAbstractItemModel *model = Ui_.Feeds_->model ();
 		for (int i = 0, size = model->rowCount (); i < size; ++i)
 		{
 			auto index = model->index (i, 0);
-			if (Impl_->FlatToFolders_->GetSourceModel ())
-				index = Impl_->FlatToFolders_->MapToSource (index);
+			if (FlatToFolders_->GetSourceModel ())
+				index = FlatToFolders_->MapToSource (index);
 			indexes << Core::Instance ().GetChannelsModel ()->mapToSource (index);
 		}
 
@@ -456,13 +374,13 @@ namespace Aggregator
 		{
 			if (index.isValid ())
 				Core::Instance ().MarkChannelAsRead (index);
-			else if (Impl_->FlatToFolders_->GetSourceModel ())
+			else if (FlatToFolders_->GetSourceModel ())
 			{
-				const auto& parentIndex = Impl_->FlatToFolders_->index (row++, 0);
+				const auto& parentIndex = FlatToFolders_->index (row++, 0);
 				for (int i = 0, size = model->rowCount (parentIndex); i < size; ++i)
 				{
-					auto source = Impl_->FlatToFolders_->index (i, 0, parentIndex);
-					source = Impl_->FlatToFolders_->MapToSource (source);
+					auto source = FlatToFolders_->index (i, 0, parentIndex);
+					source = FlatToFolders_->MapToSource (source);
 					Core::Instance ().MarkChannelAsRead (source);
 				}
 			}
@@ -586,13 +504,17 @@ namespace Aggregator
 		if (!index.isValid ())
 			return;
 
-		FeedSettings dia { index, nullptr };
+		FeedSettings dia { index, Proxy_ };
 		dia.exec ();
 	}
 
 	void Aggregator::on_ActionUpdateSelectedFeed__triggered ()
 	{
-		Perform ([] (const QModelIndex& mi) { Core::Instance ().UpdateFeed (mi); });
+		Perform ([] (const QModelIndex& mi)
+				{
+					const auto feedId = mi.data (ChannelRoles::FeedID).value<IDType_t> ();
+					Core::Instance ().UpdateFeed (feedId);
+				});
 	}
 
 	void Aggregator::on_ActionImportOPML__triggered ()
@@ -602,20 +524,7 @@ namespace Aggregator
 
 	void Aggregator::on_ActionExportOPML__triggered ()
 	{
-		Export exportDialog (tr ("Export to OPML"),
-				tr ("Select save file"),
-				tr ("OPML files (*.opml);;"
-					"XML files (*.xml);;"
-					"All files (*.*)"), nullptr);
-		exportDialog.SetFeeds (Core::Instance ().GetChannels ());
-		if (exportDialog.exec () == QDialog::Rejected)
-			return;
-
-		Core::Instance ().ExportToOPML (exportDialog.GetDestination (),
-				exportDialog.GetTitle (),
-				exportDialog.GetOwner (),
-				exportDialog.GetOwnerEmail (),
-				exportDialog.GetSelectedFeeds ());
+		ExportUtils::RunExportOPML ();
 	}
 
 	void Aggregator::on_ActionImportBinary__triggered ()
@@ -630,19 +539,7 @@ namespace Aggregator
 
 	void Aggregator::on_ActionExportBinary__triggered ()
 	{
-		Export exportDialog (tr ("Export to binary file"),
-				tr ("Select save file"),
-				tr ("Aggregator exchange files (*.lcae);;"
-					"All files (*.*)"), nullptr);
-		exportDialog.SetFeeds (Core::Instance ().GetChannels ());
-		if (exportDialog.exec () == QDialog::Rejected)
-			return;
-
-		Core::Instance ().ExportToBinary (exportDialog.GetDestination (),
-				exportDialog.GetTitle (),
-				exportDialog.GetOwner (),
-				exportDialog.GetOwnerEmail (),
-				exportDialog.GetSelectedFeeds ());
+		ExportUtils::RunExportBinary ();
 	}
 
 	void Aggregator::on_ActionExportFB2__triggered ()

@@ -37,7 +37,7 @@
 #include <QUrl>
 #include <QTimer>
 #include <QTextCodec>
-#include <QXmlStreamWriter>
+#include <QXmlStreamReader>
 #include <QNetworkReply>
 #include <interfaces/iwebbrowser.h>
 #include <interfaces/core/icoreproxy.h>
@@ -49,7 +49,6 @@
 #include <util/sys/fileremoveguard.h>
 #include <util/sys/paths.h>
 #include <util/xpc/defaulthookproxy.h>
-#include <util/shortcuts/shortcutmanager.h>
 #include <util/sll/prelude.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/visitor.h>
@@ -57,17 +56,10 @@
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "parserfactory.h"
-#include "rss20parser.h"
-#include "rss10parser.h"
-#include "rss091parser.h"
-#include "atom10parser.h"
-#include "atom03parser.h"
 #include "channelsmodel.h"
 #include "opmlparser.h"
 #include "opmlwriter.h"
-#include "sqlstoragebackend.h"
 #include "jobholderrepresentation.h"
-#include "channelsfiltermodel.h"
 #include "importopml.h"
 #include "addfeed.h"
 #include "pluginmanager.h"
@@ -75,6 +67,7 @@
 #include "dbupdatethreadworker.h"
 #include "dumbstorage.h"
 #include "storagebackendmanager.h"
+#include "parser.h"
 
 namespace LeechCraft
 {
@@ -82,15 +75,6 @@ namespace Aggregator
 {
 	Core::Core ()
 	{
-		qRegisterMetaType<IDType_t> ("IDType_t");
-		qRegisterMetaType<QList<IDType_t>> ("QList<IDType_t>");
-		qRegisterMetaType<QSet<IDType_t>> ("QSet<IDType_t>");
-		qRegisterMetaType<QItemSelection> ("QItemSelection");
-		qRegisterMetaType<Item> ("Item");
-		qRegisterMetaType<ChannelShort> ("ChannelShort");
-		qRegisterMetaType<Channel> ("Channel");
-		qRegisterMetaType<channels_container_t> ("channels_container_t");
-		qRegisterMetaTypeStreamOperators<Feed> ("LeechCraft::Plugins::Aggregator::Feed");
 	}
 
 	Core& Core::Instance ()
@@ -103,8 +87,6 @@ namespace Aggregator
 	{
 		DBUpThread_.reset ();
 
-		delete JobHolderRepresentation_;
-		delete ChannelsFilterModel_;
 		delete ChannelsModel_;
 
 		StorageBackend_.reset ();
@@ -218,17 +200,13 @@ namespace Aggregator
 
 			const auto& s = e.Additional_;
 			if (s.contains ("UpdateOnStartup"))
-				XmlSettingsManager::Instance ()->setProperty ("UpdateOnStartup",
-						s.value ("UpdateOnStartup").toBool ());
+				XmlSettingsManager::Instance ()->setProperty ("UpdateOnStartup", s.value ("UpdateOnStartup").toBool ());
 			if (s.contains ("UpdateTimeout"))
-				XmlSettingsManager::Instance ()->setProperty ("UpdateInterval",
-						s.value ("UpdateTimeout").toInt ());
+				XmlSettingsManager::Instance ()->setProperty ("UpdateInterval", s.value ("UpdateTimeout").toInt ());
 			if (s.contains ("MaxArticles"))
-				XmlSettingsManager::Instance ()->setProperty ("ItemsPerChannel",
-						s.value ("MaxArticles").toInt ());
+				XmlSettingsManager::Instance ()->setProperty ("ItemsPerChannel", s.value ("MaxArticles").toInt ());
 			if (s.contains ("MaxAge"))
-				XmlSettingsManager::Instance ()->setProperty ("ItemsMaxAge",
-						s.value ("MaxAge").toInt ());
+				XmlSettingsManager::Instance ()->setProperty ("ItemsMaxAge", s.value ("MaxAge").toInt ());
 		}
 		else
 		{
@@ -255,13 +233,12 @@ namespace Aggregator
 
 		AddFromOPML (importDialog.GetFilename (),
 				importDialog.GetTags (),
-				importDialog.GetMask ());
+				importDialog.GetSelectedUrls ());
 	}
 
 	bool Core::DoDelayedInit ()
 	{
 		bool result = true;
-		ShortcutMgr_ = new Util::ShortcutManager (Proxy_, this);
 
 		QDir dir = QDir::home ();
 		if (!dir.cd (".leechcraft/aggregator") &&
@@ -277,12 +254,6 @@ namespace Aggregator
 		if (!ReinitStorage ())
 			result = false;
 
-		ChannelsFilterModel_ = new ChannelsFilterModel ();
-		ChannelsFilterModel_->setSourceModel (ChannelsModel_);
-		ChannelsFilterModel_->setFilterKeyColumn (0);
-
-		JobHolderRepresentation_ = new JobHolderRepresentation ();
-
 		DBUpThread_ = std::make_shared<DBUpdateThread> (Proxy_);
 		DBUpThread_->SetAutoQuit (true);
 		DBUpThread_->start (QThread::LowestPriority);
@@ -295,13 +266,7 @@ namespace Aggregator
 							&Core::hookGotNewItems);
 				});
 
-		ParserFactory::Instance ().Register (&RSS20Parser::Instance ());
-		ParserFactory::Instance ().Register (&Atom10Parser::Instance ());
-		ParserFactory::Instance ().Register (&RSS091Parser::Instance ());
-		ParserFactory::Instance ().Register (&Atom03Parser::Instance ());
-		ParserFactory::Instance ().Register (&RSS10Parser::Instance ());
-
-		JobHolderRepresentation_->setSourceModel (ChannelsModel_);
+		ParserFactory::Instance ().RegisterDefaultParsers ();
 
 		CustomUpdateTimer_ = new QTimer (this);
 		CustomUpdateTimer_->start (60 * 1000);
@@ -375,11 +340,11 @@ namespace Aggregator
 		AddFeed (url, Proxy_->GetTagsManager ()->Split (tagString));
 	}
 
-	void Core::AddFeed (QString url, const QStringList& tags, const boost::optional<Feed::FeedSettings>& fs)
+	void Core::AddFeed (QString url, const QStringList& tags, const std::optional<Feed::FeedSettings>& fs)
 	{
 		const auto& fixedUrl = QUrl::fromUserInput (url);
 		url = fixedUrl.toString ();
-		if (StorageBackend_->FindFeed (url) != static_cast<IDType_t> (-1))
+		if (StorageBackend_->FindFeed (url))
 		{
 			ErrorNotification (tr ("Feed addition error"),
 					tr ("The feed %1 is already added")
@@ -430,24 +395,9 @@ namespace Aggregator
 		StorageBackend_->UpdateChannel (channel);
 	}
 
-	Util::ShortcutManager* Core::GetShortcutManager () const
-	{
-		return ShortcutMgr_;
-	}
-
 	ChannelsModel* Core::GetRawChannelsModel () const
 	{
 		return ChannelsModel_;
-	}
-
-	QSortFilterProxyModel* Core::GetChannelsModel () const
-	{
-		return ChannelsFilterModel_;
-	}
-
-	IWebBrowser* Core::GetWebBrowser () const
-	{
-		return Proxy_->GetPluginsManager ()->GetAllCastableTo<IWebBrowser*> ().value (0);
 	}
 
 	void Core::MarkChannelAsRead (const QModelIndex& i)
@@ -478,249 +428,54 @@ namespace Aggregator
 		ci.ChannelID_ = channel.ChannelID_;
 		ci.Link_ = channel.Link_;
 
-		using Util::operator*;
-
-		StorageBackend_->GetChannel (channel.ChannelID_) * [&] (auto&& rc)
-		{
-			ci.Description_ = rc.Description_;
-			ci.Author_ = rc.Author_;
-		};
-
-		StorageBackend_->GetFeed (channel.FeedID_) * [&] (auto&& feed) { ci.URL_ = feed.URL_; };
-
-		// TODO introduce a method in SB for this
-		ci.NumItems_ = StorageBackend_->GetItems (channel.ChannelID_).size ();
+		const auto& fullChannel = StorageBackend_->GetChannel (channel.ChannelID_);
+		ci.Description_ = fullChannel.Description_;
+		ci.Author_ = fullChannel.Author_;
+		ci.URL_ = StorageBackend_->GetFeed (channel.FeedID_).URL_;
+		ci.NumItems_ = StorageBackend_->GetTotalItemsCount (channel.ChannelID_);
 
 		return ci;
 	}
 
-	QPixmap Core::GetChannelPixmap (const QModelIndex& i) const
+	QPixmap Core::GetChannelPixmap (const QModelIndex& idx) const
 	{
-		// TODO introduce a method in SB for this
-		const auto& channelShort = ChannelsModel_->GetChannelForIndex (i);
-		if (const auto& maybeChan = StorageBackend_->GetChannel (channelShort.ChannelID_))
-			return QPixmap::fromImage (maybeChan->Pixmap_);
-		else
-			return {};
+		const auto& img = StorageBackend_->GetChannelPixmap (idx.data (ChannelRoles::ChannelID).value<IDType_t> ());
+		return img ?
+				QPixmap::fromImage (*img) :
+				QPixmap {};
 	}
 
 	void Core::SetTagsForIndex (const QString& tags, const QModelIndex& index)
 	{
-		auto channel = ChannelsModel_->GetChannelForIndex (index);
-		channel.Tags_ = Proxy_->GetTagsManager ()->GetIDs (Proxy_->GetTagsManager ()->Split (tags));
-		StorageBackend_->UpdateChannel (channel);
+		StorageBackend_->SetChannelTags (index.data (ChannelRoles::ChannelID).value<IDType_t> (),
+				Proxy_->GetTagsManager ()->GetIDs (Proxy_->GetTagsManager ()->Split (tags)));
 	}
 
 	void Core::UpdateFavicon (const QModelIndex& index)
 	{
-		const auto& channel = ChannelsModel_->GetChannelForIndex (index);
-		// TODO no need to get full channel here
-		if (const auto& maybeChan = StorageBackend_->GetChannel (channel.ChannelID_))
-			FetchFavicon (*maybeChan);
+		FetchFavicon (index.data (ChannelRoles::ChannelID).value<IDType_t> (),
+				index.data (ChannelRoles::ChannelLink).toString ());
 	}
 
-	QStringList Core::GetCategories (const QModelIndex& index) const
+	void Core::AddFromOPML (const QString& filename, const QString& tags, const QSet<QString>& selectedUrls)
 	{
-		const auto& cs = ChannelsModel_->GetChannelForIndex (index);
-		return GetCategories (StorageBackend_->GetItems (cs.ChannelID_));
-	}
+		Util::Visit (ParseOPMLItems (filename),
+				[this] (const QString& error) { ErrorNotification (tr ("OPML import error"), error); },
+				[&] (const OPMLParser::items_container_t& items)
+				{
+					const auto& tagsList = Proxy_->GetTagsManager ()->Split (tags);
+					for (const auto& item : items)
+					{
+						if (!selectedUrls.contains (item.URL_))
+							continue;
 
-	QStringList Core::GetCategories (const items_shorts_t& items) const
-	{
-		QSet<QString> unique;
-		for (const auto& item : items)
-			for (const auto& category : item.Categories_)
-				unique << category;
-
-		auto result = unique.toList ();
-		std::sort (result.begin (), result.end ());
-		return result;
-	}
-
-	void Core::UpdateFeed (const QModelIndex& si)
-	{
-		QModelIndex index = si;
-
-		ChannelShort channel;
-		try
-		{
-			channel = ChannelsModel_->GetChannelForIndex (index);
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< e.what ()
-				<< si
-				<< index;
-			ErrorNotification (tr ("Feed update error"),
-					tr ("Could not update feed"),
-					false);
-			return;
-		}
-		UpdateFeed (channel.FeedID_);
-	}
-
-	void Core::AddFromOPML (const QString& filename,
-			const QString& tags,
-			const std::vector<bool>& mask)
-	{
-		QFile file (filename);
-		if (!file.open (QIODevice::ReadOnly))
-		{
-			ErrorNotification (tr ("OPML import error"),
-					tr ("Could not open file %1 for reading.")
-						.arg (filename));
-			return;
-		}
-
-		QByteArray data = file.readAll ();
-		file.close ();
-
-		QString errorMsg;
-		int errorLine, errorColumn;
-		QDomDocument document;
-		if (!document.setContent (data,
-					true,
-					&errorMsg,
-					&errorLine,
-					&errorColumn))
-		{
-			ErrorNotification (tr ("OPML import error"),
-					tr ("XML error, file %1, line %2, column %3, error:<br />%4")
-						.arg (filename)
-						.arg (errorLine)
-						.arg (errorColumn)
-						.arg (errorMsg));
-			return;
-		}
-
-		OPMLParser parser (document);
-		if (!parser.IsValid ())
-		{
-			ErrorNotification (tr ("OPML import error"),
-					tr ("OPML from file %1 is not valid.")
-						.arg (filename));
-			return;
-		}
-
-		OPMLParser::items_container_t items = parser.Parse ();
-		for (std::vector<bool>::const_iterator begin = mask.begin (),
-				i = mask.end () - 1; i >= begin; --i)
-			if (!*i)
-			{
-				size_t distance = std::distance (mask.begin (), i);
-				OPMLParser::items_container_t::iterator eraser = items.begin ();
-				std::advance (eraser, distance);
-				items.erase (eraser);
-			}
-
-		QStringList tagsList = Proxy_->GetTagsManager ()->Split (tags);
-		for (OPMLParser::items_container_t::const_iterator i = items.begin (),
-				end = items.end (); i != end; ++i)
-		{
-			int interval = 0;
-			if (i->CustomFetchInterval_)
-				interval = i->FetchInterval_;
-			AddFeed (i->URL_, tagsList + i->Categories_,
-					{ { IDNotFound, interval, i->MaxArticleNumber_, i->MaxArticleAge_, false } });
-		}
-	}
-
-	void Core::ExportToOPML (const QString& where,
-			const QString& title,
-			const QString& owner,
-			const QString& ownerEmail,
-			const std::vector<bool>& mask) const
-	{
-		auto channels = GetChannels ();
-
-		for (std::vector<bool>::const_iterator begin = mask.begin (),
-				i = mask.end () - 1; i >= begin; --i)
-			if (!*i)
-			{
-				size_t distance = std::distance (mask.begin (), i);
-				channels_shorts_t::iterator eraser = channels.begin ();
-				std::advance (eraser, distance);
-				channels.erase (eraser);
-			}
-
-		OPMLWriter writer;
-		QString data = writer.Write (channels, title, owner, ownerEmail);
-
-		QFile f (where);
-		if (!f.open (QIODevice::WriteOnly))
-		{
-			ErrorNotification (tr ("OPML export error"),
-					tr ("Could not open file %1 for write.").arg (where));
-			return;
-		}
-
-		f.write (data.toUtf8 ());
-		f.close ();
-	}
-
-	void Core::ExportToBinary (const QString& where,
-			const QString& title,
-			const QString& owner,
-			const QString& ownerEmail,
-			const std::vector<bool>& mask) const
-	{
-		auto channels = GetChannels ();
-
-		for (std::vector<bool>::const_iterator begin = mask.begin (),
-				i = mask.end () - 1; i >= begin; --i)
-			if (!*i)
-			{
-				size_t distance = std::distance (mask.begin (), i);
-				channels_shorts_t::iterator eraser = channels.begin ();
-				std::advance (eraser, distance);
-				channels.erase (eraser);
-			}
-
-		QFile f (where);
-		if (!f.open (QIODevice::WriteOnly))
-		{
-			ErrorNotification (tr ("Binary export error"),
-					tr ("Could not open file %1 for write.").arg (where));
-			return;
-		}
-
-		QByteArray buffer;
-		QDataStream data (&buffer, QIODevice::WriteOnly);
-
-		int version = 1;
-		int magic = 0xd34df00d;
-		data << magic
-				<< version
-				<< title
-				<< owner
-				<< ownerEmail;
-
-		for (channels_shorts_t::const_iterator i = channels.begin (), end = channels.end (); i != end; ++i)
-			if (const auto& maybeChannel = StorageBackend_->GetChannel (i->ChannelID_))
-			{
-				auto channel = *maybeChannel;
-				channel.Items_ = StorageBackend_->GetFullItems (channel.ChannelID_);
-				data << channel;
-			}
-
-		f.write (qCompress (buffer, 9));
-	}
-
-	JobHolderRepresentation* Core::GetJobHolderRepresentation () const
-	{
-		return JobHolderRepresentation_;
-	}
-
-	channels_shorts_t Core::GetChannels () const
-	{
-		channels_shorts_t result;
-		for (const auto id : StorageBackend_->GetFeedsIDs ())
-		{
-			auto feedChannels = StorageBackend_->GetChannels (id);
-			std::move (feedChannels.begin (), feedChannels.end (), std::back_inserter (result));
-		}
-		return result;
+						int interval = 0;
+						if (item.CustomFetchInterval_)
+							interval = item.FetchInterval_;
+						AddFeed (item.URL_, tagsList + item.Categories_,
+								{ { IDNotFound, interval, item.MaxArticleNumber_, item.MaxArticleAge_, false } });
+					}
+				});
 	}
 
 	void Core::AddFeeds (const feeds_container_t& feeds, const QString& tagsString)
@@ -728,9 +483,9 @@ namespace Aggregator
 		auto tags = Proxy_->GetTagsManager ()->Split (tagsString);
 		tags.removeDuplicates ();
 
-		for (const auto feed : feeds)
+		for (const auto& feed : feeds)
 		{
-			for (const auto channel : feed->Channels_)
+			for (const auto& channel : feed->Channels_)
 			{
 				channel->Tags_ += tags;
 				channel->Tags_.removeDuplicates ();
@@ -738,20 +493,6 @@ namespace Aggregator
 
 			StorageBackend_->AddFeed (*feed);
 		}
-	}
-
-	void Core::openLink (const QString& url)
-	{
-		IWebBrowser *browser = GetWebBrowser ();
-		if (!browser ||
-				XmlSettingsManager::Instance ()->
-					property ("AlwaysUseExternalBrowser").toBool ())
-		{
-			QDesktopServices::openUrl (QUrl (url));
-			return;
-		}
-
-		browser->Open (url);
 	}
 
 	void Core::handleJobFinished (int id)
@@ -814,7 +555,7 @@ namespace Aggregator
 				return;
 			}
 
-			IDType_t feedId = IDNotFound;
+			std::optional<IDType_t> feedId;
 			if (pj.Role_ == PendingJob::RFeedAdded)
 			{
 				Feed feed;
@@ -825,14 +566,14 @@ namespace Aggregator
 			else
 				feedId = StorageBackend_->FindFeed (pj.URL_);
 
-			if (feedId == IDNotFound)
+			if (!feedId)
 			{
 				ErrorNotification (tr ("Feed error"),
 						tr ("Feed with url %1 not found.").arg (pj.URL_));
 				return;
 			}
-
-			channels = parser->ParseFeed (doc, feedId);
+			else
+				channels = parser->ParseFeed (doc, *feedId);
 		}
 
 		if (pj.Role_ == PendingJob::RFeedAdded)
@@ -955,11 +696,6 @@ namespace Aggregator
 			UpdateTimer_->stop ();
 	}
 
-	void Core::handleSslError (QNetworkReply *reply)
-	{
-		reply->ignoreSslErrors ();
-	}
-
 	void Core::handleCustomUpdates ()
 	{
 		using Util::operator*;
@@ -992,16 +728,7 @@ namespace Aggregator
 					this,
 					SLOT (rotateUpdatesQueue ()));
 
-		const auto& maybeFeed = StorageBackend_->GetFeed (id);
-		if (!maybeFeed)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "no feed for id"
-					<< id;
-			return;
-		}
-
-		const auto& url = maybeFeed->URL_;
+		const auto& url = StorageBackend_->GetFeed (id).URL_;
 		for (const auto& pair : Util::Stlize (PendingJobs_))
 			if (pair.second.URL_ == url)
 			{
@@ -1083,15 +810,15 @@ namespace Aggregator
 		}
 	}
 
-	void Core::FetchFavicon (const Channel& channel)
+	void Core::FetchFavicon (IDType_t channelId, const QString& link)
 	{
-		QUrl oldUrl (channel.Link_);
+		QUrl oldUrl { link };
 		oldUrl.setPath ("/favicon.ico");
 		QString iconUrl = oldUrl.toString ();
 
 		ExternalData data;
 		data.Type_ = ExternalData::TIcon;
-		data.ChannelId_ = channel.ChannelID_;
+		data.ChannelId_ = channelId;
 		QString exFName = LeechCraft::Util::GetTemporaryName ();
 		try
 		{
@@ -1107,27 +834,19 @@ namespace Aggregator
 
 	void Core::HandleExternalData (const QString& url, const QFile& file)
 	{
+		const QImage image { file.fileName () };
+
 		const auto& data = PendingJob2ExternalData_.take (url);
 
-		// TODO add separate methods for pixmap/favicon updates in StorageBackend.
-		auto maybeChannel = StorageBackend_->GetChannel (data.ChannelId_);
-		if (!maybeChannel)
-			return;
-
-		auto channel = *maybeChannel;
-
-		const QImage image { file.fileName () };
 		switch (data.Type_)
 		{
 		case ExternalData::TImage:
-			channel.Pixmap_ = image;
+			StorageBackend_->SetChannelPixmap (data.ChannelId_, image);
 			break;
 		case ExternalData::TIcon:
-			channel.Favicon_ = image.scaled (16, 16);
+			StorageBackend_->SetChannelFavicon (data.ChannelId_, image);
 			break;
 		}
-
-		StorageBackend_->UpdateChannel (channel);
 	}
 
 	void Core::HandleFeedAdded (const channels_container_t& channels,
@@ -1145,41 +864,33 @@ namespace Aggregator
 					Util::Map (channel->Items_, [] (const Item_ptr& item) { return *item; }));
 
 			FetchPixmap (*channel);
-			FetchFavicon (*channel);
+			FetchFavicon (channel->ChannelID_, channel->Link_);
 		}
 
 		if (pj.FeedSettings_)
 		{
 			auto fs = *pj.FeedSettings_;
-			fs.FeedID_ = StorageBackend_->FindFeed (pj.URL_);
-			StorageBackend_->SetFeedSettings (fs);
+			if (const auto maybeFeedID = StorageBackend_->FindFeed (pj.URL_))
+			{
+				fs.FeedID_ = *maybeFeedID;
+				StorageBackend_->SetFeedSettings (fs);
+			}
+			else
+				qWarning () << Q_FUNC_INFO
+						<< "unable to find feed ID for the feed that's just been added"
+						<< pj.URL_;
 		}
 	}
 
-	void Core::HandleFeedUpdated (const channels_container_t& channels,
-			const Core::PendingJob& pj)
+	void Core::HandleFeedUpdated (const channels_container_t& channels, const Core::PendingJob& pj)
 	{
-		DBUpThread_->ScheduleImpl (&DBUpdateThreadWorker::updateFeed,
-				channels,
-				pj.URL_);
+		DBUpThread_->ScheduleImpl (&DBUpdateThreadWorker::updateFeed, channels, pj.URL_);
 	}
 
-	void Core::MarkChannel (const QModelIndex& i, bool state)
+	void Core::MarkChannel (const QModelIndex& idx, bool state)
 	{
-		try
-		{
-			ChannelShort cs = ChannelsModel_->GetChannelForIndex (i);
-			DBUpThread_->ScheduleImpl (&DBUpdateThreadWorker::toggleChannelUnread,
-					cs.ChannelID_,
-					state);
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< e.what ();
-			ErrorNotification (tr ("Aggregator error"),
-					tr ("Could not mark channel"));
-		}
+		const auto cid = idx.data (ChannelRoles::ChannelID).value<IDType_t> ();
+		DBUpThread_->ScheduleImpl (&DBUpdateThreadWorker::toggleChannelUnread, cid, state);
 	}
 
 	void Core::UpdateFeed (const IDType_t& id)

@@ -30,52 +30,46 @@
 #include "opmlparser.h"
 #include <QDomDocument>
 #include <QDomElement>
+#include <util/sll/domchildrenrange.h>
+#include <util/sll/either.h>
+#include <util/sll/functor.h>
 
 namespace LeechCraft
 {
 namespace Aggregator
 {
 	OPMLParser::OPMLParser (const QDomDocument& document)
-	: CacheValid_ (false)
-	, Document_ (document)
+	: Document_ (document)
 	{
 	}
 	
-	void OPMLParser::Reset (const QDomDocument& document)
+	bool OPMLParser::IsValid ()
 	{
-		Document_ = document;
-		CacheValid_ = false;
-	}
-	
-	bool OPMLParser::IsValid () const
-	{
-		QDomElement root = Document_.documentElement ();
+		auto root = Document_.documentElement ();
 		if (root.tagName () != "opml")
 			return false;
 	
-		QDomNodeList heads = root.elementsByTagName ("head");
+		auto heads = root.elementsByTagName ("head");
 		if (heads.size () != 1 || !heads.at (0).isElement ())
 			return false;
 	
-		QDomNodeList bodies = root.elementsByTagName ("body");
+		auto bodies = root.elementsByTagName ("body");
 		if (bodies.size () != 1 || !bodies.at (0).isElement ())
 			return false;
-	
-		if (!bodies.at (0).toElement ().elementsByTagName ("outline").size ())
-			return false;
-	
-		return true;
+
+		return !bodies.at (0).toElement ().elementsByTagName ("outline").isEmpty ();
+
 	}
 	
-	OPMLParser::OPMLinfo_t OPMLParser::GetInfo () const
+	OPMLParser::OPMLinfo_t OPMLParser::GetInfo ()
 	{
 		OPMLinfo_t result;
 	
-		QDomNodeList entries = Document_.documentElement ().firstChildElement ("head").childNodes ();
+		auto entries = Document_.documentElement ().firstChildElement ("head").childNodes ();
 	
 		for (int i = 0; i < entries.size (); ++i)
 		{
-			QDomElement elem = entries.at (i).toElement ();
+			auto elem = entries.at (i).toElement ();
 			if (elem.isNull ())
 				continue;
 	
@@ -85,29 +79,23 @@ namespace Aggregator
 		return result;
 	}
 	
-	OPMLParser::items_container_t OPMLParser::Parse () const
+	OPMLParser::items_container_t OPMLParser::Parse ()
 	{
 		if (!CacheValid_)
 		{
 			Items_.clear ();
-	
-			QDomElement body = Document_.documentElement ()
-				.firstChildElement ("body");
-			QDomElement outline = body.firstChildElement ("outline");
-			while (!outline.isNull ())
-			{ 
+
+			auto body = Document_.documentElement ().firstChildElement ("body");
+			for (const auto& outline : Util::DomChildren (body, "outline"))
 				ParseOutline (outline);
-				outline = outline.nextSiblingElement ("outline");
-			}
-	
+
 			CacheValid_ = true;
 		}
 	
 		return Items_;
 	}
 	
-	void OPMLParser::ParseOutline (const QDomElement& parentOutline,
-			QStringList previousStrings) const
+	void OPMLParser::ParseOutline (const QDomElement& parentOutline, QStringList previousStrings)
 	{
 		if (parentOutline.hasAttribute ("xmlUrl"))
 		{
@@ -115,14 +103,10 @@ namespace Aggregator
 			item.URL_ = parentOutline.attribute ("xmlUrl");
 			item.HTMLUrl_ = parentOutline.attribute ("htmlUrl");
 			item.Title_ = parentOutline.attribute ("title");
-			item.CustomFetchInterval_ = (parentOutline
-				.attribute ("useCustomFetchInterval") == "true");
-			item.MaxArticleAge_ = parentOutline
-				.attribute ("maxArticleAge").toInt ();
-			item.FetchInterval_ = parentOutline
-				.attribute ("fetchInterval").toInt ();
-			item.MaxArticleNumber_ = parentOutline
-				.attribute ("maxArticleNumber").toInt ();
+			item.CustomFetchInterval_ = parentOutline.attribute ("useCustomFetchInterval") == "true";
+			item.MaxArticleAge_ = parentOutline.attribute ("maxArticleAge").toInt ();
+			item.FetchInterval_ = parentOutline.attribute ("fetchInterval").toInt ();
+			item.MaxArticleNumber_ = parentOutline.attribute ("maxArticleNumber").toInt ();
 			item.Description_ = parentOutline.attribute ("description");
 			item.Categories_ = previousStrings;
 	
@@ -131,13 +115,43 @@ namespace Aggregator
 	
 		if (parentOutline.attribute ("text").size ())
 			previousStrings << parentOutline.attribute ("text");
-	
-		QDomElement outline = parentOutline.firstChildElement ("outline");
-		while (!outline.isNull ())
-		{
+
+		for (const auto& outline : Util::DomChildren (parentOutline, "outline"))
 			ParseOutline (outline, previousStrings);
-			outline = outline.nextSiblingElement ("outline");
-		}
+	}
+
+	OPMLParseResult_t ParseOPML (const QString& filename)
+	{
+		QFile file { filename };
+		if (!file.open (QIODevice::ReadOnly))
+			return OPMLParseResult_t::Left (QObject::tr ("Could not open file %1 for reading.")
+					.arg (filename));
+
+		QString errorMsg;
+		int errorLine, errorColumn;
+		QDomDocument document;
+		if (!document.setContent (&file,
+				true,
+				&errorMsg,
+				&errorLine,
+				&errorColumn))
+			return OPMLParseResult_t::Left (QObject::tr ("XML error, file %1, line %2, column %3, error:<br />%4")
+					.arg (filename)
+					.arg (errorLine)
+					.arg (errorColumn)
+					.arg (errorMsg));
+
+		OPMLParser parser { document };
+		if (!parser.IsValid ())
+			return OPMLParseResult_t::Left (QObject::tr ("OPML from file %1 is not valid.")
+					.arg (filename));
+
+		return OPMLParseResult_t::Right (parser);
+	}
+
+	OPMLItemsResult_t ParseOPMLItems (const QString& filename)
+	{
+		return ParseOPML (filename) * [] (auto parser) { return parser.Parse (); };
 	}
 }
 }

@@ -163,8 +163,6 @@ namespace Monocle
 
 		QPoint GetCurrentCenter () const;
 		void CenterOn (const QPoint&);
-
-		bool eventFilter (QObject*, QEvent*) override;
 	protected:
 		void dragEnterEvent (QDragEnterEvent*) override;
 		void dropEvent (QDropEvent*) override;

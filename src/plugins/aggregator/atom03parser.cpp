@@ -27,22 +27,20 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
+#include "atom03parser.h"
 #include <QDomDocument>
 #include <QDomElement>
 #include <QString>
 #include <QtDebug>
+#include <util/sll/domchildrenrange.h>
+#include <util/sll/prelude.h>
 #include "channel.h"
 #include "item.h"
-#include "atom03parser.h"
 
 namespace LeechCraft
 {
 namespace Aggregator
 {
-	Atom03Parser::Atom03Parser ()
-	{
-	}
-	
 	Atom03Parser& Atom03Parser::Instance ()
 	{
 		static Atom03Parser inst;
@@ -63,7 +61,7 @@ namespace Aggregator
 			const IDType_t& feedId) const
 	{
 		channels_container_t channels;
-		Channel_ptr chan (new Channel (feedId));
+		auto chan = std::make_shared<Channel> (Channel::CreateForFeed (feedId));
 		channels.push_back (chan);
 	
 		QDomElement root = doc.documentElement ();
@@ -75,45 +73,39 @@ namespace Aggregator
 		chan->Description_ = root.firstChildElement ("tagline").text ();
 		chan->Language_ = "<>";
 		chan->Author_ = GetAuthor (root);
-	
-		QDomElement entry = root.firstChildElement ("entry");
-		while (!entry.isNull ())
-		{
-			chan->Items_.push_back (Item_ptr (ParseItem (entry, chan->ChannelID_)));
-			entry = entry.nextSiblingElement ("entry");
-		}
-	
+		chan->Items_ = Util::Map (Util::DomChildren (root, "entry"),
+				[this, cid = chan->ChannelID_] (const QDomElement& entry) { return ParseItem (entry, cid); });
+
 		return channels;
 	}
 	
-	Item* Atom03Parser::ParseItem (const QDomElement& entry,
-			const IDType_t& channelId) const
+	Item_ptr Atom03Parser::ParseItem (const QDomElement& entry, const IDType_t& channelId) const
 	{
-		Item *item = new Item (channelId);
-	
+		auto item = std::make_shared<Item> (Item::CreateForChannel (channelId));
+
 		item->Title_ = ParseEscapeAware (entry.firstChildElement ("title"));
 		item->Link_ = GetLink (entry);
 		item->Guid_ = entry.firstChildElement ("id").text ();
 		item->Unread_ = true;
-	
+
 		QDomElement date = entry.firstChildElement ("modified");
 		if (date.isNull ())
 			date = entry.firstChildElement ("issued");
 		item->PubDate_ = FromRFC3339 (date.text ());
-	
+
 		QDomElement summary = entry.firstChildElement ("content");
 		if (summary.isNull ())
 			summary = entry.firstChildElement ("summary");
 		item->Description_ = ParseEscapeAware (summary);
 		GetDescription (entry, item->Description_);
-	
+
 		item->Categories_ += GetAllCategories (entry);
 		item->Author_ = GetAuthor (entry);
-	
+
 		item->NumComments_ = GetNumComments (entry);
 		item->CommentsLink_ = GetCommentsRSS (entry);
 		item->CommentsPageLink_ = GetCommentsLink (entry);
-	
+
 		item->Enclosures_ = GetEnclosures (entry, item->ItemID_);
 		item->Enclosures_ += GetEncEnclosures (entry, item->ItemID_);
 
@@ -121,7 +113,7 @@ namespace Aggregator
 		item->Latitude_ = point.first;
 		item->Longitude_ = point.second;
 		item->MRSSEntries_ = GetMediaRSS (entry, item->ItemID_);
-	
+
 		return item;
 	}
 }

@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AGGREGATOR_IMPORTOPML_H
-#define PLUGINS_AGGREGATOR_IMPORTOPML_H
+#pragma once
+
 #include <QDialog>
 #include "ui_importopml.h"
 
@@ -46,15 +46,13 @@ namespace Aggregator
 
 		QString GetFilename () const;
 		QString GetTags () const;
-		std::vector<bool> GetMask () const;
+		QSet<QString> GetSelectedUrls () const;
 	private slots:
 		void on_File__textEdited (const QString&);
 		void on_Browse__released ();
 	private:
-		bool HandleFile (const QString&);
+		void HandleFile (const QString&);
 		void Reset ();
 	};
 }
 }
-
-#endif

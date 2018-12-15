@@ -177,8 +177,8 @@ namespace Aggregator
 
 		while (stream.status () == QDataStream::Ok)
 		{
-			Channel_ptr channel (new Channel (-1, -1));
-			stream >> (*channel);
+			auto channel = std::make_shared<Channel> ();
+			stream >> *channel;
 			Channels_.push_back (channel);
 
 			QStringList strings (channel->Title_);

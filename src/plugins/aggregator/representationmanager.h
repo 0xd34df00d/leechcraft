@@ -29,35 +29,41 @@
 
 #pragma once
 
-#include <memory>
-#include <QDialog>
+#include <QObject>
 #include <QModelIndex>
-#include <interfaces/core/icoreproxyfwd.h>
-#include "ui_feedsettings.h"
-#include "common.h"
 
-namespace LeechCraft
+namespace LeechCraft::Util
 {
-namespace Util
-{
-	class TagsCompleter;
+	class ShortcutManager;
 }
 
-namespace Aggregator
+namespace LeechCraft::Aggregator
 {
-	class FeedSettings : public QDialog
+	class ItemsWidget;
+	class JobHolderRepresentation;
+	class ChannelsModelRepresentationProxy;
+	struct AppWideActions;
+	struct ChannelActions;
+
+	class RepresentationManager : public QObject
 	{
-		Q_OBJECT
-
-		Ui::FeedSettings Ui_;
-		std::shared_ptr<Util::TagsCompleter> ChannelTagsCompleter_;
-		QModelIndex Index_;
+		ItemsWidget *ReprWidget_ = nullptr;
+		JobHolderRepresentation *JobHolderRepresentation_ = nullptr;
+		ChannelsModelRepresentationProxy *ReprModel_ = nullptr;
+		QModelIndex SelectedRepr_;
 	public:
-		explicit FeedSettings (const QModelIndex&, const ICoreProxy_ptr&, QWidget* = nullptr);
-	public slots:
-		void accept () override;
-	private slots:
-		void on_UpdateFavicon__released ();
+		struct InitParams
+		{
+			Util::ShortcutManager *ShortcutMgr_;
+			const AppWideActions& AppWideActions_;
+			const ChannelActions& ChannelActions_;
+		};
+
+		explicit RepresentationManager (const InitParams&);
+
+		QAbstractItemModel* GetRepresentation () const;
+		void HandleRowChanged (const QModelIndex&);
+
+		std::optional<QModelIndex> GetRelevantIndex () const;
 	};
-}
 }

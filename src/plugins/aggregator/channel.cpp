@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include <QtDebug>
+#include <numeric>
 #include <QDataStream>
 #include <QVariant>
 #include <QStringList>
@@ -40,54 +41,18 @@ namespace LeechCraft
 {
 namespace Aggregator
 {
-	Channel::Channel (const IDType_t& id)
-	: ChannelID_ (Core::Instance ().GetPool (PTChannel).GetID ())
-	, FeedID_ (id)
+	Channel Channel::CreateForFeed (IDType_t feedId)
 	{
-	}
-
-	Channel::Channel (const IDType_t& id, const IDType_t& chId)
-	: ChannelID_ (chId)
-	, FeedID_ (id)
-	{
-	}
-
-	Channel::Channel (const Channel& channel)
-	: Items_ (channel.Items_)
-	{
-		Equalify (channel);
-	}
-
-	Channel& Channel::operator= (const Channel& channel)
-	{
-		Equalify (channel);
-		Items_ = channel.Items_;
-		return *this;
+		Channel ch;
+		ch.ChannelID_ = Core::Instance ().GetPool (PTChannel).GetID ();
+		ch.FeedID_ = feedId;
+		return ch;
 	}
 
 	int Channel::CountUnreadItems () const
 	{
-		int result = 0;
-		for (size_t i = 0; i < Items_.size (); ++i)
-			result += (Items_ [i]->Unread_);
-		return result;
-	}
-
-	void Channel::Equalify (const Channel& channel)
-	{
-		ChannelID_ = channel.ChannelID_;
-		FeedID_ = channel.FeedID_;
-		Title_ = channel.Title_;
-		DisplayTitle_ = channel.Title_;
-		Link_ = channel.Link_;
-		Description_ = channel.Description_;
-		LastBuild_ = channel.LastBuild_;
-		Tags_ = channel.Tags_;
-		Language_ = channel.Language_;
-		Author_ = channel.Author_;
-		PixmapURL_ = channel.PixmapURL_;
-		Pixmap_ = channel.Pixmap_;
-		Favicon_ = channel.Favicon_;
+		return std::accumulate (Items_.begin (), Items_.end (),
+				0, [] (int cnt, const auto& item) { return cnt + item->Unread_; });
 	}
 
 	ChannelShort Channel::ToShort () const
@@ -149,8 +114,8 @@ namespace Aggregator
 			<< chan.Pixmap_
 			<< chan.Favicon_
 			<< static_cast<quint32> (chan.Items_.size ());
-		for (size_t i = 0; i < chan.Items_.size (); ++i)
-			out << *chan.Items_ [i];
+		for (const auto& item : chan.Items_)
+			out << *item;
 		return out;
 	}
 
@@ -187,7 +152,7 @@ namespace Aggregator
 			in >> size;
 			for (size_t i = 0; i < size; ++i)
 			{
-				Item_ptr it (new Item (chan.ChannelID_));
+				auto it = std::make_shared<Item> ();
 				in >> *it;
 				chan.Items_.push_back (it);
 			}
@@ -210,7 +175,7 @@ namespace Aggregator
 			in >> size;
 			for (size_t i = 0; i < size; ++i)
 			{
-				Item_ptr it (new Item (chan.ChannelID_));
+				auto it = std::make_shared<Item> ();
 				in >> *it;
 				chan.Items_.push_back (it);
 			}

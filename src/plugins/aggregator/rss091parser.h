@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AGGREGATOR_RSS091PARSER_H
-#define PLUGINS_AGGREGATOR_RSS091PARSER_H
+#pragma once
+
 #include "rssparser.h"
 
 namespace LeechCraft
@@ -37,18 +37,13 @@ namespace Aggregator
 {
 	class RSS091Parser : public RSSParser
 	{
-		RSS091Parser ();
+		RSS091Parser () = default;
 	public:
-		virtual ~RSS091Parser ();
 		static RSS091Parser& Instance ();
-		virtual bool CouldParse (const QDomDocument&) const;
+		bool CouldParse (const QDomDocument&) const override;
 	protected:
-		virtual channels_container_t Parse (const QDomDocument&,
-				const IDType_t&) const;
-		Item* ParseItem (const QDomElement&,
-				const IDType_t&) const;
+		channels_container_t Parse (const QDomDocument&, const IDType_t&) const override;
+		Item_ptr ParseItem (const QDomElement&, const IDType_t&) const;
 	};
 }
 }
-
-#endif

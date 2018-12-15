@@ -127,79 +127,68 @@ namespace Aggregator
 			SameSets (e1.Scenes_, e2.Scenes_);
 	}
 
-	Enclosure::Enclosure (const IDType_t& item)
-	: EnclosureID_ (Core::Instance ().GetPool (PTEnclosure).GetID ())
-	, ItemID_ (item)
+	Enclosure Enclosure::CreateForItem (IDType_t itemId)
 	{
+		Enclosure enc;
+		enc.ItemID_ = itemId;
+		enc.EnclosureID_ = Core::Instance ().GetPool (PTEnclosure).GetID ();
+		return enc;
 	}
 
-	Enclosure::Enclosure (const IDType_t& item, const IDType_t& enclosure)
-	: EnclosureID_ (enclosure)
-	, ItemID_ (item)
+	MRSSThumbnail MRSSThumbnail::CreateForEntry (IDType_t entryId)
 	{
+		MRSSThumbnail thumbnail;
+		thumbnail.MRSSThumbnailID_ = Core::Instance ().GetPool (PTMRSSThumbnail).GetID ();
+		thumbnail.MRSSEntryID_ = entryId;
+		return thumbnail;
 	}
 
-	Enclosure::Enclosure ()
-	: EnclosureID_ (0)
-	, ItemID_ (0)
+	MRSSCredit MRSSCredit::CreateForEntry (IDType_t entryId)
 	{
+		MRSSCredit credit;
+		credit.MRSSCreditID_ = Core::Instance ().GetPool (PTMRSSCredit).GetID ();
+		credit.MRSSEntryID_ = entryId;
+		return credit;
 	}
 
-#define MRSS_CN(a) MRSS##a
-#define MRSS_ENUM(a) PTMRSS##a
-#define MRSS_IDMEM(a) MRSS##a##ID_
-#define MRSS_DEFINE_CTORS(a) \
-	MRSS_CN(a)::MRSS_CN(a) (const IDType_t& mrssEntry) \
-	: MRSS_IDMEM(a) (Core::Instance ().GetPool (MRSS_ENUM(a)).GetID ()) \
-	, MRSSEntryID_ (mrssEntry) \
-	{ \
-	} \
-\
-	MRSS_CN(a)::MRSS_CN(a) (const IDType_t& mrssEntry, \
-			const IDType_t& mrssThis) \
-	: MRSS_IDMEM(a) (mrssThis) \
-	, MRSSEntryID_ (mrssEntry) \
-	{ \
-	} \
-\
-	MRSS_CN(a)::MRSS_CN(a) () \
-	: MRSS_IDMEM(a) (0) \
-	, MRSSEntryID_ (0) \
-	{ \
-	}
-#define MRSS_TRAVERSER(z,i,array) MRSS_DEFINE_CTORS (BOOST_PP_SEQ_ELEM(i, array))
-#define MRSS_EXPANDER(Classes) BOOST_PP_REPEAT (BOOST_PP_SEQ_SIZE (Classes), MRSS_TRAVERSER, Classes)
-#define MRSS_CLASSES_LIST (Thumbnail)(Credit)(Comment)(PeerLink)(Scene)
-
-	MRSS_EXPANDER (MRSS_CLASSES_LIST);
-
-#undef CLASSES_LIST
-#undef MRSS_DEFINE_REGISTER
-#undef MRSS_TRAVERSER
-#undef MRSS_EXPANDER
-
-	MRSSEntry::MRSSEntry (const IDType_t& itemId)
-	: MRSSEntryID_ (Core::Instance ().GetPool (PTMRSSEntry).GetID ())
-	, ItemID_ (itemId)
+	MRSSComment MRSSComment::CreateForEntry (IDType_t entryId)
 	{
+		MRSSComment comment;
+		comment.MRSSCommentID_ = Core::Instance ().GetPool (PTMRSSComment).GetID ();
+		comment.MRSSEntryID_ = entryId;
+		return comment;
 	}
 
-	MRSSEntry::MRSSEntry (const IDType_t& itemId, const IDType_t& thisId)
-	: MRSSEntryID_ (thisId)
-	, ItemID_ (itemId)
+	MRSSPeerLink MRSSPeerLink::CreateForEntry (IDType_t entryId)
 	{
+		MRSSPeerLink link;
+		link.MRSSPeerLinkID_ = Core::Instance ().GetPool (PTMRSSPeerLink).GetID ();
+		link.MRSSEntryID_ = entryId;
+		return link;
 	}
 
-	Item::Item (const IDType_t& channel)
-	: ChannelID_ (channel)
-	, ItemID_ (Core::Instance ().GetPool (PTItem).GetID ())
+	MRSSScene MRSSScene::CreateForEntry (IDType_t entryId)
 	{
+		MRSSScene scene;
+		scene.MRSSSceneID_ = Core::Instance ().GetPool (PTMRSSScene).GetID ();
+		scene.MRSSEntryID_ = entryId;
+		return scene;
 	}
 
-	Item::Item (const IDType_t& channel, const IDType_t& item)
-	: ChannelID_ (channel)
-	, ItemID_ (item)
+	MRSSEntry MRSSEntry::CreateForItem (IDType_t itemId)
 	{
+		MRSSEntry entry;
+		entry.MRSSEntryID_ = Core::Instance ().GetPool (PTMRSSEntry).GetID ();
+		entry.ItemID_ = itemId;
+		return entry;
+	}
+
+	Item Item::CreateForChannel (IDType_t channelId)
+	{
+		Item item;
+		item.ChannelID_ = channelId;
+		item.ItemID_ = Core::Instance ().GetPool (PTItem).GetID ();
+		return item;
 	}
 
 	ItemShort Item::ToShort () const

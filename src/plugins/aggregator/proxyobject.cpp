@@ -32,6 +32,7 @@
 #include "storagebackendmanager.h"
 #include "channelsmodel.h"
 #include "itemslistmodel.h"
+#include "channelutils.h"
 
 namespace LeechCraft
 {
@@ -105,37 +106,28 @@ namespace Aggregator
 	{
 		QList<Channel> result;
 		const auto& sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
-		for (const auto& cs : Core::Instance ().GetChannels ())
-			if (const auto channel = sb->GetChannel (cs.ChannelID_))
-				result << *channel;
+		for (const auto& cs : ChannelUtils::GetAllChannels ())
+			result << sb->GetChannel (cs.ChannelID_);
 		return result;
 	}
 
 	Channel ProxyObject::GetChannel (IDType_t id) const
 	{
-		// TODO rework when StorageBackend::GetChannel()
-		// would be happy with just the channel ID.
-		const auto& channels = GetAllChannels ();
-		const auto pos = std::find_if (channels.begin (), channels.end (),
-				[id] (const Channel& channel) { return id == channel.ChannelID_; });
-		return pos != channels.end () ?
-				*pos :
-				Channel {};
+		const auto& sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
+		return sb->GetChannel (id);
 	}
 
 	int ProxyObject::CountUnreadItems (IDType_t channel) const
 	{
-		return StorageBackendManager::Instance ().MakeStorageBackendForThread ()->GetUnreadItems (channel);
+		return StorageBackendManager::Instance ().MakeStorageBackendForThread ()->GetUnreadItemsCount (channel);
 	}
 
 	QList<Item_ptr> ProxyObject::GetChannelItems (IDType_t channelId) const
 	{
-		// TODO rework when we change items_container_t
-		const auto& items = StorageBackendManager::Instance ().MakeStorageBackendForThread ()->GetFullItems (channelId);
-		return QList<Item_ptr>::fromVector (QVector<Item_ptr>::fromStdVector (items));
+		return StorageBackendManager::Instance ().MakeStorageBackendForThread ()->GetFullItems (channelId);
 	}
 
-	boost::optional<Item> ProxyObject::GetItem (IDType_t id) const
+	std::optional<Item> ProxyObject::GetItem (IDType_t id) const
 	{
 		return StorageBackendManager::Instance ().MakeStorageBackendForThread ()->GetItem (id);
 	}

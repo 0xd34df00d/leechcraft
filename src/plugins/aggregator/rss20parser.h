@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AGGREGATOR_RSS20PARSER_H
-#define PLUGINS_AGGREGATOR_RSS20PARSER_H
+#pragma once
+
 #include "rssparser.h"
 #include "channel.h"
 
@@ -38,18 +38,13 @@ namespace Aggregator
 {
 	class RSS20Parser : public RSSParser
 	{
-		RSS20Parser ();
+		RSS20Parser () = default;
 	public:
-		virtual ~RSS20Parser ();
 		static RSS20Parser& Instance ();
-		virtual bool CouldParse (const QDomDocument&) const;
+		bool CouldParse (const QDomDocument&) const override;
 	private:
-		channels_container_t Parse (const QDomDocument&,
-				const IDType_t&) const;
-		Item* ParseItem (const QDomElement&,
-				const IDType_t&) const;
+		channels_container_t Parse (const QDomDocument&, const IDType_t&) const override;
+		Item_ptr ParseItem (const QDomElement&, const IDType_t&) const;
 	};
 }
 }
-
-#endif

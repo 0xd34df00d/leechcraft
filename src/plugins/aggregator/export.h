@@ -27,9 +27,10 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AGGREGATOR_EXPORT_H
-#define PLUGINS_AGGREGATOR_EXPORT_H
+#pragma once
+
 #include <QDialog>
+#include <QSet>
 #include "ui_export.h"
 #include "channel.h"
 
@@ -51,7 +52,7 @@ namespace Aggregator
 		QString GetTitle () const;
 		QString GetOwner () const;
 		QString GetOwnerEmail () const;
-		std::vector<bool> GetSelectedFeeds () const;
+		QSet<IDType_t> GetSelectedFeeds () const;
 
 		void SetFeeds (const channels_shorts_t&);
 	private slots:
@@ -60,5 +61,3 @@ namespace Aggregator
 	};
 }
 }
-
-#endif

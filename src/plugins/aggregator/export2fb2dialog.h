@@ -63,7 +63,7 @@ namespace Aggregator
 		void on_Browse__released ();
 		void on_File__textChanged (const QString&);
 		void on_Name__textEdited ();
-		void handleChannelsSelectionChanged (const QItemSelection&, const QItemSelection&);
+		void handleChannelsSelectionChanged ();
 		void handleAccepted ();
 	};
 }

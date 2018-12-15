@@ -34,6 +34,7 @@
 #include <QMenu>
 #include <util/xpc/defaulthookproxy.h>
 #include <util/sll/qtutil.h>
+#include <util/sll/delayedexecutor.h>
 #include <interfaces/ihavetabs.h>
 #include "tabmanager.h"
 #include "core.h"
@@ -41,21 +42,10 @@
 #include "mainwindow.h"
 #include "docktoolbarmanager.h"
 #include "mainwindowmenumanager.h"
-
-Q_DECLARE_METATYPE (QDockWidget*)
-Q_DECLARE_METATYPE (QPointer<QDockWidget>)
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
-	DockManager::DockInfo::DockInfo ()
-	: Associated_ (0)
-	, Window_ (0)
-	, Width_ (-1)
-	{
-		qRegisterMetaType<QDockWidget*> ("QDockWidget*");
-		qRegisterMetaType<QPointer<QDockWidget>> ("QPointer<QDockWidget>");
-	}
-
 	DockManager::DockManager (RootWindowsManager *rootWM, QObject *parent)
 	: QObject (parent)
 	, RootWM_ (rootWM)
@@ -69,27 +59,26 @@ namespace LeechCraft
 				SLOT (handleWindow (int)));
 	}
 
-	void DockManager::AddDockWidget (QDockWidget *dw, Qt::DockWidgetArea area)
+	void DockManager::AddDockWidget (QDockWidget *dw, const IMWProxy::DockWidgetParams& params)
 	{
 		auto win = static_cast<MainWindow*> (RootWM_->GetPreferredWindow ());
-		win->addDockWidget (area, dw);
+		win->addDockWidget (params.Area_, dw);
+		win->resizeDocks ({ dw }, { 1 }, Qt::Horizontal);		// https://bugreports.qt.io/browse/QTBUG-65592
 		Dock2Info_ [dw].Window_ = win;
+		Dock2Info_ [dw].SizeContext_ = params.SizeContext_;
 
 		connect (dw,
 				SIGNAL (destroyed (QObject*)),
 				this,
 				SLOT (handleDockDestroyed ()));
 
-		Window2DockToolbarMgr_ [win]->AddDock (dw, area);
+		Window2DockToolbarMgr_ [win]->AddDock (dw, params.Area_);
 
 		dw->installEventFilter (this);
 
-		auto toggleAct = dw->toggleViewAction ();
-		ToggleAct2Dock_ [toggleAct] = dw;
-		connect (toggleAct,
-				SIGNAL (triggered (bool)),
-				this,
-				SLOT (handleDockToggled (bool)));
+		SetupDockAction (dw);
+		if (params.SizeContext_)
+			SetupSizing (dw, *params.SizeContext_);
 	}
 
 	void DockManager::AssociateDockWidget (QDockWidget *dock, QWidget *tab)
@@ -167,6 +156,14 @@ namespace LeechCraft
 		case QEvent::Hide:
 			Dock2Info_ [dock].Width_ = dock->width ();
 			break;
+		case QEvent::Resize:
+			if (const auto ctx = Dock2Info_ [dock].SizeContext_)
+			{
+				auto resizeEv = static_cast<QResizeEvent *> (event);
+				const auto width = resizeEv->size ().width ();
+				XmlSettingsManager::Instance ()->setProperty (*ctx, width);
+			}
+			break;
 		case QEvent::Show:
 		{
 			const auto width = Dock2Info_ [dock].Width_;
@@ -178,12 +175,14 @@ namespace LeechCraft
 				dock->setMinimumWidth (width);
 				dock->setMaximumWidth (width);
 
-				QMetaObject::invokeMethod (this,
-						"revertDockSizes",
-						Qt::QueuedConnection,
-						Q_ARG (QPointer<QDockWidget>, dock),
-						Q_ARG (int, prevMin),
-						Q_ARG (int, prevMax));
+				Util::ExecuteLater ([dock = QPointer<QDockWidget> { dock }, prevMin, prevMax]
+						{
+							if (!dock)
+								return;
+
+							dock->setMinimumWidth (prevMin);
+							dock->setMaximumWidth (prevMax);
+						});
 			}
 			break;
 		}
@@ -192,6 +191,23 @@ namespace LeechCraft
 		}
 
 		return false;
+	}
+
+	void DockManager::SetupDockAction (QDockWidget *dw)
+	{
+		auto toggleAct = dw->toggleViewAction ();
+		ToggleAct2Dock_ [toggleAct] = dw;
+		connect (toggleAct,
+				&QAction::triggered,
+				this,
+				[this, dw] (bool isVisible) { HandleDockToggled (dw, isVisible); });
+	}
+
+	void DockManager::SetupSizing (QDockWidget *dw, const QByteArray& sizingContext)
+	{
+		const auto& storedWidth = XmlSettingsManager::Instance ()->property (sizingContext);
+		if (storedWidth.isValid ())
+			Dock2Info_ [dw].Width_ = storedWidth.toInt ();
 	}
 
 	void DockManager::HandleDockToggled (QDockWidget *dock, bool isVisible)
@@ -212,22 +228,13 @@ namespace LeechCraft
 	{
 		auto rootWM = Core::Instance ().GetRootWindowsManager ();
 
-		auto fromWin = static_cast<MainWindow*> (rootWM->GetMainWindow (from));
-		auto toWin = static_cast<MainWindow*> (rootWM->GetMainWindow (to));
+		auto fromWin = rootWM->GetMainWindow (from);
+		auto toWin = rootWM->GetMainWindow (to);
 		auto widget = fromWin->GetTabWidget ()->Widget (tab);
 
 		for (auto i = Dock2Info_.begin (), end = Dock2Info_.end (); i != end; ++i)
 			if (i->Associated_ == widget)
 				MoveDock (i.key (), fromWin, toWin);
-	}
-
-	void DockManager::revertDockSizes (QPointer<QDockWidget> dock, int min, int max)
-	{
-		if (!dock)
-			return;
-
-		dock->setMinimumWidth (min);
-		dock->setMaximumWidth (max);
 	}
 
 	void DockManager::handleDockDestroyed ()
@@ -242,24 +249,10 @@ namespace LeechCraft
 		ForcefullyClosed_.remove (dock);
 	}
 
-	void DockManager::handleDockToggled (bool isVisible)
-	{
-		auto dock = ToggleAct2Dock_ [static_cast<QAction*> (sender ())];
-		if (!dock)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unknown toggler"
-					<< sender ();
-			return;
-		}
-
-		HandleDockToggled (dock, isVisible);
-	}
-
 	void DockManager::handleTabChanged (QWidget *tabWidget)
 	{
 		auto thisWindowIdx = RootWM_->GetWindowForTab (qobject_cast<ITabWidget*> (tabWidget));
-		auto thisWindow = static_cast<MainWindow*> (RootWM_->GetMainWindow (thisWindowIdx));
+		auto thisWindow = RootWM_->GetMainWindow (thisWindowIdx);
 		auto toolbarMgr = Window2DockToolbarMgr_ [thisWindow];
 
 		QList<QDockWidget*> toShowAssoc;
@@ -297,18 +290,11 @@ namespace LeechCraft
 
 	void DockManager::handleWindow (int index)
 	{
-		auto win = static_cast<MainWindow*> (RootWM_->GetMainWindow (index));
+		auto win = RootWM_->GetMainWindow (index);
 		Window2DockToolbarMgr_ [win] = new DockToolbarManager (win, this);
-
 		connect (win,
-				SIGNAL (destroyed (QObject*)),
+				&QObject::destroyed,
 				this,
-				SLOT (handleWindowDestroyed ()));
-	}
-
-	void DockManager::handleWindowDestroyed ()
-	{
-		auto win = static_cast<MainWindow*> (sender ());
-		Window2DockToolbarMgr_.remove (win);
+				[this, win] { Window2DockToolbarMgr_.remove (win); });
 	}
 }

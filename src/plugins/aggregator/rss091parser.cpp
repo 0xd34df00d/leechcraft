@@ -29,19 +29,13 @@
 
 #include "rss091parser.h"
 #include <QDebug>
+#include <util/sll/domchildrenrange.h>
+#include <util/sll/prelude.h>
 
 namespace LeechCraft
 {
 namespace Aggregator
 {
-	RSS091Parser::RSS091Parser ()
-	{
-	}
-
-	RSS091Parser::~RSS091Parser ()
-	{
-	}
-
 	RSS091Parser& RSS091Parser::Instance ()
 	{
 		static RSS091Parser inst;
@@ -56,47 +50,33 @@ namespace Aggregator
 				root.attribute ("version") == "0.92");
 	}
 
-	channels_container_t RSS091Parser::Parse (const QDomDocument& doc,
-			const IDType_t& feedId) const
+	channels_container_t RSS091Parser::Parse (const QDomDocument& doc, const IDType_t& feedId) const
 	{
 		channels_container_t channels;
 		QDomElement root = doc.documentElement ();
-		QDomElement channel = root.firstChildElement ("channel");
-		while (!channel.isNull ())
+		for (const auto& channel : Util::DomChildren (root, "channel"))
 		{
-			Channel_ptr chan (new Channel (feedId));
+			auto chan = std::make_shared<Channel> (Channel::CreateForFeed (feedId));
 
 			chan->Title_ = channel.firstChildElement ("title").text ().trimmed ();
 			chan->Description_ = channel.firstChildElement ("description").text ();
 			chan->Link_ = channel.firstChildElement ("link").text ();
+			chan->Items_ = Util::Map (Util::DomChildren (channel, "item"),
+					[this, cid = chan->ChannelID_] (const QDomElement& item) { return ParseItem (item, cid); });
 
-			auto& itemsList = chan->Items_;
-			itemsList.reserve (20);
-
-			QDomElement item = channel.firstChildElement ("item");
-			while (!item.isNull ())
-			{
-				itemsList.push_back (Item_ptr (ParseItem (item, chan->ChannelID_)));
-				item = item.nextSiblingElement ("item");
-			}
-			if (!chan->LastBuild_.isValid () || chan->LastBuild_.isNull ())
-			{
-				if (!itemsList.empty ())
-					chan->LastBuild_ = itemsList.at (0)->PubDate_;
-				else
-					chan->LastBuild_ = QDateTime::currentDateTime ();
-			}
+			if (!chan->LastBuild_.isValid ())
+				chan->LastBuild_ = chan->Items_.isEmpty () ?
+						QDateTime::currentDateTime () :
+						chan->Items_.front ()->PubDate_;
 
 			channels.push_back (chan);
-			channel = channel.nextSiblingElement ("channel");
 		}
 		return channels;
 	}
 
-	Item* RSS091Parser::ParseItem (const QDomElement& item,
-			const IDType_t& channelId) const
+	Item_ptr RSS091Parser::ParseItem (const QDomElement& item, const IDType_t& channelId) const
 	{
-		Item *result = new Item (channelId);
+		auto result = std::make_shared<Item> (Item::CreateForChannel (channelId));
 		result->Title_ = UnescapeHTML (item.firstChildElement ("title").text ());
 		if (result->Title_.isEmpty ())
 			result->Title_ = "<>";

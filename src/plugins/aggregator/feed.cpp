@@ -38,12 +38,19 @@ namespace LeechCraft
 namespace Aggregator
 {
 	Feed::Feed ()
-	: FeedID_ (Core::Instance ().GetPool (PTFeed).GetID ())
+	: FeedID_ { Core::Instance ().GetPool (PTFeed).GetID () }
 	{
 	}
 	
-	Feed::Feed (const IDType_t& feedId)
-	: FeedID_ (feedId)
+	Feed::Feed (IDType_t feedId)
+	: FeedID_ { feedId }
+	{
+	}
+
+	Feed::Feed (IDType_t id, const QString& url, const QDateTime& lastUpdate)
+	: FeedID_ { id }
+	, URL_ { url }
+	, LastUpdate_ { lastUpdate }
 	{
 	}
 
@@ -70,7 +77,7 @@ namespace Aggregator
 			>> size;
 		for (quint32 i = 0; i < size; ++i)
 		{
-			Channel_ptr chan (new Channel (feed.FeedID_));
+			auto chan = std::make_shared<Channel> ();
 			in >> *chan;
 			feed.Channels_.push_back (chan);
 		}

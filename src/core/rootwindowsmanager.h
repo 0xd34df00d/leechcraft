@@ -68,18 +68,18 @@ namespace LeechCraft
 
 		bool WindowCloseRequested (MainWindow*);
 
-		QObject* GetQObject ();
+		QObject* GetQObject () override;
 
-		int GetWindowsCount () const;
-		int GetPreferredWindowIndex () const;
+		int GetWindowsCount () const override;
+		int GetPreferredWindowIndex () const override;
 		int GetPreferredWindowIndex (const ITabWidget*) const;
-		int GetPreferredWindowIndex (const QByteArray&) const;
-		int GetWindowForTab (ITabWidget*) const;
-		int GetWindowIndex (QMainWindow*) const;
+		int GetPreferredWindowIndex (const QByteArray&) const override;
+		int GetWindowForTab (ITabWidget*) const override;
+		int GetWindowIndex (QMainWindow*) const override;
 
-		IMWProxy* GetMWProxy (int) const;
-		MainWindow* GetMainWindow (int) const;
-		ICoreTabWidget* GetTabWidget (int) const;
+		IMWProxy* GetMWProxy (int) const override;
+		MainWindow* GetMainWindow (int) const override;
+		ICoreTabWidget* GetTabWidget (int) const override;
 	private:
 		MainWindow* CreateWindow (int screen, bool primary);
 		void PerformWithTab (const std::function<void (TabManager*, int)>&, QWidget*);
@@ -95,13 +95,13 @@ namespace LeechCraft
 		void changeTabIcon (QWidget*, const QIcon&);
 		void bringToFront (QWidget*);
 	signals:
-		void windowAdded (int);
-		void windowRemoved (int);
-		void currentWindowChanged (int, int);
-		void tabAdded (int, int);
-		void tabIsRemoving (int, int);
-		void tabIsMoving (int, int, int);
-		void tabMoved (int, int, int);
+		void windowAdded (int) override;
+		void windowRemoved (int) override;
+		void currentWindowChanged (int, int) override;
+		void tabAdded (int, int) override;
+		void tabIsRemoving (int, int) override;
+		void tabIsMoving (int, int, int) override;
+		void tabMoved (int, int, int) override;
 
 		void hookTabAdding (LeechCraft::IHookProxy_ptr, QWidget*);
 		void hookGetPreferredWindowIndex (LeechCraft::IHookProxy_ptr, const QWidget*) const;

@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AGGREGATOR_PARSERFACTORY_H
-#define PLUGINS_AGGREGATOR_PARSERFACTORY_H
+#pragma once
+
 #include <QList>
 
 class QDomDocument;
@@ -46,10 +46,11 @@ namespace Aggregator
 		ParserFactory () = default;
 	public:
 		static ParserFactory& Instance ();
+
 		void Register (Parser*);
+		void RegisterDefaultParsers ();
+
 		Parser* Return (const QDomDocument&) const;
 	};
 }
 }
-
-#endif

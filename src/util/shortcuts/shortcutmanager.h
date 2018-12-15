@@ -119,6 +119,10 @@ namespace Util
 		 */
 		void RegisterAction (const QString& id, QAction *action);
 
+		using IDPair_t = QPair<QString, QAction*>;
+
+		void RegisterActions (const std::initializer_list<IDPair_t>& actions);
+
 		/** @brief Registers the given QShortcut with the given id.
 		 *
 		 * @param[in] id The ID of QShortcut to register.
@@ -197,7 +201,6 @@ namespace Util
 		 */
 		QMap<QString, ActionInfo> GetActionInfo () const;
 
-		typedef QPair<QString, QAction*> IDPair_t;
 		/** @brief Utility function equivalent to RegisterAction().
 		 *
 		 * This function is equivalent to calling

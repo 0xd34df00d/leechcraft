@@ -49,6 +49,9 @@ namespace Util
 
 		void testMapMember ();
 		void testMapMemberFunction ();
+
+		void testConcatLists ();
+		void testConcatSets ();
 	};
 }
 }

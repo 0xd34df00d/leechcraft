@@ -27,20 +27,18 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
+#include "atom10parser.h"
 #include <QDomDocument>
 #include <QDomElement>
 #include <QString>
 #include <QtDebug>
-#include "atom10parser.h"
+#include <util/sll/domchildrenrange.h>
+#include <util/sll/prelude.h>
 
 namespace LeechCraft
 {
 namespace Aggregator
 {
-	Atom10Parser::Atom10Parser ()
-	{
-	}
-	
 	Atom10Parser& Atom10Parser::Instance ()
 	{
 		static Atom10Parser inst;
@@ -61,7 +59,7 @@ namespace Aggregator
 			const IDType_t& feedId) const
 	{
 		channels_container_t channels;
-		Channel_ptr chan (new Channel (feedId));
+		auto chan = std::make_shared<Channel> (Channel::CreateForFeed (feedId));
 		channels.push_back (chan);
 	
 		QDomElement root = doc.documentElement ();
@@ -81,22 +79,17 @@ namespace Aggregator
 				")";
 		}
 		chan->Language_ = "<>";
-	
-		QDomElement entry = root.firstChildElement ("entry");
-		while (!entry.isNull ())
-		{
-			chan->Items_.push_back (Item_ptr (ParseItem (entry, chan->ChannelID_)));
-			entry = entry.nextSiblingElement ("entry");
-		}
-	
+		chan->Items_ = Util::Map (Util::DomChildren (root, "entry"),
+				[this, cid = chan->ChannelID_] (const QDomElement& entry) { return ParseItem (entry, cid); });
+
 		return channels;
 	}
 	
-	Item* Atom10Parser::ParseItem (const QDomElement& entry,
+	Item_ptr Atom10Parser::ParseItem (const QDomElement& entry,
 			const IDType_t& channelId) const
 	{
-		Item *item = new Item (channelId);
-	
+		auto item = std::make_shared<Item> (Item::CreateForChannel (channelId));
+
 		item->Title_ = entry.firstChildElement ("title").text ();
 		item->Link_ = GetLink (entry);
 		item->Guid_ = entry.firstChildElement ("id").text ();

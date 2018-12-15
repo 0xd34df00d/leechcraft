@@ -51,31 +51,17 @@ class QNetworkReply;
 class QFile;
 class QSortFilterProxyModel;
 class QToolBar;
-class IWebBrowser;
 
 namespace LeechCraft
 {
-namespace Util
-{
-	class ShortcutManager;
-}
-
 namespace Aggregator
 {
 	class ChannelsModel;
-	class JobHolderRepresentation;
-	class ChannelsFilterModel;
 	class PluginManager;
 
 	class Core : public QObject
 	{
 		Q_OBJECT
-
-		enum Columns
-		{
-			ColumnName = 0
-			, ColumnDate = 1
-		};
 
 		struct PendingOPML
 		{
@@ -94,7 +80,7 @@ namespace Aggregator
 			QString URL_;
 			QString Filename_;
 			QStringList Tags_;
-			boost::optional<Feed::FeedSettings> FeedSettings_;
+			std::optional<Feed::FeedSettings> FeedSettings_;
 		};
 		struct ExternalData
 		{
@@ -113,9 +99,7 @@ namespace Aggregator
 		ChannelsModel *ChannelsModel_ = nullptr;
 		QTimer *UpdateTimer_ = nullptr, *CustomUpdateTimer_ = nullptr;
 		std::shared_ptr<StorageBackend> StorageBackend_;
-		JobHolderRepresentation *JobHolderRepresentation_ = nullptr;
 		QMap<IDType_t, QDateTime> Updates_;
-		ChannelsFilterModel *ChannelsFilterModel_ = nullptr;
 		ICoreProxy_ptr Proxy_;
 		bool Initialized_ = false;
 
@@ -124,8 +108,6 @@ namespace Aggregator
 		PluginManager *PluginManager_ = nullptr;
 
 		std::shared_ptr<DBUpdateThread> DBUpThread_;
-
-		Util::ShortcutManager *ShortcutMgr_ = nullptr;
 
 		Core ();
 	private:
@@ -160,24 +142,11 @@ namespace Aggregator
 		bool ReinitStorage ();
 
 		void AddFeed (const QString&, const QString&);
-		void AddFeed (QString, const QStringList&, const boost::optional<Feed::FeedSettings>& = {});
+		void AddFeed (QString, const QStringList&, const std::optional<Feed::FeedSettings>& = {});
 		void RenameFeed (const QModelIndex& index, const QString& newName);
 
-		Util::ShortcutManager* GetShortcutManager () const;
-
-		/** Returns the channels model as it is.
-			*
-			* @sa GetRawChannelsModel
-			*/
 		ChannelsModel* GetRawChannelsModel () const;
 
-		/** Returns the filter model with the
-			* GetRawChannelsModel as a source.
-			*
-			* @sa GetRawChannelsModel.
-			*/
-		QSortFilterProxyModel* GetChannelsModel () const;
-		IWebBrowser* GetWebBrowser () const;
 		void MarkChannelAsRead (const QModelIndex&);
 		void MarkChannelAsUnread (const QModelIndex&);
 
@@ -189,32 +158,13 @@ namespace Aggregator
 		void SetTagsForIndex (const QString&, const QModelIndex&);
 		void UpdateFavicon (const QModelIndex&);
 
-		QStringList GetCategories (const QModelIndex&) const;
-		QStringList GetCategories (const items_shorts_t&) const;
+		void UpdateFeed (const IDType_t&);
+		void AddFromOPML (const QString&, const QString&, const QSet<QString>&);
 
-		void UpdateFeed (const QModelIndex&);
-		void AddFromOPML (const QString&,
-				const QString&,
-				const std::vector<bool>&);
-		void ExportToOPML (const QString&,
-				const QString&,
-				const QString&,
-				const QString&,
-				const std::vector<bool>&) const;
-		void ExportToBinary (const QString&,
-				const QString&,
-				const QString&,
-				const QString&,
-				const std::vector<bool>&) const;
-		JobHolderRepresentation* GetJobHolderRepresentation () const;
-
-		channels_shorts_t GetChannels () const;
 		void AddFeeds (const feeds_container_t&, const QString&);
 	public slots:
-		void openLink (const QString&);
 		void updateFeeds ();
 		void updateIntervalChanged ();
-		void handleSslError (QNetworkReply*);
 	private slots:
 		void fetchExternalFile (const QString&, const QString&);
 		void handleJobFinished (int);
@@ -224,19 +174,14 @@ namespace Aggregator
 		void rotateUpdatesQueue ();
 	private:
 		void FetchPixmap (const Channel&);
-		void FetchFavicon (const Channel&);
+		void FetchFavicon (IDType_t, const QString&);
 		void HandleExternalData (const QString&, const QFile&);
-		void HandleFeedAdded (const channels_container_t&,
-				const PendingJob&);
-		void HandleFeedUpdated (const channels_container_t&,
-				const PendingJob&);
+		void HandleFeedAdded (const channels_container_t&, const PendingJob&);
+		void HandleFeedUpdated (const channels_container_t&, const PendingJob&);
 		void MarkChannel (const QModelIndex&, bool);
-		void UpdateFeed (const IDType_t&);
 		void HandleProvider (QObject*, int);
 		void ErrorNotification (const QString&, const QString&, bool = true) const;
 	signals:
-		void storageChanged ();
-
 		// Plugin API
 		void hookGotNewItems (LeechCraft::IHookProxy_ptr proxy,
 				const QList<Item>& items);

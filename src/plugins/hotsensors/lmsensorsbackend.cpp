@@ -38,12 +38,12 @@ namespace HotSensors
 	struct StoredChipName
 	{
 		QByteArray Prefix_;
-		sensors_bus_id Bus_;
+		sensors_bus_id Bus_ = {};
 		int Addr_ = 0;
 		QByteArray Path_;
 
 		StoredChipName () = default;
-		StoredChipName (const sensors_chip_name*);
+		explicit StoredChipName (const sensors_chip_name*);
 
 		sensors_chip_name ToSensorsChip ();
 	};
@@ -91,18 +91,18 @@ namespace HotSensors
 	void LmSensorsBackend::EnumerateSensors ()
 	{
 		int nr = 0;
-		const sensors_chip_name *chipName = 0;
+		const sensors_chip_name *chipName = nullptr;
 		while ((chipName = sensors_get_detected_chips (nullptr, &nr)))
 		{
 			int fnr = 0;
-			const sensors_feature *feature = 0;
+			const sensors_feature *feature = nullptr;
 			while ((feature = sensors_get_features (chipName, &fnr)))
 			{
 				if (feature->type != SENSORS_FEATURE_TEMP)
 					continue;
 
 				int sfnr = 0;
-				const sensors_subfeature *subfeature = 0;
+				const sensors_subfeature *subfeature = nullptr;
 
 				StoredTemp temp
 				{
@@ -124,7 +124,7 @@ namespace HotSensors
 						sensors_get_value (chipName, subfeature->number, &temp.Crit_);
 						break;
 					case SENSORS_SUBFEATURE_TEMP_INPUT:
-						temp.SF_ = StoredSubfeature { { chipName }, subfeature->number };
+						temp.SF_ = StoredSubfeature { StoredChipName { chipName }, subfeature->number };
 						break;
 					default:
 						break;

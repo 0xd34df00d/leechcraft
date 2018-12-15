@@ -35,6 +35,7 @@
 #include <QSet>
 #include <QPointer>
 #include <interfaces/core/ihookproxy.h>
+#include <interfaces/imwproxy.h>
 
 class QMainWindow;
 class QDockWidget;
@@ -54,11 +55,11 @@ namespace LeechCraft
 
 		struct DockInfo
 		{
-			QWidget *Associated_;
-			MainWindow *Window_;
-			int Width_;
+			QWidget *Associated_ = nullptr;
+			MainWindow *Window_ = nullptr;
+			int Width_ = -1;
 
-			DockInfo ();
+			std::optional<QByteArray> SizeContext_ = {};
 		};
 		QHash<QDockWidget*, DockInfo> Dock2Info_;
 		QHash<QAction*, QDockWidget*> ToggleAct2Dock_;
@@ -68,7 +69,7 @@ namespace LeechCraft
 	public:
 		DockManager (RootWindowsManager*, QObject* = 0);
 
-		void AddDockWidget (QDockWidget*, Qt::DockWidgetArea);
+		void AddDockWidget (QDockWidget*, const IMWProxy::DockWidgetParams&);
 		void AssociateDockWidget (QDockWidget*, QWidget*);
 
 		void ToggleViewActionVisiblity (QDockWidget*, bool);
@@ -82,18 +83,16 @@ namespace LeechCraft
 	protected:
 		bool eventFilter (QObject*, QEvent*);
 	private:
+		void SetupDockAction (QDockWidget*);
+		void SetupSizing (QDockWidget*, const QByteArray&);
 		void HandleDockToggled (QDockWidget*, bool);
 	public slots:
 		void handleTabMove (int, int, int);
 	private slots:
-		void revertDockSizes (QPointer<QDockWidget>, int, int);
-
 		void handleDockDestroyed ();
-		void handleDockToggled (bool);
 		void handleTabChanged (QWidget*);
 
 		void handleWindow (int);
-		void handleWindowDestroyed ();
 	signals:
 		void hookDockWidgetActionVisToggled (LeechCraft::IHookProxy_ptr, QMainWindow*, QDockWidget*, bool);
 	};

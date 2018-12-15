@@ -175,8 +175,12 @@ namespace Aggregator
 			return Channels_.at (row).ChannelID_;
 		case ChannelRoles::FeedID:
 			return Channels_.at (row).FeedID_;
+		case ChannelRoles::RawTags:
+			return Channels_.at (row).Tags_;
 		case ChannelRoles::HumanReadableTags:
 			return Core::Instance ().GetProxy ()->GetTagsManager ()->GetTags (Channels_.at (row).Tags_);
+		case ChannelRoles::ChannelLink:
+			return Channels_.at (row).Link_;
 		default:
 			return {};
 		}
@@ -278,7 +282,7 @@ namespace Aggregator
 			return;
 
 		*pos = channel.ToShort ();
-		pos->Unread_ = StorageBackendManager::Instance ().MakeStorageBackendForThread ()->GetUnreadItems (cid);
+		pos->Unread_ = StorageBackendManager::Instance ().MakeStorageBackendForThread ()->GetUnreadItemsCount (cid);
 
 		const auto idx = pos - Channels_.begin ();
 		emit dataChanged (index (idx, 0), index (idx, 2));

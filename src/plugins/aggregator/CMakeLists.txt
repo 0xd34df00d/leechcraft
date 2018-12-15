@@ -57,6 +57,10 @@ set (SRCS
 	dumbstorage.cpp
 	storagebackendmanager.cpp
 	channelsmodelrepresentationproxy.cpp
+	exportutils.cpp
+	itemutils.cpp
+	channelutils.cpp
+	representationmanager.cpp
 	)
 set (FORMS
 	mainwidget.ui

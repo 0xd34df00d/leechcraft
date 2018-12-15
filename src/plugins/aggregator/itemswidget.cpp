@@ -49,6 +49,7 @@
 #include <util/util.h>
 #include <util/sll/overload.h>
 #include <interfaces/core/itagsmanager.h>
+#include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/ientitymanager.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
@@ -58,6 +59,7 @@
 #include "uistatepersist.h"
 #include "storagebackendmanager.h"
 #include "actionsstructs.h"
+#include "itemutils.h"
 
 namespace LeechCraft
 {
@@ -268,10 +270,9 @@ namespace Aggregator
 				&ItemsWidget::invalidateMergeMode);
 	}
 
-	void ItemsWidget::RegisterShortcuts ()
+	void ItemsWidget::RegisterShortcuts (Util::ShortcutManager *mgr)
 	{
-		auto mgr = Core::Instance ().GetShortcutManager ();
-		auto addAct = [this, mgr] (ItemsWidget::Action actId) -> void
+		auto addAct = [this, mgr] (ItemsWidget::Action actId)
 		{
 			auto act = GetAction (actId);
 			mgr->RegisterAction (act->objectName (), act);
@@ -455,9 +456,8 @@ namespace Aggregator
 
 	void ItemsWidget::MarkItemReadStatus (const QModelIndex& idx, bool read)
 	{
-		auto is = idx.data (ItemsListModel::ItemShortDescr).value<ItemShort> ();
-		is.Unread_ = !read;
-		StorageBackendManager::Instance ().MakeStorageBackendForThread ()->UpdateItem (is);
+		const auto& sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
+		sb->SetItemUnread (idx.data (ItemsListModel::ItemId).value<IDType_t> (), !read);
 	}
 
 	bool ItemsWidget::IsItemRead (int item) const
@@ -548,7 +548,7 @@ namespace Aggregator
 			return;
 
 		const auto& items = Impl_->CurrentItemsModel_->GetAllItems ();
-		const auto& allCategories = Core::Instance ().GetCategories (items);
+		const auto& allCategories = ItemUtils::GetCategories (items).toList ();
 		Impl_->ItemsFilterModel_->categorySelectionChanged (allCategories);
 
 		if (!allCategories.isEmpty ())
@@ -567,7 +567,9 @@ namespace Aggregator
 
 	void ItemsWidget::ConstructBrowser ()
 	{
-		Impl_->Ui_.ItemView_->Construct (Core::Instance ().GetWebBrowser ());
+		const auto proxy = Core::Instance ().GetProxy ();
+		const auto browser = proxy->GetPluginsManager ()->GetAllCastableTo<IWebBrowser*> ().value (0);
+		Impl_->Ui_.ItemView_->Construct (browser);
 		navBarVisibilityChanged ();
 	}
 

@@ -68,8 +68,8 @@ namespace Aggregator
 			QDomElement link = links.at (i).toElement ();
 			if (link.attribute ("rel") != "enclosure")
 				continue;
-	
-			Enclosure e (itemId);
+
+			auto e = Enclosure::CreateForItem (itemId);
 			e.URL_ = link.attribute ("href");
 			e.Type_ = link.attribute ("type");
 			e.Length_ = link.attribute ("length", "-1").toLongLong ();

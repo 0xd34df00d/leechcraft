@@ -39,16 +39,14 @@ namespace HotSensors
 
 	class LmSensorsBackend : public Backend
 	{
-		Q_OBJECT
-
 		QList<StoredTemp> Features_;
 	public:
-		LmSensorsBackend (QObject* = 0);
+		LmSensorsBackend (QObject* = nullptr);
 		~LmSensorsBackend ();
+
+		void update () override;
 	private:
 		void EnumerateSensors ();
-	public slots:
-		void update ();
 	};
 }
 }

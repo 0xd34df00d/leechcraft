@@ -34,6 +34,7 @@
 #include <QObject>
 #include <QtDebug>
 #include <util/sll/prelude.h>
+#include <util/sll/domchildrenrange.h>
 
 uint qHash (const QDomNode& node)
 {
@@ -113,21 +114,16 @@ namespace Aggregator
 
 	QString Parser::GetLink (const QDomElement& parent) const
 	{
-		QString result;
-		QDomElement link = parent.firstChildElement ("link");
-		while (!link.isNull ())
+		for (const auto& link : Util::DomChildren (parent, "link"))
 		{
-			if (!link.hasAttribute ("rel") || link.attribute ("rel") == "alternate")
-			{
-				if (!link.hasAttribute ("href"))
-					result = link.text ();
-				else
-					result = link.attribute ("href");
-				break;
-			}
-			link = link.nextSiblingElement ("link");
+			if (link.hasAttribute ("rel") && link.attribute ("rel") != "alternate")
+				continue;
+
+			return link.hasAttribute ("href") ?
+					link.attribute ("href") :
+					link.text ();
 		}
-		return result;
+		return {};
 	}
 
 	QString Parser::GetAuthor (const QDomElement& parent) const
@@ -261,7 +257,7 @@ namespace Aggregator
 		{
 			QDomElement link = nodes.at (i).toElement ();
 
-			Enclosure e (itemId);
+			auto e = Enclosure::CreateForItem (itemId);
 			e.URL_ = link.attributeNS (RDF_, "resource");
 			e.Type_ = link.attributeNS (Enc_, "type");
 			e.Length_ = link.attributeNS (Enc_, "length", "-1").toLongLong ();
@@ -413,7 +409,7 @@ namespace Aggregator
 					"content");
 			for (int i = 0; i < entries.size (); ++i)
 			{
-				MRSSEntry entry (ItemID_);
+				auto entry = MRSSEntry::CreateForItem (ItemID_);
 
 				QDomElement en = entries.at (i).toElement ();
 				ArbitraryLocatedData d = GetArbitraryLocatedDataFor (en, entry.MRSSEntryID_);
@@ -552,14 +548,11 @@ namespace Aggregator
 			for (int i = 0; i < thumbs.size (); ++i)
 			{
 				QDomElement thumbNode = thumbs.at (i).toElement ();
-				boost::optional<int> widthOpt = GetInt (thumbNode, "width");
-				int width = widthOpt ? *widthOpt : 0;
-				boost::optional<int> heightOpt = GetInt (thumbNode, "height");
-				int height = heightOpt ? *heightOpt : 0;
-				MRSSThumbnail thumb (mrssId);
+
+				auto thumb = MRSSThumbnail::CreateForEntry (mrssId);
 				thumb.URL_ = thumbNode.attribute ("url");
-				thumb.Width_ = width;
-				thumb.Height_ = height;
+				thumb.Width_ = GetInt (thumbNode, "width").value_or (0);
+				thumb.Height_ = GetInt (thumbNode, "height").value_or (0);
 				thumb.Time_ = thumbNode.attribute ("time");
 				result << thumb;
 			}
@@ -577,7 +570,7 @@ namespace Aggregator
 				QDomElement creditNode = credits.at (i).toElement ();
 				if (!creditNode.hasAttribute ("role"))
 					continue;
-				MRSSCredit credit (mrssId);
+				auto credit = MRSSCredit::CreateForEntry (mrssId);
 				credit.Role_ = creditNode.attribute ("role");
 				credit.Who_ = creditNode.text ();
 				result << credit;
@@ -598,7 +591,7 @@ namespace Aggregator
 						"comment");
 				for (int i = 0; i < comments.size (); ++i)
 				{
-					MRSSComment comment (mrssId);
+					auto comment = MRSSComment::CreateForEntry (mrssId);
 					comment.Type_ = QObject::tr ("Comments");
 					comment.Comment_ = comments.at (i).toElement ().text ();
 					result << comment;
@@ -614,7 +607,7 @@ namespace Aggregator
 						"response");
 				for (int i = 0; i < responses.size (); ++i)
 				{
-					MRSSComment comment (mrssId);
+					auto comment = MRSSComment::CreateForEntry (mrssId);
 					comment.Type_ = QObject::tr ("Responses");
 					comment.Comment_ = responses.at (i).toElement ().text ();
 					result << comment;
@@ -630,7 +623,7 @@ namespace Aggregator
 						"backLink");
 				for (int i = 0; i < backlinks.size (); ++i)
 				{
-					MRSSComment comment (mrssId);
+					auto comment = MRSSComment::CreateForEntry (mrssId);
 					comment.Type_ = QObject::tr ("Backlinks");
 					comment.Comment_ = backlinks.at (i).toElement ().text ();
 					result << comment;
@@ -648,7 +641,7 @@ namespace Aggregator
 			for (int i = 0; i < links.size (); ++i)
 			{
 				QDomElement linkNode = links.at (i).toElement ();
-				MRSSPeerLink pl (mrssId);
+				auto pl = MRSSPeerLink::CreateForEntry (mrssId);
 				pl.Link_ = linkNode.attribute ("href");
 				pl.Type_ = linkNode.attribute ("type");
 				result << pl;
@@ -669,7 +662,7 @@ namespace Aggregator
 				for (int i = 0; i < scenesNodes.size (); ++i)
 				{
 					QDomElement sceneNode = scenesNodes.at (i).toElement ();
-					MRSSScene scene (mrssId);
+					auto scene = MRSSScene::CreateForEntry (mrssId);
 					scene.Title_ = sceneNode.firstChildElement ("sceneTitle").text ();
 					scene.Description_ = sceneNode.firstChildElement ("sceneDescription").text ();
 					scene.StartTime_ = sceneNode.firstChildElement ("sceneStartTime").text ();

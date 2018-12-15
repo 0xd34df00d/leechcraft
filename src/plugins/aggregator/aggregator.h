@@ -44,18 +44,19 @@
 #include <interfaces/ipluginready.h>
 #include <interfaces/ihaverecoverabletabs.h>
 
-class QSystemTrayIcon;
-class QTranslator;
-class QToolBar;
-class IDownload;
-
 namespace LeechCraft
 {
+namespace Util
+{
+	class ShortcutManager;
+}
+
 namespace Aggregator
 {
-	struct Enclosure;
-
-	struct Aggregator_Impl;
+	class AggregatorTab;
+	class RepresentationManager;
+	struct AppWideActions;
+	struct ChannelActions;
 
 	class Aggregator : public QObject
 					 , public IInfo
@@ -83,7 +84,21 @@ namespace Aggregator
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Aggregator")
 
-		Aggregator_Impl *Impl_;
+		ICoreProxy_ptr Proxy_;
+		std::shared_ptr<AppWideActions> AppWideActions_;
+		std::shared_ptr<ChannelActions> ChannelActions_;
+
+		QMenu *ToolMenu_;
+
+		TabClassInfo TabInfo_;
+
+		std::shared_ptr<Util::XmlSettingsDialog> XmlSettingsDialog_;
+		std::shared_ptr<RepresentationManager> ReprManager_;
+		std::shared_ptr<AggregatorTab> AggregatorTab_;
+
+		Util::ShortcutManager *ShortcutMgr_ = nullptr;
+
+		bool InitFailed_ = false;
 	public:
 		void Init (ICoreProxy_ptr) override;
 		void SecondInit () override;
@@ -119,10 +134,8 @@ namespace Aggregator
 		void RecoverTabs (const QList<TabRecoverInfo>& infos) override;
 		bool HasSimilarTab (const QByteArray&, const QList<QByteArray>&) const override;
 	private:
-		bool IsRepr () const;
 		QModelIndex GetRelevantIndex () const;
 		QList<QModelIndex> GetRelevantIndexes () const;
-		void BuildID2ActionTupleMap ();
 
 		template<typename F>
 		void Perform (F&&);

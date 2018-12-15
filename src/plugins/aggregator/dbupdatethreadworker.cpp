@@ -29,7 +29,7 @@
 
 #include "dbupdatethreadworker.h"
 #include <stdexcept>
-#include <boost/optional.hpp>
+#include <optional>
 #include <QUrl>
 #include <QtDebug>
 #include <util/xpc/util.h>
@@ -195,6 +195,36 @@ namespace Aggregator
 		Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Aggregator", str, Priority::Info));
 	}
 
+	std::optional<IDType_t> DBUpdateThreadWorker::MatchChannel (const Channel& channel, IDType_t feedId,
+			const channels_container_t& allRemoteChannels) const
+	{
+		if (const auto directMatch = SB_->FindChannel (channel.Title_, channel.Link_, feedId))
+			return directMatch;
+
+		qDebug () << Q_FUNC_INFO
+				<< "unable to find a channel directly matching"
+				<< channel.Title_
+				<< channel.Link_
+				<< feedId;
+
+		const auto& allLocalChannels = SB_->GetChannels (feedId);
+		if (allLocalChannels.size () != 1 || allRemoteChannels.size () != 1)
+			return {};
+
+		auto localChannel = allLocalChannels.at (0);
+
+		qDebug () << "correcting local channel with params"
+				<< localChannel.Title_
+				<< localChannel.Link_;
+
+		localChannel.Title_ = channel.Title_;
+		localChannel.Link_ = channel.Link_;
+
+		SB_->UpdateChannel (localChannel);
+
+		return localChannel.ChannelID_;
+	}
+
 	void DBUpdateThreadWorker::toggleChannelUnread (IDType_t channel, bool state)
 	{
 		SB_->ToggleChannelUnread (channel, state);
@@ -202,8 +232,8 @@ namespace Aggregator
 
 	void DBUpdateThreadWorker::updateFeed (channels_container_t channels, QString url)
 	{
-		auto feedId = SB_->FindFeed (url);
-		if (feedId == static_cast<decltype (feedId)> (-1))
+		const auto maybeFeedId = SB_->FindFeed (url);
+		if (!maybeFeedId)
 		{
 			qWarning () << Q_FUNC_INFO
 				<< "skipping"
@@ -211,6 +241,7 @@ namespace Aggregator
 				<< "cause seems like it's not in storage yet";
 			return;
 		}
+		const auto feedId = *maybeFeedId;
 
 		const auto& feedSettings = GetFeedSettings (feedId);
 		const auto ipc = feedSettings.NumItems_;
@@ -218,15 +249,15 @@ namespace Aggregator
 
 		for (const auto& channel : channels)
 		{
-			const auto ourChannelID = SB_->FindChannel (channel->Title_, channel->Link_, feedId);
-			const auto& maybeOurChannel = SB_->GetChannel (ourChannelID);
-			if (!maybeOurChannel)
+			const auto maybeOurChannelID = MatchChannel (*channel, feedId, channels);
+			if (!maybeOurChannelID)
 			{
 				AddChannel (*channel);
 				continue;
 			}
 
-			const auto& ourChannel = *maybeOurChannel;
+			const auto ourChannelID = *maybeOurChannelID;
+			const auto& ourChannel = SB_->GetChannel (ourChannelID);
 
 			int newItems = 0;
 			int updatedItems = 0;
@@ -235,14 +266,14 @@ namespace Aggregator
 			{
 				auto& item = *itemPtr;
 
-				auto mkLazy = [] (auto&& f) { return Util::MakeLazyF<boost::optional<IDType_t>> (f); };
+				auto mkLazy = [] (auto&& f) { return Util::MakeLazyF<std::optional<IDType_t>> (f); };
 				const auto& ourItemID = Util::Msum ({
 							mkLazy ([&] { return SB_->FindItem (item.Title_, item.Link_, ourChannel.ChannelID_); }),
 							mkLazy ([&] { return SB_->FindItemByLink (item.Link_, ourChannel.ChannelID_); }),
 							mkLazy ([&]
 									{
 										if (!item.Link_.isEmpty ())
-											return boost::optional<IDType_t> {};
+											return std::optional<IDType_t> {};
 
 										return SB_->FindItemByTitle (item.Title_, ourChannel.ChannelID_);
 									})

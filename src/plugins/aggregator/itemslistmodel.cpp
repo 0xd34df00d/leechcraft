@@ -91,12 +91,11 @@ namespace Aggregator
 		if (!index.isValid ())
 			return;
 
-		auto item = CurrentItems_ [CurrentRow_];
+		const auto& item = CurrentItems_ [CurrentRow_];
 		if (!item.Unread_)
 			return;
 
-		item.Unread_ = false;
-		GetSB ()->UpdateItem (item);
+		GetSB ()->SetItemUnread (item.ItemID_, false);
 	}
 
 	const ItemShort& ItemsListModel::GetItem (const QModelIndex& index) const

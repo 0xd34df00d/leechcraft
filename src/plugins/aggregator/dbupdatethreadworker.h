@@ -61,6 +61,8 @@ namespace Aggregator
 		bool AddItem (Item& item, const Channel& channel, const Feed::FeedSettings& settings);
 		bool UpdateItem (const Item& item, Item ourItem);
 		void NotifyUpdates (int newItems, int updatedItems, const Channel_ptr& channel);
+
+		std::optional<IDType_t> MatchChannel (const Channel&, IDType_t, const channels_container_t&) const;
 	public slots:
 		void toggleChannelUnread (IDType_t channel, bool state);
 		void updateFeed (channels_container_t channels, QString url);

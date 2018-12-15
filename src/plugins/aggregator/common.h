@@ -63,7 +63,9 @@ namespace Aggregator
 		UnreadCount = LeechCraft::RoleMAX + 1,
 		ChannelID,
 		FeedID,
-		HumanReadableTags
+		RawTags,
+		HumanReadableTags,
+		ChannelLink
 	};
 }
 }

@@ -28,37 +28,48 @@
  **********************************************************************/
 
 #include "feedsettings.h"
+#include <QDesktopServices>
+#include <util/tags/tagscompleter.h>
 #include <util/tags/tagscompletionmodel.h>
 #include <util/sll/functor.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
+#include <interfaces/core/ipluginsmanager.h>
+#include <interfaces/iwebbrowser.h>
 #include "storagebackendmanager.h"
 #include "storagebackend.h"
 #include "core.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
 namespace Aggregator
 {
-	FeedSettings::FeedSettings (const QModelIndex& mapped, QWidget *parent)
+	FeedSettings::FeedSettings (const QModelIndex& mapped, const ICoreProxy_ptr& proxy, QWidget *parent)
 	: QDialog (parent)
 	, Index_ (mapped)
 	{
 		Ui_.setupUi (this);
 
-		ChannelTagsCompleter_.reset (new Util::TagsCompleter (Ui_.ChannelTags_));
+		ChannelTagsCompleter_ = std::make_shared<Util::TagsCompleter> (Ui_.ChannelTags_);
 		Ui_.ChannelTags_->AddSelector ();
 
 		connect (Ui_.ChannelLink_,
 				&QLabel::linkActivated,
-				&Core::Instance (),
-				&Core::openLink);
+				[proxy] (const QString& url)
+				{
+					const auto browser = proxy->GetPluginsManager ()->GetAllCastableTo<IWebBrowser*> ().value (0);
+					if (!browser || XmlSettingsManager::Instance ()->property ("AlwaysUseExternalBrowser").toBool ())
+						QDesktopServices::openUrl ({ url });
+					else
+						browser->Open (url);
+				});
 
 		const auto& tags = Index_.data (ChannelRoles::HumanReadableTags).toStringList ();
-		Ui_.ChannelTags_->setText (Core::Instance ().GetProxy ()->GetTagsManager ()->Join (tags));
+		Ui_.ChannelTags_->setText (proxy->GetTagsManager ()->Join (tags));
 
 		using Util::operator*;
-		const auto feedId = Core::Instance ().GetChannelInfo (Index_).FeedID_;
+		const auto feedId = Index_.data (ChannelRoles::FeedID).value<IDType_t> ();
 		[&] (auto&& settings)
 		{
 			Ui_.UpdateInterval_->setValue (settings.UpdateTimeout_);
@@ -116,7 +127,7 @@ namespace Aggregator
 		Core::Instance ().SetTagsForIndex (tags, Index_);
 
 		StorageBackendManager::Instance ().MakeStorageBackendForThread ()->SetFeedSettings ({
-				Core::Instance ().GetChannelInfo (Index_).FeedID_,
+				Index_.data (ChannelRoles::FeedID).value<IDType_t> (),
 				Ui_.UpdateInterval_->value (),
 				Ui_.NumItems_->value (),
 				Ui_.ItemAge_->value (),

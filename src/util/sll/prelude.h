@@ -197,7 +197,8 @@ namespace Util
 	{
 		std::decay_t<decltype (*containers.begin ())> result;
 		for (const auto& cont : containers)
-			std::copy (cont.begin (), cont.end (), std::back_inserter (result));
+			for (const auto& item : cont)
+				detail::Append (result, item);
 		return result;
 	}
 
@@ -246,7 +247,7 @@ namespace Util
 		return std::move (cont);
 	}
 
-	const auto Id = [] (const auto& t) { return t; };
+	const auto Id = [] (auto&& t) ->decltype (auto) { return std::forward<decltype (t)> (t); };
 
 	template<typename R>
 	auto ComparingBy (R r)

@@ -54,20 +54,24 @@ public:
 
 	virtual ~IMWProxy () {}
 
-	/** @brief Adds the given dock widget to the given area.
-	 *
-	 * This function merely calls QMainWindow::addDockWidget().
+	struct DockWidgetParams
+	{
+		Qt::DockWidgetArea Area_ = Qt::NoDockWidgetArea;
+		std::optional<QByteArray> SizeContext_ = {};
+	};
+
+	/** @brief Adds the given dock widget to the main window
 	 *
 	 * The action for toggling the visibility of this dock widget is
 	 * also added to the corresponding menus by default. The
 	 * ToggleViewActionVisiblity() method could be used to change that.
 	 *
-	 * @param[in] area The area to add widget to.
 	 * @param[in] widget The dock widget to add.
+	 * @param[in] params The parameters of the newly added dock widget.
 	 *
 	 * @sa AssociateDockWidget(), ToggleViewActionVisiblity()
 	 */
-	virtual void AddDockWidget (Qt::DockWidgetArea area, QDockWidget *widget) = 0;
+	virtual void AddDockWidget (QDockWidget *widget, const DockWidgetParams& params) = 0;
 
 	/** @brief Connects the given dock widget with the given tab.
 	 *
@@ -124,23 +128,6 @@ public:
 	 * @param[in] seq The widget's visibility action shortcut sequence.
 	 */
 	virtual void SetViewActionShortcut (QDockWidget *widget, const QKeySequence& seq) = 0;
-
-	/** @brief Adds the given toolbar at the given area.
-	 *
-	 * If the toolbar is already added, it will be just moved to the
-	 * area.
-	 *
-	 * @param[in] toolbar The toolbar to add.
-	 * @param[in] area The area where the toolbar should be added.
-	 */
-	virtual void AddToolbar (QToolBar *toolbar, Qt::ToolBarArea area = Qt::TopToolBarArea) = 0;
-
-	/** @brief Adds the given widget at the given area.
-	 *
-	 * @param[in] widget The widget to add.
-	 * @param[in] area The area where the widget should be added.
-	 */
-	virtual void AddSideWidget (QWidget *widget, WidgetArea area = WALeft) = 0;
 
 	/** @brief Toggles the visibility of the main window.
 	 */

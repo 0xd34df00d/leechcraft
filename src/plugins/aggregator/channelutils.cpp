@@ -27,37 +27,23 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
+#include "channelutils.h"
+#include "storagebackendmanager.h"
+#include "storagebackend.h"
 
-#include <memory>
-#include <QDialog>
-#include <QModelIndex>
-#include <interfaces/core/icoreproxyfwd.h>
-#include "ui_feedsettings.h"
-#include "common.h"
-
-namespace LeechCraft
+namespace LeechCraft::Aggregator::ChannelUtils
 {
-namespace Util
-{
-	class TagsCompleter;
-}
-
-namespace Aggregator
-{
-	class FeedSettings : public QDialog
+	channels_shorts_t GetAllChannels ()
 	{
-		Q_OBJECT
+		channels_shorts_t result;
 
-		Ui::FeedSettings Ui_;
-		std::shared_ptr<Util::TagsCompleter> ChannelTagsCompleter_;
-		QModelIndex Index_;
-	public:
-		explicit FeedSettings (const QModelIndex&, const ICoreProxy_ptr&, QWidget* = nullptr);
-	public slots:
-		void accept () override;
-	private slots:
-		void on_UpdateFavicon__released ();
-	};
-}
+		const auto& sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
+		for (const auto id : sb->GetFeedsIDs ())
+		{
+			auto feedChannels = sb->GetChannels (id);
+			std::move (feedChannels.begin (), feedChannels.end (), std::back_inserter (result));
+		}
+
+		return result;
+	}
 }

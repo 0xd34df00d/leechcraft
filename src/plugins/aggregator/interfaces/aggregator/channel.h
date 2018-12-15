@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AGGREGATOR_INTERFACES_AGGREGATOR_CHANNEL_H
-#define PLUGINS_AGGREGATOR_INTERFACES_AGGREGATOR_CHANNEL_H
+#pragma once
+
 #include <memory>
 #include <vector>
 #include <QString>
@@ -45,8 +45,8 @@ namespace Aggregator
 {
 	struct ChannelShort
 	{
-		IDType_t ChannelID_;
-		IDType_t FeedID_;
+		IDType_t ChannelID_ = IDNotFound;
+		IDType_t FeedID_ = IDNotFound;
 		QString Author_;
 		QString Title_;
 		QString DisplayTitle_;
@@ -54,13 +54,13 @@ namespace Aggregator
 		QStringList Tags_;
 		QDateTime LastBuild_;
 		QImage Favicon_;
-		int Unread_;
+		int Unread_ = 0;
 	};
 
 	struct Channel
 	{
-		IDType_t ChannelID_;
-		IDType_t FeedID_;
+		IDType_t ChannelID_ = IDNotFound;
+		IDType_t FeedID_ = IDNotFound;
 		QString Title_;
 		QString DisplayTitle_;
 		QString Link_;
@@ -74,14 +74,9 @@ namespace Aggregator
 		QImage Favicon_;
 		items_container_t Items_;
 
-		Channel () : Channel { IDNotFound, IDNotFound } {}
-		Channel (const IDType_t& feedId);
-		Channel (const IDType_t& feedId, const IDType_t& channelId);
-		Channel (const Channel&);
-		Channel& operator= (const Channel&);
+		static Channel CreateForFeed (IDType_t feedId);
 
 		int CountUnreadItems () const;
-		void Equalify (const Channel&);
 		ChannelShort ToShort () const;
 	};
 
@@ -103,5 +98,3 @@ Q_DECLARE_METATYPE (LeechCraft::Aggregator::ChannelShort)
 Q_DECLARE_METATYPE (LeechCraft::Aggregator::Channel)
 Q_DECLARE_METATYPE (LeechCraft::Aggregator::Channel_ptr)
 Q_DECLARE_METATYPE (LeechCraft::Aggregator::channels_container_t)
-
-#endif

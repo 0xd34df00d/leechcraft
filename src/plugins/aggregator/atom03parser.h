@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AGGREGATOR_ATOM03PARSER_H
-#define PLUGINS_AGGREGATOR_ATOM03PARSER_H
+#pragma once
+
 #include <QPair>
 #include <QDateTime>
 #include "atomparser.h"
@@ -39,17 +39,13 @@ namespace Aggregator
 {
 	class Atom03Parser : public AtomParser
 	{
-		Atom03Parser ();
+		Atom03Parser () = default;
 	public:
 		static Atom03Parser& Instance ();
-		virtual bool CouldParse (const QDomDocument&) const;
+		bool CouldParse (const QDomDocument&) const override;
 	private:
-		channels_container_t Parse (const QDomDocument&,
-				const IDType_t&) const;
-		Item* ParseItem (const QDomElement&,
-				const IDType_t&) const;
+		channels_container_t Parse (const QDomDocument&, const IDType_t&) const override;
+		Item_ptr ParseItem (const QDomElement&, const IDType_t&) const;
 	};
 }
 }
-
-#endif

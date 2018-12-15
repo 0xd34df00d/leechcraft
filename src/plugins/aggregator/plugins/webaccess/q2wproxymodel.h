@@ -32,11 +32,7 @@
 #include <memory>
 #include <QObject>
 #include <QMap>
-
-#ifndef Q_MOC_RUN // see https://bugreports.qt-project.org/browse/QTBUG-22829
 #include <WAbstractItemModel.h>
-#endif
-
 #include <util/models/modelitem.h>
 #include "serverupdater.h"
 

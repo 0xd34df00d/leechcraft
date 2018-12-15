@@ -27,64 +27,56 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "mwproxy.h"
-#include <QDockWidget>
-#include <QToolBar>
+#include "representationmanager.h"
+#include "jobholderrepresentation.h"
+#include "itemswidget.h"
+#include "channelsmodelrepresentationproxy.h"
+#include "channelsmodel.h"
+#include "actionsstructs.h"
 #include "core.h"
-#include "mainwindow.h"
-#include "dockmanager.h"
 
-namespace LeechCraft
+namespace LeechCraft::Aggregator
 {
-	MWProxy::MWProxy (MainWindow *win, QObject *parent)
-	: QObject (parent)
-	, Win_ (win)
+	RepresentationManager::RepresentationManager (const InitParams& params)
 	{
+		JobHolderRepresentation_ = new JobHolderRepresentation ();
+		JobHolderRepresentation_->setSourceModel (Core::Instance ().GetRawChannelsModel ());
+
+		ReprWidget_ = new ItemsWidget;
+		ReprWidget_->SetChannelsFilter (JobHolderRepresentation_);
+		ReprWidget_->RegisterShortcuts (params.ShortcutMgr_);
+		ReprWidget_->SetAppWideActions (params.AppWideActions_);
+		ReprWidget_->SetChannelActions (params.ChannelActions_);
+
+		ReprModel_ = new ChannelsModelRepresentationProxy { this };
+		ReprModel_->setSourceModel (JobHolderRepresentation_);
+		ReprModel_->SetWidgets (ReprWidget_->GetToolBar (), ReprWidget_);
+		ReprModel_->SetMenu (CreateFeedsContextMenu (params.ChannelActions_, params.AppWideActions_));
+
+		ReprWidget_->ConstructBrowser ();
 	}
 
-	void MWProxy::AddDockWidget (QDockWidget *w, const DockWidgetParams& params)
+	QAbstractItemModel* RepresentationManager::GetRepresentation () const
 	{
-		Core::Instance ().GetDockManager ()->AddDockWidget (w, params);
-		ToggleViewActionVisiblity (w, true);
+		return ReprModel_;
 	}
 
-	void MWProxy::AssociateDockWidget (QDockWidget *dock, QWidget *tab)
+	void RepresentationManager::HandleRowChanged (const QModelIndex& index)
 	{
-		Core::Instance ().GetDockManager ()->AssociateDockWidget (dock, tab);
+		auto si = Core::Instance ().GetProxy ()->MapToSource (index);
+		if (si.model () != GetRepresentation ())
+			si = {};
+		si = ReprModel_->mapToSource (si);
+		si = JobHolderRepresentation_->SelectionChanged (si);
+		SelectedRepr_ = si;
+		ReprWidget_->CurrentChannelChanged (si);
 	}
 
-	void MWProxy::SetDockWidgetVisibility (QDockWidget *dock, bool visible)
+	std::optional<QModelIndex> RepresentationManager::GetRelevantIndex () const
 	{
-		Core::Instance ().GetDockManager ()->SetDockWidgetVisibility (dock, visible);
-	}
+		if (!ReprWidget_->isVisible ())
+			return {};
 
-	void MWProxy::ToggleViewActionVisiblity (QDockWidget *w, bool visible)
-	{
-		Core::Instance ().GetDockManager ()->ToggleViewActionVisiblity (w, visible);
-	}
-
-	void MWProxy::SetViewActionShortcut (QDockWidget *w, const QKeySequence& seq)
-	{
-		w->toggleViewAction ()->setShortcut (seq);
-	}
-
-	void MWProxy::ToggleVisibility ()
-	{
-		Win_->showHideMain ();
-	}
-
-	void MWProxy::ShowMain ()
-	{
-		Win_->showMain ();
-	}
-
-	QMenu* MWProxy::GetMainMenu ()
-	{
-		return Win_->GetMainMenu ();
-	}
-
-	void MWProxy::HideMainMenu ()
-	{
-		Win_->HideMainMenu ();
+		return JobHolderRepresentation_->mapToSource (SelectedRepr_);
 	}
 }

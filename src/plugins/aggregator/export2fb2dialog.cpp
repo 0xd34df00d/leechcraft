@@ -47,6 +47,7 @@
 #include "core.h"
 #include "channelsmodel.h"
 #include "storagebackendmanager.h"
+#include "itemutils.h"
 
 namespace LeechCraft
 {
@@ -202,7 +203,7 @@ namespace Aggregator
 				w.writeEndElement ();
 				w.writeTextElement ("annotation",
 						Export2FB2Dialog::tr ("%n unread item(s)", "", cs.Unread_));
-				for (const auto item : items)
+				for (const auto& item : items)
 				{
 					w.writeStartElement ("title");
 						w.writeStartElement ("p");
@@ -469,7 +470,7 @@ namespace Aggregator
 
 	void Export2FB2Dialog::on_File__textChanged (const QString& name)
 	{
-		Ui_.ButtonBox_->button (QDialogButtonBox::Ok)->setEnabled (name.size ());
+		Ui_.ButtonBox_->button (QDialogButtonBox::Ok)->setEnabled (!name.isEmpty ());
 	}
 
 	void Export2FB2Dialog::on_Name__textEdited ()
@@ -479,25 +480,22 @@ namespace Aggregator
 
 	namespace
 	{
-		QStringList CatsFromIndexes (const QItemSelection& selection)
+		QStringList CatsFromIndexes (const QList<QModelIndex>& indices)
 		{
-			auto result = Util::ConcatMap (selection.indexes (),
-					[] (const QModelIndex& index) { return Core::Instance ().GetCategories (index); });
-			result.removeDuplicates ();
-			return result;
+			const auto& sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
+
+			return Util::ConcatMap (indices,
+					[&sb] (const QModelIndex& index)
+					{
+						const auto channelId = index.data (ChannelRoles::ChannelID).value<IDType_t> ();
+						return ItemUtils::GetCategories (sb->GetItems (channelId));
+					}).toList ();
 		}
 	}
 
-	void Export2FB2Dialog::handleChannelsSelectionChanged (const QItemSelection& selected,
-			const QItemSelection& deselected)
+	void Export2FB2Dialog::handleChannelsSelectionChanged ()
 	{
-		for (const auto& removed : CatsFromIndexes (deselected))
-			CurrentCategories_.removeAll (removed);
-
-		CurrentCategories_ += CatsFromIndexes (selected);
-		CurrentCategories_.removeDuplicates ();
-
-		Selector_->setPossibleSelections (CurrentCategories_);
+		Selector_->setPossibleSelections (CatsFromIndexes (Ui_.ChannelsTree_->selectionModel ()->selectedRows ()));
 		Selector_->selectAll ();
 
 		if (!HasBeenTextModified_ &&
@@ -524,22 +522,22 @@ namespace Aggregator
 
 			const auto& items = sb->GetItems (cs.ChannelID_);
 
-			for (auto i = items.begin (), end = items.end (); i != end; ++i)
+			for (const auto& item : items)
 			{
 				if (unreadOnly &&
-						!i->Unread_)
+						!item.Unread_)
 					continue;
 
-				if (!i->Categories_.isEmpty ())
+				if (!item.Categories_.isEmpty ())
 				{
 					const auto suitable = std::any_of (categories.begin (), categories.end (),
-							[&i] (const QString& cat) { return i->Categories_.contains (cat); });
+							[&item] (const QString& cat) { return item.Categories_.contains (cat); });
 					if (!suitable)
 						continue;
 				}
 
-				if (const auto& item = sb->GetItem (i->ItemID_))
-					items2write [cs].prepend (*item);
+				if (const auto& fullItem = sb->GetItem (item.ItemID_))
+					items2write [cs].prepend (*fullItem);
 			}
 		}
 

@@ -38,24 +38,33 @@
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "uistatepersist.h"
+#include "channelsmodel.h"
+#include "channelsfiltermodel.h"
 
 namespace LeechCraft
 {
 namespace Aggregator
 {
 	AggregatorTab::AggregatorTab (const AppWideActions& appWideActions,
-			const ChannelActions& channelActions, const TabClassInfo& tc, QObject *plugin)
+			const std::shared_ptr<const ChannelActions>& channelActions,
+			const TabClassInfo& tc,
+			Util::ShortcutManager *shortcutMgr,
+			QObject *plugin)
 	: TabClass_ { tc }
 	, ParentPlugin_ { plugin }
 	, ChannelActions_ { channelActions }
 	, FlatToFolders_ { std::make_shared<Util::FlatToFoldersProxyModel> () }
+	, ChannelsFilterModel_ { new ChannelsFilterModel { this } }
 	{
+		ChannelsFilterModel_->setSourceModel (Core::Instance ().GetRawChannelsModel ());
+		ChannelsFilterModel_->setFilterKeyColumn (0);
+
 		Ui_.setupUi (this);
 		Ui_.ItemsWidget_->SetAppWideActions (appWideActions);
-		Ui_.ItemsWidget_->SetChannelActions (channelActions);
-		Ui_.ItemsWidget_->RegisterShortcuts ();
+		Ui_.ItemsWidget_->SetChannelActions (*channelActions);
+		Ui_.ItemsWidget_->RegisterShortcuts (shortcutMgr);
 
-		Ui_.ItemsWidget_->SetChannelsFilter (Core::Instance ().GetChannelsModel ());
+		Ui_.ItemsWidget_->SetChannelsFilter (ChannelsFilterModel_);
 
 		connect (Ui_.ItemsWidget_,
 				&ItemsWidget::movedToChannel,
@@ -64,16 +73,16 @@ namespace Aggregator
 
 		Ui_.MergeItems_->setChecked (XmlSettingsManager::Instance ()->Property ("MergeItems", false).toBool ());
 
-		Ui_.Feeds_->addAction (channelActions.ActionMarkChannelAsRead_);
-		Ui_.Feeds_->addAction (channelActions.ActionMarkChannelAsUnread_);
+		Ui_.Feeds_->addAction (channelActions->ActionMarkChannelAsRead_);
+		Ui_.Feeds_->addAction (channelActions->ActionMarkChannelAsUnread_);
 		Ui_.Feeds_->addAction (Util::CreateSeparator (Ui_.Feeds_));
-		Ui_.Feeds_->addAction (channelActions.ActionRemoveFeed_);
-		Ui_.Feeds_->addAction (channelActions.ActionUpdateSelectedFeed_);
-		Ui_.Feeds_->addAction (channelActions.ActionRenameFeed_);
+		Ui_.Feeds_->addAction (channelActions->ActionRemoveFeed_);
+		Ui_.Feeds_->addAction (channelActions->ActionUpdateSelectedFeed_);
+		Ui_.Feeds_->addAction (channelActions->ActionRenameFeed_);
 		Ui_.Feeds_->addAction (Util::CreateSeparator (Ui_.Feeds_));
-		Ui_.Feeds_->addAction (channelActions.ActionRemoveChannel_);
+		Ui_.Feeds_->addAction (channelActions->ActionRemoveChannel_);
 		Ui_.Feeds_->addAction (Util::CreateSeparator (Ui_.Feeds_));
-		Ui_.Feeds_->addAction (channelActions.ActionChannelSettings_);
+		Ui_.Feeds_->addAction (channelActions->ActionChannelSettings_);
 		Ui_.Feeds_->addAction (Util::CreateSeparator (Ui_.Feeds_));
 		Ui_.Feeds_->addAction (appWideActions.ActionAddFeed_);
 
@@ -91,7 +100,7 @@ namespace Aggregator
 
 		connect (Ui_.TagsLine_,
 				&QLineEdit::textChanged,
-				Core::Instance ().GetChannelsModel (),
+				ChannelsFilterModel_,
 				&QSortFilterProxyModel::setFilterFixedString);
 
 		new Util::TagsCompleter (Ui_.TagsLine_);
@@ -162,7 +171,7 @@ namespace Aggregator
 		auto index = Ui_.Feeds_->selectionModel ()->currentIndex ();
 		if (FlatToFolders_->GetSourceModel ())
 			index = FlatToFolders_->MapToSource (index);
-		return Core::Instance ().GetChannelsModel ()->mapToSource (index);
+		return ChannelsFilterModel_->mapToSource (index);
 	}
 
 	QList<QModelIndex> AggregatorTab::GetRelevantIndexes () const
@@ -172,7 +181,7 @@ namespace Aggregator
 				{
 					if (FlatToFolders_->GetSourceModel ())
 						index = FlatToFolders_->MapToSource (index);
-					return Core::Instance ().GetChannelsModel ()->mapToSource (index);
+					return ChannelsFilterModel_->mapToSource (index);
 				});
 		rawList.removeAll ({});
 		return rawList;
@@ -256,12 +265,14 @@ namespace Aggregator
 	void AggregatorTab::handleFeedsContextMenuRequested (const QPoint& pos)
 	{
 		bool enable = Ui_.Feeds_->indexAt (pos).isValid ();
-		QList<QAction*> toToggle;
-		toToggle << ChannelActions_.ActionMarkChannelAsRead_
-				<< ChannelActions_.ActionMarkChannelAsUnread_
-				<< ChannelActions_.ActionRemoveFeed_
-				<< ChannelActions_.ActionChannelSettings_
-				<< ChannelActions_.ActionUpdateSelectedFeed_;
+		const QList<QAction*> toToggle
+		{
+			ChannelActions_->ActionMarkChannelAsRead_,
+			ChannelActions_->ActionMarkChannelAsUnread_,
+			ChannelActions_->ActionRemoveFeed_,
+			ChannelActions_->ActionChannelSettings_,
+			ChannelActions_->ActionUpdateSelectedFeed_
+		};
 
 		for (const auto act : toToggle)
 			act->setEnabled (enable);
@@ -292,13 +303,13 @@ namespace Aggregator
 	{
 		if (XmlSettingsManager::Instance ()->property ("GroupChannelsByTags").toBool ())
 		{
-			FlatToFolders_->SetSourceModel (Core::Instance ().GetChannelsModel ());
+			FlatToFolders_->SetSourceModel (ChannelsFilterModel_);
 			Ui_.Feeds_->setModel (FlatToFolders_.get ());
 		}
 		else
 		{
-			FlatToFolders_->SetSourceModel (0);
-			Ui_.Feeds_->setModel (Core::Instance ().GetChannelsModel ());
+			FlatToFolders_->SetSourceModel (nullptr);
+			Ui_.Feeds_->setModel (ChannelsFilterModel_);
 		}
 		connect (Ui_.Feeds_->selectionModel (),
 				&QItemSelectionModel::currentChanged,

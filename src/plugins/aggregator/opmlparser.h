@@ -27,12 +27,13 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AGGREGATOR_OPMLPARSER_H
-#define PLUGINS_AGGREGATOR_OPMLPARSER_H
-#include <vector>
+#pragma once
+
+#include <QList>
 #include <QHash>
 #include <QString>
 #include <QDomDocument>
+#include <util/sll/eitherfwd.h>
 #include "opmlitem.h"
 
 class QDomElement;
@@ -44,24 +45,26 @@ namespace Aggregator
 	class OPMLParser
 	{
 	public:
-		typedef std::vector<OPMLItem> items_container_t;
+		typedef QList<OPMLItem> items_container_t;
 		typedef QHash<QString, QString> OPMLinfo_t;
 	private:
-		mutable items_container_t Items_;
-		mutable bool CacheValid_;
-		QDomDocument Document_;
+		items_container_t Items_;
+		bool CacheValid_ = false;
+		const QDomDocument Document_;
 	public:
 		OPMLParser (const QDomDocument&);
 
-		void Reset (const QDomDocument&);
-		bool IsValid () const;
-		OPMLinfo_t GetInfo () const;
-		items_container_t Parse () const;
+		bool IsValid ();
+		OPMLinfo_t GetInfo ();
+		items_container_t Parse ();
 	private:
-		void ParseOutline (const QDomElement&,
-				QStringList = QStringList ()) const;
+		void ParseOutline (const QDomElement&, QStringList = {});
 	};
-}
-}
 
-#endif
+	using OPMLParseResult_t = Util::Either<QString, OPMLParser>;
+	OPMLParseResult_t ParseOPML (const QString& filename);
+
+	using OPMLItemsResult_t = Util::Either<QString, QList<OPMLItem>>;
+	OPMLItemsResult_t ParseOPMLItems (const QString& filename);
+}
+}

@@ -27,37 +27,17 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
+#include "itemutils.h"
 
-#include <memory>
-#include <QDialog>
-#include <QModelIndex>
-#include <interfaces/core/icoreproxyfwd.h>
-#include "ui_feedsettings.h"
-#include "common.h"
-
-namespace LeechCraft
+namespace LeechCraft::Aggregator::ItemUtils
 {
-namespace Util
-{
-	class TagsCompleter;
-}
-
-namespace Aggregator
-{
-	class FeedSettings : public QDialog
+	QSet<QString> GetCategories (const items_shorts_t& items)
 	{
-		Q_OBJECT
+		QSet<QString> unique;
+		for (const auto& item : items)
+			for (const auto& category : item.Categories_)
+				unique << category;
 
-		Ui::FeedSettings Ui_;
-		std::shared_ptr<Util::TagsCompleter> ChannelTagsCompleter_;
-		QModelIndex Index_;
-	public:
-		explicit FeedSettings (const QModelIndex&, const ICoreProxy_ptr&, QWidget* = nullptr);
-	public slots:
-		void accept () override;
-	private slots:
-		void on_UpdateFavicon__released ();
-	};
-}
+		return unique;
+	}
 }
