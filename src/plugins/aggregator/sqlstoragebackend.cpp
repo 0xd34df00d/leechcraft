@@ -823,12 +823,6 @@ namespace LeechCraft::Aggregator
 		}
 	}
 
-	void SQLStorageBackend::UpdateChannel (const Channel& channel)
-	{
-		Channels_->Insert (ChannelR::FromOrig (channel), oral::InsertAction::Replace::PKey<ChannelR>);
-		emit channelDataUpdated (channel);
-	}
-
 	void SQLStorageBackend::UpdateChannel (const ChannelShort& channel)
 	{
 		Channels_->Update ((sph::f<&ChannelR::LastBuild_> = channel.LastBuild_,

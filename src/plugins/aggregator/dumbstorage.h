@@ -66,7 +66,6 @@ namespace Aggregator
 		void AddFeed (const Feed&) override {}
 		void AddChannel (const Channel&) override {}
 		void AddItem (const Item&) override {}
-		void UpdateChannel (const Channel&) override {}
 		void UpdateChannel (const ChannelShort&) override {}
 		void UpdateItem (const Item&) override {}
 		void SetItemUnread (IDType_t, bool) override {}

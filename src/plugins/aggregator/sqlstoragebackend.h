@@ -109,7 +109,6 @@ namespace Aggregator
 		items_container_t GetFullItems (IDType_t) const override;
 
 		void AddFeed (const Feed&) override;
-		void UpdateChannel (const Channel&) override;
 		void UpdateChannel (const ChannelShort&) override;
 		void UpdateItem (const Item&) override;
 		void SetItemUnread (IDType_t, bool) override;

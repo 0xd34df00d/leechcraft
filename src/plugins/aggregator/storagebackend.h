@@ -311,20 +311,6 @@ namespace Aggregator
 
 		/** @brief Updates an already existing channel.
 		 *
-		 * If the specified channel doesn't exist in the storage, it should
-		 * be inserted to the storage, so this function should behave like
-		 * AddChannel() in this case.
-		 *
-		 * This function would emit channelDataUpdated() signal after it
-		 * finishes.
-		 *
-		 * @param[in] channel Pointer to the new version of the channel
-		 * that should be updated.
-		 */
-		virtual void UpdateChannel (const Channel& channel) = 0;
-
-		/** @brief Updates an already existing channel.
-		 *
 		 * This is an overloaded function provided for convenience.
 		 *
 		 * @param[in] channel Short information about channel.
