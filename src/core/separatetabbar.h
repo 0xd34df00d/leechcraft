@@ -45,7 +45,6 @@ namespace LeechCraft
 
 		MainWindow *Window_ = nullptr;
 
-		int Id_ = 0;
 		bool InMove_ = false;
 		SeparateTabWidget *TabWidget_ = nullptr;
 
@@ -58,7 +57,6 @@ namespace LeechCraft
 
 		void SetWindow (MainWindow*);
 
-		void SetTabData (int);
 		void SetTabClosable (int index, bool closable, QWidget *closeButton = 0);
 		void SetTabWidget (SeparateTabWidget*);
 
