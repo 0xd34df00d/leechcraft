@@ -113,17 +113,6 @@ namespace Aggregator
 	private:
 		QHash<PoolType, Util::IDPool<IDType_t>> Pools_;
 	public:
-		struct ChannelInfo
-		{
-			IDType_t FeedID_;
-			IDType_t ChannelID_;
-			QString URL_;
-			QString Link_;
-			QString Description_;
-			QString Author_;
-			int NumItems_;
-		};
-
 		static Core& Instance ();
 		void Release ();
 
@@ -150,7 +139,6 @@ namespace Aggregator
 		void MarkChannelAsRead (const QModelIndex&);
 		void MarkChannelAsUnread (const QModelIndex&);
 
-		ChannelInfo GetChannelInfo (const QModelIndex&) const;
 		QPixmap GetChannelPixmap (const QModelIndex&) const;
 
 		/** Sets the tags for index from the given user-edited string.
