@@ -68,8 +68,9 @@ namespace Aggregator
 	}
 
 	FeedSettings::FeedSettings (const QModelIndex& mapped, const ICoreProxy_ptr& proxy, QWidget *parent)
-	: QDialog (parent)
-	, Index_ (mapped)
+	: QDialog { parent }
+	, Index_ { mapped }
+	, Proxy_ { proxy }
 	{
 		Ui_.setupUi (this);
 
@@ -79,9 +80,9 @@ namespace Aggregator
 
 		connect (Ui_.ChannelLink_,
 				&QLabel::linkActivated,
-				[proxy] (const QString& url)
+				[this] (const QString& url)
 				{
-					const auto browser = proxy->GetPluginsManager ()->GetAllCastableTo<IWebBrowser*> ().value (0);
+					const auto browser = Proxy_->GetPluginsManager ()->GetAllCastableTo<IWebBrowser*> ().value (0);
 					if (!browser || XmlSettingsManager::Instance ()->property ("AlwaysUseExternalBrowser").toBool ())
 						QDesktopServices::openUrl ({ url });
 					else

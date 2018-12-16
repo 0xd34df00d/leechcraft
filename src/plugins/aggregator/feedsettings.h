@@ -45,6 +45,7 @@ namespace Aggregator
 
 		Ui::FeedSettings Ui_;
 		QPersistentModelIndex Index_;
+		const ICoreProxy_ptr Proxy_;
 	public:
 		explicit FeedSettings (const QModelIndex&, const ICoreProxy_ptr&, QWidget* = nullptr);
 	public slots:
