@@ -52,7 +52,6 @@ namespace LeechCraft
 	{
 		setObjectName ("org_LeechCraft_MainWindow_CentralTabBar");
 		setExpanding (false);
-		setIconSize (QSize (15, 15));
 		setContextMenuPolicy (Qt::CustomContextMenu);
 		setElideMode (Qt::ElideRight);
 		setDocumentMode (true);
