@@ -29,7 +29,6 @@
 
 #pragma once
 
-#include <memory>
 #include <QDialog>
 #include <QModelIndex>
 #include <interfaces/core/icoreproxyfwd.h>
@@ -38,11 +37,6 @@
 
 namespace LeechCraft
 {
-namespace Util
-{
-	class TagsCompleter;
-}
-
 namespace Aggregator
 {
 	class FeedSettings : public QDialog
@@ -50,7 +44,6 @@ namespace Aggregator
 		Q_OBJECT
 
 		Ui::FeedSettings Ui_;
-		std::shared_ptr<Util::TagsCompleter> ChannelTagsCompleter_;
 		QPersistentModelIndex Index_;
 	public:
 		explicit FeedSettings (const QModelIndex&, const ICoreProxy_ptr&, QWidget* = nullptr);

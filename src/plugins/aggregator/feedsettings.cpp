@@ -73,7 +73,8 @@ namespace Aggregator
 	{
 		Ui_.setupUi (this);
 
-		ChannelTagsCompleter_ = std::make_shared<Util::TagsCompleter> (Ui_.ChannelTags_);
+		new Util::TagsCompleter { Ui_.ChannelTags_ };
+
 		Ui_.ChannelTags_->AddSelector ();
 
 		connect (Ui_.ChannelLink_,
