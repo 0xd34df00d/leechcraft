@@ -90,6 +90,8 @@ namespace Aggregator
 		const auto& tags = Index_.data (ChannelRoles::HumanReadableTags).toStringList ();
 		Ui_.ChannelTags_->setText (proxy->GetTagsManager ()->Join (tags));
 
+		const auto& storage = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
+
 		using Util::operator*;
 		const auto feedId = Index_.data (ChannelRoles::FeedID).value<IDType_t> ();
 		[&] (auto&& settings)
@@ -98,17 +100,17 @@ namespace Aggregator
 			Ui_.NumItems_->setValue (settings.NumItems_);
 			Ui_.ItemAge_->setValue (settings.ItemAge_);
 			Ui_.AutoDownloadEnclosures_->setChecked (settings.AutoDownloadEnclosures_);
-		} * StorageBackendManager::Instance ().MakeStorageBackendForThread ()->GetFeedSettings (feedId);
+		} * storage->GetFeedSettings (feedId);
 
-		Core::ChannelInfo ci = Core::Instance ().GetChannelInfo (Index_);
+		const auto cid = Index_.data (ChannelRoles::ChannelID).value<IDType_t> ();
+		const auto& fullChannel = storage->GetChannel (cid);
 
-		SetLabelLink (Ui_.ChannelLink_, ci.Link_);
-		SetLabelLink (Ui_.FeedURL_, ci.URL_);
+		SetLabelLink (Ui_.ChannelLink_, fullChannel.Link_);
+		SetLabelLink (Ui_.FeedURL_, storage->GetFeed (fullChannel.FeedID_).URL_);
 
-		Ui_.ChannelDescription_->setHtml (ci.Description_);
-		Ui_.ChannelAuthor_->setText (ci.Author_);
-
-		Ui_.FeedNumItems_->setText (QString::number (ci.NumItems_));
+		Ui_.ChannelDescription_->setHtml (fullChannel.Description_);
+		Ui_.ChannelAuthor_->setText (fullChannel.Author_);
+		Ui_.FeedNumItems_->setText (QString::number (storage->GetTotalItemsCount (cid)));
 
 		QPixmap pixmap = Core::Instance ().GetChannelPixmap (Index_);
 		if (pixmap.width () > 400 || pixmap.height () > 300)
