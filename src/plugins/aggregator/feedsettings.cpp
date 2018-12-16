@@ -112,10 +112,13 @@ namespace Aggregator
 		Ui_.ChannelAuthor_->setText (fullChannel.Author_);
 		Ui_.FeedNumItems_->setText (QString::number (storage->GetTotalItemsCount (cid)));
 
-		QPixmap pixmap = Core::Instance ().GetChannelPixmap (Index_);
-		if (pixmap.width () > 400 || pixmap.height () > 300)
-			pixmap = pixmap.scaled (400, 300, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-		Ui_.ChannelImage_->setPixmap (pixmap);
+		if (const auto& maybeImg = storage->GetChannelPixmap (cid))
+		{
+			auto img = *maybeImg;
+			if (img.width () > 400 || img.height () > 300)
+				img = img.scaled (400, 300, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+			Ui_.ChannelImage_->setPixmap (QPixmap::fromImage (img));
+		}
 	}
 
 	void FeedSettings::accept ()
