@@ -139,9 +139,6 @@ namespace Aggregator
 		void MarkChannelAsRead (const QModelIndex&);
 		void MarkChannelAsUnread (const QModelIndex&);
 
-		/** Sets the tags for index from the given user-edited string.
-			*/
-		void SetTagsForIndex (const QString&, const QModelIndex&);
 		void UpdateFavicon (const QModelIndex&);
 
 		void UpdateFeed (const IDType_t&);
