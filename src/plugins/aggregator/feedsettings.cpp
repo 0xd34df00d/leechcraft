@@ -45,6 +45,28 @@ namespace LeechCraft
 {
 namespace Aggregator
 {
+	namespace
+	{
+		void SetLabelLink (QLabel *label, QString link)
+		{
+			QString shortLink;
+			label->setToolTip (link);
+			if (link.size () >= 160)
+				shortLink = link.left (78) + "..." + link.right (78);
+			else
+				shortLink = link;
+
+			if (QUrl { link }.isValid ())
+			{
+				link.insert (0, "<a href=\"");
+				link.append ("\">" + shortLink + "</a>");
+				label->setText (link);
+			}
+			else
+				label->setText (shortLink);
+		}
+	}
+
 	FeedSettings::FeedSettings (const QModelIndex& mapped, const ICoreProxy_ptr& proxy, QWidget *parent)
 	: QDialog (parent)
 	, Index_ (mapped)
@@ -79,36 +101,9 @@ namespace Aggregator
 		} * StorageBackendManager::Instance ().MakeStorageBackendForThread ()->GetFeedSettings (feedId);
 
 		Core::ChannelInfo ci = Core::Instance ().GetChannelInfo (Index_);
-		QString link = ci.Link_;
-		QString shortLink;
-		Ui_.ChannelLink_->setToolTip (link);
-		if (link.size () >= 160)
-			shortLink = link.left (78) + "..." + link.right (78);
-		else
-			shortLink = link;
-		if (QUrl (link).isValid ())
-		{
-			link.insert (0, "<a href=\"");
-			link.append ("\">" + shortLink + "</a>");
-			Ui_.ChannelLink_->setText (link);
-		}
-		else
-			Ui_.ChannelLink_->setText (shortLink);
 
-		link = ci.URL_;
-		Ui_.FeedURL_->setToolTip (link);
-		if (link.size () >= 160)
-			shortLink = link.left (78) + "..." + link.right (78);
-		else
-			shortLink = link;
-		if (QUrl (link).isValid ())
-		{
-			link.insert (0, "<a href=\"");
-			link.append ("\">" + shortLink + "</a>");
-			Ui_.FeedURL_->setText (link);
-		}
-		else
-			Ui_.FeedURL_->setText (shortLink);
+		SetLabelLink (Ui_.ChannelLink_, ci.Link_);
+		SetLabelLink (Ui_.FeedURL_, ci.URL_);
 
 		Ui_.ChannelDescription_->setHtml (ci.Description_);
 		Ui_.ChannelAuthor_->setText (ci.Author_);
