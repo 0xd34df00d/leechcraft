@@ -73,10 +73,6 @@ namespace LeechCraft
 {
 namespace Aggregator
 {
-	Core::Core ()
-	{
-	}
-
 	Core& Core::Instance ()
 	{
 		static Core core;

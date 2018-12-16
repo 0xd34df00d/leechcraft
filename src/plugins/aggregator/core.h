@@ -109,7 +109,7 @@ namespace Aggregator
 
 		std::shared_ptr<DBUpdateThread> DBUpThread_;
 
-		Core ();
+		Core () = default;
 	private:
 		QHash<PoolType, Util::IDPool<IDType_t>> Pools_;
 	public:
