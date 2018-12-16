@@ -405,30 +405,17 @@ namespace Aggregator
 		MarkChannel (i, true);
 	}
 
-	Core::ChannelInfo Core::GetChannelInfo (const QModelIndex& i) const
+	Core::ChannelInfo Core::GetChannelInfo (const QModelIndex& idx) const
 	{
-		ChannelShort channel;
-		try
-		{
-			channel = ChannelsModel_->GetChannelForIndex (i);
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< e.what ();
-			return ChannelInfo ();
-		}
+		const auto& fullChannel = StorageBackend_->GetChannel (idx.data (ChannelRoles::ChannelID).value<IDType_t> ());
 		ChannelInfo ci;
-		ci.FeedID_ = channel.FeedID_;
-		ci.ChannelID_ = channel.ChannelID_;
-		ci.Link_ = channel.Link_;
-
-		const auto& fullChannel = StorageBackend_->GetChannel (channel.ChannelID_);
+		ci.FeedID_ = fullChannel.FeedID_;
+		ci.ChannelID_ = fullChannel.ChannelID_;
+		ci.Link_ = fullChannel.Link_;
 		ci.Description_ = fullChannel.Description_;
 		ci.Author_ = fullChannel.Author_;
-		ci.URL_ = StorageBackend_->GetFeed (channel.FeedID_).URL_;
-		ci.NumItems_ = StorageBackend_->GetTotalItemsCount (channel.ChannelID_);
-
+		ci.URL_ = StorageBackend_->GetFeed (fullChannel.FeedID_).URL_;
+		ci.NumItems_ = StorageBackend_->GetTotalItemsCount (fullChannel.ChannelID_);
 		return ci;
 	}
 
