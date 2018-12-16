@@ -96,7 +96,7 @@ namespace Aggregator
 			Ui_.ChannelLink_->setText (shortLink);
 
 		link = ci.URL_;
-		Ui_.ChannelLink_->setToolTip (link);
+		Ui_.FeedURL_->setToolTip (link);
 		if (link.size () >= 160)
 			shortLink = link.left (78) + "..." + link.right (78);
 		else
