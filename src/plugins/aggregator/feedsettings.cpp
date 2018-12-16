@@ -125,10 +125,13 @@ namespace Aggregator
 
 	void FeedSettings::accept ()
 	{
-		QString tags = Ui_.ChannelTags_->text ();
-		Core::Instance ().SetTagsForIndex (tags, Index_);
+		const auto& storage = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
 
-		StorageBackendManager::Instance ().MakeStorageBackendForThread ()->SetFeedSettings ({
+		const auto& tags = Proxy_->GetTagsManager ()->Split (Ui_.ChannelTags_->text ());
+		storage->SetChannelTags (Index_.data (ChannelRoles::ChannelID).value<IDType_t> (),
+				Proxy_->GetTagsManager ()->GetIDs (tags));
+
+		storage->SetFeedSettings ({
 				Index_.data (ChannelRoles::FeedID).value<IDType_t> (),
 				Ui_.UpdateInterval_->value (),
 				Ui_.NumItems_->value (),
