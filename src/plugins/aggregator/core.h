@@ -139,8 +139,6 @@ namespace Aggregator
 		void MarkChannelAsRead (const QModelIndex&);
 		void MarkChannelAsUnread (const QModelIndex&);
 
-		QPixmap GetChannelPixmap (const QModelIndex&) const;
-
 		/** Sets the tags for index from the given user-edited string.
 			*/
 		void SetTagsForIndex (const QString&, const QModelIndex&);

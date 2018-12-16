@@ -401,14 +401,6 @@ namespace Aggregator
 		MarkChannel (i, true);
 	}
 
-	QPixmap Core::GetChannelPixmap (const QModelIndex& idx) const
-	{
-		const auto& img = StorageBackend_->GetChannelPixmap (idx.data (ChannelRoles::ChannelID).value<IDType_t> ());
-		return img ?
-				QPixmap::fromImage (*img) :
-				QPixmap {};
-	}
-
 	void Core::SetTagsForIndex (const QString& tags, const QModelIndex& index)
 	{
 		StorageBackend_->SetChannelTags (index.data (ChannelRoles::ChannelID).value<IDType_t> (),
