@@ -51,7 +51,7 @@ namespace Aggregator
 
 		Ui::FeedSettings Ui_;
 		std::shared_ptr<Util::TagsCompleter> ChannelTagsCompleter_;
-		QModelIndex Index_;
+		QPersistentModelIndex Index_;
 	public:
 		explicit FeedSettings (const QModelIndex&, const ICoreProxy_ptr&, QWidget* = nullptr);
 	public slots:
