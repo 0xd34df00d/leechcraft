@@ -360,7 +360,7 @@ namespace CSTP
 				<< newUrl
 				<< "for"
 				<< Reply_->url ();
-			emit done (true);
+			handleError ();
 		}
 		else
 		{
@@ -608,7 +608,7 @@ namespace CSTP
 						errString,
 						Priority::Critical);
 				Core::Instance ().GetCoreProxy ()->GetEntityManager ()->HandleEntity (e);
-				emit done (true);
+				handleError ();
 			}
 		}
 		if (URL_.isEmpty () &&
