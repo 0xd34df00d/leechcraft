@@ -85,7 +85,7 @@ namespace Dolozhee
 						file.readAll (),
 						"application/octet-stream",
 						{
-							[this, filename] (IDownload::Error)
+							[this, filename] (IDownload::Error::Type)
 							{
 								QMessageBox::critical (this,
 										"LeechCraft",
@@ -137,7 +137,7 @@ namespace Dolozhee
 				data,
 				"application/xml",
 				{
-					[this] (IDownload::Error) { ShowRegrets (); },
+					[this] (IDownload::Error::Type) { ShowRegrets (); },
 					Util::BindMemFn (&FinalPage::HandleReportPostedData, this)
 				});
 	}

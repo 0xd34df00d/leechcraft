@@ -76,7 +76,7 @@ namespace Dolozhee
 			new Util::DownloadHandler (url,
 					Proxy_->GetEntityManager (),
 					{
-						[] (IDownload::Error) {},
+						[] (IDownload::Error::Type) {},
 						Util::BindMemFn (&ReportTypePage::ParseCategories, this)
 					},
 					this);
