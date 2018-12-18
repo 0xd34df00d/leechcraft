@@ -61,13 +61,19 @@ struct EntityTestHandleResult;
 class Q_DECL_EXPORT IDownload
 {
 public:
-	enum Error
+	struct Error
 	{
-		EUnknown
-		, ENoError
-		, ENotFound
-		, EAccessDenied
-		, ELocalError
+		enum class Type
+		{
+			Unknown,
+			NoError,
+			NotFound,
+			AccessDenied,
+			LocalError,
+			UserCanceled
+		} Type_;
+
+		QString Message_;
 	};
 
 	/** @brief Returns download speed.

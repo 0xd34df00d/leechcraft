@@ -92,7 +92,7 @@ namespace CSTP
 	signals:
 		void jobFinished (int);
 		void jobRemoved (int);
-		void jobError (int, IDownload::Error);
+		void jobError (int, IDownload::Error::Type);
 		void gotEntity (const LeechCraft::Entity&);
 	};
 }

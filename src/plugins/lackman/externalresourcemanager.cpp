@@ -104,9 +104,9 @@ namespace LackMan
 				SLOT (handleResourceRemoved (int)),
 				Qt::UniqueConnection);
 		connect (pr,
-				SIGNAL (jobError (int, IDownload::Error)),
+				SIGNAL (jobError (int, IDownload::Error::Type)),
 				this,
-				SLOT (handleResourceError (int, IDownload::Error)),
+				SLOT (handleResourceError (int, IDownload::Error::Type)),
 				Qt::UniqueConnection);
 	}
 
@@ -146,14 +146,14 @@ namespace LackMan
 		PendingResources_.remove (id);
 	}
 
-	void ExternalResourceManager::handleResourceError (int id, IDownload::Error error)
+	void ExternalResourceManager::handleResourceError (int id, IDownload::Error::Type error)
 	{
 		if (!PendingResources_.contains (id))
 			return;
 
 		qWarning () << Q_FUNC_INFO
 				<< "got error"
-				<< error
+				<< static_cast<int> (error)
 				<< "for PendingResource"
 				<< id
 				<< PendingResources_ [id].URL_;

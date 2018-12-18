@@ -66,7 +66,7 @@ namespace NetStoreManager
 	private slots:
 		void handleJobFinished (int id);
 		void handleJobRemoved (int id);
-		void handleJobError (int id, IDownload::Error err);
+		void handleJobError (int id, IDownload::Error::Type err);
 	};
 }
 }

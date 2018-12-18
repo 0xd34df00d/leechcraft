@@ -545,7 +545,7 @@ namespace Aggregator
 			PendingOPMLs_.remove (id);
 	}
 
-	void Core::handleJobError (int id, IDownload::Error ie)
+	void Core::handleJobError (int id, IDownload::Error::Type ie)
 	{
 		if (!PendingJobs_.contains (id))
 		{
@@ -565,18 +565,18 @@ namespace Aggregator
 			QString msg;
 			switch (ie)
 			{
-				case IDownload::ENotFound:
-					msg = tr ("Address not found:<br />%1");
-					break;
-				case IDownload::EAccessDenied:
-					msg = tr ("Access denied:<br />%1");
-					break;
-				case IDownload::ELocalError:
-					msg = tr ("Local error for:<br />%1");
-					break;
-				default:
-					msg = tr ("Unknown error for:<br />%1");
-					break;
+			case IDownload::Error::Type::NotFound:
+				msg = tr ("Address not found:<br />%1");
+				break;
+			case IDownload::Error::Type::AccessDenied:
+				msg = tr ("Access denied:<br />%1");
+				break;
+			case IDownload::Error::Type::LocalError:
+				msg = tr ("Local error for:<br />%1");
+				break;
+			default:
+				msg = tr ("Unknown error for:<br />%1");
+				break;
 			}
 			ErrorNotification (tr ("Download error"),
 					msg.arg (pj.URL_));
@@ -870,9 +870,9 @@ namespace Aggregator
 				this,
 				SLOT (handleJobRemoved (int)));
 		connect (provider,
-				SIGNAL (jobError (int, IDownload::Error)),
+				SIGNAL (jobError (int, IDownload::Error::Type)),
 				this,
-				SLOT (handleJobError (int, IDownload::Error)));
+				SLOT (handleJobError (int, IDownload::Error::Type)));
 	}
 
 	void Core::ErrorNotification (const QString& h, const QString& body, bool wait) const

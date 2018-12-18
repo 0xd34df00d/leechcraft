@@ -60,14 +60,14 @@ namespace Util
 		} (),
 		iem,
 		{
-			[cont] (IDownload::Error error) { cont.Left (error); },
+			[cont] (IDownload::Error::Type error) { cont.Left (error); },
 			[this, cont]
 			{
 				QFile file { E_.Location_ };
 				const auto fileGuard = MakeScopeGuard ([&file] { file.remove (); });
 				if (!file.open (QIODevice::ReadOnly))
 				{
-					cont.Left (IDownload::ELocalError);
+					cont.Left (IDownload::Error::Type::LocalError);
 					return;
 				}
 
@@ -106,9 +106,9 @@ namespace Util
 				this,
 				SLOT (handleFinished (int)));
 		connect (res.Handler_,
-				SIGNAL (jobError (int, IDownload::Error)),
+				SIGNAL (jobError (int, IDownload::Error::Type)),
 				this,
-				SLOT (handleError (int, IDownload::Error)));
+				SLOT (handleError (int, IDownload::Error::Type)));
 	}
 
 	void DownloadHandler::handleFinished (int id)
@@ -120,7 +120,7 @@ namespace Util
 		deleteLater ();
 	}
 
-	void DownloadHandler::handleError (int id, IDownload::Error error)
+	void DownloadHandler::handleError (int id, IDownload::Error::Type error)
 	{
 		if (JobId_ != id)
 			return;

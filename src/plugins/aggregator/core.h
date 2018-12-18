@@ -152,7 +152,7 @@ namespace Aggregator
 		void fetchExternalFile (const QString&, const QString&);
 		void handleJobFinished (int);
 		void handleJobRemoved (int);
-		void handleJobError (int, IDownload::Error);
+		void handleJobError (int, IDownload::Error::Type);
 		void handleCustomUpdates ();
 		void rotateUpdatesQueue ();
 	private:

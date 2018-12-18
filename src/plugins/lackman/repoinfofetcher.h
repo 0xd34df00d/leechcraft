@@ -101,13 +101,13 @@ namespace LackMan
 
 		void handleRIFinished (int);
 		void handleRIRemoved (int);
-		void handleRIError (int, IDownload::Error);
+		void handleRIError (int, IDownload::Error::Type);
 		void handleComponentFinished (int);
 		void handleComponentRemoved (int);
-		void handleComponentError (int, IDownload::Error);
+		void handleComponentError (int, IDownload::Error::Type);
 		void handlePackageFinished (int);
 		void handlePackageRemoved (int);
-		void handlePackageError (int, IDownload::Error);
+		void handlePackageError (int, IDownload::Error::Type);
 
 		void handleRepoUnarchFinished (int, QProcess::ExitStatus);
 		void handleComponentUnarchFinished (int, QProcess::ExitStatus);

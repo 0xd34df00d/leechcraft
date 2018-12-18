@@ -257,7 +257,7 @@ namespace vGrabber
 				this,
 				SLOT (handleJobFinished (int)));
 		connect (provider,
-				SIGNAL (jobError (int, IDownload::Error)),
+				SIGNAL (jobError (int, IDownload::Error::Type)),
 				this,
 				SLOT (handleJobError (int)));
 	}

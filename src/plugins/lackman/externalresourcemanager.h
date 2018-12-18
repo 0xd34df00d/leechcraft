@@ -111,7 +111,7 @@ namespace LackMan
 	private slots:
 		void handleResourceFinished (int);
 		void handleResourceRemoved (int);
-		void handleResourceError (int, IDownload::Error);
+		void handleResourceError (int, IDownload::Error::Type);
 	signals:
 		/** @brief Emitted once the resource identified by url
 		 * is fetched.

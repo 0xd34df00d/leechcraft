@@ -86,10 +86,9 @@ namespace NetStoreManager
 				this,
 				SLOT (handleJobRemoved (int)));
 		connect (provider,
-				SIGNAL (jobError (int, IDownload::Error)),
+				SIGNAL (jobError (int, IDownload::Error::Type)),
 				this,
-				SLOT (handleJobError (int, IDownload::Error)));
-
+				SLOT (handleJobError (int, IDownload::Error::Type)));
 	}
 
 	void DownManager::handleDownloadRequest (const QUrl& url,
@@ -108,7 +107,7 @@ namespace NetStoreManager
 			SendEntity (e);
 	}
 
-	void DownManager::handleJobError (int id, IDownload::Error)
+	void DownManager::handleJobError (int id, IDownload::Error::Type)
 	{
 		Id2Downloader_.remove (id);
 		Id2SavePath_.remove (id);

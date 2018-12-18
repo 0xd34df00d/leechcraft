@@ -158,7 +158,7 @@ namespace CSTP
 	signals:
 		void taskFinished (int);
 		void taskRemoved (int);
-		void taskError (int, IDownload::Error);
+		void taskError (int, IDownload::Error::Type);
 		void error (const QString&);
 		void fileExists (FileExistsBehaviour*);
 	};

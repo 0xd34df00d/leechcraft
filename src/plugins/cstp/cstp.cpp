@@ -76,9 +76,9 @@ namespace CSTP
 				this,
 				SIGNAL (jobRemoved (int)));
 		connect (&Core::Instance (),
-				SIGNAL (taskError (int, IDownload::Error)),
+				SIGNAL (taskError (int, IDownload::Error::Type)),
 				this,
-				SIGNAL (jobError (int, IDownload::Error)));
+				SIGNAL (jobError (int, IDownload::Error::Type)));
 		connect (&Core::Instance (),
 				SIGNAL (error (QString)),
 				this,

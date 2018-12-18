@@ -435,9 +435,9 @@ namespace CleanWeb
 				this,
 				SLOT (handleJobFinished (int)));
 		connect (provider,
-				SIGNAL (jobError (int, IDownload::Error)),
+				SIGNAL (jobError (int, IDownload::Error::Type)),
 				this,
-				SLOT (handleJobError (int, IDownload::Error)));
+				SLOT (handleJobError (int, IDownload::Error::Type)));
 	}
 
 	void Core::Parse (const QString& filePath)
@@ -545,7 +545,7 @@ namespace CleanWeb
 		SubsModel_->SetSubData (sd);
 	}
 
-	void Core::handleJobError (int id, IDownload::Error)
+	void Core::handleJobError (int id, IDownload::Error::Type)
 	{
 		if (!PendingJobs_.contains (id))
 			return;

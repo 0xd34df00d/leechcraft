@@ -92,7 +92,7 @@ namespace LackMan
 					removed,
 					Qt::UniqueConnection);
 			QObject::connect (result.Handler_,
-					SIGNAL (jobError (int, IDownload::Error)),
+					SIGNAL (jobError (int, IDownload::Error::Type)),
 					object,
 					error,
 					Qt::UniqueConnection);
@@ -118,7 +118,7 @@ namespace LackMan
 				this,
 				SLOT (handleRIFinished (int)),
 				SLOT (handleRIRemoved (int)),
-				SLOT (handleRIError (int, IDownload::Error)));
+				SLOT (handleRIError (int, IDownload::Error::Type)));
 	}
 
 	void RepoInfoFetcher::FetchComponent (QUrl url, int repoId, const QString& component)
@@ -133,7 +133,7 @@ namespace LackMan
 				this,
 				SLOT (handleComponentFinished (int)),
 				SLOT (handleComponentRemoved (int)),
-				SLOT (handleComponentError (int, IDownload::Error)));
+				SLOT (handleComponentError (int, IDownload::Error::Type)));
 	}
 
 	void RepoInfoFetcher::ScheduleFetchPackageInfo (const QUrl& url,
@@ -173,7 +173,7 @@ namespace LackMan
 				this,
 				SLOT (handlePackageFinished (int)),
 				SLOT (handlePackageRemoved (int)),
-				SLOT (handlePackageError (int, IDownload::Error)));
+				SLOT (handlePackageError (int, IDownload::Error::Type)));
 	}
 
 	void RepoInfoFetcher::rotatePackageFetchQueue ()
@@ -222,7 +222,7 @@ namespace LackMan
 		PendingRIs_.remove (id);
 	}
 
-	void RepoInfoFetcher::handleRIError (int id, IDownload::Error)
+	void RepoInfoFetcher::handleRIError (int id, IDownload::Error::Type)
 	{
 		if (!PendingRIs_.contains (id))
 			return;
@@ -272,7 +272,7 @@ namespace LackMan
 		PendingComponents_.remove (id);
 	}
 
-	void RepoInfoFetcher::handleComponentError (int id, IDownload::Error)
+	void RepoInfoFetcher::handleComponentError (int id, IDownload::Error::Type)
 	{
 		if (!PendingComponents_.contains (id))
 			return;
@@ -321,7 +321,7 @@ namespace LackMan
 		PendingPackages_.remove (id);
 	}
 
-	void RepoInfoFetcher::handlePackageError (int id, IDownload::Error)
+	void RepoInfoFetcher::handlePackageError (int id, IDownload::Error::Type)
 	{
 		if (!PendingPackages_.contains (id))
 			return;

@@ -46,12 +46,12 @@ namespace Util
 		Q_OBJECT
 
 		const Entity E_;
-		const EitherCont<void (IDownload::Error), void ()> Cont_;
+		const EitherCont<void (IDownload::Error::Type), void ()> Cont_;
 
 		int JobId_ = -1;
 	public:
-		using DataHandler_t = EitherCont<void (IDownload::Error), void (QByteArray)>;
-		using EntityHandler_t = EitherCont<void (IDownload::Error), void ()>;
+		using DataHandler_t = EitherCont<void (IDownload::Error::Type), void (QByteArray)>;
+		using EntityHandler_t = EitherCont<void (IDownload::Error::Type), void ()>;
 
 		DownloadHandler (const QUrl& url,
 				const QVariantMap& additional,
@@ -70,7 +70,7 @@ namespace Util
 				QObject *parent = nullptr);
 	private slots:
 		void handleFinished (int);
-		void handleError (int, IDownload::Error);
+		void handleError (int, IDownload::Error::Type);
 	};
 }
 }

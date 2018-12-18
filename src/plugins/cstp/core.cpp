@@ -698,7 +698,7 @@ namespace CSTP
 			taskdscr->ErrorFlag_ = true;
 			if (notifyUser)
 				emit error (errorStr);
-			emit taskError (id, IDownload::EUnknown);
+			emit taskError (id, IDownload::Error::Type::Unknown);
 			if (taskdscr->Parameters_ & LeechCraft::NotPersistent)
 				Remove (taskdscr);
 		}

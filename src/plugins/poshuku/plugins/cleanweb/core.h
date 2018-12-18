@@ -145,7 +145,7 @@ namespace CleanWeb
 	private slots:
 		void update ();
 		void handleJobFinished (int);
-		void handleJobError (int, IDownload::Error);
+		void handleJobError (int, IDownload::Error::Type);
 
 		void moreDelayedRemoveElements ();
 
