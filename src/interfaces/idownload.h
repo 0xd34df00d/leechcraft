@@ -34,7 +34,6 @@
 #include <QtPlugin>
 #include "structures.h"
 
-class QNetworkReply;
 
 struct EntityTestHandleResult;
 
