@@ -70,7 +70,6 @@ public:
 		, EAccessDenied
 		, ELocalError
 	};
-	typedef unsigned long int JobID_t;
 
 	/** @brief Returns download speed.
 	 *
