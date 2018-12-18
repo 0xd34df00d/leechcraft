@@ -108,7 +108,6 @@ namespace CSTP
 		qint64 GetTotalDownloadSpeed () const;
 		EntityTestHandleResult CouldDownload (const LeechCraft::Entity&);
 		QAbstractItemModel* GetRepresentationModel ();
-		void SetNetworkAccessManager (QNetworkAccessManager*);
 		QNetworkAccessManager* GetNetworkAccessManager () const;
 		bool HasFinishedReply (QNetworkReply*) const;
 		void RemoveFinishedReply (QNetworkReply*);
