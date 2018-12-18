@@ -32,8 +32,11 @@
 #include <QByteArray>
 #include <QUrl>
 #include <QtPlugin>
+#include <util/sll/eitherfwd.h>
 #include "structures.h"
 
+template<typename>
+class QFuture;
 
 struct EntityTestHandleResult;
 
@@ -75,6 +78,10 @@ public:
 
 		QString Message_;
 	};
+
+	struct Success {};
+
+	using Result = LeechCraft::Util::Either<Error, Success>;
 
 	/** @brief Returns download speed.
 	 *
