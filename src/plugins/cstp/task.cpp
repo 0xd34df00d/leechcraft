@@ -39,6 +39,7 @@
 #include <util/xpc/util.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/prelude.h>
+#include <util/sll/either.h>
 #include <util/sll/qstringwrappers.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
@@ -221,6 +222,8 @@ namespace CSTP
 				SIGNAL (readyRead ()),
 				this,
 				SLOT (handleReadyRead ()));
+
+		Promise_.reportStarted ();
 	}
 
 	void Task::Stop ()
@@ -622,11 +625,17 @@ namespace CSTP
 
 	void Task::handleFinished ()
 	{
+		const auto result = IDownload::Result::Right ({});
+		Promise_.reportFinished (&result);
+
 		emit done (false);
 	}
 
 	void Task::handleError ()
 	{
+		const auto result = IDownload::Result::Left ({ IDownload::Error::Type::Unknown, {} });
+		Promise_.reportFinished (&result);
+
 		emit done (true);
 	}
 }

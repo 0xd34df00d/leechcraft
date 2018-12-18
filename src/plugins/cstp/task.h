@@ -36,7 +36,9 @@
 #include <QTime>
 #include <QNetworkReply>
 #include <QStringList>
+#include <QFutureInterface>
 #include <interfaces/structures.h>
+#include <interfaces/idownload.h>
 
 class QAuthenticator;
 class QNetworkProxy;
@@ -69,6 +71,8 @@ namespace CSTP
 		const QVariantMap Headers_;
 
 		const QByteArray UploadData_ = {};
+
+		QFutureInterface<IDownload::Result> Promise_;
 	public:
 		explicit Task (const QUrl& url = QUrl (), const QVariantMap& params = QVariantMap ());
 		explicit Task (QNetworkReply*);
@@ -89,6 +93,8 @@ namespace CSTP
 		int GetTimeFromStart () const;
 		bool IsRunning () const;
 		QString GetErrorString () const;
+
+		QFuture<IDownload::Result> GetFuture () const;
 	private:
 		void Reset ();
 		void RecalculateSpeed ();
