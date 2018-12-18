@@ -335,21 +335,6 @@ namespace CSTP
 		return td.ID_;
 	}
 
-	qint64 Core::GetDone (int pos) const
-	{
-		return TaskAt (pos).Task_->GetDone ();
-	}
-
-	qint64 Core::GetTotal (int pos) const
-	{
-		return TaskAt (pos).Task_->GetTotal ();
-	}
-
-	bool Core::IsRunning (int pos) const
-	{
-		return TaskAt (pos).Task_->IsRunning ();
-	}
-
 	qint64 Core::GetTotalDownloadSpeed () const
 	{
 		return std::accumulate (ActiveTasks_.begin (), ActiveTasks_.end (), 0,

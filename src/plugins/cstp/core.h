@@ -105,9 +105,6 @@ namespace CSTP
 
 		int AddTask (const Entity&);
 		void KillTask (int);
-		qint64 GetDone (int) const;
-		qint64 GetTotal (int) const;
-		bool IsRunning (int) const;
 		qint64 GetTotalDownloadSpeed () const;
 		EntityTestHandleResult CouldDownload (const LeechCraft::Entity&);
 		QAbstractItemModel* GetRepresentationModel ();
