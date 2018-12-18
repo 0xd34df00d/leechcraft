@@ -149,7 +149,7 @@ namespace CSTP
 
 	int CSTP::AddJob (LeechCraft::Entity e)
 	{
-		return Core::Instance ().AddTask (e);
+		return Core::Instance ().AddTask (e).first;
 	}
 
 	void CSTP::KillTask (int id)

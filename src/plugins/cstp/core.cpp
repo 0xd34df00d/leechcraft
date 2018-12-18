@@ -48,6 +48,8 @@
 #include <interfaces/idownload.h>
 #include <util/util.h>
 #include <util/sll/prelude.h>
+#include <util/sll/either.h>
+#include <util/threads/futures.h>
 #include <util/xpc/notificationactionhandler.h>
 #include <util/xpc/util.h>
 #include "task.h"
@@ -168,7 +170,7 @@ namespace CSTP
 		}
 	}
 
-	int Core::AddTask (const Entity& e)
+	QPair<int, QFuture<IDownload::Result>> Core::AddTask (const Entity& e)
 	{
 		auto url = e.Entity_.toUrl ();
 		const auto& urlList = e.Entity_.value<QList<QUrl>> ();
@@ -195,12 +197,17 @@ namespace CSTP
 			{}
 		};
 
+		auto mkErr = [] (auto type, const QString& msg) -> QPair<int, QFuture<IDownload::Result>>
+		{
+			return { -1, Util::MakeReadyFuture (IDownload::Result::Left ({ type, msg })) };
+		};
+
 		if (e.Parameters_ & LeechCraft::FromUserInitiated &&
 				e.Location_.isEmpty ())
 		{
 			CSTP::AddTask at (url, e.Location_);
 			if (at.exec () == QDialog::Rejected)
-				return -1;
+				return mkErr (IDownload::Error::Type::UserCanceled, {});
 
 			task = at.GetTask ();
 		}
@@ -216,7 +223,7 @@ namespace CSTP
 						e.Additional_,
 						e.Parameters_);
 
-			return -1;
+			return mkErr (IDownload::Error::Type::NoError, "Reporting result of urls list is not supported");
 		}
 
 		if (!dir.isEmpty ())
@@ -228,7 +235,7 @@ namespace CSTP
 					e.Additional_,
 					e.Parameters_);
 
-		return -1;
+		return mkErr (IDownload::Error::Type::LocalError, "Incorrect task parameters");
 	}
 
 	void Core::KillTask (int id)
@@ -245,7 +252,7 @@ namespace CSTP
 			<< ActiveTasks_.size ();
 	}
 
-	int Core::AddTask (QNetworkReply *rep,
+	QPair<int, QFuture<IDownload::Result>> Core::AddTask (QNetworkReply *rep,
 			const QString& path,
 			const QString& filename,
 			const QString& comment,
@@ -264,7 +271,7 @@ namespace CSTP
 		return AddTask (td);
 	}
 
-	int Core::AddTask (const QUrl& url,
+	QPair<int, QFuture<IDownload::Result>> Core::AddTask (const QUrl& url,
 			const QString& path,
 			const QString& filename,
 			const QString& comment,
@@ -285,7 +292,7 @@ namespace CSTP
 		return AddTask (td);
 	}
 
-	int Core::AddTask (TaskDescr& td)
+	QPair<int, QFuture<IDownload::Result>> Core::AddTask (TaskDescr& td)
 	{
 		td.ErrorFlag_ = false;
 		td.ID_ = CoreProxy_->GetID ();
@@ -298,7 +305,14 @@ namespace CSTP
 			{
 			case FileExistsBehaviour::Abort:
 				CoreProxy_->FreeID (td.ID_);
-				return -1;
+				return
+				{
+					-1,
+					Util::MakeReadyFuture (IDownload::Result::Left ({
+								IDownload::Error::Type::LocalError,
+								"File already exists"
+							}))
+				};
 			case FileExistsBehaviour::Remove:
 				if (!td.File_->resize (0))
 				{
@@ -306,7 +320,14 @@ namespace CSTP
 								  td.File_->errorString ();
 					qWarning () << Q_FUNC_INFO << msg;
 					emit error (msg);
-					return - 1;
+					return
+					{
+						-1,
+						Util::MakeReadyFuture (IDownload::Result::Left ({
+									IDownload::Error::Type::LocalError,
+									"Could not truncate file"
+								}))
+					};
 				}
 				break;
 			case FileExistsBehaviour::Continue:
@@ -332,7 +353,7 @@ namespace CSTP
 		ScheduleSave ();
 		if (!(td.Parameters_ & LeechCraft::NoAutostart))
 			startTriggered (rowCount () - 1);
-		return td.ID_;
+		return { td.ID_, {} };
 	}
 
 	qint64 Core::GetTotalDownloadSpeed () const

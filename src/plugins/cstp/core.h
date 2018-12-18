@@ -37,6 +37,7 @@
 #include <QNetworkAccessManager>
 #include <QSet>
 #include <QUrl>
+#include <util/sll/eitherfwd.h>
 #include <interfaces/iinfo.h>
 #include <interfaces/structures.h>
 #include <interfaces/idownload.h>
@@ -103,7 +104,7 @@ namespace CSTP
 		void SetToolbar (QToolBar*);
 		void ItemSelected (const QModelIndex&);
 
-		int AddTask (const Entity&);
+		QPair<int, QFuture<IDownload::Result>> AddTask (const Entity&);
 		void KillTask (int);
 		qint64 GetTotalDownloadSpeed () const;
 		EntityTestHandleResult CouldDownload (const LeechCraft::Entity&);
@@ -133,20 +134,20 @@ namespace CSTP
 		void writeSettings ();
 		void finishedReply (QNetworkReply*);
 	private:
-		int AddTask (const QUrl&,
+		QPair<int, QFuture<IDownload::Result>> AddTask (const QUrl&,
 				const QString&,
 				const QString&,
 				const QString&,
 				const QStringList&,
 				const QVariantMap&,
 				LeechCraft::TaskParameters = LeechCraft::NoParameters);
-		int AddTask (QNetworkReply*,
+		QPair<int, QFuture<IDownload::Result>> AddTask (QNetworkReply*,
 				const QString&,
 				const QString&,
 				const QString&,
 				const QStringList&,
 				LeechCraft::TaskParameters = LeechCraft::NoParameters);
-		int AddTask (TaskDescr&);
+		QPair<int, QFuture<IDownload::Result>> AddTask (TaskDescr&);
 		void ReadSettings ();
 		void ScheduleSave ();
 		tasks_t::const_iterator FindTask (QObject*) const;
