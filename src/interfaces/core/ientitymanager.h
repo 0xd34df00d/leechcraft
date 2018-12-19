@@ -64,13 +64,6 @@ public:
 		 */
 		int ID_ = 0;
 
-		DelegationResult () = default;
-
-		DelegationResult (QObject *handler, int id)
-		: Handler_ { handler }
-		, ID_ { id }
-		{
-		}
 
 		explicit operator bool () const
 		{
