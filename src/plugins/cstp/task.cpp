@@ -41,6 +41,7 @@
 #include <util/sll/prelude.h>
 #include <util/sll/either.h>
 #include <util/sll/qstringwrappers.h>
+#include <util/threads/futures.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
 #include "core.h"
@@ -625,16 +626,14 @@ namespace CSTP
 
 	void Task::handleFinished ()
 	{
-		const auto result = IDownload::Result::Right ({});
-		Promise_.reportFinished (&result);
+		Util::ReportFutureResult (Promise_, IDownload::Result::Right ({}));
 
 		emit done (false);
 	}
 
 	void Task::handleError ()
 	{
-		const auto result = IDownload::Result::Left ({ IDownload::Error::Type::Unknown, {} });
-		Promise_.reportFinished (&result);
+		Util::ReportFutureResult (Promise_, IDownload::Result::Left ({ IDownload::Error::Type::Unknown, {} }));
 
 		emit done (true);
 	}
