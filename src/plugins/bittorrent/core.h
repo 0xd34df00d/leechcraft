@@ -31,7 +31,6 @@
 
 #include <map>
 #include <list>
-#include <deque>
 #include <memory>
 #include <QAbstractItemModel>
 #include <QPair>
