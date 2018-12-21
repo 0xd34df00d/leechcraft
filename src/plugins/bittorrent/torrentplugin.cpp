@@ -248,12 +248,12 @@ namespace BitTorrent
 				!file.open (QIODevice::ReadOnly)) &&
 				Core::Instance ()->IsValidTorrent (entity))
 		{
-			QTemporaryFile file ("lctemporarybittorrentfile.XXXXXX");
-			if (!file.open  ())
+			QTemporaryFile tmpFile ("lctemporarybittorrentfile.XXXXXX");
+			if (!tmpFile.open  ())
 				return -1;
-			file.write (entity);
-			suggestedFname = file.fileName ().toUtf8 ();
-			file.setAutoRemove (false);
+			tmpFile.write (entity);
+			suggestedFname = tmpFile.fileName ().toUtf8 ();
+			tmpFile.setAutoRemove (false);
 		}
 
 		AddTorrentDialog_->Reinit ();
