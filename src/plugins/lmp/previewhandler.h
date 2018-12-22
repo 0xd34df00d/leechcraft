@@ -43,6 +43,8 @@ namespace LMP
 
 	class PreviewHandler : public QObject
 	{
+		Q_OBJECT
+
 		Player *Player_;
 
 		QList<Media::IAudioPile*> Providers_;
