@@ -45,6 +45,7 @@
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
+#include <util/sll/either.h>
 #include <util/xpc/util.h>
 #include <util/util.h>
 #include "core.h"
