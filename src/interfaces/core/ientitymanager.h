@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <any>
 #include <QObject>
 
 namespace LeechCraft
@@ -64,6 +65,10 @@ public:
 		 */
 		int ID_ = 0;
 
+		/** Any additional information the handling plugin might return
+		 * back to the delegator.
+		 */
+		std::any ExtendedResult_;
 
 		explicit operator bool () const
 		{
