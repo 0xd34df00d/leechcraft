@@ -158,7 +158,6 @@ namespace CSTP
 		tasks_t::reference TaskAt (int);
 	signals:
 		void taskFinished (int);
-		void taskRemoved (int);
 		void taskError (int, IDownload::Error::Type);
 		void error (const QString&);
 		void fileExists (FileExistsBehaviour*);
