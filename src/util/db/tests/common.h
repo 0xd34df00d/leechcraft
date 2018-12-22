@@ -70,7 +70,7 @@ namespace LeechCraft::Util::oral
 	}
 }
 
-#if QT_VERSION < 0x051200
+#if QT_VERSION < QT_VERSION_CHECK(5,12,0)
 template<typename... Args>
 char* toString (const std::tuple<Args...>& tuple)
 {
