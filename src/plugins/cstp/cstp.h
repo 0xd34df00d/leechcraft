@@ -77,7 +77,7 @@ namespace CSTP
 		void StartAll ();
 		void StopAll ();
 		EntityTestHandleResult CouldDownload (const LeechCraft::Entity&) const;
-		int AddJob (LeechCraft::Entity);
+		QPair<int, QFuture<Result>> AddJob (LeechCraft::Entity);
 		void KillTask (int);
 
 		QAbstractItemModel* GetRepresentation () const;

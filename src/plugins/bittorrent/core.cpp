@@ -84,7 +84,9 @@
 #include <util/sll/util.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/prelude.h>
+#include <util/sll/either.h>
 #include <util/sys/paths.h>
+#include <util/threads/futures.h>
 #include "xmlsettingsmanager.h"
 #include "piecesmodel.h"
 #include "peersmodel.h"
@@ -913,16 +915,20 @@ namespace BitTorrent
 	{
 		libtorrent::storage_mode_t GetCurrentStorageMode ()
 		{
-			QString sm = XmlSettingsManager::Instance ()->
-				property ("AllocationMode").toString ();
+			auto sm = XmlSettingsManager::Instance ()->property ("AllocationMode").toString ();
 			if (sm == "full")
 				return libtorrent::storage_mode_allocate;
 			else
 				return libtorrent::storage_mode_sparse;
 		}
-	};
 
-	int Core::AddMagnet (const QString& magnet,
+		QPair<int, QFuture<IDownload::Result>> MakeErrorResult (const QString& msg)
+		{
+			return { -1, Util::MakeReadyFuture (IDownload::Result::Left ({ IDownload::Error::Type::LocalError, msg })) };
+		}
+	}
+
+	QPair<int, QFuture<IDownload::Result>> Core::AddMagnet (const QString& magnet,
 			const QString& path,
 			const QStringList& tags,
 			TaskParameters params)
@@ -942,30 +948,22 @@ namespace BitTorrent
 		catch (const libtorrent::libtorrent_exception& e)
 		{
 			HandleLibtorrentException (e);
-			return -1;
+			return MakeErrorResult ("Torrent error");
 		}
 		catch (const std::exception& e)
 		{
 			qWarning () << Q_FUNC_INFO << e.what ();
-			return -1;
+			return MakeErrorResult ("General error");
 		}
 
-		const TorrentStruct tmp
-		{
-			handle,
-			tags,
-			Proxy_->GetID (),
-			params
-		};
-
 		beginInsertRows ({}, Handles_.size (), Handles_.size ());
-		Handles_ << tmp;
+		Handles_.append ({ handle, tags, Proxy_->GetID (), params });
 		endInsertRows ();
 
-		return tmp.ID_;
+		return { Handles_.back ().ID_, Handles_.back ().Promise_->future () };
 	}
 
-	int Core::AddFile (const QString& filename,
+	QPair<int, QFuture<IDownload::Result>> Core::AddFile (const QString& filename,
 			const QString& path,
 			const QStringList& tags,
 			bool tryLive,
@@ -978,7 +976,7 @@ namespace BitTorrent
 			ShowError (tr ("File %1 could not be read: %2.")
 					.arg (filename)
 					.arg (file.errorString ()));
-			return -1;
+			return MakeErrorResult ("Cannot read file");
 		}
 		const auto& contents = file.readAll ();
 
@@ -1002,12 +1000,12 @@ namespace BitTorrent
 		catch (const libtorrent::libtorrent_exception& e)
 		{
 			HandleLibtorrentException (e);
-			return -1;
+			return MakeErrorResult ("Torrent error");
 		}
 		catch (const std::runtime_error&)
 		{
 			ShowError (tr ("Runtime error"));
-			return -1;
+			return MakeErrorResult ("General error");
 		}
 
 		std::vector<int> priorities (atp.ti->num_files (), 1);
@@ -1048,7 +1046,7 @@ namespace BitTorrent
 		}
 
 		ScheduleSave ();
-		return newId;
+		return { newId, Handles_.back ().Promise_->future () };
 	}
 
 	void Core::KillTask (int id)
@@ -1891,6 +1889,9 @@ namespace BitTorrent
 		}
 
 		emit taskFinished (torrent.ID_);
+
+		if (torrent.Promise_)
+			Util::ReportFutureResult (*torrent.Promise_, IDownload::Result::Right ({}));
 	}
 
 	void Core::HandleFileRenamed (const libtorrent::file_renamed_alert& a)

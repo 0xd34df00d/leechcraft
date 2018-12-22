@@ -31,10 +31,12 @@
 #include <functional>
 #include <algorithm>
 #include <QThread>
+#include <QFuture>
 #include <QDesktopServices>
 #include <QUrl>
 #include "util/util.h"
 #include "util/sll/prelude.h"
+#include "util/sll/either.h"
 #include "util/sll/slotclosure.h"
 #include "interfaces/structures.h"
 #include "interfaces/idownload.h"
@@ -272,7 +274,10 @@ namespace LeechCraft
 
 		for (auto obj : handlers)
 			if (auto idl = qobject_cast<IDownload*> (obj))
-				return { obj, idl->AddJob (e) };
+			{
+				const auto& pair = idl->AddJob (e);
+				return { obj, pair.first, pair.second };
+			}
 
 		return {};
 	}

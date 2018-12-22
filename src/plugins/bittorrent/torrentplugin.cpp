@@ -60,6 +60,7 @@
 #include <util/util.h>
 #include <util/xpc/util.h>
 #include <util/shortcuts/shortcutmanager.h>
+#include <util/threads/futures.h>
 #include "core.h"
 #include "addtorrent.h"
 #include "addmultipletorrents.h"
@@ -212,7 +213,7 @@ namespace BitTorrent
 		return Core::Instance ()->CouldDownload (e);
 	}
 
-	int TorrentPlugin::AddJob (Entity e)
+	QPair<int, QFuture<IDownload::Result>> TorrentPlugin::AddJob (Entity e)
 	{
 		QString suggestedFname;
 		auto tm = Core::Instance ()->GetProxy ()->GetTagsManager ();
@@ -255,7 +256,11 @@ namespace BitTorrent
 					<< "unable to open file"
 					<< suggestedFname
 					<< file.errorString ();
-			return -1;
+			return
+			{
+				-1,
+				Util::MakeReadyFuture (Result::Left ({ Error::Type::LocalError, "Unable to open file" }))
+			};
 		}
 
 		AddTorrentDialog_->Reinit ();
@@ -284,7 +289,11 @@ namespace BitTorrent
 			dialogGuard.exec ();
 
 			if (AddTorrentDialog_->result () == QDialog::Rejected)
-				return -1;
+				return
+				{
+					-1,
+					Util::MakeReadyFuture (Result::Left ({ Error::Type::UserCanceled, {} }))
+				};
 
 			fname = AddTorrentDialog_->GetFilename (),
 			path = AddTorrentDialog_->GetSavePath ();
@@ -304,7 +313,7 @@ namespace BitTorrent
 			const auto& hrTags = Core::Instance ()->GetProxy ()->GetTagsManager ()->Split (tagsString);
 			tags = Core::Instance ()->GetProxy ()->GetTagsManager ()->GetIDs (hrTags);
 		}
-		int result = Core::Instance ()->AddFile (fname,
+		auto result = Core::Instance ()->AddFile (fname,
 				path,
 				tags,
 				tryLive,

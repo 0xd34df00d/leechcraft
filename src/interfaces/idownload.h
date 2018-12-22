@@ -146,7 +146,7 @@ public:
 	 *
 	 * @sa LeechCraft::Entity
 	 */
-	virtual int AddJob (LeechCraft::Entity entity) = 0;
+	virtual QPair<int, QFuture<Result>> AddJob (LeechCraft::Entity entity) = 0;
 
 	/** @brief Kills the task with the given id.
 	 *

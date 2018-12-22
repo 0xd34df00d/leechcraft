@@ -32,18 +32,22 @@
 #include <map>
 #include <list>
 #include <memory>
+#include <optional>
 #include <QAbstractItemModel>
 #include <QPair>
 #include <QList>
 #include <QVector>
 #include <QIcon>
+#include <QFutureInterface>
 #include <libtorrent/alert_types.hpp>
 #include <libtorrent/torrent_info.hpp>
 #include <libtorrent/torrent_handle.hpp>
 #include <libtorrent/session_status.hpp>
 #include <interfaces/iinfo.h>
 #include <interfaces/structures.h>
+#include <interfaces/idownload.h>
 #include <util/tags/tagscompletionmodel.h>
+#include <util/sll/either.h>
 #include "torrentinfo.h"
 #include "fileinfo.h"
 #include "peerinfo.h"
@@ -110,6 +114,8 @@ namespace BitTorrent
 			int ID_;
 			TaskParameters Parameters_;
 
+			std::optional<QFutureInterface<IDownload::Result>> Promise_;
+
 			bool PauseAfterCheck_ = false;
 
 			TorrentStruct (const libtorrent::torrent_handle& handle,
@@ -120,6 +126,7 @@ namespace BitTorrent
 			, Tags_ { tags }
 			, ID_ { id }
 			, Parameters_ { params }
+			, Promise_ { QFutureInterface<IDownload::Result> {} }
 			{
 			}
 
@@ -261,7 +268,7 @@ namespace BitTorrent
 			* @param[in] params Task parameters.
 			* @return The ID of the task.
 			*/
-		int AddMagnet (const QString& magnet,
+		QPair<int, QFuture<IDownload::Result>> AddMagnet (const QString& magnet,
 				const QString& path,
 				const QStringList& tags,
 				LeechCraft::TaskParameters params = LeechCraft::NoParameters);
@@ -280,7 +287,7 @@ namespace BitTorrent
 			* @param[in] params Task parameters.
 			* @return The ID of the task.
 			*/
-		int AddFile (const QString& filename,
+		QPair<int, QFuture<IDownload::Result>> AddFile (const QString& filename,
 				const QString& path,
 				const QStringList& tags,
 				bool tryLive,
