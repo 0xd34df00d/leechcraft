@@ -87,6 +87,9 @@ namespace Snails
 
 	QList<QSslCertificate> ToSslCerts (const vmime::shared_ptr<const vmime::security::cert::certificate>& cert)
 	{
+		if (!cert)
+			return {};
+
 		const auto& encoded = cert->getEncoded ();
 		const auto& data = QByteArray::fromRawData (reinterpret_cast<const char*> (&encoded [0]),
 				static_cast<int> (encoded.size ()));
