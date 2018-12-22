@@ -39,6 +39,7 @@
 #include <util/qml/themeimageprovider.h>
 #include <util/qml/standardnamfactory.h>
 #include <util/qml/qmlerrorwatcher.h>
+#include <util/sll/prelude.h>
 #include <interfaces/lmp/ilmpproxy.h>
 #include <interfaces/lmp/ilocalcollection.h>
 #include "checkmodel.h"
@@ -68,6 +69,12 @@ namespace BrainSlugz
 				return idx.data (CheckModel::MissingCount).toInt ();
 			}
 		};
+
+		auto SortArtists (Collection::Artists_t artists)
+		{
+			std::sort (artists.begin (), artists.end (), Util::ComparingBy (&Collection::Artist::Name_));
+			return artists;
+		}
 	}
 
 	CheckTab::CheckTab (const ILMPProxy_ptr& lmpProxy,
@@ -79,7 +86,7 @@ namespace BrainSlugz
 	, TC_ (tc)
 	, Plugin_ { plugin }
 	, Toolbar_ { new QToolBar { this } }
-	, Model_ { new CheckModel { lmpProxy->GetLocalCollection ()->GetAllArtists (),
+	, Model_ { new CheckModel { SortArtists (lmpProxy->GetLocalCollection ()->GetAllArtists ()),
 				coreProxy, lmpProxy, this } }
 	, CheckedModel_ { new MissingModel { Model_, this } }
 	{
