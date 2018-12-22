@@ -243,9 +243,7 @@ namespace BitTorrent
 
 		QByteArray entity = e.Entity_.toByteArray ();
 
-		QFile file (suggestedFname);
-		if ((!file.exists () ||
-				!file.open (QIODevice::ReadOnly)) &&
+		if (!QFile::exists (suggestedFname) &&
 				Core::Instance ()->IsValidTorrent (entity))
 		{
 			QTemporaryFile tmpFile ("lctemporarybittorrentfile.XXXXXX");
@@ -254,6 +252,16 @@ namespace BitTorrent
 			tmpFile.write (entity);
 			suggestedFname = tmpFile.fileName ().toUtf8 ();
 			tmpFile.setAutoRemove (false);
+		}
+
+		QFile file { suggestedFname };
+		if (!file.open (QIODevice::ReadOnly))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to open file"
+					<< suggestedFname
+					<< file.errorString ();
+			return -1;
 		}
 
 		AddTorrentDialog_->Reinit ();
