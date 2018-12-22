@@ -468,6 +468,9 @@ namespace LMP
 	{
 		void DumpAlbumsSet (const QList<Collection::Album_ptr>& albumsSet, const char *context)
 		{
+			if (qgetenv ("LC_LMP_DEBUG_UNITE_SPLITS") != "1")
+				return;
+
 			qDebug () << context;
 			qDebug () << "\t" << albumsSet [0]->Name_;
 			for (const auto& album : albumsSet)
