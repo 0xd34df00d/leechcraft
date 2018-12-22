@@ -62,7 +62,7 @@ namespace BrainSlugz
 				setDynamicSortFilter (true);
 			}
 		protected:
-			bool filterAcceptsRow (int row, const QModelIndex&) const
+			bool filterAcceptsRow (int row, const QModelIndex&) const override
 			{
 				const auto& idx = sourceModel ()->index (row, 0);
 				return idx.data (CheckModel::MissingCount).toInt ();
