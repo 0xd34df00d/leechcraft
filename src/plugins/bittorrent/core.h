@@ -56,7 +56,6 @@ class QDataStream;
 
 namespace libtorrent
 {
-	struct cache_status;
 	class session;
 };
 
@@ -74,7 +73,6 @@ namespace BitTorrent
 	class PiecesModel;
 	class PeersModel;
 	class TorrentFilesModel;
-	class RepresentationModel;
 	class LiveStreamManager;
 	class SessionSettingsManager;
 	class CachedStatusKeeper;
