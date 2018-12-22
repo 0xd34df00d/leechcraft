@@ -300,12 +300,9 @@ namespace BitTorrent
 		{
 			fname = suggestedFname;
 			path = e.Location_;
-			QString at = XmlSettingsManager::Instance ()->
-				property ("AutomaticTags").toString ();
-			Q_FOREACH (QString tag, Core::Instance ()->GetProxy ()->
-					GetTagsManager ()->Split (at))
-				tags << Core::Instance ()->GetProxy ()->
-					GetTagsManager ()->GetID (tag);
+			const auto& tagsString = XmlSettingsManager::Instance ()->property ("AutomaticTags").toString ();
+			const auto& hrTags = Core::Instance ()->GetProxy ()->GetTagsManager ()->Split (tagsString);
+			tags = Core::Instance ()->GetProxy ()->GetTagsManager ()->GetIDs (hrTags);
 		}
 		int result = Core::Instance ()->AddFile (fname,
 				path,
