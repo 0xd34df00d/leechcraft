@@ -70,6 +70,7 @@ namespace LeechCraft::Util::oral
 	}
 }
 
+#if QT_VERSION < 0x051200
 template<typename... Args>
 char* toString (const std::tuple<Args...>& tuple)
 {
@@ -85,6 +86,7 @@ char* toString (const std::tuple<Args...>& tuple)
 
 	return qstrdup (ba.data ());
 }
+#endif
 
 #define TOSTRING(n) inline char* toString (const n& rec) { return toString (#n, rec); }
 
