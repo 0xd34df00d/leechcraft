@@ -29,7 +29,10 @@
 
 #include "repoinfofetcher.h"
 #include <QTimer>
+#include <util/sll/either.h>
+#include <util/sll/visitor.h>
 #include <util/sys/paths.h>
+#include <util/threads/futures.h>
 #include <util/xpc/util.h>
 #include <interfaces/core/ientitymanager.h>
 #include "core.h"
@@ -48,15 +51,9 @@ namespace LackMan
 
 	namespace
 	{
-		template<typename PendingF>
-		void FetchImpl (QHash<int, std::result_of_t<PendingF (QString)>>& map,
-				PendingF&& factory,
-				const QUrl& url,
-				const ICoreProxy_ptr& proxy,
-				QObject *object,
-				const char *finished,
-				const char *removed,
-				const char *error)
+		template<typename SuccessF>
+		void FetchImpl (const QUrl& url, const ICoreProxy_ptr& proxy, QObject *object,
+				const QString& failureHeading, SuccessF&& successFun)
 		{
 			const auto& location = Util::GetTemporaryName ("lackman_XXXXXX.gz");
 
@@ -79,23 +76,19 @@ namespace LackMan
 				return;
 			}
 
-			map [result.ID_] = factory (location);
-
-			QObject::connect (result.Handler_,
-					SIGNAL (jobFinished (int)),
-					object,
-					finished,
-					Qt::UniqueConnection);
-			QObject::connect (result.Handler_,
-					SIGNAL (jobRemoved (int)),
-					object,
-					removed,
-					Qt::UniqueConnection);
-			QObject::connect (result.Handler_,
-					SIGNAL (jobError (int, IDownload::Error::Type)),
-					object,
-					error,
-					Qt::UniqueConnection);
+			Util::Sequence (object, boost::any_cast<QFuture<IDownload::Result>> (result.ExtendedResult_)) >>
+					Util::Visitor
+					{
+						[successFun, location] (IDownload::Success) { successFun (location); },
+						[proxy, url, failureHeading, location] (const IDownload::Error&)
+						{
+							proxy->GetEntityManager ()->HandleEntity (Util::MakeNotification (failureHeading,
+									RepoInfoFetcher::tr ("Error downloading file from %1.")
+											.arg (url.toString ()),
+									Priority::Critical));
+							QFile::remove (location);
+						}
+					};
 		}
 	}
 
@@ -108,17 +101,11 @@ namespace LackMan
 			url.setPath (path);
 		}
 
-		QUrl goodUrl = url;
-		goodUrl.setPath (goodUrl.path ().remove ("/Repo.xml.gz"));
+		QUrl baseUrl = url;
+		baseUrl.setPath (baseUrl.path ().remove ("/Repo.xml.gz"));
 
-		FetchImpl (PendingRIs_,
-				[&] (const QString& loc) { return PendingRI { goodUrl, loc }; },
-				url,
-				Proxy_,
-				this,
-				SLOT (handleRIFinished (int)),
-				SLOT (handleRIRemoved (int)),
-				SLOT (handleRIError (int, IDownload::Error::Type)));
+		FetchImpl (url, Proxy_, this, tr ("Error fetching repository"),
+				[this, baseUrl] (const QString& location) { HandleRIFinished (location, baseUrl); });
 	}
 
 	void RepoInfoFetcher::FetchComponent (QUrl url, int repoId, const QString& component)
@@ -126,14 +113,8 @@ namespace LackMan
 		if (!url.path ().endsWith ("/Packages.xml.gz"))
 			url.setPath (url.path () + "/Packages.xml.gz");
 
-		FetchImpl (PendingComponents_,
-				[&] (const QString& loc) { return PendingComponent { url, loc, component, repoId }; },
-				url,
-				Proxy_,
-				this,
-				SLOT (handleComponentFinished (int)),
-				SLOT (handleComponentRemoved (int)),
-				SLOT (handleComponentError (int, IDownload::Error::Type)));
+		FetchImpl (url, Proxy_, this, tr ("Error fetching component"),
+				[=] (const QString& location) { HandleComponentFinished (url, location, component, repoId); });
 	}
 
 	void RepoInfoFetcher::ScheduleFetchPackageInfo (const QUrl& url,
@@ -166,14 +147,11 @@ namespace LackMan
 		packageUrl.setPath (packageUrl.path () +
 				LackManUtil::NormalizePackageName (packageName) + ".xml.gz");
 
-		FetchImpl (PendingPackages_,
-				[&] (const QString& loc) { return PendingPackage { packageUrl, baseUrl, loc, packageName, newVersions, componentId }; },
-				packageUrl,
-				Proxy_,
-				this,
-				SLOT (handlePackageFinished (int)),
-				SLOT (handlePackageRemoved (int)),
-				SLOT (handlePackageError (int, IDownload::Error::Type)));
+		FetchImpl (packageUrl, Proxy_, this, tr ("Error fetching package info"),
+				[=] (const QString& location)
+				{
+					HandlePackageFinished ({ packageUrl, baseUrl, location, packageName, newVersions, componentId });
+				});
 	}
 
 	void RepoInfoFetcher::rotatePackageFetchQueue ()
@@ -188,17 +166,11 @@ namespace LackMan
 			QTimer::singleShot (50, this, SLOT (rotatePackageFetchQueue ()));
 	}
 
-	void RepoInfoFetcher::handleRIFinished (int id)
+	void RepoInfoFetcher::HandleRIFinished (const QString& location, const QUrl& url)
 	{
-		if (!PendingRIs_.contains (id))
-			return;
-
-		PendingRI pri = PendingRIs_.take (id);
-
-		QString name = pri.Location_;
 		QProcess *unarch = new QProcess (this);
-		unarch->setProperty ("URL", pri.URL_);
-		unarch->setProperty ("Filename", name);
+		unarch->setProperty ("URL", url);
+		unarch->setProperty ("Filename", location);
 		connect (unarch,
 				SIGNAL (finished (int, QProcess::ExitStatus)),
 				this,
@@ -208,47 +180,20 @@ namespace LackMan
 				this,
 				SLOT (handleUnarchError (QProcess::ProcessError)));
 #ifdef Q_OS_WIN32
-		unarch->start ("7za", { "e", "-so", name });
+		unarch->start ("7za", { "e", "-so", location });
 #else
-		unarch->start ("gunzip", { "-c", name });
+		unarch->start ("gunzip", { "-c", location });
 #endif
 	}
 
-	void RepoInfoFetcher::handleRIRemoved (int id)
+	void RepoInfoFetcher::HandleComponentFinished (const QUrl& url,
+			const QString& location, const QString& component, int repoId)
 	{
-		if (!PendingRIs_.contains (id))
-			return;
-
-		PendingRIs_.remove (id);
-	}
-
-	void RepoInfoFetcher::handleRIError (int id, IDownload::Error::Type)
-	{
-		if (!PendingRIs_.contains (id))
-			return;
-
-		PendingRI pri = PendingRIs_.take (id);
-
-		QFile::remove (pri.Location_);
-
-		Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification (tr ("Error fetching repository"),
-				tr ("Error downloading file from %1.")
-					.arg (pri.URL_.toString ()),
-				Priority::Critical));
-	}
-
-	void RepoInfoFetcher::handleComponentFinished (int id)
-	{
-		if (!PendingComponents_.contains (id))
-			return;
-
-		PendingComponent pc = PendingComponents_.take (id);
-
 		QProcess *unarch = new QProcess (this);
-		unarch->setProperty ("Component", pc.Component_);
-		unarch->setProperty ("Filename", pc.Location_);
-		unarch->setProperty ("URL", pc.URL_);
-		unarch->setProperty ("RepoID", pc.RepoID_);
+		unarch->setProperty ("Component", component);
+		unarch->setProperty ("Filename", location);
+		unarch->setProperty ("URL", url);
+		unarch->setProperty ("RepoID", repoId);
 		connect (unarch,
 				SIGNAL (finished (int, QProcess::ExitStatus)),
 				this,
@@ -258,46 +203,18 @@ namespace LackMan
 				this,
 				SLOT (handleUnarchError (QProcess::ProcessError)));
 #ifdef Q_OS_WIN32
-		unarch->start ("7za", { "e", "-so", pc.Location_ });
+		unarch->start ("7za", { "e", "-so", location });
 #else
-		unarch->start ("gunzip", { "-c", pc.Location_ });
+		unarch->start ("gunzip", { "-c", location });
 #endif
 	}
 
-	void RepoInfoFetcher::handleComponentRemoved (int id)
+	void RepoInfoFetcher::HandlePackageFinished (const PendingPackage& pp)
 	{
-		if (!PendingComponents_.contains (id))
-			return;
-
-		PendingComponents_.remove (id);
-	}
-
-	void RepoInfoFetcher::handleComponentError (int id, IDownload::Error::Type)
-	{
-		if (!PendingComponents_.contains (id))
-			return;
-
-		PendingComponent pc = PendingComponents_.take (id);
-
-		QFile::remove (pc.Location_);
-
-		Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification (tr ("Error fetching component"),
-				tr ("Error downloading file from %1.")
-					.arg (pc.URL_.toString ()),
-				Priority::Critical));
-	}
-
-	void RepoInfoFetcher::handlePackageFinished (int id)
-	{
-		if (!PendingPackages_.contains (id))
-			return;
-
-		PendingPackage pp = PendingPackages_ [id];
-
 		QProcess *unarch = new QProcess (this);
 		unarch->setProperty ("Filename", pp.Location_);
 		unarch->setProperty ("URL", pp.URL_);
-		unarch->setProperty ("TaskID", id);
+		unarch->setProperty ("PP", QVariant::fromValue (pp));
 		connect (unarch,
 				SIGNAL (finished (int, QProcess::ExitStatus)),
 				this,
@@ -311,29 +228,6 @@ namespace LackMan
 #else
 		unarch->start ("gunzip", { "-c", pp.Location_ });
 #endif
-	}
-
-	void RepoInfoFetcher::handlePackageRemoved (int id)
-	{
-		if (!PendingPackages_.contains (id))
-			return;
-
-		PendingPackages_.remove (id);
-	}
-
-	void RepoInfoFetcher::handlePackageError (int id, IDownload::Error::Type)
-	{
-		if (!PendingPackages_.contains (id))
-			return;
-
-		PendingPackage pp = PendingPackages_.take (id);
-
-		QFile::remove (pp.Location_);
-
-		Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification (tr ("Error fetching package"),
-				tr ("Error fetching package from %1.")
-					.arg (pp.URL_.toString ()),
-				Priority::Critical));
 	}
 
 	void RepoInfoFetcher::handleRepoUnarchFinished (int exitCode,
@@ -420,8 +314,7 @@ namespace LackMan
 	{
 		sender ()->deleteLater ();
 
-		int id = sender ()->property ("TaskID").toInt ();
-		PendingPackage pp = PendingPackages_.take (id);
+		auto pp = sender ()->property ("PP").value<PendingPackage> ();
 
 		if (exitCode)
 		{

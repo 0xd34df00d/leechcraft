@@ -47,22 +47,6 @@ namespace LackMan
 
 		const ICoreProxy_ptr Proxy_;
 
-		struct PendingRI
-		{
-			QUrl URL_;
-			QString Location_;
-		};
-		QHash<int, PendingRI> PendingRIs_;
-
-		struct PendingComponent
-		{
-			QUrl URL_;
-			QString Location_;
-			QString Component_;
-			int RepoID_;
-		};
-		QHash<int, PendingComponent> PendingComponents_;
-
 		struct ScheduledPackageFetch
 		{
 			QUrl BaseUrl_;
@@ -72,6 +56,7 @@ namespace LackMan
 		};
 		QList<ScheduledPackageFetch> ScheduledPackages_;
 
+	public:
 		struct PendingPackage
 		{
 			QUrl URL_;
@@ -81,8 +66,7 @@ namespace LackMan
 			QList<QString> NewVersions_;
 			int ComponentId_;
 		};
-		QHash<int, PendingPackage> PendingPackages_;
-	public:
+
 		RepoInfoFetcher (const ICoreProxy_ptr& proxy, QObject*);
 
 		void FetchFor (QUrl);
@@ -96,18 +80,12 @@ namespace LackMan
 				const QString& name,
 				const QList<QString>& newVers,
 				int componentId);
+
+		void HandleRIFinished (const QString&, const QUrl&);
+		void HandleComponentFinished (const QUrl&, const QString&, const QString&, int);
+		void HandlePackageFinished (const PendingPackage&);
 	private slots:
 		void rotatePackageFetchQueue ();
-
-		void handleRIFinished (int);
-		void handleRIRemoved (int);
-		void handleRIError (int, IDownload::Error::Type);
-		void handleComponentFinished (int);
-		void handleComponentRemoved (int);
-		void handleComponentError (int, IDownload::Error::Type);
-		void handlePackageFinished (int);
-		void handlePackageRemoved (int);
-		void handlePackageError (int, IDownload::Error::Type);
 
 		void handleRepoUnarchFinished (int, QProcess::ExitStatus);
 		void handleComponentUnarchFinished (int, QProcess::ExitStatus);
@@ -121,5 +99,7 @@ namespace LackMan
 	};
 }
 }
+
+Q_DECLARE_METATYPE (LeechCraft::LackMan::RepoInfoFetcher::PendingPackage)
 
 #endif
