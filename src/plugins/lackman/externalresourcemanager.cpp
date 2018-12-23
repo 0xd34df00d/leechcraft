@@ -58,9 +58,9 @@ namespace LackMan
 		if (ResourcesDir_.exists (fileName))
 			ResourcesDir_.remove (fileName);
 
-		Q_FOREACH (const PendingResource& pr, PendingResources_.values ())
-			if (pr.URL_ == url)
-				return;
+		if (std::any_of (PendingResources_.begin (), PendingResources_.end (),
+				[&url] (const auto& pr) { return pr.URL_ == url; }))
+			return;
 
 		QString location = ResourcesDir_.filePath (fileName);
 
