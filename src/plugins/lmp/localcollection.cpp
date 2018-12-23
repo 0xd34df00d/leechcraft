@@ -631,9 +631,7 @@ namespace LMP
 
 	void LocalCollection::PostprocessArtistsInfos (Collection::Artists_t& artists)
 	{
-		qDebug () << "postproc begin";
 		UniteSplitAlbums (artists);
-		qDebug () << "postproc end";
 	}
 
 	void LocalCollection::HandleNewArtists (Collection::Artists_t artists, const QSet<int>& ignored)
