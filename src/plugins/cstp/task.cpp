@@ -113,6 +113,8 @@ namespace CSTP
 				SIGNAL (timeout ()),
 				this,
 				SIGNAL (updateInterface ()));
+
+		Promise_.reportStarted ();
 	}
 
 	Task::~Task ()
@@ -223,8 +225,6 @@ namespace CSTP
 				SIGNAL (readyRead ()),
 				this,
 				SLOT (handleReadyRead ()));
-
-		Promise_.reportStarted ();
 	}
 
 	void Task::Stop ()
