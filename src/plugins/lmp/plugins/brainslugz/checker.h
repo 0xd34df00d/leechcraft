@@ -58,7 +58,6 @@ namespace BrainSlugz
 		const QList<Media::ReleaseInfo::Type> Types_;
 
 		Collection::Artists_t Artists_;
-		Collection::Artist Current_;
 	public:
 		Checker (CheckModel*, const QList<Media::ReleaseInfo::Type>&,
 				const ICoreProxy_ptr&, QObject* = nullptr);
@@ -66,7 +65,7 @@ namespace BrainSlugz
 		int GetRemainingCount () const;
 	private:
 		void HandleReady ();
-		void HandleDiscoReady (QList<Media::ReleaseInfo>);
+		void HandleDiscoReady (const Collection::Artist&, QList<Media::ReleaseInfo>);
 	private slots:
 		void rotateQueue ();
 	signals:

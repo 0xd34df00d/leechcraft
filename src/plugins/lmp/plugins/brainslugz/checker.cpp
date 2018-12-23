@@ -122,7 +122,7 @@ namespace BrainSlugz
 		}
 	}
 
-	void Checker::HandleDiscoReady (QList<Media::ReleaseInfo> releases)
+	void Checker::HandleDiscoReady (const Collection::Artist& artist, QList<Media::ReleaseInfo> releases)
 	{
 		releases.erase (std::remove_if (releases.begin (), releases.end (),
 					[this] (const Media::ReleaseInfo& info)
@@ -133,7 +133,7 @@ namespace BrainSlugz
 
 		bool foundSome = false;
 
-		for (const auto& albumPtr : Current_.Albums_)
+		for (const auto& albumPtr : artist.Albums_)
 		{
 			const auto pos = std::find_if (releases.begin (), releases.end (), Util::Curry (IsSameRelease) (albumPtr));
 			if (pos == releases.end ())
@@ -147,15 +147,15 @@ namespace BrainSlugz
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "we probably found something different for"
-					<< Current_.Name_;
+					<< artist.Name_;
 			for (const auto& release : releases)
 				qWarning () << "\t" << release.Year_ << release.Name_;
-			Model_->MarkNoNews (Current_);
+			Model_->MarkNoNews (artist);
 		}
 		else if (releases.isEmpty ())
-			Model_->MarkNoNews (Current_);
+			Model_->MarkNoNews (artist);
 		else
-			Model_->SetMissingReleases (releases, Current_);
+			Model_->SetMissingReleases (releases, artist);
 	}
 
 	void Checker::rotateQueue ()
@@ -168,17 +168,18 @@ namespace BrainSlugz
 			return;
 		}
 
-		Current_ = Artists_.takeFirst ();
-		Util::Sequence (this, Provider_->GetDiscography (Current_.Name_, {})) >>
+		auto artist = Artists_.takeFirst ();
+		Util::Sequence (this, Provider_->GetDiscography (artist.Name_, {})) >>
 				Util::Visitor
 				{
-					[&] (const QString&)
+					[=] (const QString& error)
 					{
 						qWarning () << Q_FUNC_INFO
-								<< Current_.Name_;
-						Model_->MarkNoNews (Current_);
+								<< artist.Name_
+								<< error;
+						Model_->MarkNoNews (artist);
 					},
-					[&] (const auto& result) { HandleDiscoReady (result); }
+					[=] (const auto& result) { HandleDiscoReady (artist, result); }
 				}.Finally ([this] { rotateQueue (); });
 	}
 }
