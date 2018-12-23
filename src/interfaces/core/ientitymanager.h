@@ -29,7 +29,7 @@
 
 #pragma once
 
-#include <any>
+#include <boost/any.hpp>
 #include <QObject>
 
 namespace LeechCraft
@@ -68,7 +68,7 @@ public:
 		/** Any additional information the handling plugin might return
 		 * back to the delegator.
 		 */
-		std::any ExtendedResult_;
+		boost::any ExtendedResult_;
 
 		explicit operator bool () const
 		{
