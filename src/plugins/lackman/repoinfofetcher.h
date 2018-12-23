@@ -84,13 +84,14 @@ namespace LackMan
 		void HandleRIFinished (const QString&, const QUrl&);
 		void HandleComponentFinished (const QUrl&, const QString&, const QString&, int);
 		void HandlePackageFinished (const PendingPackage&);
+
+		void HandleUnarchError (const QUrl&, const QString&, QProcess*);
 	private slots:
 		void rotatePackageFetchQueue ();
 
 		void handleRepoUnarchFinished (int, QProcess::ExitStatus);
 		void handleComponentUnarchFinished (int, QProcess::ExitStatus);
 		void handlePackageUnarchFinished (int, QProcess::ExitStatus);
-		void handleUnarchError (QProcess::ProcessError);
 	signals:
 		void infoFetched (const RepoInfo&);
 		void componentFetched (const PackageShortInfoList& packages,

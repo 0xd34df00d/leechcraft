@@ -176,9 +176,8 @@ namespace LackMan
 				this,
 				SLOT (handleRepoUnarchFinished (int, QProcess::ExitStatus)));
 		connect (unarch,
-				SIGNAL (error (QProcess::ProcessError)),
-				this,
-				SLOT (handleUnarchError (QProcess::ProcessError)));
+				&QProcess::errorOccurred,
+				[=] { HandleUnarchError (url, location, unarch); });
 #ifdef Q_OS_WIN32
 		unarch->start ("7za", { "e", "-so", location });
 #else
@@ -199,9 +198,8 @@ namespace LackMan
 				this,
 				SLOT (handleComponentUnarchFinished (int, QProcess::ExitStatus)));
 		connect (unarch,
-				SIGNAL (error (QProcess::ProcessError)),
-				this,
-				SLOT (handleUnarchError (QProcess::ProcessError)));
+				&QProcess::errorOccurred,
+				[=] { HandleUnarchError (url, location, unarch); });
 #ifdef Q_OS_WIN32
 		unarch->start ("7za", { "e", "-so", location });
 #else
@@ -220,9 +218,8 @@ namespace LackMan
 				this,
 				SLOT (handlePackageUnarchFinished (int, QProcess::ExitStatus)));
 		connect (unarch,
-				SIGNAL (error (QProcess::ProcessError)),
-				this,
-				SLOT (handleUnarchError (QProcess::ProcessError)));
+				&QProcess::errorOccurred,
+				[=] { HandleUnarchError (pp.URL_, pp.Location_, unarch); });
 #ifdef Q_OS_WIN32
 		unarch->start ("7za", { "e", "-so", pp.Location_ });
 #else
@@ -349,17 +346,19 @@ namespace LackMan
 		emit packageFetched (packageInfo, pp.ComponentId_);
 	}
 
-	void RepoInfoFetcher::handleUnarchError (QProcess::ProcessError error)
+	void RepoInfoFetcher::HandleUnarchError (const QUrl& url, const QString& filename, QProcess *process)
 	{
-		sender ()->deleteLater ();
+		process->deleteLater ();
+
+		auto error = process->error ();
 
 		qWarning () << Q_FUNC_INFO
 				<< "unable to unpack for"
-				<< sender ()->property ("URL").toUrl ()
-				<< sender ()->property ("Filename").toString ()
+				<< url
+				<< filename
 				<< "with"
 				<< error
-				<< qobject_cast<QProcess*> (sender ())->readAllStandardError ();
+				<< process->readAllStandardError ();
 		Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification (tr ("Component unpack error"),
 					tr ("Unable to unpack file. Exit code: %1. "
 						"Problematic file is at %2.")
