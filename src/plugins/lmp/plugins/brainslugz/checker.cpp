@@ -156,8 +156,6 @@ namespace BrainSlugz
 			Model_->MarkNoNews (Current_);
 		else
 			Model_->SetMissingReleases (releases, Current_);
-
-		rotateQueue ();
 	}
 
 	void Checker::rotateQueue ()
