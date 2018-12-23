@@ -34,6 +34,9 @@
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/netstoremanager/istorageaccount.h>
 #include <util/xpc/util.h>
+#include <util/threads/futures.h>
+#include <util/sll/visitor.h>
+#include <util/sll/either.h>
 
 namespace LeechCraft
 {
@@ -64,41 +67,25 @@ namespace NetStoreManager
 			return;
 		}
 
-		Id2SavePath_ [res.ID_] = targetPath;
-		Id2OpenAfterDownloadState_ [res.ID_] = openAfterDownload;
-		HandleProvider (res.Handler_, res.ID_);
-	}
-
-	void DownManager::HandleProvider (QObject* provider, int id)
-	{
-		Id2Downloader_ [id] = provider;
-
-		if (Downloaders_.contains (provider))
-			return;
-
-		Downloaders_ << provider;
-		connect (provider,
-				SIGNAL (jobFinished (int)),
-				this,
-				SLOT (handleJobFinished (int)));
-		connect (provider,
-				SIGNAL (jobRemoved (int)),
-				this,
-				SLOT (handleJobRemoved (int)));
-		connect (provider,
-				SIGNAL (jobError (int, IDownload::Error::Type)),
-				this,
-				SLOT (handleJobError (int, IDownload::Error::Type)));
+		Util::Sequence (this, boost::any_cast<QFuture<IDownload::Result>> (res.ExtendedResult_)) >>
+				Util::Visitor
+				{
+					[=] (IDownload::Success)
+					{
+						if (openAfterDownload)
+							SendEntity (Util::MakeEntity (QUrl::fromLocalFile (targetPath),
+									{}, OnlyHandle | FromUserInitiated));
+					},
+					[] (IDownload::Error) {}
+				};
 	}
 
 	void DownManager::handleDownloadRequest (const QUrl& url,
 			const QString& filePath, TaskParameters tp, bool open)
 	{
-		QString savePath;
-		if (open)
-			savePath = QStandardPaths::writableLocation (QStandardPaths::TempLocation) + "/" + filePath;
-		else
-			savePath = filePath;
+		const auto& savePath = open ?
+				QStandardPaths::writableLocation (QStandardPaths::TempLocation) + "/" + filePath :
+				filePath;
 
 		auto e = Util::MakeEntity (url, savePath, tp);
 		e.Additional_ ["Filename"] = QFileInfo (filePath).fileName ();
@@ -106,34 +93,5 @@ namespace NetStoreManager
 			DelegateEntity (e, savePath, open) :
 			SendEntity (e);
 	}
-
-	void DownManager::handleJobError (int id, IDownload::Error::Type)
-	{
-		Id2Downloader_.remove (id);
-		Id2SavePath_.remove (id);
-		Id2OpenAfterDownloadState_.remove (id);
-	}
-
-	void DownManager::handleJobFinished (int id)
-	{
-		QString path = Id2SavePath_.take (id);
-		Id2Downloader_.remove (id);
-
-		if (Id2OpenAfterDownloadState_.contains (id) &&
-				Id2OpenAfterDownloadState_ [id])
-		{
-			SendEntity (Util::MakeEntity (QUrl::fromLocalFile (path),
-					QString (), OnlyHandle | FromUserInitiated));
-			Id2OpenAfterDownloadState_.remove (id);
-		}
-	}
-
-	void DownManager::handleJobRemoved (int id)
-	{
-		Id2Downloader_.remove (id);
-		Id2SavePath_.remove (id);
-		Id2OpenAfterDownloadState_.remove (id);
-	}
-
 }
 }

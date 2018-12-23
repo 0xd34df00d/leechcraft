@@ -47,26 +47,14 @@ namespace NetStoreManager
 		Q_OBJECT
 
 		const ICoreProxy_ptr Proxy_;
-		QObjectList Downloaders_;
-		QMap<int, QObject*> Id2Downloader_;
-		QMap<int, QString> Id2SavePath_;
-		QMap<int, bool> Id2OpenAfterDownloadState_;
-
 	public:
 		DownManager (ICoreProxy_ptr proxy, QObject *parent = 0);
 	private:
 		void SendEntity (const Entity& e);
-		void DelegateEntity (const Entity& e,
-			const QString& targetPath, bool openAfterDownload);
-		void HandleProvider (QObject *provider, int id);
-
+		void DelegateEntity (const Entity& e, const QString& targetPath, bool openAfterDownload);
 	public slots:
 		void handleDownloadRequest (const QUrl& url,
 			const QString& filePath, TaskParameters tp, bool open);
-	private slots:
-		void handleJobFinished (int id);
-		void handleJobRemoved (int id);
-		void handleJobError (int id, IDownload::Error::Type err);
 	};
 }
 }
