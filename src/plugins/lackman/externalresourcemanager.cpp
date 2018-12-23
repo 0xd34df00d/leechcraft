@@ -32,6 +32,9 @@
 #include <QtDebug>
 #include <util/xpc/util.h>
 #include <util/sys/paths.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ientitymanager.h>
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -64,7 +67,7 @@ namespace LackMan
 
 		QString location = ResourcesDir_.filePath (fileName);
 
-		Entity e = Util::MakeEntity (url,
+		auto e = Util::MakeEntity (url,
 				location,
 				Internal |
 					DoNotNotifyUser |
@@ -72,19 +75,17 @@ namespace LackMan
 					NotPersistent |
 					DoNotAnnounceEntity);
 
-		int id = -1;
-		QObject *pr;
-		emit delegateEntity (e, &id, &pr);
-		if (id == -1)
+		auto delegateResult = Core::Instance ().GetProxy ()->GetEntityManager ()->DelegateEntity (e);
+		if (!delegateResult)
 		{
-			QString errorString = QString ("Could not find "
-						"plugin to download %1 to %2.")
-					.arg (url.toString ())
-					.arg (location);
 			qWarning () << Q_FUNC_INFO
-					<< errorString;
-			throw std::runtime_error (qPrintable (errorString));
+					<< "unable to find plugin for"
+					<< url;
+			return;
 		}
+
+		auto pr = delegateResult.Handler_;
+		auto id = delegateResult.ID_;
 
 		PendingResource prdata =
 		{
