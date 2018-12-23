@@ -317,6 +317,11 @@ namespace CSTP
 		return Reply_ ? Reply_->errorString () : tr ("Task isn't initialized properly");
 	}
 
+	QFuture<IDownload::Result> Task::GetFuture ()
+	{
+		return Promise_.future ();
+	}
+
 	void Task::Reset ()
 	{
 		RedirectHistory_.clear ();

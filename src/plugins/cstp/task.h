@@ -94,7 +94,7 @@ namespace CSTP
 		bool IsRunning () const;
 		QString GetErrorString () const;
 
-		QFuture<IDownload::Result> GetFuture () const;
+		QFuture<IDownload::Result> GetFuture ();
 	private:
 		void Reset ();
 		void RecalculateSpeed ();
