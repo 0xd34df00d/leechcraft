@@ -54,7 +54,7 @@ namespace NetStoreManager
 			bool openAfterDownload)
 	{
 		auto res = Proxy_->GetEntityManager ()->DelegateEntity (e);
-		if (res.ID_ == -1)
+		if (!res)
 		{
 			auto notif = Util::MakeNotification ("NetStoreManager",
 				tr ("Could not find plugin to download %1.")
