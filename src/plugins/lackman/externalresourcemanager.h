@@ -53,11 +53,7 @@ namespace LackMan
 	{
 		Q_OBJECT
 
-		struct PendingResource
-		{
-			QUrl URL_;
-		};
-		QMap<int, PendingResource> PendingResources_;
+		QSet<QUrl> PendingResources_;
 
 		QDir ResourcesDir_;
 	public:
@@ -108,10 +104,6 @@ namespace LackMan
 		 * cache.
 		 */
 		void ClearCachedResource (const QUrl& url);
-	private slots:
-		void handleResourceFinished (int);
-		void handleResourceRemoved (int);
-		void handleResourceError (int, IDownload::Error::Type);
 	signals:
 		/** @brief Emitted once the resource identified by url
 		 * is fetched.

@@ -31,7 +31,10 @@
 #include <stdexcept>
 #include <QtDebug>
 #include <util/xpc/util.h>
+#include <util/sll/either.h>
+#include <util/sll/visitor.h>
 #include <util/sys/paths.h>
+#include <util/threads/futures.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
 #include "core.h"
@@ -61,8 +64,7 @@ namespace LackMan
 		if (ResourcesDir_.exists (fileName))
 			ResourcesDir_.remove (fileName);
 
-		if (std::any_of (PendingResources_.begin (), PendingResources_.end (),
-				[&url] (const auto& pr) { return pr.URL_ == url; }))
+		if (PendingResources_.contains (url))
 			return;
 
 		QString location = ResourcesDir_.filePath (fileName);
@@ -84,31 +86,20 @@ namespace LackMan
 			return;
 		}
 
-		auto pr = delegateResult.Handler_;
-		auto id = delegateResult.ID_;
+		PendingResources_ << url;
 
-		PendingResource prdata =
-		{
-			url
-		};
-
-		PendingResources_ [id] = prdata;
-
-		connect (pr,
-				SIGNAL (jobFinished (int)),
-				this,
-				SLOT (handleResourceFinished (int)),
-				Qt::UniqueConnection);
-		connect (pr,
-				SIGNAL (jobRemoved (int)),
-				this,
-				SLOT (handleResourceRemoved (int)),
-				Qt::UniqueConnection);
-		connect (pr,
-				SIGNAL (jobError (int, IDownload::Error::Type)),
-				this,
-				SLOT (handleResourceError (int, IDownload::Error::Type)),
-				Qt::UniqueConnection);
+		Util::Sequence (this, boost::any_cast<QFuture<IDownload::Result>> (delegateResult.ExtendedResult_)) >>
+				Util::Visitor
+				{
+					[=] (IDownload::Success) { emit resourceFetched (url); },
+					[=] (const IDownload::Error& error)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "failed to download"
+								<< url
+								<< error.Message_;
+					}
+				}.Finally ([=] { PendingResources_.remove (url); });
 	}
 
 	QString ExternalResourceManager::GetResourcePath (const QUrl& url) const
@@ -125,40 +116,6 @@ namespace LackMan
 	void ExternalResourceManager::ClearCachedResource (const QUrl& url)
 	{
 		ResourcesDir_.remove (URLToFileName (url));
-	}
-
-	void ExternalResourceManager::handleResourceFinished (int id)
-	{
-		if (!PendingResources_.contains (id))
-			return;
-
-		PendingResource pr = PendingResources_.take (id);
-
-		ResourcesDir_.refresh ();
-
-		emit resourceFetched (pr.URL_);
-	}
-
-	void ExternalResourceManager::handleResourceRemoved (int id)
-	{
-		if (!PendingResources_.contains (id))
-			return;
-
-		PendingResources_.remove (id);
-	}
-
-	void ExternalResourceManager::handleResourceError (int id, IDownload::Error::Type error)
-	{
-		if (!PendingResources_.contains (id))
-			return;
-
-		qWarning () << Q_FUNC_INFO
-				<< "got error"
-				<< static_cast<int> (error)
-				<< "for PendingResource"
-				<< id
-				<< PendingResources_ [id].URL_;
-		PendingResources_.remove (id);
 	}
 }
 }
