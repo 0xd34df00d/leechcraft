@@ -638,6 +638,7 @@ namespace CSTP
 
 	void Task::handleError ()
 	{
+		// TODO don't emit this when the file is already fully downloaded
 		Util::ReportFutureResult (Promise_, IDownload::Result::Left ({ IDownload::Error::Type::Unknown, {} }));
 
 		emit done (true);
