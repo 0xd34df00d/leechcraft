@@ -353,7 +353,7 @@ namespace CSTP
 		ScheduleSave ();
 		if (!(td.Parameters_ & LeechCraft::NoAutostart))
 			startTriggered (rowCount () - 1);
-		return { td.ID_, {} };
+		return { td.ID_, td.Task_->GetFuture () };
 	}
 
 	qint64 Core::GetTotalDownloadSpeed () const
