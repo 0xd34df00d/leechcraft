@@ -30,6 +30,7 @@
 #include "repoinfofetcher.h"
 #include <QTimer>
 #include <util/sll/either.h>
+#include <util/sll/overload.h>
 #include <util/sll/visitor.h>
 #include <util/sys/paths.h>
 #include <util/threads/futures.h>
@@ -166,205 +167,134 @@ namespace LackMan
 			QTimer::singleShot (50, this, SLOT (rotatePackageFetchQueue ()));
 	}
 
+	namespace
+	{
+		void HandleUnarchError (QProcess *proc, IEntityManager *iem, const QUrl& url, const QString& filename)
+		{
+			proc->deleteLater ();
+
+			auto error = proc->error ();
+
+			qWarning () << Q_FUNC_INFO
+					<< "unable to unpack for"
+					<< url
+					<< filename
+					<< "with"
+					<< error
+					<< proc->readAllStandardError ();
+			const auto& notification = Util::MakeNotification (RepoInfoFetcher::tr ("Component unpack error"),
+					RepoInfoFetcher::tr ("Unable to unpack file. Exit code: %1. Problematic file is at %2.")
+						.arg (error)
+						.arg (filename),
+					Priority::Critical);
+			iem->HandleEntity (notification);
+		}
+
+		template<typename Handler>
+		void HandleUnarch (QObject *parent,
+				const ICoreProxy_ptr& proxy, const QUrl& url, const QString& location, Handler&& handler)
+		{
+			auto iem = proxy->GetEntityManager ();
+
+			auto unarch = new QProcess { parent };
+			QObject::connect (unarch,
+					Util::Overload<int> (&QProcess::finished),
+					parent,
+					[=] (int exitCode)
+					{
+						unarch->deleteLater ();
+
+						if (exitCode)
+						{
+							iem->HandleEntity (Util::MakeNotification (RepoInfoFetcher::tr ("Repository unpack error"),
+									RepoInfoFetcher::tr ("Unable to unpack the repository file. gunzip error: %1. "
+										"Problematic file is at %2.")
+											.arg (exitCode)
+											.arg (location),
+									Priority::Critical));
+							return;
+						}
+
+						QFile::remove (location);
+
+						std::invoke (handler, unarch->readAllStandardOutput ());
+					});
+
+			QObject::connect (unarch,
+					&QProcess::errorOccurred,
+					[=] { HandleUnarchError (unarch, iem, url, location); });
+
+#ifdef Q_OS_WIN32
+			unarch->start ("7za", { "e", "-so", location });
+#else
+			unarch->start ("gunzip", { "-c", location });
+#endif
+		}
+	}
+
 	void RepoInfoFetcher::HandleRIFinished (const QString& location, const QUrl& url)
 	{
-		QProcess *unarch = new QProcess (this);
-		unarch->setProperty ("URL", url);
-		unarch->setProperty ("Filename", location);
-		connect (unarch,
-				SIGNAL (finished (int, QProcess::ExitStatus)),
-				this,
-				SLOT (handleRepoUnarchFinished (int, QProcess::ExitStatus)));
-		connect (unarch,
-				&QProcess::errorOccurred,
-				[=] { HandleUnarchError (url, location, unarch); });
-#ifdef Q_OS_WIN32
-		unarch->start ("7za", { "e", "-so", location });
-#else
-		unarch->start ("gunzip", { "-c", location });
-#endif
+		HandleUnarch (this, Proxy_, url, location,
+				[=] (const QByteArray& data)
+				{
+					try
+					{
+						emit infoFetched (ParseRepoInfo (url, { data }));
+					}
+					catch (const QString& error)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< error;
+						Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification (tr ("Repository parse error"),
+								tr ("Unable to parse repository description: %1.")
+										.arg (error),
+								Priority::Critical));
+					}
+				});
 	}
 
 	void RepoInfoFetcher::HandleComponentFinished (const QUrl& url,
 			const QString& location, const QString& component, int repoId)
 	{
-		QProcess *unarch = new QProcess (this);
-		unarch->setProperty ("Component", component);
-		unarch->setProperty ("Filename", location);
-		unarch->setProperty ("URL", url);
-		unarch->setProperty ("RepoID", repoId);
-		connect (unarch,
-				SIGNAL (finished (int, QProcess::ExitStatus)),
-				this,
-				SLOT (handleComponentUnarchFinished (int, QProcess::ExitStatus)));
-		connect (unarch,
-				&QProcess::errorOccurred,
-				[=] { HandleUnarchError (url, location, unarch); });
-#ifdef Q_OS_WIN32
-		unarch->start ("7za", { "e", "-so", location });
-#else
-		unarch->start ("gunzip", { "-c", location });
-#endif
+		HandleUnarch (this, Proxy_, url, location,
+				[=] (const QByteArray& data)
+				{
+					try
+					{
+						emit componentFetched (ParseComponent (data), component, repoId);
+					}
+					catch (const std::exception& e)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< e.what ();
+						Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification (tr ("Component parse error"),
+								tr ("Unable to parse component %1 description file. "
+									"More information is available in logs.")
+										.arg (sender ()->property ("Component").toString ()),
+								Priority::Critical));
+					}
+				});
 	}
 
 	void RepoInfoFetcher::HandlePackageFinished (const PendingPackage& pp)
 	{
-		QProcess *unarch = new QProcess (this);
-		unarch->setProperty ("Filename", pp.Location_);
-		unarch->setProperty ("URL", pp.URL_);
-		unarch->setProperty ("PP", QVariant::fromValue (pp));
-		connect (unarch,
-				SIGNAL (finished (int, QProcess::ExitStatus)),
-				this,
-				SLOT (handlePackageUnarchFinished (int, QProcess::ExitStatus)));
-		connect (unarch,
-				&QProcess::errorOccurred,
-				[=] { HandleUnarchError (pp.URL_, pp.Location_, unarch); });
-#ifdef Q_OS_WIN32
-		unarch->start ("7za", { "e", "-so", pp.Location_ });
-#else
-		unarch->start ("gunzip", { "-c", pp.Location_ });
-#endif
-	}
-
-	void RepoInfoFetcher::handleRepoUnarchFinished (int exitCode,
-			QProcess::ExitStatus)
-	{
-		sender ()->deleteLater ();
-
-		if (exitCode)
-		{
-			Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification (tr ("Repository unpack error"),
-					tr ("Unable to unpack the repository file. gunzip error: %1. "
-						"Problematic file is at %2.")
-						.arg (exitCode)
-						.arg (sender ()->property ("Filename").toString ()),
-					Priority::Critical));
-			return;
-		}
-
-		QByteArray data = qobject_cast<QProcess*> (sender ())->readAllStandardOutput ();
-		QFile::remove (sender ()->property ("Filename").toString ());
-
-		RepoInfo info;
-		try
-		{
-			info = ParseRepoInfo (sender ()->property ("URL").toUrl (), QString (data));
-		}
-		catch (const QString& error)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< error;
-			Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification (tr ("Repository parse error"),
-					tr ("Unable to parse repository description: %1.")
-						.arg (error),
-					Priority::Critical));
-			return;
-		}
-
-		emit infoFetched (info);
-	}
-
-	void RepoInfoFetcher::handleComponentUnarchFinished (int exitCode,
-			QProcess::ExitStatus)
-	{
-		sender ()->deleteLater ();
-
-		if (exitCode)
-		{
-			Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification (tr ("Component unpack error"),
-					tr ("Unable to unpack the component file. gunzip error: %1. "
-						"Problematic file is at %2.")
-						.arg (exitCode)
-						.arg (sender ()->property ("Filename").toString ()),
-					Priority::Critical));
-			return;
-		}
-
-		QByteArray data = qobject_cast<QProcess*> (sender ())->readAllStandardOutput ();
-		QFile::remove (sender ()->property ("Filename").toString ());
-
-		PackageShortInfoList infos;
-		try
-		{
-			infos = ParseComponent (data);
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< e.what ();
-			Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification (tr ("Component parse error"),
-					tr ("Unable to parse component %1 description file. "
-						"More information is available in logs.")
-						.arg (sender ()->property ("Component").toString ()),
-					Priority::Critical));
-			return;
-		}
-
-		emit componentFetched (infos,
-				sender ()->property ("Component").toString (),
-				sender ()->property ("RepoID").toInt ());
-	}
-
-	void RepoInfoFetcher::handlePackageUnarchFinished (int exitCode,
-			QProcess::ExitStatus)
-	{
-		sender ()->deleteLater ();
-
-		auto pp = sender ()->property ("PP").value<PendingPackage> ();
-
-		if (exitCode)
-		{
-			Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification (tr ("Component unpack error"),
-					tr ("Unable to unpack the component file. gunzip error: %1. "
-						"Problematic file is at %2.")
-						.arg (exitCode)
-						.arg (sender ()->property ("Filename").toString ()),
-					Priority::Critical));
-			return;
-		}
-
-		QByteArray data = qobject_cast<QProcess*> (sender ())->readAllStandardOutput ();
-		QFile::remove (sender ()->property ("Filename").toString ());
-
-		PackageInfo packageInfo;
-		try
-		{
-			packageInfo = ParsePackage (data, pp.BaseURL_, pp.PackageName_, pp.NewVersions_);
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< e.what ();
-			Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification (tr ("Package parse error"),
-					tr ("Unable to parse package description file. "
-						"More information is available in logs."),
-					Priority::Critical));
-			return;
-		}
-
-		emit packageFetched (packageInfo, pp.ComponentId_);
-	}
-
-	void RepoInfoFetcher::HandleUnarchError (const QUrl& url, const QString& filename, QProcess *process)
-	{
-		process->deleteLater ();
-
-		auto error = process->error ();
-
-		qWarning () << Q_FUNC_INFO
-				<< "unable to unpack for"
-				<< url
-				<< filename
-				<< "with"
-				<< error
-				<< process->readAllStandardError ();
-		Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification (tr ("Component unpack error"),
-					tr ("Unable to unpack file. Exit code: %1. "
-						"Problematic file is at %2.")
-						.arg (error)
-						.arg (sender ()->property ("Filename").toString ()),
-					Priority::Critical));
+		HandleUnarch (this, Proxy_, pp.URL_, pp.Location_,
+				[=] (const QByteArray& data)
+				{
+					try
+					{
+						emit packageFetched (ParsePackage (data, pp.BaseURL_, pp.PackageName_, pp.NewVersions_), pp.ComponentId_);
+					}
+					catch (const std::exception& e)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< e.what ();
+						Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification (tr ("Package parse error"),
+								tr ("Unable to parse package description file. "
+									"More information is available in logs."),
+								Priority::Critical));
+					}
+				});
 	}
 }
 }
