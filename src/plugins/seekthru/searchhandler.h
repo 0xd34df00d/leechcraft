@@ -74,13 +74,11 @@ namespace SeekThru
 			int StartIndex_ = 0;
 			int ItemsPerPage_ = 0;
 			QString Response_;
-			QString Filename_;
 			QUrl RequestURL_;
 		};
 
 		QList<Result> Results_;
 		QMap<int, Result> Jobs_;
-		QList<QObject*> Downloaders_;
 		std::shared_ptr<Util::SelectableBrowser> Viewer_;
 		std::shared_ptr<QToolBar> Toolbar_;
 		std::shared_ptr<QAction> Action_;
@@ -95,13 +93,11 @@ namespace SeekThru
 		QModelIndex parent (const QModelIndex&) const override;
 		int rowCount (const QModelIndex& = QModelIndex ()) const override;
 
-		void Start (const LeechCraft::Request&);
-	private slots:
-		void handleJobFinished (int);
-		void handleJobError (int);
-		void subscribe ();
+		void Start (const Request&);
 	private:
-		void HandleProvider (QObject*);
+		void HandleJobFinished (Result, const QString&);
+	private slots:
+		void subscribe ();
 	signals:
 		void delegateEntity (const LeechCraft::Entity&,
 				int*, QObject**);

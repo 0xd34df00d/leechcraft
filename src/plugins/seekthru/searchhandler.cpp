@@ -37,9 +37,13 @@
 #include <QtDebug>
 #include <interfaces/iwebbrowser.h>
 #include <interfaces/core/ientitymanager.h>
+#include <interfaces/idownload.h>
 #include <util/xpc/util.h>
 #include <util/gui/selectablebrowser.h>
 #include <util/sys/paths.h>
+#include <util/sll/either.h>
+#include <util/sll/visitor.h>
+#include <util/threads/futures.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
 
@@ -181,6 +185,7 @@ namespace SeekThru
 					u.Type_);
 
 			Result job;
+			job.RequestURL_ = url;
 			if (u.Type_ == "application/rss+xml")
 				job.Type_ = Result::TypeRSS;
 			else if (u.Type_ == "application/atom+xml")
@@ -198,27 +203,26 @@ namespace SeekThru
 				continue;
 			}
 
-			HandleProvider (result.Handler_);
-
-			job.Filename_ = fname;
-			job.RequestURL_ = url;
-			Jobs_ [result.ID_] = job;
+			Util::Sequence (this, boost::any_cast<QFuture<IDownload::Result>> (result.ExtendedResult_)) >>
+					Util::Visitor
+					{
+						[=] (const IDownload::Error&)
+						{
+							emit error (tr ("Search request for URL<br />%1<br />was delegated, but it failed.")
+									.arg (url.toString ()));
+						},
+						[=] (IDownload::Success) { HandleJobFinished (job, fname); }
+					};
 		}
 	}
 
-	void SearchHandler::handleJobFinished (int id)
+	void SearchHandler::HandleJobFinished (Result result, const QString& filename)
 	{
-		if (!Jobs_.contains (id))
-			return;
-
-		auto result = Jobs_ [id];
-		Jobs_.remove (id);
-
-		QFile file (result.Filename_);
+		QFile file { filename };
 		if (!file.open (QIODevice::ReadOnly))
 		{
 			emit error (tr ("Could not open file %1.")
-					.arg (result.Filename_));
+					.arg (filename));
 			return;
 		}
 
@@ -227,7 +231,7 @@ namespace SeekThru
 
 		if (!file.remove ())
 			emit warning (tr ("Could not remove temporary file %1.")
-					.arg (result.Filename_));
+					.arg (filename));
 
 		QDomDocument doc;
 		if (doc.setContent (result.Response_, true))
@@ -265,16 +269,6 @@ namespace SeekThru
 		endInsertRows ();
 	}
 
-	void SearchHandler::handleJobError (int id)
-	{
-		if (!Jobs_.contains (id))
-			return;
-
-		emit error (tr ("Search request for URL<br />%1<br />was delegated, but it failed.")
-				.arg (Jobs_ [id].RequestURL_.toString ()));
-		Jobs_.remove (id);
-	}
-
 	void SearchHandler::subscribe ()
 	{
 		int r = qobject_cast<QAction*> (sender ())->data ().toInt ();
@@ -290,22 +284,6 @@ namespace SeekThru
 				LeechCraft::FromUserInitiated,
 				mime);
 		emit gotEntity (e);
-	}
-
-	void SearchHandler::HandleProvider (QObject *provider)
-	{
-		if (Downloaders_.contains (provider))
-			return;
-
-		Downloaders_ << provider;
-		connect (provider,
-				SIGNAL (jobFinished (int)),
-				this,
-				SLOT (handleJobFinished (int)));
-		connect (provider,
-				SIGNAL (jobError (int, IDownload::Error::Type)),
-				this,
-				SLOT (handleJobError (int)));
 	}
 }
 }
