@@ -36,6 +36,7 @@
 #include <QTextCodec>
 #include <QtDebug>
 #include <interfaces/iwebbrowser.h>
+#include <interfaces/core/ientitymanager.h>
 #include <util/xpc/util.h>
 #include <util/gui/selectablebrowser.h>
 #include <util/sys/paths.h>
@@ -50,8 +51,9 @@ namespace SeekThru
 {
 	const QString SearchHandler::OS_ = "http://a9.com/-/spec/opensearch/1.1/";
 
-	SearchHandler::SearchHandler (const Description& d)
+	SearchHandler::SearchHandler (const Description& d, IEntityManager *iem)
 	: D_ (d)
+	, IEM_ (iem)
 	, Viewer_ (new Util::SelectableBrowser)
 	, Toolbar_ (new QToolBar)
 	{

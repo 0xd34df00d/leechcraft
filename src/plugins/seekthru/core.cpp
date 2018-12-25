@@ -304,12 +304,12 @@ namespace SeekThru
 	IFindProxy_ptr Core::GetProxy (const LeechCraft::Request& r)
 	{
 		QList<SearchHandler_ptr> handlers;
-		Q_FOREACH (Description d, Descriptions_)
+		for (const auto& d : Descriptions_)
 		{
 			const auto& ht = Proxy_->GetTagsManager ()->GetTags (d.Tags_);
 			if (ht.contains (r.Category_))
 			{
-				auto sh = std::make_shared<SearchHandler> (d);
+				auto sh = std::make_shared<SearchHandler> (d, Proxy_->GetEntityManager ());
 				connect (sh.get (),
 						SIGNAL (delegateEntity (const LeechCraft::Entity&,
 								int*, QObject**)),

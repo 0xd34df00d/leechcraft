@@ -39,6 +39,8 @@
 class QToolBar;
 class QAction;
 
+class IEntityManager;
+
 namespace LeechCraft
 {
 namespace Util
@@ -55,6 +57,8 @@ namespace SeekThru
 		static const QString OS_;
 
 		Description D_;
+
+		IEntityManager * const IEM_;
 
 		QString SearchString_;
 		struct Result
@@ -81,7 +85,7 @@ namespace SeekThru
 		std::shared_ptr<QToolBar> Toolbar_;
 		std::shared_ptr<QAction> Action_;
 	public:
-		SearchHandler (const Description&);
+		SearchHandler (const Description&, IEntityManager*);
 
 		int columnCount (const QModelIndex& = QModelIndex ()) const override;
 		QVariant data (const QModelIndex&, int = Qt::DisplayRole) const override;
