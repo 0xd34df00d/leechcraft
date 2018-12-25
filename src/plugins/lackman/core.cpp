@@ -86,12 +86,6 @@ namespace LackMan
 				SIGNAL (packageRemoved (int)),
 				this,
 				SLOT (handlePackageRemoved (int)));
-		connect (ExternalResourceManager_,
-				SIGNAL (delegateEntity (const LeechCraft::Entity&,
-						int*, QObject**)),
-				this,
-				SIGNAL (delegateEntity (const LeechCraft::Entity&,
-						int*, QObject**)));
 		connect (PackageProcessor_,
 				SIGNAL (packageInstallError (int, const QString&)),
 				this,

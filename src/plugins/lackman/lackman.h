@@ -102,7 +102,6 @@ namespace LackMan
 		void RecoverTabs (const QList<TabRecoverInfo>& infos);
 		bool HasSimilarTab (const QByteArray&, const QList<QByteArray>&) const;
 	signals:
-		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 		void gotEntity (const LeechCraft::Entity&);
 
 		void addNewTab (const QString&, QWidget*);

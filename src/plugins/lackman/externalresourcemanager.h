@@ -117,8 +117,6 @@ namespace LackMan
 		 * @sa GetResourceData()
 		 */
 		void resourceFetched (const QUrl& url);
-
-		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 	};
 }
 }

@@ -132,8 +132,6 @@ namespace LackMan
 		void handlePackageUpdated (int from, int to);
 		void handlePackageRemoved (int);
 	signals:
-		void delegateEntity (const LeechCraft::Entity&,
-				int*, QObject**);
 		void gotEntity (const LeechCraft::Entity&);
 		void tagsUpdated (const QStringList&);
 		void packageRowActionFinished (int row);
