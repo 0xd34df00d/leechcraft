@@ -190,21 +190,19 @@ namespace SeekThru
 			else
 				continue;
 
-			int id = -1;
-			QObject *pr;
-			emit delegateEntity (e, &id, &pr);
-			if (id == -1)
+			auto result = IEM_->DelegateEntity (e);
+			if (!result)
 			{
 				emit error (tr ("Job for request<br />%1<br />wasn't delegated.")
 						.arg (url.toString ()));
 				continue;
 			}
 
-			HandleProvider (pr);
+			HandleProvider (result.Handler_);
 
 			job.Filename_ = fname;
 			job.RequestURL_ = url;
-			Jobs_ [id] = job;
+			Jobs_ [result.ID_] = job;
 		}
 	}
 
