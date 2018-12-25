@@ -94,11 +94,6 @@ namespace HotStreams
 		}
 	}
 
-	IcecastModel::IcecastModel (QObject *parent)
-	: QAbstractItemModel { parent }
-	{
-	}
-
 	QModelIndex IcecastModel::index (int row, int column, const QModelIndex& parent) const
 	{
 		if (!hasIndex (row, column, parent))

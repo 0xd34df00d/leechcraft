@@ -55,7 +55,7 @@ namespace HotStreams
 	private:
 		StationInfoList_t Stations_;
 	public:
-		IcecastModel (QObject* = nullptr);
+		using QAbstractItemModel::QAbstractItemModel;
 
 		QModelIndex index (int row, int column, const QModelIndex& parent = {}) const override;
 		QModelIndex parent (const QModelIndex& child) const override;
