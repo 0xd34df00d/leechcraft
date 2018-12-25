@@ -55,9 +55,13 @@ namespace HotStreams
 	{
 		auto reply = NAM_->get (req);
 		connect (reply,
-				SIGNAL (finished ()),
+				&QNetworkReply::finished,
 				this,
-				SLOT (handleReplyFinished ()));
+				[this, reply]
+				{
+					reply->deleteLater ();
+					HandleData (reply->readAll ());
+				});
 	}
 
 	void StreamListFetcherBase::HandleData (const QByteArray& data)
@@ -95,13 +99,6 @@ namespace HotStreams
 
 					deleteLater ();
 				};
-	}
-
-	void StreamListFetcherBase::handleReplyFinished ()
-	{
-		auto reply = qobject_cast<QNetworkReply*> (sender ());
-		reply->deleteLater ();
-		HandleData (reply->readAll ());
 	}
 }
 }

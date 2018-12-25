@@ -67,8 +67,6 @@ namespace HotStreams
 
 		virtual void HandleData (const QByteArray&);
 		virtual QList<StreamInfo> Parse (const QByteArray&) = 0;
-	protected slots:
-		void handleReplyFinished ();
 	};
 }
 }
