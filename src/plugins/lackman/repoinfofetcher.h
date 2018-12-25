@@ -95,6 +95,4 @@ namespace LackMan
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::LackMan::RepoInfoFetcher::PendingPackage)
-
 #endif
