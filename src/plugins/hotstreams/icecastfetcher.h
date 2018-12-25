@@ -47,7 +47,7 @@ namespace HotStreams
 
 		IcecastModel * const Model_;
 	public:
-		IcecastFetcher (IcecastModel*, const ICoreProxy_ptr&, QObject* = 0);
+		IcecastFetcher (IcecastModel*, const ICoreProxy_ptr&, QObject* = nullptr);
 	private:
 		void FetchList (const ICoreProxy_ptr&);
 		void ParseList ();
