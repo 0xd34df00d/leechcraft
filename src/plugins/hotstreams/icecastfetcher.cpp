@@ -125,7 +125,7 @@ namespace HotStreams
 		void CoalesceOthers (QHash<QString, QList<IcecastModel::StationInfo>>& stations, int count)
 		{
 			auto lengths = Util::Map (stations, [] (const auto& list) { return list.size (); });
-			std::sort (lengths.begin (), lengths.end (), std::greater<int> ());
+			std::sort (lengths.begin (), lengths.end (), std::greater<> ());
 			const int threshold = lengths.at (count);
 
 			QList<IcecastModel::StationInfo> otherInfos;
