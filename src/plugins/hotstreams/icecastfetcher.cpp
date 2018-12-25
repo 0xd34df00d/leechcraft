@@ -42,6 +42,8 @@
 #include <util/sys/paths.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/prelude.h>
+#include <util/sll/visitor.h>
+#include <util/sll/either.h>
 #include <util/threads/futures.h>
 #include <interfaces/idownload.h>
 #include <interfaces/core/ientitymanager.h>
@@ -100,16 +102,17 @@ namespace HotStreams
 			return;
 		}
 
-		JobID_ = res.ID_;
-
-		connect (res.Handler_,
-				SIGNAL (jobFinished (int)),
-				this,
-				SLOT (handleJobFinished (int)));
-		connect (res.Handler_,
-				SIGNAL (jobRemoved (int)),
-				this,
-				SLOT (checkDelete (int)));
+		Util::Sequence (this, boost::any_cast<QFuture<IDownload::Result>> (res.ExtendedResult_)) >>
+				Util::Visitor
+				{
+					[this] (IDownload::Success) { ParseList (); },
+					[this] (const IDownload::Error&)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "error fetching the list";
+						deleteLater ();
+					}
+				};
 	}
 
 	namespace
@@ -269,12 +272,6 @@ namespace HotStreams
 					Model_->SetStations (list);
 					deleteLater ();
 				};
-	}
-
-	void IcecastFetcher::handleJobFinished (int id)
-	{
-		if (id == JobID_)
-			ParseList ();
 	}
 }
 }

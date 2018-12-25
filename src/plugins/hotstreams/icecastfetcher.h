@@ -45,7 +45,6 @@ namespace HotStreams
 	{
 		Q_OBJECT
 
-		int JobID_ = 0;
 		QIcon RadioIcon_ { ":/hotstreams/resources/images/radio.png" };
 
 		IcecastModel * const Model_;
@@ -54,8 +53,6 @@ namespace HotStreams
 	private:
 		void FetchList (const ICoreProxy_ptr&);
 		void ParseList ();
-	private slots:
-		void handleJobFinished (int);
 	};
 }
 }
