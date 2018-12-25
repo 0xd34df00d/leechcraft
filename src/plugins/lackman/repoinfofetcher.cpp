@@ -268,8 +268,7 @@ namespace LackMan
 						qWarning () << Q_FUNC_INFO
 								<< e.what ();
 						Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification (tr ("Component parse error"),
-								tr ("Unable to parse component %1 description file. "
-									"More information is available in logs.")
+								tr ("Unable to parse component %1 description file.")
 										.arg (component),
 								Priority::Critical));
 					}
@@ -290,8 +289,7 @@ namespace LackMan
 						qWarning () << Q_FUNC_INFO
 								<< e.what ();
 						Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification (tr ("Package parse error"),
-								tr ("Unable to parse package description file. "
-									"More information is available in logs."),
+								tr ("Unable to parse package description file."),
 								Priority::Critical));
 					}
 				});
