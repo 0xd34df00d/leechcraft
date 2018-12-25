@@ -72,17 +72,6 @@ namespace CleanWeb
 		QList<QList<FilterItem_ptr>> ExceptionsCache_;
 		QList<QList<FilterItem_ptr>> FilterItemsCache_;
 
-		QObjectList Downloaders_;
-
-		struct PendingJob
-		{
-			QString FullName_;
-			QString FileName_;
-			QString Subscr_;
-			QUrl URL_;
-		};
-		QMap<int, PendingJob> PendingJobs_;
-
 		QHash<QObject*, QSet<QUrl>> MoreDelayedURLs_;
 
 		QSet<IWebView*> ScheduledHidings_;
@@ -135,8 +124,6 @@ namespace CleanWeb
 		 */
 		bool Load (const QUrl& url, const QString& subscrName);
 	private:
-		void HandleProvider (QObject*);
-
 		void Parse (const QString&);
 
 		void HideElementsChunk (HidingWorkerResult);
@@ -144,8 +131,6 @@ namespace CleanWeb
 		void HandleViewLayout (IWebView*);
 	private slots:
 		void update ();
-		void handleJobFinished (int);
-		void handleJobError (int, IDownload::Error::Type);
 
 		void moreDelayedRemoveElements ();
 

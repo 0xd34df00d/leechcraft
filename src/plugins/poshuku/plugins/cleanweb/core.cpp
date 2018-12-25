@@ -54,6 +54,8 @@
 #include <util/sll/delayedexecutor.h>
 #include <util/sll/qstringwrappers.h>
 #include <util/sll/urlaccessor.h>
+#include <util/sll/visitor.h>
+#include <util/sll/either.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/poshuku/ibrowserwidget.h>
@@ -424,22 +426,6 @@ namespace CleanWeb
 			interceptable->AddInterceptor (interceptor);
 	}
 
-	void Core::HandleProvider (QObject *provider)
-	{
-		if (Downloaders_.contains (provider))
-			return;
-
-		Downloaders_ << provider;
-		connect (provider,
-				SIGNAL (jobFinished (int)),
-				this,
-				SLOT (handleJobFinished (int)));
-		connect (provider,
-				SIGNAL (jobError (int, IDownload::Error::Type)),
-				this,
-				SLOT (handleJobError (int, IDownload::Error::Type)));
-	}
-
 	void Core::Parse (const QString& filePath)
 	{
 		SubsModel_->AddFilter (ParseToFilters ({ filePath }).first ());
@@ -474,8 +460,8 @@ namespace CleanWeb
 
 	bool Core::Load (const QUrl& url, const QString& subscrName)
 	{
-		const auto& name = QFileInfo (url.path ()).fileName ();
-		const auto& path = Util::CreateIfNotExists ("cleanweb").absoluteFilePath (name);
+		const auto& filename = QFileInfo (url.path ()).fileName ();
+		const auto& path = Util::CreateIfNotExists ("cleanweb").absoluteFilePath (filename);
 
 		const auto& e = Util::MakeEntity (url,
 				path,
@@ -501,15 +487,22 @@ namespace CleanWeb
 			return false;
 		}
 
-		HandleProvider (result.Handler_);
-		PendingJob pj
-		{
-			path,
-			name,
-			subscrName,
-			url
-		};
-		PendingJobs_ [result.ID_] = pj;
+		Util::Sequence (this, boost::any_cast<QFuture<IDownload::Result>> (result.ExtendedResult_)) >>
+				Util::Visitor
+				{
+					[] (const IDownload::Error&) {},
+					[=] (IDownload::Success)
+					{
+						Parse (path);
+						SubsModel_->SetSubData ({
+									url,
+									subscrName,
+									filename,
+									QDateTime::currentDateTime ()
+								});
+					}
+				};
+
 		return true;
 	}
 
@@ -525,32 +518,6 @@ namespace CleanWeb
 		for (const auto& f : SubsModel_->GetAllFilters ())
 			if (f.SD_.LastDateTime_.daysTo (current) > days)
 				Load (f.SD_.URL_, f.SD_.Name_);
-	}
-
-	void Core::handleJobFinished (int id)
-	{
-		if (!PendingJobs_.contains (id))
-			return;
-
-		PendingJob pj = PendingJobs_ [id];
-		SubscriptionData sd
-		{
-			pj.URL_,
-			pj.Subscr_,
-			pj.FileName_,
-			QDateTime::currentDateTime ()
-		};
-		Parse (pj.FullName_);
-		PendingJobs_.remove (id);
-		SubsModel_->SetSubData (sd);
-	}
-
-	void Core::handleJobError (int id, IDownload::Error::Type)
-	{
-		if (!PendingJobs_.contains (id))
-			return;
-
-		PendingJobs_.remove (id);
 	}
 
 	void Core::HandleViewLayout (IWebView *view)
