@@ -306,9 +306,7 @@ namespace SeekThru
 		QList<SearchHandler_ptr> handlers;
 		Q_FOREACH (Description d, Descriptions_)
 		{
-			QStringList ht;
-			Q_FOREACH (QString id, d.Tags_)
-				ht << Proxy_->GetTagsManager ()->GetTag (id);
+			const auto& ht = Proxy_->GetTagsManager ()->GetTags (d.Tags_);
 			if (ht.contains (r.Category_))
 			{
 				auto sh = std::make_shared<SearchHandler> (d);
