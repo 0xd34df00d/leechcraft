@@ -487,7 +487,7 @@ namespace CleanWeb
 
 		const auto iem = Proxy_->GetEntityManager ();
 		const auto& result = iem->DelegateEntity (e);
-		if (!result.Handler_)
+		if (!result)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unable to delegate"
