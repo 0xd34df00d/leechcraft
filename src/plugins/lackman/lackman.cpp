@@ -112,9 +112,7 @@ namespace LackMan
 
 	TabClasses_t Plugin::GetTabClasses () const
 	{
-		TabClasses_t result;
-		result << TabClass_;
-		return result;
+		return { TabClass_ };
 	}
 
 	void Plugin::TabOpenRequested (const QByteArray& tabClass)
