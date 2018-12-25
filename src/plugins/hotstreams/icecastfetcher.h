@@ -43,8 +43,6 @@ namespace HotStreams
 
 	class IcecastFetcher : public QObject
 	{
-		Q_OBJECT
-
 		QIcon RadioIcon_ { ":/hotstreams/resources/images/radio.png" };
 
 		IcecastModel * const Model_;
