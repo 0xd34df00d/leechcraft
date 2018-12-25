@@ -44,7 +44,6 @@ namespace HotStreams
 {
 	class StreamListFetcherBase : public QObject
 	{
-		Q_OBJECT
 	protected:
 		QNetworkAccessManager *NAM_;
 		QStandardItem *Root_;
