@@ -193,7 +193,12 @@ namespace SeekThru
 			else if (u.Type_.startsWith ("text/"))
 				job.Type_ = Result::TypeHTML;
 			else
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "unknown type"
+						<< u.Type_;
 				continue;
+			}
 
 			auto result = IEM_->DelegateEntity (e);
 			if (!result)
