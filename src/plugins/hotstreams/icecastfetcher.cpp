@@ -92,7 +92,7 @@ namespace HotStreams
 					DoNotNotifyUser |
 					DoNotSaveInHistory);
 		const auto& res = proxy->GetEntityManager ()->DelegateEntity (entity);
-		if (!res.Handler_)
+		if (!res)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unable to delegate entity";
