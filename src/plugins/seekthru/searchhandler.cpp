@@ -58,8 +58,7 @@ namespace SeekThru
 		setObjectName ("SeekThru SearchHandler");
 		Viewer_->Construct (Core::Instance ().GetWebBrowser ());
 
-		Action_.reset (Toolbar_->addAction (tr ("Subscribe"),
-				this, SLOT (subscribe ())));
+		Action_.reset (Toolbar_->addAction (tr ("Subscribe"), this, SLOT (subscribe ())));
 		Action_->setProperty ("ActionIcon", "news-subscribe");
 	}
 
@@ -87,32 +86,30 @@ namespace SeekThru
 				else
 					return tr ("Unknown number of results");
 			case 2:
+			{
+				QString result = D_.ShortName_;
+				switch (Results_.at (r).Type_)
 				{
-					QString result = D_.ShortName_;
-					switch (Results_.at (r).Type_)
-					{
-						case Result::TypeRSS:
-							result += " (RSS)";
-							break;
-						case Result::TypeAtom:
-							result += " (Atom)";
-							break;
-						case Result::TypeHTML:
-							result += " (HTML)";
-							break;
-					}
-					return result;
+				case Result::TypeRSS:
+					result += " (RSS)";
+					break;
+				case Result::TypeAtom:
+					result += " (Atom)";
+					break;
+				case Result::TypeHTML:
+					result += " (HTML)";
+					break;
 				}
+				return result;
+			}
 			default:
 				return QString ("");
 			}
 		case LeechCraft::RoleAdditionalInfo:
 			if (Results_.at (r).Type_ == Result::TypeHTML)
 			{
-				Viewer_->SetNavBarVisible (XmlSettingsManager::Instance ()
-						.property ("NavBarVisible").toBool ());
-				Viewer_->SetHtml (Results_.at (r).Response_,
-						Results_.at (r).RequestURL_.toString ());
+				Viewer_->SetNavBarVisible (XmlSettingsManager::Instance ().property ("NavBarVisible").toBool ());
+				Viewer_->SetHtml (Results_.at (r).Response_, Results_.at (r).RequestURL_.toString ());
 				return QVariant::fromValue<QWidget*> (Viewer_.get ());
 			}
 			else
@@ -164,7 +161,7 @@ namespace SeekThru
 		return parent.isValid () ? 0 : Results_.size ();
 	}
 
-	void SearchHandler::Start (const LeechCraft::Request& r)
+	void SearchHandler::Start (const Request& r)
 	{
 		SearchString_ = r.String_;
 		for (const auto& u : D_.URLs_)
@@ -214,7 +211,7 @@ namespace SeekThru
 		if (!Jobs_.contains (id))
 			return;
 
-		Result result = Jobs_ [id];
+		auto result = Jobs_ [id];
 		Jobs_.remove (id);
 
 		QFile file (result.Filename_);
@@ -225,11 +222,9 @@ namespace SeekThru
 			return;
 		}
 
-		result.Response_ = QTextCodec::codecForName ("UTF-8")->
-			toUnicode (file.readAll ());
+		result.Response_ = QTextCodec::codecForName ("UTF-8")->toUnicode (file.readAll ());
 		result.TotalResults_ = -1;
 
-		file.close ();
 		if (!file.remove ())
 			emit warning (tr ("Could not remove temporary file %1.")
 					.arg (result.Filename_));
@@ -239,10 +234,10 @@ namespace SeekThru
 		{
 			if (result.Type_ == Result::TypeHTML)
 			{
-				QDomNodeList nodes = doc.elementsByTagName ("meta");
+				auto nodes = doc.elementsByTagName ("meta");
 				for (int i = 0; i < nodes.size (); ++i)
 				{
-					QDomElement meta = nodes.at (i).toElement ();
+					auto meta = nodes.at (i).toElement ();
 					if (meta.isNull ())
 						continue;
 
@@ -255,10 +250,10 @@ namespace SeekThru
 			}
 			else
 			{
-				QDomNodeList nodes = doc.elementsByTagNameNS (OS_, "totalResults");
+				auto nodes = doc.elementsByTagNameNS (OS_, "totalResults");
 				if (nodes.size ())
 				{
-					QDomElement tr = nodes.at (0).toElement ();
+					auto tr = nodes.at (0).toElement ();
 					if (!tr.isNull ())
 						result.TotalResults_ = tr.text ().toInt ();
 				}
@@ -290,11 +285,10 @@ namespace SeekThru
 		else if (Results_.at (r).Type_ == Result::TypeRSS)
 			mime = "application/rss+xml";
 
-		LeechCraft::Entity e =
-			LeechCraft::Util::MakeEntity (Results_.at (r).RequestURL_,
-					QString (),
-					LeechCraft::FromUserInitiated,
-					mime);
+		auto e = Util::MakeEntity (Results_.at (r).RequestURL_,
+				{},
+				LeechCraft::FromUserInitiated,
+				mime);
 		emit gotEntity (e);
 	}
 
