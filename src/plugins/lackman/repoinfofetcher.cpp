@@ -270,7 +270,7 @@ namespace LackMan
 						Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification (tr ("Component parse error"),
 								tr ("Unable to parse component %1 description file. "
 									"More information is available in logs.")
-										.arg (sender ()->property ("Component").toString ()),
+										.arg (component),
 								Priority::Critical));
 					}
 				});
