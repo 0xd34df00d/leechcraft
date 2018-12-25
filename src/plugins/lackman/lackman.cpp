@@ -55,9 +55,8 @@ namespace LackMan
 
 		ShortcutMgr_ = new Util::ShortcutManager (proxy, this);
 
-		SettingsDialog_.reset (new Util::XmlSettingsDialog ());
-		SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
-				"lackmansettings.xml");
+		SettingsDialog_ = std::make_shared<Util::XmlSettingsDialog> ();
+		SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (), "lackmansettings.xml");
 
 		Core::Instance ().SetProxy (proxy);
 		Core::Instance ().FinishInitialization ();
