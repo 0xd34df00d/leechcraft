@@ -37,10 +37,7 @@ namespace LackMan
 {
 	QString Numerize (QString version)
 	{
-		static const QStringList mods = QStringList () << "-rc"
-				<< "-pre"
-				<< "-beta"
-				<< "-alpha";
+		static const QStringList mods { "-rc", "-pre", "-beta", "-alpha" };
 		static QStringList replacements;
 		int modsSize = mods.size ();
 		if (replacements.isEmpty ())
