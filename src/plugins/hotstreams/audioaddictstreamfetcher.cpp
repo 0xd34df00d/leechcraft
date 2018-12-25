@@ -81,7 +81,12 @@ namespace HotStreams
 		const auto& map = Util::ParseJson (data, Q_FUNC_INFO).toMap ();
 
 		if (!map.contains ("channel_filters"))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no 'channel_filters' key in the reply, but we have:"
+					<< map.keys ();
 			return result;
+		}
 
 		for (const auto& filterVar : map ["channel_filters"].toList ())
 		{
