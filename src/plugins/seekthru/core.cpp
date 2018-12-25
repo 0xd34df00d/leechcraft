@@ -311,7 +311,7 @@ namespace SeekThru
 				ht << Proxy_->GetTagsManager ()->GetTag (id);
 			if (ht.contains (r.Category_))
 			{
-				SearchHandler_ptr sh (new SearchHandler (d));
+				auto sh = std::make_shared<SearchHandler> (d);
 				connect (sh.get (),
 						SIGNAL (delegateEntity (const LeechCraft::Entity&,
 								int*, QObject**)),
@@ -334,9 +334,9 @@ namespace SeekThru
 			}
 		}
 
-		std::shared_ptr<FindProxy> fp (new FindProxy (r));
+		auto fp = std::make_shared<FindProxy> (r);
 		fp->SetHandlers (handlers);
-		return IFindProxy_ptr (fp);
+		return fp;
 	}
 
 	IWebBrowser* Core::GetWebBrowser () const
