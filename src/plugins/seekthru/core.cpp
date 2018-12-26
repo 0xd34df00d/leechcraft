@@ -41,6 +41,7 @@
 #include <interfaces/iwebbrowser.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
+#include <interfaces/core/ientitymanager.h>
 #include <util/xpc/util.h>
 #include <util/sys/paths.h>
 #include <util/sll/unreachable.h>
@@ -238,18 +239,16 @@ namespace SeekThru
 					DoNotNotifyUser |
 					NotPersistent);
 
-		int id = -1;
-		QObject *provider;
-		emit delegateEntity (e, &id, &provider);
-		if (id == -1)
+		auto result = Proxy_->GetEntityManager ()->DelegateEntity (e);
+		if (!result)
 		{
 			emit error (tr ("%1 wasn't delegated")
 					.arg (url.toString ()));
 			return;
 		}
 
-		HandleProvider (provider);
-		Jobs_ [id] = name;
+		HandleProvider (result.Handler_);
+		Jobs_ [result.ID_] = name;
 	}
 
 	void Core::Remove (const QModelIndex& index)
