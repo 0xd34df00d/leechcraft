@@ -38,12 +38,16 @@
 #include <QCoreApplication>
 #include <QtDebug>
 #include <interfaces/iwebbrowser.h>
+#include <interfaces/idownload.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
 #include <interfaces/core/ientitymanager.h>
 #include <util/xpc/util.h>
 #include <util/sys/paths.h>
 #include <util/sll/unreachable.h>
+#include <util/sll/either.h>
+#include <util/sll/visitor.h>
+#include <util/threads/futures.h>
 #include "findproxy.h"
 #include "tagsasker.h"
 
@@ -246,8 +250,32 @@ namespace SeekThru
 			return;
 		}
 
-		HandleProvider (result.Handler_);
-		Jobs_ [result.ID_] = name;
+		Util::Sequence (this, boost::any_cast<QFuture<IDownload::Result>> (result.ExtendedResult_)) >>
+				Util::Visitor
+				{
+					[=] (const IDownload::Error&)
+					{
+						emit error (tr ("A job was delegated, but it failed.")
+								.arg (name));
+					},
+					[=] (IDownload::Success)
+					{
+						QFile file { name };
+						if (!file.open (QIODevice::ReadOnly))
+						{
+							emit error (tr ("Could not open file %1.")
+									.arg (name));
+							return;
+						}
+
+						HandleEntity (QString::fromUtf8 (file.readAll ()));
+
+						if (!file.remove ())
+							qWarning () << Q_FUNC_INFO
+									<< "unable to remote temporary file:"
+									<< name;
+					}
+				};
 	}
 
 	void Core::Remove (const QModelIndex& index)
@@ -324,38 +352,6 @@ namespace SeekThru
 			return 0;
 	}
 
-	void Core::handleJobFinished (int id)
-	{
-		if (!Jobs_.contains (id))
-			return;
-		QString filename = Jobs_ [id];
-		Jobs_.remove (id);
-
-		QFile file (filename);
-		if (!file.open (QIODevice::ReadOnly))
-		{
-			emit error (tr ("Could not open file %1.")
-					.arg (filename));
-			return;
-		}
-
-		HandleEntity (QString::fromUtf8 (file.readAll ()));
-
-		if (!file.remove ())
-			qWarning () << Q_FUNC_INFO
-					<< "unable to remote temporary file:"
-					<< filename;
-	}
-
-	void Core::handleJobError (int id)
-	{
-		if (!Jobs_.contains (id))
-			return;
-		emit error (tr ("A job was delegated, but it failed.")
-				.arg (Jobs_ [id]));
-		Jobs_.remove (id);
-	}
-
 	void Core::HandleEntity (const QString& contents, const QString& useTags)
 	{
 		try
@@ -377,7 +373,6 @@ namespace SeekThru
 		{
 			qWarning () << Q_FUNC_INFO
 				<< e.what ();
-			return;
 		}
 	}
 
@@ -592,22 +587,6 @@ namespace SeekThru
 			descr.InputEncodings_ << "UTF-8";
 
 		return descr;
-	}
-
-	void Core::HandleProvider (QObject *provider)
-	{
-		if (Downloaders_.contains (provider))
-			return;
-
-		Downloaders_ << provider;
-		connect (provider,
-				SIGNAL (jobFinished (int)),
-				this,
-				SLOT (handleJobFinished (int)));
-		connect (provider,
-				SIGNAL (jobError (int, IDownload::Error::Type)),
-				this,
-				SLOT (handleJobError (int)));
 	}
 
 	void Core::ReadSettings ()

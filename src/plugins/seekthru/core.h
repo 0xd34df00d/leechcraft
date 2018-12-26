@@ -49,8 +49,6 @@ namespace SeekThru
 		Q_OBJECT
 
 		QMap<QString, QObject*> Providers_;
-		QObjectList Downloaders_;
-		QMap<int, QString> Jobs_;
 		QList<Description> Descriptions_;
 		QStringList Headers_;
 		ICoreProxy_ptr Proxy_;
@@ -107,19 +105,14 @@ namespace SeekThru
 		QStringList ComputeUniqueCategories () const;
 		QList<Description> FindMatchingHRTag (const QString&) const;
 		Description ParseData (const QString&, const QString&);
-		void HandleProvider (QObject*);
 		void ReadSettings ();
 		void WriteSettings ();
 	public:
 		bool HandleDADescrAdded (QDataStream&);
 		bool HandleDADescrRemoved (QDataStream&);
 		bool HandleDATagsChanged (QDataStream&);
-	private slots:
-		void handleJobFinished (int);
-		void handleJobError (int);
 	signals:
 		void error (const QString&);
-		void warning (const QString&);
 		void delegateEntity (const LeechCraft::Entity&,
 				int*, QObject**);
 		void gotEntity (const LeechCraft::Entity&);
