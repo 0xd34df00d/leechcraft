@@ -387,11 +387,10 @@ namespace SeekThru
 
 	QStringList Core::ComputeUniqueCategories () const
 	{
-		QStringList ids;
-		Q_FOREACH (Description d, Descriptions_)
-			Q_FOREACH (QString id, d.Tags_)
-				if (!ids.contains (id))
-					ids << id;
+		QSet<QString> ids;
+		for (const auto& d : Descriptions_)
+			for (const auto& id : d.Tags_)
+				ids << id;
 
 		QStringList result;
 		Q_FOREACH (QString id, ids)
