@@ -70,9 +70,8 @@ namespace Otzerkalu
 		QMap<int, FileData> FileMap_;
 		QStringList DownloadedFiles_;
 		int UrlCount_ = 0;
-		int ID_;
 	public:
-		OtzerkaluDownloader (const DownloadParams& param, int id, QObject *parent = 0);
+		OtzerkaluDownloader (const DownloadParams& param, QObject *parent = 0);
 		QString GetLastDownloaded () const;
 		int FilesCount () const;
 		void Begin ();

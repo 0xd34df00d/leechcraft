@@ -93,8 +93,6 @@ namespace Otzerkalu
 		if (dialog.exec () != QDialog::Accepted)
 			return;
 
-		const int id = MirrorIDPool_.GetID ();
-
 		const QList<QStandardItem*> row
 		{
 			new QStandardItem (tr ("Mirroring %1...").arg (dUrl.toString ())),
@@ -107,7 +105,6 @@ namespace Otzerkalu
 		const auto dl = new OtzerkaluDownloader (DownloadParams (dUrl, dialog.GetDir (),
 					dialog.GetRecursionLevel (),
 					dialog.FetchFromExternalHosts ()),
-				id,
 				this);
 
 		connect (dl,

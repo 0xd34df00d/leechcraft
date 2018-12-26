@@ -33,7 +33,6 @@
 #include <QObject>
 #include <QUrl>
 #include <QStandardItemModel>
-#include <util/idpool.h>
 #include <interfaces/iinfo.h>
 #include <interfaces/ientityhandler.h>
 #include <interfaces/structures.h>
@@ -56,11 +55,6 @@ namespace Otzerkalu
 
 		QStandardItemModel *RepresentationModel_;
 		ICoreProxy_ptr Proxy_;
-		Util::IDPool<int> MirrorIDPool_;
-		enum Roles
-		{
-			RMirrorId = Qt::UserRole + 1
-		};
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();

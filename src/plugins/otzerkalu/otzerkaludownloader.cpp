@@ -58,11 +58,9 @@ namespace Otzerkalu
 	{
 	}
 
-	OtzerkaluDownloader::OtzerkaluDownloader (const DownloadParams& param,
-			int id, QObject *parent)
+	OtzerkaluDownloader::OtzerkaluDownloader (const DownloadParams& param, QObject *parent)
 	: QObject (parent)
 	, Param_ (param)
-	, ID_ (id)
 	{
 	}
 
