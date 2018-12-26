@@ -235,8 +235,9 @@ namespace SeekThru
 		result.TotalResults_ = -1;
 
 		if (!file.remove ())
-			emit warning (tr ("Could not remove temporary file %1.")
-					.arg (filename));
+			qWarning () << Q_FUNC_INFO
+					<< "unable to remove temporary file"
+					<< filename;
 
 		QDomDocument doc;
 		if (doc.setContent (result.Response_, true))

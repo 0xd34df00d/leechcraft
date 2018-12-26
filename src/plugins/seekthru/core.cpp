@@ -365,8 +365,9 @@ namespace SeekThru
 
 		file.close ();
 		if (!file.remove ())
-			emit warning (tr ("Could not remove temporary file %1.")
-					.arg (filename));
+			qWarning () << Q_FUNC_INFO
+					<< "unable to remote temporary file:"
+					<< filename;
 	}
 
 	void Core::handleJobError (int id)
