@@ -276,10 +276,7 @@ namespace SeekThru
 	{
 		QStringList oldCats = ComputeUniqueCategories ();
 
-		Descriptions_ [pos].Tags_.clear ();
-		Q_FOREACH (QString tag, tags)
-			Descriptions_ [pos].Tags_ <<
-				Proxy_->GetTagsManager ()->GetID (tag);
+		Descriptions_ [pos].Tags_ = Proxy_->GetTagsManager ()->GetIDs (tags);
 
 		WriteSettings ();
 
