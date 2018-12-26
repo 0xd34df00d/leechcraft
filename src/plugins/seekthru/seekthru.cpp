@@ -63,11 +63,6 @@ namespace SeekThru
 				SLOT (handleError (const QString&)),
 				Qt::QueuedConnection);
 		connect (&Core::Instance (),
-				SIGNAL (warning (const QString&)),
-				this,
-				SLOT (handleWarning (const QString&)),
-				Qt::QueuedConnection);
-		connect (&Core::Instance (),
 				SIGNAL (categoriesChanged (const QStringList&, const QStringList&)),
 				this,
 				SIGNAL (categoriesChanged (const QStringList&, const QStringList&)));
@@ -198,11 +193,6 @@ namespace SeekThru
 	void SeekThru::handleError (const QString& error)
 	{
 		emit gotEntity (Util::MakeNotification ("SeekThru", error, Priority::Critical));
-	}
-
-	void SeekThru::handleWarning (const QString& error)
-	{
-		emit gotEntity (Util::MakeNotification ("SeekThru", error, Priority::Warning));
 	}
 }
 }

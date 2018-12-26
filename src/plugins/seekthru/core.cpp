@@ -311,23 +311,9 @@ namespace SeekThru
 			{
 				auto sh = std::make_shared<SearchHandler> (d, Proxy_->GetEntityManager ());
 				connect (sh.get (),
-						SIGNAL (delegateEntity (const LeechCraft::Entity&,
-								int*, QObject**)),
-						this,
-						SIGNAL (delegateEntity (const LeechCraft::Entity&,
-								int*, QObject**)));
-				connect (sh.get (),
-						SIGNAL (gotEntity (const LeechCraft::Entity&)),
-						this,
-						SIGNAL (gotEntity (const LeechCraft::Entity&)));
-				connect (sh.get (),
 						SIGNAL (error (const QString&)),
 						this,
 						SIGNAL (error (const QString&)));
-				connect (sh.get (),
-						SIGNAL (warning (const QString&)),
-						this,
-						SIGNAL (warning (const QString&)));
 				handlers << sh;
 			}
 		}
