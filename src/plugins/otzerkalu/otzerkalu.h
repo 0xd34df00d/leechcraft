@@ -72,9 +72,6 @@ namespace Otzerkalu
 		EntityTestHandleResult CouldHandle (const Entity& entity) const;
 		void Handle (Entity entity);
 		QAbstractItemModel* GetRepresentation () const;
-	private slots:
-		void handleFileDownloaded (int id, int count);
-		void handleMirroringFinished (int id);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 		void delegateEntity (const LeechCraft::Entity&,

@@ -101,11 +101,10 @@ namespace Otzerkalu
 			new QStandardItem ("0/0"),
 			new QStandardItem ()
 		};
+		auto progressItem = row [1];
 		RepresentationModel_->appendRow (row);
 
-		row [0]->setData (id, RMirrorId);
-
-		OtzerkaluDownloader *dl = new OtzerkaluDownloader (DownloadParams (dUrl, dialog.GetDir (),
+		const auto dl = new OtzerkaluDownloader (DownloadParams (dUrl, dialog.GetDir (),
 					dialog.GetRecursionLevel (),
 					dialog.FetchFromExternalHosts ()),
 				id,
@@ -119,14 +118,15 @@ namespace Otzerkalu
 				SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)),
 				this,
 				SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)));
+
 		connect (dl,
-				SIGNAL (fileDownloaded (int, int)),
+				&OtzerkaluDownloader::fileDownloaded,
 				this,
-				SLOT (handleFileDownloaded (int, int)));
+				[progressItem] (int, int count) { progressItem->setText (QString ("%1/%2").arg (count).arg ("unknown")); });
 		connect (dl,
-				SIGNAL (mirroringFinished (int)),
+				&OtzerkaluDownloader::mirroringFinished,
 				this,
-				SLOT (handleMirroringFinished (int)));
+				[this, progressItem] (int) { RepresentationModel_->removeRow (progressItem->row ()); });
 
 		dl->Begin ();
 	}
@@ -134,32 +134,6 @@ namespace Otzerkalu
 	QAbstractItemModel* Plugin::GetRepresentation () const
 	{
 		return RepresentationModel_;
-	}
-
-	void Plugin::handleFileDownloaded (int id, int count)
-	{
-		for (int i = 0; i < RepresentationModel_->rowCount (); ++i)
-		{
-			if (RepresentationModel_->item (i)->data (RMirrorId).toInt () != id)
-				continue;
-
-			RepresentationModel_->item (i, 1)->setText (QString ("%1/%2").arg (count).arg ("unknown"));
-
-			return;
-		}
-	}
-
-	void Plugin::handleMirroringFinished (int id)
-	{
-		for (int i = 0; i < RepresentationModel_->rowCount (); ++i)
-		{
-			if (RepresentationModel_->item (i)->data (RMirrorId).toInt () != id)
-				continue;
-
-			qDeleteAll (RepresentationModel_->takeRow (i));
-
-			return;
-		}
 	}
 }
 }
