@@ -72,8 +72,6 @@ namespace Otzerkalu
 		int UrlCount_ = 0;
 	public:
 		OtzerkaluDownloader (const DownloadParams& param, QObject *parent = 0);
-		QString GetLastDownloaded () const;
-		int FilesCount () const;
 		void Begin ();
 	private:
 		QString Download (const QUrl&, int);

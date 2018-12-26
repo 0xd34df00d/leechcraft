@@ -64,11 +64,6 @@ namespace Otzerkalu
 	{
 	}
 
-	QString OtzerkaluDownloader::GetLastDownloaded () const
-	{
-		return DownloadedFiles_.isEmpty () ? QString () : DownloadedFiles_.last ();
-	}
-
 	void OtzerkaluDownloader::Begin ()
 	{
 		//Let's download the first URL
@@ -89,11 +84,6 @@ namespace Otzerkalu
 				this,
 				SLOT (handleJobFinished (int)),
 				Qt::UniqueConnection);
-	}
-
-	int OtzerkaluDownloader::FilesCount () const
-	{
-		return DownloadedFiles_.count ();
 	}
 
 	QList<QUrl> OtzerkaluDownloader::CSSParser (const QString& data) const
