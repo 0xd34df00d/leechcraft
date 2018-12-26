@@ -94,7 +94,6 @@ namespace SeekThru
 		ISyncProxy* GetSyncProxy ();
 	private slots:
 		void handleError (const QString&);
-		void handleWarning (const QString&);
 	signals:
 		void delegateEntity (const LeechCraft::Entity&,
 				int*, QObject**);
