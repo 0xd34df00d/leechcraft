@@ -34,7 +34,6 @@
 #include <QMetaType>
 #include <QFile>
 #include <QSettings>
-#include <QTextCodec>
 #include <QInputDialog>
 #include <QCoreApplication>
 #include <QtDebug>
@@ -340,7 +339,7 @@ namespace SeekThru
 			return;
 		}
 
-		HandleEntity (QTextCodec::codecForName ("UTF-8")->toUnicode (file.readAll ()));
+		HandleEntity (QString::fromUtf8 (file.readAll ()));
 
 		file.close ();
 		if (!file.remove ())

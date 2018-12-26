@@ -33,7 +33,6 @@
 #include <QUrl>
 #include <QFile>
 #include <QDomDocument>
-#include <QTextCodec>
 #include <QtDebug>
 #include <interfaces/iwebbrowser.h>
 #include <interfaces/core/ientitymanager.h>
@@ -231,7 +230,7 @@ namespace SeekThru
 			return;
 		}
 
-		result.Response_ = QTextCodec::codecForName ("UTF-8")->toUnicode (file.readAll ());
+		result.Response_ = QString::fromUtf8 (file.readAll ());
 		result.TotalResults_ = -1;
 
 		if (!file.remove ())
