@@ -289,7 +289,7 @@ namespace SeekThru
 				{},
 				LeechCraft::FromUserInitiated,
 				mime);
-		emit gotEntity (e);
+		IEM_->HandleEntity (e);
 	}
 }
 }
