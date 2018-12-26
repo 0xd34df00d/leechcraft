@@ -231,9 +231,8 @@ namespace SeekThru
 
 	void Core::Add (const QUrl& url)
 	{
-		QString name = Util::GetTemporaryName ();
-		LeechCraft::Entity e = Util::MakeEntity (url,
-				name,
+		auto name = Util::GetTemporaryName ();
+		auto e = Util::MakeEntity (url, name,
 				Internal |
 					DoNotSaveInHistory |
 					DoNotNotifyUser |
@@ -274,7 +273,7 @@ namespace SeekThru
 
 	void Core::SetTags (int pos, const QStringList& tags)
 	{
-		QStringList oldCats = ComputeUniqueCategories ();
+		const auto oldCats = ComputeUniqueCategories ();
 
 		Descriptions_ [pos].Tags_ = Proxy_->GetTagsManager ()->GetIDs (tags);
 
@@ -343,8 +342,7 @@ namespace SeekThru
 			return;
 		}
 
-		HandleEntity (QTextCodec::codecForName ("UTF-8")->
-				toUnicode (file.readAll ()));
+		HandleEntity (QTextCodec::codecForName ("UTF-8")->toUnicode (file.readAll ()));
 
 		file.close ();
 		if (!file.remove ())
@@ -366,9 +364,9 @@ namespace SeekThru
 	{
 		try
 		{
-			Description descr = ParseData (contents, useTags);
+			auto descr = ParseData (contents, useTags);
 
-			QStringList oldCats = ComputeUniqueCategories ();
+			const auto& oldCats = ComputeUniqueCategories ();
 
 			beginInsertRows (QModelIndex (), Descriptions_.size (), Descriptions_.size ());
 			Descriptions_ << descr;
@@ -376,7 +374,7 @@ namespace SeekThru
 
 			WriteSettings ();
 
-			QStringList newCats = ComputeUniqueCategories ();
+			const auto& newCats = ComputeUniqueCategories ();
 			emit categoriesChanged (newCats, oldCats);
 		}
 		catch (const std::exception& e)
@@ -432,13 +430,13 @@ namespace SeekThru
 			throw std::runtime_error ("Parse error");
 		}
 
-		QDomElement root = doc.documentElement ();
+		auto root = doc.documentElement ();
 		if (root.tagName () != "OpenSearchDescription")
 			throw std::runtime_error ("Parse error");
 
-		QDomElement shortNameTag = root.firstChildElement ("ShortName");
-		QDomElement descriptionTag = root.firstChildElement ("Description");
-		QDomElement urlTag = root.firstChildElement ("Url");
+		auto shortNameTag = root.firstChildElement ("ShortName");
+		auto descriptionTag = root.firstChildElement ("Description");
+		auto urlTag = root.firstChildElement ("Url");
 		if (shortNameTag.isNull () ||
 				descriptionTag.isNull () ||
 				urlTag.isNull () ||
@@ -464,7 +462,7 @@ namespace SeekThru
 			urlTag = urlTag.nextSiblingElement ("Url");
 		}
 
-		QDomElement contactTag = root.firstChildElement ("Contact");
+		auto contactTag = root.firstChildElement ("Contact");
 		if (!contactTag.isNull ())
 			descr.Contact_ = contactTag.text ();
 
@@ -493,11 +491,11 @@ namespace SeekThru
 		Q_FOREACH (QString tag, hrTags)
 			descr.Tags_ << Proxy_->GetTagsManager ()->GetID (tag);
 
-		QDomElement longNameTag = root.firstChildElement ("LongName");
+		auto longNameTag = root.firstChildElement ("LongName");
 		if (!longNameTag.isNull ())
 			descr.LongName_ = longNameTag.text ();
 
-		QDomElement queryTag = root.firstChildElement ("Query");
+		auto queryTag = root.firstChildElement ("Query");
 		while (!queryTag.isNull () && queryTag.hasAttributeNS (OS_, "role"))
 		{
 			QueryDescription::Role r;
@@ -537,19 +535,19 @@ namespace SeekThru
 			queryTag = queryTag.nextSiblingElement ("Query");
 		}
 
-		QDomElement developerTag = root.firstChildElement ("Developer");
+		auto developerTag = root.firstChildElement ("Developer");
 		if (!developerTag.isNull ())
 			descr.Developer_ = developerTag.text ();
 
-		QDomElement attributionTag = root.firstChildElement ("Attribution");
+		auto attributionTag = root.firstChildElement ("Attribution");
 		if (!attributionTag.isNull ())
 			descr.Attribution_ = attributionTag.text ();
 
 		descr.Right_ = Description::SyndicationRight::Open;
-		QDomElement syndicationRightTag = root.firstChildElement ("SyndicationRight");
+		auto syndicationRightTag = root.firstChildElement ("SyndicationRight");
 		if (!syndicationRightTag.isNull ())
 		{
-			QString sr = syndicationRightTag.text ();
+			auto sr = syndicationRightTag.text ();
 			if (sr == "limited")
 				descr.Right_ = Description::SyndicationRight::Limited;
 			else if (sr == "private")
@@ -559,10 +557,10 @@ namespace SeekThru
 		}
 
 		descr.Adult_ = false;
-		QDomElement adultContentTag = root.firstChildElement ("AdultContent");
+		auto adultContentTag = root.firstChildElement ("AdultContent");
 		if (!adultContentTag.isNull ())
 		{
-			QString text = adultContentTag.text ();
+			auto text = adultContentTag.text ();
 			if (!(text == "false" ||
 					text == "FALSE" ||
 					text == "0" ||
@@ -571,7 +569,7 @@ namespace SeekThru
 				descr.Adult_ = true;
 		}
 
-		QDomElement languageTag = root.firstChildElement ("Language");
+		auto languageTag = root.firstChildElement ("Language");
 		bool was = false;;
 		while (!languageTag.isNull ())
 		{
@@ -582,7 +580,7 @@ namespace SeekThru
 		if (!was)
 			descr.Languages_ << "*";
 
-		QDomElement inputEncodingTag = root.firstChildElement ("InputEncoding");
+		auto inputEncodingTag = root.firstChildElement ("InputEncoding");
 		was = false;
 		while (!inputEncodingTag.isNull ())
 		{
@@ -593,7 +591,7 @@ namespace SeekThru
 		if (!was)
 			descr.InputEncodings_ << "UTF-8";
 
-		QDomElement outputEncodingTag = root.firstChildElement ("OutputEncoding");
+		auto outputEncodingTag = root.firstChildElement ("OutputEncoding");
 		was = false;
 		while (!outputEncodingTag.isNull ())
 		{
@@ -644,8 +642,7 @@ namespace SeekThru
 		for (int i = 0; i < Descriptions_.size (); ++i)
 		{
 			settings.setArrayIndex (i);
-			settings.setValue ("Description",
-					QVariant::fromValue<Description> (Descriptions_.at (i)));
+			settings.setValue ("Description", QVariant::fromValue<Description> (Descriptions_.at (i)));
 		}
 		settings.endArray ();
 	}
@@ -672,7 +669,7 @@ namespace SeekThru
 		else
 		{
 			*pos = descr;
-			SetTags (std::distance (Descriptions_.begin (), pos), descr.Tags_);
+			SetTags (pos - Descriptions_.begin (), descr.Tags_);
 		}
 		return true;
 	}
@@ -714,7 +711,7 @@ namespace SeekThru
 				[shortName] (const Description& d) { return d.ShortName_ == shortName; });
 		if (pos != Descriptions_.end ())
 		{
-			SetTags (std::distance (Descriptions_.begin (), pos), tags);
+			SetTags (pos - Descriptions_.begin (), tags);
 			return true;
 		}
 		else
