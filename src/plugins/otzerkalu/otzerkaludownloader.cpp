@@ -58,9 +58,10 @@ namespace Otzerkalu
 	{
 	}
 
-	OtzerkaluDownloader::OtzerkaluDownloader (const DownloadParams& param, QObject *parent)
+	OtzerkaluDownloader::OtzerkaluDownloader (const DownloadParams& param, const ICoreProxy_ptr& proxy, QObject *parent)
 	: QObject (parent)
 	, Param_ (param)
+	, Proxy_ (proxy)
 	{
 	}
 

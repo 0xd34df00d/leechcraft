@@ -105,6 +105,7 @@ namespace Otzerkalu
 		const auto dl = new OtzerkaluDownloader (DownloadParams (dUrl, dialog.GetDir (),
 					dialog.GetRecursionLevel (),
 					dialog.FetchFromExternalHosts ()),
+				Proxy_,
 				this);
 
 		connect (dl,

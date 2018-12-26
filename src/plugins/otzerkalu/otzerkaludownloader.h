@@ -36,6 +36,7 @@
 #include <QWebElementCollection>
 #include <interfaces/structures.h>
 #include <interfaces/ientityhandler.h>
+#include <interfaces/core/icoreproxyfwd.h>
 
 namespace LeechCraft
 {
@@ -66,12 +67,14 @@ namespace Otzerkalu
 	class OtzerkaluDownloader : public QObject
 	{
 		Q_OBJECT
+
 		const DownloadParams Param_;
+		const ICoreProxy_ptr Proxy_;
 		QMap<int, FileData> FileMap_;
 		QStringList DownloadedFiles_;
 		int UrlCount_ = 0;
 	public:
-		OtzerkaluDownloader (const DownloadParams& param, QObject *parent = 0);
+		OtzerkaluDownloader (const DownloadParams& param, const ICoreProxy_ptr&, QObject *parent = 0);
 		void Begin ();
 	private:
 		QString Download (const QUrl&, int);
