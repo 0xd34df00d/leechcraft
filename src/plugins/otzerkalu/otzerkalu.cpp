@@ -95,10 +95,12 @@ namespace Otzerkalu
 
 		const int id = MirrorIDPool_.GetID ();
 
-		QList<QStandardItem*> row;
-		row << new QStandardItem (tr ("Mirroring %1...").arg (dUrl.toString ()));
-		row << new QStandardItem ("0/0");
-		row << new QStandardItem ();
+		const QList<QStandardItem*> row
+		{
+			new QStandardItem (tr ("Mirroring %1...").arg (dUrl.toString ())),
+			new QStandardItem ("0/0"),
+			new QStandardItem ()
+		};
 		RepresentationModel_->appendRow (row);
 
 		row [0]->setData (id, RMirrorId);
