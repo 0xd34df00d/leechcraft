@@ -228,8 +228,7 @@ namespace SeekThru
 					continue;
 
 				const auto& url = u.MakeUrl (text, QHash<QString, QVariant> ());
-				const auto& e = Util::MakeEntity (url, QString (), FromUserInitiated | OnlyHandle);
-				emit gotEntity (e);
+				Proxy_->GetEntityManager ()->HandleEntity (Util::MakeEntity (url, {}, FromUserInitiated | OnlyHandle));
 			}
 	}
 
