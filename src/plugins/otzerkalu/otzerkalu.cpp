@@ -122,11 +122,11 @@ namespace Otzerkalu
 		connect (dl,
 				&OtzerkaluDownloader::fileDownloaded,
 				this,
-				[progressItem] (int, int count) { progressItem->setText (QString ("%1/%2").arg (count).arg ("unknown")); });
+				[progressItem] (int count) { progressItem->setText (QString ("%1/%2").arg (count).arg ("unknown")); });
 		connect (dl,
 				&OtzerkaluDownloader::mirroringFinished,
 				this,
-				[this, progressItem] (int) { RepresentationModel_->removeRow (progressItem->row ()); });
+				[this, progressItem] { RepresentationModel_->removeRow (progressItem->row ()); });
 
 		dl->Begin ();
 	}

@@ -135,7 +135,7 @@ namespace Otzerkalu
 
 		const QString& filename = data.Filename_;
 		DownloadedFiles_.append (filename);
-		emit fileDownloaded (ID_, DownloadedFiles_.count ());
+		emit fileDownloaded (DownloadedFiles_.count ());
 
 		QFile file (filename);
 		if (!file.open (QIODevice::ReadOnly))
@@ -179,7 +179,7 @@ namespace Otzerkalu
 					tr ("Finished mirroring <em>%1</em>.")
 						.arg (Param_.DownloadUrl_.toString ()),
 					Priority::Info));
-			emit mirroringFinished (ID_);
+			emit mirroringFinished ();
 		}
 	}
 

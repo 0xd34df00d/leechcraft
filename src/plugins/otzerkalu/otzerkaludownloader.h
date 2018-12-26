@@ -89,8 +89,8 @@ namespace Otzerkalu
 	signals:
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 		void gotEntity (const LeechCraft::Entity&);
-		void fileDownloaded (int id, int count);
-		void mirroringFinished (int id);
+		void fileDownloaded (int count);
+		void mirroringFinished ();
 	};
 };
 };
