@@ -113,9 +113,6 @@ namespace SeekThru
 		bool HandleDATagsChanged (QDataStream&);
 	signals:
 		void error (const QString&);
-		void delegateEntity (const LeechCraft::Entity&,
-				int*, QObject**);
-		void gotEntity (const LeechCraft::Entity&);
 		void categoriesChanged (const QStringList&, const QStringList&);
 	};
 }

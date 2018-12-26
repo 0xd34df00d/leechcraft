@@ -48,16 +48,6 @@ namespace SeekThru
 		Core::Instance ().SetProxy (proxy);
 
 		connect (&Core::Instance (),
-				SIGNAL (delegateEntity (const LeechCraft::Entity&,
-						int*, QObject**)),
-				this,
-				SIGNAL (delegateEntity (const LeechCraft::Entity&,
-						int*, QObject**)));
-		connect (&Core::Instance (),
-				SIGNAL (gotEntity (const LeechCraft::Entity&)),
-				this,
-				SIGNAL (gotEntity (const LeechCraft::Entity&)));
-		connect (&Core::Instance (),
 				SIGNAL (error (const QString&)),
 				this,
 				SLOT (handleError (const QString&)),
