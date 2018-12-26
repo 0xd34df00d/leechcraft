@@ -287,8 +287,7 @@ namespace SeekThru
 	{
 		QStringList result;
 		for (const auto& descr : Descriptions_)
-			for (const auto& tag : descr.Tags_)
-				result += Proxy_->GetTagsManager ()->GetTag (tag);
+			result += Proxy_->GetTagsManager ()->GetTags (descr.Tags_);
 
 		result.removeAll (QString ());
 		result.sort ();
@@ -392,10 +391,7 @@ namespace SeekThru
 			for (const auto& id : d.Tags_)
 				ids << id;
 
-		QStringList result;
-		Q_FOREACH (QString id, ids)
-			result << Proxy_->GetTagsManager ()->GetTag (id);
-		return result;
+		return Proxy_->GetTagsManager ()->GetTags (ids.toList ());
 	}
 
 	QList<Description> Core::FindMatchingHRTag (const QString& catStr) const
@@ -485,10 +481,7 @@ namespace SeekThru
 		else
 			descr.Tags_ = Proxy_->GetTagsManager ()->Split (useTags);
 
-		QStringList hrTags = descr.Tags_;
-		descr.Tags_.clear ();
-		Q_FOREACH (QString tag, hrTags)
-			descr.Tags_ << Proxy_->GetTagsManager ()->GetID (tag);
+		descr.Tags_ = Proxy_->GetTagsManager ()->GetIDs (descr.Tags_);
 
 		auto longNameTag = root.firstChildElement ("LongName");
 		if (!longNameTag.isNull ())
