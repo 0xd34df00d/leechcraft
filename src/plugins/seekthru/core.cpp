@@ -341,7 +341,6 @@ namespace SeekThru
 
 		HandleEntity (QString::fromUtf8 (file.readAll ()));
 
-		file.close ();
 		if (!file.remove ())
 			qWarning () << Q_FUNC_INFO
 					<< "unable to remote temporary file:"
