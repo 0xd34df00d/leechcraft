@@ -56,20 +56,19 @@ namespace Otzerkalu
 		QStandardItemModel *RepresentationModel_;
 		ICoreProxy_ptr Proxy_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-		EntityTestHandleResult CouldHandle (const Entity& entity) const;
-		void Handle (Entity entity);
-		QAbstractItemModel* GetRepresentation () const;
+		void Init (ICoreProxy_ptr) override;
+		void SecondInit () override;
+		QByteArray GetUniqueID () const override;
+		void Release () override;
+		QString GetName () const override;
+		QString GetInfo () const override;
+		QIcon GetIcon () const override;
+		EntityTestHandleResult CouldHandle (const Entity& entity) const override;
+		void Handle (Entity entity) override;
+		QAbstractItemModel* GetRepresentation () const override;
 	signals:
-		void gotEntity (const LeechCraft::Entity&);
-		void delegateEntity (const LeechCraft::Entity&,
-				int*, QObject**);
+		void gotEntity (const LeechCraft::Entity&) override;
+		void delegateEntity (const LeechCraft::Entity&, int*, QObject**) override;
 	};
 }
 }
