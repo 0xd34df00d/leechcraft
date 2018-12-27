@@ -36,6 +36,8 @@
 #include <QDir>
 #include <QUrlQuery>
 #include <util/xpc/util.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ientitymanager.h>
 
 namespace LeechCraft
 {
@@ -164,7 +166,7 @@ namespace Otzerkalu
 
 		if (!UrlCount_)
 		{
-			emit gotEntity (Util::MakeNotification ("Otzerkalu",
+			Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Otzerkalu",
 					tr ("Finished mirroring <em>%1</em>.")
 						.arg (Param_.DownloadUrl_.toString ()),
 					Priority::Info));
@@ -235,7 +237,7 @@ namespace Otzerkalu
 					<< url
 					<< "to"
 					<< filename;
-			emit gotEntity (Util::MakeNotification ("Otzerkalu",
+			Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Otzerkalu",
 					tr ("Could not download %1")
 						.arg (url.toString ()),
 					Priority::Critical));
