@@ -224,11 +224,11 @@ namespace Otzerkalu
 		QObject *pr;
 		Entity e = Util::MakeEntity (url,
 				filename,
-				LeechCraft::Internal |
-					LeechCraft::DoNotNotifyUser |
-					LeechCraft::DoNotSaveInHistory |
-					LeechCraft::NotPersistent |
-					LeechCraft::DoNotAnnounceEntity);
+				Internal |
+					DoNotNotifyUser |
+					DoNotSaveInHistory |
+					NotPersistent |
+					DoNotAnnounceEntity);
 		emit delegateEntity (e, &id, &pr);
 		if (id == -1)
 		{
