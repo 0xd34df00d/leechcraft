@@ -153,7 +153,7 @@ namespace Otzerkalu
 		bool haveLink = false;
 		for (QWebElementCollection::iterator urlElement = uel.begin ();
 				urlElement != uel.end (); ++urlElement)
-			if (HTMLReplace (urlElement, data))
+			if (HTMLReplace (*urlElement, data))
 				haveLink = true;
 
 		QWebElementCollection styleColl = page.mainFrame ()->findAllElements ("style");
@@ -174,14 +174,13 @@ namespace Otzerkalu
 		}
 	}
 
-	bool OtzerkaluDownloader::HTMLReplace (QWebElementCollection::iterator element,
-			const FileData& data)
+	bool OtzerkaluDownloader::HTMLReplace (QWebElement element, const FileData& data)
 	{
 		bool haveHref = true;
-		QUrl url = (*element).attribute ("href");
+		QUrl url = element.attribute ("href");
 		if (!url.isValid ())
 		{
-			url = (*element).attribute ("src");
+			url = element.attribute ("src");
 			haveHref = false;
 		}
 		if (url.isRelative ())
@@ -194,7 +193,7 @@ namespace Otzerkalu
 		if (filename.isEmpty ())
 			return false;
 
-		(*element).setAttribute (haveHref ? "href" : "src", filename);
+		element.setAttribute (haveHref ? "href" : "src", filename);
 		return true;
 	}
 
