@@ -91,7 +91,7 @@ namespace Otzerkalu
 
 	QList<QUrl> OtzerkaluDownloader::CSSParser (const QString& data) const
 	{
-		QRegExp UrlCSS ("(?s).*?:\\s*url\\s*\\((.*?)\\).*");
+		QRegExp UrlCSS { R"((?s).*?:\s*url\s*\((.*?)\).*)" };
 		QList<QUrl> urlStack;
 		int pos = 0;
 		while ((pos = UrlCSS.indexIn (data, pos)) != -1)
