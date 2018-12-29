@@ -91,12 +91,12 @@ namespace Otzerkalu
 
 	QList<QUrl> OtzerkaluDownloader::CSSParser (const QString& data) const
 	{
-		QRegExp UrlCSS { R"((?s).*?:\s*url\s*\((.*?)\).*)" };
+		QRegExp urlCSS { R"((?s).*?:\s*url\s*\((.*?)\).*)" };
 		QList<QUrl> urlStack;
 		int pos = 0;
-		while ((pos = UrlCSS.indexIn (data, pos)) != -1)
+		while ((pos = urlCSS.indexIn (data, pos)) != -1)
 		{
-			const QUrl& url = UrlCSS.cap (1);
+			const QUrl url { urlCSS.cap (1) };
 			if (!url.isValid ())
 				continue;
 
@@ -147,19 +147,14 @@ namespace Otzerkalu
 
 		QWebPage page;
 		page.mainFrame ()->setContent (file.readAll ());
-		QWebElementCollection uel = page.mainFrame ()->findAllElements ("*[href]") +
-				page.mainFrame ()->findAllElements ("*[src]");
 
 		bool haveLink = false;
-		for (QWebElementCollection::iterator urlElement = uel.begin ();
-				urlElement != uel.end (); ++urlElement)
-			if (HTMLReplace (*urlElement, data))
+		for (auto urlElement : page.mainFrame ()->findAllElements ("*[href]") + page.mainFrame ()->findAllElements ("*[src]"))
+			if (HTMLReplace (urlElement, data))
 				haveLink = true;
 
-		QWebElementCollection styleColl = page.mainFrame ()->findAllElements ("style");
-		for (QWebElementCollection::iterator styleItr = styleColl.begin ();
-				styleItr != styleColl.end (); ++styleItr)
-			(*styleItr).setInnerXml (CSSUrlReplace ((*styleItr).toInnerXml (), data));
+		for (auto style : page.mainFrame ()->findAllElements ("style"))
+			style.setInnerXml (CSSUrlReplace (style.toInnerXml (), data));
 
 		if (haveLink)
 			WriteData (filename, page.mainFrame ()->toHtml ());
@@ -200,15 +195,14 @@ namespace Otzerkalu
 	QString OtzerkaluDownloader::Download (const QUrl& url, int recLevel)
 	{
 		const QFileInfo fi (url.path ());
-		const QString& name = fi.fileName ();
-		const QString& path = Param_.DestDir_ + '/' + url.host () +
-				fi.path ();
+		const auto& name = fi.fileName ();
+		const auto& path = Param_.DestDir_ + '/' + url.host () + fi.path ();
 
 		//If file name's empty, rename it to 'index.html'
-		const QString& file = path + '/' + (name.isEmpty () ? "index.html" : name);
+		const auto& file = path + '/' + (name.isEmpty () ? "index.html" : name);
 
 		//If file's not a html file, add .html tail to the name
-		const QString& filename = url.hasQuery () ?
+		const auto& filename = url.hasQuery () ?
 				file + "?" + QUrlQuery { url }.toString (QUrl::FullyDecoded) + ".html" :
 				file;
 
@@ -221,7 +215,7 @@ namespace Otzerkalu
 
 		int id = -1;
 		QObject *pr;
-		Entity e = Util::MakeEntity (url,
+		auto e = Util::MakeEntity (url,
 				filename,
 				Internal |
 					DoNotNotifyUser |
@@ -248,14 +242,13 @@ namespace Otzerkalu
 		return filename;
 	}
 
-	bool OtzerkaluDownloader::WriteData(const QString& filename, const QString& data)
+	bool OtzerkaluDownloader::WriteData (const QString& filename, const QString& data)
 	{
 		QFile file (filename);
 		if (!file.open (QIODevice::WriteOnly | QIODevice::Text))
 			return false;
 
-		QTextStream out (&file);
-		out << data;
+		file.write (data.toUtf8 ());
 		return true;
 	}
 }
