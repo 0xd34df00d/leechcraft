@@ -70,7 +70,7 @@ namespace Otzerkalu
 
 		const DownloadParams Param_;
 		const ICoreProxy_ptr Proxy_;
-		QStringList DownloadedFiles_;
+		QSet<QString> DownloadedFiles_;
 		int UrlCount_ = 0;
 	public:
 		OtzerkaluDownloader (const DownloadParams& param, const ICoreProxy_ptr&, QObject *parent = 0);

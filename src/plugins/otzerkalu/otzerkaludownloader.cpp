@@ -117,7 +117,7 @@ namespace Otzerkalu
 			return;
 
 		const QString& filename = data.Filename_;
-		DownloadedFiles_.append (filename);
+		DownloadedFiles_ << filename;
 		emit fileDownloaded (DownloadedFiles_.count ());
 
 		QFile file (filename);
