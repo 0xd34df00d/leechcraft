@@ -207,7 +207,7 @@ namespace SeekThru
 				continue;
 			}
 
-			Util::Sequence (this, boost::any_cast<QFuture<IDownload::Result>> (result.ExtendedResult_)) >>
+			Util::Sequence (this, result.DownloadResult_) >>
 					Util::Visitor
 					{
 						[=] (const IDownload::Error&)

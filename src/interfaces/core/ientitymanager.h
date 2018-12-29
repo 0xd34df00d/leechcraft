@@ -29,8 +29,10 @@
 
 #pragma once
 
-#include <boost/any.hpp>
 #include <QObject>
+#include <QFuture>
+#include <util/sll/either.h>
+#include <interfaces/idownload.h>
 
 namespace LeechCraft
 {
@@ -65,10 +67,9 @@ public:
 		 */
 		int ID_ = 0;
 
-		/** Any additional information the handling plugin might return
-		 * back to the delegator.
+		/** The future with the download result.
 		 */
-		boost::any ExtendedResult_;
+		QFuture<IDownload::Result> DownloadResult_;
 
 		explicit operator bool () const
 		{

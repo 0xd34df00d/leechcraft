@@ -88,7 +88,7 @@ namespace LackMan
 
 		PendingResources_ << url;
 
-		Util::Sequence (this, boost::any_cast<QFuture<IDownload::Result>> (delegateResult.ExtendedResult_)) >>
+		Util::Sequence (this, delegateResult.DownloadResult_) >>
 				Util::Visitor
 				{
 					[=] (IDownload::Success) { emit resourceFetched (url); },

@@ -212,7 +212,7 @@ namespace Otzerkalu
 		++UrlCount_;
 
 		const FileData nextFileData { url, filename, recLevel };
-		Util::Sequence (this, boost::any_cast<QFuture<IDownload::Result>> (result.ExtendedResult_)) >>
+		Util::Sequence (this, result.DownloadResult_) >>
 				Util::Visitor
 				{
 					[this, nextFileData] (IDownload::Success) { HandleJobFinished (nextFileData); },

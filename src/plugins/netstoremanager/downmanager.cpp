@@ -67,7 +67,7 @@ namespace NetStoreManager
 			return;
 		}
 
-		Util::Sequence (this, boost::any_cast<QFuture<IDownload::Result>> (res.ExtendedResult_)) >>
+		Util::Sequence (this, res.DownloadResult_) >>
 				Util::Visitor
 				{
 					[=] (IDownload::Success)

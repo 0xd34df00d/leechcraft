@@ -210,7 +210,7 @@ namespace BodyFetch
 			return;
 		}
 
-		Util::Sequence (this, boost::any_cast<QFuture<IDownload::Result>> (result.ExtendedResult_)) >>
+		Util::Sequence (this, result.DownloadResult_) >>
 				Util::Visitor
 				{
 					[this, url, temp] (IDownload::Success) { emit downloadFinished (url, temp); },
