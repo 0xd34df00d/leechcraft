@@ -35,9 +35,13 @@
 #include <QFileInfo>
 #include <QDir>
 #include <QUrlQuery>
+#include <util/sll/either.h>
+#include <util/sll/visitor.h>
+#include <util/threads/futures.h>
 #include <util/xpc/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
+#include <interfaces/idownload.h>
 
 namespace LeechCraft
 {
@@ -73,22 +77,6 @@ namespace Otzerkalu
 		Download (Param_.DownloadUrl_, Param_.RecLevel_);
 	}
 
-	void OtzerkaluDownloader::HandleProvider (QObject *provider, int id,
-			const QUrl& url, const QString& filename, int recLevel)
-	{
-		qDebug () << Q_FUNC_INFO
-				<< "Downloading "
-				<< url.toString ()
-				<< "ID"
-				<< id;
-		FileMap_.insert (id, FileData (url, filename, recLevel));
-		connect (provider,
-				SIGNAL (jobFinished (int)),
-				this,
-				SLOT (handleJobFinished (int)),
-				Qt::UniqueConnection);
-	}
-
 	QList<QUrl> OtzerkaluDownloader::CSSParser (const QString& data) const
 	{
 		QRegExp urlCSS { R"((?s).*?:\s*url\s*\((.*?)\).*)" };
@@ -121,11 +109,10 @@ namespace Otzerkalu
 		return value;
 	}
 
-	void OtzerkaluDownloader::handleJobFinished (int id)
+	void OtzerkaluDownloader::HandleJobFinished (const FileData& data)
 	{
 		qDebug () << Q_FUNC_INFO << "Download finished";
 		--UrlCount_;
-		const FileData& data = FileMap_ [id];
 		if (!data.RecLevel_ && Param_.RecLevel_)
 			return;
 
@@ -154,7 +141,7 @@ namespace Otzerkalu
 		page.mainFrame ()->setContent (file.readAll ());
 
 		bool haveLink = false;
-		for (auto urlElement : page.mainFrame ()->findAllElements ("*[href]") + page.mainFrame ()->findAllElements ("*[src]"))
+		for (const auto& urlElement : page.mainFrame ()->findAllElements ("*[href]") + page.mainFrame ()->findAllElements ("*[src]"))
 			if (HTMLReplace (urlElement, data))
 				haveLink = true;
 
@@ -240,7 +227,14 @@ namespace Otzerkalu
 			return QString ();
 		}
 		++UrlCount_;
-		HandleProvider (result.Handler_, result.ID_, url, filename, recLevel);
+
+		const FileData nextFileData { url, filename, recLevel };
+		Util::Sequence (this, boost::any_cast<QFuture<IDownload::Result>> (result.ExtendedResult_)) >>
+				Util::Visitor
+				{
+					[this, nextFileData] (IDownload::Success) { HandleJobFinished (nextFileData); },
+					[] (const IDownload::Error&) {}
+				};
 
 		return filename;
 	}
@@ -248,7 +242,7 @@ namespace Otzerkalu
 	bool OtzerkaluDownloader::WriteData (const QString& filename, const QString& data)
 	{
 		QFile file (filename);
-		if (!file.open (QIODevice::WriteOnly | QIODevice::Text))
+		if (!file.open (QIODevice::WriteOnly))
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unable to open"

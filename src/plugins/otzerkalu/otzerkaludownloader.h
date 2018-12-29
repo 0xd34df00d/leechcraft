@@ -70,7 +70,6 @@ namespace Otzerkalu
 
 		const DownloadParams Param_;
 		const ICoreProxy_ptr Proxy_;
-		QMap<int, FileData> FileMap_;
 		QStringList DownloadedFiles_;
 		int UrlCount_ = 0;
 	public:
@@ -82,10 +81,7 @@ namespace Otzerkalu
 		QString CSSUrlReplace (QString, const FileData&);
 		bool HTMLReplace (QWebElement element, const FileData& data);
 		bool WriteData (const QString& filename, const QString& data);
-		void HandleProvider (QObject *provider, int id, const QUrl& url,
-				const QString& filename, int recLevel);
-	private slots:
-		void handleJobFinished (int id);
+		void HandleJobFinished (const FileData& data);
 	signals:
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 		void gotEntity (const LeechCraft::Entity&);
