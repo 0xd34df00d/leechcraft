@@ -31,12 +31,16 @@
 #include <cstring>
 #include <QIcon>
 #include <interfaces/iscriptloader.h>
+#include <interfaces/idownload.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <util/xpc/util.h>
 #include <util/sys/paths.h>
 #include <util/sll/prelude.h>
+#include <util/sll/either.h>
+#include <util/sll/visitor.h>
+#include <util/threads/futures.h>
 #include "workerobject.h"
 
 namespace LeechCraft
@@ -206,23 +210,12 @@ namespace BodyFetch
 			return;
 		}
 
-		Jobs_ [result.ID_] = qMakePair (url, temp);
-
-		connect (result.Handler_,
-				SIGNAL (jobFinished (int)),
-				this,
-				SLOT (handleJobFinished (int)),
-				Qt::UniqueConnection);
-	}
-
-	void Plugin::handleJobFinished (int id)
-	{
-		if (!Jobs_.contains (id))
-			return;
-
-		const QPair<QUrl, QString>& job = Jobs_.take (id);
-
-		emit downloadFinished (job.first, job.second);
+		Util::Sequence (this, boost::any_cast<QFuture<IDownload::Result>> (result.ExtendedResult_)) >>
+				Util::Visitor
+				{
+					[this, url, temp] (IDownload::Success) { emit downloadFinished (url, temp); },
+					[] (const IDownload::Error&) {}
+				};
 	}
 
 	void Plugin::handleBodyFetched (quint64 id)
