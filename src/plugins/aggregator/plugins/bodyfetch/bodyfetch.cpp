@@ -48,7 +48,7 @@ namespace BodyFetch
 	{
 		StorageDir_ = Util::CreateIfNotExists ("aggregator/bodyfetcher/storage");
 
-		const int suffixLength = std::strlen (".html");
+		static const auto suffixLength = std::strlen (".html");
 		for (int i = 0; i < 10; ++i)
 		{
 			const QString& name = QString::number (i);
@@ -59,7 +59,7 @@ namespace BodyFetch
 				QDir dir = StorageDir_;
 				dir.cd (name);
 				FetchedItems_ = Util::MapAs<QSet> (dir.entryList (),
-						[suffixLength] (QString& name)
+						[] (QString& name)
 						{
 							name.chop (suffixLength);
 							return name.toULongLong ();
