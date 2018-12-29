@@ -218,8 +218,6 @@ namespace Otzerkalu
 		//Create the necessary directory for the downloaded file
 		QDir::root ().mkpath (path);
 
-		int id = -1;
-		QObject *pr;
 		auto e = Util::MakeEntity (url,
 				filename,
 				Internal |
@@ -227,8 +225,8 @@ namespace Otzerkalu
 					DoNotSaveInHistory |
 					NotPersistent |
 					DoNotAnnounceEntity);
-		emit delegateEntity (e, &id, &pr);
-		if (id == -1)
+		const auto result = Proxy_->GetEntityManager ()->DelegateEntity (e);
+		if (!result)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "could not download"
@@ -242,7 +240,7 @@ namespace Otzerkalu
 			return QString ();
 		}
 		++UrlCount_;
-		HandleProvider (pr, id, url, filename, recLevel);
+		HandleProvider (result.Handler_, result.ID_, url, filename, recLevel);
 
 		return filename;
 	}
