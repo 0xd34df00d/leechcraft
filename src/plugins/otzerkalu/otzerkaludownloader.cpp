@@ -98,7 +98,12 @@ namespace Otzerkalu
 		{
 			const QUrl url { urlCSS.cap (1) };
 			if (!url.isValid ())
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "invalid URL"
+						<< urlCSS.cap (1);
 				continue;
+			}
 
 			urlStack.append (url);
 		}
@@ -246,7 +251,14 @@ namespace Otzerkalu
 	{
 		QFile file (filename);
 		if (!file.open (QIODevice::WriteOnly | QIODevice::Text))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to open"
+					<< filename
+					<< "for writing:"
+					<< file.errorString ();
 			return false;
+		}
 
 		file.write (data.toUtf8 ());
 		return true;
