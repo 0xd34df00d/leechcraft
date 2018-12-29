@@ -32,6 +32,7 @@
 #include <QIcon>
 #include <interfaces/iscriptloader.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <util/xpc/util.h>
 #include <util/sys/paths.h>
@@ -197,19 +198,17 @@ namespace BodyFetch
 					DoNotSaveInHistory |
 					OnlyDownload |
 					NotPersistent);
-		int id = -1;
-		QObject *obj = 0;
-		emit delegateEntity (e, &id, &obj);
-		if (id == -1)
+		auto result = Proxy_->GetEntityManager ()->DelegateEntity (e);
+		if (!result)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "delegation failed";
 			return;
 		}
 
-		Jobs_ [id] = qMakePair (url, temp);
+		Jobs_ [result.ID_] = qMakePair (url, temp);
 
-		connect (obj,
+		connect (result.Handler_,
 				SIGNAL (jobFinished (int)),
 				this,
 				SLOT (handleJobFinished (int)),
