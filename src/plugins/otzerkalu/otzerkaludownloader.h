@@ -76,8 +76,6 @@ namespace Otzerkalu
 		bool WriteData (const QString& filename, const QString& data);
 		void HandleJobFinished (const FileData& data);
 	signals:
-		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
-		void gotEntity (const LeechCraft::Entity&);
 		void fileDownloaded (int count);
 		void mirroringFinished ();
 	};

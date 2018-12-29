@@ -112,15 +112,6 @@ namespace Otzerkalu
 				this);
 
 		connect (dl,
-				SIGNAL (gotEntity (const LeechCraft::Entity&)),
-				this,
-				SIGNAL (gotEntity (const LeechCraft::Entity&)));
-		connect (dl,
-				SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)),
-				this,
-				SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)));
-
-		connect (dl,
 				&OtzerkaluDownloader::fileDownloaded,
 				this,
 				[progressItem] (int count) { progressItem->setText (QString ("%1/%2").arg (count).arg ("unknown")); });

@@ -66,9 +66,6 @@ namespace Otzerkalu
 		EntityTestHandleResult CouldHandle (const Entity& entity) const override;
 		void Handle (Entity entity) override;
 		QAbstractItemModel* GetRepresentation () const override;
-	signals:
-		void gotEntity (const LeechCraft::Entity&) override;
-		void delegateEntity (const LeechCraft::Entity&, int*, QObject**) override;
 	};
 }
 }
