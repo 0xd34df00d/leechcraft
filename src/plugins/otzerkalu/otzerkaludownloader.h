@@ -48,10 +48,6 @@ namespace Otzerkalu
 		QString DestDir_;
 		int RecLevel_ = 0;
 		bool FromOtherSite_ = false;
-
-		DownloadParams () = default;
-		DownloadParams (const QUrl& downloadUrl, const QString& destDir,
-				int recLevel, bool fromOtherSite);
 	};
 
 	struct FileData
@@ -59,9 +55,6 @@ namespace Otzerkalu
 		QUrl Url_;
 		QString Filename_;
 		int RecLevel_ = 0;
-
-		FileData () = default;
-		FileData (const QUrl& url, const QString& filename, int recLevel);
 	};
 
 	class OtzerkaluDownloader : public QObject

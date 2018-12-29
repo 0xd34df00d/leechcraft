@@ -47,23 +47,6 @@ namespace LeechCraft
 {
 namespace Otzerkalu
 {
-	DownloadParams::DownloadParams (const QUrl& downloadUrl,
-			const QString& destDir, int recLevel, bool fromOtherSite)
-	: DownloadUrl_ (downloadUrl)
-	, DestDir_ (destDir)
-	, RecLevel_ (recLevel)
-	, FromOtherSite_ (fromOtherSite)
-	{
-	}
-
-	FileData::FileData (const QUrl& url,
-			const QString& filename, int recLevel)
-	: Url_ (url)
-	, Filename_ (filename)
-	, RecLevel_ (recLevel)
-	{
-	}
-
 	OtzerkaluDownloader::OtzerkaluDownloader (const DownloadParams& param, const ICoreProxy_ptr& proxy, QObject *parent)
 	: QObject (parent)
 	, Param_ (param)

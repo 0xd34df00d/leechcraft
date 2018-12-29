@@ -102,9 +102,12 @@ namespace Otzerkalu
 		auto progressItem = row [1];
 		RepresentationModel_->appendRow (row);
 
-		const auto dl = new OtzerkaluDownloader (DownloadParams (dUrl, dialog.GetDir (),
-					dialog.GetRecursionLevel (),
-					dialog.FetchFromExternalHosts ()),
+		const auto dl = new OtzerkaluDownloader ({
+					.DownloadUrl_ = dUrl,
+					.DestDir_ = dialog.GetDir (),
+					.RecLevel_ = dialog.GetRecursionLevel (),
+					.FromOtherSite_ = dialog.FetchFromExternalHosts ()
+				},
 				Proxy_,
 				this);
 
