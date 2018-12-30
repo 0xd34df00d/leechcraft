@@ -31,8 +31,11 @@
 #include <QNetworkAccessManager>
 #include <QtDebug>
 #include <QMessageBox>
+#include <util/sll/either.h>
+#include <util/sll/visitor.h>
+#include <util/threads/futures.h>
 #include <util/xpc/util.h>
-#include <util/xpc/downloadhandler.h>
+#include <util/xpc/downloadhelpers.h>
 #include "chooseuserpage.h"
 #include "userstatuspage.h"
 #include "reporttypepage.h"
@@ -71,7 +74,8 @@ namespace Dolozhee
 
 	void ReportWizard::PostRequest (const QString& address,
 			const QByteArray& data, const QByteArray& contentType,
-			const Util::DownloadHandler::DataHandler_t& handler)
+			const std::function<void (QByteArray)>& dataHandler,
+			const std::function<void (IDownload::Error)>& errorHandler)
 	{
 		const auto& user = ChooseUser_->GetLogin ().toUtf8 ();
 		const auto& pass = ChooseUser_->GetPassword ().toUtf8 ();
@@ -84,14 +88,19 @@ namespace Dolozhee
 		additional ["UploadData"] = data;
 		additional ["Operation"] = static_cast<int> (QNetworkAccessManager::PostOperation);
 
-		new Util::DownloadHandler
+		auto res = Util::DownloadAsTemporary (Proxy_->GetEntityManager (),
+				QUrl { "https://dev.leechcraft.org" + address },
+				{
+					.Additional_ = additional,
+					.Context_ = this
+				});
+		if (!res)
 		{
-			QUrl { "https://dev.leechcraft.org" + address },
-			additional,
-			Proxy_->GetEntityManager (),
-			handler,
-			this
-		};
+			errorHandler (IDownload::Error { IDownload::Error::Type::LocalError, "no plugins to handle" });
+			return;
+		}
+
+		Util::Sequence (this, *res) >> Util::Visitor { dataHandler, errorHandler };
 	}
 
 	ChooseUserPage* ReportWizard::GetChooseUserPage () const

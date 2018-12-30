@@ -80,32 +80,20 @@ namespace Dolozhee
 			const auto& filename = QFileInfo { CurrentUpload_.Name_ }.fileName ();
 
 			Ui_.Status_->setText (tr ("Sending %1...").arg ("<em>" + filename + "</em>"));
-			try
-			{
-				wiz->PostRequest ("/uploads.xml",
-						file.readAll (),
-						"application/octet-stream",
-						{
-							[this, filename] (IDownload::Error::Type)
-							{
-								QMessageBox::critical (this,
-										"LeechCraft",
-										tr ("Unable to upload %1.")
-											.arg ("<em>" + filename + "</em>"));
-							},
-							Util::BindMemFn (&FinalPage::HandleUploadReplyData, this)
-						});
 
+			wiz->PostRequest ("/uploads.xml",
+					file.readAll (),
+					"application/octet-stream",
+					Util::BindMemFn (&FinalPage::HandleUploadReplyData, this),
+					[this, filename] (const IDownload::Error&)
+					{
+						QMessageBox::critical (this,
+								"LeechCraft",
+								tr ("Unable to upload %1.")
+									.arg ("<em>" + filename + "</em>"));
+					});
 
-				return;
-			}
-			catch (const std::exception& e)
-			{
-				QMessageBox::critical (this,
-						"LeechCraft",
-						tr ("Unable to upload %1, could not initiate uploading process.")
-							.arg ("<em>" + filename + "</em>"));
-			}
+			return;
 		}
 
 		Util::MimeDetector detector;
@@ -135,10 +123,8 @@ namespace Dolozhee
 		wiz->PostRequest ("/issues.xml",
 				data,
 				"application/xml",
-				{
-					[this] (IDownload::Error::Type) { ShowRegrets (); },
-					Util::BindMemFn (&FinalPage::HandleReportPostedData, this)
-				});
+				Util::BindMemFn (&FinalPage::HandleReportPostedData, this),
+				[this] (const IDownload::Error&) { ShowRegrets (); });
 	}
 
 	void FinalPage::HandleUploadReplyData (const QByteArray& replyData)

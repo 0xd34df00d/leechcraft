@@ -34,9 +34,12 @@
 #include <QNetworkAccessManager>
 #include <QDomDocument>
 #include <QtDebug>
-#include <util/xpc/downloadhandler.h>
 #include <util/sll/functional.h>
 #include <util/sll/unreachable.h>
+#include <util/sll/either.h>
+#include <util/sll/visitor.h>
+#include <util/threads/futures.h>
+#include <util/xpc/downloadhelpers.h>
 #include "reportwizard.h"
 
 namespace LeechCraft
@@ -70,22 +73,17 @@ namespace Dolozhee
 		if (Ui_.CatCombo_->count () > 1)
 			return;
 
-		try
-		{
-			const QUrl url { "https://dev.leechcraft.org/projects/leechcraft.xml?include=issue_categories" };
-			new Util::DownloadHandler (url,
-					Proxy_->GetEntityManager (),
-					{
-						[] (IDownload::Error::Type) {},
-						Util::BindMemFn (&ReportTypePage::ParseCategories, this)
-					},
-					this);
-		}
-		catch (const std::exception& e)
-		{
-			qDebug () << Q_FUNC_INFO
-					<< e.what ();
-		}
+		const QUrl url { "https://dev.leechcraft.org/projects/leechcraft.xml?include=issue_categories" };
+		const auto& res = Util::DownloadAsTemporary (Proxy_->GetEntityManager (), url);
+		if (!res)
+			return;
+
+		Util::Sequence (this, *res) >>
+				Util::Visitor
+				{
+					[] (const IDownload::Error&) {},
+					[this] (const QByteArray& data) { ParseCategories (data); }
+				};
 	}
 
 	void ReportTypePage::ForceReportType (Type type)

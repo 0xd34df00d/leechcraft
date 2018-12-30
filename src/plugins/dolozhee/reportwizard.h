@@ -72,7 +72,8 @@ namespace Dolozhee
 		ReportWizard (ICoreProxy_ptr, QWidget* = 0);
 
 		void PostRequest (const QString&, const QByteArray&, const QByteArray&,
-				const Util::DownloadHandler::DataHandler_t&);
+				const std::function<void (QByteArray)>&,
+				const std::function<void (IDownload::Error)>&);
 
 		ChooseUserPage* GetChooseUserPage () const;
 		ReportTypePage* GetReportTypePage () const;
