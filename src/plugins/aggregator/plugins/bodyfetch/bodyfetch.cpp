@@ -31,11 +31,16 @@
 #include <cstring>
 #include <QIcon>
 #include <interfaces/iscriptloader.h>
+#include <interfaces/idownload.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <util/xpc/util.h>
 #include <util/sys/paths.h>
 #include <util/sll/prelude.h>
+#include <util/sll/either.h>
+#include <util/sll/visitor.h>
+#include <util/threads/futures.h>
 #include "workerobject.h"
 
 namespace LeechCraft
@@ -48,7 +53,7 @@ namespace BodyFetch
 	{
 		StorageDir_ = Util::CreateIfNotExists ("aggregator/bodyfetcher/storage");
 
-		const int suffixLength = std::strlen (".html");
+		static const auto suffixLength = std::strlen (".html");
 		for (int i = 0; i < 10; ++i)
 		{
 			const QString& name = QString::number (i);
@@ -59,7 +64,7 @@ namespace BodyFetch
 				QDir dir = StorageDir_;
 				dir.cd (name);
 				FetchedItems_ = Util::MapAs<QSet> (dir.entryList (),
-						[suffixLength] (QString& name)
+						[] (QString& name)
 						{
 							name.chop (suffixLength);
 							return name.toULongLong ();
@@ -197,33 +202,20 @@ namespace BodyFetch
 					DoNotSaveInHistory |
 					OnlyDownload |
 					NotPersistent);
-		int id = -1;
-		QObject *obj = 0;
-		emit delegateEntity (e, &id, &obj);
-		if (id == -1)
+		auto result = Proxy_->GetEntityManager ()->DelegateEntity (e);
+		if (!result)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "delegation failed";
 			return;
 		}
 
-		Jobs_ [id] = qMakePair (url, temp);
-
-		connect (obj,
-				SIGNAL (jobFinished (int)),
-				this,
-				SLOT (handleJobFinished (int)),
-				Qt::UniqueConnection);
-	}
-
-	void Plugin::handleJobFinished (int id)
-	{
-		if (!Jobs_.contains (id))
-			return;
-
-		const QPair<QUrl, QString>& job = Jobs_.take (id);
-
-		emit downloadFinished (job.first, job.second);
+		Util::Sequence (this, result.DownloadResult_) >>
+				Util::Visitor
+				{
+					[this, url, temp] (IDownload::Success) { emit downloadFinished (url, temp); },
+					[] (const IDownload::Error&) {}
+				};
 	}
 
 	void Plugin::handleBodyFetched (quint64 id)

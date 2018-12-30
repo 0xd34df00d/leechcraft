@@ -33,7 +33,6 @@
 #include <QObject>
 #include <QUrl>
 #include <QStandardItemModel>
-#include <util/idpool.h>
 #include <interfaces/iinfo.h>
 #include <interfaces/ientityhandler.h>
 #include <interfaces/structures.h>
@@ -56,29 +55,17 @@ namespace Otzerkalu
 
 		QStandardItemModel *RepresentationModel_;
 		ICoreProxy_ptr Proxy_;
-		Util::IDPool<int> MirrorIDPool_;
-		enum Roles
-		{
-			RMirrorId = Qt::UserRole + 1
-		};
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-		EntityTestHandleResult CouldHandle (const Entity& entity) const;
-		void Handle (Entity entity);
-		QAbstractItemModel* GetRepresentation () const;
-	private slots:
-		void handleFileDownloaded (int id, int count);
-		void handleMirroringFinished (int id);
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
-		void delegateEntity (const LeechCraft::Entity&,
-				int*, QObject**);
+		void Init (ICoreProxy_ptr) override;
+		void SecondInit () override;
+		QByteArray GetUniqueID () const override;
+		void Release () override;
+		QString GetName () const override;
+		QString GetInfo () const override;
+		QIcon GetIcon () const override;
+		EntityTestHandleResult CouldHandle (const Entity& entity) const override;
+		void Handle (Entity entity) override;
+		QAbstractItemModel* GetRepresentation () const override;
 	};
 }
 }

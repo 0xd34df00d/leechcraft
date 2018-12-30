@@ -66,7 +66,6 @@ namespace BodyFetch
 		ICoreProxy_ptr Proxy_;
 		QDir StorageDir_;
 		WorkerObject *WO_ = nullptr;
-		QHash<int, QPair<QUrl, QString>> Jobs_;
 		QHash<int, QString> ContentsCache_;
 		QSet<quint64> FetchedItems_;
 
@@ -90,7 +89,6 @@ namespace BodyFetch
 				const QList<Item_cptr>& items);
 	private slots:
 		void handleDownload (QUrl);
-		void handleJobFinished (int);
 		void handleBodyFetched (quint64);
 	signals:
 		void downloadFinished (QUrl, QString);

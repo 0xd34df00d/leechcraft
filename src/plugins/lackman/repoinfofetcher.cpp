@@ -77,7 +77,7 @@ namespace LackMan
 				return;
 			}
 
-			Util::Sequence (object, boost::any_cast<QFuture<IDownload::Result>> (result.ExtendedResult_)) >>
+			Util::Sequence (object, result.DownloadResult_) >>
 					Util::Visitor
 					{
 						[successFun, location] (IDownload::Success) { successFun (location); },

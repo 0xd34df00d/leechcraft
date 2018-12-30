@@ -102,7 +102,7 @@ namespace HotStreams
 			return;
 		}
 
-		Util::Sequence (this, boost::any_cast<QFuture<IDownload::Result>> (res.ExtendedResult_)) >>
+		Util::Sequence (this, res.DownloadResult_) >>
 				Util::Visitor
 				{
 					[this] (IDownload::Success) { ParseList (); },

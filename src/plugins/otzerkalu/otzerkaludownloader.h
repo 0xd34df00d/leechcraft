@@ -36,6 +36,7 @@
 #include <QWebElementCollection>
 #include <interfaces/structures.h>
 #include <interfaces/ientityhandler.h>
+#include <interfaces/core/icoreproxyfwd.h>
 
 namespace LeechCraft
 {
@@ -47,10 +48,6 @@ namespace Otzerkalu
 		QString DestDir_;
 		int RecLevel_ = 0;
 		bool FromOtherSite_ = false;
-
-		DownloadParams () = default;
-		DownloadParams (const QUrl& downloadUrl, const QString& destDir,
-				int recLevel, bool fromOtherSite);
 	};
 
 	struct FileData
@@ -58,39 +55,29 @@ namespace Otzerkalu
 		QUrl Url_;
 		QString Filename_;
 		int RecLevel_ = 0;
-
-		FileData () = default;
-		FileData (const QUrl& url, const QString& filename, int recLevel);
 	};
 
 	class OtzerkaluDownloader : public QObject
 	{
 		Q_OBJECT
+
 		const DownloadParams Param_;
-		QMap<int, FileData> FileMap_;
-		QStringList DownloadedFiles_;
+		const ICoreProxy_ptr Proxy_;
+		QSet<QString> DownloadedFiles_;
 		int UrlCount_ = 0;
-		int ID_;
 	public:
-		OtzerkaluDownloader (const DownloadParams& param, int id, QObject *parent = 0);
-		QString GetLastDownloaded () const;
-		int FilesCount () const;
+		OtzerkaluDownloader (const DownloadParams& param, const ICoreProxy_ptr&, QObject *parent = 0);
 		void Begin ();
 	private:
 		QString Download (const QUrl&, int);
 		QList<QUrl> CSSParser (const QString&) const;
 		QString CSSUrlReplace (QString, const FileData&);
-		bool HTMLReplace (QWebElementCollection::iterator element, const FileData& data);
+		bool HTMLReplace (QWebElement element, const FileData& data);
 		bool WriteData (const QString& filename, const QString& data);
-		void HandleProvider (QObject *provider, int id, const QUrl& url,
-				const QString& filename, int recLevel);
-	private slots:
-		void handleJobFinished (int id);
+		void HandleJobFinished (const FileData& data);
 	signals:
-		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
-		void gotEntity (const LeechCraft::Entity&);
-		void fileDownloaded (int id, int count);
-		void mirroringFinished (int id);
+		void fileDownloaded (int count);
+		void mirroringFinished ();
 	};
 };
 };
