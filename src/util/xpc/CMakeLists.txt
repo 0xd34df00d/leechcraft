@@ -7,7 +7,6 @@ set (XPC_SRCS
 	stddatafiltermenucreator.cpp
 	util.cpp
 	anutil.cpp
-	downloadhandler.cpp
 	introspectable.cpp
 	screensaverprohibitor.cpp
 	anconstantsdefs.cpp
