@@ -55,7 +55,6 @@ namespace Dolozhee
 	, FRPage_ (new FeatureRequestPage)
 	, FilePage_ (new FileAttachPage)
 	, PreviewPage_ (new PreviewPage)
-	, FirstAuth_ (true)
 	{
 		setWindowTitle (tr ("Issue reporter"));
 

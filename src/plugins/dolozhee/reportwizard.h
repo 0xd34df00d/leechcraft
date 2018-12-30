@@ -56,7 +56,6 @@ namespace Dolozhee
 		FeatureRequestPage *FRPage_;
 		FileAttachPage *FilePage_;
 		PreviewPage *PreviewPage_;
-		bool FirstAuth_;
 	public:
 		enum PageID
 		{
