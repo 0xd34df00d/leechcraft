@@ -90,6 +90,7 @@ namespace Dolozhee
 
 		auto res = Util::DownloadAsTemporary (Proxy_->GetEntityManager (),
 				QUrl { "https://dev.leechcraft.org" + address },
+				Util::DownloadParams
 				{
 					.Additional_ = additional,
 					.Context_ = this
