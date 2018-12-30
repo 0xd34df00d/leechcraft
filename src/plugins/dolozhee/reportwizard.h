@@ -31,6 +31,7 @@
 
 #include <QWizard>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/idownload.h>
 
 namespace LeechCraft
 {
