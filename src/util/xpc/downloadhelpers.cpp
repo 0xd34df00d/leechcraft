@@ -41,7 +41,7 @@
 namespace LeechCraft::Util
 {
 	std::optional<QFuture<TempResultType_t>> DownloadAsTemporary (IEntityManager *iem,
-			const QUrl& url, DATParams params)
+			const QUrl& url, DownloadParams params)
 	{
 		const auto& path = Util::GetTemporaryName ();
 		auto e = Util::MakeEntity (url,

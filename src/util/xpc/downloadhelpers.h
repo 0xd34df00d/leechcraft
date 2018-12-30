@@ -44,7 +44,7 @@ namespace LeechCraft::Util
 {
 	using TempResultType_t = Util::Either<IDownload::Error, QByteArray>;
 
-	struct DATParams
+	struct DownloadParams
 	{
 		QString Mime_;
 		QVariantMap Additional_;
@@ -52,5 +52,5 @@ namespace LeechCraft::Util
 	};
 
 	UTIL_XPC_API std::optional<QFuture<TempResultType_t>> DownloadAsTemporary (IEntityManager *iem,
-			const QUrl& url, DATParams params = {});
+			const QUrl& url, DownloadParams params = {});
 }
