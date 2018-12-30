@@ -69,9 +69,6 @@ namespace Dolozhee
 		QString GetPassKey () const;
 	private slots:
 		void saveCredentials ();
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
-		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 	};
 }
 }
