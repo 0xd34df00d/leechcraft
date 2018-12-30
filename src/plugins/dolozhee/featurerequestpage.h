@@ -38,8 +38,6 @@ namespace Dolozhee
 {
 	class FeatureRequestPage : public QWizardPage
 	{
-		Q_OBJECT
-
 		Ui::FeatureRequestPage Ui_;
 	public:
 		explicit FeatureRequestPage (QWidget* = nullptr);

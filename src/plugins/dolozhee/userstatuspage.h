@@ -40,8 +40,6 @@ namespace Dolozhee
 
 	class UserStatusPage : public QWizardPage
 	{
-		Q_OBJECT
-
 		Ui::UserStatusPage Ui_;
 	public:
 		explicit UserStatusPage (QWidget* = nullptr);

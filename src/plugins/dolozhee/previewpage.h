@@ -38,10 +38,7 @@ namespace Dolozhee
 {
 	class PreviewPage : public QWizardPage
 	{
-		Q_OBJECT
-
 		Ui::RequestPreview Ui_;
-
 	public:
 		explicit PreviewPage (QWidget *parent = nullptr);
 

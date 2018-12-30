@@ -39,8 +39,6 @@ namespace Dolozhee
 {
 	class BugReportPage : public QWizardPage
 	{
-		Q_OBJECT
-
 		Ui::BugReportPage Ui_;
 		ICoreProxy_ptr Proxy_;
 	public:
