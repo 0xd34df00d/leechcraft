@@ -58,9 +58,9 @@ namespace Dolozhee
 	void ChooseUserPage::initializePage ()
 	{
 		connect (wizard (),
-				SIGNAL (accepted ()),
+				&QDialog::accepted,
 				this,
-				SLOT (saveCredentials ()));
+				&ChooseUserPage::SaveCredentials);
 
 		QSettings settings (QCoreApplication::organizationName (),
 			QCoreApplication::applicationName () + "_Dolozhee");
@@ -145,7 +145,7 @@ namespace Dolozhee
 		return "org.LeechCraft.Dolozhee.Username_" + Ui_.Login_->text ();
 	}
 
-	void ChooseUserPage::saveCredentials ()
+	void ChooseUserPage::SaveCredentials ()
 	{
 		if (GetUser () != User::Existing)
 			return;

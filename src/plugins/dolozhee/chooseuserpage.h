@@ -67,8 +67,7 @@ namespace Dolozhee
 		QString GetLastName () const;
 	private:
 		QString GetPassKey () const;
-	private slots:
-		void saveCredentials ();
+		void SaveCredentials ();
 	};
 }
 }
