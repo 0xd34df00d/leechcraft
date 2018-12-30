@@ -211,7 +211,6 @@ option (ENABLE_SYNCER "Build Syncer, the synchronization plugin for LeechCraft" 
 option (ENABLE_TABSESSMANAGER "Build Tab Session Manager" ${WITH_PLUGINS})
 option (ENABLE_TABSLIST "Quick overview of tabs" ${WITH_PLUGINS})
 option (ENABLE_TORRENT "Build BitTorrent, the BitTorrent client" ${WITH_PLUGINS})
-option (ENABLE_VGRABBER "Build vGrabber, the vkontakte.ru music/video getter" ${WITH_PLUGINS})
 
 # Traditional, but dependent on 3dparty
 option (ENABLE_POPISHU "Build Popishu, a simple QScintilla-based text editor" OFF)
@@ -487,10 +486,6 @@ endif ()
 
 if (ENABLE_ANHERO)
 	add_subdirectory (plugins/anhero)
-endif ()
-
-if (ENABLE_VGRABBER)
-	add_subdirectory (plugins/vgrabber)
 endif ()
 
 if (ENABLE_KINOTIFY)
