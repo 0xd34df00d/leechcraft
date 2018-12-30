@@ -79,6 +79,7 @@ namespace Dolozhee
 
 			const auto& filename = QFileInfo { CurrentUpload_.Name_ }.fileName ();
 
+			Ui_.Status_->setText (tr ("Sending %1...").arg ("<em>" + filename + "</em>"));
 			try
 			{
 				wiz->PostRequest ("/uploads.xml",
@@ -95,8 +96,6 @@ namespace Dolozhee
 							Util::BindMemFn (&FinalPage::HandleUploadReplyData, this)
 						});
 
-				Ui_.Status_->setText (tr ("Sending %1...")
-						.arg ("<em>" + QFileInfo (CurrentUpload_.Name_).fileName () + "</em>"));
 
 				return;
 			}
