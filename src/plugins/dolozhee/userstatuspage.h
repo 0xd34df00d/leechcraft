@@ -46,7 +46,7 @@ namespace Dolozhee
 	public:
 		UserStatusPage (QWidget* = 0);
 
-		void initializePage ();
+		void initializePage () override;
 	private:
 		void RegisterUser (const QString&, const QString&, ChooseUserPage*);
 	};

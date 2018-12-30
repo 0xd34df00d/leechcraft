@@ -44,8 +44,8 @@ namespace Dolozhee
 	public:
 		FeatureRequestPage (QWidget* = 0);
 
-		int nextId () const;
-		bool isComplete () const;
+		int nextId () const override;
+		bool isComplete () const override;
 
 		QString GetTitle () const;
 		QString GetText () const;

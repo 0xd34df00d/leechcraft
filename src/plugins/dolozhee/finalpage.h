@@ -54,7 +54,7 @@ namespace Dolozhee
 	public:
 		FinalPage (const ICoreProxy_ptr&, QWidget* = 0);
 
-		void initializePage ();
+		void initializePage () override;
 	private:
 		void UploadPending ();
 

@@ -55,9 +55,9 @@ namespace Dolozhee
 
 		ChooseUserPage (const ICoreProxy_ptr&, QWidget* = 0);
 
-		void initializePage ();
-		int nextId () const;
-		bool isComplete () const;
+		void initializePage () override;
+		int nextId () const override;
+		bool isComplete () const override;
 
 		User GetUser () const;
 		QString GetLogin () const;

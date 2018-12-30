@@ -69,7 +69,7 @@ namespace Dolozhee
 			Final
 		};
 
-		ReportWizard (ICoreProxy_ptr, QWidget* = 0);
+		explicit ReportWizard (ICoreProxy_ptr, QWidget* = nullptr);
 
 		void PostRequest (const QString&, const QByteArray&, const QByteArray&,
 				const std::function<void (QByteArray)>&,

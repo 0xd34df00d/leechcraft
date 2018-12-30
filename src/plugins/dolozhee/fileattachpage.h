@@ -47,7 +47,7 @@ namespace Dolozhee
 	public:
 		FileAttachPage (QWidget* = 0);
 
-		int nextId () const;
+		int nextId () const override;
 
 		void AddFile (const QString&);
 		QStringList GetFiles () const;

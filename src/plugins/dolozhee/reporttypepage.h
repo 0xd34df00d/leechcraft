@@ -39,8 +39,6 @@ namespace Dolozhee
 {
 	class ReportTypePage : public QWizardPage
 	{
-		Q_OBJECT
-
 		const ICoreProxy_ptr Proxy_;
 
 		Ui::ReportTypePage Ui_;
@@ -58,10 +56,10 @@ namespace Dolozhee
 			High
 		};
 
-		ReportTypePage (const ICoreProxy_ptr&, QWidget* = 0);
+		explicit ReportTypePage (const ICoreProxy_ptr&, QWidget* = nullptr);
 
-		int nextId () const;
-		void initializePage ();
+		int nextId () const override;
+		void initializePage () override;
 
 		void ForceReportType (Type);
 

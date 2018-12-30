@@ -45,8 +45,8 @@ namespace Dolozhee
 	public:
 		PreviewPage (QWidget *parent = 0);
 
-		void initializePage ();
-		int nextId () const;
+		void initializePage () override;
+		int nextId () const override;
 	};
 }
 }
