@@ -40,7 +40,8 @@
 
 namespace LeechCraft::Util
 {
-	std::optional<QFuture<TempResultType_t>> DownloadAsTemporary (IEntityManager *iem, const QUrl& url, QObject *context)
+	std::optional<QFuture<TempResultType_t>> DownloadAsTemporary (IEntityManager *iem,
+			const QUrl& url, DATParams params)
 	{
 		const auto& path = Util::GetTemporaryName ();
 		auto e = Util::MakeEntity (url,
@@ -49,6 +50,8 @@ namespace LeechCraft::Util
 					Internal |
 					DoNotNotifyUser |
 					NotPersistent);
+		e.Mime_ = std::move (params.Mime_);
+		e.Additional_ = std::move (params.Additional_);
 
 		auto res = iem->DelegateEntity (e);
 		if (!res)
@@ -59,7 +62,7 @@ namespace LeechCraft::Util
 			return {};
 		}
 
-		return Util::Sequence (context, res.DownloadResult_) >>
+		return Util::Sequence (params.Context_, res.DownloadResult_) >>
 				Util::Visitor
 				{
 					[] (const IDownload::Error& err) { return Util::MakeReadyFuture (TempResultType_t::Left (err)); },

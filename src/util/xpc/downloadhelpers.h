@@ -30,6 +30,7 @@
 #pragma once
 
 #include <optional>
+#include <QVariantMap>
 #include <util/sll/eitherfwd.h>
 #include <interfaces/idownload.h>
 
@@ -42,6 +43,13 @@ namespace LeechCraft::Util
 {
 	using TempResultType_t = Util::Either<IDownload::Error, QByteArray>;
 
+	struct DATParams
+	{
+		QString Mime_;
+		QVariantMap Additional_;
+		QObject *Context_ = nullptr;
+	};
+
 	std::optional<QFuture<TempResultType_t>> DownloadAsTemporary (IEntityManager *iem,
-			const QUrl& url, QObject *context = nullptr);
+			const QUrl& url, DATParams params = {});
 }
