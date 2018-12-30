@@ -46,8 +46,8 @@ namespace LeechCraft::Util
 
 	struct DownloadParams
 	{
-		QString Mime_;
-		QVariantMap Additional_;
+		QString Mime_ {};
+		QVariantMap Additional_ {};
 		QObject *Context_ = nullptr;
 	};
 
