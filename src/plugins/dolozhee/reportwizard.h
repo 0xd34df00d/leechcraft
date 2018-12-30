@@ -48,8 +48,6 @@ namespace Dolozhee
 
 	class ReportWizard : public QWizard
 	{
-		Q_OBJECT
-
 		ICoreProxy_ptr Proxy_;
 
 		ChooseUserPage *ChooseUser_;
