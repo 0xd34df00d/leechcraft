@@ -33,6 +33,7 @@
 #include <QVariantMap>
 #include <util/sll/eitherfwd.h>
 #include <interfaces/idownload.h>
+#include "xpcconfig.h"
 
 template<typename>
 class QFuture;
@@ -50,6 +51,6 @@ namespace LeechCraft::Util
 		QObject *Context_ = nullptr;
 	};
 
-	std::optional<QFuture<TempResultType_t>> DownloadAsTemporary (IEntityManager *iem,
+	UTIL_XPC_API std::optional<QFuture<TempResultType_t>> DownloadAsTemporary (IEntityManager *iem,
 			const QUrl& url, DATParams params = {});
 }
