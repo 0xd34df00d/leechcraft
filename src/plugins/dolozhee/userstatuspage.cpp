@@ -46,7 +46,7 @@ namespace Dolozhee
 
 	void UserStatusPage::initializePage ()
 	{
-		auto cup = qobject_cast<ReportWizard*> (wizard ())->GetChooseUserPage ();
+		auto cup = static_cast<ReportWizard*> (wizard ())->GetChooseUserPage ();
 
 		const auto& login = cup->GetLogin ();
 		const auto& pass = cup->GetPassword ();

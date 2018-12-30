@@ -70,7 +70,7 @@ namespace Dolozhee
 
 	void PreviewPage::initializePage ()
 	{
-		auto wiz = qobject_cast<ReportWizard*> (wizard ());
+		auto wiz = static_cast<ReportWizard*> (wizard ());
 		if (!wiz)
 			return;
 

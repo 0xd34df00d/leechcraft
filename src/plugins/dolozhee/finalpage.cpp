@@ -58,7 +58,7 @@ namespace Dolozhee
 
 	void FinalPage::initializePage ()
 	{
-		auto wiz = qobject_cast<ReportWizard*> (wizard ());
+		auto wiz = static_cast<ReportWizard*> (wizard ());
 
 		for (const auto& file : wiz->GetFilePage ()->GetFiles ())
 			PendingFiles_.push_back ({ file, QString (), QString (), QString () });
@@ -68,7 +68,7 @@ namespace Dolozhee
 
 	void FinalPage::UploadPending ()
 	{
-		auto wiz = qobject_cast<ReportWizard*> (wizard ());
+		auto wiz = static_cast<ReportWizard*> (wizard ());
 
 		if (!PendingFiles_.isEmpty ())
 		{
