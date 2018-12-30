@@ -44,7 +44,7 @@ namespace Dolozhee
 		Ui::BugReportPage Ui_;
 		ICoreProxy_ptr Proxy_;
 	public:
-		BugReportPage (ICoreProxy_ptr, QWidget* = 0);
+		explicit BugReportPage (ICoreProxy_ptr, QWidget* = nullptr);
 
 		int nextId () const override;
 		bool isComplete () const override;

@@ -45,7 +45,7 @@ namespace Dolozhee
 		Ui::FileAttachPage Ui_;
 		QStandardItemModel *Model_;
 	public:
-		FileAttachPage (QWidget* = 0);
+		explicit FileAttachPage (QWidget* = nullptr);
 
 		int nextId () const override;
 

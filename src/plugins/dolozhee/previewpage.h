@@ -43,7 +43,7 @@ namespace Dolozhee
 		Ui::RequestPreview Ui_;
 
 	public:
-		PreviewPage (QWidget *parent = 0);
+		explicit PreviewPage (QWidget *parent = nullptr);
 
 		void initializePage () override;
 		int nextId () const override;

@@ -52,7 +52,7 @@ namespace Dolozhee
 		FileInfo CurrentUpload_;
 		QList<FileInfo> UploadedFiles_;
 	public:
-		FinalPage (const ICoreProxy_ptr&, QWidget* = 0);
+		explicit FinalPage (const ICoreProxy_ptr&, QWidget* = nullptr);
 
 		void initializePage () override;
 	private:

@@ -42,7 +42,7 @@ namespace Dolozhee
 
 		Ui::FeatureRequestPage Ui_;
 	public:
-		FeatureRequestPage (QWidget* = 0);
+		explicit FeatureRequestPage (QWidget* = nullptr);
 
 		int nextId () const override;
 		bool isComplete () const override;

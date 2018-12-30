@@ -44,7 +44,7 @@ namespace Dolozhee
 
 		Ui::UserStatusPage Ui_;
 	public:
-		UserStatusPage (QWidget* = 0);
+		explicit UserStatusPage (QWidget* = nullptr);
 
 		void initializePage () override;
 	private:

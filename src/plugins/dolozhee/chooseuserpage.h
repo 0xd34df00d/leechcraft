@@ -53,7 +53,7 @@ namespace Dolozhee
 			Existing
 		};
 
-		ChooseUserPage (const ICoreProxy_ptr&, QWidget* = 0);
+		explicit ChooseUserPage (const ICoreProxy_ptr&, QWidget* = nullptr);
 
 		void initializePage () override;
 		int nextId () const override;
