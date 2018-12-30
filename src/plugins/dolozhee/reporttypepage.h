@@ -71,8 +71,6 @@ namespace Dolozhee
 		Priority GetPriority () const;
 	private:
 		void ParseCategories (const QByteArray&);
-	private slots:
-		void handleCategoriesFinished ();
 	};
 }
 }

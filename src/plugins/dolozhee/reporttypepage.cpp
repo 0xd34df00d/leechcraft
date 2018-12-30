@@ -160,21 +160,5 @@ namespace Dolozhee
 			Ui_.CatCombo_->addItem (name, id);
 		}
 	}
-
-	void ReportTypePage::handleCategoriesFinished ()
-	{
-		auto reply = qobject_cast<QNetworkReply*> (sender ());
-		if (!reply)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "invalid reply"
-					<< sender ();
-			return;
-		}
-
-		reply->deleteLater ();
-
-		ParseCategories (reply->readAll ());
-	}
 }
 }
