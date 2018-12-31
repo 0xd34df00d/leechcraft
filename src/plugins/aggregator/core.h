@@ -143,13 +143,13 @@ namespace Aggregator
 		void updateFeeds ();
 		void updateIntervalChanged ();
 	private slots:
-		void fetchExternalFile (const QString&, const QString&);
 		void handleJobFinished (int);
 		void handleJobRemoved (int);
 		void handleJobError (int, IDownload::Error::Type);
 		void handleCustomUpdates ();
 		void rotateUpdatesQueue ();
 	private:
+		void FetchExternalFile (const QString&, const QString&);
 		void FetchPixmap (const Channel&);
 		void FetchFavicon (IDType_t, const QString&);
 		void HandleExternalData (const QString&, const QFile&);

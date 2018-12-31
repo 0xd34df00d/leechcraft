@@ -595,7 +595,7 @@ namespace Aggregator
 			UpdateTimer_->start (interval * 60 * 1000);
 	}
 
-	void Core::fetchExternalFile (const QString& url, const QString& where)
+	void Core::FetchExternalFile (const QString& url, const QString& where)
 	{
 		const auto& e = Util::MakeEntity (QUrl (url),
 				where,
@@ -744,7 +744,7 @@ namespace Aggregator
 			QString exFName = LeechCraft::Util::GetTemporaryName ();
 			try
 			{
-				fetchExternalFile (channel.PixmapURL_, exFName);
+				FetchExternalFile (channel.PixmapURL_, exFName);
 			}
 			catch (const std::runtime_error& e)
 			{
@@ -767,7 +767,7 @@ namespace Aggregator
 		QString exFName = LeechCraft::Util::GetTemporaryName ();
 		try
 		{
-			fetchExternalFile (iconUrl, exFName);
+			FetchExternalFile (iconUrl, exFName);
 		}
 		catch (const std::runtime_error& e)
 		{
