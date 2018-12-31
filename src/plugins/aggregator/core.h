@@ -75,17 +75,7 @@ namespace Aggregator
 			QStringList Tags_;
 			std::optional<Feed::FeedSettings> FeedSettings_;
 		};
-		struct ExternalData
-		{
-			enum Type
-			{
-				TImage
-				, TIcon
-			} Type_;
-			IDType_t ChannelId_;
-		};
 		QMap<int, PendingJob> PendingJobs_;
-		QMap<QString, ExternalData> PendingJob2ExternalData_;
 		QList<QObject*> Downloaders_;
 		QMap<int, QObject*> ID2Downloader_;
 
@@ -148,10 +138,9 @@ namespace Aggregator
 		void handleCustomUpdates ();
 		void rotateUpdatesQueue ();
 	private:
-		void FetchExternalFile (const QString&);
+		void FetchExternalFile (const QString&, const std::function<void (QString)>&);
 		void FetchPixmap (const Channel&);
 		void FetchFavicon (IDType_t, const QString&);
-		void HandleExternalData (const QString&, const QFile&);
 		void HandleFeedAdded (const channels_container_t&, const PendingJob&);
 		void HandleFeedUpdated (const channels_container_t&, const PendingJob&);
 		void MarkChannel (const QModelIndex&, bool);

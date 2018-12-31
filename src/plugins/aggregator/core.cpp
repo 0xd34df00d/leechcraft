@@ -591,7 +591,7 @@ namespace Aggregator
 			UpdateTimer_->start (interval * 60 * 1000);
 	}
 
-	void Core::FetchExternalFile (const QString& url)
+	void Core::FetchExternalFile (const QString& url, const std::function<void (QString)>& cont)
 	{
 		auto where = Util::GetTemporaryName ();
 
@@ -614,7 +614,7 @@ namespace Aggregator
 		Util::Sequence (this, delegateResult.DownloadResult_) >>
 				Util::Visitor
 				{
-					[=] (IDownload::Success) { HandleExternalData (url, where); },
+					[=] (IDownload::Success) { cont (where); },
 					[] (const IDownload::Error&) {}
 				};
 	}
@@ -731,58 +731,20 @@ namespace Aggregator
 		if (QUrl (channel.PixmapURL_).isValid () &&
 				!QUrl (channel.PixmapURL_).isRelative ())
 		{
-			ExternalData data;
-			data.Type_ = ExternalData::TImage;
-			data.ChannelId_ = channel.ChannelID_;
-			try
-			{
-				FetchExternalFile (channel.PixmapURL_);
-			}
-			catch (const std::runtime_error& e)
-			{
-				qWarning () << Q_FUNC_INFO << e.what ();
-				return;
-			}
-			PendingJob2ExternalData_ [channel.PixmapURL_] = data;
+			auto cid = channel.ChannelID_;
+			FetchExternalFile (channel.PixmapURL_,
+					[this, cid] (const QString& path) { StorageBackend_->SetChannelPixmap (cid, QImage { path }); });
 		}
 	}
 
-	void Core::FetchFavicon (IDType_t channelId, const QString& link)
+	void Core::FetchFavicon (IDType_t cid, const QString& link)
 	{
 		QUrl oldUrl { link };
 		oldUrl.setPath ("/favicon.ico");
 		QString iconUrl = oldUrl.toString ();
 
-		ExternalData data;
-		data.Type_ = ExternalData::TIcon;
-		data.ChannelId_ = channelId;
-		try
-		{
-			FetchExternalFile (iconUrl);
-		}
-		catch (const std::runtime_error& e)
-		{
-			qWarning () << Q_FUNC_INFO << e.what ();
-			return;
-		}
-		PendingJob2ExternalData_ [iconUrl] = data;
-	}
-
-	void Core::HandleExternalData (const QString& url, const QFile& file)
-	{
-		const QImage image { file.fileName () };
-
-		const auto& data = PendingJob2ExternalData_.take (url);
-
-		switch (data.Type_)
-		{
-		case ExternalData::TImage:
-			StorageBackend_->SetChannelPixmap (data.ChannelId_, image);
-			break;
-		case ExternalData::TIcon:
-			StorageBackend_->SetChannelFavicon (data.ChannelId_, image);
-			break;
-		}
+		FetchExternalFile (iconUrl,
+				[this, cid] (const QString& path) { StorageBackend_->SetChannelFavicon (cid, QImage { path }); });
 	}
 
 	void Core::HandleFeedAdded (const channels_container_t& channels,
