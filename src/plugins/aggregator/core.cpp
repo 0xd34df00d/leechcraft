@@ -199,7 +199,7 @@ namespace Aggregator
 								ErrorNotification (tr ("OPML import error"),
 										tr ("Unable to download the OPML file."));
 							}
-						};
+						}.Finally ([name] { QFile::remove (name); });
 			}
 
 			const auto& s = e.Additional_;
