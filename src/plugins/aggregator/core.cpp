@@ -616,7 +616,7 @@ namespace Aggregator
 				{
 					[=] (IDownload::Success) { cont (where); },
 					[] (const IDownload::Error&) {}
-				};
+				}.Finally ([where] { QFile::remove (where); });
 	}
 
 	void Core::updateIntervalChanged ()
