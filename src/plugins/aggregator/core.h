@@ -69,7 +69,6 @@ namespace Aggregator
 			{
 				RFeedAdded
 				, RFeedUpdated
-				, RFeedExternalData
 			} Role_;
 			QString URL_;
 			QString Filename_;

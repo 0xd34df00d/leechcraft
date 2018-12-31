@@ -470,14 +470,12 @@ namespace Aggregator
 		}
 		if (!file.size ())
 		{
-			if (pj.Role_ != PendingJob::RFeedExternalData)
-				ErrorNotification (tr ("Feed error"),
-						tr ("Downloaded file from url %1 has null size.").arg (pj.URL_));
+			ErrorNotification (tr ("Feed error"),
+					tr ("Downloaded file from url %1 has null size.").arg (pj.URL_));
 			return;
 		}
 
 		channels_container_t channels;
-		if (pj.Role_ != PendingJob::RFeedExternalData)
 		{
 			QByteArray data = file.readAll ();
 			QDomDocument doc;
@@ -532,8 +530,6 @@ namespace Aggregator
 			HandleFeedAdded (channels, pj);
 		else if (pj.Role_ == PendingJob::RFeedUpdated)
 			HandleFeedUpdated (channels, pj);
-		else if (pj.Role_ == PendingJob::RFeedExternalData)
-			HandleExternalData (pj.URL_, file);
 	}
 
 	void Core::handleJobRemoved (int id)
@@ -607,15 +603,6 @@ namespace Aggregator
 					NotPersistent |
 					DoNotAnnounceEntity);
 
-		PendingJob pj =
-		{
-			PendingJob::RFeedExternalData,
-			url,
-			where,
-			{},
-			{}
-		};
-
 		const auto& delegateResult = Proxy_->GetEntityManager ()->DelegateEntity (e);
 		if (!delegateResult)
 		{
@@ -624,8 +611,12 @@ namespace Aggregator
 			return;
 		}
 
-		HandleProvider (delegateResult.Handler_, delegateResult.ID_);
-		PendingJobs_ [delegateResult.ID_] = pj;
+		Util::Sequence (this, delegateResult.DownloadResult_) >>
+				Util::Visitor
+				{
+					[=] (IDownload::Success) { HandleExternalData (url, where); },
+					[] (const IDownload::Error&) {}
+				};
 	}
 
 	void Core::updateIntervalChanged ()
