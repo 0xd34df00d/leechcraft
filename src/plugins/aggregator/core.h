@@ -149,7 +149,7 @@ namespace Aggregator
 		void handleCustomUpdates ();
 		void rotateUpdatesQueue ();
 	private:
-		void FetchExternalFile (const QString&, const QString&);
+		void FetchExternalFile (const QString&);
 		void FetchPixmap (const Channel&);
 		void FetchFavicon (IDType_t, const QString&);
 		void HandleExternalData (const QString&, const QFile&);
