@@ -190,8 +190,16 @@ namespace Aggregator
 					return;
 				}
 
-				HandleProvider (handleResult.Handler_, handleResult.ID_);
-				PendingOPMLs_ [handleResult.ID_] = PendingOPML { name };
+				Util::Sequence (this, handleResult.DownloadResult_) >>
+						Util::Visitor
+						{
+							[this, name] (IDownload::Success) { StartAddingOPML (name); },
+							[this] (const IDownload::Error&)
+							{
+								ErrorNotification (tr ("OPML import error"),
+										tr ("Unable to download the OPML file."));
+							}
+						};
 			}
 
 			const auto& s = e.Additional_;
@@ -449,14 +457,7 @@ namespace Aggregator
 	void Core::handleJobFinished (int id)
 	{
 		if (!PendingJobs_.contains (id))
-		{
-			if (PendingOPMLs_.contains (id))
-			{
-				StartAddingOPML (PendingOPMLs_ [id].Filename_);
-				PendingOPMLs_.remove (id);
-			}
 			return;
-		}
 		PendingJob pj = PendingJobs_ [id];
 		PendingJobs_.remove (id);
 		ID2Downloader_.remove (id);
@@ -542,19 +543,12 @@ namespace Aggregator
 			PendingJobs_.remove (id);
 			ID2Downloader_.remove (id);
 		}
-		if (PendingOPMLs_.contains (id))
-			PendingOPMLs_.remove (id);
 	}
 
 	void Core::handleJobError (int id, IDownload::Error::Type ie)
 	{
 		if (!PendingJobs_.contains (id))
-		{
-			if (PendingOPMLs_.contains (id))
-				ErrorNotification (tr ("OPML import error"),
-						tr ("Unable to download the OPML file."));
 			return;
-		}
 
 		PendingJob pj = PendingJobs_ [id];
 		Util::FileRemoveGuard file (pj.Filename_);

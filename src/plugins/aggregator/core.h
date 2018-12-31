@@ -63,12 +63,6 @@ namespace Aggregator
 	{
 		Q_OBJECT
 
-		struct PendingOPML
-		{
-			QString Filename_;
-		};
-		QMap<int, PendingOPML> PendingOPMLs_;
-
 		struct PendingJob
 		{
 			enum Role
