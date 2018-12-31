@@ -106,11 +106,7 @@ namespace Fradj
 		Ui_.DialogLayout_->insertWidget (Ui_.DialogLayout_->count () - 1, Plot_);
 
 		Plot_->setAxisTitle (QwtPlot::xBottom, tr ("Frequency, Hz"));
-#if QWT_VERSION >= 0x060100
 		Plot_->setAxisScaleEngine (QwtPlot::xBottom, new QwtLogScaleEngine { 2 });
-#else
-		Plot_->setAxisScaleEngine (QwtPlot::xBottom, new QwtLog10ScaleEngine);
-#endif
 
 		Plot_->setAxisAutoScale (QwtPlot::yLeft, false);
 		Plot_->setAxisScale (QwtPlot::yLeft, -24, 12);
@@ -126,13 +122,8 @@ namespace Fradj
 
 		auto grid = new QwtPlotGrid;
 		grid->enableXMin (true);
-#if QWT_VERSION >= 0x060100
 		grid->setMajorPen (QPen (Qt::gray, 1, Qt::DashLine));
 		grid->setMinorPen (QPen (Qt::gray, 1, Qt::DashLine));
-#else
-		grid->setMajPen (QPen (Qt::gray, 1, Qt::DashLine));
-		grid->setMinPen (QPen (Qt::gray, 1, Qt::DashLine));
-#endif
 		grid->attach (Plot_);
 #endif
 	}

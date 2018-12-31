@@ -35,11 +35,7 @@
 #include <qwt_legend.h>
 #include <qwt_dyngrid_layout.h>
 #include <qwt_scale_widget.h>
-
-#if QWT_VERSION >= 0x060100
 #include <qwt_plot_legenditem.h>
-#endif
-
 #include <util/util.h>
 #include <util/gui/util.h>
 #include "batteryinfo.h"
@@ -91,7 +87,6 @@ namespace Liznoo
 
 		Temperature_->setRenderHint (QwtPlotItem::RenderAntialiased);
 
-#if QWT_VERSION >= 0x060100
 		auto item = new QwtPlotLegendItem;
 		item->setMaxColumns (1);
 		item->setAlignment (Qt::AlignTop | Qt::AlignLeft);
@@ -102,21 +97,6 @@ namespace Liznoo
 		item->setBackgroundBrush (bgColor);
 		item->setBorderRadius (3);
 		item->setBorderPen (QPen (palette ().color (QPalette::Dark), 1));
-#else
-		QwtLegend *legend = new QwtLegend;
-		legend->setItemMode (QwtLegend::ClickableItem);
-		Ui_.PercentPlot_->insertLegend (legend, QwtPlot::ExternalLegend);
-
-		auto layout = qobject_cast<QwtDynGridLayout*> (legend->contentsWidget ()->layout ());
-		if (layout)
-			layout->setMaxCols (1);
-		else
-			qWarning () << Q_FUNC_INFO
-					<< "legend contents layout is not a QwtDynGridLayout:"
-					<< legend->contentsWidget ()->layout ();
-
-		Ui_.InfoFrame_->layout ()->addWidget (legend);
-#endif
 	}
 
 	void BatteryHistoryDialog::UpdateHistory (const BatteryHistoryList& hist, const BatteryInfo& info)

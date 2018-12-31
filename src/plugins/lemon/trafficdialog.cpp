@@ -35,11 +35,7 @@
 #include <qwt_legend.h>
 #include <qwt_dyngrid_layout.h>
 #include <qwt_scale_widget.h>
-
-#if QWT_VERSION >= 0x060100
 #include <qwt_plot_legenditem.h>
-#endif
-
 #include <util/util.h>
 #include <util/gui/util.h>
 #include "trafficmanager.h"
@@ -112,14 +108,9 @@ namespace Lemon
 		auto grid = new QwtPlotGrid;
 		grid->enableYMin (true);
 		grid->enableX (false);
-#if QWT_VERSION >= 0x060100
 		grid->setMinorPen (QPen (Qt::gray, 1, Qt::DashLine));
-#else
-		grid->setMinPen (QPen (Qt::gray, 1, Qt::DashLine));
-#endif
 		grid->attach (Ui_.TrafficPlot_);
 
-#if QWT_VERSION >= 0x060100
 		auto item = new QwtPlotLegendItem;
 		item->setMaxColumns (1);
 		item->setAlignment (Qt::AlignTop | Qt::AlignLeft);
@@ -130,21 +121,6 @@ namespace Lemon
 		item->setBackgroundBrush (bgColor);
 		item->setBorderRadius (3);
 		item->setBorderPen (QPen (palette ().color (QPalette::Dark), 1));
-#else
-		QwtLegend *legend = new QwtLegend;
-		legend->setItemMode (QwtLegend::CheckableItem);
-		Ui_.TrafficPlot_->insertLegend (legend, QwtPlot::ExternalLegend);
-
-		auto layout = qobject_cast<QwtDynGridLayout*> (legend->contentsWidget ()->layout ());
-		if (layout)
-			layout->setMaxCols (1);
-		else
-			qWarning () << Q_FUNC_INFO
-					<< "legend contents layout is not a QwtDynGridLayout:"
-					<< legend->contentsWidget ()->layout ();
-
-		Ui_.StatsFrame_->layout ()->addWidget (legend);
-#endif
 
 		connect (manager,
 				SIGNAL (updated ()),

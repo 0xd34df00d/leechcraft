@@ -48,11 +48,7 @@ namespace Poleemery
 		Ui_.GraphType_->setCurrentIndex (-1);
 
 		auto legend = new QwtLegend;
-#if QWT_VERSION >= 0x060100
 		legend->setDefaultItemMode (QwtLegendData::Clickable);
-#else
-		legend->setItemMode (QwtLegend::ClickableItem);
-#endif
 		Ui_.Plot_->insertLegend (legend, QwtPlot::BottomLegend);
 
 		connect (Ui_.GraphType_,

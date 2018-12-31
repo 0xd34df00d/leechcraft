@@ -358,13 +358,8 @@ namespace Util
 			auto grid = new QwtPlotGrid;
 			grid->enableYMin (YMinorGridEnabled_);
 			grid->enableX (false);
-#if QWT_VERSION >= 0x060100
 			grid->setMajorPen (QPen (GridLinesColor_, 1, Qt::SolidLine));
 			grid->setMinorPen (QPen (GridLinesColor_, 1, Qt::DashLine));
-#else
-			grid->setMajPen (QPen (GridLinesColor_, 1, Qt::SolidLine));
-			grid->setMinPen (QPen (GridLinesColor_, 1, Qt::DashLine));
-#endif
 			grid->attach (&plot);
 		}
 
