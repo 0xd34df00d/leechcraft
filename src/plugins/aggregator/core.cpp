@@ -195,14 +195,15 @@ namespace Aggregator
 			}
 
 			const auto& s = e.Additional_;
-			if (s.contains ("UpdateOnStartup"))
-				XmlSettingsManager::Instance ()->setProperty ("UpdateOnStartup", s.value ("UpdateOnStartup").toBool ());
-			if (s.contains ("UpdateTimeout"))
-				XmlSettingsManager::Instance ()->setProperty ("UpdateInterval", s.value ("UpdateTimeout").toInt ());
-			if (s.contains ("MaxArticles"))
-				XmlSettingsManager::Instance ()->setProperty ("ItemsPerChannel", s.value ("MaxArticles").toInt ());
-			if (s.contains ("MaxAge"))
-				XmlSettingsManager::Instance ()->setProperty ("ItemsMaxAge", s.value ("MaxAge").toInt ());
+			auto copyVal = [&s] (const QByteArray& name)
+			{
+				if (s.contains (name))
+					XmlSettingsManager::Instance ()->setProperty (name, s.value (name));
+			};
+			copyVal ("UpdateOnStartup");
+			copyVal ("UpdateTimeout");
+			copyVal ("MaxArticles");
+			copyVal ("MaxAge");
 		}
 		else
 		{
