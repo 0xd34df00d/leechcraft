@@ -69,6 +69,8 @@
 #include "exportutils.h"
 #include "actionsstructs.h"
 #include "representationmanager.h"
+#include "dbupdatethread.h"
+#include "dbupdatethreadworker.h"
 
 namespace LeechCraft
 {
@@ -457,6 +459,16 @@ namespace Aggregator
 			func (index);
 	}
 
+	namespace
+	{
+		void MarkChannel (const QModelIndex& idx, bool unread)
+		{
+			const auto cid = idx.data (ChannelRoles::ChannelID).value<IDType_t> ();
+			auto& dbUpThread = Core::Instance ().GetDBUpdateThread ();
+			dbUpThread.ScheduleImpl (&DBUpdateThreadWorker::toggleChannelUnread, cid, unread);
+		}
+	}
+
 	void Aggregator::on_ActionMarkChannelAsRead__triggered ()
 	{
 		QStringList names;
@@ -481,7 +493,7 @@ namespace Aggregator
 				XmlSettingsManager::Instance ()->setProperty ("ConfirmMarkChannelAsRead", false);
 		}
 
-		Perform ([] (const QModelIndex& mi) { Core::Instance ().MarkChannelAsRead (mi); });
+		Perform ([] (const QModelIndex& mi) { MarkChannel (mi, false); });
 	}
 
 	void Aggregator::on_ActionMarkChannelAsUnread__triggered ()
@@ -496,7 +508,7 @@ namespace Aggregator
 				QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
 			return;
 
-		Perform ([] (const QModelIndex& mi) { Core::Instance ().MarkChannelAsUnread (mi); });
+		Perform ([] (const QModelIndex& mi) { MarkChannel (mi, true); });
 	}
 
 	void Aggregator::on_ActionChannelSettings__triggered ()
