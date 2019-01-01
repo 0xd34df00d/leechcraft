@@ -353,6 +353,13 @@ namespace Aggregator
 		ParseResult ParseChannels (const QString& path, const QString& url, IDType_t feedId)
 		{
 			QFile file { path };
+			if (!file.open (QIODevice::ReadOnly))
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "unable to open the local file"
+						<< path;
+				return ParseResult::Left (Core::tr ("Unable to open the temporary file."));
+			}
 
 			QDomDocument doc;
 			QString errorMsg;
