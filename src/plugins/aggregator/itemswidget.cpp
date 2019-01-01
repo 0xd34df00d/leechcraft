@@ -847,15 +847,15 @@ namespace Aggregator
 			QString url = entry->URL_;
 
 			if (entry->Medium_ == "image")
-				result += tr ("Image ");
+				result += tr ("Image") + ' ';
 			else if (entry->Medium_ == "audio")
-				result += tr ("Audio ");
+				result += tr ("Audio") + ' ';
 			else if (entry->Medium_ == "video")
-				result += tr ("Video ");
+				result += tr ("Video") + ' ';
 			else if (entry->Medium_ == "document")
-				result += tr ("Document ");
+				result += tr ("Document") + ' ';
 			else if (entry->Medium_ == "executable")
-				result += tr ("Executable ");
+				result += tr ("Executable") + ' ';
 
 			if (entry->Title_.isEmpty ())
 				result += QString ("<a href='%1' target='_blank'>%1</a><hr />")

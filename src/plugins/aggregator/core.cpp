@@ -380,7 +380,7 @@ namespace Aggregator
 						<< errorColumn
 						<< "; copy at"
 						<< file.fileName ();
-				return ParseResult::Left (Core::tr ("XML file parse error for file downloaded from %1.")
+				return ParseResult::Left (Core::tr ("XML parse error for the feed %1.")
 								.arg (url));
 			}
 
@@ -394,7 +394,7 @@ namespace Aggregator
 						<< url
 						<< "; copy at"
 						<< copyPath;
-				return ParseResult::Left (Core::tr ("Could not find parser to parse file downloaded from %1.")
+				return ParseResult::Left (Core::tr ("Could not find parser to parse %1.")
 								.arg (url));
 			}
 
@@ -479,7 +479,7 @@ namespace Aggregator
 					[=] (const IDownload::Error& error)
 					{
 						ErrorNotification (tr ("Feed error"),
-								tr ("Unable to download feed file for %1: %2.")
+								tr ("Unable to download %1: %2.")
 									.arg (Util::FormatName (url))
 									.arg (GetErrorString (error.Type_)));
 					}
@@ -665,7 +665,7 @@ namespace Aggregator
 					{
 						if (!XmlSettingsManager::Instance ()->property ("BeSilent").toBool ())
 							ErrorNotification (tr ("Feed error"),
-									tr ("Unable to download feed file for %1: %2.")
+									tr ("Unable to download %1: %2.")
 											.arg (Util::FormatName (url))
 											.arg (GetErrorString (error.Type_)));
 					}
