@@ -359,21 +359,31 @@ namespace Aggregator
 			int errorLine, errorColumn;
 			if (!doc.setContent (&file, true, &errorMsg, &errorLine, &errorColumn))
 			{
-				file.copy (QDir::tempPath () + "/failedFile.xml");
-				return ParseResult::Left (Core::tr ("XML file parse error: %1, line %2, column %3, filename %4, from %5")
-								.arg (errorMsg)
-								.arg (errorLine)
-								.arg (errorColumn)
-								.arg (path)
+				auto copyPath = QDir::tempPath () + "/failedFile.xml";
+				file.copy (copyPath);
+				qWarning () << Q_FUNC_INFO
+						<< "error parsing XML for"
+						<< url
+						<< errorMsg
+						<< errorLine
+						<< errorColumn
+						<< "; copy at"
+						<< file.fileName ();
+				return ParseResult::Left (Core::tr ("XML file parse error for file downloaded from %1.")
 								.arg (url));
 			}
 
 			auto parser = ParserFactory::Instance ().Return (doc);
 			if (!parser)
 			{
-				file.copy (QDir::tempPath () + "/failedFile.xml");
-				return ParseResult::Left (Core::tr ("Could not find parser to parse file %1 from %2")
-								.arg (path)
+				auto copyPath = QDir::tempPath () + "/failedFile.xml";
+				file.copy (copyPath);
+				qWarning () << Q_FUNC_INFO
+						<< "no parser for"
+						<< url
+						<< "; copy at"
+						<< copyPath;
+				return ParseResult::Left (Core::tr ("Could not find parser to parse file downloaded from %1.")
 								.arg (url));
 			}
 
