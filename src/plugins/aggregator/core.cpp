@@ -110,6 +110,11 @@ namespace Aggregator
 		return Pools_ [type];
 	}
 
+	DBUpdateThread& Core::GetDBUpdateThread () const
+	{
+		return *DBUpThread_;
+	}
+
 	bool Core::CouldHandle (const Entity& e)
 	{
 		if (!e.Entity_.canConvert<QUrl> () ||
