@@ -104,9 +104,6 @@ namespace Aggregator
 
 		ChannelsModel* GetRawChannelsModel () const;
 
-		void MarkChannelAsRead (const QModelIndex&);
-		void MarkChannelAsUnread (const QModelIndex&);
-
 		void UpdateFavicon (const QModelIndex&);
 
 		void UpdateFeed (const IDType_t&);
@@ -124,7 +121,6 @@ namespace Aggregator
 		void FetchPixmap (const Channel&);
 		void FetchFavicon (IDType_t, const QString&);
 		void HandleFeedAdded (const channels_container_t&, const QStringList&);
-		void MarkChannel (const QModelIndex&, bool);
 		void ErrorNotification (const QString&, const QString&, bool = true) const;
 	signals:
 		// Plugin API

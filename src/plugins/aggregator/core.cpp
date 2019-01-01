@@ -491,16 +491,6 @@ namespace Aggregator
 		return ChannelsModel_;
 	}
 
-	void Core::MarkChannelAsRead (const QModelIndex& i)
-	{
-		MarkChannel (i, false);
-	}
-
-	void Core::MarkChannelAsUnread (const QModelIndex& i)
-	{
-		MarkChannel (i, true);
-	}
-
 	void Core::UpdateFavicon (const QModelIndex& index)
 	{
 		FetchFavicon (index.data (ChannelRoles::ChannelID).value<IDType_t> (),
@@ -719,12 +709,6 @@ namespace Aggregator
 			FetchPixmap (*channel);
 			FetchFavicon (channel->ChannelID_, channel->Link_);
 		}
-	}
-
-	void Core::MarkChannel (const QModelIndex& idx, bool state)
-	{
-		const auto cid = idx.data (ChannelRoles::ChannelID).value<IDType_t> ();
-		DBUpThread_->ScheduleImpl (&DBUpdateThreadWorker::toggleChannelUnread, cid, state);
 	}
 
 	void Core::UpdateFeed (const IDType_t& id)
