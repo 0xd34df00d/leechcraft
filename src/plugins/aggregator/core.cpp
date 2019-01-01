@@ -378,6 +378,21 @@ namespace Aggregator
 
 			return ParseResult::Right (parser->ParseFeed (doc, feedId));
 		}
+
+		QString GetErrorString (const IDownload::Error::Type type)
+		{
+			switch (type)
+			{
+			case IDownload::Error::Type::NotFound:
+				return Core::tr ("Address not found:<br />%1");
+			case IDownload::Error::Type::AccessDenied:
+				return Core::tr ("Access denied:<br />%1");
+			case IDownload::Error::Type::LocalError:
+				return Core::tr ("Local error for:<br />%1");
+			default:
+				return Core::tr ("Unknown error for:<br />%1");
+			}
+		}
 	}
 
 	void Core::AddFeed (QString url, const QStringList& tags, const std::optional<Feed::FeedSettings>& fs)
@@ -559,26 +574,9 @@ namespace Aggregator
 		if ((!XmlSettingsManager::Instance ()->property ("BeSilent").toBool () &&
 					pj.Role_ == PendingJob::RFeedUpdated) ||
 				pj.Role_ == PendingJob::RFeedAdded)
-		{
-			QString msg;
-			switch (ie)
-			{
-			case IDownload::Error::Type::NotFound:
-				msg = tr ("Address not found:<br />%1");
-				break;
-			case IDownload::Error::Type::AccessDenied:
-				msg = tr ("Access denied:<br />%1");
-				break;
-			case IDownload::Error::Type::LocalError:
-				msg = tr ("Local error for:<br />%1");
-				break;
-			default:
-				msg = tr ("Unknown error for:<br />%1");
-				break;
-			}
 			ErrorNotification (tr ("Download error"),
-					msg.arg (pj.URL_));
-		}
+					GetErrorString (ie).arg (pj.URL_));
+
 		PendingJobs_.remove (id);
 		ID2Downloader_.remove (id);
 	}
