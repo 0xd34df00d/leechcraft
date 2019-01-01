@@ -384,15 +384,21 @@ namespace Aggregator
 		{
 			switch (type)
 			{
+			case IDownload::Error::Type::Unknown:
+				break;
+			case IDownload::Error::Type::NoError:
+				return Core::tr ("No error for:<br />%1");
 			case IDownload::Error::Type::NotFound:
 				return Core::tr ("Address not found:<br />%1");
 			case IDownload::Error::Type::AccessDenied:
 				return Core::tr ("Access denied:<br />%1");
 			case IDownload::Error::Type::LocalError:
 				return Core::tr ("Local error for:<br />%1");
-			default:
-				return Core::tr ("Unknown error for:<br />%1");
+			case IDownload::Error::Type::UserCanceled:
+				return Core::tr ("User canceled the download:<br />%1");
 			}
+
+			return Core::tr ("Unknown error for:<br />%1");
 		}
 	}
 
