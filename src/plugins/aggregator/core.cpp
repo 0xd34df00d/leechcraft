@@ -53,6 +53,7 @@
 #include <util/sll/qtutil.h>
 #include <util/sll/visitor.h>
 #include <util/sll/either.h>
+#include <util/gui/util.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "parserfactory.h"
@@ -395,7 +396,7 @@ namespace Aggregator
 		}
 	}
 
-	void Core::AddFeed (QString url, const QStringList& tags, const std::optional<Feed::FeedSettings>& fs)
+	void Core::AddFeed (QString url, const QStringList& tags, const std::optional<Feed::FeedSettings>& maybeFeedSettings)
 	{
 		const auto& fixedUrl = QUrl::fromUserInput (url);
 		url = fixedUrl.toString ();
@@ -416,16 +417,6 @@ namespace Aggregator
 					NotPersistent |
 					DoNotAnnounceEntity);
 
-		const auto& tagIds = Proxy_->GetTagsManager ()->GetIDs (tags);
-		PendingJob pj =
-		{
-			PendingJob::RFeedAdded,
-			url,
-			name,
-			tagIds,
-			fs
-		};
-
 		const auto& delegateResult = Proxy_->GetEntityManager ()->DelegateEntity (e);
 		if (!delegateResult)
 		{
@@ -436,8 +427,36 @@ namespace Aggregator
 			return;
 		}
 
-		HandleProvider (delegateResult.Handler_, delegateResult.ID_);
-		PendingJobs_ [delegateResult.ID_] = pj;
+		const auto& tagIds = Proxy_->GetTagsManager ()->GetIDs (tags);
+
+		Util::Sequence (this, delegateResult.DownloadResult_) >>
+				Util::Visitor
+				{
+					[=] (IDownload::Success)
+					{
+						Feed feed;
+						feed.URL_ = url;
+						StorageBackend_->AddFeed (feed);
+
+						if (maybeFeedSettings)
+						{
+							auto fs = *maybeFeedSettings;
+							fs.FeedID_ = feed.FeedID_;
+							StorageBackend_->SetFeedSettings (fs);
+						}
+
+						Util::Visit (ParseChannels (name, url, feed.FeedID_),
+								[&] (const channels_container_t& channels) { HandleFeedAdded (channels, tagIds); },
+								[&] (const QString& error) { ErrorNotification (tr ("Feed error"), error); });
+					},
+					[=] (const IDownload::Error& error)
+					{
+						ErrorNotification (tr ("Feed error"),
+								tr ("Unable to download feed file for %1: %2.")
+									.arg (Util::FormatName (url))
+									.arg (GetErrorString (error.Type_)));
+					}
+				};
 	}
 
 	void Core::RenameFeed (const QModelIndex& index, const QString& newName)
@@ -525,16 +544,7 @@ namespace Aggregator
 			return;
 		}
 
-		std::optional<IDType_t> feedId;
-		if (pj.Role_ == PendingJob::RFeedAdded)
-		{
-			Feed feed;
-			feed.URL_ = pj.URL_;
-			StorageBackend_->AddFeed (feed);
-			feedId = feed.FeedID_;
-		}
-		else
-			feedId = StorageBackend_->FindFeed (pj.URL_);
+		auto feedId = StorageBackend_->FindFeed (pj.URL_);
 
 		if (!feedId)
 		{
@@ -546,10 +556,7 @@ namespace Aggregator
 		Util::Visit (ParseChannels (pj.Filename_, pj.URL_, *feedId),
 				[&] (const channels_container_t& channels)
 				{
-					if (pj.Role_ == PendingJob::RFeedAdded)
-						HandleFeedAdded (channels, pj);
-					else if (pj.Role_ == PendingJob::RFeedUpdated)
-						HandleFeedUpdated (channels, pj);
+					HandleFeedUpdated (channels, pj);
 				},
 				[this] (const QString& error) { ErrorNotification (tr ("Feed error"), error); });
 	}
@@ -571,9 +578,7 @@ namespace Aggregator
 		PendingJob pj = PendingJobs_ [id];
 		Util::FileRemoveGuard file (pj.Filename_);
 
-		if ((!XmlSettingsManager::Instance ()->property ("BeSilent").toBool () &&
-					pj.Role_ == PendingJob::RFeedUpdated) ||
-				pj.Role_ == PendingJob::RFeedAdded)
+		if (!XmlSettingsManager::Instance ()->property ("BeSilent").toBool ())
 			ErrorNotification (tr ("Download error"),
 					GetErrorString (ie).arg (pj.URL_));
 
@@ -752,15 +757,14 @@ namespace Aggregator
 				[this, cid] (const QString& path) { StorageBackend_->SetChannelFavicon (cid, QImage { path }); });
 	}
 
-	void Core::HandleFeedAdded (const channels_container_t& channels,
-			const Core::PendingJob& pj)
+	void Core::HandleFeedAdded (const channels_container_t& channels, const QStringList& tagIds)
 	{
 		for (const auto& channel : channels)
 		{
 			for (const auto& item : channel->Items_)
 				item->FixDate ();
 
-			channel->Tags_ = pj.Tags_;
+			channel->Tags_ = tagIds;
 			StorageBackend_->AddChannel (*channel);
 
 			emit hookGotNewItems (std::make_shared<Util::DefaultHookProxy> (),
@@ -768,20 +772,6 @@ namespace Aggregator
 
 			FetchPixmap (*channel);
 			FetchFavicon (channel->ChannelID_, channel->Link_);
-		}
-
-		if (pj.FeedSettings_)
-		{
-			auto fs = *pj.FeedSettings_;
-			if (const auto maybeFeedID = StorageBackend_->FindFeed (pj.URL_))
-			{
-				fs.FeedID_ = *maybeFeedID;
-				StorageBackend_->SetFeedSettings (fs);
-			}
-			else
-				qWarning () << Q_FUNC_INFO
-						<< "unable to find feed ID for the feed that's just been added"
-						<< pj.URL_;
 		}
 	}
 

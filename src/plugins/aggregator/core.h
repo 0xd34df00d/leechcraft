@@ -67,8 +67,7 @@ namespace Aggregator
 		{
 			enum Role
 			{
-				RFeedAdded
-				, RFeedUpdated
+				RFeedUpdated
 			} Role_;
 			QString URL_;
 			QString Filename_;
@@ -141,7 +140,7 @@ namespace Aggregator
 		void FetchExternalFile (const QString&, const std::function<void (QString)>&);
 		void FetchPixmap (const Channel&);
 		void FetchFavicon (IDType_t, const QString&);
-		void HandleFeedAdded (const channels_container_t&, const PendingJob&);
+		void HandleFeedAdded (const channels_container_t&, const QStringList&);
 		void HandleFeedUpdated (const channels_container_t&, const PendingJob&);
 		void MarkChannel (const QModelIndex&, bool);
 		void HandleProvider (QObject*, int);
