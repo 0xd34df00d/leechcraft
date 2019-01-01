@@ -546,69 +546,6 @@ namespace Aggregator
 		}
 	}
 
-	void Core::handleJobFinished (int id)
-	{
-		if (!PendingJobs_.contains (id))
-			return;
-		PendingJob pj = PendingJobs_ [id];
-		PendingJobs_.remove (id);
-		ID2Downloader_.remove (id);
-
-		Util::FileRemoveGuard file (pj.Filename_);
-		if (!file.open (QIODevice::ReadOnly))
-		{
-			qWarning () << Q_FUNC_INFO << "could not open file for pj " << pj.Filename_;
-			return;
-		}
-		if (!file.size ())
-		{
-			ErrorNotification (tr ("Feed error"),
-					tr ("Downloaded file from url %1 has null size.").arg (pj.URL_));
-			return;
-		}
-
-		auto feedId = StorageBackend_->FindFeed (pj.URL_);
-
-		if (!feedId)
-		{
-			ErrorNotification (tr ("Feed error"),
-					tr ("Feed with url %1 not found.").arg (pj.URL_));
-			return;
-		}
-
-		Util::Visit (ParseChannels (pj.Filename_, pj.URL_, *feedId),
-				[&] (const channels_container_t& channels)
-				{
-					HandleFeedUpdated (channels, pj);
-				},
-				[this] (const QString& error) { ErrorNotification (tr ("Feed error"), error); });
-	}
-
-	void Core::handleJobRemoved (int id)
-	{
-		if (PendingJobs_.contains (id))
-		{
-			PendingJobs_.remove (id);
-			ID2Downloader_.remove (id);
-		}
-	}
-
-	void Core::handleJobError (int id, IDownload::Error::Type ie)
-	{
-		if (!PendingJobs_.contains (id))
-			return;
-
-		PendingJob pj = PendingJobs_ [id];
-		Util::FileRemoveGuard file (pj.Filename_);
-
-		if (!XmlSettingsManager::Instance ()->property ("BeSilent").toBool ())
-			ErrorNotification (tr ("Download error"),
-					GetErrorString (ie).arg (pj.URL_));
-
-		PendingJobs_.remove (id);
-		ID2Downloader_.remove (id);
-	}
-
 	void Core::updateFeeds ()
 	{
 		for (const auto id : StorageBackend_->GetFeedsIDs ())
@@ -692,58 +629,24 @@ namespace Aggregator
 		if (UpdatesQueue_.isEmpty ())
 			return;
 
-		const IDType_t id = UpdatesQueue_.takeFirst ();
+		const auto feedId = UpdatesQueue_.takeFirst ();
 
 		if (!UpdatesQueue_.isEmpty ())
 			QTimer::singleShot (2000,
 					this,
 					SLOT (rotateUpdatesQueue ()));
 
-		const auto& url = StorageBackend_->GetFeed (id).URL_;
-		for (const auto& pair : Util::Stlize (PendingJobs_))
-			if (pair.second.URL_ == url)
-			{
-				const auto id = pair.first;
-				QObject *provider = ID2Downloader_ [id];
-				IDownload *downloader = qobject_cast<IDownload*> (provider);
-				if (downloader)
-				{
-					qWarning () << Q_FUNC_INFO
-						<< "stalled task detected from"
-						<< downloader
-						<< "trying to kill...";
+		const auto& url = StorageBackend_->GetFeed (feedId).URL_;
 
-					downloader->KillTask (id);
-					ID2Downloader_.remove (id);
-					qWarning () << Q_FUNC_INFO
-						<< "killed!";
-				}
-				else
-					qWarning () << Q_FUNC_INFO
-						<< "provider is not a downloader:"
-						<< provider
-						<< "; cannot kill the task";
-			}
-		PendingJobs_.clear ();
+		auto filename = Util::GetTemporaryName ();
 
-		QString filename = Util::GetTemporaryName ();
-
-		Entity e = Util::MakeEntity (QUrl (url),
+		auto e = Util::MakeEntity (QUrl (url),
 				filename,
 				Internal |
 					DoNotNotifyUser |
 					DoNotSaveInHistory |
 					NotPersistent |
 					DoNotAnnounceEntity);
-
-		PendingJob pj =
-		{
-			PendingJob::RFeedUpdated,
-			url,
-			filename,
-			{},
-			{}
-		};
 
 		const auto& delegateResult = Proxy_->GetEntityManager ()->DelegateEntity (e);
 		if (!delegateResult)
@@ -754,9 +657,26 @@ namespace Aggregator
 			return;
 		}
 
-		HandleProvider (delegateResult.Handler_, delegateResult.ID_);
-		PendingJobs_ [delegateResult.ID_] = pj;
-		Updates_ [id] = QDateTime::currentDateTime ();
+		Util::Sequence (this, delegateResult.DownloadResult_) >>
+				Util::Visitor
+				{
+					[=] (IDownload::Success)
+					{
+						Util::Visit (ParseChannels (filename, url, feedId),
+								[&] (const channels_container_t& channels)
+								{
+									DBUpThread_->ScheduleImpl (&DBUpdateThreadWorker::updateFeed, channels, url);
+								},
+								[this] (const QString& error) { ErrorNotification (tr ("Feed error"), error); });
+					},
+					[=] (const IDownload::Error& error)
+					{
+						if (!XmlSettingsManager::Instance ()->property ("BeSilent").toBool ())
+							ErrorNotification (tr ("Feed error"), GetErrorString (error.Type_));
+					}
+				}.Finally ([filename] { QFile::remove (filename); });
+
+		Updates_ [feedId] = QDateTime::currentDateTime ();
 	}
 
 	void Core::FetchPixmap (const Channel& channel)
@@ -798,11 +718,6 @@ namespace Aggregator
 		}
 	}
 
-	void Core::HandleFeedUpdated (const channels_container_t& channels, const Core::PendingJob& pj)
-	{
-		DBUpThread_->ScheduleImpl (&DBUpdateThreadWorker::updateFeed, channels, pj.URL_);
-	}
-
 	void Core::MarkChannel (const QModelIndex& idx, bool state)
 	{
 		const auto cid = idx.data (ChannelRoles::ChannelID).value<IDType_t> ();
@@ -817,28 +732,6 @@ namespace Aggregator
 					SLOT (rotateUpdatesQueue ()));
 
 		UpdatesQueue_ << id;
-	}
-
-	void Core::HandleProvider (QObject *provider, int id)
-	{
-		ID2Downloader_ [id] = provider;
-
-		if (Downloaders_.contains (provider))
-			return;
-
-		Downloaders_ << provider;
-		connect (provider,
-				SIGNAL (jobFinished (int)),
-				this,
-				SLOT (handleJobFinished (int)));
-		connect (provider,
-				SIGNAL (jobRemoved (int)),
-				this,
-				SLOT (handleJobRemoved (int)));
-		connect (provider,
-				SIGNAL (jobError (int, IDownload::Error::Type)),
-				this,
-				SLOT (handleJobError (int, IDownload::Error::Type)));
 	}
 
 	void Core::ErrorNotification (const QString& h, const QString& body, bool wait) const

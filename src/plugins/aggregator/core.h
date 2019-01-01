@@ -63,21 +63,6 @@ namespace Aggregator
 	{
 		Q_OBJECT
 
-		struct PendingJob
-		{
-			enum Role
-			{
-				RFeedUpdated
-			} Role_;
-			QString URL_;
-			QString Filename_;
-			QStringList Tags_;
-			std::optional<Feed::FeedSettings> FeedSettings_;
-		};
-		QMap<int, PendingJob> PendingJobs_;
-		QList<QObject*> Downloaders_;
-		QMap<int, QObject*> ID2Downloader_;
-
 		ChannelsModel *ChannelsModel_ = nullptr;
 		QTimer *UpdateTimer_ = nullptr, *CustomUpdateTimer_ = nullptr;
 		std::shared_ptr<StorageBackend> StorageBackend_;
@@ -131,9 +116,6 @@ namespace Aggregator
 		void updateFeeds ();
 		void updateIntervalChanged ();
 	private slots:
-		void handleJobFinished (int);
-		void handleJobRemoved (int);
-		void handleJobError (int, IDownload::Error::Type);
 		void handleCustomUpdates ();
 		void rotateUpdatesQueue ();
 	private:
@@ -141,9 +123,7 @@ namespace Aggregator
 		void FetchPixmap (const Channel&);
 		void FetchFavicon (IDType_t, const QString&);
 		void HandleFeedAdded (const channels_container_t&, const QStringList&);
-		void HandleFeedUpdated (const channels_container_t&, const PendingJob&);
 		void MarkChannel (const QModelIndex&, bool);
-		void HandleProvider (QObject*, int);
 		void ErrorNotification (const QString&, const QString&, bool = true) const;
 	signals:
 		// Plugin API
