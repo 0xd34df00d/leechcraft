@@ -345,6 +345,41 @@ namespace Aggregator
 		AddFeed (url, Proxy_->GetTagsManager ()->Split (tagString));
 	}
 
+	namespace
+	{
+		using ParseResult = Util::Either<QString, channels_container_t>;
+
+		ParseResult ParseChannels (const QString& path, const QString& url, IDType_t feedId)
+		{
+			QFile file { path };
+
+			QDomDocument doc;
+			QString errorMsg;
+			int errorLine, errorColumn;
+			if (!doc.setContent (&file, true, &errorMsg, &errorLine, &errorColumn))
+			{
+				file.copy (QDir::tempPath () + "/failedFile.xml");
+				return ParseResult::Left (Core::tr ("XML file parse error: %1, line %2, column %3, filename %4, from %5")
+								.arg (errorMsg)
+								.arg (errorLine)
+								.arg (errorColumn)
+								.arg (path)
+								.arg (url));
+			}
+
+			auto parser = ParserFactory::Instance ().Return (doc);
+			if (!parser)
+			{
+				file.copy (QDir::tempPath () + "/failedFile.xml");
+				return ParseResult::Left (Core::tr ("Could not find parser to parse file %1 from %2")
+								.arg (path)
+								.arg (url));
+			}
+
+			return ParseResult::Right (parser->ParseFeed (doc, feedId));
+		}
+	}
+
 	void Core::AddFeed (QString url, const QStringList& tags, const std::optional<Feed::FeedSettings>& fs)
 	{
 		const auto& fixedUrl = QUrl::fromUserInput (url);
@@ -475,61 +510,33 @@ namespace Aggregator
 			return;
 		}
 
-		channels_container_t channels;
+		std::optional<IDType_t> feedId;
+		if (pj.Role_ == PendingJob::RFeedAdded)
 		{
-			QByteArray data = file.readAll ();
-			QDomDocument doc;
-			QString errorMsg;
-			int errorLine, errorColumn;
-			if (!doc.setContent (data, true, &errorMsg, &errorLine, &errorColumn))
-			{
-				file.copy (QDir::tempPath () + "/failedFile.xml");
-				ErrorNotification (tr ("Feed error"),
-						tr ("XML file parse error: %1, line %2, column %3, filename %4, from %5")
-						.arg (errorMsg)
-						.arg (errorLine)
-						.arg (errorColumn)
-						.arg (pj.Filename_)
-						.arg (pj.URL_));
-				return;
-			}
+			Feed feed;
+			feed.URL_ = pj.URL_;
+			StorageBackend_->AddFeed (feed);
+			feedId = feed.FeedID_;
+		}
+		else
+			feedId = StorageBackend_->FindFeed (pj.URL_);
 
-			Parser *parser = ParserFactory::Instance ().Return (doc);
-			if (!parser)
-			{
-				file.copy (QDir::tempPath () + "/failedFile.xml");
-				ErrorNotification (tr ("Feed error"),
-						tr ("Could not find parser to parse file %1 from %2")
-						.arg (pj.Filename_)
-						.arg (pj.URL_));
-				return;
-			}
-
-			std::optional<IDType_t> feedId;
-			if (pj.Role_ == PendingJob::RFeedAdded)
-			{
-				Feed feed;
-				feed.URL_ = pj.URL_;
-				StorageBackend_->AddFeed (feed);
-				feedId = feed.FeedID_;
-			}
-			else
-				feedId = StorageBackend_->FindFeed (pj.URL_);
-
-			if (!feedId)
-			{
-				ErrorNotification (tr ("Feed error"),
-						tr ("Feed with url %1 not found.").arg (pj.URL_));
-				return;
-			}
-			else
-				channels = parser->ParseFeed (doc, *feedId);
+		if (!feedId)
+		{
+			ErrorNotification (tr ("Feed error"),
+					tr ("Feed with url %1 not found.").arg (pj.URL_));
+			return;
 		}
 
-		if (pj.Role_ == PendingJob::RFeedAdded)
-			HandleFeedAdded (channels, pj);
-		else if (pj.Role_ == PendingJob::RFeedUpdated)
-			HandleFeedUpdated (channels, pj);
+		Util::Visit (ParseChannels (pj.Filename_, pj.URL_, *feedId),
+				[&] (const channels_container_t& channels)
+				{
+					if (pj.Role_ == PendingJob::RFeedAdded)
+						HandleFeedAdded (channels, pj);
+					else if (pj.Role_ == PendingJob::RFeedUpdated)
+						HandleFeedUpdated (channels, pj);
+				},
+				[this] (const QString& error) { ErrorNotification (tr ("Feed error"), error); });
 	}
 
 	void Core::handleJobRemoved (int id)
