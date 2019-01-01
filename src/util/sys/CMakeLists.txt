@@ -11,7 +11,6 @@ find_package (Boost REQUIRED COMPONENTS filesystem system)
 include_directories (${MAGIC_INCLUDE_DIRS})
 
 set (SYS_SRCS
-	fileremoveguard.cpp
 	mimedetector.cpp
 	paths.cpp
 	resourceloader.cpp

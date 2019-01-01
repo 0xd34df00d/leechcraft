@@ -46,7 +46,6 @@
 #include <interfaces/core/ientitymanager.h>
 #include <util/models/mergemodel.h>
 #include <util/xpc/util.h>
-#include <util/sys/fileremoveguard.h>
 #include <util/sys/paths.h>
 #include <util/xpc/defaulthookproxy.h>
 #include <util/sll/prelude.h>
