@@ -404,7 +404,7 @@ namespace Aggregator
 		{
 			ErrorNotification (tr ("Feed addition error"),
 					tr ("The feed %1 is already added")
-					.arg (url));
+						.arg (url));
 			return;
 		}
 
