@@ -462,7 +462,7 @@ namespace Aggregator
 									.arg (Util::FormatName (url))
 									.arg (GetErrorString (error.Type_)));
 					}
-				};
+				}.Finally ([name] { QFile::remove (name); });
 	}
 
 	void Core::RenameFeed (const QModelIndex& index, const QString& newName)
