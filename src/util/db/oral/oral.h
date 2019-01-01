@@ -513,46 +513,6 @@ namespace oral
 			}
 		}
 
-		template<int HeadT, int... TailT>
-		struct FieldsUnpacker
-		{
-			static const int Head = HeadT;
-			using Tail_t = FieldsUnpacker<TailT...>;
-		};
-
-		template<int HeadT>
-		struct FieldsUnpacker<HeadT>
-		{
-			static const int Head = HeadT;
-			using Tail_t = std::false_type;
-		};
-
-		template<typename FieldsUnpacker, typename HeadArg, typename... TailArgs>
-		struct ValueBinder
-		{
-			QSqlQuery_ptr Query_;
-			QList<QString> BoundFields_;
-
-			void operator() (const HeadArg& arg, const TailArgs&... tail) const noexcept
-			{
-				Query_->bindValue (BoundFields_.at (FieldsUnpacker::Head), arg);
-
-				ValueBinder<typename FieldsUnpacker::Tail_t, TailArgs...> { Query_, BoundFields_ } (tail...);
-			}
-		};
-
-		template<typename FieldsUnpacker, typename HeadArg>
-		struct ValueBinder<FieldsUnpacker, HeadArg>
-		{
-			QSqlQuery_ptr Query_;
-			QList<QString> BoundFields_;
-
-			void operator() (const HeadArg& arg) const noexcept
-			{
-				Query_->bindValue (BoundFields_.at (FieldsUnpacker::Head), arg);
-			}
-		};
-
 		enum class ExprType
 		{
 			ConstTrue,
