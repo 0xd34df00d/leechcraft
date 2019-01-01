@@ -404,18 +404,18 @@ namespace Aggregator
 			case IDownload::Error::Type::Unknown:
 				break;
 			case IDownload::Error::Type::NoError:
-				return Core::tr ("No error for:<br />%1");
+				return Core::tr ("no error");
 			case IDownload::Error::Type::NotFound:
-				return Core::tr ("Address not found:<br />%1");
+				return Core::tr ("address not found");
 			case IDownload::Error::Type::AccessDenied:
-				return Core::tr ("Access denied:<br />%1");
+				return Core::tr ("access denied");
 			case IDownload::Error::Type::LocalError:
-				return Core::tr ("Local error for:<br />%1");
+				return Core::tr ("local error");
 			case IDownload::Error::Type::UserCanceled:
-				return Core::tr ("User canceled the download:<br />%1");
+				return Core::tr ("user canceled the download");
 			}
 
-			return Core::tr ("Unknown error for:<br />%1");
+			return Core::tr ("unknown error");
 		}
 	}
 
@@ -675,7 +675,10 @@ namespace Aggregator
 					[=] (const IDownload::Error& error)
 					{
 						if (!XmlSettingsManager::Instance ()->property ("BeSilent").toBool ())
-							ErrorNotification (tr ("Feed error"), GetErrorString (error.Type_));
+							ErrorNotification (tr ("Feed error"),
+									tr ("Unable to download feed file for %1: %2.")
+											.arg (Util::FormatName (url))
+											.arg (GetErrorString (error.Type_)));
 					}
 				}.Finally ([filename] { QFile::remove (filename); });
 	}
