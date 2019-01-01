@@ -620,7 +620,10 @@ namespace Aggregator
 			if (!Updates_.contains (id) ||
 					(Updates_ [id].isValid () &&
 						Updates_ [id].secsTo (current) / 60 > ut))
+			{
 				UpdateFeed (id);
+				Updates_ [id] = QDateTime::currentDateTime ();
+			}
 		}
 	}
 
@@ -675,8 +678,6 @@ namespace Aggregator
 							ErrorNotification (tr ("Feed error"), GetErrorString (error.Type_));
 					}
 				}.Finally ([filename] { QFile::remove (filename); });
-
-		Updates_ [feedId] = QDateTime::currentDateTime ();
 	}
 
 	void Core::FetchPixmap (const Channel& channel)
