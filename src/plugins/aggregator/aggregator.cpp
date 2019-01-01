@@ -428,7 +428,8 @@ namespace Aggregator
 		if (newName.isEmpty ())
 			return;
 
-		Core::Instance ().RenameFeed (ds, newName);
+		auto sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
+		sb->SetChannelDisplayTitle (ds.data (ChannelRoles::ChannelID).value<IDType_t> (), newName);
 	}
 
 	void Aggregator::on_ActionRemoveChannel__triggered ()
