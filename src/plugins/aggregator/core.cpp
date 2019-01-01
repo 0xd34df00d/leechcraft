@@ -481,11 +481,6 @@ namespace Aggregator
 				}.Finally ([name] { QFile::remove (name); });
 	}
 
-	void Core::RenameFeed (const QModelIndex& index, const QString& newName)
-	{
-		StorageBackend_->SetChannelDisplayTitle (index.data (ChannelRoles::ChannelID).value<IDType_t> (), newName);
-	}
-
 	ChannelsModel* Core::GetRawChannelsModel () const
 	{
 		return ChannelsModel_;

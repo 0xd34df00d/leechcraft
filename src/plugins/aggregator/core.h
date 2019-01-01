@@ -99,7 +99,6 @@ namespace Aggregator
 
 		void AddFeed (const QString&, const QString&);
 		void AddFeed (QString, const QStringList&, const std::optional<Feed::FeedSettings>& = {});
-		void RenameFeed (const QModelIndex& index, const QString& newName);
 
 		ChannelsModel* GetRawChannelsModel () const;
 
