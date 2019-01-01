@@ -359,7 +359,7 @@ namespace Aggregator
 			int errorLine, errorColumn;
 			if (!doc.setContent (&file, true, &errorMsg, &errorLine, &errorColumn))
 			{
-				auto copyPath = QDir::tempPath () + "/failedFile.xml";
+				const auto& copyPath = Util::GetTemporaryName ("lc_aggregator_failed.XXXXXX");
 				file.copy (copyPath);
 				qWarning () << Q_FUNC_INFO
 						<< "error parsing XML for"
@@ -376,7 +376,7 @@ namespace Aggregator
 			auto parser = ParserFactory::Instance ().Return (doc);
 			if (!parser)
 			{
-				auto copyPath = QDir::tempPath () + "/failedFile.xml";
+				const auto& copyPath = Util::GetTemporaryName ("lc_aggregator_failed.XXXXXX");
 				file.copy (copyPath);
 				qWarning () << Q_FUNC_INFO
 						<< "no parser for"
