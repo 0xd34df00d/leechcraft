@@ -209,8 +209,13 @@ namespace Aggregator
 		{
 			if (!AggregatorTab_)
 			{
-				AggregatorTab_ = std::make_unique<AggregatorTab> (*AppWideActions_, ChannelActions_,
-						TabInfo_, ShortcutMgr_, this);
+				AggregatorTab_ = std::make_unique<AggregatorTab> (AggregatorTab::InitParams {
+							*AppWideActions_,
+							ChannelActions_,
+							TabInfo_,
+							ShortcutMgr_,
+						},
+						this);
 				connect (AggregatorTab_.get (),
 						&AggregatorTab::removeTabRequested,
 						[this] { emit removeTab (AggregatorTab_.get ()); });

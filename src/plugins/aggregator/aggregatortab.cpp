@@ -45,14 +45,10 @@ namespace LeechCraft
 {
 namespace Aggregator
 {
-	AggregatorTab::AggregatorTab (const AppWideActions& appWideActions,
-			const std::shared_ptr<const ChannelActions>& channelActions,
-			const TabClassInfo& tc,
-			Util::ShortcutManager *shortcutMgr,
-			QObject *plugin)
-	: TabClass_ { tc }
+	AggregatorTab::AggregatorTab (const InitParams& params, QObject *plugin)
+	: TabClass_ { params.TabClass_ }
 	, ParentPlugin_ { plugin }
-	, ChannelActions_ { channelActions }
+	, ChannelActions_ { params.ChannelActions_ }
 	, FlatToFolders_ { std::make_shared<Util::FlatToFoldersProxyModel> () }
 	, ChannelsFilterModel_ { new ChannelsFilterModel { this } }
 	{
@@ -60,9 +56,9 @@ namespace Aggregator
 		ChannelsFilterModel_->setFilterKeyColumn (0);
 
 		Ui_.setupUi (this);
-		Ui_.ItemsWidget_->SetAppWideActions (appWideActions);
-		Ui_.ItemsWidget_->SetChannelActions (*channelActions);
-		Ui_.ItemsWidget_->RegisterShortcuts (shortcutMgr);
+		Ui_.ItemsWidget_->SetAppWideActions (params.AppWideActions_);
+		Ui_.ItemsWidget_->SetChannelActions (*ChannelActions_);
+		Ui_.ItemsWidget_->RegisterShortcuts (params.ShortcutMgr_);
 
 		Ui_.ItemsWidget_->SetChannelsFilter (ChannelsFilterModel_);
 
@@ -73,18 +69,18 @@ namespace Aggregator
 
 		Ui_.MergeItems_->setChecked (XmlSettingsManager::Instance ()->Property ("MergeItems", false).toBool ());
 
-		Ui_.Feeds_->addAction (channelActions->ActionMarkChannelAsRead_);
-		Ui_.Feeds_->addAction (channelActions->ActionMarkChannelAsUnread_);
+		Ui_.Feeds_->addAction (ChannelActions_->ActionMarkChannelAsRead_);
+		Ui_.Feeds_->addAction (ChannelActions_->ActionMarkChannelAsUnread_);
 		Ui_.Feeds_->addAction (Util::CreateSeparator (Ui_.Feeds_));
-		Ui_.Feeds_->addAction (channelActions->ActionRemoveFeed_);
-		Ui_.Feeds_->addAction (channelActions->ActionUpdateSelectedFeed_);
-		Ui_.Feeds_->addAction (channelActions->ActionRenameFeed_);
+		Ui_.Feeds_->addAction (ChannelActions_->ActionRemoveFeed_);
+		Ui_.Feeds_->addAction (ChannelActions_->ActionUpdateSelectedFeed_);
+		Ui_.Feeds_->addAction (ChannelActions_->ActionRenameFeed_);
 		Ui_.Feeds_->addAction (Util::CreateSeparator (Ui_.Feeds_));
-		Ui_.Feeds_->addAction (channelActions->ActionRemoveChannel_);
+		Ui_.Feeds_->addAction (ChannelActions_->ActionRemoveChannel_);
 		Ui_.Feeds_->addAction (Util::CreateSeparator (Ui_.Feeds_));
-		Ui_.Feeds_->addAction (channelActions->ActionChannelSettings_);
+		Ui_.Feeds_->addAction (ChannelActions_->ActionChannelSettings_);
 		Ui_.Feeds_->addAction (Util::CreateSeparator (Ui_.Feeds_));
-		Ui_.Feeds_->addAction (appWideActions.ActionAddFeed_);
+		Ui_.Feeds_->addAction (params.AppWideActions_.ActionAddFeed_);
 
 		connect (Ui_.Feeds_,
 				&QWidget::customContextMenuRequested,

@@ -68,8 +68,15 @@ namespace Aggregator
 
 		Util::DefaultScopeGuard UiStateGuard_;
 	public:
-		AggregatorTab (const AppWideActions&, const std::shared_ptr<const ChannelActions>&,
-				const TabClassInfo&, Util::ShortcutManager*, QObject*);
+		struct InitParams
+		{
+			const AppWideActions& AppWideActions_;
+			const std::shared_ptr<const ChannelActions>& ChannelActions_;
+			const TabClassInfo& TabClass_;
+			Util::ShortcutManager *ShortcutMgr_;
+		};
+
+		AggregatorTab (const InitParams&, QObject*);
 
 		QToolBar* GetToolBar () const override;
 		TabClassInfo GetTabClassInfo () const override;
