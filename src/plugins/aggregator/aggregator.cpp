@@ -150,7 +150,8 @@ namespace Aggregator
 		ReprManager_ = std::make_shared<RepresentationManager> (RepresentationManager::InitParams {
 					ShortcutMgr_,
 					*AppWideActions_,
-					*ChannelActions_
+					*ChannelActions_,
+					Core::Instance ().GetRawChannelsModel ()
 				});
 	}
 

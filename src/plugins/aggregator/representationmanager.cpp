@@ -40,7 +40,7 @@ namespace LeechCraft::Aggregator
 	RepresentationManager::RepresentationManager (const InitParams& params)
 	{
 		JobHolderRepresentation_ = new JobHolderRepresentation ();
-		JobHolderRepresentation_->setSourceModel (Core::Instance ().GetRawChannelsModel ());
+		JobHolderRepresentation_->setSourceModel (params.ChannelsModel_);
 
 		ReprWidget_ = new ItemsWidget;
 		ReprWidget_->SetChannelsFilter (JobHolderRepresentation_);

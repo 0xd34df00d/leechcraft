@@ -43,6 +43,7 @@ namespace LeechCraft::Aggregator
 	class ItemsWidget;
 	class JobHolderRepresentation;
 	class ChannelsModelRepresentationProxy;
+	class ChannelsModel;
 	struct AppWideActions;
 	struct ChannelActions;
 
@@ -58,6 +59,7 @@ namespace LeechCraft::Aggregator
 			Util::ShortcutManager *ShortcutMgr_;
 			const AppWideActions& AppWideActions_;
 			const ChannelActions& ChannelActions_;
+			ChannelsModel *ChannelsModel_;
 		};
 
 		explicit RepresentationManager (const InitParams&);
