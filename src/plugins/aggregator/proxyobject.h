@@ -63,7 +63,7 @@ namespace Aggregator
 		 *
 		 * @exception std::exception
 		 */
-		void AddFeed (Feed feed);
+		void AddFeed (Feed feed) override;
 
 		/** @brief Adds the given channel to the storage.
 		 *
@@ -83,7 +83,7 @@ namespace Aggregator
 		 *
 		 * @exception std::exception
 		 */
-		void AddChannel (Channel channel);
+		void AddChannel (Channel channel) override;
 
 		/** @brief Adds the given item to the storage.
 		 *
@@ -102,18 +102,18 @@ namespace Aggregator
 		 *
 		 * @exception std::exception
 		 */
-		void AddItem (Item item);
+		void AddItem (Item item) override;
 
-		QAbstractItemModel* GetChannelsModel () const;
-		QList<Channel> GetAllChannels () const;
-		Channel GetChannel (IDType_t) const;
-		int CountUnreadItems (IDType_t) const;
-		QList<Item_ptr> GetChannelItems (IDType_t) const;
+		QAbstractItemModel* GetChannelsModel () const override;
+		QList<Channel> GetAllChannels () const override;
+		Channel GetChannel (IDType_t) const override;
+		int CountUnreadItems (IDType_t) const override;
+		QList<Item_ptr> GetChannelItems (IDType_t) const override;
 
-		std::optional<Item> GetItem (IDType_t) const;
-		void SetItemRead (IDType_t, bool) const;
+		std::optional<Item> GetItem (IDType_t) const override;
+		void SetItemRead (IDType_t, bool) const override;
 
-		QAbstractItemModel* CreateItemsModel () const;
+		QAbstractItemModel* CreateItemsModel () const override;
 	};
 }
 }
