@@ -53,12 +53,13 @@ namespace LeechCraft
 {
 namespace Aggregator
 {
-	Export2FB2Dialog::Export2FB2Dialog (QWidget *parent)
-	: QDialog (parent)
+	Export2FB2Dialog::Export2FB2Dialog (ChannelsModel *channelsModel, QWidget *parent)
+	: QDialog { parent }
+	, ChannelsModel_ { channelsModel }
 	{
 		Ui_.setupUi (this);
 
-		Ui_.ChannelsTree_->setModel (Core::Instance ().GetRawChannelsModel ());
+		Ui_.ChannelsTree_->setModel (channelsModel);
 
 		Selector_ = new Util::CategorySelector (this);
 		Selector_->setWindowFlags (Qt::Widget);
@@ -518,7 +519,7 @@ namespace Aggregator
 
 		for (const auto& row : Ui_.ChannelsTree_->selectionModel ()->selectedRows ())
 		{
-			const auto& cs = Core::Instance ().GetRawChannelsModel ()->GetChannelForIndex (row);
+			const auto& cs = ChannelsModel_->GetChannelForIndex (row);
 
 			const auto& items = sb->GetItems (cs.ChannelID_);
 

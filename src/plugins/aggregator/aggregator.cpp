@@ -564,7 +564,7 @@ namespace Aggregator
 
 	void Aggregator::on_ActionExportFB2__triggered ()
 	{
-		Export2FB2Dialog *dialog = new Export2FB2Dialog (nullptr);
+		const auto dialog = new Export2FB2Dialog (Core::Instance ().GetRawChannelsModel (), nullptr);
 		dialog->setAttribute (Qt::WA_DeleteOnClose);
 		dialog->show ();
 	}
