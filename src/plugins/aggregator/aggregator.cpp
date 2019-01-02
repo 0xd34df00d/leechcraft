@@ -214,6 +214,7 @@ namespace Aggregator
 							ChannelActions_,
 							TabInfo_,
 							ShortcutMgr_,
+							Core::Instance ().GetRawChannelsModel ()
 						},
 						this);
 				connect (AggregatorTab_.get (),

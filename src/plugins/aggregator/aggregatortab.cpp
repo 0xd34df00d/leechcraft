@@ -52,7 +52,7 @@ namespace Aggregator
 	, FlatToFolders_ { std::make_shared<Util::FlatToFoldersProxyModel> () }
 	, ChannelsFilterModel_ { new ChannelsFilterModel { this } }
 	{
-		ChannelsFilterModel_->setSourceModel (Core::Instance ().GetRawChannelsModel ());
+		ChannelsFilterModel_->setSourceModel (params.ChannelsModel_);
 		ChannelsFilterModel_->setFilterKeyColumn (0);
 
 		Ui_.setupUi (this);

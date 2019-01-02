@@ -48,6 +48,7 @@ namespace Util
 namespace Aggregator
 {
 	class ChannelsFilterModel;
+	class ChannelsModel;
 
 	class AggregatorTab : public QWidget
 						, public ITabWidget
@@ -74,6 +75,7 @@ namespace Aggregator
 			const std::shared_ptr<const ChannelActions>& ChannelActions_;
 			const TabClassInfo& TabClass_;
 			Util::ShortcutManager *ShortcutMgr_;
+			ChannelsModel *ChannelsModel_;
 		};
 
 		AggregatorTab (const InitParams&, QObject*);
