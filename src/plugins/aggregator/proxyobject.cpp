@@ -99,7 +99,7 @@ namespace Aggregator
 
 	QAbstractItemModel* ProxyObject::GetChannelsModel () const
 	{
-		return Core::Instance ().GetRawChannelsModel ();
+		return ChannelsModel_;
 	}
 
 	QList<Channel> ProxyObject::GetAllChannels () const

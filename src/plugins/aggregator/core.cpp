@@ -309,7 +309,7 @@ namespace Aggregator
 		XmlSettingsManager::Instance ()->RegisterObject ("UpdateInterval", this, "updateIntervalChanged");
 		Initialized_ = true;
 
-		PluginManager_ = new PluginManager ();
+		PluginManager_ = new PluginManager (ChannelsModel_);
 		PluginManager_->RegisterHookable (this);
 
 		PluginManager_->RegisterHookable (StorageBackend_.get ());

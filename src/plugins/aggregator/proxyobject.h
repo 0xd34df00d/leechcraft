@@ -36,13 +36,17 @@ namespace LeechCraft
 {
 namespace Aggregator
 {
+	class ChannelsModel;
+
 	class ProxyObject : public QObject
 					  , public IProxyObject
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Aggregator::IProxyObject)
+
+		ChannelsModel * const ChannelsModel_;
 	public:
-		using QObject::QObject;
+		explicit ProxyObject (ChannelsModel*, QObject* = nullptr);
 
 		/** @brief Adds the given feed to the storage.
 		 *

@@ -34,9 +34,9 @@ namespace LeechCraft
 {
 namespace Aggregator
 {
-	PluginManager::PluginManager (QObject *parent)
+	PluginManager::PluginManager (ChannelsModel *cm, QObject *parent)
 	: Util::BaseHookInterconnector (parent)
-	, ProxyObject_ (new ProxyObject ())
+	, ProxyObject_ (new ProxyObject (cm))
 	{
 	}
 

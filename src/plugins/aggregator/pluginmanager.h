@@ -39,13 +39,15 @@ namespace LeechCraft
 {
 namespace Aggregator
 {
+	class ChannelsModel;
+
 	class PluginManager : public Util::BaseHookInterconnector
 	{
 		Q_OBJECT
 
 		std::shared_ptr<ProxyObject> ProxyObject_;
 	public:
-		PluginManager (QObject* = nullptr);
+		PluginManager (ChannelsModel*, QObject* = nullptr);
 
 		void AddPlugin (QObject*) override;
 	signals:
