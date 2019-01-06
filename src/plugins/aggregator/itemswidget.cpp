@@ -124,10 +124,7 @@ namespace Aggregator
 		Impl_->ControlToolBar_ = SetupToolBar ();
 
 		Impl_->CurrentItemsModel_.reset (new ItemsListModel);
-		QStringList headers;
-		headers << tr ("Name")
-			<< tr ("Date");
-		Impl_->ItemLists_.reset (new Util::MergeModel (headers));
+		Impl_->ItemLists_.reset (new Util::MergeModel ({ tr ("Name"), tr ("Date") }));
 		Impl_->ItemLists_->AddModel (Impl_->CurrentItemsModel_.get ());
 
 		Impl_->Ui_.setupUi (this);
