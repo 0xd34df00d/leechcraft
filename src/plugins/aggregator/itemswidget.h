@@ -77,7 +77,7 @@ namespace Aggregator
 			MaxAction
 		};
 
-		ItemsWidget (QWidget* = 0);
+		explicit ItemsWidget (QWidget* = nullptr);
 		virtual ~ItemsWidget ();
 
 		void SetAppWideActions (const AppWideActions&);
