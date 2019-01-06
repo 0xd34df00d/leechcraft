@@ -515,20 +515,11 @@ namespace Aggregator
 
 		Impl_->LastSelectedChannel_ = si;
 
-		auto index = si;
-		if (const auto f = Impl_->ChannelsFilter_)
-			index = f->mapToSource (index);
-
-		try
-		{
-			const auto& ch = Impl_->ChannelsModel_->GetChannelForIndex (index);
-			Impl_->CurrentItemsModel_->Reset (ch.ChannelID_, ch.FeedID_);
-		}
-		catch (const std::exception&)
-		{
-			Impl_->LastSelectedChannel_ = QModelIndex ();
+		if (si.isValid ())
+			Impl_->CurrentItemsModel_->Reset (si.data (ChannelRoles::ChannelID).value<IDType_t> (),
+			        si.data (ChannelRoles::FeedID).value<IDType_t> ());
+		else
 			Impl_->CurrentItemsModel_->Reset (-1, -1);
-		}
 
 		Impl_->Ui_.Items_->scrollToTop ();
 		currentItemChanged ();
