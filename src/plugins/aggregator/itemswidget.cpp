@@ -420,7 +420,7 @@ namespace Aggregator
 			 */
 			if (!added)
 			{
-				Impl_->CurrentItemsModel_->Reset (cs.ChannelID_, cs.FeedID_);
+				Impl_->CurrentItemsModel_->Reset (cs.ChannelID_);
 				added = true;
 			}
 			else
@@ -516,10 +516,9 @@ namespace Aggregator
 		Impl_->LastSelectedChannel_ = si;
 
 		if (si.isValid ())
-			Impl_->CurrentItemsModel_->Reset (si.data (ChannelRoles::ChannelID).value<IDType_t> (),
-			        si.data (ChannelRoles::FeedID).value<IDType_t> ());
+			Impl_->CurrentItemsModel_->Reset (si.data (ChannelRoles::ChannelID).value<IDType_t> ());
 		else
-			Impl_->CurrentItemsModel_->Reset (-1, -1);
+			Impl_->CurrentItemsModel_->Reset (IDNotFound);
 
 		Impl_->Ui_.Items_->scrollToTop ();
 		currentItemChanged ();
@@ -578,7 +577,7 @@ namespace Aggregator
 			return;
 
 		std::shared_ptr<ItemsListModel> ilm (new ItemsListModel);
-		ilm->Reset (cs.ChannelID_, cs.FeedID_);
+		ilm->Reset (cs.ChannelID_);
 		Impl_->SupplementaryModels_ << ilm;
 		Impl_->ItemLists_->AddModel (ilm.get ());
 	}

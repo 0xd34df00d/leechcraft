@@ -55,14 +55,18 @@ namespace Aggregator
 				[this] (IDType_t id)
 				{
 					if (id == CurrentChannel_)
-						Reset (-1, -1);
+						Reset (IDNotFound);
 				});
 		connect (&StorageBackendManager::Instance (),
 				&StorageBackendManager::feedRemoved,
-				[this] (IDType_t id)
+				[this] (IDType_t feedId)
 				{
-					if (id == CurrentFeed_)
-						Reset (-1, -1);
+					if (CurrentChannel_ == IDNotFound)
+						return;
+
+					auto sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
+					if (feedId == sb->GetChannel (CurrentChannel_).FeedID_)
+						Reset (IDNotFound);
 				});
 
 		connect (&StorageBackendManager::Instance (),
@@ -118,12 +122,11 @@ namespace Aggregator
 		return CurrentItems_ [item].Categories_;
 	}
 
-	void ItemsListModel::Reset (IDType_t channel, IDType_t feed)
+	void ItemsListModel::Reset (IDType_t channel)
 	{
 		beginResetModel ();
 
 		CurrentChannel_ = channel;
-		CurrentFeed_ = feed;
 		CurrentRow_ = -1;
 		CurrentItems_.clear ();
 
@@ -138,7 +141,6 @@ namespace Aggregator
 		beginResetModel ();
 
 		CurrentChannel_ = -1;
-		CurrentFeed_ = -1;
 		CurrentRow_ = -1;
 		CurrentItems_.clear ();
 
@@ -436,9 +438,9 @@ namespace Aggregator
 		return SB_.localData ();
 	}
 
-	void ItemsListModel::reset (IDType_t channelId, IDType_t feedId)
+	void ItemsListModel::reset (IDType_t channelId)
 	{
-		Reset (channelId, feedId);
+		Reset (channelId);
 	}
 
 	void ItemsListModel::selected (const QModelIndex& index)
