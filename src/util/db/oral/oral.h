@@ -487,7 +487,7 @@ namespace oral
 			}
 
 			template<bool B = HasPKey>
-			std::enable_if_t<B> operator() (const Seq& seq) noexcept
+			std::enable_if_t<B> operator() (const Seq& seq)
 			{
 				Deleter_ (seq);
 			}
