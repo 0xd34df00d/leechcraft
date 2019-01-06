@@ -436,14 +436,6 @@ namespace Aggregator
 		Impl_->ItemsFilterModel_->SetHideRead (hide);
 	}
 
-	bool ItemsWidget::IsItemCurrent (int item) const
-	{
-		int starting = 0;
-		const auto i = Impl_->ItemLists_->GetModelForRow (item, &starting);
-		return static_cast<ItemsListModel*> (i->data ())->
-			GetSelectedRow () == item - starting;
-	}
-
 	void ItemsWidget::Selected (const QModelIndex& index)
 	{
 		Impl_->LastSelectedIndex_ = index;
