@@ -368,18 +368,7 @@ namespace Aggregator
 			for (int i = 0, size = f ? f->rowCount () : cm->rowCount (); i < size; ++i)
 			{
 				auto index = f ? f->index (i, 0) : cm->index (i, 0);
-				ChannelShort cs;
-				try
-				{
-					cs = cm->GetChannelForIndex (f ? f->mapToSource (index) : index);
-				}
-				catch (const std::exception& e)
-				{
-					qWarning () << Q_FUNC_INFO
-						<< e.what ();
-					continue;
-				}
-				AddSupplementaryModelFor (cs);
+				AddSupplementaryModelFor (index.data (ChannelRoles::ChannelID).value<IDType_t> ());
 			}
 		}
 	}
@@ -424,7 +413,7 @@ namespace Aggregator
 				added = true;
 			}
 			else
-				AddSupplementaryModelFor (cs);
+				AddSupplementaryModelFor (cs.ChannelID_);
 		}
 	}
 
@@ -571,13 +560,13 @@ namespace Aggregator
 		}
 	}
 
-	void ItemsWidget::AddSupplementaryModelFor (const ChannelShort& cs)
+	void ItemsWidget::AddSupplementaryModelFor (IDType_t channelId)
 	{
-		if (cs.ChannelID_ == Impl_->CurrentItemsModel_->GetCurrentChannel ())
+		if (channelId == Impl_->CurrentItemsModel_->GetCurrentChannel ())
 			return;
 
 		std::shared_ptr<ItemsListModel> ilm (new ItemsListModel);
-		ilm->Reset (cs.ChannelID_);
+		ilm->Reset (channelId);
 		Impl_->SupplementaryModels_ << ilm;
 		Impl_->ItemLists_->AddModel (ilm.get ());
 	}

@@ -127,7 +127,7 @@ namespace Aggregator
 	private:
 		void MarkItemReadStatus (const QModelIndex&, bool);
 		void ClearSupplementaryModels ();
-		void AddSupplementaryModelFor (const ChannelShort&);
+		void AddSupplementaryModelFor (IDType_t);
 		void SetupActions ();
 		QToolBar* SetupToolBar ();
 		QString GetHex (QPalette::ColorRole,
