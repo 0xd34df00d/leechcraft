@@ -393,27 +393,18 @@ namespace Aggregator
 					[&tagsSet] (const QString& tag) { return tagsSet.contains (tag); }))
 				continue;
 
-			ChannelShort cs;
-			try
-			{
-				cs = cm->GetChannelForIndex (index);
-			}
-			catch (const std::exception& e)
-			{
-				qWarning () << Q_FUNC_INFO << e.what ();
-				continue;
-			}
+			auto cid = index.data (ChannelRoles::ChannelID).value<IDType_t> ();
 
 			/** So that first one gets assigned to the
 			 * current items model.
 			 */
 			if (!added)
 			{
-				Impl_->CurrentItemsModel_->Reset (cs.ChannelID_);
+				Impl_->CurrentItemsModel_->Reset (cid);
 				added = true;
 			}
 			else
-				AddSupplementaryModelFor (cs.ChannelID_);
+				AddSupplementaryModelFor (cid);
 		}
 	}
 
