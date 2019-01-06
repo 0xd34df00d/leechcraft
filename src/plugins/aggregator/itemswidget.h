@@ -78,7 +78,7 @@ namespace Aggregator
 		};
 
 		explicit ItemsWidget (QWidget* = nullptr);
-		virtual ~ItemsWidget ();
+		~ItemsWidget () override;
 
 		void SetAppWideActions (const AppWideActions&);
 		void SetChannelActions (const ChannelActions&);
