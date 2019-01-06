@@ -92,7 +92,7 @@ namespace Aggregator
 		bool TapeMode_;
 		bool MergeMode_;
 
-		QSortFilterProxyModel *ChannelsFilter_;
+		QSortFilterProxyModel *ChannelsFilter_ = nullptr;
 
 		std::unique_ptr<ItemsListModel> CurrentItemsModel_;
 		QList<std::shared_ptr<ItemsListModel>> SupplementaryModels_;
@@ -100,7 +100,7 @@ namespace Aggregator
 		std::unique_ptr<ItemsFilterModel> ItemsFilterModel_;
 		std::unique_ptr<CategorySelector> ItemCategorySelector_;
 
-		QTimer *SelectedChecker_;
+		QTimer *SelectedChecker_ = nullptr;
 		QModelIndex LastSelectedIndex_;
 		QModelIndex LastSelectedChannel_;
 	};
@@ -118,7 +118,6 @@ namespace Aggregator
 
 		SetupActions ();
 
-		Impl_->ChannelsFilter_ = 0;
 		Impl_->TapeMode_ = XmlSettingsManager::Instance ()->
 				Property ("ShowAsTape", false).toBool ();
 		Impl_->MergeMode_ = false;
