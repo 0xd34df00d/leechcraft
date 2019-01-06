@@ -53,6 +53,7 @@ namespace Aggregator
 	struct AppWideActions;
 	class Aggregator;
 	class ItemsFilterModel;
+	class ChannelsModel;
 
 	class ItemsWidget : public QWidget
 	{
@@ -80,6 +81,7 @@ namespace Aggregator
 		explicit ItemsWidget (QWidget* = nullptr);
 		~ItemsWidget () override;
 
+		void SetChannelsModel (ChannelsModel*);
 		void SetAppWideActions (const AppWideActions&);
 		void SetChannelActions (const ChannelActions&);
 		void SetChannelsFilter (QSortFilterProxyModel*);

@@ -103,6 +103,8 @@ namespace Aggregator
 		QTimer *SelectedChecker_ = nullptr;
 		QModelIndex LastSelectedIndex_;
 		QModelIndex LastSelectedChannel_;
+
+		ChannelsModel *ChannelsModel_ = nullptr;
 	};
 
 	ItemsWidget::ItemsWidget (QWidget *parent)
@@ -234,6 +236,11 @@ namespace Aggregator
 		delete Impl_;
 	}
 
+	void ItemsWidget::SetChannelsModel (ChannelsModel *cm)
+	{
+		Impl_->ChannelsModel_ = cm;
+	}
+
 	void ItemsWidget::SetAppWideActions (const AppWideActions& awa)
 	{
 		QAction *first = Impl_->ControlToolBar_->actions ().first ();
@@ -356,21 +363,15 @@ namespace Aggregator
 
 		if (Impl_->MergeMode_)
 		{
-			QSortFilterProxyModel *f = Impl_->ChannelsFilter_;
-			ChannelsModel *cm = Core::Instance ().GetRawChannelsModel ();
-			for (int i = 0, size = f ?
-					f->rowCount () :
-					cm->rowCount ();
-					i < size; ++i)
+			auto f = Impl_->ChannelsFilter_;
+			auto cm = Impl_->ChannelsModel_;
+			for (int i = 0, size = f ? f->rowCount () : cm->rowCount (); i < size; ++i)
 			{
-				QModelIndex index = f ?
-					f->index (i, 0) :
-					cm->index (i, 0);
+				auto index = f ? f->index (i, 0) : cm->index (i, 0);
 				ChannelShort cs;
 				try
 				{
-					cs = cm->
-						GetChannelForIndex (f ? f->mapToSource (index) : index);
+					cs = cm->GetChannelForIndex (f ? f->mapToSource (index) : index);
 				}
 				catch (const std::exception& e)
 				{
@@ -392,7 +393,7 @@ namespace Aggregator
 
 		const auto& tagsSet = QSet<QString>::fromList (tags);
 
-		const auto cm = Core::Instance ().GetRawChannelsModel ();
+		const auto cm = Impl_->ChannelsModel_;
 		bool added = false;
 
 		for (int i = 0, size = cm->rowCount (); i < size; ++i)
@@ -520,7 +521,7 @@ namespace Aggregator
 
 		try
 		{
-			const auto& ch = Core::Instance ().GetRawChannelsModel ()->GetChannelForIndex (index);
+			const auto& ch = Impl_->ChannelsModel_->GetChannelForIndex (index);
 			Impl_->CurrentItemsModel_->Reset (ch.ChannelID_, ch.FeedID_);
 		}
 		catch (const std::exception&)
