@@ -1563,7 +1563,7 @@ namespace oral
 			}
 
 			template<bool B = HasPKey>
-			std::enable_if_t<B> operator() (const T& seq) noexcept
+			std::enable_if_t<B> operator() (const T& seq)
 			{
 				Updater_ (seq);
 			}
