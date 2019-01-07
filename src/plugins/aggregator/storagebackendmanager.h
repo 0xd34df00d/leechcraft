@@ -51,6 +51,8 @@ namespace Aggregator
 
 		static StorageBackendManager& Instance ();
 
+		void Release ();
+
 		struct StorageCreationError
 		{
 			QString Message_;
