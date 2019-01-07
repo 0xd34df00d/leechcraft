@@ -130,7 +130,7 @@ namespace Aggregator
 		CurrentRow_ = -1;
 		CurrentItems_.clear ();
 
-		if (channel != static_cast<IDType_t> (-1))
+		if (channel != IDNotFound)
 			CurrentItems_ = GetSB ()->GetItems (channel);
 
 		endResetModel ();
@@ -140,7 +140,7 @@ namespace Aggregator
 	{
 		beginResetModel ();
 
-		CurrentChannel_ = -1;
+		CurrentChannel_ = IDNotFound;
 		CurrentRow_ = -1;
 		CurrentItems_.clear ();
 

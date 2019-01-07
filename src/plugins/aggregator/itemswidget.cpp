@@ -443,8 +443,7 @@ namespace Aggregator
 		else
 		{
 			int starting = 0;
-			LeechCraft::Util::MergeModel::const_iterator i = Impl_->ItemLists_->
-				GetModelForRow (index, &starting);
+			const auto i = Impl_->ItemLists_->GetModelForRow (index, &starting);
 			return static_cast<ItemsListModel*> (i->data ())->GetCategories (index - starting);
 		}
 	}
@@ -457,8 +456,7 @@ namespace Aggregator
 		else
 		{
 			int starting = 0;
-			LeechCraft::Util::MergeModel::const_iterator i = Impl_->ItemLists_->
-				GetModelForRow (index, &starting);
+			const auto i = Impl_->ItemLists_->GetModelForRow (index, &starting);
 			model = static_cast<ItemsListModel*> (i->data ());
 			index -= starting;
 		}
