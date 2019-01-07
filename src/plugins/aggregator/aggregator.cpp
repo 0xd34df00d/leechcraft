@@ -160,6 +160,7 @@ namespace Aggregator
 		ReprManager_.reset ();
 		AggregatorTab_.reset ();
 		Core::Instance ().Release ();
+		StorageBackendManager::Instance ().Release ();
 	}
 
 	QByteArray Aggregator::GetUniqueID () const
