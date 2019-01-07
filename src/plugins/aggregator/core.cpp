@@ -62,7 +62,6 @@
 #include "jobholderrepresentation.h"
 #include "importopml.h"
 #include "addfeed.h"
-#include "pluginmanager.h"
 #include "dbupdatethread.h"
 #include "dbupdatethreadworker.h"
 #include "dumbstorage.h"
@@ -98,11 +97,6 @@ namespace Aggregator
 	ICoreProxy_ptr Core::GetProxy () const
 	{
 		return Proxy_;
-	}
-
-	void Core::AddPlugin (QObject *plugin)
-	{
-		PluginManager_->AddPlugin (plugin);
 	}
 
 	Util::IDPool<IDType_t>& Core::GetPool (PoolType type)
@@ -308,11 +302,6 @@ namespace Aggregator
 
 		XmlSettingsManager::Instance ()->RegisterObject ("UpdateInterval", this, "updateIntervalChanged");
 		Initialized_ = true;
-
-		PluginManager_ = new PluginManager (ChannelsModel_);
-		PluginManager_->RegisterHookable (this);
-
-		PluginManager_->RegisterHookable (StorageBackend_.get ());
 
 		return result;
 	}

@@ -57,7 +57,6 @@ namespace LeechCraft
 namespace Aggregator
 {
 	class ChannelsModel;
-	class PluginManager;
 
 	class Core : public QObject
 	{
@@ -72,8 +71,6 @@ namespace Aggregator
 
 		QList<IDType_t> UpdatesQueue_;
 
-		PluginManager *PluginManager_ = nullptr;
-
 		std::shared_ptr<DBUpdateThread> DBUpThread_;
 
 		Core () = default;
@@ -85,8 +82,6 @@ namespace Aggregator
 
 		void SetProxy (ICoreProxy_ptr);
 		ICoreProxy_ptr GetProxy () const;
-
-		void AddPlugin (QObject*);
 
 		Util::IDPool<IDType_t>& GetPool (PoolType);
 

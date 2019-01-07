@@ -55,6 +55,7 @@ namespace Aggregator
 {
 	class AggregatorTab;
 	class RepresentationManager;
+	class PluginManager;
 	struct AppWideActions;
 	struct ChannelActions;
 
@@ -97,6 +98,8 @@ namespace Aggregator
 		std::shared_ptr<AggregatorTab> AggregatorTab_;
 
 		Util::ShortcutManager *ShortcutMgr_ = nullptr;
+
+		std::shared_ptr<PluginManager> PluginManager_ = nullptr;
 
 		bool InitFailed_ = false;
 	public:

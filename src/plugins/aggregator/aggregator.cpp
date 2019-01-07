@@ -71,6 +71,7 @@
 #include "representationmanager.h"
 #include "dbupdatethread.h"
 #include "dbupdatethreadworker.h"
+#include "pluginmanager.h"
 
 namespace LeechCraft
 {
@@ -140,6 +141,10 @@ namespace Aggregator
 				&Core::updateFeeds);
 
 		QMetaObject::connectSlotsByName (this);
+
+		PluginManager_ = std::make_shared<PluginManager> (Core::Instance ().GetRawChannelsModel ());
+		PluginManager_->RegisterHookable (&Core::Instance ());
+		PluginManager_->RegisterHookable (StorageBackendManager::Instance ().MakeStorageBackendForThread ().get ());
 	}
 
 	void Aggregator::SecondInit ()
@@ -157,6 +162,7 @@ namespace Aggregator
 
 	void Aggregator::Release ()
 	{
+		PluginManager_.reset ();
 		ReprManager_.reset ();
 		AggregatorTab_.reset ();
 		Core::Instance ().Release ();
@@ -306,7 +312,7 @@ namespace Aggregator
 
 	void Aggregator::AddPlugin (QObject *plugin)
 	{
-		Core::Instance ().AddPlugin (plugin);
+		PluginManager_->AddPlugin (plugin);
 	}
 
 	void Aggregator::RecoverTabs (const QList<TabRecoverInfo>& infos)
