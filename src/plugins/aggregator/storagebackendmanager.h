@@ -101,6 +101,13 @@ namespace Aggregator
 		void feedRemoved (IDType_t) const;
 
 		void storageCreated ();
+
+		/** @brief Should be emitted whenever a full item is loaded.
+		 *
+		 * @param[out] proxy Standard proxy object.
+		 * @param[out] item The pointer to the already loaded item.
+		 */
+		void hookItemLoad (LeechCraft::IHookProxy_ptr proxy, Item *item) const;
 	};
 }
 }

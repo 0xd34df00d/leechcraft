@@ -140,6 +140,10 @@ namespace Aggregator
 				&StorageBackend::feedRemoved,
 				this,
 				&StorageBackendManager::feedRemoved);
+		connect (backendPtr,
+				&StorageBackend::hookItemLoad,
+				this,
+				&StorageBackendManager::hookItemLoad);
 	}
 }
 }
