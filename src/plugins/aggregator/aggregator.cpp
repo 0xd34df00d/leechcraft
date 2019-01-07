@@ -348,6 +348,16 @@ namespace Aggregator
 			return AggregatorTab_->GetRelevantIndexes ();
 	}
 
+	namespace
+	{
+		void MarkChannel (const QModelIndex& idx, bool unread)
+		{
+			const auto cid = idx.data (ChannelRoles::ChannelID).value<IDType_t> ();
+			auto& dbUpThread = Core::Instance ().GetDBUpdateThread ();
+			dbUpThread.ScheduleImpl (&DBUpdateThreadWorker::toggleChannelUnread, cid, unread);
+		}
+	}
+
 	void Aggregator::on_ActionMarkAllAsRead__triggered ()
 	{
 		if (XmlSettingsManager::Instance ()->property ("ConfirmMarkAllAsRead").toBool ())
@@ -368,34 +378,9 @@ namespace Aggregator
 				XmlSettingsManager::Instance ()->setProperty ("ConfirmMarkAllAsRead", false);
 		}
 
-		/* TODO
-		QModelIndexList indexes;
-		QAbstractItemModel *model = Ui_.Feeds_->model ();
-		for (int i = 0, size = model->rowCount (); i < size; ++i)
-		{
-			auto index = model->index (i, 0);
-			if (FlatToFolders_->GetSourceModel ())
-				index = FlatToFolders_->MapToSource (index);
-			indexes << Core::Instance ().GetChannelsModel ()->mapToSource (index);
-		}
-
-		int row = 0;
-		for (const auto& index : indexes)
-		{
-			if (index.isValid ())
-				Core::Instance ().MarkChannelAsRead (index);
-			else if (FlatToFolders_->GetSourceModel ())
-			{
-				const auto& parentIndex = FlatToFolders_->index (row++, 0);
-				for (int i = 0, size = model->rowCount (parentIndex); i < size; ++i)
-				{
-					auto source = FlatToFolders_->index (i, 0, parentIndex);
-					source = FlatToFolders_->MapToSource (source);
-					Core::Instance ().MarkChannelAsRead (source);
-				}
-			}
-		}
-		 */
+		auto model = Core::Instance ().GetRawChannelsModel ();
+		for (int i = 0; i < model->rowCount (); ++i)
+			MarkChannel (model->index (i, 0), false);
 	}
 
 	void Aggregator::on_ActionAddFeed__triggered ()
@@ -465,16 +450,6 @@ namespace Aggregator
 	{
 		for (auto index : GetRelevantIndexes ())
 			func (index);
-	}
-
-	namespace
-	{
-		void MarkChannel (const QModelIndex& idx, bool unread)
-		{
-			const auto cid = idx.data (ChannelRoles::ChannelID).value<IDType_t> ();
-			auto& dbUpThread = Core::Instance ().GetDBUpdateThread ();
-			dbUpThread.ScheduleImpl (&DBUpdateThreadWorker::toggleChannelUnread, cid, unread);
-		}
 	}
 
 	void Aggregator::on_ActionMarkChannelAsRead__triggered ()
