@@ -37,7 +37,7 @@
 class QModelIndex;
 class QToolBar;
 class IWebBrowser;
-class QSortFilterProxyModel;
+class QAbstractItemModel;
 
 namespace LeechCraft
 {
@@ -53,7 +53,6 @@ namespace Aggregator
 	struct AppWideActions;
 	class Aggregator;
 	class ItemsFilterModel;
-	class ChannelsModel;
 
 	class ItemsWidget : public QWidget
 	{
@@ -81,10 +80,9 @@ namespace Aggregator
 		explicit ItemsWidget (QWidget* = nullptr);
 		~ItemsWidget () override;
 
-		void SetChannelsModel (ChannelsModel*);
+		void SetChannelsModel (QAbstractItemModel*);
 		void SetAppWideActions (const AppWideActions&);
 		void SetChannelActions (const ChannelActions&);
-		void SetChannelsFilter (QSortFilterProxyModel*);
 
 		void RegisterShortcuts (Util::ShortcutManager*);
 

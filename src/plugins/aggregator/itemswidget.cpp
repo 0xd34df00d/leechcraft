@@ -92,7 +92,7 @@ namespace Aggregator
 		bool TapeMode_;
 		bool MergeMode_;
 
-		QSortFilterProxyModel *ChannelsFilter_ = nullptr;
+		QAbstractItemModel *ChannelsModel_ = nullptr;
 
 		std::unique_ptr<ItemsListModel> CurrentItemsModel_;
 		QList<std::shared_ptr<ItemsListModel>> SupplementaryModels_;
@@ -103,8 +103,6 @@ namespace Aggregator
 		QTimer *SelectedChecker_ = nullptr;
 		QModelIndex LastSelectedIndex_;
 		QModelIndex LastSelectedChannel_;
-
-		ChannelsModel *ChannelsModel_ = nullptr;
 	};
 
 	ItemsWidget::ItemsWidget (QWidget *parent)
@@ -236,9 +234,17 @@ namespace Aggregator
 		delete Impl_;
 	}
 
-	void ItemsWidget::SetChannelsModel (ChannelsModel *cm)
+	void ItemsWidget::SetChannelsModel (QAbstractItemModel *cm)
 	{
 		Impl_->ChannelsModel_ = cm;
+		connect (cm,
+				&QAbstractItemModel::rowsInserted,
+				this,
+				&ItemsWidget::invalidateMergeMode);
+		connect (cm,
+				&QAbstractItemModel::rowsRemoved,
+				this,
+				&ItemsWidget::invalidateMergeMode);
 	}
 
 	void ItemsWidget::SetAppWideActions (const AppWideActions& awa)
@@ -257,20 +263,6 @@ namespace Aggregator
 		Impl_->ControlToolBar_->insertAction (first,
 				ca.ActionUpdateSelectedFeed_);
 		Impl_->ControlToolBar_->insertSeparator (first);
-	}
-
-	void ItemsWidget::SetChannelsFilter (QSortFilterProxyModel *m)
-	{
-		Impl_->ChannelsFilter_ = m;
-
-		connect (m,
-				&QAbstractItemModel::rowsInserted,
-				this,
-				&ItemsWidget::invalidateMergeMode);
-		connect (m,
-				&QAbstractItemModel::rowsRemoved,
-				this,
-				&ItemsWidget::invalidateMergeMode);
 	}
 
 	void ItemsWidget::RegisterShortcuts (Util::ShortcutManager *mgr)
@@ -363,11 +355,10 @@ namespace Aggregator
 
 		if (Impl_->MergeMode_)
 		{
-			auto f = Impl_->ChannelsFilter_;
 			auto cm = Impl_->ChannelsModel_;
-			for (int i = 0, size = f ? f->rowCount () : cm->rowCount (); i < size; ++i)
+			for (int i = 0, size = cm->rowCount (); i < size; ++i)
 			{
-				auto index = f ? f->index (i, 0) : cm->index (i, 0);
+				auto index = cm->index (i, 0);
 				AddSupplementaryModelFor (index.data (ChannelRoles::ChannelID).value<IDType_t> ());
 			}
 		}
@@ -382,9 +373,9 @@ namespace Aggregator
 
 		const auto& tagsSet = QSet<QString>::fromList (tags);
 
-		const auto cm = Impl_->ChannelsModel_;
 		bool added = false;
 
+		const auto cm = Impl_->ChannelsModel_;
 		for (int i = 0, size = cm->rowCount (); i < size; ++i)
 		{
 			const auto& index = cm->index (i, 0);
