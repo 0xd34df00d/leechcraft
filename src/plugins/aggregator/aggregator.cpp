@@ -144,7 +144,7 @@ namespace Aggregator
 
 		PluginManager_ = std::make_shared<PluginManager> (Core::Instance ().GetRawChannelsModel ());
 		PluginManager_->RegisterHookable (&Core::Instance ());
-		PluginManager_->RegisterHookable (StorageBackendManager::Instance ().MakeStorageBackendForThread ().get ());
+		PluginManager_->RegisterHookable (&StorageBackendManager::Instance ());
 	}
 
 	void Aggregator::SecondInit ()
