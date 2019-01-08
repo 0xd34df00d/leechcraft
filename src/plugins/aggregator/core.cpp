@@ -56,7 +56,6 @@
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "parserfactory.h"
-#include "channelsmodel.h"
 #include "opmlparser.h"
 #include "opmlwriter.h"
 #include "jobholderrepresentation.h"
@@ -81,8 +80,6 @@ namespace Aggregator
 	void Core::Release ()
 	{
 		DBUpThread_.reset ();
-
-		delete ChannelsModel_;
 
 		StorageBackend_.reset ();
 
@@ -252,8 +249,6 @@ namespace Aggregator
 				"directories for Aggregator";
 			result = false;
 		}
-
-		ChannelsModel_ = new ChannelsModel ();
 
 		if (!ReinitStorage ())
 			result = false;
@@ -473,11 +468,6 @@ namespace Aggregator
 									.arg (GetErrorString (error.Type_)));
 					}
 				}.Finally ([name] { QFile::remove (name); });
-	}
-
-	ChannelsModel* Core::GetRawChannelsModel () const
-	{
-		return ChannelsModel_;
 	}
 
 	void Core::UpdateFavicon (const QModelIndex& index)

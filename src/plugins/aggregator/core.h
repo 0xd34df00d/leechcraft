@@ -56,13 +56,10 @@ namespace LeechCraft
 {
 namespace Aggregator
 {
-	class ChannelsModel;
-
 	class Core : public QObject
 	{
 		Q_OBJECT
 
-		ChannelsModel *ChannelsModel_ = nullptr;
 		QTimer *UpdateTimer_ = nullptr, *CustomUpdateTimer_ = nullptr;
 		std::shared_ptr<StorageBackend> StorageBackend_;
 		QMap<IDType_t, QDateTime> Updates_;
@@ -96,8 +93,6 @@ namespace Aggregator
 
 		void AddFeed (const QString&, const QString&);
 		void AddFeed (QString, const QStringList&, const std::optional<Feed::FeedSettings>& = {});
-
-		ChannelsModel* GetRawChannelsModel () const;
 
 		void UpdateFavicon (const QModelIndex&);
 

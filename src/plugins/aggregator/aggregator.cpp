@@ -142,7 +142,9 @@ namespace Aggregator
 
 		QMetaObject::connectSlotsByName (this);
 
-		PluginManager_ = std::make_shared<PluginManager> (Core::Instance ().GetRawChannelsModel ());
+		ChannelsModel_ = std::make_shared<ChannelsModel> ();
+
+		PluginManager_ = std::make_shared<PluginManager> (ChannelsModel_.get ());
 		PluginManager_->RegisterHookable (&Core::Instance ());
 		PluginManager_->RegisterHookable (&StorageBackendManager::Instance ());
 	}
@@ -156,7 +158,7 @@ namespace Aggregator
 					ShortcutMgr_,
 					*AppWideActions_,
 					*ChannelActions_,
-					Core::Instance ().GetRawChannelsModel ()
+					ChannelsModel_.get ()
 				});
 	}
 
@@ -165,6 +167,7 @@ namespace Aggregator
 		PluginManager_.reset ();
 		ReprManager_.reset ();
 		AggregatorTab_.reset ();
+		ChannelsModel_.reset ();
 		Core::Instance ().Release ();
 		StorageBackendManager::Instance ().Release ();
 	}
@@ -221,7 +224,7 @@ namespace Aggregator
 							ChannelActions_,
 							TabInfo_,
 							ShortcutMgr_,
-							Core::Instance ().GetRawChannelsModel ()
+							ChannelsModel_.get ()
 						},
 						this);
 				connect (AggregatorTab_.get (),
@@ -384,9 +387,8 @@ namespace Aggregator
 				XmlSettingsManager::Instance ()->setProperty ("ConfirmMarkAllAsRead", false);
 		}
 
-		auto model = Core::Instance ().GetRawChannelsModel ();
-		for (int i = 0; i < model->rowCount (); ++i)
-			MarkChannel (model->index (i, 0), false);
+		for (int i = 0; i < ChannelsModel_->rowCount (); ++i)
+			MarkChannel (ChannelsModel_->index (i, 0), false);
 	}
 
 	void Aggregator::on_ActionAddFeed__triggered ()
@@ -546,7 +548,7 @@ namespace Aggregator
 
 	void Aggregator::on_ActionExportFB2__triggered ()
 	{
-		const auto dialog = new Export2FB2Dialog (Core::Instance ().GetRawChannelsModel (), nullptr);
+		const auto dialog = new Export2FB2Dialog (ChannelsModel_.get (), nullptr);
 		dialog->setAttribute (Qt::WA_DeleteOnClose);
 		dialog->show ();
 	}
