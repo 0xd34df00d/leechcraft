@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AGGREGATOR_ADDFEED_H
-#define PLUGINS_AGGREGATOR_ADDFEED_H
+#pragma once
+
 #include <QDialog>
 #include "ui_addfeed.h"
 
@@ -47,5 +47,3 @@ namespace Aggregator
 	};
 }
 }
-
-#endif
