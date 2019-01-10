@@ -38,9 +38,9 @@ namespace Aggregator
 {
 	class AddFeedDialog : public QDialog, private Ui::AddFeed
 	{
-		Q_OBJECT
 	public:
 		explicit AddFeedDialog (const QString& = QString (), QWidget *parent = 0);
+
 		QString GetURL () const;
 		QStringList GetTags () const;
 	};
