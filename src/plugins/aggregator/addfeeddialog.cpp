@@ -38,13 +38,11 @@ namespace LeechCraft
 {
 namespace Aggregator
 {
-	using LeechCraft::Util::TagsCompleter;
-
 	AddFeedDialog::AddFeedDialog (const QString& url, QWidget *parent)
 	: QDialog (parent)
 	{
 		Ui_.setupUi (this);
-		new TagsCompleter (Ui_.Tags_);
+		new Util::TagsCompleter (Ui_.Tags_);
 		Ui_.Tags_->AddSelector ();
 
 		Ui_.URL_->setText (url);
