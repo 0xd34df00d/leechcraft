@@ -36,8 +36,9 @@ namespace LeechCraft
 {
 namespace Aggregator
 {
-	class AddFeedDialog : public QDialog, private Ui::AddFeed
+	class AddFeedDialog : public QDialog
 	{
+		Ui::AddFeed Ui_;
 	public:
 		explicit AddFeedDialog (const QString& = QString (), QWidget *parent = 0);
 

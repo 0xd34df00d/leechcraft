@@ -43,16 +43,16 @@ namespace Aggregator
 	AddFeedDialog::AddFeedDialog (const QString& url, QWidget *parent)
 	: QDialog (parent)
 	{
-		setupUi (this);
-		new TagsCompleter (Tags_);
-		Tags_->AddSelector ();
+		Ui_.setupUi (this);
+		new TagsCompleter (Ui_.Tags_);
+		Ui_.Tags_->AddSelector ();
 
-		URL_->setText (url);
+		Ui_.URL_->setText (url);
 	}
 
 	QString AddFeedDialog::GetURL () const
 	{
-		QString result = URL_->text ().simplified ();
+		QString result = Ui_.URL_->text ().simplified ();
 		if (result.startsWith ("itpc"))
 			result.replace (0, 4, "http");
 		return result;
@@ -60,7 +60,7 @@ namespace Aggregator
 
 	QStringList AddFeedDialog::GetTags () const
 	{
-		return Core::Instance ().GetProxy ()->GetTagsManager ()->Split (Tags_->text ());
+		return Core::Instance ().GetProxy ()->GetTagsManager ()->Split (Ui_.Tags_->text ());
 	}
 }
 }
