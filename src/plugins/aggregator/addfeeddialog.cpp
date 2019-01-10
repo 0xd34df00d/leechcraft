@@ -32,7 +32,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
 #include "core.h"
-#include "addfeed.h"
+#include "addfeeddialog.h"
 
 namespace LeechCraft
 {
@@ -40,7 +40,7 @@ namespace Aggregator
 {
 	using LeechCraft::Util::TagsCompleter;
 
-	AddFeed::AddFeed (const QString& url, QWidget *parent)
+	AddFeedDialog::AddFeedDialog (const QString& url, QWidget *parent)
 	: QDialog (parent)
 	{
 		setupUi (this);
@@ -50,7 +50,7 @@ namespace Aggregator
 		URL_->setText (url);
 	}
 
-	QString AddFeed::GetURL () const
+	QString AddFeedDialog::GetURL () const
 	{
 		QString result = URL_->text ().simplified ();
 		if (result.startsWith ("itpc"))
@@ -58,7 +58,7 @@ namespace Aggregator
 		return result;
 	}
 
-	QStringList AddFeed::GetTags () const
+	QStringList AddFeedDialog::GetTags () const
 	{
 		return Core::Instance ().GetProxy ()->GetTagsManager ()->Split (Tags_->text ());
 	}

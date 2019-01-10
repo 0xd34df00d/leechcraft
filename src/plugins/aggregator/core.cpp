@@ -60,7 +60,7 @@
 #include "opmlwriter.h"
 #include "jobholderrepresentation.h"
 #include "importopml.h"
-#include "addfeed.h"
+#include "addfeeddialog.h"
 #include "dbupdatethread.h"
 #include "dbupdatethreadworker.h"
 #include "dumbstorage.h"
@@ -219,7 +219,7 @@ namespace Aggregator
 			else if (str.startsWith ("itpc://"))
 				str.replace (0, 4, "http");
 
-			class AddFeed af { str };
+			AddFeedDialog af { str };
 			if (af.exec () == QDialog::Accepted)
 				AddFeed (af.GetURL (),
 						af.GetTags ());

@@ -55,7 +55,7 @@
 #include "channelsfiltermodel.h"
 #include "aggregator.h"
 #include "core.h"
-#include "addfeed.h"
+#include "addfeeddialog.h"
 #include "itemsfiltermodel.h"
 #include "channelsfiltermodel.h"
 #include "xmlsettingsmanager.h"
@@ -393,7 +393,7 @@ namespace Aggregator
 
 	void Aggregator::on_ActionAddFeed__triggered ()
 	{
-		AddFeed af (QString (), nullptr);
+		AddFeedDialog af (QString (), nullptr);
 		if (af.exec () == QDialog::Accepted)
 			Core::Instance ().AddFeed (af.GetURL (), af.GetTags ());
 	}

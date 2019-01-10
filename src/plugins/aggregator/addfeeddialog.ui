@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>AddFeed</class>
- <widget class="QDialog" name="AddFeed">
+ <class>AddFeedDialog</class>
+ <widget class="QDialog" name="AddFeedDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
     <width>422</width>
-    <height>92</height>
+    <height>116</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -33,7 +33,7 @@
      <item row="0" column="1">
       <widget class="QLineEdit" name="URL_">
        <property name="text">
-        <string></string>
+        <string/>
        </property>
       </widget>
      </item>
@@ -79,7 +79,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>AddFeed</receiver>
+   <receiver>AddFeedDialog</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -95,7 +95,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>AddFeed</receiver>
+   <receiver>AddFeedDialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
