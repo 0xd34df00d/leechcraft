@@ -40,7 +40,7 @@ namespace Aggregator
 	{
 		Q_OBJECT
 	public:
-		AddFeedDialog (const QString& = QString (), QWidget *parent = 0);
+		explicit AddFeedDialog (const QString& = QString (), QWidget *parent = 0);
 		QString GetURL () const;
 		QStringList GetTags () const;
 	};
