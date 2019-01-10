@@ -460,6 +460,14 @@ namespace Aggregator
 			func (index);
 	}
 
+	namespace
+	{
+		QString FormatNamesList (const QStringList& names)
+		{
+			return "<em>" + names.join ("</em>; <em>") + "</em>";
+		}
+	}
+
 	void Aggregator::on_ActionMarkChannelAsRead__triggered ()
 	{
 		QStringList names;
@@ -470,7 +478,7 @@ namespace Aggregator
 			QMessageBox mbox (QMessageBox::Question,
 					"LeechCraft",
 					tr ("Are you sure you want to mark all items in %1 as read?")
-						.arg ("<em>" + names.join ("</em>; <em>") + "</em>"),
+						.arg (FormatNamesList (names)),
 					QMessageBox::Yes | QMessageBox::No);
 
 			mbox.setDefaultButton (QMessageBox::Yes);
@@ -495,7 +503,7 @@ namespace Aggregator
 		if (QMessageBox::question (nullptr,
 				"LeechCraft",
 				tr ("Are you sure you want to mark all items in %1 as unread?")
-					.arg ("<em>" + names.join ("</em>; <em>") + "</em>"),
+					.arg (FormatNamesList (names)),
 				QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
 			return;
 
