@@ -393,7 +393,7 @@ namespace Aggregator
 
 	void Aggregator::on_ActionAddFeed__triggered ()
 	{
-		AddFeedDialog af;
+		AddFeedDialog af { Proxy_->GetTagsManager () };
 		if (af.exec () == QDialog::Accepted)
 			Core::Instance ().AddFeed (af.GetURL (), af.GetTags ());
 	}

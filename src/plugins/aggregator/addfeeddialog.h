@@ -32,6 +32,8 @@
 #include <QDialog>
 #include "ui_addfeed.h"
 
+class ITagsManager;
+
 namespace LeechCraft
 {
 namespace Aggregator
@@ -39,8 +41,10 @@ namespace Aggregator
 	class AddFeedDialog : public QDialog
 	{
 		Ui::AddFeed Ui_;
+
+		const ITagsManager * const TagsManager_;
 	public:
-		explicit AddFeedDialog (const QString& = QString (), QWidget *parent = 0);
+		explicit AddFeedDialog (const ITagsManager*, const QString& = QString (), QWidget *parent = 0);
 
 		QString GetURL () const;
 		QStringList GetTags () const;

@@ -29,17 +29,16 @@
 
 #include <util/tags/tagscompleter.h>
 #include <util/tags/tagscompletionmodel.h>
-#include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
-#include "core.h"
 #include "addfeeddialog.h"
 
 namespace LeechCraft
 {
 namespace Aggregator
 {
-	AddFeedDialog::AddFeedDialog (const QString& url, QWidget *parent)
-	: QDialog (parent)
+	AddFeedDialog::AddFeedDialog (const ITagsManager *itm, const QString& url, QWidget *parent)
+	: QDialog { parent }
+	, TagsManager_ { itm }
 	{
 		Ui_.setupUi (this);
 		new Util::TagsCompleter (Ui_.Tags_);
@@ -58,7 +57,7 @@ namespace Aggregator
 
 	QStringList AddFeedDialog::GetTags () const
 	{
-		return Core::Instance ().GetProxy ()->GetTagsManager ()->Split (Ui_.Tags_->text ());
+		return TagsManager_->Split (Ui_.Tags_->text ());
 	}
 }
 }
