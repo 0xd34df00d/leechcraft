@@ -292,7 +292,7 @@ namespace Aggregator
 		if (version <= 2)
 		{
 			auto third = new StartupThirdPage ();
-			result << third
+			result << third;
 
 			connect (third,
 					&StartupThirdPage::feedsSelected,
