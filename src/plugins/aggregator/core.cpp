@@ -345,11 +345,6 @@ namespace Aggregator
 		return true;
 	}
 
-	void Core::AddFeed (const QString& url, const QString& tagString)
-	{
-		AddFeed (url, Proxy_->GetTagsManager ()->Split (tagString));
-	}
-
 	namespace
 	{
 		using ParseResult = Util::Either<QString, channels_container_t>;

@@ -299,8 +299,9 @@ namespace Aggregator
 					this,
 					[this] (const QList<StartupThirdPage::SelectedFeed>& feeds)
 					{
+						auto tm = Proxy_->GetTagsManager ();
 						for (const auto& feed : feeds)
-							Core::Instance ().AddFeed (feed.URL_, feed.Tags_);
+							Core::Instance ().AddFeed (feed.URL_, tm->Split (feed.Tags_));
 					});
 		}
 		return result;

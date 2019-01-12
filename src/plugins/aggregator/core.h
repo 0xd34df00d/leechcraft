@@ -91,7 +91,6 @@ namespace Aggregator
 		bool DoDelayedInit ();
 		bool ReinitStorage ();
 
-		void AddFeed (const QString&, const QString&);
 		void AddFeed (QString, const QStringList&, const std::optional<Feed::FeedSettings>& = {});
 
 		void UpdateFavicon (const QModelIndex&);
