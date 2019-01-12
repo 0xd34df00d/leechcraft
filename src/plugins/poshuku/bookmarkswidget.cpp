@@ -52,7 +52,7 @@ namespace Poshuku
 		FavoritesFilterModel_->setDynamicSortFilter (true);
 
 		const auto itm = Core::Instance ().GetProxy ()->GetTagsManager ();
-		FlatToFolders_ = std::make_shared<Util::FlatToFoldersProxyModel> (itm, this);
+		FlatToFolders_ = std::make_shared<Util::FlatToFoldersProxyModel> (itm);
 		handleGroupBookmarks ();
 		XmlSettingsManager::Instance ()->RegisterObject ("GroupBookmarksByTags",
 				this, "handleGroupBookmarks");
