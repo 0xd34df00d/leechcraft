@@ -54,7 +54,7 @@ namespace Aggregator
 			ColumnUnread,
 			ColumnLastBuild
 		};
-		ChannelsModel (QObject *parent = 0);
+		explicit ChannelsModel (QObject *parent = nullptr);
 
 		int columnCount (const QModelIndex& = QModelIndex ()) const override;
 		QVariant data (const QModelIndex&, int = Qt::DisplayRole) const override;
