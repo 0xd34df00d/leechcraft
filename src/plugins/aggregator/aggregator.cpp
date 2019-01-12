@@ -224,7 +224,8 @@ namespace Aggregator
 							ChannelActions_,
 							TabInfo_,
 							ShortcutMgr_,
-							ChannelsModel_.get ()
+							ChannelsModel_.get (),
+							Proxy_->GetTagsManager ()
 						},
 						this);
 				connect (AggregatorTab_.get (),

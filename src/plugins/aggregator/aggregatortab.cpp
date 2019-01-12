@@ -35,7 +35,6 @@
 #include <util/sll/prelude.h>
 #include <util/tags/tagscompleter.h>
 #include <util/util.h>
-#include "core.h"
 #include "xmlsettingsmanager.h"
 #include "uistatepersist.h"
 #include "channelsmodel.h"
@@ -49,7 +48,7 @@ namespace Aggregator
 	: TabClass_ { params.TabClass_ }
 	, ParentPlugin_ { plugin }
 	, ChannelActions_ { params.ChannelActions_ }
-	, FlatToFolders_ { std::make_shared<Util::FlatToFoldersProxyModel> (Core::Instance ().GetProxy ()->GetTagsManager ()) }
+	, FlatToFolders_ { std::make_shared<Util::FlatToFoldersProxyModel> (params.TagsManager_) }
 	, ChannelsFilterModel_ { new ChannelsFilterModel { this } }
 	{
 		ChannelsFilterModel_->setSourceModel (params.ChannelsModel_);
