@@ -537,7 +537,7 @@ namespace Aggregator
 
 	void Aggregator::on_ActionExportOPML__triggered ()
 	{
-		ExportUtils::RunExportOPML ();
+		ExportUtils::RunExportOPML (Proxy_->GetTagsManager ());
 	}
 
 	void Aggregator::on_ActionImportBinary__triggered ()

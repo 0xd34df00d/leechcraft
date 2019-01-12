@@ -27,15 +27,17 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AGGREGATOR_OPMLWRITER_H
-#define PLUGINS_AGGREGATOR_OPMLWRITER_H
-#include "feed.h"
+#pragma once
+
 #include <QString>
+#include "feed.h"
 
 class QDomElement;
 class QDomDocument;
 class QDomNode;
 class QStringList;
+
+class ITagsManager;
 
 namespace LeechCraft
 {
@@ -43,7 +45,10 @@ namespace Aggregator
 {
 	class OPMLWriter
 	{
+		const ITagsManager * const TagsManager_;
 	public:
+		explicit OPMLWriter (const ITagsManager*);
+
 		QString Write (const channels_shorts_t&,
 				const QString&,
 				const QString&,
@@ -60,5 +65,3 @@ namespace Aggregator
 	};
 }
 }
-
-#endif

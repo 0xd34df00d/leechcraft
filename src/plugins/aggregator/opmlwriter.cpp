@@ -36,13 +36,17 @@
 #include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
-#include "core.h"
 #include "storagebackendmanager.h"
 
 namespace LeechCraft
 {
 namespace Aggregator
 {
+	OPMLWriter::OPMLWriter (const ITagsManager *itm)
+	: TagsManager_ { itm }
+	{
+	}
+
 	QString OPMLWriter::Write (const channels_shorts_t& channels,
 			const QString& title,
 			const QString& owner,
@@ -112,7 +116,7 @@ namespace Aggregator
 		auto body = doc.createElement ("body");
 		for (const auto& cs : channels)
 		{
-			auto tags = Core::Instance ().GetProxy ()->GetTagsManager ()->GetTags (cs.Tags_);
+			auto tags = TagsManager_->GetTags (cs.Tags_);
 			tags.sort ();
 
 			auto inserter = Util::GetElementForTags (tags,
