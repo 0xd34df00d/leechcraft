@@ -52,7 +52,7 @@ namespace Aggregator
 		typedef QList<FeedInfo> FeedInfos_t;
 		QMap<QString, FeedInfos_t> Sets_;
 	public:
-		StartupThirdPage (QWidget* = 0);
+		explicit StartupThirdPage (QWidget* = nullptr);
 
 		void initializePage ();
 	private:
