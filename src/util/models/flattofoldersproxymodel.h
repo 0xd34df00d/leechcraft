@@ -50,7 +50,7 @@ namespace Util
 
 		QAbstractItemModel *SourceModel_ = nullptr;
 
-		ITagsManager *TM_ = nullptr;
+		const ITagsManager * const TM_;
 
 		FlatTreeItem_ptr Root_;
 		QMultiHash<QPersistentModelIndex, FlatTreeItem_ptr> Items_;
