@@ -61,7 +61,6 @@
 #include "xmlsettingsmanager.h"
 #include "importbinary.h"
 #include "feedsettings.h"
-#include "wizardgenerator.h"
 #include "export2fb2dialog.h"
 #include "channelsmodel.h"
 #include "aggregatortab.h"
@@ -72,6 +71,9 @@
 #include "dbupdatethread.h"
 #include "dbupdatethreadworker.h"
 #include "pluginmanager.h"
+#include "startupfirstpage.h"
+#include "startupsecondpage.h"
+#include "startupthirdpage.h"
 
 namespace LeechCraft
 {
@@ -281,7 +283,15 @@ namespace Aggregator
 
 	QList<QWizardPage*> Aggregator::GetWizardPages () const
 	{
-		return CreateWizardPages ();
+		QList<QWizardPage*> result;
+		int version = XmlSettingsManager::Instance ()->Property ("StartupVersion", 0).toInt ();
+		if (version <= 0)
+			result << new StartupFirstPage ();
+		if (version <= 1)
+			result << new StartupSecondPage ();
+		if (version <= 2)
+			result << new StartupThirdPage ();
+		return result;
 	}
 
 	QList<QAction*> Aggregator::GetActions (ActionsEmbedPlace place) const

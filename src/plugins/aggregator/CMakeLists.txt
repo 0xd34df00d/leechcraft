@@ -44,7 +44,6 @@ set (SRCS
 	jobholderrepresentation.cpp
 	itemswidget.cpp
 	itemslistmodel.cpp
-	wizardgenerator.cpp
 	startupfirstpage.cpp
 	startupsecondpage.cpp
 	startupthirdpage.cpp
