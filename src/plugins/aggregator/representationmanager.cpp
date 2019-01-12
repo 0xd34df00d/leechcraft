@@ -61,15 +61,15 @@ namespace LeechCraft::Aggregator
 		return ReprModel_;
 	}
 
-	void RepresentationManager::HandleRowChanged (const QModelIndex& index)
+	void RepresentationManager::HandleRowChanged (QModelIndex index)
 	{
-		auto si = Core::Instance ().GetProxy ()->MapToSource (index);
-		if (si.model () != GetRepresentation ())
-			si = {};
-		si = ReprModel_->mapToSource (si);
-		si = JobHolderRepresentation_->SelectionChanged (si);
-		SelectedRepr_ = si;
-		ReprWidget_->CurrentChannelChanged (si);
+		index = Core::Instance ().GetProxy ()->MapToSource (index);
+		if (index.model () != GetRepresentation ())
+			index = {};
+		index = ReprModel_->mapToSource (index);
+		index = JobHolderRepresentation_->SelectionChanged (index);
+		SelectedRepr_ = index;
+		ReprWidget_->CurrentChannelChanged (index);
 	}
 
 	std::optional<QModelIndex> RepresentationManager::GetRelevantIndex () const

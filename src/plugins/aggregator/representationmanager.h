@@ -65,7 +65,7 @@ namespace LeechCraft::Aggregator
 		explicit RepresentationManager (const InitParams&);
 
 		QAbstractItemModel* GetRepresentation () const;
-		void HandleRowChanged (const QModelIndex&);
+		void HandleRowChanged (QModelIndex);
 
 		std::optional<QModelIndex> GetRelevantIndex () const;
 	};
