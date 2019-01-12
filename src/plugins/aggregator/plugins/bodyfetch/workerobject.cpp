@@ -82,16 +82,16 @@ namespace BodyFetch
 		return Inst_.get ();
 	}
 
-	void WorkerObject::AppendItems (const QList<Item_cptr>& items)
+	void WorkerObject::AppendItem (const Item& item)
 	{
-		Items_ << items;
+		Items_ << item;
 
 		QTimer::singleShot (500,
 				this,
 				SLOT (process ()));
 	}
 
-	void WorkerObject::ProcessItems (const QList<Item_cptr>& items)
+	void WorkerObject::ProcessItems (const QList<Item>& items)
 	{
 		if (!Inst_)
 		{
@@ -107,7 +107,7 @@ namespace BodyFetch
 
 		for (const auto& item : items)
 		{
-			const auto& channel = AggregatorProxy_->GetChannel (item->ChannelID_);
+			const auto& channel = AggregatorProxy_->GetChannel (item.ChannelID_);
 			if (channel.ChannelID_ == IDNotFound)
 				continue;
 
@@ -124,19 +124,19 @@ namespace BodyFetch
 
 			const QVariantList args
 			{
-				item->Link_,
-				item->CommentsPageLink_,
-				item->Description_
+				item.Link_,
+				item.CommentsPageLink_,
+				item.Description_
 			};
 			auto fetchStr = script->InvokeMethod ("GetFullURL", args).toString ();
 			if (fetchStr.isEmpty ())
-				fetchStr = item->Link_;
+				fetchStr = item.Link_;
 
 			qDebug () << Q_FUNC_INFO << fetchStr << "using" << ChannelLink2ScriptID_ [channelLinkStr];
 
 			const auto& url = QUrl::fromEncoded (fetchStr.toUtf8 ());
 			URL2Script_ [url] = script;
-			URL2ItemID_ [url] = item->ItemID_;
+			URL2ItemID_ [url] = item.ItemID_;
 			emit downloadRequested (url);
 		}
 	}

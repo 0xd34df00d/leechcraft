@@ -183,12 +183,12 @@ namespace BodyFetch
 			item->Description_ = contents;
 	}
 
-	void Plugin::hookGotNewItems (IHookProxy_ptr, const QList<Item_cptr>& items)
+	void Plugin::hookItemAdded (IHookProxy_ptr, const Item& item)
 	{
 		if (!WO_ || !WO_->IsOk ())
 			return;
 
-		WO_->AppendItems (items);
+		WO_->AppendItem (item);
 	}
 
 	void Plugin::handleDownload (QUrl url)

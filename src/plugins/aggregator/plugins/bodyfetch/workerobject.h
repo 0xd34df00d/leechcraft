@@ -44,7 +44,6 @@ namespace Aggregator
 class IProxyObject;
 
 struct Item;
-using Item_cptr = std::shared_ptr<const Item>;
 
 namespace BodyFetch
 {
@@ -55,7 +54,7 @@ namespace BodyFetch
 		IProxyObject * const AggregatorProxy_;
 
 		IScriptLoaderInstance_ptr Inst_;
-		QList<Item_cptr> Items_;
+		QList<Item> Items_;
 
 		bool IsProcessing_ = false;
 		bool RecheckScheduled_ = false;
@@ -76,9 +75,9 @@ namespace BodyFetch
 
 		void SetLoaderInstance (const IScriptLoaderInstance_ptr&);
 		bool IsOk () const;
-		void AppendItems (const QList<Item_cptr>&);
+		void AppendItem (const Item&);
 	private:
-		void ProcessItems (const QList<Item_cptr>&);
+		void ProcessItems (const QList<Item>&);
 		IScript_ptr GetScriptForChannel (const QString&);
 		QString FindScriptForChannel (const QString&);
 		QString Parse (const QString&, IScript_ptr);
