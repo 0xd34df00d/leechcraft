@@ -232,9 +232,25 @@ namespace Aggregator
 		if (importDialog.exec () == QDialog::Rejected)
 			return;
 
-		AddFromOPML (importDialog.GetFilename (),
-				importDialog.GetTags (),
-				importDialog.GetSelectedUrls ());
+		const auto& tags = Proxy_->GetTagsManager ()->Split (importDialog.GetTags ());
+		const auto& selectedUrls = importDialog.GetSelectedUrls ();
+
+		Util::Visit (ParseOPMLItems (importDialog.GetFilename ()),
+				[this] (const QString& error) { ErrorNotification (tr ("OPML import error"), error); },
+				[&] (const OPMLParser::items_container_t& items)
+				{
+					for (const auto& item : items)
+					{
+						if (!selectedUrls.contains (item.URL_))
+							continue;
+
+						int interval = 0;
+						if (item.CustomFetchInterval_)
+							interval = item.FetchInterval_;
+						AddFeed (item.URL_, tags + item.Categories_,
+								{ { IDNotFound, interval, item.MaxArticleNumber_, item.MaxArticleAge_, false } });
+					}
+				});
 	}
 
 	bool Core::DoDelayedInit ()
@@ -474,27 +490,6 @@ namespace Aggregator
 	{
 		FetchFavicon (index.data (ChannelRoles::ChannelID).value<IDType_t> (),
 				index.data (ChannelRoles::ChannelLink).toString ());
-	}
-
-	void Core::AddFromOPML (const QString& filename, const QString& tags, const QSet<QString>& selectedUrls)
-	{
-		Util::Visit (ParseOPMLItems (filename),
-				[this] (const QString& error) { ErrorNotification (tr ("OPML import error"), error); },
-				[&] (const OPMLParser::items_container_t& items)
-				{
-					const auto& tagsList = Proxy_->GetTagsManager ()->Split (tags);
-					for (const auto& item : items)
-					{
-						if (!selectedUrls.contains (item.URL_))
-							continue;
-
-						int interval = 0;
-						if (item.CustomFetchInterval_)
-							interval = item.FetchInterval_;
-						AddFeed (item.URL_, tagsList + item.Categories_,
-								{ { IDNotFound, interval, item.MaxArticleNumber_, item.MaxArticleAge_, false } });
-					}
-				});
 	}
 
 	void Core::AddFeeds (const feeds_container_t& feeds, const QString& tagsString)

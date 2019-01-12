@@ -97,7 +97,6 @@ namespace Aggregator
 		void UpdateFavicon (const QModelIndex&);
 
 		void UpdateFeed (const IDType_t&);
-		void AddFromOPML (const QString&, const QString&, const QSet<QString>&);
 
 		void AddFeeds (const feeds_container_t&, const QString&);
 	public slots:
