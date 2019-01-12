@@ -40,15 +40,15 @@
 #include "channelsmodel.h"
 #include "item.h"
 #include "xmlsettingsmanager.h"
-#include "core.h"
 #include "storagebackendmanager.h"
 
 namespace LeechCraft
 {
 namespace Aggregator
 {
-	ChannelsModel::ChannelsModel (QObject *parent)
-	: QAbstractItemModel (parent)
+	ChannelsModel::ChannelsModel (const ITagsManager *itm, QObject *parent)
+	: QAbstractItemModel { parent }
+	, TagsManager_ { itm }
 	{
 		Headers_ << tr ("Feed")
 			<< tr ("Unread items")
@@ -102,7 +102,7 @@ namespace Aggregator
 						QVariant ();
 		}
 
-		QVariant GetTooltip (const ChannelShort& cs)
+		QVariant GetTooltip (const ITagsManager *itm, const ChannelShort& cs)
 		{
 			auto result = QString ("<qt><b>%1</b><br />").arg (cs.Title_);
 			if (cs.Author_.size ())
@@ -112,7 +112,7 @@ namespace Aggregator
 			}
 			if (cs.Tags_.size ())
 			{
-				const auto& hrTags = Core::Instance ().GetProxy ()->GetTagsManager ()->GetTags (cs.Tags_);
+				const auto& hrTags = itm->GetTags (cs.Tags_);
 				result += ChannelsModel::tr ("<b>Tags</b>: %1").arg (hrTags.join ("; "));
 				result += "<br />";
 			}
@@ -166,7 +166,7 @@ namespace Aggregator
 			else
 				return {};
 		case Qt::ToolTipRole:
-			return GetTooltip (Channels_.at (row));
+			return GetTooltip (TagsManager_, Channels_.at (row));
 		case RoleTags:
 			return Channels_.at (row).Tags_;
 		case ChannelRoles::UnreadCount:
@@ -178,7 +178,7 @@ namespace Aggregator
 		case ChannelRoles::RawTags:
 			return Channels_.at (row).Tags_;
 		case ChannelRoles::HumanReadableTags:
-			return Core::Instance ().GetProxy ()->GetTagsManager ()->GetTags (Channels_.at (row).Tags_);
+			return TagsManager_->GetTags (Channels_.at (row).Tags_);
 		case ChannelRoles::ChannelLink:
 			return Channels_.at (row).Link_;
 		default:

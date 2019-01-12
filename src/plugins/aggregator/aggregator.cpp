@@ -142,7 +142,7 @@ namespace Aggregator
 
 		QMetaObject::connectSlotsByName (this);
 
-		ChannelsModel_ = std::make_shared<ChannelsModel> ();
+		ChannelsModel_ = std::make_shared<ChannelsModel> (Proxy_->GetTagsManager ());
 
 		PluginManager_ = std::make_shared<PluginManager> (ChannelsModel_.get ());
 		PluginManager_->RegisterHookable (&Core::Instance ());
