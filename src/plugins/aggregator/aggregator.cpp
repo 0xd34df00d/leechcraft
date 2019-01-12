@@ -253,7 +253,7 @@ namespace Aggregator
 
 	void Aggregator::handleTasksTreeSelectionCurrentRowChanged (const QModelIndex& index, const QModelIndex&)
 	{
-		ReprManager_->HandleRowChanged (index);
+		ReprManager_->HandleRowChanged (Proxy_->MapToSource (index));
 	}
 
 	EntityTestHandleResult Aggregator::CouldHandle (const Entity& e) const

@@ -33,7 +33,6 @@
 #include "channelsmodelrepresentationproxy.h"
 #include "channelsmodel.h"
 #include "actionsstructs.h"
-#include "core.h"
 
 namespace LeechCraft::Aggregator
 {
@@ -63,7 +62,6 @@ namespace LeechCraft::Aggregator
 
 	void RepresentationManager::HandleRowChanged (QModelIndex index)
 	{
-		index = Core::Instance ().GetProxy ()->MapToSource (index);
 		if (index.model () != GetRepresentation ())
 			index = {};
 		index = ReprModel_->mapToSource (index);
