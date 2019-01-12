@@ -55,7 +55,7 @@ namespace Util
 		FlatTreeItem_ptr Root_;
 		QMultiHash<QPersistentModelIndex, FlatTreeItem_ptr> Items_;
 	public:
-		FlatToFoldersProxyModel (QObject* = 0);
+		explicit FlatToFoldersProxyModel (QObject* = nullptr);
 
 		void SetTagsManager (ITagsManager*);
 
