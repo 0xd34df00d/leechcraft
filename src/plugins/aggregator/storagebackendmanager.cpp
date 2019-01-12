@@ -144,6 +144,10 @@ namespace Aggregator
 				&StorageBackend::hookItemLoad,
 				this,
 				&StorageBackendManager::hookItemLoad);
+		connect (backendPtr,
+				&StorageBackend::hookItemAdded,
+				this,
+				&StorageBackendManager::hookItemAdded);
 	}
 }
 }
