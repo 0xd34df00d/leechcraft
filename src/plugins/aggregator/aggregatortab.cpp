@@ -49,7 +49,7 @@ namespace Aggregator
 	: TabClass_ { params.TabClass_ }
 	, ParentPlugin_ { plugin }
 	, ChannelActions_ { params.ChannelActions_ }
-	, FlatToFolders_ { std::make_shared<Util::FlatToFoldersProxyModel> () }
+	, FlatToFolders_ { std::make_shared<Util::FlatToFoldersProxyModel> (Core::Instance ().GetProxy ()->GetTagsManager ()) }
 	, ChannelsFilterModel_ { new ChannelsFilterModel { this } }
 	{
 		ChannelsFilterModel_->setSourceModel (params.ChannelsModel_);
@@ -119,7 +119,6 @@ namespace Aggregator
 					Ui_.ItemsWidget_->SaveUIState ();
 				});
 
-		FlatToFolders_->SetTagsManager (Core::Instance ().GetProxy ()->GetTagsManager ());
 		handleGroupChannels ();
 		XmlSettingsManager::Instance ()->RegisterObject ("GroupChannelsByTags", this, "handleGroupChannels");
 

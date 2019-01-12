@@ -55,9 +55,7 @@ namespace Util
 		FlatTreeItem_ptr Root_;
 		QMultiHash<QPersistentModelIndex, FlatTreeItem_ptr> Items_;
 	public:
-		explicit FlatToFoldersProxyModel (QObject* = nullptr);
-
-		void SetTagsManager (ITagsManager*);
+		explicit FlatToFoldersProxyModel (const ITagsManager*, QObject* = nullptr);
 
 		int columnCount (const QModelIndex& = {}) const override;
 		QVariant data (const QModelIndex&, int = Qt::DisplayRole) const override;
