@@ -52,6 +52,12 @@ namespace Aggregator
 		typedef QList<FeedInfo> FeedInfos_t;
 		QMap<QString, FeedInfos_t> Sets_;
 	public:
+		struct SelectedFeed
+		{
+			QString URL_;
+			QString Tags_;
+		};
+
 		explicit StartupThirdPage (QWidget* = nullptr);
 
 		void initializePage ();
@@ -63,6 +69,8 @@ namespace Aggregator
 	private slots:
 		void on_SelectAll__released ();
 		void on_DeselectAll__released ();
+	signals:
+		void feedsSelected (const QList<SelectedFeed>&);
 	};
 }
 }

@@ -144,6 +144,7 @@ namespace Aggregator
 		if (wizard ()->field ("Aggregator/StorageDirty").toBool ())
 			Core::Instance ().ReinitStorage ();
 
+		QList<SelectedFeed> feeds;
 		for (int i = 0; i < Ui_.Tree_->topLevelItemCount (); ++i)
 		{
 			QTreeWidgetItem *item = Ui_.Tree_->topLevelItem (i);
@@ -152,8 +153,11 @@ namespace Aggregator
 
 			QString url = item->text (2);
 			QString tags = static_cast<QLineEdit*> (Ui_.Tree_->itemWidget (item, 1))->text ();
-			Core::Instance ().AddFeed (url, tags);
+			feeds << SelectedFeed { url, tags };
 		}
+
+		if (!feeds.isEmpty ())
+			emit feedsSelected (feeds);
 	}
 
 	void StartupThirdPage::HandleCurrentIndexChanged (const QString& text)

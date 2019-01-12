@@ -290,7 +290,19 @@ namespace Aggregator
 		if (version <= 1)
 			result << new StartupSecondPage ();
 		if (version <= 2)
-			result << new StartupThirdPage ();
+		{
+			auto third = new StartupThirdPage ();
+			result << third
+
+			connect (third,
+					&StartupThirdPage::feedsSelected,
+					this,
+					[this] (const QList<StartupThirdPage::SelectedFeed>& feeds)
+					{
+						for (const auto& feed : feeds)
+							Core::Instance ().AddFeed (feed.URL_, feed.Tags_);
+					});
+		}
 		return result;
 	}
 
