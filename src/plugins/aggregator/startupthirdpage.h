@@ -60,7 +60,7 @@ namespace Aggregator
 
 		explicit StartupThirdPage (QWidget* = nullptr);
 
-		void initializePage ();
+		void initializePage () override;
 	private:
 		void ParseFeedsSets ();
 		void Populate (const QString&);
