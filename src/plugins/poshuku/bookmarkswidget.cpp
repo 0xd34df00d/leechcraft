@@ -47,13 +47,12 @@ namespace Poshuku
 	{
 		Ui_.setupUi (this);
 
-		FavoritesFilterModel_.reset (new FilterModel (this));
+		FavoritesFilterModel_ = std::make_unique<FilterModel> (this);
 		FavoritesFilterModel_->setSourceModel (Core::Instance ().GetFavoritesModel ());
 		FavoritesFilterModel_->setDynamicSortFilter (true);
 
-		FlatToFolders_.reset (new Util::FlatToFoldersProxyModel (this));
-		FlatToFolders_->SetTagsManager (Core::Instance ()
-				.GetProxy ()->GetTagsManager ());
+		FlatToFolders_ = std::make_shared<Util::FlatToFoldersProxyModel> (this);
+		FlatToFolders_->SetTagsManager (Core::Instance ().GetProxy ()->GetTagsManager ());
 		handleGroupBookmarks ();
 		XmlSettingsManager::Instance ()->RegisterObject ("GroupBookmarksByTags",
 				this, "handleGroupBookmarks");
@@ -203,8 +202,7 @@ namespace Poshuku
 	{
 		for (int i = 0, size = FavoritesFilterModel_->rowCount ();
 				i < size; ++i)
-			Core::Instance ().NewURL (FavoritesFilterModel_->
-					index (i, FavoritesModel::ColumnURL).data ().toString ());
+			Core::Instance ().NewURL (FavoritesFilterModel_->index (i, FavoritesModel::ColumnURL).data ().toString ());
 	}
 
 	void BookmarksWidget::selectTagsMode ()
