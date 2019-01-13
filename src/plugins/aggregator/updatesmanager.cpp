@@ -49,72 +49,77 @@
 
 namespace LeechCraft::Aggregator
 {
-	ParseResult ParseChannels (const QString& path, const QString& url, IDType_t feedId)
+	namespace
 	{
-		QFile file { path };
-		if (!file.open (QIODevice::ReadOnly))
+		using ParseResult = Util::Either<QString, channels_container_t>;
+
+		ParseResult ParseChannels (const QString& path, const QString& url, IDType_t feedId)
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to open the local file"
-					<< path;
-			return ParseResult::Left (UpdatesManager::tr ("Unable to open the temporary file."));
+			QFile file { path };
+			if (!file.open (QIODevice::ReadOnly))
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "unable to open the local file"
+						<< path;
+				return ParseResult::Left (UpdatesManager::tr ("Unable to open the temporary file."));
+			}
+
+			QDomDocument doc;
+			QString errorMsg;
+			int errorLine, errorColumn;
+			if (!doc.setContent (&file, true, &errorMsg, &errorLine, &errorColumn))
+			{
+				const auto& copyPath = Util::GetTemporaryName ("lc_aggregator_failed.XXXXXX");
+				file.copy (copyPath);
+				qWarning () << Q_FUNC_INFO
+						<< "error parsing XML for"
+						<< url
+						<< errorMsg
+						<< errorLine
+						<< errorColumn
+						<< "; copy at"
+						<< file.fileName ();
+				return ParseResult::Left (UpdatesManager::tr ("XML parse error for the feed %1.")
+						.arg (url));
+			}
+
+			auto parser = ParserFactory::Instance ().Return (doc);
+			if (!parser)
+			{
+				const auto& copyPath = Util::GetTemporaryName ("lc_aggregator_failed.XXXXXX");
+				file.copy (copyPath);
+				qWarning () << Q_FUNC_INFO
+						<< "no parser for"
+						<< url
+						<< "; copy at"
+						<< copyPath;
+				return ParseResult::Left (UpdatesManager::tr ("Could not find parser to parse %1.")
+						.arg (url));
+			}
+
+			return ParseResult::Right (parser->ParseFeed (doc, feedId));
 		}
 
-		QDomDocument doc;
-		QString errorMsg;
-		int errorLine, errorColumn;
-		if (!doc.setContent (&file, true, &errorMsg, &errorLine, &errorColumn))
+		QString GetErrorString (const IDownload::Error::Type type)
 		{
-			const auto& copyPath = Util::GetTemporaryName ("lc_aggregator_failed.XXXXXX");
-			file.copy (copyPath);
-			qWarning () << Q_FUNC_INFO
-					<< "error parsing XML for"
-					<< url
-					<< errorMsg
-					<< errorLine
-					<< errorColumn
-					<< "; copy at"
-					<< file.fileName ();
-			return ParseResult::Left (UpdatesManager::tr ("XML parse error for the feed %1.")
-					.arg (url));
+			switch (type)
+			{
+			case IDownload::Error::Type::Unknown:
+				break;
+			case IDownload::Error::Type::NoError:
+				return UpdatesManager::tr ("no error");
+			case IDownload::Error::Type::NotFound:
+				return UpdatesManager::tr ("address not found");
+			case IDownload::Error::Type::AccessDenied:
+				return UpdatesManager::tr ("access denied");
+			case IDownload::Error::Type::LocalError:
+				return UpdatesManager::tr ("local error");
+			case IDownload::Error::Type::UserCanceled:
+				return UpdatesManager::tr ("user canceled the download");
+			}
+
+			return UpdatesManager::tr ("unknown error");
 		}
-
-		auto parser = ParserFactory::Instance ().Return (doc);
-		if (!parser)
-		{
-			const auto& copyPath = Util::GetTemporaryName ("lc_aggregator_failed.XXXXXX");
-			file.copy (copyPath);
-			qWarning () << Q_FUNC_INFO
-					<< "no parser for"
-					<< url
-					<< "; copy at"
-					<< copyPath;
-			return ParseResult::Left (UpdatesManager::tr ("Could not find parser to parse %1.")
-					.arg (url));
-		}
-
-		return ParseResult::Right (parser->ParseFeed (doc, feedId));
-	}
-
-	QString GetErrorString (const IDownload::Error::Type type)
-	{
-		switch (type)
-		{
-		case IDownload::Error::Type::Unknown:
-			break;
-		case IDownload::Error::Type::NoError:
-			return UpdatesManager::tr ("no error");
-		case IDownload::Error::Type::NotFound:
-			return UpdatesManager::tr ("address not found");
-		case IDownload::Error::Type::AccessDenied:
-			return UpdatesManager::tr ("access denied");
-		case IDownload::Error::Type::LocalError:
-			return UpdatesManager::tr ("local error");
-		case IDownload::Error::Type::UserCanceled:
-			return UpdatesManager::tr ("user canceled the download");
-		}
-
-		return UpdatesManager::tr ("unknown error");
 	}
 
 	UpdatesManager::UpdatesManager (const DBUpdateThread_ptr& dbUpThread, IEntityManager *iem, QObject *parent)

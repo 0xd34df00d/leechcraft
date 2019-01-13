@@ -31,9 +31,6 @@
 
 #include <memory>
 #include <QObject>
-#include <interfaces/idownload.h>
-#include <util/sll/eitherfwd.h>
-#include "channel.h"
 #include "common.h"
 #include "dbupdatethread.h"
 
@@ -44,11 +41,6 @@ class IEntityManager;
 namespace LeechCraft::Aggregator
 {
 	class StorageBackend;
-
-	using ParseResult = Util::Either<QString, channels_container_t>;
-
-	ParseResult ParseChannels (const QString& path, const QString& url, IDType_t feedId);
-	QString GetErrorString (const IDownload::Error::Type type);
 
 	class UpdatesManager : public QObject
 	{
@@ -68,6 +60,7 @@ namespace LeechCraft::Aggregator
 		explicit UpdatesManager (const DBUpdateThread_ptr&, IEntityManager*, QObject* = nullptr);
 
 		void UpdateFeed (IDType_t);
+
 		void UpdateFeeds ();
 	private:
 		void HandleCustomUpdates ();
