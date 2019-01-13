@@ -37,6 +37,7 @@
 #include <interfaces/core/ientitymanager.h>
 #include "xmlsettingsmanager.h"
 #include "storagebackend.h"
+#include "storagebackendmanager.h"
 
 namespace LeechCraft
 {
@@ -45,26 +46,8 @@ namespace Aggregator
 	DBUpdateThreadWorker::DBUpdateThreadWorker (const ICoreProxy_ptr& proxy, QObject *parent)
 	: QObject (parent)
 	, Proxy_ { proxy }
+	, SB_ { StorageBackendManager::Instance ().MakeStorageBackendForThread () }
 	{
-		try
-		{
-			const QString& strType = XmlSettingsManager::Instance ()->
-					property ("StorageType").toString ();
-			SB_ = StorageBackend::Create (strType, "_UpdateThread");
-		}
-		catch (const std::runtime_error& s)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< s.what ();
-			return;
-		}
-		catch (...)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unknown exception";
-			return;
-		}
-
 		SB_->Prepare ();
 	}
 
@@ -118,8 +101,6 @@ namespace Aggregator
 
 		item.ChannelID_ = channel.ChannelID_;
 		SB_->AddItem (item);
-
-		emit hookGotNewItems (std::make_shared<Util::DefaultHookProxy> (), { item });
 
 		const auto iem = Proxy_->GetEntityManager ();
 		if (settings.AutoDownloadEnclosures_)

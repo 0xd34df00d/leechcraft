@@ -15,7 +15,7 @@ set (SRCS
 	aggregator.cpp
 	aggregatortab.cpp
 	core.cpp
-	addfeed.cpp
+	addfeeddialog.cpp
 	parserfactory.cpp
 	rssparser.cpp
 	rss20parser.cpp
@@ -44,7 +44,6 @@ set (SRCS
 	jobholderrepresentation.cpp
 	itemswidget.cpp
 	itemslistmodel.cpp
-	wizardgenerator.cpp
 	startupfirstpage.cpp
 	startupsecondpage.cpp
 	startupthirdpage.cpp
@@ -61,10 +60,11 @@ set (SRCS
 	itemutils.cpp
 	channelutils.cpp
 	representationmanager.cpp
+	updatesmanager.cpp
 	)
 set (FORMS
 	mainwidget.ui
-	addfeed.ui
+	addfeeddialog.ui
 	importopml.ui
 	export.ui
 	importbinary.ui

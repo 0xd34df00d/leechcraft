@@ -53,7 +53,7 @@ namespace LeechCraft::Aggregator::ExportUtils
 		}
 	}
 
-	void RunExportOPML (QWidget *parent)
+	void RunExportOPML (const ITagsManager *itm, QWidget *parent)
 	{
 		const auto& allChannels = ChannelUtils::GetAllChannels ();
 		Export exportDialog (QObject::tr ("Export to OPML"),
@@ -68,7 +68,7 @@ namespace LeechCraft::Aggregator::ExportUtils
 
 		auto channels = FilterChannels (allChannels, exportDialog.GetSelectedFeeds ());
 
-		OPMLWriter writer;
+		OPMLWriter writer { itm };
 		auto data = writer.Write (channels,
 				exportDialog.GetTitle (), exportDialog.GetOwner (), exportDialog.GetOwnerEmail ());
 

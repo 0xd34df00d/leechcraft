@@ -56,7 +56,7 @@ namespace Aggregator
 		connect (Ui_.LocalizationBox_,
 				Util::Overload<const QString&> (&QComboBox::currentIndexChanged),
 				this,
-				&StartupThirdPage::handleCurrentIndexChanged);
+				&StartupThirdPage::HandleCurrentIndexChanged);
 
 		const QMap<QString, int> languages
 		{
@@ -65,7 +65,7 @@ namespace Aggregator
 
 		const auto& language = Util::GetLanguage ();
 		Ui_.LocalizationBox_->setCurrentIndex (languages.value (language, 0));
-		handleCurrentIndexChanged ("(" + language + ")");
+		HandleCurrentIndexChanged ("(" + language + ")");
 
 		setTitle ("Aggregator");
 		setSubTitle (tr ("Select feeds"));
@@ -76,7 +76,7 @@ namespace Aggregator
 		connect (wizard (),
 				&QWizard::accepted,
 				this,
-				&StartupThirdPage::handleAccepted,
+				&StartupThirdPage::HandleAccepted,
 				Qt::UniqueConnection);
 		wizard ()->setMinimumWidth (std::max (wizard ()->minimumWidth (), 800));
 		wizard ()->setMinimumHeight (std::max (wizard ()->minimumHeight (), 500));
@@ -139,11 +139,12 @@ namespace Aggregator
 		}
 	}
 
-	void StartupThirdPage::handleAccepted ()
+	void StartupThirdPage::HandleAccepted ()
 	{
 		if (wizard ()->field ("Aggregator/StorageDirty").toBool ())
 			Core::Instance ().ReinitStorage ();
 
+		QList<SelectedFeed> feeds;
 		for (int i = 0; i < Ui_.Tree_->topLevelItemCount (); ++i)
 		{
 			QTreeWidgetItem *item = Ui_.Tree_->topLevelItem (i);
@@ -152,11 +153,14 @@ namespace Aggregator
 
 			QString url = item->text (2);
 			QString tags = static_cast<QLineEdit*> (Ui_.Tree_->itemWidget (item, 1))->text ();
-			Core::Instance ().AddFeed (url, tags);
+			feeds << SelectedFeed { url, tags };
 		}
+
+		if (!feeds.isEmpty ())
+			emit feedsSelected (feeds);
 	}
 
-	void StartupThirdPage::handleCurrentIndexChanged (const QString& text)
+	void StartupThirdPage::HandleCurrentIndexChanged (const QString& text)
 	{
 		Ui_.Tree_->clear ();
 		if (text.endsWith (')'))

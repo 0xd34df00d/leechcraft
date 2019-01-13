@@ -6,7 +6,6 @@ find_path(QTERMWIDGET_INCLUDE_DIR qtermwidget.h
 		/usr/local/include/
 		/opt/local/include/
 	PATH_SUFFIXES
-		qtermwidget4
 		qtermwidget5
 	)
 

@@ -79,6 +79,12 @@ namespace Aggregator
 		}
 	}
 
+	ProxyObject::ProxyObject (ChannelsModel *cm, QObject *parent)
+	: QObject { parent }
+	, ChannelsModel_ { cm }
+	{
+	}
+
 	void ProxyObject::AddFeed (Feed feed)
 	{
 		FixFeedID (feed);

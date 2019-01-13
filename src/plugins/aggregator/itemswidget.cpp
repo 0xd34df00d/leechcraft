@@ -92,7 +92,7 @@ namespace Aggregator
 		bool TapeMode_;
 		bool MergeMode_;
 
-		QSortFilterProxyModel *ChannelsFilter_;
+		QAbstractItemModel *ChannelsModel_ = nullptr;
 
 		std::unique_ptr<ItemsListModel> CurrentItemsModel_;
 		QList<std::shared_ptr<ItemsListModel>> SupplementaryModels_;
@@ -100,7 +100,7 @@ namespace Aggregator
 		std::unique_ptr<ItemsFilterModel> ItemsFilterModel_;
 		std::unique_ptr<CategorySelector> ItemCategorySelector_;
 
-		QTimer *SelectedChecker_;
+		QTimer *SelectedChecker_ = nullptr;
 		QModelIndex LastSelectedIndex_;
 		QModelIndex LastSelectedChannel_;
 	};
@@ -118,17 +118,13 @@ namespace Aggregator
 
 		SetupActions ();
 
-		Impl_->ChannelsFilter_ = 0;
 		Impl_->TapeMode_ = XmlSettingsManager::Instance ()->
 				Property ("ShowAsTape", false).toBool ();
 		Impl_->MergeMode_ = false;
 		Impl_->ControlToolBar_ = SetupToolBar ();
 
 		Impl_->CurrentItemsModel_.reset (new ItemsListModel);
-		QStringList headers;
-		headers << tr ("Name")
-			<< tr ("Date");
-		Impl_->ItemLists_.reset (new Util::MergeModel (headers));
+		Impl_->ItemLists_.reset (new Util::MergeModel ({ tr ("Name"), tr ("Date") }));
 		Impl_->ItemLists_->AddModel (Impl_->CurrentItemsModel_.get ());
 
 		Impl_->Ui_.setupUi (this);
@@ -238,6 +234,19 @@ namespace Aggregator
 		delete Impl_;
 	}
 
+	void ItemsWidget::SetChannelsModel (QAbstractItemModel *cm)
+	{
+		Impl_->ChannelsModel_ = cm;
+		connect (cm,
+				&QAbstractItemModel::rowsInserted,
+				this,
+				&ItemsWidget::invalidateMergeMode);
+		connect (cm,
+				&QAbstractItemModel::rowsRemoved,
+				this,
+				&ItemsWidget::invalidateMergeMode);
+	}
+
 	void ItemsWidget::SetAppWideActions (const AppWideActions& awa)
 	{
 		QAction *first = Impl_->ControlToolBar_->actions ().first ();
@@ -254,20 +263,6 @@ namespace Aggregator
 		Impl_->ControlToolBar_->insertAction (first,
 				ca.ActionUpdateSelectedFeed_);
 		Impl_->ControlToolBar_->insertSeparator (first);
-	}
-
-	void ItemsWidget::SetChannelsFilter (QSortFilterProxyModel *m)
-	{
-		Impl_->ChannelsFilter_ = m;
-
-		connect (m,
-				&QAbstractItemModel::rowsInserted,
-				this,
-				&ItemsWidget::invalidateMergeMode);
-		connect (m,
-				&QAbstractItemModel::rowsRemoved,
-				this,
-				&ItemsWidget::invalidateMergeMode);
 	}
 
 	void ItemsWidget::RegisterShortcuts (Util::ShortcutManager *mgr)
@@ -360,29 +355,11 @@ namespace Aggregator
 
 		if (Impl_->MergeMode_)
 		{
-			QSortFilterProxyModel *f = Impl_->ChannelsFilter_;
-			ChannelsModel *cm = Core::Instance ().GetRawChannelsModel ();
-			for (int i = 0, size = f ?
-					f->rowCount () :
-					cm->rowCount ();
-					i < size; ++i)
+			auto cm = Impl_->ChannelsModel_;
+			for (int i = 0, size = cm->rowCount (); i < size; ++i)
 			{
-				QModelIndex index = f ?
-					f->index (i, 0) :
-					cm->index (i, 0);
-				ChannelShort cs;
-				try
-				{
-					cs = cm->
-						GetChannelForIndex (f ? f->mapToSource (index) : index);
-				}
-				catch (const std::exception& e)
-				{
-					qWarning () << Q_FUNC_INFO
-						<< e.what ();
-					continue;
-				}
-				AddSupplementaryModelFor (cs);
+				auto index = cm->index (i, 0);
+				AddSupplementaryModelFor (index.data (ChannelRoles::ChannelID).value<IDType_t> ());
 			}
 		}
 	}
@@ -396,9 +373,9 @@ namespace Aggregator
 
 		const auto& tagsSet = QSet<QString>::fromList (tags);
 
-		const auto cm = Core::Instance ().GetRawChannelsModel ();
 		bool added = false;
 
+		const auto cm = Impl_->ChannelsModel_;
 		for (int i = 0, size = cm->rowCount (); i < size; ++i)
 		{
 			const auto& index = cm->index (i, 0);
@@ -407,41 +384,24 @@ namespace Aggregator
 					[&tagsSet] (const QString& tag) { return tagsSet.contains (tag); }))
 				continue;
 
-			ChannelShort cs;
-			try
-			{
-				cs = cm->GetChannelForIndex (index);
-			}
-			catch (const std::exception& e)
-			{
-				qWarning () << Q_FUNC_INFO << e.what ();
-				continue;
-			}
+			auto cid = index.data (ChannelRoles::ChannelID).value<IDType_t> ();
 
 			/** So that first one gets assigned to the
 			 * current items model.
 			 */
 			if (!added)
 			{
-				Impl_->CurrentItemsModel_->Reset (cs.ChannelID_, cs.FeedID_);
+				Impl_->CurrentItemsModel_->Reset (cid);
 				added = true;
 			}
 			else
-				AddSupplementaryModelFor (cs);
+				AddSupplementaryModelFor (cid);
 		}
 	}
 
 	void ItemsWidget::SetHideRead (bool hide)
 	{
 		Impl_->ItemsFilterModel_->SetHideRead (hide);
-	}
-
-	bool ItemsWidget::IsItemCurrent (int item) const
-	{
-		int starting = 0;
-		const auto i = Impl_->ItemLists_->GetModelForRow (item, &starting);
-		return static_cast<ItemsListModel*> (i->data ())->
-			GetSelectedRow () == item - starting;
 	}
 
 	void ItemsWidget::Selected (const QModelIndex& index)
@@ -483,8 +443,7 @@ namespace Aggregator
 		else
 		{
 			int starting = 0;
-			LeechCraft::Util::MergeModel::const_iterator i = Impl_->ItemLists_->
-				GetModelForRow (index, &starting);
+			const auto i = Impl_->ItemLists_->GetModelForRow (index, &starting);
 			return static_cast<ItemsListModel*> (i->data ())->GetCategories (index - starting);
 		}
 	}
@@ -497,8 +456,7 @@ namespace Aggregator
 		else
 		{
 			int starting = 0;
-			LeechCraft::Util::MergeModel::const_iterator i = Impl_->ItemLists_->
-				GetModelForRow (index, &starting);
+			const auto i = Impl_->ItemLists_->GetModelForRow (index, &starting);
 			model = static_cast<ItemsListModel*> (i->data ());
 			index -= starting;
 		}
@@ -526,20 +484,10 @@ namespace Aggregator
 
 		Impl_->LastSelectedChannel_ = si;
 
-		auto index = si;
-		if (const auto f = Impl_->ChannelsFilter_)
-			index = f->mapToSource (index);
-
-		try
-		{
-			const auto& ch = Core::Instance ().GetRawChannelsModel ()->GetChannelForIndex (index);
-			Impl_->CurrentItemsModel_->Reset (ch.ChannelID_, ch.FeedID_);
-		}
-		catch (const std::exception&)
-		{
-			Impl_->LastSelectedChannel_ = QModelIndex ();
-			Impl_->CurrentItemsModel_->Reset (-1, -1);
-		}
+		if (si.isValid ())
+			Impl_->CurrentItemsModel_->Reset (si.data (ChannelRoles::ChannelID).value<IDType_t> ());
+		else
+			Impl_->CurrentItemsModel_->Reset (IDNotFound);
 
 		Impl_->Ui_.Items_->scrollToTop ();
 		currentItemChanged ();
@@ -592,13 +540,13 @@ namespace Aggregator
 		}
 	}
 
-	void ItemsWidget::AddSupplementaryModelFor (const ChannelShort& cs)
+	void ItemsWidget::AddSupplementaryModelFor (IDType_t channelId)
 	{
-		if (cs.ChannelID_ == Impl_->CurrentItemsModel_->GetCurrentChannel ())
+		if (channelId == Impl_->CurrentItemsModel_->GetCurrentChannel ())
 			return;
 
 		std::shared_ptr<ItemsListModel> ilm (new ItemsListModel);
-		ilm->Reset (cs.ChannelID_, cs.FeedID_);
+		ilm->Reset (channelId);
 		Impl_->SupplementaryModels_ << ilm;
 		Impl_->ItemLists_->AddModel (ilm.get ());
 	}

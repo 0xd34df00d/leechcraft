@@ -52,7 +52,7 @@ namespace Aggregator
 		bool CacheValid_ = false;
 		const QDomDocument Document_;
 	public:
-		OPMLParser (const QDomDocument&);
+		explicit OPMLParser (const QDomDocument&);
 
 		bool IsValid ();
 		OPMLinfo_t GetInfo ();

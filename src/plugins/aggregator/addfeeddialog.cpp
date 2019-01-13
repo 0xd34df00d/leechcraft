@@ -29,38 +29,35 @@
 
 #include <util/tags/tagscompleter.h>
 #include <util/tags/tagscompletionmodel.h>
-#include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
-#include "core.h"
-#include "addfeed.h"
+#include "addfeeddialog.h"
 
 namespace LeechCraft
 {
 namespace Aggregator
 {
-	using LeechCraft::Util::TagsCompleter;
-
-	AddFeed::AddFeed (const QString& url, QWidget *parent)
-	: QDialog (parent)
+	AddFeedDialog::AddFeedDialog (const ITagsManager *itm, const QString& url, QWidget *parent)
+	: QDialog { parent }
+	, TagsManager_ { itm }
 	{
-		setupUi (this);
-		new TagsCompleter (Tags_);
-		Tags_->AddSelector ();
+		Ui_.setupUi (this);
+		new Util::TagsCompleter (Ui_.Tags_);
+		Ui_.Tags_->AddSelector ();
 
-		URL_->setText (url);
+		Ui_.URL_->setText (url);
 	}
 
-	QString AddFeed::GetURL () const
+	QString AddFeedDialog::GetURL () const
 	{
-		QString result = URL_->text ().simplified ();
+		QString result = Ui_.URL_->text ().simplified ();
 		if (result.startsWith ("itpc"))
 			result.replace (0, 4, "http");
 		return result;
 	}
 
-	QStringList AddFeed::GetTags () const
+	QStringList AddFeedDialog::GetTags () const
 	{
-		return Core::Instance ().GetProxy ()->GetTagsManager ()->Split (Tags_->text ());
+		return TagsManager_->Split (Ui_.Tags_->text ());
 	}
 }
 }

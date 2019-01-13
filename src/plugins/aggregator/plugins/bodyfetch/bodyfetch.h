@@ -85,8 +85,8 @@ namespace BodyFetch
 	public slots:
 		void hookItemLoad (LeechCraft::IHookProxy_ptr proxy,
 				Item*);
-		void hookGotNewItems (LeechCraft::IHookProxy_ptr proxy,
-				const QList<Item_cptr>& items);
+		void hookItemAdded (LeechCraft::IHookProxy_ptr proxy,
+				const Item& item);
 	private slots:
 		void handleDownload (QUrl);
 		void handleBodyFetched (quint64);

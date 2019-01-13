@@ -56,23 +56,13 @@ namespace LeechCraft
 {
 namespace Aggregator
 {
-	class ChannelsModel;
-	class PluginManager;
-
 	class Core : public QObject
 	{
 		Q_OBJECT
 
-		ChannelsModel *ChannelsModel_ = nullptr;
-		QTimer *UpdateTimer_ = nullptr, *CustomUpdateTimer_ = nullptr;
 		std::shared_ptr<StorageBackend> StorageBackend_;
-		QMap<IDType_t, QDateTime> Updates_;
 		ICoreProxy_ptr Proxy_;
 		bool Initialized_ = false;
-
-		QList<IDType_t> UpdatesQueue_;
-
-		PluginManager *PluginManager_ = nullptr;
 
 		std::shared_ptr<DBUpdateThread> DBUpThread_;
 
@@ -86,11 +76,9 @@ namespace Aggregator
 		void SetProxy (ICoreProxy_ptr);
 		ICoreProxy_ptr GetProxy () const;
 
-		void AddPlugin (QObject*);
-
 		Util::IDPool<IDType_t>& GetPool (PoolType);
 
-		DBUpdateThread& GetDBUpdateThread () const;
+		std::shared_ptr<DBUpdateThread> GetDBUpdateThread () const;
 
 		bool CouldHandle (const LeechCraft::Entity&);
 		void Handle (LeechCraft::Entity);
@@ -99,33 +87,17 @@ namespace Aggregator
 		bool DoDelayedInit ();
 		bool ReinitStorage ();
 
-		void AddFeed (const QString&, const QString&);
 		void AddFeed (QString, const QStringList&, const std::optional<Feed::FeedSettings>& = {});
-
-		ChannelsModel* GetRawChannelsModel () const;
 
 		void UpdateFavicon (const QModelIndex&);
 
-		void UpdateFeed (const IDType_t&);
-		void AddFromOPML (const QString&, const QString&, const QSet<QString>&);
-
 		void AddFeeds (const feeds_container_t&, const QString&);
-	public slots:
-		void updateFeeds ();
-		void updateIntervalChanged ();
-	private slots:
-		void handleCustomUpdates ();
-		void rotateUpdatesQueue ();
 	private:
 		void FetchExternalFile (const QString&, const std::function<void (QString)>&);
 		void FetchPixmap (const Channel&);
 		void FetchFavicon (IDType_t, const QString&);
 		void HandleFeedAdded (const channels_container_t&, const QStringList&);
 		void ErrorNotification (const QString&, const QString&, bool = true) const;
-	signals:
-		// Plugin API
-		void hookGotNewItems (LeechCraft::IHookProxy_ptr proxy,
-				const QList<Item>& items);
 	};
 }
 }

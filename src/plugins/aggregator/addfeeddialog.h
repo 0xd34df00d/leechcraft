@@ -27,24 +27,27 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AGGREGATOR_ADDFEED_H
-#define PLUGINS_AGGREGATOR_ADDFEED_H
+#pragma once
+
 #include <QDialog>
-#include "ui_addfeed.h"
+#include "ui_addfeeddialog.h"
+
+class ITagsManager;
 
 namespace LeechCraft
 {
 namespace Aggregator
 {
-	class AddFeed : public QDialog, private Ui::AddFeed
+	class AddFeedDialog : public QDialog
 	{
-		Q_OBJECT
+		Ui::AddFeedDialog Ui_;
+
+		const ITagsManager * const TagsManager_;
 	public:
-		AddFeed (const QString& = QString (), QWidget *parent = 0);
+		explicit AddFeedDialog (const ITagsManager*, const QString& = QString (), QWidget *parent = 0);
+
 		QString GetURL () const;
 		QStringList GetTags () const;
 	};
 }
 }
-
-#endif

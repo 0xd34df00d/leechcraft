@@ -471,6 +471,13 @@ namespace Aggregator
 		 */
 		void hookItemLoad (LeechCraft::IHookProxy_ptr proxy, Item *item) const;
 
+		/** @brief Emitted whenever a new item is added.
+		 *
+		 * @param proxy Standard proxy object.
+		 * @param item The item being added.
+		 */
+		void hookItemAdded (LeechCraft::IHookProxy_ptr proxy, const Item& item) const;
+
 		void channelRemoved (IDType_t channelId);
 		void feedRemoved (IDType_t feedId);
 	};

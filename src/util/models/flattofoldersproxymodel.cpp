@@ -74,18 +74,12 @@ namespace LeechCraft
 
 	namespace Util
 	{
-		FlatToFoldersProxyModel::FlatToFoldersProxyModel (QObject *parent)
+		FlatToFoldersProxyModel::FlatToFoldersProxyModel (const ITagsManager *itm, QObject *parent)
 		: QAbstractItemModel { parent }
+		, TM_ { itm }
 		, Root_ { std::make_shared<FlatTreeItem> () }
 		{
 			Root_->Type_ = FlatTreeItem::Type::Root;
-		}
-
-		void FlatToFoldersProxyModel::SetTagsManager (ITagsManager *tm)
-		{
-			beginResetModel ();
-			TM_ = tm;
-			endResetModel ();
 		}
 
 		int FlatToFoldersProxyModel::columnCount (const QModelIndex&) const

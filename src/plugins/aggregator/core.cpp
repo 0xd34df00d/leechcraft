@@ -56,18 +56,17 @@
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "parserfactory.h"
-#include "channelsmodel.h"
 #include "opmlparser.h"
 #include "opmlwriter.h"
 #include "jobholderrepresentation.h"
 #include "importopml.h"
-#include "addfeed.h"
-#include "pluginmanager.h"
+#include "addfeeddialog.h"
 #include "dbupdatethread.h"
 #include "dbupdatethreadworker.h"
 #include "dumbstorage.h"
 #include "storagebackendmanager.h"
 #include "parser.h"
+#include "updatesmanager.h"
 
 namespace LeechCraft
 {
@@ -82,8 +81,6 @@ namespace Aggregator
 	void Core::Release ()
 	{
 		DBUpThread_.reset ();
-
-		delete ChannelsModel_;
 
 		StorageBackend_.reset ();
 
@@ -100,19 +97,14 @@ namespace Aggregator
 		return Proxy_;
 	}
 
-	void Core::AddPlugin (QObject *plugin)
-	{
-		PluginManager_->AddPlugin (plugin);
-	}
-
 	Util::IDPool<IDType_t>& Core::GetPool (PoolType type)
 	{
 		return Pools_ [type];
 	}
 
-	DBUpdateThread& Core::GetDBUpdateThread () const
+	std::shared_ptr<DBUpdateThread> Core::GetDBUpdateThread () const
 	{
-		return *DBUpThread_;
+		return DBUpThread_;
 	}
 
 	bool Core::CouldHandle (const Entity& e)
@@ -228,7 +220,7 @@ namespace Aggregator
 			else if (str.startsWith ("itpc://"))
 				str.replace (0, 4, "http");
 
-			class AddFeed af { str };
+			AddFeedDialog af { Proxy_->GetTagsManager (), str };
 			if (af.exec () == QDialog::Accepted)
 				AddFeed (af.GetURL (),
 						af.GetTags ());
@@ -241,9 +233,25 @@ namespace Aggregator
 		if (importDialog.exec () == QDialog::Rejected)
 			return;
 
-		AddFromOPML (importDialog.GetFilename (),
-				importDialog.GetTags (),
-				importDialog.GetSelectedUrls ());
+		const auto& tags = Proxy_->GetTagsManager ()->Split (importDialog.GetTags ());
+		const auto& selectedUrls = importDialog.GetSelectedUrls ();
+
+		Util::Visit (ParseOPMLItems (importDialog.GetFilename ()),
+				[this] (const QString& error) { ErrorNotification (tr ("OPML import error"), error); },
+				[&] (const OPMLParser::items_container_t& items)
+				{
+					for (const auto& item : items)
+					{
+						if (!selectedUrls.contains (item.URL_))
+							continue;
+
+						int interval = 0;
+						if (item.CustomFetchInterval_)
+							interval = item.FetchInterval_;
+						AddFeed (item.URL_, tags + item.Categories_,
+								{ { IDNotFound, interval, item.MaxArticleNumber_, item.MaxArticleAge_, false } });
+					}
+				});
 	}
 
 	bool Core::DoDelayedInit ()
@@ -259,60 +267,16 @@ namespace Aggregator
 			result = false;
 		}
 
-		ChannelsModel_ = new ChannelsModel ();
-
 		if (!ReinitStorage ())
 			result = false;
 
 		DBUpThread_ = std::make_shared<DBUpdateThread> (Proxy_);
 		DBUpThread_->SetAutoQuit (true);
 		DBUpThread_->start (QThread::LowestPriority);
-		DBUpThread_->ScheduleImpl (&DBUpdateThreadWorker::WithWorker,
-				[this] (DBUpdateThreadWorker *worker)
-				{
-					connect (worker,
-							&DBUpdateThreadWorker::hookGotNewItems,
-							this,
-							&Core::hookGotNewItems);
-				});
 
 		ParserFactory::Instance ().RegisterDefaultParsers ();
 
-		CustomUpdateTimer_ = new QTimer (this);
-		CustomUpdateTimer_->start (60 * 1000);
-		connect (CustomUpdateTimer_,
-				&QTimer::timeout,
-				this,
-				&Core::handleCustomUpdates);
-
-		UpdateTimer_ = new QTimer (this);
-		UpdateTimer_->setSingleShot (true);
-		connect (UpdateTimer_,
-				&QTimer::timeout,
-				this,
-				&Core::updateFeeds);
-
-		auto now = QDateTime::currentDateTime ();
-		auto lastUpdated = XmlSettingsManager::Instance ()->Property ("LastUpdateDateTime", now).toDateTime ();
-		if (auto interval = XmlSettingsManager::Instance ()->property ("UpdateInterval").toInt ())
-		{
-			auto updateDiff = lastUpdated.secsTo (now);
-			if (XmlSettingsManager::Instance ()->property ("UpdateOnStartup").toBool () ||
-					updateDiff > interval * 60)
-				QTimer::singleShot (7000,
-						this,
-						SLOT (updateFeeds ()));
-			else
-				UpdateTimer_->start (updateDiff * 1000);
-		}
-
-		XmlSettingsManager::Instance ()->RegisterObject ("UpdateInterval", this, "updateIntervalChanged");
 		Initialized_ = true;
-
-		PluginManager_ = new PluginManager (ChannelsModel_);
-		PluginManager_->RegisterHookable (this);
-
-		PluginManager_->RegisterHookable (StorageBackend_.get ());
 
 		return result;
 	}
@@ -343,84 +307,6 @@ namespace Aggregator
 		}
 
 		return true;
-	}
-
-	void Core::AddFeed (const QString& url, const QString& tagString)
-	{
-		AddFeed (url, Proxy_->GetTagsManager ()->Split (tagString));
-	}
-
-	namespace
-	{
-		using ParseResult = Util::Either<QString, channels_container_t>;
-
-		ParseResult ParseChannels (const QString& path, const QString& url, IDType_t feedId)
-		{
-			QFile file { path };
-			if (!file.open (QIODevice::ReadOnly))
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "unable to open the local file"
-						<< path;
-				return ParseResult::Left (Core::tr ("Unable to open the temporary file."));
-			}
-
-			QDomDocument doc;
-			QString errorMsg;
-			int errorLine, errorColumn;
-			if (!doc.setContent (&file, true, &errorMsg, &errorLine, &errorColumn))
-			{
-				const auto& copyPath = Util::GetTemporaryName ("lc_aggregator_failed.XXXXXX");
-				file.copy (copyPath);
-				qWarning () << Q_FUNC_INFO
-						<< "error parsing XML for"
-						<< url
-						<< errorMsg
-						<< errorLine
-						<< errorColumn
-						<< "; copy at"
-						<< file.fileName ();
-				return ParseResult::Left (Core::tr ("XML parse error for the feed %1.")
-								.arg (url));
-			}
-
-			auto parser = ParserFactory::Instance ().Return (doc);
-			if (!parser)
-			{
-				const auto& copyPath = Util::GetTemporaryName ("lc_aggregator_failed.XXXXXX");
-				file.copy (copyPath);
-				qWarning () << Q_FUNC_INFO
-						<< "no parser for"
-						<< url
-						<< "; copy at"
-						<< copyPath;
-				return ParseResult::Left (Core::tr ("Could not find parser to parse %1.")
-								.arg (url));
-			}
-
-			return ParseResult::Right (parser->ParseFeed (doc, feedId));
-		}
-
-		QString GetErrorString (const IDownload::Error::Type type)
-		{
-			switch (type)
-			{
-			case IDownload::Error::Type::Unknown:
-				break;
-			case IDownload::Error::Type::NoError:
-				return Core::tr ("no error");
-			case IDownload::Error::Type::NotFound:
-				return Core::tr ("address not found");
-			case IDownload::Error::Type::AccessDenied:
-				return Core::tr ("access denied");
-			case IDownload::Error::Type::LocalError:
-				return Core::tr ("local error");
-			case IDownload::Error::Type::UserCanceled:
-				return Core::tr ("user canceled the download");
-			}
-
-			return Core::tr ("unknown error");
-		}
 	}
 
 	void Core::AddFeed (QString url, const QStringList& tags, const std::optional<Feed::FeedSettings>& maybeFeedSettings)
@@ -486,36 +372,10 @@ namespace Aggregator
 				}.Finally ([name] { QFile::remove (name); });
 	}
 
-	ChannelsModel* Core::GetRawChannelsModel () const
-	{
-		return ChannelsModel_;
-	}
-
 	void Core::UpdateFavicon (const QModelIndex& index)
 	{
 		FetchFavicon (index.data (ChannelRoles::ChannelID).value<IDType_t> (),
 				index.data (ChannelRoles::ChannelLink).toString ());
-	}
-
-	void Core::AddFromOPML (const QString& filename, const QString& tags, const QSet<QString>& selectedUrls)
-	{
-		Util::Visit (ParseOPMLItems (filename),
-				[this] (const QString& error) { ErrorNotification (tr ("OPML import error"), error); },
-				[&] (const OPMLParser::items_container_t& items)
-				{
-					const auto& tagsList = Proxy_->GetTagsManager ()->Split (tags);
-					for (const auto& item : items)
-					{
-						if (!selectedUrls.contains (item.URL_))
-							continue;
-
-						int interval = 0;
-						if (item.CustomFetchInterval_)
-							interval = item.FetchInterval_;
-						AddFeed (item.URL_, tagsList + item.Categories_,
-								{ { IDNotFound, interval, item.MaxArticleNumber_, item.MaxArticleAge_, false } });
-					}
-				});
 	}
 
 	void Core::AddFeeds (const feeds_container_t& feeds, const QString& tagsString)
@@ -533,21 +393,6 @@ namespace Aggregator
 
 			StorageBackend_->AddFeed (*feed);
 		}
-	}
-
-	void Core::updateFeeds ()
-	{
-		for (const auto id : StorageBackend_->GetFeedsIDs ())
-		{
-			// It's handled by custom timer.
-			if (StorageBackend_->GetFeedSettings (id).value_or (Feed::FeedSettings {}).UpdateTimeout_)
-				continue;
-
-			UpdateFeed (id);
-		}
-		XmlSettingsManager::Instance ()->setProperty ("LastUpdateDateTime", QDateTime::currentDateTime ());
-		if (int interval = XmlSettingsManager::Instance ()->property ("UpdateInterval").toInt ())
-			UpdateTimer_->start (interval * 60 * 1000);
 	}
 
 	void Core::FetchExternalFile (const QString& url, const std::function<void (QString)>& cont)
@@ -576,100 +421,6 @@ namespace Aggregator
 					[=] (IDownload::Success) { cont (where); },
 					[] (const IDownload::Error&) {}
 				}.Finally ([where] { QFile::remove (where); });
-	}
-
-	void Core::updateIntervalChanged ()
-	{
-		int min = XmlSettingsManager::Instance ()->
-			property ("UpdateInterval").toInt ();
-		if (min)
-		{
-			if (UpdateTimer_->isActive ())
-				UpdateTimer_->setInterval (min * 60 * 1000);
-			else
-				UpdateTimer_->start (min * 60 * 1000);
-		}
-		else
-			UpdateTimer_->stop ();
-	}
-
-	void Core::handleCustomUpdates ()
-	{
-		using Util::operator*;
-
-		QDateTime current = QDateTime::currentDateTime ();
-		for (const auto id : StorageBackend_->GetFeedsIDs ())
-		{
-			const auto ut = (StorageBackend_->GetFeedSettings (id) * &Feed::FeedSettings::UpdateTimeout_).value_or (0);
-
-			// It's handled by normal timer.
-			if (!ut)
-				continue;
-
-			if (!Updates_.contains (id) ||
-					(Updates_ [id].isValid () &&
-						Updates_ [id].secsTo (current) / 60 > ut))
-			{
-				UpdateFeed (id);
-				Updates_ [id] = QDateTime::currentDateTime ();
-			}
-		}
-	}
-
-	void Core::rotateUpdatesQueue ()
-	{
-		if (UpdatesQueue_.isEmpty ())
-			return;
-
-		const auto feedId = UpdatesQueue_.takeFirst ();
-
-		if (!UpdatesQueue_.isEmpty ())
-			QTimer::singleShot (2000,
-					this,
-					SLOT (rotateUpdatesQueue ()));
-
-		const auto& url = StorageBackend_->GetFeed (feedId).URL_;
-
-		auto filename = Util::GetTemporaryName ();
-
-		auto e = Util::MakeEntity (QUrl (url),
-				filename,
-				Internal |
-					DoNotNotifyUser |
-					DoNotSaveInHistory |
-					NotPersistent |
-					DoNotAnnounceEntity);
-
-		const auto& delegateResult = Proxy_->GetEntityManager ()->DelegateEntity (e);
-		if (!delegateResult)
-		{
-			ErrorNotification ("Aggregator",
-					tr ("Could not find plugin for feed with URL %1")
-						.arg (url));
-			return;
-		}
-
-		Util::Sequence (this, delegateResult.DownloadResult_) >>
-				Util::Visitor
-				{
-					[=] (IDownload::Success)
-					{
-						Util::Visit (ParseChannels (filename, url, feedId),
-								[&] (const channels_container_t& channels)
-								{
-									DBUpThread_->ScheduleImpl (&DBUpdateThreadWorker::updateFeed, channels, url);
-								},
-								[this] (const QString& error) { ErrorNotification (tr ("Feed error"), error); });
-					},
-					[=] (const IDownload::Error& error)
-					{
-						if (!XmlSettingsManager::Instance ()->property ("BeSilent").toBool ())
-							ErrorNotification (tr ("Feed error"),
-									tr ("Unable to download %1: %2.")
-											.arg (Util::FormatName (url))
-											.arg (GetErrorString (error.Type_)));
-					}
-				}.Finally ([filename] { QFile::remove (filename); });
 	}
 
 	void Core::FetchPixmap (const Channel& channel)
@@ -703,22 +454,9 @@ namespace Aggregator
 			channel->Tags_ = tagIds;
 			StorageBackend_->AddChannel (*channel);
 
-			emit hookGotNewItems (std::make_shared<Util::DefaultHookProxy> (),
-					Util::Map (channel->Items_, [] (const Item_ptr& item) { return *item; }));
-
 			FetchPixmap (*channel);
 			FetchFavicon (channel->ChannelID_, channel->Link_);
 		}
-	}
-
-	void Core::UpdateFeed (const IDType_t& id)
-	{
-		if (UpdatesQueue_.isEmpty ())
-			QTimer::singleShot (500,
-					this,
-					SLOT (rotateUpdatesQueue ()));
-
-		UpdatesQueue_ << id;
 	}
 
 	void Core::ErrorNotification (const QString& h, const QString& body, bool wait) const

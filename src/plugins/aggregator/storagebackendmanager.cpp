@@ -44,6 +44,16 @@ namespace Aggregator
 		return sbm;
 	}
 
+	void StorageBackendManager::Release ()
+	{
+		if (auto cnt = PrimaryStorageBackend_.use_count (); cnt > 1)
+			qWarning () << Q_FUNC_INFO
+					<< "primary storage use count is"
+					<< cnt;
+
+		PrimaryStorageBackend_.reset ();
+	}
+
 	StorageBackendManager::StorageCreationResult_t StorageBackendManager::CreatePrimaryStorage ()
 	{
 		const auto& strType = XmlSettingsManager::Instance ()->property ("StorageType").toByteArray ();
@@ -130,6 +140,14 @@ namespace Aggregator
 				&StorageBackend::feedRemoved,
 				this,
 				&StorageBackendManager::feedRemoved);
+		connect (backendPtr,
+				&StorageBackend::hookItemLoad,
+				this,
+				&StorageBackendManager::hookItemLoad);
+		connect (backendPtr,
+				&StorageBackend::hookItemAdded,
+				this,
+				&StorageBackendManager::hookItemAdded);
 	}
 }
 }

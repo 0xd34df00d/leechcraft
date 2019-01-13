@@ -102,7 +102,7 @@ public:
 	 *
 	 * @sa GetTag()
 	 */
-	QStringList GetTags (const QList<tag_id>& ids)
+	QStringList GetTags (const QList<tag_id>& ids) const
 	{
 		QStringList result;
 		for (const auto& id : ids)

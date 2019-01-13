@@ -51,6 +51,8 @@ namespace Aggregator
 
 		static StorageBackendManager& Instance ();
 
+		void Release ();
+
 		struct StorageCreationError
 		{
 			QString Message_;
@@ -99,6 +101,20 @@ namespace Aggregator
 		void feedRemoved (IDType_t) const;
 
 		void storageCreated ();
+
+		/** @brief Should be emitted whenever a full item is loaded.
+		 *
+		 * @param[out] proxy Standard proxy object.
+		 * @param[out] item The pointer to the already loaded item.
+		 */
+		void hookItemLoad (LeechCraft::IHookProxy_ptr proxy, Item *item) const;
+
+		/** @brief Emitted whenever a new item is added.
+		 *
+		 * @param proxy Standard proxy object.
+		 * @param item The item being added.
+		 */
+		void hookItemAdded (LeechCraft::IHookProxy_ptr proxy, const Item& item) const;
 	};
 }
 }

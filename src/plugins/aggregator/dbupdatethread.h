@@ -38,5 +38,7 @@ namespace Aggregator
 	class DBUpdateThreadWorker;
 
 	using DBUpdateThread = Util::WorkerThread<DBUpdateThreadWorker>;
+
+	using DBUpdateThread_ptr = std::shared_ptr<DBUpdateThread>;
 }
 }

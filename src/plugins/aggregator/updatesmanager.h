@@ -27,27 +27,52 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "wizardgenerator.h"
-#include "xmlsettingsmanager.h"
-#include "startupfirstpage.h"
-#include "startupsecondpage.h"
-#include "startupthirdpage.h"
+#pragma once
 
-namespace LeechCraft
+#include <memory>
+#include <QObject>
+#include <interfaces/idownload.h>
+#include <util/sll/eitherfwd.h>
+#include "channel.h"
+#include "common.h"
+#include "dbupdatethread.h"
+
+class QTimer;
+
+class IEntityManager;
+
+namespace LeechCraft::Aggregator
 {
-namespace Aggregator
-{
-	QList<QWizardPage*> CreateWizardPages ()
+	class StorageBackend;
+
+	using ParseResult = Util::Either<QString, channels_container_t>;
+
+	ParseResult ParseChannels (const QString& path, const QString& url, IDType_t feedId);
+	QString GetErrorString (const IDownload::Error::Type type);
+
+	class UpdatesManager : public QObject
 	{
-		QList<QWizardPage*> result;
-		int version = XmlSettingsManager::Instance ()->Property ("StartupVersion", 0).toInt ();
-		if (version <= 0)
-			result << new StartupFirstPage ();
-		if (version <= 1)
-			result << new StartupSecondPage ();
-		if (version <= 2)
-			result << new StartupThirdPage ();
-		return result;
-	}
-}
+		Q_OBJECT
+
+		IEntityManager * const EntityManager_;
+
+		const DBUpdateThread_ptr DBUpThread_;
+		const std::shared_ptr<StorageBackend> StorageBackend_;
+
+		QTimer * const UpdateTimer_;
+		QTimer * const CustomUpdateTimer_;
+
+		QList<IDType_t> UpdatesQueue_;
+		QMap<IDType_t, QDateTime> Updates_;
+	public:
+		explicit UpdatesManager (const DBUpdateThread_ptr&, IEntityManager*, QObject* = nullptr);
+
+		void UpdateFeed (IDType_t);
+		void UpdateFeeds ();
+	private:
+		void HandleCustomUpdates ();
+		void RotateUpdatesQueue ();
+	private slots:
+		void updateIntervalChanged ();
+	};
 }

@@ -864,6 +864,8 @@ namespace LeechCraft::Aggregator
 		WriteEnclosures (item.Enclosures_);
 		WriteMRSSEntries (item.MRSSEntries_);
 
+		emit hookItemAdded (std::make_shared<Util::DefaultHookProxy> (), item);
+
 		const auto& channel = GetChannel (item.ChannelID_);
 		emit itemDataUpdated (item, channel);
 		emit channelDataUpdated (channel);

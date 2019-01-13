@@ -35,7 +35,6 @@
 #include <util/sll/prelude.h>
 #include <util/tags/tagscompleter.h>
 #include <util/util.h>
-#include "core.h"
 #include "xmlsettingsmanager.h"
 #include "uistatepersist.h"
 #include "channelsmodel.h"
@@ -49,18 +48,17 @@ namespace Aggregator
 	: TabClass_ { params.TabClass_ }
 	, ParentPlugin_ { plugin }
 	, ChannelActions_ { params.ChannelActions_ }
-	, FlatToFolders_ { std::make_shared<Util::FlatToFoldersProxyModel> () }
+	, FlatToFolders_ { std::make_shared<Util::FlatToFoldersProxyModel> (params.TagsManager_) }
 	, ChannelsFilterModel_ { new ChannelsFilterModel { this } }
 	{
 		ChannelsFilterModel_->setSourceModel (params.ChannelsModel_);
 		ChannelsFilterModel_->setFilterKeyColumn (0);
 
 		Ui_.setupUi (this);
+		Ui_.ItemsWidget_->SetChannelsModel (ChannelsFilterModel_);
 		Ui_.ItemsWidget_->SetAppWideActions (params.AppWideActions_);
 		Ui_.ItemsWidget_->SetChannelActions (*ChannelActions_);
 		Ui_.ItemsWidget_->RegisterShortcuts (params.ShortcutMgr_);
-
-		Ui_.ItemsWidget_->SetChannelsFilter (ChannelsFilterModel_);
 
 		connect (Ui_.ItemsWidget_,
 				&ItemsWidget::movedToChannel,
@@ -120,7 +118,6 @@ namespace Aggregator
 					Ui_.ItemsWidget_->SaveUIState ();
 				});
 
-		FlatToFolders_->SetTagsManager (Core::Instance ().GetProxy ()->GetTagsManager ());
 		handleGroupChannels ();
 		XmlSettingsManager::Instance ()->RegisterObject ("GroupChannelsByTags", this, "handleGroupChannels");
 

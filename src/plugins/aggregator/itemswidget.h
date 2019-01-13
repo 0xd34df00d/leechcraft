@@ -37,7 +37,7 @@
 class QModelIndex;
 class QToolBar;
 class IWebBrowser;
-class QSortFilterProxyModel;
+class QAbstractItemModel;
 
 namespace LeechCraft
 {
@@ -77,12 +77,12 @@ namespace Aggregator
 			MaxAction
 		};
 
-		ItemsWidget (QWidget* = 0);
-		virtual ~ItemsWidget ();
+		explicit ItemsWidget (QWidget* = nullptr);
+		~ItemsWidget () override;
 
+		void SetChannelsModel (QAbstractItemModel*);
 		void SetAppWideActions (const AppWideActions&);
 		void SetChannelActions (const ChannelActions&);
-		void SetChannelsFilter (QSortFilterProxyModel*);
 
 		void RegisterShortcuts (Util::ShortcutManager*);
 
@@ -111,7 +111,6 @@ namespace Aggregator
 			*/
 		void SetMergeModeTags (const QStringList& tags);
 		void SetHideRead (bool);
-		bool IsItemCurrent (int) const;
 		void Selected (const QModelIndex&);
 		bool IsItemRead (int) const;
 		bool IsItemReadNotCurrent (int) const;
@@ -126,7 +125,7 @@ namespace Aggregator
 	private:
 		void MarkItemReadStatus (const QModelIndex&, bool);
 		void ClearSupplementaryModels ();
-		void AddSupplementaryModelFor (const ChannelShort&);
+		void AddSupplementaryModelFor (IDType_t);
 		void SetupActions ();
 		QToolBar* SetupToolBar ();
 		QString GetHex (QPalette::ColorRole,

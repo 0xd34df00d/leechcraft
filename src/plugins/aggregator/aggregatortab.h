@@ -37,6 +37,8 @@
 #include "ui_mainwidget.h"
 #include "actionsstructs.h"
 
+class ITagsManager;
+
 namespace LeechCraft
 {
 namespace Util
@@ -76,6 +78,7 @@ namespace Aggregator
 			const TabClassInfo& TabClass_;
 			Util::ShortcutManager *ShortcutMgr_;
 			ChannelsModel *ChannelsModel_;
+			const ITagsManager * const TagsManager_;
 		};
 
 		AggregatorTab (const InitParams&, QObject*);

@@ -53,8 +53,8 @@ namespace Aggregator
 	signals:
 		void hookItemLoad (LeechCraft::IHookProxy_ptr proxy,
 				Item*);
-		void hookGotNewItems (LeechCraft::IHookProxy_ptr proxy,
-				const QList<Item>& items);
+		void hookItemAdded (LeechCraft::IHookProxy_ptr proxy,
+				const Item& item);
 	};
 }
 }

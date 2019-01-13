@@ -55,13 +55,12 @@
 #include "channelsfiltermodel.h"
 #include "aggregator.h"
 #include "core.h"
-#include "addfeed.h"
+#include "addfeeddialog.h"
 #include "itemsfiltermodel.h"
 #include "channelsfiltermodel.h"
 #include "xmlsettingsmanager.h"
 #include "importbinary.h"
 #include "feedsettings.h"
-#include "wizardgenerator.h"
 #include "export2fb2dialog.h"
 #include "channelsmodel.h"
 #include "aggregatortab.h"
@@ -71,6 +70,11 @@
 #include "representationmanager.h"
 #include "dbupdatethread.h"
 #include "dbupdatethreadworker.h"
+#include "pluginmanager.h"
+#include "startupfirstpage.h"
+#include "startupsecondpage.h"
+#include "startupthirdpage.h"
+#include "updatesmanager.h"
 
 namespace LeechCraft
 {
@@ -134,12 +138,20 @@ namespace Aggregator
 			box->open ();
 		}
 
+		UpdatesManager_ = std::make_shared<UpdatesManager> (Core::Instance ().GetDBUpdateThread (),
+				Proxy_->GetEntityManager ());
+
 		connect (AppWideActions_->ActionUpdateFeeds_,
 				&QAction::triggered,
-				&Core::Instance (),
-				&Core::updateFeeds);
+				UpdatesManager_.get (),
+				&UpdatesManager::UpdateFeeds);
 
 		QMetaObject::connectSlotsByName (this);
+
+		ChannelsModel_ = std::make_shared<ChannelsModel> (Proxy_->GetTagsManager ());
+
+		PluginManager_ = std::make_shared<PluginManager> (ChannelsModel_.get ());
+		PluginManager_->RegisterHookable (&StorageBackendManager::Instance ());
 	}
 
 	void Aggregator::SecondInit ()
@@ -151,15 +163,18 @@ namespace Aggregator
 					ShortcutMgr_,
 					*AppWideActions_,
 					*ChannelActions_,
-					Core::Instance ().GetRawChannelsModel ()
+					ChannelsModel_.get ()
 				});
 	}
 
 	void Aggregator::Release ()
 	{
+		PluginManager_.reset ();
 		ReprManager_.reset ();
 		AggregatorTab_.reset ();
+		ChannelsModel_.reset ();
 		Core::Instance ().Release ();
+		StorageBackendManager::Instance ().Release ();
 	}
 
 	QByteArray Aggregator::GetUniqueID () const
@@ -214,7 +229,8 @@ namespace Aggregator
 							ChannelActions_,
 							TabInfo_,
 							ShortcutMgr_,
-							Core::Instance ().GetRawChannelsModel ()
+							ChannelsModel_.get (),
+							Proxy_->GetTagsManager ()
 						},
 						this);
 				connect (AggregatorTab_.get (),
@@ -242,7 +258,7 @@ namespace Aggregator
 
 	void Aggregator::handleTasksTreeSelectionCurrentRowChanged (const QModelIndex& index, const QModelIndex&)
 	{
-		ReprManager_->HandleRowChanged (index);
+		ReprManager_->HandleRowChanged (Proxy_->MapToSource (index));
 	}
 
 	EntityTestHandleResult Aggregator::CouldHandle (const Entity& e) const
@@ -270,7 +286,28 @@ namespace Aggregator
 
 	QList<QWizardPage*> Aggregator::GetWizardPages () const
 	{
-		return CreateWizardPages ();
+		QList<QWizardPage*> result;
+		int version = XmlSettingsManager::Instance ()->Property ("StartupVersion", 0).toInt ();
+		if (version <= 0)
+			result << new StartupFirstPage ();
+		if (version <= 1)
+			result << new StartupSecondPage ();
+		if (version <= 2)
+		{
+			auto third = new StartupThirdPage ();
+			result << third;
+
+			connect (third,
+					&StartupThirdPage::feedsSelected,
+					this,
+					[this] (const QList<StartupThirdPage::SelectedFeed>& feeds)
+					{
+						auto tm = Proxy_->GetTagsManager ();
+						for (const auto& feed : feeds)
+							Core::Instance ().AddFeed (feed.URL_, tm->Split (feed.Tags_));
+					});
+		}
+		return result;
 	}
 
 	QList<QAction*> Aggregator::GetActions (ActionsEmbedPlace place) const
@@ -305,7 +342,7 @@ namespace Aggregator
 
 	void Aggregator::AddPlugin (QObject *plugin)
 	{
-		Core::Instance ().AddPlugin (plugin);
+		PluginManager_->AddPlugin (plugin);
 	}
 
 	void Aggregator::RecoverTabs (const QList<TabRecoverInfo>& infos)
@@ -347,6 +384,16 @@ namespace Aggregator
 			return AggregatorTab_->GetRelevantIndexes ();
 	}
 
+	namespace
+	{
+		void MarkChannel (const QModelIndex& idx, bool unread)
+		{
+			const auto cid = idx.data (ChannelRoles::ChannelID).value<IDType_t> ();
+			auto dbUpThread = Core::Instance ().GetDBUpdateThread ();
+			dbUpThread->ScheduleImpl (&DBUpdateThreadWorker::toggleChannelUnread, cid, unread);
+		}
+	}
+
 	void Aggregator::on_ActionMarkAllAsRead__triggered ()
 	{
 		if (XmlSettingsManager::Instance ()->property ("ConfirmMarkAllAsRead").toBool ())
@@ -367,39 +414,13 @@ namespace Aggregator
 				XmlSettingsManager::Instance ()->setProperty ("ConfirmMarkAllAsRead", false);
 		}
 
-		/* TODO
-		QModelIndexList indexes;
-		QAbstractItemModel *model = Ui_.Feeds_->model ();
-		for (int i = 0, size = model->rowCount (); i < size; ++i)
-		{
-			auto index = model->index (i, 0);
-			if (FlatToFolders_->GetSourceModel ())
-				index = FlatToFolders_->MapToSource (index);
-			indexes << Core::Instance ().GetChannelsModel ()->mapToSource (index);
-		}
-
-		int row = 0;
-		for (const auto& index : indexes)
-		{
-			if (index.isValid ())
-				Core::Instance ().MarkChannelAsRead (index);
-			else if (FlatToFolders_->GetSourceModel ())
-			{
-				const auto& parentIndex = FlatToFolders_->index (row++, 0);
-				for (int i = 0, size = model->rowCount (parentIndex); i < size; ++i)
-				{
-					auto source = FlatToFolders_->index (i, 0, parentIndex);
-					source = FlatToFolders_->MapToSource (source);
-					Core::Instance ().MarkChannelAsRead (source);
-				}
-			}
-		}
-		 */
+		for (int i = 0; i < ChannelsModel_->rowCount (); ++i)
+			MarkChannel (ChannelsModel_->index (i, 0), false);
 	}
 
 	void Aggregator::on_ActionAddFeed__triggered ()
 	{
-		AddFeed af (QString (), nullptr);
+		AddFeedDialog af { Proxy_->GetTagsManager () };
 		if (af.exec () == QDialog::Accepted)
 			Core::Instance ().AddFeed (af.GetURL (), af.GetTags ());
 	}
@@ -468,11 +489,9 @@ namespace Aggregator
 
 	namespace
 	{
-		void MarkChannel (const QModelIndex& idx, bool unread)
+		QString FormatNamesList (const QStringList& names)
 		{
-			const auto cid = idx.data (ChannelRoles::ChannelID).value<IDType_t> ();
-			auto& dbUpThread = Core::Instance ().GetDBUpdateThread ();
-			dbUpThread.ScheduleImpl (&DBUpdateThreadWorker::toggleChannelUnread, cid, unread);
+			return "<em>" + names.join ("</em>; <em>") + "</em>";
 		}
 	}
 
@@ -486,7 +505,7 @@ namespace Aggregator
 			QMessageBox mbox (QMessageBox::Question,
 					"LeechCraft",
 					tr ("Are you sure you want to mark all items in %1 as read?")
-						.arg ("<em>" + names.join ("</em>; <em>") + "</em>"),
+						.arg (FormatNamesList (names)),
 					QMessageBox::Yes | QMessageBox::No);
 
 			mbox.setDefaultButton (QMessageBox::Yes);
@@ -511,7 +530,7 @@ namespace Aggregator
 		if (QMessageBox::question (nullptr,
 				"LeechCraft",
 				tr ("Are you sure you want to mark all items in %1 as unread?")
-					.arg ("<em>" + names.join ("</em>; <em>") + "</em>"),
+					.arg (FormatNamesList (names)),
 				QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
 			return;
 
@@ -530,10 +549,9 @@ namespace Aggregator
 
 	void Aggregator::on_ActionUpdateSelectedFeed__triggered ()
 	{
-		Perform ([] (const QModelIndex& mi)
+		Perform ([this] (const QModelIndex& mi)
 				{
-					const auto feedId = mi.data (ChannelRoles::FeedID).value<IDType_t> ();
-					Core::Instance ().UpdateFeed (feedId);
+					UpdatesManager_->UpdateFeed (mi.data (ChannelRoles::FeedID).value<IDType_t> ());
 				});
 	}
 
@@ -544,7 +562,7 @@ namespace Aggregator
 
 	void Aggregator::on_ActionExportOPML__triggered ()
 	{
-		ExportUtils::RunExportOPML ();
+		ExportUtils::RunExportOPML (Proxy_->GetTagsManager ());
 	}
 
 	void Aggregator::on_ActionImportBinary__triggered ()
@@ -564,7 +582,7 @@ namespace Aggregator
 
 	void Aggregator::on_ActionExportFB2__triggered ()
 	{
-		const auto dialog = new Export2FB2Dialog (Core::Instance ().GetRawChannelsModel (), nullptr);
+		const auto dialog = new Export2FB2Dialog (ChannelsModel_.get (), nullptr);
 		dialog->setAttribute (Qt::WA_DeleteOnClose);
 		dialog->show ();
 	}

@@ -52,17 +52,25 @@ namespace Aggregator
 		typedef QList<FeedInfo> FeedInfos_t;
 		QMap<QString, FeedInfos_t> Sets_;
 	public:
-		StartupThirdPage (QWidget* = 0);
+		struct SelectedFeed
+		{
+			QString URL_;
+			QString Tags_;
+		};
 
-		void initializePage ();
+		explicit StartupThirdPage (QWidget* = nullptr);
+
+		void initializePage () override;
 	private:
 		void ParseFeedsSets ();
 		void Populate (const QString&);
+		void HandleAccepted ();
+		void HandleCurrentIndexChanged (const QString&);
 	private slots:
-		void handleAccepted ();
-		void handleCurrentIndexChanged (const QString&);
 		void on_SelectAll__released ();
 		void on_DeselectAll__released ();
+	signals:
+		void feedsSelected (const QList<SelectedFeed>&);
 	};
 }
 }

@@ -36,6 +36,8 @@
 class QToolBar;
 class QMenu;
 
+class ITagsManager;
+
 namespace LeechCraft
 {
 namespace Aggregator
@@ -47,6 +49,8 @@ namespace Aggregator
 		QStringList Headers_;
 		typedef QList<ChannelShort> Channels_t;
 		Channels_t Channels_;
+
+		const ITagsManager * const TagsManager_;
 	public:
 		enum Columns
 		{
@@ -54,7 +58,7 @@ namespace Aggregator
 			ColumnUnread,
 			ColumnLastBuild
 		};
-		ChannelsModel (QObject *parent = 0);
+		explicit ChannelsModel (const ITagsManager*, QObject *parent = nullptr);
 
 		int columnCount (const QModelIndex& = QModelIndex ()) const override;
 		QVariant data (const QModelIndex&, int = Qt::DisplayRole) const override;
