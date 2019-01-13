@@ -42,6 +42,14 @@ namespace LeechCraft::Aggregator
 	: QObject { parent }
 	, EntityManager_ { iem }
 	{
+		connect (&StorageBackendManager::Instance (),
+				&StorageBackendManager::channelAdded,
+				this,
+				[this] (const Channel& channel)
+				{
+					FetchPixmap (channel.ChannelID_, channel.PixmapURL_);
+					FetchFavicon (channel.ChannelID_, channel.Link_);
+				});
 	}
 
 	void ResourcesFetcher::FetchPixmap (IDType_t cid, const QString& pixmapUrl)
