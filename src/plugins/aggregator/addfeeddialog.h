@@ -30,7 +30,7 @@
 #pragma once
 
 #include <QDialog>
-#include "ui_addfeed.h"
+#include "ui_addfeeddialog.h"
 
 class ITagsManager;
 
@@ -40,7 +40,7 @@ namespace Aggregator
 {
 	class AddFeedDialog : public QDialog
 	{
-		Ui::AddFeed Ui_;
+		Ui::AddFeedDialog Ui_;
 
 		const ITagsManager * const TagsManager_;
 	public:
