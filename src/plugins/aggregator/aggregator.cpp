@@ -147,6 +147,11 @@ namespace Aggregator
 				UpdatesManager_.get (),
 				&UpdatesManager::UpdateFeeds);
 
+		connect (&Core::Instance (),
+				&Core::updateRequested,
+				UpdatesManager_.get (),
+				&UpdatesManager::UpdateFeed);
+
 		QMetaObject::connectSlotsByName (this);
 
 		ChannelsModel_ = std::make_shared<ChannelsModel> (Proxy_->GetTagsManager ());

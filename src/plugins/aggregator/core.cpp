@@ -67,7 +67,6 @@
 #include "storagebackendmanager.h"
 #include "parser.h"
 #include "opmladder.h"
-#include "updatesmanager.h"
 
 namespace LeechCraft
 {
@@ -249,55 +248,18 @@ namespace Aggregator
 			return;
 		}
 
-		const auto& name = Util::GetTemporaryName ();
-		const auto& e = Util::MakeEntity (fixedUrl,
-				name,
-				Internal |
-					DoNotNotifyUser |
-					DoNotSaveInHistory |
-					NotPersistent |
-					DoNotAnnounceEntity);
+		Feed feed;
+		feed.URL_ = url;
+		StorageBackend_->AddFeed (feed);
 
-		const auto& delegateResult = Proxy_->GetEntityManager ()->DelegateEntity (e);
-		if (!delegateResult)
+		if (maybeFeedSettings)
 		{
-			ErrorNotification (tr ("Plugin error"),
-					tr ("Could not find plugin to download feed %1.")
-						.arg (url),
-					false);
-			return;
+			auto fs = *maybeFeedSettings;
+			fs.FeedID_ = feed.FeedID_;
+			StorageBackend_->SetFeedSettings (fs);
 		}
 
-		const auto& tagIds = Proxy_->GetTagsManager ()->GetIDs (tags);
-
-		Util::Sequence (this, delegateResult.DownloadResult_) >>
-				Util::Visitor
-				{
-					[=] (IDownload::Success)
-					{
-						Feed feed;
-						feed.URL_ = url;
-						StorageBackend_->AddFeed (feed);
-
-						if (maybeFeedSettings)
-						{
-							auto fs = *maybeFeedSettings;
-							fs.FeedID_ = feed.FeedID_;
-							StorageBackend_->SetFeedSettings (fs);
-						}
-
-						Util::Visit (ParseChannels (name, url, feed.FeedID_),
-								[&] (const channels_container_t& channels) { HandleFeedAdded (channels, tagIds); },
-								[&] (const QString& error) { ErrorNotification (tr ("Feed error"), error); });
-					},
-					[=] (const IDownload::Error& error)
-					{
-						ErrorNotification (tr ("Feed error"),
-								tr ("Unable to download %1: %2.")
-									.arg (Util::FormatName (url))
-									.arg (GetErrorString (error.Type_)));
-					}
-				}.Finally ([name] { QFile::remove (name); });
+		emit updateRequested (feed.FeedID_);
 	}
 
 	void Core::AddFeeds (const feeds_container_t& feeds, const QString& tagsString)
@@ -314,18 +276,6 @@ namespace Aggregator
 			}
 
 			StorageBackend_->AddFeed (*feed);
-		}
-	}
-
-	void Core::HandleFeedAdded (const channels_container_t& channels, const QStringList& tagIds)
-	{
-		for (const auto& channel : channels)
-		{
-			for (const auto& item : channel->Items_)
-				item->FixDate ();
-
-			channel->Tags_ = tagIds;
-			StorageBackend_->AddChannel (*channel);
 		}
 	}
 

@@ -94,8 +94,9 @@ namespace Aggregator
 
 		void AddFeeds (const feeds_container_t&, const QString&);
 	private:
-		void HandleFeedAdded (const channels_container_t&, const QStringList&);
 		void ErrorNotification (const QString&, const QString&, bool = true) const;
+	signals:
+		void updateRequested (IDType_t);
 	};
 }
 }
