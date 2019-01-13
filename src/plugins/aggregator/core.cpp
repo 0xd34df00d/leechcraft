@@ -272,14 +272,6 @@ namespace Aggregator
 		DBUpThread_ = std::make_shared<DBUpdateThread> (Proxy_);
 		DBUpThread_->SetAutoQuit (true);
 		DBUpThread_->start (QThread::LowestPriority);
-		DBUpThread_->ScheduleImpl (&DBUpdateThreadWorker::WithWorker,
-				[this] (DBUpdateThreadWorker *worker)
-				{
-					connect (worker,
-							&DBUpdateThreadWorker::hookGotNewItems,
-							this,
-							&Core::hookGotNewItems);
-				});
 
 		ParserFactory::Instance ().RegisterDefaultParsers ();
 
@@ -671,9 +663,6 @@ namespace Aggregator
 
 			channel->Tags_ = tagIds;
 			StorageBackend_->AddChannel (*channel);
-
-			emit hookGotNewItems (std::make_shared<Util::DefaultHookProxy> (),
-					Util::Map (channel->Items_, [] (const Item_ptr& item) { return *item; }));
 
 			FetchPixmap (*channel);
 			FetchFavicon (channel->ChannelID_, channel->Link_);

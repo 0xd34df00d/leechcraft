@@ -102,8 +102,6 @@ namespace Aggregator
 		item.ChannelID_ = channel.ChannelID_;
 		SB_->AddItem (item);
 
-		emit hookGotNewItems (std::make_shared<Util::DefaultHookProxy> (), { item });
-
 		const auto iem = Proxy_->GetEntityManager ();
 		if (settings.AutoDownloadEnclosures_)
 			for (const auto& e : item.Enclosures_)

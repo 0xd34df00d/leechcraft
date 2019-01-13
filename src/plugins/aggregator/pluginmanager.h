@@ -55,8 +55,6 @@ namespace Aggregator
 				Item*);
 		void hookItemAdded (LeechCraft::IHookProxy_ptr proxy,
 				const Item& item);
-		void hookGotNewItems (LeechCraft::IHookProxy_ptr proxy,
-				const QList<Item>& items);
 	};
 }
 }

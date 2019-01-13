@@ -110,10 +110,6 @@ namespace Aggregator
 		void FetchFavicon (IDType_t, const QString&);
 		void HandleFeedAdded (const channels_container_t&, const QStringList&);
 		void ErrorNotification (const QString&, const QString&, bool = true) const;
-	signals:
-		// Plugin API
-		void hookGotNewItems (LeechCraft::IHookProxy_ptr proxy,
-				const QList<Item>& items);
 	};
 }
 }
