@@ -62,6 +62,7 @@ set (SRCS
 	representationmanager.cpp
 	updatesmanager.cpp
 	resourcesfetcher.cpp
+	opmladder.cpp
 	)
 set (FORMS
 	mainwidget.ui

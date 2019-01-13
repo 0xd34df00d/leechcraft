@@ -66,6 +66,7 @@
 #include "dumbstorage.h"
 #include "storagebackendmanager.h"
 #include "parser.h"
+#include "opmladder.h"
 #include "updatesmanager.h"
 
 namespace LeechCraft
@@ -113,17 +114,11 @@ namespace Aggregator
 				!Initialized_)
 			return false;
 
-		const auto& url = e.Entity_.toUrl ();
+		if (OpmlAdder_->IsOpmlEntity (e))
+			return true;
 
-		if (e.Mime_ == "text/x-opml")
-		{
-			if (url.scheme () != "file" &&
-					url.scheme () != "http" &&
-					url.scheme () != "https" &&
-					url.scheme () != "itpc")
-				return false;
-		}
-		else if (e.Mime_ == "text/xml")
+		const auto& url = e.Entity_.toUrl ();
+		if (e.Mime_ == "text/xml")
 		{
 			if (url.scheme () != "http" &&
 					url.scheme () != "https")
@@ -161,57 +156,9 @@ namespace Aggregator
 
 	void Core::Handle (Entity e)
 	{
-		QUrl url = e.Entity_.toUrl ();
-		if (e.Mime_ == "text/x-opml")
+		if (!OpmlAdder_->HandleOpmlEntity (e))
 		{
-			if (url.scheme () == "file")
-				StartAddingOPML (url.toLocalFile ());
-			else
-			{
-				const auto& name = Util::GetTemporaryName ();
-
-				const auto& dlEntity = Util::MakeEntity (url,
-						name,
-						Internal |
-							DoNotNotifyUser |
-							DoNotSaveInHistory |
-							NotPersistent |
-							DoNotAnnounceEntity);
-
-				const auto& handleResult = Proxy_->GetEntityManager ()->DelegateEntity (dlEntity);
-				if (!handleResult)
-				{
-					ErrorNotification (tr ("Import error"),
-							tr ("Could not find plugin to download OPML %1.")
-								.arg (url.toString ()));
-					return;
-				}
-
-				Util::Sequence (this, handleResult.DownloadResult_) >>
-						Util::Visitor
-						{
-							[this, name] (IDownload::Success) { StartAddingOPML (name); },
-							[this] (const IDownload::Error&)
-							{
-								ErrorNotification (tr ("OPML import error"),
-										tr ("Unable to download the OPML file."));
-							}
-						}.Finally ([name] { QFile::remove (name); });
-			}
-
-			const auto& s = e.Additional_;
-			auto copyVal = [&s] (const QByteArray& name)
-			{
-				if (s.contains (name))
-					XmlSettingsManager::Instance ()->setProperty (name, s.value (name));
-			};
-			copyVal ("UpdateOnStartup");
-			copyVal ("UpdateTimeout");
-			copyVal ("MaxArticles");
-			copyVal ("MaxAge");
-		}
-		else
-		{
+			QUrl url = e.Entity_.toUrl ();
 			QString str = url.toString ();
 			if (str.startsWith ("feed://"))
 				str.replace (0, 4, "http");
@@ -229,29 +176,7 @@ namespace Aggregator
 
 	void Core::StartAddingOPML (const QString& file)
 	{
-		ImportOPML importDialog (file);
-		if (importDialog.exec () == QDialog::Rejected)
-			return;
-
-		const auto& tags = Proxy_->GetTagsManager ()->Split (importDialog.GetTags ());
-		const auto& selectedUrls = importDialog.GetSelectedUrls ();
-
-		Util::Visit (ParseOPMLItems (importDialog.GetFilename ()),
-				[this] (const QString& error) { ErrorNotification (tr ("OPML import error"), error); },
-				[&] (const OPMLParser::items_container_t& items)
-				{
-					for (const auto& item : items)
-					{
-						if (!selectedUrls.contains (item.URL_))
-							continue;
-
-						int interval = 0;
-						if (item.CustomFetchInterval_)
-							interval = item.FetchInterval_;
-						AddFeed (item.URL_, tags + item.Categories_,
-								{ { IDNotFound, interval, item.MaxArticleNumber_, item.MaxArticleAge_, false } });
-					}
-				});
+		OpmlAdder_->StartAddingOpml (file);
 	}
 
 	bool Core::DoDelayedInit ()
@@ -275,6 +200,9 @@ namespace Aggregator
 		DBUpThread_->start (QThread::LowestPriority);
 
 		ParserFactory::Instance ().RegisterDefaultParsers ();
+
+		// TODO replace with std::bind_front in C++20
+		OpmlAdder_ = std::make_shared<OpmlAdder> ([this] (auto... args) { return AddFeed (args...); }, Proxy_);
 
 		Initialized_ = true;
 
