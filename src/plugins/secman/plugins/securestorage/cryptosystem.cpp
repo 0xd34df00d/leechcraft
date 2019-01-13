@@ -88,6 +88,9 @@ namespace SecureStorage
 
 		auto mkHmacCtx ()
 		{
+#if OPENSSL_VERSION_NUMBER >= 0x10100000L
+			return mkUnique (HMAC_CTX_new (), &HMAC_CTX_free);
+#else
 			auto ptr = new HMAC_CTX ();
 			HMAC_CTX_init (&ptr);
 			return mkUnique (ptr,
@@ -96,6 +99,7 @@ namespace SecureStorage
 						HMAC_CTX_cleanup (ptr);
 						delete ptr;
 					});
+#endif
 		}
 	}
 
