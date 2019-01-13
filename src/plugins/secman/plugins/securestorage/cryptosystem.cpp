@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "cryptosystem.h"
+#include <memory>
 #include <QByteArray>
 #include <openssl/sha.h>
 #include <openssl/aes.h>
@@ -78,6 +79,24 @@ namespace SecureStorage
 					.arg (retCode)
 					.toStdString () };
 		}
+
+		template<typename T, typename D>
+		auto mkUnique(T *pointee, D dtor)
+		{
+			return std::unique_ptr<T, D> { pointee, dtor };
+		}
+
+		auto mkHmacCtx ()
+		{
+			auto ptr = new HMAC_CTX ();
+			HMAC_CTX_init (&ptr);
+			return mkUnique (ptr,
+					[] (auto ptr)
+					{
+						HMAC_CTX_cleanup (ptr);
+						delete ptr;
+					});
+		}
 	}
 
 	QByteArray CryptoSystem::Encrypt (const QByteArray& data) const
@@ -92,34 +111,32 @@ namespace SecureStorage
 		Check (RAND_bytes (randomData, RndLength));
 
 		// init cipher
-		EVP_CIPHER_CTX cipherCtx;
-		EVP_CIPHER_CTX_init (&cipherCtx);
-		Check (EVP_EncryptInit (&cipherCtx, EVP_aes_256_ofb (),
+		auto cipherCtx = mkUnique (EVP_CIPHER_CTX_new (), &EVP_CIPHER_CTX_free);
+		EVP_CIPHER_CTX_init (cipherCtx.get ());
+		Check (EVP_EncryptInit (cipherCtx.get (), EVP_aes_256_ofb (),
 				reinterpret_cast<const unsigned char*> (Key_.data ()),
 				cipherText.Iv ()));
 
 		// encrypt
 		int outLength = 0;
 		unsigned char* outPtr = cipherText.Data ();
-		Check (EVP_EncryptUpdate (&cipherCtx, outPtr, &outLength,
+		Check (EVP_EncryptUpdate (cipherCtx.get (), outPtr, &outLength,
 				reinterpret_cast<const unsigned char*> (data.data ()),
 				data.length ()));
 		outPtr += outLength;
-		Check (EVP_EncryptUpdate (&cipherCtx, outPtr, &outLength, randomData, RndLength));
+		Check (EVP_EncryptUpdate (cipherCtx.get (), outPtr, &outLength, randomData, RndLength));
 		outPtr += outLength;
 		// output last block & cleanup
-		Check (EVP_EncryptFinal (&cipherCtx, outPtr, &outLength));
+		Check (EVP_EncryptFinal (cipherCtx.get (), outPtr, &outLength));
 
 		// compute hmac
 		{
-			HMAC_CTX hmacCtx;
-			HMAC_CTX_init (&hmacCtx);
-			auto cleanup = Util::MakeScopeGuard ([&hmacCtx] { HMAC_CTX_cleanup (&hmacCtx); });
-			Check (HMAC_Init_ex (&hmacCtx, Key_.data (), Key_.length (), EVP_sha256 (), 0));
-			Check (HMAC_Update (&hmacCtx, reinterpret_cast<const unsigned char*> (data.data ()), data.length ()));
-			Check (HMAC_Update (&hmacCtx, randomData, RndLength));
+			auto hmacCtx = mkHmacCtx ();
+			Check (HMAC_Init_ex (hmacCtx.get (), Key_.data (), Key_.length (), EVP_sha256 (), 0));
+			Check (HMAC_Update (hmacCtx.get (), reinterpret_cast<const unsigned char*> (data.data ()), data.length ()));
+			Check (HMAC_Update (hmacCtx.get (), randomData, RndLength));
 			unsigned hmacLength = 0;
-			Check (HMAC_Final (&hmacCtx, cipherText.Hmac (), &hmacLength));
+			Check (HMAC_Final (hmacCtx.get (), cipherText.Hmac (), &hmacLength));
 		}
 
 		return result;
@@ -136,34 +153,34 @@ namespace SecureStorage
 				CipherTextFormatUtils::DataLengthFor (cipherText.length ()));
 
 		// init cipher
-		EVP_CIPHER_CTX cipherCtx;
-		EVP_CIPHER_CTX_init (&cipherCtx);
-		EVP_DecryptInit (&cipherCtx, EVP_aes_256_ofb (),
+		auto cipherCtx = mkUnique (EVP_CIPHER_CTX_new (), &EVP_CIPHER_CTX_free);
+		EVP_CIPHER_CTX_init (cipherCtx.get ());
+		EVP_DecryptInit (cipherCtx.get (), EVP_aes_256_ofb (),
 				reinterpret_cast<const unsigned char*> (Key_.data ()),
 				cipherTextFormat.Iv ());
 
 		// decrypt
 		int outLength = 0;
 		unsigned char* outPtr = reinterpret_cast<unsigned char*> (data.data ());
-		EVP_DecryptUpdate (&cipherCtx, outPtr, &outLength,
+		EVP_DecryptUpdate (cipherCtx.get (), outPtr, &outLength,
 				cipherTextFormat.Data (), cipherTextFormat.GetDataLength ());
 		outPtr += outLength;
-		EVP_DecryptUpdate (&cipherCtx, outPtr, &outLength,
+		EVP_DecryptUpdate (cipherCtx.get (), outPtr, &outLength,
 				cipherTextFormat.Rnd (), RndLength);
 		outPtr += outLength;
 		// output last block & cleanup
-		EVP_DecryptFinal (&cipherCtx, outPtr, &outLength);
+		EVP_DecryptFinal (cipherCtx.get (), outPtr, &outLength);
 
 		// compute hmac
 		unsigned char hmac [HMACLength];
-		HMAC_CTX hmacCtx;
-		HMAC_CTX_init (&hmacCtx);
-		HMAC_Init_ex (&hmacCtx, Key_.data (), Key_.length (),
-				EVP_sha256 (), 0);
-		HMAC_Update (&hmacCtx, reinterpret_cast<unsigned char*> (data.data ()), data.length ());
-		unsigned int hmacLength = 0;
-		HMAC_Final (&hmacCtx, hmac, &hmacLength);
-		HMAC_CTX_cleanup (&hmacCtx);
+		{
+			auto hmacCtx = mkHmacCtx ();
+			HMAC_Init_ex (hmacCtx.get (), Key_.data (), Key_.length (),
+					EVP_sha256 (), 0);
+			HMAC_Update (hmacCtx.get (), reinterpret_cast<unsigned char*> (data.data ()), data.length ());
+			unsigned int hmacLength = 0;
+			HMAC_Final (hmacCtx.get (), hmac, &hmacLength);
+		}
 
 		// check hmac
 		const bool hmacsDifferent = memcmp (hmac, cipherTextFormat.Hmac (), HMACLength);
