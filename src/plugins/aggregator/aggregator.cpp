@@ -147,7 +147,6 @@ namespace Aggregator
 		ChannelsModel_ = std::make_shared<ChannelsModel> (Proxy_->GetTagsManager ());
 
 		PluginManager_ = std::make_shared<PluginManager> (ChannelsModel_.get ());
-		PluginManager_->RegisterHookable (&Core::Instance ());
 		PluginManager_->RegisterHookable (&StorageBackendManager::Instance ());
 	}
 
