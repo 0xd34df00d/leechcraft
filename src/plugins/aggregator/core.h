@@ -82,7 +82,7 @@ namespace Aggregator
 
 		Util::IDPool<IDType_t>& GetPool (PoolType);
 
-		DBUpdateThread& GetDBUpdateThread () const;
+		std::shared_ptr<DBUpdateThread> GetDBUpdateThread () const;
 
 		bool CouldHandle (const LeechCraft::Entity&);
 		void Handle (LeechCraft::Entity);

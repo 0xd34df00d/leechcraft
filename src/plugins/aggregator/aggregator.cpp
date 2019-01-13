@@ -385,8 +385,8 @@ namespace Aggregator
 		void MarkChannel (const QModelIndex& idx, bool unread)
 		{
 			const auto cid = idx.data (ChannelRoles::ChannelID).value<IDType_t> ();
-			auto& dbUpThread = Core::Instance ().GetDBUpdateThread ();
-			dbUpThread.ScheduleImpl (&DBUpdateThreadWorker::toggleChannelUnread, cid, unread);
+			auto dbUpThread = Core::Instance ().GetDBUpdateThread ();
+			dbUpThread->ScheduleImpl (&DBUpdateThreadWorker::toggleChannelUnread, cid, unread);
 		}
 	}
 

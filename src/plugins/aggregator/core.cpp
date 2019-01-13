@@ -101,9 +101,9 @@ namespace Aggregator
 		return Pools_ [type];
 	}
 
-	DBUpdateThread& Core::GetDBUpdateThread () const
+	std::shared_ptr<DBUpdateThread> Core::GetDBUpdateThread () const
 	{
-		return *DBUpThread_;
+		return DBUpThread_;
 	}
 
 	bool Core::CouldHandle (const Entity& e)
