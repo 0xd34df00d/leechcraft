@@ -92,7 +92,7 @@ namespace SecureStorage
 			return mkUnique (HMAC_CTX_new (), &HMAC_CTX_free);
 #else
 			auto ptr = new HMAC_CTX ();
-			HMAC_CTX_init (&ptr);
+			HMAC_CTX_init (ptr);
 			return mkUnique (ptr,
 					[] (auto ptr)
 					{
