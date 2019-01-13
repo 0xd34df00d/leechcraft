@@ -60,6 +60,7 @@ set (SRCS
 	itemutils.cpp
 	channelutils.cpp
 	representationmanager.cpp
+	updatesmanager.cpp
 	)
 set (FORMS
 	mainwidget.ui

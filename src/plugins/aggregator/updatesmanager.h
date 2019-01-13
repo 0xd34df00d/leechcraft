@@ -30,74 +30,49 @@
 #pragma once
 
 #include <memory>
-#include <QAbstractItemModel>
-#include <QString>
-#include <QMap>
-#include <QPair>
-#include <QList>
-#include <QDateTime>
+#include <QObject>
 #include <interfaces/idownload.h>
-#include <interfaces/core/icoreproxy.h>
-#include <interfaces/core/ihookproxy.h>
-#include <util/idpool.h>
-#include "item.h"
+#include <util/sll/eitherfwd.h>
 #include "channel.h"
-#include "feed.h"
-#include "storagebackend.h"
-#include "dbupdatethreadfwd.h"
+#include "common.h"
+#include "dbupdatethread.h"
 
 class QTimer;
-class QNetworkReply;
-class QFile;
-class QSortFilterProxyModel;
-class QToolBar;
 
-namespace LeechCraft
+class IEntityManager;
+
+namespace LeechCraft::Aggregator
 {
-namespace Aggregator
-{
-	class Core : public QObject
+	class StorageBackend;
+
+	using ParseResult = Util::Either<QString, channels_container_t>;
+
+	ParseResult ParseChannels (const QString& path, const QString& url, IDType_t feedId);
+	QString GetErrorString (const IDownload::Error::Type type);
+
+	class UpdatesManager : public QObject
 	{
 		Q_OBJECT
 
-		std::shared_ptr<StorageBackend> StorageBackend_;
-		ICoreProxy_ptr Proxy_;
-		bool Initialized_ = false;
+		IEntityManager * const EntityManager_;
 
-		std::shared_ptr<DBUpdateThread> DBUpThread_;
+		const DBUpdateThread_ptr DBUpThread_;
+		const std::shared_ptr<StorageBackend> StorageBackend_;
 
-		Core () = default;
-	private:
-		QHash<PoolType, Util::IDPool<IDType_t>> Pools_;
+		QTimer * const UpdateTimer_;
+		QTimer * const CustomUpdateTimer_;
+
+		QList<IDType_t> UpdatesQueue_;
+		QMap<IDType_t, QDateTime> Updates_;
 	public:
-		static Core& Instance ();
-		void Release ();
+		explicit UpdatesManager (const DBUpdateThread_ptr&, IEntityManager*, QObject* = nullptr);
 
-		void SetProxy (ICoreProxy_ptr);
-		ICoreProxy_ptr GetProxy () const;
-
-		Util::IDPool<IDType_t>& GetPool (PoolType);
-
-		std::shared_ptr<DBUpdateThread> GetDBUpdateThread () const;
-
-		bool CouldHandle (const LeechCraft::Entity&);
-		void Handle (LeechCraft::Entity);
-		void StartAddingOPML (const QString&);
-
-		bool DoDelayedInit ();
-		bool ReinitStorage ();
-
-		void AddFeed (QString, const QStringList&, const std::optional<Feed::FeedSettings>& = {});
-
-		void UpdateFavicon (const QModelIndex&);
-
-		void AddFeeds (const feeds_container_t&, const QString&);
+		void UpdateFeed (IDType_t);
+		void UpdateFeeds ();
 	private:
-		void FetchExternalFile (const QString&, const std::function<void (QString)>&);
-		void FetchPixmap (const Channel&);
-		void FetchFavicon (IDType_t, const QString&);
-		void HandleFeedAdded (const channels_container_t&, const QStringList&);
-		void ErrorNotification (const QString&, const QString&, bool = true) const;
+		void HandleCustomUpdates ();
+		void RotateUpdatesQueue ();
+	private slots:
+		void updateIntervalChanged ();
 	};
-}
 }

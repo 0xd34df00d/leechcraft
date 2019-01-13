@@ -74,6 +74,7 @@
 #include "startupfirstpage.h"
 #include "startupsecondpage.h"
 #include "startupthirdpage.h"
+#include "updatesmanager.h"
 
 namespace LeechCraft
 {
@@ -137,10 +138,13 @@ namespace Aggregator
 			box->open ();
 		}
 
+		UpdatesManager_ = std::make_shared<UpdatesManager> (Core::Instance ().GetDBUpdateThread (),
+				Proxy_->GetEntityManager ());
+
 		connect (AppWideActions_->ActionUpdateFeeds_,
 				&QAction::triggered,
-				&Core::Instance (),
-				&Core::updateFeeds);
+				UpdatesManager_.get (),
+				&UpdatesManager::UpdateFeeds);
 
 		QMetaObject::connectSlotsByName (this);
 
@@ -545,10 +549,9 @@ namespace Aggregator
 
 	void Aggregator::on_ActionUpdateSelectedFeed__triggered ()
 	{
-		Perform ([] (const QModelIndex& mi)
+		Perform ([this] (const QModelIndex& mi)
 				{
-					const auto feedId = mi.data (ChannelRoles::FeedID).value<IDType_t> ();
-					Core::Instance ().UpdateFeed (feedId);
+					UpdatesManager_->UpdateFeed (mi.data (ChannelRoles::FeedID).value<IDType_t> ());
 				});
 	}
 
