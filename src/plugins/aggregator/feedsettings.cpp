@@ -38,7 +38,6 @@
 #include <interfaces/iwebbrowser.h>
 #include "storagebackendmanager.h"
 #include "storagebackend.h"
-#include "core.h"
 #include "xmlsettingsmanager.h"
 
 namespace LeechCraft
@@ -87,6 +86,14 @@ namespace Aggregator
 						QDesktopServices::openUrl ({ url });
 					else
 						browser->Open (url);
+				});
+		connect (Ui_.UpdateFavicon_,
+				&QPushButton::released,
+				this,
+				[this]
+				{
+					emit faviconRequested (Index_.data (ChannelRoles::ChannelID).value<IDType_t> (),
+							Index_.data (ChannelRoles::ChannelLink).toString ());
 				});
 
 		const auto& tags = Index_.data (ChannelRoles::HumanReadableTags).toStringList ();
@@ -140,11 +147,6 @@ namespace Aggregator
 			});
 
 		QDialog::accept ();
-	}
-
-	void FeedSettings::on_UpdateFavicon__released ()
-	{
-		Core::Instance ().UpdateFavicon (Index_);
 	}
 }
 }

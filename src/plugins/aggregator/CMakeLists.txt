@@ -61,6 +61,7 @@ set (SRCS
 	channelutils.cpp
 	representationmanager.cpp
 	updatesmanager.cpp
+	resourcesfetcher.cpp
 	)
 set (FORMS
 	mainwidget.ui

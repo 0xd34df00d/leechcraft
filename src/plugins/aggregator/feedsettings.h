@@ -50,8 +50,8 @@ namespace Aggregator
 		explicit FeedSettings (const QModelIndex&, const ICoreProxy_ptr&, QWidget* = nullptr);
 	public:
 		void accept () override;
-	private slots:
-		void on_UpdateFavicon__released ();
+	signals:
+		void faviconRequested (IDType_t, const QString&);
 	};
 }
 }

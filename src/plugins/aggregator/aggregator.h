@@ -58,6 +58,7 @@ namespace Aggregator
 	class PluginManager;
 	class UpdatesManager;
 	class ChannelsModel;
+	class ResourcesFetcher;
 	struct AppWideActions;
 	struct ChannelActions;
 
@@ -103,6 +104,7 @@ namespace Aggregator
 
 		std::shared_ptr<UpdatesManager> UpdatesManager_;
 		std::shared_ptr<PluginManager> PluginManager_;
+		std::shared_ptr<ResourcesFetcher> ResourcesFetcher_;
 
 		std::shared_ptr<ChannelsModel> ChannelsModel_;
 

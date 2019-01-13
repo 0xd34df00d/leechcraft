@@ -372,12 +372,6 @@ namespace Aggregator
 				}.Finally ([name] { QFile::remove (name); });
 	}
 
-	void Core::UpdateFavicon (const QModelIndex& index)
-	{
-		FetchFavicon (index.data (ChannelRoles::ChannelID).value<IDType_t> (),
-				index.data (ChannelRoles::ChannelLink).toString ());
-	}
-
 	void Core::AddFeeds (const feeds_container_t& feeds, const QString& tagsString)
 	{
 		auto tags = Proxy_->GetTagsManager ()->Split (tagsString);
@@ -395,55 +389,6 @@ namespace Aggregator
 		}
 	}
 
-	void Core::FetchExternalFile (const QString& url, const std::function<void (QString)>& cont)
-	{
-		auto where = Util::GetTemporaryName ();
-
-		const auto& e = Util::MakeEntity (QUrl (url),
-				where,
-				Internal |
-					DoNotNotifyUser |
-					DoNotSaveInHistory |
-					NotPersistent |
-					DoNotAnnounceEntity);
-
-		const auto& delegateResult = Proxy_->GetEntityManager ()->DelegateEntity (e);
-		if (!delegateResult)
-		{
-			ErrorNotification (tr ("Feed error"),
-					tr ("Could not find plugin to download external file %1.").arg (url));
-			return;
-		}
-
-		Util::Sequence (this, delegateResult.DownloadResult_) >>
-				Util::Visitor
-				{
-					[=] (IDownload::Success) { cont (where); },
-					[] (const IDownload::Error&) {}
-				}.Finally ([where] { QFile::remove (where); });
-	}
-
-	void Core::FetchPixmap (const Channel& channel)
-	{
-		if (QUrl (channel.PixmapURL_).isValid () &&
-				!QUrl (channel.PixmapURL_).isRelative ())
-		{
-			auto cid = channel.ChannelID_;
-			FetchExternalFile (channel.PixmapURL_,
-					[this, cid] (const QString& path) { StorageBackend_->SetChannelPixmap (cid, QImage { path }); });
-		}
-	}
-
-	void Core::FetchFavicon (IDType_t cid, const QString& link)
-	{
-		QUrl oldUrl { link };
-		oldUrl.setPath ("/favicon.ico");
-		QString iconUrl = oldUrl.toString ();
-
-		FetchExternalFile (iconUrl,
-				[this, cid] (const QString& path) { StorageBackend_->SetChannelFavicon (cid, QImage { path }); });
-	}
-
 	void Core::HandleFeedAdded (const channels_container_t& channels, const QStringList& tagIds)
 	{
 		for (const auto& channel : channels)
@@ -453,9 +398,6 @@ namespace Aggregator
 
 			channel->Tags_ = tagIds;
 			StorageBackend_->AddChannel (*channel);
-
-			FetchPixmap (*channel);
-			FetchFavicon (channel->ChannelID_, channel->Link_);
 		}
 	}
 

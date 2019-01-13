@@ -75,6 +75,7 @@
 #include "startupsecondpage.h"
 #include "startupthirdpage.h"
 #include "updatesmanager.h"
+#include "resourcesfetcher.h"
 
 namespace LeechCraft
 {
@@ -152,6 +153,8 @@ namespace Aggregator
 
 		PluginManager_ = std::make_shared<PluginManager> (ChannelsModel_.get ());
 		PluginManager_->RegisterHookable (&StorageBackendManager::Instance ());
+
+		ResourcesFetcher_ = std::make_shared<ResourcesFetcher> (Proxy_->GetEntityManager ());
 	}
 
 	void Aggregator::SecondInit ()
@@ -544,6 +547,10 @@ namespace Aggregator
 			return;
 
 		FeedSettings dia { index, Proxy_ };
+		connect (&dia,
+				&FeedSettings::faviconRequested,
+				ResourcesFetcher_.get (),
+				&ResourcesFetcher::FetchFavicon);
 		dia.exec ();
 	}
 
