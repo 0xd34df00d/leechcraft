@@ -47,7 +47,7 @@ namespace Aggregator
 
 		std::shared_ptr<ProxyObject> ProxyObject_;
 	public:
-		PluginManager (ChannelsModel*, QObject* = nullptr);
+		explicit PluginManager (ChannelsModel*, QObject* = nullptr);
 
 		void AddPlugin (QObject*) override;
 	signals:
