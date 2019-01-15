@@ -43,6 +43,7 @@
 #include <interfaces/istartupwizard.h>
 #include <interfaces/ipluginready.h>
 #include <interfaces/ihaverecoverabletabs.h>
+#include "dbupdatethreadfwd.h"
 
 namespace LeechCraft
 {
@@ -107,6 +108,8 @@ namespace Aggregator
 		std::shared_ptr<ResourcesFetcher> ResourcesFetcher_;
 
 		std::shared_ptr<ChannelsModel> ChannelsModel_;
+
+		std::shared_ptr<DBUpdateThread> DBUpThread_;
 
 		bool InitFailed_ = false;
 	public:

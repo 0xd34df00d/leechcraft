@@ -76,6 +76,7 @@
 #include "startupthirdpage.h"
 #include "updatesmanager.h"
 #include "resourcesfetcher.h"
+#include "dbupdatethread.h"
 
 namespace LeechCraft
 {
@@ -139,8 +140,11 @@ namespace Aggregator
 			box->open ();
 		}
 
-		UpdatesManager_ = std::make_shared<UpdatesManager> (Core::Instance ().GetDBUpdateThread (),
-				Proxy_->GetEntityManager ());
+		DBUpThread_ = std::make_shared<DBUpdateThread> (Proxy_);
+		DBUpThread_->SetAutoQuit (true);
+		DBUpThread_->start (QThread::LowestPriority);
+
+		UpdatesManager_ = std::make_shared<UpdatesManager> (DBUpThread_, Proxy_->GetEntityManager ());
 
 		connect (AppWideActions_->ActionUpdateFeeds_,
 				&QAction::triggered,
@@ -181,6 +185,7 @@ namespace Aggregator
 		ReprManager_.reset ();
 		AggregatorTab_.reset ();
 		ChannelsModel_.reset ();
+		DBUpThread_.reset ();
 		Core::Instance ().Release ();
 		StorageBackendManager::Instance ().Release ();
 	}
@@ -394,11 +399,10 @@ namespace Aggregator
 
 	namespace
 	{
-		void MarkChannel (const QModelIndex& idx, bool unread)
+		void MarkChannel (DBUpdateThread& dbUpThread, const QModelIndex& idx, bool unread)
 		{
 			const auto cid = idx.data (ChannelRoles::ChannelID).value<IDType_t> ();
-			auto dbUpThread = Core::Instance ().GetDBUpdateThread ();
-			dbUpThread->ScheduleImpl (&DBUpdateThreadWorker::toggleChannelUnread, cid, unread);
+			dbUpThread.ScheduleImpl (&DBUpdateThreadWorker::toggleChannelUnread, cid, unread);
 		}
 	}
 
@@ -423,7 +427,7 @@ namespace Aggregator
 		}
 
 		for (int i = 0; i < ChannelsModel_->rowCount (); ++i)
-			MarkChannel (ChannelsModel_->index (i, 0), false);
+			MarkChannel (*DBUpThread_, ChannelsModel_->index (i, 0), false);
 	}
 
 	void Aggregator::on_ActionAddFeed__triggered ()
@@ -527,7 +531,7 @@ namespace Aggregator
 				XmlSettingsManager::Instance ()->setProperty ("ConfirmMarkChannelAsRead", false);
 		}
 
-		Perform ([] (const QModelIndex& mi) { MarkChannel (mi, false); });
+		Perform ([this] (const QModelIndex& mi) { MarkChannel (*DBUpThread_, mi, false); });
 	}
 
 	void Aggregator::on_ActionMarkChannelAsUnread__triggered ()
@@ -542,7 +546,7 @@ namespace Aggregator
 				QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
 			return;
 
-		Perform ([] (const QModelIndex& mi) { MarkChannel (mi, true); });
+		Perform ([this] (const QModelIndex& mi) { MarkChannel (*DBUpThread_, mi, true); });
 	}
 
 	void Aggregator::on_ActionChannelSettings__triggered ()

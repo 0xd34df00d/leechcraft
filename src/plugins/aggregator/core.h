@@ -44,7 +44,6 @@
 #include "channel.h"
 #include "feed.h"
 #include "storagebackend.h"
-#include "dbupdatethreadfwd.h"
 
 class QTimer;
 class QNetworkReply;
@@ -66,7 +65,6 @@ namespace Aggregator
 		ICoreProxy_ptr Proxy_;
 		bool Initialized_ = false;
 
-		std::shared_ptr<DBUpdateThread> DBUpThread_;
 		std::shared_ptr<OpmlAdder> OpmlAdder_;
 
 		Core () = default;
@@ -80,8 +78,6 @@ namespace Aggregator
 		ICoreProxy_ptr GetProxy () const;
 
 		Util::IDPool<IDType_t>& GetPool (PoolType);
-
-		std::shared_ptr<DBUpdateThread> GetDBUpdateThread () const;
 
 		bool CouldHandle (const LeechCraft::Entity&);
 		void Handle (LeechCraft::Entity);

@@ -80,8 +80,6 @@ namespace Aggregator
 
 	void Core::Release ()
 	{
-		DBUpThread_.reset ();
-
 		StorageBackend_.reset ();
 
 		XmlSettingsManager::Instance ()->Release ();
@@ -100,11 +98,6 @@ namespace Aggregator
 	Util::IDPool<IDType_t>& Core::GetPool (PoolType type)
 	{
 		return Pools_ [type];
-	}
-
-	std::shared_ptr<DBUpdateThread> Core::GetDBUpdateThread () const
-	{
-		return DBUpThread_;
 	}
 
 	bool Core::CouldHandle (const Entity& e)
@@ -193,10 +186,6 @@ namespace Aggregator
 
 		if (!ReinitStorage ())
 			result = false;
-
-		DBUpThread_ = std::make_shared<DBUpdateThread> (Proxy_);
-		DBUpThread_->SetAutoQuit (true);
-		DBUpThread_->start (QThread::LowestPriority);
 
 		ParserFactory::Instance ().RegisterDefaultParsers ();
 
