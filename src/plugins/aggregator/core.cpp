@@ -187,8 +187,6 @@ namespace Aggregator
 		if (!ReinitStorage ())
 			result = false;
 
-		ParserFactory::Instance ().RegisterDefaultParsers ();
-
 		// TODO replace with std::bind_front in C++20
 		OpmlAdder_ = std::make_shared<OpmlAdder> ([this] (auto... args) { AddFeed (args...); }, Proxy_);
 

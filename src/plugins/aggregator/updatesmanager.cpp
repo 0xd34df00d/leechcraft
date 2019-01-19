@@ -130,6 +130,8 @@ namespace LeechCraft::Aggregator
 	, UpdateTimer_ { new QTimer { this } }
 	, CustomUpdateTimer_ { new QTimer { this } }
 	{
+		ParserFactory::Instance ().RegisterDefaultParsers ();
+
 		UpdateTimer_->setSingleShot (true);
 		connect (UpdateTimer_,
 				&QTimer::timeout,
