@@ -95,11 +95,6 @@ namespace Aggregator
 		return Proxy_;
 	}
 
-	Util::IDPool<IDType_t>& Core::GetPool (PoolType type)
-	{
-		return Pools_ [type];
-	}
-
 	bool Core::CouldHandle (const Entity& e)
 	{
 		if (!e.Entity_.canConvert<QUrl> () ||
@@ -187,7 +182,7 @@ namespace Aggregator
 
 	bool Core::ReinitStorage ()
 	{
-		const auto result = Util::Visit (StorageBackendManager::Instance ().CreatePrimaryStorage (),
+		return Util::Visit (StorageBackendManager::Instance ().CreatePrimaryStorage (),
 				[this] (const StorageBackend_ptr& backend)
 				{
 					StorageBackend_ = backend;
@@ -198,19 +193,6 @@ namespace Aggregator
 					ErrorNotification (tr ("Storage error"), error.Message_);
 					return false;
 				});
-
-		if (!result)
-			return false;
-
-		Pools_.clear ();
-		for (int type = 0; type < PTMAX; ++type)
-		{
-			Util::IDPool<IDType_t> pool;
-			pool.SetID (StorageBackend_->GetHighestID (static_cast<PoolType> (type)) + 1);
-			Pools_ [static_cast<PoolType> (type)] = pool;
-		}
-
-		return true;
 	}
 
 	void Core::AddFeed (QString url, const QStringList& tags, const std::optional<Feed::FeedSettings>& maybeFeedSettings)

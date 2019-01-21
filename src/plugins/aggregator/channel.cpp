@@ -35,7 +35,7 @@
 #include <QPixmap>
 #include "channel.h"
 #include "item.h"
-#include "core.h"
+#include "poolsmanager.h"
 
 namespace LeechCraft
 {
@@ -44,7 +44,7 @@ namespace Aggregator
 	Channel Channel::CreateForFeed (IDType_t feedId)
 	{
 		Channel ch;
-		ch.ChannelID_ = Core::Instance ().GetPool (PTChannel).GetID ();
+		ch.ChannelID_ = PoolsManager::Instance ().GetPool (PTChannel).GetID ();
 		ch.FeedID_ = feedId;
 		return ch;
 	}

@@ -63,6 +63,7 @@ set (SRCS
 	updatesmanager.cpp
 	resourcesfetcher.cpp
 	opmladder.cpp
+	poolsmanager.cpp
 	)
 set (FORMS
 	mainwidget.ui

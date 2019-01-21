@@ -28,7 +28,7 @@
  **********************************************************************/
 
 #include "proxyobject.h"
-#include "core.h"
+#include "poolsmanager.h"
 #include "storagebackendmanager.h"
 #include "channelsmodel.h"
 #include "itemslistmodel.h"
@@ -45,7 +45,7 @@ namespace Aggregator
 			if (item.ItemID_)
 				return;
 
-			item.ItemID_ = Core::Instance ().GetPool (PTItem).GetID ();
+			item.ItemID_ = PoolsManager::Instance ().GetPool (PTItem).GetID ();
 
 			for (auto& enc : item.Enclosures_)
 				enc.ItemID_ = item.ItemID_;
@@ -56,7 +56,7 @@ namespace Aggregator
 			if (channel.ChannelID_)
 				return;
 
-			channel.ChannelID_ = Core::Instance ().GetPool (PTChannel).GetID ();
+			channel.ChannelID_ = PoolsManager::Instance ().GetPool (PTChannel).GetID ();
 			for (const auto& item : channel.Items_)
 			{
 				item->ChannelID_ = channel.ChannelID_;
@@ -69,7 +69,7 @@ namespace Aggregator
 			if (feed.FeedID_)
 				return;
 
-			feed.FeedID_ = Core::Instance ().GetPool (PTFeed).GetID ();
+			feed.FeedID_ = PoolsManager::Instance ().GetPool (PTFeed).GetID ();
 
 			for (const auto& channel : feed.Channels_)
 			{

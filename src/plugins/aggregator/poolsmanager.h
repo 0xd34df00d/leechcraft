@@ -29,66 +29,20 @@
 
 #pragma once
 
-#include <memory>
-#include <QAbstractItemModel>
-#include <QString>
-#include <QMap>
-#include <QPair>
-#include <QList>
-#include <QDateTime>
-#include <interfaces/idownload.h>
-#include <interfaces/core/icoreproxy.h>
-#include <interfaces/core/ihookproxy.h>
+#include <QHash>
 #include <util/idpool.h>
-#include "item.h"
-#include "channel.h"
-#include "feed.h"
-#include "storagebackend.h"
+#include "common.h"
 
-class QTimer;
-class QNetworkReply;
-class QFile;
-class QSortFilterProxyModel;
-class QToolBar;
-
-namespace LeechCraft
+namespace LeechCraft::Aggregator
 {
-namespace Aggregator
-{
-	class OpmlAdder;
-
-	class Core : public QObject
+	class PoolsManager
 	{
-		Q_OBJECT
-
-		std::shared_ptr<StorageBackend> StorageBackend_;
-		ICoreProxy_ptr Proxy_;
-		bool Initialized_ = false;
-
-		std::shared_ptr<OpmlAdder> OpmlAdder_;
-
-		Core () = default;
+		QHash<PoolType, Util::IDPool<IDType_t>> Pools_;
 	public:
-		static Core& Instance ();
-		void Release ();
+		static PoolsManager& Instance ();
 
-		void SetProxy (ICoreProxy_ptr);
-		ICoreProxy_ptr GetProxy () const;
+		void ReloadPools ();
 
-		bool CouldHandle (const LeechCraft::Entity&);
-		void Handle (LeechCraft::Entity);
-		void StartAddingOPML (const QString&);
-
-		bool DoDelayedInit ();
-		bool ReinitStorage ();
-
-		void AddFeed (QString, const QStringList&, const std::optional<Feed::FeedSettings>& = {});
-
-		void AddFeeds (const feeds_container_t&, const QString&);
-	private:
-		void ErrorNotification (const QString&, const QString&, bool = true) const;
-	signals:
-		void updateRequested (IDType_t);
+		Util::IDPool<IDType_t>& GetPool (PoolType);
 	};
-}
 }

@@ -31,14 +31,14 @@
 #include <QtDebug>
 #include "feed.h"
 #include "channel.h"
-#include "core.h"
+#include "poolsmanager.h"
 
 namespace LeechCraft
 {
 namespace Aggregator
 {
 	Feed::Feed ()
-	: FeedID_ { Core::Instance ().GetPool (PTFeed).GetID () }
+	: FeedID_ { PoolsManager::Instance ().GetPool (PTFeed).GetID () }
 	{
 	}
 	

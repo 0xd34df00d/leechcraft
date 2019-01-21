@@ -33,7 +33,7 @@
 #include <QDataStream>
 #include <QtDebug>
 #include "item.h"
-#include "core.h"
+#include "poolsmanager.h"
 
 namespace LeechCraft
 {
@@ -131,14 +131,14 @@ namespace Aggregator
 	{
 		Enclosure enc;
 		enc.ItemID_ = itemId;
-		enc.EnclosureID_ = Core::Instance ().GetPool (PTEnclosure).GetID ();
+		enc.EnclosureID_ = PoolsManager::Instance ().GetPool (PTEnclosure).GetID ();
 		return enc;
 	}
 
 	MRSSThumbnail MRSSThumbnail::CreateForEntry (IDType_t entryId)
 	{
 		MRSSThumbnail thumbnail;
-		thumbnail.MRSSThumbnailID_ = Core::Instance ().GetPool (PTMRSSThumbnail).GetID ();
+		thumbnail.MRSSThumbnailID_ = PoolsManager::Instance ().GetPool (PTMRSSThumbnail).GetID ();
 		thumbnail.MRSSEntryID_ = entryId;
 		return thumbnail;
 	}
@@ -146,7 +146,7 @@ namespace Aggregator
 	MRSSCredit MRSSCredit::CreateForEntry (IDType_t entryId)
 	{
 		MRSSCredit credit;
-		credit.MRSSCreditID_ = Core::Instance ().GetPool (PTMRSSCredit).GetID ();
+		credit.MRSSCreditID_ = PoolsManager::Instance ().GetPool (PTMRSSCredit).GetID ();
 		credit.MRSSEntryID_ = entryId;
 		return credit;
 	}
@@ -154,7 +154,7 @@ namespace Aggregator
 	MRSSComment MRSSComment::CreateForEntry (IDType_t entryId)
 	{
 		MRSSComment comment;
-		comment.MRSSCommentID_ = Core::Instance ().GetPool (PTMRSSComment).GetID ();
+		comment.MRSSCommentID_ = PoolsManager::Instance ().GetPool (PTMRSSComment).GetID ();
 		comment.MRSSEntryID_ = entryId;
 		return comment;
 	}
@@ -162,7 +162,7 @@ namespace Aggregator
 	MRSSPeerLink MRSSPeerLink::CreateForEntry (IDType_t entryId)
 	{
 		MRSSPeerLink link;
-		link.MRSSPeerLinkID_ = Core::Instance ().GetPool (PTMRSSPeerLink).GetID ();
+		link.MRSSPeerLinkID_ = PoolsManager::Instance ().GetPool (PTMRSSPeerLink).GetID ();
 		link.MRSSEntryID_ = entryId;
 		return link;
 	}
@@ -170,7 +170,7 @@ namespace Aggregator
 	MRSSScene MRSSScene::CreateForEntry (IDType_t entryId)
 	{
 		MRSSScene scene;
-		scene.MRSSSceneID_ = Core::Instance ().GetPool (PTMRSSScene).GetID ();
+		scene.MRSSSceneID_ = PoolsManager::Instance ().GetPool (PTMRSSScene).GetID ();
 		scene.MRSSEntryID_ = entryId;
 		return scene;
 	}
@@ -178,7 +178,7 @@ namespace Aggregator
 	MRSSEntry MRSSEntry::CreateForItem (IDType_t itemId)
 	{
 		MRSSEntry entry;
-		entry.MRSSEntryID_ = Core::Instance ().GetPool (PTMRSSEntry).GetID ();
+		entry.MRSSEntryID_ = PoolsManager::Instance ().GetPool (PTMRSSEntry).GetID ();
 		entry.ItemID_ = itemId;
 		return entry;
 	}
@@ -187,7 +187,7 @@ namespace Aggregator
 	{
 		Item item;
 		item.ChannelID_ = channelId;
-		item.ItemID_ = Core::Instance ().GetPool (PTItem).GetID ();
+		item.ItemID_ = PoolsManager::Instance ().GetPool (PTItem).GetID ();
 		return item;
 	}
 

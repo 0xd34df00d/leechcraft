@@ -27,68 +27,37 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <memory>
-#include <QAbstractItemModel>
-#include <QString>
-#include <QMap>
-#include <QPair>
-#include <QList>
-#include <QDateTime>
-#include <interfaces/idownload.h>
-#include <interfaces/core/icoreproxy.h>
-#include <interfaces/core/ihookproxy.h>
-#include <util/idpool.h>
-#include "item.h"
-#include "channel.h"
-#include "feed.h"
+#include "poolsmanager.h"
+#include "storagebackendmanager.h"
 #include "storagebackend.h"
 
-class QTimer;
-class QNetworkReply;
-class QFile;
-class QSortFilterProxyModel;
-class QToolBar;
-
-namespace LeechCraft
+namespace LeechCraft::Aggregator
 {
-namespace Aggregator
-{
-	class OpmlAdder;
-
-	class Core : public QObject
+	PoolsManager& PoolsManager::Instance ()
 	{
-		Q_OBJECT
+		static PoolsManager pm;
+		return pm;
+	}
 
-		std::shared_ptr<StorageBackend> StorageBackend_;
-		ICoreProxy_ptr Proxy_;
-		bool Initialized_ = false;
+	void PoolsManager::ReloadPools ()
+	{
+		decltype (Pools_) pools;
 
-		std::shared_ptr<OpmlAdder> OpmlAdder_;
+		auto sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
 
-		Core () = default;
-	public:
-		static Core& Instance ();
-		void Release ();
+		for (int type = 0; type < PTMAX; ++type)
+		{
+			Util::IDPool<IDType_t> pool;
+			pool.SetID (sb->GetHighestID (static_cast<PoolType> (type)) + 1);
+			pools [static_cast<PoolType> (type)] = pool;
+		}
 
-		void SetProxy (ICoreProxy_ptr);
-		ICoreProxy_ptr GetProxy () const;
+		Pools_ = pools;
+	}
 
-		bool CouldHandle (const LeechCraft::Entity&);
-		void Handle (LeechCraft::Entity);
-		void StartAddingOPML (const QString&);
+	Util::IDPool<IDType_t>& PoolsManager::GetPool (PoolType type)
+	{
+		return Pools_ [type];
+	}
 
-		bool DoDelayedInit ();
-		bool ReinitStorage ();
-
-		void AddFeed (QString, const QStringList&, const std::optional<Feed::FeedSettings>& = {});
-
-		void AddFeeds (const feeds_container_t&, const QString&);
-	private:
-		void ErrorNotification (const QString&, const QString&, bool = true) const;
-	signals:
-		void updateRequested (IDType_t);
-	};
-}
 }
