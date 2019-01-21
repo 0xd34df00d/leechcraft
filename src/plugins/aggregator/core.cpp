@@ -174,16 +174,6 @@ namespace Aggregator
 	bool Core::DoDelayedInit ()
 	{
 		bool result = true;
-
-		QDir dir = QDir::home ();
-		if (!dir.cd (".leechcraft/aggregator") &&
-				!dir.mkpath (".leechcraft/aggregator"))
-		{
-			qCritical () << Q_FUNC_INFO << "could not create necessary "
-				"directories for Aggregator";
-			result = false;
-		}
-
 		if (!ReinitStorage ())
 			result = false;
 
