@@ -28,12 +28,6 @@
  **********************************************************************/
 
 #include "ipluginloader.h"
-
-#if defined __GNUC__
-#include <cstdlib>
-#include <cxxabi.h>
-#endif
-
 #include <QLibrary>
 #include <QtDebug>
 
@@ -41,35 +35,6 @@ namespace LeechCraft
 {
 namespace Loaders
 {
-	namespace
-	{
-		QString TryDemangle (const QString& errorStr)
-		{
-#if defined __GNUC__
-			static const QString marker { "undefined symbol: " };
-			const auto pos = errorStr.indexOf (marker);
-			if (pos == -1)
-				return {};
-
-			auto mangled = errorStr.mid (pos + marker.size ());
-			const auto endPos = mangled.indexOf (')');
-			if (endPos >= 0)
-				mangled = mangled.left (endPos);
-
-			int status = 0;
-			QString result;
-			if (auto rawStr = abi::__cxa_demangle (mangled.toLatin1 ().constData (), 0, 0, &status))
-			{
-				result = QString::fromLatin1 (rawStr);
-				std::free (rawStr);
-			}
-			return result;
-#else
-			return {};
-#endif
-		}
-	}
-
 	qint64 GetLibAPILevel (const QString& file)
 	{
 		if (file.isEmpty ())
@@ -77,15 +42,7 @@ namespace Loaders
 
 		QLibrary library (file);
 		if (!library.load ())
-		{
-			const auto& demangled = TryDemangle (library.errorString ());
-			if (!demangled.isEmpty ())
-				qWarning () << Q_FUNC_INFO
-						<< "demangled name:"
-						<< demangled;
-
 			return static_cast<quint64> (-1);
-		}
 
 		typedef quint64 (*APIVersion_t) ();
 		auto getter = reinterpret_cast<APIVersion_t> (library.resolve ("GetAPILevels"));

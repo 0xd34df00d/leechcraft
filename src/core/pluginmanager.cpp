@@ -31,6 +31,12 @@
 #include <algorithm>
 #include <functional>
 #include <numeric>
+
+#if defined __GNUC__
+#include <cstdlib>
+#include <cxxabi.h>
+#endif
+
 #include <QApplication>
 #include <QDir>
 #include <QStringList>
@@ -895,6 +901,32 @@ namespace LeechCraft
 			}
 		}
 
+		QString TryDemangle (const QString& errorStr)
+		{
+#if defined __GNUC__
+			static const QString marker { "undefined symbol: " };
+			const auto pos = errorStr.indexOf (marker);
+			if (pos == -1)
+				return {};
+
+			auto mangled = errorStr.mid (pos + marker.size ());
+			const auto endPos = mangled.indexOf (')');
+			if (endPos >= 0)
+				mangled = mangled.left (endPos);
+
+			int status = 0;
+			QString result;
+			if (auto rawStr = abi::__cxa_demangle (mangled.toLatin1 ().constData (), 0, 0, &status))
+			{
+				result = QString::fromLatin1 (rawStr);
+				std::free (rawStr);
+			}
+			return result;
+#else
+			return {};
+#endif
+		}
+
 		void TryLoad (Loaders::IPluginLoader_ptr loader)
 		{
 			loader->Load ();
@@ -904,6 +936,12 @@ namespace LeechCraft
 					<< loader->GetFileName ()
 					<< ";"
 					<< loader->GetErrorString ();
+
+				const auto& demangled = TryDemangle (loader->GetErrorString ());
+				if (!demangled.isEmpty ())
+					qWarning () << "demangled name:"
+							<< demangled;
+
 				throw Fail (PluginManager::tr ("Could not load plugin from %1: %2.")
 							.arg (loader->GetFileName ())
 							.arg (loader->GetErrorString ()));
