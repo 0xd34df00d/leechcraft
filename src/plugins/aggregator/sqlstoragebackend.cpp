@@ -41,13 +41,13 @@
 #include <util/db/util.h>
 #include <util/db/oral/oral.h>
 #include <util/db/oral/pgimpl.h>
+#include <util/xpc/coreproxyholder.h>
 #include <util/xpc/defaulthookproxy.h>
 #include <util/sll/functor.h>
 #include <util/sys/paths.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
 #include "xmlsettingsmanager.h"
-#include "core.h"
 
 namespace LeechCraft::Aggregator
 {
@@ -83,13 +83,13 @@ namespace LeechCraft::Aggregator
 
 		BaseType ToBaseType () const
 		{
-			static const auto itm = Core::Instance ().GetProxy ()->GetTagsManager ();
+			static const auto itm = Util::CoreProxyHolder::Get ()->GetTagsManager ();
 			return itm->Join (TagsList_);
 		}
 
 		static Tags FromBaseType (const BaseType& var)
 		{
-			static const auto itm = Core::Instance ().GetProxy ()->GetTagsManager ();
+			static const auto itm = Util::CoreProxyHolder::Get ()->GetTagsManager ();
 			return { itm->Split (var) };
 		}
 
