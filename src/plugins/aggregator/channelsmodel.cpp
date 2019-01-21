@@ -75,6 +75,9 @@ namespace Aggregator
 				&StorageBackendManager::storageCreated,
 				this,
 				&ChannelsModel::PopulateChannels);
+
+		if (StorageBackendManager::Instance ().IsPrimaryStorageCreated ())
+			PopulateChannels ();
 	}
 
 	int ChannelsModel::columnCount (const QModelIndex&) const
