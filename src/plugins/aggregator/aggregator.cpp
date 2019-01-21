@@ -78,6 +78,7 @@
 #include "updatesmanager.h"
 #include "resourcesfetcher.h"
 #include "dbupdatethread.h"
+#include "poolsmanager.h"
 
 namespace LeechCraft
 {
@@ -146,6 +147,8 @@ namespace Aggregator
 		DBUpThread_ = std::make_shared<DBUpdateThread> (Proxy_);
 		DBUpThread_->SetAutoQuit (true);
 		DBUpThread_->start (QThread::LowestPriority);
+
+		PoolsManager::Instance ().ReloadPools ();
 
 		UpdatesManager_ = std::make_shared<UpdatesManager> (DBUpThread_, Proxy_->GetEntityManager ());
 
