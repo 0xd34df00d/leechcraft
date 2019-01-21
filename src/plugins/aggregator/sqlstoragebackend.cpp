@@ -43,6 +43,7 @@
 #include <util/db/oral/pgimpl.h>
 #include <util/xpc/defaulthookproxy.h>
 #include <util/sll/functor.h>
+#include <util/sys/paths.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
 #include "xmlsettingsmanager.h"
@@ -400,9 +401,7 @@ namespace LeechCraft::Aggregator
 		{
 		case SBSQLite:
 		{
-			QDir dir = QDir::home ();
-			dir.cd (".leechcraft");
-			dir.cd ("aggregator");
+			auto dir = Util::GetUserDir (Util::UserDir::LC, "aggregator");
 			DB_.setDatabaseName (dir.filePath ("aggregator.db"));
 			break;
 		}
