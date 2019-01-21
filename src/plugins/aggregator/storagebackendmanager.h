@@ -61,6 +61,8 @@ namespace Aggregator
 		using StorageCreationResult_t = Util::Either<StorageCreationError, StorageBackend_ptr>;
 		StorageCreationResult_t CreatePrimaryStorage ();
 
+		bool IsPrimaryStorageCreated () const;
+
 		StorageBackend_ptr MakeStorageBackendForThread () const;
 
 		void Register (const StorageBackend_ptr&);

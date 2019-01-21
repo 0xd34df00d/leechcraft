@@ -93,6 +93,11 @@ namespace Aggregator
 		return StorageCreationResult_t::Right (PrimaryStorageBackend_);
 	}
 
+	bool StorageBackendManager::IsPrimaryStorageCreated () const
+	{
+		return static_cast<bool> (PrimaryStorageBackend_);
+	}
+
 	StorageBackend_ptr StorageBackendManager::MakeStorageBackendForThread () const
 	{
 		if (QThread::currentThread () == qApp->thread ())
