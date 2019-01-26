@@ -1940,12 +1940,7 @@ namespace BitTorrent
 
 	void Core::HandleLibtorrentException (const std::exception& e)
 	{
-		ShowError (tr ("Error code %1 of category:<blockquote>%2</blockquote>"
-					"error message:<blockquote>%3</blockquote>"
-					"raw exception message:<blockquote>%4</blockquote>")
-				.arg (e.error ().value ())
-				.arg (e.error ().category ().name ())
-				.arg (QString::fromUtf8 (e.error ().message ().c_str ()))
+		ShowError (tr ("libtorrent error: %1")
 				.arg (e.what ()));
 	}
 
