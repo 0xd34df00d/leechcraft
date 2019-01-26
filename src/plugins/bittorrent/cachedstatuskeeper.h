@@ -44,17 +44,24 @@ namespace BitTorrent
 {
 	class CachedStatusKeeper : public QObject
 	{
+	public:
+#if LIBTORRENT_VERSION_NUM >= 10200
+		using FlagsType_t = libtorrent::status_flags_t;
+#else
+		using FlagsType_t = uint32_t;
+#endif
+	private:
 		struct CachedItem
 		{
 			libtorrent::torrent_status Status_;
-			uint32_t ReqFlags_;
+			FlagsType_t ReqFlags_;
 		};
 
 		QMap<libtorrent::torrent_handle, CachedItem> Handle2Status_;
 	public:
 		using QObject::QObject;
 
-		libtorrent::torrent_status GetStatus (const libtorrent::torrent_handle&, uint32_t flags);
+		libtorrent::torrent_status GetStatus (const libtorrent::torrent_handle&, FlagsType_t flags);
 		void HandleStatusUpdatePosted (const libtorrent::torrent_status&);
 	};
 }
