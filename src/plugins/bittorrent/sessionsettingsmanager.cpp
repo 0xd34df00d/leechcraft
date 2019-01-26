@@ -32,7 +32,6 @@
 #include <QMainWindow>
 #include <QTimer>
 #include <libtorrent/session.hpp>
-#include <libtorrent/extensions/metadata_transfer.hpp>
 #include <libtorrent/extensions/ut_metadata.hpp>
 #include <libtorrent/extensions/ut_pex.hpp>
 #include <libtorrent/extensions/smart_ban.hpp>
