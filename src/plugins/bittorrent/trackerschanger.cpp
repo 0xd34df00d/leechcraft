@@ -56,27 +56,31 @@ namespace BitTorrent
 	void TrackersChanger::SetTrackers (const std::vector<libtorrent::announce_entry>& trackers)
 	{
 		Ui_.Trackers_->clear ();
-		Q_FOREACH (const auto& tracker, trackers)
+		for (const auto& tracker : trackers)
 		{
-			QStringList strings;
-			bool torrent, client, magnet, tex;
-			torrent = tracker.source & libtorrent::announce_entry::source_torrent;
-			client = tracker.source & libtorrent::announce_entry::source_client;
-			magnet = tracker.source & libtorrent::announce_entry::source_magnet_link;
-			tex = tracker.source & libtorrent::announce_entry::source_tex;
-			strings << QString::fromUtf8 (tracker.url.c_str ())
-				<< QString::number (tracker.tier)
-				<< tr ("%1 s").arg (tracker.next_announce_in ())
-				<< QString::number (tracker.fails)
-				<< QString::number (tracker.fail_limit)
-				<< (tracker.verified ? tr ("true") : tr ("false"))
-				<< (tracker.updating ? tr ("true") : tr ("false"))
-				<< (tracker.start_sent ? tr ("true") : tr ("false"))
-				<< (tracker.complete_sent ? tr ("true") : tr ("false"))
-				<< (torrent ? tr ("true") : tr ("false"))
-				<< (client ? tr ("true") : tr ("false"))
-				<< (magnet ? tr ("true") : tr ("false"))
-				<< (tex ? tr ("true") : tr ("false"));
+			const bool torrent = tracker.source & libtorrent::announce_entry::source_torrent;
+			const bool client = tracker.source & libtorrent::announce_entry::source_client;
+			const bool magnet = tracker.source & libtorrent::announce_entry::source_magnet_link;
+			const bool tex = tracker.source & libtorrent::announce_entry::source_tex;
+
+			const auto showBool = [] (bool val) { return val ? tr ("true") : tr ("false"); };
+
+			const QStringList strings
+			{
+				QString::fromUtf8 (tracker.url.c_str ()),
+				QString::number (tracker.tier),
+				tr ("%1 s").arg (tracker.next_announce_in ()),
+				QString::number (tracker.fails),
+				QString::number (tracker.fail_limit),
+				showBool (tracker.verified),
+				showBool (tracker.updating),
+				showBool (tracker.start_sent),
+				showBool (tracker.complete_sent),
+				showBool (torrent),
+				showBool (client),
+				showBool (magnet),
+				showBool (tex)
+			};
 			Ui_.Trackers_->addTopLevelItem (new QTreeWidgetItem (strings));
 		}
 		for (int i = 0; i < Ui_.Trackers_->columnCount (); ++i)
