@@ -761,7 +761,7 @@ namespace BitTorrent
 			libtorrent::torrent_info result (data.constData (), data.size ());
 			return result;
 		}
-		catch (const libtorrent::libtorrent_exception& e)
+		catch (const std::exception& e)
 		{
 			HandleLibtorrentException (e);
 			return libtorrent::torrent_info (libtorrent::sha1_hash ());
@@ -945,7 +945,7 @@ namespace BitTorrent
 			atp.flags |= libtorrent::add_torrent_params::flag_duplicate_is_error;
 			handle = Session_->add_torrent (atp);
 		}
-		catch (const libtorrent::libtorrent_exception& e)
+		catch (const std::exception& e)
 		{
 			HandleLibtorrentException (e);
 			return MakeErrorResult ("Torrent error");
@@ -997,7 +997,7 @@ namespace BitTorrent
 
 			handle = Session_->add_torrent (atp);
 		}
-		catch (const libtorrent::libtorrent_exception& e)
+		catch (const std::exception& e)
 		{
 			HandleLibtorrentException (e);
 			return MakeErrorResult ("Torrent error");
@@ -1109,7 +1109,7 @@ namespace BitTorrent
 		{
 			Handles_.at (pos).Handle_.force_reannounce ();
 		}
-		catch (const libtorrent::libtorrent_exception& e)
+		catch (const std::exception& e)
 		{
 			HandleLibtorrentException (e);
 			ShowError (tr ("Torrent %1 could not be reannounced at the "
@@ -1804,7 +1804,7 @@ namespace BitTorrent
 
 			handle = Session_->add_torrent (atp);
 		}
-		catch (const libtorrent::libtorrent_exception& e)
+		catch (const std::exception& e)
 		{
 			qWarning () << Q_FUNC_INFO << e.what ();
 			HandleLibtorrentException (e);
@@ -1938,7 +1938,7 @@ namespace BitTorrent
 		SaveScheduled_ = true;
 	}
 
-	void Core::HandleLibtorrentException (const libtorrent::libtorrent_exception& e)
+	void Core::HandleLibtorrentException (const std::exception& e)
 	{
 		ShowError (tr ("Error code %1 of category:<blockquote>%2</blockquote>"
 					"error message:<blockquote>%3</blockquote>"
@@ -2342,9 +2342,6 @@ namespace BitTorrent
 					, libtorrent::torrent_error_alert
 					, libtorrent::piece_finished_alert
 					> (alert, sd);
-			}
-			catch (const libtorrent::libtorrent_exception&)
-			{
 			}
 			catch (const std::exception&)
 			{

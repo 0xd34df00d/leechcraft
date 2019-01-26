@@ -375,7 +375,7 @@ namespace BitTorrent
 		 */
 		void UpdateTagsImpl (const QStringList& tags, int torrent);
 		void ScheduleSave ();
-		void HandleLibtorrentException (const libtorrent::libtorrent_exception&);
+		void HandleLibtorrentException (const std::exception&);
 
 		void ShowError (const QString&);
 	private slots:
