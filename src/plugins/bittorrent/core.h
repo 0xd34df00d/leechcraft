@@ -146,6 +146,7 @@ namespace BitTorrent
 			, AutoManaged_ { autoManaged }
 			, ID_ { id }
 			, Parameters_ { params }
+			, Promise_ { QFutureInterface<IDownload::Result> {} }
 			{
 			}
 		};
