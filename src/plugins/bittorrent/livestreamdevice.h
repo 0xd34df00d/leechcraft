@@ -61,18 +61,18 @@ namespace BitTorrent
 	public:
 		LiveStreamDevice (const libtorrent::torrent_handle&, CachedStatusKeeper*, QObject* = nullptr);
 
-		virtual qint64 bytesAvailable () const;
-		virtual bool isSequential () const;
-		virtual bool open (OpenMode);
-		virtual qint64 pos () const;
-		virtual bool seek (qint64);
-		virtual qint64 size () const;
+		qint64 bytesAvailable () const override;
+		bool isSequential () const override;
+		bool open (OpenMode) override;
+		qint64 pos () const override;
+		bool seek (qint64) override;
+		qint64 size () const override;
 
 		void PieceRead (const libtorrent::read_piece_alert&);
 		void CheckReady ();
 	protected:
-		virtual qint64 readData (char*, qint64);
-		virtual qint64 writeData (const char*, qint64);
+		qint64 readData (char*, qint64) override;
+		qint64 writeData (const char*, qint64) override;
 	private:
 		void CheckNextChunk ();
 	private slots:
