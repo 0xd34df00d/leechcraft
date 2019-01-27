@@ -207,6 +207,12 @@ namespace BitTorrent
 			static_cast<double> (size) / speed * 1000 :
 			60000;
 
+#if LIBTORRENT_VERSION_NUM >= 10200
+		constexpr auto alertFlag = libtorrent::torrent_handle::alert_when_available;
+#else
+		constexpr auto alertFlag = 1;
+#endif
+
 		int thisDeadline = 0;
 		for (int i = ReadPos_; i < NumPieces_; ++i)
 			if (!pieces [i])
@@ -214,7 +220,7 @@ namespace BitTorrent
 						IsReady_ ?
 							(thisDeadline += time) :
 							1000000,
-						1);
+						alertFlag);
 		if (!IsReady_)
 		{
 			std::vector<int> prios (NumPieces_, 0);
@@ -224,13 +230,13 @@ namespace BitTorrent
 			if (!pieces [0])
 			{
 				qDebug () << "scheduling first piece";
-				Handle_.set_piece_deadline (0, 500, 1);
+				Handle_.set_piece_deadline (0, 500, alertFlag);
 				prios [0] = 7;
 			}
 			if (!pieces [NumPieces_ - 1])
 			{
 				qDebug () << "scheduling last piece";
-				Handle_.set_piece_deadline (NumPieces_ - 1, 500, 1);
+				Handle_.set_piece_deadline (NumPieces_ - 1, 500, alertFlag);
 				prios [NumPieces_ - 1] = 7;
 			}
 			Handle_.prioritize_pieces (prios);
