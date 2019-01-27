@@ -1406,7 +1406,13 @@ namespace BitTorrent
 
 	QMap<BanRange_t, bool> Core::GetFilter () const
 	{
+#if LIBTORRENT_VERSION_NUM >= 10200
 		const auto& [v4, v6] = Session_->get_ip_filter ().export_filter ();
+#else
+		const auto& both = Session_->get_ip_filter ().export_filter ();
+		const auto& v4 = both.get<0> ();
+		const auto& v6 = both.get<1> ();
+#endif
 
 		QMap<BanRange_t, bool> result;
 		for (const auto& range : v4)
