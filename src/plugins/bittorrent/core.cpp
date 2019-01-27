@@ -2044,9 +2044,6 @@ namespace BitTorrent
 		settings.endGroup ();
 
 		boost::uint32_t saveflags = 0xffffffff;
-		if (!Session_->is_dht_running ())
-			saveflags &= ~libtorrent::session::save_dht_state;
-
 		libtorrent::entry sessionState;
 		Session_->save_state (sessionState, saveflags);
 
