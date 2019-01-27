@@ -65,6 +65,29 @@ namespace BitTorrent
 
 			const auto showBool = [] (bool val) { return val ? tr ("true") : tr ("false"); };
 
+#if LIBTORRENT_VERSION_NUM >= 10200
+			const auto now = std::chrono::system_clock::now ();
+			for (const auto& endpoint : tracker.endpoints)
+			{
+				const QStringList strings
+				{
+					QString::fromUtf8 (tracker.url.c_str ()),
+					QString::number (tracker.tier),
+					tr ("%1 s").arg (libtorrent::total_seconds (endpoint.next_announce - now)),
+					QString::number (endpoint.fails),
+					QString::number (tracker.fail_limit),
+					showBool (tracker.verified),
+					showBool (endpoint.updating),
+					showBool (endpoint.start_sent),
+					showBool (endpoint.complete_sent),
+					showBool (torrent),
+					showBool (client),
+					showBool (magnet),
+					showBool (tex)
+				};
+				Ui_.Trackers_->addTopLevelItem (new QTreeWidgetItem (strings));
+			}
+#else
 			const QStringList strings
 			{
 				QString::fromUtf8 (tracker.url.c_str ()),
@@ -82,6 +105,7 @@ namespace BitTorrent
 				showBool (tex)
 			};
 			Ui_.Trackers_->addTopLevelItem (new QTreeWidgetItem (strings));
+#endif
 		}
 		for (int i = 0; i < Ui_.Trackers_->columnCount (); ++i)
 			Ui_.Trackers_->resizeColumnToContents (i);
