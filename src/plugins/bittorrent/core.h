@@ -128,6 +128,7 @@ namespace BitTorrent
 			, Parameters_ { params }
 			, Promise_ { QFutureInterface<IDownload::Result> {} }
 			{
+				Promise_->reportStarted ();
 			}
 
 			TorrentStruct (const std::vector<int>& prios,
@@ -148,6 +149,7 @@ namespace BitTorrent
 			, Parameters_ { params }
 			, Promise_ { QFutureInterface<IDownload::Result> {} }
 			{
+				Promise_->reportStarted ();
 			}
 		};
 
