@@ -90,11 +90,6 @@ namespace BitTorrent
 		return false;
 	}
 
-	bool LiveStreamDevice::isWritable () const
-	{
-		return false;
-	}
-
 	bool LiveStreamDevice::open (QIODevice::OpenMode)
 	{
 		return true;

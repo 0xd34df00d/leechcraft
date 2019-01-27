@@ -63,7 +63,6 @@ namespace BitTorrent
 
 		virtual qint64 bytesAvailable () const;
 		virtual bool isSequential () const;
-		virtual bool isWritable () const;
 		virtual bool open (OpenMode);
 		virtual qint64 pos () const;
 		virtual bool seek (qint64);
