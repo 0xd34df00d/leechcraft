@@ -181,7 +181,7 @@ namespace BitTorrent
 		{
 			libtorrent::settings_pack pack;
 			pack.set_str (libtorrent::settings_pack::peer_fingerprint, BuildFingerprint (Proxy_));
-			Session_ = new libtorrent::session (pack, 0);
+			Session_ = new libtorrent::session (pack, {});
 			Session_->set_ip_filter ({});
 
 			SessionSettingsMgr_ = new SessionSettingsManager { Session_, Proxy_, this };
@@ -2206,7 +2206,7 @@ namespace BitTorrent
 					<< ":"
 					<< a.port
 					<< "; the SHA1 hash is"
-					<< libtorrent::to_hex (a.info_hash.to_string ()).c_str ();
+					<< QByteArray::fromStdString (a.info_hash.to_string ());
 			NeedToLog_ = false;
 		}
 
@@ -2231,7 +2231,7 @@ namespace BitTorrent
 		{
 			qDebug () << "<libtorrent> <DHT>"
 					<< "got peers for"
-					<< libtorrent::to_hex (a.info_hash.to_string ()).c_str ();
+					<< QByteArray::fromStdString (a.info_hash.to_string ());
 			NeedToLog_ = false;
 		}
 
