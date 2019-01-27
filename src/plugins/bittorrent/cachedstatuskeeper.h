@@ -47,8 +47,10 @@ namespace BitTorrent
 	public:
 #if LIBTORRENT_VERSION_NUM >= 10200
 		using FlagsType_t = libtorrent::status_flags_t;
+		constexpr static FlagsType_t AllFlags = FlagsType_t::all ();
 #else
 		using FlagsType_t = uint32_t;
+		constexpr static FlagsType_t AllFlags = 0xffffffff;
 #endif
 	private:
 		struct CachedItem
@@ -61,7 +63,7 @@ namespace BitTorrent
 	public:
 		using QObject::QObject;
 
-		libtorrent::torrent_status GetStatus (const libtorrent::torrent_handle&, FlagsType_t flags);
+		libtorrent::torrent_status GetStatus (const libtorrent::torrent_handle&, FlagsType_t flags = {});
 		void HandleStatusUpdatePosted (const libtorrent::torrent_status&);
 	};
 }

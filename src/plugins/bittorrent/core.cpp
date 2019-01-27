@@ -789,7 +789,7 @@ namespace BitTorrent
 		const auto& handle = Handles_.at (idx).Handle_;
 
 		auto result = std::make_unique<TorrentInfo> ();
-		result->Status_ = StatusKeeper_->GetStatus (handle, 0xffffffff);
+		result->Status_ = StatusKeeper_->GetStatus (handle, CachedStatusKeeper::AllFlags);
 		if (const auto info = handle.torrent_file ())
 			result->Info_.reset (new libtorrent::torrent_info (*info));
 		result->Destination_ = QString::fromStdString (result->Status_.save_path);
@@ -840,7 +840,7 @@ namespace BitTorrent
 	{
 		for (const auto& handle : Handles_)
 		{
-			const auto& s = handle.Handle_.status (0);
+			const auto& s = handle.Handle_.status ({});
 			QString domain = QUrl (s.current_tracker.c_str ()).host ();
 			if (domain.size ())
 			{
@@ -1299,7 +1299,7 @@ namespace BitTorrent
 		if (!CheckValidity (idx))
 			return false;
 
-		return StatusKeeper_->GetStatus (Handles_.at (idx).Handle_, 0).auto_managed;
+		return StatusKeeper_->GetStatus (Handles_.at (idx).Handle_).auto_managed;
 	};
 
 	void Core::SetTorrentManaged (bool man, int idx)
@@ -1316,7 +1316,7 @@ namespace BitTorrent
 		if (!CheckValidity (idx))
 			return false;
 
-		return StatusKeeper_->GetStatus (Handles_.at (idx).Handle_, 0).sequential_download;
+		return StatusKeeper_->GetStatus (Handles_.at (idx).Handle_).sequential_download;
 	}
 
 	void Core::SetTorrentSequentialDownload (bool seq, int idx)
@@ -1332,7 +1332,7 @@ namespace BitTorrent
 		if (!CheckValidity (idx))
 			return false;
 
-		return StatusKeeper_->GetStatus (Handles_.at (idx).Handle_, 0).super_seeding;
+		return StatusKeeper_->GetStatus (Handles_.at (idx).Handle_).super_seeding;
 	}
 
 	void Core::SetTorrentSuperSeeding (bool sup, int idx)
@@ -2059,7 +2059,7 @@ namespace BitTorrent
 			if (Handles_.at (i).State_ == TSSeeding)
 				continue;
 
-			const auto& status = Handles_.at (i).Handle_.status (0);
+			const auto& status = Handles_.at (i).Handle_.status ({});
 			libtorrent::torrent_status::state_t state = status.state;
 
 			if (status.paused)

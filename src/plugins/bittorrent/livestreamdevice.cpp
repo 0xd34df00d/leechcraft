@@ -129,7 +129,7 @@ namespace BitTorrent
 
 	qint64 LiveStreamDevice::size () const
 	{
-		return StatusKeeper_->GetStatus (Handle_, {}).total_wanted;
+		return StatusKeeper_->GetStatus (Handle_).total_wanted;
 	}
 
 	void LiveStreamDevice::PieceRead (const libtorrent::read_piece_alert&)

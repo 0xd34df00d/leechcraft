@@ -51,12 +51,7 @@ namespace BitTorrent
 
 	void CachedStatusKeeper::HandleStatusUpdatePosted (const libtorrent::torrent_status& status)
 	{
-#if LIBTORRENT_VERSION_NUM >= 10200
-		const auto all = FlagsType_t::all ();
-#else
-		const auto all = 0xffffffff;
-#endif
-		Handle2Status_ [status.handle] = { status, all };
+		Handle2Status_ [status.handle] = { status, AllFlags };
 	}
 }
 }
