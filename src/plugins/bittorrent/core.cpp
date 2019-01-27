@@ -950,11 +950,6 @@ namespace BitTorrent
 			HandleLibtorrentException (e);
 			return MakeErrorResult ("Torrent error");
 		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO << e.what ();
-			return MakeErrorResult ("General error");
-		}
 
 		beginInsertRows ({}, Handles_.size (), Handles_.size ());
 		Handles_.append ({ handle, tags, Proxy_->GetID (), params });
