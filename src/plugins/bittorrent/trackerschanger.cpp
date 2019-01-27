@@ -90,12 +90,13 @@ namespace BitTorrent
 	std::vector<libtorrent::announce_entry> TrackersChanger::GetTrackers () const
 	{
 		const int count = Ui_.Trackers_->topLevelItemCount ();
-		std::vector<libtorrent::announce_entry> result (count, std::string ());
+		std::vector<libtorrent::announce_entry> result;
+		result.reserve (count);
 		for (int i = 0; i < count; ++i)
 		{
-			QTreeWidgetItem *item = Ui_.Trackers_->topLevelItem (i);
-			result [i].url = item->text (0).toStdString ();
-			result [i].tier = item->text (1).toInt ();
+			auto item = Ui_.Trackers_->topLevelItem (i);
+			auto& entry = result.emplace_back (item->text (0).toStdString ());
+			entry.tier = item->text (1).toInt ();
 		}
 		return result;
 	}
