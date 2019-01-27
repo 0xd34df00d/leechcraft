@@ -1400,12 +1400,12 @@ namespace BitTorrent
 
 	QMap<BanRange_t, bool> Core::GetFilter () const
 	{
-		const auto& both = Session_->get_ip_filter ().export_filter ();
+		const auto& [v4, v6] = Session_->get_ip_filter ().export_filter ();
 
 		QMap<BanRange_t, bool> result;
-		for (const auto& range : both.get<0> ())
+		for (const auto& range : v4)
 			result [GetBanRange (range)] = range.flags;
-		for (const auto& range : both.get<1> ())
+		for (const auto& range : v6)
 			result [GetBanRange (range)] = range.flags;
 		return result;
 	}
