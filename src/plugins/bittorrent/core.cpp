@@ -958,6 +958,12 @@ namespace BitTorrent
 		return { Handles_.back ().ID_, Handles_.back ().Promise_->future () };
 	}
 
+#if LIBTORRENT_VERSION_NUM >= 10200
+	namespace lt_lib = std;
+#else
+	namespace lt_lib = boost;
+#endif
+
 	QPair<int, QFuture<IDownload::Result>> Core::AddFile (const QString& filename,
 			const QString& path,
 			const QStringList& tags,
@@ -981,7 +987,7 @@ namespace BitTorrent
 		libtorrent::add_torrent_params atp;
 		try
 		{
-			atp.ti = boost::make_shared<libtorrent::torrent_info> (GetTorrentInfo (contents));
+			atp.ti = lt_lib::make_shared<libtorrent::torrent_info> (GetTorrentInfo (contents));
 			atp.storage_mode = GetCurrentStorageMode ();
 			atp.save_path = std::string (path.toUtf8 ().constData ());
 			if (!autoManaged)
@@ -1130,7 +1136,7 @@ namespace BitTorrent
 			return;
 
 		const auto& handle = Handles_.at (pos).Handle_;
-		const auto& status = handle.status (0);
+		const auto& status = handle.status ({});
 		switch (status.state)
 		{
 		case libtorrent::torrent_status::checking_files:
@@ -1420,7 +1426,7 @@ namespace BitTorrent
 			return;
 		}
 
-		const auto& status = a.handle.status (0);
+		const auto& status = a.handle.status ({});
 		if (!status.error.empty ())
 		{
 			qWarning () << Q_FUNC_INFO
@@ -1796,7 +1802,7 @@ namespace BitTorrent
 		try
 		{
 			libtorrent::add_torrent_params atp;
-			atp.ti = boost::make_shared<libtorrent::torrent_info> (e);
+			atp.ti = lt_lib::make_shared<libtorrent::torrent_info> (e);
 			atp.storage_mode = GetCurrentStorageMode ();
 			atp.save_path = path.string ();
 			if (!automanaged)
@@ -2043,7 +2049,11 @@ namespace BitTorrent
 		settings.endArray ();
 		settings.endGroup ();
 
+#if LIBTORRENT_VERSION_NUM >= 10200
+		constexpr auto saveflags = libtorrent::save_state_flags_t::all ();
+#else
 		boost::uint32_t saveflags = 0xffffffff;
+#endif
 		libtorrent::entry sessionState;
 		Session_->save_state (sessionState, saveflags);
 
