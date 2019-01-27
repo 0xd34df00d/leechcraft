@@ -563,8 +563,7 @@ namespace BitTorrent
 			;// do nothing
 		else return;
 
-		std::sort (rows.begin (), rows.end (),
-				std::greater<int> ());
+		std::sort (rows.begin (), rows.end (), std::greater<> ());
 
 		Q_FOREACH (int row, rows)
 			Core::Instance ()->RemoveTorrent (row, roptions);
