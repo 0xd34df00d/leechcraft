@@ -1063,16 +1063,28 @@ namespace BitTorrent
 			<< Handles_.size ();
 	}
 
-	void Core::RemoveTorrent (int pos, int roptions)
+	void Core::RemoveTorrent (int pos, bool withFiles)
 	{
 		if (!CheckValidity (pos))
 			return;
 
 		beginRemoveRows (QModelIndex (), pos, pos);
-		Session_->remove_torrent (Handles_.at (pos).Handle_, roptions);
+
+#if LIBTORRENT_VERSION_NUM >= 10200
+		libtorrent::remove_flags_t options;
+		if (withFiles)
+			options |= libtorrent::session_handle::delete_files;
+#else
+		int options = 0;
+		if (withFiles)
+			options |= libtorrent::session::delete_files;
+#endif
+		Session_->remove_torrent (Handles_.at (pos).Handle_, options);
+
 		int id = Handles_.at (pos).ID_;
 		Handles_.removeAt (pos);
 		Proxy_->FreeID (id);
+
 		endRemoveRows ();
 
 		ScheduleSave ();

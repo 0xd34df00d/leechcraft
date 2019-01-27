@@ -556,9 +556,9 @@ namespace BitTorrent
 
 		confirm.exec ();
 
-		int roptions = 0;
+		bool withFiles = false;
 		if (confirm.clickedButton () == deleteTorrentsAndFilesButton)
-			roptions |= libtorrent::session::delete_files;
+			withFiles = true;
 		else if (confirm.clickedButton () == deleteTorrentsButton)
 			;// do nothing
 		else return;
@@ -566,7 +566,7 @@ namespace BitTorrent
 		std::sort (rows.begin (), rows.end (), std::greater<> ());
 
 		Q_FOREACH (int row, rows)
-			Core::Instance ()->RemoveTorrent (row, roptions);
+			Core::Instance ()->RemoveTorrent (row, withFiles);
 		TabWidget_->InvalidateSelection ();
 		setActionsEnabled ();
 	}
