@@ -879,7 +879,7 @@ namespace BitTorrent
 			const libtorrent::peer_info& pi = peerInfos [i];
 
 			const int interesting = std::count_if (ourMissing.begin (), ourMissing.end (),
-					[&pi] (int idx) { return pi.pieces [idx]; });
+					[&pi] (int idx) { return idx < pi.pieces.end_index () && pi.pieces [idx]; });
 
 			PeerInfo ppi
 			{
