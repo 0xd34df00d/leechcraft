@@ -80,8 +80,6 @@ namespace Aggregator
 
 	void Core::Release ()
 	{
-		StorageBackend_.reset ();
-
 		XmlSettingsManager::Instance ()->Release ();
 	}
 
@@ -183,23 +181,24 @@ namespace Aggregator
 	bool Core::ReinitStorage ()
 	{
 		return Util::Visit (StorageBackendManager::Instance ().CreatePrimaryStorage (),
-				[this] (const StorageBackend_ptr& backend)
-				{
-					StorageBackend_ = backend;
-					return true;
-				},
+				[] (const StorageBackend_ptr&) { return true; },
 				[this] (const auto& error)
 				{
-					ErrorNotification (tr ("Storage error"), error.Message_);
+					auto e = Util::MakeNotification ("Aggregator",
+							tr ("Error initializing storage.") + " " + error.Message_,
+							Priority::Critical);
+					Proxy_->GetEntityManager ()->HandleEntity (e);
 					return false;
 				});
 	}
 
 	void Core::AddFeed (QString url, const QStringList& tags, const std::optional<Feed::FeedSettings>& maybeFeedSettings)
 	{
+		auto sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
+
 		const auto& fixedUrl = QUrl::fromUserInput (url);
 		url = fixedUrl.toString ();
-		if (StorageBackend_->FindFeed (url))
+		if (sb->FindFeed (url))
 		{
 			ErrorNotification (tr ("Feed addition error"),
 					tr ("The feed %1 is already added")
@@ -209,13 +208,13 @@ namespace Aggregator
 
 		Feed feed;
 		feed.URL_ = url;
-		StorageBackend_->AddFeed (feed);
+		sb->AddFeed (feed);
 
 		if (maybeFeedSettings)
 		{
 			auto fs = *maybeFeedSettings;
 			fs.FeedID_ = feed.FeedID_;
-			StorageBackend_->SetFeedSettings (fs);
+			sb->SetFeedSettings (fs);
 		}
 
 		emit updateRequested (feed.FeedID_);
@@ -226,6 +225,7 @@ namespace Aggregator
 		auto tags = Proxy_->GetTagsManager ()->Split (tagsString);
 		tags.removeDuplicates ();
 
+		auto sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
 		for (const auto& feed : feeds)
 		{
 			for (const auto& channel : feed->Channels_)
@@ -234,7 +234,7 @@ namespace Aggregator
 				channel->Tags_.removeDuplicates ();
 			}
 
-			StorageBackend_->AddFeed (*feed);
+			sb->AddFeed (*feed);
 		}
 	}
 

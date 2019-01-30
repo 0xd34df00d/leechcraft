@@ -61,7 +61,6 @@ namespace Aggregator
 	{
 		Q_OBJECT
 
-		std::shared_ptr<StorageBackend> StorageBackend_;
 		ICoreProxy_ptr Proxy_;
 		bool Initialized_ = false;
 
