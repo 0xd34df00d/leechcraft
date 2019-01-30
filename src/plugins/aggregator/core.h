@@ -62,7 +62,6 @@ namespace Aggregator
 		Q_OBJECT
 
 		ICoreProxy_ptr Proxy_;
-		bool Initialized_ = false;
 
 		std::shared_ptr<OpmlAdder> OpmlAdder_;
 

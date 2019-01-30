@@ -95,8 +95,7 @@ namespace Aggregator
 
 	bool Core::CouldHandle (const Entity& e)
 	{
-		if (!e.Entity_.canConvert<QUrl> () ||
-				!Initialized_)
+		if (!e.Entity_.canConvert<QUrl> ())
 			return false;
 
 		if (OpmlAdder_->IsOpmlEntity (e))
@@ -172,8 +171,6 @@ namespace Aggregator
 
 		// TODO replace with std::bind_front in C++20
 		OpmlAdder_ = std::make_shared<OpmlAdder> ([this] (auto... args) { AddFeed (args...); }, Proxy_);
-
-		Initialized_ = true;
 
 		return result;
 	}
