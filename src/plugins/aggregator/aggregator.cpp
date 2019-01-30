@@ -192,7 +192,6 @@ namespace Aggregator
 		AggregatorTab_.reset ();
 		ChannelsModel_.reset ();
 		DBUpThread_.reset ();
-		Core::Instance ().Release ();
 		StorageBackendManager::Instance ().Release ();
 	}
 

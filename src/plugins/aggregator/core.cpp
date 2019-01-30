@@ -78,11 +78,6 @@ namespace Aggregator
 		return core;
 	}
 
-	void Core::Release ()
-	{
-		XmlSettingsManager::Instance ()->Release ();
-	}
-
 	void Core::SetProxy (ICoreProxy_ptr proxy)
 	{
 		Proxy_ = proxy;

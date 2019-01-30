@@ -68,7 +68,6 @@ namespace Aggregator
 		Core () = default;
 	public:
 		static Core& Instance ();
-		void Release ();
 
 		void SetProxy (ICoreProxy_ptr);
 		ICoreProxy_ptr GetProxy () const;
