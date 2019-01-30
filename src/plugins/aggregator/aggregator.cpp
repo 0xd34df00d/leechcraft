@@ -45,11 +45,11 @@
 #include <interfaces/core/icoreproxy.h>
 #include <util/tags/tagscompletionmodel.h>
 #include <util/util.h>
-#include <util/tags/categoryselector.h>
 #include <util/db/backendselector.h>
+#include <util/gui/util.h>
 #include <util/models/flattofoldersproxymodel.h>
 #include <util/shortcuts/shortcutmanager.h>
-#include <util/gui/util.h>
+#include <util/tags/categoryselector.h>
 #include <util/xpc/coreproxyholder.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "itemsfiltermodel.h"
