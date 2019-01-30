@@ -44,7 +44,6 @@
 #include <util/tags/categoryselector.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/prelude.h>
-#include "core.h"
 #include "channelsmodel.h"
 #include "storagebackendmanager.h"
 #include "itemutils.h"
@@ -53,9 +52,10 @@ namespace LeechCraft
 {
 namespace Aggregator
 {
-	Export2FB2Dialog::Export2FB2Dialog (ChannelsModel *channelsModel, QWidget *parent)
+	Export2FB2Dialog::Export2FB2Dialog (ChannelsModel *channelsModel, const ICoreProxy_ptr& proxy, QWidget *parent)
 	: QDialog { parent }
 	, ChannelsModel_ { channelsModel }
+	, Proxy_ { proxy }
 	{
 		Ui_.setupUi (this);
 
@@ -243,7 +243,8 @@ namespace Aggregator
 		void WriteBeginning (QXmlStreamWriter& w,
 				const QStringList& authors,
 				const QStringList& genres,
-				const QString& name)
+				const QString& name,
+				const ICoreProxy_ptr& proxy)
 		{
 			w.setAutoFormatting (true);
 			w.setAutoFormattingIndent (2);
@@ -272,7 +273,7 @@ namespace Aggregator
 					w.writeEndElement ();
 					w.writeTextElement ("program-used",
 							QString ("LeechCraft Aggregator %1")
-								.arg (Core::Instance ().GetProxy ()->GetVersion ()));
+								.arg (proxy->GetVersion ()));
 					w.writeTextElement ("id",
 							QUuid::createUuid ().toString ());
 					w.writeTextElement ("version", "1.0");
@@ -321,14 +322,14 @@ namespace Aggregator
 		}
 
 		QXmlStreamWriter w (&file);
-		WriteBeginning (w, authors, genres, Ui_.Name_->text ());
+		WriteBeginning (w, authors, genres, Ui_.Name_->text (), Proxy_);
 
 		for (const auto& cs : channels)
 			WriteChannel (w, cs, info.Items_ [cs]);
 		w.writeEndElement ();
 		w.writeEndDocument ();
 
-		const auto iem = Core::Instance ().GetProxy ()->GetEntityManager ();
+		const auto iem = Proxy_->GetEntityManager ();
 		iem->HandleEntity (Util::MakeNotification ("Aggregator",
 					tr ("Export complete."),
 					Priority::Info));
@@ -446,8 +447,7 @@ namespace Aggregator
 
 		doc.print (&printer);
 
-		const auto iem = Core::Instance ().GetProxy ()->GetEntityManager ();
-		iem->HandleEntity (Util::MakeNotification ("Aggregator",
+		Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Aggregator",
 					tr ("Export complete."),
 					Priority::Info));
 	}
