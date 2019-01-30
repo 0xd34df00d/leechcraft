@@ -152,6 +152,8 @@ namespace Aggregator
 
 		template<typename F>
 		void Perform (F&&);
+
+		void ReinitStorage ();
 	public slots:
 		void handleTasksTreeSelectionCurrentRowChanged (const QModelIndex&, const QModelIndex&);
 	private slots:

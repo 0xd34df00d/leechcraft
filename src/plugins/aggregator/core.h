@@ -76,14 +76,11 @@ namespace Aggregator
 		void Handle (LeechCraft::Entity);
 		void StartAddingOPML (const QString&);
 
-		bool DoDelayedInit ();
-		bool ReinitStorage ();
+		void DoDelayedInit ();
 
 		void AddFeed (QString, const QStringList&, const std::optional<Feed::FeedSettings>& = {});
 
 		void AddFeeds (const feeds_container_t&, const QString&);
-	private:
-		void ErrorNotification (const QString&, const QString&, bool = true) const;
 	signals:
 		void updateRequested (IDType_t);
 	};

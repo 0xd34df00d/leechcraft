@@ -48,6 +48,8 @@
 #include <util/db/backendselector.h>
 #include <util/gui/util.h>
 #include <util/models/flattofoldersproxymodel.h>
+#include <util/sll/either.h>
+#include <util/sll/visitor.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/tags/categoryselector.h>
 #include <util/xpc/coreproxyholder.h>
@@ -127,22 +129,9 @@ namespace Aggregator
 		XmlSettingsDialog_->SetCustomWidget ("BackendSelector",
 				new Util::BackendSelector (XmlSettingsManager::Instance ()));
 
-		if (!Core::Instance ().DoDelayedInit ())
-		{
-			AppWideActions_->SetEnabled (false);
-			InitFailed_ = true;
-			qWarning () << Q_FUNC_INFO
-					<< "core initialization failed";
+		ReinitStorage ();
 
-			auto box = new QMessageBox (QMessageBox::Critical,
-					"LeechCraft",
-					tr ("Aggregator failed to initialize properly. Check logs and talk with "
-						"the developers. Or, at least, check the storage backend settings and "
-						"restart LeechCraft.<br /><br />If you are using SQLite backend (the "
-						"default), make sure you have the corresponding Qt driver installed."),
-					QMessageBox::Ok);
-			box->open ();
-		}
+		Core::Instance ().DoDelayedInit ();
 
 		DBUpThread_ = std::make_shared<DBUpdateThread> (Proxy_);
 		DBUpThread_->SetAutoQuit (true);
@@ -174,9 +163,6 @@ namespace Aggregator
 
 	void Aggregator::SecondInit ()
 	{
-		if (InitFailed_)
-			return;
-
 		ReprManager_ = std::make_shared<RepresentationManager> (RepresentationManager::InitParams {
 					ShortcutMgr_,
 					*AppWideActions_,
@@ -327,8 +313,8 @@ namespace Aggregator
 
 			connect (third,
 					&StartupThirdPage::reinitStorageRequested,
-					&Core::Instance (),
-					&Core::ReinitStorage);
+					this,
+					&Aggregator::ReinitStorage);
 		}
 		return result;
 	}
@@ -507,6 +493,25 @@ namespace Aggregator
 	{
 		for (auto index : GetRelevantIndexes ())
 			func (index);
+	}
+
+	void Aggregator::ReinitStorage ()
+	{
+		const auto storageReady = Util::Visit (StorageBackendManager::Instance ().CreatePrimaryStorage (),
+				[] (const StorageBackend_ptr&) { return true; },
+				[] (const auto& error)
+				{
+					auto box = new QMessageBox (QMessageBox::Critical,
+							"LeechCraft",
+							tr ("Failed to initialize Aggregator storage: %1.")
+								.arg (error.Message_),
+							QMessageBox::Ok);
+					box->open ();
+					return false;
+				});
+
+		AppWideActions_->SetEnabled (storageReady);
+
 	}
 
 	namespace

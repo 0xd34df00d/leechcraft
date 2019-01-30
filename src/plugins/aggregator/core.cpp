@@ -158,30 +158,10 @@ namespace Aggregator
 		OpmlAdder_->StartAddingOpml (file);
 	}
 
-	bool Core::DoDelayedInit ()
+	void Core::DoDelayedInit ()
 	{
-		bool result = true;
-		if (!ReinitStorage ())
-			result = false;
-
 		// TODO replace with std::bind_front in C++20
 		OpmlAdder_ = std::make_shared<OpmlAdder> ([this] (auto... args) { AddFeed (args...); }, Proxy_);
-
-		return result;
-	}
-
-	bool Core::ReinitStorage ()
-	{
-		return Util::Visit (StorageBackendManager::Instance ().CreatePrimaryStorage (),
-				[] (const StorageBackend_ptr&) { return true; },
-				[this] (const auto& error)
-				{
-					auto e = Util::MakeNotification ("Aggregator",
-							tr ("Error initializing storage.") + " " + error.Message_,
-							Priority::Critical);
-					Proxy_->GetEntityManager ()->HandleEntity (e);
-					return false;
-				});
 	}
 
 	void Core::AddFeed (QString url, const QStringList& tags, const std::optional<Feed::FeedSettings>& maybeFeedSettings)
@@ -192,9 +172,11 @@ namespace Aggregator
 		url = fixedUrl.toString ();
 		if (sb->FindFeed (url))
 		{
-			ErrorNotification (tr ("Feed addition error"),
+			auto e = Util::MakeNotification (tr ("Feed addition error"),
 					tr ("The feed %1 is already added")
-						.arg (url));
+						.arg (url),
+					Priority::Critical);
+			Proxy_->GetEntityManager ()->HandleEntity (e);
 			return;
 		}
 
@@ -228,13 +210,6 @@ namespace Aggregator
 
 			sb->AddFeed (*feed);
 		}
-	}
-
-	void Core::ErrorNotification (const QString& h, const QString& body, bool wait) const
-	{
-		auto e = Util::MakeNotification (h, body, Priority::Critical);
-		e.Additional_ ["UntilUserSees"] = wait;
-		Proxy_->GetEntityManager ()->HandleEntity (e);
 	}
 }
 }
