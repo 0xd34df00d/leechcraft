@@ -36,7 +36,6 @@
 #include <util/sll/prelude.h>
 #include <util/sll/overload.h>
 #include "xmlsettingsmanager.h"
-#include "core.h"
 
 namespace LeechCraft
 {
@@ -142,7 +141,7 @@ namespace Aggregator
 	void StartupThirdPage::HandleAccepted ()
 	{
 		if (wizard ()->field ("Aggregator/StorageDirty").toBool ())
-			Core::Instance ().ReinitStorage ();
+			emit reinitStorageRequested ();
 
 		QList<SelectedFeed> feeds;
 		for (int i = 0; i < Ui_.Tree_->topLevelItemCount (); ++i)

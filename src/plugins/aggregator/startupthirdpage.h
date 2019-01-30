@@ -71,6 +71,7 @@ namespace Aggregator
 		void on_DeselectAll__released ();
 	signals:
 		void feedsSelected (const QList<SelectedFeed>&);
+		void reinitStorageRequested ();
 	};
 }
 }

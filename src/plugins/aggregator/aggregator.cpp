@@ -325,6 +325,11 @@ namespace Aggregator
 						for (const auto& feed : feeds)
 							Core::Instance ().AddFeed (feed.URL_, tm->Split (feed.Tags_));
 					});
+
+			connect (third,
+					&StartupThirdPage::reinitStorageRequested,
+					&Core::Instance (),
+					&Core::ReinitStorage);
 		}
 		return result;
 	}
