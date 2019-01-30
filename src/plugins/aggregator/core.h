@@ -63,18 +63,12 @@ namespace Aggregator
 
 		ICoreProxy_ptr Proxy_;
 
-		std::shared_ptr<OpmlAdder> OpmlAdder_;
-
 		Core () = default;
 	public:
 		static Core& Instance ();
 
 		void SetProxy (ICoreProxy_ptr);
 		ICoreProxy_ptr GetProxy () const;
-
-		bool CouldHandle (const LeechCraft::Entity&);
-		void Handle (LeechCraft::Entity);
-		void StartAddingOPML (const QString&);
 
 		void DoDelayedInit ();
 

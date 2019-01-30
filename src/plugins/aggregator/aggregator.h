@@ -60,6 +60,7 @@ namespace Aggregator
 	class UpdatesManager;
 	class ChannelsModel;
 	class ResourcesFetcher;
+	class OpmlAdder;
 	struct AppWideActions;
 	struct ChannelActions;
 
@@ -108,6 +109,8 @@ namespace Aggregator
 		std::shared_ptr<ResourcesFetcher> ResourcesFetcher_;
 
 		std::shared_ptr<ChannelsModel> ChannelsModel_;
+
+		std::shared_ptr<OpmlAdder> OpmlAdder_;
 
 		std::shared_ptr<DBUpdateThread> DBUpThread_;
 

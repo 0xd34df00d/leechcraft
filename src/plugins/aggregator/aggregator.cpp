@@ -41,6 +41,7 @@
 #include <QCursor>
 #include <QKeyEvent>
 #include <QInputDialog>
+#include <QXmlStreamReader>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/icoreproxy.h>
 #include <util/tags/tagscompletionmodel.h>
@@ -81,6 +82,7 @@
 #include "resourcesfetcher.h"
 #include "dbupdatethread.h"
 #include "poolsmanager.h"
+#include "opmladder.h"
 
 namespace LeechCraft
 {
@@ -131,7 +133,8 @@ namespace Aggregator
 
 		ReinitStorage ();
 
-		Core::Instance ().DoDelayedInit ();
+		// TODO replace with std::bind_front in C++20
+		OpmlAdder_ = std::make_shared<OpmlAdder> ([] (auto... args) { Core::Instance ().AddFeed (args...); }, Proxy_);
 
 		DBUpThread_ = std::make_shared<DBUpdateThread> (Proxy_);
 		DBUpThread_->SetAutoQuit (true);
@@ -267,15 +270,67 @@ namespace Aggregator
 
 	EntityTestHandleResult Aggregator::CouldHandle (const Entity& e) const
 	{
-		EntityTestHandleResult r;
-		if (Core::Instance ().CouldHandle (e))
-			r.HandlePriority_ = EntityTestHandleResult::PIdeal;
-		return r;
+		if (!e.Entity_.canConvert<QUrl> ())
+			return {};
+
+		if (OpmlAdder_->IsOpmlEntity (e))
+			return EntityTestHandleResult { EntityTestHandleResult::PIdeal };
+
+		const auto& url = e.Entity_.toUrl ();
+		if (e.Mime_ == "text/xml")
+		{
+			if (url.scheme () != "http" &&
+					url.scheme () != "https")
+				return {};
+
+			const auto& pageData = e.Additional_ ["URLData"].toString ();
+			QXmlStreamReader xmlReader (pageData);
+			if (!xmlReader.readNextStartElement ())
+				return {};
+
+			return xmlReader.name () == "rss" || xmlReader.name () == "atom" ?
+					EntityTestHandleResult { EntityTestHandleResult::PIdeal } :
+					EntityTestHandleResult {};
+		}
+		else
+		{
+			if (url.scheme () == "feed" || url.scheme () == "itpc")
+				return EntityTestHandleResult { EntityTestHandleResult::PIdeal };
+
+			if (url.scheme () != "http" &&
+					url.scheme () != "https")
+				return {};
+
+			if (e.Mime_ != "application/atom+xml" &&
+					e.Mime_ != "application/rss+xml")
+				return {};
+
+			const auto& linkRel = e.Additional_ ["LinkRel"].toString ();
+			if (!linkRel.isEmpty () &&
+					linkRel != "alternate")
+				return {};
+		}
+
+		return EntityTestHandleResult { EntityTestHandleResult::PIdeal };
 	}
 
 	void Aggregator::Handle (Entity e)
 	{
-		Core::Instance ().Handle (e);
+		if (OpmlAdder_->HandleOpmlEntity (e))
+			return;
+
+		QUrl url = e.Entity_.toUrl ();
+		QString str = url.toString ();
+		if (str.startsWith ("feed://"))
+			str.replace (0, 4, "http");
+		else if (str.startsWith ("feed:"))
+			str.remove  (0, 5);
+		else if (str.startsWith ("itpc://"))
+			str.replace (0, 4, "http");
+
+		AddFeedDialog af { Proxy_->GetTagsManager (), str };
+		if (af.exec () == QDialog::Accepted)
+			Core::Instance ().AddFeed (af.GetURL (), af.GetTags ());
 	}
 
 	void Aggregator::SetShortcut (const QString& name, const QKeySequences_t& shortcuts)
@@ -588,7 +643,7 @@ namespace Aggregator
 
 	void Aggregator::on_ActionImportOPML__triggered ()
 	{
-		Core::Instance ().StartAddingOPML (QString ());
+		OpmlAdder_->StartAddingOpml ({});
 	}
 
 	void Aggregator::on_ActionExportOPML__triggered ()
