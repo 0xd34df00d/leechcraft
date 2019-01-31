@@ -657,8 +657,20 @@ namespace Aggregator
 		if (import.exec () == QDialog::Rejected)
 			return;
 
-		Core::Instance ().AddFeeds (import.GetSelectedFeeds (),
-				import.GetTags ());
+		auto tags = Proxy_->GetTagsManager ()->Split (import.GetTags ());
+		tags.removeDuplicates ();
+
+		auto sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
+		for (const auto& feed : import.GetSelectedFeeds ())
+		{
+			for (const auto& channel : feed->Channels_)
+			{
+				channel->Tags_ += tags;
+				channel->Tags_.removeDuplicates ();
+			}
+
+			sb->AddFeed (*feed);
+		}
 	}
 
 	void Aggregator::on_ActionExportBinary__triggered ()

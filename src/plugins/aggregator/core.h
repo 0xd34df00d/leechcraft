@@ -73,8 +73,6 @@ namespace Aggregator
 		void DoDelayedInit ();
 
 		void AddFeed (QString, const QStringList&, const std::optional<Feed::FeedSettings>& = {});
-
-		void AddFeeds (const feeds_container_t&, const QString&);
 	signals:
 		void updateRequested (IDType_t);
 	};

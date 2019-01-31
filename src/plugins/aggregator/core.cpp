@@ -117,23 +117,5 @@ namespace Aggregator
 
 		emit updateRequested (feed.FeedID_);
 	}
-
-	void Core::AddFeeds (const feeds_container_t& feeds, const QString& tagsString)
-	{
-		auto tags = Proxy_->GetTagsManager ()->Split (tagsString);
-		tags.removeDuplicates ();
-
-		auto sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
-		for (const auto& feed : feeds)
-		{
-			for (const auto& channel : feed->Channels_)
-			{
-				channel->Tags_ += tags;
-				channel->Tags_.removeDuplicates ();
-			}
-
-			sb->AddFeed (*feed);
-		}
-	}
 }
 }
