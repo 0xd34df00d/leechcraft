@@ -46,6 +46,7 @@ namespace LeechCraft::Aggregator
 	class ChannelsModel;
 	struct AppWideActions;
 	struct ChannelActions;
+	struct ItemsWidgetDependencies;
 
 	class RepresentationManager : public QObject
 	{
@@ -56,10 +57,11 @@ namespace LeechCraft::Aggregator
 	public:
 		struct InitParams
 		{
-			Util::ShortcutManager *ShortcutMgr_;
 			const AppWideActions& AppWideActions_;
 			const ChannelActions& ChannelActions_;
 			ChannelsModel *ChannelsModel_;
+
+			const ItemsWidgetDependencies& ReprWidgetDeps_;
 		};
 
 		explicit RepresentationManager (const InitParams&);

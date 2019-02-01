@@ -55,10 +55,12 @@ namespace Aggregator
 		ChannelsFilterModel_->setFilterKeyColumn (0);
 
 		Ui_.setupUi (this);
-		Ui_.ItemsWidget_->SetChannelsModel (ChannelsFilterModel_);
-		Ui_.ItemsWidget_->SetAppWideActions (params.AppWideActions_);
-		Ui_.ItemsWidget_->SetChannelActions (*ChannelActions_);
-		Ui_.ItemsWidget_->RegisterShortcuts (params.ShortcutMgr_);
+		Ui_.ItemsWidget_->InjectDependencies ({
+					params.ShortcutMgr_,
+					ChannelsFilterModel_,
+					params.AppWideActions_,
+					*params.ChannelActions_
+				});
 
 		connect (Ui_.ItemsWidget_,
 				&ItemsWidget::movedToChannel,

@@ -234,8 +234,9 @@ namespace Aggregator
 		delete Impl_;
 	}
 
-	void ItemsWidget::SetChannelsModel (QAbstractItemModel *cm)
+	void ItemsWidget::InjectDependencies (const Dependencies& deps)
 	{
+		auto cm = deps.ChannelsModel_;
 		Impl_->ChannelsModel_ = cm;
 		connect (cm,
 				&QAbstractItemModel::rowsInserted,
@@ -245,32 +246,20 @@ namespace Aggregator
 				&QAbstractItemModel::rowsRemoved,
 				this,
 				&ItemsWidget::invalidateMergeMode);
-	}
 
-	void ItemsWidget::SetAppWideActions (const AppWideActions& awa)
-	{
-		QAction *first = Impl_->ControlToolBar_->actions ().first ();
-		Impl_->ControlToolBar_->insertAction (first,
-				awa.ActionUpdateFeeds_);
+		auto first = Impl_->ControlToolBar_->actions ().first ();
+
+		Impl_->ControlToolBar_->insertAction (first, deps.AppWideActions_.ActionUpdateFeeds_);
 		Impl_->ControlToolBar_->insertSeparator (first);
-	}
 
-	void ItemsWidget::SetChannelActions (const ChannelActions& ca)
-	{
-		QAction *first = Impl_->ControlToolBar_->actions ().first ();
-		Impl_->ControlToolBar_->insertAction (first,
-				ca.ActionRemoveFeed_);
-		Impl_->ControlToolBar_->insertAction (first,
-				ca.ActionUpdateSelectedFeed_);
+		Impl_->ControlToolBar_->insertAction (first, deps.ChannelActions_.ActionRemoveFeed_);
+		Impl_->ControlToolBar_->insertAction (first, deps.ChannelActions_.ActionUpdateSelectedFeed_);
 		Impl_->ControlToolBar_->insertSeparator (first);
-	}
 
-	void ItemsWidget::RegisterShortcuts (Util::ShortcutManager *mgr)
-	{
-		auto addAct = [this, mgr] (ItemsWidget::Action actId)
+		auto addAct = [this, &deps] (ItemsWidget::Action actId)
 		{
 			auto act = GetAction (actId);
-			mgr->RegisterAction (act->objectName (), act);
+			deps.ShortcutsMgr_->RegisterAction (act->objectName (), act);
 		};
 
 		for (int i = 0; i < static_cast<int> (ItemsWidget::Action::MaxAction); ++i)

@@ -167,10 +167,16 @@ namespace Aggregator
 	void Aggregator::SecondInit ()
 	{
 		ReprManager_ = std::make_shared<RepresentationManager> (RepresentationManager::InitParams {
-					ShortcutMgr_,
 					*AppWideActions_,
 					*ChannelActions_,
-					ChannelsModel_.get ()
+					ChannelsModel_.get (),
+					ItemsWidget::Dependencies
+					{
+						ShortcutMgr_,
+						ChannelsModel_.get (),
+						*AppWideActions_,
+						*ChannelActions_
+					}
 				});
 	}
 

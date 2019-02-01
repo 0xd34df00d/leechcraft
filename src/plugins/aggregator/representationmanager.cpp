@@ -42,10 +42,7 @@ namespace LeechCraft::Aggregator
 		JobHolderRepresentation_->setSourceModel (params.ChannelsModel_);
 
 		ReprWidget_ = new ItemsWidget;
-		ReprWidget_->SetChannelsModel (JobHolderRepresentation_);
-		ReprWidget_->RegisterShortcuts (params.ShortcutMgr_);
-		ReprWidget_->SetAppWideActions (params.AppWideActions_);
-		ReprWidget_->SetChannelActions (params.ChannelActions_);
+		ReprWidget_->InjectDependencies (params.ReprWidgetDeps_);
 
 		ReprModel_ = new ChannelsModelRepresentationProxy { this };
 		ReprModel_->setSourceModel (JobHolderRepresentation_);

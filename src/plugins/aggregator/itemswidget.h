@@ -54,6 +54,14 @@ namespace Aggregator
 	class Aggregator;
 	class ItemsFilterModel;
 
+	struct ItemsWidgetDependencies
+	{
+		Util::ShortcutManager *ShortcutsMgr_;
+		QAbstractItemModel *ChannelsModel_;
+		const AppWideActions& AppWideActions_;
+		const ChannelActions& ChannelActions_;
+	};
+
 	class ItemsWidget : public QWidget
 	{
 		Q_OBJECT
@@ -77,14 +85,12 @@ namespace Aggregator
 			MaxAction
 		};
 
+		using Dependencies = ItemsWidgetDependencies;
+
 		explicit ItemsWidget (QWidget* = nullptr);
 		~ItemsWidget () override;
 
-		void SetChannelsModel (QAbstractItemModel*);
-		void SetAppWideActions (const AppWideActions&);
-		void SetChannelActions (const ChannelActions&);
-
-		void RegisterShortcuts (Util::ShortcutManager*);
+		void InjectDependencies (const Dependencies&);
 
 		Item GetItem (const QModelIndex&) const;
 		QToolBar* GetToolBar () const;
