@@ -100,6 +100,8 @@ namespace Aggregator
 		std::unique_ptr<ItemsFilterModel> ItemsFilterModel_;
 		std::unique_ptr<CategorySelector> ItemCategorySelector_;
 
+		std::function<void (QString, QStringList)> FeedAdder_;
+
 		QTimer *SelectedChecker_ = nullptr;
 		QModelIndex LastSelectedIndex_;
 		QModelIndex LastSelectedChannel_;
@@ -255,6 +257,8 @@ namespace Aggregator
 		Impl_->ControlToolBar_->insertAction (first, deps.ChannelActions_.ActionRemoveFeed_);
 		Impl_->ControlToolBar_->insertAction (first, deps.ChannelActions_.ActionUpdateSelectedFeed_);
 		Impl_->ControlToolBar_->insertSeparator (first);
+
+		Impl_->FeedAdder_ = deps.FeedAdder_;
 
 		auto addAct = [this, &deps] (ItemsWidget::Action actId)
 		{
@@ -461,7 +465,7 @@ namespace Aggregator
 
 		const auto& addTags = Core::Instance ().GetProxy ()->GetTagsManager ()->
 				Split (XmlSettingsManager::Instance ()->property ("CommentsTags").toString ());
-		Core::Instance ().AddFeed (commentRSS, tags + addTags);
+		Impl_->FeedAdder_ (commentRSS, tags + addTags);
 	}
 
 	void ItemsWidget::CurrentChannelChanged (const QModelIndex& si)

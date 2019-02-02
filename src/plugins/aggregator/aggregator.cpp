@@ -175,7 +175,8 @@ namespace Aggregator
 						ShortcutMgr_,
 						ChannelsModel_.get (),
 						*AppWideActions_,
-						*ChannelActions_
+						*ChannelActions_,
+						[] (const QString& url, const QStringList& tags) { Core::Instance ().AddFeed (url, tags); }
 					}
 				});
 	}
@@ -249,6 +250,7 @@ namespace Aggregator
 								ChannelsModel_.get (),
 								*AppWideActions_,
 								*ChannelActions_,
+								[] (const QString& url, const QStringList& tags) { Core::Instance ().AddFeed (url, tags); }
 							}
 						},
 						this);

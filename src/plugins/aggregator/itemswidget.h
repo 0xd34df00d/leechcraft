@@ -60,6 +60,7 @@ namespace Aggregator
 		QAbstractItemModel *ChannelsModel_;
 		const AppWideActions& AppWideActions_;
 		const ChannelActions& ChannelActions_;
+		std::function<void (QString, QStringList)> FeedAdder_;
 	};
 
 	class ItemsWidget : public QWidget
