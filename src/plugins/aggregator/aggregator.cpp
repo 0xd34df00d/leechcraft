@@ -566,7 +566,6 @@ namespace Aggregator
 				});
 
 		AppWideActions_->SetEnabled (storageReady);
-
 	}
 
 	ItemsWidgetDependencies Aggregator::MakeItemsWidgetDeps () const
