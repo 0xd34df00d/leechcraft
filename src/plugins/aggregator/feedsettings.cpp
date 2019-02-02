@@ -74,8 +74,10 @@ namespace Aggregator
 		Ui_.setupUi (this);
 
 		new Util::TagsCompleter { Ui_.ChannelTags_ };
+		new Util::TagsCompleter { Ui_.FeedTags_ };
 
 		Ui_.ChannelTags_->AddSelector ();
+		Ui_.FeedTags_->AddSelector ();
 
 		connect (Ui_.ChannelLink_,
 				&QLabel::linkActivated,
@@ -96,13 +98,18 @@ namespace Aggregator
 							Index_.data (ChannelRoles::ChannelLink).toString ());
 				});
 
-		const auto& tags = Index_.data (ChannelRoles::HumanReadableTags).toStringList ();
-		Ui_.ChannelTags_->setText (proxy->GetTagsManager ()->Join (tags));
+		const auto itm = proxy->GetTagsManager ();
+
+		Ui_.ChannelTags_->setText (itm->Join (Index_.data (ChannelRoles::HumanReadableTags).toStringList ()));
 
 		const auto& storage = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
 
-		using Util::operator*;
 		const auto feedId = Index_.data (ChannelRoles::FeedID).value<IDType_t> ();
+
+		if (const auto feedTags = storage->GetFeedTags (feedId))
+			Ui_.FeedTags_->setText (itm->Join (itm->GetTags (*feedTags)));
+
+		using Util::operator*;
 		[&] (auto&& settings)
 		{
 			Ui_.UpdateInterval_->setValue (settings.UpdateTimeout_);
@@ -134,9 +141,11 @@ namespace Aggregator
 	{
 		const auto& storage = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
 
-		const auto& tags = Proxy_->GetTagsManager ()->Split (Ui_.ChannelTags_->text ());
+		const auto itm = Proxy_->GetTagsManager ();
 		storage->SetChannelTags (Index_.data (ChannelRoles::ChannelID).value<IDType_t> (),
-				Proxy_->GetTagsManager ()->GetIDs (tags));
+				itm->GetIDs (itm->Split (Ui_.ChannelTags_->text ())));
+		storage->SetFeedTags (Index_.data (ChannelRoles::FeedID).value<IDType_t> (),
+				itm->GetIDs (itm->Split (Ui_.FeedTags_->text ())));
 
 		storage->SetFeedSettings ({
 				Index_.data (ChannelRoles::FeedID).value<IDType_t> (),
