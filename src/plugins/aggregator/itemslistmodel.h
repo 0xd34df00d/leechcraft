@@ -61,7 +61,7 @@ namespace Aggregator
 
 		mutable QThreadStorage<StorageBackend_ptr> SB_;
 	public:
-		ItemsListModel (QObject* = nullptr);
+		explicit ItemsListModel (QObject* = nullptr);
 
 		int GetSelectedRow () const;
 		const IDType_t& GetCurrentChannel () const;
