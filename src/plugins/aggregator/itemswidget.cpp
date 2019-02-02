@@ -125,15 +125,15 @@ namespace Aggregator
 		Impl_->MergeMode_ = false;
 		Impl_->ControlToolBar_ = SetupToolBar ();
 
-		Impl_->CurrentItemsModel_.reset (new ItemsListModel { Core::Instance ().GetProxy ()->GetIconThemeManager () });
-		Impl_->ItemLists_.reset (new Util::MergeModel ({ tr ("Name"), tr ("Date") }));
+		Impl_->CurrentItemsModel_ = std::make_unique<ItemsListModel> (Core::Instance ().GetProxy ()->GetIconThemeManager ());
+		Impl_->ItemLists_ = std::make_unique<Util::MergeModel> (QStringList { tr ("Name"), tr ("Date") });
 		Impl_->ItemLists_->AddModel (Impl_->CurrentItemsModel_.get ());
 
 		Impl_->Ui_.setupUi (this);
 
 		Impl_->Ui_.Items_->setAcceptDrops (false);
 
-		Impl_->ItemsFilterModel_.reset (new ItemsFilterModel (this));
+		Impl_->ItemsFilterModel_ = std::make_unique<ItemsFilterModel> (this);
 		Impl_->ItemsFilterModel_->SetItemsWidget (this);
 		Impl_->ItemsFilterModel_->setSourceModel (Impl_->ItemLists_.get ());
 		Impl_->ItemsFilterModel_->setFilterKeyColumn (0);
@@ -189,7 +189,7 @@ namespace Aggregator
 				this,
 				&ItemsWidget::makeCurrentItemVisible);
 
-		Impl_->ItemCategorySelector_.reset (new CategorySelector ());
+		Impl_->ItemCategorySelector_ = std::make_unique<CategorySelector> ();
 		Impl_->ItemCategorySelector_->SetCaption (tr ("Items categories"));
 		Impl_->ItemCategorySelector_->setWindowFlags (Qt::Widget);
 		Impl_->Ui_.CategoriesSplitter_->addWidget (Impl_->ItemCategorySelector_.get ());
@@ -538,7 +538,7 @@ namespace Aggregator
 		if (channelId == Impl_->CurrentItemsModel_->GetCurrentChannel ())
 			return;
 
-		std::shared_ptr<ItemsListModel> ilm (new ItemsListModel { Core::Instance ().GetProxy ()->GetIconThemeManager () });
+		auto ilm = std::make_shared<ItemsListModel> (Core::Instance ().GetProxy ()->GetIconThemeManager ());
 		ilm->Reset (channelId);
 		Impl_->SupplementaryModels_ << ilm;
 		Impl_->ItemLists_->AddModel (ilm.get ());
