@@ -241,9 +241,15 @@ namespace Aggregator
 							*AppWideActions_,
 							ChannelActions_,
 							TabInfo_,
-							ShortcutMgr_,
 							ChannelsModel_.get (),
-							Proxy_->GetTagsManager ()
+							Proxy_->GetTagsManager (),
+							ItemsWidget::Dependencies
+							{
+								ShortcutMgr_,
+								ChannelsModel_.get (),
+								*AppWideActions_,
+								*ChannelActions_,
+							}
 						},
 						this);
 				connect (AggregatorTab_.get (),

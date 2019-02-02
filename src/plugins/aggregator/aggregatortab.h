@@ -76,9 +76,10 @@ namespace Aggregator
 			const AppWideActions& AppWideActions_;
 			const std::shared_ptr<const ChannelActions>& ChannelActions_;
 			const TabClassInfo& TabClass_;
-			Util::ShortcutManager *ShortcutMgr_;
 			ChannelsModel *ChannelsModel_;
 			const ITagsManager * const TagsManager_;
+
+			ItemsWidget::Dependencies ItemsWidgetDeps_;
 		};
 
 		AggregatorTab (const InitParams&, QObject*);
