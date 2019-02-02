@@ -369,11 +369,27 @@ namespace LeechCraft::Aggregator
 
 		static constexpr auto FieldNameMorpher = &CommonFieldNameMorpher;
 	};
+
+	struct SQLStorageBackend::Feed2TagsR
+	{
+		oral::References<&FeedR::FeedID_> FeedID_;
+		oral::NotNull<Tags> Tags_;
+
+		static QString ClassName ()
+		{
+			return "feeds2tags";
+		}
+
+		static constexpr auto FieldNameMorpher = &CommonFieldNameMorpher;
+	};
 }
 
 BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Aggregator::SQLStorageBackend::Item2TagsR,
 		ItemID_,
 		Tag_)
+BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Aggregator::SQLStorageBackend::Feed2TagsR,
+		FeedID_,
+		Tags_)
 
 namespace LeechCraft::Aggregator
 {
@@ -428,7 +444,7 @@ namespace LeechCraft::Aggregator
 
 		auto adaptedPtrs = std::tie (Feeds_, FeedsSettings_, Channels_, Items_, Enclosures_,
 				MRSSEntries_, MRSSThumbnails_, MRSSCredits_, MRSSComments_, MRSSPeerLinks_, MRSSScenes_,
-				Items2Tags_);
+				Items2Tags_, Feeds2Tags_);
 		Type_ == SBSQLite ?
 				oral::AdaptPtrs<oral::SQLiteImplFactory> (DB_, adaptedPtrs) :
 				oral::AdaptPtrs<oral::PostgreSQLImplFactory> (DB_, adaptedPtrs);

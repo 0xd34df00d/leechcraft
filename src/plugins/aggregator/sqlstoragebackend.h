@@ -61,6 +61,8 @@ namespace Aggregator
 		struct MRSSSceneR;
 
 		struct Item2TagsR;
+
+		struct Feed2TagsR;
 	private:
 		const Type Type_;
 
@@ -76,6 +78,7 @@ namespace Aggregator
 		Util::oral::ObjectInfo_ptr<MRSSSceneR> MRSSScenes_;
 		Util::oral::ObjectInfo_ptr<MRSSEntryR> MRSSEntries_;
 		Util::oral::ObjectInfo_ptr<Item2TagsR> Items2Tags_;
+		Util::oral::ObjectInfo_ptr<Feed2TagsR> Feeds2Tags_;
 	public:
 		SQLStorageBackend (Type, const QString&);
 
