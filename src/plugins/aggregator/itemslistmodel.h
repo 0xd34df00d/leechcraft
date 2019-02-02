@@ -40,6 +40,8 @@
 #include "channel.h"
 #include "storagebackend.h"
 
+class IIconThemeManager;
+
 namespace LeechCraft
 {
 namespace Aggregator
@@ -61,7 +63,7 @@ namespace Aggregator
 
 		mutable QThreadStorage<StorageBackend_ptr> SB_;
 	public:
-		explicit ItemsListModel (QObject* = nullptr);
+		explicit ItemsListModel (IIconThemeManager*, QObject* = nullptr);
 
 		int GetSelectedRow () const;
 		const IDType_t& GetCurrentChannel () const;

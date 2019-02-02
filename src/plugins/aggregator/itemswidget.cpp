@@ -125,7 +125,7 @@ namespace Aggregator
 		Impl_->MergeMode_ = false;
 		Impl_->ControlToolBar_ = SetupToolBar ();
 
-		Impl_->CurrentItemsModel_.reset (new ItemsListModel);
+		Impl_->CurrentItemsModel_.reset (new ItemsListModel { Core::Instance ().GetProxy ()->GetIconThemeManager () });
 		Impl_->ItemLists_.reset (new Util::MergeModel ({ tr ("Name"), tr ("Date") }));
 		Impl_->ItemLists_->AddModel (Impl_->CurrentItemsModel_.get ());
 
@@ -538,7 +538,7 @@ namespace Aggregator
 		if (channelId == Impl_->CurrentItemsModel_->GetCurrentChannel ())
 			return;
 
-		std::shared_ptr<ItemsListModel> ilm (new ItemsListModel);
+		std::shared_ptr<ItemsListModel> ilm (new ItemsListModel { Core::Instance ().GetProxy ()->GetIconThemeManager () });
 		ilm->Reset (channelId);
 		Impl_->SupplementaryModels_ << ilm;
 		Impl_->ItemLists_->AddModel (ilm.get ());

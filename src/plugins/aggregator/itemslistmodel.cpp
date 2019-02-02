@@ -34,7 +34,6 @@
 #include <QTextDocument>
 #include <QtDebug>
 #include <interfaces/core/iiconthememanager.h>
-#include "core.h"
 #include "xmlsettingsmanager.h"
 #include "storagebackendmanager.h"
 
@@ -42,11 +41,11 @@ namespace LeechCraft
 {
 namespace Aggregator
 {
-	ItemsListModel::ItemsListModel (QObject *parent)
+	ItemsListModel::ItemsListModel (IIconThemeManager *itm, QObject *parent)
 	: QAbstractItemModel (parent)
-	, StarredIcon_ (Core::Instance ().GetProxy ()->GetIconThemeManager ()->GetIcon ("mail-mark-important"))
-	, UnreadIcon_ (Core::Instance ().GetProxy ()->GetIconThemeManager ()->GetIcon ("mail-mark-unread"))
-	, ReadIcon_ (Core::Instance ().GetProxy ()->GetIconThemeManager ()->GetIcon ("mail-mark-read"))
+	, StarredIcon_ (itm->GetIcon ("mail-mark-important"))
+	, UnreadIcon_ (itm->GetIcon ("mail-mark-unread"))
+	, ReadIcon_ (itm->GetIcon ("mail-mark-read"))
 	{
 		ItemHeaders_ << tr ("Name") << tr ("Date");
 

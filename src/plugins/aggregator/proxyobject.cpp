@@ -28,6 +28,8 @@
  **********************************************************************/
 
 #include "proxyobject.h"
+#include <interfaces/core/icoreproxy.h>
+#include <util/xpc/coreproxyholder.h>
 #include "poolsmanager.h"
 #include "storagebackendmanager.h"
 #include "channelsmodel.h"
@@ -152,7 +154,7 @@ namespace Aggregator
 
 	QAbstractItemModel* ProxyObject::CreateItemsModel () const
 	{
-		return new ItemsListModel;
+		return new ItemsListModel { Util::CoreProxyHolder::Get ()->GetIconThemeManager () };
 	}
 }
 }
