@@ -44,6 +44,7 @@
 #include <interfaces/ipluginready.h>
 #include <interfaces/ihaverecoverabletabs.h>
 #include "dbupdatethreadfwd.h"
+#include "feed.h"
 
 namespace LeechCraft
 {
@@ -153,6 +154,8 @@ namespace Aggregator
 	private:
 		QModelIndex GetRelevantIndex () const;
 		QList<QModelIndex> GetRelevantIndexes () const;
+
+		void AddFeed (QString, const QStringList&, const std::optional<Feed::FeedSettings>& = {}) const;
 
 		template<typename F>
 		void Perform (F&&);

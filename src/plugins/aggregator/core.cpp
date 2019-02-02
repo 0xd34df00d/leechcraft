@@ -87,35 +87,5 @@ namespace Aggregator
 	{
 		return Proxy_;
 	}
-
-	void Core::AddFeed (QString url, const QStringList& tags, const std::optional<Feed::FeedSettings>& maybeFeedSettings)
-	{
-		auto sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
-
-		const auto& fixedUrl = QUrl::fromUserInput (url);
-		url = fixedUrl.toString ();
-		if (sb->FindFeed (url))
-		{
-			auto e = Util::MakeNotification (tr ("Feed addition error"),
-					tr ("The feed %1 is already added")
-						.arg (url),
-					Priority::Critical);
-			Proxy_->GetEntityManager ()->HandleEntity (e);
-			return;
-		}
-
-		Feed feed;
-		feed.URL_ = url;
-		sb->AddFeed (feed);
-
-		if (maybeFeedSettings)
-		{
-			auto fs = *maybeFeedSettings;
-			fs.FeedID_ = feed.FeedID_;
-			sb->SetFeedSettings (fs);
-		}
-
-		emit updateRequested (feed.FeedID_);
-	}
 }
 }

@@ -71,10 +71,6 @@ namespace Aggregator
 		ICoreProxy_ptr GetProxy () const;
 
 		void DoDelayedInit ();
-
-		void AddFeed (QString, const QStringList&, const std::optional<Feed::FeedSettings>& = {});
-	signals:
-		void updateRequested (IDType_t);
 	};
 }
 }

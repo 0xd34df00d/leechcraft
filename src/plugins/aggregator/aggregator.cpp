@@ -44,6 +44,7 @@
 #include <QXmlStreamReader>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ientitymanager.h>
 #include <util/tags/tagscompletionmodel.h>
 #include <util/util.h>
 #include <util/db/backendselector.h>
@@ -54,6 +55,7 @@
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/tags/categoryselector.h>
 #include <util/xpc/coreproxyholder.h>
+#include <util/xpc/util.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "itemsfiltermodel.h"
 #include "channelsfiltermodel.h"
@@ -134,7 +136,7 @@ namespace Aggregator
 		ReinitStorage ();
 
 		// TODO replace with std::bind_front in C++20
-		OpmlAdder_ = std::make_shared<OpmlAdder> ([] (auto... args) { Core::Instance ().AddFeed (args...); }, Proxy_);
+		OpmlAdder_ = std::make_shared<OpmlAdder> ([this] (auto... args) { AddFeed (args...); }, Proxy_);
 
 		DBUpThread_ = std::make_shared<DBUpdateThread> (Proxy_);
 		DBUpThread_->SetAutoQuit (true);
@@ -148,11 +150,6 @@ namespace Aggregator
 				&QAction::triggered,
 				UpdatesManager_.get (),
 				&UpdatesManager::UpdateFeeds);
-
-		connect (&Core::Instance (),
-				&Core::updateRequested,
-				UpdatesManager_.get (),
-				&UpdatesManager::UpdateFeed);
 
 		QMetaObject::connectSlotsByName (this);
 
@@ -330,7 +327,7 @@ namespace Aggregator
 
 		AddFeedDialog af { Proxy_->GetTagsManager (), str };
 		if (af.exec () == QDialog::Accepted)
-			Core::Instance ().AddFeed (af.GetURL (), af.GetTags ());
+			AddFeed (af.GetURL (), af.GetTags ());
 	}
 
 	void Aggregator::SetShortcut (const QString& name, const QKeySequences_t& shortcuts)
@@ -363,7 +360,7 @@ namespace Aggregator
 					{
 						auto tm = Proxy_->GetTagsManager ();
 						for (const auto& feed : feeds)
-							Core::Instance ().AddFeed (feed.URL_, tm->Split (feed.Tags_));
+							AddFeed (feed.URL_, tm->Split (feed.Tags_));
 					});
 
 			connect (third,
@@ -448,6 +445,36 @@ namespace Aggregator
 			return AggregatorTab_->GetRelevantIndexes ();
 	}
 
+	void Aggregator::AddFeed (QString url, const QStringList& tags, const std::optional<Feed::FeedSettings>& maybeFeedSettings) const
+	{
+		auto sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
+
+		const auto& fixedUrl = QUrl::fromUserInput (url);
+		url = fixedUrl.toString ();
+		if (sb->FindFeed (url))
+		{
+			auto e = Util::MakeNotification (tr ("Feed addition error"),
+					tr ("The feed %1 is already added")
+							.arg (url),
+					Priority::Critical);
+			Proxy_->GetEntityManager ()->HandleEntity (e);
+			return;
+		}
+
+		Feed feed;
+		feed.URL_ = url;
+		sb->AddFeed (feed);
+
+		if (maybeFeedSettings)
+		{
+			auto fs = *maybeFeedSettings;
+			fs.FeedID_ = feed.FeedID_;
+			sb->SetFeedSettings (fs);
+		}
+
+		UpdatesManager_->UpdateFeed (feed.FeedID_);
+	}
+
 	namespace
 	{
 		void MarkChannel (DBUpdateThread& dbUpThread, const QModelIndex& idx, bool unread)
@@ -485,7 +512,7 @@ namespace Aggregator
 	{
 		AddFeedDialog af { Proxy_->GetTagsManager () };
 		if (af.exec () == QDialog::Accepted)
-			Core::Instance ().AddFeed (af.GetURL (), af.GetTags ());
+			AddFeed (af.GetURL (), af.GetTags ());
 	}
 
 	void Aggregator::on_ActionRemoveFeed__triggered ()
@@ -576,7 +603,7 @@ namespace Aggregator
 			ChannelsModel_.get (),
 			*AppWideActions_,
 			*ChannelActions_,
-			[] (const QString& url, const QStringList& tags) { Core::Instance ().AddFeed (url, tags); }
+			[this] (const QString& url, const QStringList& tags) { AddFeed (url, tags); }
 		};
 	}
 
