@@ -819,6 +819,12 @@ namespace oral
 			return MakeExprTree<ExprType::Equal> (left, right);
 		}
 
+		template<typename L, typename R, typename = EnableRelOp_t<L, R>>
+		auto operator!= (const L& left, const R& right) noexcept
+		{
+			return MakeExprTree<ExprType::Neq> (left, right);
+		}
+
 		template<ExprType Op>
 		struct InfixBinary {};
 	}
