@@ -78,8 +78,14 @@ namespace Aggregator
 		return s;
 	}
 
-	void DBUpdateThreadWorker::AddChannel (const Channel& channel)
+	void DBUpdateThreadWorker::AddChannel (Channel channel)
 	{
+		if (const auto tags = SB_->GetFeedTags (channel.FeedID_))
+		{
+			channel.Tags_ += *tags;
+			channel.Tags_.removeDuplicates ();
+		}
+
 		SB_->AddChannel (channel);
 
 		QString str = tr ("Added channel \"%1\" (%n item(s))",

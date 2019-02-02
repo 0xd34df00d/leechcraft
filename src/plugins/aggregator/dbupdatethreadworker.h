@@ -58,7 +58,7 @@ namespace Aggregator
 		void WithWorker (const std::function<void (DBUpdateThreadWorker*)>&);
 	private:
 		Feed::FeedSettings GetFeedSettings (IDType_t);
-		void AddChannel (const Channel& channel);
+		void AddChannel (Channel channel);
 		bool AddItem (Item& item, const Channel& channel, const Feed::FeedSettings& settings);
 		bool UpdateItem (const Item& item, Item ourItem);
 		void NotifyUpdates (int newItems, int updatedItems, const Channel_ptr& channel);
