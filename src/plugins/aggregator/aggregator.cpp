@@ -464,6 +464,7 @@ namespace Aggregator
 		Feed feed;
 		feed.URL_ = url;
 		sb->AddFeed (feed);
+		sb->SetFeedTags (feed.FeedID_, Proxy_->GetTagsManager ()->GetIDs (tags));
 
 		if (maybeFeedSettings)
 		{
