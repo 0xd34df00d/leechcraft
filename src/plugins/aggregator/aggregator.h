@@ -63,6 +63,7 @@ namespace Aggregator
 	class OpmlAdder;
 	struct AppWideActions;
 	struct ChannelActions;
+	struct ItemsWidgetDependencies;
 
 	class Aggregator : public QObject
 					 , public IInfo
@@ -157,6 +158,8 @@ namespace Aggregator
 		void Perform (F&&);
 
 		void ReinitStorage ();
+
+		ItemsWidgetDependencies MakeItemsWidgetDeps () const;
 	public slots:
 		void handleTasksTreeSelectionCurrentRowChanged (const QModelIndex&, const QModelIndex&);
 	private slots:

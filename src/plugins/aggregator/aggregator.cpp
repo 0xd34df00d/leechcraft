@@ -170,14 +170,7 @@ namespace Aggregator
 					*AppWideActions_,
 					*ChannelActions_,
 					ChannelsModel_.get (),
-					ItemsWidget::Dependencies
-					{
-						ShortcutMgr_,
-						ChannelsModel_.get (),
-						*AppWideActions_,
-						*ChannelActions_,
-						[] (const QString& url, const QStringList& tags) { Core::Instance ().AddFeed (url, tags); }
-					}
+					MakeItemsWidgetDeps ()
 				});
 	}
 
@@ -244,14 +237,7 @@ namespace Aggregator
 							TabInfo_,
 							ChannelsModel_.get (),
 							Proxy_->GetTagsManager (),
-							ItemsWidget::Dependencies
-							{
-								ShortcutMgr_,
-								ChannelsModel_.get (),
-								*AppWideActions_,
-								*ChannelActions_,
-								[] (const QString& url, const QStringList& tags) { Core::Instance ().AddFeed (url, tags); }
-							}
+							MakeItemsWidgetDeps ()
 						},
 						this);
 				connect (AggregatorTab_.get (),
@@ -581,6 +567,18 @@ namespace Aggregator
 
 		AppWideActions_->SetEnabled (storageReady);
 
+	}
+
+	ItemsWidgetDependencies Aggregator::MakeItemsWidgetDeps () const
+	{
+		return
+		{
+			ShortcutMgr_,
+			ChannelsModel_.get (),
+			*AppWideActions_,
+			*ChannelActions_,
+			[] (const QString& url, const QStringList& tags) { Core::Instance ().AddFeed (url, tags); }
+		};
 	}
 
 	namespace
