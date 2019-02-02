@@ -117,6 +117,9 @@ namespace Aggregator
 		 */
 		virtual void SetFeedSettings (const Feed::FeedSettings& settings) = 0;
 
+		virtual std::optional<QStringList> GetFeedTags (IDType_t feed) const = 0;
+		virtual void SetFeedTags (IDType_t feed, const QStringList& tags) = 0;
+
 		/** @brief Get all the channels of a feed in the container.
 		 *
 		 * Returns short information about channels in the storage which

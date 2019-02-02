@@ -44,6 +44,8 @@ namespace Aggregator
 		std::optional<IDType_t> FindFeed (const QString&) const override { return {}; }
 		std::optional<Feed::FeedSettings> GetFeedSettings (IDType_t) const override { return {}; }
 		void SetFeedSettings (const Feed::FeedSettings&) override {}
+		std::optional<QStringList> GetFeedTags (IDType_t) const override { return {}; }
+		void SetFeedTags (IDType_t, const QStringList&) override {}
 		channels_shorts_t GetChannels (IDType_t) const override { return {}; }
 		Channel GetChannel (IDType_t) const override { return {}; }
 		std::optional<IDType_t> FindChannel (const QString&, const QString&, IDType_t) const override { return {}; }

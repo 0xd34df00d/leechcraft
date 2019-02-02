@@ -600,6 +600,18 @@ namespace LeechCraft::Aggregator
 				oral::InsertAction::Replace::Fields<&FeedSettingsR::FeedID_>);
 	}
 
+	std::optional<QStringList> SQLStorageBackend::GetFeedTags (IDType_t feedId) const
+	{
+		return Feeds2Tags_->SelectOne (sph::f<&Feed2TagsR::FeedID_> == feedId) *
+				[] (const auto& feed2tags) { return static_cast<QStringList> (*feed2tags.Tags_); };
+	}
+
+	void SQLStorageBackend::SetFeedTags (IDType_t feedId, const QStringList& tags)
+	{
+		Feeds2Tags_->Insert (Feed2TagsR { feedId, tags },
+				oral::InsertAction::Replace::Fields<&Feed2TagsR::FeedID_>);
+	}
+
 	namespace
 	{
 		namespace detail
