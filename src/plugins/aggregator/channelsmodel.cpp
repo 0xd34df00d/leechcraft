@@ -46,9 +46,11 @@ namespace LeechCraft
 {
 namespace Aggregator
 {
-	ChannelsModel::ChannelsModel (const ITagsManager *itm, QObject *parent)
+	ChannelsModel::ChannelsModel (const std::shared_ptr<const FeedsErrorManager>& errorMgr,
+			const ITagsManager *itm, QObject *parent)
 	: QAbstractItemModel { parent }
 	, TagsManager_ { itm }
+	, FeedsErrorManager_ { errorMgr }
 	{
 		Headers_ << tr ("Feed")
 			<< tr ("Unread items")

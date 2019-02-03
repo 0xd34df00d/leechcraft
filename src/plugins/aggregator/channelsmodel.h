@@ -42,6 +42,8 @@ namespace LeechCraft
 {
 namespace Aggregator
 {
+	class FeedsErrorManager;
+
 	class ChannelsModel : public QAbstractItemModel
 	{
 		Q_DECLARE_TR_FUNCTIONS (ChannelsModel)
@@ -51,6 +53,7 @@ namespace Aggregator
 		Channels_t Channels_;
 
 		const ITagsManager * const TagsManager_;
+		const std::shared_ptr<const FeedsErrorManager> FeedsErrorManager_;
 	public:
 		enum Columns
 		{
@@ -58,7 +61,8 @@ namespace Aggregator
 			ColumnUnread,
 			ColumnLastBuild
 		};
-		explicit ChannelsModel (const ITagsManager*, QObject *parent = nullptr);
+		explicit ChannelsModel (const std::shared_ptr<const FeedsErrorManager>&,
+		        const ITagsManager*, QObject *parent = nullptr);
 
 		int columnCount (const QModelIndex& = QModelIndex ()) const override;
 		QVariant data (const QModelIndex&, int = Qt::DisplayRole) const override;
