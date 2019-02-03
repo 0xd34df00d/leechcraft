@@ -64,6 +64,7 @@ set (SRCS
 	opmladder.cpp
 	poolsmanager.cpp
 	coreproxyholder.cpp
+	feedserrormanager.cpp
 	)
 set (FORMS
 	mainwidget.ui
