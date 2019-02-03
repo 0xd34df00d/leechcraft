@@ -270,17 +270,15 @@ namespace LeechCraft::Aggregator
 						Util::Visit (ParseChannels (filename, url, feedId),
 								[&] (const channels_container_t& channels)
 								{
+									FeedsErrorManager_->ClearFeedErrors (feedId);
 									DBUpThread_->ScheduleImpl (&DBUpdateThreadWorker::updateFeed, channels, url);
 								},
-								emitError);
+								[&] (const QString& error)
+								{
+									FeedsErrorManager_->AddFeedError (feedId, FeedsErrorManager::ParseError { error });
+								});
 					},
-					[=] (const IDownload::Error& error)
-					{
-						if (!XmlSettingsManager::Instance ()->property ("BeSilent").toBool ())
-							emitError (tr ("Unable to download %1: %2.")
-									.arg (Util::FormatName (url))
-									.arg (GetErrorString (error.Type_)));
-					}
+					[=] (const IDownload::Error& error) { FeedsErrorManager_->AddFeedError (feedId, error); }
 				}.Finally ([filename] { QFile::remove (filename); });
 	}
 }
