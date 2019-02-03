@@ -183,6 +183,8 @@ namespace Aggregator
 			return Channels_.at (row).Tags_;
 		case ChannelRoles::UnreadCount:
 			return Channels_.at (row).Unread_;
+		case ChannelRoles::ErrorCount:
+			return FeedsErrorManager_->GetFeedErrors (Channels_.at (row).FeedID_).size ();
 		case ChannelRoles::ChannelID:
 			return Channels_.at (row).ChannelID_;
 		case ChannelRoles::FeedID:
