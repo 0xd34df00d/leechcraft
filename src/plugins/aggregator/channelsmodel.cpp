@@ -299,7 +299,7 @@ namespace Aggregator
 	{
 		for (auto i = 0; i < Channels_.size (); ++i)
 			if (Channels_.at (i).FeedID_ == feedId)
-				emit dataChanged (index (i, 0), index (i, columnCount ()));
+				emit dataChanged (index (i, 0), index (i, columnCount () - 1));
 	}
 
 	void ChannelsModel::UpdateChannelData (const Channel& channel)
