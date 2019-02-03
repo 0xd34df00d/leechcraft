@@ -60,7 +60,6 @@
 #include "itemsfiltermodel.h"
 #include "channelsfiltermodel.h"
 #include "aggregator.h"
-#include "core.h"
 #include "addfeeddialog.h"
 #include "itemsfiltermodel.h"
 #include "channelsfiltermodel.h"
@@ -125,8 +124,6 @@ namespace Aggregator
 
 		ToolMenu_ = AppWideActions_->CreateToolMenu ();
 		ToolMenu_->setIcon (GetIcon ());
-
-		Core::Instance ().SetProxy (proxy);
 
 		XmlSettingsDialog_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (), "aggregatorsettings.xml");

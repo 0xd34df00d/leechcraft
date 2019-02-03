@@ -33,7 +33,6 @@
 #include <QByteArray>
 #include <QDataStream>
 #include <QMessageBox>
-#include "core.h"
 #include "export.h"
 #include "opmlwriter.h"
 #include "storagebackendmanager.h"

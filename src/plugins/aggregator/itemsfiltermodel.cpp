@@ -31,7 +31,6 @@
 #include <QtDebug>
 #include "itemswidget.h"
 #include "xmlsettingsmanager.h"
-#include "core.h"
 #include "storagebackendmanager.h"
 
 namespace LeechCraft

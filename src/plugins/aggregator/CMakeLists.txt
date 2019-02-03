@@ -14,7 +14,6 @@ include_directories (${Boost_INCLUDE_DIRS}
 set (SRCS
 	aggregator.cpp
 	aggregatortab.cpp
-	core.cpp
 	addfeeddialog.cpp
 	parserfactory.cpp
 	rssparser.cpp
