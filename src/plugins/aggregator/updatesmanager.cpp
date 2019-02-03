@@ -100,27 +100,6 @@ namespace LeechCraft::Aggregator
 
 			return ParseResult::Right (parser->ParseFeed (doc, feedId));
 		}
-
-		QString GetErrorString (const IDownload::Error::Type type)
-		{
-			switch (type)
-			{
-			case IDownload::Error::Type::Unknown:
-				break;
-			case IDownload::Error::Type::NoError:
-				return UpdatesManager::tr ("no error");
-			case IDownload::Error::Type::NotFound:
-				return UpdatesManager::tr ("address not found");
-			case IDownload::Error::Type::AccessDenied:
-				return UpdatesManager::tr ("access denied");
-			case IDownload::Error::Type::LocalError:
-				return UpdatesManager::tr ("local error");
-			case IDownload::Error::Type::UserCanceled:
-				return UpdatesManager::tr ("user canceled the download");
-			}
-
-			return UpdatesManager::tr ("unknown error");
-		}
 	}
 
 	UpdatesManager::UpdatesManager (const InitParams& initParams, QObject *parent)

@@ -35,6 +35,8 @@
 #include <QPalette>
 #include <QIcon>
 #include <QFontMetrics>
+#include <util/sll/prelude.h>
+#include <util/sll/visitor.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
 #include "channelsmodel.h"
@@ -117,8 +119,51 @@ namespace Aggregator
 						QVariant ();
 		}
 
-		QVariant GetTooltip (const ITagsManager *itm, const ChannelShort& cs)
+		QString GetErrorString (const IDownload::Error::Type type)
 		{
+			switch (type)
+			{
+			case IDownload::Error::Type::Unknown:
+				break;
+			case IDownload::Error::Type::NoError:
+				return ChannelsModel::tr ("no error");
+			case IDownload::Error::Type::NotFound:
+				return ChannelsModel::tr ("address not found");
+			case IDownload::Error::Type::AccessDenied:
+				return ChannelsModel::tr ("access denied");
+			case IDownload::Error::Type::LocalError:
+				return ChannelsModel::tr ("local error");
+			case IDownload::Error::Type::UserCanceled:
+				return ChannelsModel::tr ("user canceled the download");
+			}
+
+			return ChannelsModel::tr ("unknown error");
+		}
+
+		QString ErrorToString (const FeedsErrorManager::Error& error)
+		{
+			return Util::Visit (error,
+					[] (const FeedsErrorManager::ParseError& e) { return ChannelsModel::tr ("Parse error: ") + e.Error_; },
+					[] (const IDownload::Error& e)
+					{
+						auto str = ChannelsModel::tr ("Error downloading the feed: %1.")
+								.arg (GetErrorString (e.Type_));
+						if (!e.Message_.isEmpty ())
+							str += " " + e.Message_;
+						return str;
+					});
+		}
+
+		QVariant GetTooltip (const ITagsManager *itm, const FeedsErrorManager& errMgr, const ChannelShort& cs)
+		{
+			const auto& errors = errMgr.GetFeedErrors (cs.FeedID_);
+			if (!errors.isEmpty ())
+			{
+				auto errorsStrings = Util::Map (errors, ErrorToString);
+				errorsStrings.removeDuplicates ();
+				return errorsStrings.join ("\n");
+			}
+
 			auto result = QString ("<qt><b>%1</b><br />").arg (cs.Title_);
 			if (cs.Author_.size ())
 			{
@@ -187,7 +232,7 @@ namespace Aggregator
 			else
 				return {};
 		case Qt::ToolTipRole:
-			return GetTooltip (TagsManager_, Channels_.at (row));
+			return GetTooltip (TagsManager_, *FeedsErrorManager_, Channels_.at (row));
 		case RoleTags:
 			return Channels_.at (row).Tags_;
 		case ChannelRoles::UnreadCount:
