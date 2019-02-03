@@ -90,8 +90,6 @@ namespace GoogleDrive
 	signals:
 		void accountAdded (QObject *accObj);
 		void accountRemoved (QObject *accObj);
-		void delegateEntity (const LeechCraft::Entity& entity, int *id, QObject **provider);
-		void gotEntity (const LeechCraft::Entity& e);
 	};
 }
 }
