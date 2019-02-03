@@ -61,8 +61,6 @@
 #include "channelsfiltermodel.h"
 #include "aggregator.h"
 #include "addfeeddialog.h"
-#include "itemsfiltermodel.h"
-#include "channelsfiltermodel.h"
 #include "xmlsettingsmanager.h"
 #include "importbinary.h"
 #include "feedsettings.h"
@@ -81,7 +79,6 @@
 #include "startupthirdpage.h"
 #include "updatesmanager.h"
 #include "resourcesfetcher.h"
-#include "dbupdatethread.h"
 #include "poolsmanager.h"
 #include "opmladder.h"
 
