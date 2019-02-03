@@ -41,6 +41,7 @@
 #include "item.h"
 #include "xmlsettingsmanager.h"
 #include "storagebackendmanager.h"
+#include "feedserrormanager.h"
 
 namespace LeechCraft
 {
@@ -166,7 +167,13 @@ namespace Aggregator
 		case Qt::ForegroundRole:
 			return GetForegroundColor (Channels_.at (row));
 		case Qt::FontRole:
-			if (Channels_.at (row).Unread_)
+			if (const auto& errors = FeedsErrorManager_->GetFeedErrors (Channels_.at (row).FeedID_); !errors.isEmpty ())
+			{
+				QFont font;
+				font.setStrikeOut (true);
+				return font;
+			}
+			else if (Channels_.at (row).Unread_)
 				return XmlSettingsManager::Instance ()->property ("UnreadItemsFont");
 			else
 				return {};
