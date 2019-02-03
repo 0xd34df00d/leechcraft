@@ -1344,7 +1344,7 @@ namespace Aggregator
 			Impl_->ActionMarkItemAsImportant_->setChecked (tags.contains ("_important"));
 		}
 
-		QString preHtml = "<html><head><meta charset=\"UTF-8\" /><title>News</title></head><body bgcolor=\"";
+		QString preHtml = R"(<html><head><meta charset="UTF-8" /><title>News</title></head><body bgcolor=")";
 		preHtml += palette ().color (QPalette::Base).name ();
 		preHtml += "\">";
 		if (Impl_->TapeMode_)
