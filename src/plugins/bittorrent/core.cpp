@@ -1003,11 +1003,6 @@ namespace BitTorrent
 			HandleLibtorrentException (e);
 			return MakeErrorResult ("Torrent error");
 		}
-		catch (const std::runtime_error&)
-		{
-			ShowError (tr ("Runtime error"));
-			return MakeErrorResult ("General error");
-		}
 
 		std::vector<int> priorities (atp.ti->num_files (), 1);
 
