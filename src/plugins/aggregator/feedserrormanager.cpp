@@ -42,4 +42,9 @@ namespace LeechCraft::Aggregator
 		if (Errors_.remove (id))
 			emit clearedErrors (id);
 	}
+
+	QList<FeedsErrorManager::Error> FeedsErrorManager::GetFeedErrors (IDType_t id) const
+	{
+		return Errors_.value (id);
+	}
 }

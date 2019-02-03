@@ -52,6 +52,8 @@ namespace LeechCraft::Aggregator
 		void AddFeedError (IDType_t, const Error&);
 
 		void ClearFeedErrors (IDType_t);
+
+		QList<Error> GetFeedErrors (IDType_t) const;
 	signals:
 		void gotErrors (IDType_t);
 		void clearedErrors (IDType_t);
