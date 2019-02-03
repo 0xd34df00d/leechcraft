@@ -92,8 +92,6 @@ namespace BodyFetch
 		void handleBodyFetched (quint64);
 	signals:
 		void downloadFinished (QUrl, QString);
-
-		void delegateEntity (const LeechCraft::Entity&, int*, QObject**) override;
 	};
 }
 }
