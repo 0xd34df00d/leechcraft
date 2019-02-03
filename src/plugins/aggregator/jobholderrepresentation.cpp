@@ -57,7 +57,8 @@ namespace Aggregator
 		// The row won't show up anyway in the job list if it was empty, so
 		// we can just check if it has unread items or selected. Later means
 		// that user's just clicked last unread item there.
-		return sourceModel ()->index (row, 1).data ().toInt () ||
+		auto srcIdx = sourceModel ()->index (row, 0);
+		return srcIdx.data (ChannelRoles::UnreadCount).toInt () ||
 				(Selected_.isValid () && row == Selected_.row ());
 	}
 }
