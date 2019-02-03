@@ -59,6 +59,7 @@ namespace Aggregator
 		// that user's just clicked last unread item there.
 		auto srcIdx = sourceModel ()->index (row, 0);
 		return srcIdx.data (ChannelRoles::UnreadCount).toInt () ||
+				srcIdx.data (ChannelRoles::ErrorCount).toInt () ||
 				(Selected_.isValid () && row == Selected_.row ());
 	}
 }
