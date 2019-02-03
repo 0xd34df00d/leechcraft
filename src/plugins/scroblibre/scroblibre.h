@@ -72,9 +72,6 @@ namespace Scroblibre
 		void PlaybackStopped ();
 		void LoveCurrentTrack ();
 		void BanCurrentTrack ();
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
-		void delegateEntity (const LeechCraft::Entity&, int* id, QObject** provider);
 	};
 }
 }

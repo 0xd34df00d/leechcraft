@@ -65,9 +65,6 @@ namespace Scroblibre
 		void handleAccountRemoved (const QUrl& url, const QString& login);
 	private slots:
 		void submit ();
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
-		void delegateEntity (const LeechCraft::Entity&, int* id, QObject** provider);
 	};
 }
 }
