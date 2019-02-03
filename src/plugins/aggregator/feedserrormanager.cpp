@@ -31,11 +31,15 @@
 
 namespace LeechCraft::Aggregator
 {
-	void FeedsErrorManager::AddFeedError (IDType_t, const Error&)
+	void FeedsErrorManager::AddFeedError (IDType_t id, const Error& error)
 	{
+		Errors_ [id] << error;
+		emit gotErrors (id);
 	}
 
-	void FeedsErrorManager::ClearFeedErrors (IDType_t)
+	void FeedsErrorManager::ClearFeedErrors (IDType_t id)
 	{
+		if (Errors_.remove (id))
+			emit clearedErrors (id);
 	}
 }

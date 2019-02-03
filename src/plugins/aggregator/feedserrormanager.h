@@ -31,6 +31,7 @@
 
 #include <boost/variant.hpp>
 #include <QObject>
+#include <QHash>
 #include <interfaces/idownload.h>
 #include "common.h"
 
@@ -38,15 +39,21 @@ namespace LeechCraft::Aggregator
 {
 	class FeedsErrorManager : public QObject
 	{
+		Q_OBJECT
 	public:
 		struct ParseError
 		{
 			QString Error_;
 		};
 		using Error = boost::variant<IDownload::Error, ParseError>;
-
+	private:
+		QHash<IDType_t, QList<Error>> Errors_;
+	public:
 		void AddFeedError (IDType_t, const Error&);
 
 		void ClearFeedErrors (IDType_t);
+	signals:
+		void gotErrors (IDType_t);
+		void clearedErrors (IDType_t);
 	};
 }
