@@ -138,7 +138,10 @@ namespace Aggregator
 
 		PoolsManager::Instance ().ReloadPools ();
 
-		UpdatesManager_ = std::make_shared<UpdatesManager> (DBUpThread_, Proxy_->GetEntityManager ());
+		UpdatesManager_ = std::make_shared<UpdatesManager> (UpdatesManager::InitParams {
+					DBUpThread_,
+					Proxy_->GetEntityManager ()
+				});
 
 		connect (AppWideActions_->ActionUpdateFeeds_,
 				&QAction::triggered,

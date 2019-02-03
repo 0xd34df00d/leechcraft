@@ -57,7 +57,12 @@ namespace LeechCraft::Aggregator
 		QList<IDType_t> UpdatesQueue_;
 		QMap<IDType_t, QDateTime> Updates_;
 	public:
-		explicit UpdatesManager (const DBUpdateThread_ptr&, IEntityManager*, QObject* = nullptr);
+		struct InitParams
+		{
+			const DBUpdateThread_ptr DBUpThread_;
+			IEntityManager *EntityManager_;
+		};
+		explicit UpdatesManager (const InitParams&, QObject* = nullptr);
 
 		void UpdateFeed (IDType_t);
 

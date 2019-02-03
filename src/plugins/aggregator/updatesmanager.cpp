@@ -122,10 +122,10 @@ namespace LeechCraft::Aggregator
 		}
 	}
 
-	UpdatesManager::UpdatesManager (const DBUpdateThread_ptr& dbUpThread, IEntityManager *iem, QObject *parent)
+	UpdatesManager::UpdatesManager (const InitParams& initParams, QObject *parent)
 	: QObject { parent }
-	, EntityManager_ { iem }
-	, DBUpThread_ { dbUpThread }
+	, EntityManager_ { initParams.EntityManager_ }
+	, DBUpThread_ { initParams.DBUpThread_ }
 	, StorageBackend_ { StorageBackendManager::Instance ().MakeStorageBackendForThread () }
 	, UpdateTimer_ { new QTimer { this } }
 	, CustomUpdateTimer_ { new QTimer { this } }
