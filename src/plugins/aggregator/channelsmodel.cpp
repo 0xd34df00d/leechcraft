@@ -79,6 +79,15 @@ namespace Aggregator
 				this,
 				&ChannelsModel::PopulateChannels);
 
+		connect (FeedsErrorManager_.get (),
+				&FeedsErrorManager::gotErrors,
+				this,
+				&ChannelsModel::HandleFeedErrorsChanged);
+		connect (FeedsErrorManager_.get (),
+				&FeedsErrorManager::clearedErrors,
+				this,
+				&ChannelsModel::HandleFeedErrorsChanged);
+
 		if (StorageBackendManager::Instance ().IsPrimaryStorageCreated ())
 			PopulateChannels ();
 	}
@@ -284,6 +293,13 @@ namespace Aggregator
 			it = Channels_.erase (it);
 			endRemoveRows ();
 		}
+	}
+
+	void ChannelsModel::HandleFeedErrorsChanged (IDType_t feedId)
+	{
+		for (auto i = 0; i < Channels_.size (); ++i)
+			if (Channels_.at (i).FeedID_ == feedId)
+				emit dataChanged (index (i, 0), index (i, columnCount ()));
 	}
 
 	void ChannelsModel::UpdateChannelData (const Channel& channel)

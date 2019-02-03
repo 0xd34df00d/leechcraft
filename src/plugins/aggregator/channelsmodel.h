@@ -76,6 +76,9 @@ namespace Aggregator
 	private:
 		void RemoveChannel (IDType_t);
 		void RemoveFeed (IDType_t);
+
+		void HandleFeedErrorsChanged (IDType_t);
+
 		void UpdateChannelData (const Channel&);
 
 		void AddChannel (const ChannelShort&);
