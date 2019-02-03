@@ -81,6 +81,7 @@
 #include "resourcesfetcher.h"
 #include "poolsmanager.h"
 #include "opmladder.h"
+#include "feedserrormanager.h"
 
 namespace LeechCraft
 {
@@ -138,8 +139,11 @@ namespace Aggregator
 
 		PoolsManager::Instance ().ReloadPools ();
 
+		ErrorsManager_ = std::make_shared<FeedsErrorManager> ();
+
 		UpdatesManager_ = std::make_shared<UpdatesManager> (UpdatesManager::InitParams {
 					DBUpThread_,
+					ErrorsManager_,
 					Proxy_->GetEntityManager ()
 				});
 

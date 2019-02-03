@@ -62,6 +62,7 @@ namespace Aggregator
 	class ChannelsModel;
 	class ResourcesFetcher;
 	class OpmlAdder;
+	class FeedsErrorManager;
 	struct AppWideActions;
 	struct ChannelActions;
 	struct ItemsWidgetDependencies;
@@ -106,6 +107,7 @@ namespace Aggregator
 
 		Util::ShortcutManager *ShortcutMgr_ = nullptr;
 
+		std::shared_ptr<FeedsErrorManager> ErrorsManager_;
 		std::shared_ptr<UpdatesManager> UpdatesManager_;
 		std::shared_ptr<PluginManager> PluginManager_;
 		std::shared_ptr<ResourcesFetcher> ResourcesFetcher_;

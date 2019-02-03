@@ -46,6 +46,7 @@
 #include "storagebackend.h"
 #include "storagebackendmanager.h"
 #include "xmlsettingsmanager.h"
+#include "feedserrormanager.h"
 
 namespace LeechCraft::Aggregator
 {
@@ -126,6 +127,7 @@ namespace LeechCraft::Aggregator
 	: QObject { parent }
 	, EntityManager_ { initParams.EntityManager_ }
 	, DBUpThread_ { initParams.DBUpThread_ }
+	, FeedsErrorManager_ { initParams.FeedsErrorManager_ }
 	, StorageBackend_ { StorageBackendManager::Instance ().MakeStorageBackendForThread () }
 	, UpdateTimer_ { new QTimer { this } }
 	, CustomUpdateTimer_ { new QTimer { this } }
