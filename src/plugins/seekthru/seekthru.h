@@ -95,8 +95,6 @@ namespace SeekThru
 	private slots:
 		void handleError (const QString&);
 	signals:
-		void delegateEntity (const LeechCraft::Entity&,
-				int*, QObject**);
 		void gotEntity (const LeechCraft::Entity&);
 		void categoriesChanged (const QStringList&, const QStringList&);
 	};
