@@ -43,6 +43,7 @@
 #include <interfaces/iwebbrowser.h>
 #include <util/tags/categoryselector.h>
 #include <util/xpc/util.h>
+#include <util/xpc/coreproxyholder.h>
 #include <util/models/mergemodel.h>
 #include <util/gui/clearlineeditaddon.h>
 #include <util/shortcuts/shortcutmanager.h>
@@ -51,7 +52,6 @@
 #include <interfaces/core/itagsmanager.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/ientitymanager.h>
-#include "core.h"
 #include "xmlsettingsmanager.h"
 #include "itemsfiltermodel.h"
 #include "itemslistmodel.h"
@@ -125,7 +125,8 @@ namespace Aggregator
 		Impl_->MergeMode_ = false;
 		Impl_->ControlToolBar_ = SetupToolBar ();
 
-		Impl_->CurrentItemsModel_ = std::make_unique<ItemsListModel> (Core::Instance ().GetProxy ()->GetIconThemeManager ());
+		auto proxy = Util::CoreProxyHolder::Get ();
+		Impl_->CurrentItemsModel_ = std::make_unique<ItemsListModel> (proxy->GetIconThemeManager ());
 		Impl_->ItemLists_ = std::make_unique<Util::MergeModel> (QStringList { tr ("Name"), tr ("Date") });
 		Impl_->ItemLists_->AddModel (Impl_->CurrentItemsModel_.get ());
 
@@ -173,7 +174,7 @@ namespace Aggregator
 				this,
 				&ItemsWidget::updateItemsFilter);
 
-		new Util::ClearLineEditAddon (Core::Instance ().GetProxy (), Impl_->Ui_.SearchLine_);
+		new Util::ClearLineEditAddon (proxy, Impl_->Ui_.SearchLine_);
 
 		QHeaderView *itemsHeader = Impl_->Ui_.Items_->header ();
 		QFontMetrics fm = fontMetrics ();
@@ -463,7 +464,7 @@ namespace Aggregator
 		QString commentRSS = it.CommentsLink_;
 		QStringList tags = it.Categories_;
 
-		const auto& addTags = Core::Instance ().GetProxy ()->GetTagsManager ()->
+		const auto& addTags = Util::CoreProxyHolder::Get ()->GetTagsManager ()->
 				Split (XmlSettingsManager::Instance ()->property ("CommentsTags").toString ());
 		Impl_->FeedAdder_ (commentRSS, tags + addTags);
 	}
@@ -508,7 +509,7 @@ namespace Aggregator
 
 	void ItemsWidget::ConstructBrowser ()
 	{
-		const auto proxy = Core::Instance ().GetProxy ();
+		const auto proxy = Util::CoreProxyHolder::Get ();
 		const auto browser = proxy->GetPluginsManager ()->GetAllCastableTo<IWebBrowser*> ().value (0);
 		Impl_->Ui_.ItemView_->Construct (browser);
 		navBarVisibilityChanged ();
@@ -538,7 +539,7 @@ namespace Aggregator
 		if (channelId == Impl_->CurrentItemsModel_->GetCurrentChannel ())
 			return;
 
-		auto ilm = std::make_shared<ItemsListModel> (Core::Instance ().GetProxy ()->GetIconThemeManager ());
+		auto ilm = std::make_shared<ItemsListModel> (Util::CoreProxyHolder::Get ()->GetIconThemeManager ());
 		ilm->Reset (channelId);
 		Impl_->SupplementaryModels_ << ilm;
 		Impl_->ItemLists_->AddModel (ilm.get ());
@@ -1306,7 +1307,7 @@ namespace Aggregator
 
 	void ItemsWidget::on_ActionItemLinkOpen__triggered ()
 	{
-		const auto iem = Core::Instance ().GetProxy ()->GetEntityManager ();
+		const auto iem = Util::CoreProxyHolder::Get ()->GetEntityManager ();
 		for (const auto& idx : GetSelected ())
 			iem->HandleEntity (Util::MakeEntity (QUrl { GetItem (idx).Link_ },
 						{},
