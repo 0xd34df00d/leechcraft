@@ -168,7 +168,6 @@ namespace BitTorrent
 		void StopAll ();
 		EntityTestHandleResult CouldDownload (const LeechCraft::Entity&) const;
 		QPair<int, QFuture<Result>> AddJob (LeechCraft::Entity);
-		void KillTask (int);
 
 		// IJobHolder
 		QAbstractItemModel* GetRepresentation () const;

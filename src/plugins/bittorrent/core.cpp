@@ -1045,20 +1045,6 @@ namespace BitTorrent
 		return { newId, Handles_.back ().Promise_->future () };
 	}
 
-	void Core::KillTask (int id)
-	{
-		for (int i = 0, size = Handles_.size (); i != size; ++i)
-			if (Handles_.at (i).ID_ == id)
-			{
-				RemoveTorrent (id);
-				return;
-			}
-		qWarning () << Q_FUNC_INFO
-			<< "not found"
-			<< id
-			<< Handles_.size ();
-	}
-
 	void Core::RemoveTorrent (int pos, bool withFiles)
 	{
 		if (!CheckValidity (pos))

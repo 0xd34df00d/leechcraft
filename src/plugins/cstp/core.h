@@ -105,7 +105,6 @@ namespace CSTP
 		void ItemSelected (const QModelIndex&);
 
 		QPair<int, QFuture<IDownload::Result>> AddTask (const Entity&);
-		void KillTask (int);
 		qint64 GetTotalDownloadSpeed () const;
 		EntityTestHandleResult CouldDownload (const LeechCraft::Entity&);
 		QAbstractItemModel* GetRepresentationModel ();

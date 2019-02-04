@@ -324,11 +324,6 @@ namespace BitTorrent
 		return result;
 	}
 
-	void TorrentPlugin::KillTask (int id)
-	{
-		Core::Instance ()->KillTask (id);
-	}
-
 	QAbstractItemModel* TorrentPlugin::GetRepresentation () const
 	{
 		return ReprProxy_;

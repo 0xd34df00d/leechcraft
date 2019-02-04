@@ -238,20 +238,6 @@ namespace CSTP
 		return mkErr (IDownload::Error::Type::LocalError, "Incorrect task parameters");
 	}
 
-	void Core::KillTask (int id)
-	{
-		for (int i = 0, size = ActiveTasks_.size (); i != size; ++i)
-			if (static_cast<int> (ActiveTasks_ [i].ID_) == id)
-			{
-				removeTriggered (i);
-				return;
-			}
-		qWarning () << Q_FUNC_INFO
-			<< "not found"
-			<< id
-			<< ActiveTasks_.size ();
-	}
-
 	QPair<int, QFuture<IDownload::Result>> Core::AddTask (QNetworkReply *rep,
 			const QString& path,
 			const QString& filename,

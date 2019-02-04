@@ -148,16 +148,6 @@ public:
 	 */
 	virtual QPair<int, QFuture<Result>> AddJob (LeechCraft::Entity entity) = 0;
 
-	/** @brief Kills the task with the given id.
-	 *
-	 * Kills the task with the id previously returned from AddJob. If
-	 * there is no such task, the function shall leave the downloader
-	 * in a good state. Ignoring will do.
-	 *
-	 * @param[in] id ID of the task previously added with AddJob().
-	 */
-	virtual void KillTask (int id) = 0;
-
 	/** @brief Virtual destructor.
 	 */
 	virtual ~IDownload () {}

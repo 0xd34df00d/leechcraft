@@ -149,11 +149,6 @@ namespace CSTP
 		return Core::Instance ().AddTask (e);
 	}
 
-	void CSTP::KillTask (int id)
-	{
-		Core::Instance ().KillTask (id);
-	}
-
 	QAbstractItemModel* CSTP::GetRepresentation () const
 	{
 		return Core::Instance ().GetRepresentationModel ();

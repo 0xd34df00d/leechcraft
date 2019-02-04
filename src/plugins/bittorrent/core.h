@@ -296,7 +296,6 @@ namespace BitTorrent
 				bool tryLive,
 				const QVector<bool>& files = QVector<bool> (),
 				LeechCraft::TaskParameters params = LeechCraft::NoParameters);
-		void KillTask (int);
 		void RemoveTorrent (int, bool withFiles = false);
 		void PauseTorrent (int);
 		void ResumeTorrent (int);
