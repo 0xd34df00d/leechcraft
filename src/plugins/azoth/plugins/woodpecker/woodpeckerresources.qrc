@@ -1,5 +1,0 @@
-<RCC>
-  <qresource prefix="/azoth/woodpecker" >
-	<file>resources/images/woodpecker.svg</file>
-  </qresource>
-</RCC>

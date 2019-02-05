@@ -352,7 +352,4 @@ endif ()
 if (ENABLE_AZOTH_ZHEET)
 	add_subdirectory (plugins/zheet)
 endif ()
-if (ENABLE_AZOTH_WOODPECKER)
-	add_subdirectory (plugins/woodpecker)
-endif ()
 
