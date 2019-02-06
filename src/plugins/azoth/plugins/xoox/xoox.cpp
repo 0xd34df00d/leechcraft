@@ -60,10 +60,6 @@ namespace Xoox
 				SIGNAL (gotEntity (LeechCraft::Entity)),
 				this,
 				SIGNAL (gotEntity (LeechCraft::Entity)));
-		connect (&Core::Instance (),
-				SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)),
-				this,
-				SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)));
 
 		const auto& progRep = proxy->GetPluginsManager ()->CreateLoadProgressReporter (this);
 		const auto capsDB = new CapsDatabase { progRep };

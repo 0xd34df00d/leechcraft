@@ -62,7 +62,6 @@ namespace Xoox
 		void SendEntity (const Entity&);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
-		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 	};
 }
 }
