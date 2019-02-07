@@ -141,7 +141,6 @@ namespace Astrality
 		void removeFinished (AccountWrapper*);
 
 		void gotEntity (LeechCraft::Entity);
-		void delegateEntity (LeechCraft::Entity, int*, QObject**);
 	};
 }
 }

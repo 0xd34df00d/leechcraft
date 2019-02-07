@@ -271,10 +271,6 @@ namespace Astrality
 				this,
 				SIGNAL (gotEntity (LeechCraft::Entity)));
 		connect (w,
-				SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)),
-				this,
-				SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)));
-		connect (w,
 				SIGNAL (removeFinished (AccountWrapper*)),
 				this,
 				SLOT (handleAccountRemoved (AccountWrapper*)));

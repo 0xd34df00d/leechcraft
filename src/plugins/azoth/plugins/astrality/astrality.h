@@ -76,7 +76,6 @@ namespace Astrality
 		void handleProtoWrappers (const QList<QObject*>&);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
-		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 
 		void gotNewProtocols (const QList<QObject*>&);
 	};

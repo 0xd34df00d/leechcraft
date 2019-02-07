@@ -89,7 +89,6 @@ namespace Astrality
 		void accountRemoved (QObject*);
 
 		void gotEntity (const LeechCraft::Entity&);
-		void delegateEntity (LeechCraft::Entity, int*, QObject**);
 	};
 }
 }
