@@ -470,7 +470,6 @@ namespace Azoth
 		void invalidateSmoothAvatarCache (QObject*);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
-		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 		void topStatusChanged (LeechCraft::Azoth::State);
 
 		/** Convenient signal for rethrowing the event of an account

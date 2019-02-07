@@ -135,7 +135,6 @@ namespace Azoth
 		void handleConsoleWidget (ConsoleWidget*);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
-		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 
 		void addNewTab (const QString&, QWidget*);
 		void removeTab (QWidget*);

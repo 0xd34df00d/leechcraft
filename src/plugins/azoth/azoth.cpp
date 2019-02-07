@@ -509,10 +509,6 @@ namespace Azoth
 				this,
 				SIGNAL (gotEntity (const LeechCraft::Entity&)));
 		connect (&Core::Instance (),
-				SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)),
-				this,
-				SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)));
-		connect (&Core::Instance (),
 				SIGNAL (gotSDWidget (ServiceDiscoveryWidget*)),
 				this,
 				SLOT (handleSDWidget (ServiceDiscoveryWidget*)));
