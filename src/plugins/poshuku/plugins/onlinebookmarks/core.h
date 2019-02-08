@@ -112,7 +112,6 @@ namespace OnlineBookmarks
 		void checkUploadPeriod ();
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
-		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 	};
 }
 }

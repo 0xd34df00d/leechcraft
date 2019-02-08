@@ -82,7 +82,6 @@ namespace OnlineBookmarks
 		void hookMoreMenuFillEnd (LeechCraft::IHookProxy_ptr, QMenu*, QObject*);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
-		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 	};
 }
 }
