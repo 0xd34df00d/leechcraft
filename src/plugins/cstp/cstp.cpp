@@ -69,14 +69,6 @@ namespace CSTP
 		Core::Instance ().SetToolbar (Toolbar_);
 
 		connect (&Core::Instance (),
-				SIGNAL (taskFinished (int)),
-				this,
-				SIGNAL (jobFinished (int)));
-		connect (&Core::Instance (),
-				SIGNAL (taskError (int, IDownload::Error::Type)),
-				this,
-				SIGNAL (jobError (int, IDownload::Error::Type)));
-		connect (&Core::Instance (),
 				SIGNAL (error (QString)),
 				this,
 				SLOT (handleError (QString)));

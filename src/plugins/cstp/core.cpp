@@ -683,7 +683,6 @@ namespace CSTP
 			bool silence = taskdscr->Parameters_ & LeechCraft::DoNotAnnounceEntity;
 			auto tp = taskdscr->Parameters_;
 			Remove (taskdscr);
-			emit taskFinished (id);
 			if (!silence)
 			{
 				tp |= IsDownloaded;
@@ -705,7 +704,6 @@ namespace CSTP
 			taskdscr->ErrorFlag_ = true;
 			if (notifyUser)
 				emit error (errorStr);
-			emit taskError (id, IDownload::Error::Type::Unknown);
 			if (taskdscr->Parameters_ & LeechCraft::NotPersistent)
 				Remove (taskdscr);
 		}
