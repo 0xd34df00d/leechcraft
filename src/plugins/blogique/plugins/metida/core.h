@@ -83,7 +83,6 @@ namespace Metida
 
 	signals:
 		void gotEntity (LeechCraft::Entity e);
-		void delegateEntity (LeechCraft::Entity e, int *id, QObject **obj);
 	};
 }
 }

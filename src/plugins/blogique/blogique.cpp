@@ -72,10 +72,6 @@ namespace Blogique
 				this,
 				SIGNAL (gotEntity (LeechCraft::Entity)));
 		connect (&Core::Instance (),
-				SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)),
-				this,
-				SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)));
-		connect (&Core::Instance (),
 				SIGNAL (addNewTab (QString,QWidget*)),
 				this,
 				SIGNAL (addNewTab (QString,QWidget*)));

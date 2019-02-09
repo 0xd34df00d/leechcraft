@@ -77,7 +77,6 @@ namespace Hestia
 
 	signals:
 		void gotEntity (const LeechCraft::Entity& e);
-		void delegateEntity (const LeechCraft::Entity& e, int *id, QObject **obj);
 	};
 }
 }

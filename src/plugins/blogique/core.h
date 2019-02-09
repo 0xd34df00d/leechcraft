@@ -113,7 +113,6 @@ namespace Blogique
 		void accountValidated (QObject *account, bool validated);
 
 		void gotEntity (LeechCraft::Entity e);
-		void delegateEntity (LeechCraft::Entity e, int *id, QObject **obj);
 
 		void addNewTab (const QString& name, QWidget *tab);
 		void removeTab (QWidget *tab);
