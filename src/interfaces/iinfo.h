@@ -267,14 +267,6 @@ public:
 	virtual QIcon GetIcon () const = 0;
 
 	/** @brief Virtual destructor.
-	 *
- * - gotEntity (const LeechCraft::Entity& entity);
- *   Notifies other plugins about a new entity.
- * - delegateEntity (const LeechCraft::Entity& entity, int *id, QObject **provider);
- *   Entity delegation request. If a suitable provider is found, the
- *   entity is delegated to it, id is set according to the task ID
- *   returned from the provider, and provider is set to point to the
- *   provider object.
 	 */
 	virtual ~IInfo () {}
 
