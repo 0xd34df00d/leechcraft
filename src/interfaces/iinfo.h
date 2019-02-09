@@ -313,40 +313,6 @@ public:
 	{
 		Q_UNUSED (entity);
 	}
-
-	/** @brief This signal is emitted by plugin to delegate the entity
-	 * to an another plugin.
-	 *
-	 * In this case, the plugin actually cares whether the entity would
-	 * be handled. This signal is typically used, for example, to
-	 * delegate a download request.
-	 *
-	 * id and provider are used in download delegation requests. If
-	 * these parameters are not NULL and the entity is handled, they are
-	 * set to the task ID returned by the corresponding IDownload
-	 * instance and the main plugin instance of the handling plugin,
-	 * respectively. Thus, setting the id to a non-NULL value means that
-	 * only downloading may occur as result but no handling.
-	 *
-	 * Nevertheless, if you need to enable entity handlers to handle
-	 * your request as well, you may leave the id parameter as NULL and
-	 * just set the provider to a non-NULL value.
-	 *
-	 * @note This function is expected to be a signal in subclasses.
-	 *
-	 * @param[out] entity The entity to delegate.
-	 * @param[in] id The pointer to the variable that would contain the
-	 * task ID of this delegate request, or NULL.
-	 * @param[in] provider The pointer to the main plugin instance of
-	 * the plugin that handles this delegate request, or NULL.
-	 */
-	virtual void delegateEntity (const LeechCraft::Entity& entity,
-			int *id, QObject **provider)
-	{
-		Q_UNUSED (entity);
-		Q_UNUSED (id);
-		Q_UNUSED (provider);
-	}
 };
 
 Q_DECLARE_INTERFACE (IInfo, "org.Deviant.LeechCraft.IInfo/1.0")
