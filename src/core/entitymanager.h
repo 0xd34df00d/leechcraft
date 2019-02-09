@@ -40,11 +40,11 @@ namespace LeechCraft
 		Q_OBJECT
 		Q_INTERFACES (IEntityManager)
 	public:
-		EntityManager (QObject* = nullptr);
+		explicit EntityManager (QObject* = nullptr);
 
-		DelegationResult DelegateEntity (Entity, QObject* = nullptr);
-		Q_INVOKABLE bool HandleEntity (LeechCraft::Entity, QObject* = nullptr);
-		Q_INVOKABLE bool CouldHandle (const LeechCraft::Entity&);
-		QList<QObject*> GetPossibleHandlers (const Entity&);
+		DelegationResult DelegateEntity (Entity, QObject* = nullptr) override;
+		Q_INVOKABLE bool HandleEntity (LeechCraft::Entity, QObject* = nullptr) override;
+		Q_INVOKABLE bool CouldHandle (const LeechCraft::Entity&) override;
+		QList<QObject*> GetPossibleHandlers (const Entity&) override;
 	};
 }
