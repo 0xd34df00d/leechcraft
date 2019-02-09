@@ -60,13 +60,13 @@ namespace Popishu
 		QMenu *DoctypeMenu_;
 		QMenu *RecentFilesMenu_;
 		QString Filename_;
-		bool Modified_;
+		bool Modified_ = false;
 		QHash<QString, QString> Extension2Lang_;
 
-		bool DoctypeDetected_;
+		bool DoctypeDetected_ = false;
 
-		QObject *WrappedObject_;
-		bool TemporaryDocument_;
+		QObject *WrappedObject_ = nullptr;
+		bool TemporaryDocument_ = false;
 
 		bool TabRecoverSaveScheduled_ = false;
 	public:

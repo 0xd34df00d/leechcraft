@@ -72,10 +72,6 @@ namespace Popishu
 	, ParentPlugin_ (parentPlugin)
 	, Proxy_ (proxy)
 	, Toolbar_ (new QToolBar)
-	, Modified_ (false)
-	, DoctypeDetected_ (false)
-	, WrappedObject_ (0)
-	, TemporaryDocument_ (false)
 	{
 		SetupDefPairs ();
 
