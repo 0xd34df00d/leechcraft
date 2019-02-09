@@ -391,17 +391,9 @@ namespace LeechCraft
 		}
 	}
 
-	bool Core::handleGotEntity (Entity p, int *id, QObject **pr)
+	bool Core::handleGotEntity (Entity p)
 	{
-		if (id && pr)
-		{
-			const auto& result = EntityManager ().DelegateEntity (p);
-			*id = result.ID_;
-			*pr = result.Handler_;
-			return result.Handler_;
-		}
-		else
-			return EntityManager ().HandleEntity (p);
+		return EntityManager ().HandleEntity (p);
 	}
 
 	void Core::handleCouldHandle (const Entity& e, bool *could)

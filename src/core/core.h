@@ -190,17 +190,10 @@ namespace LeechCraft
 		 * string, this parameter is considered to be an UTF-8
 		 * representation of it.
 		 *
-		 * If id is not null and the job is handled by a downloader,
-		 * the return value of IDownloader::AddJob() is assigned to *id.
-		 * The same is with the provider.
-		 *
 		 * @param[in] entity Entity.
-		 * @param[out] id The ID of the job if applicable.
-		 * @param[out] provider The provider that downloads this job.
 		 * @return True if the entity was actually handled.
 		 */
-		bool handleGotEntity (LeechCraft::Entity entity,
-				int *id = 0, QObject **provider = 0);
+		bool handleGotEntity (LeechCraft::Entity entity);
 	private slots:
 		/** Returns whether the given entity could be handlerd.
 		 *
