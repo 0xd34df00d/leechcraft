@@ -73,14 +73,14 @@ namespace Popishu
 		EditorPage (const ICoreProxy_ptr& proxy, const TabClassInfo&, QObject*);
 		~EditorPage ();
 
-		void Remove ();
-		QToolBar* GetToolBar () const;
-		QObject* ParentMultiTabs ();
-		TabClassInfo GetTabClassInfo () const;
+		void Remove () override;
+		QToolBar* GetToolBar () const override;
+		QObject* ParentMultiTabs () override;
+		TabClassInfo GetTabClassInfo () const override;
 
-		QByteArray GetTabRecoverData () const;
-		QIcon GetTabRecoverIcon () const;
-		QString GetTabRecoverName () const;
+		QByteArray GetTabRecoverData () const override;
+		QIcon GetTabRecoverIcon () const override;
+		QString GetTabRecoverName () const override;
 
 		void RestoreState (QDataStream&);
 
@@ -148,7 +148,7 @@ namespace Popishu
 
 		void languageChanged (const QString& language);
 
-		void tabRecoverDataChanged ();
+		void tabRecoverDataChanged () override;
 	};
 }
 }
