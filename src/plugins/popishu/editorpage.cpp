@@ -58,6 +58,7 @@
 #include <util/sll/prelude.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
+#include <interfaces/core/ientitymanager.h>
 #include "xmlsettingsmanager.h"
 #include "replacedialog.h"
 
@@ -467,9 +468,8 @@ namespace Popishu
 				break;
 			}
 
-		emit delegateEntity (e, 0, 0);
-
-		if (!WrappedObject_)
+		// TODO rework to do this via some proper API
+		if (!Proxy_->GetEntityManager ()->DelegateEntity (e) || !WrappedObject_)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "script wrapping failed";
