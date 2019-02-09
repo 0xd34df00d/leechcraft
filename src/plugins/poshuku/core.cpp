@@ -548,10 +548,6 @@ namespace Poshuku
 				this,
 				SIGNAL (gotEntity (const LeechCraft::Entity&)));
 		connect (widget,
-				SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)),
-				this,
-				SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)));
-		connect (widget,
 				SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)),
 				this,
 				SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)));
