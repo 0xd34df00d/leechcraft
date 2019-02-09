@@ -213,7 +213,7 @@ namespace BitTorrent
 		return Core::Instance ()->CouldDownload (e);
 	}
 
-	QPair<int, QFuture<IDownload::Result>> TorrentPlugin::AddJob (Entity e)
+	QFuture<IDownload::Result> TorrentPlugin::AddJob (Entity e)
 	{
 		QString suggestedFname;
 		auto tm = Core::Instance ()->GetProxy ()->GetTagsManager ();
@@ -256,11 +256,7 @@ namespace BitTorrent
 					<< "unable to open file"
 					<< suggestedFname
 					<< file.errorString ();
-			return
-			{
-				-1,
-				Util::MakeReadyFuture (Result::Left ({ Error::Type::LocalError, "Unable to open file" }))
-			};
+			return Util::MakeReadyFuture (Result::Left ({ Error::Type::LocalError, "Unable to open file" }));
 		}
 
 		AddTorrentDialog_->Reinit ();
@@ -289,11 +285,7 @@ namespace BitTorrent
 			dialogGuard.exec ();
 
 			if (AddTorrentDialog_->result () == QDialog::Rejected)
-				return
-				{
-					-1,
-					Util::MakeReadyFuture (Result::Left ({ Error::Type::UserCanceled, {} }))
-				};
+				return Util::MakeReadyFuture (Result::Left ({ Error::Type::UserCanceled, {} }));
 
 			fname = AddTorrentDialog_->GetFilename (),
 			path = AddTorrentDialog_->GetSavePath ();

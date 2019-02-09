@@ -271,7 +271,7 @@ namespace BitTorrent
 			* @param[in] params Task parameters.
 			* @return The ID of the task.
 			*/
-		QPair<int, QFuture<IDownload::Result>> AddMagnet (const QString& magnet,
+		QFuture<IDownload::Result> AddMagnet (const QString& magnet,
 				const QString& path,
 				const QStringList& tags,
 				LeechCraft::TaskParameters params = LeechCraft::NoParameters);
@@ -290,7 +290,7 @@ namespace BitTorrent
 			* @param[in] params Task parameters.
 			* @return The ID of the task.
 			*/
-		QPair<int, QFuture<IDownload::Result>> AddFile (const QString& filename,
+		QFuture<IDownload::Result> AddFile (const QString& filename,
 				const QString& path,
 				const QStringList& tags,
 				bool tryLive,

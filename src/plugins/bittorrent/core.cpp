@@ -922,13 +922,13 @@ namespace BitTorrent
 				return libtorrent::storage_mode_sparse;
 		}
 
-		QPair<int, QFuture<IDownload::Result>> MakeErrorResult (const QString& msg)
+		QFuture<IDownload::Result> MakeErrorResult (const QString& msg)
 		{
-			return { -1, Util::MakeReadyFuture (IDownload::Result::Left ({ IDownload::Error::Type::LocalError, msg })) };
+			return Util::MakeReadyFuture (IDownload::Result::Left ({ IDownload::Error::Type::LocalError, msg }));
 		}
 	}
 
-	QPair<int, QFuture<IDownload::Result>> Core::AddMagnet (const QString& magnet,
+	QFuture<IDownload::Result> Core::AddMagnet (const QString& magnet,
 			const QString& path,
 			const QStringList& tags,
 			TaskParameters params)
@@ -955,7 +955,7 @@ namespace BitTorrent
 		Handles_.append ({ handle, tags, Proxy_->GetID (), params });
 		endInsertRows ();
 
-		return { Handles_.back ().ID_, Handles_.back ().Promise_->future () };
+		return Handles_.back ().Promise_->future ();
 	}
 
 #if LIBTORRENT_VERSION_NUM >= 10200
@@ -964,7 +964,7 @@ namespace BitTorrent
 	namespace lt_lib = boost;
 #endif
 
-	QPair<int, QFuture<IDownload::Result>> Core::AddFile (const QString& filename,
+	QFuture<IDownload::Result> Core::AddFile (const QString& filename,
 			const QString& path,
 			const QStringList& tags,
 			bool tryLive,
@@ -1042,7 +1042,7 @@ namespace BitTorrent
 		}
 
 		ScheduleSave ();
-		return { newId, Handles_.back ().Promise_->future () };
+		return Handles_.back ().Promise_->future ();
 	}
 
 	void Core::RemoveTorrent (int pos, bool withFiles)

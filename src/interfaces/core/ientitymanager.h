@@ -62,11 +62,6 @@ public:
 		 */
 		QObject *Handler_ = nullptr;
 
-		/** The internal ID of the delegated entity local to the handling
-		 * plugin.
-		 */
-		int ID_ = 0;
-
 		/** The future with the download result.
 		 */
 		QFuture<IDownload::Result> DownloadResult_;

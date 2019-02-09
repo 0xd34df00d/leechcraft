@@ -170,7 +170,7 @@ namespace CSTP
 		}
 	}
 
-	QPair<int, QFuture<IDownload::Result>> Core::AddTask (const Entity& e)
+	QFuture<IDownload::Result> Core::AddTask (const Entity& e)
 	{
 		auto url = e.Entity_.toUrl ();
 		const auto& urlList = e.Entity_.value<QList<QUrl>> ();
@@ -197,9 +197,9 @@ namespace CSTP
 			{}
 		};
 
-		auto mkErr = [] (auto type, const QString& msg) -> QPair<int, QFuture<IDownload::Result>>
+		auto mkErr = [] (auto type, const QString& msg)
 		{
-			return { -1, Util::MakeReadyFuture (IDownload::Result::Left ({ type, msg })) };
+			return Util::MakeReadyFuture (IDownload::Result::Left ({ type, msg }));
 		};
 
 		if (e.Parameters_ & LeechCraft::FromUserInitiated &&
@@ -238,7 +238,7 @@ namespace CSTP
 		return mkErr (IDownload::Error::Type::LocalError, "Incorrect task parameters");
 	}
 
-	QPair<int, QFuture<IDownload::Result>> Core::AddTask (QNetworkReply *rep,
+	QFuture<IDownload::Result> Core::AddTask (QNetworkReply *rep,
 			const QString& path,
 			const QString& filename,
 			const QString& comment,
@@ -257,7 +257,7 @@ namespace CSTP
 		return AddTask (td);
 	}
 
-	QPair<int, QFuture<IDownload::Result>> Core::AddTask (const QUrl& url,
+	QFuture<IDownload::Result> Core::AddTask (const QUrl& url,
 			const QString& path,
 			const QString& filename,
 			const QString& comment,
@@ -278,7 +278,7 @@ namespace CSTP
 		return AddTask (td);
 	}
 
-	QPair<int, QFuture<IDownload::Result>> Core::AddTask (TaskDescr& td)
+	QFuture<IDownload::Result> Core::AddTask (TaskDescr& td)
 	{
 		td.ErrorFlag_ = false;
 		td.ID_ = CoreProxy_->GetID ();
@@ -290,15 +290,10 @@ namespace CSTP
 			switch (fileExistsBehaviour)
 			{
 			case FileExistsBehaviour::Abort:
-				CoreProxy_->FreeID (td.ID_);
-				return
-				{
-					-1,
-					Util::MakeReadyFuture (IDownload::Result::Left ({
-								IDownload::Error::Type::LocalError,
-								"File already exists"
-							}))
-				};
+				return Util::MakeReadyFuture (IDownload::Result::Left ({
+							IDownload::Error::Type::LocalError,
+							"File already exists"
+						}));
 			case FileExistsBehaviour::Remove:
 				if (!td.File_->resize (0))
 				{
@@ -306,14 +301,10 @@ namespace CSTP
 								  td.File_->errorString ();
 					qWarning () << Q_FUNC_INFO << msg;
 					emit error (msg);
-					return
-					{
-						-1,
-						Util::MakeReadyFuture (IDownload::Result::Left ({
-									IDownload::Error::Type::LocalError,
-									"Could not truncate file"
-								}))
-					};
+					return Util::MakeReadyFuture (IDownload::Result::Left ({
+								IDownload::Error::Type::LocalError,
+								"Could not truncate file"
+							}));
 				}
 				break;
 			case FileExistsBehaviour::Continue:
@@ -339,7 +330,7 @@ namespace CSTP
 		ScheduleSave ();
 		if (!(td.Parameters_ & LeechCraft::NoAutostart))
 			startTriggered (rowCount () - 1);
-		return { td.ID_, td.Task_->GetFuture () };
+		return td.Task_->GetFuture ();
 	}
 
 	qint64 Core::GetTotalDownloadSpeed () const

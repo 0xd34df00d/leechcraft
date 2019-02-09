@@ -274,10 +274,7 @@ namespace LeechCraft
 
 		for (auto obj : handlers)
 			if (auto idl = qobject_cast<IDownload*> (obj))
-			{
-				const auto& pair = idl->AddJob (e);
-				return { obj, pair.first, pair.second };
-			}
+				return { obj, idl->AddJob (e) };
 
 		return {};
 	}

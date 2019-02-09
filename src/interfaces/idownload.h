@@ -146,7 +146,7 @@ public:
 	 *
 	 * @sa LeechCraft::Entity
 	 */
-	virtual QPair<int, QFuture<Result>> AddJob (LeechCraft::Entity entity) = 0;
+	virtual QFuture<Result> AddJob (LeechCraft::Entity entity) = 0;
 
 	/** @brief Virtual destructor.
 	 */

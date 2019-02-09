@@ -136,7 +136,7 @@ namespace CSTP
 		return Core::Instance ().CouldDownload (e);
 	}
 
-	QPair<int, QFuture<IDownload::Result>> CSTP::AddJob (LeechCraft::Entity e)
+	QFuture<IDownload::Result> CSTP::AddJob (LeechCraft::Entity e)
 	{
 		return Core::Instance ().AddTask (e);
 	}

@@ -104,7 +104,7 @@ namespace CSTP
 		void SetToolbar (QToolBar*);
 		void ItemSelected (const QModelIndex&);
 
-		QPair<int, QFuture<IDownload::Result>> AddTask (const Entity&);
+		QFuture<IDownload::Result> AddTask (const Entity&);
 		qint64 GetTotalDownloadSpeed () const;
 		EntityTestHandleResult CouldDownload (const LeechCraft::Entity&);
 		QAbstractItemModel* GetRepresentationModel ();
@@ -133,20 +133,20 @@ namespace CSTP
 		void writeSettings ();
 		void finishedReply (QNetworkReply*);
 	private:
-		QPair<int, QFuture<IDownload::Result>> AddTask (const QUrl&,
+		QFuture<IDownload::Result> AddTask (const QUrl&,
 				const QString&,
 				const QString&,
 				const QString&,
 				const QStringList&,
 				const QVariantMap&,
 				LeechCraft::TaskParameters = LeechCraft::NoParameters);
-		QPair<int, QFuture<IDownload::Result>> AddTask (QNetworkReply*,
+		QFuture<IDownload::Result> AddTask (QNetworkReply*,
 				const QString&,
 				const QString&,
 				const QString&,
 				const QStringList&,
 				LeechCraft::TaskParameters = LeechCraft::NoParameters);
-		QPair<int, QFuture<IDownload::Result>> AddTask (TaskDescr&);
+		QFuture<IDownload::Result> AddTask (TaskDescr&);
 		void ReadSettings ();
 		void ScheduleSave ();
 		tasks_t::const_iterator FindTask (QObject*) const;
