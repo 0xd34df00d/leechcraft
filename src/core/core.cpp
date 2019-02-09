@@ -448,16 +448,6 @@ namespace LeechCraft
 					this,
 					SLOT (handleGotEntity (LeechCraft::Entity)),
 					Qt::QueuedConnection);
-
-		if (qmo->indexOfSignal (QMetaObject::normalizedSignature (
-						"delegateEntity (const LeechCraft::Entity&, int*, QObject**)"
-						).constData ()) != -1)
-			connect (plugin,
-					SIGNAL (delegateEntity (const LeechCraft::Entity&,
-							int*, QObject**)),
-					this,
-					SLOT (handleGotEntity (LeechCraft::Entity,
-							int*, QObject**)));
 	}
 
 	void Core::InitMultiTab (const QObject *plugin)
