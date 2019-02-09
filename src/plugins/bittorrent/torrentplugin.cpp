@@ -926,14 +926,6 @@ namespace BitTorrent
 		TorrentSelectionChanged_ = true;
 
 		AddTorrentDialog_.reset (new AddTorrent);
-		connect (Core::Instance (),
-				SIGNAL (taskFinished (int)),
-				this,
-				SIGNAL (jobFinished (int)));
-		connect (Core::Instance (),
-				SIGNAL (taskRemoved (int)),
-				this,
-				SIGNAL (jobRemoved (int)));
 
 		Core::Instance ()->SetWidgets (Toolbar_.get (), TabWidget_.get ());
 	}

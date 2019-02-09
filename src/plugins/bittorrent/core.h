@@ -388,8 +388,6 @@ namespace BitTorrent
 	signals:
 		void addToHistory (const QString&, const QString&, quint64,
 				const QDateTime&, const QStringList&);
-		void taskFinished (int);
-		void taskRemoved (int);
 		void fileRenamed (int torrent, int file, const QString& newName);
 	};
 }

@@ -226,9 +226,6 @@ namespace BitTorrent
 		void SetupStuff ();
 		void SetupActions ();
 	signals:
-		void jobFinished (int);
-		void jobRemoved (int);
-
 		void addNewTab (const QString&, QWidget*);
 		void changeTabIcon (QWidget*, const QIcon&);
 		void changeTabName (QWidget*, const QString&);

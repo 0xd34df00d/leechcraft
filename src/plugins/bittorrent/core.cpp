@@ -1070,7 +1070,6 @@ namespace BitTorrent
 		endRemoveRows ();
 
 		ScheduleSave ();
-		emit taskRemoved (id);
 	}
 
 	void Core::PauseTorrent (int pos)
@@ -1887,8 +1886,6 @@ namespace BitTorrent
 			e.Entity_ = QUrl::fromLocalFile (localeCodec->toUnicode (path));
 			iem->HandleEntity (e);
 		}
-
-		emit taskFinished (torrent.ID_);
 
 		if (torrent.Promise_)
 			Util::ReportFutureResult (*torrent.Promise_, IDownload::Result::Right ({}));
