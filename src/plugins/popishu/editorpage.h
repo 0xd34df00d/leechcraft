@@ -144,8 +144,6 @@ namespace Popishu
 		void changeTooltip (QWidget*, QWidget*);
 		void statusBarChanged (QWidget*, const QString&);
 		void couldHandle (const LeechCraft::Entity&, bool*);
-		void delegateEntity (const LeechCraft::Entity&,
-				int*, QObject**);
 		void gotEntity (const LeechCraft::Entity&);
 
 		void languageChanged (const QString& language);

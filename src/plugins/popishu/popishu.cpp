@@ -179,12 +179,6 @@ namespace Popishu
 				this,
 				SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)));
 		connect (result,
-				SIGNAL (delegateEntity (const LeechCraft::Entity&,
-						int*, QObject**)),
-				this,
-				SIGNAL (delegateEntity (const LeechCraft::Entity&,
-						int*, QObject**)));
-		connect (result,
 				SIGNAL (gotEntity (const LeechCraft::Entity&)),
 				this,
 				SIGNAL (gotEntity (const LeechCraft::Entity&)));
