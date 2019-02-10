@@ -531,12 +531,11 @@ namespace Popishu
 
 	void EditorPage::handleMonoFontChanged ()
 	{
-		QsciLexer *lexer = Ui_.TextEditor_->lexer ();
+		auto lexer = Ui_.TextEditor_->lexer ();
 		if (!lexer)
 			return;
 
-		QFont font = XmlSettingsManager::Instance ()->
-				property ("MonoFont").value<QFont> ();
+		auto font = XmlSettingsManager::Instance ()->property ("MonoFont").value<QFont> ();
 		lexer->setFont (font);
 	}
 
@@ -555,14 +554,9 @@ namespace Popishu
 
 	void EditorPage::handleVisualWrapFlags ()
 	{
-		QsciScintilla::WrapVisualFlag eflag =
-				FlagFromName (XmlSettingsManager::Instance ()->
-						property ("EndLineFlag").toString ());
-		QsciScintilla::WrapVisualFlag sflag =
-				FlagFromName (XmlSettingsManager::Instance ()->
-						property ("StartLineFlag").toString ());;
-		int indent = XmlSettingsManager::Instance ()->
-				property ("WrappedIndent").toInt ();
+		auto eflag = FlagFromName (XmlSettingsManager::Instance ()->property ("EndLineFlag").toString ());
+		auto sflag = FlagFromName (XmlSettingsManager::Instance ()->property ("StartLineFlag").toString ());
+		int indent = XmlSettingsManager::Instance ()->property ("WrappedIndent").toInt ();
 		Ui_.TextEditor_->setWrapVisualFlags (eflag, sflag, indent);
 	}
 
@@ -580,7 +574,7 @@ namespace Popishu
 				QString (),
 				FromUserInitiated,
 				"x-leechcraft/script-wrap-request");
-		QObject *object = 0;
+		QObject *object = nullptr;
 		e.Additional_ ["Object"] = QVariant::fromValue<QObject**> (&object);
 		e.Additional_ ["Language"] = FixLanguage (language);
 
@@ -684,7 +678,7 @@ namespace Popishu
 
 	QsciLexer* EditorPage::GetLexerByLanguage (const QString& lang) const
 	{
-		QsciLexer *result = 0;
+		QsciLexer *result = nullptr;
 		if (lang == "Bash")
 			result = new QsciLexerBash (Ui_.TextEditor_);
 		else if (lang == "CMake")
@@ -715,8 +709,7 @@ namespace Popishu
 			result = new QsciLexerXML (Ui_.TextEditor_);
 
 		if (result)
-			result->setFont (XmlSettingsManager::Instance ()->
-					property ("MonoFont").value<QFont> ());
+			result->setFont (XmlSettingsManager::Instance ()->property ("MonoFont").value<QFont> ());
 
 		return result;
 	}
@@ -742,20 +735,18 @@ namespace Popishu
 
 	void EditorPage::GroupActions (const QList<QAction*>& actions)
 	{
-		if (!actions.size ())
+		if (actions.isEmpty ())
 			return;
 
-		QActionGroup *group = new QActionGroup (this);
+		auto group = new QActionGroup (this);
 		for (const auto action : actions)
 			group->addAction (action);
 	}
 
 	void EditorPage::RestoreRecentFiles ()
 	{
-		QStringList recent = XmlSettingsManager::Instance ()->
-				property ("RecentlyOpenedFiles").toStringList ();
-		int num = XmlSettingsManager::Instance ()->
-				property ("NumRecentlyOpened").toInt ();
+		auto recent = XmlSettingsManager::Instance ()->property ("RecentlyOpenedFiles").toStringList ();
+		int num = XmlSettingsManager::Instance ()->property ("NumRecentlyOpened").toInt ();
 		while (recent.size () > num)
 			recent.removeAt (num);
 
@@ -805,7 +796,7 @@ namespace Popishu
 
 	void EditorPage::PrependRecentFile (const QString& filePath, bool save)
 	{
-		QAction *action = new QAction (filePath, this);
+		auto action = new QAction (filePath, this);
 		action->setData (filePath);
 		connect (action,
 				&QAction::triggered,
@@ -820,7 +811,7 @@ namespace Popishu
 				});
 
 		QList<QAction*> currentActions = RecentFilesMenu_->actions ();
-		if (!currentActions.size ())
+		if (currentActions.isEmpty ())
 			RecentFilesMenu_->addAction (action);
 		else
 		{
@@ -832,8 +823,7 @@ namespace Popishu
 				}
 
 			RecentFilesMenu_->insertAction (currentActions.at (0), action);
-			int num = XmlSettingsManager::Instance ()->
-					property ("NumRecentlyOpened").toInt ();
+			int num = XmlSettingsManager::Instance ()->property ("NumRecentlyOpened").toInt ();
 			while (currentActions.size () + 1 > num)
 				delete currentActions.takeLast ();
 		}
