@@ -117,8 +117,6 @@ namespace Poshuku
 		void SetShortcut (const QString&, const QKeySequences_t&);
 		QMap<QString, ActionInfo> GetActionInfo () const;
 
-		QString GetDiagInfoString () const;
-
 		QList<QAction*> GetActions (ActionsEmbedPlace) const;
 
 		void RecoverTabs (const QList<TabRecoverInfo>&);
