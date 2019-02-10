@@ -145,7 +145,7 @@ namespace CSTP
 			if (file.isEmpty ())
 				file = QString ("index_%1")
 					.arg (QDateTime::currentDateTime ().toString (Qt::ISODate));
-			static const QRegExp restrictedChars (",|=|;|:|\\[|\\]|\\\"|\\*|\\?|&|\\||\\\\|/|(?:^LPT\\d$)|(?:^COM\\d$)|(?:^PRN$)|(?:^AUX$)|(?:^CON$)|(?:^NUL$)");
+			static const QRegExp restrictedChars (R"(,|=|;|:|\[|\]|\"|\*|\?|&|\||\\|/|(?:^LPT\d$)|(?:^COM\d$)|(?:^PRN$)|(?:^AUX$)|(?:^CON$)|(?:^NUL$))");
 			static const QString replaceWith ('_');
 			file.replace (restrictedChars, replaceWith);
 			if (file != fileInfo.fileName ())
