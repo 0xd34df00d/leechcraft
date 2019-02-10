@@ -1347,10 +1347,8 @@ namespace Poshuku
 					e.Parameters_ = LeechCraft::FromUserInitiated |
 							LeechCraft::OnlyHandle;
 
-					bool ch = false;
-					emit couldHandle (e, &ch);
-					if (ch)
-						addAction (tr ("Subscribe"), [e, this] { emit gotEntity (e); });
+					if (iem->CouldHandle (e))
+						addAction (tr ("Subscribe"), [iem, e] { iem->HandleEntity (e); });
 				}
 			}
 
