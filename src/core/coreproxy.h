@@ -46,28 +46,28 @@ namespace LeechCraft
 
 		EntityManager *EM_;
 	public:
-		CoreProxy (QObject* = 0);
-		QNetworkAccessManager* GetNetworkAccessManager () const;
-		IShortcutProxy* GetShortcutProxy () const;
-		QModelIndex MapToSource (const QModelIndex&) const;
+		explicit CoreProxy (QObject* = nullptr);
 
-		Util::BaseSettingsManager* GetSettingsManager () const;
+		QNetworkAccessManager* GetNetworkAccessManager () const override;
+		IShortcutProxy* GetShortcutProxy () const override;
+		QModelIndex MapToSource (const QModelIndex&) const override;
 
-		IRootWindowsManager* GetRootWindowsManager () const;
+		Util::BaseSettingsManager* GetSettingsManager () const override;
 
-		IIconThemeManager* GetIconThemeManager () const;
+		IRootWindowsManager* GetRootWindowsManager () const override;
 
-		IColorThemeManager* GetColorThemeManager () const;
+		IIconThemeManager* GetIconThemeManager () const override;
 
-		ITagsManager* GetTagsManager () const;
-		QStringList GetSearchCategories () const;
-		IPluginsManager* GetPluginsManager () const;
-		IEntityManager* GetEntityManager () const;
-		QString GetVersion () const;
-		void RegisterSkinnable (QAction*);
-		bool IsShuttingDown ();
+		IColorThemeManager* GetColorThemeManager () const override;
+
+		ITagsManager* GetTagsManager () const override;
+		QStringList GetSearchCategories () const override;
+		IPluginsManager* GetPluginsManager () const override;
+		IEntityManager* GetEntityManager () const override;
+		QString GetVersion () const override;
+		void RegisterSkinnable (QAction*) override;
+		bool IsShuttingDown () override;
 	};
 };
 
 #endif
-
