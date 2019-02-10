@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef COREPROXY_H
-#define COREPROXY_H
+#pragma once
+
 #include <QObject>
 #include "interfaces/core/icoreproxy.h"
 
@@ -68,6 +68,4 @@ namespace LeechCraft
 		void RegisterSkinnable (QAction*) override;
 		bool IsShuttingDown () override;
 	};
-};
-
-#endif
+}
