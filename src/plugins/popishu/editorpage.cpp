@@ -824,11 +824,11 @@ namespace Popishu
 			RecentFilesMenu_->addAction (action);
 		else
 		{
-			for (const auto action : currentActions)
-				if (action->data ().toString () == filePath)
+			for (const auto otherAct : currentActions)
+				if (otherAct->data ().toString () == filePath)
 				{
-					currentActions.removeAll (action);
-					delete action;
+					currentActions.removeAll (otherAct);
+					delete otherAct;
 				}
 
 			RecentFilesMenu_->insertAction (currentActions.at (0), action);
