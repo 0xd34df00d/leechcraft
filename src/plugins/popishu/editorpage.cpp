@@ -599,29 +599,6 @@ namespace Popishu
 		}
 	}
 
-	void EditorPage::handleRecentFileOpen ()
-	{
-		QAction *sAct = qobject_cast<QAction*> (sender ());
-		if (!sAct)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "sender is not a QAction"
-					<< sender ();
-			return;
-		}
-
-		QString file = sAct->data ().toString ();
-		if (!QFile::exists (file))
-		{
-			emit gotEntity (Util::MakeNotification (tr ("File not found"),
-					tr ("The requested file doesn't exist anymore."),
-					Priority::Warning));
-			return;
-		}
-
-		Open (file);
-	}
-
 	void EditorPage::tabRecoverSave ()
 	{
 		TabRecoverSaveScheduled_ = false;
@@ -832,9 +809,16 @@ namespace Popishu
 		QAction *action = new QAction (filePath, this);
 		action->setData (filePath);
 		connect (action,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleRecentFileOpen ()));
+				&QAction::triggered,
+				[this, filePath]
+				{
+					if (!QFile::exists (filePath))
+						emit gotEntity (Util::MakeNotification (tr ("File not found"),
+								tr ("The requested file doesn't exist anymore."),
+								Priority::Warning));
+					else
+						Open (filePath);
+				});
 
 		QList<QAction*> currentActions = RecentFilesMenu_->actions ();
 		if (!currentActions.size ())

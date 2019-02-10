@@ -118,8 +118,6 @@ namespace Popishu
 		void checkInterpreters (QString language);
 		void checkProperDoctypeAction (const QString& language);
 
-		void handleRecentFileOpen ();
-
 		void tabRecoverSave ();
 	private:
 		void SetWhitespaceVisibility (QsciScintilla::WhitespaceVisibility);
