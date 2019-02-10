@@ -142,7 +142,6 @@ namespace Poshuku
 		void statusBarChanged (QWidget*, const QString&);
 		void raiseTab (QWidget*);
 		void gotEntity (const LeechCraft::Entity&);
-		void couldHandle (const LeechCraft::Entity&, bool*);
 
 		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
 

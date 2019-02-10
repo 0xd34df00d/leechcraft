@@ -331,10 +331,6 @@ namespace Poshuku
 				this,
 				SIGNAL (gotEntity (const LeechCraft::Entity&)));
 		connect (&Core::Instance (),
-				SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)),
-				this,
-				SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)));
-		connect (&Core::Instance (),
 				SIGNAL (error (const QString&)),
 				this,
 				SLOT (handleError (const QString&)));

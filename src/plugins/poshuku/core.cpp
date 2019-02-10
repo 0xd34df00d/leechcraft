@@ -548,10 +548,6 @@ namespace Poshuku
 				this,
 				SIGNAL (gotEntity (const LeechCraft::Entity&)));
 		connect (widget,
-				SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)),
-				this,
-				SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)));
-		connect (widget,
 				&BrowserWidget::urlChanged,
 				this,
 				[this, widget] { HandleHistory (widget->GetWebView ()); });
