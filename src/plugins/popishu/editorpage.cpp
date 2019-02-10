@@ -584,8 +584,7 @@ namespace Popishu
 		e.Additional_ ["Object"] = QVariant::fromValue<QObject**> (&object);
 		e.Additional_ ["Language"] = FixLanguage (language);
 
-		bool ch = false;
-		emit couldHandle (e, &ch);
+		const auto ch = Proxy_->GetEntityManager ()->CouldHandle (e);
 		ShowConsole (ch);
 	}
 
