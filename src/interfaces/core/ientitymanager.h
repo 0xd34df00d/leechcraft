@@ -44,8 +44,8 @@ namespace LeechCraft
  * Core entity manager is that very thing that routes entities between
  * different plugins and chooses which plugins will handle what entity.
  *
- * This class can be used instead more or less deprecated gotEntity()
- * and delegateEntity() signals of IInfo.
+ * This class can be used instead of the more or less deprecated
+ * IInfo::gotEntity() signal.
  *
  * @sa Entity, IInfo
  */

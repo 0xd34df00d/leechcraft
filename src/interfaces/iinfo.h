@@ -270,45 +270,12 @@ public:
 	 */
 	virtual ~IInfo () {}
 
-	/** @brief This signal is emitted by plugin to query if the given
-	 * entity could be handled.
-	 *
-	 * If there is at least one plugin that can handle the given entity,
-	 * the could is set to true, otherwise it is set to false.
-	 *
-	 * @param[out] entity The entity to check if could be handled.
-	 * @param[in] could The pointer to the variable that would contain
-	 * the result of the check.
-	 *
-	 * @note This function is expected to be a signal in subclasses.
-	 *
-	 * @sa gotEntity(), delegateEntity()
-	 */
 	virtual void couldHandle (const LeechCraft::Entity& entity, bool *could)
 	{
 		Q_UNUSED (entity);
 		Q_UNUSED (could);
 	}
 
-	/** @brief This signal is emitted by plugin to notify the Core and
-	 * other plugins about an entity.
-	 *
-	 * In this case, the plugin doesn't care what would happen next to
-	 * the entity after the announcement and whether it would be catched
-	 * by any other plugin at all. This is the opposite to the semantics
-	 * of delegateEntity().
-	 *
-	 * This signal is typically emitted, for example, when a plugin has
-	 * just finished downloading something and wants to notify other
-	 * plugins about newly created files.
-	 *
-	 * This signal is asynchronous: the handling happends after the
-	 * control gets back to the event loop.
-	 *
-	 * @note This function is expected to be a signal in subclasses.
-	 *
-	 * @param[out] entity The entity.
-	 */
 	virtual void gotEntity (const LeechCraft::Entity& entity)
 	{
 		Q_UNUSED (entity);
