@@ -83,16 +83,6 @@ namespace Qrosp
 		return Proxy_->GetSearchCategories ();
 	}
 
-	int CoreProxyWrapper::GetID ()
-	{
-		return Proxy_->GetID ();
-	}
-
-	void CoreProxyWrapper::FreeID (int id)
-	{
-		Proxy_->FreeID (id);
-	}
-
 	QObject* CoreProxyWrapper::GetPluginsManager () const
 	{
 		return new PluginsManagerWrapper (Proxy_->GetPluginsManager ());

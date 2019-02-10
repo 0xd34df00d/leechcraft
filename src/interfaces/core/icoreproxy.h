@@ -150,29 +150,6 @@ public:
 	 */
 	virtual QStringList GetSearchCategories () const = 0;
 
-	/** @brief Returns an ID for a delegated task from the pool.
-	 *
-	 * Use this in your downloader plugin when generating an ID for a
-	 * newly added task. This way you can avoid ID clashes with other
-	 * downloaders.
-	 *
-	 * @return The ID of the task.
-	 *
-	 * @sa FreeID()
-	 */
-	virtual int GetID () = 0;
-
-	/** @brief Marks an ID previously returned by GetID as unused.
-	 *
-	 * Returns the id to the global ID pool. Use this in your downloader
-	 * plugins after your download finishes.
-	 *
-	 * @param[in] id An ID previously obtained by GetID().
-	 *
-	 * @sa GetID()
-	 */
-	virtual void FreeID (int id) = 0;
-
 	/** @brief Returns the application's plugin manager.
 	 *
 	 * @return The application plugins manager.

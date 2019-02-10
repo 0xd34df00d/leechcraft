@@ -31,7 +31,6 @@
 #define COREPROXY_H
 #include <QObject>
 #include "interfaces/core/icoreproxy.h"
-#include "util/idpool.h"
 
 namespace LeechCraft
 {
@@ -45,7 +44,6 @@ namespace LeechCraft
 		Q_OBJECT
 		Q_INTERFACES (ICoreProxy)
 
-		Util::IDPool<int> Pool_;
 		EntityManager *EM_;
 	public:
 		CoreProxy (QObject* = 0);
@@ -63,8 +61,6 @@ namespace LeechCraft
 
 		ITagsManager* GetTagsManager () const;
 		QStringList GetSearchCategories () const;
-		int GetID ();
-		void FreeID (int);
 		IPluginsManager* GetPluginsManager () const;
 		IEntityManager* GetEntityManager () const;
 		QString GetVersion () const;

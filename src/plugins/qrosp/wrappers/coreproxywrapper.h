@@ -63,8 +63,6 @@ namespace Qrosp
 		ICoreTabWidget* GetTabWidget () const;
 		QObject* GetTagsManager () const;
 		QStringList GetSearchCategories () const;
-		int GetID ();
-		void FreeID (int id);
 		QObject* GetPluginsManager () const;
 	};
 }

@@ -102,16 +102,6 @@ namespace LeechCraft
 		return result;
 	}
 
-	int CoreProxy::GetID ()
-	{
-		return Pool_.GetID ();
-	}
-
-	void CoreProxy::FreeID (int id)
-	{
-		Pool_.FreeID (id);
-	}
-
 	IPluginsManager* CoreProxy::GetPluginsManager () const
 	{
 		return Core::Instance ().GetPluginManager ();
