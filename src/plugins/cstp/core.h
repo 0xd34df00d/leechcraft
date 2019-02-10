@@ -66,7 +66,6 @@ namespace CSTP
 			QString Comment_;
 			bool ErrorFlag_;
 			LeechCraft::TaskParameters Parameters_;
-			quint32 ID_;
 			QStringList Tags_;
 		};
 		typedef std::vector<TaskDescr> tasks_t;

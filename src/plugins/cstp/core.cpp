@@ -281,7 +281,6 @@ namespace CSTP
 	QFuture<IDownload::Result> Core::AddTask (TaskDescr& td)
 	{
 		td.ErrorFlag_ = false;
-		td.ID_ = CoreProxy_->GetID ();
 
 		if (td.File_->exists ())
 		{
@@ -611,7 +610,6 @@ namespace CSTP
 		if (taskdscr == ActiveTasks_.end ())
 			return;
 
-		int id = taskdscr->ID_;
 		QString filename = taskdscr->File_->fileName ();
 		QString url = taskdscr->Task_->GetURL ();
 		if (url.size () > 50)
@@ -688,7 +686,6 @@ namespace CSTP
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "erroneous 'done' for"
-					<< id
 					<< filename
 					<< url
 					<< errorStr;
@@ -806,11 +803,9 @@ namespace CSTP
 	void Core::Remove (tasks_t::iterator it)
 	{
 		int dst = std::distance (ActiveTasks_.begin (), it);
-		int id = it->ID_;
 		beginRemoveRows (QModelIndex (), dst, dst);
 		ActiveTasks_.erase (it);
 		endRemoveRows ();
-		CoreProxy_->FreeID (id);
 
 		ScheduleSave ();
 	}
