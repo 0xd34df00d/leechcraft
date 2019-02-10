@@ -965,15 +965,12 @@ namespace Poshuku
 							"x-leechcraft/plain-text-document");
 					e.Additional_ ["Language"] = "HTML";
 					e.Additional_ ["IsTemporaryDocument"] = true;
-					bool ch = false;
-					emit couldHandle (e, &ch);
-					if (ch)
-					{
-						emit gotEntity (e);
-						return;
-					}
 
-					SourceViewer *viewer = new SourceViewer (this);
+					auto iem = Core::Instance ().GetProxy ()->GetEntityManager ();
+					if (iem->HandleEntity (e))
+						return;
+
+					auto viewer = new SourceViewer (this);
 					viewer->setAttribute (Qt::WA_DeleteOnClose);
 					viewer->SetHtml (html);
 					viewer->show ();
