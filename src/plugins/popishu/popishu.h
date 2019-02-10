@@ -90,8 +90,6 @@ namespace Popishu
 		void statusBarChanged (QWidget*, const QString&);
 		void raiseTab (QWidget*);
 		void gotEntity (const LeechCraft::Entity&);
-
-		void couldHandle (const LeechCraft::Entity&, bool*);
 	};
 }
 }
