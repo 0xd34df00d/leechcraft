@@ -111,7 +111,6 @@ namespace BitTorrent
 			QStringList Tags_;
 			bool AutoManaged_ = true;
 
-			int ID_;
 			TaskParameters Parameters_;
 
 			std::optional<QFutureInterface<IDownload::Result>> Promise_;
@@ -120,11 +119,9 @@ namespace BitTorrent
 
 			TorrentStruct (const libtorrent::torrent_handle& handle,
 					const QStringList& tags,
-					int id,
 					TaskParameters params)
 			: Handle_ { handle }
 			, Tags_ { tags }
-			, ID_ { id }
 			, Parameters_ { params }
 			, Promise_ { QFutureInterface<IDownload::Result> {} }
 			{
@@ -137,7 +134,6 @@ namespace BitTorrent
 					const QString& filename,
 					const QStringList& tags,
 					bool autoManaged,
-					int id,
 					TaskParameters params)
 			: FilePriorities_ { prios }
 			, Handle_ { handle }
@@ -145,7 +141,6 @@ namespace BitTorrent
 			, TorrentFileName_ { filename }
 			, Tags_ { tags }
 			, AutoManaged_ { autoManaged }
-			, ID_ { id }
 			, Parameters_ { params }
 			, Promise_ { QFutureInterface<IDownload::Result> {} }
 			{

@@ -952,7 +952,7 @@ namespace BitTorrent
 		}
 
 		beginInsertRows ({}, Handles_.size (), Handles_.size ());
-		Handles_.append ({ handle, tags, Proxy_->GetID (), params });
+		Handles_.append ({ handle, tags, params });
 		endInsertRows ();
 
 		return Handles_.back ().Promise_->future ();
@@ -1022,7 +1022,6 @@ namespace BitTorrent
 		if (!torrentFileName.endsWith (".torrent"))
 			torrentFileName.append (".torrent");
 
-		const auto newId = Proxy_->GetID ();
 		Handles_.append ({
 				priorities,
 				handle,
@@ -1030,7 +1029,6 @@ namespace BitTorrent
 				torrentFileName,
 				tags,
 				autoManaged,
-				newId,
 				params
 			});
 		endInsertRows ();
@@ -1063,9 +1061,7 @@ namespace BitTorrent
 #endif
 		Session_->remove_torrent (Handles_.at (pos).Handle_, options);
 
-		int id = Handles_.at (pos).ID_;
 		Handles_.removeAt (pos);
-		Proxy_->FreeID (id);
 
 		endRemoveRows ();
 
@@ -1752,7 +1748,6 @@ namespace BitTorrent
 					filename,
 					settings.value ("Tags").toStringList (),
 					automanaged,
-					Proxy_->GetID (),
 					taskParameters
 				});
 			endInsertRows ();
@@ -1997,7 +1992,6 @@ namespace BitTorrent
 					settings.setValue ("SavePath", QString::fromUtf8 (savePath.c_str ()));
 					settings.setValue ("Filename", Handles_.at (i).TorrentFileName_);
 					settings.setValue ("Tags", Handles_.at (i).Tags_);
-					settings.setValue ("ID", Handles_.at (i).ID_);
 					settings.setValue ("Parameters", static_cast<int> (Handles_.at (i).Parameters_));
 					settings.setValue ("AutoManaged", Handles_.at (i).AutoManaged_);
 
