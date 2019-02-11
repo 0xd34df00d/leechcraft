@@ -68,7 +68,7 @@ namespace Nacheku
 
 		/** Handles the changes in the directory. Compares the
 		 * QFileInfos from previous run with current ones and emits
-		 * gotEntity() for each file which has been added or modified
+		 * an entity for each file which has been added or modified
 		 * since the previous check.
 		 *
 		 * @param[in] dir The directory that changed.

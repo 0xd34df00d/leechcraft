@@ -42,7 +42,7 @@ namespace Nacheku
 	/** @brief Watches clipboard for downloadable contents.
 	 *
 	 * ClipboardWatcher polls the clipboard periodically for new content
-	 * and emits gotEntity() if it's found.
+	 * and emits a new entity if it's found.
 	 *
 	 * The entities emitted from ClipboardWatcher do have
 	 * LeechCraft::FromUserInitiated flag set, Entity_ is an utf8-ed
