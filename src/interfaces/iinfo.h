@@ -270,12 +270,6 @@ public:
 	 */
 	virtual ~IInfo () {}
 
-	virtual void couldHandle (const LeechCraft::Entity& entity, bool *could)
-	{
-		Q_UNUSED (entity);
-		Q_UNUSED (could);
-	}
-
 	virtual void gotEntity (const LeechCraft::Entity& entity)
 	{
 		Q_UNUSED (entity);
