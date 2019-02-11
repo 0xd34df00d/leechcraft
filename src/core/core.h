@@ -195,14 +195,6 @@ namespace LeechCraft
 		 */
 		bool handleGotEntity (LeechCraft::Entity entity);
 	private slots:
-		/** Returns whether the given entity could be handlerd.
-		 *
-		 * @param[in] entity The download entity to be checked.
-		 * @param[out] could Whether the given entity could be checked.
-		 */
-		void handleCouldHandle (const LeechCraft::Entity& entity,
-				bool *could);
-
 		void queueEntity (const LeechCraft::Entity&);
 
 		void pullEntityQueue ();

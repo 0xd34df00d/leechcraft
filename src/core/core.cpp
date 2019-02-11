@@ -396,11 +396,6 @@ namespace LeechCraft
 		return EntityManager ().HandleEntity (p);
 	}
 
-	void Core::handleCouldHandle (const Entity& e, bool *could)
-	{
-		*could = EntityManager ().CouldHandle (e);
-	}
-
 	void Core::queueEntity (const Entity& e)
 	{
 		QueuedEntities_ << e;
@@ -423,14 +418,6 @@ namespace LeechCraft
 	void Core::InitDynamicSignals (const QObject *plugin)
 	{
 		const QMetaObject *qmo = plugin->metaObject ();
-
-		if (qmo->indexOfSignal (QMetaObject::normalizedSignature (
-						"couldHandle (const LeechCraft::Entity&, bool*)"
-						).constData ()) != -1)
-			connect (plugin,
-					SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)),
-					this,
-					SLOT (handleCouldHandle (const LeechCraft::Entity&, bool*)));
 
 		if (qmo->indexOfSignal (QMetaObject::normalizedSignature (
 						"gotEntity (const LeechCraft::Entity&)"
