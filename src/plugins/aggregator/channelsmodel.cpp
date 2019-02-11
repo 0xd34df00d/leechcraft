@@ -128,9 +128,23 @@ namespace Aggregator
 			case IDownload::Error::Type::NoError:
 				return ChannelsModel::tr ("no error");
 			case IDownload::Error::Type::NotFound:
-				return ChannelsModel::tr ("address not found");
+				return ChannelsModel::tr ("not found");
+			case IDownload::Error::Type::Gone:
+				return ChannelsModel::tr ("gone forever");
 			case IDownload::Error::Type::AccessDenied:
 				return ChannelsModel::tr ("access denied");
+			case IDownload::Error::Type::AuthRequired:
+				return ChannelsModel::tr ("authentication required");
+			case IDownload::Error::Type::ProtocolError:
+				return ChannelsModel::tr ("protocol error");
+			case IDownload::Error::Type::NetworkError:
+				return ChannelsModel::tr ("network error");
+			case IDownload::Error::Type::ContentError:
+				return ChannelsModel::tr ("content error");
+			case IDownload::Error::Type::ProxyError:
+				return ChannelsModel::tr ("proxy error");
+			case IDownload::Error::Type::ServerError:
+				return ChannelsModel::tr ("server error");
 			case IDownload::Error::Type::LocalError:
 				return ChannelsModel::tr ("local error");
 			case IDownload::Error::Type::UserCanceled:
