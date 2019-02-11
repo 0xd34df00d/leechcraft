@@ -100,6 +100,8 @@ namespace CSTP
 		void RecalculateSpeed ();
 		void HandleMetadataRedirection ();
 		void HandleMetadataFilename ();
+
+		void HandleError (IDownload::Error::Type, const QString&);
 	private slots:
 		void handleDataTransferProgress (qint64, qint64);
 		void redirectedConstruction (const QByteArray&);
@@ -109,7 +111,6 @@ namespace CSTP
 			*/
 		bool handleReadyRead ();
 		void handleFinished ();
-		void handleError ();
 	signals:
 		void updateInterface ();
 		void done (bool);

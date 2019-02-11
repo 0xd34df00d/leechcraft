@@ -41,6 +41,7 @@
 #include <util/sll/prelude.h>
 #include <util/sll/either.h>
 #include <util/sll/qstringwrappers.h>
+#include <util/sll/overload.h>
 #include <util/threads/futures.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
@@ -173,7 +174,7 @@ namespace CSTP
 			default:
 				qWarning () << Q_FUNC_INFO
 						<< "unsupported operation";
-				handleError ();
+				HandleError (IDownload::Error::Type::ProtocolError, tr ("Unsupported operation."));
 				return;
 			}
 		}
@@ -191,7 +192,9 @@ namespace CSTP
 			}
 			else if (!Reply_->isOpen ())
 			{
-				handleError ();
+				qWarning () << Q_FUNC_INFO
+						<< "reply is not open";
+				HandleError (IDownload::Error::Type::LocalError, "Reply is not open.");
 				return;
 			}
 			else if (handleReadyRead ())
@@ -211,10 +214,6 @@ namespace CSTP
 				this,
 				SLOT (handleFinished ()));
 		connect (Reply_.get (),
-				SIGNAL (error (QNetworkReply::NetworkError)),
-				this,
-				SLOT (handleError ()));
-		connect (Reply_.get (),
 				SIGNAL (metaDataChanged ()),
 				this,
 				SLOT (handleMetaDataChanged ()));
@@ -222,6 +221,11 @@ namespace CSTP
 				SIGNAL (readyRead ()),
 				this,
 				SLOT (handleReadyRead ()));
+
+		connect (Reply_.get (),
+				Util::Overload<QNetworkReply::NetworkError> (&QNetworkReply::error),
+				this,
+				[this] (QNetworkReply::NetworkError) { HandleError (IDownload::Error::Type::Unknown, Reply_->errorString ()); });
 	}
 
 	void Task::Stop ()
@@ -366,7 +370,7 @@ namespace CSTP
 				<< newUrl
 				<< "for"
 				<< Reply_->url ();
-			handleError ();
+			HandleError (IDownload::Error::Type::ProtocolError, tr ("Redirections loop detected."));
 		}
 		else
 		{
@@ -443,6 +447,14 @@ namespace CSTP
 
 			return result;
 		}
+	}
+
+	void Task::HandleError (IDownload::Error::Type err, const QString& msg)
+	{
+		// TODO don't emit this when the file is already fully downloaded
+		Util::ReportFutureResult (Promise_, IDownload::Result::Left ({ err, msg }));
+
+		emit done (true);
 	}
 
 	void Task::HandleMetadataFilename ()
@@ -537,15 +549,21 @@ namespace CSTP
 	{
 		const auto& localFile = URL_.toLocalFile ();
 		qDebug () << "LOCAL FILE" << localFile << To_->fileName ();
+
+		auto reportError = [this] (const QString& msg)
+		{
+			QTimer::singleShot (0,
+					this,
+					[this, msg] { HandleError (IDownload::Error::Type::LocalError, msg); });
+		};
+
 		QFileInfo fi { localFile };
 		if (!fi.isFile ())
 		{
 			qWarning () << Q_FUNC_INFO
 					<< URL_
 					<< "is not a file";
-			QTimer::singleShot (0,
-					this,
-					SLOT (handleError ()));
+			reportError (tr ("Target path is not a file."));
 			return;
 		}
 
@@ -560,22 +578,19 @@ namespace CSTP
 				qWarning () << Q_FUNC_INFO
 						<< "unable to open destfile"
 						<< To_->fileName ()
-						<< "for writing";
-				QTimer::singleShot (0,
-						this,
-						SLOT (handleError ()));
+						<< "for writing"
+						<< To_->errorString ();
+				reportError (tr ("Unable to open the destination file for writing."));
 				return;
 			}
 
 			if (!file.open (QIODevice::ReadOnly))
 			{
 				qWarning () << Q_FUNC_INFO
-						<< "unable to open sourcefile"
+						<< "unable to open source file"
 						<< file.fileName ()
 						<< "for reading";
-				QTimer::singleShot (0,
-						this,
-						SLOT (handleError ()));
+				reportError (tr ("Unable to open the source file for reading."));
 				return;
 			}
 
@@ -610,11 +625,7 @@ namespace CSTP
 				const auto& errString = tr ("Error writing to file %1: %2")
 						.arg (To_->fileName ())
 						.arg (To_->errorString ());
-				const auto& e = Util::MakeNotification ("LeechCraft CSTP",
-						errString,
-						Priority::Critical);
-				Core::Instance ().GetCoreProxy ()->GetEntityManager ()->HandleEntity (e);
-				handleError ();
+				HandleError (IDownload::Error::Type::LocalError, errString);
 			}
 		}
 		if (URL_.isEmpty () &&
@@ -631,14 +642,6 @@ namespace CSTP
 		Util::ReportFutureResult (Promise_, IDownload::Result::Right ({}));
 
 		emit done (false);
-	}
-
-	void Task::handleError ()
-	{
-		// TODO don't emit this when the file is already fully downloaded
-		Util::ReportFutureResult (Promise_, IDownload::Result::Left ({ IDownload::Error::Type::Unknown, {} }));
-
-		emit done (true);
 	}
 }
 }
