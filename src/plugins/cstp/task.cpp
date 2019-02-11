@@ -56,7 +56,10 @@ namespace CSTP
 		void LateDelete (QNetworkReply *rep)
 		{
 			if (rep)
+			{
+				Core::Instance ().RemoveFinishedReply (rep);
 				rep->deleteLater ();
+			}
 		}
 
 		QVariantMap Augment (QVariantMap map, const QList<QPair<QString, QVariant>>& pairs)
@@ -115,12 +118,6 @@ namespace CSTP
 				SIGNAL (updateInterface ()));
 
 		Promise_.reportStarted ();
-	}
-
-	Task::~Task ()
-	{
-		if (Reply_)
-			Core::Instance ().RemoveFinishedReply (Reply_.get ());
 	}
 
 	void Task::Start (const std::shared_ptr<QFile>& tof)
