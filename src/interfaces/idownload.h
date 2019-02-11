@@ -71,7 +71,14 @@ public:
 			Unknown,
 			NoError,
 			NotFound,
+			Gone,
 			AccessDenied,
+			AuthRequired,
+			ProtocolError,
+			NetworkError,
+			ContentError,
+			ProxyError,
+			ServerError,
 			LocalError,
 			UserCanceled
 		} Type_;
