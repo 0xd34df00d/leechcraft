@@ -121,6 +121,71 @@ namespace CSTP
 		Promise_.reportStarted ();
 	}
 
+	namespace
+	{
+		auto MapError (QNetworkReply::NetworkError error)
+		{
+			switch (error)
+			{
+			case QNetworkReply::NoError:
+				return IDownload::Error::Type::NoError;
+
+			case QNetworkReply::ConnectionRefusedError:
+			case QNetworkReply::RemoteHostClosedError:
+			case QNetworkReply::TimeoutError:
+			case QNetworkReply::OperationCanceledError:
+			case QNetworkReply::TemporaryNetworkFailureError:
+			case QNetworkReply::NetworkSessionFailedError:
+			case QNetworkReply::UnknownNetworkError:
+				return IDownload::Error::Type::NetworkError;
+
+			case QNetworkReply::SslHandshakeFailedError:
+			case QNetworkReply::BackgroundRequestNotAllowedError:
+			case QNetworkReply::TooManyRedirectsError:
+			case QNetworkReply::InsecureRedirectError:
+			case QNetworkReply::ProtocolUnknownError:
+			case QNetworkReply::ProtocolInvalidOperationError:
+			case QNetworkReply::ProtocolFailure:
+				return IDownload::Error::Type::ProtocolError;
+
+			case QNetworkReply::HostNotFoundError:
+			case QNetworkReply::ContentNotFoundError:
+				return IDownload::Error::Type::NotFound;
+
+			case QNetworkReply::ContentGoneError:
+				return IDownload::Error::Type::Gone;
+
+			case QNetworkReply::ContentAccessDenied:
+				return IDownload::Error::Type::AccessDenied;
+
+			case QNetworkReply::AuthenticationRequiredError:
+				return IDownload::Error::Type::AuthRequired;
+
+			case QNetworkReply::ContentOperationNotPermittedError:
+			case QNetworkReply::ContentReSendError:
+			case QNetworkReply::ContentConflictError:
+			case QNetworkReply::UnknownContentError:
+				return IDownload::Error::Type::ContentError;
+
+			case QNetworkReply::ProxyConnectionRefusedError:
+			case QNetworkReply::ProxyConnectionClosedError:
+			case QNetworkReply::ProxyNotFoundError:
+			case QNetworkReply::ProxyTimeoutError:
+			case QNetworkReply::ProxyAuthenticationRequiredError:
+			case QNetworkReply::UnknownProxyError:
+				return IDownload::Error::Type::ProxyError;
+
+			case QNetworkReply::InternalServerError:
+			case QNetworkReply::OperationNotImplementedError:
+			case QNetworkReply::ServiceUnavailableError:
+			case QNetworkReply::UnknownServerError:
+				return IDownload::Error::Type::ServerError;
+			}
+
+			return IDownload::Error::Type::Unknown;
+		}
+	}
+
 	void Task::Start (const std::shared_ptr<QFile>& tof)
 	{
 		FileSizeAtStart_ = tof->size ();
@@ -225,7 +290,7 @@ namespace CSTP
 		connect (Reply_.get (),
 				Util::Overload<QNetworkReply::NetworkError> (&QNetworkReply::error),
 				this,
-				[this] (QNetworkReply::NetworkError) { HandleError (IDownload::Error::Type::Unknown, Reply_->errorString ()); });
+				[this] (QNetworkReply::NetworkError err) { HandleError (MapError (err), Reply_->errorString ()); });
 	}
 
 	void Task::Stop ()
