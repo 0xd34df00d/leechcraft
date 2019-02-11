@@ -67,7 +67,6 @@ namespace GoogleDrive
 		void handleRequestAuthTokenFinished ();
 
 	signals:
-		void gotEntity (LeechCraft::Entity e);
 		void authSuccess (QObject *accObj);
 	};
 }
