@@ -183,7 +183,6 @@ namespace Aggregator
 		void on_ActionMarkChannelAsUnread__triggered ();
 		void on_ActionChannelSettings__triggered ();
 	signals:
-		void gotEntity (const LeechCraft::Entity&) override;
 		void addNewTab (const QString&, QWidget*) override;
 		void removeTab (QWidget*) override;
 		void changeTabName (QWidget*, const QString&) override;
