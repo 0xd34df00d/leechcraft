@@ -81,8 +81,8 @@ namespace Aggregator
 
 			/** @brief Automatically download enclosures.
 			 *
-			 * Whether Aggregator should automatically emit a
-			 * gotEntity for each enclosure in each news item it
+			 * Whether Aggregator should automatically emit an
+			 * entity for each enclosure in each news item it
 			 * fetches.
 			 */
 			bool AutoDownloadEnclosures_ = false;
