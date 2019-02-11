@@ -44,6 +44,7 @@
 #include <QMainWindow>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <util/sll/either.h>
 #include <util/xpc/util.h>
@@ -229,7 +230,7 @@ namespace CSTP
 
 	void CSTP::handleError (const QString& error)
 	{
-		emit gotEntity (Util::MakeNotification ("HTTP error", error, Priority::Critical));
+		Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification ("HTTP error", error, Priority::Critical));
 	}
 }
 }
