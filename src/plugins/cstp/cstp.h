@@ -59,6 +59,8 @@ namespace CSTP
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.CSTP")
 
+		ICoreProxy_ptr Proxy_;
+
 		QMenu *Plugins_;
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
 		QToolBar *Toolbar_;

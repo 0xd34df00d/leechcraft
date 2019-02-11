@@ -57,7 +57,10 @@ namespace CSTP
 {
 	void CSTP::Init (ICoreProxy_ptr coreProxy)
 	{
+		Proxy_ = coreProxy;
+
 		Core::Instance ().SetCoreProxy (coreProxy);
+
 		Util::InstallTranslator ("cstp");
 
 		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
