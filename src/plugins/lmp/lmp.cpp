@@ -37,6 +37,7 @@
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/iiconthememanager.h>
+#include <interfaces/core/ientitymanager.h>
 #include <util/util.h>
 #include <util/xpc/util.h>
 #include <util/sll/prelude.h>
@@ -210,7 +211,7 @@ namespace LMP
 	void Plugin::SecondInit ()
 	{
 		for (const auto& e : GlobAction2Entity_)
-			emit gotEntity (e);
+			Proxy_->GetEntityManager ()->HandleEntity (e);
 
 		Core::Instance ().InitWithOtherPlugins ();
 		PlayerTab_->InitWithOtherPlugins ();
@@ -232,7 +233,7 @@ namespace LMP
 		e.Additional_ ["Shortcut"] = QVariant::fromValue (sequences.value (0));
 		e.Additional_ ["AltShortcuts"] = Util::Map (sequences.mid (1),
 				&QVariant::fromValue<QKeySequence>);
-		emit gotEntity (e);
+		Proxy_->GetEntityManager ()->HandleEntity (e);
 	}
 
 	QMap<QString, ActionInfo> Plugin::GetActionInfo () const
