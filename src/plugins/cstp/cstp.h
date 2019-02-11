@@ -90,8 +90,6 @@ namespace CSTP
 		void handleTasksTreeSelectionCurrentRowChanged (const QModelIndex&, const QModelIndex&);
 		void handleFileExists (Core::FileExistsBehaviour*);
 		void handleError (const QString&);
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }
