@@ -52,7 +52,7 @@ namespace Nacheku
 	{
 		QString PreviousClipboardContents_;
 	public:
-		ClipboardWatcher (IEntityManager*, QObject *parent = 0);
+		explicit ClipboardWatcher (IEntityManager*, QObject *parent = nullptr);
 	};
 }
 }
