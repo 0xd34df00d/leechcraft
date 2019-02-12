@@ -78,8 +78,6 @@ namespace GmailNotifier
 	private slots:
 		void setAuthorization ();
 		void applyInterval ();
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }
