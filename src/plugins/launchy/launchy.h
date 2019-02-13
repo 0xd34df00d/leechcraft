@@ -70,24 +70,24 @@ namespace Launchy
 
 		QuarkComponent_ptr LaunchQuark_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+		void Init (ICoreProxy_ptr) override;
+		void SecondInit () override;
+		QByteArray GetUniqueID () const override;
+		void Release () override;
+		QString GetName () const override;
+		QString GetInfo () const override;
+		QIcon GetIcon () const override;
 
-		QList<QAction*> GetActions (ActionsEmbedPlace) const;
+		QList<QAction*> GetActions (ActionsEmbedPlace) const override;
 
-		QMap<QString, ActionInfo> GetActionInfo () const;
-		void SetShortcut (const QString& id, const QKeySequences_t& sequences);
+		QMap<QString, ActionInfo> GetActionInfo () const override;
+		void SetShortcut (const QString& id, const QKeySequences_t& sequences) override;
 
-		QuarkComponents_t GetComponents () const;
+		QuarkComponents_t GetComponents () const override;
 	private slots:
 		void handleFSRequested ();
 	signals:
-		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
+		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace) override;
 	};
 }
 }
