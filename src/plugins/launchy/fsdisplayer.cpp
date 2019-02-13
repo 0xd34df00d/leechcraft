@@ -65,7 +65,7 @@ namespace Launchy
 		ICoreProxy_ptr Proxy_;
 		QHash<QString, QIcon> Icons_;
 	public:
-		ItemIconsProvider (ICoreProxy_ptr proxy)
+		explicit ItemIconsProvider (const ICoreProxy_ptr& proxy)
 		: QQuickImageProvider (Pixmap)
 		, Proxy_ (proxy)
 		{
@@ -81,7 +81,7 @@ namespace Launchy
 			Icons_ [id] = icon;
 		}
 
-		QPixmap requestPixmap (const QString& id, QSize* size, const QSize& requestedSize)
+		QPixmap requestPixmap (const QString& id, QSize* size, const QSize& requestedSize) override
 		{
 			auto icon = Icons_.value (id);
 			if (icon.isNull ())
@@ -102,7 +102,7 @@ namespace Launchy
 		class DisplayModel : public Util::RoleNamesMixin<QStandardItemModel>
 		{
 		public:
-			DisplayModel (QObject *parent = 0)
+			explicit DisplayModel (QObject *parent = nullptr)
 			: RoleNamesMixin<QStandardItemModel> (parent)
 			{
 				QHash<int, QByteArray> roleNames;
