@@ -137,10 +137,6 @@ namespace Launchy
 	void Plugin::handleFSRequested ()
 	{
 		auto dis = new FSDisplayer (Proxy_, Finder_, FavManager_, RecentManager_, this);
-		connect (dis,
-				SIGNAL (gotEntity (LeechCraft::Entity)),
-				this,
-				SIGNAL (gotEntity (LeechCraft::Entity)));
 	}
 }
 }

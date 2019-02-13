@@ -89,8 +89,6 @@ namespace Launchy
 		void handleExecRequested (const QString&);
 		void handleItemBookmark (const QString&);
 	signals:
-		void gotEntity (const LeechCraft::Entity&);
-
 		void appFilterTextChanged ();
 	};
 }
