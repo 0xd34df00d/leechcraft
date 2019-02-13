@@ -129,12 +129,12 @@ namespace Launchy
 	, CatsModel_ (new DisplayModel (this))
 	, ItemsModel_ (new DisplayModel (this))
 	, ItemsProxyModel_ (new ItemsSortFilterProxyModel (ItemsModel_, this))
-	, View_ (new QQuickWidget)
+	, View_ (std::make_shared<QQuickWidget> ())
 	, IconsProvider_ (new ItemIconsProvider (proxy))
 	, SysPathHandler_ (new SysPathItemProvider (ItemsModel_, this))
 	{
 		View_->setWindowFlags (Qt::Dialog | Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint);
-		Util::EnableTransparency (View_);
+		Util::EnableTransparency (View_.get ());
 
 		const auto& rect = qApp->desktop ()->screenGeometry (QCursor::pos ());
 		View_->setGeometry (rect);
@@ -152,7 +152,7 @@ namespace Launchy
 		View_->rootContext ()->setContextProperty ("colorProxy",
 				new Util::ColorThemeProxy (proxy->GetColorThemeManager (), parent));
 
-		new Util::QmlErrorWatcher { View_ };
+		new Util::QmlErrorWatcher { View_.get () };
 
 		View_->setSource (Util::GetSysPathUrl (Util::SysPath::QML, "launchy", "FSView.qml"));
 
@@ -175,11 +175,6 @@ namespace Launchy
 
 		handleFinderUpdated ();
 		handleCategorySelected (0);
-	}
-
-	FSDisplayer::~FSDisplayer ()
-	{
-		delete View_;
 	}
 
 	QString FSDisplayer::GetAppFilterText () const

@@ -66,14 +66,13 @@ namespace Launchy
 		QStandardItemModel * const ItemsModel_;
 		ItemsSortFilterProxyModel * const ItemsProxyModel_;
 
-		QQuickWidget * const View_;
+		const std::shared_ptr<QQuickWidget> View_;
 		ItemIconsProvider * const IconsProvider_;
 
 		SysPathItemProvider * const SysPathHandler_;
 	public:
 		FSDisplayer (ICoreProxy_ptr, Util::XDG::ItemsFinder*,
 				FavoritesManager*, RecentManager*, QObject* = nullptr);
-		~FSDisplayer ();
 
 		QString GetAppFilterText () const;
 		void SetAppFilterText (const QString&);
