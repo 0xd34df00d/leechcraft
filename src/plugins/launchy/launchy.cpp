@@ -136,7 +136,7 @@ namespace Launchy
 
 	void Plugin::handleFSRequested ()
 	{
-		auto dis = new FSDisplayer (Proxy_, Finder_, FavManager_, RecentManager_, this);
+		new FSDisplayer (Proxy_, Finder_, FavManager_, RecentManager_, this);
 	}
 }
 }
