@@ -129,8 +129,6 @@ namespace LMP
 
 		void fullRaiseRequested ();
 
-		void gotEntity (const LeechCraft::Entity&);
-
 		void tabRecoverDataChanged ();
 
 		void effectsConfigRequested (int);

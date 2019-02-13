@@ -144,8 +144,6 @@ namespace LMP
 		void raiseTab (QWidget*);
 
 		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
-
-		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }

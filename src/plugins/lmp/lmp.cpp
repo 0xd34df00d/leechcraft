@@ -156,10 +156,6 @@ namespace LMP
 				SIGNAL (raiseTab (QWidget*)),
 				this,
 				SIGNAL (raiseTab (QWidget*)));
-		connect (PlayerTab_,
-				SIGNAL (gotEntity (LeechCraft::Entity)),
-				this,
-				SIGNAL (gotEntity (LeechCraft::Entity)));
 		connect (&Core::Instance (),
 				SIGNAL (artistBrowseRequested (QString)),
 				this,
