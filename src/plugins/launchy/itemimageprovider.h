@@ -43,11 +43,11 @@ namespace Launchy
 		const ICoreProxy_ptr Proxy_;
 		QHash<QString, QIcon> PermID2Icon_;
 	public:
-		ItemImageProvider (const ICoreProxy_ptr&);
+		explicit ItemImageProvider (const ICoreProxy_ptr&);
 
 		void AddItem (Util::XDG::Item_ptr);
 
-		QIcon GetIcon (const QStringList&);
+		QIcon GetIcon (const QStringList&) override;
 	};
 }
 }

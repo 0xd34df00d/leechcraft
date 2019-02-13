@@ -44,13 +44,13 @@ namespace Launchy
 		QStringList CategoryNames_;
 		QString AppFilterText_;
 	public:
-		ItemsSortFilterProxyModel (QAbstractItemModel*, QObject* = nullptr);
+		explicit ItemsSortFilterProxyModel (QAbstractItemModel*, QObject* = nullptr);
 
 		QString GetAppFilterText () const;
 		void SetAppFilterText (const QString&);
 	protected:
-		bool lessThan (const QModelIndex& left, const QModelIndex& right) const;
-		bool filterAcceptsRow (int, const QModelIndex&) const;
+		bool lessThan (const QModelIndex& left, const QModelIndex& right) const override;
+		bool filterAcceptsRow (int, const QModelIndex&) const override;
 	public slots:
 		void setCategoryNames (const QStringList&);
 	private slots:

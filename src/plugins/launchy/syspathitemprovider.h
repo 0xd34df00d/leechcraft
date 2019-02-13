@@ -44,12 +44,12 @@ namespace Launchy
 
 		QStandardItemModel * const Model_;
 
-		bool SearchPathScheduled_;
+		bool SearchPathScheduled_ = false;
 		QString CurrentQuery_;
 
 		QStandardItem *PathItem_;
 	public:
-		SysPathItemProvider (QStandardItemModel*, QObject* = 0);
+		explicit SysPathItemProvider (QStandardItemModel*, QObject* = nullptr);
 
 		void HandleQuery (const QString&);
 	private:

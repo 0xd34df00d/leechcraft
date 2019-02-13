@@ -56,7 +56,7 @@ namespace Launchy
 		QStandardItemModel *Model_;
 	public:
 		QuarkManager (ICoreProxy_ptr, FavoritesManager*,
-				Util::XDG::ItemsFinder*, ItemImageProvider*, QObject* = 0);
+				Util::XDG::ItemsFinder*, ItemImageProvider*, QObject* = nullptr);
 
 		QAbstractItemModel* GetModel () const;
 	private:

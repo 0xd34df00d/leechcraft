@@ -42,7 +42,7 @@ namespace Launchy
 
 		QSet<QString> Favorites_;
 	public:
-		FavoritesManager (QObject* = 0);
+		explicit FavoritesManager (QObject* = nullptr);
 
 		const QSet<QString>& GetFavorites () const;
 		bool IsFavorite (const QString&) const;

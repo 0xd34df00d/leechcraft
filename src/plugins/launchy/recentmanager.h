@@ -42,7 +42,7 @@ namespace Launchy
 
 		QStringList RecentList_;
 	public:
-		RecentManager (QObject* = 0);
+		explicit RecentManager (QObject* = nullptr);
 
 		bool HasRecents () const;
 		bool IsRecent (const QString&) const;
