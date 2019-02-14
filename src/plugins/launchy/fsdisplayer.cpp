@@ -346,13 +346,14 @@ namespace Launchy
 
 		QList<Util::XDG::Item_ptr> uniqueItems;
 		for (const auto& sublist : items)
-			for (auto item : sublist)
+			for (const auto& item : sublist)
 				if (!item->IsHidden () &&
 						std::none_of (uniqueItems.begin (), uniqueItems.end (),
 								[&item] (const auto& other) { return *other == *item; }))
 					uniqueItems << item;
+
 		std::sort (uniqueItems.begin (), uniqueItems.end (),
-				[&curLang] (Util::XDG::Item_ptr left, Util::XDG::Item_ptr right)
+				[&curLang] (const auto& left, const auto& right)
 				{
 					return QString::localeAwareCompare (left->GetName (curLang), right->GetName (curLang)) < 0;
 				});
