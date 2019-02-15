@@ -45,7 +45,7 @@ namespace Delicious
 	{
 		Util::InstallTranslator ("poshuku_onlinebookmarks_delicious");
 
-		DeliciousService_.reset (new DeliciousService (proxy));
+		DeliciousService_ = std::make_shared<DeliciousService> (proxy);
 
 		connect (DeliciousService_.get (),
 				SIGNAL (gotEntity (const LeechCraft::Entity&)),
