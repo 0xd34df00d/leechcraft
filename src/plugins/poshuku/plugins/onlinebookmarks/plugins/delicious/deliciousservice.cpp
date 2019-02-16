@@ -47,7 +47,7 @@ namespace OnlineBookmarks
 namespace Delicious
 {
 	DeliciousService::DeliciousService (ICoreProxy_ptr proxy)
-	: CoreProxy_ (proxy)
+	: CoreProxy_ (std::move (proxy))
 	, DeliciousApi_ (new DeliciousApi)
 	{
 	}
@@ -225,7 +225,7 @@ namespace Delicious
 
 	void DeliciousService::getReplyFinished ()
 	{
-		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
 		if (!reply)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -254,7 +254,7 @@ namespace Delicious
 
 	void DeliciousService::readyReadReply ()
 	{
-		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
 		if (!reply)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -272,9 +272,7 @@ namespace Delicious
 		case OTAuth:
 			if (DeliciousApi_->ParseAuthReply (result))
 			{
-				DeliciousAccount *account =
-						new DeliciousAccount (Reply2Request_ [reply].Login_,
-								this);
+				auto account = new DeliciousAccount (Reply2Request_ [reply].Login_, this);
 				account->SetPassword (Reply2Request_ [reply].Password_);
 				Accounts_ << account;
 				saveAccounts ();
@@ -344,7 +342,7 @@ namespace Delicious
 
 	void DeliciousService::removeAccount (QObject *accObj)
 	{
-		DeliciousAccount *account = qobject_cast<DeliciousAccount*> (accObj);
+		auto account = qobject_cast<DeliciousAccount*> (accObj);
 		if (Accounts_.removeAll (account))
 		{
 			accObj->deleteLater ();

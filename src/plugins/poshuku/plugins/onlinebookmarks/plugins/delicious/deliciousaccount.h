@@ -63,25 +63,25 @@ namespace Delicious
 			ATOAuth
 		};
 
-		DeliciousAccount (const QString&, QObject* = 0);
+		explicit DeliciousAccount (const QString&, QObject* = nullptr);
 
-		QObject* GetQObject ();
-		QObject* GetParentService () const;
-		QByteArray GetAccountID () const;
-		QString GetLogin () const;
+		QObject* GetQObject () override;
+		QObject* GetParentService () const override;
+		QByteArray GetAccountID () const override;
+		QString GetLogin () const override;
 
-		QString GetPassword () const;
-		void SetPassword (const QString&);
+		QString GetPassword () const override;
+		void SetPassword (const QString&) override;
 
 		QVariantMap GetIdentifyingData() const;
 
-		bool IsSyncing () const;
-		void SetSyncing (bool);
+		bool IsSyncing () const override;
+		void SetSyncing (bool) override;
 
-		QDateTime GetLastDownloadDateTime () const;
-		void SetLastDownloadDateTime (const QDateTime&);
-		QDateTime GetLastUploadDateTime () const;
-		void SetLastUploadDateTime (const QDateTime&);
+		QDateTime GetLastDownloadDateTime () const override;
+		void SetLastDownloadDateTime (const QDateTime&) override;
+		QDateTime GetLastUploadDateTime () const override;
+		void SetLastUploadDateTime (const QDateTime&) override;
 
 		QVariantList GetBookmarksDiff (const QVariantList&);
 		void AppendDownloadedBookmarks (const QVariantList&);

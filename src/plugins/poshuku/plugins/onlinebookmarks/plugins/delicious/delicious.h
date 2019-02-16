@@ -58,18 +58,18 @@ namespace Delicious
 
 		std::shared_ptr<DeliciousService> DeliciousService_;
 	public:
-		void Init (ICoreProxy_ptr proxy);
-		void SecondInit ();
-		void Release ();
-		QByteArray GetUniqueID() const;
-		QString GetName() const;
-		QString GetInfo() const;
-		QIcon GetIcon() const;
+		void Init (ICoreProxy_ptr proxy) override;
+		void SecondInit () override;
+		void Release () override;
+		QByteArray GetUniqueID() const override;
+		QString GetName() const override;
+		QString GetInfo() const override;
+		QIcon GetIcon() const override;
 
-		QSet<QByteArray> GetPluginClasses () const;
+		QSet<QByteArray> GetPluginClasses () const override;
 
-		QObject* GetQObject ();
-		QObject* GetBookmarksService () const;
+		QObject* GetQObject () override;
+		QObject* GetBookmarksService () const override;
 	};
 }
 }

@@ -74,17 +74,20 @@ namespace Delicious
 		QHash<QNetworkReply*, Request> Reply2Request_;
 		QHash<IAccount*, QByteArray> Account2ReplyContent_;
 	public:
-		DeliciousService (ICoreProxy_ptr);
+		explicit DeliciousService (ICoreProxy_ptr);
+
 		void Prepare ();
-		IBookmarksService::Features GetFeatures () const;
-		QObject* GetQObject ();
-		QString GetServiceName () const;
-		QIcon GetServiceIcon () const;
-		QWidget* GetAuthWidget ();
-		void CheckAuthData (const QVariantMap&);
-		void RegisterAccount (const QVariantMap&);
-		void UploadBookmarks (QObject*, const QVariantList&);
-		void DownloadBookmarks (QObject*, const QDateTime&);
+
+		IBookmarksService::Features GetFeatures () const override;
+		QObject* GetQObject () override;
+		QString GetServiceName () const override;
+		QIcon GetServiceIcon () const override;
+		QWidget* GetAuthWidget () override;
+		void CheckAuthData (const QVariantMap&) override;
+		void RegisterAccount (const QVariantMap&) override;
+		void UploadBookmarks (QObject*, const QVariantList&) override;
+		void DownloadBookmarks (QObject*, const QDateTime&) override;
+
 		DeliciousAccount* GetAccountByName (const QString&);
 	private:
 		void SendRequest (const QString&, const QByteArray&, const Request&);
@@ -92,12 +95,13 @@ namespace Delicious
 	private slots:
 		void getReplyFinished ();
 		void readyReadReply ();
-		void saveAccounts () const;
-		void removeAccount (QObject*);
+
+		void saveAccounts () const override;
+		void removeAccount (QObject*) override;
 	signals:
-		void accountAdded (QObjectList);
-		void gotBookmarks (QObject*, const QVariantList&);
-		void bookmarksUploaded ();
+		void accountAdded (QObjectList) override;
+		void gotBookmarks (QObject*, const QVariantList&) override;
+		void bookmarksUploaded () override;
 	};
 }
 }

@@ -80,9 +80,7 @@ namespace Delicious
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
 	{
-		QSet<QByteArray> classes;
-		classes << "org.LeechCraft.Plugins.Poshuku.Plugins.OnlineBookmarks.IServicePlugin";
-		return classes;
+		return { "org.LeechCraft.Plugins.Poshuku.Plugins.OnlineBookmarks.IServicePlugin" };
 	}
 
 	QObject* Plugin::GetQObject ()
@@ -94,7 +92,6 @@ namespace Delicious
 	{
 		return DeliciousService_.get ();
 	}
-
 }
 }
 }
