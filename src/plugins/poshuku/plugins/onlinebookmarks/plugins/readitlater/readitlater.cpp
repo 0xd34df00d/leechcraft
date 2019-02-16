@@ -80,9 +80,7 @@ namespace ReadItLater
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
 	{
-		QSet<QByteArray> classes;
-		classes << "org.LeechCraft.Plugins.Poshuku.Plugins.OnlineBookmarks.IServicePlugin";
-		return classes;
+		return { "org.LeechCraft.Plugins.Poshuku.Plugins.OnlineBookmarks.IServicePlugin" };
 	}
 
 	QObject* Plugin::GetQObject ()

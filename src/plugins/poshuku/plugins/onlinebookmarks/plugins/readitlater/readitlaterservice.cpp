@@ -47,7 +47,7 @@ namespace OnlineBookmarks
 namespace ReadItLater
 {
 	ReadItLaterService::ReadItLaterService (ICoreProxy_ptr proxy)
-	: CoreProxy_ (proxy)
+	: CoreProxy_ (std::move (proxy))
 	, ReadItLaterApi_ (new ReadItLaterApi)
 	{
 	}
@@ -260,7 +260,7 @@ namespace ReadItLater
 
 	void ReadItLaterService::readyReadReply ()
 	{
-		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
 		if (!reply)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -278,9 +278,7 @@ namespace ReadItLater
 			if (Reply2Request_ [reply].Type_ == OTAuth ||
 					Reply2Request_ [reply].Type_ == OTRegister)
 			{
-				ReadItLaterAccount *account =
-						new ReadItLaterAccount (Reply2Request_ [reply].Login_,
-								this);
+				auto account = new ReadItLaterAccount (Reply2Request_ [reply].Login_, this);
 				account->SetPassword (Reply2Request_ [reply].Password_);
 				Accounts_ << account;
 				saveAccounts ();
@@ -368,7 +366,7 @@ namespace ReadItLater
 
 	void ReadItLaterService::removeAccount (QObject* accObj)
 	{
-		ReadItLaterAccount *account = qobject_cast<ReadItLaterAccount*> (accObj);
+		auto account = qobject_cast<ReadItLaterAccount*> (accObj);
 		if (Accounts_.removeAll (account))
 		{
 			accObj->deleteLater ();
