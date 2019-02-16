@@ -92,7 +92,7 @@ namespace Delicious
 
 	QObject* Plugin::GetBookmarksService () const
 	{
-		return qobject_cast<QObject*> (DeliciousService_.get ());
+		return DeliciousService_.get ();
 	}
 
 }
