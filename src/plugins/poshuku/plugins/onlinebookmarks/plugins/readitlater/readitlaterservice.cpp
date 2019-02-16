@@ -33,6 +33,7 @@
 #include <QSettings>
 #include <QtDebug>
 #include <util/xpc/util.h>
+#include <interfaces/core/ientitymanager.h>
 #include "readitlaterauthwidget.h"
 #include "readitlaterapi.h"
 #include "readitlateraccount.h"
@@ -269,7 +270,6 @@ namespace ReadItLater
 		}
 
 		const QVariant& result = reply->attribute (QNetworkRequest::HttpStatusCodeAttribute);
-		Entity e;
 		QString msg;
 		Priority priority = Priority::Info;
 		switch (result.toInt ())
@@ -340,10 +340,10 @@ namespace ReadItLater
 			priority = Priority::Warning;
 			break;
 		}
-		e = Util::MakeNotification ("OnlineBookmarks",
+		auto e = Util::MakeNotification ("OnlineBookmarks",
 				msg,
 				priority);
-		emit gotEntity (e);
+		CoreProxy_->GetEntityManager ()->HandleEntity (e);
 	}
 
 	void ReadItLaterService::saveAccounts () const
