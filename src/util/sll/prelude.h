@@ -282,7 +282,7 @@ namespace Util
 	template<typename F>
 	auto Flip (F&& f)
 	{
-		return [f = std::move (f)] (auto&& left, auto&& right)
+		return [f = std::forward<F> (f)] (auto&& left, auto&& right)
 		{
 			return f (std::forward<decltype (right)> (right),
 					std::forward<decltype (left)> (left));
