@@ -1601,9 +1601,9 @@ namespace Azoth
 				return {};
 
 			const auto& stlized = Util::Stlize (map);
-			const auto maxPos = std::max_element (stlized.begin (), stlized.end (),
+			const auto& maxElem = *std::max_element (stlized.begin (), stlized.end (),
 					Util::ComparingBy (Util::Snd));
-			return maxPos->first;
+			return maxElem.first;
 		}
 	}
 
