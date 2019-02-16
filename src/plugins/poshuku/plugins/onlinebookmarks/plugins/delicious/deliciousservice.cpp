@@ -32,6 +32,7 @@
 #include <QNetworkReply>
 #include <QSettings>
 #include <util/xpc/util.h>
+#include <interfaces/core/ientitymanager.h>
 #include <interfaces/iaccount.h>
 #include "deliciousauthwidget.h"
 #include "deliciousapi.h"
@@ -318,7 +319,7 @@ namespace Delicious
 			break;
 		}
 		if (!msg.isEmpty ())
-			emit gotEntity (e);
+			CoreProxy_->GetEntityManager ()->HandleEntity (e);
 	}
 
 	void DeliciousService::saveAccounts () const
