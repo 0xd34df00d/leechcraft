@@ -96,7 +96,6 @@ namespace Delicious
 		void removeAccount (QObject*);
 	signals:
 		void accountAdded (QObjectList);
-		void gotEntity (const LeechCraft::Entity&);
 		void gotBookmarks (QObject*, const QVariantList&);
 		void bookmarksUploaded ();
 	};
