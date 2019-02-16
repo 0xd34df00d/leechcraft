@@ -71,8 +71,6 @@ namespace ReadItLater
 
 		QObject* GetQObject ();
 		QObject* GetBookmarksService () const;
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }
