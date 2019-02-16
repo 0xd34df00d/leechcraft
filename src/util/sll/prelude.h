@@ -241,10 +241,10 @@ namespace Util
 	}
 
 	template<typename Cont>
-	Cont Sorted (Cont&& cont)
+	decltype (auto) Sorted (Cont&& cont)
 	{
 		std::sort (cont.begin (), cont.end ());
-		return std::move (cont);
+		return std::forward<Cont> (cont);
 	}
 
 	const auto Id = [] (auto&& t) ->decltype (auto) { return std::forward<decltype (t)> (t); };
