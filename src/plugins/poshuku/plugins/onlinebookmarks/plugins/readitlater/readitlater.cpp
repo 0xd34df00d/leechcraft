@@ -45,7 +45,7 @@ namespace ReadItLater
 	{
 		Util::InstallTranslator ("poshuku_onlinebookmarks_readitlater");
 
-		ReadItLaterService_.reset (new ReadItLaterService (proxy));
+		ReadItLaterService_ = std::make_shared<ReadItLaterService> (proxy);
 
 		connect (ReadItLaterService_.get (),
 				SIGNAL (gotEntity (const LeechCraft::Entity&)),
