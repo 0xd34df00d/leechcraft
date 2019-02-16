@@ -65,16 +65,15 @@ namespace SpeedDial
 			return std::log (std::max<int> (then.daysTo (now) + 1, 1));
 		}
 
-		template<typename T>
-		auto GetSortedVec (const T& t)
+		template<typename K, typename V>
+		auto GetSortedVec (const QHash<K, V>& hash)
 		{
-			auto vec = Util::Map (Util::StlizeCopy (t), Util::Id);
-
+			std::vector<std::pair<K, V>> vec { hash.keyValueBegin (), hash.keyValueEnd () };
 			std::sort (vec.begin (), vec.end (), Util::Flip (Util::ComparingBy (Util::Snd)));
 			return vec;
 		}
 
-		LoadResult GetTopUrls (const IStorageBackend_ptr& sb, int count)
+		LoadResult GetTopUrls (const IStorageBackend_ptr& sb, size_t count)
 		{
 			history_items_t items;
 			sb->LoadHistory (items);
@@ -96,7 +95,7 @@ namespace SpeedDial
 			const auto& hostsVec = GetSortedVec (host2score);
 
 			TopList_t topSites;
-			for (int i = 0; i < std::min (hostsVec.size (), count); ++i)
+			for (size_t i = 0; i < std::min (hostsVec.size (), count); ++i)
 			{
 				const auto& url = hostsVec [i].first.toString ();
 				topSites.append ({ url, url });
@@ -107,7 +106,7 @@ namespace SpeedDial
 			const auto& vec = GetSortedVec (url2score);
 
 			TopList_t topPages;
-			for (int i = 0; i < std::min (vec.size (), count); ++i)
+			for (size_t i = 0; i < std::min (vec.size (), count); ++i)
 			{
 				const auto& url = vec [i].first;
 
