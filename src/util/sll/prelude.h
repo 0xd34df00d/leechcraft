@@ -247,7 +247,7 @@ namespace Util
 		return std::forward<Cont> (cont);
 	}
 
-	const auto Id = [] (auto&& t) ->decltype (auto) { return std::forward<decltype (t)> (t); };
+	constexpr auto Id = [] (auto&& t) ->decltype (auto) { return std::forward<decltype (t)> (t); };
 
 	template<typename R>
 	auto ComparingBy (R r)
@@ -261,11 +261,11 @@ namespace Util
 		return [r] (const auto& left, const auto& right) { return std::invoke (r, left) == std::invoke (r, right); };
 	}
 
-	const auto Apply = [] (const auto& t) { return t (); };
+	constexpr auto Apply = [] (const auto& t) { return t (); };
 
-	const auto Fst = [] (const auto& pair) { return pair.first; };
+	constexpr auto Fst = [] (const auto& pair) { return pair.first; };
 
-	const auto Snd = [] (const auto& pair) { return pair.second; };
+	constexpr auto Snd = [] (const auto& pair) { return pair.second; };
 
 	template<typename F>
 	auto First (F&& f)
