@@ -165,10 +165,10 @@ namespace Util
 			families [pair.second->GetFont ().family ()] << pair.first;
 
 		const auto& stlized = Util::Stlize (families);
-		const auto& maxElem = std::max_element (stlized.begin (), stlized.end (),
+		const auto& maxPair = *std::max_element (stlized.begin (), stlized.end (),
 				ComparingBy ([] (auto pair) { return pair.second.size (); }));
 
-		const auto dialog = new MassFontChangeDialog { maxElem->first, maxElem->second, this };
+		const auto dialog = new MassFontChangeDialog { maxPair.first, maxPair.second, this };
 		dialog->show ();
 		connect (dialog,
 				&QDialog::finished,
