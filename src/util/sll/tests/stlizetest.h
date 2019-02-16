@@ -44,6 +44,8 @@ namespace Util
 		void testNonConstModify ();
 		void testRvalue ();
 
+		void testAnyOf ();
+
 		void benchmarkPlain ();
 		void benchmarkStlized ();
 	};

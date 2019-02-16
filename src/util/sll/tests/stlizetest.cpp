@@ -104,6 +104,15 @@ namespace Util
 		QCOMPARE (list, (QStringList { "aaa", "bbb", "ccc" }));
 	}
 
+	void StlizeTest::testAnyOf ()
+	{
+		const auto& stlized = Util::Stlize (GetSimpleMap ());
+		const bool hasBbb = std::any_of (stlized.begin (), stlized.end (),
+				[] (const auto& pair) { return pair.second == "bbb"; });
+
+		QCOMPARE (hasBbb, true);
+	}
+
 	namespace
 	{
 		QMap<int, int> GetBigMap ()
