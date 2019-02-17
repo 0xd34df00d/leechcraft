@@ -32,7 +32,6 @@
 #include <QQmlError>
 #include <QQmlEngine>
 #include <QtDebug>
-#include <util/util.h>
 #include <util/sys/paths.h>
 #include <util/qml/colorthemeproxy.h>
 #include <util/qml/themeimageprovider.h>
