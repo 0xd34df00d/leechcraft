@@ -39,7 +39,6 @@
 #include <QApplication>
 #include <QtDebug>
 #include <interfaces/iscriptloader.h>
-#include <util/util.h>
 #include <util/sys/paths.h>
 #include <util/sll/util.h>
 #include <util/sll/prelude.h>

@@ -36,7 +36,6 @@
 #include <QThread>
 #include <QVariant>
 #include <QSqlRecord>
-#include <util/util.h>
 #include <util/db/dblock.h>
 #include <util/db/util.h>
 #include <util/db/oral/oral.h>
