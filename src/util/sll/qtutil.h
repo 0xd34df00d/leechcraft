@@ -29,107 +29,56 @@
 
 #pragma once
 
-#include <tuple>
-#include <boost/range.hpp>
 #include "sllconfig.h"
 
-namespace LeechCraft
-{
-namespace Util
+namespace LeechCraft::Util
 {
 	namespace detail
 	{
-		template<template<typename> class F, typename V>
-		using MF = typename F<V>::type;
-
-		template<typename T>
-		struct Identity
+		template<template<typename, typename> class PairType, typename BaseIt, typename Key, typename Value>
+		struct Iterator
 		{
-			using type = T;
+			using iterator_category = std::bidirectional_iterator_tag;
+			using difference_type = std::ptrdiff_t;
+
+			using value_type = PairType<Key, Value>;
+			using reference = value_type;
+			using pointer = value_type*;
+
+			BaseIt BaseIt_;
+
+			bool operator== (const Iterator& other) const { return BaseIt_ == other.BaseIt_; }
+			bool operator!= (const Iterator& other) const { return BaseIt_ != other.BaseIt_; }
+
+			reference operator* () { return { BaseIt_.key (), BaseIt_.value () }; }
+
+			Iterator& operator++ ()
+			{
+				++BaseIt_;
+				return *this;
+			}
+
+			Iterator operator++ (int) & { return { BaseIt_++ }; }
+
+			Iterator& operator-- ()
+			{
+				--BaseIt_;
+				return *this;
+			}
+
+			Iterator operator-- (int) & { return { BaseIt_-- }; }
 		};
 
-		template<
-				template<template<typename> class, template<typename> class, typename, template<typename, typename> class> class This,
-				template<typename> class KeyMF,
-				template<typename> class ValueMF,
-				typename Iter,
-				template<typename, typename> class PairType,
-				typename KeyType = MF<KeyMF, decltype (Iter {}.key ())>,
-				typename ValueType = MF<ValueMF, decltype (Iter {}.value ())>
-			>
-		using IteratorAdaptorBase = boost::iterator_adaptor<
-				This<KeyMF, ValueMF, Iter, PairType>,
-				Iter,
-				PairType<KeyType, ValueType>,
-				boost::use_default,
-				PairType<KeyType, ValueType>
-			>;
-
-		template<
-				template<typename> class KeyMF,
-				template<typename> class ValueMF,
-				typename Iter,
-				template<typename, typename> class PairType
-			>
-		class StlAssocIteratorAdaptor : public IteratorAdaptorBase<StlAssocIteratorAdaptor, KeyMF, ValueMF, Iter, PairType>
+		template<typename Iter, typename BaseIter, typename Assoc>
+		struct Range
 		{
-			friend class boost::iterator_core_access;
+			Assoc Assoc_;
 
-			using Super_t = IteratorAdaptorBase<detail::StlAssocIteratorAdaptor, KeyMF, ValueMF, Iter, PairType>;
-		public:
-			StlAssocIteratorAdaptor () = default;
+			BaseIter Begin_ = Assoc_.begin ();
+			BaseIter End_ = Assoc_.end ();
 
-			StlAssocIteratorAdaptor (Iter it)
-			: Super_t { it }
-			{
-			}
-		private:
-			typename Super_t::reference dereference () const
-			{
-				return { this->base ().key (), this->base ().value () };
-			}
-		};
-
-		template<
-				template<typename> class KeyMF,
-				template<typename> class ValueMF,
-				typename Iter,
-				typename Assoc,
-				template<typename K, typename V> class PairType
-			>
-		struct StlAssocRange : private std::tuple<Assoc>
-							 , public boost::iterator_range<StlAssocIteratorAdaptor<KeyMF, ValueMF, Iter, PairType>>
-		{
-		public:
-			StlAssocRange (Assoc&& assoc)
-			: std::tuple<Assoc> { std::move (assoc) }
-			, boost::iterator_range<StlAssocIteratorAdaptor<KeyMF, ValueMF, Iter, PairType>> { std::get<0> (*this).begin (), std::get<0> (*this).end () }
-			{
-			}
-		};
-
-		template<
-				template<typename> class KeyMF,
-				template<typename> class ValueMF,
-				typename Iter,
-				typename Assoc,
-				template<typename K, typename V> class PairType
-			>
-		struct StlAssocRange<KeyMF, ValueMF, Iter, Assoc&, PairType> : public boost::iterator_range<StlAssocIteratorAdaptor<KeyMF, ValueMF, Iter, PairType>>
-		{
-		public:
-			StlAssocRange (Assoc& assoc)
-			: boost::iterator_range<StlAssocIteratorAdaptor<KeyMF, ValueMF, Iter, PairType>> { assoc.begin (), assoc.end () }
-			{
-			}
-
-			auto AsList () const
-			{
-				QList<typename StlAssocRange::value_type> result;
-				result.reserve (std::distance (this->begin (), this->end ()));
-				std::copy (this->begin (), this->end (), std::back_inserter (result));
-				return result;
-			}
+			auto begin () const { return Iter { Begin_ }; }
+			auto end () const { return Iter { End_ }; }
 		};
 	}
 
@@ -163,15 +112,28 @@ namespace Util
 	 * @tparam Assoc The type of the source Qt associative container.
 	 */
 	template<template<typename K, typename V> class PairType = std::pair, typename Assoc>
-	auto Stlize (Assoc&& assoc) -> detail::StlAssocRange<detail::Identity, detail::Identity, decltype (assoc.begin ()), Assoc, PairType>
+	auto Stlize (Assoc&& assoc)
 	{
-		return { std::forward<Assoc> (assoc) };
+		using BaseIt = decltype (assoc.begin ());
+		using Iterator = detail::Iterator<
+				PairType,
+				BaseIt,
+				decltype (BaseIt {}.key ()),
+				decltype (BaseIt {}.value ())
+			>;
+		return detail::Range<Iterator, BaseIt, Assoc> { std::forward<Assoc> (assoc) };
 	}
 
 	template<template<typename K, typename V> class PairType = std::pair, typename Assoc>
-	auto StlizeCopy (Assoc&& assoc) -> detail::StlAssocRange<std::decay, std::decay, decltype (assoc.begin ()), Assoc, PairType>
+	auto StlizeCopy (Assoc&& assoc)
 	{
-		return { std::forward<Assoc> (assoc) };
+		using BaseIt = decltype (assoc.begin ());
+		using Iterator = detail::Iterator<
+				PairType,
+				BaseIt,
+				std::decay_t<decltype (BaseIt {}.key ())>,
+				std::decay_t<decltype (BaseIt {}.value ())>
+			>;
+		return detail::Range<Iterator, BaseIt, Assoc> { std::forward<Assoc> (assoc) };
 	}
-}
 }
