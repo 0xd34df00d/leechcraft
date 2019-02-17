@@ -45,17 +45,6 @@ namespace LeechCraft
 {
 	namespace Util
 	{
-		/** @brief An utility function that creates a QString from
-		 * UTF8-encoded std::string.
-		 *
-		 * @param[in] str The UTF-8 encoded std::string.
-		 * @return The QString containing the same string.
-		 */
-		inline QString FromStdString (const std::string& str)
-		{
-			return QString::fromUtf8 (str.c_str ());
-		}
-
 		/** @brief Returns the given image in a Base64-encoded form.
 		 *
 		 * The return result is suitable for inserting into
