@@ -230,16 +230,6 @@ namespace Util
 		return result;
 	}
 
-	template<template<typename Pair, typename... Rest> class Cont, template<typename K, typename V> class Pair, typename K, typename V, typename KV, typename... Rest>
-	boost::optional<V> Lookup (const KV& key, const Cont<Pair<K, V>, Rest...>& cont)
-	{
-		for (const auto& pair : cont)
-			if (pair.first == key)
-				return pair.second;
-
-		return {};
-	}
-
 	template<typename Cont>
 	decltype (auto) Sorted (Cont&& cont)
 	{
