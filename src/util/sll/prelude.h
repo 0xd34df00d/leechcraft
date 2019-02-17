@@ -34,7 +34,6 @@
 #include <iterator>
 #include <QPair>
 #include <QStringList>
-#include <boost/optional.hpp>
 
 namespace boost
 {
