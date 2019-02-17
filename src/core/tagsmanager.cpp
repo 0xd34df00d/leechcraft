@@ -34,7 +34,6 @@
 #include <QSettings>
 #include <QCoreApplication>
 #include <QtDebug>
-#include <util/util.h>
 #include <util/sll/prelude.h>
 #include <util/tags/tagscompleter.h>
 

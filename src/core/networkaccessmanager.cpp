@@ -35,7 +35,6 @@
 #include <QFile>
 #include <QNetworkReply>
 #include <QTimer>
-#include <util/util.h>
 #include <util/network/customcookiejar.h>
 #include <util/network/networkdiskcache.h>
 #include <util/xpc/defaulthookproxy.h>
