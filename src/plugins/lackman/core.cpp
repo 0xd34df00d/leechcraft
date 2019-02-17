@@ -481,7 +481,7 @@ namespace LackMan
 			}
 			catch (const std::exception& e)
 			{
-				QString str = Util::FromStdString (e.what ());
+				auto str = QString::fromUtf8 (e.what ());
 				qWarning () << Q_FUNC_INFO
 						<< "got"
 						<< str
@@ -502,7 +502,7 @@ namespace LackMan
 			}
 			catch (const std::exception& e)
 			{
-				QString str = Util::FromStdString (e.what ());
+				auto str = QString::fromUtf8 (e.what ());
 				qWarning () << Q_FUNC_INFO
 						<< "got"
 						<< str
@@ -663,7 +663,7 @@ namespace LackMan
 		}
 		catch (const std::exception& e)
 		{
-			QString str = Util::FromStdString (e.what ());
+			auto str = QString::fromUtf8 (e.what ());
 			qWarning () << Q_FUNC_INFO
 					<< "got"
 					<< str
@@ -741,7 +741,7 @@ namespace LackMan
 		}
 		catch (const std::exception& e)
 		{
-			QString str = Util::FromStdString (e.what ());
+			auto str = QString::fromUtf8 (e.what ());
 			qWarning () << Q_FUNC_INFO
 					<< "unable to remove from installed"
 					<< packageId
