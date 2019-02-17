@@ -106,7 +106,12 @@ namespace Lastfmscrobble
 
 	QNetworkReply* Request (const QString& method, QNetworkAccessManager *nam, const ParamsMap_t& map)
 	{
-		return Request (method, nam, Util::StlizeCopy<QPair> (map).AsList ());
+		ParamsList_t paramsList;
+		paramsList.reserve (map.size ());
+		const auto& stlized = Util::StlizeCopy<QPair> (map);
+		std::copy (stlized.begin (), stlized.end (), std::back_inserter (paramsList));
+
+		return Request (method, nam, std::move (paramsList));
 	}
 
 	QNetworkReply* Request (const QString& method, QNetworkAccessManager *nam, ParamsList_t params)
