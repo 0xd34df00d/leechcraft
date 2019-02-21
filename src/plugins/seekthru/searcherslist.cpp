@@ -145,7 +145,7 @@ namespace SeekThru
 
 		const auto& e = Util::MakeEntity (act->data (),
 				QString (), FromUserInitiated | OnlyHandle);
-		emit gotEntity (e);
+		Proxy_->GetEntityManager ()->HandleEntity (e);
 	}
 }
 }
