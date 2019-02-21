@@ -58,7 +58,12 @@ namespace SeekThru
 
 		menu->addAction (tr ("From searchplugins.net..."),
 				this,
-				SLOT (handleOpenURL ()))->setData (QUrl ("http://searchplugins.net"));
+				[proxy]
+				{
+					const auto& e = Util::MakeEntity (QUrl { "http://searchplugins.net" },
+							QString (), FromUserInitiated | OnlyHandle);
+					proxy->GetEntityManager ()->HandleEntity (e);
+				});
 	}
 
 	void SearchersList::handleCurrentChanged (const QModelIndex& current)
@@ -137,15 +142,6 @@ namespace SeekThru
 		Core::Instance ().SetTags (Current_,
 				Core::Instance ().GetProxy ()->
 					GetTagsManager ()->Split (Ui_.Tags_->text ()));
-	}
-
-	void SearchersList::handleOpenURL ()
-	{
-		auto act = qobject_cast<QAction*> (sender ());
-
-		const auto& e = Util::MakeEntity (act->data (),
-				QString (), FromUserInitiated | OnlyHandle);
-		Proxy_->GetEntityManager ()->HandleEntity (e);
 	}
 }
 }
