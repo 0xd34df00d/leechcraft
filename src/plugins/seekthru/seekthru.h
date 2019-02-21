@@ -67,36 +67,36 @@ namespace SeekThru
 		ICoreProxy_ptr Proxy_;
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		void Release ();
-		QByteArray GetUniqueID () const;
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-		QStringList Provides () const;
-		QStringList Needs () const;
-		QStringList Uses () const;
-		void SetProvider (QObject*, const QString&);
+		void Init (ICoreProxy_ptr) override;
+		void SecondInit () override;
+		void Release () override;
+		QByteArray GetUniqueID () const override;
+		QString GetName () const override;
+		QString GetInfo () const override;
+		QIcon GetIcon () const override;
+		QStringList Provides () const override;
+		QStringList Needs () const override;
+		QStringList Uses () const override;
+		void SetProvider (QObject*, const QString&) override;
 
-		QStringList GetCategories () const;
-		QList<IFindProxy_ptr> GetProxy (const LeechCraft::Request&);
+		QStringList GetCategories () const override;
+		QList<IFindProxy_ptr> GetProxy (const LeechCraft::Request&) override;
 
-		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const override;
 
-		EntityTestHandleResult CouldHandle (const LeechCraft::Entity&) const;
-		void Handle (LeechCraft::Entity);
+		EntityTestHandleResult CouldHandle (const LeechCraft::Entity&) const override;
+		void Handle (LeechCraft::Entity) override;
 
-		QString GetFilterVerb () const;
-		QList<FilterVariant> GetFilterVariants (const QVariant&) const;
+		QString GetFilterVerb () const override;
+		QList<FilterVariant> GetFilterVariants (const QVariant&) const override;
 
-		QList<QWizardPage*> GetWizardPages () const;
+		QList<QWizardPage*> GetWizardPages () const override;
 
-		ISyncProxy* GetSyncProxy ();
+		ISyncProxy* GetSyncProxy () override;
 	private slots:
 		void handleError (const QString&);
 	signals:
-		void categoriesChanged (const QStringList&, const QStringList&);
+		void categoriesChanged (const QStringList&, const QStringList&) override;
 	};
 }
 }
