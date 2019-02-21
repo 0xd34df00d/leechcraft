@@ -64,6 +64,7 @@ namespace SeekThru
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.SeekThru")
 
+		ICoreProxy_ptr Proxy_;
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
 	public:
 		void Init (ICoreProxy_ptr);
