@@ -63,7 +63,7 @@ namespace SeekThru
 		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"seekthrusettings.xml");
 
-		auto searchersList = new SearchersList;
+		auto searchersList = new SearchersList { proxy };
 		connect (searchersList,
 				SIGNAL (gotEntity (LeechCraft::Entity)),
 				this,

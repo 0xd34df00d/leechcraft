@@ -40,8 +40,9 @@ namespace LeechCraft
 {
 namespace SeekThru
 {
-	SearchersList::SearchersList (QWidget* parent)
-	: QWidget (parent)
+	SearchersList::SearchersList (const ICoreProxy_ptr& proxy, QWidget* parent)
+	: QWidget { parent }
+	, Proxy_ { proxy }
 	{
 		Ui_.setupUi (this);
 		new Util::TagsCompleter (Ui_.Tags_);

@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QWidget>
+#include <interfaces/core/icoreproxyfwd.h>
 #include "ui_searcherslist.h"
 
 namespace LeechCraft
@@ -42,10 +43,12 @@ namespace SeekThru
 	{
 		Q_OBJECT
 
+		const ICoreProxy_ptr Proxy_;
+
 		Ui::SearchersList Ui_;
 		QModelIndex Current_;
 	public:
-		explicit SearchersList (QWidget* = nullptr);
+		explicit SearchersList (const ICoreProxy_ptr&, QWidget* = nullptr);
 	private slots:
 		void handleCurrentChanged (const QModelIndex&);
 		void on_ButtonAdd__released ();
