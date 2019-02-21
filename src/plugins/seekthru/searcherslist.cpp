@@ -33,6 +33,7 @@
 #include <util/tags/tagscompleter.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
+#include <interfaces/core/ientitymanager.h>
 #include <util/xpc/util.h>
 #include "core.h"
 
