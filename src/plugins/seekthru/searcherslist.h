@@ -43,7 +43,7 @@ namespace SeekThru
 		Ui::SearchersList Ui_;
 		QModelIndex Current_;
 	public:
-		SearchersList (QWidget* = 0);
+		explicit SearchersList (QWidget* = nullptr);
 	private slots:
 		void handleCurrentChanged (const QModelIndex&);
 		void on_ButtonAdd__released ();
