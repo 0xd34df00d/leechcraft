@@ -29,6 +29,7 @@
 
 #include "seekthru.h"
 #include <interfaces/entitytesthandleresult.h>
+#include <interfaces/core/ientitymanager.h>
 #include <util/util.h>
 #include <util/xpc/util.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
@@ -180,7 +181,7 @@ namespace SeekThru
 
 	void SeekThru::handleError (const QString& error)
 	{
-		emit gotEntity (Util::MakeNotification ("SeekThru", error, Priority::Critical));
+		Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification ("SeekThru", error, Priority::Critical));
 	}
 }
 }
