@@ -56,8 +56,6 @@ namespace SeekThru
 		void on_Tags__editingFinished ();
 
 		void handleOpenURL ();
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }

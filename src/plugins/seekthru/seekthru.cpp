@@ -64,10 +64,6 @@ namespace SeekThru
 				"seekthrusettings.xml");
 
 		auto searchersList = new SearchersList { proxy };
-		connect (searchersList,
-				SIGNAL (gotEntity (LeechCraft::Entity)),
-				this,
-				SIGNAL (gotEntity (LeechCraft::Entity)));
 		XmlSettingsDialog_->SetCustomWidget ("SearchersList", searchersList);
 	}
 
