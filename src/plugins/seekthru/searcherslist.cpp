@@ -87,8 +87,7 @@ namespace SeekThru
 			Ui_.LongName_->setText (longName);
 
 		QStringList tags = current.data (Core::RoleTags).toStringList ();
-		Ui_.Tags_->setText (Core::Instance ().GetProxy ()->
-				GetTagsManager ()->Join (tags));
+		Ui_.Tags_->setText (Proxy_->GetTagsManager ()->Join (tags));
 
 		QString contact = current.data (Core::RoleContact).toString ();
 		if (contact.isEmpty ())
@@ -140,9 +139,7 @@ namespace SeekThru
 
 	void SearchersList::on_Tags__editingFinished ()
 	{
-		Core::Instance ().SetTags (Current_,
-				Core::Instance ().GetProxy ()->
-					GetTagsManager ()->Split (Ui_.Tags_->text ()));
+		Core::Instance ().SetTags (Current_, Proxy_->GetTagsManager ()->Split (Ui_.Tags_->text ()));
 	}
 }
 }
