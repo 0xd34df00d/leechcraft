@@ -32,8 +32,10 @@
 #include <QDateTime>
 #include <QTimer>
 #include <interfaces/iplugin2.h>
-#include <interfaces/poshuku/iproxyobject.h>
+#include <interfaces/ipersistentstorageplugin.h>
 #include <interfaces/iserviceplugin.h>
+#include <interfaces/core/ipluginsmanager.h>
+#include <interfaces/poshuku/iproxyobject.h>
 #include <util/xpc/util.h>
 #include <util/xpc/passutils.h>
 #include "accountssettings.h"
@@ -176,15 +178,13 @@ namespace OnlineBookmarks
 
 	void Core::DeletePassword (QObject *accObj)
 	{
-		IAccount *account = qobject_cast<IAccount*> (accObj);
-		QVariantList keys;
-		keys << account->GetAccountID ();
+		auto account = qobject_cast<IAccount*> (accObj);
+		const auto& key = account->GetAccountID ();
 
-		Entity e = Util::MakeEntity (keys,
-				QString (),
-				Internal,
-				"x-leechcraft/data-persistent-clear");
-		emit gotEntity (e);
+		const auto& plugins = CoreProxy_->GetPluginsManager ()->GetAllCastableTo<IPersistentStoragePlugin*> ();
+		for (const auto plugin : plugins)
+			if (const auto& storage = plugin->RequestStorage ())
+				storage->Set (key, {});
 	}
 
 	QString Core::GetPassword (QObject *accObj)
