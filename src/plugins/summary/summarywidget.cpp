@@ -176,10 +176,11 @@ namespace Summary
 						const auto& prevMapped = Core::Instance ().MapToSourceRecursively (previous);
 						const auto& thisMapped = Core::Instance ().MapToSourceRecursively (current);
 
-						if (prevMapped.model () != thisMapped.model ())
+						if (prevMapped.isValid () && prevMapped.model () != thisMapped.model ())
 							std::invoke (method, SrcModel2Handler_ [prevMapped.model ()], QModelIndex {});
 
-						std::invoke (method, SrcModel2Handler_ [thisMapped.model ()], thisMapped);
+						if (thisMapped.isValid ())
+							std::invoke (method, SrcModel2Handler_ [thisMapped.model ()], thisMapped);
 					});
 		};
 		connectChange (&QItemSelectionModel::currentChanged,
