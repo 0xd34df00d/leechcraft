@@ -218,6 +218,9 @@ namespace LeechCraft
 	};
 }
 
+class IJobHolderRepresentationHandler;
+using IJobHolderRepresentationHandler_ptr = std::shared_ptr<IJobHolderRepresentationHandler>;
+
 /** @brief Interface for plugins holding jobs or persistent notifications.
  *
  * If a plugin can have some long-performing jobs (like a BitTorrent
@@ -275,6 +278,8 @@ public:
 	 * @sa LeechCraft::ProcessStateInfo
 	 */
 	virtual QAbstractItemModel* GetRepresentation () const = 0;
+
+	virtual IJobHolderRepresentationHandler_ptr MakeRepresentationHandler () { return {}; }
 
 	/** @brief Virtual destructor.
 	 */
