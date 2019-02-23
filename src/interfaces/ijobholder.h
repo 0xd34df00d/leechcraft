@@ -33,7 +33,6 @@
 #include <QAbstractItemModel>
 #include "interfaces/structures.h"
 
-class QModelIndex;
 class QWidget;
 
 namespace LeechCraft
