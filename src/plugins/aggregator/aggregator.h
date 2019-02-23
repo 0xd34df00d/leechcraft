@@ -135,7 +135,7 @@ namespace Aggregator
 		void TabOpenRequested (const QByteArray&) override;
 
 		QAbstractItemModel* GetRepresentation () const override;
-		IJobHolderRepresentationHandler_ptr MakeRepresentationHandler () override;
+		IJobHolderRepresentationHandler_ptr CreateRepresentationHandler () override;
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const override;
 

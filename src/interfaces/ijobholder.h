@@ -279,7 +279,7 @@ public:
 	 */
 	virtual QAbstractItemModel* GetRepresentation () const = 0;
 
-	virtual IJobHolderRepresentationHandler_ptr MakeRepresentationHandler () { return {}; }
+	virtual IJobHolderRepresentationHandler_ptr CreateRepresentationHandler () { return {}; }
 
 	/** @brief Virtual destructor.
 	 */

@@ -262,7 +262,7 @@ namespace Aggregator
 		return ReprManager_->GetRepresentation ();
 	}
 
-	IJobHolderRepresentationHandler_ptr Aggregator::MakeRepresentationHandler ()
+	IJobHolderRepresentationHandler_ptr Aggregator::CreateRepresentationHandler ()
 	{
 		// TODO create per-call
 		return ReprManager_;

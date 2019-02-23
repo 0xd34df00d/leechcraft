@@ -163,7 +163,7 @@ namespace Summary
 		ReconnectModelSpecific ();
 
 		for (const auto ijh : pm->GetAllCastableTo<IJobHolder*> ())
-			if (const auto handler = ijh->MakeRepresentationHandler ())
+			if (const auto handler = ijh->CreateRepresentationHandler ())
 				SrcModel2Handler_ [ijh->GetRepresentation ()] = handler;
 
 		auto connectChange = [this] (auto signal, auto method)
