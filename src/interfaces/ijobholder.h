@@ -30,9 +30,9 @@
 #pragma once
 
 #include <QtPlugin>
-#include <QAbstractItemModel>
 #include "interfaces/structures.h"
 
+class QAbstractItemModel;
 class QWidget;
 
 namespace LeechCraft
