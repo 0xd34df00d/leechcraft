@@ -84,38 +84,38 @@ namespace Azoth
 		TabClasses_t TabClasses_;
 		TabClassInfo ServerHistoryTC_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		void Release ();
-		QByteArray GetUniqueID () const;
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-		QStringList Provides () const;
+		void Init (ICoreProxy_ptr) override;
+		void SecondInit () override;
+		void Release () override;
+		QByteArray GetUniqueID () const override;
+		QString GetName () const override;
+		QString GetInfo () const override;
+		QIcon GetIcon () const override;
+		QStringList Provides () const override;
 
-		QSet<QByteArray> GetExpectedPluginClasses () const;
-		void AddPlugin (QObject*);
+		QSet<QByteArray> GetExpectedPluginClasses () const override;
+		void AddPlugin (QObject*) override;
 
-		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const override;
 
-		QAbstractItemModel* GetRepresentation () const;
+		QAbstractItemModel* GetRepresentation () const override;
 
-		QList<QAction*> GetActions (ActionsEmbedPlace) const;
-		QMap<QString, QList<QAction*>> GetMenuActions () const;
+		QList<QAction*> GetActions (ActionsEmbedPlace) const override;
+		QMap<QString, QList<QAction*>> GetMenuActions () const override;
 
-		EntityTestHandleResult CouldHandle (const Entity&) const;
-		void Handle (Entity);
+		EntityTestHandleResult CouldHandle (const Entity&) const override;
+		void Handle (Entity) override;
 
-		TabClasses_t GetTabClasses () const;
-		void TabOpenRequested (const QByteArray&);
+		TabClasses_t GetTabClasses () const override;
+		void TabOpenRequested (const QByteArray&) override;
 
-		void RecoverTabs (const QList<TabRecoverInfo>&);
-		bool HasSimilarTab (const QByteArray&, const QList<QByteArray>&) const;
+		void RecoverTabs (const QList<TabRecoverInfo>&) override;
+		bool HasSimilarTab (const QByteArray&, const QList<QByteArray>&) const override;
 
-		void SetShortcut (const QString&, const QKeySequences_t&);
-		QMap<QString, ActionInfo> GetActionInfo() const;
+		void SetShortcut (const QString&, const QKeySequences_t&) override;
+		QMap<QString, ActionInfo> GetActionInfo() const override;
 
-		QList<ANFieldData> GetANFields () const;
+		QList<ANFieldData> GetANFields () const override;
 	private :
 		void InitShortcuts ();
 		void InitAccActsMgr ();
@@ -134,16 +134,16 @@ namespace Azoth
 		void handleMoreThisStuff (const QString&);
 		void handleConsoleWidget (ConsoleWidget*);
 	signals:
-		void gotEntity (const LeechCraft::Entity&);
+		void gotEntity (const LeechCraft::Entity&) override;
 
-		void addNewTab (const QString&, QWidget*);
-		void removeTab (QWidget*);
-		void changeTabName (QWidget*, const QString&);
-		void changeTabIcon (QWidget*, const QIcon&);
-		void statusBarChanged (QWidget*, const QString&);
-		void raiseTab (QWidget*);
+		void addNewTab (const QString&, QWidget*) override;
+		void removeTab (QWidget*) override;
+		void changeTabName (QWidget*, const QString&) override;
+		void changeTabIcon (QWidget*, const QIcon&) override;
+		void statusBarChanged (QWidget*, const QString&) override;
+		void raiseTab (QWidget*) override;
 
-		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
+		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace) override;
 	};
 }
 }
