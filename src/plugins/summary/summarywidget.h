@@ -35,6 +35,7 @@
 #include <QStringList>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/ihaverecoverabletabs.h>
+#include <interfaces/ijobholderrepresentationhandler.h>
 #include "ui_summarywidget.h"
 #include "core.h"
 
@@ -63,6 +64,8 @@ namespace Summary
 		static QObject *S_ParentMultiTabs_;
 
 		QSortFilterProxyModel *Sorter_;
+
+		QHash<const QAbstractItemModel*, IJobHolderRepresentationHandler_ptr> SrcModel2Handler_;
 	public:
 		explicit SummaryWidget (QWidget* = nullptr);
 		~SummaryWidget () override;

@@ -161,6 +161,10 @@ namespace Summary
 				fm.width ("99.99% (1024.0 kb from 1024.0 kb at 1024.0 kb/s)"));
 
 		ReconnectModelSpecific ();
+
+		for (const auto ijh : pm->GetAllCastableTo<IJobHolder*> ())
+			if (const auto handler = ijh->MakeRepresentationHandler ())
+				SrcModel2Handler_ [ijh->GetRepresentation ()] = handler;
 	}
 
 	void SummaryWidget::ReconnectModelSpecific ()
