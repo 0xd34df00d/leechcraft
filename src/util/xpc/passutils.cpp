@@ -153,8 +153,7 @@ namespace Util
 	void SavePassword (const QString& password, const QString& key,
 			const ICoreProxy_ptr& proxy)
 	{
-		const auto& plugins = proxy->GetPluginsManager ()->
-				GetAllCastableTo<IPersistentStoragePlugin*> ();
+		const auto& plugins = proxy->GetPluginsManager ()->GetAllCastableTo<IPersistentStoragePlugin*> ();
 		for (const auto plugin : plugins)
 			if (const auto& storage = plugin->RequestStorage ())
 				storage->Set (key.toUtf8 (), password);
