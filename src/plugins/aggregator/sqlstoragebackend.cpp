@@ -611,6 +611,11 @@ namespace LeechCraft::Aggregator
 				oral::InsertAction::Replace::Fields<&Feed2TagsR::FeedID_>);
 	}
 
+	void SQLStorageBackend::SetFeedURL (IDType_t feedId, const QString& url)
+	{
+		Feeds_->Update (sph::f<&FeedR::URL_> = url, sph::f<&FeedR::FeedID_> == feedId);
+	}
+
 	namespace
 	{
 		namespace detail
