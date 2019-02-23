@@ -165,6 +165,29 @@ namespace Summary
 		for (const auto ijh : pm->GetAllCastableTo<IJobHolder*> ())
 			if (const auto handler = ijh->MakeRepresentationHandler ())
 				SrcModel2Handler_ [ijh->GetRepresentation ()] = handler;
+
+		auto connectChange = [this] (auto signal, auto method)
+		{
+			connect (Ui_.PluginsTasksTree_->selectionModel (),
+					signal,
+					this,
+					[this, method] (const QModelIndex& current, const QModelIndex& previous)
+					{
+						const auto& prevMapped = Core::Instance ().MapToSourceRecursively (previous);
+						const auto& thisMapped = Core::Instance ().MapToSourceRecursively (current);
+
+						if (prevMapped.model () != thisMapped.model ())
+							std::invoke (method, SrcModel2Handler_ [prevMapped.model ()], QModelIndex {});
+
+						std::invoke (method, SrcModel2Handler_ [thisMapped.model ()], thisMapped);
+					});
+		};
+		connectChange (&QItemSelectionModel::currentChanged,
+				&IJobHolderRepresentationHandler::HandleCurrentChanged);
+		connectChange (&QItemSelectionModel::currentRowChanged,
+				&IJobHolderRepresentationHandler::HandleCurrentRowChanged);
+		connectChange (&QItemSelectionModel::currentColumnChanged,
+				&IJobHolderRepresentationHandler::HandleCurrentColumnChanged);
 	}
 
 	void SummaryWidget::ReconnectModelSpecific ()
