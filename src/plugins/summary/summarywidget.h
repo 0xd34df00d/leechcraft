@@ -64,20 +64,20 @@ namespace Summary
 
 		QSortFilterProxyModel *Sorter_;
 	public:
-		SummaryWidget (QWidget* = 0);
-		virtual ~SummaryWidget ();
+		explicit SummaryWidget (QWidget* = nullptr);
+		~SummaryWidget () override;
 
 		static void SetParentMultiTabs (QObject*);
 
-		void Remove ();
-		QToolBar* GetToolBar () const;
-		QList<QAction*> GetTabBarContextMenuActions () const;
-		QObject* ParentMultiTabs ();
-		TabClassInfo GetTabClassInfo () const;
+		void Remove () override;
+		QToolBar* GetToolBar () const override;
+		QList<QAction*> GetTabBarContextMenuActions () const override;
+		QObject* ParentMultiTabs () override;
+		TabClassInfo GetTabClassInfo () const override;
 
-		QByteArray GetTabRecoverData () const;
-		QString GetTabRecoverName () const;
-		QIcon GetTabRecoverIcon () const;
+		QByteArray GetTabRecoverData () const override;
+		QString GetTabRecoverName () const override;
+		QIcon GetTabRecoverIcon () const override;
 
 		void RestoreState (const QByteArray&);
 
@@ -106,7 +106,7 @@ namespace Summary
 		void raiseTab (QWidget*);
 		void needToClose ();
 
-		void tabRecoverDataChanged ();
+		void tabRecoverDataChanged () override;
 	};
 }
 }
