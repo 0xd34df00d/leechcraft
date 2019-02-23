@@ -57,11 +57,9 @@ namespace LeechCraft::Aggregator
 		return ReprModel_;
 	}
 
-	void RepresentationManager::HandleRowChanged (QModelIndex index)
+	void RepresentationManager::HandleCurrentRowChanged (const QModelIndex& srcIdx)
 	{
-		if (index.model () != GetRepresentation ())
-			index = {};
-		index = ReprModel_->mapToSource (index);
+		auto index = ReprModel_->mapToSource (srcIdx);
 		index = JobHolderRepresentation_->SelectionChanged (index);
 		SelectedRepr_ = index;
 		ReprWidget_->CurrentChannelChanged (index);

@@ -135,6 +135,7 @@ namespace Aggregator
 		void TabOpenRequested (const QByteArray&) override;
 
 		QAbstractItemModel* GetRepresentation () const override;
+		IJobHolderRepresentationHandler_ptr MakeRepresentationHandler () override;
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const override;
 
@@ -165,8 +166,6 @@ namespace Aggregator
 		void ReinitStorage ();
 
 		ItemsWidgetDependencies MakeItemsWidgetDeps () const;
-	public slots:
-		void handleTasksTreeSelectionCurrentRowChanged (const QModelIndex&, const QModelIndex&);
 	private slots:
 		void on_ActionMarkAllAsRead__triggered ();
 		void on_ActionAddFeed__triggered ();

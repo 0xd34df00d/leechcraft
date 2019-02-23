@@ -42,6 +42,7 @@
 #include <QKeyEvent>
 #include <QInputDialog>
 #include <QXmlStreamReader>
+#include <interfaces/ijobholderrepresentationhandler.h>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
@@ -261,9 +262,10 @@ namespace Aggregator
 		return ReprManager_->GetRepresentation ();
 	}
 
-	void Aggregator::handleTasksTreeSelectionCurrentRowChanged (const QModelIndex& index, const QModelIndex&)
+	IJobHolderRepresentationHandler_ptr Aggregator::MakeRepresentationHandler ()
 	{
-		ReprManager_->HandleRowChanged (Proxy_->MapToSource (index));
+		// TODO create per-call
+		return ReprManager_;
 	}
 
 	EntityTestHandleResult Aggregator::CouldHandle (const Entity& e) const

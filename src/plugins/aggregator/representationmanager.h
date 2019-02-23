@@ -32,6 +32,7 @@
 #include <optional>
 #include <QObject>
 #include <QModelIndex>
+#include <interfaces/ijobholderrepresentationhandler.h>
 
 namespace LeechCraft::Util
 {
@@ -49,6 +50,7 @@ namespace LeechCraft::Aggregator
 	struct ItemsWidgetDependencies;
 
 	class RepresentationManager : public QObject
+								, public IJobHolderRepresentationHandler
 	{
 		ItemsWidget *ReprWidget_ = nullptr;
 		JobHolderRepresentation *JobHolderRepresentation_ = nullptr;
@@ -67,7 +69,8 @@ namespace LeechCraft::Aggregator
 		explicit RepresentationManager (const InitParams&);
 
 		QAbstractItemModel* GetRepresentation () const;
-		void HandleRowChanged (QModelIndex);
+
+		void HandleCurrentRowChanged (const QModelIndex&) override;
 
 		std::optional<QModelIndex> GetRelevantIndex () const;
 	};
