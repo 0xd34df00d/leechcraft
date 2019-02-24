@@ -67,7 +67,7 @@ namespace Azoth
 		QHash<QString, QObjectList> Entry2Incoming_;
 		QHash<ITransferJob*, QString> Job2SavePath_;
 
-		QModelIndex Selected_;
+		QPersistentModelIndex Selected_;
 		QToolBar * const ReprBar_;
 	public:
 		TransferJobManager (AvatarsManager*, QObject* = nullptr);
