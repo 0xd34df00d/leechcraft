@@ -160,8 +160,6 @@ namespace Summary
 		itemsHeader->resizeSection (2,
 				fm.width ("99.99% (1024.0 kb from 1024.0 kb at 1024.0 kb/s)"));
 
-		ReconnectModelSpecific ();
-
 		for (const auto ijh : pm->GetAllCastableTo<IJobHolder*> ())
 			if (const auto handler = ijh->CreateRepresentationHandler ())
 				SrcModel2Handler_ [ijh->GetRepresentation ()] = handler;
@@ -189,29 +187,6 @@ namespace Summary
 				&IJobHolderRepresentationHandler::HandleCurrentRowChanged);
 		connectChange (&QItemSelectionModel::currentColumnChanged,
 				&IJobHolderRepresentationHandler::HandleCurrentColumnChanged);
-	}
-
-	void SummaryWidget::ReconnectModelSpecific ()
-	{
-		const auto sel = Ui_.PluginsTasksTree_->selectionModel ();
-
-#define C2(sig,sl,arg1,arg2) \
-		if (mo->indexOfMethod (QMetaObject::normalizedSignature ("handleTasksTreeSelection" #sl "(" #arg1 ", " #arg2 ")")) != -1) \
-			connect (sel, \
-					SIGNAL (sig (arg1, arg2)), \
-					object, \
-					SLOT (handleTasksTreeSelection##sl (arg1, arg2)));
-
-		auto pm = Core::Instance ().GetProxy ()->GetPluginsManager ();
-		for (const auto object : pm->GetAllCastableRoots<IJobHolder*> ())
-		{
-			const auto *mo = object->metaObject ();
-
-			C2 (currentChanged, CurrentChanged, QModelIndex, QModelIndex);
-			C2 (currentColumnChanged, CurrentColumnChanged, QModelIndex, QModelIndex);
-			C2 (currentRowChanged, CurrentRowChanged, QModelIndex, QModelIndex);
-		}
-#undef C2
 	}
 
 	void SummaryWidget::ConnectObject (QObject *object)

@@ -88,7 +88,6 @@ namespace Summary
 
 		Ui::SummaryWidget GetUi () const;
 	private:
-		void ReconnectModelSpecific ();
 		void ConnectObject (QObject*);
 		SearchWidget* CreateSearchWidget ();
 		void ReinitToolbar ();
