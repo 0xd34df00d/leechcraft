@@ -11,6 +11,7 @@ set (XPC_SRCS
 	screensaverprohibitor.cpp
 	anconstantsdefs.cpp
 	downloadhelpers.cpp
+	downloaderrorstrings.cpp
 	)
 
 foreach (SRC ${XPC_SRCS})

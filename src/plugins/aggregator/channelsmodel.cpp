@@ -37,6 +37,7 @@
 #include <QFontMetrics>
 #include <util/sll/prelude.h>
 #include <util/sll/visitor.h>
+#include <util/xpc/downloaderrorstrings.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
 #include "channelsmodel.h"
@@ -119,41 +120,6 @@ namespace Aggregator
 						QVariant ();
 		}
 
-		QString GetErrorString (const IDownload::Error::Type type)
-		{
-			switch (type)
-			{
-			case IDownload::Error::Type::Unknown:
-				break;
-			case IDownload::Error::Type::NoError:
-				return ChannelsModel::tr ("no error");
-			case IDownload::Error::Type::NotFound:
-				return ChannelsModel::tr ("not found");
-			case IDownload::Error::Type::Gone:
-				return ChannelsModel::tr ("gone forever");
-			case IDownload::Error::Type::AccessDenied:
-				return ChannelsModel::tr ("access denied");
-			case IDownload::Error::Type::AuthRequired:
-				return ChannelsModel::tr ("authentication required");
-			case IDownload::Error::Type::ProtocolError:
-				return ChannelsModel::tr ("protocol error");
-			case IDownload::Error::Type::NetworkError:
-				return ChannelsModel::tr ("network error");
-			case IDownload::Error::Type::ContentError:
-				return ChannelsModel::tr ("content error");
-			case IDownload::Error::Type::ProxyError:
-				return ChannelsModel::tr ("proxy error");
-			case IDownload::Error::Type::ServerError:
-				return ChannelsModel::tr ("server error");
-			case IDownload::Error::Type::LocalError:
-				return ChannelsModel::tr ("local error");
-			case IDownload::Error::Type::UserCanceled:
-				return ChannelsModel::tr ("user canceled the download");
-			}
-
-			return ChannelsModel::tr ("unknown error");
-		}
-
 		QString ErrorToString (const FeedsErrorManager::Error& error)
 		{
 			return Util::Visit (error,
@@ -161,7 +127,7 @@ namespace Aggregator
 					[] (const IDownload::Error& e)
 					{
 						auto str = ChannelsModel::tr ("Error downloading the feed: %1.")
-								.arg (GetErrorString (e.Type_));
+								.arg (Util::GetErrorString (e.Type_));
 						if (!e.Message_.isEmpty ())
 							str += " " + e.Message_;
 						return str;
