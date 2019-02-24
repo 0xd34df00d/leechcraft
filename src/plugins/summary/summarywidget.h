@@ -88,7 +88,6 @@ namespace Summary
 
 		Ui::SummaryWidget GetUi () const;
 	private:
-		void ConnectObject (QObject*);
 		SearchWidget* CreateSearchWidget ();
 		void ReinitToolbar ();
 		QList<QAction*> CreateProxyActions (const QList<QAction*>&, QObject*) const;

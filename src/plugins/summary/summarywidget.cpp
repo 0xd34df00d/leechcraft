@@ -123,10 +123,6 @@ namespace Summary
 
 		Ui_.ControlsDockWidget_->hide ();
 
-		auto pm = Core::Instance ().GetProxy ()->GetPluginsManager ();
-		for (const auto plugin : pm->GetAllCastableRoots<IJobHolder*> ())
-			ConnectObject (plugin);
-
 		Ui_.PluginsTasksTree_->setModel (Sorter_);
 
 		connect (Sorter_,
@@ -160,6 +156,7 @@ namespace Summary
 		itemsHeader->resizeSection (2,
 				fm.width ("99.99% (1024.0 kb from 1024.0 kb at 1024.0 kb/s)"));
 
+		auto pm = Core::Instance ().GetProxy ()->GetPluginsManager ();
 		for (const auto ijh : pm->GetAllCastableTo<IJobHolder*> ())
 			if (const auto handler = ijh->CreateRepresentationHandler ())
 				SrcModel2Handler_ [ijh->GetRepresentation ()] = handler;
@@ -187,26 +184,24 @@ namespace Summary
 				&IJobHolderRepresentationHandler::HandleCurrentRowChanged);
 		connectChange (&QItemSelectionModel::currentColumnChanged,
 				&IJobHolderRepresentationHandler::HandleCurrentColumnChanged);
-	}
 
-	void SummaryWidget::ConnectObject (QObject *object)
-	{
-		const auto *mo = object->metaObject ();
-
-#define C1(sig,sl,arg) \
-		if (mo->indexOfMethod (QMetaObject::normalizedSignature ("handleTasksTree" #sl "(" #arg ")")) != -1) \
-			connect (Ui_.PluginsTasksTree_, \
-					SIGNAL (sig (arg)), \
-					object, \
-					SLOT (handleTasksTree##sl (arg)));
-
-		C1 (activated, Activated, QModelIndex);
-		C1 (clicked, Clicked, QModelIndex);
-		C1 (doubleClicked, DoubleClicked, QModelIndex);
-		C1 (entered, Entered, QModelIndex);
-		C1 (pressed, Pressed, QModelIndex);
-		C1 (viewportEntered, ViewportEntered, );
-#undef C1
+		auto connectAction = [this] (auto signal, auto method)
+		{
+			connect (Ui_.PluginsTasksTree_,
+					signal,
+					this,
+					[this, method] (const QModelIndex& index)
+					{
+						const auto& mapped = Core::Instance ().MapToSourceRecursively (index);
+						if (mapped.isValid ())
+							std::invoke (method, SrcModel2Handler_ [mapped.model ()], mapped);
+					});
+		};
+		connectAction (&QAbstractItemView::activated, &IJobHolderRepresentationHandler::HandleActivated);
+		connectAction (&QAbstractItemView::clicked, &IJobHolderRepresentationHandler::HandleClicked);
+		connectAction (&QAbstractItemView::doubleClicked, &IJobHolderRepresentationHandler::HandleDoubleClicked);
+		connectAction (&QAbstractItemView::entered, &IJobHolderRepresentationHandler::HandleEntered);
+		connectAction (&QAbstractItemView::pressed, &IJobHolderRepresentationHandler::HandlePressed);
 	}
 
 	SummaryWidget::~SummaryWidget ()
