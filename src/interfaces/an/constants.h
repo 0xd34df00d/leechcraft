@@ -173,6 +173,18 @@ namespace AN
 	 */
 	Q_DECL_IMPORT extern const QString TypeTerminalInactivity;
 
+	/** @brief Category for news-related events.
+	 */
+	Q_DECL_IMPORT extern const QString CatNews;
+
+	/** @brief News source got updated.
+	 */
+	Q_DECL_IMPORT extern const QString TypeNewsSourceUpdated;
+
+	/** @brief News source is detected to be broken.
+	 */
+	Q_DECL_IMPORT extern const QString TypeNewsSourceBroken;
+
 	/** @brief Generic notifications that don't fit into any other category.
 	 */
 	Q_DECL_IMPORT extern const QString CatGeneric;
@@ -297,6 +309,10 @@ namespace AN
 		 * currently in (QString).
 		 */
 		Q_DECL_IMPORT extern const QString IMLocationLocality;
+
+		/** @brief News source name (QString).
+		 */
+		Q_DECL_IMPORT extern const QString NewsSourceName;
 	}
 }
 }

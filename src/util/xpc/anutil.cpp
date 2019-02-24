@@ -51,6 +51,7 @@ namespace AN
 			{ LAN::CatPackageManager, QObject::tr ("Package manager") },
 			{ LAN::CatMediaPlayer, QObject::tr ("Media player") },
 			{ LAN::CatTerminal, QObject::tr ("Terminal") },
+			{ LAN::CatNews, QObject::tr ("News") },
 			{ LAN::CatGeneric, QObject::tr ("Generic") }
 		};
 		return cat2hr;
@@ -115,6 +116,13 @@ namespace AN
 				}
 			},
 			{
+				LAN::CatNews,
+				{
+					LAN::TypeNewsSourceUpdated,
+					LAN::TypeNewsSourceBroken
+				}
+			},
+			{
 				LAN::CatGeneric,
 				{
 					LAN::TypeGeneric
@@ -162,6 +170,9 @@ namespace AN
 			{ LAN::TypeTerminalBell, QObject::tr ("Bell in a terminal") },
 			{ LAN::TypeTerminalActivity, QObject::tr ("Activity in a terminal") },
 			{ LAN::TypeTerminalInactivity, QObject::tr ("Inactivity in a terminal") },
+
+			{ LAN::TypeNewsSourceUpdated, QObject::tr ("News source got updated") },
+			{ LAN::TypeNewsSourceBroken, QObject::tr ("News source is detected to be broken") },
 
 			{ LAN::TypeGeneric, QObject::tr ("Generic") }
 		};

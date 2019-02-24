@@ -71,6 +71,10 @@ namespace LeechCraft::AN
 	const QString TypeTerminalActivity { CatTerminal + ".Activity" };
 	const QString TypeTerminalInactivity { CatTerminal + ".Inactivity" };
 
+	const QString CatNews { "org.LC.AdvNotifications.News" };
+	const QString TypeNewsSourceUpdated { CatNews + ".Updated" };
+	const QString TypeNewsSourceBroken { CatNews + ".Broken" };
+
 	const QString CatGeneric { "org.LC.AdvNotifications.Generic" };
 	const QString TypeGeneric { CatGeneric + ".Generic" };
 
@@ -92,6 +96,7 @@ namespace LeechCraft::AN
 		const QString IMLocationLatitude { CatIM + ".Fields.Location.Latitude" };
 		const QString IMLocationCountry { CatIM + ".Fields.Location.Country" };
 		const QString IMLocationLocality { CatIM + ".Fields.Location.Locality" };
+		const QString NewsSourceName { CatNews + ".Fields.Source.Name" };
 	}
 
 	namespace EF

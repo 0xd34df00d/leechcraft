@@ -243,6 +243,21 @@ namespace Util
 				}
 			},
 			{
+				AN::CatNews,
+				{
+					{
+						AN::Field::NewsSourceName,
+						QObject::tr ("News source name"),
+						QObject::tr ("The name of the news source that caused the notification."),
+						QVariant::String,
+						{
+							AN::TypeNewsSourceBroken,
+							AN::TypeNewsSourceUpdated
+						}
+					}
+				}
+			},
+			{
 				AN::CatTerminal,
 				{
 					{
