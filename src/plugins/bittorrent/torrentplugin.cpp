@@ -88,14 +88,14 @@ namespace BitTorrent
 		class ReprProxy final : public QSortFilterProxyModel
 		{
 		public:
-			ReprProxy (QAbstractItemModel *model)
+			explicit ReprProxy (QAbstractItemModel *model)
 			: QSortFilterProxyModel (model)
 			{
 				setDynamicSortFilter (true);
 				setSourceModel (model);
 			}
 
-			QVariant data (const QModelIndex& unmapped, int role) const
+			QVariant data (const QModelIndex& unmapped, int role) const override
 			{
 				const auto& index = mapToSource (unmapped);
 				const int normCol = index.column ();
@@ -106,7 +106,7 @@ namespace BitTorrent
 					return QSortFilterProxyModel::data (unmapped, role);
 			}
 		protected:
-			bool filterAcceptsColumn (int sourceColumn, const QModelIndex&) const
+			bool filterAcceptsColumn (int sourceColumn, const QModelIndex&) const override
 			{
 				return sourceColumn >= Core::Columns::ColumnName &&
 						sourceColumn <= Core::Columns::ColumnProgress;
