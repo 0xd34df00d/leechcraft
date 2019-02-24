@@ -28,6 +28,11 @@
  **********************************************************************/
 
 #include "feedserrormanager.h"
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ientitymanager.h>
+#include <util/sll/visitor.h>
+#include <util/xpc/downloaderrorstrings.h>
+#include <util/xpc/util.h>
 
 namespace LeechCraft::Aggregator
 {
@@ -41,16 +46,49 @@ namespace LeechCraft::Aggregator
 	{
 	}
 
+	namespace
+	{
+		auto MakeEventId (IDType_t id)
+		{
+			return "FeedID/" + QString::number (id);
+		}
+	}
+
 	void FeedsErrorManager::AddFeedError (IDType_t id, const Error& error)
 	{
-		Errors_ [id] << error;
+		auto& errors = Errors_ [id];
+		if (errors.contains (error))
+			return;
+
+		errors << error;
 		emit gotErrors (id);
+
+		const auto& [shortErrorDescr, fullErrorDescr] = Util::Visit (error,
+				[] (const FeedsErrorManager::ParseError& e)
+					{ return QPair { tr ("parse error"), tr ("Parse error: ") + e.Error_ }; },
+				[] (const IDownload::Error& e)
+					{ return QPair { Util::GetErrorString (e.Type_), e.Message_ }; });
+
+		auto e = Util::MakeAN ("Aggregator",
+				tr ("Error updating feed: %1.").arg (shortErrorDescr),
+				Priority::Warning,
+				"org.LeechCraft.Aggregator",
+				AN::CatNews, AN::TypeNewsSourceBroken,
+				MakeEventId (id),
+				{},
+				0, 1,
+				fullErrorDescr);
+		Proxy_->GetEntityManager ()->HandleEntity (e);
 	}
 
 	void FeedsErrorManager::ClearFeedErrors (IDType_t id)
 	{
-		if (Errors_.remove (id))
-			emit clearedErrors (id);
+		if (!Errors_.remove (id))
+			return;
+
+		emit clearedErrors (id);
+
+		Proxy_->GetEntityManager ()->HandleEntity (Util::MakeANCancel ("org.LeechCraft.Aggregator", MakeEventId (id)));
 	}
 
 	QList<FeedsErrorManager::Error> FeedsErrorManager::GetFeedErrors (IDType_t id) const
