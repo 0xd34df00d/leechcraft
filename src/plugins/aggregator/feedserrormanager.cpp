@@ -63,21 +63,27 @@ namespace LeechCraft::Aggregator
 		errors << error;
 		emit gotErrors (id);
 
-		const auto& [shortErrorDescr, fullErrorDescr] = Util::Visit (error,
+		struct ErrorInfo
+		{
+			QString Short_;
+			QString Full_;
+		};
+
+		const auto& errInfo = Util::Visit (error,
 				[] (const FeedsErrorManager::ParseError& e)
-					{ return QPair { tr ("parse error"), tr ("Parse error: ") + e.Error_ }; },
+					{ return ErrorInfo { tr ("parse error"), tr ("Parse error: ") + e.Error_ }; },
 				[] (const IDownload::Error& e)
-					{ return QPair { Util::GetErrorString (e.Type_), e.Message_ }; });
+					{ return ErrorInfo { Util::GetErrorString (e.Type_), e.Message_ }; });
 
 		auto e = Util::MakeAN ("Aggregator",
-				tr ("Error updating feed: %1.").arg (shortErrorDescr),
+				tr ("Error updating feed: %1.").arg (errInfo.Short_),
 				Priority::Warning,
 				"org.LeechCraft.Aggregator",
 				AN::CatNews, AN::TypeNewsSourceBroken,
 				MakeEventId (id),
 				{},
 				0, 1,
-				fullErrorDescr);
+				errInfo.Full_);
 		Proxy_->GetEntityManager ()->HandleEntity (e);
 	}
 
