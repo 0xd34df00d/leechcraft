@@ -41,6 +41,7 @@
 
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/imwproxy.h>
+#include <interfaces/ijobholderrepresentationhandler.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/core/iiconthememanager.h>
@@ -169,6 +170,20 @@ namespace Azoth
 	QAbstractItemModel* Plugin::GetRepresentation () const
 	{
 		return Core::Instance ().GetTransferJobManager ()->GetSummaryModel ();
+	}
+
+	IJobHolderRepresentationHandler_ptr Plugin::CreateRepresentationHandler ()
+	{
+		class Handler : public IJobHolderRepresentationHandler
+		{
+		public:
+			void HandleCurrentRowChanged (const QModelIndex& index) override
+			{
+				Core::Instance ().GetTransferJobManager ()->SelectionChanged (index);
+			}
+		};
+
+		return std::make_shared<Handler> ();
 	}
 
 	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace aep) const
@@ -649,13 +664,6 @@ namespace Azoth
 
 		emit addNewTab (ServerHistoryTC_.VisibleName_, widget);
 		emit raiseTab (widget);
-	}
-
-	void Plugin::handleTasksTreeSelectionCurrentRowChanged (const QModelIndex& index, const QModelIndex&)
-	{
-		QModelIndex si = Core::Instance ().GetProxy ()->MapToSource (index);
-		TransferJobManager *mgr = Core::Instance ().GetTransferJobManager ();
-		mgr->SelectionChanged (si.model () == mgr->GetSummaryModel () ? si : QModelIndex ());
 	}
 
 	void Plugin::handleMWLocation (Qt::DockWidgetArea area)

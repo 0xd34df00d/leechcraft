@@ -99,6 +99,7 @@ namespace Azoth
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const override;
 
 		QAbstractItemModel* GetRepresentation () const override;
+		IJobHolderRepresentationHandler_ptr CreateRepresentationHandler () override;
 
 		QList<QAction*> GetActions (ActionsEmbedPlace) const override;
 		QMap<QString, QList<QAction*>> GetMenuActions () const override;
@@ -127,7 +128,6 @@ namespace Azoth
 		void handleSDWidget (ServiceDiscoveryWidget*);
 		void handleMicroblogsTab (MicroblogsTab*);
 		void handleServerHistoryTab (ServerHistoryWidget*);
-		void handleTasksTreeSelectionCurrentRowChanged (const QModelIndex&, const QModelIndex&);
 	private slots:
 		void handleMWLocation (Qt::DockWidgetArea);
 		void handleMWFloating (bool);
