@@ -420,6 +420,17 @@ namespace AdvancedNotifications
 			inactiveInactivity.SetMethods (NMVisual | NMTray);
 			Rules_ << inactiveInactivity;
 		}
+
+		if (version == -1 || version == 6)
+		{
+			NotificationRule newsSourceUpdated (tr ("News source updated"), AN::CatNews, { AN::TypeNewsSourceUpdated });
+			newsSourceUpdated.SetMethods (NMVisual);
+			Rules_ << newsSourceUpdated;
+
+			NotificationRule newsSourceBroken (tr ("News source broken"), AN::CatNews, { AN::TypeNewsSourceBroken });
+			newsSourceBroken.SetMethods (NMVisual | NMTray);
+			Rules_ << newsSourceBroken;
+		}
 	}
 
 	void RulesManager::LoadSettings ()
@@ -430,7 +441,7 @@ namespace AdvancedNotifications
 		Rules_ = settings.value ("RulesList").value<QList<NotificationRule>> ();
 		int rulesVersion = settings.value ("DefaultRulesVersion", 1).toInt ();
 
-		const int currentDefVersion = 6;
+		const int currentDefVersion = 7;
 		if (Rules_.isEmpty ())
 			LoadDefaultRules (0);
 
