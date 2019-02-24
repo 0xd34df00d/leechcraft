@@ -30,9 +30,12 @@
 #include "feedserrormanager.h"
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
+#include <util/gui/util.h>
 #include <util/sll/visitor.h>
 #include <util/xpc/downloaderrorstrings.h>
 #include <util/xpc/util.h>
+#include "storagebackendmanager.h"
+#include "storagebackend.h"
 
 namespace LeechCraft::Aggregator
 {
@@ -75,8 +78,16 @@ namespace LeechCraft::Aggregator
 				[] (const IDownload::Error& e)
 					{ return ErrorInfo { Util::GetErrorString (e.Type_), e.Message_ }; });
 
+		const auto& storage = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
+		const auto& channels = storage->GetChannels (id);
+		const auto& reprName = channels.size () == 1 ?
+				channels [0].Title_ :
+				storage->GetFeed (id).URL_;
+
 		auto e = Util::MakeAN ("Aggregator",
-				tr ("Error updating feed: %1.").arg (errInfo.Short_),
+				tr ("Error updating feed %1: %2.")
+					.arg (Util::FormatName (reprName))
+					.arg (errInfo.Short_),
 				Priority::Warning,
 				"org.LeechCraft.Aggregator",
 				AN::CatNews, AN::TypeNewsSourceBroken,
