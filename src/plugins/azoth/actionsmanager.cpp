@@ -993,7 +993,7 @@ namespace Azoth
 		if (advEntry)
 		{
 			QAction *drawAtt = new QAction (tr ("Draw attention..."), entry->GetQObject ());
-			drawAtt->setProperty ("ActionIcon", "task-attention");
+			drawAtt->setProperty ("ActionIcon", "emblem-important");
 			Entry2Actions_ [entry] ["drawattention"] = drawAtt;
 			Action2Areas_ [drawAtt] << CLEAAContactListCtxtMenu
 					<< CLEAAToolbar;
