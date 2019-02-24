@@ -84,6 +84,11 @@ public:
 		} Type_;
 
 		QString Message_;
+
+		bool operator== (const Error& other) const
+		{
+			return Type_ == other.Type_ && Message_ == other.Message_;
+		}
 	};
 
 	struct Success {};
