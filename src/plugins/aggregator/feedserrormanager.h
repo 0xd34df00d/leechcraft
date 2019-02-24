@@ -33,6 +33,7 @@
 #include <QObject>
 #include <QHash>
 #include <interfaces/idownload.h>
+#include <interfaces/core/icoreproxyfwd.h>
 #include "common.h"
 
 namespace LeechCraft::Aggregator
@@ -47,8 +48,11 @@ namespace LeechCraft::Aggregator
 		};
 		using Error = boost::variant<IDownload::Error, ParseError>;
 	private:
+		const ICoreProxy_ptr Proxy_;
 		QHash<IDType_t, QList<Error>> Errors_;
 	public:
+		explicit FeedsErrorManager (const ICoreProxy_ptr&);
+
 		void AddFeedError (IDType_t, const Error&);
 
 		void ClearFeedErrors (IDType_t);

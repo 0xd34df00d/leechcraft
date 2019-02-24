@@ -140,7 +140,7 @@ namespace Aggregator
 
 		PoolsManager::Instance ().ReloadPools ();
 
-		ErrorsManager_ = std::make_shared<FeedsErrorManager> ();
+		ErrorsManager_ = std::make_shared<FeedsErrorManager> (Proxy_);
 
 		UpdatesManager_ = std::make_shared<UpdatesManager> (UpdatesManager::InitParams {
 					DBUpThread_,

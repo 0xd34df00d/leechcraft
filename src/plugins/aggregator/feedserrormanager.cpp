@@ -31,6 +31,11 @@
 
 namespace LeechCraft::Aggregator
 {
+	FeedsErrorManager::FeedsErrorManager (const ICoreProxy_ptr& proxy)
+	: Proxy_ { proxy }
+	{
+	}
+
 	void FeedsErrorManager::AddFeedError (IDType_t id, const Error& error)
 	{
 		Errors_ [id] << error;
