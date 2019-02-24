@@ -82,12 +82,12 @@ namespace CSTP
 		QFuture<Result> AddJob (LeechCraft::Entity) override;
 
 		QAbstractItemModel* GetRepresentation () const override;
+		IJobHolderRepresentationHandler_ptr CreateRepresentationHandler () override;
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const override;
 	private:
 		void SetupToolbar ();
 	private slots:
-		void handleTasksTreeSelectionCurrentRowChanged (const QModelIndex&, const QModelIndex&);
 		void handleFileExists (Core::FileExistsBehaviour*);
 		void handleError (const QString&);
 	};

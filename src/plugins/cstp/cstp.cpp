@@ -43,6 +43,7 @@
 #include <QTranslator>
 #include <QMainWindow>
 #include <interfaces/entitytesthandleresult.h>
+#include <interfaces/ijobholderrepresentationhandler.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/irootwindowsmanager.h>
@@ -150,12 +151,18 @@ namespace CSTP
 		return Core::Instance ().GetRepresentationModel ();
 	}
 
-	void CSTP::handleTasksTreeSelectionCurrentRowChanged (const QModelIndex& si, const QModelIndex&)
+	IJobHolderRepresentationHandler_ptr CSTP::CreateRepresentationHandler ()
 	{
-		auto index = Core::Instance ().GetCoreProxy ()->MapToSource (si);
-		if (index.model () != GetRepresentation ())
-			index = QModelIndex {};
-		Core::Instance ().ItemSelected (index);
+		class Handler : public IJobHolderRepresentationHandler
+		{
+		public:
+			void HandleCurrentRowChanged (const QModelIndex& index) override
+			{
+				Core::Instance ().ItemSelected (index);
+			}
+		};
+
+		return std::make_shared<Handler> ();
 	}
 
 	Util::XmlSettingsDialog_ptr CSTP::GetSettingsDialog () const
