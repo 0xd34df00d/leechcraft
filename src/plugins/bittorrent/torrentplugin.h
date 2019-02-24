@@ -152,54 +152,54 @@ namespace BitTorrent
 		QSortFilterProxyModel *ReprProxy_;
 	public:
 		// IInfo
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		QString GetName () const;
-		QString GetInfo () const;
-		QStringList Provides () const;
-		void Release ();
-		QIcon GetIcon () const;
+		void Init (ICoreProxy_ptr) override;
+		void SecondInit () override;
+		QByteArray GetUniqueID () const override;
+		QString GetName () const override;
+		QString GetInfo () const override;
+		QStringList Provides () const override;
+		void Release () override;
+		QIcon GetIcon () const override;
 
 		// IDownload
-		qint64 GetDownloadSpeed () const;
-		qint64 GetUploadSpeed () const;
-		void StartAll ();
-		void StopAll ();
-		EntityTestHandleResult CouldDownload (const LeechCraft::Entity&) const;
-		QFuture<Result> AddJob (LeechCraft::Entity);
+		qint64 GetDownloadSpeed () const override;
+		qint64 GetUploadSpeed () const override;
+		void StartAll () override;
+		void StopAll () override;
+		EntityTestHandleResult CouldDownload (const LeechCraft::Entity&) const override;
+		QFuture<Result> AddJob (LeechCraft::Entity) override;
 
 		// IJobHolder
-		QAbstractItemModel* GetRepresentation () const;
+		QAbstractItemModel* GetRepresentation () const override;
 
 		// IImportExport
-		void ImportSettings (const QByteArray&);
-		void ImportData (const QByteArray&);
-		QByteArray ExportSettings () const;
-		QByteArray ExportData () const;
+		void ImportSettings (const QByteArray&) override;
+		void ImportData (const QByteArray&) override;
+		QByteArray ExportSettings () const override;
+		QByteArray ExportData () const override;
 
 		// ITaggableJobs
-		void SetTags (int, const QStringList&);
+		void SetTags (int, const QStringList&) override;
 
 		// IHaveSettings
-		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const override;
 
 		// IHaveShortcuts
-		void SetShortcut (const QString&, const QKeySequences_t&);
-		QMap<QString, ActionInfo> GetActionInfo () const;
+		void SetShortcut (const QString&, const QKeySequences_t&) override;
+		QMap<QString, ActionInfo> GetActionInfo () const override;
 
 		// IHaveTabs
-		TabClasses_t GetTabClasses () const;
-		void TabOpenRequested (const QByteArray&);
+		TabClasses_t GetTabClasses () const override;
+		void TabOpenRequested (const QByteArray&) override;
 
 		// IStartupWizard
-		QList<QWizardPage*> GetWizardPages () const;
+		QList<QWizardPage*> GetWizardPages () const override;
 
 		// IToolBarEmbedder
-		QList<QAction*> GetActions (ActionsEmbedPlace) const;
+		QList<QAction*> GetActions (ActionsEmbedPlace) const override;
 
 		// IHaveDiagInfo
-		QString GetDiagInfoString () const;
+		QString GetDiagInfoString () const override;
 	private slots:
 		void on_OpenTorrent__triggered ();
 		void on_OpenMultipleTorrents__triggered ();
@@ -226,14 +226,14 @@ namespace BitTorrent
 		void SetupStuff ();
 		void SetupActions ();
 	signals:
-		void addNewTab (const QString&, QWidget*);
-		void changeTabIcon (QWidget*, const QIcon&);
-		void changeTabName (QWidget*, const QString&);
-		void raiseTab (QWidget*);
-		void removeTab (QWidget*);
-		void statusBarChanged (QWidget*, const QString&);
+		void addNewTab (const QString&, QWidget*) override;
+		void changeTabIcon (QWidget*, const QIcon&) override;
+		void changeTabName (QWidget*, const QString&) override;
+		void raiseTab (QWidget*) override;
+		void removeTab (QWidget*) override;
+		void statusBarChanged (QWidget*, const QString&) override;
 
-		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
+		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace) override;
 	};
 }
 }
