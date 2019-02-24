@@ -31,6 +31,11 @@
 
 namespace LeechCraft::Aggregator
 {
+	bool FeedsErrorManager::ParseError::operator== (const FeedsErrorManager::ParseError& other) const
+	{
+		return Error_ == other.Error_;
+	}
+
 	FeedsErrorManager::FeedsErrorManager (const ICoreProxy_ptr& proxy)
 	: Proxy_ { proxy }
 	{

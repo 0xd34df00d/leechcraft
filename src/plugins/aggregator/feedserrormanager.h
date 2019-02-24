@@ -45,6 +45,8 @@ namespace LeechCraft::Aggregator
 		struct ParseError
 		{
 			QString Error_;
+
+			bool operator== (const ParseError&) const;
 		};
 		using Error = boost::variant<IDownload::Error, ParseError>;
 	private:
