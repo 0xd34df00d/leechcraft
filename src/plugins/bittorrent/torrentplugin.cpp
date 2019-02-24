@@ -51,6 +51,7 @@
 #include <libtorrent/version.hpp>
 #include <libtorrent/announce_entry.hpp>
 #include <interfaces/entitytesthandleresult.h>
+#include <interfaces/ijobholderrepresentationhandler.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
 #include <interfaces/core/irootwindowsmanager.h>
@@ -321,17 +322,28 @@ namespace BitTorrent
 		return ReprProxy_;
 	}
 
-	void TorrentPlugin::handleTasksTreeSelectionCurrentRowChanged (const QModelIndex& si, const QModelIndex&)
+	IJobHolderRepresentationHandler_ptr TorrentPlugin::CreateRepresentationHandler ()
 	{
-		QModelIndex mapped = Core::Instance ()->GetProxy ()->MapToSource (si);
-		if (mapped.model () != GetRepresentation ())
-			mapped = QModelIndex ();
+		class Handler : public IJobHolderRepresentationHandler
+		{
+			TorrentPlugin * const Plugin_;
+		public:
+			explicit Handler (TorrentPlugin *plugin)
+			: Plugin_ { plugin }
+			{
+			}
 
-		Core::Instance ()->SetCurrentTorrent (mapped.row ());
-		if (mapped.isValid ())
-			TabWidget_->InvalidateSelection ();
+			void HandleCurrentRowChanged (const QModelIndex& index) override
+			{
+				Core::Instance ()->SetCurrentTorrent (index.row ());
+				if (index.isValid ())
+					Plugin_->TabWidget_->InvalidateSelection ();
 
-		setActionsEnabled ();
+				Plugin_->setActionsEnabled ();
+			}
+		};
+
+		return std::make_shared<Handler> (this);
 	}
 
 	void TorrentPlugin::ImportSettings (const QByteArray& settings)
