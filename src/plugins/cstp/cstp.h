@@ -65,25 +65,25 @@ namespace CSTP
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
 		QToolBar *Toolbar_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		void Release ();
-		QByteArray GetUniqueID () const;
-		QString GetName () const;
-		QString GetInfo () const;
-		QStringList Provides () const;
-		QIcon GetIcon () const;
+		void Init (ICoreProxy_ptr) override;
+		void SecondInit () override;
+		void Release () override;
+		QByteArray GetUniqueID () const override;
+		QString GetName () const override;
+		QString GetInfo () const override;
+		QStringList Provides () const override;
+		QIcon GetIcon () const override;
 
-		qint64 GetDownloadSpeed () const;
-		qint64 GetUploadSpeed () const;
-		void StartAll ();
-		void StopAll ();
-		EntityTestHandleResult CouldDownload (const LeechCraft::Entity&) const;
-		QFuture<Result> AddJob (LeechCraft::Entity);
+		qint64 GetDownloadSpeed () const override;
+		qint64 GetUploadSpeed () const override;
+		void StartAll () override;
+		void StopAll () override;
+		EntityTestHandleResult CouldDownload (const LeechCraft::Entity&) const override;
+		QFuture<Result> AddJob (LeechCraft::Entity) override;
 
-		QAbstractItemModel* GetRepresentation () const;
+		QAbstractItemModel* GetRepresentation () const override;
 
-		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const override;
 	private:
 		void SetupToolbar ();
 	private slots:
