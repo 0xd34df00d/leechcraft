@@ -61,7 +61,6 @@ namespace CSTP
 
 		ICoreProxy_ptr Proxy_;
 
-		QMenu *Plugins_;
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
 		QToolBar *Toolbar_;
 	public:
