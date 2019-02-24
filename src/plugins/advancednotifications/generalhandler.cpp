@@ -77,7 +77,8 @@ namespace AdvancedNotifications
 			{ AN::CatGeneric, "preferences-desktop-notification-bell" },
 			{ AN::CatPackageManager, "system-software-update" },
 			{ AN::CatMediaPlayer, "applications-multimedia" },
-			{ AN::CatTerminal, "utilities-terminal" }
+			{ AN::CatTerminal, "utilities-terminal" },
+			{ AN::CatNews, "view-pim-news" }
 		};
 	}
 
