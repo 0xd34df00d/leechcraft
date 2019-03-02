@@ -515,8 +515,7 @@ namespace Xoox
 
 	void VCardDialog::EnableEditableMode ()
 	{
-		Ui_.ButtonBox_->setStandardButtons (QDialogButtonBox::Save |
-				QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
+		Ui_.ButtonBox_->setStandardButtons (QDialogButtonBox::Save | QDialogButtonBox::Close);
 		connect (Ui_.ButtonBox_->button (QDialogButtonBox::Save),
 				SIGNAL (released ()),
 				this,
