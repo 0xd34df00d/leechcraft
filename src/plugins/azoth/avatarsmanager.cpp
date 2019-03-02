@@ -234,6 +234,9 @@ namespace Azoth
 		emit avatarInvalidated (that);
 
 		HandleSubscriptions (that);
+
+		if (const auto acc = SelfInfo2Account_.value (that))
+			emit accountAvatarInvalidated (acc);
 	}
 
 	void AvatarsManager::handleCacheSizeChanged ()

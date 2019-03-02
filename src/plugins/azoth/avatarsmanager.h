@@ -81,6 +81,7 @@ namespace Azoth
 		void handleCacheSizeChanged ();
 	signals:
 		void avatarInvalidated (QObject*);
+		void accountAvatarInvalidated (const IAccount*);
 	};
 }
 }
