@@ -59,7 +59,7 @@ namespace Azoth
 		uint64_t SubscriptionID_ = 0;
 		QHash<QObject*, QHash<IHaveAvatars::Size, QHash<uint64_t, AvatarHandler_f>>> Subscriptions_;
 	public:
-		AvatarsManager (QObject* = nullptr);
+		explicit AvatarsManager (QObject* = nullptr);
 
 		QFuture<QImage> GetAvatar (QObject*, IHaveAvatars::Size) override;
 		QFuture<std::optional<QByteArray>> GetStoredAvatarData (const QString&, IHaveAvatars::Size) override;
