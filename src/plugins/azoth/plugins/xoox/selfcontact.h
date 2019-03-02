@@ -63,10 +63,11 @@ namespace Xoox
 
 		void HandlePresence (const QXmppPresence&, const QString&) override;
 
-		void UpdatePriority (const QString&, int);
 		void RemoveVariant (const QString&, bool);
 		QString GetJID () const override;
 		void UpdateJID (const QString&);
+	private:
+		void UpdatePriority (const QString&, int);
 	private slots:
 		void handleSelfVCardUpdated ();
 	};
