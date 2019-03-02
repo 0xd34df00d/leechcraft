@@ -56,7 +56,7 @@ namespace Azoth
 		using CacheValue_t = boost::variant<QByteArray, QImage>;
 		QCache<CacheKey_t, CacheValue_t> Cache_;
 	public:
-		AvatarsStorage (QObject* = nullptr);
+		explicit AvatarsStorage (QObject* = nullptr);
 
 		QFuture<void> SetAvatar (const QString&, IHaveAvatars::Size, const QImage&);
 		QFuture<void> SetAvatar (const QString&, IHaveAvatars::Size, const QByteArray&);
