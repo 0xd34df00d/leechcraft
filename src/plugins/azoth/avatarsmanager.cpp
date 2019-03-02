@@ -33,6 +33,7 @@
 #include <util/sll/qtutil.h>
 #include <util/sll/unreachable.h>
 #include "interfaces/azoth/iaccount.h"
+#include "interfaces/azoth/iextselfinfoaccount.h"
 #include "avatarsstorage.h"
 #include "resourcesmanager.h"
 #include "xmlsettingsmanager.h"
@@ -194,7 +195,11 @@ namespace Azoth
 				this,
 				SLOT (handleEntries (QList<QObject*>)));
 
-		handleEntries (qobject_cast<IAccount*> (accObj)->GetCLEntries ());
+		const auto acc = qobject_cast<IAccount*> (accObj);
+		handleEntries (acc->GetCLEntries ());
+
+		if (const auto iesia = qobject_cast<IExtSelfInfoAccount*> (accObj))
+			SelfInfo2Account_ [iesia->GetSelfContact ()] = acc;
 	}
 
 	void AvatarsManager::handleEntries (const QList<QObject*>& entries)

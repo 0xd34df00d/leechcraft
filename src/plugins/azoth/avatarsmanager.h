@@ -44,6 +44,7 @@ namespace LeechCraft
 namespace Azoth
 {
 	class AvatarsStorage;
+	class IAccount;
 
 	class AvatarsManager : public QObject
 						 , public IAvatarsManager
@@ -58,6 +59,8 @@ namespace Azoth
 	private:
 		uint64_t SubscriptionID_ = 0;
 		QHash<QObject*, QHash<IHaveAvatars::Size, QHash<uint64_t, AvatarHandler_f>>> Subscriptions_;
+
+		QHash<QObject*, const IAccount*> SelfInfo2Account_;
 	public:
 		explicit AvatarsManager (QObject* = nullptr);
 
