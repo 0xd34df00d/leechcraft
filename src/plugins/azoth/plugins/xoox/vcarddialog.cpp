@@ -71,16 +71,15 @@ namespace Xoox
 	, JID_ (entry->GetJID ())
 	{
 		Ui_.setupUi (this);
-		Ui_.EditJID_->setText (entry->GetJID ());
+		Ui_.EditJID_->setText (JID_);
 		connect (this,
 				SIGNAL (accepted ()),
 				this,
 				SLOT (setNote ()));
 
-		const auto account = entry->GetParentAccount ();
-		UpdateNote (account, entry->GetJID ());
+		UpdateNote (Account_, JID_);
 
-		if (entry->GetJID () == account->GetSettings ()->GetJID ())
+		if (JID_ == Account_->GetSettings ()->GetJID ())
 			EnableEditableMode ();
 		else
 		{
