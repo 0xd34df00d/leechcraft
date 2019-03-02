@@ -217,6 +217,15 @@ namespace Azoth
 				this,
 				SLOT (handleClearUnreadMsgCount (QObject*)));
 
+		connect (AvatarsManager_.get (),
+				&AvatarsManager::avatarInvalidated,
+				this,
+				[this] (QObject *entryObj)
+				{
+					Entry2SmoothAvatarCache_.remove (qobject_cast<ICLEntry*> (entryObj));
+					updateItem ();
+				});
+
 		PluginManager_->RegisterHookable (this);
 		PluginManager_->RegisterHookable (CLModel_);
 		PluginManager_->RegisterHookable (ActionsManager_);
@@ -1195,12 +1204,6 @@ namespace Azoth
 					this,
 					SLOT (handleBeenBanned (const QString&)));
 		}
-
-		if (qobject_cast<IHaveAvatars*> (entryObj))
-			connect (entryObj,
-					SIGNAL (avatarChanged (QObject*)),
-					this,
-					SLOT (invalidateSmoothAvatarCache (QObject*)));
 
 		NotificationsManager_->AddCLEntry (entryObj);
 
@@ -2357,21 +2360,6 @@ namespace Azoth
 	void Core::handleRIEXItemsSuggested (QList<RIEXItem> items, QObject *from, QString message)
 	{
 		RIEX::HandleRIEXItemsSuggested (items, from, message);
-	}
-
-	void Core::invalidateSmoothAvatarCache (QObject *entryObj)
-	{
-		const auto entry = qobject_cast<ICLEntry*> (entryObj);
-		if (!entry)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< sender ()
-					<< "could not be casted to ICLEntry";
-			return;
-		}
-
-		Entry2SmoothAvatarCache_.remove (entry);
-		updateItem ();
 	}
 }
 }

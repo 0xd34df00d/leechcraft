@@ -466,8 +466,6 @@ namespace Azoth
 		void handleJobDeoffered (QObject*);
 
 		void handleRIEXItemsSuggested (QList<LeechCraft::Azoth::RIEXItem>, QObject*, QString);
-
-		void invalidateSmoothAvatarCache (QObject*);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 		void topStatusChanged (LeechCraft::Azoth::State);
