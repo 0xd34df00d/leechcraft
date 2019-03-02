@@ -61,6 +61,8 @@ namespace Xoox
 				const QString&, const QString&) override;
 		QList<QAction*> GetActions () const override;
 
+		void HandlePresence (const QXmppPresence&, const QString&) override;
+
 		void UpdatePriority (const QString&, int);
 		void RemoveVariant (const QString&, bool);
 		QString GetJID () const override;

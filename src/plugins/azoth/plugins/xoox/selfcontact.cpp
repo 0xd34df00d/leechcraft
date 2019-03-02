@@ -119,6 +119,16 @@ namespace Xoox
 		return EntryBase::GetActions ();
 	}
 
+	void SelfContact::HandlePresence (const QXmppPresence& pres, const QString& resource)
+	{
+		EntryBase::HandlePresence (pres, resource);
+
+		if (pres.type () == QXmppPresence::Available)
+			UpdatePriority (resource, pres.priority ());
+		else
+			RemoveVariant (resource, Account_->GetClientConnection ()->GetOurResource () == resource);
+	}
+
 	void SelfContact::UpdatePriority (const QString& resource, int prio)
 	{
 		Status2Prio_.remove (resource);

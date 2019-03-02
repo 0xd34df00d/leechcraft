@@ -1153,15 +1153,7 @@ namespace Xoox
 			if (thisInstance)
 				emit statusChanged (XooxUtil::PresenceToStatus (pres));
 
-			if (pres.type () == QXmppPresence::Available)
-			{
-				SelfContact_->SetClientInfo (resource, pres);
-				SelfContact_->UpdatePriority (resource, pres.priority ());
-				SelfContact_->SetStatus (XooxUtil::PresenceToStatus (pres), resource, pres);
-			}
-			else
-				SelfContact_->RemoveVariant (resource, thisInstance);
-
+			SelfContact_->HandlePresence (pres, resource);
 			return;
 		}
 		else if (!JID2CLEntry_.contains (jid))
