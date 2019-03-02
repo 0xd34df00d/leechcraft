@@ -201,6 +201,8 @@ namespace Xoox
 		QString GetOurJID () const;
 		void SetOurJID (const QString&);
 
+		QString GetOurResource () const;
+
 		/** Joins the room and returns the contact list
 		 * entry representing that room.
 		 */

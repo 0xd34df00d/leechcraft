@@ -456,6 +456,11 @@ namespace Xoox
 		SelfContact_->UpdateJID (jid);
 	}
 
+	QString ClientConnection::GetOurResource () const
+	{
+		return OurResource_;
+	}
+
 	RoomCLEntry* ClientConnection::JoinRoom (const QString& jid, const QString& nick, bool asAutojoin)
 	{
 		if (RoomHandlers_.contains (jid))
