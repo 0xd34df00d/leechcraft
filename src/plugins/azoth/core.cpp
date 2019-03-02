@@ -586,13 +586,7 @@ namespace Azoth
 	void Core::UpdateItem (QObject *entryObj)
 	{
 		for (const auto item : Entry2Items_.value (qobject_cast<ICLEntry*> (entryObj)))
-		{
-			const auto& idx = item->index ();
-			QMetaObject::invokeMethod (CLModel_,
-					"dataChanged",
-					Q_ARG (QModelIndex, idx),
-					Q_ARG (QModelIndex, idx));
-		}
+			CLModel_->dataChanged (item->index (), item->index ());
 	}
 
 	QStringList Core::GetChatGroups () const
