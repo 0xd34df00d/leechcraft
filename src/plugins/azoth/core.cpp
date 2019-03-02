@@ -1352,6 +1352,9 @@ namespace Azoth
 
 	QImage Core::GetAvatar (ICLEntry *entry, int size)
 	{
+		if (!entry)
+			return {};
+
 		if (const auto candPtr = Entry2SmoothAvatarCache_ [entry])
 		{
 			const auto& cand = *candPtr;
@@ -1363,9 +1366,6 @@ namespace Azoth
 				cand.height () >= size)
 				return cand.scaled ({ size, size }, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 		}
-
-		if (!entry)
-			return {};
 
 		const auto obj = entry->GetQObject ();
 		Util::Sequence (obj, AvatarsManager_->GetAvatar (obj, IHaveAvatars::Size::Thumbnail)) >>
