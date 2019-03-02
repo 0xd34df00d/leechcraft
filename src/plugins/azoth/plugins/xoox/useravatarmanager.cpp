@@ -89,7 +89,10 @@ namespace Xoox
 				[this, id, from] (const std::optional<QByteArray>& data)
 				{
 					if (!data || data->isEmpty ())
+					{
+						emit avatarUpdated (from);
 						return;
+					}
 
 					const auto& storedId = QCryptographicHash::hash (*data, QCryptographicHash::Sha1).toHex ();
 					if (storedId != id)
