@@ -223,7 +223,7 @@ namespace Azoth
 				[this] (QObject *entryObj)
 				{
 					Entry2SmoothAvatarCache_.remove (qobject_cast<ICLEntry*> (entryObj));
-					updateItem ();
+					UpdateItem (entryObj);
 				});
 
 		PluginManager_->RegisterHookable (this);
