@@ -225,6 +225,14 @@ namespace Azoth
 					Entry2SmoothAvatarCache_.remove (qobject_cast<ICLEntry*> (entryObj));
 					UpdateItem (entryObj);
 				});
+		connect (AvatarsManager_.get (),
+				&AvatarsManager::accountAvatarInvalidated,
+				this,
+				[this] (const IAccount *acc)
+				{
+					const auto item = GetAccountItem (acc);
+					item->model ()->dataChanged (item->index (), item->index ());
+				});
 
 		PluginManager_->RegisterHookable (this);
 		PluginManager_->RegisterHookable (CLModel_);
