@@ -541,11 +541,6 @@ namespace Xoox
 		Note_ = acc->GetClientConnection ()->
 				GetAnnotationsManager ()->GetNote (jid);
 		Ui_.NotesEdit_->setPlainText (Note_.GetNote ());
-
-		rebuildClientInfo ();
-
-		QObject *entryObj = acc->GetClientConnection ()->GetCLEntry (jid);
-		InitConnections (qobject_cast<EntryBase*> (entryObj));
 	}
 }
 }
