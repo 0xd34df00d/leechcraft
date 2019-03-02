@@ -1307,6 +1307,12 @@ namespace Xoox
 		QString resource;
 		Split (from, &bare, &resource);
 
+		if (bare == OurBareJID_)
+		{
+			SelfContact_->avatarChanged (SelfContact_);
+			return;
+		}
+
 		if (!JID2CLEntry_.contains (from))
 			return;
 
