@@ -2291,7 +2291,7 @@ namespace Azoth
 		}
 
 		for (auto item : Entry2Items_.value (entry))
-			item->setText (entry->GetEntryName ());
+			item->model ()->dataChanged (item->index (), item->index ());
 	}
 
 	void Core::handleClearUnreadMsgCount (QObject *entryObj)
