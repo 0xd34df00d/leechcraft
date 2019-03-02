@@ -67,6 +67,8 @@ namespace Xoox
 
 	VCardDialog::VCardDialog (EntryBase *entry, QWidget *parent)
 	: QDialog (parent)
+	, Account_ (entry->GetParentAccount ())
+	, JID_ (entry->GetJID ())
 	{
 		Ui_.setupUi (this);
 		Ui_.EditJID_->setText (entry->GetJID ());
@@ -537,8 +539,6 @@ namespace Xoox
 		if (!acc)
 			return;
 
-		Account_ = acc;
-		JID_ = jid;
 		Note_ = acc->GetClientConnection ()->
 				GetAnnotationsManager ()->GetNote (jid);
 		Ui_.NotesEdit_->setPlainText (Note_.GetNote ());
