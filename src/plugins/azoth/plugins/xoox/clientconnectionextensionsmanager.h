@@ -36,6 +36,8 @@ class QXmppClient;
 
 namespace LeechCraft::Azoth::Xoox
 {
+	class ClientConnection;
+
 	using SimpleExtensions = std::tuple<
 				class JabberSearchManager*,
 				class LastActivityManager*,
@@ -46,7 +48,7 @@ namespace LeechCraft::Azoth::Xoox
 	{
 		SimpleExtensions SimpleExtensions_;
 	public:
-		explicit ClientConnectionExtensionsManager (QXmppClient&, QObject* = nullptr);
+		explicit ClientConnectionExtensionsManager (ClientConnection&, QXmppClient&, QObject* = nullptr);
 
 		template<typename T>
 		T& Get () { return *std::get<T*> (SimpleExtensions_); }

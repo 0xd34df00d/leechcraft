@@ -108,7 +108,7 @@ namespace Xoox
 	: Account_ (account)
 	, Settings_ (account->GetSettings ())
 	, Client_ (new QXmppClient (this))
-	, ExtsMgr_ (std::make_unique<ClientConnectionExtensionsManager> (*Client_))
+	, ExtsMgr_ (std::make_unique<ClientConnectionExtensionsManager> (*this, *Client_))
 	, FileLogSink_ (new QXmppLogger (this))
 	, MUCManager_ (new QXmppMucManager)
 	, XferManager_ (new QXmppTransferManager)

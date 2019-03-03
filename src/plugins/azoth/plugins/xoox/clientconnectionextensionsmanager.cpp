@@ -47,7 +47,8 @@ namespace LeechCraft::Azoth::Xoox
 		}
 	}
 
-	ClientConnectionExtensionsManager::ClientConnectionExtensionsManager (QXmppClient& client, QObject *parent)
+	ClientConnectionExtensionsManager::ClientConnectionExtensionsManager (ClientConnection& conn,
+			QXmppClient& client, QObject *parent)
 	: QObject { parent }
 	, SimpleExtensions_ { MakeSimpleExtensions () }
 	{
