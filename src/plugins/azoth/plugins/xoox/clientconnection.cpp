@@ -77,7 +77,6 @@
 #include "util.h"
 #include "selfcontact.h"
 #include "adhoccommandserver.h"
-#include "jabbersearchmanager.h"
 #include "useravatarmanager.h"
 #include "msgarchivingmanager.h"
 #include "sdmanager.h"
@@ -128,7 +127,6 @@ namespace Xoox
 	, PrivacyListsManager_ (new PrivacyListsManager (this))
 	, AdHocCommandManager_ (new AdHocCommandManager (this))
 	, AnnotationsManager_ (0)
-	, JabberSearchManager_ (new JabberSearchManager)
 	, UserAvatarManager_ (0)
 	, RIEXManager_ (new RIEXManager (account->GetParentProtocol ()->GetCapsDatabase ()))
 	, MsgArchivingManager_ (new MsgArchivingManager (this))
@@ -216,7 +214,6 @@ namespace Xoox
 #ifdef ENABLE_MEDIACALLS
 		Client_->addExtension (CallManager_);
 #endif
-		Client_->addExtension (JabberSearchManager_);
 		Client_->addExtension (RIEXManager_);
 		Client_->addExtension (AdHocCommandManager_);
 		Client_->addExtension (new AdHocCommandServer (this, proxy));
@@ -564,11 +561,6 @@ namespace Xoox
 	AdHocCommandManager* ClientConnection::GetAdHocCommandManager () const
 	{
 		return AdHocCommandManager_;
-	}
-
-	JabberSearchManager* ClientConnection::GetJabberSearchManager () const
-	{
-		return JabberSearchManager_;
 	}
 
 	UserAvatarManager* ClientConnection::GetUserAvatarManager () const

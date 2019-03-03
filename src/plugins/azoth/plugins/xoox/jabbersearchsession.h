@@ -52,7 +52,7 @@ namespace Xoox
 		GlooxAccount *Acc_;
 		QStandardItemModel *Model_;
 
-		JabberSearchManager *SM_;
+		JabberSearchManager& SM_;
 
 		QString CurrentServer_;
 	public:

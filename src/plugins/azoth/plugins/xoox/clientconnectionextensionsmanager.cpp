@@ -29,6 +29,7 @@
 
 #include "clientconnectionextensionsmanager.h"
 #include <QXmppClient.h>
+#include "jabbersearchmanager.h"
 #include "lastactivitymanager.h"
 #include "pingmanager.h"
 

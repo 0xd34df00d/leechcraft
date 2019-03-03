@@ -37,6 +37,7 @@ class QXmppClient;
 namespace LeechCraft::Azoth::Xoox
 {
 	using SimpleExtensions = std::tuple<
+				class JabberSearchManager*,
 				class LastActivityManager*,
 				class PingManager*
 			>;

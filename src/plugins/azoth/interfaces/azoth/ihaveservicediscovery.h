@@ -207,7 +207,7 @@ namespace Azoth
 		 * @return The default query.
 		 */
 		virtual QString GetDefaultQuery () const = 0;
-	protected:
+
 		/** @brief Notifies about a new service discovery session.
 		 *
 		 * This signal should be emitted when the account itself has

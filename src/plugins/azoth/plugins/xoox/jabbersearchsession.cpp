@@ -29,12 +29,13 @@
 
 #include "jabbersearchsession.h"
 #include <QStandardItemModel>
+#include <QMessageBox>
 #include "glooxaccount.h"
 #include "clientconnection.h"
+#include "clientconnectionextensionsmanager.h"
 #include "legacyformbuilder.h"
 #include "formbuilder.h"
 #include "util.h"
-#include <QMessageBox>
 
 namespace LeechCraft
 {
@@ -46,9 +47,9 @@ namespace Xoox
 	: QObject (acc)
 	, Acc_ (acc)
 	, Model_ (new QStandardItemModel (this))
-	, SM_ (acc->GetClientConnection ()->GetJabberSearchManager ())
+	, SM_ (acc->GetClientConnection ()->GetExtensionsManager ().Get<JabberSearchManager> ())
 	{
-		connect (SM_,
+		connect (&SM_,
 				SIGNAL (gotServerError (QXmppIq)),
 				this,
 				SLOT (handleGotError (QXmppIq)));
@@ -60,12 +61,12 @@ namespace Xoox
 
 		CurrentServer_ = server;
 
-		connect (SM_,
+		connect (&SM_,
 				SIGNAL (gotSearchFields (QString, QXmppElement)),
 				this,
 				SLOT (handleGotSearchFields (QString, QXmppElement)),
 				Qt::UniqueConnection);
-		SM_->RequestSearchFields (server);
+		SM_.RequestSearchFields (server);
 	}
 
 	QAbstractItemModel* JabberSearchSession::GetRepresentationModel () const
@@ -79,7 +80,7 @@ namespace Xoox
 		if (server != CurrentServer_)
 			return;
 
-		disconnect (SM_,
+		disconnect (&SM_,
 				SIGNAL (gotItems (QString, QList<JabberSearchManager::Item>)),
 				this,
 				SLOT (handleGotItems (QString, QList<JabberSearchManager::Item>)));
@@ -106,7 +107,7 @@ namespace Xoox
 		if (server != CurrentServer_)
 			return;
 
-		disconnect (SM_,
+		disconnect (&SM_,
 				SIGNAL (gotSearchFields (QString, QXmppElement)),
 				this,
 				SLOT (handleGotSearchFields (QString, QXmppElement)));
@@ -125,7 +126,7 @@ namespace Xoox
 			QXmppDataForm form = fb.GetForm ();
 			form.setType (QXmppDataForm::Submit);
 
-			SM_->SubmitSearchRequest (server, form);
+			SM_.SubmitSearchRequest (server, form);
 		}
 		else
 		{
@@ -134,10 +135,10 @@ namespace Xoox
 			if (!XooxUtil::RunFormDialog (w))
 				return;
 
-			SM_->SubmitSearchRequest (server, fb.GetFilledChildren ());
+			SM_.SubmitSearchRequest (server, fb.GetFilledChildren ());
 		}
 
-		connect (SM_,
+		connect (&SM_,
 				SIGNAL (gotItems (QString, QList<JabberSearchManager::Item>)),
 				this,
 				SLOT (handleGotItems (QString, QList<JabberSearchManager::Item>)),

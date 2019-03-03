@@ -77,7 +77,6 @@ namespace Xoox
 	class PubSubManager;
 	class PrivacyListsManager;
 	class AdHocCommandManager;
-	class JabberSearchManager;
 	class XMPPBobManager;
 	class XMPPCaptchaManager;
 	class UserAvatarManager;
@@ -129,7 +128,6 @@ namespace Xoox
 		PrivacyListsManager *PrivacyListsManager_;
 		AdHocCommandManager *AdHocCommandManager_;
 		AnnotationsManager *AnnotationsManager_;
-		JabberSearchManager *JabberSearchManager_;
 		UserAvatarManager *UserAvatarManager_;
 		RIEXManager *RIEXManager_;
 		MsgArchivingManager *MsgArchivingManager_;
@@ -229,7 +227,6 @@ namespace Xoox
 		QXmppCallManager* GetCallManager () const;
 #endif
 		AdHocCommandManager* GetAdHocCommandManager () const;
-		JabberSearchManager* GetJabberSearchManager () const;
 		UserAvatarManager* GetUserAvatarManager () const;
 		RIEXManager* GetRIEXManager () const;
 		SDManager* GetSDManager () const;
