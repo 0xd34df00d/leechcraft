@@ -91,11 +91,11 @@ namespace Xoox
 		const QStringList& keys = items.first ().Dictionary_.keys ();
 		Model_->setHorizontalHeaderLabels (keys);
 
-		Q_FOREACH (const JabberSearchManager::Item& item, items)
+		for (const auto& item : items)
 		{
 			QList<QStandardItem*> row;
 
-			Q_FOREACH (const QString& key, keys)
+			for (const auto& key : keys)
 				row << new QStandardItem (item.Dictionary_.value (key, tr ("(unknown)")));
 
 			Model_->appendRow (row);
