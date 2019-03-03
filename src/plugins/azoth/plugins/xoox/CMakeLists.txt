@@ -22,6 +22,7 @@ set (XOOX_SRCS
 	glooxaccountconfigurationwidget.cpp
 	glooxaccount.cpp
 	clientconnection.cpp
+	clientconnectionextensionsmanager.cpp
 	glooxclentry.cpp
 	glooxmessage.cpp
 	joingroupchatwidget.cpp
