@@ -169,11 +169,11 @@ namespace Xoox
 	EntryStatus EntryBase::GetStatus (const QString& variant) const
 	{
 		if (!variant.isEmpty () &&
-				CurrentStatus_.contains (variant))
-			return CurrentStatus_ [variant];
+				Variants_.contains (variant))
+			return Variants_ [variant].CurrentStatus_;
 
-		if (CurrentStatus_.size ())
-			return *CurrentStatus_.begin ();
+		if (!Variants_.isEmpty ())
+			return Variants_.begin ()->CurrentStatus_;
 
 		return EntryStatus ();
 	}
@@ -226,20 +226,21 @@ namespace Xoox
 
 	QMap<QString, QVariant> EntryBase::GetClientInfo (const QString& var) const
 	{
-		auto res = Variant2ClientInfo_ [var];
+		const auto& varInfo = Variants_ [var];
+		auto res = varInfo.ClientInfo_;
 
-		if (Variant2SecsDiff_.contains (var))
+		if (varInfo.SecsDiff_)
 		{
 			auto now = QDateTime::currentDateTimeUtc ();
 			now.setTimeSpec (Qt::LocalTime);
-			const auto& secsDiff = Variant2SecsDiff_.value (var);
+			const auto& secsDiff = *varInfo.SecsDiff_;
 			res ["client_time"] = now
 					.addSecs (secsDiff.Diff_)
 					.addSecs (secsDiff.Tzo_);
 			res ["client_tzo"] = secsDiff.Tzo_;
 		}
 
-		const auto& version = Variant2Version_ [var];
+		const auto& version = varInfo.Version_;
 		if (version.name ().isEmpty ())
 			return res;
 
@@ -499,17 +500,17 @@ namespace Xoox
 
 	Media::AudioInfo EntryBase::GetUserTune (const QString& variant) const
 	{
-		return Variant2Audio_ [GetVariantOrHighest (variant)];
+		return Variants_ [GetVariantOrHighest (variant)].Audio_.value_or (Media::AudioInfo {});
 	}
 
 	MoodInfo EntryBase::GetUserMood (const QString& variant) const
 	{
-		return Variant2Mood_ [GetVariantOrHighest (variant)];
+		return Variants_ [GetVariantOrHighest (variant)].Mood_.value_or (MoodInfo {});
 	}
 
 	ActivityInfo EntryBase::GetUserActivity (const QString& variant) const
 	{
-		return Variant2Activity_ [GetVariantOrHighest (variant)];
+		return Variants_ [GetVariantOrHighest (variant)].Activity_.value_or (ActivityInfo {});
 	}
 
 	void EntryBase::UpdateEntityTime ()
@@ -609,10 +610,11 @@ namespace Xoox
 
 		if (const auto location = dynamic_cast<UserLocation*> (event))
 		{
-			if (Location_ [variant] == location->GetInfo ())
+			auto& currentLocation = Variants_ [variant].Location_;
+			if (currentLocation == location->GetInfo ())
 				return;
 
-			Location_ [variant] = location->GetInfo ();
+			currentLocation = location->GetInfo ();
 			emit locationChanged (variant, this);
 			emit locationChanged (variant);
 			return;
@@ -658,7 +660,7 @@ namespace Xoox
 	{
 		if (!variant.isEmpty ())
 		{
-			if (CurrentStatus_.contains (variant))
+			if (Variants_.contains (variant))
 				SetStatus ({}, variant, {});
 			return;
 		}
@@ -671,18 +673,18 @@ namespace Xoox
 
 	void EntryBase::SetStatus (const EntryStatus& status, const QString& variant, const QXmppPresence& presence)
 	{
-		const bool existed = CurrentStatus_.contains (variant);
+		const bool existed = Variants_.contains (variant);
+		auto& varInfo = Variants_ [variant];
 		const bool wasOffline = existed ?
-				CurrentStatus_ [variant].State_ == SOffline :
+				varInfo.CurrentStatus_.State_ == SOffline :
 				false;
 
 		if (existed &&
-				status == CurrentStatus_ [variant] &&
-				presence.priority () == Variant2ClientInfo_.value (variant).value ("priority"))
+				status == varInfo.CurrentStatus_ &&
+				presence.priority () == varInfo.ClientInfo_.value ("priority"))
 			return;
 
-		CurrentStatus_ [variant] = status;
-
+		varInfo.CurrentStatus_ = status;
 
 		if ((!existed || wasOffline) &&
 				status.State_ != SOffline)
@@ -700,21 +702,10 @@ namespace Xoox
 		if (status.State_ != SOffline)
 		{
 			if (const int p = presence.priority ())
-				Variant2ClientInfo_ [variant] ["priority"] = p;
+				varInfo.ClientInfo_ ["priority"] = p;
 		}
 		else
-		{
-			Variant2Version_.remove (variant);
-			Variant2ClientInfo_.remove (variant);
-			Variant2VerString_.remove (variant);
-			Variant2Identities_.remove (variant);
-
-			Variant2Audio_.remove (variant);
-			Variant2Mood_.remove (variant);
-			Variant2Activity_.remove (variant);
-
-			Variant2SecsDiff_.remove (variant);
-		}
+			Variants_.remove (variant);
 
 		emit statusChanged (status, variant);
 
@@ -792,7 +783,8 @@ namespace Xoox
 	void EntryBase::SetClientInfo (const QString& variant,
 			const QString& node, const QByteArray& ver)
 	{
-		if (Variant2VerString_ [variant] == ver)
+		auto& varInfo = Variants_ [variant];
+		if (varInfo.VerString_ == ver)
 			return;
 
 		const auto& staticClientInfo = XooxUtil::GetStaticClientInfo (node);
@@ -801,11 +793,11 @@ namespace Xoox
 					<< "unknown client for"
 					<< node;
 
-		Variant2ClientInfo_ [variant] ["client_type"] = staticClientInfo.ID_;
-		Variant2ClientInfo_ [variant] ["client_name"] = staticClientInfo.HumanReadableName_;
-		Variant2ClientInfo_ [variant] ["raw_client_name"] = staticClientInfo.HumanReadableName_;
+		varInfo.ClientInfo_ ["client_type"] = staticClientInfo.ID_;
+		varInfo.ClientInfo_ ["client_name"] = staticClientInfo.HumanReadableName_;
+		varInfo.ClientInfo_ ["raw_client_name"] = staticClientInfo.HumanReadableName_;
 
-		Variant2VerString_ [variant] = ver;
+		varInfo.VerString_ = ver;
 
 		QString reqJid = GetJID ();
 		QString reqVar = "";
@@ -847,62 +839,66 @@ namespace Xoox
 	void EntryBase::SetClientVersion (const QString& variant, const QXmppVersionIq& version)
 	{
 		qDebug () << Q_FUNC_INFO << variant << version.os ();
-		Variant2Version_ [variant] = version;
+		Variants_ [variant].Version_ = version;
 
 		emit entryGenerallyChanged ();
 	}
 
 	void EntryBase::SetDiscoIdentities (const QString& variant, const QList<QXmppDiscoveryIq::Identity>& ids)
 	{
-		Variant2Identities_ [variant] = ids;
+		auto& varInfo = Variants_ [variant];
+		varInfo.Identities_ = ids;
 
 		const QString& name = ids.value (0).name ();
 		const QString& type = ids.value (0).type ();
 		if (name.contains ("Kopete"))
 		{
-			Variant2ClientInfo_ [variant] ["client_type"] = "kopete";
-			Variant2ClientInfo_ [variant] ["client_name"] = "Kopete";
-			Variant2ClientInfo_ [variant] ["raw_client_name"] = "kopete";
+			varInfo.ClientInfo_ ["client_type"] = "kopete";
+			varInfo.ClientInfo_ ["client_name"] = "Kopete";
+			varInfo.ClientInfo_ ["raw_client_name"] = "kopete";
 			emit statusChanged (GetStatus (variant), variant);
 		}
 		else if (name.contains ("emacs", Qt::CaseInsensitive) ||
 				name.contains ("jabber.el", Qt::CaseInsensitive))
 		{
-			Variant2ClientInfo_ [variant] ["client_type"] = "jabber.el";
-			Variant2ClientInfo_ [variant] ["client_name"] = "Emacs Jabber.El";
-			Variant2ClientInfo_ [variant] ["raw_client_name"] = "jabber.el";
+			varInfo.ClientInfo_ ["client_type"] = "jabber.el";
+			varInfo.ClientInfo_ ["client_name"] = "Emacs Jabber.El";
+			varInfo.ClientInfo_ ["raw_client_name"] = "jabber.el";
 			emit statusChanged (GetStatus (variant), variant);
 		}
 		else if (type == "mrim")
 		{
-			Variant2ClientInfo_ [variant] ["client_type"] = "mailruagent";
-			Variant2ClientInfo_ [variant] ["client_name"] = "Mail.Ru Agent Gateway";
-			Variant2ClientInfo_ [variant] ["raw_client_name"] = "mailruagent";
+			varInfo.ClientInfo_ ["client_type"] = "mailruagent";
+			varInfo.ClientInfo_ ["client_name"] = "Mail.Ru Agent Gateway";
+			varInfo.ClientInfo_ ["raw_client_name"] = "mailruagent";
 			emit statusChanged (GetStatus (variant), variant);
 		}
 	}
 
 	GeolocationInfo_t EntryBase::GetGeolocationInfo (const QString& variant) const
 	{
-		return Location_ [variant];
+		return Variants_ [variant].Location_;
 	}
 
 	QByteArray EntryBase::GetVariantVerString (const QString& var) const
 	{
-		return Variant2VerString_ [var];
+		return Variants_ [var].VerString_;
 	}
 
 	QXmppVersionIq EntryBase::GetClientVersion (const QString& var) const
 	{
-		return Variant2Version_ [var];
+		return Variants_ [var].Version_;
 	}
 
 	void EntryBase::HandleUserActivity (const UserActivity *activity, const QString& variant)
 	{
+		auto& varInfo = Variants_ [variant];
 		if (activity->GetGeneral () == UserActivity::GeneralEmpty)
 		{
-			if (!Variant2Activity_.remove (variant))
+			if (!varInfo.Activity_)
 				return;
+
+			varInfo.Activity_.reset ();
 		}
 		else
 		{
@@ -912,10 +908,10 @@ namespace Xoox
 				activity->GetSpecificStr (),
 				activity->GetText ()
 			};
-			if (Variant2Activity_ [variant] == info)
+			if (varInfo.Activity_ == info)
 				return;
 
-			Variant2Activity_ [variant] = info;
+			varInfo.Activity_ = info;
 		}
 
 		emit activityChanged (variant);
@@ -923,10 +919,13 @@ namespace Xoox
 
 	void EntryBase::HandleUserMood (const UserMood *mood, const QString& variant)
 	{
+		auto& varInfo = Variants_ [variant];
 		if (mood->GetMood () == UserMood::MoodEmpty)
 		{
-			if (!Variant2Mood_.remove (variant))
+			if (!varInfo.Mood_)
 				return;
+
+			varInfo.Mood_.reset ();
 		}
 		else
 		{
@@ -935,10 +934,10 @@ namespace Xoox
 				mood->GetMoodStr (),
 				mood->GetText ()
 			};
-			if (Variant2Mood_ [variant] == info)
+			if (varInfo.Mood_ == info)
 				return;
 
-			Variant2Mood_ [variant] = info;
+			varInfo.Mood_ = info;
 		}
 
 		emit moodChanged (variant);
@@ -946,18 +945,21 @@ namespace Xoox
 
 	void EntryBase::HandleUserTune (const UserTune *tune, const QString& variant)
 	{
+		auto& varInfo = Variants_ [variant];
 		if (tune->IsNull ())
 		{
-			if (!Variant2Audio_.remove (variant))
+			if (!varInfo.Audio_)
 				return;
+
+			varInfo.Audio_.reset ();
 		}
 		else
 		{
 			const auto& audioInfo = tune->ToAudioInfo ();
-			if (Variant2Audio_ [variant] == audioInfo)
+			if (varInfo.Audio_ == audioInfo)
 				return;
 
-			Variant2Audio_ [variant] = audioInfo;
+			varInfo.Audio_ = audioInfo;
 		}
 
 		emit tuneChanged (variant);
@@ -1048,7 +1050,7 @@ namespace Xoox
 			variant = "";
 
 		const auto secsDiff = QDateTime::currentDateTimeUtc ().secsTo (thatTime);
-		Variant2SecsDiff_ [variant] = { static_cast<int> (secsDiff), iq.tzo () };
+		Variants_ [variant].SecsDiff_ = { static_cast<int> (secsDiff), iq.tzo () };
 
 		emit entryGenerallyChanged ();
 
@@ -1062,9 +1064,9 @@ namespace Xoox
 		{
 			QStringList commandable;
 			const auto capsMgr = Account_->GetClientConnection ()->GetCapsManager ();
-			for (const auto& pair : Util::Stlize (Variant2VerString_))
+			for (const auto& pair : Util::Stlize (Variants_))
 			{
-				const auto& caps = capsMgr->GetRawCaps (pair.second);
+				const auto& caps = capsMgr->GetRawCaps (pair.second.VerString_);
 				if (caps.isEmpty () ||
 						caps.contains (AdHocCommandManager::GetAdHocFeature ()))
 					commandable << pair.first;

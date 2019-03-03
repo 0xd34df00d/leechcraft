@@ -115,33 +115,36 @@ namespace Xoox
 
 		QList<GlooxMessage*> AllMessages_;
 		QList<GlooxMessage*> UnreadMessages_;
-		QMap<QString, EntryStatus> CurrentStatus_;
 		QList<QAction*> Actions_;
 		QAction *Commands_;
 		QAction *DetectNick_;
 		QAction *StdSep_;
-
-		QMap<QString, GeolocationInfo_t> Location_;
-
-		QPointer<VCardDialog> VCardDialog_;
-
-		QByteArray VCardPhotoHash_;
-
-		QMap<QString, QMap<QString, QVariant>> Variant2ClientInfo_;
-		QMap<QString, QByteArray> Variant2VerString_;
-		QMap<QString, QXmppVersionIq> Variant2Version_;
-		QMap<QString, QList<QXmppDiscoveryIq::Identity>> Variant2Identities_;
-
-		QMap<QString, Media::AudioInfo> Variant2Audio_;
-		QMap<QString, MoodInfo> Variant2Mood_;
-		QMap<QString, ActivityInfo> Variant2Activity_;
 
 		struct EntityTimeInfo
 		{
 			int Diff_;
 			int Tzo_;
 		};
-		QMap<QString, EntityTimeInfo> Variant2SecsDiff_;
+
+		struct VariantInfo
+		{
+			EntryStatus CurrentStatus_;
+			GeolocationInfo_t Location_;
+			QMap<QString, QVariant> ClientInfo_;
+			QByteArray VerString_;
+			QXmppVersionIq Version_;
+			QList<QXmppDiscoveryIq::Identity> Identities_;
+			std::optional<Media::AudioInfo> Audio_;
+			std::optional<MoodInfo> Mood_;
+			std::optional<ActivityInfo> Activity_;
+			std::optional<EntityTimeInfo> SecsDiff_;
+		};
+		QHash<QString, VariantInfo> Variants_;
+
+		QPointer<VCardDialog> VCardDialog_;
+
+		QByteArray VCardPhotoHash_;
+
 		QDateTime LastEntityTimeRequest_;
 
 		bool HasUnreadMsgs_ = false;

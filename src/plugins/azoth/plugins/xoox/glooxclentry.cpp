@@ -83,7 +83,7 @@ namespace Xoox
 		const auto& prevVariants = Variants ();
 
 		ODS_ = ToOfflineDataSource ();
-		CurrentStatus_.clear ();
+		Variants_.clear ();
 		if (prevVariants.isEmpty ())
 			return;
 
@@ -299,8 +299,8 @@ namespace Xoox
 
 	bool GlooxCLEntry::IsGateway (QString *variant) const
 	{
-		for (const QString& varCand : Variant2Identities_.keys ())
-			for (const auto& id : Variant2Identities_ [varCand])
+		for (const auto& [varCand, info] : Util::Stlize (Variants_))
+			for (const auto& id : info.Identities_)
 				if (id.category () == "gateway")
 				{
 					if (variant)

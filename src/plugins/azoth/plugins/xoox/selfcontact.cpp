@@ -143,7 +143,7 @@ namespace Xoox
 					RemoveVariant (otherResource, false);
 
 		Status2Prio_.remove (resource);
-		CurrentStatus_.remove (resource);
+		Variants_.remove (resource);
 
 		EntryBase::SetStatus (EntryStatus (SOffline, QString ()),
 				resource,
