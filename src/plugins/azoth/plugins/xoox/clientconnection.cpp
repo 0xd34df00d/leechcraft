@@ -98,6 +98,7 @@
 #include "pingmanager.h"
 #include "xep0334utils.h"
 #include "sslerrorshandler.h"
+#include "clientconnectionextensionsmanager.h"
 
 namespace LeechCraft
 {
@@ -109,6 +110,7 @@ namespace Xoox
 	: Account_ (account)
 	, Settings_ (account->GetSettings ())
 	, Client_ (new QXmppClient (this))
+	, ExtsMgr_ (std::make_unique<ClientConnectionExtensionsManager> (*Client_))
 	, FileLogSink_ (new QXmppLogger (this))
 	, MUCManager_ (new QXmppMucManager)
 	, XferManager_ (new QXmppTransferManager)
@@ -495,6 +497,11 @@ namespace Xoox
 		GlooxCLEntry *entry = new GlooxCLEntry (jid, Account_);
 		JID2CLEntry_ [jid] = entry;
 		emit gotRosterItems ({ entry });
+	}
+
+	ClientConnectionExtensionsManager& ClientConnection::GetExtensionsManager () const
+	{
+		return *ExtsMgr_;
 	}
 
 	DiscoManagerWrapper* ClientConnection::GetDiscoManagerWrapper () const

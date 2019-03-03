@@ -97,6 +97,8 @@ namespace Xoox
 
 	class DiscoManagerWrapper;
 
+	class ClientConnectionExtensionsManager;
+
 	class ClientConnection : public QObject
 	{
 		Q_OBJECT
@@ -105,6 +107,8 @@ namespace Xoox
 		AccountSettingsHolder *Settings_;
 
 		QXmppClient *Client_;
+
+		std::unique_ptr<ClientConnectionExtensionsManager> ExtsMgr_;
 
 		QXmppLogger *FileLogSink_;
 
@@ -210,6 +214,8 @@ namespace Xoox
 		void Unregister (RoomHandler*);
 
 		void CreateEntry (const QString&);
+
+		ClientConnectionExtensionsManager& GetExtensionsManager () const;
 
 		DiscoManagerWrapper* GetDiscoManagerWrapper () const;
 
