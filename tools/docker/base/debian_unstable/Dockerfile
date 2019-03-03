@@ -17,7 +17,7 @@ RUN eatmydata apt install -q -y cmake debhelper libaspell-dev \
         libudev-dev \
 		libx11-dev libxkbfile-dev libxcomposite-dev libxrender-dev libxcb-xkb-dev libxcb-render0-dev libxcb-composite0-dev libxcb-render-util0-dev \
 		libxml2-dev po-debconf x11proto-randr-dev zlib1g-dev \
-        libnl-3-dev witty-dev libnl-route-3-dev libpurple-dev libvlc-dev libimobiledevice-dev libgpod-dev \
+        libnl-3-dev libnl-route-3-dev libpurple-dev libvlc-dev libimobiledevice-dev libgpod-dev \
         libavcodec-dev libavformat-dev libavdevice-dev libavutil-dev libswscale-dev libswresample-dev libpostproc-dev libchromaprint-dev \
         git \
         libgstreamer1.0-dev libsensors4-dev
