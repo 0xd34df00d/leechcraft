@@ -683,19 +683,6 @@ namespace Xoox
 
 		CurrentStatus_ [variant] = status;
 
-		const QStringList& vars = Variants ();
-		if ((!existed || wasOffline) && !vars.isEmpty ())
-		{
-			const QString& highest = vars.first ();
-			if (Location_.contains ({}))
-				Location_ [highest] = Location_.take ({});
-			if (Variant2Audio_.contains ({}))
-				Variant2Audio_ [highest] = Variant2Audio_.take ({});
-			if (Variant2Mood_.contains ({}))
-				Variant2Mood_ [highest] = Variant2Mood_.take ({});
-			if (Variant2Activity_.contains ({}))
-				Variant2Activity_ [highest] = Variant2Activity_.take ({});
-		}
 
 		if ((!existed || wasOffline) &&
 				status.State_ != SOffline)
@@ -734,7 +721,7 @@ namespace Xoox
 		if (!existed ||
 				status.State_ == SOffline ||
 				wasOffline)
-			emit availableVariantsChanged (vars);
+			emit availableVariantsChanged (Variants ());
 
 		GlooxMessage *message = 0;
 		if (GetEntryType () == EntryType::PrivateChat)
