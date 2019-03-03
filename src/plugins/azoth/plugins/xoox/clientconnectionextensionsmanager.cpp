@@ -37,11 +37,20 @@ namespace LeechCraft::Azoth::Xoox
 {
 	namespace
 	{
-		auto MakeSimpleExtensions ()
+		template<typename T>
+		T* MakeForType (ClientConnection& conn)
 		{
-			return std::apply ([] (auto... types)
+			if constexpr (std::is_constructible_v<T, ClientConnection*>)
+				return new T { &conn };
+			else
+				return new T {};
+		}
+
+		auto MakeSimpleExtensions (ClientConnection& conn)
+		{
+			return std::apply ([&conn] (auto... types)
 					{
-						return SimpleExtensions { new std::remove_pointer_t<decltype (types)>... };
+						return SimpleExtensions { MakeForType<std::remove_pointer_t<decltype (types)>> (conn)... };
 					},
 					SimpleExtensions {});
 		}
@@ -50,7 +59,7 @@ namespace LeechCraft::Azoth::Xoox
 	ClientConnectionExtensionsManager::ClientConnectionExtensionsManager (ClientConnection& conn,
 			QXmppClient& client, QObject *parent)
 	: QObject { parent }
-	, SimpleExtensions_ { MakeSimpleExtensions () }
+	, SimpleExtensions_ { MakeSimpleExtensions (conn) }
 	{
 		std::apply ([&client] (auto... exts) { (client.addExtension (exts), ...); },
 				SimpleExtensions_);
