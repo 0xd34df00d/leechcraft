@@ -113,17 +113,17 @@ namespace Xoox
 				SLOT (handleGotSearchFields (QString, QXmppElement)));
 
 		const QXmppElement& xForm = elem.firstChildElement ("x");
-		QXmppDataForm form;
-		form.parse (XooxUtil::XmppElem2DomElem (xForm));
-
 		if (!xForm.isNull ())
 		{
+			QXmppDataForm form;
+			form.parse (XooxUtil::XmppElem2DomElem (xForm));
+
 			FormBuilder fb;
 			QWidget *w = fb.CreateForm (form);
 			if (!XooxUtil::RunFormDialog (w))
 				return;
 
-			QXmppDataForm form = fb.GetForm ();
+			form = fb.GetForm ();
 			form.setType (QXmppDataForm::Submit);
 
 			SM_.SubmitSearchRequest (server, form);
