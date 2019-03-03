@@ -29,23 +29,25 @@
 
 #pragma once
 
+#include <tuple>
 #include <QObject>
 
 class QXmppClient;
 
 namespace LeechCraft::Azoth::Xoox
 {
-	class LastActivityManager;
-	class PingManager;
+	using SimpleExtensions = std::tuple<
+				class LastActivityManager*,
+				class PingManager*
+			>;
 
 	class ClientConnectionExtensionsManager : public QObject
 	{
-		LastActivityManager * const LastActivityManager_;
-		PingManager * const PingManager_;
+		SimpleExtensions SimpleExtensions_;
 	public:
 		explicit ClientConnectionExtensionsManager (QXmppClient&, QObject* = nullptr);
 
-		LastActivityManager* GetLastActivityManager () const;
-		PingManager* GetPingManager () const;
+		template<typename T>
+		T& Get () { return *std::get<T*> (SimpleExtensions_); }
 	};
 }

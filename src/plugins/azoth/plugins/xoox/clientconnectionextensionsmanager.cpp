@@ -34,22 +34,23 @@
 
 namespace LeechCraft::Azoth::Xoox
 {
+	namespace
+	{
+		auto MakeSimpleExtensions ()
+		{
+			return std::apply ([] (auto... types)
+					{
+						return SimpleExtensions { new std::remove_pointer_t<decltype (types)>... };
+					},
+					SimpleExtensions {});
+		}
+	}
+
 	ClientConnectionExtensionsManager::ClientConnectionExtensionsManager (QXmppClient& client, QObject *parent)
 	: QObject { parent }
-	, LastActivityManager_ (new LastActivityManager)
-	, PingManager_ { new PingManager }
+	, SimpleExtensions_ { MakeSimpleExtensions () }
 	{
-		client.addExtension (LastActivityManager_);
-		client.addExtension (PingManager_);
-	}
-
-	LastActivityManager* ClientConnectionExtensionsManager::GetLastActivityManager () const
-	{
-		return LastActivityManager_;
-	}
-
-	PingManager* ClientConnectionExtensionsManager::GetPingManager () const
-	{
-		return PingManager_;
+		std::apply ([&client] (auto... exts) { (client.addExtension (exts), ...); },
+				SimpleExtensions_);
 	}
 }

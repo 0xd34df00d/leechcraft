@@ -550,7 +550,7 @@ namespace Xoox
 			jid += '/' + variant;
 
 		auto reply = new PingReplyObject { this };
-		Account_->GetClientConnection ()->GetExtensionsManager ().GetPingManager ()->Ping (jid,
+		Account_->GetClientConnection ()->GetExtensionsManager ().Get<PingManager> ().Ping (jid,
 				[reply] (int msecs) { reply->HandleReply (msecs); });
 		return reply;
 	}
