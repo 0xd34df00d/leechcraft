@@ -76,7 +76,6 @@ namespace Xoox
 	class FetchQueue;
 	class PubSubManager;
 	class PrivacyListsManager;
-	class AdHocCommandManager;
 	class XMPPBobManager;
 	class XMPPCaptchaManager;
 	class UserAvatarManager;
@@ -126,7 +125,6 @@ namespace Xoox
 #endif
 		PubSubManager *PubSubManager_;
 		PrivacyListsManager *PrivacyListsManager_;
-		AdHocCommandManager *AdHocCommandManager_;
 		AnnotationsManager *AnnotationsManager_;
 		UserAvatarManager *UserAvatarManager_;
 		RIEXManager *RIEXManager_;
@@ -226,7 +224,6 @@ namespace Xoox
 #ifdef ENABLE_MEDIACALLS
 		QXmppCallManager* GetCallManager () const;
 #endif
-		AdHocCommandManager* GetAdHocCommandManager () const;
 		UserAvatarManager* GetUserAvatarManager () const;
 		RIEXManager* GetRIEXManager () const;
 		SDManager* GetSDManager () const;

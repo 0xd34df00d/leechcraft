@@ -73,7 +73,6 @@
 #include "usertune.h"
 #include "userlocation.h"
 #include "privacylistsmanager.h"
-#include "adhoccommandmanager.h"
 #include "util.h"
 #include "selfcontact.h"
 #include "adhoccommandserver.h"
@@ -125,7 +124,6 @@ namespace Xoox
 #endif
 	, PubSubManager_ (new PubSubManager)
 	, PrivacyListsManager_ (new PrivacyListsManager (this))
-	, AdHocCommandManager_ (new AdHocCommandManager (this))
 	, AnnotationsManager_ (0)
 	, UserAvatarManager_ (0)
 	, RIEXManager_ (new RIEXManager (account->GetParentProtocol ()->GetCapsDatabase ()))
@@ -215,7 +213,6 @@ namespace Xoox
 		Client_->addExtension (CallManager_);
 #endif
 		Client_->addExtension (RIEXManager_);
-		Client_->addExtension (AdHocCommandManager_);
 		Client_->addExtension (new AdHocCommandServer (this, proxy));
 		Client_->addExtension (Xep0313Manager_);
 		Client_->addExtension (CarbonsManager_);
@@ -557,11 +554,6 @@ namespace Xoox
 		return CallManager_;
 	}
 #endif
-
-	AdHocCommandManager* ClientConnection::GetAdHocCommandManager () const
-	{
-		return AdHocCommandManager_;
-	}
 
 	UserAvatarManager* ClientConnection::GetUserAvatarManager () const
 	{

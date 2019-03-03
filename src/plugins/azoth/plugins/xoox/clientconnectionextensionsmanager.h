@@ -39,6 +39,7 @@ namespace LeechCraft::Azoth::Xoox
 	class ClientConnection;
 
 	using SimpleExtensions = std::tuple<
+				class AdHocCommandManager*,
 				class JabberSearchManager*,
 				class LastActivityManager*,
 				class PingManager*

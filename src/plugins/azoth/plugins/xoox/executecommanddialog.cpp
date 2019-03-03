@@ -33,6 +33,7 @@
 #include <QLabel>
 #include "glooxaccount.h"
 #include "clientconnection.h"
+#include "clientconnectionextensionsmanager.h"
 #include "formbuilder.h"
 #include "ui_commandslistpage.h"
 #include "ui_commandresultpage.h"
@@ -175,7 +176,7 @@ namespace Xoox
 			GlooxAccount *account, QWidget *parent, Tag)
 	: QWizard { parent }
 	, Account_ { account }
-	, Manager_ { account->GetClientConnection ()->GetAdHocCommandManager () }
+	, Manager_ { account->GetClientConnection ()->GetExtensionsManager ().Get<AdHocCommandManager> () }
 	, JID_ { jid }
 	{
 		Ui_.setupUi (this);
@@ -185,7 +186,7 @@ namespace Xoox
 				this,
 				SLOT (handleCurrentChanged (int)));
 
-		connect (Manager_,
+		connect (&Manager_,
 				SIGNAL (gotError (QString, QString)),
 				this,
 				SLOT (handleError (QString)));
@@ -226,32 +227,32 @@ namespace Xoox
 		if (currentId () != idx)
 			next ();
 
-		connect (Manager_,
+		connect (&Manager_,
 				SIGNAL (gotCommands (QString, QList<AdHocCommand>)),
 				this,
 				SLOT (handleGotCommands (QString, QList<AdHocCommand>)),
 				Qt::UniqueConnection);
-		Manager_->QueryCommands (JID_);
+		Manager_.QueryCommands (JID_);
 	}
 
 	void ExecuteCommandDialog::ExecuteCommand (const AdHocCommand& command)
 	{
-		connect (Manager_,
+		connect (&Manager_,
 				SIGNAL (gotResult (QString, AdHocResult)),
 				this,
 				SLOT (handleGotResult (QString, AdHocResult)),
 				Qt::UniqueConnection);
-		Manager_->ExecuteCommand (JID_, command);
+		Manager_.ExecuteCommand (JID_, command);
 	}
 
 	void ExecuteCommandDialog::ProceedExecuting (const AdHocResult& result, const QString& action)
 	{
-		connect (Manager_,
+		connect (&Manager_,
 				SIGNAL (gotResult (QString, AdHocResult)),
 				this,
 				SLOT (handleGotResult (QString, AdHocResult)),
 				Qt::UniqueConnection);
-		Manager_->ProceedExecuting (JID_, result, action);
+		Manager_.ProceedExecuting (JID_, result, action);
 	}
 
 	void ExecuteCommandDialog::handleCurrentChanged (int id)
@@ -291,7 +292,7 @@ namespace Xoox
 		if (jid != JID_)
 			return;
 
-		disconnect (Manager_,
+		disconnect (&Manager_,
 				SIGNAL (gotCommands (QString, QList<AdHocCommand>)),
 				this,
 				SLOT (handleGotCommands (QString, QList<AdHocCommand>)));
@@ -307,7 +308,7 @@ namespace Xoox
 		if (jid != JID_)
 			return;
 
-		disconnect (Manager_,
+		disconnect (&Manager_,
 				SIGNAL (gotResult (QString, AdHocResult)),
 				this,
 				SLOT (handleGotResult (QString, AdHocResult)));
