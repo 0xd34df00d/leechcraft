@@ -451,7 +451,7 @@ namespace Xoox
 	{
 		OurJID_ = jid;
 
-		Split (jid, &OurBareJID_, &OurResource_);
+		std::tie (OurBareJID_, OurResource_) = Split (jid);
 
 		SelfContact_->UpdateJID (jid);
 	}
@@ -796,10 +796,7 @@ namespace Xoox
 
 	QObject* ClientConnection::GetCLEntry (const QString& fullJid) const
 	{
-		QString bare;
-		QString variant;
-		Split (fullJid, &bare, &variant);
-
+		auto [bare, variant] = Split (fullJid);
 		return GetCLEntry (bare, variant);
 	}
 
@@ -820,8 +817,7 @@ namespace Xoox
 			return entry;
 		else
 		{
-			QString trueBare, trueVar;
-			Split (bareJid, &trueBare, &trueVar);
+			auto [trueBare, trueVar] = Split (bareJid);
 			if (trueBare != bareJid)
 				return GetCLEntry (trueBare, trueVar);
 
@@ -907,9 +903,7 @@ namespace Xoox
 	{
 		QFile::remove (Util::CreateIfNotExists ("azoth").filePath ("qxmpp.log"));
 
-		QString jid;
-		QString bare;
-		Split (OurJID_, &jid, &bare);
+		auto [jid, bare] = Split (OurJID_);
 		QString logName = jid + ".qxmpp.log";
 		logName.replace ('@', '_');
 		const QString& path = Util::CreateIfNotExists ("azoth/xoox/logs").filePath (logName);
@@ -938,14 +932,14 @@ namespace Xoox
 		setFileLogging (Settings_->GetFileLogEnabled ());
 	}
 
-	void ClientConnection::Split (const QString& jid,
-			QString *bare, QString *resource)
+	ClientConnection::SplitResult ClientConnection::Split (const QString& jid)
 	{
 		const int pos = jid.indexOf ('/');
-		if (bare)
-			*bare = jid.left (pos);
-		if (resource)
-			*resource = (pos >= 0 ? jid.mid (pos + 1) : QString ());
+		return
+		{
+			.Bare_ = jid.left (pos),
+			.Resource_ = pos >= 0 ? jid.mid (pos + 1) : QString {}
+		};
 	}
 
 	void ClientConnection::handlePendingForm (QXmppDataForm *formObj, const QString& from)
@@ -1099,9 +1093,7 @@ namespace Xoox
 
 	void ClientConnection::handleVCardReceived (const QXmppVCardIq& vcard)
 	{
-		QString jid;
-		QString nick;
-		Split (vcard.from (), &jid, &nick);
+		auto [jid, nick] = Split (vcard.from ());
 
 		if (jid.isEmpty ())
 			jid = OurBareJID_;
@@ -1122,9 +1114,7 @@ namespace Xoox
 
 	void ClientConnection::handleVersionReceived (const QXmppVersionIq& version)
 	{
-		QString jid;
-		QString nick;
-		Split (version.from (), &jid, &nick);
+		auto [jid, nick] = Split (version.from ());
 
 		if (JID2CLEntry_.contains (jid))
 			JID2CLEntry_ [jid]->SetClientVersion (nick, version);
@@ -1143,9 +1133,7 @@ namespace Xoox
 			return;
 		}
 
-		QString jid;
-		QString resource;
-		Split (pres.from (), &jid, &resource);
+		auto [jid, resource] = Split (pres.from ());
 
 		if (jid == OurBareJID_)
 		{
@@ -1202,9 +1190,7 @@ namespace Xoox
 			return;
 		}
 
-		QString jid;
-		QString resource;
-		Split (msg.from (), &jid, &resource);
+		auto [jid, resource] = Split (msg.from ());
 
 		CryptHandler_->ProcessIncoming (msg);
 
@@ -1251,9 +1237,7 @@ namespace Xoox
 		if (msg.from () == OurJID_ || msg.to () == OurJID_)
 			return;
 
-		QString jid;
-		QString resource;
-		Split (msg.from (), &jid, &resource);
+		auto [jid, resource] = Split (msg.from ());
 
 		if (jid != OurBareJID_)
 		{
@@ -1264,7 +1248,7 @@ namespace Xoox
 		if (msg.body ().isEmpty ())
 			return;
 
-		Split (msg.to (), &jid, &resource);
+		std::tie (jid, resource) = Split (msg.to ());
 		if (!JID2CLEntry_.contains (jid))
 			return;
 
@@ -1279,9 +1263,7 @@ namespace Xoox
 
 	void ClientConnection::handlePEPEvent (const QString& from, PEPEventBase *event)
 	{
-		QString bare;
-		QString resource;
-		Split (from, &bare, &resource);
+		auto [bare, resource] = Split (from);
 
 		if (bare == OurBareJID_)
 			SelfContact_->HandlePEPEvent (resource, event);
@@ -1303,9 +1285,7 @@ namespace Xoox
 
 	void ClientConnection::handlePEPAvatarUpdated (const QString& from)
 	{
-		QString bare;
-		QString resource;
-		Split (from, &bare, &resource);
+		auto [bare, resource] = Split (from);
 
 		if (bare == OurBareJID_)
 		{
@@ -1453,9 +1433,7 @@ namespace Xoox
 			break;
 		case QXmppPresence::Error:
 		{
-			QString bare;
-			QString resource;
-			ClientConnection::Split (jid, &bare, &resource);
+			auto [bare, resource] = ClientConnection::Split (jid);
 			if (RoomHandlers_.contains (bare))
 				RoomHandlers_ [bare]->HandleErrorPresence (pres, resource);
 			else if (const auto entry = JID2CLEntry_.value (bare))
@@ -1494,9 +1472,7 @@ namespace Xoox
 					};
 				});
 
-		QString jid;
-		QString resource;
-		Split (msgFrom, &jid, &resource);
+		auto [jid, resource] = Split (msgFrom);
 
 		if (!items.isEmpty ())
 			Account_->riexItemsSuggested (items, JID2CLEntry_.value (jid), body);

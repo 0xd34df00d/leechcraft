@@ -634,10 +634,7 @@ namespace Xoox
 
 	void EntryBase::HandleAttentionMessage (const QXmppMessage& msg)
 	{
-		QString jid;
-		QString resource;
-		ClientConnection::Split (msg.from (), &jid, &resource);
-
+		auto resource = ClientConnection::Split (msg.from ()).Resource_;
 		emit attentionDrawn (msg.body (), resource);
 	}
 
@@ -1058,9 +1055,7 @@ namespace Xoox
 		if (!thatTime.isValid ())
 			return;
 
-		QString bare;
-		QString variant;
-		ClientConnection::Split (from, &bare, &variant);
+		auto [bare, variant] = ClientConnection::Split (from);
 
 		if (variant.isEmpty () || GetEntryType () == EntryType::PrivateChat)
 			variant = "";

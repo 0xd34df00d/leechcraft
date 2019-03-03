@@ -332,9 +332,7 @@ namespace Xoox
 		{
 			const QString& body = queryItems ["body"];
 
-			QString jid;
-			QString variant;
-			ClientConnection::Split (path, &jid, &variant);
+			auto [jid, variant] = ClientConnection::Split (path);
 			if (jid.isEmpty ())
 			{
 				qWarning () << Q_FUNC_INFO

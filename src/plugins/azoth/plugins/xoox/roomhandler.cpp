@@ -619,8 +619,7 @@ namespace Xoox
 	{
 		const auto& pres = Room_->participantPresence (jid);
 
-		QString nick;
-		ClientConnection::Split (jid, 0, &nick);
+		const auto nick = ClientConnection::Split (jid).Resource_;
 
 		const bool existed = Nick2Entry_.contains (nick);
 
@@ -647,8 +646,7 @@ namespace Xoox
 	{
 		const auto& pres = Room_->participantPresence (jid);
 
-		QString nick;
-		ClientConnection::Split (jid, 0, &nick);
+		const auto nick = ClientConnection::Split (jid).Resource_;
 
 		const auto& entry = GetParticipantEntry (nick);
 
@@ -666,8 +664,7 @@ namespace Xoox
 	{
 		const auto& pres = Room_->participantPresence (jid);
 
-		QString nick;
-		ClientConnection::Split (jid, 0, &nick);
+		const auto nick = ClientConnection::Split (jid).Resource_;
 
 		const bool us = Room_->nickName () == nick;
 

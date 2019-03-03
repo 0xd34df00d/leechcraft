@@ -157,7 +157,7 @@ namespace Xoox
 
 	void SelfContact::UpdateJID (const QString& fullJid)
 	{
-		ClientConnection::Split (fullJid, &BareJID_, &Resource_);
+		std::tie (BareJID_, Resource_) = ClientConnection::Split (fullJid);
 
 		emit availableVariantsChanged (Variants ());
 	}

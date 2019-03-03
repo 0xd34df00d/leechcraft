@@ -74,10 +74,7 @@ namespace Xoox
 
 	QString MediaCall::GetSourceID () const
 	{
-		QString jid;
-		QString var;
-		ClientConnection::Split (Call_->jid (), &jid, &var);
-		return Account_->GetAccountID () + '_' + jid;
+		return Account_->GetAccountID () + '_' + ClientConnection::Split (Call_->jid ()).Bare_;
 	}
 
 	void MediaCall::Accept ()

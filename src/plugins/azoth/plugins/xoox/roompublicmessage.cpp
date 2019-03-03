@@ -85,7 +85,7 @@ namespace Xoox
 	, SubType_ (SubType::Other)
 	, XHTML_ (msg.xhtml ())
 	{
-		ClientConnection::Split (msg.from (), &FromJID_, &FromVariant_);
+		std::tie (FromJID_, FromVariant_) = ClientConnection::Split (msg.from ());
 	}
 
 	void RoomPublicMessage::SetParticipantEntry (const RoomParticipantEntry_ptr& entry)

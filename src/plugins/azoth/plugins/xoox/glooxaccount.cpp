@@ -874,12 +874,7 @@ namespace Xoox
 		QStringList allJids { Util::Map (entries, [] (ICLEntry *entry) { return entry->GetHumanReadableID (); }) };
 		if (variants.indexOf (selected) == 1)
 			allJids = Util::Map (allJids,
-					[] (const QString& jid)
-					{
-						QString bare;
-						ClientConnection::Split (jid, &bare, nullptr);
-						return bare.section ('@', 1);
-					});
+					[] (const QString& jid) { return ClientConnection::Split (jid).Bare_.section ('@', 1); });
 
 		allJids.removeDuplicates ();
 

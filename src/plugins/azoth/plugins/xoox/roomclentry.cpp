@@ -341,11 +341,7 @@ namespace Xoox
 		if (!entry)
 			return QString ();
 
-		const QString& jid = entry->GetRealJID ();
-		QString bare;
-		QString resource;
-		ClientConnection::Split (jid, &bare, &resource);
-		return bare;
+		return ClientConnection::Split (entry->GetRealJID ()).Bare_;
 	}
 
 	void RoomCLEntry::InviteToMUC (const QString& id, const QString& msg)

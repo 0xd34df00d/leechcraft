@@ -280,8 +280,17 @@ namespace Xoox
 		GlooxMessage* CreateMessage (IMessage::Type,
 				const QString&, const QString&, const QString&);
 
-		static void Split (const QString& full,
-				QString *bare, QString *resource);
+		struct SplitResult
+		{
+			QString Bare_;
+			QString Resource_;
+
+			operator std::tuple<QString&, QString&> () &&
+			{
+				return std::tie (Bare_, Resource_);
+			}
+		};
+		static SplitResult Split (const QString& full);
 	private:
 		void SetupLogger ();
 		void HandleOtherPresence (const QXmppPresence&);

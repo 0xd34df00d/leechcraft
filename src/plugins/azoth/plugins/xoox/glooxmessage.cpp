@@ -71,7 +71,7 @@ namespace Xoox
 	, Message_ (message)
 	, Connection_ (conn)
 	{
-		Connection_->Split (message.from (), &BareJID_, &Variant_);
+		std::tie (BareJID_, Variant_) = Connection_->Split (message.from ());
 
 		if (!Message_.stamp ().isValid ())
 			Message_.setStamp (QDateTime::currentDateTime ());

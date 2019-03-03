@@ -123,9 +123,7 @@ namespace Xoox
 		if (receivedIq.queryNode () != NsCommands)
 			return false;
 
-		QString from;
-		QString resource;
-		ClientConnection::Split (receivedIq.from (), &from, &resource);
+		auto [from, resource] = ClientConnection::Split (receivedIq.from ());
 
 		if (Conn_->GetOurJID ().startsWith (from))
 		{
@@ -162,8 +160,7 @@ namespace Xoox
 				cmdElem.attribute ("action") != "complete")
 			return false;
 
-		QString from, resource;
-		ClientConnection::Split (elem.attribute ("from"), &from, &resource);
+		auto [from, resource] = ClientConnection::Split (elem.attribute ("from"));
 		const bool isUs = Conn_->GetOurJID ().startsWith (from);
 
 		const QString& node = cmdElem.attribute ("node");
