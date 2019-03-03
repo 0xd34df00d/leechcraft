@@ -49,7 +49,6 @@ namespace Xoox
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::ISearchSession)
 
-		GlooxAccount *Acc_;
 		QStandardItemModel *Model_;
 
 		JabberSearchManager& SM_;

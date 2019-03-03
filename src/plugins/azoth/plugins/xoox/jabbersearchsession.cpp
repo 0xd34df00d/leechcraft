@@ -45,7 +45,6 @@ namespace Xoox
 {
 	JabberSearchSession::JabberSearchSession (GlooxAccount *acc)
 	: QObject (acc)
-	, Acc_ (acc)
 	, Model_ (new QStandardItemModel (this))
 	, SM_ (acc->GetClientConnection ()->GetExtensionsManager ().Get<JabberSearchManager> ())
 	{
