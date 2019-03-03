@@ -77,7 +77,6 @@
 #include "util.h"
 #include "selfcontact.h"
 #include "adhoccommandserver.h"
-#include "lastactivitymanager.h"
 #include "jabbersearchmanager.h"
 #include "useravatarmanager.h"
 #include "msgarchivingmanager.h"
@@ -129,7 +128,6 @@ namespace Xoox
 	, PrivacyListsManager_ (new PrivacyListsManager (this))
 	, AdHocCommandManager_ (new AdHocCommandManager (this))
 	, AnnotationsManager_ (0)
-	, LastActivityManager_ (new LastActivityManager)
 	, JabberSearchManager_ (new JabberSearchManager)
 	, UserAvatarManager_ (0)
 	, RIEXManager_ (new RIEXManager (account->GetParentProtocol ()->GetCapsDatabase ()))
@@ -137,7 +135,6 @@ namespace Xoox
 	, SDManager_ (new SDManager (this))
 	, Xep0313Manager_ (new Xep0313Manager)
 	, CarbonsManager_ (new CarbonsManager)
-	, PingManager_ (new PingManager)
 	, CryptHandler_ (new CryptHandler (this))
 	, ErrorMgr_ (new ClientConnectionErrorMgr (this))
 	, InfoReqPolicyMgr_ (new InfoRequestPolicyManager (this))
@@ -219,14 +216,12 @@ namespace Xoox
 #ifdef ENABLE_MEDIACALLS
 		Client_->addExtension (CallManager_);
 #endif
-		Client_->addExtension (LastActivityManager_);
 		Client_->addExtension (JabberSearchManager_);
 		Client_->addExtension (RIEXManager_);
 		Client_->addExtension (AdHocCommandManager_);
 		Client_->addExtension (new AdHocCommandServer (this, proxy));
 		Client_->addExtension (Xep0313Manager_);
 		Client_->addExtension (CarbonsManager_);
-		Client_->addExtension (PingManager_);
 
 		connect (CarbonsManager_,
 				SIGNAL (gotMessage (QXmppMessage)),
@@ -544,11 +539,6 @@ namespace Xoox
 		return AnnotationsManager_;
 	}
 
-	LastActivityManager* ClientConnection::GetLastActivityManager () const
-	{
-		return LastActivityManager_;
-	}
-
 	PubSubManager* ClientConnection::GetPubSubManager () const
 	{
 		return PubSubManager_;
@@ -599,11 +589,6 @@ namespace Xoox
 	Xep0313Manager* ClientConnection::GetXep0313Manager () const
 	{
 		return Xep0313Manager_;
-	}
-
-	PingManager* ClientConnection::GetPingManager () const
-	{
-		return PingManager_;
 	}
 
 	InfoRequestPolicyManager* ClientConnection::GetInfoReqPolicyManager () const

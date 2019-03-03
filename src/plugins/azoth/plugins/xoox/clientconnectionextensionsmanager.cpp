@@ -28,11 +28,28 @@
  **********************************************************************/
 
 #include "clientconnectionextensionsmanager.h"
+#include <QXmppClient.h>
+#include "lastactivitymanager.h"
+#include "pingmanager.h"
 
 namespace LeechCraft::Azoth::Xoox
 {
 	ClientConnectionExtensionsManager::ClientConnectionExtensionsManager (QXmppClient& client, QObject *parent)
 	: QObject { parent }
+	, LastActivityManager_ (new LastActivityManager)
+	, PingManager_ { new PingManager }
 	{
+		client.addExtension (LastActivityManager_);
+		client.addExtension (PingManager_);
+	}
+
+	LastActivityManager* ClientConnectionExtensionsManager::GetLastActivityManager () const
+	{
+		return LastActivityManager_;
+	}
+
+	PingManager* ClientConnectionExtensionsManager::GetPingManager () const
+	{
+		return PingManager_;
 	}
 }

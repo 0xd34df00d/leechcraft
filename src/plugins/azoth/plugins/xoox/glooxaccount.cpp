@@ -80,6 +80,7 @@
 #include "lastactivitymanager.h"
 #include "roomhandler.h"
 #include "clientconnectionerrormgr.h"
+#include "clientconnectionextensionsmanager.h"
 #include "addtoblockedrunner.h"
 #include "util.h"
 #include "selfcontact.h"
@@ -660,7 +661,7 @@ namespace Xoox
 	{
 		auto pending = new PendingLastActivityRequest { jid, this };
 
-		const auto manager = ClientConnection_->GetLastActivityManager ();
+		const auto manager = ClientConnection_->GetExtensionsManager ().GetLastActivityManager ();
 		const auto& id = manager->RequestLastActivity (jid);
 		connect (manager,
 				SIGNAL (gotLastActivity (QString, int)),

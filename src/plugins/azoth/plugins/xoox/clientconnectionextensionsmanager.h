@@ -35,10 +35,17 @@ class QXmppClient;
 
 namespace LeechCraft::Azoth::Xoox
 {
+	class LastActivityManager;
+	class PingManager;
 
 	class ClientConnectionExtensionsManager : public QObject
 	{
+		LastActivityManager * const LastActivityManager_;
+		PingManager * const PingManager_;
 	public:
 		explicit ClientConnectionExtensionsManager (QXmppClient&, QObject* = nullptr);
+
+		LastActivityManager* GetLastActivityManager () const;
+		PingManager* GetPingManager () const;
 	};
 }

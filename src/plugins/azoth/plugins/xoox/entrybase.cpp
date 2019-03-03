@@ -80,6 +80,7 @@
 #include "pendingversionquery.h"
 #include "discomanagerwrapper.h"
 #include "vcardstorage.h"
+#include "clientconnectionextensionsmanager.h"
 
 namespace LeechCraft
 {
@@ -549,7 +550,7 @@ namespace Xoox
 			jid += '/' + variant;
 
 		auto reply = new PingReplyObject { this };
-		Account_->GetClientConnection ()->GetPingManager ()->Ping (jid,
+		Account_->GetClientConnection ()->GetExtensionsManager ().GetPingManager ()->Ping (jid,
 				[reply] (int msecs) { reply->HandleReply (msecs); });
 		return reply;
 	}

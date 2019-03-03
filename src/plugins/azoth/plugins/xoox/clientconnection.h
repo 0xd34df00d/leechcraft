@@ -77,7 +77,6 @@ namespace Xoox
 	class PubSubManager;
 	class PrivacyListsManager;
 	class AdHocCommandManager;
-	class LastActivityManager;
 	class JabberSearchManager;
 	class XMPPBobManager;
 	class XMPPCaptchaManager;
@@ -86,7 +85,6 @@ namespace Xoox
 	class SDManager;
 	class Xep0313Manager;
 	class CarbonsManager;
-	class PingManager;
 
 	class InfoRequestPolicyManager;
 	class ClientConnectionErrorMgr;
@@ -131,7 +129,6 @@ namespace Xoox
 		PrivacyListsManager *PrivacyListsManager_;
 		AdHocCommandManager *AdHocCommandManager_;
 		AnnotationsManager *AnnotationsManager_;
-		LastActivityManager *LastActivityManager_;
 		JabberSearchManager *JabberSearchManager_;
 		UserAvatarManager *UserAvatarManager_;
 		RIEXManager *RIEXManager_;
@@ -139,7 +136,6 @@ namespace Xoox
 		SDManager *SDManager_;
 		Xep0313Manager *Xep0313Manager_;
 		CarbonsManager *CarbonsManager_;
-		PingManager *PingManager_;
 
 		CryptHandler *CryptHandler_;
 		ClientConnectionErrorMgr *ErrorMgr_;
@@ -194,7 +190,7 @@ namespace Xoox
 		QHash<QString, QList<VCardCallback_t>> VCardFetchCallbacks_;
 	public:
 		ClientConnection (GlooxAccount*);
-		virtual ~ClientConnection ();
+		~ClientConnection ();
 
 		void SetState (const GlooxAccountState&);
 		GlooxAccountState GetLastState () const;
@@ -226,7 +222,6 @@ namespace Xoox
 		QXmppEntityTimeManager* GetEntityTimeManager () const;
 		CapsManager* GetCapsManager () const;
 		AnnotationsManager* GetAnnotationsManager () const;
-		LastActivityManager* GetLastActivityManager () const;
 		PubSubManager* GetPubSubManager () const;
 		PrivacyListsManager* GetPrivacyListsManager () const;
 		XMPPBobManager* GetBobManager () const;
@@ -239,7 +234,6 @@ namespace Xoox
 		RIEXManager* GetRIEXManager () const;
 		SDManager* GetSDManager () const;
 		Xep0313Manager* GetXep0313Manager () const;
-		PingManager* GetPingManager () const;
 
 		InfoRequestPolicyManager* GetInfoReqPolicyManager () const;
 
