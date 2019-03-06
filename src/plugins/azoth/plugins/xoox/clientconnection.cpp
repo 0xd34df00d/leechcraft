@@ -40,7 +40,6 @@
 #include <QXmppDiscoveryManager.h>
 #include <QXmppTransferManager.h>
 #include <QXmppBookmarkManager.h>
-#include <QXmppEntityTimeManager.h>
 #include <QXmppPubSubIq.h>
 #include <QXmppMessageReceiptManager.h>
 #include <QXmppCallManager.h>
@@ -111,7 +110,6 @@ namespace Xoox
 	, XferManager_ (new QXmppTransferManager)
 	, DiscoveryManager_ (Client_->findExtension<QXmppDiscoveryManager> ())
 	, BMManager_ (new QXmppBookmarkManager)
-	, EntityTimeManager_ (Client_->findExtension<QXmppEntityTimeManager> ())
 	, DeliveryReceiptsManager_ (new QXmppMessageReceiptManager)
 	, CaptchaManager_ (new XMPPCaptchaManager)
 	, BobManager_ (new XMPPBobManager)
@@ -513,11 +511,6 @@ namespace Xoox
 	QXmppTransferManager* ClientConnection::GetTransferManager () const
 	{
 		return XferManager_;
-	}
-
-	QXmppEntityTimeManager* ClientConnection::GetEntityTimeManager () const
-	{
-		return EntityTimeManager_;
 	}
 
 	CapsManager* ClientConnection::GetCapsManager () const

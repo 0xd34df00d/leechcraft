@@ -50,7 +50,6 @@ class QXmppDiscoveryManager;
 class QXmppTransferManager;
 class QXmppDiscoveryIq;
 class QXmppBookmarkManager;
-class QXmppEntityTimeManager;
 class QXmppMessageReceiptManager;
 #ifdef ENABLE_MEDIACALLS
 class QXmppCallManager;
@@ -109,7 +108,6 @@ namespace Xoox
 		QXmppTransferManager *XferManager_;
 		QXmppDiscoveryManager *DiscoveryManager_;
 		QXmppBookmarkManager *BMManager_;
-		QXmppEntityTimeManager *EntityTimeManager_;
 		QXmppMessageReceiptManager *DeliveryReceiptsManager_;
 
 		XMPPCaptchaManager *CaptchaManager_;
@@ -213,7 +211,6 @@ namespace Xoox
 		QXmppDiscoveryManager* GetQXmppDiscoveryManager () const;
 		QXmppVersionManager* GetVersionManager () const;
 		QXmppTransferManager* GetTransferManager () const;
-		QXmppEntityTimeManager* GetEntityTimeManager () const;
 		CapsManager* GetCapsManager () const;
 		AnnotationsManager* GetAnnotationsManager () const;
 		PubSubManager* GetPubSubManager () const;
