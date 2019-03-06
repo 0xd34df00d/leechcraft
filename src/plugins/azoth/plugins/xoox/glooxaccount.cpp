@@ -143,15 +143,14 @@ namespace Xoox
 
 	void GlooxAccount::Init ()
 	{
-		ClientConnection_.reset (new ClientConnection (this));
+		ClientConnection_ = std::make_shared<ClientConnection> (this);
 
 		connect (ClientConnection_.get (),
 				SIGNAL (sslErrors (QList<QSslError>, ICanHaveSslErrors::ISslErrorsReaction_ptr)),
 				this,
 				SIGNAL (sslErrors (QList<QSslError>, ICanHaveSslErrors::ISslErrorsReaction_ptr)));
 
-		TransferManager_.reset (new TransferManager (ClientConnection_->GetTransferManager (),
-					this));
+		TransferManager_ = std::make_shared<TransferManager> (ClientConnection_->GetTransferManager (), this);
 
 		connect (ClientConnection_.get (),
 				SIGNAL (gotConsoleLog (QByteArray, IHaveConsole::PacketDirection, QString)),
