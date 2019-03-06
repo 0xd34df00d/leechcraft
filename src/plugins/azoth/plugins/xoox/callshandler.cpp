@@ -28,13 +28,15 @@
  **********************************************************************/
 
 #include "callshandler.h"
+#include <QHostAddress>
 #include <QXmppCallManager.h>
 #include <util/xpc/util.h>
-#include "glooxaccount.h"
+#include "accountsettingsholder.h"
 #include "clientconnection.h"
 #include "clientconnectionextensionsmanager.h"
-#include "mediacall.h"
 #include "core.h"
+#include "glooxaccount.h"
+#include "mediacall.h"
 
 namespace LeechCraft::Azoth::Xoox
 {
@@ -48,6 +50,24 @@ namespace LeechCraft::Azoth::Xoox
 				&QXmppCallManager::callReceived,
 				this,
 				[this] (QXmppCall *call) { emit Acc_.called (new MediaCall (&Acc_, call)); });
+
+		auto settings = conn.GetSettings ();
+		auto updateSettings = [callMgr]
+		{
+			callMgr->setStunServer (QHostAddress (settings->GetStunHost ()), settings->GetStunPort ());
+			callMgr->setTurnServer (QHostAddress (settings->GetTurnHost ()), settings->GetTurnPort ());
+			callMgr->setTurnUser (settings->GetTurnUser ());
+			callMgr->setTurnPassword (settings->GetTurnPass ());
+		};
+		connect (settings,
+				&AccountSettingsHolder::stunSettingsChanged,
+				this,
+				updateSettings);
+		connect (settings,
+				&AccountSettingsHolder::turnSettingsChanged,
+				this,
+				updateSettings);
+		updateSettings ();
 	}
 
 	QObject* CallsHandler::Call (const QString& id, const QString& variant)
