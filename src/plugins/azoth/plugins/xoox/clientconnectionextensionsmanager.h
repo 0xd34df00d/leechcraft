@@ -33,6 +33,8 @@
 #include <QObject>
 
 class QXmppClient;
+
+class QXmppAcrhiveManager;
 class QXmppDiscoveryManager;
 class QXmppEntityTimeManager;
 
@@ -44,7 +46,8 @@ namespace LeechCraft::Azoth::Xoox
 				class AdHocCommandManager*,
 				class JabberSearchManager*,
 				class LastActivityManager*,
-				class PingManager*
+				class PingManager*,
+				QXmppAcrhiveManager*
 			>;
 
 	using DefaultExtensions = std::tuple<

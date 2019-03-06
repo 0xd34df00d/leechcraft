@@ -29,6 +29,7 @@
 
 #include "clientconnectionextensionsmanager.h"
 #include <QXmppClient.h>
+#include <QXmppArchiveManager.h>
 #include <QXmppDiscoveryManager.h>
 #include <QXmppEntityTimeManager.h>
 #include "adhoccommandmanager.h"

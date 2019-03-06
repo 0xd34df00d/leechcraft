@@ -41,7 +41,6 @@
 #include <QXmppTransferManager.h>
 #include <QXmppBookmarkManager.h>
 #include <QXmppEntityTimeManager.h>
-#include <QXmppArchiveManager.h>
 #include <QXmppPubSubIq.h>
 #include <QXmppMessageReceiptManager.h>
 #include <QXmppCallManager.h>
@@ -113,7 +112,6 @@ namespace Xoox
 	, DiscoveryManager_ (Client_->findExtension<QXmppDiscoveryManager> ())
 	, BMManager_ (new QXmppBookmarkManager)
 	, EntityTimeManager_ (Client_->findExtension<QXmppEntityTimeManager> ())
-	, ArchiveManager_ (new QXmppArchiveManager)
 	, DeliveryReceiptsManager_ (new QXmppMessageReceiptManager)
 	, CaptchaManager_ (new XMPPCaptchaManager)
 	, BobManager_ (new XMPPBobManager)
@@ -205,7 +203,6 @@ namespace Xoox
 		Client_->addExtension (DeliveryReceiptsManager_);
 		Client_->addExtension (MUCManager_);
 		Client_->addExtension (XferManager_);
-		Client_->addExtension (ArchiveManager_);
 		Client_->addExtension (CaptchaManager_);
 		Client_->addExtension (new LegacyEntityTimeExt);
 		Client_->addExtension (PrivacyListsManager_);
