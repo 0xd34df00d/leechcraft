@@ -166,99 +166,98 @@ namespace Xoox
 
 		AccountSettingsHolder* GetSettings () const;
 
+		void AddEntry (const QString&, const QString&, const QStringList&);
+
 		// IAccount
-		QObject* GetQObject ();
-		GlooxProtocol* GetParentProtocol () const;
-		AccountFeatures GetAccountFeatures () const;
-		QList<QObject*> GetCLEntries ();
-		QString GetAccountName () const;
-		QString GetOurNick () const;
-		void RenameAccount (const QString&);
-		QByteArray GetAccountID () const;
-		QList<QAction*> GetActions () const;
-		void OpenConfigurationDialog ();
-		EntryStatus GetState () const;
-		void ChangeState (const EntryStatus&);
-		void Authorize (QObject*);
-		void DenyAuth (QObject*);
-		void AddEntry (const QString&,
-				const QString&, const QStringList&);
-		void RequestAuth (const QString&, const QString&,
-				const QString&, const QStringList&);
-		void RemoveEntry (QObject*);
-		QObject* GetTransferManager () const;
+		QObject* GetQObject () override;
+		GlooxProtocol* GetParentProtocol () const override;
+		AccountFeatures GetAccountFeatures () const override;
+		QList<QObject*> GetCLEntries () override;
+		QString GetAccountName () const override;
+		QString GetOurNick () const override;
+		void RenameAccount (const QString&) override;
+		QByteArray GetAccountID () const override;
+		QList<QAction*> GetActions () const override;
+		void OpenConfigurationDialog () override;
+		EntryStatus GetState () const override;
+		void ChangeState (const EntryStatus&) override;
+		void Authorize (QObject*) override;
+		void DenyAuth (QObject*) override;
+		void RequestAuth (const QString&, const QString&, const QString&, const QStringList&) override;
+		void RemoveEntry (QObject*) override;
+		QObject* GetTransferManager () const override;
 
 		// IExtSelfInfoAccount
-		QObject* GetSelfContact () const;
-		QIcon GetAccountIcon () const;
+		QObject* GetSelfContact () const override;
+		QIcon GetAccountIcon () const override;
 
 		// IHaveServiceDiscovery
-		QObject* CreateSDSession ();
-		QString GetDefaultQuery () const;
+		QObject* CreateSDSession () override;
+		QString GetDefaultQuery () const override;
 
 		// IHaveSearch
-		QObject* CreateSearchSession ();
-		QString GetDefaultSearchServer () const;
+		QObject* CreateSearchSession () override;
+		QString GetDefaultSearchServer () const override;
 
 		// IHaveConsole
-		PacketFormat GetPacketFormat () const;
-		void SetConsoleEnabled (bool);
+		PacketFormat GetPacketFormat () const override;
+		void SetConsoleEnabled (bool) override;
 
 		// IHaveMicroblogs
-		void SubmitPost (const Post&);
+		void SubmitPost (const Post&) override;
 
 		// ISupportTune, ISupportMood, ISupportActivity
-		void PublishTune (const QMap<QString, QVariant>&);
-		void SetMood (const MoodInfo&);
-		void SetActivity (const ActivityInfo&);
+		void PublishTune (const QMap<QString, QVariant>&) override;
+		void SetMood (const MoodInfo&) override;
+		void SetActivity (const ActivityInfo&) override;
 
 		// ISupportGeolocation
-		void SetGeolocationInfo (const GeolocationInfo_t&);
-		GeolocationInfo_t GetUserGeolocationInfo (QObject*, const QString&) const;
+		void SetGeolocationInfo (const GeolocationInfo_t&) override;
+		GeolocationInfo_t GetUserGeolocationInfo (QObject*, const QString&) const override;
 
 #ifdef ENABLE_MEDIACALLS
 		// ISupportMediaCalls
-		MediaCallFeatures GetMediaCallFeatures () const;
-		QObject* Call (const QString& id, const QString& variant);
+		MediaCallFeatures GetMediaCallFeatures () const override;
+		QObject* Call (const QString& id, const QString& variant) override;
 #endif
 
 		// ISupportRIEX
-		void SuggestItems (QList<RIEXItem>, QObject*, QString);
+		void SuggestItems (QList<RIEXItem>, QObject*, QString) override;
 
 		// ISupportBookmarks
-		QWidget* GetMUCBookmarkEditorWidget ();
-		QVariantList GetBookmarkedMUCs () const;
-		void SetBookmarkedMUCs (const QVariantList&);
+		QWidget* GetMUCBookmarkEditorWidget () override;
+		QVariantList GetBookmarkedMUCs () const override;
+		void SetBookmarkedMUCs (const QVariantList&) override;
 
 		// ISupportLastActivity
-		QObject* RequestLastActivity (QObject*, const QString&);
-		QObject* RequestLastActivity (const QString&);
+		QObject* RequestLastActivity (QObject*, const QString&) override;
+		QObject* RequestLastActivity (const QString&) override;
 
 		// IRegManagedAccount
-		bool SupportsFeature (Feature) const;
-		void UpdateServerPassword (const QString& newPass);
-		void DeregisterAccount ();
+		bool SupportsFeature (Feature) const override;
+		void UpdateServerPassword (const QString& newPass) override;
+		void DeregisterAccount () override;
 
 		// IHaveServerHistory
-		bool HasFeature (ServerHistoryFeature) const;
-		void OpenServerHistoryConfiguration ();
-		QAbstractItemModel* GetServerContactsModel () const;
-		void FetchServerHistory (const QModelIndex&, const QByteArray&, int);
-		DefaultSortParams GetSortParams () const;
-		QFuture<DatedFetchResult_t> FetchServerHistory (const QDateTime&);
+		bool HasFeature (ServerHistoryFeature) const override;
+		void OpenServerHistoryConfiguration () override;
+		QAbstractItemModel* GetServerContactsModel () const override;
+		void FetchServerHistory (const QModelIndex&, const QByteArray&, int) override;
+		DefaultSortParams GetSortParams () const override;
+		QFuture<DatedFetchResult_t> FetchServerHistory (const QDateTime&) override;
 
 		// IHaveBlacklists
-		bool SupportsBlacklists () const;
-		void SuggestToBlacklist (const QList<ICLEntry*>&);
+		bool SupportsBlacklists () const override;
+		void SuggestToBlacklist (const QList<ICLEntry*>&) override;
 
 #ifdef ENABLE_CRYPT
 		// ISupportPGP
-		void SetPrivateKey (const QCA::PGPKey&);
-		QCA::PGPKey GetPrivateKey () const;
-		void SetEntryKey (QObject*, const QCA::PGPKey&);
-		QCA::PGPKey GetEntryKey (QObject* entry) const;
-		GPGExceptions::MaybeException_t SetEncryptionEnabled (QObject*, bool);
-		bool IsEncryptionEnabled (QObject*) const;
+		void SetPrivateKey (const QCA::PGPKey&) override;
+		QCA::PGPKey GetPrivateKey () const override;
+		void SetEntryKey (QObject*, const QCA::PGPKey&) override;
+		QCA::PGPKey GetEntryKey (QObject* entry) const override;
+		GPGExceptions::MaybeException_t SetEncryptionEnabled (QObject*, bool) override;
+		bool IsEncryptionEnabled (QObject*) const override;
 #endif
 
 		QString GetNick () const;
@@ -302,45 +301,45 @@ namespace Xoox
 		void handleIncomingCall (QXmppCall*);
 #endif
 	signals:
-		void gotCLItems (const QList<QObject*>&);
-		void removedCLItems (const QList<QObject*>&);
-		void accountRenamed (const QString&);
-		void authorizationRequested (QObject*, const QString&);
-		void itemSubscribed (QObject*, const QString&);
-		void itemUnsubscribed (QObject*, const QString&);
-		void itemUnsubscribed (const QString&, const QString&);
-		void itemCancelledSubscription (QObject*, const QString&);
-		void itemGrantedSubscription (QObject*, const QString&);
-		void statusChanged (const EntryStatus&);
+		void gotCLItems (const QList<QObject*>&) override;
+		void removedCLItems (const QList<QObject*>&) override;
+		void accountRenamed (const QString&) override;
+		void authorizationRequested (QObject*, const QString&) override;
+		void itemSubscribed (QObject*, const QString&) override;
+		void itemUnsubscribed (QObject*, const QString&) override;
+		void itemUnsubscribed (const QString&, const QString&) override;
+		void itemCancelledSubscription (QObject*, const QString&) override;
+		void itemGrantedSubscription (QObject*, const QString&) override;
+		void statusChanged (const EntryStatus&) override;
 		void mucInvitationReceived (const QVariantMap&,
-				const QString&, const QString&);
+				const QString&, const QString&) override;
 
-		void gotSDSession (QObject*);
+		void gotSDSession (QObject*) override;
 
-		void bookmarksChanged ();
+		void bookmarksChanged () override;
 
 		void riexItemsSuggested (QList<LeechCraft::Azoth::RIEXItem> items,
-				QObject*, QString);
+				QObject*, QString) override;
 
-		void gotConsolePacket (const QByteArray&, IHaveConsole::PacketDirection, const QString&);
+		void gotConsolePacket (const QByteArray&, IHaveConsole::PacketDirection, const QString&) override;
 
-		void geolocationInfoChanged (const QString&, QObject*);
+		void geolocationInfoChanged (const QString&, QObject*) override;
 
-		void serverPasswordUpdated (const QString&);
+		void serverPasswordUpdated (const QString&) override;
 
 		void serverHistoryFetched (const QModelIndex&,
-				const QByteArray&, const SrvHistMessages_t&);
+				const QByteArray&, const SrvHistMessages_t&) override;
 
 		void sslErrors (const QList<QSslError>&,
-				const ICanHaveSslErrors::ISslErrorsReaction_ptr&);
+				const ICanHaveSslErrors::ISslErrorsReaction_ptr&) override;
 
 #ifdef ENABLE_MEDIACALLS
-		void called (QObject*);
+		void called (QObject*) override;
 #endif
 
 #ifdef ENABLE_CRYPT
-		void signatureVerified (QObject*, bool);
-		void encryptionStateChanged (QObject*, bool);
+		void signatureVerified (QObject*, bool) override;
+		void encryptionStateChanged (QObject*, bool) override;
 #endif
 
 		void rosterSaveRequested ();
