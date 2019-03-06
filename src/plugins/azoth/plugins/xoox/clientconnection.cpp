@@ -107,7 +107,6 @@ namespace Xoox
 	: Account_ (account)
 	, Settings_ (account->GetSettings ())
 	, Client_ (new QXmppClient (this))
-	, ExtsMgr_ (std::make_unique<ClientConnectionExtensionsManager> (*this, *Client_))
 	, FileLogSink_ (new QXmppLogger (this))
 	, MUCManager_ (new QXmppMucManager)
 	, XferManager_ (new QXmppTransferManager)
@@ -135,6 +134,7 @@ namespace Xoox
 	, ErrorMgr_ (new ClientConnectionErrorMgr (this))
 	, InfoReqPolicyMgr_ (new InfoRequestPolicyManager (this))
 	, DiscoManagerWrapper_ (new DiscoManagerWrapper (DiscoveryManager_, this))
+	, ExtsMgr_ (std::make_unique<ClientConnectionExtensionsManager> (*this, *Client_))
 	, OurJID_ (Settings_->GetFullJID ())
 	, SelfContact_ (new SelfContact (OurJID_, account))
 	, CapsManager_ (new CapsManager (DiscoveryManager_, this,

@@ -104,8 +104,6 @@ namespace Xoox
 
 		QXmppClient *Client_;
 
-		std::unique_ptr<ClientConnectionExtensionsManager> ExtsMgr_;
-
 		QXmppLogger *FileLogSink_;
 
 		QXmppMucManager *MUCManager_;
@@ -139,6 +137,8 @@ namespace Xoox
 		InfoRequestPolicyManager *InfoReqPolicyMgr_;
 
 		DiscoManagerWrapper *DiscoManagerWrapper_;
+
+		std::unique_ptr<ClientConnectionExtensionsManager> ExtsMgr_;
 
 		QString OurJID_;
 		QString OurBareJID_;
