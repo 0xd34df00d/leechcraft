@@ -29,6 +29,8 @@
 
 #include "clientconnectionextensionsmanager.h"
 #include <QXmppClient.h>
+#include <QXmppDiscoveryManager.h>
+#include <QXmppEntityTimeManager.h>
 #include "adhoccommandmanager.h"
 #include "jabbersearchmanager.h"
 #include "lastactivitymanager.h"
@@ -38,6 +40,15 @@ namespace LeechCraft::Azoth::Xoox
 {
 	namespace
 	{
+		auto MakeDefaultExtensions (QXmppClient& client)
+		{
+			return std::apply ([&client] (auto... types)
+					{
+						return DefaultExtensions { client.findExtension<std::remove_pointer_t<decltype (types)>> ()... };
+					},
+					DefaultExtensions {});
+		}
+
 		template<typename T>
 		T* MakeForType (ClientConnection& conn)
 		{
@@ -60,6 +71,7 @@ namespace LeechCraft::Azoth::Xoox
 	ClientConnectionExtensionsManager::ClientConnectionExtensionsManager (ClientConnection& conn,
 			QXmppClient& client, QObject *parent)
 	: QObject { parent }
+	, DefaultExtensions_ { MakeDefaultExtensions (client) }
 	, SimpleExtensions_ { MakeSimpleExtensions (conn) }
 	{
 		std::apply ([&client] (auto... exts) { (client.addExtension (exts), ...); },

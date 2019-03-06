@@ -33,6 +33,8 @@
 #include <QObject>
 
 class QXmppClient;
+class QXmppDiscoveryManager;
+class QXmppEntityTimeManager;
 
 namespace LeechCraft::Azoth::Xoox
 {
@@ -45,13 +47,33 @@ namespace LeechCraft::Azoth::Xoox
 				class PingManager*
 			>;
 
+	using DefaultExtensions = std::tuple<
+				QXmppDiscoveryManager*,
+				QXmppEntityTimeManager*
+			>;
+
 	class ClientConnectionExtensionsManager : public QObject
 	{
+		DefaultExtensions DefaultExtensions_;
 		SimpleExtensions SimpleExtensions_;
 	public:
 		explicit ClientConnectionExtensionsManager (ClientConnection&, QXmppClient&, QObject* = nullptr);
 
 		template<typename T>
-		T& Get () { return *std::get<T*> (SimpleExtensions_); }
+		T& Get ()
+		{
+			if constexpr (HasExt<T> (DefaultExtensions {}))
+				return *std::get<T*> (DefaultExtensions_);
+			else if constexpr (HasExt<T> (SimpleExtensions {}))
+				return *std::get<T*> (SimpleExtensions_);
+			else
+				static_assert (std::is_same_v<T, struct Dummy>, "Unable to find the given extension type");
+		}
+	private:
+		template<typename T, typename... ExtsTypes>
+		constexpr static bool HasExt (const std::tuple<ExtsTypes...>&)
+		{
+			return (std::is_same_v<T*, ExtsTypes> || ...);
+		}
 	};
 }
