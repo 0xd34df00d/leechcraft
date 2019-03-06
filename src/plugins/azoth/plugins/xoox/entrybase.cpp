@@ -521,8 +521,8 @@ namespace Xoox
 				LastEntityTimeRequest_.secsTo (now) < 60)
 			return;
 
-		auto timeMgr = Account_->GetClientConnection ()->GetEntityTimeManager ();
-		connect (timeMgr,
+		auto& timeMgr = Account_->GetClientConnection ()->GetExtensionsManager ().Get<QXmppEntityTimeManager> ();
+		connect (&timeMgr,
 				SIGNAL (timeReceived (QXmppEntityTimeIq)),
 				this,
 				SLOT (handleTimeReceived (QXmppEntityTimeIq)),
@@ -534,13 +534,13 @@ namespace Xoox
 
 		if (jid.contains ('/'))
 		{
-			timeMgr->requestTime (jid);
+			timeMgr.requestTime (jid);
 			return;
 		}
 
 		for (const auto& variant : Variants ())
 			if (!variant.isEmpty ())
-				timeMgr->requestTime (jid + '/' + variant);
+				timeMgr.requestTime (jid + '/' + variant);
 	}
 
 	QObject* EntryBase::Ping (const QString& variant)
