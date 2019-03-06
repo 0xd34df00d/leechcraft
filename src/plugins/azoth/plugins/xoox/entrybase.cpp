@@ -521,7 +521,8 @@ namespace Xoox
 				LastEntityTimeRequest_.secsTo (now) < 60)
 			return;
 
-		connect (Account_->GetClientConnection ()->GetEntityTimeManager (),
+		auto timeMgr = Account_->GetClientConnection ()->GetEntityTimeManager ();
+		connect (timeMgr,
 				SIGNAL (timeReceived (QXmppEntityTimeIq)),
 				this,
 				SLOT (handleTimeReceived (QXmppEntityTimeIq)),
@@ -531,7 +532,6 @@ namespace Xoox
 
 		auto jid = GetJID ();
 
-		auto timeMgr = Account_->GetClientConnection ()->GetEntityTimeManager ();
 		if (jid.contains ('/'))
 		{
 			timeMgr->requestTime (jid);
