@@ -60,8 +60,6 @@
 #include "glooxprotocol.h"
 #include "offlinedatasource.h"
 
-class QXmppCall;
-
 namespace LeechCraft
 {
 namespace Azoth
@@ -87,6 +85,7 @@ namespace Xoox
 	class GlooxMessage;
 	class TransferManager;
 	class Xep0313ModelManager;
+	class CallsHandler;
 
 	class GlooxAccount : public QObject
 					   , public IAccount
@@ -150,6 +149,9 @@ namespace Xoox
 
 		std::shared_ptr<ClientConnection> ClientConnection_;
 		std::shared_ptr<TransferManager> TransferManager_;
+#ifdef ENABLE_MEDIACALLS
+		std::shared_ptr<CallsHandler> CallsHandler_;
+#endif
 
 		QHash<QObject*, QPair<QString, QString>> ExistingEntry2JoinConflict_;
 
@@ -297,9 +299,6 @@ namespace Xoox
 		void handleCarbonsToggled (bool);
 		void handleServerHistoryFetched (const QString&,
 				const QString&, SrvHistMessages_t);
-#ifdef ENABLE_MEDIACALLS
-		void handleIncomingCall (QXmppCall*);
-#endif
 	signals:
 		void gotCLItems (const QList<QObject*>&) override;
 		void removedCLItems (const QList<QObject*>&) override;

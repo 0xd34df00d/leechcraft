@@ -45,9 +45,6 @@
 #include <interfaces/azoth/iprotocol.h>
 #include <interfaces/azoth/iproxyobject.h>
 
-#ifdef ENABLE_MEDIACALLS
-#include "mediacall.h"
-#endif
 #ifdef ENABLE_CRYPT
 #include "pgpmanager.h"
 #endif
@@ -84,6 +81,7 @@
 #include "addtoblockedrunner.h"
 #include "util.h"
 #include "selfcontact.h"
+#include "callshandler.h"
 
 namespace LeechCraft
 {
@@ -152,6 +150,10 @@ namespace Xoox
 
 		TransferManager_ = std::make_shared<TransferManager> (ClientConnection_->GetTransferManager (), this);
 
+#ifdef ENABLE_MEDIACALLS
+		CallsHandler_ = std::make_shared<CallsHandler> (*this, *ClientConnection_);
+#endif
+
 		connect (ClientConnection_.get (),
 				SIGNAL (gotConsoleLog (QByteArray, IHaveConsole::PacketDirection, QString)),
 				this,
@@ -217,13 +219,6 @@ namespace Xoox
 				SIGNAL (serverHistoryFetched (QString, QString, SrvHistMessages_t)),
 				this,
 				SLOT (handleServerHistoryFetched (QString, QString, SrvHistMessages_t)));
-
-#ifdef ENABLE_MEDIACALLS
-		connect (ClientConnection_->GetCallManager (),
-				SIGNAL (callReceived (QXmppCall*)),
-				this,
-				SLOT (handleIncomingCall (QXmppCall*)));
-#endif
 
 		regenAccountIcon (SettingsHolder_->GetJID ());
 
@@ -493,36 +488,7 @@ namespace Xoox
 
 	QObject* GlooxAccount::Call (const QString& id, const QString& variant)
 	{
-		if (id == qobject_cast<ICLEntry*> (GetSelfContact ())->GetEntryID ())
-		{
-			Core::Instance ().SendEntity (Util::MakeNotification ("LeechCraft",
-						tr ("Why would you call yourself?"),
-						Priority::Warning));
-
-			return 0;
-		}
-
-		QString target = GlooxCLEntry::JIDFromID (this, id);
-
-		QString var = variant;
-		if (var.isEmpty ())
-		{
-			QObject *entryObj = GetClientConnection ()->
-					GetCLEntry (target, QString ());
-			GlooxCLEntry *entry = qobject_cast<GlooxCLEntry*> (entryObj);
-			if (entry)
-				var = entry->Variants ().value (0);
-			else
-				qWarning () << Q_FUNC_INFO
-						<< "null entry for"
-						<< target;
-		}
-		if (!var.isEmpty ())
-			target += '/' + var;
-
-		const auto call = new MediaCall (this, ClientConnection_->GetCallManager ()->call (target));
-		emit called (call);
-		return call;
+		return CallsHandler_->Call (id, variant);
 	}
 #endif
 
@@ -1222,13 +1188,6 @@ namespace Xoox
 
 		emit serverHistoryFetched (index, id.toUtf8 (), messages);
 	}
-
-#ifdef ENABLE_MEDIACALLS
-	void GlooxAccount::handleIncomingCall (QXmppCall *call)
-	{
-		emit called (new MediaCall (this, call));
-	}
-#endif
 }
 }
 }
