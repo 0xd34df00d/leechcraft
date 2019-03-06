@@ -188,6 +188,8 @@ namespace Xoox
 		GlooxAccountState GetLastState () const;
 		bool IsConnected () const;
 
+		AccountSettingsHolder* GetSettings () const;
+
 		void SetPassword (const QString&);
 
 		QString GetOurJID () const;
