@@ -1038,11 +1038,6 @@ namespace Xoox
 		emit gotSDSession (sd);
 	}
 
-	void GlooxAccount::RequestRosterSave ()
-	{
-		emit rosterSaveRequested ();
-	}
-
 	QByteArray GlooxAccount::Serialize () const
 	{
 		quint16 version = 9;

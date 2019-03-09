@@ -276,8 +276,6 @@ namespace Xoox
 
 		void CreateSDForResource (const QString&);
 
-		void RequestRosterSave ();
-
 		QByteArray Serialize () const;
 		static GlooxAccount* Deserialize (const QByteArray&, GlooxProtocol*);
 
