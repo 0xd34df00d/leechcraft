@@ -188,11 +188,6 @@ namespace Xoox
 				this,
 				SIGNAL (removedCLItems (QList<QObject*>)));
 
-		connect (ClientConnection_.get (),
-				SIGNAL (rosterItemSubscribed (QObject*, QString)),
-				this,
-				SIGNAL (itemSubscribed (QObject*, QString)));
-
 		connect (ClientConnection_->GetXep0313Manager (),
 				SIGNAL (serverHistoryFetched (QString, QString, SrvHistMessages_t)),
 				this,
