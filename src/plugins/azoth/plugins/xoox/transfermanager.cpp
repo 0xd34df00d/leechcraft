@@ -31,6 +31,7 @@
 #include <QXmppTransferManager.h>
 #include "accountsettingsholder.h"
 #include "clientconnection.h"
+#include "clientconnectionextensionsmanager.h"
 #include "glooxaccount.h"
 #include "glooxclentry.h"
 #include "serverinfostorage.h"
@@ -44,7 +45,7 @@ namespace Xoox
 {
 	TransferManager::TransferManager (ClientConnection& conn, GlooxAccount& account)
 	: Conn_ { conn }
-	, Manager_ { conn.GetTransferManager () }
+	, Manager_ { conn.GetExtensionsManager ().Get<QXmppTransferManager> () }
 	, Account_ { account }
 	{
 		connect (&Manager_,

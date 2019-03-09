@@ -47,7 +47,6 @@ class QXmppMessage;
 class QXmppMucManager;
 class QXmppClient;
 class QXmppDiscoveryManager;
-class QXmppTransferManager;
 class QXmppDiscoveryIq;
 class QXmppBookmarkManager;
 class QXmppMessageReceiptManager;
@@ -101,7 +100,6 @@ namespace Xoox
 		QXmppLogger *FileLogSink_;
 
 		QXmppMucManager *MUCManager_;
-		QXmppTransferManager *XferManager_;
 		QXmppDiscoveryManager *DiscoveryManager_;
 		QXmppBookmarkManager *BMManager_;
 		QXmppMessageReceiptManager *DeliveryReceiptsManager_;
@@ -205,7 +203,6 @@ namespace Xoox
 		QXmppMucManager* GetMUCManager () const;
 		QXmppDiscoveryManager* GetQXmppDiscoveryManager () const;
 		QXmppVersionManager* GetVersionManager () const;
-		QXmppTransferManager* GetTransferManager () const;
 		CapsManager* GetCapsManager () const;
 		AnnotationsManager* GetAnnotationsManager () const;
 		PubSubManager* GetPubSubManager () const;

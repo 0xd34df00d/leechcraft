@@ -33,6 +33,7 @@
 #include <QXmppCallManager.h>
 #include <QXmppDiscoveryManager.h>
 #include <QXmppEntityTimeManager.h>
+#include <QXmppTransferManager.h>
 #include "adhoccommandmanager.h"
 #include "jabbersearchmanager.h"
 #include "lastactivitymanager.h"

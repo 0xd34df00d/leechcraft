@@ -38,6 +38,7 @@ class QXmppArchiveManager;
 class QXmppCallManager;
 class QXmppDiscoveryManager;
 class QXmppEntityTimeManager;
+class QXmppTransferManager;
 
 namespace LeechCraft::Azoth::Xoox
 {
@@ -50,8 +51,9 @@ namespace LeechCraft::Azoth::Xoox
 				class PingManager*,
 				QXmppArchiveManager*,
 #ifdef ENABLE_MEDIACALLS
-				QXmppCallManager*
+				QXmppCallManager*,
 #endif
+				QXmppTransferManager*
 			>;
 
 	using DefaultExtensions = std::tuple<

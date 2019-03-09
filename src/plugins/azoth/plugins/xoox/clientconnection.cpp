@@ -37,7 +37,6 @@
 #include <QXmppRosterManager.h>
 #include <QXmppVCardManager.h>
 #include <QXmppDiscoveryManager.h>
-#include <QXmppTransferManager.h>
 #include <QXmppBookmarkManager.h>
 #include <QXmppPubSubIq.h>
 #include <QXmppMessageReceiptManager.h>
@@ -105,7 +104,6 @@ namespace Xoox
 	, Client_ (new QXmppClient (this))
 	, FileLogSink_ (new QXmppLogger (this))
 	, MUCManager_ (new QXmppMucManager)
-	, XferManager_ (new QXmppTransferManager)
 	, DiscoveryManager_ (Client_->findExtension<QXmppDiscoveryManager> ())
 	, BMManager_ (new QXmppBookmarkManager)
 	, DeliveryReceiptsManager_ (new QXmppMessageReceiptManager)
@@ -194,7 +192,6 @@ namespace Xoox
 		Client_->addExtension (PubSubManager_);
 		Client_->addExtension (DeliveryReceiptsManager_);
 		Client_->addExtension (MUCManager_);
-		Client_->addExtension (XferManager_);
 		Client_->addExtension (CaptchaManager_);
 		Client_->addExtension (new LegacyEntityTimeExt);
 		Client_->addExtension (PrivacyListsManager_);
@@ -482,11 +479,6 @@ namespace Xoox
 	QXmppVersionManager* ClientConnection::GetVersionManager () const
 	{
 		return &Client_->versionManager ();
-	}
-
-	QXmppTransferManager* ClientConnection::GetTransferManager () const
-	{
-		return XferManager_;
 	}
 
 	CapsManager* ClientConnection::GetCapsManager () const
