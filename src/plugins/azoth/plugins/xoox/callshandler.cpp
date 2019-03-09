@@ -36,7 +36,10 @@
 #include "clientconnectionextensionsmanager.h"
 #include "core.h"
 #include "glooxaccount.h"
+
+#ifdef ENABLE_MEDIACALLS
 #include "mediacall.h"
+#endif
 
 namespace LeechCraft::Azoth::Xoox
 {
@@ -45,6 +48,7 @@ namespace LeechCraft::Azoth::Xoox
 	, Acc_ { acc }
 	, Conn_ { conn }
 	{
+#ifdef ENABLE_MEDIACALLS
 		auto& callMgr = conn.GetExtensionsManager ().Get<QXmppCallManager> ();
 		connect (&callMgr,
 				&QXmppCallManager::callReceived,
@@ -68,10 +72,15 @@ namespace LeechCraft::Azoth::Xoox
 				this,
 				updateSettings);
 		updateSettings ();
+#else
+		Q_UNUSED (Acc_)
+		Q_UNUSED (Conn_)
+#endif
 	}
 
 	QObject* CallsHandler::Call (const QString& id, const QString& variant)
 	{
+#ifdef ENABLE_MEDIACALLS
 		if (id == qobject_cast<ICLEntry*> (Acc_.GetSelfContact ())->GetEntryID ())
 		{
 			Core::Instance ().SendEntity (Util::MakeNotification ("LeechCraft",
@@ -100,5 +109,10 @@ namespace LeechCraft::Azoth::Xoox
 		const auto call = new MediaCall (&Acc_, callMgr.call (target));
 		emit Acc_.called (call);
 		return call;
+#else
+		Q_UNUSED (id)
+		Q_UNUSED (variant)
+		return nullptr;
+#endif
 	}
 }
