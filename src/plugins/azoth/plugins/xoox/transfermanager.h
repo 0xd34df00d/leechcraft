@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_TRANSFERMANAGER_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_TRANSFERMANAGER_H
+#pragma once
+
 #include <interfaces/azoth/itransfermanager.h>
 
 class QXmppTransferManager;
@@ -63,5 +63,3 @@ namespace Xoox
 }
 }
 }
-
-#endif
