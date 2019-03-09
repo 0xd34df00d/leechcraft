@@ -176,9 +176,9 @@ namespace Xoox
 				SIGNAL (statusChanged (EntryStatus)));
 
 		connect (ClientConnection_.get (),
-				SIGNAL (gotRosterItems (QList<QObject*>)),
+				&ClientConnection::gotRosterItems,
 				this,
-				SLOT (handleGotRosterItems (QList<QObject*>)));
+				&GlooxAccount::gotCLItems);
 		connect (ClientConnection_.get (),
 				SIGNAL (rosterItemRemoved (QObject*)),
 				this,
@@ -1085,11 +1085,6 @@ namespace Xoox
 			const auto& pair = ExistingEntry2JoinConflict_.take (entry);
 			JoinRoom (pair.first, pair.second, {});
 		}
-	}
-
-	void GlooxAccount::handleGotRosterItems (const QList<QObject*>& items)
-	{
-		emit gotCLItems (items);
 	}
 
 	void GlooxAccount::handleServerAuthFailed ()

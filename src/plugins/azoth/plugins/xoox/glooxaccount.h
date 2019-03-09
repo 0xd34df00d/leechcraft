@@ -286,7 +286,6 @@ namespace Xoox
 		void HandleClientConnectionAvailable (bool);
 	public slots:
 		void handleEntryRemoved (QObject*);
-		void handleGotRosterItems (const QList<QObject*>&);
 	private slots:
 		void regenAccountIcon (const QString&);
 		void handleServerAuthFailed ();
