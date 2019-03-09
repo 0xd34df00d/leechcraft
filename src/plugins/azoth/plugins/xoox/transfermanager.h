@@ -41,16 +41,19 @@ namespace Azoth
 namespace Xoox
 {
 	class GlooxAccount;
+	class ClientConnection;
+
 	class TransferManager : public QObject
 						  , public ITransferManager
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::ITransferManager)
 
-		QXmppTransferManager *Manager_;
-		GlooxAccount *Account_;
+		ClientConnection& Conn_;
+		QXmppTransferManager& Manager_;
+		GlooxAccount& Account_;
 	public:
-		TransferManager (QXmppTransferManager*, GlooxAccount*);
+		TransferManager (ClientConnection&, GlooxAccount&);
 
 		bool IsAvailable () const override;
 		QObject* SendFile (const QString&, const QString&, const QString&, const QString&) override;

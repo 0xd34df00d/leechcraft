@@ -148,7 +148,7 @@ namespace Xoox
 				this,
 				SIGNAL (sslErrors (QList<QSslError>, ICanHaveSslErrors::ISslErrorsReaction_ptr)));
 
-		TransferManager_ = std::make_shared<TransferManager> (ClientConnection_->GetTransferManager (), this);
+		TransferManager_ = std::make_shared<TransferManager> (*ClientConnection_, *this);
 
 #ifdef ENABLE_MEDIACALLS
 		CallsHandler_ = std::make_shared<CallsHandler> (*this, *ClientConnection_);

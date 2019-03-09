@@ -29,11 +29,11 @@
 
 #include "transfermanager.h"
 #include <QXmppTransferManager.h>
-#include "transferjob.h"
-#include "glooxaccount.h"
-#include "clientconnection.h"
-#include "glooxclentry.h"
 #include "accountsettingsholder.h"
+#include "clientconnection.h"
+#include "glooxaccount.h"
+#include "glooxclentry.h"
+#include "transferjob.h"
 
 namespace LeechCraft
 {
@@ -41,12 +41,12 @@ namespace Azoth
 {
 namespace Xoox
 {
-	TransferManager::TransferManager (QXmppTransferManager *manager, GlooxAccount *account)
-	: QObject (manager)
-	, Manager_ (manager)
-	, Account_ (account)
+	TransferManager::TransferManager (ClientConnection& conn, GlooxAccount& account)
+	: Conn_ { conn }
+	, Manager_ { conn.GetTransferManager () }
+	, Account_ { account }
 	{
-		connect (Manager_,
+		connect (&Manager_,
 				SIGNAL (fileReceived (QXmppTransferJob*)),
 				this,
 				SLOT (handleFileReceived (QXmppTransferJob*)));
@@ -54,39 +54,37 @@ namespace Xoox
 
 	bool TransferManager::IsAvailable () const
 	{
-		const auto settings = Account_->GetSettings ();
+		const auto settings = Account_.GetSettings ();
 		return settings->GetFTMethods () != QXmppTransferJob::NoMethod;
 	}
 
 	QObject* TransferManager::SendFile (const QString& id,
 			const QString& sourceVar, const QString& name, const QString& comment)
 	{
-		QString target = GlooxCLEntry::JIDFromID (Account_, id);
+		QString target = GlooxCLEntry::JIDFromID (&Account_, id);
 		QString var = sourceVar;
 		if (var.isEmpty ())
 		{
-			QObject *entryObj = Account_->GetClientConnection ()->
-					GetCLEntry (target, QString ());
+			QObject *entryObj = Conn_.GetCLEntry (target, QString ());
 			ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
 			if (!entry)
-				return 0;
+				return nullptr;
 			var = entry->Variants ().value (0);
 		}
 		if (!var.isEmpty ())
 			target += '/' + var;
-		return new TransferJob (Manager_->sendFile (target, name, comment), this);
+		return new TransferJob (Manager_.sendFile (target, name, comment), this);
 	}
 
 	GlooxAccount* TransferManager::GetAccount () const
 	{
-		return Account_;
+		return &Account_;
 	}
 
 	void TransferManager::handleFileReceived (QXmppTransferJob *job)
 	{
-		auto cc = Account_->GetClientConnection ();
-		if (!cc->GetCLEntry (job->jid ()))
-			cc->CreateEntry (job->jid ());
+		if (!Conn_.GetCLEntry (job->jid ()))
+			Conn_.CreateEntry (job->jid ());
 
 		emit fileOffered (new TransferJob (job, this));
 	}
