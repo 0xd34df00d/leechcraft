@@ -54,8 +54,8 @@ namespace Xoox
 		static bool Supports0313 (const QStringList& features);
 		static QString GetNsUri ();
 
-		QStringList discoveryFeatures () const;
-		bool handleStanza (const QDomElement&);
+		QStringList discoveryFeatures () const override;
+		bool handleStanza (const QDomElement&) override;
 
 		void RequestPrefs ();
 		void SetPrefs (const Xep0313PrefIq&);
