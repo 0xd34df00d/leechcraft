@@ -187,35 +187,11 @@ namespace Xoox
 				SIGNAL (rosterItemsRemoved (QList<QObject*>)),
 				this,
 				SIGNAL (removedCLItems (QList<QObject*>)));
-		connect (ClientConnection_.get (),
-				SIGNAL (gotSubscriptionRequest (QObject*, QString)),
-				this,
-				SIGNAL (authorizationRequested (QObject*, QString)));
 
 		connect (ClientConnection_.get (),
 				SIGNAL (rosterItemSubscribed (QObject*, QString)),
 				this,
 				SIGNAL (itemSubscribed (QObject*, QString)));
-		connect (ClientConnection_.get (),
-				SIGNAL (rosterItemUnsubscribed (QObject*, QString)),
-				this,
-				SIGNAL (itemUnsubscribed (QObject*, QString)));
-		connect (ClientConnection_.get (),
-				SIGNAL (rosterItemUnsubscribed (QString, QString)),
-				this,
-				SIGNAL (itemUnsubscribed (QString, QString)));
-		connect (ClientConnection_.get (),
-				SIGNAL (rosterItemCancelledSubscription (QObject*, QString)),
-				this,
-				SIGNAL (itemCancelledSubscription (QObject*, QString)));
-		connect (ClientConnection_.get (),
-				SIGNAL (rosterItemGrantedSubscription (QObject*, QString)),
-				this,
-				SIGNAL (itemGrantedSubscription (QObject*, QString)));
-		connect (ClientConnection_.get (),
-				SIGNAL (gotMUCInvitation (QVariantMap, QString, QString)),
-				this,
-				SIGNAL (mucInvitationReceived (QVariantMap, QString, QString)));
 
 		connect (ClientConnection_->GetXep0313Manager (),
 				SIGNAL (serverHistoryFetched (QString, QString, SrvHistMessages_t)),

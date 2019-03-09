@@ -318,12 +318,6 @@ namespace Xoox
 		void rosterItemRemoved (QObject*);
 		void rosterItemUpdated (QObject*);
 		void rosterItemSubscribed (QObject*, const QString&);
-		void rosterItemUnsubscribed (QObject*, const QString&);
-		void rosterItemUnsubscribed (const QString&, const QString&);
-		void rosterItemCancelledSubscription (QObject*, const QString&);
-		void rosterItemGrantedSubscription (QObject*, const QString&);
-		void gotSubscriptionRequest (QObject*, const QString&);
-		void gotMUCInvitation (const QVariantMap&, const QString&, const QString&);
 
 		void gotConsoleLog (const QByteArray&, IHaveConsole::PacketDirection, const QString&);
 
