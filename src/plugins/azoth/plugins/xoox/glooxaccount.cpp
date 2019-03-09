@@ -137,6 +137,8 @@ namespace Xoox
 				SIGNAL (jidChanged (QString)),
 				this,
 				SLOT (regenAccountIcon (QString)));
+
+		HandleClientConnectionAvailable (false);
 	}
 
 	void GlooxAccount::Init ()
@@ -223,6 +225,8 @@ namespace Xoox
 		regenAccountIcon (SettingsHolder_->GetJID ());
 
 		CarbonsAction_->setChecked (SettingsHolder_->IsMessageCarbonsEnabled ());
+
+		HandleClientConnectionAvailable (true);
 	}
 
 	void GlooxAccount::Release ()
@@ -1093,6 +1097,12 @@ namespace Xoox
 		const auto& second = SettingsHolder_->GetJID ().split ('@', QString::SkipEmptyParts).value (1);
 		const int slIdx = second.indexOf ('/');
 		return slIdx >= 0 ? second.left (slIdx) : second;
+	}
+
+	void GlooxAccount::HandleClientConnectionAvailable (bool available)
+	{
+		for (auto act : GetActions ())
+			act->setEnabled (available);
 	}
 
 	void GlooxAccount::handleEntryRemoved (QObject *entry)

@@ -283,6 +283,7 @@ namespace Xoox
 	private:
 		QString GetPassword (bool authFailure = false);
 		QString GetDefaultReqHost () const;
+		void HandleClientConnectionAvailable (bool);
 	public slots:
 		void handleEntryRemoved (QObject*);
 		void handleGotRosterItems (const QList<QObject*>&);
