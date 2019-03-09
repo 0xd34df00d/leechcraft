@@ -128,8 +128,6 @@ namespace Xoox
 	, SelfContact_ (new SelfContact (OurJID_, account))
 	, CapsManager_ (new CapsManager (DiscoveryManager_, this, account->GetParentProtocol ()->GetCapsDatabase ()))
 	, ServerInfoStorage_ (new ServerInfoStorage (this, Settings_))
-	, IsConnected_ (false)
-	, FirstTimeConnect_ (true)
 	, VCardQueue_ (new FetchQueue ([this] (QString str, bool report)
 				{
 					const auto& id = Client_->vCardManager ().requestVCard (str);

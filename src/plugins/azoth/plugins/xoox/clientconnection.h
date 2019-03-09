@@ -140,8 +140,8 @@ namespace Xoox
 		QHash<QString, GlooxCLEntry*> JID2CLEntry_;
 		QHash<QString, GlooxCLEntry*> ODSEntries_;
 
-		bool IsConnected_;
-		bool FirstTimeConnect_;
+		bool IsConnected_ = false;
+		bool FirstTimeConnect_ = true;
 
 		QHash<QString, RoomHandler*> RoomHandlers_;
 		GlooxAccountState LastState_;
