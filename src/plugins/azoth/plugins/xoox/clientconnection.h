@@ -316,7 +316,6 @@ namespace Xoox
 	signals:
 		void gotRosterItems (const QList<QObject*>&);
 		void rosterItemRemoved (QObject*);
-		void rosterItemsRemoved (const QList<QObject*>&);
 		void rosterItemUpdated (QObject*);
 		void rosterItemSubscribed (QObject*, const QString&);
 		void rosterItemUnsubscribed (QObject*, const QString&);
