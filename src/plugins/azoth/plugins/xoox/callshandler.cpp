@@ -51,7 +51,7 @@ namespace LeechCraft::Azoth::Xoox
 				this,
 				[this] (QXmppCall *call) { emit Acc_.called (new MediaCall (&Acc_, call)); });
 
-		auto settings = conn.GetSettings ();
+		auto settings = acc.GetSettings ();
 		auto updateSettings = [&callMgr, settings]
 		{
 			callMgr.setStunServer (QHostAddress (settings->GetStunHost ()), settings->GetStunPort ());

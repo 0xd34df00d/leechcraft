@@ -389,11 +389,6 @@ namespace Xoox
 		return IsConnected_;
 	}
 
-	AccountSettingsHolder* ClientConnection::GetSettings () const
-	{
-		return Settings_;
-	}
-
 	void ClientConnection::SetPassword (const QString& pwd)
 	{
 		Password_ = pwd;
