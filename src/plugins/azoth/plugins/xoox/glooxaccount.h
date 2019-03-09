@@ -286,15 +286,6 @@ namespace Xoox
 		void HandleClientConnectionAvailable (bool);
 	public slots:
 		void handleEntryRemoved (QObject*);
-	private slots:
-		void regenAccountIcon (const QString&);
-		void handleServerAuthFailed ();
-		void feedClientPassword ();
-		void showSelfVCard ();
-		void showPrivacyDialog ();
-		void handleCarbonsToggled (bool);
-		void handleServerHistoryFetched (const QString&,
-				const QString&, SrvHistMessages_t);
 	signals:
 		void gotCLItems (const QList<QObject*>&) override;
 		void removedCLItems (const QList<QObject*>&) override;

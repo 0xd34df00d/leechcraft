@@ -96,6 +96,23 @@ namespace Xoox
 			s1.Status_ == s2.Status_;
 	}
 
+	namespace
+	{
+		QIcon MakeAccountIcon (const QString& jid)
+		{
+			if (jid.contains ("google") ||
+					jid.contains ("gmail"))
+				return QIcon { ":/plugins/azoth/plugins/xoox/resources/images/special/gtalk.svg" };
+			else if (jid.contains ("facebook") ||
+					jid.contains ("fb.com"))
+				return QIcon { ":/plugins/azoth/plugins/xoox/resources/images/special/facebook.svg" };
+			else if (jid.contains ("odnoklassniki"))
+				return QIcon { ":/plugins/azoth/plugins/xoox/resources/images/special/odnoklassniki.svg" };
+
+			return {};
+		}
+	}
+
 	GlooxAccount::GlooxAccount (const QString& name,
 			GlooxProtocol *proto,
 			QObject *parent)
@@ -110,33 +127,34 @@ namespace Xoox
 	{
 		SelfVCardAction_->setProperty ("ActionIcon", "text-x-vcard");
 		PrivacyDialogAction_->setProperty ("ActionIcon", "emblem-locked");
-		CarbonsAction_->setProperty ("ActionIcon", "edit-copy");
 
+		CarbonsAction_->setProperty ("ActionIcon", "edit-copy");
 		CarbonsAction_->setCheckable (true);
 		CarbonsAction_->setToolTip (tr ("Deliver messages from conversations on "
 					"other resources to this resource as well."));
 
 		connect (SelfVCardAction_,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (showSelfVCard ()));
+				&QAction::triggered,
+				[this]
+				{
+					const auto& jid = SettingsHolder_->GetJID ();
+					if (auto entry = qobject_cast<EntryBase*> (ClientConnection_->GetCLEntry (jid)))
+						entry->ShowInfo ();
+				});
 		connect (PrivacyDialogAction_,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (showPrivacyDialog ()));
+				&QAction::triggered,
+				[this] { (new PrivacyListsConfigDialog (ClientConnection_->GetPrivacyListsManager ()))->show (); });
 		connect (CarbonsAction_,
-				SIGNAL (toggled (bool)),
-				this,
-				SLOT (handleCarbonsToggled (bool)));
+				&QAction::toggled,
+				[this] (bool enabled) { SettingsHolder_->SetMessageCarbonsEnabled (enabled); });
 
 		connect (SettingsHolder_,
-				SIGNAL (accountSettingsChanged ()),
+				&AccountSettingsHolder::accountSettingsChanged,
 				this,
-				SIGNAL (accountSettingsChanged ()));
+				&GlooxAccount::accountSettingsChanged);
 		connect (SettingsHolder_,
-				SIGNAL (jidChanged (QString)),
-				this,
-				SLOT (regenAccountIcon (QString)));
+				&AccountSettingsHolder::jidChanged,
+				[this] (const QString& jid) { AccountIcon_ = MakeAccountIcon (jid); });
 
 		HandleClientConnectionAvailable (false);
 	}
@@ -146,9 +164,9 @@ namespace Xoox
 		ClientConnection_ = std::make_shared<ClientConnection> (this);
 
 		connect (ClientConnection_.get (),
-				SIGNAL (sslErrors (QList<QSslError>, ICanHaveSslErrors::ISslErrorsReaction_ptr)),
+				&ClientConnection::sslErrors,
 				this,
-				SIGNAL (sslErrors (QList<QSslError>, ICanHaveSslErrors::ISslErrorsReaction_ptr)));
+				&GlooxAccount::sslErrors);
 
 		TransferManager_ = std::make_shared<TransferManager> (*ClientConnection_, *this);
 
@@ -157,23 +175,29 @@ namespace Xoox
 #endif
 
 		connect (ClientConnection_.get (),
-				SIGNAL (gotConsoleLog (QByteArray, IHaveConsole::PacketDirection, QString)),
+				&ClientConnection::gotConsoleLog,
 				this,
-				SIGNAL (gotConsolePacket (QByteArray, IHaveConsole::PacketDirection, QString)));
+				&GlooxAccount::gotConsolePacket);
 
 		connect (ClientConnection_.get (),
-				SIGNAL (serverAuthFailed ()),
-				this,
-				SLOT (handleServerAuthFailed ()));
+				&ClientConnection::serverAuthFailed,
+				[this]
+				{
+					const auto& pwd = GetPassword (true);
+					if (!pwd.isNull ())
+					{
+						ClientConnection_->SetPassword (pwd);
+						ClientConnection_->SetState (ClientConnection_->GetLastState ());
+					}
+				});
 		connect (ClientConnection_.get (),
-				SIGNAL (needPassword ()),
-				this,
-				SLOT (feedClientPassword ()));
+				&ClientConnection::needPassword,
+				[this] { ClientConnection_->SetPassword (GetPassword ()); });
 
 		connect (ClientConnection_.get (),
-				SIGNAL (statusChanged (EntryStatus)),
+				&ClientConnection::statusChanged,
 				this,
-				SIGNAL (statusChanged (EntryStatus)));
+				&GlooxAccount::statusChanged);
 
 		connect (ClientConnection_.get (),
 				&ClientConnection::gotRosterItems,
@@ -183,17 +207,16 @@ namespace Xoox
 				SIGNAL (rosterItemRemoved (QObject*)),
 				this,
 				SLOT (handleEntryRemoved (QObject*)));
-		connect (ClientConnection_.get (),
-				SIGNAL (rosterItemsRemoved (QList<QObject*>)),
-				this,
-				SIGNAL (removedCLItems (QList<QObject*>)));
 
 		connect (ClientConnection_->GetXep0313Manager (),
-				SIGNAL (serverHistoryFetched (QString, QString, SrvHistMessages_t)),
+				&Xep0313Manager::serverHistoryFetched,
 				this,
-				SLOT (handleServerHistoryFetched (QString, QString, SrvHistMessages_t)));
+				[this] (const QString& jid, const QString& id, const SrvHistMessages_t& messages)
+				{
+					emit serverHistoryFetched (Xep0313ModelMgr_->Jid2Index (jid), id.toUtf8 (), messages);
+				});
 
-		regenAccountIcon (SettingsHolder_->GetJID ());
+		AccountIcon_ = MakeAccountIcon (SettingsHolder_->GetJID ());
 
 		CarbonsAction_->setChecked (SettingsHolder_->IsMessageCarbonsEnabled ());
 
@@ -1049,20 +1072,6 @@ namespace Xoox
 		return ParentProtocol_->GetProxyObject ()->GetAccountPassword (this, !authfailure);
 	}
 
-	void GlooxAccount::regenAccountIcon (const QString& jid)
-	{
-		AccountIcon_ = QIcon ();
-
-		if (jid.contains ("google") ||
-				jid.contains ("gmail"))
-			AccountIcon_ = QIcon (":/plugins/azoth/plugins/xoox/resources/images/special/gtalk.svg");
-		else if (jid.contains ("facebook") ||
-				jid.contains ("fb.com"))
-			AccountIcon_ = QIcon (":/plugins/azoth/plugins/xoox/resources/images/special/facebook.svg");
-		else if (jid.contains ("odnoklassniki"))
-			AccountIcon_ = QIcon (":/plugins/azoth/plugins/xoox/resources/images/special/odnoklassniki.svg");
-	}
-
 	QString GlooxAccount::GetDefaultReqHost () const
 	{
 		const auto& second = SettingsHolder_->GetJID ().split ('@', QString::SkipEmptyParts).value (1);
@@ -1085,50 +1094,6 @@ namespace Xoox
 			const auto& pair = ExistingEntry2JoinConflict_.take (entry);
 			JoinRoom (pair.first, pair.second, {});
 		}
-	}
-
-	void GlooxAccount::handleServerAuthFailed ()
-	{
-		const QString& pwd = GetPassword (true);
-		if (!pwd.isNull ())
-		{
-			ClientConnection_->SetPassword (pwd);
-			ClientConnection_->SetState (ClientConnection_->GetLastState ());
-		}
-	}
-
-	void GlooxAccount::feedClientPassword ()
-	{
-		ClientConnection_->SetPassword (GetPassword ());
-	}
-
-	void GlooxAccount::showSelfVCard ()
-	{
-		if (!ClientConnection_)
-			return;
-
-		const auto& jid = SettingsHolder_->GetJID ();
-		auto entry = qobject_cast<EntryBase*> (ClientConnection_->GetCLEntry (jid));
-		if (entry)
-			entry->ShowInfo ();
-	}
-
-	void GlooxAccount::showPrivacyDialog ()
-	{
-		auto mgr = ClientConnection_->GetPrivacyListsManager ();
-		auto plcd = new PrivacyListsConfigDialog (mgr);
-		plcd->show ();
-	}
-
-	void GlooxAccount::handleCarbonsToggled (bool toggled)
-	{
-		SettingsHolder_->SetMessageCarbonsEnabled (toggled);
-	}
-
-	void GlooxAccount::handleServerHistoryFetched (const QString& jid,
-			const QString& id, SrvHistMessages_t messages)
-	{
-		emit serverHistoryFetched (Xep0313ModelMgr_->Jid2Index (jid), id.toUtf8 (), messages);
 	}
 }
 }
