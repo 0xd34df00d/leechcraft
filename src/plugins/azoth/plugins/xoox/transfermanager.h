@@ -52,13 +52,13 @@ namespace Xoox
 	public:
 		TransferManager (QXmppTransferManager*, GlooxAccount*);
 
-		bool IsAvailable () const;
-		QObject* SendFile (const QString&, const QString&, const QString&, const QString&);
+		bool IsAvailable () const override;
+		QObject* SendFile (const QString&, const QString&, const QString&, const QString&) override;
 		GlooxAccount* GetAccount () const;
 	private slots:
 		void handleFileReceived (QXmppTransferJob*);
 	signals:
-		void fileOffered (QObject*);
+		void fileOffered (QObject*) override;
 	};
 }
 }
