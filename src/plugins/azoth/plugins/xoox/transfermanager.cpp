@@ -49,9 +49,14 @@ namespace Xoox
 	, Account_ { account }
 	{
 		connect (&Manager_,
-				SIGNAL (fileReceived (QXmppTransferJob*)),
+				&QXmppTransferManager::fileReceived,
 				this,
-				SLOT (handleFileReceived (QXmppTransferJob*)));
+				[this] (QXmppTransferJob *job)
+				{
+					if (!Conn_.GetCLEntry (job->jid ()))
+						Conn_.CreateEntry (job->jid ());
+					emit fileOffered (new TransferJob (job, this));
+				});
 
 		auto settings = Account_.GetSettings ();
 
@@ -110,14 +115,6 @@ namespace Xoox
 	GlooxAccount* TransferManager::GetAccount () const
 	{
 		return &Account_;
-	}
-
-	void TransferManager::handleFileReceived (QXmppTransferJob *job)
-	{
-		if (!Conn_.GetCLEntry (job->jid ()))
-			Conn_.CreateEntry (job->jid ());
-
-		emit fileOffered (new TransferJob (job, this));
 	}
 }
 }

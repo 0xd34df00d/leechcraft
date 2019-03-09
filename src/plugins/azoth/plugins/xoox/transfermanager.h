@@ -58,8 +58,6 @@ namespace Xoox
 		bool IsAvailable () const override;
 		QObject* SendFile (const QString&, const QString&, const QString&, const QString&) override;
 		GlooxAccount* GetAccount () const;
-	private slots:
-		void handleFileReceived (QXmppTransferJob*);
 	signals:
 		void fileOffered (QObject*) override;
 	};
