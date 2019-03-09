@@ -33,6 +33,9 @@
 #include <QXmppClient.h>
 #include <QXmppMessage.h>
 #include <QXmppResultSet.h>
+#include "accountsettingsholder.h"
+#include "clientconnection.h"
+#include "glooxaccount.h"
 #include "xep0313prefiq.h"
 #include "xep0313reqiq.h"
 #include "util.h"
@@ -186,6 +189,17 @@ namespace Xoox
 		if (!messages.isEmpty () &&
 				messages.first ().TS_ > messages.last ().TS_)
 			std::reverse (messages.begin (), messages.end ());
+
+		const auto& ourNick = Conn_.GetAccount ()->GetSettings ()->GetNick ();
+		const auto jidEntry = Conn_.GetCLEntry (jid);
+		const auto& otherNick = jidEntry ?
+				qobject_cast<ICLEntry*> (jidEntry)->GetHumanReadableID () :
+				jid;
+		for (auto& message : messages)
+			message.Nick_ = message.Dir_ == IMessage::Direction::In ?
+					otherNick :
+					ourNick;
+
 		emit serverHistoryFetched (jid, resultSet.last (), messages);
 	}
 

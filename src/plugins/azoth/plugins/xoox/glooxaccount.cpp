@@ -1128,20 +1128,7 @@ namespace Xoox
 	void GlooxAccount::handleServerHistoryFetched (const QString& jid,
 			const QString& id, SrvHistMessages_t messages)
 	{
-		const auto& index = Xep0313ModelMgr_->Jid2Index (jid);
-
-		const auto& ourNick = GetOurNick ();
-
-		const auto jidEntry = ClientConnection_->GetCLEntry (jid);
-		const auto& otherNick = jidEntry ?
-				qobject_cast<ICLEntry*> (jidEntry)->GetHumanReadableID () :
-				jid;
-		for (auto& message : messages)
-			message.Nick_ = message.Dir_ == IMessage::Direction::In ?
-					otherNick :
-					ourNick;
-
-		emit serverHistoryFetched (index, id.toUtf8 (), messages);
+		emit serverHistoryFetched (Xep0313ModelMgr_->Jid2Index (jid), id.toUtf8 (), messages);
 	}
 }
 }
