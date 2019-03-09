@@ -45,19 +45,19 @@ namespace LeechCraft::Azoth::Xoox
 	, Acc_ { acc }
 	, Conn_ { conn }
 	{
-		auto callMgr = conn.GetCallManager ();
-		connect (callMgr,
+		auto& callMgr = conn.GetExtensionsManager ().Get<QXmppCallManager> ();
+		connect (&callMgr,
 				&QXmppCallManager::callReceived,
 				this,
 				[this] (QXmppCall *call) { emit Acc_.called (new MediaCall (&Acc_, call)); });
 
 		auto settings = conn.GetSettings ();
-		auto updateSettings = [callMgr]
+		auto updateSettings = [&callMgr, settings]
 		{
-			callMgr->setStunServer (QHostAddress (settings->GetStunHost ()), settings->GetStunPort ());
-			callMgr->setTurnServer (QHostAddress (settings->GetTurnHost ()), settings->GetTurnPort ());
-			callMgr->setTurnUser (settings->GetTurnUser ());
-			callMgr->setTurnPassword (settings->GetTurnPass ());
+			callMgr.setStunServer (QHostAddress (settings->GetStunHost ()), settings->GetStunPort ());
+			callMgr.setTurnServer (QHostAddress (settings->GetTurnHost ()), settings->GetTurnPort ());
+			callMgr.setTurnUser (settings->GetTurnUser ());
+			callMgr.setTurnPassword (settings->GetTurnPass ());
 		};
 		connect (settings,
 				&AccountSettingsHolder::stunSettingsChanged,
@@ -96,8 +96,8 @@ namespace LeechCraft::Azoth::Xoox
 		if (!resultingVar.isEmpty ())
 			target += '/' + resultingVar;
 
-		auto callMgr = conn.GetCallManager ();
-		const auto call = new MediaCall (&Acc_, callMgr->call (target));
+		auto& callMgr = Conn_.GetExtensionsManager ().Get<QXmppCallManager> ();
+		const auto call = new MediaCall (&Acc_, callMgr.call (target));
 		emit Acc_.called (call);
 		return call;
 	}

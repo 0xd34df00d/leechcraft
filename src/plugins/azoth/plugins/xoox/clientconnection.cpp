@@ -29,7 +29,6 @@
 
 #include "clientconnection.h"
 #include <QTimer>
-#include <QHostAddress>
 #include <QDir>
 #include <QtDebug>
 #include <QXmppClient.h>
@@ -42,7 +41,6 @@
 #include <QXmppBookmarkManager.h>
 #include <QXmppPubSubIq.h>
 #include <QXmppMessageReceiptManager.h>
-#include <QXmppCallManager.h>
 #include <util/sll/delayedexecutor.h>
 #include <util/sll/prelude.h>
 #include <util/xpc/util.h>
@@ -114,9 +112,6 @@ namespace Xoox
 	, CaptchaManager_ (new XMPPCaptchaManager)
 	, BobManager_ (new XMPPBobManager)
 	, CaptchaDisplayManager_ (new CaptchaManager (CaptchaManager_, BobManager_, this))
-#ifdef ENABLE_MEDIACALLS
-	, CallManager_ (new QXmppCallManager)
-#endif
 	, PubSubManager_ (new PubSubManager)
 	, PrivacyListsManager_ (new PrivacyListsManager (this))
 	, AnnotationsManager_ (0)
@@ -133,8 +128,7 @@ namespace Xoox
 	, ExtsMgr_ (std::make_unique<ClientConnectionExtensionsManager> (*this, *Client_))
 	, OurJID_ (Settings_->GetFullJID ())
 	, SelfContact_ (new SelfContact (OurJID_, account))
-	, CapsManager_ (new CapsManager (DiscoveryManager_, this,
-			account->GetParentProtocol ()->GetCapsDatabase ()))
+	, CapsManager_ (new CapsManager (DiscoveryManager_, this, account->GetParentProtocol ()->GetCapsDatabase ()))
 	, ServerInfoStorage_ (new ServerInfoStorage (this, Settings_))
 	, IsConnected_ (false)
 	, FirstTimeConnect_ (true)
@@ -204,9 +198,6 @@ namespace Xoox
 		Client_->addExtension (CaptchaManager_);
 		Client_->addExtension (new LegacyEntityTimeExt);
 		Client_->addExtension (PrivacyListsManager_);
-#ifdef ENABLE_MEDIACALLS
-		Client_->addExtension (CallManager_);
-#endif
 		Client_->addExtension (RIEXManager_);
 		Client_->addExtension (new AdHocCommandServer (this, proxy));
 		Client_->addExtension (Xep0313Manager_);
@@ -532,13 +523,6 @@ namespace Xoox
 	{
 		return BobManager_;
 	}
-
-#ifdef ENABLE_MEDIACALLS
-	QXmppCallManager* ClientConnection::GetCallManager () const
-	{
-		return CallManager_;
-	}
-#endif
 
 	UserAvatarManager* ClientConnection::GetUserAvatarManager () const
 	{

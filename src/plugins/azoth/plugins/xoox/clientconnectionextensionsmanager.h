@@ -35,6 +35,7 @@
 class QXmppClient;
 
 class QXmppArchiveManager;
+class QXmppCallManager;
 class QXmppDiscoveryManager;
 class QXmppEntityTimeManager;
 
@@ -47,7 +48,10 @@ namespace LeechCraft::Azoth::Xoox
 				class JabberSearchManager*,
 				class LastActivityManager*,
 				class PingManager*,
-				QXmppArchiveManager*
+				QXmppArchiveManager*,
+#ifdef ENABLE_MEDIACALLS
+				QXmppCallManager*
+#endif
 			>;
 
 	using DefaultExtensions = std::tuple<
