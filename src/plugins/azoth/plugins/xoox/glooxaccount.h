@@ -269,8 +269,6 @@ namespace Xoox
 
 		std::shared_ptr<ClientConnection> GetClientConnection () const;
 		GlooxCLEntry* CreateFromODS (OfflineDataSource_ptr);
-		QXmppBookmarkSet GetBookmarks () const;
-		void SetBookmarks (const QXmppBookmarkSet&);
 
 		void UpdateOurPhotoHash (const QByteArray&);
 

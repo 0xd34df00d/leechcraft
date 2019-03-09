@@ -550,7 +550,7 @@ namespace Xoox
 	{
 		QVariantList result;
 
-		const QXmppBookmarkSet& set = GetBookmarks ();
+		const QXmppBookmarkSet& set = ClientConnection_->GetBookmarks ();
 
 		Q_FOREACH (const QXmppBookmarkConference& conf, set.conferences ())
 		{
@@ -610,8 +610,8 @@ namespace Xoox
 
 		QXmppBookmarkSet set;
 		set.setConferences (mucs);
-		set.setUrls (GetBookmarks ().urls ());
-		SetBookmarks (set);
+		set.setUrls (ClientConnection_->GetBookmarks ().urls ());
+		ClientConnection_->SetBookmarks (set);
 	}
 
 	QObject* GlooxAccount::RequestLastActivity (QObject *entry, const QString& variant)
@@ -1008,22 +1008,6 @@ namespace Xoox
 	GlooxCLEntry* GlooxAccount::CreateFromODS (OfflineDataSource_ptr ods)
 	{
 		return ClientConnection_->AddODSCLEntry (ods);
-	}
-
-	QXmppBookmarkSet GlooxAccount::GetBookmarks () const
-	{
-		if (!ClientConnection_)
-			return QXmppBookmarkSet ();
-
-		return ClientConnection_->GetBookmarks ();
-	}
-
-	void GlooxAccount::SetBookmarks (const QXmppBookmarkSet& set)
-	{
-		if (!ClientConnection_)
-			return;
-
-		ClientConnection_->SetBookmarks (set);
 	}
 
 	void GlooxAccount::UpdateOurPhotoHash (const QByteArray& hash)
