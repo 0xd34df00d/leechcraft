@@ -55,6 +55,11 @@ namespace Xoox
 		return NsMam;
 	}
 
+	Xep0313Manager::Xep0313Manager (ClientConnection& conn)
+	: Conn_ { conn }
+	{
+	}
+
 	QStringList Xep0313Manager::discoveryFeatures () const
 	{
 		return { NsMam };

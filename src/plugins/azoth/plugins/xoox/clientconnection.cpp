@@ -117,7 +117,7 @@ namespace Xoox
 	, RIEXManager_ (new RIEXManager (account->GetParentProtocol ()->GetCapsDatabase ()))
 	, MsgArchivingManager_ (new MsgArchivingManager (this))
 	, SDManager_ (new SDManager (this))
-	, Xep0313Manager_ (new Xep0313Manager)
+	, Xep0313Manager_ (new Xep0313Manager (*this))
 	, CarbonsManager_ (new CarbonsManager)
 	, CryptHandler_ (new CryptHandler (this))
 	, ErrorMgr_ (new ClientConnectionErrorMgr (this))

@@ -40,11 +40,14 @@ namespace Azoth
 {
 namespace Xoox
 {
+	class ClientConnection;
 	class Xep0313PrefIq;
 
 	class Xep0313Manager : public QXmppClientExtension
 	{
 		Q_OBJECT
+
+		ClientConnection& Conn_;
 
 		QMap<QString, SrvHistMessages_t> Messages_;
 		QMap<QString, QString> QueryId2Jid_;
@@ -53,6 +56,8 @@ namespace Xoox
 	public:
 		static bool Supports0313 (const QStringList& features);
 		static QString GetNsUri ();
+
+		explicit Xep0313Manager (ClientConnection&);
 
 		QStringList discoveryFeatures () const override;
 		bool handleStanza (const QDomElement&) override;
