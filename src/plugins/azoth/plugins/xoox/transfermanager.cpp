@@ -33,6 +33,7 @@
 #include "clientconnection.h"
 #include "glooxaccount.h"
 #include "glooxclentry.h"
+#include "serverinfostorage.h"
 #include "transferjob.h"
 
 namespace LeechCraft
@@ -50,6 +51,35 @@ namespace Xoox
 				SIGNAL (fileReceived (QXmppTransferJob*)),
 				this,
 				SLOT (handleFileReceived (QXmppTransferJob*)));
+
+		auto settings = Account_.GetSettings ();
+
+		auto handleDetectedBSProxy = [settings, this] (const QString& proxy)
+		{
+			if (settings->GetUseSOCKS5Proxy () && !settings->GetSOCKS5Proxy ().isEmpty ())
+				return;
+
+			Manager_.setProxy (proxy);
+		};
+
+		auto serverInfoStorage = conn.GetServerInfoStorage ();
+		connect (serverInfoStorage,
+				&ServerInfoStorage::bytestreamsProxyChanged,
+				this,
+				handleDetectedBSProxy);
+
+		auto updateFTSettings = [=]
+		{
+			Manager_.setSupportedMethods (settings->GetFTMethods ());
+			Manager_.setProxy (settings->GetUseSOCKS5Proxy () ? settings->GetSOCKS5Proxy () : QString {});
+
+			handleDetectedBSProxy (serverInfoStorage->GetBytestreamsProxy ());
+		};
+		connect (settings,
+				&AccountSettingsHolder::fileTransferSettingsChanged,
+				this,
+				updateFTSettings);
+		updateFTSettings ();
 	}
 
 	bool TransferManager::IsAvailable () const

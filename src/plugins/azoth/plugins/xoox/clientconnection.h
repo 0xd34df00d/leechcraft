@@ -309,8 +309,6 @@ namespace Xoox
 		void setFileLogging (bool);
 		void handlePhotoHash ();
 		void handlePriorityChanged (int);
-		void updateFTSettings ();
-		void handleDetectedBSProxy (const QString&);
 
 		void handleMessageCarbonsSettingsChanged ();
 

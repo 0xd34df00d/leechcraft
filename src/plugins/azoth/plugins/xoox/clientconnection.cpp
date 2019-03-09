@@ -304,16 +304,6 @@ namespace Xoox
 				SIGNAL (priorityChanged (int)),
 				this,
 				SLOT (handlePriorityChanged (int)));
-		connect (Settings_,
-				SIGNAL (fileTransferSettingsChanged ()),
-				this,
-				SLOT (updateFTSettings ()));
-		updateFTSettings ();
-
-		connect (ServerInfoStorage_,
-				SIGNAL (bytestreamsProxyChanged (QString)),
-				this,
-				SLOT (handleDetectedBSProxy (QString)));
 
 		connect (Settings_,
 				SIGNAL (messageCarbonsSettingsChanged ()),
@@ -1457,23 +1447,6 @@ namespace Xoox
 		LastState_.Priority_ = prio;
 		if (LastState_.State_ != SOffline)
 			SetState (LastState_);
-	}
-
-	void ClientConnection::updateFTSettings ()
-	{
-		auto ft = GetTransferManager ();
-		ft->setSupportedMethods (Settings_->GetFTMethods ());
-		ft->setProxy (Settings_->GetUseSOCKS5Proxy () ? Settings_->GetSOCKS5Proxy () : QString ());
-
-		handleDetectedBSProxy (ServerInfoStorage_->GetBytestreamsProxy ());
-	}
-
-	void ClientConnection::handleDetectedBSProxy (const QString& proxy)
-	{
-		if (Settings_->GetUseSOCKS5Proxy () && !Settings_->GetSOCKS5Proxy ().isEmpty ())
-			return;
-
-		GetTransferManager ()->setProxy (proxy);
 	}
 
 	void ClientConnection::handleMessageCarbonsSettingsChanged ()
