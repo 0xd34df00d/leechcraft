@@ -30,6 +30,7 @@
 #include "annotationsmanager.h"
 #include "xmppannotationsmanager.h"
 #include "clientconnection.h"
+#include "clientconnectionextensionsmanager.h"
 
 namespace LeechCraft
 {
@@ -39,11 +40,9 @@ namespace Xoox
 {
 	AnnotationsManager::AnnotationsManager (ClientConnection& conn, QObject *parent)
 	: QObject { parent }
-	, XMPPAnnManager_ { new XMPPAnnotationsManager }
+	, XMPPAnnManager_ { conn.GetExtensionsManager ().Get<XMPPAnnotationsManager> () }
 	{
-		conn.GetClient ()->addExtension (XMPPAnnManager_);
-
-		connect (XMPPAnnManager_,
+		connect (&XMPPAnnManager_,
 				&XMPPAnnotationsManager::notesReceived,
 				this,
 				[this] (const QList<XMPPAnnotationsIq::NoteItem>& notes)
@@ -61,13 +60,13 @@ namespace Xoox
 	void AnnotationsManager::SetNote (const QString& jid, const XMPPAnnotationsIq::NoteItem& note)
 	{
 		JID2Note_ [jid] = note;
-		XMPPAnnManager_->SetNotes (JID2Note_.values ());
+		XMPPAnnManager_.SetNotes (JID2Note_.values ());
 	}
 
 	void AnnotationsManager::refetchNotes ()
 	{
 		JID2Note_.clear ();
-		XMPPAnnManager_->RequestNotes ();
+		XMPPAnnManager_.RequestNotes ();
 	}
 }
 }

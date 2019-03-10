@@ -51,6 +51,7 @@ namespace LeechCraft::Azoth::Xoox
 				class LastActivityManager*,
 				class LegacyEntityTimeExt*,
 				class PingManager*,
+				class XMPPAnnotationsManager*,
 				QXmppArchiveManager*,
 				QXmppBookmarkManager*,
 #ifdef ENABLE_MEDIACALLS

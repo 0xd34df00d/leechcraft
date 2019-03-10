@@ -46,7 +46,7 @@ namespace Xoox
 	{
 		Q_OBJECT
 		
-		XMPPAnnotationsManager *XMPPAnnManager_;
+		XMPPAnnotationsManager& XMPPAnnManager_;
 		
 		QHash<QString, XMPPAnnotationsIq::NoteItem> JID2Note_;
 	public:
