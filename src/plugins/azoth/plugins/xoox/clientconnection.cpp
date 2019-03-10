@@ -59,7 +59,6 @@
 #include "annotationsmanager.h"
 #include "formbuilder.h"
 #include "fetchqueue.h"
-#include "legacyentitytimeext.h"
 #include "pubsubmanager.h"
 #include "useractivity.h"
 #include "usermood.h"
@@ -184,7 +183,6 @@ namespace Xoox
 		Client_->addExtension (DeliveryReceiptsManager_);
 		Client_->addExtension (MUCManager_);
 		Client_->addExtension (CaptchaManager_);
-		Client_->addExtension (new LegacyEntityTimeExt);
 		Client_->addExtension (PrivacyListsManager_);
 		Client_->addExtension (RIEXManager_);
 		Client_->addExtension (new AdHocCommandServer (this, proxy));

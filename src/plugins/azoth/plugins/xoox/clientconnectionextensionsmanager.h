@@ -49,6 +49,7 @@ namespace LeechCraft::Azoth::Xoox
 				class AdHocCommandManager*,
 				class JabberSearchManager*,
 				class LastActivityManager*,
+				class LegacyEntityTimeExt*,
 				class PingManager*,
 				QXmppArchiveManager*,
 				QXmppBookmarkManager*,

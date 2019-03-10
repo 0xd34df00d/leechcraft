@@ -38,6 +38,7 @@
 #include "adhoccommandmanager.h"
 #include "jabbersearchmanager.h"
 #include "lastactivitymanager.h"
+#include "legacyentitytimeext.h"
 #include "pingmanager.h"
 
 namespace LeechCraft::Azoth::Xoox
