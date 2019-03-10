@@ -278,11 +278,6 @@ namespace Xoox
 				this,
 				SLOT (handleMessageDelivered (QString, QString)));
 
-		connect (BMManager_,
-				SIGNAL (bookmarksReceived (QXmppBookmarkSet)),
-				Account_,
-				SIGNAL (bookmarksChanged ()));
-
 		connect (Settings_,
 				SIGNAL (kaParamsChanged (QPair<int, int>)),
 				this,

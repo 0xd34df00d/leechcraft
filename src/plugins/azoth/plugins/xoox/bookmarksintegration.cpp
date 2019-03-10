@@ -54,6 +54,11 @@ namespace LeechCraft::Azoth::Xoox
 							&BookmarksIntegration::HandleBookmarksReceived,
 							Qt::UniqueConnection);
 				});
+
+		connect (&Mgr_,
+				&QXmppBookmarkManager::bookmarksReceived,
+				&Acc_,
+				&GlooxAccount::bookmarksChanged);
 	}
 
 	QVariantList BookmarksIntegration::GetBookmarkedMUCs () const
