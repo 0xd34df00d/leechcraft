@@ -920,30 +920,6 @@ namespace Xoox
 			const auto& presences = rm.getAllPresencesForBareJid (re.bareJid ());
 			for (const auto& resource : presences.keys ())
 				entry->SetClientInfo (resource, presences [resource]);
-
-			if (bareJid == "juick@juick.com")
-			{
-				const auto hasDisplayed = XmlSettingsManager::Instance ()
-						.Property ("HasDisplayedJuickDeprecation", false).toBool ();
-				if (!hasDisplayed)
-				{
-					new Util::DelayedExecutor
-					{
-						[]
-						{
-							const auto& e = Util::MakeNotification ("Azoth",
-									tr ("Using the juick.com service is discouraged. Please consider "
-										"migrating to saner alternatives, like point.im."),
-									Priority::Warning);
-							Core::Instance ().SendEntity (e);
-						},
-						15000
-					};
-
-					XmlSettingsManager::Instance ()
-							.setProperty ("HasDisplayedJuickDeprecation", true);
-				}
-			}
 		}
 		emit gotRosterItems (items);
 
