@@ -147,14 +147,6 @@ namespace Xoox
 		GlooxAccountState LastState_;
 		QString Password_;
 
-		struct JoinQueueItem
-		{
-			bool AsAutojoin_;
-			QString RoomJID_;
-			QString Nickname_;
-		};
-		QList<JoinQueueItem> JoinQueue_;
-
 		FetchQueue *VCardQueue_;
 		FetchQueue *CapsQueue_;
 		FetchQueue *VersionQueue_;
@@ -249,8 +241,6 @@ namespace Xoox
 		void FetchVCard (const QString&, VCardCallback_t, bool reportErrors = false);
 		void FetchVersion (const QString&, bool reportErrors = false);
 
-		QXmppBookmarkSet GetBookmarks () const;
-		void SetBookmarks (const QXmppBookmarkSet&);
 		QXmppBookmarkManager* GetBMManager () const;
 
 		GlooxMessage* CreateMessage (IMessage::Type,
@@ -294,9 +284,6 @@ namespace Xoox
 
 		void handleRoomInvitation (const QString&, const QString&, const QString&);
 		void handleGotRIEXItems (QString, QList<RIEXManager::Item>, bool);
-
-		void handleBookmarksReceived (const QXmppBookmarkSet&);
-		void handleAutojoinQueue ();
 
 		void handleLog (QXmppLogger::MessageType, const QString&);
 

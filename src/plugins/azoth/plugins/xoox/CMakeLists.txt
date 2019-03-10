@@ -116,6 +116,7 @@ set (XOOX_SRCS
 	sslerrorshandler.cpp
 	offlinedatasource.cpp
 	callshandler.cpp
+	bookmarksintegration.cpp
 	)
 set (XOOX_FORMS
 	glooxaccountconfigurationdialog.ui

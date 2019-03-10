@@ -783,16 +783,6 @@ namespace Xoox
 		VersionQueue_->Schedule (jid, FetchQueue::Priority::PLow, reportErrors);
 	}
 
-	QXmppBookmarkSet ClientConnection::GetBookmarks () const
-	{
-		return BMManager_->bookmarks ();
-	}
-
-	void ClientConnection::SetBookmarks (const QXmppBookmarkSet& set)
-	{
-		BMManager_->setBookmarks (set);
-	}
-
 	QXmppBookmarkManager* ClientConnection::GetBMManager () const
 	{
 		return BMManager_;
@@ -895,12 +885,6 @@ namespace Xoox
 		emit statusChanged ({ LastState_.State_, LastState_.Status_ });
 
 		Client_->vCardManager ().requestVCard (OurBareJID_);
-
-		connect (BMManager_,
-				SIGNAL (bookmarksReceived (QXmppBookmarkSet)),
-				this,
-				SLOT (handleBookmarksReceived (QXmppBookmarkSet)),
-				Qt::UniqueConnection);
 
 		AnnotationsManager_->refetchNotes ();
 
@@ -1242,51 +1226,6 @@ namespace Xoox
 			AwaitingRIEXItems_ [msgFrom] += items;
 		else
 			HandleRIEX (msgFrom, items);
-	}
-
-	void ClientConnection::handleBookmarksReceived (const QXmppBookmarkSet& set)
-	{
-		disconnect (BMManager_,
-				SIGNAL (bookmarksReceived (const QXmppBookmarkSet&)),
-				this,
-				SLOT (handleBookmarksReceived (const QXmppBookmarkSet&)));
-
-		for (const auto& conf : set.conferences ())
-		{
-			if (!conf.autoJoin ())
-				continue;
-
-			const JoinQueueItem item
-			{
-				true,
-				conf.jid (),
-				conf.nickName ()
-			};
-			JoinQueue_ << item;
-		}
-
-		if (JoinQueue_.size ())
-			QTimer::singleShot (3000,
-					this,
-					SLOT (handleAutojoinQueue ()));
-	}
-
-	void ClientConnection::handleAutojoinQueue ()
-	{
-		if (JoinQueue_.isEmpty ())
-			return;
-
-		if (!Account_->GetParentProtocol ()->GetProxyObject ()->IsAutojoinAllowed ())
-			return;
-
-		const auto& it = JoinQueue_.takeFirst ();
-		if (const auto roomItem = JoinRoom (it.RoomJID_, it.Nickname_, it.AsAutojoin_))
-			emit gotRosterItems ({ roomItem });
-
-		if (!JoinQueue_.isEmpty ())
-			QTimer::singleShot (800,
-					this,
-					SLOT (handleAutojoinQueue ()));
 	}
 
 	void ClientConnection::handleLog (QXmppLogger::MessageType type, const QString& msg)

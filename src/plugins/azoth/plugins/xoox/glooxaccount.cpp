@@ -82,6 +82,7 @@
 #include "util.h"
 #include "selfcontact.h"
 #include "callshandler.h"
+#include "bookmarksintegration.h"
 
 namespace LeechCraft
 {
@@ -169,6 +170,7 @@ namespace Xoox
 				&GlooxAccount::sslErrors);
 
 		TransferManager_ = std::make_shared<TransferManager> (*ClientConnection_, *this);
+		BookmarksIntegration_ = std::make_shared<BookmarksIntegration> (*ClientConnection_, *this);
 
 #ifdef ENABLE_MEDIACALLS
 		CallsHandler_ = std::make_shared<CallsHandler> (*this, *ClientConnection_);
@@ -546,70 +548,12 @@ namespace Xoox
 
 	QVariantList GlooxAccount::GetBookmarkedMUCs () const
 	{
-		QVariantList result;
-
-		const QXmppBookmarkSet& set = ClientConnection_->GetBookmarks ();
-
-		Q_FOREACH (const QXmppBookmarkConference& conf, set.conferences ())
-		{
-			const QStringList& split = conf.jid ().split ('@', QString::SkipEmptyParts);
-			if (split.size () != 2)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "incorrectly split jid for conf"
-						<< conf.jid ()
-						<< split;
-				continue;
-			}
-
-			QVariantMap cm;
-			cm ["HumanReadableName"] = QString ("%1 (%2)")
-					.arg (conf.jid ())
-					.arg (conf.nickName ());
-			cm ["AccountID"] = GetAccountID ();
-			cm ["Nick"] = conf.nickName ();
-			cm ["Room"] = split.at (0);
-			cm ["Server"] = split.at (1);
-			cm ["Autojoin"] = conf.autoJoin ();
-			cm ["StoredName"] = conf.name ();
-			result << cm;
-		}
-
-		return result;
+		return BookmarksIntegration_->GetBookmarkedMUCs ();
 	}
 
 	void GlooxAccount::SetBookmarkedMUCs (const QVariantList& datas)
 	{
-		QSet<QString> jids;
-
-		QList<QXmppBookmarkConference> mucs;
-		Q_FOREACH (const QVariant& var, datas)
-		{
-			const QVariantMap& map = var.toMap ();
-			QXmppBookmarkConference conf;
-			conf.setAutoJoin (map.value ("Autojoin").toBool ());
-
-			const auto& room = map.value ("Room").toString ();
-			const auto& server = map.value ("Server").toString ();
-			if (room.isEmpty () || server.isEmpty ())
-				continue;
-
-			const auto& jid = room + '@' + server;
-			if (jids.contains (jid))
-				continue;
-
-			jids << jid;
-
-			conf.setJid (jid);
-			conf.setNickName (map.value ("Nick").toString ());
-			conf.setName (map.value ("StoredName").toString ());
-			mucs << conf;
-		}
-
-		QXmppBookmarkSet set;
-		set.setConferences (mucs);
-		set.setUrls (ClientConnection_->GetBookmarks ().urls ());
-		ClientConnection_->SetBookmarks (set);
+		BookmarksIntegration_->SetBookmarkedMUCs (datas);
 	}
 
 	QObject* GlooxAccount::RequestLastActivity (QObject *entry, const QString& variant)

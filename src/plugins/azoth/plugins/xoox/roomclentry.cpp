@@ -159,7 +159,7 @@ namespace Xoox
 
 	QString RoomCLEntry::GetEntryName () const
 	{
-		for (const auto& bm : Account_->GetClientConnection ()->GetBookmarks ().conferences ())
+		for (const auto& bm : Account_->GetClientConnection ()->GetBMManager ()->bookmarks ().conferences ())
 			if (bm.jid () == RH_->GetRoomJID () && !bm.name ().isEmpty ())
 				return bm.name ();
 
