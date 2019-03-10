@@ -46,7 +46,6 @@ namespace Xoox
 	{
 		Q_OBJECT
 		
-		ClientConnection *ClientConn_;
 		XMPPAnnotationsManager *XMPPAnnManager_;
 		
 		QHash<QString, XMPPAnnotationsIq::NoteItem> JID2Note_;

@@ -39,10 +39,9 @@ namespace Xoox
 {
 	AnnotationsManager::AnnotationsManager (ClientConnection *parent)
 	: QObject (parent)
-	, ClientConn_ (parent)
 	, XMPPAnnManager_ (new XMPPAnnotationsManager)
 	{
-		ClientConn_->GetClient ()->addExtension (XMPPAnnManager_);
+		conn->GetClient ()->addExtension (XMPPAnnManager_);
 
 		connect (XMPPAnnManager_,
 				SIGNAL (notesReceived (const QList<XMPPAnnotationsIq::NoteItem>&)),
