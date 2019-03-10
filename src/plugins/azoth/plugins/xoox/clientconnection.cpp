@@ -424,14 +424,6 @@ namespace Xoox
 			return nullptr;
 		}
 
-		if (!JoinQueue_.isEmpty ())
-		{
-			auto pos = std::find_if (JoinQueue_.begin (), JoinQueue_.end (),
-					[&jid] (const JoinQueueItem& it) { return it.RoomJID_ == jid; });
-			if (pos != JoinQueue_.end ())
-				JoinQueue_.erase (pos);
-		}
-
 		const auto rh = new RoomHandler (jid, nick, asAutojoin, Account_);
 		RoomHandlers_ [jid] = rh;
 		return rh->GetCLEntry ();
