@@ -37,11 +37,11 @@ namespace Azoth
 {
 namespace Xoox
 {
-	AnnotationsManager::AnnotationsManager (ClientConnection *parent)
-	: QObject (parent)
-	, XMPPAnnManager_ (new XMPPAnnotationsManager)
+	AnnotationsManager::AnnotationsManager (ClientConnection& conn, QObject *parent)
+	: QObject { parent }
+	, XMPPAnnManager_ { new XMPPAnnotationsManager }
 	{
-		conn->GetClient ()->addExtension (XMPPAnnManager_);
+		conn.GetClient ()->addExtension (XMPPAnnManager_);
 
 		connect (XMPPAnnManager_,
 				SIGNAL (notesReceived (const QList<XMPPAnnotationsIq::NoteItem>&)),

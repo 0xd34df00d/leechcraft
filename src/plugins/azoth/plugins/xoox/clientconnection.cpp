@@ -194,7 +194,7 @@ namespace Xoox
 				this,
 				SLOT (handleCarbonsMessage (QXmppMessage)));
 
-		AnnotationsManager_ = new AnnotationsManager (this);
+		AnnotationsManager_ = new AnnotationsManager (*this, this);
 
 		DiscoveryManager_->setClientCapabilitiesNode ("http://leechcraft.org/azoth");
 
