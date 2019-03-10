@@ -326,6 +326,8 @@ namespace Xoox
 		void needPassword ();
 		void statusChanged (const EntryStatus&);
 
+		void connected ();
+
 		void sslErrors (const QList<QSslError>&, const ICanHaveSslErrors::ISslErrorsReaction_ptr&);
 	};
 }

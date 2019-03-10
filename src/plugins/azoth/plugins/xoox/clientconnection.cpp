@@ -899,6 +899,7 @@ namespace Xoox
 	void ClientConnection::handleConnected ()
 	{
 		IsConnected_ = true;
+		emit connected ();
 		emit statusChanged ({ LastState_.State_, LastState_.Status_ });
 
 		Client_->vCardManager ().requestVCard (OurBareJID_);
