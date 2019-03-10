@@ -161,6 +161,25 @@ namespace Xoox
 		HandleClientConnectionAvailable (false);
 	}
 
+	struct GlooxAccount::Managers
+	{
+		ClientConnection& Conn_;
+		GlooxAccount& Acc_;
+
+		TransferManager TransferManager_ { Conn_, Acc_ };
+		BookmarksIntegrator BookmarksIntegrator_ { Conn_, Acc_ };
+#ifdef ENABLE_MEDIACALLS
+		CallsHandler CallsHandler_ { Acc_, Conn_ };
+#endif
+		ClientLoggerManager ClientLoggerManager_ { *Conn_.GetClient (), *Acc_.GetSettings () };
+
+		Managers (ClientConnection& conn, GlooxAccount& acc)
+		: Conn_ { conn }
+		, Acc_ { acc }
+		{
+		}
+	};
+
 	void GlooxAccount::Init ()
 	{
 		ClientConnection_ = std::make_shared<ClientConnection> (this);
@@ -170,13 +189,7 @@ namespace Xoox
 				this,
 				&GlooxAccount::sslErrors);
 
-		TransferManager_ = std::make_shared<TransferManager> (*ClientConnection_, *this);
-		BookmarksIntegrator_ = std::make_shared<BookmarksIntegrator> (*ClientConnection_, *this);
-		ClientLoggerManager_ = std::make_shared<ClientLoggerManager> (*ClientConnection_->GetClient (), *SettingsHolder_);
-
-#ifdef ENABLE_MEDIACALLS
-		CallsHandler_ = std::make_shared<CallsHandler> (*this, *ClientConnection_);
-#endif
+		Managers_ = std::make_shared<Managers> (*ClientConnection_, *this);
 
 		connect (ClientConnection_.get (),
 				&ClientConnection::gotConsoleLog,
@@ -377,7 +390,7 @@ namespace Xoox
 
 	QObject* GlooxAccount::GetTransferManager () const
 	{
-		return TransferManager_.get ();
+		return &Managers_->TransferManager_;
 	}
 
 	QIcon GlooxAccount::GetAccountIcon () const
@@ -490,7 +503,7 @@ namespace Xoox
 
 	QObject* GlooxAccount::Call (const QString& id, const QString& variant)
 	{
-		return CallsHandler_->Call (id, variant);
+		return Managers_->CallsHandler_.Call (id, variant);
 	}
 #endif
 
@@ -550,12 +563,12 @@ namespace Xoox
 
 	QVariantList GlooxAccount::GetBookmarkedMUCs () const
 	{
-		return BookmarksIntegrator_->GetBookmarkedMUCs ();
+		return Managers_->BookmarksIntegrator_.GetBookmarkedMUCs ();
 	}
 
 	void GlooxAccount::SetBookmarkedMUCs (const QVariantList& datas)
 	{
-		BookmarksIntegrator_->SetBookmarkedMUCs (datas);
+		Managers_->BookmarksIntegrator_.SetBookmarkedMUCs (datas);
 	}
 
 	QObject* GlooxAccount::RequestLastActivity (QObject *entry, const QString& variant)

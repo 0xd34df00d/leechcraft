@@ -83,11 +83,7 @@ namespace Xoox
 	class GlooxCLEntry;
 	class GlooxProtocol;
 	class GlooxMessage;
-	class TransferManager;
 	class Xep0313ModelManager;
-	class CallsHandler;
-	class BookmarksIntegrator;
-	class ClientLoggerManager;
 
 	class GlooxAccount : public QObject
 					   , public IAccount
@@ -150,12 +146,9 @@ namespace Xoox
 		QIcon AccountIcon_;
 
 		std::shared_ptr<ClientConnection> ClientConnection_;
-		std::shared_ptr<TransferManager> TransferManager_;
-		std::shared_ptr<BookmarksIntegrator> BookmarksIntegrator_;
-#ifdef ENABLE_MEDIACALLS
-		std::shared_ptr<CallsHandler> CallsHandler_;
-#endif
-		std::shared_ptr<ClientLoggerManager> ClientLoggerManager_;
+
+		struct Managers;
+		std::shared_ptr<Managers> Managers_;
 
 		QHash<QObject*, QPair<QString, QString>> ExistingEntry2JoinConflict_;
 
