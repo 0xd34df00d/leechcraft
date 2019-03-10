@@ -417,11 +417,11 @@ namespace Xoox
 	{
 		if (RoomHandlers_.contains (jid))
 		{
-			Entity e = Util::MakeNotification ("Azoth",
-					tr ("This room is already joined."),
-					Priority::Critical);
-			Core::Instance ().SendEntity (e);
-			return 0;
+			if (!asAutojoin)
+				Core::Instance ().SendEntity (Util::MakeNotification ("Azoth",
+						tr ("This room is already joined."),
+						Priority::Critical));
+			return nullptr;
 		}
 
 		if (!JoinQueue_.isEmpty ())
