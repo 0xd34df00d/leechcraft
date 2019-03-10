@@ -37,7 +37,6 @@
 #include <QXmppRosterManager.h>
 #include <QXmppVCardManager.h>
 #include <QXmppDiscoveryManager.h>
-#include <QXmppBookmarkManager.h>
 #include <QXmppPubSubIq.h>
 #include <QXmppMessageReceiptManager.h>
 #include <util/sll/delayedexecutor.h>
@@ -105,7 +104,6 @@ namespace Xoox
 	, FileLogSink_ (new QXmppLogger (this))
 	, MUCManager_ (new QXmppMucManager)
 	, DiscoveryManager_ (Client_->findExtension<QXmppDiscoveryManager> ())
-	, BMManager_ (new QXmppBookmarkManager)
 	, DeliveryReceiptsManager_ (new QXmppMessageReceiptManager)
 	, CaptchaManager_ (new XMPPCaptchaManager)
 	, BobManager_ (new XMPPBobManager)
@@ -185,7 +183,6 @@ namespace Xoox
 
 		CryptHandler_->Init ();
 
-		Client_->addExtension (BMManager_);
 		Client_->addExtension (BobManager_);
 		Client_->addExtension (PubSubManager_);
 		Client_->addExtension (DeliveryReceiptsManager_);
@@ -776,11 +773,6 @@ namespace Xoox
 	void ClientConnection::FetchVersion (const QString& jid, bool reportErrors)
 	{
 		VersionQueue_->Schedule (jid, FetchQueue::Priority::PLow, reportErrors);
-	}
-
-	QXmppBookmarkManager* ClientConnection::GetBMManager () const
-	{
-		return BMManager_;
 	}
 
 	GlooxMessage* ClientConnection::CreateMessage (IMessage::Type type,

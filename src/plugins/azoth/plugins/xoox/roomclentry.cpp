@@ -36,6 +36,7 @@
 #include <util/sll/prelude.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include <interfaces/azoth/azothutil.h>
+#include "clientconnectionextensionsmanager.h"
 #include "glooxaccount.h"
 #include "glooxprotocol.h"
 #include "roompublicmessage.h"
@@ -126,7 +127,7 @@ namespace Xoox
 				this,
 				SLOT (reemitStatusChange (const EntryStatus&)));
 
-		connect (Account_->GetClientConnection ()->GetBMManager (),
+		connect (&Account_->GetClientConnection ()->GetExtensionsManager ().Get<QXmppBookmarkManager> (),
 				SIGNAL (bookmarksReceived (QXmppBookmarkSet)),
 				this,
 				SLOT (handleBookmarks (QXmppBookmarkSet)));
@@ -159,7 +160,8 @@ namespace Xoox
 
 	QString RoomCLEntry::GetEntryName () const
 	{
-		for (const auto& bm : Account_->GetClientConnection ()->GetBMManager ()->bookmarks ().conferences ())
+		const auto& bmManager = Account_->GetClientConnection ()->GetExtensionsManager ().Get<QXmppBookmarkManager> ();
+		for (const auto& bm : bmManager.bookmarks ().conferences ())
 			if (bm.jid () == RH_->GetRoomJID () && !bm.name ().isEmpty ())
 				return bm.name ();
 

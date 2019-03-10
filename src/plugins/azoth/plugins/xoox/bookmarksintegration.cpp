@@ -33,6 +33,7 @@
 #include <QXmppBookmarkSet.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include "clientconnection.h"
+#include "clientconnectionextensionsmanager.h"
 #include "glooxaccount.h"
 #include "roomclentry.h"
 
@@ -42,7 +43,7 @@ namespace LeechCraft::Azoth::Xoox
 	: QObject { parent }
 	, Acc_ { acc }
 	, Conn_ { conn }
-	, Mgr_ { *conn.GetBMManager () }
+	, Mgr_ { conn.GetExtensionsManager ().Get<QXmppBookmarkManager> () }
 	{
 		connect (&conn,
 				&ClientConnection::connected,

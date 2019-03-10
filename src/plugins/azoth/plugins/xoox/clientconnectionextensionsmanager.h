@@ -35,6 +35,7 @@
 class QXmppClient;
 
 class QXmppArchiveManager;
+class QXmppBookmarkManager;
 class QXmppCallManager;
 class QXmppDiscoveryManager;
 class QXmppEntityTimeManager;
@@ -50,6 +51,7 @@ namespace LeechCraft::Azoth::Xoox
 				class LastActivityManager*,
 				class PingManager*,
 				QXmppArchiveManager*,
+				QXmppBookmarkManager*,
 #ifdef ENABLE_MEDIACALLS
 				QXmppCallManager*,
 #endif

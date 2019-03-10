@@ -30,6 +30,7 @@
 #include "clientconnectionextensionsmanager.h"
 #include <QXmppClient.h>
 #include <QXmppArchiveManager.h>
+#include <QXmppBookmarkManager.h>
 #include <QXmppCallManager.h>
 #include <QXmppDiscoveryManager.h>
 #include <QXmppEntityTimeManager.h>

@@ -36,7 +36,6 @@
 #include <QHash>
 #include <QSet>
 #include <QXmppClient.h>
-#include <QXmppMucIq.h>
 #include <interfaces/azoth/imessage.h>
 #include <interfaces/azoth/icanhavesslerrors.h>
 #include "glooxclentry.h"
@@ -48,7 +47,6 @@ class QXmppMucManager;
 class QXmppClient;
 class QXmppDiscoveryManager;
 class QXmppDiscoveryIq;
-class QXmppBookmarkManager;
 class QXmppMessageReceiptManager;
 
 namespace LeechCraft
@@ -101,7 +99,6 @@ namespace Xoox
 
 		QXmppMucManager *MUCManager_;
 		QXmppDiscoveryManager *DiscoveryManager_;
-		QXmppBookmarkManager *BMManager_;
 		QXmppMessageReceiptManager *DeliveryReceiptsManager_;
 
 		XMPPCaptchaManager *CaptchaManager_;
@@ -240,8 +237,6 @@ namespace Xoox
 		void FetchVCard (const QString&, bool reportErrors = false);
 		void FetchVCard (const QString&, VCardCallback_t, bool reportErrors = false);
 		void FetchVersion (const QString&, bool reportErrors = false);
-
-		QXmppBookmarkManager* GetBMManager () const;
 
 		GlooxMessage* CreateMessage (IMessage::Type,
 				const QString&, const QString&, const QString&);
