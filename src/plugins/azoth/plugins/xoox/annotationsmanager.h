@@ -50,7 +50,7 @@ namespace Xoox
 		
 		QHash<QString, XMPPAnnotationsIq::NoteItem> JID2Note_;
 	public:
-		AnnotationsManager (ClientConnection&, QObject* = nullptr);
+		explicit AnnotationsManager (ClientConnection&, QObject* = nullptr);
 		
 		XMPPAnnotationsIq::NoteItem GetNote (const QString&) const;
 		void SetNote (const QString&, const XMPPAnnotationsIq::NoteItem&);
