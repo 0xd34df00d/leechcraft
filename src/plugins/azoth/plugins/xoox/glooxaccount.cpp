@@ -82,7 +82,7 @@
 #include "util.h"
 #include "selfcontact.h"
 #include "callshandler.h"
-#include "bookmarksintegration.h"
+#include "bookmarksintegrator.h"
 
 namespace LeechCraft
 {
@@ -170,7 +170,7 @@ namespace Xoox
 				&GlooxAccount::sslErrors);
 
 		TransferManager_ = std::make_shared<TransferManager> (*ClientConnection_, *this);
-		BookmarksIntegration_ = std::make_shared<BookmarksIntegration> (*ClientConnection_, *this);
+		BookmarksIntegrator_ = std::make_shared<BookmarksIntegrator> (*ClientConnection_, *this);
 
 #ifdef ENABLE_MEDIACALLS
 		CallsHandler_ = std::make_shared<CallsHandler> (*this, *ClientConnection_);
@@ -548,12 +548,12 @@ namespace Xoox
 
 	QVariantList GlooxAccount::GetBookmarkedMUCs () const
 	{
-		return BookmarksIntegration_->GetBookmarkedMUCs ();
+		return BookmarksIntegrator_->GetBookmarkedMUCs ();
 	}
 
 	void GlooxAccount::SetBookmarkedMUCs (const QVariantList& datas)
 	{
-		BookmarksIntegration_->SetBookmarkedMUCs (datas);
+		BookmarksIntegrator_->SetBookmarkedMUCs (datas);
 	}
 
 	QObject* GlooxAccount::RequestLastActivity (QObject *entry, const QString& variant)

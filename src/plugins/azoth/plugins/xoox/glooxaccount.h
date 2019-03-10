@@ -86,7 +86,7 @@ namespace Xoox
 	class TransferManager;
 	class Xep0313ModelManager;
 	class CallsHandler;
-	class BookmarksIntegration;
+	class BookmarksIntegrator;
 
 	class GlooxAccount : public QObject
 					   , public IAccount
@@ -150,7 +150,7 @@ namespace Xoox
 
 		std::shared_ptr<ClientConnection> ClientConnection_;
 		std::shared_ptr<TransferManager> TransferManager_;
-		std::shared_ptr<BookmarksIntegration> BookmarksIntegration_;
+		std::shared_ptr<BookmarksIntegrator> BookmarksIntegrator_;
 #ifdef ENABLE_MEDIACALLS
 		std::shared_ptr<CallsHandler> CallsHandler_;
 #endif

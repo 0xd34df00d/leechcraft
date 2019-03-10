@@ -40,7 +40,7 @@ namespace LeechCraft::Azoth::Xoox
 	class ClientConnection;
 	class GlooxAccount;
 
-	class BookmarksIntegration : public QObject
+	class BookmarksIntegrator : public QObject
 	{
 		GlooxAccount& Acc_;
 		ClientConnection& Conn_;
@@ -55,7 +55,7 @@ namespace LeechCraft::Azoth::Xoox
 		};
 		QList<JoinQueueItem> JoinQueue_;
 	public:
-		BookmarksIntegration (ClientConnection&, GlooxAccount&, QObject* = nullptr);
+		BookmarksIntegrator (ClientConnection&, GlooxAccount&, QObject* = nullptr);
 
 		QVariantList GetBookmarkedMUCs () const;
 		void SetBookmarkedMUCs (const QVariantList&);

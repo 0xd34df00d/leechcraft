@@ -27,7 +27,7 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "bookmarksintegration.h"
+#include "bookmarksintegrator.h"
 #include <QTimer>
 #include <QXmppBookmarkManager.h>
 #include <QXmppBookmarkSet.h>
@@ -39,7 +39,7 @@
 
 namespace LeechCraft::Azoth::Xoox
 {
-	BookmarksIntegration::BookmarksIntegration (ClientConnection& conn, GlooxAccount& acc, QObject *parent)
+	BookmarksIntegrator::BookmarksIntegrator (ClientConnection& conn, GlooxAccount& acc, QObject *parent)
 	: QObject { parent }
 	, Acc_ { acc }
 	, Conn_ { conn }
@@ -52,7 +52,7 @@ namespace LeechCraft::Azoth::Xoox
 					connect (&Mgr_,
 							&QXmppBookmarkManager::bookmarksReceived,
 							this,
-							&BookmarksIntegration::HandleBookmarksReceived,
+							&BookmarksIntegrator::HandleBookmarksReceived,
 							Qt::UniqueConnection);
 				});
 
@@ -62,7 +62,7 @@ namespace LeechCraft::Azoth::Xoox
 				&GlooxAccount::bookmarksChanged);
 	}
 
-	QVariantList BookmarksIntegration::GetBookmarkedMUCs () const
+	QVariantList BookmarksIntegrator::GetBookmarkedMUCs () const
 	{
 		QVariantList result;
 
@@ -94,7 +94,7 @@ namespace LeechCraft::Azoth::Xoox
 		return result;
 	}
 
-	void BookmarksIntegration::SetBookmarkedMUCs (const QVariantList& datas)
+	void BookmarksIntegrator::SetBookmarkedMUCs (const QVariantList& datas)
 	{
 		QSet<QString> jids;
 
@@ -127,12 +127,12 @@ namespace LeechCraft::Azoth::Xoox
 		Mgr_.setBookmarks (set);
 	}
 
-	void BookmarksIntegration::HandleBookmarksReceived (const QXmppBookmarkSet& set)
+	void BookmarksIntegrator::HandleBookmarksReceived (const QXmppBookmarkSet& set)
 	{
 		disconnect (&Mgr_,
 				&QXmppBookmarkManager::bookmarksReceived,
 				this,
-				&BookmarksIntegration::HandleBookmarksReceived);
+				&BookmarksIntegrator::HandleBookmarksReceived);
 
 		for (const auto& conf : set.conferences ())
 		{
@@ -151,10 +151,10 @@ namespace LeechCraft::Azoth::Xoox
 		if (!JoinQueue_.isEmpty ())
 			QTimer::singleShot (3000,
 					this,
-					&BookmarksIntegration::HandleAutojoinQueue);
+					&BookmarksIntegrator::HandleAutojoinQueue);
 	}
 
-	void BookmarksIntegration::HandleAutojoinQueue ()
+	void BookmarksIntegrator::HandleAutojoinQueue ()
 	{
 		if (JoinQueue_.isEmpty ())
 			return;
@@ -169,6 +169,6 @@ namespace LeechCraft::Azoth::Xoox
 		if (!JoinQueue_.isEmpty ())
 			QTimer::singleShot (800,
 					this,
-					&BookmarksIntegration::HandleAutojoinQueue);
+					&BookmarksIntegrator::HandleAutojoinQueue);
 	}
 }
