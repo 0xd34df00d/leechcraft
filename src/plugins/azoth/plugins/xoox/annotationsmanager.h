@@ -56,8 +56,6 @@ namespace Xoox
 		void SetNote (const QString&, const XMPPAnnotationsIq::NoteItem&);
 	public slots:
 		void refetchNotes ();
-	private slots:
-		void handleNotesReceived (const QList<XMPPAnnotationsIq::NoteItem>&);
 	};
 }
 }

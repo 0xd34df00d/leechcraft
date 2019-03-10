@@ -44,9 +44,13 @@ namespace Xoox
 		conn.GetClient ()->addExtension (XMPPAnnManager_);
 
 		connect (XMPPAnnManager_,
-				SIGNAL (notesReceived (const QList<XMPPAnnotationsIq::NoteItem>&)),
+				&XMPPAnnotationsManager::notesReceived,
 				this,
-				SLOT (handleNotesReceived (const QList<XMPPAnnotationsIq::NoteItem>&)));
+				[this] (const QList<XMPPAnnotationsIq::NoteItem>& notes)
+				{
+					for (const auto& item : notes)
+						JID2Note_ [item.GetJid ()] = item;
+				});
 	}
 
 	XMPPAnnotationsIq::NoteItem AnnotationsManager::GetNote (const QString& jid) const
@@ -64,12 +68,6 @@ namespace Xoox
 	{
 		JID2Note_.clear ();
 		XMPPAnnManager_->RequestNotes ();
-	}
-
-	void AnnotationsManager::handleNotesReceived (const QList<XMPPAnnotationsIq::NoteItem>& notes)
-	{
-		Q_FOREACH (const auto& item, notes)
-			JID2Note_ [item.GetJid ()] = item;
 	}
 }
 }
