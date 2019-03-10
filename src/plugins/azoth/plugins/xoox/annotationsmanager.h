@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_ANNOTATIONSMANAGER_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_ANNOTATIONSMANAGER_H
+#pragma once
+
 #include <QObject>
 #include <QHash>
 #include "xmppannotationsiq.h"
@@ -63,5 +63,3 @@ namespace Xoox
 }
 }
 }
-
-#endif
