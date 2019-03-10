@@ -44,7 +44,6 @@
 #include <util/xpc/util.h>
 #include <util/network/socketerrorstrings.h>
 #include <util/sys/sysinfo.h>
-#include <util/sys/paths.h>
 #include <xmlsettingsdialog/basesettingsmanager.h>
 #include <interfaces/azoth/iprotocol.h>
 #include <interfaces/azoth/iproxyobject.h>
@@ -101,7 +100,6 @@ namespace Xoox
 	: Account_ (account)
 	, Settings_ (account->GetSettings ())
 	, Client_ (new QXmppClient (this))
-	, FileLogSink_ (new QXmppLogger (this))
 	, MUCManager_ (new QXmppMucManager)
 	, DiscoveryManager_ (Client_->findExtension<QXmppDiscoveryManager> ())
 	, DeliveryReceiptsManager_ (new QXmppMessageReceiptManager)
@@ -146,8 +144,6 @@ namespace Xoox
 				OurJID_.contains ("gmail.com") ? 2000 : 1000, 1, this))
 	{
 		SetOurJID (OurJID_);
-
-		SetupLogger ();
 
 		connect (ErrorMgr_,
 				SIGNAL (serverAuthFailed ()),
@@ -279,10 +275,6 @@ namespace Xoox
 				SIGNAL (kaParamsChanged (QPair<int, int>)),
 				this,
 				SLOT (setKAParams (QPair<int, int>)));
-		connect (Settings_,
-				SIGNAL (fileLogChanged (bool)),
-				this,
-				SLOT (setFileLogging (bool)));
 		connect (Settings_,
 				SIGNAL (photoHashChanged (QByteArray)),
 				this,
@@ -788,39 +780,6 @@ namespace Xoox
 		return msg;
 	}
 
-	void ClientConnection::SetupLogger ()
-	{
-		QFile::remove (Util::CreateIfNotExists ("azoth").filePath ("qxmpp.log"));
-
-		auto [jid, bare] = Split (OurJID_);
-		QString logName = jid + ".qxmpp.log";
-		logName.replace ('@', '_');
-		const QString& path = Util::CreateIfNotExists ("azoth/xoox/logs").filePath (logName);
-		QFileInfo info (path);
-		if (info.size () > 1024 * 1024 * 10)
-			QFile::remove (path);
-
-		const auto logger = new QXmppLogger (Client_);
-		logger->setLoggingType (QXmppLogger::SignalLogging);
-		logger->setMessageTypes (QXmppLogger::AnyMessage);
-		connect (logger,
-				&QXmppLogger::message,
-				FileLogSink_,
-				[this] (QXmppLogger::MessageType type, const QString& msg)
-				{
-					const auto& path = FileLogSink_->logFilePath ();
-					if (!QFile::exists (path))
-						FileLogSink_->reopen ();
-					FileLogSink_->log (type, msg);
-				});
-		Client_->setLogger (logger);
-
-		FileLogSink_->setLogFilePath (path);
-		FileLogSink_->setMessageTypes (QXmppLogger::AnyMessage);
-
-		setFileLogging (Settings_->GetFileLogEnabled ());
-	}
-
 	ClientConnection::SplitResult ClientConnection::Split (const QString& jid)
 	{
 		const int pos = jid.indexOf ('/');
@@ -1309,11 +1268,6 @@ namespace Xoox
 
 		Client_->configuration ().setKeepAliveInterval (p.first);
 		Client_->configuration ().setKeepAliveTimeout (p.second);
-	}
-
-	void ClientConnection::setFileLogging (bool fileLog)
-	{
-		FileLogSink_->setLoggingType (fileLog ? QXmppLogger::FileLogging : QXmppLogger::NoLogging);
 	}
 
 	void ClientConnection::handlePhotoHash ()

@@ -95,8 +95,6 @@ namespace Xoox
 
 		QXmppClient *Client_;
 
-		QXmppLogger *FileLogSink_;
-
 		QXmppMucManager *MUCManager_;
 		QXmppDiscoveryManager *DiscoveryManager_;
 		QXmppMessageReceiptManager *DeliveryReceiptsManager_;
@@ -253,7 +251,6 @@ namespace Xoox
 		};
 		static SplitResult Split (const QString& full);
 	private:
-		void SetupLogger ();
 		void HandleOtherPresence (const QXmppPresence&);
 		void HandleRIEX (QString, QList<RIEXManager::Item>, QString = QString ());
 		void InvokeCallbacks (const QXmppIq&);
@@ -283,7 +280,6 @@ namespace Xoox
 		void handleLog (QXmppLogger::MessageType, const QString&);
 
 		void setKAParams (const QPair<int, int>&);
-		void setFileLogging (bool);
 		void handlePhotoHash ();
 		void handlePriorityChanged (int);
 

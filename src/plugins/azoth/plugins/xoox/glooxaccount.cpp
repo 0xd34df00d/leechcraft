@@ -83,6 +83,7 @@
 #include "selfcontact.h"
 #include "callshandler.h"
 #include "bookmarksintegrator.h"
+#include "clientloggermanager.h"
 
 namespace LeechCraft
 {
@@ -171,6 +172,7 @@ namespace Xoox
 
 		TransferManager_ = std::make_shared<TransferManager> (*ClientConnection_, *this);
 		BookmarksIntegrator_ = std::make_shared<BookmarksIntegrator> (*ClientConnection_, *this);
+		ClientLoggerManager_ = std::make_shared<ClientLoggerManager> (*ClientConnection_->GetClient (), *SettingsHolder_);
 
 #ifdef ENABLE_MEDIACALLS
 		CallsHandler_ = std::make_shared<CallsHandler> (*this, *ClientConnection_);
