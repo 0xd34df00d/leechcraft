@@ -78,7 +78,7 @@ namespace Xoox
 			void SetGroups (QStringList);
 		};
 
-		RIEXManager (const CapsDatabase*);
+		explicit RIEXManager (const CapsDatabase*);
 
 		QStringList discoveryFeatures () const override;
 		bool handleStanza (const QDomElement&) override;
