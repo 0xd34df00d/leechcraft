@@ -54,7 +54,11 @@ namespace Xoox
 		connect (&conn,
 				&ClientConnection::connected,
 				this,
-				&AnnotationsManager::refetchNotes);
+				[this]
+				{
+					JID2Note_.clear ();
+					XMPPAnnManager_.RequestNotes ();
+				});
 	}
 
 	XMPPAnnotationsIq::NoteItem AnnotationsManager::GetNote (const QString& jid) const
@@ -66,12 +70,6 @@ namespace Xoox
 	{
 		JID2Note_ [jid] = note;
 		XMPPAnnManager_.SetNotes (JID2Note_.values ());
-	}
-
-	void AnnotationsManager::refetchNotes ()
-	{
-		JID2Note_.clear ();
-		XMPPAnnManager_.RequestNotes ();
 	}
 }
 }

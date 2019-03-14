@@ -54,8 +54,6 @@ namespace Xoox
 		
 		XMPPAnnotationsIq::NoteItem GetNote (const QString&) const;
 		void SetNote (const QString&, const XMPPAnnotationsIq::NoteItem&);
-	public slots:
-		void refetchNotes ();
 	};
 }
 }
