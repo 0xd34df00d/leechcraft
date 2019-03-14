@@ -80,8 +80,8 @@ namespace Xoox
 
 		RIEXManager (const CapsDatabase*);
 
-		QStringList discoveryFeatures () const;
-		bool handleStanza (const QDomElement&);
+		QStringList discoveryFeatures () const override;
+		bool handleStanza (const QDomElement&) override;
 
 		void SuggestItems (EntryBase *to, QList<Item> items,
 				QString message = QString ());
