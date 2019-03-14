@@ -830,8 +830,6 @@ namespace Xoox
 
 		Client_->vCardManager ().requestVCard (OurBareJID_);
 
-		AnnotationsManager_->refetchNotes ();
-
 		for (auto rh : RoomHandlers_)
 			rh->Join ();
 

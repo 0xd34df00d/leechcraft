@@ -50,6 +50,11 @@ namespace Xoox
 					for (const auto& item : notes)
 						JID2Note_ [item.GetJid ()] = item;
 				});
+
+		connect (&conn,
+				&ClientConnection::connected,
+				this,
+				&AnnotationsManager::refetchNotes);
 	}
 
 	XMPPAnnotationsIq::NoteItem AnnotationsManager::GetNote (const QString& jid) const
