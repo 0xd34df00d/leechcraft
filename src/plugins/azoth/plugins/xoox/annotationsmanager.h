@@ -44,10 +44,7 @@ namespace Xoox
 
 	class AnnotationsManager : public QObject
 	{
-		Q_OBJECT
-		
 		XMPPAnnotationsManager& XMPPAnnManager_;
-		
 		QHash<QString, XMPPAnnotationsIq::NoteItem> JID2Note_;
 	public:
 		explicit AnnotationsManager (ClientConnection&, QObject* = nullptr);
