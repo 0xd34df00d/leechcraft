@@ -35,6 +35,8 @@ namespace LeechCraft
 {
 namespace Azoth
 {
+struct RIEXItem;
+
 namespace Xoox
 {
 	class EntryBase;
@@ -46,47 +48,14 @@ namespace Xoox
 
 		const CapsDatabase * const CapsDB_;
 	public:
-		class Item
-		{
-		public:
-			enum Action
-			{
-				AAdd,
-				ADelete,
-				AModify
-			};
-		private:
-			Action Action_;
-
-			QString JID_;
-			QString Name_;
-			QStringList Groups_;
-		public:
-			Item ();
-			Item (Action action, QString jid, QString name, QStringList groups);
-
-			Action GetAction () const;
-			void SetAction (Action);
-
-			QString GetJID () const;
-			void SetJID (QString);
-
-			QString GetName () const;
-			void SetName (QString);
-
-			QStringList GetGroups () const;
-			void SetGroups (QStringList);
-		};
-
 		explicit RIEXManager (const CapsDatabase*);
 
 		QStringList discoveryFeatures () const override;
 		bool handleStanza (const QDomElement&) override;
 
-		void SuggestItems (EntryBase *to, QList<Item> items,
-				QString message = QString ());
+		void SuggestItems (EntryBase *to, QList<RIEXItem> items, QString message = {});
 	signals:
-		void gotItems (QString from, QList<RIEXManager::Item> items, bool messagePending);
+		void gotItems (QString from, QList<LeechCraft::Azoth::RIEXItem> items, bool messagePending);
 	};
 }
 }

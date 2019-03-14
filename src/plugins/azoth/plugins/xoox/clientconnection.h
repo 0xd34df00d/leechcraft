@@ -40,7 +40,6 @@
 #include <interfaces/azoth/icanhavesslerrors.h>
 #include "glooxclentry.h"
 #include "glooxaccount.h"
-#include "riexmanager.h"
 
 class QXmppMessage;
 class QXmppMucManager;
@@ -75,6 +74,7 @@ namespace Xoox
 	class Xep0313Manager;
 	class CarbonsManager;
 
+	class RIEXManager;
 	class InfoRequestPolicyManager;
 	class ClientConnectionErrorMgr;
 	class CryptHandler;
@@ -150,7 +150,7 @@ namespace Xoox
 		QList<QPair<QString, PEPEventBase*>> InitialEventQueue_;
 		QHash<QString, QPointer<GlooxMessage>> UndeliveredMessages_;
 
-		QHash<QString, QList<RIEXManager::Item>> AwaitingRIEXItems_;
+		QHash<QString, QList<RIEXItem>> AwaitingRIEXItems_;
 	public:
 		typedef std::function<void (const QXmppVCardIq&)> VCardCallback_t;
 		typedef std::function<void (QXmppIq)> PacketCallback_t;
@@ -252,7 +252,7 @@ namespace Xoox
 		static SplitResult Split (const QString& full);
 	private:
 		void HandleOtherPresence (const QXmppPresence&);
-		void HandleRIEX (QString, QList<RIEXManager::Item>, QString = QString ());
+		void HandleRIEX (QString, QList<RIEXItem>, QString = QString ());
 		void InvokeCallbacks (const QXmppIq&);
 	public slots:
 		void handlePendingForm (QXmppDataForm*, const QString&);
@@ -275,7 +275,7 @@ namespace Xoox
 		void handleMessageDelivered (const QString&, const QString&);
 
 		void handleRoomInvitation (const QString&, const QString&, const QString&);
-		void handleGotRIEXItems (QString, QList<RIEXManager::Item>, bool);
+		void handleGotRIEXItems (QString, QList<RIEXItem>, bool);
 
 		void handleLog (QXmppLogger::MessageType, const QString&);
 

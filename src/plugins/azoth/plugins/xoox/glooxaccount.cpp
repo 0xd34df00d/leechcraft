@@ -84,6 +84,7 @@
 #include "callshandler.h"
 #include "bookmarksintegrator.h"
 #include "clientloggermanager.h"
+#include "riexmanager.h"
 
 namespace LeechCraft
 {
@@ -519,24 +520,21 @@ namespace Xoox
 			return;
 		}
 
-		QList<RIEXManager::Item> add;
-		QList<RIEXManager::Item> del;
-		QList<RIEXManager::Item> modify;
+		QList<RIEXItem> add;
+		QList<RIEXItem> del;
+		QList<RIEXItem> modify;
 		Q_FOREACH (const RIEXItem& item, items)
 		{
 			switch (item.Action_)
 			{
 			case RIEXItem::AAdd:
-				add << RIEXManager::Item (RIEXManager::Item::AAdd,
-						item.ID_, item.Nick_, item.Groups_);
+				add << RIEXItem { RIEXItem::AAdd, item.ID_, item.Nick_, item.Groups_ };
 				break;
 			case RIEXItem::ADelete:
-				del << RIEXManager::Item (RIEXManager::Item::ADelete,
-						item.ID_, item.Nick_, item.Groups_);
+				del << RIEXItem { RIEXItem::ADelete, item.ID_, item.Nick_, item.Groups_ };
 				break;
 			case RIEXItem::AModify:
-				modify << RIEXManager::Item (RIEXManager::Item::AModify,
-						item.ID_, item.Nick_, item.Groups_);
+				modify << RIEXItem { RIEXItem::AModify, item.ID_, item.Nick_, item.Groups_ };
 				break;
 			default:
 				qWarning () << Q_FUNC_INFO

@@ -42,60 +42,6 @@ namespace Xoox
 {
 	const QString NsRIEX = "http://jabber.org/protocol/rosterx";
 
-	RIEXManager::Item::Item ()
-	: Action_ (AAdd)
-	{
-	}
-
-	RIEXManager::Item::Item (RIEXManager::Item::Action action,
-			QString jid, QString name, QStringList groups)
-	: Action_ (action)
-	, JID_ (jid)
-	, Name_ (name)
-	, Groups_ (groups)
-	{
-	}
-
-	RIEXManager::Item::Action RIEXManager::Item::GetAction () const
-	{
-		return Action_;
-	}
-
-	void RIEXManager::Item::SetAction (RIEXManager::Item::Action action)
-	{
-		Action_ = action;
-	}
-
-	QString RIEXManager::Item::GetJID () const
-	{
-		return JID_;
-	}
-
-	void RIEXManager::Item::SetJID (QString jid)
-	{
-		JID_ = jid;
-	}
-
-	QString RIEXManager::Item::GetName () const
-	{
-		return Name_;
-	}
-
-	void RIEXManager::Item::SetName (QString name)
-	{
-		Name_ = name;
-	}
-
-	QStringList RIEXManager::Item::GetGroups () const
-	{
-		return Groups_;
-	}
-
-	void RIEXManager::Item::SetGroups (QStringList groups)
-	{
-		Groups_ = groups;
-	}
-
 	RIEXManager::RIEXManager (const CapsDatabase *db)
 	: CapsDB_ { db }
 	{
@@ -118,7 +64,7 @@ namespace Xoox
 
 		const bool isIq = elem.tagName () == "iq";
 
-		QList<Item> items;
+		QList<RIEXItem> items;
 
 		QDomElement item = x.firstChildElement ("item");
 		while (!item.isNull ())
@@ -132,14 +78,14 @@ namespace Xoox
 				group = group.nextSiblingElement ("group");
 			}
 
-			Item::Action act = Item::AAdd;
+			auto act = RIEXItem::AAdd;
 			const QString& actAttr = item.attribute ("action");
 			if (actAttr == "modify")
-				act = Item::AModify;
+				act = RIEXItem::AModify;
 			else if (actAttr == "delete")
-				act = Item::ADelete;
+				act = RIEXItem::ADelete;
 
-			items << Item (act, item.attribute ("jid"), item.attribute ("name"), groups);
+			items << RIEXItem { act, item.attribute ("jid"), item.attribute ("name"), groups };
 
 			item = item.nextSiblingElement ("item");
 		}
@@ -149,29 +95,29 @@ namespace Xoox
 		return isIq;
 	}
 
-	void RIEXManager::SuggestItems (EntryBase *to, QList<RIEXManager::Item> items, QString message)
+	void RIEXManager::SuggestItems (EntryBase *to, QList<RIEXItem> items, QString message)
 	{
 		QXmppElement x;
 		x.setTagName ("x");
 		x.setAttribute ("xmlns", NsRIEX);
 
-		Q_FOREACH (const RIEXManager::Item& item, items)
+		for (const auto& item : items)
 		{
 			QXmppElement itElem;
 			itElem.setTagName ("item");
 
-			if (!item.GetJID ().isEmpty ())
-				itElem.setAttribute ("jid", item.GetJID ());
+			if (!item.ID_.isEmpty ())
+				itElem.setAttribute ("jid", item.ID_);
 
-			if (!item.GetName ().isEmpty ())
-				itElem.setAttribute ("name", item.GetName ());
+			if (!item.Nick_.isEmpty ())
+				itElem.setAttribute ("name", item.Nick_);
 
-			switch (item.GetAction ())
+			switch (item.Action_)
 			{
-			case Item::AModify:
+			case RIEXItem::AModify:
 				itElem.setAttribute ("action", "modify");
 				break;
-			case Item::ADelete:
+			case RIEXItem::ADelete:
 				itElem.setAttribute ("action", "delete");
 				break;
 			default:
@@ -179,7 +125,7 @@ namespace Xoox
 				break;
 			}
 
-			Q_FOREACH (const QString& group, item.GetGroups ())
+			for (const auto& group : item.Groups_)
 			{
 				QXmppElement groupElem;
 				groupElem.setTagName ("group");

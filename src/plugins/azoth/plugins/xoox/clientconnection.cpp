@@ -88,6 +88,7 @@
 #include "xep0334utils.h"
 #include "sslerrorshandler.h"
 #include "clientconnectionextensionsmanager.h"
+#include "riexmanager.h"
 
 namespace LeechCraft
 {
@@ -1138,7 +1139,7 @@ namespace Xoox
 		emit Account_->mucInvitationReceived (identifying, inviter, reason);
 	}
 
-	void ClientConnection::handleGotRIEXItems (QString msgFrom, QList<RIEXManager::Item> items, bool msgPending)
+	void ClientConnection::handleGotRIEXItems (QString msgFrom, QList<RIEXItem> items, bool msgPending)
 	{
 		if (msgPending)
 			AwaitingRIEXItems_ [msgFrom] += items;
@@ -1228,22 +1229,9 @@ namespace Xoox
 		}
 	}
 
-	void ClientConnection::HandleRIEX (QString msgFrom, QList<RIEXManager::Item> origItems, QString body)
+	void ClientConnection::HandleRIEX (QString msgFrom, QList<RIEXItem> items, QString body)
 	{
-		const auto& items = Util::Map (origItems,
-				[] (const RIEXManager::Item& item)
-				{
-					return RIEXItem
-					{
-						static_cast<RIEXItem::Action> (item.GetAction ()),
-						item.GetJID (),
-						item.GetName (),
-						item.GetGroups ()
-					};
-				});
-
 		auto [jid, resource] = Split (msgFrom);
-
 		if (!items.isEmpty ())
 			Account_->riexItemsSuggested (items, JID2CLEntry_.value (jid), body);
 	}
