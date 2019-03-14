@@ -729,6 +729,9 @@ namespace Xoox
 		case ServerHistoryFeature::AccountSupportsHistory:
 		case ServerHistoryFeature::Configurable:
 			return supportsMam;
+		case ServerHistoryFeature::DatedFetching:
+			// TODO
+			return false;
 		}
 
 		qWarning () << Q_FUNC_INFO
