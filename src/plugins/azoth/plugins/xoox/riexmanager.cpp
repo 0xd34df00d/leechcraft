@@ -42,11 +42,6 @@ namespace Xoox
 {
 	const QString NsRIEX = "http://jabber.org/protocol/rosterx";
 
-	RIEXManager::RIEXManager (const CapsDatabase *db)
-	: CapsDB_ { db }
-	{
-	}
-
 	QStringList RIEXManager::discoveryFeatures () const
 	{
 		return QStringList (NsRIEX);
@@ -139,10 +134,12 @@ namespace Xoox
 
 		QString suppRes;
 
+		const auto capsDb = to->GetParentAccount ()->GetParentProtocol ()->GetCapsDatabase ();
+
 		Q_FOREACH (const QString& variant, to->Variants ())
 		{
 			const QByteArray& ver = to->GetVariantVerString (variant);
-			const QStringList& features = CapsDB_->Get (ver);
+			const QStringList& features = capsDb->Get (ver);
 			if (features.contains (NsRIEX))
 			{
 				suppRes = variant;

@@ -110,7 +110,7 @@ namespace Xoox
 	, PrivacyListsManager_ (new PrivacyListsManager (this))
 	, AnnotationsManager_ (0)
 	, UserAvatarManager_ (0)
-	, RIEXManager_ (new RIEXManager (account->GetParentProtocol ()->GetCapsDatabase ()))
+	, RIEXManager_ (new RIEXManager)
 	, MsgArchivingManager_ (new MsgArchivingManager (this))
 	, SDManager_ (new SDManager (this))
 	, Xep0313Manager_ (new Xep0313Manager (*this))

@@ -40,16 +40,11 @@ struct RIEXItem;
 namespace Xoox
 {
 	class EntryBase;
-	class CapsDatabase;
 
 	class RIEXManager : public QXmppClientExtension
 	{
 		Q_OBJECT
-
-		const CapsDatabase * const CapsDB_;
 	public:
-		explicit RIEXManager (const CapsDatabase*);
-
 		QStringList discoveryFeatures () const override;
 		bool handleStanza (const QDomElement&) override;
 
