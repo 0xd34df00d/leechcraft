@@ -31,7 +31,6 @@
 #include <QXmppTransferManager.h>
 #include "accountsettingsholder.h"
 #include "clientconnection.h"
-#include "clientconnectionextensionsmanager.h"
 #include "glooxaccount.h"
 #include "glooxclentry.h"
 #include "serverinfostorage.h"
@@ -43,9 +42,9 @@ namespace Azoth
 {
 namespace Xoox
 {
-	TransferManager::TransferManager (ClientConnection& conn, GlooxAccount& account)
+	TransferManager::TransferManager (QXmppTransferManager& mgr, ClientConnection& conn, GlooxAccount& account)
 	: Conn_ { conn }
-	, Manager_ { conn.GetExtensionsManager ().Get<QXmppTransferManager> () }
+	, Manager_ { mgr }
 	, Account_ { account }
 	{
 		connect (&Manager_,

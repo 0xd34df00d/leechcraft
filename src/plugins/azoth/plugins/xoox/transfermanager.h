@@ -53,7 +53,7 @@ namespace Xoox
 		QXmppTransferManager& Manager_;
 		GlooxAccount& Account_;
 	public:
-		TransferManager (ClientConnection&, GlooxAccount&);
+		TransferManager (QXmppTransferManager&, ClientConnection&, GlooxAccount&);
 
 		bool IsAvailable () const override;
 		QObject* SendFile (const QString&, const QString&, const QString&, const QString&) override;
