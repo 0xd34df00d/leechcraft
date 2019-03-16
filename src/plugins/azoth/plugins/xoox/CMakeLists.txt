@@ -118,6 +118,7 @@ set (XOOX_SRCS
 	callshandler.cpp
 	bookmarksintegrator.cpp
 	clientloggermanager.cpp
+	riexintegrator.cpp
 	)
 set (XOOX_FORMS
 	glooxaccountconfigurationdialog.ui

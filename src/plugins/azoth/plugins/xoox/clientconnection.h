@@ -273,7 +273,6 @@ namespace Xoox
 		void handleMessageDelivered (const QString&, const QString&);
 
 		void handleRoomInvitation (const QString&, const QString&, const QString&);
-		void handleGotRIEXItems (QString, QList<RIEXItem>, QString);
 
 		void handleLog (QXmppLogger::MessageType, const QString&);
 

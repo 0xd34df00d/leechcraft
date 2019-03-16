@@ -233,11 +233,6 @@ namespace Xoox
 				this,
 				SLOT (handleRoomInvitation (QString, QString, QString)));
 
-		connect (RIEXManager_,
-				SIGNAL (gotItems (QString, QList<RIEXManager::Item>, QString)),
-				this,
-				SLOT (handleGotRIEXItems (QString, QList<RIEXManager::Item>, QString)));
-
 		connect (&Client_->rosterManager (),
 				SIGNAL (rosterReceived ()),
 				this,
@@ -1134,11 +1129,6 @@ namespace Xoox
 		emit Account_->mucInvitationReceived (identifying, inviter, reason);
 	}
 
-	void ClientConnection::handleGotRIEXItems (QString msgFrom, QList<RIEXItem> items, QString msg)
-	{
-		HandleRIEX (msgFrom, items, msg);
-	}
-
 	void ClientConnection::handleLog (QXmppLogger::MessageType type, const QString& msg)
 	{
 		QString entryId;
@@ -1219,13 +1209,6 @@ namespace Xoox
 					<< pres.type ();
 			break;
 		}
-	}
-
-	void ClientConnection::HandleRIEX (QString msgFrom, QList<RIEXItem> items, QString body)
-	{
-		auto [jid, resource] = Split (msgFrom);
-		if (!items.isEmpty ())
-			Account_->riexItemsSuggested (items, JID2CLEntry_.value (jid), body);
 	}
 
 	void ClientConnection::InvokeCallbacks (const QXmppIq& iq)

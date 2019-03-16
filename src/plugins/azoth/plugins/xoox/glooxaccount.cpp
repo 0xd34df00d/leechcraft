@@ -85,6 +85,7 @@
 #include "bookmarksintegrator.h"
 #include "clientloggermanager.h"
 #include "riexmanager.h"
+#include "riexintegrator.h"
 
 namespace LeechCraft
 {
@@ -169,6 +170,7 @@ namespace Xoox
 
 		TransferManager TransferManager_ { Conn_, Acc_ };
 		BookmarksIntegrator BookmarksIntegrator_ { Conn_, Acc_ };
+		RIEXIntegrator RiexIntegrator_ { *Conn_.GetRIEXManager (), Acc_ };
 #ifdef ENABLE_MEDIACALLS
 		CallsHandler CallsHandler_ { Acc_, Conn_ };
 #endif
