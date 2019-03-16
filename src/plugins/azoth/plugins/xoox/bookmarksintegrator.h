@@ -55,7 +55,7 @@ namespace LeechCraft::Azoth::Xoox
 		};
 		QList<JoinQueueItem> JoinQueue_;
 	public:
-		BookmarksIntegrator (ClientConnection&, GlooxAccount&, QObject* = nullptr);
+		BookmarksIntegrator (QXmppBookmarkManager&, ClientConnection&, GlooxAccount&, QObject* = nullptr);
 
 		QVariantList GetBookmarkedMUCs () const;
 		void SetBookmarkedMUCs (const QVariantList&);

@@ -171,7 +171,7 @@ namespace Xoox
 		ClientConnectionExtensionsManager& ExtsMgr_ = Conn_.GetExtensionsManager ();
 
 		TransferManager TransferManager_ { ExtsMgr_.Get<QXmppTransferManager> (), Conn_, Acc_ };
-		BookmarksIntegrator BookmarksIntegrator_ { Conn_, Acc_ };
+		BookmarksIntegrator BookmarksIntegrator_ { ExtsMgr_.Get<QXmppBookmarkManager> (), Conn_, Acc_ };
 		RIEXIntegrator RiexIntegrator_ { ExtsMgr_.Get<RIEXManager> (), Acc_ };
 #ifdef ENABLE_MEDIACALLS
 		CallsHandler CallsHandler_ { Acc_, Conn_ };
