@@ -57,8 +57,6 @@ namespace Xoox
 		if (x.namespaceURI () != NsRIEX)
 			return false;
 
-		const bool isIq = elem.tagName () == "iq";
-
 		QList<RIEXItem> items;
 
 		QDomElement item = x.firstChildElement ("item");
@@ -85,9 +83,17 @@ namespace Xoox
 			item = item.nextSiblingElement ("item");
 		}
 
-		emit gotItems (elem.attribute ("from"), items, !isIq);
+		QString body;
+		if (elem.tagName () == "message")
+		{
+			QXmppMessage msg;
+			msg.parse (elem);
+			body = msg.body ();
+		}
 
-		return isIq;
+		emit gotItems (elem.attribute ("from"), items, body);
+
+		return true;
 	}
 
 	void RIEXManager::SuggestItems (EntryBase *to, QList<RIEXItem> items, QString message)

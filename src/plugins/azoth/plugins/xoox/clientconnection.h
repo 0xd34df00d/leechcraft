@@ -149,8 +149,6 @@ namespace Xoox
 		QList<QXmppMessage> OfflineMsgQueue_;
 		QList<QPair<QString, PEPEventBase*>> InitialEventQueue_;
 		QHash<QString, QPointer<GlooxMessage>> UndeliveredMessages_;
-
-		QHash<QString, QList<RIEXItem>> AwaitingRIEXItems_;
 	public:
 		typedef std::function<void (const QXmppVCardIq&)> VCardCallback_t;
 		typedef std::function<void (QXmppIq)> PacketCallback_t;
@@ -275,7 +273,7 @@ namespace Xoox
 		void handleMessageDelivered (const QString&, const QString&);
 
 		void handleRoomInvitation (const QString&, const QString&, const QString&);
-		void handleGotRIEXItems (QString, QList<RIEXItem>, bool);
+		void handleGotRIEXItems (QString, QList<RIEXItem>, QString);
 
 		void handleLog (QXmppLogger::MessageType, const QString&);
 

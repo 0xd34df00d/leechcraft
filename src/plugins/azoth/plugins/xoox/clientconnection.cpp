@@ -234,9 +234,9 @@ namespace Xoox
 				SLOT (handleRoomInvitation (QString, QString, QString)));
 
 		connect (RIEXManager_,
-				SIGNAL (gotItems (QString, QList<RIEXManager::Item>, bool)),
+				SIGNAL (gotItems (QString, QList<RIEXManager::Item>, QString)),
 				this,
-				SLOT (handleGotRIEXItems (QString, QList<RIEXManager::Item>, bool)));
+				SLOT (handleGotRIEXItems (QString, QList<RIEXManager::Item>, QString)));
 
 		connect (&Client_->rosterManager (),
 				SIGNAL (rosterReceived ()),
@@ -1010,12 +1010,7 @@ namespace Xoox
 
 		CryptHandler_->ProcessIncoming (msg);
 
-		if (AwaitingRIEXItems_.contains (msg.from ()))
-		{
-			HandleRIEX (msg.from (), AwaitingRIEXItems_.take (msg.from ()), msg.body ());
-			return;
-		}
-		else if (CarbonsManager_->CheckMessage (msg))
+		if (CarbonsManager_->CheckMessage (msg))
 			return;
 		else if (RoomHandlers_.contains (jid))
 			RoomHandlers_ [jid]->HandleMessage (msg, resource);
@@ -1139,12 +1134,9 @@ namespace Xoox
 		emit Account_->mucInvitationReceived (identifying, inviter, reason);
 	}
 
-	void ClientConnection::handleGotRIEXItems (QString msgFrom, QList<RIEXItem> items, bool msgPending)
+	void ClientConnection::handleGotRIEXItems (QString msgFrom, QList<RIEXItem> items, QString msg)
 	{
-		if (msgPending)
-			AwaitingRIEXItems_ [msgFrom] += items;
-		else
-			HandleRIEX (msgFrom, items);
+		HandleRIEX (msgFrom, items, msg);
 	}
 
 	void ClientConnection::handleLog (QXmppLogger::MessageType type, const QString& msg)

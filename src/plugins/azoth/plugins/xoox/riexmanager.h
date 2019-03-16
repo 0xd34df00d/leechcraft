@@ -50,7 +50,7 @@ namespace Xoox
 
 		void SuggestItems (EntryBase *to, QList<RIEXItem> items, QString message = {});
 	signals:
-		void gotItems (QString from, QList<LeechCraft::Azoth::RIEXItem> items, bool messagePending);
+		void gotItems (QString from, QList<LeechCraft::Azoth::RIEXItem> items, const QString& body);
 	};
 }
 }
