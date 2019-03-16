@@ -58,11 +58,11 @@ namespace Xoox
 
 		UserTune ();
 
-		QXmppElement ToXML () const;
-		void Parse (const QDomElement&);
-		QString Node () const;
+		QXmppElement ToXML () const override;
+		void Parse (const QDomElement&) override;
+		QString Node () const override;
 
-		PEPEventBase* Clone () const;
+		PEPEventBase* Clone () const override;
 
 		QString GetArtist () const;
 		void SetArtist (const QString&);

@@ -135,11 +135,11 @@ namespace Xoox
 	public:
 		static QString GetNodeString ();
 		
-		QXmppElement ToXML () const;
-		void Parse (const QDomElement&);
-		QString Node () const;
+		QXmppElement ToXML () const override;
+		void Parse (const QDomElement&) override;
+		QString Node () const override;
 		
-		PEPEventBase* Clone () const;
+		PEPEventBase* Clone () const override;
 		
 		Mood GetMood () const;
 		void SetMood (Mood);

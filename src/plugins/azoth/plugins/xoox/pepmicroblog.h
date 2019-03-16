@@ -78,15 +78,15 @@ namespace Xoox
 		PEPMicroblog ();
 		PEPMicroblog (const Post&);
 
-		QXmppElement ToXML () const;
-		void Parse (const QDomElement&);
-		QString Node () const;
+		QXmppElement ToXML () const override;
+		void Parse (const QDomElement&) override;
+		QString Node () const override;
 
-		PEPEventBase* Clone () const;
+		PEPEventBase* Clone () const override;
 
 		operator Post () const;
 
-		QString GetEventID () const;
+		QString GetEventID () const override;
 
 		QString GetAuthorName () const;
 		void SetAuthorName (const QString&);
