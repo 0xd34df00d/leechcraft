@@ -74,7 +74,6 @@ namespace Xoox
 	class Xep0313Manager;
 	class CarbonsManager;
 
-	class RIEXManager;
 	class InfoRequestPolicyManager;
 	class ClientConnectionErrorMgr;
 	class CryptHandler;
@@ -107,7 +106,6 @@ namespace Xoox
 		PrivacyListsManager *PrivacyListsManager_;
 		AnnotationsManager *AnnotationsManager_;
 		UserAvatarManager *UserAvatarManager_;
-		RIEXManager *RIEXManager_;
 		MsgArchivingManager *MsgArchivingManager_;
 		SDManager *SDManager_;
 		Xep0313Manager *Xep0313Manager_;
@@ -192,7 +190,6 @@ namespace Xoox
 		PrivacyListsManager* GetPrivacyListsManager () const;
 		XMPPBobManager* GetBobManager () const;
 		UserAvatarManager* GetUserAvatarManager () const;
-		RIEXManager* GetRIEXManager () const;
 		SDManager* GetSDManager () const;
 		Xep0313Manager* GetXep0313Manager () const;
 
@@ -250,7 +247,6 @@ namespace Xoox
 		static SplitResult Split (const QString& full);
 	private:
 		void HandleOtherPresence (const QXmppPresence&);
-		void HandleRIEX (QString, QList<RIEXItem>, QString = QString ());
 		void InvokeCallbacks (const QXmppIq&);
 	public slots:
 		void handlePendingForm (QXmppDataForm*, const QString&);

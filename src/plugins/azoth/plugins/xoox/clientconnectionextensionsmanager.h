@@ -51,6 +51,7 @@ namespace LeechCraft::Azoth::Xoox
 				class LastActivityManager*,
 				class LegacyEntityTimeExt*,
 				class PingManager*,
+				class RIEXManager*,
 				class XMPPAnnotationsManager*,
 				QXmppArchiveManager*,
 				QXmppBookmarkManager*,

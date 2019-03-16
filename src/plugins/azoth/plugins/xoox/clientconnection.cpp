@@ -110,7 +110,6 @@ namespace Xoox
 	, PrivacyListsManager_ (new PrivacyListsManager (this))
 	, AnnotationsManager_ (0)
 	, UserAvatarManager_ (0)
-	, RIEXManager_ (new RIEXManager)
 	, MsgArchivingManager_ (new MsgArchivingManager (this))
 	, SDManager_ (new SDManager (this))
 	, Xep0313Manager_ (new Xep0313Manager (*this))
@@ -185,7 +184,6 @@ namespace Xoox
 		Client_->addExtension (MUCManager_);
 		Client_->addExtension (CaptchaManager_);
 		Client_->addExtension (PrivacyListsManager_);
-		Client_->addExtension (RIEXManager_);
 		Client_->addExtension (new AdHocCommandServer (this, proxy));
 		Client_->addExtension (Xep0313Manager_);
 		Client_->addExtension (CarbonsManager_);
@@ -472,11 +470,6 @@ namespace Xoox
 	UserAvatarManager* ClientConnection::GetUserAvatarManager () const
 	{
 		return UserAvatarManager_;
-	}
-
-	RIEXManager* ClientConnection::GetRIEXManager () const
-	{
-		return RIEXManager_;
 	}
 
 	SDManager* ClientConnection::GetSDManager () const

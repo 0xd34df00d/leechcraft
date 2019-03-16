@@ -170,7 +170,7 @@ namespace Xoox
 
 		TransferManager TransferManager_ { Conn_, Acc_ };
 		BookmarksIntegrator BookmarksIntegrator_ { Conn_, Acc_ };
-		RIEXIntegrator RiexIntegrator_ { *Conn_.GetRIEXManager (), Acc_ };
+		RIEXIntegrator RiexIntegrator_ { Conn_.GetExtensionsManager ().Get<RIEXManager> (), Acc_ };
 #ifdef ENABLE_MEDIACALLS
 		CallsHandler CallsHandler_ { Acc_, Conn_ };
 #endif

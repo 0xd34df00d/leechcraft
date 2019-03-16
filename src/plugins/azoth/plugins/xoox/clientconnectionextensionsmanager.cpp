@@ -40,6 +40,7 @@
 #include "lastactivitymanager.h"
 #include "legacyentitytimeext.h"
 #include "pingmanager.h"
+#include "riexmanager.h"
 #include "xmppannotationsmanager.h"
 
 namespace LeechCraft::Azoth::Xoox
