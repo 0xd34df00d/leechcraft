@@ -51,6 +51,8 @@ namespace LeechCraft::Azoth::Xoox
 		QHash<QString, QList<RIEXItem>> AwaitingRIEXItems_;
 	public:
 		RIEXIntegrator (RIEXManager&, GlooxAccount&, QObject* = nullptr);
+
+		void SuggestItems (const QList<RIEXItem>&, QObject*, const QString&);
 	private:
 		void HandleRIEX (const QString&, const QList<RIEXItem>&, const QString&);
 	};

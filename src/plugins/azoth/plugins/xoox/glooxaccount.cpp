@@ -512,48 +512,7 @@ namespace Xoox
 
 	void GlooxAccount::SuggestItems (QList<RIEXItem> items, QObject *to, QString message)
 	{
-		EntryBase *entry = qobject_cast<EntryBase*> (to);
-		if (!entry)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to cast"
-					<< to
-					<< "to EntryBase";
-			return;
-		}
-
-		QList<RIEXItem> add;
-		QList<RIEXItem> del;
-		QList<RIEXItem> modify;
-		Q_FOREACH (const RIEXItem& item, items)
-		{
-			switch (item.Action_)
-			{
-			case RIEXItem::AAdd:
-				add << RIEXItem { RIEXItem::AAdd, item.ID_, item.Nick_, item.Groups_ };
-				break;
-			case RIEXItem::ADelete:
-				del << RIEXItem { RIEXItem::ADelete, item.ID_, item.Nick_, item.Groups_ };
-				break;
-			case RIEXItem::AModify:
-				modify << RIEXItem { RIEXItem::AModify, item.ID_, item.Nick_, item.Groups_ };
-				break;
-			default:
-				qWarning () << Q_FUNC_INFO
-						<< "unknown action"
-						<< item.Action_
-						<< "for item"
-						<< item.ID_;
-				break;
-			}
-		}
-
-		if (!add.isEmpty ())
-			ClientConnection_->GetRIEXManager ()->SuggestItems (entry, add, message);
-		if (!modify.isEmpty ())
-			ClientConnection_->GetRIEXManager ()->SuggestItems (entry, modify, message);
-		if (!del.isEmpty ())
-			ClientConnection_->GetRIEXManager ()->SuggestItems (entry, del, message);
+		Managers_->RiexIntegrator_.SuggestItems (items, to, message);
 	}
 
 	QWidget* GlooxAccount::GetMUCBookmarkEditorWidget ()

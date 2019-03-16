@@ -28,9 +28,10 @@
  **********************************************************************/
 
 #include "riexintegrator.h"
+#include "clientconnection.h"
+#include "riexintegrator.h"
 #include "glooxaccount.h"
 #include "riexmanager.h"
-#include "clientconnection.h"
 
 namespace LeechCraft::Azoth::Xoox
 {
@@ -51,4 +52,51 @@ namespace LeechCraft::Azoth::Xoox
 		if (!items.isEmpty ())
 			Acc_.riexItemsSuggested (items, Acc_.GetClientConnection ()->GetCLEntry (jid), body);
 	}
+
+	void RIEXIntegrator::SuggestItems (const QList<RIEXItem>& items, QObject *to, const QString& message)
+	{
+		const auto entry = qobject_cast<EntryBase*> (to);
+		if (!entry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to cast"
+					<< to
+					<< "to EntryBase";
+			return;
+		}
+
+		QList<RIEXItem> add;
+		QList<RIEXItem> del;
+		QList<RIEXItem> modify;
+		for (const auto& item : items)
+		{
+			switch (item.Action_)
+			{
+			case RIEXItem::AAdd:
+				add << RIEXItem { RIEXItem::AAdd, item.ID_, item.Nick_, item.Groups_ };
+				break;
+			case RIEXItem::ADelete:
+				del << RIEXItem { RIEXItem::ADelete, item.ID_, item.Nick_, item.Groups_ };
+				break;
+			case RIEXItem::AModify:
+				modify << RIEXItem { RIEXItem::AModify, item.ID_, item.Nick_, item.Groups_ };
+				break;
+			default:
+				qWarning () << Q_FUNC_INFO
+						<< "unknown action"
+						<< item.Action_
+						<< "for item"
+						<< item.ID_;
+				break;
+			}
+		}
+
+		if (!add.isEmpty ())
+			Mgr_.SuggestItems (entry, add, message);
+		if (!modify.isEmpty ())
+			Mgr_.SuggestItems (entry, modify, message);
+		if (!del.isEmpty ())
+			Mgr_.SuggestItems (entry, del, message);
+	}
+
 }
