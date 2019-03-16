@@ -51,12 +51,10 @@ namespace Xoox
 		QString Title_;
 		QString Track_;
 		QUrl URI_;
-		int Length_;
-		int Rating_;
+		int Length_ = 0;
+		int Rating_ = 0;
 	public:
 		static QString GetNodeString ();
-
-		UserTune ();
 
 		QXmppElement ToXML () const override;
 		void Parse (const QDomElement&) override;
