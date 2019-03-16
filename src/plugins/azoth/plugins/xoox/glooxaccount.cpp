@@ -33,7 +33,6 @@
 #include <QMessageBox>
 #include <QtDebug>
 #include <QAction>
-#include <QXmppCallManager.h>
 #include <QXmppMucManager.h>
 #include <util/xpc/util.h>
 #include <util/sll/prelude.h>
@@ -174,7 +173,7 @@ namespace Xoox
 		BookmarksIntegrator BookmarksIntegrator_ { ExtsMgr_.Get<QXmppBookmarkManager> (), Conn_, Acc_ };
 		RIEXIntegrator RiexIntegrator_ { ExtsMgr_.Get<RIEXManager> (), Acc_ };
 #ifdef ENABLE_MEDIACALLS
-		CallsHandler CallsHandler_ { Acc_, Conn_ };
+		CallsHandler CallsHandler_ { ExtsMgr_.Get<QXmppCallManager> (), Conn_, Acc_ };
 #endif
 		ClientLoggerManager ClientLoggerManager_ { *Conn_.GetClient (), *Acc_.GetSettings () };
 

@@ -31,6 +31,8 @@
 
 #include <QObject>
 
+class QXmppCallManager;
+
 namespace LeechCraft::Azoth::Xoox
 {
 	class GlooxAccount;
@@ -38,10 +40,11 @@ namespace LeechCraft::Azoth::Xoox
 
 	class CallsHandler : public QObject
 	{
-		GlooxAccount& Acc_;
+		QXmppCallManager& Mgr_;
 		ClientConnection& Conn_;
+		GlooxAccount& Acc_;
 	public:
-		explicit CallsHandler (GlooxAccount&, ClientConnection&, QObject* = nullptr);
+		explicit CallsHandler (QXmppCallManager&, ClientConnection&, GlooxAccount&, QObject* = nullptr);
 
 		QObject* Call (const QString& id, const QString& variant);
 	};

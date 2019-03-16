@@ -33,7 +33,6 @@
 #include <util/xpc/util.h>
 #include "accountsettingsholder.h"
 #include "clientconnection.h"
-#include "clientconnectionextensionsmanager.h"
 #include "core.h"
 #include "glooxaccount.h"
 
@@ -43,14 +42,14 @@
 
 namespace LeechCraft::Azoth::Xoox
 {
-	CallsHandler::CallsHandler (GlooxAccount& acc, ClientConnection& conn, QObject *parent)
+	CallsHandler::CallsHandler (QXmppCallManager& callMgr, ClientConnection& conn, GlooxAccount& acc, QObject *parent)
 	: QObject { parent }
-	, Acc_ { acc }
+	, Mgr_ { callMgr }
 	, Conn_ { conn }
+	, Acc_ { acc }
 	{
 #ifdef ENABLE_MEDIACALLS
-		auto& callMgr = conn.GetExtensionsManager ().Get<QXmppCallManager> ();
-		connect (&callMgr,
+		connect (&Mgr_,
 				&QXmppCallManager::callReceived,
 				this,
 				[this] (QXmppCall *call) { emit Acc_.called (new MediaCall (&Acc_, call)); });
@@ -105,8 +104,7 @@ namespace LeechCraft::Azoth::Xoox
 		if (!resultingVar.isEmpty ())
 			target += '/' + resultingVar;
 
-		auto& callMgr = Conn_.GetExtensionsManager ().Get<QXmppCallManager> ();
-		const auto call = new MediaCall (&Acc_, callMgr.call (target));
+		const auto call = new MediaCall (&Acc_, Mgr_.call (target));
 		emit Acc_.called (call);
 		return call;
 #else
