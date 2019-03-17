@@ -60,22 +60,22 @@ namespace PPL
 
 		QAction *ActionSync_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		void Release ();
-		QByteArray GetUniqueID () const;
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+		void Init (ICoreProxy_ptr) override;
+		void SecondInit () override;
+		void Release () override;
+		QByteArray GetUniqueID () const override;
+		QString GetName () const override;
+		QString GetInfo () const override;
+		QIcon GetIcon () const override;
 
-		QSet<QByteArray> GetPluginClasses () const;
+		QSet<QByteArray> GetPluginClasses () const override;
 
-		QList<QAction*> GetActions (ActionsEmbedPlace area) const;
-		QMap<QString, QList<QAction*>> GetMenuActions () const;
+		QList<QAction*> GetActions (ActionsEmbedPlace area) const override;
+		QMap<QString, QList<QAction*>> GetMenuActions () const override;
 
-		void SetLMPProxy (ILMPProxy_ptr);
+		void SetLMPProxy (ILMPProxy_ptr) override;
 	signals:
-		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
+		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace) override;
 	};
 }
 }
