@@ -57,26 +57,26 @@ namespace Hestia
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
 
 	public:
-		void Init (ICoreProxy_ptr proxy);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+		void Init (ICoreProxy_ptr proxy) override;
+		void SecondInit () override;
+		QByteArray GetUniqueID () const override;
+		void Release () override;
+		QString GetName () const override;
+		QString GetInfo () const override;
+		QIcon GetIcon () const override;
 
-		QSet<QByteArray> GetPluginClasses () const;
+		QSet<QByteArray> GetPluginClasses () const override;
 
-		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const override;
 
-		QObject* GetQObject ();
-		QList<QObject*> GetBloggingPlatforms () const;
+		QObject* GetQObject () override;
+		QList<QObject*> GetBloggingPlatforms () const override;
 
 	public slots:
 		void initPlugin (QObject *proxy);
 
 	signals:
-		void gotEntity (const LeechCraft::Entity& e);
+		void gotEntity (const LeechCraft::Entity& e) override;
 	};
 }
 }
