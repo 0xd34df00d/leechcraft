@@ -40,14 +40,14 @@ namespace Hestia
 {
 	class LocalBlogAccount;
 
-	class LocalBloggingPlatform: public QObject
+	class LocalBloggingPlatform : public QObject
 								, public IBloggingPlatform
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Blogique::IBloggingPlatform)
 
 		QObject *ParentBlogginPlatfromPlugin_;
-		QObject *PluginProxy_;
+		QObject *PluginProxy_ = nullptr;
 		QList<LocalBlogAccount*> Accounts_;
 
 		enum BloqiqueSidePosition
@@ -56,7 +56,7 @@ namespace Hestia
 			Second
 		};
 	public:
-		LocalBloggingPlatform (QObject *parent = 0);
+		explicit LocalBloggingPlatform (QObject *parent = nullptr);
 
 		QObject* GetQObject () override;
 		BloggingPlatfromFeatures GetFeatures () const override;

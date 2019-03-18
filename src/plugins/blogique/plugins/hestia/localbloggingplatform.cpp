@@ -47,8 +47,7 @@ namespace Blogique
 namespace Hestia
 {
 	LocalBloggingPlatform::LocalBloggingPlatform (QObject *parent)
-	: ParentBlogginPlatfromPlugin_ (parent)
-	, PluginProxy_ (0)
+	: ParentBlogginPlatfromPlugin_ { parent }
 	{
 	}
 
