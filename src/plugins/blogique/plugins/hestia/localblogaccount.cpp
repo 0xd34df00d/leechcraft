@@ -42,7 +42,7 @@ namespace Blogique
 {
 namespace Hestia
 {
-	constexpr auto DefaultPostsNumber = 20;
+	constexpr auto DefaultPostsCount = 20;
 
 	LocalBlogAccount::LocalBlogAccount (const QString& name, QObject *parent)
 	: QObject (parent)
@@ -154,7 +154,7 @@ namespace Hestia
 		{
 			emit requestEntriesBegin ();
 			emit gotEntries (AccountStorage_->GetLastEntries (AccountStorage::Mode::FullMode,
-					count ? count : DefaultPostsNumber));
+					count ? count : DefaultPostsCount));
 		}
 		catch (const std::runtime_error& e)
 		{
