@@ -68,9 +68,6 @@ namespace Hestia
 
 		void SetPluginProxy (QObject *pluginProxy);
 		IPluginProxy* GetPluginProxy ();
-
-	signals:
-		void gotEntity (LeechCraft::Entity e);
 	};
 }
 }

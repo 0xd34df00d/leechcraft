@@ -47,11 +47,6 @@ namespace Hestia
 		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"blogiquehestiasettings.xml");
 		Core::Instance ().CreateBloggingPlatfroms (this);
-
-		connect (&Core::Instance (),
-				SIGNAL (gotEntity (LeechCraft::Entity)),
-				this,
-				SIGNAL (gotEntity (LeechCraft::Entity)));
 	}
 
 	void Plugin::SecondInit ()
