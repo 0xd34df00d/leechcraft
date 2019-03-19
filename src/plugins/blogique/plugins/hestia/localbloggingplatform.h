@@ -81,6 +81,8 @@ namespace Hestia
 	private:
 		void RestoreAccounts ();
 
+		void HandleAccountObject (LocalBlogAccount*);
+
 	private slots:
 		void saveAccounts ();
 		void handleAccountValidated (bool valid);

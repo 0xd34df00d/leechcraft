@@ -115,8 +115,7 @@ namespace Hestia
 		{
 			Accounts_ << account;
 			saveAccounts ();
-			emit accountAdded (account);
-			account->Init ();
+			HandleAccountObject (account);
 		}
 	}
 
@@ -191,10 +190,25 @@ namespace Hestia
 						tr ("You have invalid account data."),
 						Priority::Warning));
 
-			emit accountAdded (acc);
-			acc->Init ();
+			HandleAccountObject (acc);
 		}
 		settings.endArray ();
+	}
+
+	void LocalBloggingPlatform::HandleAccountObject (LocalBlogAccount *account)
+	{
+		emit accountAdded (account);
+
+		connect (account,
+				SIGNAL (accountValidated (bool)),
+				this,
+				SLOT (handleAccountValidated (bool)));
+		connect (account,
+				SIGNAL (accountSettingsChanged ()),
+				this,
+				SLOT (saveAccounts ()));
+
+		account->Init ();
 	}
 
 	void LocalBloggingPlatform::saveAccounts ()

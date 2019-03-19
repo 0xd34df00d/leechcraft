@@ -251,16 +251,6 @@ namespace Hestia
 
 	void LocalBlogAccount::Init ()
 	{
-		connect (this,
-				SIGNAL (accountValidated (bool)),
-				ParentBloggingPlatform_,
-				SLOT (handleAccountValidated (bool)));
-
-		connect (this,
-				SIGNAL (accountSettingsChanged ()),
-				ParentBloggingPlatform_,
-				SLOT (saveAccounts ()));
-
 		if (IsValid_)
 			AccountStorage_->Init (DatabasePath_);
 	}
