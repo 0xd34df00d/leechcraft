@@ -42,6 +42,8 @@ namespace Blogique
 {
 namespace Hestia
 {
+	constexpr auto DefaultPostsNumber = 20;
+
 	LocalBlogAccount::LocalBlogAccount (const QString& name, QObject *parent)
 	: QObject (parent)
 	, ParentBloggingPlatform_ (qobject_cast<LocalBloggingPlatform*> (parent))
@@ -49,7 +51,6 @@ namespace Hestia
 	, IsValid_ (false)
 	, AccountStorage_ (new AccountStorage (this))
 	, LoadAllEvents_ (new QAction (tr ("All entries"), this))
-	, DefaultPostsNumber_ (20)
 	{
 		connect (LoadAllEvents_,
 				SIGNAL (triggered ()),
@@ -153,7 +154,7 @@ namespace Hestia
 		{
 			emit requestEntriesBegin ();
 			emit gotEntries (AccountStorage_->GetLastEntries (AccountStorage::Mode::FullMode,
-					count ? count : DefaultPostsNumber_));
+					count ? count : DefaultPostsNumber));
 		}
 		catch (const std::runtime_error& e)
 		{

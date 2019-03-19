@@ -55,9 +55,6 @@ namespace Hestia
 		AccountStorage *AccountStorage_;
 
 		QAction *LoadAllEvents_;
-
-		const int DefaultPostsNumber_;
-
 	public:
 		LocalBlogAccount (const QString& name, QObject *parent = 0);
 
