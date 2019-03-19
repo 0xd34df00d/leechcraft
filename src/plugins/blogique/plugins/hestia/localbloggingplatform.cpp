@@ -200,13 +200,13 @@ namespace Hestia
 		emit accountAdded (account);
 
 		connect (account,
-				SIGNAL (accountValidated (bool)),
+				&LocalBlogAccount::accountValidated,
 				this,
-				SLOT (handleAccountValidated (bool)));
+				[this, account] (bool valid) { emit accountValidated (account->GetQObject (), valid); });
 		connect (account,
-				SIGNAL (accountSettingsChanged ()),
+				&LocalBlogAccount::accountSettingsChanged,
 				this,
-				SLOT (saveAccounts ()));
+				&LocalBloggingPlatform::saveAccounts);
 
 		account->Init ();
 	}
@@ -226,21 +226,6 @@ namespace Hestia
 		}
 		settings.endArray ();
 	}
-
-	void LocalBloggingPlatform::handleAccountValidated (bool valid)
-	{
-		IAccount *acc = qobject_cast<IAccount*> (sender ());
-		if (!acc)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< sender ()
-					<< "is not an IAccount";;
-			return;
-		}
-
-		emit accountValidated (acc->GetQObject (), valid);
-	}
-
 }
 }
 }

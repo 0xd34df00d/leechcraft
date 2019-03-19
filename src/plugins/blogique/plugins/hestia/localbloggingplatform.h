@@ -85,7 +85,6 @@ namespace Hestia
 
 	private slots:
 		void saveAccounts ();
-		void handleAccountValidated (bool valid);
 
 	signals:
 		void accountAdded (QObject *account) override;
