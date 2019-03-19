@@ -50,7 +50,7 @@ namespace Hestia
 
 		LocalBloggingPlatform *ParentBloggingPlatform_;
 		QString Name_;
-		bool IsValid_;
+		bool IsValid_ = false;
 		QString DatabasePath_;
 		AccountStorage *AccountStorage_;
 

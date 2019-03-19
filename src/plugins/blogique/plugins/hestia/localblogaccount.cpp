@@ -48,7 +48,6 @@ namespace Hestia
 	: QObject (parent)
 	, ParentBloggingPlatform_ (qobject_cast<LocalBloggingPlatform*> (parent))
 	, Name_ (name)
-	, IsValid_ (false)
 	, AccountStorage_ (new AccountStorage (this))
 	, LoadAllEvents_ (new QAction (tr ("All entries"), this))
 	{
@@ -108,7 +107,7 @@ namespace Hestia
 
 	QObject* LocalBlogAccount::GetProfile ()
 	{
-		return 0;
+		return nullptr;
 	}
 
 	void LocalBlogAccount::RemoveEntry (const Entry& entry)
@@ -282,12 +281,12 @@ namespace Hestia
 			qWarning () << Q_FUNC_INFO
 					<< "unknown version"
 					<< ver;
-			return 0;
+			return nullptr;
 		}
 
 		QString name;
 		in >> name;
-		LocalBlogAccount *result = new LocalBlogAccount (name, parent);
+		auto result = new LocalBlogAccount (name, parent);
 		in >> result->DatabasePath_
 				>> result->IsValid_;
 

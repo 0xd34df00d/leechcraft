@@ -65,7 +65,7 @@ namespace Hestia
 	{
 		QObjectList result;
 		for (auto acc : Accounts_)
-				result << acc;
+			result << acc;
 		return result;
 	}
 
@@ -107,7 +107,7 @@ namespace Hestia
 			return;
 		}
 
-		LocalBlogAccount *account = new LocalBlogAccount (name, this);
+		auto account = new LocalBlogAccount (name, this);
 		account->FillSettings (w);
 
 		const QString& path = w->GetAccountBasePath ();
@@ -132,17 +132,17 @@ namespace Hestia
 
 	QList<QAction*> LocalBloggingPlatform::GetEditorActions () const
 	{
-		return QList<QAction*> ();
+		return {};
 	}
 
 	QList<InlineTagInserter> LocalBloggingPlatform::GetInlineTagInserters () const
 	{
-		return QList<InlineTagInserter> ();
+		return {};
 	}
 
 	QList<QWidget*> LocalBloggingPlatform::GetBlogiqueSideWidgets () const
 	{
-		return { };
+		return {};
 	}
 
 	void LocalBloggingPlatform::SetPluginProxy (QObject *proxy)
@@ -162,7 +162,7 @@ namespace Hestia
 
 	IAdvancedHTMLEditor::CustomTags_t LocalBloggingPlatform::GetCustomTags () const
 	{
-		return IAdvancedHTMLEditor::CustomTags_t ();
+		return {};
 	}
 
 	void LocalBloggingPlatform::RestoreAccounts ()
