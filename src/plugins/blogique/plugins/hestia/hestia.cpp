@@ -43,7 +43,7 @@ namespace Hestia
 	void Plugin::Init (ICoreProxy_ptr)
 	{
 		Util::InstallTranslator ("blogique_hestia");
-		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
+		XmlSettingsDialog_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"blogiquehestiasettings.xml");
 		Core::Instance ().CreateBloggingPlatfroms (this);
