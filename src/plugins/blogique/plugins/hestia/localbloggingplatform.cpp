@@ -37,7 +37,6 @@
 #include <util/xpc/passutils.h>
 #include <util/xpc/util.h>
 #include "accountconfigurationwidget.h"
-#include "core.h"
 #include "localblogaccount.h"
 
 namespace LeechCraft
@@ -176,7 +175,7 @@ namespace Hestia
 		{
 			settings.setArrayIndex (i);
 			QByteArray data = settings.value ("SerializedData").toByteArray ();
-			LocalBlogAccount *acc = LocalBlogAccount::Deserialize (data, this);
+			auto acc = LocalBlogAccount::Deserialize (data, this);
 			if (!acc)
 			{
 				qWarning () << Q_FUNC_INFO
@@ -186,9 +185,8 @@ namespace Hestia
 			}
 			Accounts_ << acc;
 			if (!acc->IsValid ())
-				Core::Instance ().SendEntity (Util::MakeNotification ("Blogique",
-						tr ("You have invalid account data."),
-						Priority::Warning));
+				qWarning () << Q_FUNC_INFO
+						<< "account is invalid";
 
 			HandleAccountObject (acc);
 		}
