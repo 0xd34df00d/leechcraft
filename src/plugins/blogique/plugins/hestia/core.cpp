@@ -68,16 +68,6 @@ namespace Hestia
 		Platform_ = std::make_shared<LocalBloggingPlatform> (parentPlatform);
 	}
 
-	void Core::SetCoreProxy (ICoreProxy_ptr proxy)
-	{
-		Proxy_ = proxy;
-	}
-
-	ICoreProxy_ptr Core::GetCoreProxy ()
-	{
-		return Proxy_;
-	}
-
 	QObjectList Core::GetBloggingPlatforms () const
 	{
 		return Platform_ ? QObjectList () << Platform_.get () : QObjectList ();
@@ -92,12 +82,6 @@ namespace Hestia
 	{
 		return qobject_cast<IPluginProxy*> (PluginProxy_);
 	}
-
-	void Core::SendEntity (const Entity& e)
-	{
-		emit gotEntity (e);
-	}
-
 }
 }
 }

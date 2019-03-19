@@ -50,7 +50,6 @@ namespace Hestia
 	{
 		Q_OBJECT
 
-		ICoreProxy_ptr Proxy_;
 		QObjectList BlogPlatformPlugins_;
 		std::shared_ptr<LocalBloggingPlatform> Platform_;
 		QObject *PluginProxy_;
@@ -64,15 +63,11 @@ namespace Hestia
 		void Release ();
 
 		void CreateBloggingPlatfroms (QObject *parentPlatform);
-		void SetCoreProxy (ICoreProxy_ptr proxy);
-		ICoreProxy_ptr GetCoreProxy ();
 
 		QObjectList GetBloggingPlatforms () const;
 
 		void SetPluginProxy (QObject *pluginProxy);
 		IPluginProxy* GetPluginProxy ();
-
-		void SendEntity (const Entity& e);
 
 	signals:
 		void gotEntity (LeechCraft::Entity e);

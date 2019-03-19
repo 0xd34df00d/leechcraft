@@ -40,13 +40,12 @@ namespace Blogique
 {
 namespace Hestia
 {
-	void Plugin::Init (ICoreProxy_ptr proxy)
+	void Plugin::Init (ICoreProxy_ptr)
 	{
 		Util::InstallTranslator ("blogique_hestia");
 		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
 		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"blogiquehestiasettings.xml");
-		Core::Instance ().SetCoreProxy (proxy);
 		Core::Instance ().CreateBloggingPlatfroms (this);
 
 		connect (&Core::Instance (),
