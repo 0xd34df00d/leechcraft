@@ -29,7 +29,6 @@
 
 #include "core.h"
 #include <interfaces/blogique/ipluginproxy.h>
-#include "localbloggingplatform.h"
 
 namespace LeechCraft
 {
@@ -46,41 +45,6 @@ namespace Hestia
 	{
 		static Core c;
 		return c;
-	}
-
-	void Core::SecondInit ()
-	{
-		if (Platform_)
-		{
-			Platform_->SetPluginProxy (PluginProxy_);
-			Platform_->Prepare ();
-		}
-	}
-
-	void Core::Release ()
-	{
-		if (Platform_)
-			Platform_->Release ();
-	}
-
-	void Core::CreateBloggingPlatfroms (QObject *parentPlatform)
-	{
-		Platform_ = std::make_shared<LocalBloggingPlatform> (parentPlatform);
-	}
-
-	QObjectList Core::GetBloggingPlatforms () const
-	{
-		return Platform_ ? QObjectList () << Platform_.get () : QObjectList ();
-	}
-
-	void Core::SetPluginProxy (QObject *pluginProxy)
-	{
-		PluginProxy_ = pluginProxy;
-	}
-
-	IPluginProxy* Core::GetPluginProxy ()
-	{
-		return qobject_cast<IPluginProxy*> (PluginProxy_);
 	}
 }
 }

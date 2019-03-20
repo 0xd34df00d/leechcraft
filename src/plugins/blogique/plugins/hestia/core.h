@@ -48,26 +48,13 @@ namespace Hestia
 
 	class Core : public QObject
 	{
-		Q_OBJECT
-
 		QObjectList BlogPlatformPlugins_;
-		std::shared_ptr<LocalBloggingPlatform> Platform_;
 		QObject *PluginProxy_;
 
 		Core ();
 		Q_DISABLE_COPY (Core)
 	public:
 		static Core& Instance ();
-
-		void SecondInit ();
-		void Release ();
-
-		void CreateBloggingPlatfroms (QObject *parentPlatform);
-
-		QObjectList GetBloggingPlatforms () const;
-
-		void SetPluginProxy (QObject *pluginProxy);
-		IPluginProxy* GetPluginProxy ();
 	};
 }
 }

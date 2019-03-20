@@ -42,6 +42,8 @@ namespace Blogique
 {
 namespace Hestia
 {
+	class LocalBloggingPlatform;
+
 	class Plugin : public QObject
 				, public IInfo
 				, public IHaveSettings
@@ -55,7 +57,7 @@ namespace Hestia
 		LC_PLUGIN_METADATA ("org.LeechCraft.Blogique.Hestia")
 
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
-
+		std::shared_ptr<LocalBloggingPlatform> Platform_;
 	public:
 		void Init (ICoreProxy_ptr proxy) override;
 		void SecondInit () override;

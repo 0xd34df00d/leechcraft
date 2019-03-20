@@ -28,10 +28,10 @@
  **********************************************************************/
 
 #include "hestia.h"
-#include "core.h"
 #include <QIcon>
 #include <util/util.h>
 #include <interfaces/structures.h>
+#include "localbloggingplatform.h"
 #include "xmlsettingsmanager.h"
 
 namespace LeechCraft
@@ -46,12 +46,13 @@ namespace Hestia
 		XmlSettingsDialog_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"blogiquehestiasettings.xml");
-		Core::Instance ().CreateBloggingPlatfroms (this);
+
+		Platform_ = std::make_shared<LocalBloggingPlatform> (this);
 	}
 
 	void Plugin::SecondInit ()
 	{
-		Core::Instance ().SecondInit ();
+		Platform_->Prepare ();
 	}
 
 	QByteArray Plugin::GetUniqueID () const
@@ -61,7 +62,7 @@ namespace Hestia
 
 	void Plugin::Release ()
 	{
-		Core::Instance ().Release ();
+		Platform_->Release ();
 	}
 
 	QString Plugin::GetName () const
@@ -98,12 +99,12 @@ namespace Hestia
 
 	QList<QObject*> Plugin::GetBloggingPlatforms () const
 	{
-		return Core::Instance ().GetBloggingPlatforms ();
+		return { Platform_.get () };
 	}
 
 	void Plugin::initPlugin (QObject *proxy)
 	{
-		Core::Instance ().SetPluginProxy (proxy);
+		Platform_->SetPluginProxy (proxy);
 	}
 
 }
