@@ -13,7 +13,6 @@ set (HESTIA_SRCS
 	accountconfigurationdialog.cpp
 	accountconfigurationwidget.cpp
 	accountstorage.cpp
-	core.cpp
 	hestia.cpp
 	localblogaccount.cpp
 	localbloggingplatform.cpp
