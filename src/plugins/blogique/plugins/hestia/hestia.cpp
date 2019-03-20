@@ -82,9 +82,7 @@ namespace Hestia
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
 	{
-		QSet<QByteArray> classes;
-		classes << "org.LeechCraft.Plugins.Blogique.Plugins.IBlogPlatformPlugin";
-		return classes;
+		return { "org.LeechCraft.Plugins.Blogique.Plugins.IBlogPlatformPlugin" };
 	}
 
 	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
