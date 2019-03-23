@@ -53,14 +53,14 @@ namespace Xoox
 	public:
 		static QString GetAdHocFeature ();
 
-		AdHocCommandManager (ClientConnection*);
+		explicit AdHocCommandManager (ClientConnection*);
 
 		QString QueryCommands (const QString&);
 		QString ExecuteCommand (const QString&, const AdHocCommand&);
 		QString ProceedExecuting (const QString&, const AdHocResult&, const QString&);
 
-		QStringList discoveryFeatures () const;
-		bool handleStanza (const QDomElement&);
+		QStringList discoveryFeatures () const override;
+		bool handleStanza (const QDomElement&) override;
 	private:
 		void RegisterErrorHandler (const QString&);
 		void HandleError (const QXmppIq&);
