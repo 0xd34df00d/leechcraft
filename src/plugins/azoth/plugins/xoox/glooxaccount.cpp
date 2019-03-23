@@ -494,11 +494,8 @@ namespace Xoox
 	GeolocationInfo_t GlooxAccount::GetUserGeolocationInfo (QObject *obj,
 			const QString& variant) const
 	{
-		EntryBase *entry = qobject_cast<EntryBase*> (obj);
-		if (!entry)
-			return GeolocationInfo_t ();
-
-		return entry->GetGeolocationInfo (variant);
+		const auto entry = qobject_cast<EntryBase*> (obj);
+		return entry ? entry->GetGeolocationInfo (variant) : GeolocationInfo_t {};
 	}
 
 #ifdef ENABLE_MEDIACALLS
