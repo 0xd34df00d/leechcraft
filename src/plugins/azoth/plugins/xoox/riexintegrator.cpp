@@ -31,7 +31,7 @@
 #include "clientconnection.h"
 #include "riexintegrator.h"
 #include "glooxaccount.h"
-#include "riexmanager.h"
+#include "xeps/riexmanager.h"
 
 namespace LeechCraft::Azoth::Xoox
 {

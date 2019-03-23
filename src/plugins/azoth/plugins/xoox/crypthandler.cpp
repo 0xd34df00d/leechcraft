@@ -31,7 +31,7 @@
 #include <QtDebug>
 
 #ifdef ENABLE_CRYPT
-#include "pgpmanager.h"
+#include "xeps/pgpmanager.h"
 #endif
 
 #include "clientconnection.h"

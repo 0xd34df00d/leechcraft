@@ -31,7 +31,7 @@
 
 #include <QWizard>
 #include "ui_executecommanddialog.h"
-#include "adhoccommandmanager.h"
+#include "xeps/adhoccommandmanager.h"
 
 namespace LeechCraft
 {

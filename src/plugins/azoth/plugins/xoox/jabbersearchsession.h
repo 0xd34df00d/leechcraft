@@ -31,7 +31,7 @@
 #define PLUGINS_AZOTH_PLUGINS_XOOX_JABBERSEARCHSESSION_H
 #include <QObject>
 #include <interfaces/azoth/ihavesearch.h>
-#include "jabbersearchmanager.h"
+#include "xeps/jabbersearchmanager.h"
 
 class QStandardItemModel;
 

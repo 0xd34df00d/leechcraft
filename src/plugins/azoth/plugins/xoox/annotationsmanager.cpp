@@ -28,7 +28,7 @@
  **********************************************************************/
 
 #include "annotationsmanager.h"
-#include "xmppannotationsmanager.h"
+#include "xeps/xmppannotationsmanager.h"
 #include "clientconnection.h"
 #include "clientconnectionextensionsmanager.h"
 

@@ -29,8 +29,8 @@
 
 #include "imagemediawidget.h"
 #include <QDebug>
-#include "xmppbobmanager.h"
-#include "xmppbobiq.h"
+#include "xeps/xmppbobmanager.h"
+#include "xeps/xmppbobiq.h"
 
 namespace LeechCraft
 {

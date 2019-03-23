@@ -31,7 +31,7 @@
 
 #include <QDialog>
 #include "ui_privacylistsconfigdialog.h"
-#include "privacylistsmanager.h"
+#include "xeps/privacylistsmanager.h"
 
 class QStandardItemModel;
 class QStandardItem;

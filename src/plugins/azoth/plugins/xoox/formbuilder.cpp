@@ -37,7 +37,7 @@
 #include <QTreeWidget>
 #include <QtDebug>
 #include "imagemediawidget.h"
-#include "xmppbobmanager.h"
+#include "xeps/xmppbobmanager.h"
 
 namespace LeechCraft
 {

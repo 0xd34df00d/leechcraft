@@ -51,31 +51,31 @@ set (XOOX_SRCS
 	inbandaccountregfirstpage.cpp
 	inbandaccountregsecondpage.cpp
 	inbandaccountregthirdpage.cpp
-	legacyentitytimeext.cpp
-	pubsubmanager.cpp
+	xeps/legacyentitytimeext.cpp
+	xeps/pubsubmanager.cpp
 	pepeventbase.cpp
 	useractivity.cpp
 	usermood.cpp
 	usertune.cpp
-	privacylistsmanager.cpp
+	xeps/privacylistsmanager.cpp
 	imagemediawidget.cpp
 	privacylistsconfigdialog.cpp
 	privacylistsitemdialog.cpp
-	adhoccommandmanager.cpp
+	xeps/adhoccommandmanager.cpp
 	executecommanddialog.cpp
 	userlocation.cpp
 	selfcontact.cpp
-	adhoccommandserver.cpp
+	xeps/adhoccommandserver.cpp
 	adhoccommand.cpp
-	lastactivitymanager.cpp
-	riexmanager.cpp
+	xeps/lastactivitymanager.cpp
+	xeps/riexmanager.cpp
 	jabbersearchsession.cpp
-	jabbersearchmanager.cpp
+	xeps/jabbersearchmanager.cpp
 	useravatarmanager.cpp
 	useravatardata.cpp
 	useravatarmetadata.cpp
 	sdmanager.cpp
-	msgarchivingmanager.cpp
+	xeps/msgarchivingmanager.cpp
 	xep0232handler.cpp
 	pepmicroblog.cpp
 	vcardlisteditdialog.cpp
@@ -88,22 +88,22 @@ set (XOOX_SRCS
 	crypthandler.cpp
 	serverinfostorage.cpp
 	inforequestpolicymanager.cpp
-	xmppannotationsiq.cpp
-	xmppannotationsmanager.cpp
-	xmppbobiq.cpp
-	xmppbobmanager.cpp
-	xmppcaptchaiq.cpp
-	xmppcaptchamanager.cpp
+	xeps/xmppannotationsiq.cpp
+	xeps/xmppannotationsmanager.cpp
+	xeps/xmppbobiq.cpp
+	xeps/xmppbobmanager.cpp
+	xeps/xmppcaptchaiq.cpp
+	xeps/xmppcaptchamanager.cpp
 	xmlsettingsmanager.cpp
 	captchamanager.cpp
-	xep0313manager.cpp
-	xep0313prefiq.cpp
+	xeps/xep0313manager.cpp
+	xeps/xep0313prefiq.cpp
 	xep0313prefsdialog.cpp
 	xep0313modelmanager.cpp
-	xep0313reqiq.cpp
+	xeps/xep0313reqiq.cpp
 	xep0334utils.cpp
-	carbonsmanager.cpp
-	pingmanager.cpp
+	xeps/carbonsmanager.cpp
+	xeps/pingmanager.cpp
 	pingreplyobject.cpp
 	pendingversionquery.cpp
 	pendinglastactivityrequest.cpp
@@ -146,7 +146,7 @@ set (DEFINITIONS "")
 if (ENABLE_CRYPT)
 	list (APPEND DEFINITIONS "-DENABLE_CRYPT")
 
-	set (XOOX_SRCS ${XOOX_SRCS} pgpmanager.cpp)
+	set (XOOX_SRCS ${XOOX_SRCS} xeps/pgpmanager.cpp)
 endif ()
 
 if (ENABLE_MEDIACALLS)

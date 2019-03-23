@@ -35,13 +35,13 @@
 #include <QXmppDiscoveryManager.h>
 #include <QXmppEntityTimeManager.h>
 #include <QXmppTransferManager.h>
-#include "adhoccommandmanager.h"
-#include "jabbersearchmanager.h"
-#include "lastactivitymanager.h"
-#include "legacyentitytimeext.h"
-#include "pingmanager.h"
-#include "riexmanager.h"
-#include "xmppannotationsmanager.h"
+#include "xeps/adhoccommandmanager.h"
+#include "xeps/jabbersearchmanager.h"
+#include "xeps/lastactivitymanager.h"
+#include "xeps/legacyentitytimeext.h"
+#include "xeps/pingmanager.h"
+#include "xeps/riexmanager.h"
+#include "xeps/xmppannotationsmanager.h"
 
 namespace LeechCraft::Azoth::Xoox
 {

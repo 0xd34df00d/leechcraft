@@ -32,7 +32,7 @@
 #include <util/network/socketerrorstrings.h>
 #include <util/util.h>
 #include <util/sll/slotclosure.h>
-#include "xmppbobmanager.h"
+#include "xeps/xmppbobmanager.h"
 #include "inbandaccountregfirstpage.h"
 #include "util.h"
 #include "regformhandlerwidget.h"

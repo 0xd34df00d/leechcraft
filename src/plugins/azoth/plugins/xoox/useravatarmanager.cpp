@@ -31,7 +31,7 @@
 #include <QCryptographicHash>
 #include <util/threads/futures.h>
 #include <interfaces/azoth/iproxyobject.h>
-#include "pubsubmanager.h"
+#include "xeps/pubsubmanager.h"
 #include "useravatardata.h"
 #include "useravatarmetadata.h"
 #include "clientconnection.h"

@@ -31,7 +31,7 @@
 
 #include <QObject>
 #include <QHash>
-#include "xmppannotationsiq.h"
+#include "xeps/xmppannotationsiq.h"
 
 namespace LeechCraft
 {

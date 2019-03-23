@@ -28,8 +28,8 @@
  **********************************************************************/
 
 #include "xep0313prefsdialog.h"
-#include "xep0313manager.h"
-#include "xep0313prefiq.h"
+#include "xeps/xep0313manager.h"
+#include "xeps/xep0313prefiq.h"
 
 namespace LeechCraft
 {

@@ -43,7 +43,7 @@
 #include "core.h"
 #include "clientconnection.h"
 #include "gwoptionsdialog.h"
-#include "privacylistsmanager.h"
+#include "xeps/privacylistsmanager.h"
 #include "glooxmessage.h"
 #include "util.h"
 

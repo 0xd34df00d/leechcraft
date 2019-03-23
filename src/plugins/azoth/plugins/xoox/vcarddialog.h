@@ -32,7 +32,7 @@
 #include <QDialog>
 #include <QXmppVCardIq.h>
 #include "ui_vcarddialog.h"
-#include "xmppannotationsiq.h"
+#include "xeps/xmppannotationsiq.h"
 
 namespace LeechCraft
 {

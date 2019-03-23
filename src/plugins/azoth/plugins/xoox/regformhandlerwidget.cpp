@@ -35,7 +35,7 @@
 #include <QLineEdit>
 #include <QDomElement>
 #include <QtDebug>
-#include "xmppbobmanager.h"
+#include "xeps/xmppbobmanager.h"
 #include "util.h"
 
 namespace LeechCraft

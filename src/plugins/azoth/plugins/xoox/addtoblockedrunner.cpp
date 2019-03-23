@@ -32,7 +32,7 @@
 #include <util/sll/prelude.h>
 #include <util/sll/util.h>
 #include "clientconnection.h"
-#include "privacylistsmanager.h"
+#include "xeps/privacylistsmanager.h"
 
 namespace LeechCraft
 {

@@ -28,7 +28,7 @@
  **********************************************************************/
 
 #include "privacylistsitemdialog.h"
-#include "privacylistsmanager.h"
+#include "xeps/privacylistsmanager.h"
 
 namespace LeechCraft
 {

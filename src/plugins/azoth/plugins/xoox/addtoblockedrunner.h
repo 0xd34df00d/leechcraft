@@ -32,7 +32,7 @@
 #include <memory>
 #include <QObject>
 #include <QStringList>
-#include "privacylistsmanager.h"
+#include "xeps/privacylistsmanager.h"
 
 namespace LeechCraft
 {

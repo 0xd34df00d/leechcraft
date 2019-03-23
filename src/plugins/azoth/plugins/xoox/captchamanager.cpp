@@ -33,9 +33,9 @@
 #include <QDialogButtonBox>
 #include <QVBoxLayout>
 #include <QtDebug>
-#include "xmppcaptchamanager.h"
+#include "xeps/xmppcaptchamanager.h"
 #include "formbuilder.h"
-#include "xmppbobmanager.h"
+#include "xeps/xmppbobmanager.h"
 
 namespace LeechCraft
 {

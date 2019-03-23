@@ -45,7 +45,7 @@
 #include <interfaces/azoth/iproxyobject.h>
 
 #ifdef ENABLE_CRYPT
-#include "pgpmanager.h"
+#include "xeps/pgpmanager.h"
 #endif
 
 #include "glooxprotocol.h"
@@ -56,7 +56,7 @@
 #include "roomclentry.h"
 #include "transfermanager.h"
 #include "sdsession.h"
-#include "pubsubmanager.h"
+#include "xeps/pubsubmanager.h"
 #include "usertune.h"
 #include "usermood.h"
 #include "useractivity.h"
@@ -69,11 +69,11 @@
 #include "crypthandler.h"
 #include "gwitemsremovaldialog.h"
 #include "serverinfostorage.h"
-#include "xep0313manager.h"
+#include "xeps/xep0313manager.h"
 #include "xep0313prefsdialog.h"
 #include "xep0313modelmanager.h"
 #include "pendinglastactivityrequest.h"
-#include "lastactivitymanager.h"
+#include "xeps/lastactivitymanager.h"
 #include "roomhandler.h"
 #include "clientconnectionerrormgr.h"
 #include "clientconnectionextensionsmanager.h"
@@ -83,7 +83,7 @@
 #include "callshandler.h"
 #include "bookmarksintegrator.h"
 #include "clientloggermanager.h"
-#include "riexmanager.h"
+#include "xeps/riexmanager.h"
 #include "riexintegrator.h"
 
 namespace LeechCraft
