@@ -34,6 +34,7 @@
 #include "clientconnection.h"
 #include "glooxaccount.h"
 #include "util.h"
+#include "xmppelementdescription.h"
 
 namespace LeechCraft::Azoth::Xoox
 {
@@ -51,23 +52,20 @@ namespace LeechCraft::Azoth::Xoox
 		const auto& jid = Acc_.GetSettings ()->GetJID ();
 		const auto aPos = jid.indexOf ('@');
 
-		QXmppElement userElem;
-		userElem.setTagName ("username");
-		userElem.setValue (aPos > 0 ? jid.left (aPos) : jid);
-
-		QXmppElement passElem;
-		passElem.setTagName ("password");
-		passElem.setValue (newPass);
-
-		QXmppElement queryElem;
-		queryElem.setTagName ("query");
-		queryElem.setAttribute ("xmlns", XooxUtil::NsRegister);
-		queryElem.appendChild (userElem);
-		queryElem.appendChild (passElem);
+		XmppElementDescription queryDescr
+		{
+			.TagName_ = "query",
+			.Attributes_ = { { "xmlns", XooxUtil::NsRegister } },
+			.Children_ =
+			{
+				{ .TagName_ = "username", .Value_ = aPos > 0 ? jid.left (aPos) : jid },
+				{ .TagName_ = "password", .Value_ = newPass },
+			}
+		};
 
 		QXmppIq iq (QXmppIq::Set);
 		iq.setTo (Acc_.GetDefaultReqHost ());
-		iq.setExtensions ({ queryElem });
+		iq.setExtensions ({ ToElement (queryDescr) });
 
 		Conn_.SendPacketWCallback (iq,
 				[this, newPass] (const QXmppIq& reply)
@@ -85,16 +83,15 @@ namespace LeechCraft::Azoth::Xoox
 	{
 		QXmppIq MakeDeregisterIq ()
 		{
-			QXmppElement removeElem;
-			removeElem.setTagName ("remove");
-
-			QXmppElement queryElem;
-			queryElem.setTagName ("query");
-			queryElem.setAttribute ("xmlns", XooxUtil::NsRegister);
-			queryElem.appendChild (removeElem);
+			XmppElementDescription queryDescr
+			{
+				.TagName_ = "query",
+				.Attributes_ = { { "xmlns", XooxUtil::NsRegister } },
+				.Children_ = { { .TagName_ = "remove" } }
+			};
 
 			QXmppIq iq { QXmppIq::Set };
-			iq.setExtensions ({ queryElem });
+			iq.setExtensions ({ ToElement (queryDescr) });
 			return iq;
 		}
 	}
