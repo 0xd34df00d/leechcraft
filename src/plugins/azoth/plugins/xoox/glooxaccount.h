@@ -277,9 +277,10 @@ namespace Xoox
 		GlooxMessage* CreateMessage (IMessage::Type,
 				const QString&, const QString&,
 				const QString&);
+
+		QString GetDefaultReqHost () const;
 	private:
 		QString GetPassword (bool authFailure = false);
-		QString GetDefaultReqHost () const;
 		void HandleClientConnectionAvailable (bool);
 	public slots:
 		void handleEntryRemoved (QObject*);

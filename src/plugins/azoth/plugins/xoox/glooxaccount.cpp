@@ -85,6 +85,7 @@
 #include "clientloggermanager.h"
 #include "xeps/riexmanager.h"
 #include "riexintegrator.h"
+#include "inbandaccountactions.h"
 
 namespace LeechCraft
 {
@@ -176,6 +177,7 @@ namespace Xoox
 		CallsHandler CallsHandler_ { ExtsMgr_.Get<QXmppCallManager> (), Conn_, Acc_ };
 #endif
 		ClientLoggerManager ClientLoggerManager_ { *Conn_.GetClient (), *Acc_.GetSettings () };
+		InBandAccountActions AccountActions_ { Conn_, Acc_ };
 
 		Managers (ClientConnection& conn, GlooxAccount& acc)
 		: Conn_ { conn }
@@ -575,108 +577,12 @@ namespace Xoox
 
 	void GlooxAccount::UpdateServerPassword (const QString& newPass)
 	{
-		if (newPass.isEmpty ())
-			return;
-
-		const auto& jid = SettingsHolder_->GetJID ();
-		const auto aPos = jid.indexOf ('@');
-
-		QXmppElement userElem;
-		userElem.setTagName ("username");
-		userElem.setValue (aPos > 0 ? jid.left (aPos) : jid);
-
-		QXmppElement passElem;
-		passElem.setTagName ("password");
-		passElem.setValue (newPass);
-
-		QXmppElement queryElem;
-		queryElem.setTagName ("query");
-		queryElem.setAttribute ("xmlns", XooxUtil::NsRegister);
-		queryElem.appendChild (userElem);
-		queryElem.appendChild (passElem);
-
-		QXmppIq iq (QXmppIq::Set);
-		iq.setTo (GetDefaultReqHost ());
-		iq.setExtensions ({ queryElem });
-
-		ClientConnection_->SendPacketWCallback (iq,
-				[this, newPass] (const QXmppIq& reply) -> void
-				{
-					if (reply.type () != QXmppIq::Result)
-						return;
-
-					emit serverPasswordUpdated (newPass);
-					ParentProtocol_->GetProxyObject ()->SetPassword (newPass, this);
-					ClientConnection_->SetPassword (newPass);
-				});
-	}
-
-	namespace
-	{
-		QXmppIq MakeDeregisterIq ()
-		{
-			QXmppElement removeElem;
-			removeElem.setTagName ("remove");
-
-			QXmppElement queryElem;
-			queryElem.setTagName ("query");
-			queryElem.setAttribute ("xmlns", XooxUtil::NsRegister);
-			queryElem.appendChild (removeElem);
-
-			QXmppIq iq { QXmppIq::Set };
-			iq.setExtensions ({ queryElem });
-			return iq;
-		}
+		Managers_->AccountActions_.UpdateServerPassword (newPass);
 	}
 
 	void GlooxAccount::DeregisterAccount ()
 	{
-		const auto worker = [this]
-		{
-			ClientConnection_->SendPacketWCallback (MakeDeregisterIq (),
-					[this] (const QXmppIq& reply)
-					{
-						if (reply.type () == QXmppIq::Result)
-						{
-							ParentProtocol_->RemoveAccount (this);
-							ChangeState ({ SOffline, {} });
-						}
-						else
-							qWarning () << Q_FUNC_INFO
-									<< "unable to cancel the registration:"
-									<< reply.type ();
-					});
-		};
-
-		if (GetState ().State_ != SOffline)
-		{
-			worker ();
-			return;
-		}
-
-		ChangeState ({ SOnline, {} });
-		new Util::SlotClosure<Util::ChoiceDeletePolicy>
-		{
-			[this, worker]
-			{
-				switch (GetState ().State_)
-				{
-				case SOffline:
-				case SError:
-				case SConnecting:
-					return Util::ChoiceDeletePolicy::Delete::No;
-				default:
-					break;
-				}
-
-				worker ();
-
-				return Util::ChoiceDeletePolicy::Delete::Yes;
-			},
-			this,
-			SIGNAL (statusChanged (EntryStatus)),
-			this
-		};
+		Managers_->AccountActions_.CancelRegistration ();
 	}
 
 	bool GlooxAccount::HasFeature (ServerHistoryFeature feature) const
