@@ -120,6 +120,7 @@ set (XOOX_SRCS
 	clientloggermanager.cpp
 	riexintegrator.cpp
 	inbandaccountactions.cpp
+	xmppelementdescription.cpp
 	)
 set (XOOX_FORMS
 	glooxaccountconfigurationdialog.ui
