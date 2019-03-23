@@ -32,6 +32,7 @@
 #include <QString>
 #include <QHash>
 #include <QList>
+#include <util/sll/requiresinit.h>
 
 class QXmppElement;
 
@@ -39,7 +40,7 @@ namespace LeechCraft::Azoth::Xoox
 {
 	struct XmppElementDescription
 	{
-		QString TagName_;
+		Util::RequiresInit<QString> TagName_;
 		QString Value_;
 
 		QHash<QString, QString> Attributes_;
