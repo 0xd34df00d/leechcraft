@@ -56,26 +56,6 @@ namespace Metida
 		return PluginId_;
 	}
 
-	void Core::SecondInit ()
-	{
-		if (LJPlatform_)
-		{
-			LJPlatform_->SetPluginProxy (PluginProxy_);
-			LJPlatform_->Prepare ();
-		}
-	}
-
-	void Core::Release ()
-	{
-		if (LJPlatform_)
-			LJPlatform_->Release ();
-	}
-
-	void Core::CreateBloggingPlatfroms (QObject *parentPlatform)
-	{
-		LJPlatform_ = std::make_shared<LJBloggingPlatform> (parentPlatform);
-	}
-
 	void Core::SetCoreProxy (ICoreProxy_ptr proxy)
 	{
 		Proxy_ = proxy;
@@ -84,11 +64,6 @@ namespace Metida
 	ICoreProxy_ptr Core::GetCoreProxy ()
 	{
 		return Proxy_;
-	}
-
-	QObjectList Core::GetBloggingPlatforms () const
-	{
-		return LJPlatform_ ? QObjectList () << LJPlatform_.get () : QObjectList ();
 	}
 
 	void Core::SetPluginProxy (QObject *pluginProxy)

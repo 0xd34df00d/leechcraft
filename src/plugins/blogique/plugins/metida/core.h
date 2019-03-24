@@ -52,7 +52,6 @@ namespace Metida
 		Q_OBJECT
 
 		ICoreProxy_ptr Proxy_;
-		std::shared_ptr<LJBloggingPlatform> LJPlatform_;
 		QObject *PluginProxy_;
 		QByteArray PluginId_;
 		LocalStorage *Storage_;
@@ -64,14 +63,8 @@ namespace Metida
 
 		QByteArray GetUniqueID () const;
 
-		void SecondInit ();
-		void Release ();
-
-		void CreateBloggingPlatfroms (QObject *parentPlatform);
 		void SetCoreProxy (ICoreProxy_ptr proxy);
 		ICoreProxy_ptr GetCoreProxy ();
-
-		QObjectList GetBloggingPlatforms () const;
 
 		void SetPluginProxy (QObject *pluginProxy);
 		IPluginProxy* GetPluginProxy ();

@@ -43,6 +43,8 @@ namespace Blogique
 {
 namespace Metida
 {
+	class LJBloggingPlatform;
+
 	class Plugin : public QObject
 				, public IInfo
 				, public IHaveSettings
@@ -57,6 +59,7 @@ namespace Metida
 
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
 
+		std::shared_ptr<LJBloggingPlatform> LJPlatform_;
 	public:
 		void Init (ICoreProxy_ptr proxy);
 		void SecondInit ();

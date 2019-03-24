@@ -32,6 +32,7 @@
 #include <util/util.h>
 #include <interfaces/structures.h>
 #include "core.h"
+#include "ljbloggingplatform.h"
 #include "xmlsettingsmanager.h"
 
 namespace LeechCraft
@@ -48,7 +49,8 @@ namespace Metida
 		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (), "blogiquemetidasettings.xml");
 
 		Core::Instance ().SetCoreProxy (proxy);
-		Core::Instance ().CreateBloggingPlatfroms (this);
+
+		LJPlatform_ = std::make_shared<LJBloggingPlatform> (this);
 
 		connect (&Core::Instance (),
 				SIGNAL (gotEntity (LeechCraft::Entity)),
@@ -58,7 +60,7 @@ namespace Metida
 
 	void Plugin::SecondInit ()
 	{
-		Core::Instance ().SecondInit ();
+		LJPlatform_->Prepare ();
 	}
 
 	QByteArray Plugin::GetUniqueID () const
@@ -68,7 +70,7 @@ namespace Metida
 
 	void Plugin::Release ()
 	{
-		Core::Instance ().Release ();
+		LJPlatform_->Release ();
 	}
 
 	QString Plugin::GetName () const
@@ -104,11 +106,12 @@ namespace Metida
 
 	QList<QObject*> Plugin::GetBloggingPlatforms () const
 	{
-		return Core::Instance ().GetBloggingPlatforms ();
+		return { LJPlatform_.get () };
 	}
 
 	void Plugin::initPlugin (QObject *proxy)
 	{
+		LJPlatform_->SetPluginProxy (proxy);
 		Core::Instance ().SetPluginProxy (proxy);
 	}
 
