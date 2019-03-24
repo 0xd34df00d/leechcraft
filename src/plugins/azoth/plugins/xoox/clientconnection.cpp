@@ -149,7 +149,6 @@ namespace Xoox
 				this,
 				SIGNAL (serverAuthFailed ()));
 
-		LastState_.State_ = SOffline;
 		handlePriorityChanged (Settings_->GetPriority ());
 
 		const auto proxy = account->GetParentProtocol ()->GetProxyObject ();
