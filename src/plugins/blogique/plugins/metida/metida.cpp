@@ -94,9 +94,7 @@ namespace Metida
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
 	{
-		QSet<QByteArray> classes;
-		classes << "org.LeechCraft.Plugins.Blogique.Plugins.IBlogPlatformPlugin";
-		return classes;
+		return { "org.LeechCraft.Plugins.Blogique.Plugins.IBlogPlatformPlugin" };
 	}
 
 	QObject* Plugin::GetQObject ()
