@@ -43,9 +43,9 @@ namespace Metida
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Util::InstallTranslator ("blogique_metida");
-		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
-		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
-				"blogiquemetidasettings.xml");
+
+		XmlSettingsDialog_ = std::make_shared<Util::XmlSettingsDialog> ();
+		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (), "blogiquemetidasettings.xml");
 
 		Core::Instance ().SetCoreProxy (proxy);
 		Core::Instance ().CreateBloggingPlatfroms (this);
