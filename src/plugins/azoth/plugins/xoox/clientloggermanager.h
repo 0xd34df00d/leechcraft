@@ -30,6 +30,8 @@
 #pragma once
 
 #include <QObject>
+#include <QXmppLogger.h>
+#include <interfaces/azoth/ihaveconsole.h>
 
 class QXmppClient;
 class QXmppLogger;
@@ -40,8 +42,17 @@ namespace LeechCraft::Azoth::Xoox
 
 	class ClientLoggerManager : public QObject
 	{
+		Q_OBJECT
+
+		bool Signaled_ = false;
 		QXmppLogger *FileLogSink_;
 	public:
 		ClientLoggerManager (QXmppClient&, AccountSettingsHolder&, QObject* = nullptr);
+
+		void SetSignaledLog (bool);
+	private:
+		void EmitConsoleLog (QXmppLogger::MessageType, const QString&);
+	signals:
+		void gotConsoleLog (const QByteArray&, IHaveConsole::PacketDirection, const QString&);
 	};
 }

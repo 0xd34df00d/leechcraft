@@ -497,21 +497,6 @@ namespace Xoox
 		return ServerInfoStorage_;
 	}
 
-	void ClientConnection::SetSignaledLog (bool signaled)
-	{
-		if (signaled)
-			connect (Client_->logger (),
-					SIGNAL (message (QXmppLogger::MessageType, QString)),
-					this,
-					SLOT (handleLog (QXmppLogger::MessageType, QString)),
-					Qt::UniqueConnection);
-		else
-			disconnect (Client_->logger (),
-					SIGNAL (message (QXmppLogger::MessageType, QString)),
-					this,
-					SLOT (handleLog (QXmppLogger::MessageType, QString)));
-	}
-
 	void ClientConnection::RequestInfo (const QString& jid) const
 	{
 		if (JID2CLEntry_.contains (jid))
@@ -1120,32 +1105,6 @@ namespace Xoox
 		identifying ["Server"] = split.value (1);
 
 		emit Account_->mucInvitationReceived (identifying, inviter, reason);
-	}
-
-	void ClientConnection::handleLog (QXmppLogger::MessageType type, const QString& msg)
-	{
-		QString entryId;
-		QDomDocument doc;
-		if (doc.setContent (msg))
-		{
-			const auto& elem = doc.documentElement ();
-			if (type == QXmppLogger::ReceivedMessage)
-				entryId = elem.attribute ("from");
-			else if (type == QXmppLogger::SentMessage)
-				entryId = elem.attribute ("to");
-		}
-
-		switch (type)
-		{
-		case QXmppLogger::SentMessage:
-			emit gotConsoleLog (msg.toUtf8 (), IHaveConsole::PacketDirection::Out, entryId);
-			break;
-		case QXmppLogger::ReceivedMessage:
-			emit gotConsoleLog (msg.toUtf8 (), IHaveConsole::PacketDirection::In, entryId);
-			break;
-		default:
-			break;
-		}
 	}
 
 	void ClientConnection::HandleOtherPresence (const QXmppPresence& pres)

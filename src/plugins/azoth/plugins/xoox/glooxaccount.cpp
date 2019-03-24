@@ -197,8 +197,8 @@ namespace Xoox
 
 		Managers_ = std::make_shared<Managers> (*ClientConnection_, *this);
 
-		connect (ClientConnection_.get (),
-				&ClientConnection::gotConsoleLog,
+		connect (&Managers_->ClientLoggerManager_,
+				&ClientLoggerManager::gotConsoleLog,
 				this,
 				&GlooxAccount::gotConsolePacket);
 
@@ -438,7 +438,7 @@ namespace Xoox
 
 	void GlooxAccount::SetConsoleEnabled (bool enabled)
 	{
-		ClientConnection_->SetSignaledLog (enabled);
+		Managers_->ClientLoggerManager_.SetSignaledLog (enabled);
 	}
 
 	void GlooxAccount::SubmitPost (const Post& post)

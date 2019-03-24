@@ -63,6 +63,9 @@ namespace LeechCraft::Azoth::Xoox
 					if (!QFile::exists (curPath))
 						FileLogSink_->reopen ();
 					FileLogSink_->log (type, msg);
+
+					if (Signaled_)
+						EmitConsoleLog (type, msg);
 				});
 		client.setLogger (logger);
 
@@ -79,4 +82,36 @@ namespace LeechCraft::Azoth::Xoox
 				setFileLogging);
 		setFileLogging (settings.GetFileLogEnabled ());
 	}
+
+	void ClientLoggerManager::SetSignaledLog (bool signaled)
+	{
+		Signaled_ = signaled;
+	}
+
+	void ClientLoggerManager::EmitConsoleLog (QXmppLogger::MessageType type, const QString& msg)
+	{
+		QString entryId;
+		QDomDocument doc;
+		if (doc.setContent (msg))
+		{
+			const auto& elem = doc.documentElement ();
+			if (type == QXmppLogger::ReceivedMessage)
+				entryId = elem.attribute ("from");
+			else if (type == QXmppLogger::SentMessage)
+				entryId = elem.attribute ("to");
+		}
+
+		switch (type)
+		{
+		case QXmppLogger::SentMessage:
+			emit gotConsoleLog (msg.toUtf8 (), IHaveConsole::PacketDirection::Out, entryId);
+			break;
+		case QXmppLogger::ReceivedMessage:
+			emit gotConsoleLog (msg.toUtf8 (), IHaveConsole::PacketDirection::In, entryId);
+			break;
+		default:
+			break;
+		}
+	}
+
 }

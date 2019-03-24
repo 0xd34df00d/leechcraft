@@ -198,8 +198,6 @@ namespace Xoox
 		CryptHandler* GetCryptHandler () const;
 		ServerInfoStorage* GetServerInfoStorage () const;
 
-		void SetSignaledLog (bool);
-
 		void RequestInfo (const QString&) const;
 
 		void Update (const QXmppRosterIq::Item&);
@@ -270,8 +268,6 @@ namespace Xoox
 
 		void handleRoomInvitation (const QString&, const QString&, const QString&);
 
-		void handleLog (QXmppLogger::MessageType, const QString&);
-
 		void setKAParams (const QPair<int, int>&);
 		void handlePhotoHash ();
 		void handlePriorityChanged (int);
@@ -287,8 +283,6 @@ namespace Xoox
 	signals:
 		void gotRosterItems (const QList<QObject*>&);
 		void rosterItemRemoved (QObject*);
-
-		void gotConsoleLog (const QByteArray&, IHaveConsole::PacketDirection, const QString&);
 
 		void gotRequestedPosts (const QList<LeechCraft::Azoth::Post>&, const QString&);
 		void gotNewPost (const LeechCraft::Azoth::Post&);
