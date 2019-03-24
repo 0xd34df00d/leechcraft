@@ -52,7 +52,6 @@ namespace Metida
 		Q_OBJECT
 
 		ICoreProxy_ptr Proxy_;
-		QObjectList BlogPlatformPlugins_;
 		std::shared_ptr<LJBloggingPlatform> LJPlatform_;
 		QObject *PluginProxy_;
 		QByteArray PluginId_;
