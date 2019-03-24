@@ -73,9 +73,9 @@ namespace Xoox
 
 	struct GlooxAccountState
 	{
-		State State_;
-		QString Status_;
-		int Priority_;
+		State State_ = SOffline;
+		QString Status_ = {};
+		int Priority_ = 0;
 	};
 
 	bool operator== (const GlooxAccountState&, const GlooxAccountState&);
