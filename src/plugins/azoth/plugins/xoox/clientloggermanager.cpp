@@ -59,8 +59,8 @@ namespace LeechCraft::Azoth::Xoox
 				FileLogSink_,
 				[this] (QXmppLogger::MessageType type, const QString& msg)
 				{
-					const auto& path = FileLogSink_->logFilePath ();
-					if (!QFile::exists (path))
+					const auto& curPath = FileLogSink_->logFilePath ();
+					if (!QFile::exists (curPath))
 						FileLogSink_->reopen ();
 					FileLogSink_->log (type, msg);
 				});
