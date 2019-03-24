@@ -56,7 +56,7 @@ namespace LeechCraft::Azoth::Xoox
 		logger->setMessageTypes (QXmppLogger::AnyMessage);
 		connect (logger,
 				&QXmppLogger::message,
-				FileLogSink_,
+				this,
 				[this] (QXmppLogger::MessageType type, const QString& msg)
 				{
 					const auto& curPath = FileLogSink_->logFilePath ();
