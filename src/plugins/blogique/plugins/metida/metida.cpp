@@ -112,7 +112,6 @@ namespace Metida
 	void Plugin::initPlugin (QObject *proxy)
 	{
 		LJPlatform_->SetPluginProxy (proxy);
-		Core::Instance ().SetPluginProxy (proxy);
 	}
 
 }

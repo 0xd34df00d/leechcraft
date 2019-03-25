@@ -28,7 +28,6 @@
  **********************************************************************/
 
 #include "core.h"
-#include <interfaces/blogique/ipluginproxy.h>
 #include "ljbloggingplatform.h"
 #include "localstorage.h"
 
@@ -39,8 +38,7 @@ namespace Blogique
 namespace Metida
 {
 	Core::Core ()
-	: PluginProxy_ (0)
-	, PluginId_ ("org.LeechCraft.Blogique.Metida")
+	: PluginId_ ("org.LeechCraft.Blogique.Metida")
 	, Storage_ (new LocalStorage (PluginId_, this))
 	{
 	}
@@ -64,16 +62,6 @@ namespace Metida
 	ICoreProxy_ptr Core::GetCoreProxy ()
 	{
 		return Proxy_;
-	}
-
-	void Core::SetPluginProxy (QObject *pluginProxy)
-	{
-		PluginProxy_ = pluginProxy;
-	}
-
-	IPluginProxy* Core::GetPluginProxy ()
-	{
-		return qobject_cast<IPluginProxy*> (PluginProxy_);
 	}
 
 	LocalStorage* Core::GetLocalStorage () const

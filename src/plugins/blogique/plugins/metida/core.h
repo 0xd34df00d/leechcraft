@@ -52,7 +52,6 @@ namespace Metida
 		Q_OBJECT
 
 		ICoreProxy_ptr Proxy_;
-		QObject *PluginProxy_;
 		QByteArray PluginId_;
 		LocalStorage *Storage_;
 
@@ -65,9 +64,6 @@ namespace Metida
 
 		void SetCoreProxy (ICoreProxy_ptr proxy);
 		ICoreProxy_ptr GetCoreProxy ();
-
-		void SetPluginProxy (QObject *pluginProxy);
-		IPluginProxy* GetPluginProxy ();
 
 		LocalStorage* GetLocalStorage () const;
 
