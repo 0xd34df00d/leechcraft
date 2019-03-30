@@ -33,6 +33,7 @@
 #include <QObject>
 #include <QSet>
 #include <interfaces/blogique/iaccount.h>
+#include <interfaces/core/icoreproxyfwd.h>
 #include "profiletypes.h"
 #include "ljfriendentry.h"
 #include "entryoptions.h"
@@ -95,7 +96,9 @@ namespace Metida
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Blogique::IAccount)
 
-		LJBloggingPlatform *ParentBloggingPlatform_;
+		LJBloggingPlatform * const ParentBloggingPlatform_;
+		const ICoreProxy_ptr Proxy_;
+
 		LJXmlRPC *LJXmlRpc_;
 		QString Name_;
 		QString Login_;
@@ -114,7 +117,7 @@ namespace Metida
 		LastUpdateType LastUpdateType_ = LastUpdateType::LastEntries;
 
 	public:
-		LJAccount (const QString& name, QObject *parent = 0);
+		LJAccount (const QString& name, const ICoreProxy_ptr& proxy, QObject *parent = nullptr);
 
 		QObject* GetQObject () override;
 		QObject* GetParentBloggingPlatform () const override;
@@ -149,7 +152,7 @@ namespace Metida
 		void FillSettings (LJAccountConfigurationWidget *widget);
 
 		QByteArray Serialize () const;
-		static LJAccount* Deserialize (const QByteArray& data, QObject *parent);
+		static LJAccount* Deserialize (const QByteArray& data, const ICoreProxy_ptr& proxy, QObject *parent);
 
 		void Validate ();
 		void Init ();

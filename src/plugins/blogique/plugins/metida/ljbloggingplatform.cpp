@@ -139,7 +139,7 @@ namespace Metida
 			return;
 		}
 
-		LJAccount *account = new LJAccount (name, this);
+		LJAccount *account = new LJAccount (name, Proxy_, this);
 		account->FillSettings (w);
 
 		const QString& pass = w->GetPassword ();
@@ -439,7 +439,7 @@ namespace Metida
 		{
 			settings.setArrayIndex (i);
 			QByteArray data = settings.value ("SerializedData").toByteArray ();
-			LJAccount *acc = LJAccount::Deserialize (data, this);
+			LJAccount *acc = LJAccount::Deserialize (data, Proxy_, this);
 			if (!acc)
 			{
 				qWarning () << Q_FUNC_INFO

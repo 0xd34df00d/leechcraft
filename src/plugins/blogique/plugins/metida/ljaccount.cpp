@@ -34,7 +34,6 @@
 #include <util/xpc/util.h>
 #include <util/xpc/notificationactionhandler.h>
 #include <util/sll/prelude.h>
-#include "core.h"
 #include "ljaccountconfigurationwidget.h"
 #include "ljaccountconfigurationdialog.h"
 #include "ljbloggingplatform.h"
@@ -52,9 +51,10 @@ namespace Blogique
 {
 namespace Metida
 {
-	LJAccount::LJAccount (const QString& name, QObject *parent)
+	LJAccount::LJAccount (const QString& name, const ICoreProxy_ptr& proxy, QObject *parent)
 	: QObject (parent)
 	, ParentBloggingPlatform_ (qobject_cast<LJBloggingPlatform*> (parent))
+	, Proxy_ (proxy)
 	, LJXmlRpc_ (new LJXmlRPC (this, this))
 	, Name_ (name)
 	, LJProfile_ (std::make_shared<LJProfile> (this))
@@ -205,7 +205,7 @@ namespace Metida
 	QString LJAccount::GetPassword () const
 	{
 		QString key ("org.LeechCraft.Blogique.PassForAccount/" + GetAccountID ());
-		return Util::GetPassword (key, QString (), Core::Instance ().GetCoreProxy ());
+		return Util::GetPassword (key, QString (), Proxy_);
 	}
 
 	QObject* LJAccount::GetProfile ()
@@ -379,7 +379,7 @@ namespace Metida
 		if (!pass.isNull ())
 			Util::SavePassword (pass,
 					"org.LeechCraft.Blogique.PassForAccount/" + GetAccountID (),
-					Core::Instance ().GetCoreProxy ());
+					Proxy_);
 
 		emit accountSettingsChanged ();
 		Validate ();
@@ -401,7 +401,7 @@ namespace Metida
 		return result;
 	}
 
-	LJAccount* LJAccount::Deserialize (const QByteArray& data, QObject *parent)
+	LJAccount* LJAccount::Deserialize (const QByteArray& data, const ICoreProxy_ptr& proxy, QObject *parent)
 	{
 		quint16 ver = 0;
 		QDataStream in (data);
@@ -418,7 +418,7 @@ namespace Metida
 
 		QString name;
 		in >> name;
-		LJAccount *result = new LJAccount (name, parent);
+		LJAccount *result = new LJAccount (name, proxy, parent);
 		in >> result->Login_
 				>> result->IsValid_;
 
