@@ -34,7 +34,6 @@
 #include <util/qml/themeimageprovider.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/media/icurrentsongkeeper.h>
-#include "core.h"
 #include "entryoptions.h"
 #include "ljaccount.h"
 #include "ljprofile.h"
@@ -47,8 +46,9 @@ namespace Blogique
 {
 namespace Metida
 {
-	PostOptionsWidget::PostOptionsWidget (QWidget *parent)
-	: QWidget (parent)
+	PostOptionsWidget::PostOptionsWidget (const ICoreProxy_ptr& proxy, QWidget *parent)
+	: QWidget { parent }
+	, Proxy_ { proxy }
 	{
 		Ui_.setupUi (this);
 
@@ -342,17 +342,16 @@ namespace Metida
 
 	namespace
 	{
-		QObject* GetFirstICurrentSongKeeperInstance ()
+		QObject* GetFirstICurrentSongKeeperInstance (const ICoreProxy_ptr& proxy)
 		{
-			auto plugins = Core::Instance ().GetCoreProxy ()->GetPluginsManager ()->
-					GetAllCastableRoots<Media::ICurrentSongKeeper*> ();
+			auto plugins = proxy->GetPluginsManager ()->GetAllCastableRoots<Media::ICurrentSongKeeper*> ();
 			return plugins.value (0);
 		}
 	}
 
 	void PostOptionsWidget::handleAutoUpdateCurrentMusic ()
 	{
-		auto obj = GetFirstICurrentSongKeeperInstance ();
+		auto obj = GetFirstICurrentSongKeeperInstance (Proxy_);
 		if (XmlSettingsManager::Instance ().Property ("AutoUpdateCurrentMusic", false).toBool () &&
 				obj)
 			connect (obj,
@@ -394,7 +393,7 @@ namespace Metida
 
 	void PostOptionsWidget::on_AutoDetect__released ()
 	{
-		auto pluginObj = GetFirstICurrentSongKeeperInstance ();
+		auto pluginObj = GetFirstICurrentSongKeeperInstance (Proxy_);
 		if (!pluginObj)
 			return;
 

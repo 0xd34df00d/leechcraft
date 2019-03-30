@@ -191,7 +191,7 @@ namespace Metida
 
 	QList<QWidget*> LJBloggingPlatform::GetBlogiqueSideWidgets () const
 	{
-		return { new PostOptionsWidget };
+		return { new PostOptionsWidget { Proxy_ } };
 	}
 
 	void LJBloggingPlatform::SetPluginProxy (QObject *proxy)

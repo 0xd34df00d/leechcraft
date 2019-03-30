@@ -30,8 +30,9 @@
 #pragma once
 
 #include <QWidget>
-#include <interfaces/blogique/iblogiquesidewidget.h>
+#include <interfaces/core/icoreproxyfwd.h>
 #include <interfaces/media/audiostructs.h>
+#include <interfaces/blogique/iblogiquesidewidget.h>
 #include "ui_postoptionswidget.h"
 
 namespace Media
@@ -53,12 +54,14 @@ namespace Metida
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Blogique::IBlogiqueSideWidget)
 
+		const ICoreProxy_ptr Proxy_;
+
 		Ui::PostOptions Ui_;
 		LJAccount *Account_ = nullptr;
 		quint32 AllowMask_ = 0;
 
 	public:
-		PostOptionsWidget (QWidget *parent = 0);
+		PostOptionsWidget (const ICoreProxy_ptr& proxy, QWidget *parent = 0);
 
 		QString GetName () const;
 		SideWidgetType GetWidgetType () const;
