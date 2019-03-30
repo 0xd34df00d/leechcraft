@@ -59,26 +59,26 @@ namespace Metida
 	public:
 		LJBloggingPlatform (QObject *parent);
 
-		QObject* GetQObject ();
-		BloggingPlatfromFeatures GetFeatures () const;
-		QObjectList GetRegisteredAccounts ();
-		QObject* GetParentBloggingPlatformPlugin () const;
-		QString GetBloggingPlatformName () const;
-		QIcon GetBloggingPlatformIcon () const;
-		QByteArray GetBloggingPlatformID () const;
+		QObject* GetQObject () override;
+		BloggingPlatfromFeatures GetFeatures () const override;
+		QObjectList GetRegisteredAccounts () override;
+		QObject* GetParentBloggingPlatformPlugin () const override;
+		QString GetBloggingPlatformName () const override;
+		QIcon GetBloggingPlatformIcon () const override;
+		QByteArray GetBloggingPlatformID () const override;
 
-		QList<QWidget*> GetAccountRegistrationWidgets (AccountAddOptions, const QString&);
-		void RegisterAccount (const QString& name, const QList<QWidget*>& widgets);
-		void RemoveAccount (QObject *account);
-		QList<QAction*> GetEditorActions () const;
-		QList<InlineTagInserter> GetInlineTagInserters () const;
-		QList<QWidget*> GetBlogiqueSideWidgets () const;
+		QList<QWidget*> GetAccountRegistrationWidgets (AccountAddOptions, const QString&) override;
+		void RegisterAccount (const QString& name, const QList<QWidget*>& widgets) override;
+		void RemoveAccount (QObject *account) override;
+		QList<QAction*> GetEditorActions () const override;
+		QList<InlineTagInserter> GetInlineTagInserters () const override;
+		QList<QWidget*> GetBlogiqueSideWidgets () const override;
 
 		void SetPluginProxy (QObject *proxy);
 		void Prepare ();
 		void Release ();
 
-		IAdvancedHTMLEditor::CustomTags_t GetCustomTags () const;
+		IAdvancedHTMLEditor::CustomTags_t GetCustomTags () const override;
 	private:
 		void RestoreAccounts ();
 
@@ -92,10 +92,10 @@ namespace Metida
 		void handleMessageUpdateIntervalChanged ();
 		void checkForMessages ();
 	signals:
-		void accountAdded (QObject *account);
-		void accountRemoved (QObject *account);
-		void accountValidated (QObject *account, bool validated);
-		void insertTag (const QString& tag);
+		void accountAdded (QObject *account) override;
+		void accountRemoved (QObject *account) override;
+		void accountValidated (QObject *account, bool validated) override;
+		void insertTag (const QString& tag) override;
 	};
 }
 }
