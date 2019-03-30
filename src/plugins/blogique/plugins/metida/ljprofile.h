@@ -57,10 +57,10 @@ namespace Metida
 		LJProfileData ProfileData_;
 		QHash<QNetworkReply*, QString> Reply2AvatarId_;
 	public:
-		LJProfile (QObject *parentAccount, QObject *parent = 0);
+		LJProfile (QObject *parentAccount, QObject *parent = nullptr);
 
-		QWidget* GetProfileWidget ();
-		QList<QPair<QIcon, QString>> GetPostingTargets () const;
+		QWidget* GetProfileWidget () override;
+		QList<QPair<QIcon, QString>> GetPostingTargets () const override;
 
 		LJProfileData GetProfileData () const;
 		QObject* GetParentAccount () const;
@@ -86,7 +86,7 @@ namespace Metida
 		void handleOtherAvatarDownloadFinished ();
 
 	signals:
-		void profileUpdated ();
+		void profileUpdated () override;
 		void tagsUpdated (const QHash<QString, int>& tags);
 	};
 }
