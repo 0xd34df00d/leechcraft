@@ -55,7 +55,7 @@ namespace Metida
 
 	QWidget* LJProfile::GetProfileWidget ()
 	{
-		return new ProfileWidget (this);
+		return new ProfileWidget (this, Proxy_);
 	}
 
 	QList<QPair<QIcon, QString>> LJProfile::GetPostingTargets () const

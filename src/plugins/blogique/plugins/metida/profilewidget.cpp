@@ -46,7 +46,6 @@
 #include "xmlsettingsmanager.h"
 #include "addeditentrydialog.h"
 #include "friendsproxymodel.h"
-#include "core.h"
 #include "sendmessagedialog.h"
 
 namespace LeechCraft
@@ -55,9 +54,10 @@ namespace Blogique
 {
 namespace Metida
 {
-	ProfileWidget::ProfileWidget (LJProfile *profile, QWidget *parent)
+	ProfileWidget::ProfileWidget (LJProfile *profile, const ICoreProxy_ptr& proxy, QWidget *parent)
 	: QWidget (parent)
 	, Profile_ (profile)
+	, Proxy_ (proxy)
 	, FriendsModel_ (new QStandardItemModel (this))
 	, FriendsProxyModel_ (new FriendsProxyModel (this))
 	, GroupsModel_ (new QStandardItemModel (this))
@@ -197,7 +197,7 @@ namespace Metida
 			QStandardItem *item = new QStandardItem (fr->GetUserName ());
 			QStandardItem *itemName = new QStandardItem (fr->GetFullName ());
 
-			const auto iconMgr = Core::Instance ().GetCoreProxy ()->GetIconThemeManager ();
+			const auto iconMgr = Proxy_->GetIconThemeManager ();
 
 			QIcon icon;
 			FriendsProxyModel::FriendStatus status = FriendsProxyModel::FSFriendOf;
@@ -249,8 +249,7 @@ namespace Metida
 
 	void ProfileWidget::FillCommunities (const QStringList& communities)
 	{
-		const QIcon& icon = Core::Instance ().GetCoreProxy ()->
-				GetIconThemeManager ()->GetIcon ("system-users");
+		const QIcon& icon = Proxy_->GetIconThemeManager ()->GetIcon ("system-users");
 		for (const auto& community : communities)
 		{
 			QStandardItem *item = new QStandardItem (icon, community);
@@ -480,11 +479,10 @@ namespace Metida
 		if (!index.isValid ())
 			return;
 
-		Core::Instance ().GetCoreProxy ()->GetEntityManager ()->
-				HandleEntity (Util::MakeEntity (QUrl (QString ("http://%1.livejournal.com")
-							.arg (index.data ().toString ())),
-						QString (),
-						OnlyHandle | FromUserInitiated));
+		Proxy_->GetEntityManager ()->HandleEntity (Util::MakeEntity (QUrl (QString ("http://%1.livejournal.com")
+					.arg (index.data ().toString ())),
+				QString (),
+				OnlyHandle | FromUserInitiated));
 	}
 
 	void ProfileWidget::handleSendMessage ()
@@ -510,11 +508,10 @@ namespace Metida
 		if (!index.isValid ())
 			return;
 
-		Core::Instance ().GetCoreProxy ()->GetEntityManager ()->
-				HandleEntity (Util::MakeEntity (QUrl (QString ("http://%1.livejournal.com")
-							.arg (index.data ().toString ())),
-						QString (),
-						OnlyHandle | FromUserInitiated));
+		Proxy_->GetEntityManager ()->HandleEntity (Util::MakeEntity (QUrl (QString ("http://%1.livejournal.com")
+					.arg (index.data ().toString ())),
+				QString (),
+				OnlyHandle | FromUserInitiated));
 	}
 
 	void ProfileWidget::handleFriendsViewDoubleClicked (const QModelIndex& index)

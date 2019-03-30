@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QWidget>
+#include <interfaces/core/icoreproxyfwd.h>
 #include <interfaces/blogique/iprofilewidget.h>
 #include "profiletypes.h"
 #include "ui_profilewidget.h"
@@ -61,6 +62,8 @@ namespace Metida
 		};
 		
 		LJProfile * const Profile_;
+		const ICoreProxy_ptr Proxy_;
+
 		QStandardItemModel * const FriendsModel_;
 		FriendsProxyModel * const FriendsProxyModel_;
 		QStandardItemModel * const GroupsModel_;
@@ -73,7 +76,7 @@ namespace Metida
 		QHash<QString, LJFriendEntry_ptr> Username2Friend_;
 
 	public:
-		ProfileWidget (LJProfile *profile, QWidget *parent = nullptr);
+		ProfileWidget (LJProfile *profile, const ICoreProxy_ptr& proxy, QWidget *parent = nullptr);
 	private:
 		void RereadProfileData ();
 		void FillFriends (const QList<LJFriendEntry_ptr>& friends);
