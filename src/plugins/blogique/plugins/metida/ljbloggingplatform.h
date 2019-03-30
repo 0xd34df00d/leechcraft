@@ -56,12 +56,6 @@ namespace Metida
 		QAction *FirstSeparator_;
 
 		QTimer *MessageCheckingTimer_;
-
-		enum BloqiqueSidePosition
-		{
-			First,
-			Second
-		};
 	public:
 		LJBloggingPlatform (QObject *parent);
 
