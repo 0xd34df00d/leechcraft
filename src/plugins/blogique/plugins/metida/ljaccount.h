@@ -99,7 +99,7 @@ namespace Metida
 		LJXmlRPC *LJXmlRpc_;
 		QString Name_;
 		QString Login_;
-		bool IsValid_;
+		bool IsValid_ = false;
 		std::shared_ptr<LJProfile> LJProfile_;
 
 		QAction *LoadLastEvents_;
@@ -111,7 +111,7 @@ namespace Metida
 			LastEntries,
 			ChangedEntries
 		};
-		LastUpdateType LastUpdateType_;
+		LastUpdateType LastUpdateType_ = LastUpdateType::LastEntries;
 
 	public:
 		LJAccount (const QString& name, QObject *parent = 0);

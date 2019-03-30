@@ -57,11 +57,9 @@ namespace Metida
 	, ParentBloggingPlatform_ (qobject_cast<LJBloggingPlatform*> (parent))
 	, LJXmlRpc_ (new LJXmlRPC (this, this))
 	, Name_ (name)
-	, IsValid_ (false)
 	, LJProfile_ (std::make_shared<LJProfile> (this))
 	, LoadLastEvents_ (new QAction (tr ("Last entries"), this))
 	, LoadChangedEvents_ (new QAction (tr ("Changed entries"), this))
-	, LastUpdateType_ (LastUpdateType::LastEntries)
 	{
 		qRegisterMetaType<LJProfileData> ("LJProfileData");
 		qRegisterMetaTypeStreamOperators<QList<LJFriendGroup>> ("QList<LJFriendGroup>");
