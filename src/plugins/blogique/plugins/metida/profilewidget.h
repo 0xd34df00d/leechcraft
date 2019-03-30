@@ -73,7 +73,7 @@ namespace Metida
 		QHash<QString, LJFriendEntry_ptr> Username2Friend_;
 
 	public:
-		ProfileWidget (LJProfile *profile, QWidget *parent = 0);
+		ProfileWidget (LJProfile *profile, QWidget *parent = nullptr);
 	private:
 		void RereadProfileData ();
 		void FillFriends (const QList<LJFriendEntry_ptr>& friends);
@@ -82,7 +82,7 @@ namespace Metida
 		void ReFillModels ();
 
 	public slots:
-		void updateProfile ();
+		void updateProfile () override;
 	private slots:
 		void on_ColoringFriendsList__toggled (bool toggle);
 		void on_Add__released ();
