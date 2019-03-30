@@ -63,13 +63,13 @@ namespace Metida
 	public:
 		explicit PostOptionsWidget (const ICoreProxy_ptr& proxy, QWidget *parent = nullptr);
 
-		QString GetName () const;
-		SideWidgetType GetWidgetType () const;
-		QVariantMap GetPostOptions () const;
-		void SetPostOptions (const QVariantMap& map);
-		QVariantMap GetCustomData () const;
-		void SetCustomData (const QVariantMap& map);
-		void SetAccount (QObject *account);
+		QString GetName () const override;
+		SideWidgetType GetWidgetType () const override;
+		QVariantMap GetPostOptions () const override;
+		void SetPostOptions (const QVariantMap& map) override;
+		QVariantMap GetCustomData () const override;
+		void SetCustomData (const QVariantMap& map) override;
+		void SetAccount (QObject *account) override;
 
 	private:
 		void FillItems ();
