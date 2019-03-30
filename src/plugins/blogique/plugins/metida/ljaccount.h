@@ -116,35 +116,35 @@ namespace Metida
 	public:
 		LJAccount (const QString& name, QObject *parent = 0);
 
-		QObject* GetQObject ();
-		QObject* GetParentBloggingPlatform () const;
-		QString GetAccountName () const;
-		QString GetOurLogin () const;
-		void RenameAccount (const QString& name);
-		QByteArray GetAccountID () const;
-		void OpenConfigurationDialog ();
-		bool IsValid () const;
+		QObject* GetQObject () override;
+		QObject* GetParentBloggingPlatform () const override;
+		QString GetAccountName () const override;
+		QString GetOurLogin () const override;
+		void RenameAccount (const QString& name) override;
+		QByteArray GetAccountID () const override;
+		void OpenConfigurationDialog () override;
+		bool IsValid () const override;
 
 		QString GetPassword () const;
 
-		QObject* GetProfile ();
+		QObject* GetProfile () override;
 
-		void GetEntriesByDate (const QDate& date);
-		void GetEntriesWithFilter (const Filter& filter);
-		void RemoveEntry (const Entry& entry);
-		void UpdateEntry (const Entry& entry);
+		void GetEntriesByDate (const QDate& date) override;
+		void GetEntriesWithFilter (const Filter& filter) override;
+		void RemoveEntry (const Entry& entry) override;
+		void UpdateEntry (const Entry& entry) override;
 
-		void RequestLastEntries (int count);
-		void RequestStatistics ();
-		void RequestTags ();
+		void RequestLastEntries (int count) override;
+		void RequestStatistics () override;
+		void RequestTags () override;
 
 		void RequestInbox ();
 
-		void RequestRecentComments ();
-		void AddComment (const CommentEntry& comment);
-		void DeleteComment (qint64 id, bool deleteThread = false);
+		void RequestRecentComments () override;
+		void AddComment (const CommentEntry& comment) override;
+		void DeleteComment (qint64 id, bool deleteThread = false) override;
 
-		QList<QAction*> GetUpdateActions () const;
+		QList<QAction*> GetUpdateActions () const override;
 
 		void FillSettings (LJAccountConfigurationWidget *widget);
 
@@ -170,10 +170,10 @@ namespace Metida
 
 	public slots:
 		void handleValidatingFinished (bool success);
-		void updateProfile ();
+		void updateProfile () override;
 
-		void submit (const Entry& event);
-		void preview (const Entry& event);
+		void submit (const Entry& event) override;
+		void preview (const Entry& event) override;
 
 		void handleEventPosted (const QList<LJEvent>& entries);
 		void handleEventUpdated (const QList<LJEvent>& entries);
@@ -195,29 +195,29 @@ namespace Metida
 		void handleCommentSent (const QUrl& url);
 
 	signals:
-		void accountRenamed (const QString& newName);
+		void accountRenamed (const QString& newName) override;
 		void accountSettingsChanged ();
 		void accountValidated (bool validated);
 
-		void requestEntriesBegin ();
+		void requestEntriesBegin () override;
 
-		void entryPosted (const QList<Entry>& entries);
-		void entryUpdated (const QList<Entry>& entries);
-		void entryRemoved (int itemId);
+		void entryPosted (const QList<Entry>& entries) override;
+		void entryUpdated (const QList<Entry>& entries) override;
+		void entryRemoved (int itemId) override;
 
 		void gotError(int errorCode, const QString& errorString,
-				const QString& localizedErrorString = QString ());
+				const QString& localizedErrorString = QString ()) override;
 
-		void gotFilteredEntries (const QList<Entry>& entries);
-		void gettingFilteredEntriesFinished ();
+		void gotFilteredEntries (const QList<Entry>& entries) override;
+		void gettingFilteredEntriesFinished () override;
 
-		void gotEntries (const QList<Entry>& entries);
+		void gotEntries (const QList<Entry>& entries) override;
 
-		void gotBlogStatistics (const QMap<QDate, int>& statistics);
-		void tagsUpdated (const QHash<QString, int>& tags);
+		void gotBlogStatistics (const QMap<QDate, int>& statistics) override;
+		void tagsUpdated (const QHash<QString, int>& tags) override;
 
-		void gotRecentComments (const QList<CommentEntry>& comments);
-		void commentsDeleted (const QList<qint64>& comments);
+		void gotRecentComments (const QList<CommentEntry>& comments) override;
+		void commentsDeleted (const QList<qint64>& comments) override;
 	};
 }
 }
