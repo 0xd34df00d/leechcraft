@@ -53,34 +53,20 @@ namespace Metida
 	{
 		QString CurrentLocation_;
 		QString CurrentMood_;
-		int CurrentMoodId_;
+		int CurrentMoodId_ = -1;
 		QString CurrentMusic_;
-		bool ShowInFriendsPage_;
-		bool AutoFormat_;
-		AdultContent AdultContent_;
-		CommentsManagement CommentsManagement_;
-		CommentsManagement ScreeningComments_;
+		bool ShowInFriendsPage_ = true;
+		bool AutoFormat_ = true;
+		AdultContent AdultContent_ = AdultContent::WithoutAdultContent;
+		CommentsManagement CommentsManagement_ = CommentsManagement::EnableComments;
+		CommentsManagement ScreeningComments_ = CommentsManagement::Default;
 		QString PostAvatar_;
-		bool EntryVisibility_;
-		bool UsedRTE_;
-		bool NotifyByEmail_;
+		bool EntryVisibility_ = true;
+		bool UsedRTE_ = true;
+		bool NotifyByEmail_ = true;
 		QStringList LikeButtons_;
 		QUrl RepostUrl_;
-		bool IsRepost_;
-
-		LJEventProperties ()
-		: CurrentMoodId_ (-1)
-		, ShowInFriendsPage_ (true)
-		, AutoFormat_ (true)
-		, AdultContent_ (AdultContent::WithoutAdultContent)
-		, CommentsManagement_ (CommentsManagement::EnableComments)
-		, ScreeningComments_ (CommentsManagement::Default)
-		, EntryVisibility_ (true)
-		, UsedRTE_ (true)
-		, NotifyByEmail_ (true)
-		, IsRepost_ (false)
-		{
-		}
+		bool IsRepost_ = false;
 	};
 
 	struct LJEvent
@@ -88,8 +74,8 @@ namespace Metida
 		//for posting
 		QString Event_;
 		QString Subject_;
-		Access Security_;
-		quint32 AllowMask_;
+		Access Security_ = Access::Public;
+		quint32 AllowMask_ = 0;
 		QDateTime DateTime_;
 		QStringList Tags_;
 		QString TimeZone_;
@@ -97,19 +83,10 @@ namespace Metida
 		LJEventProperties Props_;
 
 		// for getting
-		qlonglong ItemID_;
-		qlonglong DItemID_;
-		uint ANum_;
+		qlonglong ItemID_ = -1;
+		qlonglong DItemID_ = -1;
+		uint ANum_ = 0;
 		QUrl Url_;
-
-		LJEvent ()
-		: Security_ (Access::Public)
-		, AllowMask_ (0)
-		, ItemID_ (-1)
-		, DItemID_ (-1)
-		, ANum_ (0)
-		{
-		}
 	};
 
 	class LJAccount : public QObject
