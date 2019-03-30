@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QObject>
+#include <interfaces/core/icoreproxyfwd.h>
 #include <interfaces/blogique/ibloggingplatform.h>
 
 namespace LeechCraft
@@ -46,7 +47,9 @@ namespace Metida
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Blogique::IBloggingPlatform)
 
-		QObject *ParentBlogginPlatfromPlugin_;
+		QObject * const ParentBlogginPlatfromPlugin_;
+		const ICoreProxy_ptr Proxy_;
+
 		QObject *PluginProxy_;
 		QList<LJAccount*> LJAccounts_;
 
@@ -57,7 +60,7 @@ namespace Metida
 
 		QTimer *MessageCheckingTimer_;
 	public:
-		LJBloggingPlatform (QObject *parent);
+		LJBloggingPlatform (const ICoreProxy_ptr&, QObject *parent);
 
 		QObject* GetQObject () override;
 		BloggingPlatfromFeatures GetFeatures () const override;

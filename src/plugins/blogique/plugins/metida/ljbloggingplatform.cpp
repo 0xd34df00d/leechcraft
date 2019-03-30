@@ -54,8 +54,9 @@ namespace Blogique
 {
 namespace Metida
 {
-	LJBloggingPlatform::LJBloggingPlatform (QObject *parent)
+	LJBloggingPlatform::LJBloggingPlatform (const ICoreProxy_ptr& proxy, QObject *parent)
 	: ParentBlogginPlatfromPlugin_ (parent)
+	, Proxy_ (proxy)
 	, PluginProxy_ (0)
 	, LJUser_ (new QAction (Core::Instance ().GetCoreProxy ()->GetIconThemeManager ()->GetIcon ("user-properties"),
 			tr ("Add LJ user"), this))

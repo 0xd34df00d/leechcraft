@@ -50,7 +50,7 @@ namespace Metida
 
 		Core::Instance ().SetCoreProxy (proxy);
 
-		LJPlatform_ = std::make_shared<LJBloggingPlatform> (this);
+		LJPlatform_ = std::make_shared<LJBloggingPlatform> (proxy, this);
 
 		connect (&Core::Instance (),
 				SIGNAL (gotEntity (LeechCraft::Entity)),
@@ -113,7 +113,6 @@ namespace Metida
 	{
 		LJPlatform_->SetPluginProxy (proxy);
 	}
-
 }
 }
 }
