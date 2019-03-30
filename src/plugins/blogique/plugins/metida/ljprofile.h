@@ -32,6 +32,7 @@
 #include <memory>
 #include <QObject>
 #include <QSet>
+#include <interfaces/core/icoreproxyfwd.h>
 #include <interfaces/blogique/iprofile.h>
 #include "profiletypes.h"
 #include "ljfriendentry.h"
@@ -53,11 +54,13 @@ namespace Metida
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Blogique::IProfile)
 
-		QObject *ParentAccount_;
+		QObject * const ParentAccount_;
+		const ICoreProxy_ptr Proxy_;
+
 		LJProfileData ProfileData_;
 		QHash<QNetworkReply*, QString> Reply2AvatarId_;
 	public:
-		LJProfile (QObject *parentAccount, QObject *parent = nullptr);
+		LJProfile (QObject *parentAccount, const ICoreProxy_ptr&, QObject *parent = nullptr);
 
 		QWidget* GetProfileWidget () override;
 		QList<QPair<QIcon, QString>> GetPostingTargets () const override;

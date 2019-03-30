@@ -34,9 +34,9 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <interfaces/core/iiconthememanager.h>
+#include <interfaces/core/icoreproxy.h>
 #include <util/sys/paths.h>
 #include "ljaccount.h"
-#include "core.h"
 #include "profilewidget.h"
 #include "localstorage.h"
 
@@ -46,9 +46,10 @@ namespace Blogique
 {
 namespace Metida
 {
-	LJProfile::LJProfile (QObject *parentAccount, QObject *parent)
-	: QObject (parent)
-	, ParentAccount_ (parentAccount)
+	LJProfile::LJProfile (QObject *parentAccount, const ICoreProxy_ptr& proxy, QObject *parent)
+	: QObject { parent }
+	, ParentAccount_ { parentAccount }
+	, Proxy_ { proxy }
 	{
 	}
 
@@ -59,7 +60,7 @@ namespace Metida
 
 	QList<QPair<QIcon, QString>> LJProfile::GetPostingTargets () const
 	{
-		const auto mgr = Core::Instance ().GetCoreProxy ()->GetIconThemeManager ();
+		const auto mgr = Proxy_->GetIconThemeManager ();
 
 		QList<QPair<QIcon, QString>> targets;
 		const auto& icon = mgr->GetIcon ("system-users");
@@ -152,8 +153,7 @@ namespace Metida
 			return;
 
 		QNetworkRequest request (avatarUrl);
-		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
-				GetNetworkAccessManager ()->get (request);
+		const auto reply = Proxy_->GetNetworkAccessManager ()->get (request);
 		connect (reply,
 				SIGNAL (finished ()),
 				this,
@@ -167,8 +167,7 @@ namespace Metida
 			return;
 
 		QNetworkRequest request (url);
-		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
-				GetNetworkAccessManager ()->get (request);
+		const auto reply = Proxy_->GetNetworkAccessManager ()->get (request);
 		Reply2AvatarId_ [reply] = id;
 		connect (reply,
 				SIGNAL (finished ()),

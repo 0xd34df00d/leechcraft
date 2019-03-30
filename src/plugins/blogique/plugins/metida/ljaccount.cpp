@@ -57,7 +57,7 @@ namespace Metida
 	, Proxy_ (proxy)
 	, LJXmlRpc_ (new LJXmlRPC (this, this))
 	, Name_ (name)
-	, LJProfile_ (std::make_shared<LJProfile> (this))
+	, LJProfile_ (std::make_shared<LJProfile> (this, proxy))
 	, LoadLastEvents_ (new QAction (tr ("Last entries"), this))
 	, LoadChangedEvents_ (new QAction (tr ("Changed entries"), this))
 	{
