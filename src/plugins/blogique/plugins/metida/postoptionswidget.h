@@ -54,8 +54,8 @@ namespace Metida
 		Q_INTERFACES (LeechCraft::Blogique::IBlogiqueSideWidget)
 
 		Ui::PostOptions Ui_;
-		LJAccount *Account_;
-		quint32 AllowMask_;
+		LJAccount *Account_ = nullptr;
+		quint32 AllowMask_ = 0;
 
 	public:
 		PostOptionsWidget (QWidget *parent = 0);

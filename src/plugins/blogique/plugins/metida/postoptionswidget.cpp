@@ -49,8 +49,6 @@ namespace Metida
 {
 	PostOptionsWidget::PostOptionsWidget (QWidget *parent)
 	: QWidget (parent)
-	, Account_ (0)
-	, AllowMask_ (0)
 	{
 		Ui_.setupUi (this);
 
