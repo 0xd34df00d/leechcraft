@@ -61,7 +61,7 @@ namespace Metida
 		quint32 AllowMask_ = 0;
 
 	public:
-		PostOptionsWidget (const ICoreProxy_ptr& proxy, QWidget *parent = 0);
+		explicit PostOptionsWidget (const ICoreProxy_ptr& proxy, QWidget *parent = nullptr);
 
 		QString GetName () const;
 		SideWidgetType GetWidgetType () const;
