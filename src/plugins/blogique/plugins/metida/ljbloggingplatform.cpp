@@ -58,12 +58,9 @@ namespace Metida
 	: ParentBlogginPlatfromPlugin_ (parent)
 	, Proxy_ (proxy)
 	, PluginProxy_ (0)
-	, LJUser_ (new QAction (Core::Instance ().GetCoreProxy ()->GetIconThemeManager ()->GetIcon ("user-properties"),
-			tr ("Add LJ user"), this))
-	, LJPoll_ (new QAction (Core::Instance ().GetCoreProxy ()->GetIconThemeManager ()->GetIcon ("office-chart-pie"),
-			tr ("Create poll"), this))
-	, LJCut_ (new QAction (Core::Instance ().GetCoreProxy ()->GetIconThemeManager ()->GetIcon ("user-properties"),
-			tr ("Insert LJ cut"), this))
+	, LJUser_ (new QAction (proxy->GetIconThemeManager ()->GetIcon ("user-properties"), tr ("Add LJ user"), this))
+	, LJPoll_ (new QAction (proxy->GetIconThemeManager ()->GetIcon ("office-chart-pie"), tr ("Create poll"), this))
+	, LJCut_ (new QAction (proxy->GetIconThemeManager ()->GetIcon ("user-properties"), tr ("Insert LJ cut"), this))
 	, FirstSeparator_ (new QAction (this))
 	, MessageCheckingTimer_ (new QTimer (this))
 	{
@@ -149,7 +146,7 @@ namespace Metida
 		if (!pass.isEmpty ())
 			Util::SavePassword (pass,
 					"org.LeechCraft.Blogique.PassForAccount/" + account->GetAccountID (),
-					Core::Instance ().GetCoreProxy ());
+					Proxy_);
 
 		LJAccounts_ << account;
 		saveAccounts ();
@@ -177,12 +174,19 @@ namespace Metida
 
 	QList<InlineTagInserter> LJBloggingPlatform::GetInlineTagInserters () const
 	{
-		return { InlineTagInserter { "lj-cut", QVariantMap (), [] (QAction *action)
+		auto cutIcon = Proxy_->GetIconThemeManager ()->GetIcon ("distribute-vertical-equal");
+		return
+		{
+			{
+				"lj-cut",
+				{},
+				[cutIcon] (QAction *action)
 				{
 					action->setText ("Insert cut");
-					action->setIcon (Core::Instance ().GetCoreProxy ()->
-							GetIconThemeManager ()->GetIcon ("distribute-vertical-equal"));
-				} } };
+					action->setIcon (cutIcon);
+				}
+			}
+		};
 	}
 
 	QList<QWidget*> LJBloggingPlatform::GetBlogiqueSideWidgets () const
@@ -471,7 +475,7 @@ namespace Metida
 
 	void LJBloggingPlatform::handleAddLJUser ()
 	{
-		auto rootWM = Core::Instance ().GetCoreProxy ()->GetRootWindowsManager ();
+		auto rootWM = Proxy_->GetRootWindowsManager ();
 		QString name = QInputDialog::getText (rootWM->GetPreferredWindow (),
 				tr ("Add LJ User"),
 				tr ("Enter LJ user name:"));
