@@ -60,13 +60,13 @@ namespace Metida
 			Name
 		};
 		
-		LJProfile *Profile_;
-		QStandardItemModel *FriendsModel_;
-		FriendsProxyModel *FriendsProxyModel_;
-		QStandardItemModel *GroupsModel_;
-		QStandardItemModel *FriendsInGroupModel_;
-		QStandardItemModel *FriendsNotInGroupModel_;
-		QStandardItemModel *CommunitiesModel_;
+		LJProfile * const Profile_;
+		QStandardItemModel * const FriendsModel_;
+		FriendsProxyModel * const FriendsProxyModel_;
+		QStandardItemModel * const GroupsModel_;
+		QStandardItemModel * const FriendsInGroupModel_;
+		QStandardItemModel * const FriendsNotInGroupModel_;
+		QStandardItemModel * const CommunitiesModel_;
 		QHash<QStandardItem*, LJFriendGroup> Item2FriendGroup_;
 		QHash<QStandardItem*, LJFriendEntry_ptr> Item2Friend_;
 		QMap<LJFriendEntry_ptr, QStandardItem*> Friend2Item_;
