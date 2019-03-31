@@ -51,8 +51,6 @@ namespace Metida
 		Q_DISABLE_COPY (Core)
 	public:
 		static Core& Instance ();
-
-		QByteArray GetUniqueID () const;
 	};
 }
 }

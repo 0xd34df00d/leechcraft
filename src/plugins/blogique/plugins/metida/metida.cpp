@@ -60,7 +60,7 @@ namespace Metida
 
 	QByteArray Plugin::GetUniqueID () const
 	{
-		return Core::Instance ().GetUniqueID ();
+		return "org.LeechCraft.Blogique.Metida";
 	}
 
 	void Plugin::Release ()

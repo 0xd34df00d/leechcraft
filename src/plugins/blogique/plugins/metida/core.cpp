@@ -45,11 +45,6 @@ namespace Metida
 		static Core c;
 		return c;
 	}
-
-	QByteArray Core::GetUniqueID () const
-	{
-		return PluginId_;
-	}
 }
 }
 }
