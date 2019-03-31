@@ -52,7 +52,6 @@ namespace Metida
 {
 	constexpr int BitMaskForFriendsOnlyComments = 0;
 	constexpr int MaxGetEventsCount = 50;
-	constexpr int MaxGetEventsPerDayCount = 200;
 
 	LJXmlRPC::LJXmlRPC (LJAccount *acc, QObject *parent)
 	: QObject (parent)
