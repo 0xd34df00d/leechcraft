@@ -39,19 +39,13 @@ namespace LeechCraft
 {
 namespace Blogique
 {
-class IPluginProxy;
-
 namespace Metida
 {
-	class LJBloggingPlatform;
-	class LocalStorage;
-
 	class Core : public QObject
 	{
 		Q_OBJECT
 
 		QByteArray PluginId_;
-		LocalStorage *Storage_;
 
 		Core ();
 		Q_DISABLE_COPY (Core)
@@ -60,10 +54,7 @@ namespace Metida
 
 		QByteArray GetUniqueID () const;
 
-		LocalStorage* GetLocalStorage () const;
-
 		void SendEntity (const Entity& e);
-
 	signals:
 		void gotEntity (LeechCraft::Entity e);
 	};

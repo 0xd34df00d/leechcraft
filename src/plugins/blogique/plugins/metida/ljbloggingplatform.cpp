@@ -40,7 +40,6 @@
 #include <util/xpc/passutils.h>
 #include <util/sll/prelude.h>
 #include <util/sll/functional.h>
-#include "core.h"
 #include "ljaccount.h"
 #include "ljaccountconfigurationwidget.h"
 #include "postoptionswidget.h"
@@ -54,8 +53,9 @@ namespace Blogique
 {
 namespace Metida
 {
-	LJBloggingPlatform::LJBloggingPlatform (const ICoreProxy_ptr& proxy, QObject *parent)
-	: ParentBlogginPlatfromPlugin_ (parent)
+	LJBloggingPlatform::LJBloggingPlatform (LocalStorage& storage, const ICoreProxy_ptr& proxy, QObject *parent)
+	: Storage_ (storage)
+	, ParentBlogginPlatfromPlugin_ (parent)
 	, Proxy_ (proxy)
 	, PluginProxy_ (0)
 	, LJUser_ (new QAction (proxy->GetIconThemeManager ()->GetIcon ("user-properties"), tr ("Add LJ user"), this))
@@ -152,7 +152,7 @@ namespace Metida
 		saveAccounts ();
 		emit accountAdded (account);
 		account->Init ();
-		Core::Instance ().GetLocalStorage ()->AddAccount (account->GetAccountID ());
+		Storage_.AddAccount (account->GetAccountID ());
 	}
 
 	void LJBloggingPlatform::RemoveAccount (QObject *account)
@@ -161,7 +161,7 @@ namespace Metida
 		if (LJAccounts_.removeAll (acc))
 		{
 			emit accountRemoved (account);
-			Core::Instance ().GetLocalStorage ()->RemoveAccount (acc->GetAccountID ());
+			Storage_.RemoveAccount (acc->GetAccountID ());
 			account->deleteLater ();
 			saveAccounts ();
 		}
@@ -451,7 +451,7 @@ namespace Metida
 			emit accountAdded (acc);
 
 			acc->Init ();
-			Core::Instance ().GetLocalStorage ()->AddAccount (acc->GetAccountID ());
+			Storage_.AddAccount (acc->GetAccountID ());
 		}
 		settings.endArray ();
 	}

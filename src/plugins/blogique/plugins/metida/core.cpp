@@ -28,8 +28,6 @@
  **********************************************************************/
 
 #include "core.h"
-#include "ljbloggingplatform.h"
-#include "localstorage.h"
 
 namespace LeechCraft
 {
@@ -39,7 +37,6 @@ namespace Metida
 {
 	Core::Core ()
 	: PluginId_ ("org.LeechCraft.Blogique.Metida")
-	, Storage_ (new LocalStorage (PluginId_, this))
 	{
 	}
 
@@ -52,11 +49,6 @@ namespace Metida
 	QByteArray Core::GetUniqueID () const
 	{
 		return PluginId_;
-	}
-
-	LocalStorage* Core::GetLocalStorage () const
-	{
-		return Storage_;
 	}
 
 	void Core::SendEntity (const Entity& e)

@@ -33,6 +33,7 @@
 #include <interfaces/structures.h>
 #include "core.h"
 #include "ljbloggingplatform.h"
+#include "localstorage.h"
 #include "xmlsettingsmanager.h"
 
 namespace LeechCraft
@@ -48,7 +49,8 @@ namespace Metida
 		XmlSettingsDialog_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (), "blogiquemetidasettings.xml");
 
-		LJPlatform_ = std::make_shared<LJBloggingPlatform> (proxy, this);
+		Storage_ = std::make_shared<LocalStorage> (GetUniqueID ());
+		LJPlatform_ = std::make_shared<LJBloggingPlatform> (*Storage_, proxy, this);
 
 		connect (&Core::Instance (),
 				SIGNAL (gotEntity (LeechCraft::Entity)),

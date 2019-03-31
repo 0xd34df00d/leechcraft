@@ -40,6 +40,7 @@ namespace Blogique
 namespace Metida
 {
 	class LJAccount;
+	class LocalStorage;
 
 	class LJBloggingPlatform: public QObject
 							, public IBloggingPlatform
@@ -47,6 +48,7 @@ namespace Metida
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Blogique::IBloggingPlatform)
 
+		LocalStorage& Storage_;
 		QObject * const ParentBlogginPlatfromPlugin_;
 		const ICoreProxy_ptr Proxy_;
 
@@ -60,7 +62,7 @@ namespace Metida
 
 		QTimer *MessageCheckingTimer_;
 	public:
-		LJBloggingPlatform (const ICoreProxy_ptr&, QObject *parent);
+		LJBloggingPlatform (LocalStorage& storage, const ICoreProxy_ptr&, QObject *parent);
 
 		QObject* GetQObject () override;
 		BloggingPlatfromFeatures GetFeatures () const override;

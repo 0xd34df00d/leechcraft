@@ -43,6 +43,7 @@ namespace Blogique
 {
 namespace Metida
 {
+	class LocalStorage;
 	class LJBloggingPlatform;
 
 	class Plugin : public QObject
@@ -59,6 +60,7 @@ namespace Metida
 
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
 
+		std::shared_ptr<LocalStorage> Storage_;
 		std::shared_ptr<LJBloggingPlatform> LJPlatform_;
 	public:
 		void Init (ICoreProxy_ptr proxy) override;
