@@ -41,11 +41,11 @@ namespace LeechCraft::Azoth::Xoox
 	struct XmppElementDescription
 	{
 		Util::RequiresInit<QString> TagName_;
-		QString Value_;
+		QString Value_ = {};
 
-		QHash<QString, QString> Attributes_;
+		QHash<QString, QString> Attributes_ = {};
 
-		QList<XmppElementDescription> Children_;
+		QList<XmppElementDescription> Children_ = {};
 	};
 
 	QXmppElement ToElement (const XmppElementDescription&);
