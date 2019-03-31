@@ -34,6 +34,7 @@
 #include <util/xpc/util.h>
 #include <util/xpc/notificationactionhandler.h>
 #include <util/sll/prelude.h>
+#include <interfaces/core/ientitymanager.h>
 #include "ljaccountconfigurationwidget.h"
 #include "ljaccountconfigurationdialog.h"
 #include "ljbloggingplatform.h"
@@ -689,12 +690,12 @@ namespace Metida
 		Util::NotificationActionHandler *nh =
 				new Util::NotificationActionHandler (e, this);
 		nh->AddFunction (tr ("Open inbox"),
-				[]
+				[this]
 				{
 					Entity urlEntity = Util::MakeEntity (QUrl ("http://livejournal.com/inbox/"),
 							QString (),
 							OnlyHandle | FromUserInitiated);
-					Core::Instance ().SendEntity (urlEntity);
+					Proxy_->GetEntityManager ()->HandleEntity (urlEntity);
 				});
 		nh->AddDependentObject (this);
 		nh->AddFunction (tr ("Mark all as read"),
@@ -702,19 +703,19 @@ namespace Metida
 				{
 					SetMessagesAsRead (ids);
 				});
-		Core::Instance ().SendEntity (e);
+		Proxy_->GetEntityManager ()->HandleEntity (e);
 	}
 
 	void LJAccount::handleMessagesRead ()
 	{
-		Core::Instance ().SendEntity (Util::MakeNotification ("Blogique Metida",
+		Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Blogique Metida",
 				tr ("All unread messages were marked as read"),
 				Priority::Info));
 	}
 
 	void LJAccount::handleMessageSent ()
 	{
-		Core::Instance ().SendEntity (Util::MakeNotification ("Blogique Metida",
+		Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Blogique Metida",
 				tr ("Message has been sent successfully"),
 				Priority::Info));
 	}
@@ -764,7 +765,7 @@ namespace Metida
 
 	void LJAccount::handleCommentSent (const QUrl& url)
 	{
-		Core::Instance ().SendEntity (Util::MakeNotification ("Blogique Metida",
+		Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Blogique Metida",
 				tr ("Reply was posted successfully:") +
 						QString (" <a href=\"%1\">%1</a>\n").arg (url.toString ()),
 				Priority::Info));
