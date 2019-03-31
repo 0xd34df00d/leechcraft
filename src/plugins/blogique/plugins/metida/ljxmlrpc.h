@@ -36,7 +36,7 @@
 #include <QDomElement>
 #include <QNetworkRequest>
 #include <QNetworkReply>
-#include "core.h"
+#include <interfaces/core/icoreproxyfwd.h>
 #include "profiletypes.h"
 #include "ljaccount.h"
 
@@ -52,7 +52,9 @@ namespace Metida
 	{
 		Q_OBJECT
 
-		LJAccount *Account_;
+		LJAccount * const Account_;
+		const ICoreProxy_ptr Proxy_;
+
 		QQueue<std::function<void (const QString&)>> ApiCallQueue_;
 
 		QHash<QNetworkReply*, int> Reply2Skip_;
@@ -71,7 +73,7 @@ namespace Metida
 		QMap<QPair<int, int>, LJCommentEntry> Id2CommentEntry_;
 
 	public:
-		LJXmlRPC (LJAccount *acc, QObject *parent = 0);
+		LJXmlRPC (LJAccount *acc, const ICoreProxy_ptr& proxy, QObject *parent = 0);
 
 		void Validate (const QString& login, const QString& pass);
 

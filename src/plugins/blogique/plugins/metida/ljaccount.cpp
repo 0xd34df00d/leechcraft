@@ -56,7 +56,7 @@ namespace Metida
 	: QObject (parent)
 	, ParentBloggingPlatform_ (qobject_cast<LJBloggingPlatform*> (parent))
 	, Proxy_ (proxy)
-	, LJXmlRpc_ (new LJXmlRPC (this, this))
+	, LJXmlRpc_ (new LJXmlRPC (this, Proxy_, this))
 	, Name_ (name)
 	, LJProfile_ (std::make_shared<LJProfile> (this, proxy))
 	, LoadLastEvents_ (new QAction (tr ("Last entries"), this))

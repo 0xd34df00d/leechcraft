@@ -39,6 +39,8 @@
 #include <util/sys/sysinfo.h>
 #include <util/xpc/util.h>
 #include <util/sll/urloperator.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ientitymanager.h>
 #include "profiletypes.h"
 #include "ljfriendentry.h"
 #include "utils.h"
@@ -53,9 +55,10 @@ namespace Metida
 	constexpr int BitMaskForFriendsOnlyComments = 0;
 	constexpr int MaxGetEventsCount = 50;
 
-	LJXmlRPC::LJXmlRPC (LJAccount *acc, QObject *parent)
-	: QObject (parent)
-	, Account_ (acc)
+	LJXmlRPC::LJXmlRPC (LJAccount *acc, const ICoreProxy_ptr& proxy, QObject *parent)
+	: QObject { parent }
+	, Account_ { acc }
+	, Proxy_ { proxy }
 	{
 	}
 
@@ -334,16 +337,20 @@ namespace Metida
 			return { member, dataField };
 		}
 
-		QNetworkRequest CreateNetworkRequest ()
+		QNetworkRequest CreateNetworkRequest (const ICoreProxy_ptr& proxy)
 		{
 			QNetworkRequest request;
-			auto userAgent = "LeechCraft Blogique " +
-					Core::Instance ().GetCoreProxy ()->GetVersion ().toUtf8 ();
+			auto userAgent = "LeechCraft Blogique " + proxy->GetVersion ().toUtf8 ();
 			request.setUrl (QUrl ("http://www.livejournal.com/interface/xmlrpc"));
 			request.setRawHeader ("User-Agent", userAgent);
 			request.setHeader (QNetworkRequest::ContentTypeHeader, "text/xml");
 
 			return request;
+		}
+
+		QNetworkReply* Post (const ICoreProxy_ptr& proxy, const QDomDocument& document)
+		{
+			return proxy->GetNetworkAccessManager ()->post (CreateNetworkRequest (proxy), document.toByteArray ());
 		}
 
 		QString GetPassword (const QString& password, const QString& challenge)
@@ -384,9 +391,7 @@ namespace Metida
 		QDomText methodNameText = document.createTextNode ("LJ.XMLRPC.getchallenge");
 		methodName.appendChild (methodNameText);
 
-		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
-				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
-						document.toByteArray ());
+		auto reply = Post (Proxy_, document);
 
 		connect (reply,
 				SIGNAL (finished ()),
@@ -410,7 +415,7 @@ namespace Metida
 		element.appendChild (GetSimpleMemberElement ("clientversion", "string",
 				Util::SysInfo::GetOSName () +
 					"-LeechCraft Blogique: " +
-					Core::Instance ().GetCoreProxy ()->GetVersion (),
+					Proxy_->GetVersion (),
 				document));
 		element.appendChild (GetSimpleMemberElement ("getmoods", "int",
 				"0", document));
@@ -423,9 +428,7 @@ namespace Metida
 		element.appendChild (GetSimpleMemberElement ("getcaps", "int",
 				"1", document));
 
-		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
-				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
-						document.toByteArray ());
+		auto reply = Post (Proxy_, document);
 
 		connect (reply,
 				SIGNAL (finished ()),
@@ -450,9 +453,7 @@ namespace Metida
 		element.appendChild (GetSimpleMemberElement ("includefriendof", "boolean",
 				"1", document));
 
-		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
-				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
-						document.toByteArray ());
+		auto reply = Post (Proxy_, document);
 
 		connect (reply,
 				SIGNAL (finished ()),
@@ -491,9 +492,7 @@ namespace Metida
 		structField.appendChild (GetSimpleMemberElement ("groupmask", "int",
 				QString::number (groupMask), document));
 
-		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
-				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
-						document.toByteArray ());
+		auto reply = Post (Proxy_, document);
 
 		connect (reply,
 				SIGNAL (finished ()),
@@ -522,9 +521,7 @@ namespace Metida
 		QDomText text = document.createTextNode (username);
 		valueType.appendChild (text);
 
-		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
-				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
-						document.toByteArray ());
+		auto reply = Post (Proxy_, document);
 
 		connect (reply,
 				SIGNAL (finished ()),
@@ -554,9 +551,7 @@ namespace Metida
 		subStruct.second.appendChild (GetSimpleMemberElement ("public", "boolean",
 				 isPublic ? "1" : "0", document));
 
-		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
-				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
-						document.toByteArray ());
+		auto reply = Post (Proxy_, document);
 
 		connect (reply,
 				SIGNAL (finished ()),
@@ -585,9 +580,7 @@ namespace Metida
 		QDomText text = document.createTextNode (QString::number (id));
 		valueType.appendChild (text);
 
-		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
-				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
-						  document.toByteArray ());
+		auto reply = Post (Proxy_, document);
 
 		connect (reply,
 				SIGNAL (finished ()),
@@ -602,8 +595,7 @@ namespace Metida
 	void LJXmlRPC::PreviewEventRequest (const LJEvent& event, const QString& challenge)
 	{
 		QNetworkRequest request (QUrl ("http://www.livejournal.com/preview/entry.bml"));
-		auto userAgent = "LeechCraft Blogique " +
-				Core::Instance ().GetCoreProxy ()->GetVersion ().toUtf8 ();
+		auto userAgent = "LeechCraft Blogique " + Proxy_->GetVersion ().toUtf8 ();
 		request.setRawHeader ("User-Agent", userAgent);
 		request.setRawHeader ("Referer", "http://www.livejournal.com/update.bml");
 		request.setRawHeader ("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
@@ -643,8 +635,7 @@ namespace Metida
 				("date_diff", "1");
 
 		const auto& payload = QUrlQuery { params }.toString (QUrl::FullyEncoded).toUtf8 ();
-		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
-				GetNetworkAccessManager ()->post (request, payload);
+		auto reply = Proxy_->GetNetworkAccessManager ()->post (request, payload);
 		connect (reply,
 				SIGNAL (finished ()),
 				this,
@@ -725,9 +716,7 @@ namespace Metida
 		propsStruct.second.appendChild (GetSimpleMemberElement ("picture_keyword",
 				"string", event.Props_.PostAvatar_, document));
 
-		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
-				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
-						document.toByteArray ());
+		auto reply = Post (Proxy_, document);
 
 		connect (reply,
 				SIGNAL (finished ()),
@@ -754,9 +743,7 @@ namespace Metida
 		element.appendChild (GetSimpleMemberElement ("usejournal", "string",
 				Account_->GetOurLogin (), document));
 
-		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
-				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
-						document.toByteArray ());
+		auto reply = Post (Proxy_, document);
 		connect (reply,
 				SIGNAL (finished ()),
 				this,
@@ -840,9 +827,7 @@ namespace Metida
 		propsStruct.second.appendChild (GetSimpleMemberElement ("picture_keyword",
 				"string", event.Props_.PostAvatar_, document));
 
-		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
-				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
-						document.toByteArray ());
+		auto reply = Post (Proxy_, document);
 
 		connect (reply,
 				SIGNAL (finished ()),
@@ -876,9 +861,7 @@ namespace Metida
 		element.appendChild (GetSimpleMemberElement ("usejournal", "string",
 				Account_->GetOurLogin (), document));
 
-		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
-				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
-				document.toByteArray ());
+		auto reply = Post (Proxy_, document);
 		Reply2Filter_ [reply] = filter;
 
 		connect (reply,
@@ -908,9 +891,7 @@ namespace Metida
 		// for debug lj-tags
 // 		element.appendChild (GetSimpleMemberElement ("parseljtags", "boolean",
 // 				"1", document));
-		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
-				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
-						document.toByteArray ());
+		auto reply = Post (Proxy_, document);
 
 		connect (reply,
 				SIGNAL (finished ()),
@@ -937,9 +918,7 @@ namespace Metida
 		element.appendChild (GetSimpleMemberElement ("usejournal", "string",
 				Account_->GetOurLogin (), document));
 
-		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
-				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
-						document.toByteArray ());
+		auto reply = Post (Proxy_, document);
 
 		connect (reply,
 				SIGNAL (finished ()),
@@ -973,9 +952,7 @@ namespace Metida
 		element.appendChild (GetSimpleMemberElement ("usejournal", "string",
 				Account_->GetOurLogin (), document));
 
-		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
-				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
-						document.toByteArray ());
+		auto reply = Post (Proxy_, document);
 
 		Reply2Skip_ [reply] = skip;
 		Reply2Date_ [reply] = date;
@@ -1006,9 +983,7 @@ namespace Metida
 		element.appendChild (GetSimpleMemberElement ("usejournal", "string",
 				Account_->GetOurLogin (), document));
 
-		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
-				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
-						document.toByteArray ());
+		auto reply = Post (Proxy_, document);
 		Reply2RequestType_ [reply] = prt;
 
 		connect (reply,
@@ -1047,9 +1022,7 @@ namespace Metida
 		element.appendChild (GetSimpleMemberElement ("usejournal", "string",
 				Account_->GetOurLogin (), document));
 
-		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
-				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
-						document.toByteArray ());
+		auto reply = Post (Proxy_, document);
 		Reply2RequestType_ [reply] = rt;
 
 		connect (reply,
@@ -1073,9 +1046,7 @@ namespace Metida
 		element.appendChild (GetSimpleMemberElement ("usejournal", "string",
 				Account_->GetOurLogin (), document));
 
-		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
-				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
-						document.toByteArray ());
+		auto reply = Post (Proxy_, document);
 		connect (reply,
 				SIGNAL (finished ()),
 				this,
@@ -1101,9 +1072,7 @@ namespace Metida
 				QString::number (lastSyncDate),
 				document));
 
-		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
-				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
-						document.toByteArray ());
+		auto reply = Post (Proxy_, document);
 		connect (reply,
 				SIGNAL (finished ()),
 				this,
@@ -1135,9 +1104,7 @@ namespace Metida
 			type.appendChild (text);
 		}
 
-		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
-				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
-						document.toByteArray ());
+		auto reply = Post (Proxy_, document);
 		connect (reply,
 				SIGNAL (finished ()),
 				this,
@@ -1170,9 +1137,7 @@ namespace Metida
 			type.appendChild (text);
 		}
 
-		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
-				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
-						document.toByteArray ());
+		auto reply = Post (Proxy_, document);
 		connect (reply,
 				SIGNAL (finished ()),
 				this,
@@ -1195,9 +1160,7 @@ namespace Metida
 				XmlSettingsManager::Instance ().Property ("RecentCommentsNumber", 10).toString (),
 				document));
 
-		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
-				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
-						document.toByteArray ());
+		auto reply = Post (Proxy_, document);
 		connect (reply,
 				SIGNAL (finished ()),
 				this,
@@ -1223,9 +1186,7 @@ namespace Metida
 		element.appendChild (GetSimpleMemberElement ("journal", "string",
 				Account_->GetOurLogin (), document));
 
-		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
-				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
-						document.toByteArray ());
+		auto reply = Post (Proxy_, document);
 		connect (reply,
 				SIGNAL (finished ()),
 				this,
@@ -1254,9 +1215,7 @@ namespace Metida
 		element.appendChild (GetSimpleMemberElement ("journal", "string",
 				Account_->GetOurLogin (), document));
 
-		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
-				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
-						document.toByteArray ());
+		auto reply = Post (Proxy_, document);
 		connect (reply,
 				SIGNAL (finished ()),
 				this,
@@ -1277,9 +1236,7 @@ namespace Metida
 
 		element.appendChild (GetSimpleMemberElement ("usejournal", "string",
 				Account_->GetOurLogin (), document));
-		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
-				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
-						document.toByteArray ());
+		auto reply = Post (Proxy_, document);
 		connect (reply,
 				SIGNAL (finished ()),
 				this,
@@ -1847,7 +1804,7 @@ namespace Metida
 		{
 			file.write (reply->readAll ());
 			file.close ();
-			Core::Instance ().SendEntity (Util::MakeEntity (QUrl::fromLocalFile (file.fileName ()),
+			Proxy_->GetEntityManager ()->HandleEntity (Util::MakeEntity (QUrl::fromLocalFile (file.fileName ()),
 					QString (), OnlyHandle | FromUserInitiated));
 		}
 	}
