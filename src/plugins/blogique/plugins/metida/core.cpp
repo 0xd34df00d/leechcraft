@@ -54,16 +54,6 @@ namespace Metida
 		return PluginId_;
 	}
 
-	void Core::SetCoreProxy (ICoreProxy_ptr proxy)
-	{
-		Proxy_ = proxy;
-	}
-
-	ICoreProxy_ptr Core::GetCoreProxy ()
-	{
-		return Proxy_;
-	}
-
 	LocalStorage* Core::GetLocalStorage () const
 	{
 		return Storage_;

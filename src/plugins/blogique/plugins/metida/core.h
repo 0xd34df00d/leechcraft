@@ -34,7 +34,6 @@
 #include <QSet>
 #include <QUrl>
 #include <interfaces/structures.h>
-#include <interfaces/core/icoreproxy.h>
 
 namespace LeechCraft
 {
@@ -51,7 +50,6 @@ namespace Metida
 	{
 		Q_OBJECT
 
-		ICoreProxy_ptr Proxy_;
 		QByteArray PluginId_;
 		LocalStorage *Storage_;
 
@@ -61,9 +59,6 @@ namespace Metida
 		static Core& Instance ();
 
 		QByteArray GetUniqueID () const;
-
-		void SetCoreProxy (ICoreProxy_ptr proxy);
-		ICoreProxy_ptr GetCoreProxy ();
 
 		LocalStorage* GetLocalStorage () const;
 

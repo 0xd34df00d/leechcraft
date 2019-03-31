@@ -48,8 +48,6 @@ namespace Metida
 		XmlSettingsDialog_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (), "blogiquemetidasettings.xml");
 
-		Core::Instance ().SetCoreProxy (proxy);
-
 		LJPlatform_ = std::make_shared<LJBloggingPlatform> (proxy, this);
 
 		connect (&Core::Instance (),
