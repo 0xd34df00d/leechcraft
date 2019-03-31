@@ -51,11 +51,6 @@ namespace Metida
 
 		Storage_ = std::make_shared<LocalStorage> (GetUniqueID ());
 		LJPlatform_ = std::make_shared<LJBloggingPlatform> (*Storage_, proxy, this);
-
-		connect (&Core::Instance (),
-				SIGNAL (gotEntity (LeechCraft::Entity)),
-				this,
-				SIGNAL (gotEntity (LeechCraft::Entity)));
 	}
 
 	void Plugin::SecondInit ()

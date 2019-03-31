@@ -80,9 +80,6 @@ namespace Metida
 
 	public slots:
 		void initPlugin (QObject *proxy);
-
-	signals:
-		void gotEntity (const LeechCraft::Entity& e) override;
 	};
 }
 }

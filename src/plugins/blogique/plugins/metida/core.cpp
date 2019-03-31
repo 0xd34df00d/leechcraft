@@ -50,12 +50,6 @@ namespace Metida
 	{
 		return PluginId_;
 	}
-
-	void Core::SendEntity (const Entity& e)
-	{
-		emit gotEntity (e);
-	}
-
 }
 }
 }

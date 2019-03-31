@@ -53,10 +53,6 @@ namespace Metida
 		static Core& Instance ();
 
 		QByteArray GetUniqueID () const;
-
-		void SendEntity (const Entity& e);
-	signals:
-		void gotEntity (LeechCraft::Entity e);
 	};
 }
 }
