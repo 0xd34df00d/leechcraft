@@ -50,12 +50,13 @@ namespace Blogique
 {
 namespace Metida
 {
+	constexpr int BitMaskForFriendsOnlyComments = 0;
+	constexpr int MaxGetEventsCount = 50;
+	constexpr int MaxGetEventsPerDayCount = 200;
+
 	LJXmlRPC::LJXmlRPC (LJAccount *acc, QObject *parent)
 	: QObject (parent)
 	, Account_ (acc)
-	, BitMaskForFriendsOnlyComments_ (0)
-	, MaxGetEventsCount_ (50)
-	, MaxGetEventsPerDayCount_ (200)
 	{
 	}
 
@@ -671,7 +672,7 @@ namespace Metida
 				MetidaUtils::GetStringForAccess (event.Security_), document));
 		if (event.Security_ == Access::FriendsOnly)
 			element.appendChild (GetSimpleMemberElement ("allowmask", "int",
-					QString::number (BitMaskForFriendsOnlyComments_), document));
+					QString::number (BitMaskForFriendsOnlyComments), document));
 		else if (event.Security_ == Access::Custom)
 			element.appendChild (GetSimpleMemberElement ("allowmask", "int",
 					QString::number (event.AllowMask_), document));
@@ -786,7 +787,7 @@ namespace Metida
 				MetidaUtils::GetStringForAccess (event.Security_), document));
 		if (event.Security_ == Access::FriendsOnly)
 			element.appendChild (GetSimpleMemberElement ("allowmask", "int",
-					QString::number (BitMaskForFriendsOnlyComments_), document));
+					QString::number (BitMaskForFriendsOnlyComments), document));
 		else if (event.Security_ == Access::Custom)
 			element.appendChild (GetSimpleMemberElement ("allowmask", "int",
 					QString::number (event.AllowMask_), document));
@@ -870,7 +871,7 @@ namespace Metida
 						.toString ("yyyy-MM-dd hh:MM:ss"),
 				document));
 		element.appendChild (GetSimpleMemberElement ("howmany", "int",
-				QString::number (MaxGetEventsCount_), document));
+				QString::number (MaxGetEventsCount), document));
 		element.appendChild (GetSimpleMemberElement ("skip", "int",
 				QString::number (filter.Skip_), document));
 		element.appendChild (GetSimpleMemberElement ("usejournal", "string",

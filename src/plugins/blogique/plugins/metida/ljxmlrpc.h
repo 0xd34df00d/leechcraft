@@ -55,10 +55,6 @@ namespace Metida
 		LJAccount *Account_;
 		QQueue<std::function<void (const QString&)>> ApiCallQueue_;
 
-		const int BitMaskForFriendsOnlyComments_;
-		const int MaxGetEventsCount_;
-		const int MaxGetEventsPerDayCount_;
-
 		QHash<QNetworkReply*, int> Reply2Skip_;
 		QHash<QNetworkReply*, Filter> Reply2Filter_;
 		QHash<QNetworkReply*, QDate> Reply2Date_;
