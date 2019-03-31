@@ -11,7 +11,6 @@ include_directories (${CMAKE_CURRENT_BINARY_DIR}
 
 set (METIDA_SRCS
 	addeditentrydialog.cpp
-	core.cpp
 	frienditemdelegate.cpp
 	friendsproxymodel.cpp
 	ljaccount.cpp

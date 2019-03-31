@@ -31,7 +31,6 @@
 #include <QIcon>
 #include <util/util.h>
 #include <interfaces/structures.h>
-#include "core.h"
 #include "ljbloggingplatform.h"
 #include "localstorage.h"
 #include "xmlsettingsmanager.h"
