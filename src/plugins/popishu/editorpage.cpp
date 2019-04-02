@@ -803,9 +803,9 @@ namespace Popishu
 				[this, filePath]
 				{
 					if (!QFile::exists (filePath))
-						emit gotEntity (Util::MakeNotification (tr ("File not found"),
-								tr ("The requested file doesn't exist anymore."),
-								Priority::Warning));
+						Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification (tr ("File not found"),
+									tr ("The requested file doesn't exist anymore."),
+									Priority::Warning));
 					else
 						Open (filePath);
 				});
