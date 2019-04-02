@@ -141,7 +141,6 @@ namespace Popishu
 		void changeTabIcon (QWidget*, const QIcon&);
 		void changeTooltip (QWidget*, QWidget*);
 		void statusBarChanged (QWidget*, const QString&);
-		void gotEntity (const LeechCraft::Entity&);
 
 		void languageChanged (const QString& language);
 

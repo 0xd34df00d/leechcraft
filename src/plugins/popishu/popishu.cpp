@@ -173,10 +173,6 @@ namespace Popishu
 				SIGNAL (changeTabName (QWidget*, const QString&)),
 				this,
 				SIGNAL (changeTabName (QWidget*, const QString&)));
-		connect (result,
-				SIGNAL (gotEntity (const LeechCraft::Entity&)),
-				this,
-				SIGNAL (gotEntity (const LeechCraft::Entity&)));
 		return result;
 	}
 
