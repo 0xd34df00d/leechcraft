@@ -53,9 +53,8 @@ namespace Popishu
 		TabClass_.Priority_ = 70;
 		TabClass_.Features_ = TFOpenableByRequest | TFSuggestOpening;
 
-		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
-		XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
-				"popishusettings.xml");
+		XmlSettingsDialog_ = std::make_shared<Util::XmlSettingsDialog> ();
+		XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (), "popishusettings.xml");
 	}
 
 	void Plugin::SecondInit ()
