@@ -166,13 +166,13 @@ namespace Popishu
 	{
 		auto result = new EditorPage (Proxy_, TabClass_, this);
 		connect (result,
-				SIGNAL (removeTab (QWidget*)),
+				&EditorPage::removeTab,
 				this,
-				SIGNAL (removeTab (QWidget*)));
+				&Plugin::removeTab);
 		connect (result,
-				SIGNAL (changeTabName (QWidget*, const QString&)),
+				&EditorPage::changeTabName,
 				this,
-				SIGNAL (changeTabName (QWidget*, const QString&)));
+				&Plugin::changeTabName);
 		return result;
 	}
 
