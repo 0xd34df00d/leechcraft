@@ -60,34 +60,34 @@ namespace Popishu
 		ICoreProxy_ptr Proxy_;
 		std::shared_ptr<Util::XmlSettingsDialog> XmlSettingsDialog_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		void Release ();
-		QByteArray GetUniqueID () const;
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+		void Init (ICoreProxy_ptr) override;
+		void SecondInit () override;
+		void Release () override;
+		QByteArray GetUniqueID () const override;
+		QString GetName () const override;
+		QString GetInfo () const override;
+		QIcon GetIcon () const override;
 
-		TabClasses_t GetTabClasses () const;
-		void TabOpenRequested (const QByteArray&);
+		TabClasses_t GetTabClasses () const override;
+		void TabOpenRequested (const QByteArray&) override;
 
-		EntityTestHandleResult CouldHandle (const Entity&) const;
-		void Handle (Entity);
+		EntityTestHandleResult CouldHandle (const Entity&) const override;
+		void Handle (Entity) override;
 
-		std::shared_ptr<Util::XmlSettingsDialog> GetSettingsDialog () const;
+		std::shared_ptr<Util::XmlSettingsDialog> GetSettingsDialog () const override;
 
-		void RecoverTabs (const QList<TabRecoverInfo>&);
-		bool HasSimilarTab (const QByteArray&, const QList<QByteArray>&) const;
+		void RecoverTabs (const QList<TabRecoverInfo>&) override;
+		bool HasSimilarTab (const QByteArray&, const QList<QByteArray>&) const override;
 	private:
 		EditorPage* MakeEditorPage ();
 		void AnnouncePage (EditorPage*);
 	signals:
-		void addNewTab (const QString&, QWidget*);
-		void removeTab (QWidget*);
-		void changeTabName (QWidget*, const QString&);
-		void changeTabIcon (QWidget*, const QIcon&);
-		void statusBarChanged (QWidget*, const QString&);
-		void raiseTab (QWidget*);
+		void addNewTab (const QString&, QWidget*) override;
+		void removeTab (QWidget*) override;
+		void changeTabName (QWidget*, const QString&) override;
+		void changeTabIcon (QWidget*, const QIcon&) override;
+		void statusBarChanged (QWidget*, const QString&) override;
+		void raiseTab (QWidget*) override;
 	};
 }
 }
