@@ -43,31 +43,27 @@ namespace Poshuku
 		Ui_.setupUi (this);
 		Ui_.Label_->setText (tr ("Search %1 with:").arg ("<em>" + text + "</em>"));
 
-		const QStringList& categories = Core::Instance ()
-				.GetProxy ()->GetSearchCategories ();
-		Q_FOREACH (const QString& cat, categories)
-			new QTreeWidgetItem (Ui_.Tree_, QStringList (cat));
+		for (const auto& cat : Core::Instance ().GetProxy ()->GetSearchCategories ())
+			new QTreeWidgetItem (Ui_.Tree_, QStringList { cat });
 
 		on_MarkAll__released ();
 
 		connect (this,
-				SIGNAL (accepted ()),
+				&QDialog::accepted,
 				this,
-				SLOT (doSearch ()));
+				&SearchText::doSearch);
 	}
 
 	void SearchText::doSearch ()
 	{
 		QStringList selected;
-
 		for (int i = 0; i < Ui_.Tree_->topLevelItemCount (); ++i)
 			if (Ui_.Tree_->topLevelItem (i)->checkState (0) == Qt::Checked)
 				selected << Ui_.Tree_->topLevelItem (i)->text (0);
-
-		if (!selected.size ())
+		if (selected.isEmpty ())
 			return;
 
-		Entity e = Util::MakeEntity (Text_,
+		auto e = Util::MakeEntity (Text_,
 				QString (),
 				FromUserInitiated,
 				"x-leechcraft/category-search-request");
