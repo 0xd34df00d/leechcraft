@@ -45,8 +45,9 @@ namespace Poshuku
 		QString Text_;
 	public:
 		SearchText (const QString&, QWidget* = 0);
+	private:
+		void DoSearch ();
 	private slots:
-		void doSearch ();
 		void on_MarkAll__released ();
 		void on_UnmarkAll__released ();
 	signals:

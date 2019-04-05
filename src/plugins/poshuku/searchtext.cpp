@@ -51,10 +51,10 @@ namespace Poshuku
 		connect (this,
 				&QDialog::accepted,
 				this,
-				&SearchText::doSearch);
+				&SearchText::DoSearch);
 	}
 
-	void SearchText::doSearch ()
+	void SearchText::DoSearch ()
 	{
 		QStringList selected;
 		for (int i = 0; i < Ui_.Tree_->topLevelItemCount (); ++i)
