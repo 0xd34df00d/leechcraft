@@ -531,8 +531,7 @@ namespace Poshuku
 			searchAct
 		};
 
-		new Util::StdDataFilterMenuCreator (text,
-				Core::Instance ().GetProxy ()->GetEntityManager (), menu);
+		new Util::StdDataFilterMenuCreator (text, Proxy_->GetEntityManager (), menu);
 	}
 
 	void BrowserWidget::AddStandardActions (QMenu *menu)
@@ -963,8 +962,7 @@ namespace Poshuku
 					e.Additional_ ["Language"] = "HTML";
 					e.Additional_ ["IsTemporaryDocument"] = true;
 
-					auto iem = Core::Instance ().GetProxy ()->GetEntityManager ();
-					if (iem->HandleEntity (e))
+					if (Proxy_->GetEntityManager ()->HandleEntity (e))
 						return;
 
 					auto viewer = new SourceViewer (this);
@@ -1294,7 +1292,7 @@ namespace Poshuku
 	{
 		QPointer<QMenu> menu (new QMenu ());
 
-		const auto iem = Core::Instance ().GetProxy ()->GetEntityManager ();
+		const auto iem = Proxy_->GetEntityManager ();
 
 		IHookProxy_ptr proxy (new Util::DefaultHookProxy ());
 
