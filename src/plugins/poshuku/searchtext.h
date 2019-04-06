@@ -41,8 +41,9 @@ namespace Poshuku
 	{
 		Q_OBJECT
 
+		const QString Text_;
+
 		Ui::SearchText Ui_;
-		QString Text_;
 	public:
 		SearchText (const QString&, QWidget* = nullptr);
 	private:
