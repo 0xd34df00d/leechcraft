@@ -95,7 +95,7 @@ namespace Util
 	{
 		auto adapted = PrepareRecords<SimpleRecord> (MakeDatabase ());
 		const auto& single = adapted->SelectOne (sph::f<&SimpleRecord::ID_> == 1);
-		QCOMPARE (single, (boost::optional<SimpleRecord> { { 1, "1" } }));
+		QCOMPARE (single, (std::optional<SimpleRecord> { { 1, "1" } }));
 	}
 
 	void OralTest_SimpleRecord::testSimpleRecordInsertSelectByFields ()
@@ -123,7 +123,7 @@ namespace Util
 	{
 		auto adapted = PrepareRecords<SimpleRecord> (MakeDatabase ());
 		const auto& single = adapted->SelectOne (sph::f<&SimpleRecord::ID_> == 1);
-		QCOMPARE (single, (boost::optional<SimpleRecord> { { 1, "1" } }));
+		QCOMPARE (single, (std::optional<SimpleRecord> { { 1, "1" } }));
 	}
 
 	void OralTest_SimpleRecord::testSimpleRecordInsertSelectSingleFieldByFields ()
