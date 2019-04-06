@@ -522,11 +522,7 @@ namespace Poshuku
 		{
 			[text, this]
 			{
-				const auto st = new SearchText (text, this);
-				connect (st,
-						SIGNAL (gotEntity (LeechCraft::Entity)),
-						this,
-						SIGNAL (gotEntity (LeechCraft::Entity)));
+				const auto st = new SearchText (text, Proxy_, this);
 				st->setAttribute (Qt::WA_DeleteOnClose);
 				st->show ();
 			},

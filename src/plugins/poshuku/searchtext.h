@@ -41,18 +41,17 @@ namespace Poshuku
 	{
 		Q_OBJECT
 
+		const ICoreProxy_ptr Proxy_;
 		const QString Text_;
 
 		Ui::SearchText Ui_;
 	public:
-		SearchText (const QString&, QWidget* = nullptr);
+		SearchText (const QString&, const ICoreProxy_ptr&, QWidget* = nullptr);
 	private:
 		void DoSearch ();
 	private slots:
 		void on_MarkAll__released ();
 		void on_UnmarkAll__released ();
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }

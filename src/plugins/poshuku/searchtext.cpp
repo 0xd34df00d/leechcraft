@@ -30,15 +30,17 @@
 #include "searchtext.h"
 #include <util/xpc/util.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ientitymanager.h>
 #include "core.h"
 
 namespace LeechCraft
 {
 namespace Poshuku
 {
-	SearchText::SearchText (const QString& text, QWidget *parent)
-	: QDialog (parent)
-	, Text_ (text)
+	SearchText::SearchText (const QString& text, const ICoreProxy_ptr& proxy, QWidget *parent)
+	: QDialog { parent }
+	, Proxy_ { proxy }
+	, Text_ { text }
 	{
 		Ui_.setupUi (this);
 		Ui_.Label_->setText (tr ("Search %1 with:").arg ("<em>" + text + "</em>"));
@@ -70,7 +72,7 @@ namespace Poshuku
 
 		e.Additional_ ["Categories"] = selected;
 
-		emit gotEntity (e);
+		Proxy_->GetEntityManager ()->HandleEntity (e);
 	}
 
 	void SearchText::on_MarkAll__released ()
