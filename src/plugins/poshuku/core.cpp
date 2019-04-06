@@ -57,6 +57,7 @@
 #include <util/xpc/introspectable.h>
 #include <interfaces/ihaveshortcuts.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include "interfaces/poshuku/iwebview.h"
@@ -576,7 +577,7 @@ namespace Poshuku
 					"x-leechcraft/data-filter-request");
 			e.Additional_ ["DataFilter"] = category.toUtf8 ();
 		}
-		emit gotEntity (e);
+		Proxy_->GetEntityManager ()->HandleEntity (e);
 	}
 
 	IWebView_ptr Core::CreateWebView ()

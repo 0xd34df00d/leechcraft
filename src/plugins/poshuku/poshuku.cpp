@@ -41,6 +41,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/core/iiconthememanager.h>
+#include <interfaces/core/ientitymanager.h>
 #include <util/util.h>
 #include <util/xpc/util.h>
 #include <util/tags/tagscompletionmodel.h>
@@ -378,7 +379,8 @@ namespace Poshuku
 
 	void Poshuku::handleError (const QString& msg)
 	{
-		emit gotEntity (Util::MakeNotification ("Poshuku", msg, Priority::Warning));
+		const auto& e = Util::MakeNotification ("Poshuku", msg, Priority::Warning);
+		Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (e);
 	}
 
 	void Poshuku::handleSettingsClicked (const QString& name)
