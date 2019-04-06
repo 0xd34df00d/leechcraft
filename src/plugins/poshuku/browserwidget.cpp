@@ -978,7 +978,7 @@ namespace Poshuku
 				QString (),
 				FromUserInitiated);
 		e.Additional_ ["AllowedSemantics"] = QStringList { "fetch", "save" };
-		emit gotEntity (e);
+		Proxy_->GetEntityManager ()->HandleEntity (e);
 	}
 
 	void BrowserWidget::focusLineEdit ()
@@ -1219,7 +1219,7 @@ namespace Poshuku
 									OnlyHandle;
 					e.Additional_ ["IgnorePlugins"] = QStringList { "org.LeechCraft.Poshuku" };
 					e.Additional_ ["URLData"] = html;
-					emit gotEntity (e);
+					Proxy_->GetEntityManager ()->HandleEntity (e);
 
 					QString formatted;
 					QXmlStreamWriter w (&formatted);
@@ -1527,7 +1527,7 @@ namespace Poshuku
 		Util::NotificationActionHandler *nh = new Util::NotificationActionHandler (e, this);
 		nh->AddFunction (tr ("Open"), [this] () { emit raiseTab (this); });
 		nh->AddDependentObject (this);
-		emit gotEntity (e);
+		Proxy_->GetEntityManager ()->HandleEntity (e);
 	}
 
 	void BrowserWidget::handleChangeEncodingAboutToShow ()
