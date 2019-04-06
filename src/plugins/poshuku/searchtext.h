@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_SEARCHTEXT_H
-#define PLUGINS_POSHUKU_SEARCHTEXT_H
+#pragma once
+
 #include <QDialog>
 #include <interfaces/iinfo.h>
 #include "ui_searchtext.h"
@@ -55,5 +55,3 @@ namespace Poshuku
 	};
 }
 }
-
-#endif
