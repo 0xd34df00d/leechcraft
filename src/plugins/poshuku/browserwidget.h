@@ -223,7 +223,6 @@ namespace Poshuku
 		void tooltipChanged (QWidget*);
 		void addToFavorites (const QString&, const QString&);
 		void statusBarChanged (const QString&);
-		void gotEntity (const LeechCraft::Entity&);
 		void raiseTab (QWidget*);
 		void tabRecoverDataChanged () override;
 

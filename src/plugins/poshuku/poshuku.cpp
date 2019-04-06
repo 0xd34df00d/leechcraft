@@ -328,10 +328,6 @@ namespace Poshuku
 				this,
 				SIGNAL (raiseTab (QWidget*)));
 		connect (&Core::Instance (),
-				SIGNAL (gotEntity (const LeechCraft::Entity&)),
-				this,
-				SIGNAL (gotEntity (const LeechCraft::Entity&)));
-		connect (&Core::Instance (),
 				SIGNAL (error (const QString&)),
 				this,
 				SLOT (handleError (const QString&)));

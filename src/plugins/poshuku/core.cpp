@@ -545,10 +545,6 @@ namespace Poshuku
 				this,
 				SLOT (handleAddToFavorites (const QString&, const QString&)));
 		connect (widget,
-				SIGNAL (gotEntity (const LeechCraft::Entity&)),
-				this,
-				SIGNAL (gotEntity (const LeechCraft::Entity&)));
-		connect (widget,
 				&BrowserWidget::urlChanged,
 				this,
 				[this, widget] { HandleHistory (widget->GetWebView ()); });
