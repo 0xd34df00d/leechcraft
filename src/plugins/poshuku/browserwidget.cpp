@@ -1241,7 +1241,7 @@ namespace Poshuku
 
 	namespace
 	{
-		const QRegExp UrlInText ("://|www\\.|\\w\\.\\w");
+		const QRegExp UrlInText (R"(://|www\.|\w\.\w)");
 
 		void SavePixmap (const QPixmap& px, const QUrl& url, IEntityManager *iem)
 		{
