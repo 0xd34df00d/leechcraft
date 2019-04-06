@@ -102,10 +102,11 @@ namespace Poshuku
 	QObject *BrowserWidget::S_MultiTabsParent_ = 0;
 
 	BrowserWidget::BrowserWidget (const IWebView_ptr& view,
-			Util::ShortcutManager *sm, QWidget *parent)
+			Util::ShortcutManager *sm, const ICoreProxy_ptr& coreProxy, QWidget *parent)
 	: QWidget (parent)
 	, ReloadTimer_ (new QTimer (this))
 	, WebView_ (view)
+	, Proxy_ (coreProxy)
 	{
 		Ui_.setupUi (this);
 

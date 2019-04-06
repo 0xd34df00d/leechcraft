@@ -323,7 +323,7 @@ namespace Poshuku
 	BrowserWidget* Core::CreateBrowserWidget (const IWebView_ptr& view, const QUrl& url,
 			bool raise, const QList<QPair<QByteArray, QVariant>>& props)
 	{
-		const auto widget = new BrowserWidget { view, ShortcutMgr_ };
+		const auto widget = new BrowserWidget { view, ShortcutMgr_, Proxy_ };
 		emit browserWidgetCreated (widget);
 		widget->FinalizeInit ();
 		Widgets_.push_back (widget);
@@ -370,7 +370,7 @@ namespace Poshuku
 		if (!Initialized_)
 			return nullptr;
 
-		const auto widget = new BrowserWidget { CreateWebView (), ShortcutMgr_ };
+		const auto widget = new BrowserWidget { CreateWebView (), ShortcutMgr_, Proxy_ };
 		emit browserWidgetCreated (widget);
 		widget->Deown ();
 		widget->FinalizeInit ();

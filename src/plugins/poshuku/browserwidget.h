@@ -41,6 +41,7 @@
 #include <interfaces/ihaverecoverabletabs.h>
 #include <interfaces/iwkfontssettable.h>
 #include <interfaces/core/ihookproxy.h>
+#include <interfaces/core/icoreproxyfwd.h>
 #include <interfaces/poshuku/poshukutypes.h>
 #include "interfaces/poshuku/ibrowserwidget.h"
 #include "interfaces/poshuku/iwebview.h"
@@ -121,11 +122,13 @@ namespace Poshuku
 		QMap<QString, QList<QAction*>> WindowMenus_;
 
 		const IWebView_ptr WebView_;
+		const ICoreProxy_ptr Proxy_;
+
 		QLabel *LinkTextItem_;
 
 		static QObject* S_MultiTabsParent_;
 	public:
-		BrowserWidget (const IWebView_ptr&, Util::ShortcutManager*, QWidget* = nullptr);
+		BrowserWidget (const IWebView_ptr&, Util::ShortcutManager*, const ICoreProxy_ptr&, QWidget* = nullptr);
 		virtual ~BrowserWidget ();
 		static void SetParentMultiTabs (QObject*);
 
