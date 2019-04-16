@@ -68,7 +68,12 @@ namespace SpeedDial
 		template<typename K, typename V>
 		auto GetSortedVec (const QHash<K, V>& hash)
 		{
+#if QT_VERSION >= QT_VERSION_CHECK (5, 10, 0)
 			std::vector<std::pair<K, V>> vec { hash.keyValueBegin (), hash.keyValueEnd () };
+#else
+			auto stlized = Util::Stlize (hash);
+			std::vector<std::pair<K, V>> vec { stlized.begin (), stlized.end () };
+#endif
 			std::sort (vec.begin (), vec.end (), Util::Flip (Util::ComparingBy (Util::Snd)));
 			return vec;
 		}
