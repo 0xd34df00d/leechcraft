@@ -5,6 +5,7 @@ RUN git clone https://github.com/0xd34df00d/leechcraft.git && \
 	mkdir build && \
 	cd build && \
 	cmake ../src \
+		-DCMAKE_C_COMPILER=/usr/bin/gcc-8 -DCMAKE_CXX_COMPILER=/usr/bin/g++-8 \
 		-DLIB_SUFFIX=64 \
 		-DCMAKE_INSTALL_PREFIX=/usr \
 		-DSTRICT_LICENSING=True \
