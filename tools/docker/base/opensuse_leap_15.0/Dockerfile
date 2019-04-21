@@ -3,7 +3,7 @@ FROM opensuse/leap:15.0
 RUN zypper -n ar 'https://download.opensuse.org/source/distribution/leap/15.0/repo/oss/' oss-src
 RUN zypper -n ar 'https://download.opensuse.org/repositories/network/openSUSE_Leap_15.0/network.repo'
 
-RUN zypper -n ref
+RUN zypper ref
 RUN zypper -n in eatmydata
 RUN eatmydata zypper dup -y
 
