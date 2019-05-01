@@ -68,6 +68,7 @@ namespace Lastfmscrobble
 	void ImagesFetcher::HandleError (const QString& err)
 	{
 		qWarning () << Q_FUNC_INFO << err;
+		HandleDone ();
 	}
 
 	void ImagesFetcher::HandleDone ()
