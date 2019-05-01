@@ -98,7 +98,7 @@ namespace Lastfmscrobble
 
 		QHttpPart contentsPart;
 		contentsPart.setHeader (QNetworkRequest::ContentDispositionHeader,
-				"form-data; name=\"contents\"; filename=\"contents\"");
+				R"(form-data; name="contents"; filename="contents")");
 		contentsPart.setBody (data);
 
 		auto multipart = new QHttpMultiPart { QHttpMultiPart::FormDataType };
