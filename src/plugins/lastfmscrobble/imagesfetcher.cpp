@@ -56,9 +56,13 @@ namespace Lastfmscrobble
 	, Artist_ { artist }
 	, NAM_ { nam }
 	{
-		const QNetworkRequest req { GetUrl ("artist/photos/pageurl") };
-		Util::HandleNetworkReply (this, NAM_->post (req, "artist=" + QUrl::toPercentEncoding (artist)),
-				[this] (const QByteArray& data) { HandlePageUrl (data); });
+		auto reply = NAM_->post (QNetworkRequest { GetUrl ("artist/photos/pageurl") }, "artist=" + QUrl::toPercentEncoding (artist));
+		Util::Sequence (this, Util::HandleReply<> (reply, this)) >>
+				Util::Visitor
+				{
+					[this] (const QByteArray& data) { HandlePageUrl (data); },
+					[] (Util::Void) {}
+				};
 	}
 
 	void ImagesFetcher::HandleDone ()
@@ -81,8 +85,13 @@ namespace Lastfmscrobble
 			return;
 		}
 
-		Util::HandleNetworkReply (this, NAM_->get (QNetworkRequest { url }),
-				[this] (const QByteArray& data) { HandleImagesPageFetched (data); });
+		const auto reply = NAM_->get (QNetworkRequest { url });
+		Util::Sequence (this, Util::HandleReply<> (reply, this)) >>
+				Util::Visitor
+				{
+					[this] (const QByteArray& data) { HandleImagesPageFetched (data); },
+					[] (Util::Void) {}
+				};
 	}
 
 	void ImagesFetcher::HandleImagesPageFetched (const QByteArray& data)
@@ -107,8 +116,12 @@ namespace Lastfmscrobble
 		const auto reply = NAM_->post (QNetworkRequest { GetUrl ("artist/photos/parsepage") }, multipart);
 		multipart->setParent (reply);
 
-		Util::HandleNetworkReply (this, reply,
-				[this] (const QByteArray& data) { HandlePageParsed (data); });
+		Util::Sequence (this, Util::HandleReply<> (reply, this)) >>
+				Util::Visitor
+				{
+					[this] (const QByteArray& data) { HandlePageParsed (data); },
+					[] (Util::Void) {}
+				};
 	}
 
 	void ImagesFetcher::HandlePageParsed (const QByteArray& data)
