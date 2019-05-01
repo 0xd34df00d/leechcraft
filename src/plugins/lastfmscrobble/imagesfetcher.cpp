@@ -57,11 +57,11 @@ namespace Lastfmscrobble
 	, NAM_ { nam }
 	{
 		auto reply = NAM_->post (QNetworkRequest { GetUrl ("artist/photos/pageurl") }, "artist=" + QUrl::toPercentEncoding (artist));
-		Util::Sequence (this, Util::HandleReply<> (reply, this)) >>
+		Util::Sequence (this, Util::HandleReply<Util::ErrorInfo<QString>> (reply, this)) >>
 				Util::Visitor
 				{
 					[this] (const QByteArray& data) { HandlePageUrl (data); },
-					[] (Util::Void) {}
+					[] (const QString& err) { qWarning () << Q_FUNC_INFO << err; }
 				};
 	}
 
@@ -86,11 +86,11 @@ namespace Lastfmscrobble
 		}
 
 		const auto reply = NAM_->get (QNetworkRequest { url });
-		Util::Sequence (this, Util::HandleReply<> (reply, this)) >>
+		Util::Sequence (this, Util::HandleReply<Util::ErrorInfo<QString>> (reply, this)) >>
 				Util::Visitor
 				{
 					[this] (const QByteArray& data) { HandleImagesPageFetched (data); },
-					[] (Util::Void) {}
+					[] (const QString& err) { qWarning () << Q_FUNC_INFO << err; }
 				};
 	}
 
@@ -116,11 +116,11 @@ namespace Lastfmscrobble
 		const auto reply = NAM_->post (QNetworkRequest { GetUrl ("artist/photos/parsepage") }, multipart);
 		multipart->setParent (reply);
 
-		Util::Sequence (this, Util::HandleReply<> (reply, this)) >>
+		Util::Sequence (this, Util::HandleReply<Util::ErrorInfo<QString>> (reply, this)) >>
 				Util::Visitor
 				{
 					[this] (const QByteArray& data) { HandlePageParsed (data); },
-					[] (Util::Void) {}
+					[] (const QString& err) { qWarning () << Q_FUNC_INFO << err; }
 				};
 	}
 
