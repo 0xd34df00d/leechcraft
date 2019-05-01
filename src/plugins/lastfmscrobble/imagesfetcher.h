@@ -49,6 +49,7 @@ namespace Lastfmscrobble
 	public:
 		ImagesFetcher (const QString&, QNetworkAccessManager*, QObject* = nullptr);
 	private:
+		void HandleError (const QString&);
 		void HandleDone ();
 
 		void HandlePageUrl (const QByteArray&);

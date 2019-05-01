@@ -61,8 +61,13 @@ namespace Lastfmscrobble
 				Util::Visitor
 				{
 					[this] (const QByteArray& data) { HandlePageUrl (data); },
-					[] (const QString& err) { qWarning () << Q_FUNC_INFO << err; }
+					[this] (const QString& err) { HandleError (err); }
 				};
+	}
+
+	void ImagesFetcher::HandleError (const QString& err)
+	{
+		qWarning () << Q_FUNC_INFO << err;
 	}
 
 	void ImagesFetcher::HandleDone ()
@@ -90,7 +95,7 @@ namespace Lastfmscrobble
 				Util::Visitor
 				{
 					[this] (const QByteArray& data) { HandleImagesPageFetched (data); },
-					[] (const QString& err) { qWarning () << Q_FUNC_INFO << err; }
+					[this] (const QString& err) { HandleError (err); }
 				};
 	}
 
@@ -120,7 +125,7 @@ namespace Lastfmscrobble
 				Util::Visitor
 				{
 					[this] (const QByteArray& data) { HandlePageParsed (data); },
-					[] (const QString& err) { qWarning () << Q_FUNC_INFO << err; }
+					[this] (const QString& err) { HandleError (err); }
 				};
 	}
 
