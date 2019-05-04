@@ -36,10 +36,6 @@ namespace LeechCraft
 {
 namespace Snails
 {
-	AttDescr::AttDescr ()
-	{
-	}
-
 	AttDescr::AttDescr (vmime::shared_ptr<const vmime::attachment> att)
 	: Name_ (StringizeCT (att->getName ()))
 	, Descr_ (StringizeCT (att->getDescription ()))
