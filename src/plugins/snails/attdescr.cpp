@@ -37,7 +37,6 @@ namespace LeechCraft
 namespace Snails
 {
 	AttDescr::AttDescr ()
-	: Size_ (0)
 	{
 	}
 

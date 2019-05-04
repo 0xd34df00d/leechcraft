@@ -41,7 +41,7 @@ namespace Snails
 	{
 		QString Name_;
 		QString Descr_;
-		qlonglong Size_;
+		qlonglong Size_ = 0;
 
 		QByteArray Type_;
 		QByteArray SubType_;
