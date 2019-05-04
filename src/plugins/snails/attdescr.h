@@ -47,7 +47,6 @@ namespace Snails
 		QByteArray SubType_;
 	public:
 		AttDescr () = default;
-		AttDescr (vmime::shared_ptr<const vmime::attachment>);
 		AttDescr (const QString& name, const QString& descr,
 				const QByteArray& type, const QByteArray& subtype,
 				qlonglong size);
