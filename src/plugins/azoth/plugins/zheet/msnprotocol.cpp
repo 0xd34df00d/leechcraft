@@ -31,6 +31,8 @@
 #include <QIcon>
 #include <QSettings>
 #include <QtDebug>
+#include <util/sll/prelude.h>
+#include <util/sll/functional.h>
 #include "msnaccountconfigwidget.h"
 #include "msnaccount.h"
 
@@ -62,10 +64,7 @@ namespace Zheet
 
 	QList<QObject*> MSNProtocol::GetRegisteredAccounts ()
 	{
-		QList<QObject*> result;
-		Q_FOREACH (auto acc, Accounts_)
-			result << acc;
-		return result;
+		return Util::Map (Accounts_, Util::Upcast<QObject*>);
 	}
 
 	QObject* MSNProtocol::GetParentProtocolPlugin () const

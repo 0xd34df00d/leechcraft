@@ -30,6 +30,8 @@
 #include "msnaccount.h"
 #include <msn/notificationserver.h>
 #include <util/xpc/util.h>
+#include <util/sll/prelude.h>
+#include <util/sll/functional.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include "msnprotocol.h"
 #include "callbacks.h"
@@ -233,10 +235,7 @@ namespace Zheet
 
 	QList<QObject*> MSNAccount::GetCLEntries ()
 	{
-		QList<QObject*> result;
-		Q_FOREACH (auto obj, Entries_)
-			result << obj;
-		return result;
+		return Util::Map (Entries_, Util::Upcast<QObject*>);
 	}
 
 	QString MSNAccount::GetAccountName () const

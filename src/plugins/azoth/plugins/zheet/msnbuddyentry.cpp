@@ -31,6 +31,7 @@
 #include <algorithm>
 #include <QImage>
 #include <msn/notificationserver.h>
+#include <util/sll/prelude.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include <interfaces/azoth/azothutil.h>
 #include "msnaccount.h"
@@ -50,10 +51,8 @@ namespace Zheet
 	: QObject (acc)
 	, Account_ (acc)
 	, Buddy_ (buddy)
+	, Groups_ (Util::Map (buddy.groups, ZheetUtil::FromStd))
 	{
-		Q_FOREACH (auto grp, buddy.groups)
-			Groups_ << ZheetUtil::FromStd (grp->name);
-
 		qDebug () << Q_FUNC_INFO << Groups_;
 		std::for_each (buddy.properties.cbegin (), buddy.properties.cend (),
 				[] (decltype (*buddy.properties.cbegin ()) item) { qDebug () << item.first.c_str () << ": " << item.second.c_str (); });
