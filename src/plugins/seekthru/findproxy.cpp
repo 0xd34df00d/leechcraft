@@ -39,7 +39,7 @@ namespace SeekThru
 
 	FindProxy::FindProxy (const Request& r)
 	: R_ (r)
-	, MergeModel_ (new MergeModel (QStringList ("1") << "2" << "3"))
+	, MergeModel_ (new Util::MergeModel ({ "1", "2", "3" }))
 	{
 	}
 
