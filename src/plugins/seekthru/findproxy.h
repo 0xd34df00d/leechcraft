@@ -53,11 +53,11 @@ namespace SeekThru
 		QList<SearchHandler_ptr> Handlers_;
 	public:
 		FindProxy (Request);
-		virtual ~FindProxy ();
+		~FindProxy () override;
 
-		QAbstractItemModel* GetModel ();
-		QByteArray GetUniqueSearchID () const;
-		QStringList GetCategories () const;
+		QAbstractItemModel* GetModel () override;
+		QByteArray GetUniqueSearchID () const override;
+		QStringList GetCategories () const override;
 
 		void SetHandlers (const QList<SearchHandler_ptr>&);
 	};
