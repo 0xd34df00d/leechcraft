@@ -69,17 +69,17 @@ namespace Zheet
 
 		QString Name_;
 		MSN::Passport Passport_;
-		QString Server_;
-		int Port_;
+		QString Server_ = "messenger.hotmail.com";
+		int Port_ = 1863;
 
 		Callbacks *CB_;
-		MSN::NotificationServerConnection *Conn_;
+		MSN::NotificationServerConnection *Conn_ = nullptr;
 		SBManager *SB_;
 		GroupManager *GroupManager_;
 		TransferManager *TM_;
 
 		EntryStatus PendingStatus_;
-		bool Connecting_;
+		bool Connecting_ = false;
 		EntryStatus CurrentStatus_;
 
 		QHash<QString, MSNBuddyEntry*> Entries_;

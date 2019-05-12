@@ -55,14 +55,10 @@ namespace Zheet
 	: QObject (parent)
 	, Proto_ (parent)
 	, Name_ (name)
-	, Server_ ("messenger.hotmail.com")
-	, Port_ (1863)
 	, CB_ (new Callbacks (this))
-	, Conn_ (0)
 	, SB_ (new SBManager (CB_, this))
 	, GroupManager_ (new GroupManager (CB_, this))
 	, TM_ (new TransferManager (CB_, this))
-	, Connecting_ (false)
 	, ActionManageBL_ (new QAction (tr ("Manage blacklist..."), this))
 	{
 		connect (CB_,
