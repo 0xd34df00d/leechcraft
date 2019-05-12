@@ -37,8 +37,8 @@ namespace SeekThru
 {
 	using LeechCraft::Util::MergeModel;
 
-	FindProxy::FindProxy (const Request& r)
-	: R_ (r)
+	FindProxy::FindProxy (Request r)
+	: R_ (std::move (r))
 	, MergeModel_ (new Util::MergeModel ({ "1", "2", "3" }))
 	{
 	}
