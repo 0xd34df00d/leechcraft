@@ -31,12 +31,8 @@
 #include <util/models/mergemodel.h>
 #include "core.h"
 
-namespace LeechCraft
+namespace LeechCraft::SeekThru
 {
-namespace SeekThru
-{
-	using LeechCraft::Util::MergeModel;
-
 	FindProxy::FindProxy (Request r)
 	: R_ (std::move (r))
 	, MergeModel_ (new Util::MergeModel ({ "1", "2", "3" }))
@@ -70,11 +66,10 @@ namespace SeekThru
 	void FindProxy::SetHandlers (const QList<SearchHandler_ptr>& handlers)
 	{
 		Handlers_ = handlers;
-		for (const auto sh : Handlers_)
+		for (const auto& sh : Handlers_)
 		{
 			MergeModel_->AddModel (sh.get ());
 			sh->Start (R_);
 		}
 	}
-}
 }

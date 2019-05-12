@@ -48,7 +48,7 @@ namespace SeekThru
 		Q_OBJECT
 		Q_INTERFACES (IFindProxy)
 
-		LeechCraft::Request R_;
+		Request R_;
 		std::shared_ptr<LeechCraft::Util::MergeModel> MergeModel_;
 		QList<SearchHandler_ptr> Handlers_;
 	public:
