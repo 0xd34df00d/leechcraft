@@ -58,7 +58,7 @@ namespace SeekThru
 			RoleFile
 		};
 	public:
-		StartupFirstPage (QWidget* = 0);
+		explicit StartupFirstPage (QWidget* = nullptr);
 
 		void initializePage () override;
 	private:
