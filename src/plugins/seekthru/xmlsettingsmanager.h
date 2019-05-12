@@ -41,7 +41,6 @@ namespace SeekThru
 
 		XmlSettingsManager ();
 	public:
-		virtual ~XmlSettingsManager ();
 		static XmlSettingsManager& Instance ();
 	protected:
 		virtual QSettings* BeginSettings () const;

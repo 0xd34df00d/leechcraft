@@ -39,10 +39,6 @@ namespace SeekThru
 		BaseSettingsManager::Init ();
 	}
 
-	XmlSettingsManager::~XmlSettingsManager ()
-	{
-	}
-
 	XmlSettingsManager& XmlSettingsManager::Instance ()
 	{
 		static XmlSettingsManager xsm;
