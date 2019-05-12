@@ -52,7 +52,7 @@ namespace SeekThru
 		std::shared_ptr<LeechCraft::Util::MergeModel> MergeModel_;
 		QList<SearchHandler_ptr> Handlers_;
 	public:
-		FindProxy (Request);
+		explicit FindProxy (Request);
 		~FindProxy () override;
 
 		QAbstractItemModel* GetModel () override;
