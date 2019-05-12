@@ -33,9 +33,7 @@
 #include <QObject>
 #include "sllconfig.h"
 
-namespace LeechCraft
-{
-namespace Util
+namespace LeechCraft::Util
 {
 	/** @brief Executes a given action after a given timeout.
 	 *
@@ -100,5 +98,4 @@ namespace Util
 	{
 		new DelayedExecutor { actor, delay };
 	}
-}
 }
