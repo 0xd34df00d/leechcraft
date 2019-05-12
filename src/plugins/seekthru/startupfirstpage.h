@@ -60,7 +60,7 @@ namespace SeekThru
 	public:
 		StartupFirstPage (QWidget* = 0);
 
-		void initializePage ();
+		void initializePage () override;
 	private:
 		void Populate (const QString&);
 	private slots:
