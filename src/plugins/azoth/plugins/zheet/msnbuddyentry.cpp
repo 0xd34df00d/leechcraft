@@ -28,7 +28,6 @@
  **********************************************************************/
 
 #include "msnbuddyentry.h"
-#include <algorithm>
 #include <QImage>
 #include <msn/notificationserver.h>
 #include <util/sll/prelude.h>
@@ -54,8 +53,8 @@ namespace Zheet
 	, Groups_ (Util::Map (buddy.groups, ZheetUtil::FromStd))
 	{
 		qDebug () << Q_FUNC_INFO << Groups_;
-		std::for_each (buddy.properties.cbegin (), buddy.properties.cend (),
-				[] (decltype (*buddy.properties.cbegin ()) item) { qDebug () << item.first.c_str () << ": " << item.second.c_str (); });
+		for (const auto& item : buddy.properties)
+			qDebug () << item.first.c_str () << ": " << item.second.c_str ();
 
 		try
 		{
