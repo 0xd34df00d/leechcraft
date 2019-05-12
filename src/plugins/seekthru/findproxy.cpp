@@ -37,7 +37,7 @@ namespace SeekThru
 {
 	using LeechCraft::Util::MergeModel;
 
-	FindProxy::FindProxy (const LeechCraft::Request& r)
+	FindProxy::FindProxy (const Request& r)
 	: R_ (r)
 	, MergeModel_ (new MergeModel (QStringList ("1") << "2" << "3"))
 	{
@@ -45,7 +45,7 @@ namespace SeekThru
 
 	FindProxy::~FindProxy ()
 	{
-		Q_FOREACH (SearchHandler_ptr sh, Handlers_)
+		for (const auto& sh : Handlers_)
 			MergeModel_->RemoveModel (sh.get ());
 	}
 
@@ -70,7 +70,7 @@ namespace SeekThru
 	void FindProxy::SetHandlers (const QList<SearchHandler_ptr>& handlers)
 	{
 		Handlers_ = handlers;
-		Q_FOREACH (SearchHandler_ptr sh, Handlers_)
+		for (const auto sh : Handlers_)
 		{
 			MergeModel_->AddModel (sh.get ());
 			sh->Start (R_);

@@ -99,8 +99,7 @@ namespace SeekThru
 
 	void StartupFirstPage::Populate (const QString& title)
 	{
-		EngineInfos_t engines = Sets_ [title];
-		Q_FOREACH (EngineInfo info, engines)
+		for (const auto& info : Sets_ [title])
 		{
 			QStringList strings;
 			strings << info.Name_
