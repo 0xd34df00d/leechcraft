@@ -101,11 +101,5 @@ namespace Util
 	{
 		new DelayedExecutor { actor, delay };
 	}
-
-	template<typename F>
-	void DelayDestruction (const std::shared_ptr<F>& obj)
-	{
-		ExecuteLater ([obj] {});
-	}
 }
 }
