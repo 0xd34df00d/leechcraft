@@ -30,9 +30,7 @@
 #include "tagsasker.h"
 #include <util/tags/tagscompleter.h>
 
-namespace LeechCraft
-{
-namespace SeekThru
+namespace LeechCraft::SeekThru
 {
 	TagsAsker::TagsAsker (const QString& text, QWidget *parent)
 	: QDialog (parent)
@@ -47,5 +45,4 @@ namespace SeekThru
 	{
 		return Ui_.Tags_->text ();
 	}
-}
 }

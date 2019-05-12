@@ -48,9 +48,7 @@
 
 Q_DECLARE_METATYPE (QToolBar*)
 
-namespace LeechCraft
-{
-namespace SeekThru
+namespace LeechCraft::SeekThru
 {
 	const QString SearchHandler::OS_ = "http://a9.com/-/spec/opensearch/1.1/";
 
@@ -290,5 +288,4 @@ namespace SeekThru
 				mime);
 		IEM_->HandleEntity (e);
 	}
-}
 }

@@ -40,9 +40,7 @@
 
 class IWebBrowser;
 
-namespace LeechCraft
-{
-namespace SeekThru
+namespace LeechCraft::SeekThru
 {
 	class Core : public QAbstractItemModel
 	{
@@ -115,5 +113,4 @@ namespace SeekThru
 		void error (const QString&);
 		void categoriesChanged (const QStringList&, const QStringList&);
 	};
-}
 }

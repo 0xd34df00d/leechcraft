@@ -32,9 +32,7 @@
 #include <QDialog>
 #include "ui_tagsasker.h"
 
-namespace LeechCraft
-{
-namespace SeekThru
+namespace LeechCraft::SeekThru
 {
 	class TagsAsker : public QDialog
 	{
@@ -46,5 +44,4 @@ namespace SeekThru
 
 		QString GetTags () const;
 	};
-}
 }

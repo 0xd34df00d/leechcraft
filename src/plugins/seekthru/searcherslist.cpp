@@ -37,9 +37,7 @@
 #include <util/xpc/util.h>
 #include "core.h"
 
-namespace LeechCraft
-{
-namespace SeekThru
+namespace LeechCraft::SeekThru
 {
 	SearchersList::SearchersList (const ICoreProxy_ptr& proxy, QWidget* parent)
 	: QWidget { parent }
@@ -141,5 +139,4 @@ namespace SeekThru
 	{
 		Core::Instance ().SetTags (Current_, Proxy_->GetTagsManager ()->Split (Ui_.Tags_->text ()));
 	}
-}
 }

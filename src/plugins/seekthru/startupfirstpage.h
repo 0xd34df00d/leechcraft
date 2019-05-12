@@ -32,9 +32,7 @@
 #include <QWizardPage>
 #include "ui_startupfirstpage.h"
 
-namespace LeechCraft
-{
-namespace SeekThru
+namespace LeechCraft::SeekThru
 {
 	struct EngineInfo
 	{
@@ -67,5 +65,4 @@ namespace SeekThru
 		void handleAccepted ();
 		void handleCurrentIndexChanged (const QString&);
 	};
-}
 }

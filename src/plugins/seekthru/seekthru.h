@@ -40,9 +40,7 @@
 #include <interfaces/isyncable.h>
 #include <interfaces/structures.h>
 
-namespace LeechCraft
-{
-namespace SeekThru
+namespace LeechCraft::SeekThru
 {
 	class SeekThru : public QObject
 					, public IInfo
@@ -98,5 +96,4 @@ namespace SeekThru
 	signals:
 		void categoriesChanged (const QStringList&, const QStringList&) override;
 	};
-}
 }

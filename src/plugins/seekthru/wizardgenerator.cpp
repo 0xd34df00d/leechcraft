@@ -31,9 +31,7 @@
 #include "xmlsettingsmanager.h"
 #include "startupfirstpage.h"
 
-namespace LeechCraft
-{
-namespace SeekThru
+namespace LeechCraft::SeekThru
 {
 	QList<QWizardPage*> WizardGenerator::GetPages ()
 	{
@@ -48,5 +46,4 @@ namespace SeekThru
 		XmlSettingsManager::Instance ().setProperty ("StartupVersion", version);
 		return result;
 	}
-}
 }

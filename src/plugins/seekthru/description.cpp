@@ -33,9 +33,7 @@
 #include <QDataStream>
 #include <QUrlQuery>
 
-namespace LeechCraft
-{
-namespace SeekThru
+namespace LeechCraft::SeekThru
 {
 	QDataStream& operator<< (QDataStream& out, const UrlDescription& d)
 	{
@@ -178,5 +176,4 @@ namespace SeekThru
 			>> d.OutputEncodings_;
 		return in;
 	}
-}
 }

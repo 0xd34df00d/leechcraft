@@ -38,9 +38,7 @@
 #include "searcherslist.h"
 #include "wizardgenerator.h"
 
-namespace LeechCraft
-{
-namespace SeekThru
+namespace LeechCraft::SeekThru
 {
 	void SeekThru::Init (ICoreProxy_ptr proxy)
 	{
@@ -183,7 +181,6 @@ namespace SeekThru
 	{
 		Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification ("SeekThru", error, Priority::Critical));
 	}
-}
 }
 
 LC_EXPORT_PLUGIN (leechcraft_seekthru, LeechCraft::SeekThru::SeekThru);

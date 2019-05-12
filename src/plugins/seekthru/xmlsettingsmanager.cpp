@@ -30,9 +30,7 @@
 #include "xmlsettingsmanager.h"
 #include <QCoreApplication>
 
-namespace LeechCraft
-{
-namespace SeekThru
+namespace LeechCraft::SeekThru
 {
 	XmlSettingsManager::XmlSettingsManager ()
 	{
@@ -55,5 +53,4 @@ namespace SeekThru
 	void XmlSettingsManager::EndSettings (QSettings*) const
 	{
 	}
-}
 }

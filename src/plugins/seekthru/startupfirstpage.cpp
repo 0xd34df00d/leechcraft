@@ -36,12 +36,9 @@
 #include "xmlsettingsmanager.h"
 #include "core.h"
 
-namespace LeechCraft
+namespace LeechCraft::SeekThru
 {
-namespace SeekThru
-{
-	EngineInfo::EngineInfo (const QString& fn,
-			const QString& tags, const QString& name)
+	EngineInfo::EngineInfo (const QString& fn, const QString& tags, const QString& name)
 	: ResourceFileName_ (fn)
 	, DefaultTags_ (tags)
 	, Name_ (name)
@@ -157,5 +154,4 @@ namespace SeekThru
 		}
 		Populate ("general");
 	}
-}
 }

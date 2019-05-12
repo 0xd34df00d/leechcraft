@@ -33,14 +33,11 @@
 
 class QWizardPage;
 
-namespace LeechCraft
-{
-namespace SeekThru
+namespace LeechCraft::SeekThru
 {
 	class WizardGenerator
 	{
 	public:
 		QList<QWizardPage*> GetPages ();
 	};
-}
 }

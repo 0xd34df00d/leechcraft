@@ -51,9 +51,7 @@
 #include "findproxy.h"
 #include "tagsasker.h"
 
-namespace LeechCraft
-{
-namespace SeekThru
+namespace LeechCraft::SeekThru
 {
 	const QString Core::OS_ = "http://a9.com/-/spec/opensearch/1.1/";
 
@@ -689,5 +687,4 @@ namespace SeekThru
 			return false;
 		}
 	}
-}
 }

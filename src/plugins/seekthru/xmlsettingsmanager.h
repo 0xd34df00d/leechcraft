@@ -31,11 +31,9 @@
 
 #include <xmlsettingsdialog/basesettingsmanager.h>
 
-namespace LeechCraft
+namespace LeechCraft::SeekThru
 {
-namespace SeekThru
-{
-	class XmlSettingsManager : public LeechCraft::Util::BaseSettingsManager
+	class XmlSettingsManager : public Util::BaseSettingsManager
 	{
 		Q_OBJECT
 
@@ -46,5 +44,4 @@ namespace SeekThru
 		virtual QSettings* BeginSettings () const;
 		virtual void EndSettings (QSettings*) const;
 	};
-}
 }
