@@ -234,7 +234,7 @@ namespace Zheet
 	QList<QObject*> MSNAccount::GetCLEntries ()
 	{
 		QList<QObject*> result;
-		Q_FOREACH (auto obj, Entries_.values ())
+		Q_FOREACH (auto obj, Entries_)
 			result << obj;
 		return result;
 	}
