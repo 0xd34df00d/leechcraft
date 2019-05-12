@@ -220,8 +220,11 @@ namespace LeechCraft
 
 		Splash_ = new SplashScreen { QPixmap (":/resources/images/splash.svg"), Qt::SplashScreen };
 		Splash_->setUpdatesEnabled (true);
-		Splash_->show ();
-		Splash_->repaint ();
+		if (!VarMap_.count ("no-splash-screen"))
+		{
+			Splash_->show ();
+			Splash_->repaint ();
+		}
 
 		QTimer::singleShot (50,
 				this,
@@ -262,6 +265,7 @@ namespace LeechCraft
 				("no-resource-caching", "disable caching of dynamic loadable resources (useful for stuff like Azoth themes development)")
 				("autorestart", "automatically restart LC if it's closed (not guaranteed to work everywhere, especially on Windows and Mac OS X)")
 				("minimized", "start LC minimized to tray")
+				("no-splash-screen", "do not show the splash screen")
 				("restart", "restart the LC");
 		bpo::positional_options_description pdesc;
 		pdesc.add ("entity", -1);

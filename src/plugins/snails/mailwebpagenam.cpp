@@ -110,6 +110,8 @@ namespace LeechCraft::Snails
 			reply->setError (QNetworkReply::ContentNotFoundError,
 					QString { "Attachment %1 not found" }
 							.arg (origReq.url ().toString ()));
+
+			return reply;
 		}
 
 		qDebug () << Q_FUNC_INFO
