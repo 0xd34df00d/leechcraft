@@ -74,10 +74,10 @@ namespace Zheet
 		const auto& newSet = newGroupsLst.toSet ();
 		const auto& oldSet = oldGroupsLst.toSet ();
 
-		Q_FOREACH (const QString& grp, newSet - oldSet)
+		for (const auto& grp : newSet - oldSet)
 			AddGroup (entry->GetHumanReadableID (), grp);
 
-		Q_FOREACH (const QString& grp, oldSet - newSet)
+		for (const auto& grp : oldSet - newSet)
 			RemoveGroup (entry->GetHumanReadableID (), grp);
 	}
 
@@ -117,14 +117,14 @@ namespace Zheet
 
 	void GroupManager::handleGotGroups (const QList<MSN::Group>& groups)
 	{
-		Q_FOREACH (const MSN::Group& g, groups)
+		for (const auto& g : groups)
 		{
 			const auto& name = ZheetUtil::FromStd (g.name);
 			const auto& id = ZheetUtil::FromStd (g.groupID);
 			Group2ID_ [name] = id;
 			ID2Group_ [id] = name;
 
-			Q_FOREACH (const QString& id, PendingAdditions_.take (name))
+			for (const auto& id : PendingAdditions_.take (name))
 				AddGroup (id, name);
 		}
 	}

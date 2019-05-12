@@ -124,10 +124,10 @@ namespace Zheet
 	{
 		Switchboards_ [entry] = conn;
 
-		Q_FOREACH (MSNMessage *msg, PendingMessages_.take (entry))
+		for (auto msg : PendingMessages_.take (entry))
 			SendMessage (msg, entry);
 
-		Q_FOREACH (auto ft, PendingTransfers_.take (entry))
+		for (auto ft : PendingTransfers_.take (entry))
 			conn->sendFile (ft);
 
 		if (PendingNudges_.remove (entry))

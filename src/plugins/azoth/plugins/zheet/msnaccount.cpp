@@ -406,7 +406,7 @@ namespace Zheet
 		qDebug () << Q_FUNC_INFO;
 		QList<QObject*> result;
 
-		Q_FOREACH (const MSN::Buddy *buddy, buddies)
+		for (auto buddy : buddies)
 		{
 			const auto& id = ZheetUtil::FromStd (buddy->userName);
 			if (Entries_.contains (id))

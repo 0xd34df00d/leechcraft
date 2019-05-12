@@ -44,7 +44,7 @@ namespace Zheet
 	{
 		Ui_.setupUi (this);
 
-		Q_FOREACH (const QString& str, acc->GetBL ())
+		for (const auto& str : acc->GetBL ())
 			Model_->appendRow (new QStandardItem (str));
 
 		Ui_.BL_->setModel (Model_);
@@ -52,7 +52,7 @@ namespace Zheet
 
 	void ManageBlackListDialog::on_Remove__released ()
 	{
-		QStandardItem *item = Model_->itemFromIndex (Ui_.BL_->currentIndex ());
+		const auto item = Model_->itemFromIndex (Ui_.BL_->currentIndex ());
 		if (!item)
 			return;
 
