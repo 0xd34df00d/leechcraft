@@ -59,7 +59,7 @@ namespace LeechCraft::SeekThru
 
 	QStringList FindProxy::GetCategories () const
 	{
-		return QStringList (R_.Category_);
+		return { R_.Category_ };
 	}
 
 	void FindProxy::SetHandlers (const QList<SearchHandler_ptr>& handlers)
