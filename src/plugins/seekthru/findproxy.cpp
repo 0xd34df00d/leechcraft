@@ -29,7 +29,6 @@
 
 #include "findproxy.h"
 #include <util/models/mergemodel.h>
-#include "core.h"
 
 namespace LeechCraft::SeekThru
 {
