@@ -38,7 +38,7 @@ namespace LeechCraft::SeekThru
 	{
 		Ui::TagsAsker Ui_;
 	public:
-		TagsAsker (const QString&, QWidget* = 0);
+		explicit TagsAsker (const QString&, QWidget* = nullptr);
 
 		QString GetTags () const;
 	};
