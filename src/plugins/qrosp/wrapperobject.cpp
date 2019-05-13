@@ -136,7 +136,7 @@ namespace Qrosp
 			return;
 		}
 
-		Q_FOREACH (QString req, requires)
+		for (const auto& req : requires)
 			engine->importExtension (req);
 #endif
 	}
@@ -170,7 +170,7 @@ namespace Qrosp
 
 		const auto& manifest = ParseManifest (Path_ + ".manifest.json");
 
-		Q_FOREACH (auto signature, manifest ["ExportedSlots"].toStringList ())
+		for (auto signature : manifest ["ExportedSlots"].toStringList ())
 		{
 			signature = signature.trimmed ();
 			if (signature.isEmpty ())
@@ -180,7 +180,7 @@ namespace Qrosp
 			builder.addSlot (sigArray);
 		}
 
-		Q_FOREACH (auto signature, manifest ["ExportedSignals"].toStringList ())
+		for (auto signature : manifest ["ExportedSignals"].toStringList ())
 		{
 			signature = signature.trimmed ();
 			if (signature.isEmpty ())
@@ -398,8 +398,7 @@ namespace Qrosp
 	QSet<QByteArray> WrapperObject::GetPluginClasses () const
 	{
 		QSet<QByteArray> result;
-		Q_FOREACH (QString pclass,
-				SCALL (QStringList) ("GetPluginClasses"))
+		for (const auto& pclass : SCALL (QStringList) ("GetPluginClasses"))
 			result << pclass.toUtf8 ();
 		return result;
 	}
@@ -407,7 +406,7 @@ namespace Qrosp
 	TabClasses_t WrapperObject::GetTabClasses () const
 	{
 		TabClasses_t result;
-		Q_FOREACH (const QVariant& mapVar, SCALL (QVariantList) ("GetPluginClasses"))
+		for (const auto& mapVar : SCALL (QVariantList) ("GetPluginClasses"))
 		{
 			const auto& map = mapVar.toMap ();
 			TabClassInfo info
