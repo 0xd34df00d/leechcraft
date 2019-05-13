@@ -41,7 +41,7 @@ namespace LeechCraft::SeekThru
 	public:
 		static XmlSettingsManager& Instance ();
 	protected:
-		virtual QSettings* BeginSettings () const;
-		virtual void EndSettings (QSettings*) const;
+		virtual QSettings* BeginSettings () const override;
+		virtual void EndSettings (QSettings*) const override;
 	};
 }
