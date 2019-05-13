@@ -170,25 +170,21 @@ namespace Qrosp
 
 		const auto& manifest = ParseManifest (Path_ + ".manifest.json");
 
+		auto prepareSig = [] (auto&& sig) { return std::forward<decltype (sig)> (sig).trimmed ().toLatin1 (); };
+
 		for (auto signature : manifest ["ExportedSlots"].toStringList ())
-		{
-			signature = signature.trimmed ();
-			if (signature.isEmpty ())
-				continue;
-			const auto& sigArray = signature.toLatin1 ();
-			Index2ExportedSignatures_ [currentMetaMethod++] = sigArray;
-			builder.addSlot (sigArray);
-		}
+			if (auto sigArray = prepareSig (signature); !sigArray.isEmpty ())
+			{
+				Index2ExportedSignatures_ [currentMetaMethod++] = sigArray;
+				builder.addSlot (sigArray);
+			}
 
 		for (auto signature : manifest ["ExportedSignals"].toStringList ())
-		{
-			signature = signature.trimmed ();
-			if (signature.isEmpty ())
-				continue;
-			const auto& sigArray = signature.toLatin1 ();
-			Index2ExportedSignatures_ [currentMetaMethod++] = sigArray;
-			builder.addSignal (sigArray);
-		}
+			if (auto sigArray = prepareSig (signature); !sigArray.isEmpty ())
+			{
+				Index2ExportedSignatures_ [currentMetaMethod++] = sigArray;
+				builder.addSignal (sigArray);
+			}
 
 		ThisMetaObject_ = builder.toMetaObject ();
 
