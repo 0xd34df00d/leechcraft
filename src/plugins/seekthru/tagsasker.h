@@ -36,8 +36,6 @@ namespace LeechCraft::SeekThru
 {
 	class TagsAsker : public QDialog
 	{
-		Q_OBJECT
-
 		Ui::TagsAsker Ui_;
 	public:
 		TagsAsker (const QString&, QWidget* = 0);
