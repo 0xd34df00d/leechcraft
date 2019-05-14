@@ -167,7 +167,7 @@ namespace LMP
 		TrackLists_.resize (releases.size ());
 
 		auto discoProv = DiscoProviders_.value (0);
-		Q_FOREACH (const auto& release, releases)
+		for (const auto& release : releases)
 		{
 			auto item = new QStandardItem ();
 			item->setData (release.Title_, ReleasesModel::Role::AlbumName);

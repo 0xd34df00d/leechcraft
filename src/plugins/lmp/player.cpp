@@ -81,7 +81,7 @@ namespace LMP
 
 	bool Player::Sorter::operator() (const MediaInfo& left, const MediaInfo& right) const
 	{
-		Q_FOREACH (auto crit, Criteria_)
+		for (auto crit : Criteria_)
 		{
 			switch (crit)
 			{

@@ -139,7 +139,7 @@ namespace LMP
 
 		const auto& roots = Core::Instance ().GetProxy ()->GetPluginsManager ()->
 				GetAllCastableRoots<Media::IEventsProvider*> ();
-		Q_FOREACH (auto root, roots)
+		for (auto root : roots)
 		{
 			auto scrob = qobject_cast<Media::IEventsProvider*> (root);
 			if (!scrob)

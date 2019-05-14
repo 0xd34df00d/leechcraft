@@ -79,8 +79,8 @@ namespace LMP
 		QHash<int, int> year2albums;
 		QHash<QString, int> genre2encounters;
 		int trackCount = 0;
-		Q_FOREACH (const auto& artist, artists)
-			Q_FOREACH (const auto& album, artist.Albums_)
+		for (const auto& artist : artists)
+			for (const auto& album : artist.Albums_)
 			{
 				if (albumIds.contains (album->ID_))
 					continue;
@@ -90,7 +90,7 @@ namespace LMP
 				trackCount += album->Tracks_.size ();
 
 				if (!album->Tracks_.isEmpty ())
-					Q_FOREACH (const auto& genre, album->Tracks_.at (0).Genres_)
+					for (const auto& genre : album->Tracks_.at (0).Genres_)
 						++genre2encounters [genre.toLower ()];
 			}
 

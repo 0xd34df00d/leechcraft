@@ -90,7 +90,7 @@ namespace LMP
 		auto paths = Util::Map (indexes, [] (const auto& idx) { return idx.data ().toString (); });
 
 		auto coll = Core::Instance ().GetLocalCollection ();
-		Q_FOREACH (const auto& path, paths)
+		for (const auto& path : paths)
 			coll->Unscan (path);
 	}
 

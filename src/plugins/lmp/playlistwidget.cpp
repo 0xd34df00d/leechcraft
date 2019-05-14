@@ -786,7 +786,7 @@ namespace LMP
 
 	void PlaylistWidget::handlePlayModeChanged (Player::PlayMode mode)
 	{
-		Q_FOREACH (QAction *action, PlayModesGroup_->actions ())
+		for (auto action : PlayModesGroup_->actions ())
 			if (action->property ("PlayMode").toInt () == static_cast<int> (mode))
 			{
 				action->setChecked (true);
@@ -1071,7 +1071,7 @@ namespace LMP
 	{
 		const auto& sources = GetSelected ();
 		auto allSrcs = Player_->GetQueue ();
-		Q_FOREACH (const auto& source, sources)
+		for (const auto& source : sources)
 			allSrcs.removeAll (source);
 
 		Player_->Enqueue (sources + allSrcs, Player::EnqueueReplace);
@@ -1099,7 +1099,7 @@ namespace LMP
 	{
 		const auto& sources = GetSelected ();
 		auto allSrcs = Player_->GetQueue ();
-		Q_FOREACH (const auto& source, sources)
+		for (const auto& source : sources)
 			allSrcs.removeAll (source);
 
 		Player_->Enqueue (allSrcs + sources, Player::EnqueueReplace);

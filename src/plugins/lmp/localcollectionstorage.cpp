@@ -658,7 +658,7 @@ namespace LMP
 		const int id = AddTrack_.lastInsertId ().toInt ();
 		track.ID_ = id;
 
-		Q_FOREACH (const QString& genre, track.Genres_)
+		for (const auto& genre : track.Genres_)
 		{
 			AddGenre_.bindValue (":track_id", id);
 			AddGenre_.bindValue (":name", genre);
