@@ -31,6 +31,7 @@
 #include <QStandardItemModel>
 #include <QFile>
 #include <QMessageBox>
+#include <util/sll/prelude.h>
 #include <xmlsettingsdialog/datasourceroles.h>
 #include "xmlsettingsmanager.h"
 #include "core.h"
@@ -86,9 +87,7 @@ namespace LMP
 
 	void RootPathSettingsManager::removeRequested (const QString&, const QModelIndexList& indexes)
 	{
-		QStringList paths;
-		Q_FOREACH (const auto& idx, indexes)
-			paths << idx.data ().toString ();
+		auto paths = Util::Map (indexes, [] (const auto& idx) { return idx.data ().toString (); });
 
 		auto coll = Core::Instance ().GetLocalCollection ();
 		Q_FOREACH (const auto& path, paths)
