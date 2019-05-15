@@ -142,7 +142,7 @@ namespace Xoox
 
 		const auto capsDb = to->GetParentAccount ()->GetParentProtocol ()->GetCapsDatabase ();
 
-		Q_FOREACH (const QString& variant, to->Variants ())
+		for (const auto& variant : to->Variants ())
 		{
 			const QByteArray& ver = to->GetVariantVerString (variant);
 			const QStringList& features = capsDb->Get (ver);

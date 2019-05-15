@@ -326,7 +326,7 @@ namespace Xoox
 	{
 		const GlooxAccountState& origState = Conn_->GetLastState ();
 		GlooxAccountState newState = origState;
-		Q_FOREACH (const QXmppDataForm::Field& field, form.fields ())
+		for (const auto& field : form.fields ())
 		{
 			if (field.key () == "status")
 				newState.State_ = GetStr2State ().value (field.value ().toString (), newState.State_);
@@ -354,16 +354,17 @@ namespace Xoox
 		fields.append (field);
 
 		QList<QPair<QString, QString>> options;
-		Q_FOREACH (QObject *entryObj, Conn_->GetCLEntries ())
+		for (auto entryObj : Conn_->GetCLEntries ())
 		{
-			RoomCLEntry *entry = qobject_cast<RoomCLEntry*> (entryObj);
+			const auto entry = qobject_cast<RoomCLEntry*> (entryObj);
 			if (!entry)
 				continue;
 
-			QPair<QString, QString> option;
-			option.first = entry->GetHumanReadableID () + "/" + entry->GetNick ();
-			option.second = entry->GetEntryID ();
-			options << option;
+			options << QPair
+			{
+				entry->GetHumanReadableID () + "/" + entry->GetNick (),
+				entry->GetEntryID ()
+			};
 		}
 
 		QXmppDataForm::Field gcs (QXmppDataForm::Field::ListMultiField);
@@ -384,15 +385,15 @@ namespace Xoox
 	void AdHocCommandServer::LeaveGroupchatsSubmitted (const QDomElement& sourceElem,
 			const QString& sessionId, const QXmppDataForm& form)
 	{
-		Q_FOREACH (const QXmppDataForm::Field& field, form.fields ())
+		for (const auto& field : form.fields ())
 		{
 			if (field.key () != "groupchats")
 				continue;
 
 			const QStringList& ids = field.value ().toStringList ();
-			Q_FOREACH (QObject *entryObj, Conn_->GetCLEntries ())
+			for (auto entryObj : Conn_->GetCLEntries ())
 			{
-				RoomCLEntry *entry = qobject_cast<RoomCLEntry*> (entryObj);
+				auto entry = qobject_cast<RoomCLEntry*> (entryObj);
 				if (!entry)
 					continue;
 
@@ -412,13 +413,13 @@ namespace Xoox
 	{
 		const QString& to = sourceElem.attribute ("from");
 
-		Q_FOREACH (QObject *obj, Conn_->GetCLEntries ())
+		for (auto obj : Conn_->GetCLEntries ())
 		{
-			EntryBase *base = qobject_cast<EntryBase*> (obj);
+			auto base = qobject_cast<EntryBase*> (obj);
 			if (!base)
 				continue;
 
-			Q_FOREACH (GlooxMessage *msgObj, base->GetUnreadMessages ())
+			for (auto msgObj : base->GetUnreadMessages ())
 			{
 				QXmppMessage msg (QString (), to, msgObj->GetNativeMessage ().body ());
 				msg.setStamp (msgObj->GetDateTime ());
@@ -479,7 +480,7 @@ namespace Xoox
 	{
 		QUrl url;
 		QString location;
-		Q_FOREACH (const QXmppDataForm::Field& field, form.fields ())
+		for (const auto& field : form.fields ())
 		{
 			if (field.key () == "url")
 				url = QUrl::fromUserInput (field.value ().toString ());

@@ -32,6 +32,7 @@
 #include <functional>
 #include <QDomElement>
 #include <QXmppClient.h>
+#include <util/sll/qtutil.h>
 
 namespace LeechCraft
 {
@@ -254,12 +255,12 @@ namespace Xoox
 		pref.setTagName ("pref");
 		pref.setAttribute ("xmlns", NsArchive);
 
-		Q_FOREACH (MsgArchMethod meth, map.keys ())
+		for (const auto& [meth, policy] : Util::Stlize (map))
 		{
 			QXmppElement elem;
 			elem.setTagName ("method");
 			elem.setAttribute ("type", MethodConverter (meth));
-			elem.setAttribute ("use", MethodPolicyConverter (map [meth]));
+			elem.setAttribute ("use", MethodPolicyConverter (policy));
 			pref.appendChild (elem);
 		}
 

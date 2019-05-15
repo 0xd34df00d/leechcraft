@@ -130,7 +130,7 @@ namespace Xoox
 		query.setTagName ("query");
 		query.setAttribute ("xmlns", NsJabberSearch);
 
-		Q_FOREACH (const QXmppElement& field, fields)
+		for (const auto& field : fields)
 			query.appendChild (field);
 
 		SubmitSearchRequest (server, query);

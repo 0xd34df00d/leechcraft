@@ -129,7 +129,7 @@ namespace Xoox
 		writer->writeStartElement ("storage");
 		writer->writeAttribute ("xmlns", NSRosterNotes);
 
-		Q_FOREACH (const auto& item, Items_)
+		for (const auto& item : Items_)
 		{
 			writer->writeStartElement ("note");
 			writer->writeAttribute ("jid", item.GetJid ());
