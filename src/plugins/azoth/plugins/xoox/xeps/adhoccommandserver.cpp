@@ -304,6 +304,24 @@ namespace Xoox
 		Send (form, sourceElem, NodeChangeStatus);
 	}
 
+	namespace
+	{
+		const auto& GetStr2State ()
+		{
+			static QMap<QString, State> str2state
+			{
+				{ "chat", SChat },
+				{ "online", SOnline },
+				{ "away", SAway },
+				{ "xa", SXA },
+				{ "dnd", SDND },
+				{ "invisible", SInvisible },
+				{ "offline", SOffline }
+			};
+			return str2state;
+		}
+	}
+
 	void AdHocCommandServer::ChangeStatusSubmitted (const QDomElement& sourceElem,
 			const QString& sessionId, const QXmppDataForm& form)
 	{
@@ -312,18 +330,7 @@ namespace Xoox
 		Q_FOREACH (const QXmppDataForm::Field& field, form.fields ())
 		{
 			if (field.key () == "status")
-			{
-				QMap<QString, State> str2state;
-				str2state ["chat"] = SChat;
-				str2state ["online"] = SOnline;
-				str2state ["away"] = SAway;
-				str2state ["xa"] = SXA;
-				str2state ["dnd"] = SDND;
-				str2state ["invisible"] = SInvisible;
-				str2state ["offline"] = SOffline;
-
-				newState.State_ = str2state.value (field.value ().toString (), newState.State_);
-			}
+				newState.State_ = GetStr2State ().value (field.value ().toString (), newState.State_);
 			else if (field.key () == "status-priority")
 				newState.Priority_ = field.value ().toInt ();
 			else if (field.key () == "status-message")
