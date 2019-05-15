@@ -268,12 +268,11 @@ namespace Xoox
 
 		QString option;
 		QList<QPair<QString, QString>> options;
-		QPair<State, QString> pair;
-		Q_FOREACH (pair, rawOpts)
+		for (const auto& [rawState, status] : rawOpts)
 		{
-			options << qMakePair (Proxy_->StateToString (pair.first), pair.second);
-			if (pair.first == state.State_)
-				option = pair.second;
+			options << QPair { Proxy_->StateToString (rawState), status };
+			if (rawState == state.State_)
+				option = status;
 		}
 
 		QXmppDataForm::Field stateField (QXmppDataForm::Field::ListSingleField);
