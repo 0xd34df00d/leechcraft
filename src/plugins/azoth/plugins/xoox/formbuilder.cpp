@@ -36,6 +36,7 @@
 #include <QLineEdit>
 #include <QTreeWidget>
 #include <QtDebug>
+#include <util/sll/prelude.h>
 #include "imagemediawidget.h"
 #include "xeps/xmppbobmanager.h"
 
@@ -308,10 +309,8 @@ namespace Xoox
 				return QVariant ();
 			}
 
-			QStringList result;
-			Q_FOREACH (auto item, tree->selectedItems ())
-				result << item->data (0, Qt::UserRole).toString ();
-			return result;
+			return Util::Map (tree->selectedItems (),
+					[] (auto item) { return item->data (0, Qt::UserRole).toString (); });
 		}
 	};
 
