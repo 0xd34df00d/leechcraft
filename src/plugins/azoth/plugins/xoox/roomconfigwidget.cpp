@@ -232,9 +232,11 @@ namespace Xoox
 			auto firstItem = new QStandardItem (perm.jid ());
 			firstItem->setData (perm.reason (), ItemRoles::Reason);
 
-			QList<QStandardItem*> items;
-			items << firstItem;
-			items << new QStandardItem (perm.reason ());
+			QList<QStandardItem*> items
+			{
+				firstItem,
+				new QStandardItem (perm.reason ())
+			};
 			Q_FOREACH (QStandardItem *item, items)
 				item->setEditable (false);
 			parentItem->appendRow (items);
