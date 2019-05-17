@@ -35,8 +35,10 @@
 #include <QDir>
 #include <QtDebug>
 #include <QXmppLogger.h>
-#include <util/xpc/util.h>
+#include <util/sll/functional.h>
+#include <util/sll/prelude.h>
 #include <util/sys/paths.h>
+#include <util/xpc/util.h>
 #include <interfaces/azoth/iprotocolplugin.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include "glooxaccount.h"
@@ -115,10 +117,7 @@ namespace Xoox
 
 	QList<QObject*> GlooxProtocol::GetRegisteredAccounts ()
 	{
-		QList<QObject*> result;
-		Q_FOREACH (GlooxAccount *acc, Accounts_)
-			result << acc;
-		return result;
+		return Util::Map (Accounts_, Util::Upcast<QObject*>);
 	}
 
 	QObject* GlooxProtocol::GetParentProtocolPlugin () const
