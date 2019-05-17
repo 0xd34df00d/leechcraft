@@ -36,6 +36,7 @@
 #include <QLineEdit>
 #include <QTreeWidget>
 #include <QtDebug>
+#include <util/sll/qtutil.h>
 #include <util/sll/prelude.h>
 #include "imagemediawidget.h"
 #include "xeps/xmppbobmanager.h"
@@ -78,12 +79,10 @@ namespace Xoox
 
 		void Save ()
 		{
-			Q_FOREACH (QWidget *widget, Widget2Field_.keys ())
+			for (const auto& [widget, field] : Util::Stlize (Widget2Field_))
 			{
-				const QVariant& var = GetData (widget);
-				if (var.isNull ())
-					continue;
-				Widget2Field_ [widget]->setValue (var);
+				if (const auto& var = GetData (widget); !var.isNull ())
+					field->setValue (var);
 			}
 		}
 
@@ -283,13 +282,12 @@ namespace Xoox
 			tree->setSelectionMode (SelMode_);
 			tree->setHeaderHidden (true);
 
-			QPair<QString, QString> option;
-			Q_FOREACH (option, field.options ())
+			for (const auto& [name, value] : field.options ())
 			{
-				QTreeWidgetItem *item = new QTreeWidgetItem (tree, QStringList (option.first));
-				item->setData (0, Qt::UserRole, option.second);
+				auto item = new QTreeWidgetItem (tree, { name });
+				item->setData (0, Qt::UserRole, value);
 
-				if (option.second == field.value ())
+				if (value == field.value ())
 					tree->setCurrentItem (item, 0, QItemSelectionModel::SelectCurrent);
 			}
 

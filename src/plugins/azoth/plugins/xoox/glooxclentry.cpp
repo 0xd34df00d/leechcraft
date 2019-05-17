@@ -221,19 +221,18 @@ namespace Xoox
 		if (!rm.isRosterReceived ())
 			return EntryBase::GetStatus (variant);
 
-		const QMap<QString, QXmppPresence>& press = rm.getAllPresencesForBareJid (GetJID ());
+		const auto& press = rm.getAllPresencesForBareJid (GetJID ());
 		if (!press.size ())
 			return EntryBase::GetStatus (variant);
 
 		QXmppPresence max = press.begin ().value ();
-		Q_FOREACH (const QString& resource, press.keys ())
+		for (const auto& [resource, pres] : Util::Stlize (press))
 		{
 			if (!variant.isEmpty () && variant == resource)
 			{
-				max = press [resource];
+				max = pres;
 				break;
 			}
-			const QXmppPresence& pres = press [resource];
 			if (pres.priority () > max.priority ())
 				max = pres;
 		}

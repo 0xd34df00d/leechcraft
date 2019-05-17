@@ -31,6 +31,7 @@
 #include <QUuid>
 #include <QDomElement>
 #include <QXmppElement.h>
+#include <util/sll/qtutil.h>
 
 namespace LeechCraft
 {
@@ -99,16 +100,16 @@ namespace Xoox
 		source.appendChild (GetAuthorElem (AuthorName_, AuthorURI_));
 		entry.appendChild (source);
 
-		Q_FOREACH (const auto& key, Contents_.keys ())
+		for (const auto& [key, value] : Util::Stlize (Contents_.keys ()))
 		{
 			QXmppElement cElem;
 			cElem.setTagName ("content");
 			cElem.setAttribute ("type", key);
-			cElem.setValue (Contents_ [key]);
+			cElem.setValue (value);
 			entry.appendChild (cElem);
 		}
 
-		Q_FOREACH (const auto& linkInfo, Alternates_)
+		for (const auto& linkInfo : Alternates_)
 		{
 			QXmppElement link;
 			link.setTagName ("link");
@@ -119,7 +120,7 @@ namespace Xoox
 			entry.appendChild (link);
 		}
 
-		Q_FOREACH (const auto& repInfo, InReplyTo_)
+		for (const auto& repInfo : InReplyTo_)
 		{
 			QXmppElement elem;
 			elem.setTagName ("in-reply-to");

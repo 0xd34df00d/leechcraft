@@ -383,7 +383,7 @@ namespace Xoox
 			return false;
 		}
 
-		Q_FOREACH (GlooxAccount *acc, Accounts_)
+		for (auto acc : Accounts_)
 			if (acc->GetAccountName () == name)
 			{
 				Core::Instance ().SendEntity (Util::MakeNotification ("Azoth",

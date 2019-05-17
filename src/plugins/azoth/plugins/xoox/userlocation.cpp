@@ -33,6 +33,7 @@
 #include <QDomElement>
 #include <QtDebug>
 #include <QXmppElement.h>
+#include <util/sll/qtutil.h>
 
 namespace LeechCraft
 {
@@ -53,12 +54,11 @@ namespace Xoox
 		geoloc.setTagName ("geoloc");
 		geoloc.setAttribute ("xmlns", NsLocationNode);
 
-		Q_FOREACH (const QString& key, Info_.keys ())
+		for (const auto& [key, val] : Util::Stlize (Info_))
 		{
 			QXmppElement elem;
 			elem.setTagName (key);
 
-			const QVariant& val = Info_ [key];
 			if (val.type () == QVariant::DateTime)
 				elem.setValue (val.toDateTime ().toString (Qt::ISODate));
 			else if (val.type () == QVariant::Url)

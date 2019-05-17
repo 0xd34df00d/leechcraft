@@ -68,7 +68,7 @@ namespace XEP0232Handler
 			return SoftwareInformation ();
 
 		SoftwareInformation si;
-		Q_FOREACH (const QXmppDataForm::Field& f, fields)
+		for (const auto& f : fields)
 		{
 			const auto& var = f.key ();
 			if (var == "icon")
@@ -76,7 +76,7 @@ namespace XEP0232Handler
 				const auto& media = f.media ();
 				si.IconWidth_ = media.width ();
 				si.IconHeight_ = media.height ();
-				Q_FOREACH (const auto& pair, media.uris ())
+				for (const auto& pair : media.uris ())
 					if (pair.second.startsWith ("http"))
 					{
 						si.IconURL_ = QUrl::fromEncoded (pair.second.toLatin1 ());

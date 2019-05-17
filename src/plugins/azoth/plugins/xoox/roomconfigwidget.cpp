@@ -237,7 +237,7 @@ namespace Xoox
 				firstItem,
 				new QStandardItem (perm.reason ())
 			};
-			Q_FOREACH (QStandardItem *item, items)
+			for (auto item : items)
 				item->setEditable (false);
 			parentItem->appendRow (items);
 		}

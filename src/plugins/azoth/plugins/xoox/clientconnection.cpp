@@ -307,7 +307,7 @@ namespace Xoox
 				state.State_ == SOffline)
 			Client_->setClientPresence (pres);
 
-		Q_FOREACH (RoomHandler *rh, RoomHandlers_)
+		for (auto rh : RoomHandlers_)
 			rh->SetPresence (pres);
 
 		if (!IsConnected_ &&
@@ -340,7 +340,7 @@ namespace Xoox
 			CapsQueue_->Clear ();
 			VersionQueue_->Clear ();
 
-			Q_FOREACH (const QString& jid, JID2CLEntry_.keys ())
+			for (const auto& jid : JID2CLEntry_.keys ())
 			{
 				auto entry = JID2CLEntry_.take (jid);
 				ODSEntries_ [jid] = entry;
