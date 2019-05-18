@@ -86,6 +86,7 @@
 #include "xeps/riexmanager.h"
 #include "riexintegrator.h"
 #include "inbandaccountactions.h"
+#include "captchamanager.h"
 
 namespace LeechCraft
 {
@@ -178,6 +179,8 @@ namespace Xoox
 #endif
 		ClientLoggerManager ClientLoggerManager_ { *Conn_.GetClient (), *Acc_.GetSettings () };
 		InBandAccountActions AccountActions_ { Conn_, Acc_ };
+
+		CaptchaManager CaptchaManager_ { ExtsMgr_.Get<XMPPCaptchaManager> (), ExtsMgr_.Get<XMPPBobManager> () };
 
 		Managers (ClientConnection& conn, GlooxAccount& acc)
 		: Conn_ { conn }

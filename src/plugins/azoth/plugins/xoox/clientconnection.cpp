@@ -78,7 +78,6 @@
 #include "serverinfostorage.h"
 #include "xmlsettingsmanager.h"
 #include "inforequestpolicymanager.h"
-#include "captchamanager.h"
 #include "xeps/xep0313manager.h"
 #include "xeps/carbonsmanager.h"
 #include "xeps/pingmanager.h"
@@ -143,8 +142,6 @@ namespace Xoox
 				SIGNAL (serverAuthFailed ()));
 
 		handlePriorityChanged (Settings_->GetPriority ());
-
-		new CaptchaManager (ExtsMgr_->Get<XMPPCaptchaManager> (), ExtsMgr_->Get<XMPPBobManager> (), this);
 
 		const auto proxy = account->GetParentProtocol ()->GetProxyObject ();
 
