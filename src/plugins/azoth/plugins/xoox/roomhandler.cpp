@@ -48,6 +48,7 @@
 #include "roompublicmessage.h"
 #include "roomparticipantentry.h"
 #include "clientconnection.h"
+#include "clientconnectionextensionsmanager.h"
 #include "glooxmessage.h"
 #include "util.h"
 #include "glooxprotocol.h"
@@ -425,7 +426,7 @@ namespace Xoox
 	{
 		const auto client = Account_->GetClientConnection ();
 
-		FormBuilder fb { from, client->GetBobManager () };
+		FormBuilder fb { from, &client->GetExtensionsManager ().Get<XMPPBobManager> () };
 
 		QDialog dia;
 		dia.setWindowTitle (tr ("Data form from %1").arg (from));

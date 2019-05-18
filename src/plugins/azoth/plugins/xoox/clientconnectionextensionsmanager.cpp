@@ -43,6 +43,8 @@
 #include "xeps/pingmanager.h"
 #include "xeps/riexmanager.h"
 #include "xeps/xmppannotationsmanager.h"
+#include "xeps/xmppbobmanager.h"
+#include "xeps/xmppcaptchamanager.h"
 
 namespace LeechCraft::Azoth::Xoox
 {

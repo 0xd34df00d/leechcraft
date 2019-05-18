@@ -66,8 +66,6 @@ namespace Xoox
 	class FetchQueue;
 	class PubSubManager;
 	class PrivacyListsManager;
-	class XMPPBobManager;
-	class XMPPCaptchaManager;
 	class UserAvatarManager;
 	class SDManager;
 	class Xep0313Manager;
@@ -77,8 +75,6 @@ namespace Xoox
 	class ClientConnectionErrorMgr;
 	class CryptHandler;
 	class ServerInfoStorage;
-
-	class CaptchaManager;
 
 	class DiscoManagerWrapper;
 
@@ -96,10 +92,6 @@ namespace Xoox
 		QXmppMucManager *MUCManager_;
 		QXmppDiscoveryManager *DiscoveryManager_;
 		QXmppMessageReceiptManager *DeliveryReceiptsManager_;
-
-		XMPPCaptchaManager *CaptchaManager_;
-		XMPPBobManager *BobManager_;
-		CaptchaManager *CaptchaDisplayManager_;
 
 		PubSubManager *PubSubManager_;
 		PrivacyListsManager *PrivacyListsManager_;
@@ -186,7 +178,6 @@ namespace Xoox
 		AnnotationsManager* GetAnnotationsManager () const;
 		PubSubManager* GetPubSubManager () const;
 		PrivacyListsManager* GetPrivacyListsManager () const;
-		XMPPBobManager* GetBobManager () const;
 		UserAvatarManager* GetUserAvatarManager () const;
 		SDManager* GetSDManager () const;
 		Xep0313Manager* GetXep0313Manager () const;

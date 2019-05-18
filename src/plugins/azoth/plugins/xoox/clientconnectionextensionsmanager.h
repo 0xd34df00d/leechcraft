@@ -54,6 +54,8 @@ namespace LeechCraft::Azoth::Xoox
 				class PingManager*,
 				class RIEXManager*,
 				class XMPPAnnotationsManager*,
+				class XMPPBobManager*,
+				class XMPPCaptchaManager*,
 				QXmppArchiveManager*,
 				QXmppBookmarkManager*,
 #ifdef ENABLE_MEDIACALLS

@@ -72,8 +72,6 @@
 #include "sdmanager.h"
 #include "xep0232handler.h"
 #include "pepmicroblog.h"
-#include "xeps/xmppbobmanager.h"
-#include "xeps/xmppcaptchamanager.h"
 #include "clientconnectionerrormgr.h"
 #include "accountsettingsholder.h"
 #include "crypthandler.h"
@@ -102,9 +100,6 @@ namespace Xoox
 	, MUCManager_ (new QXmppMucManager)
 	, DiscoveryManager_ (Client_->findExtension<QXmppDiscoveryManager> ())
 	, DeliveryReceiptsManager_ (new QXmppMessageReceiptManager)
-	, CaptchaManager_ (new XMPPCaptchaManager)
-	, BobManager_ (new XMPPBobManager)
-	, CaptchaDisplayManager_ (new CaptchaManager (CaptchaManager_, BobManager_, this))
 	, PubSubManager_ (new PubSubManager)
 	, PrivacyListsManager_ (new PrivacyListsManager (this))
 	, AnnotationsManager_ (0)
@@ -149,6 +144,8 @@ namespace Xoox
 
 		handlePriorityChanged (Settings_->GetPriority ());
 
+		new CaptchaManager (ExtsMgr_->Get<XMPPCaptchaManager> (), ExtsMgr_->Get<XMPPBobManager> (), this);
+
 		const auto proxy = account->GetParentProtocol ()->GetProxyObject ();
 
 		PubSubManager_->RegisterCreator<UserActivity> ();
@@ -175,11 +172,9 @@ namespace Xoox
 
 		CryptHandler_->Init ();
 
-		Client_->addExtension (BobManager_);
 		Client_->addExtension (PubSubManager_);
 		Client_->addExtension (DeliveryReceiptsManager_);
 		Client_->addExtension (MUCManager_);
-		Client_->addExtension (CaptchaManager_);
 		Client_->addExtension (PrivacyListsManager_);
 		Client_->addExtension (new AdHocCommandServer (this, proxy));
 		Client_->addExtension (Xep0313Manager_);
@@ -457,11 +452,6 @@ namespace Xoox
 	PrivacyListsManager* ClientConnection::GetPrivacyListsManager () const
 	{
 		return PrivacyListsManager_;
-	}
-
-	XMPPBobManager* ClientConnection::GetBobManager () const
-	{
-		return BobManager_;
 	}
 
 	UserAvatarManager* ClientConnection::GetUserAvatarManager () const

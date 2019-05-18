@@ -49,8 +49,8 @@ namespace Xoox
 	{
 		Q_OBJECT
 
-		XMPPCaptchaManager *CaptchaManager_;
-		XMPPBobManager *BobManager_;
+		XMPPCaptchaManager& CaptchaManager_;
+		XMPPBobManager& BobManager_;
 
 		struct PendingCaptcha
 		{
@@ -60,7 +60,7 @@ namespace Xoox
 		};
 		QList<PendingCaptcha> Pendings_;
 	public:
-		CaptchaManager (XMPPCaptchaManager*, XMPPBobManager*, QObject* = 0);
+		CaptchaManager (XMPPCaptchaManager&, XMPPBobManager&, QObject* = 0);
 	private slots:
 		void handleCaptchaReceived (const QString&, const QXmppDataForm&);
 		void handleDialogFinished (int);

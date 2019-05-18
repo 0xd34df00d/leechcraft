@@ -43,13 +43,12 @@ namespace Azoth
 {
 namespace Xoox
 {
-	CaptchaManager::CaptchaManager (XMPPCaptchaManager *captchaMgr,
-			XMPPBobManager *bobMgr, QObject *parent)
+	CaptchaManager::CaptchaManager (XMPPCaptchaManager& captchaMgr, XMPPBobManager& bobMgr, QObject *parent)
 	: QObject (parent)
 	, CaptchaManager_ (captchaMgr)
 	, BobManager_ (bobMgr)
 	{
-		connect (captchaMgr,
+		connect (&captchaMgr,
 				SIGNAL (captchaFormReceived (const QString&, const QXmppDataForm&)),
 				this,
 				SLOT (handleCaptchaReceived (const QString&, const QXmppDataForm&)));
@@ -57,7 +56,7 @@ namespace Xoox
 
 	void CaptchaManager::handleCaptchaReceived (const QString& jid, const QXmppDataForm& dataForm)
 	{
-		auto builder = new FormBuilder (jid, BobManager_);
+		auto builder = new FormBuilder (jid, &BobManager_);
 
 		auto dialog = new QDialog ();
 		QWidget *widget = builder->CreateForm (dataForm, dialog);
@@ -66,7 +65,7 @@ namespace Xoox
 				widget->windowTitle ());
 		dialog->setLayout (new QVBoxLayout ());
 		dialog->layout ()->addWidget (widget);
-		QDialogButtonBox *box = new QDialogButtonBox (QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+		const auto box = new QDialogButtonBox (QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
 		dialog->layout ()->addWidget (box);
 
 		connect (box,
@@ -109,7 +108,7 @@ namespace Xoox
 		if (result == QDialog::Accepted)
 		{
 			const auto& form = pos->FB_->GetForm ();
-			CaptchaManager_->SendResponse (pos->JID_, form);
+			CaptchaManager_.SendResponse (pos->JID_, form);
 		}
 
 		pos->Dialog_->deleteLater ();

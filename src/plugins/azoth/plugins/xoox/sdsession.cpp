@@ -35,6 +35,7 @@
 #include <util/sll/delayedexecutor.h>
 #include "glooxaccount.h"
 #include "clientconnection.h"
+#include "clientconnectionextensionsmanager.h"
 #include "sdmodel.h"
 #include "capsmanager.h"
 #include "vcarddialog.h"
@@ -460,7 +461,7 @@ namespace Xoox
 			return;
 		}
 
-		FormBuilder builder { {}, Account_->GetClientConnection ()->GetBobManager () };
+		FormBuilder builder { {}, &Account_->GetClientConnection ()->GetExtensionsManager ().Get<XMPPBobManager> () };
 		const auto widget = builder.CreateForm (form);
 		if (!XooxUtil::RunFormDialog (widget))
 			return;
