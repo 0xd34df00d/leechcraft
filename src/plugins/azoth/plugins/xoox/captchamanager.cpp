@@ -29,6 +29,7 @@
 
 #include "captchamanager.h"
 #include <algorithm>
+#include <memory>
 #include <QDialog>
 #include <QDialogButtonBox>
 #include <QVBoxLayout>
@@ -77,42 +78,21 @@ namespace Xoox
 				dialog,
 				SLOT (reject ()));
 
-		Pendings_.push_back ({
-				jid,
-				builder,
-				dialog
-			});
-
 		connect (dialog,
 				&QDialog::finished,
 				this,
-				&CaptchaManager::HandleDialogFinished);
+				[this, builder, jid, dialog] (int result)
+				{
+					if (result == QDialog::Accepted)
+					{
+						const auto& form = builder->GetForm ();
+						CaptchaManager_.SendResponse (jid, form);
+					}
+
+					dialog->deleteLater ();
+				});
 
 		dialog->show ();
-	}
-
-	void CaptchaManager::HandleDialogFinished (int result)
-	{
-		auto dialog = qobject_cast<QDialog*> (sender ());
-
-		const auto pos = std::find_if (Pendings_.begin (), Pendings_.end (),
-				[dialog] (const PendingCaptcha& pending)
-					{ return pending.Dialog_ == dialog; });
-		if (pos == Pendings_.end ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "sender dialog not found";
-			return;
-		}
-
-		if (result == QDialog::Accepted)
-		{
-			const auto& form = pos->FB_->GetForm ();
-			CaptchaManager_.SendResponse (pos->JID_, form);
-		}
-
-		pos->Dialog_->deleteLater ();
-		Pendings_.erase (pos);
 	}
 }
 }

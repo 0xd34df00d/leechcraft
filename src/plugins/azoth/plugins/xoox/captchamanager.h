@@ -29,7 +29,6 @@
 
 #pragma once
 
-#include <memory>
 #include <QObject>
 
 class QXmppDataForm;
@@ -51,19 +50,10 @@ namespace Xoox
 
 		XMPPCaptchaManager& CaptchaManager_;
 		XMPPBobManager& BobManager_;
-
-		struct PendingCaptcha
-		{
-			QString JID_;
-			std::shared_ptr<FormBuilder> FB_;
-			QDialog *Dialog_;
-		};
-		QList<PendingCaptcha> Pendings_;
 	public:
 		CaptchaManager (XMPPCaptchaManager&, XMPPBobManager&, QObject* = nullptr);
 	private:
 		void HandleCaptchaReceived (const QString&, const QXmppDataForm&);
-		void HandleDialogFinished (int);
 	};
 }
 }
