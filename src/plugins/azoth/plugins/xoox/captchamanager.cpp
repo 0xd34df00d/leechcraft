@@ -56,7 +56,7 @@ namespace Xoox
 
 	void CaptchaManager::HandleCaptchaReceived (const QString& jid, const QXmppDataForm& dataForm)
 	{
-		auto builder = new FormBuilder (jid, &BobManager_);
+		auto builder = std::make_shared<FormBuilder> (jid, &BobManager_);
 
 		auto dialog = new QDialog ();
 		QWidget *widget = builder->CreateForm (dataForm, dialog);
@@ -79,7 +79,7 @@ namespace Xoox
 
 		Pendings_.push_back ({
 				jid,
-				std::shared_ptr<FormBuilder> (builder),
+				builder,
 				dialog
 			});
 
