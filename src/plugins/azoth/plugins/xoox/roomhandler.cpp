@@ -439,13 +439,13 @@ namespace Xoox
 		dia.layout ()->addWidget (fb.CreateForm (*form));
 		auto box = new QDialogButtonBox (QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
 		connect (box,
-				SIGNAL (accepted ()),
+				&QDialogButtonBox::accepted,
 				&dia,
-				SLOT (accept ()));
+				&QDialog::accept);
 		connect (box,
-				SIGNAL (rejected ()),
+				&QDialogButtonBox::rejected,
 				&dia,
-				SLOT (reject ()));
+				&QDialog::reject);
 		dia.layout ()->addWidget (box);
 		dia.setWindowModality (Qt::WindowModal);
 		if (dia.exec () != QDialog::Accepted)
