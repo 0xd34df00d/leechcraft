@@ -60,7 +60,7 @@ namespace Xoox
 		};
 		QList<PendingCaptcha> Pendings_;
 	public:
-		CaptchaManager (XMPPCaptchaManager&, XMPPBobManager&, QObject* = 0);
+		CaptchaManager (XMPPCaptchaManager&, XMPPBobManager&, QObject* = nullptr);
 	private slots:
 		void handleCaptchaReceived (const QString&, const QXmppDataForm&);
 		void handleDialogFinished (int);
