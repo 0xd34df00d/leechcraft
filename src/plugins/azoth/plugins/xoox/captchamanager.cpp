@@ -49,12 +49,12 @@ namespace Xoox
 	, BobManager_ (bobMgr)
 	{
 		connect (&captchaMgr,
-				SIGNAL (captchaFormReceived (const QString&, const QXmppDataForm&)),
+				&XMPPCaptchaManager::captchaFormReceived,
 				this,
-				SLOT (handleCaptchaReceived (const QString&, const QXmppDataForm&)));
+				&CaptchaManager::HandleCaptchaReceived);
 	}
 
-	void CaptchaManager::handleCaptchaReceived (const QString& jid, const QXmppDataForm& dataForm)
+	void CaptchaManager::HandleCaptchaReceived (const QString& jid, const QXmppDataForm& dataForm)
 	{
 		auto builder = new FormBuilder (jid, &BobManager_);
 
@@ -84,14 +84,14 @@ namespace Xoox
 			});
 
 		connect (dialog,
-				SIGNAL (finished (int)),
+				&QDialog::finished,
 				this,
-				SLOT (handleDialogFinished (int)));
+				&CaptchaManager::HandleDialogFinished);
 
 		dialog->show ();
 	}
 
-	void CaptchaManager::handleDialogFinished (int result)
+	void CaptchaManager::HandleDialogFinished (int result)
 	{
 		auto dialog = qobject_cast<QDialog*> (sender ());
 
