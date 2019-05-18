@@ -60,7 +60,7 @@ namespace Xoox
 		auto builder = std::make_shared<FormBuilder> (jid, &BobManager_);
 
 		auto dialog = new QDialog ();
-		QWidget *widget = builder->CreateForm (dataForm, dialog);
+		auto widget = builder->CreateForm (dataForm, dialog);
 		dialog->setWindowTitle (widget->windowTitle ().isEmpty () ?
 				tr ("Enter CAPTCHA") :
 				widget->windowTitle ());
@@ -71,24 +71,21 @@ namespace Xoox
 		dialog->setAttribute (Qt::WA_DeleteOnClose);
 
 		connect (box,
-				SIGNAL (accepted ()),
+				&QDialogButtonBox::accepted,
 				dialog,
-				SLOT (accept ()));
+				&QDialog::accept);
 		connect (box,
-				SIGNAL (rejected ()),
+				&QDialogButtonBox::rejected,
 				dialog,
-				SLOT (reject ()));
+				&QDialog::reject);
 
 		connect (dialog,
 				&QDialog::finished,
 				this,
-				[this, builder, jid, dialog] (int result)
+				[this, builder, jid] (int result)
 				{
 					if (result == QDialog::Accepted)
-					{
-						const auto& form = builder->GetForm ();
-						CaptchaManager_.SendResponse (jid, form);
-					}
+						CaptchaManager_.SendResponse (jid, builder->GetForm ());
 				});
 
 		dialog->show ();
