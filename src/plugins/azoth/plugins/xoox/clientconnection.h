@@ -244,8 +244,6 @@ namespace Xoox
 	private:
 		void HandleOtherPresence (const QXmppPresence&);
 		void InvokeCallbacks (const QXmppIq&);
-	public slots:
-		void handlePendingForm (QXmppDataForm*, const QString&);
 	private slots:
 		void handleConnected ();
 		void handleDisconnected ();

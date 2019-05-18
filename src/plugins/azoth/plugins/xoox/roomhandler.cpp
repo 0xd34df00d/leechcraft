@@ -31,6 +31,9 @@
 #include <QMessageBox>
 #include <QInputDialog>
 #include <QtDebug>
+#include <QVBoxLayout>
+#include <QDialogButtonBox>
+#include <QLabel>
 #include <QXmppVCardIq.h>
 #include <QXmppMucManager.h>
 #include <QXmppClient.h>
@@ -406,7 +409,7 @@ namespace Xoox
 					delete df;
 				}
 				else
-					emit gotPendingForm (df, msg.from ());
+					HandlePendingForm (df, msg.from ());
 			}
 			else
 			{
@@ -419,6 +422,41 @@ namespace Xoox
 						<< str;
 			}
 		}
+	}
+
+	void RoomHandler::HandlePendingForm (QXmppDataForm *formObj, const QString& from)
+	{
+		const auto client = Account_->GetClientConnection ();
+
+		std::unique_ptr<QXmppDataForm> form (formObj);
+		FormBuilder fb { from, client->GetBobManager () };
+
+		QDialog dia;
+		dia.setWindowTitle (tr ("Data form from %1").arg (from));
+		dia.setLayout (new QVBoxLayout ());
+
+		dia.layout ()->addWidget (new QLabel { tr ("You have received dataform from %1:").arg (from) });
+		dia.layout ()->addWidget (fb.CreateForm (*form));
+		auto box = new QDialogButtonBox (QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+		connect (box,
+				SIGNAL (accepted ()),
+				&dia,
+				SLOT (accept ()));
+		connect (box,
+				SIGNAL (rejected ()),
+				&dia,
+				SLOT (reject ()));
+		dia.layout ()->addWidget (box);
+		dia.setWindowModality (Qt::WindowModal);
+		if (dia.exec () != QDialog::Accepted)
+			return;
+
+		QXmppMessage msg ("", from);
+		msg.setType (QXmppMessage::Normal);
+		auto subForm = fb.GetForm ();
+		subForm.setType (QXmppDataForm::Submit);
+		msg.setExtensions ({ XooxUtil::Form2XmppElem (subForm) });
+		client->GetClient ()->sendPacket (msg);
 	}
 
 	void RoomHandler::HandleMessage (const QXmppMessage& msg, const QString& nick)
