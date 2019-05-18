@@ -68,6 +68,7 @@ namespace Xoox
 		dialog->layout ()->addWidget (widget);
 		const auto box = new QDialogButtonBox (QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
 		dialog->layout ()->addWidget (box);
+		dialog->setAttribute (Qt::WA_DeleteOnClose);
 
 		connect (box,
 				SIGNAL (accepted ()),
@@ -88,8 +89,6 @@ namespace Xoox
 						const auto& form = builder->GetForm ();
 						CaptchaManager_.SendResponse (jid, form);
 					}
-
-					dialog->deleteLater ();
 				});
 
 		dialog->show ();
