@@ -762,16 +762,15 @@ namespace Xoox
 	void ClientConnection::handlePendingForm (QXmppDataForm *formObj, const QString& from)
 	{
 		std::unique_ptr<QXmppDataForm> form (formObj);
-		FormBuilder fb (from, BobManager_);
+		FormBuilder fb { from, BobManager_ };
 
 		QDialog dia;
 		dia.setWindowTitle (tr ("Data form from %1").arg (from));
 		dia.setLayout (new QVBoxLayout ());
 
-		dia.layout ()->addWidget (new QLabel (tr ("You have received "
-						"dataform from %1:").arg (from)));
+		dia.layout ()->addWidget (new QLabel { tr ("You have received dataform from %1:").arg (from) });
 		dia.layout ()->addWidget (fb.CreateForm (*form));
-		QDialogButtonBox *box = new QDialogButtonBox (QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+		auto box = new QDialogButtonBox (QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
 		connect (box,
 				SIGNAL (accepted ()),
 				&dia,
@@ -787,7 +786,7 @@ namespace Xoox
 
 		QXmppMessage msg ("", from);
 		msg.setType (QXmppMessage::Normal);
-		QXmppDataForm subForm = fb.GetForm ();
+		auto subForm = fb.GetForm ();
 		subForm.setType (QXmppDataForm::Submit);
 		msg.setExtensions ({ XooxUtil::Form2XmppElem (subForm) });
 		Client_->sendPacket (msg);
