@@ -69,7 +69,6 @@ namespace Xoox
 	class XMPPBobManager;
 	class XMPPCaptchaManager;
 	class UserAvatarManager;
-	class MsgArchivingManager;
 	class SDManager;
 	class Xep0313Manager;
 	class CarbonsManager;
@@ -106,7 +105,6 @@ namespace Xoox
 		PrivacyListsManager *PrivacyListsManager_;
 		AnnotationsManager *AnnotationsManager_;
 		UserAvatarManager *UserAvatarManager_;
-		MsgArchivingManager *MsgArchivingManager_;
 		SDManager *SDManager_;
 		Xep0313Manager *Xep0313Manager_;
 		CarbonsManager *CarbonsManager_;

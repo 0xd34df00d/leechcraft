@@ -69,7 +69,6 @@
 #include "selfcontact.h"
 #include "xeps/adhoccommandserver.h"
 #include "useravatarmanager.h"
-#include "xeps/msgarchivingmanager.h"
 #include "sdmanager.h"
 #include "xep0232handler.h"
 #include "pepmicroblog.h"
@@ -110,7 +109,6 @@ namespace Xoox
 	, PrivacyListsManager_ (new PrivacyListsManager (this))
 	, AnnotationsManager_ (0)
 	, UserAvatarManager_ (0)
-	, MsgArchivingManager_ (new MsgArchivingManager (this))
 	, SDManager_ (new SDManager (this))
 	, Xep0313Manager_ (new Xep0313Manager (*this))
 	, CarbonsManager_ (new CarbonsManager)

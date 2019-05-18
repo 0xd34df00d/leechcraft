@@ -50,6 +50,7 @@ namespace LeechCraft::Azoth::Xoox
 				class JabberSearchManager*,
 				class LastActivityManager*,
 				class LegacyEntityTimeExt*,
+				class MsgArchivingManager*,
 				class PingManager*,
 				class RIEXManager*,
 				class XMPPAnnotationsManager*,

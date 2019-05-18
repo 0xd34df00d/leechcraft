@@ -39,6 +39,7 @@
 #include "xeps/jabbersearchmanager.h"
 #include "xeps/lastactivitymanager.h"
 #include "xeps/legacyentitytimeext.h"
+#include "xeps/msgarchivingmanager.h"
 #include "xeps/pingmanager.h"
 #include "xeps/riexmanager.h"
 #include "xeps/xmppannotationsmanager.h"
