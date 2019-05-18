@@ -117,7 +117,7 @@ namespace Xoox
 		void handleChatTabClosed ();
 	private:
 		void HandleMessageExtensions (const QXmppMessage&);
-		void HandlePendingForm (QXmppDataForm*, const QString&);
+		void HandlePendingForm (std::unique_ptr<QXmppDataForm>, const QString&);
 
 		void HandleRenameStart (const RoomParticipantEntry_ptr& entry,
 				const QString& nick, const QString& newNick);

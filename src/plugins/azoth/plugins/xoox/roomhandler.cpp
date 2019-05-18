@@ -399,17 +399,14 @@ namespace Xoox
 			const auto& xmlns = elem.attribute ("xmlns");
 			if (xmlns == NSData)
 			{
-				const auto df = new QXmppDataForm ();
+				auto df = std::make_unique<QXmppDataForm> ();
 				df->parse (XooxUtil::XmppElem2DomElem (elem));
 				if (df->isNull ())
-				{
 					qWarning () << Q_FUNC_INFO
 							<< "unable to parse form from"
 							<< msg.from ();
-					delete df;
-				}
 				else
-					HandlePendingForm (df, msg.from ());
+					HandlePendingForm (std::move (df), msg.from ());
 			}
 			else
 			{
@@ -424,11 +421,10 @@ namespace Xoox
 		}
 	}
 
-	void RoomHandler::HandlePendingForm (QXmppDataForm *formObj, const QString& from)
+	void RoomHandler::HandlePendingForm (std::unique_ptr<QXmppDataForm> form, const QString& from)
 	{
 		const auto client = Account_->GetClientConnection ();
 
-		std::unique_ptr<QXmppDataForm> form (formObj);
 		FormBuilder fb { from, client->GetBobManager () };
 
 		QDialog dia;
