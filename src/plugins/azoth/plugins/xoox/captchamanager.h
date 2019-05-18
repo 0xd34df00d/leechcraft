@@ -46,8 +46,6 @@ namespace Xoox
 
 	class CaptchaManager : public QObject
 	{
-		Q_OBJECT
-
 		XMPPCaptchaManager& CaptchaManager_;
 		XMPPBobManager& BobManager_;
 	public:
