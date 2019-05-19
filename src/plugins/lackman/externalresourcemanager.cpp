@@ -109,7 +109,7 @@ namespace LackMan
 
 	void ExternalResourceManager::ClearCaches ()
 	{
-		Q_FOREACH (const QString& fname, ResourcesDir_.entryList ())
+		for (const auto& fname : ResourcesDir_.entryList ())
 			ResourcesDir_.remove (fname);
 	}
 

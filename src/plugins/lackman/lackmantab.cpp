@@ -328,7 +328,7 @@ namespace LackMan
 		QString text;
 		auto AddText = [&text] (const QStringList& urls)
 		{
-			Q_FOREACH (const QString& url, urls)
+			for (const auto& url : urls)
 				text += "<img src='" + url + "' alt='Image' /><br />";
 		};
 

@@ -61,9 +61,8 @@ namespace LackMan
 		}
 
 		if (toggled)
-			Q_FOREACH (QAbstractButton *otherButton, Buttons_)
-				if (otherButton != button &&
-						otherButton->isChecked ())
+			for (auto otherButton : Buttons_)
+				if (otherButton != button && otherButton->isChecked ())
 					otherButton->setChecked (false);
 	}
 }

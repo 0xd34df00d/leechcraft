@@ -221,7 +221,7 @@ namespace LackMan
 		// Prepare the list of those vertices that have back
 		// edges coming from them.
 		QList<Vertex_t> backVertices;
-		Q_FOREACH (const Edge_t& edge, backEdges)
+		for (const auto& edge : backEdges)
 			backVertices << Edge2Vertices_ [edge].first;
 
 		// Third, mark fulfillable/unfulfillable deps.
@@ -242,7 +242,7 @@ namespace LackMan
 		QList<Vertex_t> vertices;
 		boost::topological_sort (fg,
 				std::front_inserter (vertices));
-		Q_FOREACH (const Vertex_t& vertex, vertices)
+		for (const auto& vertex : vertices)
 			if (fg [vertex].Type_ == VertexInfo::TAll)
 				PackagesToInstall_ << fg [vertex].PackageId_;
 	}
@@ -276,9 +276,7 @@ namespace LackMan
 
 	void DepTreeBuilder::InnerLoop (int packageId)
 	{
-		const auto& dependencies = Core::Instance ().GetDependencies (packageId);
-
-		Q_FOREACH (const Dependency& dep, dependencies)
+		for (const auto& dep : Core::Instance ().GetDependencies (packageId))
 		{
 			if (Core::Instance ().IsFulfilled (dep))
 				continue;
@@ -298,9 +296,7 @@ namespace LackMan
 			Edge_t edge = boost::add_edge (packageVertex, depVertex, Graph_).first;
 			Edge2Vertices_ [edge] = qMakePair (packageVertex, depVertex);
 
-			const auto& suitable = Core::Instance ().GetDependencyFulfillers (dep);
-
-			Q_FOREACH (const ListPackageInfo& lpi, suitable)
+			for (const auto& lpi : Core::Instance ().GetDependencyFulfillers (dep))
 			{
 				Vertex_t ffVertex;
 				if (!Package2Vertex_.contains (lpi.PackageID_))

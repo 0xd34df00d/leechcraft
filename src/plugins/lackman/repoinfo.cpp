@@ -29,6 +29,7 @@
 
 #include "repoinfo.h"
 #include <QtDebug>
+#include <util/sll/qtutil.h>
 
 namespace LeechCraft
 {
@@ -110,7 +111,7 @@ namespace LackMan
 	void RepoInfo::SetComponents (const QStringList& components)
 	{
 		Components_.clear ();
-		Q_FOREACH (const QString& c, components)
+		for (const auto& c : components)
 			Components_ << c.simplified ();
 	}
 
@@ -134,13 +135,15 @@ namespace LackMan
 				<< "; icon:" << IconURL_
 				<< "; package sizes:" << PackageSizes_
 				<< "; dependencies:";
-		Q_FOREACH (QString version, Deps_.keys ())
-			Q_FOREACH (const Dependency& d, Deps_ [version])
+
+		for (auto [version, deps] : Util::Stlize (Deps_))
+			for (const auto& d : deps)
 				qDebug () << "\t" << version << d.Type_ << d.Name_ << d.Version_;
-		if (Images_.size ())
+
+		if (!Images_.isEmpty ())
 		{
 			qDebug () << "; images:";
-			Q_FOREACH (const Image& img, Images_)
+			for (const auto& img : Images_)
 				qDebug () << "\t" << img.Type_ << img.URL_;
 		}
 	}

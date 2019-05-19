@@ -82,7 +82,7 @@ namespace LackMan
 				.split ('\n', QString::SkipEmptyParts);
 		files.sort ();
 		std::reverse (files.begin (), files.end ());
-		Q_FOREACH (const QString& packageFilename, files)
+		for (const auto& packageFilename : files)
 		{
 			const QString& fullName = packageDir.filePath (packageFilename);
 #ifndef QT_NO_DEBUG

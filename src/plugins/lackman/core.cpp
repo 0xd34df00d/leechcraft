@@ -37,6 +37,7 @@
 #include <QtDebug>
 #include <util/util.h>
 #include <util/sll/prelude.h>
+#include <util/sll/qtutil.h>
 #include <util/xpc/util.h>
 #include <xmlsettingsdialog/datasourceroles.h>
 #include <interfaces/core/icoreproxy.h>
@@ -311,7 +312,7 @@ namespace LackMan
 				.arg (version)
 				.arg (info.VersionArchivers_.value (version, "gz"));
 
-		Q_FOREACH (int repoId, repo2cmpt.keys ())
+		for (auto [repoId, components] : Util::Stlize (repo2cmpt))
 		{
 			RepoInfo ri = Storage_->GetRepo (repoId);
 			QUrl url = ri.GetUrl ();
@@ -319,7 +320,7 @@ namespace LackMan
 			if (!path.endsWith ('/'))
 				path += '/';
 
-			Q_FOREACH (const QString& component, repo2cmpt [repoId])
+			for (const auto& component : components)
 			{
 				QUrl tmp = url;
 				tmp.setPath (path + pathAddition.arg (component));
@@ -414,7 +415,7 @@ namespace LackMan
 			return;
 		}
 
-		Q_FOREACH (const QString& oc, ourComponents)
+		for (const auto& oc : ourComponents)
 		{
 			if (!components.contains (oc))
 			{
@@ -465,10 +466,10 @@ namespace LackMan
 		const auto& toRemove = PendingManager_->GetPendingRemove ();
 		const auto& toUpdate = PendingManager_->GetPendingUpdate ();
 
-		Q_FOREACH (int packageId, toRemove)
+		for (int packageId : toRemove)
 			PerformRemoval (packageId);
 
-		Q_FOREACH (int packageId, toInstall)
+		for (int packageId : toInstall)
 		{
 			try
 			{
@@ -489,7 +490,7 @@ namespace LackMan
 			}
 		}
 
-		Q_FOREACH (int packageId, toUpdate)
+		for (int packageId : toUpdate)
 		{
 			try
 			{
@@ -551,8 +552,7 @@ namespace LackMan
 						{ return IsVersionLess (i1.Version_, i2.Version_); });
 			ListPackageInfo last = list.last ();
 
-			Q_FOREACH (const InstalledDependencyInfo& idi,
-					instedAll)
+			for (const auto& idi : instedAll)
 				if (last.Name_ == idi.Dep_.Name_)
 				{
 					last.IsInstalled_ = true;
@@ -870,7 +870,7 @@ namespace LackMan
 		std::sort (rows.begin (), rows.end ());
 		std::reverse (rows.begin (), rows.end ());
 
-		Q_FOREACH (int row, rows)
+		for (auto row : rows)
 		{
 			QList<QStandardItem*> items = ReposModel_->takeRow (row);
 			QUrl url = items.at (RCURL)->data ().value<QUrl> ();
@@ -1077,7 +1077,7 @@ namespace LackMan
 			std::sort (versions.begin (), versions.end (), IsVersionLess);
 			const auto& greatest = versions.last ();
 
-			Q_FOREACH (const auto& version, pInfo.Versions_)
+			for (const auto& version : pInfo.Versions_)
 			{
 				const int packageId = Storage_->FindPackage (pInfo.Name_, version);
 				Storage_->AddLocation (packageId, componentId);
