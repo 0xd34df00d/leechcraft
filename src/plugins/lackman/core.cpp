@@ -549,9 +549,8 @@ namespace LackMan
 
 		InstalledDependencyInfoList instedAll = GetLackManInstalledPackages ();
 
-		Q_FOREACH (const QString& packageName, infos.keys ())
+		for (auto list : infos)
 		{
-			auto list = infos [packageName];
 			std::sort (list.begin (), list.end (),
 					[] (const ListPackageInfo& i1, const ListPackageInfo& i2)
 						{ return IsVersionLess (i1.Version_, i2.Version_); });
