@@ -249,12 +249,10 @@ namespace LackMan
 
 	bool Core::IsFulfilled (const Dependency& dep) const
 	{
-		Q_FOREACH (const InstalledDependencyInfo& info, GetAllInstalledPackages ())
-			if (info.Dep_.Name_ == dep.Name_ &&
-					IsVersionOk (info.Dep_.Version_, dep.Version_))
-				return true;
-
-		return false;
+		const auto& all = GetAllInstalledPackages ();
+		return std::any_of (all.begin (), all.end (),
+				[this, &dep] (const InstalledDependencyInfo& info)
+					{ return info.Dep_.Name_ == dep.Name_ && IsVersionOk (info.Dep_.Version_, dep.Version_); });
 	}
 
 	QIcon Core::GetIconForLPI (const ListPackageInfo& packageInfo)
