@@ -200,11 +200,8 @@ namespace LackMan
 
 	DependencyList Core::GetDependencies (int packageId) const
 	{
-		DependencyList result;
-		Q_FOREACH (const Dependency& dep, Storage_->GetDependencies (packageId))
-			if (dep.Type_ == Dependency::TRequires)
-				result << dep;
-		return result;
+		return Util::Filter (Storage_->GetDependencies (packageId),
+				[] (const auto& dep) { return dep.Type_ == Dependency::TRequires; });
 	}
 
 	QList<ListPackageInfo> Core::GetDependencyFulfillers (const Dependency& dep) const
