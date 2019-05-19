@@ -74,26 +74,26 @@ namespace Xoox
 				ClientConnection *conn);
 
 		// IMessage
-		QObject* GetQObject ();
-		void Send ();
-		void Store ();
-		Direction GetDirection () const;
-		Type GetMessageType () const;
-		SubType GetMessageSubType () const;
+		QObject* GetQObject () override;
+		void Send () override;
+		void Store () override;
+		Direction GetDirection () const override;
+		Type GetMessageType () const override;
+		SubType GetMessageSubType () const override;
 		void SetMessageSubType (SubType);
-		QObject* OtherPart () const;
-		QString GetOtherVariant () const;
-		QString GetBody () const;
-		void SetBody (const QString&);
-		QDateTime GetDateTime () const;
-		void SetDateTime (const QDateTime&);
+		QObject* OtherPart () const override;
+		QString GetOtherVariant () const override;
+		QString GetBody () const override;
+		void SetBody (const QString&) override;
+		QDateTime GetDateTime () const override;
+		void SetDateTime (const QDateTime&) override;
 
 		// IAdvancedMessage
-		bool IsDelivered () const;
+		bool IsDelivered () const override;
 
 		// IRichTextMessage
-		QString GetRichBody () const;
-		void SetRichBody (const QString&);
+		QString GetRichBody () const override;
+		void SetRichBody (const QString&) override;
 
 		void SetDelivered (bool);
 
@@ -101,7 +101,7 @@ namespace Xoox
 
 		QXmppMessage GetNativeMessage () const;
 	signals:
-		void messageDelivered ();
+		void messageDelivered () override;
 	};
 }
 }
