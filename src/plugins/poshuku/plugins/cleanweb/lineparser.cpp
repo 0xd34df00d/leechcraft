@@ -66,7 +66,7 @@ namespace CleanWeb
 			else
 				f.ThirdParty_ = FilterOption::ThirdParty::Unspecified;
 
-			Q_FOREACH (const QString& option, options)
+			for (const auto& option : QStringList { options })
 				if (option.startsWith ("domain="))
 				{
 					const auto& domains = option.mid (7);
