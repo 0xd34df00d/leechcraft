@@ -42,9 +42,9 @@ namespace OnlineBookmarks
 {
 namespace ReadItLater
 {
-	ReadItLaterApi::ReadItLaterApi ()
-	: ApiKey_ ("0l7A6m89daNpif742cpM7fRJe9Tcxd49")
+	namespace
 	{
+		const QString ApiKey { "0l7A6m89daNpif742cpM7fRJe9Tcxd49" };
 	}
 
 	QString ReadItLaterApi::GetAuthUrl () const
@@ -55,7 +55,7 @@ namespace ReadItLater
 	QByteArray ReadItLaterApi::GetAuthPayload (const QString& login, const QString& pass)
 	{
 		return QString ("username=%1&password=%2&apikey=%3")
-				.arg (login, pass, ApiKey_).toUtf8 ();
+				.arg (login, pass, ApiKey).toUtf8 ();
 	}
 
 	QString ReadItLaterApi::GetRegisterUrl () const
@@ -104,7 +104,7 @@ namespace ReadItLater
 		QString res = QString ("username=%1&password=%2&apikey=%3&new=%4&update_tags=%5")
 				.arg (login,
 					password,
-					ApiKey_,
+					ApiKey,
 					QString::fromUtf8 (jsonBookmarks.constData ()),
 					QString::fromUtf8 (jsonTags.constData ()));
 		return res.toUtf8 ();
@@ -121,7 +121,7 @@ namespace ReadItLater
 		return QString ("username=%1&password=%2&apikey=%3&since=%4&tags=1")
 				.arg (login,
 					password,
-					ApiKey_,
+					ApiKey,
 					!from.isNull () ? QString::number (from.toTime_t ()) : "").toUtf8 ();
 	}
 

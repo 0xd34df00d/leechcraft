@@ -45,10 +45,7 @@ namespace ReadItLater
 	class ReadItLaterApi : public QObject
 	{
 		Q_OBJECT
-
-		const QString ApiKey_;
 	public:
-		ReadItLaterApi ();
 		QString GetAuthUrl () const;
 		QByteArray GetAuthPayload (const QString&, const QString&);
 		QString GetRegisterUrl () const;
