@@ -31,6 +31,7 @@
 #include <QDataStream>
 #include <QtDebug>
 #include <util/util.h>
+#include <util/sll/prelude.h>
 #include <interfaces/ibookmarksservice.h>
 
 namespace LeechCraft
@@ -116,12 +117,8 @@ namespace ReadItLater
 
 	QVariantList ReadItLaterAccount::GetBookmarksDiff (const QVariantList& list)
 	{
-		QVariantList diff;
-		Q_FOREACH (const QVariant& var, list)
-			if (!DownloadedBookmarks_.contains (var))
-				diff << var;
-
-		return diff;
+		return Util::Filter (list,
+				[this] (const auto& var) { return !DownloadedBookmarks_.contains (var); });
 	}
 
 	void ReadItLaterAccount::SetLastUploadDateTime(const QDateTime& date)
