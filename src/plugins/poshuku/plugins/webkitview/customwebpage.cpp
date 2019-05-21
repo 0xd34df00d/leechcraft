@@ -987,29 +987,29 @@ namespace WebKitView
 				continue;
 			}
 
-			const QVariantList vars = values.at (i).toList ();
+			const auto& vars = values.at (i).toList ();
 			if (!vars.size ())
 				continue;
 
-			const ElementsData_t list = pair.first [pairFirstKeys.at (i)];
-			ElementsData_t::const_iterator source = list.end ();
+			const auto list = pair.first [pairFirstKeys.at (i)];
+			auto source = list.end ();
 			QString value;
-			Q_FOREACH (const QVariant& var, vars)
+			for (const auto& var : vars)
 			{
 				const ElementData ed = var.value<ElementData> ();
 				source = FindElement (ed, list, true);
-				if (source < list.end ())
+				if (source != list.end ())
 				{
 					value = ed.Value_;
 					break;
 				}
 			}
-			if (source >= list.end ())
-				Q_FOREACH (const QVariant& var, vars)
+			if (source == list.end ())
+				for (const auto& var : vars)
 				{
-					const ElementData ed = var.value<ElementData> ();
+					const auto& ed = var.value<ElementData> ();
 					source = FindElement (ed, list, false);
-					if (source < list.end ())
+					if (source != list.end ())
 					{
 						value = ed.Value_;
 						break;
@@ -1020,7 +1020,7 @@ namespace WebKitView
 				pair.second [*source].setAttribute ("value", value);
 		}
 
-		Q_FOREACH (QWebFrame *childFrame, frame->childFrames ())
+		for (auto childFrame : frame->childFrames ())
 			fillForms (childFrame);
 
 		FilledState_ = HarvestForms (frame ? frame : mainFrame ()).first;
