@@ -61,7 +61,7 @@ class ReadItLaterAccount : public QObject
 
 		QVariantList DownloadedBookmarks_;
 	public:
-		ReadItLaterAccount (const QString&, QObject* = 0);
+		explicit ReadItLaterAccount (const QString&, QObject* = nullptr);
 
 		QObject* GetQObject () override;
 		QObject* GetParentService () const override;
