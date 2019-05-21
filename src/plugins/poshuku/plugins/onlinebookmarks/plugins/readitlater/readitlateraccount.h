@@ -54,7 +54,7 @@ class ReadItLaterAccount : public QObject
 
 		QObject *ParentService_;
 
-		bool IsSyncing_;
+		bool IsSyncing_ = false;
 
 		QDateTime LastUpload_;
 		QDateTime LastDownload_;
