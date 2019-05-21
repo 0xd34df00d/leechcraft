@@ -141,16 +141,15 @@ namespace ReadItLater
 		const QVariantMap& nestedMap = result ["list"].toMap ();
 
 		QVariantList bookmarks;
-		Q_FOREACH (const QVariant& var, nestedMap)
+		for (const auto& var : nestedMap)
 		{
-			QVariantMap record;
-			QVariantMap map = var.toMap ();
-
-			record ["Tags"] = map ["tags"].toStringList ();
-			record ["Title"] = map ["title"].toString ();
-			record ["URL"] = map ["url"].toString ();
-
-			bookmarks.push_back (record);
+			const auto& map = var.toMap ();
+			bookmarks.push_back (QVariantMap
+					{
+						{ "Tags", map ["tags"] },
+						{ "Title", map ["title"] },
+						{ "URL", map ["url"] }
+					});
 		}
 
 		return bookmarks;
