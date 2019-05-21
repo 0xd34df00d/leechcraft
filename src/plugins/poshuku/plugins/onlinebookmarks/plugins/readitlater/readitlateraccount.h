@@ -63,21 +63,21 @@ class ReadItLaterAccount : public QObject
 	public:
 		ReadItLaterAccount (const QString&, QObject* = 0);
 
-		QObject* GetQObject ();
-		QObject* GetParentService () const;
-		QByteArray GetAccountID () const;
-		QString GetLogin () const;
+		QObject* GetQObject () override;
+		QObject* GetParentService () const override;
+		QByteArray GetAccountID () const override;
+		QString GetLogin () const override;
 
-		QString GetPassword () const;
-		void SetPassword (const QString&);
+		QString GetPassword () const override;
+		void SetPassword (const QString&) override;
 
-		bool IsSyncing () const;
-		void SetSyncing (bool);
+		bool IsSyncing () const override;
+		void SetSyncing (bool) override;
 
-		QDateTime GetLastDownloadDateTime () const;
-		QDateTime GetLastUploadDateTime () const;
-		void SetLastUploadDateTime (const QDateTime&);
-		void SetLastDownloadDateTime (const QDateTime&);
+		QDateTime GetLastDownloadDateTime () const override;
+		QDateTime GetLastUploadDateTime () const override;
+		void SetLastUploadDateTime (const QDateTime&) override;
+		void SetLastDownloadDateTime (const QDateTime&) override;
 
 		void AppendDownloadedBookmarks (const QVariantList&);
 		QVariantList GetBookmarksDiff (const QVariantList&);
