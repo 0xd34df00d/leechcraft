@@ -170,11 +170,11 @@ namespace ReadItLater
 
 	ReadItLaterAccount* ReadItLaterService::GetAccountByName (const QString& login)
 	{
-		Q_FOREACH (ReadItLaterAccount *account, Accounts_)
+		for (const auto account : Accounts_)
 			if (account->GetLogin () == login)
 				return account;
 
-		return 0;
+		return nullptr;
 	}
 
 	void ReadItLaterService::SendRequest (const QString& urlSting,
@@ -241,11 +241,9 @@ namespace ReadItLater
 
 		if (Reply2Request_ [reply].Type_ == OTDownload)
 		{
-			ReadItLaterAccount *account = GetAccountByName (Reply2Request_ [reply].Login_);
-			if (account)
+			if (const auto account = GetAccountByName (Reply2Request_ [reply].Login_))
 			{
-				QVariantList downloadedBookmarks = ReadItLaterApi_->
-						GetDownloadedBookmarks (Account2ReplyContent_ [account]);
+				const auto& downloadedBookmarks = ReadItLaterApi_->GetDownloadedBookmarks (Account2ReplyContent_ [account]);
 				if (!downloadedBookmarks.isEmpty ())
 				{
 					account->AppendDownloadedBookmarks (downloadedBookmarks);
