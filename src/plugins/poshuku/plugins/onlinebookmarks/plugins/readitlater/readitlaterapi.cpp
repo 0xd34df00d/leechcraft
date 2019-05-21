@@ -82,7 +82,7 @@ namespace ReadItLater
 		{
 			const auto& record = recordVar.toMap ();
 
-			const auto& url = record ["URL"].toString ();
+			const auto& url = record ["URL"];
 
 			const auto& tags = record ["Tags"].toString ();
 			if (!tags.isEmpty ())
@@ -97,7 +97,7 @@ namespace ReadItLater
 					QVariantMap
 					{
 						{ "url", url },
-						{ "title", record ["Title"].toString () }
+						{ "title", record ["Title"] }
 					});
 		}
 
