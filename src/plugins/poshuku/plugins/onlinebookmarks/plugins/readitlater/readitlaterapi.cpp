@@ -78,21 +78,27 @@ namespace ReadItLater
 			const QString& password, const QVariantList& bookmarks)
 	{
 		QVariantMap exportBookmarks, exportTags;
-		int i = 0;
-		int j = 0;
-		Q_FOREACH (const QVariant& record, bookmarks)
+		for (const auto& recordVar : bookmarks)
 		{
-			QVariantMap bookmark, tags;
-			bookmark.insert ("url", record.toMap () ["URL"].toString ());
-			bookmark.insert ("title", record.toMap () ["Title"].toString ());
+			const auto& record = recordVar.toMap ();
 
-			if (!(record.toMap () ["Tags"].toStringList ().isEmpty ()))
-			{
-				tags.insert ("url", record.toMap () ["URL"].toString ());
-				tags.insert ("tags", record.toMap () ["Tags"].toString ());
-				exportTags.insert (QString::number (j++), tags);
-			}
-			exportBookmarks.insert(QString::number (i++), bookmark);
+			const auto& url = record ["URL"].toString ();
+
+			const auto& tags = record ["Tags"].toString ();
+			if (!tags.isEmpty ())
+				exportTags.insert (QString::number (exportTags.size ()),
+						QVariantMap
+						{
+							{ "url", url },
+							{ "tags", tags }
+						});
+
+			exportBookmarks.insert (QString::number (exportBookmarks.size ()),
+					QVariantMap
+					{
+						{ "url", url },
+						{ "title", record ["Title"].toString () }
+					});
 		}
 
 		if (exportBookmarks.isEmpty ())
