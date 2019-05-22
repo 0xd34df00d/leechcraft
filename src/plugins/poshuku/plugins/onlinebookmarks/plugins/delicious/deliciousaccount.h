@@ -51,7 +51,7 @@ namespace Delicious
 		QString Password_;
 		QObject *ParentService_;
 
-		bool IsSyncing_;
+		bool IsSyncing_ = false;
 
 		QDateTime LastUpload_;
 		QDateTime LastDownload_;
