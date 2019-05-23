@@ -141,7 +141,7 @@ namespace OnlineBookmarks
 				accounts << acc->GetQObject ();
 			}
 
-		Q_FOREACH (IBookmarksService *service, Item2Service_.values ())
+		for (auto service : Item2Service_)
 			service->saveAccounts ();
 
 		Core::Instance ().SetActiveAccounts (accounts);
