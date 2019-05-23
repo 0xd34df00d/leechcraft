@@ -65,7 +65,7 @@ namespace OnlineBookmarks
 
 	void AccountsSettings::InitServices ()
 	{
-		Q_FOREACH (QObject *plugin, Core::Instance ().GetServicePlugins ())
+		for (auto plugin : Core::Instance ().GetServicePlugins ())
 		{
 			IBookmarksService *ibs = qobject_cast<IBookmarksService*> (plugin);
 			QAction *act = new QAction (ibs->GetServiceIcon (), ibs->GetServiceName (), this);
@@ -268,7 +268,7 @@ namespace OnlineBookmarks
 			return;
 		}
 
-		Q_FOREACH (QObject *accObj, accObjects)
+		for (auto accObj : accObjects)
 		{
 			IAccount *account = qobject_cast<IAccount*> (accObj);
 			if (Id2Account_.contains (account->GetAccountID ()))

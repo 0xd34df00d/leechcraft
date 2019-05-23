@@ -232,7 +232,7 @@ namespace OnlineBookmarks
 			const QVariantList& allBookmarks, bool byService)
 	{
 		QVariantList list;
-		Q_FOREACH (const QVariant& bookmark, allBookmarks)
+		for (const auto& bookmark : allBookmarks)
 		{
 			QString url = bookmark.toMap () ["URL"].toString ();
 			if (url.isEmpty ())
@@ -280,7 +280,7 @@ namespace OnlineBookmarks
 		eBookmarks.Additional_ ["BrowserBookmarks"] = importBookmarks;
 		emit gotEntity (eBookmarks);
 
-		Q_FOREACH (const QVariant& bookmark, importBookmarks)
+		for (const auto& bookmark : importBookmarks)
 			Url2Account_ [bookmark.toMap () ["URL"].toString ()] = account;
 
 		IBookmarksService *ibs = qobject_cast<IBookmarksService*> (sender ());
@@ -318,7 +318,7 @@ namespace OnlineBookmarks
 		QVariantList result = GetAllBookmarks ();
 		IAccount *account = 0;
 
-		Q_FOREACH (QObject *accObj, ActiveAccounts_)
+		for (const auto accObj : ActiveAccounts_)
 		{
 			account = qobject_cast<IAccount*> (accObj);
 			if (!account)
@@ -334,7 +334,7 @@ namespace OnlineBookmarks
 		switch (type)
 		{
 		case 0:
-			Q_FOREACH (QObject *accObj, ActiveAccounts_)
+			for (auto accObj : ActiveAccounts_)
 			{
 				account = qobject_cast<IAccount*> (accObj);
 				if (!account)
@@ -346,7 +346,7 @@ namespace OnlineBookmarks
 			}
 			break;
 		case 1:
-			Q_FOREACH (QObject *accObj, ActiveAccounts_)
+			for (auto accObj : ActiveAccounts_)
 			{
 				account = qobject_cast<IAccount*> (accObj);
 				if (!account)
@@ -360,7 +360,7 @@ namespace OnlineBookmarks
 			}
 			break;
 		case 2:
-			Q_FOREACH (QObject *accObj, ActiveAccounts_)
+			for (auto accObj : ActiveAccounts_)
 			{
 				account = qobject_cast<IAccount*> (accObj);
 				if (!account)
@@ -378,7 +378,7 @@ namespace OnlineBookmarks
 
 	void Core::downloadBookmarks ()
 	{
-		Q_FOREACH (QObject *accObj, ActiveAccounts_)
+		for (auto accObj : ActiveAccounts_)
 		{
 			IAccount *account = qobject_cast<IAccount*> (accObj);
 			IBookmarksService *ibs = qobject_cast<IBookmarksService*> (account->GetParentService ());
@@ -388,7 +388,7 @@ namespace OnlineBookmarks
 
 	void Core::downloadAllBookmarks ()
 	{
-		Q_FOREACH (QObject *accObj, ActiveAccounts_)
+		for (auto accObj : ActiveAccounts_)
 		{
 			IAccount *account = qobject_cast<IAccount*> (accObj);
 			IBookmarksService *ibs = qobject_cast<IBookmarksService*> (account->GetParentService ());
