@@ -32,6 +32,7 @@
 #include <QNetworkReply>
 #include <QSettings>
 #include <util/xpc/util.h>
+#include <util/sll/prelude.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/iaccount.h>
 #include "deliciousauthwidget.h"
@@ -214,13 +215,7 @@ namespace Delicious
 		}
 
 		if (!Accounts_.isEmpty ())
-		{
-			QObjectList list;
-			Q_FOREACH (DeliciousAccount *acc, Accounts_)
-				list << acc->GetQObject ();
-
-			emit accountAdded (list);
-		}
+			emit accountAdded (Util::Map (Accounts_, &DeliciousAccount::GetQObject));
 	}
 
 	void DeliciousService::getReplyFinished ()
