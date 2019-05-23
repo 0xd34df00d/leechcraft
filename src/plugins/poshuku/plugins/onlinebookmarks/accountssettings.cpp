@@ -271,7 +271,6 @@ namespace OnlineBookmarks
 			return;
 		}
 
-		QObjectList accounts;
 		Q_FOREACH (QObject *accObj, accObjects)
 		{
 			IAccount *account = qobject_cast<IAccount*> (accObj);
@@ -284,8 +283,6 @@ namespace OnlineBookmarks
 				account->SetPassword (Core::Instance ().GetPassword (accObj));
 
 			Id2Account_ [account->GetAccountID ()] = accObj;
-
-			accounts << accObj;
 
 			const QModelIndex& index = GetServiceIndex (ibs->GetQObject ());
 			QStandardItem *parentItem = 0;
