@@ -118,7 +118,7 @@ namespace Delicious
 		}
 
 		int i = 0;
-		Q_FOREACH (const QVariant& var, bookmarks)
+		for (const auto& var : bookmarks)
 		{
 			Request req;
 			req.Type_ = OTUpload;
@@ -161,11 +161,11 @@ namespace Delicious
 
 	DeliciousAccount* DeliciousService::GetAccountByName (const QString& name)
 	{
-		Q_FOREACH (DeliciousAccount *account, Accounts_)
-		if (account->GetLogin () == name)
-			return account;
+		for (const auto account : Accounts_)
+			if (account->GetLogin () == name)
+				return account;
 
-		return 0;
+		return nullptr;
 	}
 
 	void DeliciousService::SendRequest (const QString& urlString,

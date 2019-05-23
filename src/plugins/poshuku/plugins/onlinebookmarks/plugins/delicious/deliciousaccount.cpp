@@ -127,7 +127,7 @@ namespace Delicious
 
 	void DeliciousAccount::AppendDownloadedBookmarks (const QVariantList& bookmarks)
 	{
-		Q_FOREACH (const QVariant& var, bookmarks)
+		for (const auto& var : bookmarks)
 			if (!DownloadedBookmarks_.contains (var))
 				DownloadedBookmarks_ << var;
 	}
