@@ -84,10 +84,11 @@ namespace Delicious
 
 	QVariantMap DeliciousAccount::GetIdentifyingData () const
 	{
-		QVariantMap map;
-		map ["Login"] = Login_;
-		map ["Password_"] = Password_;
-		return map;
+		return
+		{
+			{ "Login", Login_ },
+			{ "Password_", Password_ }
+		};
 	}
 
 	bool DeliciousAccount::IsSyncing () const
