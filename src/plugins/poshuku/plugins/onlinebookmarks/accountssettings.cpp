@@ -32,6 +32,7 @@
 #include <QDateTime>
 #include <QTimer>
 #include <QLayout>
+#include <util/sll/qtutil.h>
 #include <interfaces/iauthwidget.h>
 #include <interfaces/iaccount.h>
 #include "core.h"
@@ -103,26 +104,22 @@ namespace OnlineBookmarks
 
 	void AccountsSettings::UpdateDates ()
 	{
-		Q_FOREACH (QStandardItem *item, Item2Account_.keys ())
+		for (auto [item, acc] : Util::Stlize (Item2Account_))
 		{
 			int row = item->row ();
-			QStandardItem * parentItem = item->parent ();
-			parentItem->child ( row, 1)->
-					setText (Item2Account_ [item]->GetLastUploadDateTime ()
-						.toString (Qt::DefaultLocaleShortDate));
-			parentItem->child ( row, 2)->
-					setText (Item2Account_ [item]->GetLastDownloadDateTime ()
-						.toString (Qt::DefaultLocaleShortDate));
+			const auto parentItem = item->parent ();
+			parentItem->child (row, 1)->setText (acc->GetLastUploadDateTime ().toString (Qt::DefaultLocaleShortDate));
+			parentItem->child (row, 2)->setText (acc->GetLastDownloadDateTime ().toString (Qt::DefaultLocaleShortDate));
 		}
 	}
 
 	QModelIndex AccountsSettings::GetServiceIndex (QObject *serviceObj) const
 	{
-		Q_FOREACH (QStandardItem *item, Item2Service_.keys ())
-			if (Item2Service_ [item] == qobject_cast<IBookmarksService*> (serviceObj))
+		for (auto [item, service] : Util::Stlize (Item2Service_))
+			if (service == qobject_cast<IBookmarksService*> (serviceObj))
 				return item->index ();
 
-		return QModelIndex ();
+		return {};
 	}
 
 	void AccountsSettings::ScheduleResize ()
@@ -137,11 +134,11 @@ namespace OnlineBookmarks
 	void AccountsSettings::accept ()
 	{
 		QObjectList accounts;
-		Q_FOREACH (QStandardItem *item,  Item2Account_.keys ())
+		for (auto [item, acc] : Util::Stlize (Item2Account_))
 			if (item->checkState () == Qt::Checked)
 			{
-				Item2Account_ [item]->SetSyncing (true);
-				accounts << Item2Account_ [item]->GetQObject ();
+				acc->SetSyncing (true);
+				accounts << acc->GetQObject ();
 			}
 
 		Q_FOREACH (IBookmarksService *service, Item2Service_.values ())

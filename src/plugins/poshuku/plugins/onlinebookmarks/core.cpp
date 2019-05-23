@@ -36,6 +36,7 @@
 #include <interfaces/iserviceplugin.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/poshuku/iproxyobject.h>
+#include <util/sll/qtutil.h>
 #include <util/xpc/util.h>
 #include <util/xpc/passutils.h>
 #include "accountssettings.h"
@@ -206,11 +207,11 @@ namespace OnlineBookmarks
 
 	QModelIndex Core::GetServiceIndex (QObject *object) const
 	{
-		Q_FOREACH (QStandardItem *item, Item2Service_.keys ())
-		if (Item2Service_ [item] == qobject_cast<IBookmarksService*> (object))
-			return item->index ();
+		for (auto [item, service] : Util::Stlize (Item2Service_))
+			if (service == qobject_cast<IBookmarksService*> (object))
+				return item->index ();
 
-		return QModelIndex ();
+		return {};
 	}
 
 	QObject* Core::GetBookmarksModel () const
