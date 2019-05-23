@@ -55,8 +55,8 @@ namespace OnlineBookmarks
 		QHash<QByteArray, QObject*> Id2Account_;
 		QHash<IBookmarksService*, QWidget*> Service2AuthWidget_;
 		QStandardItemModel *AccountsModel_;
-		bool Scheduled_;
-		QWidget *LastWidget_;
+		bool Scheduled_ = false;
+		QWidget *LastWidget_ = nullptr;
 		QHash<QAction*, IBookmarksService*> Action2Service_;
 	public:
 		AccountsSettings ();

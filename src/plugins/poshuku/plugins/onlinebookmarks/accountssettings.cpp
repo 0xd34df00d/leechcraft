@@ -44,8 +44,6 @@ namespace OnlineBookmarks
 {
 	AccountsSettings::AccountsSettings ()
 	: AccountsModel_ (new QStandardItemModel (this))
-	, Scheduled_ (false)
-	, LastWidget_ (0)
 	{
 		Ui_.setupUi (this);
 
