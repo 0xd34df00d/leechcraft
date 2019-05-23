@@ -32,6 +32,7 @@
 #include <QtDebug>
 #include <QIcon>
 #include <util/util.h>
+#include <util/sll/prelude.h>
 
 namespace LeechCraft
 {
@@ -121,12 +122,7 @@ namespace Delicious
 
 	QVariantList DeliciousAccount::GetBookmarksDiff (const QVariantList& list)
 	{
-		QVariantList diff;
-		Q_FOREACH (const QVariant& var, list)
-			if (!DownloadedBookmarks_.contains (var))
-				diff << var;
-
-		return diff;
+		return Util::Filter (list, [this] (const QVariant& var) { return !DownloadedBookmarks_.contains (var); });
 	}
 
 	void DeliciousAccount::AppendDownloadedBookmarks (const QVariantList& bookmarks)
