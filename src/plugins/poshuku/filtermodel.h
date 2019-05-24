@@ -40,7 +40,7 @@ namespace Poshuku
 	public:
 		using Util::TagsFilterModel::TagsFilterModel;
 	protected:
-		virtual QStringList GetTagsForIndex (int) const;
+		QStringList GetTagsForIndex (int) const override;
 	};
 }
 }
