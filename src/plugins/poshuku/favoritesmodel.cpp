@@ -35,6 +35,7 @@
 #include <QFileInfo>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
+#include <util/sll/prelude.h>
 #include <util/sll/views.h>
 #include <util/xpc/defaulthookproxy.h>
 #include "filtermodel.h"
@@ -196,17 +197,17 @@ namespace Poshuku
 
 	QList<QVariant> FavoritesModel::getItemsMap() const
 	{
-		QList<QVariant> result;
-		Q_FOREACH (const FavoritesItem& item, Items_)
-		{
-			QMap<QString, QVariant> map;
-			map ["Title"] = item.Title_;
-			map ["URL"] = item.URL_;
-			map ["Tags"] = Core::Instance ().GetProxy ()->GetTagsManager ()->GetTags (item.Tags_);
-			result << map;
-		}
-
-		return result;
+		const auto itm = Core::Instance ().GetProxy ()->GetTagsManager ();
+		return Util::Map (Items_,
+				[] (const auto& item) -> QVariant
+				{
+					return QVariantMap
+					{
+						{ "Title", item.Title_ },
+						{ "URL", item.URL_ },
+						{ "Tags", itm->GetTags (item.Tags_) }
+					};
+				});
 	}
 
 	Qt::DropActions FavoritesModel::supportedDropActions () const
