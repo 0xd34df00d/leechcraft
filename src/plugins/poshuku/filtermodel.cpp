@@ -39,11 +39,6 @@ namespace LeechCraft
 {
 namespace Poshuku
 {
-	FilterModel::FilterModel (QObject *parent)
-	: LeechCraft::Util::TagsFilterModel (parent)
-	{
-	}
-
 	QStringList FilterModel::GetTagsForIndex (int row) const
 	{
 		const auto& ids = sourceModel ()->data (sourceModel ()->index (row, 0), RoleTags).toStringList ();

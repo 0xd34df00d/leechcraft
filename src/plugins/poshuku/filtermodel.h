@@ -39,7 +39,7 @@ namespace Poshuku
 	{
 		Q_OBJECT
 	public:
-		FilterModel (QObject* = 0);
+		using Util::TagsFilterModel::TagsFilterModel;
 	protected:
 		virtual QStringList GetTagsForIndex (int) const;
 	};
