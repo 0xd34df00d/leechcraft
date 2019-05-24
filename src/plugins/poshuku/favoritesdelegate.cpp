@@ -69,17 +69,9 @@ namespace Poshuku
 			return;
 		}
 
-		QStringList tags = Core::Instance ().GetFavoritesModel ()->
-			data (index, LeechCraft::RoleTags).toStringList ();
-
-		QStringList user;
-		Q_FOREACH (QString id, tags)
-			user.append (Core::Instance ().GetProxy ()->GetTagsManager ()->
-					GetTag (id));
-
-		static_cast<TagsLineEdit*> (editor)->
-			setText (Core::Instance ().GetProxy ()->
-					GetTagsManager ()->Join (user));
+		auto itm = Core::Instance ().GetProxy ()->GetTagsManager ();
+		auto tags = Core::Instance ().GetFavoritesModel ()->data (index, RoleTags).toStringList ();
+		static_cast<TagsLineEdit*> (editor)->setText (itm->Join (itm->GetTags (tags)));
 	}
 
 	void FavoritesDelegate::setModelData (QWidget *editor,
@@ -91,8 +83,7 @@ namespace Poshuku
 			return;
 		}
 
-		QStringList tags = Core::Instance ().GetProxy ()->GetTagsManager ()->
-			Split (static_cast<TagsLineEdit*> (editor)->text ());
+		auto tags = Core::Instance ().GetProxy ()->GetTagsManager ()->Split (static_cast<TagsLineEdit*> (editor)->text ());
 		model->setData (index, tags);
 	}
 
