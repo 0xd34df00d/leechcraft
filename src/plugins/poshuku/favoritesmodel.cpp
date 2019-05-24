@@ -199,7 +199,7 @@ namespace Poshuku
 	{
 		const auto itm = Core::Instance ().GetProxy ()->GetTagsManager ();
 		return Util::Map (Items_,
-				[] (const auto& item) -> QVariant
+				[itm] (const auto& item) -> QVariant
 				{
 					return QVariantMap
 					{
