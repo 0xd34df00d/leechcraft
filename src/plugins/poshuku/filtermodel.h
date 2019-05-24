@@ -37,7 +37,6 @@ namespace Poshuku
 {
 	class FilterModel : public Util::TagsFilterModel
 	{
-		Q_OBJECT
 	public:
 		using Util::TagsFilterModel::TagsFilterModel;
 	protected:
