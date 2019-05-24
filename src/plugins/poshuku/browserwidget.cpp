@@ -1634,7 +1634,7 @@ namespace Poshuku
 				pos += rx.matchedLength () - 4;
 			}
 
-			Q_FOREACH (QString str, caps)
+			for (auto str : caps)
 			{
 				str.prepend ("xn--");
 				char *output = 0;

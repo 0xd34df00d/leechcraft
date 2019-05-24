@@ -55,7 +55,7 @@ namespace Poshuku
 				[] (const QNetworkCookie& c1, const QNetworkCookie& c2)
 					{ return c1.domain () < c2.domain (); });
 		int idx = 0;
-		Q_FOREACH (QNetworkCookie cookie, cookies)
+		for (const auto& cookie : cookies)
 			Cookies_ [idx++] = cookie;
 
 		for (int i = 0; i < Cookies_.size (); ++i)

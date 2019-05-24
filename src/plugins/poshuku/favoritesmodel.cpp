@@ -358,11 +358,11 @@ namespace Poshuku
 
 	FavoritesModel::FavoritesItem FavoritesModel::GetItemFromUrl (const QString& url)
 	{
-		Q_FOREACH (const FavoritesItem& item, Items_)
+		for (const auto& item : Items_)
 			if (item.URL_ == url)
 				return item;
 
-		return FavoritesItem ();
+		return {};
 	}
 
 	void FavoritesModel::removeItem (const QModelIndex& index)
@@ -439,7 +439,7 @@ namespace Poshuku
 		beginInsertRows (QModelIndex (), 0, items.size () - 1);
 		for (items_t::iterator i = items.begin (), end = items.end (); i != end; ++i)
 		{
-			Q_FOREACH (const QString& tag, i->Tags_)
+			for (const auto& tag : QStringList { i->Tags_ })
 			{
 				const auto& ut = Core::Instance ().GetProxy ()->GetTagsManager ()->GetTag (tag);
 				if (ut.isEmpty ())

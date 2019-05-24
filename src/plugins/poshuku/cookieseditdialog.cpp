@@ -109,9 +109,7 @@ namespace Poshuku
 		}
 		else
 		{
-			Q_FOREACH (QNetworkCookie cookie,
-					QNetworkCookie::parseCookies (Ui_.RawCookieEdit_->
-						toPlainText ().toUtf8 ()))
+			for (const auto& cookie : QNetworkCookie::parseCookies (Ui_.RawCookieEdit_->toPlainText ().toUtf8 ()))
 				Model_->SetCookie (QModelIndex (), cookie);
 	
 			Ui_.RawCookieEdit_->clear ();

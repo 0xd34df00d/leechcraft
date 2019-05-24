@@ -101,10 +101,9 @@ namespace Poshuku
 			else if (list.size () < num)
 			{
 				QString merged;
-				Q_FOREACH (QString url, list)
+				for (const auto& url : list)
 					merged.append (QString ("<li>%1</li>")
-							.arg (QApplication::fontMetrics ()
-									.elidedText (url, Qt::ElideMiddle, 400)));
+							.arg (QApplication::fontMetrics ().elidedText (url, Qt::ElideMiddle, 400)));
 				result = FavoritesChecker::tr ("%1 favorites are %2:<br /><ul>%3</ul>")
 					.arg (list.size ())
 					.arg (property)

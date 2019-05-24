@@ -248,14 +248,14 @@ namespace Poshuku
 		{
 			VisibleButtons_.removeAll (ClearButton_);
 			ClearButton_->hide ();
-			Q_FOREACH (QToolButton *btn, HideButtons_)
+			for (auto btn : HideButtons_)
 				btn->hide ();
 		}
 		else if (!VisibleButtons_.contains (ClearButton_))
 		{
 			VisibleButtons_.push_back (ClearButton_);
 			ClearButton_->show ();
-			Q_FOREACH (QToolButton *btn, HideButtons_)
+			for (auto btn : HideButtons_)
 				btn->show ();
 		}
 

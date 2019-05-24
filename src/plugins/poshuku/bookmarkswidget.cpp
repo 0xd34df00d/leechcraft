@@ -134,7 +134,7 @@ namespace Poshuku
 					toDelete << QPersistentModelIndex (index);
 				}
 
-				Q_FOREACH (const QPersistentModelIndex& pIndex, toDelete)
+				for (const auto& pIndex : toDelete)
 					Core::Instance ().GetFavoritesModel ()->removeItem (pIndex);
 
 				return;
