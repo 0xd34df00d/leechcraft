@@ -40,7 +40,6 @@ namespace Poshuku
 		Q_OBJECT
 	public:
 		FilterModel (QObject* = 0);
-		virtual ~FilterModel ();
 	protected:
 		virtual QStringList GetTagsForIndex (int) const;
 	};

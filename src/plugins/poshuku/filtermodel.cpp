@@ -44,10 +44,6 @@ namespace Poshuku
 	{
 	}
 
-	FilterModel::~FilterModel ()
-	{
-	}
-
 	QStringList FilterModel::GetTagsForIndex (int row) const
 	{
 		const auto& ids = sourceModel ()->data (sourceModel ()->index (row, 0), RoleTags).toStringList ();
