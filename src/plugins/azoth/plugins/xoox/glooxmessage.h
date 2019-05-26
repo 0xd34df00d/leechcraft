@@ -99,7 +99,7 @@ namespace Xoox
 
 		void SetVariant (const QString&);
 
-		QXmppMessage GetNativeMessage () const;
+		const QXmppMessage& GetNativeMessage () const;
 	signals:
 		void messageDelivered () override;
 	};

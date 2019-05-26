@@ -202,7 +202,7 @@ namespace Xoox
 					(BareJID_ + '/' + Variant_));
 	}
 
-	QXmppMessage GlooxMessage::GetNativeMessage () const
+	const QXmppMessage& GlooxMessage::GetNativeMessage () const
 	{
 		return Message_;
 	}
