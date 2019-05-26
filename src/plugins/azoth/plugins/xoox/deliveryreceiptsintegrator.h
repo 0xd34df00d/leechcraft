@@ -29,70 +29,24 @@
 
 #pragma once
 
-#include <tuple>
 #include <QObject>
+#include <QHash>
 
-class QXmppClient;
+template<typename>
+class QPointer;
 
-class QXmppArchiveManager;
-class QXmppBookmarkManager;
-class QXmppCallManager;
-class QXmppDiscoveryManager;
-class QXmppEntityTimeManager;
 class QXmppMessageReceiptManager;
-class QXmppTransferManager;
 
 namespace LeechCraft::Azoth::Xoox
 {
-	class ClientConnection;
+	class GlooxMessage;
 
-	using SimpleExtensions = std::tuple<
-				class AdHocCommandManager*,
-				class JabberSearchManager*,
-				class LastActivityManager*,
-				class LegacyEntityTimeExt*,
-				class MsgArchivingManager*,
-				class PingManager*,
-				class RIEXManager*,
-				class XMPPAnnotationsManager*,
-				class XMPPBobManager*,
-				class XMPPCaptchaManager*,
-				QXmppArchiveManager*,
-				QXmppBookmarkManager*,
-#ifdef ENABLE_MEDIACALLS
-				QXmppCallManager*,
-#endif
-				QXmppMessageReceiptManager*,
-				QXmppTransferManager*
-			>;
-
-	using DefaultExtensions = std::tuple<
-				QXmppDiscoveryManager*,
-				QXmppEntityTimeManager*
-			>;
-
-	class ClientConnectionExtensionsManager : public QObject
+	class DeliveryReceiptsIntegrator : public QObject
 	{
-		DefaultExtensions DefaultExtensions_;
-		SimpleExtensions SimpleExtensions_;
+		QHash<QString, QPointer<GlooxMessage>> UndeliveredMessages_;
 	public:
-		explicit ClientConnectionExtensionsManager (ClientConnection&, QXmppClient&, QObject* = nullptr);
+		explicit DeliveryReceiptsIntegrator (QXmppMessageReceiptManager&);
 
-		template<typename T>
-		T& Get ()
-		{
-			if constexpr (HasExt<T> (DefaultExtensions {}))
-				return *std::get<T*> (DefaultExtensions_);
-			else if constexpr (HasExt<T> (SimpleExtensions {}))
-				return *std::get<T*> (SimpleExtensions_);
-			else
-				static_assert (std::is_same_v<T, struct Dummy>, "Unable to find the given extension type");
-		}
-	private:
-		template<typename T, typename... ExtsTypes>
-		constexpr static bool HasExt (const std::tuple<ExtsTypes...>&)
-		{
-			return (std::is_same_v<T*, ExtsTypes> || ...);
-		}
+		void ProcessMessage (GlooxMessage&);
 	};
 }

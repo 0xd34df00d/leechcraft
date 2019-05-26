@@ -121,6 +121,7 @@ set (XOOX_SRCS
 	riexintegrator.cpp
 	inbandaccountactions.cpp
 	xmppelementdescription.cpp
+	deliveryreceiptsintegrator.cpp
 	)
 set (XOOX_FORMS
 	glooxaccountconfigurationdialog.ui

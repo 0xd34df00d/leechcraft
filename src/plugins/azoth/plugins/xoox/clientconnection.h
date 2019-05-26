@@ -46,7 +46,6 @@ class QXmppMucManager;
 class QXmppClient;
 class QXmppDiscoveryManager;
 class QXmppDiscoveryIq;
-class QXmppMessageReceiptManager;
 
 namespace LeechCraft
 {
@@ -91,7 +90,6 @@ namespace Xoox
 
 		QXmppMucManager *MUCManager_;
 		QXmppDiscoveryManager *DiscoveryManager_;
-		QXmppMessageReceiptManager *DeliveryReceiptsManager_;
 
 		PubSubManager *PubSubManager_;
 		PrivacyListsManager *PrivacyListsManager_;
@@ -136,7 +134,6 @@ namespace Xoox
 
 		QList<QXmppMessage> OfflineMsgQueue_;
 		QList<QPair<QString, PEPEventBase*>> InitialEventQueue_;
-		QHash<QString, QPointer<GlooxMessage>> UndeliveredMessages_;
 	public:
 		typedef std::function<void (const QXmppVCardIq&)> VCardCallback_t;
 		typedef std::function<void (QXmppIq)> PacketCallback_t;
@@ -251,7 +248,6 @@ namespace Xoox
 
 		void handlePEPEvent (const QString&, PEPEventBase*);
 		void handlePEPAvatarUpdated (const QString&);
-		void handleMessageDelivered (const QString&, const QString&);
 
 		void handleRoomInvitation (const QString&, const QString&, const QString&);
 

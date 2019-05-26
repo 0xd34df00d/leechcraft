@@ -38,7 +38,6 @@
 #include <QXmppVCardManager.h>
 #include <QXmppDiscoveryManager.h>
 #include <QXmppPubSubIq.h>
-#include <QXmppMessageReceiptManager.h>
 #include <util/sll/delayedexecutor.h>
 #include <util/sll/prelude.h>
 #include <util/xpc/util.h>
@@ -98,7 +97,6 @@ namespace Xoox
 	, Client_ (new QXmppClient (this))
 	, MUCManager_ (new QXmppMucManager)
 	, DiscoveryManager_ (Client_->findExtension<QXmppDiscoveryManager> ())
-	, DeliveryReceiptsManager_ (new QXmppMessageReceiptManager)
 	, PubSubManager_ (new PubSubManager)
 	, PrivacyListsManager_ (new PrivacyListsManager (this))
 	, AnnotationsManager_ (0)
@@ -170,7 +168,6 @@ namespace Xoox
 		CryptHandler_->Init ();
 
 		Client_->addExtension (PubSubManager_);
-		Client_->addExtension (DeliveryReceiptsManager_);
 		Client_->addExtension (MUCManager_);
 		Client_->addExtension (PrivacyListsManager_);
 		Client_->addExtension (new AdHocCommandServer (this, proxy));
@@ -246,11 +243,6 @@ namespace Xoox
 				SIGNAL (versionReceived (QXmppVersionIq)),
 				this,
 				SLOT (handleVersionReceived (QXmppVersionIq)));
-
-		connect (DeliveryReceiptsManager_,
-				SIGNAL (messageDelivered (QString, QString)),
-				this,
-				SLOT (handleMessageDelivered (QString, QString)));
 
 		connect (Settings_,
 				SIGNAL (kaParamsChanged (QPair<int, int>)),
@@ -619,12 +611,6 @@ namespace Xoox
 
 	void ClientConnection::SendMessage (GlooxMessage *msgObj)
 	{
-		if (msgObj->GetMessageType () == IMessage::Type::ChatMessage)
-		{
-			msgObj->SetReceiptRequested (true);
-			UndeliveredMessages_ [msgObj->GetNativeMessage ().id ()] = msgObj;
-		}
-
 		auto msg = msgObj->GetNativeMessage ();
 		CryptHandler_->ProcessOutgoing (msg, msgObj);
 
@@ -1035,12 +1021,6 @@ namespace Xoox
 
 		const auto entry = JID2CLEntry_ [from];
 		entry->avatarChanged (entry);
-	}
-
-	void ClientConnection::handleMessageDelivered (const QString&, const QString& msgId)
-	{
-		if (const auto msg = UndeliveredMessages_.take (msgId))
-			msg->SetDelivered (true);
 	}
 
 	void ClientConnection::handleRoomInvitation (const QString& room,

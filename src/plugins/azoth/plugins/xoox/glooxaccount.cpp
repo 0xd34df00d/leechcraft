@@ -87,6 +87,7 @@
 #include "riexintegrator.h"
 #include "inbandaccountactions.h"
 #include "captchamanager.h"
+#include "deliveryreceiptsintegrator.h"
 
 namespace LeechCraft
 {
@@ -181,6 +182,8 @@ namespace Xoox
 		InBandAccountActions AccountActions_ { Conn_, Acc_ };
 
 		CaptchaManager CaptchaManager_ { ExtsMgr_.Get<XMPPCaptchaManager> (), ExtsMgr_.Get<XMPPBobManager> () };
+
+		DeliveryReceiptsIntegrator ReceiptsIntegrator_ { ExtsMgr_.Get<QXmppMessageReceiptManager> () };
 
 		Managers (ClientConnection& conn, GlooxAccount& acc)
 		: Conn_ { conn }
@@ -283,6 +286,7 @@ namespace Xoox
 
 	void GlooxAccount::SendMessage (GlooxMessage& msg)
 	{
+		Managers_->ReceiptsIntegrator_.ProcessMessage (msg);
 		ClientConnection_->SendMessage (&msg);
 	}
 

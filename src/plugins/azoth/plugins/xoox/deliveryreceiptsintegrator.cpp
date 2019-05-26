@@ -27,65 +27,31 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "clientconnectionextensionsmanager.h"
-#include <QXmppClient.h>
-#include <QXmppArchiveManager.h>
-#include <QXmppBookmarkManager.h>
-#include <QXmppCallManager.h>
-#include <QXmppDiscoveryManager.h>
-#include <QXmppEntityTimeManager.h>
+#include "deliveryreceiptsintegrator.h"
+#include <QPointer>
 #include <QXmppMessageReceiptManager.h>
-#include <QXmppTransferManager.h>
-#include "xeps/adhoccommandmanager.h"
-#include "xeps/jabbersearchmanager.h"
-#include "xeps/lastactivitymanager.h"
-#include "xeps/legacyentitytimeext.h"
-#include "xeps/msgarchivingmanager.h"
-#include "xeps/pingmanager.h"
-#include "xeps/riexmanager.h"
-#include "xeps/xmppannotationsmanager.h"
-#include "xeps/xmppbobmanager.h"
-#include "xeps/xmppcaptchamanager.h"
+#include "glooxmessage.h"
 
 namespace LeechCraft::Azoth::Xoox
 {
-	namespace
+	DeliveryReceiptsIntegrator::DeliveryReceiptsIntegrator (QXmppMessageReceiptManager& mgr)
 	{
-		auto MakeDefaultExtensions (QXmppClient& client)
-		{
-			return std::apply ([&client] (auto... types)
-					{
-						return DefaultExtensions { client.findExtension<std::remove_pointer_t<decltype (types)>> ()... };
-					},
-					DefaultExtensions {});
-		}
-
-		template<typename T>
-		T* MakeForType (ClientConnection& conn)
-		{
-			if constexpr (std::is_constructible_v<T, ClientConnection*>)
-				return new T { &conn };
-			else
-				return new T {};
-		}
-
-		auto MakeSimpleExtensions (ClientConnection& conn)
-		{
-			return std::apply ([&conn] (auto... types)
-					{
-						return SimpleExtensions { MakeForType<std::remove_pointer_t<decltype (types)>> (conn)... };
-					},
-					SimpleExtensions {});
-		}
+		connect (&mgr,
+				&QXmppMessageReceiptManager::messageDelivered,
+				this,
+				[this] (const QString&, const QString& msgId)
+				{
+					if (const auto msg = UndeliveredMessages_.take (msgId))
+						msg->SetDelivered (true);
+				});
 	}
 
-	ClientConnectionExtensionsManager::ClientConnectionExtensionsManager (ClientConnection& conn,
-			QXmppClient& client, QObject *parent)
-	: QObject { parent }
-	, DefaultExtensions_ { MakeDefaultExtensions (client) }
-	, SimpleExtensions_ { MakeSimpleExtensions (conn) }
+	void DeliveryReceiptsIntegrator::ProcessMessage (GlooxMessage& msgObj)
 	{
-		std::apply ([&client] (auto... exts) { (client.addExtension (exts), ...); },
-				SimpleExtensions_);
+		if (msgObj.GetMessageType () == IMessage::Type::ChatMessage)
+		{
+			msgObj.SetReceiptRequested (true);
+			UndeliveredMessages_ [msgObj.GetNativeMessage ().id ()] = &msgObj;
+		}
 	}
 }
