@@ -98,7 +98,7 @@ namespace Xoox
 		{
 		case Type::ChatMessage:
 		case Type::MUCMessage:
-			Connection_->SendMessage (this);
+			Connection_->GetAccount ()->SendMessage (*this);
 			qobject_cast<ICLEntry*> (OtherPart ())->gotMessage (this);
 			break;
 		default:

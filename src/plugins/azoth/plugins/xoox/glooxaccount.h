@@ -172,6 +172,7 @@ namespace Xoox
 		GlooxProtocol* GetParentProtocol () const override;
 		AccountFeatures GetAccountFeatures () const override;
 		QList<QObject*> GetCLEntries () override;
+		void SendMessage (GlooxMessage&);
 		QString GetAccountName () const override;
 		QString GetOurNick () const override;
 		void RenameAccount (const QString&) override;

@@ -281,6 +281,11 @@ namespace Xoox
 				QList<QObject*> ();
 	}
 
+	void GlooxAccount::SendMessage (GlooxMessage& msg)
+	{
+		ClientConnection_->SendMessage (&msg);
+	}
+
 	QString GlooxAccount::GetAccountName () const
 	{
 		return Name_;
