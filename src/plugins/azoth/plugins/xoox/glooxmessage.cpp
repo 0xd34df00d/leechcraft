@@ -97,8 +97,6 @@ namespace Xoox
 		switch (Type_)
 		{
 		case Type::ChatMessage:
-			Message_.setReceiptRequested (true);
-			[[fallthrough]];
 		case Type::MUCMessage:
 			Connection_->SendMessage (this);
 			qobject_cast<ICLEntry*> (OtherPart ())->gotMessage (this);

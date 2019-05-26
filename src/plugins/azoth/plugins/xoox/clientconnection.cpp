@@ -619,9 +619,12 @@ namespace Xoox
 
 	void ClientConnection::SendMessage (GlooxMessage *msgObj)
 	{
-		QXmppMessage msg = msgObj->GetNativeMessage ();
-		if (msg.isReceiptRequested ())
+		auto msg = msgObj->GetNativeMessage ();
+		if (msgObj->GetMessageType () == IMessage::Type::ChatMessage)
+		{
+			msg.setReceiptRequested (true);
 			UndeliveredMessages_ [msg.id ()] = msgObj;
+		}
 
 		CryptHandler_->ProcessOutgoing (msg, msgObj);
 
