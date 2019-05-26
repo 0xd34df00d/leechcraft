@@ -182,6 +182,11 @@ namespace Xoox
 		Message_.setXhtml (html);
 	}
 
+	void GlooxMessage::SetReceiptRequested (bool request)
+	{
+		Message_.setReceiptRequested (request);
+	}
+
 	void GlooxMessage::SetDelivered (bool delivered)
 	{
 		IsDelivered_ = delivered;

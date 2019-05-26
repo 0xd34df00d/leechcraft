@@ -95,6 +95,7 @@ namespace Xoox
 		QString GetRichBody () const override;
 		void SetRichBody (const QString&) override;
 
+		void SetReceiptRequested (bool);
 		void SetDelivered (bool);
 
 		void SetVariant (const QString&);

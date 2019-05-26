@@ -619,13 +619,13 @@ namespace Xoox
 
 	void ClientConnection::SendMessage (GlooxMessage *msgObj)
 	{
-		auto msg = msgObj->GetNativeMessage ();
 		if (msgObj->GetMessageType () == IMessage::Type::ChatMessage)
 		{
-			msg.setReceiptRequested (true);
-			UndeliveredMessages_ [msg.id ()] = msgObj;
+			msgObj->SetReceiptRequested (true);
+			UndeliveredMessages_ [msgObj->GetNativeMessage ().id ()] = msgObj;
 		}
 
+		auto msg = msgObj->GetNativeMessage ();
 		CryptHandler_->ProcessOutgoing (msg, msgObj);
 
 		if (msgObj->IsOTRMessage ())
