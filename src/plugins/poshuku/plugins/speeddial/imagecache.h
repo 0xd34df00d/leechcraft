@@ -56,7 +56,7 @@ namespace SpeedDial
 
 		QList<QWebPage*> PendingLoads_;
 	public:
-		ImageCache (const ICoreProxy_ptr&);
+		explicit ImageCache (const ICoreProxy_ptr&);
 
 		QImage GetSnapshot (const QUrl&);
 		QSize GetThumbSize () const;
