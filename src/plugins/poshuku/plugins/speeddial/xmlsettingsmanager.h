@@ -35,8 +35,6 @@ namespace LeechCraft::Poshuku::SpeedDial
 {
 	class XmlSettingsManager : public Util::BaseSettingsManager
 	{
-		Q_OBJECT
-
 		XmlSettingsManager ();
 	protected:
 		void EndSettings (QSettings*) const override;
