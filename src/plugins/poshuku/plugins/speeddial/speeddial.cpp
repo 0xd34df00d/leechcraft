@@ -52,7 +52,7 @@ namespace SpeedDial
 		qRegisterMetaType<AddrList_t> ("LeechCraft::Poshuku::SpeedDial::AddrList_t");
 		qRegisterMetaTypeStreamOperators<AddrList_t> ();
 
-		XSD_.reset (new Util::XmlSettingsDialog);
+		XSD_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "poshukuspeeddialsettings.xml");
 
 		CustomSites_ = new CustomSitesManager;
@@ -90,9 +90,7 @@ namespace SpeedDial
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
 	{
-		QSet<QByteArray> result;
-		result << "org.LeechCraft.Poshuku.Plugins/1.0";
-		return result;
+		return { "org.LeechCraft.Poshuku.Plugins/1.0" };
 	}
 
 	void Plugin::initPlugin (QObject *object)
