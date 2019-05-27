@@ -77,25 +77,25 @@ namespace LHTR
 	public:
 		explicit RichEditorWidget (ICoreProxy_ptr, QWidget* = nullptr);
 
-		QString GetContents (ContentType) const;
-		void SetContents (QString, ContentType);
-		void AppendAction (QAction*);
-		void AppendSeparator ();
-		void RemoveAction (QAction*);
-		QAction* GetEditorAction (EditorAction);
-		void SetBackgroundColor (const QColor&, ContentType);
-		QWidget* GetWidget ();
-		QObject* GetQObject ();
+		QString GetContents (ContentType) const override;
+		void SetContents (QString, ContentType) override;
+		void AppendAction (QAction*) override;
+		void AppendSeparator () override;
+		void RemoveAction (QAction*) override;
+		QAction* GetEditorAction (EditorAction) override;
+		void SetBackgroundColor (const QColor&, ContentType) override;
+		QWidget* GetWidget () override;
+		QObject* GetQObject () override;
 
-		void InsertHTML (const QString&);
-		void SetCustomTags (const QList<CustomTag>&);
-		QAction* AddInlineTagInserter (const QString& tagName, const QVariantMap& params);
-		void ExecJS (const QString&);
+		void InsertHTML (const QString&) override;
+		void SetCustomTags (const QList<CustomTag>&) override;
+		QAction* AddInlineTagInserter (const QString& tagName, const QVariantMap& params) override;
+		void ExecJS (const QString&) override;
 
-		void SetFontFamily (FontFamily, const QFont&);
-		void SetFontSize (FontSize, int);
+		void SetFontFamily (FontFamily, const QFont&) override;
+		void SetFontSize (FontSize, int) override;
 
-		bool eventFilter (QObject*, QEvent*);
+		bool eventFilter (QObject*, QEvent*) override;
 	private:
 		void InternalSetBgColor (const QColor&, ContentType);
 
@@ -149,7 +149,7 @@ namespace LHTR
 		void handleFind ();
 		void handleReplace ();
 	signals:
-		void textChanged ();
+		void textChanged () override;
 	};
 }
 }
