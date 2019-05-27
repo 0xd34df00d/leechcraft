@@ -160,17 +160,12 @@ namespace SpeedDial
 					QString js;
 					js += "(function() {";
 					js += "var image = document.getElementById(" + elemId + ");";
-					js += "if (image == null) return false;";
-					js += "image.src = '" + Util::GetAsBase64Src (image) + "';";
-					js += "return true;";
+					js += "if (image !== null) image.src = '" + Util::GetAsBase64Src (image) + "';";
 					js += "})()";
 
 					View_->EvaluateJS (js,
-							[this] (const QVariant& res)
+							[this] (const QVariant&)
 							{
-								if (!res.toBool ())
-									return;
-
 								if (!--PendingImages_)
 									deleteLater ();
 							});
