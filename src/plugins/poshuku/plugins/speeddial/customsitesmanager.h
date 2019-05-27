@@ -37,11 +37,7 @@
 
 class QStandardItemModel;
 
-namespace LeechCraft
-{
-namespace Poshuku
-{
-namespace SpeedDial
+namespace LeechCraft::Poshuku::SpeedDial
 {
 	typedef QPair<QString, QUrl> Addr_t;
 	typedef QList<Addr_t> AddrList_t;
@@ -67,8 +63,6 @@ namespace SpeedDial
 		void modifyRequested (const QString&, int, const QVariantList&);
 		void removeRequested (const QString&, const QModelIndexList&);
 	};
-}
-}
 }
 
 Q_DECLARE_METATYPE (LeechCraft::Poshuku::SpeedDial::AddrList_t)

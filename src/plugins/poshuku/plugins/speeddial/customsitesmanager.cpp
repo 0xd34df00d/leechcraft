@@ -33,11 +33,7 @@
 #include <QtDebug>
 #include <xmlsettingsdialog/datasourceroles.h>
 
-namespace LeechCraft
-{
-namespace Poshuku
-{
-namespace SpeedDial
+namespace LeechCraft::Poshuku::SpeedDial
 {
 	CustomSitesManager::CustomSitesManager ()
 	: Model_ { new QStandardItemModel { this } }
@@ -129,6 +125,4 @@ namespace SpeedDial
 
 		SaveSettings ();
 	}
-}
-}
 }

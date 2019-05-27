@@ -38,9 +38,7 @@ class QWebView;
 class QUrl;
 class QImage;
 
-namespace LeechCraft
-{
-namespace Poshuku
+namespace LeechCraft::Poshuku
 {
 class IProxyObject;
 class IWebView;
@@ -76,6 +74,5 @@ namespace SpeedDial
 	private slots:
 		void handleLoadStarted ();
 	};
-}
 }
 }

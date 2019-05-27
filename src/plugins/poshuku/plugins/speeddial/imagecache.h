@@ -38,11 +38,7 @@ class QSize;
 class QWebPage;
 class QImage;
 
-namespace LeechCraft
-{
-namespace Poshuku
-{
-namespace SpeedDial
+namespace LeechCraft::Poshuku::SpeedDial
 {
 	class ImageCache : public QObject
 	{
@@ -67,6 +63,4 @@ namespace SpeedDial
 	signals:
 		void gotSnapshot (const QUrl&, const QImage&);
 	};
-}
-}
 }

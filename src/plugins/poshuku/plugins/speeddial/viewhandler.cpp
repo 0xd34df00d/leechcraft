@@ -46,11 +46,7 @@
 #include "xmlsettingsmanager.h"
 #include "customsitesmanager.h"
 
-namespace LeechCraft
-{
-namespace Poshuku
-{
-namespace SpeedDial
+namespace LeechCraft::Poshuku::SpeedDial
 {
 	struct LoadResult
 	{
@@ -321,6 +317,4 @@ namespace SpeedDial
 		if (!PendingImages_)
 			deleteLater ();
 	}
-}
-}
 }

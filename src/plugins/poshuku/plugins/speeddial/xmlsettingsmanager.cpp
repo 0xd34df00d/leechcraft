@@ -30,11 +30,7 @@
 #include "xmlsettingsmanager.h"
 #include <QCoreApplication>
 
-namespace LeechCraft
-{
-namespace Poshuku
-{
-namespace SpeedDial
+namespace LeechCraft::Poshuku::SpeedDial
 {
 	XmlSettingsManager::XmlSettingsManager ()
 	: Util::BaseSettingsManager (true)
@@ -57,6 +53,4 @@ namespace SpeedDial
 		return new QSettings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Poshuku_SpeedDial");
 	}
-}
-}
 }

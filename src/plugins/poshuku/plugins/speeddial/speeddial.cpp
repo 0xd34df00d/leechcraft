@@ -37,11 +37,7 @@
 #include "customsitesmanager.h"
 #include "xmlsettingsmanager.h"
 
-namespace LeechCraft
-{
-namespace Poshuku
-{
-namespace SpeedDial
+namespace LeechCraft::Poshuku::SpeedDial
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
@@ -108,8 +104,6 @@ namespace SpeedDial
 	{
 		return XSD_;
 	}
-}
-}
 }
 
 LC_EXPORT_PLUGIN (leechcraft_poshuku_speeddial, LeechCraft::Poshuku::SpeedDial::Plugin);

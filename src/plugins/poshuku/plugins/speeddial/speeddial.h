@@ -39,9 +39,7 @@
 
 class QWebView;
 
-namespace LeechCraft
-{
-namespace Poshuku
+namespace LeechCraft::Poshuku
 {
 class IProxyObject;
 
@@ -82,6 +80,5 @@ namespace SpeedDial
 
 		void hookBrowserWidgetInitialized (LeechCraft::IHookProxy_ptr, QObject*);
 	};
-}
 }
 }
