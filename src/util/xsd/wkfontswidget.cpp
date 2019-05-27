@@ -83,17 +83,6 @@ namespace Util
 			connect (pair.second,
 					Util::Overload<int> (&QSpinBox::valueChanged),
 					[this, pair] { PendingSizeChanges_ [pair.first] = pair.second->value (); });
-
-		ResetZoom ();
-
-		connect (Ui_->Zoom_,
-				Util::Overload<int> (&QSpinBox::valueChanged),
-				[this] { IsFontZoomDirty_ = true; });
-	}
-
-	void WkFontsWidget::SetFontZoomTooltip (const QString& label)
-	{
-		Ui_->Zoom_->setToolTip (label);
 	}
 
 	void WkFontsWidget::RegisterSettable (IWkFontsSettable *settable)
@@ -108,8 +97,6 @@ namespace Util
 
 		for (const auto& pair : Util::Stlize (Size2Spinbox_))
 			settable->SetFontSize (pair.first, pair.second->value ());
-
-		settable->SetFontSizeMultiplier (Ui_->Zoom_->value () / 100.);
 	}
 
 	void WkFontsWidget::SetSize (IWkFontsSettable::FontSize type, int size)
@@ -136,12 +123,6 @@ namespace Util
 			const auto& option = Size2Name_ [pair.first];
 			pair.second->setValue (BSM_->Property (option, 10).toInt ());
 		}
-	}
-
-	void WkFontsWidget::ResetZoom ()
-	{
-		const auto factor = BSM_->Property ("FontSizeMultiplier", 1).toDouble ();
-		Ui_->Zoom_->setValue (factor * 100);
 	}
 
 	void WkFontsWidget::ApplyPendingSizeChanges ()
@@ -199,30 +180,16 @@ namespace Util
 				settable->SetFontFamily (pair.first, pair.second);
 		}
 
-		if (IsFontZoomDirty_)
-		{
-			const auto factor = Ui_->Zoom_->value () / 100.;
-
-			BSM_->setProperty ("FontSizeMultiplier", factor);
-			emit sizeMultiplierChanged (factor);
-
-			for (const auto settable : Settables_)
-				settable->SetFontSizeMultiplier (factor);
-		}
-
 		PendingFontChanges_.clear ();
-		IsFontZoomDirty_ = false;
 	}
 
 	void WkFontsWidget::reject ()
 	{
 		ResetFontChoosers ();
 		ResetSizeChoosers ();
-		ResetZoom ();
 
 		PendingFontChanges_.clear ();
 		PendingSizeChanges_.clear ();
-		IsFontZoomDirty_ = false;
 	}
 }
 }

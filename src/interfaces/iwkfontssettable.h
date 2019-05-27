@@ -93,14 +93,6 @@ public:
 	 * @param[in] size The font size to set.
 	 */
 	virtual void SetFontSize (FontSize type, int size) = 0;
-
-	/** @brief Sets the font size multiplier to the given \em factor.
-	 *
-	 * See also <code>QWebView::setTextSizeMultiplier()</code>.
-	 *
-	 * @param[in] factor The font size multiplier.
-	 */
-	virtual void SetFontSizeMultiplier (qreal factor) = 0;
 };
 
 inline uint qHash (IWkFontsSettable::FontFamily f)

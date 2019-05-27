@@ -460,11 +460,6 @@ namespace LHTR
 		Ui_.View_->settings ()->setFontSize (static_cast<QWebSettings::FontSize> (font), size);
 	}
 
-	void RichEditorWidget::SetFontSizeMultiplier (qreal factor)
-	{
-		Ui_.View_->setTextSizeMultiplier (factor);
-	}
-
 	bool RichEditorWidget::eventFilter (QObject*, QEvent *event)
 	{
 		if (event->type () != QEvent::KeyPress && event->type () != QEvent::KeyRelease)

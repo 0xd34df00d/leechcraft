@@ -462,10 +462,6 @@ namespace WebEngineView
 		settings ()->setFontSize (webSize, size);
 	}
 
-	void CustomWebView::SetFontSizeMultiplier (qreal factor)
-	{
-	}
-
 	QObject* CustomWebView::GetQObject ()
 	{
 		return this;

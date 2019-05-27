@@ -776,12 +776,6 @@ namespace Poshuku
 			iwfs->SetFontSize (type, size);
 	}
 
-	void BrowserWidget::SetFontSizeMultiplier (qreal factor)
-	{
-		if (const auto iwfs = qobject_cast<IWkFontsSettable*> (WebView_->GetQWidget ()))
-			iwfs->SetFontSizeMultiplier (factor);
-	}
-
 	void BrowserWidget::SetOnLoadScrollPoint (const QPoint& sp)
 	{
 		OnLoadPos_ = sp;

@@ -484,11 +484,6 @@ namespace Azoth
 		Ui_.View_->settings ()->setFontSize (static_cast<QWebSettings::FontSize> (type), size);
 	}
 
-	void ChatTab::SetFontSizeMultiplier (qreal factor)
-	{
-		Ui_.View_->setTextSizeMultiplier (factor);
-	}
-
 	void ChatTab::ShowUsersList ()
 	{
 		IMUCEntry *muc = GetEntry<IMUCEntry> ();

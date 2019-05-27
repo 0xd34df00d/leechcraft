@@ -102,8 +102,6 @@ namespace Util
 		QHash<IWkFontsSettable::FontSize, int> PendingSizeChanges_;
 
 		QList<IWkFontsSettable*> Settables_;
-
-		bool IsFontZoomDirty_ = false;
 	public:
 		/** @brief Creates the fonts settings widget.
 		 *
@@ -112,12 +110,6 @@ namespace Util
 		 * @param[in] parent The parent widget for this widget.
 		 */
 		WkFontsWidget (Util::BaseSettingsManager *bsm, QWidget *parent = nullptr);
-
-		/** @brief Sets the tooltip for the font size multiplier control.
-		 *
-		 * @param[in] tooltip The tooltip string.
-		 */
-		void SetFontZoomTooltip (const QString& tooltip);
 
 		/** @brief Registers an object to be automatically updated
 		 * whenever font settings change.
@@ -140,7 +132,6 @@ namespace Util
 	private:
 		void ResetFontChoosers ();
 		void ResetSizeChoosers ();
-		void ResetZoom ();
 
 		void ApplyPendingSizeChanges ();
 	private slots:

@@ -67,7 +67,6 @@ namespace Snails
 
 		void SetFontFamily (FontFamily family, const QFont& font);
 		void SetFontSize (FontSize type, int size);
-		void SetFontSizeMultiplier (qreal factor);
 	signals:
 		void textChanged ();
 	};

@@ -515,11 +515,6 @@ namespace WebKitView
 		settings ()->setFontSize (static_cast<QWebSettings::FontSize> (type), size);
 	}
 
-	void CustomWebView::SetFontSizeMultiplier (qreal factor)
-	{
-		setTextSizeMultiplier (factor);
-	}
-
 	QObject* CustomWebView::GetQObject ()
 	{
 		return this;

@@ -119,7 +119,6 @@ namespace WebKitView
 
 		void SetFontFamily (FontFamily family, const QFont& font) override;
 		void SetFontSize (FontSize type, int size) override;
-		void SetFontSizeMultiplier (qreal factor) override;
 		QObject* GetQObject () override;
 
 		void Load (const QNetworkRequest&,

@@ -135,9 +135,5 @@ namespace Snails
 
 		cursor.setCharFormat (fmt);
 	}
-
-	void TextEditorAdaptor::SetFontSizeMultiplier (qreal)
-	{
-	}
 }
 }

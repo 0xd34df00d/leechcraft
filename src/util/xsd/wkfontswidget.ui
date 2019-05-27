@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>621</width>
-    <height>562</height>
+    <height>539</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -141,29 +141,6 @@
        <widget class="QSpinBox" name="SizeFixedWidth_">
         <property name="suffix">
          <string> px</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="label_10">
-        <property name="text">
-         <string>Font zoom:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="1">
-       <widget class="QSpinBox" name="Zoom_">
-        <property name="suffix">
-         <string notr="true">%</string>
-        </property>
-        <property name="minimum">
-         <number>10</number>
-        </property>
-        <property name="maximum">
-         <number>1600</number>
-        </property>
-        <property name="value">
-         <number>100</number>
         </property>
        </widget>
       </item>

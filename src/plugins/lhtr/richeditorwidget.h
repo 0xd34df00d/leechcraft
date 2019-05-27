@@ -94,7 +94,6 @@ namespace LHTR
 
 		void SetFontFamily (FontFamily, const QFont&);
 		void SetFontSize (FontSize, int);
-		void SetFontSizeMultiplier (qreal);
 
 		bool eventFilter (QObject*, QEvent*);
 	private:

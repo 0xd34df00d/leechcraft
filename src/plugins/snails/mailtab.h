@@ -123,7 +123,6 @@ namespace Snails
 		QObject* GetQObject ();
 		void SetFontFamily (FontFamily, const QFont&);
 		void SetFontSize (FontSize type, int size);
-		void SetFontSizeMultiplier (qreal factor);
 	private:
 		void FillCommonActions (Util::ShortcutManager*);
 		void FillMailActions (Util::ShortcutManager*);

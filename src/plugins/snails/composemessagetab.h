@@ -86,7 +86,6 @@ namespace Snails
 		QObject* GetQObject ();
 		void SetFontFamily (FontFamily, const QFont&);
 		void SetFontSize (FontSize, int);
-		void SetFontSizeMultiplier (qreal);
 
 		void SelectAccount (const Account_ptr&);
 		void PrepareLinked (MsgType, const MessageInfo&, const MessageBodies&);

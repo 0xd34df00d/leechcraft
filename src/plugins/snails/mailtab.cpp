@@ -279,11 +279,6 @@ namespace Snails
 		Ui_.MailView_->settings ()->setFontSize (static_cast<QWebSettings::FontSize> (type), size);
 	}
 
-	void MailTab::SetFontSizeMultiplier (qreal factor)
-	{
-		Ui_.MailView_->setTextSizeMultiplier (factor);
-	}
-
 	void MailTab::FillCommonActions (Util::ShortcutManager *sm)
 	{
 		TabToolbar_->addAction (MakeAction ("MailTab.Fetch", sm, this, SLOT (handleFetchNewMail ())));

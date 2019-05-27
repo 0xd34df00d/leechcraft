@@ -168,7 +168,6 @@ namespace Azoth
 		QObject* GetQObject ();
 		void SetFontFamily (FontFamily, const QFont&);
 		void SetFontSize (FontSize type, int size);
-		void SetFontSizeMultiplier (qreal factor);
 
 		void ShowUsersList ();
 

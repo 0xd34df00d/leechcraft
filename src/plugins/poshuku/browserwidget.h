@@ -166,7 +166,6 @@ namespace Poshuku
 
 		void SetFontFamily (FontFamily family, const QFont& font) override;
 		void SetFontSize (FontSize type, int size) override;
-		void SetFontSizeMultiplier (qreal factor) override;
 
 		void SetOnLoadScrollPoint (const QPoint&);
 	protected:

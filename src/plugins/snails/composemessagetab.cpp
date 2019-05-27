@@ -134,13 +134,6 @@ namespace Snails
 				iwfs->SetFontSize (type, size);
 	}
 
-	void ComposeMessageTab::SetFontSizeMultiplier (qreal factor)
-	{
-		for (const auto editor : Ui_.Editor_->GetAllEditors ())
-			if (const auto iwfs = qobject_cast<IWkFontsSettable*> (editor->GetQObject ()))
-				iwfs->SetFontSizeMultiplier (factor);
-	}
-
 	void ComposeMessageTab::SelectAccount (const Account_ptr& account)
 	{
 		const auto& var = QVariant::fromValue<Account_ptr> (account);
