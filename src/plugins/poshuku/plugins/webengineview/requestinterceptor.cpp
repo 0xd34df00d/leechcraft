@@ -68,6 +68,9 @@ namespace WebEngineView
 			HANDLE (CspReport)
 			HANDLE (PluginResource)
 			HANDLE (Unknown)
+			case QWebEngineUrlRequestInfo::ResourceTypeLast:
+				qWarning () << Q_FUNC_INFO << "got ResourceTypeLast";
+				return IInterceptableRequests::ResourceType::Unknown;
 			}
 #undef HANDLE
 
