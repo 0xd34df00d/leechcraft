@@ -300,15 +300,6 @@ namespace WebEngineView
 		page ()->setZoomFactor (factor);
 	}
 
-	double CustomWebView::GetTextSizeMultiplier () const
-	{
-		return 1;
-	}
-
-	void CustomWebView::SetTextSizeMultiplier (double)
-	{
-	}
-
 	QString CustomWebView::GetDefaultTextEncoding () const
 	{
 		return settings ()->defaultTextEncoding ();

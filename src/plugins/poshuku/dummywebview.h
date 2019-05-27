@@ -67,8 +67,6 @@ namespace Poshuku
 		void SetScrollPosition (const QPoint&) override;
 		double GetZoomFactor () const override;
 		void SetZoomFactor (double) override;
-		double GetTextSizeMultiplier () const override;
-		void SetTextSizeMultiplier (double) override;
 		QString GetDefaultTextEncoding () const override;
 		void SetDefaultTextEncoding (const QString&) override;
 		void InitiateFind (const QString&) override;

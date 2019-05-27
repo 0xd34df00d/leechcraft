@@ -215,10 +215,6 @@ namespace Poshuku
 		ZoomOut_ = new QAction (this);
 		ZoomReset_ = new QAction (this);
 
-		TextZoomIn_ = new QAction (this);
-		TextZoomOut_ = new QAction (this);
-		TextZoomReset_ = new QAction (this);
-
 		HistoryAction_ = new QAction (tr ("Open history"),
 				this);
 		HistoryAction_->setCheckable (true);
@@ -272,10 +268,6 @@ namespace Poshuku
 			WindowMenus_ [view] << ZoomIn_;
 			WindowMenus_ [view] << ZoomOut_;
 			WindowMenus_ [view] << ZoomReset_;
-			WindowMenus_ [view] << Util::CreateSeparator (this);
-			WindowMenus_ [view] << TextZoomIn_;
-			WindowMenus_ [view] << TextZoomOut_;
-			WindowMenus_ [view] << TextZoomReset_;
 			WindowMenus_ [view] << Util::CreateSeparator (this);
 		}
 		proxy = std::make_shared<Util::DefaultHookProxy> ();
@@ -356,19 +348,6 @@ namespace Poshuku
 		fullZoomer->InstallScrollFilter (webViewWidget,
 				[] (QWheelEvent *ev) { return ev->modifiers () == Qt::ControlModifier; });
 		fullZoomer->SetActionsTriple (ZoomIn_, ZoomOut_, ZoomReset_);
-
-		const auto textZoomer = new Zoomer
-		{
-			[this] { return WebView_->GetTextSizeMultiplier (); },
-			[this] (qreal f) { WebView_->SetTextSizeMultiplier (f); },
-			this
-		};
-		textZoomer->InstallScrollFilter (webViewWidget,
-				[] (QWheelEvent *ev)
-				{
-					return ev->modifiers () == (Qt::ControlModifier | Qt::ShiftModifier);
-				});
-		textZoomer->SetActionsTriple (TextZoomIn_, TextZoomOut_, TextZoomReset_);
 
 		connect (Ui_.URLFrame_,
 				SIGNAL (load (QString)),
@@ -1773,9 +1752,6 @@ namespace Poshuku
 		REG (ZoomIn_);
 		REG (ZoomOut_);
 		REG (ZoomReset_);
-		REG (TextZoomIn_);
-		REG (TextZoomOut_);
-		REG (TextZoomReset_);
 #undef REG
 	}
 }

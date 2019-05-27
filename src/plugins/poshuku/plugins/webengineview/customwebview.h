@@ -87,8 +87,6 @@ namespace WebEngineView
 		void SetScrollPosition (const QPoint& point) override;
 		double GetZoomFactor () const override;
 		void SetZoomFactor (double d) override;
-		double GetTextSizeMultiplier () const override;
-		void SetTextSizeMultiplier (double d) override;
 
 		QString GetDefaultTextEncoding () const override;
 		void SetDefaultTextEncoding (const QString& encoding) override;

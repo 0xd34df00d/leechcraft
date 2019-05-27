@@ -355,16 +355,6 @@ namespace WebKitView
 		setZoomFactor (factor);
 	}
 
-	double CustomWebView::GetTextSizeMultiplier () const
-	{
-		return textSizeMultiplier ();
-	}
-
-	void CustomWebView::SetTextSizeMultiplier (double factor)
-	{
-		setTextSizeMultiplier (factor);
-	}
-
 	QString CustomWebView::GetDefaultTextEncoding () const
 	{
 		return settings ()->defaultTextEncoding ();

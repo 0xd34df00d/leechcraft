@@ -130,15 +130,6 @@ namespace Poshuku
 	{
 	}
 
-	double DummyWebView::GetTextSizeMultiplier () const
-	{
-		return 1;
-	}
-
-	void DummyWebView::SetTextSizeMultiplier (double)
-	{
-	}
-
 	QString DummyWebView::GetDefaultTextEncoding () const
 	{
 		return {};
