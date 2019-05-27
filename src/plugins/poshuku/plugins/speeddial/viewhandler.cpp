@@ -151,9 +151,30 @@ namespace SpeedDial
 			LoadStatistics ();
 
 		connect (ImageCache_,
-				SIGNAL (gotSnapshot (QUrl, QImage)),
+				&ImageCache::gotSnapshot,
 				this,
-				SLOT (handleSnapshot (QUrl, QImage)));
+				[this] (const QUrl& url, const QImage& image)
+				{
+					const auto& elemId = QString::number (qHash (url));
+
+					QString js;
+					js += "(function() {";
+					js += "var image = document.getElementById(" + elemId + ");";
+					js += "if (image == null) return false;";
+					js += "image.src = '" + Util::GetAsBase64Src (image) + "';";
+					js += "return true;";
+					js += "})()";
+
+					View_->EvaluateJS (js,
+							[this] (const QVariant& res)
+							{
+								if (!res.toBool ())
+									return;
+
+								if (!--PendingImages_)
+									deleteLater ();
+							});
+				});
 	}
 
 	void ViewHandler::LoadStatistics ()
@@ -302,30 +323,6 @@ namespace SpeedDial
 
 		if (!PendingImages_)
 			deleteLater ();
-	}
-
-	void ViewHandler::handleSnapshot (const QUrl& url, const QImage& image)
-	{
-		const auto& elemId = QString::number (qHash (url));
-
-		QString js;
-		js += "(function() {";
-		js += "var image = document.getElementById(" + elemId + ");";
-		js += "if (image == null) return false;";
-		js += "image.src = '" + Util::GetAsBase64Src (image) + "';";
-		js += "return true;";
-		js += "})()";
-
-		View_->EvaluateJS (js,
-				[this] (const QVariant& res)
-				{
-					if (!res.toBool ())
-						return;
-
-					if (!--PendingImages_)
-						deleteLater ();
-				});
-
 	}
 }
 }

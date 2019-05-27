@@ -75,8 +75,6 @@ namespace SpeedDial
 		void WriteTable (QXmlStreamWriter&, const TopList_t&, size_t, size_t, const QString&);
 	private slots:
 		void handleLoadStarted ();
-
-		void handleSnapshot (const QUrl&, const QImage&);
 	};
 }
 }
