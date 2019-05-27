@@ -163,12 +163,10 @@ namespace SpeedDial
 					js += "if (image !== null) image.src = '" + Util::GetAsBase64Src (image) + "';";
 					js += "})()";
 
-					View_->EvaluateJS (js,
-							[this] (const QVariant&)
-							{
-								if (!--PendingImages_)
-									deleteLater ();
-							});
+					View_->EvaluateJS (js);
+
+					if (!--PendingImages_)
+						deleteLater ();
 				});
 	}
 
