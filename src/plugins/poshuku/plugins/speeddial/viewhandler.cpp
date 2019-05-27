@@ -123,6 +123,19 @@ namespace SpeedDial
 
 			return { topPages, topSites };
 		}
+
+		QString GetImageSetterJS (const QString& elemId, const QString& url)
+		{
+			return QString {R"(
+(function() {
+	let image = document.getElementById('%1');
+	if (image !== null)
+		image.src = '%2';
+})()
+					)"}
+					.arg (elemId)
+					.arg (url);
+		}
 	}
 
 	const size_t Rows = 2;
@@ -155,16 +168,7 @@ namespace SpeedDial
 				this,
 				[this] (const QUrl& url, const QImage& image)
 				{
-					const auto& elemId = QString::number (qHash (url));
-
-					QString js;
-					js += "(function() {";
-					js += "var image = document.getElementById(" + elemId + ");";
-					js += "if (image !== null) image.src = '" + Util::GetAsBase64Src (image) + "';";
-					js += "})()";
-
-					View_->EvaluateJS (js);
-
+					View_->EvaluateJS (GetImageSetterJS (QString::number (qHash (url)), Util::GetAsBase64Src (image)));
 					if (!--PendingImages_)
 						deleteLater ();
 				});
