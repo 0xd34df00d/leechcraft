@@ -75,7 +75,7 @@ namespace LHTR
 
 		QAction *ToggleView_;
 	public:
-		RichEditorWidget (ICoreProxy_ptr, QWidget* = 0);
+		explicit RichEditorWidget (ICoreProxy_ptr, QWidget* = nullptr);
 
 		QString GetContents (ContentType) const;
 		void SetContents (QString, ContentType);
