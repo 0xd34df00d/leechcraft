@@ -136,15 +136,24 @@ namespace SpeedDial
 	, ImageCache_ { cache }
 	, PoshukuProxy_ { proxy }
 	{
+		if (XmlSettingsManager::Instance ().property ("UseStaticList").toBool ())
+		{
+			const auto& topList = customManager->GetTopList ();
+			if (topList.isEmpty ())
+			{
+				deleteLater ();
+				return;
+			}
+
+			WriteTables ({ { {}, topList } });
+		}
+		else
+			LoadStatistics ();
+
 		connect (ImageCache_,
 				SIGNAL (gotSnapshot (QUrl, QImage)),
 				this,
 				SLOT (handleSnapshot (QUrl, QImage)));
-
-		if (XmlSettingsManager::Instance ().property ("UseStaticList").toBool ())
-			WriteTables ({ { {}, customManager->GetTopList () } });
-		else
-			LoadStatistics ();
 	}
 
 	void ViewHandler::LoadStatistics ()
