@@ -103,7 +103,9 @@ namespace WebEngineView
 		void SetFontSize (FontSize type, int size) override;
 		QObject* GetQObject () override;
 	protected:
+		void childEvent (QChildEvent*) override;
 		void contextMenuEvent (QContextMenuEvent*) override;
+		bool eventFilter (QObject*, QEvent*) override;
 	signals:
 		void earliestViewLayout () override;
 		void linkHovered (const QString&, const QString&, const QString&) override;

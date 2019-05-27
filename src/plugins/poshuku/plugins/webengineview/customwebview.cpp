@@ -37,6 +37,8 @@
 #include <QPrinter>
 #include <QPrintDialog>
 #include <QContextMenuEvent>
+#include <QMouseEvent>
+#include <QAction>
 #include <util/sll/unreachable.h>
 #include <interfaces/poshuku/iwebviewhistory.h>
 #include <interfaces/poshuku/iproxyobject.h>
@@ -467,6 +469,22 @@ namespace WebEngineView
 		return this;
 	}
 
+	void CustomWebView::childEvent (QChildEvent *event)
+	{
+		const auto child = event->child ();
+		switch (event->type ())
+		{
+		case QEvent::ChildAdded:
+			child->installEventFilter (this);
+			break;
+		case QEvent::ChildRemoved:
+			child->removeEventFilter (this);
+			break;
+		default:
+			break;
+		}
+	}
+
 	void CustomWebView::contextMenuEvent (QContextMenuEvent *event)
 	{
 		const auto& data = page ()->contextMenuData ();
@@ -479,6 +497,23 @@ namespace WebEngineView
 					data.mediaUrl (),
 					{}
 				});
+	}
+
+	bool CustomWebView::eventFilter (QObject *src, QEvent *event)
+	{
+		if (event->type () != QEvent::MouseButtonPress)
+			return QWebEngineView::eventFilter (src, event);
+
+		const auto me = static_cast<QMouseEvent*> (event);
+		const bool mBack = me->button () == Qt::XButton1;
+		const bool mForward = me->button () == Qt::XButton2;
+		if (mBack || mForward)
+		{
+			pageAction (mBack ? QWebEnginePage::Back : QWebEnginePage::Forward)->trigger ();
+			return true;
+		}
+		else
+			return QWebEngineView::eventFilter (src, event);
 	}
 }
 }
