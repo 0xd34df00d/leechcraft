@@ -400,6 +400,9 @@ namespace CleanWeb
 		auto interceptor = [this] (const IInterceptableRequests::RequestInfo& info)
 				-> IInterceptableRequests::Result_t
 		{
+			if (info.RequestUrl_.scheme () == "data")
+				return IInterceptableRequests::Allow {};
+
 			if (!ShouldReject (info, ExceptionsCache_, FilterItemsCache_))
 				return IInterceptableRequests::Allow {};
 
