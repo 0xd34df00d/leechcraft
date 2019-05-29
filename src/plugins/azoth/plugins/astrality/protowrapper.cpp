@@ -32,6 +32,8 @@
 #include <AccountManager>
 #include <PendingReady>
 #include <PendingAccount>
+#include <util/sll/prelude.h>
+#include <util/sll/functional.h>
 #include <util/util.h>
 #include <util/xpc/util.h>
 #include "accountregfirstpage.h"
@@ -141,10 +143,7 @@ namespace Astrality
 
 	QList<QObject*> ProtoWrapper::GetRegisteredAccounts ()
 	{
-		QList<QObject*> result;
-		Q_FOREACH (auto acc, Accounts_)
-			result << acc;
-		return result;
+		return Util::Map (Accounts_, Util::Upcast<QObject*>);
 	}
 
 	QObject* ProtoWrapper::GetParentProtocolPlugin () const

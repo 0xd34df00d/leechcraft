@@ -28,6 +28,8 @@
  **********************************************************************/
 
 #include "cmwrapper.h"
+#include <util/sll/prelude.h>
+#include <util/sll/functional.h>
 #include <QtDebug>
 #include <ConnectionManager>
 #include <PendingReady>
@@ -52,10 +54,7 @@ namespace Astrality
 
 	QList<QObject*> CMWrapper::GetProtocols () const
 	{
-		QList<QObject*> result;
-		Q_FOREACH (auto pw, ProtoWrappers_)
-			result << pw;
-		return result;
+		return Util::Map (ProtoWrappers_, Util::Upcast<QObject*>);
 	}
 
 	void CMWrapper::handleCMReady (Tp::PendingOperation *op)

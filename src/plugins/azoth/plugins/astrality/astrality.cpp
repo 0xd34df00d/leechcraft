@@ -34,6 +34,7 @@
 #include <Debug>
 #include <ConnectionManager>
 #include <PendingStringList>
+#include <util/sll/prelude.h>
 #include <util/util.h>
 #include <interfaces/azoth/iprotocol.h>
 #include <interfaces/azoth/iaccount.h>
@@ -109,10 +110,7 @@ namespace Astrality
 
 	QList<QObject*> Plugin::GetProtocols () const
 	{
-		QList<QObject*> result;
-		Q_FOREACH (auto cmw, Wrappers_)
-			result << cmw->GetProtocols ();
-		return result;
+		return Util::ConcatMap (Wrappers_, &CMWrapper::GetProtocols);
 	}
 
 	void Plugin::initPlugin (QObject *proxy)

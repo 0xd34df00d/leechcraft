@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "vcarddialog.h"
+#include <util/sll/prelude.h>
 
 namespace LeechCraft
 {
@@ -55,9 +56,8 @@ namespace Astrality
 			return;
 		}
 
-		QStringList strings;
-		Q_FOREACH (const Tp::ContactInfoField& field, list)
-			strings << field.fieldName + ": " + field.fieldValue.join ("; ");
+		const auto& strings = Util::Map (list,
+				[] (const auto& field) { return field.fieldName + ": " + field.fieldValue.join ("; "); });
 		Ui_.InfoFields_->setPlainText (strings.join ("\n"));
 	}
 }

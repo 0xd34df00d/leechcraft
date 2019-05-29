@@ -40,6 +40,8 @@
 #include <ContactManager>
 #include <PendingReady>
 #include <util/util.h>
+#include <util/sll/functional.h>
+#include <util/sll/prelude.h>
 #include <util/xpc/util.h>
 #include <util/xpc/passutils.h>
 #include "astralityutil.h"
@@ -111,10 +113,7 @@ namespace Astrality
 
 	QList<QObject*> AccountWrapper::GetCLEntries ()
 	{
-		QList<QObject*> result;
-		Q_FOREACH (auto e, Entries_)
-			result << e;
-		return result;
+		return Util::Map (Entries_, Util::Upcast<QObject*>);
 	}
 
 	QString AccountWrapper::GetAccountName () const
