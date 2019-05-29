@@ -68,8 +68,8 @@ namespace Astrality
 
 	void Plugin::Release ()
 	{
-		Q_FOREACH (CMWrapper *cmWrapper, Wrappers_)
-			Q_FOREACH (QObject *protocol, cmWrapper->GetProtocols ())
+		for (const auto cmWrapper : Wrappers_)
+			for (const auto protocol : cmWrapper->GetProtocols ())
 				qobject_cast<ProtoWrapper*> (protocol)->Release ();
 
 		qDeleteAll (Wrappers_);
@@ -122,7 +122,7 @@ namespace Astrality
 		auto psl = qobject_cast<Tp::PendingStringList*> (op);
 		qDebug () << Q_FUNC_INFO << psl->result ();
 
-		Q_FOREACH (const QString& cmName, psl->result ())
+		for (const auto& cmName : psl->result ())
 		{
 			auto cmw = new CMWrapper (cmName, Proxy_, this);
 			Wrappers_ << cmw;
@@ -140,7 +140,7 @@ namespace Astrality
 
 	void Plugin::handleProtoWrappers (const QList<QObject*>& wrappers)
 	{
-		Q_FOREACH (QObject *obj, wrappers)
+		for (const auto obj : wrappers)
 		{
 			connect (obj,
 					SIGNAL (gotEntity (LeechCraft::Entity)),

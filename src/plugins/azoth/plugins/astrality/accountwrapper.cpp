@@ -161,7 +161,7 @@ namespace Astrality
 		dia.layout ()->addWidget (widget);
 
 		auto pages = proto->GetAccountRegistrationWidgets (IProtocol::AAONoOptions);
-		Q_FOREACH (QWidget *page, pages)
+		for (auto page : pages)
 			widget->addTab (page, page->windowTitle ());
 
 		qobject_cast<AccountRegFirstPage*> (pages.at (0))->SetSettings (S_);
@@ -610,7 +610,7 @@ namespace Astrality
 	void AccountWrapper::handlePresencePubRequested (Tp::Contacts contacts)
 	{
 		qDebug () << Q_FUNC_INFO << contacts.size ();
-		Q_FOREACH (Tp::ContactPtr c, contacts)
+		for (const auto& c : contacts)
 		{
 			qDebug () << c->alias () << c->groups () << c->id ();
 			auto w = CreateEntry (c);
@@ -629,7 +629,7 @@ namespace Astrality
 		if (state != Tp::ContactListStateSuccess)
 			return;
 
-		Q_FOREACH (Tp::ContactPtr c, contacts)
+		for (const auto& c : contacts)
 		{
 			qDebug () << c->alias () << c->groups () << c->id ();
 			CreateEntry (c);
@@ -640,13 +640,13 @@ namespace Astrality
 			Tp::Contacts removed, Tp::Channel::GroupMemberChangeDetails)
 	{
 		qDebug () << Q_FUNC_INFO << added.size () << removed.size ();
-		Q_FOREACH (Tp::ContactPtr c, added)
+		for (const auto& c : added)
 			if (std::find_if (Entries_.begin (), Entries_.end (),
 					[c] (decltype (Entries_.front ()) e)
 						{ return c->id () == e->GetHumanReadableID (); }) == Entries_.end ())
 				CreateEntry (c);
 
-		Q_FOREACH (Tp::ContactPtr c, removed)
+		for (const auto& c : removed)
 		{
 			auto pos = std::find_if (Entries_.begin (), Entries_.end (),
 					[c] (decltype (Entries_.front ()) e)
@@ -672,7 +672,7 @@ namespace Astrality
 		qDebug () << Q_FUNC_INFO << pc->contacts ().size ();
 
 		const QString& msg = po->property ("Astrality/Msg").toString ();
-		Q_FOREACH (Tp::ContactPtr c, pc->contacts ())
+		for (const auto& c : pc->contacts ())
 		{
 			qDebug () << c->alias () << c->id ();
 			CreateEntry (c);

@@ -87,7 +87,7 @@ namespace Astrality
 
 	void ProtoWrapper::Release ()
 	{
-		Q_FOREACH (QObject *accObj, GetRegisteredAccounts ())
+		for (const auto accObj : GetRegisteredAccounts ())
 		{
 			auto acc = qobject_cast<AccountWrapper*> (accObj);
 			emit accountRemoved (acc);
@@ -227,7 +227,7 @@ namespace Astrality
 		}
 		qDebug () << Q_FUNC_INFO << ProtoName_ << AM_->supportedAccountProperties ();
 
-		Q_FOREACH (auto acc, AM_->allAccounts ())
+		for (auto acc : AM_->allAccounts ())
 			handleNewAccount (acc);
 	}
 
@@ -259,7 +259,7 @@ namespace Astrality
 		if (ProtoName_ != acc->protocolName ())
 			return 0;
 
-		Q_FOREACH (AccountWrapper *w, Accounts_)
+		for (auto w : Accounts_)
 			if (w->GetOurID () == acc->uniqueIdentifier ())
 				return w;
 

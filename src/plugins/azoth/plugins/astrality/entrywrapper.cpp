@@ -142,11 +142,11 @@ namespace Astrality
 	void EntryWrapper::SetGroups (const QStringList& groups)
 	{
 		const auto& oldGroups = Groups ();
-		Q_FOREACH (const QString& g, oldGroups)
+		for (const auto& g : oldGroups)
 			if (!groups.contains (g))
 				C_->removeFromGroup (g);
 
-		Q_FOREACH (const QString& g, groups)
+		for (const auto& g : groups)
 			if (!oldGroups.contains (g))
 				C_->addToGroup (g);
 	}
@@ -280,7 +280,7 @@ namespace Astrality
 		auto info = qobject_cast<Tp::PendingContactInfo*> (op);
 		auto fields = info->infoFields ();
 		qDebug () << Q_FUNC_INFO << fields.allFields ().size ();
-		Q_FOREACH (Tp::ContactInfoField field, fields.allFields ())
+		for (const auto field : fields.allFields ())
 			qDebug () << field.fieldName << field.fieldValue << field.parameters;
 
 		dia->SetInfoFields (fields.allFields ());

@@ -70,7 +70,7 @@ namespace Astrality
 
 		qDebug () << Q_FUNC_INFO << CM_->name ();
 		QList<QObject*> newProtoWrappers;
-		Q_FOREACH (const QString& proto, CM_->supportedProtocols ())
+		for (const auto& proto : CM_->supportedProtocols ())
 		{
 			qDebug () << "has protocol" << proto;
 			if (proto == "jabber" || proto == "irc")
