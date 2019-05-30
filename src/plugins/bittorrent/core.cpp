@@ -347,19 +347,15 @@ namespace BitTorrent
 		auto model = new QStandardItemModel;
 		model->setHorizontalHeaderLabels ({tr ("URL"), tr ("Standard") });
 		for (const auto& url : Handles_.at (idx).Handle_.url_seeds ())
-		{
-			QList<QStandardItem*> items;
-			items << new QStandardItem (QString::fromUtf8 (url.c_str ()));
-			items << new QStandardItem ("BEP 19");
-			model->appendRow (items);
-		}
+			model->appendRow ({
+						new QStandardItem (QString::fromUtf8 (url.c_str ())),
+						new QStandardItem ("BEP 19")
+					});
 		for (const auto& url : Handles_.at (idx).Handle_.http_seeds ())
-		{
-			QList<QStandardItem*> items;
-			items << new QStandardItem (QString::fromUtf8 (url.c_str ()));
-			items << new QStandardItem ("BEP 17");
-			model->appendRow (items);
-		}
+			model->appendRow ({
+						new QStandardItem (QString::fromUtf8 (url.c_str ())),
+						new QStandardItem ("BEP 17")
+					});
 		return model;
 	}
 
