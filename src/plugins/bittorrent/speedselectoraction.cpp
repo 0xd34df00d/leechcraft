@@ -114,5 +114,12 @@ namespace BitTorrent
 		Call ([s] (QComboBox *box) { box->setCurrentIndex (s); });
 		emit currentIndexChanged (s);
 	}
+
+	template<typename F>
+	void SpeedSelectorAction::Call (F&& f)
+	{
+		for (const auto w : createdWidgets ())
+			f (static_cast<QComboBox*> (w));
+	}
 }
 }

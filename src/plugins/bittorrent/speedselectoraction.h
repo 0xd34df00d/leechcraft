@@ -54,11 +54,7 @@ namespace BitTorrent
 		void syncSpeeds (int);
 	private:
 		template<typename F>
-		void Call (F f)
-		{
-			for (const auto w : createdWidgets ())
-				f (static_cast<QComboBox*> (w));
-		}
+		void Call (F&&);
 	signals:
 		void currentIndexChanged (int);
 	};
