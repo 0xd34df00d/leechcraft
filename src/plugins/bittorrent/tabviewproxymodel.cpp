@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "tabviewproxymodel.h"
+#include <algorithm>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
 #include "core.h"
@@ -74,11 +75,9 @@ namespace BitTorrent
 		auto tm = Core::Instance ()->GetProxy ()->GetTagsManager ();
 		const auto& reqTags = tm->Split (pattern);
 		const auto& torrentTags = idx.data (RoleTags).toStringList ();
-		Q_FOREACH (const auto& tagId, torrentTags)
-			if (reqTags.contains (tm->GetTag (tagId)))
-				return true;
 
-		return false;
+		return std::any_of (torrentTags.begin (), torrentTags.end (),
+				[&] (const auto& tagId) { return reqTags.contains (tm->GetTag (tagId)); });
 	}
 
 	void TabViewProxyModel::setStateFilterMode (int mode)
