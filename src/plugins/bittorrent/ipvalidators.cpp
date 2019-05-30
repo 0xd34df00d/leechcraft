@@ -44,7 +44,7 @@ namespace BitTorrent
 		QStringList octets = input.split ('.', QString::SkipEmptyParts);
 		if (octets.size () != 4)
 			return Invalid;
-		Q_FOREACH (QString octet, octets)
+		for (const auto& octet : octets)
 		{
 			if (octet.isEmpty ())
 				return Intermediate;
@@ -68,11 +68,11 @@ namespace BitTorrent
 		QStringList octets = input.split (':', QString::SkipEmptyParts);
 		if (octets.size () != 8)
 			return Invalid;
-		Q_FOREACH (QString octet, octets)
+		for (const auto& octet : octets)
 		{
 			if (octet.isEmpty ())
 				return Intermediate;
-			int val = octet.toInt (0, 16);
+			int val = octet.toInt (nullptr, 16);
 			if (val < 0 || val > 65535)
 				return Invalid;
 		}

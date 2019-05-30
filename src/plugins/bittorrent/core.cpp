@@ -346,16 +346,14 @@ namespace BitTorrent
 
 		auto model = new QStandardItemModel;
 		model->setHorizontalHeaderLabels ({tr ("URL"), tr ("Standard") });
-		Q_FOREACH (std::string url,
-				Handles_.at (idx).Handle_.url_seeds ())
+		for (const auto& url : Handles_.at (idx).Handle_.url_seeds ())
 		{
 			QList<QStandardItem*> items;
 			items << new QStandardItem (QString::fromUtf8 (url.c_str ()));
 			items << new QStandardItem ("BEP 19");
 			model->appendRow (items);
 		}
-		Q_FOREACH (std::string url,
-				Handles_.at (idx).Handle_.http_seeds ())
+		for (const auto& url : Handles_.at (idx).Handle_.http_seeds ())
 		{
 			QList<QStandardItem*> items;
 			items << new QStandardItem (QString::fromUtf8 (url.c_str ()));

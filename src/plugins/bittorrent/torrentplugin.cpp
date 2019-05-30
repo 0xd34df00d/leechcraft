@@ -534,9 +534,9 @@ namespace BitTorrent
 		}
 
 		QList<int> rows;
-		Q_FOREACH (QModelIndex si, sis)
+		for (const auto& si : sis)
 		{
-			QModelIndex mapped = Core::Instance ()->GetProxy ()->MapToSource (si);
+			auto mapped = Core::Instance ()->GetProxy ()->MapToSource (si);
 			if (mapped.isValid ())
 				rows << mapped.row ();
 		}
@@ -564,7 +564,7 @@ namespace BitTorrent
 
 		std::sort (rows.begin (), rows.end (), std::greater<> ());
 
-		Q_FOREACH (int row, rows)
+		for (int row : rows)
 			Core::Instance ()->RemoveTorrent (row, withFiles);
 		TabWidget_->InvalidateSelection ();
 		setActionsEnabled ();
@@ -584,8 +584,7 @@ namespace BitTorrent
 			return;
 		}
 
-		QList<int> rows;
-		Q_FOREACH (QModelIndex si, sis)
+		for (const auto& si : sis)
 			Core::Instance ()->ResumeTorrent (Core::Instance ()->GetProxy ()->MapToSource (si).row ());
 		setActionsEnabled ();
 	}
@@ -604,8 +603,7 @@ namespace BitTorrent
 			return;
 		}
 
-		QList<int> rows;
-		Q_FOREACH (QModelIndex si, sis)
+		for (const auto& si : sis)
 			Core::Instance ()->PauseTorrent (Core::Instance ()->GetProxy ()->MapToSource (si).row ());
 		setActionsEnabled ();
 	}
@@ -628,9 +626,9 @@ namespace BitTorrent
 			}
 
 			std::vector<int> selections;
-			Q_FOREACH (QModelIndex si, sis)
+			for (const auto& si : sis)
 			{
-				QModelIndex mapped = Core::Instance ()->GetProxy ()->MapToSource (si);
+				auto mapped = Core::Instance ()->GetProxy ()->MapToSource (si);
 				if (mapped.model () != model)
 					continue;
 				selections.push_back (mapped.row ());
@@ -675,7 +673,7 @@ namespace BitTorrent
 			sel->clearSelection ();
 
 		QItemSelection selection;
-		Q_FOREACH (QModelIndex si, sis)
+		for (const auto& si : sis)
 		{
 			QModelIndex sibling = si.sibling (si.row () - 1, si.column ());
 			if (Core::Instance ()->GetProxy ()->MapToSource (sibling).model () != GetRepresentation ())
@@ -724,7 +722,7 @@ namespace BitTorrent
 			sel->clearSelection ();
 
 		QItemSelection selection;
-		Q_FOREACH (QModelIndex si, sis)
+		for (const auto& si : sis)
 		{
 			QModelIndex sibling = si.sibling (si.row () + 1, si.column ());
 			if (Core::Instance ()->GetProxy ()->MapToSource (sibling).model () != GetRepresentation ())
@@ -772,7 +770,7 @@ namespace BitTorrent
 	{
 		try
 		{
-			Q_FOREACH (int torrent, GetSelections (GetRepresentation (), sender ()))
+			for (int torrent : GetSelections (GetRepresentation (), sender ()))
 				Core::Instance ()->ForceReannounce (torrent);
 		}
 		catch (const std::exception& e)
@@ -787,7 +785,7 @@ namespace BitTorrent
 	{
 		try
 		{
-			Q_FOREACH (int torrent, GetSelections (GetRepresentation (), sender ()))
+			for (int torrent : GetSelections (GetRepresentation (), sender ()))
 				Core::Instance ()->ForceRecheck (torrent);
 		}
 		catch (const std::exception& e)
@@ -813,7 +811,7 @@ namespace BitTorrent
 		}
 
 		std::vector<libtorrent::announce_entry> allTrackers;
-		Q_FOREACH (QModelIndex si, sis)
+		for (const auto& si : sis)
 		{
 			auto those = Core::Instance ()->GetTrackers (Core::Instance ()->
 					GetProxy ()->MapToSource (si).row ());

@@ -56,7 +56,7 @@ namespace BitTorrent
 		template<typename F>
 		void Call (F f)
 		{
-			Q_FOREACH (QWidget *w, createdWidgets ())
+			for (const auto w : createdWidgets ())
 				f (static_cast<QComboBox*> (w));
 		}
 	signals:
