@@ -34,9 +34,7 @@
 #include <interfaces/core/icoreproxyfwd.h>
 #include <interfaces/poshuku/ilinkopenmodifier.h>
 
-namespace LeechCraft
-{
-namespace Poshuku
+namespace LeechCraft::Poshuku
 {
 class IProxyObject;
 
@@ -58,6 +56,5 @@ namespace WebEngineView
 	signals:
 		void webViewCreated (const std::shared_ptr<CustomWebView>&, bool);
 	};
-}
 }
 }

@@ -34,11 +34,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
 
-namespace LeechCraft
-{
-namespace Poshuku
-{
-namespace WebEngineView
+namespace LeechCraft::Poshuku::WebEngineView
 {
 	DownloadItemHandler::DownloadItemHandler (const ICoreProxy_ptr& proxy, QWebEngineProfile *prof, QObject *parent)
 	: QObject { parent }
@@ -64,6 +60,4 @@ namespace WebEngineView
 		auto em = Proxy_->GetEntityManager ();
 		em->HandleEntity (e);
 	}
-}
-}
 }

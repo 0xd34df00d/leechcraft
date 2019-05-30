@@ -33,11 +33,7 @@
 #include <QtDebug>
 #include <util/network/customcookiejar.h>
 
-namespace LeechCraft
-{
-namespace Poshuku
-{
-namespace WebEngineView
+namespace LeechCraft::Poshuku::WebEngineView
 {
 	CookiesSyncer::CookiesSyncer (Util::CustomCookieJar *lcJar,
 			QWebEngineCookieStore *weStore)
@@ -100,6 +96,4 @@ namespace WebEngineView
 		WebEngine2LCQueue_.removeOne (cookie);
 		LCJar_->deleteCookie (cookie);
 	}
-}
-}
 }

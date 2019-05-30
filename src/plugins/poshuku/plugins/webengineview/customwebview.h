@@ -34,9 +34,7 @@
 #include <interfaces/poshuku/iwebview.h>
 #include <interfaces/iwkfontssettable.h>
 
-namespace LeechCraft
-{
-namespace Poshuku
+namespace LeechCraft::Poshuku
 {
 class IProxyObject;
 
@@ -121,6 +119,5 @@ namespace WebEngineView
 
 		void webViewCreated (const std::shared_ptr<CustomWebView>&, bool);
 	};
-}
 }
 }

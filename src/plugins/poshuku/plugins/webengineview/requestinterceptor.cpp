@@ -34,11 +34,7 @@
 #include <util/sll/slotclosure.h>
 #include "customwebview.h"
 
-namespace LeechCraft
-{
-namespace Poshuku
-{
-namespace WebEngineView
+namespace LeechCraft::Poshuku::WebEngineView
 {
 	namespace
 	{
@@ -130,6 +126,4 @@ namespace WebEngineView
 			this
 		};
 	}
-}
-}
 }

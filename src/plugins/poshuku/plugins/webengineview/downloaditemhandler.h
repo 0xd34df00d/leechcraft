@@ -35,11 +35,7 @@
 class QWebEngineProfile;
 class QWebEngineDownloadItem;
 
-namespace LeechCraft
-{
-namespace Poshuku
-{
-namespace WebEngineView
+namespace LeechCraft::Poshuku::WebEngineView
 {
 	class DownloadItemHandler : public QObject
 	{
@@ -49,6 +45,4 @@ namespace WebEngineView
 	private:
 		void HandleDownloadItem (QWebEngineDownloadItem*);
 	};
-}
-}
 }

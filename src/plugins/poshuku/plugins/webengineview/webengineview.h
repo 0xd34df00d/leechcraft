@@ -36,9 +36,7 @@
 #include <interfaces/poshuku/iwebviewprovider.h>
 #include <interfaces/poshuku/iinterceptablerequests.h>
 
-namespace LeechCraft
-{
-namespace Poshuku
+namespace LeechCraft::Poshuku
 {
 class IProxyObject;
 
@@ -87,6 +85,5 @@ namespace WebEngineView
 	signals:
 		void webViewCreated (const std::shared_ptr<IWebView>&, bool) override;
 	};
-}
 }
 }

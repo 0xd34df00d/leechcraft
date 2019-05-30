@@ -39,11 +39,7 @@
 #include "cookiessyncer.h"
 #include "downloaditemhandler.h"
 
-namespace LeechCraft
-{
-namespace Poshuku
-{
-namespace WebEngineView
+namespace LeechCraft::Poshuku::WebEngineView
 {
 	namespace
 	{
@@ -174,8 +170,6 @@ namespace WebEngineView
 	{
 		PoshukuProxy_ = qobject_cast<IProxyObject*> (proxyObj);
 	}
-}
-}
 }
 
 LC_EXPORT_PLUGIN (leechcraft_poshuku_webengineview, LeechCraft::Poshuku::WebEngineView::Plugin);

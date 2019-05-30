@@ -33,11 +33,7 @@
 
 class QWebEngineView;
 
-namespace LeechCraft
-{
-namespace Poshuku
-{
-namespace WebEngineView
+namespace LeechCraft::Poshuku::WebEngineView
 {
 	class FindNotification : public Util::FindNotification
 	{
@@ -51,6 +47,4 @@ namespace WebEngineView
 		void handleNext (const QString& text, FindFlags flags) override;
 		void reject () override;
 	};
-}
-}
 }

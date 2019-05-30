@@ -32,11 +32,7 @@
 #include <interfaces/poshuku/iproxyobject.h>
 #include "customwebview.h"
 
-namespace LeechCraft
-{
-namespace Poshuku
-{
-namespace WebEngineView
+namespace LeechCraft::Poshuku::WebEngineView
 {
 	CustomWebPage::CustomWebPage (const ICoreProxy_ptr& proxy, IProxyObject *poshukuProxy, QWidget *parent)
 	: QWebEnginePage { parent }
@@ -74,6 +70,4 @@ namespace WebEngineView
 
 		return QWebEnginePage::acceptNavigationRequest (url, type, isMainFrame);
 	}
-}
-}
 }
