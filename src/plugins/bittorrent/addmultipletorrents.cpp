@@ -78,10 +78,7 @@ namespace BitTorrent
 	QStringList AddMultipleTorrents::GetTags () const
 	{
 		auto tm = Core::Instance ()->GetProxy ()->GetTagsManager ();
-		QStringList result;
-		Q_FOREACH (const auto& tag, tm->Split (TagsEdit_->text ()))
-			result << tm->GetID (tag);
-		return result;
+		return tm->GetIDs (tm->Split (TagsEdit_->text ()));
 	}
 
 	void AddMultipleTorrents::on_BrowseOpen__released ()
