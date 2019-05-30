@@ -46,8 +46,8 @@ namespace BitTorrent
 
 		int CurrentData ();
 	protected:
-		QWidget* createWidget (QWidget*);
-		void deleteWidget (QWidget*);
+		QWidget* createWidget (QWidget*) override;
+		void deleteWidget (QWidget*) override;
 	public slots:
 		void handleSpeedsChanged ();
 	private slots:
