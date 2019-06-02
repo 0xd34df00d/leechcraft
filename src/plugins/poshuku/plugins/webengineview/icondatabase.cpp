@@ -96,7 +96,7 @@ namespace LeechCraft::Poshuku::WebEngineView
 
 	struct IconDatabase::IconUrl2IconRecord
 	{
-		Util::oral::PKey<QUrl> IconUrl_;
+		Util::oral::PKey<QUrl, Util::oral::NoAutogen> IconUrl_;
 		AsDataStream<QIcon> Icon_;
 
 		static QString ClassName ()
@@ -107,7 +107,7 @@ namespace LeechCraft::Poshuku::WebEngineView
 
 	struct IconDatabase::PageUrl2IconUrlRecord
 	{
-		Util::oral::PKey<QUrl> PageUrl_;
+		Util::oral::PKey<QUrl, Util::oral::NoAutogen> PageUrl_;
 		Util::oral::References<&IconUrl2IconRecord::IconUrl_> IconUrl_;
 
 		static QString ClassName ()
