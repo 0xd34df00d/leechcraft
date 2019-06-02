@@ -6,6 +6,7 @@ set (WEBENGINEVIEW_SRCS
 	customwebview.cpp
 	downloaditemhandler.cpp
 	findnotification.cpp
+	icondatabase.cpp
 	requestinterceptor.cpp
 	webengineview.cpp
 	)
