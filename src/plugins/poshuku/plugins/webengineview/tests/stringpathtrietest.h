@@ -37,7 +37,16 @@ namespace LeechCraft::Poshuku::WebEngineView
 	{
 		Q_OBJECT
 	private slots:
+		void testEmptyTrie ();
+		void testEmptyQuery ();
+
 		void testExactMatchSingle ();
 		void testExactMatchOverwriteSingle ();
+
+		void testExactMatchMulti ();
+		void testExactMatchParentPre ();
+		void testExactMatchParentPost ();
+
+		void testPartialMatchPre ();
 	};
 }
