@@ -216,7 +216,7 @@ namespace oral
 				return "INTEGER";
 			else if constexpr (std::is_same_v<T, double>)
 				return "REAL";
-			else if constexpr (std::is_same_v<T, QString> || std::is_same_v<T, QDateTime>)
+			else if constexpr (std::is_same_v<T, QString> || std::is_same_v<T, QDateTime> || std::is_same_v<T, QUrl>)
 				return "TEXT";
 			else if constexpr (std::is_same_v<T, QByteArray>)
 				return ImplFactory::TypeLits::Binary;
