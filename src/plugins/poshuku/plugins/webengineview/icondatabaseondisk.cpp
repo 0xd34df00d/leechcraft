@@ -109,11 +109,10 @@ namespace LeechCraft::Poshuku::WebEngineView
 		PageUrl2IconUrl_->Insert ({ pageUrl, iconUrl, now }, Replace::PKey<PageUrl2IconUrlRecord>);
 	}
 
-	QIcon IconDatabaseOnDisk::GetIcon (const QUrl& pageUrl)
+	QIcon IconDatabaseOnDisk::GetIcon (const QUrl& iconUrl)
 	{
 		return IconUrl2Icon_->SelectOne (sph::fields<&IconUrl2IconRecord::Icon_>,
-				sph::f<&IconUrl2IconRecord::IconUrl_> == sph::f<&PageUrl2IconUrlRecord::IconUrl_> &&
-				sph::f<&PageUrl2IconUrlRecord::PageUrl_> == pageUrl)
+				sph::f<&IconUrl2IconRecord::IconUrl_> == iconUrl)
 				.value_or (Util::oral::AsDataStream<QIcon> {});
 	}
 

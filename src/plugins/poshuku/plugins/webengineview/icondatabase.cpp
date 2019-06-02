@@ -28,26 +28,56 @@
  **********************************************************************/
 
 #include "icondatabase.h"
+#include <functional>
 #include <QUrl>
 #include <QIcon>
 #include "icondatabaseondisk.h"
+#include "stringpathtrie.h"
 
 namespace LeechCraft::Poshuku::WebEngineView
 {
 	IconDatabase::IconDatabase (QObject *parent)
 	: QObject { parent }
-	, DB_ { std::make_shared<IconDatabaseOnDisk> ()}
+	, DB_ { std::make_shared<IconDatabaseOnDisk> () }
+	, Trie_ { std::make_shared<StringPathTrie<QUrl>> () }
 	{
+		for (const auto& [pageUrl, iconUrl] : DB_->GetAllPages ())
+			MarkUrl (pageUrl, iconUrl);
 	}
 
 	void IconDatabase::UpdateIcon (const QUrl& pageUrl, const QIcon& icon, const QUrl& iconUrl)
 	{
-		if (!icon.isNull ())
-			DB_->UpdateIcon (pageUrl, icon, iconUrl);
+		if (icon.isNull ())
+			return;
+
+		DB_->UpdateIcon (pageUrl, icon, iconUrl);
+		MarkUrl (pageUrl, iconUrl);
+	}
+
+	namespace
+	{
+		template<typename F>
+		auto WithRefs (const QUrl& url, F&& fun)
+		{
+			auto path = url.path ();
+			auto refs = path.splitRef ('/', QString::SkipEmptyParts);
+			auto host = url.host ();
+			refs.prepend ({ &host });
+
+			return std::invoke (std::forward<F> (fun), std::move (refs));
+		}
 	}
 
 	QIcon IconDatabase::GetIcon (const QUrl& pageUrl)
 	{
-		return DB_->GetIcon (pageUrl);
+		const auto& maybeMatch = WithRefs (pageUrl, [this] (const auto& refs) { return Trie_->BestMatch (refs); });
+		return maybeMatch ?
+				DB_->GetIcon (*maybeMatch) :
+				QIcon {};
+	}
+
+	void IconDatabase::MarkUrl (const QUrl& pageUrl, const QUrl& iconUrl)
+	{
+		WithRefs (pageUrl, [this, iconUrl] (const auto& refs) { Trie_->Mark (refs, std::move (iconUrl)); });
 	}
 }

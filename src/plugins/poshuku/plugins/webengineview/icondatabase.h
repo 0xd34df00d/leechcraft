@@ -39,13 +39,19 @@ namespace LeechCraft::Poshuku::WebEngineView
 {
 	class IconDatabaseOnDisk;
 
+	template<typename V>
+	class StringPathTrie;
+
 	class IconDatabase : public QObject
 	{
 		std::shared_ptr<IconDatabaseOnDisk> DB_;
+		std::shared_ptr<StringPathTrie<QUrl>> Trie_;
 	public:
 		explicit IconDatabase (QObject* = nullptr);
 
 		void UpdateIcon (const QUrl& pageUrl, const QIcon& icon, const QUrl& iconUrl);
 		QIcon GetIcon (const QUrl& pageUrl);
+	private:
+		void MarkUrl (const QUrl&, const QUrl&);
 	};
 }

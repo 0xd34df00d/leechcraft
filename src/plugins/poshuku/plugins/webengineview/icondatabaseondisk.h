@@ -51,7 +51,7 @@ namespace LeechCraft::Poshuku::WebEngineView
 		explicit IconDatabaseOnDisk ();
 
 		void UpdateIcon (const QUrl& pageUrl, const QIcon& icon, const QUrl& iconUrl);
-		QIcon GetIcon (const QUrl& pageUrl);
+		QIcon GetIcon (const QUrl& iconUrl);
 
 		QList<std::tuple<QUrl, QUrl>> GetAllPages () const;
 	};
