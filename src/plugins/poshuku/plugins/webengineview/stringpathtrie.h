@@ -29,8 +29,10 @@
 
 #pragma once
 
+#include <stdexcept>
 #include <QHash>
 #include <QString>
+#include <QtDebug>
 
 namespace LeechCraft::Poshuku::WebEngineView
 {
@@ -69,13 +71,27 @@ namespace LeechCraft::Poshuku::WebEngineView
 		const std::optional<V>& BestMatch (It begin, It end) const
 		{
 			if (begin == end)
-				return Value_;
+				return Value_ ? Value_ : WalkArbitraryChild ();
 
 			const auto& strRef = QString::fromRawData (begin->constData (), begin->size ());
 			const auto pos = Children_.find (strRef);
 			return pos == Children_.end () ?
 					Value_ :
 					pos->BestMatch (begin + 1, end);
+		}
+
+		const std::optional<V>& WalkArbitraryChild () const
+		{
+			if (Value_)
+				return Value_;
+
+			if (Children_.isEmpty ())
+			{
+				qCritical () << Q_FUNC_INFO << "empty children";
+				throw std::runtime_error { "empty children" };
+			}
+
+			return Children_.begin ()->WalkArbitraryChild ();
 		}
 	};
 }
