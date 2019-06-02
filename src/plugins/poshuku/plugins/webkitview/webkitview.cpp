@@ -33,6 +33,7 @@
 #include <qwebsettings.h>
 #include <qtwebkitversion.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include <util/util.h>
 #include <util/sys/paths.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/poshuku/iproxyobject.h>
@@ -52,6 +53,8 @@ namespace WebKitView
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Util::InstallTranslator ("poshuku_webkitview");
+
 		Proxy_ = proxy;
 
 		QWebHistoryInterface::setDefaultInterface (new LinkHistory);
