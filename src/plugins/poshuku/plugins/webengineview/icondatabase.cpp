@@ -33,71 +33,15 @@
 #include <QDir>
 #include <QSqlError>
 #include <util/db/oral/oral.h>
+#include <util/db/oral/utilitytypes.h>
 #include <util/sys/paths.h>
 
 namespace LeechCraft::Poshuku::WebEngineView
 {
-	template<typename T>
-	struct AsDataStream
-	{
-		using BaseType = QByteArray;
-
-		T Val_;
-
-		operator T () const &
-		{
-			return Val_;
-		}
-
-		operator T&& () &&
-		{
-			return std::move (Val_);
-		}
-
-		AsDataStream () = default;
-		AsDataStream (const AsDataStream&) = default;
-		AsDataStream (AsDataStream&&) = default;
-
-		AsDataStream& operator= (const AsDataStream&) = default;
-		AsDataStream& operator= (AsDataStream&&) = default;
-
-		template<typename... Args>
-		AsDataStream (Args&&... args)
-		: Val_ { std::forward<Args> (args)... }
-		{
-		}
-
-		template<typename U>
-		AsDataStream& operator= (U&& val)
-		{
-			Val_ = std::forward<U> (val);
-			return *this;
-		}
-
-		BaseType ToBaseType () const
-		{
-			QByteArray ba;
-			{
-				QDataStream out { &ba, QIODevice::WriteOnly };
-				out << Val_;
-			}
-			return ba;
-		}
-
-		static AsDataStream FromBaseType (const QByteArray& ba)
-		{
-			QDataStream in { ba };
-
-			AsDataStream res;
-			in >> res.Val_;
-			return res;
-		}
-	};
-
 	struct IconDatabase::IconUrl2IconRecord
 	{
 		Util::oral::PKey<QUrl, Util::oral::NoAutogen> IconUrl_;
-		AsDataStream<QIcon> Icon_;
+		Util::oral::AsDataStream<QIcon> Icon_;
 
 		static QString ClassName ()
 		{
@@ -165,6 +109,7 @@ namespace LeechCraft::Poshuku::WebEngineView
 	{
 		return IconUrl2Icon_->SelectOne (sph::fields<&IconUrl2IconRecord::Icon_>,
 				sph::f<&IconUrl2IconRecord::IconUrl_> == sph::f<&PageUrl2IconUrlRecord::IconUrl_> &&
-				sph::f<&PageUrl2IconUrlRecord::PageUrl_> == pageUrl).value_or (AsDataStream<QIcon> {});
+				sph::f<&PageUrl2IconUrlRecord::PageUrl_> == pageUrl)
+				.value_or (Util::oral::AsDataStream<QIcon> {});
 	}
 }
