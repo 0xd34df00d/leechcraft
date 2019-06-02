@@ -53,6 +53,7 @@ namespace LeechCraft::Poshuku::WebEngineView
 	{
 		Util::oral::PKey<QUrl, Util::oral::NoAutogen> PageUrl_;
 		Util::oral::References<&IconUrl2IconRecord::IconUrl_> IconUrl_;
+		QDateTime LastUpdate_;
 
 		static QString ClassName ()
 		{
@@ -69,7 +70,8 @@ BOOST_FUSION_ADAPT_STRUCT (IDOD::IconUrl2IconRecord,
 
 BOOST_FUSION_ADAPT_STRUCT (IDOD::PageUrl2IconUrlRecord,
 		PageUrl_,
-		IconUrl_)
+		IconUrl_,
+		LastUpdate_)
 
 namespace LeechCraft::Poshuku::WebEngineView
 {
@@ -99,8 +101,12 @@ namespace LeechCraft::Poshuku::WebEngineView
 
 	void IconDatabaseOnDisk::UpdateIcon (const QUrl& pageUrl, const QIcon& icon, const QUrl& iconUrl)
 	{
-		IconUrl2Icon_->Insert ({ iconUrl, icon }, Util::oral::InsertAction::Replace::PKey<IconUrl2IconRecord>);
-		PageUrl2IconUrl_->Insert ({ pageUrl, iconUrl }, Util::oral::InsertAction::Replace::PKey<PageUrl2IconUrlRecord>);
+		using Replace = Util::oral::InsertAction::Replace;
+
+		const auto& now = QDateTime::currentDateTime ();
+
+		IconUrl2Icon_->Insert ({ iconUrl, icon }, Replace::PKey<IconUrl2IconRecord>);
+		PageUrl2IconUrl_->Insert ({ pageUrl, iconUrl, now }, Replace::PKey<PageUrl2IconUrlRecord>);
 	}
 
 	QIcon IconDatabaseOnDisk::GetIcon (const QUrl& pageUrl)
