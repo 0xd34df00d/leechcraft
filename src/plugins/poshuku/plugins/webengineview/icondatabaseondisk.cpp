@@ -116,4 +116,9 @@ namespace LeechCraft::Poshuku::WebEngineView
 				sph::f<&PageUrl2IconUrlRecord::PageUrl_> == pageUrl)
 				.value_or (Util::oral::AsDataStream<QIcon> {});
 	}
+
+	QList<std::tuple<QUrl, QUrl>> IconDatabaseOnDisk::GetAllPages () const
+	{
+		return PageUrl2IconUrl_->Select (sph::fields<&PageUrl2IconUrlRecord::PageUrl_, &PageUrl2IconUrlRecord::IconUrl_>);
+	}
 }

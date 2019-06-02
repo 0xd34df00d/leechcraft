@@ -52,5 +52,7 @@ namespace LeechCraft::Poshuku::WebEngineView
 
 		void UpdateIcon (const QUrl& pageUrl, const QIcon& icon, const QUrl& iconUrl);
 		QIcon GetIcon (const QUrl& pageUrl);
+
+		QList<std::tuple<QUrl, QUrl>> GetAllPages () const;
 	};
 }
