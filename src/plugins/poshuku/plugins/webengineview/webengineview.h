@@ -44,6 +44,7 @@ namespace WebEngineView
 {
 	class RequestInterceptor;
 	class CustomWebView;
+	class IconDatabase;
 
 	class Plugin : public QObject
 				 , public IInfo
@@ -63,6 +64,8 @@ namespace WebEngineView
 
 		ICoreProxy_ptr Proxy_;
 		IProxyObject *PoshukuProxy_ = nullptr;
+
+		std::shared_ptr<IconDatabase> IconDB_;
 	public:
 		void Init (ICoreProxy_ptr) override;
 		void SecondInit () override;

@@ -38,6 +38,7 @@
 #include "requestinterceptor.h"
 #include "cookiessyncer.h"
 #include "downloaditemhandler.h"
+#include "icondatabase.h"
 
 namespace LeechCraft::Poshuku::WebEngineView
 {
@@ -91,6 +92,8 @@ namespace LeechCraft::Poshuku::WebEngineView
 
 		const auto cookieJar = proxy->GetNetworkAccessManager ()->cookieJar ();
 		new CookiesSyncer { qobject_cast<Util::CustomCookieJar*> (cookieJar), prof->cookieStore () };
+
+		IconDB_ = std::make_shared<IconDatabase> ();
 	}
 
 	void Plugin::SecondInit ()
@@ -139,7 +142,7 @@ namespace LeechCraft::Poshuku::WebEngineView
 
 	QIcon Plugin::GetIconForUrl (const QUrl& url) const
 	{
-		return {};
+		return IconDB_->GetIcon (url);
 	}
 
 	QIcon Plugin::GetDefaultUrlIcon () const
@@ -155,6 +158,13 @@ namespace LeechCraft::Poshuku::WebEngineView
 	void Plugin::HandleView (CustomWebView *view)
 	{
 		Interceptor_->RegisterView (view);
+		connect (view,
+				&QWebEngineView::iconChanged,
+				this,
+				[this, view] (const QIcon& icon)
+				{
+					IconDB_->UpdateIcon (view->url (), icon, view->iconUrl ());
+				});
 
 		connect (view,
 				&CustomWebView::webViewCreated,
