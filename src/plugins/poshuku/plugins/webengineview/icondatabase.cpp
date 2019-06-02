@@ -30,86 +30,24 @@
 #include "icondatabase.h"
 #include <QUrl>
 #include <QIcon>
-#include <QDir>
-#include <QSqlError>
-#include <util/db/oral/oral.h>
-#include <util/db/oral/utilitytypes.h>
-#include <util/sys/paths.h>
-
-namespace LeechCraft::Poshuku::WebEngineView
-{
-	struct IconDatabase::IconUrl2IconRecord
-	{
-		Util::oral::PKey<QUrl, Util::oral::NoAutogen> IconUrl_;
-		Util::oral::AsDataStream<QIcon> Icon_;
-
-		static QString ClassName ()
-		{
-			return "IconUrl2Icon";
-		}
-	};
-
-	struct IconDatabase::PageUrl2IconUrlRecord
-	{
-		Util::oral::PKey<QUrl, Util::oral::NoAutogen> PageUrl_;
-		Util::oral::References<&IconUrl2IconRecord::IconUrl_> IconUrl_;
-
-		static QString ClassName ()
-		{
-			return "PageUrl2IconUrl";
-		}
-	};
-}
-
-BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Poshuku::WebEngineView::IconDatabase::IconUrl2IconRecord,
-		IconUrl_,
-		Icon_)
-
-BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Poshuku::WebEngineView::IconDatabase::PageUrl2IconUrlRecord,
-		PageUrl_,
-		IconUrl_)
+#include "icondatabaseondisk.h"
 
 namespace LeechCraft::Poshuku::WebEngineView
 {
 	IconDatabase::IconDatabase (QObject *parent)
 	: QObject { parent }
-	, DB_ { QSqlDatabase::addDatabase ("QSQLITE",
-			Util::GenConnectionName ("org.LeechCraft.Poshuku.WebEngineView.IconDB")) }
+	, DB_ { std::make_shared<IconDatabaseOnDisk> ()}
 	{
-		const auto& cacheDir = Util::GetUserDir (Util::UserDir::Cache, "poshuku/webengineview");
-		DB_.setDatabaseName (cacheDir.filePath ("icons.db"));
-
-		if (!DB_.open ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "cannot open the database";
-			Util::DBLock::DumpError (DB_.lastError ());
-			throw std::runtime_error { "Cannot create database" };
-		}
-
-		Util::RunTextQuery (DB_, "PRAGMA synchronous = NORMAL;");
-		Util::RunTextQuery (DB_, "PRAGMA journal_mode = WAL;");
-
-		IconUrl2Icon_ = Util::oral::AdaptPtr<IconUrl2IconRecord> (DB_);
-		PageUrl2IconUrl_ = Util::oral::AdaptPtr<PageUrl2IconUrlRecord> (DB_);
 	}
-
-	namespace sph = Util::oral::sph;
 
 	void IconDatabase::UpdateIcon (const QUrl& pageUrl, const QIcon& icon, const QUrl& iconUrl)
 	{
-		if (icon.isNull ())
-			return;
-
-		IconUrl2Icon_->Insert ({ iconUrl, icon }, Util::oral::InsertAction::Replace::PKey<IconUrl2IconRecord>);
-		PageUrl2IconUrl_->Insert ({ pageUrl, iconUrl }, Util::oral::InsertAction::Replace::PKey<PageUrl2IconUrlRecord>);
+		if (!icon.isNull ())
+			DB_->UpdateIcon (pageUrl, icon, iconUrl);
 	}
 
 	QIcon IconDatabase::GetIcon (const QUrl& pageUrl)
 	{
-		return IconUrl2Icon_->SelectOne (sph::fields<&IconUrl2IconRecord::Icon_>,
-				sph::f<&IconUrl2IconRecord::IconUrl_> == sph::f<&PageUrl2IconUrlRecord::IconUrl_> &&
-				sph::f<&PageUrl2IconUrlRecord::PageUrl_> == pageUrl)
-				.value_or (Util::oral::AsDataStream<QIcon> {});
+		return DB_->GetIcon (pageUrl);
 	}
 }

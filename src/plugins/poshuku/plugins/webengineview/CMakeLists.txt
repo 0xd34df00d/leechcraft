@@ -7,6 +7,7 @@ set (WEBENGINEVIEW_SRCS
 	downloaditemhandler.cpp
 	findnotification.cpp
 	icondatabase.cpp
+	icondatabaseondisk.cpp
 	requestinterceptor.cpp
 	webengineview.cpp
 	)

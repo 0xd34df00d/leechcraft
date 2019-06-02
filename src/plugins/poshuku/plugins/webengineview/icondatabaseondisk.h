@@ -29,21 +29,26 @@
 
 #pragma once
 
-#include <memory>
-#include <QObject>
+#include <QSqlDatabase>
+#include <util/db/oral/oralfwd.h>
 
 class QUrl;
 class QIcon;
 
 namespace LeechCraft::Poshuku::WebEngineView
 {
-	class IconDatabaseOnDisk;
-
-	class IconDatabase : public QObject
+	class IconDatabaseOnDisk
 	{
-		std::shared_ptr<IconDatabaseOnDisk> DB_;
 	public:
-		explicit IconDatabase (QObject* = nullptr);
+		struct PageUrl2IconUrlRecord;
+		struct IconUrl2IconRecord;
+	private:
+		QSqlDatabase DB_;
+
+		Util::oral::ObjectInfo_ptr<IconUrl2IconRecord> IconUrl2Icon_;
+		Util::oral::ObjectInfo_ptr<PageUrl2IconUrlRecord> PageUrl2IconUrl_;
+	public:
+		explicit IconDatabaseOnDisk ();
 
 		void UpdateIcon (const QUrl& pageUrl, const QIcon& icon, const QUrl& iconUrl);
 		QIcon GetIcon (const QUrl& pageUrl);
