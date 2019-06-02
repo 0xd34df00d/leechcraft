@@ -32,3 +32,18 @@ install (TARGETS leechcraft_poshuku_webengineview DESTINATION ${LC_PLUGINS_DEST}
 #install (FILES poshukuwebengineviewsettings.xml DESTINATION ${LC_SETTINGS_DEST})
 
 FindQtLibs (leechcraft_poshuku_webengineview PrintSupport WebEngineWidgets)
+
+option (ENABLE_POSHUKU_WEBENGINEVIEW_TESTS "Build tests for Poshuku WebEngineView" ON)
+
+if (ENABLE_POSHUKU_WEBENGINEVIEW_TESTS)
+	function (AddWEVTest _execName _cppFile _testName)
+		set (_fullExecName lc_poshuku_dcac_${_execName}_test)
+		add_executable (${_fullExecName} WIN32 ${_cppFile})
+		target_link_libraries (${_fullExecName} ${LEECHCRAFT_LIBRARIES})
+		add_test (${_testName} ${_fullExecName})
+		FindQtLibs (${_fullExecName} Test WebEngineWidgets)
+		add_dependencies (${_fullExecName} leechcraft_poshuku_dcac)
+	endfunction ()
+
+	AddWEVTest (stringpathtrietest tests/stringpathtrietest.cpp PoshukuWEVStringPathTrieTest)
+endif ()
