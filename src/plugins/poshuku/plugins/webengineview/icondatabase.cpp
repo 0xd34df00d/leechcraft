@@ -154,6 +154,9 @@ namespace LeechCraft::Poshuku::WebEngineView
 
 	void IconDatabase::UpdateIcon (const QUrl& pageUrl, const QIcon& icon, const QUrl& iconUrl)
 	{
+		if (icon.isNull ())
+			return;
+
 		IconUrl2Icon_->Insert ({ iconUrl, icon }, Util::oral::InsertAction::Replace::PKey<IconUrl2IconRecord>);
 		PageUrl2IconUrl_->Insert ({ pageUrl, iconUrl }, Util::oral::InsertAction::Replace::PKey<PageUrl2IconUrlRecord>);
 	}
