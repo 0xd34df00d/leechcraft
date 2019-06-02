@@ -47,6 +47,7 @@ namespace LeechCraft::Poshuku::WebEngineView
 		void testExactMatchParentPre ();
 		void testExactMatchParentPost ();
 
-		void testPartialMatchPre ();
+		void testPartialMatchLongerQuery ();
+		void testPartialMatchShorterQuery ();
 	};
 }

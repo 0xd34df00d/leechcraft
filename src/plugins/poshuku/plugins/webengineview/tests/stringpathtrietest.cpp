@@ -55,7 +55,7 @@ namespace LeechCraft::Poshuku::WebEngineView
 		IntTrie trie;
 		trie.Mark (AsRefs ({ "foo", "bar", "baz" }), 10);
 
-		QCOMPARE (trie.BestMatch (AsRefs ({})), std::optional<int> {});
+		QCOMPARE (trie.BestMatch (AsRefs ({})), std::optional<int> { 10 });
 	}
 
 	void StringPathTrieTest::testExactMatchSingle ()
@@ -105,12 +105,21 @@ namespace LeechCraft::Poshuku::WebEngineView
 		QCOMPARE (trie.BestMatch (AsRefs ({ "foo", "bar", "baz" })), std::optional<int> { 20 });
 	}
 
-	void StringPathTrieTest::testPartialMatchPre ()
+	void StringPathTrieTest::testPartialMatchLongerQuery ()
 	{
 		IntTrie trie;
 		trie.Mark (AsRefs ({ "foo" }), 20);
 		trie.Mark (AsRefs ({ "foo", "bar" }), 10);
 
 		QCOMPARE (trie.BestMatch (AsRefs ({ "foo", "bar", "baz" })), std::optional<int> { 10 });
+	}
+
+	void StringPathTrieTest::testPartialMatchShorterQuery ()
+	{
+		IntTrie trie;
+		trie.Mark (AsRefs ({ "foo", "bar" }), 20);
+		trie.Mark (AsRefs ({ "foo", "bar", "baz" }), 10);
+
+		QCOMPARE (trie.BestMatch (AsRefs ({ "foo" })), std::optional<int> { 20 });
 	}
 }
