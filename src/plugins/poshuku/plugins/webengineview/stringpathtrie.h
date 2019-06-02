@@ -64,7 +64,10 @@ namespace LeechCraft::Poshuku::WebEngineView
 			}
 
 			const auto& strRef = QString::fromRawData (begin->constData (), begin->size ());
-			Children_ [strRef].Mark (begin + 1, end, std::move (value));
+			auto pos = Children_.find (strRef);
+			if (pos == Children_.end ())
+				pos = Children_.insert (begin->toString (), {});
+			pos->Mark (begin + 1, end, std::move (value));
 		}
 
 		template<typename It>
