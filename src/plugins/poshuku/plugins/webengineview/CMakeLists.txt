@@ -31,7 +31,7 @@ target_link_libraries (leechcraft_poshuku_webengineview
 install (TARGETS leechcraft_poshuku_webengineview DESTINATION ${LC_PLUGINS_DEST})
 #install (FILES poshukuwebengineviewsettings.xml DESTINATION ${LC_SETTINGS_DEST})
 
-FindQtLibs (leechcraft_poshuku_webengineview PrintSupport WebEngineWidgets)
+FindQtLibs (leechcraft_poshuku_webengineview PrintSupport Sql WebEngineWidgets)
 
 option (ENABLE_POSHUKU_WEBENGINEVIEW_TESTS "Build tests for Poshuku WebEngineView" ON)
 
