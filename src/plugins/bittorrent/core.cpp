@@ -1489,6 +1489,8 @@ namespace BitTorrent
 			const auto row = std::distance (Handles_.begin (), pos);
 			emit dataChanged (index (row, 0), index (row, columnCount () - 1));
 		}
+
+		emit torrentsStatusesUpdated ();
 	}
 
 	void Core::HandleTorrentChecked (const libtorrent::torrent_handle& h)

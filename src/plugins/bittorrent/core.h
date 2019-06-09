@@ -384,6 +384,7 @@ namespace BitTorrent
 		void addToHistory (const QString&, const QString&, quint64,
 				const QDateTime&, const QStringList&);
 		void fileRenamed (int torrent, int file, const QString& newName);
+		void torrentsStatusesUpdated ();
 	};
 }
 }
