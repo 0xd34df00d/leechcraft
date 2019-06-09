@@ -1475,6 +1475,9 @@ namespace BitTorrent
 
 	void Core::UpdateStatus (const std::vector<libtorrent::torrent_status>& statuses)
 	{
+		if (statuses.empty ())
+			return;
+
 		for (const auto& status : statuses)
 		{
 			StatusKeeper_->HandleStatusUpdatePosted (status);
