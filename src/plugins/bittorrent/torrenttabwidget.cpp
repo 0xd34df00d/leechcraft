@@ -125,10 +125,10 @@ namespace BitTorrent
 				SLOT (on_TorrentTags__editingFinished ()));
 
 		connect (Core::Instance (),
-				SIGNAL (dataChanged (const QModelIndex&,
-						const QModelIndex&)),
+				SIGNAL (torrentsStatusesUpdated ()),
 				this,
-				SLOT (updateTorrentStats ()));
+				SLOT (updateTorrentStats ()),
+				Qt::QueuedConnection);
 		connect (this,
 				SIGNAL (currentChanged (int)),
 				this,
