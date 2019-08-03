@@ -1,0 +1,5 @@
+resolver: lts-13.26
+packages:
+- .
+extra-deps:
+- cmake-syntax-0.1.0.0
