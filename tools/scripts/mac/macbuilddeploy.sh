@@ -6,7 +6,7 @@ set -x
 TARGET=/usr/local
 QTVERSION=qt
 DYLDINFO=/Library/Developer/CommandLineTools/usr/bin/dyldinfo
-ICONPACK=../../oxygen
+ICONPACK=../../../oxygen
 
 BASEDIR=$(dirname $0)
 echo $BASEDIR
