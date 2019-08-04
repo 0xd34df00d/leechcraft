@@ -25,7 +25,11 @@ dependencies:
 - cmake-syntax
 - extra
 - filepath
+- mtl
 - pathwalk
+
+ghc-options:
+- -Wall
 
 library:
   source-dirs: src
