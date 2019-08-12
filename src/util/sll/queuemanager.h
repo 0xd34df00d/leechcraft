@@ -9,7 +9,7 @@
 #pragma once
 
 #include <functional>
-#include <boost/optional.hpp>
+#include <optional>
 #include <QObject>
 #include <QDateTime>
 #include <QPointer>
@@ -50,8 +50,8 @@ namespace Util
 
 		bool Paused_;
 
-		typedef boost::optional<QPointer<QObject>> OptionalTracker_t;
-		QList<QPair<std::function<void ()>, boost::optional<QPointer<QObject>>>> Queue_;
+		typedef std::optional<QPointer<QObject>> OptionalTracker_t;
+		QList<QPair<std::function<void ()>, std::optional<QPointer<QObject>>>> Queue_;
 	public:
 		/** @brief Creates a queue manager with the given \em timeout.
 		 *

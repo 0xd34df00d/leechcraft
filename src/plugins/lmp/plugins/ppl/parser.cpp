@@ -7,7 +7,7 @@
  **********************************************************************/
 
 #include "parser.h"
-#include <boost/optional.hpp>
+#include <optional>
 #include <functional>
 #include <QDateTime>
 #include <QtDebug>
@@ -35,7 +35,7 @@ namespace PPL
 			return [] (const QDateTime& dt) { return dt; };
 		}
 
-		boost::optional<QPair<Media::AudioInfo, QDateTime>> ParseTrack (QStringRef line)
+		std::optional<QPair<Media::AudioInfo, QDateTime>> ParseTrack (QStringRef line)
 		{
 			enum
 			{

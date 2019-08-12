@@ -102,7 +102,7 @@ namespace Qrosp
 	void WrapperObject::InitQTS ()
 	{
 #ifndef QROSP_NO_QTSCRIPT
-		QStringList requires = SCALL (QStringList) ("Requires");
+		QStringList reqs = SCALL (QStringList) ("Requires");
 		QObject *scriptEngineObject = 0;
 		QMetaObject::invokeMethod (ScriptAction_->script (),
 				"engine", Q_RETURN_ARG (QObject*, scriptEngineObject));
@@ -115,7 +115,7 @@ namespace Qrosp
 			return;
 		}
 
-		for (const auto& req : requires)
+		for (const auto& req : reqs)
 			engine->importExtension (req);
 #endif
 	}

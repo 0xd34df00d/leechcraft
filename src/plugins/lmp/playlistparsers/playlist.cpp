@@ -63,7 +63,7 @@ namespace LMP
 	{
 	}
 
-	boost::optional<MediaInfo> PlaylistItem::GetMediaInfo () const
+	std::optional<MediaInfo> PlaylistItem::GetMediaInfo () const
 	{
 		static const QSet<QString> knownFields
 		{

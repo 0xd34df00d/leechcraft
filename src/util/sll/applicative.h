@@ -9,7 +9,6 @@
 #pragma once
 
 #include <optional>
-#include <boost/optional.hpp>
 
 namespace LC
 {
@@ -46,35 +45,6 @@ namespace Util
 	}
 
 	// Implementations
-	template<typename T>
-	struct InstanceApplicative<boost::optional<T>>
-	{
-		using Type_t = boost::optional<T>;
-
-		template<typename>
-		struct GSLResult;
-
-		template<typename V>
-		struct GSLResult<boost::optional<V>>
-		{
-			using Type_t = boost::optional<std::result_of_t<T (const V&)>>;
-		};
-
-		template<typename U>
-		static boost::optional<U> Pure (const U& v)
-		{
-			return { v };
-		}
-
-		template<typename AV>
-		static GSLResult_t<Type_t, AV> GSL (const Type_t& f, const AV& v)
-		{
-			if (!f || !v)
-				return {};
-
-			return { (*f) (*v) };
-		}
-	};
 
 	template<typename T>
 	struct InstanceApplicative<std::optional<T>>

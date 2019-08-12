@@ -45,7 +45,7 @@ namespace Azoth
 			Util::Unreachable ();
 		}
 
-		boost::optional<IHaveAvatars::Size> ChooseSize (IHaveAvatars *iha, IHaveAvatars::Size size)
+		std::optional<IHaveAvatars::Size> ChooseSize (IHaveAvatars *iha, IHaveAvatars::Size size)
 		{
 			if (iha->SupportsSize (size))
 				return size;
@@ -158,9 +158,9 @@ namespace Azoth
 
 			const auto size = pair.first;
 			Util::Sequence (this, GetAvatar (entry, pair.first)) >>
-					[this, size, entry] (const boost::optional<QImage>& image)
+					[this, size, entry] (const std::optional<QImage>& image)
 					{
-						const auto realImg = image.get_value_or ({});
+						const auto realImg = image.value_or (QImage {});
 						for (const auto& handler : Subscriptions_.value (entry).value (size))
 							handler (realImg);
 					};

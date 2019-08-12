@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include <boost/optional.hpp>
+#include <optional>
 #include <QObject>
 #include <interfaces/core/icoreproxyfwd.h>
 #include "notificationrule.h"
@@ -42,7 +42,7 @@ namespace AdvancedNotifications
 		void SetRuleEnabled (const NotificationRule&, bool);
 		void UpdateRule (const QModelIndex&, const NotificationRule&);
 
-		boost::optional<NotificationRule> CreateRuleFromEntity (const Entity&);
+		std::optional<NotificationRule> CreateRuleFromEntity (const Entity&);
 		void HandleEntity (const Entity&);
 		void SuggestRuleConfiguration (const Entity&);
 		QList<Entity> GetAllRules (const QString&) const;

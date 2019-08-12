@@ -9,7 +9,7 @@
 #pragma once
 
 #include <functional>
-#include <boost/optional.hpp>
+#include <optional>
 #include <QFuture>
 #include <QImage>
 #include <interfaces/structures.h>
@@ -251,7 +251,7 @@ namespace Util
 
 	UTIL_XPC_API void InitJobHolderRow (const QList<QStandardItem*>& row);
 
-	using LazyNotificationPixmap_t = std::function<boost::optional<QFuture<QImage>> ()>;
+	using LazyNotificationPixmap_t = std::function<std::optional<QFuture<QImage>> ()>;
 }
 }
 

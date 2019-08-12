@@ -8,10 +8,8 @@
 
 #pragma once
 
-#ifndef Q_MOC_RUN
 #include <boost/bimap.hpp>
-#endif
-
+#include <boost/container/allocator.hpp>
 #include <QObject>
 #include <QStringList>
 #include <QMultiMap>
@@ -33,7 +31,7 @@ namespace NetStoreManager
 		size_t BufferLength_;
 		size_t EventSize_;
 
-		typedef boost::bimaps::bimap<QString, int> descriptorsMap;
+		typedef boost::bimaps::bimap<QString, int, boost::container::allocator<void>> descriptorsMap;
 		descriptorsMap WatchedPathes2Descriptors_;
 
 		QStringList ExceptionMasks_;

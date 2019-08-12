@@ -9,11 +9,8 @@
 #pragma once
 
 #include <functional>
-
-#ifndef Q_MOC_RUN
 #include <boost/bimap.hpp>
-#endif
-
+#include <boost/container/allocator.hpp>
 #include <QObject>
 #include <QQueue>
 #include "interfaces/netstoremanager/isupportfilelistings.h"
@@ -35,7 +32,7 @@ namespace NetStoreManager
 		IStorageAccount *Account_;
 		ISupportFileListings *SFLAccount_;
 		QHash<QByteArray, StorageItem> Id2Item_;
-		boost::bimaps::bimap<QByteArray, QString> Id2Path_;
+		boost::bimaps::bimap<QByteArray, QString, boost::container::allocator<void>> Id2Path_;
 		QQueue<std::function<void (void)>> CallsQueue_;
 
 		Snapshot_t Snapshot_;

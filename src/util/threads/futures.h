@@ -11,7 +11,7 @@
 #include <type_traits>
 #include <functional>
 #include <memory>
-#include <boost/optional.hpp>
+#include <optional>
 #include <QFutureInterface>
 #include <QFutureWatcher>
 #include <util/sll/slotclosure.h>
@@ -307,7 +307,7 @@ namespace Util
 			std::shared_ptr<void> ExecuteGuard_;
 			Sequencer<Future> * const Seq_;
 
-			boost::optional<QFuture<Ret>> ThisFuture_;
+			std::optional<QFuture<Ret>> ThisFuture_;
 
 			std::function<DestructionTag ()> DestrHandler_;
 

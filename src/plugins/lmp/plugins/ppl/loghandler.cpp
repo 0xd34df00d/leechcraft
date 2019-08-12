@@ -68,9 +68,9 @@ namespace PPL
 		}
 
 		template<typename T, typename F>
-		boost::optional<T> FindAttrRelaxed (const QList<T>& items, const QString& attr, F&& attrGetter)
+		std::optional<T> FindAttrRelaxed (const QList<T>& items, const QString& attr, F&& attrGetter)
 		{
-			auto finder = [&] (const auto& checker) -> boost::optional<T>
+			auto finder = [&] (const auto& checker) -> std::optional<T>
 			{
 				const auto pos = std::find_if (items.begin (), items.end (),
 						[&] (const auto& item) { return checker (std::invoke (attrGetter, item)); });
@@ -92,22 +92,22 @@ namespace PPL
 					});
 		}
 
-		boost::optional<Collection::Artist> FindArtist (const Collection::Artists_t& artists, const QString& name)
+		std::optional<Collection::Artist> FindArtist (const Collection::Artists_t& artists, const QString& name)
 		{
 			return FindAttrRelaxed (artists, name, &Collection::Artist::Name_);
 		}
 
-		boost::optional<Collection::Album_ptr> FindAlbum (const QList<Collection::Album_ptr>& albums, const QString& name)
+		std::optional<Collection::Album_ptr> FindAlbum (const QList<Collection::Album_ptr>& albums, const QString& name)
 		{
 			return FindAttrRelaxed (albums, name, [] (const auto& albumPtr) { return albumPtr->Name_; });
 		}
 
-		boost::optional<Collection::Track> FindTrack (const QList<Collection::Track>& tracks, const QString& name)
+		std::optional<Collection::Track> FindTrack (const QList<Collection::Track>& tracks, const QString& name)
 		{
 			return FindAttrRelaxed (tracks, name, &Collection::Track::Name_);
 		}
 
-		boost::optional<int> FindMetadata (const Collection::Artists_t& artists, const Media::AudioInfo& info)
+		std::optional<int> FindMetadata (const Collection::Artists_t& artists, const Media::AudioInfo& info)
 		{
 			using Util::operator>>;
 			using Util::operator*;

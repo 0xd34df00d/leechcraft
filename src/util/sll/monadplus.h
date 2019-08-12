@@ -10,7 +10,6 @@
 
 #include <numeric>
 #include <optional>
-#include <boost/optional.hpp>
 
 namespace LC
 {
@@ -83,20 +82,6 @@ namespace Util
 			return std::accumulate (begin (vec), end (vec), Mzero<T> (), &operator+<T>);
 		}
 	} Msum {};
-
-	template<typename T>
-	struct InstanceMonadPlus<boost::optional<T>>
-	{
-		static boost::optional<T> Mzero ()
-		{
-			return {};
-		}
-
-		static boost::optional<T> Mplus (const boost::optional<T>& t1, const boost::optional<T>& t2)
-		{
-			return t1 ? t1 : t2;
-		}
-	};
 
 	template<typename T>
 	struct InstanceMonadPlus<std::optional<T>>

@@ -79,7 +79,7 @@ namespace Util
 			const auto& colorVar = map ["color"];
 			const auto& pointsVar = map ["points"];
 
-			boost::optional<QColor> brushColor;
+			std::optional<QColor> brushColor;
 			if (map.contains ("brushColor"))
 			{
 				const auto& brushVar = map ["brushColor"];

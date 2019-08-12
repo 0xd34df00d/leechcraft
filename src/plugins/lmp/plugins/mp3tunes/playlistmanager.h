@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include <boost/optional.hpp>
+#include <optional>
 #include <QObject>
 #include <QMap>
 #include <interfaces/media/audiostructs.h>
@@ -45,7 +45,7 @@ namespace MP3Tunes
 		QStandardItem* GetRoot () const;
 		void Update ();
 
-		boost::optional<Media::AudioInfo> GetMediaInfo (const QUrl&) const;
+		std::optional<Media::AudioInfo> GetMediaInfo (const QUrl&) const;
 	private slots:
 		void requestPlaylists (const QString&);
 		void handleGotPlaylists ();

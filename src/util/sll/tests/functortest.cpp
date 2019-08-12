@@ -18,21 +18,21 @@ namespace Util
 {
 	void FunctorTest::testBoostOptionalFMap ()
 	{
-		boost::optional<int> value { 2 };
+		std::optional<int> value { 2 };
 		const auto& fmapped = Fmap (value, [] (int val) { return QString::number (val); });
-		QCOMPARE (boost::optional<QString> { "2" }, fmapped);
+		QCOMPARE (std::optional<QString> { "2" }, fmapped);
 	}
 
 	void FunctorTest::testBoostOptionalFMapEmpty ()
 	{
-		boost::optional<int> value;
+		std::optional<int> value;
 		const auto& fmapped = Fmap (value, [] (int val) { return QString::number (val); });
-		QCOMPARE (boost::optional<QString> {}, fmapped);
+		QCOMPARE (std::optional<QString> {}, fmapped);
 	}
 
 	void FunctorTest::testIsFunctorTrue ()
 	{
-		static_assert (IsFunctor<boost::optional<int>> (), "test failed");
+		static_assert (IsFunctor<std::optional<int>> (), "test failed");
 	}
 
 	void FunctorTest::testIsFunctorFalse ()

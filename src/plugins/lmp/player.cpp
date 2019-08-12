@@ -587,7 +587,7 @@ namespace LMP
 		return Util::Map (CurrentQueue_,
 				[this, current] (const AudioSource& source)
 				{
-					boost::optional<MediaInfo> info;
+					std::optional<MediaInfo> info;
 					const auto& url = source.ToUrl ();
 					if (Url2Info_.contains (url))
 						info = Url2Info_ [url];

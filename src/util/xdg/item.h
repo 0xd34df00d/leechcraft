@@ -9,7 +9,7 @@
 #pragma once
 
 #include <memory>
-#include <boost/optional.hpp>
+#include <optional>
 #include <QHash>
 #include <QDebug>
 #include <QIcon>
@@ -47,7 +47,7 @@ namespace XDG
 		QString WD_;
 
 		QString IconName_;
-		mutable boost::optional<QIcon> Icon_;
+		mutable std::optional<QIcon> Icon_;
 
 		bool IsHidden_ = false;
 		Type Type_ = Type::Other;

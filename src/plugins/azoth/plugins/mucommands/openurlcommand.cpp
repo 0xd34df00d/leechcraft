@@ -74,8 +74,8 @@ namespace MuCommands
 
 	struct UrlRange
 	{
-		boost::optional<int> Start_;
-		boost::optional<int> End_;
+		std::optional<int> Start_;
+		std::optional<int> End_;
 	};
 
 	struct SinceLast {};
@@ -90,7 +90,7 @@ namespace MuCommands
 	struct UrlComposite
 	{
 		RxableRanges_t Range_;
-		boost::optional<RegExpStr_t> Pat_;
+		std::optional<RegExpStr_t> Pat_;
 	};
 
 	using OpenUrlParams_t = boost::variant<UrlIndex_t, UrlComposite, RegExpStr_t, JustLast>;
@@ -192,8 +192,8 @@ namespace MuCommands
 				if (allUrls.isEmpty ())
 					return {};
 
-				auto begin = boost::get_optional_value_or (range.Start_, 1);
-				auto end = boost::get_optional_value_or (range.End_, allUrls.size ());
+				auto begin = range.Start_.value_or (1);
+				auto end = range.End_.value_or (allUrls.size ());
 
 				if (!begin || !end)
 					throw StringCommandResult

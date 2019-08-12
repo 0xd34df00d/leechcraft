@@ -207,7 +207,7 @@ namespace BitTorrent
 			const auto& fi = infos.at (i);
 			const auto& parentItem = MkParentIfDoesntExist (fi.Path_);
 
-			const auto& filename = QString::fromStdString (fi.Path_.filename ().u8string ());
+			const auto& filename = QString::fromStdU16String (fi.Path_.filename ().u16string ());
 
 			const auto item = parentItem->AppendChild (parentItem);
 			item->Name_ = filename;
@@ -389,7 +389,7 @@ namespace BitTorrent
 
 		const auto& parentNode = MkParentIfDoesntExist (newPath, true);
 
-		node->Name_ = QString::fromStdString (newPath.filename ().u8string ());
+		node->Name_ = QString::fromStdU16String (newPath.filename ().u16string ());
 		node->Reparent (parentNode);
 
 		beginInsertRows (FindIndex (newPath.parent_path ()), parentNode->GetRowCount (), parentNode->GetRowCount ());

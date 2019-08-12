@@ -153,7 +153,7 @@ namespace AdvancedNotifications
 		SaveSettings ();
 	}
 
-	boost::optional<NotificationRule> RulesManager::CreateRuleFromEntity (const Entity& e)
+	std::optional<NotificationRule> RulesManager::CreateRuleFromEntity (const Entity& e)
 	{
 		const auto& title = e.Entity_.toString ();
 		const auto& sender = e.Additional_ ["org.LC.AdvNotifications.SenderID"].toByteArray ();

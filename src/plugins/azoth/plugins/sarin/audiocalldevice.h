@@ -30,7 +30,7 @@ namespace Sarin
 
 		std::unique_ptr<CallDataWriter> DataWriter_;
 
-		boost::optional<QAudioFormat> WriteFmt_;
+		std::optional<QAudioFormat> WriteFmt_;
 	public:
 		AudioCallDevice (int32_t, CallManager*);
 

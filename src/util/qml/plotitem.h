@@ -10,7 +10,7 @@
 
 #include <memory>
 #include <functional>
-#include <boost/optional.hpp>
+#include <optional>
 #include <QtGlobal>
 #include <QQuickPaintedItem>
 #include "qmlconfig.h"
@@ -58,7 +58,7 @@ namespace Util
 		struct PointsSet
 		{
 			QColor Color_;
-			boost::optional<QColor> BrushColor_;
+			std::optional<QColor> BrushColor_;
 			QList<QPointF> Points_;
 		};
 		QList<PointsSet> Multipoints_;

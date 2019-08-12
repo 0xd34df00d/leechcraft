@@ -219,7 +219,7 @@ namespace NetStoreManager
 		Id2Item_.clear ();
 		Id2Path_.erase (Id2Path_.begin (), Id2Path_.end ());
 		Id2Path_.clear ();
-		boost::bimaps::bimap<QByteArray, QStandardItem*> id2StandardItem;
+		boost::bimaps::bimap<QByteArray, QStandardItem*, boost::container::allocator<void>> id2StandardItem;
 		for (const auto& item : items)
 		{
 			if (item.IsTrashed_)

@@ -171,7 +171,7 @@ namespace XDG
 			return { std::forward<Container> (oldCont), std::forward<Container> (newCont) };
 		}
 
-		boost::optional<Cat2Items_t> Merge (const Cat2Items_t& existing, Cat2ID2Item_t result)
+		std::optional<Cat2Items_t> Merge (const Cat2Items_t& existing, Cat2ID2Item_t result)
 		{
 			auto ourItems = ItemsList2Map (existing);
 
@@ -228,7 +228,7 @@ namespace XDG
 				{
 					return QtConcurrent::run (Merge, Items_, result);
 				} >>
-				[this] (const boost::optional<Cat2Items_t>& result)
+				[this] (const std::optional<Cat2Items_t>& result)
 				{
 					IsScanning_ = false;
 					IsReady_ = true;

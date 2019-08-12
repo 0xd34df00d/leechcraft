@@ -1648,7 +1648,7 @@ namespace LC::Azoth
 
 	namespace
 	{
-		boost::optional<EntryStatus> LoadSavedStatus (IAccount *account)
+		std::optional<EntryStatus> LoadSavedStatus (IAccount *account)
 		{
 			const auto proto = qobject_cast<IProtocol*> (account->GetParentProtocol ());
 			if (!proto)

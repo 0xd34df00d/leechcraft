@@ -105,7 +105,7 @@ namespace ChatHistory
 
 		DaysResult_t GetDaysForSheet (const QString& accountId, const QString& entryId, int year, int month);
 
-		boost::optional<int> GetAllHistoryCount ();
+		std::optional<int> GetAllHistoryCount ();
 
 		void RegenUsersCache ();
 		void ClearHistory (const QString& accountId, const QString& entryId);

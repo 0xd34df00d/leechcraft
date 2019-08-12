@@ -19,54 +19,54 @@ namespace Util
 {
 	void MonadTest::testBoostOptionalReturn ()
 	{
-		const auto& pure = Return<boost::optional> (2);
-		QCOMPARE (pure, boost::optional<int> { 2 });
+		const auto& pure = Return<std::optional> (2);
+		QCOMPARE (pure, std::optional<int> { 2 });
 	}
 
 	void MonadTest::testBoostOptionalBind ()
 	{
-		const auto& pure = Return<boost::optional> (2);
-		const auto& result = Bind (pure, [] (int value) { return boost::optional<int> { ++value }; });
-		QCOMPARE (result, boost::optional<int> { 3 });
+		const auto& pure = Return<std::optional> (2);
+		const auto& result = Bind (pure, [] (int value) { return std::optional<int> { ++value }; });
+		QCOMPARE (result, std::optional<int> { 3 });
 	}
 
 	void MonadTest::testBoostOptionalBindEmpty ()
 	{
-		const auto& result = Bind (boost::optional<int> {}, [] (int value) { return boost::optional<int> { ++value }; });
-		QCOMPARE (result, boost::optional<int> {});
+		const auto& result = Bind (std::optional<int> {}, [] (int value) { return std::optional<int> { ++value }; });
+		QCOMPARE (result, std::optional<int> {});
 	}
 
 	void MonadTest::testBoostOptionalBindOperator ()
 	{
-		const auto& pure = Return<boost::optional> (2);
-		const auto& result = pure >> [] (int value) { return boost::optional<int> { ++value }; };
-		QCOMPARE (result, boost::optional<int> { 3 });
+		const auto& pure = Return<std::optional> (2);
+		const auto& result = pure >> [] (int value) { return std::optional<int> { ++value }; };
+		QCOMPARE (result, std::optional<int> { 3 });
 	}
 
 	void MonadTest::testBoostOptionalBindEmptyOperator ()
 	{
-		const auto& result = boost::optional<int> {} >> [] (int value) { return boost::optional<int> { ++value }; };
-		QCOMPARE (result, boost::optional<int> {});
+		const auto& result = std::optional<int> {} >> [] (int value) { return std::optional<int> { ++value }; };
+		QCOMPARE (result, std::optional<int> {});
 	}
 
 	void MonadTest::testBoostOptionalDo ()
 	{
-		const auto& result = Do (boost::optional<int> { 2 },
-				[] (int a) -> boost::optional<int> { return a * 2; },
-				[] (int a) -> boost::optional<int> { return a + 1; },
-				[] (int a) -> boost::optional<int> { return a * 3; });
-		QCOMPARE (result, boost::optional<int> { 15 });
+		const auto& result = Do (std::optional<int> { 2 },
+				[] (int a) -> std::optional<int> { return a * 2; },
+				[] (int a) -> std::optional<int> { return a + 1; },
+				[] (int a) -> std::optional<int> { return a * 3; });
+		QCOMPARE (result, std::optional<int> { 15 });
 	}
 
 	void MonadTest::testBoostOptionalDoEmpty ()
 	{
 		bool called = false;
-		const auto& result = Do (boost::optional<int> { 2 },
-				[] (int a) -> boost::optional<int> { return a * 2; },
-				[] (int) -> boost::optional<int> { return {}; },
-				[&called] (int a) -> boost::optional<int> { called = true; return a * 3; });
+		const auto& result = Do (std::optional<int> { 2 },
+				[] (int a) -> std::optional<int> { return a * 2; },
+				[] (int) -> std::optional<int> { return {}; },
+				[&called] (int a) -> std::optional<int> { called = true; return a * 3; });
 
-		QCOMPARE (result, boost::optional<int> {});
+		QCOMPARE (result, std::optional<int> {});
 		QCOMPARE (called, false);
 	}
 

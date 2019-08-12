@@ -32,7 +32,7 @@ namespace FOC
 		FlashOnClickPlugin (const ICoreProxy_ptr&,
 				FlashOnClickWhitelist*, QObject* = nullptr);
 
-		boost::optional<QWebPluginFactory::Plugin> Plugin (bool) const override;
+		std::optional<QWebPluginFactory::Plugin> Plugin (bool) const override;
 		QWidget* Create (const QString&,
 				const QUrl&,
 				const QStringList&,

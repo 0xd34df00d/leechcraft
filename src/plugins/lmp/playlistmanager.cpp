@@ -68,7 +68,7 @@ namespace LMP
 							continue;
 
 						urls << url;
-						infos << item.second.get_value_or ({});
+						infos << item.second.value_or (MediaInfo {});
 					}
 
 				result->setUrls (urls);
@@ -183,7 +183,7 @@ namespace LMP
 		}
 	}
 
-	boost::optional<MediaInfo> PlaylistManager::TryResolveMediaInfo (const QUrl& url) const
+	std::optional<MediaInfo> PlaylistManager::TryResolveMediaInfo (const QUrl& url) const
 	{
 		for (auto provObj : PlaylistProviders_)
 			if (const auto info = qobject_cast<IPlaylistProvider*> (provObj)->GetURLInfo (url))
