@@ -158,10 +158,7 @@ namespace Acetamide
 	void ChannelParticipantEntry::RemoveRole (const ChannelRole& role)
 	{
 		if (Roles_.removeAll (role))
-		{
-			qSort (Roles_.begin (), Roles_.end ());
 			emit permsChanged ();
-		}
 	}
 
 	void ChannelParticipantEntry::handleWhoIs ()
