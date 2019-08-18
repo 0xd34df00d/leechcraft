@@ -239,7 +239,7 @@ namespace Util
 		{
 			QImage img (cur [0], cur [1], QImage::Format_ARGB32);
 			cur += 2;
-			for (int i = 0; i < img.byteCount () / 4; ++i, ++cur)
+			for (int i = 0; i < img.sizeInBytes () / 4; ++i, ++cur)
 				reinterpret_cast<uint*> (img.bits ()) [i] = *cur;
 
 			icon.addPixmap (QPixmap::fromImage (img));
