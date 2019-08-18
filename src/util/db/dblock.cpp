@@ -84,8 +84,7 @@ void LeechCraft::Util::DBLock::Good ()
 void LeechCraft::Util::DBLock::DumpError (const QSqlError& lastError)
 {
 	qWarning () << lastError.text () << "|"
-		<< lastError.type () << "|"
-		<< lastError.number ();
+		<< lastError.type ();
 }
 
 void LeechCraft::Util::DBLock::DumpError (const QSqlQuery& lastQuery)
