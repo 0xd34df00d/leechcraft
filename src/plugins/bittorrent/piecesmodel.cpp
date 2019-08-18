@@ -177,7 +177,7 @@ namespace BitTorrent
 
 		// Remove
 		QList<int> values = index2position.values ();
-		qSort (values.begin (), values.end (), qGreater<int> ());
+		std::sort (values.begin (), values.end (), std::greater<> ());
 		for (int i = 0; i < values.size (); ++i)
 		{
 			beginRemoveRows (QModelIndex (), values.at (i), values.at (i));
