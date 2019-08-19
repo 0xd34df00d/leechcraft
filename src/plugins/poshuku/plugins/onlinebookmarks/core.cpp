@@ -403,14 +403,13 @@ namespace OnlineBookmarks
 		long lastCheckTimeInSec = XmlSettingsManager::Instance ()->
 				Property ("LastDownloadCheck", 0).toInt ();
 
-		long diff = lastCheckTimeInSec + downloadPeriod - QDateTime::currentDateTime ().toTime_t ();
+		long diff = lastCheckTimeInSec + downloadPeriod - QDateTime::currentSecsSinceEpoch ();
 		if (diff > 0)
 			DownloadTimer_->start (diff * 1000);
 		else
 		{
 			downloadBookmarks ();
-			XmlSettingsManager::Instance ()->setProperty ("LastDownloadCheck",
-					QDateTime::currentDateTime ().toTime_t ());
+			XmlSettingsManager::Instance ()->setProperty ("LastDownloadCheck", QDateTime::currentSecsSinceEpoch ());
 			DownloadTimer_->start (downloadPeriod * 1000);
 		}
 	}
@@ -422,14 +421,13 @@ namespace OnlineBookmarks
 		long lastCheckTimeInSec = XmlSettingsManager::Instance ()->
 				Property ("LastUploadCheck", 0).toInt ();
 
-		long diff = lastCheckTimeInSec + uploadPeriod - QDateTime::currentDateTime ().toTime_t ();
+		long diff = lastCheckTimeInSec + uploadPeriod - QDateTime::currentSecsSinceEpoch ();
 		if (diff > 0)
 			UploadTimer_->start (diff * 1000);
 		else
 		{
 			uploadBookmarks ();
-			XmlSettingsManager::Instance ()->setProperty ("LastUploadCheck",
-					QDateTime::currentDateTime ().toTime_t ());
+			XmlSettingsManager::Instance ()->setProperty ("LastUploadCheck", QDateTime::currentSecsSinceEpoch ());
 			UploadTimer_->start (uploadPeriod * 1000);
 		}
 	}

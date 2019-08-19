@@ -128,7 +128,7 @@ namespace ReadItLater
 				.arg (login,
 					password,
 					ApiKey,
-					!from.isNull () ? QString::number (from.toTime_t ()) : "").toUtf8 ();
+					!from.isNull () ? QString::number (from.toSecsSinceEpoch ()) : "").toUtf8 ();
 	}
 
 	QVariantList ReadItLaterApi::GetDownloadedBookmarks (const QByteArray& content)
