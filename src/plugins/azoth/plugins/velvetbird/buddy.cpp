@@ -236,7 +236,7 @@ namespace VelvetBird
 
 		auto msg = new ConvIMMessage (QString::fromUtf8 (body), IMessage::Direction::In, this);
 		if (time)
-			msg->SetDateTime (QDateTime::fromTime_t (time));
+			msg->SetDateTime (QDateTime::fromSecsSinceEpoch (time));
 		Store (msg);
 	}
 
