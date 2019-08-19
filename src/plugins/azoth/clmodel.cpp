@@ -217,7 +217,7 @@ namespace Azoth
 		if (!acc)
 			return false;
 
-		const auto& newGrp = parent.child (row, 0).data (Core::CLREntryCategory).toString ();
+		const auto& newGrp = index (row, 0, parent).data (Core::CLREntryCategory).toString ();
 
 		for (const auto& info : DndUtil::DecodeMimeInfos (mime))
 		{
