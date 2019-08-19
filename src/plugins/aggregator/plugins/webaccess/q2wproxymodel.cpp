@@ -144,7 +144,7 @@ namespace WebAccess
 			case QVariant::Bool:
 				return var.toBool ();
 			case QVariant::DateTime:
-				return Wt::WDateTime::fromTime_t (var.toDateTime ().toTime_t ());
+				return Wt::WDateTime::fromTime_t (var.toDateTime ().toSecsSinceEpoch ());
 			case QVariant::String:
 				return ToW (var.toString ());
 			case QVariant::Double:
