@@ -143,7 +143,7 @@ namespace Acetamide
 		if (!Roles_.contains (role))
 		{
 			Roles_ << role;
-			qSort (Roles_.begin (), Roles_.end ());
+			std::sort (Roles_.begin (), Roles_.end ());
 			emit permsChanged ();
 		}
 	}
@@ -151,7 +151,7 @@ namespace Acetamide
 	void ChannelParticipantEntry::SetRoles (const QList<ChannelRole>& roles)
 	{
 		Roles_ = roles;
-		qSort (Roles_.begin (), Roles_.end ());
+		std::sort (Roles_.begin (), Roles_.end ());
 		emit permsChanged ();
 	}
 
