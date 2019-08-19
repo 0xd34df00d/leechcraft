@@ -336,9 +336,9 @@ namespace BitTorrent
 		QString date;
 		if (const auto maybeDate = info.creation_date ())
 #if LIBTORRENT_VERSION_NUM >= 10200
-			date = QDateTime::fromTime_t (maybeDate).toString ();
+			date = QDateTime::fromSecsSinceEpoch (maybeDate).toString ();
 #else
-			date = QDateTime::fromTime_t (*maybeDate).toString ();
+			date = QDateTime::fromSecsSinceEpoch (*maybeDate).toString ();
 #endif
 
 		if (!creator.isEmpty () && !creator.isNull ())
