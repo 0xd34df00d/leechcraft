@@ -6,8 +6,10 @@ find_package (Qwt)
 
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
-	${Boost_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
+	)
+include_directories (SYSTEM
+	${Boost_INCLUDE_DIR}
 	${QWT_INCLUDE_DIRS}
 	)
 set (SRCS
