@@ -111,7 +111,7 @@ namespace PPL
 				{}
 			};
 
-			const auto& dt = QDateTime::fromTime_t (elems.at (Timestamp).toLongLong ());
+			const auto& dt = QDateTime::fromSecsSinceEpoch (elems.at (Timestamp).toLongLong ());
 
 			return { { info, dt } };
 		}
