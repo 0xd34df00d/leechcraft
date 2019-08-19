@@ -423,9 +423,10 @@ namespace Azoth
 					SLOT (handleCatRenameTriggered ()));
 			actions << rename;
 
+			auto model = index.model ();
 			QList<QVariant> entries;
-			for (int i = 0, cnt = index.model ()->rowCount (index); i < cnt; ++i)
-				entries << index.child (i, 0).data (Core::CLREntryObject);
+			for (int i = 0, cnt = model->rowCount (index); i < cnt; ++i)
+				entries << model->index (i, 0, index).data (Core::CLREntryObject);
 
 			QAction *sendMsg = new QAction (tr ("Send message..."), menu);
 			sendMsg->setProperty ("Azoth/Entries", entries);
