@@ -869,7 +869,7 @@ namespace Murm
 			items.value (3).toULongLong (),
 			items.value (6).toString (),
 			MessageFlags { items.value (2).toInt () },
-			QDateTime::fromTime_t (items.value (4).toULongLong ()),
+			QDateTime::fromSecsSinceEpoch (items.value (4).toULongLong ()),
 			params
 		};
 
@@ -1374,7 +1374,7 @@ namespace Murm
 					wallMap ["body"].toString ();
 			info.Likes_ = wallMap ["likes"].toMap () ["count"].toInt ();
 			info.Reposts_ = wallMap ["reposts"].toMap () ["count"].toInt ();
-			info.PostDate_ = QDateTime::fromTime_t (wallMap ["date"].toLongLong ());
+			info.PostDate_ = QDateTime::fromSecsSinceEpoch (wallMap ["date"].toLongLong ());
 		}
 
 		VideoInfo VideoMap2Info (const QVariantMap& map)
@@ -1548,7 +1548,7 @@ namespace Murm
 				map ["user_id"].toULongLong (),
 				map ["body"].toString (),
 				flags,
-				QDateTime::fromTime_t (map ["date"].toULongLong ()),
+				QDateTime::fromSecsSinceEpoch (map ["date"].toULongLong ()),
 				{}
 			};
 
