@@ -124,7 +124,7 @@ namespace Murm
 
 			const HistoryItem item
 			{
-				QDateTime::fromTime_t (map ["date"].toULongLong ()),
+				QDateTime::fromSecsSinceEpoch (map ["date"].toULongLong ()),
 				map ["out"].toInt () == 1 ? IMessage::Direction::Out : IMessage::Direction::In,
 				map ["body"].toString (),
 				{},
