@@ -1065,7 +1065,7 @@ namespace Metida
 		auto element = FillServicePart (result.second, Account_->GetOurLogin (),
 				Account_->GetPassword (), challenge, document);
 		const uint lastSyncDate = XmlSettingsManager::Instance ().Property ("LastInboxUpdateDate",
-				QDateTime (QDateTime::currentDateTime ().date ().addMonths (-1)))
+				QDateTime (QDate::currentDate ().addMonths (-1)))
 					.toDateTime ().toTime_t ();
 		element.appendChild (GetSimpleMemberElement ("lastsync",
 				"string",
