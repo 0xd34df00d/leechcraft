@@ -310,7 +310,7 @@ namespace Acetamide
 		else if (ctcpList.at (0).toLower () == "ping")
 		{
 			cmd = QString ("%1 %2%3").arg ("\001PING ",
-					QString::number (currentDT.toTime_t ()), QChar ('\001'));
+					QString::number (currentDT.toSecsSinceEpoch ()), QChar ('\001'));
 			outputMessage = tr ("Received request %1 from %2, sending response")
 					.arg ("PING", opts.Nick_);
 		}
@@ -472,7 +472,7 @@ namespace Acetamide
 		WhoIsMessage msg;
 		msg.Nick_ = QString::fromStdString (opts.Parameters_.at (1));
 		msg.IdleTime_ = Util::MakeTimeFromLong (std::stol (opts.Parameters_.at (2)));
-		msg.AuthTime_ = QDateTime::fromTime_t (std::stoul (opts.Parameters_.at (3))).toString (Qt::TextDate);
+		msg.AuthTime_ = QDateTime::fromSecsSinceEpoch (std::stoul (opts.Parameters_.at (3))).toString (Qt::TextDate);
 		ISH_->ShowWhoIsReply (msg);
 	}
 
@@ -898,7 +898,7 @@ namespace Acetamide
 		}
 
 		if (count > 4)
-			time = QDateTime::fromTime_t (std::stoi (opts.Parameters_.at (4)));
+			time = QDateTime::fromSecsSinceEpoch (std::stoi (opts.Parameters_.at (4)));
 
 		ISH_->ShowBanList (channel, mask, opts.Nick_, time);
 	}
@@ -929,7 +929,7 @@ namespace Acetamide
 		}
 
 		if (count > 4)
-			time = QDateTime::fromTime_t (std::stoi (opts.Parameters_.at (4)));
+			time = QDateTime::fromSecsSinceEpoch (std::stoi (opts.Parameters_.at (4)));
 
 		ISH_->ShowExceptList (channel, mask, opts.Nick_, time);
 	}
@@ -960,7 +960,7 @@ namespace Acetamide
 		}
 
 		if (count > 4)
-			time = QDateTime::fromTime_t (std::stoi (opts.Parameters_.at (4)));
+			time = QDateTime::fromSecsSinceEpoch (std::stoi (opts.Parameters_.at (4)));
 
 		ISH_->ShowInviteList (channel, mask, opts.Nick_, time);
 	}

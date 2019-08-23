@@ -575,7 +575,7 @@ namespace Acetamide
 
 		QString msg (tr ("Topic was set by %1 at %2")
 				.arg (who)
-				.arg (QDateTime::fromTime_t (time).toString (Qt::TextDate)));
+				.arg (QDateTime::fromSecsSinceEpoch (time).toString (Qt::TextDate)));
 		handler->HandleServiceMessage (msg,
 				IMessage::Type::ServiceMessage,
 				IMessage::SubType::Other);

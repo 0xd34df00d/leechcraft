@@ -131,9 +131,7 @@ namespace Acetamide
 
 		IrcAccount *account = new IrcAccount (name, this);
 		account->FillSettings (w);
-		account->SetAccountID (GetProtocolID () + "." +
-				QString::number (QDateTime::currentDateTime ()
-					.toTime_t ()));
+		account->SetAccountID (GetProtocolID () + "." + QString::number (QDateTime::currentSecsSinceEpoch ()));
 		IrcAccounts_ << account;
 		saveAccounts ();
 		emit accountAdded (account);
