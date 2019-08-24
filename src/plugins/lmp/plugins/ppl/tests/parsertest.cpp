@@ -87,7 +87,7 @@ Heart Of A Coward	Severance	Monstro	1	213	L	1470071135
 					1,
 					{}
 				},
-				QDateTime::fromTime_t (1470071135).toUTC ()
+				QDateTime::fromSecsSinceEpoch (1470071135).toUTC ()
 			}
 		};
 
@@ -123,7 +123,7 @@ Heart Of A Coward	Severance	Nauseam	4	218	L	1470072028
 					1,
 					{}
 				},
-				QDateTime::fromTime_t (1470071135).toUTC ()
+				QDateTime::fromSecsSinceEpoch (1470071135).toUTC ()
 			},
 			{
 				Media::AudioInfo
@@ -137,7 +137,7 @@ Heart Of A Coward	Severance	Nauseam	4	218	L	1470072028
 					2,
 					{}
 				},
-				QDateTime::fromTime_t (1470071375).toUTC ()
+				QDateTime::fromSecsSinceEpoch (1470071375).toUTC ()
 			},
 			{
 				Media::AudioInfo
@@ -151,7 +151,7 @@ Heart Of A Coward	Severance	Nauseam	4	218	L	1470072028
 					4,
 					{}
 				},
-				QDateTime::fromTime_t (1470072028).toUTC ()
+				QDateTime::fromSecsSinceEpoch (1470072028).toUTC ()
 			}
 		};
 
@@ -196,7 +196,7 @@ Heart Of A Coward		Monstro		213	L	1470071135
 					0,
 					{}
 				},
-				QDateTime::fromTime_t (1470071135).toUTC ()
+				QDateTime::fromSecsSinceEpoch (1470071135).toUTC ()
 			}
 		};
 
