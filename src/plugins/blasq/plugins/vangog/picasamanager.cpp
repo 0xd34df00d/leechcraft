@@ -304,7 +304,7 @@ namespace Vangog
 		access.appendChild (accessRights);
 		QDomElement timestamp = doc.createElement ("gphoto:timestamp");
 		root.appendChild (timestamp);
-		QDomText timestampValue = doc.createTextNode (QString::number (QDateTime::currentDateTime ().toTime_t ()));
+		QDomText timestampValue = doc.createTextNode (QString::number (QDateTime::currentSecsSinceEpoch ()));
 		timestamp.appendChild (timestampValue);
 		QDomElement category = doc.createElement ("category");
 		category.setAttribute ("scheme", "http://schemas.google.com/g/2005#kind");
