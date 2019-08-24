@@ -38,6 +38,7 @@
 #include <QDesktopWidget>
 #include <QAbstractEventDispatcher>
 #include <QtDebug>
+#include <QScreen>
 #include <QTimer>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
@@ -665,14 +666,14 @@ namespace Util
 					1);
 	}
 
-	QRect XWrapper::GetAvailableGeometry (int screen)
+	QRect XWrapper::GetAvailableGeometry (int screenIdx)
 	{
 		auto dw = QApplication::desktop ();
 
-		if (screen < 0 || screen >= dw->screenCount ())
-			screen = dw->primaryScreen ();
+		const auto& screens = QGuiApplication::screens ();
+		auto screen = screens.value (screenIdx, QGuiApplication::primaryScreen ());
 
-		auto available = dw->screenGeometry (screen);
+		auto available = screen->geometry ();
 		const auto deskGeom = dw->rect ();
 
 		for (const auto wid : GetWindows ())
