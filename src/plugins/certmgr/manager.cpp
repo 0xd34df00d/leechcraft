@@ -30,7 +30,7 @@
 #include "manager.h"
 #include <QFile>
 #include <QDataStream>
-#include <QSslSocket>
+#include <QSslConfiguration>
 #include <QtDebug>
 #include <util/util.h>
 #include <util/sys/paths.h>
@@ -44,9 +44,8 @@ namespace CertMgr
 	: SystemCertsModel_ { new CertsModel { this } }
 	, LocalCertsModel_ { new CertsModel { this } }
 	{
-		const auto& systems = QSslSocket::systemCaCertificates ();
 		QSet<QByteArray> existing;
-		for (const auto& cert : systems)
+		for (const auto& cert : QSslConfiguration::systemCaCertificates ())
 		{
 			const auto& pem = cert.toPem ();
 			if (existing.contains (pem))
@@ -169,7 +168,9 @@ namespace CertMgr
 
 	void Manager::ResetSocketDefault ()
 	{
-		QSslSocket::setDefaultCaCertificates (AllowedDefaults_ + Locals_);
+		auto def = QSslConfiguration::defaultConfiguration ();
+		def.setCaCertificates (AllowedDefaults_ + Locals_);
+		QSslConfiguration::setDefaultConfiguration (def);
 	}
 
 	namespace
