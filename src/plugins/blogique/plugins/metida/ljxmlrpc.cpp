@@ -1064,9 +1064,9 @@ namespace Metida
 		document.appendChild (result.first);
 		auto element = FillServicePart (result.second, Account_->GetOurLogin (),
 				Account_->GetPassword (), challenge, document);
-		const uint lastSyncDate = XmlSettingsManager::Instance ().Property ("LastInboxUpdateDate",
-				QDateTime (QDate::currentDate ().addMonths (-1)))
-					.toDateTime ().toTime_t ();
+		const auto& lastMonth = QDateTime (QDate::currentDate ().addMonths (-1));
+		const uint lastSyncDate = XmlSettingsManager::Instance ().Property ("LastInboxUpdateDate", lastMonth)
+				.toDateTime ().toSecsSinceEpoch ();
 		element.appendChild (GetSimpleMemberElement ("lastsync",
 				"string",
 				QString::number (lastSyncDate),
@@ -1798,7 +1798,7 @@ namespace Metida
 
 		const auto& path = QStandardPaths::writableLocation (QStandardPaths::TempLocation) +
 				QString ("/blogique_preview_%1.bml")
-						.arg (QDateTime::currentDateTime ().toTime_t ());
+						.arg (QDateTime::currentSecsSinceEpoch ());
 		QFile file (path);
 		if (file.open (QIODevice::WriteOnly))
 		{
@@ -2212,7 +2212,7 @@ namespace Metida
 				else if (fieldEntry.Name () == "text")
 					comment.Text_ = fieldEntry.ValueToString ();
 				else if (fieldEntry.Name () == "datepostunix")
-					comment.PostingDate_ = QDateTime::fromTime_t (fieldEntry.ValueToLongLong ());
+					comment.PostingDate_ = QDateTime::fromSecsSinceEpoch (fieldEntry.ValueToLongLong ());
 			}
 
 			return comment;
