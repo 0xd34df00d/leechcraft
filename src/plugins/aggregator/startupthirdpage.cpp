@@ -53,7 +53,7 @@ namespace Aggregator
 		header->setSectionResizeMode (1, QHeaderView::ResizeToContents);
 
 		connect (Ui_.LocalizationBox_,
-				Util::Overload<const QString&> (&QComboBox::currentIndexChanged),
+				&QComboBox::currentTextChanged,
 				this,
 				&StartupThirdPage::HandleCurrentIndexChanged);
 
