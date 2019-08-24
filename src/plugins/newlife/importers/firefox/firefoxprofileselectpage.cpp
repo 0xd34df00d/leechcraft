@@ -191,7 +191,7 @@ namespace Importers
 				QMap<QString, QVariant> record;
 				record ["URL"] = query.value (0).toString ();
 				record ["Title"] = query.value (1).toString ();
-				record ["DateTime"] = QDateTime::fromTime_t (query.value (2).toLongLong () / 1000000);
+				record ["DateTime"] = QDateTime::fromSecsSinceEpoch (query.value (2).toLongLong () / 1000000);
 				history.push_back (record);
 			}
 			while (query.next ());

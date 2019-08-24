@@ -106,7 +106,7 @@ namespace Importers
 					QMap<QString, QVariant> record;
 					record ["Title"] = oldHistoryFile.readLine ().trimmed ();
 					record ["URL"] = oldHistoryFile.readLine ().trimmed ();
-					record ["DateTime"] = QDateTime::fromTime_t (oldHistoryFile.readLine ()
+					record ["DateTime"] = QDateTime::fromSecsSinceEpoch (oldHistoryFile.readLine ()
 							.trimmed ().toLongLong ());
 					history.push_back (record);
 				}
@@ -142,7 +142,7 @@ namespace Importers
 					QMap<QString, QVariant> record;
 					record ["URL"] = query.value (0).toUrl ();
 					record ["Title"] = query.value (1).toString ();
-					record ["DateTime"] = QDateTime::fromTime_t (query.value (2).toLongLong () / 1000000 - 11644473600);
+					record ["DateTime"] = QDateTime::fromSecsSinceEpoch (query.value (2).toLongLong () / 1000000 - 11644473600);
 					history.push_back (record);
 				}
 			}
