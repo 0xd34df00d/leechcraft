@@ -149,7 +149,7 @@ namespace LMP
 				Player_->PrepareURLInfo (sources.at (i).ToUrl (), infos.at (i));
 
 		auto afterIdx = row >= 0 ?
-				parent.child (row, 0) :
+				index (row, 0, parent) :
 				parent;
 		const auto& firstSrc = afterIdx.isValid () ?
 				Player_->GetIndexSources (afterIdx).value (0) :

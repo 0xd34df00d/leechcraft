@@ -1263,7 +1263,7 @@ namespace LMP
 
 		if (index.data (Role::IsAlbum).toBool ())
 		{
-			play (index.child (0, 0));
+			play (PlaylistModel_->index (0, 0, index));
 			return;
 		}
 

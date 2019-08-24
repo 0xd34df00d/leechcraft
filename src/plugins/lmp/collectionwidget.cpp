@@ -191,7 +191,7 @@ namespace LMP
 
 			auto model = root.model ();
 			for (int i = 0; i < model->rowCount (root); ++i)
-				result += CollectFromModel<T> (root.child (i, 0), role);
+				result += CollectFromModel<T> (model->index (i, 0, root), role);
 
 			return result;
 		}
