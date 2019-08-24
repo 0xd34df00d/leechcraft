@@ -340,7 +340,7 @@ namespace Azoth
 		const auto& cal = dt.timeSpec () == Qt::LocalTime ?
 				boost::locale::calendar {} :
 				boost::locale::calendar { "GMT" };
-		boost::locale::date_time bdt { static_cast<double> (dt.toTime_t ()),  cal };
+		boost::locale::date_time bdt { static_cast<double> (dt.toSecsSinceEpoch ()),  cal };
 
 		std::ostringstream ostr;
 		ostr << bdt;
