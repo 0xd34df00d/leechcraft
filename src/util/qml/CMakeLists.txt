@@ -3,7 +3,7 @@ if (WITH_QWT)
 	set (ADDITIONAL_LIBS ${QWT_LIBRARIES})
 	add_definitions (-DWITH_QWT)
 
-	include_directories (${QWT_INCLUDE_DIRS})
+	include_directories (SYSTEM ${QWT_INCLUDE_DIRS})
 endif ()
 
 set (QML_SRCS
