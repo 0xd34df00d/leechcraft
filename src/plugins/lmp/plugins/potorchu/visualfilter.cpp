@@ -160,7 +160,7 @@ namespace Potorchu
 		{
 			std::unique_ptr<QTemporaryFile> fontFile
 			{
-				QTemporaryFile::createLocalFile (":/lmp/potorchu/resources/data/blank.ttf")
+				QTemporaryFile::createNativeFile (":/lmp/potorchu/resources/data/blank.ttf")
 			};
 			const std::string fontFileNameStr { fontFile->fileName ().toUtf8 ().constData () };
 
