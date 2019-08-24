@@ -331,7 +331,7 @@ namespace Blasq
 
 		for (auto i = 0, rc = model->rowCount (allPhotosIdx); i < rc; ++i)
 		{
-			const auto& idx = allPhotosIdx.child (i, 0);
+			const auto& idx = model->index (i, 0, allPhotosIdx);
 			if (idx.data (CollectionRole::ID).toString () == id)
 				return idx;
 		}
