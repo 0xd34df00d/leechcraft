@@ -34,7 +34,6 @@
 #include <util/util.h>
 #include <util/sll/domchildrenrange.h>
 #include <util/sll/prelude.h>
-#include <util/sll/overload.h>
 #include "xmlsettingsmanager.h"
 
 namespace LeechCraft
