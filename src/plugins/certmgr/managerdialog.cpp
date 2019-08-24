@@ -143,9 +143,10 @@ namespace CertMgr
 		else
 		{
 			const auto& selected = Ui_.LocalTree_->selectionModel ()->selectedRows ().value (0);
-			for (auto i = 0, rc = Manager_->GetLocalModel ()->rowCount (selected); i < rc; ++i)
+			const auto model = Manager_->GetLocalModel ();
+			for (auto i = 0, rc = model->rowCount (selected); i < rc; ++i)
 			{
-				const auto& child = selected.child (i, 0);
+				const auto& child = model->index (i, 0, selected);
 				const auto& certVar = child.data (CertsModel::CertificateRole);
 				Manager_->RemoveCert (certVar.value<QSslCertificate> ());
 			}
