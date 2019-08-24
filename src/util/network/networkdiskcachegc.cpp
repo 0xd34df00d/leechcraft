@@ -78,7 +78,12 @@ namespace Util
 			{
 				const auto& path = it.next ();
 				const auto& info = it.fileInfo ();
-				result.Items_.insert (info.created (), path);
+#if QT_VERSION >= QT_VERSION_CHECK (5, 10, 0)
+				const auto& created = info.birthTime ();
+#else
+				const auto& created = info.created ();
+#endif
+				result.Items_.insert (created, path);
 				result.TotalSize_ += info.size ();
 			}
 
