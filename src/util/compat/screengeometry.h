@@ -36,6 +36,7 @@
 #include <QScreen>
 #else
 #include <QApplication>
+#include <QDesktopWidget>
 #endif
 
 namespace LeechCraft::Util::Compat
