@@ -41,18 +41,26 @@
 
 namespace LeechCraft::Util::Compat
 {
-	inline QRect AvailableGeometry (const QPoint& p)
-	{
 #if QT_VERSION >= QT_VERSION_CHECK (5, 10, 0)
-		const auto screen = QGuiApplication::screenAt (p);
-		if (!screen)
+	namespace detail
+	{
+		auto GetScreenWithFallback (const QPoint& p)
 		{
+			if (auto screen = QGuiApplication::screenAt (p))
+				return screen;
+
 			qWarning () << Q_FUNC_INFO
 					<< "unknown screen for point"
 					<< p;
-			return {};
+			return QGuiApplication::primaryScreen ();
 		}
-		return screen->availableGeometry ();
+	}
+#endif
+
+	inline QRect AvailableGeometry (const QPoint& p)
+	{
+#if QT_VERSION >= QT_VERSION_CHECK (5, 10, 0)
+		return detail::GetScreenWithFallback (p)->availableGeometry ();
 #else
 		return QApplication::desktop ()->availableGeometry (p);
 #endif
