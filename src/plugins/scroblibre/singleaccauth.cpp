@@ -80,7 +80,7 @@ namespace Scroblibre
 			append ("a", info.Info_.Artist_);
 			append ("b", info.Info_.Album_);
 			append ("t", info.Info_.Title_);
-			append ("i", QString::number (info.TS_.toTime_t ()));
+			append ("i", QString::number (info.TS_.toSecsSinceEpoch ()));
 			append ("l", QString::number (info.Info_.Length_));
 			if (info.Info_.TrackNumber_)
 				append ("n", QString::number (info.Info_.TrackNumber_));
@@ -221,7 +221,7 @@ namespace Scroblibre
 
 		SID_.clear ();
 
-		const auto nowTime_t = QDateTime::currentDateTime ().toTime_t ();
+		const auto nowTime_t = QDateTime::currentSecsSinceEpoch ();
 		const auto& nowStr = QString::number (nowTime_t);
 
 		QUrl reqUrl { BaseURL_ };
