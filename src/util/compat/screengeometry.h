@@ -31,7 +31,9 @@
 
 #include <QtGlobal>
 
-#if QT_VERSION >= QT_VERSION_CHECK (5, 10, 0)
+#define NEW_IMPL QT_VERSION >= QT_VERSION_CHECK (5, 10, 0)
+
+#if NEW_IMPL
 #include <QGuiApplication>
 #include <QScreen>
 #else
@@ -41,7 +43,7 @@
 
 namespace LeechCraft::Util::Compat
 {
-#if QT_VERSION >= QT_VERSION_CHECK (5, 10, 0)
+#if NEW_IMPL
 	namespace detail
 	{
 		auto GetScreenWithFallback (const QPoint& p)
@@ -59,7 +61,7 @@ namespace LeechCraft::Util::Compat
 
 	inline QRect AvailableGeometry (const QPoint& p)
 	{
-#if QT_VERSION >= QT_VERSION_CHECK (5, 10, 0)
+#if NEW_IMPL
 		return detail::GetScreenWithFallback (p)->availableGeometry ();
 #else
 		return QApplication::desktop ()->availableGeometry (p);
@@ -68,10 +70,12 @@ namespace LeechCraft::Util::Compat
 
 	inline QRect ScreenGeometry (const QPoint& p)
 	{
-#if QT_VERSION >= QT_VERSION_CHECK (5, 10, 0)
+#if NEW_IMPL
 		return detail::GetScreenWithFallback (p)->geometry ();
 #else
 		return QApplication::desktop ()->screenGeometry (p);
 #endif
 	}
 }
+
+#undef NEW_IMPL
