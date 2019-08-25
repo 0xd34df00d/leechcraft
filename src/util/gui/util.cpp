@@ -33,10 +33,10 @@
 #include <QDesktopWidget>
 #include <QKeyEvent>
 #include <QTimer>
-#include <QDesktopWidget>
 #include <QLabel>
 #include <QStyleOptionViewItem>
 #include <QtDebug>
+#include <util/compat/screengeometry.h>
 
 namespace LeechCraft
 {
@@ -44,7 +44,7 @@ namespace Util
 {
 	QPoint FitRectScreen (QPoint pos, const QSize& size, FitFlags flags, const QPoint& shiftAdd)
 	{
-		return FitRect (pos, size, QApplication::desktop ()->screenGeometry (pos), flags, shiftAdd);
+		return FitRect (pos, size, Compat::ScreenGeometry (pos), flags, shiftAdd);
 	}
 
 	QPoint FitRect (QPoint pos, const QSize& size, const QRect& geometry,
@@ -119,7 +119,7 @@ namespace Util
 
 	QLabel* ShowPixmapLabel (const QPixmap& srcPx, const QPoint& pos)
 	{
-		const auto& availGeom = QApplication::desktop ()->availableGeometry (pos).size () * 0.9;
+		const auto& availGeom = Compat::AvailableGeometry (pos).size () * 0.9;
 
 		auto px = srcPx;
 		if (px.size ().width () > availGeom.width () ||
