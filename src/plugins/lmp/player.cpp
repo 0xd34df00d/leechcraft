@@ -142,7 +142,7 @@ namespace LMP
 	, Source_ (new SourceObject (Category::Music, this))
 	, Output_ (new Output (this))
 	, Path_ (new Path (Source_, Output_))
-	, PRG_ { QDateTime::currentDateTime ().toTime_t () }
+	, PRG_ { static_cast<std::mt19937::result_type> (QDateTime::currentSecsSinceEpoch ()) }
 	, RulesManager_ (new PlayerRulesManager (PlaylistModel_, this))
 	{
 		qRegisterMetaType<QList<AudioSource>> ("QList<AudioSource>");
