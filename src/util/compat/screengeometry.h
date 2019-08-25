@@ -40,7 +40,7 @@
 
 namespace LeechCraft::Util::Compat
 {
-	QRect AvailableGeometry (const QPoint& p)
+	inline QRect AvailableGeometry (const QPoint& p)
 	{
 #if QT_VERSION >= QT_VERSION_CHECK (5, 10, 0)
 		const auto screen = QGuiApplication::screenAt (p);
