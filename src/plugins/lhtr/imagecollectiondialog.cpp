@@ -64,9 +64,9 @@ namespace LHTR
 			}
 		};
 
-		addSize (sample.ThumbSize_, trUtf8 ("Thumbnail (%1×%2)"), PreviewSize::Thumb);
-		addSize (sample.PreviewSize_, trUtf8 ("Preview (%1×%2)"), PreviewSize::Preview);
-		addSize (sample.FullSize_, trUtf8 ("Full (%1×%2)"), PreviewSize::Full);
+		addSize (sample.ThumbSize_, tr ("Thumbnail (%1×%2)"), PreviewSize::Thumb);
+		addSize (sample.PreviewSize_, tr ("Preview (%1×%2)"), PreviewSize::Preview);
+		addSize (sample.FullSize_, tr ("Full (%1×%2)"), PreviewSize::Full);
 	}
 
 	RemoteImageInfos_t ImageCollectionDialog::GetInfos () const
