@@ -36,6 +36,7 @@
 #include <QKeyEvent>
 #include <qrencode.h>
 #include <util/util.h>
+#include <util/compat/screengeometry.h>
 #include <util/sll/lambdaeventfilter.h>
 
 namespace LeechCraft
@@ -140,7 +141,7 @@ namespace QRd
 				image.setPixel (x + whiteBorder, y + whiteBorder,
 						code->data [y * width + x] & 0x01);
 
-		const auto& geom = QApplication::desktop ()->availableGeometry (QCursor::pos ());
+		const auto& geom = Util::Compat::AvailableGeometry (QCursor::pos ());
 		const auto& dim = std::min (geom.width (), geom.height ());
 		if (dim < fullWidth)
 		{
