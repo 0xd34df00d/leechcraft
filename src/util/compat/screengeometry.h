@@ -65,4 +65,13 @@ namespace LeechCraft::Util::Compat
 		return QApplication::desktop ()->availableGeometry (p);
 #endif
 	}
+
+	inline QRect ScreenGeometry (const QPoint& p)
+	{
+#if QT_VERSION >= QT_VERSION_CHECK (5, 10, 0)
+		return detail::GetScreenWithFallback (p)->geometry ();
+#else
+		return QApplication::desktop ()->screenGeometry (p);
+#endif
+	}
 }
