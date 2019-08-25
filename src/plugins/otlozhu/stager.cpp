@@ -65,7 +65,7 @@ namespace Sync
 
 	Laretz::Field_t ToField (const QDateTime& dt)
 	{
-		return static_cast<int64_t> (dt.toTime_t ());
+		return static_cast<int64_t> (dt.toSecsSinceEpoch ());
 	}
 
 	Laretz::Field_t ToField (const QVariant& var)

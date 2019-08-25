@@ -147,9 +147,9 @@ namespace Otlozhu
 					})
 				("Deps", &TodoItem::Deps_)
 				("Created", [] (TodoItem *item, QVariant time)
-						{ item->Created_.setTime_t (time.toUInt ()); })
+						{ item->Created_.setSecsSinceEpoch (time.toUInt ()); })
 				("Due", [] (TodoItem *item, QVariant time)
-						{ item->Due_.setTime_t (time.toUInt ()); })
+						{ item->Due_.setSecsSinceEpoch (time.toUInt ()); })
 				("Percentage", &TodoItem::Percentage_);
 	}
 
