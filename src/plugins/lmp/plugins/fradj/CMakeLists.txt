@@ -9,7 +9,7 @@ if (WITH_QWT)
 	find_package (Qwt)
 
 	set (ADDITIONAL_LIBRARIES ${QWT_LIBRARIES})
-	include_directories (${QWT_INCLUDE_DIRS})
+	include_directories (SYSTEM ${QWT_INCLUDE_DIRS})
 endif (WITH_QWT)
 
 include_directories (${LMP_INCLUDE_DIR}
