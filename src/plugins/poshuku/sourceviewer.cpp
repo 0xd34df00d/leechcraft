@@ -31,7 +31,6 @@
 #include <QDesktopWidget>
 #include <QShortcut>
 #include <util/gui/findnotification.h>
-#include <interfaces/core/icoreproxy.h>
 #include "htmlhighlighter.h"
 #include "core.h"
 
