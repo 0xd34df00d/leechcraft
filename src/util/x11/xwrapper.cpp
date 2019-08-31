@@ -39,11 +39,11 @@
 #include <QAbstractEventDispatcher>
 #include <QtDebug>
 #include <QScreen>
-#include <QTimer>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/Xatom.h>
 #include <xcb/xcb.h>
+#include <util/compat/imagebytes.h>
 
 namespace LeechCraft
 {
@@ -240,11 +240,7 @@ namespace Util
 		{
 			QImage img (cur [0], cur [1], QImage::Format_ARGB32);
 			cur += 2;
-#if QT_VERSION  >= QT_VERSION_CHECK(5, 10, 0)
-			const auto bytesCount = img.sizeInBytes ();
-#else
-			const auto bytesCount = img.byteCount ();
-#endif
+			const auto bytesCount = Compat::SizeInBytes (img);
 			for (int i = 0; i < bytesCount / 4; ++i, ++cur)
 				reinterpret_cast<uint*> (img.bits ()) [i] = *cur;
 
