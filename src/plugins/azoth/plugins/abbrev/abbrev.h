@@ -38,9 +38,7 @@
 
 class QWebView;
 
-namespace LeechCraft
-{
-namespace Azoth
+namespace LeechCraft::Azoth
 {
 class IProxyObject;
 
@@ -99,7 +97,6 @@ namespace Abbrev
 				int,
 				QString);
 	};
-}
 }
 }
 

@@ -31,11 +31,7 @@
 #include <QDataStream>
 #include <QtDebug>
 
-namespace LeechCraft
-{
-namespace Azoth
-{
-namespace Abbrev
+namespace LeechCraft::Azoth::Abbrev
 {
 	QDataStream& operator<< (QDataStream& str, const Abbreviation& abbr)
 	{
@@ -61,6 +57,4 @@ namespace Abbrev
 				>> abbr.Expansion_;
 		return str;
 	}
-}
-}
 }

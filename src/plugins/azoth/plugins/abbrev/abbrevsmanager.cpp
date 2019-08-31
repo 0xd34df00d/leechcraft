@@ -32,11 +32,7 @@
 #include <QCoreApplication>
 #include <interfaces/azoth/iprovidecommands.h>
 
-namespace LeechCraft
-{
-namespace Azoth
-{
-namespace Abbrev
+namespace LeechCraft::Azoth::Abbrev
 {
 	AbbrevsManager::AbbrevsManager (QObject *parent)
 	: QObject { parent }
@@ -143,6 +139,4 @@ namespace Abbrev
 		settings.setValue ("Abbreviations", QVariant::fromValue (Abbrevs_));
 		settings.endGroup ();
 	}
-}
-}
 }

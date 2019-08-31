@@ -32,11 +32,7 @@
 #include <QObject>
 #include "abbreviation.h"
 
-namespace LeechCraft
-{
-namespace Azoth
-{
-namespace Abbrev
+namespace LeechCraft::Azoth::Abbrev
 {
 	class AbbrevsManager : public QObject
 	{
@@ -55,6 +51,4 @@ namespace Abbrev
 		void Load ();
 		void Save () const;
 	};
-}
-}
 }

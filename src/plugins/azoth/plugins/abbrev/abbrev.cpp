@@ -35,11 +35,7 @@
 #include "abbrevsmanager.h"
 #include "shortcutsmanager.h"
 
-namespace LeechCraft
-{
-namespace Azoth
-{
-namespace Abbrev
+namespace LeechCraft::Azoth::Abbrev
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
@@ -232,8 +228,5 @@ namespace Abbrev
 		}
 	}
 }
-}
-}
 
 LC_EXPORT_PLUGIN (leechcraft_azoth_abbrev, LeechCraft::Azoth::Abbrev::Plugin);
-

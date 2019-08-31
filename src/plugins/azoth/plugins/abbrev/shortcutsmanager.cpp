@@ -32,11 +32,7 @@
 #include <QtDebug>
 #include "abbrevsmanager.h"
 
-namespace LeechCraft
-{
-namespace Azoth
-{
-namespace Abbrev
+namespace LeechCraft::Azoth::Abbrev
 {
 	ShortcutsManager::ShortcutsManager (AbbrevsManager *abbrevs, QObject *parent)
 	: QObject { parent }
@@ -105,6 +101,4 @@ namespace Abbrev
 		edit->setPlainText (processed);
 		edit->moveCursor (QTextCursor::EndOfBlock, QTextCursor::MoveAnchor);
 	}
-}
-}
 }

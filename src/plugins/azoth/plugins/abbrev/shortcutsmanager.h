@@ -34,11 +34,7 @@
 #include <QMap>
 #include <interfaces/ihaveshortcuts.h>
 
-namespace LeechCraft
-{
-namespace Azoth
-{
-namespace Abbrev
+namespace LeechCraft::Azoth::Abbrev
 {
 	class AbbrevsManager;
 
@@ -61,6 +57,4 @@ namespace Abbrev
 	private:
 		void HandleActivated (QWidget*);
 	};
-}
-}
 }
