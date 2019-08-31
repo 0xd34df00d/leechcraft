@@ -42,6 +42,7 @@
 #include <QClipboard>
 #include <QtDebug>
 #include <util/util.h>
+#include <util/compat/imagebytes.h>
 #include <util/xpc/util.h>
 #include <util/xpc/defaulthookproxy.h>
 #include <util/xpc/notificationactionhandler.h>
@@ -1383,7 +1384,7 @@ namespace Azoth
 							QImage {} :
 							avatar.scaled ({ size, size },
 									Qt::KeepAspectRatio, Qt::SmoothTransformation);
-					Entry2SmoothAvatarCache_.insert (entry, new QImage { avatar }, avatar.byteCount ());
+					Entry2SmoothAvatarCache_.insert (entry, new QImage { avatar }, Util::Compat::SizeInBytes (avatar));
 
 					UpdateItem (obj);
 				};
