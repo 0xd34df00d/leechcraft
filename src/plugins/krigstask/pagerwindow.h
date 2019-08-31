@@ -33,6 +33,8 @@
 #include <QQuickWidget>
 #include <interfaces/core/icoreproxy.h>
 
+class QScreen;
+
 namespace LeechCraft
 {
 namespace Util
@@ -56,7 +58,7 @@ namespace Krigstask
 		Util::SettableIconProvider *WinIconProv_;
 		ImageProvider *WinSnapshotProv_;
 	public:
-		PagerWindow (int, bool, ICoreProxy_ptr, QWidget* = 0);
+		PagerWindow (const QScreen*, bool, ICoreProxy_ptr, QWidget* = 0);
 	private:
 		void FillModel ();
 		void FillSubmodel (SingleDesktopModel*, const QList<ulong>&, ulong);

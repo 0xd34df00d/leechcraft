@@ -30,7 +30,7 @@
 #include "pagerwindow.h"
 #include <QUrl>
 #include <QStandardItemModel>
-#include <QDesktopWidget>
+#include <QScreen>
 #include <QApplication>
 #include <QSysInfo>
 #include <QQmlContext>
@@ -130,7 +130,7 @@ namespace Krigstask
 		}
 	};
 
-	PagerWindow::PagerWindow (int screen, bool showThumbs, ICoreProxy_ptr proxy, QWidget *parent)
+	PagerWindow::PagerWindow (const QScreen *screen, bool showThumbs, ICoreProxy_ptr proxy, QWidget *parent)
 	: QQuickWidget (parent)
 	, DesktopsModel_ (new DesktopsModel (this))
 	, ShowThumbs_ (showThumbs)
@@ -151,8 +151,7 @@ namespace Krigstask
 		engine ()->addImageProvider ("WinIcons", WinIconProv_);
 		engine ()->addImageProvider ("WinSnaps", WinSnapshotProv_);
 
-		rootContext ()->setContextProperty ("geometry",
-				qApp->desktop ()->availableGeometry (screen));
+		rootContext ()->setContextProperty ("geometry", screen->availableGeometry ());
 
 		FillModel ();
 		rootContext ()->setContextProperty ("showThumbs", ShowThumbs_);
