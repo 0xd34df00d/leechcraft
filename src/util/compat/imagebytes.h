@@ -33,7 +33,7 @@
 
 namespace LeechCraft::Util::Compat
 {
-	inline size_t SizeInBytes (const QImage& img)
+	inline auto SizeInBytes (const QImage& img)
 	{
 #if QT_VERSION >= QT_VERSION_CHECK (5, 10, 0)
 		return img.sizeInBytes ();
