@@ -29,13 +29,12 @@
 
 #pragma once
 
-#include <QtGlobal>
+#include <QScreen>
 
 #define NEW_IMPL QT_VERSION >= QT_VERSION_CHECK (5, 10, 0)
 
 #if NEW_IMPL
 #include <QGuiApplication>
-#include <QScreen>
 #else
 #include <QApplication>
 #include <QDesktopWidget>
@@ -43,38 +42,29 @@
 
 namespace LeechCraft::Util::Compat
 {
-#if NEW_IMPL
-	namespace detail
+	auto GetScreenWithFallback (const QPoint& p)
 	{
-		auto GetScreenWithFallback (const QPoint& p)
-		{
-			if (auto screen = QGuiApplication::screenAt (p))
-				return screen;
-
-			qWarning () << Q_FUNC_INFO
-					<< "unknown screen for point"
-					<< p;
-			return QGuiApplication::primaryScreen ();
-		}
-	}
+#if NEW_IMPL
+		if (auto screen = QGuiApplication::screenAt (p))
+			return screen;
+#else
+		if (auto screen = QGuiApplication::screens ().value (QApplication::desktop ()->screenNumber (p)))
+			return screen;
 #endif
+		qWarning () << Q_FUNC_INFO
+				<< "unknown screen for point"
+				<< p;
+		return QGuiApplication::primaryScreen ();
+	}
 
 	inline QRect AvailableGeometry (const QPoint& p)
 	{
-#if NEW_IMPL
-		return detail::GetScreenWithFallback (p)->availableGeometry ();
-#else
-		return QApplication::desktop ()->availableGeometry (p);
-#endif
+		return GetScreenWithFallback (p)->availableGeometry ();
 	}
 
 	inline QRect ScreenGeometry (const QPoint& p)
 	{
-#if NEW_IMPL
-		return detail::GetScreenWithFallback (p)->geometry ();
-#else
-		return QApplication::desktop ()->screenGeometry (p);
-#endif
+		return GetScreenWithFallback (p)->geometry ();
 	}
 }
 
