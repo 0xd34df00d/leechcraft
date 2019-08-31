@@ -48,6 +48,7 @@
 #include <QFileInfo>
 #include <QDir>
 #include <QDateTime>
+#include <util/compat/fileinfo.h>
 #include <util/util.h>
 #include <util/sys/mimedetector.h>
 #include <util/sll/util.h>
@@ -218,7 +219,7 @@ namespace HttHare
 			result += "<tr><td class=" + NormalizeClass (mimes.at (i).MimeType_) + "><a href='";
 			result += link + "'>" + item.fileName () + "</a></td>";
 			result += "<td>" + Util::MakePrettySize (item.size ()) + "</td>";
-			result += "<td>" + item.created ().toString (Qt::SystemLocaleShortDate) + "</td></tr>";
+			result += "<td>" + Util::Compat::Created (item).toString (Qt::SystemLocaleShortDate) + "</td></tr>";
 		}
 
 		result += "</table></body></html>";
