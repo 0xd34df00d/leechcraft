@@ -38,6 +38,7 @@
 #include <QApplication>
 #include <QDesktopWidget>
 #include <util/util.h>
+#include <util/compat/screengeometry.h>
 #include <util/qml/themeimageprovider.h>
 #include <util/qml/colorthemeproxy.h>
 #include <util/qml/util.h>
@@ -135,7 +136,7 @@ namespace Launchy
 		View_->setWindowFlags (Qt::Dialog | Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint);
 		Util::EnableTransparency (View_.get ());
 
-		const auto& rect = qApp->desktop ()->screenGeometry (QCursor::pos ());
+		const auto& rect = Util::Compat::ScreenGeometry (QCursor::pos ());
 		View_->setGeometry (rect);
 		View_->setFixedSize (rect.size ());
 
