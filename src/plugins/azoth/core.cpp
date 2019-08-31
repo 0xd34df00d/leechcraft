@@ -43,7 +43,6 @@
 #include <QtDebug>
 #include <util/util.h>
 #include <util/xpc/util.h>
-#include <util/tags/categoryselector.h>
 #include <util/xpc/defaulthookproxy.h>
 #include <util/xpc/notificationactionhandler.h>
 #include <util/xsd/wkfontswidget.h>
@@ -86,8 +85,6 @@
 #include "transferjobmanager.h"
 #include "accounthandlerchooserdialog.h"
 #include "util.h"
-#include "activitydialog.h"
-#include "mooddialog.h"
 #include "callmanager.h"
 #include "addcontactdialog.h"
 #include "clmodel.h"
