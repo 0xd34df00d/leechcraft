@@ -71,20 +71,20 @@ namespace Abbrev
 
 		ShortcutsManager *ShortcutsMgr_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+		void Init (ICoreProxy_ptr) override;
+		void SecondInit () override;
+		QByteArray GetUniqueID () const override;
+		void Release () override;
+		QString GetName () const override;
+		QString GetInfo () const override;
+		QIcon GetIcon () const override;
 
-		QSet<QByteArray> GetPluginClasses () const;
+		QSet<QByteArray> GetPluginClasses () const override;
 
-		QMap<QString, ActionInfo> GetActionInfo () const;
-		void SetShortcut (const QString&, const QKeySequences_t&);
+		QMap<QString, ActionInfo> GetActionInfo () const override;
+		void SetShortcut (const QString&, const QKeySequences_t&) override;
 
-		StaticCommands_t GetStaticCommands (ICLEntry*);
+		StaticCommands_t GetStaticCommands (ICLEntry*) override;
 	private:
 		void ListAbbrevs (ICLEntry*);
 		void RemoveAbbrev (const QString&);
