@@ -43,7 +43,7 @@ namespace LeechCraft
 {
 namespace Qrosp
 {
-	void Plugin::Init (ICoreProxy_ptr proxy)
+	void Plugin::Init (ICoreProxy_ptr /* TODO proxy */)
 	{
 	}
 
