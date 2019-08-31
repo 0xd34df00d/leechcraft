@@ -263,6 +263,11 @@ namespace Krigstask
 		Pager_ = new PagerWindow (screen, showThumbs, Proxy_);
 		new Util::AutoResizeMixin ({ x, y }, [screen] { return screen->availableGeometry (); }, Pager_);
 		Pager_->show ();
+
+		connect (screen,
+				&QObject::destroyed,
+				Pager_,
+				&QObject::deleteLater);
 	}
 
 	void TaskbarProxy::handleAction ()
