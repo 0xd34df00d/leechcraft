@@ -30,6 +30,7 @@
 #include "imagehint.h"
 #include <QImage>
 #include <QDBusArgument>
+#include <util/compat/imagebytes.h>
 
 namespace LeechCraft
 {
@@ -42,7 +43,7 @@ namespace Sysnotify
 	, HasAlpha_ { image.hasAlphaChannel () }
 	, Channels_ { HasAlpha_ ? 4 : 3 }
 	, BPS_ { image.depth () / Channels_ }
-	, Data_ { reinterpret_cast<char*> (image.rgbSwapped ().bits ()), image.byteCount () }
+	, Data_ { reinterpret_cast<char*> (image.rgbSwapped ().bits ()), static_cast<int> (Util::Compat::SizeInBytes (image)) }
 	{
 	}
 
