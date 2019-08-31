@@ -28,7 +28,6 @@
  **********************************************************************/
 
 #include "shortcutsmanager.h"
-#include <QSignalMapper>
 #include <QTextEdit>
 #include <QtDebug>
 #include "abbrevsmanager.h"
@@ -41,13 +40,8 @@ namespace Abbrev
 {
 	ShortcutsManager::ShortcutsManager (AbbrevsManager *abbrevs, QObject *parent)
 	: QObject { parent }
-	, Mapper_ { new QSignalMapper { this } }
 	, Abbrevs_ { abbrevs }
 	{
-		connect (Mapper_,
-				SIGNAL (mapped (QWidget*)),
-				this,
-				SLOT (handleActivated (QWidget*)));
 	}
 
 	void ShortcutsManager::HandleTab (QWidget *tab)
@@ -55,16 +49,15 @@ namespace Abbrev
 		const auto shortcut = new QShortcut { tab };
 		shortcut->setKey (Sequence_);
 		connect (shortcut,
-				SIGNAL (activated ()),
-				Mapper_,
-				SLOT (map ()));
-		Mapper_->setMapping (shortcut, tab);
+				&QShortcut::activated,
+				this,
+				[this, tab] { HandleActivated (tab); });
 		Tab2SC_ [tab] = shortcut;
 
 		connect (tab,
-				SIGNAL (destroyed (QObject*)),
+				&QObject::destroyed,
 				this,
-				SLOT (handleDestroyed (QObject*)));
+				[this, tab] { Tab2SC_.remove (tab); });
 	}
 
 	QMap<QString, ActionInfo> ShortcutsManager::GetActionInfo () const
@@ -90,7 +83,7 @@ namespace Abbrev
 			sc->setKey (Sequence_);
 	}
 
-	void ShortcutsManager::handleActivated (QWidget *tab)
+	void ShortcutsManager::HandleActivated (QWidget *tab)
 	{
 		QTextEdit *edit = nullptr;
 		QMetaObject::invokeMethod (tab,
@@ -111,11 +104,6 @@ namespace Abbrev
 
 		edit->setPlainText (processed);
 		edit->moveCursor (QTextCursor::EndOfBlock, QTextCursor::MoveAnchor);
-	}
-
-	void ShortcutsManager::handleDestroyed (QObject *tabObj)
-	{
-		Tab2SC_.remove (static_cast<QWidget*> (tabObj));
 	}
 }
 }

@@ -34,8 +34,6 @@
 #include <QMap>
 #include <interfaces/ihaveshortcuts.h>
 
-class QSignalMapper;
-
 namespace LeechCraft
 {
 namespace Azoth
@@ -48,22 +46,20 @@ namespace Abbrev
 	{
 		Q_OBJECT
 
-		QSignalMapper * const Mapper_;
 		AbbrevsManager * const Abbrevs_;
 
 		QMap<QWidget*, QShortcut*> Tab2SC_;
 
 		QKeySequence Sequence_;
 	public:
-		ShortcutsManager (AbbrevsManager*, QObject* = nullptr);
+		explicit ShortcutsManager (AbbrevsManager*, QObject* = nullptr);
 
 		void HandleTab (QWidget*);
 
 		QMap<QString, ActionInfo> GetActionInfo () const;
 		void SetShortcut (const QString&, const QKeySequences_t&);
-	private slots:
-		void handleActivated (QWidget*);
-		void handleDestroyed (QObject*);
+	private:
+		void HandleActivated (QWidget*);
 	};
 }
 }
