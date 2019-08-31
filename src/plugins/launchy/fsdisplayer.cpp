@@ -45,7 +45,6 @@
 #include <util/xdg/itemsfinder.h>
 #include <util/xdg/item.h>
 #include <util/models/rolenamesmixin.h>
-#include <util/sll/slotclosure.h>
 #include <util/qml/qmlerrorwatcher.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/iiconthememanager.h>
