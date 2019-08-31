@@ -33,6 +33,7 @@
 #include <QDialogButtonBox>
 #include <QDesktopWidget>
 #include <interfaces/core/iiconthememanager.h>
+#include <util/compat/screengeometry.h>
 #include "photostab.h"
 #include "interfaces/blasq/collection.h"
 
@@ -69,7 +70,7 @@ namespace Blasq
 				SLOT (reject ()));
 		lay->addWidget (buttonBox);
 
-		const auto& geom = qApp->desktop ()->availableGeometry (QCursor::pos ());
+		const auto& geom = Util::Compat::AvailableGeometry (QCursor::pos ());
 		dialog->resize (geom.size () * 2 / 3);
 
 		dialog->setAttribute (Qt::WA_DeleteOnClose);
