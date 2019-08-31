@@ -28,7 +28,8 @@
  **********************************************************************/
 
 #include "sourceviewer.h"
-#include <QDesktopWidget>
+#include <QGuiApplication>
+#include <QScreen>
 #include <QShortcut>
 #include <util/gui/findnotification.h>
 #include "htmlhighlighter.h"
@@ -68,7 +69,7 @@ namespace Poshuku
 		Ui_.setupUi (this);
 
 		auto frect = frameGeometry ();
-		frect.moveCenter (QDesktopWidget ().availableGeometry ().center ());
+		frect.moveCenter (QGuiApplication::primaryScreen ()->availableGeometry ().center ());
 		move (frect.topLeft ());
 		new HtmlHighlighter { Ui_.HtmlEdit_ };
 
