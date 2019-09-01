@@ -49,26 +49,26 @@ namespace Snails
 
 		QTextEdit * const Edit_;
 	public:
-		TextEditorAdaptor (QTextEdit*);
+		explicit TextEditorAdaptor (QTextEdit*);
 
-		QString GetContents (ContentType type) const;
-		void SetContents (QString contents, ContentType type);
+		QString GetContents (ContentType type) const override;
+		void SetContents (QString contents, ContentType type) override;
 
-		QAction* GetEditorAction (EditorAction);
-		void AppendAction (QAction*);
-		void AppendSeparator ();
-		void RemoveAction (QAction*);
-		void SetBackgroundColor (const QColor&, ContentType);
-		QWidget* GetWidget ();
-		QObject* GetQObject ();
+		QAction* GetEditorAction (EditorAction) override;
+		void AppendAction (QAction*) override;
+		void AppendSeparator () override;
+		void RemoveAction (QAction*) override;
+		void SetBackgroundColor (const QColor&, ContentType) override;
+		QWidget* GetWidget () override;
+		QObject* GetQObject () override;
 
-		bool FindText (const QString&);
-		void DeleteSelection ();
+		bool FindText (const QString&) override;
+		void DeleteSelection () override;
 
-		void SetFontFamily (FontFamily family, const QFont& font);
-		void SetFontSize (FontSize type, int size);
+		void SetFontFamily (FontFamily family, const QFont& font) override;
+		void SetFontSize (FontSize type, int size) override;
 	signals:
-		void textChanged ();
+		void textChanged () override;
 	};
 }
 }
