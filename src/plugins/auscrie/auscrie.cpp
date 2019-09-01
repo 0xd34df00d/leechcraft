@@ -208,6 +208,10 @@ namespace Auscrie
 	{
 		auto rootWin = Proxy_->GetRootWindowsManager ()->GetPreferredWindow ();
 
+		// Qt folks have decided that grabbing screens is "insecure", so there is no good substitute for this API
+		// now that it's deprecated. The suggestion is to use platform-dependent code.
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 		switch (Dialog_->GetMode ())
 		{
 		case ShooterDialog::Mode::LCWindowOverlay:
@@ -216,20 +220,16 @@ namespace Auscrie
 			return QPixmap::grabWidget (rootWin);
 		case ShooterDialog::Mode::CurrentScreen:
 		{
-			// Qt folks have decided that grabbing screens is "insecure", so there is no good substitute for this API
-			// now that it's deprecated. The suggestion is to use platform-dependent code.
-			#pragma GCC diagnostic push
-			#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
  			auto desk = qApp->desktop ();
 			auto screen = desk->screen (desk->screenNumber (QCursor::pos ()));
 			auto geom = desk->screenGeometry (QCursor::pos ());
 			return QPixmap::grabWindow (screen->winId (),
 					geom.x (), geom.y (), geom.width (), geom.height ());
-			#pragma GCC diagnostic pop
 		}
 		case ShooterDialog::Mode::WholeDesktop:
 			return QPixmap::grabWindow (qApp->desktop ()->winId ());
 		}
+#pragma GCC diagnostic pop
 
 		Util::Unreachable ();
 	}
