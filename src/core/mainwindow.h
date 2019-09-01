@@ -48,6 +48,7 @@ class QShortcut;
 class QSplashScreen;
 class QSystemTrayIcon;
 class QWidgetAction;
+class QScreen;
 
 namespace LeechCraft
 {
@@ -88,7 +89,7 @@ namespace LeechCraft
 		QToolBar *TopDockToolbar_;
 		QToolBar *BottomDockToolbar_;
 	public:
-		MainWindow (int screen, bool isPrimary, int windowIdx);
+		MainWindow (QScreen *screen, bool isPrimary, int windowIdx);
 
 		void Init ();
 
@@ -139,7 +140,6 @@ namespace LeechCraft
 		void handleCurrentTabChanged (int);
 		void handleRestoreActionAdded (QAction*);
 		void handleTrayIconActivated (QSystemTrayIcon::ActivationReason);
-		void handleWorkAreaResized (int);
 		void doDelayedInit ();
 	private:
 		void FillQuickLaunch ();

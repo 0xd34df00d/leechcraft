@@ -30,7 +30,7 @@
 #include "rootwindowsmanager.h"
 #include <iterator>
 #include <algorithm>
-#include <QDesktopWidget>
+#include <QGuiApplication>
 #include <util/xpc/defaulthookproxy.h>
 #include <interfaces/ihavetabs.h>
 #include "core.h"
@@ -58,22 +58,12 @@ namespace LeechCraft
 		const bool deskMode = Application::instance ()->arguments ().contains ("--desktop");
 		if (!deskMode)
 		{
-			CreateWindow (-1, true);
+			CreateWindow (QGuiApplication::primaryScreen (), true);
 			return;
 		}
 
-		const auto desk = QApplication::desktop ();
-		const auto sc = desk->screenCount ();
-		const auto virtDesk = desk->isVirtualDesktop ();
-		qDebug () << Q_FUNC_INFO
-				<< "running with"
-				<< sc
-				<< "screens; virtual desktop?"
-				<< virtDesk;
-		qWarning () << Q_FUNC_INFO
-				<< "non-virtual desktops aren't supported";
-		for (int i = 0; i < (virtDesk ? sc : 1); ++i)
-			CreateWindow (i, true);
+		for (const auto screen : QGuiApplication::screens ())
+			CreateWindow (screen, true);
 	}
 
 	void RootWindowsManager::Release ()
@@ -90,7 +80,7 @@ namespace LeechCraft
 
 	MainWindow* RootWindowsManager::MakeMainWindow ()
 	{
-		const auto win = CreateWindow (-1, false);
+		const auto win = CreateWindow (QGuiApplication::primaryScreen (), false);
 		win->show ();
 		return win;
 	}
@@ -239,7 +229,7 @@ namespace LeechCraft
 		return Windows_ [index].Window_->GetTabWidget ();
 	}
 
-	MainWindow* RootWindowsManager::CreateWindow (int screen, bool primary)
+	MainWindow* RootWindowsManager::CreateWindow (QScreen *screen, bool primary)
 	{
 		const auto nextIdx = Windows_.size ();
 

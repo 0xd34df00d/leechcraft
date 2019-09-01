@@ -36,7 +36,7 @@
 #include <QMenu>
 #include <QTime>
 #include <QDockWidget>
-#include <QDesktopWidget>
+#include <QScreen>
 #include <QWidgetAction>
 #include <QMimeData>
 #include <QToolBar>
@@ -66,7 +66,7 @@
 using namespace LeechCraft;
 using namespace LeechCraft::Util;
 
-LeechCraft::MainWindow::MainWindow (int screen, bool isPrimary, int windowIdx)
+LeechCraft::MainWindow::MainWindow (QScreen *screen, bool isPrimary, int windowIdx)
 : IsPrimary_ (isPrimary)
 , WindowIdx_ (windowIdx)
 , LeftDockToolbar_ (new QToolBar ())
@@ -86,16 +86,22 @@ LeechCraft::MainWindow::MainWindow (int screen, bool isPrimary, int windowIdx)
 
 	if (Application::instance ()->arguments ().contains ("--desktop") && isPrimary)
 	{
-		auto desktop = Application::desktop ();
-		const auto& sRect = desktop->screenGeometry (screen);
-		move (sRect.x (), sRect.y ());
+		const auto& sRect = screen->geometry ();
+		move (sRect.topLeft ());
 
 		setWindowFlags (Qt::FramelessWindowHint);
-		connect (qApp->desktop (),
-				SIGNAL (workAreaResized (int)),
+
+		auto resizeHandler = [this, screen]
+		{
+			const auto& available = screen->availableGeometry ();
+			setGeometry (available);
+			setFixedSize (available.size ());
+		};
+		connect (screen,
+				&QScreen::availableGeometryChanged,
 				this,
-				SLOT (handleWorkAreaResized (int)));
-		handleWorkAreaResized (screen);
+				resizeHandler);
+		resizeHandler ();
 	}
 }
 
@@ -585,18 +591,6 @@ void LeechCraft::MainWindow::handleTrayIconActivated (QSystemTrayIcon::Activatio
 			showHideMain ();
 			return;
 	}
-}
-
-void MainWindow::handleWorkAreaResized (int screen)
-{
-	auto desktop = QApplication::desktop ();
-	if (screen != desktop->screenNumber (this))
-		return;
-
-	const auto& available = desktop->availableGeometry (this);
-
-	setGeometry (available);
-	setFixedSize (available.size ());
 }
 
 void LeechCraft::MainWindow::doDelayedInit ()

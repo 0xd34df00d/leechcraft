@@ -35,6 +35,7 @@
 #include "mainwindow.h"
 
 class QIcon;
+class QScreen;
 
 namespace LeechCraft
 {
@@ -81,7 +82,7 @@ namespace LeechCraft
 		MainWindow* GetMainWindow (int) const override;
 		ICoreTabWidget* GetTabWidget (int) const override;
 	private:
-		MainWindow* CreateWindow (int screen, bool primary);
+		MainWindow* CreateWindow (QScreen *screen, bool primary);
 		void PerformWithTab (const std::function<void (TabManager*, int)>&, QWidget*);
 		void MoveTab (int tab, int fromWin, int toWin);
 		void CloseWindowTabs (int index);
