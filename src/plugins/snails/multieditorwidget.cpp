@@ -56,8 +56,12 @@ namespace Snails
 				SLOT (handleEditorSelected (int)));
 
 		const auto editorsGroup = new QActionGroup (this);
-		auto addEditor = [&] (const QString& name, int index) -> void
+		auto addEditor = [&] (const QString& name, std::shared_ptr<IEditorWidget> editor)
 		{
+			const auto index = MsgEdits_.size ();
+
+			MsgEdits_ << std::move (editor);
+
 			auto action = new QAction (name, this);
 			connect (action,
 					SIGNAL (triggered ()),
@@ -72,9 +76,7 @@ namespace Snails
 			Actions_ << action;
 		};
 
-		MsgEdits_ << std::make_shared<TextEditorAdaptor> (Ui_.PlainEdit_);
-
-		addEditor (tr ("Plain text (internal)"), MsgEdits_.size () - 1);
+		addEditor (tr ("Plain text (internal)"), std::make_shared<TextEditorAdaptor> (Ui_.PlainEdit_));
 
 		const auto& plugs = Core::Instance ().GetProxy ()->
 				GetPluginsManager ()->GetAllCastableRoots<ITextEditor*> ();
@@ -86,15 +88,14 @@ namespace Snails
 				continue;
 
 			const std::shared_ptr<QWidget> w { plug->GetTextEditor (ContentType::HTML) };
-			const auto edit = std::dynamic_pointer_cast<IEditorWidget> (w);
+			auto edit = std::dynamic_pointer_cast<IEditorWidget> (w);
 			if (!edit)
 				continue;
 
-			MsgEdits_ << edit;
 			Ui_.EditorStack_->addWidget (w.get ());
 
 			const auto& pluginName = qobject_cast<IInfo*> (plugObj)->GetName ();
-			addEditor (tr ("Rich text (%1)").arg (pluginName), MsgEdits_.size () - 1);
+			addEditor (tr ("Rich text (%1)").arg (pluginName), std::move (edit));
 		}
 
 		Ui_.EditorStack_->setCurrentIndex (Ui_.EditorStack_->count () - 1);
