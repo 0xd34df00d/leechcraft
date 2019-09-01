@@ -34,6 +34,7 @@
 #include <QApplication>
 #include <QAbstractProxyModel>
 #include <QTreeView>
+#include <util/compat/fontwidth.h>
 #include <util/sys/resourceloader.h>
 #include <util/xpc/defaulthookproxy.h>
 #include <interfaces/media/audiostructs.h>
@@ -237,7 +238,7 @@ namespace Azoth
 			QFont unreadFont = o.font;
 			unreadFont.setBold (true);
 
-			int unreadSpace = CPadding + QFontMetrics (unreadFont).width (text);
+			int unreadSpace = CPadding + Util::Compat::Width (QFontMetrics { unreadFont }, text);
 
 			painter->setFont (unreadFont);
 			painter->drawText (r.left () + CPadding, r.top (),
@@ -251,7 +252,7 @@ namespace Azoth
 
 		const auto& groupName = index.data ().toString ();
 		painter->drawText (r, Qt::AlignVCenter | Qt::AlignLeft, groupName);
-		const int textWidth = o.fontMetrics.width (groupName);
+		const int textWidth = Util::Compat::Width (o.fontMetrics, groupName);
 		const int rem = r.width () - textWidth;
 
 		const auto& counts = GetCounts (index);
@@ -260,7 +261,7 @@ namespace Azoth
 				.arg (counts.first)
 				.arg (counts.second);
 
-		if (rem >= o.fontMetrics.width (str))
+		if (rem >= Util::Compat::Width (o.fontMetrics, str))
 		{
 
 			QFont font = painter->font ();
@@ -316,7 +317,7 @@ namespace Azoth
 			unreadFont = option.font;
 			unreadFont.setBold (true);
 
-			unreadSpace = CPadding + QFontMetrics (unreadFont).width (unreadStr);
+			unreadSpace = CPadding + Util::Compat::Width (QFontMetrics { unreadFont}, unreadStr);
 		}
 
 		const int textShift = 2 * CPadding + iconSize + unreadSpace;

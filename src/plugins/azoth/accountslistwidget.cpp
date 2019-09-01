@@ -35,6 +35,7 @@
 #include <QSettings>
 #include <QStandardItemModel>
 #include <QStyledItemDelegate>
+#include <util/compat/fontwidth.h>
 #include "interfaces/azoth/iaccount.h"
 #include "interfaces/azoth/iprotocol.h"
 #ifdef ENABLE_CRYPT
@@ -190,12 +191,13 @@ namespace Azoth
 				SLOT (handleAccountSelected (QModelIndex)));
 		handleAccountSelected ({});
 
+		namespace UC = Util::Compat;
 		Ui_.Accounts_->setColumnWidth (0, 32);
-		Ui_.Accounts_->setColumnWidth (1, fm.width ("Some typical very long account name"));
-		Ui_.Accounts_->setColumnWidth (2, fm.width ("Some typical style"));
-		Ui_.Accounts_->setColumnWidth (3, fm.width ("Some typical style variant (alternate)"));
-		Ui_.Accounts_->setColumnWidth (4, fm.width ("Some typical style"));
-		Ui_.Accounts_->setColumnWidth (5, fm.width ("Some typical style variant (alternate)"));
+		Ui_.Accounts_->setColumnWidth (1, UC::Width (fm, "Some typical very long account name"));
+		Ui_.Accounts_->setColumnWidth (2, UC::Width (fm, "Some typical style"));
+		Ui_.Accounts_->setColumnWidth (3, UC::Width (fm, "Some typical style variant (alternate)"));
+		Ui_.Accounts_->setColumnWidth (4, UC::Width (fm, "Some typical style"));
+		Ui_.Accounts_->setColumnWidth (5, UC::Width (fm, "Some typical style variant (alternate)"));
 	}
 
 	void AccountsListWidget::addAccount (IAccount *acc)
