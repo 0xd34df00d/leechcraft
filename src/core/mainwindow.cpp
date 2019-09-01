@@ -28,14 +28,12 @@
  **********************************************************************/
 
 #include "mainwindow.h"
-#include <iostream>
 #include <algorithm>
 #include <QMessageBox>
 #include <QCloseEvent>
 #include <QCursor>
 #include <QShortcut>
 #include <QMenu>
-#include <QSplashScreen>
 #include <QTime>
 #include <QDockWidget>
 #include <QDesktopWidget>

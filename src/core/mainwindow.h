@@ -30,7 +30,6 @@
 #pragma once
 
 #include <QMainWindow>
-#include <QDialog>
 #include <QSettings>
 #include <QSystemTrayIcon>
 #include <QList>
