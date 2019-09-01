@@ -45,6 +45,7 @@
 #include <QMimeData>
 #include <QToolBar>
 #include <QUrlQuery>
+#include <util/compat/screengeometry.h>
 #include <util/xpc/defaulthookproxy.h>
 #include <util/xpc/util.h>
 #include <util/xsd/wkfontswidget.h>
@@ -1640,7 +1641,7 @@ namespace Azoth
 		TabIcon_ = QIcon ("lcicons:/plugins/azoth/resources/images/azoth.svg");
 		Ui_.AvatarLabel_->hide ();
 
-		const int height = qApp->desktop ()->availableGeometry (QCursor::pos ()).height ();
+		const int height = Util::Compat::AvailableGeometry (QCursor::pos ()).height ();
 
 		MUCEventLog_->setWindowTitle (tr ("MUC log for %1")
 					.arg (GetEntry<ICLEntry> ()->GetHumanReadableID ()));
