@@ -30,7 +30,6 @@
 #include "multieditorwidget.h"
 #include <QAction>
 #include <QActionGroup>
-#include <QSignalMapper>
 #include <util/sll/prelude.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/iinfo.h>
@@ -49,12 +48,6 @@ namespace Snails
 
 	void MultiEditorWidget::SetupEditors (const std::function<void (QAction*)>& editorsHandler)
 	{
-		auto mapper = new QSignalMapper (this);
-		connect (mapper,
-				SIGNAL (mapped (int)),
-				this,
-				SLOT (handleEditorSelected (int)));
-
 		const auto editorsGroup = new QActionGroup (this);
 		auto addEditor = [&] (const QString& name, std::shared_ptr<IEditorWidget> editor)
 		{
@@ -64,13 +57,12 @@ namespace Snails
 
 			auto action = new QAction (name, this);
 			connect (action,
-					SIGNAL (triggered ()),
-					mapper,
-					SLOT (map ()));
+					&QAction::triggered,
+					this,
+					[this, index] { HandleEditorSelected (index); });
 			editorsGroup->addAction (action);
 			action->setCheckable (true);
 			action->setChecked (true);
-			mapper->setMapping (action, index);
 
 			editorsHandler (action);
 			Actions_ << action;
@@ -128,7 +120,7 @@ namespace Snails
 			return;
 
 		Actions_.value (index)->setChecked (true);
-		handleEditorSelected (index);
+		HandleEditorSelected (index);
 	}
 
 	QList<IEditorWidget*> MultiEditorWidget::GetAllEditors () const
@@ -143,12 +135,10 @@ namespace Snails
 				ContentType::HTML;
 	}
 
-	void MultiEditorWidget::handleEditorSelected (int index)
+	void MultiEditorWidget::HandleEditorSelected (int index)
 	{
 		const auto previous = GetCurrentEditor ();
-
 		Ui_.EditorStack_->setCurrentIndex (index);
-
 		emit editorChanged (GetCurrentEditor (), previous);
 	}
 }

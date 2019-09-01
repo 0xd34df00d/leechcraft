@@ -62,8 +62,8 @@ namespace Snails
 
 		QList<IEditorWidget*> GetAllEditors () const;
 		ContentType GetEditorType (IEditorWidget*) const;
-	private slots:
-		void handleEditorSelected (int);
+	private:
+		void HandleEditorSelected (int);
 	signals:
 		void editorChanged (IEditorWidget*, IEditorWidget*);
 	};
