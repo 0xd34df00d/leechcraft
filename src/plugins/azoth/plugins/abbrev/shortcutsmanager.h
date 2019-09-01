@@ -40,8 +40,6 @@ namespace LeechCraft::Azoth::Abbrev
 
 	class ShortcutsManager : public QObject
 	{
-		Q_OBJECT
-
 		AbbrevsManager * const Abbrevs_;
 
 		QMap<QWidget*, QShortcut*> Tab2SC_;
