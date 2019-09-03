@@ -30,7 +30,6 @@
 #include "fenet.h"
 #include <QIcon>
 #include <QApplication>
-#include <QTreeView>
 #include <QProcess>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/util.h>

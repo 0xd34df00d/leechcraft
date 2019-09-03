@@ -28,10 +28,6 @@
  **********************************************************************/
 
 #include "wmfinder.h"
-#include <QDir>
-#include <QStandardItemModel>
-#include <QtDebug>
-#include <util/sys/paths.h>
 
 namespace LeechCraft::Fenet
 {
