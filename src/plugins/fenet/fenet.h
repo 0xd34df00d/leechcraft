@@ -35,9 +35,7 @@
 
 class QProcess;
 
-namespace LeechCraft
-{
-namespace Fenet
+namespace LeechCraft::Fenet
 {
 	class WMFinder;
 	class CompFinder;
@@ -88,5 +86,4 @@ namespace Fenet
 		void handleProcessError ();
 		void handleCompProcessError ();
 	};
-}
 }

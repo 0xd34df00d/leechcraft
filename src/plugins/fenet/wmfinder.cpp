@@ -33,9 +33,7 @@
 #include <QtDebug>
 #include <util/sys/paths.h>
 
-namespace LeechCraft
-{
-namespace Fenet
+namespace LeechCraft::Fenet
 {
 	WMFinder::WMFinder (QObject *parent)
 	: FinderBase (parent)
@@ -58,5 +56,4 @@ namespace Fenet
 			varmap ["compositing"].toBool ()
 		};
 	}
-}
 }

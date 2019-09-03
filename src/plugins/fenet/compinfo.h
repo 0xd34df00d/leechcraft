@@ -32,9 +32,7 @@
 #include <QStringList>
 #include <QMetaType>
 
-namespace LeechCraft
-{
-namespace Fenet
+namespace LeechCraft::Fenet
 {
 	struct Param
 	{
@@ -65,7 +63,6 @@ namespace Fenet
 	};
 
 	typedef QList<CompInfo> CompInfos_t;
-}
 }
 
 Q_DECLARE_METATYPE (LeechCraft::Fenet::Param)

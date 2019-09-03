@@ -40,9 +40,7 @@ class QStandardItem;
 class QAbstractItemModel;
 class QSettings;
 
-namespace LeechCraft
-{
-namespace Fenet
+namespace LeechCraft::Fenet
 {
 	class CompParamsManager : public QObject
 	{
@@ -77,5 +75,4 @@ namespace Fenet
 	signals:
 		void paramsChanged ();
 	};
-}
 }

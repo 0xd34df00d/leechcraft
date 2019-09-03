@@ -31,9 +31,7 @@
 
 #include <xmlsettingsdialog/basesettingsmanager.h>
 
-namespace LeechCraft
-{
-namespace Fenet
+namespace LeechCraft::Fenet
 {
 	class XmlSettingsManager : public Util::BaseSettingsManager
 	{
@@ -44,5 +42,4 @@ namespace Fenet
 		virtual QSettings* BeginSettings () const;
 		virtual void EndSettings (QSettings*) const;
 	};
-}
 }

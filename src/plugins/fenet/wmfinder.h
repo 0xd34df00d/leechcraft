@@ -32,9 +32,7 @@
 #include "finderbase.h"
 #include "wminfo.h"
 
-namespace LeechCraft
-{
-namespace Fenet
+namespace LeechCraft::Fenet
 {
 	class WMFinder : public FinderBase<WMInfo>
 	{
@@ -43,5 +41,4 @@ namespace Fenet
 
 		WMInfo GetInfo (const QString&, const QStringList&, const QVariantMap&) const;
 	};
-}
 }

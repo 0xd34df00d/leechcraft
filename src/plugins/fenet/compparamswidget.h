@@ -31,9 +31,7 @@
 
 #include <QTreeView>
 
-namespace LeechCraft
-{
-namespace Fenet
+namespace LeechCraft::Fenet
 {
 	class CompParamsWidget : public QTreeView
 	{
@@ -47,5 +45,4 @@ namespace Fenet
 		void accepted ();
 		void rejected ();
 	};
-}
 }

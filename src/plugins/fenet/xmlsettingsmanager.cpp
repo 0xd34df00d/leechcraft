@@ -30,9 +30,7 @@
 #include "xmlsettingsmanager.h"
 #include <QApplication>
 
-namespace LeechCraft
-{
-namespace Fenet
+namespace LeechCraft::Fenet
 {
 	XmlSettingsManager::XmlSettingsManager ()
 	{
@@ -55,5 +53,4 @@ namespace Fenet
 				QCoreApplication::applicationName () + "_Fenet");
 		return settings;
 	}
-}
 }

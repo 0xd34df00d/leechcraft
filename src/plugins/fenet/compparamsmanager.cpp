@@ -33,9 +33,7 @@
 #include <QSettings>
 #include <QtDebug>
 
-namespace LeechCraft
-{
-namespace Fenet
+namespace LeechCraft::Fenet
 {
 	CompParamsManager::CompParamsManager (QObject *parent)
 	: QObject (parent)
@@ -198,5 +196,4 @@ namespace Fenet
 		ChangedFlags_.clear ();
 		ChangedParams_.clear ();
 	}
-}
 }

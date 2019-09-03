@@ -31,9 +31,7 @@
 #include "finderbase.h"
 #include "compinfo.h"
 
-namespace LeechCraft
-{
-namespace Fenet
+namespace LeechCraft::Fenet
 {
 	class CompFinder : public FinderBase<CompInfo>
 	{
@@ -42,5 +40,4 @@ namespace Fenet
 
 		CompInfo GetInfo (const QString&, const QStringList&, const QVariantMap&) const;
 	};
-}
 }

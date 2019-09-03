@@ -35,9 +35,7 @@
 #include <util/sll/curry.h>
 #include "compparamsmanager.h"
 
-namespace LeechCraft
-{
-namespace Fenet
+namespace LeechCraft::Fenet
 {
 	namespace
 	{
@@ -112,5 +110,4 @@ namespace Fenet
 	{
 		emit rejected ();
 	}
-}
 }
