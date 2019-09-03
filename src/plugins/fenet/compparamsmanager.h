@@ -58,7 +58,7 @@ namespace LeechCraft::Fenet
 			Description = Qt::UserRole + 1
 		};
 
-		CompParamsManager (QObject* = 0);
+		explicit CompParamsManager (QObject* = nullptr);
 
 		QAbstractItemModel* GetModel () const;
 

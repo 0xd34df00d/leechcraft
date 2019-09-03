@@ -37,8 +37,8 @@ namespace LeechCraft::Fenet
 	class WMFinder : public FinderBase<WMInfo>
 	{
 	public:
-		WMFinder (QObject* = 0);
+		explicit WMFinder (QObject* = nullptr);
 
-		WMInfo GetInfo (const QString&, const QStringList&, const QVariantMap&) const;
+		WMInfo GetInfo (const QString&, const QStringList&, const QVariantMap&) const override;
 	};
 }

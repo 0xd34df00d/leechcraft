@@ -36,8 +36,8 @@ namespace LeechCraft::Fenet
 	class CompFinder : public FinderBase<CompInfo>
 	{
 	public:
-		CompFinder (QObject* = 0);
+		explicit CompFinder (QObject* = nullptr);
 
-		CompInfo GetInfo (const QString&, const QStringList&, const QVariantMap&) const;
+		CompInfo GetInfo (const QString&, const QStringList&, const QVariantMap&) const override;
 	};
 }

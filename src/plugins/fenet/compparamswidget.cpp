@@ -42,14 +42,11 @@ namespace LeechCraft::Fenet
 		class EditDelegate : public QStyledItemDelegate
 		{
 		public:
-			EditDelegate (QObject *parent = 0)
-			: QStyledItemDelegate (parent)
-			{
-			}
+			using QStyledItemDelegate::QStyledItemDelegate;
 
-			QWidget* createEditor (QWidget*, const QStyleOptionViewItem&, const QModelIndex&) const;
-			void setEditorData (QWidget*, const QModelIndex&) const;
-			void setModelData (QWidget*, QAbstractItemModel*, const QModelIndex&) const;
+			QWidget* createEditor (QWidget*, const QStyleOptionViewItem&, const QModelIndex&) const override;
+			void setEditorData (QWidget*, const QModelIndex&) const override;
+			void setModelData (QWidget*, QAbstractItemModel*, const QModelIndex&) const override;
 		};
 
 		QWidget* EditDelegate::createEditor (QWidget *parent,

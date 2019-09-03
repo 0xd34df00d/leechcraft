@@ -37,7 +37,7 @@ namespace LeechCraft::Fenet
 	{
 		Q_OBJECT
 	public:
-		CompParamsWidget (QWidget* = 0);
+		explicit CompParamsWidget (QWidget* = nullptr);
 	public slots:
 		void accept ();
 		void reject ();

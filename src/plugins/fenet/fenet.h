@@ -58,18 +58,18 @@ namespace LeechCraft::Fenet
 
 		Util::XmlSettingsDialog_ptr XSD_;
 
-		QProcess *Process_ = 0;
-		QProcess *CompProcess_ = 0;
+		QProcess *Process_ = nullptr;
+		QProcess *CompProcess_ = nullptr;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+		void Init (ICoreProxy_ptr) override;
+		void SecondInit () override;
+		QByteArray GetUniqueID () const override;
+		void Release () override;
+		QString GetName () const override;
+		QString GetInfo () const override;
+		QIcon GetIcon () const override;
 
-		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const override;
 	private:
 		void StartWM ();
 		void KillWM ();
