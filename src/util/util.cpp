@@ -46,6 +46,7 @@
 #include <QPainter>
 #include <QAction>
 #include <QtDebug>
+#include <util/compat/fontwidth.h>
 
 QString LeechCraft::Util::GetAsBase64Src (const QImage& pix)
 {
@@ -283,7 +284,7 @@ QPixmap LeechCraft::Util::DrawOverlayText (QPixmap px,
 	font.setPixelSize (std::max (6., fontHeight));
 
 	const QFontMetrics fm (font);
-	const auto width = fm.width (text) + 2. * iconSize.width () / 10.;
+	const auto width = Compat::Width (fm, text) + 2. * iconSize.width () / 10.;
 	const auto height = fm.height () + 2. * iconSize.height () / 10.;
 	const bool tooSmall = width > iconSize.width ();
 
