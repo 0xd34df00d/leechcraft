@@ -29,7 +29,9 @@
 
 #include "bookmarkswidget.h"
 #include <QMessageBox>
+#include <util/compat/fontwidth.h>
 #include <util/models/flattofoldersproxymodel.h>
+#include <util/sll/curry.h>
 #include <util/tags/tagscompleter.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
@@ -84,15 +86,13 @@ namespace Poshuku
 				this,
 				SLOT (updateFavoritesFilter ()));
 
-		QHeaderView *itemsHeader = Ui_.FavoritesView_->header ();
-		QFontMetrics fm = fontMetrics ();
+		const auto itemsHeader = Ui_.FavoritesView_->header ();
+		const auto width = Util::Curry (&Util::Compat::Width, fontMetrics ());
 		itemsHeader->resizeSection (0,
-				fm.width ("Average site title can be very big, it's also the "
+				width ("Average site title can be very big, it's also the "
 					"most important part, so it's priority is the biggest."));
-		itemsHeader->resizeSection (1,
-				fm.width ("Average URL could be very very long, but we don't account this."));
-		itemsHeader->resizeSection (2,
-				fm.width ("Average tags list size should be like this."));
+		itemsHeader->resizeSection (1, width ("Average URL could be very very long, but we don't account this."));
+		itemsHeader->resizeSection (2, width ("Average tags list size should be like this."));
 	}
 
 	void BookmarksWidget::on_ActionEditBookmark__triggered ()

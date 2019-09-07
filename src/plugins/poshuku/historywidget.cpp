@@ -29,6 +29,8 @@
 
 #include "historywidget.h"
 #include <QDateTime>
+#include <util/compat/fontwidth.h>
+#include <util/sll/curry.h>
 #include "core.h"
 #include "historymodel.h"
 #include "historyfiltermodel.h"
@@ -61,14 +63,12 @@ namespace Poshuku
 				SLOT (updateHistoryFilter ()));
 
 		const auto itemsHeader = Ui_.HistoryView_->header ();
-		const auto& fm = fontMetrics ();
+		const auto width = Util::Curry (&Util::Compat::Width, fontMetrics ());
 		itemsHeader->resizeSection (0,
-				fm.width ("Average site title can be very big, it's also the "
+				width ("Average site title can be very big, it's also the "
 					"most important part, so it's priority is the biggest."));
-		itemsHeader->resizeSection (1,
-				fm.width (QDateTime::currentDateTime ().toString () + " space"));
-		itemsHeader->resizeSection (2,
-				fm.width ("Average URL could be very very long, but we don't account this."));
+		itemsHeader->resizeSection (1, width (QDateTime::currentDateTime ().toString () + " space"));
+		itemsHeader->resizeSection (2, width ("Average URL could be very very long, but we don't account this."));
 	}
 
 	void HistoryWidget::on_HistoryView__activated (const QModelIndex& index)

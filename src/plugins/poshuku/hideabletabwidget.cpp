@@ -32,6 +32,7 @@
 #include <QTabBar>
 #include <QToolBar>
 #include <QtDebug>
+#include <util/compat/fontwidth.h>
 
 namespace LeechCraft
 {
@@ -56,7 +57,7 @@ namespace Poshuku
 
 		QVBoxLayout *tabLay = new QVBoxLayout;
 		QToolBar *hc = new QToolBar;
-		hc->setFixedWidth (QApplication::fontMetrics ().width ("<"));
+		hc->setFixedWidth (Util::Compat::Width (fontMetrics (), "<"));
 		tabLay->addWidget (hc);
 		tabLay->addWidget (TabBar_);
 		tabLay->setStretch (1, 10);
