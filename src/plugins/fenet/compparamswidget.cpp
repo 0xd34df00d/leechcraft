@@ -92,7 +92,7 @@ namespace LeechCraft::Fenet
 		setItemDelegate (new EditDelegate (this));
 		setRootIsDecorated (false);
 
-		auto width = Util::Curry (&Util::Compat::Width) (fontMetrics ());
+		auto width = Util::Curry (&Util::Compat::Width, fontMetrics ());
 		setColumnWidth (0, width ("Average compositor option description length"));
 		setColumnWidth (1, width ("average value"));
 		setColumnWidth (2, width ("flag"));
