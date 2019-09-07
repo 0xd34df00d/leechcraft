@@ -30,6 +30,8 @@
 #include "transcodingparamswidget.h"
 #include <QThread>
 #include <QtDebug>
+#include <util/compat/fontwidth.h>
+#include <util/sll/curry.h>
 #include "transcodingparams.h"
 #include "formats.h"
 
@@ -42,9 +44,9 @@ namespace LMP
 	, Formats_ (new Formats)
 	{
 		Ui_.setupUi (this);
-		const auto& fm = fontMetrics ();
-		const auto qualityWidth = std::max (fm.width (" 9999 kbps "),
-				fm.width (" " + tr ("Quality %1").arg (10) + " "));
+		const auto width = Util::Curry (&Util::Compat::Width, fontMetrics ());
+		const auto qualityWidth = std::max (width (" 9999 kbps "),
+				width (" " + tr ("Quality %1").arg (10) + " "));
 		Ui_.QualityDisplay_->setFixedWidth (qualityWidth);
 		Ui_.QualityDisplay_->setFrameShape (Ui_.ThreadsDisplay_->frameShape ());
 
