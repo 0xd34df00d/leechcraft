@@ -37,6 +37,7 @@
 #include <util/util.h>
 #include <util/gui/clearlineeditaddon.h>
 #include <util/gui/lineeditbuttonmanager.h>
+#include <util/compat/fontwidth.h>
 #include <interfaces/core/itagsmanager.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include "core.h"
@@ -121,7 +122,7 @@ namespace LackMan
 
 		auto setColWidth = [this] (int col, const QString& sample)
 		{
-			Ui_.PackagesTree_->setColumnWidth (col, fontMetrics ().width (sample));
+			Ui_.PackagesTree_->setColumnWidth (col, Util::Compat::Width (fontMetrics (), sample));
 		};
 		Ui_.PackagesTree_->setColumnWidth (PackagesModel::Columns::Inst, 32);
 		Ui_.PackagesTree_->setColumnWidth (PackagesModel::Columns::Upd, 32);
