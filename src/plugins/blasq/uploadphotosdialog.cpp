@@ -31,6 +31,8 @@
 #include <QStandardItemModel>
 #include <QFileDialog>
 #include <util/util.h>
+#include <util/compat/fontwidth.h>
+#include <util/sll/curry.h>
 #include "interfaces/blasq/iaccount.h"
 #include "interfaces/blasq/isupportuploads.h"
 #include "selectalbumdialog.h"
@@ -61,11 +63,10 @@ namespace Blasq
 		Ui_.setupUi (this);
 		Ui_.PhotosView_->setModel (FilesModel_);
 
+		const auto width = Util::Curry (&Util::Compat::Width, fontMetrics ());
 		Ui_.PhotosView_->setColumnWidth (Column::ThePhoto,
-				Ui_.PhotosView_->iconSize ().width () +
-					fontMetrics ().width (" typical image name "));
-		Ui_.PhotosView_->setColumnWidth (Column::PhotoSize,
-				fontMetrics ().width ("  999.999 KiB  "));
+				Ui_.PhotosView_->iconSize ().width () + width (" typical image name "));
+		Ui_.PhotosView_->setColumnWidth (Column::PhotoSize, width ("  999.999 KiB  "));
 
 		if (!ISU_->HasUploadFeature (ISupportUploads::Feature::SupportsDescriptions))
 			Ui_.PhotosView_->hideColumn (Column::PhotoDesc);
