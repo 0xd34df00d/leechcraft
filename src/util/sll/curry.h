@@ -49,53 +49,20 @@ namespace Util
 		, m_prevArgs { prev }
 		{
 		}
-	private:
-		template<typename T>
-		std::result_of_t<F (PrevArgs..., T)> invoke (const T& arg, int) const
-		{
-			return invokeIndexed (arg, std::index_sequence_for<PrevArgs...> {});
-		}
 
-		template<typename IF>
-		struct Invoke
-		{
-			template<typename... IArgs>
-			auto operator() (IF fr, IArgs... args)
-			{
-				return fr (args...);
-			}
-		};
-
-		template<typename R, typename C, typename... Args>
-		struct Invoke<R (C::*) (Args...)>
-		{
-			auto operator() (R (C::*ptr) (Args...), C c, Args... rest)
-			{
-				return (c.*ptr) (rest...);
-			}
-
-			auto operator() (R (C::*ptr) (Args...), C *c, Args... rest)
-			{
-				return (c->*ptr) (rest...);
-			}
-		};
-
-		template<typename T, std::size_t... Is>
-		auto invokeIndexed (const T& arg, std::index_sequence<Is...>) const
-		{
-			return Invoke<F> {} (m_f, std::get<Is> (m_prevArgs)..., arg);
-		}
-
-		template<typename T>
-		CurryImpl<F, PrevArgs..., T> invoke (const T& arg, ...) const
-		{
-			return { m_f, std::tuple_cat (m_prevArgs, std::tuple<T> { arg }) };
-		}
-	public:
 		template<typename T>
 		auto operator() (const T& arg) const
 		{
-			return invoke (arg, 0);
+			if constexpr (std::is_invocable_v<F, PrevArgs..., T>)
+			{
+				auto wrapper = [this, &arg] (auto&&... args)
+				{
+					return std::invoke (m_f, std::forward<decltype (args)> (args)..., arg);
+				};
+				return std::apply (std::move (wrapper), m_prevArgs);
+			}
+			else
+				return CurryImpl<F, PrevArgs..., T> { m_f, std::tuple_cat (m_prevArgs, std::tuple<T> { arg }) };
 		}
 	};
 
