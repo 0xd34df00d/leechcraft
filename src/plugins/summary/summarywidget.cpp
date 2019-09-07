@@ -45,7 +45,9 @@
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/imwproxy.h>
+#include <util/compat/fontwidth.h>
 #include <util/gui/clearlineeditaddon.h>
+#include <util/sll/curry.h>
 #include "core.h"
 #include "summary.h"
 #include "modeldelegate.h"
@@ -148,13 +150,10 @@ namespace Summary
 				Qt::QueuedConnection);
 
 		const auto itemsHeader = Ui_.PluginsTasksTree_->header ();
-		const auto& fm = fontMetrics ();
-		itemsHeader->resizeSection (0,
-				fm.width ("Average download job or torrent name is just like this."));
-		itemsHeader->resizeSection (1,
-				fm.width ("Of the download."));
-		itemsHeader->resizeSection (2,
-				fm.width ("99.99% (1024.0 kb from 1024.0 kb at 1024.0 kb/s)"));
+		const auto width = Util::Curry (&Util::Compat::Width, fontMetrics ());
+		itemsHeader->resizeSection (0, width ("Average download job or torrent name is just like this."));
+		itemsHeader->resizeSection (1, width ("Of the download."));
+		itemsHeader->resizeSection (2, width ("99.99% (1024.0 kb from 1024.0 kb at 1024.0 kb/s)"));
 
 		auto pm = Core::Instance ().GetProxy ()->GetPluginsManager ();
 		for (const auto ijh : pm->GetAllCastableTo<IJobHolder*> ())
