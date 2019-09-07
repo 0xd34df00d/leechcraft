@@ -160,7 +160,7 @@ namespace Otlozhu
 					!XmlSettingsManager::Instance ().property ("DoneGreyOut").toBool ())
 				return {};
 
-			auto brush = QApplication::palette ().foreground ();
+			auto brush = QApplication::palette ().windowText ();
 			brush.setColor (brush.color ().lighter ());
 			return brush;
 		}
