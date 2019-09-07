@@ -81,20 +81,19 @@ namespace Util
 		};
 
 		template<typename T, std::size_t... Is>
-		auto invokeIndexed (const T& arg, std::index_sequence<Is...>) const ->
-				decltype (Invoke<F> {} (m_f, std::get<Is> (m_prevArgs)..., arg))
+		auto invokeIndexed (const T& arg, std::index_sequence<Is...>) const
 		{
 			return Invoke<F> {} (m_f, std::get<Is> (m_prevArgs)..., arg);
 		}
 
 		template<typename T>
-		auto invoke (const T& arg, ...) const -> CurryImpl<F, PrevArgs..., T>
+		CurryImpl<F, PrevArgs..., T> invoke (const T& arg, ...) const
 		{
 			return { m_f, std::tuple_cat (m_prevArgs, std::tuple<T> { arg }) };
 		}
 	public:
 		template<typename T>
-		auto operator() (const T& arg) const -> decltype (invoke (arg, 0))
+		auto operator() (const T& arg) const
 		{
 			return invoke (arg, 0);
 		}
