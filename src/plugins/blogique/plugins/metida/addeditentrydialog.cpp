@@ -31,6 +31,8 @@
 #include <QColorDialog>
 #include <QtDebug>
 #include <QMessageBox>
+#include <util/compat/fontwidth.h>
+#include <util/sll/curry.h>
 #include "ljprofile.h"
 #include "selectgroupsdialog.h"
 
@@ -40,7 +42,6 @@ namespace Blogique
 {
 namespace Metida
 {
-
 	AddEditEntryDialog::AddEditEntryDialog (LJProfile *profile, AddTypeEntry type, QWidget *parent)
 	: QDialog (parent)
 	, Profile_ (profile)
@@ -53,10 +54,9 @@ namespace Metida
 		Ui_.AddTypeEntry_->setItemData (0, ATEFriend, AddType);
 		Ui_.AddTypeEntry_->setItemData (1, ATEGroup, AddType);
 
-		Ui_.BackgroundColorLabel_->setMinimumWidth (QApplication::fontMetrics ()
-				.width (" #RRGGBB "));
-		Ui_.ForegroundColorLabel_->setMinimumWidth (QApplication::fontMetrics ()
-				.width (" #RRGGBB "));
+		const auto width = Util::Curry (&Util::Compat::Width, fontMetrics ());
+		Ui_.BackgroundColorLabel_->setMinimumWidth (width (" #RRGGBB "));
+		Ui_.ForegroundColorLabel_->setMinimumWidth (width (" #RRGGBB "));
 
 		switch (type)
 		{
