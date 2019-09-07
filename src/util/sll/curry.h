@@ -100,10 +100,10 @@ namespace Util
 		}
 	};
 
-	template<typename F>
-	CurryImpl<F> Curry (F f)
+	template<typename F, typename... Args>
+	CurryImpl<F, Args...> Curry (F f, Args&&... args)
 	{
-		return { f, {} };
+		return { f, std::forward_as_tuple (std::forward<Args> (args)...) };
 	}
 }
 }
