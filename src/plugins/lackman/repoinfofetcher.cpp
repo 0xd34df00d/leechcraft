@@ -198,7 +198,7 @@ namespace LackMan
 
 			auto unarch = new QProcess { parent };
 			QObject::connect (unarch,
-					Util::Overload<int> (&QProcess::finished),
+					Util::Overload<int, QProcess::ExitStatus> (&QProcess::finished),
 					parent,
 					[=] (int exitCode)
 					{
