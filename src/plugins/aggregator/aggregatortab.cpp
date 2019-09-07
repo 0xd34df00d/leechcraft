@@ -32,6 +32,8 @@
 #include <QMenu>
 #include <QSortFilterProxyModel>
 #include <util/models/flattofoldersproxymodel.h>
+#include <util/compat/fontwidth.h>
+#include <util/sll/curry.h>
 #include <util/sll/prelude.h>
 #include <util/tags/tagscompleter.h>
 #include <util/util.h>
@@ -85,12 +87,11 @@ namespace Aggregator
 				this,
 				&AggregatorTab::handleFeedsContextMenuRequested);
 
-		const auto fm = fontMetrics ();
-		int dateTimeSize = fm.width (QDateTime::currentDateTime ().toString (Qt::SystemLocaleShortDate) + "__");
-		const auto channelsHeader = Ui_.Feeds_->header ();
-		channelsHeader->resizeSection (0, fm.width ("Average channel name"));
-		channelsHeader->resizeSection (1, fm.width ("_9999_"));
-		channelsHeader->resizeSection (2, dateTimeSize);
+		const auto header = Ui_.Feeds_->header ();
+		const auto width = Util::Curry (&Util::Compat::Width, fontMetrics ());
+		header->resizeSection (0, width ("Average channel name"));
+		header->resizeSection (1, width ("_9999_"));
+		header->resizeSection (2, width (QDateTime::currentDateTime ().toString (Qt::SystemLocaleShortDate) + "__"));
 
 		connect (Ui_.TagsLine_,
 				&QLineEdit::textChanged,

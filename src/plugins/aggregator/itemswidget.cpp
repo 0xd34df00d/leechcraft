@@ -41,6 +41,7 @@
 #include <QClipboard>
 #include <QtDebug>
 #include <interfaces/iwebbrowser.h>
+#include <util/compat/fontwidth.h>
 #include <util/tags/categoryselector.h>
 #include <util/xpc/util.h>
 #include <util/xpc/coreproxyholder.h>
@@ -49,6 +50,7 @@
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/util.h>
 #include <util/sll/overload.h>
+#include <util/sll/curry.h>
 #include <interfaces/core/itagsmanager.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/ientitymanager.h>
@@ -176,15 +178,11 @@ namespace Aggregator
 
 		new Util::ClearLineEditAddon (proxy, Impl_->Ui_.SearchLine_);
 
-		QHeaderView *itemsHeader = Impl_->Ui_.Items_->header ();
-		QFontMetrics fm = fontMetrics ();
-		int dateTimeSize = fm.width (QDateTime::currentDateTime ()
-				.toString (Qt::SystemLocaleShortDate) + "__");
-		itemsHeader->resizeSection (0,
-				fm.width ("Average news article size is about this width or "
-					"maybe bigger, because they are bigger"));
-		itemsHeader->resizeSection (1,
-				dateTimeSize);
+		const auto header = Impl_->Ui_.Items_->header ();
+		const auto width = Util::Curry (&Util::Compat::Width, fontMetrics ());
+		header->resizeSection (0,
+				width ("Average news article size is about this width or maybe bigger, because they are bigger"));
+		header->resizeSection (1, width (QDateTime::currentDateTime ().toString (Qt::SystemLocaleShortDate) + "__"));
 		connect (Impl_->Ui_.Items_->header (),
 				&QHeaderView::sectionClicked,
 				this,
