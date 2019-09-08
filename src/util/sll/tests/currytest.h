@@ -38,5 +38,7 @@ namespace LeechCraft::Util
 		Q_OBJECT
 	private slots:
 		void testBasic ();
+		void testMoveArgs ();
+		void testMoveFun ();
 	};
 }

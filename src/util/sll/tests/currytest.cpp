@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "currytest.h"
+#include <memory>
 #include <QtTest>
 #include <curry.h>
 
@@ -39,5 +40,28 @@ namespace LeechCraft::Util
 	{
 		auto sum = [] (int a, int b, int c) { return a + b + c; };
 		QCOMPARE (Curry (sum) (1) (2) (3), 6);
+
+		auto stored = Curry (sum);
+		QCOMPARE (stored (1) (2) (3), 6);
+		QCOMPARE (stored (0) (2) (3), 5);
+
+		auto storedApplied = Curry (sum) (0);
+		QCOMPARE (storedApplied (2) (3), 5);
+	}
+
+	void CurryTest::testMoveArgs ()
+	{
+		auto func = [] (std::unique_ptr<int> a, std::unique_ptr<int> b) { return *a + *b; };
+		QCOMPARE (Curry (func) (std::make_unique<int> (1)) (std::make_unique<int> (2)), 3);
+
+		auto curried = Curry (func) (std::make_unique<int> (1));
+		QCOMPARE (std::move (curried) (std::make_unique<int> (2)), 3);
+	}
+
+	void CurryTest::testMoveFun ()
+	{
+		auto ptr = std::make_unique<int> (10);
+		auto func = [ptr = std::move (ptr)] (std::unique_ptr<int> a, std::unique_ptr<int> b) { return *ptr +  *a + *b; };
+		QCOMPARE (Curry (std::move (func)) (std::make_unique<int> (1)) (std::make_unique<int> (2)), 13);
 	}
 }
