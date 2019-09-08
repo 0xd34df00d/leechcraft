@@ -71,6 +71,16 @@ namespace LeechCraft::Util
 		QCOMPARE (Curry (sum) (1) (2) (3), 6);
 	}
 
+	void CurryTest::testRefModifications ()
+	{
+		int a = 5;
+		int b = 6;
+		auto func = [] (int& a, int& b) { ++a; ++b; return a + b; };
+		QCOMPARE (Curry (func) (a) (b), 13);
+		QCOMPARE (a, 6);
+		QCOMPARE (b, 7);
+	}
+
 	namespace
 	{
 		template<typename T>
