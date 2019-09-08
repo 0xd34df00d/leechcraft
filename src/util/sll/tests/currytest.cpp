@@ -132,14 +132,18 @@ namespace LeechCraft::Util
 		using C1 = Counter<struct Tag1>;
 		using C2 = Counter<struct Tag2>;
 
-		auto func1 = [] (C1, C2) { return 0; };
-		QCOMPARE (Curry (func1) (C1 {}) (C2 {}), 0);
+		auto func = [] (C1, C2) { return 0; };
+		QCOMPARE (Curry (func) (C1 {}) (C2 {}), 0);
 
 		QCOMPARE (C1::CopyConstrs_, 0);
 		QCOMPARE (C2::CopyConstrs_, 0);
+		QCOMPARE (C1::CopyAssignments_, 0);
+		QCOMPARE (C2::CopyAssignments_, 0);
 
 		QCOMPARE (C1::MoveConstrs_, 2);
 		QCOMPARE (C2::MoveConstrs_, 1);
+		QCOMPARE (C1::MoveAssignments_, 0);
+		QCOMPARE (C2::MoveAssignments_, 0);
 	}
 
 	void CurryTest::testNoExtraCopiesByRef ()
@@ -147,14 +151,18 @@ namespace LeechCraft::Util
 		using C1 = Counter<struct Tag1>;
 		using C2 = Counter<struct Tag2>;
 
-		auto func1 = [] (C1&, C2&) { return 0; };
-		//QCOMPARE (Curry (func1) (C1 {}) (C2 {}), 0);
+		auto func = [] (C1&&, C2&&) { return 0; };
+		QCOMPARE (Curry (func) (C1 {}) (C2 {}), 0);
 
 		QCOMPARE (C1::CopyConstrs_, 0);
 		QCOMPARE (C2::CopyConstrs_, 0);
+		QCOMPARE (C1::CopyAssignments_, 0);
+		QCOMPARE (C2::CopyAssignments_, 0);
 
 		QCOMPARE (C1::MoveConstrs_, 1);
 		QCOMPARE (C2::MoveConstrs_, 0);
+		QCOMPARE (C1::MoveAssignments_, 0);
+		QCOMPARE (C2::MoveAssignments_, 0);
 	}
 
 	void CurryTest::testNoExtraCopiesByConstRef ()
@@ -162,13 +170,17 @@ namespace LeechCraft::Util
 		using C1 = Counter<struct Tag1>;
 		using C2 = Counter<struct Tag2>;
 
-		auto func1 = [] (const C1&, const C2&) { return 0; };
-		QCOMPARE (Curry (func1) (C1 {}) (C2 {}), 0);
+		auto func = [] (const C1&, const C2&) { return 0; };
+		QCOMPARE (Curry (func) (C1 {}) (C2 {}), 0);
 
 		QCOMPARE (C1::CopyConstrs_, 0);
 		QCOMPARE (C2::CopyConstrs_, 0);
+		QCOMPARE (C1::CopyAssignments_, 0);
+		QCOMPARE (C2::CopyAssignments_, 0);
 
 		QCOMPARE (C1::MoveConstrs_, 1);
 		QCOMPARE (C2::MoveConstrs_, 0);
+		QCOMPARE (C1::MoveAssignments_, 0);
+		QCOMPARE (C2::MoveAssignments_, 0);
 	}
 }
