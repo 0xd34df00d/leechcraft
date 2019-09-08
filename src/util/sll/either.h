@@ -238,7 +238,7 @@ namespace Util
 		template<typename V>
 		struct GSLResult<Either<L, V>>
 		{
-			using Type_t = Either<L, std::result_of_t<R (V)>>;
+			using Type_t = Either<L, std::result_of_t<R (const V&)>>;
 		};
 
 		template<typename RP>

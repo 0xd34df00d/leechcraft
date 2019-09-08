@@ -78,7 +78,7 @@ namespace Util
 		template<typename V>
 		struct GSLResult<boost::optional<V>>
 		{
-			using Type_t = boost::optional<std::result_of_t<T (V)>>;
+			using Type_t = boost::optional<std::result_of_t<T (const V&)>>;
 		};
 
 		template<typename U>
@@ -108,7 +108,7 @@ namespace Util
 		template<typename V>
 		struct GSLResult<std::optional<V>>
 		{
-			using Type_t = std::optional<std::result_of_t<T (V)>>;
+			using Type_t = std::optional<std::result_of_t<T (const V&)>>;
 		};
 
 		template<typename U>
