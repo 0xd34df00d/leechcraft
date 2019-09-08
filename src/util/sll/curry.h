@@ -40,36 +40,59 @@ namespace Util
 	template<typename F, typename... PrevArgs>
 	class CurryImpl
 	{
-		const F m_f;
+		F m_f;
 
-		const std::tuple<PrevArgs...> m_prevArgs;
+		std::tuple<PrevArgs...> m_prevArgs;
 	public:
-		CurryImpl (F f, const std::tuple<PrevArgs...>& prev)
-		: m_f { f }
-		, m_prevArgs { prev }
+		template<typename CF, typename CT>
+		CurryImpl (CF&& f, CT&& prev)
+		: m_f { std::forward<CF> (f) }
+		, m_prevArgs { std::forward<CT> (prev) }
 		{
 		}
 
 		template<typename T>
-		auto operator() (const T& arg) const
+		auto operator() (T&& arg) const &
+		{
+			return CurryImpl::run (*this, std::forward<T> (arg));
+		}
+
+		template<typename T>
+		auto operator() (T&& arg) &
+		{
+			return CurryImpl::run (std::as_const (*this), std::forward<T> (arg));
+		}
+
+		template<typename T>
+		auto operator() (T&& arg) &&
+		{
+			return CurryImpl::run (std::move (*this), std::forward<T> (arg));
+		}
+	private:
+		template<typename This, typename T>
+		static auto run (This&& refThis, T&& arg)
 		{
 			if constexpr (std::is_invocable_v<F, PrevArgs..., T>)
 			{
-				auto wrapper = [this, &arg] (auto&&... args)
+				auto wrapper = [&refThis, &arg] (auto&&... args)
 				{
-					return std::invoke (m_f, std::forward<decltype (args)> (args)..., arg);
+					return std::invoke (std::move (refThis.m_f), std::forward<decltype (args)> (args)..., std::forward<T> (arg));
 				};
-				return std::apply (std::move (wrapper), m_prevArgs);
+				return std::apply (std::move (wrapper), std::move (refThis.m_prevArgs));
 			}
 			else
-				return CurryImpl<F, PrevArgs..., T> { m_f, std::tuple_cat (m_prevArgs, std::tuple<T> { arg }) };
+				return CurryImpl<F, PrevArgs..., T>
+				{
+					std::move (refThis.m_f),
+					std::tuple_cat (std::move (refThis.m_prevArgs), std::forward_as_tuple (std::forward<T> (arg)))
+				};
 		}
 	};
 
 	template<typename F, typename... Args>
-	CurryImpl<F, Args...> Curry (F f, Args&&... args)
+	CurryImpl<std::decay_t<F>, Args...> Curry (F&& f, Args&&... args)
 	{
-		return { f, std::forward_as_tuple (std::forward<Args> (args)...) };
+		return { std::forward<F> (f), std::forward_as_tuple (std::forward<Args> (args)...) };
 	}
 }
 }
