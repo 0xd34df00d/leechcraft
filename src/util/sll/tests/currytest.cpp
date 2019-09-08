@@ -64,4 +64,10 @@ namespace LeechCraft::Util
 		auto func = [ptr = std::move (ptr)] (std::unique_ptr<int> a, std::unique_ptr<int> b) { return *ptr +  *a + *b; };
 		QCOMPARE (Curry (std::move (func)) (std::make_unique<int> (1)) (std::make_unique<int> (2)), 13);
 	}
+
+	void CurryTest::testRValueFun ()
+	{
+		auto sum = [] (int&& a, int&& b, int&& c) { return a + b + c; };
+		QCOMPARE (Curry (sum) (1) (2) (3), 6);
+	}
 }

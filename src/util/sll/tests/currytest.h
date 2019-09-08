@@ -40,5 +40,6 @@ namespace LeechCraft::Util
 		void testBasic ();
 		void testMoveArgs ();
 		void testMoveFun ();
+		void testRValueFun ();
 	};
 }
