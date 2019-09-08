@@ -42,5 +42,10 @@ namespace LeechCraft::Util
 		void testMoveFun ();
 		void testRValueFun ();
 		void testRefModifications ();
+
+		void testNoExtraCopiesByValue ();
+		void testNoExtraCopiesByRef ();
+		void testNoExtraCopiesByConstRef ();
+		void testNoExtraCopiesByConstRefToExisting ();
 	};
 }

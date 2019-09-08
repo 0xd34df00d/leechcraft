@@ -183,4 +183,25 @@ namespace LeechCraft::Util
 		QCOMPARE (C1::MoveAssignments_, 0);
 		QCOMPARE (C2::MoveAssignments_, 0);
 	}
+
+	void CurryTest::testNoExtraCopiesByConstRefToExisting ()
+	{
+		using C1 = Counter<struct Tag1>;
+		using C2 = Counter<struct Tag2>;
+
+		auto func = [] (const C1&, const C2&) { return 0; };
+		C1 c1;
+		C2 c2;
+		QCOMPARE (Curry (func) (c1) (c2), 0);
+
+		QCOMPARE (C1::CopyConstrs_, 0);
+		QCOMPARE (C2::CopyConstrs_, 0);
+		QCOMPARE (C1::CopyAssignments_, 0);
+		QCOMPARE (C2::CopyAssignments_, 0);
+
+		QCOMPARE (C1::MoveConstrs_, 0);
+		QCOMPARE (C2::MoveConstrs_, 0);
+		QCOMPARE (C1::MoveAssignments_, 0);
+		QCOMPARE (C2::MoveAssignments_, 0);
+	}
 }
