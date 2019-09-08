@@ -54,19 +54,19 @@ namespace Util
 		template<typename T>
 		auto operator() (T&& arg) const &
 		{
-			return CurryImpl::run (*this, std::forward<T> (arg));
+			return run (*this, std::forward<T> (arg));
 		}
 
 		template<typename T>
 		auto operator() (T&& arg) &
 		{
-			return CurryImpl::run (std::as_const (*this), std::forward<T> (arg));
+			return run (std::as_const (*this), std::forward<T> (arg));
 		}
 
 		template<typename T>
 		auto operator() (T&& arg) &&
 		{
-			return CurryImpl::run (std::move (*this), std::forward<T> (arg));
+			return run (std::move (*this), std::forward<T> (arg));
 		}
 	private:
 		template<typename This, typename T>

@@ -70,4 +70,95 @@ namespace LeechCraft::Util
 		auto sum = [] (int&& a, int&& b, int&& c) { return a + b + c; };
 		QCOMPARE (Curry (sum) (1) (2) (3), 6);
 	}
+
+	namespace
+	{
+		template<typename T>
+		struct Counter
+		{
+			static inline int DefConstrs_ = 0;
+			static inline int CopyConstrs_ = 0;
+			static inline int CopyAssignments_ = 0;
+			static inline int MoveConstrs_ = 0;
+			static inline int MoveAssignments_ = 0;
+			static inline int Dtors_ = 0;
+
+			Counter ()
+			{
+				++DefConstrs_;
+			}
+
+			Counter (const Counter&)
+			{
+				++CopyConstrs_;
+			}
+
+			Counter (Counter&&)
+			{
+				++MoveConstrs_;
+			}
+
+			Counter& operator= (const Counter&)
+			{
+				++CopyAssignments_;
+				return *this;
+			}
+
+			Counter& operator= (Counter&&)
+			{
+				++MoveAssignments_;
+				return *this;
+			}
+
+			~Counter ()
+			{
+				++Dtors_;
+			}
+		};
+	}
+
+	void CurryTest::testNoExtraCopiesByValue ()
+	{
+		using C1 = Counter<struct Tag1>;
+		using C2 = Counter<struct Tag2>;
+
+		auto func1 = [] (C1, C2) { return 0; };
+		QCOMPARE (Curry (func1) (C1 {}) (C2 {}), 0);
+
+		QCOMPARE (C1::CopyConstrs_, 0);
+		QCOMPARE (C2::CopyConstrs_, 0);
+
+		QCOMPARE (C1::MoveConstrs_, 2);
+		QCOMPARE (C2::MoveConstrs_, 1);
+	}
+
+	void CurryTest::testNoExtraCopiesByRef ()
+	{
+		using C1 = Counter<struct Tag1>;
+		using C2 = Counter<struct Tag2>;
+
+		auto func1 = [] (C1&, C2&) { return 0; };
+		//QCOMPARE (Curry (func1) (C1 {}) (C2 {}), 0);
+
+		QCOMPARE (C1::CopyConstrs_, 0);
+		QCOMPARE (C2::CopyConstrs_, 0);
+
+		QCOMPARE (C1::MoveConstrs_, 1);
+		QCOMPARE (C2::MoveConstrs_, 0);
+	}
+
+	void CurryTest::testNoExtraCopiesByConstRef ()
+	{
+		using C1 = Counter<struct Tag1>;
+		using C2 = Counter<struct Tag2>;
+
+		auto func1 = [] (const C1&, const C2&) { return 0; };
+		QCOMPARE (Curry (func1) (C1 {}) (C2 {}), 0);
+
+		QCOMPARE (C1::CopyConstrs_, 0);
+		QCOMPARE (C2::CopyConstrs_, 0);
+
+		QCOMPARE (C1::MoveConstrs_, 1);
+		QCOMPARE (C2::MoveConstrs_, 0);
+	}
 }
