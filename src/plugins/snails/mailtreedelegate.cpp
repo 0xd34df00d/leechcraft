@@ -218,15 +218,7 @@ namespace Snails
 
 	QSize MailTreeDelegate::sizeHint (const QStyleOptionViewItem& option, const QModelIndex& index) const
 	{
-		const auto& subjFontInfo = GetSubjectFont (index, option.font);
-		const QFontMetrics plainFM { option.font };
-
-		const auto width = View_->viewport ()->width ();
-		const auto height = 2 * VerticalPadding_ +
-				subjFontInfo.second.height () +
-				plainFM.height ();
-
-		return { width, height };
+		return { View_->viewport ()->width (), GetTextualHeight (index, option) + 2 * VerticalPadding_ };
 	}
 
 	bool MailTreeDelegate::editorEvent (QEvent *event, QAbstractItemModel *model,
@@ -395,6 +387,13 @@ namespace Snails
 			View_->update (idx);
 			idx = View_->indexBelow (idx);
 		}
+	}
+
+	int MailTreeDelegate::GetTextualHeight (const QModelIndex& index, const QStyleOptionViewItem& option) const
+	{
+		const auto& subjFontInfo = GetSubjectFont (index, option.font);
+		const QFontMetrics plainFM { option.font };
+		return subjFontInfo.second.height () + plainFM.height ();
 	}
 
 	int MailTreeDelegate::DrawMessageActionIcons (QPainter *painter,

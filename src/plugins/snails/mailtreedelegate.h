@@ -69,6 +69,7 @@ namespace Snails
 
 		void SetMailListMode (MailListMode);
 	private:
+		int GetTextualHeight (const QModelIndex&, const QStyleOptionViewItem&) const;
 		int DrawMessageActionIcons (QPainter*, const QStyleOptionViewItem&, const QModelIndex&, int) const;
 	};
 }
