@@ -11,6 +11,10 @@
 		</tab>
 		<tab>
 			<label value="Mail list" />
+			<item type="spinbox" property="MessageListPadding" min="0" max="100" default="2">
+				<label value="Padding between messages" />
+				<suffix value=" px" />
+			</item>
 			<item type="combobox" property="MessageActionsHintsStyle">
 				<label value="Message actions hints style:" />
 				<option name="Icon" default="true">
