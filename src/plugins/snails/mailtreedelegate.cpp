@@ -137,7 +137,7 @@ namespace Snails
 
 			painter->drawPixmap (topLeft, px);
 
-			option.rect.adjust (height + vertPadding, 0, 0, 0);
+			option.rect.adjust (px.width () + HorizontalPadding, 0, 0, 0);
 		}
 
 		QStyle* GetStyle (const QStyleOptionViewItem& option)
