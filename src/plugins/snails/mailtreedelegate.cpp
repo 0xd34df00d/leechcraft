@@ -59,10 +59,12 @@ namespace Snails
 		XmlSettingsManager::Instance ().RegisterObject ("MessageListPadding", this,
 				[this] (const QVariant& var)
 				{
-					Padding_ = var.toInt ();
+					VerticalPadding_ = var.toInt ();
 					View_->doItemsLayout ();
 				});
 	}
+
+	const int HorizontalPadding = 2;
 
 	namespace
 	{
@@ -82,7 +84,7 @@ namespace Snails
 		}
 
 		int GetActionsBarWidth (const QModelIndex& index,
-				QStyle *style, const QStyleOptionViewItem& option, int subjHeight, int padding)
+				QStyle *style, const QStyleOptionViewItem& option, int subjHeight)
 		{
 			const auto& acts = index.data (MailModel::MailRole::MessageActions)
 					.value<QList<MessageListActionInfo>> ();
@@ -95,7 +97,7 @@ namespace Snails
 
 			return acts.size () * subjHeight +
 					(acts.size () - 1) * spacing +
-					2 * padding;
+					2 * HorizontalPadding;
 		}
 
 		void DrawCheckbox (QPainter *painter, QStyle *style,
@@ -122,12 +124,12 @@ namespace Snails
 			option.rect.setLeft (option.rect.left () + checkboxWidth);
 		}
 
-		void DrawIcon (QPainter *painter, QStyleOptionViewItem& option, const QModelIndex& index, int padding)
+		void DrawIcon (QPainter *painter, QStyleOptionViewItem& option, const QModelIndex& index, int vertPadding)
 		{
 			const auto height = option.rect.height ();
 
 			const auto& px = index.data (Qt::DecorationRole).value<QIcon> ()
-					.pixmap (height - 2 * padding, height - 2 * padding);
+					.pixmap (height - 2 * vertPadding, height - 2 * HorizontalPadding);
 
 			auto topLeft = option.rect.topLeft ();
 			const auto heightDiff = height - px.height ();
@@ -135,7 +137,7 @@ namespace Snails
 
 			painter->drawPixmap (topLeft, px);
 
-			option.rect.adjust (height + padding, 0, 0, 0);
+			option.rect.adjust (height + vertPadding, 0, 0, 0);
 		}
 
 		QStyle* GetStyle (const QStyleOptionViewItem& option)
@@ -163,7 +165,7 @@ namespace Snails
 		if (Mode_ == MailListMode::MultiSelect)
 			DrawCheckbox (painter, style, option, index);
 
-		DrawIcon (painter, option, index, Padding_);
+		DrawIcon (painter, option, index, VerticalPadding_);
 
 		const auto& subject = GetString (index, MailModel::Column::Subject);
 
@@ -172,7 +174,7 @@ namespace Snails
 		auto y = option.rect.top () + subjHeight;
 
 		const auto actionsWidth = View_->isPersistentEditorOpen (index) ?
-				GetActionsBarWidth (index, style, option, subjHeight, Padding_) :
+				GetActionsBarWidth (index, style, option, subjHeight) :
 				0;
 
 		const auto actionsHintWidth = DrawMessageActionIcons (painter, option, index, subjHeight);
@@ -211,7 +213,7 @@ namespace Snails
 
 		painter->drawText (option.rect.left (),
 				y,
-				fontFM.elidedText (from, Qt::ElideRight, option.rect.width () - dateWidth - 5 * Padding_));
+				fontFM.elidedText (from, Qt::ElideRight, option.rect.width () - dateWidth - 5 * HorizontalPadding));
 
 		painter->restore ();
 	}
@@ -222,7 +224,7 @@ namespace Snails
 		const QFontMetrics plainFM { option.font };
 
 		const auto width = View_->viewport ()->width ();
-		const auto height = 2 * Padding_ +
+		const auto height = 2 * VerticalPadding_ +
 				subjFontInfo.second.height () +
 				plainFM.height ();
 
@@ -417,7 +419,7 @@ namespace Snails
 		std::reverse (actionInfos.begin (), actionInfos.end ());
 
 		if (ActionsHintsBalls_)
-			height -= Padding_ * 2;
+			height -= VerticalPadding_ * 2;
 
 		painter->save ();
 		painter->setRenderHint (QPainter::Antialiasing);
@@ -425,9 +427,9 @@ namespace Snails
 		painter->setPen (Qt::NoPen);
 
 		auto rect = option.rect;
-		rect.setLeft (rect.right () - height - Padding_);
+		rect.setLeft (rect.right () - height - VerticalPadding_);
 		rect.setSize ({ height, height });
-		rect.moveTop (rect.top () + Padding_);
+		rect.moveTop (rect.top () + VerticalPadding_);
 		for (const auto& item : actionInfos)
 		{
 			if (item.Flags_ & MessageListActionFlag::AlwaysPresent)
@@ -449,7 +451,7 @@ namespace Snails
 			else
 				item.Icon_.paint (painter, rect);
 
-			rect.moveLeft (rect.left () - height - Padding_);
+			rect.moveLeft (rect.left () - height - HorizontalPadding);
 		}
 
 		painter->restore ();

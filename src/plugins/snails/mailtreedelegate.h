@@ -53,7 +53,7 @@ namespace Snails
 
 		MailListMode Mode_;
 
-		int Padding_ = 2;
+		int VerticalPadding_ = 2;
 		bool ActionsHintsBalls_;
 	public:
 		MailTreeDelegate (const MessageLoader_f&, QTreeView*, QObject* = nullptr);
