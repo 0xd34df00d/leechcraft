@@ -122,8 +122,14 @@ namespace Snails
 		{
 			const auto height = option.rect.height ();
 
-			const auto& icon = index.data (Qt::DecorationRole).value<QIcon> ();
-			painter->drawPixmap (option.rect.topLeft (), icon.pixmap (height - 2 * Padding, height - 2 * Padding));
+			const auto& px = index.data (Qt::DecorationRole).value<QIcon> ()
+					.pixmap (height - 2 * Padding, height - 2 * Padding);
+
+			auto topLeft = option.rect.topLeft ();
+			const auto heightDiff = height - px.height ();
+			topLeft.ry () += heightDiff / 2;
+
+			painter->drawPixmap (topLeft, px);
 
 			option.rect.adjust (height + Padding, 0, 0, 0);
 		}
