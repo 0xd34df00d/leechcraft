@@ -73,14 +73,12 @@ namespace Snails
 			return index.sibling (index.row (), static_cast<int> (column)).data ().toString ();
 		}
 
-		QPair<QFont, QFontMetrics> GetSubjectFont (const QModelIndex& index,
-				const QStyleOptionViewItem& option)
+		QPair<QFont, QFontMetrics> GetSubjectFont (const QModelIndex& index, QFont font)
 		{
-			auto subjectFont = option.font;
 			if (!index.data (MailModel::MailRole::IsRead).toBool ())
-				subjectFont.setBold (true);
+				font.setBold (true);
 
-			return { subjectFont, QFontMetrics { subjectFont } };
+			return { font, QFontMetrics { font } };
 		}
 
 		int GetActionsBarWidth (const QModelIndex& index,
@@ -169,7 +167,7 @@ namespace Snails
 
 		const auto& subject = GetString (index, MailModel::Column::Subject);
 
-		const auto& subjFontInfo = GetSubjectFont (index, option);
+		const auto& subjFontInfo = GetSubjectFont (index, option.font);
 		const auto subjHeight = subjFontInfo.second.height ();
 		auto y = option.rect.top () + subjHeight;
 
@@ -220,7 +218,7 @@ namespace Snails
 
 	QSize MailTreeDelegate::sizeHint (const QStyleOptionViewItem& option, const QModelIndex& index) const
 	{
-		const auto& subjFontInfo = GetSubjectFont (index, option);
+		const auto& subjFontInfo = GetSubjectFont (index, option.font);
 		const QFontMetrics plainFM { option.font };
 
 		const auto width = View_->viewport ()->width ();
@@ -370,7 +368,7 @@ namespace Snails
 	void MailTreeDelegate::updateEditorGeometry (QWidget *editor,
 			const QStyleOptionViewItem& option, const QModelIndex& index) const
 	{
-		auto height = GetSubjectFont (index, option).second.height ();
+		auto height = GetSubjectFont (index, option.font).second.height ();
 
 		qobject_cast<QToolBar*> (editor)->setIconSize ({ height, height });
 
