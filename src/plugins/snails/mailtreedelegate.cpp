@@ -122,22 +122,6 @@ namespace Snails
 			option.rect.setLeft (option.rect.left () + checkboxWidth);
 		}
 
-		void DrawIcon (QPainter *painter, QStyleOptionViewItem& option, const QModelIndex& index, int vertPadding)
-		{
-			const auto height = option.rect.height ();
-
-			const auto& px = index.data (Qt::DecorationRole).value<QIcon> ()
-					.pixmap (height - 2 * vertPadding, height - 2 * HorizontalPadding);
-
-			auto topLeft = option.rect.topLeft ();
-			const auto heightDiff = height - px.height ();
-			topLeft.ry () += heightDiff / 2;
-
-			painter->drawPixmap (topLeft, px);
-
-			option.rect.adjust (px.width () + HorizontalPadding, 0, 0, 0);
-		}
-
 		QStyle* GetStyle (const QStyleOptionViewItem& option)
 		{
 			return option.widget ?
@@ -163,7 +147,7 @@ namespace Snails
 		if (Mode_ == MailListMode::MultiSelect)
 			DrawCheckbox (painter, style, option, index);
 
-		DrawIcon (painter, option, index, VerticalPadding_);
+		DrawIcon (painter, option, index);
 
 		const auto& subject = GetString (index, MailModel::Column::Subject);
 
@@ -394,6 +378,19 @@ namespace Snails
 		const auto& subjFontInfo = GetSubjectFont (index, option.font);
 		const QFontMetrics plainFM { option.font };
 		return subjFontInfo.second.height () + plainFM.height ();
+	}
+
+	void MailTreeDelegate::DrawIcon (QPainter *painter, QStyleOptionViewItem& option, const QModelIndex& index) const
+	{
+		const auto height = option.rect.height ();
+
+		const auto& px = index.data (Qt::DecorationRole).value<QIcon> ()
+				.pixmap (height - 2 * VerticalPadding_, height - 2 * HorizontalPadding);
+
+		auto topLeft = option.rect.topLeft ();
+		painter->drawPixmap (topLeft, px);
+
+		option.rect.adjust (px.width () + HorizontalPadding, 0, 0, 0);
 	}
 
 	int MailTreeDelegate::DrawMessageActionIcons (QPainter *painter,
