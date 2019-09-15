@@ -44,7 +44,6 @@ namespace Snails
 {
 	struct FolderNotFound
 	{
-	public:
 		const char* what () const;
 	};
 
