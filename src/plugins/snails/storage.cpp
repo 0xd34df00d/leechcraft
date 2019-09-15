@@ -99,6 +99,11 @@ namespace Snails
 		return BaseForAccount (acc)->GetMessageBodies (folder, msgId);
 	}
 
+	bool Storage::HasMessageBodies (Account *acc, const QStringList& folder, const QByteArray& msgId)
+	{
+		return BaseForAccount (acc)->HasMessageBodies (folder, msgId);
+	}
+
 	QList<QByteArray> Storage::LoadIDs (Account *acc, const QStringList& folder)
 	{
 		return BaseForAccount (acc)->GetIDs (folder);

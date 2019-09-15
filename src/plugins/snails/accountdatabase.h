@@ -96,6 +96,7 @@ namespace Snails
 
 		void SaveMessageBodies (const QStringList& folder, const QByteArray& msgId, const Snails::MessageBodies&);
 		std::optional<Snails::MessageBodies> GetMessageBodies (const QStringList& folder, const QByteArray& msgId);
+		bool HasMessageBodies (const QStringList& folder, const QByteArray& msgId);
 
 		std::optional<bool> IsMessageRead (const QByteArray& msgId, const QStringList& folder);
 		void SetMessageRead (const QByteArray& msgId, const QStringList& folder, bool read);

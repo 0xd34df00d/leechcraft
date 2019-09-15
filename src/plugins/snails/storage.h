@@ -65,6 +65,7 @@ namespace Snails
 
 		void SaveMessageBodies (Account*, const QStringList& folder, const QByteArray& msgId, const MessageBodies&);
 		std::optional<MessageBodies> GetMessageBodies (Account*, const QStringList& folder, const QByteArray& msgId);
+		bool HasMessageBodies (Account*, const QStringList& folder, const QByteArray& msgId);
 
 		QList<QByteArray> LoadIDs (Account*, const QStringList& folder);
 		std::optional<QByteArray> GetLastID (Account*, const QStringList& folder);

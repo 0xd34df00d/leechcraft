@@ -478,6 +478,15 @@ namespace Snails
 				[] (auto&& tup) { return Snails::MessageBodies { std::get<0> (tup), std::get<1> (tup) }; };
 	}
 
+	bool AccountDatabase::HasMessageBodies (const QStringList& folder, const QByteArray& msgId)
+	{
+		auto msgPKey = GetMsgTableId (msgId, folder);
+		if (!msgPKey)
+			return {};
+
+		return MessagesBodies_->Select (sph::count<>, sph::f<&MessageBodies::MsgId_> == *msgPKey);
+	}
+
 	std::optional<bool> AccountDatabase::IsMessageRead (const QByteArray& msgId, const QStringList& folder)
 	{
 		return Messages_->SelectOne (sph::fields<&Message::IsRead_>,
