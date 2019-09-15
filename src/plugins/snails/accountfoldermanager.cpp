@@ -37,11 +37,6 @@ namespace LeechCraft
 {
 namespace Snails
 {
-	AccountFolderManager::AccountFolderManager (QObject *parent)
-	: QObject (parent)
-	{
-	}
-
 	QList<Folder> AccountFolderManager::GetFolders () const
 	{
 		return Folders_;

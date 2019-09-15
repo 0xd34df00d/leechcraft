@@ -58,7 +58,7 @@ namespace Snails
 
 		QHash<QStringList, FolderFlags> Folder2Flags_;
 	public:
-		AccountFolderManager (QObject* = 0);
+		using QObject::QObject;
 
 		QList<Folder> GetFolders () const;
 		QList<QStringList> GetFoldersPaths () const;
