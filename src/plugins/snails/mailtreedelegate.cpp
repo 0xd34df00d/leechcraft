@@ -382,12 +382,13 @@ namespace Snails
 
 	void MailTreeDelegate::DrawIcon (QPainter *painter, QStyleOptionViewItem& option, const QModelIndex& index) const
 	{
-		const auto height = option.rect.height ();
+		const auto height = GetTextualHeight (index, option);
 
 		const auto& px = index.data (Qt::DecorationRole).value<QIcon> ()
-				.pixmap (height - 2 * VerticalPadding_, height - 2 * HorizontalPadding);
+				.pixmap (height, height);
 
 		auto topLeft = option.rect.topLeft ();
+		topLeft.ry () += (height - px.height ()) / 2;
 		painter->drawPixmap (topLeft, px);
 
 		option.rect.adjust (px.width () + HorizontalPadding, 0, 0, 0);
