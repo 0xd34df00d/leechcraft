@@ -132,6 +132,7 @@ namespace Snails
 		QList<QByteArray> GetSelectedIds () const;
 
 		void UpdateMsgActionsStatus ();
+		void CheckFetchChildMessages (const QModelIndex&);
 		QList<Folder> GetActualFolders () const;
 
 		void SetMessage (const MessageInfo&, const std::optional<MessageBodies>&);

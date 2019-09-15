@@ -38,6 +38,7 @@
 #include <QMessageBox>
 #include <QShortcut>
 #include <util/util.h>
+#include <util/models/util.h>
 #include <util/tags/categoryselector.h>
 #include <util/sys/extensionsdata.h>
 #include <util/sll/urloperator.h>
@@ -67,6 +68,7 @@
 #include "accountsmanager.h"
 #include "structures.h"
 #include "util.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -766,6 +768,29 @@ namespace Snails
 		}
 	}
 
+	void MailTab::CheckFetchChildMessages (const QModelIndex& rootIdx)
+	{
+		qDebug () << XmlSettingsManager::Instance ().property ("FetchMessagesPolicy");
+		if (XmlSettingsManager::Instance ().property ("FetchMessagesPolicy").toByteArray () != "MessageAndChildren")
+			return;
+
+		QList<QByteArray> missing;
+
+		const auto& folder = MailModel_->GetCurrentFolder ();
+		Util::EnumerateChildren (rootIdx, false,
+				[this, &missing, &folder] (const QModelIndex& idx)
+				{
+					const auto& id = idx.data (MailModel::MailRole::ID).toByteArray ();
+					if (!Storage_->HasMessageBodies (CurrAcc_.get (), folder, id))
+						missing << id;
+				});
+
+		qDebug () << Q_FUNC_INFO << missing.size ();
+
+		if (!missing.isEmpty ())
+			CurrAcc_->PrefetchWholeMessages (folder, missing);
+	}
+
 	void MailTab::handleMailSelected ()
 	{
 		const auto updateActionsGuard = Util::MakeScopeGuard ([this] { UpdateMsgActionsStatus (); });
@@ -832,6 +857,8 @@ namespace Snails
 		CurrMsgBodies_ = std::move (bodies);
 
 		CurrAcc_->SetReadStatus (true, { id }, folder);
+
+		CheckFetchChildMessages (idx);
 	}
 
 	void MailTab::rebuildOpsToFolders ()

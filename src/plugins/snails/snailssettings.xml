@@ -38,6 +38,18 @@
 			</item>
 		</groupbox>
 		<groupbox>
+			<label value="Messages fetching" />
+			<item type="combobox" property="FetchMessagesPolicy">
+				<label value="Messages contents fetching policy:" />
+				<option name="JustMessage" default="true">
+					<label value="fetch just the message when it is selected" />
+				</option>
+				<option name="MessageAndChildren">
+					<label value="fetch the message and its children when it is selected" />
+				</option>
+			</item>
+		</groupbox>
+		<groupbox>
 			<label value="Editor" />
 			<item type="combobox" property="ReplyMessageFormat">
 				<label value="Default format of a reply:" />
