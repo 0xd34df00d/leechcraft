@@ -60,7 +60,7 @@ namespace Snails
 		QHash<QByteArray, QList<TreeNode_ptr>> FolderId2Nodes_;
 		QHash<QByteArray, QByteArray> MsgId2FolderId_;
 
-		QHash<QByteArray, QList<MessageListActionInfo>> MsgId2Actions_;
+		mutable QHash<QByteArray, QList<MessageListActionInfo>> MsgId2Actions_;
 	public:
 		enum class Column
 		{

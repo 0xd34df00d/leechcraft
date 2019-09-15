@@ -134,6 +134,8 @@ namespace Snails
 		switch (role)
 		{
 		case MessageActions:
+			if (!MsgId2Actions_.contains (msg.FolderId_))
+				MsgId2Actions_ [msg.FolderId_] = ActionsMgr_->GetMessageActions (msg);
 			return QVariant::fromValue (MsgId2Actions_.value (msg.FolderId_));
 		case Qt::DisplayRole:
 		case Sort:
@@ -353,10 +355,6 @@ namespace Snails
 			const auto& msgId = msg.MessageId_;
 			if (!msgId.isEmpty ())
 				MsgId2FolderId_ [msgId] = msg.FolderId_;
-
-			const auto& acts = ActionsMgr_->GetMessageActions (msg);
-			if (!acts.isEmpty ())
-				MsgId2Actions_ [msg.FolderId_] = acts;
 		}
 
 		for (const auto& msg : messages)
