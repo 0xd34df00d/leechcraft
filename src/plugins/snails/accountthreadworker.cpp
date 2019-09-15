@@ -820,6 +820,7 @@ namespace Snails
 
 	FetchWholeMessageResult_t AccountThreadWorker::FetchWholeMessage (const QStringList& folderId, const QByteArray& msgId)
 	{
+		qDebug () << Q_FUNC_INFO << msgId;
 		auto folder = GetFolder (folderId, FolderMode::ReadOnly);
 		if (!folder)
 			return FetchWholeMessageResult_t::Left (FolderNotFound {});
@@ -844,6 +845,36 @@ namespace Snails
 		auto bodies = GetMessageBodies (messages.front ());
 		qDebug () << "done";
 		return FetchWholeMessageResult_t::Right (std::move (bodies));
+	}
+
+	PrefetchWholeMessagesResult_t AccountThreadWorker::PrefetchWholeMessages (const QStringList& folderId,
+			const QList<QByteArray>& msgIds)
+	{
+		qDebug () << Q_FUNC_INFO << msgIds.size ();
+		auto folder = GetFolder (folderId, FolderMode::ReadOnly);
+		if (!folder)
+			return PrefetchWholeMessagesResult_t::Left (FolderNotFound {});
+
+		std::vector<vmime::net::message::uid> uids;
+		uids.reserve (msgIds.size ());
+		for (const auto& msgId : msgIds)
+			uids.push_back (msgId.constData ());
+		const auto& set = vmime::net::messageSet::byUID (uids);
+
+		const auto attrs = vmime::net::fetchAttributes::FLAGS |
+				vmime::net::fetchAttributes::UID |
+				vmime::net::fetchAttributes::CONTENT_INFO |
+				vmime::net::fetchAttributes::STRUCTURE |
+				vmime::net::fetchAttributes::FULL_HEADER;
+		const auto& messages = folder->getAndFetchMessages (set, attrs);
+
+		QHash<QByteArray, MessageBodies> result;
+		for (const auto& msg : messages)
+			result [QByteArray::fromStdString (msg->getUID ())] = GetMessageBodies (msg);
+
+		qDebug () << "done";
+
+		return PrefetchWholeMessagesResult_t::Right (std::move (result));
 	}
 
 	FetchAttachmentResult_t AccountThreadWorker::FetchAttachment (const QStringList& folderId,

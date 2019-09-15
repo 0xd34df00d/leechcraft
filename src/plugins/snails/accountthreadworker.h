@@ -142,6 +142,7 @@ namespace Snails
 		SetReadStatusResult_t SetReadStatus (bool read, const QList<QByteArray>& ids, const QStringList& folder);
 
 		FetchWholeMessageResult_t FetchWholeMessage (const QStringList& folder, const QByteArray& msgId);
+		PrefetchWholeMessagesResult_t PrefetchWholeMessages (const QStringList& folder, const QList<QByteArray>& msgIds);
 
 		FetchAttachmentResult_t FetchAttachment (const QStringList& folder,
 				const QByteArray& msgId, const QString& attName, const QString& path);

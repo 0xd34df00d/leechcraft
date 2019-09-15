@@ -67,6 +67,8 @@ namespace Snails
 
 	using FetchWholeMessageResult_t = Util::Either<boost::variant<FolderNotFound, MessageNotFound>, MessageBodies>;
 
+	using PrefetchWholeMessagesResult_t = Util::Either<boost::variant<FolderNotFound>, QHash<QByteArray, MessageBodies>>;
+
 	using FetchAttachmentResult_t = Util::Either<
 			boost::variant<MessageNotFound, FileOpenError, AttachmentNotFound>,
 			Util::Void

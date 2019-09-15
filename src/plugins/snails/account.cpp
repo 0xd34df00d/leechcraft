@@ -307,6 +307,22 @@ namespace Snails
 		return future;
 	}
 
+	void Account::PrefetchWholeMessages (const QStringList& folder, const QList<QByteArray>& msgIds)
+	{
+		auto future = WorkerPool_->Schedule (TaskPriority::Low,
+				&AccountThreadWorker::PrefetchWholeMessages, folder, msgIds);
+		Util::Sequence (this, future) >>
+				Util::Visitor
+				{
+					[=] (const QHash<QByteArray, MessageBodies>& bodiesHash)
+					{
+						for (const auto& [msgId, bodies] : Util::Stlize (bodiesHash))
+							Storage_->SaveMessageBodies (this, folder, msgId, bodies);
+					},
+					Util::Visitor { [] (auto e) { qWarning () << Q_FUNC_INFO << e.what (); } }
+				};
+	}
+
 	QFuture<Account::SendMessageResult_t> Account::SendMessage (const OutgoingMessage& msg)
 	{
 		return WorkerPool_->Schedule (TaskPriority::High, &AccountThreadWorker::SendMessage, msg);

@@ -131,6 +131,7 @@ namespace Snails
 
 		using FetchWholeMessageResult_t = QFuture<WrapReturnType_t<Snails::FetchWholeMessageResult_t>>;
 		FetchWholeMessageResult_t FetchWholeMessage (const QStringList&, const QByteArray&);
+		void PrefetchWholeMessages (const QStringList&, const QList<QByteArray>&);
 
 		using SendMessageResult_t = Util::Either<InvokeError_t<>, Util::Void>;
 		QFuture<SendMessageResult_t> SendMessage (const OutgoingMessage&);
