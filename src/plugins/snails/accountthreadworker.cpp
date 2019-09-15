@@ -843,7 +843,7 @@ namespace Snails
 		}
 
 		auto bodies = GetMessageBodies (messages.front ());
-		qDebug () << "done";
+		qDebug () << Q_FUNC_INFO << "done";
 		return FetchWholeMessageResult_t::Right (std::move (bodies));
 	}
 
@@ -872,7 +872,7 @@ namespace Snails
 		for (const auto& msg : messages)
 			result [QByteArray::fromStdString (msg->getUID ())] = GetMessageBodies (msg);
 
-		qDebug () << "done";
+		qDebug () << Q_FUNC_INFO << "done";
 
 		return PrefetchWholeMessagesResult_t::Right (std::move (result));
 	}
