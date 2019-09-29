@@ -78,5 +78,20 @@ namespace Snails
 		MessageInfo Info_;
 		vmime::shared_ptr<const vmime::header> Headers_;
 	};
+
+	struct FolderAlreadyExists
+	{
+		const char* what () const;
+	};
+
+	struct InvalidPathComponent
+	{
+		QString Component_;
+		QByteArray FullMessage_ = "`" + Component_.toUtf8 () + "` is an invalid component name";
+
+		const char* what () const;
+	};
+
+	using CreateFolderResult_t = Util::Either<boost::variant<FolderAlreadyExists, InvalidPathComponent>, Util::Void>;
 }
 }

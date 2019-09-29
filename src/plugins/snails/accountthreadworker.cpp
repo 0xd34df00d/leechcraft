@@ -157,6 +157,16 @@ namespace Snails
 		return "attachment not found";
 	}
 
+	const char* FolderAlreadyExists::what () const
+	{
+		return "folder already exists";
+	}
+
+	const char* InvalidPathComponent::what () const
+	{
+		return FullMessage_.constData ();
+	}
+
 	AccountThreadWorker::AccountThreadWorker (bool isListening,
 			const QString& threadName, Account *parent, Storage *st)
 	: A_ (parent)
@@ -1079,6 +1089,22 @@ namespace Snails
 			throw;
 		}
 		transport->send (vMsg, pl.get ());
+	}
+
+	CreateFolderResult_t AccountThreadWorker::CreateFolder (const QStringList& folderPath)
+	{
+		auto store = MakeStore ();
+
+		for (const auto& comp : folderPath)
+			if (!store->isValidFolderName ({ comp.toUtf8 ().constData (), vmime::charsets::UTF_8 }))
+				return CreateFolderResult_t::Left (InvalidPathComponent { comp });
+
+		auto folder = store->getFolder (Folder2Path (folderPath));
+		if (folder->exists ())
+			return CreateFolderResult_t::Left (FolderAlreadyExists {});
+
+		folder->create ({});
+		return CreateFolderResult_t::Right ({});
 	}
 }
 }
