@@ -113,7 +113,7 @@ namespace Snails
 		QList<QByteArray> GetCheckedIds () const;
 		bool HasCheckedIds () const;
 	private:
-		void UpdateParentReadCount (const QByteArray&, bool);
+		void UpdateParents (const QByteArray&, bool);
 
 		void RemoveNode (const TreeNode_ptr&);
 		bool AppendStructured (const MessageInfo&);

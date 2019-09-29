@@ -374,7 +374,7 @@ namespace Snails
 
 	bool MailModel::Remove (const QByteArray& id)
 	{
-		UpdateParentReadCount (id, false);
+		UpdateParents (id, false);
 
 		for (const auto& node : FolderId2Nodes_.value (id))
 			RemoveNode (node);
@@ -429,7 +429,7 @@ namespace Snails
 				});
 	}
 
-	void MailModel::UpdateParentReadCount (const QByteArray& folderId, bool addUnread)
+	void MailModel::UpdateParents (const QByteArray& folderId, bool addUnread)
 	{
 		QList<TreeNode_ptr> nodes;
 		for (const auto& node : FolderId2Nodes_.value (folderId))
@@ -443,21 +443,14 @@ namespace Snails
 		{
 			const auto& item = nodes.at (i);
 
-			bool emitUpdate = false;
 			if (addUnread && !item->UnreadChildren_.contains (folderId))
-			{
 				item->UnreadChildren_ << folderId;
-				emitUpdate = true;
-			}
-			else if (!addUnread && item->UnreadChildren_.remove (folderId))
-				emitUpdate = true;
+			else if (!addUnread)
+				item->UnreadChildren_.remove (folderId);
 
-			if (emitUpdate)
-			{
-				const auto& leftIdx = createIndex (item->GetRow (), 0, item.get ());
-				const auto& rightIdx = createIndex (item->GetRow (), columnCount () - 1, item.get ());
-				emit dataChanged (leftIdx, rightIdx);
-			}
+			const auto& leftIdx = createIndex (item->GetRow (), 0, item.get ());
+			const auto& rightIdx = createIndex (item->GetRow (), columnCount () - 1, item.get ());
+			emit dataChanged (leftIdx, rightIdx);
 
 			const auto& parent = item->GetParent ();
 			if (parent != Root_)
@@ -531,8 +524,7 @@ namespace Snails
 			endInsertRows ();
 		}
 
-		if (!msg.IsRead_)
-			UpdateParentReadCount (msg.FolderId_, true);
+		UpdateParents (msg.FolderId_, msg.IsRead_);
 
 		return !indexes.isEmpty ();
 	}
