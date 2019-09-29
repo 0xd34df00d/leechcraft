@@ -29,17 +29,12 @@
 
 #include "storage.h"
 #include <stdexcept>
-#include <QFile>
 #include <QApplication>
-#include <QtConcurrentMap>
-#include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QDataStream>
-#include <QtConcurrentRun>
 #include <util/db/dblock.h>
 #include <util/sys/paths.h>
-#include <util/threads/futures.h>
 #include "xmlsettingsmanager.h"
 #include "account.h"
 #include "accountdatabase.h"
