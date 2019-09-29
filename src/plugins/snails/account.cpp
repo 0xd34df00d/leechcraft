@@ -403,6 +403,20 @@ namespace Snails
 			DeleteFromFolder (ids, folder);
 	}
 
+	Account::CreateFolderResult_t Account::CreateFolder (const QStringList& path)
+	{
+		auto future = WorkerPool_->Schedule (TaskPriority::High, &AccountThreadWorker::CreateFolder, path);
+
+		Util::Sequence (this, future) >>
+				Util::Visitor
+				{
+					[this, path] (Util::Void) { FolderManager_->AddFolder (path); },
+					[] (const auto&) {}
+				};
+
+		return future;
+	}
+
 	QByteArray Account::Serialize () const
 	{
 		QMutexLocker l (GetMutex ());

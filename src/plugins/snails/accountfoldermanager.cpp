@@ -30,6 +30,7 @@
 #include "accountfoldermanager.h"
 #include <stdexcept>
 #include <QDataStream>
+#include <QtDebug>
 #include <util/sll/qtutil.h>
 #include "common.h"
 
@@ -73,6 +74,16 @@ namespace Snails
 	void AccountFolderManager::AppendFolderFlags (const QStringList& folder, FolderFlag flags)
 	{
 		Folder2Flags_ [folder] |= flags;
+	}
+
+	void AccountFolderManager::AddFolder (const QStringList& newPath)
+	{
+		if (std::any_of (Folders_.begin (), Folders_.end (),
+				[&newPath] (const auto& folder) { return folder.Path_ == newPath; }))
+			return;
+
+		Folders_ << Folder { newPath, FolderType::Other };
+		emit foldersUpdated ();
 	}
 
 	void AccountFolderManager::SetFolders (const QList<Folder>& folders)

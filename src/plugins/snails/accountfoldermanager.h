@@ -68,6 +68,7 @@ namespace Snails
 		void ClearFolderFlags ();
 		void AppendFolderFlags (const QStringList&, FolderFlag);
 
+		void AddFolder (const QStringList&);
 		void SetFolders (const QList<Folder>&);
 
 		QByteArray Serialize () const;

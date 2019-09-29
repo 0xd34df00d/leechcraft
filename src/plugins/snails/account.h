@@ -147,6 +147,9 @@ namespace Snails
 		void MoveMessages (const QList<QByteArray>& ids, const QStringList& from, const QList<QStringList>& to);
 		void DeleteMessages (const QList<QByteArray>& ids, const QStringList& folder);
 
+		using CreateFolderResult_t = QFuture<WrapReturnType_t<Snails::CreateFolderResult_t>>;
+		CreateFolderResult_t CreateFolder (const QStringList&);
+
 		QByteArray Serialize () const;
 		static std::shared_ptr<Account> Deserialize (const QByteArray&, const Dependencies&);
 
