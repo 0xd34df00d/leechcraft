@@ -1103,7 +1103,17 @@ namespace Snails
 		if (folder->exists ())
 			return CreateFolderResult_t::Left (FolderAlreadyExists {});
 
-		folder->create ({});
+		vmime::net::folderAttributes attrs;
+		attrs.setType (vmime::net::folderAttributes::TYPE_CONTAINS_MESSAGES);
+		folder->create (attrs);
+		try
+		{
+			folder->create ({});
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO << e.what ();
+		}
 		return CreateFolderResult_t::Right ({});
 	}
 }
