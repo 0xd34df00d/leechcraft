@@ -524,7 +524,7 @@ namespace Snails
 			endInsertRows ();
 		}
 
-		UpdateParents (msg.FolderId_, msg.IsRead_);
+		UpdateParents (msg.FolderId_, !msg.IsRead_);
 
 		return !indexes.isEmpty ();
 	}
