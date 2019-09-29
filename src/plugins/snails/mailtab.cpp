@@ -37,6 +37,7 @@
 #include <QToolButton>
 #include <QMessageBox>
 #include <QShortcut>
+#include <QInputDialog>
 #include <util/util.h>
 #include <util/models/util.h>
 #include <util/tags/categoryselector.h>
@@ -1165,6 +1166,61 @@ namespace Snails
 						proxy->GetEntityManager ()->HandleEntity (e);
 					}
 				};
+	}
+
+	namespace
+	{
+		void RunCreateFolder (QStringList path, Account& acc, const ICoreProxy_ptr& proxy, QWidget *parent)
+		{
+			const auto& label = path.isEmpty () ?
+					MailTab::tr ("Enter the name of the folder:") :
+					MailTab::tr ("Enter the name of the folder to be created under %1:")
+							.arg (Util::FormatName (path.join ("/")));
+			const auto& name = QInputDialog::getText (parent, MailTab::tr ("Create folder"), label);
+			if (name.isEmpty ())
+				return;
+
+			path.append (name);
+
+			auto errHandler = [name, proxy] (const auto& err)
+			{
+				const auto& text = Util::Visit (err,
+						[name] (const FolderAlreadyExists&)
+						{
+							return MailTab::tr ("Folder %1 already exists.").arg (Util::FormatName (name));
+						},
+						[] (const InvalidPathComponent& comp)
+						{
+							return MailTab::tr ("Path component %1 is invalid.").arg (Util::FormatName (comp.Component_));
+						},
+						[] (const auto& e) { return QString { e.what () }; });
+				const auto& e = Util::MakeNotification ("Snails", text, Priority::Warning);
+				proxy->GetEntityManager ()->HandleEntity (e);
+			};
+
+			Util::Sequence (parent, acc.CreateFolder (path)) >>
+					Util::Visitor
+					{
+						[] (Util::Void) {},
+						errHandler
+					};
+		}
+	}
+
+	void MailTab::on_TagsTree__customContextMenuRequested (const QPoint& pos)
+	{
+		if (!CurrAcc_)
+			return;
+
+		const auto& idx = Ui_.TagsTree_->indexAt (pos);
+
+		auto path = idx.isValid () ?
+				idx.data (FoldersModel::Role::FolderPath).toStringList () :
+				QStringList {};
+
+		QMenu menu;
+		menu.addAction (tr ("Create folder..."), [this, path] { RunCreateFolder (path, *CurrAcc_, Proxy_, this); });
+		menu.exec (Ui_.TagsTree_->viewport ()->mapToGlobal (pos));
 	}
 }
 }

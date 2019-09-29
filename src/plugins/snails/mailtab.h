@@ -171,6 +171,8 @@ namespace Snails
 
 		void handleFetchNewMail ();
 		void handleRefreshFolder ();
+
+		void on_TagsTree__customContextMenuRequested (const QPoint&);
 	signals:
 		void removeTab (QWidget*);
 
