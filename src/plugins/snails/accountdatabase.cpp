@@ -197,7 +197,7 @@ namespace LeechCraft
 namespace Snails
 {
 	AccountDatabase::AccountDatabase (const QDir& dir, const Account *acc)
-	: DB_ { QSqlDatabase::addDatabase ("QSQLITE", "SnailsStorage_" + acc->GetID ()) }
+	: DB_ { QSqlDatabase::addDatabase ("QSQLITE", Util::GenConnectionName ("SnailsStorage_" + acc->GetID ())) }
 	{
 		DB_.setDatabaseName (dir.filePath ("msgs.db"));
 		if (!DB_.open ())

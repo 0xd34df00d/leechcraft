@@ -30,7 +30,6 @@
 #pragma once
 
 #include <optional>
-#include <memory>
 #include <QObject>
 #include <QStringList>
 #include <QMap>
