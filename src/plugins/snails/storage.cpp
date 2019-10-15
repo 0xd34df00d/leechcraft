@@ -30,6 +30,7 @@
 #include "storage.h"
 #include <stdexcept>
 #include <QApplication>
+#include <QThread>
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QDataStream>
@@ -59,6 +60,7 @@ namespace Snails
 
 	Storage::Storage (QObject *parent)
 	: QObject (parent)
+	, CachedThread_ { QThread::currentThreadId () }
 	{
 		SDir_ = Util::CreateIfNotExists ("snails/storage");
 	}
@@ -165,12 +167,15 @@ namespace Snails
 
 	AccountDatabase_ptr Storage::BaseForAccount (const Account *acc)
 	{
-		if (AccountBases_.contains (acc))
+		const auto isCachedThread = QThread::currentThreadId () == CachedThread_;
+
+		if (isCachedThread && AccountBases_.contains (acc))
 			return AccountBases_ [acc];
 
 		const auto& dir = DirForAccount (acc);
 		const auto& base = std::make_shared<AccountDatabase> (dir, acc);
-		AccountBases_ [acc] = base;
+		if (isCachedThread)
+			AccountBases_ [acc] = base;
 		return base;
 	}
 }

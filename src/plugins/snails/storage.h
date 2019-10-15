@@ -54,6 +54,7 @@ namespace Snails
 		QDir SDir_;
 
 		QHash<const Account*, AccountDatabase_ptr> AccountBases_;
+		const Qt::HANDLE CachedThread_;
 	public:
 		Storage (QObject* = nullptr);
 
