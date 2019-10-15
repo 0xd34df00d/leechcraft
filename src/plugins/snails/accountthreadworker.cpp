@@ -57,6 +57,7 @@
 #include "core.h"
 #include "progresslistener.h"
 #include "storage.h"
+#include "accountdatabase.h"
 #include "vmimeconversions.h"
 #include "outputiodevadapter.h"
 #include "common.h"
@@ -624,7 +625,8 @@ namespace Snails
 		qDebug () << "done fetching, sent" << bytesCounter.GetSent ()
 				<< "bytes, received" << bytesCounter.GetReceived () << "bytes";
 
-		auto localIds = QSet<QByteArray>::fromList (Storage_->LoadIDs (A_, folderName));
+		const auto base = Storage_->BaseForAccount (A_);
+		auto localIds = QSet<QByteArray>::fromList (base->GetIDs (folderName));
 
 		SyncStatusesResult result;
 		for (const auto& msg : remoteIds)
@@ -633,7 +635,7 @@ namespace Snails
 			if (!localIds.remove (uid))
 				continue;
 
-			const auto isStoredRead = Storage_->IsMessageRead (A_, folderName, uid);
+			const auto isStoredRead = base->IsMessageRead (uid, folderName).value ();
 			const auto isRemoteRead = msg->getFlags () & vmime::net::message::FLAG_SEEN;
 
 			if (isStoredRead != isRemoteRead)
