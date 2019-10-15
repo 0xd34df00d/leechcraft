@@ -771,7 +771,6 @@ namespace Snails
 
 	void MailTab::CheckFetchChildMessages (const QModelIndex& rootIdx)
 	{
-		qDebug () << XmlSettingsManager::Instance ().property ("FetchMessagesPolicy");
 		if (XmlSettingsManager::Instance ().property ("FetchMessagesPolicy").toByteArray () != "MessageAndChildren")
 			return;
 
@@ -785,8 +784,6 @@ namespace Snails
 					if (!Storage_->HasMessageBodies (CurrAcc_.get (), folder, id))
 						missing << id;
 				});
-
-		qDebug () << Q_FUNC_INFO << missing.size ();
 
 		if (!missing.isEmpty ())
 			CurrAcc_->PrefetchWholeMessages (folder, missing);
