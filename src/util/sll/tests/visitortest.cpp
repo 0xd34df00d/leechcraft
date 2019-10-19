@@ -37,7 +37,7 @@ namespace LeechCraft
 {
 namespace Util
 {
-	using Variant_t = boost::variant<int, char, std::string, QString, double, float>;
+	using Variant_t = std::variant<int, char, std::string, QString, double, float>;
 
 	struct S1
 	{
@@ -51,7 +51,7 @@ namespace Util
 		double field2;
 	};
 
-	using SVariant_t = boost::variant<S1, S2>;
+	using SVariant_t = std::variant<S1, S2>;
 
 	void VisitorTest::testBasicVisitor ()
 	{
@@ -208,7 +208,7 @@ namespace Util
 
 	void VisitorTest::testPrepareJustAutoVisitor ()
 	{
-		using Variant_t = boost::variant<int, double, float>;
+		using Variant_t = std::variant<int, double, float>;
 
 		Visitor visitor
 		{
@@ -221,8 +221,8 @@ namespace Util
 
 	void VisitorTest::testPrepareRecursiveVisitor ()
 	{
-		using SubVariant_t = boost::variant<int, double, float>;
-		using Variant_t = boost::variant<SubVariant_t, QString>;
+		using SubVariant_t = std::variant<int, double, float>;
+		using Variant_t = std::variant<SubVariant_t, QString>;
 
 		Visitor visitor
 		{
