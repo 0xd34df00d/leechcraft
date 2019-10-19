@@ -46,8 +46,6 @@ namespace Util
 
 		void testNonCopyableFunctors ();
 
-		void testDifferentReturnTypes ();
-
 		void testAcceptsRValueRef ();
 
 		void testLValueRef ();

@@ -114,29 +114,6 @@ namespace Util
 	}
 #undef NC
 
-	void VisitorTest::testDifferentReturnTypes ()
-	{
-		struct Foo {};
-		struct Bar : Foo {};
-
-		Variant_t v { 'a' };
-		decltype (auto) res = Visit (v,
-				[] (int) -> Foo* { return nullptr; },
-				[] (char) -> Foo* { return nullptr; },
-				[] (auto) -> Bar* { return nullptr; });
-
-		decltype (auto) res2 = Visit (v,
-				[] (int) -> Bar* { return nullptr; },
-				[] (char) -> Bar* { return nullptr; },
-				[] (auto) -> Foo* { return nullptr; });
-
-		static_assert (std::is_same_v<decltype (res), Foo*>);
-		static_assert (std::is_same_v<decltype (res2), Foo*>);
-
-		QCOMPARE (res, nullptr);
-		QCOMPARE (res2, nullptr);
-	}
-
 	void VisitorTest::testAcceptsRValueRef ()
 	{
 		const auto& res = Visit (Variant_t { 'a' },
