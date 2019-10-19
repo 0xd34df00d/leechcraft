@@ -112,31 +112,10 @@ namespace Util
 		return detail::InitImpl<List, std::tuple<Args...>> (std::make_index_sequence<sizeof... (Args) - 1> {});
 	}
 
-	namespace detail
-	{
-		template<typename Type, template<typename...> class List, typename... Tail>
-		constexpr bool HasTypeImpl (List<Type, Tail...>, int)
-		{
-			return true;
-		}
-
-		template<typename, template<typename...> class List>
-		constexpr bool HasTypeImpl (List<>, float)
-		{
-			return false;
-		}
-
-		template<typename Type, template<typename...> class List, typename Head, typename... Tail>
-		constexpr bool HasTypeImpl (List<Head, Tail...>, float)
-		{
-			return HasTypeImpl<Type> (List<Tail...> {}, 0);
-		}
-	}
-
 	template<typename Type, template<typename...> class List, typename... Args>
-	constexpr bool HasType (List<Args...> list)
+	constexpr bool HasType (List<Args...>)
 	{
-		return detail::HasTypeImpl<Type> (list, 0);
+		return (std::is_same_v<Type, Args> || ...);
 	}
 
 	namespace detail
