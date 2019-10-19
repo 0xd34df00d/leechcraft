@@ -65,19 +65,6 @@ namespace Snails
 	{
 		const auto MaxRecLevel = 3;
 
-		template<typename Result, typename Ex,
-				typename = std::enable_if_t<Util::HasType<std::decay_t<Ex>> (Util::AsTypelist_t<typename Result::L_t> {})>>
-		Result ReturnException (const Ex& ex, int)
-		{
-			return Result::Left (ex);
-		}
-
-		template<typename Result, typename Ex>
-		Result ReturnException (const Ex&, float)
-		{
-			return Result::Left (std::current_exception ());
-		}
-
 		void ReconnectATW (AccountThreadWorker*);
 
 		template<typename Result, typename F>
@@ -123,7 +110,10 @@ namespace Snails
 							<< "retries:"
 							<< ex.what ();
 
-					return ReturnException<Result> (ex, 0);
+					if constexpr (Util::HasType<std::decay_t<Ex>> (Util::AsTypelist_t<typename Result::L_t> {}))
+						return Result::Left (ex);
+					else
+						return Result::Left (std::current_exception ());
 				}
 
 				++RecLevel_;
