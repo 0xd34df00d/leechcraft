@@ -147,6 +147,20 @@ namespace Util
 			return Either { r };
 		}
 
+		template<typename... Vars>
+		static Either LeftLift (const std::variant<Vars...>& var)
+		{
+			return Either { std::visit ([] (auto&& arg) { return L { std::forward<decltype (arg)> (arg) }; }, var) };
+		}
+
+		template<typename... Vars>
+		static Either LeftLift (const Either<std::variant<Vars...>, R>& either)
+		{
+			return either.IsRight () ?
+					Right (either.GetRight ()) :
+					LeftLift (either.GetLeft ());
+		}
+
 		template<typename RNew>
 		static std::enable_if_t<!std::is_convertible<RNew, R>::value, Either<L, RNew>> Right (const RNew& r)
 		{
