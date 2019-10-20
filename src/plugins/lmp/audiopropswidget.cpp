@@ -44,11 +44,7 @@
 #include <taglib/taglib.h>
 #include <taglib/fileref.h>
 #include <taglib/tag.h>
-
-#define HAS_APE TAGLIB_MAJOR_VERSION > 1 || TAGLIB_MINOR_VERSION > 6
-#if HAS_APE
 #include <taglib/apeproperties.h>
-#endif
 
 #ifdef TAGLIB_WITH_ASF
 #include <taglib/asfproperties.h>
@@ -167,14 +163,13 @@ namespace LMP
 				if (const auto casted = dynamic_cast<T*> (Props_))
 					F_ (AudioPropsWidget::tr ("File type"), Parse (casted));
 			}
-#if HAS_APE
+
 			QString Parse (TagLib::APE::Properties *props)
 			{
 				IF_ ("APE version", props->version ());
 				IF_ ("Bits per sample", props->bitsPerSample ());
 				return "APE";
 			}
-#endif
 
 #ifdef TAGLIB_WITH_ASF
 			QString Parse (TagLib::ASF::Properties*)
@@ -259,17 +254,13 @@ namespace LMP
 
 			QString Parse (TagLib::RIFF::AIFF::Properties *props)
 			{
-#if TAGLIB_MAJOR_VERSION > 1 || TAGLIB_MINOR_VERSION > 6
 				IF_ ("Sample width", props->bitsPerSample ());
-#endif
 				return "AIFF";
 			}
 
 			QString Parse (TagLib::RIFF::WAV::Properties *props)
 			{
-#if TAGLIB_MAJOR_VERSION > 1 || TAGLIB_MINOR_VERSION > 6
 				IF_ ("Sample width", props->bitsPerSample ());
-#endif
 				return "WAV";
 			}
 
@@ -347,9 +338,7 @@ namespace LMP
 		addMap (GetGenericProps (props));
 
 		boost::mpl::vector<
-#if HAS_APE
 				TagLib::APE::Properties*,
-#endif
 #ifdef TAGLIB_WITH_ASF
 				TagLib::ASF::Properties*,
 #endif
