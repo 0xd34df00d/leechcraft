@@ -101,7 +101,7 @@ namespace Imgaste
 					},
 					[this] (Util::ReplyWithHeaders reply)
 					{
-						Util::ReportFutureResult (Promise_, Worker_->GetLink (reply.Data_, reply.Headers_));
+						Util::ReportFutureResult (Promise_, Result_t::LeftLift (Worker_->GetLink (reply.Data_, reply.Headers_)));
 					}
 				}.Finally ([this, reprModel, reprRow]
 						{
