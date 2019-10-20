@@ -45,17 +45,9 @@
 #include <taglib/fileref.h>
 #include <taglib/tag.h>
 #include <taglib/apeproperties.h>
-
-#ifdef TAGLIB_WITH_ASF
 #include <taglib/asfproperties.h>
-#endif
-
 #include <taglib/flacproperties.h>
-
-#ifdef TAGLIB_WITH_MP4
 #include <taglib/mp4properties.h>
-#endif
-
 #include <taglib/mpcproperties.h>
 #include <taglib/mpegproperties.h>
 #include <taglib/speexproperties.h>
@@ -171,12 +163,10 @@ namespace LMP
 				return "APE";
 			}
 
-#ifdef TAGLIB_WITH_ASF
 			QString Parse (TagLib::ASF::Properties*)
 			{
 				return "ASF";
 			}
-#endif
 
 			QString Parse (TagLib::FLAC::Properties *props)
 			{
@@ -184,13 +174,11 @@ namespace LMP
 				return "FLAC";
 			}
 
-#ifdef TAGLIB_WITH_MP4
 			QString Parse (TagLib::MP4::Properties *props)
 			{
 				IF_ ("Bits per sample", props->bitsPerSample ());
 				return "MP4";
 			}
-#endif
 
 			QString Parse (TagLib::MPC::Properties *props)
 			{
@@ -339,13 +327,9 @@ namespace LMP
 
 		boost::mpl::vector<
 				TagLib::APE::Properties*,
-#ifdef TAGLIB_WITH_ASF
 				TagLib::ASF::Properties*,
-#endif
 				TagLib::FLAC::Properties*,
-#ifdef TAGLIB_WITH_MP4
 				TagLib::MP4::Properties*,
-#endif
 				TagLib::MPC::Properties*,
 				TagLib::MPEG::Properties*,
 				TagLib::Ogg::Speex::Properties*,
