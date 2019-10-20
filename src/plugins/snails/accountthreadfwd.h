@@ -29,7 +29,7 @@
 
 #pragma once
 
-#include <boost/variant.hpp>
+#include <variant>
 #include <vmime/exception.hpp>
 #include <vmime/security/cert/X509Certificate.hpp>
 #include <vmime/security/cert/certificateException.hpp>
@@ -43,7 +43,7 @@ namespace Snails
 	class GenericExceptionWrapper;
 
 	template<typename... Rest>
-	using InvokeError_t = boost::variant<
+	using InvokeError_t = std::variant<
 				vmime::exceptions::authentication_error,
 				vmime::exceptions::connection_error,
 				vmime::security::cert::certificateException,
@@ -60,7 +60,7 @@ namespace Snails
 		struct AsInvokeError;
 
 		template<typename... List>
-		struct AsInvokeError<boost::variant<List...>>
+		struct AsInvokeError<std::variant<List...>>
 		{
 			using Type = InvokeError_t<List...>;
 		};

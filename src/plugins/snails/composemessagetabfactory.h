@@ -30,7 +30,6 @@
 #pragma once
 
 #include <memory>
-#include <boost/variant.hpp>
 #include <QObject>
 #include "account.h"
 
@@ -58,7 +57,7 @@ namespace Snails
 
 		void PrepareComposeTab (const Account_ptr&);
 		void PrepareLinkedTab (MsgType, const Account_ptr&, const MessageInfo&,
-				const boost::variant<MessageBodies, Account::FetchWholeMessageResult_t>&);
+				const std::variant<MessageBodies, Account::FetchWholeMessageResult_t>&);
 	signals:
 		void gotTab (const QString&, QWidget*);
 	};

@@ -84,7 +84,7 @@ namespace Snails
 						Paths_ << filePath;
 						RotateQueue ();
 					},
-					[=] (auto e) { Util::ReportFutureResult (Promise_, Result_t::Left (e)); }
+					[=] (auto e) { Util::ReportFutureResult (Promise_, Result_t::LeftLift (std::move (e))); }
 				};
 }
 }

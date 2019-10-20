@@ -31,7 +31,6 @@
 
 #include <stdexcept>
 #include <memory>
-#include <boost/variant.hpp>
 #include <vmime/net/message.hpp>
 #include <util/sll/either.h>
 #include <util/sll/void.h>
@@ -64,12 +63,12 @@ namespace Snails
 
 	struct MessageBodies;
 
-	using FetchWholeMessageResult_t = Util::Either<boost::variant<FolderNotFound, MessageNotFound>, MessageBodies>;
+	using FetchWholeMessageResult_t = Util::Either<std::variant<FolderNotFound, MessageNotFound>, MessageBodies>;
 
-	using PrefetchWholeMessagesResult_t = Util::Either<boost::variant<FolderNotFound>, QHash<QByteArray, MessageBodies>>;
+	using PrefetchWholeMessagesResult_t = Util::Either<std::variant<FolderNotFound>, QHash<QByteArray, MessageBodies>>;
 
 	using FetchAttachmentResult_t = Util::Either<
-			boost::variant<MessageNotFound, FileOpenError, AttachmentNotFound>,
+			std::variant<MessageNotFound, FileOpenError, AttachmentNotFound>,
 			Util::Void
 		>;
 
@@ -92,6 +91,6 @@ namespace Snails
 		const char* what () const;
 	};
 
-	using CreateFolderResult_t = Util::Either<boost::variant<FolderAlreadyExists, InvalidPathComponent>, Util::Void>;
+	using CreateFolderResult_t = Util::Either<std::variant<FolderAlreadyExists, InvalidPathComponent>, Util::Void>;
 }
 }

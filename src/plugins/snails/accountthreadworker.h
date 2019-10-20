@@ -29,7 +29,6 @@
 
 #pragma once
 
-#include <boost/variant.hpp>
 #include <QObject>
 #include <vmime/net/session.hpp>
 #include <vmime/net/message.hpp>
@@ -134,11 +133,11 @@ namespace Snails
 
 		SyncStatusesResult SyncMessagesStatuses (const QStringList&);
 
-		using MsgCountError_t = boost::variant<FolderNotFound>;
+		using MsgCountError_t = std::variant<FolderNotFound>;
 		using MsgCountResult_t = Util::Either<MsgCountError_t, QPair<int, int>>;
 		MsgCountResult_t GetMessageCount (const QStringList& folder);
 
-		using SetReadStatusResult_t = Util::Either<boost::variant<FolderNotFound>, Util::Void>;
+		using SetReadStatusResult_t = Util::Either<std::variant<FolderNotFound>, Util::Void>;
 		SetReadStatusResult_t SetReadStatus (bool read, const QList<QByteArray>& ids, const QStringList& folder);
 
 		FetchWholeMessageResult_t FetchWholeMessage (const QStringList& folder, const QByteArray& msgId);
@@ -149,7 +148,7 @@ namespace Snails
 
 		void CopyMessages (const QList<QByteArray>& ids, const QStringList& from, const QList<QStringList>& tos);
 
-		using DeleteResult_t = Util::Either<boost::variant<FolderNotFound>, Util::Void>;
+		using DeleteResult_t = Util::Either<std::variant<FolderNotFound>, Util::Void>;
 		DeleteResult_t DeleteMessages (const QList<QByteArray>& ids, const QStringList& folder);
 
 		void SendMessage (const OutgoingMessage&);

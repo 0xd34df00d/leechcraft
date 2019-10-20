@@ -65,7 +65,7 @@ namespace Snails
 
 	void ComposeMessageTabFactory::PrepareLinkedTab (MsgType type,
 			const Account_ptr& account, const MessageInfo& msgInfo,
-			const boost::variant<MessageBodies, Account::FetchWholeMessageResult_t>& bodiesVar)
+			const std::variant<MessageBodies, Account::FetchWholeMessageResult_t>& bodiesVar)
 	{
 		const auto cmt = MakeTab ();
 

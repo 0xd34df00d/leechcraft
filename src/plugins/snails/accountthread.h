@@ -120,7 +120,7 @@ namespace Snails
 
 				try
 				{
-					return F_ ();
+					return Result::LeftLift (F_ ());
 				}
 				catch (const vmime::exceptions::authentication_error& err)
 				{
@@ -214,24 +214,10 @@ namespace Snails
 			}
 		};
 
-		template<typename T>
-		using IsVoid_t = std::is_same<T, boost::detail::variant::void_>;
-
 		template<typename... Lefts, typename Right>
-		struct WrapFunctionTypeImpl<Util::Either<boost::variant<Lefts...>, Right>>
+		struct WrapFunctionTypeImpl<Util::Either<std::variant<Lefts...>, Right>>
 		{
-			using LeftTypes_t = Util::Filter_t<Util::Not<IsVoid_t>::Result_t, Util::Typelist<Lefts...>>;
-
-			template<typename>
-			struct BuildErrorList;
-
-			template<typename... Types>
-			struct BuildErrorList<Util::Typelist<Types...>>
-			{
-				using Result_t = InvokeError_t<Types...>;
-			};
-
-			using Result_t = Util::Either<typename BuildErrorList<LeftTypes_t>::Result_t, Right>;
+			using Result_t = Util::Either<InvokeError_t<Lefts...>, Right>;
 
 			template<typename F>
 			static auto WrapFunction (AccountThreadWorker *w, const F& f)
