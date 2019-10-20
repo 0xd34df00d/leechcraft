@@ -185,7 +185,7 @@ namespace LMP
 
 			QString Parse (TagLib::FLAC::Properties *props)
 			{
-				IF_ ("Sample width", props->sampleWidth ());
+				IF_ ("Sample width", props->bitsPerSample ());
 				return "FLAC";
 			}
 
@@ -260,7 +260,7 @@ namespace LMP
 			QString Parse (TagLib::RIFF::AIFF::Properties *props)
 			{
 #if TAGLIB_MAJOR_VERSION > 1 || TAGLIB_MINOR_VERSION > 6
-				IF_ ("Sample width", props->sampleWidth ());
+				IF_ ("Sample width", props->bitsPerSample ());
 #endif
 				return "AIFF";
 			}
@@ -268,7 +268,7 @@ namespace LMP
 			QString Parse (TagLib::RIFF::WAV::Properties *props)
 			{
 #if TAGLIB_MAJOR_VERSION > 1 || TAGLIB_MINOR_VERSION > 6
-				IF_ ("Sample width", props->sampleWidth ());
+				IF_ ("Sample width", props->bitsPerSample ());
 #endif
 				return "WAV";
 			}
