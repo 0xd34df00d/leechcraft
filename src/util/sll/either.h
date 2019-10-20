@@ -161,6 +161,14 @@ namespace Util
 					LeftLift (either.GetLeft ());
 		}
 
+		template<typename LPrime, typename = std::enable_if_t<std::is_convertible_v<LPrime, L>>>
+		static Either LeftLift (const Either<LPrime, R>& either)
+		{
+			return either.IsRight () ?
+					Right (either.GetRight ()) :
+					Left (either.GetLeft ());
+		}
+
 		template<typename RNew>
 		static std::enable_if_t<!std::is_convertible<RNew, R>::value, Either<L, RNew>> Right (const RNew& r)
 		{
