@@ -120,7 +120,7 @@ namespace Snails
 
 				try
 				{
-					return Result::LeftLift (F_ ());
+					return F_ ();
 				}
 				catch (const vmime::exceptions::authentication_error& err)
 				{
@@ -224,7 +224,7 @@ namespace Snails
 			{
 				return [=] (auto... args)
 				{
-					return HandleExceptions<Result_t> (w, [&] { return std::invoke (f, args...); });
+					return HandleExceptions<Result_t> (w, [&] { return Result_t::LeftLift (std::invoke (f, args...)); });
 				};
 			}
 		};
