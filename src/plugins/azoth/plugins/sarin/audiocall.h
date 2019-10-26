@@ -77,7 +77,7 @@ namespace Sarin
 	public:
 		AudioCall (const ToxContact*, CallManager*, Direction);
 
-		void SetCallIdx (const boost::optional<qint32>&);
+		void SetCallIdx (const std::optional<qint32>&);
 
 		Direction GetDirection () const;
 		QString GetSourceID () const;

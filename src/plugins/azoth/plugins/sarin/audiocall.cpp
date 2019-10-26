@@ -78,7 +78,7 @@ namespace Sarin
 		WriteFmt_.setSampleRate (24000);
 	}
 
-	void AudioCall::SetCallIdx (const boost::optional<qint32>& idx)
+	void AudioCall::SetCallIdx (const std::optional<qint32>& idx)
 	{
 		if (!idx)
 		{

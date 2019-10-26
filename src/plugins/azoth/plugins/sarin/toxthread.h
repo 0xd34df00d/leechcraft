@@ -117,7 +117,7 @@ namespace Sarin
 		void AddFriend (QByteArray);
 		void RemoveFriend (const QByteArray&);
 
-		QFuture<boost::optional<qint32>> ResolveFriendId (const QByteArray&);
+		QFuture<std::optional<qint32>> ResolveFriendId (const QByteArray&);
 		QFuture<QByteArray> GetFriendPubkey (qint32);
 		QFuture<FriendInfo> ResolveFriend (qint32);
 

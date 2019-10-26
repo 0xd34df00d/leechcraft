@@ -166,7 +166,7 @@ namespace GPGExceptions
 
 	/** @brief A type representing a possibility of a GPG-related error.
 	 */
-	using MaybeException_t = boost::optional<AnyException_t>;
+	using MaybeException_t = std::optional<AnyException_t>;
 }
 }
 }

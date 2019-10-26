@@ -29,8 +29,9 @@
 
 #pragma once
 
+#include <variant>
+#include <optional>
 #include <type_traits>
-#include <boost/variant.hpp>
 #include "functor.h"
 #include "applicative.h"
 #include "monad.h"
@@ -43,7 +44,7 @@ namespace Util
 	template<typename L, typename R>
 	class Either
 	{
-		using Either_t = boost::variant<L, R>;
+		using Either_t = std::variant<L, R>;
 		Either_t This_;
 
 		enum { LeftVal, RightVal };
@@ -72,43 +73,43 @@ namespace Util
 
 		bool IsLeft () const
 		{
-			return This_.which () == LeftVal;
+			return This_.index () == LeftVal;
 		}
 
 		bool IsRight () const
 		{
-			return This_.which () == RightVal;
+			return This_.index () == RightVal;
 		}
 
 		const L& GetLeft () const
 		{
 			if (!IsLeft ())
 				throw std::runtime_error { "Tried accessing Left for a Right Either" };
-			return boost::get<L> (This_);
+			return std::get<L> (This_);
 		}
 
 		const R& GetRight () const
 		{
 			if (!IsRight ())
 				throw std::runtime_error { "Tried accessing Right for a Left Either" };
-			return boost::get<R> (This_);
+			return std::get<R> (This_);
 		}
 
-		boost::optional<L> MaybeLeft () const
+		std::optional<L> MaybeLeft () const
 		{
 			if (!IsLeft ())
 				return {};
 			return GetLeft ();
 		}
 
-		boost::optional<R> MaybeRight () const
+		std::optional<R> MaybeRight () const
 		{
 			if (!IsRight ())
 				return {};
 			return GetRight ();
 		}
 
-		boost::variant<L, R> AsVariant () const
+		std::variant<L, R> AsVariant () const
 		{
 			return This_;
 		}
@@ -122,7 +123,7 @@ namespace Util
 		}
 
 		template<typename RNew>
-		static Either<L, RNew> FromMaybe (const boost::optional<RNew>& maybeRight, const L& left)
+		static Either<L, RNew> FromMaybe (const std::optional<RNew>& maybeRight, const L& left)
 		{
 			return maybeRight ?
 					Either<L, RNew>::Right (*maybeRight) :

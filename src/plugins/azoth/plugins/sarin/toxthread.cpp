@@ -311,9 +311,9 @@ namespace Sarin
 				});
 	}
 
-	QFuture<boost::optional<qint32>> ToxThread::ResolveFriendId (const QByteArray& pkey)
+	QFuture<std::optional<qint32>> ToxThread::ResolveFriendId (const QByteArray& pkey)
 	{
-		return ScheduleFunction ([pkey] (Tox *tox) -> boost::optional<qint32>
+		return ScheduleFunction ([pkey] (Tox *tox) -> std::optional<qint32>
 				{
 					const auto num = GetFriendId (tox, pkey);
 					if (num == -1)
