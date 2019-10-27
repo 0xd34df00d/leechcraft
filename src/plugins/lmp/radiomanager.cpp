@@ -37,6 +37,7 @@
 #include <util/models/mergemodel.h>
 #include <util/sll/dropargs.h>
 #include <util/sll/prelude.h>
+#include <util/sll/visitor.h>
 #include <util/gui/util.h>
 #include <interfaces/media/iradiostationprovider.h>
 #include <interfaces/media/imodifiableradiostation.h>
@@ -218,37 +219,13 @@ namespace LMP
 				});
 	}
 
-	namespace
-	{
-		class ActionFunctorVisitor : public boost::static_visitor<void>
-		{
-			const QModelIndex Index_;
-		public:
-			ActionFunctorVisitor (const QModelIndex& index)
-			: Index_ { index }
-			{
-			}
-
-			void operator() (const std::function<void ()>& func) const
-			{
-				func ();
-			}
-
-			void operator() (const std::function<void (QModelIndex)>& func) const
-			{
-				func (Index_);
-			}
-		};
-	}
-
 	void RadioManager::Handle (const QModelIndex& index, Player *player)
 	{
 		const auto& funcVar = index.data (Media::RadioItemRole::ActionFunctor);
 		if (funcVar.isValid ())
-		{
-			auto function = funcVar.value<Media::ActionFunctor_f> ();
-			return boost::apply_visitor (ActionFunctorVisitor { index }, function);
-		}
+			return Util::Visit (funcVar.value<Media::ActionFunctor_f> (),
+			        [] (const std::function<void ()>& func) { return func (); },
+			        [&index] (const std::function<void (QModelIndex)>& func) { func (index); });
 
 		QString param;
 
