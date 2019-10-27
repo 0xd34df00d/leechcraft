@@ -69,7 +69,7 @@ namespace LMP
 
 	namespace
 	{
-		struct StringMatcher : boost::static_visitor<bool>
+		struct StringMatcher
 		{
 			const QString Value_;
 
@@ -90,7 +90,7 @@ namespace LMP
 			}
 		};
 
-		struct IntMatcher : boost::static_visitor<bool>
+		struct IntMatcher
 		{
 			const int Value_;
 
