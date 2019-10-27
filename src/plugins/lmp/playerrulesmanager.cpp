@@ -73,11 +73,6 @@ namespace LMP
 		{
 			const QString Value_;
 
-			StringMatcher (const QString& val)
-			: Value_ { val }
-			{
-			}
-
 			bool operator() (const ANStringFieldValue& value) const
 			{
 				return value.Rx_.exactMatch (Value_) == value.Contains_;
@@ -93,11 +88,6 @@ namespace LMP
 		struct IntMatcher
 		{
 			const int Value_;
-
-			IntMatcher (int val)
-			: Value_ { val }
-			{
-			}
 
 			bool operator() (const ANIntFieldValue& value) const
 			{
