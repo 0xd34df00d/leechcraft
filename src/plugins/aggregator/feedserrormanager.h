@@ -48,7 +48,7 @@ namespace LeechCraft::Aggregator
 
 			bool operator== (const ParseError&) const;
 		};
-		using Error = boost::variant<IDownload::Error, ParseError>;
+		using Error = std::variant<IDownload::Error, ParseError>;
 	private:
 		const ICoreProxy_ptr Proxy_;
 		QHash<IDType_t, QList<Error>> Errors_;
