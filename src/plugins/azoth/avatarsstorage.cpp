@@ -99,7 +99,7 @@ namespace Azoth
 						return image;
 					});
 			CacheValue_t convertedValue { image };
-			if (convertedValue.which () != value->which ())
+			if (convertedValue.index () != value->index ())
 				Cache_.insert ({ entryId, size }, new CacheValue_t { std::move (convertedValue) }, GetImageCost (image));
 
 			return Util::MakeReadyFuture<MaybeImage> (std::move (image));

@@ -53,7 +53,7 @@ namespace Azoth
 		AvatarsStorageThread * const StorageThread_;
 
 		using CacheKey_t = QPair<QString, IHaveAvatars::Size>;
-		using CacheValue_t = boost::variant<QByteArray, QImage>;
+		using CacheValue_t = std::variant<QByteArray, QImage>;
 		QCache<CacheKey_t, CacheValue_t> Cache_;
 	public:
 		explicit AvatarsStorage (QObject* = nullptr);

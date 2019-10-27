@@ -28,7 +28,7 @@
  **********************************************************************/
 
 #include "entrybase.h"
-#include <boost/variant.hpp>
+#include <variant>
 #include <boost/optional.hpp>
 #include <QIcon>
 #include <QXmlStreamWriter>
@@ -155,7 +155,7 @@ namespace Murm
 			const boost::optional<QSize> ThumbSize_;
 		};
 
-		using ImageInfo = boost::variant<SimpleImageInfo, LinkImageInfo>;
+		using ImageInfo = std::variant<SimpleImageInfo, LinkImageInfo>;
 
 		void WriteImgDims (QXmlStreamWriter& w, const boost::optional<QSize>& size)
 		{

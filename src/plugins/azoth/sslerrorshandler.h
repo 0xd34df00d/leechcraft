@@ -49,7 +49,7 @@ namespace Azoth
 			QString Name_;
 		};
 
-		using Context_t = boost::variant<AccountRegistration, Account>;
+		using Context_t = std::variant<AccountRegistration, Account>;
 	private:
 		const Context_t Context_;
 		ICanHaveSslErrors * const ICHSE_;

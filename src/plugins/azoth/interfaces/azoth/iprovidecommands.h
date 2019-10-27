@@ -50,7 +50,7 @@ namespace Azoth
 	{
 		QString NewText_;
 	};
-	typedef boost::variant<bool, StringCommandResult, TextMorphResult> CommandResult_t;
+	typedef std::variant<bool, StringCommandResult, TextMorphResult> CommandResult_t;
 
 	typedef std::function<CommandResult_t (ICLEntry*, QString&)> Command_f;
 

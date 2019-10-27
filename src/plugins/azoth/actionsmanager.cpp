@@ -94,7 +94,7 @@ using SingleEntryActor_f = std::function<void (LeechCraft::Azoth::ICLEntry*)> ;
 using SingleEntryActorWManager_f = std::function<void (LeechCraft::Azoth::ICLEntry*, LeechCraft::Azoth::ActionsManager*)>;
 using MultiEntryActor_f = std::function<void (QList<LeechCraft::Azoth::ICLEntry*>)> ;
 
-using EntryActor_f = boost::variant<LeechCraft::Util::Void, SingleEntryActor_f, SingleEntryActorWManager_f, MultiEntryActor_f>;
+using EntryActor_f = std::variant<LeechCraft::Util::Void, SingleEntryActor_f, SingleEntryActorWManager_f, MultiEntryActor_f>;
 Q_DECLARE_METATYPE (EntryActor_f);
 
 using EntriesList_t = QList<LeechCraft::Azoth::ICLEntry*>;
@@ -712,7 +712,7 @@ namespace Azoth
 				if (!action)
 					continue;
 
-				if (pair.second.which ())
+				if (pair.second.index ())
 					action->setProperty ("Azoth/EntryActor", QVariant::fromValue (pair.second));
 
 				if (!action->property ("Azoth/EntryActor").isNull ())
@@ -831,7 +831,7 @@ namespace Azoth
 				const auto refAction = Entry2Actions_ [entries.first ()] [name];
 				const auto& refActorVar = refAction->property ("Azoth/EntryActor");
 				if (refActorVar.isNull () &&
-						!pair.second.which () &&
+						!pair.second.index () &&
 						!refAction->isSeparator () &&
 						!refAction->menu ())
 					continue;

@@ -54,7 +54,7 @@ namespace Acetamide
 
 		using Tcp_ptr = std::shared_ptr<QTcpSocket>;
 		using Ssl_ptr = std::shared_ptr<QSslSocket>;
-		boost::variant<Tcp_ptr, Ssl_ptr> Socket_;
+		std::variant<Tcp_ptr, Ssl_ptr> Socket_;
 
 		QTextCodec *LastCodec_ = nullptr;
 	public:

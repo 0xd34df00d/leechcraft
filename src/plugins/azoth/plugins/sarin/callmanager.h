@@ -30,7 +30,7 @@
 #pragma once
 
 #include <memory>
-#include <boost/variant.hpp>
+#include <variant>
 #include <QObject>
 #include <tox/toxav.h>
 #include <util/sll/either.h>
@@ -50,7 +50,7 @@ namespace Sarin
 	class ToxThread;
 
 	template<typename... Errors>
-	using Error_t = boost::variant<Errors...>;
+	using Error_t = std::variant<Errors...>;
 
 	class CallManager : public QObject
 	{
