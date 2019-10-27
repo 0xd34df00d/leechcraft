@@ -32,6 +32,7 @@
 #include <QtConcurrentRun>
 #include <QtDebug>
 #include <util/threads/futures.h>
+#include <util/sll/visitor.h>
 #include "avatarsstoragethread.h"
 #include "interfaces/azoth/iclentry.h"
 
@@ -79,64 +80,29 @@ namespace Azoth
 		return StorageThread_->SetAvatar (entryId, size, data);
 	}
 
-	namespace
-	{
-		struct ToByteArray
-		{
-			QByteArray operator() (const QByteArray& array) const
-			{
-				return array;
-			}
-
-			QByteArray operator() (const QImage& image) const
-			{
-				qDebug () << Q_FUNC_INFO
-						<< "cache semimiss";
-
-				QByteArray data;
-				QBuffer buffer { &data };
-				image.save (&buffer, "PNG", 0);
-
-				return data;
-			}
-		};
-
-		struct ToImage
-		{
-			QImage operator() (const QImage& image) const
-			{
-				return image;
-			}
-
-			QImage operator() (const QByteArray& array) const
-			{
-				qDebug () << Q_FUNC_INFO
-						<< "cache semimiss";
-
-				QImage image;
-				if (!image.loadFromData (array))
-				{
-					qWarning () << Q_FUNC_INFO
-							<< "unable to load image";
-					return {};
-				}
-
-				return image;
-			}
-		};
-	}
-
 	QFuture<MaybeImage> AvatarsStorage::GetAvatar (const ICLEntry *entry, IHaveAvatars::Size size)
 	{
 		const auto& entryId = entry->GetEntryID ();
 		if (const auto value = Cache_ [{ entryId, size }])
 		{
-			const auto& image = boost::apply_visitor (ToImage {}, *value);
+			auto image = Util::Visit (*value,
+					[] (const QImage& image) { return image; },
+					[] (const QByteArray& array)
+					{
+						QImage image;
+						if (!image.loadFromData (array))
+						{
+							qWarning () << Q_FUNC_INFO
+									<< "unable to load image";
+							return QImage {};
+						}
+						return image;
+					});
 			CacheValue_t convertedValue { image };
 			if (convertedValue.which () != value->which ())
 				Cache_.insert ({ entryId, size }, new CacheValue_t { std::move (convertedValue) }, GetImageCost (image));
 
-			return Util::MakeReadyFuture<MaybeImage> (image);
+			return Util::MakeReadyFuture<MaybeImage> (std::move (image));
 		}
 
 		const auto& hrId = entry->GetHumanReadableID ();
@@ -164,7 +130,18 @@ namespace Azoth
 	QFuture<MaybeByteArray> AvatarsStorage::GetAvatar (const QString& entryId, IHaveAvatars::Size size)
 	{
 		if (const auto value = Cache_ [{ entryId, size }])
-			return Util::MakeReadyFuture<MaybeByteArray> (boost::apply_visitor (ToByteArray {}, *value));
+		{
+			auto ba = Util::Visit (*value,
+					[] (const QByteArray& arr) { return arr; },
+					[] (const QImage& image)
+					{
+						QByteArray data;
+						QBuffer buffer { &data };
+						image.save (&buffer, "PNG", 0);
+						return data;
+					});
+			return Util::MakeReadyFuture<MaybeByteArray> (std::move (ba));
+		}
 
 		return StorageThread_->GetAvatar (entryId, size);
 	}
