@@ -103,7 +103,7 @@ namespace FXB
 		struct NotAnFBDocument {};
 		struct UnsupportedVersion {};
 
-		using Error_t = boost::variant<NotAnFBDocument, UnsupportedVersion>;
+		using Error_t = std::variant<NotAnFBDocument, UnsupportedVersion>;
 	private:
 		std::optional<Error_t> Error_;
 	public:
