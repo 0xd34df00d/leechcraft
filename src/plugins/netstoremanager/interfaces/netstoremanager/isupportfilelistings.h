@@ -29,7 +29,7 @@
 
 #pragma once
 
-#include <boost/variant/variant_fwd.hpp>
+#include <variant>
 #include <QStringList>
 #include <QtPlugin>
 #include <QUrl>
@@ -137,7 +137,7 @@ namespace NetStoreManager
 		virtual void Copy (const QList<QByteArray>& ids, const QByteArray& newParentId) = 0;
 		virtual void Move (const QList<QByteArray>& ids, const QByteArray& newParentId) = 0;
 
-		using RequestUrlError_t = boost::variant<InvalidItem, UserCancelled, QString>;
+		using RequestUrlError_t = std::variant<InvalidItem, UserCancelled, QString>;
 		using RequestUrlResult_t = Util::Either<RequestUrlError_t, QUrl>;
 		virtual QFuture<RequestUrlResult_t> RequestUrl (const QByteArray& id) = 0;
 
