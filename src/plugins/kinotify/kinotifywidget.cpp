@@ -342,8 +342,8 @@ namespace Kinotify
 		data.replace ("{body}", Body_);
 
 		const auto& overrideData = Util::Visit (OverridePixmap_,
-				[] (boost::blank) { return QByteArray {}; },
-				[] (auto pixmap)
+				[] (Util::Void) { return QByteArray {}; },
+				[] (const auto& pixmap)
 				{
 					QBuffer iconBuffer;
 					iconBuffer.open (QIODevice::ReadWrite);

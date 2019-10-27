@@ -30,11 +30,12 @@
 
 #pragma once
 
-#include "kinotify.h"
-#include <boost/variant.hpp>
+#include <variant>
 #include <QWebView>
 #include <QStateMachine>
+#include <util/sll/void.h>
 #include "interfaces/structures.h"
+#include "kinotify.h"
 
 namespace LeechCraft
 {
@@ -47,7 +48,7 @@ namespace Kinotify
 {
 	class NotificationAction;
 
-	using ImageVar_t = boost::variant<boost::blank, QPixmap, QImage>;
+	using ImageVar_t = std::variant<Util::Void, QPixmap, QImage>;
 
 	class KinotifyWidget : public QWebView
 	{
