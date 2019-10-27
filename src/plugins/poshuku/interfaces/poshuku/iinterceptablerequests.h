@@ -30,8 +30,8 @@
 #pragma once
 
 #include <functional>
-#include <boost/variant.hpp>
-#include <boost/optional.hpp>
+#include <variant>
+#include <optional>
 #include <QUrl>
 #include <QtPlugin>
 
@@ -89,7 +89,7 @@ namespace Poshuku
 			NavigationType NavType_;
 			ResourceType ResourceType_;
 
-			boost::optional<IWebView*> View_;
+			std::optional<IWebView*> View_;
 		};
 
 		struct Block {};
@@ -100,7 +100,7 @@ namespace Poshuku
 			QUrl NewUrl_;
 		};
 
-		using Result_t = boost::variant<Block, Allow, Redirect>;
+		using Result_t = std::variant<Block, Allow, Redirect>;
 
 		using Interceptor_t = std::function<Result_t (RequestInfo)>;
 

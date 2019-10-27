@@ -77,7 +77,7 @@ namespace LeechCraft::Poshuku::WebEngineView
 	void RequestInterceptor::interceptRequest (QWebEngineUrlRequestInfo& info)
 	{
 		const auto& pageUrl = info.firstPartyUrl ();
-		const auto page = [&] () -> boost::optional<IWebView*>
+		const auto page = [&] () -> std::optional<IWebView*>
 		{
 			for (const auto view : Views_)
 				if (pageUrl == view->GetUrl ())

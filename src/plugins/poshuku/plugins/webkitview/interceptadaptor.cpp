@@ -122,7 +122,7 @@ namespace WebKitView
 			page->mainFrame ()->url (),
 			IInterceptableRequests::NavigationType::Unknown,
 			DeriveResourceType (req),
-			view ? boost::optional<IWebView*> { view } : boost::optional<IWebView*> {}
+			view ? std::optional<IWebView*> { view } : std::optional<IWebView*> {}
 		};
 
 		bool beenRedirected = false;

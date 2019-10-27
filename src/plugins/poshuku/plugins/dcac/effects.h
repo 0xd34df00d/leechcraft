@@ -62,7 +62,7 @@ namespace DCAC
 	bool operator== (const ColorTempEffect&, const ColorTempEffect&);
 	bool operator!= (const ColorTempEffect&, const ColorTempEffect&);
 
-	using Effect_t = boost::variant<InvertEffect, LightnessEffect, ColorTempEffect>;
+	using Effect_t = std::variant<InvertEffect, LightnessEffect, ColorTempEffect>;
 }
 }
 }
