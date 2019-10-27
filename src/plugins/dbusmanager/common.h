@@ -46,7 +46,7 @@ namespace DBusManager
 	struct SerializationError {};
 
 	template<typename... Errs>
-	QString GetErrorDescription (const boost::variant<Errs...>& errs)
+	QString GetErrorDescription (const std::variant<Errs...>& errs)
 	{
 		return Util::Visit (errs,
 				[] (const IdentifierNotFound& id) { return QString { "Identifier not found: %1" }.arg (id.Ident_); },

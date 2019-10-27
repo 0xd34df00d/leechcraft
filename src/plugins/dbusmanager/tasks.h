@@ -46,10 +46,10 @@ namespace DBusManager
 
 		QStringList GetHolders () const;
 
-		using RowCountResult_t = Util::Either<boost::variant<IdentifierNotFound>, int>;
+		using RowCountResult_t = Util::Either<std::variant<IdentifierNotFound>, int>;
 		RowCountResult_t RowCount (const QString& holder) const;
 
-		using GetDataResult_t = Util::Either<boost::variant<IdentifierNotFound>, QVariantList>;
+		using GetDataResult_t = Util::Either<std::variant<IdentifierNotFound>, QVariantList>;
 		GetDataResult_t GetData (const QString&, int, int) const;
 	};
 }
