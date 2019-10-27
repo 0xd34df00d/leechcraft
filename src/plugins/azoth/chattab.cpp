@@ -567,44 +567,6 @@ namespace Azoth
 			return text [cmd.size ()].isSpace ();
 		}
 
-		class CommandResultVisitor : public boost::static_visitor<bool>
-		{
-			QString& Text_;
-			QObject * const EntryObj_;
-		public:
-			CommandResultVisitor (QString& text, QObject *entryObj)
-			: Text_ (text)
-			, EntryObj_ { entryObj }
-			{
-			}
-
-			bool operator() (bool res) const
-			{
-				return res;
-			}
-
-			bool operator() (const StringCommandResult& result) const
-			{
-				const auto msg = new CoreMessage
-				{
-					result.Message_,
-					QDateTime::currentDateTime (),
-					IMessage::Type::ServiceMessage,
-					IMessage::Direction::In,
-					EntryObj_,
-					EntryObj_
-				};
-				msg->Store ();
-				return result.StopProcessing_;
-			}
-
-			bool operator() (const TextMorphResult& result) const
-			{
-				Text_ = result.NewText_;
-				return false;
-			}
-		};
-
 		/** Processes the outgoing messages, replacing /nick with calls
 		 * to the entity to change nick, for example, etc.
 		 *
@@ -629,8 +591,28 @@ namespace Azoth
 					const auto entryObj = entry->GetQObject ();
 					try
 					{
-						auto res = cmd.Command_ (entry, text);
-						if (boost::apply_visitor (CommandResultVisitor { text, entryObj }, res))
+						const auto handled = Util::Visit (cmd.Command_ (entry, text),
+								[] (bool res) { return res; },
+								[&text] (const TextMorphResult& result)
+								{
+									text = result.NewText_;
+									return false;
+								},
+								[entryObj] (const StringCommandResult& result)
+								{
+									const auto msg = new CoreMessage
+									{
+										result.Message_,
+										QDateTime::currentDateTime (),
+										IMessage::Type::ServiceMessage,
+										IMessage::Direction::In,
+										entryObj,
+										entryObj
+									};
+									msg->Store ();
+									return result.StopProcessing_;
+								});
+						if (handled)
 							return true;
 					}
 					catch (const CommandException& ex)
