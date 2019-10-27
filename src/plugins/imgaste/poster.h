@@ -63,7 +63,7 @@ namespace Imgaste
 		};
 		using ServiceAPIError = Worker::Error;
 
-		using Error_t = boost::variant<NetworkRequestError, ServiceAPIError>;
+		using Error_t = std::variant<NetworkRequestError, ServiceAPIError>;
 		using Result_t = Util::Either<Error_t, QString>;
 	private:
 		QFutureInterface<Result_t> Promise_;
