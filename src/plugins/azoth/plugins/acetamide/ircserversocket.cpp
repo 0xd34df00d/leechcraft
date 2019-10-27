@@ -35,6 +35,7 @@
 #include <interfaces/core/ientitymanager.h>
 #include <util/xpc/util.h>
 #include <util/sll/visitor.h>
+#include <util/sll/functional.h>
 #include "ircserverhandler.h"
 #include "clientconnection.h"
 
@@ -179,7 +180,7 @@ namespace Acetamide
 	QTcpSocket* IrcServerSocket::GetSocketPtr () const
 	{
 		return Util::Visit (Socket_,
-				[] (const auto& ptr) { return ptr.get (); });
+				[] (const auto& ptr) { return Util::Upcast<QTcpSocket*> (ptr.get ()); });
 	}
 
 	void IrcServerSocket::readReply ()
