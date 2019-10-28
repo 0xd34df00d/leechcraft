@@ -29,10 +29,10 @@
 
 #pragma once
 
+#include <variant>
 #include <QtPlugin>
 #include <QVariant>
 #include <QStringList>
-#include <boost/variant/variant.hpp>
 
 namespace LeechCraft
 {
@@ -262,7 +262,7 @@ namespace LeechCraft
 
 	/** @brief A combination of all possible descriptions.
 	 */
-	typedef boost::variant<ANBoolFieldValue, ANIntFieldValue, ANStringFieldValue> ANFieldValue;
+	typedef std::variant<ANBoolFieldValue, ANIntFieldValue, ANStringFieldValue> ANFieldValue;
 }
 
 /** @brief Interface for plugins emitting AdvancedNotifications entries.

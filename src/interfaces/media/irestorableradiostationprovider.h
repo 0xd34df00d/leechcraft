@@ -29,7 +29,7 @@
 
 #pragma once
 
-#include <boost/variant.hpp>
+#include <variant>
 #include <QtPlugin>
 #include "iradiostation.h"
 
@@ -46,7 +46,7 @@ namespace Media
 	 *
 	 * @sa AudioInfo
 	 */
-	using RadioRestoreVariant_t = boost::variant<QList<AudioInfo>>;
+	using RadioRestoreVariant_t = std::variant<QList<AudioInfo>>;
 
 	/** @brief Describes the result of restoring a single radio station.
 	 *

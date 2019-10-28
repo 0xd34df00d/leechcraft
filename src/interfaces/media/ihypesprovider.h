@@ -29,7 +29,7 @@
 
 #pragma once
 
-#include <boost/variant.hpp>
+#include <variant>
 #include <QString>
 #include <QList>
 #include <QUrl>
@@ -158,7 +158,7 @@ namespace Media
 		QUrl ArtistPage_;
 	};
 
-	using HypedInfo_t = boost::variant<QList<HypedArtistInfo>, QList<HypedTrackInfo>>;
+	using HypedInfo_t = std::variant<QList<HypedArtistInfo>, QList<HypedTrackInfo>>;
 
 	/** @brief Interface for plugins that support fetching hypes.
 	 *
@@ -227,9 +227,9 @@ namespace Media
 	{
 		if constexpr (HypeType == IHypesProvider::HypeType::NewArtists ||
 				HypeType == IHypesProvider::HypeType::TopArtists)
-			return boost::get<QList<HypedArtistInfo>> (info);
+			return std::get<QList<HypedArtistInfo>> (info);
 		else
-			return boost::get<QList<HypedTrackInfo>> (info);
+			return std::get<QList<HypedTrackInfo>> (info);
 	}
 }
 

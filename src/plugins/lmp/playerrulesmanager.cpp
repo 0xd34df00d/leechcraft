@@ -128,7 +128,7 @@ namespace LMP
 
 				hadSome = true;
 				auto variant = wrapped.value<ANFieldValue> ();
-				return boost::apply_visitor (U { value }, variant);
+				return std::visit (U { value }, variant);
 			}
 
 			bool operator() (const MediaInfo& info) const

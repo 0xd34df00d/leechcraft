@@ -31,7 +31,7 @@
 
 #include <memory>
 #include <functional>
-#include <boost/variant.hpp>
+#include <variant>
 #include <QMap>
 #include <QMetaType>
 #include <QtPlugin>
@@ -44,7 +44,7 @@ namespace Media
 	class IRadioStation;
 	typedef std::shared_ptr<IRadioStation> IRadioStation_ptr;
 
-	using ActionFunctor_f = boost::variant<std::function<void (QModelIndex)>, std::function<void ()>>;
+	using ActionFunctor_f = std::variant<std::function<void (QModelIndex)>, std::function<void ()>>;
 
 	/** @brief Describes the type of a radio station.
 	 *
