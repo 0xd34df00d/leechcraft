@@ -59,7 +59,7 @@ namespace Util
 			{
 			}
 		};
-		using Result_t = boost::variant<Finished, Error>;
+		using Result_t = std::variant<Finished, Error>;
 	private:
 		QFutureInterface<Result_t> Iface_;
 	public:

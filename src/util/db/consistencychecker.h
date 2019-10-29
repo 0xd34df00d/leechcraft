@@ -65,7 +65,7 @@ namespace Util
 		{
 			QString Error_;
 		};
-		using DumpResult_t = boost::variant<DumpFinished, DumpError>;
+		using DumpResult_t = std::variant<DumpFinished, DumpError>;
 
 		struct Succeeded {};
 		struct IFailed
@@ -74,7 +74,7 @@ namespace Util
 		};
 		using Failed = std::shared_ptr<IFailed>;
 
-		using CheckResult_t = boost::variant<Succeeded, Failed>;
+		using CheckResult_t = std::variant<Succeeded, Failed>;
 
 		QFuture<CheckResult_t> StartCheck ();
 	private:

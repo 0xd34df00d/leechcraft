@@ -30,7 +30,7 @@
 #pragma once
 
 #include <functional>
-#include <boost/variant.hpp>
+#include <variant>
 #include <QObject>
 #include <QDateTime>
 #include <QUrl>
@@ -107,7 +107,7 @@ namespace SvcAuth
 		void GetAuthKey ();
 
 		struct SilentMode {};
-		using AuthKeyError_t = boost::variant<SilentMode>;
+		using AuthKeyError_t = std::variant<SilentMode>;
 		using AuthKeyResult_t = Either<AuthKeyError_t, QString>;
 
 		[[nodiscard]] QFuture<AuthKeyResult_t> GetAuthKeyFuture ();
