@@ -219,7 +219,7 @@ namespace oral
 			return 2;
 		}
 
-		using ActionSelector_t = boost::variant<DefaultTag, IgnoreTag, Replace>;
+		using ActionSelector_t = std::variant<DefaultTag, IgnoreTag, Replace>;
 		ActionSelector_t Selector_;
 
 		template<typename Tag>

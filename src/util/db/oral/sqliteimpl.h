@@ -55,7 +55,7 @@ namespace LeechCraft::Util::oral::detail::SQLite
 
 		QSqlQuery_ptr GetQuery (InsertAction action) override
 		{
-			auto& query = Queries_ [action.Selector_.which ()];
+			auto& query = Queries_ [action.Selector_.index ()];
 			if (!query)
 			{
 				query = std::make_shared<QSqlQuery> (DB_);
