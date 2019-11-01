@@ -30,8 +30,8 @@
 #pragma once
 
 #include <stdexcept>
-#include <boost/variant.hpp>
-#include <boost/optional.hpp>
+#include <variant>
+#include <optional>
 
 namespace LeechCraft
 {

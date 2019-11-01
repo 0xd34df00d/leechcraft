@@ -30,7 +30,7 @@
 #pragma once
 
 #include <memory>
-#include <boost/variant.hpp>
+#include <variant>
 #include <QObject>
 #include <QSslSocket>
 #include <interfaces/azoth/icanhavesslerrors.h>

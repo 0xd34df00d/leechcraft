@@ -30,7 +30,7 @@
 #pragma once
 
 #include <optional>
-#include <boost/variant.hpp>
+#include <variant>
 #include <QObject>
 #include <QMap>
 #include <QFutureInterface>

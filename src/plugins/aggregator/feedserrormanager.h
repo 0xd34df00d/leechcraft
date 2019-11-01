@@ -29,7 +29,7 @@
 
 #pragma once
 
-#include <boost/variant.hpp>
+#include <variant>
 #include <QObject>
 #include <QHash>
 #include <interfaces/idownload.h>

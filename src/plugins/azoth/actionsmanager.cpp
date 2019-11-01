@@ -31,7 +31,7 @@
 #include <functional>
 #include <algorithm>
 #include <map>
-#include <boost/variant.hpp>
+#include <variant>
 #include <QAction>
 #include <QMenu>
 #include <QInputDialog>

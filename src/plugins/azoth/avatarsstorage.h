@@ -30,7 +30,7 @@
 #pragma once
 
 #include <optional>
-#include <boost/variant.hpp>
+#include <variant>
 #include <QObject>
 #include <QCache>
 #include "interfaces/azoth/ihaveavatars.h"

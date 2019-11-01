@@ -29,8 +29,8 @@
 
 #pragma once
 
+#include <variant>
 #include <QMetaType>
-#include <boost/variant.hpp>
 
 namespace LeechCraft
 {

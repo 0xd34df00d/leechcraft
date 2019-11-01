@@ -29,9 +29,9 @@
 
 #pragma once
 
+#include <variant>
 #include <functional>
 #include <stdexcept>
-#include <boost/variant.hpp>
 #include <QStringList>
 #include <QtPlugin>
 

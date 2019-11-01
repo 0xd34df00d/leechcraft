@@ -31,7 +31,7 @@
 
 #include <functional>
 #include <optional>
-#include <boost/variant.hpp>
+#include <variant>
 #include <QString>
 #include <QObject>
 #include <QHash>

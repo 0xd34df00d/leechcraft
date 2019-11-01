@@ -29,10 +29,9 @@
 
 #pragma once
 
-#include <boost/variant.hpp>
+#include <variant>
 #include <QObject>
 #include <QStringList>
-#include <util/sll/eitherfwd.h>
 #include "common.h"
 
 namespace LeechCraft

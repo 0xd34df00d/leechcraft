@@ -29,7 +29,7 @@
 
 #pragma once
 
-#include <boost/variant.hpp>
+#include <variant>
 #include <QProcess>
 #include <QFuture>
 #include "dbconfig.h"
