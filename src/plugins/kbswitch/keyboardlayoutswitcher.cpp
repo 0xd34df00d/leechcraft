@@ -70,9 +70,9 @@ namespace KBSwitch
 		}
 	}
 
-	boost::optional<int> KeyboardLayoutSwitcher::GetSavedState (ITabWidget *itw) const
+	std::optional<int> KeyboardLayoutSwitcher::GetSavedState (ITabWidget *itw) const
 	{
-		using Res_t = boost::optional<int>;
+		using Res_t = std::optional<int>;
 
 		switch (CurrentSwitchingPloicy_)
 		{

@@ -62,7 +62,7 @@ namespace KBSwitch
 		bool IsGlobalPolicy () const;
 	private:
 		void UpdateSavedState (ITabWidget*, int);
-		boost::optional<int> GetSavedState (ITabWidget*) const;
+		std::optional<int> GetSavedState (ITabWidget*) const;
 	public slots:
 		void updateKBLayouts (QWidget *current, QWidget *prev);
 	private slots:
