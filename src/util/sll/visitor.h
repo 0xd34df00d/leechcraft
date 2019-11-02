@@ -30,12 +30,8 @@
 #pragma once
 
 #include <variant>
-#include <boost/variant.hpp>
 #include "void.h"
 #include "util.h"
-#include "typelist.h"
-#include "typelevel.h"
-#include "detector.h"
 
 namespace LeechCraft
 {
@@ -54,81 +50,11 @@ namespace Util
 			using std::decay_t<Bases>::operator()...;
 		};
 
-		template<typename R, typename... Args>
-		struct Visitor : boost::static_visitor<R>
-					   , VisitorBase<Args...>
-		{
-			using VisitorBase<Args...>::VisitorBase;
-		};
-
-		template<typename T>
-		constexpr T Declval () { throw "shall not be called"; }
-
-		template<typename... Args>
-		constexpr bool AllLValueRefs = AllOf<std::is_lvalue_reference, Args...>;
-
-		template<typename... Args>
-		constexpr bool AllRValueRefs = AllOf<std::is_rvalue_reference, Args...>;
-
-		template<typename... Args>
-		constexpr bool AllConsts = AllOf<std::is_const, Args...>;
-
-		template<typename... Args>
-		constexpr bool AllConstsWithoutRefs = AllOf<std::is_const, std::remove_reference_t<Args>...>;
-
-		template<typename R, typename... Args>
-		constexpr decltype (auto) FixCommonType ()
-		{
-			if constexpr (AllConsts<Args...>)
-				return Declval<std::add_const_t<R>> ();
-			else if constexpr (AllLValueRefs<Args...>)
-			{
-				if constexpr (AllConstsWithoutRefs<Args...>)
-					return Declval<std::add_lvalue_reference_t<std::add_const_t<R>>> ();
-				else
-					return Declval<std::add_lvalue_reference_t<R>> ();
-			}
-			else if constexpr (AllRValueRefs<Args...>)
-			{
-				static_assert (!AllConstsWithoutRefs<Args...>, "const rvalue references are useless");
-				return Declval<std::add_rvalue_reference_t<R>> ();
-			}
-			else
-				return Declval<R> ();
-		}
-
-		template<typename R, typename... Args>
-		using FixCommonType_t = decltype (FixCommonType<R, Args...> ());
-
-		template<typename... Vars,
-				typename... Args,
-				typename Common = std::common_type_t<std::result_of_t<detail::VisitorBase<Args...> (Vars&)>...>,
-				typename Res = FixCommonType_t<Common, std::result_of_t<detail::VisitorBase<Args...> (Vars&)>...>>
-		constexpr Res DetectCommonType (Typelist<Vars...>, Typelist<Args...>);
-
 		template<class... Ts> struct Overloaded : Ts...
 		{
 			using Ts::operator()...;
 		};
 		template<class... Ts> Overloaded (Ts...) -> Overloaded<Ts...>;
-	}
-
-	template<typename... Vars, typename... Args>
-	decltype (auto) Visit (const boost::variant<Vars...>& v, Args&&... args)
-	{
-		using R_t = decltype (detail::DetectCommonType (Typelist<Vars...> {}, Typelist<Args...> {}));
-
-		detail::Visitor<R_t, Args...> visitor { std::forward<Args> (args)... };
-		return boost::apply_visitor (visitor, v);
-	}
-
-	template<typename... Vars, typename... Args>
-	decltype (auto) Visit (boost::variant<Vars...>& v, Args&&... args)
-	{
-		using R_t = decltype (detail::DetectCommonType (Typelist<Vars...> {}, Typelist<Args...> {}));
-
-		detail::Visitor<R_t, Args...> visitor { std::forward<Args> (args)... };
-		return boost::apply_visitor (visitor, v);
 	}
 
 	template<typename... Vars, typename... Args>
