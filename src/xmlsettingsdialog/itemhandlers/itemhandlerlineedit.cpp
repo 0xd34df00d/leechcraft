@@ -33,6 +33,7 @@
 #include <QGridLayout>
 #include <QApplication>
 #include <QtDebug>
+#include <util/compat/fontwidth.h>
 
 namespace LeechCraft
 {
@@ -53,8 +54,7 @@ namespace LeechCraft
 		QLineEdit *edit = new QLineEdit (value.toString ());
 		XSD_->SetTooltip (edit, item);
 		edit->setObjectName (item.attribute ("property"));
-		edit->setMinimumWidth (QApplication::fontMetrics ()
-				.width ("thisismaybeadefaultsetting"));
+		edit->setMinimumWidth (Util::Compat::Width (QApplication::fontMetrics (), "thisismaybeadefaultsetting"));
 		if (item.hasAttribute ("password"))
 			edit->setEchoMode (QLineEdit::Password);
 		if (item.hasAttribute ("inputMask"))

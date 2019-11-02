@@ -33,6 +33,7 @@
 #include <QGridLayout>
 #include <QApplication>
 #include <QtDebug>
+#include <util/compat/fontwidth.h>
 
 namespace LeechCraft
 {
@@ -54,8 +55,7 @@ namespace LeechCraft
 		XSD_->SetTooltip (edit, item);
 		edit->setPlainText (value.toStringList ().join ("\n"));
 		edit->setObjectName (item.attribute ("property"));
-		edit->setMinimumWidth (QApplication::fontMetrics ()
-				.width ("thisismaybeadefaultsetting"));
+		edit->setMinimumWidth (Util::Compat::Width (QApplication::fontMetrics (), "thisismaybeadefaultsetting"));
 		connect (edit,
 				SIGNAL (textChanged ()),
 				this,

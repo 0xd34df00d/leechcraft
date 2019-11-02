@@ -34,6 +34,7 @@
 #include <QColorDialog>
 #include <QApplication>
 #include <QtDebug>
+#include <util/compat/fontwidth.h>
 
 namespace LeechCraft
 {
@@ -52,7 +53,7 @@ namespace LeechCraft
 				SIGNAL (released ()),
 				this,
 				SLOT (chooseColor ()));
-		Label_->setMinimumWidth (QApplication::fontMetrics ().width ("  #RRRRGGGGBBBB  "));
+		Label_->setMinimumWidth (Util::Compat::Width (QApplication::fontMetrics (), "  #RRRRGGGGBBBB  "));
 	}
 
 	void ColorPicker::SetCurrentColor (const QColor& color)

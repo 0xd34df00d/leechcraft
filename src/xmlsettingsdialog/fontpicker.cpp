@@ -34,6 +34,7 @@
 #include <QFontDialog>
 #include <QHBoxLayout>
 #include <QApplication>
+#include <util/compat/fontwidth.h>
 
 namespace LeechCraft
 {
@@ -54,8 +55,10 @@ namespace LeechCraft
 				SIGNAL (released ()),
 				this,
 				SLOT (chooseFont ()));
-		Label_->setMinimumWidth (1.5 * QApplication::fontMetrics ()
-				.width (QApplication::font ().toString ()));
+
+		const auto fontNameWidth = Util::Compat::Width (QApplication::fontMetrics (),
+				QApplication::font ().toString ());
+		Label_->setMinimumWidth (1.5 * fontNameWidth);
 	}
 
 	void FontPicker::SetCurrentFont (const QFont& font)

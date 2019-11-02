@@ -33,6 +33,7 @@
 #include <QFileDialog>
 #include <QApplication>
 #include <QMap>
+#include <util/compat/fontwidth.h>
 #include "filepicker.h"
 
 using namespace LeechCraft;
@@ -57,8 +58,8 @@ FilePicker::FilePicker (FilePicker::Type type, QWidget *parent)
 			SIGNAL (textEdited (const QString&)),
 			this,
 			SIGNAL (textChanged (const QString&)));
-	LineEdit_->setMinimumWidth (QApplication::fontMetrics ()
-			.width ("thisismaybeadefaultsettingstring,dont"));
+	LineEdit_->setMinimumWidth (Util::Compat::Width (QApplication::fontMetrics (),
+			"thisismaybeadefaultsettingstring,dont"));
 }
 
 void FilePicker::SetText (QString text)
