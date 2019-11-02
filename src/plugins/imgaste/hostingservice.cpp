@@ -86,7 +86,7 @@ namespace Imgaste
 		Util::Unreachable ();
 	}
 
-	boost::optional<HostingService> FromString (const QString& str)
+	std::optional<HostingService> FromString (const QString& str)
 	{
 		for (auto s : GetAllServices ())
 			if (ToInfo (s).Name_ == str)

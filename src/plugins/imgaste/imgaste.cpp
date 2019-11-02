@@ -127,7 +127,7 @@ namespace Imgaste
 
 	namespace
 	{
-		boost::optional<IDataFilter::FilterVariant> ToFilterVariant (HostingService s,
+		std::optional<IDataFilter::FilterVariant> ToFilterVariant (HostingService s,
 				const ImageInfo& imageInfo)
 		{
 			const auto& hostingInfo = ToInfo (s);
@@ -138,7 +138,7 @@ namespace Imgaste
 			return { { str.toUtf8 (), str, {}, {} } };
 		}
 
-		boost::optional<ImageInfo> GetImageInfo (const QVariant& data)
+		std::optional<ImageInfo> GetImageInfo (const QVariant& data)
 		{
 			const auto& file = data.toUrl ().toLocalFile ();
 			const QFileInfo fileInfo { file };

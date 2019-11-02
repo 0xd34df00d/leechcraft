@@ -31,7 +31,7 @@
 
 #include <memory>
 #include <functional>
-#include <boost/optional.hpp>
+#include <optional>
 #include <QSize>
 #include <QString>
 #include <util/sll/eitherfwd.h>
@@ -70,7 +70,7 @@ namespace Imgaste
 
 	bool operator< (HostingService, HostingService);
 	HostingServiceInfo ToInfo (HostingService);
-	boost::optional<HostingService> FromString (const QString&);
+	std::optional<HostingService> FromString (const QString&);
 	QList<HostingService> GetAllServices ();
 
 	struct Worker
