@@ -91,7 +91,7 @@ namespace Liznoo
 	class AvailabilityChecker : public QObject
 	{
 	public:
-		using Result_t = boost::optional<std::shared_ptr<T>>;
+		using Result_t = std::optional<std::shared_ptr<T>>;
 	private:
 		QFutureInterface<Result_t> Iface_;
 
