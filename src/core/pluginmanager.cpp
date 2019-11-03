@@ -31,6 +31,7 @@
 #include <algorithm>
 #include <functional>
 #include <numeric>
+#include <optional>
 
 #if defined __GNUC__
 #include <cstdlib>
@@ -1007,7 +1008,7 @@ namespace LeechCraft
 
 		const bool shouldDump = qgetenv ("LC_DUMP_SOCHECKS") == "1";
 
-		auto thrCheck = [shouldDump, checks] (Loaders::IPluginLoader_ptr loader) -> boost::optional<Checks::Fail>
+		auto thrCheck = [shouldDump, checks] (Loaders::IPluginLoader_ptr loader) -> std::optional<Checks::Fail>
 		{
 			QElapsedTimer timer;
 			if (shouldDump)
@@ -1036,7 +1037,7 @@ namespace LeechCraft
 			return {};
 		};
 
-		QList<boost::optional<Checks::Fail>> fails;
+		QList<std::optional<Checks::Fail>> fails;
 		if (!DBusMode_)
 		{
 			const auto mid = std::partition (PluginContainers_.begin (), PluginContainers_.end (),
@@ -1045,7 +1046,7 @@ namespace LeechCraft
 						return loader->GetManifest () ["RequireGUIThreadLibraryLoading"].toBool ();
 					});
 			auto future = QtConcurrent::mapped (mid, PluginContainers_.end (),
-					std::function<boost::optional<Checks::Fail> (Loaders::IPluginLoader_ptr)> (thrCheck));
+					std::function<std::optional<Checks::Fail> (Loaders::IPluginLoader_ptr)> (thrCheck));
 
 			for (auto it = PluginContainers_.begin (); it != mid; ++it)
 			{

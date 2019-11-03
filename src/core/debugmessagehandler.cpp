@@ -34,7 +34,7 @@
 #include <iomanip>
 #include <cstdlib>
 #include <cstring>
-#include <boost/optional.hpp>
+#include <optional>
 
 #if defined (_GNU_SOURCE) || defined (Q_OS_OSX)
 #include <execinfo.h>
@@ -152,7 +152,7 @@ namespace
 #if defined (_GNU_SOURCE)
 	using StrRange_t = std::pair<const char*, const char*>;
 
-	boost::optional<StrRange_t> FindStrRange (const char *str, char open, char close)
+	std::optional<StrRange_t> FindStrRange (const char *str, char open, char close)
 	{
 		const auto strEnd = str + std::strlen (str);
 		const auto parensCount = std::count_if (str, strEnd,
@@ -168,7 +168,7 @@ namespace
 		return { { openParen + 1, closeParen } };
 	}
 
-	boost::optional<AddrInfo> QueryAddr2Line (const std::string& execName,
+	std::optional<AddrInfo> QueryAddr2Line (const std::string& execName,
 			const std::string& addr)
 	{
 		QProcess proc;
@@ -188,7 +188,7 @@ namespace
 		return { { execName, out [1].constData (), out [0].constData () } };
 	}
 
-	boost::optional<AddrInfo> QueryAddr2LineExecutable (const char *str,
+	std::optional<AddrInfo> QueryAddr2LineExecutable (const char *str,
 			const std::string& execName)
 	{
 		using LeechCraft::Util::operator>>;
@@ -201,13 +201,13 @@ namespace
 				};
 	}
 
-	boost::optional<AddrInfo> QueryAddr2LineLibrary (const std::string& execName,
+	std::optional<AddrInfo> QueryAddr2LineLibrary (const std::string& execName,
 			const std::string& addr)
 	{
 		return QueryAddr2Line (execName, addr);
 	}
 
-	boost::optional<std::string> GetDemangled (const char *str)
+	std::optional<std::string> GetDemangled (const char *str)
 	{
 		int status = -1;
 		const auto demangled = abi::__cxa_demangle (str, nullptr, 0, &status);
@@ -229,7 +229,7 @@ namespace
 		{
 		}
 
-		boost::optional<AddrInfo> operator() (const char *str) const
+		std::optional<AddrInfo> operator() (const char *str) const
 		{
 			using LeechCraft::Util::operator>>;
 
@@ -252,12 +252,12 @@ namespace
 						return GetDemangled (pair.first) >>
 								[&] (const std::string& value)
 								{
-									return boost::optional<AddrInfo> { { binaryName, {}, value } };
+									return std::optional<AddrInfo> { { binaryName, {}, value } };
 								};
 					};
 		}
 	private:
-		boost::optional<AddrInfo> QueryRelative (const std::string& binaryName, const char *str) const
+		std::optional<AddrInfo> QueryRelative (const std::string& binaryName, const char *str) const
 		{
 			const auto& symLinked = QFile::symLinkTarget (QString::fromStdString (binaryName));
 			const auto libAddrPos = LibAddrsCache_.find (symLinked);
@@ -267,7 +267,7 @@ namespace
 			using LeechCraft::Util::operator>>;
 
 			return FindStrRange (str, '[', ']') >>
-					[&] (const auto& bracketRange) -> boost::optional<AddrInfo>
+					[&] (const auto& bracketRange) -> std::optional<AddrInfo>
 					{
 						try
 						{
@@ -327,7 +327,7 @@ namespace
 	class AddrInfoGetter
 	{
 	public:
-		boost::optional<AddrInfo> operator() (const char*)
+		std::optional<AddrInfo> operator() (const char*)
 		{
 			return {};
 		}
