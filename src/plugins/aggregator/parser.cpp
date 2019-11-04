@@ -343,35 +343,35 @@ namespace Aggregator
 			ArbitraryLocatedData& operator+= (const ArbitraryLocatedData& child)
 			{
 				if (child.URL_)
-					URL_.reset (*child.URL_);
+					URL_ = child.URL_;
 				if (child.Rating_)
-					Rating_.reset (*child.Rating_);
+					Rating_ = child.Rating_;
 				if (child.RatingScheme_)
-					RatingScheme_.reset (*child.RatingScheme_);
+					RatingScheme_ = child.RatingScheme_;
 				if (child.Title_)
-					Title_.reset (*child.Title_);
+					Title_ = child.Title_;
 				if (child.Description_)
-					Description_.reset (*child.Description_);
+					Description_ = child.Description_;
 				if (child.Keywords_)
-					Keywords_.reset (*child.Keywords_);
+					Keywords_ = child.Keywords_;
 				if (child.CopyrightURL_)
-					CopyrightURL_.reset (*child.CopyrightURL_);
+					CopyrightURL_ = child.CopyrightURL_;
 				if (child.CopyrightText_)
-					CopyrightText_.reset (*child.CopyrightText_);
+					CopyrightText_ = child.CopyrightText_;
 				if (child.RatingAverage_)
-					RatingAverage_.reset (*child.RatingAverage_);
+					RatingAverage_ = child.RatingAverage_;
 				if (child.RatingCount_)
-					RatingCount_.reset (*child.RatingCount_);
+					RatingCount_ = child.RatingCount_;
 				if (child.RatingMin_)
-					RatingMin_.reset (*child.RatingMin_);
+					RatingMin_ = child.RatingMin_;
 				if (child.RatingMax_)
-					RatingMax_.reset (*child.RatingMax_);
+					RatingMax_ = child.RatingMax_;
 				if (child.Views_)
-					Views_.reset (*child.Views_);
+					Views_ = child.Views_;
 				if (child.Favs_)
-					Favs_.reset (*child.Favs_);
+					Favs_ = child.Favs_;
 				if (child.Tags_)
-					Tags_.reset (*child.Tags_);
+					Tags_ = child.Tags_;
 
 				Thumbnails_ += child.Thumbnails_;
 				Credits_ += child.Credits_;
@@ -489,9 +489,9 @@ namespace Aggregator
 			QList<QDomNode> elems = GetDirectChildrenNS (element, Parser::MediaRSS_,
 					"player");
 			if (!elems.size ())
-				return boost::optional<QString> ();
+				return {};
 
-			return boost::optional<QString> (elems.at (0).toElement ().attribute ("url"));
+			return elems.at (0).toElement ().attribute ("url");
 		}
 
 		boost::optional<QString> GetTitle (const QDomElement& element)
@@ -499,10 +499,10 @@ namespace Aggregator
 			QList<QDomNode> elems = GetDirectChildrenNS (element, Parser::MediaRSS_,
 					"title");
 			if (!elems.size ())
-				return boost::optional<QString> ();
+				return {};
 
 			QDomElement telem = elems.at (0).toElement ();
-			return boost::optional<QString> (Parser::UnescapeHTML (telem.text ()));
+			return Parser::UnescapeHTML (telem.text ());
 		}
 
 		boost::optional<QString> GetDescription (const QDomElement& element)
@@ -510,10 +510,10 @@ namespace Aggregator
 			QList<QDomNode> elems = GetDirectChildrenNS (element, Parser::MediaRSS_,
 					"description");
 			if (!elems.size ())
-				return boost::optional<QString> ();
+				return {};
 
 			QDomElement telem = elems.at (0).toElement ();
-			return boost::optional<QString> (Parser::UnescapeHTML (telem.text ()));
+			return Parser::UnescapeHTML (telem.text ());
 		}
 
 		boost::optional<QString> GetKeywords (const QDomElement& element)
@@ -521,10 +521,10 @@ namespace Aggregator
 			QList<QDomNode> elems = GetDirectChildrenNS (element, Parser::MediaRSS_,
 					"keywords");
 			if (!elems.size ())
-				return boost::optional<QString> ();
+				return {};
 
 			QDomElement telem = elems.at (0).toElement ();
-			return boost::optional<QString> (telem.text ());
+			return telem.text ();
 		}
 
 		boost::optional<int> GetInt (const QDomElement& elem, const QString& attrname)
@@ -534,9 +534,9 @@ namespace Aggregator
 				bool ok = false;
 				int result = elem.attribute (attrname).toInt (&ok);
 				if (ok)
-					return boost::optional<int> (result);
+					return result;
 			}
-			return boost::optional<int> ();
+			return {};
 		}
 
 		QList<MRSSThumbnail> GetThumbnails (const QDomElement& element,
