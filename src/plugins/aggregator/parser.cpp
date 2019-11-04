@@ -687,11 +687,11 @@ namespace Aggregator
 				if (elems.size ())
 				{
 					QDomElement relem = elems.at (0).toElement ();
-					rating.reset (relem.text ());
+					rating = relem.text ();
 					if (relem.hasAttribute ("scheme"))
-						rscheme.reset (relem.attribute ("scheme"));
+						rscheme = relem.attribute ("scheme");
 					else
-						rscheme.reset ("urn:simple");
+						rscheme = "urn:simple";
 				}
 			}
 
@@ -703,9 +703,9 @@ namespace Aggregator
 				if (elems.size ())
 				{
 					QDomElement celem = elems.at (0).toElement ();
-					ctext.reset (celem.text ());
+					ctext = celem.text ();
 					if (celem.hasAttribute ("url"))
-						curl.reset (celem.attribute ("url"));
+						curl = celem.attribute ("url");
 				}
 			}
 			boost::optional<int> raverage {};
@@ -746,7 +746,7 @@ namespace Aggregator
 					if (tagsNode.size ())
 					{
 						QDomElement tag = tagsNode.at (0).toElement ();
-						tags.reset (tag.text ());
+						tags = tag.text ();
 					}
 				}
 			}
