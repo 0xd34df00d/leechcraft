@@ -28,7 +28,7 @@
  **********************************************************************/
 
 #include "parser.h"
-#include <boost/optional.hpp>
+#include <optional>
 #include <QDomElement>
 #include <QStringList>
 #include <QObject>
@@ -316,21 +316,21 @@ namespace Aggregator
 	{
 		struct ArbitraryLocatedData
 		{
-			boost::optional<QString> URL_;
-			boost::optional<QString> Rating_;
-			boost::optional<QString> RatingScheme_;
-			boost::optional<QString> Title_;
-			boost::optional<QString> Description_;
-			boost::optional<QString> Keywords_;
-			boost::optional<QString> CopyrightURL_;
-			boost::optional<QString> CopyrightText_;
-			boost::optional<int> RatingAverage_;
-			boost::optional<int> RatingCount_;
-			boost::optional<int> RatingMin_;
-			boost::optional<int> RatingMax_;
-			boost::optional<int> Views_;
-			boost::optional<int> Favs_;
-			boost::optional<QString> Tags_;
+			std::optional<QString> URL_;
+			std::optional<QString> Rating_;
+			std::optional<QString> RatingScheme_;
+			std::optional<QString> Title_;
+			std::optional<QString> Description_;
+			std::optional<QString> Keywords_;
+			std::optional<QString> CopyrightURL_;
+			std::optional<QString> CopyrightText_;
+			std::optional<int> RatingAverage_;
+			std::optional<int> RatingCount_;
+			std::optional<int> RatingMin_;
+			std::optional<int> RatingMax_;
+			std::optional<int> Views_;
+			std::optional<int> Favs_;
+			std::optional<QString> Tags_;
 			QList<MRSSThumbnail> Thumbnails_;
 			QList<MRSSCredit> Credits_;
 			QList<MRSSComment> Comments_;
@@ -442,20 +442,20 @@ namespace Aggregator
 				entry.Height_ = en.attribute ("height").toInt ();
 				entry.Lang_ = en.attribute ("lang");
 
-				entry.Rating_ = d.Rating_.get_value_or (QString ());
-				entry.RatingScheme_ = d.RatingScheme_.get_value_or (QString ());
-				entry.Title_ = d.Title_.get_value_or (QString ());
-				entry.Description_ = d.Description_.get_value_or (QString ());
-				entry.Keywords_ = d.Keywords_.get_value_or (QString ());
-				entry.CopyrightURL_ = d.CopyrightURL_.get_value_or (QString ());
-				entry.CopyrightText_ = d.CopyrightText_.get_value_or (QString ());
-				entry.RatingAverage_ = d.RatingAverage_.get_value_or (0);
-				entry.RatingCount_ = d.RatingCount_.get_value_or (0);
-				entry.RatingMin_ = d.RatingMin_.get_value_or (0);
-				entry.RatingMax_ = d.RatingMax_.get_value_or (0);
-				entry.Views_ = d.Views_.get_value_or (0);
-				entry.Favs_ = d.Favs_.get_value_or (0);
-				entry.Tags_ = d.Tags_.get_value_or (QString ());
+				entry.Rating_ = d.Rating_.value_or (QString ());
+				entry.RatingScheme_ = d.RatingScheme_.value_or (QString ());
+				entry.Title_ = d.Title_.value_or (QString ());
+				entry.Description_ = d.Description_.value_or (QString ());
+				entry.Keywords_ = d.Keywords_.value_or (QString ());
+				entry.CopyrightURL_ = d.CopyrightURL_.value_or (QString ());
+				entry.CopyrightText_ = d.CopyrightText_.value_or (QString ());
+				entry.RatingAverage_ = d.RatingAverage_.value_or (0);
+				entry.RatingCount_ = d.RatingCount_.value_or (0);
+				entry.RatingMin_ = d.RatingMin_.value_or (0);
+				entry.RatingMax_ = d.RatingMax_.value_or (0);
+				entry.Views_ = d.Views_.value_or (0);
+				entry.Favs_ = d.Favs_.value_or (0);
+				entry.Tags_ = d.Tags_.value_or (QString ());
 				entry.Thumbnails_ = d.Thumbnails_;
 				entry.Credits_ = d.Credits_;
 				entry.Comments_ = d.Comments_;
@@ -484,7 +484,7 @@ namespace Aggregator
 			return result;
 		}
 
-		boost::optional<QString> GetURL (const QDomElement& element)
+		std::optional<QString> GetURL (const QDomElement& element)
 		{
 			QList<QDomNode> elems = GetDirectChildrenNS (element, Parser::MediaRSS_,
 					"player");
@@ -494,7 +494,7 @@ namespace Aggregator
 			return elems.at (0).toElement ().attribute ("url");
 		}
 
-		boost::optional<QString> GetTitle (const QDomElement& element)
+		std::optional<QString> GetTitle (const QDomElement& element)
 		{
 			QList<QDomNode> elems = GetDirectChildrenNS (element, Parser::MediaRSS_,
 					"title");
@@ -505,7 +505,7 @@ namespace Aggregator
 			return Parser::UnescapeHTML (telem.text ());
 		}
 
-		boost::optional<QString> GetDescription (const QDomElement& element)
+		std::optional<QString> GetDescription (const QDomElement& element)
 		{
 			QList<QDomNode> elems = GetDirectChildrenNS (element, Parser::MediaRSS_,
 					"description");
@@ -516,7 +516,7 @@ namespace Aggregator
 			return Parser::UnescapeHTML (telem.text ());
 		}
 
-		boost::optional<QString> GetKeywords (const QDomElement& element)
+		std::optional<QString> GetKeywords (const QDomElement& element)
 		{
 			QList<QDomNode> elems = GetDirectChildrenNS (element, Parser::MediaRSS_,
 					"keywords");
@@ -527,7 +527,7 @@ namespace Aggregator
 			return telem.text ();
 		}
 
-		boost::optional<int> GetInt (const QDomElement& elem, const QString& attrname)
+		std::optional<int> GetInt (const QDomElement& elem, const QString& attrname)
 		{
 			if (elem.hasAttribute (attrname))
 			{
@@ -679,8 +679,8 @@ namespace Aggregator
 			if (Cache_.contains (element))
 				return Cache_ [element];
 
-			boost::optional<QString> rating;
-			boost::optional<QString> rscheme;
+			std::optional<QString> rating;
+			std::optional<QString> rscheme;
 			{
 				QList<QDomNode> elems = GetDirectChildrenNS (element, Parser::MediaRSS_,
 						"rating");
@@ -695,8 +695,8 @@ namespace Aggregator
 				}
 			}
 
-			boost::optional<QString> curl;
-			boost::optional<QString> ctext;
+			std::optional<QString> curl;
+			std::optional<QString> ctext;
 			{
 				QList<QDomNode> elems = GetDirectChildrenNS (element, Parser::MediaRSS_,
 						"copyright");
@@ -708,13 +708,13 @@ namespace Aggregator
 						curl = celem.attribute ("url");
 				}
 			}
-			boost::optional<int> raverage {};
-			boost::optional<int> rcount {};
-			boost::optional<int> rmin {};
-			boost::optional<int> rmax {};
-			boost::optional<int> views {};
-			boost::optional<int> favs {};
-			boost::optional<QString> tags;
+			std::optional<int> raverage {};
+			std::optional<int> rcount {};
+			std::optional<int> rmin {};
+			std::optional<int> rmax {};
+			std::optional<int> views {};
+			std::optional<int> favs {};
+			std::optional<QString> tags;
 			{
 				QList<QDomNode> comms = GetDirectChildrenNS (element, Parser::MediaRSS_,
 						"community");
