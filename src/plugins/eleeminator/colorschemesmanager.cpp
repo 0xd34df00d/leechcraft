@@ -28,7 +28,7 @@
  **********************************************************************/
 
 #include "colorschemesmanager.h"
-#include <boost/optional.hpp>
+#include <optional>
 #include <QDir>
 #include <QSettings>
 #include <QSet>
@@ -66,7 +66,7 @@ namespace Eleeminator
 					[&dir] (QString str) { return str.prepend (dir); });
 		}
 
-		using MaybeScheme_t = boost::optional<ColorSchemesManager::Scheme>;
+		using MaybeScheme_t = std::optional<ColorSchemesManager::Scheme>;
 
 		MaybeScheme_t ParseScheme (const QString& filename)
 		{

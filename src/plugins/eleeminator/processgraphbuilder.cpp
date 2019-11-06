@@ -29,7 +29,7 @@
 
 #include "processgraphbuilder.h"
 #include <algorithm>
-#include <boost/optional.hpp>
+#include <optional>
 #include <QDir>
 #include <QMap>
 #include <QtDebug>
@@ -41,7 +41,7 @@ namespace Eleeminator
 {
 	namespace
 	{
-		boost::optional<int> GetParentPid (QDir subdir, const QString& subdirName)
+		std::optional<int> GetParentPid (QDir subdir, const QString& subdirName)
 		{
 			if (!subdir.cd (subdirName))
 				return {};
@@ -62,7 +62,7 @@ namespace Eleeminator
 				const auto& parentPidStr = line.mid (marker.size ()).trimmed ();
 				bool ok = false;
 				const auto parentPid = parentPidStr.toInt (&ok);
-				return ok ? parentPid : boost::optional<int> {};
+				return ok ? parentPid : std::optional<int> {};
 			}
 			while (!line.isEmpty ());
 
