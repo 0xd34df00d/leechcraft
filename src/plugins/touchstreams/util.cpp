@@ -54,7 +54,7 @@ namespace TouchStreams
 		return false;
 	}
 
-	boost::optional<Media::AudioInfo> TrackMap2Info (const QVariantMap& map)
+	std::optional<Media::AudioInfo> TrackMap2Info (const QVariantMap& map)
 	{
 		const auto& url = QUrl::fromEncoded (map ["url"].toString ().toUtf8 ());
 		if (!url.isValid ())

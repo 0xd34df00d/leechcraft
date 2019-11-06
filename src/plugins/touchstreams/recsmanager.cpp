@@ -44,7 +44,7 @@ namespace LeechCraft
 {
 namespace TouchStreams
 {
-	RecsManager::RecsManager (boost::optional<qulonglong> uid,
+	RecsManager::RecsManager (std::optional<qulonglong> uid,
 			Util::SvcAuth::VkAuthManager *authMgr,
 			Util::QueueManager *queueMgr,
 			const ICoreProxy_ptr& proxy,

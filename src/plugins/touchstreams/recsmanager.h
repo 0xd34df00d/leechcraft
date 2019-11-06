@@ -30,7 +30,7 @@
 #pragma once
 
 #include <functional>
-#include <boost/optional.hpp>
+#include <optional>
 #include <QObject>
 #include <QPair>
 #include <util/sll/util.h>
@@ -57,7 +57,7 @@ namespace TouchStreams
 	{
 		Q_OBJECT
 
-		const boost::optional<qlonglong> UID_;
+		const std::optional<qlonglong> UID_;
 		Util::SvcAuth::VkAuthManager * const AuthMgr_;
 		Util::QueueManager * const QueueMgr_;
 		const Util::DefaultScopeGuard RequestQueueGuard_;
@@ -68,7 +68,7 @@ namespace TouchStreams
 
 		QStandardItem * const RootItem_;
 	public:
-		RecsManager (boost::optional<qulonglong>,
+		RecsManager (std::optional<qulonglong>,
 				Util::SvcAuth::VkAuthManager*,
 				Util::QueueManager*,
 				const ICoreProxy_ptr&,

@@ -29,7 +29,7 @@
 
 #pragma once
 
-#include <boost/optional.hpp>
+#include <optional>
 #include <interfaces/core/icoreproxy.h>
 
 class QStandardItem;
@@ -46,12 +46,9 @@ namespace Media
 
 namespace LeechCraft
 {
-namespace Util
-{
-namespace SvcAuth
+namespace Util::SvcAuth
 {
 	class VkAuthManager;
-}
 }
 
 namespace TouchStreams
@@ -59,7 +56,7 @@ namespace TouchStreams
 	bool CheckAuthentication (QStandardItem *rootItem,
 			Util::SvcAuth::VkAuthManager *authMgr, const ICoreProxy_ptr&);
 
-	boost::optional<Media::AudioInfo> TrackMap2Info (const QVariantMap& trackMap);
+	std::optional<Media::AudioInfo> TrackMap2Info (const QVariantMap& trackMap);
 	QString TrackMap2RadioId (const QVariantMap& trackMap);
 }
 }
