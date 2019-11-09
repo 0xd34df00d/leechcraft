@@ -406,6 +406,24 @@ namespace BitTorrent
 			return "Uninitialized?!";
 		}
 
+		bool IsPaused (const libtorrent::torrent_status& status)
+		{
+#if LIBTORRENT_VERSION_NUM >= 10200
+			return status.flags & libtorrent::torrent_flags::paused;
+#else
+			return status.paused;
+#endif
+		}
+
+		bool IsAutoManaged (const libtorrent::torrent_status& status)
+		{
+#if LIBTORRENT_VERSION_NUM >= 10200
+			return status.flags & libtorrent::torrent_flags::auto_managed;
+#else
+			return status.auto_managed;
+#endif
+		}
+
 		QString GetStringForStatus (const libtorrent::torrent_status& status)
 		{
 			const auto& stateStr = GetStringForState (status.state);
@@ -417,7 +435,7 @@ namespace BitTorrent
 					return errorStr;
 				}
 
-				if (status.paused)
+				if (IsPaused (status))
 				{
 					static const auto pausedStr = Core::tr ("Paused");
 					return pausedStr;
@@ -429,7 +447,7 @@ namespace BitTorrent
 					.arg (stateStr)
 					.arg (Util::MakeTimeFromLong (time));
 			}
-			else if (status.paused)
+			else if (IsPaused (status))
 			{
 				static const auto idleStr = Core::tr ("Idle");
 				return idleStr;
@@ -468,7 +486,7 @@ namespace BitTorrent
 			if (status.errc)
 				return QIcon::fromTheme ("dialog-error");
 
-			if (status.paused)
+			if (IsPaused (status))
 				return QIcon::fromTheme ("media-playback-stop");
 
 			switch (status.state)
@@ -496,7 +514,7 @@ namespace BitTorrent
 			case ColumnName:
 				return QString::fromStdString (status.name);
 			case ColumnState:
-				return status.paused ?
+				return IsPaused (status) ?
 						-1 :
 						static_cast<int> (status.state);
 			case ColumnProgress:
@@ -549,7 +567,7 @@ namespace BitTorrent
 										tr ("/s"))
 								.arg (status.num_peers);
 					}
-					else if (!status.paused &&
+					else if (!IsPaused (status) &&
 								(status.state == libtorrent::torrent_status::finished ||
 								status.state == libtorrent::torrent_status::seeding))
 					{
@@ -583,7 +601,7 @@ namespace BitTorrent
 								.arg (Util::MakePrettySize (status.total_wanted_done))
 								.arg (Util::MakePrettySize (status.total_wanted));
 					}
-					else if (!status.paused &&
+					else if (!IsPaused (status) &&
 								(status.state == libtorrent::torrent_status::finished ||
 								status.state == libtorrent::torrent_status::seeding))
 					{
@@ -658,7 +676,7 @@ namespace BitTorrent
 			ProcessStateInfo::State state = ProcessStateInfo::State::Running;
 			if (status.errc)
 				state = ProcessStateInfo::State::Error;
-			else if (status.paused)
+			else if (IsPaused (status))
 				state = ProcessStateInfo::State::Paused;
 
 			return QVariant::fromValue<ProcessStateInfo> ({
@@ -1109,7 +1127,7 @@ namespace BitTorrent
 
 		handle.force_recheck ();
 
-		if (status.paused && !status.auto_managed)
+		if (IsPaused (status) && !IsAutoManaged (status))
 		{
 			handle.resume ();
 			Handles_ [pos].PauseAfterCheck_ = true;
@@ -1272,7 +1290,7 @@ namespace BitTorrent
 		if (!CheckValidity (idx))
 			return false;
 
-		return StatusKeeper_->GetStatus (Handles_.at (idx).Handle_).auto_managed;
+		return IsAutoManaged (StatusKeeper_->GetStatus (Handles_.at (idx).Handle_));
 	};
 
 	void Core::SetTorrentManaged (bool man, int idx)
@@ -1289,7 +1307,12 @@ namespace BitTorrent
 		if (!CheckValidity (idx))
 			return false;
 
-		return StatusKeeper_->GetStatus (Handles_.at (idx).Handle_).sequential_download;
+		const auto& status = StatusKeeper_->GetStatus (Handles_.at (idx).Handle_);
+#if LIBTORRENT_VERSION_NUM >= 10200
+		return status.flags & libtorrent::torrent_flags::sequential_download;
+#else
+		return status.sequential_download;
+#endif
 	}
 
 	void Core::SetTorrentSequentialDownload (bool seq, int idx)
@@ -1305,7 +1328,12 @@ namespace BitTorrent
 		if (!CheckValidity (idx))
 			return false;
 
-		return StatusKeeper_->GetStatus (Handles_.at (idx).Handle_).super_seeding;
+		const auto& status = StatusKeeper_->GetStatus (Handles_.at (idx).Handle_);
+#if LIBTORRENT_VERSION_NUM >= 10200
+		return status.flags & libtorrent::torrent_flags::super_seeding;
+#else
+		return status.super_seeding;
+#endif
 	}
 
 	void Core::SetTorrentSuperSeeding (bool sup, int idx)
@@ -2043,7 +2071,7 @@ namespace BitTorrent
 			const auto& status = Handles_.at (i).Handle_.status ({});
 			libtorrent::torrent_status::state_t state = status.state;
 
-			if (status.paused)
+			if (IsAutoManaged (status))
 			{
 				Handles_ [i].State_ = TSIdle;
 				continue;
