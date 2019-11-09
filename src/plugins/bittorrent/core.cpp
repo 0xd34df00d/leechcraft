@@ -935,6 +935,12 @@ namespace BitTorrent
 		}
 	}
 
+#if LIBTORRENT_VERSION_NUM >= 10200
+#define ATP_FLAG(name) libtorrent::torrent_flags::name;
+#else
+#define ATP_FLAG(name) libtorrent::add_torrent_params::flag_ ## name
+#endif
+
 	QFuture<IDownload::Result> Core::AddMagnet (const QString& magnet,
 			const QString& path,
 			const QStringList& tags,
@@ -958,8 +964,8 @@ namespace BitTorrent
 			atp.storage_mode = GetCurrentStorageMode ();
 			atp.save_path = std::string (path.toUtf8 ().constData ());
 			if (params & NoAutostart)
-				atp.flags |= libtorrent::add_torrent_params::flag_paused;
-			atp.flags |= libtorrent::add_torrent_params::flag_duplicate_is_error;
+				atp.flags |= ATP_FLAG (paused);
+			atp.flags |= ATP_FLAG (duplicate_is_error);
 			handle = Session_->add_torrent (atp);
 		}
 		catch (const std::exception& e)
@@ -1008,10 +1014,10 @@ namespace BitTorrent
 			atp.storage_mode = GetCurrentStorageMode ();
 			atp.save_path = std::string (path.toUtf8 ().constData ());
 			if (!autoManaged)
-				atp.flags &= ~libtorrent::add_torrent_params::flag_auto_managed;
+				atp.flags &= ~ATP_FLAG (auto_managed);
 			if (tryLive || (params & NoAutostart))
-				atp.flags |= libtorrent::add_torrent_params::flag_paused;
-			atp.flags |= libtorrent::add_torrent_params::flag_duplicate_is_error;
+				atp.flags |= ATP_FLAG (paused);
+			atp.flags |= ATP_FLAG (duplicate_is_error);
 
 			handle = Session_->add_torrent (atp);
 		}
@@ -1818,10 +1824,10 @@ namespace BitTorrent
 			atp.storage_mode = GetCurrentStorageMode ();
 			atp.save_path = path.string ();
 			if (!automanaged)
-				atp.flags &= ~libtorrent::add_torrent_params::flag_auto_managed;
+				atp.flags &= ~ATP_FLAG (auto_managed);
 			if (pause)
-				atp.flags |= libtorrent::add_torrent_params::flag_paused;
-			atp.flags |= libtorrent::add_torrent_params::flag_duplicate_is_error;
+				atp.flags |= ATP_FLAG (paused);
+			atp.flags |= ATP_FLAG (duplicate_is_error);
 
 			std::copy (resumeData.constData (),
 					resumeData.constData () + resumeData.size (),
