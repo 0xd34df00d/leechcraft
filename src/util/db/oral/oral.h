@@ -1125,9 +1125,9 @@ namespace oral
 		}
 
 		template<typename ResList>
-		auto HandleResultBehaviour (ResultBehaviour::All, ResList&& list) noexcept
+		decltype (auto) HandleResultBehaviour (ResultBehaviour::All, ResList&& list) noexcept
 		{
-			return std::move (list);
+			return std::forward<ResList> (list);
 		}
 
 		template<typename ResList>
