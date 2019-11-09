@@ -1695,7 +1695,7 @@ namespace oral
 	{
 		const auto& cachedData = detail::BuildCachedFieldsData<T> ();
 
-		if (db.record (cachedData.Table_).isEmpty ())
+		if (!db.tables ().contains (cachedData.Table_, Qt::CaseInsensitive))
 			RunTextQuery (db, detail::AdaptCreateTable<ImplFactory, T> (cachedData));
 
 		ImplFactory factory;
