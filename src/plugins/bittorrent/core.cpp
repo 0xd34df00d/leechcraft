@@ -940,9 +940,19 @@ namespace BitTorrent
 		try
 		{
 			libtorrent::add_torrent_params atp;
+#if LIBTORRENT_VERSION_NUM >= 10200
+			boost::system::error_code ec;
+			libtorrent::parse_magnet_uri (magnet.toStdString (), atp, ec);
+			if (ec)
+			{
+				ShowError (tr ("libtorrent error: %1").arg (QString::fromStdString (ec.message ())));
+				return MakeErrorResult ("Torrent error");
+			}
+#else
+			atp.url = magnet.toStdString ();
+#endif
 			atp.storage_mode = GetCurrentStorageMode ();
 			atp.save_path = std::string (path.toUtf8 ().constData ());
-			atp.url = magnet.toStdString ();
 			if (params & NoAutostart)
 				atp.flags |= libtorrent::add_torrent_params::flag_paused;
 			atp.flags |= libtorrent::add_torrent_params::flag_duplicate_is_error;
