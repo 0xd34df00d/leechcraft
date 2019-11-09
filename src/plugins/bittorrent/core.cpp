@@ -388,8 +388,6 @@ namespace BitTorrent
 		{
 			switch (state)
 			{
-				case libtorrent::torrent_status::queued_for_checking:
-					return Core::tr ("Queued for checking");
 				case libtorrent::torrent_status::checking_files:
 					return Core::tr ("Checking files");
 				case libtorrent::torrent_status::downloading_metadata:
@@ -475,7 +473,6 @@ namespace BitTorrent
 
 			switch (status.state)
 			{
-			case libtorrent::torrent_status::queued_for_checking:
 			case libtorrent::torrent_status::checking_files:
 			case libtorrent::torrent_status::checking_resume_data:
 				return QIcon::fromTheme ("tools-check-spelling");
@@ -1111,7 +1108,6 @@ namespace BitTorrent
 		{
 		case libtorrent::torrent_status::checking_files:
 		case libtorrent::torrent_status::checking_resume_data:
-		case libtorrent::torrent_status::queued_for_checking:
 			return;
 		default:
 			break;
@@ -2061,7 +2057,6 @@ namespace BitTorrent
 
 			switch (state)
 			{
-			case libtorrent::torrent_status::queued_for_checking:
 			case libtorrent::torrent_status::checking_files:
 			case libtorrent::torrent_status::checking_resume_data:
 			case libtorrent::torrent_status::allocating:
