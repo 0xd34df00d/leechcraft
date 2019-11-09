@@ -39,6 +39,7 @@
 #include <QMenu>
 #include <util/util.h>
 #include <util/sll/prelude.h>
+#include <util/compat/fontwidth.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
 #include "addtorrentfilesmodel.h"
@@ -89,10 +90,10 @@ namespace BitTorrent
 			});
 		Ui_.MarkMenuButton_->setMenu (markMenu);
 
-		const auto& fm = fontMetrics ();
 		const auto header = Ui_.FilesView_->header ();
-		header->resizeSection (0, fm.width ("Thisisanaveragetorrentcontainedfilename,ormaybeevenbiggerthanthat!"));
-		header->resizeSection (1, fm.width ("_999.9 MB_"));
+		const auto width = [this] (const auto& str) { return Util::Compat::Width (fontMetrics (), str); };
+		header->resizeSection (0, width ("Thisisanaveragetorrentcontainedfilename,ormaybeevenbiggerthanthat!"));
+		header->resizeSection (1, width ("_999.9 MB_"));
 		header->setStretchLastSection (true);
 
 		connect (Ui_.ExpandAll_,

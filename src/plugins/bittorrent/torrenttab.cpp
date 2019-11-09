@@ -44,6 +44,7 @@
 #include <util/sll/prelude.h>
 #include <util/sll/views.h>
 #include <util/xpc/util.h>
+#include <util/compat/fontwidth.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/itagsmanager.h>
@@ -118,10 +119,10 @@ namespace BitTorrent
 				[this] { Ui_.Tabs_->SetSelectedIndices (GetSelectedRows ()); });
 		Ui_.TorrentsView_->sortByColumn (Core::ColumnID, Qt::SortOrder::AscendingOrder);
 
-		const auto& fm = Ui_.TorrentsView_->fontMetrics ();
 		QHeaderView *header = Ui_.TorrentsView_->header ();
-		header->resizeSection (Core::Columns::ColumnID, fm.width ("999"));
-		header->resizeSection (Core::Columns::ColumnName, fm.width ("boardwalk.empire.s03e02.hdtv.720p.ac3.rus.eng.novafilm.tv.mkv") * 1.3);
+		const auto width = [this] (const auto& str) { return Util::Compat::Width (fontMetrics (), str); };
+		header->resizeSection (Core::Columns::ColumnID, width ("999"));
+		header->resizeSection (Core::Columns::ColumnName, width ("boardwalk.empire.s03e02.hdtv.720p.ac3.rus.eng.novafilm.tv.mkv") * 1.3);
 
 		auto buttonMgr = new Util::LineEditButtonManager (Ui_.SearchLine_);
 		new Util::TagsCompleter (Ui_.SearchLine_);
