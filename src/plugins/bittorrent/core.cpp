@@ -411,7 +411,7 @@ namespace BitTorrent
 			const auto& stateStr = GetStringForState (status.state);
 			if (status.state == libtorrent::torrent_status::downloading)
 			{
-				if (!status.error.empty ())
+				if (status.errc)
 				{
 					static const auto errorStr = Core::tr ("Error");
 					return errorStr;
@@ -465,7 +465,7 @@ namespace BitTorrent
 			if (column != ColumnName)
 				return {};
 
-			if (!status.error.empty ())
+			if (status.errc)
 				return QIcon::fromTheme ("dialog-error");
 
 			if (status.paused)
@@ -640,8 +640,6 @@ namespace BitTorrent
 						.arg (Util::MakePrettySize (status.total_wanted_done))
 						.arg (Util::MakePrettySize (status.total_wanted))) + "\n";
 			result += tr ("Status:") + " " + GetStringForStatus (status);
-			if (!status.error.empty ())
-				result += " (" + QString::fromUtf8 (status.error.c_str ()) + ")";
 			result += "\n";
 
 			result += tr ("Downloading speed:") + " " +
@@ -658,7 +656,7 @@ namespace BitTorrent
 		case JobHolderRole::ProcessState:
 		{
 			ProcessStateInfo::State state = ProcessStateInfo::State::Running;
-			if (!status.error.empty ())
+			if (status.errc)
 				state = ProcessStateInfo::State::Error;
 			else if (status.paused)
 				state = ProcessStateInfo::State::Paused;
@@ -785,10 +783,6 @@ namespace BitTorrent
 			result->Info_.reset (new libtorrent::torrent_info (*info));
 		result->Destination_ = QString::fromStdString (result->Status_.save_path);
 		result->State_ = GetStringForStatus (result->Status_);
-
-		if (!result->Status_.error.empty ())
-			result->State_ += " (" + QString::fromUtf8 (result->Status_.error.c_str ()) + ")";
-
 		return result;
 	}
 
@@ -1399,7 +1393,7 @@ namespace BitTorrent
 		}
 
 		const auto& status = a.handle.status ({});
-		if (!status.error.empty ())
+		if (status.errc)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "not saving erroneous torrent:"
