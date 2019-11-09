@@ -658,6 +658,8 @@ namespace BitTorrent
 						.arg (Util::MakePrettySize (status.total_wanted_done))
 						.arg (Util::MakePrettySize (status.total_wanted))) + "\n";
 			result += tr ("Status:") + " " + GetStringForStatus (status);
+			if (status.errc)
+				result += " (" + QString::fromStdString (status.errc.message ()) + ")";
 			result += "\n";
 
 			result += tr ("Downloading speed:") + " " +
@@ -801,6 +803,8 @@ namespace BitTorrent
 			result->Info_.reset (new libtorrent::torrent_info (*info));
 		result->Destination_ = QString::fromStdString (result->Status_.save_path);
 		result->State_ = GetStringForStatus (result->Status_);
+		if (result->Status_.errc)
+			result->State_ = " (" + QString::fromStdString (result->Status_.errc.message ()) + ")";
 		return result;
 	}
 
