@@ -70,6 +70,12 @@
 #include <libtorrent/session.hpp>
 #include <libtorrent/lazy_entry.hpp>
 #include <libtorrent/announce_entry.hpp>
+
+#if LIBTORRENT_VERSION_NUM >= 10200
+#include <libtorrent/read_resume_data.hpp>
+#include <libtorrent/write_resume_data.hpp>
+#endif
+
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
@@ -1469,11 +1475,16 @@ namespace BitTorrent
 			return;
 		}
 
+#if LIBTORRENT_VERSION_NUM >= 10200
+		const auto& buf = libtorrent::write_resume_data_buf (a.params);
+		file.write (buf.data (), buf.size ());
+#else
 		std::deque<char> outbuf;
 		libtorrent::bencode (std::back_inserter (outbuf), *a.resume_data.get ());
 
 		for (size_t i = 0; i < outbuf.size (); ++i)
 			file.write (&outbuf.at (i), 1);
+#endif
 	}
 
 	void Core::HandleMetadata (const libtorrent::metadata_received_alert& a)
@@ -1826,19 +1837,26 @@ namespace BitTorrent
 
 		try
 		{
+#if LIBTORRENT_VERSION_NUM >= 10200
+			auto atp = libtorrent::read_resume_data (libtorrent::span { resumeData.constData (), resumeData.size () });
+			atp.ti = lt_lib::make_shared<libtorrent::torrent_info> (e);
+			Q_UNUSED (path)
+#else
 			libtorrent::add_torrent_params atp;
 			atp.ti = lt_lib::make_shared<libtorrent::torrent_info> (e);
 			atp.storage_mode = GetCurrentStorageMode ();
 			atp.save_path = path.string ();
+
+			std::copy (resumeData.constData (),
+					resumeData.constData () + resumeData.size (),
+					std::back_inserter (atp.resume_data));
+#endif
+
 			if (!automanaged)
 				atp.flags &= ~ATP_FLAG (auto_managed);
 			if (pause)
 				atp.flags |= ATP_FLAG (paused);
 			atp.flags |= ATP_FLAG (duplicate_is_error);
-
-			std::copy (resumeData.constData (),
-					resumeData.constData () + resumeData.size (),
-					std::back_inserter (atp.resume_data));
 
 			handle = Session_->add_torrent (atp);
 		}
