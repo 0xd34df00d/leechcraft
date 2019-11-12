@@ -872,7 +872,7 @@ namespace oral
 			F Binder_;
 			int LastID_;
 
-			ExprTreeHandler (const QString& sql, F&& binder, int lastId)
+			ExprTreeHandler (const QString& sql, F&& binder, int lastId) noexcept
 			: Sql_ { sql }
 			, Binder_ { std::move (binder) }
 			, LastID_ { lastId }
