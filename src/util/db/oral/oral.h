@@ -1042,7 +1042,7 @@ namespace oral
 		struct OffsetNone {};
 
 		template<size_t RepIdx, size_t TupIdx, typename Tuple, typename NewType>
-		decltype (auto) GetReplaceTupleElem (Tuple&& tuple, NewType&& arg) noexcept
+		constexpr decltype (auto) GetReplaceTupleElem (Tuple&& tuple, NewType&& arg) noexcept
 		{
 			if constexpr (RepIdx == TupIdx)
 				return std::forward<NewType> (arg);
@@ -1051,7 +1051,7 @@ namespace oral
 		}
 
 		template<size_t RepIdx, typename NewType, typename Tuple, size_t... TupIdxs>
-		auto ReplaceTupleElemImpl (Tuple&& tuple, NewType&& arg, std::index_sequence<TupIdxs...>) noexcept
+		constexpr auto ReplaceTupleElemImpl (Tuple&& tuple, NewType&& arg, std::index_sequence<TupIdxs...>) noexcept
 		{
 			return std::tuple
 			{
@@ -1060,7 +1060,7 @@ namespace oral
 		}
 
 		template<size_t RepIdx, typename NewType, typename... TupleArgs>
-		auto ReplaceTupleElem (std::tuple<TupleArgs...>&& tuple, NewType&& arg) noexcept
+		constexpr auto ReplaceTupleElem (std::tuple<TupleArgs...>&& tuple, NewType&& arg) noexcept
 		{
 			return ReplaceTupleElemImpl<RepIdx> (std::move (tuple),
 					std::forward<NewType> (arg),
@@ -1229,43 +1229,43 @@ namespace oral
 				ParamsTuple Params_;
 
 				template<typename NewTuple>
-				auto RepTuple (NewTuple&& tuple) noexcept
+				constexpr auto RepTuple (NewTuple&& tuple) noexcept
 				{
 					return Builder<NewTuple> { W_, tuple };
 				}
 
 				template<typename U>
-				auto Select (U&& selector) && noexcept
+				constexpr auto Select (U&& selector) && noexcept
 				{
 					return RepTuple (ReplaceTupleElem<0> (std::move (Params_), std::forward<U> (selector)));
 				}
 
 				template<typename U>
-				auto Where (U&& tree) && noexcept
+				constexpr auto Where (U&& tree) && noexcept
 				{
 					return RepTuple (ReplaceTupleElem<1> (std::move (Params_), std::forward<U> (tree)));
 				}
 
 				template<typename U>
-				auto Order (U&& order) && noexcept
+				constexpr auto Order (U&& order) && noexcept
 				{
 					return RepTuple (ReplaceTupleElem<2> (std::move (Params_), std::forward<U> (order)));
 				}
 
 				template<typename U>
-				auto Group (U&& group) && noexcept
+				constexpr auto Group (U&& group) && noexcept
 				{
 					return RepTuple (ReplaceTupleElem<3> (std::move (Params_), std::forward<U> (group)));
 				}
 
 				template<typename U = Limit>
-				auto Limit (U&& limit) && noexcept
+				constexpr auto Limit (U&& limit) && noexcept
 				{
 					return RepTuple (ReplaceTupleElem<4> (std::move (Params_), std::forward<U> (limit)));
 				}
 
 				template<typename U = Offset>
-				auto Offset (U&& offset) && noexcept
+				constexpr auto Offset (U&& offset) && noexcept
 				{
 					return RepTuple (ReplaceTupleElem<5> (std::move (Params_), std::forward<U> (offset)));
 				}
@@ -1276,7 +1276,7 @@ namespace oral
 				}
 
 				template<auto... Ptrs>
-				auto Group () && noexcept
+				constexpr auto Group () && noexcept
 				{
 					return std::move (*this).Group (GroupBy<Ptrs...> {});
 				}
