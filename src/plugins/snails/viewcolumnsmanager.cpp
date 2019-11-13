@@ -78,7 +78,7 @@ namespace Snails
 		QList<int> widths;
 
 		for (const auto& string : strings)
-			widths << fm.width (string);
+			widths << fm.horizontalAdvance (string);
 
 		SetDefaultWidths (widths);
 	}
