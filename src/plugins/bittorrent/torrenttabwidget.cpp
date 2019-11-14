@@ -343,14 +343,6 @@ namespace BitTorrent
 		Ui_.UploadingTorrents_->setValue (ssm->GetMaxUploadingTorrents ());
 	}
 
-	namespace
-	{
-		QTime Announce2Time (const libtorrent::time_duration& announce)
-		{
-			return QTime { 0, 0 }.addMSecs (libtorrent::duration_cast<libtorrent::seconds> (announce).count ());
-		}
-	}
-
 	void TorrentTabWidget::UpdateTorrentControl ()
 	{
 		Ui_.TorrentDownloadRateController_->setValue (Core::Instance ()->GetTorrentDownloadRate (Index_));
@@ -380,7 +372,10 @@ namespace BitTorrent
 		Ui_.LabelState_->setText (i->State_);
 		Ui_.LabelDownloadRate_->setText (Util::MakePrettySize (i->Status_.download_rate) + tr ("/s"));
 		Ui_.LabelUploadRate_->setText (Util::MakePrettySize (i->Status_.upload_rate) + tr ("/s"));
-		Ui_.LabelNextAnnounce_->setText (Announce2Time (i->Status_.next_announce).toString ());
+
+		const auto nextAnnounceSecs = libtorrent::duration_cast<libtorrent::seconds>(i->Status_.next_announce).count ();
+		Ui_.LabelNextAnnounce_->setText (Util::MakeTimeFromLong (nextAnnounceSecs));
+
 		Ui_.LabelProgress_->setText (QString::number (i->Status_.progress * 100, 'f', 2) + "%");
 		Ui_.LabelDownloaded_->setText (Util::MakePrettySize (i->Status_.total_download));
 		Ui_.LabelUploaded_->setText (Util::MakePrettySize (i->Status_.total_upload));
