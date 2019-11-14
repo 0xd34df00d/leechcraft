@@ -422,7 +422,6 @@ namespace BitTorrent
 		Ui_.LabelFailed_->setText (Util::MakePrettySize (i->Status_.total_failed_bytes));
 		Ui_.LabelConnectedPeers_->setText (QString::number (i->Status_.num_peers));
 		Ui_.LabelConnectedSeeds_->setText (QString::number (i->Status_.num_seeds));
-		Ui_.LabelAnnounceInterval_->setText (Announce2Time (i->Status_.announce_interval).toString ());
 		Ui_.LabelTotalPieces_->setText (QString::number (i->Info_->num_pieces ()));
 		Ui_.LabelDownloadedPieces_->setText (QString::number (i->Status_.num_pieces));
 		Ui_.LabelPieceSize_->setText (Util::MakePrettySize (i->Info_->piece_length ()));
