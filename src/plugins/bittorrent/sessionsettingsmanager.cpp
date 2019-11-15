@@ -113,7 +113,6 @@ namespace BitTorrent
 			XmlSettingsManager::Instance ()->setProperty ("UPNPIgnoreNonrouters", true);
 			XmlSettingsManager::Instance ()->setProperty ("SendBufferWatermark", 9);
 			XmlSettingsManager::Instance ()->setProperty ("CacheSize", 0);
-			XmlSettingsManager::Instance ()->setProperty ("CacheBufferChunkSize", 1);
 			XmlSettingsManager::Instance ()->setProperty ("UseReadCache", false);
 			XmlSettingsManager::Instance ()->setProperty ("CloseRedundantConnections", true);
 			XmlSettingsManager::Instance ()->setProperty ("MaxPeerListSize", 500);
@@ -128,7 +127,6 @@ namespace BitTorrent
 			XmlSettingsManager::Instance ()->setProperty ("AllowMultipleConnectionsPerIP", true);
 			XmlSettingsManager::Instance ()->setProperty ("CacheSize", 512);
 			XmlSettingsManager::Instance ()->setProperty ("UseReadCache", true);
-			XmlSettingsManager::Instance ()->setProperty ("CacheBufferChunkSize", 128);
 			XmlSettingsManager::Instance ()->setProperty ("CacheExpiry", 60 * 60);
 			XmlSettingsManager::Instance ()->setProperty ("CloseRedundantConnections", true);
 			XmlSettingsManager::Instance ()->setProperty ("MaxRejects", 10);
@@ -296,7 +294,6 @@ namespace BitTorrent
 			"PeerConnectTimeout",
 			"ConnectionSpeed",
 			"SendRedundantHave",
-			"LazyBitfields",
 			"InactivityTimeout",
 			"UnchokeInterval",
 			"OptimisticUnchokeMultiplier",
@@ -360,7 +357,6 @@ namespace BitTorrent
 			"NotificationStorage",
 			"NotificationTracker",
 			"NotificationStatus",
-			"NotificationProgress",
 			"NotificationIPBlock",
 			"NotificationDHT"
 		};
@@ -391,8 +387,6 @@ namespace BitTorrent
 			mask |= libtorrent::alert::tracker_notification;
 		if (XmlSettingsManager::Instance ()->property ("NotificationStatus").toBool ())
 			mask |= libtorrent::alert::status_notification;
-		if (XmlSettingsManager::Instance ()->property ("NotificationProgress").toBool ())
-			mask |= libtorrent::alert::progress_notification;
 		if (XmlSettingsManager::Instance ()->property ("NotificationIPBlock").toBool ())
 			mask |= libtorrent::alert::ip_block_notification;
 
@@ -533,7 +527,6 @@ namespace BitTorrent
 		LT_SET_INT_OPT (initial_picker_threshold, "InitialPickerThreshold");
 		LT_SET_INT_OPT (allowed_fast_set_size, "AllowedFastSetSize");
 		LT_SET_INT_OPT (handshake_timeout, "HandshakeTimeout");
-		LT_SET_INT_OPT (cache_buffer_chunk_size, "CacheBufferChunkSize");
 		LT_SET_INT_OPT (cache_expiry, "CacheExpiry");
 		LT_SET_INT_OPT (peer_tos, "PeerTOS");
 		LT_SET_INT_OPT (auto_manage_interval, "AutoManageInterval");
@@ -557,7 +550,6 @@ namespace BitTorrent
 
 		LT_SET_BOOL_OPT (allow_multiple_connections_per_ip, "AllowMultipleConnectionsPerIP");
 		LT_SET_BOOL_OPT (send_redundant_have, "SendRedundantHave");
-		LT_SET_BOOL_OPT (lazy_bitfields, "LazyBitfields");
 		LT_SET_BOOL_OPT (use_dht_as_fallback, "UseDHTAsFallback");
 		LT_SET_BOOL_OPT (upnp_ignore_nonrouters, "UPNPIgnoreNonrouters");
 		LT_SET_BOOL_OPT (use_parole_mode, "UseParoleMode");

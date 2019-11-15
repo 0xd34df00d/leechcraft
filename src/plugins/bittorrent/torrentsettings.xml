@@ -150,9 +150,6 @@
 					<item type="checkbox" property="SendRedundantHave" state="off">
 						<label lang="en" value="Send redundant have messages" />
 					</item>
-					<item type="checkbox" property="LazyBitfields" state="on">
-						<label lang="en" value="Lazy bitfields" />
-					</item>
 					<item type="checkbox" property="UPNPIgnoreNonrouters" state="on">
 						<label lang="en" value="Ignore UPNP-nonrouters" />
 					</item>
@@ -370,10 +367,6 @@
 					<label value="Maximum outstanding disk bytes per connection:" />
 					<suffix value=" KB" />
 				</item>
-				<item type="spinbox" property="CacheBufferChunkSize" default="16" minimum="1" maximum="256">
-					<label value="Allocate this number of blocks at a time:" />
-					<suffix value=" blocks" />
-				</item>
 				<item type="spinbox" property="FilePoolSize" default="40" minimum="5" maximum="1000" step="5">
 					<label lang="en" value="Maximum amount of concurrently open files:" />
 				</item>
@@ -400,9 +393,6 @@
 				</item>
 				<item type="checkbox" property="NotificationStatus" default="on">
 					<label lang="en" value="State change events" />
-				</item>
-				<item type="checkbox" property="NotificationProgress" default="off">
-					<label lang="en" value="Progress events" />
 				</item>
 				<item type="checkbox" property="NotificationIPBlock" default="on">
 					<label lang="en" value="IP block events" />
