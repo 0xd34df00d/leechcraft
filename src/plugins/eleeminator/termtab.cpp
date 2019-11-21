@@ -326,10 +326,7 @@ namespace Eleeminator
 		if (hotspot->type () != Filter::HotSpot::Link)
 			return;
 
-		const auto urlHotSpot = dynamic_cast<const Konsole::UrlFilter::HotSpot*> (hotspot);
-		if (!urlHotSpot)
-			return;
-
+		const auto urlHotSpot = static_cast<const Konsole::UrlFilter::HotSpot*> (hotspot);
 		const auto& cap = urlHotSpot->capturedTexts ().value (0);
 		if (cap.isEmpty ())
 			return;
