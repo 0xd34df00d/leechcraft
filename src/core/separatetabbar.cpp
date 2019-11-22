@@ -298,7 +298,7 @@ namespace LeechCraft
 			data->setData ("x-leechcraft/tab-drag-action", "reordering");
 			data->setData ("x-leechcraft/tab-tabclass", itw->GetTabClassInfo ().TabClass_);
 		}
-		else if (idt)
+		else
 			idt->FillMimeData (data);
 
 		auto drag = new QDrag (this);
