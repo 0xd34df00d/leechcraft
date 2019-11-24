@@ -50,6 +50,7 @@ namespace SB2
 {
 	class ViewManager;
 	class TrayComponent;
+	class LauncherComponent;
 	class DockActionComponent;
 
 	class Plugin : public QObject
@@ -66,9 +67,10 @@ namespace SB2
 
 		struct WindowInfo
 		{
-			ViewManager *Mgr_;
-			TrayComponent *Tray_;
-			DockActionComponent *Dock_;
+			std::shared_ptr<ViewManager> Mgr_;
+			std::shared_ptr<TrayComponent> Tray_;
+			std::shared_ptr<LauncherComponent> Launcher_;
+			std::shared_ptr<DockActionComponent> Dock_;
 		};
 		QList<WindowInfo> Managers_;
 
