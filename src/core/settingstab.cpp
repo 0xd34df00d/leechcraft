@@ -35,6 +35,7 @@
 #include <QToolButton>
 #include <QToolBar>
 #include <QLineEdit>
+#include "util/compat/fontwidth.h"
 #include "util/sll/qtutil.h"
 #include "util/gui/flowlayout.h"
 #include "util/gui/clearlineeditaddon.h"
@@ -129,7 +130,7 @@ namespace LeechCraft
 			const auto& fm = QApplication::fontMetrics ();
 			const int pad = 3;
 			for (auto i = origSplit.begin (), end = origSplit.end (); i != end; ++i)
-				if (fm.width (*i) > ButtonWidth - 2 * pad)
+				if (Util::Compat::Width (fm, *i) > ButtonWidth - 2 * pad)
 					*i = fm.elidedText (*i, Qt::ElideRight, ButtonWidth - 2 * pad);
 
 			return origSplit.join ("\n");
