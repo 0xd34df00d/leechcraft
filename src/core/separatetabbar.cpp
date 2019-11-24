@@ -84,7 +84,7 @@ namespace LeechCraft
 			return;
 		}
 
-		setTabButton (index, GetCloseButtonPosition (), closable ? closeButton : 0);
+		setTabButton (index, GetCloseButtonPosition (), closable ? closeButton : nullptr);
 	}
 
 	void SeparateTabBar::SetTabWidget (SeparateTabWidget *widget)
