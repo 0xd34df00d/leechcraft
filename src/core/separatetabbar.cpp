@@ -287,7 +287,7 @@ namespace LeechCraft
 			return;
 		}
 
-		auto px = QPixmap::grabWidget (widget);
+		auto px = widget->grab ();
 		px = px.scaledToWidth (px.width () / 2, Qt::SmoothTransformation);
 
 		auto idt = qobject_cast<IDNDTab*> (widget);
