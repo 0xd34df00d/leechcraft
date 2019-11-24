@@ -78,8 +78,6 @@ namespace LeechCraft
 		void handleSearch (const QString&);
 
 		void handleBackRequested ();
-		void handleApply ();
-		void handleCancel ();
 	signals:
 		void remove (QWidget*);
 	};

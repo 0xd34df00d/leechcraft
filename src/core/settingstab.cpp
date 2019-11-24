@@ -71,15 +71,23 @@ namespace LeechCraft
 
 		ActionApply_->setProperty ("ActionIcon", "dialog-ok");
 		connect (ActionApply_,
-				SIGNAL (triggered ()),
+				&QAction::triggered,
 				this,
-				SLOT (handleApply ()));
+				[this]
+				{
+					for (const auto& widget : SettingsWidgets_)
+						widget->Accept ();
+				});
 
 		ActionCancel_->setProperty ("ActionIcon", "dialog-cancel");
 		connect (ActionCancel_,
-				SIGNAL (triggered ()),
+				&QAction::triggered,
 				this,
-				SLOT (handleCancel ()));
+				[this]
+				{
+					for (const auto& widget : SettingsWidgets_)
+						widget->Reject ();
+				});
 
 		QTimer::singleShot (1000,
 				this,
@@ -384,17 +392,5 @@ namespace LeechCraft
 		Ui_.StackedWidget_->removeWidget (widget.get ());
 
 		UpdateButtonsState ();
-	}
-
-	void SettingsTab::handleApply ()
-	{
-		for (const auto& widget : SettingsWidgets_)
-			widget->Accept ();
-	}
-
-	void SettingsTab::handleCancel ()
-	{
-		for (const auto& widget : SettingsWidgets_)
-			widget->Reject ();
 	}
 }
