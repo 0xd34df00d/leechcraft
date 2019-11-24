@@ -119,9 +119,7 @@ namespace SB2
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
 	{
-		QSet<QByteArray> result;
-		result << "org.LeechCraft.Core.Plugins/1.0";
-		return result;
+		return { "org.LeechCraft.Core.Plugins/1.0" };
 	}
 
 	QMap<QString, ActionInfo> Plugin::GetActionInfo () const
@@ -189,9 +187,9 @@ namespace SB2
 		mgr->RegisterInternalComponent (launcher->GetComponent ());
 		if (init)
 			connect (this,
-					SIGNAL (pluginsAvailable ()),
+					&Plugin::pluginsAvailable,
 					launcher.get (),
-					SLOT (handlePluginsAvailable ()));
+					&LauncherComponent::handlePluginsAvailable);
 		else
 			launcher->handlePluginsAvailable ();
 
@@ -199,9 +197,9 @@ namespace SB2
 		mgr->RegisterInternalComponent (tray->GetComponent ());
 		if (init)
 			connect (this,
-					SIGNAL (pluginsAvailable ()),
+					&Plugin::pluginsAvailable,
 					tray.get (),
-					SLOT (handlePluginsAvailable ()));
+					&TrayComponent::handlePluginsAvailable);
 		else
 			tray->handlePluginsAvailable ();
 
