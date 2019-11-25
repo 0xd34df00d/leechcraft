@@ -49,7 +49,7 @@ namespace SB2
 					std::unique_ptr<QuarkManager> qm;
 					try
 					{
-						qm.reset (new QuarkManager (comp, viewMgr, proxy));
+						qm = std::make_unique<QuarkManager> (comp, viewMgr, proxy);
 					}
 					catch (const std::exception& e)
 					{
