@@ -100,6 +100,9 @@ namespace SB2
 
 	void QuarkUnhideListView::unhide (const QString& itemClass)
 	{
+		if (!ID2Component_.contains (itemClass))
+			return;
+
 		const auto& info = ID2Component_.take (itemClass);
 		ViewManager_->UnhideQuark (info.Comp_, info.Manager_);
 
