@@ -222,33 +222,34 @@ namespace SB2
 			if (item->data (ViewItemsModel::Role::SourceURL) != url)
 				continue;
 
-			ViewItemsModel_->removeRow (i);
+			RemoveQuark (i);
+			break;
 		}
-
-		auto mgr = Quark2Manager_.take (url);
-		AddToRemoved (mgr->GetManifest ().GetID ());
-
-		SaveQuarkOrder ();
 	}
 
 	void ViewManager::RemoveQuark (const QString& id)
 	{
-		QUrl url;
 		for (int i = 0; i < ViewItemsModel_->rowCount (); ++i)
 		{
 			auto item = ViewItemsModel_->item (i);
 			if (item->data (ViewItemsModel::Role::QuarkClass) != id)
 				continue;
 
-			url = item->data (ViewItemsModel::Role::SourceURL).toUrl ();
-			ViewItemsModel_->removeRow (i);
+			RemoveQuark (i);
+			break;
 		}
+	}
 
-		if (!url.isValid ())
-			return;
+	void ViewManager::RemoveQuark (int row)
+	{
+		auto url = ViewItemsModel_->item (row)->data (ViewItemsModel::Role::SourceURL).toUrl ();
+
+		ViewItemsModel_->removeRow (row);
 
 		auto mgr = Quark2Manager_.take (url);
 		AddToRemoved (mgr->GetManifest ().GetID ());
+
+		SaveQuarkOrder ();
 	}
 
 	void ViewManager::UnhideQuark (QuarkComponent_ptr component, QuarkManager_ptr manager)

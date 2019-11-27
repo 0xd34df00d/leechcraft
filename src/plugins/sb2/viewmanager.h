@@ -112,6 +112,8 @@ namespace SB2
 
 		std::shared_ptr<QSettings> GetSettings () const;
 	private:
+		void RemoveQuark (int);
+
 		void AddComponent (QuarkComponent_ptr, bool forceAdd);
 		void AddComponent (QuarkComponent_ptr, QuarkManager_ptr, bool forceAdd);
 		QuarkComponents_t ScanRootDir (const QDir&) const;
