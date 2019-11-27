@@ -234,10 +234,16 @@ namespace SB2
 				continue;
 
 			auto url = item->data (ViewItemsModel::Role::SourceURL).toUrl ();
+			auto mgr = Quark2Manager_.take (url);
+			if (!mgr)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "no manager for"
+						<< url;
+				return;
+			}
 
 			ViewItemsModel_->removeRow (i);
-
-			auto mgr = Quark2Manager_.take (url);
 			AddToRemoved (mgr->GetManifest ().GetID ());
 
 			SaveQuarkOrder ();
