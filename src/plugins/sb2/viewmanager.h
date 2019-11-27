@@ -112,7 +112,8 @@ namespace SB2
 
 		std::shared_ptr<QSettings> GetSettings () const;
 	private:
-		void RemoveQuark (int);
+		template<int Role, typename T>
+		void RemoveQuarkBy (const T&);
 
 		void AddComponent (QuarkComponent_ptr, bool forceAdd);
 		void AddComponent (QuarkComponent_ptr, QuarkManager_ptr, bool forceAdd);
