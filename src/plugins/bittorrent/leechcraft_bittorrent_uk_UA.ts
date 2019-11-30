@@ -376,7 +376,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::BitTorrent::AddMagnetDialog</name>
+    <name>LC::BitTorrent::AddMagnetDialog</name>
     <message>
         <location filename="addmagnetdialog.cpp" line="124"/>
         <source>Select save directory</source>
@@ -384,7 +384,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::BitTorrent::AddMultipleTorrents</name>
+    <name>LC::BitTorrent::AddMultipleTorrents</name>
     <message>
         <location filename="addmultipletorrents.cpp" line="90"/>
         <source>Select directory with torrents</source>
@@ -397,7 +397,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::BitTorrent::AddTorrent</name>
+    <name>LC::BitTorrent::AddTorrent</name>
     <message>
         <location filename="addtorrent.cpp" line="116"/>
         <location filename="addtorrent.cpp" line="117"/>
@@ -444,7 +444,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::BitTorrent::AddTorrentFilesModel</name>
+    <name>LC::BitTorrent::AddTorrentFilesModel</name>
     <message>
         <location filename="addtorrentfilesmodel.cpp" line="38"/>
         <source>Name</source>
@@ -457,7 +457,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::BitTorrent::Core</name>
+    <name>LC::BitTorrent::Core</name>
     <message>
         <location filename="core.cpp" line="130"/>
         <source>Unknown</source>
@@ -703,7 +703,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::BitTorrent::FastSpeedControlWidget</name>
+    <name>LC::BitTorrent::FastSpeedControlWidget</name>
     <message>
         <location filename="fastspeedcontrolwidget.cpp" line="102"/>
         <location filename="fastspeedcontrolwidget.cpp" line="103"/>
@@ -712,7 +712,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::BitTorrent::FilesViewDelegate</name>
+    <name>LC::BitTorrent::FilesViewDelegate</name>
     <message>
         <location filename="filesviewdelegate.cpp" line="95"/>
         <source>%1% (%2 of %3)</source>
@@ -720,7 +720,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::BitTorrent::FirstStep</name>
+    <name>LC::BitTorrent::FirstStep</name>
     <message>
         <location filename="firststep.cpp" line="91"/>
         <source>Select where to save torrent file</source>
@@ -734,7 +734,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::BitTorrent::IPFilterDialog</name>
+    <name>LC::BitTorrent::IPFilterDialog</name>
     <message>
         <location filename="ipfilterdialog.cpp" line="56"/>
         <location filename="ipfilterdialog.cpp" line="90"/>
@@ -750,7 +750,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::BitTorrent::IntroPage</name>
+    <name>LC::BitTorrent::IntroPage</name>
     <message>
         <location filename="intropage.cpp" line="41"/>
         <source>Introduction</source>
@@ -763,7 +763,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::BitTorrent::LiveStreamDevice</name>
+    <name>LC::BitTorrent::LiveStreamDevice</name>
     <message>
         <location filename="livestreamdevice.cpp" line="55"/>
         <source>No metadata is available yet.</source>
@@ -771,7 +771,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::BitTorrent::MoveTorrentFiles</name>
+    <name>LC::BitTorrent::MoveTorrentFiles</name>
     <message>
         <location filename="movetorrentfiles.cpp" line="52"/>
         <source>Multiple directories</source>
@@ -784,7 +784,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::BitTorrent::NewTorrentWizard</name>
+    <name>LC::BitTorrent::NewTorrentWizard</name>
     <message>
         <location filename="newtorrentwizard.cpp" line="43"/>
         <source>New torrent wizard</source>
@@ -792,7 +792,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::BitTorrent::PeersModel</name>
+    <name>LC::BitTorrent::PeersModel</name>
     <message>
         <location filename="peersmodel.cpp" line="48"/>
         <source>IP</source>
@@ -841,7 +841,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::BitTorrent::PeersTabLinker</name>
+    <name>LC::BitTorrent::PeersTabLinker</name>
     <message>
         <location filename="peerstablinker.cpp" line="115"/>
         <source>%1 %2 from %3</source>
@@ -917,7 +917,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::BitTorrent::PiecesModel</name>
+    <name>LC::BitTorrent::PiecesModel</name>
     <message>
         <location filename="piecesmodel.cpp" line="47"/>
         <source>Index</source>
@@ -955,7 +955,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::BitTorrent::SecondStep</name>
+    <name>LC::BitTorrent::SecondStep</name>
     <message>
         <location filename="secondstep.cpp" line="56"/>
         <source>Select one or more paths to add</source>
@@ -963,7 +963,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::BitTorrent::SessionSettingsManager</name>
+    <name>LC::BitTorrent::SessionSettingsManager</name>
     <message>
         <location filename="sessionsettingsmanager.cpp" line="450"/>
         <source>Error listening on ports %1-%2: %3</source>
@@ -976,7 +976,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::BitTorrent::SpeedSelectorAction</name>
+    <name>LC::BitTorrent::SpeedSelectorAction</name>
     <message>
         <location filename="speedselectoraction.cpp" line="100"/>
         <source>%1 KiB/s</source>
@@ -984,7 +984,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::BitTorrent::StartupFirstPage</name>
+    <name>LC::BitTorrent::StartupFirstPage</name>
     <message>
         <location filename="startupfirstpage.cpp" line="45"/>
         <source>Set basic options</source>
@@ -992,7 +992,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::BitTorrent::TabWidget</name>
+    <name>LC::BitTorrent::TabWidget</name>
     <message>
         <location filename="tabwidget.cpp" line="97"/>
         <location filename="tabwidget.cpp" line="98"/>
@@ -1003,7 +1003,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::BitTorrent::ThirdStep</name>
+    <name>LC::BitTorrent::ThirdStep</name>
     <message>
         <location filename="thirdstep.cpp" line="102"/>
         <source> pieces (%1)</source>
@@ -1011,7 +1011,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::BitTorrent::TorrentFilesModel</name>
+    <name>LC::BitTorrent::TorrentFilesModel</name>
     <message>
         <location filename="torrentfilesmodel.cpp" line="49"/>
         <source>Name</source>
@@ -1034,7 +1034,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::BitTorrent::TorrentMaker</name>
+    <name>LC::BitTorrent::TorrentMaker</name>
     <message>
         <location filename="torrentmaker.cpp" line="82"/>
         <source>Could not open file %1 for write!</source>
@@ -1057,7 +1057,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::BitTorrent::TorrentPlugin</name>
+    <name>LC::BitTorrent::TorrentPlugin</name>
     <message>
         <location filename="torrentplugin.cpp" line="133"/>
         <source>BitTorrent tab</source>
@@ -1225,7 +1225,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::BitTorrent::TorrentTab</name>
+    <name>LC::BitTorrent::TorrentTab</name>
     <message>
         <location filename="torrenttab.cpp" line="138"/>
         <source>Open torrent...</source>
@@ -1372,7 +1372,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::BitTorrent::TorrentTabFilesWidget</name>
+    <name>LC::BitTorrent::TorrentTabFilesWidget</name>
     <message>
         <location filename="torrenttabfileswidget.cpp" line="160"/>
         <source>%1% (%2 of %3)</source>
@@ -1449,7 +1449,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::BitTorrent::TorrentTabWidget</name>
+    <name>LC::BitTorrent::TorrentTabWidget</name>
     <message>
         <location filename="torrenttabwidget.cpp" line="143"/>
         <source>Add peer...</source>
@@ -1508,7 +1508,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::BitTorrent::TrackersChanger</name>
+    <name>LC::BitTorrent::TrackersChanger</name>
     <message>
         <location filename="trackerschanger.cpp" line="73"/>
         <source>%1 s</source>

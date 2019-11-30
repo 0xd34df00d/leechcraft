@@ -1,6 +1,6 @@
 <?xml version="1.0" ?><!DOCTYPE TS><TS language="it" version="2.0">
 <context>
-    <name>LeechCraft::Summary::Core</name>
+    <name>LC::Summary::Core</name>
     <message>
         <location filename="core.cpp" line="121"/>
         <location filename="core.cpp" line="356"/>
@@ -24,7 +24,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Summary::OperationalModel</name>
+    <name>LC::Summary::OperationalModel</name>
     <message>
         <location filename="operationalmodel.cpp" line="28"/>
         <source>Entity</source>
@@ -42,7 +42,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Summary::RequestNormalizer</name>
+    <name>LC::Summary::RequestNormalizer</name>
     <message>
         <location filename="requestnormalizer.cpp" line="49"/>
         <source>Name</source>
@@ -75,7 +75,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Summary::SearchWidget</name>
+    <name>LC::Summary::SearchWidget</name>
     <message>
         <location filename="searchwidget.cpp" line="33"/>
         <source>Search categories</source>
@@ -83,7 +83,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Summary::Summary</name>
+    <name>LC::Summary::Summary</name>
     <message>
         <location filename="summary.cpp" line="70"/>
         <source>Summary</source>
@@ -96,7 +96,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Summary::SummaryWidget</name>
+    <name>LC::Summary::SummaryWidget</name>
     <message>
         <location filename="summarywidget.cpp" line="51"/>
         <source>Ctrl+F</source>

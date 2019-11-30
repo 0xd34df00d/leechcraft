@@ -125,7 +125,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::Popishu::EditorPage</name>
+    <name>LC::Plugins::Popishu::EditorPage</name>
     <message>
         <location filename="editorpage.cpp" line="92"/>
         <source>Document type</source>
@@ -210,7 +210,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::Popishu::Plugin</name>
+    <name>LC::Plugins::Popishu::Plugin</name>
     <message>
         <location filename="popishu.cpp" line="102"/>
         <source>Plain text editor with syntax highlighting and stuff.</source>

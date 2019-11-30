@@ -41,7 +41,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Poshuku::OnlineBookmarks::AccountsSettings</name>
+    <name>LC::Poshuku::OnlineBookmarks::AccountsSettings</name>
     <message>
         <source>Account</source>
         <translation>Учётнаяз апись</translation>
@@ -56,7 +56,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Poshuku::OnlineBookmarks::Plugin</name>
+    <name>LC::Poshuku::OnlineBookmarks::Plugin</name>
     <message>
         <source>Sync</source>
         <translation>Синхронизировать</translation>

@@ -33,7 +33,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Herbicide::Plugin</name>
+    <name>LC::Azoth::Herbicide::Plugin</name>
     <message>
         <location filename="herbicide.cpp" line="70"/>
         <source>A simple antispam plugin for Azoth.</source>

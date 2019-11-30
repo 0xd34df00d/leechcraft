@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="en_US">
 <context>
-    <name>LeechCraft::HotSensors::Plugin</name>
+    <name>LC::HotSensors::Plugin</name>
     <message>
         <location filename="hotsensors.cpp" line="82"/>
         <source>Temperature sensors information quark.</source>

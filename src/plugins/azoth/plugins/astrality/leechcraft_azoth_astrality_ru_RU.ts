@@ -50,7 +50,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Astrality::AccountWrapper</name>
+    <name>LC::Azoth::Astrality::AccountWrapper</name>
     <message>
         <location filename="accountwrapper.cpp" line="276"/>
         <source>Enter password for account %1 with login %2:</source>
@@ -178,7 +178,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Astrality::MsgWrapper</name>
+    <name>LC::Azoth::Astrality::MsgWrapper</name>
     <message>
         <location filename="msgwrapper.cpp" line="134"/>
         <source>Unable to send message to %1: %2 (%3).</source>
@@ -186,7 +186,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Astrality::Plugin</name>
+    <name>LC::Azoth::Astrality::Plugin</name>
     <message>
         <location filename="astrality.cpp" line="80"/>
         <source>Support for protocols provided by Telepathy.</source>
@@ -194,7 +194,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Astrality::ProtoWrapper</name>
+    <name>LC::Azoth::Astrality::ProtoWrapper</name>
     <message>
         <location filename="protowrapper.cpp" line="221"/>
         <source>Failed to create account: %1 (%2).</source>

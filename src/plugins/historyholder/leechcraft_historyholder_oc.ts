@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="oc">
 <context>
-    <name>LeechCraft::Plugins::HistoryHolder::Core</name>
+    <name>LC::Plugins::HistoryHolder::Core</name>
     <message>
         <location filename="core.cpp" line="67"/>
         <source>Entity/location</source>
@@ -30,7 +30,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::HistoryHolder::Plugin</name>
+    <name>LC::Plugins::HistoryHolder::Plugin</name>
     <message>
         <location filename="historyholder.cpp" line="56"/>
         <source>Holds history from various plugins</source>

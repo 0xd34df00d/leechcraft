@@ -55,7 +55,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::BrainSlugz::CheckTab</name>
+    <name>LC::LMP::BrainSlugz::CheckTab</name>
     <message>
         <location filename="checktab.cpp" line="159"/>
         <source>Start</source>
@@ -63,7 +63,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::BrainSlugz::Plugin</name>
+    <name>LC::LMP::BrainSlugz::Plugin</name>
     <message>
         <location filename="brainslugz.cpp" line="80"/>
         <source>Check if your collection misses some albums or EPs!</source>
@@ -71,7 +71,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::BrainSlugz::ProgressModelManager</name>
+    <name>LC::LMP::BrainSlugz::ProgressModelManager</name>
     <message numerus="yes">
         <location filename="progressmodelmanager.cpp" line="63"/>
         <source>Checking new releases of %n artist(s)...</source>

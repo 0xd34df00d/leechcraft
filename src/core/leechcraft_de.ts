@@ -357,7 +357,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::AboutDialog</name>
+    <name>LC::AboutDialog</name>
     <message>
         <location filename="aboutdialog.cpp" line="101"/>
         <source>Years: %1</source>
@@ -365,7 +365,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Application</name>
+    <name>LC::Application</name>
     <message>
         <location filename="application.cpp" line="157"/>
         <source>Could not create path %1/.leechcraft</source>
@@ -403,7 +403,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::CommonJobAdder</name>
+    <name>LC::CommonJobAdder</name>
     <message>
         <location filename="commonjobadder.cpp" line="59"/>
         <source>Select file</source>
@@ -411,7 +411,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Core</name>
+    <name>LC::Core</name>
     <message>
         <location filename="core.cpp" line="281"/>
         <source>No plugins are able to download &quot;%1&quot;</source>
@@ -444,7 +444,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::CoreInstanceObject</name>
+    <name>LC::CoreInstanceObject</name>
     <message>
         <location filename="coreinstanceobject.cpp" line="289"/>
         <source>LeechCraft Core module.</source>
@@ -513,7 +513,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::FilePicker</name>
+    <name>LC::FilePicker</name>
     <message>
         <location filename="../xmlsettingsdialog/filepicker.cpp" line="46"/>
         <source>Browse...</source>
@@ -532,7 +532,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::FontPicker</name>
+    <name>LC::FontPicker</name>
     <message>
         <location filename="../xmlsettingsdialog/fontpicker.cpp" line="45"/>
         <source>Choose font</source>
@@ -570,7 +570,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::HandlerChoiceDialog</name>
+    <name>LC::HandlerChoiceDialog</name>
     <message>
         <location filename="handlerchoicedialog.cpp" line="323"/>
         <source>Select save location</source>
@@ -578,7 +578,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::ItemHandlerCombobox</name>
+    <name>LC::ItemHandlerCombobox</name>
     <message>
         <location filename="../xmlsettingsdialog/itemhandlers/itemhandlercombobox.cpp" line="88"/>
         <source>More stuff...</source>
@@ -586,7 +586,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::MainWindow</name>
+    <name>LC::MainWindow</name>
     <message>
         <location filename="mainwindow.cpp" line="144"/>
         <source>F11</source>
@@ -615,7 +615,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::NetworkAccessManager</name>
+    <name>LC::NetworkAccessManager</name>
     <message>
         <location filename="networkaccessmanager.cpp" line="196"/>
         <location filename="networkaccessmanager.cpp" line="209"/>
@@ -634,7 +634,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::NewTabMenuManager</name>
+    <name>LC::NewTabMenuManager</name>
     <message>
         <location filename="newtabmenumanager.cpp" line="44"/>
         <source>New tab</source>
@@ -647,7 +647,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::PluginManager</name>
+    <name>LC::PluginManager</name>
     <message>
         <location filename="pluginmanager.cpp" line="75"/>
         <source>Name</source>
@@ -715,7 +715,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::PrefDelegate</name>
+    <name>LC::PrefDelegate</name>
     <message>
         <location filename="pluginmanagerdialog.cpp" line="65"/>
         <source>Configure...</source>
@@ -723,7 +723,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::SeparateTabWidget</name>
+    <name>LC::SeparateTabWidget</name>
     <message>
         <location filename="separatetabwidget.cpp" line="358"/>
         <source>Move tab to</source>
@@ -746,7 +746,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::SettingsTab</name>
+    <name>LC::SettingsTab</name>
     <message>
         <location filename="settingstab.cpp" line="54"/>
         <source>Settings bar</source>
@@ -797,7 +797,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::ShortcutManager</name>
+    <name>LC::ShortcutManager</name>
     <message>
         <location filename="shortcutmanager.cpp" line="79"/>
         <source>Name</source>
@@ -825,7 +825,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::SslErrorsDialog</name>
+    <name>LC::SslErrorsDialog</name>
     <message>
         <location filename="sslerrorsdialog.cpp" line="68"/>
         <source>Certificate</source>
@@ -931,7 +931,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::StartupWizard</name>
+    <name>LC::StartupWizard</name>
     <message>
         <location filename="startupwizard.cpp" line="44"/>
         <source>Startup wizard</source>
@@ -944,7 +944,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::TabManager</name>
+    <name>LC::TabManager</name>
     <message>
         <location filename="tabmanager.cpp" line="68"/>
         <source>Close all but this</source>
@@ -952,7 +952,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::TagsManager</name>
+    <name>LC::TagsManager</name>
     <message>
         <location filename="tagsmanager.cpp" line="45"/>
         <source>untagged</source>
@@ -960,7 +960,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::TagsViewer</name>
+    <name>LC::TagsViewer</name>
     <message>
         <location filename="tagsviewer.cpp" line="55"/>
         <source>Rename</source>
@@ -973,7 +973,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Util</name>
+    <name>LC::Util</name>
     <message>
         <location filename="../util/xsd/addressesmodelmanager.cpp" line="46"/>
         <source>Host</source>
@@ -986,7 +986,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Util::CategorySelector</name>
+    <name>LC::Util::CategorySelector</name>
     <message>
         <location filename="../util/tags/categoryselector.cpp" line="51"/>
         <source>Tags selector</source>
@@ -1004,7 +1004,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Util::ColorButton</name>
+    <name>LC::Util::ColorButton</name>
     <message>
         <location filename="../util/gui/colorbutton.cpp" line="70"/>
         <source>Select color</source>
@@ -1012,7 +1012,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Util::FlatToFoldersProxyModel</name>
+    <name>LC::Util::FlatToFoldersProxyModel</name>
     <message>
         <location filename="../util/models/flattofoldersproxymodel.cpp" line="111"/>
         <source>untagged</source>
@@ -1025,7 +1025,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Util::SvcAuth::VkAuthManager</name>
+    <name>LC::Util::SvcAuth::VkAuthManager</name>
     <message>
         <location filename="../util/svcauth/vkauthmanager.cpp" line="256"/>
         <source>VK.com authentication for %1 failed because of error %2. Report upstream please.</source>
@@ -1038,7 +1038,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Util::SvcAuth::VkCaptchaDialog</name>
+    <name>LC::Util::SvcAuth::VkCaptchaDialog</name>
     <message>
         <location filename="../util/svcauth/vkcaptchadialog.cpp" line="66"/>
         <source>CAPTCHA required for %1</source>
@@ -1046,7 +1046,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::WinWarnDialog</name>
+    <name>LC::WinWarnDialog</name>
     <message>
         <location filename="winwarndialog.cpp" line="49"/>
         <source>Seems like you are running Microsoft Windows.

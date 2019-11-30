@@ -25,7 +25,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Poshuku::Fua::FUA</name>
+    <name>LC::Poshuku::Fua::FUA</name>
     <message>
         <location filename="fua.cpp" line="58"/>
         <source>Domain</source>

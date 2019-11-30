@@ -3,7 +3,7 @@
 <TS version="2.0" language="de">
 <defaultcodec>UTF-8</defaultcodec>
 <context>
-    <name>LeechCraft::Plugins::DBusManager::Core</name>
+    <name>LC::Plugins::DBusManager::Core</name>
     <message>
         <location filename="core.cpp" line="72"/>
         <source>LeechCraft D-Bus general interface</source>
@@ -11,7 +11,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::DBusManager::DBusManager</name>
+    <name>LC::Plugins::DBusManager::DBusManager</name>
     <message>
         <location filename="dbusmanager.cpp" line="64"/>
         <source>DBus support for LeechCraft</source>
@@ -19,7 +19,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::DBusManager::General</name>
+    <name>LC::Plugins::DBusManager::General</name>
     <message>
         <location filename="general.cpp" line="58"/>
         <location filename="general.cpp" line="82"/>
@@ -33,7 +33,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::DBusManager::Tasks</name>
+    <name>LC::Plugins::DBusManager::Tasks</name>
     <message>
         <location filename="tasks.cpp" line="60"/>
         <location filename="tasks.cpp" line="83"/>

@@ -237,14 +237,14 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::AboutDialog</name>
+    <name>LC::AboutDialog</name>
     <message>
         <source>Years: %1</source>
         <translation>Годы: %1</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Application</name>
+    <name>LC::Application</name>
     <message>
         <source>Could not create path %1/.leechcraft</source>
         <translation>Невозможно создать путь %1/.leechcraft</translation>
@@ -275,7 +275,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::ColorPicker</name>
+    <name>LC::ColorPicker</name>
     <message>
         <source>Choose color</source>
         <translation>Выбрать цвет</translation>
@@ -286,14 +286,14 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::CommonJobAdder</name>
+    <name>LC::CommonJobAdder</name>
     <message>
         <source>Select file</source>
         <translation>Выберите файл</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Core</name>
+    <name>LC::Core</name>
     <message>
         <source>No plugins are able to download &quot;%1&quot;</source>
         <translation>Нет модулей, способных загрузить «%1»</translation>
@@ -320,7 +320,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::CoreInstanceObject</name>
+    <name>LC::CoreInstanceObject</name>
     <message>
         <source>LeechCraft Core module.</source>
         <translation>Модуль ядра LeechCraft.</translation>
@@ -375,7 +375,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::FilePicker</name>
+    <name>LC::FilePicker</name>
     <message>
         <source>Browse...</source>
         <translation>Обзор...</translation>
@@ -390,7 +390,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::FontPicker</name>
+    <name>LC::FontPicker</name>
     <message>
         <source>Choose font</source>
         <translation>Выберите шрифт</translation>
@@ -421,21 +421,21 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::HandlerChoiceDialog</name>
+    <name>LC::HandlerChoiceDialog</name>
     <message>
         <source>Select save location</source>
         <translation>Выберите место сохранения</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::ItemHandlerCombobox</name>
+    <name>LC::ItemHandlerCombobox</name>
     <message>
         <source>More stuff...</source>
         <translation>Больше такого...</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::MainWindow</name>
+    <name>LC::MainWindow</name>
     <message>
         <source>Do you really want to quit?</source>
         <translation>Вы действительно хотите выйти?</translation>
@@ -459,7 +459,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::MainWindowMenuManager</name>
+    <name>LC::MainWindowMenuManager</name>
     <message>
         <source>View</source>
         <translation>Вид</translation>
@@ -470,7 +470,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::NetworkAccessManager</name>
+    <name>LC::NetworkAccessManager</name>
     <message>
         <source>Could not create Core directory.</source>
         <translation>Невозможно создать каталог Ядра.</translation>
@@ -481,7 +481,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::NewTabMenuManager</name>
+    <name>LC::NewTabMenuManager</name>
     <message>
         <source>New tab</source>
         <translation>Новая вкладка</translation>
@@ -492,7 +492,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::PluginManager</name>
+    <name>LC::PluginManager</name>
     <message>
         <source>Name</source>
         <translation>Имя</translation>
@@ -555,14 +555,14 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::PrefDelegate</name>
+    <name>LC::PrefDelegate</name>
     <message>
         <source>Configure...</source>
         <translation>Настроить...</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::SeparateTabWidget</name>
+    <name>LC::SeparateTabWidget</name>
     <message>
         <source>Move tab to</source>
         <translation>Переместить вкладку</translation>
@@ -581,7 +581,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::SettingsTab</name>
+    <name>LC::SettingsTab</name>
     <message>
         <source>Settings bar</source>
         <translation>Панель инструментов параметров</translation>
@@ -616,14 +616,14 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::SettingsWidget</name>
+    <name>LC::SettingsWidget</name>
     <message>
         <source>Settings for %1</source>
         <translation>Параметры %1</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::ShortcutManager</name>
+    <name>LC::ShortcutManager</name>
     <message>
         <source>Name</source>
         <translation>Имя</translation>
@@ -646,14 +646,14 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::SplashScreen</name>
+    <name>LC::SplashScreen</name>
     <message>
         <source>(%1 of %2)</source>
         <translation>(%1 из %2)</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::StartupWizard</name>
+    <name>LC::StartupWizard</name>
     <message>
         <source>Startup wizard</source>
         <translation>Мастер первого запуска</translation>
@@ -664,21 +664,21 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::TabManager</name>
+    <name>LC::TabManager</name>
     <message>
         <source>Close all but this</source>
         <translation>Закрыть все кроме этой</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::TagsManager</name>
+    <name>LC::TagsManager</name>
     <message>
         <source>untagged</source>
         <translation>неотмеченное</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::TagsViewer</name>
+    <name>LC::TagsViewer</name>
     <message>
         <source>Rename</source>
         <translation>Переименовать</translation>
@@ -689,7 +689,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Util::AddressesModelManager</name>
+    <name>LC::Util::AddressesModelManager</name>
     <message>
         <source>Host</source>
         <translation>Хост</translation>
@@ -700,7 +700,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Util::CategorySelector</name>
+    <name>LC::Util::CategorySelector</name>
     <message>
         <source>Tags selector</source>
         <translation>Выбор тегов</translation>
@@ -715,14 +715,14 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Util::ColorButton</name>
+    <name>LC::Util::ColorButton</name>
     <message>
         <source>Select color</source>
         <translation>Выбрать цвет</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Util::ConsistencyChecker</name>
+    <name>LC::Util::ConsistencyChecker</name>
     <message>
         <source>Not enough available disk space.</source>
         <translation>Недостаточно места на диске.</translation>
@@ -749,7 +749,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Util::Dumper</name>
+    <name>LC::Util::Dumper</name>
     <message>
         <source>Dumping process crashed: %1.</source>
         <translation>Процесс выгрузки данных упал: %1.</translation>
@@ -768,7 +768,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Util::FlatToFoldersProxyModel</name>
+    <name>LC::Util::FlatToFoldersProxyModel</name>
     <message>
         <source>untagged</source>
         <translation>неотмеченное</translation>
@@ -779,7 +779,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Util::SvcAuth::VkAuthManager</name>
+    <name>LC::Util::SvcAuth::VkAuthManager</name>
     <message>
         <source>VK.com authentication for %1</source>
         <translation>Аутентификация ВКонтакте для %1</translation>
@@ -790,14 +790,14 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Util::SvcAuth::VkCaptchaDialog</name>
+    <name>LC::Util::SvcAuth::VkCaptchaDialog</name>
     <message>
         <source>CAPTCHA required for %1</source>
         <translation>Требуется CAPTCHA для %1</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::WinWarnDialog</name>
+    <name>LC::WinWarnDialog</name>
     <message>
         <source>Seems like you are running Microsoft Windows.
 

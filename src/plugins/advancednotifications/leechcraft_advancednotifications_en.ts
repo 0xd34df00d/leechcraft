@@ -48,7 +48,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::AdvancedNotifications::EnableSoundActionManager</name>
+    <name>LC::AdvancedNotifications::EnableSoundActionManager</name>
     <message>
         <location filename="enablesoundactionmanager.cpp" line="40"/>
         <source>Enable sound notifications</source>
@@ -56,7 +56,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::AdvancedNotifications::MatchConfigDialog</name>
+    <name>LC::AdvancedNotifications::MatchConfigDialog</name>
     <message>
         <location filename="matchconfigdialog.cpp" line="49"/>
         <source>Standard fields</source>
@@ -69,7 +69,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::AdvancedNotifications::NotificationRulesWidget</name>
+    <name>LC::AdvancedNotifications::NotificationRulesWidget</name>
     <message>
         <location filename="notificationruleswidget.cpp" line="97"/>
         <source>Field name</source>
@@ -124,7 +124,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::AdvancedNotifications::Plugin</name>
+    <name>LC::AdvancedNotifications::Plugin</name>
     <message>
         <location filename="advancednotifications.cpp" line="76"/>
         <source>Toggle Advanced Notifications rules...</source>
@@ -137,7 +137,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::AdvancedNotifications::RulesManager</name>
+    <name>LC::AdvancedNotifications::RulesManager</name>
     <message>
         <location filename="rulesmanager.cpp" line="362"/>
         <source>Event is due</source>
@@ -230,7 +230,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::AdvancedNotifications::SystemTrayHandler</name>
+    <name>LC::AdvancedNotifications::SystemTrayHandler</name>
     <message>
         <location filename="systemtrayhandler.cpp" line="252"/>
         <source>Dismiss</source>
@@ -238,7 +238,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::AdvancedNotifications::UnhandledNotificationsKeeper</name>
+    <name>LC::AdvancedNotifications::UnhandledNotificationsKeeper</name>
     <message>
         <location filename="unhandlednotificationskeeper.cpp" line="52"/>
         <source>Title</source>

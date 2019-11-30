@@ -304,7 +304,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Acetamide::ChannelCLEntry</name>
+    <name>LC::Azoth::Acetamide::ChannelCLEntry</name>
     <message>
         <location filename="channelclentry.cpp" line="68"/>
         <source>Role</source>
@@ -377,7 +377,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Acetamide::ChannelConfigWidget</name>
+    <name>LC::Azoth::Acetamide::ChannelConfigWidget</name>
     <message>
         <location filename="channelconfigwidget.cpp" line="57"/>
         <source>Ban mask</source>
@@ -409,7 +409,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Acetamide::ChannelHandler</name>
+    <name>LC::Azoth::Acetamide::ChannelHandler</name>
     <message>
         <location filename="channelhandler.cpp" line="277"/>
         <source>%1 has left the channel (%2)</source>
@@ -555,7 +555,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Acetamide::ChannelParticipantEntry</name>
+    <name>LC::Azoth::Acetamide::ChannelParticipantEntry</name>
     <message>
         <location filename="channelparticipantentry.cpp" line="50"/>
         <source>Information</source>
@@ -568,7 +568,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Acetamide::ChannelsListDialog</name>
+    <name>LC::Azoth::Acetamide::ChannelsListDialog</name>
     <message>
         <location filename="channelslistdialog.cpp" line="51"/>
         <source>Name</source>
@@ -586,7 +586,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Acetamide::ChannelsManager</name>
+    <name>LC::Azoth::Acetamide::ChannelsManager</name>
     <message>
         <location filename="channelsmanager.cpp" line="471"/>
         <source>%1 added to your ban list.</source>
@@ -609,7 +609,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Acetamide::ClientConnection</name>
+    <name>LC::Azoth::Acetamide::ClientConnection</name>
     <message>
         <location filename="clientconnection.cpp" line="135"/>
         <source>This channel is already joined.</source>
@@ -623,7 +623,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Acetamide::InviteChannelsDialog</name>
+    <name>LC::Azoth::Acetamide::InviteChannelsDialog</name>
     <message>
         <location filename="invitechannelsdialog.cpp" line="54"/>
         <source>Join</source>
@@ -656,7 +656,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Acetamide::IrcProtocol</name>
+    <name>LC::Azoth::Acetamide::IrcProtocol</name>
     <message>
         <location filename="ircprotocol.cpp" line="255"/>
         <source>This channel needs password.</source>
@@ -669,7 +669,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Acetamide::IrcServerCLEntry</name>
+    <name>LC::Azoth::Acetamide::IrcServerCLEntry</name>
     <message>
         <location filename="ircserverclentry.cpp" line="50"/>
         <source>Channels list</source>
@@ -682,7 +682,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Acetamide::IrcServerHandler</name>
+    <name>LC::Azoth::Acetamide::IrcServerHandler</name>
     <message>
         <location filename="ircserverhandler.cpp" line="548"/>
         <source>%1 is a %2</source>
@@ -760,7 +760,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Acetamide::IrcServerSocket</name>
+    <name>LC::Azoth::Acetamide::IrcServerSocket</name>
     <message>
         <location filename="ircserversocket.cpp" line="153"/>
         <source>Unknown encoding %1.</source>
@@ -768,7 +768,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Acetamide::NickServIdentifyWidget</name>
+    <name>LC::Azoth::Acetamide::NickServIdentifyWidget</name>
     <message>
         <location filename="nickservidentifywidget.cpp" line="53"/>
         <source>Server</source>
@@ -796,7 +796,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Acetamide::Plugin</name>
+    <name>LC::Azoth::Acetamide::Plugin</name>
     <message>
         <location filename="acetamide.cpp" line="91"/>
         <source>IRC protocol support.</source>
@@ -804,7 +804,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Acetamide::ServerParticipantEntry</name>
+    <name>LC::Azoth::Acetamide::ServerParticipantEntry</name>
     <message>
         <location filename="serverparticipantentry.cpp" line="71"/>
         <source>Private chats</source>
@@ -812,7 +812,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Acetamide::ServerResponseManager</name>
+    <name>LC::Azoth::Acetamide::ServerResponseManager</name>
     <message>
         <location filename="serverresponsemanager.cpp" line="367"/>
         <source> invites you to a channel </source>
@@ -854,7 +854,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Acetamide::VCardDialog</name>
+    <name>LC::Azoth::Acetamide::VCardDialog</name>
     <message>
         <location filename="vcarddialog.cpp" line="51"/>
         <source>VCard for %1</source>

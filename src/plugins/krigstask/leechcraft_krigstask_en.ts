@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="en_US">
 <context>
-    <name>LeechCraft::Krigstask::Plugin</name>
+    <name>LC::Krigstask::Plugin</name>
     <message>
         <location filename="krigstask.cpp" line="74"/>
         <source>Application switcher.</source>
@@ -10,7 +10,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Krigstask::TaskbarProxy</name>
+    <name>LC::Krigstask::TaskbarProxy</name>
     <message>
         <location filename="taskbarproxy.cpp" line="127"/>
         <source>Minimize</source>

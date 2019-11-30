@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="ru_RU">
 <context>
-    <name>LeechCraft::Lemon::Plugin</name>
+    <name>LC::Lemon::Plugin</name>
     <message>
         <location filename="lemon.cpp" line="82"/>
         <source>Global network status monitor.</source>
@@ -10,7 +10,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Lemon::TrafficDialog</name>
+    <name>LC::Lemon::TrafficDialog</name>
     <message>
         <location filename="trafficdialog.cpp" line="55"/>
         <source>RX</source>
@@ -63,7 +63,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Lemon::TrafficManager</name>
+    <name>LC::Lemon::TrafficManager</name>
     <message>
         <location filename="trafficmanager.cpp" line="251"/>
         <source>Download speed: %1/s</source>

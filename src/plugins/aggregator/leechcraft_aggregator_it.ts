@@ -1025,7 +1025,7 @@ Proprietario:</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Aggregator::Aggregator</name>
+    <name>LC::Aggregator::Aggregator</name>
     <message>
         <location filename="aggregator.cpp" line="117"/>
         <source>Aggregator</source>
@@ -1117,7 +1117,7 @@ Proprietario:</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Aggregator::ChannelsModel</name>
+    <name>LC::Aggregator::ChannelsModel</name>
     <message>
         <location filename="channelsmodel.cpp" line="62"/>
         <source>Feed</source>
@@ -1145,7 +1145,7 @@ Proprietario:</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Aggregator::Core</name>
+    <name>LC::Aggregator::Core</name>
     <message>
         <location filename="core.cpp" line="209"/>
         <source>Import error</source>
@@ -1359,7 +1359,7 @@ Proprietario:</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Aggregator::DBUpdateThreadWorker</name>
+    <name>LC::Aggregator::DBUpdateThreadWorker</name>
     <message numerus="yes">
         <location filename="dbupdatethreadworker.cpp" line="127"/>
         <source>Added channel &quot;%1&quot; (%n item(s))</source>
@@ -1393,7 +1393,7 @@ Proprietario:</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Aggregator::Export2FB2Dialog</name>
+    <name>LC::Aggregator::Export2FB2Dialog</name>
     <message>
         <location filename="export2fb2dialog.cpp" line="455"/>
         <source>Select save file</source>
@@ -1435,7 +1435,7 @@ Proprietario:</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Aggregator::ImportBinary</name>
+    <name>LC::Aggregator::ImportBinary</name>
     <message>
         <location filename="importbinary.cpp" line="114"/>
         <source>Select binary file</source>
@@ -1460,17 +1460,17 @@ Proprietario:</translation>
     </message>
     <message>
         <location filename="importbinary.cpp" line="156"/>
-        <source>Selected file %1 is not a valid LeechCraft::Aggregator exchange file.</source>
+        <source>Selected file %1 is not a valid LC::Aggregator exchange file.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="importbinary.cpp" line="169"/>
-        <source>Selected file %1 is a valid LeechCraft::Aggregator exchange file, but its version %2 is unknown</source>
+        <source>Selected file %1 is a valid LC::Aggregator exchange file, but its version %2 is unknown</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Aggregator::ImportOPML</name>
+    <name>LC::Aggregator::ImportOPML</name>
     <message>
         <location filename="importopml.cpp" line="94"/>
         <source>Select OPML file</source>
@@ -1505,7 +1505,7 @@ Proprietario:</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Aggregator::ItemsListModel</name>
+    <name>LC::Aggregator::ItemsListModel</name>
     <message>
         <location filename="itemslistmodel.cpp" line="51"/>
         <source>Name</source>
@@ -1557,7 +1557,7 @@ Proprietario:</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Aggregator::ItemsWidget</name>
+    <name>LC::Aggregator::ItemsWidget</name>
     <message>
         <location filename="itemswidget.cpp" line="125"/>
         <source>Name</source>
@@ -1882,7 +1882,7 @@ Proprietario:</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Aggregator::StartupFirstPage</name>
+    <name>LC::Aggregator::StartupFirstPage</name>
     <message>
         <location filename="startupfirstpage.cpp" line="42"/>
         <source>Set default options</source>
@@ -1890,7 +1890,7 @@ Proprietario:</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Aggregator::StartupSecondPage</name>
+    <name>LC::Aggregator::StartupSecondPage</name>
     <message>
         <location filename="startupsecondpage.cpp" line="47"/>
         <source>Set storage options</source>
@@ -1898,7 +1898,7 @@ Proprietario:</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Aggregator::StartupThirdPage</name>
+    <name>LC::Aggregator::StartupThirdPage</name>
     <message>
         <location filename="startupthirdpage.cpp" line="70"/>
         <source>Select feeds</source>

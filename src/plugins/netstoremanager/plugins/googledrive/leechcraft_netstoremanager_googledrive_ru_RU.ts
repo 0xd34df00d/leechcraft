@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="ru_RU">
 <context>
-    <name>LeechCraft::NetStoreManager::GoogleDrive::Account</name>
+    <name>LC::NetStoreManager::GoogleDrive::Account</name>
     <message>
         <location filename="account.cpp" line="156"/>
         <source>Are you sure you want to delete all selected items? This action cannot be undone.&lt;br&gt;&lt;i&gt;Note: if you delete a directory then all files in it will also be deleted.&lt;/i&gt;</source>
@@ -25,7 +25,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::NetStoreManager::GoogleDrive::AuthManager</name>
+    <name>LC::NetStoreManager::GoogleDrive::AuthManager</name>
     <message>
         <location filename="authmanager.cpp" line="79"/>
         <source>A browser window will pop up with a request for permissions to access your Google Drive account. Once you accept it, a verification code will appear. Enter that verification code in the box below:</source>
@@ -38,7 +38,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::NetStoreManager::GoogleDrive::Core</name>
+    <name>LC::NetStoreManager::GoogleDrive::Core</name>
     <message>
         <location filename="core.cpp" line="74"/>
         <source>Import error</source>
@@ -51,7 +51,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::NetStoreManager::GoogleDrive::DriveManager</name>
+    <name>LC::NetStoreManager::GoogleDrive::DriveManager</name>
     <message>
         <location filename="drivemanager.cpp" line="284"/>
         <source>Initializing...</source>
@@ -69,7 +69,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::NetStoreManager::GoogleDrive::Plugin</name>
+    <name>LC::NetStoreManager::GoogleDrive::Plugin</name>
     <message>
         <location filename="googledrive.cpp" line="98"/>
         <source>Support for the GoogleDrive for NetStoreManager plugin.</source>
@@ -77,7 +77,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::NetStoreManager::GoogleDrive::UploadManager</name>
+    <name>LC::NetStoreManager::GoogleDrive::UploadManager</name>
     <message>
         <location filename="uploadmanager.cpp" line="121"/>
         <source>Finished</source>

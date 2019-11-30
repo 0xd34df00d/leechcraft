@@ -23,7 +23,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::Fradj</name>
+    <name>LC::LMP::Fradj</name>
     <message>
         <location filename="eqbandwidget.cpp" line="51"/>
         <source>Hz</source>
@@ -31,7 +31,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::Fradj::EqConfiguratorDialog</name>
+    <name>LC::LMP::Fradj::EqConfiguratorDialog</name>
     <message>
         <location filename="eqconfiguratordialog.cpp" line="110"/>
         <source>Frequency, Hz</source>
@@ -44,7 +44,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::Fradj::Plugin</name>
+    <name>LC::LMP::Fradj::Plugin</name>
     <message>
         <location filename="fradj.cpp" line="63"/>
         <source>Configurable equalizer effect for LMP.</source>

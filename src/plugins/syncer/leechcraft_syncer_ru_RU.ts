@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="ru_RU">
 <context>
-    <name>LeechCraft::Plugins::Syncer::Core</name>
+    <name>LC::Plugins::Syncer::Core</name>
     <message>
         <location filename="core.cpp" line="206"/>
         <location filename="core.cpp" line="222"/>
@@ -50,7 +50,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::Syncer::Plugin</name>
+    <name>LC::Plugins::Syncer::Plugin</name>
     <message>
         <location filename="syncer.cpp" line="69"/>
         <source>Synchronization plugin for LeechCraft</source>

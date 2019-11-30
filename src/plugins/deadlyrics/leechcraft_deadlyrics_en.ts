@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="en_US">
 <context>
-    <name>LeechCraft::DeadLyrics::DeadLyRicS</name>
+    <name>LC::DeadLyrics::DeadLyRicS</name>
     <message>
         <location filename="deadlyrics.cpp" line="72"/>
         <source>Song lyrics searcher.</source>
@@ -16,7 +16,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::DeadLyrics::HascirylSearcher</name>
+    <name>LC::DeadLyrics::HascirylSearcher</name>
     <message>
         <location filename="hascirylsearcher.cpp" line="131"/>
         <source>Lyrics not found.</source>

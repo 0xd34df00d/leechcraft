@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="ru_RU">
 <context>
-    <name>LeechCraft::Azoth::Xtazy::Plugin</name>
+    <name>LC::Azoth::Xtazy::Plugin</name>
     <message>
         <location filename="xtazy.cpp" line="66"/>
         <source>Sends the metadata of the currently plaing tune to the chat.</source>

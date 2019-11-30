@@ -10,7 +10,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::ChatHistory::ChatHistoryWidget</name>
+    <name>LC::Azoth::ChatHistory::ChatHistoryWidget</name>
     <message>
         <location filename="chathistorywidget.cpp" line="62"/>
         <source>Chat history</source>
@@ -68,7 +68,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::ChatHistory::Plugin</name>
+    <name>LC::Azoth::ChatHistory::Plugin</name>
     <message>
         <location filename="chathistory.cpp" line="64"/>
         <source>Chat history viewer for the Azoth IM</source>
@@ -103,7 +103,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::ChatHistory::Storage</name>
+    <name>LC::Azoth::ChatHistory::Storage</name>
     <message>
         <location filename="storage.cpp" line="94"/>
         <source>Unable to open Azoth history database.</source>
@@ -111,7 +111,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::ChatHistory::StorageManager</name>
+    <name>LC::Azoth::ChatHistory::StorageManager</name>
     <message>
         <location filename="storagemanager.cpp" line="237"/>
         <source>Unable to initialize permanent storage. %1.</source>

@@ -2,21 +2,21 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="uk_UA">
 <context>
-    <name>LeechCraft::Plugins::DBusManager::Core</name>
+    <name>LC::Plugins::DBusManager::Core</name>
     <message>
         <source>LeechCraft D-Bus general interface</source>
         <translation>Головний інтерфейс LeechCraft для системи D-Bus</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::DBusManager::DBusManager</name>
+    <name>LC::Plugins::DBusManager::DBusManager</name>
     <message>
         <source>DBus support for LeechCraft</source>
         <translation>Підтримка D-Bus для LeechCraft</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::DBusManager::General</name>
+    <name>LC::Plugins::DBusManager::General</name>
     <message>
         <source>Not found plugin %1.</source>
         <translation>Плагін %1 не знайдено.</translation>
@@ -27,7 +27,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::DBusManager::Tasks</name>
+    <name>LC::Plugins::DBusManager::Tasks</name>
     <message>
         <source>Not found job holder %1.</source>
         <translation>Не знайдено плагін з задачами %1.</translation>

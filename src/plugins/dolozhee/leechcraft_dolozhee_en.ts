@@ -150,7 +150,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Dolozhee::ChooseUserPage</name>
+    <name>LC::Dolozhee::ChooseUserPage</name>
     <message>
         <location filename="chooseuserpage.cpp" line="78"/>
         <source>Please enter password for user %1:</source>
@@ -158,7 +158,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Dolozhee::FileAttachPage</name>
+    <name>LC::Dolozhee::FileAttachPage</name>
     <message>
         <location filename="fileattachpage.cpp" line="46"/>
         <source>Path</source>
@@ -181,7 +181,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Dolozhee::FinalPage</name>
+    <name>LC::Dolozhee::FinalPage</name>
     <message>
         <location filename="finalpage.cpp" line="98"/>
         <source>Sending %1...</source>
@@ -219,7 +219,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Dolozhee::Plugin</name>
+    <name>LC::Dolozhee::Plugin</name>
     <message>
         <location filename="dolozhee.cpp" line="49"/>
         <source>Report an issue...</source>
@@ -232,7 +232,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Dolozhee::PreviewPage</name>
+    <name>LC::Dolozhee::PreviewPage</name>
     <message>
         <location filename="previewpage.cpp" line="49"/>
         <source>Send request</source>
@@ -250,7 +250,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Dolozhee::ReportWizard</name>
+    <name>LC::Dolozhee::ReportWizard</name>
     <message>
         <location filename="reportwizard.cpp" line="61"/>
         <source>Issue reporter</source>
@@ -258,7 +258,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Dolozhee::UserStatusPage</name>
+    <name>LC::Dolozhee::UserStatusPage</name>
     <message>
         <location filename="userstatuspage.cpp" line="61"/>
         <source>Registering %1...</source>

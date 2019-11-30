@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="en_US">
 <context>
-    <name>LeechCraft::Azoth::StandardStyles::Plugin</name>
+    <name>LC::Azoth::StandardStyles::Plugin</name>
     <message>
         <location filename="standardstyles.cpp" line="69"/>
         <source>Support for standard Azoth chat styles.</source>

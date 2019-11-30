@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="en_US">
 <context>
-    <name>LeechCraft::Devmon::Plugin</name>
+    <name>LC::Devmon::Plugin</name>
     <message>
         <location filename="devmon.cpp" line="67"/>
         <source>USB non-storage devices monitor plugin.</source>

@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="ru_RU">
 <context>
-    <name>LeechCraft::Azoth::BirthdayNotifier::Plugin</name>
+    <name>LC::Azoth::BirthdayNotifier::Plugin</name>
     <message>
         <location filename="birthdaynotifier.cpp" line="75"/>
         <source>Notifies about birthdays of your buddies.</source>

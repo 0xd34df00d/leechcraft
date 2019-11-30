@@ -81,7 +81,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Monocle::AnnManager</name>
+    <name>LC::Monocle::AnnManager</name>
     <message>
         <location filename="annmanager.cpp" line="72"/>
         <source>Page %1</source>
@@ -89,7 +89,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Monocle::AnnTreeDelegate</name>
+    <name>LC::Monocle::AnnTreeDelegate</name>
     <message>
         <location filename="anntreedelegate.cpp" line="158"/>
         <source>Author</source>
@@ -102,7 +102,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Monocle::AnnWidget</name>
+    <name>LC::Monocle::AnnWidget</name>
     <message>
         <location filename="annwidget.cpp" line="52"/>
         <source>Previous annotation</source>
@@ -120,7 +120,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Monocle::BookmarksWidget</name>
+    <name>LC::Monocle::BookmarksWidget</name>
     <message>
         <location filename="bookmarkswidget.cpp" line="52"/>
         <source>Add bookmark</source>
@@ -133,7 +133,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Monocle::DefaultBackendManager</name>
+    <name>LC::Monocle::DefaultBackendManager</name>
     <message>
         <location filename="defaultbackendmanager.cpp" line="50"/>
         <source>Backends</source>
@@ -146,7 +146,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Monocle::DocInfoDialog</name>
+    <name>LC::Monocle::DocInfoDialog</name>
     <message>
         <location filename="docinfodialog.cpp" line="77"/>
         <source>Name</source>
@@ -164,7 +164,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Monocle::DocumentBookmarksManager</name>
+    <name>LC::Monocle::DocumentBookmarksManager</name>
     <message>
         <location filename="documentbookmarksmanager.cpp" line="92"/>
         <source>Page %1</source>
@@ -182,7 +182,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Monocle::DocumentTab</name>
+    <name>LC::Monocle::DocumentTab</name>
     <message>
         <location filename="documenttab.cpp" line="567"/>
         <source>Open...</source>
@@ -386,7 +386,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Monocle::NavigationHistory</name>
+    <name>LC::Monocle::NavigationHistory</name>
     <message>
         <location filename="navigationhistory.cpp" line="82"/>
         <source>Page %1 (%2)</source>
@@ -394,7 +394,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Monocle::PageGraphicsItem</name>
+    <name>LC::Monocle::PageGraphicsItem</name>
     <message>
         <location filename="pagegraphicsitem.cpp" line="203"/>
         <source>Rotate 90 degrees counter-clockwise</source>
@@ -412,7 +412,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Monocle::Plugin</name>
+    <name>LC::Monocle::Plugin</name>
     <message>
         <location filename="monocle.cpp" line="75"/>
         <source>Go to previous annotation</source>
@@ -430,7 +430,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Monocle::RecentlyOpenedManager</name>
+    <name>LC::Monocle::RecentlyOpenedManager</name>
     <message>
         <location filename="recentlyopenedmanager.cpp" line="56"/>
         <source>Recently opened</source>
@@ -438,7 +438,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Monocle::SearchTabWidget</name>
+    <name>LC::Monocle::SearchTabWidget</name>
     <message>
         <location filename="searchtabwidget.cpp" line="82"/>
         <source>Page %1</source>

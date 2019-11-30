@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="en_US">
 <context>
-    <name>LeechCraft::MusicZombie::PendingDisco</name>
+    <name>LC::MusicZombie::PendingDisco</name>
     <message>
         <location filename="pendingdisco.cpp" line="114"/>
         <source>Error getting candidate releases list.</source>
@@ -25,7 +25,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::MusicZombie::Plugin</name>
+    <name>LC::MusicZombie::Plugin</name>
     <message>
         <location filename="musiczombie.cpp" line="77"/>
         <source>Client for the MusicBrainz.org service.</source>

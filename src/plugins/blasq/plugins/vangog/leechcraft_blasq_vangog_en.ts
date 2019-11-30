@@ -35,7 +35,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Blasq::Vangog::AuthManager</name>
+    <name>LC::Blasq::Vangog::AuthManager</name>
     <message>
         <location filename="authmanager.cpp" line="84"/>
         <source>A browser window will pop up with a request for permissions to access your Google account. Once you accept it, a verification code will appear. Enter that verification code in the box below:</source>
@@ -48,7 +48,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Blasq::Vangog::PicasaAccount</name>
+    <name>LC::Blasq::Vangog::PicasaAccount</name>
     <message>
         <location filename="picasaaccount.cpp" line="68"/>
         <location filename="picasaaccount.cpp" line="364"/>
@@ -83,7 +83,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Blasq::Vangog::Plugin</name>
+    <name>LC::Blasq::Vangog::Plugin</name>
     <message>
         <location filename="vangog.cpp" line="67"/>
         <source>Picasa support module for Blasq.</source>

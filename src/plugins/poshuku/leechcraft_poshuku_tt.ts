@@ -204,7 +204,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Poshuku::AddToFavoritesDialog</name>
+    <name>LC::Poshuku::AddToFavoritesDialog</name>
     <message>
         <location filename="addtofavoritesdialog.cpp" line="39"/>
         <source>untagged</source>
@@ -212,7 +212,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Poshuku::BookmarksWidget</name>
+    <name>LC::Poshuku::BookmarksWidget</name>
     <message>
         <location filename="bookmarkswidget.cpp" line="136"/>
         <source>Change URL</source>
@@ -230,7 +230,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Poshuku::BrowserWidget</name>
+    <name>LC::Poshuku::BrowserWidget</name>
     <message>
         <location filename="browserwidget.cpp" line="113"/>
         <source>Bookmarks</source>
@@ -455,7 +455,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Poshuku::CookiesEditModel</name>
+    <name>LC::Poshuku::CookiesEditModel</name>
     <message>
         <location filename="cookieseditmodel.cpp" line="39"/>
         <source>Domain (cookie name)</source>
@@ -463,7 +463,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Poshuku::Core</name>
+    <name>LC::Poshuku::Core</name>
     <message>
         <location filename="core.cpp" line="86"/>
         <source>Poshuku</source>
@@ -507,7 +507,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Poshuku::CustomWebPage</name>
+    <name>LC::Poshuku::CustomWebPage</name>
     <message>
         <location filename="customwebpage.cpp" line="141"/>
         <source>&lt;a href=&quot;http://downforeveryoneorjustme.com/{host}&quot; target=&quot;_blank&quot;&gt;check&lt;/a&gt; if the site &lt;strong&gt;{host}&lt;/strong&gt; is down for you only;</source>
@@ -617,7 +617,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Poshuku::CustomWebView</name>
+    <name>LC::Poshuku::CustomWebView</name>
     <message>
         <location filename="customwebview.cpp" line="173"/>
         <location filename="customwebview.cpp" line="182"/>
@@ -772,7 +772,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Poshuku::FavoritesChecker</name>
+    <name>LC::Poshuku::FavoritesChecker</name>
     <message>
         <location filename="favoriteschecker.cpp" line="36"/>
         <source>Checking Favorites...</source>
@@ -825,7 +825,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Poshuku::FavoritesModel</name>
+    <name>LC::Poshuku::FavoritesModel</name>
     <message>
         <location filename="favoritesmodel.cpp" line="43"/>
         <source>Title</source>
@@ -849,7 +849,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Poshuku::HistoryModel</name>
+    <name>LC::Poshuku::HistoryModel</name>
     <message>
         <location filename="historymodel.cpp" line="99"/>
         <source>Title</source>
@@ -867,7 +867,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Poshuku::ImportEntityHandler</name>
+    <name>LC::Poshuku::ImportEntityHandler</name>
     <message>
         <location filename="importentityhandler.cpp" line="42"/>
         <source>Importing history...</source>
@@ -890,7 +890,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Poshuku::Poshuku</name>
+    <name>LC::Poshuku::Poshuku</name>
     <message>
         <location filename="poshuku.cpp" line="114"/>
         <source>Import XBEL...</source>
@@ -933,7 +933,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Poshuku::ScreenShotSaveDialog</name>
+    <name>LC::Poshuku::ScreenShotSaveDialog</name>
     <message>
         <location filename="screenshotsavedialog.cpp" line="82"/>
         <source>File size unknown</source>
@@ -941,7 +941,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Poshuku::SearchText</name>
+    <name>LC::Poshuku::SearchText</name>
     <message>
         <location filename="searchtext.cpp" line="33"/>
         <source>Search %1 with:</source>

@@ -1,6 +1,6 @@
 <?xml version="1.0" ?><!DOCTYPE TS><TS language="uk_UA" version="2.0">
 <context>
-    <name>LeechCraft::Azoth::Rosenthal::Plugin</name>
+    <name>LC::Azoth::Rosenthal::Plugin</name>
     <message>
         <location filename="rosenthal.cpp" line="74"/>
         <source>Provides spellchecking for Azoth.</source>

@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="ru_RU">
 <context>
-    <name>LeechCraft::Azoth::Autopaste::ActionsStorage</name>
+    <name>LC::Azoth::Autopaste::ActionsStorage</name>
     <message>
         <location filename="actionsstorage.cpp" line="54"/>
         <source>Paste to pastebin...</source>
@@ -10,7 +10,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Autopaste::PasteServiceBase</name>
+    <name>LC::Azoth::Autopaste::PasteServiceBase</name>
     <message>
         <location filename="pasteservicebase.cpp" line="76"/>
         <source>Text pasted</source>
@@ -23,7 +23,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Autopaste::Plugin</name>
+    <name>LC::Azoth::Autopaste::Plugin</name>
     <message>
         <location filename="autopaste.cpp" line="89"/>
         <source>Detects long messages and suggests pasting them to a pastebin.</source>

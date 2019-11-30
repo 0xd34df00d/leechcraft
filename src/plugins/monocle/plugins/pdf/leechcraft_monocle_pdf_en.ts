@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="en_US">
 <context>
-    <name>LeechCraft::Monocle::PDF::Document</name>
+    <name>LC::Monocle::PDF::Document</name>
     <message>
         <location filename="document.cpp" line="282"/>
         <source>saving encrypted documents is not supported</source>
@@ -10,7 +10,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Monocle::PDF::Plugin</name>
+    <name>LC::Monocle::PDF::Plugin</name>
     <message>
         <location filename="pdf.cpp" line="72"/>
         <source>PDF backend for Monocle.</source>

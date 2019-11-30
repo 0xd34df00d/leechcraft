@@ -1,6 +1,6 @@
 <?xml version="1.0" ?><!DOCTYPE TS><TS language="uk_UA" version="2.0">
 <context>
-    <name>LeechCraft::Kinotify::Plugin</name>
+    <name>LC::Kinotify::Plugin</name>
     <message>
         <location filename="kinotify.cpp" line="78"/>
         <source>Fancy Kinetic notifications.</source>

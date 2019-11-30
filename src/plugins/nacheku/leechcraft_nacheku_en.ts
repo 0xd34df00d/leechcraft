@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="en_US">
 <context>
-    <name>LeechCraft::Nacheku::Plugin</name>
+    <name>LC::Nacheku::Plugin</name>
     <message>
         <location filename="nacheku.cpp" line="79"/>
         <source>Nacheku watches clipboard for links and a directory for files.</source>

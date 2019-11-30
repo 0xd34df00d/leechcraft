@@ -71,7 +71,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Poleemery::AccountsTab</name>
+    <name>LC::Poleemery::AccountsTab</name>
     <message>
         <location filename="accountstab.cpp" line="46"/>
         <source>Account</source>
@@ -89,7 +89,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Poleemery::CurrenciesManager</name>
+    <name>LC::Poleemery::CurrenciesManager</name>
     <message>
         <location filename="currenciesmanager.cpp" line="58"/>
         <source>Code</source>
@@ -102,7 +102,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Poleemery::EntriesModel</name>
+    <name>LC::Poleemery::EntriesModel</name>
     <message>
         <location filename="entriesmodel.cpp" line="47"/>
         <source>Date</source>
@@ -165,7 +165,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Poleemery::OperationPropsDialog</name>
+    <name>LC::Poleemery::OperationPropsDialog</name>
     <message>
         <location filename="operationpropsdialog.cpp" line="169"/>
         <source>Update prices</source>
@@ -178,7 +178,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Poleemery::OperationsTab</name>
+    <name>LC::Poleemery::OperationsTab</name>
     <message>
         <location filename="operationstab.cpp" line="50"/>
         <source>Poleemery</source>
@@ -201,7 +201,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Poleemery::Plugin</name>
+    <name>LC::Poleemery::Plugin</name>
     <message>
         <location filename="poleemery.cpp" line="57"/>
         <source>Finances operations</source>

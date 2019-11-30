@@ -33,7 +33,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::AdvancedNotifications::EnableSoundActionManager</name>
+    <name>LC::AdvancedNotifications::EnableSoundActionManager</name>
     <message>
         <location filename="enablesoundactionmanager.cpp" line="40"/>
         <source>Enable sound notifications</source>
@@ -41,7 +41,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::AdvancedNotifications::MatchConfigDialog</name>
+    <name>LC::AdvancedNotifications::MatchConfigDialog</name>
     <message>
         <location filename="matchconfigdialog.cpp" line="48"/>
         <source>Standard fields</source>
@@ -54,7 +54,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::AdvancedNotifications::NotificationRulesWidget</name>
+    <name>LC::AdvancedNotifications::NotificationRulesWidget</name>
     <message>
         <location filename="notificationruleswidget.cpp" line="87"/>
         <source>Field name</source>
@@ -104,7 +104,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::AdvancedNotifications::Plugin</name>
+    <name>LC::AdvancedNotifications::Plugin</name>
     <message>
         <location filename="advancednotifications.cpp" line="77"/>
         <source>Toggle Advanced Notifications rules...</source>
@@ -117,7 +117,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::AdvancedNotifications::RulesManager</name>
+    <name>LC::AdvancedNotifications::RulesManager</name>
     <message>
         <location filename="rulesmanager.cpp" line="307"/>
         <source>Event is due</source>
@@ -210,7 +210,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::AdvancedNotifications::SystemTrayHandler</name>
+    <name>LC::AdvancedNotifications::SystemTrayHandler</name>
     <message>
         <location filename="systemtrayhandler.cpp" line="225"/>
         <source>Dismiss</source>

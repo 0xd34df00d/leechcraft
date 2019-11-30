@@ -15,7 +15,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::KBSwitch::LayoutsConfigWidget</name>
+    <name>LC::KBSwitch::LayoutsConfigWidget</name>
     <message>
         <location filename="layoutsconfigwidget.cpp" line="134"/>
         <source>Code</source>
@@ -33,7 +33,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::KBSwitch::OptionsConfigWidget</name>
+    <name>LC::KBSwitch::OptionsConfigWidget</name>
     <message>
         <location filename="optionsconfigwidget.cpp" line="47"/>
         <source>Code</source>
@@ -46,7 +46,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::KBSwitch::Plugin</name>
+    <name>LC::KBSwitch::Plugin</name>
     <message>
         <location filename="kbswitch.cpp" line="112"/>
         <source>Provides keyboard layout configurator and plugin- or tab-grained layout control.</source>

@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="en_US">
 <context>
-    <name>LeechCraft::Azoth::AdiumStyles::Plugin</name>
+    <name>LC::Azoth::AdiumStyles::Plugin</name>
     <message>
         <location filename="adiumstyles.cpp" line="68"/>
         <source>Support for Adium chat styles.</source>

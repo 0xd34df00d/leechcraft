@@ -30,7 +30,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Intermutko::AcceptLangWidget</name>
+    <name>LC::Intermutko::AcceptLangWidget</name>
     <message>
         <location filename="acceptlangwidget.cpp" line="159"/>
         <source>Do you want to add an accepted language without any country specified as a fallback?</source>
@@ -38,7 +38,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Intermutko::Plugin</name>
+    <name>LC::Intermutko::Plugin</name>
     <message>
         <location filename="intermutko.cpp" line="77"/>
         <source>Provides fine-grained tuning for the Accept-Language HTTP header.</source>

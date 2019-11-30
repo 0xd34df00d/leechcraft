@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="en_US">
 <context>
-    <name>LeechCraft::vlc::PlaylistModel</name>
+    <name>LC::vlc::PlaylistModel</name>
     <message>
         <location filename="playlistmodel.cpp" line="53"/>
         <source>Name</source>
@@ -15,7 +15,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::vlc::PlaylistTitleWidget</name>
+    <name>LC::vlc::PlaylistTitleWidget</name>
     <message>
         <location filename="playlisttitlewidget.cpp" line="45"/>
         <source>Playlist</source>
@@ -23,7 +23,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::vlc::Plugin</name>
+    <name>LC::vlc::Plugin</name>
     <message>
         <location filename="vlc.cpp" line="55"/>
         <source>Navigate left in DVD menu</source>
@@ -106,7 +106,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::vlc::VlcWidget</name>
+    <name>LC::vlc::VlcWidget</name>
     <message>
         <location filename="vlcwidget.cpp" line="281"/>
         <location filename="vlcwidget.cpp" line="293"/>

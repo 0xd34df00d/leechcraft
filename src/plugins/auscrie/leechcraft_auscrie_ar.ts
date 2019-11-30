@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="ar_SA">
 <context>
-    <name>LeechCraft::Plugins::Auscrie::Plugin</name>
+    <name>LC::Plugins::Auscrie::Plugin</name>
     <message>
         <location filename="auscrie.cpp" line="45"/>
         <source>Make a screenshot</source>
@@ -25,7 +25,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::Auscrie::Poster</name>
+    <name>LC::Plugins::Auscrie::Poster</name>
     <message>
         <location filename="poster.cpp" line="189"/>
         <source>Page parse failed</source>

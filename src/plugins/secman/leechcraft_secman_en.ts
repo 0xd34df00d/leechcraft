@@ -10,7 +10,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::SecMan::ContentsDisplayDialog</name>
+    <name>LC::SecMan::ContentsDisplayDialog</name>
     <message>
         <location filename="contentsdisplaydialog.cpp" line="89"/>
         <source>Key index</source>
@@ -23,7 +23,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::SecMan::Plugin</name>
+    <name>LC::SecMan::Plugin</name>
     <message>
         <location filename="secman.cpp" line="48"/>
         <source>Display storages&apos; contents</source>

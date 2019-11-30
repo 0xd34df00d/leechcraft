@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="en_US">
 <context>
-    <name>LeechCraft::Mellonetray::Plugin</name>
+    <name>LC::Mellonetray::Plugin</name>
     <message>
         <location filename="mellonetray.cpp" line="73"/>
         <source>System-wide tray area.</source>

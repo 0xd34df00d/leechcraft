@@ -1,6 +1,6 @@
 <?xml version="1.0" ?><!DOCTYPE TS><TS language="uk_UA" version="2.0">
 <context>
-    <name>LeechCraft::GmailNotifier::GmailChecker</name>
+    <name>LC::GmailNotifier::GmailChecker</name>
     <message>
         <location filename="gmailchecker.cpp" line="79"/>
         <location filename="gmailchecker.cpp" line="103"/>
@@ -55,7 +55,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::GmailNotifier::GmailNotifier</name>
+    <name>LC::GmailNotifier::GmailNotifier</name>
     <message>
         <location filename="gmailnotifier.cpp" line="97"/>
         <source>Google mail notification plugin</source>

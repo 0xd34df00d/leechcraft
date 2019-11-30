@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="ru_RU">
 <context>
-    <name>LeechCraft::TouchStreams::AlbumsManager</name>
+    <name>LC::TouchStreams::AlbumsManager</name>
     <message>
         <location filename="albumsmanager.cpp" line="80"/>
         <location filename="albumsmanager.cpp" line="101"/>
@@ -16,7 +16,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::TouchStreams::AuthCloseHandler</name>
+    <name>LC::TouchStreams::AuthCloseHandler</name>
     <message>
         <location filename="authclosehandler.cpp" line="53"/>
         <source>Shall TouchStreams ask for VKontakte authentication next time?&lt;br/&gt;&lt;br/&gt;You can always reauthenticate later.</source>
@@ -25,7 +25,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::TouchStreams::FriendsManager</name>
+    <name>LC::TouchStreams::FriendsManager</name>
     <message>
         <location filename="friendsmanager.cpp" line="70"/>
         <source>VKontakte: friends</source>
@@ -43,7 +43,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::TouchStreams::Plugin</name>
+    <name>LC::TouchStreams::Plugin</name>
     <message>
         <location filename="touchstreams.cpp" line="106"/>
         <source>VK.com music streamer.</source>
@@ -56,7 +56,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::TouchStreams::RecsManager</name>
+    <name>LC::TouchStreams::RecsManager</name>
     <message>
         <location filename="recsmanager.cpp" line="58"/>
         <source>VKontakte: recommendations</source>

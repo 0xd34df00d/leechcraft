@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="en_US">
 <context>
-    <name>LeechCraft::Azoth::Abbrev::AbbrevsManager</name>
+    <name>LC::Azoth::Abbrev::AbbrevsManager</name>
     <message>
         <location filename="abbrevsmanager.cpp" line="52"/>
         <source>Abbreviation with this pattern already exists.</source>
@@ -25,7 +25,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Abbrev::Plugin</name>
+    <name>LC::Azoth::Abbrev::Plugin</name>
     <message>
         <location filename="abbrev.cpp" line="69"/>
         <source>Adds a new abbreviation to the list of abbreviations.</source>
@@ -93,7 +93,7 @@ Removes a previously added abbrevation either by its _pattern_ or by its _index_
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Abbrev::ShortcutsManager</name>
+    <name>LC::Azoth::Abbrev::ShortcutsManager</name>
     <message>
         <location filename="shortcutsmanager.cpp" line="76"/>
         <source>Expand abbreviations in current message edit text.</source>

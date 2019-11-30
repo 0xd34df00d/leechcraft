@@ -269,7 +269,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Snails</name>
+    <name>LC::Snails</name>
     <message>
         <location filename="accountthreadworker.cpp" line="578"/>
         <source>Fetching messages in %1...</source>
@@ -277,7 +277,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Snails::Account</name>
+    <name>LC::Snails::Account</name>
     <message>
         <location filename="account.cpp" line="81"/>
         <source>Connection failed for account %1: certificate check failed. %2</source>
@@ -305,7 +305,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Snails::AccountAddWizard</name>
+    <name>LC::Snails::AccountAddWizard</name>
     <message>
         <location filename="accountaddwizard.cpp" line="279"/>
         <source>Account creation wizard</source>
@@ -313,7 +313,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Snails::AccountConfigDialog</name>
+    <name>LC::Snails::AccountConfigDialog</name>
     <message>
         <location filename="accountconfigdialog.cpp" line="42"/>
         <source>Folders to sync</source>
@@ -321,7 +321,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Snails::AccountThreadWorker</name>
+    <name>LC::Snails::AccountThreadWorker</name>
     <message>
         <location filename="accountthreadworker.cpp" line="610"/>
         <source>Fetching message IDs in %1...</source>
@@ -344,7 +344,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Snails::AccountsManager</name>
+    <name>LC::Snails::AccountsManager</name>
     <message>
         <location filename="accountsmanager.cpp" line="50"/>
         <source>Name</source>
@@ -357,7 +357,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Snails::ComposeMessageTab</name>
+    <name>LC::Snails::ComposeMessageTab</name>
     <message numerus="yes">
         <location filename="composemessagetab.cpp" line="402"/>
         <source>Attached %n files(s) from the source message.</source>
@@ -449,7 +449,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Snails::ComposeMessageTabFactory</name>
+    <name>LC::Snails::ComposeMessageTabFactory</name>
     <message>
         <location filename="composemessagetabfactory.cpp" line="93"/>
         <source>Unable to fetch message: %1.</source>
@@ -457,7 +457,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Snails::FoldersModel</name>
+    <name>LC::Snails::FoldersModel</name>
     <message>
         <location filename="foldersmodel.cpp" line="97"/>
         <source>Folder</source>
@@ -470,7 +470,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Snails::GMailServicePage</name>
+    <name>LC::Snails::GMailServicePage</name>
     <message>
         <location filename="accountaddwizard.cpp" line="214"/>
         <source>Login:</source>
@@ -478,7 +478,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Snails::MailModel</name>
+    <name>LC::Snails::MailModel</name>
     <message>
         <location filename="mailmodel.cpp" line="79"/>
         <source>From</source>
@@ -511,7 +511,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Snails::MailTab</name>
+    <name>LC::Snails::MailTab</name>
     <message>
         <location filename="mailtab.cpp" line="179"/>
         <source>Fetch new mail</source>
@@ -706,7 +706,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Snails::MultiEditorWidget</name>
+    <name>LC::Snails::MultiEditorWidget</name>
     <message>
         <location filename="multieditorwidget.cpp" line="77"/>
         <source>Plain text (internal)</source>
@@ -719,7 +719,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Snails::Plugin</name>
+    <name>LC::Snails::Plugin</name>
     <message>
         <location filename="snails.cpp" line="62"/>
         <source>Mail</source>
@@ -747,7 +747,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Snails::ProgressManager</name>
+    <name>LC::Snails::ProgressManager</name>
     <message>
         <location filename="progressmanager.cpp" line="65"/>
         <source>Running</source>
@@ -756,7 +756,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Snails::TemplatesEditorWidget</name>
+    <name>LC::Snails::TemplatesEditorWidget</name>
     <message>
         <location filename="templateseditorwidget.cpp" line="107"/>
         <source>Unable to save template: %1.</source>

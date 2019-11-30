@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="ru_RU">
 <context>
-    <name>LeechCraft::SB2::LCMenuComponent</name>
+    <name>LC::SB2::LCMenuComponent</name>
     <message>
         <location filename="lcmenucomponent.cpp" line="81"/>
         <source>LeechCraft menu</source>
@@ -10,7 +10,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::SB2::Plugin</name>
+    <name>LC::SB2::Plugin</name>
     <message>
         <location filename="sb2.cpp" line="115"/>
         <source>Side panel with quarks like tab launcher and switcher or tray area, where other plugins can also embed quarks .</source>
@@ -19,7 +19,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::SB2::QuarkProxy</name>
+    <name>LC::SB2::QuarkProxy</name>
     <message>
         <location filename="quarkproxy.cpp" line="205"/>
         <source>SB2 panel settings</source>
@@ -27,7 +27,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::SB2::ViewManager</name>
+    <name>LC::SB2::ViewManager</name>
     <message>
         <location filename="viewmanager.cpp" line="100"/>
         <source>SB2 panel</source>

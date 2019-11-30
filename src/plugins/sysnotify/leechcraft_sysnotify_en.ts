@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="en_US">
 <context>
-    <name>LeechCraft::Sysnotify::Plugin</name>
+    <name>LC::Sysnotify::Plugin</name>
     <message>
         <source>Notifies about LeechCraft events via Desktop Notifications.</source>
         <translation>Notifies about LeechCraft events via Desktop Notifications.</translation>

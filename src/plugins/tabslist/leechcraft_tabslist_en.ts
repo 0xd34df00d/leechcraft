@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="en_US">
 <context>
-    <name>LeechCraft::TabsList::Plugin</name>
+    <name>LC::TabsList::Plugin</name>
     <message>
         <location filename="tabslist.cpp" line="37"/>
         <source>List of tabs</source>

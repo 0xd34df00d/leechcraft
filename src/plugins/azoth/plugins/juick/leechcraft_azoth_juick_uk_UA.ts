@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="uk_UA">
 <context>
-    <name>LeechCraft::Azoth::Juick::Plugin</name>
+    <name>LC::Azoth::Juick::Plugin</name>
     <message>
         <location filename="juick.cpp" line="104"/>
         <source>Azoth Juick provides nicer support for the juick.com microblogging service.</source>

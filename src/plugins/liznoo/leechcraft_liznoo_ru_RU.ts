@@ -55,7 +55,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Liznoo::BatteryHistoryDialog</name>
+    <name>LC::Liznoo::BatteryHistoryDialog</name>
     <message>
         <location filename="batteryhistorydialog.cpp" line="164"/>
         <source>(discharging)</source>
@@ -135,7 +135,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Liznoo::Logind::LogindConnector</name>
+    <name>LC::Liznoo::Logind::LogindConnector</name>
     <message>
         <location filename="platform/logind/logindconnector.cpp" line="87"/>
         <source>Preparing LeechCraft for going to sleep...</source>
@@ -143,7 +143,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Liznoo::Plugin</name>
+    <name>LC::Liznoo::Plugin</name>
     <message>
         <location filename="liznoo.cpp" line="83"/>
         <source>Suspend</source>
@@ -197,7 +197,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Liznoo::PowerActions::FreeBSD</name>
+    <name>LC::Liznoo::PowerActions::FreeBSD</name>
     <message>
         <location filename="platform/poweractions/freebsd.cpp" line="64"/>
         <source>No permissions to write to %1. If you are in the %2 group, add %3 to %4 and run %5 to apply the required permissions to %1.</source>
@@ -210,7 +210,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Liznoo::PowerActions::PMUtils</name>
+    <name>LC::Liznoo::PowerActions::PMUtils</name>
     <message>
         <location filename="platform/poweractions/pmutils.cpp" line="64"/>
         <source>%1 failed to start. Probably %2 is not installed? Original message: %3.</source>
@@ -218,7 +218,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Liznoo::PowerActions::UPower</name>
+    <name>LC::Liznoo::PowerActions::UPower</name>
     <message>
         <location filename="platform/poweractions/upower.cpp" line="80"/>
         <source>Cannot connect to UPower daemon.</source>
@@ -226,7 +226,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Liznoo::WinAPI::FakeQWidgetWinAPI</name>
+    <name>LC::Liznoo::WinAPI::FakeQWidgetWinAPI</name>
     <message>
         <location filename="platform/winapi/fakeqwidgetwinapi.cpp" line="54"/>
         <source>Power saver</source>

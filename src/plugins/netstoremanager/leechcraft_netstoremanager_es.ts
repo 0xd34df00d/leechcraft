@@ -31,7 +31,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::NetStoreManager::AccountsManager</name>
+    <name>LC::NetStoreManager::AccountsManager</name>
     <message>
         <location filename="accountsmanager.cpp" line="33"/>
         <source>Account</source>
@@ -44,7 +44,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::NetStoreManager::ManagerTab</name>
+    <name>LC::NetStoreManager::ManagerTab</name>
     <message>
         <location filename="managertab.cpp" line="40"/>
         <source>Copy URL...</source>
@@ -77,7 +77,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::NetStoreManager::Plugin</name>
+    <name>LC::NetStoreManager::Plugin</name>
     <message>
         <location filename="netstoremanager.cpp" line="82"/>
         <source>Allows one to manage his network storages like Yandex.Disk.</source>
@@ -90,7 +90,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::NetStoreManager::UpManager</name>
+    <name>LC::NetStoreManager::UpManager</name>
     <message>
         <location filename="upmanager.cpp" line="83"/>
         <source>%1 is already uploading to %2.</source>

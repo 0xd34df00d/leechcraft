@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="ru_RU">
 <context>
-    <name>LeechCraft::Plugins::NetworkMonitor</name>
+    <name>LC::Plugins::NetworkMonitor</name>
     <message>
         <location filename="requestmodel.cpp" line="55"/>
         <source>Date started</source>
@@ -25,7 +25,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::NetworkMonitor::Plugin</name>
+    <name>LC::Plugins::NetworkMonitor::Plugin</name>
     <message>
         <location filename="networkmonitor.cpp" line="90"/>
         <source>Network monitor...</source>
@@ -38,7 +38,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::NetworkMonitor::RequestModel</name>
+    <name>LC::Plugins::NetworkMonitor::RequestModel</name>
     <message>
         <location filename="requestmodel.cpp" line="109"/>
         <source>In progress</source>

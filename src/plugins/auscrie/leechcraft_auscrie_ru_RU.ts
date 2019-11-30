@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="ru_RU">
 <context>
-    <name>LeechCraft::Auscrie::Plugin</name>
+    <name>LC::Auscrie::Plugin</name>
     <message>
         <location filename="auscrie.cpp" line="60"/>
         <source>Make a screenshot</source>
@@ -25,7 +25,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Auscrie::ShooterDialog</name>
+    <name>LC::Auscrie::ShooterDialog</name>
     <message>
         <location filename="shooterdialog.cpp" line="49"/>
         <source>Make screenshot</source>

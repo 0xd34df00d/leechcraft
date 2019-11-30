@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="ru_RU">
 <context>
-    <name>LeechCraft::GmailNotifier::GmailChecker</name>
+    <name>LC::GmailNotifier::GmailChecker</name>
     <message>
         <location filename="gmailchecker.cpp" line="122"/>
         <location filename="gmailchecker.cpp" line="173"/>
@@ -36,7 +36,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::GmailNotifier::GmailNotifier</name>
+    <name>LC::GmailNotifier::GmailNotifier</name>
     <message>
         <location filename="gmailnotifier.cpp" line="120"/>
         <source>Google mail notification plugin</source>
@@ -44,7 +44,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::GmailNotifier::MailListView</name>
+    <name>LC::GmailNotifier::MailListView</name>
     <message>
         <location filename="maillistview.cpp" line="99"/>
         <source>Yesterday, %1</source>
@@ -52,7 +52,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::GmailNotifier::Notifier</name>
+    <name>LC::GmailNotifier::Notifier</name>
     <message>
         <location filename="notifier.cpp" line="69"/>
         <source>No subject</source>

@@ -48,7 +48,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Liznoo::BatteryHistoryDialog</name>
+    <name>LC::Liznoo::BatteryHistoryDialog</name>
     <message>
         <location filename="batteryhistorydialog.cpp" line="45"/>
         <source>Percentage</source>
@@ -123,7 +123,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Liznoo::FakeQWidgetWinAPI</name>
+    <name>LC::Liznoo::FakeQWidgetWinAPI</name>
     <message>
         <location filename="fakeqwidgetwinapi.cpp" line="51"/>
         <source>Power saver</source>
@@ -151,7 +151,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Liznoo::PlatformFreeBSD</name>
+    <name>LC::Liznoo::PlatformFreeBSD</name>
     <message>
         <location filename="platformfreebsd.cpp" line="73"/>
         <source>Looks like you don&apos;t have permission to write to /dev/acpi. If you&apos;re in &apos;wheel&apos; group, add &apos;perm acpi 0664&apos; to /etc/devfs.conf and run &apos;/etc/rc.d/devfs restart&apos; to apply needed permissions to /dev/acpi.</source>
@@ -159,7 +159,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Liznoo::Plugin</name>
+    <name>LC::Liznoo::Plugin</name>
     <message>
         <location filename="liznoo.cpp" line="87"/>
         <source>Suspend</source>

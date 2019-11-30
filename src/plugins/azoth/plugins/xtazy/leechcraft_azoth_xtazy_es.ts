@@ -1,6 +1,6 @@
 <?xml version="1.0" ?><!DOCTYPE TS><TS language="es" version="2.0">
 <context>
-    <name>LeechCraft::Azoth::Xtazy::Plugin</name>
+    <name>LC::Azoth::Xtazy::Plugin</name>
     <message>
         <location filename="xtazy.cpp" line="81"/>
         <source>Publishes current tune.</source>

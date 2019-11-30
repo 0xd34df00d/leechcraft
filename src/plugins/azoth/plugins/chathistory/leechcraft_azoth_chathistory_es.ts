@@ -28,7 +28,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::ChatHistory::ChatHistoryWidget</name>
+    <name>LC::Azoth::ChatHistory::ChatHistoryWidget</name>
     <message>
         <location filename="chathistorywidget.cpp" line="53"/>
         <source>Chat history</source>
@@ -61,7 +61,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::ChatHistory::Core</name>
+    <name>LC::Azoth::ChatHistory::Core</name>
     <message>
         <location filename="core.cpp" line="47"/>
         <source>Chat history</source>
@@ -74,7 +74,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::ChatHistory::Plugin</name>
+    <name>LC::Azoth::ChatHistory::Plugin</name>
     <message>
         <location filename="chathistory.cpp" line="51"/>
         <source>IM history</source>

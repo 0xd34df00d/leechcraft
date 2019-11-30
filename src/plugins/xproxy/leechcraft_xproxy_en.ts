@@ -81,7 +81,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::XProxy</name>
+    <name>LC::XProxy</name>
     <message>
         <location filename="editurlsdialog.cpp" line="62"/>
         <source>Host</source>
@@ -104,7 +104,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::XProxy::EditListsDialog</name>
+    <name>LC::XProxy::EditListsDialog</name>
     <message>
         <location filename="editlistsdialog.cpp" line="76"/>
         <source>No new scripts can be added.</source>
@@ -122,7 +122,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::XProxy::Plugin</name>
+    <name>LC::XProxy::Plugin</name>
     <message>
         <location filename="xproxy.cpp" line="91"/>
         <source>Advanced proxy servers manager for LeechCraft.</source>
@@ -130,7 +130,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::XProxy::ProxiesConfigWidget</name>
+    <name>LC::XProxy::ProxiesConfigWidget</name>
     <message>
         <location filename="proxiesconfigwidget.cpp" line="59"/>
         <source>caching HTTP</source>

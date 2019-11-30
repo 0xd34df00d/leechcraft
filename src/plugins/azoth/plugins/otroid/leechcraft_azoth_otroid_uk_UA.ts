@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="uk_UA">
 <context>
-    <name>LeechCraft::Azoth::OTRoid::Plugin</name>
+    <name>LC::Azoth::OTRoid::Plugin</name>
     <message>
         <location filename="otroid.cpp" line="130"/>
         <source>Azoth OTRoid adds support for Off-the-Record deniable encryption system.</source>

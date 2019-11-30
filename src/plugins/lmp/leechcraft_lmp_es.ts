@@ -149,7 +149,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::AlbumArtManagerDialog</name>
+    <name>LC::LMP::AlbumArtManagerDialog</name>
     <message>
         <location filename="albumartmanagerdialog.cpp" line="145"/>
         <source>Choose album art</source>
@@ -162,7 +162,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::ArtistBrowserTab</name>
+    <name>LC::LMP::ArtistBrowserTab</name>
     <message>
         <location filename="artistbrowsertab.cpp" line="101"/>
         <source>Artist browser: %1</source>
@@ -175,7 +175,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::AudioPropsWidget</name>
+    <name>LC::LMP::AudioPropsWidget</name>
     <message>
         <location filename="audiopropswidget.cpp" line="84"/>
         <source>Copy</source>
@@ -248,7 +248,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::CloudUploadManager</name>
+    <name>LC::LMP::CloudUploadManager</name>
     <message>
         <location filename="sync/clouduploadmanager.cpp" line="86"/>
         <source>File %1 successfully transcoded, adding to upload queue for account %2 at service %3...</source>
@@ -256,7 +256,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::CloudUploader</name>
+    <name>LC::LMP::CloudUploader</name>
     <message>
         <location filename="sync/clouduploader.cpp" line="93"/>
         <source>Error uploading file %1 to cloud: %2.</source>
@@ -264,7 +264,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::CollectionStatsDialog</name>
+    <name>LC::LMP::CollectionStatsDialog</name>
     <message>
         <location filename="collectionstatsdialog.cpp" line="76"/>
         <source>Artists in collection:</source>
@@ -297,7 +297,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::DevicesBrowserWidget</name>
+    <name>LC::LMP::DevicesBrowserWidget</name>
     <message>
         <location filename="sync/devicesbrowserwidget.cpp" line="239"/>
         <source>Select syncer</source>
@@ -315,7 +315,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::EventsWidget</name>
+    <name>LC::LMP::EventsWidget</name>
     <message>
         <location filename="eventswidget.cpp" line="95"/>
         <source>Sure!</source>
@@ -343,7 +343,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::FSBrowserWidget</name>
+    <name>LC::LMP::FSBrowserWidget</name>
     <message>
         <location filename="fsbrowserwidget.cpp" line="57"/>
         <source>Add to playlist</source>
@@ -371,7 +371,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::HypesWidget</name>
+    <name>LC::LMP::HypesWidget</name>
     <message>
         <location filename="hypeswidget.cpp" line="100"/>
         <source>Hyped artists</source>
@@ -415,7 +415,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::LMPSystemTrayIcon</name>
+    <name>LC::LMP::LMPSystemTrayIcon</name>
     <message>
         <location filename="lmpsystemtrayicon.cpp" line="67"/>
         <source>%1 (%2)</source>
@@ -433,7 +433,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::LocalCollection</name>
+    <name>LC::LMP::LocalCollection</name>
     <message numerus="yes">
         <location filename="localcollection.cpp" line="878"/>
         <source>%n new artist(s)</source>
@@ -456,7 +456,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::MountableFlattener</name>
+    <name>LC::LMP::MountableFlattener</name>
     <message>
         <location filename="sync/devicesbrowserwidget.cpp" line="75"/>
         <source>not mounted</source>
@@ -469,7 +469,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::NowPlayingWidget</name>
+    <name>LC::LMP::NowPlayingWidget</name>
     <message>
         <location filename="nowplayingwidget.cpp" line="114"/>
         <source>unknown</source>
@@ -492,7 +492,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::PLManagerWidget</name>
+    <name>LC::LMP::PLManagerWidget</name>
     <message>
         <location filename="plmanagerwidget.cpp" line="44"/>
         <source>Delete playlist</source>
@@ -505,7 +505,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::Player</name>
+    <name>LC::LMP::Player</name>
     <message>
         <location filename="player.cpp" line="529"/>
         <source>Radio</source>
@@ -528,7 +528,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::PlayerTab</name>
+    <name>LC::LMP::PlayerTab</name>
     <message>
         <location filename="playertab.cpp" line="295"/>
         <source>Current song</source>
@@ -666,7 +666,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::PlaylistManager</name>
+    <name>LC::LMP::PlaylistManager</name>
     <message>
         <location filename="playlistmanager.cpp" line="104"/>
         <source>Static playlists</source>
@@ -694,7 +694,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::PlaylistWidget</name>
+    <name>LC::LMP::PlaylistWidget</name>
     <message>
         <location filename="playlistwidget.cpp" line="233"/>
         <source>Clear...</source>
@@ -887,7 +887,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::Plugin</name>
+    <name>LC::LMP::Plugin</name>
     <message>
         <location filename="lmp.cpp" line="86"/>
         <location filename="lmp.cpp" line="380"/>
@@ -942,7 +942,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::PreviewHandler</name>
+    <name>LC::LMP::PreviewHandler</name>
     <message numerus="yes">
         <location filename="previewhandler.cpp" line="165"/>
         <source>Not all tracks were fetched for album %1 by %2: %n track(s) weren&apos;t found.</source>
@@ -950,7 +950,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::RadioWidget</name>
+    <name>LC::LMP::RadioWidget</name>
     <message>
         <location filename="radiowidget.cpp" line="133"/>
         <source>Similar artists radio</source>
@@ -973,7 +973,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::RootPathSettingsManager</name>
+    <name>LC::LMP::RootPathSettingsManager</name>
     <message>
         <location filename="rootpathsettingsmanager.cpp" line="46"/>
         <source>Path</source>
@@ -981,7 +981,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::SimilarModel</name>
+    <name>LC::LMP::SimilarModel</name>
     <message>
         <location filename="similarmodel.cpp" line="73"/>
         <source>Tags: %1</source>
@@ -989,7 +989,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::SimilarViewManager</name>
+    <name>LC::LMP::SimilarViewManager</name>
     <message>
         <location filename="similarviewmanager.cpp" line="118"/>
         <source>Similarity: %1%</source>
@@ -1007,7 +1007,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::SortingCriteriaDialog</name>
+    <name>LC::LMP::SortingCriteriaDialog</name>
     <message>
         <location filename="sortingcriteriadialog.cpp" line="83"/>
         <source>Select criteria</source>
@@ -1020,7 +1020,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::SyncManager</name>
+    <name>LC::LMP::SyncManager</name>
     <message>
         <location filename="sync/syncmanager.cpp" line="127"/>
         <source>File %1 successfully transcoded, adding to copy queue for the device %2...</source>
@@ -1028,7 +1028,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::SyncManagerBase</name>
+    <name>LC::LMP::SyncManagerBase</name>
     <message numerus="yes">
         <location filename="sync/syncmanagerbase.cpp" line="73"/>
         <source>Uploading %n file(s)</source>
@@ -1071,7 +1071,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::TranscodingParamsWidget</name>
+    <name>LC::LMP::TranscodingParamsWidget</name>
     <message>
         <location filename="sync/transcodingparamswidget.cpp" line="46"/>
         <location filename="sync/transcodingparamswidget.cpp" line="149"/>

@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="ru_RU">
 <context>
-    <name>LeechCraft::Azoth::Rosenthal::Plugin</name>
+    <name>LC::Azoth::Rosenthal::Plugin</name>
     <message>
         <location filename="rosenthal.cpp" line="83"/>
         <source>Provides spellchecking for Azoth.</source>

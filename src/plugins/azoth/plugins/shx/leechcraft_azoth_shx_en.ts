@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="en_US">
 <context>
-    <name>LeechCraft::Azoth::SHX::Plugin</name>
+    <name>LC::Azoth::SHX::Plugin</name>
     <message>
         <location filename="shx.cpp" line="80"/>
         <source>Allows one to execute arbitrary shell commands and paste their result.</source>

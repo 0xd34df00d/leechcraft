@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="en_US">
 <context>
-    <name>LeechCraft::HttHare::Plugin</name>
+    <name>LC::HttHare::Plugin</name>
     <message>
         <location filename="htthare.cpp" line="74"/>
         <source>Share your files over local network via HTTP.</source>
@@ -10,7 +10,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::HttHare::RequestHandler</name>
+    <name>LC::HttHare::RequestHandler</name>
     <message>
         <location filename="requesthandler.cpp" line="191"/>
         <source>Listing of %1</source>

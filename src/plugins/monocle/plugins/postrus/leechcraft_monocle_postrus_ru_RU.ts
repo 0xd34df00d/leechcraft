@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="ru_RU">
 <context>
-    <name>LeechCraft::Monocle::Postrus::Plugin</name>
+    <name>LC::Monocle::Postrus::Plugin</name>
     <message>
         <location filename="postrus.cpp" line="65"/>
         <source>PostScript backend for Monocle.</source>

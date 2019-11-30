@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="ru_RU">
 <context>
-    <name>LeechCraft::Azoth::Vader::MRIMAccount</name>
+    <name>LC::Azoth::Vader::MRIMAccount</name>
     <message>
         <location filename="mrimaccount.cpp" line="130"/>
         <source>Open mailbox...</source>
@@ -50,7 +50,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Vader::MRIMBuddy</name>
+    <name>LC::Azoth::Vader::MRIMBuddy</name>
     <message>
         <location filename="mrimbuddy.cpp" line="60"/>
         <source>Update phone number...</source>
@@ -98,7 +98,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Vader::Plugin</name>
+    <name>LC::Azoth::Vader::Plugin</name>
     <message>
         <location filename="vader.cpp" line="86"/>
         <source>Support for the Mail.ru Agent protocol.</source>
@@ -106,7 +106,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Vader::VCardDialog</name>
+    <name>LC::Azoth::Vader::VCardDialog</name>
     <message>
         <location filename="vcarddialog.cpp" line="62"/>
         <source>Nickname: %1.</source>

@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="en_US">
 <context>
-    <name>LeechCraft::Lastfmscrobble::Authenticator</name>
+    <name>LC::Lastfmscrobble::Authenticator</name>
     <message>
         <location filename="authenticator.cpp" line="101"/>
         <source>Enter password for Last.fm account with login %1:</source>
@@ -10,7 +10,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Lastfmscrobble::LastFmRadioStation</name>
+    <name>LC::Lastfmscrobble::LastFmRadioStation</name>
     <message>
         <location filename="lastfmradiostation.cpp" line="47"/>
         <source>Library</source>
@@ -43,7 +43,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Lastfmscrobble::Plugin</name>
+    <name>LC::Lastfmscrobble::Plugin</name>
     <message>
         <location filename="lastfmscrobble.cpp" line="89"/>
         <source>Library</source>

@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="en_US">
 <context>
-    <name>LeechCraft::Poshuku::WebKitView::CustomWebPage</name>
+    <name>LC::Poshuku::WebKitView::CustomWebPage</name>
     <message>
         <location filename="customwebpage.cpp" line="237"/>
         <source>Unable to send the request to %1. Please try submitting it again.</source>
@@ -112,7 +112,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Poshuku::WebKitView::CustomWebView</name>
+    <name>LC::Poshuku::WebKitView::CustomWebView</name>
     <message>
         <location filename="customwebview.cpp" line="168"/>
         <location filename="customwebview.cpp" line="178"/>
@@ -182,7 +182,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Poshuku::WebKitView::Plugin</name>
+    <name>LC::Poshuku::WebKitView::Plugin</name>
     <message>
         <location filename="webkitview.cpp" line="126"/>
         <source>Provides QtWebKit-based backend for Poshuku.</source>
@@ -190,7 +190,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Poshuku::WebKitView::SslStateDialog</name>
+    <name>LC::Poshuku::WebKitView::SslStateDialog</name>
     <message>
         <location filename="sslstatedialog.cpp" line="56"/>
         <source>SSL encryption is not used.</source>
@@ -213,7 +213,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Poshuku::WebKitView::WebViewSslWatcherHandler</name>
+    <name>LC::Poshuku::WebKitView::WebViewSslWatcherHandler</name>
     <message>
         <location filename="webviewsslwatcherhandler.cpp" line="77"/>
         <source>Some SSL errors where encountered.</source>

@@ -229,7 +229,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LHTR</name>
+    <name>LC::LHTR</name>
     <message utf8="true">
         <location filename="imagecollectiondialog.cpp" line="67"/>
         <source>Thumbnail (%1×%2)</source>
@@ -262,7 +262,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LHTR::FindDialog</name>
+    <name>LC::LHTR::FindDialog</name>
     <message>
         <location filename="finddialog.cpp" line="96"/>
         <location filename="finddialog.cpp" line="112"/>
@@ -284,7 +284,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LHTR::ImageDialog</name>
+    <name>LC::LHTR::ImageDialog</name>
     <message>
         <location filename="imagedialog.cpp" line="86"/>
         <source>Select image</source>
@@ -292,7 +292,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LHTR::Plugin</name>
+    <name>LC::LHTR::Plugin</name>
     <message>
         <location filename="lhtr.cpp" line="72"/>
         <source>LeechCraft HTML Text editoR.</source>
@@ -300,7 +300,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LHTR::RichEditorWidget</name>
+    <name>LC::LHTR::RichEditorWidget</name>
     <message>
         <location filename="richeditorwidget.cpp" line="141"/>
         <source>Find</source>

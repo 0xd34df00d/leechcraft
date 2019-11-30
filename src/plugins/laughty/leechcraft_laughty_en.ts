@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="en_US">
 <context>
-    <name>LeechCraft::Laughty::Plugin</name>
+    <name>LC::Laughty::Plugin</name>
     <message>
         <location filename="laughty.cpp" line="75"/>
         <source>Desktop Notifications server.</source>
@@ -10,7 +10,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Laughty::ServerObject</name>
+    <name>LC::Laughty::ServerObject</name>
     <message>
         <location filename="serverobject.cpp" line="166"/>
         <source>Dismiss</source>

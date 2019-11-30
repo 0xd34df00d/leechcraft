@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="en_US">
 <context>
-    <name>LeechCraft::Azoth::Modnok::Plugin</name>
+    <name>LC::Azoth::Modnok::Plugin</name>
     <message>
         <location filename="modnok.cpp" line="105"/>
         <source>Azoth Modnok allows one to render LaTeX formulas and display them in the chat window.</source>

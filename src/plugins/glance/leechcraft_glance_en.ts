@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="en_US">
 <context>
-    <name>LeechCraft::Plugins::Glance::Plugin</name>
+    <name>LC::Plugins::Glance::Plugin</name>
     <message>
         <location filename="glance.cpp" line="70"/>
         <source>Quick overview of tabs.</source>

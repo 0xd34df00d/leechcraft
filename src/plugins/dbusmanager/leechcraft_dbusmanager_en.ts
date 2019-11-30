@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="en_US">
 <context>
-    <name>LeechCraft::DBusManager::Core</name>
+    <name>LC::DBusManager::Core</name>
     <message>
         <location filename="core.cpp" line="86"/>
         <source>LeechCraft D-Bus general interface</source>
@@ -10,7 +10,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::DBusManager::DBusManager</name>
+    <name>LC::DBusManager::DBusManager</name>
     <message>
         <location filename="dbusmanager.cpp" line="68"/>
         <source>General DBus support for LeechCraft.</source>

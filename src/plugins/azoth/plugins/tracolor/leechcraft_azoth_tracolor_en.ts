@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="en_US">
 <context>
-    <name>LeechCraft::Azoth::Tracolor</name>
+    <name>LC::Azoth::Tracolor</name>
     <message>
         <location filename="eventssettingsmanager.cpp" line="58"/>
         <source>Event</source>
@@ -15,7 +15,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Tracolor::Plugin</name>
+    <name>LC::Azoth::Tracolor::Plugin</name>
     <message>
         <location filename="tracolor.cpp" line="93"/>
         <source>Indicates contacts activity via color coding.</source>

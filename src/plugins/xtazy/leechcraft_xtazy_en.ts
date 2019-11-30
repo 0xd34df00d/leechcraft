@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="en_US">
 <context>
-    <name>LeechCraft::Xtazy::Plugin</name>
+    <name>LC::Xtazy::Plugin</name>
     <message>
         <location filename="xtazy.cpp" line="88"/>
         <source>Keeps track of the currently playing song and provides it to other plugins.</source>

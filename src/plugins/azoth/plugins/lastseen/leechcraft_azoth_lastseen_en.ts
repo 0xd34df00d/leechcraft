@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="en_US">
 <context>
-    <name>LeechCraft::Azoth::LastSeen::Plugin</name>
+    <name>LC::Azoth::LastSeen::Plugin</name>
     <message>
         <location filename="lastseen.cpp" line="97"/>
         <source>Azoth LastSeen displays when a contact has been online and available for the last time.</source>

@@ -169,7 +169,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::AlbumArtManager</name>
+    <name>LC::LMP::AlbumArtManager</name>
     <message>
         <location filename="albumartmanager.cpp" line="179"/>
         <source>Path %1 cannot be used as album art storage, default path will be used instead.</source>
@@ -177,7 +177,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::AlbumArtManagerDialog</name>
+    <name>LC::LMP::AlbumArtManagerDialog</name>
     <message>
         <location filename="albumartmanagerdialog.cpp" line="145"/>
         <source>Choose album art</source>
@@ -190,7 +190,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::ArtistBrowserTab</name>
+    <name>LC::LMP::ArtistBrowserTab</name>
     <message>
         <location filename="artistbrowsertab.cpp" line="112"/>
         <source>Artist browser: %1</source>
@@ -203,7 +203,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::AudioPropsWidget</name>
+    <name>LC::LMP::AudioPropsWidget</name>
     <message>
         <location filename="audiopropswidget.cpp" line="88"/>
         <source>Copy</source>
@@ -291,7 +291,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::CloudUploadManager</name>
+    <name>LC::LMP::CloudUploadManager</name>
     <message>
         <location filename="sync/clouduploadmanager.cpp" line="86"/>
         <source>File %1 successfully transcoded, adding to upload queue for account %2 at service %3...</source>
@@ -299,7 +299,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::CloudUploader</name>
+    <name>LC::LMP::CloudUploader</name>
     <message>
         <location filename="sync/clouduploader.cpp" line="93"/>
         <source>Error uploading file %1 to cloud: %2.</source>
@@ -307,7 +307,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::CollectionStatsDialog</name>
+    <name>LC::LMP::CollectionStatsDialog</name>
     <message>
         <location filename="collectionstatsdialog.cpp" line="76"/>
         <source>Artists in collection:</source>
@@ -340,7 +340,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::CollectionWidget</name>
+    <name>LC::LMP::CollectionWidget</name>
     <message numerus="yes">
         <location filename="collectionwidget.cpp" line="218"/>
         <source>Are you sure you want to erase %n track(s)? This action cannot be undone.</source>
@@ -391,7 +391,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::DevicesBrowserWidget</name>
+    <name>LC::LMP::DevicesBrowserWidget</name>
     <message>
         <location filename="sync/devicesbrowserwidget.cpp" line="77"/>
         <source>not mounted</source>
@@ -419,7 +419,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::EffectsManager</name>
+    <name>LC::LMP::EffectsManager</name>
     <message>
         <location filename="effectsmanager.cpp" line="71"/>
         <source>Effect</source>
@@ -437,7 +437,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::EventsWidget</name>
+    <name>LC::LMP::EventsWidget</name>
     <message>
         <location filename="eventswidget.cpp" line="108"/>
         <source>Sure!</source>
@@ -465,7 +465,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::FSBrowserWidget</name>
+    <name>LC::LMP::FSBrowserWidget</name>
     <message>
         <location filename="fsbrowserwidget.cpp" line="57"/>
         <source>Add to playlist</source>
@@ -493,7 +493,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::HypesWidget</name>
+    <name>LC::LMP::HypesWidget</name>
     <message>
         <location filename="hypeswidget.cpp" line="113"/>
         <source>Hyped artists</source>
@@ -543,7 +543,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::LMPSystemTrayIcon</name>
+    <name>LC::LMP::LMPSystemTrayIcon</name>
     <message>
         <location filename="lmpsystemtrayicon.cpp" line="68"/>
         <source>%1 (%2)</source>
@@ -561,7 +561,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::LocalCollection</name>
+    <name>LC::LMP::LocalCollection</name>
     <message numerus="yes">
         <location filename="localcollection.cpp" line="944"/>
         <source>%n new artist(s)</source>
@@ -593,7 +593,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::LocalCollectionModel</name>
+    <name>LC::LMP::LocalCollectionModel</name>
     <message>
         <location filename="localcollectionmodel.cpp" line="126"/>
         <source>Last playback: %1</source>
@@ -620,7 +620,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::NPStateUpdater</name>
+    <name>LC::LMP::NPStateUpdater</name>
     <message>
         <location filename="npstateupdater.cpp" line="83"/>
         <source>Playback is stopped.</source>
@@ -648,7 +648,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::NPTooltipHook</name>
+    <name>LC::LMP::NPTooltipHook</name>
     <message numerus="yes">
         <location filename="nptooltiphook.cpp" line="70"/>
         <source>Played %n time(s) since %1</source>
@@ -660,7 +660,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::NowPlayingWidget</name>
+    <name>LC::LMP::NowPlayingWidget</name>
     <message>
         <location filename="nowplayingwidget.cpp" line="152"/>
         <source>showing lyrics from %3 (%1 of %2)</source>
@@ -668,7 +668,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::PLManagerWidget</name>
+    <name>LC::LMP::PLManagerWidget</name>
     <message>
         <location filename="plmanagerwidget.cpp" line="55"/>
         <source>Delete playlist</source>
@@ -681,7 +681,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::Player</name>
+    <name>LC::LMP::Player</name>
     <message>
         <location filename="player.cpp" line="189"/>
         <source>Playlist</source>
@@ -739,7 +739,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::PlayerTab</name>
+    <name>LC::LMP::PlayerTab</name>
     <message>
         <location filename="playertab.cpp" line="87"/>
         <source>Effects</source>
@@ -827,7 +827,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::PlaylistManager</name>
+    <name>LC::LMP::PlaylistManager</name>
     <message>
         <location filename="playlistmanager.cpp" line="106"/>
         <source>Static playlists</source>
@@ -855,7 +855,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::PlaylistWidget</name>
+    <name>LC::LMP::PlaylistWidget</name>
     <message>
         <location filename="playlistwidget.cpp" line="308"/>
         <source>Clear...</source>
@@ -1122,7 +1122,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::Plugin</name>
+    <name>LC::LMP::Plugin</name>
     <message>
         <location filename="lmp.cpp" line="118"/>
         <location filename="lmp.cpp" line="538"/>
@@ -1213,7 +1213,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::PreviewHandler</name>
+    <name>LC::LMP::PreviewHandler</name>
     <message numerus="yes">
         <location filename="previewhandler.cpp" line="175"/>
         <source>Not all tracks were fetched for album %1 by %2: %n track(s) weren&apos;t found.</source>
@@ -1224,7 +1224,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::ProgressManager</name>
+    <name>LC::LMP::ProgressManager</name>
     <message>
         <location filename="progressmanager.cpp" line="93"/>
         <source>%1 of %2</source>
@@ -1252,7 +1252,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::RGFilterController</name>
+    <name>LC::LMP::RGFilterController</name>
     <message>
         <location filename="rgfiltercontroller.cpp" line="70"/>
         <source>ReplayGain configuration</source>
@@ -1260,7 +1260,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::RadioCustomStation</name>
+    <name>LC::LMP::RadioCustomStation</name>
     <message>
         <location filename="radiocustomstation.cpp" line="56"/>
         <source>Bookmarks</source>
@@ -1268,7 +1268,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::RadioCustomStreams</name>
+    <name>LC::LMP::RadioCustomStreams</name>
     <message>
         <location filename="radiocustomstreams.cpp" line="58"/>
         <source>Custom streams</source>
@@ -1276,7 +1276,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::RadioManager</name>
+    <name>LC::LMP::RadioManager</name>
     <message>
         <location filename="radiomanager.cpp" line="267"/>
         <source>Similar artists radio</source>
@@ -1299,7 +1299,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::RadioPilesManager</name>
+    <name>LC::LMP::RadioPilesManager</name>
     <message>
         <location filename="radiopilesmanager.cpp" line="64"/>
         <source>Search in %1</source>
@@ -1325,7 +1325,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::RadioTracksGrabDialog</name>
+    <name>LC::LMP::RadioTracksGrabDialog</name>
     <message>
         <location filename="radiotracksgrabdialog.cpp" line="62"/>
         <source>Artist</source>
@@ -1353,7 +1353,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::RadioWidget</name>
+    <name>LC::LMP::RadioWidget</name>
     <message>
         <location filename="radiowidget.cpp" line="169"/>
         <source>Refresh</source>
@@ -1381,7 +1381,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::RootPathSettingsManager</name>
+    <name>LC::LMP::RootPathSettingsManager</name>
     <message>
         <location filename="rootpathsettingsmanager.cpp" line="47"/>
         <source>Path</source>
@@ -1395,7 +1395,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::SimilarModel</name>
+    <name>LC::LMP::SimilarModel</name>
     <message>
         <location filename="similarmodel.cpp" line="73"/>
         <source>Tags: %1</source>
@@ -1403,7 +1403,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::SimilarViewManager</name>
+    <name>LC::LMP::SimilarViewManager</name>
     <message>
         <location filename="similarviewmanager.cpp" line="104"/>
         <source>Similarity: %1%</source>
@@ -1416,7 +1416,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::SortingCriteriaDialog</name>
+    <name>LC::LMP::SortingCriteriaDialog</name>
     <message>
         <location filename="sortingcriteriadialog.cpp" line="91"/>
         <source>Select criteria</source>
@@ -1429,7 +1429,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::SourceErrorHandler</name>
+    <name>LC::LMP::SourceErrorHandler</name>
     <message>
         <location filename="sourceerrorhandler.cpp" line="61"/>
         <source>Cannot find a proper audio decoder for file %1. You probably don&apos;t have all the codec plugins installed.</source>
@@ -1457,7 +1457,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::StdArtistActionsManager</name>
+    <name>LC::LMP::StdArtistActionsManager</name>
     <message>
         <location filename="stdartistactionsmanager.cpp" line="68"/>
         <source>Check out &quot;%1&quot;</source>
@@ -1465,7 +1465,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::SyncManager</name>
+    <name>LC::LMP::SyncManager</name>
     <message>
         <location filename="sync/syncmanager.cpp" line="129"/>
         <source>File %1 successfully transcoded, adding to copy queue for the device %2...</source>
@@ -1479,7 +1479,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::SyncManagerBase</name>
+    <name>LC::LMP::SyncManagerBase</name>
     <message numerus="yes">
         <location filename="sync/syncmanagerbase.cpp" line="74"/>
         <source>Uploading %n file(s)</source>
@@ -1525,7 +1525,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::TranscodingParamsWidget</name>
+    <name>LC::LMP::TranscodingParamsWidget</name>
     <message>
         <location filename="sync/transcodingparamswidget.cpp" line="47"/>
         <location filename="sync/transcodingparamswidget.cpp" line="181"/>
@@ -1544,7 +1544,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::UnmountableDevManager</name>
+    <name>LC::LMP::UnmountableDevManager</name>
     <message>
         <location filename="sync/unmountabledevmanager.cpp" line="104"/>
         <source>%1% charged</source>
@@ -1552,7 +1552,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::VolumeNotifyController</name>
+    <name>LC::LMP::VolumeNotifyController</name>
     <message>
         <location filename="volumenotifycontroller.cpp" line="72"/>
         <source>LMP volume has been changed to %1%.</source>

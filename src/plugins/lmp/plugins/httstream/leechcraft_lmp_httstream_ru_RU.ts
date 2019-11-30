@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="ru_RU">
 <context>
-    <name>LeechCraft::LMP::HttStream::FilterConfigurator</name>
+    <name>LC::LMP::HttStream::FilterConfigurator</name>
     <message>
         <location filename="filterconfigurator.cpp" line="70"/>
         <source>HTTP streaming settings</source>
@@ -10,7 +10,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::HttStream::Plugin</name>
+    <name>LC::LMP::HttStream::Plugin</name>
     <message>
         <location filename="httstream.cpp" line="63"/>
         <source>Adds support for streaming music played in LMP via HTTP.</source>

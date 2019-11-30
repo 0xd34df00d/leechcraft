@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="it_IT">
 <context>
-    <name>LeechCraft::Poshuku::FatApe::Plugin</name>
+    <name>LC::Poshuku::FatApe::Plugin</name>
     <message>
         <location filename="fatape.cpp" line="83"/>
         <source>Name</source>
@@ -20,7 +20,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Poshuku::FatApe::UserScriptInstallerDialog</name>
+    <name>LC::Poshuku::FatApe::UserScriptInstallerDialog</name>
     <message>
         <location filename="userscriptinstallerdialog.cpp" line="53"/>
         <source>Fetching script...</source>
@@ -38,7 +38,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Poshuku::FatApe::UserScriptsManagerWidget</name>
+    <name>LC::Poshuku::FatApe::UserScriptsManagerWidget</name>
     <message>
         <location filename="userscriptsmanagerwidget.cpp" line="76"/>
         <location filename="userscriptsmanagerwidget.cpp" line="97"/>

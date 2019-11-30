@@ -30,7 +30,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::CSTP::AddTask</name>
+    <name>LC::CSTP::AddTask</name>
     <message>
         <location filename="addtask.cpp" line="116"/>
         <source>Directory %1 doesn&apos;t exist, would you like to select another?</source>
@@ -58,7 +58,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::CSTP::CSTP</name>
+    <name>LC::CSTP::CSTP</name>
     <message>
         <location filename="cstp.cpp" line="219"/>
         <source>Remove</source>
@@ -101,7 +101,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::CSTP::Core</name>
+    <name>LC::CSTP::Core</name>
     <message>
         <location filename="core.cpp" line="72"/>
         <source>State</source>
@@ -164,7 +164,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::CSTP::Task</name>
+    <name>LC::CSTP::Task</name>
     <message>
         <location filename="task.cpp" line="239"/>
         <source>Stopped</source>

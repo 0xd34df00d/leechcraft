@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="fr">
 <context>
-    <name>LeechCraft::Poshuku::FileScheme::FileScheme</name>
+    <name>LC::Poshuku::FileScheme::FileScheme</name>
     <message>
         <location filename="filescheme.cpp" line="66"/>
         <source>Provides support for file:// scheme.</source>
@@ -10,7 +10,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Poshuku::FileScheme::SchemeReply</name>
+    <name>LC::Poshuku::FileScheme::SchemeReply</name>
     <message>
         <location filename="schemereply.cpp" line="46"/>
         <source>No error</source>

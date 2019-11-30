@@ -15,7 +15,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Eleeminator</name>
+    <name>LC::Eleeminator</name>
     <message>
         <location filename="termtab.cpp" line="67"/>
         <source>Terminal toolbar</source>
@@ -23,7 +23,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Eleeminator::Plugin</name>
+    <name>LC::Eleeminator::Plugin</name>
     <message>
         <location filename="eleeminator.cpp" line="53"/>
         <source>Close terminal tab</source>
@@ -61,7 +61,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Eleeminator::TermTab</name>
+    <name>LC::Eleeminator::TermTab</name>
     <message>
         <location filename="termtab.cpp" line="181"/>
         <source>Clear window</source>

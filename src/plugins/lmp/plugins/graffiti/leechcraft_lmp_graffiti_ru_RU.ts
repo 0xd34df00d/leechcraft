@@ -35,7 +35,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::Graffiti::CueSplitter</name>
+    <name>LC::LMP::Graffiti::CueSplitter</name>
     <message>
         <location filename="cuesplitter.cpp" line="301"/>
         <source>Cue file is invalid</source>
@@ -53,7 +53,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::Graffiti::FilesModel</name>
+    <name>LC::LMP::Graffiti::FilesModel</name>
     <message>
         <location filename="filesmodel.cpp" line="49"/>
         <source>Track</source>
@@ -76,7 +76,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::Graffiti::GraffitiTab</name>
+    <name>LC::LMP::Graffiti::GraffitiTab</name>
     <message>
         <location filename="graffititab.cpp" line="136"/>
         <source>Scanning path %1...</source>
@@ -147,7 +147,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::Graffiti::Plugin</name>
+    <name>LC::LMP::Graffiti::Plugin</name>
     <message>
         <location filename="graffiti.cpp" line="82"/>
         <source>Allows one to manipulate audio files tags.</source>
@@ -160,7 +160,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::Graffiti::ProgressManager</name>
+    <name>LC::LMP::Graffiti::ProgressManager</name>
     <message>
         <location filename="progressmanager.cpp" line="58"/>
         <source>Fetching tags...</source>
@@ -189,7 +189,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::Graffiti::RenameDialog</name>
+    <name>LC::LMP::Graffiti::RenameDialog</name>
     <message>
         <location filename="renamedialog.cpp" line="50"/>
         <source>The following variables are allowed in the pattern: %1.</source>

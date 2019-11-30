@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="ru_RU">
 <context>
-    <name>LeechCraft::Scroblibre::AccountsManager</name>
+    <name>LC::Scroblibre::AccountsManager</name>
     <message>
         <location filename="accountsmanager.cpp" line="56"/>
         <source>Service</source>
@@ -15,7 +15,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Scroblibre::Plugin</name>
+    <name>LC::Scroblibre::Plugin</name>
     <message>
         <location filename="scroblibre.cpp" line="89"/>
         <source>Multiaccount scrobbler for services supporting Scrobbler API 1.2.</source>
@@ -23,7 +23,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Scroblibre::SingleAccAuth</name>
+    <name>LC::Scroblibre::SingleAccAuth</name>
     <message>
         <location filename="singleaccauth.cpp" line="236"/>
         <source>Please enter password for account %1 on %2:</source>

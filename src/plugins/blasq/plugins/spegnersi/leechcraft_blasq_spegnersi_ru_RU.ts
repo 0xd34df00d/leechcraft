@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="ru_RU">
 <context>
-    <name>LeechCraft::Blasq::Spegnersi::FlickrAccount</name>
+    <name>LC::Blasq::Spegnersi::FlickrAccount</name>
     <message>
         <location filename="flickraccount.cpp" line="184"/>
         <source>Name</source>
@@ -25,7 +25,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Blasq::Spegnersi::Plugin</name>
+    <name>LC::Blasq::Spegnersi::Plugin</name>
     <message>
         <location filename="spegnersi.cpp" line="64"/>
         <source>Flickr support module for Blasq.</source>

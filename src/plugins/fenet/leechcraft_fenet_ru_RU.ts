@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="ru_RU">
 <context>
-    <name>LeechCraft::Fenet::CompParamsManager</name>
+    <name>LC::Fenet::CompParamsManager</name>
     <message>
         <location filename="compparamsmanager.cpp" line="44"/>
         <source>Option</source>
@@ -20,7 +20,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Fenet::Plugin</name>
+    <name>LC::Fenet::Plugin</name>
     <message>
         <location filename="fenet.cpp" line="127"/>
         <source>Window manager control plugin.</source>

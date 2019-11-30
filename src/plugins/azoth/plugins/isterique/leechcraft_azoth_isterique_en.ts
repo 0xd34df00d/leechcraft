@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="en_US">
 <context>
-    <name>LeechCraft::Azoth::Isterique::Plugin</name>
+    <name>LC::Azoth::Isterique::Plugin</name>
     <message>
         <location filename="isterique.cpp" line="58"/>
         <source>Azoth Isterique fixes excessive CAPS LOCK usage in incoming messages.</source>

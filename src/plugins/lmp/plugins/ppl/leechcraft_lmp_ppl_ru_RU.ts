@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="ru_RU">
 <context>
-    <name>LeechCraft::LMP::PPL::LocalCollectionScrobbler</name>
+    <name>LC::LMP::PPL::LocalCollectionScrobbler</name>
     <message>
         <location filename="loghandler.cpp" line="84"/>
         <source>Local collection</source>
@@ -10,7 +10,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::PPL::Plugin</name>
+    <name>LC::LMP::PPL::Plugin</name>
     <message>
         <location filename="ppl.cpp" line="52"/>
         <source>Sync scrobbling log</source>
@@ -33,7 +33,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::PPL::TracksSelectorDialog</name>
+    <name>LC::LMP::PPL::TracksSelectorDialog</name>
     <message>
         <location filename="tracksselectordialog.cpp" line="122"/>
         <source>Artist</source>

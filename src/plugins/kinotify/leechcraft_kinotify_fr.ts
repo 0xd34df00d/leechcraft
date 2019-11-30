@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="fr">
 <context>
-    <name>LeechCraft::Plugins::Kinotify::Plugin</name>
+    <name>LC::Plugins::Kinotify::Plugin</name>
     <message>
         <location filename="kinotify.cpp" line="71"/>
         <source>Fancy Kinetic notifications.</source>

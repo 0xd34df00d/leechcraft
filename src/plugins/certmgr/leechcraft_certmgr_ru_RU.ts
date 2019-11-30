@@ -15,7 +15,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::CertMgr</name>
+    <name>LC::CertMgr</name>
     <message>
         <location filename="acceptedrejecteddialog.cpp" line="48"/>
         <source>Address</source>
@@ -28,7 +28,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::CertMgr::AcceptedRejectedDialog</name>
+    <name>LC::CertMgr::AcceptedRejectedDialog</name>
     <message>
         <location filename="acceptedrejecteddialog.cpp" line="82"/>
         <source>Remove exceptions</source>
@@ -46,7 +46,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::CertMgr::CertsModel</name>
+    <name>LC::CertMgr::CertsModel</name>
     <message>
         <location filename="certsmodel.cpp" line="114"/>
         <source>Organization</source>
@@ -124,7 +124,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::CertMgr::ExceptionsModel</name>
+    <name>LC::CertMgr::ExceptionsModel</name>
     <message>
         <location filename="exceptionsmodel.cpp" line="59"/>
         <location filename="exceptionsmodel.cpp" line="72"/>
@@ -139,7 +139,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::CertMgr::ManagerDialog</name>
+    <name>LC::CertMgr::ManagerDialog</name>
     <message>
         <location filename="managerdialog.cpp" line="86"/>
         <source>Select certificate files</source>
@@ -173,7 +173,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::CertMgr::Plugin</name>
+    <name>LC::CertMgr::Plugin</name>
     <message>
         <location filename="certmgr.cpp" line="80"/>
         <source>SSL certificates manager.</source>

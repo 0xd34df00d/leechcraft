@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="en_US">
 <context>
-    <name>LeechCraft::Monocle::Seen::Plugin</name>
+    <name>LC::Monocle::Seen::Plugin</name>
     <message>
         <location filename="seen.cpp" line="84"/>
         <source>DjVu backend for Monocle.</source>

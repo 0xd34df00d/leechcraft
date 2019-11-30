@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="ru_RU">
 <context>
-    <name>LeechCraft::Poshuku::SpeedDial</name>
+    <name>LC::Poshuku::SpeedDial</name>
     <message>
         <location filename="customsitesmanager.cpp" line="45"/>
         <source>Site name</source>
@@ -10,7 +10,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Poshuku::SpeedDial::Plugin</name>
+    <name>LC::Poshuku::SpeedDial::Plugin</name>
     <message>
         <location filename="speeddial.cpp" line="79"/>
         <source>Adds a special speed dial page.</source>
@@ -18,7 +18,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Poshuku::SpeedDial::ViewHandler</name>
+    <name>LC::Poshuku::SpeedDial::ViewHandler</name>
     <message>
         <location filename="viewhandler.cpp" line="190"/>
         <source>Top pages</source>

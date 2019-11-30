@@ -25,7 +25,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::NamAuth::NamHandler</name>
+    <name>LC::NamAuth::NamHandler</name>
     <message>
         <location filename="namhandler.cpp" line="85"/>
         <location filename="namhandler.cpp" line="95"/>
@@ -35,7 +35,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::NamAuth::Plugin</name>
+    <name>LC::NamAuth::Plugin</name>
     <message>
         <location filename="namauth.cpp" line="71"/>
         <source>Provides basic support for HTTP-level authentication.</source>

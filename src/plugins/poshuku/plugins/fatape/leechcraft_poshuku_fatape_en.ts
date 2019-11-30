@@ -30,7 +30,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Poshuku::FatApe::Plugin</name>
+    <name>LC::Poshuku::FatApe::Plugin</name>
     <message>
         <location filename="fatape.cpp" line="92"/>
         <source>Name</source>
@@ -48,7 +48,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Poshuku::FatApe::UserScriptCreator</name>
+    <name>LC::Poshuku::FatApe::UserScriptCreator</name>
     <message>
         <location filename="userscriptcreator.cpp" line="90"/>
         <source>Unable to create file %1: %2. Do you want to try again changing the file name?</source>
@@ -61,7 +61,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Poshuku::FatApe::UserScriptInstallerDialog</name>
+    <name>LC::Poshuku::FatApe::UserScriptInstallerDialog</name>
     <message>
         <location filename="userscriptinstallerdialog.cpp" line="73"/>
         <source>Fetching script...</source>

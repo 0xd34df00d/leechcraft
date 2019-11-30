@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="en_US">
 <context>
-    <name>LeechCraft::Launchy::FSDisplayer</name>
+    <name>LC::Launchy::FSDisplayer</name>
     <message>
         <location filename="fsdisplayer.cpp" line="210"/>
         <source>Recent</source>
@@ -85,7 +85,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Launchy::Plugin</name>
+    <name>LC::Launchy::Plugin</name>
     <message>
         <location filename="launchy.cpp" line="67"/>
         <source>Open fullscreen launcher...</source>

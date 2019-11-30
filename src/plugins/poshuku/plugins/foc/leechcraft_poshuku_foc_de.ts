@@ -28,7 +28,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Poshuku::FOC::FlashOnClickWhitelist</name>
+    <name>LC::Poshuku::FOC::FlashOnClickWhitelist</name>
     <message>
         <location filename="flashonclickwhitelist.cpp" line="49"/>
         <source>Whitelist</source>
@@ -51,7 +51,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Poshuku::FOC::FlashPlaceHolder</name>
+    <name>LC::Poshuku::FOC::FlashPlaceHolder</name>
     <message>
         <location filename="flashplaceholder.cpp" line="141"/>
         <source>Load</source>
@@ -74,7 +74,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Poshuku::FOC::Plugin</name>
+    <name>LC::Poshuku::FOC::Plugin</name>
     <message>
         <location filename="foc.cpp" line="77"/>
         <source>Shows the Flash-on-Click placeholder instead of flash player clips.</source>

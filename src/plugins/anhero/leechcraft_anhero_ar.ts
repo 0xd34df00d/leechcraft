@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="ar_SA">
 <context>
-    <name>LeechCraft::Plugins::AnHero::Plugin</name>
+    <name>LC::Plugins::AnHero::Plugin</name>
     <message>
         <location filename="anhero.cpp" line="72"/>
         <source>Crash handler</source>

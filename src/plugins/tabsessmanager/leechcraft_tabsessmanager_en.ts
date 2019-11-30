@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="en_US">
 <context>
-    <name>LeechCraft::TabSessManager::Plugin</name>
+    <name>LC::TabSessManager::Plugin</name>
     <message>
         <location filename="tabsessmanager.cpp" line="125"/>
         <source>Manages sessions of tabs in LeechCraft.</source>
@@ -10,7 +10,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::TabSessManager::RestoreSessionDialog</name>
+    <name>LC::TabSessManager::RestoreSessionDialog</name>
     <message>
         <location filename="restoresessiondialog.cpp" line="60"/>
         <source>no name</source>
@@ -18,7 +18,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::TabSessManager::SessionMenuManager</name>
+    <name>LC::TabSessManager::SessionMenuManager</name>
     <message>
         <location filename="sessionmenumanager.cpp" line="45"/>
         <source>Sessions</source>
@@ -61,7 +61,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::TabSessManager::SessionsManager</name>
+    <name>LC::TabSessManager::SessionsManager</name>
     <message>
         <location filename="sessionsmanager.cpp" line="314"/>
         <source>Custom session</source>
@@ -74,7 +74,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::TabSessManager::UncloseManager</name>
+    <name>LC::TabSessManager::UncloseManager</name>
     <message>
         <location filename="unclosemanager.cpp" line="49"/>
         <source>Unclose tabs</source>

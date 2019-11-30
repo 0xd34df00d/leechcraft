@@ -50,7 +50,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::LackMan::Core</name>
+    <name>LC::Plugins::LackMan::Core</name>
     <message>
         <location filename="core.cpp" line="109"/>
         <source>URL</source>
@@ -232,7 +232,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::LackMan::PackageProcessor</name>
+    <name>LC::Plugins::LackMan::PackageProcessor</name>
     <message>
         <location filename="packageprocessor.cpp" line="66"/>
         <source>Could not find database file for package %1.</source>
@@ -305,7 +305,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::LackMan::PackagesDelegate</name>
+    <name>LC::Plugins::LackMan::PackagesDelegate</name>
     <message>
         <location filename="packagesdelegate.cpp" line="234"/>
         <source>Remove</source>
@@ -328,7 +328,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::LackMan::PendingManager</name>
+    <name>LC::Plugins::LackMan::PendingManager</name>
     <message>
         <location filename="pendingmanager.cpp" line="114"/>
         <source>Package dependencies could not be fulfilled: %1</source>
@@ -351,7 +351,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::LackMan::Plugin</name>
+    <name>LC::Plugins::LackMan::Plugin</name>
     <message>
         <location filename="lackman.cpp" line="47"/>
         <source>LackMan</source>
@@ -419,7 +419,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::LackMan::RepoInfoFetcher</name>
+    <name>LC::Plugins::LackMan::RepoInfoFetcher</name>
     <message>
         <location filename="repoinfofetcher.cpp" line="67"/>
         <location filename="repoinfofetcher.cpp" line="243"/>
@@ -522,7 +522,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::LackMan::Storage</name>
+    <name>LC::Plugins::LackMan::Storage</name>
     <message>
         <location filename="storage.cpp" line="840"/>
         <source>Package with ID %1 not found.</source>

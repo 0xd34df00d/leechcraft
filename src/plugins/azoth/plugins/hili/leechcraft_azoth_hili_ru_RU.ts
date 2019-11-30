@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="ru_RU">
 <context>
-    <name>LeechCraft::Azoth::HiLi::Plugin</name>
+    <name>LC::Azoth::HiLi::Plugin</name>
     <message>
         <location filename="hili.cpp" line="81"/>
         <source>Azoth Hili allows one to customize the settings of highlights in conferences.</source>

@@ -1,6 +1,6 @@
 <?xml version="1.0" ?><!DOCTYPE TS><TS language="es" version="2.0">
 <context>
-    <name>LeechCraft::Azoth::LastSeen::Plugin</name>
+    <name>LC::Azoth::LastSeen::Plugin</name>
     <message>
         <location filename="lastseen.cpp" line="62"/>
         <source>Azoth LastSeen displays when a contact has been online and available for the list time.</source>

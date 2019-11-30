@@ -84,7 +84,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Otlozhu::ItemsMergeDialog</name>
+    <name>LC::Otlozhu::ItemsMergeDialog</name>
     <message numerus="yes">
         <location filename="itemsmergedialog.cpp" line="41"/>
         <source>There are %n items to import. How would you like to merge similar tasks?</source>
@@ -96,7 +96,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Otlozhu::NotificationsManager</name>
+    <name>LC::Otlozhu::NotificationsManager</name>
     <message>
         <location filename="notificationsmanager.cpp" line="68"/>
         <source>%1 is due now!</source>
@@ -104,7 +104,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Otlozhu::Plugin</name>
+    <name>LC::Otlozhu::Plugin</name>
     <message>
         <location filename="otlozhu.cpp" line="100"/>
         <source>A simple GTD-compatible ToDo manager.</source>
@@ -112,7 +112,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Otlozhu::StorageModel</name>
+    <name>LC::Otlozhu::StorageModel</name>
     <message>
         <location filename="storagemodel.cpp" line="49"/>
         <source>Title</source>
@@ -150,7 +150,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Otlozhu::TodoTab</name>
+    <name>LC::Otlozhu::TodoTab</name>
     <message>
         <location filename="todotab.cpp" line="60"/>
         <source>Set progress</source>

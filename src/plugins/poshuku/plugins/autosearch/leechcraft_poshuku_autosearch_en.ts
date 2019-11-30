@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="en_US">
 <context>
-    <name>LeechCraft::Poshuku::Autosearch::Plugin</name>
+    <name>LC::Poshuku::Autosearch::Plugin</name>
     <message>
         <location filename="autosearch.cpp" line="69"/>
         <source>Provides support for Google search suggestions.</source>

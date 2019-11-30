@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="en_US">
 <context>
-    <name>LeechCraft::Poshuku::QRd::Plugin</name>
+    <name>LC::Poshuku::QRd::Plugin</name>
     <message>
         <location filename="qrd.cpp" line="72"/>
         <source>Shows the QR code with the URL of an opened web page.</source>

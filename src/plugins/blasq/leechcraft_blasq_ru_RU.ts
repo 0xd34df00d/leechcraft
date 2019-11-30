@@ -15,7 +15,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Blasq::AccountsManager</name>
+    <name>LC::Blasq::AccountsManager</name>
     <message>
         <location filename="accountsmanager.cpp" line="45"/>
         <source>Name</source>
@@ -28,7 +28,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Blasq::DataFilterUploader</name>
+    <name>LC::Blasq::DataFilterUploader</name>
     <message>
         <location filename="datafilteruploader.cpp" line="68"/>
         <source>Select account</source>
@@ -41,7 +41,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Blasq::DefaultImageChooser</name>
+    <name>LC::Blasq::DefaultImageChooser</name>
     <message>
         <location filename="defaultimagechooser.cpp" line="49"/>
         <source>Choose an image to insert</source>
@@ -49,7 +49,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Blasq::NewAccountWizardFirstPage</name>
+    <name>LC::Blasq::NewAccountWizardFirstPage</name>
     <message>
         <location filename="newaccountwizardfirstpage.cpp" line="90"/>
         <source>%1 options</source>
@@ -57,7 +57,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Blasq::PhotosTab</name>
+    <name>LC::Blasq::PhotosTab</name>
     <message>
         <location filename="photostab.cpp" line="147"/>
         <source>Upload photos...</source>
@@ -90,7 +90,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Blasq::Plugin</name>
+    <name>LC::Blasq::Plugin</name>
     <message>
         <location filename="blasq.cpp" line="70"/>
         <source>Blasq</source>
@@ -118,7 +118,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Blasq::UploadPhotosDialog</name>
+    <name>LC::Blasq::UploadPhotosDialog</name>
     <message>
         <location filename="uploadphotosdialog.cpp" line="59"/>
         <source>Photo</source>

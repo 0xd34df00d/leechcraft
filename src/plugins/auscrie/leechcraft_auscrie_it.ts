@@ -1,6 +1,6 @@
 <?xml version="1.0" ?><!DOCTYPE TS><TS language="it" version="2.0">
 <context>
-    <name>LeechCraft::Auscrie::Plugin</name>
+    <name>LC::Auscrie::Plugin</name>
     <message>
         <location filename="auscrie.cpp" line="45"/>
         <source>Make a screenshot</source>
@@ -23,7 +23,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Auscrie::Poster</name>
+    <name>LC::Auscrie::Poster</name>
     <message>
         <location filename="poster.cpp" line="187"/>
         <source>Page parse failed</source>

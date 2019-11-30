@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="ru_RU">
 <context>
-    <name>LeechCraft::Monocle::FXB::FB2Converter</name>
+    <name>LC::Monocle::FXB::FB2Converter</name>
     <message>
         <location filename="fb2converter.cpp" line="65"/>
         <source>Invalid FictionBook document.</source>
@@ -10,7 +10,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Monocle::FXB::Plugin</name>
+    <name>LC::Monocle::FXB::Plugin</name>
     <message>
         <location filename="fxb.cpp" line="71"/>
         <source>FictionBook (fb2) backend for Monocle.</source>

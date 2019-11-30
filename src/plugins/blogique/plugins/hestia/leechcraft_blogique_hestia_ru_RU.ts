@@ -18,7 +18,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Blogique::Hestia::AccountConfigurationWidget</name>
+    <name>LC::Blogique::Hestia::AccountConfigurationWidget</name>
     <message>
         <location filename="accountconfigurationwidget.cpp" line="51"/>
         <source>Select new account base</source>
@@ -47,7 +47,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Blogique::Hestia::LocalBlogAccount</name>
+    <name>LC::Blogique::Hestia::LocalBlogAccount</name>
     <message>
         <location filename="localblogaccount.cpp" line="51"/>
         <source>All entries</source>
@@ -55,7 +55,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Blogique::Hestia::LocalBloggingPlatform</name>
+    <name>LC::Blogique::Hestia::LocalBloggingPlatform</name>
     <message>
         <location filename="localbloggingplatform.cpp" line="193"/>
         <source>You have invalid account data.</source>
@@ -63,7 +63,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Blogique::Hestia::Plugin</name>
+    <name>LC::Blogique::Hestia::Plugin</name>
     <message>
         <location filename="hestia.cpp" line="84"/>
         <source>Local blogging platform plugin for Blogique.</source>

@@ -152,7 +152,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Poshuku</name>
+    <name>LC::Poshuku</name>
     <message>
         <location filename="historymodel.cpp" line="110"/>
         <source>Title</source>
@@ -195,7 +195,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Poshuku::BrowserWidget</name>
+    <name>LC::Poshuku::BrowserWidget</name>
     <message>
         <location filename="browserwidget.cpp" line="123"/>
         <source>Bookmarks</source>
@@ -394,7 +394,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Poshuku::CookiesEditModel</name>
+    <name>LC::Poshuku::CookiesEditModel</name>
     <message>
         <location filename="cookieseditmodel.cpp" line="49"/>
         <source>Domain (cookie name)</source>
@@ -402,7 +402,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Poshuku::Core</name>
+    <name>LC::Poshuku::Core</name>
     <message>
         <location filename="core.cpp" line="97"/>
         <source>Poshuku</source>
@@ -446,7 +446,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Poshuku::CustomWebPage</name>
+    <name>LC::Poshuku::CustomWebPage</name>
     <message>
         <location filename="customwebpage.cpp" line="545"/>
         <source>&lt;a href=&quot;http://downforeveryoneorjustme.com/{host}&quot; target=&quot;_blank&quot;&gt;check&lt;/a&gt; if the site &lt;strong&gt;{host}&lt;/strong&gt; is down for you only;</source>
@@ -566,7 +566,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Poshuku::CustomWebView</name>
+    <name>LC::Poshuku::CustomWebView</name>
     <message>
         <location filename="customwebview.cpp" line="185"/>
         <location filename="customwebview.cpp" line="194"/>
@@ -721,7 +721,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Poshuku::FavoritesChecker</name>
+    <name>LC::Poshuku::FavoritesChecker</name>
     <message>
         <location filename="favoriteschecker.cpp" line="49"/>
         <source>Checking Favorites...</source>
@@ -769,7 +769,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Poshuku::FavoritesModel</name>
+    <name>LC::Poshuku::FavoritesModel</name>
     <message>
         <location filename="favoritesmodel.cpp" line="59"/>
         <source>Title</source>
@@ -787,7 +787,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Poshuku::Poshuku</name>
+    <name>LC::Poshuku::Poshuku</name>
     <message>
         <location filename="poshuku.cpp" line="135"/>
         <source>Import XBEL...</source>
@@ -830,7 +830,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Poshuku::ProgressLineEdit</name>
+    <name>LC::Poshuku::ProgressLineEdit</name>
     <message>
         <location filename="progresslineedit.cpp" line="225"/>
         <source>Paste and go</source>
@@ -838,7 +838,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Poshuku::ScreenShotSaveDialog</name>
+    <name>LC::Poshuku::ScreenShotSaveDialog</name>
     <message>
         <location filename="screenshotsavedialog.cpp" line="95"/>
         <source>Save</source>
@@ -866,7 +866,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Poshuku::SearchText</name>
+    <name>LC::Poshuku::SearchText</name>
     <message>
         <location filename="searchtext.cpp" line="44"/>
         <source>Search %1 with:</source>
@@ -874,7 +874,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Poshuku::UrlEditButtonsManager</name>
+    <name>LC::Poshuku::UrlEditButtonsManager</name>
     <message>
         <location filename="urleditbuttonsmanager.cpp" line="113"/>
         <source>Some SSL errors where encountered.</source>

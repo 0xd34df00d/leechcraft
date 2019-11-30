@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="es">
 <context>
-    <name>LeechCraft::Poshuku::CleanWeb::CleanWeb</name>
+    <name>LC::Poshuku::CleanWeb::CleanWeb</name>
     <message>
         <location filename="cleanweb.cpp" line="89"/>
         <source>Blocks unwanted ads.</source>
@@ -10,7 +10,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Poshuku::CleanWeb::Core</name>
+    <name>LC::Poshuku::CleanWeb::Core</name>
     <message>
         <location filename="core.cpp" line="271"/>
         <source>Blocked by Poshuku CleanWeb: %1</source>
@@ -33,7 +33,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Poshuku::CleanWeb::RuleOptionDialog</name>
+    <name>LC::Poshuku::CleanWeb::RuleOptionDialog</name>
     <message>
         <location filename="ruleoptiondialog.cpp" line="159"/>
         <location filename="ruleoptiondialog.cpp" line="185"/>
@@ -47,7 +47,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Poshuku::CleanWeb::SubscriptionAddDialog</name>
+    <name>LC::Poshuku::CleanWeb::SubscriptionAddDialog</name>
     <message>
         <location filename="subscriptionadddialog.cpp" line="98"/>
         <source>Name</source>
@@ -65,7 +65,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Poshuku::CleanWeb::SubscriptionsManagerWidget</name>
+    <name>LC::Poshuku::CleanWeb::SubscriptionsManagerWidget</name>
     <message>
         <location filename="subscriptionsmanagerwidget.cpp" line="78"/>
         <location filename="subscriptionsmanagerwidget.cpp" line="88"/>
@@ -96,7 +96,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Poshuku::CleanWeb::SubscriptionsModel</name>
+    <name>LC::Poshuku::CleanWeb::SubscriptionsModel</name>
     <message>
         <location filename="subscriptionsmodel.cpp" line="47"/>
         <source>Name</source>
@@ -114,7 +114,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Poshuku::CleanWeb::UserFilters</name>
+    <name>LC::Poshuku::CleanWeb::UserFilters</name>
     <message>
         <location filename="userfilters.cpp" line="99"/>
         <source>Paste rules</source>
@@ -137,7 +137,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Poshuku::CleanWeb::UserFiltersModel</name>
+    <name>LC::Poshuku::CleanWeb::UserFiltersModel</name>
     <message>
         <location filename="userfiltersmodel.cpp" line="62"/>
         <source>Filter</source>

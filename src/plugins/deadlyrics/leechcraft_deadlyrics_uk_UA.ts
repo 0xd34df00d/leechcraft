@@ -2,21 +2,21 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="uk_UA">
 <context>
-    <name>LeechCraft::Plugins::DeadLyrics::Core</name>
+    <name>LC::Plugins::DeadLyrics::Core</name>
     <message>
         <source>lyrics</source>
         <translation>тексти</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::DeadLyrics::DeadLyRicS</name>
+    <name>LC::Plugins::DeadLyrics::DeadLyRicS</name>
     <message>
         <source>Lyrics Searcher</source>
         <translation>Пошук текстів пісень</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::DeadLyrics::FindProxy</name>
+    <name>LC::Plugins::DeadLyrics::FindProxy</name>
     <message>
         <source>Searching...</source>
         <translation>Пошук...</translation>

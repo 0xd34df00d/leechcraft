@@ -72,7 +72,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Blogique::Metida::AddEditEntryDialog</name>
+    <name>LC::Blogique::Metida::AddEditEntryDialog</name>
     <message>
         <location filename="addeditentrydialog.cpp" line="184"/>
         <source>Username must be defined.</source>
@@ -102,7 +102,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Blogique::Metida::LJAccount</name>
+    <name>LC::Blogique::Metida::LJAccount</name>
     <message>
         <location filename="ljaccount.cpp" line="61"/>
         <source>Last entries</source>
@@ -145,7 +145,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Blogique::Metida::LJBloggingPlatform</name>
+    <name>LC::Blogique::Metida::LJBloggingPlatform</name>
     <message>
         <location filename="ljbloggingplatform.cpp" line="59"/>
         <source>Add LJ user</source>
@@ -190,7 +190,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Blogique::Metida::Plugin</name>
+    <name>LC::Blogique::Metida::Plugin</name>
     <message>
         <location filename="metida.cpp" line="88"/>
         <source>LiveJournal blogging platform support for Blogique.</source>
@@ -199,7 +199,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Blogique::Metida::PollDialog</name>
+    <name>LC::Blogique::Metida::PollDialog</name>
     <message>
         <location filename="polldialog.cpp" line="59"/>
         <source>Check boxes</source>
@@ -247,7 +247,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Blogique::Metida::PostOptionsWidget</name>
+    <name>LC::Blogique::Metida::PostOptionsWidget</name>
     <message>
         <location filename="postoptionswidget.cpp" line="81"/>
         <source>Post options</source>
@@ -354,7 +354,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Blogique::Metida::ProfileWidget</name>
+    <name>LC::Blogique::Metida::ProfileWidget</name>
     <message>
         <location filename="profilewidget.cpp" line="68"/>
         <source>Username</source>
@@ -457,7 +457,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Blogique::Metida::SelectGroupsDialog</name>
+    <name>LC::Blogique::Metida::SelectGroupsDialog</name>
     <message>
         <location filename="selectgroupsdialog.cpp" line="49"/>
         <source>Group</source>
@@ -465,7 +465,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Blogique::Metida::SendMessageDialog</name>
+    <name>LC::Blogique::Metida::SendMessageDialog</name>
     <message>
         <location filename="sendmessagedialog.cpp" line="50"/>
         <source>Send</source>

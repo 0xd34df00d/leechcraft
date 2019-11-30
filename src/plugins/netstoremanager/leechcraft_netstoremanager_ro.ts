@@ -31,7 +31,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::NetStoreManager::AccountsManager</name>
+    <name>LC::NetStoreManager::AccountsManager</name>
     <message>
         <location filename="accountsmanager.cpp" line="45"/>
         <source>Account</source>
@@ -44,7 +44,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::NetStoreManager::DirectoryWidget</name>
+    <name>LC::NetStoreManager::DirectoryWidget</name>
     <message>
         <location filename="directorywidget.cpp" line="71"/>
         <source>Select directory</source>
@@ -61,7 +61,7 @@ Trebuie să selectați un cont în prima coloană.</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::NetStoreManager::DownManager</name>
+    <name>LC::NetStoreManager::DownManager</name>
     <message>
         <location filename="downmanager.cpp" line="60"/>
         <source>Could not find plugin to download %1.</source>
@@ -69,7 +69,7 @@ Trebuie să selectați un cont în prima coloană.</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::NetStoreManager::ManagerTab</name>
+    <name>LC::NetStoreManager::ManagerTab</name>
     <message>
         <location filename="managertab.cpp" line="100"/>
         <source>Copy URL...</source>
@@ -230,7 +230,7 @@ Trebuie să selectați un cont în prima coloană.</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::NetStoreManager::Plugin</name>
+    <name>LC::NetStoreManager::Plugin</name>
     <message>
         <location filename="netstoremanager.cpp" line="116"/>
         <source>Allows one to manage his network storages like Yandex.Disk.</source>
@@ -248,7 +248,7 @@ Trebuie să selectați un cont în prima coloană.</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::NetStoreManager::RemoteDirectorySelectDialog</name>
+    <name>LC::NetStoreManager::RemoteDirectorySelectDialog</name>
     <message>
         <location filename="remotedirectoryselectdialog.cpp" line="64"/>
         <source>New directory...</source>
@@ -273,7 +273,7 @@ Trebuie să selectați un cont în prima coloană.</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::NetStoreManager::SyncWidget</name>
+    <name>LC::NetStoreManager::SyncWidget</name>
     <message>
         <location filename="syncwidget.cpp" line="55"/>
         <source>Account</source>
@@ -291,7 +291,7 @@ Trebuie să selectați un cont în prima coloană.</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::NetStoreManager::UpManager</name>
+    <name>LC::NetStoreManager::UpManager</name>
     <message>
         <location filename="upmanager.cpp" line="124"/>
         <source>%1 is already uploading to %2.</source>

@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="ru_RU">
 <context>
-    <name>LeechCraft::DeadLyrics::DeadLyRicS</name>
+    <name>LC::DeadLyrics::DeadLyRicS</name>
     <message>
         <source>Song lyrics searcher.</source>
         <translation>Модуль поиска текстов песен.</translation>
@@ -13,7 +13,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::DeadLyrics::HascirylSearcher</name>
+    <name>LC::DeadLyrics::HascirylSearcher</name>
     <message>
         <source>Lyrics not found.</source>
         <translation>Текст не найден.</translation>

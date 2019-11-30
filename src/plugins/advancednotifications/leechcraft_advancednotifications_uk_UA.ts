@@ -33,7 +33,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::AdvancedNotifications::EnableSoundActionManager</name>
+    <name>LC::AdvancedNotifications::EnableSoundActionManager</name>
     <message>
         <location filename="enablesoundactionmanager.cpp" line="40"/>
         <source>Enable sound notifications</source>
@@ -41,7 +41,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::AdvancedNotifications::MatchConfigDialog</name>
+    <name>LC::AdvancedNotifications::MatchConfigDialog</name>
     <message>
         <location filename="matchconfigdialog.cpp" line="142"/>
         <source>Invalid matcher type %1.</source>
@@ -49,7 +49,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::AdvancedNotifications::NotificationRulesWidget</name>
+    <name>LC::AdvancedNotifications::NotificationRulesWidget</name>
     <message>
         <location filename="notificationruleswidget.cpp" line="99"/>
         <source>Field name</source>
@@ -98,7 +98,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::AdvancedNotifications::Plugin</name>
+    <name>LC::AdvancedNotifications::Plugin</name>
     <message>
         <location filename="advancednotifications.cpp" line="75"/>
         <source>Toggle Advanced Notifications rules...</source>
@@ -111,7 +111,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::AdvancedNotifications::RulesManager</name>
+    <name>LC::AdvancedNotifications::RulesManager</name>
     <message>
         <location filename="rulesmanager.cpp" line="84"/>
         <source>Instant messaging</source>
@@ -264,7 +264,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::AdvancedNotifications::SystemTrayHandler</name>
+    <name>LC::AdvancedNotifications::SystemTrayHandler</name>
     <message>
         <location filename="systemtrayhandler.cpp" line="221"/>
         <source>Dismiss</source>

@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="en_US">
 <context>
-    <name>LeechCraft::Poshuku::DCAC::Plugin</name>
+    <name>LC::Poshuku::DCAC::Plugin</name>
     <message>
         <location filename="dcac.cpp" line="74"/>
         <source>Inverts the colors of web pages.</source>
@@ -10,7 +10,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Poshuku::DCAC::ViewsManager</name>
+    <name>LC::Poshuku::DCAC::ViewsManager</name>
     <message>
         <location filename="viewsmanager.cpp" line="105"/>
         <source>Night mode</source>

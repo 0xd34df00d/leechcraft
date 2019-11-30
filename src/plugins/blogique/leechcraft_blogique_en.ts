@@ -467,7 +467,7 @@ You can specify all export parameters in this wizard.</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Blogique::AccountsListWidget</name>
+    <name>LC::Blogique::AccountsListWidget</name>
     <message>
         <location filename="accountslistwidget.cpp" line="79"/>
         <source>Account</source>
@@ -514,7 +514,7 @@ You can specify all export parameters in this wizard.</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Blogique::AccountsSelectDialog</name>
+    <name>LC::Blogique::AccountsSelectDialog</name>
     <message>
         <location filename="accountsselectdialog.cpp" line="45"/>
         <source>Account name</source>
@@ -522,7 +522,7 @@ You can specify all export parameters in this wizard.</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Blogique::AddAccountWizardFirstPage</name>
+    <name>LC::Blogique::AddAccountWizardFirstPage</name>
     <message>
         <location filename="addaccountwizardfirstpage.cpp" line="131"/>
         <source>%1 options</source>
@@ -530,7 +530,7 @@ You can specify all export parameters in this wizard.</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Blogique::AddCommentDialog</name>
+    <name>LC::Blogique::AddCommentDialog</name>
     <message>
         <location filename="addcommentdialog.cpp" line="44"/>
         <source>Send</source>
@@ -538,7 +538,7 @@ You can specify all export parameters in this wizard.</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Blogique::BlogEntriesWidget</name>
+    <name>LC::Blogique::BlogEntriesWidget</name>
     <message>
         <location filename="blogentrieswidget.cpp" line="72"/>
         <source>Date</source>
@@ -571,7 +571,7 @@ You can specify all export parameters in this wizard.</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Blogique::BlogiqueWidget</name>
+    <name>LC::Blogique::BlogiqueWidget</name>
     <message>
         <location filename="blogiquewidget.cpp" line="285"/>
         <source>No subject</source>
@@ -642,7 +642,7 @@ You can specify all export parameters in this wizard.</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Blogique::CommentsWidget</name>
+    <name>LC::Blogique::CommentsWidget</name>
     <message>
         <location filename="commentswidget.cpp" line="109"/>
         <source>Comments</source>
@@ -655,7 +655,7 @@ You can specify all export parameters in this wizard.</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Blogique::Core</name>
+    <name>LC::Blogique::Core</name>
     <message>
         <location filename="core.cpp" line="356"/>
         <source>Entry was posted successfully:</source>
@@ -683,7 +683,7 @@ You can specify all export parameters in this wizard.</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Blogique::DraftEntriesWidget</name>
+    <name>LC::Blogique::DraftEntriesWidget</name>
     <message>
         <location filename="draftentrieswidget.cpp" line="75"/>
         <source>Open in new tab</source>
@@ -726,7 +726,7 @@ You can specify all export parameters in this wizard.</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Blogique::ExportWizard</name>
+    <name>LC::Blogique::ExportWizard</name>
     <message>
         <location filename="exportwizard.cpp" line="206"/>
         <source>All entries</source>
@@ -759,7 +759,7 @@ You can specify all export parameters in this wizard.</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Blogique::Plugin</name>
+    <name>LC::Blogique::Plugin</name>
     <message>
         <location filename="blogique.cpp" line="91"/>
         <source>Export blog</source>
@@ -772,7 +772,7 @@ You can specify all export parameters in this wizard.</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Blogique::SelectTargetDelegate</name>
+    <name>LC::Blogique::SelectTargetDelegate</name>
     <message>
         <location filename="selecttargetdelegate.cpp" line="64"/>
         <location filename="selecttargetdelegate.cpp" line="70"/>
@@ -781,7 +781,7 @@ You can specify all export parameters in this wizard.</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Blogique::SubmitToDialog</name>
+    <name>LC::Blogique::SubmitToDialog</name>
     <message>
         <location filename="submittodialog.cpp" line="47"/>
         <source>Account</source>

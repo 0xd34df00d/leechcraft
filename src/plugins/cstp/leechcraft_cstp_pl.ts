@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.0">
 <context>
-    <name>LeechCraft::Plugins::CSTP::AddTask</name>
+    <name>LC::Plugins::CSTP::AddTask</name>
     <message>
         <location filename="addtask.cpp" line="107"/>
         <source>Directory %1 doesn&apos;t exist, would you like to select another?</source>
@@ -30,7 +30,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::CSTP::CSTP</name>
+    <name>LC::Plugins::CSTP::CSTP</name>
     <message>
         <location filename="cstp.cpp" line="206"/>
         <source>Remove</source>
@@ -73,7 +73,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::CSTP::Core</name>
+    <name>LC::Plugins::CSTP::Core</name>
     <message>
         <location filename="core.cpp" line="61"/>
         <source>URL</source>
@@ -122,7 +122,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::CSTP::MainViewDelegate</name>
+    <name>LC::Plugins::CSTP::MainViewDelegate</name>
     <message>
         <location filename="mainviewdelegate.cpp" line="71"/>
         <source>Idle</source>
@@ -130,7 +130,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::CSTP::Task</name>
+    <name>LC::Plugins::CSTP::Task</name>
     <message>
         <location filename="task.cpp" line="213"/>
         <source>Stopped</source>

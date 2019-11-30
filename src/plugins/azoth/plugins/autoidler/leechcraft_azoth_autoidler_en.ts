@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="en_US">
 <context>
-    <name>LeechCraft::Azoth::Autoidler::Plugin</name>
+    <name>LC::Azoth::Autoidler::Plugin</name>
     <message>
         <location filename="autoidler.cpp" line="86"/>
         <source>Automatically updates statuses depending on idle time.</source>

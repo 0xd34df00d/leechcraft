@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="ru_RU">
 <context>
-    <name>LeechCraft::WKPlugins::Plugin</name>
+    <name>LC::WKPlugins::Plugin</name>
     <message>
         <location filename="wkplugins.cpp" line="75"/>
         <source>Provides support for spellchecking and HTML5 notifications to WebKit.</source>

@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="ru_RU">
 <context>
-    <name>LeechCraft::Ooronee::Plugin</name>
+    <name>LC::Ooronee::Plugin</name>
     <message>
         <location filename="ooronee.cpp" line="82"/>
         <source>Provides a quark for handling image and text droppend onto it via other data filter plugins.</source>
@@ -10,7 +10,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Ooronee::QuarkProxy</name>
+    <name>LC::Ooronee::QuarkProxy</name>
     <message>
         <location filename="quarkproxy.cpp" line="132"/>
         <source>Select the data filter to handle the dropped image:</source>

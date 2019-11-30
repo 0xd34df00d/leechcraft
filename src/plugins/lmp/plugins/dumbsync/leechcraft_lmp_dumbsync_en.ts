@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="en_US">
 <context>
-    <name>LeechCraft::LMP::DumbSync::Plugin</name>
+    <name>LC::LMP::DumbSync::Plugin</name>
     <message>
         <location filename="dumbsync.cpp" line="66"/>
         <source>Adds support for synchronization with portable players that show themselves as Flash drives, like Rockbox players.</source>

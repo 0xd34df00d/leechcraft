@@ -437,7 +437,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::AcceptRIEXDialog</name>
+    <name>LC::Azoth::AcceptRIEXDialog</name>
     <message>
         <location filename="acceptriexdialog.cpp" line="48"/>
         <source>Action</source>
@@ -492,7 +492,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::AccountActionsManager</name>
+    <name>LC::Azoth::AccountActionsManager</name>
     <message>
         <location filename="accountactionsmanager.cpp" line="87"/>
         <source>Join conference...</source>
@@ -620,7 +620,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::AccountsListWidget</name>
+    <name>LC::Azoth::AccountsListWidget</name>
     <message>
         <location filename="accountslistwidget.cpp" line="164"/>
         <source>Show</source>
@@ -663,7 +663,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::ActionsManager</name>
+    <name>LC::Azoth::ActionsManager</name>
     <message>
         <location filename="actionsmanager.cpp" line="909"/>
         <source>Enter reason</source>
@@ -983,7 +983,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::ActivityDialog</name>
+    <name>LC::Azoth::ActivityDialog</name>
     <message>
         <location filename="activitydialog.cpp" line="57"/>
         <source>doing_chores</source>
@@ -1382,7 +1382,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::AddAccountWizardFirstPage</name>
+    <name>LC::Azoth::AddAccountWizardFirstPage</name>
     <message>
         <location filename="addaccountwizardfirstpage.cpp" line="124"/>
         <source>%1 options</source>
@@ -1390,7 +1390,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::AdvancedPermChangeDialog</name>
+    <name>LC::Azoth::AdvancedPermChangeDialog</name>
     <message>
         <location filename="advancedpermchangedialog.cpp" line="49"/>
         <source>Set %1 to %2 for %3</source>
@@ -1398,7 +1398,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::BookmarksManagerDialog</name>
+    <name>LC::Azoth::BookmarksManagerDialog</name>
     <message>
         <location filename="bookmarksmanagerdialog.cpp" line="230"/>
         <source>Add bookmark for account %1</source>
@@ -1416,7 +1416,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::CLTooltipManager</name>
+    <name>LC::Azoth::CLTooltipManager</name>
     <message>
         <location filename="cltooltipmanager.cpp" line="328"/>
         <source>In groups:</source>
@@ -1454,7 +1454,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::CallChatWidget</name>
+    <name>LC::Azoth::CallChatWidget</name>
     <message>
         <location filename="callchatwidget.cpp" line="44"/>
         <source>Initializing...</source>
@@ -1482,7 +1482,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::CallManager</name>
+    <name>LC::Azoth::CallManager</name>
     <message>
         <location filename="callmanager.cpp" line="140"/>
         <source>Incoming call from %1</source>
@@ -1500,7 +1500,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::ChatTab</name>
+    <name>LC::Azoth::ChatTab</name>
     <message>
         <location filename="chattab.cpp" line="145"/>
         <source>Azoth chat window</source>
@@ -1666,7 +1666,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::ChatTabWebView</name>
+    <name>LC::Azoth::ChatTabWebView</name>
     <message>
         <location filename="chattabwebview.cpp" line="99"/>
         <source>Open as URL</source>
@@ -1699,7 +1699,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::ConsoleWidget</name>
+    <name>LC::Azoth::ConsoleWidget</name>
     <message>
         <location filename="consolewidget.cpp" line="51"/>
         <source>IM console</source>
@@ -1717,7 +1717,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::ContactDropFilter</name>
+    <name>LC::Azoth::ContactDropFilter</name>
     <message>
         <location filename="contactdropfilter.cpp" line="132"/>
         <source>This message contains inline image, enable XHTML-IM to view it.</source>
@@ -1776,7 +1776,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Core</name>
+    <name>LC::Azoth::Core</name>
     <message>
         <location filename="core.cpp" line="1130"/>
         <source>Unauthorized users</source>
@@ -1979,7 +1979,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::CoreCommandsManager</name>
+    <name>LC::Azoth::CoreCommandsManager</name>
     <message>
         <location filename="corecommandsmanager.cpp" line="60"/>
         <source>The following commands are available:</source>
@@ -2038,7 +2038,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::CustomStatusesManager</name>
+    <name>LC::Azoth::CustomStatusesManager</name>
     <message>
         <location filename="customstatusesmanager.cpp" line="50"/>
         <source>Name</source>
@@ -2056,7 +2056,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::DrawAttentionDialog</name>
+    <name>LC::Azoth::DrawAttentionDialog</name>
     <message>
         <location filename="drawattentiondialog.cpp" line="43"/>
         <source>&lt;all&gt;</source>
@@ -2064,7 +2064,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::FileSendDialog</name>
+    <name>LC::Azoth::FileSendDialog</name>
     <message>
         <location filename="filesenddialog.cpp" line="74"/>
         <source>Protocol file transfer</source>
@@ -2092,7 +2092,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::GroupRemoveDialog</name>
+    <name>LC::Azoth::GroupRemoveDialog</name>
     <message>
         <location filename="groupremovedialog.cpp" line="44"/>
         <source>Name</source>
@@ -2105,7 +2105,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::GroupSendDialog</name>
+    <name>LC::Azoth::GroupSendDialog</name>
     <message>
         <location filename="groupsenddialog.cpp" line="47"/>
         <source>Name</source>
@@ -2118,7 +2118,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::ImportManager</name>
+    <name>LC::Azoth::ImportManager</name>
     <message>
         <location filename="importmanager.cpp" line="218"/>
         <source>Select account to import history from %1 into:</source>
@@ -2126,7 +2126,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::JoinConferenceDialog</name>
+    <name>LC::Azoth::JoinConferenceDialog</name>
     <message>
         <location filename="joinconferencedialog.cpp" line="90"/>
         <source>%1 (%2, %3)</source>
@@ -2134,7 +2134,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::MainWidget</name>
+    <name>LC::Azoth::MainWidget</name>
     <message>
         <location filename="mainwidget.cpp" line="240"/>
         <source>Manage bookmarks...</source>
@@ -2227,7 +2227,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::MoodDialog</name>
+    <name>LC::Azoth::MoodDialog</name>
     <message>
         <location filename="mooddialog.cpp" line="88"/>
         <source>afraid</source>
@@ -2655,7 +2655,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::MsgFormatterWidget</name>
+    <name>LC::Azoth::MsgFormatterWidget</name>
     <message>
         <location filename="msgformatterwidget.cpp" line="87"/>
         <source>Emoticons</source>
@@ -2718,7 +2718,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::NotificationsManager</name>
+    <name>LC::Azoth::NotificationsManager</name>
     <message>
         <location filename="notificationsmanager.cpp" line="195"/>
         <source>Incoming chat message from &lt;em&gt;%1&lt;/em&gt;.</source>
@@ -2949,7 +2949,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Plugin</name>
+    <name>LC::Azoth::Plugin</name>
     <message>
         <location filename="azoth.cpp" line="442"/>
         <source>Default input device</source>
@@ -3095,7 +3095,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::ProxyObject</name>
+    <name>LC::Azoth::ProxyObject</name>
     <message>
         <location filename="proxyobject.cpp" line="214"/>
         <source>Enter password for %1:</source>
@@ -3113,7 +3113,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::SearchWidget</name>
+    <name>LC::Azoth::SearchWidget</name>
     <message>
         <location filename="searchwidget.cpp" line="112"/>
         <source>Search</source>
@@ -3126,7 +3126,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::ServerHistoryWidget</name>
+    <name>LC::Azoth::ServerHistoryWidget</name>
     <message>
         <location filename="serverhistorywidget.cpp" line="91"/>
         <source>Previous page</source>
@@ -3139,7 +3139,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::ServiceDiscoveryWidget</name>
+    <name>LC::Azoth::ServiceDiscoveryWidget</name>
     <message>
         <location filename="servicediscoverywidget.cpp" line="106"/>
         <source>Filter...</source>
@@ -3162,7 +3162,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::ShareRIEXDialog</name>
+    <name>LC::Azoth::ShareRIEXDialog</name>
     <message>
         <location filename="shareriexdialog.cpp" line="52"/>
         <source>Select items to be shared with %1:</source>
@@ -3195,7 +3195,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::StatusChangeMenuManager</name>
+    <name>LC::Azoth::StatusChangeMenuManager</name>
     <message>
         <location filename="statuschangemenumanager.cpp" line="47"/>
         <source>Change status</source>
@@ -3248,7 +3248,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::TextEdit</name>
+    <name>LC::Azoth::TextEdit</name>
     <message>
         <location filename="textedit.cpp" line="58"/>
         <source>Delete the word before the cursor</source>
@@ -3266,7 +3266,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::TransferJobManager</name>
+    <name>LC::Azoth::TransferJobManager</name>
     <message>
         <location filename="transferjobmanager.cpp" line="128"/>
         <source>Transferring %1 from %2</source>

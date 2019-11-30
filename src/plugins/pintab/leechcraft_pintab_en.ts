@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="en_US">
 <context>
-    <name>LeechCraft::PinTab::Plugin</name>
+    <name>LC::PinTab::Plugin</name>
     <message>
         <location filename="pintab.cpp" line="38"/>
         <source>Pin tab</source>

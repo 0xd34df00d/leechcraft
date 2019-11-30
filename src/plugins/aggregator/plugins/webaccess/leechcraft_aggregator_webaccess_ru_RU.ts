@@ -30,7 +30,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Aggregator::WebAccess::Plugin</name>
+    <name>LC::Aggregator::WebAccess::Plugin</name>
     <message>
         <location filename="webaccess.cpp" line="75"/>
         <source>Provides remote HTTP/Web access to Aggregator.</source>

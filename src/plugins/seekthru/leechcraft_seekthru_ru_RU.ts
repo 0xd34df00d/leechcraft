@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="ru_RU">
 <context>
-    <name>LeechCraft::SeekThru::Core</name>
+    <name>LC::SeekThru::Core</name>
     <message>
         <location filename="core.cpp" line="82"/>
         <source>Short name</source>
@@ -55,7 +55,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::SeekThru::SearchHandler</name>
+    <name>LC::SeekThru::SearchHandler</name>
     <message>
         <location filename="searchhandler.cpp" line="58"/>
         <source>Subscribe</source>
@@ -97,7 +97,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::SeekThru::SearchersList</name>
+    <name>LC::SeekThru::SearchersList</name>
     <message>
         <location filename="searcherslist.cpp" line="57"/>
         <source>From searchplugins.net...</source>
@@ -155,7 +155,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::SeekThru::SeekThru</name>
+    <name>LC::SeekThru::SeekThru</name>
     <message>
         <location filename="seekthru.cpp" line="109"/>
         <source>Search via OpenSearch-aware search providers.</source>
@@ -173,7 +173,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::SeekThru::StartupFirstPage</name>
+    <name>LC::SeekThru::StartupFirstPage</name>
     <message>
         <location filename="startupfirstpage.cpp" line="76"/>
         <source>Select default search engines</source>

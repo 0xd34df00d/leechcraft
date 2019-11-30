@@ -35,7 +35,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Blasq::DeathNote::FotoBilderAccount</name>
+    <name>LC::Blasq::DeathNote::FotoBilderAccount</name>
     <message>
         <location filename="fotobilderaccount.cpp" line="78"/>
         <location filename="fotobilderaccount.cpp" line="728"/>
@@ -54,7 +54,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Blasq::DeathNote::Plugin</name>
+    <name>LC::Blasq::DeathNote::Plugin</name>
     <message>
         <location filename="deathnote.cpp" line="68"/>
         <source>LiveJournal FotoBilder support module for Blasq.</source>
@@ -62,7 +62,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Blasq::DeathNote::SelectGroupsDialog</name>
+    <name>LC::Blasq::DeathNote::SelectGroupsDialog</name>
     <message>
         <location filename="selectgroupsdialog.cpp" line="59"/>
         <source>Groups</source>

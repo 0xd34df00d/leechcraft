@@ -25,7 +25,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Metacontacts::Core</name>
+    <name>LC::Azoth::Metacontacts::Core</name>
     <message>
         <location filename="core.cpp" line="210"/>
         <source>Enter the name of the new metacontact uniting %1 and %2:</source>
@@ -33,7 +33,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Metacontacts::ManageContactsDialog</name>
+    <name>LC::Azoth::Metacontacts::ManageContactsDialog</name>
     <message>
         <location filename="managecontactsdialog.cpp" line="41"/>
         <source>Name</source>
@@ -61,7 +61,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Metacontacts::MetaAccount</name>
+    <name>LC::Azoth::Metacontacts::MetaAccount</name>
     <message>
         <location filename="metaaccount.cpp" line="60"/>
         <source>Metacontacts</source>
@@ -69,7 +69,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Metacontacts::MetaEntry</name>
+    <name>LC::Azoth::Metacontacts::MetaEntry</name>
     <message>
         <location filename="metaentry.cpp" line="45"/>
         <source>Manage contacts...</source>
@@ -77,7 +77,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Metacontacts::MetaProtocol</name>
+    <name>LC::Azoth::Metacontacts::MetaProtocol</name>
     <message>
         <location filename="metaprotocol.cpp" line="60"/>
         <source>Metacontacts</source>
@@ -85,7 +85,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Metacontacts::Plugin</name>
+    <name>LC::Azoth::Metacontacts::Plugin</name>
     <message>
         <location filename="metacontacts.cpp" line="39"/>
         <source>Add to a metacontact...</source>

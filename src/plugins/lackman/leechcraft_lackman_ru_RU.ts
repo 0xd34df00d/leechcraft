@@ -65,7 +65,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LackMan::Core</name>
+    <name>LC::LackMan::Core</name>
     <message>
         <location filename="core.cpp" line="108"/>
         <source>URL</source>
@@ -245,7 +245,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LackMan::LackManTab</name>
+    <name>LC::LackMan::LackManTab</name>
     <message>
         <location filename="lackmantab.cpp" line="78"/>
         <source>Package tags</source>
@@ -333,7 +333,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LackMan::PackageProcessor</name>
+    <name>LC::LackMan::PackageProcessor</name>
     <message>
         <location filename="packageprocessor.cpp" line="60"/>
         <source>Could not find database file for package %1.</source>
@@ -406,7 +406,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LackMan::PackagesModel</name>
+    <name>LC::LackMan::PackagesModel</name>
     <message>
         <location filename="packagesmodel.cpp" line="63"/>
         <source>I</source>
@@ -444,7 +444,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LackMan::PendingManager</name>
+    <name>LC::LackMan::PendingManager</name>
     <message>
         <location filename="pendingmanager.cpp" line="139"/>
         <source>Package dependencies could not be fulfilled: %1</source>
@@ -467,7 +467,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LackMan::Plugin</name>
+    <name>LC::LackMan::Plugin</name>
     <message>
         <location filename="lackman.cpp" line="108"/>
         <source>LeechCraft Package Manager.</source>
@@ -475,7 +475,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LackMan::RepoInfoFetcher</name>
+    <name>LC::LackMan::RepoInfoFetcher</name>
     <message>
         <location filename="repoinfofetcher.cpp" line="76"/>
         <location filename="repoinfofetcher.cpp" line="235"/>
@@ -568,7 +568,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LackMan::Storage</name>
+    <name>LC::LackMan::Storage</name>
     <message>
         <location filename="storage.cpp" line="863"/>
         <source>Package with ID %1 not found.</source>
@@ -581,7 +581,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LackMan::UpdatesNotificationManager</name>
+    <name>LC::LackMan::UpdatesNotificationManager</name>
     <message>
         <location filename="updatesnotificationmanager.cpp" line="128"/>
         <source>A new version of %1 is available.</source>

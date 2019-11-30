@@ -25,7 +25,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Poshuku::OnlineBookmarks::Delicious::DeliciousService</name>
+    <name>LC::Poshuku::OnlineBookmarks::Delicious::DeliciousService</name>
     <message>
         <location filename="deliciousservice.cpp" line="255"/>
         <source>Authentication was successfull.</source>
@@ -48,7 +48,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Poshuku::OnlineBookmarks::Delicious::Plugin</name>
+    <name>LC::Poshuku::OnlineBookmarks::Delicious::Plugin</name>
     <message>
         <location filename="delicious.cpp" line="63"/>
         <source>Sync local bookmarks with your account in Delicious</source>

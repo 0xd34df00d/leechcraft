@@ -46,7 +46,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Poshuku::Keywords::KeywordsManagerWidget</name>
+    <name>LC::Poshuku::Keywords::KeywordsManagerWidget</name>
     <message>
         <location filename="keywordsmanagerwidget.cpp" line="70"/>
         <source>Keyword already exists</source>
@@ -59,7 +59,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Poshuku::Keywords::Plugin</name>
+    <name>LC::Poshuku::Keywords::Plugin</name>
     <message>
         <location filename="keywords.cpp" line="53"/>
         <source>Keyword</source>

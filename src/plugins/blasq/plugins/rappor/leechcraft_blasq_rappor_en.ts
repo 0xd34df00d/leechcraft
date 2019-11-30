@@ -54,7 +54,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Blasq::Rappor</name>
+    <name>LC::Blasq::Rappor</name>
     <message>
         <location filename="vkaccount.cpp" line="61"/>
         <source>Name</source>
@@ -67,7 +67,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Blasq::Rappor::Plugin</name>
+    <name>LC::Blasq::Rappor::Plugin</name>
     <message>
         <location filename="rappor.cpp" line="67"/>
         <source>VKontakte support module for Blasq.</source>
@@ -75,7 +75,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Blasq::Rappor::VkService</name>
+    <name>LC::Blasq::Rappor::VkService</name>
     <message>
         <location filename="vkservice.cpp" line="65"/>
         <source>VKontakte</source>

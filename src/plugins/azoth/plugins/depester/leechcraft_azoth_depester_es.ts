@@ -1,6 +1,6 @@
 <?xml version="1.0" ?><!DOCTYPE TS><TS language="es" version="2.0">
 <context>
-    <name>LeechCraft::Azoth::Depester::Plugin</name>
+    <name>LC::Azoth::Depester::Plugin</name>
     <message>
         <location filename="depester.cpp" line="57"/>
         <source>Allows one to block messages from unwanted contacts in MUCs.</source>

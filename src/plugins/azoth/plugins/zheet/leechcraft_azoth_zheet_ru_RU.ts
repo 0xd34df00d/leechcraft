@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="ru_RU">
 <context>
-    <name>LeechCraft::Azoth::Zheet::Callbacks</name>
+    <name>LC::Azoth::Zheet::Callbacks</name>
     <message>
         <location filename="callbacks.cpp" line="103"/>
         <source>Error for MSN account %1: %2.</source>
@@ -10,7 +10,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Zheet::MSNAccount</name>
+    <name>LC::Azoth::Zheet::MSNAccount</name>
     <message>
         <location filename="msnaccount.cpp" line="51"/>
         <source>Manage blacklist...</source>
@@ -33,7 +33,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Zheet::Plugin</name>
+    <name>LC::Azoth::Zheet::Plugin</name>
     <message>
         <location filename="zheet.cpp" line="62"/>
         <source>Support for the MSN protocol.</source>

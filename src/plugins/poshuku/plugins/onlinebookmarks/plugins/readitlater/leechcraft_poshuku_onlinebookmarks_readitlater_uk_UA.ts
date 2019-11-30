@@ -20,7 +20,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Poshuku::OnlineBookmarks::ReadItLater::Plugin</name>
+    <name>LC::Poshuku::OnlineBookmarks::ReadItLater::Plugin</name>
     <message>
         <location filename="readitlater.cpp" line="63"/>
         <source>Sync local bookmarks with your account in Read It Later</source>
@@ -28,7 +28,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Poshuku::OnlineBookmarks::ReadItLater::ReadItLaterService</name>
+    <name>LC::Poshuku::OnlineBookmarks::ReadItLater::ReadItLaterService</name>
     <message>
         <location filename="readitlaterservice.cpp" line="260"/>
         <source>Authentication has finished successfully</source>

@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="fr">
 <context>
-    <name>LeechCraft::Plugins::DeadLyrics::Core</name>
+    <name>LC::Plugins::DeadLyrics::Core</name>
     <message>
         <location filename="core.cpp" line="73"/>
         <location filename="core.cpp" line="78"/>
@@ -11,7 +11,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::DeadLyrics::DeadLyRicS</name>
+    <name>LC::Plugins::DeadLyrics::DeadLyRicS</name>
     <message>
         <location filename="deadlyrics.cpp" line="64"/>
         <source>Lyrics Searcher</source>
@@ -19,7 +19,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::DeadLyrics::FindProxy</name>
+    <name>LC::Plugins::DeadLyrics::FindProxy</name>
     <message>
         <location filename="findproxy.cpp" line="151"/>
         <source>Searching...</source>

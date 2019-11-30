@@ -1035,7 +1035,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Aggregator::Aggregator</name>
+    <name>LC::Aggregator::Aggregator</name>
     <message>
         <location filename="aggregator.cpp" line="131"/>
         <source>Aggregator</source>
@@ -1116,7 +1116,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Aggregator::ChannelsModel</name>
+    <name>LC::Aggregator::ChannelsModel</name>
     <message>
         <location filename="channelsmodel.cpp" line="56"/>
         <source>Feed</source>
@@ -1144,7 +1144,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Aggregator::Core</name>
+    <name>LC::Aggregator::Core</name>
     <message>
         <location filename="core.cpp" line="221"/>
         <source>Import error</source>
@@ -1348,7 +1348,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Aggregator::DBUpdateThreadWorker</name>
+    <name>LC::Aggregator::DBUpdateThreadWorker</name>
     <message numerus="yes">
         <location filename="dbupdatethreadworker.cpp" line="154"/>
         <source>Added channel &quot;%1&quot; (%n item(s))</source>
@@ -1373,7 +1373,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Aggregator::Export2FB2Dialog</name>
+    <name>LC::Aggregator::Export2FB2Dialog</name>
     <message>
         <location filename="export2fb2dialog.cpp" line="455"/>
         <source>Select save file</source>
@@ -1412,7 +1412,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Aggregator::ImportBinary</name>
+    <name>LC::Aggregator::ImportBinary</name>
     <message>
         <location filename="importbinary.cpp" line="114"/>
         <source>Select binary file</source>
@@ -1437,17 +1437,17 @@
     </message>
     <message>
         <location filename="importbinary.cpp" line="156"/>
-        <source>Selected file %1 is not a valid LeechCraft::Aggregator exchange file.</source>
-        <translation>Обраний файл %1 не є дійсним файлом обміну  LeechCraft::Aggregator.</translation>
+        <source>Selected file %1 is not a valid LC::Aggregator exchange file.</source>
+        <translation>Обраний файл %1 не є дійсним файлом обміну  LC::Aggregator.</translation>
     </message>
     <message>
         <location filename="importbinary.cpp" line="169"/>
-        <source>Selected file %1 is a valid LeechCraft::Aggregator exchange file, but its version %2 is unknown</source>
-        <translation>Обраний файл %1 є дійсним файлом обміну  LeechCraft::Aggregator, але має невідому версію %2</translation>
+        <source>Selected file %1 is a valid LC::Aggregator exchange file, but its version %2 is unknown</source>
+        <translation>Обраний файл %1 є дійсним файлом обміну  LC::Aggregator, але має невідому версію %2</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Aggregator::ImportOPML</name>
+    <name>LC::Aggregator::ImportOPML</name>
     <message>
         <location filename="importopml.cpp" line="100"/>
         <source>Select OPML file</source>
@@ -1482,7 +1482,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Aggregator::ItemsListModel</name>
+    <name>LC::Aggregator::ItemsListModel</name>
     <message>
         <location filename="itemslistmodel.cpp" line="51"/>
         <source>Name</source>
@@ -1525,7 +1525,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Aggregator::ItemsWidget</name>
+    <name>LC::Aggregator::ItemsWidget</name>
     <message>
         <location filename="itemswidget.cpp" line="111"/>
         <source>Name</source>
@@ -1813,7 +1813,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Aggregator::RegexpMatcherManager</name>
+    <name>LC::Aggregator::RegexpMatcherManager</name>
     <message>
         <location filename="regexpmatchermanager.cpp" line="90"/>
         <source>Title matcher</source>
@@ -1826,7 +1826,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Aggregator::RegexpMatcherUi</name>
+    <name>LC::Aggregator::RegexpMatcherUi</name>
     <message>
         <location filename="regexpmatcherui.cpp" line="73"/>
         <location filename="regexpmatcherui.cpp" line="83"/>
@@ -1849,7 +1849,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Aggregator::StartupFirstPage</name>
+    <name>LC::Aggregator::StartupFirstPage</name>
     <message>
         <location filename="startupfirstpage.cpp" line="42"/>
         <source>Set default options</source>
@@ -1857,7 +1857,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Aggregator::StartupSecondPage</name>
+    <name>LC::Aggregator::StartupSecondPage</name>
     <message>
         <location filename="startupsecondpage.cpp" line="47"/>
         <source>Set storage options</source>
@@ -1865,7 +1865,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Aggregator::StartupThirdPage</name>
+    <name>LC::Aggregator::StartupThirdPage</name>
     <message>
         <location filename="startupthirdpage.cpp" line="138"/>
         <source>Select feeds</source>

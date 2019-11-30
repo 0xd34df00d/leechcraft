@@ -1,6 +1,6 @@
 <?xml version="1.0" ?><!DOCTYPE TS><TS language="uk_UA" version="2.0">
 <context>
-    <name>LeechCraft::Azoth::Autopaste::Plugin</name>
+    <name>LC::Azoth::Autopaste::Plugin</name>
     <message>
         <location filename="autopaste.cpp" line="67"/>
         <source>Detects long messages and suggests pasting them to a pastebin.</source>

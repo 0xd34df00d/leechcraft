@@ -88,7 +88,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::NewLife::Common::IMImportPage</name>
+    <name>LC::NewLife::Common::IMImportPage</name>
     <message>
         <location filename="common/imimportpage.cpp" line="69"/>
         <source>Account name</source>
@@ -111,7 +111,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::NewLife::Importers::AkregatorImportPage</name>
+    <name>LC::NewLife::Importers::AkregatorImportPage</name>
     <message>
         <location filename="importers/akregator/akregatorimportpage.cpp" line="51"/>
         <source>Akregator&apos;s feeds import</source>
@@ -149,7 +149,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::NewLife::Importers::FirefoxImportPage</name>
+    <name>LC::NewLife::Importers::FirefoxImportPage</name>
     <message>
         <location filename="importers/firefox/firefoximportpage.cpp" line="49"/>
         <source>Firefox&apos;s data import</source>
@@ -173,7 +173,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::NewLife::Importers::FirefoxProfileSelectPage</name>
+    <name>LC::NewLife::Importers::FirefoxProfileSelectPage</name>
     <message>
         <location filename="importers/firefox/firefoxprofileselectpage.cpp" line="89"/>
         <source>Default</source>
@@ -201,7 +201,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::NewLife::Importers::JsonBookmarksImportPage</name>
+    <name>LC::NewLife::Importers::JsonBookmarksImportPage</name>
     <message>
         <location filename="importers/jsonbookmarks/jsonbookmarksimportpage.cpp" line="167"/>
         <source>Unable to open file %1: %2.</source>
@@ -219,7 +219,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::NewLife::Importers::JsonBookmarksImporter</name>
+    <name>LC::NewLife::Importers::JsonBookmarksImporter</name>
     <message>
         <location filename="importers/jsonbookmarks/jsonbookmarksimporter.cpp" line="47"/>
         <source>JSON bookmarks</source>
@@ -227,7 +227,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::NewLife::Importers::KTorrentImportPage</name>
+    <name>LC::NewLife::Importers::KTorrentImportPage</name>
     <message>
         <location filename="importers/ktorrent/ktorrentimportpage.cpp" line="52"/>
         <source>KTorrent&apos;s torrents import</source>
@@ -260,7 +260,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::NewLife::Importers::LifereaImportPage</name>
+    <name>LC::NewLife::Importers::LifereaImportPage</name>
     <message>
         <location filename="importers/liferea/lifereaimportpage.cpp" line="51"/>
         <source>Liferea&apos;s feeds import</source>
@@ -283,7 +283,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::NewLife::Importers::OperaImportSelectPage</name>
+    <name>LC::NewLife::Importers::OperaImportSelectPage</name>
     <message>
         <location filename="importers/opera/operaimportselectpage.cpp" line="131"/>
         <location filename="importers/opera/operaimportselectpage.cpp" line="205"/>
@@ -303,7 +303,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::NewLife::Plugin</name>
+    <name>LC::NewLife::Plugin</name>
     <message>
         <location filename="newlife.cpp" line="49"/>
         <source>Import settings...</source>

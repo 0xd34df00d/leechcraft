@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="en_US">
 <context>
-    <name>LeechCraft::Imgaste::Plugin</name>
+    <name>LC::Imgaste::Plugin</name>
     <message>
         <location filename="imgaste.cpp" line="75"/>
         <source>Simple image uploader to imagebin services like dump.bitcheese.net.</source>
@@ -20,7 +20,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Imgaste::Poster</name>
+    <name>LC::Imgaste::Poster</name>
     <message>
         <location filename="poster.cpp" line="64"/>
         <source>Image upload</source>

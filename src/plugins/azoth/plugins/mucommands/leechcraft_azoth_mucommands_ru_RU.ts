@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="ru_RU">
 <context>
-    <name>LeechCraft::Azoth::MuCommands::Plugin</name>
+    <name>LC::Azoth::MuCommands::Plugin</name>
     <message>
         <location filename="mucommands.cpp" line="250"/>
         <source>Provides some common commands, both for conferences and for private chats, for Azoth.</source>

@@ -63,7 +63,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LackMan::Core</name>
+    <name>LC::LackMan::Core</name>
     <message>
         <location filename="core.cpp" line="108"/>
         <source>URL</source>
@@ -239,7 +239,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LackMan::PackageProcessor</name>
+    <name>LC::LackMan::PackageProcessor</name>
     <message>
         <location filename="packageprocessor.cpp" line="48"/>
         <source>Could not find database file for package %1.</source>
@@ -312,7 +312,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LackMan::PackagesDelegate</name>
+    <name>LC::LackMan::PackagesDelegate</name>
     <message>
         <location filename="packagesdelegate.cpp" line="218"/>
         <source>Remove</source>
@@ -335,7 +335,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LackMan::PendingManager</name>
+    <name>LC::LackMan::PendingManager</name>
     <message>
         <location filename="pendingmanager.cpp" line="113"/>
         <source>Package dependencies could not be fulfilled: %1</source>
@@ -358,7 +358,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LackMan::Plugin</name>
+    <name>LC::LackMan::Plugin</name>
     <message>
         <location filename="lackman.cpp" line="68"/>
         <source>Package tags</source>
@@ -427,7 +427,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LackMan::RepoInfoFetcher</name>
+    <name>LC::LackMan::RepoInfoFetcher</name>
     <message>
         <location filename="repoinfofetcher.cpp" line="66"/>
         <location filename="repoinfofetcher.cpp" line="279"/>
@@ -536,7 +536,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LackMan::Storage</name>
+    <name>LC::LackMan::Storage</name>
     <message>
         <location filename="storage.cpp" line="852"/>
         <source>Package with ID %1 not found.</source>

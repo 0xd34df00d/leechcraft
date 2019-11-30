@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="en_US">
 <context>
-    <name>LeechCraft::Azoth::OTRoid::Authenticator</name>
+    <name>LC::Azoth::OTRoid::Authenticator</name>
     <message>
         <location filename="authenticator.cpp" line="61"/>
         <source>%1 (%2) wants to authenticate with you via a question. The question is:</source>
@@ -38,7 +38,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::OTRoid::FPManager</name>
+    <name>LC::Azoth::OTRoid::FPManager</name>
     <message>
         <location filename="fpmanager.cpp" line="195"/>
         <source>Name</source>
@@ -69,7 +69,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::OTRoid::InitiateAuthDialog</name>
+    <name>LC::Azoth::OTRoid::InitiateAuthDialog</name>
     <message>
         <location filename="initiateauthdialog.cpp" line="47"/>
         <source>Choose authentication method for %1 (%2):</source>
@@ -77,7 +77,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::OTRoid::OtrHandler</name>
+    <name>LC::Azoth::OTRoid::OtrHandler</name>
     <message>
         <location filename="otrhandler.cpp" line="140"/>
         <source>The following message received from %1 was not encrypted:</source>
@@ -215,7 +215,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::OTRoid::Plugin</name>
+    <name>LC::Azoth::OTRoid::Plugin</name>
     <message>
         <location filename="otroid.cpp" line="91"/>
         <source>Azoth OTRoid adds support for Off-the-Record deniable encryption system.</source>
@@ -223,7 +223,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::OTRoid::PrivKeyManager</name>
+    <name>LC::Azoth::OTRoid::PrivKeyManager</name>
     <message>
         <location filename="privkeymanager.cpp" line="75"/>
         <source>Private keys generation</source>

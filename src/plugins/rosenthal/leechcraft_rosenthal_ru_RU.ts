@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="ru_RU">
 <context>
-    <name>LeechCraft::Rosenthal::KnownDictsManager</name>
+    <name>LC::Rosenthal::KnownDictsManager</name>
     <message>
         <location filename="knowndictsmanager.cpp" line="151"/>
         <source>Locale</source>
@@ -20,7 +20,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Rosenthal::Plugin</name>
+    <name>LC::Rosenthal::Plugin</name>
     <message>
         <location filename="rosenthal.cpp" line="82"/>
         <source>Spellchecker service module for other plugins to use.</source>

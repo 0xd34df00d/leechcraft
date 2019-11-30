@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="ru_RU">
 <context>
-    <name>LeechCraft::Monocle::Dik::Plugin</name>
+    <name>LC::Monocle::Dik::Plugin</name>
     <message>
         <location filename="dik.cpp" line="64"/>
         <source>MOBI backend for Monocle.</source>

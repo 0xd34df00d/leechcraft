@@ -35,7 +35,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Murm::EntryBase</name>
+    <name>LC::Azoth::Murm::EntryBase</name>
     <message>
         <location filename="entrybase.cpp" line="341"/>
         <source>Enqueue</source>
@@ -89,7 +89,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Murm::PendingUpload</name>
+    <name>LC::Azoth::Murm::PendingUpload</name>
     <message>
         <location filename="pendingupload.cpp" line="131"/>
         <source>Unable to get upload server from VKontakte, protocol error %1: %2.</source>
@@ -117,7 +117,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Murm::Plugin</name>
+    <name>LC::Azoth::Murm::Plugin</name>
     <message>
         <location filename="murm.cpp" line="75"/>
         <source>Native support for the VKontakte messaging protocol.</source>
@@ -125,7 +125,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Murm::ServerHistoryManager</name>
+    <name>LC::Azoth::Murm::ServerHistoryManager</name>
     <message>
         <location filename="serverhistorymanager.cpp" line="69"/>
         <source>Contact</source>
@@ -133,7 +133,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Murm::VCardDialog</name>
+    <name>LC::Azoth::Murm::VCardDialog</name>
     <message>
         <location filename="vcarddialog.cpp" line="65"/>
         <source>female</source>
@@ -146,7 +146,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Murm::VkAccount</name>
+    <name>LC::Azoth::Murm::VkAccount</name>
     <message>
         <location filename="vkaccount.cpp" line="328"/>
         <source>me</source>
@@ -159,7 +159,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Murm::VkChatEntry</name>
+    <name>LC::Azoth::Murm::VkChatEntry</name>
     <message>
         <location filename="vkchatentry.cpp" line="192"/>
         <source>Chats</source>
@@ -172,7 +172,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Murm::VkEntry</name>
+    <name>LC::Azoth::Murm::VkEntry</name>
     <message>
         <location filename="vkentry.cpp" line="107"/>
         <source>%1 is now on the site again</source>
@@ -255,7 +255,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Murm::VkProtocol</name>
+    <name>LC::Azoth::Murm::VkProtocol</name>
     <message>
         <location filename="vkprotocol.cpp" line="99"/>
         <source>VKontakte</source>

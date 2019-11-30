@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="en_US">
 <context>
-    <name>LeechCraft::LMP::Potorchu</name>
+    <name>LC::LMP::Potorchu</name>
     <message>
         <location filename="visualfilter.cpp" line="102"/>
         <source>Visualization</source>
@@ -10,7 +10,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::Potorchu::Plugin</name>
+    <name>LC::LMP::Potorchu::Plugin</name>
     <message>
         <location filename="potorchu.cpp" line="63"/>
         <source>Visualization effects for LMP.</source>

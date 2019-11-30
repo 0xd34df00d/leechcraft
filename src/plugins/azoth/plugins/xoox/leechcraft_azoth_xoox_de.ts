@@ -372,7 +372,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Xoox</name>
+    <name>LC::Azoth::Xoox</name>
     <message>
         <location filename="executecommanddialog.cpp" line="200"/>
         <source>Execute another command</source>
@@ -415,7 +415,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Xoox::AdHocCommandManager</name>
+    <name>LC::Azoth::Xoox::AdHocCommandManager</name>
     <message>
         <location filename="adhoccommandmanager.cpp" line="222"/>
         <source>Original message: %1.</source>
@@ -423,7 +423,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Xoox::AdHocCommandServer</name>
+    <name>LC::Azoth::Xoox::AdHocCommandServer</name>
     <message>
         <location filename="adhoccommandserver.cpp" line="303"/>
         <source>Change status</source>
@@ -486,7 +486,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Xoox::CapsStorageOnDisk</name>
+    <name>LC::Azoth::Xoox::CapsStorageOnDisk</name>
     <message>
         <location filename="capsstorageondisk.cpp" line="226"/>
         <source>Migrating capabilities database...</source>
@@ -494,7 +494,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Xoox::CaptchaManager</name>
+    <name>LC::Azoth::Xoox::CaptchaManager</name>
     <message>
         <location filename="captchamanager.cpp" line="65"/>
         <source>Enter CAPTCHA</source>
@@ -502,7 +502,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Xoox::ClientConnection</name>
+    <name>LC::Azoth::Xoox::ClientConnection</name>
     <message>
         <location filename="clientconnection.cpp" line="454"/>
         <source>This room is already joined.</source>
@@ -525,7 +525,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Xoox::ClientConnectionErrorMgr</name>
+    <name>LC::Azoth::Xoox::ClientConnectionErrorMgr</name>
     <message>
         <location filename="clientconnectionerrormgr.cpp" line="102"/>
         <source>Error from %1: %2</source>
@@ -673,7 +673,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Xoox::CryptHandler</name>
+    <name>LC::Azoth::Xoox::CryptHandler</name>
     <message>
         <location filename="crypthandler.cpp" line="100"/>
         <source>This message is encrypted. Please decrypt it to view the original contents.</source>
@@ -681,7 +681,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Xoox::EntryBase</name>
+    <name>LC::Azoth::Xoox::EntryBase</name>
     <message>
         <location filename="entrybase.cpp" line="91"/>
         <source>Commands...</source>
@@ -821,7 +821,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Xoox::ExecuteCommandDialog</name>
+    <name>LC::Azoth::Xoox::ExecuteCommandDialog</name>
     <message>
         <location filename="executecommanddialog.cpp" line="224"/>
         <source>Please wait while the list of commands is fetched.</source>
@@ -839,7 +839,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Xoox::GWItemsRemovalDialog</name>
+    <name>LC::Azoth::Xoox::GWItemsRemovalDialog</name>
     <message>
         <location filename="gwitemsremovaldialog.cpp" line="46"/>
         <source>Name</source>
@@ -852,7 +852,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Xoox::GWOptionsDialog</name>
+    <name>LC::Azoth::Xoox::GWOptionsDialog</name>
     <message>
         <location filename="gwoptionsdialog.cpp" line="84"/>
         <source>Error updating gateway information: %1.</source>
@@ -860,7 +860,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Xoox::GlooxAccount</name>
+    <name>LC::Azoth::Xoox::GlooxAccount</name>
     <message>
         <location filename="glooxaccount.cpp" line="101"/>
         <source>Self VCard...</source>
@@ -918,7 +918,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Xoox::GlooxAccountConfigurationWidget</name>
+    <name>LC::Azoth::Xoox::GlooxAccountConfigurationWidget</name>
     <message>
         <location filename="glooxaccountconfigurationwidget.cpp" line="260"/>
         <source>Password update</source>
@@ -931,7 +931,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Xoox::GlooxCLEntry</name>
+    <name>LC::Azoth::Xoox::GlooxCLEntry</name>
     <message>
         <location filename="glooxclentry.cpp" line="148"/>
         <source>Block contact</source>
@@ -964,7 +964,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Xoox::GlooxProtocol</name>
+    <name>LC::Azoth::Xoox::GlooxProtocol</name>
     <message>
         <location filename="glooxprotocol.cpp" line="389"/>
         <source>Unable to import account: malformed import data.</source>
@@ -977,7 +977,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Xoox::InBandAccountRegThirdPage</name>
+    <name>LC::Azoth::Xoox::InBandAccountRegThirdPage</name>
     <message>
         <location filename="inbandaccountregthirdpage.cpp" line="90"/>
         <source>Awaiting registration result...</source>
@@ -995,7 +995,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Xoox::JabberSearchManager</name>
+    <name>LC::Azoth::Xoox::JabberSearchManager</name>
     <message>
         <location filename="jabbersearchmanager.cpp" line="52"/>
         <source>First name</source>
@@ -1018,7 +1018,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Xoox::JabberSearchSession</name>
+    <name>LC::Azoth::Xoox::JabberSearchSession</name>
     <message>
         <location filename="jabbersearchsession.cpp" line="98"/>
         <source>(unknown)</source>
@@ -1076,7 +1076,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Xoox::LegacyFormBuilder</name>
+    <name>LC::Azoth::Xoox::LegacyFormBuilder</name>
     <message>
         <location filename="legacyformbuilder.cpp" line="71"/>
         <source>Username:</source>
@@ -1109,7 +1109,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Xoox::Plugin</name>
+    <name>LC::Azoth::Xoox::Plugin</name>
     <message>
         <location filename="xoox.cpp" line="106"/>
         <source>XMPP (Jabber) protocol module using the QXmpp library.</source>
@@ -1118,7 +1118,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Xoox::PrivacyListsConfigDialog</name>
+    <name>LC::Azoth::Xoox::PrivacyListsConfigDialog</name>
     <message>
         <location filename="privacylistsconfigdialog.cpp" line="69"/>
         <source>Fetching names of privacy lists...</source>
@@ -1226,7 +1226,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Xoox::PrivacyListsItemDialog</name>
+    <name>LC::Azoth::Xoox::PrivacyListsItemDialog</name>
     <message>
         <location filename="privacylistsitemdialog.cpp" line="143"/>
         <source>Both</source>
@@ -1249,7 +1249,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Xoox::PrivacyListsManager</name>
+    <name>LC::Azoth::Xoox::PrivacyListsManager</name>
     <message>
         <location filename="privacylistsmanager.cpp" line="409"/>
         <source>Cannot fetch lists.</source>
@@ -1257,7 +1257,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Xoox::RegFormHandlerWidget</name>
+    <name>LC::Azoth::Xoox::RegFormHandlerWidget</name>
     <message>
         <location filename="regformhandlerwidget.cpp" line="108"/>
         <source>Connecting to %1...</source>
@@ -1315,7 +1315,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Xoox::RoomCLEntry</name>
+    <name>LC::Azoth::Xoox::RoomCLEntry</name>
     <message>
         <location filename="roomclentry.cpp" line="86"/>
         <source>Role</source>
@@ -1388,7 +1388,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Xoox::RoomConfigWidget</name>
+    <name>LC::Azoth::Xoox::RoomConfigWidget</name>
     <message>
         <location filename="roomconfigwidget.cpp" line="78"/>
         <location filename="roomconfigwidget.cpp" line="88"/>
@@ -1417,7 +1417,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Xoox::RoomHandler</name>
+    <name>LC::Azoth::Xoox::RoomHandler</name>
     <message>
         <location filename="roomhandler.cpp" line="147"/>
         <source>%1 has left the room</source>
@@ -1541,7 +1541,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Xoox::SDSession</name>
+    <name>LC::Azoth::Xoox::SDSession</name>
     <message>
         <location filename="sdsession.cpp" line="90"/>
         <source>Name</source>
@@ -1649,7 +1649,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Xoox::SelfContact</name>
+    <name>LC::Azoth::Xoox::SelfContact</name>
     <message>
         <location filename="selfcontact.cpp" line="94"/>
         <source>Self contact</source>
@@ -1657,7 +1657,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Xoox::TransferJob</name>
+    <name>LC::Azoth::Xoox::TransferJob</name>
     <message>
         <location filename="transferjob.cpp" line="115"/>
         <source>could not open incoming file %1: %2</source>
@@ -1665,7 +1665,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Xoox::VCardDialog</name>
+    <name>LC::Azoth::Xoox::VCardDialog</name>
     <message>
         <location filename="vcarddialog.cpp" line="317"/>
         <source>Capabilities</source>
@@ -1797,7 +1797,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Xoox::VCardListEditDialog</name>
+    <name>LC::Azoth::Xoox::VCardListEditDialog</name>
     <message>
         <location filename="vcardlisteditdialog.cpp" line="45"/>
         <source>Item</source>
@@ -1810,7 +1810,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Xoox::WaitPage</name>
+    <name>LC::Azoth::Xoox::WaitPage</name>
     <message>
         <location filename="executecommanddialog.cpp" line="54"/>
         <source>Fetching data...</source>

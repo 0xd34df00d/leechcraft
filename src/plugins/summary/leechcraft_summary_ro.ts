@@ -1,6 +1,6 @@
 <?xml version="1.0" ?><!DOCTYPE TS><TS language="ro_RO" version="2.0">
 <context>
-    <name>LeechCraft::Summary::Core</name>
+    <name>LC::Summary::Core</name>
     <message>
         <location filename="core.cpp" line="254"/>
         <location filename="core.cpp" line="268"/>
@@ -9,7 +9,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Summary::Summary</name>
+    <name>LC::Summary::Summary</name>
     <message>
         <location filename="summary.cpp" line="81"/>
         <source>Summary</source>
@@ -22,7 +22,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Summary::SummaryWidget</name>
+    <name>LC::Summary::SummaryWidget</name>
     <message>
         <location filename="summarywidget.cpp" line="68"/>
         <source>Search...</source>

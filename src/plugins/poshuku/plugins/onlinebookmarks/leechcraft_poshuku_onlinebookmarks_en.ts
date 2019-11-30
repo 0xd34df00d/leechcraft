@@ -50,7 +50,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Poshuku::OnlineBookmarks::AccountsSettings</name>
+    <name>LC::Poshuku::OnlineBookmarks::AccountsSettings</name>
     <message>
         <location filename="accountssettings.cpp" line="54"/>
         <source>Account</source>
@@ -68,7 +68,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Poshuku::OnlineBookmarks::Plugin</name>
+    <name>LC::Poshuku::OnlineBookmarks::Plugin</name>
     <message>
         <location filename="onlinebookmarks.cpp" line="95"/>
         <source>Sync local bookmarks with your account in online bookmark services like Read It Later.</source>

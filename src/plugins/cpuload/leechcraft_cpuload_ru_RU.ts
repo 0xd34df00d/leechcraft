@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="ru_RU">
 <context>
-    <name>LeechCraft::CpuLoad::Plugin</name>
+    <name>LC::CpuLoad::Plugin</name>
     <message>
         <location filename="cpuload.cpp" line="86"/>
         <source>Quark for monitoring CPU load.</source>

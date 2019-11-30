@@ -1,6 +1,6 @@
 <?xml version="1.0" ?><!DOCTYPE TS><TS language="fr" version="2.0">
 <context>
-    <name>LeechCraft::Plugins::AnHero::Plugin</name>
+    <name>LC::Plugins::AnHero::Plugin</name>
     <message>
         <location filename="anhero.cpp" line="72"/>
         <source>Crash handler</source>

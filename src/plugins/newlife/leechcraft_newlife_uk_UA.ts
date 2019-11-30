@@ -75,7 +75,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::NewLife::AkregatorImportPage</name>
+    <name>LC::Plugins::NewLife::AkregatorImportPage</name>
     <message>
         <location filename="akregatorimportpage.cpp" line="40"/>
         <source>Akregator&apos;s feeds import</source>
@@ -113,7 +113,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::NewLife::FirefoxImportPage</name>
+    <name>LC::Plugins::NewLife::FirefoxImportPage</name>
     <message>
         <location filename="firefoximporter/firefoximportpage.cpp" line="39"/>
         <source>Firefox&apos;s data import</source>
@@ -137,7 +137,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::NewLife::FirefoxProfileSelectPage</name>
+    <name>LC::Plugins::NewLife::FirefoxProfileSelectPage</name>
     <message>
         <location filename="firefoximporter/firefoxprofileselectpage.cpp" line="85"/>
         <source>Default</source>
@@ -165,7 +165,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::NewLife::KTorrentImportPage</name>
+    <name>LC::Plugins::NewLife::KTorrentImportPage</name>
     <message>
         <location filename="ktorrentimportpage.cpp" line="41"/>
         <source>KTorrent&apos;s torrents import</source>
@@ -198,7 +198,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::NewLife::LifereaImportPage</name>
+    <name>LC::Plugins::NewLife::LifereaImportPage</name>
     <message>
         <location filename="lifereaimportpage.cpp" line="40"/>
         <source>Liferea&apos;s feeds import</source>
@@ -221,7 +221,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::NewLife::Plugin</name>
+    <name>LC::Plugins::NewLife::Plugin</name>
     <message>
         <location filename="newlife.cpp" line="68"/>
         <source>The settings importer.</source>
