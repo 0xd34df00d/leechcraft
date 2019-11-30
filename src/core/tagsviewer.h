@@ -32,7 +32,7 @@
 #include <QWidget>
 #include "ui_tagsviewer.h"
 
-namespace LeechCraft
+namespace LC
 {
 	class TagsViewer : public QWidget
 	{

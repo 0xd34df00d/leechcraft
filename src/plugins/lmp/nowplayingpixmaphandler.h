@@ -35,7 +35,7 @@
 class QPixmap;
 class QUrl;
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

@@ -39,7 +39,7 @@
 #include "storagebackend.h"
 #include "channelutils.h"
 
-namespace LeechCraft::Aggregator::ExportUtils
+namespace LC::Aggregator::ExportUtils
 {
 	namespace
 	{

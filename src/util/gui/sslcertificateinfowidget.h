@@ -41,7 +41,7 @@ namespace Ui
 	class SslCertificateInfoWidget;
 }
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

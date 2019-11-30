@@ -33,7 +33,7 @@
 #include <QtCrypto>
 #include "gpgexceptions.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -141,5 +141,5 @@ namespace Azoth
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Azoth::ISupportPGP,
+Q_DECLARE_INTERFACE (LC::Azoth::ISupportPGP,
 		"org.Deviant.LeechCraft.Azoth.ISupportPGP/1.0")

@@ -38,7 +38,7 @@
 #include "../scripter.h"
 #include "../itemhandlerfactory.h"
 
-namespace LeechCraft
+namespace LC
 {
 	ItemHandlerCombobox::ItemHandlerCombobox (ItemHandlerFactory *factory, Util::XmlSettingsDialog *xsd)
 	: ItemHandlerOptionsSetValue { xsd }

@@ -31,7 +31,7 @@
 
 #include "isupportmicroblogs.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -45,5 +45,5 @@ namespace Azoth
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Azoth::IHaveMicroblogs,
+Q_DECLARE_INTERFACE (LC::Azoth::IHaveMicroblogs,
 		"org.Deviant.LeechCraft.Azoth.IHaveMicroblogs/1.0")

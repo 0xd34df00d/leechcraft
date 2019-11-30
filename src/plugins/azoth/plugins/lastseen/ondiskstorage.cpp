@@ -36,7 +36,7 @@
 #include <util/sys/paths.h>
 #include "entrystats.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -70,7 +70,7 @@ namespace LastSeen
 }
 }
 
-using StatsRecord = LeechCraft::Azoth::LastSeen::OnDiskStorage::Record;
+using StatsRecord = LC::Azoth::LastSeen::OnDiskStorage::Record;
 
 BOOST_FUSION_ADAPT_STRUCT (StatsRecord,
 		EntryID_,
@@ -78,7 +78,7 @@ BOOST_FUSION_ADAPT_STRUCT (StatsRecord,
 		Online_,
 		StatusChange_)
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

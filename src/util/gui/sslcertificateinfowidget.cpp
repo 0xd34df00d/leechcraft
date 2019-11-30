@@ -35,7 +35,7 @@
 #include <QDialogButtonBox>
 #include "ui_sslcertificateinfowidget.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

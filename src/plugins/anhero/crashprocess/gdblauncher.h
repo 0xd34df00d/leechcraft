@@ -34,7 +34,7 @@
 
 class QProcess;
 
-namespace LeechCraft
+namespace LC
 {
 namespace AnHero
 {

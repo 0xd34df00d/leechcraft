@@ -39,7 +39,7 @@
 #include "../core.h"
 #include "../localfileresolver.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

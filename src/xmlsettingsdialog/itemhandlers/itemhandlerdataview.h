@@ -32,7 +32,7 @@
 #include "itemhandlerbase.h"
 #include <QHash>
 
-namespace LeechCraft
+namespace LC
 {
 	class ItemHandlerFactory;
 	class DataViewWidget;

@@ -37,7 +37,7 @@
 #include "ssecommon.h"
 #endif
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

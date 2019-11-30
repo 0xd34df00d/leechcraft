@@ -41,7 +41,7 @@ namespace Laretz
 	class OpSummer;
 }
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

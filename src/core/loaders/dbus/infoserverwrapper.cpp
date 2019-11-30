@@ -29,7 +29,7 @@
 
 #include "infoserverwrapper.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace DBus
 {

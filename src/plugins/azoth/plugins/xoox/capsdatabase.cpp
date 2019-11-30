@@ -35,7 +35,7 @@
 #include <util/sys/paths.h>
 #include "capsstorageondisk.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

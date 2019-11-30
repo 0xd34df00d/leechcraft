@@ -43,7 +43,7 @@
 #include "metaentry.h"
 #include "addtometacontactsdialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

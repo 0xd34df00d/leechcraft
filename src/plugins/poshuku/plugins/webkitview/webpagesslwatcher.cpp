@@ -35,7 +35,7 @@
 #include <qwebpage.h>
 #include <qwebframe.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {
@@ -62,13 +62,13 @@ namespace WebKitView
 				SLOT (handleReplyCreated (QNetworkAccessManager::Operation,
 						QNetworkRequest, QNetworkReply*)));
 		connect (page,
-				SIGNAL (hookAcceptNavigationRequest (LeechCraft::IHookProxy_ptr,
+				SIGNAL (hookAcceptNavigationRequest (LC::IHookProxy_ptr,
 						QWebPage*,
 						QWebFrame*,
 						const QNetworkRequest&,
 						QWebPage::NavigationType)),
 				this,
-				SLOT (handleNavigationRequest (LeechCraft::IHookProxy_ptr,
+				SLOT (handleNavigationRequest (LC::IHookProxy_ptr,
 						QWebPage*,
 						QWebFrame*,
 						const QNetworkRequest&,

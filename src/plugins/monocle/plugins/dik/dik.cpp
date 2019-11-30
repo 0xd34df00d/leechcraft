@@ -32,7 +32,7 @@
 #include <util/util.h>
 #include "document.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {
@@ -112,5 +112,5 @@ namespace Dik
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_monocle_dik, LeechCraft::Monocle::Dik::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_monocle_dik, LC::Monocle::Dik::Plugin);
 

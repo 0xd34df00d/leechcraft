@@ -30,7 +30,7 @@
 #include "address.h"
 #include <QDebug>
 
-namespace LeechCraft::Snails
+namespace LC::Snails
 {
 	QDataStream& operator<< (QDataStream& out, AddressType a)
 	{

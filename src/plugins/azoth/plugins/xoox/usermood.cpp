@@ -33,7 +33,7 @@
 #include <QtDebug>
 #include <QXmppElement.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

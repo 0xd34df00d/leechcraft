@@ -37,7 +37,7 @@ template<typename T>
 class QList;
 class QSslError;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

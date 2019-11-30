@@ -35,7 +35,7 @@
 #include <util/xpc/passutils.h>
 #include "consts.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

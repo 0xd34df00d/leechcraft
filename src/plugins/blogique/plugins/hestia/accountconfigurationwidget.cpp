@@ -32,7 +32,7 @@
 #include <util/util.h>
 #include <util/sys/paths.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blogique
 {

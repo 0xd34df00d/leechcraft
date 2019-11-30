@@ -93,7 +93,7 @@ public:
 
 	struct Success {};
 
-	using Result = LeechCraft::Util::Either<Error, Success>;
+	using Result = LC::Util::Either<Error, Success>;
 
 	/** @brief Returns download speed.
 	 *
@@ -144,9 +144,9 @@ public:
 	 * handled.
 	 *
 	 * @sa AddJob
-	 * @sa LeechCraft::Entity
+	 * @sa LC::Entity
 	 */
-	virtual EntityTestHandleResult CouldDownload (const LeechCraft::Entity& entity) const = 0;
+	virtual EntityTestHandleResult CouldDownload (const LC::Entity& entity) const = 0;
 
 	/** @brief Adds the job with given parameters.
 	 *
@@ -156,9 +156,9 @@ public:
 	 * @param[in] entity A Entity structure.
 	 * @return ID of the job for the other plugins to use.
 	 *
-	 * @sa LeechCraft::Entity
+	 * @sa LC::Entity
 	 */
-	virtual QFuture<Result> AddJob (LeechCraft::Entity entity) = 0;
+	virtual QFuture<Result> AddJob (LC::Entity entity) = 0;
 
 	/** @brief Virtual destructor.
 	 */

@@ -32,7 +32,7 @@
 #include <QDialog>
 #include "ui_smsdialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

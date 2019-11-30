@@ -32,7 +32,7 @@
 #include <QObject>
 #include "interfaces/blogique/ipluginproxy.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blogique
 {
@@ -40,7 +40,7 @@ namespace Blogique
 					, public IPluginProxy
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Blogique::IPluginProxy)
+		Q_INTERFACES (LC::Blogique::IPluginProxy)
 	public:
 		PluginProxy (QObject* = 0);
 	};

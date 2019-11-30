@@ -31,7 +31,7 @@
 
 #include <QtPlugin>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Aggregator
 {
@@ -47,5 +47,5 @@ namespace Aggregator
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Aggregator::IAggregatorPlugin,
+Q_DECLARE_INTERFACE (LC::Aggregator::IAggregatorPlugin,
 		"org.LeechCraft.Aggregator.IProxyObject/1.0")

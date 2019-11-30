@@ -35,7 +35,7 @@
 class QXmppVersionManager;
 class QXmppVersionIq;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -45,7 +45,7 @@ namespace Xoox
 							  , public IPendingVersionQuery
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IPendingVersionQuery)
+		Q_INTERFACES (LC::Azoth::IPendingVersionQuery)
 
 		const QString Jid_;
 	public:

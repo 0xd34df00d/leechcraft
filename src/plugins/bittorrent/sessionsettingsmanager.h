@@ -39,7 +39,7 @@ namespace libtorrent
 	class session;
 }
 
-namespace LeechCraft
+namespace LC
 {
 namespace BitTorrent
 {

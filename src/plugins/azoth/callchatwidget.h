@@ -33,7 +33,7 @@
 #include "interfaces/azoth/imediacall.h"
 #include "ui_callchatwidget.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -49,7 +49,7 @@ namespace Azoth
 	private slots:
 		void on_AcceptButton__released ();
 		void on_HangupButton__released ();
-		void handleStateChanged (LeechCraft::Azoth::IMediaCall::State);
+		void handleStateChanged (LC::Azoth::IMediaCall::State);
 		void scheduleDelete ();
 	};
 }

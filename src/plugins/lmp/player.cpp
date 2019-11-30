@@ -67,7 +67,7 @@
 #include "playerrulesmanager.h"
 #include "sourceerrorhandler.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

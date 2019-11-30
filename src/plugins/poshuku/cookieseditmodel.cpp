@@ -37,11 +37,11 @@
 #include <util/network/customcookiejar.h>
 #include "core.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {
-	using LeechCraft::Util::CustomCookieJar;
+	using LC::Util::CustomCookieJar;
 
 	CookiesEditModel::CookiesEditModel (QObject *parent)
 	: QStandardItemModel (parent)

@@ -39,7 +39,7 @@ extern "C"
 #include <mupdf.h>
 }
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {
@@ -51,7 +51,7 @@ namespace Mu
 				 , public IBackendPlugin
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Monocle::IBackendPlugin)
+		Q_INTERFACES (IInfo IPlugin2 LC::Monocle::IBackendPlugin)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Monocle.Mu")
 

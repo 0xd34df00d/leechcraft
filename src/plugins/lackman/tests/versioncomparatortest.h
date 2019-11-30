@@ -33,7 +33,7 @@
 #define VERSIONCOMPARATOR_DEBUG
 #include "../versioncomparator.h"
 
-using namespace LeechCraft::Plugins::LackMan;
+using namespace LC::Plugins::LackMan;
 
 class TestVersionComparator : public QObject
 {

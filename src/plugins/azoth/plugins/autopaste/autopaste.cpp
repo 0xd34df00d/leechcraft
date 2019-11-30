@@ -44,7 +44,7 @@
 #include "pastedialog.h"
 #include "actionsstorage.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -234,7 +234,7 @@ namespace Autopaste
 		AzothProxy_ = qobject_cast<IProxyObject*> (obj);
 	}
 
-	void Plugin::hookMessageSendRequested (LeechCraft::IHookProxy_ptr proxy,
+	void Plugin::hookMessageSendRequested (LC::IHookProxy_ptr proxy,
 			QObject*, QObject *entry, int, QString)
 	{
 		ICLEntry *other = qobject_cast<ICLEntry*> (entry);
@@ -342,4 +342,4 @@ namespace Autopaste
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_azoth_autopaste, LeechCraft::Azoth::Autopaste::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_azoth_autopaste, LC::Azoth::Autopaste::Plugin);

@@ -29,7 +29,7 @@
 
 #include "platformbackend.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Lemon
 {

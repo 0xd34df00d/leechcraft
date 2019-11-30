@@ -47,7 +47,7 @@ class QToolBar;
 
 struct EntityTestHandleResult;
 
-namespace LeechCraft
+namespace LC
 {
 namespace CSTP
 {
@@ -65,7 +65,7 @@ namespace CSTP
 			std::shared_ptr<QFile> File_;
 			QString Comment_;
 			bool ErrorFlag_;
-			LeechCraft::TaskParameters Parameters_;
+			LC::TaskParameters Parameters_;
 			QStringList Tags_;
 		};
 		typedef std::vector<TaskDescr> tasks_t;
@@ -105,7 +105,7 @@ namespace CSTP
 
 		QFuture<IDownload::Result> AddTask (const Entity&);
 		qint64 GetTotalDownloadSpeed () const;
-		EntityTestHandleResult CouldDownload (const LeechCraft::Entity&);
+		EntityTestHandleResult CouldDownload (const LC::Entity&);
 		QAbstractItemModel* GetRepresentationModel ();
 		QNetworkAccessManager* GetNetworkAccessManager () const;
 		bool HasFinishedReply (QNetworkReply*) const;
@@ -138,13 +138,13 @@ namespace CSTP
 				const QString&,
 				const QStringList&,
 				const QVariantMap&,
-				LeechCraft::TaskParameters = LeechCraft::NoParameters);
+				LC::TaskParameters = LC::NoParameters);
 		QFuture<IDownload::Result> AddTask (QNetworkReply*,
 				const QString&,
 				const QString&,
 				const QString&,
 				const QStringList&,
-				LeechCraft::TaskParameters = LeechCraft::NoParameters);
+				LC::TaskParameters = LC::NoParameters);
 		QFuture<IDownload::Result> AddTask (TaskDescr&);
 		void ReadSettings ();
 		void ScheduleSave ();

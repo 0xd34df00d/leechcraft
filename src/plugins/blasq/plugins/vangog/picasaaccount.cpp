@@ -44,7 +44,7 @@
 #include "picasaservice.h"
 #include "uploadmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blasq
 {

@@ -44,7 +44,7 @@
 #include "unclosemanager.h"
 #include "tabspropsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace TabSessManager
 {
@@ -193,4 +193,4 @@ namespace TabSessManager
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_tabsessmanager, LeechCraft::TabSessManager::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_tabsessmanager, LC::TabSessManager::Plugin);

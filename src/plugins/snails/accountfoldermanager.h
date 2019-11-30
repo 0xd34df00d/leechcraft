@@ -34,7 +34,7 @@
 #include <QHash>
 #include "folder.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Snails
 {

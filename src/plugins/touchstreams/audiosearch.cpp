@@ -41,7 +41,7 @@
 #include <util/svcauth/vkauthmanager.h>
 #include "xmlsettingsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace TouchStreams
 {

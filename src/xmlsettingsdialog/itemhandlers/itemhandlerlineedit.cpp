@@ -35,7 +35,7 @@
 #include <QtDebug>
 #include <util/compat/fontwidth.h>
 
-namespace LeechCraft
+namespace LC
 {
 	bool ItemHandlerLineEdit::CanHandle (const QDomElement& element) const
 	{

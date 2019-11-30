@@ -32,9 +32,9 @@
 #include <typelist.h>
 #include <typelevel.h>
 
-QTEST_MAIN (LeechCraft::Util::TypelistTest)
+QTEST_MAIN (LC::Util::TypelistTest)
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

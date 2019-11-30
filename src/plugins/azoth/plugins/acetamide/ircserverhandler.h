@@ -37,7 +37,7 @@
 #include "serverparticipantentry.h"
 #include "invitechannelsdialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

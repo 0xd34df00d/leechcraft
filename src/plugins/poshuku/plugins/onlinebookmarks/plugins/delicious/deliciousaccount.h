@@ -33,7 +33,7 @@
 #include <QDateTime>
 #include <interfaces/iaccount.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {
@@ -45,7 +45,7 @@ namespace Delicious
 							, public IAccount
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Poshuku::OnlineBookmarks::IAccount)
+		Q_INTERFACES (LC::Poshuku::OnlineBookmarks::IAccount)
 
 		QString Login_;
 		QString Password_;

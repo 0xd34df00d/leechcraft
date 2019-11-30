@@ -30,7 +30,7 @@
 #include "mediainfo.h"
 #include <QDataStream>
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

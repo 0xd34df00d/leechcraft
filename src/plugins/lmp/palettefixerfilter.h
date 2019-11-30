@@ -32,7 +32,7 @@
 #include <QObject>
 #include <QPalette>
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

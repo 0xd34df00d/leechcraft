@@ -36,7 +36,7 @@
 #include "fotobilderaccount.h"
 #include "registerpage.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blasq
 {

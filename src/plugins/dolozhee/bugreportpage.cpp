@@ -32,7 +32,7 @@
 #include <util/sys/sysinfo.h>
 #include "reportwizard.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Dolozhee
 {

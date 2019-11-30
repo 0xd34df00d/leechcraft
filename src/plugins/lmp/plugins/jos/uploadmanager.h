@@ -34,7 +34,7 @@
 #include <QMap>
 #include <QFile>
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

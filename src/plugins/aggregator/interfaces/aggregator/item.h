@@ -37,7 +37,7 @@
 #include <QMetaType>
 #include "common.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Aggregator
 {
@@ -333,6 +333,6 @@ namespace Aggregator
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::Aggregator::Item_ptr)
-Q_DECLARE_METATYPE (LeechCraft::Aggregator::Item)
-Q_DECLARE_METATYPE (LeechCraft::Aggregator::ItemShort)
+Q_DECLARE_METATYPE (LC::Aggregator::Item_ptr)
+Q_DECLARE_METATYPE (LC::Aggregator::Item)
+Q_DECLARE_METATYPE (LC::Aggregator::ItemShort)

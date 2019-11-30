@@ -29,7 +29,7 @@
 
 #include "convinfo.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace GmailNotifier
 {

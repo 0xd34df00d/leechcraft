@@ -31,7 +31,7 @@
 #include <QtDebug>
 #include <QColor>
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

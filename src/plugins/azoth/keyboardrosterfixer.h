@@ -34,7 +34,7 @@
 class QTreeView;
 class QLineEdit;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

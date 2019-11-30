@@ -43,7 +43,7 @@
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/idownload.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Otzerkalu
 {

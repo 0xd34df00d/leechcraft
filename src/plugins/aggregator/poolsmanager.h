@@ -33,7 +33,7 @@
 #include <util/idpool.h>
 #include "common.h"
 
-namespace LeechCraft::Aggregator
+namespace LC::Aggregator
 {
 	class PoolsManager
 	{

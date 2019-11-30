@@ -18,7 +18,7 @@
     <number>2</number>
    </property>
    <item>
-    <widget class="LeechCraft::Azoth::Xoox::GlooxAccountConfigurationWidget" name="ConfWidget_" native="true"/>
+    <widget class="LC::Azoth::Xoox::GlooxAccountConfigurationWidget" name="ConfWidget_" native="true"/>
    </item>
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">
@@ -34,7 +34,7 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>LeechCraft::Azoth::Xoox::GlooxAccountConfigurationWidget</class>
+   <class>LC::Azoth::Xoox::GlooxAccountConfigurationWidget</class>
    <extends>QWidget</extends>
    <header>glooxaccountconfigurationwidget.h</header>
    <container>1</container>

@@ -34,7 +34,7 @@
 #include "typedmatchers.h"
 #include "fieldmatch.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace AdvancedNotifications
 {

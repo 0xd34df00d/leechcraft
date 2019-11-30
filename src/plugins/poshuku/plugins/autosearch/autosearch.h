@@ -36,7 +36,7 @@
 
 class QNetworkReply;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {
@@ -66,7 +66,7 @@ namespace Autosearch
 
 		QSet<QByteArray> GetPluginClasses () const;
 	public slots:
-		void hookURLCompletionNewStringRequested (LeechCraft::IHookProxy_ptr proxy,
+		void hookURLCompletionNewStringRequested (LC::IHookProxy_ptr proxy,
 				QObject *model,
 				const QString& string,
 				int historyItems);

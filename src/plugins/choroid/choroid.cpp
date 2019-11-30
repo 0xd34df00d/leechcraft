@@ -32,7 +32,7 @@
 #include <QIcon>
 #include "choroidtab.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Choroid
 {
@@ -105,4 +105,4 @@ namespace Choroid
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_choroid, LeechCraft::Choroid::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_choroid, LC::Choroid::Plugin);

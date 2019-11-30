@@ -31,7 +31,7 @@
 
 #include "../common/connectorbase.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Liznoo
 {

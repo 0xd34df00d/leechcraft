@@ -39,7 +39,7 @@
 #include "coreplugin2manager.h"
 #include "dockmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 	DockToolbarManager::DockToolbarManager (MainWindow *win, DockManager *dock)
 	: QObject (win)

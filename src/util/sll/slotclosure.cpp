@@ -29,7 +29,7 @@
 
 #include "slotclosure.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

@@ -30,7 +30,7 @@
 #include "modelitem.h"
 #include <algorithm>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

@@ -30,7 +30,7 @@
 #include "lifereaimporter.h"
 #include "lifereaimportpage.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace NewLife
 {

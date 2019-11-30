@@ -31,7 +31,7 @@
 #include <QIcon>
 #include "extensionsdataimpl.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

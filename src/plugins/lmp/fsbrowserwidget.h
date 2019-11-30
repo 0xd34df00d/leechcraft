@@ -32,7 +32,7 @@
 #include <QWidget>
 #include "ui_fsbrowserwidget.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

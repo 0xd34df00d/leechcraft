@@ -35,7 +35,7 @@
 class QAbstractItemModel;
 class QWidget;
 
-namespace LeechCraft
+namespace LC
 {
 	/** @brief Describes the columns in a job holder model.
 	 *
@@ -273,9 +273,9 @@ public:
 	 *
 	 * @return Representation model.
 	 *
-	 * @sa LeechCraft::CustomDataRoles
-	 * @sa LeechCraft::JobHolderRow
-	 * @sa LeechCraft::ProcessStateInfo
+	 * @sa LC::CustomDataRoles
+	 * @sa LC::JobHolderRow
+	 * @sa LC::ProcessStateInfo
 	 */
 	virtual QAbstractItemModel* GetRepresentation () const = 0;
 
@@ -286,7 +286,7 @@ public:
 	virtual ~IJobHolder () {}
 };
 
-Q_DECLARE_METATYPE (LeechCraft::JobHolderRow)
-Q_DECLARE_METATYPE (LeechCraft::ProcessStateInfo)
+Q_DECLARE_METATYPE (LC::JobHolderRow)
+Q_DECLARE_METATYPE (LC::ProcessStateInfo)
 
 Q_DECLARE_INTERFACE (IJobHolder, "org.Deviant.LeechCraft.IJobHolder/1.0")

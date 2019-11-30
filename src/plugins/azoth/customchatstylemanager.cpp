@@ -32,7 +32,7 @@
 #include <QCoreApplication>
 #include "interfaces/azoth/iaccount.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

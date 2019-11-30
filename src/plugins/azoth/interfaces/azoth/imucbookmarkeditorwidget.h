@@ -32,7 +32,7 @@
 #include <QMetaType>
 #include <QVariantMap>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -68,7 +68,7 @@ namespace Azoth
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Azoth::IMUCBookmarkEditorWidget,
+Q_DECLARE_INTERFACE (LC::Azoth::IMUCBookmarkEditorWidget,
 		"org.Deviant.LeechCraft.Azoth.IMUCBookmarkEditorWidget/1.0")
 
 #endif

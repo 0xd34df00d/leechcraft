@@ -30,7 +30,7 @@
 #include "convimmessage.h"
 #include "buddy.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

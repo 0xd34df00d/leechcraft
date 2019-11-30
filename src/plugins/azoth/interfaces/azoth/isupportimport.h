@@ -32,7 +32,7 @@
 #include <QMetaType>
 #include <QVariantMap>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -92,7 +92,7 @@ namespace Azoth
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Azoth::ISupportImport,
+Q_DECLARE_INTERFACE (LC::Azoth::ISupportImport,
 		"org.Deviant.LeechCraft.Azoth.ISupportImport/1.0")
 
 #endif

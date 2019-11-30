@@ -32,7 +32,7 @@
 #include <QDialog>
 #include "ui_accountpropsdialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poleemery
 {

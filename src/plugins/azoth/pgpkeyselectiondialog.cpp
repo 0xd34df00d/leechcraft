@@ -30,7 +30,7 @@
 #include "pgpkeyselectiondialog.h"
 #include "cryptomanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

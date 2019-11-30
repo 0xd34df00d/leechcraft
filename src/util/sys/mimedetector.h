@@ -35,7 +35,7 @@
 class QString;
 class QByteArray;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

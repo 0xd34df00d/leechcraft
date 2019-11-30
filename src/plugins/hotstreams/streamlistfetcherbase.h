@@ -38,7 +38,7 @@ class QNetworkAccessManager;
 class QNetworkRequest;
 class QStandardItem;
 
-namespace LeechCraft
+namespace LC
 {
 namespace HotStreams
 {

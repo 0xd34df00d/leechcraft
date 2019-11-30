@@ -36,7 +36,7 @@
 
 class QTimer;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {
@@ -44,7 +44,7 @@ namespace Poshuku
 							 , public IURLCompletionModel
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Poshuku::IURLCompletionModel)
+		Q_INTERFACES (LC::Poshuku::IURLCompletionModel)
 
 		mutable bool Valid_ = false;
 		mutable history_items_t Items_;
@@ -77,7 +77,7 @@ namespace Poshuku
 		void handleItemAdded (const HistoryItem&);
 	signals:
 		// Plugin API
-		void hookURLCompletionNewStringRequested (LeechCraft::IHookProxy_ptr proxy,
+		void hookURLCompletionNewStringRequested (LC::IHookProxy_ptr proxy,
 				QObject *model,
 				const QString& string,
 				int historyItems);

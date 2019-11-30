@@ -34,7 +34,7 @@
 #include <util/sll/visitor.h>
 #include "accountthread.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Snails
 {

@@ -34,7 +34,7 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/iactionsexporter.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Auscrie
 {
@@ -71,7 +71,7 @@ namespace Auscrie
 		void MakeScreenshot (int);
 		QPixmap GetPixmap () const;
 	signals:
-		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
+		void gotActions (QList<QAction*>, LC::ActionsEmbedPlace);
 	};
 }
 }

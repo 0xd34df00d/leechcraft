@@ -36,7 +36,7 @@
 
 class QTranslator;
 
-namespace LeechCraft
+namespace LC
 {
 namespace NewLife
 {
@@ -65,7 +65,7 @@ namespace NewLife
 	private slots:
 		void runWizard ();
 	signals:
-		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
+		void gotActions (QList<QAction*>, LC::ActionsEmbedPlace);
 	};
 }
 }

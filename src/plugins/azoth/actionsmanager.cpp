@@ -90,17 +90,17 @@
 #include "serverhistorywidget.h"
 #include "avatarsmanager.h"
 
-using SingleEntryActor_f = std::function<void (LeechCraft::Azoth::ICLEntry*)> ;
-using SingleEntryActorWManager_f = std::function<void (LeechCraft::Azoth::ICLEntry*, LeechCraft::Azoth::ActionsManager*)>;
-using MultiEntryActor_f = std::function<void (QList<LeechCraft::Azoth::ICLEntry*>)> ;
+using SingleEntryActor_f = std::function<void (LC::Azoth::ICLEntry*)> ;
+using SingleEntryActorWManager_f = std::function<void (LC::Azoth::ICLEntry*, LC::Azoth::ActionsManager*)>;
+using MultiEntryActor_f = std::function<void (QList<LC::Azoth::ICLEntry*>)> ;
 
-using EntryActor_f = std::variant<LeechCraft::Util::Void, SingleEntryActor_f, SingleEntryActorWManager_f, MultiEntryActor_f>;
+using EntryActor_f = std::variant<LC::Util::Void, SingleEntryActor_f, SingleEntryActorWManager_f, MultiEntryActor_f>;
 Q_DECLARE_METATYPE (EntryActor_f);
 
-using EntriesList_t = QList<LeechCraft::Azoth::ICLEntry*>;
+using EntriesList_t = QList<LC::Azoth::ICLEntry*>;
 Q_DECLARE_METATYPE (EntriesList_t);
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

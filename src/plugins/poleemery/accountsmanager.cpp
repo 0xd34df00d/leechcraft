@@ -30,7 +30,7 @@
 #include "accountsmanager.h"
 #include "storage.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poleemery
 {

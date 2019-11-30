@@ -32,7 +32,7 @@
 #include <QObject>
 #include <QDir>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {

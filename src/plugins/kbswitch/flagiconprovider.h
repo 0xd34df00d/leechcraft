@@ -32,7 +32,7 @@
 #include <QtGlobal>
 #include <QQuickImageProvider>
 
-namespace LeechCraft
+namespace LC
 {
 namespace KBSwitch
 {

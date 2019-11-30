@@ -31,7 +31,7 @@
 
 #include <QString>
 
-namespace LeechCraft::Snails
+namespace LC::Snails
 {
 	struct AccountConfig
 	{

@@ -39,7 +39,7 @@
 #include <X11/XKBlib.h>
 #include <X11/extensions/XKBrules.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace KBSwitch
 {

@@ -37,7 +37,7 @@
 
 class QXmppIq;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

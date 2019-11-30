@@ -32,7 +32,7 @@
 #include <boost/circular_buffer.hpp>
 #include <QString>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Liznoo
 {

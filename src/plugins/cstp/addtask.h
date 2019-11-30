@@ -33,7 +33,7 @@
 #include <QUrl>
 #include "ui_addtask.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace CSTP
 {

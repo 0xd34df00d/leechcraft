@@ -33,7 +33,7 @@
 #include <QObject>
 #include "sllconfig.h"
 
-namespace LeechCraft::Util
+namespace LC::Util
 {
 	/** @brief Executes a given action after a given timeout.
 	 *

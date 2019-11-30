@@ -36,7 +36,7 @@
 #include "droparea.h"
 #include "quarkproxy.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Ooronee
 {
@@ -93,4 +93,4 @@ namespace Ooronee
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_ooronee, LeechCraft::Ooronee::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_ooronee, LC::Ooronee::Plugin);

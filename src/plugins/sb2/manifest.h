@@ -32,7 +32,7 @@
 #include <QStringList>
 #include <QIcon>
 
-namespace LeechCraft
+namespace LC
 {
 namespace SB2
 {

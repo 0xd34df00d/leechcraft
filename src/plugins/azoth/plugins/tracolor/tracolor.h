@@ -36,7 +36,7 @@
 #include <interfaces/ientityhandler.h>
 #include <interfaces/core/ihookproxy.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -84,7 +84,7 @@ namespace Tracolor
 		void Handle (Entity);
 	public slots:
 		void initPlugin (QObject*);
-		void hookCollectContactIcons (LeechCraft::IHookProxy_ptr, QObject*, QList<QIcon>&) const;
+		void hookCollectContactIcons (LC::IHookProxy_ptr, QObject*, QList<QIcon>&) const;
 	private slots:
 		void handleIconsUpdated (const QByteArray&);
 		void handleEnableTracolorChanged ();

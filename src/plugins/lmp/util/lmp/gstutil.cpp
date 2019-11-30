@@ -43,7 +43,7 @@ extern "C"
 #include <gst/gst.h>
 #include "../../xmlsettingsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

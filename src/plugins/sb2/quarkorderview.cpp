@@ -42,7 +42,7 @@
 #include "viewmanager.h"
 #include "quarkmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace SB2
 {

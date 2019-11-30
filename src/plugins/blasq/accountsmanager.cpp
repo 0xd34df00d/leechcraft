@@ -33,7 +33,7 @@
 #include "interfaces/blasq/iaccount.h"
 #include "servicesmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blasq
 {

@@ -29,7 +29,7 @@
 
 #include "processinfo.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Eleeminator
 {
@@ -59,8 +59,8 @@ namespace Eleeminator
 }
 }
 
-QDebug operator<< (QDebug debug, const LeechCraft::Eleeminator::ProcessInfo& info)
+QDebug operator<< (QDebug debug, const LC::Eleeminator::ProcessInfo& info)
 {
-	LeechCraft::Eleeminator::PrintPI (debug.nospace (), info);
+	LC::Eleeminator::PrintPI (debug.nospace (), info);
 	return debug.space ();
 }

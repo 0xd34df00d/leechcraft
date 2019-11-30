@@ -37,7 +37,7 @@
 #include "reporttypepage.h"
 #include "fileattachpage.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Dolozhee
 {
@@ -133,4 +133,4 @@ namespace Dolozhee
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_dolozhee, LeechCraft::Dolozhee::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_dolozhee, LC::Dolozhee::Plugin);

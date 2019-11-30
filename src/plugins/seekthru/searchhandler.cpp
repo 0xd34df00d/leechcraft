@@ -48,7 +48,7 @@
 
 Q_DECLARE_METATYPE (QToolBar*)
 
-namespace LeechCraft::SeekThru
+namespace LC::SeekThru
 {
 	const QString SearchHandler::OS_ = "http://a9.com/-/spec/opensearch/1.1/";
 
@@ -108,7 +108,7 @@ namespace LeechCraft::SeekThru
 			default:
 				return QString ("");
 			}
-		case LeechCraft::RoleAdditionalInfo:
+		case LC::RoleAdditionalInfo:
 			if (Results_.at (r).Type_ == Result::TypeHTML)
 			{
 				Viewer_->SetNavBarVisible (XmlSettingsManager::Instance ().property ("NavBarVisible").toBool ());
@@ -117,7 +117,7 @@ namespace LeechCraft::SeekThru
 			}
 			else
 				return 0;
-		case LeechCraft::RoleControls:
+		case LC::RoleControls:
 			if (Results_.at (r).Type_ != Result::TypeHTML)
 			{
 				Action_->setData (r);
@@ -174,11 +174,11 @@ namespace LeechCraft::SeekThru
 			QString fname = Util::GetTemporaryName ();
 			auto e = Util::MakeEntity (url,
 					fname,
-					LeechCraft::Internal |
-						LeechCraft::DoNotNotifyUser |
-						LeechCraft::DoNotSaveInHistory |
-						LeechCraft::NotPersistent |
-						LeechCraft::DoNotAnnounceEntity,
+					LC::Internal |
+						LC::DoNotNotifyUser |
+						LC::DoNotSaveInHistory |
+						LC::NotPersistent |
+						LC::DoNotAnnounceEntity,
 					u.Type_);
 
 			Result job;
@@ -284,7 +284,7 @@ namespace LeechCraft::SeekThru
 
 		auto e = Util::MakeEntity (Results_.at (r).RequestURL_,
 				{},
-				LeechCraft::FromUserInitiated,
+				LC::FromUserInitiated,
 				mime);
 		IEM_->HandleEntity (e);
 	}

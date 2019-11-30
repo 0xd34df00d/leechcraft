@@ -40,7 +40,7 @@
 #include <util/gui/util.h>
 #include "batteryinfo.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Liznoo
 {

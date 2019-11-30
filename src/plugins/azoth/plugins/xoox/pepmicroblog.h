@@ -36,7 +36,7 @@
 #include <QMap>
 #include <interfaces/azoth/isupportmicroblogs.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

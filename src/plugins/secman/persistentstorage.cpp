@@ -31,7 +31,7 @@
 #include <QVariant>
 #include "core.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace SecMan
 {

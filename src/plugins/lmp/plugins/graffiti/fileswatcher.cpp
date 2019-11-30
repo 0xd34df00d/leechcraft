@@ -32,7 +32,7 @@
 #include <QSet>
 #include <QStringList>
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

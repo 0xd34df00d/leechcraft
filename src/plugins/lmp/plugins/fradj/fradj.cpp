@@ -31,7 +31,7 @@
 #include <util/util.h>
 #include "eq10bandeffect.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {
@@ -101,4 +101,4 @@ namespace Fradj
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_lmp_httstream, LeechCraft::LMP::Fradj::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_lmp_httstream, LC::LMP::Fradj::Plugin);

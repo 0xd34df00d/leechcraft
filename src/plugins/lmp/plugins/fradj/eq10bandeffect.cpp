@@ -33,7 +33,7 @@
 #include <gst/gst.h>
 #include "eqconfigurator.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

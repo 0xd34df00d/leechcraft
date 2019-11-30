@@ -33,18 +33,18 @@
 #include "presencecommand.cpp"
 #include "testutil.h"
 
-QTEST_APPLESS_MAIN (LeechCraft::Azoth::MuCommands::PresenceCommandTest)
+QTEST_APPLESS_MAIN (LC::Azoth::MuCommands::PresenceCommandTest)
 
 namespace QTest
 {
 	template<>
-	char* toString (const LeechCraft::Azoth::MuCommands::Status_t& acc)
+	char* toString (const LC::Azoth::MuCommands::Status_t& acc)
 	{
-		return LeechCraft::Azoth::MuCommands::PrintVar (acc);
+		return LC::Azoth::MuCommands::PrintVar (acc);
 	}
 }
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

@@ -43,7 +43,7 @@ class QStandardItem;
 class QSortFilterProxyModel;
 class QToolButton;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

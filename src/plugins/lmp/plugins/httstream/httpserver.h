@@ -36,7 +36,7 @@
 class QTcpServer;
 class QTcpSocket;
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

@@ -34,7 +34,7 @@
 #include <interfaces/media/ieventsprovider.h>
 #include <util/sll/either.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Lastfmscrobble
 {

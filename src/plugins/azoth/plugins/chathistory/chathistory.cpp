@@ -47,7 +47,7 @@
 #include "storagemanager.h"
 #include "loggingstatekeeper.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -195,9 +195,9 @@ namespace ChatHistory
 				this,
 				SIGNAL (removeTab (QWidget*)));
 		connect (wh,
-				SIGNAL (gotEntity (LeechCraft::Entity)),
+				SIGNAL (gotEntity (LC::Entity)),
 				this,
-				SIGNAL (gotEntity (LeechCraft::Entity)));
+				SIGNAL (gotEntity (LC::Entity)));
 	}
 
 	void Plugin::initPlugin (QObject *proxy)
@@ -263,7 +263,7 @@ namespace ChatHistory
 		proxy->SetReturnValue (list);
 	}
 
-	void Plugin::hookGotMessage2 (LeechCraft::IHookProxy_ptr,
+	void Plugin::hookGotMessage2 (LC::IHookProxy_ptr,
 				QObject *message)
 	{
 		if (message->property ("Azoth/HiddenMessage").toBool () == true)
@@ -406,4 +406,4 @@ namespace ChatHistory
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_azoth_chathistory, LeechCraft::Azoth::ChatHistory::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_azoth_chathistory, LC::Azoth::ChatHistory::Plugin);

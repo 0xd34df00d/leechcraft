@@ -61,7 +61,7 @@
 #include "tagsfetchmanager.h"
 #include "reciterator.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

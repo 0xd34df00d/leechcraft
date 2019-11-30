@@ -39,7 +39,7 @@ class QStandardItem;
 class QStandardItemModel;
 class QHttpMultiPart;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Zalil
 {

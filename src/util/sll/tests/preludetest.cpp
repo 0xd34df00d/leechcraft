@@ -32,9 +32,9 @@
 #include <prelude.h>
 #include <qtutil.h>
 
-QTEST_MAIN (LeechCraft::Util::PreludeTest)
+QTEST_MAIN (LC::Util::PreludeTest)
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

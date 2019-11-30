@@ -33,7 +33,7 @@
 
 class QUrl;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {
@@ -47,7 +47,7 @@ namespace Poshuku
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Poshuku::IFlashOverrider,
+Q_DECLARE_INTERFACE (LC::Poshuku::IFlashOverrider,
 		"org.Deviant.LeechCraft.Poshuku.IFlashOverrider/1.0")
 
 #endif

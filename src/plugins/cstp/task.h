@@ -47,7 +47,7 @@ class QIODevice;
 class QFile;
 class QTimer;
 
-namespace LeechCraft
+namespace LC
 {
 namespace CSTP
 {

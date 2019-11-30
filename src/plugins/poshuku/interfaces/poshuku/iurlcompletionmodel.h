@@ -31,7 +31,7 @@
 
 #include <QtPlugin>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {
@@ -45,5 +45,5 @@ namespace Poshuku
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Poshuku::IURLCompletionModel,
+Q_DECLARE_INTERFACE (LC::Poshuku::IURLCompletionModel,
 		"org.Deviant.LeechCraft.Poshuku.IURLCompletionModel/1.0")

@@ -38,7 +38,7 @@
 #include <QtDebug>
 #include <util/compat/screengeometry.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

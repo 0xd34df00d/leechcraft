@@ -33,7 +33,7 @@
 
 class QAbstractButton;
 
-namespace LeechCraft
+namespace LC
 {
 namespace LackMan
 {

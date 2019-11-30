@@ -41,7 +41,7 @@
 #include "vkprotocol.h"
 #include "vkconnection.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -70,12 +70,12 @@ namespace Murm
 					, public IHaveServerHistory
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IAccount
-				LeechCraft::Azoth::ISupportTune
-				LeechCraft::Azoth::IExtSelfInfoAccount
-				LeechCraft::Azoth::IHaveConsole
-				LeechCraft::Azoth::ISupportNonRoster
-				LeechCraft::Azoth::IHaveServerHistory)
+		Q_INTERFACES (LC::Azoth::IAccount
+				LC::Azoth::ISupportTune
+				LC::Azoth::IExtSelfInfoAccount
+				LC::Azoth::IHaveConsole
+				LC::Azoth::ISupportNonRoster
+				LC::Azoth::IHaveServerHistory)
 
 		const ICoreProxy_ptr CoreProxy_;
 

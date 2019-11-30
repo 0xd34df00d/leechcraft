@@ -34,7 +34,7 @@ class QLineEdit;
 class QMenu;
 class QString;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {
@@ -56,5 +56,5 @@ namespace Poshuku
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Poshuku::IBrowserWidget,
+Q_DECLARE_INTERFACE (LC::Poshuku::IBrowserWidget,
 		"org.Deviant.LeechCraft.Poshuku.IBrowserWidget/1.0")

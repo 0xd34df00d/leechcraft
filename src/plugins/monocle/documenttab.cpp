@@ -99,7 +99,7 @@
 #include "smoothscroller.h"
 #include "xmlsettingsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {

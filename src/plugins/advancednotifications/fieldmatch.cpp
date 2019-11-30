@@ -32,7 +32,7 @@
 #include <QtDebug>
 #include "typedmatchers.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace AdvancedNotifications
 {

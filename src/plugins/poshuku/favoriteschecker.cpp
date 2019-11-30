@@ -38,7 +38,7 @@
 #include <interfaces/core/irootwindowsmanager.h>
 #include "core.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

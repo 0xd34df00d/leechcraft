@@ -32,7 +32,7 @@
 #include <QSystemTrayIcon>
 #include "mediainfo.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

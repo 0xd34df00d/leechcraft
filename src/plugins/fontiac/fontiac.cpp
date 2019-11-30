@@ -34,7 +34,7 @@
 #include "xmlsettingsmanager.h"
 #include "substsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Fontiac
 {
@@ -84,4 +84,4 @@ namespace Fontiac
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_fontiac, LeechCraft::Fontiac::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_fontiac, LC::Fontiac::Plugin);

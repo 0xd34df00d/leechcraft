@@ -37,7 +37,7 @@
 #include <interfaces/lmp/isyncplugin.h>
 #include <interfaces/lmp/iunmountablesync.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {
@@ -55,8 +55,8 @@ namespace jOS
 		Q_OBJECT
 		Q_INTERFACES (IInfo
 				IPlugin2
-				LeechCraft::LMP::ILMPPlugin
-				LeechCraft::LMP::IUnmountableSync)
+				LC::LMP::ILMPPlugin
+				LC::LMP::IUnmountableSync)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.LMP.jOS")
 

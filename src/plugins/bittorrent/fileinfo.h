@@ -31,7 +31,7 @@
 
 #include <boost/filesystem/path.hpp>
 
-namespace LeechCraft
+namespace LC
 {
 namespace BitTorrent
 {

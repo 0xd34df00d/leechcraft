@@ -41,7 +41,7 @@
 #include "eventproxyobject.h"
 #include "generalhandler.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace AdvancedNotifications
 {

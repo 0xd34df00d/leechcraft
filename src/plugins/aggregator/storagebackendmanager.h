@@ -34,7 +34,7 @@
 #include <util/sll/eitherfwd.h>
 #include "storagebackend.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Aggregator
 {
@@ -109,14 +109,14 @@ namespace Aggregator
 		 * @param[out] proxy Standard proxy object.
 		 * @param[out] item The pointer to the already loaded item.
 		 */
-		void hookItemLoad (LeechCraft::IHookProxy_ptr proxy, Item *item) const;
+		void hookItemLoad (LC::IHookProxy_ptr proxy, Item *item) const;
 
 		/** @brief Emitted whenever a new item is added.
 		 *
 		 * @param proxy Standard proxy object.
 		 * @param item The item being added.
 		 */
-		void hookItemAdded (LeechCraft::IHookProxy_ptr proxy, const Item& item) const;
+		void hookItemAdded (LC::IHookProxy_ptr proxy, const Item& item) const;
 	};
 }
 }

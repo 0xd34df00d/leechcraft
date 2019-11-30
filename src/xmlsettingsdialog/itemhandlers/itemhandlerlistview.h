@@ -34,7 +34,7 @@
 
 class QListView;
 
-namespace LeechCraft
+namespace LC
 {
 	class ItemHandlerFactory;
 

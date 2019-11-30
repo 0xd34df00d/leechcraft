@@ -32,9 +32,9 @@
 #include <QtTest>
 #include <typegetter.h>
 
-QTEST_MAIN (LeechCraft::Util::TypeGetterTest)
+QTEST_MAIN (LC::Util::TypeGetterTest)
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

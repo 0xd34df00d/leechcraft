@@ -30,7 +30,7 @@
 #include "typingmanager.h"
 #include <QTimer>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

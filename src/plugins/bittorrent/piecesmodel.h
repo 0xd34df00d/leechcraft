@@ -35,7 +35,7 @@
 #include <vector>
 #include <libtorrent/torrent_handle.hpp>
 
-namespace LeechCraft
+namespace LC
 {
 namespace BitTorrent
 {

@@ -44,7 +44,7 @@
 #include "flatmountableitems.h"
 #include "devbackend.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Vrooby
 {

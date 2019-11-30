@@ -29,7 +29,7 @@
 
 #include "itemhandleroptionssetvalue.h"
 
-namespace LeechCraft
+namespace LC
 {
 	void ItemHandlerOptionsSetValue::UpdateValue (QDomElement& element,
 			const QVariant& value) const

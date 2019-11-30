@@ -36,7 +36,7 @@
 #include "sslerrorsdialog.h"
 #include "sslerrorschoicestorage.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

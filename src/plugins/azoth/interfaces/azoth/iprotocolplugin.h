@@ -33,7 +33,7 @@
 
 class QObject;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -84,7 +84,7 @@ namespace Azoth
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Azoth::IProtocolPlugin,
+Q_DECLARE_INTERFACE (LC::Azoth::IProtocolPlugin,
 		"org.Deviant.LeechCraft.Azoth.IProtocolPlugin/1.0")
 
 #endif

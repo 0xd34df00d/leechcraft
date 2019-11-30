@@ -32,7 +32,7 @@
 #include <QtDebug>
 #include <util/sll/unreachable.h>
 
-namespace LeechCraft::Monocle
+namespace LC::Monocle
 {
 	QByteArray LayoutMode2Name (LayoutMode mode)
 	{

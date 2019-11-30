@@ -37,7 +37,7 @@
 
 class QHostAddress;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {
@@ -72,4 +72,4 @@ namespace Util
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::Util::AddrList_t)
+Q_DECLARE_METATYPE (LC::Util::AddrList_t)

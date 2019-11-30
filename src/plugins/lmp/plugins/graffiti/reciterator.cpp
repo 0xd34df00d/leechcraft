@@ -33,7 +33,7 @@
 #include <interfaces/lmp/ilmpproxy.h>
 #include <interfaces/lmp/ilmputilproxy.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

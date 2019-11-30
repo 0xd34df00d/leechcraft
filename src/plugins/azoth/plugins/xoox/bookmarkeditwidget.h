@@ -34,7 +34,7 @@
 #include <interfaces/azoth/imucbookmarkeditorwidget.h>
 #include "ui_bookmarkeditwidget.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -44,7 +44,7 @@ namespace Xoox
 							 , public IMUCBookmarkEditorWidget
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IMUCBookmarkEditorWidget)
+		Q_INTERFACES (LC::Azoth::IMUCBookmarkEditorWidget)
 
 		Ui::BookmarkEditWidget Ui_;
 	public:

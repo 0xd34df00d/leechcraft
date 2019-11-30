@@ -32,7 +32,7 @@
 #include <QObject>
 #include <interfaces/core/iloadprogressreporter.h>
 
-namespace LeechCraft
+namespace LC
 {
 	class LoadProcessBase : public QObject
 						  , public ILoadProcess

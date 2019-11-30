@@ -31,7 +31,7 @@
 #include <QToolTip>
 #include <QtDebug>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

@@ -42,7 +42,7 @@
 #include "separatetabbar.h"
 #include "mainwindowmenumanager.h"
 
-using namespace LeechCraft;
+using namespace LC;
 
 TabManager::TabManager (SeparateTabWidget *tabWidget, MainWindow *window, QObject *parent)
 : QObject (parent)

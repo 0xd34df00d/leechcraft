@@ -24,7 +24,7 @@
     <widget class="QLineEdit" name="FilterLine_"/>
    </item>
    <item>
-    <widget class="LeechCraft::Azoth::ContactsListView" name="CLTree_">
+    <widget class="LC::Azoth::ContactsListView" name="CLTree_">
      <property name="sizePolicy">
       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
        <horstretch>0</horstretch>
@@ -80,7 +80,7 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>LeechCraft::Azoth::ContactsListView</class>
+   <class>LC::Azoth::ContactsListView</class>
    <extends>QTreeView</extends>
    <header>contactslistview.h</header>
   </customwidget>

@@ -33,7 +33,7 @@
 #include <QCoreApplication>
 #include <xmlsettingsdialog/datasourceroles.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

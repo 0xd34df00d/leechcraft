@@ -34,7 +34,7 @@
 #include <QReadLocker>
 #include <QWriteLocker>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Snails
 {

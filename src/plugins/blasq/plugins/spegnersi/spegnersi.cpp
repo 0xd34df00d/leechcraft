@@ -32,7 +32,7 @@
 #include <util/util.h>
 #include "flickrservice.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blasq
 {
@@ -88,4 +88,4 @@ namespace Spegnersi
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_blasq_spegnersi, LeechCraft::Blasq::Spegnersi::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_blasq_spegnersi, LC::Blasq::Spegnersi::Plugin);

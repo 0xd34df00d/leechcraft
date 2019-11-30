@@ -45,7 +45,7 @@
 #include <interfaces/core/iiconthememanager.h>
 #include "util.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace TouchStreams
 {

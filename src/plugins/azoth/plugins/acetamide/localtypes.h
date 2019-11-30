@@ -33,7 +33,7 @@
 #include <QPair>
 #include <QDateTime>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

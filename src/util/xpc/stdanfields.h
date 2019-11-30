@@ -35,7 +35,7 @@ template<typename T>
 class QList;
 class QString;
 
-namespace LeechCraft
+namespace LC
 {
 struct ANFieldData;
 

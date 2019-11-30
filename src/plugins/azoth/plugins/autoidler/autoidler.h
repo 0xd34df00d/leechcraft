@@ -42,7 +42,7 @@ class QTranslator;
 
 class Idle;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -57,7 +57,7 @@ namespace Autoidler
 				 , public ILastActivityProvider
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 IHaveSettings LeechCraft::Azoth::ILastActivityProvider)
+		Q_INTERFACES (IInfo IPlugin2 IHaveSettings LC::Azoth::ILastActivityProvider)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.AutoIdler")
 

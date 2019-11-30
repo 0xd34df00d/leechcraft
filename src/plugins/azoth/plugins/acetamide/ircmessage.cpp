@@ -35,7 +35,7 @@
 #include "ircserverhandler.h"
 #include "channelsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

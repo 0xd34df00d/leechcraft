@@ -35,7 +35,7 @@
 #include <interfaces/ihavesettings.h>
 #include <interfaces/core/ihookproxy.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -77,16 +77,16 @@ namespace Autopaste
 	public slots:
 		void initPlugin (QObject*);
 
-		void hookMessageSendRequested (LeechCraft::IHookProxy_ptr proxy,
+		void hookMessageSendRequested (LC::IHookProxy_ptr proxy,
 				QObject *chatTab,
 				QObject *entry,
 				int type,
 				QString variant);
 
-		void hookEntryActionAreasRequested (LeechCraft::IHookProxy_ptr proxy,
+		void hookEntryActionAreasRequested (LC::IHookProxy_ptr proxy,
 				QObject *action,
 				QObject *entry);
-		void hookEntryActionsRequested (LeechCraft::IHookProxy_ptr proxy,
+		void hookEntryActionsRequested (LC::IHookProxy_ptr proxy,
 				QObject *entry);
 	private slots:
 		void handlePasteRequested (QObject*);

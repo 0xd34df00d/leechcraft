@@ -31,7 +31,7 @@
 #define PLUGINS_AZOTH_INTERFACES_IMUCJOINWIDGET_H
 #include <QVariant>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -127,7 +127,7 @@ namespace Azoth
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Azoth::IMUCJoinWidget,
+Q_DECLARE_INTERFACE (LC::Azoth::IMUCJoinWidget,
 		"org.Deviant.LeechCraft.Azoth.IMUCJoinWidget/1.0")
 
 #endif

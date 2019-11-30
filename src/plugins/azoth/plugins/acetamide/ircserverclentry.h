@@ -36,7 +36,7 @@
 #include <interfaces/azoth/iconfigurablemuc.h>
 #include "entrybase.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -51,8 +51,8 @@ namespace Acetamide
 						   , public IConfigurableMUC
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IMUCEntry
-				LeechCraft::Azoth::IConfigurableMUC)
+		Q_INTERFACES (LC::Azoth::IMUCEntry
+				LC::Azoth::IConfigurableMUC)
 
 		IrcServerHandler *ISH_;
 	public:

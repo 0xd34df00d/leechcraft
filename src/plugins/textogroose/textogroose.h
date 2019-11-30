@@ -35,7 +35,7 @@
 
 class IScriptLoaderInstance;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Textogroose
 {

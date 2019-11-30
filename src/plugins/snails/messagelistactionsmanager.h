@@ -33,7 +33,7 @@
 #include <QObject>
 #include "messagelistactioninfo.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Snails
 {

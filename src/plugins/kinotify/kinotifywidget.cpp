@@ -54,7 +54,7 @@
 #include "notificationaction.h"
 #include "xmlsettingsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Kinotify
 {

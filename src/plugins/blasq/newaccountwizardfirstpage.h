@@ -32,7 +32,7 @@
 #include <QWizardPage>
 #include "ui_newaccountwizardfirstpage.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blasq
 {

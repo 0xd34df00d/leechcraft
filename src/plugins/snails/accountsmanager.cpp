@@ -37,7 +37,7 @@
 #include "accountconfigdialog.h"
 #include "accountaddwizard.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Snails
 {

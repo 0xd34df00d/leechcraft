@@ -33,7 +33,7 @@
 
 class QIODevice;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Snails
 {

@@ -34,7 +34,7 @@
 #include <interfaces/core/icoreproxyfwd.h>
 #include <interfaces/poshuku/ilinkopenmodifier.h>
 
-namespace LeechCraft::Poshuku
+namespace LC::Poshuku
 {
 class IProxyObject;
 

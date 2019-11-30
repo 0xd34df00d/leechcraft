@@ -35,7 +35,7 @@
 #include <interfaces/ihavesettings.h>
 #include <interfaces/core/ihookproxy.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -65,7 +65,7 @@ namespace Isterique
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 	public slots:
-		void hookGotMessage (LeechCraft::IHookProxy_ptr proxy,
+		void hookGotMessage (LC::IHookProxy_ptr proxy,
 				QObject *message);
 	};
 }

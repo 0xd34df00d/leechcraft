@@ -30,7 +30,7 @@
 #include <QApplication>
 #include "xmlsettingsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace GmailNotifier
 {

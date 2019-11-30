@@ -37,7 +37,7 @@
 #include "core.h"
 #include "singletrackerchanger.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace BitTorrent
 {

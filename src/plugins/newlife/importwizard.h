@@ -33,7 +33,7 @@
 #include <interfaces/core/icoreproxyfwd.h>
 #include "ui_importwizard.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace NewLife
 {

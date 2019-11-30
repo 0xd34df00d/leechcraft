@@ -37,7 +37,7 @@ class QMenu;
 class QAction;
 class ITabWidget;
 
-namespace LeechCraft
+namespace LC
 {
 namespace TabSessManager
 {

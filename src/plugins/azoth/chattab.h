@@ -45,7 +45,7 @@
 class QTextBrowser;
 class QNetworkAccessManager;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {
@@ -286,20 +286,20 @@ namespace Azoth
 		void currentVariantChanged (const QString&);
 
 		// Hooks
-		void hookChatTabCreated (LeechCraft::IHookProxy_ptr proxy,
+		void hookChatTabCreated (LC::IHookProxy_ptr proxy,
 				QObject *chatTab,
 				QObject *entry,
 				QWebView *webView);
-		void hookGonnaAppendMsg (LeechCraft::IHookProxy_ptr proxy,
+		void hookGonnaAppendMsg (LC::IHookProxy_ptr proxy,
 				QObject *message);
-		void hookMadeCurrent (LeechCraft::IHookProxy_ptr proxy,
+		void hookMadeCurrent (LC::IHookProxy_ptr proxy,
 				QObject *chatTab);
-		void hookMessageSendRequested (LeechCraft::IHookProxy_ptr proxy,
+		void hookMessageSendRequested (LC::IHookProxy_ptr proxy,
 				QObject *chatTab,
 				QObject *entry,
 				int type,
 				QString variant);
-		void hookThemeReloaded (LeechCraft::IHookProxy_ptr proxy,
+		void hookThemeReloaded (LC::IHookProxy_ptr proxy,
 				QObject *chatTab,
 				QWebView *view,
 				QObject *entry);

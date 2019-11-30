@@ -89,7 +89,7 @@
         </item>
        </layout>
       </widget>
-      <widget class="LeechCraft::Util::SelectableBrowser" name="ItemView_" native="true"/>
+      <widget class="LC::Util::SelectableBrowser" name="ItemView_" native="true"/>
      </widget>
     </widget>
    </item>
@@ -97,7 +97,7 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>LeechCraft::Util::SelectableBrowser</class>
+   <class>LC::Util::SelectableBrowser</class>
    <extends>QWidget</extends>
    <header location="global">util/gui/selectablebrowser.h</header>
    <container>1</container>

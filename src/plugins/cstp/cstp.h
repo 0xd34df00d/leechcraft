@@ -42,7 +42,7 @@
 class QTabWidget;
 class QToolBar;
 
-namespace LeechCraft
+namespace LC
 {
 namespace CSTP
 {
@@ -77,8 +77,8 @@ namespace CSTP
 		qint64 GetUploadSpeed () const override;
 		void StartAll () override;
 		void StopAll () override;
-		EntityTestHandleResult CouldDownload (const LeechCraft::Entity&) const override;
-		QFuture<Result> AddJob (LeechCraft::Entity) override;
+		EntityTestHandleResult CouldDownload (const LC::Entity&) const override;
+		QFuture<Result> AddJob (LC::Entity) override;
 
 		QAbstractItemModel* GetRepresentation () const override;
 		IJobHolderRepresentationHandler_ptr CreateRepresentationHandler () override;

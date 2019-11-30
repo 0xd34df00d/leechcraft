@@ -33,7 +33,7 @@
 #include <QVariant>
 #include "deliciousaccount.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

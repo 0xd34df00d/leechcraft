@@ -35,9 +35,9 @@
 #include <lazy.h>
 #include <typelist.h>
 
-QTEST_MAIN (LeechCraft::Util::MonadPlusTest)
+QTEST_MAIN (LC::Util::MonadPlusTest)
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

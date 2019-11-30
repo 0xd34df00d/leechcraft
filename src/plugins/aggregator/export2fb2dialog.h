@@ -33,7 +33,7 @@
 #include <interfaces/core/icoreproxyfwd.h>
 #include "ui_export2fb2dialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 struct Entity;
 

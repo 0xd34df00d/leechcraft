@@ -71,11 +71,11 @@
 #include "importentity.h"
 #include "dummywebview.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {
-	using LeechCraft::Util::TagsCompletionModel;
+	using LC::Util::TagsCompletionModel;
 
 	Core::Core ()
 	: PluginManager_ (new PluginManager (this))
@@ -83,13 +83,13 @@ namespace Poshuku
 	, HistoryModel_ (new HistoryModel (this))
 	, FavoritesModel_ (new FavoritesModel (this))
 	{
-		qRegisterMetaType<BrowserWidgetSettings> ("LeechCraft::Poshuku::BrowserWidgetSettings");
-		qRegisterMetaTypeStreamOperators<BrowserWidgetSettings> ("LeechCraft::Poshuku::BrowserWidgetSettings");
+		qRegisterMetaType<BrowserWidgetSettings> ("LC::Poshuku::BrowserWidgetSettings");
+		qRegisterMetaTypeStreamOperators<BrowserWidgetSettings> ("LC::Poshuku::BrowserWidgetSettings");
 
-		qRegisterMetaType<ElementData> ("LeechCraft::Poshuku::ElementData");
-		qRegisterMetaTypeStreamOperators<ElementData> ("LeechCraft::Poshuku::ElementData");
-		qRegisterMetaType<ElementsData_t> ("LeechCraft::Poshuku::ElementsData_t");
-		qRegisterMetaTypeStreamOperators<ElementsData_t> ("LeechCraft::Poshuku::ElementsData_t");
+		qRegisterMetaType<ElementData> ("LC::Poshuku::ElementData");
+		qRegisterMetaTypeStreamOperators<ElementData> ("LC::Poshuku::ElementData");
+		qRegisterMetaType<ElementsData_t> ("LC::Poshuku::ElementsData_t");
+		qRegisterMetaTypeStreamOperators<ElementsData_t> ("LC::Poshuku::ElementsData_t");
 
 		Util::Introspectable::Instance ().Register<ElementData> (&ToVariantMap);
 

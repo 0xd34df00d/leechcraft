@@ -33,7 +33,7 @@
 #include <util/models/dndactionsmixin.h>
 #include "localcollection.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

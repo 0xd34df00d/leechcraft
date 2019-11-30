@@ -39,7 +39,7 @@
 class QStandardItemModel;
 class QStandardItem;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -52,7 +52,7 @@ namespace Xoox
 					, public ISDSession
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::ISDSession)
+		Q_INTERFACES (LC::Azoth::ISDSession)
 
 		QString Query_;
 

@@ -39,7 +39,7 @@
 #include "core.h"
 #include "localtypes.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -58,10 +58,10 @@ namespace Acetamide
 						   , public ICanHaveSslErrors
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IAccount
-				LeechCraft::Azoth::IHaveConsole
-				LeechCraft::Azoth::ISupportBookmarks
-				LeechCraft::Azoth::ICanHaveSslErrors
+		Q_INTERFACES (LC::Azoth::IAccount
+				LC::Azoth::IHaveConsole
+				LC::Azoth::ISupportBookmarks
+				LC::Azoth::ICanHaveSslErrors
 				)
 
 		QString AccountName_;

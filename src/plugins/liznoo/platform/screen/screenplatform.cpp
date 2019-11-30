@@ -29,7 +29,7 @@
 
 #include "screenplatform.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Liznoo
 {

@@ -39,7 +39,7 @@
 #include "interfaces/lmp/itagresolver.h"
 #include "mediainfo.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {
@@ -47,7 +47,7 @@ namespace LMP
 							, public ITagResolver
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::LMP::ITagResolver)
+		Q_INTERFACES (LC::LMP::ITagResolver)
 
 		QMutex TaglibMutex_;
 		QReadWriteLock CacheLock_;

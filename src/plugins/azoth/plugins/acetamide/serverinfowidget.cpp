@@ -33,7 +33,7 @@
 #include <util/sll/qtutil.h>
 #include "ircserverclentry.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

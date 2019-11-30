@@ -33,7 +33,7 @@
 #include <interfaces/core/icoreproxyfwd.h>
 #include <interfaces/devices/iremovabledevmanager.h>
 
-namespace LeechCraft
+namespace LC
 {
 struct Entity;
 struct DeviceInfo;

@@ -33,7 +33,7 @@
 #include <Types>
 #include "ui_vcarddialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

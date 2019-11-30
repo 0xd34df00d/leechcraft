@@ -40,7 +40,7 @@
 #include "mrimaccount.h"
 #include "proto/contactinfo.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -57,10 +57,10 @@ namespace Vader
 						  , public IAdvancedCLEntry
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::ICLEntry
-				LeechCraft::Azoth::IHaveAvatars
-				LeechCraft::Azoth::IHaveContactTune
-				LeechCraft::Azoth::IAdvancedCLEntry)
+		Q_INTERFACES (LC::Azoth::ICLEntry
+				LC::Azoth::IHaveAvatars
+				LC::Azoth::IHaveContactTune
+				LC::Azoth::IAdvancedCLEntry)
 
 		MRIMAccount *A_;
 		Proto::ContactInfo Info_;

@@ -77,10 +77,10 @@
 #include "sessionsettingsmanager.h"
 #include "sessionstats.h"
 
-using LeechCraft::ActionInfo;
-using namespace LeechCraft::Util;
+using LC::ActionInfo;
+using namespace LC::Util;
 
-namespace LeechCraft
+namespace LC
 {
 namespace BitTorrent
 {
@@ -1196,4 +1196,4 @@ namespace BitTorrent
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_bittorrent, LeechCraft::BitTorrent::TorrentPlugin);
+LC_EXPORT_PLUGIN (leechcraft_bittorrent, LC::BitTorrent::TorrentPlugin);

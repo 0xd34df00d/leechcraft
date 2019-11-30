@@ -32,7 +32,7 @@
 #include <util/util.h>
 #include "localeentry.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Intermutko
 {

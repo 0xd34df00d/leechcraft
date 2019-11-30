@@ -32,7 +32,7 @@
 #include <QObject>
 #include <interfaces/isyncable.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Otlozhu
 {

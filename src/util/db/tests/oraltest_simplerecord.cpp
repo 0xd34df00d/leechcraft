@@ -31,9 +31,9 @@
 #include "common.h"
 #include "simplerecord.h"
 
-QTEST_GUILESS_MAIN (LeechCraft::Util::OralTest_SimpleRecord)
+QTEST_GUILESS_MAIN (LC::Util::OralTest_SimpleRecord)
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

@@ -35,7 +35,7 @@
 #include <QList>
 #include <interfaces/media/ilyricsfinder.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace DeadLyrics
 {

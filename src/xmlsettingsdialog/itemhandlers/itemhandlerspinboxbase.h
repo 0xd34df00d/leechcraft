@@ -36,7 +36,7 @@
 #include <QtDebug>
 #include "../xmlsettingsdialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 	template<typename WidgetType, typename ValueType>
 	class ItemHandlerSpinboxBase : public ItemHandlerStringGetValue

@@ -32,7 +32,7 @@
 #include <QWidget>
 #include "ui_subscriptionsmanagerwidget.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

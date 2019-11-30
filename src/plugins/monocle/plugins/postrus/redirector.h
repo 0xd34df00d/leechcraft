@@ -33,7 +33,7 @@
 #include <interfaces/monocle/iredirectproxy.h>
 
 class QProcess;
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {

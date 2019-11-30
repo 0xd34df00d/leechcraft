@@ -35,7 +35,7 @@
 class QToolButton;
 class QAction;
 
-namespace LeechCraft
+namespace LC
 {
 namespace vlc
 {

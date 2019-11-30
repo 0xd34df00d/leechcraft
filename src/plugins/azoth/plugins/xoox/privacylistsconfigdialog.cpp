@@ -36,7 +36,7 @@
 #include <util/sll/functional.h>
 #include "privacylistsitemdialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

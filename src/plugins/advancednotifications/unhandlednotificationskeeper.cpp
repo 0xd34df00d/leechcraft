@@ -40,7 +40,7 @@
 #include <util/sll/qtutil.h>
 #include "notificationrule.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace AdvancedNotifications
 {

@@ -37,7 +37,7 @@
 #include "openurlcommand.h"
 #include "descparser.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -297,4 +297,4 @@ namespace MuCommands
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_azoth_mucommands, LeechCraft::Azoth::MuCommands::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_azoth_mucommands, LC::Azoth::MuCommands::Plugin);

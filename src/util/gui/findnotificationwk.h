@@ -34,7 +34,7 @@
 
 class QWebView;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

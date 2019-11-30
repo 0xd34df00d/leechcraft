@@ -36,7 +36,7 @@ class QStandardItemModel;
 class QStandardItem;
 class QAbstractItemModel;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Liznoo
 {

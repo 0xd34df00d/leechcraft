@@ -33,7 +33,7 @@
 #include <variant>
 #include <optional>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

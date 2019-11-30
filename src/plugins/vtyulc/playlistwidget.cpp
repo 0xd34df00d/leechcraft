@@ -47,7 +47,7 @@
 #include <vlc/vlc.h>
 #include "playlistmodel.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace vlc
 {

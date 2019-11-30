@@ -33,7 +33,7 @@
 #include <interfaces/azoth/imucjoinwidget.h>
 #include "ui_joingroupchatwidget.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -45,7 +45,7 @@ namespace Xoox
 							  , public IMUCJoinWidget
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IMUCJoinWidget)
+		Q_INTERFACES (LC::Azoth::IMUCJoinWidget)
 
 		Ui::JoinGroupchatWidget Ui_;
 		GlooxAccount *SelectedAccount_;

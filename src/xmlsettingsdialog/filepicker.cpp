@@ -36,7 +36,7 @@
 #include <util/compat/fontwidth.h>
 #include "filepicker.h"
 
-using namespace LeechCraft;
+using namespace LC;
 
 FilePicker::FilePicker (FilePicker::Type type, QWidget *parent)
 : QWidget (parent)

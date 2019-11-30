@@ -31,7 +31,7 @@
 #include <QtDebug>
 #include "radiocustomstreams.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

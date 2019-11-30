@@ -29,7 +29,7 @@
 
 #include <util/xpc/coreproxyholder.h>
 
-namespace LeechCraft::Util
+namespace LC::Util
 {
 	ICoreProxy_ptr CoreProxyHolder::Proxy_ {};
 }

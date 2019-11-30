@@ -37,7 +37,7 @@
 #include "ui_wkfontswidget.h"
 #include "massfontchangedialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

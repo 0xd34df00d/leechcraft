@@ -37,7 +37,7 @@ class QSslError;
 class QNetworkReply;
 class QSettings;
 
-namespace LeechCraft
+namespace LC
 {
 	class SslErrorsHandler : public QObject
 	{

@@ -38,7 +38,7 @@
 
 class QTemporaryDir;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Snails
 {

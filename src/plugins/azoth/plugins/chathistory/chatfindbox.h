@@ -31,7 +31,7 @@
 
 #include <util/gui/findnotification.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

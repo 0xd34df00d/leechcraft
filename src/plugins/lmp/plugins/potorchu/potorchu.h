@@ -35,7 +35,7 @@
 #include <interfaces/lmp/ilmpplugin.h>
 #include <interfaces/lmp/ifilterplugin.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {
@@ -48,7 +48,7 @@ namespace Potorchu
 				 , public IFilterPlugin
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 LeechCraft::LMP::ILMPPlugin LeechCraft::LMP::IFilterPlugin)
+		Q_INTERFACES (IInfo IPlugin2 LC::LMP::ILMPPlugin LC::LMP::IFilterPlugin)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.LMP.Potorchu")
 

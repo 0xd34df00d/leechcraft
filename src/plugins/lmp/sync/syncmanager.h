@@ -32,7 +32,7 @@
 #include "syncmanagerbase.h"
 #include "interfaces/lmp/isyncplugin.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

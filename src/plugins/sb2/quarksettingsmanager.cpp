@@ -33,7 +33,7 @@
 #include <QFileInfo>
 #include <QtDebug>
 
-namespace LeechCraft
+namespace LC
 {
 namespace SB2
 {

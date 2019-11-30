@@ -48,7 +48,7 @@
 #include <QtDebug>
 #include <util/compat/fontwidth.h>
 
-QString LeechCraft::Util::GetAsBase64Src (const QImage& pix)
+QString LC::Util::GetAsBase64Src (const QImage& pix)
 {
 	QBuffer buf;
 	buf.open (QIODevice::ReadWrite);
@@ -57,7 +57,7 @@ QString LeechCraft::Util::GetAsBase64Src (const QImage& pix)
 			.arg (QString (buf.buffer ().toBase64 ()));
 }
 
-QString LeechCraft::Util::GetUserText (const Entity& p)
+QString LC::Util::GetUserText (const Entity& p)
 {
 	QString string = QObject::tr ("Too long to show");
 	if (p.Additional_.contains ("UserVisibleName") &&
@@ -107,7 +107,7 @@ namespace
 	}
 }
 
-QString LeechCraft::Util::MakePrettySize (qint64 sourcesize)
+QString LC::Util::MakePrettySize (qint64 sourcesize)
 {
 	static QStringList units
 	{
@@ -120,7 +120,7 @@ QString LeechCraft::Util::MakePrettySize (qint64 sourcesize)
 	return MakePrettySizeWith (sourcesize, units);
 }
 
-QString LeechCraft::Util::MakePrettySizeShort (qint64 sourcesize)
+QString LC::Util::MakePrettySizeShort (qint64 sourcesize)
 {
 	static const QStringList units
 	{
@@ -133,7 +133,7 @@ QString LeechCraft::Util::MakePrettySizeShort (qint64 sourcesize)
 	return MakePrettySizeWith (sourcesize, units);
 }
 
-QString LeechCraft::Util::MakeTimeFromLong (ulong time)
+QString LC::Util::MakeTimeFromLong (ulong time)
 {
 	int d = time / 86400;
 	time -= d * 86400;
@@ -144,7 +144,7 @@ QString LeechCraft::Util::MakeTimeFromLong (ulong time)
 	return result;
 }
 
-QTranslator* LeechCraft::Util::LoadTranslator (const QString& baseName,
+QTranslator* LC::Util::LoadTranslator (const QString& baseName,
 		const QString& localeName,
 		const QString& prefix,
 		const QString& appName)
@@ -184,7 +184,7 @@ QTranslator* LeechCraft::Util::LoadTranslator (const QString& baseName,
 	return nullptr;
 }
 
-QTranslator* LeechCraft::Util::InstallTranslator (const QString& baseName,
+QTranslator* LC::Util::InstallTranslator (const QString& baseName,
 		const QString& prefix,
 		const QString& appName)
 {
@@ -204,7 +204,7 @@ QTranslator* LeechCraft::Util::InstallTranslator (const QString& baseName,
 	return nullptr;
 }
 
-QString LeechCraft::Util::GetLocaleName ()
+QString LC::Util::GetLocaleName ()
 {
 	QSettings settings (QCoreApplication::organizationName (),
 			QCoreApplication::applicationName ());
@@ -235,7 +235,7 @@ QString LeechCraft::Util::GetLocaleName ()
 	return localeName;
 }
 
-QString LeechCraft::Util::GetInternetLocaleName (const QLocale& locale)
+QString LC::Util::GetInternetLocaleName (const QLocale& locale)
 {
 	if (locale.language () == QLocale::AnyLanguage)
 		return "*";
@@ -245,12 +245,12 @@ QString LeechCraft::Util::GetInternetLocaleName (const QLocale& locale)
 	return locStr;
 }
 
-QString LeechCraft::Util::GetLanguage ()
+QString LC::Util::GetLanguage ()
 {
 	return GetLocaleName ().left (2);
 }
 
-QModelIndexList LeechCraft::Util::GetSummarySelectedRows (QObject *sender)
+QModelIndexList LC::Util::GetSummarySelectedRows (QObject *sender)
 {
 	QAction *senderAct = qobject_cast<QAction*> (sender);
 	if (!senderAct)
@@ -268,14 +268,14 @@ QModelIndexList LeechCraft::Util::GetSummarySelectedRows (QObject *sender)
 			property ("SelectedRows").value<QList<QModelIndex>> ();
 }
 
-QAction* LeechCraft::Util::CreateSeparator (QObject *parent)
+QAction* LC::Util::CreateSeparator (QObject *parent)
 {
 	QAction *result = new QAction (parent);
 	result->setSeparator (true);
 	return result;
 }
 
-QPixmap LeechCraft::Util::DrawOverlayText (QPixmap px,
+QPixmap LC::Util::DrawOverlayText (QPixmap px,
 		const QString& text, QFont font, const QPen& pen, const QBrush& brush)
 {
 	const auto& iconSize = px.size () / px.devicePixelRatio ();

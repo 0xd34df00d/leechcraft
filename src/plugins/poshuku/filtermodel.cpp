@@ -35,7 +35,7 @@
 #include "favoritesmodel.h"
 #include "core.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

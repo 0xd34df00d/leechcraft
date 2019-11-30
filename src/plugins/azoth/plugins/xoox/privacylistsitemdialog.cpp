@@ -30,7 +30,7 @@
 #include "privacylistsitemdialog.h"
 #include "xeps/privacylistsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

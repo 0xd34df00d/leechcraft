@@ -31,7 +31,7 @@
 #define PLUGINS_AZOTH_INTERFACES_IHAVECONSOLE_H
 #include <QMetaType>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -137,7 +137,7 @@ namespace Azoth
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Azoth::IHaveConsole,
+Q_DECLARE_INTERFACE (LC::Azoth::IHaveConsole,
 		"org.Deviant.LeechCraft.Azoth.IHaveConsole/1.0")
 
 #endif

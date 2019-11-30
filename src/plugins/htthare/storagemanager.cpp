@@ -33,7 +33,7 @@
 #include <QDir>
 #include <QtDebug>
 
-namespace LeechCraft
+namespace LC
 {
 namespace HttHare
 {

@@ -20,7 +20,7 @@
    <item>
     <layout class="QVBoxLayout" name="verticalLayout_2">
      <item>
-      <widget class="LeechCraft::Util::TagsLineEdit" name="FavoritesFilterLine_"/>
+      <widget class="LC::Util::TagsLineEdit" name="FavoritesFilterLine_"/>
      </item>
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -63,7 +63,7 @@
     </layout>
    </item>
    <item>
-    <widget class="LeechCraft::Poshuku::FavoritesTreeView" name="FavoritesView_">
+    <widget class="LC::Poshuku::FavoritesTreeView" name="FavoritesView_">
      <property name="contextMenuPolicy">
       <enum>Qt::ActionsContextMenu</enum>
      </property>
@@ -102,12 +102,12 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>LeechCraft::Util::TagsLineEdit</class>
+   <class>LC::Util::TagsLineEdit</class>
    <extends>QLineEdit</extends>
    <header location="global">util/tags/tagslineedit.h</header>
   </customwidget>
   <customwidget>
-   <class>LeechCraft::Poshuku::FavoritesTreeView</class>
+   <class>LC::Poshuku::FavoritesTreeView</class>
    <extends>QTreeView</extends>
    <header>favoritestreeview.h</header>
   </customwidget>

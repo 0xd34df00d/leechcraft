@@ -32,7 +32,7 @@
 #include <QDialog>
 #include "ui_collectionstatsdialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

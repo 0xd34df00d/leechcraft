@@ -36,7 +36,7 @@ class QStandardItemModel;
 class QAbstractItemModel;
 class QMenu;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {

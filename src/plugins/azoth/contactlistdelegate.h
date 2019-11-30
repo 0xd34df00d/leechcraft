@@ -34,7 +34,7 @@
 
 class QTreeView;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -82,7 +82,7 @@ namespace Azoth
 		void handleHighlightGroupsChanged ();
 		void handleContactHeightChanged ();
 	signals:
-		void hookCollectContactIcons (LeechCraft::IHookProxy_ptr, QObject*, QList<QIcon>&) const;
+		void hookCollectContactIcons (LC::IHookProxy_ptr, QObject*, QList<QIcon>&) const;
 	};
 }
 }

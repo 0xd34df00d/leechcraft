@@ -34,7 +34,7 @@
 #include <interfaces/media/iradiostation.h>
 #include <interfaces/media/imodifiableradiostation.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

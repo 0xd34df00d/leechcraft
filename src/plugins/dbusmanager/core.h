@@ -37,7 +37,7 @@
 #include "general.h"
 #include "tasks.h"
 
-namespace LeechCraft
+namespace LC
 {
 struct Entity;
 

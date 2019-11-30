@@ -35,7 +35,7 @@
 #include <QStringList>
 #include <interfaces/media/iaudiopile.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

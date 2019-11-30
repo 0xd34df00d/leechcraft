@@ -35,7 +35,7 @@
 #include <QList>
 #include <QSize>
 
-namespace LeechCraft
+namespace LC
 {
 	/** @brief Describes a single image hosting service (including account).
 	 *
@@ -132,7 +132,7 @@ public:
 	 *
 	 * @return The information about the selected images.
 	 */
-	virtual LeechCraft::RemoteImageInfos_t GetInfos () const = 0;
+	virtual LC::RemoteImageInfos_t GetInfos () const = 0;
 protected:
 	/** @brief Emitted when the information about the requested images
 	 * becomes available.
@@ -173,9 +173,9 @@ public:
 	 *
 	 * @return The list of supported image services.
 	 *
-	 * @sa LeechCraft::ImageServiceInfo
+	 * @sa LC::ImageServiceInfo
 	 */
-	virtual LeechCraft::ImageServiceInfos_t GetServices () const = 0;
+	virtual LC::ImageServiceInfos_t GetServices () const = 0;
 
 	/** @brief Requests the images for the given service.
 	 *

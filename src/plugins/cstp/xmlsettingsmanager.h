@@ -31,11 +31,11 @@
 #define PLUGINS_CSTP_XMLSETTINGSMANAGER_H
 #include <xmlsettingsdialog/basesettingsmanager.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace CSTP
 {
-	class XmlSettingsManager : public LeechCraft::Util::BaseSettingsManager
+	class XmlSettingsManager : public LC::Util::BaseSettingsManager
 	{
 		Q_OBJECT
 		XmlSettingsManager ();

@@ -36,7 +36,7 @@
 class QStandardItemModel;
 class QStandardItem;
 
-namespace LeechCraft
+namespace LC
 {
 enum class ActionsEmbedPlace;
 

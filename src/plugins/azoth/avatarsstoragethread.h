@@ -34,7 +34,7 @@
 #include "interfaces/azoth/ihaveavatars.h"
 #include "avatarsstorageondisk.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

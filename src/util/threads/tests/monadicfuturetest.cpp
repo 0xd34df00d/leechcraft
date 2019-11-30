@@ -32,9 +32,9 @@
 #include <monadicfuture.h>
 #include "common.h"
 
-QTEST_MAIN (LeechCraft::Util::MonadicFuturesTest)
+QTEST_MAIN (LC::Util::MonadicFuturesTest)
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

@@ -34,7 +34,7 @@
 template<typename T>
 class QList;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {
@@ -50,5 +50,5 @@ namespace Poshuku
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Poshuku::IWebPluginProvider,
+Q_DECLARE_INTERFACE (LC::Poshuku::IWebPluginProvider,
 	"org.LeechCraft.Poshuku.IWebPluginProvider/1.0")

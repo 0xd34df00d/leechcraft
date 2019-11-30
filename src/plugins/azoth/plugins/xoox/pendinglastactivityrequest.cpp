@@ -29,7 +29,7 @@
 
 #include "pendinglastactivityrequest.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

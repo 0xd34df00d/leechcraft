@@ -34,7 +34,7 @@
 #include <QByteArray>
 #include <util/models/rolenamesmixin.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blasq
 {

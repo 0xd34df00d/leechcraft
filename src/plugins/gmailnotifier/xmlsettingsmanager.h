@@ -31,7 +31,7 @@
 #define PLUGINS_GMAILNOTIFIER__XMLSETTINGSMANAGER_H
 #include <xmlsettingsdialog/basesettingsmanager.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace GmailNotifier
 {

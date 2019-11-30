@@ -32,7 +32,7 @@
 #include <QDialog>
 #include "ui_reloadintervalselector.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

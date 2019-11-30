@@ -32,7 +32,7 @@
 #include <QWizard>
 #include "newtorrentparams.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace BitTorrent
 {

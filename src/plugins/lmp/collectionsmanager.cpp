@@ -35,7 +35,7 @@
 #include "collectionsortermodel.h"
 #include "player.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

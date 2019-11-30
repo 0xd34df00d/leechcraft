@@ -32,7 +32,7 @@
 #include <QWidget>
 #include "ui_accregfirstpage.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

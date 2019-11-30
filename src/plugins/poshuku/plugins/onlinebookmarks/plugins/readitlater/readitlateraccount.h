@@ -35,7 +35,7 @@
 #include <interfaces/structures.h>
 #include <interfaces/iaccount.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {
@@ -47,7 +47,7 @@ class ReadItLaterAccount : public QObject
 							, public IAccount
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Poshuku::OnlineBookmarks::IAccount)
+		Q_INTERFACES (LC::Poshuku::OnlineBookmarks::IAccount)
 
 		QString Login_;
 		QString Password_;

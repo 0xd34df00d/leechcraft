@@ -15,10 +15,10 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="LeechCraft::Util::TagsLineEdit" name="CategoriesLineEdit_"/>
+    <widget class="LC::Util::TagsLineEdit" name="CategoriesLineEdit_"/>
    </item>
    <item>
-    <widget class="LeechCraft::Util::CategorySelector" name="GroupsSelector_" native="true"/>
+    <widget class="LC::Util::CategorySelector" name="GroupsSelector_" native="true"/>
    </item>
    <item>
     <spacer name="verticalSpacer">
@@ -47,12 +47,12 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>LeechCraft::Util::TagsLineEdit</class>
+   <class>LC::Util::TagsLineEdit</class>
    <extends>QLineEdit</extends>
    <header location="global">util/tags/tagslineedit.h</header>
   </customwidget>
   <customwidget>
-   <class>LeechCraft::Util::CategorySelector</class>
+   <class>LC::Util::CategorySelector</class>
    <extends>QWidget</extends>
    <header location="global">util/tags/categoryselector.h</header>
    <container>1</container>

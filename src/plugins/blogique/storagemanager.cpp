@@ -35,7 +35,7 @@
 #include <util/db/dblock.h>
 #include <util/sys/paths.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blogique
 {

@@ -36,7 +36,7 @@
 #include <sys/sysctl.h>
 #include <QtDebug>
 
-namespace LeechCraft
+namespace LC
 {
 namespace CpuLoad
 {

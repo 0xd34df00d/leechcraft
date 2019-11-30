@@ -33,7 +33,7 @@
 #include <QQuickItem>
 #include <util/sll/delayedexecutor.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace SB2
 {

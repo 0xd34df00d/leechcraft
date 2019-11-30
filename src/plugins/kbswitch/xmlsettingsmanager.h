@@ -31,12 +31,12 @@
 
 #include <xmlsettingsdialog/basesettingsmanager.h>
 
-namespace LeechCraft
+namespace LC
 {
 	namespace KBSwitch
 {
 	class XmlSettingsManager : public
-			LeechCraft::Util::BaseSettingsManager
+			LC::Util::BaseSettingsManager
 	{
 		Q_OBJECT
 

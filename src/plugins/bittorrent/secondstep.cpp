@@ -32,7 +32,7 @@
 #include "secondstep.h"
 #include "xmlsettingsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace BitTorrent
 {
@@ -68,7 +68,7 @@ namespace BitTorrent
 			QString path = files.at (i);
 			QTreeWidgetItem *item = new QTreeWidgetItem (FilesWidget_);
 			item->setText (0,
-					LeechCraft::Util::MakePrettySize (QFileInfo (path).size ()));
+					LC::Util::MakePrettySize (QFileInfo (path).size ()));
 			item->setText (1, path);
 		}
 	}

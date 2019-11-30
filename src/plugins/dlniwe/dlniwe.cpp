@@ -47,7 +47,7 @@
 #include "xmlsettingsmanager.h"
 #include "fspathsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace DLNiwe
 {
@@ -127,4 +127,4 @@ namespace DLNiwe
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_dlniwe, LeechCraft::DLNiwe::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_dlniwe, LC::DLNiwe::Plugin);

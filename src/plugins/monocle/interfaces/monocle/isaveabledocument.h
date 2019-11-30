@@ -31,7 +31,7 @@
 
 #include <QtPlugin>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {
@@ -97,5 +97,5 @@ namespace Monocle
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Monocle::ISaveableDocument,
+Q_DECLARE_INTERFACE (LC::Monocle::ISaveableDocument,
 		"org.LeechCraft.Monocle.ISaveableDocument/1.0")

@@ -33,7 +33,7 @@
 #include <QGridLayout>
 #include <QtDebug>
 
-namespace LeechCraft
+namespace LC
 {
 	bool ItemHandlerGroupbox::CanHandle (const QDomElement& element) const
 	{

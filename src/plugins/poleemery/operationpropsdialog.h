@@ -33,7 +33,7 @@
 #include "ui_operationpropsdialog.h"
 #include "structures.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poleemery
 {

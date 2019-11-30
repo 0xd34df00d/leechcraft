@@ -34,7 +34,7 @@
 
 class IWebFileStorage;
 
-namespace LeechCraft
+namespace LC
 {
 namespace DBusManager
 {

@@ -52,7 +52,7 @@
 #include "transfermanager.h"
 #include "appinfomanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

@@ -35,7 +35,7 @@
 class QStandardItem;
 class QSortFilterProxyModel;
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

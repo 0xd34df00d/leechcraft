@@ -32,7 +32,7 @@
 #include "packet.h"
 #include "headers.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

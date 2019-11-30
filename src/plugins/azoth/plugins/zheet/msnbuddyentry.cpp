@@ -40,7 +40,7 @@
 #include "groupmanager.h"
 #include "sbmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

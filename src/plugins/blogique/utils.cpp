@@ -29,7 +29,7 @@
 
 #include "utils.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blogique
 {

@@ -33,7 +33,7 @@
 #include <QObject>
 #include <QVariant>
 
-namespace LeechCraft
+namespace LC
 {
 class IHookProxy;
 typedef std::shared_ptr<IHookProxy> IHookProxy_ptr;

@@ -35,7 +35,7 @@
 #include <util/sys/paths.h>
 #include "kbctl.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace KBSwitch
 {

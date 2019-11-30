@@ -35,7 +35,7 @@
 
 class QSortFilterProxyModel;
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {
@@ -66,9 +66,9 @@ namespace LMP
 
 		void handleScanProgress (int);
 	signals:
-		void hookCollectionContextMenuRequested (LeechCraft::IHookProxy_ptr,
+		void hookCollectionContextMenuRequested (LC::IHookProxy_ptr,
 				QMenu*,
-				const LeechCraft::LMP::MediaInfo&);
+				const LC::LMP::MediaInfo&);
 	};
 }
 }

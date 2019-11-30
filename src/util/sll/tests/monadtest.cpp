@@ -32,9 +32,9 @@
 #include <monad.h>
 #include <typelist.h>
 
-QTEST_MAIN (LeechCraft::Util::MonadTest)
+QTEST_MAIN (LC::Util::MonadTest)
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

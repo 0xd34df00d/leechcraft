@@ -33,7 +33,7 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/iactionsexporter.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Dolozhee
 {
@@ -59,12 +59,12 @@ namespace Dolozhee
 		QString GetInfo () const;
 		QIcon GetIcon () const;
 
-		QList<QAction*> GetActions (LeechCraft::ActionsEmbedPlace area) const;
+		QList<QAction*> GetActions (LC::ActionsEmbedPlace area) const;
 	private slots:
 		void checkSavedReports ();
 		ReportWizard* initiateReporting ();
 	signals:
-		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
+		void gotActions (QList<QAction*>, LC::ActionsEmbedPlace);
 	};
 }
 }

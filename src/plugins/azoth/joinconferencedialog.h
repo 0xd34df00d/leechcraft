@@ -33,7 +33,7 @@
 #include "interfaces/azoth/iaccount.h"
 #include "ui_joinconferencedialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

@@ -33,7 +33,7 @@
 #include <interfaces/blogique/ibloggingplatform.h>
 #include "ui_accountconfigurationwidget.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blogique
 {

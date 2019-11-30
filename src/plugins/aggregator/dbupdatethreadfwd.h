@@ -31,7 +31,7 @@
 
 #include <util/threads/workerthreadbasefwd.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Aggregator
 {

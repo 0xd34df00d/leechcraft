@@ -34,7 +34,7 @@
 #include "ircparticipantentry.h"
 #include "localtypes.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

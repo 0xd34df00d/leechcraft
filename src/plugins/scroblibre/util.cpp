@@ -31,7 +31,7 @@
 #include <QUrl>
 #include <QtDebug>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Scroblibre
 {

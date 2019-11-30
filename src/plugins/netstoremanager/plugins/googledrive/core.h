@@ -33,7 +33,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/structures.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace NetStoreManager
 {
@@ -54,7 +54,7 @@ namespace GoogleDrive
 		void SetProxy (ICoreProxy_ptr proxy);
 		ICoreProxy_ptr GetProxy () const;
 
-		void SendEntity (const LeechCraft::Entity& e);
+		void SendEntity (const LC::Entity& e);
 	};
 }
 }

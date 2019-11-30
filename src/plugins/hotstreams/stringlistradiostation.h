@@ -33,7 +33,7 @@
 #include <QUrl>
 #include <interfaces/media/iradiostation.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace HotStreams
 {

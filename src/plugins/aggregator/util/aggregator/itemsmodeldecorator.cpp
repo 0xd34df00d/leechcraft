@@ -32,7 +32,7 @@
 #include <QModelIndex>
 #include <interfaces/aggregator/iitemsmodel.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Aggregator
 {

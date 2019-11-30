@@ -31,7 +31,7 @@
 #include <QApplication>
 #include <QStringList>
 
-using namespace LeechCraft;
+using namespace LC;
 
 Settings::Settings ()
 {

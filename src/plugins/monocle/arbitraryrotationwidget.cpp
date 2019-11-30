@@ -29,7 +29,7 @@
 
 #include "arbitraryrotationwidget.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {

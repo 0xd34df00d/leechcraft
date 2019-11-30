@@ -38,7 +38,7 @@
 #include "operationsmanager.h"
 #include "currenciesmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poleemery
 {

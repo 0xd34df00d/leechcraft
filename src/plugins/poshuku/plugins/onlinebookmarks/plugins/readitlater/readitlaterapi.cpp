@@ -34,7 +34,7 @@
 #include <util/sll/parsejson.h>
 #include <util/sll/serializejson.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

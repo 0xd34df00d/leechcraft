@@ -34,7 +34,7 @@
 #include <QTimer>
 #include <util/threads/futures.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {

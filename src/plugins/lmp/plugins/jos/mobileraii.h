@@ -34,7 +34,7 @@
 #include <QString>
 #include <libimobiledevice/libimobiledevice.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

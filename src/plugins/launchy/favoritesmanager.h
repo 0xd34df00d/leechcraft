@@ -32,7 +32,7 @@
 #include <QObject>
 #include <QSet>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Launchy
 {

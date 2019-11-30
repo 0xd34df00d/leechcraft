@@ -34,7 +34,7 @@
 #include <QDateTime>
 #include <QIcon>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {
@@ -85,7 +85,7 @@ namespace OnlineBookmarks
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Poshuku::OnlineBookmarks::IAccount,
+Q_DECLARE_INTERFACE (LC::Poshuku::OnlineBookmarks::IAccount,
 		"org.Deviant.LeechCraft.Poshuku.OnlineBookmarks.IAccount/1.0")
 
 #endif // PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_IACCOUNT_H

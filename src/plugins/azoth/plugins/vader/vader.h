@@ -38,7 +38,7 @@
 
 class QAction;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -55,7 +55,7 @@ namespace Vader
 					, public IProtocolPlugin
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveSettings IPlugin2 LeechCraft::Azoth::IProtocolPlugin)
+		Q_INTERFACES (IInfo IHaveSettings IPlugin2 LC::Azoth::IProtocolPlugin)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.Vader")
 
@@ -85,10 +85,10 @@ namespace Vader
 	public slots:
 		void initPlugin (QObject*);
 
-		void hookEntryActionAreasRequested (LeechCraft::IHookProxy_ptr proxy,
+		void hookEntryActionAreasRequested (LC::IHookProxy_ptr proxy,
 				QObject *action,
 				QObject *entry);
-		void hookEntryActionsRequested (LeechCraft::IHookProxy_ptr proxy,
+		void hookEntryActionsRequested (LC::IHookProxy_ptr proxy,
 				QObject *entry);
 		void entryServiceRequested ();
 	signals:

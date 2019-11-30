@@ -32,7 +32,7 @@
 #include <QStringList>
 #include <QDebug>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Eleeminator
 {
@@ -46,4 +46,4 @@ namespace Eleeminator
 }
 }
 
-QDebug operator<< (QDebug, const LeechCraft::Eleeminator::ProcessInfo&);
+QDebug operator<< (QDebug, const LC::Eleeminator::ProcessInfo&);

@@ -33,7 +33,7 @@
 #include "entitygeneratingpage.h"
 #include "ui_feedssettingsimportpage.h"
 
-namespace LeechCraft
+namespace LC
 {
 struct Entity;
 

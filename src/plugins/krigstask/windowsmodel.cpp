@@ -36,7 +36,7 @@
 
 #include <X11/extensions/Xcomposite.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Krigstask
 {

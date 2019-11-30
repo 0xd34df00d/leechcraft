@@ -38,7 +38,7 @@
 #include "authmanager.h"
 #include "consts.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

@@ -31,7 +31,7 @@
 
 #include <QNetworkRequest>
 
-namespace LeechCraft
+namespace LC
 {
 namespace MusicZombie
 {

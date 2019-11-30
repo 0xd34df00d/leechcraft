@@ -37,7 +37,7 @@ namespace Wt
 	class WServer;
 }
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

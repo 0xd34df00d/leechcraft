@@ -39,7 +39,7 @@
 #include "vkentry.h"
 #include "logger.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

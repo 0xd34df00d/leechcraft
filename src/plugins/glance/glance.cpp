@@ -40,7 +40,7 @@
 #include "core.h"
 #include "glanceshower.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Plugins
 {
@@ -138,4 +138,4 @@ namespace Glance
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_glance, LeechCraft::Plugins::Glance::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_glance, LC::Plugins::Glance::Plugin);

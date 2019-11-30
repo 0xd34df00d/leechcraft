@@ -31,9 +31,9 @@
 #include <QtTest>
 #include "util.h"
 
-QTEST_MAIN (LeechCraft::Util::ScopeGuardTest)
+QTEST_MAIN (LC::Util::ScopeGuardTest)
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

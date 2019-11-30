@@ -38,7 +38,7 @@
 class QTimer;
 class QNetworkAccessManager;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

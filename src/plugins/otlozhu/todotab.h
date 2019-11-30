@@ -33,7 +33,7 @@
 #include <interfaces/ihavetabs.h>
 #include "ui_todotab.h"
 
-namespace LeechCraft
+namespace LC
 {
 struct Entity;
 
@@ -79,7 +79,7 @@ namespace Otlozhu
 		void handleExport ();
 	signals:
 		void removeTab (QWidget*);
-		void gotEntity (const LeechCraft::Entity&);
+		void gotEntity (const LC::Entity&);
 	};
 }
 }

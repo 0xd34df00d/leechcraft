@@ -86,7 +86,7 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="LeechCraft::LMP::NowPlayingWidget" name="NPWidget_" native="true"/>
+            <widget class="LC::LMP::NowPlayingWidget" name="NPWidget_" native="true"/>
            </item>
           </layout>
          </widget>
@@ -96,7 +96,7 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="LeechCraft::LMP::CollectionWidget" name="CollectionWidget_" native="true"/>
+            <widget class="LC::LMP::CollectionWidget" name="CollectionWidget_" native="true"/>
            </item>
           </layout>
          </widget>
@@ -106,7 +106,7 @@
             <number>1</number>
            </property>
            <item>
-            <widget class="LeechCraft::LMP::PLManagerWidget" name="PLManagerWidget_" native="true"/>
+            <widget class="LC::LMP::PLManagerWidget" name="PLManagerWidget_" native="true"/>
            </item>
           </layout>
          </widget>
@@ -129,7 +129,7 @@
                 <number>1</number>
                </property>
                <item>
-                <widget class="LeechCraft::LMP::RecommendationsWidget" name="RecommendationsWidget_" native="true"/>
+                <widget class="LC::LMP::RecommendationsWidget" name="RecommendationsWidget_" native="true"/>
                </item>
               </layout>
              </widget>
@@ -142,7 +142,7 @@
                 <number>1</number>
                </property>
                <item>
-                <widget class="LeechCraft::LMP::EventsWidget" name="EventsWidget_" native="true"/>
+                <widget class="LC::LMP::EventsWidget" name="EventsWidget_" native="true"/>
                </item>
               </layout>
              </widget>
@@ -155,7 +155,7 @@
                 <number>1</number>
                </property>
                <item>
-                <widget class="LeechCraft::LMP::ReleasesWidget" name="ReleasesWidget_" native="true"/>
+                <widget class="LC::LMP::ReleasesWidget" name="ReleasesWidget_" native="true"/>
                </item>
               </layout>
              </widget>
@@ -168,7 +168,7 @@
                 <number>1</number>
                </property>
                <item>
-                <widget class="LeechCraft::LMP::HypesWidget" name="HypesWidget_" native="true"/>
+                <widget class="LC::LMP::HypesWidget" name="HypesWidget_" native="true"/>
                </item>
               </layout>
              </widget>
@@ -195,7 +195,7 @@
                 <number>1</number>
                </property>
                <item>
-                <widget class="LeechCraft::LMP::RadioWidget" name="RadioWidget_" native="true"/>
+                <widget class="LC::LMP::RadioWidget" name="RadioWidget_" native="true"/>
                </item>
               </layout>
              </widget>
@@ -208,7 +208,7 @@
                 <number>1</number>
                </property>
                <item>
-                <widget class="LeechCraft::LMP::CloudWidget" name="CloudWidget_" native="true"/>
+                <widget class="LC::LMP::CloudWidget" name="CloudWidget_" native="true"/>
                </item>
               </layout>
              </widget>
@@ -222,7 +222,7 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="LeechCraft::LMP::FSBrowserWidget" name="FSBrowser_" native="true"/>
+            <widget class="LC::LMP::FSBrowserWidget" name="FSBrowser_" native="true"/>
            </item>
           </layout>
          </widget>
@@ -232,7 +232,7 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="LeechCraft::LMP::DevicesBrowserWidget" name="DevicesBrowser_" native="true"/>
+            <widget class="LC::LMP::DevicesBrowserWidget" name="DevicesBrowser_" native="true"/>
            </item>
           </layout>
          </widget>
@@ -240,7 +240,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="LeechCraft::LMP::PlaylistWidget" name="Playlist_" native="true">
+     <widget class="LC::LMP::PlaylistWidget" name="Playlist_" native="true">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
         <horstretch>0</horstretch>
@@ -254,73 +254,73 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>LeechCraft::LMP::NowPlayingWidget</class>
+   <class>LC::LMP::NowPlayingWidget</class>
    <extends>QWidget</extends>
    <header>nowplayingwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>LeechCraft::LMP::FSBrowserWidget</class>
+   <class>LC::LMP::FSBrowserWidget</class>
    <extends>QWidget</extends>
    <header>fsbrowserwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>LeechCraft::LMP::RecommendationsWidget</class>
+   <class>LC::LMP::RecommendationsWidget</class>
    <extends>QWidget</extends>
    <header>recommendationswidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>LeechCraft::LMP::RadioWidget</class>
+   <class>LC::LMP::RadioWidget</class>
    <extends>QWidget</extends>
    <header>radiowidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>LeechCraft::LMP::ReleasesWidget</class>
+   <class>LC::LMP::ReleasesWidget</class>
    <extends>QWidget</extends>
    <header>releaseswidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>LeechCraft::LMP::DevicesBrowserWidget</class>
+   <class>LC::LMP::DevicesBrowserWidget</class>
    <extends>QWidget</extends>
    <header>sync/devicesbrowserwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>LeechCraft::LMP::PlaylistWidget</class>
+   <class>LC::LMP::PlaylistWidget</class>
    <extends>QWidget</extends>
    <header>playlistwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>LeechCraft::LMP::CloudWidget</class>
+   <class>LC::LMP::CloudWidget</class>
    <extends>QWidget</extends>
    <header>sync/cloudwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>LeechCraft::LMP::EventsWidget</class>
+   <class>LC::LMP::EventsWidget</class>
    <extends>QWidget</extends>
    <header>eventswidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>LeechCraft::LMP::PLManagerWidget</class>
+   <class>LC::LMP::PLManagerWidget</class>
    <extends>QWidget</extends>
    <header>plmanagerwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>LeechCraft::LMP::HypesWidget</class>
+   <class>LC::LMP::HypesWidget</class>
    <extends>QWidget</extends>
    <header>hypeswidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>LeechCraft::LMP::CollectionWidget</class>
+   <class>LC::LMP::CollectionWidget</class>
    <extends>QWidget</extends>
    <header>collectionwidget.h</header>
    <container>1</container>

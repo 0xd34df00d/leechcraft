@@ -38,7 +38,7 @@
 #include <util/sll/visitor.h>
 #include <util/sll/either.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace NetStoreManager
 {

@@ -39,7 +39,7 @@
 #include "bioviewmanager.h"
 #include "previewhandler.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

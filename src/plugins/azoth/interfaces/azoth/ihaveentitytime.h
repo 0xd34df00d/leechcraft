@@ -29,7 +29,7 @@
 
 #pragma once
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -58,5 +58,5 @@ namespace Azoth
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Azoth::IHaveEntityTime,
+Q_DECLARE_INTERFACE (LC::Azoth::IHaveEntityTime,
 		"org.Deviant.LeechCraft.Azoth.IHaveEntityTime/1.0")

@@ -30,7 +30,7 @@
 #include "hookproxywrapper.h"
 #include <interfaces/core/ihookproxy.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Qrosp
 {

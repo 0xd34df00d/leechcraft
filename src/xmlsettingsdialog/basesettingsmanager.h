@@ -44,7 +44,7 @@
 
 typedef std::shared_ptr<QSettings> Settings_ptr;
 
-namespace LeechCraft
+namespace LC
 {
 class SettingsThread;
 
@@ -70,7 +70,7 @@ namespace Util
 		bool IsInitializing_ = false;
 		bool CleanupScheduled_ = false;
 
-		friend class LeechCraft::SettingsThread;
+		friend class LC::SettingsThread;
 	protected:
 		bool ReadAllKeys_;
 	public:
@@ -218,4 +218,4 @@ namespace Util
 }
 }
 
-Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::Util::BaseSettingsManager::EventFlags)
+Q_DECLARE_OPERATORS_FOR_FLAGS (LC::Util::BaseSettingsManager::EventFlags)

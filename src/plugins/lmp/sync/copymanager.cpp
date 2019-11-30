@@ -29,7 +29,7 @@
 
 #include "copymanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

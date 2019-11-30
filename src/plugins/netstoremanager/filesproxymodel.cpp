@@ -31,7 +31,7 @@
 #include "interfaces/netstoremanager/isupportfilelistings.h"
 #include "managertab.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace NetStoreManager
 {

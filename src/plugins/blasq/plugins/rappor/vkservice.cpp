@@ -34,7 +34,7 @@
 #include <QtDebug>
 #include "vkaccount.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blasq
 {

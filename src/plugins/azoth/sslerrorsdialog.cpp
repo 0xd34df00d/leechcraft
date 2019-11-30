@@ -32,7 +32,7 @@
 #include <util/network/sslerror2treeitem.h>
 #include <util/sll/visitor.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

@@ -37,7 +37,7 @@
 #include "xmlsettingsmanager.h"
 #include "nickservidentifywidget.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -61,9 +61,9 @@ namespace Acetamide
 				Core::Instance ().GetNickServIdentifyWidget ());
 
 		connect (&Core::Instance (),
-				SIGNAL (gotEntity (const LeechCraft::Entity&)),
+				SIGNAL (gotEntity (const LC::Entity&)),
 				this,
-				SIGNAL (gotEntity (const LeechCraft::Entity&)));
+				SIGNAL (gotEntity (const LC::Entity&)));
 	}
 
 	void Plugin::SecondInit ()
@@ -149,4 +149,4 @@ QDataStream& operator>> (QDataStream& in, QList<QStringList>& list)
 }
 
 LC_EXPORT_PLUGIN (leechcraft_azoth_acetamide,
-		LeechCraft::Azoth::Acetamide::Plugin);
+		LC::Azoth::Acetamide::Plugin);

@@ -31,7 +31,7 @@
 #define PLUGINS_AZOTH_INTERFACES_ILASTACTIVITYPROVIDER_H
 #include <QMetaType>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -58,7 +58,7 @@ namespace Azoth
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Azoth::ILastActivityProvider,
+Q_DECLARE_INTERFACE (LC::Azoth::ILastActivityProvider,
 		"org.Deviant.LeechCraft.Azoth.ILastActivityProvider/1.0")
 
 #endif

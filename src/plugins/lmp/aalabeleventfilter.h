@@ -32,7 +32,7 @@
 #include <functional>
 #include <QObject>
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

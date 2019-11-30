@@ -38,7 +38,7 @@
 
 class QFileInfo;
 
-namespace LeechCraft
+namespace LC
 {
 namespace HttHare
 {
@@ -47,7 +47,7 @@ namespace HttHare
 
 	class RequestHandler
 	{
-		Q_DECLARE_TR_FUNCTIONS (LeechCraft::HttHare::RequestHandler)
+		Q_DECLARE_TR_FUNCTIONS (LC::HttHare::RequestHandler)
 
 		const Connection_ptr Conn_;
 

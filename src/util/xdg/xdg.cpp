@@ -31,7 +31,7 @@
 #include <QIcon>
 #include <QFile>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

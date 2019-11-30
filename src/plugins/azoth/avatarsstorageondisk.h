@@ -35,7 +35,7 @@
 #include <util/db/oral/oralfwd.h>
 #include "interfaces/azoth/ihaveavatars.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

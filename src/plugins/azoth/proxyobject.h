@@ -37,7 +37,7 @@
 #include <QRegExp>
 #include "interfaces/azoth/iproxyobject.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -61,7 +61,7 @@ namespace Azoth
 					  , public IProxyObject
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IProxyObject)
+		Q_INTERFACES (LC::Azoth::IProxyObject)
 
 		QHash<QString, AuthStatus> SerializedStr2AuthStatus_;
 

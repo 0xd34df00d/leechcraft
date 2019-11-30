@@ -37,7 +37,7 @@ namespace Wt
 	class WApplication;
 }
 
-namespace LeechCraft
+namespace LC
 {
 namespace Aggregator
 {

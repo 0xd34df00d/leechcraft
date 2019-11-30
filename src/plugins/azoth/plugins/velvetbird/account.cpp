@@ -37,7 +37,7 @@
 #include "buddy.h"
 #include "accountconfigdialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -233,7 +233,7 @@ namespace VelvetBird
 			QMetaObject::invokeMethod (this,
 					"handleAuthFailure",
 					Qt::QueuedConnection,
-					Q_ARG (LeechCraft::Azoth::EntryStatus, prevStatus));
+					Q_ARG (LC::Azoth::EntryStatus, prevStatus));
 	}
 
 	void Account::HandleConvLessMessage (PurpleConversation *conv,

@@ -42,7 +42,7 @@
 #include "historymanager.h"
 #include "plotmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace HotSensors
 {
@@ -109,4 +109,4 @@ namespace HotSensors
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_hotsensors, LeechCraft::HotSensors::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_hotsensors, LC::HotSensors::Plugin);

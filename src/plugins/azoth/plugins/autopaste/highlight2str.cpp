@@ -30,7 +30,7 @@
 #include "highlight2str.h"
 #include <QtDebug>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

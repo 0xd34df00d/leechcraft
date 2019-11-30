@@ -34,7 +34,7 @@ class QString;
 template<typename T>
 class QList;
 
-namespace LeechCraft
+namespace LC
 {
 	struct Entity;
 }
@@ -53,20 +53,20 @@ public:
 	/** @brief Returns all rules matching the \em category.
 	 *
 	 * The category can be either one of the predefined categories (like
-	 * LeechCraft::AN::CatIM) or empty, in which case all the rules are
+	 * LC::AN::CatIM) or empty, in which case all the rules are
 	 * returned.
 	 *
 	 * @param[in] category The category of the rules to return, or empty
 	 * for all rules.
 	 * @return The list of all rules matching the given \em category.
 	 */
-	virtual QList<LeechCraft::Entity> GetAllRules (const QString& category) const = 0;
+	virtual QList<LC::Entity> GetAllRules (const QString& category) const = 0;
 
 	/** @brief Requests opening the configuration of the given \em rule.
 	 *
 	 * @param[in] rule One of the rules returned from GetAllRules().
 	 */
-	virtual void RequestRuleConfiguration (const LeechCraft::Entity& rule) = 0;
+	virtual void RequestRuleConfiguration (const LC::Entity& rule) = 0;
 protected:
 	/** @brief Emitted when the rules change.
 	 *

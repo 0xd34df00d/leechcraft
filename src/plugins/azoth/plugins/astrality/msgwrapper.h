@@ -35,7 +35,7 @@
 #include <interfaces/structures.h>
 #include <interfaces/azoth/imessage.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -47,7 +47,7 @@ namespace Astrality
 					 , public IMessage
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IMessage);
+		Q_INTERFACES (LC::Azoth::IMessage);
 
 		Tp::ContactMessengerPtr Messenger_;
 		EntryWrapper *Entry_;
@@ -79,7 +79,7 @@ namespace Astrality
 	private slots:
 		void handleMessageSent (Tp::PendingOperation*);
 	signals:
-		void gotEntity (const LeechCraft::Entity&);
+		void gotEntity (const LC::Entity&);
 	};
 }
 }

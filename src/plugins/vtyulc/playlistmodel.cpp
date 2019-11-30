@@ -39,7 +39,7 @@
 #include <vlc/vlc.h>
 #include "playlistwidget.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace vlc
 {

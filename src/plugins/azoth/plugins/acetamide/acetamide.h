@@ -36,7 +36,7 @@
 #include <interfaces/iplugin2.h>
 #include <interfaces/azoth/iprotocolplugin.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -50,7 +50,7 @@ namespace Acetamide
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IHaveSettings IPlugin2
-				LeechCraft::Azoth::IProtocolPlugin)
+				LC::Azoth::IProtocolPlugin)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.Acetamide")
 
@@ -73,7 +73,7 @@ namespace Acetamide
 	public slots:
 		void initPlugin (QObject*);
 	signals:
-		void gotEntity (const LeechCraft::Entity&);
+		void gotEntity (const LC::Entity&);
 		void gotNewProtocols (const QList<QObject*>&);
 	};
 }

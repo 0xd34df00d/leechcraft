@@ -40,7 +40,7 @@
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -196,4 +196,4 @@ namespace SHX
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_azoth_shx, LeechCraft::Azoth::SHX::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_azoth_shx, LC::Azoth::SHX::Plugin);

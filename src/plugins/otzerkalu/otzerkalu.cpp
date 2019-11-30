@@ -35,7 +35,7 @@
 #include "otzerkaludialog.h"
 #include <interfaces/core/icoreproxy.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Otzerkalu
 {
@@ -130,4 +130,4 @@ namespace Otzerkalu
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_otzerkalu, LeechCraft::Otzerkalu::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_otzerkalu, LC::Otzerkalu::Plugin);

@@ -45,7 +45,7 @@
 #include "previewpage.h"
 #include "finalpage.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Dolozhee
 {

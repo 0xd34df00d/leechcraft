@@ -39,7 +39,7 @@
 #include "audiopropswidget.h"
 #include "xmlsettingsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

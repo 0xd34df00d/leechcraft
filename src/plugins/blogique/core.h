@@ -37,7 +37,7 @@
 
 class QTimer;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blogique
 {
@@ -112,7 +112,7 @@ namespace Blogique
 		void accountRemoved (QObject *account);
 		void accountValidated (QObject *account, bool validated);
 
-		void gotEntity (LeechCraft::Entity e);
+		void gotEntity (LC::Entity e);
 
 		void addNewTab (const QString& name, QWidget *tab);
 		void removeTab (QWidget *tab);

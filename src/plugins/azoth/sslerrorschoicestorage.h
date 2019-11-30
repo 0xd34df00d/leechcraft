@@ -34,7 +34,7 @@
 #include <QSslError>
 #include <util/db/oral/oralfwd.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

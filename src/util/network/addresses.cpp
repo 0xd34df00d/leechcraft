@@ -31,7 +31,7 @@
 #include <QHostAddress>
 #include <QNetworkInterface>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

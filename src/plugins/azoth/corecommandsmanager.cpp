@@ -35,7 +35,7 @@
 #include "chattabsmanager.h"
 #include "coremessage.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

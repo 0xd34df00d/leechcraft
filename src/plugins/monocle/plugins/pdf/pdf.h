@@ -37,7 +37,7 @@
 #include <interfaces/monocle/ibackendplugin.h>
 #include <interfaces/monocle/iknowfileextensions.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {
@@ -56,8 +56,8 @@ namespace PDF
 				IPlugin2
 				IHaveSettings
 				IHaveDiagInfo
-				LeechCraft::Monocle::IBackendPlugin
-				LeechCraft::Monocle::IKnowFileExtensions)
+				LC::Monocle::IBackendPlugin
+				LC::Monocle::IKnowFileExtensions)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Monocle.PDF")
 

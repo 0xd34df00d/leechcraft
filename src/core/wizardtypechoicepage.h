@@ -33,7 +33,7 @@
 #include "ui_wizardtypechoicepage.h"
 #include "startupwizard.h"
 
-namespace LeechCraft
+namespace LC
 {
 	class WizardTypeChoicePage : public QWizardPage
 	{

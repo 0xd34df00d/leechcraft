@@ -39,13 +39,13 @@
 #include <util/db/oral/oral.h>
 #include <util/sys/paths.h>
 
-BOOST_FUSION_ADAPT_STRUCT (LeechCraft::NamAuth::SQLStorageBackend::AuthRecord,
+BOOST_FUSION_ADAPT_STRUCT (LC::NamAuth::SQLStorageBackend::AuthRecord,
 		RealmName_,
 		Context_,
 		Login_,
 		Password_)
 
-namespace LeechCraft
+namespace LC
 {
 namespace NamAuth
 {

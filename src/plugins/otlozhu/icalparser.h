@@ -31,7 +31,7 @@
 
 #include "todoitem.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Otlozhu
 {

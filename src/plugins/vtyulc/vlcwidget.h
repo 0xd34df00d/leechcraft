@@ -49,7 +49,7 @@ class QSettings;
 class QDockWidget;
 class QStringList;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

@@ -34,7 +34,7 @@
 
 class QDBusInterface;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Loaders
 {

@@ -31,7 +31,7 @@
 #include <QStandardItemModel>
 #include "xmlsettingsmanager.h"
 #include <QtDebug>
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

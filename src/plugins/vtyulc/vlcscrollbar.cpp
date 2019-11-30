@@ -34,7 +34,7 @@
 #include <QPoint>
 #include "vlcscrollbar.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace vlc
 {

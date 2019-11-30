@@ -36,7 +36,7 @@
 #include <util/sll/slotclosure.h>
 #include "vkconnection.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

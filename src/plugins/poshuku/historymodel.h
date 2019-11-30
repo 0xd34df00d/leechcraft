@@ -39,7 +39,7 @@
 class QTimer;
 class QAction;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {
@@ -82,10 +82,10 @@ namespace Poshuku
 			* string and replace url, third element (if any) would
 			* be converted to QDateTime and replace the date.
 			*/
-		void hookAddingToHistory (LeechCraft::IHookProxy_ptr proxy,
+		void hookAddingToHistory (LC::IHookProxy_ptr proxy,
 				QString title, QString url, QDateTime date);
 	};
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::Poshuku::HistoryItem)
+Q_DECLARE_METATYPE (LC::Poshuku::HistoryItem)

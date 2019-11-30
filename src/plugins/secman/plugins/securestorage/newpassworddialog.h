@@ -32,7 +32,7 @@
 #include <QDialog>
 #include "ui_newpassworddialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace SecMan
 {

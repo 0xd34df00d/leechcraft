@@ -33,7 +33,7 @@
 #include <QMetaType>
 #include <QStringList>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -142,14 +142,14 @@ namespace Azoth
 		 * or null if not applicable. Must implement ICLEntr.
 		 * @param[out] message Optional reason message.
 		 */
-		virtual void riexItemsSuggested (QList<LeechCraft::Azoth::RIEXItem> items,
+		virtual void riexItemsSuggested (QList<LC::Azoth::RIEXItem> items,
 				QObject *from, QString message) = 0;
 	};
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Azoth::ISupportRIEX,
+Q_DECLARE_INTERFACE (LC::Azoth::ISupportRIEX,
 		"org.Deviant.LeechCraft.Azoth.ISupportRIEX/1.0")
-Q_DECLARE_METATYPE (LeechCraft::Azoth::RIEXItem)
+Q_DECLARE_METATYPE (LC::Azoth::RIEXItem)
 
 #endif

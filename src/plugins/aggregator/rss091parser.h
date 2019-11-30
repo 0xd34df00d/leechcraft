@@ -31,7 +31,7 @@
 
 #include "rssparser.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Aggregator
 {

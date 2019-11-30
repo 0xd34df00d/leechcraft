@@ -33,7 +33,7 @@
 #include "address.h"
 #include "attdescr.h"
 
-namespace LeechCraft::Snails
+namespace LC::Snails
 {
 	struct MessageInfo
 	{
@@ -57,4 +57,4 @@ namespace LeechCraft::Snails
 	};
 }
 
-Q_DECLARE_METATYPE (LeechCraft::Snails::MessageInfo)
+Q_DECLARE_METATYPE (LC::Snails::MessageInfo)

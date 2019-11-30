@@ -20,7 +20,7 @@
    <item>
     <layout class="QVBoxLayout" name="verticalLayout_3">
      <item>
-      <widget class="LeechCraft::Util::TagsLineEdit" name="HistoryFilterLine_"/>
+      <widget class="LC::Util::TagsLineEdit" name="HistoryFilterLine_"/>
      </item>
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout">
@@ -64,7 +64,7 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>LeechCraft::Util::TagsLineEdit</class>
+   <class>LC::Util::TagsLineEdit</class>
    <extends>QLineEdit</extends>
    <header location="global">util/tags/tagslineedit.h</header>
   </customwidget>

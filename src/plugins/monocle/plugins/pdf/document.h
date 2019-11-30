@@ -48,7 +48,7 @@ namespace Poppler
 	class Document;
 }
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {
@@ -69,16 +69,16 @@ namespace PDF
 				   , public ISaveableDocument
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Monocle::IDocument
-				LeechCraft::Monocle::IHaveTOC
-				LeechCraft::Monocle::IHaveTextContent
-				LeechCraft::Monocle::IHaveOptionalContent
-				LeechCraft::Monocle::IHaveFontInfo
-				LeechCraft::Monocle::ISupportAnnotations
-				LeechCraft::Monocle::ISupportForms
-				LeechCraft::Monocle::ISupportPainting
-				LeechCraft::Monocle::ISearchableDocument
-				LeechCraft::Monocle::ISaveableDocument)
+		Q_INTERFACES (LC::Monocle::IDocument
+				LC::Monocle::IHaveTOC
+				LC::Monocle::IHaveTextContent
+				LC::Monocle::IHaveOptionalContent
+				LC::Monocle::IHaveFontInfo
+				LC::Monocle::ISupportAnnotations
+				LC::Monocle::ISupportForms
+				LC::Monocle::ISupportPainting
+				LC::Monocle::ISearchableDocument
+				LC::Monocle::ISaveableDocument)
 
 		PDocument_ptr PDocument_;
 		TOCEntryLevel_t TOC_;

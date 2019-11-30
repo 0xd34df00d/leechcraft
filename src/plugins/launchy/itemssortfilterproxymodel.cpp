@@ -32,7 +32,7 @@
 #include <QTimer>
 #include "modelroles.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Launchy
 {

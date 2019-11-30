@@ -32,7 +32,7 @@
 #include <util/util.h>
 #include "vkservice.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blasq
 {
@@ -88,4 +88,4 @@ namespace Rappor
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_blasq_rappor, LeechCraft::Blasq::Rappor::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_blasq_rappor, LC::Blasq::Rappor::Plugin);

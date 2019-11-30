@@ -37,7 +37,7 @@
 #include <interfaces/ijobholder.h>
 #include <interfaces/ihaveshortcuts.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {
@@ -98,7 +98,7 @@ namespace Snails
 		QAbstractItemModel* GetRepresentation () const;
 
 		void SetShortcut (const QString& id, const QKeySequences_t& sequences);
-		QMap<QString, LeechCraft::ActionInfo> GetActionInfo () const;
+		QMap<QString, LC::ActionInfo> GetActionInfo () const;
 	private slots:
 		void handleNewTab (const QString& name, QWidget*);
 	signals:

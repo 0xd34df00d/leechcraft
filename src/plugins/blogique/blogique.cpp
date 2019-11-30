@@ -37,14 +37,14 @@
 #include "core.h"
 #include "xmlsettingsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blogique
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		qRegisterMetaType<LeechCraft::Blogique::CommentsWidget::CommentIDs_t> ("LeechCraft::Blogique::CommentIDs_t");
-		qRegisterMetaTypeStreamOperators<LeechCraft::Blogique::CommentsWidget::CommentIDs_t> ();
+		qRegisterMetaType<LC::Blogique::CommentsWidget::CommentIDs_t> ("LC::Blogique::CommentIDs_t");
+		qRegisterMetaTypeStreamOperators<LC::Blogique::CommentsWidget::CommentIDs_t> ();
 
 		Util::InstallTranslator ("blogique");
 		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog);
@@ -68,9 +68,9 @@ namespace Blogique
 		TabClasses_ << tabClass;
 
 		connect (&Core::Instance (),
-				SIGNAL (gotEntity (LeechCraft::Entity)),
+				SIGNAL (gotEntity (LC::Entity)),
 				this,
-				SIGNAL (gotEntity (LeechCraft::Entity)));
+				SIGNAL (gotEntity (LC::Entity)));
 		connect (&Core::Instance (),
 				SIGNAL (addNewTab (QString,QWidget*)),
 				this,
@@ -220,4 +220,4 @@ namespace Blogique
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_blogique, LeechCraft::Blogique::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_blogique, LC::Blogique::Plugin);

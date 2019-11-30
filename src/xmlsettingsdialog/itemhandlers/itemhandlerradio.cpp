@@ -35,7 +35,7 @@
 #include <QtDebug>
 #include "../radiogroup.h"
 
-namespace LeechCraft
+namespace LC
 {
 	bool ItemHandlerRadio::CanHandle (const QDomElement& element) const
 	{

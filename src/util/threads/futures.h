@@ -40,7 +40,7 @@
 #include "threadsconfig.h"
 #include "concurrentexception.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

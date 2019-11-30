@@ -38,7 +38,7 @@
 #include "infoproxy.h"
 #include "dbus/marshalling.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Loaders
 {

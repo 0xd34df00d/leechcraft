@@ -31,7 +31,7 @@
 #include <QCoreApplication>
 
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

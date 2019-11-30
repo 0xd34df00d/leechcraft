@@ -33,7 +33,7 @@
 #include <libtorrent/torrent_info.hpp>
 #include "ui_trackerschanger.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace BitTorrent
 {

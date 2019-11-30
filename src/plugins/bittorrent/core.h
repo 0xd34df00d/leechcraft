@@ -65,7 +65,7 @@ namespace libtorrent
 
 struct EntityTestHandleResult;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {
@@ -224,7 +224,7 @@ namespace BitTorrent
 
 		SessionSettingsManager* GetSessionSettingsManager () const;
 
-		EntityTestHandleResult CouldDownload (const LeechCraft::Entity&) const;
+		EntityTestHandleResult CouldDownload (const LC::Entity&) const;
 		PiecesModel* GetPiecesModel (int);
 		PeersModel* GetPeersModel (int);
 		QAbstractItemModel* GetWebSeedsModel (int);
@@ -269,7 +269,7 @@ namespace BitTorrent
 		QFuture<IDownload::Result> AddMagnet (const QString& magnet,
 				const QString& path,
 				const QStringList& tags,
-				LeechCraft::TaskParameters params = LeechCraft::NoParameters);
+				LC::TaskParameters params = LC::NoParameters);
 		/** @brief Adds the given torrent file from the filename to the
 			* queue.
 			*
@@ -290,7 +290,7 @@ namespace BitTorrent
 				const QStringList& tags,
 				bool tryLive,
 				const QVector<bool>& files = QVector<bool> (),
-				LeechCraft::TaskParameters params = LeechCraft::NoParameters);
+				LC::TaskParameters params = LC::NoParameters);
 		void RemoveTorrent (int, bool withFiles = false);
 		void PauseTorrent (int);
 		void ResumeTorrent (int);

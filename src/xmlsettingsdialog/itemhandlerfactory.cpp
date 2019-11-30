@@ -49,7 +49,7 @@
 #include "itemhandlers/itemhandlerlistview.h"
 #include "itemhandlers/itemhandlertreeview.h"
 
-namespace LeechCraft
+namespace LC
 {
 	ItemHandlerFactory::ItemHandlerFactory (Util::XmlSettingsDialog *xsd)
 	{

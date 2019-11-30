@@ -35,7 +35,7 @@
 #include <interfaces/lmp/iunmountablesync.h>
 #include <gpod/itdb.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

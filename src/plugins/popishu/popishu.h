@@ -38,7 +38,7 @@
 
 class QTranslator;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Popishu
 {

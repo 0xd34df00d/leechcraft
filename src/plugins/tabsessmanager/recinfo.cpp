@@ -29,7 +29,7 @@
 
 #include "recinfo.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace TabSessManager
 {

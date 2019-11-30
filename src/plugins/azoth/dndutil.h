@@ -37,7 +37,7 @@ class QList;
 class QMimeData;
 class QObject;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

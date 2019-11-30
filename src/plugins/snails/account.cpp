@@ -68,7 +68,7 @@
 Q_DECLARE_METATYPE (QList<QStringList>)
 Q_DECLARE_METATYPE (QList<QByteArray>)
 
-namespace LeechCraft
+namespace LC
 {
 namespace Snails
 {

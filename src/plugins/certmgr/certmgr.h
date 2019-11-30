@@ -35,7 +35,7 @@
 #include <interfaces/ihavesettings.h>
 #include "manager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace CertMgr
 {

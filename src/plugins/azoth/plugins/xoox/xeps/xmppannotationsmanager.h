@@ -32,7 +32,7 @@
 #include <QXmppClientExtension.h>
 #include "xmppannotationsiq.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

@@ -47,7 +47,7 @@ class QModelIndex;
 template<typename T>
 class QFuture;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Snails
 {
@@ -194,4 +194,4 @@ namespace Snails
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::Snails::Account_ptr)
+Q_DECLARE_METATYPE (LC::Snails::Account_ptr)

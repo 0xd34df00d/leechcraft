@@ -33,7 +33,7 @@
 #include <QFuture>
 #include <QtPlugin>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -116,5 +116,5 @@ namespace Azoth
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Azoth::IHaveAvatars,
+Q_DECLARE_INTERFACE (LC::Azoth::IHaveAvatars,
 		"org.LeechCraft.Azoth.IHaveAvatars/1.0")

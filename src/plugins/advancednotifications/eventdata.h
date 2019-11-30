@@ -33,7 +33,7 @@
 #include <QPixmap>
 #include <interfaces/structures.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace AdvancedNotifications
 {

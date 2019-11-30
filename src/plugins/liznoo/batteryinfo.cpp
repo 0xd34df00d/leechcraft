@@ -30,7 +30,7 @@
 #include "batteryinfo.h"
 #include <QtDebug>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Liznoo
 {

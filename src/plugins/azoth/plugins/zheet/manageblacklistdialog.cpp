@@ -31,7 +31,7 @@
 #include <QStandardItemModel>
 #include "msnaccount.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

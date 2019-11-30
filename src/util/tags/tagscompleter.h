@@ -32,7 +32,7 @@
 #include <QCompleter>
 #include "tagsconfig.h"
 
-namespace LeechCraft
+namespace LC
 {
 	class TagsManager;
 
@@ -60,7 +60,7 @@ namespace LeechCraft
 			Q_OBJECT
 
 			UTIL_TAGS_API static QAbstractItemModel *CompletionModel_;
-			friend class LeechCraft::TagsManager;
+			friend class LC::TagsManager;
 
 			TagsLineEdit *Edit_;
 		public:

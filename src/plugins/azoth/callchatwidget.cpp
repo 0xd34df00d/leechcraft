@@ -30,7 +30,7 @@
 #include "callchatwidget.h"
 #include <QTimer>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -52,9 +52,9 @@ namespace Azoth
 				SLOT (scheduleDelete ()));
 
 		connect (call,
-				SIGNAL (stateChanged (LeechCraft::Azoth::IMediaCall::State)),
+				SIGNAL (stateChanged (LC::Azoth::IMediaCall::State)),
 				this,
-				SLOT (handleStateChanged (LeechCraft::Azoth::IMediaCall::State)));
+				SLOT (handleStateChanged (LC::Azoth::IMediaCall::State)));
 	}
 
 	void CallChatWidget::handleStateChanged (IMediaCall::State state)

@@ -33,7 +33,7 @@
 
 class QWizardPage;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

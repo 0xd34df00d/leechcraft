@@ -34,7 +34,7 @@
 #include <util/sll/util.h>
 #include "xep0313manager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

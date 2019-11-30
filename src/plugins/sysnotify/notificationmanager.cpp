@@ -37,7 +37,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include "imagehint.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Sysnotify
 {

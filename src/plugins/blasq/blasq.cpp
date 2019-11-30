@@ -47,7 +47,7 @@
 #include "enumsproxy.h"
 #include "datafilteruploader.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blasq
 {
@@ -262,4 +262,4 @@ namespace Blasq
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_blasq, LeechCraft::Blasq::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_blasq, LC::Blasq::Plugin);

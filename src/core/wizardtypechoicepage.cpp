@@ -29,7 +29,7 @@
 
 #include "wizardtypechoicepage.h"
 
-namespace LeechCraft
+namespace LC
 {
 	WizardTypeChoicePage::WizardTypeChoicePage (QWidget *parent)
 	: QWizardPage (parent)

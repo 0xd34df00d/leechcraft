@@ -32,7 +32,7 @@
 #include <QStringList>
 #include <QtPlugin>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {
@@ -83,5 +83,5 @@ namespace Monocle
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Monocle::IKnowFileExtensions,
+Q_DECLARE_INTERFACE (LC::Monocle::IKnowFileExtensions,
 		"org.LeechCraft.Monocle.IKnowFileExtensions/1.0")

@@ -34,7 +34,7 @@
 #include "oraldetailfwd.h"
 #include "impldefs.h"
 
-namespace LeechCraft::Util::oral::detail::SQLite
+namespace LC::Util::oral::detail::SQLite
 {
 	using QSqlQuery_ptr = std::shared_ptr<QSqlQuery>;
 
@@ -91,7 +91,7 @@ namespace LeechCraft::Util::oral::detail::SQLite
 	};
 }
 
-namespace LeechCraft::Util::oral
+namespace LC::Util::oral
 {
 	using SQLiteImplFactory = detail::SQLite::ImplFactory;
 }

@@ -39,7 +39,7 @@
 class QWebHitTestResult;
 class QContextMenuEvent;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {
@@ -74,11 +74,11 @@ namespace DCAC
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 	public slots:
-		void hookBrowserWidgetInitialized (LeechCraft::IHookProxy_ptr proxy,
+		void hookBrowserWidgetInitialized (LC::IHookProxy_ptr proxy,
 				QObject *browserWidget);
-		void hookWebViewContextMenu (LeechCraft::IHookProxy_ptr proxy,
-				LeechCraft::Poshuku::IWebView *view,
-				const LeechCraft::Poshuku::ContextMenuInfo& info,
+		void hookWebViewContextMenu (LC::IHookProxy_ptr proxy,
+				LC::Poshuku::IWebView *view,
+				const LC::Poshuku::ContextMenuInfo& info,
 				QMenu *menu,
 				WebViewCtxMenuStage menuBuildStage);
 	};

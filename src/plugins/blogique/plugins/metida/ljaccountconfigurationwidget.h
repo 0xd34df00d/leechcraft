@@ -32,7 +32,7 @@
 #include <QWidget>
 #include "ui_ljaccountconfigurationwidget.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blogique
 {

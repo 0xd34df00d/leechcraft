@@ -38,7 +38,7 @@
 template<typename T>
 class QFutureWatcher;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {

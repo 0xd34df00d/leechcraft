@@ -33,7 +33,7 @@
 #include <QDataStream>
 #include <QUrlQuery>
 
-namespace LeechCraft::SeekThru
+namespace LC::SeekThru
 {
 	QDataStream& operator<< (QDataStream& out, const UrlDescription& d)
 	{

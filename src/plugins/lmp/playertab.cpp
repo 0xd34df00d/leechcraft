@@ -72,7 +72,7 @@
 #include "npstateupdater.h"
 #include "nptooltiphook.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

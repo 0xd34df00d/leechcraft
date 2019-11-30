@@ -34,7 +34,7 @@
 #include "interfaces/azoth/iaccount.h"
 #include "core.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

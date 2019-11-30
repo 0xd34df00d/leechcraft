@@ -38,7 +38,7 @@ class QDockWidget;
 class QAction;
 class QMainWindow;
 
-namespace LeechCraft
+namespace LC
 {
 	class MainWindow;
 	class DockManager;
@@ -70,9 +70,9 @@ namespace LeechCraft
 		void handleDockFloating (bool);
 		void handleActionToggled (bool);
 	signals:
-		void hookAddingDockAction (LeechCraft::IHookProxy_ptr, QMainWindow*, QAction*, Qt::DockWidgetArea);
-		void hookRemovingDockAction (LeechCraft::IHookProxy_ptr, QMainWindow*, QAction*, Qt::DockWidgetArea);
+		void hookAddingDockAction (LC::IHookProxy_ptr, QMainWindow*, QAction*, Qt::DockWidgetArea);
+		void hookRemovingDockAction (LC::IHookProxy_ptr, QMainWindow*, QAction*, Qt::DockWidgetArea);
 
-		void hookDockBarWillBeShown (LeechCraft::IHookProxy_ptr, QMainWindow*, QToolBar*, Qt::DockWidgetArea);
+		void hookDockBarWillBeShown (LC::IHookProxy_ptr, QMainWindow*, QToolBar*, Qt::DockWidgetArea);
 	};
 }

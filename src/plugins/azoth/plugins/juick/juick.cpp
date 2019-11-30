@@ -38,7 +38,7 @@
 #include <interfaces/azoth/iclentry.h>
 #include <util/util.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -202,7 +202,7 @@ namespace Juick
 			proxy->SetValue ("body", FormatBody (proxy->GetValue ("body").toString ()));
 	}
 
-	void Plugin::hookMessageWillCreated (LeechCraft::IHookProxy_ptr proxy,
+	void Plugin::hookMessageWillCreated (LC::IHookProxy_ptr proxy,
 			QObject *chatTab, QObject *entry, int, QString)
 	{
 		ICLEntry *other = qobject_cast<ICLEntry*> (entry);
@@ -366,4 +366,4 @@ namespace Juick
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_azoth_juick, LeechCraft::Azoth::Juick::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_azoth_juick, LC::Azoth::Juick::Plugin);

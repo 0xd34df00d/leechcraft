@@ -31,9 +31,9 @@
 #include <QtTest>
 #include "../colortemp.cpp"
 
-QTEST_APPLESS_MAIN (LeechCraft::Poshuku::DCAC::Temp2RgbTest)
+QTEST_APPLESS_MAIN (LC::Poshuku::DCAC::Temp2RgbTest)
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

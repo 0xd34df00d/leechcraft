@@ -45,7 +45,7 @@
 #include <interfaces/azoth/iextselfinfoaccount.h>
 #include "packproxymodel.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

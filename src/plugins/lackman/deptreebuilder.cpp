@@ -34,7 +34,7 @@
 #include <boost/graph/topological_sort.hpp>
 #include "core.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LackMan
 {

@@ -38,7 +38,7 @@ class QMenu;
 
 class ITagsManager;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Aggregator
 {

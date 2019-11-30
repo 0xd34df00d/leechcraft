@@ -35,7 +35,7 @@
 #include "engine/audiosource.h"
 #include "playlist.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

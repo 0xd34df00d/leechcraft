@@ -39,7 +39,7 @@ class QAction;
 
 class ITabWidget;
 
-namespace LeechCraft
+namespace LC
 {
 	class NewTabMenuManager : public QObject
 	{

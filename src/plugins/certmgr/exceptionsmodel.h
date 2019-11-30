@@ -33,7 +33,7 @@
 
 class QSettings;
 
-namespace LeechCraft
+namespace LC
 {
 namespace CertMgr
 {

@@ -36,7 +36,7 @@
 #include <util/sll/eitherfwd.h>
 #include <util/sll/void.h>
 
-namespace LeechCraft
+namespace LC
 {
 enum class ContentType;
 

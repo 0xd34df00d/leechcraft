@@ -32,7 +32,7 @@
 #include "clientconnection.h"
 #include "clientconnectionextensionsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

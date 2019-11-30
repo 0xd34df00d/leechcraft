@@ -32,7 +32,7 @@
 #include "xspf.h"
 #include "pls.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

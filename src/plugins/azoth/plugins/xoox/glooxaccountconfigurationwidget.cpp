@@ -30,7 +30,7 @@
 #include "glooxaccountconfigurationwidget.h"
 #include <QInputDialog>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

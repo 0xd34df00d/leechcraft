@@ -31,7 +31,7 @@
 #include <QDataStream>
 #include <QtDebug>
 
-namespace LeechCraft::Azoth::Abbrev
+namespace LC::Azoth::Abbrev
 {
 	QDataStream& operator<< (QDataStream& str, const Abbreviation& abbr)
 	{

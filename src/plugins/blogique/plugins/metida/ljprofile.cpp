@@ -40,7 +40,7 @@
 #include "profilewidget.h"
 #include "localstorage.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blogique
 {

@@ -42,7 +42,7 @@
 #include "accountwrapper.h"
 #include "protowrapper.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -143,13 +143,13 @@ namespace Astrality
 		for (const auto obj : wrappers)
 		{
 			connect (obj,
-					SIGNAL (gotEntity (LeechCraft::Entity)),
+					SIGNAL (gotEntity (LC::Entity)),
 					this,
-					SIGNAL (gotEntity (LeechCraft::Entity)));
+					SIGNAL (gotEntity (LC::Entity)));
 		}
 	}
 }
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_azoth_astrality, LeechCraft::Azoth::Astrality::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_azoth_astrality, LC::Azoth::Astrality::Plugin);

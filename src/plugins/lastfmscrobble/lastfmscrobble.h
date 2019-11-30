@@ -45,7 +45,7 @@
 class QStandardItem;
 class QStandardItemModel;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Lastfmscrobble
 {

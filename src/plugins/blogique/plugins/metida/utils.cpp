@@ -31,7 +31,7 @@
 #include <QMap>
 #include <QObject>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blogique
 {

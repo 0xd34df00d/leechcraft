@@ -31,7 +31,7 @@
 #define PLUGINS_POSHUKU_FILTERMODEL_H
 #include <util/tags/tagsfiltermodel.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

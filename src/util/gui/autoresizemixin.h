@@ -38,7 +38,7 @@
 class QWidget;
 class QWindow;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

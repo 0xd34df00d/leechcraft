@@ -29,7 +29,7 @@
 
 #include "backend.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace CpuLoad
 {

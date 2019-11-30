@@ -37,7 +37,7 @@
 #include <interfaces/ihaveshortcuts.h>
 #include <util/xdg/xdgfwd.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {
@@ -87,7 +87,7 @@ namespace Launchy
 	private slots:
 		void handleFSRequested ();
 	signals:
-		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace) override;
+		void gotActions (QList<QAction*>, LC::ActionsEmbedPlace) override;
 	};
 }
 }

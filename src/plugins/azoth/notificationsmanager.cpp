@@ -63,7 +63,7 @@
 #include "mooddialog.h"
 #include "avatarsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

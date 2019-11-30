@@ -36,7 +36,7 @@
 #include "backend.h"
 #include "cpuloadproxyobj.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace CpuLoad
 {

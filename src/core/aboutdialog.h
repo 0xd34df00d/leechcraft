@@ -32,7 +32,7 @@
 #include <QDialog>
 #include "ui_aboutdialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 	class AboutDialog : public QDialog
 	{

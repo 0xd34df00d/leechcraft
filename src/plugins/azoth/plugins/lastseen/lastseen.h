@@ -38,7 +38,7 @@
 
 class IPluginsManager;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -72,10 +72,10 @@ namespace LastSeen
 	private:
 		void Migrate (IPluginsManager*);
 	public slots:
-		void hookEntryStatusChanged (LeechCraft::IHookProxy_ptr proxy,
+		void hookEntryStatusChanged (LC::IHookProxy_ptr proxy,
 				QObject *entry,
 				QString variant);
-		void hookTooltipBeforeVariants (LeechCraft::IHookProxy_ptr proxy,
+		void hookTooltipBeforeVariants (LC::IHookProxy_ptr proxy,
 				QObject *entry);
 	};
 }

@@ -40,7 +40,7 @@ class QStandardItemModel;
 
 class QQuickWidget;
 
-namespace LeechCraft
+namespace LC
 {
 struct Entity;
 

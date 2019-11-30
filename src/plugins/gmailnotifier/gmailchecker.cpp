@@ -37,7 +37,7 @@
 #include <QtDebug>
 #include "xmlsettingsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace GmailNotifier
 {

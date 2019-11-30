@@ -36,7 +36,7 @@
 class QwtPlot;
 class QwtPlotCurve;
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

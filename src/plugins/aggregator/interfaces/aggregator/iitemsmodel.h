@@ -34,7 +34,7 @@
 
 class QModelIndex;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Aggregator
 {
@@ -56,5 +56,5 @@ namespace Aggregator
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Aggregator::IItemsModel,
+Q_DECLARE_INTERFACE (LC::Aggregator::IItemsModel,
 		"org.Deviant.LeechCraft.Aggregator.IItemsModel/1.0")

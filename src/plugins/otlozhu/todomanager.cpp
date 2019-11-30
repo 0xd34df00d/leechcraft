@@ -34,7 +34,7 @@
 #include "notificationsmanager.h"
 #include "core.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Otlozhu
 {
@@ -48,9 +48,9 @@ namespace Otlozhu
 		Model_->SetStorage (Storage_);
 
 		connect (NotifMgr_,
-				SIGNAL (gotEntity (LeechCraft::Entity)),
+				SIGNAL (gotEntity (LC::Entity)),
 				this,
-				SIGNAL (gotEntity (LeechCraft::Entity)));
+				SIGNAL (gotEntity (LC::Entity)));
 	}
 
 	TodoStorage* TodoManager::GetTodoStorage () const

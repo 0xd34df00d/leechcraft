@@ -34,7 +34,7 @@
 #include <interfaces/monocle/ihavetoc.h>
 #include <util/monocle/textdocumentadapter.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {
@@ -45,10 +45,10 @@ namespace FXB
 				   , public IHaveTOC
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Monocle::IDocument
-				LeechCraft::Monocle::IHaveTOC
-				LeechCraft::Monocle::ISearchableDocument
-				LeechCraft::Monocle::ISupportPainting)
+		Q_INTERFACES (LC::Monocle::IDocument
+				LC::Monocle::IHaveTOC
+				LC::Monocle::ISearchableDocument
+				LC::Monocle::ISupportPainting)
 
 		DocumentInfo Info_;
 		TOCEntryLevel_t TOC_;

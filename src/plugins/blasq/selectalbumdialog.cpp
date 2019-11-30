@@ -33,7 +33,7 @@
 #include "interfaces/blasq/iaccount.h"
 #include "interfaces/blasq/isupportuploads.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blasq
 {

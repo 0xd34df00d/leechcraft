@@ -39,7 +39,7 @@
 
 class QStandardItemModel;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {
@@ -80,7 +80,7 @@ namespace Fua
 		const QMap<QString, QString>& GetBackLookupMap () const;
 	public slots:
 		void initPlugin (QObject*);
-		void hookUserAgentForUrlRequested (LeechCraft::IHookProxy_ptr, const QUrl&);
+		void hookUserAgentForUrlRequested (LC::IHookProxy_ptr, const QUrl&);
 	};
 }
 }

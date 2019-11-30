@@ -33,7 +33,7 @@
 
 class QTextEdit;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

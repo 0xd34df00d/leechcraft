@@ -33,7 +33,7 @@
 #include <QObject>
 #include <interfaces/azoth/itransfermanager.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -45,7 +45,7 @@ namespace Sarin
 						   , public ITransferJob
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::ITransferJob)
+		Q_INTERFACES (LC::Azoth::ITransferJob)
 	protected:
 		const QString AzothId_;
 		const QByteArray PubKey_;

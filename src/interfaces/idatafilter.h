@@ -66,8 +66,8 @@ typedef std::function<void (QVariant)> DataFilterCallback_f;
  * IEntityHandler, considering (and accepting) entities with MIME
  * "x-leechcraft/data-filter-request". Such entities will contain the
  * entity to filter (like, a piece of text or an image) in the
- * LeechCraft::Entity::Entity_ field and may contain the "DataFilter"
- * key in the LeechCraft::Entity::Additional_ map with the ID of the
+ * LC::Entity::Entity_ field and may contain the "DataFilter"
+ * key in the LC::Entity::Additional_ map with the ID of the
  * exact filter variant to use (if user has already selected it).
  *
  * \section Data filter callbacks
@@ -75,7 +75,7 @@ typedef std::function<void (QVariant)> DataFilterCallback_f;
  * The result of the data filter, if any, can be passed to the plugin
  * emitting the entity. For this the emitting plugin shall set the
  * callback function as the value of the \em DataFilterCallback
- * LeechCraft::Entity::Additional_ map. The function is expected to be an
+ * LC::Entity::Additional_ map. The function is expected to be an
  * object of type ::DataFilterCallback_f.
  *
  * @note Not all data filter plugins support callbacks. For example, it
@@ -84,7 +84,7 @@ typedef std::function<void (QVariant)> DataFilterCallback_f;
  * to be sane enough, though, for the combination of the filtered entity
  * and callback semantics to make sense.
  *
- * @sa LeechCraft::Entity, IEntityHandler
+ * @sa LC::Entity, IEntityHandler
  * @sa DataFilterCallback_f
  */
 class Q_DECL_EXPORT IDataFilter

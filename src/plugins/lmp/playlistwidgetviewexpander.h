@@ -35,7 +35,7 @@
 class QAbstractItemModel;
 class QModelIndex;
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

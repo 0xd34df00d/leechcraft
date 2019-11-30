@@ -37,7 +37,7 @@
 class QStandardItemModel;
 class QSortFilterProxyModel;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -49,7 +49,7 @@ namespace Murm
 						, public IMUCJoinWidget
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IMUCJoinWidget)
+		Q_INTERFACES (LC::Azoth::IMUCJoinWidget)
 
 		Ui::MucJoinWidget Ui_;
 		QStandardItemModel *UsersModel_;

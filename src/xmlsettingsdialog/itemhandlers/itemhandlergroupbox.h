@@ -31,7 +31,7 @@
 
 #include "itemhandlerbooleangetvalue.h"
 
-namespace LeechCraft
+namespace LC
 {
 	class ItemHandlerGroupbox : public ItemHandlerBooleanGetValue
 	{

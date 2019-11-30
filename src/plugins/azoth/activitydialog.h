@@ -32,7 +32,7 @@
 #include <QDialog>
 #include "ui_activitydialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

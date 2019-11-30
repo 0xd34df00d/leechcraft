@@ -37,7 +37,7 @@
 #include <QDir>
 #include <interfaces/iscriptloader.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Aggregator
 {

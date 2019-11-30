@@ -38,7 +38,7 @@ class QDateTime;
 class QObject;
 class QWebView;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -48,18 +48,18 @@ namespace Azoth
 	public:
 		PluginManager (QObject* = 0);
 	signals:
-		void hookAddingCLEntryBegin (LeechCraft::IHookProxy_ptr proxy,
+		void hookAddingCLEntryBegin (LC::IHookProxy_ptr proxy,
 				QObject *entry);
-		void hookAddingCLEntryEnd (LeechCraft::IHookProxy_ptr proxy,
+		void hookAddingCLEntryEnd (LC::IHookProxy_ptr proxy,
 				QObject *entry);
-		void hookChatTabCreated (LeechCraft::IHookProxy_ptr proxy,
+		void hookChatTabCreated (LC::IHookProxy_ptr proxy,
 				QObject *chatTab,
 				QObject *entry,
 				QWebView *webView);
 
-		void hookCollectContactIcons (LeechCraft::IHookProxy_ptr, QObject*, QList<QIcon>&) const;
+		void hookCollectContactIcons (LC::IHookProxy_ptr, QObject*, QList<QIcon>&) const;
 
-		void hookDnDEntry2Entry (LeechCraft::IHookProxy_ptr proxy,
+		void hookDnDEntry2Entry (LC::IHookProxy_ptr proxy,
 				QObject *source,
 				QObject *target);
 
@@ -101,11 +101,11 @@ namespace Azoth
 		 *
 		 * @sa hookEntryActionsRequested()
 		 */
-		void hookEntryActionAreasRequested (LeechCraft::IHookProxy_ptr proxy,
+		void hookEntryActionAreasRequested (LC::IHookProxy_ptr proxy,
 				QObject *action,
 				QObject *entry);
 
-		void hookEntryActionsRemoved (LeechCraft::IHookProxy_ptr proxy,
+		void hookEntryActionsRemoved (LC::IHookProxy_ptr proxy,
 				QObject *entry);
 
 		/** @brief Hook for adding actions for contact list entries.
@@ -141,21 +141,21 @@ namespace Azoth
 		 *
 		 * @sa hookEntryActionAreasRequested()
 		 */
-		void hookEntryActionsRequested (LeechCraft::IHookProxy_ptr proxy,
+		void hookEntryActionsRequested (LC::IHookProxy_ptr proxy,
 				QObject *entry);
 
-		void hookEntryStatusChanged (LeechCraft::IHookProxy_ptr proxy,
+		void hookEntryStatusChanged (LC::IHookProxy_ptr proxy,
 				QObject *entry,
 				QString variant);
 
-		void hookGonnaAppendMsg (LeechCraft::IHookProxy_ptr proxy,
+		void hookGonnaAppendMsg (LC::IHookProxy_ptr proxy,
 				QObject *message);
 
-		void hookGonnaHandleSmiles (LeechCraft::IHookProxy_ptr proxy,
+		void hookGonnaHandleSmiles (LC::IHookProxy_ptr proxy,
 				QString body,
 				QString pack);
 
-		void hookGotAuthRequest (LeechCraft::IHookProxy_ptr proxy,
+		void hookGotAuthRequest (LC::IHookProxy_ptr proxy,
 				QObject *entry,
 				QString msg);
 
@@ -175,42 +175,42 @@ namespace Azoth
 		 * @param[out] proxy The proxy object.
 		 * @param[out] message The message object implementing IMessage.
 		 */
-		void hookGotMessage (LeechCraft::IHookProxy_ptr proxy,
+		void hookGotMessage (LC::IHookProxy_ptr proxy,
 				QObject *message);
-		void hookGotMessage2 (LeechCraft::IHookProxy_ptr proxy,
+		void hookGotMessage2 (LC::IHookProxy_ptr proxy,
 				QObject *message);
-		void hookFormatDateTime (LeechCraft::IHookProxy_ptr proxy,
+		void hookFormatDateTime (LC::IHookProxy_ptr proxy,
 				QObject *chatTab,
 				QDateTime dateTime,
 				QObject *message);
-		void hookFormatNickname (LeechCraft::IHookProxy_ptr proxy,
+		void hookFormatNickname (LC::IHookProxy_ptr proxy,
 				QObject *chatTab,
 				QString nick,
 				QObject *message);
-		void hookFormatBodyBegin (LeechCraft::IHookProxy_ptr proxy,
+		void hookFormatBodyBegin (LC::IHookProxy_ptr proxy,
 				QObject *message);
-		void hookFormatBodyEnd (LeechCraft::IHookProxy_ptr proxy,
+		void hookFormatBodyEnd (LC::IHookProxy_ptr proxy,
 				QObject *message);
-		void hookIsHighlightMessage (LeechCraft::IHookProxy_ptr proxy,
+		void hookIsHighlightMessage (LC::IHookProxy_ptr proxy,
 				QObject *message);
-		void hookMadeCurrent (LeechCraft::IHookProxy_ptr proxy,
+		void hookMadeCurrent (LC::IHookProxy_ptr proxy,
 				QObject *chatTab);
-		void hookMessageSendRequested (LeechCraft::IHookProxy_ptr proxy,
+		void hookMessageSendRequested (LC::IHookProxy_ptr proxy,
 				QObject *chatTab,
 				QObject *entry,
 				int type,
 				QString variant);
-		void hookMessageWillCreated (LeechCraft::IHookProxy_ptr proxy,
+		void hookMessageWillCreated (LC::IHookProxy_ptr proxy,
 				QObject *chatTab,
 				QObject *entry,
 				int type,
 				QString variant);
-		void hookMessageCreated (LeechCraft::IHookProxy_ptr proxy,
+		void hookMessageCreated (LC::IHookProxy_ptr proxy,
 				QObject *chatTab,
 				QObject *message);
-		void hookShouldCountUnread (LeechCraft::IHookProxy_ptr proxy,
+		void hookShouldCountUnread (LC::IHookProxy_ptr proxy,
 				QObject *message);
-		void hookThemeReloaded (LeechCraft::IHookProxy_ptr proxy,
+		void hookThemeReloaded (LC::IHookProxy_ptr proxy,
 				QObject *chatTab,
 				QWebView *view,
 				QObject *entry);
@@ -237,7 +237,7 @@ namespace Azoth
 		 *
 		 * @sa IHookProxy
 		 */
-		void hookTooltipBeforeVariants (LeechCraft::IHookProxy_ptr proxy,
+		void hookTooltipBeforeVariants (LC::IHookProxy_ptr proxy,
 				QObject *entry);
 	};
 }

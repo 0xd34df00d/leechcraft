@@ -37,7 +37,7 @@ class QString;
 
 using ChromaprintContext = struct ChromaprintContextPrivate;
 
-namespace LeechCraft
+namespace LC
 {
 namespace MusicZombie
 {

@@ -33,7 +33,7 @@
 #include <QString>
 #include "item.h"
 
-namespace LeechCraft::Aggregator::ItemUtils
+namespace LC::Aggregator::ItemUtils
 {
 	QSet<QString> GetCategories (const items_shorts_t& items);
 }

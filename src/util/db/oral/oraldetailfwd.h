@@ -31,7 +31,7 @@
 
 #include <boost/optional.hpp>
 
-namespace LeechCraft::Util::oral::detail
+namespace LC::Util::oral::detail
 {
 	struct CachedFieldsData
 	{

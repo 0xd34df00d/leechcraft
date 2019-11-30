@@ -29,7 +29,7 @@
 
 #include "cachedstatuskeeper.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace BitTorrent
 {

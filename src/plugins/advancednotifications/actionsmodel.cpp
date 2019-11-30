@@ -31,7 +31,7 @@
 #include <QAction>
 #include <QtDebug>
 
-namespace LeechCraft
+namespace LC
 {
 namespace AdvancedNotifications
 {

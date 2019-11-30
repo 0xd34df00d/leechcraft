@@ -38,7 +38,7 @@
 #include "fileattachpage.h"
 #include "chooseuserpage.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Dolozhee
 {

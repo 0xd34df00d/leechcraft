@@ -35,7 +35,7 @@
 #include <interfaces/an/ianemitter.h>
 #include "ui_matchconfigdialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 struct ANFieldData;
 

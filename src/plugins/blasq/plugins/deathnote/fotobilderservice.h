@@ -34,7 +34,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/structures.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blasq
 {
@@ -46,7 +46,7 @@ namespace DeathNote
 							, public IService
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Blasq::IService)
+		Q_INTERFACES (LC::Blasq::IService)
 
 		const ICoreProxy_ptr Proxy_;
 		QList<FotoBilderAccount*> Accounts_;

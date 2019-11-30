@@ -32,9 +32,9 @@
 #include <QtTest>
 #include "../invertcolors.cpp"
 
-QTEST_APPLESS_MAIN (LeechCraft::Poshuku::DCAC::InvertRgbTest)
+QTEST_APPLESS_MAIN (LC::Poshuku::DCAC::InvertRgbTest)
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

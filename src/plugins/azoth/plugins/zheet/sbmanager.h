@@ -40,7 +40,7 @@ namespace MSN
 	class SwitchboardServerConnection;
 }
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

@@ -31,7 +31,7 @@
 
 #include <QtGlobal>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -59,5 +59,5 @@ namespace Azoth
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Azoth::ISupportMood,
+Q_DECLARE_INTERFACE (LC::Azoth::ISupportMood,
 		"org.Deviant.LeechCraft.Azoth.ISupportMood/1.0")

@@ -37,7 +37,7 @@ inline uint qHash (const QStringList& list)
 	return qHash (list.join ("<|>"));
 }
 
-namespace LeechCraft
+namespace LC
 {
 namespace Snails
 {

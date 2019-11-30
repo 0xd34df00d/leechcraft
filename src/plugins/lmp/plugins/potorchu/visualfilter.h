@@ -39,7 +39,7 @@ typedef struct _GstBuffer GstBuffer;
 
 class projectM;
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

@@ -34,7 +34,7 @@
 class QString;
 class QRect;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {
@@ -73,5 +73,5 @@ namespace Monocle
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Monocle::IHaveTextContent,
+Q_DECLARE_INTERFACE (LC::Monocle::IHaveTextContent,
 		"org.LeechCraft.Monocle.IHaveTextContent/1.0")

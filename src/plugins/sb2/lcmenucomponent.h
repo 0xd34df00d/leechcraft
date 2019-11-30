@@ -33,7 +33,7 @@
 #include <interfaces/iquarkcomponentprovider.h>
 #include <interfaces/core/icoreproxy.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace SB2
 {

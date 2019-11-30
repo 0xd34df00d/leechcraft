@@ -36,7 +36,7 @@
 #include "util.h"
 #include "imagesfetcher.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Lastfmscrobble
 {

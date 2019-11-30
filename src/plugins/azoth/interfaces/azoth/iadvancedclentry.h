@@ -31,7 +31,7 @@
 #define PLUGINS_AZOTH_INTERFACES_IADVANCEDCLENTRY_H
 #include "imucbookmarkeditorwidget.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -119,7 +119,7 @@ namespace Azoth
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Azoth::IAdvancedCLEntry,
+Q_DECLARE_INTERFACE (LC::Azoth::IAdvancedCLEntry,
 		"org.Deviant.LeechCraft.Azoth.IAdvancedCLEntry/1.0")
 
 #endif

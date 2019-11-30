@@ -32,7 +32,7 @@
 #include <QObject>
 #include <vmime/net/events.hpp>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Snails
 {

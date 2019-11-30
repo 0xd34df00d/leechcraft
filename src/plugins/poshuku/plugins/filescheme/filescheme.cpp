@@ -35,7 +35,7 @@
 
 Q_DECLARE_METATYPE (QNetworkReply*);
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {
@@ -105,5 +105,5 @@ namespace FileScheme
 }
 
 LC_EXPORT_PLUGIN (leechcraft_poshuku_filescheme,
-		LeechCraft::Poshuku::FileScheme::FileScheme);
+		LC::Poshuku::FileScheme::FileScheme);
 

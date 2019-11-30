@@ -42,7 +42,7 @@ namespace Media
 	struct AlbumRelease;
 }
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

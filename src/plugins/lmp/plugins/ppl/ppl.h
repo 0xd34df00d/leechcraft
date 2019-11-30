@@ -35,7 +35,7 @@
 #include <interfaces/iactionsexporter.h>
 #include <interfaces/lmp/ilmpplugin.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {
@@ -51,7 +51,7 @@ namespace PPL
 		Q_INTERFACES (IInfo
 				IPlugin2
 				IActionsExporter
-				LeechCraft::LMP::ILMPPlugin)
+				LC::LMP::ILMPPlugin)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.LMP.PPL")
 
@@ -75,7 +75,7 @@ namespace PPL
 
 		void SetLMPProxy (ILMPProxy_ptr) override;
 	signals:
-		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace) override;
+		void gotActions (QList<QAction*>, LC::ActionsEmbedPlace) override;
 	};
 }
 }

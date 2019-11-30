@@ -45,7 +45,7 @@
 #include "mainwindowmenumanager.h"
 #include "xmlsettingsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 	DockManager::DockManager (RootWindowsManager *rootWM, QObject *parent)
 	: QObject (parent)

@@ -33,7 +33,7 @@
 #include <QTimer>
 #include <util/util.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace HttHare
 {

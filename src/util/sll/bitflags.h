@@ -31,7 +31,7 @@
 
 #include <type_traits>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {
@@ -83,11 +83,11 @@ namespace Util
 }
 
 #define DECLARE_BIT_FLAGS(F) \
-		inline LeechCraft::Util::BitFlags<F> operator& (F left, F right) \
+		inline LC::Util::BitFlags<F> operator& (F left, F right) \
 		{ \
-			return LeechCraft::Util::BitFlags<F> { left } & right; \
+			return LC::Util::BitFlags<F> { left } & right; \
 		} \
-		inline LeechCraft::Util::BitFlags<F> operator| (F left, F right) \
+		inline LC::Util::BitFlags<F> operator| (F left, F right) \
 		{ \
-			return LeechCraft::Util::BitFlags<F> { left } | right; \
+			return LC::Util::BitFlags<F> { left } | right; \
 		}

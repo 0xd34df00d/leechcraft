@@ -34,7 +34,7 @@
 #include "xmlsettingsmanager.h"
 #include "scripthandler.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

@@ -32,7 +32,7 @@
 #include "engine/output.h"
 #include "core.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

@@ -38,7 +38,7 @@
 #include "xmlsettingsmanager.h"
 #include "colorschemesmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Eleeminator
 {
@@ -166,4 +166,4 @@ namespace Eleeminator
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_eleeminator, LeechCraft::Eleeminator::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_eleeminator, LC::Eleeminator::Plugin);

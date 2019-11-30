@@ -35,7 +35,7 @@
 class QXmppBookmarkManager;
 class QXmppBookmarkSet;
 
-namespace LeechCraft::Azoth::Xoox
+namespace LC::Azoth::Xoox
 {
 	class ClientConnection;
 	class GlooxAccount;

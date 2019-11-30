@@ -33,7 +33,7 @@
 #include <QAction>
 #include "ui_tabwidget.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace
 {

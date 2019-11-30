@@ -40,7 +40,7 @@
 #include "settingstab.h"
 #include "coreproxy.h"
 
-namespace LeechCraft
+namespace LC
 {
 	namespace
 	{

@@ -48,7 +48,7 @@
 Q_DECLARE_METATYPE (GstMessage*);
 Q_DECLARE_METATYPE (GstMessage_ptr);
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

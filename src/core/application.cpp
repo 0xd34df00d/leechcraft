@@ -90,7 +90,7 @@
 
 namespace bpo = boost::program_options;
 
-namespace LeechCraft
+namespace LC
 {
 	Application::Application (int& argc, char **argv)
 	: QApplication (argc, argv)
@@ -174,15 +174,15 @@ namespace LeechCraft
 
 		qRegisterMetaType<QModelIndex> ("QModelIndex");
 		qRegisterMetaType<QModelIndex*> ("QModelIndexStar");
-		qRegisterMetaType<TagsManager::TagsDictionary_t> ("LeechCraft::TagsManager::TagsDictionary_t");
-		qRegisterMetaType<Util::QtException_ptr> ("LeechCraft::Util::QtException_ptr");
-		qRegisterMetaType<Entity> ("LeechCraft::Entity");
+		qRegisterMetaType<TagsManager::TagsDictionary_t> ("LC::TagsManager::TagsDictionary_t");
+		qRegisterMetaType<Util::QtException_ptr> ("LC::Util::QtException_ptr");
+		qRegisterMetaType<Entity> ("LC::Entity");
 		qRegisterMetaType<Entity> ("Entity");
-		qRegisterMetaType<IHookProxy_ptr> ("LeechCraft::IHookProxy_ptr");
+		qRegisterMetaType<IHookProxy_ptr> ("LC::IHookProxy_ptr");
 		qRegisterMetaType<QKeySequences_t> ("QKeySequences_t");
 		qRegisterMetaTypeStreamOperators<QKeySequences_t> ("QKeySequences_t");
-		qRegisterMetaTypeStreamOperators<TagsManager::TagsDictionary_t> ("LeechCraft::TagsManager::TagsDictionary_t");
-		qRegisterMetaTypeStreamOperators<Entity> ("LeechCraft::Entity");
+		qRegisterMetaTypeStreamOperators<TagsManager::TagsDictionary_t> ("LC::TagsManager::TagsDictionary_t");
+		qRegisterMetaTypeStreamOperators<Entity> ("LC::Entity");
 
 		qmlRegisterType<Util::ToolTipItem> ("org.LC.common", 1, 0, "ToolTip");
 

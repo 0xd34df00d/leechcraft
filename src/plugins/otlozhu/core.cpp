@@ -37,7 +37,7 @@
 #include "todomanager.h"
 #include "todostorage.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Otlozhu
 {
@@ -48,9 +48,9 @@ namespace Otlozhu
 #endif
 	{
 		connect (TodoManager_,
-				SIGNAL (gotEntity (LeechCraft::Entity)),
+				SIGNAL (gotEntity (LC::Entity)),
 				this,
-				SIGNAL (gotEntity (LeechCraft::Entity)));
+				SIGNAL (gotEntity (LC::Entity)));
 
 #ifndef DISABLE_SYNC
 		auto stagerHandler = new StagerHandler (this);

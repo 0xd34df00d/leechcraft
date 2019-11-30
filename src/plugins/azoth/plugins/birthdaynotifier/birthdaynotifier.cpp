@@ -43,7 +43,7 @@
 #include <interfaces/azoth/iextselfinfoaccount.h>
 #include "xmlsettingsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -241,4 +241,4 @@ namespace BirthdayNotifier
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_azoth_birthdaynotifier, LeechCraft::Azoth::BirthdayNotifier::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_azoth_birthdaynotifier, LC::Azoth::BirthdayNotifier::Plugin);

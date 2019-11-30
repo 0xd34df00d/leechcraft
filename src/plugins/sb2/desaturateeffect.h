@@ -31,7 +31,7 @@
 
 #include <QGraphicsEffect>
 
-namespace LeechCraft
+namespace LC
 {
 namespace SB2
 {

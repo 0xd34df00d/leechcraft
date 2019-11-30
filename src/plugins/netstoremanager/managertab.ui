@@ -18,7 +18,7 @@
     <number>1</number>
    </property>
    <item row="1" column="0">
-    <widget class="LeechCraft::NetStoreManager::FilesView" name="FilesView_">
+    <widget class="LC::NetStoreManager::FilesView" name="FilesView_">
      <property name="contextMenuPolicy">
       <enum>Qt::ActionsContextMenu</enum>
      </property>
@@ -50,7 +50,7 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>LeechCraft::NetStoreManager::FilesView</class>
+   <class>LC::NetStoreManager::FilesView</class>
    <extends>QTreeView</extends>
    <header>filesview.h</header>
   </customwidget>

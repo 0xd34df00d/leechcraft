@@ -48,7 +48,7 @@ uint qHash (const QDomNode& node)
 	return (node.lineNumber () << 24) + node.columnNumber ();
 }
 
-namespace LeechCraft
+namespace LC
 {
 namespace Aggregator
 {

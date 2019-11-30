@@ -35,7 +35,7 @@
 #include "accountsettingsholder.h"
 #include "clientconnection.h"
 
-namespace LeechCraft::Azoth::Xoox
+namespace LC::Azoth::Xoox
 {
 	ClientLoggerManager::ClientLoggerManager (QXmppClient& client, AccountSettingsHolder& settings, QObject *parent)
 	: QObject { parent }

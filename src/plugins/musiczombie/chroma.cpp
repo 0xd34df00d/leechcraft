@@ -46,7 +46,7 @@ extern "C"
 
 #include <chromaprint.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace MusicZombie
 {

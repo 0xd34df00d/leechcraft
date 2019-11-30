@@ -37,7 +37,7 @@ namespace Media
 	struct AudioInfo;
 }
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

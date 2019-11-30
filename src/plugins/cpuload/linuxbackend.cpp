@@ -32,7 +32,7 @@
 #include <QFile>
 #include <QtDebug>
 
-namespace LeechCraft
+namespace LC
 {
 namespace CpuLoad
 {

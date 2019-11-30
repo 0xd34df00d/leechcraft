@@ -31,7 +31,7 @@
 
 #include "itemhandlernovalue.h"
 
-namespace LeechCraft
+namespace LC
 {
 	class ItemHandlerCustomWidget : public ItemHandlerNoValue
 	{

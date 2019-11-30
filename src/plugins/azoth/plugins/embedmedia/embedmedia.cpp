@@ -38,7 +38,7 @@
 #include <QWebPage>
 
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -98,7 +98,7 @@ namespace EmbedMedia
 		return result;
 	}
 
-	void Plugin::hookChatTabCreated (LeechCraft::IHookProxy_ptr,
+	void Plugin::hookChatTabCreated (LC::IHookProxy_ptr,
 			QObject*, QObject*, QWebView *webView)
 	{
 		const auto frame = webView->page ()->mainFrame ();
@@ -111,4 +111,4 @@ namespace EmbedMedia
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_azoth_embedmedia, LeechCraft::Azoth::EmbedMedia::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_azoth_embedmedia, LC::Azoth::EmbedMedia::Plugin);

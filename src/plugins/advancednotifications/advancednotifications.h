@@ -40,7 +40,7 @@
 #include <interfaces/ipluginready.h>
 #include <interfaces/an/ianrulesstorage.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace AdvancedNotifications
 {
@@ -100,7 +100,7 @@ namespace AdvancedNotifications
 		QList<Entity> GetAllRules (const QString&) const;
 		void RequestRuleConfiguration (const Entity&);
 	signals:
-		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
+		void gotActions (QList<QAction*>, LC::ActionsEmbedPlace);
 
 		void rulesChanged ();
 	};

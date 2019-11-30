@@ -31,7 +31,7 @@
 #include "../common/dbusthread.h"
 #include "../upower/upowerconnector.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Liznoo
 {

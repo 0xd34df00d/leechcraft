@@ -35,7 +35,7 @@
 #include <QScriptEngine>
 #include "settings.h"
 
-namespace LeechCraft
+namespace LC
 {
 	class Scripter
 	{

@@ -34,7 +34,7 @@
 #include "core.h"
 #include "operationsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poleemery
 {

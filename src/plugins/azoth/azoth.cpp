@@ -72,7 +72,7 @@
 #include "actionsmanager.h"
 #include "resourcesmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -518,9 +518,9 @@ namespace Azoth
 	void Plugin::InitSignals ()
 	{
 		connect (&Core::Instance (),
-				SIGNAL (gotEntity (const LeechCraft::Entity&)),
+				SIGNAL (gotEntity (const LC::Entity&)),
 				this,
-				SIGNAL (gotEntity (const LeechCraft::Entity&)));
+				SIGNAL (gotEntity (const LC::Entity&)));
 		connect (&Core::Instance (),
 				SIGNAL (gotSDWidget (ServiceDiscoveryWidget*)),
 				this,
@@ -713,4 +713,4 @@ namespace Azoth
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_azoth, LeechCraft::Azoth::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_azoth, LC::Azoth::Plugin);

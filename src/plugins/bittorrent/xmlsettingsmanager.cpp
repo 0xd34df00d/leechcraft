@@ -31,7 +31,7 @@
 #include <QSettings>
 #include <QCoreApplication>
 
-namespace LeechCraft
+namespace LC
 {
 namespace BitTorrent
 {

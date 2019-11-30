@@ -35,7 +35,7 @@
 #include <interfaces/core/ientitymanager.h>
 #include "mailwebpagenam.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Snails
 {

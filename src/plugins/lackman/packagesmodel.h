@@ -32,7 +32,7 @@
 #include <QAbstractItemModel>
 #include "repoinfo.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LackMan
 {

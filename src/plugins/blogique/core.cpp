@@ -46,7 +46,7 @@
 #include "blogiquewidget.h"
 #include "xmlsettingsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blogique
 {

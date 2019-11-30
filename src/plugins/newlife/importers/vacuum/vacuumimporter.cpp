@@ -30,7 +30,7 @@
 #include "vacuumimporter.h"
 #include "vacuumimportpage.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace NewLife
 {

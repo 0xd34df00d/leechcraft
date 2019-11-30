@@ -32,7 +32,7 @@
 #include <QDialog>
 #include "ui_choosebackenddialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {

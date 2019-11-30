@@ -43,7 +43,7 @@ class QComboBox;
 class QProgressBar;
 class QQuickWidget;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blogique
 {

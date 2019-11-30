@@ -31,7 +31,7 @@
 #include <QStringList>
 #include <QtDebug>
 
-namespace LeechCraft
+namespace LC
 {
 namespace LackMan
 {

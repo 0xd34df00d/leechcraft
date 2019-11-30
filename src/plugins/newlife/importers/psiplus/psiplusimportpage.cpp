@@ -39,7 +39,7 @@
 #include "importwizard.h"
 #include "imhistimporterbase.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace NewLife
 {

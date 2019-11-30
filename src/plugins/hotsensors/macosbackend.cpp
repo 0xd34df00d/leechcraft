@@ -34,7 +34,7 @@
 #include <QtDebug>
 #include <IOKit/IOKitLib.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace HotSensors
 {

@@ -37,7 +37,7 @@
 #include <util/db/oral/oral.h>
 #include <util/db/oral/migrate.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -57,12 +57,12 @@ namespace Azoth
 }
 }
 
-BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Azoth::SslErrorsChoiceStorage::Record,
+BOOST_FUSION_ADAPT_STRUCT (LC::Azoth::SslErrorsChoiceStorage::Record,
 		AccountID_,
 		Error_,
 		Action_)
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

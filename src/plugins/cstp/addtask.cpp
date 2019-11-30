@@ -35,7 +35,7 @@
 #include <QFileDialog>
 #include "xmlsettingsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace CSTP
 {

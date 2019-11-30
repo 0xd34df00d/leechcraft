@@ -48,7 +48,7 @@
 #include "arbitraryrotationwidget.h"
 #include "pageslayoutmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {

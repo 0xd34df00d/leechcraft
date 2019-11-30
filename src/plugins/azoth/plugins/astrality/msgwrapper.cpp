@@ -32,7 +32,7 @@
 #include <util/xpc/util.h>
 #include "entrywrapper.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -64,9 +64,9 @@ namespace Astrality
 	, MST_ (mst)
 	{
 		connect (this,
-				SIGNAL (gotEntity (LeechCraft::Entity)),
+				SIGNAL (gotEntity (LC::Entity)),
 				Entry_,
-				SIGNAL (gotEntity (LeechCraft::Entity)));
+				SIGNAL (gotEntity (LC::Entity)));
 	}
 
 	QObject* MsgWrapper::GetQObject ()

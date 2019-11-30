@@ -39,7 +39,7 @@
 
 Q_DECLARE_METATYPE (QVariantList*);
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

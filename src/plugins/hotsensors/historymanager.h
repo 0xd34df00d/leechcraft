@@ -33,7 +33,7 @@
 #include <QHash>
 #include "structures.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace HotSensors
 {

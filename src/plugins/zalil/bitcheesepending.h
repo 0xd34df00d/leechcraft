@@ -31,7 +31,7 @@
 
 #include "pendinguploadbase.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Zalil
 {

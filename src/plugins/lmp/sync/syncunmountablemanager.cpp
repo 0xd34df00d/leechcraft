@@ -33,7 +33,7 @@
 #include "localcollection.h"
 #include "localcollectionmodel.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

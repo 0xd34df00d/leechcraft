@@ -32,7 +32,7 @@
 #include <QMetaType>
 #include "ilink.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {
@@ -87,5 +87,5 @@ namespace Monocle
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Monocle::IHaveTOC,
+Q_DECLARE_INTERFACE (LC::Monocle::IHaveTOC,
 		"org.LeechCraft.Monocle.IHaveTOC/1.0")

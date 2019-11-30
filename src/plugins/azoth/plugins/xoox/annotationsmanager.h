@@ -33,7 +33,7 @@
 #include <QHash>
 #include "xeps/xmppannotationsiq.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

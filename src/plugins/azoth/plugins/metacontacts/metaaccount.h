@@ -32,7 +32,7 @@
 #include <QObject>
 #include <interfaces/azoth/iaccount.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -44,7 +44,7 @@ namespace Metacontacts
 					  , public IAccount
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IAccount)
+		Q_INTERFACES (LC::Azoth::IAccount)
 
 		MetaProtocol *Parent_;
 	public:

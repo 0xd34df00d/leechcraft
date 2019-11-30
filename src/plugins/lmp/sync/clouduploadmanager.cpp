@@ -35,7 +35,7 @@
 #include <interfaces/lmp/icloudstorageplugin.h>
 #include "clouduploader.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

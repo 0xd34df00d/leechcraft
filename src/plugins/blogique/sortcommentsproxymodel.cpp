@@ -32,7 +32,7 @@
 #include <QtDebug>
 #include "commentswidget.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blogique
 {

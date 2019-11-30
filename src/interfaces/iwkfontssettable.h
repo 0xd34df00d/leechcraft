@@ -37,7 +37,7 @@ class QFont;
  * fonts configuration to the user.
  *
  * The tabs implementing this interface should just be registered with an
- * instance of LeechCraft::Util::WkFontsWidget, which will take care of
+ * instance of LC::Util::WkFontsWidget, which will take care of
  * the rest.
  *
  * @sa ITabWidget

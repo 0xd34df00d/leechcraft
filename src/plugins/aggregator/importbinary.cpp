@@ -37,7 +37,7 @@
 #include <QTimer>
 #include <QtDebug>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Aggregator
 {
@@ -154,7 +154,7 @@ namespace Aggregator
 			QMessageBox::warning (this,
 					tr ("LeechCraft"),
 					tr ("Selected file %1 is not a valid "
-						"LeechCraft::Aggregator exchange file.")
+						"LC::Aggregator exchange file.")
 					.arg (filename));
 			return false;
 		}
@@ -166,7 +166,7 @@ namespace Aggregator
 		{
 			QMessageBox::warning (this,
 					tr ("LeechCraft"),
-					tr ("Selected file %1 is a valid LeechCraft::Aggregator "
+					tr ("Selected file %1 is a valid LC::Aggregator "
 						"exchange file, but its version %2 is unknown")
 					.arg (filename)
 					.arg (version));

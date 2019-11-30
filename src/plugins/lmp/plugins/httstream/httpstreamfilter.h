@@ -38,7 +38,7 @@ typedef struct _GstPad GstPad;
 typedef struct _GstMessage GstMessage;
 typedef struct _GstPadTemplate GstPadTemplate;
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

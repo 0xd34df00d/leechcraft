@@ -39,7 +39,7 @@
 #include <interfaces/azoth/imessage.h>
 #include "xmlsettingsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -144,4 +144,4 @@ namespace HiLi
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_azoth_hili, LeechCraft::Azoth::HiLi::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_azoth_hili, LC::Azoth::HiLi::Plugin);

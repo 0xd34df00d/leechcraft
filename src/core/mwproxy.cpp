@@ -34,7 +34,7 @@
 #include "mainwindow.h"
 #include "dockmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 	MWProxy::MWProxy (MainWindow *win, QObject *parent)
 	: QObject (parent)

@@ -33,7 +33,7 @@
 
 class QWidget;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -137,9 +137,9 @@ namespace Azoth
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Azoth::IMUCConfigWidget,
+Q_DECLARE_INTERFACE (LC::Azoth::IMUCConfigWidget,
 		"org.Deviant.LeechCraft.Azoth.IMUCConfigWidget/1.0")
-Q_DECLARE_INTERFACE (LeechCraft::Azoth::IConfigurableMUC,
+Q_DECLARE_INTERFACE (LC::Azoth::IConfigurableMUC,
 		"org.Deviant.LeechCraft.Azoth.IConfigurableMUC/1.0")
 
 #endif

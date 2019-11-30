@@ -33,7 +33,7 @@
 
 class QColor;
 
-namespace LeechCraft
+namespace LC
 {
 namespace vlc
 {

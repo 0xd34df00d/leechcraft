@@ -41,7 +41,7 @@
 
 class QTranslator;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Qrosp
 {
@@ -90,8 +90,8 @@ namespace Qrosp
 		void SetProvider (QObject*, const QString&);
 
 		// IEntityHandler
-		EntityTestHandleResult CouldHandle (const LeechCraft::Entity&) const;
-		void Handle (LeechCraft::Entity);
+		EntityTestHandleResult CouldHandle (const LC::Entity&) const;
+		void Handle (LC::Entity);
 
 		// IJobHolder
 		QAbstractItemModel* GetRepresentation () const;
@@ -113,7 +113,7 @@ namespace Qrosp
 		void changeTabIcon (QWidget*, const QIcon&);
 		void statusBarChanged (QWidget*, const QString&);
 		void raiseTab (QWidget*);
-		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
+		void gotActions (QList<QAction*>, LC::ActionsEmbedPlace);
 	private:
 		template<typename T>
 		struct Call

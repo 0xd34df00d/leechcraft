@@ -37,7 +37,7 @@
 #include "util.h"
 #include "threadexceptions.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

@@ -40,7 +40,7 @@
 #include "core.h"
 #include "torrentfilesmodel.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace BitTorrent
 {

@@ -34,7 +34,7 @@
 #include <QtDebug>
 #include <interfaces/azoth/imessage.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -58,7 +58,7 @@ namespace AzothUtil
 	 * date.
 	 *
 	 * This function is a standard implementation to be used in
-	 * LeechCraft::Azoth::ICLEntry::PurgeMessages() implementations. It
+	 * LC::Azoth::ICLEntry::PurgeMessages() implementations. It
 	 * deletes all the messages in the \em messages list before the given
 	 * date \em before.
 	 *

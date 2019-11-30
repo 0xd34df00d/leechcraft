@@ -38,7 +38,7 @@
 #include "requestmodel.h"
 #include "headermodel.h"
 
-namespace LeechCraft
+namespace LC
 {
 	namespace Plugins
 	{
@@ -166,5 +166,5 @@ namespace LeechCraft
 	};
 };
 
-LC_EXPORT_PLUGIN (leechcraft_networkmonitor, LeechCraft::Plugins::NetworkMonitor::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_networkmonitor, LC::Plugins::NetworkMonitor::Plugin);
 

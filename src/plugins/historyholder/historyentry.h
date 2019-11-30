@@ -32,7 +32,7 @@
 #include <QDateTime>
 #include <interfaces/structures.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace HistoryHolder
 {
@@ -47,4 +47,4 @@ namespace HistoryHolder
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::HistoryHolder::HistoryEntry)
+Q_DECLARE_METATYPE (LC::HistoryHolder::HistoryEntry)

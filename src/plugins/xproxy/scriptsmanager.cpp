@@ -33,7 +33,7 @@
 #include <interfaces/core/ipluginsmanager.h>
 #include "urllistscript.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace XProxy
 {

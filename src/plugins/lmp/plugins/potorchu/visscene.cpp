@@ -30,7 +30,7 @@
 #include "visscene.h"
 #include <QPainter>
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

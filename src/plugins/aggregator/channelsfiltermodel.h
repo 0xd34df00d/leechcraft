@@ -31,7 +31,7 @@
 #define PLUGINS_AGGREGATOR_CHANNELSFILTERMODEL_H
 #include <util/tags/tagsfiltermodel.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Aggregator
 {

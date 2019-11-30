@@ -34,7 +34,7 @@
 #include <util/sll/eithercont.h>
 #include "structures.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace XProxy
 {

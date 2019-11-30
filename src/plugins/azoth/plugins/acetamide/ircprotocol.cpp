@@ -43,7 +43,7 @@
 #include "ircaccountconfigurationwidget.h"
 #include "ircjoingroupchat.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

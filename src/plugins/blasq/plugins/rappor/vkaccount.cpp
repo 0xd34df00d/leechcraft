@@ -41,7 +41,7 @@
 #include "albumsettingsdialog.h"
 #include "uploadmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blasq
 {

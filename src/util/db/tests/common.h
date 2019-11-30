@@ -34,7 +34,7 @@
 #include <QSqlError>
 #include <oral/oral.h>
 
-namespace lco = LeechCraft::Util::oral;
+namespace lco = LC::Util::oral;
 
 #define ORAL_FACTORY_SQLITE 1
 #define ORAL_FACTORY_POSTGRES 2
@@ -61,7 +61,7 @@ auto operator== (const T& left, const T& right)
 	return left.AsTuple () == right.AsTuple ();
 }
 
-namespace LeechCraft::Util::oral
+namespace LC::Util::oral
 {
 	template<typename T, typename... Args>
 	char* toString (const PKey<T, Args...>& pkey)
@@ -107,7 +107,7 @@ char* toString (const char *name, const T& t)
 	return qstrdup (ba.data ());
 }
 
-namespace LeechCraft::Util
+namespace LC::Util
 {
 	QSqlDatabase MakeDatabase (const QString& name = ":memory:")
 	{

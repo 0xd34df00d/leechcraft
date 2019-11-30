@@ -46,7 +46,7 @@
 #include <interfaces/core/itagsmanager.h>
 #include "historyentry.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace HistoryHolder
 {
@@ -94,9 +94,9 @@ namespace HistoryHolder
 
 	void HistoryDB::Add (const Entity& entity)
 	{
-		if (entity.Parameters_ & LeechCraft::DoNotSaveInHistory ||
-				entity.Parameters_ & LeechCraft::Internal ||
-				!(entity.Parameters_ & LeechCraft::IsDownloaded))
+		if (entity.Parameters_ & LC::DoNotSaveInHistory ||
+				entity.Parameters_ & LC::Internal ||
+				!(entity.Parameters_ & LC::IsDownloaded))
 			return;
 
 		Add (entity, QDateTime::currentDateTime ());

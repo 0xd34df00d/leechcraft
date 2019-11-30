@@ -36,7 +36,7 @@
 #include <interfaces/blogique/ibloggingplatformplugin.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blogique
 {
@@ -52,7 +52,7 @@ namespace Hestia
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 IHaveSettings
-				LeechCraft::Blogique::IBloggingPlatformPlugin)
+				LC::Blogique::IBloggingPlatformPlugin)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Blogique.Hestia")
 

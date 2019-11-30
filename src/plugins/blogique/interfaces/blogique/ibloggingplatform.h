@@ -37,7 +37,7 @@
 class QObject;
 class QIcon;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blogique
 {
@@ -306,7 +306,7 @@ namespace Blogique
 }
 }
 
-Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::Blogique::IBloggingPlatform::BloggingPlatfromFeatures)
-Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::Blogique::IBloggingPlatform::AccountAddOptions)
-Q_DECLARE_INTERFACE (LeechCraft::Blogique::IBloggingPlatform,
+Q_DECLARE_OPERATORS_FOR_FLAGS (LC::Blogique::IBloggingPlatform::BloggingPlatfromFeatures)
+Q_DECLARE_OPERATORS_FOR_FLAGS (LC::Blogique::IBloggingPlatform::AccountAddOptions)
+Q_DECLARE_INTERFACE (LC::Blogique::IBloggingPlatform,
 		"org.Deviant.LeechCraft.Blogique.IBloggingPlatform/1.0")

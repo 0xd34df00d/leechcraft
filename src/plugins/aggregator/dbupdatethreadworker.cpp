@@ -39,7 +39,7 @@
 #include "storagebackend.h"
 #include "storagebackendmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Aggregator
 {

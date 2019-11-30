@@ -43,7 +43,7 @@
 class QAudioInput;
 class QAudioOutput;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -70,7 +70,7 @@ namespace Azoth
 		void HandleIncomingCall (IMediaCall*);
 	private slots:
 		void handleCall (QObject*);
-		void handleStateChanged (LeechCraft::Azoth::IMediaCall::State);
+		void handleStateChanged (LC::Azoth::IMediaCall::State);
 		void handleAudioModeChanged (QIODevice::OpenMode);
 
 		void handleReadFormatChanged ();

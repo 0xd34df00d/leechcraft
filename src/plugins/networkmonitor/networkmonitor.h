@@ -38,7 +38,7 @@
 class QSortFilterProxyModel;
 class QNetworkAccessManager;
 
-namespace LeechCraft
+namespace LC
 {
 	namespace Plugins
 	{
@@ -74,7 +74,7 @@ namespace LeechCraft
 				void handleCurrentChanged (const QModelIndex&);
 				void filterUpdated ();
 			signals:
-				void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
+				void gotActions (QList<QAction*>, LC::ActionsEmbedPlace);
 			};
 		};
 	};

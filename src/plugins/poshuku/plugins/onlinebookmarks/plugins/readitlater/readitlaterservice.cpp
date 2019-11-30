@@ -38,7 +38,7 @@
 #include "readitlaterapi.h"
 #include "readitlateraccount.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

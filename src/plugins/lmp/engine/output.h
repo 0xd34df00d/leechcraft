@@ -35,7 +35,7 @@
 typedef struct _GstElement GstElement;
 typedef struct _GstPad GstPad;
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

@@ -34,7 +34,7 @@
 #include <util/sll/parsejson.h>
 #include "picasaaccount.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blasq
 {

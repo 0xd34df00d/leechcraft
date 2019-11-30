@@ -34,7 +34,7 @@
 #include <QXmppClientExtension.h>
 #include "pepeventbase.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

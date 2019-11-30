@@ -32,7 +32,7 @@
 #include <QCoreApplication>
 #include <util/sll/scopeguards.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Auscrie
 {

@@ -43,7 +43,7 @@ typedef std::function<void (QString)> Actor_f;
 
 Q_DECLARE_METATYPE (Actor_f);
 
-namespace LeechCraft
+namespace LC
 {
 namespace Krigstask
 {

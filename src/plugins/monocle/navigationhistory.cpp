@@ -31,7 +31,7 @@
 #include <QFileInfo>
 #include <QMenu>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {

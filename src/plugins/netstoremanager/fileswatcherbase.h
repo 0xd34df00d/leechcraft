@@ -32,7 +32,7 @@
 
 #include <QObject>
 
-namespace LeechCraft
+namespace LC
 {
 namespace NetStoreManager
 {

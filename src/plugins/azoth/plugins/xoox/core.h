@@ -33,7 +33,7 @@
 #include <interfaces/structures.h>
 #include <interfaces/core/icoreproxy.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -61,7 +61,7 @@ namespace Xoox
 
 		void SendEntity (const Entity&);
 	signals:
-		void gotEntity (const LeechCraft::Entity&);
+		void gotEntity (const LC::Entity&);
 	};
 }
 }

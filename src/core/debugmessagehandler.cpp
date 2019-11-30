@@ -191,7 +191,7 @@ namespace
 	std::optional<AddrInfo> QueryAddr2LineExecutable (const char *str,
 			const std::string& execName)
 	{
-		using LeechCraft::Util::operator>>;
+		using LC::Util::operator>>;
 
 		return FindStrRange (str, '[', ']') >>
 				[&] (const auto& bracketRange)
@@ -231,7 +231,7 @@ namespace
 
 		std::optional<AddrInfo> operator() (const char *str) const
 		{
-			using LeechCraft::Util::operator>>;
+			using LC::Util::operator>>;
 
 			return FindStrRange (str, '(', ')') >>
 					[this, str] (const StrRange_t& pair)
@@ -264,7 +264,7 @@ namespace
 			if (libAddrPos == LibAddrsCache_.end ())
 				return {};
 
-			using LeechCraft::Util::operator>>;
+			using LC::Util::operator>>;
 
 			return FindStrRange (str, '[', ']') >>
 					[&] (const auto& bracketRange) -> std::optional<AddrInfo>

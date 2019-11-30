@@ -39,7 +39,7 @@ namespace lastfm
 	class RadioStation;
 }
 
-namespace LeechCraft
+namespace LC
 {
 namespace Lastfmscrobble
 {

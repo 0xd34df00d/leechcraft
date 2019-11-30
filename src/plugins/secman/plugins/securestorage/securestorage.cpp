@@ -64,7 +64,7 @@ namespace
 	}
 }
 
-namespace LeechCraft
+namespace LC
 {
 namespace SecMan
 {
@@ -453,4 +453,4 @@ namespace SecureStorage
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_secman_securestorage, LeechCraft::SecMan::SecureStorage::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_secman_securestorage, LC::SecMan::SecureStorage::Plugin);

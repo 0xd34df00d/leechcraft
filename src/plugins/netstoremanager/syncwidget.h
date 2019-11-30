@@ -34,7 +34,7 @@
 
 class QStandardItemModel;
 
-namespace LeechCraft
+namespace LC
 {
 namespace NetStoreManager
 {
@@ -83,5 +83,5 @@ namespace NetStoreManager
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::NetStoreManager::SyncerInfo)
-Q_DECLARE_METATYPE (QList<LeechCraft::NetStoreManager::SyncerInfo>)
+Q_DECLARE_METATYPE (LC::NetStoreManager::SyncerInfo)
+Q_DECLARE_METATYPE (QList<LC::NetStoreManager::SyncerInfo>)

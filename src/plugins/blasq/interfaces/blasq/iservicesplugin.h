@@ -31,7 +31,7 @@
 
 #include <QList>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blasq
 {
@@ -47,4 +47,4 @@ namespace Blasq
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Blasq::IServicesPlugin, "org.LeechCraft.Blasq.IServicesPlugin/1.0")
+Q_DECLARE_INTERFACE (LC::Blasq::IServicesPlugin, "org.LeechCraft.Blasq.IServicesPlugin/1.0")

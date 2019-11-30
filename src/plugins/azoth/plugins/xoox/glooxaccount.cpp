@@ -89,7 +89,7 @@
 #include "captchamanager.h"
 #include "deliveryreceiptsintegrator.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

@@ -35,7 +35,7 @@
 #include <util/db/oral/oralfwd.h>
 #include "storagebackend.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Aggregator
 {

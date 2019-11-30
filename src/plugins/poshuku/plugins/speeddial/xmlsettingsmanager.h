@@ -31,7 +31,7 @@
 
 #include <xmlsettingsdialog/basesettingsmanager.h>
 
-namespace LeechCraft::Poshuku::SpeedDial
+namespace LC::Poshuku::SpeedDial
 {
 	class XmlSettingsManager : public Util::BaseSettingsManager
 	{

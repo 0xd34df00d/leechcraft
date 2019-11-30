@@ -31,7 +31,7 @@
 
 #include <util/sll/intseq.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

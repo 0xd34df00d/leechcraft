@@ -32,7 +32,7 @@
 #include <QDialog>
 #include "ui_gwitemsremovaldialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

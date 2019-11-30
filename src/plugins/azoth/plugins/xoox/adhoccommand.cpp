@@ -31,7 +31,7 @@
 #include <QtDebug>
 #include <QDomElement>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

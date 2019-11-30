@@ -36,7 +36,7 @@
 #include "reducelightness.h"
 #include "colortemp.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

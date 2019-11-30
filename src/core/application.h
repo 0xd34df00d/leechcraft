@@ -33,7 +33,7 @@
 #include <QApplication>
 #include <QStringList>
 
-namespace LeechCraft
+namespace LC
 {
 	class SplashScreen;
 

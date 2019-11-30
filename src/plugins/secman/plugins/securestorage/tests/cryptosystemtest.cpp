@@ -35,7 +35,7 @@
 #include "../cryptosystem.h"
 #include "../ciphertextformat.h"
 
-using namespace LeechCraft::Plugins::SecMan::StoragePlugins::SecureStorage;
+using namespace LC::Plugins::SecMan::StoragePlugins::SecureStorage;
 
 QTEST_MAIN (CryptoSystemTest)
 

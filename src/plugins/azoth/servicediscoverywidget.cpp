@@ -39,7 +39,7 @@
 #include "interfaces/azoth/ihaveservicediscovery.h"
 #include "core.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

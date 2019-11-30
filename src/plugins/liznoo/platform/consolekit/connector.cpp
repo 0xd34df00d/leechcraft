@@ -30,7 +30,7 @@
 #include "connector.h"
 #include <QtDebug>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Liznoo
 {

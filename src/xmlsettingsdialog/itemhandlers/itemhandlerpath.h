@@ -31,7 +31,7 @@
 
 #include "itemhandlerstringsetvalue.h"
 
-namespace LeechCraft
+namespace LC
 {
 	class ItemHandlerPath : public ItemHandlerStringSetValue
 	{

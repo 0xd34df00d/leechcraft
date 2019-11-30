@@ -36,7 +36,7 @@
 
 class QWidget;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {
@@ -106,7 +106,7 @@ namespace Azoth
 	private slots:
 		void handleNeedToClose (ChatTab*);
 		void updateCurrentTab (QObject*);
-		void handleAddingCLEntryEnd (LeechCraft::IHookProxy_ptr proxy,
+		void handleAddingCLEntryEnd (LC::IHookProxy_ptr proxy,
 				QObject *entry);
 		void chatWindowStyleChanged ();
 	signals:

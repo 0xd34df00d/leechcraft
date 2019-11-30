@@ -34,7 +34,7 @@
 #include <QDBusConnection>
 #include <interfaces/media/audiostructs.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Xtazy
 {

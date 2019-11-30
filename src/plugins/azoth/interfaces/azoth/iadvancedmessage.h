@@ -31,7 +31,7 @@
 #define PLUGINS_AZOTH_INTERFACES_IADVANCEDMESSAGE_H
 #include <QtPlugin>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -72,7 +72,7 @@ namespace Azoth
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Azoth::IAdvancedMessage,
+Q_DECLARE_INTERFACE (LC::Azoth::IAdvancedMessage,
 	"org.Deviant.LeechCraft.Azoth.IAdvancedMessage/1.0")
 
 #endif

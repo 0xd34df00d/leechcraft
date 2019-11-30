@@ -38,7 +38,7 @@
 #include "resourcesmanager.h"
 #include "xmlsettingsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

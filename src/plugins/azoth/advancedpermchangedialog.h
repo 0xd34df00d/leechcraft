@@ -32,7 +32,7 @@
 #include <QDialog>
 #include "ui_advancedpermchangedialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

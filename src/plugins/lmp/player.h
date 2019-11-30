@@ -53,7 +53,7 @@ class QStandardItemModel;
 
 typedef QPair<QString, QString> StringPair_t;
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {
@@ -267,4 +267,4 @@ namespace LMP
 }
 }
 
-Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::LMP::Player::EnqueueFlags)
+Q_DECLARE_OPERATORS_FOR_FLAGS (LC::LMP::Player::EnqueueFlags)

@@ -45,7 +45,7 @@
 #include "marshalling.h"
 #include "infoserverwrapper.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace DBus
 {

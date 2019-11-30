@@ -35,7 +35,7 @@
 
 class QPushButton;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blogique
 {

@@ -33,7 +33,7 @@
 #include "ui_executecommanddialog.h"
 #include "xeps/adhoccommandmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

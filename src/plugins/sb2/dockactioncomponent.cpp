@@ -29,7 +29,7 @@
 
 #include "dockactioncomponent.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace SB2
 {

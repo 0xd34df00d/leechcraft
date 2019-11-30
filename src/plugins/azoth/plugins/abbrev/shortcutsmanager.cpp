@@ -32,7 +32,7 @@
 #include <QtDebug>
 #include "abbrevsmanager.h"
 
-namespace LeechCraft::Azoth::Abbrev
+namespace LC::Azoth::Abbrev
 {
 	ShortcutsManager::ShortcutsManager (AbbrevsManager *abbrevs, QObject *parent)
 	: QObject { parent }

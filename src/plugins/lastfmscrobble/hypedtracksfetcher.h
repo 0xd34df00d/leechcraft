@@ -36,7 +36,7 @@
 
 class QNetworkAccessManager;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Lastfmscrobble
 {

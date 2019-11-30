@@ -48,7 +48,7 @@
 #include <interfaces/core/itagsmanager.h>
 #include "xmlsettingsmanager.h"
 
-namespace LeechCraft::Aggregator
+namespace LC::Aggregator
 {
 	namespace oral = Util::oral;
 	namespace sph = Util::oral::sph;
@@ -205,7 +205,7 @@ namespace LeechCraft::Aggregator
 #define EXTRACT_NAME(_1, _2, triple) BOOST_PP_TUPLE_ELEM (1, triple),
 
 #define DEFINE_STRUCT(structName, className, origStructName, fields)					\
-namespace LeechCraft::Aggregator														\
+namespace LC::Aggregator														\
 {																						\
 	struct SQLStorageBackend::structName												\
 	{																					\
@@ -229,7 +229,7 @@ namespace LeechCraft::Aggregator														\
 	};																					\
 }																						\
 																						\
-BOOST_FUSION_ADAPT_STRUCT(LeechCraft::Aggregator::SQLStorageBackend::structName,		\
+BOOST_FUSION_ADAPT_STRUCT(LC::Aggregator::SQLStorageBackend::structName,		\
 		BOOST_PP_SEQ_FOR_EACH (EXTRACT_NAME, _, fields))
 
 #define SAME_NAME(type, name) (type, name, name)
@@ -354,7 +354,7 @@ DEFINE_STRUCT (MRSSSceneR, "mrss_scenes", MRSSScene,
 		(SAME_NAME (QString, EndTime_))
 		)
 
-namespace LeechCraft::Aggregator
+namespace LC::Aggregator
 {
 	struct SQLStorageBackend::Item2TagsR
 	{
@@ -383,14 +383,14 @@ namespace LeechCraft::Aggregator
 	};
 }
 
-BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Aggregator::SQLStorageBackend::Item2TagsR,
+BOOST_FUSION_ADAPT_STRUCT (LC::Aggregator::SQLStorageBackend::Item2TagsR,
 		ItemID_,
 		Tag_)
-BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Aggregator::SQLStorageBackend::Feed2TagsR,
+BOOST_FUSION_ADAPT_STRUCT (LC::Aggregator::SQLStorageBackend::Feed2TagsR,
 		FeedID_,
 		Tags_)
 
-namespace LeechCraft::Aggregator
+namespace LC::Aggregator
 {
 	using Util::operator*;
 

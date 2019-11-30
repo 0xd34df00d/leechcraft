@@ -31,7 +31,7 @@
 #include <Wt/WApplication.h>
 #include <Wt/WServer.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Aggregator
 {

@@ -35,7 +35,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include "xdgconfig.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

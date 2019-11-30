@@ -31,7 +31,7 @@
 #include <util/sll/qtutil.h>
 #include <interfaces/iinfo.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace TabSessManager
 {

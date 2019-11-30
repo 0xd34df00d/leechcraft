@@ -40,7 +40,7 @@
 class QContextMenuEvent;
 class QMenu;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {
@@ -74,7 +74,7 @@ namespace Poshuku
 		 *
 		 * @sa hookAddToFavoritesRequested().
 		 */
-		void hookAddedToFavorites (LeechCraft::IHookProxy_ptr proxy,
+		void hookAddedToFavorites (LC::IHookProxy_ptr proxy,
 				QString title, QString url, QStringList tags);
 
 		/** @brief Called when an entry is going to be added to history.
@@ -93,7 +93,7 @@ namespace Poshuku
 		 * @param url The URL of the item.
 		 * @param date Datetime of visit (usually current one).
 		 */
-		void hookAddingToHistory (LeechCraft::IHookProxy_ptr proxy,
+		void hookAddingToHistory (LC::IHookProxy_ptr proxy,
 				QString title, QString url, QDateTime date);
 
 		/** @brief Called when item addition to favorites is requested.
@@ -109,7 +109,7 @@ namespace Poshuku
 		 *
 		 * @sa hookAddedToFavorites().
 		 */
-		void hookAddToFavoritesRequested (LeechCraft::IHookProxy_ptr proxy,
+		void hookAddToFavoritesRequested (LC::IHookProxy_ptr proxy,
 				QString title, QString url);
 
 		/** @brief Called when a new browser widget is created and
@@ -118,7 +118,7 @@ namespace Poshuku
 		 * @param proxy The standard hook proxy object.
 		 * @param browserWidget The browser widget itself.
 		 */
-		void hookBrowserWidgetInitialized (LeechCraft::IHookProxy_ptr proxy,
+		void hookBrowserWidgetInitialized (LC::IHookProxy_ptr proxy,
 				QObject *browserWidget);
 
 		/** @brief Called whenever the icon of the page changes.
@@ -128,7 +128,7 @@ namespace Poshuku
 		 * @param proxy The standard hook proxy object.
 		 * @param browserWidget The widget with the browser.
 		 */
-		void hookIconChanged (LeechCraft::IHookProxy_ptr proxy,
+		void hookIconChanged (LC::IHookProxy_ptr proxy,
 				QObject *browserWidget);
 
 		/** @brief Called whenever an icon is requested for url.
@@ -142,7 +142,7 @@ namespace Poshuku
 		 * @param proxy The standard hook proxy object.
 		 * @param url The URL for which the icon is requested.
 		 */
-		void hookIconRequested (LeechCraft::IHookProxy_ptr proxy,
+		void hookIconRequested (LC::IHookProxy_ptr proxy,
 				const QUrl& url);
 
 		/** @brief Called when the given page load progress changes.
@@ -158,7 +158,7 @@ namespace Poshuku
 		 * @param browserWidget The widget with the page.
 		 * @param progress The load progress, in percents.
 		 */
-		void hookLoadProgress (LeechCraft::IHookProxy_ptr proxy,
+		void hookLoadProgress (LC::IHookProxy_ptr proxy,
 				QObject *browserWidget,
 				int progress);
 
@@ -182,7 +182,7 @@ namespace Poshuku
 		 *
 		 * @sa hookMoreMenuFillEnd()
 		 */
-		void hookMoreMenuFillBegin (LeechCraft::IHookProxy_ptr proxy,
+		void hookMoreMenuFillBegin (LC::IHookProxy_ptr proxy,
 				QMenu *menu,
 				QObject *browserWidget);
 
@@ -198,7 +198,7 @@ namespace Poshuku
 		 *
 		 * @sa hookMoreMenuFillBegin()
 		 */
-		void hookMoreMenuFillEnd (LeechCraft::IHookProxy_ptr proxy,
+		void hookMoreMenuFillEnd (LC::IHookProxy_ptr proxy,
 				QMenu *menu,
 				QObject *browserWidget);
 
@@ -220,7 +220,7 @@ namespace Poshuku
 		 * were obtained by setting the HTML contents directly instead
 		 * of loading them from an URL.
 		 */
-		void hookNotifyLoadFinished (LeechCraft::IHookProxy_ptr proxy,
+		void hookNotifyLoadFinished (LC::IHookProxy_ptr proxy,
 				QObject *browserWidget,
 				bool ok,
 				bool notifyWhenFinished,
@@ -242,7 +242,7 @@ namespace Poshuku
 		 * @param urls The list of URLs originally scheduled to be
 		 * restored.
 		 */
-		void hookSessionRestoreScheduled (LeechCraft::IHookProxy_ptr proxy,
+		void hookSessionRestoreScheduled (LC::IHookProxy_ptr proxy,
 				const QList<QUrl>& urls);
 
 		/** @brief This hook is called when the given URL should be set.
@@ -260,7 +260,7 @@ namespace Poshuku
 		 * @param browserWidget The widget whose URL is to be set.
 		 * @param url The original URL.
 		 */
-		void hookSetURL (LeechCraft::IHookProxy_ptr proxy,
+		void hookSetURL (LC::IHookProxy_ptr proxy,
 				QObject *browserWidget,
 				QUrl url);
 
@@ -277,7 +277,7 @@ namespace Poshuku
 		 * is to be displayed.
 		 * @param message The original message to be displayed.
 		 */
-		void hookStatusBarMessage (LeechCraft::IHookProxy_ptr proxy,
+		void hookStatusBarMessage (LC::IHookProxy_ptr proxy,
 				QObject *browserWidget,
 				QString message);
 
@@ -299,24 +299,24 @@ namespace Poshuku
 		 * @param browserWidget The browser widget for which tabbar
 		 * actions are requested.
 		 */
-		void hookTabBarContextMenuActions (LeechCraft::IHookProxy_ptr proxy,
+		void hookTabBarContextMenuActions (LC::IHookProxy_ptr proxy,
 				const QObject *browserWidget) const;
 
-		void hookTabAdded (LeechCraft::IHookProxy_ptr proxy,
+		void hookTabAdded (LC::IHookProxy_ptr proxy,
 				QObject *browserWidget,
 				const QUrl& url);
 
-		void hookTabRemoveRequested (LeechCraft::IHookProxy_ptr proxy,
+		void hookTabRemoveRequested (LC::IHookProxy_ptr proxy,
 				QObject *browserWidget);
-		void hookUpdateLogicalPath (LeechCraft::IHookProxy_ptr proxy,
+		void hookUpdateLogicalPath (LC::IHookProxy_ptr proxy,
 				QObject *browserWidget);
-		void hookURLCompletionNewStringRequested (LeechCraft::IHookProxy_ptr proxy,
+		void hookURLCompletionNewStringRequested (LC::IHookProxy_ptr proxy,
 				QObject *model,
 				const QString& string,
 				int historyItems);
-		void hookURLEditReturnPressed (LeechCraft::IHookProxy_ptr proxy,
+		void hookURLEditReturnPressed (LC::IHookProxy_ptr proxy,
 				QObject *browserWidget);
-		void hookUserAgentForUrlRequested (LeechCraft::IHookProxy_ptr proxy,
+		void hookUserAgentForUrlRequested (LC::IHookProxy_ptr proxy,
 				const QUrl& url);
 
 		/** @brief Called when context menu for the view is requested.
@@ -338,9 +338,9 @@ namespace Poshuku
 		 * @param menu The menu being built.
 		 * @param menuBuildStage The stage of the menu being built.
 		 */
-		void hookWebViewContextMenu (LeechCraft::IHookProxy_ptr proxy,
-				LeechCraft::Poshuku::IWebView *view,
-				const LeechCraft::Poshuku::ContextMenuInfo& hitTestResult,
+		void hookWebViewContextMenu (LC::IHookProxy_ptr proxy,
+				LC::Poshuku::IWebView *view,
+				const LC::Poshuku::ContextMenuInfo& hitTestResult,
 				QMenu *menu,
 				WebViewCtxMenuStage menuBuildStage);
 	};

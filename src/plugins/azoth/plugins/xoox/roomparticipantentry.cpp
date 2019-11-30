@@ -39,7 +39,7 @@
 #include "core.h"
 #include "avatarsstorage.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

@@ -31,7 +31,7 @@
 #include <QStandardItemModel>
 #include <QInputDialog>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

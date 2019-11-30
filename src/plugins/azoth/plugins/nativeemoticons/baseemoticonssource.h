@@ -34,7 +34,7 @@
 #include <QSet>
 #include <interfaces/azoth/iresourceplugin.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {
@@ -48,7 +48,7 @@ namespace NativeEmoticons
 							  , public IEmoticonResourceSource
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IEmoticonResourceSource)
+		Q_INTERFACES (LC::Azoth::IEmoticonResourceSource)
 	protected:
 		std::shared_ptr<Util::ResourceLoader> EmoLoader_;
 

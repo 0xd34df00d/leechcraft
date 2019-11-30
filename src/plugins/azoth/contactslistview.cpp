@@ -30,7 +30,7 @@
 #include "contactslistview.h"
 #include "core.h"
 
-namespace LeechCraft::Azoth
+namespace LC::Azoth
 {
 	QRect ContactsListView::visualRect (const QModelIndex& index) const
 	{

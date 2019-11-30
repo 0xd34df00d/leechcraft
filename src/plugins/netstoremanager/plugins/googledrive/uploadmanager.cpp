@@ -34,7 +34,7 @@
 #include "account.h"
 #include "core.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace NetStoreManager
 {

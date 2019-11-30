@@ -33,7 +33,7 @@
 #include <QQuickWidget>
 #include <QPointer>
 
-namespace LeechCraft
+namespace LC
 {
 namespace SB2
 {

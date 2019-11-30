@@ -29,7 +29,7 @@
 
 #include "fswinwatcher.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Kinotify
 {

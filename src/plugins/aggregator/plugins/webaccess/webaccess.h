@@ -39,7 +39,7 @@
 #include <interfaces/core/ihookproxy.h>
 #include <interfaces/ihavesettings.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {
@@ -62,7 +62,7 @@ namespace WebAccess
 		Q_INTERFACES (IInfo
 				IPlugin2
 				IHaveSettings
-				LeechCraft::Aggregator::IAggregatorPlugin)
+				LC::Aggregator::IAggregatorPlugin)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Aggregator.WebAccess")
 

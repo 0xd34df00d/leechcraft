@@ -35,7 +35,7 @@
 #include <QUrl>
 #include <QtPlugin>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {
@@ -109,5 +109,5 @@ namespace Poshuku
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Poshuku::IInterceptableRequests,
+Q_DECLARE_INTERFACE (LC::Poshuku::IInterceptableRequests,
 		"org.LeechCraft.Poshuku.IInterceptableRequests/1.0")

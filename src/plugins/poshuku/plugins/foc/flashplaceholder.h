@@ -36,7 +36,7 @@
 
 class QWebElement;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

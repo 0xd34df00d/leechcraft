@@ -29,7 +29,7 @@
 
 #include "closedialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Eleeminator
 {

@@ -36,7 +36,7 @@
 #include <util/models/rolenamesmixin.h>
 class QQuickImageProvider;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

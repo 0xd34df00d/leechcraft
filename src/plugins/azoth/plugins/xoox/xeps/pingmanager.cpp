@@ -33,7 +33,7 @@
 #include <QXmppClient.h>
 #include <QXmppPingIq.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

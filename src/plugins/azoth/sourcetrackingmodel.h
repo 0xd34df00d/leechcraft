@@ -33,7 +33,7 @@
 #include <interfaces/azoth/iresourceplugin.h>
 #include <interfaces/azoth/ichatstyleresourcesource.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

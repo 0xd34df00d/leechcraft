@@ -39,7 +39,7 @@
 #include "folder.h"
 #include "vmimeconversions.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Snails
 {

@@ -41,7 +41,7 @@
 #include "messageinfo.h"
 #include "messagebodies.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Snails
 {
@@ -145,7 +145,7 @@ namespace Snails
 }
 }
 
-BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Snails::AccountDatabase::Message,
+BOOST_FUSION_ADAPT_STRUCT (LC::Snails::AccountDatabase::Message,
 		Id_,
 		UniqueId_,
 		IsRead_,
@@ -155,14 +155,14 @@ BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Snails::AccountDatabase::Message,
 		Refs_,
 		InReplyTos_)
 
-BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Snails::AccountDatabase::Address,
+BOOST_FUSION_ADAPT_STRUCT (LC::Snails::AccountDatabase::Address,
 		Id_,
 		MsgId_,
 		AddressType_,
 		Name_,
 		Email_)
 
-BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Snails::AccountDatabase::Attachment,
+BOOST_FUSION_ADAPT_STRUCT (LC::Snails::AccountDatabase::Attachment,
 		Id_,
 		MsgId_,
 		Name_,
@@ -171,28 +171,28 @@ BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Snails::AccountDatabase::Attachment,
 		Type_,
 		SubType_)
 
-BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Snails::AccountDatabase::MessageBodies,
+BOOST_FUSION_ADAPT_STRUCT (LC::Snails::AccountDatabase::MessageBodies,
 		Id_,
 		MsgId_,
 		PlainText_,
 		HTML_)
 
-BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Snails::AccountDatabase::Folder,
+BOOST_FUSION_ADAPT_STRUCT (LC::Snails::AccountDatabase::Folder,
 		Id_,
 		FolderPath_)
 
-BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Snails::AccountDatabase::Msg2Folder,
+BOOST_FUSION_ADAPT_STRUCT (LC::Snails::AccountDatabase::Msg2Folder,
 		Id_,
 		MsgId_,
 		FolderId_,
 		FolderMessageId_)
 
-BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Snails::AccountDatabase::MsgHeader,
+BOOST_FUSION_ADAPT_STRUCT (LC::Snails::AccountDatabase::MsgHeader,
 		Id_,
 		MsgUniqueId_,
 		Header_)
 
-namespace LeechCraft
+namespace LC
 {
 namespace Snails
 {

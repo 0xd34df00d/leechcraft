@@ -37,7 +37,7 @@
 #include <interfaces/media/ilyricsfinder.h>
 #include "searcher.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace DeadLyrics
 {

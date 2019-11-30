@@ -34,12 +34,12 @@
 #include <QModelIndex>
 #include <interfaces/ijobholderrepresentationhandler.h>
 
-namespace LeechCraft::Util
+namespace LC::Util
 {
 	class ShortcutManager;
 }
 
-namespace LeechCraft::Aggregator
+namespace LC::Aggregator
 {
 	class ItemsWidget;
 	class JobHolderRepresentation;

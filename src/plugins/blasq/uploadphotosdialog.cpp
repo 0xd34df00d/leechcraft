@@ -38,7 +38,7 @@
 #include "selectalbumdialog.h"
 #include "xmlsettingsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blasq
 {

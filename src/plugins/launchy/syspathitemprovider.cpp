@@ -35,7 +35,7 @@
 #include <util/sys/paths.h>
 #include "modelroles.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Launchy
 {

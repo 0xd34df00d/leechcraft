@@ -32,7 +32,7 @@
 #include <interfaces/core/ientitymanager.h>
 #include "generalhandler.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace AdvancedNotifications
 {

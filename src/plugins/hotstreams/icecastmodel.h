@@ -32,7 +32,7 @@
 #include <QAbstractItemModel>
 #include <QIcon>
 
-namespace LeechCraft
+namespace LC
 {
 namespace HotStreams
 {

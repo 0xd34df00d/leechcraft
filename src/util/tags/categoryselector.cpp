@@ -40,7 +40,7 @@
 #include <QtDebug>
 #include "ui_categoryselector.h"
 
-using namespace LeechCraft::Util;
+using namespace LC::Util;
 const int RoleTag = 52;
 
 CategorySelector::CategorySelector (QWidget *parent)

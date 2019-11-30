@@ -35,7 +35,7 @@
 
 class QWidget;
 
-namespace LeechCraft
+namespace LC
 {
 namespace TabSessManager
 {

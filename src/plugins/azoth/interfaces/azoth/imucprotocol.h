@@ -33,7 +33,7 @@
 
 class QWidget;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -100,5 +100,5 @@ namespace Azoth
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Azoth::IMUCProtocol,
+Q_DECLARE_INTERFACE (LC::Azoth::IMUCProtocol,
 		"org.Deviant.LeechCraft.Azoth.IMUCProtocol/1.0")

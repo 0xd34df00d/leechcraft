@@ -33,7 +33,7 @@
 #include <QDateTime>
 #include <QtDebug>
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

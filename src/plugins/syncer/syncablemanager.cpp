@@ -32,7 +32,7 @@
 #include <interfaces/isyncable.h>
 #include "singlesyncable.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Syncer
 {

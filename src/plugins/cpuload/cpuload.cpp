@@ -40,7 +40,7 @@
 
 #include "backendproxy.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace CpuLoad
 {
@@ -104,4 +104,4 @@ namespace CpuLoad
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_cpuload, LeechCraft::CpuLoad::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_cpuload, LC::CpuLoad::Plugin);

@@ -44,7 +44,7 @@
 class QStandardItem;
 class QStandardItemModel;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {
@@ -82,9 +82,9 @@ namespace FatApe
 		void SetScriptEnabled(int scriptIndex, bool value);
 		int AddScriptToManager (const UserScript& script);
 	public slots:
-		void hookBrowserWidgetInitialized (LeechCraft::IHookProxy_ptr proxy,
+		void hookBrowserWidgetInitialized (LC::IHookProxy_ptr proxy,
 				QObject *browserWidget);
-		void hookAcceptNavigationRequest (LeechCraft::IHookProxy_ptr proxy,
+		void hookAcceptNavigationRequest (LC::IHookProxy_ptr proxy,
 				QWebPage *page,
 				QWebFrame *frame,
 				QNetworkRequest request,

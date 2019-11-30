@@ -32,7 +32,7 @@
 #include <QSqlDatabase>
 #include "dbconfig.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

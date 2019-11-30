@@ -31,7 +31,7 @@
 
 #include "tunesourcebase.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Xtazy
 {

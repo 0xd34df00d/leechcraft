@@ -35,7 +35,7 @@
 #include <interfaces/iplugin2.h>
 #include <interfaces/core/ihookproxy.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {
@@ -60,7 +60,7 @@ namespace FileScheme
 
 		QSet<QByteArray> GetPluginClasses () const;
 	public slots:
-		void hookNAMCreateRequest (LeechCraft::IHookProxy_ptr proxy,
+		void hookNAMCreateRequest (LC::IHookProxy_ptr proxy,
 				QNetworkAccessManager *manager,
 				QNetworkAccessManager::Operation *op,
 				QIODevice **dev);

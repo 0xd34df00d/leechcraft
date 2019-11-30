@@ -513,7 +513,7 @@
         </widget>
        </item>
        <item row="0" column="1">
-        <widget class="LeechCraft::Util::ColorButton" name="ColorButton_">
+        <widget class="LC::Util::ColorButton" name="ColorButton_">
          <property name="text">
           <string notr="true"/>
          </property>
@@ -543,7 +543,7 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>LeechCraft::Util::ColorButton</class>
+   <class>LC::Util::ColorButton</class>
    <extends>QPushButton</extends>
    <header location="global">util/gui/colorbutton.h</header>
   </customwidget>

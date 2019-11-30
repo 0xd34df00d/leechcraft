@@ -46,7 +46,7 @@ class QFuture;
 struct QAudioFormat;
 #endif
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -59,7 +59,7 @@ namespace Sarin
 					, public IMediaCall
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IMediaCall)
+		Q_INTERFACES (LC::Azoth::IMediaCall)
 
 		const QString SourceId_;
 		const QString SourcePubkey_;
@@ -96,7 +96,7 @@ namespace Sarin
 		void HandleReadFrameParams (int32_t, int, int);
 		void HandleCallStateChanged (int32_t, uint32_t);
 	signals:
-		void stateChanged (LeechCraft::Azoth::IMediaCall::State);
+		void stateChanged (LC::Azoth::IMediaCall::State);
 		void audioModeChanged (QIODevice::OpenMode);
 
 		void readFormatChanged ();

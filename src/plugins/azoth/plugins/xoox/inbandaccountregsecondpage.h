@@ -33,7 +33,7 @@
 #include <QXmppClient.h>
 #include <interfaces/azoth/icanhavesslerrors.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -46,7 +46,7 @@ namespace Xoox
 									 , public ICanHaveSslErrors
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::ICanHaveSslErrors)
+		Q_INTERFACES (LC::Azoth::ICanHaveSslErrors)
 
 		QXmppClient * const Client_;
 		RegFormHandlerWidget *RegForm_;

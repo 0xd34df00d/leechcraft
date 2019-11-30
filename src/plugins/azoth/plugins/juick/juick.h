@@ -36,7 +36,7 @@
 #include <interfaces/core/ihookproxy.h>
 #include <interfaces/azoth/imessage.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -76,9 +76,9 @@ namespace Juick
 				IMessage::Direction direction, IMessage::Type type);
 		bool IsBehind (const QString& text, int index, const QString& pattern) const;
 	public slots:
-		void hookFormatBodyEnd (LeechCraft::IHookProxy_ptr proxy,
+		void hookFormatBodyEnd (LC::IHookProxy_ptr proxy,
 				QObject *message);
-		void hookMessageWillCreated (LeechCraft::IHookProxy_ptr proxy,
+		void hookMessageWillCreated (LC::IHookProxy_ptr proxy,
 				QObject *chatTab,
 				QObject *entry,
 				int type,

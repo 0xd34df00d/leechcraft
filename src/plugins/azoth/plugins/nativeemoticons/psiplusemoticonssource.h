@@ -34,7 +34,7 @@
 #include <QHash>
 #include "baseemoticonssource.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

@@ -29,7 +29,7 @@
 
 #include "coreproxyserverwrapper.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace DBus
 {

@@ -38,7 +38,7 @@
 class QIcon;
 class QIODevice;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

@@ -35,7 +35,7 @@
 class QAbstractItemModel;
 class QString;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blasq
 {
@@ -63,4 +63,4 @@ namespace Blasq
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Blasq::IAccount, "org.LeechCraft.Blasq.IAccount/1.0")
+Q_DECLARE_INTERFACE (LC::Blasq::IAccount, "org.LeechCraft.Blasq.IAccount/1.0")

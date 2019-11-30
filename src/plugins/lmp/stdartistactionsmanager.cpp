@@ -36,7 +36,7 @@
 #include "core.h"
 #include "previewhandler.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

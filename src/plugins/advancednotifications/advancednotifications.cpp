@@ -43,7 +43,7 @@
 #include "unhandlednotificationskeeper.h"
 #include "interfaces/advancednotifications/inotificationbackendplugin.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace AdvancedNotifications
 {
@@ -68,9 +68,9 @@ namespace AdvancedNotifications
 
 		GeneralHandler_ = std::make_shared<GeneralHandler> (RulesManager_, audioThemeMgr, unhandledKeeper, proxy);
 		connect (GeneralHandler_.get (),
-				SIGNAL (gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace)),
+				SIGNAL (gotActions (QList<QAction*>, LC::ActionsEmbedPlace)),
 				this,
-				SIGNAL (gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace)));
+				SIGNAL (gotActions (QList<QAction*>, LC::ActionsEmbedPlace)));
 
 		Component_ = std::make_shared<QuarkComponent> ("advancednotifications", "ANQuark.qml");
 		Component_->StaticProps_.push_back ({ "AN_quarkTooltip", tr ("Toggle Advanced Notifications rules...") });
@@ -180,4 +180,4 @@ namespace AdvancedNotifications
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_advancednotifications, LeechCraft::AdvancedNotifications::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_advancednotifications, LC::AdvancedNotifications::Plugin);

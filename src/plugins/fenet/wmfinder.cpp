@@ -29,7 +29,7 @@
 
 #include "wmfinder.h"
 
-namespace LeechCraft::Fenet
+namespace LC::Fenet
 {
 	WMFinder::WMFinder (QObject *parent)
 	: FinderBase (parent)

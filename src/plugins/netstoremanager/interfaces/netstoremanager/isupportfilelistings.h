@@ -42,7 +42,7 @@ class QStandardItem;
 template<typename>
 class QFuture;
 
-namespace LeechCraft
+namespace LC
 {
 namespace NetStoreManager
 {
@@ -154,7 +154,7 @@ namespace NetStoreManager
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::NetStoreManager::ISupportFileListings,
+Q_DECLARE_INTERFACE (LC::NetStoreManager::ISupportFileListings,
 		"org.Deviant.LeechCraft.NetStoreManager.ISupportFileListings/1.0")
-Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::NetStoreManager::ListingOps)
+Q_DECLARE_OPERATORS_FOR_FLAGS (LC::NetStoreManager::ListingOps)
 

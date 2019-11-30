@@ -50,8 +50,8 @@ class QAbstractItemModel;
  * the row representing the flash drive itself.
  *
  * Each row of the model should contain data for roles defined in the
- * LeechCraft::CommonDevRole enum as well as LeechCraft::USBDeviceRole or
- * LeechCraft::MassStorageRole enums, depending on the device type.
+ * LC::CommonDevRole enum as well as LC::USBDeviceRole or
+ * LC::MassStorageRole enums, depending on the device type.
  */
 class Q_DECL_EXPORT IRemovableDevManager
 {
@@ -72,13 +72,13 @@ public:
 	 * @return Whether the \em type is recognized and supported by the
 	 * plugin.
 	 */
-	virtual bool SupportsDevType (LeechCraft::DeviceType type) const = 0;
+	virtual bool SupportsDevType (LC::DeviceType type) const = 0;
 
 	/** @brief Returns the model describing the devices.
 	 *
 	 * Each row of the model should contain data for roles defined in the
-	 * LeechCraft::CommonDevRole enum as well as LeechCraft::USBDeviceRole or
-	 * LeechCraft::MassStorageRole enums, depending on the device type.
+	 * LC::CommonDevRole enum as well as LC::USBDeviceRole or
+	 * LC::MassStorageRole enums, depending on the device type.
 	 *
 	 * The returned model should be flat - in other words, no hierarchy is
 	 * assumed to be present.

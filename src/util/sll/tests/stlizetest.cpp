@@ -31,9 +31,9 @@
 #include <QtTest>
 #include <qtutil.h>
 
-QTEST_MAIN (LeechCraft::Util::StlizeTest)
+QTEST_MAIN (LC::Util::StlizeTest)
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

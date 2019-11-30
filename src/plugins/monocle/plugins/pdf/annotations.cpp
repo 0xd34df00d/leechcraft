@@ -34,7 +34,7 @@
 #include <poppler-version.h>
 #include "links.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {

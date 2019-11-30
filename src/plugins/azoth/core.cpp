@@ -107,7 +107,7 @@
 
 Q_DECLARE_METATYPE (QPointer<QObject>);
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -198,9 +198,9 @@ namespace Azoth
 		FillANFields ();
 
 		connect (this,
-				SIGNAL (hookAddingCLEntryEnd (LeechCraft::IHookProxy_ptr, QObject*)),
+				SIGNAL (hookAddingCLEntryEnd (LC::IHookProxy_ptr, QObject*)),
 				ChatTabsManager_,
-				SLOT (handleAddingCLEntryEnd (LeechCraft::IHookProxy_ptr, QObject*)));
+				SLOT (handleAddingCLEntryEnd (LC::IHookProxy_ptr, QObject*)));
 		connect (XferJobManager_.get (),
 				SIGNAL (jobNoLongerOffered (QObject*)),
 				this,
@@ -239,9 +239,9 @@ namespace Azoth
 
 		SmilesOptionsModel_->AddModel (new QStringListModel (QStringList (QString ())));
 
-		qRegisterMetaType<IMessage*> ("LeechCraft::Azoth::IMessage*");
+		qRegisterMetaType<IMessage*> ("LC::Azoth::IMessage*");
 		qRegisterMetaType<IMessage*> ("IMessage*");
-		qRegisterMetaType<EntryStatus> ("LeechCraft::Azoth::EntryStatus");
+		qRegisterMetaType<EntryStatus> ("LC::Azoth::EntryStatus");
 		qRegisterMetaType<QPointer<QObject>> ("QPointer<QObject>");
 
 		XmlSettingsManager::Instance ().RegisterObject ("StatusIcons",
@@ -619,7 +619,7 @@ namespace Azoth
 		return result.toList ();
 	}
 
-	void Core::SendEntity (const LeechCraft::Entity& e)
+	void Core::SendEntity (const LC::Entity& e)
 	{
 		emit gotEntity (e);
 	}
@@ -1804,9 +1804,9 @@ namespace Azoth
 
 		if (qobject_cast<ISupportRIEX*> (account->GetQObject ()))
 			connect (account->GetQObject (),
-					SIGNAL (riexItemsSuggested (QList<LeechCraft::Azoth::RIEXItem>, QObject*, QString)),
+					SIGNAL (riexItemsSuggested (QList<LC::Azoth::RIEXItem>, QObject*, QString)),
 					this,
-					SLOT (handleRIEXItemsSuggested (QList<LeechCraft::Azoth::RIEXItem>, QObject*, QString)));
+					SLOT (handleRIEXItemsSuggested (QList<LC::Azoth::RIEXItem>, QObject*, QString)));
 
 		if (const auto ichse = qobject_cast<ICanHaveSslErrors*> (account->GetQObject ()))
 			new SslErrorsHandler { SslErrorsHandler::Account { accountId, accountName }, ichse };

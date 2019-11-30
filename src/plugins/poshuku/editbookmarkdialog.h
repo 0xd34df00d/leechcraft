@@ -32,7 +32,7 @@
 #include <QDialog>
 #include "ui_editbookmarkdialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

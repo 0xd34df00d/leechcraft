@@ -37,7 +37,7 @@
 #include "attdescr.h"
 #include "messageinfo.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Snails
 {

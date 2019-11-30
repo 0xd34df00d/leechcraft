@@ -108,9 +108,9 @@
 Q_DECLARE_METATYPE (QMenu*)
 Q_DECLARE_METATYPE (QToolBar*)
 
-using namespace LeechCraft::Util;
+using namespace LC::Util;
 
-namespace LeechCraft
+namespace LC
 {
 namespace BitTorrent
 {

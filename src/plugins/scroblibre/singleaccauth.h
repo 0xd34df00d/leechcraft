@@ -34,7 +34,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include "submitinfo.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Scroblibre
 {

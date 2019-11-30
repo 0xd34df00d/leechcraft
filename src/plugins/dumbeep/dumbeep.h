@@ -34,7 +34,7 @@
 #include <interfaces/ihavesettings.h>
 #include <interfaces/ientityhandler.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Dumbeep
 {

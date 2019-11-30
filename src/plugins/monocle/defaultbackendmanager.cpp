@@ -39,7 +39,7 @@
 #include "choosebackenddialog.h"
 #include "core.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {

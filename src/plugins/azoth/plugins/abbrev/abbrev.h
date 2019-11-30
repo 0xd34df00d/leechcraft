@@ -38,7 +38,7 @@
 
 class QWebView;
 
-namespace LeechCraft::Azoth
+namespace LC::Azoth
 {
 class IProxyObject;
 
@@ -57,7 +57,7 @@ namespace Abbrev
 		Q_INTERFACES (IInfo
 				IPlugin2
 				IHaveShortcuts
-				LeechCraft::Azoth::IProvideCommands)
+				LC::Azoth::IProvideCommands)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.Abbrev")
 
@@ -89,9 +89,9 @@ namespace Abbrev
 	public slots:
 		void initPlugin (QObject*);
 
-		void hookChatTabCreated (LeechCraft::IHookProxy_ptr,
+		void hookChatTabCreated (LC::IHookProxy_ptr,
 				QObject*, QObject*, QWebView*);
-		void hookMessageSendRequested (LeechCraft::IHookProxy_ptr,
+		void hookMessageSendRequested (LC::IHookProxy_ptr,
 				QObject*,
 				QObject*,
 				int,

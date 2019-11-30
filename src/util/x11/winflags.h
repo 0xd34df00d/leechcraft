@@ -31,7 +31,7 @@
 
 #include <QFlags>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {
@@ -75,5 +75,5 @@ namespace Util
 }
 }
 
-Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::Util::WinStateFlags)
-Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::Util::AllowedActionFlags)
+Q_DECLARE_OPERATORS_FOR_FLAGS (LC::Util::WinStateFlags)
+Q_DECLARE_OPERATORS_FOR_FLAGS (LC::Util::AllowedActionFlags)

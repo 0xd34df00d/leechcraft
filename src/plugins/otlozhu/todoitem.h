@@ -34,7 +34,7 @@
 #include <QDateTime>
 #include <QVariantMap>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Otlozhu
 {

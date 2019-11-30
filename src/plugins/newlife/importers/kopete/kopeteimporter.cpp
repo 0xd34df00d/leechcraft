@@ -30,7 +30,7 @@
 #include "kopeteimporter.h"
 #include "kopeteimportpage.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace NewLife
 {

@@ -33,7 +33,7 @@
 #include <QList>
 #include "ui_fastspeedcontrolwidget.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace BitTorrent
 {

@@ -29,7 +29,7 @@
 
 #include "msnaccountconfigwidget.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

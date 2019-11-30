@@ -33,7 +33,7 @@
 #include <QHash>
 #include <QString>
 
-namespace LeechCraft
+namespace LC
 {
 namespace AdvancedNotifications
 {

@@ -40,7 +40,7 @@ namespace Media
 class IDiscographyProvider;
 }
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

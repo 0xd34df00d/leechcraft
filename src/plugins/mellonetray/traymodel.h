@@ -34,7 +34,7 @@
 #include <QAbstractNativeEventFilter>
 #include <util/models/rolenamesmixin.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Mellonetray
 {

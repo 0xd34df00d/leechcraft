@@ -38,7 +38,7 @@ class QWebView;
 class QUrl;
 class QImage;
 
-namespace LeechCraft::Poshuku
+namespace LC::Poshuku
 {
 class IProxyObject;
 class IWebView;

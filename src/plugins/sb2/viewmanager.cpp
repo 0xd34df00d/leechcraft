@@ -55,7 +55,7 @@
 #include "viewpropsmanager.h"
 #include "dirwatcher.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace SB2
 {

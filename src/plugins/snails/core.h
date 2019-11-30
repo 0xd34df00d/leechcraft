@@ -33,7 +33,7 @@
 #include <interfaces/structures.h>
 #include <interfaces/core/icoreproxy.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

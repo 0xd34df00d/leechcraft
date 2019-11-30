@@ -31,7 +31,7 @@
 #include <QVBoxLayout>
 #include "intropage.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace BitTorrent
 {

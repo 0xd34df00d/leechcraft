@@ -38,7 +38,7 @@
 #include "httpserver.h"
 #include "filterconfigurator.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

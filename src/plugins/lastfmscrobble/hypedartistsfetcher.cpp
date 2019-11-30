@@ -41,7 +41,7 @@
 #include "util.h"
 #include "pendingartistbio.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Lastfmscrobble
 {

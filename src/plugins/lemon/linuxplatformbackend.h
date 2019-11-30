@@ -33,7 +33,7 @@
 #include <QHash>
 #include <libnl3/netlink/route/link.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Lemon
 {

@@ -34,7 +34,7 @@
 #include <QDir>
 #include <interfaces/media/ilyricsfinder.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace DeadLyrics
 {

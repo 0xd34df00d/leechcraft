@@ -39,7 +39,7 @@
 
 class QTranslator;
 
-namespace LeechCraft
+namespace LC
 {
 namespace SB2
 {

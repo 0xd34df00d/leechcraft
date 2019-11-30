@@ -32,7 +32,7 @@
 #include "vkaccount.h"
 #include "vkentry.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

@@ -39,7 +39,7 @@
 #include "accountregfirstpage.h"
 #include "accountwrapper.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -266,9 +266,9 @@ namespace Astrality
 		qDebug () << Q_FUNC_INFO << ProtoName_ << acc->nickname () << acc->iconName ();
 		auto w = new AccountWrapper (acc, Proxy_, this);
 		connect (w,
-				SIGNAL (gotEntity (LeechCraft::Entity)),
+				SIGNAL (gotEntity (LC::Entity)),
 				this,
-				SIGNAL (gotEntity (LeechCraft::Entity)));
+				SIGNAL (gotEntity (LC::Entity)));
 		connect (w,
 				SIGNAL (removeFinished (AccountWrapper*)),
 				this,

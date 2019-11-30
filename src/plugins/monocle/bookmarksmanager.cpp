@@ -35,7 +35,7 @@
 #include <util/sys/paths.h>
 #include "bookmark.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {

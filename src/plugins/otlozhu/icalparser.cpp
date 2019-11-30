@@ -38,7 +38,7 @@
 #include <interfaces/core/itagsmanager.h>
 #include "core.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Otlozhu
 {
@@ -79,19 +79,19 @@ namespace Otlozhu
 }
 }
 
-BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Otlozhu::Field,
+BOOST_FUSION_ADAPT_STRUCT (LC::Otlozhu::Field,
 		Name_,
 		Val_);
 
-BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Otlozhu::Item,
+BOOST_FUSION_ADAPT_STRUCT (LC::Otlozhu::Item,
 		Name_,
 		Fields_);
 
-BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Otlozhu::ICal,
+BOOST_FUSION_ADAPT_STRUCT (LC::Otlozhu::ICal,
 		Fields_,
 		Items_);
 
-namespace LeechCraft
+namespace LC
 {
 namespace Otlozhu
 {

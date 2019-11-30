@@ -32,7 +32,7 @@
 #include <QDialog>
 #include "ui_addaccountdialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace NetStoreManager
 {

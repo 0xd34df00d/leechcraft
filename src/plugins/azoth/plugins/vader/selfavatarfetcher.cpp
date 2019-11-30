@@ -36,7 +36,7 @@
 #include <util/threads/futures.h>
 #include "avatarstimestampstorage.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

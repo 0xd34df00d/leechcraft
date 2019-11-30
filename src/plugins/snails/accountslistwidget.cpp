@@ -31,7 +31,7 @@
 #include "account.h"
 #include "accountsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Snails
 {

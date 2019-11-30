@@ -38,7 +38,7 @@ class QAction;
 
 class IPluginsManager;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

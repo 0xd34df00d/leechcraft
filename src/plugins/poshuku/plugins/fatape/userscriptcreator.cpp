@@ -37,7 +37,7 @@
 #include "userscript.h"
 #include "fatape.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

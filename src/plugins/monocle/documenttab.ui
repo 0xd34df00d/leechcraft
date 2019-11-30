@@ -21,7 +21,7 @@
     <number>1</number>
    </property>
    <item>
-    <widget class="LeechCraft::Monocle::PagesView" name="PagesView_">
+    <widget class="LC::Monocle::PagesView" name="PagesView_">
      <property name="acceptDrops">
       <bool>false</bool>
      </property>
@@ -37,7 +37,7 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>LeechCraft::Monocle::PagesView</class>
+   <class>LC::Monocle::PagesView</class>
    <extends>QGraphicsView</extends>
    <header>pagesview.h</header>
   </customwidget>

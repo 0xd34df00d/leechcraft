@@ -36,7 +36,7 @@
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/iadvancedclentry.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -49,8 +49,8 @@ namespace Metacontacts
 					, public IAdvancedCLEntry
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::ICLEntry
-				LeechCraft::Azoth::IAdvancedCLEntry)
+		Q_INTERFACES (LC::Azoth::ICLEntry
+				LC::Azoth::IAdvancedCLEntry)
 
 		MetaAccount *Account_;
 		QString ID_;

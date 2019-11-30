@@ -33,11 +33,11 @@
 #include <QStandardItemModel>
 #include <QtDebug>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {
-	uint qHash (const LeechCraft::Monocle::ILink_ptr& link)
+	uint qHash (const LC::Monocle::ILink_ptr& link)
 	{
 		return ::qHash (link.get ());
 	}

@@ -47,7 +47,7 @@
 #include "xmlsettingsmanager.h"
 #include "addcommentdialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blogique
 {
@@ -239,7 +239,7 @@ namespace Blogique
 		FillModel ();
 	}
 
-	QDataStream& operator<< (QDataStream& out, const LeechCraft::Blogique::CommentsWidget::CommentID& comment)
+	QDataStream& operator<< (QDataStream& out, const LC::Blogique::CommentsWidget::CommentID& comment)
 	{
 		out << static_cast<qint8> (1)
 				<< comment.AccountID_
@@ -247,7 +247,7 @@ namespace Blogique
 		return out;
 	}
 
-	QDataStream& operator>> (QDataStream& in, LeechCraft::Blogique::CommentsWidget::CommentID& comment)
+	QDataStream& operator>> (QDataStream& in, LC::Blogique::CommentsWidget::CommentID& comment)
 	{
 		qint8 version = 0;
 		in >> version;
@@ -257,7 +257,7 @@ namespace Blogique
 		return in;
 	}
 
-	uint qHash (const LeechCraft::Blogique::CommentsWidget::CommentID& cid)
+	uint qHash (const LC::Blogique::CommentsWidget::CommentID& cid)
 	{
 		return qHash (cid.AccountID_) + ::qHash (cid.CommentID_);
 	}

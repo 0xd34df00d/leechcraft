@@ -37,7 +37,7 @@
 #include "clientconnection.h"
 #include "glooxmessage.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

@@ -33,13 +33,13 @@
 #include <QMap>
 #include <interfaces/an/constants.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {
 namespace AN
 {
-	namespace LAN = LeechCraft::AN;
+	namespace LAN = LC::AN;
 
 	QMap<QString, QString> GetCategoryNameMap ()
 	{

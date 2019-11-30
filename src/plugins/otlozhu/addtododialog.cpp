@@ -33,7 +33,7 @@
 #include <util/tags/tagscompleter.h>
 #include "core.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Otlozhu
 {

@@ -34,7 +34,7 @@
 
 class QwtPlotCurve;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Lemon
 {

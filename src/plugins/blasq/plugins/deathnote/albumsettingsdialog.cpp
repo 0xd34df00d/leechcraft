@@ -34,7 +34,7 @@
 #include "fotobilderaccount.h"
 #include "selectgroupsdialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blasq
 {

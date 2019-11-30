@@ -38,7 +38,7 @@
 #include <interfaces/ientityhandler.h>
 #include <interfaces/core/icoreproxyfwd.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Otzerkalu
 {

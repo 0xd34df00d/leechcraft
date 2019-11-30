@@ -57,7 +57,7 @@
 #include "closedialog.h"
 #include "colorschemesmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Eleeminator
 {

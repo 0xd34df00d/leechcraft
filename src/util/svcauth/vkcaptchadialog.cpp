@@ -33,7 +33,7 @@
 #include <QNetworkReply>
 #include "ui_vkcaptchadialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

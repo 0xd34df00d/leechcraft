@@ -37,7 +37,7 @@
 #include <QDragEnterEvent>
 #include "signalledwidget.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace vlc
 {

@@ -34,7 +34,7 @@
 #include "servicesmanager.h"
 #include "pendinguploadbase.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Zalil
 {
@@ -101,4 +101,4 @@ namespace Zalil
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_zalil, LeechCraft::Zalil::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_zalil, LC::Zalil::Plugin);

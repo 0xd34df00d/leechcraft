@@ -34,7 +34,7 @@
 
 class QSslCertificate;
 
-namespace LeechCraft
+namespace LC
 {
 namespace CertMgr
 {

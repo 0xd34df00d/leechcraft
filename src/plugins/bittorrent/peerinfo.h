@@ -39,7 +39,7 @@ namespace libtorrent
     struct peer_info;
 }
 
-namespace LeechCraft
+namespace LC
 {
 namespace BitTorrent
 {

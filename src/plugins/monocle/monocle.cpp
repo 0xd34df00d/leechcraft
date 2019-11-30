@@ -40,7 +40,7 @@
 #include "xmlsettingsmanager.h"
 #include "defaultbackendmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {
@@ -228,5 +228,5 @@ namespace Monocle
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_monocle, LeechCraft::Monocle::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_monocle, LC::Monocle::Plugin);
 

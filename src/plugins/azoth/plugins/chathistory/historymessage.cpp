@@ -31,7 +31,7 @@
 #include <QtDebug>
 #include <interfaces/azoth/imucentry.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

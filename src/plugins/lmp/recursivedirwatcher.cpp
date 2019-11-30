@@ -35,7 +35,7 @@
 #include "recursivedirwatcher_generic.h"
 #endif
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

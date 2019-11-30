@@ -39,7 +39,7 @@
 #include <interfaces/poshuku/iwebviewprovider.h>
 #include <interfaces/poshuku/iinterceptablerequests.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {
@@ -64,8 +64,8 @@ namespace WebKitView
 				IPlugin2
 				IHaveSettings
 				IHaveDiagInfo
-				LeechCraft::Poshuku::IWebViewProvider
-				LeechCraft::Poshuku::IInterceptableRequests)
+				LC::Poshuku::IWebViewProvider
+				LC::Poshuku::IInterceptableRequests)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Poshuku.WebKitView")
 
@@ -102,7 +102,7 @@ namespace WebKitView
 	private slots:
 		void handleWebViewCreated (const std::shared_ptr<CustomWebView>&, bool);
 	public slots:
-		void hookNAMCreateRequest (LeechCraft::IHookProxy_ptr,
+		void hookNAMCreateRequest (LC::IHookProxy_ptr,
 				QNetworkAccessManager*,
 				QNetworkAccessManager::Operation*,
 				QIODevice**);

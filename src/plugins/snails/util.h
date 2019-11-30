@@ -35,7 +35,7 @@ class QByteArray;
 
 class IEntityManager;
 
-namespace LeechCraft::Snails
+namespace LC::Snails
 {
 	class Account;
 

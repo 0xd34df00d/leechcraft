@@ -36,7 +36,7 @@
 #include "glooxaccount.h"
 #include "roomclentry.h"
 
-namespace LeechCraft::Azoth::Xoox
+namespace LC::Azoth::Xoox
 {
 	BookmarksIntegrator::BookmarksIntegrator (QXmppBookmarkManager& mgr,
 			ClientConnection& conn, GlooxAccount& acc, QObject *parent)

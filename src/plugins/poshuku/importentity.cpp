@@ -36,7 +36,7 @@
 #include "historymodel.h"
 #include "favoritesmodel.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

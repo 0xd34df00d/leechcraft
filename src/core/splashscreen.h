@@ -31,7 +31,7 @@
 
 #include <QSplashScreen>
 
-namespace LeechCraft
+namespace LC
 {
 	class LoadProcessBase;
 

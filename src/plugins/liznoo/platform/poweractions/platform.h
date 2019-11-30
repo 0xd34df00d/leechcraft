@@ -32,7 +32,7 @@
 #include <QObject>
 #include <QFuture>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Liznoo
 {

@@ -38,7 +38,7 @@
 #include "ljfriendentry.h"
 #include "entryoptions.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blogique
 {
@@ -94,7 +94,7 @@ namespace Metida
 					, public IAccount
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Blogique::IAccount)
+		Q_INTERFACES (LC::Blogique::IAccount)
 
 		LJBloggingPlatform * const ParentBloggingPlatform_;
 		const ICoreProxy_ptr Proxy_;

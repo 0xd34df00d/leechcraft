@@ -29,7 +29,7 @@
 
 #include "bandinfo.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

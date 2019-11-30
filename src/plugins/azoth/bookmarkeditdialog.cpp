@@ -33,7 +33,7 @@
 #include "interfaces/azoth/isupportbookmarks.h"
 #include "interfaces/azoth/imucbookmarkeditorwidget.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

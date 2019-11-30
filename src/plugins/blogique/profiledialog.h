@@ -32,7 +32,7 @@
 #include <QDialog>
 #include "ui_profiledialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blogique
 {

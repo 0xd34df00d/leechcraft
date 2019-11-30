@@ -50,7 +50,7 @@
 #include "core.h"
 #include "similarmodel.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

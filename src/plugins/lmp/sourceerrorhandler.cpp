@@ -33,7 +33,7 @@
 #include <interfaces/core/ientitymanager.h>
 #include "engine/sourceobject.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

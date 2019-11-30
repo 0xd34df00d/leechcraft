@@ -32,7 +32,7 @@
 #include <QSpinBox>
 #include "rangewidget.h"
 
-using namespace LeechCraft;
+using namespace LC;
 
 RangeWidget::RangeWidget (QWidget *parent)
 : QWidget (parent)

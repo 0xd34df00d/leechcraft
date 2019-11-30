@@ -34,7 +34,7 @@
 #include <QPointer>
 #include <QColor>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Lemon
 {

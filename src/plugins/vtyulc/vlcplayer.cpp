@@ -59,7 +59,7 @@ namespace
 	const int MAX_TIMEOUT = 1000; // in ms
 }
 
-namespace LeechCraft
+namespace LC
 {
 namespace vlc
 {

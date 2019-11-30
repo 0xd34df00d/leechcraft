@@ -35,7 +35,7 @@
 #include "richeditorwidget.h"
 #include "xmlsettingsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LHTR
 {
@@ -105,4 +105,4 @@ namespace LHTR
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_lhtr, LeechCraft::LHTR::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_lhtr, LC::LHTR::Plugin);

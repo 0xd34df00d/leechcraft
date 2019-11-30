@@ -63,11 +63,11 @@
 #include "actionsstructs.h"
 #include "itemutils.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Aggregator
 {
-	using LeechCraft::Util::CategorySelector;
+	using LC::Util::CategorySelector;
 
 	struct ItemsWidget_Impl
 	{

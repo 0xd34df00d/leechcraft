@@ -45,7 +45,7 @@
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "browserwidget.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {
@@ -106,10 +106,10 @@ namespace Poshuku
 		QSet<QByteArray> GetExpectedPluginClasses () const;
 		void AddPlugin (QObject*);
 
-		std::shared_ptr<LeechCraft::Util::XmlSettingsDialog> GetSettingsDialog () const;
+		std::shared_ptr<LC::Util::XmlSettingsDialog> GetSettingsDialog () const;
 
-		EntityTestHandleResult CouldHandle (const LeechCraft::Entity&) const;
-		void Handle (LeechCraft::Entity);
+		EntityTestHandleResult CouldHandle (const LC::Entity&) const;
+		void Handle (LC::Entity);
 
 		void Open (const QString&);
 		IWebWidget* GetWidget () const;
@@ -140,7 +140,7 @@ namespace Poshuku
 		void statusBarChanged (QWidget*, const QString&);
 		void raiseTab (QWidget*);
 
-		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
+		void gotActions (QList<QAction*>, LC::ActionsEmbedPlace);
 
 		void tabRecovered (const QByteArray&, QWidget*);
 	};

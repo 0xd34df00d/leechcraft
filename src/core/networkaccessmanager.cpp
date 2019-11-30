@@ -45,8 +45,8 @@
 
 Q_DECLARE_METATYPE (QNetworkReply*);
 
-using namespace LeechCraft;
-using namespace LeechCraft::Util;
+using namespace LC;
+using namespace LC::Util;
 
 NetworkAccessManager::NetworkAccessManager (QObject *parent)
 : QNetworkAccessManager (parent)
@@ -148,13 +148,13 @@ QNetworkReply* NetworkAccessManager::createRequest (QNetworkAccessManager::Opera
 	return result;
 }
 
-void LeechCraft::NetworkAccessManager::handleSslErrors (QNetworkReply *replyObj,
+void LC::NetworkAccessManager::handleSslErrors (QNetworkReply *replyObj,
 		const QList<QSslError>& errors)
 {
 	new SslErrorsHandler { replyObj, errors };
 }
 
-void LeechCraft::NetworkAccessManager::saveCookies () const
+void LC::NetworkAccessManager::saveCookies () const
 {
 	QDir dir = QDir::home ();
 	dir.cd (".leechcraft");
@@ -180,7 +180,7 @@ void LeechCraft::NetworkAccessManager::saveCookies () const
 	file.write (saveEnabled ? CookieJar_->Save () : QByteArray ());
 }
 
-void LeechCraft::NetworkAccessManager::handleFilterTrackingCookies ()
+void LC::NetworkAccessManager::handleFilterTrackingCookies ()
 {
 	CookieJar_->SetFilterTrackingCookies (XmlSettingsManager::Instance ()->
 				property ("FilterTrackingCookies").toBool ());

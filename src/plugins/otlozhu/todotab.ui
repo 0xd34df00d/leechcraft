@@ -34,7 +34,7 @@
         <number>1</number>
        </property>
        <item>
-        <widget class="LeechCraft::Util::TagsLineEdit" name="FilterLine_">
+        <widget class="LC::Util::TagsLineEdit" name="FilterLine_">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -97,7 +97,7 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>LeechCraft::Util::TagsLineEdit</class>
+   <class>LC::Util::TagsLineEdit</class>
    <extends>QLineEdit</extends>
    <header location="global">util/tags/tagslineedit.h</header>
   </customwidget>

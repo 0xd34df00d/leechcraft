@@ -36,7 +36,7 @@
 
 class QNetworkReply;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

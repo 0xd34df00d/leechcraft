@@ -53,7 +53,7 @@
 #include "updatesnotificationmanager.h"
 #include "lackmanutil.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LackMan
 {

@@ -37,7 +37,7 @@
 #include <interfaces/core/icoretabwidget.h>
 #include <interfaces/core/irootwindowsmanager.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace PinTab
 {
@@ -177,7 +177,7 @@ namespace PinTab
 		tw->MoveTab (tabIndex, Window2Widget2TabData_.value (window).count ());
 	}
 
-	void Plugin::hookTabContextMenuFill (LeechCraft::IHookProxy_ptr,
+	void Plugin::hookTabContextMenuFill (LC::IHookProxy_ptr,
 			QMenu *menu, int index, int windowId)
 	{
 		auto window = Proxy_->GetRootWindowsManager ()->GetMainWindow (windowId);
@@ -202,7 +202,7 @@ namespace PinTab
 		}
 	}
 
-	void Plugin::hookTabFinishedMoving (LeechCraft::IHookProxy_ptr, int index, int windowId)
+	void Plugin::hookTabFinishedMoving (LC::IHookProxy_ptr, int index, int windowId)
 	{
 		auto window = Proxy_->GetRootWindowsManager ()->GetMainWindow (windowId);
 		if (!window)
@@ -294,4 +294,4 @@ namespace PinTab
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_pintab, LeechCraft::PinTab::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_pintab, LC::PinTab::Plugin);

@@ -52,7 +52,7 @@
 #include "unhandlednotificationskeeper.h"
 #include "addfrommisseddialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace AdvancedNotifications
 {

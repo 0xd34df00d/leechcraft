@@ -30,7 +30,7 @@
 #include "favoritestreeview.h"
 #include <QKeyEvent>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

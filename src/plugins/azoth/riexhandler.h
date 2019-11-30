@@ -34,7 +34,7 @@
 #include <QObject>
 #include "interfaces/azoth/isupportriex.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

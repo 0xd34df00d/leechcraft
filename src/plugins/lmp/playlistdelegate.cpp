@@ -39,9 +39,9 @@
 #include "mediainfo.h"
 #include "util.h"
 
-Q_DECLARE_METATYPE (QList<LeechCraft::Entity>)
+Q_DECLARE_METATYPE (QList<LC::Entity>)
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

@@ -51,7 +51,7 @@ typedef struct _GstBus GstBus;
 
 typedef std::shared_ptr<GstMessage> GstMessage_ptr;
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

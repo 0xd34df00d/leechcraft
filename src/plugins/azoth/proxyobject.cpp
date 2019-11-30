@@ -46,7 +46,7 @@
 #include "util.h"
 #include "customstatusesmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

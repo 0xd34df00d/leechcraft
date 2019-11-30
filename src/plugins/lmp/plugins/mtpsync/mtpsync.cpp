@@ -43,7 +43,7 @@
 #include <interfaces/devices/iremovabledevmanager.h>
 #include <interfaces/devices/deviceroles.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {
@@ -695,4 +695,4 @@ namespace MTPSync
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_lmp_mtpsync, LeechCraft::LMP::MTPSync::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_lmp_mtpsync, LC::LMP::MTPSync::Plugin);

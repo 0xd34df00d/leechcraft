@@ -36,7 +36,7 @@
 #include <interfaces/poshuku/iwebviewprovider.h>
 #include <interfaces/poshuku/iinterceptablerequests.h>
 
-namespace LeechCraft::Poshuku
+namespace LC::Poshuku
 {
 class IProxyObject;
 
@@ -55,8 +55,8 @@ namespace WebEngineView
 		Q_OBJECT
 		Q_INTERFACES (IInfo
 				IPlugin2
-				LeechCraft::Poshuku::IWebViewProvider
-				LeechCraft::Poshuku::IInterceptableRequests)
+				LC::Poshuku::IWebViewProvider
+				LC::Poshuku::IInterceptableRequests)
 
 		Q_PLUGIN_METADATA (IID "org.LeechCraft.Poshuku.WebEngineView" FILE "manifest.json")
 

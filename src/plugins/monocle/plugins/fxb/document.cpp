@@ -38,7 +38,7 @@
 #include "fb2converter.h"
 #include "xmlsettingsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {

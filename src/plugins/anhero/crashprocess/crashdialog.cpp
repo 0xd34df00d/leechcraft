@@ -42,7 +42,7 @@
 #include "gdblauncher.h"
 #include "highlighter.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace AnHero
 {

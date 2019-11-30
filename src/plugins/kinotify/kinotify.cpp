@@ -44,7 +44,7 @@
 #include "xmlsettingsmanager.h"
 #include "fswinwatcher.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Kinotify
 {
@@ -282,4 +282,4 @@ namespace Kinotify
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_kinotify, LeechCraft::Kinotify::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_kinotify, LC::Kinotify::Plugin);

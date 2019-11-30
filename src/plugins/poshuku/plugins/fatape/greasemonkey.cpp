@@ -36,7 +36,7 @@
 #include <QUrl>
 #include <interfaces/poshuku/iwebview.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

@@ -33,7 +33,7 @@
 #include <QNetworkCookie>
 #include <QMap>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

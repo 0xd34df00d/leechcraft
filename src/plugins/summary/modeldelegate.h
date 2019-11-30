@@ -31,7 +31,7 @@
 
 #include <QStyledItemDelegate>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Summary
 {

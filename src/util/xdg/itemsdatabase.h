@@ -33,7 +33,7 @@
 
 class QFileSystemWatcher;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

@@ -30,7 +30,7 @@
 #include "ipvalidators.h"
 #include <QStringList>
 
-namespace LeechCraft
+namespace LC
 {
 namespace BitTorrent
 {

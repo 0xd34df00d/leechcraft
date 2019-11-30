@@ -42,7 +42,7 @@ class QColor;
 class QWidget;
 class QStyleOptionViewItem;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {
@@ -211,4 +211,4 @@ namespace Util
 }
 }
 
-Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::Util::FitFlags)
+Q_DECLARE_OPERATORS_FOR_FLAGS (LC::Util::FitFlags)

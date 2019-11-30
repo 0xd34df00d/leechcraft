@@ -34,7 +34,7 @@
 #include <QString>
 #include <QMetaType>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {
@@ -58,7 +58,7 @@ namespace Util
 }
 }
 
-UTIL_SLL_API QDataStream& operator<< (QDataStream&, const LeechCraft::Util::RegExp&);
-UTIL_SLL_API QDataStream& operator>> (QDataStream&, LeechCraft::Util::RegExp&);
+UTIL_SLL_API QDataStream& operator<< (QDataStream&, const LC::Util::RegExp&);
+UTIL_SLL_API QDataStream& operator>> (QDataStream&, LC::Util::RegExp&);
 
-Q_DECLARE_METATYPE (LeechCraft::Util::RegExp)
+Q_DECLARE_METATYPE (LC::Util::RegExp)

@@ -35,7 +35,7 @@
 class QObject;
 class QIcon;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -255,7 +255,7 @@ namespace Azoth
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::Azoth::IProtocol*)
-Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::Azoth::IProtocol::ProtocolFeatures)
-Q_DECLARE_INTERFACE (LeechCraft::Azoth::IProtocol,
+Q_DECLARE_METATYPE (LC::Azoth::IProtocol*)
+Q_DECLARE_OPERATORS_FOR_FLAGS (LC::Azoth::IProtocol::ProtocolFeatures)
+Q_DECLARE_INTERFACE (LC::Azoth::IProtocol,
 		"org.Deviant.LeechCraft.Azoth.IProtocol/1.0")

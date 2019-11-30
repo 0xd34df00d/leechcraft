@@ -35,7 +35,7 @@
 #include <interfaces/data/iimgsource.h>
 #include <interfaces/core/icoreproxy.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace LHTR
 {

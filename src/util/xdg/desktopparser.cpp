@@ -32,7 +32,7 @@
 #include <boost/spirit/include/phoenix.hpp>
 #include <boost/fusion/adapted.hpp>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {
@@ -66,19 +66,19 @@ namespace XDG
 }
 }
 
-BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Util::XDG::Field,
+BOOST_FUSION_ADAPT_STRUCT (LC::Util::XDG::Field,
 		Name_,
 		Lang_,
 		Val_)
 
-BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Util::XDG::Group,
+BOOST_FUSION_ADAPT_STRUCT (LC::Util::XDG::Group,
 		Name_,
 		Fields_)
 
-BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Util::XDG::File,
+BOOST_FUSION_ADAPT_STRUCT (LC::Util::XDG::File,
 		Groups_)
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

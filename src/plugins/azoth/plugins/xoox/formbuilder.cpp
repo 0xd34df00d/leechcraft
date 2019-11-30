@@ -41,7 +41,7 @@
 #include "imagemediawidget.h"
 #include "xeps/xmppbobmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

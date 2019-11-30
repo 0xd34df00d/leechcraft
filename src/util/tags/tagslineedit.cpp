@@ -40,7 +40,7 @@
 #include "tagscompletionmodel.h"
 #include "tagscompleter.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

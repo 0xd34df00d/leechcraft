@@ -31,7 +31,7 @@
 #define PLUGINS_POSHUKU_COOKIESFILTER_H
 #include <QSortFilterProxyModel>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

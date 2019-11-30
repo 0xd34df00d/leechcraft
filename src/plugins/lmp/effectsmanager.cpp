@@ -37,7 +37,7 @@
 #include "engine/rgfilter.h"
 #include "xmlsettingsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

@@ -37,7 +37,7 @@
 #include <interfaces/poshuku/iproxyobject.h>
 #include "userscript.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

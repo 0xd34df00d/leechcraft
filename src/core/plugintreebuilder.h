@@ -35,7 +35,7 @@
 #include <QSet>
 #include <QHash>
 
-namespace LeechCraft
+namespace LC
 {
 	class PluginTreeBuilder
 	{

@@ -33,7 +33,7 @@
 #include <QPixmap>
 #include "ui_screenshotsavedialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

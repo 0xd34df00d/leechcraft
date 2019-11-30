@@ -40,7 +40,7 @@
 #include "callbackmanager.h"
 #include "toxlogger.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

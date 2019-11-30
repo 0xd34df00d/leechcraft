@@ -29,7 +29,7 @@
 
 #include "entitywrapper.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Qrosp
 {

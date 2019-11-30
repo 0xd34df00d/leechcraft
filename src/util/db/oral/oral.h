@@ -64,7 +64,7 @@
 #include "impldefs.h"
 #include "sqliteimpl.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

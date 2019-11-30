@@ -49,7 +49,7 @@
 #include "xmlsettingsmanager.h"
 #include "radiotracksgrabdialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

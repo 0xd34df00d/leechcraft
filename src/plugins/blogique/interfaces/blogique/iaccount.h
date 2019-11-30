@@ -38,7 +38,7 @@
 class QAction;
 class QWidget;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blogique
 {
@@ -339,5 +339,5 @@ namespace Blogique
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Blogique::IAccount,
+Q_DECLARE_INTERFACE (LC::Blogique::IAccount,
 		"org.Deviant.LeechCraft.Blogique.IAccount/1.0")

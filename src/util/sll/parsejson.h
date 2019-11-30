@@ -35,7 +35,7 @@
 #include <QtDebug>
 #include <QJsonDocument>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

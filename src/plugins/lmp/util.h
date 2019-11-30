@@ -40,7 +40,7 @@ class QPixmap;
 class QPoint;
 class QColor;
 
-namespace LeechCraft
+namespace LC
 {
 struct Entity;
 

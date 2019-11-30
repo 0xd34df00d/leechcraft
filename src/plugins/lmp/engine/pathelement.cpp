@@ -29,7 +29,7 @@
 
 #include "pathelement.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

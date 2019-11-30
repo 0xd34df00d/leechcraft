@@ -39,7 +39,7 @@ class QXmppVCardIq;
 class QXmppMucManager;
 class QXmppMucRoom;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

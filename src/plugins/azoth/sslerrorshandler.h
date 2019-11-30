@@ -33,7 +33,7 @@
 #include <QObject>
 #include <interfaces/azoth/icanhavesslerrors.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

@@ -34,7 +34,7 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavetabs.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Choroid
 {

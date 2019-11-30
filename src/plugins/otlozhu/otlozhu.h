@@ -40,7 +40,7 @@
 #include <interfaces/ientityhandler.h>
 #include <interfaces/ihavesettings.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Otlozhu
 {
@@ -98,7 +98,7 @@ namespace Otlozhu
 		void statusBarChanged (QWidget*, const QString&);
 		void raiseTab (QWidget*);
 
-		void gotEntity (const LeechCraft::Entity&);
+		void gotEntity (const LC::Entity&);
 	};
 }
 }

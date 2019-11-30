@@ -34,7 +34,7 @@
 #include <interfaces/advancednotifications/inotificationhandler.h>
 #include "notificationdata.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace AdvancedNotifications
 {
@@ -44,7 +44,7 @@ namespace Dolle
 							  , public INotificationHandler
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::AdvancedNotifications::INotificationHandler)
+		Q_INTERFACES (LC::AdvancedNotifications::INotificationHandler)
 
 		QMap<QString, NotificationData> Counts_;
 	public:

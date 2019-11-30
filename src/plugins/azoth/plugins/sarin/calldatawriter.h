@@ -35,7 +35,7 @@
 
 class QAudioFormat;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

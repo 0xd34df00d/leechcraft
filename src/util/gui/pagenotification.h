@@ -32,7 +32,7 @@
 #include <QWidget>
 #include "guiconfig.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

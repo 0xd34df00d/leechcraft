@@ -34,7 +34,7 @@
 class QString;
 class QObject;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -48,5 +48,5 @@ namespace Azoth
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Azoth::ISupportNonRoster,
+Q_DECLARE_INTERFACE (LC::Azoth::ISupportNonRoster,
 		"org.LeechCraft.Azoth.ISupportNonRoster/1.0")

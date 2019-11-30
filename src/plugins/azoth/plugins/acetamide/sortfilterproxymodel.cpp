@@ -29,7 +29,7 @@
 
 #include "sortfilterproxymodel.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

@@ -37,7 +37,7 @@
 #include "uploader.h"
 #include "playlistmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {
@@ -141,9 +141,9 @@ namespace MP3Tunes
 			Uploaders_ [acc] = up;
 
 			connect (up,
-					SIGNAL (uploadFinished (QString, LeechCraft::LMP::CloudStorageError, QString)),
+					SIGNAL (uploadFinished (QString, LC::LMP::CloudStorageError, QString)),
 					this,
-					SIGNAL (uploadFinished (QString, LeechCraft::LMP::CloudStorageError, QString)));
+					SIGNAL (uploadFinished (QString, LC::LMP::CloudStorageError, QString)));
 		}
 
 		Uploaders_ [acc]->Upload (localPath);
@@ -172,4 +172,4 @@ namespace MP3Tunes
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_lmp_mp3tunes, LeechCraft::LMP::MP3Tunes::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_lmp_mp3tunes, LC::LMP::MP3Tunes::Plugin);

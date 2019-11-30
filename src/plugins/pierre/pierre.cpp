@@ -42,7 +42,7 @@
 #include "fullscreen.h"
 #include "reopenhandler.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Pierre
 {
@@ -166,12 +166,12 @@ namespace Pierre
 				GetAllCastableRoots<IActionsExporter*> ();
 		for (auto actor : actors)
 			connect (actor,
-					SIGNAL (gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace)),
+					SIGNAL (gotActions (QList<QAction*>, LC::ActionsEmbedPlace)),
 					this,
-					SLOT (handleGotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace)),
+					SLOT (handleGotActions (QList<QAction*>, LC::ActionsEmbedPlace)),
 					Qt::UniqueConnection);
 	}
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_pierre, LeechCraft::Pierre::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_pierre, LC::Pierre::Plugin);

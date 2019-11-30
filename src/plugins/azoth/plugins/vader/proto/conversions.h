@@ -33,7 +33,7 @@
 #include <QByteArray>
 #include <QTextCodec>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

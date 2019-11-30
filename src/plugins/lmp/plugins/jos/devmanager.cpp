@@ -40,7 +40,7 @@
 #include <util/sll/delayedexecutor.h>
 #include "mobileraii.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

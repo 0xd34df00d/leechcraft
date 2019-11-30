@@ -32,7 +32,7 @@
 #include <QDialog>
 #include "ui_proxyconfigdialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace XProxy
 {

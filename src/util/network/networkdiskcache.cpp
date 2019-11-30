@@ -36,7 +36,7 @@
 #include <util/threads/futures.h>
 #include "networkdiskcachegc.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

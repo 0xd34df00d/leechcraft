@@ -32,7 +32,7 @@
 #include <util/sll/util.h>
 #include "util.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Intermutko
 {

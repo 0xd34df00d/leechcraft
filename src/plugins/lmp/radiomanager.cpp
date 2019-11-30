@@ -48,7 +48,7 @@
 #include "radiocustomstreams.h"
 #include "radiopilesmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

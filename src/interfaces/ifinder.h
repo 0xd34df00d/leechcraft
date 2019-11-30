@@ -36,7 +36,7 @@
 
 class QAbstractItemModel;
 
-namespace LeechCraft
+namespace LC
 {
 	/** @brief Describes the elementary subrequest.
 	 *
@@ -170,7 +170,7 @@ public:
 	 *
 	 * @sa IFindProxy
 	 */
-	virtual QList<IFindProxy_ptr> GetProxy (const LeechCraft::Request& r) = 0;
+	virtual QList<IFindProxy_ptr> GetProxy (const LC::Request& r) = 0;
 
 	/** @brief This signal should be emitted by plugin after the list of
 	 * categories has been updated.

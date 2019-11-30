@@ -29,7 +29,7 @@
 
 #include "editcommentdialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Otlozhu
 {

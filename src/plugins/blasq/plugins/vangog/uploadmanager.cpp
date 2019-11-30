@@ -35,7 +35,7 @@
 #include <util/sll/queuemanager.h>
 #include "picasaaccount.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blasq
 {

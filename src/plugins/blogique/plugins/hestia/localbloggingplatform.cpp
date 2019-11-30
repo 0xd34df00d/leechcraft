@@ -39,7 +39,7 @@
 #include "accountconfigurationwidget.h"
 #include "localblogaccount.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blogique
 {

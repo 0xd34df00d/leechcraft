@@ -35,7 +35,7 @@
 #include <QtDebug>
 #include <QStandardItemModel>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Eleeminator
 {

@@ -36,14 +36,14 @@
 #include "findproxy.h"
 #include "historydb.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace HistoryHolder
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		qRegisterMetaType<HistoryEntry> ("LeechCraft::Plugins::HistoryHolder::Core::HistoryEntry");
-		qRegisterMetaTypeStreamOperators<HistoryEntry> ("LeechCraft::Plugins::HistoryHolder::Core::HistoryEntry");
+		qRegisterMetaType<HistoryEntry> ("LC::Plugins::HistoryHolder::Core::HistoryEntry");
+		qRegisterMetaTypeStreamOperators<HistoryEntry> ("LC::Plugins::HistoryHolder::Core::HistoryEntry");
 
 		DB_ = std::make_shared<HistoryDB> (proxy->GetTagsManager (),
 				proxy->GetPluginsManager ()->CreateLoadProgressReporter (this));
@@ -99,10 +99,10 @@ namespace HistoryHolder
 		return {};
 	}
 
-	void Plugin::Handle (LeechCraft::Entity)
+	void Plugin::Handle (LC::Entity)
 	{
 	}
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_historyholder, LeechCraft::HistoryHolder::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_historyholder, LC::HistoryHolder::Plugin);

@@ -35,7 +35,7 @@
 #include <QPalette>
 #include <QtDebug>
 
-namespace LeechCraft
+namespace LC
 {
 namespace CertMgr
 {

@@ -35,7 +35,7 @@
 
 class QWebView;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {
@@ -69,7 +69,7 @@ namespace WebKitView
 		 * @param request The original network request.
 		 * @param type The navigation type.
 		 */
-		void hookAcceptNavigationRequest (LeechCraft::IHookProxy_ptr proxy,
+		void hookAcceptNavigationRequest (LC::IHookProxy_ptr proxy,
 				QWebPage *page,
 				QWebFrame *frame,
 				QNetworkRequest request,
@@ -90,7 +90,7 @@ namespace WebKitView
 		 * @param frame The frame that this request originated from.
 		 * @param suggested The suggested filename.
 		 */
-		void hookChooseFile (LeechCraft::IHookProxy_ptr proxy,
+		void hookChooseFile (LC::IHookProxy_ptr proxy,
 				QWebPage *page,
 				QWebFrame *frame,
 				QString suggested);
@@ -100,7 +100,7 @@ namespace WebKitView
 		 * @param proxy The standard hook proxy object.
 		 * @param page The web page whose contents changed.
 		 */
-		void hookContentsChanged (LeechCraft::IHookProxy_ptr proxy,
+		void hookContentsChanged (LC::IHookProxy_ptr proxy,
 				QWebPage *page);
 
 		/** @brief Called whenever an HTML object element is encountered.
@@ -126,7 +126,7 @@ namespace WebKitView
 		 * @param params List of parameters to the plugin.
 		 * @param values List of values of the parameters.
 		 */
-		void hookCreatePlugin (LeechCraft::IHookProxy_ptr proxy,
+		void hookCreatePlugin (LC::IHookProxy_ptr proxy,
 				QWebPage *page,
 				QString clsid,
 				QUrl url,
@@ -148,7 +148,7 @@ namespace WebKitView
 		 * @param page The page originating the new window request.
 		 * @param type The type of the new window.
 		 */
-		void hookCreateWindow (LeechCraft::IHookProxy_ptr proxy,
+		void hookCreateWindow (LC::IHookProxy_ptr proxy,
 				QWebPage *page,
 				QWebPage::WebWindowType type);
 
@@ -160,7 +160,7 @@ namespace WebKitView
 		 * excessive data.
 		 * @param databaseName The name of the database.
 		 */
-		void hookDatabaseQuotaExceeded (LeechCraft::IHookProxy_ptr proxy,
+		void hookDatabaseQuotaExceeded (LC::IHookProxy_ptr proxy,
 				QWebPage *sourcePage,
 				QWebFrame *sourceFrame,
 				QString databaseName);
@@ -177,7 +177,7 @@ namespace WebKitView
 		 * @param sourcePage The page originating the request.
 		 * @param request The original download request.
 		 */
-		void hookDownloadRequested (LeechCraft::IHookProxy_ptr proxy,
+		void hookDownloadRequested (LC::IHookProxy_ptr proxy,
 				QWebPage *sourcePage,
 				QNetworkRequest request);
 
@@ -199,7 +199,7 @@ namespace WebKitView
 		 *
 		 * @sa hookSupportsExtension().
 		 */
-		void hookExtension (LeechCraft::IHookProxy_ptr proxy,
+		void hookExtension (LC::IHookProxy_ptr proxy,
 				QWebPage *page,
 				QWebPage::Extension extension,
 				const QWebPage::ExtensionOption* extensionOption,
@@ -219,7 +219,7 @@ namespace WebKitView
 		 * @param text The original text to be found by the user.
 		 * @param findFlags The text find options.
 		 */
-		void hookFindText (LeechCraft::IHookProxy_ptr proxy,
+		void hookFindText (LC::IHookProxy_ptr proxy,
 				QObject *browserWidget,
 				QString text,
 				QWebPage::FindFlags findFlags);
@@ -233,7 +233,7 @@ namespace WebKitView
 		 * @param page The page on which the frame is created.
 		 * @param frameCreated The newly created frame.
 		 */
-		void hookFrameCreated (LeechCraft::IHookProxy_ptr proxy,
+		void hookFrameCreated (LC::IHookProxy_ptr proxy,
 				QWebPage *page,
 				QWebFrame *frameCreated);
 
@@ -247,7 +247,7 @@ namespace WebKitView
 		 * changed.
 		 * @param rect The new position and size rect.
 		 */
-		void hookGeometryChangeRequested (LeechCraft::IHookProxy_ptr proxy,
+		void hookGeometryChangeRequested (LC::IHookProxy_ptr proxy,
 				QWebPage *page,
 				QRect rect);
 
@@ -267,7 +267,7 @@ namespace WebKitView
 		 * alert() a message.
 		 * @param message The original message text.
 		 */
-		void hookJavaScriptAlert (LeechCraft::IHookProxy_ptr proxy,
+		void hookJavaScriptAlert (LC::IHookProxy_ptr proxy,
 				QWebPage *page,
 				QWebFrame *frame,
 				QString message);
@@ -289,7 +289,7 @@ namespace WebKitView
 		 * confirm() something.
 		 * @param message The original message text.
 		 */
-		void hookJavaScriptConfirm (LeechCraft::IHookProxy_ptr proxy,
+		void hookJavaScriptConfirm (LC::IHookProxy_ptr proxy,
 				QWebPage *page,
 				QWebFrame *frame,
 				QString message);
@@ -313,7 +313,7 @@ namespace WebKitView
 		 * @param line The line, if applicable.
 		 * @param sourceId The ID of the source, if applicable.
 		 */
-		void hookJavaScriptConsoleMessage (LeechCraft::IHookProxy_ptr proxy,
+		void hookJavaScriptConsoleMessage (LC::IHookProxy_ptr proxy,
 				QWebPage *page,
 				QString message,
 				int line,
@@ -342,7 +342,7 @@ namespace WebKitView
 		 * @param defValue The default value suggested by the JS.
 		 * @param resultString The result string.
 		 */
-		void hookJavaScriptPrompt (LeechCraft::IHookProxy_ptr proxy,
+		void hookJavaScriptPrompt (LC::IHookProxy_ptr proxy,
 				QWebPage *page,
 				QWebFrame *frame,
 				QString message,
@@ -364,7 +364,7 @@ namespace WebKitView
 		 * @param sourcePage The page containing the frame.
 		 * @param frame The frame whose window object is cleared.
 		 */
-		void hookJavaScriptWindowObjectCleared (LeechCraft::IHookProxy_ptr proxy,
+		void hookJavaScriptWindowObjectCleared (LC::IHookProxy_ptr proxy,
 				QWebPage *sourcePage,
 				QWebFrame *frame);
 
@@ -376,7 +376,7 @@ namespace WebKitView
 		 * @param page The page where the link is clicked.
 		 * @param url The URL of the link.
 		 */
-		void hookLinkClicked (LeechCraft::IHookProxy_ptr proxy,
+		void hookLinkClicked (LC::IHookProxy_ptr proxy,
 				QWebPage *page,
 				QUrl url);
 
@@ -389,7 +389,7 @@ namespace WebKitView
 		 * markup.
 		 * @param textContent The text within the HTML link element.
 		 */
-		void hookLinkHovered (LeechCraft::IHookProxy_ptr proxy,
+		void hookLinkHovered (LC::IHookProxy_ptr proxy,
 				QWebPage *page,
 				QString link,
 				QString title,
@@ -401,7 +401,7 @@ namespace WebKitView
 		 * @param page The page that has finished loading.
 		 * @param result Whether the page loaded successfully.
 		 */
-		void hookLoadFinished (LeechCraft::IHookProxy_ptr proxy,
+		void hookLoadFinished (LC::IHookProxy_ptr proxy,
 				QWebPage *page,
 				bool result);
 
@@ -416,7 +416,7 @@ namespace WebKitView
 		 *
 		 * @sa hookExtension().
 		 */
-		void hookSupportsExtension (LeechCraft::IHookProxy_ptr proxy,
+		void hookSupportsExtension (LC::IHookProxy_ptr proxy,
 				const QWebPage *page,
 				QWebPage::Extension extension);
 
@@ -431,7 +431,7 @@ namespace WebKitView
 		 * content.
 		 * @param reply The QNetworkReply with the unsupported content.
 		 */
-		void hookUnsupportedContent (LeechCraft::IHookProxy_ptr proxy,
+		void hookUnsupportedContent (LC::IHookProxy_ptr proxy,
 				QWebPage *page,
 				QNetworkReply *reply);
 
@@ -443,7 +443,7 @@ namespace WebKitView
 		 * @param proxy The standard hook proxy object.
 		 * @param page The QWebPage that begins constructing.
 		 */
-		void hookWebPageConstructionBegin (LeechCraft::IHookProxy_ptr proxy,
+		void hookWebPageConstructionBegin (LC::IHookProxy_ptr proxy,
 				QWebPage *page);
 
 		/** @brief Called when the given page finishes constructing.
@@ -456,7 +456,7 @@ namespace WebKitView
 		 *
 		 * @sa hookWebPageConstructionBegin().
 		 */
-		void hookWebPageConstructionEnd (LeechCraft::IHookProxy_ptr proxy,
+		void hookWebPageConstructionEnd (LC::IHookProxy_ptr proxy,
 				QWebPage *page);
 
 		/** @brief Called from QWebPage::windowCloseRequested().
@@ -467,7 +467,7 @@ namespace WebKitView
 		 * @param proxy The standard hook proxy object.
 		 * @param page The web page originating the request.
 		 */
-		void hookWindowCloseRequested (LeechCraft::IHookProxy_ptr proxy,
+		void hookWindowCloseRequested (LC::IHookProxy_ptr proxy,
 				QWebPage *page);
 	};
 }

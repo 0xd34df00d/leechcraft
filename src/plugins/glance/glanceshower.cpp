@@ -48,7 +48,7 @@
 #include "core.h"
 #include "glanceitem.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Plugins
 {

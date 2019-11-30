@@ -32,7 +32,7 @@
 #include "exceptions.h"
 #include "conversions.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

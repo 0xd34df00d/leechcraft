@@ -36,7 +36,7 @@
 class QXmlStreamWriter;
 class QDomElement;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

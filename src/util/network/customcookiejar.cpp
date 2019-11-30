@@ -37,7 +37,7 @@
 #include <util/sll/util.h>
 #include <util/threads/futures.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

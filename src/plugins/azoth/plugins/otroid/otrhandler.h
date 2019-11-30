@@ -50,7 +50,7 @@ class QTimer;
 class QMenu;
 class QAction;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

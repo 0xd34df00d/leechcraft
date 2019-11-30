@@ -31,7 +31,7 @@
 
 #include <QStandardItemModel>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

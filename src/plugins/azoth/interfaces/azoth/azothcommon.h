@@ -33,7 +33,7 @@
 #include <interfaces/iactionsexporter.h>
 #include <interfaces/azoth/imessage.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -159,5 +159,5 @@ namespace Azoth
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::Azoth::State)
-Q_DECLARE_METATYPE (LeechCraft::Azoth::ChatPartState)
+Q_DECLARE_METATYPE (LC::Azoth::State)
+Q_DECLARE_METATYPE (LC::Azoth::ChatPartState)

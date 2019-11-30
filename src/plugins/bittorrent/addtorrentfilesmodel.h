@@ -31,7 +31,7 @@
 
 #include "torrentfilesmodelbase.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace BitTorrent
 {

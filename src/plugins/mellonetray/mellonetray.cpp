@@ -34,7 +34,7 @@
 #include "traymodel.h"
 #include "iconhandler.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Mellonetray
 {
@@ -91,4 +91,4 @@ namespace Mellonetray
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_mellonetray, LeechCraft::Mellonetray::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_mellonetray, LC::Mellonetray::Plugin);

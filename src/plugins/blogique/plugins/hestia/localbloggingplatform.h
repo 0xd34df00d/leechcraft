@@ -32,7 +32,7 @@
 #include <QObject>
 #include <interfaces/blogique/ibloggingplatform.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blogique
 {
@@ -44,7 +44,7 @@ namespace Hestia
 								, public IBloggingPlatform
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Blogique::IBloggingPlatform)
+		Q_INTERFACES (LC::Blogique::IBloggingPlatform)
 
 		QObject *ParentBlogginPlatfromPlugin_;
 		QObject *PluginProxy_ = nullptr;

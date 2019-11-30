@@ -35,7 +35,7 @@
 #include "xmlsettingsmanager.h"
 #include "friendsproxymodel.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blogique
 {

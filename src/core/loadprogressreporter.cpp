@@ -33,7 +33,7 @@
 #include "loadprocess.h"
 #include "splashscreen.h"
 
-namespace LeechCraft
+namespace LC
 {
 	ILoadProcess_ptr LoadProgressReporter::InitiateProcess (const QString& title, int min, int max)
 	{

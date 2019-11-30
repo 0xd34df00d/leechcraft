@@ -37,7 +37,7 @@
 class QAbstractItemModel;
 class QSettings;
 
-namespace LeechCraft
+namespace LC
 {
 	namespace Util
 	{

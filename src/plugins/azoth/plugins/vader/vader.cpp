@@ -41,7 +41,7 @@
 #include "vaderutil.h"
 #include "xmlsettingsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -119,12 +119,12 @@ namespace Vader
 		AzothProxy_ = qobject_cast<IProxyObject*> (proxy);
 	}
 
-	void Plugin::hookEntryActionAreasRequested (LeechCraft::IHookProxy_ptr,
+	void Plugin::hookEntryActionAreasRequested (LC::IHookProxy_ptr,
 			QObject*, QObject*)
 	{
 	}
 
-	void Plugin::hookEntryActionsRequested (LeechCraft::IHookProxy_ptr proxy,
+	void Plugin::hookEntryActionsRequested (LC::IHookProxy_ptr proxy,
 			QObject *entry)
 	{
 		if (!qobject_cast<MRIMBuddy*> (entry))
@@ -162,4 +162,4 @@ namespace Vader
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_azoth_vader, LeechCraft::Azoth::Vader::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_azoth_vader, LC::Azoth::Vader::Plugin);

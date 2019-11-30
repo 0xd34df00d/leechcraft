@@ -35,7 +35,7 @@
 class QNetworkAccessManager;
 class QDomDocument;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Lastfmscrobble
 {

@@ -31,7 +31,7 @@
 
 #include "itemhandlerstringsetvalue.h"
 
-namespace LeechCraft
+namespace LC
 {
 	/** This is for those whose value is always a plain string.
 	 * These are:

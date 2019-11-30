@@ -36,15 +36,15 @@
 #include <QVariant>
 #include <QtDebug>
 
-QSet<QString> LeechCraft::Util::DBLock::LockedBases_;
-QMutex LeechCraft::Util::DBLock::LockedMutex_;
+QSet<QString> LC::Util::DBLock::LockedBases_;
+QMutex LC::Util::DBLock::LockedMutex_;
 
-LeechCraft::Util::DBLock::DBLock (QSqlDatabase& database)
+LC::Util::DBLock::DBLock (QSqlDatabase& database)
 : Database_ (database)
 {
 }
 
-LeechCraft::Util::DBLock::~DBLock ()
+LC::Util::DBLock::~DBLock ()
 {
 	if (!Initialized_)
 		return;
@@ -58,7 +58,7 @@ LeechCraft::Util::DBLock::~DBLock ()
 	}
 }
 
-void LeechCraft::Util::DBLock::Init ()
+void LC::Util::DBLock::Init ()
 {
 	{
 		QMutexLocker locker (&LockedMutex_);
@@ -76,25 +76,25 @@ void LeechCraft::Util::DBLock::Init ()
 	Initialized_ = true;
 }
 
-void LeechCraft::Util::DBLock::Good ()
+void LC::Util::DBLock::Good ()
 {
 	Good_ = true;
 }
 
-void LeechCraft::Util::DBLock::DumpError (const QSqlError& lastError)
+void LC::Util::DBLock::DumpError (const QSqlError& lastError)
 {
 	qWarning () << lastError.text () << "|"
 		<< lastError.type ();
 }
 
-void LeechCraft::Util::DBLock::DumpError (const QSqlQuery& lastQuery)
+void LC::Util::DBLock::DumpError (const QSqlQuery& lastQuery)
 {
 	qWarning () << "query:" << lastQuery.lastQuery ();
 	DumpError (lastQuery.lastError ());
 	qWarning () << "bound values:" << lastQuery.boundValues ();
 }
 
-void LeechCraft::Util::DBLock::Execute (QSqlQuery& query)
+void LC::Util::DBLock::Execute (QSqlQuery& query)
 {
 	if (query.exec ())
 		return;

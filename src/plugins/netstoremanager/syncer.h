@@ -40,7 +40,7 @@
 #include "interfaces/netstoremanager/isupportfilelistings.h"
 #include "syncmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace NetStoreManager
 {

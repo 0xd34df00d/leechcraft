@@ -34,7 +34,7 @@
 #include <QObject>
 #include <vmime/utility/progressListener.hpp>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Snails
 {

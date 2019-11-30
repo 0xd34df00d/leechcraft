@@ -33,7 +33,7 @@
 #include <QStringList>
 #include <util/models/rolenamesmixin.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Launchy
 {

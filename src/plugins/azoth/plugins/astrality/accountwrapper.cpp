@@ -49,7 +49,7 @@
 #include "protowrapper.h"
 #include "accountregfirstpage.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

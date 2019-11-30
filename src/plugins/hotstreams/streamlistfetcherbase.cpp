@@ -39,7 +39,7 @@
 #include <interfaces/media/iradiostationprovider.h>
 #include "roles.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace HotStreams
 {

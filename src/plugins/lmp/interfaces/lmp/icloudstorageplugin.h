@@ -35,7 +35,7 @@ class QString;
 class QObject;
 class QIcon;
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {
@@ -79,4 +79,4 @@ namespace LMP
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::LMP::ICloudStoragePlugin, "org.LeechCraft.LMP.ICloudStoragePlugin/1.0")
+Q_DECLARE_INTERFACE (LC::LMP::ICloudStoragePlugin, "org.LeechCraft.LMP.ICloudStoragePlugin/1.0")

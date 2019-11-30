@@ -34,7 +34,7 @@
 #include <QUrl>
 #include <util/monocle/textdocumentadapter.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {
@@ -46,9 +46,9 @@ namespace Dik
 				   , public TextDocumentAdapter
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Monocle::IDocument
-				LeechCraft::Monocle::ISearchableDocument
-				LeechCraft::Monocle::ISupportPainting)
+		Q_INTERFACES (LC::Monocle::IDocument
+				LC::Monocle::ISearchableDocument
+				LC::Monocle::ISupportPainting)
 
 		DocumentInfo Info_;
 		QUrl DocURL_;

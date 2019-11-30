@@ -41,7 +41,7 @@
 #include "interfaces/blasq/isupportuploads.h"
 #include "uploadphotosdialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blasq
 {

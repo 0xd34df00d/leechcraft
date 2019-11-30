@@ -39,7 +39,7 @@
 #include "scriptsmanager.h"
 #include "urllistscript.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace XProxy
 {
@@ -49,10 +49,10 @@ namespace XProxy
 
 		CoreProxy_ = proxy;
 
-		qRegisterMetaTypeStreamOperators<Proxy> ("LeechCraft::XProxy::Proxy");
-		qRegisterMetaTypeStreamOperators<ReqTarget> ("LeechCraft::XProxy::ReqTarget");
-		qRegisterMetaTypeStreamOperators<QList<LeechCraft::XProxy::Entry_t>> ("QList<LeechCraft::XProxy::Entry_t>");
-		qRegisterMetaTypeStreamOperators<QList<LeechCraft::XProxy::ScriptEntry_t>> ("QList<LeechCraft::XProxy::ScriptEntry_t>");
+		qRegisterMetaTypeStreamOperators<Proxy> ("LC::XProxy::Proxy");
+		qRegisterMetaTypeStreamOperators<ReqTarget> ("LC::XProxy::ReqTarget");
+		qRegisterMetaTypeStreamOperators<QList<LC::XProxy::Entry_t>> ("QList<LC::XProxy::Entry_t>");
+		qRegisterMetaTypeStreamOperators<QList<LC::XProxy::ScriptEntry_t>> ("QList<LC::XProxy::ScriptEntry_t>");
 
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "xproxysettings.xml");
@@ -112,4 +112,4 @@ namespace XProxy
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_xproxy, LeechCraft::XProxy::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_xproxy, LC::XProxy::Plugin);

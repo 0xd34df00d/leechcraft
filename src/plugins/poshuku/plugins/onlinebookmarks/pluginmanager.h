@@ -31,7 +31,7 @@
 
 #include <util/xpc/basehookinterconnector.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

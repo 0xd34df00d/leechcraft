@@ -30,7 +30,7 @@
 #include "xmlsettingsmanager.h"
 #include <QApplication>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blasq
 {

@@ -38,7 +38,7 @@
 
 class QTranslator;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -56,7 +56,7 @@ namespace Xoox
 				 , public IProtocolPlugin
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 IHaveSettings LeechCraft::Azoth::IProtocolPlugin)
+		Q_INTERFACES (IInfo IPlugin2 IHaveSettings LC::Azoth::IProtocolPlugin)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.Xoox")
 
@@ -85,7 +85,7 @@ namespace Xoox
 	public slots:
 		void initPlugin (QObject*);
 	signals:
-		void gotEntity (const LeechCraft::Entity&);
+		void gotEntity (const LC::Entity&);
 
 		void gotNewProtocols (const QList<QObject*>&);
 	};

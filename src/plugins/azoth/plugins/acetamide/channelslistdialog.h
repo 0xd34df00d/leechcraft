@@ -37,7 +37,7 @@ class QStandardItem;
 class QStandardItemModel;
 class QTimer;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

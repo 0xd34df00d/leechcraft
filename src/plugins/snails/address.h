@@ -33,7 +33,7 @@
 #include <QList>
 #include <QPair>
 
-namespace LeechCraft::Snails
+namespace LC::Snails
 {
 	enum class AddressType
 	{

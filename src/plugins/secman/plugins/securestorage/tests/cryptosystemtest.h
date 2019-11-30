@@ -31,7 +31,7 @@
 #define PLUGINS_SECMAN_SECURESTORAGE_CRYPTOSYSTEM_TEST_H
 #include <QObject>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Plugins
 {

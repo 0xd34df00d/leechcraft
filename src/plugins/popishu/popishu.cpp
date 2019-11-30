@@ -36,7 +36,7 @@
 #include "editorpage.h"
 #include "xmlsettingsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Popishu
 {
@@ -185,4 +185,4 @@ namespace Popishu
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_popishu, LeechCraft::Popishu::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_popishu, LC::Popishu::Plugin);

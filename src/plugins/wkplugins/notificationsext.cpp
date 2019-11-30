@@ -31,7 +31,7 @@
 #include <util/xpc/util.h>
 #include <interfaces/core/ientitymanager.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace WKPlugins
 {

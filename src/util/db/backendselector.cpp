@@ -32,7 +32,7 @@
 #include "ui_backendselector.h"
 #include "../xmlsettingsdialog/basesettingsmanager.h"
 
-using namespace LeechCraft::Util;
+using namespace LC::Util;
 
 BackendSelector::BackendSelector (BaseSettingsManager *m, QWidget *parent)
 : QWidget (parent)

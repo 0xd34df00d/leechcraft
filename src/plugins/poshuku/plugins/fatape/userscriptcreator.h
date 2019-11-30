@@ -34,7 +34,7 @@
 
 class QWidget;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

@@ -37,7 +37,7 @@
 
 class QModelIndex;
 
-namespace LeechCraft
+namespace LC
 {
 namespace HistoryHolder
 {

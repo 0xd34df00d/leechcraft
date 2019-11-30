@@ -33,7 +33,7 @@
 #include <poppler-qt5.h>
 #include <interfaces/monocle/ilink.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {
@@ -44,7 +44,7 @@ namespace PDF
 	class Link : public QObject
 			   , public ILink
 	{
-		Q_INTERFACES (LeechCraft::Monocle::ILink)
+		Q_INTERFACES (LC::Monocle::ILink)
 
 		Document * const Doc_;
 		std::shared_ptr<Poppler::Link> Link_;
@@ -65,7 +65,7 @@ namespace PDF
 				  , public ILink
 				  , public IPageLink
 	{
-		Q_INTERFACES (LeechCraft::Monocle::ILink LeechCraft::Monocle::IPageLink)
+		Q_INTERFACES (LC::Monocle::ILink LC::Monocle::IPageLink)
 
 		Document * const Doc_;
 		std::unique_ptr<Poppler::LinkDestination> Dest_;

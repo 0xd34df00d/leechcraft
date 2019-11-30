@@ -34,7 +34,7 @@
 #include <QPainter>
 #include "soundwidget.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace vlc
 {

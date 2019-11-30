@@ -43,7 +43,7 @@
 #include <sys/resource.h>
 #endif
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

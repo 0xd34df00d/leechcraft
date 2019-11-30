@@ -38,7 +38,7 @@
 #include "formbuilder.h"
 #include "affiliationselectordialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

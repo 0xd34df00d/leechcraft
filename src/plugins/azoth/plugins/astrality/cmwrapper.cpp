@@ -35,7 +35,7 @@
 #include <PendingReady>
 #include "protowrapper.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

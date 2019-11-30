@@ -41,7 +41,7 @@
 #include "keysequencer.h"
 #include "coreproxy.h"
 
-namespace LeechCraft
+namespace LC
 {
 	class SMFilterProxyModel : public QSortFilterProxyModel
 	{

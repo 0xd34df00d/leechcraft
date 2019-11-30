@@ -34,7 +34,7 @@
 #include <util/sll/monad.h>
 #include "futures.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

@@ -32,7 +32,7 @@
 #include "core.h"
 #include "sslerrorshandler.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

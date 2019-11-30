@@ -36,7 +36,7 @@
 class QDomElement;
 class QDomDocument;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {
@@ -64,4 +64,4 @@ namespace Monocle
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::Monocle::Bookmark)
+Q_DECLARE_METATYPE (LC::Monocle::Bookmark)

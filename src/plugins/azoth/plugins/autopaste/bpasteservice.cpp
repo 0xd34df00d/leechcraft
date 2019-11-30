@@ -30,7 +30,7 @@
 #include "bpasteservice.h"
 #include "highlight2str.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

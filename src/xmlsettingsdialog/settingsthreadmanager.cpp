@@ -33,7 +33,7 @@
 #include "settingsthread.h"
 #include "basesettingsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 	SettingsThreadManager::SettingsThreadManager ()
 	: Thread_ { new QThread { this } }

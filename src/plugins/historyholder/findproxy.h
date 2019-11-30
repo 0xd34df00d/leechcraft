@@ -36,7 +36,7 @@
 
 using QAbstractItemModel_ptr = std::shared_ptr<QAbstractItemModel>;
 
-namespace LeechCraft
+namespace LC
 {
 namespace HistoryHolder
 {

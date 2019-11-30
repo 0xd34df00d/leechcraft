@@ -32,7 +32,7 @@
 #include <QStandardItemModel>
 #include <QtDebug>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blogique
 {

@@ -35,7 +35,7 @@
 #include "todomanager.h"
 #include "todostorage.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Otlozhu
 {

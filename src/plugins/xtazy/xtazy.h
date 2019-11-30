@@ -35,7 +35,7 @@
 #include <interfaces/media/iaudioscrobbler.h>
 #include <interfaces/media/icurrentsongkeeper.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Xtazy
 {

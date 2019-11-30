@@ -32,7 +32,7 @@
 #include <QWizardPage>
 #include "ui_previewpage.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Dolozhee
 {

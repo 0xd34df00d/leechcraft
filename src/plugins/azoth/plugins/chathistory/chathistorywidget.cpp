@@ -45,7 +45,7 @@
 #include "historyvieweventfilter.h"
 #include "storagemanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

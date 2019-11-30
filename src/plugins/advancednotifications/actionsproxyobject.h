@@ -31,7 +31,7 @@
 #define PLUGINS_ADVANCEDNOTIFICATIONS_QML_ACTIONSPROXYOBJECT_H
 #include <QObject>
 
-namespace LeechCraft
+namespace LC
 {
 namespace AdvancedNotifications
 {

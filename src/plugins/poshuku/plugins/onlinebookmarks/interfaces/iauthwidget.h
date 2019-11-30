@@ -32,7 +32,7 @@
 
 #include <QVariant>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {
@@ -50,7 +50,7 @@ namespace OnlineBookmarks
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Poshuku::OnlineBookmarks::IAuthWidget,
+Q_DECLARE_INTERFACE (LC::Poshuku::OnlineBookmarks::IAuthWidget,
 		"org.Deviant.LeechCraft.Poshuku.OnlineBookmarks.IAuthWidget/1.0")
 
 #endif // PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_IAUTHWIDGET_H

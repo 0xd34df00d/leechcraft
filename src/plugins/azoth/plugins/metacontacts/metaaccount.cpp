@@ -33,7 +33,7 @@
 #include "metaprotocol.h"
 #include "metaentry.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

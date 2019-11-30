@@ -33,7 +33,7 @@
 #include <tox/tox.h>
 #include "toxprotocol.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -104,4 +104,4 @@ namespace Sarin
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_azoth_sarin, LeechCraft::Azoth::Sarin::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_azoth_sarin, LC::Azoth::Sarin::Plugin);

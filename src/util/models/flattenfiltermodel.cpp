@@ -29,7 +29,7 @@
 
 #include "flattenfiltermodel.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

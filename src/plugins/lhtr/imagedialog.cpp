@@ -31,7 +31,7 @@
 #include <QFileDialog>
 #include <QUrl>
 
-namespace LeechCraft
+namespace LC
 {
 namespace LHTR
 {

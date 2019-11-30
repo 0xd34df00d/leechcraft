@@ -32,7 +32,7 @@
 #include <QWidget>
 #include "ui_headersviewwidget.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Snails
 {

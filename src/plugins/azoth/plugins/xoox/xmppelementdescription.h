@@ -36,7 +36,7 @@
 
 class QXmppElement;
 
-namespace LeechCraft::Azoth::Xoox
+namespace LC::Azoth::Xoox
 {
 	struct XmppElementDescription
 	{

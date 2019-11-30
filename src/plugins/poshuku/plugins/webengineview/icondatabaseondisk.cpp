@@ -36,7 +36,7 @@
 #include <util/db/oral/utilitytypes.h>
 #include <util/sys/paths.h>
 
-namespace LeechCraft::Poshuku::WebEngineView
+namespace LC::Poshuku::WebEngineView
 {
 	struct IconDatabaseOnDisk::IconUrl2IconRecord
 	{
@@ -62,7 +62,7 @@ namespace LeechCraft::Poshuku::WebEngineView
 	};
 }
 
-using IDOD = LeechCraft::Poshuku::WebEngineView::IconDatabaseOnDisk;
+using IDOD = LC::Poshuku::WebEngineView::IconDatabaseOnDisk;
 
 BOOST_FUSION_ADAPT_STRUCT (IDOD::IconUrl2IconRecord,
 		IconUrl_,
@@ -73,7 +73,7 @@ BOOST_FUSION_ADAPT_STRUCT (IDOD::PageUrl2IconUrlRecord,
 		IconUrl_,
 		LastUpdate_)
 
-namespace LeechCraft::Poshuku::WebEngineView
+namespace LC::Poshuku::WebEngineView
 {
 	IconDatabaseOnDisk::IconDatabaseOnDisk ()
 	: DB_ { QSqlDatabase::addDatabase ("QSQLITE",

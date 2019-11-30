@@ -34,7 +34,7 @@
 #include "interfaces/monocle/idocument.h"
 #include "interfaces/monocle/ihavefontinfo.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {

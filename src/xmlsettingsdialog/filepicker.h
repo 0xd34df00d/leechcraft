@@ -34,7 +34,7 @@
 class QLineEdit;
 class QPushButton;
 
-namespace LeechCraft
+namespace LC
 {
 	class FilePicker : public QWidget
 	{

@@ -34,7 +34,7 @@
 #include <interfaces/core/icoreproxyfwd.h>
 #include "eventdata.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace AdvancedNotifications
 {

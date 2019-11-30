@@ -33,9 +33,9 @@
 #include <QtTest>
 #include <domchildrenrange.h>
 
-QTEST_MAIN (LeechCraft::Util::DomChildrenRangeTest)
+QTEST_MAIN (LC::Util::DomChildrenRangeTest)
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

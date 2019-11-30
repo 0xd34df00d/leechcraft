@@ -35,7 +35,7 @@
 
 class IHaveSettings;
 
-namespace LeechCraft
+namespace LC
 {
 	class SettingsWidget : public QWidget
 	{

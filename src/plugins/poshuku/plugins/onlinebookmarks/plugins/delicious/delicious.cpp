@@ -33,7 +33,7 @@
 #include "deliciousauthwidget.h"
 #include "deliciousservice.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {
@@ -98,4 +98,4 @@ namespace Delicious
 }
 
 LC_EXPORT_PLUGIN (leechcraft_poshuku_onlinebookmarks_delicious,
-		LeechCraft::Poshuku::OnlineBookmarks::Delicious::Plugin);
+		LC::Poshuku::OnlineBookmarks::Delicious::Plugin);

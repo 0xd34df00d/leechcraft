@@ -35,7 +35,7 @@ class QAbstractItemModel;
 class QModelIndex;
 class QString;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -226,9 +226,9 @@ namespace Azoth
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Azoth::ISDSession,
+Q_DECLARE_INTERFACE (LC::Azoth::ISDSession,
 		"org.Deviant.LeechCraft.Azoth.ISDSession/1.0")
-Q_DECLARE_INTERFACE (LeechCraft::Azoth::IHaveServiceDiscovery,
+Q_DECLARE_INTERFACE (LC::Azoth::IHaveServiceDiscovery,
 		"org.Deviant.LeechCraft.Azoth.IHaveServiceDiscovery/1.0")
 
 #endif

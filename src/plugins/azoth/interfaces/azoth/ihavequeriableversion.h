@@ -32,7 +32,7 @@
 class QString;
 class QObject;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -54,7 +54,7 @@ namespace Azoth
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Azoth::IPendingVersionQuery,
+Q_DECLARE_INTERFACE (LC::Azoth::IPendingVersionQuery,
 		"org.LeechCraft.Azoth.IPendingVersionQuery/1.0")
-Q_DECLARE_INTERFACE (LeechCraft::Azoth::IHaveQueriableVersion,
+Q_DECLARE_INTERFACE (LC::Azoth::IHaveQueriableVersion,
 		"org.LeechCraft.Azoth.IHaveQueriableVersion/1.0")

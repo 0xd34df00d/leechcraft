@@ -32,7 +32,7 @@
 #include <QWidget>
 #include "ui_accountslistwidget.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace NetStoreManager
 {

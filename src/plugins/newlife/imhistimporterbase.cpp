@@ -33,7 +33,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace NewLife
 {

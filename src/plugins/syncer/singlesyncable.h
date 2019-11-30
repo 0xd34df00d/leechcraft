@@ -46,7 +46,7 @@ namespace Laretz
 	class Operation;
 }
 
-namespace LeechCraft
+namespace LC
 {
 namespace Syncer
 {

@@ -37,7 +37,7 @@
 #include "util.h"
 #include "glooxaccount.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

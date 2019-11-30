@@ -46,7 +46,7 @@
 #include <sys/types.h>
 #endif
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

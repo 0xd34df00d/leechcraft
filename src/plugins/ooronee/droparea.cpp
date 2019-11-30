@@ -31,7 +31,7 @@
 #include <QCursor>
 #include <QMimeData>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Ooronee
 {

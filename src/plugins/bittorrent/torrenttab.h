@@ -33,7 +33,7 @@
 #include <interfaces/ihavetabs.h>
 #include "ui_torrenttab.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace BitTorrent
 {

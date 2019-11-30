@@ -36,7 +36,7 @@
 #include <interfaces/netstoremanager/istorageplugin.h>
 #include "account.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace NetStoreManager
 {
@@ -54,7 +54,7 @@ namespace GoogleDrive
 		Q_INTERFACES (IInfo
 				IPlugin2
 				IHaveSettings
-				LeechCraft::NetStoreManager::IStoragePlugin)
+				LC::NetStoreManager::IStoragePlugin)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.NetStoreManager.GoogleDrive")
 

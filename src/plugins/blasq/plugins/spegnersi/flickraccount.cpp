@@ -39,7 +39,7 @@
 #include <util/xpc/util.h>
 #include "flickrservice.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blasq
 {

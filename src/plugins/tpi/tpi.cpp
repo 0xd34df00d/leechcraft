@@ -34,7 +34,7 @@
 #include <util/gui/util.h>
 #include "infomodelmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace TPI
 {
@@ -85,4 +85,4 @@ namespace TPI
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_tpi, LeechCraft::TPI::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_tpi, LC::TPI::Plugin);

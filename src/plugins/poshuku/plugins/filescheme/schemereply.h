@@ -32,7 +32,7 @@
 #include <QNetworkReply>
 #include <QBuffer>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

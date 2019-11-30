@@ -36,7 +36,7 @@
 
 class QObject;
 
-namespace LeechCraft
+namespace LC
 {
 	class UTIL_API StandardException : public std::exception
 	{

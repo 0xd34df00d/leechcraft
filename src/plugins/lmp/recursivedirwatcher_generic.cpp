@@ -34,7 +34,7 @@
 #include <QtConcurrentRun>
 #include <util/threads/futures.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

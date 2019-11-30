@@ -45,7 +45,7 @@
 #include "checkmodel.h"
 #include "checker.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

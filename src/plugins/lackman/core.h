@@ -38,7 +38,7 @@ class QAbstractItemModel;
 class QStandardItemModel;
 class QDir;
 
-namespace LeechCraft
+namespace LC
 {
 namespace LackMan
 {
@@ -132,7 +132,7 @@ namespace LackMan
 		void handlePackageUpdated (int from, int to);
 		void handlePackageRemoved (int);
 	signals:
-		void gotEntity (const LeechCraft::Entity&);
+		void gotEntity (const LC::Entity&);
 		void tagsUpdated (const QStringList&);
 		void packageRowActionFinished (int row);
 

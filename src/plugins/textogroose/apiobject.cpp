@@ -29,7 +29,7 @@
 
 #include "apiobject.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Textogroose
 {

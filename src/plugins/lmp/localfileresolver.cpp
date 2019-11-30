@@ -37,7 +37,7 @@
 #include "util/lmp/gstutil.h"
 #include "xmlsettingsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

@@ -32,7 +32,7 @@
 #include <QWidgetAction>
 #include <QComboBox>
 
-namespace LeechCraft
+namespace LC
 {
 namespace BitTorrent
 {

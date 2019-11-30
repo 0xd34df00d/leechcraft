@@ -41,7 +41,7 @@
 
 class QSystemTrayIcon;
 
-namespace LeechCraft
+namespace LC
 {
 namespace AdvancedNotifications
 {
@@ -84,7 +84,7 @@ namespace AdvancedNotifications
 		void handleTrayActivated (QSystemTrayIcon::ActivationReason);
 		void handleLCAction ();
 	signals:
-		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
+		void gotActions (QList<QAction*>, LC::ActionsEmbedPlace);
 	};
 }
 }

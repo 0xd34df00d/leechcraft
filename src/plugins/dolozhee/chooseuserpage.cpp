@@ -33,7 +33,7 @@
 #include <util/xpc/passutils.h>
 #include "reportwizard.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Dolozhee
 {

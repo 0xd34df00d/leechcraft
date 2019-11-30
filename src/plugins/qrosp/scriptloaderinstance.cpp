@@ -33,7 +33,7 @@
 #include <qross/core/manager.h>
 #include "loadedscript.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Qrosp
 {

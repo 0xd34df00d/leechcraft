@@ -31,7 +31,7 @@
 
 #include <cstdint>
 
-namespace LeechCraft
+namespace LC
 {
 namespace BitTorrent
 {

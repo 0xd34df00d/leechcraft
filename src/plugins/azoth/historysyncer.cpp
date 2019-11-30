@@ -42,7 +42,7 @@
 #include "interfaces/azoth/ihaveserverhistory.h"
 #include "core.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

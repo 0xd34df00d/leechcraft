@@ -33,7 +33,7 @@
 #include <QAbstractItemModel>
 #include <QSslCertificate>
 
-namespace LeechCraft
+namespace LC
 {
 namespace CertMgr
 {

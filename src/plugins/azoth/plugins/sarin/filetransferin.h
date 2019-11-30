@@ -34,7 +34,7 @@
 
 class QFile;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

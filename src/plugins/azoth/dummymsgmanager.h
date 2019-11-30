@@ -32,7 +32,7 @@
 #include <QObject>
 #include <QHash>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

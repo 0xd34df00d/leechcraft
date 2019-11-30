@@ -48,7 +48,7 @@
 #include "quarkmanager.h"
 #include "panelsettingsdialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace SB2
 {

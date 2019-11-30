@@ -32,7 +32,7 @@
 #include "notificationhandler.h"
 #include "dockutil.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace AdvancedNotifications
 {
@@ -84,4 +84,4 @@ namespace Dolle
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_advancednotifications_dolle, LeechCraft::AdvancedNotifications::Dolle::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_advancednotifications_dolle, LC::AdvancedNotifications::Dolle::Plugin);

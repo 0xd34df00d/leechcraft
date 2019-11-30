@@ -36,7 +36,7 @@ class QStandardItemModel;
 class QAbstractItemModel;
 class QUrl;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Scroblibre
 {

@@ -32,7 +32,7 @@
 #include <interfaces/core/itagsmanager.h>
 #include "addfeeddialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Aggregator
 {

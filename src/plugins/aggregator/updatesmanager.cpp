@@ -48,7 +48,7 @@
 #include "xmlsettingsmanager.h"
 #include "feedserrormanager.h"
 
-namespace LeechCraft::Aggregator
+namespace LC::Aggregator
 {
 	namespace
 	{

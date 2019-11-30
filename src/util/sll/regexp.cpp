@@ -37,7 +37,7 @@
 #include <QRegExp>
 #endif
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {
@@ -236,7 +236,7 @@ namespace Util
 }
 }
 
-QDataStream& operator<< (QDataStream& out, const LeechCraft::Util::RegExp& rx)
+QDataStream& operator<< (QDataStream& out, const LC::Util::RegExp& rx)
 {
 	out << static_cast<quint8> (1);
 	out << rx.GetPattern ()
@@ -244,7 +244,7 @@ QDataStream& operator<< (QDataStream& out, const LeechCraft::Util::RegExp& rx)
 	return out;
 }
 
-QDataStream& operator>> (QDataStream& in, LeechCraft::Util::RegExp& rx)
+QDataStream& operator>> (QDataStream& in, LC::Util::RegExp& rx)
 {
 	quint8 version = 0;
 	in >> version;
@@ -261,7 +261,7 @@ QDataStream& operator>> (QDataStream& in, LeechCraft::Util::RegExp& rx)
 	in >> pattern
 		>> cs;
 
-	rx = LeechCraft::Util::RegExp { pattern, static_cast<Qt::CaseSensitivity> (cs) };
+	rx = LC::Util::RegExp { pattern, static_cast<Qt::CaseSensitivity> (cs) };
 
 	return in;
 }

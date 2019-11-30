@@ -31,7 +31,7 @@
 #include <QtEndian>
 #include "exceptions.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

@@ -40,7 +40,7 @@ namespace Media
 	class ICurrentSongKeeper;
 }
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blogique
 {
@@ -52,7 +52,7 @@ namespace Metida
 							, public IBlogiqueSideWidget
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Blogique::IBlogiqueSideWidget)
+		Q_INTERFACES (LC::Blogique::IBlogiqueSideWidget)
 
 		const ICoreProxy_ptr Proxy_;
 

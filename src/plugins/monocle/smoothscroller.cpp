@@ -32,7 +32,7 @@
 #include "pagesview.h"
 #include "xmlsettingsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {

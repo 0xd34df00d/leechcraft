@@ -37,7 +37,7 @@
 #include "typingmanager.h"
 #include "../vaderutil.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

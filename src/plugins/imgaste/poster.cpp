@@ -38,7 +38,7 @@
 #include <util/util.h>
 #include <util/network/handlenetworkreply.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Imgaste
 {

@@ -46,7 +46,7 @@
 #include <QX11Info>
 #endif
 
-namespace LeechCraft
+namespace LC
 {
 	RootWindowsManager::RootWindowsManager (QObject *parent)
 	: QObject (parent)

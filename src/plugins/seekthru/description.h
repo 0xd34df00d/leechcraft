@@ -35,7 +35,7 @@
 #include <QUrl>
 #include <QMetaType>
 
-namespace LeechCraft::SeekThru
+namespace LC::SeekThru
 {
 	struct UrlDescription
 	{
@@ -107,4 +107,4 @@ namespace LeechCraft::SeekThru
 	QDataStream& operator>> (QDataStream&, Description&);
 }
 
-Q_DECLARE_METATYPE (LeechCraft::SeekThru::Description)
+Q_DECLARE_METATYPE (LC::SeekThru::Description)

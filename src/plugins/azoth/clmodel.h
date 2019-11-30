@@ -32,7 +32,7 @@
 #include <QStandardItemModel>
 #include <interfaces/core/ihookproxy.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -63,7 +63,7 @@ namespace Azoth
 		bool TryDropContact (const QMimeData*, int, const QModelIndex&);
 		bool TryDropFile (const QMimeData*, const QModelIndex&);
 	signals:
-		void hookDnDEntry2Entry (LeechCraft::IHookProxy_ptr,
+		void hookDnDEntry2Entry (LC::IHookProxy_ptr,
 				QObject*, QObject*);
 		void rebuiltTooltip ();
 	};

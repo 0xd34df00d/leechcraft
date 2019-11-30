@@ -33,7 +33,7 @@
 #include <interfaces/azoth/iprotocol.h>
 #include <interfaces/core/icoreproxy.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -47,7 +47,7 @@ namespace Vader
 							 , public IProtocol
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IProtocol)
+		Q_INTERFACES (LC::Azoth::IProtocol)
 
 		IProxyObject * const AzothProxy_;
 		const ICoreProxy_ptr CoreProxy_;

@@ -33,7 +33,7 @@
 
 class QTreeView;
 
-namespace LeechCraft
+namespace LC
 {
 namespace BitTorrent
 {

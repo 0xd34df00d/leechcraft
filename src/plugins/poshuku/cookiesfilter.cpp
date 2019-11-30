@@ -29,7 +29,7 @@
 
 #include "cookiesfilter.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

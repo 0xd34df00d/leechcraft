@@ -35,7 +35,7 @@
 class QString;
 class QObject;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

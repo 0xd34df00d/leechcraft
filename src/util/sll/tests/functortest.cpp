@@ -31,9 +31,9 @@
 #include <QtTest>
 #include <functor.h>
 
-QTEST_MAIN (LeechCraft::Util::FunctorTest)
+QTEST_MAIN (LC::Util::FunctorTest)
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

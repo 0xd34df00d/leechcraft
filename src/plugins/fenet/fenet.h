@@ -35,7 +35,7 @@
 
 class QProcess;
 
-namespace LeechCraft::Fenet
+namespace LC::Fenet
 {
 	class WMFinder;
 	class CompFinder;

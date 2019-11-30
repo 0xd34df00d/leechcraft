@@ -37,7 +37,7 @@
 #include "interfaces/core/iiconthememanager.h"
 #include "interfaces/core/ishortcutproxy.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

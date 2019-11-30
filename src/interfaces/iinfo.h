@@ -270,7 +270,7 @@ public:
 	 */
 	virtual ~IInfo () {}
 
-	virtual void gotEntity (const LeechCraft::Entity& entity)
+	virtual void gotEntity (const LC::Entity& entity)
 	{
 		Q_UNUSED (entity);
 	}

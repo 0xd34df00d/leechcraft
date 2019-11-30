@@ -43,7 +43,7 @@
 #include <util/threads/futures.h>
 #include "workerobject.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Aggregator
 {
@@ -226,4 +226,4 @@ namespace BodyFetch
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_aggregator_bodyfetch, LeechCraft::Aggregator::BodyFetch::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_aggregator_bodyfetch, LC::Aggregator::BodyFetch::Plugin);

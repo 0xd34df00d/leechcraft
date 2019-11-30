@@ -35,7 +35,7 @@
 #include "historymodel.h"
 #include "historyfiltermodel.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

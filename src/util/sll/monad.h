@@ -34,7 +34,7 @@
 #include "typelist.h"
 #include "applicative.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

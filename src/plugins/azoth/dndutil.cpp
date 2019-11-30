@@ -35,7 +35,7 @@
 #include "interfaces/azoth/iclentry.h"
 #include "core.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

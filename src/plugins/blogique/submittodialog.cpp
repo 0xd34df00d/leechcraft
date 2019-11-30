@@ -34,7 +34,7 @@
 #include "core.h"
 #include "selecttargetdelegate.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blogique
 {

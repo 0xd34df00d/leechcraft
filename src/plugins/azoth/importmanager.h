@@ -32,7 +32,7 @@
 #include <QObject>
 #include <interfaces/structures.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

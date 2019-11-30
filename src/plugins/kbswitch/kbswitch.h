@@ -35,7 +35,7 @@
 #include <interfaces/iquarkcomponentprovider.h>
 #include <interfaces/core/icoretabwidget.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace KBSwitch
 {

@@ -42,7 +42,7 @@
 #include "messageinfo.h"
 #include "messagebodies.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Snails
 {

@@ -34,13 +34,13 @@
 #include <QVariant>
 #include <QStringList>
 
-namespace LeechCraft
+namespace LC
 {
 	/** @brief A single additional AdvancedNotifications field.
 	 *
 	 * This data structure describes an additional field in the
 	 * AdvancedNotifications notification entities. The field ID (the
-	 * name of the corresponding key in LeechCraft::Entity::Additional_
+	 * name of the corresponding key in LC::Entity::Additional_
 	 * map) is stored in the ID_ member.
 	 *
 	 * This structure also carries information about field name, type,
@@ -51,7 +51,7 @@ namespace LeechCraft
 		/** @brief The field ID.
 		 *
 		 * The field ID is the value of the corresponding key in the
-		 * LeechCraft::Entity::Additional_ map.
+		 * LC::Entity::Additional_ map.
 		 */
 		QString ID_;
 
@@ -72,7 +72,7 @@ namespace LeechCraft
 		 *
 		 * This member contains the type of the value of this field -
 		 * the value for the corresponding key (equal to ID_) in the
-		 * LeechCraft::Entity::Additional_ map.
+		 * LC::Entity::Additional_ map.
 		 *
 		 * For now only QVariant::Int, QVariant::String and
 		 * QVariant::StringList are supported.
@@ -277,7 +277,7 @@ namespace LeechCraft
  * If a plugin doesn't define any additional fields, it may choose to
  * not implement this interface.
  *
- * @sa LeechCraft::ANFieldData
+ * @sa LC::ANFieldData
  */
 class Q_DECL_EXPORT IANEmitter
 {
@@ -292,19 +292,19 @@ public:
 	 *
 	 * This list must not change during single run session.
 	 *
-	 * Please refer to the documentation of the LeechCraft::ANFieldData
+	 * Please refer to the documentation of the LC::ANFieldData
 	 * structure for more information.
 	 *
 	 * @return The list of additional AdvancedNotifications fields.
 	 *
-	 * @sa LeechCraft::ANFieldData
+	 * @sa LC::ANFieldData
 	 */
-	virtual QList<LeechCraft::ANFieldData> GetANFields () const = 0;
+	virtual QList<LC::ANFieldData> GetANFields () const = 0;
 };
 
 Q_DECLARE_INTERFACE (IANEmitter, "org.Deviant.LeechCraft.IANEmitter/1.0")
-Q_DECLARE_METATYPE (LeechCraft::ANFieldData)
-Q_DECLARE_METATYPE (LeechCraft::ANFieldValue)
-Q_DECLARE_METATYPE (QList<LeechCraft::ANFieldValue>)
+Q_DECLARE_METATYPE (LC::ANFieldData)
+Q_DECLARE_METATYPE (LC::ANFieldValue)
+Q_DECLARE_METATYPE (QList<LC::ANFieldValue>)
 
-Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::ANIntFieldValue::Operations)
+Q_DECLARE_OPERATORS_FOR_FLAGS (LC::ANIntFieldValue::Operations)

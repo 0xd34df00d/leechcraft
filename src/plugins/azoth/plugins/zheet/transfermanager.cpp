@@ -33,7 +33,7 @@
 #include "transferjob.h"
 #include "callbacks.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

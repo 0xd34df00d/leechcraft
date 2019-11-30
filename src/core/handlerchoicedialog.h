@@ -40,7 +40,7 @@ class IInfo;
 class IDownload;
 class IEntityHandler;
 
-namespace LeechCraft
+namespace LC
 {
 	/** Dialog to allow the user to choose the downloader or handler he
 	 * wants for a given entity.

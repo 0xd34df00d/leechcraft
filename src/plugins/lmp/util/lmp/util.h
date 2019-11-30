@@ -36,7 +36,7 @@
 template<typename, typename>
 class QMap;
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {
@@ -65,4 +65,4 @@ namespace LMP
 }
 }
 
-Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::LMP::SubstitutionFlags)
+Q_DECLARE_OPERATORS_FOR_FLAGS (LC::LMP::SubstitutionFlags)

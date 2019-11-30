@@ -38,7 +38,7 @@
 #include "proto/headers.h"
 #include "mrimprotocol.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -60,9 +60,9 @@ namespace Vader
 					  , public IExtSelfInfoAccount
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IAccount
-				LeechCraft::Azoth::ISupportTune
-				LeechCraft::Azoth::IExtSelfInfoAccount)
+		Q_INTERFACES (LC::Azoth::IAccount
+				LC::Azoth::ISupportTune
+				LC::Azoth::IExtSelfInfoAccount)
 
 		MRIMProtocol *Proto_;
 		QString Name_;

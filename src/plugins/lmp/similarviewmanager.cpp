@@ -43,7 +43,7 @@
 #include "core.h"
 #include "stdartistactionsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

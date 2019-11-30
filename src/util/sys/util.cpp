@@ -31,7 +31,7 @@
 #include <QString>
 #include <QImageWriter>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

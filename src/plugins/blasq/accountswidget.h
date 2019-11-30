@@ -32,7 +32,7 @@
 #include <QWidget>
 #include "ui_accountswidget.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blasq
 {

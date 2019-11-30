@@ -31,7 +31,7 @@
 #define PLUGINS_AZOTH_INTERFACES_IRICHTEXTMESSAGE_H
 #include <QtPlugin>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -93,7 +93,7 @@ namespace Azoth
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Azoth::IRichTextMessage,
+Q_DECLARE_INTERFACE (LC::Azoth::IRichTextMessage,
 	"org.Deviant.LeechCraft.Azoth.IRichTextMessage/1.0")
 
 #endif

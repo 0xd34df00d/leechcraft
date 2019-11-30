@@ -39,7 +39,7 @@
 class QAbstractItemModel;
 class QModelIndex;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Aggregator
 {

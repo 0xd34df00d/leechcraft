@@ -38,7 +38,7 @@
 #include <interfaces/core/iiconthememanager.h>
 #include "sbview.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace SB2
 {

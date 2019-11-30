@@ -33,7 +33,7 @@
 #include <QtDebug>
 #include <util/network/customcookiejar.h>
 
-namespace LeechCraft::Poshuku::WebEngineView
+namespace LC::Poshuku::WebEngineView
 {
 	CookiesSyncer::CookiesSyncer (Util::CustomCookieJar *lcJar,
 			QWebEngineCookieStore *weStore)

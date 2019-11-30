@@ -32,7 +32,7 @@
 #include <QQmlEngine>
 #include <util/network/networkdiskcache.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

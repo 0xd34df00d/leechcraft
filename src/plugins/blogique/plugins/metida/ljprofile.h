@@ -39,7 +39,7 @@
 
 class QNetworkReply;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blogique
 {
@@ -52,7 +52,7 @@ namespace Metida
 					, public IProfile
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Blogique::IProfile)
+		Q_INTERFACES (LC::Blogique::IProfile)
 
 		QObject * const ParentAccount_;
 		const ICoreProxy_ptr Proxy_;

@@ -33,7 +33,7 @@
 #include <util/sys/paths.h>
 #include <interfaces/structures.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Qrosp
 {
@@ -42,7 +42,7 @@ namespace Qrosp
 	{
 	}
 
-	QString UtilProxy::GetUserText (const LeechCraft::Entity& entity) const
+	QString UtilProxy::GetUserText (const LC::Entity& entity) const
 	{
 		return Util::GetUserText (entity);
 	}
@@ -84,7 +84,7 @@ namespace Qrosp
 	}
 
 	QObject* UtilProxy::MakeEntity (const QVariant& entity,
-			const QString& location, LeechCraft::TaskParameters tp, const QString& mime) const
+			const QString& location, LC::TaskParameters tp, const QString& mime) const
 	{
 		return new EntityWrapper (Util::MakeEntity (entity, location, tp,  mime));
 	}

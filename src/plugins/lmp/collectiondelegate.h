@@ -33,7 +33,7 @@
 #include <QPixmapCache>
 #include <QCache>
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

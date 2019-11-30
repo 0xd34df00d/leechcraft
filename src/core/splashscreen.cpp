@@ -33,7 +33,7 @@
 #include <util/sll/slotclosure.h>
 #include "loadprocessbase.h"
 
-namespace LeechCraft
+namespace LC
 {
 	void SplashScreen::RegisterLoadProcess (LoadProcessBase *proc)
 	{

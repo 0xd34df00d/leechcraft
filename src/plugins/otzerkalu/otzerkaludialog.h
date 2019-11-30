@@ -35,7 +35,7 @@
 #include <QFileDialog>
 #include "ui_otzerkaludialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Otzerkalu
 {

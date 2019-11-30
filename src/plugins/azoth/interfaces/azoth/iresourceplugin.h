@@ -42,7 +42,7 @@ inline uint qHash (const QImage& image)
 	return image.cacheKey ();
 }
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -183,9 +183,9 @@ namespace Azoth
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Azoth::IEmoticonResourceSource,
+Q_DECLARE_INTERFACE (LC::Azoth::IEmoticonResourceSource,
 		"org.Deviant.LeechCraft.Azoth.IEmoticonResourceSource/1.0")
-Q_DECLARE_INTERFACE (LeechCraft::Azoth::IResourcePlugin,
+Q_DECLARE_INTERFACE (LC::Azoth::IResourcePlugin,
 		"org.Deviant.LeechCraft.Azoth.IResourcePlugin/1.0")
 
 #endif

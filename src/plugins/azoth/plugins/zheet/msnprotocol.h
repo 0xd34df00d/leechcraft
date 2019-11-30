@@ -32,7 +32,7 @@
 #include <QObject>
 #include <interfaces/azoth/iprotocol.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -44,7 +44,7 @@ namespace Zheet
 					  , public IProtocol
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IProtocol)
+		Q_INTERFACES (LC::Azoth::IProtocol)
 
 		QList<MSNAccount*> Accounts_;
 	public:

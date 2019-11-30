@@ -55,7 +55,7 @@ namespace security::cert
 }
 }
 
-namespace LeechCraft
+namespace LC
 {
 namespace Snails
 {

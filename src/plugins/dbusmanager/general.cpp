@@ -39,7 +39,7 @@
 #include <interfaces/core/ipluginsmanager.h>
 #include "core.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace DBusManager
 {

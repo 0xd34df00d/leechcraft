@@ -33,7 +33,7 @@
 #include <QStringList>
 #include <QXmppDataForm.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

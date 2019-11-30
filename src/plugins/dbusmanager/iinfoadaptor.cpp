@@ -30,7 +30,7 @@
 #include "iinfoadaptor.h"
 #include <interfaces/iinfo.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace DBusManager
 {

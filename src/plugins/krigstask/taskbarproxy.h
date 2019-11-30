@@ -33,7 +33,7 @@
 #include <QPointer>
 #include <interfaces/core/icoreproxy.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Krigstask
 {

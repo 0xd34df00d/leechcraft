@@ -49,7 +49,7 @@
 #include "editcommentdialog.h"
 #include "editdatedialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Otlozhu
 {

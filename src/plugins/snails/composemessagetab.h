@@ -37,7 +37,7 @@
 
 class IEditorWidget;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Snails
 {

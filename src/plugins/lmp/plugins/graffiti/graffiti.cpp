@@ -34,7 +34,7 @@
 #include "graffititab.h"
 #include "progressmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {
@@ -142,7 +142,7 @@ namespace Graffiti
 		return tab;
 	}
 
-	void Plugin::hookPlaylistContextMenuRequested (LeechCraft::IHookProxy_ptr,
+	void Plugin::hookPlaylistContextMenuRequested (LC::IHookProxy_ptr,
 			QMenu *menu, const MediaInfo& mediaInfo)
 	{
 		if (mediaInfo.LocalPath_.isEmpty ())
@@ -180,4 +180,4 @@ namespace Graffiti
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_lmp_graffiti, LeechCraft::LMP::Graffiti::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_lmp_graffiti, LC::LMP::Graffiti::Plugin);

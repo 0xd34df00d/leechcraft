@@ -32,7 +32,7 @@
 #include <QWizardPage>
 #include "ui_inbandaccountregfirstpage.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

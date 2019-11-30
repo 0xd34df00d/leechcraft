@@ -32,7 +32,7 @@
 #include <util/util.h>
 #include "udevbackend.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Devmon
 {
@@ -90,5 +90,5 @@ namespace Devmon
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_devmon, LeechCraft::Devmon::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_devmon, LC::Devmon::Plugin);
 

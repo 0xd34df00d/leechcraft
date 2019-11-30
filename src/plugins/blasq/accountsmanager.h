@@ -35,7 +35,7 @@ class QModelIndex;
 class QAbstractItemModel;
 class QStandardItemModel;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blasq
 {

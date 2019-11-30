@@ -106,7 +106,7 @@ namespace Media
 		 *
 		 * @sa LyricsResults
 		 */
-		using LyricsQueryResult_t = LeechCraft::Util::Either<QString, LyricsResults>;
+		using LyricsQueryResult_t = LC::Util::Either<QString, LyricsResults>;
 
 		/** @brief Requests searching for lyrics for the given query.
 		 *

@@ -32,7 +32,7 @@
 #include <QFlags>
 #include <QMetaType>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -58,5 +58,5 @@ namespace Azoth
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Azoth::IRegManagedAccount,
+Q_DECLARE_INTERFACE (LC::Azoth::IRegManagedAccount,
 		"org.Deviant.LeechCraft.Azoth.IRegManagedAccount/1.0")

@@ -34,7 +34,7 @@
 #include <qwebsettings.h>
 #include "xmlsettingsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

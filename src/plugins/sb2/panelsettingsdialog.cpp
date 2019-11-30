@@ -31,7 +31,7 @@
 #include <QStandardItemModel>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace SB2
 {

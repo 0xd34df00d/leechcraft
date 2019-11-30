@@ -37,7 +37,7 @@
 
 class QXmppMessage;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -51,8 +51,8 @@ namespace Xoox
 							, public IRichTextMessage
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IMessage
-				LeechCraft::Azoth::IRichTextMessage)
+		Q_INTERFACES (LC::Azoth::IMessage
+				LC::Azoth::IRichTextMessage)
 
 		QPointer<RoomCLEntry> ParentEntry_;
 		RoomParticipantEntry_ptr ParticipantEntry_;

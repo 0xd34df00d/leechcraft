@@ -34,7 +34,7 @@
 
 class QString;
 
-namespace LeechCraft::Util
+namespace LC::Util
 {
 	UTIL_XPC_API QString GetErrorString (IDownload::Error::Type type);
 }

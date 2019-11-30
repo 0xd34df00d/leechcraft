@@ -37,7 +37,7 @@
 #include "interfaces/structures.h"
 #include "kinotify.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

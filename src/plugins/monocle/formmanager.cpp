@@ -52,7 +52,7 @@ uint qHash (const QList<int>& list)
 	return qHash (arr);
 }
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {

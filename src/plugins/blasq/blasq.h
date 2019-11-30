@@ -39,7 +39,7 @@
 #include <interfaces/ientityhandler.h>
 #include <interfaces/data/iimgsource.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blasq
 {

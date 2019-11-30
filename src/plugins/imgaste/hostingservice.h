@@ -43,7 +43,7 @@ class QNetworkAccessManager;
 template<typename, typename>
 class QHash;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Imgaste
 {

@@ -33,7 +33,7 @@
 #include <QTime>
 #include <QSet>
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

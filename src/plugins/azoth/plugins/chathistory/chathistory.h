@@ -42,7 +42,7 @@
 #include <interfaces/azoth/ihistoryplugin.h>
 #include "storagestructures.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -68,7 +68,7 @@ namespace ChatHistory
 				IActionsExporter
 				IHaveTabs
 				IHaveSettings
-				LeechCraft::Azoth::IHistoryPlugin)
+				LC::Azoth::IHistoryPlugin)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.ChatHistory")
 
@@ -121,14 +121,14 @@ namespace ChatHistory
 	public slots:
 		void initPlugin (QObject*);
 
-		void hookEntryActionAreasRequested (LeechCraft::IHookProxy_ptr proxy,
+		void hookEntryActionAreasRequested (LC::IHookProxy_ptr proxy,
 				QObject *action,
 				QObject *entry);
-		void hookEntryActionsRemoved (LeechCraft::IHookProxy_ptr proxy,
+		void hookEntryActionsRemoved (LC::IHookProxy_ptr proxy,
 				QObject *entry);
-		void hookEntryActionsRequested (LeechCraft::IHookProxy_ptr proxy,
+		void hookEntryActionsRequested (LC::IHookProxy_ptr proxy,
 				QObject *entry);
-		void hookGotMessage2 (LeechCraft::IHookProxy_ptr proxy,
+		void hookGotMessage2 (LC::IHookProxy_ptr proxy,
 				QObject *message);
 	private slots:
 		void handlePushButton (const QString&);
@@ -147,9 +147,9 @@ namespace ChatHistory
 
 		void gotLastMessages (QObject*, const QList<QObject*>&);
 
-		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
+		void gotActions (QList<QAction*>, LC::ActionsEmbedPlace);
 
-		void gotEntity (const LeechCraft::Entity&);
+		void gotEntity (const LC::Entity&);
 	};
 }
 }

@@ -33,7 +33,7 @@
 #include "core.h"
 #include "storagemodel.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Otlozhu
 {

@@ -32,7 +32,7 @@
 #include <QObject>
 #include <interfaces/azoth/itransfermanager.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -44,7 +44,7 @@ namespace Murm
 						  , public ITransferManager
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::ITransferManager)
+		Q_INTERFACES (LC::Azoth::ITransferManager)
 
 		VkAccount * const Acc_;
 	public:

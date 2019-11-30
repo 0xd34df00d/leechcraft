@@ -34,7 +34,7 @@
 #include <QFileInfo>
 #include <interfaces/lmp/ilmpplugin.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

@@ -35,7 +35,7 @@
 
 class QWebFrame;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

@@ -33,7 +33,7 @@
 #include <functional>
 #include <stdexcept>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

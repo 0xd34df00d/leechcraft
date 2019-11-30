@@ -37,7 +37,7 @@
 #include "xmlsettingsmanager.h"
 #include "core.h"
 
-namespace LeechCraft
+namespace LC
 {
 	NewTabMenuManager::NewTabMenuManager (QObject *parent)
 	: QObject (parent)

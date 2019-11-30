@@ -34,7 +34,7 @@
 class QStandardItemModel;
 class QComboBox;
 
-namespace LeechCraft
+namespace LC
 {
 namespace NetStoreManager
 {

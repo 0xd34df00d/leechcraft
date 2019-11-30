@@ -41,7 +41,7 @@ namespace Ui
 	class CategorySelector;
 }
 
-namespace LeechCraft
+namespace LC
 {
 	namespace Util
 	{

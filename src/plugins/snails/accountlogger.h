@@ -36,7 +36,7 @@
 class QFile;
 class QDateTime;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Snails
 {

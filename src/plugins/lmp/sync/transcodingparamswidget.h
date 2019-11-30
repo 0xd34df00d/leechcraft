@@ -34,7 +34,7 @@
 #include "ui_transcodingparamswidget.h"
 #include "formats.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

@@ -30,7 +30,7 @@
 #include "dummymsgmanager.h"
 #include "coremessage.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

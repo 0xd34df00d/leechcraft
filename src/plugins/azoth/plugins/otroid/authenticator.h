@@ -34,7 +34,7 @@
 
 typedef struct context ConnContext;    /* Forward declare */
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

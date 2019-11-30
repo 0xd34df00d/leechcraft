@@ -32,7 +32,7 @@
 #include <QAction>
 #include <util/sll/slotclosure.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

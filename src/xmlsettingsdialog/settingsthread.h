@@ -33,7 +33,7 @@
 #include <QVariant>
 #include <QMutex>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

@@ -35,7 +35,7 @@
 #include <interfaces/media/itagsfetcher.h>
 #include "filesmodel.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

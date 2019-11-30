@@ -31,7 +31,7 @@
 #include "xeps/xep0313manager.h"
 #include "xeps/xep0313prefiq.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

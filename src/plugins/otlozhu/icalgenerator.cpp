@@ -32,7 +32,7 @@
 #include <interfaces/core/itagsmanager.h>
 #include "core.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Otlozhu
 {

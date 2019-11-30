@@ -32,7 +32,7 @@
 #include <QWizardPage>
 #include "ui_userstatuspage.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Dolozhee
 {

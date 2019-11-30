@@ -31,7 +31,7 @@
 
 #include <util/tags/tagsfiltermodel.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Summary
 {

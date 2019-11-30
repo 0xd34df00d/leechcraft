@@ -37,7 +37,7 @@
 #include "newtabmenumanager.h"
 #include "iconthemeengine.h"
 
-namespace LeechCraft
+namespace LC
 {
 	MainWindowMenuManager::MainWindowMenuManager (const Ui::LeechCraft& ui, QObject *parent)
 	: QObject { parent }

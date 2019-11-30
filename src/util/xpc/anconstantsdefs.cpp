@@ -31,7 +31,7 @@
 #include <interfaces/an/entityfields.h>
 #include "xpcconfig.h"
 
-namespace LeechCraft::AN
+namespace LC::AN
 {
 	const QString CatEventCancel { "org.LC.AdvNotifications.Cancel" };
 

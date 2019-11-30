@@ -39,7 +39,7 @@ namespace MSN
 	class SwitchboardServerConnection;
 }
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -53,7 +53,7 @@ namespace Zheet
 					  , public ITransferJob
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::ITransferJob)
+		Q_INTERFACES (LC::Azoth::ITransferJob)
 
 		uint ID_;
 		MSNAccount *A_;

@@ -42,7 +42,7 @@
 #include "storage.h"
 #include "loggingstatekeeper.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

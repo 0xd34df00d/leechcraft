@@ -34,7 +34,7 @@
 #include <interfaces/iplugin2.h>
 #include <interfaces/advancednotifications/inotificationbackendplugin.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace AdvancedNotifications
 {
@@ -48,7 +48,7 @@ namespace Dolle
 		Q_OBJECT
 		Q_INTERFACES (IInfo
 				IPlugin2
-				LeechCraft::AdvancedNotifications::INotificationBackendPlugin
+				LC::AdvancedNotifications::INotificationBackendPlugin
 				)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.AdvancedNotifications.Dolle")

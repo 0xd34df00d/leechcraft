@@ -60,7 +60,7 @@
 #include "glooxprotocol.h"
 #include "offlinedatasource.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -111,31 +111,31 @@ namespace Xoox
 #endif
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IAccount
-				LeechCraft::Azoth::IExtSelfInfoAccount
-				LeechCraft::Azoth::IHaveServiceDiscovery
-				LeechCraft::Azoth::IHaveSearch
-				LeechCraft::Azoth::IHaveConsole
-				LeechCraft::Azoth::IHaveMicroblogs
-				LeechCraft::Azoth::ISupportTune
-				LeechCraft::Azoth::ISupportMood
-				LeechCraft::Azoth::ISupportActivity
-				LeechCraft::Azoth::ISupportGeolocation
-				LeechCraft::Azoth::ISupportRIEX
-				LeechCraft::Azoth::ISupportBookmarks
-				LeechCraft::Azoth::ISupportLastActivity
-				LeechCraft::Azoth::IRegManagedAccount
-				LeechCraft::Azoth::IHaveServerHistory
-				LeechCraft::Azoth::IHaveBlacklists
-				LeechCraft::Azoth::ICanHaveSslErrors
+		Q_INTERFACES (LC::Azoth::IAccount
+				LC::Azoth::IExtSelfInfoAccount
+				LC::Azoth::IHaveServiceDiscovery
+				LC::Azoth::IHaveSearch
+				LC::Azoth::IHaveConsole
+				LC::Azoth::IHaveMicroblogs
+				LC::Azoth::ISupportTune
+				LC::Azoth::ISupportMood
+				LC::Azoth::ISupportActivity
+				LC::Azoth::ISupportGeolocation
+				LC::Azoth::ISupportRIEX
+				LC::Azoth::ISupportBookmarks
+				LC::Azoth::ISupportLastActivity
+				LC::Azoth::IRegManagedAccount
+				LC::Azoth::IHaveServerHistory
+				LC::Azoth::IHaveBlacklists
+				LC::Azoth::ICanHaveSslErrors
 			)
 
 #ifdef ENABLE_MEDIACALLS
-		Q_INTERFACES (LeechCraft::Azoth::ISupportMediaCalls)
+		Q_INTERFACES (LC::Azoth::ISupportMediaCalls)
 #endif
 
 #ifdef ENABLE_CRYPT
-		Q_INTERFACES (LeechCraft::Azoth::ISupportPGP)
+		Q_INTERFACES (LC::Azoth::ISupportPGP)
 #endif
 
 		QString Name_;
@@ -303,7 +303,7 @@ namespace Xoox
 
 		void bookmarksChanged () override;
 
-		void riexItemsSuggested (QList<LeechCraft::Azoth::RIEXItem> items,
+		void riexItemsSuggested (QList<LC::Azoth::RIEXItem> items,
 				QObject*, QString) override;
 
 		void gotConsolePacket (const QByteArray&, IHaveConsole::PacketDirection, const QString&) override;

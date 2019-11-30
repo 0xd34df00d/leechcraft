@@ -33,7 +33,7 @@
 #include "interfaces/poshuku/iwebview.h"
 #include "ui_dummywebview.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

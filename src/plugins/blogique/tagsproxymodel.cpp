@@ -30,7 +30,7 @@
 #include "tagsproxymodel.h"
 #include "blogiquewidget.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blogique
 {

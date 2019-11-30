@@ -36,7 +36,7 @@
 #include "core.h"
 #include "ircaccount.h"
 
-namespace LeechCraft
+namespace LC
 {
 
 struct Entity;

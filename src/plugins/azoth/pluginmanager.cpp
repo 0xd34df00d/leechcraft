@@ -32,7 +32,7 @@
 #include <QtDebug>
 #include "core.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

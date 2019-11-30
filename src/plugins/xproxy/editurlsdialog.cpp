@@ -32,7 +32,7 @@
 #include <util/sll/slotclosure.h>
 #include "editurldialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace XProxy
 {

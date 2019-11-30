@@ -34,7 +34,7 @@
 
 class QTimer;
 
-namespace LeechCraft
+namespace LC
 {
 struct Entity;
 
@@ -55,7 +55,7 @@ namespace Otlozhu
 		void handleTimer ();
 		void readjustTimer ();
 	signals:
-		void gotEntity (const LeechCraft::Entity&);
+		void gotEntity (const LC::Entity&);
 	};
 }
 }

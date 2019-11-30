@@ -31,7 +31,7 @@
 #define PLUGINS_AZOTH_PLUGINS_XOOX_IMAGEMEDIAWIDGET_H
 #include <QLabel>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

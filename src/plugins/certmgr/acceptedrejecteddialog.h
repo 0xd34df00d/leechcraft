@@ -34,7 +34,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include "ui_acceptedrejecteddialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace CertMgr
 {

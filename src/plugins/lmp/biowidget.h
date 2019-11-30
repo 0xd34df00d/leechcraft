@@ -39,7 +39,7 @@ namespace Media
 	class IArtistBioFetcher;
 }
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

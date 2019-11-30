@@ -31,7 +31,7 @@
 #include <QDataStream>
 #include <util/structuresops.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace HistoryHolder
 {

@@ -37,7 +37,7 @@
 #include "account.h"
 #include "buddy.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

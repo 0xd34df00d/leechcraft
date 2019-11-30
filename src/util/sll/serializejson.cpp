@@ -32,7 +32,7 @@
 #include <QFile>
 #include "either.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

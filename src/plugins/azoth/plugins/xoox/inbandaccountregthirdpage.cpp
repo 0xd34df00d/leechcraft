@@ -34,7 +34,7 @@
 #include "inbandaccountregsecondpage.h"
 #include "glooxaccountconfigurationwidget.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

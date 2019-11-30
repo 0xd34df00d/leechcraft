@@ -35,7 +35,7 @@
 #include "interfaces/secman/istorageplugin.h"
 #include "core.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace SecMan
 {

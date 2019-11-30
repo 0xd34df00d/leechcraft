@@ -34,7 +34,7 @@
 
 class QDBusContext;
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

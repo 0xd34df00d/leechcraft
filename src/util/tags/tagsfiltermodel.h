@@ -32,7 +32,7 @@
 #include <QSortFilterProxyModel>
 #include "tagsconfig.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

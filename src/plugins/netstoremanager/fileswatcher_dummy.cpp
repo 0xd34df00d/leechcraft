@@ -30,7 +30,7 @@
 #include "fileswatcher_dummy.h"
 #include <QStringList>
 
-namespace LeechCraft
+namespace LC
 {
 namespace NetStoreManager
 {

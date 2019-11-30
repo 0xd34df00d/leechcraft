@@ -32,7 +32,7 @@
 #include <QTimer>
 #include <QUrl>
 
-namespace LeechCraft
+namespace LC
 {
 namespace SB2
 {

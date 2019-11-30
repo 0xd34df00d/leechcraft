@@ -33,7 +33,7 @@
 #include <interfaces/ijobholder.h>
 #include "cuesplitter.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

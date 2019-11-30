@@ -37,7 +37,7 @@
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/iaccount.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -88,25 +88,25 @@ namespace Herbicide
 }
 }
 
-BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Azoth::Herbicide::Logger::AccountRecord,
+BOOST_FUSION_ADAPT_STRUCT (LC::Azoth::Herbicide::Logger::AccountRecord,
 		PKey_,
 		AccountID_,
 		AccountName_)
 
-BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Azoth::Herbicide::Logger::EntryRecord,
+BOOST_FUSION_ADAPT_STRUCT (LC::Azoth::Herbicide::Logger::EntryRecord,
 		PKey_,
 		AccountID_,
 		EntryID_,
 		EntryHumanReadableId_,
 		EntryName_)
 
-BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Azoth::Herbicide::Logger::EventRecord,
+BOOST_FUSION_ADAPT_STRUCT (LC::Azoth::Herbicide::Logger::EventRecord,
 		PKey_,
 		EntryID_,
 		Event_,
 		Reason_)
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

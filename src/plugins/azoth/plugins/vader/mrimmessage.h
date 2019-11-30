@@ -33,7 +33,7 @@
 #include <interfaces/azoth/imessage.h>
 #include <interfaces/azoth/iadvancedmessage.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -47,8 +47,8 @@ namespace Vader
 					  , public IAdvancedMessage
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IMessage
-				LeechCraft::Azoth::IAdvancedMessage)
+		Q_INTERFACES (LC::Azoth::IMessage
+				LC::Azoth::IAdvancedMessage)
 
 		MRIMBuddy *Buddy_;
 		MRIMAccount *A_;

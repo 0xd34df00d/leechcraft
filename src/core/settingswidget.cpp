@@ -36,7 +36,7 @@
 #include "interfaces/iplugin2.h"
 #include "core.h"
 
-namespace LeechCraft
+namespace LC
 {
 	SettingsWidget::SettingsWidget (QObject *settable,
 			const QObjectList& subplugins,

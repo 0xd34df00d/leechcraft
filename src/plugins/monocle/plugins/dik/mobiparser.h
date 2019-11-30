@@ -37,7 +37,7 @@
 
 class QTextCodec;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {

@@ -31,7 +31,7 @@
 #include <interfaces/iplugin2.h>
 #include <interfaces/secman/istorageplugin.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace SecMan
 {

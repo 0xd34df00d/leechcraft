@@ -38,7 +38,7 @@
 #include <util/network/lcserviceoverride.h>
 #include <util/network/handlenetworkreply.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Lastfmscrobble
 {

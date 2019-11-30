@@ -34,7 +34,7 @@
 class QAction;
 class QTreeView;
 
-namespace LeechCraft
+namespace LC
 {
 namespace NetStoreManager
 {

@@ -41,7 +41,7 @@
 #include <util/sll/util.h>
 #include "xmlsettingsmanager.h"
 
-namespace LeechCraft::Poshuku::SpeedDial
+namespace LC::Poshuku::SpeedDial
 {
 	const QSize RenderSize { 1280, 720 };
 	const QSize ThumbSize = RenderSize / 8;

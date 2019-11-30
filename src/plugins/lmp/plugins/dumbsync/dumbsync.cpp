@@ -43,7 +43,7 @@
 
 typedef std::shared_ptr<QFile> QFile_ptr;
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {
@@ -224,4 +224,4 @@ namespace DumbSync
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_lmp_dumbsync, LeechCraft::LMP::DumbSync::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_lmp_dumbsync, LC::LMP::DumbSync::Plugin);

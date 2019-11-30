@@ -35,7 +35,7 @@
 #include <QDomElement>
 #include <QString>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

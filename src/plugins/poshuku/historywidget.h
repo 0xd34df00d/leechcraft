@@ -33,7 +33,7 @@
 #include <util/tags/tagscompleter.h>
 #include "ui_historywidget.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

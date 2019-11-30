@@ -33,7 +33,7 @@
 #include "interfaces/azoth/isupportgeolocation.h"
 #include "ui_locationdialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

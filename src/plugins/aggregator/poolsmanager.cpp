@@ -31,7 +31,7 @@
 #include "storagebackendmanager.h"
 #include "storagebackend.h"
 
-namespace LeechCraft::Aggregator
+namespace LC::Aggregator
 {
 	PoolsManager& PoolsManager::Instance ()
 	{

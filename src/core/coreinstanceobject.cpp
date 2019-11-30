@@ -50,7 +50,7 @@
 #include "coreproxy.h"
 #include "application.h"
 
-namespace LeechCraft
+namespace LC
 {
 	namespace
 	{

@@ -50,7 +50,7 @@
 #include "quarkmanager.h"
 #include "platformobjects.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Liznoo
 {
@@ -350,4 +350,4 @@ namespace Liznoo
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_liznoo, LeechCraft::Liznoo::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_liznoo, LC::Liznoo::Plugin);

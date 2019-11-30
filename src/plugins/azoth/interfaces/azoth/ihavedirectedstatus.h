@@ -32,7 +32,7 @@
 #include <QtPlugin>
 #include "iclentry.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -75,7 +75,7 @@ namespace Azoth
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Azoth::IHaveDirectedStatus,
+Q_DECLARE_INTERFACE (LC::Azoth::IHaveDirectedStatus,
 		"org.Deviant.LeechCraft.Azoth.IHaveDirectedStatus/1.0")
 
 #endif

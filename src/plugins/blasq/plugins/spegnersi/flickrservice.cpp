@@ -34,7 +34,7 @@
 #include <QtDebug>
 #include "flickraccount.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blasq
 {

@@ -35,7 +35,7 @@ class QToolBar;
 class QWidget;
 class QMenu;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Aggregator
 {

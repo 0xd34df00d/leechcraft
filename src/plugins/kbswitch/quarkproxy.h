@@ -31,7 +31,7 @@
 
 #include <QObject>
 
-namespace LeechCraft
+namespace LC
 {
 namespace KBSwitch
 {

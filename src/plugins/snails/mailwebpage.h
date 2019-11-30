@@ -33,7 +33,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include "messageinfo.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Snails
 {

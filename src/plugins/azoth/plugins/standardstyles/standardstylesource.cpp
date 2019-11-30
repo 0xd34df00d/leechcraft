@@ -43,7 +43,7 @@
 #include <interfaces/azoth/imucentry.h>
 #include <interfaces/azoth/iproxyobject.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

@@ -31,7 +31,7 @@
 #define PLUGINS_AZOTH_INTERFACES_IEXTSELFINFOACCOUNT_H
 #include <QMetaType>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -78,7 +78,7 @@ namespace Azoth
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Azoth::IExtSelfInfoAccount,
+Q_DECLARE_INTERFACE (LC::Azoth::IExtSelfInfoAccount,
 		"org.Deviant.LeechCraft.Azoth.IExtSelfInfoAccount/1.0")
 
 #endif

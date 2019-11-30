@@ -31,7 +31,7 @@
 
 #include <QTreeView>
 
-namespace LeechCraft::Azoth
+namespace LC::Azoth
 {
 	class ContactsListView : public QTreeView
 	{

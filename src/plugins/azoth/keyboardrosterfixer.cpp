@@ -33,7 +33,7 @@
 #include <QTreeView>
 #include <QLineEdit>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

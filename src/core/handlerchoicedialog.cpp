@@ -39,7 +39,7 @@
 #include "interfaces/ientityhandler.h"
 #include "core.h"
 
-namespace LeechCraft
+namespace LC
 {
 	HandlerChoiceDialog::HandlerChoiceDialog (const QString& entity, QWidget *parent)
 	: QDialog (parent)

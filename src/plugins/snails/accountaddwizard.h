@@ -31,7 +31,7 @@
 
 #include <QWizard>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Snails
 {

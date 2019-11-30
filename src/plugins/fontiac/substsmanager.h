@@ -39,7 +39,7 @@ class QStandardItemModel;
 class QAbstractItemModel;
 class QFont;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Fontiac
 {

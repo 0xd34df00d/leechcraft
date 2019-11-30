@@ -34,9 +34,9 @@
 #include "interfaces/azoth/iaccount.h"
 #include "interfaces/azoth/iprotocol.h"
 
-Q_DECLARE_METATYPE (LeechCraft::Azoth::ICLEntry*);
+Q_DECLARE_METATYPE (LC::Azoth::ICLEntry*);
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

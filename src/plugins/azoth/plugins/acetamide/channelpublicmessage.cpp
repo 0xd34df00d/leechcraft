@@ -33,7 +33,7 @@
 #include "channelclentry.h"
 #include "channelhandler.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

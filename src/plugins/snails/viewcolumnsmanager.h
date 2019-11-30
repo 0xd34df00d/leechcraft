@@ -34,7 +34,7 @@
 
 class QHeaderView;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Snails
 {

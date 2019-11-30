@@ -32,7 +32,7 @@
 #include "storage.h"
 #include <util/threads/workerthreadbasefwd.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

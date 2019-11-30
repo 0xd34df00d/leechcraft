@@ -40,7 +40,7 @@
 class QWebView;
 class QTranslator;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -75,7 +75,7 @@ namespace Rosenthal
 	protected:
 		bool eventFilter (QObject*, QEvent*);
 	private slots:
-		void hookChatTabCreated (LeechCraft::IHookProxy_ptr,
+		void hookChatTabCreated (LC::IHookProxy_ptr,
 				QObject*,
 				QObject*,
 				QWebView*);

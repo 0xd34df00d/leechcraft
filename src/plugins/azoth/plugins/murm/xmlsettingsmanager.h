@@ -31,13 +31,13 @@
 
 #include <xmlsettingsdialog/basesettingsmanager.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
 namespace Murm
 {
-	class XmlSettingsManager : public LeechCraft::Util::BaseSettingsManager
+	class XmlSettingsManager : public LC::Util::BaseSettingsManager
 	{
 		Q_OBJECT
 

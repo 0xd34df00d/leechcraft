@@ -33,7 +33,7 @@ class QXmppElement;
 class QDomElement;
 class QString;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

@@ -38,7 +38,7 @@
 #include "structures.h"
 #include "entrybase.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -51,7 +51,7 @@ namespace Murm
 					  , public IMUCEntry
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IMUCEntry)
+		Q_INTERFACES (LC::Azoth::IMUCEntry)
 
 		ChatInfo Info_;
 		QSet<int> PendingUserInfoRequests_;

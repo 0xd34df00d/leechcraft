@@ -31,7 +31,7 @@
 #define PLUGINS_AZOTH_PLUGINS_ZHEET_CORE_H
 #include <QObject>
 
-namespace LeechCraft
+namespace LC
 {
 struct Entity;
 
@@ -62,7 +62,7 @@ namespace Zheet
 
 		void SendEntity (const Entity&);
 	signals:
-		void gotEntity (const LeechCraft::Entity&);
+		void gotEntity (const LC::Entity&);
 	};
 }
 }

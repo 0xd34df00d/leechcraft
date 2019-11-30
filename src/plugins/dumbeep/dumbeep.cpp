@@ -36,7 +36,7 @@
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Dumbeep
 {
@@ -132,4 +132,4 @@ namespace Dumbeep
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_dumbeep, LeechCraft::Dumbeep::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_dumbeep, LC::Dumbeep::Plugin);

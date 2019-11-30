@@ -31,7 +31,7 @@
 #include <util/util.h>
 #include "httpstreamfilter.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {
@@ -106,4 +106,4 @@ namespace HttStream
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_lmp_httstream, LeechCraft::LMP::HttStream::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_lmp_httstream, LC::LMP::HttStream::Plugin);

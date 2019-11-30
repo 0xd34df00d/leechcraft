@@ -30,7 +30,7 @@
 #include "util.h"
 #include <QQuickWidget>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

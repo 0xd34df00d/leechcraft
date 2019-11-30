@@ -37,7 +37,7 @@
 
 class ITagsManager;
 
-namespace LeechCraft
+namespace LC
 {
 struct FlatTreeItem;
 using FlatTreeItem_ptr = std::shared_ptr<FlatTreeItem>;

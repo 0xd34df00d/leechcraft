@@ -36,7 +36,7 @@
 #include <interfaces/ihavesettings.h>
 #include <interfaces/azoth/iprovidecommands.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -52,7 +52,7 @@ namespace MuCommands
 		Q_OBJECT
 		Q_INTERFACES (IInfo
 				IPlugin2
-				LeechCraft::Azoth::IProvideCommands)
+				LC::Azoth::IProvideCommands)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.MuCommands")
 

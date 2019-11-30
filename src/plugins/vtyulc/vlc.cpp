@@ -36,7 +36,7 @@
 #include <util/util.h>
 #include "vlc.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace vlc
 {
@@ -176,7 +176,7 @@ namespace vlc
 				SLOT (deleted (QWidget*)));
 	}
 
-	LeechCraft::TabClasses_t Plugin::GetTabClasses () const
+	LC::TabClasses_t Plugin::GetTabClasses () const
 	{
 		return { VlcWidget::GetTabInfo () };
 	}
@@ -223,4 +223,4 @@ namespace vlc
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_vlc, LeechCraft::vlc::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_vlc, LC::vlc::Plugin);

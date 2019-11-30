@@ -46,7 +46,7 @@
 #include "recsmanager.h"
 #include "tracksrestorehandler.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace TouchStreams
 {
@@ -181,4 +181,4 @@ namespace TouchStreams
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_touchstreams, LeechCraft::TouchStreams::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_touchstreams, LC::TouchStreams::Plugin);

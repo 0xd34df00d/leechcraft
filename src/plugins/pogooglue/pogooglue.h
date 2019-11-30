@@ -35,7 +35,7 @@
 #include <interfaces/ientityhandler.h>
 #include <interfaces/idatafilter.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Pogooglue
 {

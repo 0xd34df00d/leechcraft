@@ -35,7 +35,7 @@
 #include <QString>
 #include <interfaces/core/icoreproxy.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

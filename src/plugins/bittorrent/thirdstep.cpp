@@ -36,7 +36,7 @@
 #include "secondstep.h"
 #include "newtorrentwizard.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace BitTorrent
 {
@@ -100,7 +100,7 @@ namespace BitTorrent
 
 		NumPieces_->setText (QString::number (numPieces) +
 				tr (" pieces (%1)")
-				.arg (LeechCraft::Util::MakePrettySize (TotalSize_)));
+				.arg (LC::Util::MakePrettySize (TotalSize_)));
 	}
 }
 }

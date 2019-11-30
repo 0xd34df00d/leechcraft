@@ -32,7 +32,7 @@
 #include <QUrl>
 #include <QObject>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -78,7 +78,7 @@ namespace Azoth
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Azoth::IURIHandler,
+Q_DECLARE_INTERFACE (LC::Azoth::IURIHandler,
 		"org.Deviant.LeechCraft.Azoth.IURIHandler/1.0")
 
 #endif

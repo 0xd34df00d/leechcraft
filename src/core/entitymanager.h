@@ -32,7 +32,7 @@
 #include <QObject>
 #include "interfaces/core/ientitymanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 	class EntityManager : public QObject
 						, public IEntityManager
@@ -43,8 +43,8 @@ namespace LeechCraft
 		explicit EntityManager (QObject* = nullptr);
 
 		DelegationResult DelegateEntity (Entity, QObject* = nullptr) override;
-		Q_INVOKABLE bool HandleEntity (LeechCraft::Entity, QObject* = nullptr) override;
-		Q_INVOKABLE bool CouldHandle (const LeechCraft::Entity&) override;
+		Q_INVOKABLE bool HandleEntity (LC::Entity, QObject* = nullptr) override;
+		Q_INVOKABLE bool CouldHandle (const LC::Entity&) override;
 		QList<QObject*> GetPossibleHandlers (const Entity&) override;
 	};
 }

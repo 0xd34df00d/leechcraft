@@ -33,7 +33,7 @@
 
 class QWizardPage;
 
-namespace LeechCraft::SeekThru
+namespace LC::SeekThru
 {
 	class WizardGenerator
 	{

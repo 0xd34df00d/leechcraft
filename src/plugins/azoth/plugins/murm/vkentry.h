@@ -42,7 +42,7 @@
 
 class QTimer;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -58,7 +58,7 @@ namespace Murm
 				  , public IHaveAvatars
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IMetaInfoEntry LeechCraft::Azoth::IHaveAvatars)
+		Q_INTERFACES (LC::Azoth::IMetaInfoEntry LC::Azoth::IHaveAvatars)
 
 		UserInfo Info_;
 

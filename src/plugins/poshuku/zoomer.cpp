@@ -31,7 +31,7 @@
 #include <QWheelEvent>
 #include <QAction>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

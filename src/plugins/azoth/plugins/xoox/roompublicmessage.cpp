@@ -38,7 +38,7 @@
 #include "clientconnection.h"
 #include "roomhandler.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

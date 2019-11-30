@@ -39,7 +39,7 @@
 
 class QQuickImageProvider;
 
-namespace LeechCraft
+namespace LC
 {
 	/** @brief Describes a single quark.
 	 *
@@ -182,7 +182,7 @@ public:
 	 *
 	 * @return The list of quark components provided by this plugin.
 	 */
-	virtual LeechCraft::QuarkComponents_t GetComponents () const = 0;
+	virtual LC::QuarkComponents_t GetComponents () const = 0;
 };
 
 Q_DECLARE_INTERFACE (IQuarkComponentProvider, "org.Deviant.LeechCraft.IQuarkComponentProvider/1.0")

@@ -202,7 +202,7 @@
        </widget>
       </item>
       <item row="3" column="1">
-       <widget class="LeechCraft::Util::TagsLineEdit" name="TagsEdit_">
+       <widget class="LC::Util::TagsLineEdit" name="TagsEdit_">
         <property name="text">
          <string>untagged</string>
         </property>
@@ -392,7 +392,7 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>LeechCraft::Util::TagsLineEdit</class>
+   <class>LC::Util::TagsLineEdit</class>
    <extends>QLineEdit</extends>
    <header location="global">util/tags/tagslineedit.h</header>
   </customwidget>

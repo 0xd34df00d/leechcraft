@@ -37,7 +37,7 @@
 #include <libdjvu/ddjvuapi.h>
 #include <libdjvu/miniexp.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {
@@ -54,8 +54,8 @@ namespace Seen
 		Q_OBJECT
 		Q_INTERFACES (IInfo
 				IPlugin2
-				LeechCraft::Monocle::IKnowFileExtensions
-				LeechCraft::Monocle::IBackendPlugin)
+				LC::Monocle::IKnowFileExtensions
+				LC::Monocle::IBackendPlugin)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Monocle.Seen")
 

@@ -31,7 +31,7 @@
 
 #include <QMetaType>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -91,4 +91,4 @@ namespace Azoth
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::Azoth::ActivityInfo)
+Q_DECLARE_METATYPE (LC::Azoth::ActivityInfo)

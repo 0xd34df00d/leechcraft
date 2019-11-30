@@ -36,7 +36,7 @@ class QXmppDataForm;
 class QWidget;
 class QFormLayout;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

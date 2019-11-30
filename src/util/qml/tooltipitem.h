@@ -33,7 +33,7 @@
 #include <QQuickItem>
 #include "qmlconfig.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

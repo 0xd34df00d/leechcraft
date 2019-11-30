@@ -31,7 +31,7 @@
 
 #include <interfaces/media/iradiostationprovider.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace HotStreams
 {

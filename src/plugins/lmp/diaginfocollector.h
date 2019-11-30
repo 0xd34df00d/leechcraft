@@ -31,7 +31,7 @@
 
 #include <QStringList>
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

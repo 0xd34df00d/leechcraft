@@ -39,7 +39,7 @@
 #include "smoothscroller.h"
 #include "common.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {

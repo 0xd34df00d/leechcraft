@@ -35,7 +35,7 @@
 #include <util/sll/unreachable.h>
 #include "transcodingparams.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

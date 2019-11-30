@@ -39,7 +39,7 @@
 
 Q_DECLARE_METATYPE (QSet<QString>)
 
-namespace LeechCraft
+namespace LC
 {
 namespace Rosenthal
 {

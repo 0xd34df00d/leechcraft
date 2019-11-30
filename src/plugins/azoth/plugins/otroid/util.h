@@ -41,7 +41,7 @@ extern "C"
 class QIcon;
 class QString;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

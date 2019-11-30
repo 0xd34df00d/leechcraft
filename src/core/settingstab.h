@@ -39,7 +39,7 @@ class IHaveSettings;
 class QLineEdit;
 class QToolButton;
 
-namespace LeechCraft
+namespace LC
 {
 	class SettingsWidget;
 

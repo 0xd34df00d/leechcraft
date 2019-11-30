@@ -32,7 +32,7 @@
 #include "core.h"
 #include "sessionsettingsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace BitTorrent
 {

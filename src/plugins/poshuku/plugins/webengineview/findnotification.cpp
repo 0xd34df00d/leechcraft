@@ -30,7 +30,7 @@
 #include "findnotification.h"
 #include <QWebEngineView>
 
-namespace LeechCraft::Poshuku::WebEngineView
+namespace LC::Poshuku::WebEngineView
 {
 	FindNotification::FindNotification (ICoreProxy_ptr proxy, QWebEngineView *near)
 	: Util::FindNotification { proxy, near }

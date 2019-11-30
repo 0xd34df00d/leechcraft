@@ -31,7 +31,7 @@
 
 #include "streamlistfetcherbase.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace HotStreams
 {

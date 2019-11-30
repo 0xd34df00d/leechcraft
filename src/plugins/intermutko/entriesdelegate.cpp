@@ -34,7 +34,7 @@
 #include "localesmodel.h"
 #include "util.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Intermutko
 {

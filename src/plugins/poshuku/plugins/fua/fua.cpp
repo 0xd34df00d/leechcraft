@@ -40,7 +40,7 @@
 #include "settings.h"
 #include "xmlsettingsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {
@@ -104,7 +104,7 @@ namespace Fua
 		return XmlSettingsDialog_;
 	}
 
-	void FUA::hookUserAgentForUrlRequested (LeechCraft::IHookProxy_ptr proxy,
+	void FUA::hookUserAgentForUrlRequested (LC::IHookProxy_ptr proxy,
 			const QUrl& url)
 	{
 		const auto& host = url.host ();
@@ -221,4 +221,4 @@ namespace Fua
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_poshuku_fua, LeechCraft::Poshuku::Fua::FUA);
+LC_EXPORT_PLUGIN (leechcraft_poshuku_fua, LC::Poshuku::Fua::FUA);

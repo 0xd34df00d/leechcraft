@@ -31,7 +31,7 @@
 #include <QtPlugin>
 #include <QtDebug>
 
-namespace LeechCraft
+namespace LC
 {
 namespace WKPlugins
 {

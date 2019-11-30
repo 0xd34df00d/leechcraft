@@ -43,7 +43,7 @@
 #include "accountfoldermanager.h"
 #include "composemessagetab.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Snails
 {
@@ -61,12 +61,12 @@ namespace Snails
 		MsgView_->AddLocalPrefix ();
 
 		qRegisterMetaType<size_t> ("size_t");
-		qRegisterMetaType<AttDescr> ("LeechCraft::Snails::AttDescr");
+		qRegisterMetaType<AttDescr> ("LC::Snails::AttDescr");
 		qRegisterMetaType<AttDescr> ("AttDescr");
 		qRegisterMetaType<QList<QStringList>> ("QList<QStringList>");
 		qRegisterMetaType<QList<QByteArray>> ("QList<QByteArray>");
-		qRegisterMetaType<Folder> ("LeechCraft::Snails::Folder");
-		qRegisterMetaType<QList<Folder>> ("QList<LeechCraft::Snails::Folder>");
+		qRegisterMetaType<Folder> ("LC::Snails::Folder");
+		qRegisterMetaType<QList<Folder>> ("QList<LC::Snails::Folder>");
 
 		qRegisterMetaTypeStreamOperators<AttDescr> ();
 		qRegisterMetaTypeStreamOperators<Folder> ();

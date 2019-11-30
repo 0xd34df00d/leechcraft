@@ -32,7 +32,7 @@
 #include <QDialog>
 #include "ui_importopml.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Aggregator
 {

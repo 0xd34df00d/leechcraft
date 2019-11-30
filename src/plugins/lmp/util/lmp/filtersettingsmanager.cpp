@@ -30,7 +30,7 @@
 #include "filtersettingsmanager.h"
 #include <QCoreApplication>
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

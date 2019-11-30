@@ -32,7 +32,7 @@
 #include <QDialog>
 #include "ui_drawattentiondialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

@@ -32,7 +32,7 @@
 #include <util/sll/functor.h>
 #include <interfaces/azoth/iaccount.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

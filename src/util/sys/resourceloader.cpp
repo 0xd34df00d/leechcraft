@@ -38,7 +38,7 @@
 #include <QtDebug>
 #include <QBuffer>
 
-namespace LeechCraft
+namespace LC
 {
 	namespace Util
 	{

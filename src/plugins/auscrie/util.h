@@ -33,7 +33,7 @@
 
 class QObject;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Auscrie
 {

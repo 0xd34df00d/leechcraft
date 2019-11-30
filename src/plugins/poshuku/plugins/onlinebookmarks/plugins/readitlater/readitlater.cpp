@@ -33,7 +33,7 @@
 #include "readitlaterauthwidget.h"
 #include "readitlaterservice.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {
@@ -99,4 +99,4 @@ namespace ReadItLater
 }
 
 LC_EXPORT_PLUGIN (leechcraft_poshuku_onlinebookmarks_readitlater,
-		LeechCraft::Poshuku::OnlineBookmarks::ReadItLater::Plugin);
+		LC::Poshuku::OnlineBookmarks::ReadItLater::Plugin);

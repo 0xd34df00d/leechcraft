@@ -38,7 +38,7 @@
 #include <interfaces/ihavesettings.h>
 #include <interfaces/ihaveshortcuts.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {

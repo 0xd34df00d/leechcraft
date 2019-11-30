@@ -40,7 +40,7 @@ class QActionGroup;
 class QUndoStack;
 class QSortFilterProxyModel;
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {
@@ -151,9 +151,9 @@ namespace LMP
 
 		void updateStatsLabel ();
 	signals:
-		void hookPlaylistContextMenuRequested (LeechCraft::IHookProxy_ptr,
+		void hookPlaylistContextMenuRequested (LC::IHookProxy_ptr,
 				QMenu*,
-				LeechCraft::LMP::MediaInfo);
+				LC::LMP::MediaInfo);
 	};
 }
 }

@@ -42,7 +42,7 @@
 #include <util/xpc/downloadhelpers.h>
 #include "reportwizard.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Dolozhee
 {

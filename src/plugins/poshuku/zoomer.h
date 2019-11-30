@@ -35,7 +35,7 @@
 class QWheelEvent;
 class QAction;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

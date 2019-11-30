@@ -36,7 +36,7 @@
 #include "channelclentry.h"
 #include "ircaccount.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

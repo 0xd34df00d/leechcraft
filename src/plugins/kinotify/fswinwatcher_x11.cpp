@@ -33,7 +33,7 @@
 #include <X11/Xlib.h>
 #include <interfaces/core/irootwindowsmanager.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Kinotify
 {

@@ -34,7 +34,7 @@
 #include "manager.h"
 #include "certsmodel.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace CertMgr
 {

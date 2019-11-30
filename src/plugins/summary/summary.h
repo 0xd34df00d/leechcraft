@@ -37,7 +37,7 @@
 #include <interfaces/isummaryrepresentation.h>
 #include <interfaces/ihaverecoverabletabs.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Summary
 {

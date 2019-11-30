@@ -31,7 +31,7 @@
 
 #include <memory>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

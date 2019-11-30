@@ -32,7 +32,7 @@
 #include <QWidget>
 #include "ui_templateseditorwidget.h"
 
-namespace LeechCraft
+namespace LC
 {
 enum class ContentType;
 

@@ -36,7 +36,7 @@
 #include <interfaces/iactionsexporter.h>
 #include <interfaces/ihaveshortcuts.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Plugins
 {
@@ -73,7 +73,7 @@ namespace Glance
 	public slots:
 		void on_ActionGlance__triggered ();
 	signals:
-		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
+		void gotActions (QList<QAction*>, LC::ActionsEmbedPlace);
 	};
 };
 };

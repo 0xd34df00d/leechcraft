@@ -29,7 +29,7 @@
 
 #include "ciphertextformat.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace SecMan
 {

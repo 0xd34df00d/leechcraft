@@ -38,7 +38,7 @@ class QStandardItemModel;
 class QAbstractItemModel;
 class QModelIndex;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poleemery
 {

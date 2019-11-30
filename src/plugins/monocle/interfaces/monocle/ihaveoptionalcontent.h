@@ -31,7 +31,7 @@
 
 class QAbstractItemModel;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {
@@ -57,5 +57,5 @@ namespace Monocle
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Monocle::IHaveOptionalContent,
+Q_DECLARE_INTERFACE (LC::Monocle::IHaveOptionalContent,
 		"org.LeechCraft.Monocle.IHaveOptionalContent/1.0")

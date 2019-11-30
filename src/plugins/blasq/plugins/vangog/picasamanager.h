@@ -42,7 +42,7 @@
 
 class QNetworkReply;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blasq
 {

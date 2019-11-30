@@ -35,7 +35,7 @@
 
 class QTimer;
 
-namespace LeechCraft
+namespace LC
 {
 	class SslErrorsDialog;
 
@@ -73,7 +73,7 @@ namespace LeechCraft
 		void error (const QString&) const;
 		void acceptableLanguagesChanged ();
 
-		void hookNAMCreateRequest (LeechCraft::IHookProxy_ptr proxy,
+		void hookNAMCreateRequest (LC::IHookProxy_ptr proxy,
 					QNetworkAccessManager *manager,
 					QNetworkAccessManager::Operation *op,
 					QIODevice **dev);

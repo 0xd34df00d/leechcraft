@@ -42,7 +42,7 @@ extern "C"
 #include <interfaces/azoth/iprotocol.h>
 #include "util.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

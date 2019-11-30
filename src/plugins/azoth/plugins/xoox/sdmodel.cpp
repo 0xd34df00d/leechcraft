@@ -31,7 +31,7 @@
 #include <QtDebug>
 #include "sdsession.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

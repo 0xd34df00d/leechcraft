@@ -75,7 +75,7 @@
 #include "loaders/dbuspluginloader.h"
 #endif
 
-namespace LeechCraft
+namespace LC
 {
 	PluginManager::PluginManager (const QStringList& pluginPaths, QObject *parent)
 	: QAbstractItemModel (parent)

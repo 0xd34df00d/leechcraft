@@ -36,7 +36,7 @@ class QList;
 
 class QStringList;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

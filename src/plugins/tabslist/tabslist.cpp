@@ -48,7 +48,7 @@
 
 Q_DECLARE_METATYPE (ICoreTabWidget*)
 
-namespace LeechCraft
+namespace LC
 {
 namespace TabsList
 {
@@ -380,4 +380,4 @@ namespace TabsList
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_tabslist, LeechCraft::TabsList::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_tabslist, LC::TabsList::Plugin);

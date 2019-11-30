@@ -33,7 +33,7 @@
 #include <QFuture>
 #include <util/sll/newtype.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {
@@ -107,4 +107,4 @@ namespace Util
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::Util::QtException_ptr)
+Q_DECLARE_METATYPE (LC::Util::QtException_ptr)

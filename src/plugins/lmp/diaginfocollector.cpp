@@ -31,7 +31,7 @@
 #include <gst/gst.h>
 #include <taglib/taglib.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

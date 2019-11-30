@@ -67,7 +67,7 @@
 	#pragma message ("Unsupported system")
 #endif
 
-namespace LeechCraft
+namespace LC
 {
 namespace Liznoo
 {

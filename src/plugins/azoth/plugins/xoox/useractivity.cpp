@@ -31,7 +31,7 @@
 #include <QDomElement>
 #include <QXmppElement.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

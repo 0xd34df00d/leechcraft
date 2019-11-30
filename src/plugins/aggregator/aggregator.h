@@ -46,7 +46,7 @@
 #include "dbupdatethreadfwd.h"
 #include "feed.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {
@@ -189,7 +189,7 @@ namespace Aggregator
 		void statusBarChanged (QWidget*, const QString&) override;
 		void raiseTab (QWidget*) override;
 
-		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace) override;
+		void gotActions (QList<QAction*>, LC::ActionsEmbedPlace) override;
 	};
 }
 }

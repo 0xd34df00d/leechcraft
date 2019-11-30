@@ -31,7 +31,7 @@
 #include <QtDebug>
 #include <interfaces/core/icolorthememanager.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

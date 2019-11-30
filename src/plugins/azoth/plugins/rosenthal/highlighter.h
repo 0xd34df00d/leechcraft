@@ -35,7 +35,7 @@
 #include <QCache>
 #include <interfaces/ispellcheckprovider.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

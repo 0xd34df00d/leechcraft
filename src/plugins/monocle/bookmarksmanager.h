@@ -33,7 +33,7 @@
 #include <QtXml/QDomDocument>
 #include "interfaces/monocle/idocument.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {

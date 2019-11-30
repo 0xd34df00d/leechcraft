@@ -52,7 +52,7 @@ namespace
 	}
 }
 
-namespace LeechCraft
+namespace LC
 {
 namespace vlc
 {

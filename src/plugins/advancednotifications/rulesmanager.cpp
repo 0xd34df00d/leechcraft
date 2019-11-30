@@ -46,7 +46,7 @@
 #include "typedmatchers.h"
 #include "xmlsettingsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace AdvancedNotifications
 {
@@ -89,10 +89,10 @@ namespace AdvancedNotifications
 	, Proxy_ (proxy)
 	, RulesModel_ (new RulesModel (this))
 	{
-		qRegisterMetaType<NotificationRule> ("LeechCraft::AdvancedNotifications::NotificationRule");
-		qRegisterMetaTypeStreamOperators<NotificationRule> ("LeechCraft::AdvancedNotifications::NotificationRule");
-		qRegisterMetaType<QList<NotificationRule>> ("QList<LeechCraft::AdvancedNotifications::NotificationRule>");
-		qRegisterMetaTypeStreamOperators<QList<NotificationRule>> ("QList<LeechCraft::AdvancedNotifications::NotificationRule>");
+		qRegisterMetaType<NotificationRule> ("LC::AdvancedNotifications::NotificationRule");
+		qRegisterMetaTypeStreamOperators<NotificationRule> ("LC::AdvancedNotifications::NotificationRule");
+		qRegisterMetaType<QList<NotificationRule>> ("QList<LC::AdvancedNotifications::NotificationRule>");
+		qRegisterMetaTypeStreamOperators<QList<NotificationRule>> ("QList<LC::AdvancedNotifications::NotificationRule>");
 
 		LoadSettings ();
 

@@ -69,7 +69,7 @@
 
 Q_DECLARE_METATYPE (QNetworkReply*);
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

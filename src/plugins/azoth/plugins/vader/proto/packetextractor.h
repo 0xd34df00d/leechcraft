@@ -32,7 +32,7 @@
 #include <QByteArray>
 #include "halfpacket.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

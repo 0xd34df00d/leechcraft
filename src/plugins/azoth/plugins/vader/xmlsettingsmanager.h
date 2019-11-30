@@ -31,14 +31,14 @@
 
 #include <xmlsettingsdialog/basesettingsmanager.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
 namespace Vader
 {
 	class XmlSettingsManager : public
-			LeechCraft::Util::BaseSettingsManager
+			LC::Util::BaseSettingsManager
 	{
 		Q_OBJECT
 

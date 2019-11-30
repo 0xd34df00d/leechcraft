@@ -32,7 +32,7 @@
 #include <memory>
 #include <QObject>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Loaders
 {

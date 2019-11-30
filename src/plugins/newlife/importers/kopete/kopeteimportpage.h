@@ -31,7 +31,7 @@
 
 #include "common/imimportpage.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace NewLife
 {

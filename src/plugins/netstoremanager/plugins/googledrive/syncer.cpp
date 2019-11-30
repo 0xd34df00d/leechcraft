@@ -35,7 +35,7 @@
 #include "xmlsettingsmanager.h"
 #include "drivemanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace NetStoreManager
 {

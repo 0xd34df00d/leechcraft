@@ -29,7 +29,7 @@
 
 #include "pluginmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

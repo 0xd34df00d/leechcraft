@@ -39,7 +39,7 @@
 #include "deliciousapi.h"
 #include "deliciousaccount.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

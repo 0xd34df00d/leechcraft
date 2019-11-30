@@ -39,7 +39,7 @@
 #include "pendingtagsfetch.h"
 #endif
 
-namespace LeechCraft
+namespace LC
 {
 namespace MusicZombie
 {
@@ -111,4 +111,4 @@ namespace MusicZombie
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_musiczombie, LeechCraft::MusicZombie::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_musiczombie, LC::MusicZombie::Plugin);

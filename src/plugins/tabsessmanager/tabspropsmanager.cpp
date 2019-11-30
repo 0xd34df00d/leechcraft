@@ -30,7 +30,7 @@
 #include "tabspropsmanager.h"
 #include <QWidget>
 
-namespace LeechCraft
+namespace LC
 {
 namespace TabSessManager
 {

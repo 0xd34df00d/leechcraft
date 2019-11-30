@@ -36,7 +36,7 @@
 class QAction;
 class QMenu;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

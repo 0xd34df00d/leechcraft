@@ -29,7 +29,7 @@
 
 #include "replacedialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Popishu
 {

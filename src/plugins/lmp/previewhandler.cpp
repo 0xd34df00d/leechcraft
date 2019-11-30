@@ -39,7 +39,7 @@
 #include "core.h"
 #include "previewcharacteristicinfo.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

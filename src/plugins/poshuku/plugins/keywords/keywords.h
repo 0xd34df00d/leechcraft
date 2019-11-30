@@ -36,7 +36,7 @@
 #include <interfaces/ihavesettings.h>
 #include <interfaces/core/ihookproxy.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {
@@ -68,7 +68,7 @@ namespace Keywords
 		void UpdateKeywords (const QString& keyword, const QString& url);
 		void RemoveKeyword (const QString& keyword);
 	public slots:
-		void hookURLEditReturnPressed (LeechCraft::IHookProxy_ptr proxy,
+		void hookURLEditReturnPressed (LC::IHookProxy_ptr proxy,
 				QObject *browserWidget);
 	};
 }

@@ -33,7 +33,7 @@
 #include <interfaces/iquarkcomponentprovider.h>
 #include <util/qml/unhidelistviewbase.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace SB2
 {

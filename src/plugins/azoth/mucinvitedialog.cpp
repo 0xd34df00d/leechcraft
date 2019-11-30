@@ -32,7 +32,7 @@
 #include "interfaces/azoth/iaccount.h"
 #include "interfaces/azoth/iclentry.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

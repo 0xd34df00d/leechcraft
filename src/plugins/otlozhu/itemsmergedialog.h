@@ -32,7 +32,7 @@
 #include <QDialog>
 #include "ui_itemsmergedialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Otlozhu
 {

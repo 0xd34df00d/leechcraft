@@ -35,7 +35,7 @@
 
 class QAction;
 
-namespace LeechCraft
+namespace LC
 {
 	/** @brief Specifies where the actions should be embedded.
 	 */
@@ -102,7 +102,7 @@ public:
 	 *
 	 * @return The list of actions for the given area.
 	 */
-	virtual QList<QAction*> GetActions (LeechCraft::ActionsEmbedPlace area) const = 0;
+	virtual QList<QAction*> GetActions (LC::ActionsEmbedPlace area) const = 0;
 
 	/** @brief Returns the actions to embed into the menu.
 	 *
@@ -128,7 +128,7 @@ protected:
 	 * @param[out] actions The list of new actions for the given area.
 	 * @param[out] area The area where these actions should be placed.
 	 */
-	virtual void gotActions (QList<QAction*> actions, LeechCraft::ActionsEmbedPlace area) = 0;
+	virtual void gotActions (QList<QAction*> actions, LC::ActionsEmbedPlace area) = 0;
 };
 
 Q_DECLARE_INTERFACE (IActionsExporter, "org.Deviant.LeechCraft.IActionsExporter/1.0")

@@ -36,7 +36,7 @@
 #include <basetyps.h>
 #include <shellapi.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Kinotify
 {

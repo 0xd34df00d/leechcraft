@@ -36,7 +36,7 @@
 
 class QwtPlotCurve;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Liznoo
 {

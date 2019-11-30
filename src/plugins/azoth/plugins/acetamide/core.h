@@ -36,7 +36,7 @@
 
 class QStandardItemModel;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -87,7 +87,7 @@ namespace Acetamide
 	private slots:
 		void handleItemsAdded (const QList<QObject*>&);
 	signals:
-		void gotEntity (const LeechCraft::Entity&);
+		void gotEntity (const LC::Entity&);
 	};
 }
 }

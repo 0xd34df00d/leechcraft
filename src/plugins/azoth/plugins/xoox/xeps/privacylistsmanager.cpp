@@ -36,7 +36,7 @@
 #include "clientconnection.h"
 #include "serverinfostorage.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

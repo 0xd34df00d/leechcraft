@@ -35,7 +35,7 @@
 
 class ITabWidget;
 
-namespace LeechCraft
+namespace LC
 {
 namespace KBSwitch
 {

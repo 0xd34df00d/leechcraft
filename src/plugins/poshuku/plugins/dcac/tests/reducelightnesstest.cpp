@@ -31,9 +31,9 @@
 #include <QtTest>
 #include "../reducelightness.cpp"
 
-QTEST_APPLESS_MAIN (LeechCraft::Poshuku::DCAC::ReduceLightnessTest)
+QTEST_APPLESS_MAIN (LC::Poshuku::DCAC::ReduceLightnessTest)
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

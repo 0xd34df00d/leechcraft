@@ -33,9 +33,9 @@
 #include <curry.h>
 #include <void.h>
 
-QTEST_MAIN (LeechCraft::Util::EitherTest)
+QTEST_MAIN (LC::Util::EitherTest)
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

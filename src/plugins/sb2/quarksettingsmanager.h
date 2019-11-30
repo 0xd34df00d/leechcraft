@@ -34,7 +34,7 @@
 
 class QQmlContext;
 
-namespace LeechCraft
+namespace LC
 {
 namespace SB2
 {

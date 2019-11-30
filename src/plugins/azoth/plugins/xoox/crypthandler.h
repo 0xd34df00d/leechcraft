@@ -40,7 +40,7 @@
 class QXmppMessage;
 class QXmppPresence;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

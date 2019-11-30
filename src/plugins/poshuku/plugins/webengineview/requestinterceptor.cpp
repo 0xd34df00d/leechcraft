@@ -34,7 +34,7 @@
 #include <util/sll/slotclosure.h>
 #include "customwebview.h"
 
-namespace LeechCraft::Poshuku::WebEngineView
+namespace LC::Poshuku::WebEngineView
 {
 	namespace
 	{

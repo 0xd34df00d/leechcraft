@@ -35,7 +35,7 @@
 #include <windows.h>
 #include "platformlayer.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Liznoo
 {

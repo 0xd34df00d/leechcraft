@@ -33,7 +33,7 @@
 #include <QtDebug>
 #include <util/sll/delayedexecutor.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {

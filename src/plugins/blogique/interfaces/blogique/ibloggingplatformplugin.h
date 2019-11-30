@@ -33,7 +33,7 @@
 
 class QObject;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blogique
 {
@@ -69,6 +69,6 @@ namespace Blogique
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Blogique::IBloggingPlatformPlugin,
+Q_DECLARE_INTERFACE (LC::Blogique::IBloggingPlatformPlugin,
 		"org.Deviant.LeechCraft.Blogique.IBloggingPlatformPlugin/1.0")
 

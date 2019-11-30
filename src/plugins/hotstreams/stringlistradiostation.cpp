@@ -32,7 +32,7 @@
 #include <QTemporaryFile>
 #include <QtDebug>
 
-namespace LeechCraft
+namespace LC
 {
 namespace HotStreams
 {

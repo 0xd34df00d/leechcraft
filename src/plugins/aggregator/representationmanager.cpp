@@ -34,7 +34,7 @@
 #include "channelsmodel.h"
 #include "actionsstructs.h"
 
-namespace LeechCraft::Aggregator
+namespace LC::Aggregator
 {
 	RepresentationManager::RepresentationManager (const InitParams& params)
 	{

@@ -32,7 +32,7 @@
 #include "entitygeneratingpage.h"
 #include "ui_operaimportselectpage.h"
 
-namespace LeechCraft
+namespace LC
 {
 struct Entity;
 

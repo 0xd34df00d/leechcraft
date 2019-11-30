@@ -38,7 +38,7 @@ class QTimer;
 
 class IEntityManager;
 
-namespace LeechCraft::Aggregator
+namespace LC::Aggregator
 {
 	class StorageBackend;
 	class FeedsErrorManager;

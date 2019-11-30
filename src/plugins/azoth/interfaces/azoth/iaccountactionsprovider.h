@@ -36,7 +36,7 @@ class QAction;
 template<typename>
 class QList;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -52,5 +52,5 @@ namespace Azoth
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Azoth::IAccountActionsProvider,
+Q_DECLARE_INTERFACE (LC::Azoth::IAccountActionsProvider,
 		"org.LeechCraft.Azoth.IAccountActionsProvider/1.0")

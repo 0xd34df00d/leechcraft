@@ -36,7 +36,7 @@
 #include <interfaces/lmp/ilmpplugin.h>
 #include <interfaces/lmp/isyncplugin.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {
@@ -53,8 +53,8 @@ namespace DumbSync
 		Q_INTERFACES (IInfo
 				IHaveSettings
 				IPlugin2
-				LeechCraft::LMP::ILMPPlugin
-				LeechCraft::LMP::ISyncPlugin)
+				LC::LMP::ILMPPlugin
+				LC::LMP::ISyncPlugin)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.LMP.DumbSync")
 

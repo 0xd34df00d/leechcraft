@@ -31,7 +31,7 @@
 #include <QtTest>
 #include "parser.cpp"
 
-QTEST_APPLESS_MAIN (LeechCraft::LMP::PPL::ParserTest)
+QTEST_APPLESS_MAIN (LC::LMP::PPL::ParserTest)
 
 QDebug operator<< (QDebug dbg, const Media::AudioInfo& info)
 {
@@ -58,7 +58,7 @@ namespace QTest
 	}
 }
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

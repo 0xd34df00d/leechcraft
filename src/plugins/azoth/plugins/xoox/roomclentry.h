@@ -42,7 +42,7 @@
 
 class QXmppBookmarkSet;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -59,11 +59,11 @@ namespace Xoox
 					  , public IHaveDirectedStatus
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::ICLEntry
-						LeechCraft::Azoth::IMUCEntry
-						LeechCraft::Azoth::IMUCPerms
-						LeechCraft::Azoth::IConfigurableMUC
-						LeechCraft::Azoth::IHaveDirectedStatus)
+		Q_INTERFACES (LC::Azoth::ICLEntry
+						LC::Azoth::IMUCEntry
+						LC::Azoth::IMUCPerms
+						LC::Azoth::IConfigurableMUC
+						LC::Azoth::IHaveDirectedStatus)
 
 		friend class RoomHandler;
 

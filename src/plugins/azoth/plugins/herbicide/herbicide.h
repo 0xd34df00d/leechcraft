@@ -36,7 +36,7 @@
 #include <interfaces/core/ihookproxy.h>
 #include <interfaces/azoth/iaccountactionsprovider.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -54,7 +54,7 @@ namespace Herbicide
 				 , public IAccountActionsProvider
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 IHaveSettings LeechCraft::Azoth::IAccountActionsProvider)
+		Q_INTERFACES (IInfo IPlugin2 IHaveSettings LC::Azoth::IAccountActionsProvider)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.Herbicide")
 
@@ -92,10 +92,10 @@ namespace Herbicide
 
 		void ShowAccountAntispamConfig (IAccount*);
 	public slots:
-		void hookGotAuthRequest (LeechCraft::IHookProxy_ptr proxy,
+		void hookGotAuthRequest (LC::IHookProxy_ptr proxy,
 				QObject *entry,
 				QString msg);
-		void hookGotMessage (LeechCraft::IHookProxy_ptr proxy,
+		void hookGotMessage (LC::IHookProxy_ptr proxy,
 				QObject *message);
 	};
 }

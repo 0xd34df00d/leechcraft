@@ -34,7 +34,7 @@
 
 typedef struct __FSEventStream *FSEventStreamRef;
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

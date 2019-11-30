@@ -63,10 +63,10 @@
 #include "rootwindowsmanager.h"
 #include "mainwindowmenumanager.h"
 
-using namespace LeechCraft;
-using namespace LeechCraft::Util;
+using namespace LC;
+using namespace LC::Util;
 
-LeechCraft::MainWindow::MainWindow (QScreen *screen, bool isPrimary, int windowIdx)
+LC::MainWindow::MainWindow (QScreen *screen, bool isPrimary, int windowIdx)
 : IsPrimary_ (isPrimary)
 , WindowIdx_ (windowIdx)
 , LeftDockToolbar_ (new QToolBar ())
@@ -105,7 +105,7 @@ LeechCraft::MainWindow::MainWindow (QScreen *screen, bool isPrimary, int windowI
 	}
 }
 
-void LeechCraft::MainWindow::Init ()
+void LC::MainWindow::Init ()
 {
 	hide ();
 
@@ -150,22 +150,22 @@ void LeechCraft::MainWindow::Init ()
 				[this] { Util::ExecuteLater ([this] { doDelayedInit (); }); });
 }
 
-void LeechCraft::MainWindow::handleShortcutFullscreenMode ()
+void LC::MainWindow::handleShortcutFullscreenMode ()
 {
 	on_ActionFullscreenMode__triggered (!isFullScreen ());
 }
 
-SeparateTabWidget* LeechCraft::MainWindow::GetTabWidget () const
+SeparateTabWidget* LC::MainWindow::GetTabWidget () const
 {
 	return Ui_.MainTabWidget_;
 }
 
-QSplitter* LeechCraft::MainWindow::GetMainSplitter () const
+QSplitter* LC::MainWindow::GetMainSplitter () const
 {
 	return Ui_.MainSplitter_;
 }
 
-void LeechCraft::MainWindow::SetAdditionalTitle (const QString& title)
+void LC::MainWindow::SetAdditionalTitle (const QString& title)
 {
 	if (title.isEmpty ())
 		setWindowTitle ("LeechCraft");
@@ -173,17 +173,17 @@ void LeechCraft::MainWindow::SetAdditionalTitle (const QString& title)
 		setWindowTitle (title + " - LeechCraft");
 }
 
-QMenu* LeechCraft::MainWindow::GetMainMenu () const
+QMenu* LC::MainWindow::GetMainMenu () const
 {
 	return MenuButton_->menu ();
 }
 
-void LeechCraft::MainWindow::HideMainMenu ()
+void LC::MainWindow::HideMainMenu ()
 {
 	MBAction_->setVisible (false);
 }
 
-QToolBar* LeechCraft::MainWindow::GetDockListWidget (Qt::DockWidgetArea area) const
+QToolBar* LC::MainWindow::GetDockListWidget (Qt::DockWidgetArea area) const
 {
 	switch (area)
 	{
@@ -205,7 +205,7 @@ MainWindowMenuManager* MainWindow::GetMenuManager () const
 	return MenuManager_;
 }
 
-QMenu* LeechCraft::MainWindow::createPopupMenu ()
+QMenu* LC::MainWindow::createPopupMenu ()
 {
 	auto menu = QMainWindow::createPopupMenu ();
 	for (auto action : menu->actions ())
@@ -215,7 +215,7 @@ QMenu* LeechCraft::MainWindow::createPopupMenu ()
 	return menu;
 }
 
-void LeechCraft::MainWindow::closeEvent (QCloseEvent *e)
+void LC::MainWindow::closeEvent (QCloseEvent *e)
 {
 	e->ignore ();
 
@@ -232,7 +232,7 @@ void LeechCraft::MainWindow::closeEvent (QCloseEvent *e)
 	}
 }
 
-void LeechCraft::MainWindow::InitializeInterface ()
+void LC::MainWindow::InitializeInterface ()
 {
 	Ui_.MainTabWidget_->setObjectName ("org_LeechCraft_MainWindow_CentralTabWidget");
 	Ui_.MainTabWidget_->SetTabsClosable (true);
@@ -290,7 +290,7 @@ void LeechCraft::MainWindow::InitializeInterface ()
 	Ui_.MainTabWidget_->InsertAction2TabBarLayout (QTabBar::LeftSide, MBAction_, 0);
 }
 
-void LeechCraft::MainWindow::SetStatusBar ()
+void LC::MainWindow::SetStatusBar ()
 {
 	const int height = statusBar ()->sizeHint ().height ();
 
@@ -300,7 +300,7 @@ void LeechCraft::MainWindow::SetStatusBar ()
 	statusBar ()->addPermanentWidget (QLBar_);
 }
 
-void LeechCraft::MainWindow::ReadSettings ()
+void LC::MainWindow::ReadSettings ()
 {
 	QSettings settings ("Deviant", "Leechcraft");
 
@@ -325,7 +325,7 @@ void LeechCraft::MainWindow::ReadSettings ()
 		settings.endGroup ();
 }
 
-void LeechCraft::MainWindow::WriteSettings ()
+void LC::MainWindow::WriteSettings ()
 {
 	QSettings settings ("Deviant", "Leechcraft");
 
@@ -346,7 +346,7 @@ void LeechCraft::MainWindow::WriteSettings ()
 		settings.endGroup ();
 }
 
-void LeechCraft::MainWindow::on_ActionAddTask__triggered ()
+void LC::MainWindow::on_ActionAddTask__triggered ()
 {
 	CommonJobAdder adder (this);
 	if (adder.exec () != QDialog::Accepted)
@@ -357,12 +357,12 @@ void LeechCraft::MainWindow::on_ActionAddTask__triggered ()
 		Core::Instance ().TryToAddJob (name);
 }
 
-void LeechCraft::MainWindow::on_ActionNewWindow__triggered ()
+void LC::MainWindow::on_ActionNewWindow__triggered ()
 {
 	Core::Instance ().GetRootWindowsManager ()->MakeMainWindow ();
 }
 
-void LeechCraft::MainWindow::on_ActionCloseTab__triggered ()
+void LC::MainWindow::on_ActionCloseTab__triggered ()
 {
 	auto rootWM = Core::Instance ().GetRootWindowsManager ();
 	rootWM->GetTabManager (this)->remove (Ui_.MainTabWidget_->GetLastContextMenuTab ());
@@ -374,19 +374,19 @@ void MainWindow::handleCloseCurrentTab ()
 	rootWM->GetTabManager (this)->remove (Ui_.MainTabWidget_->CurrentIndex ());
 }
 
-void LeechCraft::MainWindow::on_ActionSettings__triggered ()
+void LC::MainWindow::on_ActionSettings__triggered ()
 {
 	Core::Instance ().GetCoreInstanceObject ()->TabOpenRequested ("org.LeechCraft.SettingsPane");
 }
 
-void LeechCraft::MainWindow::on_ActionAboutLeechCraft__triggered ()
+void LC::MainWindow::on_ActionAboutLeechCraft__triggered ()
 {
 	AboutDialog *dia = new AboutDialog (this);
 	dia->setAttribute (Qt::WA_DeleteOnClose);
 	dia->show ();
 }
 
-void LeechCraft::MainWindow::on_ActionRestart__triggered()
+void LC::MainWindow::on_ActionRestart__triggered()
 {
 	if (QMessageBox::question (this,
 				"LeechCraft",
@@ -397,7 +397,7 @@ void LeechCraft::MainWindow::on_ActionRestart__triggered()
 	static_cast<Application*> (qApp)->InitiateRestart ();
 }
 
-void LeechCraft::MainWindow::on_ActionQuit__triggered ()
+void LC::MainWindow::on_ActionQuit__triggered ()
 {
 	if (XmlSettingsManager::Instance ()->property ("ConfirmQuit").toBool ())
 	{
@@ -421,7 +421,7 @@ void LeechCraft::MainWindow::on_ActionQuit__triggered ()
 	static_cast<Application*> (qApp)->Quit ();
 }
 
-void LeechCraft::MainWindow::on_ActionShowStatusBar__triggered ()
+void LC::MainWindow::on_ActionShowStatusBar__triggered ()
 {
 	bool visible = Ui_.ActionShowStatusBar_->isChecked ();
 
@@ -433,7 +433,7 @@ void LeechCraft::MainWindow::on_ActionShowStatusBar__triggered ()
 	statusBar ()->setVisible (visible);
 }
 
-void LeechCraft::MainWindow::handleQuit ()
+void LC::MainWindow::handleQuit ()
 {
 	WriteSettings ();
 	hide ();
@@ -450,7 +450,7 @@ void LeechCraft::MainWindow::handleQuit ()
 	}
 }
 
-void LeechCraft::MainWindow::on_ActionFullscreenMode__triggered (bool full)
+void LC::MainWindow::on_ActionFullscreenMode__triggered (bool full)
 {
 	if (full)
 	{
@@ -491,7 +491,7 @@ namespace
 	}
 };
 
-void LeechCraft::MainWindow::handleToolButtonStyleChanged ()
+void LC::MainWindow::handleToolButtonStyleChanged ()
 {
 	setToolButtonStyle (GetToolButtonStyle ());
 }
@@ -512,7 +512,7 @@ void MainWindow::handleShowTrayIconChanged ()
 	TrayIcon_->setVisible (isVisible);
 }
 
-void LeechCraft::MainWindow::handleNewTabMenuRequested ()
+void LC::MainWindow::handleNewTabMenuRequested ()
 {
 	QMenu *ntmenu = Core::Instance ()
 			.GetNewTabMenuManager ()->GetNewTabMenu ();
@@ -544,7 +544,7 @@ void MainWindow::handleRestoreActionAdded (QAction *act)
 	Ui_.MainTabWidget_->InsertAction2TabBar (Ui_.ActionCloseTab_, act);
 }
 
-void LeechCraft::MainWindow::showHideMain ()
+void LC::MainWindow::showHideMain ()
 {
 	IsShown_ = !IsShown_;
 	if (IsShown_)
@@ -553,7 +553,7 @@ void LeechCraft::MainWindow::showHideMain ()
 		hide ();
 }
 
-void LeechCraft::MainWindow::showMain ()
+void LC::MainWindow::showMain ()
 {
 	if (!IsShown_)
 		IsShown_ = true;
@@ -578,7 +578,7 @@ void MainWindow::showFirstTime ()
 	}
 }
 
-void LeechCraft::MainWindow::handleTrayIconActivated (QSystemTrayIcon::ActivationReason reason)
+void LC::MainWindow::handleTrayIconActivated (QSystemTrayIcon::ActivationReason reason)
 {
 	switch (reason)
 	{
@@ -593,7 +593,7 @@ void LeechCraft::MainWindow::handleTrayIconActivated (QSystemTrayIcon::Activatio
 	}
 }
 
-void LeechCraft::MainWindow::doDelayedInit ()
+void LC::MainWindow::doDelayedInit ()
 {
 	FillQuickLaunch ();
 	FillTray ();
@@ -605,7 +605,7 @@ void LeechCraft::MainWindow::doDelayedInit ()
 	new StartupWizard (this);
 }
 
-void LeechCraft::MainWindow::FillQuickLaunch ()
+void LC::MainWindow::FillQuickLaunch ()
 {
 	auto proxy = std::make_shared<Util::DefaultHookProxy> ();
 	emit hookGonnaFillMenu (proxy);
@@ -638,7 +638,7 @@ void LeechCraft::MainWindow::FillQuickLaunch ()
 	}
 }
 
-void LeechCraft::MainWindow::FillTray ()
+void LC::MainWindow::FillTray ()
 {
 	if (!IsPrimary_)
 		return;
@@ -679,7 +679,7 @@ void LeechCraft::MainWindow::FillTray ()
 			this, "handleShowTrayIconChanged");
 }
 
-void LeechCraft::MainWindow::FillToolMenu ()
+void LC::MainWindow::FillToolMenu ()
 {
 	MenuManager_->FillToolMenu ();
 
@@ -692,7 +692,7 @@ void LeechCraft::MainWindow::FillToolMenu ()
 		Ui_.MainTabWidget_->InsertAction2TabBar (i, additionalActs.at (i));
 }
 
-void LeechCraft::MainWindow::InitializeShortcuts ()
+void LC::MainWindow::InitializeShortcuts ()
 {
 #ifndef Q_OS_MAC
 	const auto sysModifier = Qt::CTRL;
@@ -760,13 +760,13 @@ void LeechCraft::MainWindow::InitializeShortcuts ()
 	}
 }
 
-void LeechCraft::MainWindow::ShowMenuAndBar (bool show)
+void LC::MainWindow::ShowMenuAndBar (bool show)
 {
 	if (XmlSettingsManager::Instance ()->property ("ToolBarVisibilityManipulation").toBool ())
 		Ui_.ActionFullscreenMode_->setChecked (!show);
 }
 
-void LeechCraft::MainWindow::keyPressEvent (QKeyEvent *e)
+void LC::MainWindow::keyPressEvent (QKeyEvent *e)
 {
 	int index = (e->key () & ~Qt::CTRL) - Qt::Key_0;
 	if (index == 0)

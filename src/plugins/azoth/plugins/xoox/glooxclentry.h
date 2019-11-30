@@ -39,7 +39,7 @@
 #include "entrybase.h"
 #include "offlinedatasource.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -56,7 +56,7 @@ namespace Xoox
 					   , public IAuthable
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IAuthable)
+		Q_INTERFACES (LC::Azoth::IAuthable)
 	private:
 		OfflineDataSource_ptr ODS_;
 

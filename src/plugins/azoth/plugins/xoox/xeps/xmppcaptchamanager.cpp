@@ -32,7 +32,7 @@
 #include <QXmppClient.h>
 #include "xmppcaptchaiq.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

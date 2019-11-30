@@ -37,7 +37,7 @@ class QModelIndex;
 class QToolBar;
 class QToolButton;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {
@@ -45,7 +45,7 @@ namespace Poshuku
 							, public IAddressBar
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Poshuku::IAddressBar)
+		Q_INTERFACES (LC::Poshuku::IAddressBar)
 
 		bool IsCompleting_;
 		QString PreviousUrl_;

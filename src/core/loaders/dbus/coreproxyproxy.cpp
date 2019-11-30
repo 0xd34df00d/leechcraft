@@ -31,7 +31,7 @@
 #include <QModelIndex>
 #include <QDBusReply>
 
-namespace LeechCraft
+namespace LC
 {
 namespace DBus
 {

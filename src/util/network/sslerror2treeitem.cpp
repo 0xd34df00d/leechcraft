@@ -33,7 +33,7 @@
 #include <QTreeWidgetItem>
 #include <QSslError>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

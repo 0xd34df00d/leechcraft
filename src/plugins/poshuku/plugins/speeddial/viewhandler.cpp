@@ -46,7 +46,7 @@
 #include "xmlsettingsmanager.h"
 #include "customsitesmanager.h"
 
-namespace LeechCraft::Poshuku::SpeedDial
+namespace LC::Poshuku::SpeedDial
 {
 	struct LoadResult
 	{

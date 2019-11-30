@@ -35,7 +35,7 @@ class QString;
 class QIcon;
 class QPixmap;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

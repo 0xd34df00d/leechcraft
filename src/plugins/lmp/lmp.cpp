@@ -62,7 +62,7 @@
 typedef QList<QPair<QString, QUrl>> CustomStationsList_t;
 Q_DECLARE_METATYPE (CustomStationsList_t);
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {
@@ -107,9 +107,9 @@ namespace LMP
 		qRegisterMetaType<QList<QPair<QString, QUrl>>> ("QList<QPair<QString, QUrl>>");
 		qRegisterMetaTypeStreamOperators<QList<QPair<QString, QUrl>>> ();
 
-		qRegisterMetaType<SavedFilterInfo> ("LeechCraft::LMP::SavedFilterInfo");
+		qRegisterMetaType<SavedFilterInfo> ("LC::LMP::SavedFilterInfo");
 		qRegisterMetaTypeStreamOperators<SavedFilterInfo> ();
-		qRegisterMetaType<QList<SavedFilterInfo>> ("QList<LeechCraft::LMP::SavedFilterInfo>");
+		qRegisterMetaType<QList<SavedFilterInfo>> ("QList<LC::LMP::SavedFilterInfo>");
 		qRegisterMetaTypeStreamOperators<QList<SavedFilterInfo>> ();
 
 		XSD_ = std::make_shared<Util::XmlSettingsDialog> ();
@@ -393,7 +393,7 @@ namespace LMP
 		};
 	}
 
-	void Plugin::RecoverTabs (const QList<LeechCraft::TabRecoverInfo>& infos)
+	void Plugin::RecoverTabs (const QList<LC::TabRecoverInfo>& infos)
 	{
 		for (const auto& recInfo : infos)
 		{
@@ -558,4 +558,4 @@ namespace LMP
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_lmp, LeechCraft::LMP::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_lmp, LC::LMP::Plugin);

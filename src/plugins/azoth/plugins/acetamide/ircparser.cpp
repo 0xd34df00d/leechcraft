@@ -36,7 +36,7 @@
 #include "ircaccount.h"
 #include "ircserverhandler.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

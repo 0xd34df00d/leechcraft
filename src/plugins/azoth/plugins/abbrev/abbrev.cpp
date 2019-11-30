@@ -35,12 +35,12 @@
 #include "abbrevsmanager.h"
 #include "shortcutsmanager.h"
 
-namespace LeechCraft::Azoth::Abbrev
+namespace LC::Azoth::Abbrev
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-		qRegisterMetaType<Abbreviation> ("LeechCraft::Azoth::Abbrev::Abbreviation");
-		qRegisterMetaType<QList<Abbreviation>> ("QList<LeechCraft::Azoth::Abbrev::Abbreviation>");
+		qRegisterMetaType<Abbreviation> ("LC::Azoth::Abbrev::Abbreviation");
+		qRegisterMetaType<QList<Abbreviation>> ("QList<LC::Azoth::Abbrev::Abbreviation>");
 		qRegisterMetaTypeStreamOperators<Abbreviation> ();
 		qRegisterMetaTypeStreamOperators<QList<Abbreviation>> ();
 
@@ -204,7 +204,7 @@ namespace LeechCraft::Azoth::Abbrev
 		ShortcutsMgr_->HandleTab (qobject_cast<QWidget*> (chatTab));
 	}
 
-	void Plugin::hookMessageSendRequested (LeechCraft::IHookProxy_ptr proxy,
+	void Plugin::hookMessageSendRequested (LC::IHookProxy_ptr proxy,
 			QObject*, QObject *entryObj, int, QString)
 	{
 		const auto& text = proxy->GetValue ("text").toString ();
@@ -229,4 +229,4 @@ namespace LeechCraft::Azoth::Abbrev
 	}
 }
 
-LC_EXPORT_PLUGIN (leechcraft_azoth_abbrev, LeechCraft::Azoth::Abbrev::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_azoth_abbrev, LC::Azoth::Abbrev::Plugin);

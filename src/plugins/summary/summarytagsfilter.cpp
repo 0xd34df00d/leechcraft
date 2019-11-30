@@ -31,7 +31,7 @@
 #include <QStringList>
 #include <interfaces/structures.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Summary
 {

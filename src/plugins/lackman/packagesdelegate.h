@@ -37,7 +37,7 @@
 class QTreeView;
 class QToolButton;
 
-namespace LeechCraft
+namespace LC
 {
 namespace LackMan
 {

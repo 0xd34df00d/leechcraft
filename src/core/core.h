@@ -45,7 +45,7 @@ class IShortcutProxy;
 class QToolBar;
 class QNetworkAccessManager;
 
-namespace LeechCraft
+namespace LC
 {
 	class RootWindowsManager;
 	class MainWindow;
@@ -193,9 +193,9 @@ namespace LeechCraft
 		 * @param[in] entity Entity.
 		 * @return True if the entity was actually handled.
 		 */
-		bool handleGotEntity (LeechCraft::Entity entity);
+		bool handleGotEntity (LC::Entity entity);
 	private slots:
-		void queueEntity (const LeechCraft::Entity&);
+		void queueEntity (const LC::Entity&);
 
 		void pullEntityQueue ();
 

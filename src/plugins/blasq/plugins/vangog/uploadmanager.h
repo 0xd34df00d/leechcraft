@@ -36,7 +36,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/blasq/isupportuploads.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

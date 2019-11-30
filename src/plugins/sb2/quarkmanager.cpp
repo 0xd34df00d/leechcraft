@@ -45,7 +45,7 @@
 #include "sbview.h"
 #include "quarksettingsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace SB2
 {

@@ -38,7 +38,7 @@
 #include <X11/Xlib.h>
 #include <X11/XKBlib.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace KBSwitch
 {

@@ -38,7 +38,7 @@
 #include "externalresourcemanager.h"
 #include "storage.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LackMan
 {

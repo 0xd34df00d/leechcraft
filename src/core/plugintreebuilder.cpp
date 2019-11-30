@@ -46,7 +46,7 @@
 #include "interfaces/iplugin2.h"
 #include "interfaces/ipluginready.h"
 
-namespace LeechCraft
+namespace LC
 {
 	PluginTreeBuilder::VertexInfo::VertexInfo ()
 	: IsFulfilled_ (false)

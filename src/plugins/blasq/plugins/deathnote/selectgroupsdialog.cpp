@@ -40,7 +40,7 @@
 #include "fotobilderaccount.h"
 #include "util.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blasq
 {

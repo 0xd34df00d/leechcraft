@@ -36,7 +36,7 @@
 class QNetworkAccessManager;
 class QNetworkReply;
 
-namespace LeechCraft
+namespace LC
 {
 struct Entity;
 

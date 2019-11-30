@@ -32,7 +32,7 @@
 
 #include <QSortFilterProxyModel>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

@@ -34,7 +34,7 @@
 #include "interfaces/blasq/collection.h"
 #include "interfaces/blasq/isupportdeletes.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blasq
 {

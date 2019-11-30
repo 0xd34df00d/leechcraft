@@ -31,7 +31,7 @@
 #include <QIODevice>
 #include <QFile>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Snails
 {

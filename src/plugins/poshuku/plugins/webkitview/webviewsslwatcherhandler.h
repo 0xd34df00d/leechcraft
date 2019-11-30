@@ -34,7 +34,7 @@
 class QAction;
 class IIconThemeManager;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

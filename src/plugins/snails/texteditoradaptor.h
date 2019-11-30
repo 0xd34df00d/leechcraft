@@ -35,7 +35,7 @@
 
 class QTextEdit;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Snails
 {

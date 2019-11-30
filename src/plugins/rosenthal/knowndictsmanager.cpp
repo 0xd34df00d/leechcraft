@@ -36,7 +36,7 @@
 #include <util/sys/paths.h>
 #include "xmlsettingsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Rosenthal
 {

@@ -51,7 +51,7 @@
 
 Q_DECLARE_METATYPE (QModelIndex)
 
-namespace LeechCraft
+namespace LC
 {
 namespace LackMan
 {

@@ -37,7 +37,7 @@
 #include "monad.h"
 #include "visitor.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

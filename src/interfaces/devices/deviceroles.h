@@ -32,7 +32,7 @@
 #include <Qt>
 #include "devicetypes.h"
 
-namespace LeechCraft
+namespace LC
 {
 	/** @brief Describes the various common partition types.
 	 *

@@ -32,7 +32,7 @@
 #include <memory>
 #include <QtPlugin>
 
-namespace LeechCraft
+namespace LC
 {
 	namespace Util
 	{
@@ -59,7 +59,7 @@ public:
 	 * @return The XmlSettingsDialog object that manages the settings
 	 * dialog of the plugin.
 	 */
-	virtual LeechCraft::Util::XmlSettingsDialog_ptr GetSettingsDialog () const = 0;
+	virtual LC::Util::XmlSettingsDialog_ptr GetSettingsDialog () const = 0;
 
 	/** @brief Virtual destructor.
 	 */

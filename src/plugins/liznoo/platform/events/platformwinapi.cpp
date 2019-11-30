@@ -45,7 +45,7 @@ auto aHPowerNotifyDeleter = [] (HPOWERNOTIFY *ptr)
 };
 }
 
-namespace LeechCraft
+namespace LC
 {
 namespace Liznoo
 {
@@ -96,4 +96,4 @@ namespace Events
 	}
 }
 } // namespace Liznoo
-} // namespace LeechCraft
+} // namespace LC

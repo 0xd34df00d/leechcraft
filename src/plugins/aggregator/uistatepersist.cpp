@@ -35,7 +35,7 @@
 #include <QDebug>
 #include <QApplication>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Aggregator
 {

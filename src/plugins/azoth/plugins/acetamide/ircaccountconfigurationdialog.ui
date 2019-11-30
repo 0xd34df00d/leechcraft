@@ -25,13 +25,13 @@
     </widget>
    </item>
    <item row="0" column="0">
-    <widget class="LeechCraft::Azoth::Acetamide::IrcAccountConfigurationWidget" name="ConfWidget_" native="true"/>
+    <widget class="LC::Azoth::Acetamide::IrcAccountConfigurationWidget" name="ConfWidget_" native="true"/>
    </item>
   </layout>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>LeechCraft::Azoth::Acetamide::IrcAccountConfigurationWidget</class>
+   <class>LC::Azoth::Acetamide::IrcAccountConfigurationWidget</class>
    <extends>QWidget</extends>
    <header>ircaccountconfigurationwidget.h</header>
    <container>1</container>

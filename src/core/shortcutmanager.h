@@ -36,7 +36,7 @@
 class QSortFilterProxyModel;
 class QStandardItemModel;
 
-namespace LeechCraft
+namespace LC
 {
 	class ShortcutManager : public QWidget
 						  , public IShortcutProxy

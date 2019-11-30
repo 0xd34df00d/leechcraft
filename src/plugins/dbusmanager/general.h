@@ -34,7 +34,7 @@
 #include <QStringList>
 #include "common.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace DBusManager
 {

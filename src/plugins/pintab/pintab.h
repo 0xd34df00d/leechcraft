@@ -39,7 +39,7 @@
 
 class QMainWindow;
 
-namespace LeechCraft
+namespace LC
 {
 namespace PinTab
 {
@@ -74,11 +74,11 @@ namespace PinTab
 		void PinTab (int tabIndex, int windowIndex);
 		void UnPinTab (int tabIndex, int windowIndex);
 	public slots:
-		void hookTabContextMenuFill (LeechCraft::IHookProxy_ptr proxy,
+		void hookTabContextMenuFill (LC::IHookProxy_ptr proxy,
 				QMenu *menu, int index, int windowId);
-		void hookTabFinishedMoving (LeechCraft::IHookProxy_ptr proxy, int index,
+		void hookTabFinishedMoving (LC::IHookProxy_ptr proxy, int index,
 				int windowId);
-		void hookTabSetText (LeechCraft::IHookProxy_ptr proxy, int index,
+		void hookTabSetText (LC::IHookProxy_ptr proxy, int index,
 				int windowId);
 	private slots:
 		void pinTab (int index = -1);

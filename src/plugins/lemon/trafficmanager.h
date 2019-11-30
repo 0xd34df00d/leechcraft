@@ -43,7 +43,7 @@ class QStandardItemModel;
 class QNetworkSession;
 typedef std::shared_ptr<QNetworkSession> QNetworkSession_ptr;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Lemon
 {

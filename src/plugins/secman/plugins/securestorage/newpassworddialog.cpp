@@ -31,7 +31,7 @@
 #include <QString>
 #include "securestorage.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace SecMan
 {

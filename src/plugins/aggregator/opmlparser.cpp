@@ -36,7 +36,7 @@
 #include <util/sll/either.h>
 #include <util/sll/functor.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Aggregator
 {

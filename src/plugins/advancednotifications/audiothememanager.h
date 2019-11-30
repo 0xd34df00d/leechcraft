@@ -38,7 +38,7 @@ class QFileInfo;
 
 using QFileInfoList = QList<QFileInfo>;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

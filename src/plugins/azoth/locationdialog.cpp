@@ -30,7 +30,7 @@
 #include "locationdialog.h"
 #include <QUrl>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

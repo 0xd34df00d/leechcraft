@@ -35,7 +35,7 @@
 #include <QByteArray>
 #include <QPair>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -217,7 +217,7 @@ namespace Azoth
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Azoth::IMUCPerms,
+Q_DECLARE_INTERFACE (LC::Azoth::IMUCPerms,
 		"org.Deviant.LeechCraft.Azoth.IMUCPerms/1.0")
 
 #endif

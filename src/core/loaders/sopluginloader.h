@@ -33,7 +33,7 @@
 
 class QPluginLoader;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Loaders
 {

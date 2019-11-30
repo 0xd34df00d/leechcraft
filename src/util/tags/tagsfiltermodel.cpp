@@ -31,7 +31,7 @@
 #include <QtDebug>
 #include "tagsfiltermodel.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

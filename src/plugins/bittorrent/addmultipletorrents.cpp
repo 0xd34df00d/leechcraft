@@ -33,7 +33,7 @@
 #include "addmultipletorrents.h"
 #include "xmlsettingsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace BitTorrent
 {

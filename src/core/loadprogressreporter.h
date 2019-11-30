@@ -31,7 +31,7 @@
 
 #include <interfaces/core/iloadprogressreporter.h>
 
-namespace LeechCraft
+namespace LC
 {
 	class LoadProgressReporter : public QObject
 							   , public ILoadProgressReporter

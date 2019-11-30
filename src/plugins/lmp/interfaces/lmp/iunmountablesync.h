@@ -34,7 +34,7 @@
 #include <QFile>
 #include <QtPlugin>
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {
@@ -114,5 +114,5 @@ namespace LMP
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::LMP::UnmountableDevInfo)
-Q_DECLARE_INTERFACE (LeechCraft::LMP::IUnmountableSync, "org.LeechCraft.LMP.IUnmountableSync/1.0")
+Q_DECLARE_METATYPE (LC::LMP::UnmountableDevInfo)
+Q_DECLARE_INTERFACE (LC::LMP::IUnmountableSync, "org.LeechCraft.LMP.IUnmountableSync/1.0")

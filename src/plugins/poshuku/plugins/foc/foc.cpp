@@ -35,7 +35,7 @@
 #include "flashonclickplugin.h"
 #include "flashonclickwhitelist.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {
@@ -105,4 +105,4 @@ namespace FOC
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_poshuku_foc, LeechCraft::Poshuku::FOC::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_poshuku_foc, LC::Poshuku::FOC::Plugin);

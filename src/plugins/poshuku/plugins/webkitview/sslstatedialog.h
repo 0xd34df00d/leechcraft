@@ -36,7 +36,7 @@
 class QSslError;
 class IIconThemeManager;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

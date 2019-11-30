@@ -39,7 +39,7 @@
 
 class QTranslator;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -86,16 +86,16 @@ namespace OTRoid
 	public slots:
 		void initPlugin (QObject*);
 
-		void hookEntryActionAreasRequested (LeechCraft::IHookProxy_ptr proxy,
+		void hookEntryActionAreasRequested (LC::IHookProxy_ptr proxy,
 				QObject *action,
 				QObject *entry);
-		void hookEntryActionsRemoved (LeechCraft::IHookProxy_ptr proxy,
+		void hookEntryActionsRemoved (LC::IHookProxy_ptr proxy,
 				QObject *entry);
-		void hookEntryActionsRequested (LeechCraft::IHookProxy_ptr proxy,
+		void hookEntryActionsRequested (LC::IHookProxy_ptr proxy,
 				QObject *entry);
-		void hookGotMessage (LeechCraft::IHookProxy_ptr proxy,
+		void hookGotMessage (LC::IHookProxy_ptr proxy,
 				QObject *message);
-		void hookMessageCreated (LeechCraft::IHookProxy_ptr proxy,
+		void hookMessageCreated (LC::IHookProxy_ptr proxy,
 				QObject *chatTab,
 				QObject *message);
 	};

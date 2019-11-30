@@ -34,7 +34,7 @@
 
 class QPropertyAnimation;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Plugins
 {

@@ -31,7 +31,7 @@
 #include <QString>
 #include <Wt/WString.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Aggregator
 {

@@ -45,7 +45,7 @@
 #include <xcb/xcb.h>
 #include <util/compat/imagebytes.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

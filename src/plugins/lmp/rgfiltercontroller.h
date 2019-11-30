@@ -34,7 +34,7 @@
 #include "interfaces/lmp/ifilterconfigurator.h"
 #include "engine/rgfilter.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

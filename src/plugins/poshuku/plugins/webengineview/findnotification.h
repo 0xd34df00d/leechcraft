@@ -33,7 +33,7 @@
 
 class QWebEngineView;
 
-namespace LeechCraft::Poshuku::WebEngineView
+namespace LC::Poshuku::WebEngineView
 {
 	class FindNotification : public Util::FindNotification
 	{

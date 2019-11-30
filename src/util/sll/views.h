@@ -33,7 +33,7 @@
 #include <boost/iterator/zip_iterator.hpp>
 #include <boost/range.hpp>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

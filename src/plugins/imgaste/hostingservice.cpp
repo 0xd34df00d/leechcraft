@@ -38,7 +38,7 @@
 #include <util/sll/unreachable.h>
 #include "requestbuilder.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Imgaste
 {

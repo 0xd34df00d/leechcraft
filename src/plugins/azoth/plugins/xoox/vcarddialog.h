@@ -34,7 +34,7 @@
 #include "ui_vcarddialog.h"
 #include "xeps/xmppannotationsiq.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

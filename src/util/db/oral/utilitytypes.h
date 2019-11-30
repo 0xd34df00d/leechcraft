@@ -33,7 +33,7 @@
 #include <QDataStream>
 #include <QByteArray>
 
-namespace LeechCraft::Util::oral
+namespace LC::Util::oral
 {
 	template<typename T>
 	struct AsDataStream

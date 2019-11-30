@@ -34,7 +34,7 @@
 #include <util/sll/unreachable.h>
 #include <util/threads/futures.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Liznoo
 {

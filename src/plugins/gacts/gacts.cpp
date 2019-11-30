@@ -33,7 +33,7 @@
 #include <qxtglobalshortcut.h>
 #include <interfaces/entitytesthandleresult.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace GActs
 {
@@ -146,4 +146,4 @@ namespace GActs
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_gacts, LeechCraft::GActs::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_gacts, LC::GActs::Plugin);

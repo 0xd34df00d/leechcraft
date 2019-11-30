@@ -48,7 +48,7 @@
 #include "fotobilderservice.h"
 #include "util.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blasq
 {

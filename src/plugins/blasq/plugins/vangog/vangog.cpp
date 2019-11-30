@@ -32,7 +32,7 @@
 #include <util/util.h>
 #include "picasaservice.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blasq
 {
@@ -88,4 +88,4 @@ namespace Vangog
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_blasq_vangog, LeechCraft::Blasq::Vangog::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_blasq_vangog, LC::Blasq::Vangog::Plugin);

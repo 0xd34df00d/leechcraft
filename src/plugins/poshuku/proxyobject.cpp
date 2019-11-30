@@ -34,7 +34,7 @@
 #include "browserwidget.h"
 #include "linkopenmodifier.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

@@ -38,7 +38,7 @@ namespace TagLib
 	class FileRef;
 }
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {
@@ -71,4 +71,4 @@ namespace LMP
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::LMP::ITagResolver, "org.LeechCraft.LMP.ITagResolver/1.0")
+Q_DECLARE_INTERFACE (LC::LMP::ITagResolver, "org.LeechCraft.LMP.ITagResolver/1.0")

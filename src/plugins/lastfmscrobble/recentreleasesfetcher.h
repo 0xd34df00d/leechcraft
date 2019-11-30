@@ -41,7 +41,7 @@ namespace Media
 
 class QNetworkAccessManager;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Lastfmscrobble
 {

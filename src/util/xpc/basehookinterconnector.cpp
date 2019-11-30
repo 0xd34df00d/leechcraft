@@ -31,7 +31,7 @@
 #include <QMetaMethod>
 #include <QtDebug>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {
@@ -48,7 +48,7 @@ namespace Util
 	{
 		bool IsHookMethod (const QMetaMethod& method)
 		{
-			return method.parameterTypes ().value (0) == "LeechCraft::IHookProxy_ptr";
+			return method.parameterTypes ().value (0) == "LC::IHookProxy_ptr";
 		}
 
 		auto BuildHookSlots (const QObject *obj)

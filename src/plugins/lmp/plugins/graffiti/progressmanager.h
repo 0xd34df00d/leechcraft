@@ -36,7 +36,7 @@ class QStandardItemModel;
 class QAbstractItemModel;
 class QStandardItem;
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

@@ -32,7 +32,7 @@
 #include <QObject>
 #include <QAbstractSocket>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

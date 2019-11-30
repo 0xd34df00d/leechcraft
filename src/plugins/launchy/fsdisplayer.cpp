@@ -56,7 +56,7 @@
 #include "recentmanager.h"
 #include "syspathitemprovider.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Launchy
 {

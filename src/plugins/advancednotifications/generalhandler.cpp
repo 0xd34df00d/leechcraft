@@ -39,7 +39,7 @@
 #include "rulesmanager.h"
 #include "unhandlednotificationskeeper.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace AdvancedNotifications
 {
@@ -65,9 +65,9 @@ namespace AdvancedNotifications
 		}
 
 		connect (coreHandlers.first ().get (),
-				SIGNAL (gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace)),
+				SIGNAL (gotActions (QList<QAction*>, LC::ActionsEmbedPlace)),
 				this,
-				SIGNAL (gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace)));
+				SIGNAL (gotActions (QList<QAction*>, LC::ActionsEmbedPlace)));
 
 		Cat2IconName_ =
 		{

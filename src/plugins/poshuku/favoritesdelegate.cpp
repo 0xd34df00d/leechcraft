@@ -36,12 +36,12 @@
 #include "filtermodel.h"
 #include "favoritesmodel.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {
-	using LeechCraft::Util::TagsCompleter;
-	using LeechCraft::Util::TagsLineEdit;
+	using LC::Util::TagsCompleter;
+	using LC::Util::TagsLineEdit;
 
 	FavoritesDelegate::FavoritesDelegate (QObject *parent)
 	: QItemDelegate (parent)

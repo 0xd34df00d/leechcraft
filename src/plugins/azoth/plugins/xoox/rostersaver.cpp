@@ -39,7 +39,7 @@
 #include "glooxaccount.h"
 #include "glooxclentry.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

@@ -41,7 +41,7 @@ class QAbstractItemModel;
 template<typename>
 class QFuture;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -162,5 +162,5 @@ namespace Azoth
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Azoth::IHaveServerHistory,
+Q_DECLARE_INTERFACE (LC::Azoth::IHaveServerHistory,
 		"org.LeechCraft.Azoth.IHaveServerHistory/1.0")

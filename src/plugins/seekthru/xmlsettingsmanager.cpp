@@ -30,7 +30,7 @@
 #include "xmlsettingsmanager.h"
 #include <QCoreApplication>
 
-namespace LeechCraft::SeekThru
+namespace LC::SeekThru
 {
 	XmlSettingsManager::XmlSettingsManager ()
 	{

@@ -32,7 +32,7 @@
 #include <QWizardPage>
 #include <interfaces/core/icoreproxyfwd.h>
 
-namespace LeechCraft
+namespace LC
 {
 struct Entity;
 

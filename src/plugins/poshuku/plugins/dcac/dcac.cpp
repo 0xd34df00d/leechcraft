@@ -38,7 +38,7 @@
 #include "viewsmanager.h"
 #include "xmlsettingsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {
@@ -112,5 +112,5 @@ namespace DCAC
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_poshuku_dcac, LeechCraft::Poshuku::DCAC::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_poshuku_dcac, LC::Poshuku::DCAC::Plugin);
 

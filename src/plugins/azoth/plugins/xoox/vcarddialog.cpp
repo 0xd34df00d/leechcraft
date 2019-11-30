@@ -44,7 +44,7 @@
 #include "vcardlisteditdialog.h"
 #include "accountsettingsholder.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

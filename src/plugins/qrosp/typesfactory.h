@@ -31,7 +31,7 @@
 #define PLUGINS_QROSP_WRAPPERS_TYPESFACTORY_H
 #include <QObject>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Qrosp
 {

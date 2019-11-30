@@ -33,7 +33,7 @@
 
 class QDockWidget;
 
-namespace LeechCraft
+namespace LC
 {
 namespace SB2
 {
@@ -45,7 +45,7 @@ namespace SB2
 	public slots:
 		void handlePluginsAvailable ();
 	private slots:
-		void handleGotActions (const QList<QAction*>&, LeechCraft::ActionsEmbedPlace);
+		void handleGotActions (const QList<QAction*>&, LC::ActionsEmbedPlace);
 	};
 }
 }

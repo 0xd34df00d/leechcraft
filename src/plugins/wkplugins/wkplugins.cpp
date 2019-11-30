@@ -36,7 +36,7 @@
 #include "spellcheckext.h"
 #include "xmlsettingsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace WKPlugins
 {
@@ -116,6 +116,6 @@ namespace WKPlugins
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_wkplugins, LeechCraft::WKPlugins::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_wkplugins, LC::WKPlugins::Plugin);
 
 Q_IMPORT_PLUGIN (StaticPlugin)

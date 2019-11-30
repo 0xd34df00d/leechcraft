@@ -33,7 +33,7 @@
 
 class QAbstractItemModel;
 
-namespace LeechCraft
+namespace LC
 {
 struct Entity;
 
@@ -57,7 +57,7 @@ namespace Otlozhu
 		TodoStorage* GetTodoStorage () const;
 		QAbstractItemModel* GetTodoModel () const;
 	signals:
-		void gotEntity (const LeechCraft::Entity&);
+		void gotEntity (const LC::Entity&);
 	};
 }
 }

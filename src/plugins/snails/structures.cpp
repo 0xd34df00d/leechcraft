@@ -32,7 +32,7 @@
 #include <util/sll/unreachable.h>
 #include <interfaces/itexteditor.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Snails
 {

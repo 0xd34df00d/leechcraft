@@ -40,7 +40,7 @@ class QWebFrame;
 template<typename>
 class QFuture;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {
@@ -369,5 +369,5 @@ namespace Azoth
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Azoth::IProxyObject,
+Q_DECLARE_INTERFACE (LC::Azoth::IProxyObject,
 		"org.LeechCraft.Azoth.IProxyObject/1.0")

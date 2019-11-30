@@ -37,7 +37,7 @@
 #include "core.h"
 #include "accounthandlerchooserdialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

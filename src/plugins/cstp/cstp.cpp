@@ -53,7 +53,7 @@
 #include "core.h"
 #include "xmlsettingsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace CSTP
 {
@@ -136,12 +136,12 @@ namespace CSTP
 		Core::Instance ().stopAllTriggered ();
 	}
 
-	EntityTestHandleResult CSTP::CouldDownload (const LeechCraft::Entity& e) const
+	EntityTestHandleResult CSTP::CouldDownload (const LC::Entity& e) const
 	{
 		return Core::Instance ().CouldDownload (e);
 	}
 
-	QFuture<IDownload::Result> CSTP::AddJob (LeechCraft::Entity e)
+	QFuture<IDownload::Result> CSTP::AddJob (LC::Entity e)
 	{
 		return Core::Instance ().AddTask (e);
 	}
@@ -242,4 +242,4 @@ namespace CSTP
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_cstp, LeechCraft::CSTP::CSTP);
+LC_EXPORT_PLUGIN (leechcraft_cstp, LC::CSTP::CSTP);

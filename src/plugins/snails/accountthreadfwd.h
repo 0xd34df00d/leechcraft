@@ -36,7 +36,7 @@
 #include <util/sll/void.h>
 #include <util/sll/eitherfwd.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Snails
 {

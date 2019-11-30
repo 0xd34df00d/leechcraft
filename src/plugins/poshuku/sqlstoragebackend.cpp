@@ -43,7 +43,7 @@
 #include <util/util.h>
 #include "xmlsettingsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {
@@ -125,18 +125,18 @@ namespace Poshuku
 }
 }
 
-BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Poshuku::SQLStorageBackend::History,
+BOOST_FUSION_ADAPT_STRUCT (LC::Poshuku::SQLStorageBackend::History,
 		Date_,
 		Title_,
 		URL_)
-BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Poshuku::SQLStorageBackend::Favorites,
+BOOST_FUSION_ADAPT_STRUCT (LC::Poshuku::SQLStorageBackend::Favorites,
 		Title_,
 		URL_,
 		Tags_)
-BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Poshuku::SQLStorageBackend::FormsNever,
+BOOST_FUSION_ADAPT_STRUCT (LC::Poshuku::SQLStorageBackend::FormsNever,
 		URL_)
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

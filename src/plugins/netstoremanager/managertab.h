@@ -42,7 +42,7 @@ class QComboBox;
 class QStandardItem;
 class QAction;
 
-namespace LeechCraft
+namespace LC
 {
 namespace NetStoreManager
 {

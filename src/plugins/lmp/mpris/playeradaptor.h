@@ -39,7 +39,7 @@ class QString;
 class QStringList;
 class QVariant;
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

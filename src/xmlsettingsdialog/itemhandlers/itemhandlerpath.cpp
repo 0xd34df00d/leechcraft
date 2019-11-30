@@ -37,7 +37,7 @@
 #include <util/sll/qtutil.h>
 #include "../filepicker.h"
 
-namespace LeechCraft
+namespace LC
 {
 	bool ItemHandlerPath::CanHandle (const QDomElement& element) const
 	{

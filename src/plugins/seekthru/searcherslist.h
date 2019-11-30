@@ -33,7 +33,7 @@
 #include <interfaces/core/icoreproxyfwd.h>
 #include "ui_searcherslist.h"
 
-namespace LeechCraft
+namespace LC
 {
 struct Entity;
 

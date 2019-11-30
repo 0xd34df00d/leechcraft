@@ -37,7 +37,7 @@
 #include <util/sll/typelist.h>
 #include <util/sll/typegetter.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

@@ -34,7 +34,7 @@
 #include "vkentry.h"
 #include <util/gui/clearlineeditaddon.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

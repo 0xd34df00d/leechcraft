@@ -38,7 +38,7 @@ class QAbstractItemModel;
 class QStandardItemModel;
 class QStandardItem;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

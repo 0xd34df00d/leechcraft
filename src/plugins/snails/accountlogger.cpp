@@ -35,7 +35,7 @@
 #include <util/sys/paths.h>
 #include "account.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Snails
 {

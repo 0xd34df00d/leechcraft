@@ -33,7 +33,7 @@
 #include <QIcon>
 #include <interfaces/iinfo.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace DBus
 {

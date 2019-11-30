@@ -33,7 +33,7 @@
 #include <QObject>
 #include "interfaces/lmp/ifilterelement.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

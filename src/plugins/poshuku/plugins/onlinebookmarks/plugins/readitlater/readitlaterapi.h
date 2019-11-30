@@ -34,7 +34,7 @@
 #include <QUrl>
 #include <QVariant>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

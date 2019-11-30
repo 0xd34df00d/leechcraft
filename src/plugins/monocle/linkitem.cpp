@@ -32,7 +32,7 @@
 #include <QCursor>
 #include <QPen>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {

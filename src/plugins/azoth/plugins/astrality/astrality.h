@@ -38,7 +38,7 @@ namespace Tp
 	class PendingOperation;
 }
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -52,7 +52,7 @@ namespace Astrality
 					, public IProtocolPlugin
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Azoth::IProtocolPlugin);
+		Q_INTERFACES (IInfo IPlugin2 LC::Azoth::IProtocolPlugin);
 
 		ICoreProxy_ptr Proxy_;
 		QList<CMWrapper*> Wrappers_;
@@ -75,7 +75,7 @@ namespace Astrality
 		void handleListNames (Tp::PendingOperation*);
 		void handleProtoWrappers (const QList<QObject*>&);
 	signals:
-		void gotEntity (const LeechCraft::Entity&);
+		void gotEntity (const LC::Entity&);
 
 		void gotNewProtocols (const QList<QObject*>&);
 	};

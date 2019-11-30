@@ -32,7 +32,7 @@
 #include <interfaces/core/icoreproxyfwd.h>
 #include "common/imimporter.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace NewLife
 {

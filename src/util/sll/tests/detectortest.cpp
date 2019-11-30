@@ -31,9 +31,9 @@
 #include <QtTest>
 #include <detector.h>
 
-QTEST_MAIN (LeechCraft::Util::DetectorTest)
+QTEST_MAIN (LC::Util::DetectorTest)
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

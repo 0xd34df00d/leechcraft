@@ -38,7 +38,7 @@ namespace Tp
 	class ProtocolInfo;
 }
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

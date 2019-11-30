@@ -36,7 +36,7 @@
 
 class QStandardItemModel;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blasq
 {
@@ -86,4 +86,4 @@ namespace DeathNote
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::Blasq::DeathNote::ParsedMember)
+Q_DECLARE_METATYPE (LC::Blasq::DeathNote::ParsedMember)

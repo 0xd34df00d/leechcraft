@@ -37,7 +37,7 @@
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/iauthable.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -51,7 +51,7 @@ namespace Astrality
 					   , public IAuthable
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::ICLEntry LeechCraft::Azoth::IAuthable);
+		Q_INTERFACES (LC::Azoth::ICLEntry LC::Azoth::IAuthable);
 
 		AccountWrapper *AW_;
 		Tp::ContactPtr C_;
@@ -114,7 +114,7 @@ namespace Astrality
 		void itemCancelledSubscription (QObject*, const QString&);
 		void itemGrantedSubscription (QObject*, const QString&);
 
-		void gotEntity (LeechCraft::Entity);
+		void gotEntity (LC::Entity);
 	};
 }
 }

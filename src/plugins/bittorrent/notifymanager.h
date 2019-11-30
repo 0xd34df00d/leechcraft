@@ -33,7 +33,7 @@
 #include <interfaces/structures.h>
 #include <util/xpc/util.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace BitTorrent
 {

@@ -48,7 +48,7 @@
 #include "friendsproxymodel.h"
 #include "sendmessagedialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blogique
 {

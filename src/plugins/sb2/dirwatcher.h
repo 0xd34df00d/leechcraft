@@ -36,7 +36,7 @@
 class QFileSystemWatcher;
 class QUrl;
 
-namespace LeechCraft
+namespace LC
 {
 namespace SB2
 {

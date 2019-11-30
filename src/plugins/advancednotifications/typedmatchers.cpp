@@ -37,7 +37,7 @@
 #include "ui_intmatcherconfigwidget.h"
 #include "ui_stringlikematcherconfigwidget.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace AdvancedNotifications
 {

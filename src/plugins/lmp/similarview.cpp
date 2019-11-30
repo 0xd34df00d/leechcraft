@@ -34,7 +34,7 @@
 #include <util/sys/paths.h>
 #include "similarviewmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

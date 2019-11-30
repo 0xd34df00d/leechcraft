@@ -36,7 +36,7 @@
 class QSqlDatabase;
 class QSqlQuery;
 
-namespace LeechCraft
+namespace LC
 {
 struct Entity;
 

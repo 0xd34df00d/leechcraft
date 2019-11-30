@@ -38,7 +38,7 @@
 #include "interfaces/netstoremanager/istorageaccount.h"
 #include "interfaces/netstoremanager/istorageplugin.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace NetStoreManager
 {

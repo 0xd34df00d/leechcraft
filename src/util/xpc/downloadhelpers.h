@@ -40,7 +40,7 @@ class QFuture;
 
 class IEntityManager;
 
-namespace LeechCraft::Util
+namespace LC::Util
 {
 	using TempResultType_t = Util::Either<IDownload::Error, QByteArray>;
 

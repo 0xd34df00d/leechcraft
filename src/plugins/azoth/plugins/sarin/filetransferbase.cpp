@@ -29,7 +29,7 @@
 
 #include "filetransferbase.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

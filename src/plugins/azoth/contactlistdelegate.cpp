@@ -52,7 +52,7 @@
 #include "util.h"
 #include "resourcesmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

@@ -31,7 +31,7 @@
 
 #include <QNetworkProxyFactory>
 
-namespace LeechCraft
+namespace LC
 {
 namespace XProxy
 {

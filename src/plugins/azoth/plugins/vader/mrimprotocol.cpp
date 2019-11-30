@@ -36,7 +36,7 @@
 #include "mrimaccount.h"
 #include "mrimaccountconfigwidget.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

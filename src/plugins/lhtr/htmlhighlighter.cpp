@@ -29,7 +29,7 @@
 
 #include "htmlhighlighter.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LHTR
 {

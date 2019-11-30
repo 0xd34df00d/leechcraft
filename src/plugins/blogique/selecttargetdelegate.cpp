@@ -35,7 +35,7 @@
 #include "interfaces/blogique/iprofile.h"
 #include "submittodialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blogique
 {

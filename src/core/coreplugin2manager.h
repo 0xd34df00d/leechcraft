@@ -40,7 +40,7 @@ class QMenu;
 class QDockWidget;
 class QSystemTrayIcon;
 
-namespace LeechCraft
+namespace LC
 {
 	class CorePlugin2Manager : public Util::BaseHookInterconnector
 	{
@@ -48,45 +48,45 @@ namespace LeechCraft
 	public:
 		CorePlugin2Manager (QObject* = 0);
 	signals:
-		void hookDockWidgetActionVisToggled (LeechCraft::IHookProxy_ptr proxy,
+		void hookDockWidgetActionVisToggled (LC::IHookProxy_ptr proxy,
 				QMainWindow *window,
 				QDockWidget *dock,
 				bool toggleActionVisible);
 
-		void hookAddingDockAction (LeechCraft::IHookProxy_ptr, QMainWindow*, QAction*, Qt::DockWidgetArea);
-		void hookRemovingDockAction (LeechCraft::IHookProxy_ptr, QMainWindow*, QAction*, Qt::DockWidgetArea);
+		void hookAddingDockAction (LC::IHookProxy_ptr, QMainWindow*, QAction*, Qt::DockWidgetArea);
+		void hookRemovingDockAction (LC::IHookProxy_ptr, QMainWindow*, QAction*, Qt::DockWidgetArea);
 
-		void hookDockBarWillBeShown (LeechCraft::IHookProxy_ptr, QMainWindow*, QToolBar*, Qt::DockWidgetArea);
+		void hookDockBarWillBeShown (LC::IHookProxy_ptr, QMainWindow*, QToolBar*, Qt::DockWidgetArea);
 
-		void hookGonnaFillMenu (LeechCraft::IHookProxy_ptr);
-		void hookGonnaFillQuickLaunch (LeechCraft::IHookProxy_ptr proxy);
-		void hookGonnaShowStatusBar (LeechCraft::IHookProxy_ptr, bool);
-		void hookNAMCreateRequest (LeechCraft::IHookProxy_ptr proxy,
+		void hookGonnaFillMenu (LC::IHookProxy_ptr);
+		void hookGonnaFillQuickLaunch (LC::IHookProxy_ptr proxy);
+		void hookGonnaShowStatusBar (LC::IHookProxy_ptr, bool);
+		void hookNAMCreateRequest (LC::IHookProxy_ptr proxy,
 				QNetworkAccessManager *manager,
 				QNetworkAccessManager::Operation *op,
 				QIODevice **dev);
-		void hookTabContextMenuFill (LeechCraft::IHookProxy_ptr proxy,
+		void hookTabContextMenuFill (LC::IHookProxy_ptr proxy,
 				QMenu *menu, int index, int windowId);
 
-		void hookTabAdding (LeechCraft::IHookProxy_ptr proxy,
+		void hookTabAdding (LC::IHookProxy_ptr proxy,
 				QWidget *tabWidget);
-		void hookTabFinishedMoving (LeechCraft::IHookProxy_ptr proxy,
+		void hookTabFinishedMoving (LC::IHookProxy_ptr proxy,
 				int index, int windowId);
-		void hookTabSetText (LeechCraft::IHookProxy_ptr proxy,
+		void hookTabSetText (LC::IHookProxy_ptr proxy,
 				int index, int windowId);
-		void hookTabIsRemoving (LeechCraft::IHookProxy_ptr proxy,
+		void hookTabIsRemoving (LC::IHookProxy_ptr proxy,
 				int index,
 				int windowId);
 
-		void hookGetPreferredWindowIndex (LeechCraft::IHookProxy_ptr proxy,
+		void hookGetPreferredWindowIndex (LC::IHookProxy_ptr proxy,
 				const QWidget *widget);
-		void hookGetPreferredWindowIndex (LeechCraft::IHookProxy_ptr proxy,
+		void hookGetPreferredWindowIndex (LC::IHookProxy_ptr proxy,
 				const QByteArray& tabClass);
-		void hookGetPreferredWindowIndex (LeechCraft::IHookProxy_ptr proxy);
+		void hookGetPreferredWindowIndex (LC::IHookProxy_ptr proxy);
 
-		void hookTrayIconCreated (LeechCraft::IHookProxy_ptr,
+		void hookTrayIconCreated (LC::IHookProxy_ptr,
 				QSystemTrayIcon*);
-		void hookTrayIconVisibilityChanged (LeechCraft::IHookProxy_ptr,
+		void hookTrayIconVisibilityChanged (LC::IHookProxy_ptr,
 				QSystemTrayIcon*,
 				bool);
 	};

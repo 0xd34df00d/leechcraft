@@ -39,7 +39,7 @@
 #include <interfaces/lmp/ilocalcollection.h>
 #include "checkmodel.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

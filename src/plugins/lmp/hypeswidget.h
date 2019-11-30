@@ -36,7 +36,7 @@
 class QStandardItemModel;
 class QQuickWidget;
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

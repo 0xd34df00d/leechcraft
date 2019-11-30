@@ -40,7 +40,7 @@ uint qHash (const QPointer<QObject>& ptr)
 	return qHash (ptr.data ());
 }
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

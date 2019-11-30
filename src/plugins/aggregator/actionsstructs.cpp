@@ -32,7 +32,7 @@
 #include <QMenu>
 #include <util/shortcuts/shortcutmanager.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Aggregator
 {

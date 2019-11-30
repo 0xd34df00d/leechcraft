@@ -31,7 +31,7 @@
 #include <QtDebug>
 #include "../basesettingsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 	ItemHandlerBase::ItemHandlerBase (Util::XmlSettingsDialog *xsd)
 	: XSD_ { xsd }

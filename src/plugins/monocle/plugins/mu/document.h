@@ -39,7 +39,7 @@ extern "C"
 
 #include <interfaces/monocle/idocument.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {
@@ -49,7 +49,7 @@ namespace Mu
 				   , public IDocument
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Monocle::IDocument)
+		Q_INTERFACES (LC::Monocle::IDocument)
 
 		fz_context *MuCtx_;
 		pdf_document *MuDoc_;

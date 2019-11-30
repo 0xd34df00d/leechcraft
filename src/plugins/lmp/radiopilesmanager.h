@@ -41,7 +41,7 @@ namespace Media
 	class IAudioPile;
 }
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

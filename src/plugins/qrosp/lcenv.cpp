@@ -29,7 +29,7 @@
 
 #include "lcenv.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Qrosp
 {

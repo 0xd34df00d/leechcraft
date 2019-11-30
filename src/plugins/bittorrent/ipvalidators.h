@@ -31,7 +31,7 @@
 
 #include <QValidator>
 
-namespace LeechCraft
+namespace LC
 {
 namespace BitTorrent
 {

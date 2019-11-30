@@ -36,7 +36,7 @@
 #include <vmime/security/cert/serverIdentityException.hpp>
 #include "vmimeconversions.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Snails
 {

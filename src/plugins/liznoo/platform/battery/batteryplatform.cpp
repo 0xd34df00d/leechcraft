@@ -29,7 +29,7 @@
 
 #include "batteryplatform.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Liznoo
 {

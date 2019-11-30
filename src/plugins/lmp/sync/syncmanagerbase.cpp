@@ -33,7 +33,7 @@
 #include "transcodemanager.h"
 #include "../core.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

@@ -33,7 +33,7 @@
 #include <QStringList>
 #include "localeentry.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Intermutko
 {

@@ -33,7 +33,7 @@
 #include "platformlayer.h"
 #include "../common/dbusthread.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Liznoo
 {

@@ -30,7 +30,7 @@
 #include "pastedialog.h"
 #include "pasteservicefactory.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

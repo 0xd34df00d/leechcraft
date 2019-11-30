@@ -29,7 +29,7 @@
 
 #include "avatarsstoragethread.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

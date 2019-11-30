@@ -36,7 +36,7 @@ class QMimeData;
 class QImage;
 class QUrl;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

@@ -35,7 +35,7 @@
 class QModelIndex;
 class QUrl;
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {
@@ -49,4 +49,4 @@ namespace LMP
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::LMP::ICollectionModel, "org.LeechCraft.LMP.ICollectionModel/1.0")
+Q_DECLARE_INTERFACE (LC::LMP::ICollectionModel, "org.LeechCraft.LMP.ICollectionModel/1.0")

@@ -39,7 +39,7 @@
 #include "compparamsmanager.h"
 #include "compparamswidget.h"
 
-namespace LeechCraft::Fenet
+namespace LC::Fenet
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
@@ -253,4 +253,4 @@ namespace LeechCraft::Fenet
 	}
 }
 
-LC_EXPORT_PLUGIN (leechcraft_fenet, LeechCraft::Fenet::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_fenet, LC::Fenet::Plugin);

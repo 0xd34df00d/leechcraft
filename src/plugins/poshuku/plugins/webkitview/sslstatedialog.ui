@@ -70,7 +70,7 @@
         </layout>
        </item>
        <item>
-        <widget class="LeechCraft::Util::SslCertificateInfoWidget" name="SslInfoWidget_" native="true">
+        <widget class="LC::Util::SslCertificateInfoWidget" name="SslInfoWidget_" native="true">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
            <horstretch>0</horstretch>
@@ -149,7 +149,7 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>LeechCraft::Util::SslCertificateInfoWidget</class>
+   <class>LC::Util::SslCertificateInfoWidget</class>
    <extends>QWidget</extends>
    <header location="global">util/gui/sslcertificateinfowidget.h</header>
    <container>1</container>

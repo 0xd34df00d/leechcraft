@@ -34,7 +34,7 @@
 class QModelIndex;
 class QUrl;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blasq
 {
@@ -76,4 +76,4 @@ namespace Blasq
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Blasq::ISupportUploads, "org.LeechCraft.Blasq.ISupportUploads/1.0")
+Q_DECLARE_INTERFACE (LC::Blasq::ISupportUploads, "org.LeechCraft.Blasq.ISupportUploads/1.0")

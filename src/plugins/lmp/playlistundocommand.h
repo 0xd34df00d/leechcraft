@@ -32,7 +32,7 @@
 #include <QUndoCommand>
 #include "engine/audiosource.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

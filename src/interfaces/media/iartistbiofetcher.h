@@ -104,7 +104,7 @@ namespace Media
 		 *
 		 * @sa ArtistBio
 		 */
-		using Result_t = LeechCraft::Util::Either<QString, ArtistBio>;
+		using Result_t = LC::Util::Either<QString, ArtistBio>;
 
 		/** @brief Returns the service name.
 		 *

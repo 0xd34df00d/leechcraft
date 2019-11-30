@@ -40,7 +40,7 @@
 using GuardedReply_t = QPointer<QNetworkReply>;
 Q_DECLARE_METATYPE (GuardedReply_t)
 
-namespace LeechCraft
+namespace LC
 {
 namespace Plugins
 {

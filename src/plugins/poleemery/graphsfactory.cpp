@@ -45,7 +45,7 @@
 #include "currenciesmanager.h"
 #include "storage.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poleemery
 {

@@ -31,7 +31,7 @@
 
 class QPainter;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {
@@ -62,5 +62,5 @@ namespace Monocle
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Monocle::ISupportPainting,
+Q_DECLARE_INTERFACE (LC::Monocle::ISupportPainting,
 		"org.LeechCraft.Monocle.ISupportPainting/1.0")

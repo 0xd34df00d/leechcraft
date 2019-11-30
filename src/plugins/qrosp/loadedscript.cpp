@@ -36,7 +36,7 @@
 #include <qross/core/script.h>
 #include "lcenv.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Qrosp
 {

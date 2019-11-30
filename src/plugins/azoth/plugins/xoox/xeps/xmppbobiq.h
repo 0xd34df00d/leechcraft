@@ -31,7 +31,7 @@
 
 #include <QXmppIq.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

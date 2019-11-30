@@ -54,7 +54,7 @@ class QNetworkReply;
 class QNetworkAccessManager;
 class IWebWidget;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {
@@ -184,17 +184,17 @@ namespace Poshuku
 		void browserWidgetCreated (BrowserWidget*);
 
 		// Hook support signals
-		void hookAddToFavoritesRequested (LeechCraft::IHookProxy_ptr,
+		void hookAddToFavoritesRequested (LC::IHookProxy_ptr,
 				QString title, QString url);
-		void hookIconRequested (LeechCraft::IHookProxy_ptr,
+		void hookIconRequested (LC::IHookProxy_ptr,
 				const QUrl& url) const;
-		void hookTabAdded (LeechCraft::IHookProxy_ptr,
+		void hookTabAdded (LC::IHookProxy_ptr,
 				QObject *browserWidget,
 				const QUrl& url);
-		void hookUserAgentForUrlRequested (LeechCraft::IHookProxy_ptr,
+		void hookUserAgentForUrlRequested (LC::IHookProxy_ptr,
 				const QUrl&) const;
 	};
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::Poshuku::Core::UncloseData)
+Q_DECLARE_METATYPE (LC::Poshuku::Core::UncloseData)

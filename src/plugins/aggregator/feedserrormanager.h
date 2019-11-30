@@ -36,7 +36,7 @@
 #include <interfaces/core/icoreproxyfwd.h>
 #include "common.h"
 
-namespace LeechCraft::Aggregator
+namespace LC::Aggregator
 {
 	class FeedsErrorManager : public QObject
 	{

@@ -38,7 +38,7 @@
 #include "util/lmp/filtersettingsmanager.h"
 #include "httpstreamfilter.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

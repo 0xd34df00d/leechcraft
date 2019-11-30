@@ -34,7 +34,7 @@
 
 class QXmppDiscoveryManager;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

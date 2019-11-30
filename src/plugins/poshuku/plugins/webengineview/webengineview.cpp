@@ -40,7 +40,7 @@
 #include "downloaditemhandler.h"
 #include "icondatabase.h"
 
-namespace LeechCraft::Poshuku::WebEngineView
+namespace LC::Poshuku::WebEngineView
 {
 	namespace
 	{
@@ -182,4 +182,4 @@ namespace LeechCraft::Poshuku::WebEngineView
 	}
 }
 
-LC_EXPORT_PLUGIN (leechcraft_poshuku_webengineview, LeechCraft::Poshuku::WebEngineView::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_poshuku_webengineview, LC::Poshuku::WebEngineView::Plugin);

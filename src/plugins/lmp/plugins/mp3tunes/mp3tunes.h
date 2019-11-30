@@ -37,7 +37,7 @@
 #include <interfaces/lmp/icloudstorageplugin.h>
 #include <interfaces/lmp/iplaylistprovider.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {
@@ -60,9 +60,9 @@ namespace MP3Tunes
 		Q_INTERFACES (IInfo
 				IHaveSettings
 				IPlugin2
-				LeechCraft::LMP::ILMPPlugin
-				LeechCraft::LMP::ICloudStoragePlugin
-				LeechCraft::LMP::IPlaylistProvider)
+				LC::LMP::ILMPPlugin
+				LC::LMP::ICloudStoragePlugin
+				LC::LMP::IPlaylistProvider)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.LMP.MP3Tunes")
 
@@ -104,7 +104,7 @@ namespace MP3Tunes
 		boost::optional<Media::AudioInfo> GetURLInfo (const QUrl&);
 	signals:
 		void uploadFinished (const QString&,
-				LeechCraft::LMP::CloudStorageError, const QString&);
+				LC::LMP::CloudStorageError, const QString&);
 		void accountsChanged ();
 	};
 }

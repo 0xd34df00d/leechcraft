@@ -29,7 +29,7 @@
 
 #include "qtutil.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

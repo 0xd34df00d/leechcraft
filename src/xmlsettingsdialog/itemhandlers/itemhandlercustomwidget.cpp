@@ -31,7 +31,7 @@
 #include <QGridLayout>
 #include <QLabel>
 
-namespace LeechCraft
+namespace LC
 {
 	bool ItemHandlerCustomWidget::CanHandle (const QDomElement& element) const
 	{

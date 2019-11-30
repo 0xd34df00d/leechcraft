@@ -35,7 +35,7 @@
 #include "seen.h"
 #include "docmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {

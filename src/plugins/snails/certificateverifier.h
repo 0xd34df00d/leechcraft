@@ -31,7 +31,7 @@
 
 #include <vmime/security/cert/certificateVerifier.hpp>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Snails
 {

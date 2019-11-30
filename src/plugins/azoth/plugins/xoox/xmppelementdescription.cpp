@@ -31,7 +31,7 @@
 #include <QXmppElement.h>
 #include <util/sll/qtutil.h>
 
-namespace LeechCraft::Azoth::Xoox
+namespace LC::Azoth::Xoox
 {
 	QXmppElement ToElement (const XmppElementDescription& descr)
 	{

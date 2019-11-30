@@ -46,7 +46,7 @@ namespace
 {
 	void SetupLibraryPaths ()
 	{
-		if (!LeechCraft::Util::IsOSXLoadFromBundle ())
+		if (!LC::Util::IsOSXLoadFromBundle ())
 			return;
 
 		char path [1024] = { 0 };
@@ -105,7 +105,7 @@ int main (int argc, char **argv)
 	QCoreApplication::setAttribute (Qt::AA_ShareOpenGLContexts);
 	QCoreApplication::setAttribute (Qt::AA_UseHighDpiPixmaps);
 
-	LeechCraft::Application app (argc, argv);
+	LC::Application app (argc, argv);
 	return app.exec ();
 }
 

@@ -42,7 +42,7 @@
 
 class QTcpSocket;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

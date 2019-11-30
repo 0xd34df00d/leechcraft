@@ -37,7 +37,7 @@
 #include <util/sys/fdguard.h>
 #include "basesettingsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 	SettingsThread::~SettingsThread ()
 	{

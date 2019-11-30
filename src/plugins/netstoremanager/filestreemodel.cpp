@@ -34,7 +34,7 @@
 #include <QMenu>
 #include "interfaces/netstoremanager/isupportfilelistings.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace NetStoreManager
 {

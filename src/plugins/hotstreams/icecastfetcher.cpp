@@ -49,7 +49,7 @@
 #include <interfaces/core/ientitymanager.h>
 #include "icecastmodel.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace HotStreams
 {

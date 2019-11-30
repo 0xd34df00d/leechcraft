@@ -34,7 +34,7 @@
 #include <interfaces/iquarkcomponentprovider.h>
 #include <interfaces/ihavesettings.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Ooronee
 {

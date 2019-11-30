@@ -33,7 +33,7 @@
 #include <QtCrypto>
 #include "ui_pgpkeyselectiondialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

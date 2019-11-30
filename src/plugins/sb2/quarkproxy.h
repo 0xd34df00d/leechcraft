@@ -38,7 +38,7 @@
 class QUrl;
 class QPoint;
 
-namespace LeechCraft
+namespace LC
 {
 namespace SB2
 {

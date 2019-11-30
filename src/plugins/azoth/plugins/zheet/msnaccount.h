@@ -44,7 +44,7 @@ namespace MSN
 	class Message;
 }
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -63,7 +63,7 @@ namespace Zheet
 					 , public IExtSelfInfoAccount
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IAccount LeechCraft::Azoth::IExtSelfInfoAccount)
+		Q_INTERFACES (LC::Azoth::IAccount LC::Azoth::IExtSelfInfoAccount)
 
 		MSNProtocol *Proto_;
 

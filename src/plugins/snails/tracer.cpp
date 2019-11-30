@@ -30,7 +30,7 @@
 #include "tracer.h"
 #include "accountlogger.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Snails
 {

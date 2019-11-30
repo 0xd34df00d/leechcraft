@@ -34,7 +34,7 @@
 #include "ui_finalpage.h"
 #include "structures.h"
 
-namespace LeechCraft
+namespace LC
 {
 struct Entity;
 

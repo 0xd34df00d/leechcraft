@@ -47,7 +47,7 @@
 #include "xmlsettingsmanager.h"
 #include "handlerchoicedialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 	EntityManager::EntityManager (QObject *parent)
 	: QObject (parent)

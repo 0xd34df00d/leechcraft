@@ -38,7 +38,7 @@
 #include "knowndictsmanager.h"
 #include "checker.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Rosenthal
 {
@@ -121,4 +121,4 @@ namespace Rosenthal
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_rosenthal, LeechCraft::Rosenthal::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_rosenthal, LC::Rosenthal::Plugin);

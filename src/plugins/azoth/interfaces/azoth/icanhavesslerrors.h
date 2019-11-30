@@ -37,7 +37,7 @@ class QList;
 
 class QSslError;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -64,5 +64,5 @@ namespace Azoth
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Azoth::ICanHaveSslErrors,
+Q_DECLARE_INTERFACE (LC::Azoth::ICanHaveSslErrors,
 		"org.LeechCraft.Azoth.ICanHaveSslErrors/1.0")

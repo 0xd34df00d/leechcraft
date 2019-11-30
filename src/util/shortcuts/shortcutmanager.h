@@ -40,7 +40,7 @@ class QAction;
 class QShortcut;
 class IShortcutProxy;
 
-namespace LeechCraft
+namespace LC
 {
 struct Entity;
 

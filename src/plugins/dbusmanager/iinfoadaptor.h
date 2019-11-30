@@ -34,7 +34,7 @@
 class IInfo;
 class QObject;
 
-namespace LeechCraft
+namespace LC
 {
 namespace DBusManager
 {

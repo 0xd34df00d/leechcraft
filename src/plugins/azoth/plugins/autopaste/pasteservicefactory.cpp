@@ -35,7 +35,7 @@
 #include "pasteorgruservice.h"
 #include "poundpythonservice.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

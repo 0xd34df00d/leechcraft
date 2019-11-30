@@ -31,7 +31,7 @@
 #include <QLibrary>
 #include <QtDebug>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Loaders
 {

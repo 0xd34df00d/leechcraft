@@ -34,7 +34,7 @@
 #include "document.h"
 #include "xmlsettingsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {
@@ -119,4 +119,4 @@ namespace FXB
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_monocle_fxb, LeechCraft::Monocle::FXB::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_monocle_fxb, LC::Monocle::FXB::Plugin);

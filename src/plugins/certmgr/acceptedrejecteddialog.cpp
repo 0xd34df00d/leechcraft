@@ -33,7 +33,7 @@
 #include <QTimer>
 #include "exceptionsmodel.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace CertMgr
 {

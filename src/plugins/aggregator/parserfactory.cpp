@@ -36,7 +36,7 @@
 #include "atom10parser.h"
 #include "atom03parser.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Aggregator
 {

@@ -33,7 +33,7 @@
 #include <QRectF>
 #include <QMetaType>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {
@@ -166,5 +166,5 @@ namespace Monocle
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Monocle::ILink, "org.LeechCraft.Monocle.ILink/1.0")
-Q_DECLARE_INTERFACE (LeechCraft::Monocle::IPageLink, "org.LeechCraft.Monocle.IPageLink/1.0")
+Q_DECLARE_INTERFACE (LC::Monocle::ILink, "org.LeechCraft.Monocle.ILink/1.0")
+Q_DECLARE_INTERFACE (LC::Monocle::IPageLink, "org.LeechCraft.Monocle.IPageLink/1.0")

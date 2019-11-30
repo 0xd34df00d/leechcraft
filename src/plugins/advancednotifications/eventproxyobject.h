@@ -33,7 +33,7 @@
 #include <QUrl>
 #include "eventdata.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace AdvancedNotifications
 {

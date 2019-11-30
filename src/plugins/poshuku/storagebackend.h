@@ -36,7 +36,7 @@
 #include "favoritesmodel.h"
 #include "pageformsdata.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {
@@ -49,7 +49,7 @@ namespace Poshuku
 						 , public IStorageBackend
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Poshuku::IStorageBackend)
+		Q_INTERFACES (LC::Poshuku::IStorageBackend)
 	public:
 		enum Type
 		{

@@ -30,7 +30,7 @@
 #include "imimportpage.h"
 #include <QStandardItemModel>
 
-namespace LeechCraft
+namespace LC
 {
 namespace NewLife
 {

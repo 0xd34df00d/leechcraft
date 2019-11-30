@@ -33,7 +33,7 @@
 #include <QTimer>
 #include <QtDebug>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

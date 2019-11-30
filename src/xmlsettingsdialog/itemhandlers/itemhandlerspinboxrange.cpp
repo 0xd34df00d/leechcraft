@@ -33,7 +33,7 @@
 #include <QtDebug>
 #include "../rangewidget.h"
 
-namespace LeechCraft
+namespace LC
 {
 	bool ItemHandlerSpinboxRange::CanHandle (const QDomElement& element) const
 	{

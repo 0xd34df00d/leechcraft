@@ -34,7 +34,7 @@
 #include <util/threads/concurrentexception.h>
 #include <tox/toxav.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

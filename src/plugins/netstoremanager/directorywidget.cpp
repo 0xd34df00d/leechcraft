@@ -34,7 +34,7 @@
 #include "accountsmanager.h"
 #include "remotedirectoryselectdialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace NetStoreManager
 {

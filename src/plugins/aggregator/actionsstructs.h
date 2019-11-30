@@ -35,7 +35,7 @@ class QAction;
 class QWidget;
 class QMenu;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

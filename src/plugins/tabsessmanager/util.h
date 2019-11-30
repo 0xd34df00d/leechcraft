@@ -41,7 +41,7 @@ class QList;
 
 struct TabClassInfo;
 
-namespace LeechCraft
+namespace LC
 {
 namespace TabSessManager
 {

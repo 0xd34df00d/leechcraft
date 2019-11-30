@@ -30,7 +30,7 @@
 #include "banpeersdialog.h"
 #include "ipvalidators.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace BitTorrent
 {

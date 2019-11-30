@@ -34,7 +34,7 @@
 #include <util/xpc/util.h>
 #include "../core.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {
@@ -43,9 +43,9 @@ namespace LMP
 	, Cloud_ (cloud)
 	{
 		connect (Cloud_->GetQObject (),
-				SIGNAL (uploadFinished (QString, LeechCraft::LMP::CloudStorageError, QString)),
+				SIGNAL (uploadFinished (QString, LC::LMP::CloudStorageError, QString)),
 				this,
-				SLOT (handleUploadFinished (QString, LeechCraft::LMP::CloudStorageError, QString)),
+				SLOT (handleUploadFinished (QString, LC::LMP::CloudStorageError, QString)),
 				Qt::UniqueConnection);
 	}
 

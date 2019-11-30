@@ -56,7 +56,7 @@
 #include "mainwindow.h"
 #include "iconthemeengine.h"
 
-namespace LeechCraft
+namespace LC
 {
 	SeparateTabWidget::SeparateTabWidget (QWidget *parent)
 	: QWidget (parent)

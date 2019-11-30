@@ -38,7 +38,7 @@
 #include "namhandler.h"
 #include "sqlstoragebackend.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace NamAuth
 {
@@ -116,4 +116,4 @@ namespace NamAuth
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_namauth, LeechCraft::NamAuth::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_namauth, LC::NamAuth::Plugin);

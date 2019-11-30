@@ -30,7 +30,7 @@
 #include "folder.h"
 #include <QDataStream>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Snails
 {
@@ -41,7 +41,7 @@ namespace Snails
 }
 }
 
-QDataStream& operator<< (QDataStream& out, const LeechCraft::Snails::Folder& folder)
+QDataStream& operator<< (QDataStream& out, const LC::Snails::Folder& folder)
 {
 	out << static_cast<quint8> (1)
 			<< static_cast<quint32> (folder.Type_)
@@ -49,7 +49,7 @@ QDataStream& operator<< (QDataStream& out, const LeechCraft::Snails::Folder& fol
 	return out;
 }
 
-QDataStream& operator>> (QDataStream& in, LeechCraft::Snails::Folder& folder)
+QDataStream& operator>> (QDataStream& in, LC::Snails::Folder& folder)
 {
 	quint8 version = 0;
 	in >> version;
@@ -60,7 +60,7 @@ QDataStream& operator>> (QDataStream& in, LeechCraft::Snails::Folder& folder)
 	in >> type
 			>> folder.Path_;
 
-	folder.Type_ = static_cast<LeechCraft::Snails::FolderType> (type);
+	folder.Type_ = static_cast<LC::Snails::FolderType> (type);
 
 	return in;
 }

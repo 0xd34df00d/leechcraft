@@ -34,7 +34,7 @@
 #include <QtDebug>
 #include "../colorpicker.h"
 
-namespace LeechCraft
+namespace LC
 {
 	bool ItemHandlerColor::CanHandle (const QDomElement& element) const
 	{

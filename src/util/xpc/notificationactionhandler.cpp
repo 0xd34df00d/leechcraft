@@ -30,7 +30,7 @@
 #include "notificationactionhandler.h"
 #include <QStringList>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

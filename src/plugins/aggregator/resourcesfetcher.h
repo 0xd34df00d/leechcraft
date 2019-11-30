@@ -37,7 +37,7 @@ class QString;
 
 class IEntityManager;
 
-namespace LeechCraft::Aggregator
+namespace LC::Aggregator
 {
 	class ResourcesFetcher : public QObject
 	{

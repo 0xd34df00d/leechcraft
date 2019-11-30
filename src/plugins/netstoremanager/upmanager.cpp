@@ -52,7 +52,7 @@ inline uint qHash (const QStringList& id)
 	return qHash (id.join ("/"));
 }
 
-namespace LeechCraft
+namespace LC
 {
 namespace NetStoreManager
 {

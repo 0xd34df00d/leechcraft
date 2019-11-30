@@ -30,7 +30,7 @@
 #include "abstractimporter.h"
 #include <algorithm>
 
-namespace LeechCraft
+namespace LC
 {
 namespace NewLife
 {

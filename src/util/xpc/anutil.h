@@ -37,7 +37,7 @@ class QStringList;
 template<typename K, typename V>
 class QMap;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

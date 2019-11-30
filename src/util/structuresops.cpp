@@ -29,7 +29,7 @@
 
 #include "structuresops.h"
 
-QDataStream& operator<< (QDataStream& out, const LeechCraft::Entity& e)
+QDataStream& operator<< (QDataStream& out, const LC::Entity& e)
 {
 	quint16 version = 2;
 	out << version
@@ -41,7 +41,7 @@ QDataStream& operator<< (QDataStream& out, const LeechCraft::Entity& e)
 	return out;
 }
 
-QDataStream& operator>> (QDataStream& in, LeechCraft::Entity& e)
+QDataStream& operator>> (QDataStream& in, LC::Entity& e)
 {
 	quint16 version = 0;
 	in >> version;
@@ -54,30 +54,30 @@ QDataStream& operator>> (QDataStream& in, LeechCraft::Entity& e)
 			>> parameters
 			>> e.Additional_;
 
-		if (parameters & LeechCraft::NoAutostart)
-			e.Parameters_ |= LeechCraft::NoAutostart;
-		if (parameters & LeechCraft::DoNotSaveInHistory)
-			e.Parameters_ |= LeechCraft::DoNotSaveInHistory;
-		if (parameters & LeechCraft::IsDownloaded)
-			e.Parameters_ |= LeechCraft::IsDownloaded;
-		if (parameters & LeechCraft::FromUserInitiated)
-			e.Parameters_ |= LeechCraft::FromUserInitiated;
-		if (parameters & LeechCraft::DoNotNotifyUser)
-			e.Parameters_ |= LeechCraft::DoNotNotifyUser;
-		if (parameters & LeechCraft::Internal)
-			e.Parameters_ |= LeechCraft::Internal;
-		if (parameters & LeechCraft::NotPersistent)
-			e.Parameters_ |= LeechCraft::NotPersistent;
-		if (parameters & LeechCraft::DoNotAnnounceEntity)
-			e.Parameters_ |= LeechCraft::DoNotAnnounceEntity;
-		if (parameters & LeechCraft::OnlyHandle)
-			e.Parameters_ |= LeechCraft::OnlyHandle;
-		if (parameters & LeechCraft::OnlyDownload)
-			e.Parameters_ |= LeechCraft::OnlyDownload;
-		if (parameters & LeechCraft::AutoAccept)
-			e.Parameters_ |= LeechCraft::AutoAccept;
-		if (parameters & LeechCraft::FromCommandLine)
-			e.Parameters_ |= LeechCraft::FromCommandLine;
+		if (parameters & LC::NoAutostart)
+			e.Parameters_ |= LC::NoAutostart;
+		if (parameters & LC::DoNotSaveInHistory)
+			e.Parameters_ |= LC::DoNotSaveInHistory;
+		if (parameters & LC::IsDownloaded)
+			e.Parameters_ |= LC::IsDownloaded;
+		if (parameters & LC::FromUserInitiated)
+			e.Parameters_ |= LC::FromUserInitiated;
+		if (parameters & LC::DoNotNotifyUser)
+			e.Parameters_ |= LC::DoNotNotifyUser;
+		if (parameters & LC::Internal)
+			e.Parameters_ |= LC::Internal;
+		if (parameters & LC::NotPersistent)
+			e.Parameters_ |= LC::NotPersistent;
+		if (parameters & LC::DoNotAnnounceEntity)
+			e.Parameters_ |= LC::DoNotAnnounceEntity;
+		if (parameters & LC::OnlyHandle)
+			e.Parameters_ |= LC::OnlyHandle;
+		if (parameters & LC::OnlyDownload)
+			e.Parameters_ |= LC::OnlyDownload;
+		if (parameters & LC::AutoAccept)
+			e.Parameters_ |= LC::AutoAccept;
+		if (parameters & LC::FromCommandLine)
+			e.Parameters_ |= LC::FromCommandLine;
 	}
 	else if (version == 1)
 	{
@@ -91,30 +91,30 @@ QDataStream& operator>> (QDataStream& in, LeechCraft::Entity& e)
 
 		e.Entity_ = buf;
 
-		if (parameters & LeechCraft::NoAutostart)
-			e.Parameters_ |= LeechCraft::NoAutostart;
-		if (parameters & LeechCraft::DoNotSaveInHistory)
-			e.Parameters_ |= LeechCraft::DoNotSaveInHistory;
-		if (parameters & LeechCraft::IsDownloaded)
-			e.Parameters_ |= LeechCraft::IsDownloaded;
-		if (parameters & LeechCraft::FromUserInitiated)
-			e.Parameters_ |= LeechCraft::FromUserInitiated;
-		if (parameters & LeechCraft::DoNotNotifyUser)
-			e.Parameters_ |= LeechCraft::DoNotNotifyUser;
-		if (parameters & LeechCraft::Internal)
-			e.Parameters_ |= LeechCraft::Internal;
-		if (parameters & LeechCraft::NotPersistent)
-			e.Parameters_ |= LeechCraft::NotPersistent;
-		if (parameters & LeechCraft::DoNotAnnounceEntity)
-			e.Parameters_ |= LeechCraft::DoNotAnnounceEntity;
-		if (parameters & LeechCraft::OnlyHandle)
-			e.Parameters_ |= LeechCraft::OnlyHandle;
-		if (parameters & LeechCraft::OnlyDownload)
-			e.Parameters_ |= LeechCraft::OnlyDownload;
-		if (parameters & LeechCraft::AutoAccept)
-			e.Parameters_ |= LeechCraft::AutoAccept;
-		if (parameters & LeechCraft::FromCommandLine)
-			e.Parameters_ |= LeechCraft::FromCommandLine;
+		if (parameters & LC::NoAutostart)
+			e.Parameters_ |= LC::NoAutostart;
+		if (parameters & LC::DoNotSaveInHistory)
+			e.Parameters_ |= LC::DoNotSaveInHistory;
+		if (parameters & LC::IsDownloaded)
+			e.Parameters_ |= LC::IsDownloaded;
+		if (parameters & LC::FromUserInitiated)
+			e.Parameters_ |= LC::FromUserInitiated;
+		if (parameters & LC::DoNotNotifyUser)
+			e.Parameters_ |= LC::DoNotNotifyUser;
+		if (parameters & LC::Internal)
+			e.Parameters_ |= LC::Internal;
+		if (parameters & LC::NotPersistent)
+			e.Parameters_ |= LC::NotPersistent;
+		if (parameters & LC::DoNotAnnounceEntity)
+			e.Parameters_ |= LC::DoNotAnnounceEntity;
+		if (parameters & LC::OnlyHandle)
+			e.Parameters_ |= LC::OnlyHandle;
+		if (parameters & LC::OnlyDownload)
+			e.Parameters_ |= LC::OnlyDownload;
+		if (parameters & LC::AutoAccept)
+			e.Parameters_ |= LC::AutoAccept;
+		if (parameters & LC::FromCommandLine)
+			e.Parameters_ |= LC::FromCommandLine;
 	}
 	else
 	{
@@ -125,16 +125,16 @@ QDataStream& operator>> (QDataStream& in, LeechCraft::Entity& e)
 	return in;
 }
 
-namespace LeechCraft
+namespace LC
 {
-	bool operator< (const LeechCraft::Entity& e1, const LeechCraft::Entity& e2)
+	bool operator< (const LC::Entity& e1, const LC::Entity& e2)
 	{
 		return e1.Mime_ < e2.Mime_ &&
 			e1.Location_ < e2.Location_ &&
 			e1.Parameters_ < e2.Parameters_;
 	}
 
-	bool operator== (const LeechCraft::Entity& e1, const LeechCraft::Entity& e2)
+	bool operator== (const LC::Entity& e1, const LC::Entity& e2)
 	{
 		return e1.Mime_ == e2.Mime_ &&
 			e1.Entity_ == e2.Entity_ &&

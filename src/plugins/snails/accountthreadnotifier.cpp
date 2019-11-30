@@ -29,7 +29,7 @@
 
 #include "accountthreadnotifier.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Snails
 {

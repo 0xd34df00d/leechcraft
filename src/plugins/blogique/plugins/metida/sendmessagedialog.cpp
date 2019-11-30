@@ -34,7 +34,7 @@
 #include "ljaccount.h"
 #include "ljprofile.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blogique
 {

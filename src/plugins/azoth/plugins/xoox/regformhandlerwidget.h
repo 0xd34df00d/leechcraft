@@ -36,7 +36,7 @@
 
 class QXmppClient;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

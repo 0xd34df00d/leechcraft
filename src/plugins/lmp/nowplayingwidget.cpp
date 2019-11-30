@@ -41,7 +41,7 @@
 #include "biowidget.h"
 #include "similarview.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

@@ -30,13 +30,13 @@
 #include "xmlsettingsmanager.h"
 #include <QCoreApplication>
 
-namespace LeechCraft
+namespace LC
 {
 namespace CSTP
 {
 	XmlSettingsManager::XmlSettingsManager ()
 	{
-		LeechCraft::Util::BaseSettingsManager::Init ();
+		LC::Util::BaseSettingsManager::Init ();
 	}
 
 	XmlSettingsManager& XmlSettingsManager::Instance ()

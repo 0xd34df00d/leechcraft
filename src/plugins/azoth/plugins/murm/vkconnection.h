@@ -41,7 +41,7 @@
 
 class QTimer;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {
@@ -64,7 +64,7 @@ namespace Murm
 	{
 		Q_OBJECT
 
-		LeechCraft::Util::SvcAuth::VkAuthManager * const AuthMgr_;
+		LC::Util::SvcAuth::VkAuthManager * const AuthMgr_;
 		const ICoreProxy_ptr Proxy_;
 
 		Logger& Logger_;
@@ -127,7 +127,7 @@ namespace Murm
 		};
 	private:
 		QList<PreparedCall_f> PreparedCalls_;
-		LeechCraft::Util::QueueManager *CallQueue_;
+		LC::Util::QueueManager *CallQueue_;
 
 		typedef QList<QPair<QNetworkReply*, PreparedCall_f>> RunningCalls_t;
 		RunningCalls_t RunningCalls_;

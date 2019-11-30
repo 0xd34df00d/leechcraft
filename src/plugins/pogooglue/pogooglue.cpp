@@ -36,7 +36,7 @@
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/ientitymanager.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Pogooglue
 {
@@ -133,4 +133,4 @@ namespace Pogooglue
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_pogooglue, LeechCraft::Pogooglue::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_pogooglue, LC::Pogooglue::Plugin);

@@ -37,7 +37,7 @@
 
 Q_DECLARE_METATYPE (QList<QLocale>)
 
-namespace LeechCraft
+namespace LC
 {
 namespace Intermutko
 {

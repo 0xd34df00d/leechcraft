@@ -34,7 +34,7 @@
 #include "callbacks.h"
 #include "zheetutil.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

@@ -38,7 +38,7 @@ class QNetworkReply;
 class QAuthenticator;
 class QTimer;
 
-namespace LeechCraft
+namespace LC
 {
 namespace GmailNotifier
 {

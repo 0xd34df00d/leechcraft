@@ -34,7 +34,7 @@
 #include "localcollection.h"
 #include "recursivedirwatcher.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

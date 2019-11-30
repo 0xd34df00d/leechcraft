@@ -32,7 +32,7 @@
 #include <interfaces/iactionsexporter.h>
 #include <interfaces/core/ipluginsmanager.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace SB2
 {
@@ -43,9 +43,9 @@ namespace SB2
 				GetAllCastableRoots<IActionsExporter*> ();
 		for (QObject *actObj : hasActions)
 			connect (actObj,
-					SIGNAL (gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace)),
+					SIGNAL (gotActions (QList<QAction*>, LC::ActionsEmbedPlace)),
 					this,
-					SLOT (handleGotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace)));
+					SLOT (handleGotActions (QList<QAction*>, LC::ActionsEmbedPlace)));
 	}
 
 	void TrayComponent::handlePluginsAvailable ()

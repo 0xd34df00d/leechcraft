@@ -41,7 +41,7 @@
 class QTranslator;
 class QImage;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -78,12 +78,12 @@ namespace Modnok
 		QImage GetRenderedImage (const QString&);
 		QString HandleBody (QString);
 	public slots:
-		void hookFormatBodyEnd (LeechCraft::IHookProxy_ptr proxy,
+		void hookFormatBodyEnd (LC::IHookProxy_ptr proxy,
 				QObject *message);
-		void hookGonnaHandleSmiles (LeechCraft::IHookProxy_ptr proxy,
+		void hookGonnaHandleSmiles (LC::IHookProxy_ptr proxy,
 				QString body,
 				QString pack);
-		void hookMessageCreated (LeechCraft::IHookProxy_ptr proxy,
+		void hookMessageCreated (LC::IHookProxy_ptr proxy,
 				QObject *chatTab,
 				QObject *message);
 	private slots:

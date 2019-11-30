@@ -38,7 +38,7 @@
 
 class QAction;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -52,7 +52,7 @@ namespace Metacontacts
 				 , public IProtocolPlugin
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Azoth::IProtocolPlugin)
+		Q_INTERFACES (IInfo IPlugin2 LC::Azoth::IProtocolPlugin)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.MetaContacts")
 
@@ -72,14 +72,14 @@ namespace Metacontacts
 		QObject* GetQObject ();
 		QList<QObject*> GetProtocols () const;
 	public slots:
-		void hookAddingCLEntryBegin (LeechCraft::IHookProxy_ptr proxy,
+		void hookAddingCLEntryBegin (LC::IHookProxy_ptr proxy,
 				QObject *entry);
-		void hookDnDEntry2Entry (LeechCraft::IHookProxy_ptr,
+		void hookDnDEntry2Entry (LC::IHookProxy_ptr,
 				QObject*, QObject*);
-		void hookEntryActionAreasRequested (LeechCraft::IHookProxy_ptr proxy,
+		void hookEntryActionAreasRequested (LC::IHookProxy_ptr proxy,
 				QObject *action,
 				QObject *entry);
-		void hookEntryActionsRequested (LeechCraft::IHookProxy_ptr proxy,
+		void hookEntryActionsRequested (LC::IHookProxy_ptr proxy,
 				QObject *entry);
 	private slots:
 		void handleAddToMetacontacts ();

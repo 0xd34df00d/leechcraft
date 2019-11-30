@@ -32,7 +32,7 @@
 #include <QWizardPage>
 #include "ui_featurerequestpage.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Dolozhee
 {

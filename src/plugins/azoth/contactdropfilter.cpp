@@ -50,7 +50,7 @@
 #include "dndutil.h"
 #include "msgsender.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

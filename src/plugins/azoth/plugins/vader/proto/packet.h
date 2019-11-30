@@ -31,7 +31,7 @@
 
 #include <QByteArray>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

@@ -52,7 +52,7 @@
 #include "q2wproxymodel.h"
 #include "readitemsfilter.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Aggregator
 {

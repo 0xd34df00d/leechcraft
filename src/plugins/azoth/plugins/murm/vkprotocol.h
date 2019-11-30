@@ -34,7 +34,7 @@
 #include <interfaces/azoth/iprotocol.h>
 #include <interfaces/azoth/imucprotocol.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -50,7 +50,7 @@ namespace Murm
 						   , public IMUCProtocol
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IProtocol LeechCraft::Azoth::IMUCProtocol)
+		Q_INTERFACES (LC::Azoth::IProtocol LC::Azoth::IMUCProtocol)
 
 		const ICoreProxy_ptr Proxy_;
 		IProxyObject * const AzothProxy_;

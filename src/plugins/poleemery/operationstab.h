@@ -34,7 +34,7 @@
 #include <interfaces/ihavetabs.h>
 #include "ui_operationstab.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poleemery
 {

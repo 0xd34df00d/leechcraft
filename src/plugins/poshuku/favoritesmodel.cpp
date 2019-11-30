@@ -42,7 +42,7 @@
 #include "core.h"
 #include "editbookmarkdialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

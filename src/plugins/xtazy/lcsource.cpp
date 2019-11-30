@@ -30,7 +30,7 @@
 #include "lcsource.h"
 #include <interfaces/media/audiostructs.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Xtazy
 {

@@ -84,7 +84,7 @@
 #include "opmladder.h"
 #include "feedserrormanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Aggregator
 {
@@ -104,7 +104,7 @@ namespace Aggregator
 		qRegisterMetaType<ChannelShort> ("ChannelShort");
 		qRegisterMetaType<Channel> ("Channel");
 		qRegisterMetaType<channels_container_t> ("channels_container_t");
-		qRegisterMetaTypeStreamOperators<Feed> ("LeechCraft::Plugins::Aggregator::Feed");
+		qRegisterMetaTypeStreamOperators<Feed> ("LC::Plugins::Aggregator::Feed");
 
 		TabInfo_ = TabClassInfo
 		{
@@ -729,4 +729,4 @@ namespace Aggregator
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_aggregator, LeechCraft::Aggregator::Aggregator);
+LC_EXPORT_PLUGIN (leechcraft_aggregator, LC::Aggregator::Aggregator);

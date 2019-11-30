@@ -30,7 +30,7 @@
 #include "accountregfirstpage.h"
 #include <ProtocolInfo>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

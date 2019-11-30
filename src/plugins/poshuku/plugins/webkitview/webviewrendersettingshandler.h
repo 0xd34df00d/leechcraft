@@ -33,7 +33,7 @@
 
 class QWebView;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

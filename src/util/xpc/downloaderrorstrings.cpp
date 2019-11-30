@@ -30,7 +30,7 @@
 #include "downloaderrorstrings.h"
 #include <QObject>
 
-namespace LeechCraft::Util
+namespace LC::Util
 {
 	QString GetErrorString (IDownload::Error::Type type)
 	{

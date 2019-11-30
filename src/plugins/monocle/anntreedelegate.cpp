@@ -36,7 +36,7 @@
 #include <QResizeEvent>
 #include "annmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {

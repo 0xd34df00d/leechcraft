@@ -34,7 +34,7 @@
 #include <QMap>
 #include <interfaces/ihaveshortcuts.h>
 
-namespace LeechCraft::Azoth::Abbrev
+namespace LC::Azoth::Abbrev
 {
 	class AbbrevsManager;
 

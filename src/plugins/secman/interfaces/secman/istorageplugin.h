@@ -32,7 +32,7 @@
 #include <QtPlugin>
 #include <QFlags>
 
-namespace LeechCraft
+namespace LC
 {
 namespace SecMan
 {
@@ -60,5 +60,5 @@ namespace SecMan
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::SecMan::IStoragePlugin,
+Q_DECLARE_INTERFACE (LC::SecMan::IStoragePlugin,
 		"org.LeechCraft.SecMan.IStoragePlugin/1.0")

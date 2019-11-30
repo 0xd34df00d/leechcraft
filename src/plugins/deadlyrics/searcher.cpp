@@ -31,7 +31,7 @@
 #include <stdexcept>
 #include <QDataStream>
 
-namespace LeechCraft
+namespace LC
 {
 namespace DeadLyrics
 {

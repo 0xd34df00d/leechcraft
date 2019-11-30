@@ -31,7 +31,7 @@
 
 #include <xmlsettingsdialog/basesettingsmanager.h>
 
-namespace LeechCraft::Fenet
+namespace LC::Fenet
 {
 	class XmlSettingsManager : public Util::BaseSettingsManager
 	{

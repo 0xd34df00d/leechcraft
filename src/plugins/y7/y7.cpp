@@ -30,7 +30,7 @@
 #include "y7.h"
 #include <QIcon>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Y7
 {
@@ -68,5 +68,5 @@ namespace Y7
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_y7, LeechCraft::Y7::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_y7, LC::Y7::Plugin);
 

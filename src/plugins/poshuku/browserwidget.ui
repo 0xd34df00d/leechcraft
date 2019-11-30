@@ -22,11 +22,11 @@
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
-     <widget class="LeechCraft::Poshuku::HideableTabWidget" name="Sidebar_" native="true"/>
+     <widget class="LC::Poshuku::HideableTabWidget" name="Sidebar_" native="true"/>
      <widget class="QWidget" name="layoutWidget">
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
-        <widget class="LeechCraft::Poshuku::URLFrame" name="URLFrame_">
+        <widget class="LC::Poshuku::URLFrame" name="URLFrame_">
          <property name="frameShape">
           <enum>QFrame::StyledPanel</enum>
          </property>
@@ -68,13 +68,13 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>LeechCraft::Poshuku::HideableTabWidget</class>
+   <class>LC::Poshuku::HideableTabWidget</class>
    <extends>QWidget</extends>
    <header>hideabletabwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>LeechCraft::Poshuku::URLFrame</class>
+   <class>LC::Poshuku::URLFrame</class>
    <extends>QFrame</extends>
    <header>urlframe.h</header>
    <container>1</container>

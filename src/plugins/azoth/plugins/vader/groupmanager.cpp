@@ -32,7 +32,7 @@
 #include "mrimaccount.h"
 #include "mrimbuddy.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

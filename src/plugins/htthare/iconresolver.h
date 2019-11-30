@@ -33,7 +33,7 @@
 
 class QImage;
 
-namespace LeechCraft
+namespace LC
 {
 namespace HttHare
 {

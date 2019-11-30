@@ -38,7 +38,7 @@
 
 class QwtPlot;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

@@ -32,7 +32,7 @@
 #include <QDialog>
 #include "ui_hyperlinkdialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LHTR
 {

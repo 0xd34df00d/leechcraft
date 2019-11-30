@@ -31,7 +31,7 @@
 
 #include <QNetworkAccessManager>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

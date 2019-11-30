@@ -43,7 +43,7 @@ class QSortFilterProxyModel;
 class QFileSystemWatcher;
 class QTimer;
 
-namespace LeechCraft
+namespace LC
 {
 	namespace Util
 	{

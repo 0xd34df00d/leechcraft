@@ -36,7 +36,7 @@
 
 class QQmlEngine;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

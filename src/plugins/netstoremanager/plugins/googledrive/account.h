@@ -36,7 +36,7 @@
 #include <interfaces/netstoremanager/isupportfilelistings.h>
 #include "drivemanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace NetStoreManager
 {
@@ -52,8 +52,8 @@ namespace GoogleDrive
 					, public ISupportFileListings
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::NetStoreManager::IStorageAccount
-				LeechCraft::NetStoreManager::ISupportFileListings)
+		Q_INTERFACES (LC::NetStoreManager::IStorageAccount
+				LC::NetStoreManager::ISupportFileListings)
 
 
 		QObject *ParentPlugin_;

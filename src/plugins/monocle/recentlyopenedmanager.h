@@ -36,7 +36,7 @@
 
 class QMenu;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {

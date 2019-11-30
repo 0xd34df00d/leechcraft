@@ -42,7 +42,7 @@ class QXmppEntityTimeManager;
 class QXmppMessageReceiptManager;
 class QXmppTransferManager;
 
-namespace LeechCraft::Azoth::Xoox
+namespace LC::Azoth::Xoox
 {
 	class ClientConnection;
 

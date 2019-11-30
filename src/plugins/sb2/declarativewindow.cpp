@@ -40,7 +40,7 @@
 #include <util/gui/util.h>
 #include "viewmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace SB2
 {

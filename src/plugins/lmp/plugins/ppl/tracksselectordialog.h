@@ -33,7 +33,7 @@
 #include <interfaces/media/iaudioscrobbler.h>
 #include "ui_tracksselectordialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

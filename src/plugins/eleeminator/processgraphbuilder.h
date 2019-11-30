@@ -32,7 +32,7 @@
 #include <QAbstractItemModel>
 #include "processinfo.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Eleeminator
 {

@@ -33,7 +33,7 @@
 #include <QMetaType>
 #include <QVariant>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -287,8 +287,8 @@ namespace Azoth
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Azoth::IMUCEntry,
+Q_DECLARE_INTERFACE (LC::Azoth::IMUCEntry,
 		"org.Deviant.LeechCraft.Azoth.IMUCEntry/1.0")
-Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::Azoth::IMUCEntry::MUCFeatures)
+Q_DECLARE_OPERATORS_FOR_FLAGS (LC::Azoth::IMUCEntry::MUCFeatures)
 
 #endif

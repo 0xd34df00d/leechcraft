@@ -31,7 +31,7 @@
 #include <QAction>
 #include "xmlsettingsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace AdvancedNotifications
 {

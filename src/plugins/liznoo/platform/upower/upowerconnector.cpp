@@ -35,7 +35,7 @@
 #include <QtDebug>
 #include <util/xpc/util.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Liznoo
 {

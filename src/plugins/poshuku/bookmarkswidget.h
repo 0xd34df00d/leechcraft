@@ -34,7 +34,7 @@
 #include "filtermodel.h"
 #include "ui_bookmarkswidget.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

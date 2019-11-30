@@ -44,7 +44,7 @@ extern "C"
 #include <libotr/privkey.h>
 }
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

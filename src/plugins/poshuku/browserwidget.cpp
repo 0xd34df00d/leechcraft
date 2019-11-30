@@ -94,11 +94,11 @@
 
 Q_DECLARE_METATYPE (QList<QObject*>);
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {
-	using LeechCraft::ActionInfo;
+	using LC::ActionInfo;
 
 	QObject *BrowserWidget::S_MultiTabsParent_ = 0;
 
@@ -1300,7 +1300,7 @@ namespace Poshuku
 
 				if (hasAtom || hasRSS)
 				{
-					LeechCraft::Entity e;
+					LC::Entity e;
 					if (hasAtom)
 					{
 						e.Additional_ ["UserVisibleName"] = "Atom";
@@ -1313,8 +1313,8 @@ namespace Poshuku
 					}
 
 					e.Entity_ = info.LinkUrl_;
-					e.Parameters_ = LeechCraft::FromUserInitiated |
-							LeechCraft::OnlyHandle;
+					e.Parameters_ = LC::FromUserInitiated |
+							LC::OnlyHandle;
 
 					if (iem->CouldHandle (e))
 						addAction (tr ("Subscribe"), [iem, e] { iem->HandleEntity (e); });

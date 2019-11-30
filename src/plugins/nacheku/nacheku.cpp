@@ -36,7 +36,7 @@
 #include "clipboardwatcher.h"
 #include "directorywatcher.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Nacheku
 {
@@ -88,4 +88,4 @@ namespace Nacheku
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_nacheku, LeechCraft::Nacheku::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_nacheku, LC::Nacheku::Plugin);

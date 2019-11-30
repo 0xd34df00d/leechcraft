@@ -37,7 +37,7 @@
 #include <QMap>
 #include <util/xpc/util.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace NewLife
 {

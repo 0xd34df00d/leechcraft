@@ -35,7 +35,7 @@
 #include <util/util.h>
 #include "hascirylsearcher.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace DeadLyrics
 {
@@ -102,4 +102,4 @@ namespace DeadLyrics
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_deadlyrics, LeechCraft::DeadLyrics::DeadLyRicS);
+LC_EXPORT_PLUGIN (leechcraft_deadlyrics, LC::DeadLyrics::DeadLyRicS);

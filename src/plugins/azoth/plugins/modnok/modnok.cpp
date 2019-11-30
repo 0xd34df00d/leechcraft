@@ -41,7 +41,7 @@
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -326,4 +326,4 @@ namespace Modnok
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_azoth_modnok, LeechCraft::Azoth::Modnok::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_azoth_modnok, LC::Azoth::Modnok::Plugin);

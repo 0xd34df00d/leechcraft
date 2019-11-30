@@ -30,7 +30,7 @@
 #include "oralfkeytest.h"
 #include "common.h"
 
-QTEST_GUILESS_MAIN (LeechCraft::Util::OralFKeyTest)
+QTEST_GUILESS_MAIN (LC::Util::OralFKeyTest)
 
 struct Student
 {
@@ -126,7 +126,7 @@ BOOST_FUSION_ADAPT_STRUCT (Student2Lecturer,
 
 TOSTRING (Student2Lecturer)
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

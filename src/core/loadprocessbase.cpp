@@ -29,7 +29,7 @@
 
 #include "loadprocessbase.h"
 
-namespace LeechCraft
+namespace LC
 {
 	void LoadProcessBase::operator++ ()
 	{

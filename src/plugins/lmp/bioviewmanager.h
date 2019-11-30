@@ -46,7 +46,7 @@ namespace Media
 	struct AlbumInfo;
 }
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

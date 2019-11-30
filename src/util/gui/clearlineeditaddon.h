@@ -37,7 +37,7 @@ class QLineEdit;
 class QToolButton;
 class QShortcut;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

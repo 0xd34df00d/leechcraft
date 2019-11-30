@@ -37,7 +37,7 @@
 class QwtPlot;
 class QwtPlotItem;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poleemery
 {

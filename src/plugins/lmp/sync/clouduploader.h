@@ -33,7 +33,7 @@
 #include <QList>
 #include <interfaces/lmp/icloudstorageplugin.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {
@@ -61,7 +61,7 @@ namespace LMP
 		bool IsRunning () const;
 	private slots:
 		void handleUploadFinished (const QString& localPath,
-				LeechCraft::LMP::CloudStorageError error, const QString& errorStr);
+				LC::LMP::CloudStorageError error, const QString& errorStr);
 	signals:
 		void startedCopying (const QString&);
 		void finishedCopying ();

@@ -32,7 +32,7 @@
 #include <QString>
 #include <QFlags>
 
-namespace LeechCraft
+namespace LC
 {
 namespace AN
 {
@@ -317,4 +317,4 @@ namespace AN
 }
 }
 
-Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::AN::NotifyFlags)
+Q_DECLARE_OPERATORS_FOR_FLAGS (LC::AN::NotifyFlags)

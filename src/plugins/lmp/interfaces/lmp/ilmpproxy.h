@@ -37,7 +37,7 @@
 
 class QPixmap;
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {
@@ -67,4 +67,4 @@ namespace LMP
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::LMP::ILMPProxy, "org.LeechCraft.LMP.ILMPProxy/1.0")
+Q_DECLARE_INTERFACE (LC::LMP::ILMPProxy, "org.LeechCraft.LMP.ILMPProxy/1.0")

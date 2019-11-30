@@ -35,7 +35,7 @@
 #include <interfaces/azoth/iurihandler.h>
 #include <interfaces/azoth/isupportimport.h>
 
-namespace LeechCraft
+namespace LC
 {
 struct Entity;
 
@@ -56,10 +56,10 @@ namespace Xoox
 							  , public ISupportImport
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IProtocol
-				LeechCraft::Azoth::IMUCProtocol
-				LeechCraft::Azoth::IURIHandler
-				LeechCraft::Azoth::ISupportImport)
+		Q_INTERFACES (LC::Azoth::IProtocol
+				LC::Azoth::IMUCProtocol
+				LC::Azoth::IURIHandler
+				LC::Azoth::ISupportImport)
 
 		QObject *ParentProtocolPlugin_;
 		QList<GlooxAccount*> Accounts_;

@@ -40,7 +40,7 @@ namespace Ui
 	class FindNotification;
 }
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

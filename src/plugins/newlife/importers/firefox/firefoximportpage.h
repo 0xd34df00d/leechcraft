@@ -32,7 +32,7 @@
 #include <QWizardPage>
 #include "ui_feedssettingsimportpage.h"
 
-namespace LeechCraft
+namespace LC
 {
 struct Entity;
 

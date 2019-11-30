@@ -32,7 +32,7 @@
 #include <QDialog>
 #include "ui_movetorrentfiles.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace BitTorrent
 {

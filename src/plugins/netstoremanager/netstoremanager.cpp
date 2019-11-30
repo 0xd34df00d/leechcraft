@@ -42,7 +42,7 @@
 #include "upmanager.h"
 #include "syncmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace NetStoreManager
 {
@@ -277,4 +277,4 @@ namespace NetStoreManager
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_netstoremanager, LeechCraft::NetStoreManager::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_netstoremanager, LC::NetStoreManager::Plugin);

@@ -35,7 +35,7 @@
 #include <netlink/route/link.h>
 #include <netlink/route/route.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Lemon
 {

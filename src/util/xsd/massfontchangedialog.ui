@@ -15,7 +15,7 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="LeechCraft::Util::FontChooserWidget" name="FontChooser_" native="true">
+    <widget class="LC::Util::FontChooserWidget" name="FontChooser_" native="true">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
        <horstretch>0</horstretch>
@@ -93,7 +93,7 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>LeechCraft::Util::FontChooserWidget</class>
+   <class>LC::Util::FontChooserWidget</class>
    <extends>QWidget</extends>
    <header>fontchooserwidget.h</header>
    <container>1</container>

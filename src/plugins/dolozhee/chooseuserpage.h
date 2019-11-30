@@ -33,7 +33,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include "ui_chooseuserpage.h"
 
-namespace LeechCraft
+namespace LC
 {
 struct Entity;
 

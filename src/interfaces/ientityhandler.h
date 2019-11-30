@@ -61,9 +61,9 @@ public:
 	 * handled.
 	 *
 	 * @sa Handle
-	 * @sa LeechCraft::Entity
+	 * @sa LC::Entity
 	 */
-	virtual EntityTestHandleResult CouldHandle (const LeechCraft::Entity& entity) const = 0;
+	virtual EntityTestHandleResult CouldHandle (const LC::Entity& entity) const = 0;
 
 	/** @brief Notifies the plugin that it should handle the given entity.
 	 *
@@ -74,9 +74,9 @@ public:
 	 * @param[in] entity A Entity structure to be handled by
 	 * this plugin.
 	 *
-	 * @sa LeechCraft::Entity
+	 * @sa LC::Entity
 	 */
-	virtual void Handle (LeechCraft::Entity entity) = 0;
+	virtual void Handle (LC::Entity entity) = 0;
 
 	virtual ~IEntityHandler () {}
 };

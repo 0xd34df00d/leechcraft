@@ -36,7 +36,7 @@
 #include <interfaces/structures.h>
 #include <interfaces/idownload.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace NetStoreManager
 {

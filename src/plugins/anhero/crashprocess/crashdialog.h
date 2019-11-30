@@ -35,7 +35,7 @@
 #include "ui_crashdialog.h"
 #include "appinfo.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace AnHero
 {

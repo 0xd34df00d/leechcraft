@@ -55,7 +55,7 @@
 #include <xcb/xcb_renderutil.h>
 #include "pagerwindowproxy.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Krigstask
 {

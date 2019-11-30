@@ -42,7 +42,7 @@
 class QTimer;
 class QComboBox;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Summary
 {

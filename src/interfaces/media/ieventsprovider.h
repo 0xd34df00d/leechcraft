@@ -168,7 +168,7 @@ namespace Media
 		 * The result of an recommended events query is either a string with a
 		 * human-readable error text, or the list of the recommended events.
 		 */
-		using EventsQueryResult_t = LeechCraft::Util::Either<QString, EventInfos_t>;
+		using EventsQueryResult_t = LC::Util::Either<QString, EventInfos_t>;
 
 		/** @brief Returns the service name.
 		 *

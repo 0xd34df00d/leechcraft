@@ -35,7 +35,7 @@
 #include <QtDebug>
 #include "../itemhandlerfactory.h"
 
-namespace LeechCraft
+namespace LC
 {
 	ItemHandlerTreeView::ItemHandlerTreeView (ItemHandlerFactory *factory, Util::XmlSettingsDialog *xsd)
 	: ItemHandlerBase { xsd }

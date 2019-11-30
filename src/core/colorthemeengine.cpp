@@ -42,7 +42,7 @@
 #include "core.h"
 #include "rootwindowsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 	ColorThemeEngine::ColorThemeEngine ()
 	: Loader_ (new Util::ResourceLoader ("themes/", this))

@@ -34,7 +34,7 @@
 #include "ui_nowplayingwidget.h"
 #include "mediainfo.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

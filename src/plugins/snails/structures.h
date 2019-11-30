@@ -31,7 +31,7 @@
 
 class QString;
 
-namespace LeechCraft
+namespace LC
 {
 enum class ContentType;
 

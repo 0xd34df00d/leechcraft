@@ -30,7 +30,7 @@
 #include <util/db/backendselector.h>
 #include "xmlsettingsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Aggregator
 {

@@ -32,7 +32,7 @@
 #include <QObject>
 #include <interfaces/azoth/ihavepings.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -42,7 +42,7 @@ namespace Xoox
 						  , public IPendingPing
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IPendingPing)
+		Q_INTERFACES (LC::Azoth::IPendingPing)
 
 		int Timeout_ = -1;
 	public:

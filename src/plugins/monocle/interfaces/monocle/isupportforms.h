@@ -32,7 +32,7 @@
 #include <memory>
 #include <QtPlugin>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {
@@ -73,5 +73,5 @@ namespace Monocle
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Monocle::ISupportForms,
+Q_DECLARE_INTERFACE (LC::Monocle::ISupportForms,
 		"org.LeechCraft.Monocle.ISupportForms/1.0")

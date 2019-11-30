@@ -35,7 +35,7 @@
 #include <QCache>
 #include <QXmppVCardIq.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

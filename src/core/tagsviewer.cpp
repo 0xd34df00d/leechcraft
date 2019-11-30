@@ -31,7 +31,7 @@
 #include <QInputDialog>
 #include "tagsmanager.h"
 
-using namespace LeechCraft;
+using namespace LC;
 
 TagsViewer::TagsViewer (QWidget *parent)
 : QWidget (parent)
@@ -40,7 +40,7 @@ TagsViewer::TagsViewer (QWidget *parent)
 	Ui_.TagsView_->setModel (TagsManager::Instance ().GetModel ());
 }
 
-void LeechCraft::TagsViewer::on_Rename__released ()
+void LC::TagsViewer::on_Rename__released ()
 {
 	QModelIndex index = Ui_.TagsView_->currentIndex ();
 	if (!index.isValid ())

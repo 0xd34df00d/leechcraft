@@ -42,7 +42,7 @@ namespace Media
 	class ICurrentSongKeeper;
 }
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -63,7 +63,7 @@ namespace Xtazy
 		Q_INTERFACES (IInfo
 				IPlugin2
 				IHaveSettings
-				LeechCraft::Azoth::IProvideCommands)
+				LC::Azoth::IProvideCommands)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.Xtazy")
 

@@ -32,7 +32,7 @@
 #include <QEvent>
 #include <QApplication>
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

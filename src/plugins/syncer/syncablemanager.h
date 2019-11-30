@@ -33,7 +33,7 @@
 
 class ISyncable;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Syncer
 {

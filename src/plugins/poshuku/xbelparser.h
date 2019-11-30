@@ -34,7 +34,7 @@
 class QByteArray;
 class QDomElement;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

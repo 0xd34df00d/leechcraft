@@ -32,7 +32,7 @@
 #include <QMouseEvent>
 #include "documenttab.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {

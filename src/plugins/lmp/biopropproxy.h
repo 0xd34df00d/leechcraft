@@ -39,7 +39,7 @@ namespace Media
 	struct ArtistImage;
 }
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

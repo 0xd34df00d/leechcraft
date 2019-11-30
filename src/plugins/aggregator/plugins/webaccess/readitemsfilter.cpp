@@ -31,7 +31,7 @@
 #include <Wt/WTimer.h>
 #include "aggregatorapp.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Aggregator
 {

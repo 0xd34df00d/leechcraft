@@ -30,7 +30,7 @@
 #include "selectablebrowser.h"
 #include <QVBoxLayout>
 
-namespace LeechCraft
+namespace LC
 {
 	namespace Util
 	{

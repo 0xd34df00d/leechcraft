@@ -32,7 +32,7 @@
 #include "platformlayer.h"
 #include <IOKit/pwr_mgt/IOPMLib.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Liznoo
 {

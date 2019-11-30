@@ -30,7 +30,7 @@
 #include "tagsmanagerwrapper.h"
 #include <interfaces/core/itagsmanager.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Qrosp
 {

@@ -24,7 +24,7 @@
       </widget>
      </item>
      <item>
-      <widget class="LeechCraft::Util::TagsLineEdit" name="Tags_"/>
+      <widget class="LC::Util::TagsLineEdit" name="Tags_"/>
      </item>
     </layout>
    </item>
@@ -42,7 +42,7 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>LeechCraft::Util::TagsLineEdit</class>
+   <class>LC::Util::TagsLineEdit</class>
    <extends>QLineEdit</extends>
    <header location="global">util/tags/tagslineedit.h</header>
   </customwidget>

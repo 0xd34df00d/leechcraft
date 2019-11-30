@@ -31,7 +31,7 @@
 
 #include <qglobal.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {

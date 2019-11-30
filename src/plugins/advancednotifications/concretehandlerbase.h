@@ -34,7 +34,7 @@
 #include "common.h"
 #include "interfaces/advancednotifications/inotificationhandler.h"
 
-namespace LeechCraft
+namespace LC
 {
 struct Entity;
 

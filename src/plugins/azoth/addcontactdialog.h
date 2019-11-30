@@ -32,7 +32,7 @@
 #include <QDialog>
 #include "ui_addcontactdialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

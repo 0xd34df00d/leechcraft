@@ -64,7 +64,7 @@
     </widget>
    </item>
    <item>
-    <widget class="LeechCraft::Poshuku::ProgressLineEdit" name="URLEdit_">
+    <widget class="LC::Poshuku::ProgressLineEdit" name="URLEdit_">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
        <horstretch>10</horstretch>
@@ -80,7 +80,7 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>LeechCraft::Poshuku::ProgressLineEdit</class>
+   <class>LC::Poshuku::ProgressLineEdit</class>
    <extends>QLineEdit</extends>
    <header>progresslineedit.h</header>
   </customwidget>

@@ -41,7 +41,7 @@
 #include "mprissource.h"
 #endif
 
-namespace LeechCraft
+namespace LC
 {
 namespace Xtazy
 {
@@ -159,4 +159,4 @@ namespace Xtazy
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_xtazy, LeechCraft::Xtazy::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_xtazy, LC::Xtazy::Plugin);

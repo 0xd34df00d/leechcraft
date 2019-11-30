@@ -41,7 +41,7 @@ class QMainWindow;
 class QDockWidget;
 class QAction;
 
-namespace LeechCraft
+namespace LC
 {
 	class MainWindow;
 	class RootWindowsManager;
@@ -94,6 +94,6 @@ namespace LeechCraft
 
 		void handleWindow (int);
 	signals:
-		void hookDockWidgetActionVisToggled (LeechCraft::IHookProxy_ptr, QMainWindow*, QDockWidget*, bool);
+		void hookDockWidgetActionVisToggled (LC::IHookProxy_ptr, QMainWindow*, QDockWidget*, bool);
 	};
 }

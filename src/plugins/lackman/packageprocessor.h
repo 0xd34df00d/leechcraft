@@ -35,7 +35,7 @@
 #include <QUrl>
 #include <QProcess>
 
-namespace LeechCraft
+namespace LC
 {
 namespace LackMan
 {

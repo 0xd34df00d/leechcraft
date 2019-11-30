@@ -37,7 +37,7 @@
 #include "util.h"
 #include "convimmessage.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

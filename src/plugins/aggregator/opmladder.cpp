@@ -42,7 +42,7 @@
 #include "opmlparser.h"
 #include "common.h"
 
-namespace LeechCraft::Aggregator
+namespace LC::Aggregator
 {
 	OpmlAdder::OpmlAdder (const AddFeedHandler& handler, const ICoreProxy_ptr& proxy, QObject *parent)
 	: QObject { parent }

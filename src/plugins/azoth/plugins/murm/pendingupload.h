@@ -35,7 +35,7 @@
 
 class QNetworkReply;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -49,7 +49,7 @@ namespace Murm
 						, public ITransferJob
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::ITransferJob)
+		Q_INTERFACES (LC::Azoth::ITransferJob)
 
 		VkAccount * const Acc_;
 		VkConnection * const Conn_;

@@ -36,7 +36,7 @@
 #include "todostorage.h"
 #include "stager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Otlozhu
 {

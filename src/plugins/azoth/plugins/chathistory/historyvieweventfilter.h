@@ -34,7 +34,7 @@
 class QTextBrowser;
 class QUrl;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

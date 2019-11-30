@@ -33,7 +33,7 @@
 
 class QUrl;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -165,7 +165,7 @@ namespace Azoth
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Azoth::IChatStyleResourceSource,
+Q_DECLARE_INTERFACE (LC::Azoth::IChatStyleResourceSource,
 		"org.Deviant.LeechCraft.Azoth.IChatStyleResourceSource/1.0")
 
 #endif

@@ -35,7 +35,7 @@
 #include "ircprotocol.h"
 #include "nickservidentifywidget.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -92,7 +92,7 @@ namespace Acetamide
 		return Proxy_;
 	}
 
-	void Core::SendEntity (const LeechCraft::Entity& e)
+	void Core::SendEntity (const LC::Entity& e)
 	{
 		emit gotEntity (e);
 	}

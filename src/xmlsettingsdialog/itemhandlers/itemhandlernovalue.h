@@ -31,7 +31,7 @@
 
 #include "itemhandlerbase.h"
 
-namespace LeechCraft
+namespace LC
 {
 	class ItemHandlerNoValue : public ItemHandlerBase
 	{

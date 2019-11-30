@@ -38,7 +38,7 @@
 #include <QByteArrayMatcher>
 #include <util/sll/regexp.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {
@@ -137,5 +137,5 @@ namespace CleanWeb
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::Poshuku::CleanWeb::FilterItem)
-Q_DECLARE_METATYPE (QList<LeechCraft::Poshuku::CleanWeb::FilterItem>)
+Q_DECLARE_METATYPE (LC::Poshuku::CleanWeb::FilterItem)
+Q_DECLARE_METATYPE (QList<LC::Poshuku::CleanWeb::FilterItem>)

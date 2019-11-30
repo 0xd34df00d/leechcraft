@@ -33,7 +33,7 @@
 #include "pageformsdata.h"
 #include "ui_passwordremember.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

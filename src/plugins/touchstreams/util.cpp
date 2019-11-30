@@ -35,7 +35,7 @@
 #include <interfaces/media/iradiostationprovider.h>
 #include <interfaces/media/audiostructs.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace TouchStreams
 {

@@ -30,7 +30,7 @@
 #include "delayedexecutor.h"
 #include <QTimer>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

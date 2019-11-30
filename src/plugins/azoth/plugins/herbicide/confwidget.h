@@ -33,7 +33,7 @@
 #include <xmlsettingsdialog/basesettingsmanager.h>
 #include "ui_confwidget.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

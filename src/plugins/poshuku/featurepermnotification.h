@@ -32,7 +32,7 @@
 #include <util/gui/pagenotification.h>
 #include "ui_featurepermnotification.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

@@ -40,7 +40,7 @@
 #include <util/util.h>
 #include <interfaces/ijobholder.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Zalil
 {

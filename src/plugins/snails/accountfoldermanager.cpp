@@ -34,7 +34,7 @@
 #include <util/sll/qtutil.h>
 #include "common.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Snails
 {

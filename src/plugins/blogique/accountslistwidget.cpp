@@ -40,7 +40,7 @@
 #include "profiledialog.h"
 #include "storagemanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blogique
 {

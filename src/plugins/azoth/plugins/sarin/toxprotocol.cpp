@@ -35,7 +35,7 @@
 #include "accregisterdetailspage.h"
 #include "toxaccount.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

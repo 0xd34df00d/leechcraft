@@ -35,7 +35,7 @@
 
 class IColorThemeManager;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

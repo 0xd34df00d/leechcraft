@@ -36,7 +36,7 @@
 #include <QHash>
 #include <util/db/oral/oraltypes.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poleemery
 {
@@ -65,15 +65,15 @@ namespace Poleemery
 }
 }
 
-BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Poleemery::Account,
+BOOST_FUSION_ADAPT_STRUCT (LC::Poleemery::Account,
 		ID_,
 		Type_,
 		Name_,
 		Currency_)
 
-Q_DECLARE_METATYPE (LeechCraft::Poleemery::Account)
+Q_DECLARE_METATYPE (LC::Poleemery::Account)
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poleemery
 {
@@ -140,7 +140,7 @@ namespace Poleemery
 }
 }
 
-BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Poleemery::NakedExpenseEntry,
+BOOST_FUSION_ADAPT_STRUCT (LC::Poleemery::NakedExpenseEntry,
 		ID_,
 		AccountID_,
 		Amount_,
@@ -152,7 +152,7 @@ BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Poleemery::NakedExpenseEntry,
 		EntryCurrency_,
 		Rate_)
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poleemery
 {
@@ -171,11 +171,11 @@ namespace Poleemery
 }
 }
 
-BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Poleemery::Category,
+BOOST_FUSION_ADAPT_STRUCT (LC::Poleemery::Category,
 		ID_,
 		Name_)
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poleemery
 {
@@ -195,12 +195,12 @@ namespace Poleemery
 }
 }
 
-BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Poleemery::CategoryLink,
+BOOST_FUSION_ADAPT_STRUCT (LC::Poleemery::CategoryLink,
 		ID_,
 		Category_,
 		Entry_)
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poleemery
 {
@@ -217,7 +217,7 @@ namespace Poleemery
 }
 }
 
-BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Poleemery::ReceiptEntry,
+BOOST_FUSION_ADAPT_STRUCT (LC::Poleemery::ReceiptEntry,
 		ID_,
 		AccountID_,
 		Amount_,
@@ -225,7 +225,7 @@ BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Poleemery::ReceiptEntry,
 		Description_,
 		Date_)
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poleemery
 {
@@ -244,13 +244,13 @@ namespace Poleemery
 }
 }
 
-BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Poleemery::Rate,
+BOOST_FUSION_ADAPT_STRUCT (LC::Poleemery::Rate,
 		ID_,
 		Code_,
 		SnapshotTime_,
 		Rate_)
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poleemery
 {

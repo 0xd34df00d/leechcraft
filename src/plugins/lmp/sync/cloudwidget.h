@@ -32,7 +32,7 @@
 #include <QWidget>
 #include "ui_cloudwidget.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

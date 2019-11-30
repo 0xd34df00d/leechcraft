@@ -40,7 +40,7 @@
 #include <QDesktopWidget>
 #endif
 
-namespace LeechCraft::Util::Compat
+namespace LC::Util::Compat
 {
 	auto GetScreenWithFallback (const QPoint& p)
 	{

@@ -38,7 +38,7 @@
 #include "core.h"
 #include "xmlsettingsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace NetStoreManager
 {
@@ -185,4 +185,4 @@ namespace GoogleDrive
 }
 
 
-LC_EXPORT_PLUGIN (leechcraft_netstoremanager_googeldrive, LeechCraft::NetStoreManager::GoogleDrive::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_netstoremanager_googeldrive, LC::NetStoreManager::GoogleDrive::Plugin);

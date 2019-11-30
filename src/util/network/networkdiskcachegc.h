@@ -39,7 +39,7 @@
 template<typename T>
 class QFuture;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

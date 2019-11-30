@@ -32,7 +32,7 @@
 #include <QWizardPage>
 #include "ui_startupfirstpage.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Aggregator
 {

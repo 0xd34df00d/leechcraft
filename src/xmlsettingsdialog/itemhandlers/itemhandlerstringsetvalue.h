@@ -31,7 +31,7 @@
 
 #include "itemhandlerbase.h"
 
-namespace LeechCraft
+namespace LC
 {
 	/** This is the base handler for those items whose values are
 	 * represented by a plain string (created from QVariant::toString())

@@ -39,7 +39,7 @@
 
 class QWidget;
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {
@@ -56,7 +56,7 @@ namespace BrainSlugz
 				 , public ILMPPlugin
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveTabs IPlugin2 IJobHolder LeechCraft::LMP::ILMPPlugin)
+		Q_INTERFACES (IInfo IHaveTabs IPlugin2 IJobHolder LC::LMP::ILMPPlugin)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.LMP.BrainSlugz")
 

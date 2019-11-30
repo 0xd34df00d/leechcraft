@@ -32,7 +32,7 @@
 #include "mrimaccount.h"
 #include "proto/connection.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

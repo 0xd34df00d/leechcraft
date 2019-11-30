@@ -35,7 +35,7 @@
 #include <interfaces/advancednotifications/types.h>
 #include "dockutil.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace AdvancedNotifications
 {

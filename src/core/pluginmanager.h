@@ -40,7 +40,7 @@
 #include "interfaces/iinfo.h"
 #include "interfaces/core/ipluginsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 	class MainWindow;
 	class PluginTreeBuilder;

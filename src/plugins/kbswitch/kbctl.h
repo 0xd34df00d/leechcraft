@@ -37,7 +37,7 @@
 typedef struct _XDisplay Display;
 typedef union  _XEvent XEvent;
 
-namespace LeechCraft
+namespace LC
 {
 namespace KBSwitch
 {

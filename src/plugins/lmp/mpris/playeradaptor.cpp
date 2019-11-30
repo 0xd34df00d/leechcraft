@@ -41,7 +41,7 @@
 #include "../engine/output.h"
 #include "fdopropsadaptor.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

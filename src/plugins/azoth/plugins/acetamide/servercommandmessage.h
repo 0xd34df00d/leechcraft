@@ -34,7 +34,7 @@
 #include <QObject>
 #include <interfaces/azoth/imessage.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -47,7 +47,7 @@ namespace Acetamide
 								, public IMessage
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IMessage)
+		Q_INTERFACES (LC::Azoth::IMessage)
 
 		QPointer<IrcServerCLEntry> ParentEntry_;
 		QString Message_;

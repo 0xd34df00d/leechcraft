@@ -36,7 +36,7 @@
 #include <interfaces/core/iiconthememanager.h>
 #include "webpagesslwatcher.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

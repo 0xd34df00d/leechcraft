@@ -82,7 +82,7 @@
 #include "vcardstorage.h"
 #include "clientconnectionextensionsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -207,7 +207,7 @@ namespace Xoox
 
 		if (Account_->GetState ().State_ == SOffline)
 		{
-			Entity e = LeechCraft::Util::MakeNotification ("Azoth",
+			Entity e = LC::Util::MakeNotification ("Azoth",
 					tr ("Can't view info while offline"),
 					Priority::Critical);
 			Core::Instance ().SendEntity (e);

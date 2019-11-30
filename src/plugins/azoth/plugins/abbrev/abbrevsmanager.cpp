@@ -32,7 +32,7 @@
 #include <QCoreApplication>
 #include <interfaces/azoth/iprovidecommands.h>
 
-namespace LeechCraft::Azoth::Abbrev
+namespace LC::Azoth::Abbrev
 {
 	AbbrevsManager::AbbrevsManager (QObject *parent)
 	: QObject { parent }

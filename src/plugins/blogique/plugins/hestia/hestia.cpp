@@ -34,7 +34,7 @@
 #include "localbloggingplatform.h"
 #include "xmlsettingsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blogique
 {
@@ -109,4 +109,4 @@ namespace Hestia
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_blogique_hestia, LeechCraft::Blogique::Hestia::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_blogique_hestia, LC::Blogique::Hestia::Plugin);

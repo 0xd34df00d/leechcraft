@@ -36,7 +36,7 @@
 #include "lineeditbuttonmanager.h"
 #include "interfaces/core/iiconthememanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

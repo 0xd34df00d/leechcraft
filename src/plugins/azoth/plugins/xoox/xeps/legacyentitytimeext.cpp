@@ -32,7 +32,7 @@
 #include <QDateTime>
 #include <QXmppClient.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

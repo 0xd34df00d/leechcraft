@@ -30,7 +30,7 @@
 #include "backend.h"
 #include <QTimer>
 
-namespace LeechCraft
+namespace LC
 {
 namespace HotSensors
 {

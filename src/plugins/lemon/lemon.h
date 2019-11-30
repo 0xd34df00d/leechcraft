@@ -34,7 +34,7 @@
 #include <interfaces/ihavesettings.h>
 #include <interfaces/iquarkcomponentprovider.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Lemon
 {

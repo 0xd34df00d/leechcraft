@@ -32,7 +32,7 @@
 #include <QObject>
 #include "interfaces/lmp/ifilterconfigurator.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

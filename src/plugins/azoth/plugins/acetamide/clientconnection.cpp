@@ -41,7 +41,7 @@
 #include "ircserverhandler.h"
 #include "xmlsettingsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

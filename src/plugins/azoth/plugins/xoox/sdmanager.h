@@ -36,7 +36,7 @@
 
 class ClientConnection;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

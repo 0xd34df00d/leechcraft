@@ -37,7 +37,7 @@
 #include <interfaces/core/ipluginsmanager.h>
 #include "apiobject.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Textogroose
 {
@@ -125,4 +125,4 @@ namespace Textogroose
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_textogroose, LeechCraft::Textogroose::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_textogroose, LC::Textogroose::Plugin);

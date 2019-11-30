@@ -31,7 +31,7 @@
 #include <QWidget>
 #include <interfaces/poshuku/iwebpluginprovider.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

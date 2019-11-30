@@ -33,7 +33,7 @@
 #include <thread>
 #include <chrono>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

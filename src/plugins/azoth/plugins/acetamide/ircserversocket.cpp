@@ -39,7 +39,7 @@
 #include "ircserverhandler.h"
 #include "clientconnection.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

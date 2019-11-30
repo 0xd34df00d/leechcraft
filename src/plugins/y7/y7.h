@@ -32,7 +32,7 @@
 #include <QObject>
 #include <interfaces/iinfo.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Y7
 {

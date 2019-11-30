@@ -41,7 +41,7 @@
 
 typedef std::shared_ptr<QDBusInterface> QDBusInterface_ptr;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Vrooby
 {

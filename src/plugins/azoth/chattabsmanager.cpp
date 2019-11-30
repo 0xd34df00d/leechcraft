@@ -34,7 +34,7 @@
 #include "xmlsettingsmanager.h"
 #include "chattabnetworkaccessmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

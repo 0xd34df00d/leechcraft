@@ -31,7 +31,7 @@
 #include <QIcon>
 #include "protomanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -113,4 +113,4 @@ namespace VelvetBird
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_azoth_velvetbird, LeechCraft::Azoth::VelvetBird::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_azoth_velvetbird, LC::Azoth::VelvetBird::Plugin);

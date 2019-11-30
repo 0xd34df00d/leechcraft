@@ -33,7 +33,7 @@
 #include <QStandardItemModel>
 #include <QHash>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

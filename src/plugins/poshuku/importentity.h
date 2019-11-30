@@ -31,7 +31,7 @@
 
 class IRootWindowsManager;
 
-namespace LeechCraft
+namespace LC
 {
 struct Entity;
 

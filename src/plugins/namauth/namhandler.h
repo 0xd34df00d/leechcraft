@@ -36,7 +36,7 @@ class QNetworkReply;
 class QNetworkProxy;
 class QAuthenticator;
 
-namespace LeechCraft
+namespace LC
 {
 namespace NamAuth
 {

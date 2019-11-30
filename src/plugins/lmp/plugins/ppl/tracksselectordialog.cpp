@@ -37,7 +37,7 @@
 #include <util/sll/views.h>
 #include <util/sll/util.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

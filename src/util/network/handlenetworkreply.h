@@ -38,7 +38,7 @@
 #include <util/threads/futures.h>
 #include "networkconfig.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

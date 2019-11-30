@@ -34,7 +34,7 @@
 #include <QList>
 #include "peerinfo.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace BitTorrent
 {

@@ -32,7 +32,7 @@
 #include <memory>
 #include <QVector>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

@@ -33,7 +33,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include "ui_albumsettingsdialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blasq
 {

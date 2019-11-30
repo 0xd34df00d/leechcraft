@@ -32,7 +32,7 @@
 #include <QObject>
 #include "../../batteryinfo.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Liznoo
 {

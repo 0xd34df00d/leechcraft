@@ -47,7 +47,7 @@
 #include <interfaces/azoth/iaccount.h>
 #include "xmlsettingsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

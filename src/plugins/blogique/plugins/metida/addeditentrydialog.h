@@ -32,7 +32,7 @@
 #include <QDialog>
 #include "ui_addeditentrydialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blogique
 {

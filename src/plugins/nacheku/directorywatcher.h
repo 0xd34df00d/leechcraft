@@ -38,7 +38,7 @@
 
 class IEntityManager;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Nacheku
 {

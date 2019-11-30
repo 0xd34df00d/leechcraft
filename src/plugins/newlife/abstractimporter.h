@@ -34,7 +34,7 @@
 
 class QWizardPage;
 
-namespace LeechCraft
+namespace LC
 {
 struct Entity;
 

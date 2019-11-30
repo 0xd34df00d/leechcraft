@@ -35,7 +35,7 @@
 
 class QSqlQuery;
 
-namespace LeechCraft::Util::oral::detail
+namespace LC::Util::oral::detail
 {
 	class IInsertQueryBuilder
 	{

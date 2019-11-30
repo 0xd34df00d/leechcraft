@@ -32,7 +32,7 @@
 #include <QCalendarWidget>
 #include <QMap>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blogique
 {

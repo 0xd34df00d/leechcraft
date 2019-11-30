@@ -44,7 +44,7 @@
 #include "shooterdialog.h"
 #include "util.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Auscrie
 {
@@ -236,4 +236,4 @@ namespace Auscrie
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_auscrie, LeechCraft::Auscrie::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_auscrie, LC::Auscrie::Plugin);

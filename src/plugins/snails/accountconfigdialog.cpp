@@ -31,7 +31,7 @@
 #include <numeric>
 #include <QMenu>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Snails
 {

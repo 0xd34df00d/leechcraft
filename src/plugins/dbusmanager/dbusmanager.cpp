@@ -33,7 +33,7 @@
 #include <util/util.h>
 #include "core.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace DBusManager
 {
@@ -81,4 +81,4 @@ namespace DBusManager
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_dbusmanager, LeechCraft::DBusManager::DBusManager);
+LC_EXPORT_PLUGIN (leechcraft_dbusmanager, LC::DBusManager::DBusManager);

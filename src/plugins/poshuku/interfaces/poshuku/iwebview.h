@@ -45,7 +45,7 @@ class QMenu;
 template<typename>
 class QList;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {
@@ -217,5 +217,5 @@ namespace Poshuku
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Poshuku::IWebView,
+Q_DECLARE_INTERFACE (LC::Poshuku::IWebView,
 		"org.LeechCraft.Poshuku.IWebView/1.0")

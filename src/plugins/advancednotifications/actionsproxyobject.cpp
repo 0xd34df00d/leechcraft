@@ -29,7 +29,7 @@
 
 #include "actionsproxyobject.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace AdvancedNotifications
 {

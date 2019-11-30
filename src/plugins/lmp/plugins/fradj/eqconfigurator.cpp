@@ -34,7 +34,7 @@
 #include "eqconfiguratordialog.h"
 #include "iequalizer.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

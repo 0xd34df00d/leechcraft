@@ -33,7 +33,7 @@
 #include <QtDebug>
 #include "imageinfosmodel.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LHTR
 {

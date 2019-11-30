@@ -31,7 +31,7 @@
 #define CHILDACTIONEVENTFILTER_H
 #include <QObject>
 
-namespace LeechCraft
+namespace LC
 {
 	/** Event filter to intercept child creation/polish events to
 	 * properly set icons on QActions. This event filter is supposed to

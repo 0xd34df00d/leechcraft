@@ -40,7 +40,7 @@
 #include "channel.h"
 #include "feed.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Aggregator
 {

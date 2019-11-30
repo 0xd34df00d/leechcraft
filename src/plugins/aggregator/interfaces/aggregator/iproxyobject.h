@@ -35,7 +35,7 @@
 
 class QAbstractItemModel;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Aggregator
 {
@@ -72,5 +72,5 @@ namespace Aggregator
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Aggregator::IProxyObject,
+Q_DECLARE_INTERFACE (LC::Aggregator::IProxyObject,
 		"org.Deviant.LeechCraft.Aggregator.IProxyObject/1.0")

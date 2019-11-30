@@ -33,12 +33,12 @@
 #include <QHash>
 #include <QList>
 
-namespace LeechCraft::Azoth
+namespace LC::Azoth
 {
 	struct RIEXItem;
 }
 
-namespace LeechCraft::Azoth::Xoox
+namespace LC::Azoth::Xoox
 {
 	class RIEXManager;
 	class GlooxAccount;

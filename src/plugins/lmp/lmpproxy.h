@@ -34,7 +34,7 @@
 #include "interfaces/lmp/ilmputilproxy.h"
 #include "interfaces/lmp/ilmpguiproxy.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {
@@ -45,7 +45,7 @@ namespace LMP
 					   , public ILMPUtilProxy
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::LMP::ILMPUtilProxy)
+		Q_INTERFACES (LC::LMP::ILMPUtilProxy)
 	public:
 		QString FindAlbumArt (const QString&, bool) const;
 		QList<QFileInfo> RecIterateInfo (const QString&, bool, std::atomic<bool>*) const;
@@ -55,7 +55,7 @@ namespace LMP
 					  , public ILMPGuiProxy
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::LMP::ILMPGuiProxy)
+		Q_INTERFACES (LC::LMP::ILMPGuiProxy)
 
 		PlayerTab *PlayerTab_ = nullptr;
 	public:
@@ -69,7 +69,7 @@ namespace LMP
 				   , public ILMPProxy
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::LMP::ILMPProxy)
+		Q_INTERFACES (LC::LMP::ILMPProxy)
 
 		ILocalCollection * const LocalCollection_;
 		ITagResolver * const TagResolver_;

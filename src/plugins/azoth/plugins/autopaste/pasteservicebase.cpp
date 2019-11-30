@@ -37,7 +37,7 @@
 #include <interfaces/azoth/imessage.h>
 #include <interfaces/core/ientitymanager.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

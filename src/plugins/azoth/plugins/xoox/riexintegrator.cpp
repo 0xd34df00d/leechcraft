@@ -33,7 +33,7 @@
 #include "glooxaccount.h"
 #include "xeps/riexmanager.h"
 
-namespace LeechCraft::Azoth::Xoox
+namespace LC::Azoth::Xoox
 {
 	RIEXIntegrator::RIEXIntegrator (RIEXManager& mgr, GlooxAccount& acc, QObject *parent)
 	: QObject { parent }

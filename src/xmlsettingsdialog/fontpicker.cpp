@@ -36,7 +36,7 @@
 #include <QApplication>
 #include <util/compat/fontwidth.h>
 
-namespace LeechCraft
+namespace LC
 {
 	FontPicker::FontPicker (const QString& title, QWidget *parent)
 	: QWidget (parent)

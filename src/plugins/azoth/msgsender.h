@@ -34,7 +34,7 @@
 #include <interfaces/core/ihookproxy.h>
 #include "interfaces/azoth/imessage.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -45,12 +45,12 @@ namespace Azoth
 		MsgSender (ICLEntry *e, IMessage::Type type,
 				QString text, QString variant = {}, QString richText = {});
 	signals:
-		void hookMessageWillCreated (LeechCraft::IHookProxy_ptr proxy,
+		void hookMessageWillCreated (LC::IHookProxy_ptr proxy,
 				QObject *chatTab,
 				QObject *entry,
 				int type,
 				QString variant);
-		void hookMessageCreated (LeechCraft::IHookProxy_ptr proxy,
+		void hookMessageCreated (LC::IHookProxy_ptr proxy,
 				QObject *chatTab,
 				QObject *message);
 	};

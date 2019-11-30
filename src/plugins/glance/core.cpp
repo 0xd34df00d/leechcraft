@@ -32,7 +32,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Plugins
 {

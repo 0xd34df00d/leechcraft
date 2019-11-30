@@ -35,7 +35,7 @@
 #include "interfaces/azoth/ihaveconsole.h"
 #include "ui_consolewidget.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

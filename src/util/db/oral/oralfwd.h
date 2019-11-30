@@ -33,7 +33,7 @@
 
 class QSqlDatabase;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

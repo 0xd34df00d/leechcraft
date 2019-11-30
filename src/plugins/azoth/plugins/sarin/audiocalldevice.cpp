@@ -32,7 +32,7 @@
 #include <QtDebug>
 #include "callmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

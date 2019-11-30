@@ -32,7 +32,7 @@
 #include <QDialog>
 #include "ui_ipfilterdialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace BitTorrent
 {

@@ -57,7 +57,7 @@
 #include "iconresolver.h"
 #include "trmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace HttHare
 {
@@ -125,7 +125,7 @@ namespace HttHare
 			locales << "en";
 
 		auto mgr = Conn_->GetTrManager ();
-		return mgr->Translate (locales, "LeechCraft::HttHare::RequestHandler", msg);
+		return mgr->Translate (locales, "LC::HttHare::RequestHandler", msg);
 	}
 
 	void RequestHandler::ErrorResponse (int code,

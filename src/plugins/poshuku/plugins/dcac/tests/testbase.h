@@ -43,7 +43,7 @@ inline bool operator< (const QSize& s1, const QSize& s2)
 	return std::make_pair (s1.width (), s1.height ()) < std::make_pair (s2.width (), s2.height ());
 }
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

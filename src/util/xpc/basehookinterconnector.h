@@ -33,7 +33,7 @@
 #include <QList>
 #include "xpcconfig.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {
@@ -53,7 +53,7 @@ namespace Util
 	 * -# One subclasses from this class and lists all the signals that
 	 *    should ever be relayed to plugins in the signals section of the
 	 *    subclass. First parameter of the signals should always be
-	 *    LeechCraft::IHookProxy_ptr.
+	 *    LC::IHookProxy_ptr.
 	 * -# One adds the instance objects of the subplugins to the
 	 *    interconnector via the AddPlugin() method.
 	 * -# One registers the objects emitting signals that need to be

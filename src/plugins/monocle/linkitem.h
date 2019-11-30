@@ -32,7 +32,7 @@
 #include <QGraphicsRectItem>
 #include "interfaces/monocle/ilink.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {

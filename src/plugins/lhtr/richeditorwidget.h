@@ -39,7 +39,7 @@
 
 class QToolBar;
 
-namespace LeechCraft
+namespace LC
 {
 namespace LHTR
 {

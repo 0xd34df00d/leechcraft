@@ -33,7 +33,7 @@
 #include <interfaces/ifinder.h>
 #include "searchhandler.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {
@@ -49,7 +49,7 @@ namespace SeekThru
 		Q_INTERFACES (IFindProxy)
 
 		Request R_;
-		std::shared_ptr<LeechCraft::Util::MergeModel> MergeModel_;
+		std::shared_ptr<LC::Util::MergeModel> MergeModel_;
 		QList<SearchHandler_ptr> Handlers_;
 	public:
 		explicit FindProxy (Request);

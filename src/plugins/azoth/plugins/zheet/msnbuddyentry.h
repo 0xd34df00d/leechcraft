@@ -42,7 +42,7 @@ namespace MSN
 	class Buddy;
 }
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -56,7 +56,7 @@ namespace Zheet
 						, public IAdvancedCLEntry
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::ICLEntry LeechCraft::Azoth::IAdvancedCLEntry)
+		Q_INTERFACES (LC::Azoth::ICLEntry LC::Azoth::IAdvancedCLEntry)
 
 		MSNAccount *Account_;
 

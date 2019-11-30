@@ -29,7 +29,7 @@
 
 #include "pluginsmanagerwrapper.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Qrosp
 {

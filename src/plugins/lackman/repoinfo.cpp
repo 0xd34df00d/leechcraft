@@ -31,7 +31,7 @@
 #include <QtDebug>
 #include <util/sll/qtutil.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace LackMan
 {

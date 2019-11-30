@@ -89,7 +89,7 @@ namespace Media
 		 * The result of a recent releases query is either a string with a
 		 * human-readable error text, or a list of AlbumRelease objects.
 		 */
-		using Result_t = LeechCraft::Util::Either<QString, QList<AlbumRelease>>;
+		using Result_t = LC::Util::Either<QString, QList<AlbumRelease>>;
 
 		/** @brief Requests the recent releases.
 		 *

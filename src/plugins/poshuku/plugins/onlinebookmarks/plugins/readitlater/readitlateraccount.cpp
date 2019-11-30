@@ -34,7 +34,7 @@
 #include <util/sll/prelude.h>
 #include <interfaces/ibookmarksservice.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

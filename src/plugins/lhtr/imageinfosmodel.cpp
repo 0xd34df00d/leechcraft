@@ -35,7 +35,7 @@
 #include <QImage>
 #include <QtDebug>
 
-namespace LeechCraft
+namespace LC
 {
 namespace LHTR
 {

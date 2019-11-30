@@ -32,7 +32,7 @@
 #include <interfaces/poshuku/iproxyobject.h>
 #include "customwebview.h"
 
-namespace LeechCraft::Poshuku::WebEngineView
+namespace LC::Poshuku::WebEngineView
 {
 	CustomWebPage::CustomWebPage (const ICoreProxy_ptr& proxy, IProxyObject *poshukuProxy, QWidget *parent)
 	: QWebEnginePage { parent }

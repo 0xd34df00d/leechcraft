@@ -49,9 +49,9 @@
 #include "customchatstylemanager.h"
 #include "chatstyleoptionmanager.h"
 
-Q_DECLARE_METATYPE (LeechCraft::Azoth::ChatStyleOptionManager*)
+Q_DECLARE_METATYPE (LC::Azoth::ChatStyleOptionManager*)
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

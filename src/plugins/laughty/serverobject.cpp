@@ -41,7 +41,7 @@
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/iiconthememanager.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Laughty
 {

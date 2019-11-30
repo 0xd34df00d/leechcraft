@@ -39,7 +39,7 @@
 #include <interfaces/core/ientitymanager.h>
 #include "core.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LackMan
 {

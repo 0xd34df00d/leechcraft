@@ -33,7 +33,7 @@
 class QAction;
 class QToolButton;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {
@@ -60,7 +60,7 @@ namespace Poshuku
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Poshuku::IAddressBar,
+Q_DECLARE_INTERFACE (LC::Poshuku::IAddressBar,
 		"org.Deviant.LeechCraft.Poshuku.IAddressBar/1.0")
 
 #endif

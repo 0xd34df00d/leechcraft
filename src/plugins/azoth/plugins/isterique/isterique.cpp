@@ -34,7 +34,7 @@
 #include <interfaces/azoth/imessage.h>
 #include "xmlsettingsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -90,7 +90,7 @@ namespace Isterique
 		return SettingsDialog_;
 	}
 
-	void Plugin::hookGotMessage (LeechCraft::IHookProxy_ptr, QObject *message)
+	void Plugin::hookGotMessage (LC::IHookProxy_ptr, QObject *message)
 	{
 		IMessage *msg = qobject_cast<IMessage*> (message);
 		if (!msg)
@@ -137,4 +137,4 @@ namespace Isterique
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_azoth_isterique, LeechCraft::Azoth::Isterique::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_azoth_isterique, LC::Azoth::Isterique::Plugin);

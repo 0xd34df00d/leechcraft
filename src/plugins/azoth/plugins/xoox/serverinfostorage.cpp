@@ -35,7 +35,7 @@
 #include "accountsettingsholder.h"
 #include "discomanagerwrapper.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

@@ -31,7 +31,7 @@
 
 #include <QtPlugin>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -55,7 +55,7 @@ namespace Azoth
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Azoth::IPendingPing,
+Q_DECLARE_INTERFACE (LC::Azoth::IPendingPing,
 		"org.LeechCraft.Azoth.IPendingPing/1.0")
-Q_DECLARE_INTERFACE (LeechCraft::Azoth::IHavePings,
+Q_DECLARE_INTERFACE (LC::Azoth::IHavePings,
 		"org.LeechCraft.Azoth.IHavePings/1.0")

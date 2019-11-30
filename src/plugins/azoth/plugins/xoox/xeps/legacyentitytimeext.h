@@ -31,7 +31,7 @@
 #define PLUGINS_AZOTH_PLUGINS_XOOX_LEGACYENTITYTIMEEXT_H
 #include <QXmppClientExtension.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

@@ -32,7 +32,7 @@
 #include <QDialog>
 #include "ui_addtometacontactsdialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

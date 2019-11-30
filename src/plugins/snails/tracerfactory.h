@@ -33,7 +33,7 @@
 #include <QString>
 #include <vmime/net/tracer.hpp>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Snails
 {

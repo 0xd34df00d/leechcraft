@@ -35,7 +35,7 @@
 class QStandardItem;
 class QDomElement;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

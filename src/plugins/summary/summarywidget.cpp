@@ -54,7 +54,7 @@
 
 Q_DECLARE_METATYPE (QMenu*)
 
-namespace LeechCraft
+namespace LC
 {
 namespace Summary
 {

@@ -33,7 +33,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/poshuku/iwebplugin.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {
@@ -45,7 +45,7 @@ namespace FOC
 							 , public IWebPlugin
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Poshuku::IWebPlugin)
+		Q_INTERFACES (LC::Poshuku::IWebPlugin)
 
 		const ICoreProxy_ptr Proxy_;
 		FlashOnClickWhitelist * const WL_;

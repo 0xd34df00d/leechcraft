@@ -35,7 +35,7 @@
 
 class QString;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

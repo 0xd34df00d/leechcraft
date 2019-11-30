@@ -35,7 +35,7 @@
 
 class QGraphicsScene;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {

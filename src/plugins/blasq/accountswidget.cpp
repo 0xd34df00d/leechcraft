@@ -33,7 +33,7 @@
 #include "newaccountwizardfirstpage.h"
 #include "accountsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blasq
 {

@@ -35,7 +35,7 @@
 
 class QScreen;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

@@ -46,7 +46,7 @@
 #include "storagebackendmanager.h"
 #include "feedserrormanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Aggregator
 {

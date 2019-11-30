@@ -35,7 +35,7 @@
 #include <interfaces/azoth/iaccount.h>
 #include <interfaces/azoth/iprotocol.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

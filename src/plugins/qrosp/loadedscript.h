@@ -37,7 +37,7 @@ namespace Qross
 	class Action;
 }
 
-namespace LeechCraft
+namespace LC
 {
 namespace Qrosp
 {

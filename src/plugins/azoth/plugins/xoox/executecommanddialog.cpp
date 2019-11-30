@@ -38,7 +38,7 @@
 #include "ui_commandslistpage.h"
 #include "ui_commandresultpage.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

@@ -38,7 +38,7 @@
 #include "xmlsettingsmanager.h"
 #include "quarkproxy.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Lemon
 {
@@ -99,4 +99,4 @@ namespace Lemon
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_lemon, LeechCraft::Lemon::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_lemon, LC::Lemon::Plugin);

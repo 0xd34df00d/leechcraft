@@ -32,7 +32,7 @@
 #include "xeps/xmppbobmanager.h"
 #include "xeps/xmppbobiq.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

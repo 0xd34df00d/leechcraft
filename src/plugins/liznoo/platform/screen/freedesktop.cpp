@@ -33,7 +33,7 @@
 #include <QDBusInterface>
 #include <QDBusPendingCall>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Liznoo
 {

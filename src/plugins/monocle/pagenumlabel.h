@@ -31,7 +31,7 @@
 
 #include <QSpinBox>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {

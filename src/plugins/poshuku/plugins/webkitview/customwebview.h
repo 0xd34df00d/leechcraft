@@ -43,7 +43,7 @@ class QWebInspector;
 
 class IEntityManager;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {
@@ -63,7 +63,7 @@ namespace WebKitView
 						, public IWkFontsSettable
 	{
 		Q_OBJECT
-		Q_INTERFACES (IWkFontsSettable LeechCraft::Poshuku::IWebView)
+		Q_INTERFACES (IWkFontsSettable LC::Poshuku::IWebView)
 
 		const ICoreProxy_ptr Proxy_;
 

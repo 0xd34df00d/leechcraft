@@ -40,7 +40,7 @@ class QNetworkReply;
 class QDomElement;
 class QUrl;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Lastfmscrobble
 {

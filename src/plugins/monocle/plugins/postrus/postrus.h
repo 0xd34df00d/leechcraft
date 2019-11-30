@@ -35,7 +35,7 @@
 #include <interfaces/monocle/ibackendplugin.h>
 #include <interfaces/monocle/iknowfileextensions.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {
@@ -50,8 +50,8 @@ namespace Postrus
 		Q_OBJECT
 		Q_INTERFACES (IInfo
 				IPlugin2
-				LeechCraft::Monocle::IBackendPlugin
-				LeechCraft::Monocle::IKnowFileExtensions)
+				LC::Monocle::IBackendPlugin
+				LC::Monocle::IKnowFileExtensions)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Monocle.Postrus")
 	public:

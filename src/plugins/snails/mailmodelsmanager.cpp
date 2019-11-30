@@ -35,7 +35,7 @@
 #include "messageinfo.h"
 #include "messagelistactionsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Snails
 {

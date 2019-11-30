@@ -34,7 +34,7 @@
 #include <QSqlQuery>
 #include "profiletypes.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blogique
 {

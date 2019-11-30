@@ -34,7 +34,7 @@
 #include <QAudioFormat>
 #include "calldatawriter.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

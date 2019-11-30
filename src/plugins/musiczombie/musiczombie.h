@@ -37,7 +37,7 @@
 #include <interfaces/media/itagsfetcher.h>
 #endif
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

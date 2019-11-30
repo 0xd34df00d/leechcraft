@@ -31,7 +31,7 @@
 #define PLUGINS_AZOTH_HILI_XMLSETTINGSMANAGER_H
 #include <xmlsettingsdialog/basesettingsmanager.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

@@ -41,7 +41,7 @@
 #include "dndutil.h"
 #include "cltooltipmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

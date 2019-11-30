@@ -36,7 +36,7 @@ class QString;
 class QIcon;
 class QWidget;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blasq
 {
@@ -68,4 +68,4 @@ namespace Blasq
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Blasq::IService, "org.LeechCraft.Blasq.IService/1.0")
+Q_DECLARE_INTERFACE (LC::Blasq::IService, "org.LeechCraft.Blasq.IService/1.0")

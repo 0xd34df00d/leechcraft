@@ -45,7 +45,7 @@ class QTabWidget;
 class QToolButton;
 class QFile;
 
-namespace LeechCraft
+namespace LC
 {
 	class IconThemeEngine : public QObject
 						  , public IIconThemeManager

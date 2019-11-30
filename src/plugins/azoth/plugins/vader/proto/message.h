@@ -32,7 +32,7 @@
 #include <QString>
 #include <QDateTime>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

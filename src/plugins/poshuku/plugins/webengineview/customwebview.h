@@ -34,7 +34,7 @@
 #include <interfaces/poshuku/iwebview.h>
 #include <interfaces/iwkfontssettable.h>
 
-namespace LeechCraft::Poshuku
+namespace LC::Poshuku
 {
 class IProxyObject;
 
@@ -47,7 +47,7 @@ namespace WebEngineView
 							  , public IWkFontsSettable
 	{
 		Q_OBJECT
-		Q_INTERFACES (IWkFontsSettable LeechCraft::Poshuku::IWebView)
+		Q_INTERFACES (IWkFontsSettable LC::Poshuku::IWebView)
 
 		const ICoreProxy_ptr Proxy_;
 		IProxyObject * const PoshukuProxy_;

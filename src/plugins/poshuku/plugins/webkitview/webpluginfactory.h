@@ -34,7 +34,7 @@
 #include <interfaces/core/ipluginsmanager.h>
 #include "interfaces/poshuku/iwebplugin.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

@@ -31,7 +31,7 @@
 
 #include <QXmppClientExtension.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

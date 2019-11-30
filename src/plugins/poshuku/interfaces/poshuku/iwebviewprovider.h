@@ -33,7 +33,7 @@
 #include <QIcon>
 #include <QtPlugin>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {
@@ -56,5 +56,5 @@ namespace Poshuku
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Poshuku::IWebViewProvider,
+Q_DECLARE_INTERFACE (LC::Poshuku::IWebViewProvider,
 		"org.LeechCraft.Poshuku.IWebViewProvider/1.0")

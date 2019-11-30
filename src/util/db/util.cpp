@@ -33,7 +33,7 @@
 #include <QThread>
 #include "dblock.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

@@ -32,7 +32,7 @@
 #include <QWizard>
 #include <QMap>
 
-namespace LeechCraft
+namespace LC
 {
 	class StartupWizard : public QWizard
 	{

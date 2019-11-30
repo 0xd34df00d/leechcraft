@@ -34,7 +34,7 @@
 #include "oraldetailfwd.h"
 #include "impldefs.h"
 
-namespace LeechCraft::Util::oral::detail::PostgreSQL
+namespace LC::Util::oral::detail::PostgreSQL
 {
 	using QSqlQuery_ptr = std::shared_ptr<QSqlQuery>;
 
@@ -119,7 +119,7 @@ namespace LeechCraft::Util::oral::detail::PostgreSQL
 	};
 }
 
-namespace LeechCraft::Util::oral
+namespace LC::Util::oral
 {
 	using PostgreSQLImplFactory = detail::PostgreSQL::ImplFactory;
 }

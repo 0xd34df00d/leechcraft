@@ -36,7 +36,7 @@
 #include <util/sll/qtutil.h>
 #include <interfaces/azoth/iprovidecommands.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

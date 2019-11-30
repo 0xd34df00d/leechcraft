@@ -33,7 +33,7 @@
 #include <QMetaType>
 #include "idocument.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {
@@ -194,5 +194,5 @@ namespace Monocle
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Monocle::IBackendPlugin,
+Q_DECLARE_INTERFACE (LC::Monocle::IBackendPlugin,
 		"org.LeechCraft.Monocle.IBackendPlugin/1.0")

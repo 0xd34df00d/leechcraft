@@ -36,7 +36,7 @@
 #include "vkmessage.h"
 #include "vkconnection.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

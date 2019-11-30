@@ -36,7 +36,7 @@
 #include <interfaces/azoth/isupportmediacalls.h>
 #include "toxaccountconfiguration.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -55,7 +55,7 @@ namespace Sarin
 					 , public ISupportMediaCalls
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IAccount LeechCraft::Azoth::ISupportMediaCalls)
+		Q_INTERFACES (LC::Azoth::IAccount LC::Azoth::ISupportMediaCalls)
 
 		ToxProtocol * const Proto_;
 		const QByteArray UID_;
@@ -138,7 +138,7 @@ namespace Sarin
 
 		void HandleInMessage (const QByteArray&, const QString&);
 
-		void HandleThreadFatalException (const LeechCraft::Util::QtException_ptr&);
+		void HandleThreadFatalException (const LC::Util::QtException_ptr&);
 	signals:
 		void accountRenamed (const QString&) override;
 		void authorizationRequested (QObject*, const QString&) override;

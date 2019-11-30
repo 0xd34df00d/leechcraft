@@ -37,7 +37,7 @@
 #include <util/sll/prelude.h>
 #include <util/tags/tagscompleter.h>
 
-using namespace LeechCraft;
+using namespace LC;
 
 TagsManager::TagsManager ()
 {

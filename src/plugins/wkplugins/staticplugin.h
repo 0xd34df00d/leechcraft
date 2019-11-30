@@ -32,7 +32,7 @@
 #include <QObject>
 #include <QWebKitPlatformPlugin>
 
-namespace LeechCraft
+namespace LC
 {
 namespace WKPlugins
 {

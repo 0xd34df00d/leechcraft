@@ -36,7 +36,7 @@
 #include "favoritesmanager.h"
 #include "itemimageprovider.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Launchy
 {

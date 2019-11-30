@@ -36,7 +36,7 @@
 #include <interfaces/ihavetabs.h>
 #include <interfaces/ihavesettings.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poleemery
 {

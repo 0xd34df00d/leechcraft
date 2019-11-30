@@ -29,7 +29,7 @@
 
 #include "tracebytecounter.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Snails
 {

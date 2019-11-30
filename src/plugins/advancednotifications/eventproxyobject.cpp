@@ -34,7 +34,7 @@
 
 Q_DECLARE_METATYPE (QList<QObject*>)
 
-namespace LeechCraft
+namespace LC
 {
 namespace AdvancedNotifications
 {

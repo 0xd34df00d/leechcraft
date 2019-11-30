@@ -40,7 +40,7 @@
 #include "profiletypes.h"
 #include "ljaccount.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blogique
 {

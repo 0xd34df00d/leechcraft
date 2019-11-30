@@ -31,7 +31,7 @@
 
 #include <QModelIndex>
 
-namespace LeechCraft::Util
+namespace LC::Util
 {
 	template<typename F>
 	void EnumerateChildren (const QModelIndex& idx, bool includingRoot, F&& f)

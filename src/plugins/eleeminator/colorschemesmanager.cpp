@@ -36,7 +36,7 @@
 #include <qtermwidget.h>
 #include <util/sll/prelude.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Eleeminator
 {

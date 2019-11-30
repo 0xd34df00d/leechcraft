@@ -30,7 +30,7 @@
 #include "sslerrorsdialog.h"
 #include <util/network/sslerror2treeitem.h>
 
-namespace LeechCraft
+namespace LC
 {
 SslErrorsDialog::SslErrorsDialog (const QString& url,
 		const QList<QSslError>& errors,

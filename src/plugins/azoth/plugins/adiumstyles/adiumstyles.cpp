@@ -33,7 +33,7 @@
 #include <util/util.h>
 #include "adiumstylesource.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -96,4 +96,4 @@ namespace AdiumStyles
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_azoth_adiumstyles, LeechCraft::Azoth::AdiumStyles::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_azoth_adiumstyles, LC::Azoth::AdiumStyles::Plugin);

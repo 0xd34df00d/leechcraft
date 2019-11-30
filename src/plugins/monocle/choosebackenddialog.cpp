@@ -30,7 +30,7 @@
 #include "choosebackenddialog.h"
 #include <interfaces/iinfo.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {

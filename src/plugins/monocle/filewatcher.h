@@ -35,7 +35,7 @@
 #include <QFileSystemWatcher>
 #include <QTimer>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {

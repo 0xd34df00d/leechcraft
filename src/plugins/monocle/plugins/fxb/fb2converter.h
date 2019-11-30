@@ -48,7 +48,7 @@ class QDomElement;
 class QDomDocument;
 class QTextDocument;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {

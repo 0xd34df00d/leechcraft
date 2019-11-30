@@ -35,7 +35,7 @@
 class QLabel;
 class QPushButton;
 
-namespace LeechCraft
+namespace LC
 {
 	class ColorPicker : public QWidget
 	{

@@ -33,7 +33,7 @@
 #include <QDateTime>
 #include "atomparser.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Aggregator
 {

@@ -25,13 +25,13 @@
     </widget>
    </item>
    <item row="0" column="0">
-    <widget class="LeechCraft::Blogique::Metida::LJAccountConfigurationWidget" name="ConfWidget_" native="true"/>
+    <widget class="LC::Blogique::Metida::LJAccountConfigurationWidget" name="ConfWidget_" native="true"/>
    </item>
   </layout>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>LeechCraft::Blogique::Metida::LJAccountConfigurationWidget</class>
+   <class>LC::Blogique::Metida::LJAccountConfigurationWidget</class>
    <extends>QWidget</extends>
    <header>ljaccountconfigurationwidget.h</header>
    <container>1</container>

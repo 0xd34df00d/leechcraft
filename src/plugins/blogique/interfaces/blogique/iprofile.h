@@ -34,7 +34,7 @@
 #include <QStringList>
 #include <QIcon>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blogique
 {
@@ -57,5 +57,5 @@ namespace Blogique
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Blogique::IProfile,
+Q_DECLARE_INTERFACE (LC::Blogique::IProfile,
 		"org.Deviant.LeechCraft.Blogique.IProfile/1.0")

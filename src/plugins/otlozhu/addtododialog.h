@@ -33,7 +33,7 @@
 #include "ui_addtododialog.h"
 #include "todoitem.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Otlozhu
 {

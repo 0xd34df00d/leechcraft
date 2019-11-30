@@ -34,7 +34,7 @@
 #include <interfaces/azoth/iclentry.h>
 #include "xmlsettingsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

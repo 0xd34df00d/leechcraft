@@ -35,7 +35,7 @@
 #include "core.h"
 #include "converteddoccleaner.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {

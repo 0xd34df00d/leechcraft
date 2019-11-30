@@ -33,7 +33,7 @@
 #include <QList>
 #include <QtPlugin>
 
-namespace LeechCraft
+namespace LC
 {
 namespace AdvancedNotifications
 {
@@ -51,5 +51,5 @@ namespace AdvancedNotifications
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::AdvancedNotifications::INotificationBackendPlugin,
+Q_DECLARE_INTERFACE (LC::AdvancedNotifications::INotificationBackendPlugin,
 		"org.LeechCraft.AdvancedNotifications.INotificationBackendPlugin/1.0")

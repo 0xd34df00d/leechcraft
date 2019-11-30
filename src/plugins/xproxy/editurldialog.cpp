@@ -30,7 +30,7 @@
 #include "editurldialog.h"
 #include "structures.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace XProxy
 {

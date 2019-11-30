@@ -33,7 +33,7 @@
 #include <QStringList>
 #include <interfaces/core/icoreproxyfwd.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace NewLife
 {

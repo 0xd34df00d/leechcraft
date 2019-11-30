@@ -39,7 +39,7 @@ class QToolBar;
 class IWebBrowser;
 class QAbstractItemModel;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

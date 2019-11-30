@@ -34,7 +34,7 @@
 #include "serverobject.h"
 #include "serveradaptor.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Laughty
 {
@@ -85,4 +85,4 @@ namespace Laughty
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_laughty, LeechCraft::Laughty::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_laughty, LC::Laughty::Plugin);

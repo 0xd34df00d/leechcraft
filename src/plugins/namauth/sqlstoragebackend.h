@@ -35,7 +35,7 @@
 #include <util/db/oral/oralfwd.h>
 #include <util/db/oral/oraltypes.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace NamAuth
 {

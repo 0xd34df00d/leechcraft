@@ -36,7 +36,7 @@
 #include <util/sll/functor.h>
 #include <util/sys/paths.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -56,11 +56,11 @@ namespace Murm
 }
 }
 
-BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Azoth::Murm::PhotoUrlStorage::Record,
+BOOST_FUSION_ADAPT_STRUCT (LC::Azoth::Murm::PhotoUrlStorage::Record,
 		UserNum_,
 		BigPhotoUrl_)
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

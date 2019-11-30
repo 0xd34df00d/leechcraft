@@ -33,7 +33,7 @@
 #include <util/threads/futures.h>
 #include "receventsfetcher.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Lastfmscrobble
 {

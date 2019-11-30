@@ -32,7 +32,7 @@
 #include "core.h"
 #include "banpeersdialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace BitTorrent
 {

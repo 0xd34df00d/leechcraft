@@ -34,7 +34,7 @@
 #include <QList>
 #include <QMap>
 
-namespace LeechCraft
+namespace LC
 {
 namespace HotSensors
 {

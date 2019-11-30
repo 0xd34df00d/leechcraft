@@ -44,7 +44,7 @@ class QAction;
 class QStandardItem;
 class QStringList;
 
-namespace LeechCraft
+namespace LC
 {
 namespace vlc
 {

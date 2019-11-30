@@ -38,7 +38,7 @@ class QSize;
 class QWebPage;
 class QImage;
 
-namespace LeechCraft::Poshuku::SpeedDial
+namespace LC::Poshuku::SpeedDial
 {
 	class ImageCache : public QObject
 	{

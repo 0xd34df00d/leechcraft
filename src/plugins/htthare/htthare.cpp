@@ -37,7 +37,7 @@
 #include "server.h"
 #include "xmlsettingsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace HttHare
 {
@@ -131,4 +131,4 @@ namespace HttHare
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_htthare, LeechCraft::HttHare::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_htthare, LC::HttHare::Plugin);

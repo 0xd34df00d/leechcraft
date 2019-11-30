@@ -30,7 +30,7 @@
 #include "servicesmanager.h"
 #include "interfaces/blasq/iservicesplugin.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blasq
 {

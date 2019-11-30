@@ -32,7 +32,7 @@
 #include "itemhandlerspinboxbase.h"
 #include <QDoubleSpinBox>
 
-namespace LeechCraft
+namespace LC
 {
 	class ItemHandlerSpinboxDouble : public ItemHandlerSpinboxBase<QDoubleSpinBox, double>
 	{

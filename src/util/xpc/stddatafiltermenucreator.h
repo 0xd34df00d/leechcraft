@@ -36,7 +36,7 @@ class QVariant;
 class IEntityManager;
 class QMenu;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

@@ -35,7 +35,7 @@ typedef struct _GstElement GstElement;
 typedef struct _GstMessage GstMessage;
 typedef struct _GstBus GstBus;
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

@@ -32,7 +32,7 @@
 #include <QFrame>
 #include "ui_urlframe.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

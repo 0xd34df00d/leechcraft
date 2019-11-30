@@ -38,7 +38,7 @@
 
 class IShortcutProxy;
 
-namespace LeechCraft
+namespace LC
 {
 	class SettingsTab;
 	class CorePlugin2Manager;
@@ -120,7 +120,7 @@ namespace LeechCraft
 		void statusBarChanged (QWidget*, const QString&);
 		void raiseTab (QWidget*);
 
-		void gotEntity (const LeechCraft::Entity&);
+		void gotEntity (const LC::Entity&);
 	};
 }
 

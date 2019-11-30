@@ -31,7 +31,7 @@
 #include <QTcpSocket>
 #include <QtDebug>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

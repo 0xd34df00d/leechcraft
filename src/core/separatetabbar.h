@@ -32,7 +32,7 @@
 #include <QTabBar>
 #include <QHash>
 
-namespace LeechCraft
+namespace LC
 {
 	class MainWindow;
 	class SeparateTabWidget;

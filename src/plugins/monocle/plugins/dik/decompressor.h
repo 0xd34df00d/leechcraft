@@ -33,7 +33,7 @@
 
 class QByteArray;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {

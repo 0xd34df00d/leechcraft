@@ -33,7 +33,7 @@
 #include "interfaces/monocle/idocument.h"
 #include "interfaces/monocle/ibackendplugin.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {

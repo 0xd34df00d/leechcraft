@@ -57,7 +57,7 @@ class QTabWidget;
 class QTranslator;
 class QSortFilterProxyModel;
 
-namespace LeechCraft
+namespace LC
 {
 namespace BitTorrent
 {
@@ -97,10 +97,10 @@ namespace BitTorrent
 
 		ICoreProxy_ptr Proxy_;
 
-		std::shared_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
+		std::shared_ptr<LC::Util::XmlSettingsDialog> XmlSettingsDialog_;
 		std::unique_ptr<AddTorrent> AddTorrentDialog_;
 		bool TorrentSelectionChanged_;
-		std::unique_ptr<LeechCraft::Util::TagsCompleter> TagsAddDiaCompleter_;
+		std::unique_ptr<LC::Util::TagsCompleter> TagsAddDiaCompleter_;
 		std::unique_ptr<TabWidget> TabWidget_;
 		std::unique_ptr<QToolBar> Toolbar_;
 		std::unique_ptr<QAction> OpenTorrent_,
@@ -166,8 +166,8 @@ namespace BitTorrent
 		qint64 GetUploadSpeed () const override;
 		void StartAll () override;
 		void StopAll () override;
-		EntityTestHandleResult CouldDownload (const LeechCraft::Entity&) const override;
-		QFuture<Result> AddJob (LeechCraft::Entity) override;
+		EntityTestHandleResult CouldDownload (const LC::Entity&) const override;
+		QFuture<Result> AddJob (LC::Entity) override;
 
 		// IJobHolder
 		QAbstractItemModel* GetRepresentation () const override;
@@ -233,7 +233,7 @@ namespace BitTorrent
 		void removeTab (QWidget*) override;
 		void statusBarChanged (QWidget*, const QString&) override;
 
-		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace) override;
+		void gotActions (QList<QAction*>, LC::ActionsEmbedPlace) override;
 	};
 }
 }

@@ -39,7 +39,7 @@
 
 class QWebView;
 
-namespace LeechCraft::Poshuku
+namespace LC::Poshuku
 {
 class IProxyObject;
 
@@ -78,7 +78,7 @@ namespace SpeedDial
 	public slots:
 		void initPlugin (QObject*);
 
-		void hookBrowserWidgetInitialized (LeechCraft::IHookProxy_ptr, QObject*);
+		void hookBrowserWidgetInitialized (LC::IHookProxy_ptr, QObject*);
 	};
 }
 }

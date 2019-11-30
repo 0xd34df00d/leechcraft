@@ -31,7 +31,7 @@
 
 #include <QFontMetrics>
 
-namespace LeechCraft::Util::Compat
+namespace LC::Util::Compat
 {
 	inline int Width (const QFontMetrics& fm, const QString& text)
 	{

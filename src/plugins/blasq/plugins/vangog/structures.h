@@ -33,7 +33,7 @@
 #include <QStringList>
 #include <QUrl>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blasq
 {

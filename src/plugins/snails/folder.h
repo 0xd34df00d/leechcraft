@@ -34,7 +34,7 @@
 
 class QDataStream;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Snails
 {
@@ -59,8 +59,8 @@ namespace Snails
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::Snails::Folder)
-Q_DECLARE_METATYPE (QList<LeechCraft::Snails::Folder>)
+Q_DECLARE_METATYPE (LC::Snails::Folder)
+Q_DECLARE_METATYPE (QList<LC::Snails::Folder>)
 
-QDataStream& operator<< (QDataStream&, const LeechCraft::Snails::Folder&);
-QDataStream& operator>> (QDataStream&, LeechCraft::Snails::Folder&);
+QDataStream& operator<< (QDataStream&, const LC::Snails::Folder&);
+QDataStream& operator>> (QDataStream&, LC::Snails::Folder&);

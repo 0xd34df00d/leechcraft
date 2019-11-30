@@ -37,7 +37,7 @@
 #include "coreproxyproxy.h"
 
 QDBusArgument& operator<< (QDBusArgument& arg,
-		const LeechCraft::DBus::ObjectManager::ObjectDataInfo& info)
+		const LC::DBus::ObjectManager::ObjectDataInfo& info)
 {
 	arg.beginStructure ();
 	arg << info.Path_ << info.Service_;
@@ -46,7 +46,7 @@ QDBusArgument& operator<< (QDBusArgument& arg,
 }
 
 const QDBusArgument& operator>> (const QDBusArgument& arg,
-		LeechCraft::DBus::ObjectManager::ObjectDataInfo& info)
+		LC::DBus::ObjectManager::ObjectDataInfo& info)
 {
 	arg.beginStructure ();
 	arg >> info.Path_ >> info.Service_;
@@ -56,14 +56,14 @@ const QDBusArgument& operator>> (const QDBusArgument& arg,
 
 QDBusArgument& operator<< (QDBusArgument& arg, const ICoreProxy_ptr& proxy)
 {
-	return arg << LeechCraft::DBus::ObjectManager::Instance ().RegisterObject (proxy);
+	return arg << LC::DBus::ObjectManager::Instance ().RegisterObject (proxy);
 }
 
 const QDBusArgument& operator>> (const QDBusArgument& arg, ICoreProxy_ptr& proxy)
 {
-	LeechCraft::DBus::ObjectManager::ObjectDataInfo info;
+	LC::DBus::ObjectManager::ObjectDataInfo info;
 	arg >> info;
-	LeechCraft::DBus::ObjectManager::Instance ().Wrap (proxy, info);
+	LC::DBus::ObjectManager::Instance ().Wrap (proxy, info);
 	return arg;
 }
 
@@ -95,7 +95,7 @@ const QDBusArgument& operator>> (const QDBusArgument& arg, QIcon& icon)
 	return arg;
 }
 
-namespace LeechCraft
+namespace LC
 {
 namespace DBus
 {

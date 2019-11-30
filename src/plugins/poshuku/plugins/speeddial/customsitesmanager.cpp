@@ -33,7 +33,7 @@
 #include <QtDebug>
 #include <xmlsettingsdialog/datasourceroles.h>
 
-namespace LeechCraft::Poshuku::SpeedDial
+namespace LC::Poshuku::SpeedDial
 {
 	CustomSitesManager::CustomSitesManager ()
 	: Model_ { new QStandardItemModel { this } }

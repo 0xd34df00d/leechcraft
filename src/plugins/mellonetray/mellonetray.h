@@ -33,7 +33,7 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/iquarkcomponentprovider.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Mellonetray
 {

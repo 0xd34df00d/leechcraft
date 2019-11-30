@@ -33,7 +33,7 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/devices/iremovabledevmanager.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Devmon
 {

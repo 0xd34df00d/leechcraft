@@ -34,7 +34,7 @@
 #include <interfaces/structures.h>
 #include "xpcconfig.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

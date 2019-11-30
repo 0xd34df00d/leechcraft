@@ -41,7 +41,7 @@
 #include <util/util.h>
 #include <util/sll/delayedexecutor.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

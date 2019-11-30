@@ -36,7 +36,7 @@
 #include <HUpnpAv/HRootDir>
 #include <xmlsettingsdialog/datasourceroles.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace DLNiwe
 {

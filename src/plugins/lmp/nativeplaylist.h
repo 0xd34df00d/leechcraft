@@ -32,7 +32,7 @@
 #include <boost/optional.hpp>
 #include "engine/audiosource.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

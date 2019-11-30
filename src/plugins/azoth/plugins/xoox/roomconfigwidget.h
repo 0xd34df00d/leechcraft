@@ -41,7 +41,7 @@ class QStandardItem;
 class QXmppMucManager;
 class QXmppMucRoom;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -54,7 +54,7 @@ namespace Xoox
 						   , public IMUCConfigWidget
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IMUCConfigWidget)
+		Q_INTERFACES (LC::Azoth::IMUCConfigWidget)
 
 		Ui::RoomConfigWidget Ui_;
 

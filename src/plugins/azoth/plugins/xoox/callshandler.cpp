@@ -40,7 +40,7 @@
 #include "mediacall.h"
 #endif
 
-namespace LeechCraft::Azoth::Xoox
+namespace LC::Azoth::Xoox
 {
 	CallsHandler::CallsHandler (QXmppCallManager& callMgr, ClientConnection& conn, GlooxAccount& acc, QObject *parent)
 	: QObject { parent }

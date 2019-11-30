@@ -38,7 +38,7 @@
 #include "modelsconfig.h"
 #include "modelitem.h"
 
-namespace LeechCraft
+namespace LC
 {
 	namespace Util
 	{

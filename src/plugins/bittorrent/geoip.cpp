@@ -37,7 +37,7 @@
 #include <GeoIP.h>
 #endif
 
-namespace LeechCraft
+namespace LC
 {
 namespace BitTorrent
 {

@@ -41,7 +41,7 @@
 #include "itemimageprovider.h"
 #include "recentmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Launchy
 {
@@ -141,4 +141,4 @@ namespace Launchy
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_launchy, LeechCraft::Launchy::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_launchy, LC::Launchy::Plugin);

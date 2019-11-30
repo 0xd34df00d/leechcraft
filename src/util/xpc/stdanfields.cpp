@@ -33,7 +33,7 @@
 #include <interfaces/an/ianemitter.h>
 #include <interfaces/an/constants.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

@@ -42,7 +42,7 @@
 #include <util/sll/prelude.h>
 #include "eqbandwidget.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

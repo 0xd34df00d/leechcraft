@@ -35,7 +35,7 @@
 
 class QDataStream;
 
-namespace LeechCraft
+namespace LC
 {
 namespace XProxy
 {
@@ -68,4 +68,4 @@ namespace XProxy
 }
 }
 
-Q_DECLARE_METATYPE (QList<LeechCraft::XProxy::Entry_t>)
+Q_DECLARE_METATYPE (QList<LC::XProxy::Entry_t>)

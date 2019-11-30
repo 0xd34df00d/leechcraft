@@ -35,7 +35,7 @@
 class QIODevice;
 class QAudioFormat;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -85,7 +85,7 @@ namespace Azoth
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Azoth::IMediaCall,
+Q_DECLARE_INTERFACE (LC::Azoth::IMediaCall,
 		"org.Deviant.LeechCraft.Azoth.IMediaCall/1.0")
 
 #endif

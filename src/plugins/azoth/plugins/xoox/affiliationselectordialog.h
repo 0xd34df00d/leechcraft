@@ -33,7 +33,7 @@
 #include "ui_affiliationselectordialog.h"
 #include <QXmppMucIq.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

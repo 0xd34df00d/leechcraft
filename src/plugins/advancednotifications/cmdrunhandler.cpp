@@ -31,7 +31,7 @@
 #include <QProcess>
 #include "notificationrule.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace AdvancedNotifications
 {

@@ -35,7 +35,7 @@
 #include "pasteservicebase.h"
 #include "ui_pastedialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

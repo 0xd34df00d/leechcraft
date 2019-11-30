@@ -35,7 +35,7 @@
 class QStandardItemModel;
 class QModelIndex;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

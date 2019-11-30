@@ -32,7 +32,7 @@
 #include <QStandardItemModel>
 #include <util/models/dndactionsmixin.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

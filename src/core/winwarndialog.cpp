@@ -31,7 +31,7 @@
 #include <QMessageBox>
 #include "xmlsettingsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 	WinWarnDialog::WinWarnDialog ()
 	{

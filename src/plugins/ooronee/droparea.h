@@ -32,7 +32,7 @@
 #include <QtGlobal>
 #include <QQuickItem>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Ooronee
 {

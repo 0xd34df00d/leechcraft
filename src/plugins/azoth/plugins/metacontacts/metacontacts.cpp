@@ -35,7 +35,7 @@
 #include "metaprotocol.h"
 #include "core.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -159,4 +159,4 @@ namespace Metacontacts
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_azoth_metacontacts, LeechCraft::Azoth::Metacontacts::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_azoth_metacontacts, LC::Azoth::Metacontacts::Plugin);

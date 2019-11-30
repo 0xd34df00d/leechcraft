@@ -35,7 +35,7 @@
 #include "ui_feedsettings.h"
 #include "common.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Aggregator
 {

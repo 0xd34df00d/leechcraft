@@ -42,7 +42,7 @@ class QString;
 class QWidget;
 class QObject;
 
-namespace LeechCraft
+namespace LC
 {
 struct Entity;
 

@@ -31,7 +31,7 @@
 #include <QTcpServer>
 #include <QTcpSocket>
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

@@ -32,7 +32,7 @@
 #include "checktab.h"
 #include "progressmodelmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {
@@ -136,4 +136,4 @@ namespace BrainSlugz
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_lmp_brainslugz, LeechCraft::LMP::BrainSlugz::Plugin)
+LC_EXPORT_PLUGIN (leechcraft_lmp_brainslugz, LC::LMP::BrainSlugz::Plugin)

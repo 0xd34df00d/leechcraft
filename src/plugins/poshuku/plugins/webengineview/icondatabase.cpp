@@ -34,7 +34,7 @@
 #include "icondatabaseondisk.h"
 #include "stringpathtrie.h"
 
-namespace LeechCraft::Poshuku::WebEngineView
+namespace LC::Poshuku::WebEngineView
 {
 	IconDatabase::IconDatabase (QObject *parent)
 	: QObject { parent }

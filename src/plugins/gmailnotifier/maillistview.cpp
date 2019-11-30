@@ -39,7 +39,7 @@
 #include <util/qml/colorthemeproxy.h>
 #include <util/models/rolenamesmixin.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace GmailNotifier
 {

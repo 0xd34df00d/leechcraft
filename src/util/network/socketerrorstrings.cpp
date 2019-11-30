@@ -30,7 +30,7 @@
 #include "socketerrorstrings.h"
 #include <QObject>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

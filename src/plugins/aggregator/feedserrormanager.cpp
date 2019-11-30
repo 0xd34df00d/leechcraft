@@ -37,7 +37,7 @@
 #include "storagebackendmanager.h"
 #include "storagebackend.h"
 
-namespace LeechCraft::Aggregator
+namespace LC::Aggregator
 {
 	bool FeedsErrorManager::ParseError::operator== (const FeedsErrorManager::ParseError& other) const
 	{

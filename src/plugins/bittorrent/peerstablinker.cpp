@@ -35,7 +35,7 @@
 #include "core.h"
 #include "peersmodel.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace BitTorrent
 {

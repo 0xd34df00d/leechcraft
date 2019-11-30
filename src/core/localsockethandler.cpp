@@ -39,7 +39,7 @@
 #include "interfaces/structures.h"
 #include "application.h"
 
-namespace LeechCraft
+namespace LC
 {
 	LocalSocketHandler::LocalSocketHandler ()
 	: Server_ (new QLocalServer)

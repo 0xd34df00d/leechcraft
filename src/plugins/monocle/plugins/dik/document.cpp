@@ -36,7 +36,7 @@
 #include <QTextFrame>
 #include "mobiparser.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {

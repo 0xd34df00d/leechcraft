@@ -35,7 +35,7 @@
 #include "xmlsettingsmanager.h"
 #include "document.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {
@@ -131,4 +131,4 @@ namespace PDF
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_monocle_pdf, LeechCraft::Monocle::PDF::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_monocle_pdf, LC::Monocle::PDF::Plugin);

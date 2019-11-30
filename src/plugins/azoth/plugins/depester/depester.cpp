@@ -41,7 +41,7 @@
 
 Q_DECLARE_METATYPE (QSet<QString>);
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -172,13 +172,13 @@ namespace Depester
 		proxy->SetReturnValue (list);
 	}
 
-	void Plugin::hookGonnaAppendMsg (LeechCraft::IHookProxy_ptr proxy,
+	void Plugin::hookGonnaAppendMsg (LC::IHookProxy_ptr proxy,
 				QObject *message)
 	{
 		HandleMsgOccurence (proxy, message);
 	}
 
-	void Plugin::hookGotMessage (LeechCraft::IHookProxy_ptr proxy,
+	void Plugin::hookGotMessage (LC::IHookProxy_ptr proxy,
 				QObject *message)
 	{
 		HandleMsgOccurence (proxy, message);
@@ -252,4 +252,4 @@ namespace Depester
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_azoth_depester, LeechCraft::Azoth::Depester::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_azoth_depester, LC::Azoth::Depester::Plugin);

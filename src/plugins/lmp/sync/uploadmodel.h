@@ -32,7 +32,7 @@
 #include <QIdentityProxyModel>
 #include <QSet>
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

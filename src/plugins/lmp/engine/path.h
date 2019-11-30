@@ -33,7 +33,7 @@
 #include "sourceobject.h"
 #include "interfaces/lmp/ipath.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

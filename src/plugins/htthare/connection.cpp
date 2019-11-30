@@ -31,7 +31,7 @@
 #include <QtDebug>
 #include "requesthandler.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace HttHare
 {

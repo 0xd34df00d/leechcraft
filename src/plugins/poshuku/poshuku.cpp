@@ -52,11 +52,11 @@
 #include "xmlsettingsmanager.h"
 #include "cookieseditdialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {
-	using LeechCraft::Util::TagsCompletionModel;
+	using LC::Util::TagsCompletionModel;
 
 	void Poshuku::Init (ICoreProxy_ptr coreProxy)
 	{
@@ -213,19 +213,19 @@ namespace Poshuku
 		Core::Instance ().AddPlugin (plugin);
 	}
 
-	std::shared_ptr<LeechCraft::Util::XmlSettingsDialog> Poshuku::GetSettingsDialog () const
+	std::shared_ptr<LC::Util::XmlSettingsDialog> Poshuku::GetSettingsDialog () const
 	{
 		return XmlSettingsDialog_;
 	}
 
-	EntityTestHandleResult Poshuku::CouldHandle (const LeechCraft::Entity& e) const
+	EntityTestHandleResult Poshuku::CouldHandle (const LC::Entity& e) const
 	{
 		return Core::Instance ().CouldHandle (e) ?
 				EntityTestHandleResult (EntityTestHandleResult::PIdeal) :
 				EntityTestHandleResult ();
 	}
 
-	void Poshuku::Handle (LeechCraft::Entity e)
+	void Poshuku::Handle (LC::Entity e)
 	{
 		Core::Instance ().Handle (e);
 	}
@@ -410,4 +410,4 @@ namespace Poshuku
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_poshuku, LeechCraft::Poshuku::Poshuku);
+LC_EXPORT_PLUGIN (leechcraft_poshuku, LC::Poshuku::Poshuku);

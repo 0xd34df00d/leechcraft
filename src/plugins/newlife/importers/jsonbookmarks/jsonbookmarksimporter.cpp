@@ -30,7 +30,7 @@
 #include "jsonbookmarksimporter.h"
 #include "jsonbookmarksimportpage.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace NewLife
 {

@@ -65,7 +65,7 @@
     </layout>
    </item>
    <item>
-    <widget class="LeechCraft::Snails::MultiEditorWidget" name="Editor_" native="true">
+    <widget class="LC::Snails::MultiEditorWidget" name="Editor_" native="true">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
        <horstretch>0</horstretch>
@@ -78,7 +78,7 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>LeechCraft::Snails::MultiEditorWidget</class>
+   <class>LC::Snails::MultiEditorWidget</class>
    <extends>QWidget</extends>
    <header>multieditorwidget.h</header>
    <container>1</container>

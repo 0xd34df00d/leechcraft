@@ -33,7 +33,7 @@
 #include <QResizeEvent>
 #include <util/gui/util.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

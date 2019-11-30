@@ -36,7 +36,7 @@
 #include <util/sll/prelude.h>
 #include "xmlsettingsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

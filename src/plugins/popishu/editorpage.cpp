@@ -64,7 +64,7 @@
 
 Q_DECLARE_METATYPE (QObject**);
 
-namespace LeechCraft
+namespace LC
 {
 namespace Popishu
 {

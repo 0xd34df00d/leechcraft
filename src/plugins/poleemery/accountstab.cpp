@@ -33,7 +33,7 @@
 #include "accountpropsdialog.h"
 #include "core.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poleemery
 {

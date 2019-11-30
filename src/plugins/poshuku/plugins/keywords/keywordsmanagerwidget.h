@@ -34,7 +34,7 @@
 #include <QSettings>
 #include "ui_keywordsmanagerwidget.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

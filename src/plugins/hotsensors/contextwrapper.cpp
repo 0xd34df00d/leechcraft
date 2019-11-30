@@ -40,7 +40,7 @@
 #include "plotmanager.h"
 #include "sensorsgraphmodel.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace HotSensors
 {

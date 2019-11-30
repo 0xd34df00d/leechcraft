@@ -34,7 +34,7 @@
 #include <interfaces/core/iiconthememanager.h>
 #include "xmlsettingsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace KnowHow
 {

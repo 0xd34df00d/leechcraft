@@ -30,7 +30,7 @@
 #include "findproxy.h"
 #include <interfaces/structures.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace HistoryHolder
 {

@@ -33,7 +33,7 @@
 #include <util/xpc/util.h>
 #include "account.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Snails
 {

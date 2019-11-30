@@ -37,7 +37,7 @@
 #include "flashplaceholder.h"
 #include "flashonclickwhitelist.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

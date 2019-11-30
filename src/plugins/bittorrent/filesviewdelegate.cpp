@@ -38,7 +38,7 @@
 #include "filesviewdelegate.h"
 #include "torrentfilesmodel.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace BitTorrent
 {

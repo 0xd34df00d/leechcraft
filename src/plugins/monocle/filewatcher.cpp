@@ -33,7 +33,7 @@
 #include <QDir>
 #include "documenttab.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {

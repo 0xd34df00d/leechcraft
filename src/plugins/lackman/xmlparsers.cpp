@@ -36,7 +36,7 @@
 #include <QDomElement>
 #include <QtDebug>
 
-namespace LeechCraft
+namespace LC
 {
 namespace LackMan
 {

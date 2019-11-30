@@ -33,7 +33,7 @@
 #include <interfaces/azoth/imessage.h>
 #include <interfaces/azoth/iadvancedmessage.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -46,8 +46,8 @@ namespace Sarin
 					  , public IAdvancedMessage
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IMessage
-				LeechCraft::Azoth::IAdvancedMessage)
+		Q_INTERFACES (LC::Azoth::IMessage
+				LC::Azoth::IAdvancedMessage)
 
 		ToxContact * const Contact_;
 		const Direction Dir_;

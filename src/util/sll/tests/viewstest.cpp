@@ -32,9 +32,9 @@
 #include <views.h>
 #include <prelude.h>
 
-QTEST_MAIN (LeechCraft::Util::ViewsTest)
+QTEST_MAIN (LC::Util::ViewsTest)
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

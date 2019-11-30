@@ -38,7 +38,7 @@
 #include <QtDebug>
 #include "traymodel.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Mellonetray
 {

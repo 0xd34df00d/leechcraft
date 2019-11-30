@@ -33,7 +33,7 @@
 #include <boost/program_options.hpp>
 #include <QLocalServer>
 
-namespace LeechCraft
+namespace LC
 {
 	struct Entity;
 
@@ -50,6 +50,6 @@ namespace LeechCraft
 	private:
 		void DoLine (const boost::program_options::variables_map&, const QString&);
 	signals:
-		void gotEntity (const LeechCraft::Entity&);
+		void gotEntity (const LC::Entity&);
 	};
 };

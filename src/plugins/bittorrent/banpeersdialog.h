@@ -32,7 +32,7 @@
 #include <QDialog>
 #include "ui_banpeersdialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace BitTorrent
 {

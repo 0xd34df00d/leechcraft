@@ -40,7 +40,7 @@
 
 class IWebBrowser;
 
-namespace LeechCraft::SeekThru
+namespace LC::SeekThru
 {
 	class Core : public QAbstractItemModel
 	{
@@ -95,7 +95,7 @@ namespace LeechCraft::SeekThru
 		void Remove (const QModelIndex&);
 		void SetTags (const QModelIndex&, const QStringList&);
 		QStringList GetCategories () const;
-		IFindProxy_ptr GetProxy (const LeechCraft::Request&);
+		IFindProxy_ptr GetProxy (const LC::Request&);
 		IWebBrowser* GetWebBrowser () const;
 		void HandleEntity (const QString&, const QString& = QString ());
 	private:

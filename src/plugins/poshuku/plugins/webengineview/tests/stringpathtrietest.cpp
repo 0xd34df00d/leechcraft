@@ -32,9 +32,9 @@
 #include <util/sll/prelude.h>
 #include <stringpathtrie.h>
 
-QTEST_MAIN (LeechCraft::Poshuku::WebEngineView::StringPathTrieTest)
+QTEST_MAIN (LC::Poshuku::WebEngineView::StringPathTrieTest)
 
-namespace LeechCraft::Poshuku::WebEngineView
+namespace LC::Poshuku::WebEngineView
 {
 	using IntTrie = StringPathTrie<int>;
 

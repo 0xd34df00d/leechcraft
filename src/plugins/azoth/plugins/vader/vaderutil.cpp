@@ -31,7 +31,7 @@
 #include <QAction>
 #include "proto/headers.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

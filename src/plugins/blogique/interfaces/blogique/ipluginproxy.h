@@ -31,7 +31,7 @@
 
 #include <QString>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blogique
 {
@@ -43,6 +43,6 @@ namespace Blogique
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Blogique::IPluginProxy,
+Q_DECLARE_INTERFACE (LC::Blogique::IPluginProxy,
 		"org.Deviant.LeechCraft.Plugins.Blogique.Plugins.IPluginProxy/1.0")
 

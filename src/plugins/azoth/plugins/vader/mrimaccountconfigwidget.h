@@ -32,7 +32,7 @@
 #include <QWidget>
 #include "ui_mrimaccountconfigwidget.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

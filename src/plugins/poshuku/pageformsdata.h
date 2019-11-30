@@ -37,7 +37,7 @@
 
 class QDebug;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

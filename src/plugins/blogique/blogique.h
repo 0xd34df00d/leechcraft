@@ -40,7 +40,7 @@
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 
 class QWebView;
-namespace LeechCraft
+namespace LC
 {
 namespace Blogique
 {
@@ -93,9 +93,9 @@ namespace Blogique
 		void statusBarChanged (QWidget *tabContents, const QString& text);
 		void raiseTab (QWidget *tabContents);
 
-		void gotEntity (const LeechCraft::Entity& e);
+		void gotEntity (const LC::Entity& e);
 
-		void gotActions (QList<QAction*> actions, LeechCraft::ActionsEmbedPlace area);
+		void gotActions (QList<QAction*> actions, LC::ActionsEmbedPlace area);
 	};
 }
 }

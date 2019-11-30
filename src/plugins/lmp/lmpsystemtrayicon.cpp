@@ -38,7 +38,7 @@
 #include "player.h"
 #include "engine/output.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

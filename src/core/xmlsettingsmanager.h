@@ -31,7 +31,7 @@
 #define XMLSETTINGSMANAGER_H
 #include <xmlsettingsdialog/basesettingsmanager.h>
 
-namespace LeechCraft
+namespace LC
 {
 	class XmlSettingsManager : public Util::BaseSettingsManager
 	{

@@ -32,7 +32,7 @@
 #include <QObject>
 #include "interfaces/monocle/idocument.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {

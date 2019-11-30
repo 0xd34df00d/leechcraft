@@ -33,7 +33,7 @@
 #include <QFileDialog>
 #include <util/util.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Dolozhee
 {

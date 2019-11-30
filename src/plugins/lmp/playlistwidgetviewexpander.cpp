@@ -31,7 +31,7 @@
 #include <QAbstractItemModel>
 #include <util/sll/delayedexecutor.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

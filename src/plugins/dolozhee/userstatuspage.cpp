@@ -34,7 +34,7 @@
 #include "chooseuserpage.h"
 #include "xmlgenerator.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Dolozhee
 {

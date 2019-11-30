@@ -32,7 +32,7 @@
 #include <QMetaType>
 #include <QVariant>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blogique
 {
@@ -116,5 +116,5 @@ namespace Blogique
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Blogique::IBlogiqueSideWidget,
+Q_DECLARE_INTERFACE (LC::Blogique::IBlogiqueSideWidget,
 		"org.Deviant.LeechCraft.Blogique.IBlogiqueSideWidget/1.0")

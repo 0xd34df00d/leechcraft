@@ -39,7 +39,7 @@
 #include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace AnHero
 {
@@ -214,4 +214,4 @@ namespace AnHero
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_anhero, LeechCraft::AnHero::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_anhero, LC::AnHero::Plugin);

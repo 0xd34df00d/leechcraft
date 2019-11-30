@@ -32,7 +32,7 @@
 #include <QtDebug>
 #include <util/sll/parsejson.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace HotStreams
 {

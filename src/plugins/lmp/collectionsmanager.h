@@ -36,7 +36,7 @@ class QAbstractItemModel;
 class QStandardItemModel;
 class QSortFilterProxyModel;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

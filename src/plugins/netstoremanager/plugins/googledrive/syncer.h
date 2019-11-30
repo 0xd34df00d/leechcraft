@@ -34,7 +34,7 @@
 #include <QMap>
 #include <QQueue>
 
-namespace LeechCraft
+namespace LC
 {
 namespace NetStoreManager
 {

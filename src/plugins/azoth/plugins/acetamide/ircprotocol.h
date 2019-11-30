@@ -34,7 +34,7 @@
 #include <interfaces/azoth/imucprotocol.h>
 #include <interfaces/azoth/iurihandler.h>
 
-namespace LeechCraft
+namespace LC
 {
 struct Entity;
 
@@ -50,9 +50,9 @@ namespace Acetamide
 							, public IURIHandler
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IProtocol
-				LeechCraft::Azoth::IMUCProtocol
-				LeechCraft::Azoth::IURIHandler)
+		Q_INTERFACES (LC::Azoth::IProtocol
+				LC::Azoth::IMUCProtocol
+				LC::Azoth::IURIHandler)
 
 		QObject *ParentProtocolPlugin_;
 		QList<IrcAccount*> IrcAccounts_;

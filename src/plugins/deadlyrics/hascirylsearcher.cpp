@@ -37,7 +37,7 @@
 #include <util/sll/functor.h>
 #include <util/sll/parsejson.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace DeadLyrics
 {

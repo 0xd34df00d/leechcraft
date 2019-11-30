@@ -38,7 +38,7 @@
 #include "core.h"
 #include "accountssettings.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {
@@ -67,9 +67,9 @@ namespace OnlineBookmarks
 			Core::Instance ().checkUploadPeriod ();
 
 		connect (&Core::Instance (),
-				SIGNAL (gotEntity (const LeechCraft::Entity&)),
+				SIGNAL (gotEntity (const LC::Entity&)),
 				this,
-				SIGNAL (gotEntity (const LeechCraft::Entity&)));
+				SIGNAL (gotEntity (const LC::Entity&)));
 	}
 
 	void Plugin::Release ()
@@ -166,4 +166,4 @@ namespace OnlineBookmarks
 }
 
 LC_EXPORT_PLUGIN (leechcraft_poshuku_onlinebookmarks,
-		LeechCraft::Poshuku::OnlineBookmarks::Plugin);
+		LC::Poshuku::OnlineBookmarks::Plugin);

@@ -37,7 +37,7 @@ class QPointer;
 
 class QXmppMessageReceiptManager;
 
-namespace LeechCraft::Azoth::Xoox
+namespace LC::Azoth::Xoox
 {
 	class GlooxMessage;
 

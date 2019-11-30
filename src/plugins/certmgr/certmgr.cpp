@@ -35,7 +35,7 @@
 #include "acceptedrejecteddialog.h"
 #include "managerdialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace CertMgr
 {
@@ -112,4 +112,4 @@ namespace CertMgr
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_certmgr, LeechCraft::CertMgr::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_certmgr, LC::CertMgr::Plugin);

@@ -41,7 +41,7 @@ class QStandardItemModel;
 class QAbstractItemModel;
 class QByteArray;
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {
@@ -97,5 +97,5 @@ namespace LMP
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::LMP::SavedFilterInfo)
-Q_DECLARE_METATYPE (QList<LeechCraft::LMP::SavedFilterInfo>)
+Q_DECLARE_METATYPE (LC::LMP::SavedFilterInfo)
+Q_DECLARE_METATYPE (QList<LC::LMP::SavedFilterInfo>)

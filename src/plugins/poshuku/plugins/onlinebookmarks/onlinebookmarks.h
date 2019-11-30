@@ -40,7 +40,7 @@
 
 class QWebView;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {
@@ -79,9 +79,9 @@ namespace OnlineBookmarks
 		void AddPlugin (QObject*);
 	public slots:
 		void initPlugin (QObject*);
-		void hookMoreMenuFillEnd (LeechCraft::IHookProxy_ptr, QMenu*, QObject*);
+		void hookMoreMenuFillEnd (LC::IHookProxy_ptr, QMenu*, QObject*);
 	signals:
-		void gotEntity (const LeechCraft::Entity&);
+		void gotEntity (const LC::Entity&);
 	};
 }
 }

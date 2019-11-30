@@ -31,7 +31,7 @@
 
 #include <QSortFilterProxyModel>
 
-namespace LeechCraft
+namespace LC
 {
 namespace NetStoreManager
 {

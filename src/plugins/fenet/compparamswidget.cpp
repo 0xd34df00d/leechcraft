@@ -35,7 +35,7 @@
 #include <util/sll/curry.h>
 #include "compparamsmanager.h"
 
-namespace LeechCraft::Fenet
+namespace LC::Fenet
 {
 	namespace
 	{

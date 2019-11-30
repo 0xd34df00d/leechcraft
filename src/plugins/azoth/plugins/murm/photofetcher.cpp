@@ -40,7 +40,7 @@
 #include <util/sll/slotclosure.h>
 #include <util/sys/paths.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

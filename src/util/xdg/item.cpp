@@ -38,7 +38,7 @@
 #include "desktopparser.h"
 #include "xdg.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

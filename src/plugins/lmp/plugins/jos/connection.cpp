@@ -39,7 +39,7 @@
 #include "afcfile.h"
 #include "gpoddb.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

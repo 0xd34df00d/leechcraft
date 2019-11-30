@@ -45,7 +45,7 @@
 #include "tracksharedialog.h"
 #include "xmlsettingsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -287,4 +287,4 @@ namespace Xtazy
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_azoth_xtazy, LeechCraft::Azoth::Xtazy::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_azoth_xtazy, LC::Azoth::Xtazy::Plugin);

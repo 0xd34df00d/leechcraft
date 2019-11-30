@@ -33,7 +33,7 @@
 
 class ICoreProxy;
 
-namespace LeechCraft
+namespace LC
 {
 namespace DBus
 {

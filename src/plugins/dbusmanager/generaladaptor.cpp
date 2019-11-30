@@ -35,7 +35,7 @@
 #include "core.h"
 #include "common.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace DBusManager
 {

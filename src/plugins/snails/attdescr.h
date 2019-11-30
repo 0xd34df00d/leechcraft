@@ -33,7 +33,7 @@
 #include <QMetaType>
 #include <vmime/attachment.hpp>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Snails
 {
@@ -69,4 +69,4 @@ namespace Snails
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::Snails::AttDescr)
+Q_DECLARE_METATYPE (LC::Snails::AttDescr)

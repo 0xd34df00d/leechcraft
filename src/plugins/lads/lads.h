@@ -39,7 +39,7 @@
 class QMenuBar;
 class QMainWindow;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Lads
 {
@@ -71,12 +71,12 @@ namespace Lads
 
 	public slots:
 		void showHideMain () const;
-		void hookGonnaFillMenu (LeechCraft::IHookProxy_ptr);
+		void hookGonnaFillMenu (LC::IHookProxy_ptr);
 	private slots:
 		void fillMenu ();
-		void handleGotActions (const QList<QAction*>&, LeechCraft::ActionsEmbedPlace);
+		void handleGotActions (const QList<QAction*>&, LC::ActionsEmbedPlace);
 	signals:
-		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
+		void gotActions (QList<QAction*>, LC::ActionsEmbedPlace);
 	};
 }
 }

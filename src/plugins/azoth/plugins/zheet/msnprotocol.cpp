@@ -36,7 +36,7 @@
 #include "msnaccountconfigwidget.h"
 #include "msnaccount.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

@@ -32,7 +32,7 @@
 #include <QWizardPage>
 #include "ui_newtorrentthirdstep.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace BitTorrent
 {

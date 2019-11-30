@@ -35,7 +35,7 @@
 #include <QHash>
 #include "itemhandlers/itemhandlerbase.h"
 
-namespace LeechCraft
+namespace LC
 {
 	/** @brief Manager for the item handlers.
 	 *

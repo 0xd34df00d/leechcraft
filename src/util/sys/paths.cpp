@@ -41,7 +41,7 @@
 #include <QStandardPaths>
 #include <util/util.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

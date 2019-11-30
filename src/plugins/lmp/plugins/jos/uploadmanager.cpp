@@ -32,7 +32,7 @@
 #include <interfaces/lmp/iunmountablesync.h>
 #include "connection.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

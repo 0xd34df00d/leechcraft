@@ -43,7 +43,7 @@
 #include "xmlsettingsmanager.h"
 #include "eventssettingsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -178,4 +178,4 @@ namespace Tracolor
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_azoth_tracolor, LeechCraft::Azoth::Tracolor::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_azoth_tracolor, LC::Azoth::Tracolor::Plugin);

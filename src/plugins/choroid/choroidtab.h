@@ -45,7 +45,7 @@ class QDeclarativeView;
 
 class QQuickWidget;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Choroid
 {

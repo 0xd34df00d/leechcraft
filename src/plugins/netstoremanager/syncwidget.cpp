@@ -41,7 +41,7 @@
 #include "utils.h"
 #include "syncer.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace NetStoreManager
 {

@@ -33,7 +33,7 @@
 #include "sourceobject.h"
 #include "output.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

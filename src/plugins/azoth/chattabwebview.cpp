@@ -43,7 +43,7 @@
 #include "core.h"
 #include "actionsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

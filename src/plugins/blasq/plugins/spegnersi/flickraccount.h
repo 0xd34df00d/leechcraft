@@ -37,7 +37,7 @@
 class QStandardItemModel;
 class QStandardItem;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blasq
 {
@@ -49,7 +49,7 @@ namespace Spegnersi
 						, public IAccount
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Blasq::IAccount)
+		Q_INTERFACES (LC::Blasq::IAccount)
 
 		QString Name_;
 		const QByteArray ID_;

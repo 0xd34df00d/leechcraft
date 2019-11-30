@@ -34,7 +34,7 @@
 #include <QtDebug>
 #include <util/compat/fontwidth.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

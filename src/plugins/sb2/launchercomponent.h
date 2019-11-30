@@ -39,7 +39,7 @@ class QStandardItemModel;
 class QStandardItem;
 class IHaveTabs;
 
-namespace LeechCraft
+namespace LC
 {
 struct TabClassInfo;
 class QuarkComponent;

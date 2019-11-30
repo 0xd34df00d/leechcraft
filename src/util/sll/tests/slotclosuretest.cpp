@@ -31,9 +31,9 @@
 #include <QtTest>
 #include "slotclosure.h"
 
-QTEST_MAIN (LeechCraft::Util::SlotClosureTest)
+QTEST_MAIN (LC::Util::SlotClosureTest)
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

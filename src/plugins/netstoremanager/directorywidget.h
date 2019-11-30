@@ -32,7 +32,7 @@
 #include <QWidget>
 #include "ui_directorywidget.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace NetStoreManager
 {

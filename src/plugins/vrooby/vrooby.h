@@ -36,7 +36,7 @@
 #include <interfaces/devices/iremovabledevmanager.h>
 #include <interfaces/iactionsexporter.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Vrooby
 {
@@ -74,7 +74,7 @@ namespace Vrooby
 		void checkAction ();
 		void showTrayView ();
 	signals:
-		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
+		void gotActions (QList<QAction*>, LC::ActionsEmbedPlace);
 	};
 }
 }

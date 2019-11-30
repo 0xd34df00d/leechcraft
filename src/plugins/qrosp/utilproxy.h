@@ -37,7 +37,7 @@
 
 class QTranslator;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Qrosp
 {
@@ -47,7 +47,7 @@ namespace Qrosp
 	public:
 		UtilProxy (QObject* = 0);
 	public slots:
-		QString GetUserText (const LeechCraft::Entity& entity) const;
+		QString GetUserText (const LC::Entity& entity) const;
 		QString MakePrettySize (qint64 size) const;
 		QString MakeTimeFromLong (ulong time) const;
 		QTranslator* InstallTranslator (const QString& base,
@@ -58,7 +58,7 @@ namespace Qrosp
 		QString GetTemporaryName (const QString& pattern) const;
 		QObject* MakeEntity (const QVariant& entity,
 				const QString& location,
-				LeechCraft::TaskParameters tp,
+				LC::TaskParameters tp,
 				const QString& mime) const;
 		QObject* MakeNotification (const QString& header,
 				const QString& text,

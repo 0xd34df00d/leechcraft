@@ -42,7 +42,7 @@
 #include "channelsmodel.h"
 #include "channelsfiltermodel.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Aggregator
 {

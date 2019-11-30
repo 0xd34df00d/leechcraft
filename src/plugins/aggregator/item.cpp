@@ -35,7 +35,7 @@
 #include "item.h"
 #include "poolsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Aggregator
 {

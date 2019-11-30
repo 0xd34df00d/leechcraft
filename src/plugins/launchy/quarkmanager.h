@@ -37,7 +37,7 @@ class QStandardItem;
 class QAbstractItemModel;
 class QStandardItemModel;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Launchy
 {

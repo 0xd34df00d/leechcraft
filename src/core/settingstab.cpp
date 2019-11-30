@@ -49,7 +49,7 @@
 #include "coreproxy.h"
 #include "settingswidget.h"
 
-namespace LeechCraft
+namespace LC
 {
 	const int ButtonWidth = 96;
 

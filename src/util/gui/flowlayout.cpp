@@ -30,7 +30,7 @@
 #include "flowlayout.h"
 #include <QWidget>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

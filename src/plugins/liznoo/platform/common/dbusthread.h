@@ -31,7 +31,7 @@
 
 #include <util/threads/workerthreadbase.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Liznoo
 {

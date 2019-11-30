@@ -31,7 +31,7 @@
 #include <QtDebug>
 #include "connection.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

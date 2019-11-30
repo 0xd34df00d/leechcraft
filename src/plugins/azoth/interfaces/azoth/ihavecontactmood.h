@@ -33,7 +33,7 @@
 
 class QString;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -86,5 +86,5 @@ namespace Azoth
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Azoth::IHaveContactMood,
+Q_DECLARE_INTERFACE (LC::Azoth::IHaveContactMood,
 		"org.LeechCraft.Azoth.IHaveContactMood/1.0")

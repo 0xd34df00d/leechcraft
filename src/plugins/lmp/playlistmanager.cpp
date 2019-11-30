@@ -43,7 +43,7 @@
 #include "localcollection.h"
 #include "mediainfo.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

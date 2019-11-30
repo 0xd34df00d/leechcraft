@@ -34,7 +34,7 @@
 #include "ui_accountaddwizardtemplatepage.h"
 #include "accountconfig.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Snails
 {

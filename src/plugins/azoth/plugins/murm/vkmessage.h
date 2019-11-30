@@ -34,7 +34,7 @@
 #include <interfaces/azoth/iadvancedmessage.h>
 #include <interfaces/azoth/irichtextmessage.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -48,9 +48,9 @@ namespace Murm
 					, public IRichTextMessage
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IMessage
-				LeechCraft::Azoth::IAdvancedMessage
-				LeechCraft::Azoth::IRichTextMessage)
+		Q_INTERFACES (LC::Azoth::IMessage
+				LC::Azoth::IAdvancedMessage
+				LC::Azoth::IRichTextMessage)
 
 		EntryBase * const OtherPart_;
 		EntryBase * const ParentCLEntry_;

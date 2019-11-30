@@ -37,7 +37,7 @@
 #include <QCache>
 #include <interfaces/azoth/ichatstyleresourcesource.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {
@@ -59,7 +59,7 @@ namespace AdiumStyles
 						   , public IChatStyleResourceSource
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IChatStyleResourceSource)
+		Q_INTERFACES (LC::Azoth::IChatStyleResourceSource)
 
 		std::shared_ptr<Util::ResourceLoader> StylesLoader_;
 		IProxyObject *Proxy_;

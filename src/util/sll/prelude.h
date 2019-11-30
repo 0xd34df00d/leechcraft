@@ -41,7 +41,7 @@ namespace boost
 	class iterator_range;
 }
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

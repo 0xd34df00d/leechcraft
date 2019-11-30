@@ -33,7 +33,7 @@
 #include <interfaces/iinfo.h>
 #include "ui_searchtext.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

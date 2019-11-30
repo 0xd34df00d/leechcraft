@@ -49,7 +49,7 @@
 
 Q_DECLARE_METATYPE (QSet<QByteArray>);
 
-namespace LeechCraft
+namespace LC
 {
 namespace SB2
 {
@@ -132,7 +132,7 @@ namespace SB2
 		ShortcutMgr_->SetShortcut (id, seqs);
 	}
 
-	void Plugin::hookGonnaShowStatusBar (LeechCraft::IHookProxy_ptr proxy, bool show)
+	void Plugin::hookGonnaShowStatusBar (LC::IHookProxy_ptr proxy, bool show)
 	{
 		if (show)
 			proxy->CancelDefault ();
@@ -219,5 +219,5 @@ namespace SB2
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_sb2, LeechCraft::SB2::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_sb2, LC::SB2::Plugin);
 

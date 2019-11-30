@@ -34,7 +34,7 @@
 #include <QtDebug>
 #include "mergemodel.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

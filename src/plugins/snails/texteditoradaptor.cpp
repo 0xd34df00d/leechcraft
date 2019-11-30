@@ -30,7 +30,7 @@
 #include "texteditoradaptor.h"
 #include <QTextEdit>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Snails
 {

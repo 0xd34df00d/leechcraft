@@ -32,7 +32,7 @@
 #include <QSettings>
 #include "commonpl.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

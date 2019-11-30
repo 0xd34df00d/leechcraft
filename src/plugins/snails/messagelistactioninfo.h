@@ -36,7 +36,7 @@
 #include <QMetaType>
 #include <util/sll/bitflags.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Snails
 {
@@ -63,7 +63,7 @@ namespace Snails
 }
 }
 
-DECLARE_BIT_FLAGS (LeechCraft::Snails::MessageListActionFlag)
+DECLARE_BIT_FLAGS (LC::Snails::MessageListActionFlag)
 
-Q_DECLARE_METATYPE (LeechCraft::Snails::MessageListActionInfo)
-Q_DECLARE_METATYPE (QList<LeechCraft::Snails::MessageListActionInfo>)
+Q_DECLARE_METATYPE (LC::Snails::MessageListActionInfo)
+Q_DECLARE_METATYPE (QList<LC::Snails::MessageListActionInfo>)

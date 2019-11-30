@@ -43,7 +43,7 @@
 #include <util/xpc/util.h>
 #include <util/sll/scopeguards.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace NewLife
 {

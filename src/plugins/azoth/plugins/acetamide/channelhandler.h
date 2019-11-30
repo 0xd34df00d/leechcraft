@@ -36,7 +36,7 @@
 #include "localtypes.h"
 #include "channelparticipantentry.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

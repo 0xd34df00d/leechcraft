@@ -35,7 +35,7 @@
 #include <QXmppDiscoveryIq.h>
 #include <interfaces/core/iloadprogressreporter.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

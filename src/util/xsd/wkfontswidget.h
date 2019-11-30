@@ -42,7 +42,7 @@ namespace Ui
 	class WkFontsWidget;
 }
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

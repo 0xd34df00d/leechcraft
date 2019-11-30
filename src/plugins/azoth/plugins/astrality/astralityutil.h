@@ -37,7 +37,7 @@ namespace Tp
 	class Presence;
 }
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

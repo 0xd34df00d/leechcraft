@@ -56,7 +56,7 @@
 #include "stdartistactionsmanager.h"
 #include "localcollection.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

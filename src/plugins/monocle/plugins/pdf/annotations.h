@@ -39,7 +39,7 @@ namespace Poppler
 	class TextAnnotation;
 }
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {

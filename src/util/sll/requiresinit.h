@@ -29,7 +29,7 @@
 
 #pragma once
 
-namespace LeechCraft::Util
+namespace LC::Util
 {
 	template<typename T>
 	struct RequiresInit

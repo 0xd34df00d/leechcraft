@@ -35,7 +35,7 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/core/ihookproxy.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {
@@ -107,7 +107,7 @@ namespace Poshuku
 		void error (const QString&);
 
 		// Hook support
-		void hookAddedToFavorites (LeechCraft::IHookProxy_ptr,
+		void hookAddedToFavorites (LC::IHookProxy_ptr,
 				QString title, QString url, QStringList tags);
 	};
 }

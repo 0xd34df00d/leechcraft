@@ -33,7 +33,7 @@
 #include <interfaces/ihavetabs.h>
 #include "ui_microblogstab.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

@@ -30,7 +30,7 @@
 #include "ktorrentimporter.h"
 #include "ktorrentimportpage.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace NewLife
 {

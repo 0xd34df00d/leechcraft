@@ -44,7 +44,7 @@
 
 Q_DECLARE_METATYPE (QList<QPointF>)
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

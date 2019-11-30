@@ -34,7 +34,7 @@
 
 class QComboBox;
 
-namespace LeechCraft
+namespace LC
 {
 	class ItemHandlerFactory;
 

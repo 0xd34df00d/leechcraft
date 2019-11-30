@@ -32,7 +32,7 @@
 #include <QMap>
 #include <QString>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

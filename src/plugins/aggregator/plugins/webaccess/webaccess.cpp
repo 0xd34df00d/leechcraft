@@ -35,7 +35,7 @@
 #include "servermanager.h"
 #include "xmlsettingsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Aggregator
 {
@@ -114,4 +114,4 @@ namespace WebAccess
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_aggregator_webaccess, LeechCraft::Aggregator::WebAccess::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_aggregator_webaccess, LC::Aggregator::WebAccess::Plugin);

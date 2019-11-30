@@ -32,7 +32,7 @@
 #include <QDialog>
 #include "ui_selectalbumdialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blasq
 {

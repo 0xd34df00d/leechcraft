@@ -43,7 +43,7 @@
 class QSortFilterProxyModel;
 class QStringListModel;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {
@@ -102,7 +102,7 @@ namespace LackMan
 		void RecoverTabs (const QList<TabRecoverInfo>& infos);
 		bool HasSimilarTab (const QByteArray&, const QList<QByteArray>&) const;
 	signals:
-		void gotEntity (const LeechCraft::Entity&);
+		void gotEntity (const LC::Entity&);
 
 		void addNewTab (const QString&, QWidget*);
 		void removeTab (QWidget*);

@@ -31,7 +31,7 @@
 
 #include "util/db/oral/oral.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

@@ -40,7 +40,7 @@
 #include "xmlsettingsmanager.h"
 #include "util.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Lastfmscrobble
 {

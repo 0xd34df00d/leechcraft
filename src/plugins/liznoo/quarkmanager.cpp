@@ -32,7 +32,7 @@
 #include <util/models/rolenamesmixin.h>
 #include "batteryinfo.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Liznoo
 {

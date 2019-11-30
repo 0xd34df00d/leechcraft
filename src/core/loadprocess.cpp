@@ -29,7 +29,7 @@
 
 #include "loadprocess.h"
 
-namespace LeechCraft
+namespace LC
 {
 	LoadProcess::LoadProcess (const QString& title, int min, int max)
 	: Title_ { title }

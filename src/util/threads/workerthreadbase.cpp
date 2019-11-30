@@ -30,7 +30,7 @@
 #include "workerthreadbase.h"
 #include <util/sll/slotclosure.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

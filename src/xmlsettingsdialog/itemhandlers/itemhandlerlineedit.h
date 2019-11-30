@@ -31,7 +31,7 @@
 
 #include "itemhandlerstringgetvalue.h"
 
-namespace LeechCraft
+namespace LC
 {
 	class ItemHandlerLineEdit : public ItemHandlerStringGetValue
 	{

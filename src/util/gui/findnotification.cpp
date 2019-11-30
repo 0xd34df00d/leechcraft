@@ -35,7 +35,7 @@
 #include "util/shortcuts/util.h"
 #include "ui_findnotification.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

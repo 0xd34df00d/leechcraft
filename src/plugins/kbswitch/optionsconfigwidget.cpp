@@ -36,7 +36,7 @@
 #include "rulesstorage.h"
 #include "xmlsettingsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace KBSwitch
 {

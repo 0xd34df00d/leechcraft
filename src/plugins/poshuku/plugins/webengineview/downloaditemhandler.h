@@ -35,7 +35,7 @@
 class QWebEngineProfile;
 class QWebEngineDownloadItem;
 
-namespace LeechCraft::Poshuku::WebEngineView
+namespace LC::Poshuku::WebEngineView
 {
 	class DownloadItemHandler : public QObject
 	{

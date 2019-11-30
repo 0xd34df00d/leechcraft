@@ -37,7 +37,7 @@
 #include "xmlsettingsmanager.h"
 #include "3dparty/idle.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -171,4 +171,4 @@ namespace Autoidler
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_azoth_autoidler, LeechCraft::Azoth::Autoidler::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_azoth_autoidler, LC::Azoth::Autoidler::Plugin);

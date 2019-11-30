@@ -45,7 +45,7 @@
 #include "util.h"
 #include "photourlstorage.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

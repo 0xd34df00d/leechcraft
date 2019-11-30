@@ -33,7 +33,7 @@
 #include <util/threads/workerthreadbase.h>
 #include "vcardstorageondisk.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

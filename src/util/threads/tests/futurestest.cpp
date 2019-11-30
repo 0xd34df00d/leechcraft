@@ -33,9 +33,9 @@
 #include <futures.h>
 #include "common.h"
 
-QTEST_MAIN (LeechCraft::Util::FuturesTest)
+QTEST_MAIN (LC::Util::FuturesTest)
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

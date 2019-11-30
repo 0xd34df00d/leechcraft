@@ -32,7 +32,7 @@
 #include <QObject>
 #include <interfaces/ipersistentstorageplugin.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace SecMan
 {

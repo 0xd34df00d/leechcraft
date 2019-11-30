@@ -37,7 +37,7 @@
 #include <interfaces/core/icoreproxyfwd.h>
 #include "repoinfo.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LackMan
 {

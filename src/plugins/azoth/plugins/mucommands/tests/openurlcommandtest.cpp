@@ -33,7 +33,7 @@
 #include "openurlcommand.cpp"
 #include "testutil.h"
 
-QTEST_APPLESS_MAIN (LeechCraft::Azoth::MuCommands::OpenUrlCommandTest)
+QTEST_APPLESS_MAIN (LC::Azoth::MuCommands::OpenUrlCommandTest)
 
 template<typename T>
 QDebug operator<< (QDebug dbg, const boost::optional<T>& opt)
@@ -45,7 +45,7 @@ QDebug operator<< (QDebug dbg, const boost::optional<T>& opt)
 	return dbg.space ();
 }
 
-QDebug operator<< (QDebug dbg, const LeechCraft::Azoth::MuCommands::UrlRange& r)
+QDebug operator<< (QDebug dbg, const LC::Azoth::MuCommands::UrlRange& r)
 {
 	dbg.nospace () << "UrlRange { start: "
 			<< r.Start_
@@ -55,10 +55,10 @@ QDebug operator<< (QDebug dbg, const LeechCraft::Azoth::MuCommands::UrlRange& r)
 	return dbg.space ();
 }
 
-QDebug operator<< (QDebug dbg, const LeechCraft::Azoth::MuCommands::UrlComposite& c)
+QDebug operator<< (QDebug dbg, const LC::Azoth::MuCommands::UrlComposite& c)
 {
 	dbg.nospace () << "UrlComposite { "
-			<< LeechCraft::Azoth::MuCommands::PrintVisitor {} (c.Range_).toUtf8 ()
+			<< LC::Azoth::MuCommands::PrintVisitor {} (c.Range_).toUtf8 ()
 			<< "; rx: `"
 			<< boost::get_optional_value_or (c.Pat_, "").c_str ()
 			<< "` }";
@@ -68,13 +68,13 @@ QDebug operator<< (QDebug dbg, const LeechCraft::Azoth::MuCommands::UrlComposite
 namespace QTest
 {
 	template<>
-	char* toString (const LeechCraft::Azoth::MuCommands::OpenUrlParams_t& var)
+	char* toString (const LC::Azoth::MuCommands::OpenUrlParams_t& var)
 	{
-		return LeechCraft::Azoth::MuCommands::PrintVar (var);
+		return LC::Azoth::MuCommands::PrintVar (var);
 	}
 }
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

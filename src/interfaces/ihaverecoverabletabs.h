@@ -61,7 +61,7 @@ public:
 	 *
 	 * This state will later be passed to the
 	 * IHaveRecoverableTabs::RecoverTabs() as the
-	 * LeechCraft::TabRecoverInfo::Data_ member.
+	 * LC::TabRecoverInfo::Data_ member.
 	 */
 	virtual QByteArray GetTabRecoverData () const = 0;
 
@@ -95,7 +95,7 @@ protected:
 	virtual void tabRecoverDataChanged () = 0;
 };
 
-namespace LeechCraft
+namespace LC
 {
 	typedef QList<QPair<QByteArray, QVariant>> DynPropertiesList_t;
 
@@ -144,7 +144,7 @@ namespace LeechCraft
  * closed tab), the RecoverTabs() method will be called by a tab session
  * manager plugin to recover the needed tabs.
  *
- * @sa IRecoverableTab, LeechCraft::TabRecoverInfo, IHaveTabs
+ * @sa IRecoverableTab, LC::TabRecoverInfo, IHaveTabs
  */
 class Q_DECL_EXPORT IHaveRecoverableTabs
 {
@@ -156,16 +156,16 @@ public:
 	 * This method should recover the tabs according to the information
 	 * contained in the infos list. That is, for each tab recover info
 	 * in that list it should create the tab, recover the tab state
-	 * according to LeechCraft::TabRecoverInfo::Data_, set the dynamic
+	 * according to LC::TabRecoverInfo::Data_, set the dynamic
 	 * properties of the tab (via QObject::setProperty()) according to
-	 * LeechCraft::TabRecoverInfo::DynProperties_ list, and only then
+	 * LC::TabRecoverInfo::DynProperties_ list, and only then
 	 * emit the IHaveTabs::addNewTab() signal.
 	 *
 	 * @note Please note that it's very important to emit the tab via
 	 * the addNewTab() signal only \em after the tab's dynamic properties
 	 * are restored.
 	 */
-	virtual void RecoverTabs (const QList<LeechCraft::TabRecoverInfo>& infos) = 0;
+	virtual void RecoverTabs (const QList<LC::TabRecoverInfo>& infos) = 0;
 
 	/** @brief Checks if there is a tab similar to the one defined by \em data.
 	 *

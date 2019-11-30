@@ -34,7 +34,7 @@
 class QXmppTransferManager;
 class QXmppTransferJob;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -47,7 +47,7 @@ namespace Xoox
 						  , public ITransferManager
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::ITransferManager)
+		Q_INTERFACES (LC::Azoth::ITransferManager)
 
 		ClientConnection& Conn_;
 		QXmppTransferManager& Manager_;

@@ -37,7 +37,7 @@
 template<typename, typename>
 class QMap;
 
-namespace LeechCraft
+namespace LC
 {
 enum class ContentType;
 

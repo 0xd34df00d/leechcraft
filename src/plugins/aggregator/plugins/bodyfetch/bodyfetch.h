@@ -38,7 +38,7 @@
 #include <interfaces/aggregator/item.h>
 #include <interfaces/core/ihookproxy.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Aggregator
 {
@@ -59,7 +59,7 @@ namespace BodyFetch
 		Q_OBJECT
 		Q_INTERFACES (IInfo
 				IPlugin2
-				LeechCraft::Aggregator::IAggregatorPlugin)
+				LC::Aggregator::IAggregatorPlugin)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Aggregator.BodyFetch")
 
@@ -83,9 +83,9 @@ namespace BodyFetch
 
 		void InitPlugin (IProxyObject*) override;
 	public slots:
-		void hookItemLoad (LeechCraft::IHookProxy_ptr proxy,
+		void hookItemLoad (LC::IHookProxy_ptr proxy,
 				Item*);
-		void hookItemAdded (LeechCraft::IHookProxy_ptr proxy,
+		void hookItemAdded (LC::IHookProxy_ptr proxy,
 				const Item& item);
 	private slots:
 		void handleDownload (QUrl);

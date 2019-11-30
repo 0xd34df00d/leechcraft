@@ -33,7 +33,7 @@
 #include <QWidget>
 #include "ui_ircaccountconfigurationwidget.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

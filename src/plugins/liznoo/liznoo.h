@@ -38,7 +38,7 @@
 #include "batteryhistory.h"
 #include "batteryinfo.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Liznoo
 {
@@ -102,7 +102,7 @@ namespace Liznoo
 
 		void handlePushButton (const QString&);
 	signals:
-		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
+		void gotActions (QList<QAction*>, LC::ActionsEmbedPlace);
 	};
 }
 }

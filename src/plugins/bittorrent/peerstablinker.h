@@ -39,7 +39,7 @@ namespace Ui
 	class TorrentTabWidget;
 }
 
-namespace LeechCraft
+namespace LC
 {
 namespace BitTorrent
 {

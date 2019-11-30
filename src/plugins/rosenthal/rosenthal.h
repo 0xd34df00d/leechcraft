@@ -34,7 +34,7 @@
 #include <interfaces/ihavesettings.h>
 #include <interfaces/ispellcheckprovider.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Rosenthal
 {

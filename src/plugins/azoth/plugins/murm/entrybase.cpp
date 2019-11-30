@@ -44,7 +44,7 @@
 #include "vkconnection.h"
 #include "xmlsettingsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -276,7 +276,7 @@ namespace Murm
 		{
 			return GetImageTemplate (SimpleImageInfo
 					{
-						LeechCraft::Util::GetAsBase64Src (icon.pixmap (16, 16).toImage ()),
+						LC::Util::GetAsBase64Src (icon.pixmap (16, 16).toImage ()),
 						name,
 						{ 16, 16 }
 					},
@@ -285,7 +285,7 @@ namespace Murm
 
 		QString Audio2Replacement (const AudioInfo& info, const ICoreProxy_ptr& proxy)
 		{
-			auto durStr = LeechCraft::Util::MakeTimeFromLong (info.Duration_);
+			auto durStr = LC::Util::MakeTimeFromLong (info.Duration_);
 			if (durStr.startsWith ("00:"))
 				durStr = durStr.mid (3);
 
@@ -352,7 +352,7 @@ namespace Murm
 			result += "<strong>" + info.Title_ + "</strong> ";
 			if (!info.Desc_.isEmpty ())
 				result += "(" + info.Desc_ + ") ";
-			result += "[" + LeechCraft::Util::MakeTimeFromLong (info.Duration_) + "] <br />";
+			result += "[" + LC::Util::MakeTimeFromLong (info.Duration_) + "] <br />";
 			result += "</a></div>";
 
 			return result;

@@ -32,7 +32,7 @@
 #include <QSortFilterProxyModel>
 #include <QQueue>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Aggregator
 {

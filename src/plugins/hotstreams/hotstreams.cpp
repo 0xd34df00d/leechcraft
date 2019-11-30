@@ -47,7 +47,7 @@
 
 Q_DECLARE_METATYPE (QList<QUrl>);
 
-namespace LeechCraft
+namespace LC
 {
 namespace HotStreams
 {
@@ -195,5 +195,5 @@ namespace HotStreams
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_hotstreams, LeechCraft::HotStreams::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_hotstreams, LC::HotStreams::Plugin);
 

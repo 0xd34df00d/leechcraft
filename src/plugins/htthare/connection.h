@@ -32,7 +32,7 @@
 #include <memory>
 #include <boost/asio.hpp>
 
-namespace LeechCraft
+namespace LC
 {
 namespace HttHare
 {

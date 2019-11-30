@@ -34,7 +34,7 @@
 #include <QDBusMetaType>
 #include "core.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace DBusManager
 {

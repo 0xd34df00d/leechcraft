@@ -32,7 +32,7 @@
 #include "abstractimporter.h"
 #include "firefoxprofileselectpage.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace NewLife
 {

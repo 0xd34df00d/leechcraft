@@ -32,7 +32,7 @@
 #include <QObject>
 #include <interfaces/azoth/iclentry.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -45,7 +45,7 @@ namespace Sarin
 					 , public ICLEntry
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::ICLEntry)
+		Q_INTERFACES (LC::Azoth::ICLEntry)
 
 		const QByteArray Pubkey_;
 		ToxAccount * const Acc_;

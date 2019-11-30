@@ -32,7 +32,7 @@
 #include "devmanager.h"
 #include "uploadmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {
@@ -122,4 +122,4 @@ namespace jOS
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_lmp_jos, LeechCraft::LMP::jOS::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_lmp_jos, LC::LMP::jOS::Plugin);

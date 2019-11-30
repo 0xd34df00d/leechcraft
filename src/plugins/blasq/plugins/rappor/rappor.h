@@ -34,7 +34,7 @@
 #include <interfaces/iplugin2.h>
 #include <interfaces/blasq/iservicesplugin.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blasq
 {
@@ -48,7 +48,7 @@ namespace Rappor
 				 , public IServicesPlugin
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Blasq::IServicesPlugin)
+		Q_INTERFACES (IInfo IPlugin2 LC::Blasq::IServicesPlugin)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Blasq.Rappor")
 

@@ -35,7 +35,7 @@
 #include "storage.h"
 #include "pendingmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LackMan
 {

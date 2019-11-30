@@ -42,7 +42,7 @@
 class QStandardItemModel;
 class QStandardItem;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {
@@ -62,8 +62,8 @@ namespace Vangog
 						, public ISupportUploads
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Blasq::IAccount LeechCraft::Blasq::ISupportDeletes
-				LeechCraft::Blasq::ISupportUploads)
+		Q_INTERFACES (LC::Blasq::IAccount LC::Blasq::ISupportDeletes
+				LC::Blasq::ISupportUploads)
 
 		QString Name_;
 		PicasaService * const Service_;

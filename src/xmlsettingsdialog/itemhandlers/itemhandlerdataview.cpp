@@ -43,7 +43,7 @@
 #include "../colorpicker.h"
 #include "../datasourceroles.h"
 
-namespace LeechCraft
+namespace LC
 {
 	ItemHandlerDataView::ItemHandlerDataView (ItemHandlerFactory *factory, Util::XmlSettingsDialog *xsd)
 	: ItemHandlerBase { xsd }

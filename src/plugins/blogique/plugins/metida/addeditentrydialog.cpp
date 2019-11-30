@@ -36,7 +36,7 @@
 #include "ljprofile.h"
 #include "selectgroupsdialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blogique
 {

@@ -32,7 +32,7 @@
 #include <QObject>
 #include <QVariantMap>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Otlozhu
 {

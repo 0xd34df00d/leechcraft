@@ -40,7 +40,7 @@
 #include "xmlparsers.h"
 #include "lackmanutil.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LackMan
 {

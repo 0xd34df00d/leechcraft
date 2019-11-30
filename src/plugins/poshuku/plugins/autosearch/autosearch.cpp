@@ -38,7 +38,7 @@
 #include <util/util.h>
 #include <util/sll/urloperator.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {
@@ -158,4 +158,4 @@ namespace Autosearch
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_poshuku_autosearch, LeechCraft::Poshuku::Autosearch::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_poshuku_autosearch, LC::Poshuku::Autosearch::Plugin);

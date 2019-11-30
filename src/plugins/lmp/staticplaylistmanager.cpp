@@ -32,7 +32,7 @@
 #include "mediainfo.h"
 #include "playlistparsers/m3u.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

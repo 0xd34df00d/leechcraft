@@ -43,7 +43,7 @@
 #include "accountthreadfwd.h"
 #include "common.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Snails
 {

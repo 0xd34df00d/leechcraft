@@ -33,7 +33,7 @@
 
 class QDomDocument;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Aggregator
 {

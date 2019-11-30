@@ -42,7 +42,7 @@
 #include <util/sll/urloperator.h>
 #include "vkaccount.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blasq
 {

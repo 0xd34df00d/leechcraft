@@ -30,7 +30,7 @@
 
 #include "fileswatcherbase.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace NetStoreManager
 {

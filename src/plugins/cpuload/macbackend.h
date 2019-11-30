@@ -32,7 +32,7 @@
 #include "backend.h"
 #include <QVector>
 
-namespace LeechCraft
+namespace LC
 {
 namespace CpuLoad
 {

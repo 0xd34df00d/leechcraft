@@ -31,7 +31,7 @@
 #define PLUGINS_LACKMAN_STRINGFILTERMODEL_H
 #include <QSortFilterProxyModel>
 
-namespace LeechCraft
+namespace LC
 {
 namespace LackMan
 {

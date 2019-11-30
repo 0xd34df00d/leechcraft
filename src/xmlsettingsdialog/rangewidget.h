@@ -33,7 +33,7 @@
 
 class QSpinBox;
 
-namespace LeechCraft
+namespace LC
 {
 	class RangeWidget : public QWidget
 	{

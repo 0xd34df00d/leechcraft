@@ -30,7 +30,7 @@
 #include "requestbuilder.h"
 #include <QUuid>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Imgaste
 {

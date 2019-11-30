@@ -31,7 +31,7 @@
 
 #include "itemhandleroptionssetvalue.h"
 
-namespace LeechCraft
+namespace LC
 {
 	class ItemHandlerRadio : public ItemHandlerOptionsSetValue
 	{

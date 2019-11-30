@@ -29,7 +29,7 @@
 
 #include "itemhandlerspinboxdouble.h"
 
-namespace LeechCraft
+namespace LC
 {
 	ItemHandlerSpinboxDouble::ItemHandlerSpinboxDouble (Util::XmlSettingsDialog *xsd)
 	: ItemHandlerSpinboxBase<QDoubleSpinBox, double>

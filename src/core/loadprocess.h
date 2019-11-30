@@ -32,7 +32,7 @@
 #include <QElapsedTimer>
 #include "loadprocessbase.h"
 
-namespace LeechCraft
+namespace LC
 {
 	class LoadProcess : public LoadProcessBase
 	{

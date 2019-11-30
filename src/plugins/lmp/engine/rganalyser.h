@@ -38,7 +38,7 @@ typedef struct _GstMessage GstMessage;
 typedef struct _GstElement GstElement;
 typedef std::shared_ptr<GstMessage> GstMessage_ptr;
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

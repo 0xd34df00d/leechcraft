@@ -52,7 +52,7 @@
 #include "hypedartistsfetcher.h"
 #include "hypedtracksfetcher.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Lastfmscrobble
 {
@@ -298,4 +298,4 @@ namespace Lastfmscrobble
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_lastfmscrobble, LeechCraft::Lastfmscrobble::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_lastfmscrobble, LC::Lastfmscrobble::Plugin);

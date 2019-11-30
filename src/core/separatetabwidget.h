@@ -48,7 +48,7 @@ class QHBoxLayout;
 class QToolButton;
 class QToolBar;
 
-namespace LeechCraft
+namespace LC
 {
 	class MainWindow;
 	class SeparateTabBar;
@@ -175,15 +175,15 @@ namespace LeechCraft
 		void tabWasMoved (int from, int to);
 
 		// Hook
-		void hookTabContextMenuFill (LeechCraft::IHookProxy_ptr proxy,
+		void hookTabContextMenuFill (LC::IHookProxy_ptr proxy,
 				QMenu *menu, int index, int windowsId);
-		void hookTabFinishedMoving (LeechCraft::IHookProxy_ptr proxy,
+		void hookTabFinishedMoving (LC::IHookProxy_ptr proxy,
 				int index,
 				int windowId);
-		void hookTabSetText (LeechCraft::IHookProxy_ptr proxy,
+		void hookTabSetText (LC::IHookProxy_ptr proxy,
 				int index,
 				int windowId);
-		void hookTabIsRemoving (LeechCraft::IHookProxy_ptr proxy,
+		void hookTabIsRemoving (LC::IHookProxy_ptr proxy,
 				int index,
 				int windowId);
 	};

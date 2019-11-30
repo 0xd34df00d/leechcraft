@@ -32,7 +32,7 @@
 
 #include "platformlayer.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Liznoo
 {

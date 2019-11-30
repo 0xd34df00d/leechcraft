@@ -37,7 +37,7 @@ class QTimer;
 class QFileSystemWatcher;
 class IPluginsManager;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

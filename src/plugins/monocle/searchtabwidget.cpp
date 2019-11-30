@@ -33,7 +33,7 @@
 #include <util/sll/qtutil.h>
 #include "textsearchhandler.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {

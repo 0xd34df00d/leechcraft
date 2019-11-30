@@ -33,7 +33,7 @@
 #include <QMap>
 #include <QVariant>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -155,7 +155,7 @@ namespace Azoth
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Azoth::ISupportGeolocation,
+Q_DECLARE_INTERFACE (LC::Azoth::ISupportGeolocation,
 		"org.Deviant.LeechCraft.Azoth.ISupportGeolocation/1.0")
 
 #endif

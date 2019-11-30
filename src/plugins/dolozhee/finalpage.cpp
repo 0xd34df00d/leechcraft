@@ -44,7 +44,7 @@
 #include "xmlgenerator.h"
 #include "fileattachpage.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Dolozhee
 {

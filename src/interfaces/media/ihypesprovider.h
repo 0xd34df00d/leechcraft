@@ -175,7 +175,7 @@ namespace Media
 		 * The result of a hyped entity list query is either a string with a
 		 * human-readable error text, or the list of the hyped items.
 		 */
-		using HypeQueryResult_t = LeechCraft::Util::Either<QString, HypedInfo_t>;
+		using HypeQueryResult_t = LC::Util::Either<QString, HypedInfo_t>;
 
 		/** @brief Returns the service name.
 		 *

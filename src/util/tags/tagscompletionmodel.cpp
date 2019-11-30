@@ -31,7 +31,7 @@
 #include <QtDebug>
 #include "tagscompletionmodel.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

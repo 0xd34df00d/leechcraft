@@ -47,7 +47,7 @@
 #include "xmlsettingsmanager.h"
 #include "polldialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blogique
 {

@@ -19,7 +19,7 @@
   <property name="options">
    <set>QWizard::CancelButtonOnLeft|QWizard::NoDefaultButton</set>
   </property>
-  <widget class="LeechCraft::NewLife::FirstPage" name="FirstPage_">
+  <widget class="LC::NewLife::FirstPage" name="FirstPage_">
    <attribute name="pageId">
     <string notr="true">0</string>
    </attribute>
@@ -41,7 +41,7 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>LeechCraft::NewLife::FirstPage</class>
+   <class>LC::NewLife::FirstPage</class>
    <extends>QWizardPage</extends>
    <header>firstpage.h</header>
    <container>1</container>

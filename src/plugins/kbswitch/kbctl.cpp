@@ -50,7 +50,7 @@
 #include <xcb/xkb.h>
 #undef explicit
 
-namespace LeechCraft
+namespace LC
 {
 namespace KBSwitch
 {

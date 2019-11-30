@@ -39,7 +39,7 @@
 #include <util/compat/screengeometry.h>
 #include <util/sll/lambdaeventfilter.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {
@@ -173,4 +173,4 @@ namespace QRd
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_poshuku_qrd, LeechCraft::Poshuku::QRd::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_poshuku_qrd, LC::Poshuku::QRd::Plugin);

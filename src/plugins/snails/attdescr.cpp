@@ -32,7 +32,7 @@
 #include <QtDebug>
 #include "vmimeconversions.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Snails
 {

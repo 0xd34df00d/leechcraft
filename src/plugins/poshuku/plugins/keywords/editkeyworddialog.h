@@ -32,7 +32,7 @@
 #include <QDialog>
 #include "ui_editkeyworddialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

@@ -36,7 +36,7 @@
 #include "xmlsettingsmanager.h"
 #include "tipdialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace KnowHow
 {
@@ -96,4 +96,4 @@ namespace KnowHow
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_knowhow, LeechCraft::KnowHow::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_knowhow, LC::KnowHow::Plugin);

@@ -32,7 +32,7 @@
 #include <QMainWindow>
 #include "ui_sourceviewer.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

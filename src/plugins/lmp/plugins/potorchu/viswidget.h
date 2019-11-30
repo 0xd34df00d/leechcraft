@@ -31,7 +31,7 @@
 
 #include <QGraphicsView>
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

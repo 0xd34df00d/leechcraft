@@ -29,7 +29,7 @@
 
 #include "inserttabledialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LHTR
 {

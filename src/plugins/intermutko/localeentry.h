@@ -31,7 +31,7 @@
 
 #include <QLocale>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Intermutko
 {
@@ -50,5 +50,5 @@ namespace Intermutko
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::Intermutko::LocaleEntry)
-Q_DECLARE_METATYPE (QList<LeechCraft::Intermutko::LocaleEntry>)
+Q_DECLARE_METATYPE (LC::Intermutko::LocaleEntry)
+Q_DECLARE_METATYPE (QList<LC::Intermutko::LocaleEntry>)

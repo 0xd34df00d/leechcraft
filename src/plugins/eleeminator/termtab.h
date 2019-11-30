@@ -36,7 +36,7 @@
 class QMenu;
 class QTermWidget;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

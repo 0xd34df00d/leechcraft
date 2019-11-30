@@ -31,9 +31,9 @@
 #include <QtTest>
 #include <visitor.h>
 
-QTEST_MAIN (LeechCraft::Util::VisitorTest)
+QTEST_MAIN (LC::Util::VisitorTest)
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

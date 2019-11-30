@@ -34,7 +34,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include "convinfo.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace GmailNotifier
 {

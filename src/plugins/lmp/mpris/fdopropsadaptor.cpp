@@ -37,7 +37,7 @@
 #include <QDBusVariant>
 #include <QtDebug>
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

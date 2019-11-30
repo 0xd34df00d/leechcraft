@@ -32,7 +32,7 @@
 #include <QDateTime>
 #include <QXmlStreamReader>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

@@ -44,7 +44,7 @@
 #include "rulesstorage.h"
 #include "optionsconfigwidget.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace KBSwitch
 {
@@ -161,4 +161,4 @@ namespace KBSwitch
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_kbswitch, LeechCraft::KBSwitch::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_kbswitch, LC::KBSwitch::Plugin);

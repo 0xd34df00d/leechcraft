@@ -33,7 +33,7 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/ientityhandler.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Sysnotify
 {

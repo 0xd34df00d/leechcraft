@@ -49,7 +49,7 @@ const QDBusArgument& operator>> (const QDBusArgument&, ICoreProxy_ptr&);
 QDBusArgument& operator<< (QDBusArgument&, const QIcon&);
 const QDBusArgument& operator>> (const QDBusArgument&, QIcon&);
 
-namespace LeechCraft
+namespace LC
 {
 namespace DBus
 {

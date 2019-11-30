@@ -33,7 +33,7 @@
 #include <QStyle>
 #include "guiconfig.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

@@ -41,7 +41,7 @@ class QAbstractItemModel;
 class QStandardItemModel;
 class QStandardItem;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {
@@ -111,7 +111,7 @@ namespace OnlineBookmarks
 		void checkDownloadPeriod ();
 		void checkUploadPeriod ();
 	signals:
-		void gotEntity (const LeechCraft::Entity&);
+		void gotEntity (const LC::Entity&);
 	};
 }
 }

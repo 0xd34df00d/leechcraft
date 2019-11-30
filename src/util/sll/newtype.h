@@ -29,7 +29,7 @@
 
 #pragma once
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {
@@ -82,4 +82,4 @@ namespace Util
 }
 }
 
-#define NewTypeTag LeechCraft::Util::detail::NewTypeHash(__FILE__), __LINE__
+#define NewTypeTag LC::Util::detail::NewTypeHash(__FILE__), __LINE__

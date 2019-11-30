@@ -52,7 +52,7 @@ uint qHash (IScript_ptr script)
 	return qHash (script.get ());
 }
 
-namespace LeechCraft
+namespace LC
 {
 namespace Aggregator
 {

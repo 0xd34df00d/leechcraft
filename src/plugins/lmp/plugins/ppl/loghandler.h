@@ -34,7 +34,7 @@
 
 class IPluginsManager;
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

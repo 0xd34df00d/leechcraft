@@ -34,7 +34,7 @@
 #include "kopeteemoticonssource.h"
 #include "psiplusemoticonssource.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -94,4 +94,4 @@ namespace NativeEmoticons
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_azoth_nativeemoticons, LeechCraft::Azoth::NativeEmoticons::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_azoth_nativeemoticons, LC::Azoth::NativeEmoticons::Plugin);

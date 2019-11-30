@@ -30,7 +30,7 @@
 #include "findproxy.h"
 #include <util/models/mergemodel.h>
 
-namespace LeechCraft::SeekThru
+namespace LC::SeekThru
 {
 	FindProxy::FindProxy (Request r)
 	: R_ (std::move (r))

@@ -34,7 +34,7 @@
 #include <QStringList>
 #include <interfaces/lmp/mediainfo.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

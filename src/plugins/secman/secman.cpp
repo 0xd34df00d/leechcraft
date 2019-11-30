@@ -35,7 +35,7 @@
 #include "contentsdisplaydialog.h"
 #include "persistentstorage.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace SecMan
 {
@@ -116,4 +116,4 @@ namespace SecMan
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_secman, LeechCraft::SecMan::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_secman, LC::SecMan::Plugin);

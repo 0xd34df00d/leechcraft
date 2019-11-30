@@ -34,7 +34,7 @@
 #include "pluginsmanagerwrapper.h"
 #include "tagsmanagerwrapper.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Qrosp
 {

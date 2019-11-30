@@ -36,7 +36,7 @@
 #include <interfaces/core/irootwindowsmanager.h>
 #include "generalhandler.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace AdvancedNotifications
 {

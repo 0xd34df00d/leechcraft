@@ -34,7 +34,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include "ui_imagecollectiondialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LHTR
 {

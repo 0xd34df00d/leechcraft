@@ -39,7 +39,7 @@ class QAbstractItemModel;
 
 typedef QList<QVariant> QVariantList;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

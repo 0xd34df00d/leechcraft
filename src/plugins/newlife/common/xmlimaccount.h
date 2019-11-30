@@ -37,7 +37,7 @@ class QDomElement;
 class QStandardItemModel;
 class QStandardItem;
 
-namespace LeechCraft
+namespace LC
 {
 namespace NewLife
 {

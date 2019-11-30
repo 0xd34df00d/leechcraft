@@ -33,7 +33,7 @@
 #include <interfaces/core/icoreproxyfwd.h>
 #include <interfaces/blogique/ibloggingplatform.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blogique
 {
@@ -46,7 +46,7 @@ namespace Metida
 							, public IBloggingPlatform
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Blogique::IBloggingPlatform)
+		Q_INTERFACES (LC::Blogique::IBloggingPlatform)
 
 		LocalStorage& Storage_;
 		QObject * const ParentBlogginPlatfromPlugin_;

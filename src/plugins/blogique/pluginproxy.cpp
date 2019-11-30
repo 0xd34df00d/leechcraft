@@ -32,7 +32,7 @@
 #include "interfaces/blogique/iaccount.h"
 #include "core.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blogique
 {

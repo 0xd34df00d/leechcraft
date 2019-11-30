@@ -51,7 +51,7 @@
 #include "localcollectionwatcher.h"
 #include "localcollectionmodel.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

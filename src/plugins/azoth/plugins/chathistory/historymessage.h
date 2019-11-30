@@ -33,7 +33,7 @@
 #include <interfaces/azoth/imessage.h>
 #include <interfaces/azoth/irichtextmessage.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -44,7 +44,7 @@ namespace ChatHistory
 						 , public IRichTextMessage
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IMessage LeechCraft::Azoth::IRichTextMessage)
+		Q_INTERFACES (LC::Azoth::IMessage LC::Azoth::IRichTextMessage)
 
 		Direction Direction_;
 		QObject * const OtherPart_;

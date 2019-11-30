@@ -38,7 +38,7 @@
 #include <QDateTime>
 #include "localtypes.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

@@ -47,7 +47,7 @@ class QXmppClient;
 class QXmppDiscoveryManager;
 class QXmppDiscoveryIq;
 
-namespace LeechCraft
+namespace LC
 {
 struct Entity;
 
@@ -267,8 +267,8 @@ namespace Xoox
 		void gotRosterItems (const QList<QObject*>&);
 		void rosterItemRemoved (QObject*);
 
-		void gotRequestedPosts (const QList<LeechCraft::Azoth::Post>&, const QString&);
-		void gotNewPost (const LeechCraft::Azoth::Post&);
+		void gotRequestedPosts (const QList<LC::Azoth::Post>&, const QString&);
+		void gotNewPost (const LC::Azoth::Post&);
 
 		void serverAuthFailed ();
 		void needPassword ();

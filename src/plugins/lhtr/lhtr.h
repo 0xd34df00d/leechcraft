@@ -34,7 +34,7 @@
 #include <interfaces/itexteditor.h>
 #include <interfaces/ihavesettings.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace LHTR
 {

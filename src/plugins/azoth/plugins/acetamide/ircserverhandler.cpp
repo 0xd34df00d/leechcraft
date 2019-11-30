@@ -52,7 +52,7 @@
 #include "channelsmanager.h"
 #include "channelslistdialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

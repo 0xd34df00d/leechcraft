@@ -32,7 +32,7 @@
 #include <QObject>
 #include <interfaces/azoth/isupportlastactivity.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -42,7 +42,7 @@ namespace Xoox
 									 , public IPendingLastActivityRequest
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IPendingLastActivityRequest)
+		Q_INTERFACES (LC::Azoth::IPendingLastActivityRequest)
 
 		const QString Jid_;
 

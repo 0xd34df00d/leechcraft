@@ -31,7 +31,7 @@
 
 #include "channel.h"
 
-namespace LeechCraft::Aggregator::ChannelUtils
+namespace LC::Aggregator::ChannelUtils
 {
 	channels_shorts_t GetAllChannels ();
 }

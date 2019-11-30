@@ -29,7 +29,7 @@
 
 #include "urlaccessor.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

@@ -32,7 +32,7 @@
 #include "actionsmodel.h"
 #include "enablesoundactionmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace AdvancedNotifications
 {

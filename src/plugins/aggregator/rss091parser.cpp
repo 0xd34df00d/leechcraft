@@ -32,7 +32,7 @@
 #include <util/sll/domchildrenrange.h>
 #include <util/sll/prelude.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Aggregator
 {

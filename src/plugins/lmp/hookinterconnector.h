@@ -34,7 +34,7 @@
 
 class QMenu;
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {
@@ -46,12 +46,12 @@ namespace LMP
 	public:
 		HookInterconnector (QObject* = nullptr);
 	signals:
-		void hookCollectionContextMenuRequested (LeechCraft::IHookProxy_ptr,
+		void hookCollectionContextMenuRequested (LC::IHookProxy_ptr,
 				QMenu*,
-				const LeechCraft::LMP::MediaInfo&);
-		void hookPlaylistContextMenuRequested (LeechCraft::IHookProxy_ptr,
+				const LC::LMP::MediaInfo&);
+		void hookPlaylistContextMenuRequested (LC::IHookProxy_ptr,
 				QMenu*,
-				const LeechCraft::LMP::MediaInfo&);
+				const LC::LMP::MediaInfo&);
 	};
 }
 }

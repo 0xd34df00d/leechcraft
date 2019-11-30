@@ -45,7 +45,7 @@
 #include "settingsglobalhandler.h"
 #include "interceptadaptor.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {
@@ -225,4 +225,4 @@ namespace WebKitView
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_poshuku_webkitview, LeechCraft::Poshuku::WebKitView::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_poshuku_webkitview, LC::Poshuku::WebKitView::Plugin);

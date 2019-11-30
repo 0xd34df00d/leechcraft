@@ -30,7 +30,7 @@
 #include "playlistundocommand.h"
 #include "player.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

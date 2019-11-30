@@ -36,7 +36,7 @@
 #include <interfaces/lmp/ilmpproxy.h>
 #include "loghandler.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {
@@ -131,4 +131,4 @@ namespace PPL
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_lmp_ppl, LeechCraft::LMP::PPL::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_lmp_ppl, LC::LMP::PPL::Plugin);

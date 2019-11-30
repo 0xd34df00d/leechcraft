@@ -33,7 +33,7 @@
 #include <QWebView>
 #include <interfaces/itexteditor.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blogique
 {

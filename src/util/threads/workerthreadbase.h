@@ -40,7 +40,7 @@
 #include "futures.h"
 #include "threadsconfig.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

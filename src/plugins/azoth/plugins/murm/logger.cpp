@@ -35,7 +35,7 @@
 #include <util/sll/serializejson.h>
 #include <util/sys/paths.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

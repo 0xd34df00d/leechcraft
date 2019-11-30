@@ -29,7 +29,7 @@
 
 #include "accountconfigurationdialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blogique
 {

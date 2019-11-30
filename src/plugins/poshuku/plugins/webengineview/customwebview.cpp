@@ -45,7 +45,7 @@
 #include "customwebpage.h"
 #include "findnotification.h"
 
-namespace LeechCraft::Poshuku::WebEngineView
+namespace LC::Poshuku::WebEngineView
 {
 	CustomWebView::CustomWebView (const ICoreProxy_ptr& proxy, IProxyObject *poshukuProxy)
 	: Proxy_ { proxy }

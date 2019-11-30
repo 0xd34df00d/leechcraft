@@ -35,7 +35,7 @@
 
 class QDBusObjectPath;
 
-namespace LeechCraft
+namespace LC
 {
 namespace DBus
 {

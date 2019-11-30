@@ -35,7 +35,7 @@
 #include <qt_windows.h>
 #include <shellapi.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

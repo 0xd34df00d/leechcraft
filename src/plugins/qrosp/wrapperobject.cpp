@@ -61,7 +61,7 @@ Q_DECLARE_METATYPE (QString*);
 
 #define SCALL(x) (Call<x> (ScriptAction_))
 
-namespace LeechCraft
+namespace LC
 {
 namespace Qrosp
 {
@@ -162,7 +162,7 @@ namespace Qrosp
 	{
 		QMetaObjectBuilder builder;
 		builder.setSuperClass (QObject::metaObject ());
-		builder.setClassName (QString ("LeechCraft::Qross::%1::%2")
+		builder.setClassName (QString ("LC::Qross::%1::%2")
 					.arg (Type_)
 					.arg (SCALL (QString) ("GetUniqueID").remove ('.')).toLatin1 ());
 
@@ -236,9 +236,9 @@ namespace Qrosp
 		QVariant WrapParameter (QByteArray type, void *elem)
 		{
 			type = QMetaObject::normalizedType (type);
-			if (type == "LeechCraft::IHookProxy_ptr")
+			if (type == "LC::IHookProxy_ptr")
 				return QVariant::fromValue<QObject*> (new HookProxyWrapper (*static_cast<IHookProxy_ptr*> (elem)));
-			else if (type == "LeechCraft::Entity")
+			else if (type == "LC::Entity")
 				return QVariant::fromValue<QObject*> (new EntityWrapper (*static_cast<Entity*> (elem)));
 			else
 			{

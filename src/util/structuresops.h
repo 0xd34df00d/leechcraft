@@ -33,13 +33,13 @@
 #include "../interfaces/structures.h"
 #include "utilconfig.h"
 
-UTIL_API QDataStream& operator<< (QDataStream& out, const LeechCraft::Entity& e);
-UTIL_API QDataStream& operator>> (QDataStream& in, LeechCraft::Entity& e);
+UTIL_API QDataStream& operator<< (QDataStream& out, const LC::Entity& e);
+UTIL_API QDataStream& operator>> (QDataStream& in, LC::Entity& e);
 
-namespace LeechCraft
+namespace LC
 {
-	UTIL_API bool operator< (const LeechCraft::Entity&, const LeechCraft::Entity&);
-	UTIL_API bool operator== (const LeechCraft::Entity&, const LeechCraft::Entity&);
+	UTIL_API bool operator< (const LC::Entity&, const LC::Entity&);
+	UTIL_API bool operator== (const LC::Entity&, const LC::Entity&);
 }
 
 #endif

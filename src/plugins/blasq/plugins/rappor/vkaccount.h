@@ -42,7 +42,7 @@ class QDomElement;
 class QStandardItemModel;
 class QStandardItem;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {
@@ -67,9 +67,9 @@ namespace Rappor
 					, public ISupportDeletes
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Blasq::IAccount
-				LeechCraft::Blasq::ISupportUploads
-				LeechCraft::Blasq::ISupportDeletes)
+		Q_INTERFACES (LC::Blasq::IAccount
+				LC::Blasq::ISupportUploads
+				LC::Blasq::ISupportDeletes)
 
 		QString Name_;
 		const QByteArray ID_;

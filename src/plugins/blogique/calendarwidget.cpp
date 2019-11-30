@@ -30,7 +30,7 @@
 #include "calendarwidget.h"
 #include <QPainter>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blogique
 {

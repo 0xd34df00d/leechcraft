@@ -31,7 +31,7 @@
 #include <interfaces/azoth/iproxyobject.h>
 #include "msnprotocol.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

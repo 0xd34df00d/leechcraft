@@ -33,7 +33,7 @@
 #include <interfaces/ihavetabs.h>
 #include "ui_graphstab.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poleemery
 {

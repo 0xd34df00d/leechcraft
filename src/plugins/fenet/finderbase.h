@@ -39,7 +39,7 @@
 class QAbstractItemModel;
 class QStandardItemModel;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Fenet
 {

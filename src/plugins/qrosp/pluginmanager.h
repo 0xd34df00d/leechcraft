@@ -32,7 +32,7 @@
 #include <QObject>
 #include <QMap>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Qrosp
 {

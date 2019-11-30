@@ -33,7 +33,7 @@
 #include <interfaces/azoth/isupportgeolocation.h>
 #include "pepeventbase.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

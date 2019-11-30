@@ -37,7 +37,7 @@
 
 class QProgressDialog;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

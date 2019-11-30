@@ -33,7 +33,7 @@
 
 class QNetworkAccessManager;
 
-namespace LeechCraft
+namespace LC
 {
 struct Entity;
 
@@ -66,7 +66,7 @@ namespace MP3Tunes
 		void removeThis (const QString&);
 
 		void uploadFinished (const QString&,
-				LeechCraft::LMP::CloudStorageError, const QString&);
+				LC::LMP::CloudStorageError, const QString&);
 	};
 }
 }

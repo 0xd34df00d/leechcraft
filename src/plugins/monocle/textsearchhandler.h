@@ -38,7 +38,7 @@ class QGraphicsRectItem;
 class QGraphicsView;
 class QGraphicsScene;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {

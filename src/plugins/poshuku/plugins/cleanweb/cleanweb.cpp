@@ -42,7 +42,7 @@
 #include "subscriptionsmodel.h"
 #include "userfiltersmodel.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {
@@ -147,4 +147,4 @@ namespace CleanWeb
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_poshuku_cleanweb, LeechCraft::Poshuku::CleanWeb::CleanWeb);
+LC_EXPORT_PLUGIN (leechcraft_poshuku_cleanweb, LC::Poshuku::CleanWeb::CleanWeb);

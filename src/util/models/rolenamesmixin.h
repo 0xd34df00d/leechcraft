@@ -32,7 +32,7 @@
 #include <utility>
 #include <QHash>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

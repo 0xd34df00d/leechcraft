@@ -32,7 +32,7 @@
 #include <memory>
 #include "interfaces/poshuku/poshukutypes.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {
@@ -56,5 +56,5 @@ namespace Poshuku
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Poshuku::IStorageBackend,
+Q_DECLARE_INTERFACE (LC::Poshuku::IStorageBackend,
 		"org.LeechCraft.Poshuku.IStorageBackend/1.0")

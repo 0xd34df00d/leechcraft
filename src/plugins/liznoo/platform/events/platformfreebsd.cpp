@@ -31,7 +31,7 @@
 #include "platformfreebsd.h"
 #include <QTimer>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Liznoo
 {

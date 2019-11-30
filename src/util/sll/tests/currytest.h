@@ -31,7 +31,7 @@
 
 #include <QObject>
 
-namespace LeechCraft::Util
+namespace LC::Util
 {
 	class CurryTest : public QObject
 	{

@@ -106,7 +106,7 @@
 #include "avatarsmanager.h"
 #include "chattabpartstatemanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

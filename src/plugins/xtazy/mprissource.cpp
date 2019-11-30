@@ -34,7 +34,7 @@
 #include <util/sll/prelude.h>
 #include <util/sll/functional.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Xtazy
 {
@@ -73,9 +73,9 @@ namespace Xtazy
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::Xtazy::PlayerStatus);
+Q_DECLARE_METATYPE (LC::Xtazy::PlayerStatus);
 
-namespace LeechCraft
+namespace LC
 {
 namespace Xtazy
 {

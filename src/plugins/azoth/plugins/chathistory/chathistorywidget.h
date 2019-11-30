@@ -39,7 +39,7 @@ class QStandardItemModel;
 class QStandardItem;
 class QSortFilterProxyModel;
 
-namespace LeechCraft
+namespace LC
 {
 struct Entity;
 
@@ -135,7 +135,7 @@ namespace ChatHistory
 	signals:
 		void removeSelf (QWidget*);
 
-		void gotEntity (const LeechCraft::Entity&);
+		void gotEntity (const LC::Entity&);
 	};
 }
 }

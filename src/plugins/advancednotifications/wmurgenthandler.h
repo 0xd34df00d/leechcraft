@@ -31,7 +31,7 @@
 
 #include "concretehandlerbase.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace AdvancedNotifications
 {

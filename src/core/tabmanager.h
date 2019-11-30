@@ -40,7 +40,7 @@ class QKeyEvent;
 class QToolBar;
 class QMenu;
 
-namespace LeechCraft
+namespace LC
 {
 	class SeparateTabWidget;
 	class MainWindow;

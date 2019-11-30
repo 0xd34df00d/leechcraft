@@ -36,7 +36,7 @@ namespace Wt
 	class WString;
 }
 
-namespace LeechCraft
+namespace LC
 {
 namespace Aggregator
 {

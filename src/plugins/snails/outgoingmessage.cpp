@@ -29,6 +29,6 @@
 
 #include "outgoingmessage.h"
 
-namespace LeechCraft::Snails
+namespace LC::Snails
 {
 }

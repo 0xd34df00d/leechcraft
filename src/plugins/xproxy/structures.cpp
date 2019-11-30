@@ -30,7 +30,7 @@
 #include "structures.h"
 #include <QDataStream>
 
-namespace LeechCraft
+namespace LC
 {
 namespace XProxy
 {

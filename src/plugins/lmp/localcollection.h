@@ -45,7 +45,7 @@ class QAbstractItemModel;
 class QModelIndex;
 class QSortFilterProxyModel;
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {
@@ -59,7 +59,7 @@ namespace LMP
 						  , public ILocalCollection
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::LMP::ILocalCollection)
+		Q_INTERFACES (LC::LMP::ILocalCollection)
 
 		bool IsReady_ = false;
 

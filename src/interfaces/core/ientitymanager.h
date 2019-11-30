@@ -34,7 +34,7 @@
 #include <util/sll/either.h>
 #include <interfaces/idownload.h>
 
-namespace LeechCraft
+namespace LC
 {
 	struct Entity;
 }
@@ -90,7 +90,7 @@ public:
 	 *
 	 * @sa DelegationResult
 	 */
-	virtual DelegationResult DelegateEntity (LeechCraft::Entity entity, QObject *desired = nullptr) = 0;
+	virtual DelegationResult DelegateEntity (LC::Entity entity, QObject *desired = nullptr) = 0;
 
 	/** @brief Handles the given entity.
 	 *
@@ -106,7 +106,7 @@ public:
 	 *
 	 * @return If the entity has been handled successfully.
 	 */
-	virtual bool HandleEntity (LeechCraft::Entity entity, QObject *desired = nullptr) = 0;
+	virtual bool HandleEntity (LC::Entity entity, QObject *desired = nullptr) = 0;
 
 	/** @brief Queries whether the given entity can be handled at all.
 	 *
@@ -114,7 +114,7 @@ public:
 	 *
 	 * @return Whether there is at least one plugin to handle this entity.
 	 */
-	virtual bool CouldHandle (const LeechCraft::Entity& entity) = 0;
+	virtual bool CouldHandle (const LC::Entity& entity) = 0;
 
 	/** @brief Queries what plugins can handle the given entity.
 	 *
@@ -122,7 +122,7 @@ public:
 	 *
 	 * @return The list of plugin instances that can handle the given entity.
 	 */
-	virtual QList<QObject*> GetPossibleHandlers (const LeechCraft::Entity& entity) = 0;
+	virtual QList<QObject*> GetPossibleHandlers (const LC::Entity& entity) = 0;
 };
 
 Q_DECLARE_INTERFACE (IEntityManager, "org.Deviant.LeechCraft.IEntityManager/1.0")

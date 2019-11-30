@@ -33,7 +33,7 @@
 #include "document.h"
 #include "docmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {
@@ -153,4 +153,4 @@ namespace Seen
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_monocle_seen, LeechCraft::Monocle::Seen::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_monocle_seen, LC::Monocle::Seen::Plugin);

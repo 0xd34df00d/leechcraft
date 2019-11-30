@@ -34,7 +34,7 @@
 
 class QWidget;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -111,7 +111,7 @@ namespace Azoth
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Azoth::ISupportBookmarks,
+Q_DECLARE_INTERFACE (LC::Azoth::ISupportBookmarks,
 		"org.Deviant.LeechCraft.Azoth.ISupportBookmarks/1.0")
 
 #endif

@@ -37,7 +37,7 @@
 #include "keywordsmanagerwidget.h"
 #include "xmlsettingsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {
@@ -126,7 +126,7 @@ namespace Keywords
 		Keywords2Urls_.remove (keyword);
 	}
 
-	void Plugin::hookURLEditReturnPressed (LeechCraft::IHookProxy_ptr proxy, QObject*)
+	void Plugin::hookURLEditReturnPressed (LC::IHookProxy_ptr proxy, QObject*)
 	{
 		const auto& text = proxy->GetValue ("Text").toString ();
 		if (text.isEmpty () || !text.contains (' '))
@@ -144,4 +144,4 @@ namespace Keywords
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_poshuku_keywords, LeechCraft::Poshuku::Keywords::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_poshuku_keywords, LC::Poshuku::Keywords::Plugin);

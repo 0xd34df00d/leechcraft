@@ -31,7 +31,7 @@
 
 #include <Qt>
 
-namespace LeechCraft
+namespace LC
 {
 	namespace DataSources
 	{

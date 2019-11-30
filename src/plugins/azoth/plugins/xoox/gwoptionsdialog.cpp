@@ -32,7 +32,7 @@
 #include <QMessageBox>
 #include "regformhandlerwidget.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

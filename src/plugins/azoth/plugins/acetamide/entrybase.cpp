@@ -38,7 +38,7 @@
 #include "vcarddialog.h"
 #include "ircparticipantentry.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

@@ -35,7 +35,7 @@
 #include <interfaces/azoth/iadvancedmessage.h>
 #include <interfaces/azoth/irichtextmessage.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -50,9 +50,9 @@ namespace Xoox
 					   , public IRichTextMessage
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IMessage
-				LeechCraft::Azoth::IAdvancedMessage
-				LeechCraft::Azoth::IRichTextMessage)
+		Q_INTERFACES (LC::Azoth::IMessage
+				LC::Azoth::IAdvancedMessage
+				LC::Azoth::IRichTextMessage)
 
 		Type Type_;
 		SubType SubType_ = SubType::Other;

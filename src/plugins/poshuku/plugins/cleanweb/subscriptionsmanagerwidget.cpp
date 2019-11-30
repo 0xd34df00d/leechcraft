@@ -34,7 +34,7 @@
 #include "subscriptionsmodel.h"
 #include "subscriptionadddialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

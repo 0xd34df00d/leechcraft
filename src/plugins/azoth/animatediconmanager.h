@@ -39,7 +39,7 @@
 #include <QImageReader>
 #include <QCache>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

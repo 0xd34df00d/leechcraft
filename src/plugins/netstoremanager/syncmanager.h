@@ -35,12 +35,12 @@
 #include "interfaces/netstoremanager/isupportfilelistings.h"
 #include "syncwidget.h"
 
-typedef QList<LeechCraft::NetStoreManager::Change> Changes_t;
+typedef QList<LC::NetStoreManager::Change> Changes_t;
 Q_DECLARE_METATYPE (Changes_t)
 
 class QThread;
 
-namespace LeechCraft
+namespace LC
 {
 namespace NetStoreManager
 {

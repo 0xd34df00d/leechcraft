@@ -33,7 +33,7 @@
 #include <QMetaType>
 #include <interfaces/structures.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Aggregator
 {
@@ -60,7 +60,7 @@ namespace Aggregator
 
 	enum ChannelRoles
 	{
-		UnreadCount = LeechCraft::RoleMAX + 1,
+		UnreadCount = LC::RoleMAX + 1,
 		ErrorCount,
 		ChannelID,
 		FeedID,
@@ -71,5 +71,5 @@ namespace Aggregator
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::Aggregator::IDType_t)
-Q_DECLARE_METATYPE (QList<LeechCraft::Aggregator::IDType_t>)
+Q_DECLARE_METATYPE (LC::Aggregator::IDType_t)
+Q_DECLARE_METATYPE (QList<LC::Aggregator::IDType_t>)

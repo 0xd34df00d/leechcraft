@@ -31,7 +31,7 @@
 #include <QCoreApplication>
 #include <QSettings>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Launchy
 {

@@ -31,7 +31,7 @@
 #define PLUGINS_LACKMAN_VERSIONCOMPARATOR_H
 #include <QString>
 
-namespace LeechCraft
+namespace LC
 {
 namespace LackMan
 {

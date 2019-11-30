@@ -31,7 +31,7 @@
 #include <util/sys/resourceloader.h>
 #include "xmlsettingsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace AdvancedNotifications
 {

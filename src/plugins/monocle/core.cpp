@@ -40,7 +40,7 @@
 #include "bookmarksmanager.h"
 #include "coreloadproxy.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {

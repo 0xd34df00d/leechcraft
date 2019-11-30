@@ -29,7 +29,7 @@
 
 #include "coreplugin2manager.h"
 
-namespace LeechCraft
+namespace LC
 {
 	CorePlugin2Manager::CorePlugin2Manager (QObject *parent)
 	: Util::BaseHookInterconnector (parent)

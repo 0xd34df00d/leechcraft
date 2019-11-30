@@ -33,7 +33,7 @@
 #include <QCoreApplication>
 #include <util/sll/prelude.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace SecMan
 {
@@ -107,4 +107,4 @@ namespace SimpleStorage
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_secman_simplestorage, LeechCraft::SecMan::SimpleStorage::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_secman_simplestorage, LC::SecMan::SimpleStorage::Plugin);

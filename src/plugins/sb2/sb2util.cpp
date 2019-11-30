@@ -29,7 +29,7 @@
 
 #include "sb2util.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace SB2
 {

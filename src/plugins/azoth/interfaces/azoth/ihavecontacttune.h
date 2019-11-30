@@ -38,7 +38,7 @@ namespace Media
 	struct AudioInfo;
 }
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -87,5 +87,5 @@ namespace Azoth
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Azoth::IHaveContactTune,
+Q_DECLARE_INTERFACE (LC::Azoth::IHaveContactTune,
 		"org.LeechCraft.Azoth.IHaveContactTune/1.0")

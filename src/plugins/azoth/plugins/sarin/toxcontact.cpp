@@ -33,7 +33,7 @@
 #include "toxaccount.h"
 #include "chatmessage.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

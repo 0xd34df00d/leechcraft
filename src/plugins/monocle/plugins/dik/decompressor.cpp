@@ -35,7 +35,7 @@
 #include "mobiparser.h"
 #include "util.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {

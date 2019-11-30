@@ -33,7 +33,7 @@
 #include "interfaces/monocle/idocument.h"
 #include "ui_thumbswidget.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {

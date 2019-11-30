@@ -33,9 +33,9 @@
 #include "commonjobadder.h"
 #include "xmlsettingsmanager.h"
 
-using namespace LeechCraft;
+using namespace LC;
 
-LeechCraft::CommonJobAdder::CommonJobAdder (QWidget *parent)
+LC::CommonJobAdder::CommonJobAdder (QWidget *parent)
 : QDialog (parent)
 {
 	setupUi (this);
@@ -46,12 +46,12 @@ LeechCraft::CommonJobAdder::CommonJobAdder (QWidget *parent)
 		What_->setText (text);
 }
 
-QString LeechCraft::CommonJobAdder::GetString () const
+QString LC::CommonJobAdder::GetString () const
 {
 	return What_->text ();
 }
 
-void LeechCraft::CommonJobAdder::on_Browse__released ()
+void LC::CommonJobAdder::on_Browse__released ()
 {
 	const QString &name = QFileDialog::getOpenFileName (this,
 			tr ("Select file"),

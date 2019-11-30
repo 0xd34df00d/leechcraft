@@ -32,7 +32,7 @@
 #include <QObject>
 #include "interfaces/aggregator/iproxyobject.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Aggregator
 {
@@ -42,7 +42,7 @@ namespace Aggregator
 					  , public IProxyObject
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Aggregator::IProxyObject)
+		Q_INTERFACES (LC::Aggregator::IProxyObject)
 
 		ChannelsModel * const ChannelsModel_;
 	public:

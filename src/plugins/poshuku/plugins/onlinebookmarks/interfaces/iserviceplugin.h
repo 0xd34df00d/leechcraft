@@ -30,7 +30,7 @@
 #ifndef PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_ISERVICEPLUGIN_H
 #define PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_ISERVICEPLUGIN_H
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {
@@ -49,7 +49,7 @@ namespace OnlineBookmarks
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Poshuku::OnlineBookmarks::IServicePlugin,
+Q_DECLARE_INTERFACE (LC::Poshuku::OnlineBookmarks::IServicePlugin,
 		"org.Deviant.LeechCraft.Poshuku.OnlineBookmarks.IServicePlugin/1.0")
 
 #endif // PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_ISERVICEPLUGIN_H

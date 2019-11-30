@@ -31,7 +31,7 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

@@ -38,7 +38,7 @@
 #include "core.h"
 #include "currenciesmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poleemery
 {
@@ -156,4 +156,4 @@ namespace Poleemery
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_poleemery, LeechCraft::Poleemery::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_poleemery, LC::Poleemery::Plugin);

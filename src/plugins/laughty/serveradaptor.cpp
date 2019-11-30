@@ -31,7 +31,7 @@
 #include <QStringList>
 #include "serverobject.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Laughty
 {

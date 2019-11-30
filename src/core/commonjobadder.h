@@ -32,7 +32,7 @@
 #include <QDialog>
 #include "ui_commonjobadder.h"
 
-namespace LeechCraft
+namespace LC
 {
 	/** Dialog for adding tasks directly via LeechCraft. Has two fields,
 	 * What and Where, corresponding to Entity_ and Location_ fields of

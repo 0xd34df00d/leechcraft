@@ -34,7 +34,7 @@
 #include <QFile>
 #include <typeinfo>
 
-using namespace LeechCraft;
+using namespace LC;
 
 Scripter::Scripter (const QDomElement& elem)
 : Settings_ (new Settings)

@@ -33,7 +33,7 @@
 #include <status.h>
 #include <interfaces/azoth/azothcommon.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

@@ -45,7 +45,7 @@
 #include "manageblacklistdialog.h"
 #include "transfermanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

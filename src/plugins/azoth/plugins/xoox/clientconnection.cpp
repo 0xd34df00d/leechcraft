@@ -85,7 +85,7 @@
 #include "clientconnectionextensionsmanager.h"
 #include "xeps/riexmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

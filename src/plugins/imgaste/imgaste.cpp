@@ -47,7 +47,7 @@
 #include "hostingservice.h"
 #include "poster.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Imgaste
 {
@@ -277,4 +277,4 @@ namespace Imgaste
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_imgaste, LeechCraft::Imgaste::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_imgaste, LC::Imgaste::Plugin);

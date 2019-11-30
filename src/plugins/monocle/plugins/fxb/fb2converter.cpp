@@ -44,7 +44,7 @@
 #include <util/sll/domchildrenrange.h>
 #include "toclink.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {

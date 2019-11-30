@@ -46,7 +46,7 @@
 #include "userscriptsmanagerwidget.h"
 #include "userscriptinstallerdialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {
@@ -149,7 +149,7 @@ namespace FatApe
 		return SettingsDialog_;
 	}
 
-	void Plugin::hookBrowserWidgetInitialized (LeechCraft::IHookProxy_ptr,
+	void Plugin::hookBrowserWidgetInitialized (LC::IHookProxy_ptr,
 			QObject *browserWidget)
 	{
 		const auto ibw = qobject_cast<IBrowserWidget*> (browserWidget);
@@ -205,7 +205,7 @@ namespace FatApe
 		UserScripts_ [scriptIndex].SetEnabled (value);
 	}
 
-	void Plugin::hookAcceptNavigationRequest (LeechCraft::IHookProxy_ptr proxy, QWebPage*,
+	void Plugin::hookAcceptNavigationRequest (LC::IHookProxy_ptr proxy, QWebPage*,
 			QWebFrame*, QNetworkRequest request, QWebPage::NavigationType)
 	{
 		if (!request.url ().path ().endsWith ("user.js", Qt::CaseInsensitive) ||
@@ -271,4 +271,4 @@ namespace FatApe
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_poshuku_fatape, LeechCraft::Poshuku::FatApe::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_poshuku_fatape, LC::Poshuku::FatApe::Plugin);

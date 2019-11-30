@@ -34,7 +34,7 @@
 #include <QMap>
 #include <QPointer>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

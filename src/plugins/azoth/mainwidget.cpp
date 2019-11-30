@@ -63,7 +63,7 @@
 #include "groupremovedialog.h"
 #include "resourcesmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -179,9 +179,9 @@ namespace Azoth
 		handleStatusIconsChanged ();
 
 		connect (&Core::Instance (),
-				SIGNAL (topStatusChanged (LeechCraft::Azoth::State)),
+				SIGNAL (topStatusChanged (LC::Azoth::State)),
 				this,
-				SLOT (updateFastStatusButton (LeechCraft::Azoth::State)));
+				SLOT (updateFastStatusButton (LC::Azoth::State)));
 
 		qobject_cast<QVBoxLayout*> (layout ())->insertWidget (0, BottomBar_);
 

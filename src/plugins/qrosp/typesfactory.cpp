@@ -30,7 +30,7 @@
 #include "typesfactory.h"
 #include "wrappers/entitywrapper.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Qrosp
 {
@@ -41,7 +41,7 @@ namespace Qrosp
 
 	QObject* TypesFactory::Create (const QString& type)
 	{
-		if (type == "LeechCraft::Entity")
+		if (type == "LC::Entity")
 			return new EntityWrapper (Entity ());
 		else
 			return 0;

@@ -32,9 +32,9 @@
 #include <QtTest>
 #include <curry.h>
 
-QTEST_APPLESS_MAIN (LeechCraft::Util::CurryTest)
+QTEST_APPLESS_MAIN (LC::Util::CurryTest)
 
-namespace LeechCraft::Util
+namespace LC::Util
 {
 	void CurryTest::testBasic ()
 	{

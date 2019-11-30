@@ -33,7 +33,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include "newtorrentparams.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace BitTorrent
 {

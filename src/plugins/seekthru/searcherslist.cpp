@@ -37,7 +37,7 @@
 #include <util/xpc/util.h>
 #include "core.h"
 
-namespace LeechCraft::SeekThru
+namespace LC::SeekThru
 {
 	SearchersList::SearchersList (const ICoreProxy_ptr& proxy, QWidget* parent)
 	: QWidget { parent }

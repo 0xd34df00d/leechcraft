@@ -38,7 +38,7 @@
 
 using Tox = struct Tox;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

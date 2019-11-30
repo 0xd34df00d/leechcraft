@@ -34,7 +34,7 @@
 #include <QDomElement>
 #include "../xmlsettingsdialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 	/** Base class for the handlers of the <item />-QDomElements.
 	 */

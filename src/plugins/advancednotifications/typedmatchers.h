@@ -42,7 +42,7 @@ namespace Ui
 	class StringLikeMatcherConfigWidget;
 }
 
-namespace LeechCraft
+namespace LC
 {
 namespace AdvancedNotifications
 {

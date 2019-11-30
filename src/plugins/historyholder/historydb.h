@@ -41,7 +41,7 @@ class QAbstractItemModel;
 
 class ITagsManager;
 
-namespace LeechCraft
+namespace LC
 {
 struct Entity;
 

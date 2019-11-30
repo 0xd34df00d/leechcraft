@@ -29,7 +29,7 @@
 
 #pragma once
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

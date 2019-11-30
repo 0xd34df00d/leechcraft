@@ -30,7 +30,7 @@
 #include "exceptionsmodel.h"
 #include <QSettings>
 
-namespace LeechCraft
+namespace LC
 {
 namespace CertMgr
 {

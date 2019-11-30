@@ -29,7 +29,7 @@
 
 #include "mobileraii.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

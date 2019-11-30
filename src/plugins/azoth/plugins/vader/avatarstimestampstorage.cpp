@@ -34,7 +34,7 @@
 #include <util/db/oral/oral.h>
 #include <util/db/util.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -54,11 +54,11 @@ namespace Vader
 }
 }
 
-BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Azoth::Vader::AvatarsTimestampStorage::AvatarTimestamp,
+BOOST_FUSION_ADAPT_STRUCT (LC::Azoth::Vader::AvatarsTimestampStorage::AvatarTimestamp,
 		Email_,
 		TS_)
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

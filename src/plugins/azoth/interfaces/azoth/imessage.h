@@ -36,7 +36,7 @@
 
 class QObject;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -351,5 +351,5 @@ namespace Azoth
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Azoth::IMessage,
+Q_DECLARE_INTERFACE (LC::Azoth::IMessage,
 		"org.LeechCraft.Azoth.IMessage/1.0")

@@ -34,7 +34,7 @@
 #include <boost/spirit/include/classic_insert_at_actor.hpp>
 #include "ircserverhandler.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

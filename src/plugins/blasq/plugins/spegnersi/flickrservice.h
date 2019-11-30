@@ -33,7 +33,7 @@
 #include <interfaces/blasq/iservice.h>
 #include <interfaces/core/icoreproxy.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blasq
 {
@@ -45,7 +45,7 @@ namespace Spegnersi
 						, public IService
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Blasq::IService)
+		Q_INTERFACES (LC::Blasq::IService)
 
 		const ICoreProxy_ptr Proxy_;
 

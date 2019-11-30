@@ -29,7 +29,7 @@
 
 #include "dataviewwidget.h"
 
-namespace LeechCraft
+namespace LC
 {
 	DataViewWidget::DataViewWidget (QWidget *parent)
 	: QWidget (parent)

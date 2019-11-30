@@ -82,9 +82,9 @@
 #include "entitymanager.h"
 #include "rootwindowsmanager.h"
 
-using namespace LeechCraft::Util;
+using namespace LC::Util;
 
-namespace LeechCraft
+namespace LC
 {
 	Core::Core ()
 	: NetworkAccessManager_ (new NetworkAccessManager)
@@ -109,9 +109,9 @@ namespace LeechCraft
 				SLOT (handleSettingClicked (const QString&)));
 
 		connect (LocalSocketHandler_.get (),
-				SIGNAL (gotEntity (const LeechCraft::Entity&)),
+				SIGNAL (gotEntity (const LC::Entity&)),
 				this,
-				SLOT (queueEntity (const LeechCraft::Entity&)));
+				SLOT (queueEntity (const LC::Entity&)));
 		connect (NetworkAccessManager_.get (),
 				SIGNAL (error (const QString&)),
 				this,
@@ -235,14 +235,14 @@ namespace LeechCraft
 		NewTabMenuManager_->SetToolbarActions (GetActions2Embed ());
 
 		disconnect (LocalSocketHandler_.get (),
-				SIGNAL (gotEntity (const LeechCraft::Entity&)),
+				SIGNAL (gotEntity (const LC::Entity&)),
 				this,
-				SLOT (queueEntity (const LeechCraft::Entity&)));
+				SLOT (queueEntity (const LC::Entity&)));
 
 		connect (LocalSocketHandler_.get (),
-				SIGNAL (gotEntity (const LeechCraft::Entity&)),
+				SIGNAL (gotEntity (const LC::Entity&)),
 				this,
-				SLOT (handleGotEntity (const LeechCraft::Entity&)));
+				SLOT (handleGotEntity (const LC::Entity&)));
 
 		QTimer::singleShot (1000,
 				LocalSocketHandler_.get (),
@@ -420,12 +420,12 @@ namespace LeechCraft
 		const QMetaObject *qmo = plugin->metaObject ();
 
 		if (qmo->indexOfSignal (QMetaObject::normalizedSignature (
-						"gotEntity (const LeechCraft::Entity&)"
+						"gotEntity (const LC::Entity&)"
 						).constData ()) != -1)
 			connect (plugin,
-					SIGNAL (gotEntity (const LeechCraft::Entity&)),
+					SIGNAL (gotEntity (const LC::Entity&)),
 					this,
-					SLOT (handleGotEntity (LeechCraft::Entity)),
+					SLOT (handleGotEntity (LC::Entity)),
 					Qt::QueuedConnection);
 	}
 

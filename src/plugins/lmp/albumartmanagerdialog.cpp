@@ -37,7 +37,7 @@
 #include "core.h"
 #include "albumartmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

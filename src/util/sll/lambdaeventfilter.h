@@ -33,7 +33,7 @@
 #include <QObject>
 #include "typegetter.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

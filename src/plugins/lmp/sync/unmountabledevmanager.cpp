@@ -35,7 +35,7 @@
 #include "../interfaces/lmp/iunmountablesync.h"
 #include "../core.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

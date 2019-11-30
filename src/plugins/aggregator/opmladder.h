@@ -35,12 +35,12 @@
 #include <interfaces/core/icoreproxyfwd.h>
 #include "feed.h"
 
-namespace LeechCraft
+namespace LC
 {
 	struct Entity;
 }
 
-namespace LeechCraft::Aggregator
+namespace LC::Aggregator
 {
 	class OpmlAdder : public QObject
 	{

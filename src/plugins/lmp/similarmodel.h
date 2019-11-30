@@ -37,7 +37,7 @@ namespace Media
 	struct ArtistInfo;
 }
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

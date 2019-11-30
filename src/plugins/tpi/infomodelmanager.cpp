@@ -34,7 +34,7 @@
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/ijobholder.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace TPI
 {

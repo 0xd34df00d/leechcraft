@@ -32,7 +32,7 @@
 #include <QWidget>
 #include "ui_plmanagerwidget.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

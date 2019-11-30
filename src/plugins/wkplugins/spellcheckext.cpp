@@ -32,7 +32,7 @@
 #include <interfaces/core/ipluginsmanager.h>
 #include "xmlsettingsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace WKPlugins
 {

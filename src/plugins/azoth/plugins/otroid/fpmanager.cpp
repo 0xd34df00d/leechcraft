@@ -44,7 +44,7 @@ extern "C"
 #include <interfaces/azoth/iaccount.h>
 #include "util.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

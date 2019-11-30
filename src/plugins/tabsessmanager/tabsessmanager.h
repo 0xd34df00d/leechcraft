@@ -36,7 +36,7 @@
 #include <interfaces/ishutdownlistener.h>
 #include <interfaces/core/ihookproxy.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace TabSessManager
 {
@@ -75,15 +75,15 @@ namespace TabSessManager
 
 		void HandleShutdownInitiated ();
 	public slots:
-		void hookTabIsRemoving (LeechCraft::IHookProxy_ptr proxy,
+		void hookTabIsRemoving (LC::IHookProxy_ptr proxy,
 				int index,
 				int windowId);
-		void hookTabAdding (LeechCraft::IHookProxy_ptr proxy,
+		void hookTabAdding (LC::IHookProxy_ptr proxy,
 				QWidget *widget);
-		void hookGetPreferredWindowIndex (LeechCraft::IHookProxy_ptr proxy,
+		void hookGetPreferredWindowIndex (LC::IHookProxy_ptr proxy,
 				const QWidget *widget) const;
 	signals:
-		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
+		void gotActions (QList<QAction*>, LC::ActionsEmbedPlace);
 	};
 }
 }

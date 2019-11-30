@@ -34,7 +34,7 @@
 #include <interfaces/blogique/iprofile.h>
 #include <interfaces/blogique/iprofilewidget.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blogique
 {

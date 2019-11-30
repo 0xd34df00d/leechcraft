@@ -32,7 +32,7 @@
 #include "tunesourcebase.h"
 #include <QFileSystemWatcher>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Xtazy
 {

@@ -31,7 +31,7 @@
 #include <QIcon>
 #include "document.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {
@@ -97,4 +97,4 @@ namespace Mu
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_monocle_mu, LeechCraft::Monocle::Mu::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_monocle_mu, LC::Monocle::Mu::Plugin);

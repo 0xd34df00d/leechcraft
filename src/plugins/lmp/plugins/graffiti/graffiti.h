@@ -38,7 +38,7 @@
 #include <interfaces/core/ihookproxy.h>
 #include <interfaces/lmp/ilmpplugin.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {
@@ -61,7 +61,7 @@ namespace Graffiti
 				IPlugin2
 				IHaveTabs
 				IJobHolder
-				LeechCraft::LMP::ILMPPlugin)
+				LC::LMP::ILMPPlugin)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.LMP.Graffiti")
 
@@ -91,12 +91,12 @@ namespace Graffiti
 	private:
 		GraffitiTab* MakeTab ();
 	public slots:
-		void hookPlaylistContextMenuRequested (LeechCraft::IHookProxy_ptr,
+		void hookPlaylistContextMenuRequested (LC::IHookProxy_ptr,
 				QMenu*,
-				const LeechCraft::LMP::MediaInfo&);
-		void hookCollectionContextMenuRequested (LeechCraft::IHookProxy_ptr,
+				const LC::LMP::MediaInfo&);
+		void hookCollectionContextMenuRequested (LC::IHookProxy_ptr,
 				QMenu*,
-				const LeechCraft::LMP::MediaInfo&);
+				const LC::LMP::MediaInfo&);
 	private slots:
 		void handleOpenTabFromContextMenu ();
 	signals:

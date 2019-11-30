@@ -41,7 +41,7 @@ namespace Ui
 	class LeechCraft;
 }
 
-namespace LeechCraft
+namespace LC
 {
 	class MainWindowMenuManager : public QObject
 	{

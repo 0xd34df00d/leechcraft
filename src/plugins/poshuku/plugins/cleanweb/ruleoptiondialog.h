@@ -33,7 +33,7 @@
 #include "ui_ruleoptiondialog.h"
 #include "filter.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

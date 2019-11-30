@@ -37,7 +37,7 @@
 #include "xmlsettingsmanager.h"
 #include "storagebackendmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Aggregator
 {

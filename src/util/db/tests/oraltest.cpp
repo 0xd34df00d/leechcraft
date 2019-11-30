@@ -30,7 +30,7 @@
 #include "oraltest.h"
 #include "common.h"
 
-QTEST_GUILESS_MAIN (LeechCraft::Util::OralTest)
+QTEST_GUILESS_MAIN (LC::Util::OralTest)
 
 struct AutogenPKeyRecord
 {
@@ -138,7 +138,7 @@ BOOST_FUSION_ADAPT_STRUCT (ComplexConstraintsRecord,
 
 TOSTRING (ComplexConstraintsRecord)
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

@@ -43,7 +43,7 @@ namespace Media
 	typedef QList<EventInfo> EventInfos_t;
 }
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

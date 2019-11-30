@@ -32,7 +32,7 @@
 #include <QObject>
 #include <QXmppDiscoveryIq.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

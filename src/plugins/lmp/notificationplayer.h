@@ -32,7 +32,7 @@
 #include <QObject>
 #include <interfaces/core/icoreproxyfwd.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

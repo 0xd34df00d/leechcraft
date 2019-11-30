@@ -33,7 +33,7 @@
 #include "sortfilterproxymodel.h"
 #include "channelclentry.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

@@ -34,7 +34,7 @@
 #include <QtDebug>
 #include "../fontpicker.h"
 
-namespace LeechCraft
+namespace LC
 {
 	bool ItemHandlerFont::CanHandle (const QDomElement& element) const
 	{

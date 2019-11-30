@@ -33,7 +33,7 @@
 #include <QUrlQuery>
 #include "sllconfig.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

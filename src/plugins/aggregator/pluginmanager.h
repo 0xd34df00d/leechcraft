@@ -35,7 +35,7 @@
 #include "interfaces/aggregator/item.h"
 #include "proxyobject.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Aggregator
 {
@@ -51,9 +51,9 @@ namespace Aggregator
 
 		void AddPlugin (QObject*) override;
 	signals:
-		void hookItemLoad (LeechCraft::IHookProxy_ptr proxy,
+		void hookItemLoad (LC::IHookProxy_ptr proxy,
 				Item*);
-		void hookItemAdded (LeechCraft::IHookProxy_ptr proxy,
+		void hookItemAdded (LC::IHookProxy_ptr proxy,
 				const Item& item);
 	};
 }

@@ -32,7 +32,7 @@
 #include <memory>
 #include <QtPlugin>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {
@@ -61,5 +61,5 @@ namespace Monocle
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Monocle::ISupportAnnotations,
+Q_DECLARE_INTERFACE (LC::Monocle::ISupportAnnotations,
 		"org.LeechCraft.Monocle.ISupportAnnotations/1.0")

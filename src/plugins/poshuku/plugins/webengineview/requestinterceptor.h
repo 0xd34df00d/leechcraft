@@ -32,7 +32,7 @@
 #include <QWebEngineUrlRequestInterceptor>
 #include <interfaces/poshuku/iinterceptablerequests.h>
 
-namespace LeechCraft::Poshuku::WebEngineView
+namespace LC::Poshuku::WebEngineView
 {
 	class CustomWebView;
 

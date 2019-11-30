@@ -33,7 +33,7 @@
 #include <interfaces/an/constants.h>
 #include "todostorage.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Otlozhu
 {

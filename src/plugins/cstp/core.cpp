@@ -70,7 +70,7 @@ extern "C"
 	#endif
 }
 
-namespace LeechCraft
+namespace LC
 {
 namespace CSTP
 {
@@ -202,7 +202,7 @@ namespace CSTP
 			return Util::MakeReadyFuture (IDownload::Result::Left ({ type, msg }));
 		};
 
-		if (e.Parameters_ & LeechCraft::FromUserInitiated &&
+		if (e.Parameters_ & LC::FromUserInitiated &&
 				e.Location_.isEmpty ())
 		{
 			CSTP::AddTask at (url, e.Location_);
@@ -243,7 +243,7 @@ namespace CSTP
 			const QString& filename,
 			const QString& comment,
 			const QStringList& tags,
-			LeechCraft::TaskParameters tp)
+			LC::TaskParameters tp)
 	{
 		TaskDescr td;
 		td.Task_.reset (new Task (rep));
@@ -263,7 +263,7 @@ namespace CSTP
 			const QString& comment,
 			const QStringList& tags,
 			const QVariantMap& params,
-			LeechCraft::TaskParameters tp)
+			LC::TaskParameters tp)
 	{
 		TaskDescr td;
 
@@ -327,7 +327,7 @@ namespace CSTP
 		ActiveTasks_.push_back (td);
 		endInsertRows ();
 		ScheduleSave ();
-		if (!(td.Parameters_ & LeechCraft::NoAutostart))
+		if (!(td.Parameters_ & LC::NoAutostart))
 			startTriggered (rowCount () - 1);
 		return td.Task_->GetFuture ();
 	}
@@ -470,7 +470,7 @@ namespace CSTP
 				return QVariant ();
 			}
 		}
-		else if (role == LeechCraft::RoleControls)
+		else if (role == LC::RoleControls)
 			return QVariant::fromValue<QToolBar*> (Toolbar_);
 		else if (role == CustomDataRoles::RoleJobHolderRow)
 			return QVariant::fromValue<JobHolderRow> (JobHolderRow::DownloadProgress);
@@ -619,8 +619,8 @@ namespace CSTP
 
 		taskdscr->File_->close ();
 
-		bool notifyUser = !(taskdscr->Parameters_ & LeechCraft::DoNotNotifyUser) &&
-				!(taskdscr->Parameters_ & LeechCraft::Internal);
+		bool notifyUser = !(taskdscr->Parameters_ & LC::DoNotNotifyUser) &&
+				!(taskdscr->Parameters_ & LC::Internal);
 
 		if (notifyUser)
 		{
@@ -669,7 +669,7 @@ namespace CSTP
 
 		if (!err)
 		{
-			bool silence = taskdscr->Parameters_ & LeechCraft::DoNotAnnounceEntity;
+			bool silence = taskdscr->Parameters_ & LC::DoNotAnnounceEntity;
 			auto tp = taskdscr->Parameters_;
 			Remove (taskdscr);
 			if (!silence)
@@ -692,7 +692,7 @@ namespace CSTP
 			taskdscr->ErrorFlag_ = true;
 			if (notifyUser)
 				emit error (errorStr);
-			if (taskdscr->Parameters_ & LeechCraft::NotPersistent)
+			if (taskdscr->Parameters_ & LC::NotPersistent)
 				Remove (taskdscr);
 		}
 	}
@@ -717,7 +717,7 @@ namespace CSTP
 		for (tasks_t::const_iterator i = ActiveTasks_.begin (),
 				end = ActiveTasks_.end (); i != end; ++i)
 		{
-			if (i->Parameters_ & LeechCraft::NotPersistent)
+			if (i->Parameters_ & LC::NotPersistent)
 				continue;
 
 			settings.setArrayIndex (taskIndex++);

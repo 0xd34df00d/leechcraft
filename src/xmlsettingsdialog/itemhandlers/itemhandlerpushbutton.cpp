@@ -31,7 +31,7 @@
 #include <QGridLayout>
 #include <QPushButton>
 
-namespace LeechCraft
+namespace LC
 {
 	bool ItemHandlerPushButton::CanHandle (const QDomElement& element) const
 	{

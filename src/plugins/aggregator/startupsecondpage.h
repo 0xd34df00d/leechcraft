@@ -32,7 +32,7 @@
 #include <QWizardPage>
 #include "ui_startupsecondpage.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

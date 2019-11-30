@@ -33,7 +33,7 @@
 #include <QUrl>
 #include "pepeventbase.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

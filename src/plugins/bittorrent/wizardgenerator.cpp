@@ -31,7 +31,7 @@
 #include "xmlsettingsmanager.h"
 #include "startupfirstpage.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace BitTorrent
 {

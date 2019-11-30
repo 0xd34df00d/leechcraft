@@ -36,7 +36,7 @@
 #include <QMetaType>
 #include "interfaces/core/itagsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 	class TagsManager final : public QAbstractItemModel
 							, public ITagsManager
@@ -79,4 +79,4 @@ namespace LeechCraft
 	};
 }
 
-Q_DECLARE_METATYPE (LeechCraft::TagsManager::TagsDictionary_t)
+Q_DECLARE_METATYPE (LC::TagsManager::TagsDictionary_t)

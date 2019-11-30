@@ -83,7 +83,7 @@
          </widget>
         </item>
         <item>
-         <widget class="LeechCraft::BitTorrent::PiecesWidget" name="PiecesWidget_" native="true">
+         <widget class="LC::BitTorrent::PiecesWidget" name="PiecesWidget_" native="true">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
             <horstretch>1</horstretch>
@@ -197,7 +197,7 @@
               </widget>
              </item>
              <item row="1" column="1">
-              <widget class="LeechCraft::Util::TagsLineEdit" name="TorrentTags_"/>
+              <widget class="LC::Util::TagsLineEdit" name="TorrentTags_"/>
              </item>
             </layout>
            </item>
@@ -694,7 +694,7 @@
      <number>1</number>
     </property>
     <item>
-     <widget class="LeechCraft::BitTorrent::TorrentTabFilesWidget" name="FilesWidget_" native="true"/>
+     <widget class="LC::BitTorrent::TorrentTabFilesWidget" name="FilesWidget_" native="true"/>
     </item>
    </layout>
   </widget>
@@ -737,7 +737,7 @@
       <widget class="QWidget" name="layoutWidget">
        <layout class="QVBoxLayout" name="verticalLayout_8">
         <item>
-         <widget class="LeechCraft::BitTorrent::PiecesWidget" name="PeerPieces_" native="true">
+         <widget class="LC::BitTorrent::PiecesWidget" name="PeerPieces_" native="true">
           <property name="minimumSize">
            <size>
             <width>0</width>
@@ -2094,17 +2094,17 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>LeechCraft::Util::TagsLineEdit</class>
+   <class>LC::Util::TagsLineEdit</class>
    <extends>QLineEdit</extends>
    <header location="global">util/tags/tagslineedit.h</header>
   </customwidget>
   <customwidget>
-   <class>LeechCraft::BitTorrent::PiecesWidget</class>
+   <class>LC::BitTorrent::PiecesWidget</class>
    <extends>QWidget</extends>
    <header>pieceswidget.h</header>
   </customwidget>
   <customwidget>
-   <class>LeechCraft::BitTorrent::TorrentTabFilesWidget</class>
+   <class>LC::BitTorrent::TorrentTabFilesWidget</class>
    <extends>QWidget</extends>
    <header>torrenttabfileswidget.h</header>
    <container>1</container>

@@ -35,7 +35,7 @@
 
 class QObject;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {
@@ -148,7 +148,7 @@ namespace Monocle
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Monocle::IPendingFontInfoRequest,
+Q_DECLARE_INTERFACE (LC::Monocle::IPendingFontInfoRequest,
 		"org.LeechCraft.Monocle.IPendingFontInfoRequest/1.0")
-Q_DECLARE_INTERFACE (LeechCraft::Monocle::IHaveFontInfo,
+Q_DECLARE_INTERFACE (LC::Monocle::IHaveFontInfo,
 		"org.LeechCraft.Monocle.IHaveFontInfo/1.0")

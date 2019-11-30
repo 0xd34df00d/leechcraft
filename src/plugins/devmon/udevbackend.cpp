@@ -34,7 +34,7 @@
 #include <libudev.h>
 #include <interfaces/devices/deviceroles.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Devmon
 {

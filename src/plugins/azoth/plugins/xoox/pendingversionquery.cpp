@@ -31,7 +31,7 @@
 #include <QXmppVersionManager.h>
 #include <QXmppVersionIq.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

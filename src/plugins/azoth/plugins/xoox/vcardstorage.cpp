@@ -34,7 +34,7 @@
 #include "vcardstorageondisk.h"
 #include "vcardstorageondiskwriter.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

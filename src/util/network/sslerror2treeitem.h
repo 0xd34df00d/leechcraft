@@ -34,7 +34,7 @@
 class QSslError;
 class QTreeWidgetItem;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

@@ -31,7 +31,7 @@
 
 #include <QtPlugin>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -86,7 +86,7 @@ namespace Azoth
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Azoth::IHaveContactActivity,
+Q_DECLARE_INTERFACE (LC::Azoth::IHaveContactActivity,
 		"org.LeechCraft.Azoth.IHaveContactActivity/1.0")
 
 

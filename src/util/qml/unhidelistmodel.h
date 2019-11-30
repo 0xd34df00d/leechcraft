@@ -33,7 +33,7 @@
 #include <util/models/rolenamesmixin.h>
 #include "qmlconfig.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

@@ -33,7 +33,7 @@
 #include "address.h"
 #include "attdescr.h"
 
-namespace LeechCraft::Snails
+namespace LC::Snails
 {
 	struct OutgoingMessage
 	{

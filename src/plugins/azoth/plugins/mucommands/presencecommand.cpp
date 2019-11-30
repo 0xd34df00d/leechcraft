@@ -40,7 +40,7 @@
 #include <interfaces/azoth/iproxyobject.h>
 #include <interfaces/azoth/ihavedirectedstatus.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -66,11 +66,11 @@ namespace MuCommands
 }
 }
 
-BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Azoth::MuCommands::PresenceParams,
+BOOST_FUSION_ADAPT_STRUCT (LC::Azoth::MuCommands::PresenceParams,
 		AccName_,
 		Status_)
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

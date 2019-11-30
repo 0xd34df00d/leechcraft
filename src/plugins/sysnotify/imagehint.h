@@ -35,7 +35,7 @@
 class QImage;
 class QDBusArgument;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Sysnotify
 {
@@ -61,4 +61,4 @@ namespace Sysnotify
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::Sysnotify::ImageHint)
+Q_DECLARE_METATYPE (LC::Sysnotify::ImageHint)

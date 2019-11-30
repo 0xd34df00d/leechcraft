@@ -39,7 +39,7 @@
 class QTranslator;
 class QAction;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -75,21 +75,21 @@ namespace Depester
 		void SaveIgnores () const;
 		void LoadIgnores ();
 	public slots:
-		void hookEntryActionAreasRequested (LeechCraft::IHookProxy_ptr proxy,
+		void hookEntryActionAreasRequested (LC::IHookProxy_ptr proxy,
 				QObject *action,
 				QObject *entry);
-		void hookEntryActionsRemoved (LeechCraft::IHookProxy_ptr proxy,
+		void hookEntryActionsRemoved (LC::IHookProxy_ptr proxy,
 				QObject *entry);
-		void hookEntryActionsRequested (LeechCraft::IHookProxy_ptr proxy,
+		void hookEntryActionsRequested (LC::IHookProxy_ptr proxy,
 				QObject *entry);
-		void hookGonnaAppendMsg (LeechCraft::IHookProxy_ptr proxy,
+		void hookGonnaAppendMsg (LC::IHookProxy_ptr proxy,
 				QObject *message);
-		void hookGotMessage (LeechCraft::IHookProxy_ptr proxy,
+		void hookGotMessage (LC::IHookProxy_ptr proxy,
 				QObject *message);
-		void hookShouldCountUnread (LeechCraft::IHookProxy_ptr proxy,
+		void hookShouldCountUnread (LC::IHookProxy_ptr proxy,
 				QObject *message);
 
-		void hookCollectContactIcons (LeechCraft::IHookProxy_ptr, QObject*, QList<QIcon>&);
+		void hookCollectContactIcons (LC::IHookProxy_ptr, QObject*, QList<QIcon>&);
 	private slots:
 		void handleIgnoreEntry (bool);
 		void handleNameChanged (const QString&);

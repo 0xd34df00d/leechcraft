@@ -40,7 +40,7 @@
 #include "vlcwidget.h"
 #include "xmlsettingsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace vlc
 {
@@ -70,7 +70,7 @@ namespace vlc
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 
 		void TabOpenRequested (const QByteArray&);
-		LeechCraft::TabClasses_t GetTabClasses () const;
+		LC::TabClasses_t GetTabClasses () const;
 
 		QMap<QString, ActionInfo> GetActionInfo () const;
 		void SetShortcut (const QString&, const QKeySequences_t&);

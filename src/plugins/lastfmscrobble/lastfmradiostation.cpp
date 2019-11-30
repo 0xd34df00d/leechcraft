@@ -33,7 +33,7 @@
 #include "xmlsettingsmanager.h"
 #include "lastfmradiotuner.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Lastfmscrobble
 {

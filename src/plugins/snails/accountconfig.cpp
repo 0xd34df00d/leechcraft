@@ -30,7 +30,7 @@
 #include "accountconfig.h"
 #include <QDataStream>
 
-namespace LeechCraft::Snails
+namespace LC::Snails
 {
 	QDataStream& operator<< (QDataStream& out, const AccountConfig& cfg)
 	{

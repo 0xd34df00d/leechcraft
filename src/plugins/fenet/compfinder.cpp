@@ -29,7 +29,7 @@
 
 #include "compfinder.h"
 
-namespace LeechCraft::Fenet
+namespace LC::Fenet
 {
 	CompFinder::CompFinder (QObject *parent)
 	: FinderBase (parent)

@@ -72,7 +72,7 @@
 #include "htmlhighlighter.h"
 #include "imagecollectiondialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LHTR
 {

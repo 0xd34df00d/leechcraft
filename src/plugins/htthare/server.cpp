@@ -34,7 +34,7 @@
 #include "iconresolver.h"
 #include "trmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace HttHare
 {

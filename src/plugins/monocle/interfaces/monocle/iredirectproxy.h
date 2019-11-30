@@ -31,7 +31,7 @@
 
 #include <QtPlugin>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {
@@ -113,5 +113,5 @@ namespace Monocle
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Monocle::IRedirectProxy,
+Q_DECLARE_INTERFACE (LC::Monocle::IRedirectProxy,
 		"org.LeechCraft.Monocle.IRedirectProxy/1.0")

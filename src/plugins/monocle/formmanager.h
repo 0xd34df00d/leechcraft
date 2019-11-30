@@ -44,7 +44,7 @@ class QRadioButton;
 class QPushButton;
 class QButtonGroup;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {

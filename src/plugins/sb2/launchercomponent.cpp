@@ -47,7 +47,7 @@
 
 Q_DECLARE_METATYPE (QSet<QByteArray>);
 
-namespace LeechCraft
+namespace LC
 {
 namespace SB2
 {

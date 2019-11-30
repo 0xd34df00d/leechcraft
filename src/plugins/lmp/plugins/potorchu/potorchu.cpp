@@ -32,7 +32,7 @@
 #include <util/util.h>
 #include "visualfilter.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {
@@ -107,4 +107,4 @@ namespace Potorchu
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_lmp_potorchu, LeechCraft::LMP::Potorchu::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_lmp_potorchu, LC::LMP::Potorchu::Plugin);

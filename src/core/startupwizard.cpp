@@ -34,7 +34,7 @@
 #include "application.h"
 #include "wizardtypechoicepage.h"
 
-namespace LeechCraft
+namespace LC
 {
 	StartupWizard::StartupWizard (QWidget *parent)
 	: QWizard (parent)

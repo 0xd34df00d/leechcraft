@@ -41,7 +41,7 @@ namespace Ui
 	class VkCaptchaDialog;
 }
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

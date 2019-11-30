@@ -31,7 +31,7 @@
 
 #include <QImage>
 
-namespace LeechCraft::Util::Compat
+namespace LC::Util::Compat
 {
 	inline auto SizeInBytes (const QImage& img)
 	{

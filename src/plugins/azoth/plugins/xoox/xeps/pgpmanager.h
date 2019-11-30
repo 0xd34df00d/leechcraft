@@ -36,7 +36,7 @@
 #include <QXmppMessage.h>
 #include <QXmppPresence.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

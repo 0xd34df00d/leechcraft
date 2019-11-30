@@ -38,7 +38,7 @@
 #include <interfaces/monocle/idocument.h>
 #include <interfaces/monocle/idynamicdocument.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {
@@ -51,7 +51,7 @@ namespace Seen
 				   , public IDynamicDocument
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Monocle::IDocument LeechCraft::Monocle::IDynamicDocument)
+		Q_INTERFACES (LC::Monocle::IDocument LC::Monocle::IDynamicDocument)
 
 		ddjvu_context_t *Context_;
 		ddjvu_document_t *Doc_;

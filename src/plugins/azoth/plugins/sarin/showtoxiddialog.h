@@ -32,7 +32,7 @@
 #include <QDialog>
 #include "ui_showtoxiddialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

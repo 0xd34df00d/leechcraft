@@ -47,7 +47,7 @@ class GlooxAccount;
 QDataStream& operator<< (QDataStream&, const QXmppDiscoveryIq::Identity&);
 QDataStream& operator>> (QDataStream&, QXmppDiscoveryIq::Identity&);
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

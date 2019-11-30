@@ -59,7 +59,7 @@ class QXmppPresence;
 class QXmppVersionIq;
 class QXmppEntityTimeIq;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -96,18 +96,18 @@ namespace Xoox
 					, public IHaveQueriableVersion
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::ICLEntry
-				LeechCraft::Azoth::IAdvancedCLEntry
-				LeechCraft::Azoth::IMetaInfoEntry
-				LeechCraft::Azoth::IHaveDirectedStatus
-				LeechCraft::Azoth::ISupportMicroblogs
-				LeechCraft::Azoth::IHaveAvatars
-				LeechCraft::Azoth::IHaveContactTune
-				LeechCraft::Azoth::IHaveContactMood
-				LeechCraft::Azoth::IHaveContactActivity
-				LeechCraft::Azoth::IHaveEntityTime
-				LeechCraft::Azoth::IHavePings
-				LeechCraft::Azoth::IHaveQueriableVersion)
+		Q_INTERFACES (LC::Azoth::ICLEntry
+				LC::Azoth::IAdvancedCLEntry
+				LC::Azoth::IMetaInfoEntry
+				LC::Azoth::IHaveDirectedStatus
+				LC::Azoth::ISupportMicroblogs
+				LC::Azoth::IHaveAvatars
+				LC::Azoth::IHaveContactTune
+				LC::Azoth::IHaveContactMood
+				LC::Azoth::IHaveContactActivity
+				LC::Azoth::IHaveEntityTime
+				LC::Azoth::IHavePings
+				LC::Azoth::IHaveQueriableVersion)
 	protected:
 		GlooxAccount *Account_;
 
@@ -265,8 +265,8 @@ namespace Xoox
 		void tuneChanged (const QString&);
 		void locationChanged (const QString&);
 
-		void gotRecentPosts (const QList<LeechCraft::Azoth::Post>&);
-		void gotNewPost (const LeechCraft::Azoth::Post&);
+		void gotRecentPosts (const QList<LC::Azoth::Post>&);
+		void gotNewPost (const LC::Azoth::Post&);
 
 		void locationChanged (const QString&, QObject*);
 

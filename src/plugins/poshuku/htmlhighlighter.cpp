@@ -30,7 +30,7 @@
 #include "htmlhighlighter.h"
 #include <QTextEdit>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

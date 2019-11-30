@@ -32,7 +32,7 @@
 #include <QString>
 #include "pepeventbase.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

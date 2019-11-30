@@ -43,7 +43,7 @@
 #include "ondiskstorage.h"
 #include "entrystats.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -54,9 +54,9 @@ namespace LastSeen
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::Azoth::LastSeen::LastHash_t);
+Q_DECLARE_METATYPE (LC::Azoth::LastSeen::LastHash_t);
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -66,8 +66,8 @@ namespace LastSeen
 	{
 		Util::InstallTranslator ("azoth_lastseen");
 
-		qRegisterMetaType<LastHash_t> ("LeechCraft::Azoth::LastSeen::LastHash_t");
-		qRegisterMetaTypeStreamOperators<LastHash_t> ("LeechCraft::Azoth::LastSeen::LastHash_t");
+		qRegisterMetaType<LastHash_t> ("LC::Azoth::LastSeen::LastHash_t");
+		qRegisterMetaTypeStreamOperators<LastHash_t> ("LC::Azoth::LastSeen::LastHash_t");
 
 		Storage_ = std::make_shared<OnDiskStorage> ();
 
@@ -301,4 +301,4 @@ namespace LastSeen
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_azoth_lastseen, LeechCraft::Azoth::LastSeen::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_azoth_lastseen, LC::Azoth::LastSeen::Plugin);

@@ -30,7 +30,7 @@
 #include "util.h"
 #include <QByteArray>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {

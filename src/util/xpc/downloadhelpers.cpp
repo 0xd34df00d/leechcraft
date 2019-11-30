@@ -38,7 +38,7 @@
 #include <util/threads/futures.h>
 #include <interfaces/core/ientitymanager.h>
 
-namespace LeechCraft::Util
+namespace LC::Util
 {
 	std::optional<QFuture<TempResultType_t>> DownloadAsTemporary (IEntityManager *iem,
 			const QUrl& url, DownloadParams params)

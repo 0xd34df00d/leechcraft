@@ -35,7 +35,7 @@
 
 class QIcon;
 
-namespace LeechCraft
+namespace LC
 {
 namespace NetStoreManager
 {
@@ -59,8 +59,8 @@ namespace NetStoreManager
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::NetStoreManager::IStoragePlugin,
+Q_DECLARE_INTERFACE (LC::NetStoreManager::IStoragePlugin,
 		"org.Deviant.LeechCraft.NetStoreManager.IStoragePlugin/1.0")
-Q_DECLARE_METATYPE (LeechCraft::NetStoreManager::IStoragePlugin*)
+Q_DECLARE_METATYPE (LC::NetStoreManager::IStoragePlugin*)
 
 #endif

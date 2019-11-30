@@ -31,7 +31,7 @@
 
 #include <atomic>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Snails
 {

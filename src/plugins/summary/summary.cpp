@@ -34,7 +34,7 @@
 #include "core.h"
 #include "summarywidget.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Summary
 {
@@ -155,4 +155,4 @@ namespace Summary
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_summary, LeechCraft::Summary::Summary);
+LC_EXPORT_PLUGIN (leechcraft_summary, LC::Summary::Summary);

@@ -34,7 +34,7 @@
 class QObject;
 class QByteArray;
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

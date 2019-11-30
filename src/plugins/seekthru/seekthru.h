@@ -40,7 +40,7 @@
 #include <interfaces/isyncable.h>
 #include <interfaces/structures.h>
 
-namespace LeechCraft::SeekThru
+namespace LC::SeekThru
 {
 	class SeekThru : public QObject
 					, public IInfo
@@ -78,12 +78,12 @@ namespace LeechCraft::SeekThru
 		void SetProvider (QObject*, const QString&) override;
 
 		QStringList GetCategories () const override;
-		QList<IFindProxy_ptr> GetProxy (const LeechCraft::Request&) override;
+		QList<IFindProxy_ptr> GetProxy (const LC::Request&) override;
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const override;
 
-		EntityTestHandleResult CouldHandle (const LeechCraft::Entity&) const override;
-		void Handle (LeechCraft::Entity) override;
+		EntityTestHandleResult CouldHandle (const LC::Entity&) const override;
+		void Handle (LC::Entity) override;
 
 		QString GetFilterVerb () const override;
 		QList<FilterVariant> GetFilterVariants (const QVariant&) const override;

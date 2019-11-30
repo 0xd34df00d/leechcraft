@@ -35,7 +35,7 @@
 class QUrl;
 class QIcon;
 
-namespace LeechCraft::Poshuku::WebEngineView
+namespace LC::Poshuku::WebEngineView
 {
 	class IconDatabaseOnDisk
 	{

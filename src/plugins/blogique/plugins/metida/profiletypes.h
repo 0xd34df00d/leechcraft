@@ -35,7 +35,7 @@
 #include <QVariant>
 #include "ljfriendentry.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blogique
 {
@@ -127,5 +127,5 @@ namespace Metida
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::Blogique::Metida::LJParserTypes::LJParseProfileEntry)
-Q_DECLARE_METATYPE (LeechCraft::Blogique::Metida::LJProfileData)
+Q_DECLARE_METATYPE (LC::Blogique::Metida::LJParserTypes::LJParseProfileEntry)
+Q_DECLARE_METATYPE (LC::Blogique::Metida::LJProfileData)

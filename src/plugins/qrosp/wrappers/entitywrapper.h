@@ -33,7 +33,7 @@
 #include <qross/core/wrapperinterface.h>
 #include <interfaces/structures.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Qrosp
 {
@@ -55,7 +55,7 @@ namespace Qrosp
 
 		void* wrappedObject () const;
 	public slots:
-		LeechCraft::Entity Native () const;
+		LC::Entity Native () const;
 		const QVariant& GetEntity () const;
 		void SetEntity (const QVariant&);
 		const QString& GetLocation () const;
@@ -72,6 +72,6 @@ namespace Qrosp
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::Qrosp::EntityWrapper)
+Q_DECLARE_METATYPE (LC::Qrosp::EntityWrapper)
 
 #endif

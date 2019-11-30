@@ -31,7 +31,7 @@
 #include <interfaces/core/ientitymanager.h>
 #include "livestreamdevice.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace BitTorrent
 {

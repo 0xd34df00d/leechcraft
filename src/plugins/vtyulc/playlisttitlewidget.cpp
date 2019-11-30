@@ -35,7 +35,7 @@
 #include <QLabel>
 #include <interfaces/core/iiconthememanager.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace vlc
 {

@@ -46,7 +46,7 @@
 #include "channelhandler.h"
 #include "bookmarkeditwidget.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

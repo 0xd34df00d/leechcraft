@@ -37,7 +37,7 @@
 
 class QSettings;
 
-namespace LeechCraft
+namespace LC
 {
 namespace SecMan
 {
@@ -49,7 +49,7 @@ namespace SimpleStorage
 				 , public IStoragePlugin
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 LeechCraft::SecMan::IStoragePlugin)
+		Q_INTERFACES (IInfo IPlugin2 LC::SecMan::IStoragePlugin)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.SecMan.SimpleStorage")
 

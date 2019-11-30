@@ -35,7 +35,7 @@
 #include <QEvent>
 #include <QtDebug>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

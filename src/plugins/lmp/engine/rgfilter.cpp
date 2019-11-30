@@ -33,7 +33,7 @@
 #include "../gstfix.h"
 #include "rgfiltercontroller.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

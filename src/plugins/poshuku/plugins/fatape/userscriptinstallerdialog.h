@@ -34,7 +34,7 @@
 #include <QNetworkReply>
 #include <QUrl>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

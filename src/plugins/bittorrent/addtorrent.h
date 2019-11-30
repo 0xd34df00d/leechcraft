@@ -36,7 +36,7 @@
 
 class QSortFilterProxyModel;
 
-namespace LeechCraft
+namespace LC
 {
 namespace BitTorrent
 {

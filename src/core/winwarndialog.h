@@ -29,7 +29,7 @@
 
 #include <QObject>
 
-namespace LeechCraft
+namespace LC
 {
 	class WinWarnDialog : public QObject
 	{

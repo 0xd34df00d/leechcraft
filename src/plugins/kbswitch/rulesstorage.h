@@ -36,7 +36,7 @@
 
 typedef struct _XDisplay Display;
 
-namespace LeechCraft
+namespace LC
 {
 namespace KBSwitch
 {

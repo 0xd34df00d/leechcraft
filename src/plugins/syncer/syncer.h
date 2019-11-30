@@ -33,7 +33,7 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavesettings.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Syncer
 {

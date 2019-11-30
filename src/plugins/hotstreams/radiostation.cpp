@@ -35,7 +35,7 @@
 #include <QtDebug>
 #include <interfaces/media/audiostructs.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace HotStreams
 {

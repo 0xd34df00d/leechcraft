@@ -34,7 +34,7 @@
 #include <interfaces/azoth/iaccount.h>
 #include "protocol.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -47,7 +47,7 @@ namespace VelvetBird
 				  , public IAccount
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IAccount)
+		Q_INTERFACES (LC::Azoth::IAccount)
 
 		PurpleAccount * const Account_;
 		Protocol * const Proto_;
@@ -91,7 +91,7 @@ namespace VelvetBird
 	public slots:
 		void updateIcon ();
 	private slots:
-		void handleAuthFailure (const LeechCraft::Azoth::EntryStatus&);
+		void handleAuthFailure (const LC::Azoth::EntryStatus&);
 	signals:
 		void accountRenamed (const QString&);
 		void gotCLItems (const QList<QObject*>&);

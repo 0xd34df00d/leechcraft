@@ -36,7 +36,7 @@
 
 typedef struct Tox Tox;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

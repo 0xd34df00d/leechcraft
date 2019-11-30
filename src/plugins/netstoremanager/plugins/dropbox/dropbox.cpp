@@ -38,7 +38,7 @@
 #include "core.h"
 #include "xmlsettingsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace NetStoreManager
 {
@@ -185,4 +185,4 @@ namespace DBox
 }
 
 
-LC_EXPORT_PLUGIN (leechcraft_netstoremanager_dbox, LeechCraft::NetStoreManager::DBox::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_netstoremanager_dbox, LC::NetStoreManager::DBox::Plugin);

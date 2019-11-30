@@ -31,7 +31,7 @@
 #include <QApplication>
 #include <QClipboard>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

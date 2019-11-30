@@ -39,7 +39,7 @@ class QObject;
 template<typename T>
 class QList;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

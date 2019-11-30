@@ -43,7 +43,7 @@
 #include "pluginmanager.h"
 #include "xmlsettingsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {
@@ -272,7 +272,7 @@ namespace OnlineBookmarks
 			return;
 		}
 
-		LeechCraft::Entity eBookmarks = Util::MakeEntity (QVariant (),
+		LC::Entity eBookmarks = Util::MakeEntity (QVariant (),
 				QString (),
 				FromUserInitiated | OnlyHandle,
 				"x-leechcraft/browser-import-data");
@@ -287,7 +287,7 @@ namespace OnlineBookmarks
 		if (!ibs)
 			return;
 
-		LeechCraft::Entity e = Util::MakeNotification ("OnlineBookmarks",
+		LC::Entity e = Util::MakeNotification ("OnlineBookmarks",
 				ibs->GetServiceName () + ": bookmarks downloaded successfully",
 				Priority::Info);
 		emit gotEntity (e);
@@ -300,7 +300,7 @@ namespace OnlineBookmarks
 		if (!ibs)
 			return;
 
-		LeechCraft::Entity e = Util::MakeNotification ("OnlineBookmarks",
+		LC::Entity e = Util::MakeNotification ("OnlineBookmarks",
 				ibs->GetServiceName () + ": bookmarks uploaded successfully",
 				Priority::Info);
 		emit gotEntity (e);

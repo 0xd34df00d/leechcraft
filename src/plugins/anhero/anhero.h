@@ -34,7 +34,7 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/ishutdownlistener.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace AnHero
 {

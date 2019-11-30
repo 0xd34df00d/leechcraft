@@ -32,7 +32,7 @@
 #include <qwebhistoryinterface.h>
 #include <QSet>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

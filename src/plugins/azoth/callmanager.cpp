@@ -44,7 +44,7 @@
 #include "xmlsettingsmanager.h"
 #include "core.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -172,9 +172,9 @@ namespace Azoth
 		Entry2Calls_ [sourceId] << obj;
 
 		connect (obj,
-				SIGNAL (stateChanged (LeechCraft::Azoth::IMediaCall::State)),
+				SIGNAL (stateChanged (LC::Azoth::IMediaCall::State)),
 				this,
-				SLOT (handleStateChanged (LeechCraft::Azoth::IMediaCall::State)));
+				SLOT (handleStateChanged (LC::Azoth::IMediaCall::State)));
 		connect (obj,
 				SIGNAL (audioModeChanged (QIODevice::OpenMode)),
 				this,

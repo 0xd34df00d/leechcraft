@@ -38,7 +38,7 @@
 #include "searcherslist.h"
 #include "wizardgenerator.h"
 
-namespace LeechCraft::SeekThru
+namespace LC::SeekThru
 {
 	void SeekThru::Init (ICoreProxy_ptr proxy)
 	{
@@ -123,14 +123,14 @@ namespace LeechCraft::SeekThru
 		return Core::Instance ().GetCategories ();
 	}
 
-	QList<IFindProxy_ptr> SeekThru::GetProxy (const LeechCraft::Request& r)
+	QList<IFindProxy_ptr> SeekThru::GetProxy (const LC::Request& r)
 	{
 		QList<IFindProxy_ptr> result;
 		result << Core::Instance ().GetProxy (r);
 		return result;
 	}
 
-	std::shared_ptr<LeechCraft::Util::XmlSettingsDialog> SeekThru::GetSettingsDialog () const
+	std::shared_ptr<LC::Util::XmlSettingsDialog> SeekThru::GetSettingsDialog () const
 	{
 		return XmlSettingsDialog_;
 	}
@@ -183,4 +183,4 @@ namespace LeechCraft::SeekThru
 	}
 }
 
-LC_EXPORT_PLUGIN (leechcraft_seekthru, LeechCraft::SeekThru::SeekThru);
+LC_EXPORT_PLUGIN (leechcraft_seekthru, LC::SeekThru::SeekThru);

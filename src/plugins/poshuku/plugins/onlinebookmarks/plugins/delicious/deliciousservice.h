@@ -34,7 +34,7 @@
 #include <interfaces/structures.h>
 #include <interfaces/ibookmarksservice.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {
@@ -49,7 +49,7 @@ namespace Delicious
 							, public IBookmarksService
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Poshuku::OnlineBookmarks::IBookmarksService)
+		Q_INTERFACES (LC::Poshuku::OnlineBookmarks::IBookmarksService)
 
 	public:
 		enum OperationType

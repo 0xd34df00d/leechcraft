@@ -51,16 +51,16 @@
 #include "findproxy.h"
 #include "tagsasker.h"
 
-namespace LeechCraft::SeekThru
+namespace LC::SeekThru
 {
 	const QString Core::OS_ = "http://a9.com/-/spec/opensearch/1.1/";
 
 	Core::Core ()
 	{
-		qRegisterMetaType<Description> ("LeechCraft::Plugins::SeekThru::Description");
-		qRegisterMetaTypeStreamOperators<UrlDescription> ("LeechCraft::Plugins::SeekThru::UrlDescription");
-		qRegisterMetaTypeStreamOperators<QueryDescription> ("LeechCraft::Plugins::SeekThru::QueryDescription");
-		qRegisterMetaTypeStreamOperators<Description> ("LeechCraft::Plugins::SeekThru::Description");
+		qRegisterMetaType<Description> ("LC::Plugins::SeekThru::Description");
+		qRegisterMetaTypeStreamOperators<UrlDescription> ("LC::Plugins::SeekThru::UrlDescription");
+		qRegisterMetaTypeStreamOperators<QueryDescription> ("LC::Plugins::SeekThru::QueryDescription");
+		qRegisterMetaTypeStreamOperators<Description> ("LC::Plugins::SeekThru::Description");
 
 		ReadSettings ();
 	}
@@ -319,7 +319,7 @@ namespace LeechCraft::SeekThru
 		return result;
 	}
 
-	IFindProxy_ptr Core::GetProxy (const LeechCraft::Request& r)
+	IFindProxy_ptr Core::GetProxy (const LC::Request& r)
 	{
 		QList<SearchHandler_ptr> handlers;
 		for (const auto& d : Descriptions_)

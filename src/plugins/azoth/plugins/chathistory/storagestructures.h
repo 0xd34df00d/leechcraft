@@ -35,7 +35,7 @@
 #include <interfaces/azoth/imessage.h>
 #include <interfaces/azoth/ihistoryplugin.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

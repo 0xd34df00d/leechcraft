@@ -34,7 +34,7 @@
 #include "customwebview.h"
 #include "sslstatedialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

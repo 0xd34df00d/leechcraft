@@ -38,7 +38,7 @@ class QList;
 template<typename, typename>
 class QHash;
 
-namespace LeechCraft
+namespace LC
 {
 enum class ContentType;
 

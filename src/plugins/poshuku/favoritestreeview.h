@@ -31,7 +31,7 @@
 #define PLUGINS_POSHUKU_FAVORITESTREEVIEW_H
 #include <QTreeView>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

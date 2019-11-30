@@ -37,7 +37,7 @@
 #include <sodium.h>
 #endif
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

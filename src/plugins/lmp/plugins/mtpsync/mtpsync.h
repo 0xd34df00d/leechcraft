@@ -41,7 +41,7 @@
 class QAbstractItemModel;
 class QModelIndex;
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {
@@ -64,8 +64,8 @@ namespace MTPSync
 		Q_OBJECT
 		Q_INTERFACES (IInfo
 				IPlugin2
-				LeechCraft::LMP::ILMPPlugin
-				LeechCraft::LMP::IUnmountableSync)
+				LC::LMP::ILMPPlugin
+				LC::LMP::IUnmountableSync)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.LMP.MTPSync")
 

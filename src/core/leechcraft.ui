@@ -39,7 +39,7 @@
       <property name="handleWidth">
        <number>1</number>
       </property>
-      <widget class="LeechCraft::SeparateTabWidget" name="MainTabWidget_" native="true"/>
+      <widget class="LC::SeparateTabWidget" name="MainTabWidget_" native="true"/>
      </widget>
     </item>
    </layout>
@@ -130,7 +130,7 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>LeechCraft::SeparateTabWidget</class>
+   <class>LC::SeparateTabWidget</class>
    <extends>QWidget</extends>
    <header>separatetabwidget.h</header>
    <container>1</container>

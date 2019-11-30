@@ -29,7 +29,7 @@
 
 #include "itemsmergedialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Otlozhu
 {

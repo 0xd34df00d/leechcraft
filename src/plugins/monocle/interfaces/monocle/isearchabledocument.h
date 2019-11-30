@@ -33,7 +33,7 @@
 #include <QMap>
 #include <QtPlugin>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {
@@ -74,5 +74,5 @@ namespace Monocle
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Monocle::ISearchableDocument,
+Q_DECLARE_INTERFACE (LC::Monocle::ISearchableDocument,
 		"org.LeechCraft.Monocle.ISearchableDocument/1.0")

@@ -33,7 +33,7 @@
 #include <QMap>
 #include "ui_changer.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

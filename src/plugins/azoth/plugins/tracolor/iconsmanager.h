@@ -33,7 +33,7 @@
 #include <QHash>
 #include <QIcon>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

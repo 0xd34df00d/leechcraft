@@ -31,7 +31,7 @@
 #include <cstring>
 #include <QTimer>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

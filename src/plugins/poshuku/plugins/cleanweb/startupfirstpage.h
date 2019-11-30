@@ -33,7 +33,7 @@
 #include <QUrl>
 #include "ui_startupfirstpage.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

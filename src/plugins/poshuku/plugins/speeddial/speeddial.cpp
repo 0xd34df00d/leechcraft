@@ -37,7 +37,7 @@
 #include "customsitesmanager.h"
 #include "xmlsettingsmanager.h"
 
-namespace LeechCraft::Poshuku::SpeedDial
+namespace LC::Poshuku::SpeedDial
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
@@ -45,7 +45,7 @@ namespace LeechCraft::Poshuku::SpeedDial
 
 		Cache_ = new ImageCache { proxy };
 
-		qRegisterMetaType<AddrList_t> ("LeechCraft::Poshuku::SpeedDial::AddrList_t");
+		qRegisterMetaType<AddrList_t> ("LC::Poshuku::SpeedDial::AddrList_t");
 		qRegisterMetaTypeStreamOperators<AddrList_t> ();
 
 		XSD_ = std::make_shared<Util::XmlSettingsDialog> ();
@@ -94,7 +94,7 @@ namespace LeechCraft::Poshuku::SpeedDial
 		PoshukuProxy_ = qobject_cast<IProxyObject*> (object);
 	}
 
-	void Plugin::hookBrowserWidgetInitialized (LeechCraft::IHookProxy_ptr,
+	void Plugin::hookBrowserWidgetInitialized (LC::IHookProxy_ptr,
 			QObject *browserWidget)
 	{
 		new ViewHandler { qobject_cast<IBrowserWidget*> (browserWidget), Cache_, CustomSites_, PoshukuProxy_ };
@@ -106,4 +106,4 @@ namespace LeechCraft::Poshuku::SpeedDial
 	}
 }
 
-LC_EXPORT_PLUGIN (leechcraft_poshuku_speeddial, LeechCraft::Poshuku::SpeedDial::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_poshuku_speeddial, LC::Poshuku::SpeedDial::Plugin);

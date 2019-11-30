@@ -35,7 +35,7 @@
 #include "resourcesmanager.h"
 #include "msgsender.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

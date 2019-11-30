@@ -46,7 +46,7 @@ namespace Av
 }
 }
 
-namespace LeechCraft
+namespace LC
 {
 namespace DLNiwe
 {

@@ -35,7 +35,7 @@
 #include <interfaces/ihaveshortcuts.h>
 #include <interfaces/ihavesettings.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

@@ -40,7 +40,7 @@
 
 class QStandardItem;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -79,7 +79,7 @@ namespace Azoth
 		void handleCacheSizeChanged ();
 		void handleAvatarsSizeChanged ();
 	signals:
-		void hookTooltipBeforeVariants (LeechCraft::IHookProxy_ptr proxy,
+		void hookTooltipBeforeVariants (LC::IHookProxy_ptr proxy,
 				QObject *entry) const;
 
 		void rebuiltTooltip ();

@@ -46,7 +46,7 @@
 #include "templateseditorwidget.h"
 #include "storage.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Snails
 {
@@ -207,5 +207,5 @@ namespace Snails
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_snails, LeechCraft::Snails::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_snails, LC::Snails::Plugin);
 

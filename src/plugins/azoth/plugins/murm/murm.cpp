@@ -35,7 +35,7 @@
 #include "vkprotocol.h"
 #include "xmlsettingsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -110,4 +110,4 @@ namespace Murm
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_azoth_murm, LeechCraft::Azoth::Murm::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_azoth_murm, LC::Azoth::Murm::Plugin);

@@ -30,7 +30,7 @@
 #include "itemhandlerstringgetvalue.h"
 #include <QCoreApplication>
 
-namespace LeechCraft
+namespace LC
 {
 	QVariant ItemHandlerStringGetValue::GetValue (const QDomElement& item,
 			QVariant) const

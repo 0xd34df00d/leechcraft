@@ -35,7 +35,7 @@
 
 class QDataStream;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {
@@ -54,4 +54,4 @@ namespace Poshuku
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::Poshuku::BrowserWidgetSettings)
+Q_DECLARE_METATYPE (LC::Poshuku::BrowserWidgetSettings)

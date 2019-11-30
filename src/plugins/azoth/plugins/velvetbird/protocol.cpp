@@ -36,7 +36,7 @@
 #include "account.h"
 #include "accregfirstpage.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

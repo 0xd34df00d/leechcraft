@@ -31,7 +31,7 @@
 
 #include "typelist.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

@@ -32,7 +32,7 @@
 #include <variant>
 #include <QMetaType>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {
@@ -67,4 +67,4 @@ namespace DCAC
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::Poshuku::DCAC::Effect_t)
+Q_DECLARE_METATYPE (LC::Poshuku::DCAC::Effect_t)

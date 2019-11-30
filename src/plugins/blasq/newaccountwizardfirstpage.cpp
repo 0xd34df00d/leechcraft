@@ -33,7 +33,7 @@
 #include <QVBoxLayout>
 #include <QtDebug>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blasq
 {

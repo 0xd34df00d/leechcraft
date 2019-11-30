@@ -36,7 +36,7 @@
 #include "acceptlangwidget.h"
 #include "localeentry.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Intermutko
 {
@@ -94,7 +94,7 @@ namespace Intermutko
 		return XSD_;
 	}
 
-	void Plugin::hookNAMCreateRequest (LeechCraft::IHookProxy_ptr proxy,
+	void Plugin::hookNAMCreateRequest (LC::IHookProxy_ptr proxy,
 			QNetworkAccessManager*, QNetworkAccessManager::Operation*, QIODevice**)
 	{
 		auto req = proxy->GetValue ("request").value<QNetworkRequest> ();
@@ -111,4 +111,4 @@ namespace Intermutko
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_intermutko, LeechCraft::Intermutko::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_intermutko, LC::Intermutko::Plugin);

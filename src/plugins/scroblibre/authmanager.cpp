@@ -32,7 +32,7 @@
 #include <QTimer>
 #include "singleaccauth.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Scroblibre
 {

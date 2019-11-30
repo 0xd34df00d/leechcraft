@@ -29,7 +29,7 @@
 
 #include "notificationaction.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Kinotify
 {

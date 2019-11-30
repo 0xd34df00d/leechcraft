@@ -39,7 +39,7 @@
 #include "zheetutil.h"
 #include "msnbuddyentry.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

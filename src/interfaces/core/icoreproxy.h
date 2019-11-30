@@ -49,7 +49,7 @@ class IColorThemeManager;
 class IIconThemeManager;
 class QAction;
 
-namespace LeechCraft
+namespace LC
 {
 	namespace Util
 	{
@@ -103,7 +103,7 @@ public:
 	 *
 	 * @return The Core settings manager.
 	 */
-	virtual LeechCraft::Util::BaseSettingsManager* GetSettingsManager () const = 0;
+	virtual LC::Util::BaseSettingsManager* GetSettingsManager () const = 0;
 
 	/** @brief Returns the icon theme manager.
 	 *
@@ -165,7 +165,7 @@ public:
 	 *
 	 * @return The application-wide entity manager.
 	 *
-	 * @sa LeechCraft::Entity
+	 * @sa LC::Entity
 	 * @sa IEntityManager
 	 */
 	virtual IEntityManager* GetEntityManager () const = 0;

@@ -117,7 +117,7 @@ namespace Media
 		 *
 		 * @sa Results_t
 		 */
-		using Result_t = LeechCraft::Util::Either<QString, Results_t>;
+		using Result_t = LC::Util::Either<QString, Results_t>;
 
 		/** @brief Returns the name of this service.
 		 *

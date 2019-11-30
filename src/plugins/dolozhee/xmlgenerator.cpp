@@ -31,7 +31,7 @@
 #include <QXmlStreamWriter>
 #include <QFileInfo>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Dolozhee
 {

@@ -31,7 +31,7 @@
 #include <QtDebug>
 #include <util/sys/resourceloader.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

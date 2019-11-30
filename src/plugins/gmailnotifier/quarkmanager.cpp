@@ -34,7 +34,7 @@
 #include <util/gui/autoresizemixin.h>
 #include "maillistview.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace GmailNotifier
 {

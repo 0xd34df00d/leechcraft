@@ -32,7 +32,7 @@
 #include <QGraphicsEffect>
 #include "effects.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

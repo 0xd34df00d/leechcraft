@@ -32,7 +32,7 @@
 #include <QWidget>
 #include <util/sll/lambdaeventfilter.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

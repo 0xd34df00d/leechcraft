@@ -32,7 +32,7 @@
 #include <QObject>
 #include "interfaces/poshuku/iproxyobject.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {
@@ -40,7 +40,7 @@ namespace Poshuku
 					  , public IProxyObject
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Poshuku::IProxyObject)
+		Q_INTERFACES (LC::Poshuku::IProxyObject)
 	public slots:
 		QObject* GetHistoryModel () const override;
 		QObject* GetFavoritesModel () const override;

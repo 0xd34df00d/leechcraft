@@ -37,7 +37,7 @@
 class QFileSystemWatcher;
 class QTimer;
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

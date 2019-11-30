@@ -30,7 +30,7 @@
 #include "queuemanager.h"
 #include <QTimer>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

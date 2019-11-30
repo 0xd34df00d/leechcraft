@@ -38,7 +38,7 @@
 #include "xeps/xmppbobmanager.h"
 #include "util.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

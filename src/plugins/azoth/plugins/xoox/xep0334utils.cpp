@@ -30,7 +30,7 @@
 #include "xep0334utils.h"
 #include <QXmppMessage.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

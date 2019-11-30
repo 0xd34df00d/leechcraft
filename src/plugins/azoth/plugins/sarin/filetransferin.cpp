@@ -32,7 +32,7 @@
 #include <tox/tox.h>
 #include "toxthread.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

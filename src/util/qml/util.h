@@ -33,7 +33,7 @@
 
 class QQuickWidget;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

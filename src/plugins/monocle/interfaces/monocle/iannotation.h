@@ -38,7 +38,7 @@ class QRectF;
 class QDateTime;
 class QPolygonF;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {
@@ -209,15 +209,15 @@ namespace Monocle
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Monocle::IAnnotation,
+Q_DECLARE_INTERFACE (LC::Monocle::IAnnotation,
 		"org.LeechCraft.Monocle.IAnnotation/1.0")
-Q_DECLARE_INTERFACE (LeechCraft::Monocle::ITextAnnotation,
+Q_DECLARE_INTERFACE (LC::Monocle::ITextAnnotation,
 		"org.LeechCraft.Monocle.ITextAnnotation/1.0")
-Q_DECLARE_INTERFACE (LeechCraft::Monocle::IHighlightAnnotation,
+Q_DECLARE_INTERFACE (LC::Monocle::IHighlightAnnotation,
 		"org.LeechCraft.Monocle.IHighlightAnnotation/1.0")
-Q_DECLARE_INTERFACE (LeechCraft::Monocle::ILinkAnnotation,
+Q_DECLARE_INTERFACE (LC::Monocle::ILinkAnnotation,
 		"org.LeechCraft.Monocle.ILinkAnnotation/1.0")
-Q_DECLARE_INTERFACE (LeechCraft::Monocle::ICaretAnnotation,
+Q_DECLARE_INTERFACE (LC::Monocle::ICaretAnnotation,
 		"org.LeechCraft.Monocle.ICaretAnnotation/1.0")
 
-Q_DECLARE_METATYPE (LeechCraft::Monocle::IAnnotation_ptr)
+Q_DECLARE_METATYPE (LC::Monocle::IAnnotation_ptr)

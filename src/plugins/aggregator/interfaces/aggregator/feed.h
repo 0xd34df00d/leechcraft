@@ -38,7 +38,7 @@
 #include "channel.h"
 #include "common.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Aggregator
 {
@@ -109,6 +109,6 @@ namespace Aggregator
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::Aggregator::Feed)
+Q_DECLARE_METATYPE (LC::Aggregator::Feed)
 
 #endif

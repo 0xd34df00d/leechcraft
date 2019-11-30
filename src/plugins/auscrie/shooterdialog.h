@@ -33,7 +33,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include "ui_shooterdialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Auscrie
 {

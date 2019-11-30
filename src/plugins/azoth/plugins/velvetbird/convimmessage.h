@@ -32,7 +32,7 @@
 #include <QObject>
 #include <interfaces/azoth/imessage.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -44,7 +44,7 @@ namespace VelvetBird
 						, public IMessage
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IMessage)
+		Q_INTERFACES (LC::Azoth::IMessage)
 
 		Buddy * const Buddy_;
 		QString Body_;

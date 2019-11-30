@@ -30,7 +30,7 @@
 #include "operaimporter.h"
 #include "operaimportselectpage.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace NewLife
 {

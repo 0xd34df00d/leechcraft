@@ -37,7 +37,7 @@
 #include <util/sll/unreachable.h>
 #include "core.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace BitTorrent
 {

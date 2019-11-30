@@ -35,7 +35,7 @@
 #include <QDateTime>
 #include <QtPlugin>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -70,5 +70,5 @@ namespace Azoth
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Azoth::ISupportMicroblogs,
+Q_DECLARE_INTERFACE (LC::Azoth::ISupportMicroblogs,
 		"org.Deviant.LeechCraft.Azoth.ISupportMicroblogs/1.0")

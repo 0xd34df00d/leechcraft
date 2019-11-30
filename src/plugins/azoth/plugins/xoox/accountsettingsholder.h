@@ -35,7 +35,7 @@
 #include <QXmppTransferManager.h>
 #include <QXmppConfiguration.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

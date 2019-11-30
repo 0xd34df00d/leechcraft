@@ -36,7 +36,7 @@
 #include <util/sys/paths.h>
 #include "common.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {

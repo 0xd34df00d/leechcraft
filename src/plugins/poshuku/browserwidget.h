@@ -52,7 +52,7 @@ class QDataStream;
 class QShortcut;
 class QLabel;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {
@@ -73,7 +73,7 @@ namespace Poshuku
 						, public IWkFontsSettable
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Poshuku::IBrowserWidget
+		Q_INTERFACES (LC::Poshuku::IBrowserWidget
 				IWebWidget
 				ITabWidget
 				IDNDTab
@@ -222,42 +222,42 @@ namespace Poshuku
 		void tabRecoverDataChanged () override;
 
 		// Hook support
-		void hookBrowserWidgetInitialized (LeechCraft::IHookProxy_ptr proxy,
+		void hookBrowserWidgetInitialized (LC::IHookProxy_ptr proxy,
 				QObject *browserWidget);
-		void hookIconChanged (LeechCraft::IHookProxy_ptr proxy,
+		void hookIconChanged (LC::IHookProxy_ptr proxy,
 				QObject *browserWidget);
-		void hookLoadProgress (LeechCraft::IHookProxy_ptr proxy,
+		void hookLoadProgress (LC::IHookProxy_ptr proxy,
 				QObject *browserWidget,
 				int progress);
-		void hookMoreMenuFillBegin (LeechCraft::IHookProxy_ptr proxy,
+		void hookMoreMenuFillBegin (LC::IHookProxy_ptr proxy,
 				QMenu *menu,
 				QObject *browserWidget);
-		void hookMoreMenuFillEnd (LeechCraft::IHookProxy_ptr proxy,
+		void hookMoreMenuFillEnd (LC::IHookProxy_ptr proxy,
 				QMenu *menu,
 				QObject *browserWidget);
-		void hookNotifyLoadFinished (LeechCraft::IHookProxy_ptr proxy,
+		void hookNotifyLoadFinished (LC::IHookProxy_ptr proxy,
 				QObject *browserWidget,
 				bool ok,
 				bool notifyWhenFinished,
 				bool own,
 				bool htmlMode);
-		void hookSetURL (LeechCraft::IHookProxy_ptr proxy,
+		void hookSetURL (LC::IHookProxy_ptr proxy,
 				QObject *browserWidget,
 				QUrl url);
-		void hookStatusBarMessage (LeechCraft::IHookProxy_ptr proxy,
+		void hookStatusBarMessage (LC::IHookProxy_ptr proxy,
 				QObject *browserWidget,
 				QString message);
-		void hookTabBarContextMenuActions (LeechCraft::IHookProxy_ptr proxy,
+		void hookTabBarContextMenuActions (LC::IHookProxy_ptr proxy,
 				const QObject *browserWidget) const;
-		void hookTabRemoveRequested (LeechCraft::IHookProxy_ptr proxy,
+		void hookTabRemoveRequested (LC::IHookProxy_ptr proxy,
 				QObject *browserWidget);
-		void hookUpdateLogicalPath (LeechCraft::IHookProxy_ptr proxy,
+		void hookUpdateLogicalPath (LC::IHookProxy_ptr proxy,
 				QObject *browserWidget);
-		void hookURLEditReturnPressed (LeechCraft::IHookProxy_ptr proxy,
+		void hookURLEditReturnPressed (LC::IHookProxy_ptr proxy,
 				QObject *browserWidget);
-		void hookWebViewContextMenu (LeechCraft::IHookProxy_ptr,
-				LeechCraft::Poshuku::IWebView*,
-				const LeechCraft::Poshuku::ContextMenuInfo& hitTestResult,
+		void hookWebViewContextMenu (LC::IHookProxy_ptr,
+				LC::Poshuku::IWebView*,
+				const LC::Poshuku::ContextMenuInfo& hitTestResult,
 				QMenu*,
 				WebViewCtxMenuStage);
 	};

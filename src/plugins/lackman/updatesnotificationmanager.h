@@ -35,7 +35,7 @@
 
 class QModelIndex;
 
-namespace LeechCraft
+namespace LC
 {
 namespace LackMan
 {

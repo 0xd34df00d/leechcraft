@@ -32,7 +32,7 @@
 #include "accountsmanager.h"
 #include "interfaces/netstoremanager/istorageplugin.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace NetStoreManager
 {

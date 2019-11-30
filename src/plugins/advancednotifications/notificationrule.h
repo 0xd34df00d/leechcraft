@@ -39,7 +39,7 @@
 class QDataStream;
 class QDebug;
 
-namespace LeechCraft
+namespace LC
 {
 namespace AdvancedNotifications
 {
@@ -151,11 +151,11 @@ namespace AdvancedNotifications
 }
 }
 
-QDebug operator<< (QDebug dbg, const LeechCraft::AdvancedNotifications::FieldMatch&);
-QDebug operator<< (QDebug dbg, const LeechCraft::AdvancedNotifications::VisualParams&);
-QDebug operator<< (QDebug dbg, const LeechCraft::AdvancedNotifications::AudioParams&);
-QDebug operator<< (QDebug dbg, const LeechCraft::AdvancedNotifications::TrayParams&);
-QDebug operator<< (QDebug dbg, const LeechCraft::AdvancedNotifications::CmdParams&);
+QDebug operator<< (QDebug dbg, const LC::AdvancedNotifications::FieldMatch&);
+QDebug operator<< (QDebug dbg, const LC::AdvancedNotifications::VisualParams&);
+QDebug operator<< (QDebug dbg, const LC::AdvancedNotifications::AudioParams&);
+QDebug operator<< (QDebug dbg, const LC::AdvancedNotifications::TrayParams&);
+QDebug operator<< (QDebug dbg, const LC::AdvancedNotifications::CmdParams&);
 
-Q_DECLARE_METATYPE (LeechCraft::AdvancedNotifications::NotificationRule)
-Q_DECLARE_METATYPE (QList<LeechCraft::AdvancedNotifications::NotificationRule>)
+Q_DECLARE_METATYPE (LC::AdvancedNotifications::NotificationRule)
+Q_DECLARE_METATYPE (QList<LC::AdvancedNotifications::NotificationRule>)

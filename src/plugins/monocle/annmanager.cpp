@@ -36,7 +36,7 @@
 #include "annitem.h"
 #include "smoothscroller.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {

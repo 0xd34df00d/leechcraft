@@ -38,7 +38,7 @@
 #include <util/sys/paths.h>
 #include <util/sll/unreachable.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

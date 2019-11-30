@@ -39,7 +39,7 @@
 #include <QtDebug>
 #include "iconthemeengine.h"
 
-using namespace LeechCraft;
+using namespace LC;
 
 ChildActionEventFilter::ChildActionEventFilter (QObject *parent)
 : QObject (parent)

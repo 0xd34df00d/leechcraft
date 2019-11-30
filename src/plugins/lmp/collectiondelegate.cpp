@@ -32,7 +32,7 @@
 #include <QApplication>
 #include "localcollectionmodel.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

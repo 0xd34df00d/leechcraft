@@ -31,7 +31,7 @@
 
 #include "syncmanagerbase.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

@@ -32,7 +32,7 @@
 #include <util/sys/resourceloader.h>
 #include <util/sll/qtutil.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

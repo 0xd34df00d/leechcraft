@@ -36,7 +36,7 @@
 #include <QMetaType>
 #include <QMap>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {
@@ -128,6 +128,6 @@ namespace Poshuku
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::Poshuku::ElementData)
-Q_DECLARE_METATYPE (LeechCraft::Poshuku::ElementsData_t)
-Q_DECLARE_METATYPE (LeechCraft::Poshuku::PageFormsData_t)
+Q_DECLARE_METATYPE (LC::Poshuku::ElementData)
+Q_DECLARE_METATYPE (LC::Poshuku::ElementsData_t)
+Q_DECLARE_METATYPE (LC::Poshuku::PageFormsData_t)

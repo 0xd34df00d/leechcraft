@@ -31,7 +31,7 @@
 
 #include <QtPlugin>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -79,5 +79,5 @@ namespace Azoth
 	};
 }
 }
-Q_DECLARE_INTERFACE (LeechCraft::Azoth::IUpdatableChatEntry,
+Q_DECLARE_INTERFACE (LC::Azoth::IUpdatableChatEntry,
 		"org.Deviant.LeechCraft.Azoth.IUpdatableChatEntry/1.0")

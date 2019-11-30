@@ -39,7 +39,7 @@ class QNetworkReply;
 class QUrl;
 class QWebView;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {
@@ -81,7 +81,7 @@ namespace WebKitView
 		void handleReplyCreated (QNetworkAccessManager::Operation,
 				const QNetworkRequest&, QNetworkReply*);
 
-		void handleNavigationRequest (LeechCraft::IHookProxy_ptr,
+		void handleNavigationRequest (LC::IHookProxy_ptr,
 				QWebPage*,
 				QWebFrame*,
 				const QNetworkRequest&,

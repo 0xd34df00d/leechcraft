@@ -29,7 +29,7 @@
 
 #include "chunkiodevice.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace NetStoreManager
 {

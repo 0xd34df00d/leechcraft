@@ -35,7 +35,7 @@
 
 class QStandardItemModel;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -47,7 +47,7 @@ namespace Xoox
 							  , public ISearchSession
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::ISearchSession)
+		Q_INTERFACES (LC::Azoth::ISearchSession)
 
 		QStandardItemModel *Model_;
 

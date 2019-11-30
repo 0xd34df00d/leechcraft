@@ -33,7 +33,7 @@
 
 class QXmppCallManager;
 
-namespace LeechCraft::Azoth::Xoox
+namespace LC::Azoth::Xoox
 {
 	class GlooxAccount;
 	class ClientConnection;

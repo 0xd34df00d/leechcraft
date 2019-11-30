@@ -33,7 +33,7 @@
 #include <util/sll/visitor.h>
 #include "settingsthreadmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

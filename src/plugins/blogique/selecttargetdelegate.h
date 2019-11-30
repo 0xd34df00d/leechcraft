@@ -31,7 +31,7 @@
 
 #include <QItemDelegate>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blogique
 {

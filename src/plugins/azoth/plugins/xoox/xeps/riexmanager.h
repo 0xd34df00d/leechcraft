@@ -31,7 +31,7 @@
 
 #include <QXmppClientExtension.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -50,7 +50,7 @@ namespace Xoox
 
 		void SuggestItems (EntryBase *to, QList<RIEXItem> items, QString message = {});
 	signals:
-		void gotItems (QString from, QList<LeechCraft::Azoth::RIEXItem> items, const QString& body);
+		void gotItems (QString from, QList<LC::Azoth::RIEXItem> items, const QString& body);
 	};
 }
 }

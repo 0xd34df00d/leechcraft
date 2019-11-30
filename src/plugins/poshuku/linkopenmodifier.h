@@ -32,7 +32,7 @@
 #include <QObject>
 #include "interfaces/poshuku/ilinkopenmodifier.h"
 
-namespace LeechCraft
+namespace LC
 {
 	namespace Poshuku
 {

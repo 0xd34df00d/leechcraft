@@ -33,7 +33,7 @@
 
 class QPoint;
 
-namespace LeechCraft
+namespace LC
 {
 namespace vlc
 {

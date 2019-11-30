@@ -32,7 +32,7 @@
 #include <QObject>
 #include <QString>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -256,9 +256,9 @@ namespace Azoth
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Azoth::ITransferJob,
+Q_DECLARE_INTERFACE (LC::Azoth::ITransferJob,
 		"org.Deviant.LeechCraft.Azoth.ITransferJob/1.0")
-Q_DECLARE_INTERFACE (LeechCraft::Azoth::ITransferManager,
+Q_DECLARE_INTERFACE (LC::Azoth::ITransferManager,
 		"org.Deviant.LeechCraft.Azoth.ITransferManager/1.0")
 
 #endif

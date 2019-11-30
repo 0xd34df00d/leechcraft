@@ -32,7 +32,7 @@
 #include <QWidget>
 #include "ui_annwidget.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {

@@ -34,7 +34,7 @@
 #include <QString>
 #include <windows.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Liznoo
 {

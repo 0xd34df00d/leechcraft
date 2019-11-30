@@ -32,7 +32,7 @@
 #include <QObject>
 #include <interfaces/azoth/iprovidecommands.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -40,7 +40,7 @@ namespace Azoth
 							  , public IProvideCommands
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IProvideCommands)
+		Q_INTERFACES (LC::Azoth::IProvideCommands)
 
 		const StaticCommand Help_;
 		const StaticCommand Clear_;

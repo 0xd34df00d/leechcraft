@@ -33,7 +33,7 @@
 #include <QDBusInterface>
 #include <QtDebug>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Liznoo
 {

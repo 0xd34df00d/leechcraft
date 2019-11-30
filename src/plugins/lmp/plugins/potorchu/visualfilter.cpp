@@ -40,7 +40,7 @@
 #include "viswidget.h"
 #include "visscene.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

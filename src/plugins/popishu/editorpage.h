@@ -39,7 +39,7 @@
 
 class QMenu;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Popishu
 {

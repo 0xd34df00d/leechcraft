@@ -37,7 +37,7 @@ class QToolButton;
 class QToolBar;
 class QMenu;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -82,7 +82,7 @@ namespace Azoth
 	public slots:
 		void handleAccountVisibilityChanged ();
 	private slots:
-		void updateFastStatusButton (LeechCraft::Azoth::State);
+		void updateFastStatusButton (LC::Azoth::State);
 		void treeActivated (const QModelIndex&);
 		void showAllUsersList ();
 		void on_CLTree__customContextMenuRequested (const QPoint&);

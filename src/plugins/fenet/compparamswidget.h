@@ -31,7 +31,7 @@
 
 #include <QTreeView>
 
-namespace LeechCraft::Fenet
+namespace LC::Fenet
 {
 	class CompParamsWidget : public QTreeView
 	{

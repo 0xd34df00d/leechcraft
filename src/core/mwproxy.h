@@ -32,7 +32,7 @@
 #include <QObject>
 #include "interfaces/imwproxy.h"
 
-namespace LeechCraft
+namespace LC
 {
 	class MainWindow;
 

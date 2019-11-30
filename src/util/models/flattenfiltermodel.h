@@ -32,7 +32,7 @@
 #include <QAbstractItemModel>
 #include "modelsconfig.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

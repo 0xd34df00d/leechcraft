@@ -34,7 +34,7 @@
 #include <util/sll/prelude.h>
 #include "transcodejob.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

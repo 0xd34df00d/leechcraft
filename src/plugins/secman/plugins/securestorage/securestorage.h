@@ -44,7 +44,7 @@
 
 class QSettings;
 
-namespace LeechCraft
+namespace LC
 {
 namespace SecMan
 {
@@ -58,7 +58,7 @@ namespace SecureStorage
 				 , public IHaveSettings
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 LeechCraft::SecMan::IStoragePlugin IActionsExporter IHaveSettings)
+		Q_INTERFACES (IInfo IPlugin2 LC::SecMan::IStoragePlugin IActionsExporter IHaveSettings)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.SecMan.SecureStorage")
 
@@ -92,7 +92,7 @@ namespace SecureStorage
 		QList<QByteArray> ListKeys (StorageType);
 		void Save (const QByteArray&, const QVariant&, StorageType);
 		QVariant Load (const QByteArray&, StorageType);
-		QList<QAction*> GetActions (LeechCraft::ActionsEmbedPlace) const;
+		QList<QAction*> GetActions (LC::ActionsEmbedPlace) const;
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 	public slots:

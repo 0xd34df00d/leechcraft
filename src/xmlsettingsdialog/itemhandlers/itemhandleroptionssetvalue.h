@@ -31,7 +31,7 @@
 
 #include "itemhandlerbase.h"
 
-namespace LeechCraft
+namespace LC
 {
 	/* This is the base handle for those items whose values are
 	 * represented by a list of options:

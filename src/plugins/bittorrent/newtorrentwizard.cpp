@@ -33,7 +33,7 @@
 #include "secondstep.h"
 #include "thirdstep.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace BitTorrent
 {

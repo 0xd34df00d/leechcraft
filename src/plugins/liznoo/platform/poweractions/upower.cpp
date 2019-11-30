@@ -32,7 +32,7 @@
 #include <QtDBus>
 #include <util/sll/unreachable.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Liznoo
 {

@@ -40,7 +40,7 @@
 #include <util/xpc/util.h>
 #include "account.h"
 
-namespace LeechCraft::Snails
+namespace LC::Snails
 {
 	QString PlainBody2HTML (const QString& body)
 	{

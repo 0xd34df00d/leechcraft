@@ -34,7 +34,7 @@
 #include <msn/util.h>
 #include <interfaces/azoth/itransfermanager.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -47,7 +47,7 @@ namespace Zheet
 						  , public ITransferManager
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::ITransferManager)
+		Q_INTERFACES (LC::Azoth::ITransferManager)
 
 		MSNAccount *A_;
 		Callbacks *CB_;

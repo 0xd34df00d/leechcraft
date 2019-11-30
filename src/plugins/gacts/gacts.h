@@ -36,7 +36,7 @@
 
 class QxtGlobalShortcut;
 
-namespace LeechCraft
+namespace LC
 {
 namespace GActs
 {

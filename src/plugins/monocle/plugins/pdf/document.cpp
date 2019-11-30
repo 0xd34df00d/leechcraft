@@ -46,7 +46,7 @@
 #include "xmlsettingsmanager.h"
 #include "pendingfontinforequest.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {

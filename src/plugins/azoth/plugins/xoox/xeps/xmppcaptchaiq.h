@@ -32,7 +32,7 @@
 #include <QXmppIq.h>
 #include <QXmppDataForm.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

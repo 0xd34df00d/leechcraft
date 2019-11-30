@@ -33,7 +33,7 @@
 #include "windowsmodel.h"
 #include "taskbarproxy.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Krigstask
 {
@@ -86,4 +86,4 @@ namespace Krigstask
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_krigstask, LeechCraft::Krigstask::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_krigstask, LC::Krigstask::Plugin);

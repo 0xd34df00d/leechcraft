@@ -50,7 +50,7 @@ class QSystemTrayIcon;
 class QWidgetAction;
 class QScreen;
 
-namespace LeechCraft
+namespace LC
 {
 	namespace Util
 	{
@@ -148,10 +148,10 @@ namespace LeechCraft
 		void InitializeShortcuts ();
 		void ShowMenuAndBar (bool);
 	signals:
-		void hookGonnaFillMenu (LeechCraft::IHookProxy_ptr);
-		void hookGonnaFillQuickLaunch (LeechCraft::IHookProxy_ptr);
-		void hookGonnaShowStatusBar (LeechCraft::IHookProxy_ptr, bool);
-		void hookTrayIconCreated (LeechCraft::IHookProxy_ptr, QSystemTrayIcon*);
-		void hookTrayIconVisibilityChanged (LeechCraft::IHookProxy_ptr, QSystemTrayIcon*, bool);
+		void hookGonnaFillMenu (LC::IHookProxy_ptr);
+		void hookGonnaFillQuickLaunch (LC::IHookProxy_ptr);
+		void hookGonnaShowStatusBar (LC::IHookProxy_ptr, bool);
+		void hookTrayIconCreated (LC::IHookProxy_ptr, QSystemTrayIcon*);
+		void hookTrayIconVisibilityChanged (LC::IHookProxy_ptr, QSystemTrayIcon*, bool);
 	};
 }

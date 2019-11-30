@@ -39,7 +39,7 @@
 #include <xcb/xcb.h>
 #include <xcb/damage.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Mellonetray
 {

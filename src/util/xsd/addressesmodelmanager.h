@@ -39,7 +39,7 @@ class QHostAddress;
 class QStandardItemModel;
 class QStandardItem;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

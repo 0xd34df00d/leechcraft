@@ -36,7 +36,7 @@
 #include <interfaces/iactionsexporter.h>
 #include <interfaces/ipersistentstorageplugin.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace SecMan
 {
@@ -71,7 +71,7 @@ namespace SecMan
 	private slots:
 		void handleDisplayContents ();
 	signals:
-		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
+		void gotActions (QList<QAction*>, LC::ActionsEmbedPlace);
 	};
 }
 }

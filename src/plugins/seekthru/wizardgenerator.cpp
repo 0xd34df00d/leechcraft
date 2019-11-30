@@ -31,7 +31,7 @@
 #include "xmlsettingsmanager.h"
 #include "startupfirstpage.h"
 
-namespace LeechCraft::SeekThru
+namespace LC::SeekThru
 {
 	QList<QWizardPage*> WizardGenerator::GetPages ()
 	{

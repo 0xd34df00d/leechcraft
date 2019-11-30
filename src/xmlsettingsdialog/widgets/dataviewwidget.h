@@ -32,7 +32,7 @@
 #include <QWidget>
 #include "ui_dataviewwidget.h"
 
-namespace LeechCraft
+namespace LC
 {
 	class DataViewWidget : public QWidget
 	{

@@ -37,7 +37,7 @@
 class QIcon;
 class QScreen;
 
-namespace LeechCraft
+namespace LC
 {
 	class TabManager;
 	class MWProxy;
@@ -104,9 +104,9 @@ namespace LeechCraft
 		void tabIsMoving (int, int, int) override;
 		void tabMoved (int, int, int) override;
 
-		void hookTabAdding (LeechCraft::IHookProxy_ptr, QWidget*);
-		void hookGetPreferredWindowIndex (LeechCraft::IHookProxy_ptr, const QWidget*) const;
-		void hookGetPreferredWindowIndex (LeechCraft::IHookProxy_ptr, const QByteArray&) const;
-		void hookGetPreferredWindowIndex (LeechCraft::IHookProxy_ptr) const;
+		void hookTabAdding (LC::IHookProxy_ptr, QWidget*);
+		void hookGetPreferredWindowIndex (LC::IHookProxy_ptr, const QWidget*) const;
+		void hookGetPreferredWindowIndex (LC::IHookProxy_ptr, const QByteArray&) const;
+		void hookGetPreferredWindowIndex (LC::IHookProxy_ptr) const;
 	};
 }

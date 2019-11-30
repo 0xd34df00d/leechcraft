@@ -40,7 +40,7 @@
 #include "xep0313reqiq.h"
 #include "util.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

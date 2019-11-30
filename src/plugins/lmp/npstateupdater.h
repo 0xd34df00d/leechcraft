@@ -37,7 +37,7 @@
 
 class QLabel;
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

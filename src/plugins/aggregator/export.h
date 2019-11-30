@@ -34,7 +34,7 @@
 #include "ui_export.h"
 #include "channel.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Aggregator
 {

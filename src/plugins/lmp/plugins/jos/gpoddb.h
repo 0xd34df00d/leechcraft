@@ -35,7 +35,7 @@
 typedef struct _Itdb_iTunesDB Itdb_iTunesDB;
 typedef struct _Itdb_Track Itdb_Track;
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

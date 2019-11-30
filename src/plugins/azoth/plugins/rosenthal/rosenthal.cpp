@@ -39,7 +39,7 @@
 #include <interfaces/core/ipluginsmanager.h>
 #include "highlighter.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -149,7 +149,7 @@ namespace Rosenthal
 		return true;
 	}
 
-	void Plugin::hookChatTabCreated (LeechCraft::IHookProxy_ptr,
+	void Plugin::hookChatTabCreated (LC::IHookProxy_ptr,
 			QObject *chatTab, QObject*, QWebView*)
 	{
 		if (!Checker_)
@@ -192,4 +192,4 @@ namespace Rosenthal
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_azoth_rosenthal, LeechCraft::Azoth::Rosenthal::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_azoth_rosenthal, LC::Azoth::Rosenthal::Plugin);

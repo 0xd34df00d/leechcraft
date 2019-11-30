@@ -33,7 +33,7 @@
 #include "linkitem.h"
 #include "pagegraphicsitem.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {

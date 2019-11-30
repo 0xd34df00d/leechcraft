@@ -30,7 +30,7 @@
 #include "core.h"
 #include "linuxplatformbackend.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Lemon
 {

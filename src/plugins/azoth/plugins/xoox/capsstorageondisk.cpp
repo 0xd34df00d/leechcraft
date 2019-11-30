@@ -43,7 +43,7 @@
 
 Q_DECLARE_METATYPE (QXmppDiscoveryIq::Identity);
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

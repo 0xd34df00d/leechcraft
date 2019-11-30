@@ -33,7 +33,7 @@
 #include <QVBoxLayout>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

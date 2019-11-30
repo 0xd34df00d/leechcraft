@@ -30,7 +30,7 @@
 #include "core.h"
 #include <interfaces/core/ientitymanager.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace NetStoreManager
 {
@@ -56,7 +56,7 @@ namespace DBox
 		return Proxy_;
 	}
 
-	void Core::SendEntity (const LeechCraft::Entity& e)
+	void Core::SendEntity (const LC::Entity& e)
 	{
 		Proxy_->GetEntityManager ()->HandleEntity (e);
 	}

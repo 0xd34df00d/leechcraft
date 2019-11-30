@@ -30,7 +30,7 @@
 #include "keeso.h"
 #include <QIcon>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -107,4 +107,4 @@ namespace Keeso
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_azoth_keeso, LeechCraft::Azoth::Keeso::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_azoth_keeso, LC::Azoth::Keeso::Plugin);

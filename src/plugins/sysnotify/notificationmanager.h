@@ -39,7 +39,7 @@
 
 class QDBusPendingCallWatcher;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Sysnotify
 {

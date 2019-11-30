@@ -33,7 +33,7 @@
 #include <interfaces/ihaveshortcuts.h>
 #include <interfaces/core/ishortcutproxy.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Qrosp
 {

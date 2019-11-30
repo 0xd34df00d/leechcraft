@@ -33,7 +33,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/ispellcheckprovider.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace WKPlugins
 {

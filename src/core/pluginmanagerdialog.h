@@ -34,7 +34,7 @@
 
 class QSortFilterProxyModel;
 
-namespace LeechCraft
+namespace LC
 {
 	class PluginManagerDialog : public QWidget
 	{

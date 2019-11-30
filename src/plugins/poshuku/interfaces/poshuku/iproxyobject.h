@@ -34,7 +34,7 @@
 
 class QUrl;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {
@@ -63,5 +63,5 @@ namespace Poshuku
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Poshuku::IProxyObject,
+Q_DECLARE_INTERFACE (LC::Poshuku::IProxyObject,
 		"org.Deviant.LeechCraft.Poshuku.IProxyObject/1.0")

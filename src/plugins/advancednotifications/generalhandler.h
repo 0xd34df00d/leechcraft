@@ -36,7 +36,7 @@
 #include <interfaces/iactionsexporter.h>
 #include "concretehandlerbase.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace AdvancedNotifications
 {
@@ -66,7 +66,7 @@ namespace AdvancedNotifications
 		ICoreProxy_ptr GetProxy () const;
 		QIcon GetIconForCategory (const QString&) const;
 	signals:
-		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
+		void gotActions (QList<QAction*>, LC::ActionsEmbedPlace);
 	};
 }
 }

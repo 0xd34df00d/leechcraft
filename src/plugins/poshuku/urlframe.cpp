@@ -30,7 +30,7 @@
 #include "urlframe.h"
 #include <QIcon>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

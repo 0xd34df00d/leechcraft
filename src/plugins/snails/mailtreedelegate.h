@@ -36,7 +36,7 @@
 class QByteArray;
 class QTreeView;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Snails
 {

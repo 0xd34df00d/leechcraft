@@ -33,7 +33,7 @@
 #include <util/util.h>
 #include "redirector.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {
@@ -116,4 +116,4 @@ namespace Postrus
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_monocle_postrus, LeechCraft::Monocle::Postrus::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_monocle_postrus, LC::Monocle::Postrus::Plugin);

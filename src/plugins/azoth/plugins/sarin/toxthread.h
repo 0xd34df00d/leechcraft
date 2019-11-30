@@ -43,7 +43,7 @@
 
 typedef struct Tox Tox;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -165,7 +165,7 @@ namespace Sarin
 
 		void friendTypingChanged (const QByteArray& pubkey, bool isTyping);
 
-		void fatalException (const LeechCraft::Util::QtException_ptr&);
+		void fatalException (const LC::Util::QtException_ptr&);
 	};
 }
 }

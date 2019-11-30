@@ -31,7 +31,7 @@
 
 #include <QMetaType>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blogique
 {
@@ -48,5 +48,5 @@ namespace Blogique
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Blogique::IProfileWidget,
+Q_DECLARE_INTERFACE (LC::Blogique::IProfileWidget,
 		"org.Deviant.LeechCraft.Blogique.IProfileWidget/1.0")

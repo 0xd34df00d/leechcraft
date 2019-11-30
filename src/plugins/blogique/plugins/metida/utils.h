@@ -32,7 +32,7 @@
 #include <QString>
 #include "entryoptions.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blogique
 {

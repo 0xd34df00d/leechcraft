@@ -90,7 +90,7 @@
       </widget>
      </item>
      <item row="2" column="1" >
-      <widget class="LeechCraft::Util::TagsLineEdit" native="1" name="TagsEdit_" />
+      <widget class="LC::Util::TagsLineEdit" native="1" name="TagsEdit_" />
      </item>
     </layout>
    </item>
@@ -121,7 +121,7 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>LeechCraft::Util::TagsLineEdit</class>
+   <class>LC::Util::TagsLineEdit</class>
    <extends>QWidget</extends>
    <header location="global" >util/tags/tagslineedit.h</header>
   </customwidget>

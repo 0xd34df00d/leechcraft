@@ -29,7 +29,7 @@
 
 #include "glooxaccountconfigurationdialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

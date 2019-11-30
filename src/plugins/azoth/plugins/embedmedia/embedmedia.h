@@ -36,7 +36,7 @@
 #include <interfaces/iplugin2.h>
 #include <interfaces/core/ihookproxy.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -62,7 +62,7 @@ namespace EmbedMedia
 		QIcon GetIcon () const;
 		QSet<QByteArray> GetPluginClasses () const;
 	private slots:
-		void hookChatTabCreated (LeechCraft::IHookProxy_ptr proxy,
+		void hookChatTabCreated (LC::IHookProxy_ptr proxy,
 				QObject *chatTab,
 				QObject *entry,
 				QWebView *webView);

@@ -36,7 +36,7 @@
 class QAction;
 class QStringList;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

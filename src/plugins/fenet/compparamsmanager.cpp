@@ -33,7 +33,7 @@
 #include <QSettings>
 #include <QtDebug>
 
-namespace LeechCraft::Fenet
+namespace LC::Fenet
 {
 	CompParamsManager::CompParamsManager (QObject *parent)
 	: QObject (parent)

@@ -32,7 +32,7 @@
 #include <functional>
 #include <boost/optional.hpp>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

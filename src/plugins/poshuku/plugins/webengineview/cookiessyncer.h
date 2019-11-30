@@ -34,12 +34,12 @@
 class QWebEngineCookieStore;
 class QNetworkCookie;
 
-namespace LeechCraft::Util
+namespace LC::Util
 {
 	class CustomCookieJar;
 }
 
-namespace LeechCraft::Poshuku::WebEngineView
+namespace LC::Poshuku::WebEngineView
 {
 	class CookiesSyncer : public QObject
 	{

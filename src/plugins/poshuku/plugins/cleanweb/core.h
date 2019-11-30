@@ -44,7 +44,7 @@
 class QNetworkRequest;
 class QWebPage;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

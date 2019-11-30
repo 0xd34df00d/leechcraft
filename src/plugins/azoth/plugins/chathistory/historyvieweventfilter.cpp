@@ -31,7 +31,7 @@
 #include <QTextBrowser>
 #include <QMouseEvent>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

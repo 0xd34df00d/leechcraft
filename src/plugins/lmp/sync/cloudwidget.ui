@@ -76,7 +76,7 @@
         </widget>
        </item>
        <item>
-        <widget class="LeechCraft::LMP::TranscodingParamsWidget" name="TranscodingOpts_" native="true"/>
+        <widget class="LC::LMP::TranscodingParamsWidget" name="TranscodingOpts_" native="true"/>
        </item>
        <item>
         <widget class="QProgressBar" name="TSProgress_">
@@ -137,7 +137,7 @@ p, li { white-space: pre-wrap; }
  </widget>
  <customwidgets>
   <customwidget>
-   <class>LeechCraft::LMP::TranscodingParamsWidget</class>
+   <class>LC::LMP::TranscodingParamsWidget</class>
    <extends>QWidget</extends>
    <header>sync/transcodingparamswidget.h</header>
    <container>1</container>

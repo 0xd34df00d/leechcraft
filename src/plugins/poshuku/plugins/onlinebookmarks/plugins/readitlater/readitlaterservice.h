@@ -37,7 +37,7 @@
 
 class QNetworkReply;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {
@@ -53,7 +53,7 @@ namespace ReadItLater
 							, public IBookmarksService
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Poshuku::OnlineBookmarks::IBookmarksService)
+		Q_INTERFACES (LC::Poshuku::OnlineBookmarks::IBookmarksService)
 	public:
 		enum OperationType
 		{

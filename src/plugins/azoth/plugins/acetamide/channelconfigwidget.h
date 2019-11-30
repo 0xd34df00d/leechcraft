@@ -39,7 +39,7 @@
 
 class QStandardItemModel;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -53,7 +53,7 @@ namespace Acetamide
 								, public IMUCConfigWidget
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IMUCConfigWidget)
+		Q_INTERFACES (LC::Azoth::IMUCConfigWidget)
 
 		Ui::ChannelConfigWidget Ui_;
 		ChannelCLEntry *ChannelEntry_;

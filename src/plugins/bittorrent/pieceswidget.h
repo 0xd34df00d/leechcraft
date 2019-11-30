@@ -33,7 +33,7 @@
 #include <vector>
 #include <libtorrent/bitfield.hpp>
 
-namespace LeechCraft
+namespace LC
 {
 namespace BitTorrent
 {

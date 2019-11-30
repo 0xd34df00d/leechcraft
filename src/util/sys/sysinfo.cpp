@@ -38,7 +38,7 @@
 #include <QFile>
 #include <QSettings>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

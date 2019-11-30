@@ -39,7 +39,7 @@
 #include <interfaces/ijobholder.h>
 #include "otzerkaludownloader.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Otzerkalu
 {

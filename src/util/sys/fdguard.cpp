@@ -33,7 +33,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

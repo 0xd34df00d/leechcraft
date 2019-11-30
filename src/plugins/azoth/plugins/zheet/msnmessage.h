@@ -39,7 +39,7 @@ namespace MSN
 	class Message;
 };
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -52,7 +52,7 @@ namespace Zheet
 					 , public IAdvancedMessage
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IMessage LeechCraft::Azoth::IAdvancedMessage)
+		Q_INTERFACES (LC::Azoth::IMessage LC::Azoth::IAdvancedMessage)
 
 		MSNBuddyEntry *Entry_;
 

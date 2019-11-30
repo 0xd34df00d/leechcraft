@@ -33,7 +33,7 @@
 #include <QVariant>
 #include "customwebpage.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

@@ -36,7 +36,7 @@
 #include "util.h"
 #include "xmppelementdescription.h"
 
-namespace LeechCraft::Azoth::Xoox
+namespace LC::Azoth::Xoox
 {
 	InBandAccountActions::InBandAccountActions (ClientConnection& conn, GlooxAccount& acc)
 	: Conn_ { conn }

@@ -31,7 +31,7 @@
 
 #include <stdexcept>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

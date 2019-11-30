@@ -36,7 +36,7 @@
 #include <util/sll/prelude.h>
 #include <util/xpc/util.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace NewLife
 {

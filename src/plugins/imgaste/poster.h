@@ -43,7 +43,7 @@
 class QNetworkAccessManager;
 class QStandardItemModel;
 
-namespace LeechCraft
+namespace LC
 {
 struct Entity;
 

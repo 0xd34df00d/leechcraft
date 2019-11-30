@@ -77,7 +77,7 @@
          <widget class="QWidget" name="layoutWidget1">
           <layout class="QVBoxLayout" name="verticalLayout">
            <item>
-            <widget class="LeechCraft::Util::TagsLineEdit" name="SearchLine_">
+            <widget class="LC::Util::TagsLineEdit" name="SearchLine_">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                <horstretch>0</horstretch>
@@ -175,7 +175,7 @@
                  </layout>
                 </item>
                 <item>
-                 <widget class="LeechCraft::Util::SelectableBrowser" name="Browser_" native="true">
+                 <widget class="LC::Util::SelectableBrowser" name="Browser_" native="true">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                     <horstretch>0</horstretch>
@@ -225,13 +225,13 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>LeechCraft::Util::SelectableBrowser</class>
+   <class>LC::Util::SelectableBrowser</class>
    <extends>QWidget</extends>
    <header location="global">util/gui/selectablebrowser.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>LeechCraft::Util::TagsLineEdit</class>
+   <class>LC::Util::TagsLineEdit</class>
    <extends>QLineEdit</extends>
    <header location="global">util/tags/tagslineedit.h</header>
   </customwidget>

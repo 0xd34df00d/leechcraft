@@ -33,7 +33,7 @@
 #include <QLineEdit>
 #include "ui_settingswidget.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace SecMan
 {

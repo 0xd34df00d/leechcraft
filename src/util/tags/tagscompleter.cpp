@@ -35,9 +35,9 @@
 #include <QLineEdit>
 #include "tagslineedit.h"
 
-using namespace LeechCraft::Util;
+using namespace LC::Util;
 
-QAbstractItemModel *LeechCraft::Util::TagsCompleter::CompletionModel_ = 0;
+QAbstractItemModel *LC::Util::TagsCompleter::CompletionModel_ = 0;
 
 TagsCompleter::TagsCompleter (TagsLineEdit *toComplete)
 : QCompleter (toComplete)

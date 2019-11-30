@@ -33,7 +33,7 @@
 #include <Qt>
 #include <QMetaType>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Launchy
 {
@@ -63,4 +63,4 @@ namespace Launchy
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::Launchy::Executor_f)
+Q_DECLARE_METATYPE (LC::Launchy::Executor_f)

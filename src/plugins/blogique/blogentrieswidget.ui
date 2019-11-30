@@ -19,7 +19,7 @@
      <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
-     <widget class="LeechCraft::Blogique::CalendarWidget" name="BlogEntriesCalendar_">
+     <widget class="LC::Blogique::CalendarWidget" name="BlogEntriesCalendar_">
       <property name="firstDayOfWeek">
        <enum>Qt::Monday</enum>
       </property>
@@ -113,7 +113,7 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>LeechCraft::Blogique::CalendarWidget</class>
+   <class>LC::Blogique::CalendarWidget</class>
    <extends>QCalendarWidget</extends>
    <header>calendarwidget.h</header>
   </customwidget>

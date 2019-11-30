@@ -31,7 +31,7 @@
 
 #include <QSyntaxHighlighter>
 
-namespace LeechCraft
+namespace LC
 {
 namespace AnHero
 {

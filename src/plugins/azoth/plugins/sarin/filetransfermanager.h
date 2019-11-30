@@ -35,7 +35,7 @@
 
 typedef struct Tox Tox;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -48,7 +48,7 @@ namespace Sarin
 							  , public ITransferManager
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::ITransferManager)
+		Q_INTERFACES (LC::Azoth::ITransferManager)
 
 		ToxAccount * const Acc_;
 		std::weak_ptr<ToxThread> ToxThread_;

@@ -32,7 +32,7 @@
 #include <functional>
 #include <QNetworkAccessManager>
 
-namespace LeechCraft::Snails
+namespace LC::Snails
 {
 	struct MessagePageContext;
 

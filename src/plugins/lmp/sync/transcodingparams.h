@@ -33,7 +33,7 @@
 #include <QMetaType>
 #include "formats.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {
@@ -62,4 +62,4 @@ namespace LMP
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::LMP::TranscodingParams)
+Q_DECLARE_METATYPE (LC::LMP::TranscodingParams)

@@ -32,7 +32,7 @@
 #include <Wt/WSortFilterProxyModel.h>
 #include <common.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Aggregator
 {

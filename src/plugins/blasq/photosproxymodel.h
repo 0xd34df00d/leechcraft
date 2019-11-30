@@ -33,7 +33,7 @@
 #include <QSet>
 #include "interfaces/blasq/collection.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blasq
 {

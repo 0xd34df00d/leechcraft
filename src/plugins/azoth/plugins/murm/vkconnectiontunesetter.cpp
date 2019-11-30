@@ -37,7 +37,7 @@
 #include <util/sll/parsejson.h>
 #include "vkconnection.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

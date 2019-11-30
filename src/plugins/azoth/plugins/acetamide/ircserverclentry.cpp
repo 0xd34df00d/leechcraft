@@ -37,7 +37,7 @@
 #include "servercommandmessage.h"
 #include "serverinfowidget.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

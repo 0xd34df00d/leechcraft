@@ -45,7 +45,7 @@
 #include "tabmanager.h"
 #include "rootwindowsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 	SeparateTabBar::SeparateTabBar (QWidget *parent)
 	: QTabBar (parent)

@@ -32,7 +32,7 @@
 #include <QStandardItemModel>
 #include <QNetworkAccessManager>
 
-namespace LeechCraft
+namespace LC
 {
 	namespace Plugins
 	{

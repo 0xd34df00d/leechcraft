@@ -31,7 +31,7 @@
 #include "finderbase.h"
 #include "compinfo.h"
 
-namespace LeechCraft::Fenet
+namespace LC::Fenet
 {
 	class CompFinder : public FinderBase<CompInfo>
 	{

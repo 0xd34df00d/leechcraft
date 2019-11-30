@@ -36,7 +36,7 @@
 #include "serverinfostorage.h"
 #include "transferjob.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

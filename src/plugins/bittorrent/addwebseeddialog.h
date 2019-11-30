@@ -32,7 +32,7 @@
 #include <QDialog>
 #include "ui_addwebseeddialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace BitTorrent
 {

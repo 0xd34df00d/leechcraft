@@ -36,7 +36,7 @@
 #include "common/imimportpage.h"
 #include "importwizard.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace NewLife
 {
@@ -100,4 +100,4 @@ namespace NewLife
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_newlife, LeechCraft::NewLife::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_newlife, LC::NewLife::Plugin);

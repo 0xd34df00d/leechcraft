@@ -36,7 +36,7 @@
 
 Q_DECLARE_METATYPE (QList<QColor>);
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

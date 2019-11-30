@@ -33,7 +33,7 @@
 #include <QStringList>
 #include "filter.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

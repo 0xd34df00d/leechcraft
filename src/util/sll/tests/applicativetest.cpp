@@ -32,9 +32,9 @@
 #include <applicative.h>
 #include <curry.h>
 
-QTEST_MAIN (LeechCraft::Util::ApplicativeTest)
+QTEST_MAIN (LC::Util::ApplicativeTest)
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

@@ -31,7 +31,7 @@
 
 #include <interfaces/core/icoreproxyfwd.h>
 
-namespace LeechCraft::Util
+namespace LC::Util
 {
 	struct CoreProxyHolder
 	{

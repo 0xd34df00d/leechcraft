@@ -45,7 +45,7 @@ class QGridLayout;
 class QDomDocument;
 class QAbstractItemModel;
 
-namespace LeechCraft
+namespace LC
 {
 class ItemHandlerFactory;
 

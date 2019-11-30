@@ -30,7 +30,7 @@
 #include "akregatorimporter.h"
 #include "akregatorimportpage.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace NewLife
 {

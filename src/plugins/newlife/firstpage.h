@@ -33,7 +33,7 @@
 #include <QMap>
 #include "ui_firstpage.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace NewLife
 {

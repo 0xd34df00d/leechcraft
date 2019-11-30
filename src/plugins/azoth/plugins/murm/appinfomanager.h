@@ -38,7 +38,7 @@
 class QNetworkAccessManager;
 class QImage;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

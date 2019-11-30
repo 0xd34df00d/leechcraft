@@ -34,7 +34,7 @@
 #include <util/sys/resourceloader.h>
 #include <interfaces/iscriptloader.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Qrosp
 {

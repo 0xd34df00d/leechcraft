@@ -42,7 +42,7 @@
 #include <interfaces/ihaveshortcuts.h>
 #include <interfaces/an/ianemitter.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -134,7 +134,7 @@ namespace Azoth
 		void handleMoreThisStuff (const QString&);
 		void handleConsoleWidget (ConsoleWidget*);
 	signals:
-		void gotEntity (const LeechCraft::Entity&) override;
+		void gotEntity (const LC::Entity&) override;
 
 		void addNewTab (const QString&, QWidget*) override;
 		void removeTab (QWidget*) override;
@@ -143,7 +143,7 @@ namespace Azoth
 		void statusBarChanged (QWidget*, const QString&) override;
 		void raiseTab (QWidget*) override;
 
-		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace) override;
+		void gotActions (QList<QAction*>, LC::ActionsEmbedPlace) override;
 	};
 }
 }

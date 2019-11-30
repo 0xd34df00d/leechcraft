@@ -184,7 +184,7 @@ namespace Media
 	 */
 	using SimilarityInfos_t = QList<SimilarityInfo>;
 
-	using SimilarityQueryResult_t = LeechCraft::Util::Either<QString, SimilarityInfos_t>;
+	using SimilarityQueryResult_t = LC::Util::Either<QString, SimilarityInfos_t>;
 }
 
 Q_DECLARE_METATYPE (Media::AudioInfo)

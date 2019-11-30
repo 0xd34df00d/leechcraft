@@ -35,7 +35,7 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/core/itagsmanager.h>
 
-namespace LeechCraft
+namespace LC
 {
 	struct FlatTreeItem
 	{

@@ -45,7 +45,7 @@
 #include "sbview.h"
 #include "viewsettingsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace SB2
 {

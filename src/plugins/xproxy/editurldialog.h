@@ -32,7 +32,7 @@
 #include <QDialog>
 #include "ui_editurldialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace XProxy
 {

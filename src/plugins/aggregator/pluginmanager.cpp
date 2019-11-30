@@ -30,7 +30,7 @@
 #include "pluginmanager.h"
 #include "interfaces/aggregator/iaggregatorplugin.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Aggregator
 {

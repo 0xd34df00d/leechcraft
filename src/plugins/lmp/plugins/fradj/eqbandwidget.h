@@ -32,7 +32,7 @@
 #include <QWidget>
 #include "ui_eqbandwidget.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

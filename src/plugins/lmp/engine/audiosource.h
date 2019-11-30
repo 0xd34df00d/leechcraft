@@ -32,7 +32,7 @@
 #include <QUrl>
 #include <QMetaType>
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {
@@ -79,5 +79,5 @@ namespace LMP
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::LMP::AudioSource)
-Q_DECLARE_METATYPE (LeechCraft::LMP::AudioSources_t)
+Q_DECLARE_METATYPE (LC::LMP::AudioSource)
+Q_DECLARE_METATYPE (LC::LMP::AudioSources_t)

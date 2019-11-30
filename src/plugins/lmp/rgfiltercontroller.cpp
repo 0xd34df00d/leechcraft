@@ -39,7 +39,7 @@
 #include "engine/sourceobject.h"
 #include "localcollectionstorage.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

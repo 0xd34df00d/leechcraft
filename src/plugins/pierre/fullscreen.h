@@ -31,7 +31,7 @@
 
 class QMainWindow;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Pierre
 {

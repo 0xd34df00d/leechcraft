@@ -31,7 +31,7 @@
 
 #include "servicebase.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Zalil
 {

@@ -39,13 +39,13 @@
 #include "utilproxy.h"
 #include "wrappers/entitywrapper.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Qrosp
 {
 	PluginManager::PluginManager ()
 	{
-		Qross::Manager::self ().registerMetaTypeHandler ("LeechCraft::Entity", EntityHandler);
+		Qross::Manager::self ().registerMetaTypeHandler ("LC::Entity", EntityHandler);
 		Qross::Manager::self ().addQObject (new TypesFactory, "TypesFactory");
 		Qross::Manager::self ().addQObject (new UtilProxy, "Util");
 

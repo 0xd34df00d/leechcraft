@@ -33,7 +33,7 @@
 #include "core.h"
 #include "msnprotocol.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -43,9 +43,9 @@ namespace Zheet
 	{
 		Util::InstallTranslator ("azoth_zheet");
 		connect (&Core::Instance (),
-				SIGNAL (gotEntity (LeechCraft::Entity)),
+				SIGNAL (gotEntity (LC::Entity)),
 				this,
-				SIGNAL (gotEntity (LeechCraft::Entity)));
+				SIGNAL (gotEntity (LC::Entity)));
 		Core::Instance ().GetProtocol ()->setParent (this);
 	}
 
@@ -104,5 +104,5 @@ namespace Zheet
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_azoth_zheet, LeechCraft::Azoth::Zheet::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_azoth_zheet, LC::Azoth::Zheet::Plugin);
 

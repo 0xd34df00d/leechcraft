@@ -36,7 +36,7 @@
 
 struct GeoIPTag;
 
-namespace LeechCraft
+namespace LC
 {
 namespace BitTorrent
 {

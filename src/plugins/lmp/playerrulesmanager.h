@@ -35,7 +35,7 @@ class QStandardItemModel;
 class QStandardItem;
 class QModelIndex;
 
-namespace LeechCraft
+namespace LC
 {
 struct Entity;
 

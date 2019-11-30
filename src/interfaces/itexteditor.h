@@ -36,7 +36,7 @@ class QString;
 class QAction;
 class QColor;
 
-namespace LeechCraft
+namespace LC
 {
 	/** Possible content types a text editor could handle.
 	 */
@@ -137,7 +137,7 @@ public:
 	 *
 	 * @sa SetContents()
 	 */
-	virtual QString GetContents (LeechCraft::ContentType type) const = 0;
+	virtual QString GetContents (LC::ContentType type) const = 0;
 
 	/** @brief Sets contents of this widget interpreted as of the given
 	 * type.
@@ -159,7 +159,7 @@ public:
 	 *
 	 * @sa GetContents()
 	 */
-	virtual void SetContents (QString contents, LeechCraft::ContentType type) = 0;
+	virtual void SetContents (QString contents, LC::ContentType type) = 0;
 
 	/** @brief Returns a standard editor action.
 	 *
@@ -169,7 +169,7 @@ public:
 	 * @param[in] action The standard action to return.
 	 * @return The action or null if not available.
 	 */
-	virtual QAction* GetEditorAction (LeechCraft::EditorAction action) = 0;
+	virtual QAction* GetEditorAction (LC::EditorAction action) = 0;
 
 	/** @brief Adds a custom action to the editor toolbar, if any.
 	 *
@@ -209,7 +209,7 @@ public:
 	 * @param[in] color The new background color.
 	 * @param[in] editor The editor to change color of.
 	 */
-	virtual void SetBackgroundColor (const QColor& color, LeechCraft::ContentType editor) = 0;
+	virtual void SetBackgroundColor (const QColor& color, LC::ContentType editor) = 0;
 
 	/** @brief Returns this editor as a QWidget.
 	 *
@@ -254,7 +254,7 @@ public:
 	 * @param[in] type The content type to query.
 	 * @return Whether the plugin supports editing the given type.
 	 */
-	virtual bool SupportsEditor (LeechCraft::ContentType type) const = 0;
+	virtual bool SupportsEditor (LC::ContentType type) const = 0;
 
 	/** @brief Creates and returns a new text editor for the given type.
 	 *
@@ -270,7 +270,7 @@ public:
 	 * @return An editor widget implementing IEditorWidget or nullptr in
 	 * case of failure.
 	 */
-	virtual QWidget* GetTextEditor (LeechCraft::ContentType type) = 0;
+	virtual QWidget* GetTextEditor (LC::ContentType type) = 0;
 };
 
 Q_DECLARE_INTERFACE (IEditorWidget, "org.Deviant.LeechCraft.IEditorWidget/1.0")

@@ -35,7 +35,7 @@
 #include "urllistscript.h"
 #include "scriptsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace XProxy
 {

@@ -33,7 +33,7 @@
 #include <interfaces/devices/deviceroles.h>
 #include <util/util.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Vrooby
 {

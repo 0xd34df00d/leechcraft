@@ -41,7 +41,7 @@ class QDateTime;
 
 class QObject;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -157,5 +157,5 @@ namespace Azoth
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Azoth::IHistoryPlugin,
+Q_DECLARE_INTERFACE (LC::Azoth::IHistoryPlugin,
 		"org.Deviant.LeechCraft.Azoth.IHistoryPlugin/1.0")

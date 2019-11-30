@@ -38,7 +38,7 @@
 #include "core.h"
 #include "progresslineedit.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

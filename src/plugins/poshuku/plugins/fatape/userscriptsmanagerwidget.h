@@ -34,7 +34,7 @@
 #include <QWidget>
 #include "ui_userscriptsmanagerwidget.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

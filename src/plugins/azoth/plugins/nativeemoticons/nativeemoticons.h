@@ -34,7 +34,7 @@
 #include <interfaces/iplugin2.h>
 #include <interfaces/azoth/iresourceplugin.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -46,7 +46,7 @@ namespace NativeEmoticons
 				 , public IResourcePlugin
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Azoth::IResourcePlugin)
+		Q_INTERFACES (IInfo IPlugin2 LC::Azoth::IResourcePlugin)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.NativeEmoticons")
 

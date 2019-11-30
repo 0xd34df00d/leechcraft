@@ -33,7 +33,7 @@
 #include <QCryptographicHash>
 #include <util/xpc/passutils.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blasq
 {

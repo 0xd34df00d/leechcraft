@@ -42,7 +42,7 @@
 class IEntityManager;
 class QStandardItem;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {
@@ -157,7 +157,7 @@ namespace Util
 	 */
 	UTIL_XPC_API Entity MakeEntity (const QVariant& entity,
 			const QString& location,
-			LeechCraft::TaskParameters tp,
+			LC::TaskParameters tp,
 			const QString& mime = QString ());
 
 	/** @brief An utility function to make a Entity with
@@ -276,4 +276,4 @@ namespace Util
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::Util::LazyNotificationPixmap_t)
+Q_DECLARE_METATYPE (LC::Util::LazyNotificationPixmap_t)

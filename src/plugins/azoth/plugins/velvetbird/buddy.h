@@ -34,7 +34,7 @@
 #include <conversation.h>
 #include <interfaces/azoth/iclentry.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -47,7 +47,7 @@ namespace VelvetBird
 				, public ICLEntry
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::ICLEntry)
+		Q_INTERFACES (LC::Azoth::ICLEntry)
 
 		Account *Account_;
 		PurpleBuddy *Buddy_;

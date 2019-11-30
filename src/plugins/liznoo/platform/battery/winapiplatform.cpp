@@ -31,7 +31,7 @@
 #include <QtDebug>
 #include "../winapi/fakeqwidgetwinapi.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Liznoo
 {

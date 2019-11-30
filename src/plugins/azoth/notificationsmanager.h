@@ -36,7 +36,7 @@
 
 class IEntityManager;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -98,7 +98,7 @@ namespace Azoth
 
 		void handleEntryMadeCurrent (QObject*);
 	signals:
-		void hookGotAuthRequest (LeechCraft::IHookProxy_ptr proxy,
+		void hookGotAuthRequest (LC::IHookProxy_ptr proxy,
 				QObject *entry,
 				QString msg);
 	};

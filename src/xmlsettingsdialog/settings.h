@@ -32,7 +32,7 @@
 #include <QObject>
 #include <QSettings>
 
-namespace LeechCraft
+namespace LC
 {
 	class Settings : public QObject
 	{

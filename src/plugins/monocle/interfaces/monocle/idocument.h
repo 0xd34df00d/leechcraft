@@ -41,7 +41,7 @@ class QUrl;
 template<typename>
 class QFuture;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {
@@ -254,6 +254,6 @@ namespace Monocle
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Monocle::IDocument,
+Q_DECLARE_INTERFACE (LC::Monocle::IDocument,
 		"org.LeechCraft.Monocle.IDocument/1.0")
-Q_DECLARE_METATYPE (LeechCraft::Monocle::IDocument::Position)
+Q_DECLARE_METATYPE (LC::Monocle::IDocument::Position)

@@ -29,6 +29,6 @@
 
 #include "messageinfo.h"
 
-namespace LeechCraft::Snails
+namespace LC::Snails
 {
 }

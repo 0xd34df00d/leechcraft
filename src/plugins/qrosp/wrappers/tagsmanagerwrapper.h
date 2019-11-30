@@ -35,7 +35,7 @@
 class ITagsManager;
 class QAbstractItemModel;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Qrosp
 {

@@ -39,7 +39,7 @@
 #include "flagiconprovider.h"
 #include "rulesstorage.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace KBSwitch
 {

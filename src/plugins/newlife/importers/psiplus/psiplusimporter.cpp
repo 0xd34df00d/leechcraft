@@ -30,7 +30,7 @@
 #include "psiplusimporter.h"
 #include "psiplusimportpage.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace NewLife
 {

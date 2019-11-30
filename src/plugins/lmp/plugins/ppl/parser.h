@@ -31,7 +31,7 @@
 
 #include <interfaces/media/iaudioscrobbler.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

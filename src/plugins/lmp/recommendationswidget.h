@@ -33,7 +33,7 @@
 #include <interfaces/media/audiostructs.h>
 #include "ui_recommendationswidget.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

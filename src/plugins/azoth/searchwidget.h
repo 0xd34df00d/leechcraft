@@ -34,7 +34,7 @@
 #include <interfaces/ihavetabs.h>
 #include "ui_searchwidget.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

@@ -37,7 +37,7 @@
 #include <interfaces/blogique/ibloggingplatformplugin.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blogique
 {
@@ -54,7 +54,7 @@ namespace Metida
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IHaveSettings IPlugin2
-				LeechCraft::Blogique::IBloggingPlatformPlugin)
+				LC::Blogique::IBloggingPlatformPlugin)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Blogique.Metida")
 

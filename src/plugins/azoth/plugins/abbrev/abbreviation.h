@@ -34,7 +34,7 @@
 
 class QDataStream;
 
-namespace LeechCraft::Azoth::Abbrev
+namespace LC::Azoth::Abbrev
 {
 	struct Abbreviation
 	{
@@ -46,5 +46,5 @@ namespace LeechCraft::Azoth::Abbrev
 	QDataStream& operator>> (QDataStream&, Abbreviation&);
 }
 
-Q_DECLARE_METATYPE (LeechCraft::Azoth::Abbrev::Abbreviation)
-Q_DECLARE_METATYPE (QList<LeechCraft::Azoth::Abbrev::Abbreviation>)
+Q_DECLARE_METATYPE (LC::Azoth::Abbrev::Abbreviation)
+Q_DECLARE_METATYPE (QList<LC::Azoth::Abbrev::Abbreviation>)

@@ -42,7 +42,7 @@
 #include <interfaces/azoth/imessage.h>
 #include <interfaces/azoth/iproxyobject.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -119,15 +119,15 @@ namespace MuCommands
 }
 }
 
-BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Azoth::MuCommands::UrlRange,
+BOOST_FUSION_ADAPT_STRUCT (LC::Azoth::MuCommands::UrlRange,
 		Start_,
 		End_);
 
-BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Azoth::MuCommands::UrlComposite,
+BOOST_FUSION_ADAPT_STRUCT (LC::Azoth::MuCommands::UrlComposite,
 		Range_,
 		Pat_);
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

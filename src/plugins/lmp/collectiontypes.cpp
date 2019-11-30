@@ -29,7 +29,7 @@
 
 #include "interfaces/lmp/collectiontypes.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

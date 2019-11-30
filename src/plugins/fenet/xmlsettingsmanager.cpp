@@ -30,7 +30,7 @@
 #include "xmlsettingsmanager.h"
 #include <QApplication>
 
-namespace LeechCraft::Fenet
+namespace LC::Fenet
 {
 	XmlSettingsManager::XmlSettingsManager ()
 	{

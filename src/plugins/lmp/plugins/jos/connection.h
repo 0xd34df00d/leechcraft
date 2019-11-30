@@ -39,7 +39,7 @@
 template<typename T>
 class QFutureWatcher;
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {
@@ -114,4 +114,4 @@ namespace jOS
 }
 }
 
-Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::LMP::jOS::Connection::CopyOptions)
+Q_DECLARE_OPERATORS_FOR_FLAGS (LC::LMP::jOS::Connection::CopyOptions)

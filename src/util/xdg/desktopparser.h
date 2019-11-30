@@ -33,7 +33,7 @@
 #include <QStringList>
 #include "xdgconfig.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

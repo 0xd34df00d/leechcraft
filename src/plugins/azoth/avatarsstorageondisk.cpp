@@ -34,7 +34,7 @@
 #include <util/db/oral/oral.h>
 #include <util/sys/paths.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -58,13 +58,13 @@ namespace Azoth
 }
 }
 
-BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Azoth::AvatarsStorageOnDisk::Record,
+BOOST_FUSION_ADAPT_STRUCT (LC::Azoth::AvatarsStorageOnDisk::Record,
 		ID_,
 		EntryID_,
 		Size_,
 		ImageData_)
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

@@ -33,7 +33,7 @@
 #include <QGridLayout>
 #include <QtDebug>
 
-namespace LeechCraft
+namespace LC
 {
 	bool ItemHandlerCheckbox::CanHandle (const QDomElement& element) const
 	{

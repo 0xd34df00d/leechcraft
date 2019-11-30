@@ -38,7 +38,7 @@
 class QStandardItemModel;
 class QStandardItem;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blogique
 {
@@ -52,7 +52,7 @@ namespace Metida
 							  , public IProfileWidget
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Blogique::IProfileWidget)
+		Q_INTERFACES (LC::Blogique::IProfileWidget)
 
 		Ui::ProfileWidget Ui_;
 

@@ -32,7 +32,7 @@
 #include <QtGlobal>
 #include <QMap>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -64,7 +64,7 @@ namespace Azoth
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Azoth::ISupportTune,
+Q_DECLARE_INTERFACE (LC::Azoth::ISupportTune,
 		"org.Deviant.LeechCraft.Azoth.ISupportTune/1.0")
 
 #endif

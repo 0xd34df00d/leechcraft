@@ -36,7 +36,7 @@
 #include <interfaces/ientityhandler.h>
 #include <interfaces/iscriptloader.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Qrosp
 {

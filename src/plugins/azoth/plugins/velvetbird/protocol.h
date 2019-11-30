@@ -37,7 +37,7 @@
 typedef struct _PurpleAccount      PurpleAccount;
 typedef struct _PurplePlugin           PurplePlugin;
 
-namespace LeechCraft
+namespace LC
 {
 struct Entity;
 
@@ -51,7 +51,7 @@ namespace VelvetBird
 				   , public IProtocol
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IProtocol)
+		Q_INTERFACES (LC::Azoth::IProtocol)
 
 		ICoreProxy_ptr Proxy_;
 		PurplePlugin *PPlug_;

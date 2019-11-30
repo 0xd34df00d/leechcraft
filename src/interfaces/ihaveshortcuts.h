@@ -41,7 +41,7 @@ class QAction;
 using QKeySequences_t = QList<QKeySequence>;
 Q_DECLARE_METATYPE (QKeySequences_t)
 
-namespace LeechCraft
+namespace LC
 {
 	/** @brief Describes an action exposed in shortcut manager.
 	 *
@@ -96,15 +96,15 @@ namespace LeechCraft
 	};
 };
 
-Q_DECLARE_METATYPE (LeechCraft::ActionInfo)
+Q_DECLARE_METATYPE (LC::ActionInfo)
 
 /** @brief Interface for plugins that support configuring shortcuts.
  *
- * LeechCraft::Util::ShortcutManager class can help creating the
+ * LC::Util::ShortcutManager class can help creating the
  * GetActionInfo() map and keeping track of created actions,
  * automatically updating their shortcuts.
  *
- * @sa LeechCraft::Util::ShortcutManager
+ * @sa LC::Util::ShortcutManager
  */
 class Q_DECL_EXPORT IHaveShortcuts
 {
@@ -126,7 +126,7 @@ public:
 	 *
 	 * @return Shortcut IDs mapped to the corresponding ActionInfo.
 	 */
-	virtual QMap<QString, LeechCraft::ActionInfo> GetActionInfo () const = 0;
+	virtual QMap<QString, LC::ActionInfo> GetActionInfo () const = 0;
 
 	virtual ~IHaveShortcuts () { }
 };

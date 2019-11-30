@@ -39,7 +39,7 @@
 
 Q_DECLARE_METATYPE (QObject**);
 
-namespace LeechCraft
+namespace LC
 {
 namespace Qrosp
 {
@@ -119,4 +119,4 @@ namespace Qrosp
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_qrosp, LeechCraft::Qrosp::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_qrosp, LC::Qrosp::Plugin);

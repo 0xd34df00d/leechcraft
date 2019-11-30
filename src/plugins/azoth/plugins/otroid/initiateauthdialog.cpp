@@ -32,7 +32,7 @@
 #include <interfaces/azoth/iclentry.h>
 #include "authenticator.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

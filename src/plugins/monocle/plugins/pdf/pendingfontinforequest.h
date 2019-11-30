@@ -38,7 +38,7 @@ namespace Poppler
 	class Document;
 }
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {
@@ -48,7 +48,7 @@ namespace PDF
 									   , public IPendingFontInfoRequest
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Monocle::IPendingFontInfoRequest)
+		Q_INTERFACES (LC::Monocle::IPendingFontInfoRequest)
 
 		QList<FontInfo> Result_;
 	public:

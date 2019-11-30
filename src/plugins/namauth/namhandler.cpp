@@ -37,7 +37,7 @@
 #include "authenticationdialog.h"
 #include "sqlstoragebackend.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace NamAuth
 {

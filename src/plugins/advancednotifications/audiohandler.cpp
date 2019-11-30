@@ -37,7 +37,7 @@
 #include "audiothememanager.h"
 #include "notificationrule.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace AdvancedNotifications
 {

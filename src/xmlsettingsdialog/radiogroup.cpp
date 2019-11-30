@@ -33,7 +33,7 @@
 #include <QVBoxLayout>
 #include "radiogroup.h"
 
-using namespace LeechCraft;
+using namespace LC;
 
 RadioGroup::RadioGroup (QWidget *parent)
 : QWidget (parent)

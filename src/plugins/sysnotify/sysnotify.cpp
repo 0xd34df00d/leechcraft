@@ -33,7 +33,7 @@
 #include <interfaces/entitytesthandleresult.h>
 #include "notificationmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Sysnotify
 {
@@ -87,4 +87,4 @@ namespace Sysnotify
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_sysnotify, LeechCraft::Sysnotify::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_sysnotify, LC::Sysnotify::Plugin);

@@ -30,7 +30,7 @@
 #include "colorbutton.h"
 #include <QColorDialog>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

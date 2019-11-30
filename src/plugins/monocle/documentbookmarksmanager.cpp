@@ -36,7 +36,7 @@
 #include "bookmark.h"
 #include "documenttab.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {

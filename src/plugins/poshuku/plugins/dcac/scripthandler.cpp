@@ -35,7 +35,7 @@
 #include <interfaces/iscriptloader.h>
 #include "scriptobject.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

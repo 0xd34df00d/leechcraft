@@ -30,7 +30,7 @@
 #include "xmppannotationsiq.h"
 #include <QDomElement>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

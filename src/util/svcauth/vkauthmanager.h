@@ -44,7 +44,7 @@ class QTimer;
 template<typename>
 class QFuture;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

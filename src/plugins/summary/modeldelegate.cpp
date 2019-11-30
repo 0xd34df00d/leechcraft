@@ -34,7 +34,7 @@
 #include <interfaces/ijobholder.h>
 #include <interfaces/structures.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Summary
 {

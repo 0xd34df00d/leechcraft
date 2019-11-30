@@ -32,7 +32,7 @@
 #include <QIODevice>
 #include <libimobiledevice/afc.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

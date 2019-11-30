@@ -40,7 +40,7 @@ class QAbstractItemModel;
 class QToolBar;
 class QUrl;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

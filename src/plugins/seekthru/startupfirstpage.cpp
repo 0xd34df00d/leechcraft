@@ -36,7 +36,7 @@
 #include "xmlsettingsmanager.h"
 #include "core.h"
 
-namespace LeechCraft::SeekThru
+namespace LC::SeekThru
 {
 	EngineInfo::EngineInfo (const QString& fn, const QString& tags, const QString& name)
 	: ResourceFileName_ (fn)

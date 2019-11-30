@@ -38,7 +38,7 @@
 #include "vkconnection.h"
 #include "vkaccount.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

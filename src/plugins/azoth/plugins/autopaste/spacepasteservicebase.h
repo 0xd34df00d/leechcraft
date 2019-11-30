@@ -31,7 +31,7 @@
 
 #include "pasteservicebase.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

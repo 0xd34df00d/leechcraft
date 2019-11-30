@@ -47,7 +47,7 @@
 #include "devbackend.h"
 #include "trayview.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Vrooby
 {
@@ -191,4 +191,4 @@ namespace Vrooby
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_vrooby, LeechCraft::Vrooby::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_vrooby, LC::Vrooby::Plugin);

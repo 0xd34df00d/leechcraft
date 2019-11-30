@@ -47,7 +47,7 @@
 #include "xmlsettingsmanager.h"
 #include "recsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace TouchStreams
 {

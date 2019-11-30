@@ -38,7 +38,7 @@
 #include <util/threads/futures.h>
 #include "chroma.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace MusicZombie
 {

@@ -35,7 +35,7 @@
 
 Q_DECLARE_METATYPE (QList<QUrl>)
 
-namespace LeechCraft
+namespace LC
 {
 namespace HotStreams
 {

@@ -35,7 +35,7 @@
 #include <QDateTime>
 #include <QColor>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blogique
 {

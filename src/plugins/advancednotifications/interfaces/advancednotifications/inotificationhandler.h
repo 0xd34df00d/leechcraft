@@ -33,7 +33,7 @@
 #include <QtPlugin>
 #include "types.h"
 
-namespace LeechCraft
+namespace LC
 {
 struct Entity;
 
@@ -54,5 +54,5 @@ namespace AdvancedNotifications
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::AdvancedNotifications::INotificationHandler,
+Q_DECLARE_INTERFACE (LC::AdvancedNotifications::INotificationHandler,
 		"org.LeechCraft.AdvancedNotifications.INotificationHandler/1.0")

@@ -38,7 +38,7 @@
 class QTranslator;
 class QTimer;
 
-namespace LeechCraft
+namespace LC
 {
 namespace GmailNotifier
 {

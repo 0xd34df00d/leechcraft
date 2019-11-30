@@ -50,7 +50,7 @@ extern "C"
 #include "fpmanager.h"
 #include "privkeymanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -182,4 +182,4 @@ namespace OTRoid
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_azoth_otroid, LeechCraft::Azoth::OTRoid::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_azoth_otroid, LC::Azoth::OTRoid::Plugin);

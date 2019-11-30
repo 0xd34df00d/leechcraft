@@ -32,7 +32,7 @@
 #include <QWidget>
 #include "ui_arbitraryrotationwidget.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {

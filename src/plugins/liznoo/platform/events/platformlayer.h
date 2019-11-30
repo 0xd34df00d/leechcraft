@@ -36,7 +36,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include "../../batteryinfo.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Liznoo
 {

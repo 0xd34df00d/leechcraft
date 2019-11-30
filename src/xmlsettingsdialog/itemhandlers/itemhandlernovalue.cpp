@@ -29,7 +29,7 @@
 
 #include "itemhandlernovalue.h"
 
-namespace LeechCraft
+namespace LC
 {
 	QVariant ItemHandlerNoValue::GetValue (const QDomElement&, QVariant) const
 	{

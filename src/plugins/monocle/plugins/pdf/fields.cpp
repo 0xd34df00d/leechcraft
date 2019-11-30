@@ -34,7 +34,7 @@
 #include <util/sll/unreachable.h>
 #include "links.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {

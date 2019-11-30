@@ -47,7 +47,7 @@
 #include "logger.h"
 #include "listsholder.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -404,7 +404,7 @@ namespace Herbicide
 		}
 	}
 
-	void Plugin::hookGotMessage (LeechCraft::IHookProxy_ptr proxy,
+	void Plugin::hookGotMessage (LC::IHookProxy_ptr proxy,
 				QObject *message)
 	{
 		const auto msg = qobject_cast<IMessage*> (message);
@@ -459,4 +459,4 @@ namespace Herbicide
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_azoth_herbicide, LeechCraft::Azoth::Herbicide::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_azoth_herbicide, LC::Azoth::Herbicide::Plugin);

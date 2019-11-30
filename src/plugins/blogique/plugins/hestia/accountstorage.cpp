@@ -36,7 +36,7 @@
 #include <util/util.h>
 #include "localblogaccount.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blogique
 {

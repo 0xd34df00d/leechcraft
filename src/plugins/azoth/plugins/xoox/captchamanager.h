@@ -34,7 +34,7 @@
 class QXmppDataForm;
 class QDialog;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

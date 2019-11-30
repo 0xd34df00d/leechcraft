@@ -48,7 +48,7 @@
 #include "rganalysismanager.h"
 #include "hookinterconnector.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

@@ -37,7 +37,7 @@
 #include <interfaces/azoth/iaccount.h>
 #include <interfaces/azoth/iextselfinfoaccount.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -50,7 +50,7 @@ namespace Astrality
 						 , public IExtSelfInfoAccount
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IAccount LeechCraft::Azoth::IExtSelfInfoAccount);
+		Q_INTERFACES (LC::Azoth::IAccount LC::Azoth::IExtSelfInfoAccount);
 
 		Tp::AccountPtr A_;
 		const ICoreProxy_ptr Proxy_;
@@ -140,7 +140,7 @@ namespace Astrality
 
 		void removeFinished (AccountWrapper*);
 
-		void gotEntity (LeechCraft::Entity);
+		void gotEntity (LC::Entity);
 	};
 }
 }

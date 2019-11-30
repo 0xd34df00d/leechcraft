@@ -31,7 +31,7 @@
 
 #include <QFileInfo>
 
-namespace LeechCraft::Util::Compat
+namespace LC::Util::Compat
 {
 	inline QDateTime Created (const QFileInfo& info)
 	{

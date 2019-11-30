@@ -39,7 +39,7 @@
 #include <interfaces/core/ientitymanager.h>
 #include "picasaaccount.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blasq
 {

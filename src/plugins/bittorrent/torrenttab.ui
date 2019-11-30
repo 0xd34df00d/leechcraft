@@ -20,7 +20,7 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="LeechCraft::Util::TagsLineEdit" name="SearchLine_">
+      <widget class="LC::Util::TagsLineEdit" name="SearchLine_">
        <property name="placeholderText">
         <string>Search...</string>
        </property>
@@ -72,7 +72,7 @@
        <bool>true</bool>
       </property>
      </widget>
-     <widget class="LeechCraft::BitTorrent::TorrentTabWidget" name="Tabs_" native="true">
+     <widget class="LC::BitTorrent::TorrentTabWidget" name="Tabs_" native="true">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
         <horstretch>0</horstretch>
@@ -86,12 +86,12 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>LeechCraft::Util::TagsLineEdit</class>
+   <class>LC::Util::TagsLineEdit</class>
    <extends>QLineEdit</extends>
    <header location="global">util/tags/tagslineedit.h</header>
   </customwidget>
   <customwidget>
-   <class>LeechCraft::BitTorrent::TorrentTabWidget</class>
+   <class>LC::BitTorrent::TorrentTabWidget</class>
    <extends>QWidget</extends>
    <header>torrenttabwidget.h</header>
    <container>1</container>

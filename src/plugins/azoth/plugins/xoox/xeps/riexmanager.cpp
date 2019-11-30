@@ -34,7 +34,7 @@
 #include "capsdatabase.h"
 #include "entrybase.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

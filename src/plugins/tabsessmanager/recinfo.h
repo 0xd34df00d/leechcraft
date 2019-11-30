@@ -35,7 +35,7 @@
 #include <QVariant>
 #include <QMetaType>
 
-namespace LeechCraft
+namespace LC
 {
 namespace TabSessManager
 {
@@ -53,6 +53,6 @@ namespace TabSessManager
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::TabSessManager::RecInfo)
+Q_DECLARE_METATYPE (LC::TabSessManager::RecInfo)
 
 #endif

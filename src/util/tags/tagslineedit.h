@@ -34,7 +34,7 @@
 #include "tagsconfig.h"
 #include "categoryselector.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

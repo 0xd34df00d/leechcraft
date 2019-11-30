@@ -42,7 +42,7 @@ class QStandardItemModel;
 class QListWidget;
 class QTabBar;
 
-namespace LeechCraft
+namespace LC
 {
 struct Entity;
 

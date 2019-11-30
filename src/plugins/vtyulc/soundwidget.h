@@ -34,7 +34,7 @@
 
 struct libvlc_media_player_t;
 
-namespace LeechCraft
+namespace LC
 {
 namespace vlc
 {

@@ -38,7 +38,7 @@
 #include <libtorrent/torrent_status.hpp>
 #endif
 
-namespace LeechCraft
+namespace LC
 {
 namespace BitTorrent
 {

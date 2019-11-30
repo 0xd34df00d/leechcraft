@@ -41,7 +41,7 @@
 #include "capsdatabase.h"
 #include "vcardstorage.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -57,9 +57,9 @@ namespace Xoox
 		Core::Instance ().SetProxy (proxy);
 
 		connect (&Core::Instance (),
-				SIGNAL (gotEntity (LeechCraft::Entity)),
+				SIGNAL (gotEntity (LC::Entity)),
 				this,
-				SIGNAL (gotEntity (LeechCraft::Entity)));
+				SIGNAL (gotEntity (LC::Entity)));
 
 		const auto& progRep = proxy->GetPluginsManager ()->CreateLoadProgressReporter (this);
 		const auto capsDB = new CapsDatabase { progRep };
@@ -139,4 +139,4 @@ namespace Xoox
 }
 
 LC_EXPORT_PLUGIN (leechcraft_azoth_xoox,
-		LeechCraft::Azoth::Xoox::Plugin);
+		LC::Azoth::Xoox::Plugin);

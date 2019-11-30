@@ -34,7 +34,7 @@
 #include <interfaces/iauthwidget.h>
 #include "ui_readitlaterauthwidget.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {
@@ -46,7 +46,7 @@ namespace ReadItLater
 								, public IAuthWidget
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Poshuku::OnlineBookmarks::IAuthWidget)
+		Q_INTERFACES (LC::Poshuku::OnlineBookmarks::IAuthWidget)
 
 		Ui::AuthWidget Ui_;
 	public:

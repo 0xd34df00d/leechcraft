@@ -33,7 +33,7 @@ class QColor;
 
 /** @brief Proxy class to the color theme management engine.
  *
- * @sa LeechCraft::Util::ColorThemeProxy.
+ * @sa LC::Util::ColorThemeProxy.
  */
 class Q_DECL_EXPORT IColorThemeManager
 {
@@ -42,7 +42,7 @@ public:
 
 	/** @brief Returns the color for the given QML section and key.
 	 *
-	 * See the LeechCraft::Util::ColorThemeProxy for the list of
+	 * See the LC::Util::ColorThemeProxy for the list of
 	 * available color sections and their keys. See the documentation
 	 * for that class for the list of possible sections and keys (they
 	 * are separated by the \em _ sign).

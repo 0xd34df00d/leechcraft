@@ -36,7 +36,7 @@
 #include "interfaces/monocle/iannotation.h"
 #include "linkitem.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {

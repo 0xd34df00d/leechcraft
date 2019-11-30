@@ -35,7 +35,7 @@
 #include "localstorage.h"
 #include "xmlsettingsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blogique
 {
@@ -111,4 +111,4 @@ namespace Metida
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_blogique_metida, LeechCraft::Blogique::Metida::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_blogique_metida, LC::Blogique::Metida::Plugin);

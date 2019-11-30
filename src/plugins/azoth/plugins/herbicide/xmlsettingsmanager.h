@@ -31,7 +31,7 @@
 #define PLUGINS_AZOTH_PLUGINS_HERBICIDE_XMLSETTINGSMANAGER_H
 #include <xmlsettingsdialog/basesettingsmanager.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

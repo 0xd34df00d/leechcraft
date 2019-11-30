@@ -34,7 +34,7 @@
 #include <QVariantList>
 #include "common.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace DBusManager
 {

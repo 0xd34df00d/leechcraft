@@ -32,7 +32,7 @@
 #include <QDebug>
 #include <objbase.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Liznoo
 {

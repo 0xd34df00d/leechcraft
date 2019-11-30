@@ -37,7 +37,7 @@
 class QAction;
 class QImage;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -584,7 +584,7 @@ namespace Azoth
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::Azoth::EntryStatus)
-Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::Azoth::ICLEntry::Features)
-Q_DECLARE_INTERFACE (LeechCraft::Azoth::ICLEntry,
+Q_DECLARE_METATYPE (LC::Azoth::EntryStatus)
+Q_DECLARE_OPERATORS_FOR_FLAGS (LC::Azoth::ICLEntry::Features)
+Q_DECLARE_INTERFACE (LC::Azoth::ICLEntry,
 		"org.Deviant.LeechCraft.Azoth.ICLEntry/1.0")

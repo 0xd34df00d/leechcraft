@@ -32,7 +32,7 @@
 #include <QtPlugin>
 #include <QFile>
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {
@@ -63,4 +63,4 @@ namespace LMP
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::LMP::ISyncPlugin, "org.LeechCraft.LMP.ISyncPlugin/1.0")
+Q_DECLARE_INTERFACE (LC::LMP::ISyncPlugin, "org.LeechCraft.LMP.ISyncPlugin/1.0")

@@ -39,7 +39,7 @@
 #include <util/sll/util.h>
 #include "ciphertextformat.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace SecMan
 {

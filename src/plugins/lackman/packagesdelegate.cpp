@@ -46,7 +46,7 @@
 #include "pendingmanager.h"
 #include "delegatebuttongroup.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LackMan
 {

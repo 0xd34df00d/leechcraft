@@ -35,7 +35,7 @@
 #include <interfaces/ihavesettings.h>
 #include <interfaces/blasq/iservicesplugin.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blasq
 {
@@ -49,7 +49,7 @@ namespace DeathNote
 				 , public IServicesPlugin
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Blasq::IServicesPlugin)
+		Q_INTERFACES (IInfo IPlugin2 LC::Blasq::IServicesPlugin)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Blasq.DeathNote")
 

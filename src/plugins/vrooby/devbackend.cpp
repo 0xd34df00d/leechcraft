@@ -32,7 +32,7 @@
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/structures.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Vrooby
 {

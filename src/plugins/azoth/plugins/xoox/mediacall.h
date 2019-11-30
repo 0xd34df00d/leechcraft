@@ -37,7 +37,7 @@
 #error Dont include this if media calls are disabled.
 #endif
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -49,7 +49,7 @@ namespace Xoox
 					, public IMediaCall
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IMediaCall)
+		Q_INTERFACES (LC::Azoth::IMediaCall)
 
 		QXmppCall *Call_;
 		GlooxAccount *Account_;
@@ -67,7 +67,7 @@ namespace Xoox
 	private slots:
 		void handleStateChanged (QXmppCall::State);
 	signals:
-		void stateChanged (LeechCraft::Azoth::IMediaCall::State);
+		void stateChanged (LC::Azoth::IMediaCall::State);
 		void audioModeChanged (QIODevice::OpenMode);
 
 		void readFormatChanged ();

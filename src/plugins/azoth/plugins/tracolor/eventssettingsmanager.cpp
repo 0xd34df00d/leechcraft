@@ -38,7 +38,7 @@
 #include <util/sll/prelude.h>
 #include <interfaces/an/constants.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

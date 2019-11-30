@@ -39,7 +39,7 @@
 
 class QTimer;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

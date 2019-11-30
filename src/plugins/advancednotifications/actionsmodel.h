@@ -34,7 +34,7 @@
 
 class QAction;
 
-namespace LeechCraft
+namespace LC
 {
 namespace AdvancedNotifications
 {

@@ -33,7 +33,7 @@
 #include <util/util.h>
 #include <util/qml/unhidelistmodel.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace SB2
 {

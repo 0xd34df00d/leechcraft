@@ -37,7 +37,7 @@
 #include "anntreedelegate.h"
 #include "core.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {

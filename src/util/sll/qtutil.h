@@ -31,7 +31,7 @@
 
 #include "sllconfig.h"
 
-namespace LeechCraft::Util
+namespace LC::Util
 {
 	namespace detail
 	{

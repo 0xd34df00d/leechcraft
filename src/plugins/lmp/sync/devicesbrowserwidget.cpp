@@ -50,10 +50,10 @@
 #include "syncunmountablemanager.h"
 #include "collectionsmanager.h"
 
-typedef QMap<QString, LeechCraft::LMP::TranscodingParams> TranscodingParamsMap_t;
+typedef QMap<QString, LC::LMP::TranscodingParams> TranscodingParamsMap_t;
 Q_DECLARE_METATYPE (TranscodingParamsMap_t)
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

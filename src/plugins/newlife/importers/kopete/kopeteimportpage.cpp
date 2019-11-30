@@ -33,7 +33,7 @@
 #include <util/sll/prelude.h>
 #include "kopeteimportthread.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace NewLife
 {

@@ -30,7 +30,7 @@
 #include "newnickservidentifydialog.h"
 #include <QMessageBox>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

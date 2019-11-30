@@ -32,7 +32,7 @@
 #include <QDialog>
 #include "ui_createscriptdialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

@@ -36,7 +36,7 @@
 #include <interfaces/azoth/azothcommon.h>
 #include "iclentry.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -466,9 +466,9 @@ namespace Azoth
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::Azoth::IAccount*)
-Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::Azoth::IAccount::AccountFeatures)
-Q_DECLARE_INTERFACE (LeechCraft::Azoth::IAccount,
+Q_DECLARE_METATYPE (LC::Azoth::IAccount*)
+Q_DECLARE_OPERATORS_FOR_FLAGS (LC::Azoth::IAccount::AccountFeatures)
+Q_DECLARE_INTERFACE (LC::Azoth::IAccount,
 		"org.Deviant.LeechCraft.Azoth.IAccount/1.0")
 
 #endif

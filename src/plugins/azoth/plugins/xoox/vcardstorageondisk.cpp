@@ -35,7 +35,7 @@
 #include <util/db/oral/oral.h>
 #include <util/sys/paths.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -66,15 +66,15 @@ namespace Xoox
 }
 }
 
-BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Azoth::Xoox::VCardStorageOnDisk::VCardRecord,
+BOOST_FUSION_ADAPT_STRUCT (LC::Azoth::Xoox::VCardStorageOnDisk::VCardRecord,
 		JID_,
 		VCardIq_)
 
-BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Azoth::Xoox::VCardStorageOnDisk::PhotoHashRecord,
+BOOST_FUSION_ADAPT_STRUCT (LC::Azoth::Xoox::VCardStorageOnDisk::PhotoHashRecord,
 		JID_,
 		Hash_)
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

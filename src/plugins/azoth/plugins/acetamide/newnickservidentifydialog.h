@@ -33,7 +33,7 @@
 #include <QDialog>
 #include "ui_newnickservidentifydialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

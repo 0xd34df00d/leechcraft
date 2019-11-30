@@ -37,7 +37,7 @@
 #include "msgwrapper.h"
 #include "vcarddialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -72,9 +72,9 @@ namespace Astrality
 		C_->requestAvatarData ();
 
 		connect (this,
-				SIGNAL (gotEntity (LeechCraft::Entity)),
+				SIGNAL (gotEntity (LC::Entity)),
 				AW_,
-				SIGNAL (gotEntity (LeechCraft::Entity)));
+				SIGNAL (gotEntity (LC::Entity)));
 
 		connect (AW_->GetMessenger (GetHumanReadableID ()).data (),
 				SIGNAL (messageReceived (Tp::ReceivedMessage, Tp::TextChannelPtr)),
@@ -273,7 +273,7 @@ namespace Astrality
 					.arg (GetEntryName ())
 					.arg (op->errorName ())
 					.arg (op->errorMessage ());
-			emit gotEntity (LeechCraft::Util::MakeNotification ("Azoth", msg, Priority::Critical));
+			emit gotEntity (LC::Util::MakeNotification ("Azoth", msg, Priority::Critical));
 			return;
 		}
 

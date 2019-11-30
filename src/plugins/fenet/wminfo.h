@@ -31,7 +31,7 @@
 
 #include <QStringList>
 
-namespace LeechCraft::Fenet
+namespace LC::Fenet
 {
 	struct WMInfo
 	{

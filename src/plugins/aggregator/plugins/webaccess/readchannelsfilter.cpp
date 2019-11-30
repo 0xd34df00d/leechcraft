@@ -31,7 +31,7 @@
 #include <QtDebug>
 #include "aggregatorapp.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Aggregator
 {

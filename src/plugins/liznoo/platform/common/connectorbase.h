@@ -33,7 +33,7 @@
 #include <QDBusConnection>
 #include <QStringList>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Liznoo
 {

@@ -45,7 +45,7 @@
 #include "todostorage.h"
 #include "xmlsettingsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Otlozhu
 {
@@ -121,9 +121,9 @@ namespace Otlozhu
 					SIGNAL (removeTab (QWidget*)));
 
 			connect (tab,
-					SIGNAL (gotEntity (LeechCraft::Entity)),
+					SIGNAL (gotEntity (LC::Entity)),
 					this,
-					SIGNAL (gotEntity (LeechCraft::Entity)));
+					SIGNAL (gotEntity (LC::Entity)));
 		}
 		else
 			qWarning () << Q_FUNC_INFO
@@ -167,4 +167,4 @@ namespace Otlozhu
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_otlozhu, LeechCraft::Otlozhu::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_otlozhu, LC::Otlozhu::Plugin);

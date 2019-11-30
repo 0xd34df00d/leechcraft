@@ -35,7 +35,7 @@
 #include <interfaces/ihavesettings.h>
 #include <interfaces/azoth/iprotocolplugin.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -53,7 +53,7 @@ namespace Murm
 		Q_INTERFACES (IInfo
 				IPlugin2
 				IHaveSettings
-				LeechCraft::Azoth::IProtocolPlugin)
+				LC::Azoth::IProtocolPlugin)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.Murm")
 

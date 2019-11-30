@@ -36,7 +36,7 @@
 #include "accountthread.h"
 #include "accountthreadworker.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Snails
 {

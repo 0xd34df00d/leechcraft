@@ -31,7 +31,7 @@
 #include "core.h"
 #include <QTimer>
 
-namespace LeechCraft
+namespace LC
 {
 namespace BitTorrent
 {

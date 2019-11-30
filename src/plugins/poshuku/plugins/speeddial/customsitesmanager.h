@@ -37,7 +37,7 @@
 
 class QStandardItemModel;
 
-namespace LeechCraft::Poshuku::SpeedDial
+namespace LC::Poshuku::SpeedDial
 {
 	typedef QPair<QString, QUrl> Addr_t;
 	typedef QList<Addr_t> AddrList_t;
@@ -65,4 +65,4 @@ namespace LeechCraft::Poshuku::SpeedDial
 	};
 }
 
-Q_DECLARE_METATYPE (LeechCraft::Poshuku::SpeedDial::AddrList_t)
+Q_DECLARE_METATYPE (LC::Poshuku::SpeedDial::AddrList_t)

@@ -37,7 +37,7 @@
 class QComboBox;
 class QSortFilterProxyModel;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

@@ -37,7 +37,7 @@
 #include <interfaces/poshuku/iwebplugin.h>
 #include <interfaces/poshuku/iwebpluginprovider.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {
@@ -53,7 +53,7 @@ namespace FOC
 				 , public IWebPluginProvider
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 IHaveSettings LeechCraft::Poshuku::IWebPluginProvider)
+		Q_INTERFACES (IInfo IPlugin2 IHaveSettings LC::Poshuku::IWebPluginProvider)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Poshuku.FOC")
 

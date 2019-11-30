@@ -34,7 +34,7 @@
 #include <util/sll/util.h>
 #include <util/db/oral/oralfwd.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

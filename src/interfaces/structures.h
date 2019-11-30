@@ -40,7 +40,7 @@
 class QMenu;
 class QIODevice;
 
-namespace LeechCraft
+namespace LC
 {
 	/** @brief Describes single task parameter.
 	 */
@@ -114,7 +114,7 @@ namespace LeechCraft
 	 * The IEntityManager class is responsible for routing entities between plugins.
 	 *
 	 * @sa IEntityManager
-	 * @sa LeechCraft::TaskParameter
+	 * @sa LC::TaskParameter
 	 */
 	struct Entity
 	{
@@ -230,7 +230,7 @@ namespace LeechCraft
 		 */
 		RoleContextMenu,
 
-		/** This role is for the LeechCraft::JobHolderRow enum.
+		/** This role is for the LC::JobHolderRow enum.
 		 */
 		RoleJobHolderRow,
 
@@ -247,9 +247,9 @@ namespace LeechCraft
 
 typedef std::shared_ptr<QObject> QObject_ptr;
 
-Q_DECLARE_METATYPE (LeechCraft::Entity)
+Q_DECLARE_METATYPE (LC::Entity)
 Q_DECLARE_METATYPE (QIODevice*)
 Q_DECLARE_METATYPE (QObject_ptr)
-Q_DECLARE_METATYPE (LeechCraft::TaskParameters)
-Q_DECLARE_METATYPE (LeechCraft::Priority)
-Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::TaskParameters)
+Q_DECLARE_METATYPE (LC::TaskParameters)
+Q_DECLARE_METATYPE (LC::Priority)
+Q_DECLARE_OPERATORS_FOR_FLAGS (LC::TaskParameters)

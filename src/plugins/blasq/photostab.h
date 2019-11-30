@@ -44,7 +44,7 @@ class QSlider;
 
 class QQuickWidget;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blasq
 {

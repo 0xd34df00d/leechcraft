@@ -34,7 +34,7 @@
 #include <QMap>
 #include <QtCrypto>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

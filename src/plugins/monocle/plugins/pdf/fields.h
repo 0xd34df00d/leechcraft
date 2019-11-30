@@ -40,7 +40,7 @@ namespace Poppler
 	class FormFieldButton;
 }
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {
@@ -52,7 +52,7 @@ namespace PDF
 					, public IFormField
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Monocle::IFormField)
+		Q_INTERFACES (LC::Monocle::IFormField)
 
 		std::shared_ptr<Poppler::FormField> BaseField_;
 	protected:
@@ -66,8 +66,8 @@ namespace PDF
 	class FormFieldText final : public FormField
 							  , public IFormFieldText
 	{
-		Q_INTERFACES (LeechCraft::Monocle::IFormField
-				LeechCraft::Monocle::IFormFieldText)
+		Q_INTERFACES (LC::Monocle::IFormField
+				LC::Monocle::IFormFieldText)
 
 		std::shared_ptr<Poppler::FormFieldText> Field_;
 	public:
@@ -88,8 +88,8 @@ namespace PDF
 	class FormFieldChoice final : public FormField
 								, public IFormFieldChoice
 	{
-		Q_INTERFACES (LeechCraft::Monocle::IFormField
-				LeechCraft::Monocle::IFormFieldChoice)
+		Q_INTERFACES (LC::Monocle::IFormField
+				LC::Monocle::IFormFieldChoice)
 
 		std::shared_ptr<Poppler::FormFieldChoice> Field_;
 	public:
@@ -114,8 +114,8 @@ namespace PDF
 	class FormFieldButton final : public FormField
 						        , public IFormFieldButton
 	{
-		Q_INTERFACES (LeechCraft::Monocle::IFormField
-				LeechCraft::Monocle::IFormFieldButton)
+		Q_INTERFACES (LC::Monocle::IFormField
+				LC::Monocle::IFormFieldButton)
 
 		std::shared_ptr<Poppler::FormFieldButton> Field_;
 		Document * const Doc_;

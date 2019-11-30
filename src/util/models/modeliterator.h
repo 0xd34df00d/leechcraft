@@ -32,7 +32,7 @@
 #include <QModelIndex>
 #include "modelsconfig.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {
@@ -201,7 +201,7 @@ namespace Util
 namespace std
 {
 	template<>
-	struct iterator_traits<LeechCraft::Util::ModelIterator>
+	struct iterator_traits<LC::Util::ModelIterator>
 	{
 		typedef QModelIndex value_type;
 		typedef int difference_type;

@@ -42,7 +42,7 @@
 
 class IIconThemeManager;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Aggregator
 {
@@ -50,7 +50,7 @@ namespace Aggregator
 						 , public IItemsModel
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Aggregator::IItemsModel)
+		Q_INTERFACES (LC::Aggregator::IItemsModel)
 
 		QStringList ItemHeaders_;
 		items_shorts_t CurrentItems_;

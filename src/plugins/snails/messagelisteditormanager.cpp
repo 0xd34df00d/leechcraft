@@ -33,7 +33,7 @@
 #include "common.h"
 #include "mailmodel.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Snails
 {

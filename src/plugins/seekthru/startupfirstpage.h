@@ -32,7 +32,7 @@
 #include <QWizardPage>
 #include "ui_startupfirstpage.h"
 
-namespace LeechCraft::SeekThru
+namespace LC::SeekThru
 {
 	struct EngineInfo
 	{

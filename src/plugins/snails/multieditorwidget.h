@@ -36,7 +36,7 @@
 
 class IEditorWidget;
 
-namespace LeechCraft
+namespace LC
 {
 enum class ContentType;
 

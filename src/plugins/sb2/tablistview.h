@@ -38,7 +38,7 @@ class QStandardItemModel;
 class QMainWindow;
 class QTimer;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

@@ -33,7 +33,7 @@
 #include "util.h"
 #include "clientconnectionerrormgr.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

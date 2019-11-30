@@ -35,7 +35,7 @@
 class QVariant;
 class QByteArray;
 
-namespace LeechCraft
+namespace LC
 {
 	/** @brief Class for hook-based communication between plugins.
 	 *
@@ -129,6 +129,6 @@ namespace LeechCraft
 	typedef std::shared_ptr<IHookProxy> IHookProxy_ptr;
 }
 
-Q_DECLARE_METATYPE (LeechCraft::IHookProxy_ptr)
+Q_DECLARE_METATYPE (LC::IHookProxy_ptr)
 
 #endif

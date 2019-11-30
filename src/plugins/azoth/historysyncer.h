@@ -38,7 +38,7 @@ class QFuture;
 
 class QDateTime;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

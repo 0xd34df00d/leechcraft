@@ -29,7 +29,7 @@
 
 #include "progresslistener.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Snails
 {

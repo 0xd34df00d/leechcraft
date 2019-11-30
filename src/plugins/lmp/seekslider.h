@@ -32,7 +32,7 @@
 #include <QWidget>
 #include "ui_seekslider.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

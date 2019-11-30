@@ -34,7 +34,7 @@
 #include <util/sll/delayedexecutor.h>
 #include "itemtypes.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

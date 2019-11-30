@@ -37,7 +37,7 @@
 
 class QTimer;
 
-namespace LeechCraft
+namespace LC
 {
 struct Entity;
 

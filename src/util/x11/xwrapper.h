@@ -48,7 +48,7 @@ typedef unsigned long Window;
 
 typedef union _XEvent XEvent;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

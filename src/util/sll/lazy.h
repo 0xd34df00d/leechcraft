@@ -32,7 +32,7 @@
 #include <functional>
 #include "monadplus.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

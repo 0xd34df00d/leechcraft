@@ -31,7 +31,7 @@
 
 #include <QtPlugin>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -66,7 +66,7 @@ namespace Azoth
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Azoth::IPendingLastActivityRequest,
+Q_DECLARE_INTERFACE (LC::Azoth::IPendingLastActivityRequest,
 		"org.LeechCraft.Azoth.IPendingLastActivityRequest/1.0")
-Q_DECLARE_INTERFACE (LeechCraft::Azoth::ISupportLastActivity,
+Q_DECLARE_INTERFACE (LC::Azoth::ISupportLastActivity,
 		"org.LeechCraft.Azoth.ISupportLastActivity/1.0")

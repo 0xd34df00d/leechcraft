@@ -37,7 +37,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include "core.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

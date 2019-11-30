@@ -38,7 +38,7 @@
 #include "xmlsettingsmanager.h"
 #include "lackmantab.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LackMan
 {
@@ -65,9 +65,9 @@ namespace LackMan
 				Core::Instance ().GetRepositoryModel ());
 
 		connect (&Core::Instance (),
-				SIGNAL (gotEntity (LeechCraft::Entity)),
+				SIGNAL (gotEntity (LC::Entity)),
 				this,
-				SIGNAL (gotEntity (LeechCraft::Entity)));
+				SIGNAL (gotEntity (LC::Entity)));
 	}
 
 	void Plugin::SecondInit ()
@@ -211,4 +211,4 @@ namespace LackMan
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_lackman, LeechCraft::LackMan::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_lackman, LC::LackMan::Plugin);

@@ -30,7 +30,7 @@
 #include "createscriptdialog.h"
 #include <QPushButton>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

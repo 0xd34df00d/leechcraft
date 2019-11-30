@@ -32,7 +32,7 @@
 #include <QObject>
 #include <interfaces/blogique/iaccount.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blogique
 {
@@ -46,7 +46,7 @@ namespace Hestia
 							, public IAccount
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Blogique::IAccount)
+		Q_INTERFACES (LC::Blogique::IAccount)
 
 		LocalBloggingPlatform *ParentBloggingPlatform_;
 		QString Name_;

@@ -35,7 +35,7 @@
 #include <QVector>
 #include "localtypes.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

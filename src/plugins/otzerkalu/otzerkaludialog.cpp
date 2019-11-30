@@ -30,7 +30,7 @@
 
 #include "otzerkaludialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Otzerkalu
 {

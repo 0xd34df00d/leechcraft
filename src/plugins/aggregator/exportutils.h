@@ -33,7 +33,7 @@ class QWidget;
 
 class ITagsManager;
 
-namespace LeechCraft::Aggregator::ExportUtils
+namespace LC::Aggregator::ExportUtils
 {
 	void RunExportOPML (const ITagsManager*, QWidget* = nullptr);
 	void RunExportBinary (QWidget* = nullptr);

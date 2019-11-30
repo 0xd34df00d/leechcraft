@@ -34,7 +34,7 @@
 #include <QList>
 #include "structures.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poleemery
 {

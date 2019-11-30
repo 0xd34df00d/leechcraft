@@ -45,7 +45,7 @@ class QDockWidget;
 class QTreeView;
 class QMenu;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {

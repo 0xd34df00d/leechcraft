@@ -48,7 +48,7 @@
 class QWebView;
 class QContextMenuEvent;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {
@@ -94,11 +94,11 @@ namespace CleanWeb
 
 		QSet<QByteArray> GetPluginClasses () const;
 	public slots:
-		void hookBrowserWidgetInitialized (LeechCraft::IHookProxy_ptr proxy,
+		void hookBrowserWidgetInitialized (LC::IHookProxy_ptr proxy,
 				QObject *browserWidget);
-		void hookWebViewContextMenu (LeechCraft::IHookProxy_ptr,
-				LeechCraft::Poshuku::IWebView*,
-				const LeechCraft::Poshuku::ContextMenuInfo&, QMenu*,
+		void hookWebViewContextMenu (LC::IHookProxy_ptr,
+				LC::Poshuku::IWebView*,
+				const LC::Poshuku::ContextMenuInfo&, QMenu*,
 				WebViewCtxMenuStage);
 	};
 }

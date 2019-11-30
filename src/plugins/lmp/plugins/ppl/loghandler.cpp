@@ -44,7 +44,7 @@
 #include "parser.h"
 #include "tracksselectordialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

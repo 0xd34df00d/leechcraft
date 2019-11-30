@@ -29,7 +29,7 @@
 
 #include "submitinfo.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Scroblibre
 {

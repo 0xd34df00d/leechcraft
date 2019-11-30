@@ -36,7 +36,7 @@
 #include "attachmentsfetcher.h"
 #include "mailwebpage.h"
 
-namespace LeechCraft::Snails
+namespace LC::Snails
 {
 	MailWebPageNAM::MailWebPageNAM (ContextGetter getter, QObject *parent)
 	: QNetworkAccessManager { parent }

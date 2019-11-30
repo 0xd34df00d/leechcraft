@@ -31,7 +31,7 @@
 #include <QtConcurrentMap>
 #include <random>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

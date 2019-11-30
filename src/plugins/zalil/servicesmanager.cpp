@@ -36,7 +36,7 @@
 #include "pendinguploadbase.h"
 #include "bitcheeseservice.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Zalil
 {

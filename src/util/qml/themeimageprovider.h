@@ -33,7 +33,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include "qmlconfig.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

@@ -34,7 +34,7 @@
 #include <util/sll/unreachable.h>
 #include <interfaces/azoth/gpgexceptions.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

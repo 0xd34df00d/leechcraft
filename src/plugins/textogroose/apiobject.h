@@ -34,7 +34,7 @@
 #include <interfaces/iscriptloader.h>
 #include <interfaces/media/ilyricsfinder.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Textogroose
 {

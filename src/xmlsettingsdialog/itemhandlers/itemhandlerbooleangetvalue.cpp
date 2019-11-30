@@ -29,7 +29,7 @@
 
 #include "itemhandlerbooleangetvalue.h"
 
-namespace LeechCraft
+namespace LC
 {
 	QVariant ItemHandlerBooleanGetValue::GetValue (const QDomElement& item,
 			QVariant value) const

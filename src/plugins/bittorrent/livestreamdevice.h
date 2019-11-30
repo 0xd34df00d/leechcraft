@@ -35,7 +35,7 @@
 #include <libtorrent/torrent_info.hpp>
 #include <libtorrent/alert_types.hpp>
 
-namespace LeechCraft
+namespace LC
 {
 namespace BitTorrent
 {

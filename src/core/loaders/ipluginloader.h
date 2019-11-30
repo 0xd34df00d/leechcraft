@@ -41,7 +41,7 @@ class QMap;
 
 using QVariantMap = QMap<QString, QVariant>;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Loaders
 {

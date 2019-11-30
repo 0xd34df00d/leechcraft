@@ -30,7 +30,7 @@
 #include "proxyfactory.h"
 #include "proxiesstorage.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace XProxy
 {

@@ -36,7 +36,7 @@
 #include <QVariantMap>
 #include <QSize>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -244,4 +244,4 @@ namespace Murm
 }
 }
 
-Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::Azoth::Murm::MessageFlags)
+Q_DECLARE_OPERATORS_FOR_FLAGS (LC::Azoth::Murm::MessageFlags)

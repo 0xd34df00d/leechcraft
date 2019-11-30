@@ -45,7 +45,7 @@
 #include <laretz/packetgenerator.h>
 #include <interfaces/isyncable.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Syncer
 {

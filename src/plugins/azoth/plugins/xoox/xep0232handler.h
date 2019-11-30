@@ -33,7 +33,7 @@
 
 class QXmppDataForm;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

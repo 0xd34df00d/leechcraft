@@ -39,7 +39,7 @@
 #include <interfaces/poshuku/poshukutypes.h>
 #include <interfaces/poshuku/ilinkopenmodifier.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {
@@ -114,88 +114,88 @@ namespace WebKitView
 		void webViewCreated (const std::shared_ptr<CustomWebView>&, bool);
 
 		// Hook support signals
-		void hookAcceptNavigationRequest (LeechCraft::IHookProxy_ptr proxy,
+		void hookAcceptNavigationRequest (LC::IHookProxy_ptr proxy,
 				QWebPage *page,
 				QWebFrame *frame,
 				QNetworkRequest request,
 				QWebPage::NavigationType type);
-		void hookChooseFile (LeechCraft::IHookProxy_ptr proxy,
+		void hookChooseFile (LC::IHookProxy_ptr proxy,
 				QWebPage *page,
 				QWebFrame *frame,
 				QString suggested);
-		void hookContentsChanged (LeechCraft::IHookProxy_ptr proxy,
+		void hookContentsChanged (LC::IHookProxy_ptr proxy,
 				QWebPage *page);
-		void hookCreatePlugin (LeechCraft::IHookProxy_ptr proxy,
+		void hookCreatePlugin (LC::IHookProxy_ptr proxy,
 				QWebPage *page,
 				QString clsid,
 				QUrl url,
 				QStringList params,
 				QStringList values);
-		void hookCreateWindow (LeechCraft::IHookProxy_ptr proxy,
+		void hookCreateWindow (LC::IHookProxy_ptr proxy,
 				QWebPage *page,
 				QWebPage::WebWindowType type);
-		void hookDatabaseQuotaExceeded (LeechCraft::IHookProxy_ptr proxy,
+		void hookDatabaseQuotaExceeded (LC::IHookProxy_ptr proxy,
 				QWebPage *sourcePage,
 				QWebFrame *sourceFrame,
 				QString databaseName);
-		void hookDownloadRequested (LeechCraft::IHookProxy_ptr proxy,
+		void hookDownloadRequested (LC::IHookProxy_ptr proxy,
 				QWebPage *sourcePage,
 				QNetworkRequest downloadRequest);
-		void hookExtension (LeechCraft::IHookProxy_ptr proxy,
+		void hookExtension (LC::IHookProxy_ptr proxy,
 				QWebPage *page,
 				QWebPage::Extension extension,
 				const QWebPage::ExtensionOption* extensionOption,
 				QWebPage::ExtensionReturn* extensionReturn);
-		void hookFrameCreated (LeechCraft::IHookProxy_ptr proxy,
+		void hookFrameCreated (LC::IHookProxy_ptr proxy,
 				QWebPage *page,
 				QWebFrame *frameCreated);
-		void hookGeometryChangeRequested (LeechCraft::IHookProxy_ptr proxy,
+		void hookGeometryChangeRequested (LC::IHookProxy_ptr proxy,
 				QWebPage *page,
 				QRect rect);
-		void hookJavaScriptAlert (LeechCraft::IHookProxy_ptr proxy,
+		void hookJavaScriptAlert (LC::IHookProxy_ptr proxy,
 				QWebPage *page,
 				QWebFrame *frame,
 				QString msg);
-		void hookJavaScriptConfirm (LeechCraft::IHookProxy_ptr proxy,
+		void hookJavaScriptConfirm (LC::IHookProxy_ptr proxy,
 				QWebPage *page,
 				QWebFrame *frame,
 				QString msg);
-		void hookJavaScriptConsoleMessage (LeechCraft::IHookProxy_ptr proxy,
+		void hookJavaScriptConsoleMessage (LC::IHookProxy_ptr proxy,
 				QWebPage *page,
 				QString msg,
 				int line,
 				QString sourceId);
-		void hookJavaScriptPrompt (LeechCraft::IHookProxy_ptr proxy,
+		void hookJavaScriptPrompt (LC::IHookProxy_ptr proxy,
 				QWebPage *page,
 				QWebFrame *frame,
 				QString msg,
 				QString defValue,
 				QString resultString);
-		void hookJavaScriptWindowObjectCleared (LeechCraft::IHookProxy_ptr proxy,
+		void hookJavaScriptWindowObjectCleared (LC::IHookProxy_ptr proxy,
 				QWebPage *sourcePage,
 				QWebFrame *frameCleared);
-		void hookLinkClicked (LeechCraft::IHookProxy_ptr proxy,
+		void hookLinkClicked (LC::IHookProxy_ptr proxy,
 				QWebPage *page,
 				QUrl url);
-		void hookLinkHovered (LeechCraft::IHookProxy_ptr proxy,
+		void hookLinkHovered (LC::IHookProxy_ptr proxy,
 				QWebPage *page,
 				QString link,
 				QString title,
 				QString textContent);
-		void hookLoadFinished (LeechCraft::IHookProxy_ptr proxy,
+		void hookLoadFinished (LC::IHookProxy_ptr proxy,
 				QWebPage *page,
 				bool result);
-		void hookSupportsExtension (LeechCraft::IHookProxy_ptr proxy,
+		void hookSupportsExtension (LC::IHookProxy_ptr proxy,
 				const QWebPage *page,
 				QWebPage::Extension extension) const;
-		void hookUnsupportedContent (LeechCraft::IHookProxy_ptr proxy,
+		void hookUnsupportedContent (LC::IHookProxy_ptr proxy,
 				QWebPage *page,
 				QNetworkReply *reply);
-		void hookWebPageConstructionBegin (LeechCraft::IHookProxy_ptr proxy,
+		void hookWebPageConstructionBegin (LC::IHookProxy_ptr proxy,
 				QWebPage *page);
-		void hookWebPageConstructionEnd (LeechCraft::IHookProxy_ptr proxy,
+		void hookWebPageConstructionEnd (LC::IHookProxy_ptr proxy,
 				QWebPage *page);
-		void hookWindowCloseRequested (LeechCraft::IHookProxy_ptr proxy,
+		void hookWindowCloseRequested (LC::IHookProxy_ptr proxy,
 				QWebPage *page);
 	};
 }

@@ -37,7 +37,7 @@
 
 class QStandardItem;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

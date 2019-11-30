@@ -33,7 +33,7 @@ class QWidget;
 class QString;
 class QAction;
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {
@@ -49,4 +49,4 @@ namespace LMP
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::LMP::ILMPGuiProxy, "org.LeechCraft.LMP.ILMPGuiProxy/1.0")
+Q_DECLARE_INTERFACE (LC::LMP::ILMPGuiProxy, "org.LeechCraft.LMP.ILMPGuiProxy/1.0")

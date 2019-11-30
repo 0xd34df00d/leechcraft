@@ -31,7 +31,7 @@
 #include <QUrl>
 #include <util/xdg/item.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Launchy
 {

@@ -35,7 +35,7 @@
 #include <interfaces/core/ientitymanager.h>
 #include "xmlsettingsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Nacheku
 {

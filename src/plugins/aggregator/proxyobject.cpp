@@ -36,7 +36,7 @@
 #include "itemslistmodel.h"
 #include "channelutils.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Aggregator
 {

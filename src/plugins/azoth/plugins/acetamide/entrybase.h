@@ -36,7 +36,7 @@
 #include <interfaces/azoth/iclentry.h>
 #include "localtypes.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -50,7 +50,7 @@ namespace Acetamide
 					, public ICLEntry
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::ICLEntry)
+		Q_INTERFACES (LC::Azoth::ICLEntry)
 	protected:
 		QList<IMessage*> AllMessages_;
 		EntryStatus CurrentStatus_;

@@ -36,7 +36,7 @@
 #include "core.h"
 #include "localtypes.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -48,7 +48,7 @@ namespace Acetamide
 						   , public IMUCJoinWidget
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IMUCJoinWidget)
+		Q_INTERFACES (LC::Azoth::IMUCJoinWidget)
 
 		Ui::IrcJoinGroupChat Ui_;
 		IrcAccount *SelectedAccount_;

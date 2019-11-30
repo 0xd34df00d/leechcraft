@@ -29,7 +29,7 @@
 
 #include "packet.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

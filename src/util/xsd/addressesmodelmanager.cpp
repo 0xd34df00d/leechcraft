@@ -34,7 +34,7 @@
 #include <xmlsettingsdialog/datasourceroles.h>
 #include <xmlsettingsdialog/basesettingsmanager.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {
@@ -74,7 +74,7 @@ namespace Util
 
 	void AddressesModelManager::RegisterTypes ()
 	{
-		qRegisterMetaType<AddrList_t> ("LeechCraft::Util::AddrList_t");
+		qRegisterMetaType<AddrList_t> ("LC::Util::AddrList_t");
 		qRegisterMetaTypeStreamOperators<AddrList_t> ();
 	}
 

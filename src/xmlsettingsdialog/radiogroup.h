@@ -34,7 +34,7 @@
 class QButtonGroup;
 class QRadioButton;
 
-namespace LeechCraft
+namespace LC
 {
 	class RadioGroup : public QWidget
 	{

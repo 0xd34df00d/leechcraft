@@ -31,7 +31,7 @@
 
 #include <QTreeView>
 
-namespace LeechCraft
+namespace LC
 {
 namespace NetStoreManager
 {

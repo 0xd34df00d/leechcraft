@@ -31,7 +31,7 @@
 #define PLUGINS_POSHUKU_XBELGENERATOR_H
 #include <QByteArray>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

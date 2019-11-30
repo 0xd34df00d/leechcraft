@@ -36,7 +36,7 @@
 #include "accountsmanager.h"
 #include "authmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Scroblibre
 {
@@ -134,4 +134,4 @@ namespace Scroblibre
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_scroblibre, LeechCraft::Scroblibre::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_scroblibre, LC::Scroblibre::Plugin);

@@ -32,7 +32,7 @@
 #include <QDateTime>
 #include <interfaces/media/audiostructs.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Scroblibre
 {

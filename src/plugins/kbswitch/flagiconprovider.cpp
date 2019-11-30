@@ -31,7 +31,7 @@
 #include <QIcon>
 #include <util/sys/paths.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace KBSwitch
 {

@@ -33,7 +33,7 @@
 #include <QItemDelegate>
 #include <util/tags/tagscompleter.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

@@ -33,7 +33,7 @@
 #include "interfaces/azoth/azothcommon.h"
 #include "ui_setstatusdialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

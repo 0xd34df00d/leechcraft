@@ -42,7 +42,7 @@
 #include "notifier.h"
 #include "quarkmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace GmailNotifier
 {
@@ -152,4 +152,4 @@ namespace GmailNotifier
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_gmailnotifier, LeechCraft::GmailNotifier::GmailNotifier);
+LC_EXPORT_PLUGIN (leechcraft_gmailnotifier, LC::GmailNotifier::GmailNotifier);

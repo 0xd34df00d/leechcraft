@@ -34,7 +34,7 @@
 #include <QByteArray>
 #include <QString>
 
-namespace LeechCraft
+namespace LC
 {
 namespace SecMan
 {

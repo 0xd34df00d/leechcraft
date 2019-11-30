@@ -36,7 +36,7 @@
 #include "engine/path.h"
 #include "sourceerrorhandler.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

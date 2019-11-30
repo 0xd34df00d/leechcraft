@@ -36,7 +36,7 @@
 class QXmppClient;
 class QXmppLogger;
 
-namespace LeechCraft::Azoth::Xoox
+namespace LC::Azoth::Xoox
 {
 	class AccountSettingsHolder;
 

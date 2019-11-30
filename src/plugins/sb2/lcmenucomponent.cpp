@@ -34,7 +34,7 @@
 #include <util/util.h>
 #include <interfaces/imwproxy.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace SB2
 {

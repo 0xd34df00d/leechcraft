@@ -31,7 +31,7 @@
 #include <typeinfo>
 #include <QDebug>
 
-namespace LeechCraft
+namespace LC
 {
 	StandardException::StandardException (const QString& what)
 	: What_ (what)

@@ -34,7 +34,7 @@
 #include "ircaccount.h"
 #include "ircprotocol.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

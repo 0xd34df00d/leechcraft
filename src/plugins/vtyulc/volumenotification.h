@@ -34,7 +34,7 @@
 class QTimer;
 class QPaintEvent;
 
-namespace LeechCraft
+namespace LC
 {
 namespace vlc
 {

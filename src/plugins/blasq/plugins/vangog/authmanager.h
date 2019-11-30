@@ -35,7 +35,7 @@
 
 class QInputDialog;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blasq
 {

@@ -49,7 +49,7 @@
 #include "audiocall.h"
 #include "filetransfermanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

@@ -39,7 +39,7 @@ struct libvlc_instance_t;
 
 class QMimeData;
 
-namespace LeechCraft
+namespace LC
 {
 namespace vlc
 {

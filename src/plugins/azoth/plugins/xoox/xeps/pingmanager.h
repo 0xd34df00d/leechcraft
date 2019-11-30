@@ -38,7 +38,7 @@
 
 class QElapsedTimer;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

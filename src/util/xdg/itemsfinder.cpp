@@ -38,7 +38,7 @@
 #include "xdg.h"
 #include "item.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

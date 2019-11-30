@@ -43,7 +43,7 @@
 class QTimer;
 class QSslSocket;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

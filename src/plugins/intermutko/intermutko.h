@@ -36,7 +36,7 @@
 #include <interfaces/ihavesettings.h>
 #include <interfaces/iplugin2.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Intermutko
 {
@@ -68,7 +68,7 @@ namespace Intermutko
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 	public slots:
-		void hookNAMCreateRequest (LeechCraft::IHookProxy_ptr,
+		void hookNAMCreateRequest (LC::IHookProxy_ptr,
 					QNetworkAccessManager*,
 					QNetworkAccessManager::Operation*,
 					QIODevice**);

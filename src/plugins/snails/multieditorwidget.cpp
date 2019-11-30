@@ -36,7 +36,7 @@
 #include "core.h"
 #include "texteditoradaptor.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Snails
 {

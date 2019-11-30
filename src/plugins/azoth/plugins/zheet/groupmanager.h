@@ -34,7 +34,7 @@
 #include <QStringList>
 #include <msn/buddy.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

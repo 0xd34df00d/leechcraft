@@ -36,7 +36,7 @@
 #include <interfaces/ihavesettings.h>
 #include <interfaces/core/ihookproxy.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -67,7 +67,7 @@ namespace HiLi
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 	public slots:
-		void hookIsHighlightMessage (LeechCraft::IHookProxy_ptr,
+		void hookIsHighlightMessage (LC::IHookProxy_ptr,
 				QObject*);
 	private slots:
 		void handleRegexpsChanged ();

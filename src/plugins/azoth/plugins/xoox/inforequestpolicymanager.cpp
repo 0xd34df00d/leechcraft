@@ -33,7 +33,7 @@
 #include "roomclentry.h"
 #include "roomhandler.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

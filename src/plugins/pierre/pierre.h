@@ -38,7 +38,7 @@
 class QMenuBar;
 class QSystemTrayIcon;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Pierre
 {
@@ -66,14 +66,14 @@ namespace Pierre
 
 		QSet<QByteArray> GetPluginClasses () const;
 	public slots:
-		void hookGonnaFillMenu (LeechCraft::IHookProxy_ptr);
-		void hookTrayIconCreated (LeechCraft::IHookProxy_ptr,
+		void hookGonnaFillMenu (LC::IHookProxy_ptr);
+		void hookTrayIconCreated (LC::IHookProxy_ptr,
 				QSystemTrayIcon*);
-		void hookTrayIconVisibilityChanged (LeechCraft::IHookProxy_ptr,
+		void hookTrayIconVisibilityChanged (LC::IHookProxy_ptr,
 				QSystemTrayIcon*,
 				bool);
 	private slots:
-		void handleGotActions (const QList<QAction*>&, LeechCraft::ActionsEmbedPlace);
+		void handleGotActions (const QList<QAction*>&, LC::ActionsEmbedPlace);
 		void handleWindow (int);
 		void fillMenu ();
 	};

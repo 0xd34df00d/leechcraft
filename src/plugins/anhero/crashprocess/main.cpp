@@ -36,7 +36,7 @@
 #include "appinfo.h"
 #include "crashdialog.h"
 
-namespace CrashProcess = LeechCraft::AnHero::CrashProcess;
+namespace CrashProcess = LC::AnHero::CrashProcess;
 
 namespace
 {

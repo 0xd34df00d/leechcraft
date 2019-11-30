@@ -33,7 +33,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include "ui_reporttypepage.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Dolozhee
 {

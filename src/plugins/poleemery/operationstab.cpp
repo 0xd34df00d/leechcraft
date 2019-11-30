@@ -39,7 +39,7 @@
 #include "accountsmanager.h"
 #include "entriesdelegate.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poleemery
 {

@@ -43,7 +43,7 @@
 #include <QXmlStreamWriter>
 #include <util/xpc/util.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace NewLife
 {

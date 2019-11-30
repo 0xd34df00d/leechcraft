@@ -43,7 +43,7 @@
 #include "util.h"
 #include "servermessagessyncer.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

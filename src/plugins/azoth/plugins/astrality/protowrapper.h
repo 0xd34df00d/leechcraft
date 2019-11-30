@@ -38,7 +38,7 @@
 #include <interfaces/azoth/iprotocol.h>
 #include "accountwrapper.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -50,7 +50,7 @@ namespace Astrality
 					   , public IProtocol
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IProtocol);
+		Q_INTERFACES (LC::Azoth::IProtocol);
 
 		Tp::ConnectionManagerPtr CM_;
 		const QString ProtoName_;
@@ -88,7 +88,7 @@ namespace Astrality
 		void accountAdded (QObject*);
 		void accountRemoved (QObject*);
 
-		void gotEntity (const LeechCraft::Entity&);
+		void gotEntity (const LC::Entity&);
 	};
 }
 }

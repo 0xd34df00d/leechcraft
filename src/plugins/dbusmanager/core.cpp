@@ -45,7 +45,7 @@
 #include "tasksadaptor.h"
 #include "webfilestorageadaptor.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace DBusManager
 {

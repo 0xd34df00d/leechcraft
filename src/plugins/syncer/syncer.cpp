@@ -37,7 +37,7 @@
 #include "xmlsettingsmanager.h"
 #include "syncablemanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Syncer
 {
@@ -91,4 +91,4 @@ namespace Syncer
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_syncer, LeechCraft::Syncer::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_syncer, LC::Syncer::Plugin);

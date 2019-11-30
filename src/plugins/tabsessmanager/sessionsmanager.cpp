@@ -47,7 +47,7 @@
 #include "util.h"
 #include "tabspropsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace TabSessManager
 {

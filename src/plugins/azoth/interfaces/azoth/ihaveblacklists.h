@@ -31,7 +31,7 @@
 
 #include <QtPlugin>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -62,5 +62,5 @@ namespace Azoth
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Azoth::IHaveBlacklists,
+Q_DECLARE_INTERFACE (LC::Azoth::IHaveBlacklists,
 		"org.LeechCraft.Azoth.IHaveBlacklists/1.0")

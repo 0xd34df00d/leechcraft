@@ -31,7 +31,7 @@
 #include <util/gui/clearlineeditaddon.h>
 #include <QPushButton>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blasq
 {

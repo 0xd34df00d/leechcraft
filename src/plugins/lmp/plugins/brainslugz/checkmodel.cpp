@@ -44,7 +44,7 @@
 #include <util/sll/either.h>
 #include <util/threads/futures.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

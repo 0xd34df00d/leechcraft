@@ -31,7 +31,7 @@
 
 #include <QtPlugin>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -113,5 +113,5 @@ namespace Azoth
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Azoth::ISupportMediaCalls,
+Q_DECLARE_INTERFACE (LC::Azoth::ISupportMediaCalls,
 		"org.Deviant.LeechCraft.Azoth.ISupportMediaCalls/1.0")

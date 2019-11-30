@@ -43,7 +43,7 @@ class QDir;
 class QStandardItemModel;
 class QToolBar;
 
-namespace LeechCraft
+namespace LC
 {
 class QuarkComponent;
 

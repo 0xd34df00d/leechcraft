@@ -32,7 +32,7 @@
 #include "fua.h"
 #include "changer.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

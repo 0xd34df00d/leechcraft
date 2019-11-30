@@ -34,7 +34,7 @@
 #include "clientconnection.h"
 #include "transfermanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

@@ -45,7 +45,7 @@
 #include "xmlsettingsmanager.h"
 #include "visualnotificationsview.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace AdvancedNotifications
 {

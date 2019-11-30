@@ -34,7 +34,7 @@
 #include <QSqlQuery>
 #include <interfaces/blogique/iaccount.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blogique
 {

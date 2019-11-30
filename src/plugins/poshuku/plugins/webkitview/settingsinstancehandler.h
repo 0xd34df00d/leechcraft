@@ -33,7 +33,7 @@
 
 class QWebSettings;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

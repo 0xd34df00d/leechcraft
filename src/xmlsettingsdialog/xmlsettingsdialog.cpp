@@ -52,7 +52,7 @@
 #include "basesettingsmanager.h"
 #include "settingsthreadmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

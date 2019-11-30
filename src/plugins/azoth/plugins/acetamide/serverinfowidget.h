@@ -34,7 +34,7 @@
 #include <interfaces/azoth/iconfigurablemuc.h>
 #include "ui_serverinfowidget.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -46,7 +46,7 @@ namespace Acetamide
 							, public IMUCConfigWidget
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IMUCConfigWidget)
+		Q_INTERFACES (LC::Azoth::IMUCConfigWidget)
 
 		Ui::ServerInfoWidget Ui_;
 		IrcServerCLEntry *ISCLEntry_;

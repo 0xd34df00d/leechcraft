@@ -34,7 +34,7 @@
 #include <QDomDocument>
 #include "channel.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Aggregator
 {

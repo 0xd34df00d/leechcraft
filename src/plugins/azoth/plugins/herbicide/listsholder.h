@@ -35,7 +35,7 @@
 
 class QVariant;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

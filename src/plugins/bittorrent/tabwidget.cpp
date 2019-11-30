@@ -46,7 +46,7 @@
 #include "sessionsettingsmanager.h"
 #include "sessionstats.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace BitTorrent
 {

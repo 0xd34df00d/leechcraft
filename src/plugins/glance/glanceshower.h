@@ -34,7 +34,7 @@
 
 class ICoreTabWidget;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Plugins
 {

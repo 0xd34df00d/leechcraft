@@ -37,7 +37,7 @@
 
 class ICoreTabWidget;
 
-namespace LeechCraft
+namespace LC
 {
 namespace TabsList
 {
@@ -72,7 +72,7 @@ namespace TabsList
 		void handleShowList ();
 		void navigateToTab ();
 	signals:
-		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
+		void gotActions (QList<QAction*>, LC::ActionsEmbedPlace);
 	};
 }
 }

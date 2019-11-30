@@ -37,7 +37,7 @@
 #include <util/sys/paths.h>
 #include <interfaces/azoth/iaccount.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

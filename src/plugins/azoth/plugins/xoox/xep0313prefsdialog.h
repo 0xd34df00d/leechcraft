@@ -32,7 +32,7 @@
 #include <QDialog>
 #include "ui_xep0313prefsdialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

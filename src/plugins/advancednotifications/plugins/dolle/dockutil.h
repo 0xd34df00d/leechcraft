@@ -33,7 +33,7 @@
 #include "notificationdata.h"
 
 
-namespace LeechCraft
+namespace LC
 {
 namespace AdvancedNotifications
 {

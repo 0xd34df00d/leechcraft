@@ -32,7 +32,7 @@
 #include <QtDebug>
 #include "glooxaccount.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

@@ -35,7 +35,7 @@
 #include <QByteArray>
 #include <QIcon>
 
-namespace LeechCraft
+namespace LC
 {
 	/** @brief Defines different behavior features of tab classes.
 	 */
@@ -101,7 +101,7 @@ namespace LeechCraft
 		TFOverridesTabClose = 1 << 4
 	};
 
-	Q_DECLARE_FLAGS (TabFeatures, LeechCraft::TabFeature);
+	Q_DECLARE_FLAGS (TabFeatures, LC::TabFeature);
 
 	/** @brief The structure describing a single tab class.
 	 */
@@ -181,7 +181,7 @@ public:
 	 *
 	 * @sa IHavetabs::GetTabClasses()
 	 */
-	virtual LeechCraft::TabClassInfo GetTabClassInfo () const = 0;
+	virtual LC::TabClassInfo GetTabClassInfo () const = 0;
 
 	/** @brief Returns the pointer to the plugin this tab belongs to.
 	 *
@@ -289,7 +289,7 @@ public:
  * semantically equivalent. For example, there may be only one opened
  * tab with the list of active downloads at a time, but there may be
  * many simultaneously opened tabs for hub browsing. Tab behavior is
- * defined by the LeechCraft::TabFeature enum.
+ * defined by the LC::TabFeature enum.
  *
  * Different tab classes may have different priorities. The priorities
  * system is used to try to guess the most-currently-wanted tab by the
@@ -312,7 +312,7 @@ public:
  * been called on your plugin, but you may use them in SecondInit() or
  * later.
  *
- * @sa ITabWidget, LeechCraft::TabClassInfo
+ * @sa ITabWidget, LC::TabClassInfo
  */
 class Q_DECL_EXPORT IHaveTabs
 {
@@ -334,7 +334,7 @@ public:
 	 *
 	 * @sa TabClassInfo, ITabWidget::GetTabClass(), TabOpenRequested().
 	 */
-	virtual LeechCraft::TabClasses_t GetTabClasses () const = 0;
+	virtual LC::TabClasses_t GetTabClasses () const = 0;
 
 	/** @brief Opens the new tab from the given tabClass.
 	 *
@@ -467,7 +467,7 @@ public:
 	virtual void raiseTab (QWidget *tabContents) = 0;
 };
 
-Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::TabFeatures)
+Q_DECLARE_OPERATORS_FOR_FLAGS (LC::TabFeatures)
 
 Q_DECLARE_INTERFACE (ITabWidget, "org.Deviant.LeechCraft.ITabWidget/1.0")
 Q_DECLARE_INTERFACE (IHaveTabs, "org.Deviant.LeechCraft.IHaveTabs/1.0")

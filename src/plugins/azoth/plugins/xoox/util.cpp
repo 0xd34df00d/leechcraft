@@ -83,7 +83,7 @@ QDataStream& operator>> (QDataStream& in, QXmppDiscoveryIq::Identity& id)
 	return in;
 }
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

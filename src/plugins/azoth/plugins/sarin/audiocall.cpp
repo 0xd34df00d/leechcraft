@@ -37,7 +37,7 @@
 #include "audiocalldevice.h"
 #include "toxcontact.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

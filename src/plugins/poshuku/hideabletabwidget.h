@@ -35,7 +35,7 @@
 class QAction;
 class QTabBar;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

@@ -42,7 +42,7 @@
 class QStandardItemModel;
 class QStandardItem;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blasq
 {
@@ -55,7 +55,7 @@ namespace DeathNote
 							, public ISupportUploads
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Blasq::IAccount LeechCraft::Blasq::ISupportUploads)
+		Q_INTERFACES (LC::Blasq::IAccount LC::Blasq::ISupportUploads)
 
 		QString Name_;
 		FotoBilderService * const Service_;

@@ -36,7 +36,7 @@
 #include "picasaaccount.h"
 #include "registerpage.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blasq
 {

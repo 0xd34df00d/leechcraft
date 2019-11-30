@@ -35,7 +35,7 @@
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/iupdatablechatentry.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -51,8 +51,8 @@ namespace Murm
 					, public IUpdatableChatEntry
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::ICLEntry
-				LeechCraft::Azoth::IUpdatableChatEntry)
+		Q_INTERFACES (LC::Azoth::ICLEntry
+				LC::Azoth::IUpdatableChatEntry)
 	protected:
 		VkAccount * const Account_;
 		QList<VkMessage*> Messages_;

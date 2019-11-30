@@ -36,7 +36,7 @@
 
 class QDBusMessage;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Liznoo
 {

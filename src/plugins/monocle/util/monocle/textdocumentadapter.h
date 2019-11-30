@@ -37,7 +37,7 @@
 
 class QTextDocument;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {

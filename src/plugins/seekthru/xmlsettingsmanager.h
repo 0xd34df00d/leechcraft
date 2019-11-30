@@ -31,7 +31,7 @@
 
 #include <xmlsettingsdialog/basesettingsmanager.h>
 
-namespace LeechCraft::SeekThru
+namespace LC::SeekThru
 {
 	class XmlSettingsManager : public Util::BaseSettingsManager
 	{

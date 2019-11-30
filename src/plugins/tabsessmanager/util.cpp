@@ -34,7 +34,7 @@
 #include <QVariant>
 #include <interfaces/ihavetabs.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace TabSessManager
 {

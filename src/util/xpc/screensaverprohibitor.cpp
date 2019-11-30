@@ -33,7 +33,7 @@
 #include <interfaces/core/ientitymanager.h>
 #include "util.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

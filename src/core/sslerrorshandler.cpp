@@ -37,7 +37,7 @@
 #include <util/sll/slotclosure.h>
 #include "sslerrorsdialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 	SslErrorsHandler::SslErrorsHandler (QNetworkReply *reply,
 			const QList<QSslError>& errors, QObject *parent)

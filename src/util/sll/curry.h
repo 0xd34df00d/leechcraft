@@ -33,7 +33,7 @@
 #include <type_traits>
 #include <utility>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

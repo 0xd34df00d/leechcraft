@@ -32,7 +32,7 @@
 #include <QStringList>
 #include <QtDebug>
 
-namespace LeechCraft
+namespace LC
 {
 namespace AdvancedNotifications
 {
@@ -350,31 +350,31 @@ namespace AdvancedNotifications
 }
 }
 
-QDebug operator<< (QDebug dbg, const LeechCraft::AdvancedNotifications::FieldMatch& match)
+QDebug operator<< (QDebug dbg, const LC::AdvancedNotifications::FieldMatch& match)
 {
 	dbg.nospace () << "FieldMatch (for: " << match.GetPluginID () << "; field: " << match.GetFieldName () << ")";
 	return dbg.space ();
 }
 
-QDebug operator<< (QDebug dbg, const LeechCraft::AdvancedNotifications::VisualParams&)
+QDebug operator<< (QDebug dbg, const LC::AdvancedNotifications::VisualParams&)
 {
 	dbg.nospace () << "VisualParams ()";
 	return dbg.space ();
 }
 
-QDebug operator<< (QDebug dbg, const LeechCraft::AdvancedNotifications::AudioParams& params)
+QDebug operator<< (QDebug dbg, const LC::AdvancedNotifications::AudioParams& params)
 {
 	dbg.nospace () << "AudioParams (file: " << params.Filename_ << ")";
 	return dbg.space ();
 }
 
-QDebug operator<< (QDebug dbg, const LeechCraft::AdvancedNotifications::TrayParams&)
+QDebug operator<< (QDebug dbg, const LC::AdvancedNotifications::TrayParams&)
 {
 	dbg.nospace () << "TrayParams ()";
 	return dbg.space ();
 }
 
-QDebug operator<< (QDebug dbg, const LeechCraft::AdvancedNotifications::CmdParams& params)
+QDebug operator<< (QDebug dbg, const LC::AdvancedNotifications::CmdParams& params)
 {
 	dbg.nospace () << "CmdParams (command: " << params.Cmd_ << "; args: " << params.Args_ << ")";
 	return dbg.space ();

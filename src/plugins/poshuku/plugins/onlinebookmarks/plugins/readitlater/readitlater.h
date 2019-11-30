@@ -35,7 +35,7 @@
 #include <interfaces/iplugin2.h>
 #include <interfaces/iserviceplugin.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {
@@ -53,7 +53,7 @@ namespace ReadItLater
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2
-				LeechCraft::Poshuku::OnlineBookmarks::IServicePlugin)
+				LC::Poshuku::OnlineBookmarks::IServicePlugin)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Poshuku.OnlineBookmarks.ReadItLater")
 

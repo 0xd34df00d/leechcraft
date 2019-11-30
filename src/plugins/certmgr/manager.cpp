@@ -36,7 +36,7 @@
 #include <util/sys/paths.h>
 #include "certsmodel.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace CertMgr
 {

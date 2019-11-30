@@ -36,7 +36,7 @@
 #include <util/xpc/util.h>
 #include "storagebackendmanager.h"
 
-namespace LeechCraft::Aggregator
+namespace LC::Aggregator
 {
 	ResourcesFetcher::ResourcesFetcher (IEntityManager *iem, QObject *parent)
 	: QObject { parent }

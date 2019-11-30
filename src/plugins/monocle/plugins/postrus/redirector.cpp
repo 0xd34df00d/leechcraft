@@ -34,7 +34,7 @@
 #include <QtDebug>
 #include <QDir>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {

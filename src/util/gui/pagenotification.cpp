@@ -31,7 +31,7 @@
 #include <stdexcept>
 #include <QVBoxLayout>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

@@ -40,7 +40,7 @@
 #endif
 #include "syncwidget.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace NetStoreManager
 {

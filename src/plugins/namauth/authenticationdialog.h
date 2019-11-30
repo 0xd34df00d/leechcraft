@@ -32,7 +32,7 @@
 #include <QDialog>
 #include "ui_authenticationdialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace NamAuth
 {

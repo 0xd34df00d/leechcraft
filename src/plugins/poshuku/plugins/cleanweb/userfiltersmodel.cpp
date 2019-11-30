@@ -47,7 +47,7 @@
 #include "lineparser.h"
 #include "core.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {
@@ -73,10 +73,10 @@ namespace CleanWeb
 	, Proxy_ { proxy }
 	, Headers_ { MakeHeaders () }
 	{
-		qRegisterMetaType<FilterItem> ("LeechCraft::Poshuku::CleanWeb::FilterItem");
-		qRegisterMetaType<QList<FilterItem>> ("QList<LeechCraft::Poshuku::CleanWeb::FilterItem>");
-		qRegisterMetaTypeStreamOperators<FilterItem> ("LeechCraft::Poshuku::CleanWeb::FilterItem");
-		qRegisterMetaTypeStreamOperators<QList<FilterItem>> ("QList<LeechCraft::Poshuku::CleanWeb::FilterItem>");
+		qRegisterMetaType<FilterItem> ("LC::Poshuku::CleanWeb::FilterItem");
+		qRegisterMetaType<QList<FilterItem>> ("QList<LC::Poshuku::CleanWeb::FilterItem>");
+		qRegisterMetaTypeStreamOperators<FilterItem> ("LC::Poshuku::CleanWeb::FilterItem");
+		qRegisterMetaTypeStreamOperators<QList<FilterItem>> ("QList<LC::Poshuku::CleanWeb::FilterItem>");
 
 		ReadSettings ();
 	}

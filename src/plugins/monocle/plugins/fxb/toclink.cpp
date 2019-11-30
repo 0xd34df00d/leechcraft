@@ -30,7 +30,7 @@
 #include "toclink.h"
 #include "document.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {

@@ -32,7 +32,7 @@
 #include <QDBusArgument>
 #include <util/compat/imagebytes.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Sysnotify
 {

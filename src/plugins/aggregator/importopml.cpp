@@ -37,7 +37,7 @@
 #include <util/sll/either.h>
 #include "opmlparser.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Aggregator
 {

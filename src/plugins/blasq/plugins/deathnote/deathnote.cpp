@@ -32,7 +32,7 @@
 #include <util/util.h>
 #include "fotobilderservice.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blasq
 {
@@ -88,4 +88,4 @@ namespace DeathNote
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_blasq_deathnote, LeechCraft::Blasq::DeathNote::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_blasq_deathnote, LC::Blasq::DeathNote::Plugin);

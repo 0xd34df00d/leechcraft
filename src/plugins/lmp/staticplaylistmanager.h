@@ -33,7 +33,7 @@
 #include <QDir>
 #include "nativeplaylist.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

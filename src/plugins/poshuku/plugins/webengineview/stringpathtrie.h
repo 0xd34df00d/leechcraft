@@ -34,7 +34,7 @@
 #include <QString>
 #include <QtDebug>
 
-namespace LeechCraft::Poshuku::WebEngineView
+namespace LC::Poshuku::WebEngineView
 {
 	template<typename V>
 	class StringPathTrie

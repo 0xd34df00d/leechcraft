@@ -33,7 +33,7 @@
 #include <QMessageBox>
 #include <QtDebug>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

@@ -34,7 +34,7 @@
 #include <QXmppConfiguration.h>
 #include "ui_glooxaccountconfigurationwidget.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

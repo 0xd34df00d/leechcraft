@@ -37,7 +37,7 @@
 class QTextEdit;
 class QWebView;
 
-namespace LeechCraft
+namespace LC
 {
 namespace LHTR
 {

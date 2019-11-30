@@ -37,7 +37,7 @@
 
 class QThread;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Aggregator
 {

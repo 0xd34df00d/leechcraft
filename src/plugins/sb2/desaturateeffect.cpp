@@ -32,7 +32,7 @@
 #include <cmath>
 #include <QPainter>
 
-namespace LeechCraft
+namespace LC
 {
 namespace SB2
 {

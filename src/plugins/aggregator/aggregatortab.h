@@ -39,7 +39,7 @@
 
 class ITagsManager;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

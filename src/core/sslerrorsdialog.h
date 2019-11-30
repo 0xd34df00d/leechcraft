@@ -34,7 +34,7 @@
 #include <QSslError>
 #include "ui_sslerrorsdialog.h"
 
-namespace LeechCraft
+namespace LC
 {
 	class SslErrorsDialog : public QDialog
 	{

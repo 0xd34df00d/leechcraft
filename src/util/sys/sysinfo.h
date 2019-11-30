@@ -32,7 +32,7 @@
 #include <QString>
 #include "sysconfig.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

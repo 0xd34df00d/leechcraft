@@ -31,7 +31,7 @@
 #define PLUGINS_POSHUKU_XMLSETTINGSMANAGER_H
 #include <xmlsettingsdialog/basesettingsmanager.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Poshuku
 {

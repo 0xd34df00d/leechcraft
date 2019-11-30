@@ -35,7 +35,7 @@
 
 class QAbstractItemModel;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Eleeminator
 {

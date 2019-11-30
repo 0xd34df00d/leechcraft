@@ -44,7 +44,7 @@
 
 #warning "Don't forget to add support for multiple windows here."
 
-namespace LeechCraft
+namespace LC
 {
 namespace Lads
 {
@@ -180,13 +180,13 @@ namespace Lads
 
 		for (auto actor : Proxy_->GetPluginsManager ()->GetAllCastableRoots<IActionsExporter*> ())
 			connect (actor,
-					SIGNAL (gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace)),
+					SIGNAL (gotActions (QList<QAction*>, LC::ActionsEmbedPlace)),
 					this,
-					SLOT (handleGotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace)));
+					SLOT (handleGotActions (QList<QAction*>, LC::ActionsEmbedPlace)));
 	}
 
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_lads, LeechCraft::Lads::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_lads, LC::Lads::Plugin);
 

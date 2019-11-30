@@ -34,7 +34,7 @@
 class QTreeView;
 class QSortFilterProxyModel;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blogique
 {

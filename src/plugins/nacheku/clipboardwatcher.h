@@ -35,7 +35,7 @@
 
 class IEntityManager;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Nacheku
 {
@@ -45,7 +45,7 @@ namespace Nacheku
 	 * and emits a new entity if it's found.
 	 *
 	 * The entities emitted from ClipboardWatcher do have
-	 * LeechCraft::FromUserInitiated flag set, Entity_ is an utf8-ed
+	 * LC::FromUserInitiated flag set, Entity_ is an utf8-ed
 	 * text from the clipboard.
 	 */
 	class ClipboardWatcher : public QObject

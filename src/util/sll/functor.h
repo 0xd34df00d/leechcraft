@@ -35,7 +35,7 @@
 #include "typeclassutil.h"
 #include "void.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Util
 {

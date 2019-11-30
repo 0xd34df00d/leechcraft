@@ -34,7 +34,7 @@
 
 class QRectF;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {
@@ -471,11 +471,11 @@ namespace Monocle
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Monocle::IFormField,
+Q_DECLARE_INTERFACE (LC::Monocle::IFormField,
 		"org.LeechCraft.Monocle.IFormField/1.0")
-Q_DECLARE_INTERFACE (LeechCraft::Monocle::IFormFieldText,
+Q_DECLARE_INTERFACE (LC::Monocle::IFormFieldText,
 		"org.LeechCraft.Monocle.IFormFieldText/1.0")
-Q_DECLARE_INTERFACE (LeechCraft::Monocle::IFormFieldChoice,
+Q_DECLARE_INTERFACE (LC::Monocle::IFormFieldChoice,
 		"org.LeechCraft.Monocle.IFormFieldChoice/1.0")
-Q_DECLARE_INTERFACE (LeechCraft::Monocle::IFormFieldButton,
+Q_DECLARE_INTERFACE (LC::Monocle::IFormFieldButton,
 		"org.LeechCraft.Monocle.IFormFieldButton/1.0")

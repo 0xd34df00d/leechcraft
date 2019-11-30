@@ -40,7 +40,7 @@
 #include "colorthemeengine.h"
 #include "rootwindowsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 	CoreProxy::CoreProxy (QObject *parent)
 	: QObject (parent)

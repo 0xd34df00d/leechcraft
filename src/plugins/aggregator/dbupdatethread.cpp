@@ -29,7 +29,7 @@
 
 #include "dbupdatethread.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Aggregator
 {

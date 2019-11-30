@@ -38,7 +38,7 @@
 class QStandardItem;
 class QQuickWidget;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Blogique
 {
@@ -93,10 +93,10 @@ namespace Blogique
 		void handleCommentsUpdated ();
 	};
 
-	QDataStream& operator>> (QDataStream& in, LeechCraft::Blogique::CommentsWidget::CommentID& comment);
-	QDataStream& operator<< (QDataStream& out, const LeechCraft::Blogique::CommentsWidget::CommentID& comment);
-	uint qHash (const LeechCraft::Blogique::CommentsWidget::CommentID& cid);
+	QDataStream& operator>> (QDataStream& in, LC::Blogique::CommentsWidget::CommentID& comment);
+	QDataStream& operator<< (QDataStream& out, const LC::Blogique::CommentsWidget::CommentID& comment);
+	uint qHash (const LC::Blogique::CommentsWidget::CommentID& cid);
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::Blogique::CommentsWidget::CommentIDs_t)
+Q_DECLARE_METATYPE (LC::Blogique::CommentsWidget::CommentIDs_t)

@@ -36,7 +36,7 @@
 
 class QAction;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {
@@ -87,12 +87,12 @@ namespace Azoth
 		void handleActionNotifyBecomesOnline ();
 		void handleActionNotifyParticipantEnter ();
 	signals:
-		void hookEntryActionAreasRequested (LeechCraft::IHookProxy_ptr proxy,
+		void hookEntryActionAreasRequested (LC::IHookProxy_ptr proxy,
 				QObject *action,
 				QObject *entry);
-		void hookEntryActionsRemoved (LeechCraft::IHookProxy_ptr proxy,
+		void hookEntryActionsRemoved (LC::IHookProxy_ptr proxy,
 				QObject *entry);
-		void hookEntryActionsRequested (LeechCraft::IHookProxy_ptr proxy,
+		void hookEntryActionsRequested (LC::IHookProxy_ptr proxy,
 				QObject *entry);
 
 		void gotServerHistoryTab (ServerHistoryWidget*);
@@ -100,4 +100,4 @@ namespace Azoth
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::Azoth::ActionsManager::CLEntryActionArea)
+Q_DECLARE_METATYPE (LC::Azoth::ActionsManager::CLEntryActionArea)

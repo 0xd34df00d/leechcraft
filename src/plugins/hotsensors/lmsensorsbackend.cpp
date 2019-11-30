@@ -31,7 +31,7 @@
 #include <QtDebug>
 #include <sensors/sensors.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace HotSensors
 {

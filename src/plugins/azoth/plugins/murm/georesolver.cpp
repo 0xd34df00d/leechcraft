@@ -34,7 +34,7 @@
 #include <util/threads/futures.h>
 #include "vkconnection.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

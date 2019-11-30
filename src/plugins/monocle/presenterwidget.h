@@ -34,7 +34,7 @@
 
 class QLabel;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {

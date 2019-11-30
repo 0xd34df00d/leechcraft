@@ -29,9 +29,9 @@
 
 #include "headermodel.h"
 
-using namespace LeechCraft::Plugins::NetworkMonitor;
+using namespace LC::Plugins::NetworkMonitor;
 
-LeechCraft::Plugins::NetworkMonitor::HeaderModel::HeaderModel (QObject *parent)
+LC::Plugins::NetworkMonitor::HeaderModel::HeaderModel (QObject *parent)
 : QStandardItemModel { parent }
 {
 	setHorizontalHeaderLabels ({ tr ("Name"), tr ("Value") });

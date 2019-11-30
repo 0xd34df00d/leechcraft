@@ -38,7 +38,7 @@
 #include "channelconfigwidget.h"
 #include "channelsmanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

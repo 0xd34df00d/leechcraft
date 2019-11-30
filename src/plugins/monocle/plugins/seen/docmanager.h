@@ -36,7 +36,7 @@
 #include <libdjvu/ddjvuapi.h>
 #include <libdjvu/miniexp.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Monocle
 {

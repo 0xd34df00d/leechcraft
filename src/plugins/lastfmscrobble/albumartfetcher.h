@@ -36,7 +36,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/media/ialbumartprovider.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace Lastfmscrobble
 {

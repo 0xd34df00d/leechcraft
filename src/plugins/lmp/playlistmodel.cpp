@@ -37,7 +37,7 @@
 #include "core.h"
 #include "radiomanager.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {

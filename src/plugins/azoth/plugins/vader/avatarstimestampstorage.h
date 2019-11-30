@@ -36,7 +36,7 @@
 
 class QDateTime;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Azoth
 {

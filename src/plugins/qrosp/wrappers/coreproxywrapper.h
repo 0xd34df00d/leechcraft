@@ -42,7 +42,7 @@ class ICoreTabWidget;
 
 Q_DECLARE_METATYPE (QNetworkAccessManager*)
 
-namespace LeechCraft
+namespace LC
 {
 namespace Qrosp
 {
@@ -57,7 +57,7 @@ namespace Qrosp
 		QNetworkAccessManager* GetNetworkAccessManager () const;
 		QObject* GetShortcutProxy () const;
 		QModelIndex MapToSource (const QModelIndex&) const;
-		//LeechCraft::Util::BaseSettingsManager* GetSettingsManager () const;
+		//LC::Util::BaseSettingsManager* GetSettingsManager () const;
 		QIcon GetIcon (const QString& on, const QString& off = QString ()) const;
 		QMainWindow* GetMainWindow () const;
 		ICoreTabWidget* GetTabWidget () const;

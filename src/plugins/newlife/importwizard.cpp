@@ -39,7 +39,7 @@
 #include "importers/opera/operaimporter.h"
 #include "importers/jsonbookmarks/jsonbookmarksimporter.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace NewLife
 {

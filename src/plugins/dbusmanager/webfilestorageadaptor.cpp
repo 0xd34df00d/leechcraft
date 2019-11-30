@@ -32,7 +32,7 @@
 #include <interfaces/iwebfilestorage.h>
 #include "core.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace DBusManager
 {

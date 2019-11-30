@@ -42,7 +42,7 @@
 #include <interfaces/idatafilter.h>
 #include <interfaces/ihavediaginfo.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {
@@ -143,7 +143,7 @@ namespace LMP
 		void statusBarChanged (QWidget*, const QString&);
 		void raiseTab (QWidget*);
 
-		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
+		void gotActions (QList<QAction*>, LC::ActionsEmbedPlace);
 	};
 }
 }

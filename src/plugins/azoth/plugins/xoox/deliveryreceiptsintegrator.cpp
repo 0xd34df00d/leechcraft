@@ -32,7 +32,7 @@
 #include <QXmppMessageReceiptManager.h>
 #include "glooxmessage.h"
 
-namespace LeechCraft::Azoth::Xoox
+namespace LC::Azoth::Xoox
 {
 	DeliveryReceiptsIntegrator::DeliveryReceiptsIntegrator (QXmppMessageReceiptManager& mgr)
 	{

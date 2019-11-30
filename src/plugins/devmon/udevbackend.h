@@ -40,7 +40,7 @@ class QAbstractItemModel;
 struct udev;
 struct udev_monitor;
 
-namespace LeechCraft
+namespace LC
 {
 namespace Devmon
 {

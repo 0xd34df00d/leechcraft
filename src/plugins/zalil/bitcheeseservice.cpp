@@ -30,7 +30,7 @@
 #include "bitcheeseservice.h"
 #include "bitcheesepending.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Zalil
 {

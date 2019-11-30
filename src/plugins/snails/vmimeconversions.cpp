@@ -38,7 +38,7 @@
 #include "folder.h"
 #include "core.h"
 
-namespace LeechCraft
+namespace LC
 {
 namespace Snails
 {
