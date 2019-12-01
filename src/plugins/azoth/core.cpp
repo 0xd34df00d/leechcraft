@@ -107,9 +107,7 @@
 
 Q_DECLARE_METATYPE (QPointer<QObject>);
 
-namespace LC
-{
-namespace Azoth
+namespace LC::Azoth
 {
 	QDataStream& operator<< (QDataStream& out, const EntryStatus& status)
 	{
@@ -2367,5 +2365,4 @@ namespace Azoth
 	{
 		RIEX::HandleRIEXItemsSuggested (items, from, message);
 	}
-}
 }

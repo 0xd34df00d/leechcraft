@@ -51,15 +51,13 @@
 class QStandardItemModel;
 class QStandardItem;
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	class ShortcutManager;
 	class WkFontsWidget;
 }
 
-namespace Azoth
+namespace LC::Azoth
 {
 	class ICLEntry;
 	class IAccount;
@@ -513,7 +511,6 @@ namespace Azoth
 		void hookShouldCountUnread (LC::IHookProxy_ptr proxy,
 				QObject *message);
 	};
-}
 }
 
 Q_DECLARE_METATYPE (LC::Azoth::Core::CLEntryType)
