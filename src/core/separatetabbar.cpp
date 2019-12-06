@@ -84,7 +84,7 @@ namespace LeechCraft
 			return;
 		}
 
-		setTabButton (index, GetCloseButtonPosition (), closable ? closeButton : 0);
+		setTabButton (index, GetCloseButtonPosition (), closable ? closeButton : nullptr);
 	}
 
 	void SeparateTabBar::SetTabWidget (SeparateTabWidget *widget)
@@ -287,7 +287,7 @@ namespace LeechCraft
 			return;
 		}
 
-		auto px = QPixmap::grabWidget (widget);
+		auto px = widget->grab ();
 		px = px.scaledToWidth (px.width () / 2, Qt::SmoothTransformation);
 
 		auto idt = qobject_cast<IDNDTab*> (widget);
@@ -298,7 +298,7 @@ namespace LeechCraft
 			data->setData ("x-leechcraft/tab-drag-action", "reordering");
 			data->setData ("x-leechcraft/tab-tabclass", itw->GetTabClassInfo ().TabClass_);
 		}
-		else if (idt)
+		else
 			idt->FillMimeData (data);
 
 		auto drag = new QDrag (this);

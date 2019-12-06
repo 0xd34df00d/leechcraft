@@ -216,39 +216,40 @@ namespace SB2
 
 	void ViewManager::RemoveQuark (const QUrl& url)
 	{
-		for (int i = 0; i < ViewItemsModel_->rowCount (); ++i)
-		{
-			auto item = ViewItemsModel_->item (i);
-			if (item->data (ViewItemsModel::Role::SourceURL) != url)
-				continue;
-
-			ViewItemsModel_->removeRow (i);
-		}
-
-		auto mgr = Quark2Manager_.take (url);
-		AddToRemoved (mgr->GetManifest ().GetID ());
-
-		SaveQuarkOrder ();
+		RemoveQuarkBy<ViewItemsModel::Role::SourceURL> (url);
 	}
 
 	void ViewManager::RemoveQuark (const QString& id)
 	{
-		QUrl url;
+		RemoveQuarkBy<ViewItemsModel::Role::QuarkClass> (id);
+	}
+
+	template<int Role, typename T>
+	void ViewManager::RemoveQuarkBy (const T& val)
+	{
 		for (int i = 0; i < ViewItemsModel_->rowCount (); ++i)
 		{
 			auto item = ViewItemsModel_->item (i);
-			if (item->data (ViewItemsModel::Role::QuarkClass) != id)
+			if (item->data (Role) != val)
 				continue;
 
-			url = item->data (ViewItemsModel::Role::SourceURL).toUrl ();
+			auto url = item->data (ViewItemsModel::Role::SourceURL).toUrl ();
+			auto mgr = Quark2Manager_.take (url);
+			if (!mgr)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "no manager for"
+						<< url;
+				return;
+			}
+
 			ViewItemsModel_->removeRow (i);
+			AddToRemoved (mgr->GetManifest ().GetID ());
+
+			SaveQuarkOrder ();
+
+			break;
 		}
-
-		if (!url.isValid ())
-			return;
-
-		auto mgr = Quark2Manager_.take (url);
-		AddToRemoved (mgr->GetManifest ().GetID ());
 	}
 
 	void ViewManager::UnhideQuark (QuarkComponent_ptr component, QuarkManager_ptr manager)

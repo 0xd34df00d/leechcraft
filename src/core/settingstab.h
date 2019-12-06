@@ -61,14 +61,14 @@ namespace LeechCraft
 
 		QStack<std::shared_ptr<SettingsWidget>> SettingsWidgets_;
 	public:
-		SettingsTab (QWidget* = 0);
+		explicit SettingsTab (QWidget* = nullptr);
 
 		void Initialize ();
 
-		TabClassInfo GetTabClassInfo () const;
-		QObject* ParentMultiTabs ();
-		void Remove ();
-		QToolBar* GetToolBar () const;
+		TabClassInfo GetTabClassInfo () const override;
+		QObject* ParentMultiTabs () override;
+		void Remove () override;
+		QToolBar* GetToolBar () const override;
 	private:
 		void UpdateButtonsState ();
 	public slots:
@@ -78,8 +78,6 @@ namespace LeechCraft
 		void handleSearch (const QString&);
 
 		void handleBackRequested ();
-		void handleApply ();
-		void handleCancel ();
 	signals:
 		void remove (QWidget*);
 	};

@@ -119,9 +119,7 @@ namespace SB2
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
 	{
-		QSet<QByteArray> result;
-		result << "org.LeechCraft.Core.Plugins/1.0";
-		return result;
+		return { "org.LeechCraft.Core.Plugins/1.0" };
 	}
 
 	QMap<QString, ActionInfo> Plugin::GetActionInfo () const
@@ -175,7 +173,7 @@ namespace SB2
 		auto rootWM = Proxy_->GetRootWindowsManager ();
 		auto win = rootWM->GetMainWindow (index);
 
-		auto mgr = new ViewManager (Proxy_, ShortcutMgr_, win, this);
+		auto mgr = std::make_shared<ViewManager> (Proxy_, ShortcutMgr_, win, this);
 		auto view = mgr->GetView ();
 
 		auto mwProxy = rootWM->GetMWProxy (index);
@@ -185,41 +183,38 @@ namespace SB2
 
 		mgr->RegisterInternalComponent ((new LCMenuComponent (mwProxy))->GetComponent ());
 
-		auto launcher = new LauncherComponent (ictw, Proxy_, mgr);
+		auto launcher = std::make_shared<LauncherComponent> (ictw, Proxy_, mgr.get ());
 		mgr->RegisterInternalComponent (launcher->GetComponent ());
 		if (init)
 			connect (this,
-					SIGNAL (pluginsAvailable ()),
-					launcher,
-					SLOT (handlePluginsAvailable ()));
+					&Plugin::pluginsAvailable,
+					launcher.get (),
+					&LauncherComponent::handlePluginsAvailable);
 		else
 			launcher->handlePluginsAvailable ();
 
-		auto tray = new TrayComponent (Proxy_, view);
+		auto tray = std::make_shared<TrayComponent> (Proxy_, view);
 		mgr->RegisterInternalComponent (tray->GetComponent ());
 		if (init)
 			connect (this,
-					SIGNAL (pluginsAvailable ()),
-					tray,
-					SLOT (handlePluginsAvailable ()));
+					&Plugin::pluginsAvailable,
+					tray.get (),
+					&TrayComponent::handlePluginsAvailable);
 		else
 			tray->handlePluginsAvailable ();
 
-		auto dock = new DockActionComponent (Proxy_, view);
+		auto dock = std::make_shared<DockActionComponent> (Proxy_, view);
 		mgr->RegisterInternalComponent (dock->GetComponent ());
 
 		if (!init)
 			mgr->SecondInit ();
 
-		Managers_.push_back ({ mgr, tray, dock });
+		Managers_.push_back ({ mgr, tray, launcher, dock });
 	}
 
 	void Plugin::handleWindowRemoved (int index)
 	{
-		const auto& info = Managers_.takeAt (index);
-		delete info.Mgr_;
-		delete info.Tray_;
-		delete info.Dock_;
+		Managers_.removeAt (index);
 	}
 }
 }

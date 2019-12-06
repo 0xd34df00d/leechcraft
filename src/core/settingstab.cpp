@@ -35,6 +35,7 @@
 #include <QToolButton>
 #include <QToolBar>
 #include <QLineEdit>
+#include "util/compat/fontwidth.h"
 #include "util/sll/qtutil.h"
 #include "util/gui/flowlayout.h"
 #include "util/gui/clearlineeditaddon.h"
@@ -70,15 +71,23 @@ namespace LeechCraft
 
 		ActionApply_->setProperty ("ActionIcon", "dialog-ok");
 		connect (ActionApply_,
-				SIGNAL (triggered ()),
+				&QAction::triggered,
 				this,
-				SLOT (handleApply ()));
+				[this]
+				{
+					for (const auto& widget : SettingsWidgets_)
+						widget->Accept ();
+				});
 
 		ActionCancel_->setProperty ("ActionIcon", "dialog-cancel");
 		connect (ActionCancel_,
-				SIGNAL (triggered ()),
+				&QAction::triggered,
 				this,
-				SLOT (handleCancel ()));
+				[this]
+				{
+					for (const auto& widget : SettingsWidgets_)
+						widget->Reject ();
+				});
 
 		QTimer::singleShot (1000,
 				this,
@@ -128,9 +137,9 @@ namespace LeechCraft
 
 			const auto& fm = QApplication::fontMetrics ();
 			const int pad = 3;
-			for (auto i = origSplit.begin (), end = origSplit.end (); i != end; ++i)
-				if (fm.width (*i) > ButtonWidth - 2 * pad)
-					*i = fm.elidedText (*i, Qt::ElideRight, ButtonWidth - 2 * pad);
+			for (auto& str : origSplit)
+				if (Util::Compat::Width (fm, str) > ButtonWidth - 2 * pad)
+					str = fm.elidedText (str, Qt::ElideRight, ButtonWidth - 2 * pad);
 
 			return origSplit.join ("\n");
 		}
@@ -152,8 +161,7 @@ namespace LeechCraft
 
 	void SettingsTab::Initialize ()
 	{
-		const QObjectList& settables = Core::Instance ()
-				.GetPluginManager ()->GetAllCastableRoots<IHaveSettings*> ();
+		const QObjectList& settables = Core::Instance ().GetPluginManager ()->GetAllCastableRoots<IHaveSettings*> ();
 
 		const auto& obj2groups = BuildGroups (settables);
 		QSet<QPair<QString, QString>> allGroups;
@@ -163,7 +171,7 @@ namespace LeechCraft
 		QMap<QString, QGroupBox*> group2box;
 		for (const auto& pair : allGroups)
 		{
-			QGroupBox *box = new QGroupBox (pair.first);
+			auto box = new QGroupBox (pair.first);
 			box->setLayout (new Util::FlowLayout);
 			group2box [pair.first] = box;
 		}
@@ -186,7 +194,7 @@ namespace LeechCraft
 					ii->GetIcon ();
 			for (const auto& pair : obj2groups [obj])
 			{
-				QToolButton *butt = new QToolButton;
+				auto butt = new QToolButton;
 				butt->setToolButtonStyle (Qt::ToolButtonTextUnderIcon);
 
 				const QString& name = NameForGroup (ii->GetName (), pair.second);
@@ -384,17 +392,5 @@ namespace LeechCraft
 		Ui_.StackedWidget_->removeWidget (widget.get ());
 
 		UpdateButtonsState ();
-	}
-
-	void SettingsTab::handleApply ()
-	{
-		for (const auto& widget : SettingsWidgets_)
-			widget->Accept ();
-	}
-
-	void SettingsTab::handleCancel ()
-	{
-		for (const auto& widget : SettingsWidgets_)
-			widget->Reject ();
 	}
 }

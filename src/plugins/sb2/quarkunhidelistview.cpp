@@ -49,7 +49,7 @@ namespace SB2
 					std::unique_ptr<QuarkManager> qm;
 					try
 					{
-						qm.reset (new QuarkManager (comp, viewMgr, proxy));
+						qm = std::make_unique<QuarkManager> (comp, viewMgr, proxy);
 					}
 					catch (const std::exception& e)
 					{
@@ -100,6 +100,9 @@ namespace SB2
 
 	void QuarkUnhideListView::unhide (const QString& itemClass)
 	{
+		if (!ID2Component_.contains (itemClass))
+			return;
+
 		const auto& info = ID2Component_.take (itemClass);
 		ViewManager_->UnhideQuark (info.Comp_, info.Manager_);
 
