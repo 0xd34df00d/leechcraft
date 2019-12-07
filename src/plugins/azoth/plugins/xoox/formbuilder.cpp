@@ -120,10 +120,32 @@ namespace Xoox
 		}
 	};
 
-	class BooleanHandler : public FieldHandler
+	template<typename WidgetT>
+	class TypedFieldHandler : public FieldHandler
 	{
 	public:
 		using FieldHandler::FieldHandler;
+	protected:
+		virtual QVariant GetDataImpl (WidgetT*) = 0;
+
+		QVariant GetData (QWidget *widget) final
+		{
+			auto concrete = qobject_cast<WidgetT*> (widget);
+			if (!concrete)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "unable to cast"
+						<< widget;
+				return {};
+			}
+			return GetDataImpl (concrete);
+		}
+	};
+
+	class BooleanHandler : public TypedFieldHandler<QCheckBox>
+	{
+	public:
+		using TypedFieldHandler::TypedFieldHandler;
 	protected:
 		QWidget* CreateWidgetImpl (QXmppDataForm::Field& field, QFormLayout *layout)
 		{
@@ -133,18 +155,8 @@ namespace Xoox
 			return box;
 		}
 
-		QVariant GetData (QWidget *widget)
+		QVariant GetDataImpl (QCheckBox *box) final
 		{
-			QCheckBox *box = qobject_cast<QCheckBox*> (widget);
-			if (!box)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "unable to cast"
-						<< widget
-						<< "to QCheckBox";
-				return QVariant ();
-			}
-
 			return box->isChecked ();
 		}
 	};
@@ -183,10 +195,10 @@ namespace Xoox
 		}
 	};
 
-	class MultiTextHandler : public FieldHandler
+	class MultiTextHandler : public TypedFieldHandler<QTextEdit>
 	{
 	public:
-		using FieldHandler::FieldHandler;
+		using TypedFieldHandler::TypedFieldHandler;
 	protected:
 		QWidget* CreateWidgetImpl (QXmppDataForm::Field& field, QFormLayout *layout)
 		{
@@ -195,29 +207,18 @@ namespace Xoox
 			return edit;
 		}
 
-		QVariant GetData (QWidget *widget)
+		QVariant GetDataImpl (QTextEdit *edit) final
 		{
-			QTextEdit *edit = qobject_cast<QTextEdit*> (widget);
-			if (!edit)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "unable to cast"
-						<< widget
-						<< "to QTextEdit";
-				return QVariant ();
-			}
-
-			QStringList result = edit->toPlainText ().split ('\n', QString::SkipEmptyParts);
-			return result;
+			return edit->toPlainText ().split ('\n', QString::SkipEmptyParts);
 		}
 	};
 
-	class SingleTextHandler : public FieldHandler
+	class SingleTextHandler : public TypedFieldHandler<QLineEdit>
 	{
 		bool IsPassword_;
 	public:
 		SingleTextHandler (bool pass, FormBuilder *builder)
-		: FieldHandler (builder)
+		: TypedFieldHandler (builder)
 		, IsPassword_ (pass)
 		{
 		}
@@ -234,28 +235,18 @@ namespace Xoox
 			return edit;
 		}
 
-		QVariant GetData (QWidget *widget)
+		QVariant GetDataImpl (QLineEdit *edit) final
 		{
-			QLineEdit *edit = qobject_cast<QLineEdit*> (widget);
-			if (!edit)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "unable to cast"
-						<< widget
-						<< "to QLineEdit";
-				return QVariant ();
-			}
-
 			return edit->text ();
 		}
 	};
 
-	class ListHandler : public FieldHandler
+	class ListHandler : public TypedFieldHandler<QTreeWidget>
 	{
 		QAbstractItemView::SelectionMode SelMode_;
 	public:
 		ListHandler (QAbstractItemView::SelectionMode mode, FormBuilder *builder)
-		: FieldHandler (builder)
+		: TypedFieldHandler (builder)
 		, SelMode_ (mode)
 		{
 		}
@@ -279,18 +270,8 @@ namespace Xoox
 			return tree;
 		}
 
-		QVariant GetData (QWidget *widget)
+		QVariant GetDataImpl (QTreeWidget *tree) final
 		{
-			QTreeWidget *tree = qobject_cast<QTreeWidget*> (widget);
-			if (!tree)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "unable to cast"
-						<< widget
-						<< "to QTreeWidget";
-				return QVariant ();
-			}
-
 			return Util::Map (tree->selectedItems (),
 					[] (auto item) { return item->data (0, Qt::UserRole).toString (); });
 		}
