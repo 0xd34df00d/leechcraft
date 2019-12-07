@@ -33,11 +33,7 @@
 #include "xeps/xmppbobmanager.h"
 #include "xeps/xmppbobiq.h"
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Xoox
+namespace LC::Azoth::Xoox
 {
 	ImageMediaWidget::ImageMediaWidget (const QUrl& uri,
 			XMPPBobManager *manager, const QString& from, QWidget *parent)
@@ -71,6 +67,4 @@ namespace Xoox
 		if (bob.GetCid () == Cid_)
 			setPixmap (QPixmap::fromImage (QImage::fromData (bob.GetData ())));
 	}
-}
-}
 }

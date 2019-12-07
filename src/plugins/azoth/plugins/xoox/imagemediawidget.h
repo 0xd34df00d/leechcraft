@@ -27,15 +27,11 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_IMAGEMEDIAWIDGET_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_IMAGEMEDIAWIDGET_H
+#pragma once
+
 #include <QLabel>
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Xoox
+namespace LC::Azoth::Xoox
 {
 	class XMPPBobManager;
 	class XMPPBobIq;
@@ -46,12 +42,9 @@ namespace Xoox
 
 		QString Cid_;
 	public:
-		ImageMediaWidget (const QUrl&, XMPPBobManager*, const QString&, QWidget* = 0);
+		ImageMediaWidget (const QUrl&, XMPPBobManager*, const QString&, QWidget* = nullptr);
 	public slots:
 		void bobReceived (const XMPPBobIq&);
 	};
 }
-}
-}
 
-#endif
