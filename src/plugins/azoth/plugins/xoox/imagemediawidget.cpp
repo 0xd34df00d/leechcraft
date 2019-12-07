@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "imagemediawidget.h"
+#include <QUrl>
 #include <QDebug>
 #include "xeps/xmppbobmanager.h"
 #include "xeps/xmppbobiq.h"
@@ -38,20 +39,20 @@ namespace Azoth
 {
 namespace Xoox
 {
-	ImageMediaWidget::ImageMediaWidget (const QPair<QString, QString>& uri,
+	ImageMediaWidget::ImageMediaWidget (const QUrl& uri,
 			XMPPBobManager *manager, const QString& from, QWidget *parent)
 	: QLabel (parent)
 	{
 		QByteArray data;
-		if (uri.second.startsWith ("cid:"))
+		if (uri.scheme () == "cid")
 		{
-			Cid_ = uri.second.mid (4);
+			Cid_ = uri.host ();
 			data = manager->Take (from, Cid_);
 		}
 		else
 			qWarning () << Q_FUNC_INFO
 					<< "unhandled uri:"
-					<< uri.second;
+					<< uri;
 
 		if (!data.isNull ())
 			setPixmap (QPixmap::fromImage (QImage::fromData (data)));

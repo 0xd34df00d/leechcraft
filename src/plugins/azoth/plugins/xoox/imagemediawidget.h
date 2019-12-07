@@ -46,7 +46,7 @@ namespace Xoox
 
 		QString Cid_;
 	public:
-		ImageMediaWidget (const QPair<QString, QString>&, XMPPBobManager*, const QString&, QWidget* = 0);
+		ImageMediaWidget (const QUrl&, XMPPBobManager*, const QString&, QWidget* = 0);
 	public slots:
 		void bobReceived (const XMPPBobIq&);
 	};

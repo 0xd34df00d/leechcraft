@@ -100,7 +100,7 @@ namespace Xoox
 			QPair<QString, QString> uri = media.uris ().first ();
 
 			if (uri.first.startsWith ("image/"))
-				mediaWidget = new ImageMediaWidget (uri, builder->BobManager (), builder->From (), container);
+				mediaWidget = new ImageMediaWidget (QUrl { uri.second }, builder->BobManager (), builder->From (), container);
 
 			if (!mediaWidget)
 			{
