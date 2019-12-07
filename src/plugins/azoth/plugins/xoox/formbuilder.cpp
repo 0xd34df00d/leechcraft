@@ -58,7 +58,7 @@ namespace Xoox
 		{
 		}
 
-		virtual ~FieldHandler () {}
+		virtual ~FieldHandler () = default;
 
 		void CreateWidget (QXmppDataForm::Field& field, QFormLayout *layout)
 		{
