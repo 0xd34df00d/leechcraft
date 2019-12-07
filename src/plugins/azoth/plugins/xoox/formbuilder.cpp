@@ -53,7 +53,7 @@ namespace Xoox
 	protected:
 		FormBuilder *Builder_;
 	public:
-		FieldHandler (FormBuilder *builder)
+		explicit FieldHandler (FormBuilder *builder)
 		: Builder_ (builder)
 		{
 		}
@@ -97,9 +97,9 @@ namespace Xoox
 
 		QWidget* CombineWithMedia (const QXmppDataForm::Media& media, QWidget *widget = 0)
 		{
-			QWidget *container = new QWidget;
-			QVBoxLayout *layout = new QVBoxLayout ();
-			QWidget *mediaWidget = 0;
+			auto container = new QWidget;
+			auto layout = new QVBoxLayout ();
+			QWidget *mediaWidget = nullptr;
 
 			QPair<QString, QString> uri = media.uris ().first ();
 
@@ -147,9 +147,9 @@ namespace Xoox
 	public:
 		using TypedFieldHandler::TypedFieldHandler;
 	protected:
-		QWidget* CreateWidgetImpl (QXmppDataForm::Field& field, QFormLayout *layout)
+		QWidget* CreateWidgetImpl (QXmppDataForm::Field& field, QFormLayout *layout) override
 		{
-			QCheckBox *box = new QCheckBox (field.label ());
+			auto box = new QCheckBox (field.label ());
 			box->setChecked (field.value ().toBool ());
 			layout->addWidget (box);
 			return box;
@@ -166,16 +166,16 @@ namespace Xoox
 	public:
 		using FieldHandler::FieldHandler;
 	protected:
-		QWidget* CreateWidgetImpl (QXmppDataForm::Field& field, QFormLayout *layout)
+		QWidget* CreateWidgetImpl (QXmppDataForm::Field& field, QFormLayout *layout) override
 		{
-			QLabel *label = new QLabel (field.value ().toString ());
+			auto label = new QLabel (field.value ().toString ());
 			layout->addRow (field.label (), label);
 			return label;
 		}
 
-		QVariant GetData (QWidget*)
+		QVariant GetData (QWidget*) override
 		{
-			return QVariant ();
+			return {};
 		}
 	};
 
@@ -184,14 +184,14 @@ namespace Xoox
 	public:
 		using FieldHandler::FieldHandler;
 	protected:
-		QWidget* CreateWidgetImpl (QXmppDataForm::Field&, QFormLayout*)
+		QWidget* CreateWidgetImpl (QXmppDataForm::Field&, QFormLayout*) override
 		{
-			return 0;
+			return nullptr;
 		}
 
-		QVariant GetData (QWidget*)
+		QVariant GetData (QWidget*) override
 		{
-			return QVariant ();
+			return {};
 		}
 	};
 
@@ -200,9 +200,9 @@ namespace Xoox
 	public:
 		using TypedFieldHandler::TypedFieldHandler;
 	protected:
-		QWidget* CreateWidgetImpl (QXmppDataForm::Field& field, QFormLayout *layout)
+		QWidget* CreateWidgetImpl (QXmppDataForm::Field& field, QFormLayout *layout) override
 		{
-			QTextEdit *edit = new QTextEdit (field.value ().toStringList ().join ("\n"));
+			auto edit = new QTextEdit (field.value ().toStringList ().join ("\n"));
 			layout->addRow (field.label (), edit);
 			return edit;
 		}
@@ -223,9 +223,9 @@ namespace Xoox
 		{
 		}
 	protected:
-		QWidget* CreateWidgetImpl (QXmppDataForm::Field& field, QFormLayout *layout)
+		QWidget* CreateWidgetImpl (QXmppDataForm::Field& field, QFormLayout *layout) override
 		{
-			QLineEdit *edit = new QLineEdit (field.value ().toString ());
+			auto edit = new QLineEdit (field.value ().toString ());
 			if (IsPassword_)
 				edit->setEchoMode (QLineEdit::Password);
 			if (!field.media ().isNull ())
@@ -251,9 +251,9 @@ namespace Xoox
 		{
 		}
 	protected:
-		QWidget* CreateWidgetImpl (QXmppDataForm::Field& field, QFormLayout *layout)
+		QWidget* CreateWidgetImpl (QXmppDataForm::Field& field, QFormLayout *layout) override
 		{
-			QTreeWidget *tree = new QTreeWidget ();
+			auto tree = new QTreeWidget ();
 			tree->setSelectionMode (SelMode_);
 			tree->setHeaderHidden (true);
 
@@ -312,14 +312,14 @@ namespace Xoox
 	QWidget* FormBuilder::CreateForm (const QXmppDataForm& form, QWidget *parent)
 	{
 		if (form.isNull ())
-			return 0;
+			return nullptr;
 
 		Form_ = form;
 
-		QWidget *widget = new QWidget (parent);
+		auto widget = new QWidget (parent);
 		widget->setWindowTitle (form.title ());
 
-		QFormLayout *layout = new QFormLayout;
+		auto layout = new QFormLayout;
 		widget->setLayout (layout);
 
 		if (!form.title ().isEmpty ())
@@ -329,18 +329,17 @@ namespace Xoox
 
 		try
 		{
-			QList<QXmppDataForm::Field>& fields = Form_.fields ();
-			for (int i = 0; i < fields.size (); ++i)
+			for (auto& field : Form_.fields ())
 			{
-				QXmppDataForm::Field& field = fields [i];
-				if (!Type2Handler_.contains (field.type ()))
+				const auto handler = Type2Handler_ [field.type ()];
+				if (!handler)
 				{
 					qWarning () << Q_FUNC_INFO
 							<< "unknown field type"
 							<< field.type ();
 					continue;
 				}
-				Type2Handler_ [field.type ()]->CreateWidget (field, layout);
+				handler->CreateWidget (field, layout);
 			}
 		}
 		catch (const std::exception& e)
@@ -348,7 +347,7 @@ namespace Xoox
 			qWarning () << Q_FUNC_INFO
 					<< e.what ()
 					<< "while trying to process fields";
-			return 0;
+			return nullptr;
 		}
 
 		return widget;
