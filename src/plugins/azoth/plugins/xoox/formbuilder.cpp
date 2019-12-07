@@ -123,11 +123,7 @@ namespace Xoox
 	class BooleanHandler : public FieldHandler
 	{
 	public:
-		BooleanHandler (FormBuilder *builder)
-		: FieldHandler (builder)
-		{
-		}
-
+		using FieldHandler::FieldHandler;
 	protected:
 		QWidget* CreateWidgetImpl (QXmppDataForm::Field& field, QFormLayout *layout)
 		{
@@ -156,11 +152,7 @@ namespace Xoox
 	class FixedHandler : public FieldHandler
 	{
 	public:
-		FixedHandler (FormBuilder *builder)
-		: FieldHandler (builder)
-		{
-		}
-
+		using FieldHandler::FieldHandler;
 	protected:
 		QWidget* CreateWidgetImpl (QXmppDataForm::Field& field, QFormLayout *layout)
 		{
@@ -178,11 +170,7 @@ namespace Xoox
 	class NullHandler : public FieldHandler
 	{
 	public:
-		NullHandler (FormBuilder *builder)
-		: FieldHandler (builder)
-		{
-		}
-
+		using FieldHandler::FieldHandler;
 	protected:
 		QWidget* CreateWidgetImpl (QXmppDataForm::Field&, QFormLayout*)
 		{
@@ -198,11 +186,7 @@ namespace Xoox
 	class MultiTextHandler : public FieldHandler
 	{
 	public:
-		MultiTextHandler (FormBuilder *builder)
-		: FieldHandler (builder)
-		{
-		}
-
+		using FieldHandler::FieldHandler;
 	protected:
 		QWidget* CreateWidgetImpl (QXmppDataForm::Field& field, QFormLayout *layout)
 		{
