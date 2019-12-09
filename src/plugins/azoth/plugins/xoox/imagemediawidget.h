@@ -38,8 +38,6 @@ namespace LC::Azoth::Xoox
 
 	class ImageMediaWidget : public QLabel
 	{
-		Q_OBJECT
-
 	public:
 		ImageMediaWidget (const QUrl&, XMPPBobManager*, const QString&, QWidget* = nullptr);
 	};
