@@ -35,6 +35,7 @@
 #include <QTextEdit>
 #include <QLineEdit>
 #include <QTreeWidget>
+#include <QMimeType>
 #include <QtDebug>
 #include <util/sll/qtutil.h>
 #include <util/sll/prelude.h>
@@ -91,23 +92,23 @@ namespace Xoox
 
 	namespace
 	{
-		QWidget* CombineWithMedia (const QXmppDataForm::Media& media, QWidget *widget, FormBuilder *builder)
+		QWidget* CombineWithMedia (const QVector<QXmppDataForm::MediaSource>& medias, QWidget *widget, FormBuilder *builder)
 		{
 			auto container = new QWidget;
 			auto layout = new QVBoxLayout ();
 			QWidget *mediaWidget = nullptr;
 
-			QPair<QString, QString> uri = media.uris ().first ();
+			const auto& media = medias.first ();
 
-			if (uri.first.startsWith ("image/"))
-				mediaWidget = new ImageMediaWidget (QUrl { uri.second }, builder->BobManager (), builder->From (), container);
+			if (media.contentType ().name ().startsWith ("image/"))
+				mediaWidget = new ImageMediaWidget (media.uri (), builder->BobManager (), builder->From (), container);
 
 			if (!mediaWidget)
 			{
 				mediaWidget = new QLabel (QObject::tr ("Unable to represent embedded media data."));
 				qWarning () << Q_FUNC_INFO
 						<< "unable to process "
-						<< uri.first;
+						<< media.uri ();
 			}
 			layout->addWidget (mediaWidget);
 			layout->addWidget (widget);
@@ -215,8 +216,8 @@ namespace Xoox
 			auto edit = new QLineEdit (field.value ().toString ());
 			if (IsPassword_)
 				edit->setEchoMode (QLineEdit::Password);
-			if (!field.media ().isNull ())
-				layout->addRow (field.label (), CombineWithMedia (field.media (), edit, Builder_));
+			if (!field.mediaSources ().isEmpty ())
+				layout->addRow (field.label (), CombineWithMedia (field.mediaSources (), edit, Builder_));
 			else
 				layout->addRow (field.label (), edit);
 			return edit;
