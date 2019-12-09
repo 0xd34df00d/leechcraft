@@ -40,11 +40,8 @@ namespace LC::Azoth::Xoox
 	{
 		Q_OBJECT
 
-		QString Cid_;
 	public:
 		ImageMediaWidget (const QUrl&, XMPPBobManager*, const QString&, QWidget* = nullptr);
-	public slots:
-		void bobReceived (const XMPPBobIq&);
 	};
 }
 

@@ -35,15 +35,15 @@
 
 namespace LC::Azoth::Xoox
 {
-	ImageMediaWidget::ImageMediaWidget (const QUrl& uri,
-			XMPPBobManager *manager, const QString& from, QWidget *parent)
+	ImageMediaWidget::ImageMediaWidget (const QUrl& uri, XMPPBobManager *manager, const QString& from, QWidget *parent)
 	: QLabel (parent)
 	{
 		QByteArray data;
+		QString cid;
 		if (uri.scheme () == "cid")
 		{
-			Cid_ = uri.host ();
-			data = manager->Take (from, Cid_);
+			cid = uri.host ();
+			data = manager->Take (from, cid);
 		}
 		else
 			qWarning () << Q_FUNC_INFO
@@ -52,19 +52,17 @@ namespace LC::Azoth::Xoox
 
 		if (!data.isNull ())
 			setPixmap (QPixmap::fromImage (QImage::fromData (data)));
-		else if (!Cid_.isEmpty ())
+		else if (!cid.isEmpty ())
 		{
 			connect (manager,
-					SIGNAL (bobReceived (const XMPPBobIq&)),
+					&XMPPBobManager::bobReceived,
 					this,
-					SLOT (bobReceived (const XMPPBobIq&)));
-			manager->RequestBob (from, Cid_);
+					[this, cid] (const XMPPBobIq& bob)
+					{
+						if (bob.GetCid () == cid)
+							setPixmap (QPixmap::fromImage (QImage::fromData (bob.GetData ())));
+					});
+			manager->RequestBob (from, cid);
 		}
-	}
-
-	void ImageMediaWidget::bobReceived (const XMPPBobIq& bob)
-	{
-		if (bob.GetCid () == Cid_)
-			setPixmap (QPixmap::fromImage (QImage::fromData (bob.GetData ())));
 	}
 }
