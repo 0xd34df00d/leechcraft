@@ -35,7 +35,10 @@
 #include <QXmppDiscoveryManager.h>
 #include <QXmppEntityTimeManager.h>
 #include <QXmppMessageReceiptManager.h>
+#include <QXmppRosterManager.h>
 #include <QXmppTransferManager.h>
+#include <QXmppVCardManager.h>
+#include <QXmppVersionManager.h>
 #include "xeps/adhoccommandmanager.h"
 #include "xeps/jabbersearchmanager.h"
 #include "xeps/lastactivitymanager.h"

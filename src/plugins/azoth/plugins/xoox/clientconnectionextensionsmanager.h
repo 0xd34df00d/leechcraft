@@ -41,6 +41,9 @@ class QXmppDiscoveryManager;
 class QXmppEntityTimeManager;
 class QXmppMessageReceiptManager;
 class QXmppTransferManager;
+class QXmppRosterManager;
+class QXmppVCardManager;
+class QXmppVersionManager;
 
 namespace LC::Azoth::Xoox
 {
@@ -68,7 +71,10 @@ namespace LC::Azoth::Xoox
 
 	using DefaultExtensions = std::tuple<
 				QXmppDiscoveryManager*,
-				QXmppEntityTimeManager*
+				QXmppEntityTimeManager*,
+				QXmppRosterManager*,
+				QXmppVCardManager*,
+				QXmppVersionManager*
 			>;
 
 	class ClientConnectionExtensionsManager : public QObject
