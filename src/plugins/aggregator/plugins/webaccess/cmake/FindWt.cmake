@@ -20,7 +20,7 @@
 # Some modifications, copyright (c) 2008, Rudoy Georg,
 # 0xd34df00d@gmail.com>
 
-find_path( Wt_INCLUDE_DIR NAMES WObject PATHS ENV PATH PATH_SUFFIXES include wt Wt )
+find_path( Wt_INCLUDE_DIR NAMES WObject.h PATHS ENV PATH PATH_SUFFIXES include wt Wt )
 
 set( Wt_FIND_COMPONENTS Release Debug )
 
