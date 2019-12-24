@@ -521,7 +521,7 @@ namespace Xoox
 				LastEntityTimeRequest_.secsTo (now) < 60)
 			return;
 
-		auto& timeMgr = Account_->GetClientConnection ()->GetExtensionsManager ().Get<QXmppEntityTimeManager> ();
+		auto& timeMgr = Account_->GetClientConnection ()->Exts ().Get<QXmppEntityTimeManager> ();
 		connect (&timeMgr,
 				SIGNAL (timeReceived (QXmppEntityTimeIq)),
 				this,
@@ -550,7 +550,7 @@ namespace Xoox
 			jid += '/' + variant;
 
 		auto reply = new PingReplyObject { this };
-		Account_->GetClientConnection ()->GetExtensionsManager ().Get<PingManager> ().Ping (jid,
+		Account_->GetClientConnection ()->Exts ().Get<PingManager> ().Ping (jid,
 				[reply] (int msecs) { reply->HandleReply (msecs); });
 		return reply;
 	}

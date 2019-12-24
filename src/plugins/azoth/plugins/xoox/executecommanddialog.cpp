@@ -127,7 +127,7 @@ namespace Xoox
 		CommandResultPage (const AdHocResult& result, GlooxAccount *acc, QWidget *parent = 0)
 		: QWizardPage { parent }
 		, Result_ { result }
-		, FB_ { {}, &acc->GetClientConnection ()->GetExtensionsManager ().Get<XMPPBobManager> () }
+		, FB_ { {}, &acc->GetClientConnection ()->Exts ().Get<XMPPBobManager> () }
 		{
 			Ui_.setupUi (this);
 			setCommitPage (true);
@@ -176,7 +176,7 @@ namespace Xoox
 			GlooxAccount *account, QWidget *parent, Tag)
 	: QWizard { parent }
 	, Account_ { account }
-	, Manager_ { account->GetClientConnection ()->GetExtensionsManager ().Get<AdHocCommandManager> () }
+	, Manager_ { account->GetClientConnection ()->Exts ().Get<AdHocCommandManager> () }
 	, JID_ { jid }
 	{
 		Ui_.setupUi (this);

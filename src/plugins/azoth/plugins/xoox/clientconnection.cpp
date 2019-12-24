@@ -398,7 +398,7 @@ namespace Xoox
 		emit gotRosterItems ({ entry });
 	}
 
-	ClientConnectionExtensionsManager& ClientConnection::GetExtensionsManager () const
+	ClientConnectionExtensionsManager& ClientConnection::Exts () const
 	{
 		return *ExtsMgr_;
 	}

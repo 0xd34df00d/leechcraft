@@ -461,7 +461,7 @@ namespace Xoox
 			return;
 		}
 
-		FormBuilder builder { {}, &Account_->GetClientConnection ()->GetExtensionsManager ().Get<XMPPBobManager> () };
+		FormBuilder builder { {}, &Account_->GetClientConnection ()->Exts ().Get<XMPPBobManager> () };
 		const auto widget = builder.CreateForm (form);
 		if (!XooxUtil::RunFormDialog (widget))
 			return;

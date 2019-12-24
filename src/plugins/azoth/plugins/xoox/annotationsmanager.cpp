@@ -40,7 +40,7 @@ namespace Xoox
 {
 	AnnotationsManager::AnnotationsManager (ClientConnection& conn, QObject *parent)
 	: QObject { parent }
-	, XMPPAnnManager_ { conn.GetExtensionsManager ().Get<XMPPAnnotationsManager> () }
+	, XMPPAnnManager_ { conn.Exts ().Get<XMPPAnnotationsManager> () }
 	{
 		connect (&XMPPAnnManager_,
 				&XMPPAnnotationsManager::notesReceived,

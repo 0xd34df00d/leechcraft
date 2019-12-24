@@ -127,7 +127,7 @@ namespace Xoox
 				this,
 				SLOT (reemitStatusChange (const EntryStatus&)));
 
-		connect (&Account_->GetClientConnection ()->GetExtensionsManager ().Get<QXmppBookmarkManager> (),
+		connect (&Account_->GetClientConnection ()->Exts ().Get<QXmppBookmarkManager> (),
 				SIGNAL (bookmarksReceived (QXmppBookmarkSet)),
 				this,
 				SLOT (handleBookmarks (QXmppBookmarkSet)));
@@ -160,7 +160,7 @@ namespace Xoox
 
 	QString RoomCLEntry::GetEntryName () const
 	{
-		const auto& bmManager = Account_->GetClientConnection ()->GetExtensionsManager ().Get<QXmppBookmarkManager> ();
+		const auto& bmManager = Account_->GetClientConnection ()->Exts ().Get<QXmppBookmarkManager> ();
 		for (const auto& bm : bmManager.bookmarks ().conferences ())
 			if (bm.jid () == RH_->GetRoomJID () && !bm.name ().isEmpty ())
 				return bm.name ();

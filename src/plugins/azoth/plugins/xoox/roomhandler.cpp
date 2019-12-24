@@ -426,7 +426,7 @@ namespace Xoox
 	{
 		const auto client = Account_->GetClientConnection ();
 
-		FormBuilder fb { from, &client->GetExtensionsManager ().Get<XMPPBobManager> () };
+		FormBuilder fb { from, &client->Exts ().Get<XMPPBobManager> () };
 
 		QDialog dia;
 		dia.setWindowTitle (tr ("Data form from %1").arg (from));

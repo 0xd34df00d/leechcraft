@@ -170,7 +170,7 @@ namespace Xoox
 		ClientConnection& Conn_;
 		GlooxAccount& Acc_;
 
-		ClientConnectionExtensionsManager& ExtsMgr_ = Conn_.GetExtensionsManager ();
+		ClientConnectionExtensionsManager& ExtsMgr_ = Conn_.Exts ();
 
 		TransferManager TransferManager_ { ExtsMgr_.Get<QXmppTransferManager> (), Conn_, Acc_ };
 		BookmarksIntegrator BookmarksIntegrator_ { ExtsMgr_.Get<QXmppBookmarkManager> (), Conn_, Acc_ };
@@ -554,7 +554,7 @@ namespace Xoox
 	{
 		auto pending = new PendingLastActivityRequest { jid, this };
 
-		auto& manager = ClientConnection_->GetExtensionsManager ().Get<LastActivityManager> ();
+		auto& manager = ClientConnection_->Exts ().Get<LastActivityManager> ();
 		const auto& id = manager.RequestLastActivity (jid);
 		connect (&manager,
 				SIGNAL (gotLastActivity (QString, int)),

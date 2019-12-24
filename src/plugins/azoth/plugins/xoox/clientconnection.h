@@ -164,7 +164,7 @@ namespace Xoox
 
 		void CreateEntry (const QString&);
 
-		ClientConnectionExtensionsManager& GetExtensionsManager () const;
+		ClientConnectionExtensionsManager& Exts () const;
 
 		DiscoManagerWrapper* GetDiscoManagerWrapper () const;
 
