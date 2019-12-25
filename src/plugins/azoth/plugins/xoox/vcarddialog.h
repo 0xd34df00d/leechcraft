@@ -58,8 +58,8 @@ namespace LC::Azoth::Xoox
 
 		QPixmap ShownPixmap_;
 	public:
-		VCardDialog (GlooxAccount*, QWidget* = 0);
-		VCardDialog (EntryBase*, QWidget* = 0);
+		explicit VCardDialog (GlooxAccount*, QWidget* = nullptr);
+		explicit VCardDialog (EntryBase*, QWidget* = nullptr);
 
 		void UpdateInfo (const QXmppVCardIq&);
 
