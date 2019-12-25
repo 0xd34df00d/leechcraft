@@ -42,6 +42,7 @@
 #include "glooxaccount.h"
 #include "core.h"
 #include "clientconnection.h"
+#include "clientconnectionextensionsmanager.h"
 #include "gwoptionsdialog.h"
 #include "xeps/privacylistsmanager.h"
 #include "glooxmessage.h"
@@ -109,15 +110,14 @@ namespace Xoox
 
 	QXmppRosterIq::Item GlooxCLEntry::GetRI () const
 	{
-		return Account_->GetClientConnection ()->GetClient ()->
-				rosterManager ().getRosterEntry (HumanReadableId_);
+		return Account_->GetClientConnection ()->Exts ().Get<QXmppRosterManager> ().getRosterEntry (HumanReadableId_);
 	}
 
 	ICLEntry::Features GlooxCLEntry::GetEntryFeatures () const
 	{
 		ICLEntry::Features result = FSupportsAuth | FSupportsGrouping;
 
-		auto& rm = Account_->GetClientConnection ()->GetClient ()->rosterManager ();
+		auto& rm = Account_->GetClientConnection ()->Exts ().Get<QXmppRosterManager> ();
 		const bool isPerm = ODS_ || rm.getRosterBareJids ().contains (GetJID ());
 
 		result |= isPerm ?
@@ -190,8 +190,8 @@ namespace Xoox
 
 		if (!ODS_)
 		{
-			const auto& presences = Account_->GetClientConnection ()->GetClient ()->
-							rosterManager ().getAllPresencesForBareJid (HumanReadableId_);
+			const auto& presences = Account_->GetClientConnection ()->Exts ()
+					.Get<QXmppRosterManager> ().getAllPresencesForBareJid (HumanReadableId_);
 			if (presences.size () == 1)
 				result << presences.begin ().key ();
 			else
@@ -216,8 +216,7 @@ namespace Xoox
 		if (AuthRequested_)
 			return EntryStatus (SOnline, QString ());
 
-		QXmppRosterManager& rm = Account_->
-				GetClientConnection ()->GetClient ()->rosterManager ();
+		auto& rm = Account_->GetClientConnection ()->Exts ().Get<QXmppRosterManager> ();
 		if (!rm.isRosterReceived ())
 			return EntryBase::GetStatus (variant);
 

@@ -217,19 +217,20 @@ namespace Xoox
 				this,
 				SLOT (handleRoomInvitation (QString, QString, QString)));
 
-		connect (&Client_->rosterManager (),
+		auto& rosterManager = Exts ().Get<QXmppRosterManager> ();
+		connect (&rosterManager,
 				SIGNAL (rosterReceived ()),
 				this,
 				SLOT (handleRosterReceived ()));
-		connect (&Client_->rosterManager (),
+		connect (&rosterManager,
 				SIGNAL (itemAdded (QString)),
 				this,
 				SLOT (handleRosterChanged (QString)));
-		connect (&Client_->rosterManager (),
+		connect (&rosterManager,
 				SIGNAL (itemChanged (QString)),
 				this,
 				SLOT (handleRosterChanged (QString)));
-		connect (&Client_->rosterManager (),
+		connect (&rosterManager,
 				SIGNAL (itemRemoved (QString)),
 				this,
 				SLOT (handleRosterItemRemoved (QString)));
@@ -527,31 +528,30 @@ namespace Xoox
 	void ClientConnection::AddEntry (const QString& id,
 			const QString& name, const QStringList& groups)
 	{
-		Client_->rosterManager ().addItem (id,
-				name, QSet<QString>::fromList (groups));
+		Exts ().Get<QXmppRosterManager> ().addItem (id, name, QSet<QString>::fromList (groups));
 	}
 
 	void ClientConnection::Subscribe (const QString& id,
 			const QString& msg, const QString& name, const QStringList& groups)
 	{
 		qDebug () << "Subscribe" << id;
-		if (!Client_->rosterManager ().getRosterBareJids ().contains (id))
-			Client_->rosterManager ().addItem (id,
-					name, QSet<QString>::fromList (groups));
-		Client_->rosterManager ().subscribe (id, msg);
-		Client_->rosterManager ().acceptSubscription (id, msg);
+		auto& rm = Exts ().Get<QXmppRosterManager> ();
+		if (!rm.getRosterBareJids ().contains (id))
+			rm.addItem (id, name, QSet<QString>::fromList (groups));
+		rm.subscribe (id, msg);
+		rm.acceptSubscription (id, msg);
 	}
 
 	void ClientConnection::Unsubscribe (const QString& jid, const QString& reason)
 	{
 		qDebug () << "Unsubscribe" << jid;
-		Client_->rosterManager ().unsubscribe (jid, reason);
+		Exts ().Get<QXmppRosterManager> ().unsubscribe (jid, reason);
 	}
 
 	void ClientConnection::GrantSubscription (const QString& jid, const QString& reason)
 	{
 		qDebug () << "GrantSubscription" << jid;
-		Client_->rosterManager ().acceptSubscription (jid, reason);
+		Exts ().Get<QXmppRosterManager> ().acceptSubscription (jid, reason);
 		if (JID2CLEntry_ [jid])
 			JID2CLEntry_ [jid]->SetAuthRequested (false);
 	}
@@ -559,7 +559,7 @@ namespace Xoox
 	void ClientConnection::RevokeSubscription (const QString& jid, const QString& reason)
 	{
 		qDebug () << "RevokeSubscription" << jid;
-		Client_->rosterManager ().refuseSubscription (jid, reason);
+		Exts ().Get<QXmppRosterManager> ().refuseSubscription (jid, reason);
 		if (JID2CLEntry_ [jid])
 			JID2CLEntry_ [jid]->SetAuthRequested (false);
 	}
@@ -568,7 +568,7 @@ namespace Xoox
 	{
 		const QString& jid = entry->GetJID ();
 
-		auto& rm = Client_->rosterManager ();
+		auto& rm = Exts ().Get<QXmppRosterManager> ();
 		if (rm.getRosterBareJids ().contains (jid))
 			rm.removeItem (jid);
 		else
@@ -765,7 +765,7 @@ namespace Xoox
 
 	void ClientConnection::handleRosterReceived ()
 	{
-		const auto& rm = Client_->rosterManager ();
+		const auto& rm = Exts ().Get<QXmppRosterManager> ();
 		QObjectList items;
 		for (const auto& bareJid : rm.getRosterBareJids ())
 		{
@@ -792,7 +792,7 @@ namespace Xoox
 
 	void ClientConnection::handleRosterChanged (const QString& bareJid)
 	{
-		const auto& rm = Client_->rosterManager ();
+		const auto& rm = Exts ().Get<QXmppRosterManager> ();
 		const auto& presences = rm.getAllPresencesForBareJid (bareJid);
 
 		if (!JID2CLEntry_.contains (bareJid))
@@ -875,7 +875,7 @@ namespace Xoox
 		else if (!JID2CLEntry_.contains (jid))
 		{
 			if (ODSEntries_.contains (jid))
-				ConvertFromODS (jid, Client_->rosterManager ().getRosterEntry (jid));
+				ConvertFromODS (jid, Exts ().Get<QXmppRosterManager> ().getRosterEntry (jid));
 			else
 				return;
 		}
@@ -928,7 +928,7 @@ namespace Xoox
 			RoomHandlers_ [jid]->HandleMessage (msg, resource);
 		else if (JID2CLEntry_.contains (jid))
 			HandleMessageForEntry (JID2CLEntry_ [jid], msg, resource, this, forwarded);
-		else if (!Client_->rosterManager ().isRosterReceived ())
+		else if (!Exts ().Get<QXmppRosterManager> ().isRosterReceived ())
 			OfflineMsgQueue_ << msg;
 		else if (jid == OurBareJID_)
 		{
@@ -1184,7 +1184,7 @@ namespace Xoox
 
 	GlooxCLEntry* ClientConnection::CreateCLEntry (const QString& jid)
 	{
-		return CreateCLEntry (Client_->rosterManager ().getRosterEntry (jid));
+		return CreateCLEntry (Exts ().Get<QXmppRosterManager> ().getRosterEntry (jid));
 	}
 
 	GlooxCLEntry* ClientConnection::CreateCLEntry (const QXmppRosterIq::Item& ri)
