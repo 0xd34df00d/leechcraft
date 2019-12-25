@@ -115,7 +115,7 @@ namespace Xoox
 	, ServerInfoStorage_ (new ServerInfoStorage (this, Settings_))
 	, VCardQueue_ (new FetchQueue ([this] (QString str, bool report)
 				{
-					const auto& id = Client_->vCardManager ().requestVCard (str);
+					const auto& id = Exts ().Get<QXmppVCardManager> ().requestVCard (str);
 					ErrorMgr_->Whitelist (id, report);
 				},
 				OurJID_.contains ("gmail.com") ? 3000 : 1500, 1, this))
@@ -235,7 +235,7 @@ namespace Xoox
 				this,
 				SLOT (handleRosterItemRemoved (QString)));
 
-		connect (&Client_->vCardManager (),
+		connect (&Exts ().Get<QXmppVCardManager> (),
 				SIGNAL (vCardReceived (QXmppVCardIq)),
 				this,
 				SLOT (handleVCardReceived (QXmppVCardIq)));
@@ -741,7 +741,7 @@ namespace Xoox
 		emit connected ();
 		emit statusChanged ({ LastState_.State_, LastState_.Status_ });
 
-		Client_->vCardManager ().requestVCard (OurBareJID_);
+		Exts ().Get<QXmppVCardManager> ().requestVCard (OurBareJID_);
 
 		for (auto rh : RoomHandlers_)
 			rh->Join ();

@@ -38,6 +38,7 @@
 #include "entrybase.h"
 #include "glooxaccount.h"
 #include "clientconnection.h"
+#include "clientconnectionextensionsmanager.h"
 #include "capsmanager.h"
 #include "annotationsmanager.h"
 #include "useravatarmanager.h"
@@ -369,9 +370,7 @@ namespace Xoox
 						PublishAvatar (px ? px->toImage () : QImage ());
 		PhotoChanged_ = false;
 
-		auto& mgr = Account_->GetClientConnection ()->
-				GetClient ()->vCardManager ();
-		mgr.setClientVCard (VCard_);
+		Account_->GetClientConnection ()->Exts ().Get<QXmppVCardManager> ().setClientVCard (VCard_);
 	}
 
 	void VCardDialog::on_PhoneButton__released ()
