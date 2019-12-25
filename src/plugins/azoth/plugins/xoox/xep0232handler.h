@@ -33,13 +33,7 @@
 
 class QXmppDataForm;
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Xoox
-{
-namespace XEP0232Handler
+namespace LC::Azoth::Xoox::XEP0232Handler
 {
 	struct SoftwareInformation
 	{
@@ -59,7 +53,4 @@ namespace XEP0232Handler
 
 	SoftwareInformation FromDataForm (const QXmppDataForm&);
 	QXmppDataForm ToDataForm (const SoftwareInformation&);
-}
-}
-}
 }

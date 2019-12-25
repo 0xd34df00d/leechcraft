@@ -39,14 +39,13 @@
 #include "entrybase.h"
 #include "offlinedatasource.h"
 
-namespace LC
+namespace LC::Azoth
 {
-namespace Azoth
-{
-class IAccount;
-class IProxyObject;
+	class IAccount;
+	class IProxyObject;
+}
 
-namespace Xoox
+namespace LC::Azoth::Xoox
 {
 	class GlooxAccount;
 	class PrivacyList;
@@ -119,8 +118,6 @@ namespace Xoox
 		void handleGWLogout ();
 		void handleGWEdit ();
 	};
-}
-}
 }
 
 #endif

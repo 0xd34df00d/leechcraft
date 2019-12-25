@@ -45,11 +45,7 @@
 #include "vcardlisteditdialog.h"
 #include "accountsettingsholder.h"
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Xoox
+namespace LC::Azoth::Xoox
 {
 	VCardDialog::VCardDialog (GlooxAccount *acc, QWidget *parent)
 	: QDialog (parent)
@@ -541,6 +537,4 @@ namespace Xoox
 				GetAnnotationsManager ()->GetNote (jid);
 		Ui_.NotesEdit_->setPlainText (Note_.GetNote ());
 	}
-}
-}
 }

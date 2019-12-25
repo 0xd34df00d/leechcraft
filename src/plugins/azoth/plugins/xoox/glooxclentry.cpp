@@ -48,11 +48,7 @@
 #include "glooxmessage.h"
 #include "util.h"
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Xoox
+namespace LC::Azoth::Xoox
 {
 	GlooxCLEntry::GlooxCLEntry (const QString& jid, GlooxAccount *parent)
 	: EntryBase (jid, parent)
@@ -395,6 +391,4 @@ namespace Xoox
 		dia->setAttribute (Qt::WA_DeleteOnClose);
 		dia->show ();
 	}
-}
-}
 }

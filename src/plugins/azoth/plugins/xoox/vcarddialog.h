@@ -27,18 +27,14 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef VCARDDIALOG_H
-#define VCARDDIALOG_H
+#pragma once
+
 #include <QDialog>
 #include <QXmppVCardIq.h>
 #include "ui_vcarddialog.h"
 #include "xeps/xmppannotationsiq.h"
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Xoox
+namespace LC::Azoth::Xoox
 {
 	class EntryBase;
 	class GlooxAccount;
@@ -87,7 +83,3 @@ namespace Xoox
 		void on_PhotoClear__released ();
 	};
 }
-}
-}
-
-#endif

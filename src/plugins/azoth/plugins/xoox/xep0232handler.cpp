@@ -32,13 +32,7 @@
 #include <QtDebug>
 #include <QXmppDataForm.h>
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Xoox
-{
-namespace XEP0232Handler
+namespace LC::Azoth::Xoox::XEP0232Handler
 {
 	const QString SWInfoFormType = "urn:xmpp:dataforms:softwareinfo";
 
@@ -148,7 +142,4 @@ namespace XEP0232Handler
 		form.setFields (fields);
 		return form;
 	}
-}
-}
-}
 }
