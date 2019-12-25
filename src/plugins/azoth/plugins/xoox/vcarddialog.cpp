@@ -280,7 +280,7 @@ namespace LC::Azoth::Xoox
 		if (!Account_)
 			return;
 
-		EntryBase *entry = qobject_cast<EntryBase*> (Account_->GetClientConnection ()->GetCLEntry (JID_));
+		auto entry = qobject_cast<EntryBase*> (Account_->GetClientConnection ()->GetCLEntry (JID_));
 		if (!entry)
 			return;
 
@@ -296,7 +296,7 @@ namespace LC::Azoth::Xoox
 					QString::number (info ["priority"].toInt ()) + ")<br />";
 
 			const auto& version = entry->GetClientVersion (variant);
-			auto gapp = [&html] (QString user, QString part)
+			auto gapp = [&html] (const QString& user, const QString& part)
 			{
 				if (!part.isEmpty ())
 					html += user + ": " + part + "<br />";
@@ -305,9 +305,9 @@ namespace LC::Azoth::Xoox
 			gapp (tr ("Version"), version.version ());
 			gapp (tr ("OS"), version.os ());
 
-			QStringList caps = mgr->GetCaps (entry->GetVariantVerString (variant));
+			auto caps = mgr->GetCaps (entry->GetVariantVerString (variant));
 			caps.sort ();
-			if (caps.size ())
+			if (!caps.isEmpty ())
 				html += "<strong>" + tr ("Capabilities") +
 						"</strong>:<ul><li>" + caps.join ("</li><li>") + "</li></ul>";
 		}
@@ -397,7 +397,7 @@ namespace LC::Azoth::Xoox
 			QPair<QString, QStringList> pair;
 			pair.first = phone.number ();
 
-			for (size_t i = 0; i < type2pos.size (); ++i)
+			for (std::size_t i = 0; i < type2pos.size (); ++i)
 				if (phone.type () & type2pos [i])
 					pair.second << options.at (i);
 
@@ -414,7 +414,7 @@ namespace LC::Azoth::Xoox
 			phone.setNumber (item.first);
 
 			QXmppVCardPhone::Type type = QXmppVCardPhone::None;
-			for (size_t i = 0; i < type2pos.size (); ++i)
+			for (std::size_t i = 0; i < type2pos.size (); ++i)
 				if (item.second.contains (options.at (i)))
 					type &= type2pos [i];
 			phone.setType (type);
@@ -452,7 +452,7 @@ namespace LC::Azoth::Xoox
 
 			QPair<QString, QStringList> pair;
 			pair.first = email.address ();
-			for (size_t i = 0; i < type2pos.size (); ++i)
+			for (std::size_t i = 0; i < type2pos.size (); ++i)
 				if (email.type () & type2pos [i])
 					pair.second << options.at (i);
 
@@ -469,7 +469,7 @@ namespace LC::Azoth::Xoox
 			email.setAddress (item.first);
 
 			QXmppVCardEmail::Type type = QXmppVCardEmail::None;
-			for (size_t i = 0; i < type2pos.size (); ++i)
+			for (std::size_t i = 0; i < type2pos.size (); ++i)
 				if (item.second.contains (options.at (i)))
 					type &= type2pos [i];
 			email.setType (type);
