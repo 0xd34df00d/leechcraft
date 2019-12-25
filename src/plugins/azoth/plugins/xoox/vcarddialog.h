@@ -63,7 +63,7 @@ namespace LC::Azoth::Xoox
 
 		void UpdateInfo (const QXmppVCardIq&);
 
-		bool eventFilter (QObject*, QEvent*);
+		bool eventFilter (QObject*, QEvent*) override;
 	private:
 		void SetPixmapLabel (QPixmap);
 
