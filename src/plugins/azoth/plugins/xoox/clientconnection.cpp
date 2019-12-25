@@ -127,7 +127,7 @@ namespace Xoox
 				OurJID_.contains ("gmail.com") ? 1000 : 400, 1, this))
 	, VersionQueue_ (new FetchQueue ([this] (QString str, bool report)
 				{
-					const auto& id = Client_->versionManager ().requestVersion (str);
+					const auto& id = Exts ().Get<QXmppVersionManager> ().requestVersion (str);
 					ErrorMgr_->Whitelist (id, report);
 				},
 				OurJID_.contains ("gmail.com") ? 2000 : 1000, 1, this))
@@ -183,7 +183,7 @@ namespace Xoox
 
 		DiscoveryManager_->setClientCapabilitiesNode ("http://leechcraft.org/azoth");
 
-		auto& vm = Client_->versionManager ();
+		auto& vm = Exts ().Get<QXmppVersionManager> ();
 		vm.setClientName ("LeechCraft Azoth");
 		handleVersionSettingsChanged ();
 		XmlSettingsManager::Instance ().RegisterObject ("AdvertiseQtVersion",
@@ -240,7 +240,7 @@ namespace Xoox
 				this,
 				SLOT (handleVCardReceived (QXmppVCardIq)));
 
-		connect (&Client_->versionManager (),
+		connect (&Exts ().Get<QXmppVersionManager> (),
 				SIGNAL (versionReceived (QXmppVersionIq)),
 				this,
 				SLOT (handleVersionReceived (QXmppVersionIq)));
@@ -421,7 +421,7 @@ namespace Xoox
 
 	QXmppVersionManager* ClientConnection::GetVersionManager () const
 	{
-		return &Client_->versionManager ();
+		return &Exts ().Get<QXmppVersionManager> ();
 	}
 
 	CapsManager* ClientConnection::GetCapsManager () const
@@ -1154,7 +1154,7 @@ namespace Xoox
 			versionStr += ")";
 		}
 
-		auto& vm = Client_->versionManager ();
+		auto& vm = Exts ().Get<QXmppVersionManager> ();
 		vm.setClientOs (infoStr);
 		vm.setClientVersion (versionStr);
 
