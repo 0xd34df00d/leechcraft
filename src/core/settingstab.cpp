@@ -150,9 +150,9 @@ namespace LC
 			for (const auto obj : settables)
 			{
 				if (obj == Core::Instance ().GetCoreInstanceObject ())
-					result [obj].append ({ "LeechCraft", {} });
+					result [obj].push_back ({ "LeechCraft", {} });
 				else if (!IsProperPlugin2 (obj, settables))
-					result [obj].append ({ SettingsTab::tr ("General plugins"), {} });
+					result [obj].push_back ({ SettingsTab::tr ("General plugins"), {} });
 			}
 
 			return result;
