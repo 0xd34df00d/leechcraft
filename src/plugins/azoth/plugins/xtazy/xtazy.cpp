@@ -214,7 +214,7 @@ namespace Xtazy
 		auto sharer = qobject_cast<IWebFileStorage*> (sharerObj);
 		sharer->UploadFile (localPath, selectedVar);
 
-		PendingUploads_ [localPath].append ({ entry->GetQObject (), {} });
+		PendingUploads_ [localPath].push_back ({ entry->GetQObject (), {} });
 
 		connect (sharerObj,
 				SIGNAL (fileUploaded (QString, QUrl)),
