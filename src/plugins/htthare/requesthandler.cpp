@@ -64,7 +64,7 @@ namespace HttHare
 	RequestHandler::RequestHandler (const Connection_ptr& conn)
 	: Conn_ (conn)
 	{
-		ResponseHeaders_.append ({ "Accept-Ranges", "bytes" });
+		ResponseHeaders_.push_back ({ "Accept-Ranges", "bytes" });
 	}
 
 	void RequestHandler::operator() (QByteArray data)
@@ -398,7 +398,7 @@ namespace HttHare
 		{
 			ResponseLine_ = "HTTP/1.1 403 Forbidden\r\n";
 
-			ResponseHeaders_.append ({ "Content-Type", "text/html; charset=utf-8" });
+			ResponseHeaders_.push_back ({ "Content-Type", "text/html; charset=utf-8" });
 			ResponseBody_ = QString (R"delim(<html>
 					<head><title>%2</title></head>
 					<body>
@@ -422,7 +422,7 @@ namespace HttHare
 		{
 			ResponseLine_ = "HTTP/1.1 404 Not found\r\n";
 
-			ResponseHeaders_.append ({ "Content-Type", "text/html; charset=utf-8" });
+			ResponseHeaders_.push_back ({ "Content-Type", "text/html; charset=utf-8" });
 			ResponseBody_ = QString (R"delim(<html>
 					<head><title>%1</title></head>
 					<body>
@@ -449,7 +449,7 @@ namespace HttHare
 		{
 			ResponseLine_ = "HTTP/1.1 200 OK\r\n";
 
-			ResponseHeaders_.append ({ "Content-Type", "text/html; charset=utf-8" });
+			ResponseHeaders_.push_back ({ "Content-Type", "text/html; charset=utf-8" });
 			ResponseBody_ = MakeDirResponse (fi, path, Url_);
 
 			DefaultWrite (verb);
@@ -581,7 +581,7 @@ namespace HttHare
 				!ResponseBody_.isEmpty () &&
 				SupportsDeflate (splitAe))
 		{
-			ResponseHeaders_.append ({ "Content-Encoding", "deflate" });
+			ResponseHeaders_.push_back ({ "Content-Encoding", "deflate" });
 			ResponseBody_ = qCompress (ResponseBody_, 6);
 			ResponseBody_.remove (0, 4);
 		}
