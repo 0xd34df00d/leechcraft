@@ -29,6 +29,7 @@
 
 #include "messagelisteditormanager.h"
 #include <QTreeView>
+#include <QEvent>
 #include <util/sll/lambdaeventfilter.h>
 #include "common.h"
 #include "mailmodel.h"
