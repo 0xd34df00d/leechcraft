@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QDateTime>
+#include <QHash>
 #include "address.h"
 #include "attdescr.h"
 

@@ -29,6 +29,7 @@
 
 #include "address.h"
 #include <QDebug>
+#include <QDataStream>
 
 namespace LC::Snails
 {

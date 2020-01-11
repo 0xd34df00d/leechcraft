@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "mailwebpagenam.h"
+#include <QFile>
 #include <util/network/customnetworkreply.h>
 #include <util/sll/prelude.h>
 #include <util/sll/visitor.h>
