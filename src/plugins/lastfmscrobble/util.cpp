@@ -116,11 +116,11 @@ namespace Lastfmscrobble
 
 	QNetworkReply* Request (const QString& method, QNetworkAccessManager *nam, ParamsList_t params)
 	{
-		params.append ({ "method", method });
-		params.append ({ "api_key", lastfm::ws::ApiKey });
+		params.push_back ({ "method", method });
+		params.push_back ({ "api_key", lastfm::ws::ApiKey });
 
 		if (!lastfm::ws::SessionKey.isEmpty ())
-			params.append ({ "sk", lastfm::ws::SessionKey });
+			params.push_back ({ "sk", lastfm::ws::SessionKey });
 
 		return XmlSettingsManager::Instance ().property ("UseGetRequests").toBool () ?
 				MakeGetRequest (nam, params) :
