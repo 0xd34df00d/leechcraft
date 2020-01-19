@@ -132,7 +132,7 @@ public:
 	 * @param[in] string String with tags.
 	 * @return The list of the tags IDs.
 	 */
-	virtual QStringList SplitToIDs (const QString& string) = 0;
+	virtual QList<tag_id> SplitToIDs (const QString& string) = 0;
 
 	/** @brief Joins the given tags into one string that's suitable to
 	 * display to the user.

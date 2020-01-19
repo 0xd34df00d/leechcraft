@@ -62,7 +62,7 @@ namespace LC
 		QString GetTag (tag_id) const;
 		QStringList GetAllTags () const;
 		QStringList Split (const QString&) const;
-		QStringList SplitToIDs (const QString&);
+		QList<tag_id> SplitToIDs (const QString&);
 		QString Join (const QStringList&) const;
 		QString JoinIDs (const QStringList&) const;
 		QAbstractItemModel* GetModel ();
