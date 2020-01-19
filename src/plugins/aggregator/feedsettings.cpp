@@ -142,10 +142,14 @@ namespace Aggregator
 		const auto& storage = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
 
 		const auto itm = Proxy_->GetTagsManager ();
-		storage->SetChannelTags (Index_.data (ChannelRoles::ChannelID).value<IDType_t> (),
-				itm->GetIDs (itm->Split (Ui_.ChannelTags_->text ())));
-		storage->SetFeedTags (Index_.data (ChannelRoles::FeedID).value<IDType_t> (),
-				itm->GetIDs (itm->Split (Ui_.FeedTags_->text ())));
+
+		const auto& channelTags = Ui_.ChannelTags_->text ();
+		storage->SetChannelTags (Index_.data (ChannelRoles::ChannelID).value<IDType_t> (), itm->SplitToIDs (channelTags));
+
+		auto feedTags = Ui_.FeedTags_->text ();
+		if (feedTags.isEmpty ())
+			feedTags = channelTags;
+		storage->SetFeedTags (Index_.data (ChannelRoles::FeedID).value<IDType_t> (), itm->SplitToIDs (feedTags));
 
 		storage->SetFeedSettings ({
 				Index_.data (ChannelRoles::FeedID).value<IDType_t> (),
