@@ -80,14 +80,23 @@ namespace LC::Aggregator
 
 		using BaseType = QString;
 
+		// need to migrate off this in the next schema migration
+		static const BaseType EmptyMarker_;
+
 		BaseType ToBaseType () const
 		{
+			if (TagsList_.isEmpty ())
+				return EmptyMarker_;
+
 			static const auto itm = Util::CoreProxyHolder::Get ()->GetTagsManager ();
 			return itm->Join (TagsList_);
 		}
 
 		static Tags FromBaseType (const BaseType& var)
 		{
+			if (var == EmptyMarker_)
+				return {};
+
 			static const auto itm = Util::CoreProxyHolder::Get ()->GetTagsManager ();
 			return { itm->Split (var) };
 		}
@@ -97,6 +106,8 @@ namespace LC::Aggregator
 			return TagsList_;
 		}
 	};
+
+	const QString Tags::EmptyMarker_ = "<<<null>>>";
 
 	struct Image
 	{
