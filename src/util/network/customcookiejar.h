@@ -63,7 +63,7 @@ namespace Util
 		 *
 		 * @param[in] parent The parent object.
 		 */
-		CustomCookieJar (QObject *parent = 0);
+		explicit CustomCookieJar (QObject *parent = nullptr);
 
 		/** Enables or disables filtering tracking cookies.
 		 *
@@ -147,7 +147,7 @@ namespace Util
 		 * @param[in] url The url to return cookies for.
 		 * @return The list of cookies, dup-free.
 		 */
-		QList<QNetworkCookie> cookiesForUrl (const QUrl& url) const;
+		QList<QNetworkCookie> cookiesForUrl (const QUrl& url) const override;
 
 		/** @brief Adds the cookieList for the given url to the jar.
 		 *
@@ -157,7 +157,7 @@ namespace Util
 		 * @param[in] url The url to set cookies for.
 		 * @return Whether the jar has been modified as the result.
 		 */
-		bool setCookiesFromUrl (const QList<QNetworkCookie>& cookieList, const QUrl& url);
+		bool setCookiesFromUrl (const QList<QNetworkCookie>& cookieList, const QUrl& url) override;
 
 		using QNetworkCookieJar::allCookies;
 		using QNetworkCookieJar::setAllCookies;
