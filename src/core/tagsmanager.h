@@ -52,21 +52,21 @@ namespace LC
 	public:
 		static TagsManager& Instance ();
 
-		int columnCount (const QModelIndex&) const;
-		QVariant data (const QModelIndex&, int) const;
-		QModelIndex index (int, int, const QModelIndex&) const;
-		QModelIndex parent (const QModelIndex&) const;
-		int rowCount (const QModelIndex&) const;
+		int columnCount (const QModelIndex&) const override;
+		QVariant data (const QModelIndex&, int) const override;
+		QModelIndex index (int, int, const QModelIndex&) const override;
+		QModelIndex parent (const QModelIndex&) const override;
+		int rowCount (const QModelIndex&) const override;
 
-		tag_id GetID (const QString&);
-		QString GetTag (tag_id) const;
-		QStringList GetAllTags () const;
-		QStringList Split (const QString&) const;
-		QList<tag_id> SplitToIDs (const QString&);
-		QString Join (const QStringList&) const;
-		QString JoinIDs (const QStringList&) const;
-		QAbstractItemModel* GetModel ();
-		QObject* GetQObject ();
+		tag_id GetID (const QString&) override;
+		QString GetTag (tag_id) const override;
+		QStringList GetAllTags () const override;
+		QStringList Split (const QString&) const override;
+		QList<tag_id> SplitToIDs (const QString&) override;
+		QString Join (const QStringList&) const override;
+		QString JoinIDs (const QStringList&) const override;
+		QAbstractItemModel* GetModel () override;
+		QObject* GetQObject () override;
 
 		void RemoveTag (const QModelIndex&);
 		void SetTag (const QModelIndex&, const QString&);
