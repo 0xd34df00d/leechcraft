@@ -40,7 +40,7 @@ namespace LC::Poshuku::WebEngineView
 	: LCJar_ { lcJar }
 	, WebEngineStore_ { weStore }
 	{
-		WebEngineStore_->loadAllCookies ();
+		WebEngineStore_->deleteAllCookies ();
 
 		HandleLCCookiesAdded (LCJar_->allCookies ());
 
