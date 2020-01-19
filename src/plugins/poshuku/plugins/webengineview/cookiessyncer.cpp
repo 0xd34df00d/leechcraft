@@ -93,7 +93,7 @@ namespace LC::Poshuku::WebEngineView
 
 	void CookiesSyncer::HandleWebEngineCookieRemoved (const QNetworkCookie& cookie)
 	{
-		WebEngine2LCQueue_.removeOne (cookie);
+		WebEngine2LCQueue_.removeAll (cookie);
 		LCJar_->deleteCookie (cookie);
 	}
 }
