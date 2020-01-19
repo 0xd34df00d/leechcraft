@@ -110,7 +110,7 @@ QStringList TagsManager::GetAllTags () const
 QStringList TagsManager::Split (const QString& string) const
 {
 	return Util::Map (string.split (";", QString::SkipEmptyParts),
-			[] (const QString& s) { return s.trimmed (); }); // TODO gcc 6
+			[] (QString& s) { return std::move (s).trimmed (); });
 }
 
 QList<ITagsManager::tag_id> TagsManager::SplitToIDs (const QString& string)
