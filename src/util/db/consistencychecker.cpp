@@ -105,7 +105,10 @@ namespace Util
 		}
 
 		QSqlQuery pragma { *db };
-		const auto isGood = pragma.exec ("PRAGMA integrity_check;") &&
+		const QString checkQuery = qgetenv ("LC_THOROUGH_SQLITE_CHECK") == "1" ?
+				"PRAGMA integrity_check;" :
+				"PRAGMA quick_check;";
+		const auto isGood = pragma.exec (checkQuery) &&
 				pragma.next () &&
 				pragma.value (0) == "ok";
 		qDebug () << Q_FUNC_INFO
