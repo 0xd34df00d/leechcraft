@@ -382,7 +382,7 @@ namespace LC::Aggregator
 
 	struct SQLStorageBackend::Feed2TagsR
 	{
-		oral::References<&FeedR::FeedID_> FeedID_;
+		oral::Unique<oral::References<&FeedR::FeedID_>> FeedID_;
 		oral::NotNull<Tags> Tags_;
 
 		static QString ClassName ()
