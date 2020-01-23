@@ -94,6 +94,7 @@ set (SRCS
 	loadprocessbase.cpp
 	loadprogressreporter.cpp
 	splashscreen.cpp
+	tagsstorage.cpp
 	loaders/ipluginloader.cpp
 	loaders/sopluginloader.cpp
 	)
