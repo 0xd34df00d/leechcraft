@@ -35,6 +35,7 @@
 #include <QString>
 #include <QMetaType>
 #include "interfaces/core/itagsmanager.h"
+#include "tagsstorage.h"
 
 namespace LC
 {
@@ -49,6 +50,7 @@ namespace LC
 		typedef QMap<QUuid, QString> TagsDictionary_t;
 	private:
 		TagsDictionary_t Tags_;
+		TagsStorage Storage_;
 	public:
 		static TagsManager& Instance ();
 
@@ -72,8 +74,7 @@ namespace LC
 		void SetTag (const QModelIndex&, const QString&);
 	private:
 		tag_id InsertTag (const QString&);
-		void ReadSettings ();
-		void WriteSettings () const;
+		void MigrateToDb ();
 	signals:
 		void tagsUpdated (const QStringList&);
 	};

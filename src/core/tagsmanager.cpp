@@ -31,18 +31,24 @@
 #include <stdexcept>
 #include <algorithm>
 #include <QStringList>
-#include <QSettings>
 #include <QCoreApplication>
+#include <QSettings>
 #include <QtDebug>
 #include <util/sll/prelude.h>
+#include <util/sll/qtutil.h>
 #include <util/tags/tagscompleter.h>
 
 using namespace LC;
 
 TagsManager::TagsManager ()
 {
-	ReadSettings ();
+	MigrateToDb ();
+
+	for (const auto& [id, name] : Storage_.GetAllTags ())
+		Tags_ [id] = name;
+
 	GetID (tr ("untagged"));
+
 	Util::TagsCompleter::SetModel (GetModel ());
 }
 
@@ -134,6 +140,8 @@ ITagsManager::tag_id TagsManager::InsertTag (const QString& tag)
 {
 	const auto& uuid = QUuid::createUuid ();
 
+	Storage_.AddTag (uuid, tag);
+
 	auto updated = Tags_;
 	auto pos = updated.insert (uuid, tag);
 	const auto dist = std::distance (updated.begin (), pos);
@@ -141,8 +149,6 @@ ITagsManager::tag_id TagsManager::InsertTag (const QString& tag)
 	beginInsertRows ({}, dist, dist);
 	Tags_ = std::move (updated);
 	endInsertRows ();
-
-	WriteSettings ();
 
 	emit tagsUpdated (GetAllTags ());
 
@@ -154,10 +160,14 @@ void TagsManager::RemoveTag (const QModelIndex& index)
 	if (!index.isValid ())
 		return;
 
+	const auto pos = Tags_.begin () + index.row ();
+
+	Storage_.DeleteTag (pos.key ());
+
 	beginRemoveRows (QModelIndex (), index.row (), index.row ());
-	Tags_.erase (Tags_.begin () + index.row ());
+	Tags_.erase (pos);
 	endRemoveRows ();
-	WriteSettings ();
+
 	emit tagsUpdated (GetAllTags ());
 }
 
@@ -169,9 +179,9 @@ void TagsManager::SetTag (const QModelIndex& index, const QString& newTag)
 	auto pos = Tags_.begin () + index.row ();
 	*pos = newTag;
 
-	emit dataChanged (index, index);
+	Storage_.SetTagName (pos.key (), newTag);
 
-	WriteSettings ();
+	emit dataChanged (index, index);
 
 	emit tagsUpdated (GetAllTags ());
 }
@@ -186,26 +196,21 @@ QObject* TagsManager::GetQObject ()
 	return this;
 }
 
-void TagsManager::ReadSettings ()
+// TODO post 0.6.75 drop this
+void TagsManager::MigrateToDb ()
 {
 	QSettings settings (QCoreApplication::organizationName (),
 			QCoreApplication::applicationName ());
 	settings.beginGroup ("Tags");
-	Tags_ = settings.value ("Dict").value<TagsDictionary_t> ();
-	if (!Tags_.isEmpty ())
+	if (!settings.value ("Migrated").toBool ())
 	{
-		beginInsertRows (QModelIndex (), 0, Tags_.size () - 1);
-		endInsertRows ();
+		const auto& tags = settings.value ("Dict").value<TagsDictionary_t> ();
+
+		qDebug () << Q_FUNC_INFO << "migrating" << tags.size () << "tags to the DB";
+
+		for (const auto& [id, name] : Util::Stlize (tags))
+			Storage_.AddTag (id, name);
+		settings.setValue ("Migrated", true);
 	}
 	settings.endGroup ();
 }
-
-void TagsManager::WriteSettings () const
-{
-	QSettings settings (QCoreApplication::organizationName (),
-			QCoreApplication::applicationName ());
-	settings.beginGroup ("Tags");
-	settings.setValue ("Dict", QVariant::fromValue<TagsDictionary_t> (Tags_));
-	settings.endGroup ();
-}
-
