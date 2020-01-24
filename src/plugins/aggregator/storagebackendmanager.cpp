@@ -74,6 +74,9 @@ namespace Aggregator
 		auto runUpdate = [this, &strType] (auto updater, const char *suffix, int targetVersion)
 		{
 			const auto curVersion = XmlSettingsManager::Instance ()->Property (strType + suffix, targetVersion).toInt ();
+			if (curVersion == targetVersion)
+				return true;
+
 			if (!std::invoke (updater, PrimaryStorageBackend_.get (), curVersion, targetVersion))
 				return false;
 
