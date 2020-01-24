@@ -67,7 +67,7 @@ namespace Aggregator
 			return StorageCreationResult_t::Left ({ s.what () });
 		}
 
-		const int feedsTable = 1;
+		const int feedsTable = 2;
 		const int channelsTable = 2;
 		const int itemsTable = 6;
 

@@ -976,6 +976,35 @@ namespace LC::Aggregator
 
 	bool SQLStorageBackend::UpdateFeedsStorage (int from)
 	{
+		Util::DBLock lock { DB_ };
+		lock.Init ();
+		try
+		{
+			if (from <= 1)
+			{
+				qDebug () << Q_FUNC_INFO << "migrating tags";
+
+				const auto& feedsTags = Feeds2Tags_->Select ();
+
+				QSqlQuery tableDeleter { DB_ };
+				tableDeleter.prepare ("DROP TABLE " + Feed2TagsR::ClassName ());
+				Util::DBLock::Execute (tableDeleter);
+
+				Feeds2Tags_ = Type_ == SBSQLite ?
+						oral::AdaptPtr<Feed2TagsR, oral::SQLiteImplFactory> (DB_) :
+						oral::AdaptPtr<Feed2TagsR, oral::PostgreSQLImplFactory> (DB_);
+
+				for (const auto& [feedId, tags] : feedsTags)
+					SetFeedTags (*feedId, tags->TagsList_);
+			}
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< e.what ();
+			return false;
+		}
+		lock.Good ();
 		return true;
 	}
 
