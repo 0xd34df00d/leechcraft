@@ -122,9 +122,9 @@ namespace Aggregator
 		void RemoveItems (const QSet<IDType_t>&) override;
 		void RemoveChannel (IDType_t) override;
 		void RemoveFeed (IDType_t) override;
-		bool UpdateFeedsStorage (int, int) override;
-		bool UpdateChannelsStorage (int, int) override;
-		bool UpdateItemsStorage (int, int) override;
+		bool UpdateFeedsStorage (int) override;
+		bool UpdateChannelsStorage (int) override;
+		bool UpdateItemsStorage (int) override;
 		void ToggleChannelUnread (IDType_t, bool) override;
 
 		QList<ITagsManager::tag_id> GetItemTags (IDType_t) override;

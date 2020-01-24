@@ -974,25 +974,23 @@ namespace LC::Aggregator
 			}
 	}
 
-	bool SQLStorageBackend::UpdateFeedsStorage (int, int)
+	bool SQLStorageBackend::UpdateFeedsStorage (int from)
 	{
 		return true;
 	}
 
-	bool SQLStorageBackend::UpdateChannelsStorage (int oldV, int newV)
+	bool SQLStorageBackend::UpdateChannelsStorage (int)
 	{
-		if (oldV != newV)
-			qCritical () << Q_FUNC_INFO
-					<< "support for old channel storage tables dropped";
-		return oldV == newV;
+		qCritical () << Q_FUNC_INFO
+				<< "support for old channel storage tables dropped";
+		return false;
 	}
 
-	bool SQLStorageBackend::UpdateItemsStorage (int oldV, int newV)
+	bool SQLStorageBackend::UpdateItemsStorage (int)
 	{
-		if (oldV != newV)
-			qCritical () << Q_FUNC_INFO
-					<< "support for old items storage tables dropped";
-		return oldV == newV;
+		qCritical () << Q_FUNC_INFO
+				<< "support for old items storage tables dropped";
+		return false;
 	}
 
 	void SQLStorageBackend::WriteEnclosures (const QList<Enclosure>& enclosures)

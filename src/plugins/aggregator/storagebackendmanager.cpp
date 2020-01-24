@@ -77,7 +77,7 @@ namespace Aggregator
 			if (curVersion == targetVersion)
 				return true;
 
-			if (!std::invoke (updater, PrimaryStorageBackend_.get (), curVersion, targetVersion))
+			if (!std::invoke (updater, PrimaryStorageBackend_.get (), curVersion))
 				return false;
 
 			XmlSettingsManager::Instance ()->setProperty (strType + suffix, targetVersion);

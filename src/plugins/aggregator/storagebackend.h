@@ -374,11 +374,10 @@ namespace Aggregator
 		 * stored in application settings is lower than newer one.
 		 *
 		 * @param[in] oldV Old storage version.
-		 * @param[in] newV New storage version.
 		 *
 		 * @return true if update successful, else false.
 		 */
-		virtual bool UpdateFeedsStorage (int oldV, int newV) = 0;
+		virtual bool UpdateFeedsStorage (int oldV) = 0;
 
 		/** @brief Update channels storage section.
 		 *
@@ -386,11 +385,10 @@ namespace Aggregator
 		 * stored in application settings is lower than newer one.
 		 *
 		 * @param[in] oldV Old storage version.
-		 * @param[in] newV New storage version.
 		 *
 		 * @return true if update successful, else false.
 		 */
-		virtual bool UpdateChannelsStorage (int oldV, int newV) = 0;
+		virtual bool UpdateChannelsStorage (int oldV) = 0;
 
 		/** @brief Update items storage section.
 		 *
@@ -398,11 +396,10 @@ namespace Aggregator
 		 * stored in application settings is lower than newer one.
 		 *
 		 * @param[in] oldV Old storage version.
-		 * @param[in] newV New storage version.
 		 *
 		 * @return true if update successful, else false.
 		 */
-		virtual bool UpdateItemsStorage (int oldV, int newV) = 0;
+		virtual bool UpdateItemsStorage (int oldV) = 0;
 
 		/** @brief Toggle channel state.
 		 *
