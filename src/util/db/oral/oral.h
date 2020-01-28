@@ -683,6 +683,49 @@ namespace oral
 			}
 		};
 
+		template<typename T>
+		class ExprTree<ExprType::LeafData, T, void>
+		{
+			T Data_;
+		public:
+			template<typename>
+			using ValueType_t = T;
+
+			ExprTree (const T& t) noexcept
+					: Data_ (t)
+			{
+			}
+
+			template<typename ObjT>
+			QString ToSql (ToSqlState<ObjT>& state) const noexcept
+			{
+				const auto& name = ":bound_" + QString::number (++state.LastID_);
+				state.BoundMembers_ [name] = ToVariantF (Data_);
+				return name;
+			}
+
+			template<typename>
+			QSet<QString> AdditionalTables () const noexcept
+			{
+				return {};
+			}
+
+			template<typename>
+			constexpr static bool HasAdditionalTables () noexcept
+			{
+				return false;
+			}
+		};
+
+		template<typename T>
+		constexpr auto AsLeafData (const T& node) noexcept
+		{
+			if constexpr (IsExprTree<T> {})
+				return node;
+			else
+				return ExprTree<ExprType::LeafData, T> { node };
+		}
+
 		template<auto... Ptr>
 		struct MemberPtrs {};
 
@@ -721,40 +764,9 @@ namespace oral
 			}
 
 			template<typename R>
-			auto operator= (const R&) const noexcept;
-		};
-
-		template<typename T>
-		class ExprTree<ExprType::LeafData, T, void>
-		{
-			T Data_;
-		public:
-			template<typename>
-			using ValueType_t = T;
-
-			ExprTree (const T& t) noexcept
-			: Data_ (t)
+			auto operator= (const R& r) const noexcept
 			{
-			}
-
-			template<typename ObjT>
-			QString ToSql (ToSqlState<ObjT>& state) const noexcept
-			{
-				const auto& name = ":bound_" + QString::number (++state.LastID_);
-				state.BoundMembers_ [name] = ToVariantF (Data_);
-				return name;
-			}
-
-			template<typename>
-			QSet<QString> AdditionalTables () const noexcept
-			{
-				return {};
-			}
-
-			template<typename>
-			constexpr static bool HasAdditionalTables () noexcept
-			{
-				return false;
+				return AssignList { *this, AsLeafData (r) };
 			}
 		};
 
@@ -762,22 +774,6 @@ namespace oral
 		class ExprTree<ExprType::ConstTrue, void, void> {};
 
 		constexpr auto ConstTrueTree_v = ExprTree<ExprType::ConstTrue> {};
-
-		template<typename T>
-		constexpr auto AsLeafData (const T& node) noexcept
-		{
-			if constexpr (IsExprTree<T> {})
-				return node;
-			else
-				return ExprTree<ExprType::LeafData, T> { node };
-		}
-
-		template<auto Ptr>
-		template<typename R>
-		auto ExprTree<ExprType::LeafStaticPlaceholder, MemberPtrs<Ptr>, void>::operator= (const R& r) const noexcept
-		{
-			return AssignList { *this, AsLeafData (r) };
-		}
 
 		template<ExprType Type, typename L, typename R>
 		auto MakeExprTree (const L& left, const R& right) noexcept
