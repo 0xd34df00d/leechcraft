@@ -732,9 +732,10 @@ namespace oral
 		template<auto Ptr>
 		class ExprTree<ExprType::LeafStaticPlaceholder, MemberPtrs<Ptr>, void>
 		{
+			using ExpectedType_t = MemberPtrType_t<Ptr>;
 		public:
 			template<typename>
-			using ValueType_t = MemberPtrType_t<Ptr>;
+			using ValueType_t = ExpectedType_t;
 
 			template<typename T>
 			QString ToSql (ToSqlState<T>&) const noexcept
@@ -763,8 +764,7 @@ namespace oral
 				return !std::is_same_v<MemberPtrStruct_t<Ptr>, T>;
 			}
 
-			template<typename R>
-			auto operator= (const R& r) const noexcept
+			auto operator= (const ExpectedType_t& r) const noexcept
 			{
 				return AssignList { *this, AsLeafData (r) };
 			}
