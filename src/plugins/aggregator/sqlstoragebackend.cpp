@@ -78,6 +78,18 @@ namespace LC::Aggregator
 	{
 		QStringList TagsList_;
 
+		Tags () = default;
+
+		Tags (QStringList tags)
+		: TagsList_ { std::move (tags) }
+		{
+		}
+
+		operator QStringList () const
+		{
+			return TagsList_;
+		}
+
 		using BaseType = QString;
 
 		// need to migrate off this in the next schema migration
@@ -100,11 +112,6 @@ namespace LC::Aggregator
 			static const auto itm = Util::CoreProxyHolder::Get ()->GetTagsManager ();
 			return { itm->Split (var) };
 		}
-
-		operator QStringList () const
-		{
-			return TagsList_;
-		}
 	};
 
 	const QString Tags::EmptyMarker_ = "<<<null>>>";
@@ -112,6 +119,18 @@ namespace LC::Aggregator
 	struct Image
 	{
 		QImage Image_;
+
+		Image () = default;
+
+		Image (QImage image)
+		: Image_ { std::move (image) }
+		{
+		}
+
+		operator QImage () const
+		{
+			return Image_;
+		}
 
 		using BaseType = QByteArray;
 
@@ -134,16 +153,23 @@ namespace LC::Aggregator
 				result.loadFromData (var, "PNG");
 			return { result };
 		}
-
-		operator QImage () const
-		{
-			return Image_;
-		}
 	};
 
 	struct ItemCategories
 	{
 		QStringList Categories_;
+
+		ItemCategories () = default;
+
+		ItemCategories (QStringList cats)
+		: Categories_ { std::move (cats) }
+		{
+		}
+
+		operator QStringList () const
+		{
+			return Categories_;
+		}
 
 		using BaseType = QString;
 
@@ -156,16 +182,23 @@ namespace LC::Aggregator
 		{
 			return { var.split ("<<<", QString::SkipEmptyParts) };
 		}
-
-		operator QStringList () const
-		{
-			return Categories_;
-		}
 	};
 
 	struct GeoCoord
 	{
-		double Coord_;
+		double Coord_ = 0;
+
+		GeoCoord () = default;
+
+		GeoCoord (double c)
+		: Coord_ { c }
+		{
+		}
+
+		operator double () const
+		{
+			return Coord_;
+		}
 
 		using BaseType = QString;
 
@@ -177,11 +210,6 @@ namespace LC::Aggregator
 		static GeoCoord FromBaseType (const BaseType& var)
 		{
 			return { var.toDouble () };
-		}
-
-		operator double () const
-		{
-			return Coord_;
 		}
 	};
 
