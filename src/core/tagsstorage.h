@@ -30,6 +30,7 @@
 #pragma once
 
 #include <optional>
+#include <QObject>
 #include <QUuid>
 #include <QString>
 #include <QList>
