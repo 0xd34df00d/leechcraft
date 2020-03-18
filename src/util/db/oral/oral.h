@@ -879,7 +879,7 @@ namespace oral
 		template<typename>
 		auto HandleExprTree (const ExprTree<ExprType::ConstTrue>&, int lastId = 0) noexcept
 		{
-			return ExprTreeHandler { QString {}, Void {}, lastId };
+			return ExprTreeHandler { "1 = 1", [] (auto&&) {}, lastId };
 		}
 
 		template<typename Seq, typename Tree,
