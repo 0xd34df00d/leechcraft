@@ -764,10 +764,11 @@ namespace LC::Aggregator
 
 		auto removeByDate = Items_->Select (sph::fields<&ItemR::ItemID_>,
 				sph::f<&ItemR::ChannelID_> == channelId &&
+				sph::f<&ItemR::Unread_> == false &&
 				sph::f<&ItemR::PubDate_> < cutoff);
 		auto removeByCount = Items_->Select.Build ()
 				.Select (sph::fields<&ItemR::ItemID_>)
-				.Where (sph::f<&ItemR::ChannelID_> == channelId)
+				.Where (sph::f<&ItemR::ChannelID_> == channelId && sph::f<&ItemR::Unread_> == false)
 				.Order (oral::OrderBy<sph::desc<&ItemR::PubDate_>>)
 				.Offset (number)
 				();
