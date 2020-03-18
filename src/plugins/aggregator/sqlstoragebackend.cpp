@@ -1014,9 +1014,7 @@ namespace LC::Aggregator
 
 				const auto& feedsTags = Feeds2Tags_->Select ();
 
-				QSqlQuery tableDeleter { DB_ };
-				tableDeleter.prepare ("DROP TABLE " + Feed2TagsR::ClassName ());
-				Util::DBLock::Execute (tableDeleter);
+				Util::RunTextQuery (DB_, "DROP TABLE " + Feed2TagsR::ClassName ());
 
 				Feeds2Tags_ = Type_ == SBSQLite ?
 						oral::AdaptPtr<Feed2TagsR, oral::SQLiteImplFactory> (DB_) :
