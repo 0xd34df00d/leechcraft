@@ -902,7 +902,6 @@ namespace LC::Aggregator
 
 		const auto& channel = GetChannel (item.ChannelID_);
 		emit itemDataUpdated (item, channel);
-		emit channelDataUpdated (channel);
 	}
 
 	void SQLStorageBackend::SetItemUnread (IDType_t itemId, bool unread)
