@@ -782,8 +782,6 @@ namespace LC::Aggregator
 		for (auto id : removedIds)
 			Items_->DeleteBy (sph::f<&ItemR::ItemID_> == id);
 		lock.Good ();
-
-		emit channelDataUpdated (GetChannel (channelId));
 	}
 
 	std::optional<QImage> SQLStorageBackend::GetChannelPixmap (IDType_t channelId) const
