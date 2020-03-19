@@ -71,11 +71,11 @@ namespace Aggregator
 		connect (&StorageBackendManager::Instance (),
 				&StorageBackendManager::itemsRemoved,
 				this,
-				&ItemsListModel::handleItemsRemoved);
+				&ItemsListModel::HandleItemsRemoved);
 		connect (&StorageBackendManager::Instance (),
 				&StorageBackendManager::itemDataUpdated,
 				this,
-				&ItemsListModel::handleItemDataUpdated);
+				&ItemsListModel::HandleItemDataUpdated);
 	}
 
 	int ItemsListModel::GetSelectedRow () const
@@ -437,6 +437,19 @@ namespace Aggregator
 		return SB_.localData ();
 	}
 
+	void ItemsListModel::HandleItemsRemoved (const QSet<IDType_t>& items)
+	{
+		RemoveItems (items);
+	}
+
+	void ItemsListModel::HandleItemDataUpdated (const Item& item)
+	{
+		if (item.ChannelID_ != CurrentChannel_)
+			return;
+
+		ItemDataUpdated (item);
+	}
+
 	void ItemsListModel::reset (IDType_t channelId)
 	{
 		Reset (channelId);
@@ -445,19 +458,6 @@ namespace Aggregator
 	void ItemsListModel::selected (const QModelIndex& index)
 	{
 		Selected (index);
-	}
-
-	void ItemsListModel::handleItemsRemoved (const QSet<IDType_t>& items)
-	{
-		RemoveItems (items);
-	}
-
-	void ItemsListModel::handleItemDataUpdated (const Item& item)
-	{
-		if (item.ChannelID_ != CurrentChannel_)
-			return;
-
-		ItemDataUpdated (item);
 	}
 }
 }

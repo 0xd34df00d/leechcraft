@@ -86,13 +86,11 @@ namespace Aggregator
 		int rowCount (const QModelIndex& = QModelIndex ()) const override;
 	private:
 		StorageBackend_ptr GetSB () const;
+		void HandleItemsRemoved (const QSet<IDType_t>&);
+		void HandleItemDataUpdated (const Item&);
 	public slots:
 		void reset (IDType_t) override;
 		void selected (const QModelIndex&) override;
-	private slots:
-		void handleItemsRemoved (const QSet<IDType_t>&);
-
-		void handleItemDataUpdated (const Item&);
 	};
 }
 }
