@@ -452,9 +452,9 @@ namespace Aggregator
 		RemoveItems (items);
 	}
 
-	void ItemsListModel::handleItemDataUpdated (const Item& item, const Channel& channel)
+	void ItemsListModel::handleItemDataUpdated (const Item& item)
 	{
-		if (channel.ChannelID_ != CurrentChannel_)
+		if (item.ChannelID_ != CurrentChannel_)
 			return;
 
 		ItemDataUpdated (item);

@@ -446,12 +446,10 @@ namespace Aggregator
 		 * instantiated storage managers.
 		 *
 		 * @param[out] item Pointer to the updated item.
-		 * @param[out] channel Pointer to the channel containing updated
-		 * item.
 		 *
 		 * @sa StorageBackendManager
 		 */
-		void itemDataUpdated (const Item& item, const Channel& channel) const;
+		void itemDataUpdated (const Item& item) const;
 
 		/** @brief Notifies that a number of items was removed.
 		 *

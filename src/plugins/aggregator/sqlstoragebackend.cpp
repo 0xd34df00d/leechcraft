@@ -525,7 +525,7 @@ namespace LC::Aggregator
 		lock.Good ();
 
 		if (const auto& item = GetItem (id))
-			emit itemDataUpdated (*item, GetChannel (item->ChannelID_));
+			emit itemDataUpdated (*item);
 	}
 
 	QList<IDType_t> SQLStorageBackend::GetItemsForTag (const ITagsManager::tag_id& tag)
@@ -900,8 +900,7 @@ namespace LC::Aggregator
 		WriteEnclosures (item.Enclosures_);
 		WriteMRSSEntries (item.MRSSEntries_);
 
-		const auto& channel = GetChannel (item.ChannelID_);
-		emit itemDataUpdated (item, channel);
+		emit itemDataUpdated (item);
 	}
 
 	void SQLStorageBackend::SetItemUnread (IDType_t itemId, bool unread)
@@ -910,10 +909,9 @@ namespace LC::Aggregator
 
 		if (const auto& fullItem = GetItem (itemId))
 		{
-			const auto channelId = fullItem->ChannelID_;
-			const auto& channel = GetChannel (channelId);
+			emit itemDataUpdated (*fullItem);
 
-			emit itemDataUpdated (*fullItem, channel);
+			const auto channelId = fullItem->ChannelID_;
 			emit channelUnreadCountUpdated (channelId, GetUnreadItemsCount (channelId));
 		}
 	}
@@ -935,8 +933,7 @@ namespace LC::Aggregator
 
 		emit hookItemAdded (std::make_shared<Util::DefaultHookProxy> (), item);
 
-		const auto& channel = GetChannel (item.ChannelID_);
-		emit itemDataUpdated (item, channel);
+		emit itemDataUpdated (item);
 		emit channelUnreadCountUpdated (item.ChannelID_, GetUnreadItemsCount (item.ChannelID_));
 	}
 
@@ -993,12 +990,11 @@ namespace LC::Aggregator
 
 		emit channelUnreadCountUpdated (channelId, state ? oldItems.size () : 0);
 
-		const auto& channel = GetChannel (channelId);
 		for (auto& oldItem : oldItems)
 			if (oldItem->Unread_ != state)
 			{
 				oldItem->Unread_ = state;
-				emit itemDataUpdated (*oldItem, channel);
+				emit itemDataUpdated (*oldItem);
 			}
 	}
 
