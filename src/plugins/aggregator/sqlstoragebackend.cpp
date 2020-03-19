@@ -910,10 +910,11 @@ namespace LC::Aggregator
 
 		if (const auto& fullItem = GetItem (itemId))
 		{
-			const auto& channel = GetChannel (fullItem->ChannelID_);
+			const auto channelId = fullItem->ChannelID_;
+			const auto& channel = GetChannel (channelId);
 
 			emit itemDataUpdated (*fullItem, channel);
-			emit channelDataUpdated (channel);
+			emit channelUnreadCountUpdated (channelId, GetUnreadItemsCount (channelId));
 		}
 	}
 
@@ -936,7 +937,7 @@ namespace LC::Aggregator
 
 		const auto& channel = GetChannel (item.ChannelID_);
 		emit itemDataUpdated (item, channel);
-		emit channelDataUpdated (channel);
+		emit channelUnreadCountUpdated (item.ChannelID_, GetUnreadItemsCount (item.ChannelID_));
 	}
 
 	void SQLStorageBackend::RemoveItems (const QSet<IDType_t>& items)
@@ -962,7 +963,7 @@ namespace LC::Aggregator
 		emit itemsRemoved ({ items });
 
 		for (const auto& cid : modifiedChannels)
-			emit channelDataUpdated (GetChannel (cid));
+			emit channelUnreadCountUpdated (cid, GetUnreadItemsCount (cid));
 	}
 
 	void SQLStorageBackend::RemoveChannel (IDType_t channelId)
@@ -990,8 +991,9 @@ namespace LC::Aggregator
 		Items_->Update (sph::f<&ItemR::Unread_> = state,
 				sph::f<&ItemR::ChannelID_> == channelId);
 
+		emit channelUnreadCountUpdated (channelId, state ? oldItems.size () : 0);
+
 		const auto& channel = GetChannel (channelId);
-		emit channelDataUpdated (channel);
 		for (auto& oldItem : oldItems)
 			if (oldItem->Unread_ != state)
 			{

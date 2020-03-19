@@ -427,7 +427,7 @@ namespace Aggregator
 		 *
 		 * This signal is emitted when a channel is updated.
 		 *
-		 * @warning StorageBackendManager::channelDataUpdated() should
+		 * @warning StorageBackendManager::channelUnreadCountUpdated() should
 		 * be used instead as it collects the signal from all
 		 * instantiated storage managers.
 		 *
@@ -435,7 +435,7 @@ namespace Aggregator
 		 *
 		 * @sa StorageBackendManager
 		 */
-		void channelDataUpdated (const Channel& channel) const;
+		void channelUnreadCountUpdated (IDType_t channelId, int unreadCount) const;
 
 		/** @brief Notifies about updated item information.
 		 *
