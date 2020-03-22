@@ -982,19 +982,17 @@ namespace LC::Aggregator
 
 	void SQLStorageBackend::ToggleChannelUnread (IDType_t channelId, bool state)
 	{
-		const auto& oldItems = GetFullItems (channelId);
+		const auto oldItems = Items_->Select (sph::fields<&ItemR::ItemID_, &ItemR::Unread_>,
+				sph::f<&ItemR::ChannelID_> == channelId);
 
 		Items_->Update (sph::f<&ItemR::Unread_> = state,
 				sph::f<&ItemR::ChannelID_> == channelId);
 
 		emit channelUnreadCountUpdated (channelId, state ? oldItems.size () : 0);
 
-		for (auto& oldItem : oldItems)
-			if (oldItem->Unread_ != state)
-			{
-				oldItem->Unread_ = state;
-				emit itemReadStatusUpdated (channelId, oldItem->ItemID_, state);
-			}
+		for (const auto& [itemId, oldState] : oldItems)
+			if (oldState != state)
+				emit itemReadStatusUpdated (channelId, itemId, state);
 	}
 
 	bool SQLStorageBackend::UpdateFeedsStorage (int from)
