@@ -76,6 +76,10 @@ namespace Aggregator
 				&StorageBackendManager::itemDataUpdated,
 				this,
 				&ItemsListModel::HandleItemDataUpdated);
+		connect (&StorageBackendManager::Instance (),
+				&StorageBackendManager::itemReadStatusUpdated,
+				this,
+				&ItemsListModel::HandleItemReadStatusUpdated);
 	}
 
 	int ItemsListModel::GetSelectedRow () const
@@ -448,6 +452,28 @@ namespace Aggregator
 			return;
 
 		ItemDataUpdated (item);
+	}
+
+	void ItemsListModel::HandleItemReadStatusUpdated (IDType_t channelId, IDType_t itemId, bool unread)
+	{
+		if (channelId != CurrentChannel_)
+			return;
+
+		const auto pos = std::find_if (CurrentItems_.begin (), CurrentItems_.end (),
+				[&itemId] (const ItemShort& itemShort) { return itemShort.ItemID_ == itemId; });
+		if (pos == CurrentItems_.end ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to find"
+					<< channelId
+					<< itemId;
+			return;
+		}
+
+		pos->Unread_ = unread;
+
+		int distance = std::distance (CurrentItems_.begin (), pos);
+		emit dataChanged (index (distance, 0), index (distance, 1));
 	}
 
 	void ItemsListModel::reset (IDType_t channelId)

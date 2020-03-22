@@ -909,9 +909,8 @@ namespace LC::Aggregator
 
 		if (const auto& fullItem = GetItem (itemId))
 		{
-			emit itemDataUpdated (*fullItem);
-
 			const auto channelId = fullItem->ChannelID_;
+			emit itemReadStatusUpdated (channelId, itemId, unread);
 			emit channelUnreadCountUpdated (channelId, GetUnreadItemsCount (channelId));
 		}
 	}
@@ -994,7 +993,7 @@ namespace LC::Aggregator
 			if (oldItem->Unread_ != state)
 			{
 				oldItem->Unread_ = state;
-				emit itemDataUpdated (*oldItem);
+				emit itemReadStatusUpdated (channelId, oldItem->ItemID_, state);
 			}
 	}
 

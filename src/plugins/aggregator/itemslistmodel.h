@@ -88,6 +88,7 @@ namespace Aggregator
 		StorageBackend_ptr GetSB () const;
 		void HandleItemsRemoved (const QSet<IDType_t>&);
 		void HandleItemDataUpdated (const Item&);
+		void HandleItemReadStatusUpdated (IDType_t, IDType_t, bool);
 	public slots:
 		void reset (IDType_t) override;
 		void selected (const QModelIndex&) override;

@@ -133,6 +133,10 @@ namespace Aggregator
 				this,
 				&StorageBackendManager::channelUnreadCountUpdated);
 		connect (backendPtr,
+				&StorageBackend::itemReadStatusUpdated,
+				this,
+				&StorageBackendManager::itemReadStatusUpdated);
+		connect (backendPtr,
 				&StorageBackend::itemDataUpdated,
 				this,
 				&StorageBackendManager::itemDataUpdated);
