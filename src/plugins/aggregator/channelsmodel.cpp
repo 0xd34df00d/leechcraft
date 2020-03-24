@@ -78,6 +78,11 @@ namespace Aggregator
 				&ChannelsModel::UpdateChannelUnreadCount,
 				Qt::QueuedConnection);
 		connect (&StorageBackendManager::Instance (),
+				&StorageBackendManager::channelDataUpdated,
+				this,
+				&ChannelsModel::UpdateChannelData,
+				Qt::QueuedConnection);
+		connect (&StorageBackendManager::Instance (),
 				&StorageBackendManager::storageCreated,
 				this,
 				&ChannelsModel::PopulateChannels);
@@ -335,6 +340,21 @@ namespace Aggregator
 			return;
 
 		pos->Unread_ = count;
+
+		const auto idx = pos - Channels_.begin ();
+		emit dataChanged (index (idx, 0), index (idx, 2));
+	}
+
+	void ChannelsModel::UpdateChannelData (const Channel& channel)
+	{
+		const auto pos = std::find_if (Channels_.begin (), Channels_.end (),
+				[&channel] (const ChannelShort& cs) { return cs.ChannelID_ == channel.ChannelID_; });
+		if (pos == Channels_.end ())
+			return;
+
+		auto unreadCount = pos->Unread_;
+		*pos = channel.ToShort ();
+		pos->Unread_ = unreadCount;
 
 		const auto idx = pos - Channels_.begin ();
 		emit dataChanged (index (idx, 0), index (idx, 2));

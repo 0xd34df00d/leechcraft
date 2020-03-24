@@ -80,6 +80,7 @@ namespace Aggregator
 		void HandleFeedErrorsChanged (IDType_t);
 
 		void UpdateChannelUnreadCount (IDType_t, int);
+		void UpdateChannelData (const Channel&);
 
 		void AddChannel (const ChannelShort&);
 		void Clear ();
