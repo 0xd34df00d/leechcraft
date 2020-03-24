@@ -78,6 +78,8 @@ namespace Aggregator
 		 */
 		void channelUnreadCountUpdated (IDType_t channelId, int unreadCount) const;
 
+		void channelDataUpdated (const Channel&) const;
+
 		void itemReadStatusUpdated (IDType_t channelId, IDType_t itemId, bool unread) const;
 
 		/** @brief Notifies about updated item information.
