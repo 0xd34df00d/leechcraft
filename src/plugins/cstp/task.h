@@ -33,7 +33,7 @@
 #include <functional>
 #include <QObject>
 #include <QUrl>
-#include <QTime>
+#include <QElapsedTimer>
 #include <QNetworkReply>
 #include <QStringList>
 #include <QFutureInterface>
