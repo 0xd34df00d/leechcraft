@@ -34,7 +34,6 @@
 #include <QtConcurrentRun>
 #include <QDateTime>
 #include <QtDebug>
-#include <util/compat/fileinfo.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/prelude.h>
 #include <util/sll/util.h>
@@ -79,7 +78,7 @@ namespace Util
 			{
 				const auto& path = it.next ();
 				const auto& info = it.fileInfo ();
-				result.Items_.insert (Compat::Created (info), path);
+				result.Items_.insert (info.birthTime (), path);
 				result.TotalSize_ += info.size ();
 			}
 
