@@ -67,14 +67,20 @@ namespace LC::Poshuku::WebEngineView
 	{
 		qDebug () << Q_FUNC_INFO << cookies.size ();
 		for (const auto& cookie : cookies)
+		{
+			CookiesPerDomain_ [cookie.domain ()] << cookie;
 			WebEngineStore_->setCookie (cookie);
+		}
 	}
 
 	void CookiesSyncer::HandleLCCookiesRemoved (const QList<QNetworkCookie>& cookies)
 	{
 		qDebug () << Q_FUNC_INFO << cookies.size ();
 		for (const auto& cookie : cookies)
+		{
+			CookiesPerDomain_ [cookie.domain ()].removeAll (cookie);
 			WebEngineStore_->deleteCookie (cookie);
+		}
 	}
 
 	void CookiesSyncer::HandleWebEngineCookieAdded (const QNetworkCookie& cookie)
@@ -84,7 +90,14 @@ namespace LC::Poshuku::WebEngineView
 					[this]
 					{
 						for (const auto& cookie : WebEngine2LCQueue_)
-							LCJar_->insertCookie (cookie);
+						{
+							auto& domainCookies = CookiesPerDomain_ [cookie.domain ()];
+							if (!domainCookies.contains (cookie))
+							{
+								domainCookies << cookie;
+								LCJar_->insertCookie (cookie);
+							}
+						}
 						WebEngine2LCQueue_.clear ();
 					});
 
@@ -93,6 +106,7 @@ namespace LC::Poshuku::WebEngineView
 
 	void CookiesSyncer::HandleWebEngineCookieRemoved (const QNetworkCookie& cookie)
 	{
+		CookiesPerDomain_ [cookie.domain ()].removeAll (cookie);
 		WebEngine2LCQueue_.removeAll (cookie);
 		LCJar_->deleteCookie (cookie);
 	}

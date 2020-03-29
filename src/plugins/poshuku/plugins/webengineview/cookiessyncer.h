@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QObject>
+#include <QHash>
 
 class QWebEngineCookieStore;
 class QNetworkCookie;
@@ -47,6 +48,8 @@ namespace LC::Poshuku::WebEngineView
 		QWebEngineCookieStore * const WebEngineStore_;
 
 		QList<QNetworkCookie> WebEngine2LCQueue_;
+
+		QHash<QString, QList<QNetworkCookie>> CookiesPerDomain_;
 	public:
 		CookiesSyncer (Util::CustomCookieJar*, QWebEngineCookieStore*);
 	private:
