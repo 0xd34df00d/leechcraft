@@ -34,7 +34,6 @@
 #include <QTranslator>
 #include <interfaces/azoth/imessage.h>
 #include <interfaces/azoth/irichtextmessage.h>
-#include <util/compat/imagebytes.h>
 #include <util/util.h>
 #include <util/sys/paths.h>
 #include <util/sll/qtutil.h>
@@ -171,7 +170,7 @@ namespace Modnok
 		process.waitForFinished (5000);
 
 		QImage img (filename);
-		FormulasCache_.insert (formula, new QImage (filename), Util::Compat::SizeInBytes (img) / 1024);
+		FormulasCache_.insert (formula, new QImage (filename), img.sizeInBytes () / 1024);
 
 		QFile (filename).remove ();
 

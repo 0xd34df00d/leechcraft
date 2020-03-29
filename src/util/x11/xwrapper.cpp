@@ -43,7 +43,6 @@
 #include <X11/Xutil.h>
 #include <X11/Xatom.h>
 #include <xcb/xcb.h>
-#include <util/compat/imagebytes.h>
 
 namespace LC
 {
@@ -240,7 +239,7 @@ namespace Util
 		{
 			QImage img (cur [0], cur [1], QImage::Format_ARGB32);
 			cur += 2;
-			const auto bytesCount = Compat::SizeInBytes (img);
+			const auto bytesCount = img.sizeInBytes ();
 			for (int i = 0; i < bytesCount / 4; ++i, ++cur)
 				reinterpret_cast<uint*> (img.bits ()) [i] = *cur;
 
