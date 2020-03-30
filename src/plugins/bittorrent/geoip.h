@@ -36,9 +36,7 @@
 
 struct MMDB_s;
 
-namespace LC
-{
-namespace BitTorrent
+namespace LC::BitTorrent
 {
 	class GeoIP
 	{
@@ -49,5 +47,4 @@ namespace BitTorrent
 
 		boost::optional<QString> GetCountry (const libtorrent::address&) const;
 	};
-}
 }

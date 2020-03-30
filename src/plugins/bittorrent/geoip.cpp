@@ -37,9 +37,7 @@
 #include <maxminddb.h>
 #endif
 
-namespace LC
-{
-namespace BitTorrent
+namespace LC::BitTorrent
 {
 #ifdef ENABLE_GEOIP
 	namespace
@@ -132,5 +130,4 @@ namespace BitTorrent
 		return {};
 	}
 #endif
-}
 }
