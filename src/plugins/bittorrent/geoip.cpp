@@ -42,7 +42,7 @@ namespace LC::BitTorrent
 #ifdef ENABLE_GEOIP
 	namespace
 	{
-		boost::optional<QString> FindDB ()
+		std::optional<QString> FindDB ()
 		{
 			const QStringList geoipCands
 			{
@@ -67,7 +67,7 @@ namespace LC::BitTorrent
 		using Util::operator>>;
 
 		const auto maybeImpl = FindDB () >>
-				[] (const QString& path) -> boost::optional<ImplPtr_t>
+				[] (const QString& path) -> std::optional<ImplPtr_t>
 				{
 					qDebug () << Q_FUNC_INFO << "loading GeoIP from" << path;
 
@@ -88,7 +88,7 @@ namespace LC::BitTorrent
 		Impl_ = maybeImpl.value_or (ImplPtr_t {});
 	}
 
-	boost::optional<QString> GeoIP::GetCountry (const libtorrent::address& addr) const
+	std::optional<QString> GeoIP::GetCountry (const libtorrent::address& addr) const
 	{
 		if (!Impl_)
 			return {};

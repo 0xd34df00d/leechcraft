@@ -30,7 +30,7 @@
 #pragma once
 
 #include <memory>
-#include <boost/optional.hpp>
+#include <optional>
 #include <QString>
 #include <libtorrent/address.hpp>
 
@@ -45,6 +45,6 @@ namespace LC::BitTorrent
 	public:
 		GeoIP ();
 
-		boost::optional<QString> GetCountry (const libtorrent::address&) const;
+		std::optional<QString> GetCountry (const libtorrent::address&) const;
 	};
 }
