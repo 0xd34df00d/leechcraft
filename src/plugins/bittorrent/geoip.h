@@ -34,7 +34,7 @@
 #include <QString>
 #include <libtorrent/address.hpp>
 
-struct GeoIPTag;
+struct MMDB_s;
 
 namespace LC
 {
@@ -42,7 +42,7 @@ namespace BitTorrent
 {
 	class GeoIP
 	{
-		using ImplPtr_t = std::shared_ptr<GeoIPTag>;
+		using ImplPtr_t = std::shared_ptr<MMDB_s>;
 		ImplPtr_t Impl_;
 	public:
 		GeoIP ();

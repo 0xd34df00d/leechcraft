@@ -34,7 +34,7 @@
 #include <util/sll/monad.h>
 
 #ifdef ENABLE_GEOIP
-#include <GeoIP.h>
+#include <maxminddb.h>
 #endif
 
 namespace LC
@@ -71,26 +71,23 @@ namespace BitTorrent
 		const auto maybeImpl = FindDB () >>
 				[] (const QString& path) -> boost::optional<ImplPtr_t>
 				{
-					const auto geoip = GeoIP_open (path.toStdString ().c_str (), GEOIP_STANDARD);
+					qDebug () << Q_FUNC_INFO << "loading GeoIP from" << path;
 
-					qDebug () << Q_FUNC_INFO << "loading GeoIP from" << path << geoip;
-
-					if (!geoip)
+					MMDB_s mmdb;
+					if (int status = MMDB_open (path.toStdString ().c_str (), MMDB_MODE_MMAP, &mmdb);
+						status != MMDB_SUCCESS)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "unable to load MaxMind DB from:"
+								<< status;
 						return {};
-					return { { geoip, &GeoIP_delete } };
+					}
+
+					auto ptr = ImplPtr_t { new MMDB_s, &MMDB_close };
+					*ptr = mmdb;
+					return { ptr };
 				};
 		Impl_ = maybeImpl.value_or (ImplPtr_t {});
-	}
-
-	namespace
-	{
-		boost::optional<QString> Code2Str (const char *code)
-		{
-			if (!code)
-				return {};
-
-			return QString::fromLatin1 (code, 2).toLower ();
-		}
 	}
 
 	boost::optional<QString> GeoIP::GetCountry (const libtorrent::address& addr) const
@@ -98,29 +95,32 @@ namespace BitTorrent
 		if (!Impl_)
 			return {};
 
-		if (addr.is_v4 ())
-			return Code2Str (GeoIP_country_code_by_ipnum (Impl_.get (), addr.to_v4 ().to_ulong ()));
-
-		if (addr.is_v6 ())
+		int gai_error;
+		int mmdb_error;
+		auto entry = MMDB_lookup_string (Impl_.get (), addr.to_string ().c_str (), &gai_error, &mmdb_error);
+		if (gai_error != 0 || mmdb_error != MMDB_SUCCESS)
 		{
-			const auto& bytes = addr.to_v6 ().to_bytes ();
-
-			in6_addr in6addr;
-
-			constexpr auto bytesSize = std::tuple_size<std::decay_t<decltype (bytes)>>::value;
-			static_assert (sizeof (in6addr.__in6_u.__u6_addr8) == bytesSize,
-					"Unexpected IPv6 address size");
-
-			std::copy (bytes.begin (), bytes.end (), &in6addr.__in6_u.__u6_addr8 [0]);
-
-			return Code2Str (GeoIP_country_code_by_ipnum_v6 (Impl_.get (), in6addr));
+			qWarning () << Q_FUNC_INFO
+					<< "unable to query MMDB for"
+					<< addr.to_string ().c_str ();
+			return {};
 		}
 
-		qWarning () << Q_FUNC_INFO
-				<< "the address is neither IPv4 nor IPv6"
-				<< addr.to_string ().c_str ();
+		if (!entry.found_entry)
+			return {};
 
-		return {};
+		MMDB_entry_data_s entryData;
+		if (int result = MMDB_get_value (&entry.entry, &entryData, "country", "iso_code", NULL);
+			result != MMDB_SUCCESS || !entryData.has_data || !entryData.utf8_string)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to query MMDB entry for the country iso code:"
+					<< result
+					<< entryData.has_data;
+			return {};
+		}
+
+		return QString::fromLatin1 (entryData.utf8_string, 2).toLower ();
 	}
 #else
 	GeoIP::GeoIP ()

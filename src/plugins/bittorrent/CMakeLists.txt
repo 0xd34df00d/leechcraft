@@ -12,10 +12,10 @@ option (ENABLE_BITTORRENT_GEOIP "Enable support for GeoIP in BitTorrent (require
 
 if (ENABLE_BITTORRENT_GEOIP)
 	add_definitions (-DENABLE_GEOIP)
-	find_package (GeoIP REQUIRED)
+	find_package (MaxMindDB REQUIRED)
 else ()
-	set (GEOIP_INCLUDE_DIRS)
-	set (GEOIP_LIBRARIES)
+	set (MMDB_INCLUDE_DIRS)
+	set (MMDB_LIBRARIES)
 endif ()
 
 include_directories (${CMAKE_CURRENT_BINARY_DIR}
@@ -23,7 +23,7 @@ include_directories (${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
 	${LibtorrentRasterbar_INCLUDE_DIRS}
 	${LEECHCRAFT_INCLUDE_DIR}
-	${GEOIP_INCLUDE_DIRS}
+	${MMDB_INCLUDE_DIRS}
 	)
 
 set (SRCS
@@ -149,7 +149,7 @@ target_link_libraries (leechcraft_bittorrent
 	${QT_LIBRARIES}
 	${LibtorrentRasterbar_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
-	${GEOIP_LIBRARIES}
+	${MMDB_LIBRARIES}
 )
 install (TARGETS leechcraft_bittorrent DESTINATION ${LC_PLUGINS_DEST})
 install (FILES torrentsettings.xml DESTINATION ${LC_SETTINGS_DEST})
