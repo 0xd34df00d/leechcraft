@@ -53,7 +53,7 @@ namespace LC::BitTorrent
 
 			for (const auto& cand : geoipCands)
 			{
-				const auto& name = cand + "/GeoIP.dat";
+				const auto& name = cand + "/GeoLite2-Country.mmdb";
 				if (QFile::exists (name))
 					return { name };
 			}
