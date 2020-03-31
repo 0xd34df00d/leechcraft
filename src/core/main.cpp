@@ -98,10 +98,6 @@ int main (int argc, char **argv)
 	SetupLibraryPaths ();
 #endif
 
-#ifndef Q_OS_MAC
-	QCoreApplication::setAttribute (Qt::AA_X11InitThreads);
-#endif
-
 	QCoreApplication::setAttribute (Qt::AA_ShareOpenGLContexts);
 	QCoreApplication::setAttribute (Qt::AA_UseHighDpiPixmaps);
 
