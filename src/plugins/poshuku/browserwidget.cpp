@@ -61,7 +61,6 @@
 #endif
 
 #include <util/util.h>
-#include <util/compat/fontwidth.h>
 #include <util/sll/slotclosure.h>
 #include <util/sll/unreachable.h>
 #include <util/xpc/util.h>
@@ -838,7 +837,7 @@ namespace Poshuku
 		const auto& metrics = LinkTextItem_->fontMetrics ();
 		msg = metrics.elidedText (msg, Qt::ElideMiddle, webViewWidget->rect ().width () * 5 / 11);
 		const auto margin = LinkTextItem_->margin ();
-		LinkTextItem_->setFixedSize (Util::Compat::Width (metrics, msg) + 2 * margin, metrics.height () + 2 * margin);
+		LinkTextItem_->setFixedSize (metrics.horizontalAdvance (msg) + 2 * margin, metrics.height () + 2 * margin);
 		LinkTextItem_->setText (msg);
 
 		const auto& localCursorPos = webViewWidget->mapFromGlobal (QCursor::pos ());

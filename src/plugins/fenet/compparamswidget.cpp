@@ -31,7 +31,6 @@
 #include <QStyledItemDelegate>
 #include <QDoubleSpinBox>
 #include <QtDebug>
-#include <util/compat/fontwidth.h>
 #include <util/sll/curry.h>
 #include "compparamsmanager.h"
 
@@ -92,10 +91,10 @@ namespace LC::Fenet
 		setItemDelegate (new EditDelegate (this));
 		setRootIsDecorated (false);
 
-		auto width = Util::Curry (&Util::Compat::Width, fontMetrics ());
-		setColumnWidth (0, width ("Average compositor option description length"));
-		setColumnWidth (1, width ("average value"));
-		setColumnWidth (2, width ("flag"));
+		const auto& fm = fontMetrics ();
+		setColumnWidth (0, fm.horizontalAdvance ("Average compositor option description length"));
+		setColumnWidth (1, fm.horizontalAdvance ("average value"));
+		setColumnWidth (2, fm.horizontalAdvance ("flag"));
 	}
 
 	void CompParamsWidget::accept ()

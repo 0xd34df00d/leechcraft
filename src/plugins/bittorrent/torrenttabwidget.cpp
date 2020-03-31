@@ -34,7 +34,6 @@
 #include <libtorrent/session.hpp>
 #include <libtorrent/lazy_entry.hpp>
 #include <util/util.h>
-#include <util/compat/fontwidth.h>
 #include <util/xpc/util.h>
 #include <util/tags/tagscompleter.h>
 #include <interfaces/core/icoreproxy.h>
@@ -61,11 +60,11 @@ namespace BitTorrent
 	{
 		Ui_.setupUi (this);
 		new Util::TagsCompleter (Ui_.TorrentTags_);
-		QHeaderView *header = Ui_.PerTrackerStats_->header ();
-		const auto width = [this] (const auto& str) { return Util::Compat::Width (fontMetrics (), str); };
-		header->resizeSection (0, width ("www.domain.name.org"));
-		header->resizeSection (1, width ("1234.5678 bytes/s"));
-		header->resizeSection (2, width ("1234.5678 bytes/s"));
+		auto header = Ui_.PerTrackerStats_->header ();
+		const auto& fm = fontMetrics ();
+		header->resizeSection (0, fm.horizontalAdvance ("www.domain.name.org"));
+		header->resizeSection (1, fm.horizontalAdvance ("1234.5678 bytes/s"));
+		header->resizeSection (2, fm.horizontalAdvance ("1234.5678 bytes/s"));
 
 		Ui_.TorrentTags_->AddSelector ();
 
@@ -79,8 +78,8 @@ namespace BitTorrent
 		new PeersTabLinker (&Ui_, PeersSorter_, this);
 
 		header = Ui_.WebSeedsView_->header ();
-		header->resizeSection (0, width ("average.domain.name.of.a.tracker"));
-		header->resizeSection (1, width ("  BEP 99  "));
+		header->resizeSection (0, fm.horizontalAdvance ("average.domain.name.of.a.tracker"));
+		header->resizeSection (1, fm.horizontalAdvance ("  BEP 99  "));
 
 		connect (Ui_.OverallDownloadRateController_,
 				SIGNAL (valueChanged (int)),

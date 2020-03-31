@@ -34,7 +34,6 @@
 #include <util/gui/clearlineeditaddon.h>
 #include <util/sll/slotclosure.h>
 #include <util/sll/prelude.h>
-#include <util/compat/fontwidth.h>
 #include <util/util.h>
 #include "filesviewdelegate.h"
 #include "core.h"
@@ -116,9 +115,9 @@ namespace BitTorrent
 
 		Ui_.SearchLine_->setVisible (Core::Instance ()->GetTorrentFiles (index).size () > 1);
 
+		const auto& fm = Ui_.FilesView_->fontMetrics ();
 		Ui_.FilesView_->header ()->resizeSection (0,
-				Util::Compat::Width (Ui_.FilesView_->fontMetrics (),
-					"some very long file name or a directory name in a torrent file"));
+				fm.horizontalAdvance ("some very long file name or a directory name in a torrent file"));
 	}
 
 	QList<QModelIndex> TorrentTabFilesWidget::GetSelectedIndexes () const

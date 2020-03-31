@@ -45,7 +45,6 @@
 #include <QMimeData>
 #include <QToolBar>
 #include <QUrlQuery>
-#include <util/compat/fontwidth.h>
 #include <util/xpc/defaulthookproxy.h>
 #include <util/xpc/util.h>
 #include <util/xsd/wkfontswidget.h>
@@ -230,7 +229,7 @@ namespace Azoth
 				SLOT (handleFileNoLongerOffered (QObject*)));
 
 		QSize ccSize = Ui_.CharCounter_->size ();
-		ccSize.setWidth (Util::Compat::Width (fontMetrics (), " 9999"));
+		ccSize.setWidth (fontMetrics ().horizontalAdvance (" 9999"));
 		Ui_.CharCounter_->resize (ccSize);
 
 		Ui_.View_->page ()->setLinkDelegationPolicy (QWebPage::DelegateAllLinks);

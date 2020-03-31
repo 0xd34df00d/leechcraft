@@ -34,7 +34,6 @@
 #include <QColorDialog>
 #include <QApplication>
 #include <QtDebug>
-#include <util/compat/fontwidth.h>
 
 namespace LC
 {
@@ -53,7 +52,7 @@ namespace LC
 				SIGNAL (released ()),
 				this,
 				SLOT (chooseColor ()));
-		Label_->setMinimumWidth (Util::Compat::Width (QApplication::fontMetrics (), "  #RRRRGGGGBBBB  "));
+		Label_->setMinimumWidth (fontMetrics ().horizontalAdvance ("  #RRRRGGGGBBBB  "));
 	}
 
 	void ColorPicker::SetCurrentColor (const QColor& color)

@@ -31,7 +31,6 @@
 #include <QColorDialog>
 #include <QtDebug>
 #include <QMessageBox>
-#include <util/compat/fontwidth.h>
 #include <util/sll/curry.h>
 #include "ljprofile.h"
 #include "selectgroupsdialog.h"
@@ -54,9 +53,9 @@ namespace Metida
 		Ui_.AddTypeEntry_->setItemData (0, ATEFriend, AddType);
 		Ui_.AddTypeEntry_->setItemData (1, ATEGroup, AddType);
 
-		const auto width = Util::Curry (&Util::Compat::Width, fontMetrics ());
-		Ui_.BackgroundColorLabel_->setMinimumWidth (width (" #RRGGBB "));
-		Ui_.ForegroundColorLabel_->setMinimumWidth (width (" #RRGGBB "));
+		const auto& fm = fontMetrics ();
+		Ui_.BackgroundColorLabel_->setMinimumWidth (fm.horizontalAdvance (" #RRGGBB "));
+		Ui_.ForegroundColorLabel_->setMinimumWidth (fm.horizontalAdvance (" #RRGGBB "));
 
 		switch (type)
 		{

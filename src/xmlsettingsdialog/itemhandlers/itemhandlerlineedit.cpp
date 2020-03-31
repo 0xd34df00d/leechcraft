@@ -33,7 +33,6 @@
 #include <QGridLayout>
 #include <QApplication>
 #include <QtDebug>
-#include <util/compat/fontwidth.h>
 
 namespace LC
 {
@@ -54,7 +53,7 @@ namespace LC
 		QLineEdit *edit = new QLineEdit (value.toString ());
 		XSD_->SetTooltip (edit, item);
 		edit->setObjectName (item.attribute ("property"));
-		edit->setMinimumWidth (Util::Compat::Width (QApplication::fontMetrics (), "thisismaybeadefaultsetting"));
+		edit->setMinimumWidth (QApplication::fontMetrics ().horizontalAdvance ("thisismaybeadefaultsetting"));
 		if (item.hasAttribute ("password"))
 			edit->setEchoMode (QLineEdit::Password);
 		if (item.hasAttribute ("inputMask"))

@@ -31,7 +31,6 @@
 #include <QTreeView>
 #include <QPainter>
 #include <QApplication>
-#include <util/compat/fontwidth.h>
 #include <util/util.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/icoreproxy.h>
@@ -111,7 +110,7 @@ namespace LMP
 			return;
 
 		const auto& text = QString::number (oneShotPosVar.toInt () + 1);
-		const auto& textWidth = Util::Compat::Width (option.fontMetrics, text);
+		const auto& textWidth = option.fontMetrics.horizontalAdvance (text);
 
 		auto oneShotRect = option.rect;
 		oneShotRect.setWidth (std::max (textWidth + 2 * Padding, oneShotRect.height ()));
@@ -142,7 +141,7 @@ namespace LMP
 		if (!rulesVar.isValid ())
 			return;
 
-		const auto flagWidth = Util::Compat::Width (option.fontMetrics, GetRuleSymbol ({}).first);
+		const auto flagWidth = option.fontMetrics.horizontalAdvance (GetRuleSymbol ({}).first);
 		const auto rectWidth = std::max (flagWidth + 2 * Padding, option.rect.height ());
 
 		for (const auto& rule : rulesVar.value<QList<Entity>> ())
@@ -221,7 +220,7 @@ namespace LMP
 		QString lengthText = Util::MakeTimeFromLong (info.Length_);
 		if (lengthText.startsWith ("00:"))
 			lengthText = lengthText.mid (3);
-		const int width = Util::Compat::Width (option.fontMetrics, lengthText);
+		const int width = option.fontMetrics.horizontalAdvance (lengthText);
 		style->drawItemText (painter, option.rect,
 				Qt::AlignRight, option.palette, true, lengthText);
 

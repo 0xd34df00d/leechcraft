@@ -34,7 +34,6 @@
 #include <QFontDialog>
 #include <QHBoxLayout>
 #include <QApplication>
-#include <util/compat/fontwidth.h>
 
 namespace LC
 {
@@ -56,8 +55,7 @@ namespace LC
 				this,
 				SLOT (chooseFont ()));
 
-		const auto fontNameWidth = Util::Compat::Width (QApplication::fontMetrics (),
-				QApplication::font ().toString ());
+		const auto fontNameWidth = fontMetrics ().horizontalAdvance (QApplication::font ().toString ());
 		Label_->setMinimumWidth (1.5 * fontNameWidth);
 	}
 

@@ -35,7 +35,6 @@
 #include <QSettings>
 #include <QStandardItemModel>
 #include <QStyledItemDelegate>
-#include <util/compat/fontwidth.h>
 #include <util/sll/curry.h>
 #include "interfaces/azoth/iaccount.h"
 #include "interfaces/azoth/iprotocol.h"
@@ -170,7 +169,6 @@ namespace Azoth
 				this,
 				SLOT (handleItemChanged (QStandardItem*)));
 
-		const auto& fm = fontMetrics ();
 
 		connect (&Core::Instance (),
 				SIGNAL (accountAdded (IAccount*)),
@@ -193,12 +191,12 @@ namespace Azoth
 		handleAccountSelected ({});
 
 		Ui_.Accounts_->setColumnWidth (0, 32);
-		const auto width = Util::Curry (&Util::Compat::Width, fm);
-		Ui_.Accounts_->setColumnWidth (1, width ("Some typical very long account name"));
-		Ui_.Accounts_->setColumnWidth (2, width ("Some typical style"));
-		Ui_.Accounts_->setColumnWidth (3, width ("Some typical style variant (alternate)"));
-		Ui_.Accounts_->setColumnWidth (4, width ("Some typical style"));
-		Ui_.Accounts_->setColumnWidth (5, width ("Some typical style variant (alternate)"));
+		const auto& fm = fontMetrics ();
+		Ui_.Accounts_->setColumnWidth (1, fm.horizontalAdvance ("Some typical very long account name"));
+		Ui_.Accounts_->setColumnWidth (2, fm.horizontalAdvance ("Some typical style"));
+		Ui_.Accounts_->setColumnWidth (3, fm.horizontalAdvance ("Some typical style variant (alternate)"));
+		Ui_.Accounts_->setColumnWidth (4, fm.horizontalAdvance ("Some typical style"));
+		Ui_.Accounts_->setColumnWidth (5, fm.horizontalAdvance ("Some typical style variant (alternate)"));
 	}
 
 	void AccountsListWidget::addAccount (IAccount *acc)

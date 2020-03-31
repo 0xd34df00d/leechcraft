@@ -33,7 +33,6 @@
 #include <QGridLayout>
 #include <QApplication>
 #include <QtDebug>
-#include <util/compat/fontwidth.h>
 
 namespace LC
 {
@@ -55,7 +54,7 @@ namespace LC
 		XSD_->SetTooltip (edit, item);
 		edit->setPlainText (value.toStringList ().join ("\n"));
 		edit->setObjectName (item.attribute ("property"));
-		edit->setMinimumWidth (Util::Compat::Width (QApplication::fontMetrics (), "thisismaybeadefaultsetting"));
+		edit->setMinimumWidth (QApplication::fontMetrics ().horizontalAdvance ("thisismaybeadefaultsetting"));
 		connect (edit,
 				SIGNAL (textChanged ()),
 				this,

@@ -33,7 +33,6 @@
 #include <QFileDialog>
 #include <QApplication>
 #include <QMap>
-#include <util/compat/fontwidth.h>
 #include "filepicker.h"
 
 using namespace LC;
@@ -58,8 +57,7 @@ FilePicker::FilePicker (FilePicker::Type type, QWidget *parent)
 			SIGNAL (textEdited (const QString&)),
 			this,
 			SIGNAL (textChanged (const QString&)));
-	LineEdit_->setMinimumWidth (Util::Compat::Width (QApplication::fontMetrics (),
-			"thisismaybeadefaultsettingstring,dont"));
+	LineEdit_->setMinimumWidth (fontMetrics ().horizontalAdvance ("thisismaybeadefaultsettingstring,dont"));
 }
 
 void FilePicker::SetText (QString text)
