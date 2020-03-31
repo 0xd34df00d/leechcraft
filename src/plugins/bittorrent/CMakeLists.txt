@@ -8,7 +8,7 @@ set (CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 find_package (LibtorrentRasterbar REQUIRED)
 
-option (ENABLE_BITTORRENT_GEOIP "Enable support for GeoIP in BitTorrent (requires building libtorrent with GeoIP support)" OFF)
+option (ENABLE_BITTORRENT_GEOIP "Enable support for GeoIP in BitTorrent" OFF)
 
 if (ENABLE_BITTORRENT_GEOIP)
 	add_definitions (-DENABLE_GEOIP)
