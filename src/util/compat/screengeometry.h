@@ -42,7 +42,7 @@
 
 namespace LC::Util::Compat
 {
-	auto GetScreenWithFallback (const QPoint& p)
+	inline auto GetScreenWithFallback (const QPoint& p)
 	{
 #if NEW_IMPL
 		if (auto screen = QGuiApplication::screenAt (p))
