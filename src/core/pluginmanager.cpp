@@ -1059,7 +1059,7 @@ namespace LC
 			fails += future.results ();
 		}
 		else
-			for (const auto loader : PluginContainers_)
+			for (const auto& loader : PluginContainers_)
 				fails << thrCheck (loader);
 
 		for (int i = fails.size () - 1; i >= 0; --i)
