@@ -99,6 +99,6 @@ namespace LC
 	QList<QPair<TagsStorage::Id, QString>> TagsStorage::GetAllTags () const
 	{
 		return Util::Map (Record_->Select (),
-				[] (const Record& rec) { return QPair { QUuid::fromString (QString::fromLatin1 (**rec.Id_)), *rec.Name_ }; });
+				[] (const Record& rec) { return QPair { QUuid { QString::fromLatin1 (**rec.Id_) }, *rec.Name_ }; });
 	}
 }
