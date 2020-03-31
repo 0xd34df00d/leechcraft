@@ -28,16 +28,17 @@
  **********************************************************************/
 
 #include "geometry.h"
+#include <QGuiApplication>
 #include <QRect>
+#include <QScreen>
 #include <QSize>
 #include <QtDebug>
-#include <util/compat/screengeometry.h>
 
 namespace LC::Util
 {
 	QPoint FitRectScreen (QPoint pos, const QSize& size, FitFlags flags, const QPoint& shiftAdd)
 	{
-		return FitRect (pos, size, Compat::ScreenGeometry (pos), flags, shiftAdd);
+		return FitRect (pos, size, ScreenGeometry (pos), flags, shiftAdd);
 	}
 
 	QPoint FitRect (QPoint pos, const QSize& size, const QRect& geometry,
@@ -70,5 +71,26 @@ namespace LC::Util
 			pos.ry () -= yDiff + shiftAdd.y ();
 
 		return pos;
+	}
+
+	QScreen* GetScreenWithFallback (const QPoint& p)
+	{
+		if (auto screen = QGuiApplication::screenAt (p))
+			return screen;
+
+		qWarning () << Q_FUNC_INFO
+				<< "unknown screen for point"
+				<< p;
+		return QGuiApplication::primaryScreen ();
+	}
+
+	QRect AvailableGeometry (const QPoint& p)
+	{
+		return GetScreenWithFallback (p)->availableGeometry ();
+	}
+
+	QRect ScreenGeometry (const QPoint& p)
+	{
+		return GetScreenWithFallback (p)->geometry ();
 	}
 }

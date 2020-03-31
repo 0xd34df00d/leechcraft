@@ -36,7 +36,7 @@
 #include <QLabel>
 #include <QStyleOptionViewItem>
 #include <QtDebug>
-#include <util/compat/screengeometry.h>
+#include "geometry.h"
 
 namespace LC
 {
@@ -82,7 +82,7 @@ namespace Util
 
 	QLabel* ShowPixmapLabel (const QPixmap& srcPx, const QPoint& pos)
 	{
-		const auto& availGeom = Compat::AvailableGeometry (pos).size () * 0.9;
+		const auto& availGeom = AvailableGeometry (pos).size () * 0.9;
 
 		auto px = srcPx;
 		if (px.size ().width () > availGeom.width () ||

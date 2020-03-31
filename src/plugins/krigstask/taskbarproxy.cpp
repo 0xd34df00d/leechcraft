@@ -32,10 +32,11 @@
 #include <QMenu>
 #include <QDesktopWidget>
 #include <QApplication>
+#include <QScreen>
 #include <QtDebug>
-#include <util/compat/screengeometry.h>
 #include <util/x11/xwrapper.h>
 #include <util/gui/autoresizemixin.h>
+#include <util/gui/geometry.h>
 #include <interfaces/core/iiconthememanager.h>
 #include "pagerwindow.h"
 
@@ -259,7 +260,7 @@ namespace Krigstask
 			return;
 		}
 
-		const auto screen = Util::Compat::GetScreenWithFallback ({ x, y });
+		const auto screen = Util::GetScreenWithFallback ({ x, y });
 		Pager_ = new PagerWindow (screen, showThumbs, Proxy_);
 		new Util::AutoResizeMixin ({ x, y }, [screen] { return screen->availableGeometry (); }, Pager_);
 		Pager_->show ();

@@ -43,7 +43,7 @@
 #include <QFinalState>
 #include <QWebHitTestResult>
 #include <QMainWindow>
-#include <util/compat/screengeometry.h>
+#include <util/gui/geometry.h>
 #include <util/sll/visitor.h>
 #include <util/sys/resourceloader.h>
 #include <util/xpc/util.h>
@@ -382,7 +382,7 @@ namespace Kinotify
 		auto desktop = QApplication::desktop ();
 		auto rootWM = Proxy_->GetRootWindowsManager ();
 		const auto& geometry = followMouse ?
-				Util::Compat::AvailableGeometry (QCursor::pos ()) :
+				Util::AvailableGeometry (QCursor::pos ()) :
 				desktop->availableGeometry (rootWM->GetPreferredWindow ());
 
 		QPoint point;

@@ -33,6 +33,7 @@
 #include "guiconfig.h"
 
 class QRect;
+class QScreen;
 class QSize;
 
 namespace LC::Util
@@ -114,6 +115,10 @@ namespace LC::Util
 	 */
 	UTIL_GUI_API QPoint FitRect (QPoint pos, const QSize& size, const QRect& geometry,
 			FitFlags flags = NoFlags, const QPoint& shiftAdd = QPoint (0, 0));
+
+	UTIL_GUI_API QScreen* GetScreenWithFallback (const QPoint& p);
+	UTIL_GUI_API QRect AvailableGeometry (const QPoint& p);
+	UTIL_GUI_API QRect ScreenGeometry (const QPoint& p);
 
 }
 
