@@ -31,6 +31,7 @@
 #include <QSet>
 #include <QMimeData>
 #include <QItemSelectionRange>
+#include <util/sll/containerconversions.h>
 #include <util/sll/prelude.h>
 #include <interfaces/iinfo.h>
 #include <interfaces/core/itagsmanager.h>
@@ -464,9 +465,9 @@ namespace LC
 
 		void FlatToFoldersProxyModel::HandleChanged (const QModelIndex& idx)
 		{
-			QSet<QString> newTags = QSet<QString>::fromList (idx.data (RoleTags).toStringList ());
+			auto newTags = Util::AsSet (idx.data (RoleTags).toStringList ());
 			if (newTags.isEmpty ())
-				newTags << QString ();
+				newTags << QString {};
 
 			QPersistentModelIndex pidx (idx);
 
