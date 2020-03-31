@@ -35,6 +35,7 @@
 #include <QToolButton>
 #include <QToolBar>
 #include <QLineEdit>
+#include "util/sll/containerconversions.h"
 #include "util/sll/qtutil.h"
 #include "util/gui/flowlayout.h"
 #include "util/gui/clearlineeditaddon.h"
@@ -165,7 +166,7 @@ namespace LC
 		const auto& obj2groups = BuildGroups (settables);
 		QSet<QPair<QString, QString>> allGroups;
 		for (const auto& list : obj2groups)
-			allGroups += QSet<QPair<QString, QString>>::fromList (list);
+			allGroups += Util::AsSet (list);
 
 		QMap<QString, QGroupBox*> group2box;
 		for (const auto& pair : allGroups)

@@ -47,6 +47,7 @@
 #include <QMessageBox>
 #include <QMainWindow>
 #include <util/exceptions.h>
+#include <util/sll/containerconversions.h>
 #include <util/sll/prelude.h>
 #include <util/sll/scopeguards.h>
 #include <interfaces/iinfo.h>
@@ -277,12 +278,12 @@ namespace LC
 			builder.AddObjects (Plugins_);
 			builder.Calculate ();
 
-			auto oldSet = QSet<QObject*>::fromList (builder.GetResult ());
+			auto oldSet = Util::AsSet (builder.GetResult ());
 
 			builder.RemoveObject (loader->Instance ());
 			builder.Calculate ();
 
-			const auto& newSet = QSet<QObject*>::fromList (builder.GetResult ());
+			const auto& newSet = Util::AsSet (builder.GetResult ());
 			oldSet.subtract (newSet);
 
 			oldSet.remove (loader->Instance ());

@@ -42,6 +42,7 @@
 
 #include <boost/graph/filtered_graph.hpp>
 #include <boost/graph/topological_sort.hpp>
+#include <util/sll/containerconversions.h>
 #include "interfaces/iinfo.h"
 #include "interfaces/iplugin2.h"
 #include "interfaces/ipluginready.h"
@@ -67,9 +68,9 @@ namespace LC
 			throw std::runtime_error ("VertexInfo creation failed.");
 		}
 
-		AllFeatureDeps_ = QSet<QString>::fromList (info->Needs ());
+		AllFeatureDeps_ = Util::AsSet (info->Needs ());
 		UnfulfilledFeatureDeps_ = AllFeatureDeps_;
-		FeatureProvides_ = QSet<QString>::fromList (info->Provides ());
+		FeatureProvides_ = Util::AsSet (info->Provides ());
 
 		const auto ipr = qobject_cast<IPluginReady*> (obj);
 		if (ipr)
