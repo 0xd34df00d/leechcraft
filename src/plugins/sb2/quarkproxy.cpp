@@ -35,7 +35,7 @@
 #include <QMainWindow>
 #include <QtDebug>
 #include <interfaces/iquarkcomponentprovider.h>
-#include <util/gui/util.h>
+#include <util/gui/geometry.h>
 #include <util/gui/autoresizemixin.h>
 #include <util/util.h>
 #include "viewmanager.h"

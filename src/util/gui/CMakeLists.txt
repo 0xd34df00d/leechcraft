@@ -6,6 +6,7 @@ set (GUI_SRCS
 	findnotification.cpp
 	findnotificationwk.cpp
 	flowlayout.cpp
+	geometry.cpp
 	lineeditbuttonmanager.cpp
 	pagenotification.cpp
 	selectablebrowser.cpp

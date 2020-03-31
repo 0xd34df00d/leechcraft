@@ -31,8 +31,8 @@
 #include <QStandardItemModel>
 #include <QSettings>
 #include <QtDebug>
-#include <util/gui/util.h>
 #include <util/gui/autoresizemixin.h>
+#include <util/gui/geometry.h>
 #include <util/sys/paths.h>
 #include <util/qml/widthiconprovider.h>
 #include <util/models/rolenamesmixin.h>

@@ -27,49 +27,48 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "autoresizemixin.h"
-#include <QWidget>
-#include <QWindow>
-#include <QResizeEvent>
-#include <util/gui/geometry.h>
+#include "geometry.h"
+#include <QRect>
+#include <QSize>
+#include <QtDebug>
+#include <util/compat/screengeometry.h>
 
-namespace LC
+namespace LC::Util
 {
-namespace Util
-{
-	AutoResizeMixin::AutoResizeMixin (const QPoint& point, RectGetter_f size, QWidget *view)
-	: QObject (view)
-	, OrigPoint_ (point)
-	, Mover_ ([view] (const QPoint& pos) { view->move (pos); })
-	, Rect_ (size)
+	QPoint FitRectScreen (QPoint pos, const QSize& size, FitFlags flags, const QPoint& shiftAdd)
 	{
-		view->installEventFilter (this);
-		Refit (view->size ());
+		return FitRect (pos, size, Compat::ScreenGeometry (pos), flags, shiftAdd);
 	}
 
-	AutoResizeMixin::AutoResizeMixin (const QPoint& point, RectGetter_f size, QWindow *window)
-	: QObject (window)
-	, OrigPoint_ (point)
-	, Mover_ ([window] (const QPoint& pos) { window->setPosition (pos); })
-	, Rect_ (size)
+	QPoint FitRect (QPoint pos, const QSize& size, const QRect& geometry,
+			FitFlags flags, const QPoint& shiftAdd)
 	{
-		window->installEventFilter (this);
-		Refit (window->size ());
-	}
+		int xDiff = std::max (0, pos.x () + size.width () - (geometry.width () + geometry.x ()));
+		if (!xDiff)
+			xDiff = std::min (0, pos.x () - geometry.x ());
+		int yDiff = std::max (0, pos.y () + size.height () - (geometry.height () + geometry.y ()));
+		if (!yDiff)
+			yDiff = std::min (0, pos.y () - geometry.y ());
 
-	bool AutoResizeMixin::eventFilter (QObject*, QEvent *event)
-	{
-		if (event->type () != QEvent::Resize)
-			return false;
+		if (flags & FitFlag::NoOverlap)
+		{
+			auto overlapFixer = [] (int& diff, int dim)
+			{
+				if (diff > 0)
+					diff = dim > diff ? dim : diff;
+			};
 
-		auto re = static_cast<QResizeEvent*> (event);
-		Refit (re->size ());
-		return false;
-	}
+			if (QRect (pos - QPoint (xDiff, yDiff), size).contains (pos) && yDiff < size.height ())
+				overlapFixer (yDiff, size.height ());
+			if (QRect (pos - QPoint (xDiff, yDiff), size).contains (pos) && xDiff < size.width ())
+				overlapFixer (xDiff, size.width ());
+		}
 
-	void AutoResizeMixin::Refit (const QSize& size)
-	{
-		Mover_ (FitRect (OrigPoint_, size, Rect_ (), Util::FitFlag::NoOverlap));
+		if (xDiff)
+			pos.rx () -= xDiff + shiftAdd.x ();
+		if (yDiff)
+			pos.ry () -= yDiff + shiftAdd.y ();
+
+		return pos;
 	}
-}
 }

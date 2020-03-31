@@ -32,7 +32,7 @@
 #include <QAction>
 #include <util/util.h>
 #include <util/xpc/util.h>
-#include <util/gui/util.h>
+#include <util/gui/geometry.h>
 #include <util/gui/unhoverdeletemixin.h>
 #include <util/sll/delayedexecutor.h>
 #include <interfaces/core/ientitymanager.h>

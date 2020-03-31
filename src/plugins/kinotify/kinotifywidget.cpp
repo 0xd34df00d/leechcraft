@@ -47,7 +47,7 @@
 #include <util/sll/visitor.h>
 #include <util/sys/resourceloader.h>
 #include <util/xpc/util.h>
-#include <util/gui/util.h>
+#include <util/gui/geometry.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/core/ientitymanager.h>

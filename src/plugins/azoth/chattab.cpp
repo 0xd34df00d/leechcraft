@@ -51,7 +51,7 @@
 #include <util/xpc/util.h>
 #include <util/xsd/wkfontswidget.h>
 #include <util/shortcuts/shortcutmanager.h>
-#include <util/gui/util.h>
+#include <util/gui/geometry.h>
 #include <util/gui/findnotificationwk.h>
 #include <util/sll/lambdaeventfilter.h>
 #include <util/sll/urloperator.h>
