@@ -826,14 +826,6 @@ if (BUILD_CODEGEN)
 	add_subdirectory (codegen)
 endif ()
 
-if (UNIX)
-	add_custom_target (data_leechcraft_gz ALL
-		"${CMAKE_CURRENT_SOURCE_DIR}/data/compress"
-		DEPENDS data/leechcraft-qt5.1
-		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data
-		)
-endif ()
-
 install (DIRECTORY util/ DESTINATION include/leechcraft/util/
 	FILES_MATCHING PATTERN "*.h")
 install (DIRECTORY interfaces/ DESTINATION include/leechcraft/interfaces/
@@ -851,7 +843,6 @@ install (DIRECTORY freedesktop/icons/ DESTINATION share/icons/hicolor)
 if (UNIX AND NOT APPLE)
 	install (FILES InitLCPlugin.cmake DESTINATION share/cmake/Modules)
 	install (DIRECTORY cmake/ DESTINATION share/leechcraft/cmake)
-	install (DIRECTORY data/ DESTINATION share/man/man1 FILES_MATCHING PATTERN "*.gz")
 	install (FILES freedesktop/leechcraft-qt5.desktop DESTINATION share/applications)
 	install (FILES scripts/leechcraft-add-file DESTINATION bin PERMISSIONS
 		OWNER_EXECUTE OWNER_WRITE OWNER_READ GROUP_EXECUTE GROUP_READ
@@ -859,4 +850,15 @@ if (UNIX AND NOT APPLE)
 	install (FILES scripts/leechcraft-handle-file DESTINATION bin PERMISSIONS
 		OWNER_EXECUTE OWNER_WRITE OWNER_READ GROUP_EXECUTE GROUP_READ
 		WORLD_EXECUTE WORLD_READ)
+
+	if (NOT SKIP_MAN_COMPRESS)
+		add_custom_target (data_leechcraft_gz ALL
+			"${CMAKE_CURRENT_SOURCE_DIR}/data/compress"
+			DEPENDS data/leechcraft-qt5.1
+			WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data
+			)
+		install (DIRECTORY data/ DESTINATION share/man/man1 FILES_MATCHING PATTERN "*.gz")
+	else ()
+		install (DIRECTORY data/ DESTINATION share/man/man1 FILES_MATCHING PATTERN "*.1")
+	endif ()
 endif ()
