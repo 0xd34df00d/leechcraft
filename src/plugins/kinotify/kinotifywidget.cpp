@@ -325,7 +325,7 @@ namespace Kinotify
 #undef REPLACE1
 
 		QDir imgDir (themePath + "/img");
-		for (const auto elem : imgDir.entryList (QStringList ("*.png")))
+		for (const auto& elem : imgDir.entryList (QStringList ("*.png")))
 			Theme_.replace (QString ("{%1}").arg (elem.left (elem.size () - 4)),
 					MakeImage (themePath + "/img/" + elem));
 
