@@ -904,7 +904,7 @@ namespace Aggregator
 			result += "<br />";
 
 			QString scenes;
-			for (const auto sc : entry->Scenes_)
+			for (const auto& sc : entry->Scenes_)
 			{
 				QString current;
 				if (!sc.Title_.isEmpty ())
