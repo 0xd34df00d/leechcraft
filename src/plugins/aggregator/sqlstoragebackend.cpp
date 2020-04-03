@@ -42,6 +42,7 @@
 #include <util/db/oral/pgimpl.h>
 #include <util/xpc/coreproxyholder.h>
 #include <util/xpc/defaulthookproxy.h>
+#include <util/sll/containerconversions.h>
 #include <util/sll/functor.h>
 #include <util/sys/paths.h>
 #include <interfaces/core/icoreproxy.h>
@@ -773,7 +774,7 @@ namespace LC::Aggregator
 				.Offset (number)
 				();
 
-		auto removedIds = QSet<IDType_t>::fromList (removeByDate) + QSet<IDType_t>::fromList (removeByCount);
+		const auto& removedIds = Util::AsSet (removeByDate) + Util::AsSet (removeByCount);
 
 		emit itemsRemoved (removedIds);
 

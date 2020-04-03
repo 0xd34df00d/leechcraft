@@ -29,6 +29,7 @@
 
 #include "itemsfiltermodel.h"
 #include <QtDebug>
+#include <util/sll/containerconversions.h>
 #include "itemswidget.h"
 #include "xmlsettingsmanager.h"
 #include "storagebackendmanager.h"
@@ -66,11 +67,11 @@ namespace Aggregator
 		else
 		{
 			const auto& sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
-			TaggedItems_ = QSet<IDType_t>::fromList (sb->GetItemsForTag (tags.takeFirst ()));
+			TaggedItems_ = Util::AsSet (sb->GetItemsForTag (tags.takeFirst ()));
 
 			for (const auto& tag : tags)
 			{
-				const auto& set = QSet<IDType_t>::fromList (sb->GetItemsForTag (tag));
+				const auto& set = Util::AsSet (sb->GetItemsForTag (tag));
 				TaggedItems_.intersect (set);
 				if (TaggedItems_.isEmpty ())
 					TaggedItems_ << -1;
@@ -128,7 +129,7 @@ namespace Aggregator
 
 	void ItemsFilterModel::categorySelectionChanged (const QStringList& categories)
 	{
-		ItemCategories_ = QSet<QString>::fromList (categories);
+		ItemCategories_ = Util::AsSet (categories);
 		invalidateFilter ();
 	}
 

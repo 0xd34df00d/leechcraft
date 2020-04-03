@@ -48,6 +48,7 @@
 #include <util/gui/clearlineeditaddon.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/util.h>
+#include <util/sll/containerconversions.h>
 #include <util/sll/overload.h>
 #include <util/sll/curry.h>
 #include <interfaces/core/itagsmanager.h>
@@ -363,7 +364,7 @@ namespace Aggregator
 
 		ClearSupplementaryModels ();
 
-		const auto& tagsSet = QSet<QString>::fromList (tags);
+		const auto& tagsSet = Util::AsSet (tags);
 
 		bool added = false;
 
