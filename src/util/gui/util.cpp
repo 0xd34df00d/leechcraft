@@ -48,13 +48,13 @@ namespace Util
 		{
 			QWidget *Display_;
 		public:
-			AADisplayEventFilter (QWidget *display)
+			explicit AADisplayEventFilter (QWidget *display)
 			: QObject (display)
 			, Display_ (display)
 			{
 			}
 		protected:
-			bool eventFilter (QObject*, QEvent *event)
+			bool eventFilter (QObject*, QEvent *event) override
 			{
 				bool shouldClose = false;
 				switch (event->type ())
