@@ -125,7 +125,7 @@ namespace LC::BitTorrent
 	{
 	}
 
-	boost::optional<QString> GeoIP::GetCountry (const libtorrent::address&) const
+	std::optional<QString> GeoIP::GetCountry (const libtorrent::address&) const
 	{
 		return {};
 	}
