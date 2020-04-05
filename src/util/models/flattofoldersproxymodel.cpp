@@ -413,7 +413,7 @@ namespace LC
 
 			QPersistentModelIndex pidx (idx);
 
-			for (const auto tag : tags)
+			for (const auto& tag : tags)
 				RemoveFromTag (tag, pidx);
 		}
 
