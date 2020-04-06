@@ -42,7 +42,7 @@ namespace LC::Util
 #endif
 	{
 #if QT_VERSION >= QT_VERSION_CHECK (5, 14, 0)
-		return QSet { cont.begin (), cont.end () };
+		return QSet (cont.begin (), cont.end ());
 #else
 		return QSet<T>::fromList (cont);
 #endif
