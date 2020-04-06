@@ -33,6 +33,7 @@
 #include <QSqlError>
 #include <QtDebug>
 #include <util/db/dblock.h>
+#include <util/sll/containerconversions.h>
 #include <util/sys/paths.h>
 #include "repoinfo.h"
 #include "core.h"
@@ -357,7 +358,7 @@ namespace LackMan
 			throw std::runtime_error ("Requested component not found");
 		}
 
-		const auto& packs = QSet<int>::fromList (GetPackagesInComponent (compId));
+		const auto& packs = Util::AsSet (GetPackagesInComponent (compId));
 		const auto& toRemove = packs - GetInstalledPackagesIDs ();
 
 		QSqlQuery remover (DB_);

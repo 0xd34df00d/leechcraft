@@ -28,9 +28,9 @@
  **********************************************************************/
 
 #include "stringfiltermodel.h"
-#include <QSet>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
+#include <util/sll/containerconversions.h>
 #include "packagesmodel.h"
 #include "core.h"
 
@@ -55,11 +55,9 @@ namespace LackMan
 				.toString ().contains (filterString, Qt::CaseInsensitive))
 			return true;
 
-		const QSet<QString>& tags = QSet<QString>::fromList (sourceModel ()->
-						data (idx, PackagesModel::PMRTags).toStringList ());
-		const QStringList& queryList = Core::Instance ().GetProxy ()->
-				GetTagsManager ()->Split (filterString);
-		QSet<QString> userDefined = QSet<QString>::fromList (queryList);
+		const auto& tags = Util::AsSet (sourceModel ()->data (idx, PackagesModel::PMRTags).toStringList ());
+		const auto& queryList = Core::Instance ().GetProxy ()->GetTagsManager ()->Split (filterString);
+		auto userDefined = Util::AsSet (queryList);
 
 		return tags.contains (userDefined);
 	}
