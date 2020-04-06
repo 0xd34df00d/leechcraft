@@ -5,7 +5,7 @@ include (InitLCPlugin NO_POLICY_SCOPE)
 set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 find_package (Hunspell REQUIRED)
-include_directories (${HUNSPELL_INCLUDE_DIR})
+include_directories (${Hunspell_INCLUDE_DIR})
 
 if (MSVC)
 	add_definitions (-DWIN32 -DHUNSPELL_STATIC)
@@ -37,7 +37,7 @@ add_library (leechcraft_rosenthal SHARED
 target_link_libraries (leechcraft_rosenthal
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
-	${HUNSPELL_LIBRARIES}
+	${Hunspell_LIBRARIES}
 	)
 install (TARGETS leechcraft_rosenthal DESTINATION ${LC_PLUGINS_DEST})
 install (FILES rosenthalsettings.xml DESTINATION ${LC_SETTINGS_DEST})
