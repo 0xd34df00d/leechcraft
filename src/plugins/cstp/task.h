@@ -57,7 +57,7 @@ namespace CSTP
 
 		std::unique_ptr<QNetworkReply, std::function<void (QNetworkReply*)>> Reply_;
 		QUrl URL_;
-		QTime StartTime_;
+		QElapsedTimer StartTime_;
 		qint64 Done_ = -1, Total_ = 0, FileSizeAtStart_ = -1;
 		double Speed_ = 0;
 		QList<QByteArray> RedirectHistory_;
