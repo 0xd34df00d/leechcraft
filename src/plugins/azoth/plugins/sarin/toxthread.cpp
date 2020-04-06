@@ -581,7 +581,7 @@ namespace Sarin
 				QMutexLocker locker { &FQueueMutex_ };
 				std::swap (queue, FQueue_);
 			}
-			for (const auto item : queue)
+			for (const auto& item : queue)
 				item (Tox_.get ());
 
 			next -= timer.elapsed ();

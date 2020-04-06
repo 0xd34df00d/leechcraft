@@ -170,7 +170,7 @@ namespace Xoox
 		auto widgets = findChildren<QWidget*> ();
 		QList<QPointer<QWidget>> pWidgets;
 		std::copy (widgets.begin (), widgets.end (), std::back_inserter (pWidgets));
-		for (const auto pWidget : pWidgets)
+		for (const auto& pWidget : pWidgets)
 			delete pWidget;
 	}
 

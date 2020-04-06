@@ -52,7 +52,7 @@ namespace DndUtil
 	{
 		QByteArray encoded;
 		QDataStream stream (&encoded, QIODevice::WriteOnly);
-		for (const auto info : entries)
+		for (const auto& info : entries)
 			stream << info.Entry_->GetEntryID () << info.Group_;
 
 		if (data)

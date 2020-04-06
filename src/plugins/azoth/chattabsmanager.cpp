@@ -383,7 +383,7 @@ namespace Azoth
 			return;
 
 		StyleParams_ = params;
-		for (const auto tab : Entry2Tab_)
+		for (const auto& tab : Entry2Tab_)
 			tab->PrepareTheme ();
 	}
 }

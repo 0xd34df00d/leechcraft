@@ -950,7 +950,7 @@ namespace Acetamide
 		Account_->ChangeState (EntryStatus (SOffline, QString ()));
 		ChannelsManager_->CloseAllChannels ();
 
-		for (const auto entry : Nick2Entry_)
+		for (const auto& entry : Nick2Entry_)
 			Account_->handleEntryRemoved (entry.get ());
 
 		Nick2Entry_.clear ();

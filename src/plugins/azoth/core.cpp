@@ -729,7 +729,7 @@ namespace LC::Azoth
 	{
 		ChatStylesOptionsModel_->AddSource (src);
 
-		for (const auto manager : StyleOptionManagers_)
+		for (const auto& manager : StyleOptionManagers_)
 			manager->AddChatStyleResourceSource (src);
 	}
 
