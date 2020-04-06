@@ -162,6 +162,8 @@ set(XCB_RENDERUTIL_header "xcb/xcb_renderutil.h")
 set(XCB_RENDERUTIL_lib "xcb-render-util")
 set(XCB_UTIL_header "xcb/xcb_util.h")
 
+set(FPHSA_NAME_MISMATCHED TRUE)
+
 ecm_find_package_parse_components(XCB
     RESULT_VAR XCB_components
     KNOWN_COMPONENTS ${XCB_known_components}
