@@ -613,7 +613,7 @@ namespace LC::Azoth
 			for (const auto& group : entry->Groups ())
 				result << group;
 		}
-		return result.toList ();
+		return result.values ();
 	}
 
 	void Core::SendEntity (const LC::Entity& e)

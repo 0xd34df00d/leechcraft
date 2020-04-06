@@ -111,10 +111,10 @@ namespace Murm
 	void GroupsManager::applyChanges ()
 	{
 		for (auto list : ModifiedLists_)
-			Conn_->ModifyFriendList (GetListInfo (list), List2IDs_ [list].toList ());
+			Conn_->ModifyFriendList (GetListInfo (list), List2IDs_ [list].values ());
 
 		for (auto i = NewLists_.begin (), end = NewLists_.end (); i != end; ++i)
-			Conn_->AddFriendList (i.key (), i.value ().toList ());
+			Conn_->AddFriendList (i.key (), i.value ().values ());
 
 		ModifiedLists_.clear ();
 

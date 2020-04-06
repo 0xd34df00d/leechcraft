@@ -95,7 +95,7 @@ namespace ChatHistory
 	{
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Azoth_ChatHistory");
-		settings.setValue ("DisabledIDs", QStringList (DisabledIDs_.toList ()));
+		settings.setValue ("DisabledIDs", QStringList (DisabledIDs_.values ()));
 	}
 }
 }

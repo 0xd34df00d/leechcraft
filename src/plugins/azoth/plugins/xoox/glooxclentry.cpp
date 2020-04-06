@@ -101,7 +101,7 @@ namespace LC::Azoth::Xoox
 
 		emit availableVariantsChanged (Variants ());
 		emit nameChanged (GetEntryName ());
-		emit groupsChanged (item.groups ().toList ());
+		emit groupsChanged (item.groups ().values ());
 	}
 
 	QXmppRosterIq::Item GlooxCLEntry::GetRI () const
@@ -164,7 +164,7 @@ namespace LC::Azoth::Xoox
 		if (ODS_)
 			return ODS_->Groups_;
 
-		QStringList groups = GetRI ().groups ().toList ();
+		QStringList groups = GetRI ().groups ().values ();
 		if (AuthRequested_)
 			groups += tr ("Unauthorized users");
 		return groups;
