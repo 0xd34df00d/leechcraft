@@ -30,24 +30,21 @@
 #pragma once
 
 #include <memory>
-#include <boost/optional.hpp>
+#include <optional>
 #include <QString>
 #include <libtorrent/address.hpp>
 
-struct GeoIPTag;
+struct MMDB_s;
 
-namespace LC
-{
-namespace BitTorrent
+namespace LC::BitTorrent
 {
 	class GeoIP
 	{
-		using ImplPtr_t = std::shared_ptr<GeoIPTag>;
+		using ImplPtr_t = std::shared_ptr<MMDB_s>;
 		ImplPtr_t Impl_;
 	public:
 		GeoIP ();
 
-		boost::optional<QString> GetCountry (const libtorrent::address&) const;
+		std::optional<QString> GetCountry (const libtorrent::address&) const;
 	};
-}
 }
