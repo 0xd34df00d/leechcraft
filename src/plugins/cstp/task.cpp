@@ -91,7 +91,7 @@ namespace CSTP
 			}))
 	, UploadData_ (params.value ("UploadData").toByteArray ())
 	{
-		StartTime_.start ();
+		RestartTime ();
 
 		connect (Timer_,
 				SIGNAL (timeout ()),
@@ -111,7 +111,7 @@ namespace CSTP
 		}
 	}
 	{
-		StartTime_.start ();
+		RestartTime ();
 
 		connect (Timer_,
 				SIGNAL (timeout ()),
@@ -222,7 +222,7 @@ namespace CSTP
 			req.setRawHeader ("Origin", URL_.scheme ().toLatin1 () + "://" + URL_.host ().toLatin1 ());
 			req.setRawHeader ("Accept", "*/*");
 
-			StartTime_.restart ();
+			RestartTime ();
 
 			for (const auto& pair : Util::Stlize (Headers_))
 				req.setRawHeader (pair.first.toLatin1 (), pair.second.toByteArray ());
@@ -370,7 +370,7 @@ namespace CSTP
 
 	int Task::GetTimeFromStart () const
 	{
-		return StartTime_.elapsed ();
+		return SpeedTimer_.elapsed ();
 	}
 
 	bool Task::IsRunning () const
@@ -398,9 +398,16 @@ namespace CSTP
 		Reply_.reset ();
 	}
 
+	void Task::RestartTime ()
+	{
+		StartTime_ = QTime::currentTime ();
+		SpeedTimer_.invalidate ();
+		SpeedTimer_.start ();
+	}
+
 	void Task::RecalculateSpeed ()
 	{
-		Speed_ = static_cast<double> (Done_ * 1000) / static_cast<double> (StartTime_.elapsed ());
+		Speed_ = static_cast<double> (Done_ * 1000) / static_cast<double> (SpeedTimer_.elapsed ());
 	}
 
 	void Task::HandleMetadataRedirection ()
