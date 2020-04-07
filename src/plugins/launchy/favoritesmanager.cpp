@@ -31,6 +31,7 @@
 #include <QCoreApplication>
 #include <QSettings>
 #include <QStringList>
+#include <util/sll/containerconversions.h>
 
 namespace LC
 {
@@ -85,7 +86,7 @@ namespace Launchy
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Launchy");
 		settings.beginGroup ("Favorites");
-		Favorites_ = QSet<QString>::fromList (settings.value ("IDs").toStringList ());
+		Favorites_ = Util::AsSet (settings.value ("IDs").toStringList ());
 		settings.endGroup ();
 	}
 }

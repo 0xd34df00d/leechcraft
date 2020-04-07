@@ -35,6 +35,7 @@
 #include <QtDebug>
 #include <util/models/dndactionsmixin.h>
 #include <util/models/mergemodel.h>
+#include <util/sll/containerconversions.h>
 #include <util/sll/dropargs.h>
 #include <util/sll/prelude.h>
 #include <util/sll/visitor.h>
@@ -404,7 +405,8 @@ namespace LMP
 
 	void RadioManager::refreshAll ()
 	{
-		for (auto prov : QSet<Media::IRadioStationProvider*>::fromList (Model2Prov_.values ()))
+		// TODO Qt 5.14 remove values() call
+		for (auto prov : Util::AsSet (Model2Prov_.values ()))
 			prov->RefreshItems ({});
 	}
 

@@ -51,6 +51,7 @@
 #include <vmime/attachmentHelper.hpp>
 #include <util/util.h>
 #include <util/xpc/util.h>
+#include <util/sll/containerconversions.h>
 #include <util/sll/prelude.h>
 #include <util/sll/unreachable.h>
 #include "account.h"
@@ -599,7 +600,7 @@ namespace Snails
 					res.Info_.Folder_ = folderName;
 					return res;
 				});
-		const auto& existing = QSet<QByteArray>::fromList (Storage_->LoadIDs (A_, folderName));
+		const auto& existing = Util::AsSet (Storage_->LoadIDs (A_, folderName));
 
 		newMessages.erase (std::remove_if (newMessages.begin (), newMessages.end (),
 					[&existing] (const auto& pair) { return existing.contains (pair.Info_.FolderId_); }),
@@ -626,7 +627,7 @@ namespace Snails
 				<< "bytes, received" << bytesCounter.GetReceived () << "bytes";
 
 		const auto base = Storage_->BaseForAccount (A_);
-		auto localIds = QSet<QByteArray>::fromList (base->GetIDs (folderName));
+		auto localIds = Util::AsSet (base->GetIDs (folderName));
 
 		SyncStatusesResult result;
 		for (const auto& msg : remoteIds)
