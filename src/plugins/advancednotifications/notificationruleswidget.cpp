@@ -42,6 +42,7 @@
 #include <util/xpc/util.h>
 #include <util/xpc/stdanfields.h>
 #include <util/xpc/anutil.h>
+#include <util/sll/containerconversions.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/prelude.h>
 #include "xmlsettingsmanager.h"
@@ -217,7 +218,7 @@ namespace AdvancedNotifications
 		{
 			auto emitter = qobject_cast<IANEmitter*> (emitterObj);
 			for (const auto& field : emitter->GetANFields ())
-				if (!GetSelectedTypes ().toSet ().intersect (field.EventTypes_.toSet ()).isEmpty ())
+				if (!Util::AsSet (GetSelectedTypes ()).intersect (field.EventTypes_.toSet ()).isEmpty ())
 					result [emitterObj] << field;
 		}
 
