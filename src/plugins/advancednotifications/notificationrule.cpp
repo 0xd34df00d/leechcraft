@@ -31,6 +31,7 @@
 #include <QDataStream>
 #include <QStringList>
 #include <QtDebug>
+#include <util/sll/containerconversions.h>
 
 namespace LC
 {
@@ -123,7 +124,7 @@ namespace AdvancedNotifications
 
 	QSet<QString> NotificationRule::GetTypes () const
 	{
-		return Types_.toSet ();
+		return Util::AsSet (Types_);
 	}
 
 	void NotificationRule::SetTypes (const QStringList& types)

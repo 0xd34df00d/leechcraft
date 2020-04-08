@@ -38,6 +38,7 @@
 #include <QToolBar>
 #include <QMainWindow>
 #include <QAction>
+#include <util/sll/containerconversions.h>
 #include <util/sys/paths.h>
 #include <util/qml/colorthemeproxy.h>
 #include <util/qml/themeimageprovider.h>
@@ -444,7 +445,7 @@ namespace SB2
 	{
 		auto settings = GetSettings ();
 		settings->beginGroup ("RemovedList");
-		RemovedIDs_ = QSet<QString>::fromList (settings->value ("IDs").toStringList ());
+		RemovedIDs_ = Util::AsSet (settings->value ("IDs").toStringList ());
 		settings->endGroup ();
 	}
 

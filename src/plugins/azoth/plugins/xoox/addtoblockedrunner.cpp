@@ -30,7 +30,6 @@
 #include "addtoblockedrunner.h"
 #include <util/sll/functional.h>
 #include <util/sll/prelude.h>
-#include <util/sll/util.h>
 #include "clientconnection.h"
 #include "xeps/privacylistsmanager.h"
 
@@ -88,7 +87,7 @@ namespace Xoox
 
 		auto items = list.GetItems ();
 
-		const auto& presentIds = QSet<QString>::fromList (Util::Map (items, &PrivacyListItem::GetValue));
+		const auto& presentIds = Util::MapAs<QSet> (items, &PrivacyListItem::GetValue);
 
 		bool modified = false;
 		for (const auto& id : Ids_)

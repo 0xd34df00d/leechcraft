@@ -35,6 +35,7 @@
 #include <QXmppClient.h>
 #include <QXmppRosterManager.h>
 #include <util/util.h>
+#include <util/sll/containerconversions.h>
 #include <util/sll/qtutil.h>
 #include <interfaces/azoth/iaccount.h>
 #include <interfaces/azoth/azothcommon.h>
@@ -176,7 +177,7 @@ namespace LC::Azoth::Xoox
 			return;
 
 		QXmppRosterIq::Item item = GetRI ();
-		item.setGroups (QSet<QString>::fromList (groups));
+		item.setGroups (Util::AsSet (groups));
 		Account_->GetClientConnection ()->Update (item);
 	}
 

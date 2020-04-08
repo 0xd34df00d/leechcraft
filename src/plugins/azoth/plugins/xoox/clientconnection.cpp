@@ -38,6 +38,7 @@
 #include <QXmppVCardManager.h>
 #include <QXmppDiscoveryManager.h>
 #include <QXmppPubSubIq.h>
+#include <util/sll/containerconversions.h>
 #include <util/sll/delayedexecutor.h>
 #include <util/sll/prelude.h>
 #include <util/xpc/util.h>
@@ -528,7 +529,7 @@ namespace Xoox
 	void ClientConnection::AddEntry (const QString& id,
 			const QString& name, const QStringList& groups)
 	{
-		Exts ().Get<QXmppRosterManager> ().addItem (id, name, QSet<QString>::fromList (groups));
+		Exts ().Get<QXmppRosterManager> ().addItem (id, name, Util::AsSet (groups));
 	}
 
 	void ClientConnection::Subscribe (const QString& id,
@@ -537,7 +538,7 @@ namespace Xoox
 		qDebug () << "Subscribe" << id;
 		auto& rm = Exts ().Get<QXmppRosterManager> ();
 		if (!rm.getRosterBareJids ().contains (id))
-			rm.addItem (id, name, QSet<QString>::fromList (groups));
+			rm.addItem (id, name, Util::AsSet (groups));
 		rm.subscribe (id, msg);
 		rm.acceptSubscription (id, msg);
 	}

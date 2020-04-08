@@ -39,6 +39,7 @@
 #include <util/gui/geometry.h>
 #include <util/gui/unhoverdeletemixin.h>
 #include <util/util.h>
+#include <util/sll/containerconversions.h>
 #include <util/sll/qtutil.h>
 #include <util/threads/futures.h>
 #include "generalhandler.h"
@@ -262,11 +263,13 @@ namespace AdvancedNotifications
 
 	void SystemTrayHandler::RebuildState ()
 	{
-		auto icons2hide = Category2Icon_.values ().toSet ();
+		// TODO Qt 5.14 remove values() call here
+		auto icons2hide = Util::AsSet (Category2Icon_.values ());
 		for (const auto icon : icons2hide)
 			icon->contextMenu ()->clear ();
 
-		auto actsDel = Category2Action_.values ().toSet ();
+		// TODO Qt 5.14 remove values() call here
+		auto actsDel = Util::AsSet (Category2Action_.values ());
 
 		EventsForIcon_.clear ();
 		EventsForAction_.clear ();

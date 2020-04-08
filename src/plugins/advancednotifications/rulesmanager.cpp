@@ -38,6 +38,7 @@
 #include <interfaces/structures.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
+#include <util/sll/containerconversions.h>
 #include <util/sll/prelude.h>
 #include <util/xpc/stdanfields.h>
 #include <util/xpc/util.h>
@@ -200,7 +201,7 @@ namespace AdvancedNotifications
 		if (e.Additional_ ["org.LC.AdvNotifications.NotifyTransient"].toBool ())
 			rule.AddMethod (NMVisual);
 
-		const auto& typeSet = types.toSet ();
+		const auto& typeSet = Util::AsSet (types);
 		if (e.Additional_ ["org.LC.AdvNotifications.NotifyAudio"].toBool ())
 		{
 			rule.AddMethod (NMAudio);
@@ -243,7 +244,7 @@ namespace AdvancedNotifications
 			for (const auto& field : iane->GetANFields ())
 			{
 				qDebug () << field.ID_ << "testing" << field.EventTypes_ << "against" << typeSet;
-				if (!field.EventTypes_.toSet ().intersect (typeSet).isEmpty ())
+				if (!Util::AsSet (field.EventTypes_).intersect (typeSet).isEmpty ())
 					tryAddFieldMatch (field, false);
 			}
 
