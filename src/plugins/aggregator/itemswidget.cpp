@@ -489,7 +489,7 @@ namespace Aggregator
 			return;
 
 		const auto& items = Impl_->CurrentItemsModel_->GetAllItems ();
-		const auto& allCategories = ItemUtils::GetCategories (items).toList ();
+		const auto& allCategories = ItemUtils::GetCategories (items).values ();
 		Impl_->ItemsFilterModel_->categorySelectionChanged (allCategories);
 
 		if (!allCategories.isEmpty ())

@@ -288,7 +288,7 @@ namespace AdvancedNotifications
 			e.Additional_ ["org.LC.AdvNotifications.RuleID"] = i;
 			e.Additional_ ["org.LC.AdvNotifications.SenderID"] = "org.LeechCraft.AdvancedNotifications";
 			e.Additional_ ["org.LC.AdvNotifications.EventCategory"] = rule.GetCategory ();
-			e.Additional_ ["org.LC.AdvNotifications.EventType"] = QStringList { rule.GetTypes ().toList () };
+			e.Additional_ ["org.LC.AdvNotifications.EventType"] = QStringList { rule.GetTypes ().values () };
 			e.Additional_ ["org.LC.AdvNotifications.AssocColor"] = rule.GetColor ();
 			e.Additional_ ["org.LC.AdvNotifications.IsEnabled"] = rule.IsEnabled ();
 
@@ -481,7 +481,7 @@ namespace AdvancedNotifications
 
 	QList<QStandardItem*> RulesManager::RuleToRow (const NotificationRule& rule) const
 	{
-		const QStringList hrTypes { Util::Map (rule.GetTypes ().toList (), Util::AN::GetTypeName) };
+		const QStringList hrTypes { Util::Map (rule.GetTypes ().values (), Util::AN::GetTypeName) };
 
 		QList<QStandardItem*> items;
 		items << new QStandardItem (rule.GetName ());

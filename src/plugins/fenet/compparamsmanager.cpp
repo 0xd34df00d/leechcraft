@@ -182,7 +182,7 @@ namespace LC::Fenet
 
 			if (newFlagsSet != oldFlags)
 			{
-				settings->setValue ("__Flags", QStringList (newFlagsSet.toList ()));
+				settings->setValue ("__Flags", QStringList (newFlagsSet.values ()));
 				changed = true;
 			}
 		}

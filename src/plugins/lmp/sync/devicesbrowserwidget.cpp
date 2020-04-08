@@ -249,9 +249,8 @@ namespace LMP
 			CurrentSyncer_ = suitables.value (items.indexOf (name));
 		}
 
-		auto paths = Util::Map (DevUploadModel_->GetSelectedIndexes ().toList (),
-				[] (const QModelIndex& idx)
-					{ return idx.data (LocalCollectionModel::Role::TrackPath).toString (); });
+		auto paths = Util::Map (DevUploadModel_->GetSelectedIndexes ().values (),
+				[] (const QModelIndex& idx) { return idx.data (LocalCollectionModel::Role::TrackPath).toString (); });
 		paths.removeAll ({});
 
 		Ui_.UploadLog_->clear ();
@@ -266,9 +265,8 @@ namespace LMP
 		Merger_->GetModelForRow (idx, &starting);
 		idx -= starting;
 
-		auto paths = Util::Map (DevUploadModel_->GetSelectedIndexes ().toList (),
-				[] (const QModelIndex& idx)
-					{ return idx.data (LocalCollectionModel::Role::TrackPath).toString (); });
+		auto paths = Util::Map (DevUploadModel_->GetSelectedIndexes ().values (),
+				[] (const QModelIndex& idx) { return idx.data (LocalCollectionModel::Role::TrackPath).toString (); });
 		paths.removeAll ({});
 
 		auto syncer = qobject_cast<IUnmountableSync*> (UnmountableMgr_->GetDeviceManager (idx));

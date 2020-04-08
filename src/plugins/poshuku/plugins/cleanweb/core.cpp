@@ -683,7 +683,7 @@ namespace CleanWeb
 
 		const auto& urls = MoreDelayedURLs_.take (senderObj);
 		if (!urls.isEmpty ())
-			RemoveElements (view, urls.toList (),
+			RemoveElements (view, urls.values (),
 					[view, urls] (bool res)
 					{
 						if (!res)

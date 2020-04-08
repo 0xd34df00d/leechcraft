@@ -239,7 +239,7 @@ namespace LackMan
 		NotifyFetchListUpdateScheduled_ = false;
 
 		auto ids = (ScheduledForAction_ [Action::Install] +
-					ScheduledForAction_ [Action::Update]).toList ();
+					ScheduledForAction_ [Action::Update]).values ();
 		for (const int id : ids)
 			ids << Deps_ [id];
 		emit fetchListUpdated (ids);

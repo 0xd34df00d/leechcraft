@@ -380,7 +380,7 @@ namespace LC::SeekThru
 			for (const auto& id : d.Tags_)
 				ids << id;
 
-		return Proxy_->GetTagsManager ()->GetTags (ids.toList ());
+		return Proxy_->GetTagsManager ()->GetTags (ids.values ());
 	}
 
 	QList<Description> Core::FindMatchingHRTag (const QString& catStr) const

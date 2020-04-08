@@ -644,7 +644,7 @@ namespace Snails
 				list << uid;
 			}
 		}
-		result.RemovedIds_ = localIds.toList ();
+		result.RemovedIds_ = localIds.values ();
 		return result;
 	}
 

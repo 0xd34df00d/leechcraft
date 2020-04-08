@@ -76,7 +76,7 @@ namespace Launchy
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Launchy");
 		settings.beginGroup ("Favorites");
-		settings.setValue ("IDs", QStringList (Favorites_.toList ()));
+		settings.setValue ("IDs", QStringList (Favorites_.values ()));
 		settings.endGroup ();
 	}
 

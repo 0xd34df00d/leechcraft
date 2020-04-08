@@ -85,7 +85,7 @@ namespace Vrooby
 			QSettings settings (QCoreApplication::organizationName (),
 					QCoreApplication::applicationName () + "_Vrooby");
 			settings.beginGroup ("HiddenDevices");
-			settings.setValue ("List", QStringList (Hidden_.toList ()));
+			settings.setValue ("List", QStringList (Hidden_.values ()));
 			settings.endGroup ();
 
 			if (FilterEnabled_)

@@ -204,7 +204,7 @@ namespace Blogique
 		ReadComments_.insert (cid);
 
 		XmlSettingsManager::Instance ().setProperty ("ReadComments",
-				QVariant::fromValue<CommentIDs_t> (ReadComments_.toList ()));
+				QVariant::fromValue<CommentIDs_t> (ReadComments_.values ()));
 
 		CommentEntry ce;
 		ce.AccountID_ = comment.AccountID_;

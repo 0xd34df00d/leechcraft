@@ -490,7 +490,7 @@ namespace Aggregator
 					{
 						const auto channelId = index.data (ChannelRoles::ChannelID).value<IDType_t> ();
 						return ItemUtils::GetCategories (sb->GetItems (channelId));
-					}).toList ();
+					}).values ();
 		}
 	}
 

@@ -54,7 +54,7 @@ namespace Blogique
 
 	QList<CommentEntry> CommentsManager::GetComments () const
 	{
-		return RecentComments_.toList ();
+		return RecentComments_.values ();
 	}
 
 	void CommentsManager::checkForComments ()

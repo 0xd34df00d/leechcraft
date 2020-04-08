@@ -436,7 +436,7 @@ namespace SB2
 	{
 		auto settings = GetSettings ();
 		settings->beginGroup ("RemovedList");
-		settings->setValue ("IDs", QStringList (RemovedIDs_.toList ()));
+		settings->setValue ("IDs", QStringList (RemovedIDs_.values ()));
 		settings->endGroup ();
 	}
 
