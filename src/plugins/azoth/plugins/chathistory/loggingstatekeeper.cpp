@@ -32,6 +32,7 @@
 #include <QCoreApplication>
 #include <QStringList>
 #include <QtDebug>
+#include <util/sll/containerconversions.h>
 #include <interfaces/azoth/iclentry.h>
 
 namespace LC
@@ -88,7 +89,7 @@ namespace ChatHistory
 	{
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Azoth_ChatHistory");
-		DisabledIDs_ = settings.value ("DisabledIDs").toStringList ().toSet ();
+		DisabledIDs_ = Util::AsSet (settings.value ("DisabledIDs").toStringList ());
 	}
 
 	void LoggingStateKeeper::SaveDisabled ()

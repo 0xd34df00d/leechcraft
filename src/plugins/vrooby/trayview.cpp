@@ -37,6 +37,7 @@
 #include <QSortFilterProxyModel>
 #include <QSettings>
 #include <QCoreApplication>
+#include <util/sll/containerconversions.h>
 #include <util/sys/paths.h>
 #include <util/qml/themeimageprovider.h>
 #include <util/qml/colorthemeproxy.h>
@@ -62,7 +63,7 @@ namespace Vrooby
 			QSettings settings (QCoreApplication::organizationName (),
 					QCoreApplication::applicationName () + "_Vrooby");
 			settings.beginGroup ("HiddenDevices");
-			Hidden_ = settings.value ("List").toStringList ().toSet ();
+			Hidden_ = Util::AsSet (settings.value ("List").toStringList ());
 			settings.endGroup ();
 		}
 

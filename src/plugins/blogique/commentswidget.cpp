@@ -38,6 +38,7 @@
 #include <util/qml/colorthemeproxy.h>
 #include <util/qml/tooltipitem.h>
 #include <util/qml/themeimageprovider.h>
+#include <util/sll/containerconversions.h>
 #include <util/sys/paths.h>
 #include <util/xpc/util.h>
 #include "commentsmanager.h"
@@ -97,8 +98,7 @@ namespace Blogique
 				this,
 				SLOT (handleAddComment (QString, int, int)));
 
-		ReadComments_ = XmlSettingsManager::Instance ().property ("ReadComments")
-				.value<CommentIDs_t> ().toSet ();
+		ReadComments_ = Util::AsSet (XmlSettingsManager::Instance ().property ("ReadComments").value<CommentIDs_t> ());
 
 		ProxyModel_->sort (0, Qt::DescendingOrder);
 		FillModel ();

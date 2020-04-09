@@ -31,8 +31,8 @@
 #include <QTimer>
 #include <QtConcurrentMap>
 #include <util/threads/futures.h>
+#include <util/sll/containerconversions.h>
 #include <util/sll/qtutil.h>
-#include "seen.h"
 #include "docmanager.h"
 
 namespace LC
@@ -290,11 +290,11 @@ namespace Seen
 				{
 					RenderJobs_.unite (result.Unrendered_);
 
-					const auto& remainingJobs = RenderJobs_.keys ().toSet ();
+					const auto& remainingJobs = Util::AsSet (RenderJobs_.keys ());
 
 					const auto finishedPages = [this, &remainingJobs]
 					{
-						auto finishedPages = PendingRenders_.keys ().toSet ();
+						auto finishedPages = Util::AsSet (PendingRenders_.keys ());
 						return finishedPages.subtract (remainingJobs);
 					} ();
 

@@ -29,6 +29,7 @@
 
 #include "groupmanager.h"
 #include <QtDebug>
+#include <util/sll/containerconversions.h>
 #include "msnaccount.h"
 #include "msnbuddyentry.h"
 #include "callbacks.h"
@@ -71,8 +72,8 @@ namespace Zheet
 	void GroupManager::SetGroups (MSNBuddyEntry *entry,
 			const QStringList& newGroupsLst, const QStringList& oldGroupsLst)
 	{
-		const auto& newSet = newGroupsLst.toSet ();
-		const auto& oldSet = oldGroupsLst.toSet ();
+		const auto& newSet = Util::AsSet (newGroupsLst);
+		const auto& oldSet = Util::AsSet (oldGroupsLst);
 
 		for (const auto& grp : newSet - oldSet)
 			AddGroup (entry->GetHumanReadableID (), grp);

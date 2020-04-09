@@ -30,6 +30,7 @@
 #include "baseemoticonssource.h"
 #include <QtDebug>
 #include <util/sys/resourceloader.h>
+#include <util/sll/containerconversions.h>
 #include <util/sll/qtutil.h>
 
 namespace LC
@@ -53,7 +54,7 @@ namespace NativeEmoticons
 
 	QSet<QString> BaseEmoticonsSource::GetEmoticonStrings (const QString& pack) const
 	{
-		return ParseFile (pack).keys ().toSet ();
+		return Util::AsSet (ParseFile (pack).keys ());
 	}
 
 	QHash<QImage, QString> BaseEmoticonsSource::GetReprImages (const QString& pack) const

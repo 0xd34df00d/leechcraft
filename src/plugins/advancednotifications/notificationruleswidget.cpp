@@ -218,7 +218,7 @@ namespace AdvancedNotifications
 		{
 			auto emitter = qobject_cast<IANEmitter*> (emitterObj);
 			for (const auto& field : emitter->GetANFields ())
-				if (!Util::AsSet (GetSelectedTypes ()).intersect (field.EventTypes_.toSet ()).isEmpty ())
+				if (!Util::AsSet (GetSelectedTypes ()).intersect (Util::AsSet (field.EventTypes_)).isEmpty ())
 					result [emitterObj] << field;
 		}
 

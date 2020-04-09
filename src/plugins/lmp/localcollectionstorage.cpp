@@ -36,6 +36,7 @@
 #include <util/util.h>
 #include <util/db/dblock.h>
 #include <util/db/util.h>
+#include <util/sll/containerconversions.h>
 #include <util/sys/paths.h>
 #include "util.h"
 #include "engine/rgfilter.h"
@@ -201,7 +202,7 @@ namespace LMP
 			artists,
 			PresentArtists_,
 			PresentAlbums_,
-			GetIgnoredTracks ().toSet ()
+			Util::AsSet (GetIgnoredTracks ())
 		};
 		qDebug () << "end";
 

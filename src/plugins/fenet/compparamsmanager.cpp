@@ -32,6 +32,7 @@
 #include <QCoreApplication>
 #include <QSettings>
 #include <QtDebug>
+#include <util/sll/containerconversions.h>
 
 namespace LC::Fenet
 {
@@ -170,7 +171,7 @@ namespace LC::Fenet
 			for (const auto& name : params.keys ())
 				settings->setValue (name, params [name]);
 
-			const auto& oldFlags = settings->value ("__Flags").toStringList ().toSet ();
+			const auto& oldFlags = Util::AsSet (settings->value ("__Flags").toStringList ());
 			auto newFlagsSet = oldFlags;
 
 			const auto& flags = ChangedFlags_ [key];
