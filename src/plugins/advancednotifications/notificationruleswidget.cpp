@@ -371,7 +371,7 @@ namespace AdvancedNotifications
 		auto handleAccepted = [this, dia]
 		{
 			const auto& idxs = dia->GetSelectedRows ();
-			for (const auto entity : UnhandledKeeper_->GetRulesEntities (idxs))
+			for (const auto& entity : UnhandledKeeper_->GetRulesEntities (idxs))
 				if (const auto rule = RM_->CreateRuleFromEntity (entity))
 					RM_->PrependRule (*rule);
 		};

@@ -91,7 +91,7 @@ namespace Textogroose
 		};
 
 		QList<IScript_ptr> scripts;
-		for (const auto ldr : Loaders_)
+		for (const auto& ldr : Loaders_)
 			for (const auto& scriptName : ldr->EnumerateScripts ())
 				scripts << ldr->LoadScript (scriptName);
 

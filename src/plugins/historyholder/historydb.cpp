@@ -109,7 +109,7 @@ namespace HistoryHolder
 
 		try
 		{
-			for (const auto table : QStringList { "history", "entities", "tags", "tags_mapping" })
+			for (const auto& table : QStringList { "history", "entities", "tags", "tags_mapping" })
 				Util::RunQuery (DB_, "historyholder", "create_" + table);
 		}
 		catch (const std::exception& e)

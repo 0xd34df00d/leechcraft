@@ -487,7 +487,7 @@ namespace Snails
 		auto header = HeaderFromContents (*headerText);
 
 		QList<MessageListActionInfo> result;
-		for (const auto provider : Providers_)
+		for (const auto& provider : Providers_)
 			result += provider->GetMessageActions (info, header, Acc_);
 		return result;
 	}

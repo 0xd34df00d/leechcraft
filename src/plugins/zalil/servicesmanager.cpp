@@ -54,7 +54,7 @@ namespace Zalil
 				QFileInfo { file }.size ();
 
 		QStringList result;
-		for (const auto service : Services_)
+		for (const auto& service : Services_)
 			if (service->GetMaxFileSize () > fileSize)
 				result << service->GetName ();
 

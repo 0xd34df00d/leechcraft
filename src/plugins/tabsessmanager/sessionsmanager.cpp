@@ -351,7 +351,7 @@ namespace TabSessManager
 		auto tabs = GetSession (name, Proxy_);
 
 		QHash<QObject*, QList<QByteArray>> plugin2recoveries;
-		for (const auto window : Tabs_)
+		for (const auto& window : Tabs_)
 			for (const auto tab : window)
 			{
 				const auto tw = qobject_cast<ITabWidget*> (tab);

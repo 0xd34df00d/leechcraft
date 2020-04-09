@@ -66,7 +66,7 @@ namespace SB2
 
 	void SBView::enterEvent (QEvent *lev)
 	{
-		for (const auto item : UnhoverItems_)
+		for (const auto& item : UnhoverItems_)
 		{
 			if (!item.Item_)
 				continue;

@@ -53,7 +53,7 @@ namespace CrashProcess
 	{
 		int FindOneOf (const QString& text, int from, const QList<QByteArray>& variants)
 		{
-			for (const auto marker : variants)
+			for (const auto& marker : variants)
 			{
 				const auto tmpIdx = text.indexOf (marker, from);
 				if (tmpIdx == -1)
