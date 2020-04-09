@@ -12,7 +12,7 @@ RUN eatmydata apt install -q -y cmake debhelper libaspell-dev \
         liblastfm5-dev libmagic-dev libmtp-dev libotr5-dev libpcre3-dev \
         libpoppler-cpp-dev libpoppler-qt5-dev libqca-qt5-2-dev libqt5scintilla2-dev \
         qtbase5-dev libqt5webkit5-dev libqt5xmlpatterns5-dev libqt5svg5-dev qttools5-dev-tools qttools5-dev libqt5x11extras5-dev qtscript5-dev  \
-        libqwt-qt5-dev libqxmpp-dev \
+        libqwt-qt5-dev libqxmpp-dev/experimental \
         libspeex-dev libtag1-dev libtidy-dev libtorrent-rasterbar-dev \
         libudev-dev \
 		libx11-dev libxkbfile-dev libxcomposite-dev libxrender-dev libxcb-xkb-dev libxcb-render0-dev libxcb-composite0-dev libxcb-render-util0-dev \
