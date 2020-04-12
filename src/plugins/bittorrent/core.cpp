@@ -169,7 +169,8 @@ namespace BitTorrent
 		bool DecodeEntry (const QByteArray& data, libtorrent::bdecode_node& e)
 		{
 			boost::system::error_code ec;
-			if (libtorrent::bdecode (data.constData (), data.constData () + data.size (), e, ec))
+			e = libtorrent::bdecode (libtorrent::span { data.constData (), data.size () }, ec);
+			if (ec)
 			{
 				qWarning () << Q_FUNC_INFO
 						<< "bad bencoding in saved torrent data"
@@ -1518,8 +1519,16 @@ namespace BitTorrent
 		std::fill (torrent->FilePriorities_.begin (),
 				torrent->FilePriorities_.end (), 1);
 
-		const auto& infoE = libtorrent::bdecode (info.metadata ().get (),
-				info.metadata ().get () + info.metadata_size ());
+		boost::system::error_code ec;
+		const libtorrent::span metadata { info.metadata ().get (), info.metadata_size () };
+		libtorrent::entry infoE = libtorrent::bdecode (metadata, ec);
+		if (ec)
+		{
+			qWarning () << Q_FUNC_INFO
+					 << "unable to bdecode"
+					 << torrent->TorrentFileName_;
+			return;
+		}
 		libtorrent::entry e;
 		e ["info"] = infoE;
 		libtorrent::bencode (std::back_inserter (torrent->TorrentFileContents_), e);
