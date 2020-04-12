@@ -1000,6 +1000,14 @@ namespace BitTorrent
 	namespace lt_lib = boost;
 #endif
 
+	namespace
+	{
+		void ToggleFlag (libtorrent::torrent_handle& h, libtorrent::torrent_flags_t flags, bool set)
+		{
+			set ? h.set_flags (flags) : h.unset_flags (flags);
+		}
+	}
+
 	QFuture<IDownload::Result> Core::AddFile (const QString& filename,
 			const QString& path,
 			const QStringList& tags,
@@ -1049,7 +1057,7 @@ namespace BitTorrent
 			handle.prioritize_files (priorities);
 		}
 
-		handle.auto_managed (autoManaged);
+		ToggleFlag (handle, libtorrent::torrent_flags::auto_managed, autoManaged);
 
 		beginInsertRows (QModelIndex (), Handles_.size (), Handles_.size ());
 		auto torrentFileName = QString::fromStdString (handle
@@ -1109,7 +1117,7 @@ namespace BitTorrent
 			return;
 
 		Handles_.at (pos).Handle_.pause ();
-		Handles_.at (pos).Handle_.auto_managed (false);
+		ToggleFlag (Handles_ [pos].Handle_, libtorrent::torrent_flags::auto_managed, false);
 		checkFinished ();
 	}
 
@@ -1120,7 +1128,7 @@ namespace BitTorrent
 
 		Handles_.at (pos).Handle_.resume ();
 		Handles_ [pos].State_ = TSIdle;
-		Handles_.at (pos).Handle_.auto_managed (Handles_.at (pos).AutoManaged_);
+		ToggleFlag (Handles_ [pos].Handle_, libtorrent::torrent_flags::auto_managed, Handles_.at (pos).AutoManaged_);
 		checkFinished ();
 	}
 
@@ -1323,14 +1331,14 @@ namespace BitTorrent
 			return false;
 
 		return IsAutoManaged (StatusKeeper_->GetStatus (Handles_.at (idx).Handle_));
-	};
+	}
 
 	void Core::SetTorrentManaged (bool man, int idx)
 	{
 		if (!CheckValidity (idx))
 			return;
 
-		Handles_.at (idx).Handle_.auto_managed (man);
+		ToggleFlag (Handles_ [idx].Handle_, libtorrent::torrent_flags::auto_managed, man);
 		Handles_ [idx].AutoManaged_ = man;
 	}
 
@@ -1352,7 +1360,7 @@ namespace BitTorrent
 		if (!CheckValidity (idx))
 			return;
 
-		Handles_.at (idx).Handle_.set_sequential_download (seq);
+		ToggleFlag (Handles_ [idx].Handle_, libtorrent::torrent_flags::sequential_download, seq);
 	}
 
 	bool Core::IsTorrentSuperSeeding (int idx) const
@@ -1373,7 +1381,7 @@ namespace BitTorrent
 		if (!CheckValidity (idx))
 			return;
 
-		Handles_.at (idx).Handle_.super_seeding (sup);
+		ToggleFlag (Handles_ [idx].Handle_, libtorrent::torrent_flags::super_seeding, sup);
 	}
 
 	void Core::MakeTorrent (const NewTorrentParams& params) const
