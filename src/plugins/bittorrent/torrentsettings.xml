@@ -150,9 +150,6 @@
 					<item type="checkbox" property="SendRedundantHave" state="off">
 						<label lang="en" value="Send redundant have messages" />
 					</item>
-					<item type="checkbox" property="UPNPIgnoreNonrouters" state="on">
-						<label lang="en" value="Ignore UPNP-nonrouters" />
-					</item>
 					<item type="checkbox" property="AutoUploadSlots" default="true">
 						<label lang="en" value="Auto upload slots" />
 					</item>

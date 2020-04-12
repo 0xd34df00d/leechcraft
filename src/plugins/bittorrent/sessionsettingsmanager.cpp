@@ -109,7 +109,6 @@ namespace BitTorrent
 			XmlSettingsManager::Instance ()->setProperty ("MaxFailcount", 2);
 			XmlSettingsManager::Instance ()->setProperty ("InactivityTimeout", 120);
 			XmlSettingsManager::Instance ()->setProperty ("MaxOutstandingDiskBytesPerConnection", 1);
-			XmlSettingsManager::Instance ()->setProperty ("UPNPIgnoreNonrouters", true);
 			XmlSettingsManager::Instance ()->setProperty ("SendBufferWatermark", 9);
 			XmlSettingsManager::Instance ()->setProperty ("CacheSize", 0);
 			XmlSettingsManager::Instance ()->setProperty ("UseReadCache", false);
@@ -302,7 +301,6 @@ namespace BitTorrent
 			"HandshakeTimeout",
 			"UseDHTAsFallback",
 			"FreeTorrentHashes",
-			"UPNPIgnoreNonrouters",
 			"SendBufferWatermark",
 			"AutoUploadSlots",
 			"UseParoleMode",
@@ -542,7 +540,6 @@ namespace BitTorrent
 		LT_SET_BOOL_OPT (allow_multiple_connections_per_ip, "AllowMultipleConnectionsPerIP");
 		LT_SET_BOOL_OPT (send_redundant_have, "SendRedundantHave");
 		LT_SET_BOOL_OPT (use_dht_as_fallback, "UseDHTAsFallback");
-		LT_SET_BOOL_OPT (upnp_ignore_nonrouters, "UPNPIgnoreNonrouters");
 		LT_SET_BOOL_OPT (use_parole_mode, "UseParoleMode");
 		LT_SET_BOOL_OPT (use_read_cache, "UseReadCache");
 		LT_SET_BOOL_OPT (auto_manage_prefer_seeds, "AutoManagePreferSeeds");
