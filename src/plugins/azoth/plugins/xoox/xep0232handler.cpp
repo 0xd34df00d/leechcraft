@@ -68,8 +68,7 @@ namespace LC::Azoth::Xoox::XEP0232Handler
 			const auto& var = f.key ();
 			if (var == "icon")
 			{
-				si.IconWidth_ = f.mediaSize ().width ();
-				si.IconHeight_ = f.mediaSize ().height ();
+				si.IconSize_ = f.mediaSize ();
 				for (const auto& source : f.mediaSources ())
 				{
 					const auto& uri = source.uri ();
@@ -113,7 +112,7 @@ namespace LC::Azoth::Xoox::XEP0232Handler
 			QXmppDataForm::Field iconField;
 			iconField.setKey ("icon");
 
-			iconField.setMediaSize ({ si.IconWidth_, si.IconHeight_ });
+			iconField.setMediaSize (si.IconSize_);
 
 			QVector<QXmppDataForm::MediaSource> sources;
 			if (!si.IconCID_.isEmpty ())

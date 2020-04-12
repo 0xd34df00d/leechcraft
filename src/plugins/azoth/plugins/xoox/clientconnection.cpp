@@ -1162,8 +1162,7 @@ namespace Xoox
 
 		XEP0232Handler::SoftwareInformation si
 		{
-			64,
-			64,
+			{ 64, 64 },
 			QUrl { "https://leechcraft.org/leechcraft.png" },
 			QByteArray {},
 			QMimeDatabase {}.mimeTypeForName ("image/png"),

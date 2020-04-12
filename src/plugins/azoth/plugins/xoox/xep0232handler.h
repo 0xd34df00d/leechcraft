@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <QSize>
 #include <QUrl>
 #include <QMimeType>
 
@@ -38,8 +39,7 @@ namespace LC::Azoth::Xoox::XEP0232Handler
 {
 	struct SoftwareInformation
 	{
-		int IconWidth_;
-		int IconHeight_;
+		QSize IconSize_;
 		QUrl IconURL_;
 		QByteArray IconCID_;
 		QMimeType IconType_;
