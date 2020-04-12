@@ -579,7 +579,7 @@ namespace BitTorrent
 								.arg (Util::MakePrettySize (status.download_payload_rate) +
 										tr ("/s"))
 								.arg (status.num_peers);
-					}
+					})
 					else if (!IsPaused (status) &&
 								(status.state == libtorrent::torrent_status::finished ||
 								status.state == libtorrent::torrent_status::seeding))
@@ -618,7 +618,7 @@ namespace BitTorrent
 								(status.state == libtorrent::torrent_status::finished ||
 								status.state == libtorrent::torrent_status::seeding))
 					{
-						static const auto templ = tr ("100% (%1)");
+						static const auto templ = QString { "100% (%1)" };
 						return templ
 								.arg (Util::MakePrettySize (status.total_wanted));
 					}

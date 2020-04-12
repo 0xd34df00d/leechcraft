@@ -164,7 +164,7 @@
                   </sizepolicy>
                  </property>
                  <property name="text">
-                  <string>/</string>
+                  <string notr="true">/</string>
                  </property>
                 </widget>
                </item>
@@ -1135,7 +1135,7 @@
          <item>
           <widget class="QToolButton" name="TrackersButton_">
            <property name="text">
-            <string>...</string>
+            <string notr="true">...</string>
            </property>
           </widget>
          </item>
@@ -1422,7 +1422,7 @@
                 </sizepolicy>
                </property>
                <property name="text">
-                <string>/</string>
+                <string notr="true">/</string>
                </property>
               </widget>
              </item>
@@ -1487,7 +1487,7 @@
                 </sizepolicy>
                </property>
                <property name="text">
-                <string>/</string>
+                <string notr="true">/</string>
                </property>
               </widget>
              </item>

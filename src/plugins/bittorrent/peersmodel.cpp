@@ -47,8 +47,8 @@ namespace BitTorrent
 	, Index_ (idx)
 	{
 		Headers_ << tr ("IP")
-			<< tr ("Drate")
-			<< tr ("Urate")
+			<< tr ("Download rate")
+			<< tr ("Upload rate")
 			<< tr ("Downloaded")
 			<< tr ("Uploaded")
 			<< tr ("Client")
