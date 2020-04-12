@@ -55,7 +55,6 @@ namespace BitTorrent
 	, SettingsSaveTimer_ { new QTimer { this } }
 	{
 		setLoggingSettings ();
-		sslPortChanged ();
 		tcpPortRangeChanged ();
 
 		if (XmlSettingsManager::Instance ()->
@@ -246,7 +245,7 @@ namespace BitTorrent
 							XmlSettingsManager::Instance ()->Property ("MaxUploadingTorrents", -1).toInt ());
 				});
 
-		XmlSettingsManager::Instance ()->RegisterObject ("TCPPortRange",
+		XmlSettingsManager::Instance ()->RegisterObject ({ "TCPPortRange", "SSLPort", "EnableSSLPort" },
 				this, "tcpPortRangeChanged");
 		XmlSettingsManager::Instance ()->RegisterObject ("AutosaveInterval",
 				this, "autosaveIntervalChanged");
@@ -254,8 +253,6 @@ namespace BitTorrent
 				this, "maxUploadsChanged");
 		XmlSettingsManager::Instance ()->RegisterObject ("MaxConnections",
 				this, "maxConnectionsChanged");
-		XmlSettingsManager::Instance ()->RegisterObject ({ "SSLPort", "EnableSSLPort" },
-				this, "sslPortChanged");
 
 		const QList<QByteArray> proxySettings
 		{
@@ -405,20 +402,14 @@ namespace BitTorrent
 		for (int port = ports.at (0).toInt (), endPort = ports.at (1).toInt (); port <= endPort; ++port)
 			portsList << "0.0.0.0:" + QString::number (port);
 
+		if (XmlSettingsManager::Instance ()->property ("EnableSSLPort").toBool ())
+		{
+			const auto sslPort = XmlSettingsManager::Instance ()->property ("SSLPort").toInt ();
+			portsList << "0.0.0.0:" + QString::number (sslPort) + "s";
+		}
+
 		settings.set_str (libtorrent::settings_pack::listen_interfaces, portsList.join (",").toStdString ());
 
-		Session_->apply_settings (settings);
-	}
-
-	void SessionSettingsManager::sslPortChanged ()
-	{
-		const bool enable = XmlSettingsManager::Instance ()->property ("EnableSSLPort").toBool ();
-		const auto sslPort = enable ?
-				XmlSettingsManager::Instance ()->property ("SSLPort").toInt () :
-				0;
-
-		auto settings = Session_->get_settings ();
-		settings.set_int (libtorrent::settings_pack::ssl_listen, sslPort);
 		Session_->apply_settings (settings);
 	}
 

@@ -76,7 +76,6 @@ namespace BitTorrent
 	private slots:
 		void setLoggingSettings ();
 		void tcpPortRangeChanged ();
-		void sslPortChanged ();
 		void maxUploadsChanged ();
 		void maxConnectionsChanged ();
 		void setProxySettings ();
