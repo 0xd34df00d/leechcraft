@@ -29,6 +29,7 @@
 
 #include "xep0232handler.h"
 #include <algorithm>
+#include <QSize>
 #include <QtDebug>
 #include <QXmppDataForm.h>
 
@@ -67,17 +68,19 @@ namespace LC::Azoth::Xoox::XEP0232Handler
 			const auto& var = f.key ();
 			if (var == "icon")
 			{
-				const auto& media = f.media ();
-				si.IconWidth_ = media.width ();
-				si.IconHeight_ = media.height ();
-				for (const auto& pair : media.uris ())
-					if (pair.second.startsWith ("http"))
+				si.IconWidth_ = f.mediaSize ().width ();
+				si.IconHeight_ = f.mediaSize ().height ();
+				for (const auto& source : f.mediaSources ())
+				{
+					const auto& uri = source.uri ();
+					if (uri.scheme () == "http")
 					{
-						si.IconURL_ = QUrl::fromEncoded (pair.second.toLatin1 ());
-						si.IconType_ = pair.first;
+						si.IconURL_ = uri;
+						si.IconType_ = source.contentType ();
 					}
-					else if (pair.second.startsWith ("cid"))
-						si.IconCID_ = pair.second;
+					else if (uri.scheme () == "cid")
+						si.IconCID_ = uri.toEncoded ();
+				}
 			}
 			else if (var == "os")
 				si.OS_ = f.value ().toString ();
@@ -109,15 +112,14 @@ namespace LC::Azoth::Xoox::XEP0232Handler
 		{
 			QXmppDataForm::Field iconField;
 			iconField.setKey ("icon");
-			QXmppDataForm::Media media;
-			media.setWidth (si.IconHeight_);
-			media.setHeight (si.IconWidth_);
-			QList<QPair<QString, QString>> uris;
+
+			iconField.setMediaSize ({ si.IconWidth_, si.IconHeight_ });
+
+			QVector<QXmppDataForm::MediaSource> sources;
 			if (!si.IconCID_.isEmpty ())
-				uris << qMakePair (si.IconType_, si.IconCID_);
-			uris << qMakePair (si.IconType_, QString (si.IconURL_.toEncoded ()));
-			media.setUris (uris);
-			iconField.setMedia (media);
+				sources.append ({ QUrl::fromEncoded (si.IconCID_), si.IconType_ });
+			sources.append ({ si.IconURL_, si.IconType_ });
+			iconField.setMediaSources (sources);
 			iconField.setValue (si.IconURL_.toEncoded ());
 
 			fields << iconField;

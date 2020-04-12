@@ -30,6 +30,7 @@
 #include "clientconnection.h"
 #include <QTimer>
 #include <QDir>
+#include <QMimeDatabase>
 #include <QtDebug>
 #include <QXmppClient.h>
 #include <QXmppMucManager.h>
@@ -1163,9 +1164,9 @@ namespace Xoox
 		{
 			64,
 			64,
-			QUrl ("https://leechcraft.org/leechcraft.png"),
-			QString (),
-			"image/png",
+			QUrl { "https://leechcraft.org/leechcraft.png" },
+			QByteArray {},
+			QMimeDatabase {}.mimeTypeForName ("image/png"),
 			sysInfo.Name_,
 			advertiseOS ? sysInfo.Version_ : QString (),
 			vm.clientName (),

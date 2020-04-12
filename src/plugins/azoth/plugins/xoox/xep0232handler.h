@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QUrl>
+#include <QMimeType>
 
 class QXmppDataForm;
 
@@ -40,8 +41,8 @@ namespace LC::Azoth::Xoox::XEP0232Handler
 		int IconWidth_;
 		int IconHeight_;
 		QUrl IconURL_;
-		QString IconCID_;
-		QString IconType_;
+		QByteArray IconCID_;
+		QMimeType IconType_;
 
 		QString OS_;
 		QString OSVer_;
