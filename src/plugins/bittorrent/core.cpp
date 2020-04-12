@@ -579,7 +579,7 @@ namespace BitTorrent
 								.arg (Util::MakePrettySize (status.download_payload_rate) +
 										tr ("/s"))
 								.arg (status.num_peers);
-					})
+					}
 					else if (!IsPaused (status) &&
 								(status.state == libtorrent::torrent_status::finished ||
 								status.state == libtorrent::torrent_status::seeding))
@@ -1040,12 +1040,11 @@ namespace BitTorrent
 			return MakeErrorResult ("Torrent error");
 		}
 
-		std::vector<int> priorities (atp.ti->num_files (), 1);
-
+		std::vector<libtorrent::download_priority_t > priorities (atp.ti->num_files (), libtorrent::default_priority);
 		if (!files.isEmpty ())
 		{
 			for (int i = 0; i < files.size (); ++i)
-				priorities [i] = files [i];
+				priorities [i] = files [i] ? libtorrent::default_priority : libtorrent::dont_download;
 
 			handle.prioritize_files (priorities);
 		}
@@ -1779,18 +1778,17 @@ namespace BitTorrent
 				continue;
 			}
 
-			std::vector<int> priorities;
-			QByteArray prioritiesLine = settings.value ("Priorities").toByteArray ();
-			std::copy (prioritiesLine.begin (), prioritiesLine.end (),
-					std::back_inserter (priorities));
+			const auto& prioritiesLine = settings.value ("Priorities").toByteArray ();
+			std::vector<libtorrent::download_priority_t> priorities;
+			priorities.resize (prioritiesLine.size ());
+			for (const auto ch : prioritiesLine)
+				priorities.emplace_back (ch);
 
 			if (priorities.empty ())
 			{
 				const auto& infoPtr = StatusKeeper_->GetStatus (handle,
 							libtorrent::torrent_handle::query_torrent_file).torrent_file.lock ();
-				const auto numFiles = infoPtr ? infoPtr->num_files () : 0;
-				priorities.resize (numFiles);
-				std::fill (priorities.begin (), priorities.end (), 1);
+				priorities.resize (infoPtr ? infoPtr->num_files () : 0, libtorrent::default_priority);
 			}
 
 			handle.prioritize_files (priorities);
@@ -2058,9 +2056,9 @@ namespace BitTorrent
 					settings.setValue ("AutoManaged", Handles_.at (i).AutoManaged_);
 
 					QByteArray prioritiesLine;
-					std::copy (Handles_.at (i).FilePriorities_.begin (),
-							Handles_.at (i).FilePriorities_.end (),
-							std::back_inserter (prioritiesLine));
+					prioritiesLine.reserve (Handles_.at (i).FilePriorities_.size ());
+					for (const auto prio : Handles_.at (i).FilePriorities_)
+						prioritiesLine.push_back (static_cast<uint8_t> (prio));
 					settings.setValue ("Priorities", prioritiesLine);
 				}
 			}

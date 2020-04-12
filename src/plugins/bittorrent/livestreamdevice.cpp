@@ -141,7 +141,7 @@ namespace BitTorrent
 				pieces [0] &&
 				pieces [NumPieces_ - 1])
 		{
-			std::vector<int> prios (NumPieces_, 1);
+			std::vector<libtorrent::download_priority_t> prios (NumPieces_, libtorrent::low_priority);
 			Handle_.prioritize_pieces (prios);
 
 			IsReady_ = true;
@@ -218,21 +218,21 @@ namespace BitTorrent
 						alertFlag);
 		if (!IsReady_)
 		{
-			std::vector<int> prios (NumPieces_, 0);
+			std::vector<libtorrent::download_priority_t > prios (NumPieces_, libtorrent::dont_download);
 			if (pieces.size () > 1)
-				prios [1] = 1;
+				prios [1] = libtorrent::default_priority;
 
 			if (!pieces [0])
 			{
 				qDebug () << "scheduling first piece";
 				Handle_.set_piece_deadline (0, 500, alertFlag);
-				prios [0] = 7;
+				prios [0] = libtorrent::top_priority;
 			}
 			if (!pieces [NumPieces_ - 1])
 			{
 				qDebug () << "scheduling last piece";
 				Handle_.set_piece_deadline (NumPieces_ - 1, 500, alertFlag);
-				prios [NumPieces_ - 1] = 7;
+				prios [NumPieces_ - 1] = libtorrent::top_priority;
 			}
 			Handle_.prioritize_pieces (prios);
 		}

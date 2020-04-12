@@ -100,7 +100,7 @@ namespace BitTorrent
 
 		struct TorrentStruct
 		{
-			std::vector<int> FilePriorities_ = {};
+			std::vector<libtorrent::download_priority_t> FilePriorities_ = {};
 			libtorrent::torrent_handle Handle_;
 			QByteArray TorrentFileContents_ = {};
 			QString TorrentFileName_ = {};
@@ -128,7 +128,7 @@ namespace BitTorrent
 				Promise_->reportStarted ();
 			}
 
-			TorrentStruct (const std::vector<int>& prios,
+			TorrentStruct (const std::vector<libtorrent::download_priority_t>& prios,
 					const libtorrent::torrent_handle& handle,
 					const QByteArray& torrentFile,
 					const QString& filename,
