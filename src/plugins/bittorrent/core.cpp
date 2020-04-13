@@ -70,12 +70,8 @@
 #include <libtorrent/session.hpp>
 #include <libtorrent/lazy_entry.hpp>
 #include <libtorrent/announce_entry.hpp>
-
-#if LIBTORRENT_VERSION_NUM >= 10200
 #include <libtorrent/read_resume_data.hpp>
 #include <libtorrent/write_resume_data.hpp>
-#endif
-
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
@@ -159,11 +155,7 @@ namespace BitTorrent
 
 			auto dig = [&ver] (int pos) { return ver.at (pos).digitValue (); };
 
-#if LIBTORRENT_VERSION_NUM >= 10103
 			return libtorrent::generate_fingerprint ("LC", dig (0), dig (1), dig (2), dig (3));
-#else
-			return libtorrent::fingerprint { "LC", dig (0), dig (1), dig (2), dig (3) }.to_string ();
-#endif
 		}
 
 		bool DecodeEntry (const QByteArray& data, libtorrent::bdecode_node& e)
@@ -395,10 +387,6 @@ namespace BitTorrent
 		{
 			switch (state)
 			{
-#if LIBTORRENT_VERSION_NUM < 10200
-				case libtorrent::torrent_status::queued_for_checking:
-					return Core::tr ("Queued for checking");
-#endif
 				case libtorrent::torrent_status::checking_files:
 					return Core::tr ("Checking files");
 				case libtorrent::torrent_status::downloading_metadata:
@@ -419,20 +407,12 @@ namespace BitTorrent
 
 		bool IsPaused (const libtorrent::torrent_status& status)
 		{
-#if LIBTORRENT_VERSION_NUM >= 10200
 			return status.flags & libtorrent::torrent_flags::paused;
-#else
-			return status.paused;
-#endif
 		}
 
 		bool IsAutoManaged (const libtorrent::torrent_status& status)
 		{
-#if LIBTORRENT_VERSION_NUM >= 10200
 			return status.flags & libtorrent::torrent_flags::auto_managed;
-#else
-			return status.auto_managed;
-#endif
 		}
 
 		QString GetStringForStatus (const libtorrent::torrent_status& status)
@@ -502,9 +482,6 @@ namespace BitTorrent
 
 			switch (status.state)
 			{
-#if LIBTORRENT_VERSION_NUM < 10200
-			case libtorrent::torrent_status::queued_for_checking:
-#endif
 			case libtorrent::torrent_status::checking_files:
 			case libtorrent::torrent_status::checking_resume_data:
 				return QIcon::fromTheme ("tools-check-spelling");
@@ -951,11 +928,7 @@ namespace BitTorrent
 		}
 	}
 
-#if LIBTORRENT_VERSION_NUM >= 10200
 #define ATP_FLAG(name) libtorrent::torrent_flags::name;
-#else
-#define ATP_FLAG(name) libtorrent::add_torrent_params::flag_ ## name
-#endif
 
 	QFuture<IDownload::Result> Core::AddMagnet (const QString& magnet,
 			const QString& path,
@@ -966,7 +939,6 @@ namespace BitTorrent
 		try
 		{
 			libtorrent::add_torrent_params atp;
-#if LIBTORRENT_VERSION_NUM >= 10200
 			boost::system::error_code ec;
 			libtorrent::parse_magnet_uri (magnet.toStdString (), atp, ec);
 			if (ec)
@@ -974,9 +946,6 @@ namespace BitTorrent
 				ShowError (tr ("libtorrent error: %1").arg (QString::fromStdString (ec.message ())));
 				return MakeErrorResult ("Torrent error");
 			}
-#else
-			atp.url = magnet.toStdString ();
-#endif
 			atp.storage_mode = GetCurrentStorageMode ();
 			atp.save_path = std::string (path.toUtf8 ().constData ());
 			if (params & NoAutostart)
@@ -996,12 +965,6 @@ namespace BitTorrent
 
 		return Handles_.back ().Promise_->future ();
 	}
-
-#if LIBTORRENT_VERSION_NUM >= 10200
-	namespace lt_lib = std;
-#else
-	namespace lt_lib = boost;
-#endif
 
 	namespace
 	{
@@ -1034,7 +997,7 @@ namespace BitTorrent
 		libtorrent::add_torrent_params atp;
 		try
 		{
-			atp.ti = lt_lib::make_shared<libtorrent::torrent_info> (GetTorrentInfo (contents));
+			atp.ti = std::make_shared<libtorrent::torrent_info> (GetTorrentInfo (contents));
 			atp.storage_mode = GetCurrentStorageMode ();
 			atp.save_path = std::string (path.toUtf8 ().constData ());
 			if (!autoManaged)
@@ -1096,15 +1059,9 @@ namespace BitTorrent
 
 		beginRemoveRows (QModelIndex (), pos, pos);
 
-#if LIBTORRENT_VERSION_NUM >= 10200
 		libtorrent::remove_flags_t options;
 		if (withFiles)
 			options |= libtorrent::session_handle::delete_files;
-#else
-		int options = 0;
-		if (withFiles)
-			options |= libtorrent::session::delete_files;
-#endif
 		Session_->remove_torrent (Handles_.at (pos).Handle_, options);
 
 		Handles_.removeAt (pos);
@@ -1351,11 +1308,7 @@ namespace BitTorrent
 			return false;
 
 		const auto& status = StatusKeeper_->GetStatus (Handles_.at (idx).Handle_);
-#if LIBTORRENT_VERSION_NUM >= 10200
 		return status.flags & libtorrent::torrent_flags::sequential_download;
-#else
-		return status.sequential_download;
-#endif
 	}
 
 	void Core::SetTorrentSequentialDownload (bool seq, int idx)
@@ -1372,11 +1325,7 @@ namespace BitTorrent
 			return false;
 
 		const auto& status = StatusKeeper_->GetStatus (Handles_.at (idx).Handle_);
-#if LIBTORRENT_VERSION_NUM >= 10200
 		return status.flags & libtorrent::torrent_flags::super_seeding;
-#else
-		return status.super_seeding;
-#endif
 	}
 
 	void Core::SetTorrentSuperSeeding (bool sup, int idx)
@@ -1437,13 +1386,7 @@ namespace BitTorrent
 
 	QMap<BanRange_t, bool> Core::GetFilter () const
 	{
-#if LIBTORRENT_VERSION_NUM >= 10200
 		const auto& [v4, v6] = Session_->get_ip_filter ().export_filter ();
-#else
-		const auto& both = Session_->get_ip_filter ().export_filter ();
-		const auto& v4 = both.get<0> ();
-		const auto& v6 = both.get<1> ();
-#endif
 
 		QMap<BanRange_t, bool> result;
 		for (const auto& range : v4)
@@ -1485,16 +1428,8 @@ namespace BitTorrent
 			return;
 		}
 
-#if LIBTORRENT_VERSION_NUM >= 10200
 		const auto& buf = libtorrent::write_resume_data_buf (a.params);
 		file.write (buf.data (), buf.size ());
-#else
-		std::deque<char> outbuf;
-		libtorrent::bencode (std::back_inserter (outbuf), *a.resume_data.get ());
-
-		for (size_t i = 0; i < outbuf.size (); ++i)
-			file.write (&outbuf.at (i), 1);
-#endif
 	}
 
 	void Core::HandleMetadata (const libtorrent::metadata_received_alert& a)
@@ -1854,20 +1789,9 @@ namespace BitTorrent
 
 		try
 		{
-#if LIBTORRENT_VERSION_NUM >= 10200
 			auto atp = libtorrent::read_resume_data (libtorrent::span { resumeData.constData (), resumeData.size () });
-			atp.ti = lt_lib::make_shared<libtorrent::torrent_info> (e);
+			atp.ti = std::make_shared<libtorrent::torrent_info> (e);
 			Q_UNUSED (path)
-#else
-			libtorrent::add_torrent_params atp;
-			atp.ti = lt_lib::make_shared<libtorrent::torrent_info> (e);
-			atp.storage_mode = GetCurrentStorageMode ();
-			atp.save_path = path.string ();
-
-			std::copy (resumeData.constData (),
-					resumeData.constData () + resumeData.size (),
-					std::back_inserter (atp.resume_data));
-#endif
 
 			if (!automanaged)
 				atp.flags &= ~ATP_FLAG (auto_managed);
@@ -2106,11 +2030,7 @@ namespace BitTorrent
 		settings.endArray ();
 		settings.endGroup ();
 
-#if LIBTORRENT_VERSION_NUM >= 10200
 		constexpr auto saveflags = libtorrent::save_state_flags_t::all ();
-#else
-		boost::uint32_t saveflags = 0xffffffff;
-#endif
 		libtorrent::entry sessionState;
 		Session_->save_state (sessionState, saveflags);
 
@@ -2141,9 +2061,6 @@ namespace BitTorrent
 
 			switch (state)
 			{
-#if LIBTORRENT_VERSION_NUM < 10200
-			case libtorrent::torrent_status::queued_for_checking:
-#endif
 			case libtorrent::torrent_status::checking_files:
 			case libtorrent::torrent_status::checking_resume_data:
 			case libtorrent::torrent_status::allocating:

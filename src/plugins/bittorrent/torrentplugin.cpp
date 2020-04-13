@@ -48,7 +48,6 @@
 #include <boost/preprocessor/seq/elem.hpp>
 #include <boost/preprocessor/repetition/repeat.hpp>
 #include <libtorrent/session.hpp>
-#include <libtorrent/version.hpp>
 #include <libtorrent/announce_entry.hpp>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/ijobholderrepresentationhandler.h>

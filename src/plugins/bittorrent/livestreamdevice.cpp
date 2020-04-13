@@ -202,11 +202,7 @@ namespace BitTorrent
 			static_cast<double> (size) / speed * 1000 :
 			60000;
 
-#if LIBTORRENT_VERSION_NUM >= 10200
 		constexpr auto alertFlag = libtorrent::torrent_handle::alert_when_available;
-#else
-		constexpr auto alertFlag = 1;
-#endif
 
 		int thisDeadline = 0;
 		for (int i = ReadPos_; i < NumPieces_; ++i)

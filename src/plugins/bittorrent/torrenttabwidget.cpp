@@ -387,13 +387,8 @@ namespace BitTorrent
 		else
 			Ui_.LabelTorrentOverallRating_->setText (QString::fromUtf8 ("\u221E"));
 		Ui_.LabelSeedRank_->setText (QString::number (i->Status_.seed_rank));
-#if LIBTORRENT_VERSION_NUM >= 10200
 		Ui_.LabelActiveTime_->setText (Util::MakeTimeFromLong (i->Status_.active_duration.count ()));
 		Ui_.LabelSeedingTime_->setText (Util::MakeTimeFromLong (i->Status_.seeding_duration.count ()));
-#else
-		Ui_.LabelActiveTime_->setText (Util::MakeTimeFromLong (i->Status_.active_time));
-		Ui_.LabelSeedingTime_->setText (Util::MakeTimeFromLong (i->Status_.seeding_time));
-#endif
 		Ui_.LabelTotalSize_->setText (Util::MakePrettySize (i->Info_->total_size ()));
 		Ui_.LabelWantedSize_->setText (Util::MakePrettySize (i->Status_.total_wanted));
 		if (i->Status_.total_payload_download)
