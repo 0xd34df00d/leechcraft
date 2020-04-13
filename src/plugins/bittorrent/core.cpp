@@ -825,7 +825,9 @@ namespace BitTorrent
 	SessionStats Core::GetSessionStats () const
 	{
 		const auto& status = Session_->status ();
-		const auto& cacheStatus = Session_->get_cache_status ();
+
+		libtorrent::cache_status cacheStatus;
+		Session_->get_cache_info (&cacheStatus, {}, libtorrent::session::disk_cache_no_pieces);
 
 		return
 		{
