@@ -352,7 +352,6 @@ namespace BitTorrent
 		void RestoreTorrents ();
 		libtorrent::torrent_handle RestoreSingleTorrent (const QByteArray&,
 				const QByteArray&,
-				const boost::filesystem::path&,
 				bool,
 				bool);
 

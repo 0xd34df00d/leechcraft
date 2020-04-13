@@ -31,9 +31,6 @@
 #include <memory>
 #include <numeric>
 #include <typeinfo>
-#include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/path.hpp>
-#include <boost/filesystem/fstream.hpp>
 #include <QFile>
 #include <QDir>
 #include <QFileInfo>
@@ -1688,8 +1685,6 @@ namespace BitTorrent
 		for (int i = 0; i < torrents; ++i)
 		{
 			settings.setArrayIndex (i);
-			const auto& pathStr = settings.value ("SavePath").toString ();
-			const auto& path = std::string (pathStr.toUtf8 ().constData ());
 			QString filename = settings.value ("Filename").toString ();
 			QFile torrent (torrentsDir.filePath (filename));
 			if (!torrent.open (QIODevice::ReadOnly))
@@ -1721,7 +1716,6 @@ namespace BitTorrent
 
 			auto handle = RestoreSingleTorrent (data,
 					resumed,
-					path,
 					automanaged,
 					taskParameters & NoAutostart);
 			if (!handle.is_valid ())
@@ -1777,7 +1771,6 @@ namespace BitTorrent
 
 	libtorrent::torrent_handle Core::RestoreSingleTorrent (const QByteArray& data,
 			const QByteArray& resumeData,
-			const boost::filesystem::path& path,
 			bool automanaged,
 			bool pause)
 	{
@@ -1791,7 +1784,6 @@ namespace BitTorrent
 		{
 			auto atp = libtorrent::read_resume_data (libtorrent::span { resumeData.constData (), resumeData.size () });
 			atp.ti = std::make_shared<libtorrent::torrent_info> (e);
-			Q_UNUSED (path)
 
 			if (!automanaged)
 				atp.flags &= ~ATP_FLAG (auto_managed);
