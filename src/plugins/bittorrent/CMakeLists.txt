@@ -2,7 +2,7 @@ cmake_minimum_required (VERSION 3.3)
 project (leechcraft_bittorrent)
 include (InitLCPlugin NO_POLICY_SCOPE)
 
-find_package (Boost REQUIRED COMPONENTS date_time filesystem system thread)
+find_package (Boost REQUIRED COMPONENTS filesystem system)
 
 set (CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
@@ -143,8 +143,6 @@ add_library (leechcraft_bittorrent SHARED
 
 target_link_libraries (leechcraft_bittorrent
 	${Boost_SYSTEM_LIBRARY}
-	${Boost_THREAD_LIBRARY}
-	${Boost_DATE_TIME_LIBRARY}
 	${Boost_FILESYSTEM_LIBRARY}
 	${QT_LIBRARIES}
 	${LibtorrentRasterbar_LIBRARIES}
