@@ -77,7 +77,7 @@ namespace Snails
 
 		QMap<QStringList, int> KnownFolders_;
 	public:
-		AccountDatabase (const QDir&, const Account*);
+		AccountDatabase (const QDir&, const QByteArray&);
 
 		Util::DBLock BeginTransaction ();
 

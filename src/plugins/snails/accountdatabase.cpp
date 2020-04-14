@@ -37,7 +37,6 @@
 #include <util/db/dblock.h>
 #include <util/db/util.h>
 #include <util/db/oral/oral.h>
-#include "account.h"
 #include "messageinfo.h"
 #include "messagebodies.h"
 
@@ -196,8 +195,8 @@ namespace LC
 {
 namespace Snails
 {
-	AccountDatabase::AccountDatabase (const QDir& dir, const Account *acc)
-	: DB_ { QSqlDatabase::addDatabase ("QSQLITE", Util::GenConnectionName ("SnailsStorage_" + acc->GetID ())) }
+	AccountDatabase::AccountDatabase (const QDir& dir, const QByteArray& accId)
+	: DB_ { QSqlDatabase::addDatabase ("QSQLITE", Util::GenConnectionName ("SnailsStorage_" + accId)) }
 	{
 		DB_.setDatabaseName (dir.filePath ("msgs.db"));
 		if (!DB_.open ())

@@ -173,7 +173,7 @@ namespace Snails
 			return AccountBases_ [acc];
 
 		const auto& dir = DirForAccount (acc);
-		const auto& base = std::make_shared<AccountDatabase> (dir, acc);
+		const auto& base = std::make_shared<AccountDatabase> (dir, acc->GetID ());
 		if (isCachedThread)
 			AccountBases_ [acc] = base;
 		return base;
