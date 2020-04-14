@@ -130,7 +130,7 @@ namespace Util
 		QBENCHMARK {
 			volatile int sum = 0;
 			for (auto value : map)
-				sum += value;
+				sum = sum + value;
 		}
 	}
 
@@ -140,7 +140,7 @@ namespace Util
 		QBENCHMARK {
 			volatile int sum = 0;
 			for (const auto& pair : Util::Stlize (map))
-				sum += pair.second;
+				sum = sum + pair.second;
 		}
 	}
 }

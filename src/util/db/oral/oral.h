@@ -1680,9 +1680,6 @@ namespace oral
 		detail::SelectWrapper<T, detail::SelectBehaviour::One> SelectOne;
 		detail::DeleteByFieldsWrapper<T> DeleteBy;
 
-		ObjectInfo (const ObjectInfo<T>&) = delete;
-		ObjectInfo (ObjectInfo<T>&&) = default;
-
 		using ObjectType_t = T;
 	};
 
