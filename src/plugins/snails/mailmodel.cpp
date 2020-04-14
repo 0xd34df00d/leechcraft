@@ -397,7 +397,7 @@ namespace Snails
 				emit dataChanged (indexPair.value (0), indexPair.value (1));
 			}
 
-			UpdateParents (MsgId2FolderId_.value (msgId), read);
+			UpdateParents (msgId, read);
 		}
 	}
 
