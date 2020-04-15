@@ -44,11 +44,8 @@ namespace LC::Azoth::Autopaste
 		InitReply (params.NAM_->post (req, data));
 	}
 
-	void HastebinService::handleFinished ()
+	void HastebinService::HandleFinished (QNetworkReply *reply)
 	{
-		sender ()->deleteLater ();
-		auto reply = qobject_cast<QNetworkReply*> (sender ());
-
 		const auto& var = Util::ParseJson (reply->readAll (), Q_FUNC_INFO);
 		if (var.isNull ())
 			return;

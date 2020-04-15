@@ -48,18 +48,24 @@ namespace LC::Azoth::Autopaste
 
 	void PasteServiceBase::InitReply (QNetworkReply *reply)
 	{
+		reply->setParent (this);
+
 		connect (reply,
-				SIGNAL (finished ()),
+				&QNetworkReply::finished,
 				this,
-				SLOT (handleFinished ()));
+				[this, reply]
+				{
+					HandleFinished (reply);
+					deleteLater ();
+				});
 		connect (reply,
-				SIGNAL (metaDataChanged ()),
+				&QNetworkReply::metaDataChanged,
 				this,
-				SLOT (handleMetadata ()));
+				[this, reply] { HandleMetadata (reply); });
 		connect (reply,
-				SIGNAL (error (QNetworkReply::NetworkError)),
+				qOverload<QNetworkReply::NetworkError> (&QNetworkReply::error),
 				this,
-				SLOT (handleError ()));
+				&QObject::deleteLater);
 	}
 
 	void PasteServiceBase::FeedURL (const QString& pasteUrl)
@@ -102,29 +108,12 @@ namespace LC::Azoth::Autopaste
 		msg->Send ();
 	}
 
-	void PasteServiceBase::handleError ()
+	void PasteServiceBase::HandleFinished (QNetworkReply*)
 	{
-		sender ()->deleteLater ();
-		deleteLater ();
 	}
 
-	void PasteServiceBase::handleFinished ()
+	void PasteServiceBase::HandleMetadata (QNetworkReply *reply)
 	{
-		sender ()->deleteLater ();
-		deleteLater ();
-	}
-
-	void PasteServiceBase::handleMetadata ()
-	{
-		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
-		if (!reply)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "sender is not a QNetworkReply:"
-					<< sender ();
-			return;
-		}
-
 		const auto& location = reply->header (QNetworkRequest::LocationHeader).toString ();
 		if (!location.isEmpty ())
 			FeedURL (location);

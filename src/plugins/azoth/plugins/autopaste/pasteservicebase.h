@@ -56,8 +56,6 @@ namespace Azoth::Autopaste
 
 	class PasteServiceBase : public QObject
 	{
-		Q_OBJECT
-
 		const ICoreProxy_ptr Proxy_;
 		QPointer<QObject> Entry_;
 	public:
@@ -74,10 +72,9 @@ namespace Azoth::Autopaste
 	protected:
 		void InitReply (QNetworkReply*);
 		void FeedURL (const QString&);
-	protected slots:
-		virtual void handleMetadata ();
-		virtual void handleFinished ();
-		virtual void handleError ();
+
+		virtual void HandleMetadata (QNetworkReply*);
+		virtual void HandleFinished (QNetworkReply*);
 	};
 }
 }

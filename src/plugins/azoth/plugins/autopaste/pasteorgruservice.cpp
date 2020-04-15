@@ -43,11 +43,9 @@ namespace LC::Azoth::Autopaste
 		InitReply (params.NAM_->post (req, data));
 	}
 
-	void PasteOrgRuService::handleFinished ()
+	void PasteOrgRuService::HandleFinished (QNetworkReply *reply)
 	{
-		auto reply = qobject_cast<QNetworkReply*> (sender ());
 		const auto& bytes = reply->readAll ();
-		sender ()->deleteLater ();
 
 		QRegExp rx("a href='(/\\?[A-Za-z0-9]+)'");
 		if (rx.indexIn (bytes) == -1)
