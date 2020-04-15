@@ -16,7 +16,6 @@ set (AUTOPASTE_SRCS
 	codepadservice.cpp
 	hastebinservice.cpp
 	pasteorgruservice.cpp
-	poundpythonservice.cpp
 	spacepasteservicebase.cpp
 	pastedialog.cpp
 	pasteservicebase.cpp

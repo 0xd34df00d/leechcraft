@@ -33,7 +33,6 @@
 #include "bpasteservice.h"
 #include "hastebinservice.h"
 #include "pasteorgruservice.h"
-#include "poundpythonservice.h"
 
 namespace LC::Azoth::Autopaste
 {
@@ -51,7 +50,6 @@ namespace LC::Azoth::Autopaste
 		Infos_.push_back ({ "bpaste.net", QIcon (), &Creator<BPasteService> });
 		Infos_.push_back ({ "codepad.org", QIcon (), &Creator<CodepadService> });
 		Infos_.push_back ({ "paste.org.ru", QIcon (), &Creator<CodepadService> });
-		Infos_.push_back ({ "pound-python.org", QIcon (), &Creator<PoundPythonService> });
 		Infos_.push_back ({ "hastebin.com", QIcon (), &Creator<HastebinService> });
 	}
 
