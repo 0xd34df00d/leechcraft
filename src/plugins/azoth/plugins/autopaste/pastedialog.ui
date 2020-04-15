@@ -62,11 +62,6 @@
        </item>
        <item>
         <property name="text">
-         <string notr="true">C++0x</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
          <string notr="true">Haskell</string>
         </property>
        </item>
@@ -78,6 +73,11 @@
        <item>
         <property name="text">
          <string notr="true">Python</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string notr="true">Shell</string>
         </property>
        </item>
        <item>

@@ -46,7 +46,6 @@ namespace LC::Azoth::Autopaste
 		switch (params.High_)
 		{
 		case Highlight::CPP:
-		case Highlight::CPP0x:
 			highlight = "C%2B%2B";
 			run = true;
 			break;
@@ -66,6 +65,10 @@ namespace LC::Azoth::Autopaste
 			break;
 		case Highlight::Python:
 			highlight = "Python";
+			run = true;
+			break;
+		case Highlight::Shell:
+			highlight = "Shell";
 			run = true;
 			break;
 		case Highlight::None:

@@ -37,7 +37,6 @@ namespace LC::Azoth::Autopaste::HlConverters
 		switch (high)
 		{
 		case Highlight::CPP:
-		case Highlight::CPP0x:
 			return "cpp";
 		case Highlight::C:
 			return "c";
@@ -49,6 +48,8 @@ namespace LC::Azoth::Autopaste::HlConverters
 			return "java";
 		case Highlight::Python:
 			return "python";
+		case Highlight::Shell:
+			return "shell";
 		case Highlight::None:
 			return "text";
 		}

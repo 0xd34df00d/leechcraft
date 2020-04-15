@@ -47,10 +47,10 @@ namespace Azoth::Autopaste
 		None,
 		C,
 		CPP,
-		CPP0x,
 		Haskell,
 		Java,
 		Python,
+		Shell,
 		XML
 	};
 
