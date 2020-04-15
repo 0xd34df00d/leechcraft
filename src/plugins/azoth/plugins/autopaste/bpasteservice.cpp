@@ -35,7 +35,7 @@ namespace LC::Azoth::Autopaste
 	void BPasteService::Paste (const PasteParams& params)
 	{
 		const auto& highlight = HlConverters::SpacePaste (params.High_);
-		auto data = "lexer=" + highlight + "&expiry=never&code=";
+		auto data = "submit=Paste!&lexer=" + highlight + "&expiry=1week&code=";
 		data += params.Text_.toUtf8 ().toPercentEncoding ();
 
 		PasteImpl (params, "https://bpaste.net/", data);
