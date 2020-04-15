@@ -44,11 +44,7 @@
 #include "pastedialog.h"
 #include "actionsstorage.h"
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Autopaste
+namespace LC::Azoth::Autopaste
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
@@ -338,8 +334,6 @@ namespace Autopaste
 				[edit] { edit->clear (); },
 				[] {});
 	}
-}
-}
 }
 
 LC_EXPORT_PLUGIN (leechcraft_azoth_autopaste, LC::Azoth::Autopaste::Plugin);

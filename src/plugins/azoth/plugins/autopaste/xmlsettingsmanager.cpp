@@ -30,11 +30,7 @@
 #include "xmlsettingsmanager.h"
 #include <QCoreApplication>
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Autopaste
+namespace LC::Azoth::Autopaste
 {
 	XmlSettingsManager::XmlSettingsManager ()
 	{
@@ -57,6 +53,4 @@ namespace Autopaste
 				QCoreApplication::applicationName () + "_Azoth_Autopaste");
 		return settings;
 	}
-}
-}
 }

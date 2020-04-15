@@ -31,11 +31,7 @@
 
 #include "spacepasteservicebase.h"
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Autopaste
+namespace LC::Azoth::Autopaste
 {
 	class PoundPythonService final : public SpacePasteServiceBase
 	{
@@ -44,7 +40,5 @@ namespace Autopaste
 
 		void Paste (const PasteParams&);
 	};
-}
-}
 }
 

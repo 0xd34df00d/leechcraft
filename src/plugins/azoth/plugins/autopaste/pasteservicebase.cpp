@@ -37,11 +37,7 @@
 #include <interfaces/azoth/imessage.h>
 #include <interfaces/core/ientitymanager.h>
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Autopaste
+namespace LC::Azoth::Autopaste
 {
 	PasteServiceBase::PasteServiceBase (QObject *entry, const ICoreProxy_ptr& proxy, QObject *parent)
 	: QObject (parent)
@@ -133,6 +129,4 @@ namespace Autopaste
 		if (!location.isEmpty ())
 			FeedURL (location);
 	}
-}
-}
 }

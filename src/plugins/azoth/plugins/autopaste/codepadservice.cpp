@@ -33,11 +33,7 @@
 #include <QNetworkReply>
 #include <QtDebug>
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Autopaste
+namespace LC::Azoth::Autopaste
 {
 	void CodepadService::Paste (const PasteParams& params)
 	{
@@ -87,6 +83,4 @@ namespace Autopaste
 
 		InitReply (params.NAM_->post (req, data));
 	}
-}
-}
 }

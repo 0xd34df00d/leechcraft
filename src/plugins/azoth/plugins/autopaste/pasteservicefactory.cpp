@@ -35,11 +35,7 @@
 #include "pasteorgruservice.h"
 #include "poundpythonservice.h"
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Autopaste
+namespace LC::Azoth::Autopaste
 {
 	namespace
 	{
@@ -63,6 +59,4 @@ namespace Autopaste
 	{
 		return Infos_;
 	}
-}
-}
 }

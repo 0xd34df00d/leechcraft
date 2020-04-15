@@ -31,11 +31,7 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Autopaste
+namespace LC::Azoth::Autopaste
 {
 	void SpacePasteServiceBase::PasteImpl (const PasteParams& params,
 			QByteArray baseUrl, const QByteArray& postData)
@@ -50,7 +46,5 @@ namespace Autopaste
 		req.setHeader (QNetworkRequest::ContentLengthHeader, postData.size ());
 		InitReply (params.NAM_->post (req, postData));
 	}
-}
-}
 }
 

@@ -36,11 +36,7 @@
 class QAction;
 class QStringList;
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Autopaste
+namespace LC::Azoth::Autopaste
 {
 	class ActionsStorage : public QObject
 	{
@@ -55,6 +51,4 @@ namespace Autopaste
 	signals:
 		void pasteRequested (QObject*);
 	};
-}
-}
 }

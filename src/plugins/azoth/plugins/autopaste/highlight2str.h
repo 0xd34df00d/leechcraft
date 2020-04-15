@@ -33,16 +33,7 @@
 
 class QString;
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Autopaste
-{
-namespace HlConverters
+namespace LC::Azoth::Autopaste::HlConverters
 {
 	QByteArray SpacePaste (Highlight);
-}
-}
-}
 }

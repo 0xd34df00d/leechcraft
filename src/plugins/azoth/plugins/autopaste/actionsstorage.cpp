@@ -32,11 +32,7 @@
 #include <QAction>
 #include <util/sll/slotclosure.h>
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Autopaste
+namespace LC::Azoth::Autopaste
 {
 	QList<QAction*> ActionsStorage::GetEntryActions (QObject *entry)
 	{
@@ -72,6 +68,4 @@ namespace Autopaste
 	{
 		return action->property ("Azoth/Autopaste/Areas").toStringList ();
 	}
-}
-}
 }

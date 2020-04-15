@@ -30,11 +30,7 @@
 #include "poundpythonservice.h"
 #include "highlight2str.h"
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Autopaste
+namespace LC::Azoth::Autopaste
 {
 	void PoundPythonService::Paste (const PasteParams& params)
 	{
@@ -44,7 +40,5 @@ namespace Autopaste
 
 		PasteImpl (params, "http://paste.pound-python.org/", data);
 	}
-}
-}
 }
 

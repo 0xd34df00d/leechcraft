@@ -40,9 +40,7 @@ namespace LC
 {
 struct Entity;
 
-namespace Azoth
-{
-namespace Autopaste
+namespace Azoth::Autopaste
 {
 	enum class Highlight
 	{
@@ -70,7 +68,7 @@ namespace Autopaste
 			Highlight High_;
 		};
 
-		PasteServiceBase (QObject *entry, const ICoreProxy_ptr&, QObject* = 0);
+		PasteServiceBase (QObject *entry, const ICoreProxy_ptr&, QObject* = nullptr);
 
 		virtual void Paste (const PasteParams&) = 0;
 	protected:
@@ -81,6 +79,5 @@ namespace Autopaste
 		virtual void handleFinished ();
 		virtual void handleError ();
 	};
-}
 }
 }

@@ -33,11 +33,7 @@
 #include <QtDebug>
 #include <QRegExp>
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Autopaste
+namespace LC::Azoth::Autopaste
 {
 	void PasteOrgRuService::Paste (const PasteParams& params)
 	{
@@ -62,6 +58,4 @@ namespace Autopaste
 		QUrl url (QString ("http://paste.org.ru:2%1").arg (rx.cap (1)));
 		FeedURL (url.toString ());
 	}
-}
-}
 }

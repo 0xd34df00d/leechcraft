@@ -30,13 +30,7 @@
 #include "highlight2str.h"
 #include <QtDebug>
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Autopaste
-{
-namespace HlConverters
+namespace LC::Azoth::Autopaste::HlConverters
 {
 	QByteArray SpacePaste (Highlight high)
 	{
@@ -64,7 +58,4 @@ namespace HlConverters
 				<< static_cast<int> (high);
 		return "text";
 	}
-}
-}
-}
 }

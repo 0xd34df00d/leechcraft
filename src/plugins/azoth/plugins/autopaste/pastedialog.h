@@ -35,11 +35,7 @@
 #include "pasteservicebase.h"
 #include "ui_pastedialog.h"
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Autopaste
+namespace LC::Azoth::Autopaste
 {
 	class PasteDialog : public QDialog
 	{
@@ -56,7 +52,7 @@ namespace Autopaste
 	private:
 		Choice Choice_ = Choice::Cancel;
 	public:
-		PasteDialog (QWidget* = 0);
+		explicit PasteDialog (QWidget* = nullptr);
 
 		Choice GetChoice () const;
 
@@ -69,6 +65,4 @@ namespace Autopaste
 	private slots:
 		void on_ButtonBox__clicked (QAbstractButton*);
 	};
-}
-}
 }

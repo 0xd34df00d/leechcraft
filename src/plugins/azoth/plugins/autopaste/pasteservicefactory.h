@@ -35,11 +35,7 @@
 #include <QString>
 #include <interfaces/core/icoreproxy.h>
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Autopaste
+namespace LC::Azoth::Autopaste
 {
 	class PasteServiceBase;
 
@@ -60,6 +56,4 @@ namespace Autopaste
 
 		QList<PasteInfo> GetInfos () const;
 	};
-}
-}
 }

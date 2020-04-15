@@ -31,11 +31,7 @@
 
 #include "pasteservicebase.h"
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Autopaste
+namespace LC::Azoth::Autopaste
 {
 	class HastebinService final : public PasteServiceBase
 	{
@@ -46,7 +42,5 @@ namespace Autopaste
 	protected:
 		void handleFinished () override;
 	};
-}
-}
 }
 

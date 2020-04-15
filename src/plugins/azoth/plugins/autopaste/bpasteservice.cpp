@@ -30,11 +30,7 @@
 #include "bpasteservice.h"
 #include "highlight2str.h"
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Autopaste
+namespace LC::Azoth::Autopaste
 {
 	void BPasteService::Paste (const PasteParams& params)
 	{
@@ -44,6 +40,4 @@ namespace Autopaste
 
 		PasteImpl (params, "https://bpaste.net/", data);
 	}
-}
-}
 }

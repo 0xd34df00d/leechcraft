@@ -33,11 +33,7 @@
 
 class QNetworkAccessManager;
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Autopaste
+namespace LC::Azoth::Autopaste
 {
 	class CodepadService final : public PasteServiceBase
 	{
@@ -46,6 +42,4 @@ namespace Autopaste
 
 		void Paste (const PasteParams&);
 	};
-}
-}
 }

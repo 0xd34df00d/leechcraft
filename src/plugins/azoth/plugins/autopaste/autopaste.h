@@ -35,9 +35,7 @@
 #include <interfaces/ihavesettings.h>
 #include <interfaces/core/ihookproxy.h>
 
-namespace LC
-{
-namespace Azoth
+namespace LC::Azoth
 {
 class ICLEntry;
 class IProxyObject;
@@ -91,6 +89,5 @@ namespace Autopaste
 	private slots:
 		void handlePasteRequested (QObject*);
 	};
-}
 }
 }

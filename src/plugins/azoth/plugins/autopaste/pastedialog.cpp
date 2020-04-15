@@ -30,11 +30,7 @@
 #include "pastedialog.h"
 #include "pasteservicefactory.h"
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Autopaste
+namespace LC::Azoth::Autopaste
 {
 	PasteDialog::PasteDialog (QWidget *parent)
 	: QDialog (parent)
@@ -94,6 +90,4 @@ namespace Autopaste
 			break;
 		}
 	}
-}
-}
 }

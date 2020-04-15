@@ -27,15 +27,11 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_AUTOPASTE_XMLSETTINGSMANAGER_H
-#define PLUGINS_AZOTH_PLUGINS_AUTOPASTE_XMLSETTINGSMANAGER_H
+#pragma once
+
 #include <xmlsettingsdialog/basesettingsmanager.h>
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Autopaste
+namespace LC::Azoth::Autopaste
 {
 	class XmlSettingsManager : public Util::BaseSettingsManager
 	{
@@ -49,7 +45,3 @@ namespace Autopaste
 		virtual void EndSettings (QSettings*) const;
 	};
 }
-}
-}
-
-#endif

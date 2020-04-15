@@ -31,11 +31,7 @@
 
 #include "pasteservicebase.h"
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Autopaste
+namespace LC::Azoth::Autopaste
 {
 	class SpacePasteServiceBase : public PasteServiceBase
 	{
@@ -45,6 +41,4 @@ namespace Autopaste
 		void PasteImpl (const PasteParams& params,
 				QByteArray baseUrl, const QByteArray& postData);
 	};
-}
-}
 }

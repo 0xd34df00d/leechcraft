@@ -33,11 +33,7 @@
 #include <QtDebug>
 #include <util/sll/parsejson.h>
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Autopaste
+namespace LC::Azoth::Autopaste
 {
 	void HastebinService::Paste (const PasteParams& params)
 	{
@@ -61,6 +57,4 @@ namespace Autopaste
 		url.setPath (var.toMap () ["key"].toString ());
 		FeedURL (url.toString ());
 	}
-}
-}
 }
