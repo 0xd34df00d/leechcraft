@@ -73,7 +73,14 @@ namespace LC::Azoth::Autopaste
 		connect (reply,
 				qOverload<QNetworkReply::NetworkError> (&QNetworkReply::error),
 				this,
-				&QObject::deleteLater);
+				[this, reply] (QNetworkReply::NetworkError error)
+				{
+					qWarning () << "Azoth Autopaste"
+							<< "base network error:"
+							<< reply->request ().url ()
+							<< error;
+					HandleError (error, reply);
+				});
 	}
 
 	void PasteServiceBase::FeedURL (const QString& pasteUrl)
@@ -114,6 +121,20 @@ namespace LC::Azoth::Autopaste
 			return;
 		}
 		msg->Send ();
+	}
+
+	void PasteServiceBase::HandleError (QNetworkReply::NetworkError error, QNetworkReply *reply)
+	{
+		auto message = error == QNetworkReply::ProtocolFailure ?
+				tr ("Unexpected reply from the service. Maybe Autopaste got oudated.") :
+				reply->errorString ();
+
+		const Entity& e = Util::MakeNotification (tr ("Text paste failure"),
+				tr ("Couldn't paste text. %1").arg (message),
+				Priority::Critical);
+		Proxy_->GetEntityManager ()->HandleEntity (e);
+
+		deleteLater ();
 	}
 
 	void PasteServiceBase::HandleFinished (QNetworkReply*)

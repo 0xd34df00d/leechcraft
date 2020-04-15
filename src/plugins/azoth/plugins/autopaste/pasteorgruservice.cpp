@@ -51,7 +51,10 @@ namespace LC::Azoth::Autopaste
 		const auto code = reply->attribute (QNetworkRequest::HttpStatusCodeAttribute).toInt ();
 		if (code >= 400)
 		{
-			// TODO handle error
+			qWarning () << Q_FUNC_INFO
+					<< "bad HTTP status code:"
+					<< code;
+			HandleError (QNetworkReply::ProtocolFailure, reply);
 			return;
 		}
 
@@ -59,7 +62,10 @@ namespace LC::Azoth::Autopaste
 		const auto& path = refreshRaw.section (";URL=", 1);
 		if (path.isEmpty ())
 		{
-			// TODO handle error
+			qWarning () << Q_FUNC_INFO
+					<< "unexpected `Refresh` header:"
+					<< refreshRaw;
+			HandleError (QNetworkReply::ProtocolFailure, reply);
 			return;
 		}
 

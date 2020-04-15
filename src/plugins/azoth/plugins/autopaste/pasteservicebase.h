@@ -31,10 +31,10 @@
 
 #include <QObject>
 #include <QPointer>
+#include <QNetworkReply>
 #include <interfaces/core/icoreproxy.h>
 
 class QNetworkAccessManager;
-class QNetworkReply;
 
 namespace LC
 {
@@ -72,6 +72,7 @@ namespace Azoth::Autopaste
 	protected:
 		void InitReply (QNetworkReply*);
 		void FeedURL (const QString&);
+		void HandleError (QNetworkReply::NetworkError, QNetworkReply*);
 
 		virtual void HandleFinished (QNetworkReply*);
 		virtual void HandleMetadata (QNetworkReply*);

@@ -48,7 +48,10 @@ namespace LC::Azoth::Autopaste
 	{
 		const auto& var = Util::ParseJson (reply->readAll (), Q_FUNC_INFO);
 		if (var.isNull ())
+		{
+			HandleError (QNetworkReply::ProtocolFailure, reply);
 			return;
+		}
 
 		QUrl url ("https://hastebin.com/");
 		url.setPath ("/" + var.toMap () ["key"].toString ());
