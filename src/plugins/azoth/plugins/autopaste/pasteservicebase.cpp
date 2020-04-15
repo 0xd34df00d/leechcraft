@@ -59,9 +59,13 @@ namespace LC::Azoth::Autopaste
 					deleteLater ();
 				});
 		connect (reply,
-				&QNetworkReply::metaDataChanged,
+				&QNetworkReply::redirected,
 				this,
-				[this, reply] { HandleMetadata (reply); });
+				[this] (const QUrl& url)
+				{
+					FeedURL (url.toString ());
+					deleteLater ();
+				});
 		connect (reply,
 				qOverload<QNetworkReply::NetworkError> (&QNetworkReply::error),
 				this,
@@ -110,15 +114,5 @@ namespace LC::Azoth::Autopaste
 
 	void PasteServiceBase::HandleFinished (QNetworkReply*)
 	{
-	}
-
-	void PasteServiceBase::HandleMetadata (QNetworkReply *reply)
-	{
-		const auto& location = reply->header (QNetworkRequest::LocationHeader).toString ();
-		if (!location.isEmpty ())
-		{
-			FeedURL (location);
-			deleteLater ();
-		}
 	}
 }

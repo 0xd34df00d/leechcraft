@@ -73,7 +73,6 @@ namespace Azoth::Autopaste
 		void InitReply (QNetworkReply*);
 		void FeedURL (const QString&);
 
-		virtual void HandleMetadata (QNetworkReply*);
 		virtual void HandleFinished (QNetworkReply*);
 	};
 }

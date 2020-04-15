@@ -80,6 +80,7 @@ namespace LC::Azoth::Autopaste
 			data += "&run=True";
 
 		req.setHeader (QNetworkRequest::ContentLengthHeader, data.size ());
+		req.setAttribute (QNetworkRequest::FollowRedirectsAttribute, true);
 
 		InitReply (params.NAM_->post (req, data));
 	}
