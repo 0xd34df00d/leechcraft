@@ -51,7 +51,7 @@ namespace LC::Azoth::Autopaste
 			return;
 
 		QUrl url ("https://hastebin.com/");
-		url.setPath (var.toMap () ["key"].toString ());
+		url.setPath ("/" + var.toMap () ["key"].toString ());
 		FeedURL (url.toString ());
 	}
 }
