@@ -37,23 +37,34 @@ namespace LC::Azoth::Autopaste
 {
 	void PasteOrgRuService::Paste (const PasteParams& params)
 	{
-		QNetworkRequest req (QString ("http://paste.org.ru:2/"));
-		const QByteArray& data = "c=" + params.Text_.toUtf8 ().toPercentEncoding ();
+		const QByteArray& data = "type=1&code=" + params.Text_.toUtf8 ().toPercentEncoding ();
+
+		QNetworkRequest req (QString ("http://paste.org.ru/?"));
+		req.setHeader (QNetworkRequest::ContentLengthHeader, data.size ());
+		req.setHeader (QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
 
 		InitReply (params.NAM_->post (req, data));
 	}
 
-	void PasteOrgRuService::HandleFinished (QNetworkReply *reply)
+	void PasteOrgRuService::HandleMetadata (QNetworkReply *reply)
 	{
-		const auto& bytes = reply->readAll ();
-
-		QRegExp rx("a href='(/\\?[A-Za-z0-9]+)'");
-		if (rx.indexIn (bytes) == -1)
+		const auto code = reply->attribute (QNetworkRequest::HttpStatusCodeAttribute).toInt ();
+		if (code >= 400)
 		{
-			qWarning () << Q_FUNC_INFO << "paste.org.ru service problem";
+			// TODO handle error
 			return;
 		}
-		QUrl url (QString ("http://paste.org.ru:2%1").arg (rx.cap (1)));
-		FeedURL (url.toString ());
+
+		const QString refreshRaw { reply->rawHeader ("Refresh") };
+		const auto& path = refreshRaw.section (";URL=", 1);
+		if (path.isEmpty ())
+		{
+			// TODO handle error
+			return;
+		}
+
+		FeedURL ("http://paste.org.ru" + path);
+
+		deleteLater ();
 	}
 }

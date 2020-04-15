@@ -67,6 +67,10 @@ namespace LC::Azoth::Autopaste
 					deleteLater ();
 				});
 		connect (reply,
+				&QNetworkReply::metaDataChanged,
+				this,
+				[this, reply] { HandleMetadata (reply); });
+		connect (reply,
 				qOverload<QNetworkReply::NetworkError> (&QNetworkReply::error),
 				this,
 				&QObject::deleteLater);
@@ -113,6 +117,10 @@ namespace LC::Azoth::Autopaste
 	}
 
 	void PasteServiceBase::HandleFinished (QNetworkReply*)
+	{
+	}
+
+	void PasteServiceBase::HandleMetadata (QNetworkReply*)
 	{
 	}
 }

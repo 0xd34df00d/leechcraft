@@ -40,7 +40,7 @@ namespace LC::Azoth::Autopaste
 
 		void Paste (const PasteParams&) override;
 	protected:
-		void HandleFinished (QNetworkReply*) override;
+		void HandleMetadata (QNetworkReply*) override;
 	};
 }
 

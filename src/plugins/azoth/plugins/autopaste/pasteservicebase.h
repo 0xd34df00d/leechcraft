@@ -74,6 +74,7 @@ namespace Azoth::Autopaste
 		void FeedURL (const QString&);
 
 		virtual void HandleFinished (QNetworkReply*);
+		virtual void HandleMetadata (QNetworkReply*);
 	};
 }
 }
