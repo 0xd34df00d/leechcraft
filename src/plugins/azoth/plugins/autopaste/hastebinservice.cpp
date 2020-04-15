@@ -37,7 +37,7 @@ namespace LC::Azoth::Autopaste
 {
 	void HastebinService::Paste (const PasteParams& params)
 	{
-		QNetworkRequest req (QString ("http://hastebin.com/documents"));
+		QNetworkRequest req (QString ("https://hastebin.com/documents"));
 		req.setHeader (QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
 		QByteArray data = params.Text_.toUtf8 ();
 
@@ -50,7 +50,7 @@ namespace LC::Azoth::Autopaste
 		if (var.isNull ())
 			return;
 
-		QUrl url ("http://hastebin.com/");
+		QUrl url ("https://hastebin.com/");
 		url.setPath (var.toMap () ["key"].toString ());
 		FeedURL (url.toString ());
 	}
