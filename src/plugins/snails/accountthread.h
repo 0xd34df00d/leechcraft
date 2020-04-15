@@ -50,7 +50,6 @@ namespace Snails
 	class Account;
 	class Storage;
 	class AccountThreadWorker;
-	class TaskQueueManager;
 
 	class GenericExceptionWrapper
 	{
@@ -70,15 +69,15 @@ namespace Snails
 		template<typename Result, typename F>
 		class ExceptionsHandler
 		{
-			F F_;
+			F&& F_;
 			const int MaxRetries_;
 
 			int RecLevel_ = 0;
 
 			AccountThreadWorker * const W_;
 		public:
-			ExceptionsHandler (AccountThreadWorker *w, const F& f, int maxRetries)
-			: F_ { f }
+			ExceptionsHandler (AccountThreadWorker *w, F&& f, int maxRetries)
+			: F_ { std::forward<F> (f) }
 			, MaxRetries_ { maxRetries }
 			, W_ { w }
 			{
@@ -170,9 +169,9 @@ namespace Snails
 		};
 
 		template<typename Result, typename F>
-		Result HandleExceptions (AccountThreadWorker *w, const F& f)
+		Result HandleExceptions (AccountThreadWorker *w, F&& f)
 		{
-			return ExceptionsHandler<Result, F> { w, f, detail::MaxRecLevel } ();
+			return ExceptionsHandler<Result, F> { w, std::forward<F> (f), detail::MaxRecLevel } ();
 		}
 
 		template<typename Right>
