@@ -116,6 +116,9 @@ namespace LC::Azoth::Autopaste
 	{
 		const auto& location = reply->header (QNetworkRequest::LocationHeader).toString ();
 		if (!location.isEmpty ())
+		{
 			FeedURL (location);
+			deleteLater ();
+		}
 	}
 }
