@@ -54,9 +54,9 @@ namespace LC::Azoth::Autopaste
 
 		ActionsStorage_ = new ActionsStorage { this };
 		connect (ActionsStorage_,
-				SIGNAL (pasteRequested (QObject*)),
+				&ActionsStorage::pasteRequested,
 				this,
-				SLOT (handlePasteRequested (QObject*)));
+				&Plugin::handlePasteRequested);
 
 		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog);
 		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),

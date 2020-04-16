@@ -30,7 +30,6 @@
 #include "actionsstorage.h"
 #include <QStringList>
 #include <QAction>
-#include <util/sll/slotclosure.h>
 
 namespace LC::Azoth::Autopaste
 {
@@ -39,25 +38,19 @@ namespace LC::Azoth::Autopaste
 		if (Entry2Actions_.contains (entry))
 			return Entry2Actions_.value (entry);
 
-		new Util::SlotClosure<Util::DeleteLaterPolicy>
-		{
-			[this, entry] { Entry2Actions_.remove (entry); },
-			entry,
-			SIGNAL (destroyed ()),
-			this
-		};
+		connect (entry,
+				&QObject::destroyed,
+				this,
+				[this, entry] { Entry2Actions_.remove (entry); });
 
 		const auto paste = new QAction { tr ("Paste to pastebin..."), entry };
 		paste->setProperty ("ActionIcon", "edit-paste");
 		paste->setProperty ("Azoth/Autopaste/Areas", QStringList { "toolbar" });
 
-		new Util::SlotClosure<Util::NoDeletePolicy>
-		{
-			[this, entry] { emit pasteRequested (entry); },
-			paste,
-			SIGNAL (triggered ()),
-			paste
-		};
+		connect (paste,
+				&QAction::triggered,
+				this,
+				[this, entry] { emit pasteRequested (entry); });
 
 		const QList<QAction*> list { paste };
 		Entry2Actions_ [entry] = list;
