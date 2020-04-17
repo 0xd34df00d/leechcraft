@@ -58,7 +58,7 @@ namespace LC::Azoth::Autopaste
 				this,
 				&Plugin::handlePasteRequested);
 
-		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog);
+		XmlSettingsDialog_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"azothautopastesettings.xml");
 	}
