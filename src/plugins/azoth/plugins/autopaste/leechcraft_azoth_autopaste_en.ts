@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="en_US">
+<TS version="2.1" language="en_US">
 <context>
     <name>LC::Azoth::Autopaste::ActionsStorage</name>
     <message>
-        <location filename="actionsstorage.cpp" line="54"/>
+        <location filename="actionsstorage.cpp" line="46"/>
         <source>Paste to pastebin...</source>
         <translation>Paste to pastebin...</translation>
     </message>
@@ -12,22 +12,43 @@
 <context>
     <name>LC::Azoth::Autopaste::PasteServiceBase</name>
     <message>
-        <location filename="pasteservicebase.cpp" line="76"/>
+        <location filename="pasteservicebase.cpp" line="93"/>
         <source>Text pasted</source>
         <translation>Text pasted</translation>
     </message>
     <message>
-        <location filename="pasteservicebase.cpp" line="77"/>
+        <location filename="pasteservicebase.cpp" line="94"/>
         <source>Your text has been pasted: %1. The URL has been copied to the clipboard.</source>
         <translation>Your text has been pasted: %1. The URL has been copied to the clipboard.</translation>
+    </message>
+    <message>
+        <location filename="pasteservicebase.cpp" line="129"/>
+        <source>Unexpected reply from the service. Maybe its support in Autopaste got oudated.</source>
+        <oldsource>Unexpected reply from the service. Maybe Autopaste got oudated.</oldsource>
+        <translation>Unexpected reply from the service. Maybe its support in Autopaste got oudated.</translation>
+    </message>
+    <message>
+        <location filename="pasteservicebase.cpp" line="132"/>
+        <source>Text paste failure</source>
+        <translation>Text paste failure</translation>
+    </message>
+    <message>
+        <location filename="pasteservicebase.cpp" line="133"/>
+        <source>Couldn&apos;t paste text. %1</source>
+        <translation>Couldn&apos;t paste text. %1</translation>
     </message>
 </context>
 <context>
     <name>LC::Azoth::Autopaste::Plugin</name>
     <message>
-        <location filename="autopaste.cpp" line="89"/>
+        <location filename="autopaste.cpp" line="86"/>
         <source>Detects long messages and suggests pasting them to a pastebin.</source>
         <translation>Detects long messages and suggests pasting them to a pastebin.</translation>
+    </message>
+    <message>
+        <location filename="autopaste.cpp" line="162"/>
+        <source>Do you want to disable autopasting for this contact (%1)?</source>
+        <translation>Do you want to disable autopasting for this contact (%1)?</translation>
     </message>
 </context>
 <context>
