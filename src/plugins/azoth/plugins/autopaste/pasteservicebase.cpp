@@ -126,7 +126,7 @@ namespace LC::Azoth::Autopaste
 	void PasteServiceBase::HandleError (QNetworkReply::NetworkError error, QNetworkReply *reply)
 	{
 		auto message = error == QNetworkReply::ProtocolFailure ?
-				tr ("Unexpected reply from the service. Maybe Autopaste got oudated.") :
+				tr ("Unexpected reply from the service. Maybe its support in Autopaste got oudated.") :
 				reply->errorString ();
 
 		const Entity& e = Util::MakeNotification (tr ("Text paste failure"),
