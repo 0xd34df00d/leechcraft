@@ -49,7 +49,6 @@ namespace Imgaste
 {
 	enum class HostingService
 	{
-		SavepicRu,
 		ImagebinCa,
 		PomfCat,
 		MixtapeMoe

@@ -73,8 +73,6 @@ namespace Imgaste
 		{
 		case HostingService::ImagebinCa:
 			return { "imagebin.ca", MakeChecker (15_mib) };
-		case HostingService::SavepicRu:
-			return { "savepic.ru", MakeChecker (8_mib, { 5000, 4000 }) };
 		case HostingService::PomfCat:
 			return { "pomf.cat", MakeChecker (75_mib) };
 		case HostingService::MixtapeMoe:
@@ -103,7 +101,6 @@ namespace Imgaste
 			HostingService::PomfCat,
 			HostingService::MixtapeMoe,
 			HostingService::ImagebinCa,
-			HostingService::SavepicRu
 		};
 	}
 
@@ -163,45 +160,6 @@ namespace Imgaste
 			}
 		};
 
-		struct SavepicWorker final : Worker
-		{
-			QRegExp RegExp_ { ".*<p class=\"img\"><a href=\"/(\\d+).htm\">.*",
-					Qt::CaseSensitive, QRegExp::RegExp2 };
-
-			QNetworkReply* Post (const QByteArray& data, const QString& format,
-					QNetworkAccessManager *am) const override
-			{
-				QUrl url ("http://savepic.ru/");
-
-				RequestBuilder builder;
-				builder.AddPair ("note", "");
-				builder.AddPair ("font1", "decor");
-				builder.AddPair ("font2", "20");
-				builder.AddPair ("orient", "h");
-				builder.AddPair ("size1", "1");
-				builder.AddPair ("size2", "1024x768");
-				builder.AddPair ("rotate", "00");
-				builder.AddPair ("flip", "0");
-				builder.AddPair ("mini", "300x225");
-				builder.AddPair ("opt3[]", "zoom");
-				builder.AddPair ("email", "");
-				builder.AddFile (format, "file", data);
-
-				QByteArray formed = builder.Build ();
-
-				return am->post (PrefillRequest (url, builder), formed);
-			}
-
-			Result_t GetLink (const QString& contents, const Headers_t&) const override
-			{
-				if (!RegExp_.exactMatch (contents))
-					return Result_t::Left ({});
-
-				QString imageId = RegExp_.cap (1);
-				return Result_t::Right ("http://savepic.ru/" + imageId + ".jpg");
-			}
-		};
-
 		struct PomfLikeWorker final : Worker
 		{
 			const QString Prefix_;
@@ -239,8 +197,6 @@ namespace Imgaste
 		{
 		case HostingService::ImagebinCa:
 			return std::make_unique<ImagebinWorker> ();
-		case HostingService::SavepicRu:
-			return std::make_unique<SavepicWorker> ();
 		case HostingService::PomfCat:
 			return std::make_unique<PomfLikeWorker> ("https://a.pomf.cat/",
 					QUrl { "https://pomf.cat/upload.php" });
