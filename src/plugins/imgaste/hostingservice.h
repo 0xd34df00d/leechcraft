@@ -51,7 +51,6 @@ namespace Imgaste
 	{
 		ImagebinCa,
 		PomfCat,
-		MixtapeMoe
 	};
 
 	struct ImageInfo
