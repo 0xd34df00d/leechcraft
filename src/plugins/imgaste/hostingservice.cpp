@@ -71,8 +71,6 @@ namespace Imgaste
 	{
 		switch (s)
 		{
-		case HostingService::DumpBitcheeseNet:
-			return { "dump.bitcheese.net", MakeChecker (20_mib) };
 		case HostingService::ImagebinCa:
 			return { "imagebin.ca", MakeChecker (15_mib) };
 		case HostingService::SavepicRu:
@@ -104,7 +102,6 @@ namespace Imgaste
 		{
 			HostingService::PomfCat,
 			HostingService::MixtapeMoe,
-			HostingService::DumpBitcheeseNet,
 			HostingService::ImagebinCa,
 			HostingService::SavepicRu
 		};
@@ -205,29 +202,6 @@ namespace Imgaste
 			}
 		};
 
-		struct BitcheeseWorker final : Worker
-		{
-			QNetworkReply* Post (const QByteArray& data, const QString& format,
-					QNetworkAccessManager *am) const override
-			{
-				QUrl url ("http://dump.bitcheese.net/upload-image");
-
-				RequestBuilder builder;
-				builder.AddFile (format, "file", data);
-
-				const QByteArray& formed = builder.Build () + "\r\n";
-
-				return am->post (PrefillRequest (url, builder), formed);
-			}
-
-			Result_t GetLink (const QString&, const Headers_t& headers) const override
-			{
-				QString str = headers ["Location"].value (0);
-				str.chop (8);
-				return Result_t::Right (str);
-			}
-		};
-
 		struct PomfLikeWorker final : Worker
 		{
 			const QString Prefix_;
@@ -263,8 +237,6 @@ namespace Imgaste
 	{
 		switch (s)
 		{
-		case HostingService::DumpBitcheeseNet:
-			return std::make_unique<BitcheeseWorker> ();
 		case HostingService::ImagebinCa:
 			return std::make_unique<ImagebinWorker> ();
 		case HostingService::SavepicRu:
