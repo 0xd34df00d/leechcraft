@@ -46,4 +46,4 @@ if (UNIX AND NOT APPLE)
 	install (FILES freedesktop/leechcraft-monocle-pdf-qt5.desktop DESTINATION share/applications)
 endif ()
 
-FindQtLibs (leechcraft_monocle_pdf Concurrent Gui)
+FindQtLibs (leechcraft_monocle_pdf Concurrent Gui Xml)
