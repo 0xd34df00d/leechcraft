@@ -45,8 +45,6 @@ namespace LC::Imgaste
 
 	void RequestBuilder::AddPair (const QString& name, const QString& value)
 	{
-		Built_.clear ();
-
 		Result_ += "--";
 		Result_ += Boundary_;
 		Result_ += "\r\n";
@@ -61,8 +59,6 @@ namespace LC::Imgaste
 	void RequestBuilder::AddFile (const QString& format,
 			const QString& name, const QByteArray& imageData)
 	{
-		Built_.clear ();
-
 		Result_ += "--";
 		Result_ += Boundary_;
 		Result_ += "\r\n";
@@ -86,18 +82,14 @@ namespace LC::Imgaste
 		Result_ += "\r\n";
 	}
 
+	namespace
+	{
+		static const QByteArray Separator { "--" };
+	}
+
 	QByteArray RequestBuilder::Build () const
 	{
-		if (!Built_.isEmpty ())
-			return Built_;
-
-		Built_ = Result_;
-
-		Built_ += "--";
-		Built_ += Boundary_;
-		Built_ += "--";
-
-		return Built_;
+		return Result_ + Separator + Boundary_ + Separator;
 	}
 
 	int RequestBuilder::Size () const
