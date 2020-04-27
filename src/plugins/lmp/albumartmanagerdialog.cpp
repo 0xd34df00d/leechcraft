@@ -74,7 +74,6 @@ namespace LMP
 	, AAMgr_ (aamgr)
 	, Model_ (new QStandardItemModel (this))
 	, SourceInfo_ ({ artist, album })
-	, RequestScheduled_ (false)
 	{
 		Ui_.setupUi (this);
 		Ui_.ArtistLine_->setText (artist);

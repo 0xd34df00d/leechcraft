@@ -54,7 +54,7 @@ namespace LMP
 
 		const Media::AlbumInfo SourceInfo_;
 
-		bool RequestScheduled_;
+		bool RequestScheduled_ = false;
 	public:
 		AlbumArtManagerDialog (const QString& artist, const QString& album, AlbumArtManager*, QWidget* = 0);
 
