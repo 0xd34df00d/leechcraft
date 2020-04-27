@@ -40,7 +40,7 @@ namespace LC::Imgaste
 		rnd = rnd.left (55);
 
 		Boundary_ = "----------";
-		Boundary_ += rnd;
+		Boundary_ += std::move (rnd).toLatin1 ();
 	}
 
 	void RequestBuilder::AddPair (const QString& name, const QString& value)

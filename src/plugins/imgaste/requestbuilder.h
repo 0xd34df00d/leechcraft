@@ -37,7 +37,7 @@ namespace LC::Imgaste
 	{
 		QByteArray Result_;
 		mutable QByteArray Built_;
-		QString Boundary_;
+		QByteArray Boundary_;
 	public:
 		RequestBuilder ();
 
