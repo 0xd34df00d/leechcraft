@@ -100,6 +100,11 @@ namespace LC::Imgaste
 		return Built_;
 	}
 
+	int RequestBuilder::Size () const
+	{
+		return Result_.size () + Boundary_.size () + 2 * Separator.size ();
+	}
+
 	QString RequestBuilder::GetBoundary () const
 	{
 		return Boundary_;

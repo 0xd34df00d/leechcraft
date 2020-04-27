@@ -45,6 +45,7 @@ namespace LC::Imgaste
 		void AddFile (const QString&, const QString&, const QByteArray&);
 
 		QByteArray Build () const;
+		int Size () const;
 		QString GetBoundary () const;
 	};
 }

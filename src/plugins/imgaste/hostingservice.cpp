@@ -106,8 +106,7 @@ namespace LC::Imgaste
 			QNetworkRequest request { url };
 			request.setHeader (QNetworkRequest::ContentTypeHeader,
 					QString ("multipart/form-data; boundary=" + builder.GetBoundary ()));
-			request.setHeader (QNetworkRequest::ContentLengthHeader,
-					QString::number (builder.Build ().size ()));
+			request.setHeader (QNetworkRequest::ContentLengthHeader, QString::number (builder.Size ()));
 			return request;
 		}
 
