@@ -38,9 +38,7 @@
 #include <util/sll/unreachable.h>
 #include "requestbuilder.h"
 
-namespace LC
-{
-namespace Imgaste
+namespace LC::Imgaste
 {
 	bool operator< (HostingService s1, HostingService s2)
 	{
@@ -103,8 +101,7 @@ namespace Imgaste
 
 	namespace
 	{
-		QNetworkRequest PrefillRequest (const QUrl& url,
-				const RequestBuilder& builder)
+		QNetworkRequest PrefillRequest (const QUrl& url, const RequestBuilder& builder)
 		{
 			QNetworkRequest request { url };
 			request.setHeader (QNetworkRequest::ContentTypeHeader,
@@ -201,5 +198,4 @@ namespace Imgaste
 
 		Util::Unreachable ();
 	}
-}
 }

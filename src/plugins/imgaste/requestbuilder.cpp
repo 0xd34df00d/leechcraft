@@ -30,9 +30,7 @@
 #include "requestbuilder.h"
 #include <QUuid>
 
-namespace LC
-{
-namespace Imgaste
+namespace LC::Imgaste
 {
 	RequestBuilder::RequestBuilder ()
 	{
@@ -106,5 +104,4 @@ namespace Imgaste
 	{
 		return Boundary_;
 	}
-}
 }

@@ -38,9 +38,7 @@
 #include <util/util.h>
 #include <util/network/handlenetworkreply.h>
 
-namespace LC
-{
-namespace Imgaste
+namespace LC::Imgaste
 {
 	Poster::Poster (HostingService service,
 			const QByteArray& data,
@@ -114,5 +112,4 @@ namespace Imgaste
 	{
 		return Promise_.future ();
 	}
-}
 }

@@ -38,9 +38,7 @@
 class QAbstractItemModel;
 class QStandardItemModel;
 
-namespace LC
-{
-namespace Imgaste
+namespace LC::Imgaste
 {
 	class Plugin : public QObject
 				 , public IInfo
@@ -78,5 +76,4 @@ namespace Imgaste
 
 		void UploadImpl (const QByteArray&, const Entity&, const QString&);
 	};
-}
 }

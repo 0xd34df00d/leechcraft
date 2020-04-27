@@ -47,9 +47,7 @@
 #include "hostingservice.h"
 #include "poster.h"
 
-namespace LC
-{
-namespace Imgaste
+namespace LC::Imgaste
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
@@ -274,7 +272,6 @@ namespace Imgaste
 					}
 				};
 	}
-}
 }
 
 LC_EXPORT_PLUGIN (leechcraft_imgaste, LC::Imgaste::Plugin);

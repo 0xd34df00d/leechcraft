@@ -31,9 +31,7 @@
 
 #include <QString>
 
-namespace LC
-{
-namespace Imgaste
+namespace LC::Imgaste
 {
 	class RequestBuilder
 	{
@@ -49,5 +47,4 @@ namespace Imgaste
 		QByteArray Build () const;
 		QString GetBoundary () const;
 	};
-}
 }

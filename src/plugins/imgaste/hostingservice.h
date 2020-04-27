@@ -43,14 +43,13 @@ class QNetworkAccessManager;
 template<typename, typename>
 class QHash;
 
-namespace LC
-{
-namespace Imgaste
+namespace LC::Imgaste
 {
 	enum class HostingService
 	{
 		ImagebinCa,
 		PomfCat,
+		CatboxMoe,
 	};
 
 	struct ImageInfo
@@ -72,7 +71,7 @@ namespace Imgaste
 
 	struct Worker
 	{
-		virtual ~Worker () {}
+		virtual ~Worker () = default;
 
 		struct Error {};
 
@@ -88,5 +87,4 @@ namespace Imgaste
 	typedef std::unique_ptr<Worker> Worker_ptr;
 
 	Worker_ptr MakeWorker (HostingService);
-}
 }
