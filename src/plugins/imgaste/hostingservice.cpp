@@ -73,6 +73,8 @@ namespace LC::Imgaste
 			return { "imagebin.ca", MakeChecker (15_mib) };
 		case HostingService::PomfCat:
 			return { "pomf.cat", MakeChecker (75_mib) };
+		case HostingService::CatboxMoe:
+			return { "catbox.moe", MakeChecker (200_mib) };
 		}
 
 		Util::Unreachable ();
@@ -96,6 +98,7 @@ namespace LC::Imgaste
 		{
 			HostingService::PomfCat,
 			HostingService::ImagebinCa,
+			HostingService::CatboxMoe,
 		};
 	}
 
@@ -112,8 +115,7 @@ namespace LC::Imgaste
 
 		struct ImagebinWorker final : Worker
 		{
-			QNetworkReply* Post (const QByteArray& data, const QString& format,
-					QNetworkAccessManager *am) const override
+			QNetworkReply* Post (const QByteArray& data, const QString& fmt, QNetworkAccessManager *am) const override
 			{
 				QUrl url { "https://imagebin.ca/upload.php" };
 
@@ -125,7 +127,7 @@ namespace LC::Imgaste
 				builder.AddPair ("tags", "leechcraft");
 				builder.AddPair ("category", "general");
 				builder.AddPair ("private", "true");
-				builder.AddFile (format, "file", data);
+				builder.AddFile (fmt, "file", data);
 
 				QByteArray formed = builder.Build ();
 
@@ -153,6 +155,32 @@ namespace LC::Imgaste
 			}
 		};
 
+		struct CatboxWorker final : Worker
+		{
+			QNetworkReply* Post (const QByteArray& data, const QString& fmt, QNetworkAccessManager *am) const override
+			{
+				QUrl url { "https://catbox.moe/user/api.php" };
+
+				RequestBuilder builder;
+				builder.AddPair ("reqtype", "fileupload");
+				builder.AddPair ("userhash", {});
+				builder.AddFile (fmt, "fileToUpload", data);
+
+				auto formed = builder.Build ();
+
+				auto request = PrefillRequest (url, builder);
+				request.setRawHeader ("Origin", "https://catbox.moe");
+				request.setRawHeader ("Referer", "https://catbox.moe/");
+				return am->post (request, formed);
+			}
+
+			Result_t GetLink (const QString& contents, const Headers_t&) const override
+			{
+				qDebug () << Q_FUNC_INFO << contents;
+				return Result_t::Right (contents);
+			}
+		};
+
 		struct PomfLikeWorker final : Worker
 		{
 			const QString Prefix_;
@@ -164,11 +192,10 @@ namespace LC::Imgaste
 			{
 			}
 
-			QNetworkReply* Post (const QByteArray& data, const QString& format,
-					QNetworkAccessManager *am) const override
+			QNetworkReply* Post (const QByteArray& data, const QString& fmt, QNetworkAccessManager *am) const override
 			{
 				RequestBuilder builder;
-				builder.AddFile (format, "files[]", data);
+				builder.AddFile (fmt, "files[]", data);
 
 				return am->post (PrefillRequest (UploadUrl_, builder), builder.Build ());
 			}
@@ -193,6 +220,8 @@ namespace LC::Imgaste
 		case HostingService::PomfCat:
 			return std::make_unique<PomfLikeWorker> ("https://a.pomf.cat/",
 					QUrl { "https://pomf.cat/upload.php" });
+		case HostingService::CatboxMoe:
+			return std::make_unique<CatboxWorker> ();
 		}
 
 		Util::Unreachable ();
