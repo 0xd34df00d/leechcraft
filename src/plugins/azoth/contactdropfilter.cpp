@@ -232,7 +232,7 @@ namespace Azoth
 		bool ok = false;
 		const auto& choice = QInputDialog::getItem (ChatTab_,
 				tr ("Send image"),
-				tr ("How exactly would you like to send the image?"),
+				tr ("How would you like to send the image?"),
 				choiceItems,
 				0,
 				false,
