@@ -32,7 +32,6 @@
 #include <optional>
 #include <variant>
 #include <QObject>
-#include <QMap>
 #include <QFutureInterface>
 #include <QNetworkReply>
 #include <util/sll/eitherfwd.h>
