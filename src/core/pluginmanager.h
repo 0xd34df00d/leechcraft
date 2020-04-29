@@ -97,14 +97,14 @@ namespace LC
 		typedef PluginsContainer_t::size_type Size_t;
 		PluginManager (const QStringList& pluginPaths, QObject *parent = 0);
 
-		int columnCount (const QModelIndex& = QModelIndex ()) const;
-		QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;
-		Qt::ItemFlags flags (const QModelIndex&) const;
-		QVariant headerData (int, Qt::Orientation, int = Qt::DisplayRole) const;
-		QModelIndex index (int, int, const QModelIndex& = QModelIndex()) const;
-		QModelIndex parent (const QModelIndex&) const;
-		int rowCount (const QModelIndex& = QModelIndex ()) const;
-		bool setData (const QModelIndex&, const QVariant&, int);
+		int columnCount (const QModelIndex& = QModelIndex ()) const override;
+		QVariant data (const QModelIndex&, int = Qt::DisplayRole) const override;
+		Qt::ItemFlags flags (const QModelIndex&) const override;
+		QVariant headerData (int, Qt::Orientation, int = Qt::DisplayRole) const override;
+		QModelIndex index (int, int, const QModelIndex& = QModelIndex()) const override;
+		QModelIndex parent (const QModelIndex&) const override;
+		int rowCount (const QModelIndex& = QModelIndex ()) const override;
+		bool setData (const QModelIndex&, const QVariant&, int) override;
 
 		Size_t GetSize () const;
 		void Init (bool safeMode);
@@ -113,24 +113,24 @@ namespace LC
 		QString Info (const Size_t& pos) const;
 
 		QList<Loaders::IPluginLoader_ptr> GetAllAvailable () const;
-		QObjectList GetAllPlugins () const;
-		QString GetPluginLibraryPath (const QObject*) const;
+		QObjectList GetAllPlugins () const override;
+		QString GetPluginLibraryPath (const QObject*) const override;
 
-		QObject* GetPluginByID (const QByteArray&) const;
+		QObject* GetPluginByID (const QByteArray&) const override;
 
 		QObjectList GetFirstLevels (const QByteArray& pclass) const;
 		QObjectList GetFirstLevels (const QSet<QByteArray>& pclasses) const;
 
-		void InjectPlugin (QObject *object);
-		void ReleasePlugin (QObject *object);
+		void InjectPlugin (QObject *object) override;
+		void ReleasePlugin (QObject *object) override;
 
 		void SetAllPlugins (Qt::CheckState);
 
-		QObject* GetQObject ();
+		QObject* GetQObject () override;
 
-		void OpenSettings (QObject*);
+		void OpenSettings (QObject*) override;
 
-		ILoadProgressReporter_ptr CreateLoadProgressReporter (QObject*);
+		ILoadProgressReporter_ptr CreateLoadProgressReporter (QObject*) override;
 
 
 		const QStringList& GetPluginLoadErrors () const;
