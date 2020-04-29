@@ -64,7 +64,6 @@ namespace LC
 
 		// All plugins ever seen
 		PluginsContainer_t AvailablePlugins_;
-		QMap<QString, PluginsContainer_t::const_iterator> FeatureProviders_;
 
 		QStringList Headers_;
 		QIcon DefaultPluginIcon_;
@@ -133,7 +132,6 @@ namespace LC
 
 		ILoadProgressReporter_ptr CreateLoadProgressReporter (QObject*);
 
-		QObject* GetProvider (const QString&) const;
 
 		const QStringList& GetPluginLoadErrors () const;
 

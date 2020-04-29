@@ -591,7 +591,6 @@ namespace LC
 		qDebug () << Q_FUNC_INFO
 				<< "destroying loaders...";
 		PluginTreeBuilder_.reset ();
-		FeatureProviders_.clear ();
 		AvailablePlugins_.clear ();
 		Obj2Loader_.clear ();
 		Plugins_.clear ();
@@ -773,13 +772,6 @@ namespace LC
 	ILoadProgressReporter_ptr PluginManager::CreateLoadProgressReporter (QObject*)
 	{
 		return std::make_shared<LoadProgressReporter> ();
-	}
-
-	QObject* PluginManager::GetProvider (const QString& feature) const
-	{
-		if (!FeatureProviders_.contains (feature))
-			return nullptr;
-		return (*FeatureProviders_ [feature])->Instance ();
 	}
 
 	const QStringList& PluginManager::GetPluginLoadErrors () const
