@@ -30,7 +30,6 @@
 #pragma once
 
 #include <QObject>
-#include <QMap>
 #include <QString>
 #include <QDir>
 #include <QHash>
@@ -65,19 +64,19 @@ namespace LC
 	public:
 		static IconThemeEngine& Instance ();
 
-		QIcon GetIcon (const QString&, const QString&);
-		void UpdateIconset (const QList<QAction*>&);
+		QIcon GetIcon (const QString&, const QString&) override;
+		void UpdateIconset (const QList<QAction*>&) override;
 		void UpdateIconset (const QList<QPushButton*>&);
 		void UpdateIconset (const QList<QTabWidget*>&);
 		void UpdateIconset (const QList<QToolButton*>&);
 
-		void ManageWidget (QWidget*);
+		void ManageWidget (QWidget*) override;
 
-		void RegisterChangeHandler (const std::function<void ()>&);
+		void RegisterChangeHandler (const std::function<void ()>&) override;
 
 		QStringList ListIcons () const;
 	protected:
-		bool eventFilter (QObject*, QEvent*);
+		bool eventFilter (QObject*, QEvent*) override;
 	private:
 		template<typename T>
 		void SetIcon (T);
