@@ -152,35 +152,35 @@ namespace LC
 			switch (role)
 			{
 			case Qt::DisplayRole:
-				{
-					QSettings settings (QCoreApplication::organizationName (),
-							QCoreApplication::applicationName () + "-pg");
-					settings.beginGroup ("Plugins");
-					settings.beginGroup (AvailablePlugins_.at (index.row ())->GetFileName ());
-					QVariant result = settings.value ("Name");
-					settings.endGroup ();
-					settings.endGroup ();
-					return result;
-				}
+			{
+				QSettings settings (QCoreApplication::organizationName (),
+						QCoreApplication::applicationName () + "-pg");
+				settings.beginGroup ("Plugins");
+				settings.beginGroup (AvailablePlugins_.at (index.row ())->GetFileName ());
+				QVariant result = settings.value ("Name");
+				settings.endGroup ();
+				settings.endGroup ();
+				return result;
+			}
 			case Qt::DecorationRole:
-				{
-					const auto& loader = AvailablePlugins_.at (index.row ());
-					if (!loader->IsLoaded ())
-						return DefaultPluginIcon_;
-					const auto& res = qobject_cast<IInfo*> (loader->Instance ())->GetIcon ();
-					return res.isNull () ? DefaultPluginIcon_ : res;
-				}
+			{
+				const auto& loader = AvailablePlugins_.at (index.row ());
+				if (!loader->IsLoaded ())
+					return DefaultPluginIcon_;
+				const auto& res = qobject_cast<IInfo*> (loader->Instance ())->GetIcon ();
+				return res.isNull () ? DefaultPluginIcon_ : res;
+			}
 			case Qt::CheckStateRole:
-				{
-					QSettings settings (QCoreApplication::organizationName (),
-							QCoreApplication::applicationName () + "-pg");
-					settings.beginGroup ("Plugins");
-					settings.beginGroup (AvailablePlugins_.at (index.row ())->GetFileName ());
-					bool result = settings.value ("AllowLoad", true).toBool ();
-					settings.endGroup ();
-					settings.endGroup ();
-					return result ? Qt::Checked : Qt::Unchecked;
-				}
+			{
+				QSettings settings (QCoreApplication::organizationName (),
+						QCoreApplication::applicationName () + "-pg");
+				settings.beginGroup ("Plugins");
+				settings.beginGroup (AvailablePlugins_.at (index.row ())->GetFileName ());
+				bool result = settings.value ("AllowLoad", true).toBool ();
+				settings.endGroup ();
+				settings.endGroup ();
+				return result ? Qt::Checked : Qt::Unchecked;
+			}
 			case Qt::ForegroundRole:
 				return QApplication::palette ()
 					.brush (AvailablePlugins_.at (index.row ())->IsLoaded () ?
@@ -778,7 +778,7 @@ namespace LC
 	QObject* PluginManager::GetProvider (const QString& feature) const
 	{
 		if (!FeatureProviders_.contains (feature))
-			return 0;
+			return nullptr;
 		return (*FeatureProviders_ [feature])->Instance ();
 	}
 
