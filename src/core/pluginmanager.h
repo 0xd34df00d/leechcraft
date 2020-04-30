@@ -132,6 +132,7 @@ namespace LC
 
 		ILoadProgressReporter_ptr CreateLoadProgressReporter (QObject*) override;
 
+		QIcon GetPluginIcon (QObject*) override;
 
 		const QStringList& GetPluginLoadErrors () const;
 

@@ -774,6 +774,11 @@ namespace LC
 		return std::make_shared<LoadProgressReporter> ();
 	}
 
+	QIcon PluginManager::GetPluginIcon (QObject *obj)
+	{
+		return qobject_cast<IInfo*> (obj)->GetIcon ();
+	}
+
 	const QStringList& PluginManager::GetPluginLoadErrors () const
 	{
 		return PluginLoadErrors_;

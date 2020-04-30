@@ -36,6 +36,8 @@
 class ILoadProgressReporter;
 using ILoadProgressReporter_ptr = std::shared_ptr<ILoadProgressReporter>;
 
+class QIcon;
+
 /** @brief This interface is used to represent LeechCraft's global
  * plugin manager.
  *
@@ -208,6 +210,8 @@ public:
 	 * @sa ILoadProgressReporter
 	 */
 	virtual ILoadProgressReporter_ptr CreateLoadProgressReporter (QObject *thisPlugin) = 0;
+
+	virtual QIcon GetPluginIcon (QObject*) = 0;
 };
 
 Q_DECLARE_INTERFACE (IPluginsManager, "org.Deviant.LeechCraft.IPluginsManager/1.0")
