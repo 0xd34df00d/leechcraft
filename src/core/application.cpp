@@ -453,20 +453,22 @@ namespace LC
 
 	void Application::InitPluginsIconset ()
 	{
-		QStringList paths { "global_icons/plugins/default", ":/" };
+		QStringList paths;
 
-		auto prependPaths = [&paths] (const QString& iconset)
+		auto appendPaths = [&paths] (const QString& iconset)
 		{
 			const auto& pluginsPath = "global_icons/plugins/" + iconset;
 			for (const auto& cand : Util::GetPathCandidates (Util::SysPath::Share, pluginsPath))
-				paths.prepend (cand);
+				paths.append (cand);
 		};
-
-		prependPaths ("default");
 
 		const auto& pluginsIconset = XmlSettingsManager::Instance ()->property ("PluginsIconset").toString ();
 		if (pluginsIconset != "Default")
-			prependPaths (pluginsIconset);
+			appendPaths (pluginsIconset);
+
+		appendPaths ("default");
+
+		paths.append (":/");
 
 		QDir::setSearchPaths ("lcicons", paths);
 	}
