@@ -45,7 +45,6 @@ namespace LMP
 		Ui::SeekSlider Ui_;
 
 		SourceObject * const Source_;
-		int CurrentTotal_;
 
 		bool IgnoreNextValChange_ = false;
 
