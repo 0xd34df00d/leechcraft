@@ -47,9 +47,9 @@ namespace LMP
 		SourceObject * const Source_;
 		int CurrentTotal_;
 
-		bool IgnoreNextValChange_;
+		bool IgnoreNextValChange_ = false;
 
-		bool IsPressed_;
+		bool IsPressed_ = false;
 	public:
 		SeekSlider (SourceObject*, QWidget* = 0);
 	private slots:

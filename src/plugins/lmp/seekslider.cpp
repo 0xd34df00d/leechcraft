@@ -39,8 +39,6 @@ namespace LMP
 	SeekSlider::SeekSlider (SourceObject *source, QWidget *parent)
 	: QWidget (parent)
 	, Source_ (source)
-	, IgnoreNextValChange_ (false)
-	, IsPressed_ (false)
 	{
 		Ui_.setupUi (this);
 
