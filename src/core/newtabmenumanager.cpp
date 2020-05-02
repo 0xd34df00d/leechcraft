@@ -151,7 +151,7 @@ namespace LC
 	void NewTabMenuManager::HideAction (ITabWidget *itw)
 	{
 		const auto pObj = itw->ParentMultiTabs ();
-		const auto& tabClass = itw->GetTabClassInfo ().TabClass_;
+		const auto tabClass = itw->GetTabClassInfo ().TabClass_;
 		for (auto action : NewTabMenu_->actions ())
 			if (action->property ("TabClass").toByteArray () == tabClass &&
 					action->property ("PluginObj").value<QObject*> () == pObj)
