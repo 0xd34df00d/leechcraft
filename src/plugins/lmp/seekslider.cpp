@@ -43,38 +43,36 @@ namespace LMP
 		Ui_.setupUi (this);
 
 		connect (source,
-				SIGNAL (currentSourceChanged (AudioSource)),
+				&SourceObject::currentSourceChanged,
 				this,
-				SLOT (updateRanges ()));
+				&SeekSlider::UpdateRanges);
 		connect (source,
-				SIGNAL (totalTimeChanged (qint64)),
+				&SourceObject::totalTimeChanged,
 				this,
-				SLOT (updateRanges ()));
+				&SeekSlider::UpdateRanges);
 		connect (source,
-				SIGNAL (tick (qint64)),
+				&SourceObject::tick,
 				this,
-				SLOT (handleCurrentPlayTime (qint64)));
+				&SeekSlider::HandleCurrentPlayTime);
 		connect (source,
-				SIGNAL (stateChanged (SourceState, SourceState)),
+				&SourceObject::stateChanged,
 				this,
-				SLOT (handleStateChanged ()));
+				&SeekSlider::HandleStateChanged);
 
 		connect (Ui_.Slider_,
-				SIGNAL (sliderPressed ()),
-				this,
-				SLOT (handleSliderPressed ()));
+				&QSlider::sliderPressed,
+				[this] { IsPressed_ = true; });
 		connect (Ui_.Slider_,
-				SIGNAL (sliderReleased ()),
-				this,
-				SLOT (handleSliderReleased ()));
+				&QSlider::sliderReleased,
+				[this] { IsPressed_ = false; });
 	}
 
-	void SeekSlider::handleCurrentPlayTime (qint64 time)
+	void SeekSlider::HandleCurrentPlayTime (qint64 time)
 	{
-		auto niceTime = [] (qint64 time) -> QString
+		auto niceTime = [] (qint64 time)
 		{
 			if (!time)
-				return {};
+				return QString {};
 
 			auto played = Util::MakeTimeFromLong (time / 1000);
 			if (played.startsWith ("00:"))
@@ -90,7 +88,7 @@ namespace LMP
 			Ui_.Slider_->setValue (time / 1000);
 	}
 
-	void SeekSlider::updateRanges ()
+	void SeekSlider::UpdateRanges ()
 	{
 		const auto newMax = Source_->GetTotalTime () / 1000;
 		if (newMax <= Ui_.Slider_->value ())
@@ -99,7 +97,7 @@ namespace LMP
 		Ui_.Slider_->setMaximum (newMax);
 	}
 
-	void SeekSlider::handleStateChanged ()
+	void SeekSlider::HandleStateChanged ()
 	{
 		const auto state = Source_->GetState ();
 		switch (state)
@@ -107,8 +105,8 @@ namespace LMP
 		case SourceState::Buffering:
 		case SourceState::Playing:
 		case SourceState::Paused:
-			updateRanges ();
-			handleCurrentPlayTime (Source_->GetCurrentTime ());
+			UpdateRanges ();
+			HandleCurrentPlayTime (Source_->GetCurrentTime ());
 			Ui_.Slider_->setEnabled (true);
 			break;
 		default:
@@ -131,16 +129,6 @@ namespace LMP
 		}
 
 		Source_->Seek (value);
-	}
-
-	void SeekSlider::handleSliderPressed ()
-	{
-		IsPressed_ = true;
-	}
-
-	void SeekSlider::handleSliderReleased ()
-	{
-		IsPressed_ = false;
 	}
 }
 }

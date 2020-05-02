@@ -50,15 +50,13 @@ namespace LMP
 
 		bool IsPressed_ = false;
 	public:
-		SeekSlider (SourceObject*, QWidget* = 0);
+		explicit SeekSlider (SourceObject*, QWidget* = nullptr);
+	private:
+		void HandleCurrentPlayTime (qint64);
+		void UpdateRanges ();
+		void HandleStateChanged ();
 	private slots:
-		void handleCurrentPlayTime (qint64);
-		void updateRanges ();
-		void handleStateChanged ();
 		void on_Slider__valueChanged (int);
-
-		void handleSliderPressed ();
-		void handleSliderReleased ();
 	};
 }
 }
