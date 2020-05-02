@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef NEWTABMENUMANAGER_H
-#define NEWTABMENUMANAGER_H
+#pragma once
+
 #include <QObject>
 #include <QMap>
 #include <QString>
@@ -51,7 +51,7 @@ namespace LC
 		QSet<QChar> UsedAccelerators_;
 		QMap<QObject*, QMap<QString, QAction*>> HiddenActions_;
 	public:
-		NewTabMenuManager (QObject* = 0);
+		explicit NewTabMenuManager (QObject* = nullptr);
 
 		void AddObject (QObject*);
 		void SetToolbarActions (QList<QList<QAction*>>);
@@ -68,11 +68,8 @@ namespace LC
 		void OpenTab (QAction*);
 		void InsertAction (QAction*);
 		void InsertActionWParent (QAction*, QObject*, bool sub);
-	private slots:
-		void handleNewTabRequested ();
 	signals:
 		void restoreTabActionAdded (QAction*);
 	};
 }
 
-#endif

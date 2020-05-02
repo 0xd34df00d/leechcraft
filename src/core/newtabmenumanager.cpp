@@ -48,28 +48,27 @@ namespace LC
 
 	void NewTabMenuManager::AddObject (QObject *obj)
 	{
-		IHaveTabs *imt = qobject_cast<IHaveTabs*> (obj);
+		const auto imt = qobject_cast<IHaveTabs*> (obj);
 		if (!imt || RegisteredMultiTabs_.contains (obj))
 			return;
 
-		IInfo *ii = qobject_cast<IInfo*> (obj);
+		const auto ii = qobject_cast<IInfo*> (obj);
 
 		for (const auto& info : imt->GetTabClasses ())
 		{
 			if (!(info.Features_ & TFOpenableByRequest))
 				continue;
 
-			QAction *newAct = new QAction (info.Icon_,
+			const auto newAct = new QAction (info.Icon_,
 					AccelerateName (info.VisibleName_),
 					this);
 			connect (newAct,
-					SIGNAL (triggered ()),
+					&QAction::triggered,
 					this,
-					SLOT (handleNewTabRequested ()));
+					[this, newAct] { OpenTab (newAct); });
 			newAct->setProperty ("PluginObj", QVariant::fromValue<QObject*> (obj));
 			newAct->setProperty ("TabClass", info.TabClass_);
-			newAct->setProperty ("Single",
-					static_cast<bool> (info.Features_ & TFSingle));
+			newAct->setProperty ("Single", static_cast<bool> (info.Features_ & TFSingle));
 			newAct->setStatusTip (info.Description_);
 			newAct->setToolTip (info.Description_);
 
@@ -77,7 +76,7 @@ namespace LC
 
 			if (info.Features_ & TFByDefault)
 			{
-				const QByteArray& id = ii->GetUniqueID () + '|' + info.TabClass_;
+				const auto& id = ii->GetUniqueID () + '|' + info.TabClass_;
 				const bool hide = XmlSettingsManager::Instance ()->Property ("Hide" + id, false).toBool ();
 				if (!hide)
 				{
@@ -113,8 +112,8 @@ namespace LC
 
 	void NewTabMenuManager::SingleRemoved (ITabWidget *itw)
 	{
-		const QByteArray& tabClass = itw->GetTabClassInfo ().TabClass_;
-		QAction *act = HiddenActions_ [itw->ParentMultiTabs ()] [tabClass];
+		const auto& tabClass = itw->GetTabClassInfo ().TabClass_;
+		const auto act = HiddenActions_ [itw->ParentMultiTabs ()] [tabClass];
 		if (!act)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -151,7 +150,7 @@ namespace LC
 
 	void NewTabMenuManager::HideAction (ITabWidget *itw)
 	{
-		QObject *pObj = itw->ParentMultiTabs ();
+		const auto pObj = itw->ParentMultiTabs ();
 		const auto& tabClass = itw->GetTabClassInfo ().TabClass_;
 		for (auto action : NewTabMenu_->actions ())
 			if (action->property ("TabClass").toByteArray () == tabClass &&
@@ -184,7 +183,7 @@ namespace LC
 		if (!hide)
 			return;
 
-		IInfo *ii = qobject_cast<IInfo*> (obj);
+		const auto ii = qobject_cast<IInfo*> (obj);
 		if (!ii)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -199,8 +198,8 @@ namespace LC
 
 	void NewTabMenuManager::OpenTab (QAction *action)
 	{
-		QObject *pObj = action->property ("PluginObj").value<QObject*> ();
-		IHaveTabs *tabs = qobject_cast<IHaveTabs*> (pObj);
+		const auto pObj = action->property ("PluginObj").value<QObject*> ();
+		const auto tabs = qobject_cast<IHaveTabs*> (pObj);
 		if (!tabs)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -209,7 +208,7 @@ namespace LC
 			return;
 		}
 
-		const QByteArray& tabClass = action->property ("TabClass").toByteArray ();
+		const auto& tabClass = action->property ("TabClass").toByteArray ();
 		tabs->TabOpenRequested (tabClass);
 
 		const auto& classes = tabs->GetTabClasses ();
@@ -287,19 +286,5 @@ namespace LC
 		}
 
 		rootMenu->insertAction (FindActionBefore (act->text (), rootMenu), act);
-	}
-
-	void NewTabMenuManager::handleNewTabRequested ()
-	{
-		QAction *action = qobject_cast<QAction*> (sender ());
-		if (!action)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< sender ()
-					<< "is not an action";
-			return;
-		}
-
-		OpenTab (action);
 	}
 }
