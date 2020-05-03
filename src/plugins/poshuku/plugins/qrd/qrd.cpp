@@ -142,7 +142,7 @@ namespace QRd
 						code->data [y * width + x] & 0x01);
 
 		const auto& geom = Util::AvailableGeometry (QCursor::pos ());
-		const auto& dim = std::min (geom.width (), geom.height ());
+		const auto dim = std::min (geom.width (), geom.height ());
 		if (dim < fullWidth)
 		{
 			QMessageBox::critical (nullptr,
