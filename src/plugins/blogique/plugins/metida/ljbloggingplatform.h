@@ -52,7 +52,7 @@ namespace Metida
 		QObject * const ParentBlogginPlatfromPlugin_;
 		const ICoreProxy_ptr Proxy_;
 
-		QObject *PluginProxy_;
+		QObject *PluginProxy_ = nullptr;
 		QList<LJAccount*> LJAccounts_;
 
 		QAction *LJUser_;

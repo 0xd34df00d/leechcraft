@@ -57,7 +57,6 @@ namespace Metida
 	: Storage_ (storage)
 	, ParentBlogginPlatfromPlugin_ (parent)
 	, Proxy_ (proxy)
-	, PluginProxy_ (0)
 	, LJUser_ (new QAction (proxy->GetIconThemeManager ()->GetIcon ("user-properties"), tr ("Add LJ user"), this))
 	, LJPoll_ (new QAction (proxy->GetIconThemeManager ()->GetIcon ("office-chart-pie"), tr ("Create poll"), this))
 	, LJCut_ (new QAction (proxy->GetIconThemeManager ()->GetIcon ("user-properties"), tr ("Insert LJ cut"), this))
