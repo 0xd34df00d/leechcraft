@@ -352,8 +352,12 @@ namespace Metida
 			elem.setAttribute ("whovote", whoVote);
 			elem.setAttribute ("name", name);
 			QDomDocument doc;
-			doc.setContent (questions);
-			elem.appendChild (doc.documentElement ());
+			if (!doc.setContent (questions))
+				qWarning () << Q_FUNC_INFO
+						<< "unable to parse poll questions from"
+						<< questions;
+			else
+				elem.appendChild (doc.documentElement ());
 
 			return true;
 		};
