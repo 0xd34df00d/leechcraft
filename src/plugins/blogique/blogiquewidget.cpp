@@ -391,19 +391,22 @@ namespace Blogique
 
 		ToolBar_->addSeparator ();
 
-		QList<QAction*> editorActions;
 		if (PostEdit_)
 		{
-			editorActions << PostEdit_->GetEditorAction (EditorAction::Find);
-			editorActions << PostEdit_->GetEditorAction (EditorAction::Replace);
-			editorActions.removeAll (0);
-		}
-		if (!editorActions.isEmpty ())
-		{
-			PostEdit_->AppendSeparator ();
-			for (auto action : editorActions)
-				PostEdit_->AppendAction (action);
-			PostEdit_->AppendSeparator ();
+			QList<QAction*> editorActions
+			{
+				PostEdit_->GetEditorAction (EditorAction::Find),
+				PostEdit_->GetEditorAction (EditorAction::Replace)
+			};
+			editorActions.removeAll (nullptr);
+
+			if (!editorActions.isEmpty ())
+			{
+				PostEdit_->AppendSeparator ();
+				for (auto action : editorActions)
+					PostEdit_->AppendAction (action);
+				PostEdit_->AppendSeparator ();
+			}
 		}
 
 		for (IAccount *acc : Core::Instance ().GetAccounts ())
