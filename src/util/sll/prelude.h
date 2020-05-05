@@ -267,15 +267,5 @@ namespace Util
 	{
 		return [f = std::forward<F> (f)] (const auto& pair) { return std::invoke (f, pair.second); };
 	}
-
-	template<typename F>
-	auto Flip (F&& f)
-	{
-		return [f = std::forward<F> (f)] (auto&& left, auto&& right)
-		{
-			return f (std::forward<decltype (right)> (right),
-					std::forward<decltype (left)> (left));
-		};
-	}
 }
 }
