@@ -65,7 +65,7 @@ namespace LC::Poshuku::SpeedDial
 		auto GetSortedVec (const QHash<K, V>& hash)
 		{
 			std::vector<std::pair<K, V>> vec { hash.keyValueBegin (), hash.keyValueEnd () };
-			std::sort (vec.begin (), vec.end (), Util::Flip (Util::ComparingBy (Util::Snd)));
+			std::sort (vec.rbegin (), vec.rend (), Util::ComparingBy (Util::Snd));
 			return vec;
 		}
 
