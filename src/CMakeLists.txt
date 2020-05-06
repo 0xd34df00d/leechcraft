@@ -134,7 +134,7 @@ endmacro ()
 
 macro (QtAddResources outfiles)
 	set (RCCS)
-	QT5_ADD_RESOURCES (RCCS ${ARGN})
+	QT5_ADD_RESOURCES (RCCS ${ARGN} OPTIONS -compress-algo best -threshold 0)
 	set (${outfiles} ${${outfiles}} ${RCCS})
 endmacro ()
 
