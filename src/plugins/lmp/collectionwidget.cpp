@@ -105,17 +105,17 @@ namespace LMP
 		new PaletteFixerFilter (Ui_.CollectionTree_);
 
 		connect (Core::Instance ().GetLocalCollection (),
-				SIGNAL (scanStarted (int)),
+				&LocalCollection::scanStarted,
 				Ui_.ScanProgress_,
-				SLOT (setMaximum (int)));
+				&QProgressBar::setMaximum);
 		connect (Core::Instance ().GetLocalCollection (),
-				SIGNAL (scanProgressChanged (int)),
+				&LocalCollection::scanProgressChanged,
 				this,
-				SLOT (handleScanProgress (int)));
+				&CollectionWidget::HandleScanProgress);
 		connect (Core::Instance ().GetLocalCollection (),
-				SIGNAL (scanFinished ()),
+				&LocalCollection::scanFinished,
 				Ui_.ScanProgress_,
-				SLOT (hide ()));
+				&QProgressBar::hide);
 		Ui_.ScanProgress_->hide ();
 
 		Ui_.CollectionTree_->setItemDelegate (new CollectionDelegate (Ui_.CollectionTree_));
@@ -124,19 +124,19 @@ namespace LMP
 		Ui_.CollectionTree_->setModel (CollectionFilterModel_);
 
 		connect (Ui_.CollectionTree_,
-				SIGNAL (doubleClicked (QModelIndex)),
+				&QTreeView::doubleClicked,
 				this,
-				SLOT (loadFromCollection ()));
+				&CollectionWidget::LoadFromCollection);
 
 		connect (Ui_.CollectionFilter_,
-				SIGNAL (textChanged (QString)),
+				&QLineEdit::textChanged,
 				CollectionFilterModel_,
-				SLOT (setFilterFixedString (QString)));
+				&QSortFilterProxyModel::setFilterFixedString);
 
 		Core::Instance ().GetHookInterconnector ()->RegisterHookable (this);
 	}
 
-	void CollectionWidget::showCollectionTrackProps ()
+	void CollectionWidget::ShowCollectionTrackProps ()
 	{
 		const auto& index = Ui_.CollectionTree_->currentIndex ();
 		const auto& info = index.data (LocalCollectionModel::Role::TrackPath).toString ();
@@ -146,7 +146,7 @@ namespace LMP
 		AudioPropsWidget::MakeDialog ()->SetProps (info);
 	}
 
-	void CollectionWidget::showCollectionAlbumArt ()
+	void CollectionWidget::ShowCollectionAlbumArt ()
 	{
 		const auto& index = Ui_.CollectionTree_->currentIndex ();
 		const auto& path = index.data (LocalCollectionModel::Role::AlbumArt).toString ();
@@ -156,7 +156,7 @@ namespace LMP
 		ShowAlbumArt (path, QCursor::pos ());
 	}
 
-	void CollectionWidget::showAlbumArtManager ()
+	void CollectionWidget::ShowAlbumArtManager ()
 	{
 		auto aamgr = Core::Instance ().GetLocalCollection ()->GetAlbumArtManager ();
 
@@ -169,7 +169,7 @@ namespace LMP
 		dia->show ();
 	}
 
-	void CollectionWidget::showInArtistBrowser ()
+	void CollectionWidget::ShowInArtistBrowser ()
 	{
 		const auto& index = Ui_.CollectionTree_->currentIndex ();
 		const auto& artist = index.data (LocalCollectionModel::Role::ArtistName).toString ();
@@ -195,7 +195,7 @@ namespace LMP
 		}
 	}
 
-	void CollectionWidget::handleCollectionRemove ()
+	void CollectionWidget::HandleCollectionRemove ()
 	{
 		const auto& index = Ui_.CollectionTree_->currentIndex ();
 		const auto& paths = CollectFromModel<QString> (index, LocalCollectionModel::Role::TrackPath);
@@ -207,7 +207,7 @@ namespace LMP
 			collection->IgnoreTrack (path);
 	}
 
-	void CollectionWidget::handleCollectionDelete ()
+	void CollectionWidget::HandleCollectionDelete ()
 	{
 		const auto& index = Ui_.CollectionTree_->currentIndex ();
 		const auto& paths = CollectFromModel<QString> (index, LocalCollectionModel::Role::TrackPath);
@@ -227,7 +227,7 @@ namespace LMP
 			QFile::remove (path);
 	}
 
-	void CollectionWidget::loadFromCollection ()
+	void CollectionWidget::LoadFromCollection ()
 	{
 		const auto& idxs = Ui_.CollectionTree_->selectionModel ()->selectedRows ();
 
@@ -240,12 +240,6 @@ namespace LMP
 		}
 
 		Core::Instance ().GetCollectionsManager ()->Enqueue (mapped, Player_);
-	}
-
-	void CollectionWidget::replaceFromCollection ()
-	{
-		Player_->clear ();
-		loadFromCollection ();
 	}
 
 	namespace
@@ -276,39 +270,41 @@ namespace LMP
 
 		QMenu menu;
 
-		auto addToPlaylist = menu.addAction (tr ("Add to playlist"),
-				this, SLOT (loadFromCollection ()));
+		auto addToPlaylist = menu.addAction (tr ("Add to playlist"), this, &CollectionWidget::LoadFromCollection);
 		addToPlaylist->setProperty ("ActionIcon", "list-add");
 
 		menu.addAction (tr ("Replace playlist"),
-				this, SLOT (replaceFromCollection ()));
+				[this]
+				{
+					Player_->clear ();
+					LoadFromCollection ();
+				});
 
 		if (nodeType == LocalCollectionModel::NodeType::Track)
 		{
 			auto showTrackProps = menu.addAction (tr ("Show track properties"),
-					this, SLOT (showCollectionTrackProps ()));
+					this, &CollectionWidget::ShowCollectionTrackProps);
 			showTrackProps->setProperty ("ActionIcon", "document-properties");
 		}
 
 		if (nodeType == LocalCollectionModel::NodeType::Album)
 		{
-			auto showAlbumArt = menu.addAction (tr ("Show album art"),
-					this, SLOT (showCollectionAlbumArt ()));
+			auto showAlbumArt = menu.addAction (tr ("Show album art"), this, &CollectionWidget::ShowCollectionAlbumArt);
 			showAlbumArt->setProperty ("ActionIcon", "media-optical");
 
-			menu.addAction (tr ("Album art manager..."), this, SLOT (showAlbumArtManager ()));
+			menu.addAction (tr ("Album art manager..."), this, &CollectionWidget::ShowAlbumArtManager);
 		}
 
 		auto showInArtistBrowser = menu.addAction (tr ("Show in artist browser"),
-				this, SLOT (showInArtistBrowser ()));
+				this, &CollectionWidget::ShowInArtistBrowser);
 		showInArtistBrowser->setIcon (QIcon { "lcicons:/lmp/resources/images/lmp_artist_browser.svg" });
 
 		menu.addSeparator ();
 
-		auto remove = menu.addAction (tr ("Remove from collection..."), this, SLOT (handleCollectionRemove ()));
+		auto remove = menu.addAction (tr ("Remove from collection..."), this, &CollectionWidget::HandleCollectionRemove);
 		remove->setProperty ("ActionIcon", "list-remove");
 
-		auto del = menu.addAction (tr ("Delete from disk..."), this, SLOT (handleCollectionDelete ()));
+		auto del = menu.addAction (tr ("Delete from disk..."), this, &CollectionWidget::HandleCollectionDelete);
 		del->setProperty ("ActionIcon", "edit-delete");
 
 		emit hookCollectionContextMenuRequested (std::make_shared<Util::DefaultHookProxy> (),
@@ -319,7 +315,7 @@ namespace LMP
 		menu.exec (Ui_.CollectionTree_->viewport ()->mapToGlobal (point));
 	}
 
-	void CollectionWidget::handleScanProgress (int progress)
+	void CollectionWidget::HandleScanProgress (int progress)
 	{
 		if (progress >= Ui_.ScanProgress_->maximum ())
 		{

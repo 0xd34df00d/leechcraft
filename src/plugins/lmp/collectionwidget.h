@@ -53,18 +53,17 @@ namespace LMP
 		QSortFilterProxyModel * const CollectionFilterModel_;
 	public:
 		CollectionWidget (QWidget* = nullptr);
+	private:
+		void ShowCollectionTrackProps ();
+		void ShowCollectionAlbumArt ();
+		void ShowAlbumArtManager ();
+		void ShowInArtistBrowser ();
+		void HandleCollectionRemove ();
+		void HandleCollectionDelete ();
+		void LoadFromCollection ();
+		void HandleScanProgress (int);
 	private slots:
-		void showCollectionTrackProps ();
-		void showCollectionAlbumArt ();
-		void showAlbumArtManager ();
-		void showInArtistBrowser ();
-		void handleCollectionRemove ();
-		void handleCollectionDelete ();
-		void loadFromCollection ();
-		void replaceFromCollection ();
 		void on_CollectionTree__customContextMenuRequested (const QPoint&);
-
-		void handleScanProgress (int);
 	signals:
 		void hookCollectionContextMenuRequested (LC::IHookProxy_ptr,
 				QMenu*,
