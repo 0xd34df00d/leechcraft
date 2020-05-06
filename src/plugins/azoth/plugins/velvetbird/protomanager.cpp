@@ -72,11 +72,18 @@ namespace VelvetBird
 			Debugger ()
 			: File_ (Util::CreateIfNotExists ("azoth/velvetbird").absoluteFilePath ("purple.log"))
 			{
-				File_.open (QIODevice::WriteOnly);
+				if (!File_.open (QIODevice::WriteOnly))
+					qWarning () << Q_FUNC_INFO
+							<< "unable to open file at"
+							<< File_.fileName ()
+							<< File_.errorString ();
 			}
 
 			void print (PurpleDebugLevel level, const char *cat, const char *msg)
 			{
+				if (!File_.isOpen ())
+					return;
+
 				static const QMap<PurpleDebugLevel, QString> levels
 				{
 					{ PURPLE_DEBUG_ALL, "ALL" },
