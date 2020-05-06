@@ -218,7 +218,7 @@ namespace Acetamide
 		bool res = parse (url.toString ().toUtf8 ().constData (), uri).full;
 		if (!res)
 		{
-			qWarning () << "input string is not a valide IRC URI"
+			qWarning () << "input string is not a valid IRC URI"
 					<< url.toString ().toUtf8 ().constData ();
 			return;
 		}
