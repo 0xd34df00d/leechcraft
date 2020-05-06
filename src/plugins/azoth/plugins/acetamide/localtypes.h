@@ -54,7 +54,7 @@ namespace Acetamide
 		int ServerPort_;
 		bool SSL_;
 
-		IrcServer IrcServer_;
+		IrcServer IrcServer_ = IrcServer::UnknownServer;
 		QString IrcServerVersion_;
 	};
 
