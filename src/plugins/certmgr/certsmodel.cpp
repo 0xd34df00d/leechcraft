@@ -153,11 +153,9 @@ namespace CertMgr
 					case QSsl::EmailEntry:
 						name = CertsModel::tr ("Email");
 						break;
-#if QT_VERSION >= QT_VERSION_CHECK (5, 13, 0)
 					case QSsl::IpAddressEntry:
 						name = CertsModel::tr ("IP address");
 						break;
-#endif
 					}
 
 					add (name, QStringList { subjs.values (key) }.join ("; "));
