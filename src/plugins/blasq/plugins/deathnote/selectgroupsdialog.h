@@ -48,7 +48,7 @@ namespace DeathNote
 	{
 		bool Public_ = false;
 		QString Name_;
-		uint Id_;
+		uint Id_ = 0;
 		uint SortOrder_ = 0;
 		uint RealId_ = 0;
 	};
