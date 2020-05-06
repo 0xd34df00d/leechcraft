@@ -226,6 +226,7 @@ namespace Acetamide
 		if (!isNick)
 		{
 			ServerOptions so;
+			so.SSL_ = false;
 			if (host_.empty ())
 				so.ServerName_ = "";
 			else
