@@ -32,7 +32,6 @@
 #include <QMessageBox>
 #include <QMenu>
 #include <util/gui/clearlineeditaddon.h>
-#include <util/util.h>
 #include <util/xpc/defaulthookproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include "core.h"
