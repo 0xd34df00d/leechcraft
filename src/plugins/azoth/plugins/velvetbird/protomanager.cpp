@@ -72,6 +72,7 @@ namespace VelvetBird
 			Debugger ()
 			: File_ (Util::CreateIfNotExists ("azoth/velvetbird").absoluteFilePath ("purple.log"))
 			{
+				File_.open (QIODevice::WriteOnly);
 			}
 
 			void print (PurpleDebugLevel level, const char *cat, const char *msg)
@@ -87,9 +88,8 @@ namespace VelvetBird
 				};
 
 				QString data = "[" + levels [level] + "] " + cat + ": " + msg + "\n";
-				File_.open (QIODevice::WriteOnly);
 				File_.write (data.toUtf8 ());
-				File_.close ();
+				File_.flush ();
 			}
 		};
 
