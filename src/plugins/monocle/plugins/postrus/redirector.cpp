@@ -73,7 +73,16 @@ namespace Postrus
 	{
 		{
 			QTemporaryFile file { QDir::tempPath () + "/lc_monocle_postrus.XXXXXX.pdf" };
-			file.open ();
+			if (!file.open ())
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "unable to create a temporarty file"
+						<< file.fileName ()
+						<< file.errorString ();
+				emit ready (Target_);
+				return;
+			}
+
 			Target_ = file.fileName ();
 		}
 
