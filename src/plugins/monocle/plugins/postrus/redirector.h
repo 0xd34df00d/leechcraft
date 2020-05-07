@@ -33,6 +33,7 @@
 #include <interfaces/monocle/iredirectproxy.h>
 
 class QProcess;
+
 namespace LC
 {
 namespace Monocle
@@ -55,9 +56,9 @@ namespace Postrus
 		QString GetRedirectSource () const;
 		QString GetRedirectTarget () const;
 		QString GetRedirectedMime () const;
-	private slots:
-		void startConverting ();
-		void handleFinished ();
+	private:
+		void StartConverting ();
+		void HandleFinished ();
 	signals:
 		void ready (const QString& target);
 	};

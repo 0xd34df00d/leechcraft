@@ -46,7 +46,7 @@ namespace Postrus
 	{
 		QTimer::singleShot (0,
 				this,
-				SLOT (startConverting ()));
+				&Redirector::StartConverting);
 	}
 
 	QObject* Redirector::GetQObject ()
@@ -69,7 +69,7 @@ namespace Postrus
 		return "application/pdf";
 	}
 
-	void Redirector::startConverting ()
+	void Redirector::StartConverting ()
 	{
 		{
 			QTemporaryFile file { QDir::tempPath () + "/lc_monocle_postrus.XXXXXX.pdf" };
@@ -82,12 +82,12 @@ namespace Postrus
 				<< Target_;
 		Process_->start ("ps2pdf", { "-dPDFSETTINGS=/prepress", "-dEmbedAllFonts=true", "-dSubsetFonts=false", "-r600", Source_, Target_ });
 		connect (Process_,
-				SIGNAL (finished (int)),
+				qOverload<int, QProcess::ExitStatus> (&QProcess::finished),
 				this,
-				SLOT (handleFinished ()));
+				&Redirector::HandleFinished);
 	}
 
-	void Redirector::handleFinished ()
+	void Redirector::HandleFinished ()
 	{
 		qDebug () << Q_FUNC_INFO
 				<< Process_->exitStatus ()
