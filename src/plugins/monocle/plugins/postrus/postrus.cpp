@@ -94,7 +94,7 @@ namespace Postrus
 
 	IRedirectProxy_ptr Plugin::GetRedirection (const QString& filename)
 	{
-		return IRedirectProxy_ptr { new Redirector { filename }};
+		return std::make_shared<Redirector> (filename);
 	}
 
 	QStringList Plugin::GetSupportedMimes () const
