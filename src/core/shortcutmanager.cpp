@@ -39,7 +39,7 @@
 #include <interfaces/ihaveshortcuts.h>
 #include <interfaces/core/iiconthememanager.h>
 #include "keysequencer.h"
-#include "coreproxy.h"
+#include "iconthemeengine.h"
 
 namespace LC
 {
@@ -162,7 +162,7 @@ namespace LC
 
 			auto icon = info [name].Icon_;
 			if (icon.isNull ())
-				icon = CoreProxy ().GetIconThemeManager ()->GetIcon ("configure-shortcuts");
+				icon = IconThemeEngine::Instance ().GetIcon ("configure-shortcuts");
 			first->setIcon (icon);
 
 			first->setData (name, Roles::OriginalName);
