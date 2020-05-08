@@ -64,5 +64,12 @@ namespace LC
 		QString GetVersion () const override;
 		void RegisterSkinnable (QAction*) override;
 		bool IsShuttingDown () override;
+
+		/* This is unsafe since this returns a core proxy without certain dependencies,
+		 * like the IPluginLoader_ptr that's normally passed to the ctor.
+		 *
+		 * Beware of the effects.
+		 */
+		static ICoreProxy_ptr UnsafeWithoutDeps ();
 	};
 }

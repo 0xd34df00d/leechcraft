@@ -290,7 +290,7 @@ namespace LC
 		box->setText (LastSearch_);
 		lay->addStretch ();
 		lay->addWidget (box, 0, Qt::AlignRight);
-		new Util::ClearLineEditAddon (std::make_shared<CoreProxy> (), box);
+		new Util::ClearLineEditAddon (CoreProxy::UnsafeWithoutDeps (), box);
 
 		Toolbar_->addWidget (widget);
 

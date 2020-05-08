@@ -165,7 +165,7 @@ namespace LC
 				FilterProxy_,
 				SLOT (setFilterFixedString (QString)));
 
-		new Util::ClearLineEditAddon (std::make_shared<CoreProxy> (), Ui_.FilterLine_);
+		new Util::ClearLineEditAddon (CoreProxy::UnsafeWithoutDeps (), Ui_.FilterLine_);
 	}
 
 	void PluginManagerDialog::readjustColumns ()

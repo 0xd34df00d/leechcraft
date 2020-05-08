@@ -672,7 +672,7 @@ namespace LC
 	{
 		try
 		{
-			qobject_cast<IInfo*> (object)->Init (std::make_shared<CoreProxy> ());
+			qobject_cast<IInfo*> (object)->Init (CoreProxy::UnsafeWithoutDeps ());
 			Core::Instance ().Setup (object);
 
 			qobject_cast<IInfo*> (object)->SecondInit ();

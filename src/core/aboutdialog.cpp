@@ -144,7 +144,7 @@ namespace LC
 		Ui_.setupUi (this);
 
 		Ui_.ProgramName_->setText (QString ("LeechCraft %1")
-				.arg (CoreProxy ().GetVersion ()));
+				.arg (CoreProxy::UnsafeWithoutDeps ()->GetVersion ()));
 
 		SetAuthors ();
 		BuildDiagInfo ();
@@ -181,7 +181,7 @@ namespace LC
 
 	void AboutDialog::BuildDiagInfo ()
 	{
-		auto text = "LeechCraft " + CoreProxy ().GetVersion () + "\n";
+		auto text = "LeechCraft " + CoreProxy::UnsafeWithoutDeps ()->GetVersion () + "\n";
 		text += QString { "Built with Qt %1, running with Qt %2\n" }
 				.arg (QT_VERSION_STR)
 				.arg (qVersion ());

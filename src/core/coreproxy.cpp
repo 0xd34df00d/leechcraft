@@ -122,4 +122,9 @@ namespace LC
 	{
 		return Core::Instance ().IsShuttingDown ();
 	}
+
+	ICoreProxy_ptr CoreProxy::UnsafeWithoutDeps ()
+	{
+		return std::make_shared<CoreProxy> (Loaders::IPluginLoader_ptr {});
+	}
 }
