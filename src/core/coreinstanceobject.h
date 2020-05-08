@@ -68,9 +68,9 @@ namespace LC
 
 		ShortcutManager *ShortcutManager_;
 
-		Util::ShortcutManager *CoreShortcutManager_;
+		Util::ShortcutManager *CoreShortcutManager_ = nullptr;
 	public:
-		CoreInstanceObject (QObject* = 0);
+		explicit CoreInstanceObject (QObject* = nullptr);
 
 		// IInfo
 		void Init (ICoreProxy_ptr);

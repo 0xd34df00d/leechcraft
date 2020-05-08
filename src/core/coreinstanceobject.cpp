@@ -129,7 +129,6 @@ namespace LC
 	, SettingsTab_ (new SettingsTab)
 	, CorePlugin2Manager_ (new CorePlugin2Manager)
 	, ShortcutManager_ (new ShortcutManager)
-	, CoreShortcutManager_ (new Util::ShortcutManager (ICoreProxy_ptr (new CoreProxy)))
 	{
 		CoreShortcutManager_->SetObject (this);
 
@@ -146,14 +145,15 @@ namespace LC
 				SIGNAL (removeTab (QWidget*)));
 	}
 
-	void CoreInstanceObject::Init (ICoreProxy_ptr)
+	void CoreInstanceObject::Init (ICoreProxy_ptr proxy)
 	{
 #ifndef Q_OS_MAC
 		const auto sysModifier = Qt::CTRL;
 #else
 		const auto sysModifier = Qt::ALT;
 #endif
-		const auto iconMgr = CoreProxy ().GetIconThemeManager ();
+		CoreShortcutManager_ = new Util::ShortcutManager (proxy);
+		const auto iconMgr = proxy->GetIconThemeManager ();
 		CoreShortcutManager_->RegisterActionInfo ("SwitchToPrevTab",
 				{
 					tr ("Switch to previously active tab"),
