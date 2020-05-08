@@ -72,7 +72,7 @@ namespace LC
 
 		std::shared_ptr<PluginTreeBuilder> PluginTreeBuilder_;
 
-		mutable bool CacheValid_;
+		mutable bool CacheValid_ = false;
 		mutable QObjectList SortedCache_;
 
 		class PluginLoadProcess;

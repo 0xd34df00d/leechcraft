@@ -82,7 +82,6 @@ namespace LC
 	: QAbstractItemModel (parent)
 	, DBusMode_ (static_cast<Application*> (qApp)->GetVarMap ().count ("multiprocess"))
 	, PluginTreeBuilder_ (new PluginTreeBuilder)
-	, CacheValid_ (false)
 	{
 		Headers_ << tr ("Name")
 			<< tr ("Description");
