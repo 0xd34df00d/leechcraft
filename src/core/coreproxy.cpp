@@ -42,9 +42,9 @@
 
 namespace LC
 {
-	CoreProxy::CoreProxy (QObject *parent)
-	: QObject (parent)
-	, EM_ (new EntityManager (this))
+	CoreProxy::CoreProxy (Loaders::IPluginLoader_ptr loader)
+	: EM_ { new EntityManager { this } }
+	, Loader_ { std::move (loader) }
 	{
 	}
 

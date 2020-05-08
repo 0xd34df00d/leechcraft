@@ -31,6 +31,7 @@
 
 #include <QObject>
 #include "interfaces/core/icoreproxy.h"
+#include "loaders/ipluginloader.h"
 
 namespace LC
 {
@@ -42,8 +43,10 @@ namespace LC
 					, public ICoreProxy
 	{
 		EntityManager *EM_;
+
+		const Loaders::IPluginLoader_ptr Loader_;
 	public:
-		explicit CoreProxy (QObject* = nullptr);
+		explicit CoreProxy (Loaders::IPluginLoader_ptr);
 
 		QNetworkAccessManager* GetNetworkAccessManager () const override;
 		IShortcutProxy* GetShortcutProxy () const override;
