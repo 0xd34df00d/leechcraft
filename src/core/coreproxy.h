@@ -41,9 +41,6 @@ namespace LC
 	class CoreProxy : public QObject
 					, public ICoreProxy
 	{
-		Q_OBJECT
-		Q_INTERFACES (ICoreProxy)
-
 		EntityManager *EM_;
 	public:
 		explicit CoreProxy (QObject* = nullptr);
