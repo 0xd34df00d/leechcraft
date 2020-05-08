@@ -64,7 +64,7 @@ namespace LC
 	public:
 		static IconThemeEngine& Instance ();
 
-		QIcon GetIcon (const QString&, const QString&) override;
+		QIcon GetIcon (const QString&, const QString& = {}) override;
 		void UpdateIconset (const QList<QAction*>&) override;
 		void UpdateIconset (const QList<QPushButton*>&);
 		void UpdateIconset (const QList<QTabWidget*>&);
