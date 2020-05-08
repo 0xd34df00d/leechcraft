@@ -53,11 +53,11 @@ namespace LC
 
 		const bool DBusMode_;
 
-		typedef QList<Loaders::IPluginLoader_ptr> PluginsContainer_t;
+		using PluginsContainer_t = QList<Loaders::IPluginLoader_ptr>;
 
 		// Only currently loaded plugins
 		mutable PluginsContainer_t PluginContainers_;
-		typedef QList<QObject*> Plugins_t;
+		using Plugins_t = QList<QObject*>;
 		mutable Plugins_t Plugins_;
 
 		QMap<QObject*, Loaders::IPluginLoader_ptr> Obj2Loader_;
@@ -94,7 +94,8 @@ namespace LC
 	private:
 		InitStage InitStage_ = InitStage::BeforeFirst;
 	public:
-		typedef PluginsContainer_t::size_type Size_t;
+		using Size_t = PluginsContainer_t::size_type;
+
 		PluginManager (const QStringList& pluginPaths, QObject *parent = 0);
 
 		int columnCount (const QModelIndex& = QModelIndex ()) const override;
