@@ -90,13 +90,9 @@ namespace LC
 
 	QStringList CoreProxy::GetSearchCategories () const
 	{
-		const QList<IFinder*>& finders = Core::Instance ().GetPluginManager ()->
-			GetAllCastableTo<IFinder*> ();
-
 		QStringList result;
-		for (QList<IFinder*>::const_iterator i = finders.begin (),
-				end = finders.end (); i != end; ++i)
-			result += (*i)->GetCategories ();
+		for (const auto& finder : Core::Instance ().GetPluginManager ()->GetAllCastableTo<IFinder*> ())
+			result += finder->GetCategories ();
 		result.removeDuplicates ();
 		std::sort (result.begin (), result.end ());
 		return result;
