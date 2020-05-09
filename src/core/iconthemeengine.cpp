@@ -42,12 +42,17 @@
 #include "xmlsettingsmanager.h"
 #include "childactioneventfilter.h"
 #include "util/util.h"
+#include <util/sys/resourceloader.h>
 #include "util/sys/paths.h"
 
 using namespace LC;
 
 IconThemeEngine::IconThemeEngine ()
+: PluginIconLoader_ { std::make_shared<Util::ResourceLoader> ("global_icons/plugins")}
 {
+	PluginIconLoader_->AddGlobalPrefix ();
+	PluginIconLoader_->AddLocalPrefix ();
+
 	QTimer *timer = new QTimer (this);
 	connect (timer,
 			SIGNAL (timeout ()),
@@ -193,6 +198,27 @@ QStringList IconThemeEngine::ListIcons () const
 	return IconSets_;
 }
 
+QIcon IconThemeEngine::GetPluginIcon (const QString& basename)
+{
+	if (const auto pos = PluginIconCache_.find (basename);
+			pos != PluginIconCache_.end ())
+		return *pos;
+
+	QPixmap px;
+
+	if (const auto& pluginsIconset = XmlSettingsManager::Instance ()->property ("PluginsIconset").toString ();
+			pluginsIconset != "Default")
+		px = PluginIconLoader_->LoadPixmap (pluginsIconset + "/" + basename);
+
+	if (px.isNull ())
+		px = PluginIconLoader_->LoadPixmap ("default/" + basename);
+
+	if (!px.isNull ())
+		PluginIconCache_ [basename] = px;
+
+	return px;
+}
+
 bool IconThemeEngine::eventFilter (QObject *obj, QEvent *e)
 {
 	if (e->type () != QEvent::DynamicPropertyChange)
@@ -235,8 +261,7 @@ void IconThemeEngine::FindIconSets ()
 
 void IconThemeEngine::FindIcons ()
 {
-	QString iconSet = XmlSettingsManager::Instance ()->
-		property ("IconSet").toString ();
+	const auto& iconSet = XmlSettingsManager::Instance ()->property ("IconSet").toString ();
 
 	if (iconSet != OldIconSet_)
 	{

@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <memory>
 #include <QObject>
 #include <QString>
 #include <QDir>
@@ -46,6 +47,11 @@ class QFile;
 
 namespace LC
 {
+	namespace Util
+	{
+		class ResourceLoader;
+	}
+
 	class IconThemeEngine : public QObject
 	{
 		Q_OBJECT
@@ -55,6 +61,9 @@ namespace LC
 
 		QReadWriteLock IconCacheLock_;
 		QHash<QPair<QString, QString>, QIcon> IconCache_;
+
+		QHash<QString, QIcon> PluginIconCache_;
+		std::shared_ptr<Util::ResourceLoader> PluginIconLoader_;
 
 		QList<std::function<void ()>> Handlers_;
 
@@ -73,6 +82,8 @@ namespace LC
 		void RegisterChangeHandler (const std::function<void ()>&);
 
 		QStringList ListIcons () const;
+
+		QIcon GetPluginIcon (const QString& basename);
 	protected:
 		bool eventFilter (QObject*, QEvent*) override;
 	private:
