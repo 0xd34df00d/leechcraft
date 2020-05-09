@@ -32,6 +32,8 @@
 #include <AccountManager>
 #include <PendingReady>
 #include <PendingAccount>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
 #include <util/sll/prelude.h>
 #include <util/sll/functional.h>
 #include <util/util.h>
@@ -160,7 +162,7 @@ namespace Astrality
 	{
 		QIcon result = QIcon::fromTheme (ProtoInfo_.iconName ());
 		if (result.isNull ())
-			result = QIcon ("lcicons:/azoth/astrality/resources/images/astrality.svg");
+			result = Proxy_->GetIconThemeManager ()->GetPluginIcon ();
 		return result;
 	}
 

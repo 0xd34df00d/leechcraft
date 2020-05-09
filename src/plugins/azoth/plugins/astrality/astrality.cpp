@@ -36,6 +36,8 @@
 #include <PendingStringList>
 #include <util/sll/prelude.h>
 #include <util/util.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
 #include <interfaces/azoth/iprotocol.h>
 #include <interfaces/azoth/iaccount.h>
 #include "cmwrapper.h"
@@ -92,8 +94,7 @@ namespace Astrality
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon ("lcicons:/azoth/astrality/resources/images/astrality.svg");
-		return icon;
+		return Proxy_->GetIconThemeManager ()->GetPluginIcon ();
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const

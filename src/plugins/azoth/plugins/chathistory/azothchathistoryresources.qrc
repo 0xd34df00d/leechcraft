@@ -1,5 +1,0 @@
-<RCC>
-  <qresource prefix="/azoth/chathistory">
-    <file>resources/images/chathistory.svg</file>
-  </qresource>
-</RCC>

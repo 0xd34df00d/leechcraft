@@ -33,18 +33,15 @@ set (ASTRALITY_FORMS
 	accountregfirstpage.ui
 	vcarddialog.ui
 	)
-set (ASTRALITY_RESOURCES azothastralityresources.qrc)
 CreateTrs ("azoth_astrality" "en;es;ru_RU;uk_UA" ASTRALITY_COMPILED_TRANSLATIONS)
 CreateTrsUpTarget ("azoth_astrality" "en;ru_RU" "${ASTRALITY_SRCS}" "${ASTRALITY_FORMS}" "")
 
 QT4_WRAP_UI (ASTRALITY_UIS_H ${ASTRALITY_FORMS})
-QT4_ADD_RESOURCES (ASTRALITY_RCCS ${ASTRALITY_RESOURCES})
 
 add_library (leechcraft_azoth_astrality SHARED
 	${ASTRALITY_COMPILED_TRANSLATIONS}
 	${ASTRALITY_SRCS}
 	${ASTRALITY_UIS_H}
-	${ASTRALITY_RCCS}
 	)
 target_link_libraries (leechcraft_azoth_astrality
 	${QT_LIBRARIES}
@@ -53,4 +50,5 @@ target_link_libraries (leechcraft_azoth_astrality
 	)
 install (TARGETS leechcraft_azoth_astrality DESTINATION ${LC_PLUGINS_DEST})
 install (FILES ${ASTRALITY_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
+install (DIRECTORY share/ DESTINATION ${LC_SHARE_DEST})
 #install (FILES azothastralitysettings.xml DESTINATION ${LC_SETTINGS_DEST})

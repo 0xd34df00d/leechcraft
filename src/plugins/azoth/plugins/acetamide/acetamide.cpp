@@ -31,6 +31,8 @@
 #include <ctime>
 #include <QIcon>
 #include <QStandardItemModel>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/util.h>
 #include "core.h"
@@ -93,8 +95,7 @@ namespace Acetamide
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon ("lcicons:/plugins/azoth/plugins/acetamide/resources/images/acetamide.svg");
-		return icon;
+		return Core::Instance ().GetProxy ()->GetIconThemeManager ()->GetPluginIcon ();
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const

@@ -12,8 +12,6 @@ set (AUTOIDLER_SRCS
 	xmlsettingsmanager.cpp
 	3dparty/idle.cpp
 	)
-set (AUTOIDLER_RESOURCES azothautoidlerresources.qrc)
-QtAddResources (AUTOIDLER_RCCS ${AUTOIDLER_RESOURCES})
 
 if (APPLE)
 	set (AUTOIDLER_SRCS ${AUTOIDLER_SRCS} 3dparty/idle_mac.cpp)
@@ -41,7 +39,6 @@ add_library (leechcraft_azoth_autoidler SHARED
 	${AUTOIDLER_COMPILED_TRANSLATIONS}
 	${AUTOIDLER_SRCS}
 	${AUTOIDLER_MOC_SRCS}
-	${AUTOIDLER_RCCS}
 	)
 target_link_libraries (leechcraft_azoth_autoidler
 	${LEECHCRAFT_LIBRARIES}
@@ -49,6 +46,7 @@ target_link_libraries (leechcraft_azoth_autoidler
 	)
 install (TARGETS leechcraft_azoth_autoidler DESTINATION ${LC_PLUGINS_DEST})
 install (FILES azothautoidlersettings.xml DESTINATION ${LC_SETTINGS_DEST})
+install (DIRECTORY share/ DESTINATION ${LC_SHARE_DEST})
 install (FILES ${AUTOIDLER_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
 
 FindQtLibs (leechcraft_azoth_autoidler Widgets)

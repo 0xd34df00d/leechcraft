@@ -52,7 +52,8 @@ namespace AdiumStyles
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.AdiumStyles")
 
-		IProxyObject *Proxy_;
+		ICoreProxy_ptr CoreProxy_;
+		IProxyObject *Proxy_ = nullptr;
 		QObjectList ResourceSources_;
 	public:
 		void Init (ICoreProxy_ptr);

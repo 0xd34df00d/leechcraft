@@ -35,6 +35,8 @@
 #include <util/util.h>
 #include <util/threads/futures.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
 #include <interfaces/azoth/imessage.h>
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/iaccount.h>
@@ -64,7 +66,7 @@ namespace ChatHistory
 		TabClass_.Description_ = tr ("Chat history viewer for the Azoth IM");
 		TabClass_.Priority_ = 40;
 		TabClass_.Features_ = TFOpenableByRequest;
-		TabClass_.Icon_ = QIcon ("lcicons:/azoth/chathistory/resources/images/chathistory.svg");
+		TabClass_.Icon_ = proxy->GetIconThemeManager ()->GetPluginIcon ();
 
 		XSD_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "azothchathistorysettings.xml");

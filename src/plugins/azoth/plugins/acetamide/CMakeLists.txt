@@ -86,6 +86,7 @@ FindQtLibs (leechcraft_azoth_acetamide Network Widgets Xml)
 
 install (TARGETS leechcraft_azoth_acetamide DESTINATION ${LC_PLUGINS_DEST})
 install (FILES azothacetamidesettings.xml DESTINATION ${LC_SETTINGS_DEST})
+install (DIRECTORY share/ DESTINATION ${LC_SHARE_DEST})
 if (UNIX AND NOT APPLE)
 	install (FILES freedesktop/leechcraft-azoth-acetamide-qt5.desktop DESTINATION share/applications)
 endif ()

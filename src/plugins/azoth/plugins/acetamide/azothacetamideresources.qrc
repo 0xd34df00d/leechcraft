@@ -1,6 +1,5 @@
 <RCC>
   <qresource prefix="/plugins/azoth/plugins/acetamide">
-    <file>resources/images/acetamide.svg</file>
     <file>resources/images/ircicon.svg</file>
   </qresource>
 </RCC>

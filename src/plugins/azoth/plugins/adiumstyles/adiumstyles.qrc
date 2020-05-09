@@ -1,6 +1,5 @@
 <RCC>
   <qresource prefix="/plugins/azoth/plugins/adiumstyles">
-    <file>resources/images/adiumstyles.svg</file>
 	<file>resources/html/Template.html</file>
   </qresource>
 </RCC>

@@ -29,6 +29,6 @@ target_link_libraries (leechcraft_azoth_adiumstyles
 	${LEECHCRAFT_LIBRARIES}
 	)
 install (TARGETS leechcraft_azoth_adiumstyles DESTINATION ${LC_PLUGINS_DEST})
-install (DIRECTORY share/azoth DESTINATION ${LC_SHARE_DEST})
+install (DIRECTORY share/ DESTINATION ${LC_SHARE_DEST})
 
 FindQtLibs (leechcraft_azoth_adiumstyles WebKitWidgets Xml)

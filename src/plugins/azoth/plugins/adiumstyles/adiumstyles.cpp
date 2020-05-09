@@ -29,6 +29,8 @@
 
 #include "adiumstyles.h"
 #include <QIcon>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include <util/util.h>
 #include "adiumstylesource.h"
@@ -39,10 +41,10 @@ namespace Azoth
 {
 namespace AdiumStyles
 {
-	void Plugin::Init (ICoreProxy_ptr)
+	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Util::InstallTranslator ("azoth_adiumstyles");
-		Proxy_ = 0;
+		CoreProxy_ = proxy;
 	}
 
 	void Plugin::SecondInit ()
@@ -70,8 +72,7 @@ namespace AdiumStyles
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon ("lcicons:/plugins/azoth/plugins/adiumstyles/resources/images/adiumstyles.svg");
-		return icon;
+		return CoreProxy_->GetIconThemeManager ()->GetPluginIcon ();
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const

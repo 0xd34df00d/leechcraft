@@ -1,5 +1,0 @@
-<RCC>
-  <qresource prefix="/azoth/astrality" >
-    <file>resources/images/astrality.svg</file>
-  </qresource>
-</RCC>

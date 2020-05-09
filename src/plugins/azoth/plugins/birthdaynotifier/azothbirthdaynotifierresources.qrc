@@ -1,5 +1,0 @@
-<RCC>
-  <qresource prefix="/azoth/birthdaynotifier">
-    <file>resources/images/birthdaynotifier.svg</file>
-  </qresource>
-</RCC>

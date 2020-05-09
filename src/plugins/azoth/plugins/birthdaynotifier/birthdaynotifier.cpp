@@ -36,6 +36,8 @@
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <interfaces/an/constants.h>
 #include <interfaces/core/ientitymanager.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include <interfaces/azoth/iaccount.h>
@@ -98,8 +100,7 @@ namespace BirthdayNotifier
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon ("lcicons:/azoth/birthdaynotifier/resources/images/birthdaynotifier.svg");
-		return icon;
+		return Proxy_->GetIconThemeManager ()->GetPluginIcon ();
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
