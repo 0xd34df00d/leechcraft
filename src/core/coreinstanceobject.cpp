@@ -129,7 +129,7 @@ namespace LC
 	, SettingsTab_ (new SettingsTab)
 	, CorePlugin2Manager_ (new CorePlugin2Manager)
 	, ShortcutManager_ (new ShortcutManager)
-	, CoreShortcutManager_ (new Util::ShortcutManager (ICoreProxy_ptr (new CoreProxy)))
+	, CoreShortcutManager_ (new Util::ShortcutManager (CoreProxy::UnsafeWithoutDeps ()))
 	{
 		CoreShortcutManager_->SetObject (this);
 
