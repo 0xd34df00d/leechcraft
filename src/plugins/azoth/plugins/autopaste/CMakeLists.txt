@@ -26,18 +26,15 @@ set (AUTOPASTE_SRCS
 set (AUTOPASTE_FORMS
 	pastedialog.ui
 	)
-set (AUTOPASTE_RESOURCES azothautopasteresources.qrc)
 
 CreateTrs ("azoth_autopaste" "en;es;ru_RU;uk_UA" AUTOPASTE_COMPILED_TRANSLATIONS)
 CreateTrsUpTarget ("azoth_autopaste" "en;ru_RU" "${AUTOPASTE_SRCS}" "${AUTOPASTE_FORMS}" "azothautopastesettings.xml")
 
 QtWrapUi (AUTOPASTE_UIS_H ${AUTOPASTE_FORMS})
-QtAddResources (AUTOPASTE_RCCS ${AUTOPASTE_RESOURCES})
 
 add_library (leechcraft_azoth_autopaste SHARED
 	${AUTOPASTE_COMPILED_TRANSLATIONS}
 	${AUTOPASTE_SRCS}
-	${AUTOPASTE_RCCS}
 	${AUTOPASTE_UIS_H}
 	)
 target_link_libraries (leechcraft_azoth_autopaste
@@ -45,5 +42,6 @@ target_link_libraries (leechcraft_azoth_autopaste
 	)
 install (TARGETS leechcraft_azoth_autopaste DESTINATION ${LC_PLUGINS_DEST})
 install (FILES azothautopastesettings.xml DESTINATION ${LC_SETTINGS_DEST})
+install (DIRECTORY share/ DESTINATION ${LC_SHARE_DEST})
 
 FindQtLibs (leechcraft_azoth_autopaste Network Widgets)

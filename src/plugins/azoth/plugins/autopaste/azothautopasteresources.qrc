@@ -1,5 +1,0 @@
-<RCC>
-  <qresource prefix="/plugins/azoth/plugins/autopaste">
-    <file>resources/images/autopaste.svg</file>
-  </qresource>
-</RCC>
