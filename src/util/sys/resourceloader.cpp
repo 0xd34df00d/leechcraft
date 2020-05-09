@@ -146,7 +146,8 @@ namespace LC
 			{
 				CacheFlushTimer_->stop ();
 
-				handleFlushCaches ();
+				CachePathContents_.setMaxCost (0);
+				CachePixmaps_.setMaxCost (0);
 			}
 			else
 			{
