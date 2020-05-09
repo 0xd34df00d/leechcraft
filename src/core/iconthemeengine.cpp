@@ -34,8 +34,6 @@
 #include <QTabWidget>
 #include <QIcon>
 #include <QDir>
-#include <QFile>
-#include <QFileInfoList>
 #include <QApplication>
 #include <QToolButton>
 #include <QTimer>

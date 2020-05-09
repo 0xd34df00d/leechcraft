@@ -36,6 +36,7 @@
 namespace LC
 {
 	class EntityManager;
+	class IconThemeManagerProxy;
 
 	/** Implements the ICoreProxy's interface.
 	 */
@@ -44,7 +45,7 @@ namespace LC
 	{
 		EntityManager *EM_;
 
-		const Loaders::IPluginLoader_ptr Loader_;
+		const std::shared_ptr<IconThemeManagerProxy> IconThemeMgr_;
 	public:
 		explicit CoreProxy (Loaders::IPluginLoader_ptr);
 

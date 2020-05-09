@@ -47,10 +47,8 @@ class QFile;
 namespace LC
 {
 	class IconThemeEngine : public QObject
-						  , public IIconThemeManager
 	{
 		Q_OBJECT
-		Q_INTERFACES (IIconThemeManager)
 
 		QString OldIconSet_;
 		QStringList IconSets_;
@@ -64,15 +62,15 @@ namespace LC
 	public:
 		static IconThemeEngine& Instance ();
 
-		QIcon GetIcon (const QString&, const QString& = {}) override;
-		void UpdateIconset (const QList<QAction*>&) override;
+		QIcon GetIcon (const QString&, const QString& = {});
+		void UpdateIconset (const QList<QAction*>&);
 		void UpdateIconset (const QList<QPushButton*>&);
 		void UpdateIconset (const QList<QTabWidget*>&);
 		void UpdateIconset (const QList<QToolButton*>&);
 
-		void ManageWidget (QWidget*) override;
+		void ManageWidget (QWidget*);
 
-		void RegisterChangeHandler (const std::function<void ()>&) override;
+		void RegisterChangeHandler (const std::function<void ()>&);
 
 		QStringList ListIcons () const;
 	protected:

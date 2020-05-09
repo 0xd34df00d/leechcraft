@@ -42,9 +42,41 @@
 
 namespace LC
 {
+	class IconThemeManagerProxy : public QObject
+								, public IIconThemeManager
+	{
+		const Loaders::IPluginLoader_ptr Loader_;
+		IconThemeEngine& Engine_ = IconThemeEngine::Instance ();
+	public:
+		IconThemeManagerProxy (Loaders::IPluginLoader_ptr loader)
+		: Loader_ { loader }
+		{
+		}
+
+		QIcon GetIcon (const QString& on, const QString& off) override
+		{
+			return Engine_.GetIcon (on, off);
+		}
+
+		void UpdateIconset (const QList<QAction*>& actions) override
+		{
+			Engine_.UpdateIconset (actions);
+		}
+
+		void ManageWidget (QWidget *w) override
+		{
+			Engine_.ManageWidget (w);
+		}
+
+		void RegisterChangeHandler (const std::function<void ()>& handler) override
+		{
+			Engine_.RegisterChangeHandler (handler);
+		}
+	};
+
 	CoreProxy::CoreProxy (Loaders::IPluginLoader_ptr loader)
 	: EM_ { new EntityManager { this } }
-	, Loader_ { std::move (loader) }
+	, IconThemeMgr_ { std::make_shared<IconThemeManagerProxy> (std::move (loader)) }
 	{
 	}
 
@@ -73,9 +105,9 @@ namespace LC
 		return Core::Instance ().GetRootWindowsManager ();
 	}
 
-	IIconThemeManager* CoreProxy::GetIconThemeManager() const
+	IIconThemeManager* CoreProxy::GetIconThemeManager () const
 	{
-		return &IconThemeEngine::Instance ();
+		return IconThemeMgr_.get ();
 	}
 
 	IColorThemeManager* CoreProxy::GetColorThemeManager () const
