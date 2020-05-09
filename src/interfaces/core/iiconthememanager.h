@@ -105,6 +105,8 @@ public:
 	 * @param[in] function The function to invoke after theme change.
 	 */
 	virtual void RegisterChangeHandler (const std::function<void ()>& function) = 0;
+
+	virtual QIcon GetPluginIcon () = 0;
 };
 
 Q_DECLARE_INTERFACE (IIconThemeManager, "org.LeechCraft.IIconThemeManager/1.0")

@@ -29,6 +29,7 @@
 
 #include "coreproxy.h"
 #include <algorithm>
+#include <QFileInfo>
 #include <interfaces/ifinder.h>
 #include "core.h"
 #include "mainwindow.h"
@@ -71,6 +72,19 @@ namespace LC
 		void RegisterChangeHandler (const std::function<void ()>& handler) override
 		{
 			Engine_.RegisterChangeHandler (handler);
+		}
+
+		QIcon GetPluginIcon () override
+		{
+			if (!Loader_)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "requested plugin icon without a loader";
+				return QIcon { "lcicons:/resources/images/defaultpluginicon.svg" };
+			}
+
+			auto basename = QFileInfo { Loader_->GetFileName () }.baseName ();
+			return Engine_.GetPluginIcon (basename.section ('_', 1));
 		}
 	};
 
