@@ -47,7 +47,6 @@ target_link_libraries (leechcraft_azoth_autoidler
 install (TARGETS leechcraft_azoth_autoidler DESTINATION ${LC_PLUGINS_DEST})
 install (FILES azothautoidlersettings.xml DESTINATION ${LC_SETTINGS_DEST})
 install (DIRECTORY share/ DESTINATION ${LC_SHARE_DEST})
-install (FILES ${AUTOIDLER_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
 
 FindQtLibs (leechcraft_azoth_autoidler Widgets)
 
