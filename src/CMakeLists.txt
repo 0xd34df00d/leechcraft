@@ -429,6 +429,49 @@ function (CreateTrsQml PlugName Langs Target QmlDirs)
 	add_dependencies (${Target} "${_marker}_whole")
 endfunction ()
 
+function(LC_DEFINE_PLUGIN pluginName)
+	set (options INSTALL_SHARE)
+	set (one_value_args SETTINGS RESOURCES)
+	set (multi_value_args SRCS FORMS QT_COMPONENTS LINK_LIBRARIES TS_LANGUAGES)
+	cmake_parse_arguments (P "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
+
+	include_directories (
+		${CMAKE_CURRENT_BINARY_DIR}
+		${LEECHCRAFT_INCLUDE_DIR}
+	)
+
+	if (P_RESOURCES)
+		QtAddResources (RCCS ${P_RESOURCES})
+	endif ()
+	if (P_FORMS)
+		QtWrapUi (UIS ${P_FORMS})
+	endif ()
+
+	CreateTrs ("${pluginName}" "${P_TS_LANGUAGES}" COMPILED_TRANSLATIONS)
+
+	set (FULL_NAME "leechcraft_${pluginName}")
+
+	add_library (${FULL_NAME} SHARED
+		${COMPILED_TRANSLATIONS}
+		${P_SRCS}
+		${RCCS}
+		${UIS}
+		)
+	target_link_libraries (${FULL_NAME} ${LEECHCRAFT_LIBRARIES} ${P_LINK_LIBRARIES})
+
+	install (TARGETS ${FULL_NAME} DESTINATION ${LC_PLUGINS_DEST})
+
+	if (P_INSTALL_SHARE)
+		install (DIRECTORY share/ DESTINATION ${LC_SHARE_DEST})
+	endif ()
+
+	if (P_SETTINGS)
+		install (FILES ${P_SETTINGS} DESTINATION ${LC_SETTINGS_DEST})
+	endif ()
+
+	FindQtLibs (${FULL_NAME} ${P_QT_COMPONENTS})
+endfunction()
+
 if (ENABLE_SUMMARY)
 	add_subdirectory (plugins/summary)
 endif ()
