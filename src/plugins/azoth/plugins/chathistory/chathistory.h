@@ -118,6 +118,9 @@ namespace ChatHistory
 		void InitWidget (ChatHistoryWidget*);
 
 		void HandleGotChatLogs (const QPointer<QObject>&, const ChatLogsResult_t&);
+
+		void HandleHistoryRequested ();
+		void HandleEntryHistoryRequested (ICLEntry*);
 	public slots:
 		void initPlugin (QObject*);
 
@@ -127,15 +130,11 @@ namespace ChatHistory
 		void hookEntryActionsRemoved (LC::IHookProxy_ptr proxy,
 				QObject *entry);
 		void hookEntryActionsRequested (LC::IHookProxy_ptr proxy,
-				QObject *entry);
+				QObject *entryObj);
 		void hookGotMessage2 (LC::IHookProxy_ptr proxy,
 				QObject *message);
 	private slots:
 		void handlePushButton (const QString&);
-
-		void handleHistoryRequested ();
-		void handleEntryHistoryRequested ();
-		void handleEntryEnableHistoryRequested (bool);
 	signals:
 		void addNewTab (const QString&, QWidget*);
 		void removeTab (QWidget*);

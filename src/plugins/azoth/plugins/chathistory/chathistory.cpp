@@ -28,7 +28,6 @@
  **********************************************************************/
 
 #include "chathistory.h"
-#include <QDir>
 #include <QIcon>
 #include <QAction>
 #include <QTranslator>
@@ -80,9 +79,9 @@ namespace ChatHistory
 
 		ActionHistory_ = new QAction (tr ("IM history"), this);
 		connect (ActionHistory_,
-				SIGNAL (triggered ()),
+				&QAction::triggered,
 				this,
-				SLOT (handleHistoryRequested ()));
+				&Plugin::HandleHistoryRequested);
 
 		SeparatorAction_ = Util::CreateSeparator (this);
 		SeparatorAction_->property ("Azoth/ChatHistory/IsGood").toBool ();
@@ -143,7 +142,7 @@ namespace ChatHistory
 	void Plugin::TabOpenRequested (const QByteArray& tabClass)
 	{
 		if (tabClass == "Chathistory")
-			handleHistoryRequested ();
+			HandleHistoryRequested ();
 		else
 			qWarning () << Q_FUNC_INFO
 					<< "unknown tab class"
@@ -155,8 +154,17 @@ namespace ChatHistory
 		return XSD_;
 	}
 
-	bool Plugin::IsHistoryEnabledFor (QObject *entry) const
+	bool Plugin::IsHistoryEnabledFor (QObject *entryObj) const
 	{
+		const auto entry = qobject_cast<ICLEntry*> (entryObj);
+		if (!entry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< entryObj
+					<< "could not be casted to ICLEntry";
+			return true;
+		}
+
 		return LoggingStateKeeper_->IsLoggingEnabled (entry);
 	}
 
@@ -228,40 +236,45 @@ namespace ChatHistory
 		delete Entry2ActionEnableHistory_.take (entry);
 	}
 
-	void Plugin::hookEntryActionsRequested (IHookProxy_ptr proxy, QObject *entry)
+	void Plugin::hookEntryActionsRequested (IHookProxy_ptr proxy, QObject *entryObj)
 	{
-		if (!Entry2ActionHistory_.contains (entry))
+		const auto entry = qobject_cast<ICLEntry*> (entryObj);
+		if (!entry)
 		{
-			QAction *action = new QAction (tr ("History..."), entry);
+			qWarning () << Q_FUNC_INFO
+					<< entryObj
+					<< "isn't an ICLEntry";
+			return;
+		}
+
+		if (!Entry2ActionHistory_.contains (entryObj))
+		{
+			QAction *action = new QAction (tr ("History..."), entryObj);
 			action->setProperty ("ActionIcon", "view-history");
 			action->setProperty ("Azoth/ChatHistory/IsGood", true);
-			action->setProperty ("Azoth/ChatHistory/Entry",
-					QVariant::fromValue<QObject*> (entry));
 			connect (action,
-					SIGNAL (triggered ()),
+					&QAction::triggered,
 					this,
-					SLOT (handleEntryHistoryRequested ()));
-			Entry2ActionHistory_ [entry] = action;
+					[this, entry] { HandleEntryHistoryRequested (entry); });
+			Entry2ActionHistory_ [entryObj] = action;
 		}
-		if (!Entry2ActionEnableHistory_.contains (entry))
+		if (!Entry2ActionEnableHistory_.contains (entryObj))
 		{
-			QAction *action = new QAction (tr ("Logging enabled"), entry);
+			QAction *action = new QAction (tr ("Logging enabled"), entryObj);
 			action->setCheckable (true);
 			action->setChecked (LoggingStateKeeper_->IsLoggingEnabled (entry));
 			action->setProperty ("Azoth/ChatHistory/IsGood", true);
-			action->setProperty ("Azoth/ChatHistory/Entry",
-					QVariant::fromValue<QObject*> (entry));
 			connect (action,
-					SIGNAL (toggled (bool)),
+					&QAction::toggled,
 					this,
-					SLOT (handleEntryEnableHistoryRequested (bool)));
-			Entry2ActionEnableHistory_ [entry] = action;
+					[this, entry] (bool enable) { LoggingStateKeeper_->SetLoggingEnabled (entry, enable); });
+			Entry2ActionEnableHistory_ [entryObj] = action;
 		}
 
 		auto list = proxy->GetReturnValue ().toList ();
 		list << QVariant::fromValue<QObject*> (SeparatorAction_);
-		list << QVariant::fromValue<QObject*> (Entry2ActionHistory_ [entry]);
-		list << QVariant::fromValue<QObject*> (Entry2ActionEnableHistory_ [entry]);
+		list << QVariant::fromValue<QObject*> (Entry2ActionHistory_ [entryObj]);
+		list << QVariant::fromValue<QObject*> (Entry2ActionEnableHistory_ [entryObj]);
 		proxy->SetReturnValue (list);
 	}
 
@@ -340,70 +353,21 @@ namespace ChatHistory
 			StorageMgr_->RegenUsersCache ();
 	}
 
-	void Plugin::handleHistoryRequested ()
+	void Plugin::HandleHistoryRequested ()
 	{
 		const auto wh = new ChatHistoryWidget { { StorageMgr_.get (), PluginProxy_, CoreProxy_, this, TabClass_ } };
 		InitWidget (wh);
 		emit addNewTab (tr ("Chat history"), wh);
 	}
 
-	void Plugin::handleEntryHistoryRequested ()
+	void Plugin::HandleEntryHistoryRequested (ICLEntry *entry)
 	{
-		if (!sender ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "null sender()";
-			return;
-		}
-
-		QObject *obj = sender ()->property ("Azoth/ChatHistory/Entry")
-				.value<QObject*> ();
-		if (!obj)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "null object for sender"
-					<< sender ();
-			return;
-		}
-
-		ICLEntry *entry = qobject_cast<ICLEntry*> (obj);
-		if (!entry)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "null entry for sender"
-					<< sender ()
-					<< "and object"
-					<< obj;
-			return;
-		}
-
 		const auto wh = new ChatHistoryWidget { { StorageMgr_.get (), PluginProxy_, CoreProxy_, this, TabClass_ }, entry };
 		InitWidget (wh);
 		emit addNewTab (tr ("Chat history"), wh);
 		emit raiseTab (wh);
 	}
 
-	void Plugin::handleEntryEnableHistoryRequested (bool enable)
-	{
-		if (!sender ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "null sender()";
-			return;
-		}
-
-		QObject *obj = sender ()->property ("Azoth/ChatHistory/Entry")
-				.value<QObject*> ();
-		if (!obj)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "null object for sender"
-					<< sender ();
-			return;
-		}
-
-		LoggingStateKeeper_->SetLoggingEnabled (obj, enable);
-	}
 }
 }
 }

@@ -48,9 +48,8 @@ namespace ChatHistory
 	public:
 		LoggingStateKeeper ();
 
-		bool IsLoggingEnabled (QObject*) const;
 		bool IsLoggingEnabled (ICLEntry*) const;
-		void SetLoggingEnabled (QObject*, bool);
+		void SetLoggingEnabled (ICLEntry*, bool);
 	private:
 		void LoadDisabled ();
 		void SaveDisabled ();

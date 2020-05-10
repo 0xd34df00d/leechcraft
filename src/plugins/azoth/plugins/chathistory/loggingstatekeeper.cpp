@@ -46,36 +46,13 @@ namespace ChatHistory
 		LoadDisabled ();
 	}
 
-	bool LoggingStateKeeper::IsLoggingEnabled (QObject *entryObj) const
-	{
-		const auto entry = qobject_cast<ICLEntry*> (entryObj);
-		if (!entry)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< entryObj
-					<< "could not be casted to ICLEntry";
-			return true;
-		}
-
-		return IsLoggingEnabled (entry);
-	}
-
 	bool LoggingStateKeeper::IsLoggingEnabled (ICLEntry *entry) const
 	{
 		return !DisabledIDs_.contains (entry->GetEntryID ());
 	}
 
-	void LoggingStateKeeper::SetLoggingEnabled (QObject *entryObj, bool enable)
+	void LoggingStateKeeper::SetLoggingEnabled (ICLEntry *entry, bool enable)
 	{
-		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
-		if (!entry)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< entryObj
-					<< "could not be casted to ICLEntry";
-			return;
-		}
-
 		const auto& id = entry->GetEntryID ();
 		if (enable)
 			DisabledIDs_.remove (id);
