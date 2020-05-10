@@ -28,6 +28,5 @@ target_link_libraries (leechcraft_azoth_depester
 	${LEECHCRAFT_LIBRARIES}
 	)
 install (TARGETS leechcraft_azoth_depester DESTINATION ${LC_PLUGINS_DEST})
-install (FILES ${DEPESTER_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
 
 FindQtLibs (leechcraft_azoth_depester Core Widgets)
