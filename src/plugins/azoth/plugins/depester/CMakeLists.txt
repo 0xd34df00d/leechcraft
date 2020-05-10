@@ -6,8 +6,6 @@ include_directories (${AZOTH_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}/azoth
 	)
 
-CreateTrsUpTarget ("azoth_depester" "en;ru_RU" "${DEPESTER_SRCS}" "" "")
-
 LC_DEFINE_PLUGIN (azoth_depester
 	SRCS
 		depester.cpp

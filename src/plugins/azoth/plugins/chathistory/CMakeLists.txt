@@ -5,7 +5,6 @@ include (InitLCPlugin NO_POLICY_SCOPE)
 include_directories (${AZOTH_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}/azoth
 	)
-CreateTrsUpTarget ("azoth_chathistory" "en;ru_RU" "${CHATHISTORY_SRCS}" "${CHATHISTORY_FORMS}" "azothchathistorysettings.xml")
 
 LC_DEFINE_PLUGIN (azoth_chathistory
 	SRCS
