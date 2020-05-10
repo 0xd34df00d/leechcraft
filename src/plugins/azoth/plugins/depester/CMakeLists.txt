@@ -10,7 +10,7 @@ CreateTrsUpTarget ("azoth_depester" "en;ru_RU" "${DEPESTER_SRCS}" "" "")
 
 LC_DEFINE_PLUGIN (azoth_depester
 	SRCS
-	depester.cpp
+		depester.cpp
 	RESOURCES depesterresources.qrc
 	QT_COMPONENTS Core Widgets
 	TS_LANGUAGES en es ru_RU uk_UA
