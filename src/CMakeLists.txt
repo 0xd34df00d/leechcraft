@@ -430,7 +430,7 @@ function (CreateTrsQml PlugName Langs Target QmlDirs)
 endfunction ()
 
 function(LC_DEFINE_PLUGIN pluginName)
-	set (options INSTALL_SHARE)
+	set (options INSTALL_SHARE INSTALL_DESKTOP)
 	set (one_value_args SETTINGS RESOURCES)
 	set (multi_value_args SRCS FORMS QT_COMPONENTS LINK_LIBRARIES TS_LANGUAGES)
 	cmake_parse_arguments (P "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
@@ -471,6 +471,10 @@ function(LC_DEFINE_PLUGIN pluginName)
 
 	if (P_SETTINGS)
 		install (FILES ${P_SETTINGS} DESTINATION ${LC_SETTINGS_DEST})
+	endif ()
+
+	if (P_INSTALL_DESKTOP AND UNIX AND NOT APPLE)
+		install (DIRECTORY freedesktop/ DESTINATION share/applications)
 	endif ()
 
 	FindQtLibs (${FULL_NAME} ${P_QT_COMPONENTS})
