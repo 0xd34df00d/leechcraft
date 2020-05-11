@@ -201,4 +201,6 @@ public:
 
 using ICoreProxy_ptr = std::shared_ptr<ICoreProxy>;
 
+const ICoreProxy_ptr& GetProxyHolder ();
+
 Q_DECLARE_METATYPE (ICoreProxy_ptr)
