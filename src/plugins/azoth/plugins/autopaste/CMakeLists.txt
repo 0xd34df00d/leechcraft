@@ -3,45 +3,27 @@ project (leechcraft_azoth_autopaste)
 include (InitLCPlugin NO_POLICY_SCOPE)
 
 include_directories (${AZOTH_INCLUDE_DIR}
-	${CMAKE_CURRENT_BINARY_DIR}
-	${LEECHCRAFT_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}/azoth
 	)
 
-set (AUTOPASTE_SRCS
-	actionsstorage.cpp
-	autopaste.cpp
-	highlight2str.cpp
-	bpasteservice.cpp
-	codepadservice.cpp
-	hastebinservice.cpp
-	pasteorgruservice.cpp
-	spacepasteservicebase.cpp
-	pastedialog.cpp
-	pasteservicebase.cpp
-	pasteservicefactory.cpp
-	xmlsettingsmanager.cpp
+LC_DEFINE_PLUGIN (azoth_autopaste
+	SRCS
+		actionsstorage.cpp
+		autopaste.cpp
+		highlight2str.cpp
+		bpasteservice.cpp
+		codepadservice.cpp
+		hastebinservice.cpp
+		pasteorgruservice.cpp
+		spacepasteservicebase.cpp
+		pastedialog.cpp
+		pasteservicebase.cpp
+		pasteservicefactory.cpp
+		xmlsettingsmanager.cpp
+	FORMS
+		pastedialog.ui
+	SETTINGS azothautopastesettings.xml
+	QT_COMPONENTS Network Widgets
+	TS_LANGUAGES en es ru_RU uk_UA
+	INSTALL_SHARE
 	)
-
-set (AUTOPASTE_FORMS
-	pastedialog.ui
-	)
-
-CreateTrs ("azoth_autopaste" "en;es;ru_RU;uk_UA" AUTOPASTE_COMPILED_TRANSLATIONS)
-CreateTrsUpTarget ("azoth_autopaste" "en;ru_RU" "${AUTOPASTE_SRCS}" "${AUTOPASTE_FORMS}" "azothautopastesettings.xml")
-
-QtWrapUi (AUTOPASTE_UIS_H ${AUTOPASTE_FORMS})
-
-add_library (leechcraft_azoth_autopaste SHARED
-	${AUTOPASTE_COMPILED_TRANSLATIONS}
-	${AUTOPASTE_SRCS}
-	${AUTOPASTE_UIS_H}
-	)
-target_link_libraries (leechcraft_azoth_autopaste
-	${LEECHCRAFT_LIBRARIES}
-	)
-install (TARGETS leechcraft_azoth_autopaste DESTINATION ${LC_PLUGINS_DEST})
-install (FILES azothautopastesettings.xml DESTINATION ${LC_SETTINGS_DEST})
-install (DIRECTORY share/ DESTINATION ${LC_SHARE_DEST})
-
-FindQtLibs (leechcraft_azoth_autopaste Network Widgets)

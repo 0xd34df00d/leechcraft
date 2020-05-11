@@ -3,21 +3,15 @@ project (leechcraft_azoth_autoidler)
 include (InitLCPlugin NO_POLICY_SCOPE)
 
 include_directories (${AZOTH_INCLUDE_DIR}
-	${CMAKE_CURRENT_BINARY_DIR}
-	${LEECHCRAFT_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}/azoth
-	)
-set (AUTOIDLER_SRCS
-	autoidler.cpp
-	xmlsettingsmanager.cpp
-	3dparty/idle.cpp
 	)
 
 if (APPLE)
-	set (AUTOIDLER_SRCS ${AUTOIDLER_SRCS} 3dparty/idle_mac.cpp)
+	set (ADDITIONAL_SRCS 3dparty/idle_mac.cpp)
 	set (ADDITIONAL_AUTOIDLER_LIBS "-framework ApplicationServices")
 elseif (UNIX)
-	set (AUTOIDLER_SRCS ${AUTOIDLER_SRCS} 3dparty/idle_x11.cpp)
+	set (ADDITIONAL_SRCS 3dparty/idle_x11.cpp)
+	set (ADDITIONAL_QT_COMPONENTS X11Extras)
 
 	find_package (X11)
 
@@ -27,27 +21,18 @@ elseif (UNIX)
 		set (ADDITIONAL_AUTOIDLER_LIBS ${X11_Xscreensaver_LIB})
 	endif ()
 elseif (WIN32)
-	set (AUTOIDLER_SRCS ${AUTOIDLER_SRCS} 3dparty/idle_win.cpp)
+	set (ADDITIONAL_SRCS 3dparty/idle_win.cpp)
 endif ()
 
-CreateTrs ("azoth_autoidler" "en;es;ro;ru_RU;uk_UA" AUTOIDLER_COMPILED_TRANSLATIONS)
-CreateTrsUpTarget ("azoth_autoidler" "en;ru_RU" "${AUTOIDLER_SRCS}" "" "azothautoidlersettings.xml")
-
-add_library (leechcraft_azoth_autoidler SHARED
-	${AUTOIDLER_COMPILED_TRANSLATIONS}
-	${AUTOIDLER_SRCS}
-	${AUTOIDLER_MOC_SRCS}
+LC_DEFINE_PLUGIN (azoth_autoidler
+	SRCS
+		autoidler.cpp
+		xmlsettingsmanager.cpp
+		3dparty/idle.cpp
+		${ADDITIONAL_SRCS}
+	SETTINGS azothautoidlersettings.xml
+	QT_COMPONENTS Widgets ${ADDITIONAL_QT_COMPONENTS}
+	LINK_LIBRARIES ${ADDITIONAL_AUTOIDLER_LIBS}
+	TS_LANGUAGES en ro ru_RU
+	INSTALL_SHARE
 	)
-target_link_libraries (leechcraft_azoth_autoidler
-	${LEECHCRAFT_LIBRARIES}
-	${ADDITIONAL_AUTOIDLER_LIBS}
-	)
-install (TARGETS leechcraft_azoth_autoidler DESTINATION ${LC_PLUGINS_DEST})
-install (FILES azothautoidlersettings.xml DESTINATION ${LC_SETTINGS_DEST})
-install (DIRECTORY share/ DESTINATION ${LC_SHARE_DEST})
-
-FindQtLibs (leechcraft_azoth_autoidler Widgets)
-
-if (UNIX AND NOT APPLE)
-	FindQtLibs (leechcraft_azoth_autoidler X11Extras)
-endif ()
