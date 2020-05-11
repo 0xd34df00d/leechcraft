@@ -274,19 +274,34 @@ public:
 	{
 		Q_UNUSED (entity);
 	}
+
+	// implementation details
+	virtual void SetProxy (ICoreProxy_ptr) = 0;
 };
 
 Q_DECLARE_INTERFACE (IInfo, "org.Deviant.LeechCraft.IInfo/1.0")
 
 #define CURRENT_API_LEVEL 20
 
-#define LC_EXPORT_PLUGIN(name,file) \
+#define LC_EXPORT_PLUGIN(file,klass) \
+	ICoreProxy_ptr klass::S_Proxy_; \
+	const ICoreProxy_ptr& GetProxyHolder () { return klass::S_Proxy_; } \
+	\
 	extern "C"\
 	{\
-		Q_DECL_EXPORT quint64 GetAPILevels ()\
-		{\
-			return CURRENT_API_LEVEL;\
-		}\
+		Q_DECL_EXPORT quint64 GetAPILevels () { return CURRENT_API_LEVEL; } \
 	}
 
-#define LC_PLUGIN_METADATA(id) Q_PLUGIN_METADATA (IID id)
+const ICoreProxy_ptr& GetProxyHolder ();
+
+#define DEFINE_PROXY \
+	static ICoreProxy_ptr S_Proxy_; \
+	_Pragma("clang diagnostic push") \
+	_Pragma("clang diagnostic ignored \"-Winconsistent-missing-override\"") \
+	void SetProxy (ICoreProxy_ptr proxy) { S_Proxy_ = std::move (proxy); } \
+	_Pragma("clang diagnostic pop") \
+	friend const ICoreProxy_ptr& ::GetProxyHolder ();
+
+#define LC_PLUGIN_METADATA(id) \
+	Q_PLUGIN_METADATA (IID id) \
+	DEFINE_PROXY

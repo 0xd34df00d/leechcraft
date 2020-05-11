@@ -406,7 +406,9 @@ namespace LC
 			try
 			{
 				qDebug () << "Initializing" << ii->GetName ();
-				ii->Init (std::make_shared<CoreProxy> (Obj2Loader_ [obj]));
+				auto proxy = std::make_shared<CoreProxy> (Obj2Loader_ [obj]);
+				ii->SetProxy (proxy);
+				ii->Init (proxy);
 
 				const auto& path = GetPluginLibraryPath (obj);
 				if (path.isEmpty ())

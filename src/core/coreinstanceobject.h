@@ -73,6 +73,7 @@ namespace LC
 		CoreInstanceObject (QObject* = 0);
 
 		// IInfo
+		void SetProxy (ICoreProxy_ptr);
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
 		void Release ();

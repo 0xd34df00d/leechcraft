@@ -64,6 +64,8 @@ namespace Qrosp
 		QMap<int, QByteArray> Index2ExportedSignatures_;
 
 		std::shared_ptr<QTranslator> Translator_;
+
+		void SetProxy (ICoreProxy_ptr) {}
 	public:
 		WrapperObject (const QString&, const QString&);
 		virtual ~WrapperObject ();

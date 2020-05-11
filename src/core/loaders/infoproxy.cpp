@@ -44,6 +44,11 @@ namespace Loaders
 	{
 	}
 
+	void InfoProxy::SetProxy (ICoreProxy_ptr proxy)
+	{
+		Info_->call ("SetProxy", QVariant::fromValue (proxy));
+	}
+
 	void InfoProxy::Init (ICoreProxy_ptr proxy)
 	{
 		qDebug () << Q_FUNC_INFO;

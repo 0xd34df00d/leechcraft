@@ -59,6 +59,7 @@ namespace WebEngineView
 				LC::Poshuku::IInterceptableRequests)
 
 		Q_PLUGIN_METADATA (IID "org.LeechCraft.Poshuku.WebEngineView" FILE "manifest.json")
+		DEFINE_PROXY
 
 		std::shared_ptr<RequestInterceptor> Interceptor_;
 

@@ -38,6 +38,11 @@ namespace DBus
 	{
 	}
 
+	void InfoServerWrapper::SetProxy (ICoreProxy_ptr proxy)
+	{
+		W_->SetProxy (proxy);
+	}
+
 	void InfoServerWrapper::Init (ICoreProxy_ptr proxy)
 	{
 		W_->Init (proxy);

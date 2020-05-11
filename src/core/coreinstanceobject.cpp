@@ -146,6 +146,10 @@ namespace LC
 				SIGNAL (removeTab (QWidget*)));
 	}
 
+	void CoreInstanceObject::SetProxy (ICoreProxy_ptr)
+	{
+	}
+
 	void CoreInstanceObject::Init (ICoreProxy_ptr)
 	{
 #ifndef Q_OS_MAC
