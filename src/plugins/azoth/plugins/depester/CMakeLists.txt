@@ -9,7 +9,7 @@ include_directories (${AZOTH_INCLUDE_DIR}
 LC_DEFINE_PLUGIN (azoth_depester
 	SRCS
 		depester.cpp
-	RESOURCES depesterresources.qrc
 	QT_COMPONENTS Core Widgets
 	TS_LANGUAGES en es ru_RU uk_UA
+	INSTALL_SHARE
 	)

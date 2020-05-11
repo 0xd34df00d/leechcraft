@@ -1,5 +1,0 @@
-<RCC>
-  <qresource prefix="/azoth/depester">
-    <file>resources/images/depester.svg</file>
-  </qresource>
-</RCC>
