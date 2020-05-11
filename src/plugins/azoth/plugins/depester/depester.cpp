@@ -41,11 +41,7 @@
 
 Q_DECLARE_METATYPE (QSet<QString>);
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Depester
+namespace LC::Azoth::Depester
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
@@ -247,8 +243,6 @@ namespace Depester
 		IgnoredNicks_ << name;
 		Entry2Nick_ [entryObj] = name;
 	}
-}
-}
 }
 
 LC_EXPORT_PLUGIN (leechcraft_azoth_depester, LC::Azoth::Depester::Plugin);

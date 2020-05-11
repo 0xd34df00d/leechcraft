@@ -39,11 +39,7 @@
 class QTranslator;
 class QAction;
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Depester
+namespace LC::Azoth::Depester
 {
 	class Plugin : public QObject
 				 , public IInfo
@@ -60,15 +56,15 @@ namespace Depester
 
 		QIcon IgnoredIcon_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+		void Init (ICoreProxy_ptr) override;
+		void SecondInit () override;
+		QByteArray GetUniqueID () const override;
+		void Release () override;
+		QString GetName () const override;
+		QString GetInfo () const override;
+		QIcon GetIcon () const override;
 
-		QSet<QByteArray> GetPluginClasses () const;
+		QSet<QByteArray> GetPluginClasses () const override;
 	private:
 		bool IsEntryIgnored (QObject*);
 		void HandleMsgOccurence (IHookProxy_ptr, QObject*);
@@ -94,6 +90,4 @@ namespace Depester
 		void handleIgnoreEntry (bool);
 		void handleNameChanged (const QString&);
 	};
-}
-}
 }
