@@ -442,9 +442,13 @@ function(LC_DEFINE_PLUGIN pluginName)
 
 	if (P_RESOURCES)
 		QtAddResources (RCCS ${P_RESOURCES})
+	else ()
+		set (RCCS)
 	endif ()
 	if (P_FORMS)
 		QtWrapUi (UIS ${P_FORMS})
+	else ()
+		set (UIS)
 	endif ()
 
 	CreateTrs ("${pluginName}" "${P_TS_LANGUAGES}" COMPILED_TRANSLATIONS)
