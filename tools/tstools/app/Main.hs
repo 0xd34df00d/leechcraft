@@ -1,15 +1,17 @@
 {-# LANGUAGE OverloadedStrings, TemplateHaskell, QuasiQuotes #-}
+{-# LANGUAGE DataKinds, TypeOperators, DeriveGeneric, FlexibleInstances, RecordWildCards #-}
 
 module Main where
 
 import qualified Control.Foldl as F
 import qualified Data.Text as T
+import Control.Monad
 import Data.Either
 import Data.FileEmbed
 import Data.Functor
 import Data.String.Interpolate.IsString
+import Options.Generic
 import Prelude hiding(FilePath)
-import System.Environment
 import Turtle
 
 xsltStyle :: Text
@@ -37,18 +39,29 @@ guessTsBase fullPath
   where
     components = tail $ dropWhile (/= "src") $ T.takeWhile (/= '/') . toTextHR <$> splitDirectories fullPath
 
+data Options w = Options
+  { path :: w ::: Maybe String <?> "Path to the plugin directory"
+  , languages :: w ::: [String] <?> "List of languages to generate or update translations for"
+  } deriving (Generic)
+
+instance ParseRecord (Options Wrapped)
+
 main :: IO ()
 main = do
-  [path, lang] <- getArgs
-  cd $ fromString path
+  Options { .. } <- unwrapRecord "tstools"
+
+  case path of
+       Just path' -> cd $ fromString path'
+       Nothing -> pure ()
 
   files <- lsif (\subpath -> pure $ subpath /= "plugins") "." `fold` F.list
   let sources = filter (\file -> file `hasExtension` "cpp" || file `hasExtension` "ui") files
   generated <- mkGenerated files
 
   tsBase <- guessTsBase <$> pwd
-  let lupdateArgs = ["-noobsolete"] <> fmap toTextHR (sources <> generated) <> ["-ts", [i|#{toTextHR tsBase}_#{lang}.ts|]]
-  view $ inproc "lupdate" lupdateArgs empty
+  forM_ languages $ \lang -> do
+    let lupdateArgs = ["-noobsolete"] <> fmap toTextHR (sources <> generated) <> ["-ts", [i|#{toTextHR tsBase}_#{lang}.ts|]]
+    view $ inproc "lupdate" lupdateArgs empty
 
   mapM_ rm generated
 

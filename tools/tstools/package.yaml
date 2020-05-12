@@ -24,6 +24,7 @@ dependencies:
 - file-embed
 - foldl
 - interpolate
+- optparse-generic
 - text
 - turtle
 
