@@ -192,7 +192,17 @@ namespace LC
 			for (const auto& prefix : LocalPrefixesChain_ + GlobalPrefixesChain_)
 				for (const auto& path : pathVariants)
 				{
+					if (Verbose_)
+						qDebug () << Q_FUNC_INFO
+								<< "trying"
+								<< prefix + RelativePath_ + path;
 					const QString& can = QFileInfo (prefix + RelativePath_ + path).absoluteFilePath ();
+					if (Verbose_)
+						qDebug () << Q_FUNC_INFO
+								<< "absolute file path"
+								<< can
+								<< "; file exists?"
+								<< QFile::exists (can);
 					if (QFile::exists (can))
 						return can;
 				}
@@ -227,6 +237,12 @@ namespace LC
 
 			if (CachePathContents_.contains (path))
 			{
+				if (Verbose_)
+					qDebug () << Q_FUNC_INFO
+							<< "found"
+							<< path
+							<< "in cache";
+
 				auto result = std::make_shared<QBuffer> ();
 				result->setData (*CachePathContents_ [path]);
 				if (open)
@@ -300,6 +316,11 @@ namespace LC
 		void ResourceLoader::SetNameFilters (const QStringList& filters)
 		{
 			NameFilters_ = filters;
+		}
+
+		void ResourceLoader::SetVerbose (bool verbose)
+		{
+			Verbose_ = true;
 		}
 
 		void ResourceLoader::ScanPath (const QString& path)

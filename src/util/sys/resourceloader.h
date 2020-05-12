@@ -109,6 +109,8 @@ namespace LC
 			QTimer *CacheFlushTimer_;
 			mutable QCache<QString, QByteArray> CachePathContents_;
 			mutable QCache<QString, QPixmap> CachePixmaps_;
+
+			bool Verbose_ = false;
 		public:
 			/** @brief Initializes the loader with the given path.
 			 *
@@ -337,6 +339,14 @@ namespace LC
 			 * @sa SetAttrFilters(), GetSubElemModel()
 			 */
 			void SetNameFilters (const QStringList&);
+
+			/** @brief Control whether the ResourceLoader prints what it is
+			 * doing to the logs.
+			 *
+			 * @param verbose If true, the loader will print more debug
+			 * statements to the logs.
+			 */
+			void SetVerbose (bool verbose);
 		private:
 			void ScanPath (const QString&);
 		private slots:
