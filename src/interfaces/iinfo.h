@@ -294,12 +294,22 @@ Q_DECLARE_INTERFACE (IInfo, "org.Deviant.LeechCraft.IInfo/1.0")
 
 const ICoreProxy_ptr& GetProxyHolder ();
 
+#ifdef __clang__
+#define LC_PUSH_OVERRIDE_WARNING \
+	_Pragma("clang diagnostic push") \
+	_Pragma("clang diagnostic ignored \"-Winconsistent-missing-override\"")
+#define LC_POP_OVERRIDE_WARNING \
+	_Pragma("clang diagnostic pop")
+#else
+#define LC_PUSH_OVERRIDE_WARNING
+#define LC_POP_OVERRIDE_WARNING
+#endif
+
 #define DEFINE_PROXY \
 	static ICoreProxy_ptr S_Proxy_; \
-	_Pragma("clang diagnostic push") \
-	_Pragma("clang diagnostic ignored \"-Winconsistent-missing-override\"") \
+	LC_PUSH_OVERRIDE_WARNING \
 	void SetProxy (ICoreProxy_ptr proxy) { S_Proxy_ = std::move (proxy); } \
-	_Pragma("clang diagnostic pop") \
+	LC_POP_OVERRIDE_WARNING \
 	friend const ICoreProxy_ptr& ::GetProxyHolder ();
 
 #define LC_PLUGIN_METADATA(id) \
