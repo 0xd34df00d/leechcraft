@@ -1,6 +1,0 @@
-<RCC>
-  <qresource prefix="/plugins/azoth/plugins/embedmedia">
-    <file>resources/scripts/embedder.js</file>
-  </qresource>
-</RCC>
-

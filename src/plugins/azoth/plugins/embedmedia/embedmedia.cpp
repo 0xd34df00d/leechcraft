@@ -37,6 +37,7 @@
 #include <QWebPage>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
+#include <util/sys/resourceloader.h>
 
 namespace LC
 {
@@ -46,20 +47,20 @@ namespace EmbedMedia
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-		QFile embedderJS (":/plugins/azoth/plugins/embedmedia/resources/scripts/embedder.js");
+		Util::ResourceLoader loader { "azoth/embedmedia" };
+		loader.AddGlobalPrefix ();
+		loader.AddLocalPrefix ();
 
-		if (!embedderJS.open (QIODevice::ReadOnly))
+		auto embedderJS = loader.Load ("embedder.js", true);
+
+		if (!embedderJS || !embedderJS->isOpen ())
 		{
 			qWarning () << Q_FUNC_INFO
-					<< "unable to open script file"
-					<< embedderJS.errorString ();
+					<< "unable to find script file";
 			return;
 		}
 
-		QTextStream content (&embedderJS);
-
-		content.setCodec (QTextCodec::codecForName ("UTF-8"));
-		ScriptContent_ = content.readAll ();
+		ScriptContent_ = embedderJS->readAll ();
 	}
 
 	void Plugin::SecondInit ()

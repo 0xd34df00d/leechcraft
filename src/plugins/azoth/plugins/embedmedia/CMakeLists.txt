@@ -8,7 +8,6 @@ include_directories (${AZOTH_INCLUDE_DIR}
 
 LC_DEFINE_PLUGIN (azoth_embedmedia
 	SRCS embedmedia.cpp
-	RESOURCES embedmedia.qrc
 	QT_COMPONENTS WebKitWidgets
 	INSTALL_SHARE
 	)
