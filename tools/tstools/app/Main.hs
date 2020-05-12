@@ -23,8 +23,8 @@ mkGenerated allFiles
       liftIO $ runManaged $ do
         xsltFile <- mktempfile "." "xxxxxx.xslt"
         liftIO $ writeTextFile xsltFile xsltStyle
-        let basename = toText' $ dropExtension settingFile
-        let xsltprocArgs = ["--stringparam", "filename", basename, toText' xsltFile, toText' settingFile]
+        let settingsBase = toText' $ dropExtension settingFile
+        let xsltprocArgs = ["--stringparam", "filename", settingsBase, toText' xsltFile, toText' settingFile]
         output "dummy.cpp" $ grep (has "QT_TRANSL") $ inproc "xsltproc" xsltprocArgs empty
       pure ["dummy.cpp"]
   | otherwise = pure []
@@ -36,7 +36,7 @@ main = do
   [path, lang] <- getArgs
   cd $ fromString path
 
-  files <- lsif (\path -> pure $ path /= "plugins") "." `fold` F.list
+  files <- lsif (\subpath -> pure $ subpath /= "plugins") "." `fold` F.list
   let sources = filterExt "cpp" files <> filterExt "uis" files
   generated <- mkGenerated files
 
