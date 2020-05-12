@@ -33,10 +33,10 @@
 #include <QIcon>
 #include <QTextCodec>
 #include <QTextStream>
-#include <QWebElement>
 #include <QWebFrame>
 #include <QWebPage>
-
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
 
 namespace LC
 {
@@ -87,15 +87,12 @@ namespace EmbedMedia
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon ("lcicons:/azoth/embedmedia/resources/images/embedmedia.svg");
-		return icon;
+		return GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon ();
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
 	{
-		QSet<QByteArray> result;
-		result << "org.LeechCraft.Plugins.Azoth.Plugins.IGeneralPlugin";
-		return result;
+		return { "org.LeechCraft.Plugins.Azoth.Plugins.IGeneralPlugin" };
 	}
 
 	void Plugin::hookChatTabCreated (LC::IHookProxy_ptr,

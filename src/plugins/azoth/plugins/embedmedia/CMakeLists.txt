@@ -3,25 +3,12 @@ project (leechcraft_azoth_embedmedia)
 include (InitLCPlugin NO_POLICY_SCOPE)
 
 include_directories (${AZOTH_INCLUDE_DIR}
-	${CMAKE_CURRENT_BINARY_DIR}
-	${LEECHCRAFT_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}/azoth
 	)
-set (EMBEDMEDIA_SRCS
-	embedmedia.cpp
-	)
-set (EMBEDMEDIA_RESOURCES
-	embedmedia.qrc
-	)
-QtAddResources (EMBEDMEDIA_RCCS ${EMBEDMEDIA_RESOURCES})
 
-add_library (leechcraft_azoth_embedmedia SHARED
-    ${EMBEDMEDIA_SRCS}
-    ${EMBEDMEDIA_RCCS}
-    )
-target_link_libraries (leechcraft_azoth_embedmedia
-	${LEECHCRAFT_LIBRARIES}
+LC_DEFINE_PLUGIN (azoth_embedmedia
+	SRCS embedmedia.cpp
+	RESOURCES embedmedia.qrc
+	QT_COMPONENTS WebKitWidgets
+	INSTALL_SHARE
 	)
-install (TARGETS leechcraft_azoth_embedmedia DESTINATION ${LC_PLUGINS_DEST})
-
-FindQtLibs (leechcraft_azoth_embedmedia Core WebKitWidgets)
