@@ -37,9 +37,19 @@
 <context>
     <name>LC::Azoth::Herbicide::Plugin</name>
     <message>
-        <location filename="herbicide.cpp" line="93"/>
+        <location filename="herbicide.cpp" line="145"/>
         <source>A simple antispam plugin for Azoth.</source>
         <translation>A simple antispam plugin for Azoth.</translation>
+    </message>
+    <message>
+        <location filename="herbicide.cpp" line="170"/>
+        <source>Configure antispam settings...</source>
+        <translation>Configure antispam settings...</translation>
+    </message>
+    <message>
+        <location filename="herbicide.cpp" line="184"/>
+        <source>Remove account-specific antispam settings</source>
+        <translation>Remove account-specific antispam settings</translation>
     </message>
 </context>
 <context>
@@ -67,27 +77,27 @@
     <message>
         <location filename="dummy.cpp" line="6"/>
         <source>Please answer the following question to verify that you are not a bot:</source>
-        <translation type="unfinished"></translation>
+        <translation>Please answer the following question to verify that you are not a bot:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="8"/>
         <source>You&apos;ve answered correctly! Please write again now what you wanted to write.</source>
-        <translation type="unfinished"></translation>
+        <translation>You&apos;ve answered correctly! Please write again now what you wanted to write.</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="7"/>
         <source>Reply for a correctly answered quest:</source>
-        <translation type="unfinished"></translation>
+        <translation>Reply for a correctly answered quest:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="10"/>
         <source>Sorry, please try again.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sorry, please try again.</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="9"/>
         <source>Reply for an incorrectly answered quest:</source>
-        <translation type="unfinished"></translation>
+        <translation>Reply for an incorrectly answered quest:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="11"/>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="ru_RU">
+<TS version="2.1" language="ru_RU">
 <context>
     <name>ConfWidget</name>
     <message>
@@ -37,9 +37,19 @@
 <context>
     <name>LC::Azoth::Herbicide::Plugin</name>
     <message>
-        <location filename="herbicide.cpp" line="93"/>
+        <location filename="herbicide.cpp" line="145"/>
         <source>A simple antispam plugin for Azoth.</source>
         <translation>Простой антиспам-модуль для Azoth.</translation>
+    </message>
+    <message>
+        <location filename="herbicide.cpp" line="170"/>
+        <source>Configure antispam settings...</source>
+        <translation>Настроить параметры антиспама...</translation>
+    </message>
+    <message>
+        <location filename="herbicide.cpp" line="184"/>
+        <source>Remove account-specific antispam settings</source>
+        <translation>Удалить настройки для данной учётной записи</translation>
     </message>
 </context>
 <context>
