@@ -6,13 +6,11 @@ import qualified Control.Foldl as F
 import qualified Data.Text as T
 import Data.Either
 import Data.FileEmbed
+import Data.Functor
 import Data.String.Interpolate.IsString
 import Prelude hiding(FilePath)
 import System.Environment
 import Turtle
-
-filterExt :: Text -> [FilePath] -> [FilePath]
-filterExt ext = filter (`hasExtension` ext)
 
 xsltStyle :: Text
 xsltStyle = $(embedStringFile "transform.xsl")
@@ -23,13 +21,21 @@ mkGenerated allFiles
       liftIO $ runManaged $ do
         xsltFile <- mktempfile "." "xxxxxx.xslt"
         liftIO $ writeTextFile xsltFile xsltStyle
-        let settingsBase = toText' $ dropExtension settingFile
-        let xsltprocArgs = ["--stringparam", "filename", settingsBase, toText' xsltFile, toText' settingFile]
-        output "dummy.cpp" $ grep (has "QT_TRANSL") $ inproc "xsltproc" xsltprocArgs empty
+        output "dummy.cpp"
+          $ sed ("__FILENAME__" $> toText' (basename settingFile))
+          $ grep (has "QT_TRANSL")
+          $ inproc "xsltproc" [toText' xsltFile, toText' settingFile] empty
       pure ["dummy.cpp"]
   | otherwise = pure []
+  where toText' = fromRight undefined . toText
+
+guessTsBase :: FilePath -> FilePath
+guessTsBase fullPath
+  | ["plugins", plugin, "plugins", subplugin] <- components = [i|leechcraft_#{plugin}_#{subplugin}|]
+  | ["plugins", plugin] <- components = [i|leechcraft_#{plugin}|]
+  | otherwise = [i|leechcraft|]
   where
-    toText' = fromRight undefined . toText
+    components = tail $ dropWhile (/= "src") $ T.takeWhile (/= '/') . toTextHR <$> splitDirectories fullPath
 
 main :: IO ()
 main = do
@@ -37,7 +43,14 @@ main = do
   cd $ fromString path
 
   files <- lsif (\subpath -> pure $ subpath /= "plugins") "." `fold` F.list
-  let sources = filterExt "cpp" files <> filterExt "uis" files
+  let sources = filter (\file -> file `hasExtension` "cpp" || file `hasExtension` "ui") files
   generated <- mkGenerated files
 
-  pure ()
+  tsBase <- guessTsBase <$> pwd
+  let lupdateArgs = ["-noobsolete"] <> fmap toTextHR (sources <> generated) <> ["-ts", [i|#{toTextHR tsBase}_#{lang}.ts|]]
+  view $ inproc "lupdate" lupdateArgs empty
+
+  mapM_ rm generated
+
+toTextHR :: FilePath -> Text
+toTextHR = either id id . toText
