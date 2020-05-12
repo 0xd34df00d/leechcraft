@@ -41,7 +41,7 @@ guessTsBase fullPath
 
 data Options w = Options
   { path :: w ::: Maybe String <?> "Path to the plugin directory"
-  , languages :: w ::: [String] <?> "List of languages to generate or update translations for"
+  , languages :: w ::: [String] <?> "List of languages to generate or update translations for (update all if empty)"
   } deriving (Generic)
 
 instance ParseRecord (Options Wrapped)
@@ -58,9 +58,13 @@ main = do
   let sources = filter (\file -> file `hasExtension` "cpp" || file `hasExtension` "ui") files
   generated <- mkGenerated files
 
-  tsBase <- guessTsBase <$> pwd
-  forM_ languages $ \lang -> do
-    let lupdateArgs = ["-noobsolete"] <> fmap toTextHR (sources <> generated) <> ["-ts", [i|#{toTextHR tsBase}_#{lang}.ts|]]
+  tsFiles <- case languages of
+                  [] -> pure $ filter (`hasExtension` "ts") files
+                  _ -> do
+                        tsBase <- guessTsBase <$> pwd
+                        pure $ (\lang -> [i|#{toTextHR tsBase}_#{lang}.ts|]) <$> languages
+  forM_ tsFiles $ \tsFile -> do
+    let lupdateArgs = ["-noobsolete"] <> fmap toTextHR (sources <> generated) <> ["-ts", toTextHR tsFile]
     view $ inproc "lupdate" lupdateArgs empty
 
   mapM_ rm generated
