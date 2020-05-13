@@ -32,6 +32,8 @@
 #include <QTextDocument>
 #include <QProcess>
 #include <QTranslator>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
 #include <interfaces/azoth/imessage.h>
 #include <interfaces/azoth/irichtextmessage.h>
 #include <util/util.h>
@@ -112,8 +114,7 @@ namespace Modnok
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon ("lcicons:/plugins/azoth/plugins/modnok/resources/images/modnok.svg");
-		return icon;
+		return GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon ();
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
