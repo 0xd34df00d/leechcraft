@@ -451,10 +451,10 @@ function(LC_DEFINE_PLUGIN pluginName)
 		set (UIS)
 	endif ()
 
-	message (STATUS "!!! ${pluginName} ${P_TS_LANGUAGES}")
 	if (P_TS_LANGUAGES)
-		message (STATUS "generating")
 		CreateTrs ("${pluginName}" "${P_TS_LANGUAGES}" COMPILED_TRANSLATIONS)
+	else ()
+		set (COMPILED_TRANSLATIONS)
 	endif ()
 
 	set (FULL_NAME "leechcraft_${pluginName}")
