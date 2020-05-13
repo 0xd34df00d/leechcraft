@@ -31,6 +31,7 @@
 
 #include <QMap>
 #include <QString>
+#include <QCoreApplication>
 
 namespace LC
 {
@@ -42,6 +43,8 @@ namespace MuCommands
 {
 	class DescParser
 	{
+		Q_DECLARE_TR_FUNCTIONS (Descriptions)
+
 		struct Desc
 		{
 			QString Description_;

@@ -19,20 +19,12 @@ set (MUCOMMANDS_SRCS
 	descparser.cpp
 	)
 
-set (MUCOMMANDS_RESOURCES azothmucommandsresources.qrc)
-QtAddResources (MUCOMMANDS_RCCS ${MUCOMMANDS_RESOURCES})
-
-add_custom_target (leechcraft_azoth_mucommands_gen_descr_ts
-		"${CMAKE_CURRENT_SOURCE_DIR}/descr_transform.sh"
-		WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}" VERBATIM)
-
 CreateTrs ("azoth_mucommands" "en;ru_RU" MUCOMMANDS_COMPILED_TRANSLATIONS)
 CreateTrsUpTarget ("azoth_mucommands" "en;ru_RU" "${MUCOMMANDS_SRCS}" "" ""
 		DEPENDS leechcraft_azoth_mucommands_gen_descr_ts)
 
 add_library (leechcraft_azoth_mucommands SHARED
 	${MUCOMMANDS_COMPILED_TRANSLATIONS}
-	${MUCOMMANDS_RCCS}
 	${MUCOMMANDS_SRCS}
 	)
 target_link_libraries (leechcraft_azoth_mucommands
@@ -40,7 +32,7 @@ target_link_libraries (leechcraft_azoth_mucommands
 	)
 install (TARGETS leechcraft_azoth_mucommands DESTINATION ${LC_PLUGINS_DEST})
 
-FindQtLibs (leechcraft_azoth_mucommands Core Xml Widgets)
+FindQtLibs (leechcraft_azoth_mucommands Core Widgets)
 
 if (ENABLE_AZOTH_MUCOMMANDS_TESTS)
 	include_directories (${CMAKE_CURRENT_BINARY_DIR}/tests ${CMAKE_CURRENT_SOURCE_DIR})
