@@ -2,10 +2,6 @@ cmake_minimum_required (VERSION 3.3)
 project (leechcraft_azoth_autoidler)
 include (InitLCPlugin NO_POLICY_SCOPE)
 
-include_directories (${AZOTH_INCLUDE_DIR}
-	${LEECHCRAFT_INCLUDE_DIR}/azoth
-	)
-
 if (APPLE)
 	set (ADDITIONAL_SRCS 3dparty/idle_mac.cpp)
 	set (ADDITIONAL_AUTOIDLER_LIBS "-framework ApplicationServices")

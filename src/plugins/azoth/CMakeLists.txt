@@ -222,6 +222,10 @@ endif ()
 
 set (AZOTH_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
+include_directories (${AZOTH_INCLUDE_DIR}
+	${LEECHCRAFT_INCLUDE_DIR}/azoth
+	)
+
 option (ENABLE_AZOTH_ABBREV "Build Abbrev for supporting abbreviations" ON)
 option (ENABLE_AZOTH_ACETAMIDE "Build Acetamide, IRC support for Azoth" ON)
 option (ENABLE_AZOTH_ADIUMSTYLES "Build support for Adium styles" ON)
