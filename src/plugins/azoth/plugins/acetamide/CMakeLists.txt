@@ -57,7 +57,6 @@ LC_DEFINE_PLUGIN (azoth_acetamide
 	SETTINGS azothacetamidesettings.xml
 	RESOURCES azothacetamideresources.qrc
 	QT_COMPONENTS Network Widgets Xml
-	TS_LANGUAGES de en es fr it ro ru_RU uk_UA
 	INSTALL_DESKTOP
 	INSTALL_SHARE
 	)

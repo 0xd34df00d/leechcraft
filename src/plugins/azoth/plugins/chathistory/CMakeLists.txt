@@ -16,6 +16,5 @@ LC_DEFINE_PLUGIN (azoth_chathistory
 	FORMS chathistorywidget.ui
 	SETTINGS azothchathistorysettings.xml
 	QT_COMPONENTS Core Sql Widgets
-	TS_LANGUAGES en es ru_RU uk_UA
 	INSTALL_SHARE
 	)

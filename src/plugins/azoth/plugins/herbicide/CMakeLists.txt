@@ -12,6 +12,5 @@ LC_DEFINE_PLUGIN (azoth_herbicide
 	FORMS confwidget.ui
 	SETTINGS azothherbicidesettings.xml
 	QT_COMPONENTS Sql Widgets
-	TS_LANGUAGES en es ru_RU uk_UA
 	INSTALL_SHARE
 	)

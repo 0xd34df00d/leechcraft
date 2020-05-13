@@ -8,6 +8,5 @@ LC_DEFINE_PLUGIN (azoth_hili
 		xmlsettingsmanager.cpp
 	SETTINGS azothhilisettings.xml
 	QT_COMPONENTS Core Widgets
-	TS_LANGUAGES en es ru_RU uk_UA
 	INSTALL_SHARE
 	)

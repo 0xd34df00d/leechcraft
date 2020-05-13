@@ -6,6 +6,5 @@ LC_DEFINE_PLUGIN (azoth_depester
 	SRCS
 		depester.cpp
 	QT_COMPONENTS Core Widgets
-	TS_LANGUAGES en es ru_RU uk_UA
 	INSTALL_SHARE
 	)

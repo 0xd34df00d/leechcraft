@@ -20,6 +20,5 @@ LC_DEFINE_PLUGIN (azoth_autopaste
 		pastedialog.ui
 	SETTINGS azothautopastesettings.xml
 	QT_COMPONENTS Network Widgets
-	TS_LANGUAGES en es ru_RU uk_UA
 	INSTALL_SHARE
 	)

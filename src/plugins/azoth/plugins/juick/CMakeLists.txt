@@ -6,6 +6,5 @@ LC_DEFINE_PLUGIN (azoth_juick
 	SRCS
 		juick.cpp
 	QT_COMPONENTS Core Widgets
-	TS_LANGUAGES en ru_RU uk_UA
 	INSTALL_SHARE
 	)

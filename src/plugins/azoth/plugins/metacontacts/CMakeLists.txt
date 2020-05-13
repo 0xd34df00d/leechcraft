@@ -16,6 +16,5 @@ LC_DEFINE_PLUGIN (azoth_metacontacts
 		addtometacontactsdialog.ui
 		managecontactsdialog.ui
 	QT_COMPONENTS Widgets
-	TS_LANGUAGES en es ro ru_RU uk_UA
 	INSTALL_SHARE
 	)

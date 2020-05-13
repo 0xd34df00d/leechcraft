@@ -8,6 +8,5 @@ LC_DEFINE_PLUGIN (azoth_birthdaynotifier
 		xmlsettingsmanager.cpp
 	SETTINGS azothbirthdaynotifiersettings.xml
 	QT_COMPONENTS Core Widgets
-	TS_LANGUAGES en ro ru_RU
 	INSTALL_SHARE
 	)

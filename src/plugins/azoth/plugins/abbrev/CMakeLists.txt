@@ -9,5 +9,4 @@ LC_DEFINE_PLUGIN (azoth_abbrev
 		abbreviation.cpp
 		shortcutsmanager.cpp
 	QT_COMPONENTS Core Widgets
-	TS_LANGUAGES en ru_RU
 	)

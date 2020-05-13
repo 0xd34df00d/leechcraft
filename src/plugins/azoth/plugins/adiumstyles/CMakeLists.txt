@@ -9,6 +9,5 @@ LC_DEFINE_PLUGIN (azoth_adiumstyles
 		packproxymodel.cpp
 	RESOURCES adiumstyles.qrc
 	QT_COMPONENTS WebKitWidgets Xml
-	TS_LANGUAGES en ru_RU
 	INSTALL_SHARE
 	)

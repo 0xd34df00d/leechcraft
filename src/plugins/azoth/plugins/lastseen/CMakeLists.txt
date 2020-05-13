@@ -7,6 +7,5 @@ LC_DEFINE_PLUGIN (azoth_lastseen
 		lastseen.cpp
 		ondiskstorage.cpp
 	QT_COMPONENTS Concurrent Sql Widgets
-	TS_LANGUAGES en es ru_RU uk_UA
 	INSTALL_SHARE
 	)
