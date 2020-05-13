@@ -1,5 +1,0 @@
-<RCC>
-  <qresource prefix="/plugins/azoth/plugins/herbicide">
-    <file>resources/images/herbicide.svg</file>
-  </qresource>
-</RCC>

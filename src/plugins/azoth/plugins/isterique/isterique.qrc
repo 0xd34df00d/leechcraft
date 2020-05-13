@@ -1,6 +1,0 @@
-<RCC>
-  <qresource prefix="/plugins/azoth/plugins/isterique">
-    <file>resources/images/isterique.svg</file>
-  </qresource>
-</RCC>
-

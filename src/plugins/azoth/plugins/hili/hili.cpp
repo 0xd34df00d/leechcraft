@@ -31,11 +31,11 @@
 #include <QCoreApplication>
 #include <QIcon>
 #include <QMessageBox>
-#include <QPushButton>
-#include <QSettings>
 #include <QTranslator>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/util.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
 #include <interfaces/azoth/imessage.h>
 #include "xmlsettingsmanager.h"
 
@@ -83,8 +83,7 @@ namespace HiLi
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon ("lcicons:/plugins/azoth/plugins/hili/resources/images/hili.svg");
-		return icon;
+		return GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon ();
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const

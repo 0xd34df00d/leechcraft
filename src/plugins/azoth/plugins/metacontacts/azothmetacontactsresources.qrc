@@ -1,5 +1,0 @@
-<RCC>
-  <qresource prefix="/plugins/azoth/plugins/metacontacts">
-    <file>resources/images/metacontacts.svg</file>
-  </qresource>
-</RCC>

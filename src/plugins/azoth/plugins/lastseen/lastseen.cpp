@@ -37,6 +37,7 @@
 #include <util/sll/util.h>
 #include <util/sll/delayedexecutor.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/iloadprogressreporter.h>
 #include <interfaces/azoth/iclentry.h>
@@ -99,8 +100,7 @@ namespace LastSeen
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon ("lcicons:/azoth/lastseen/resources/images/lastseen.svg");
-		return icon;
+		return GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon ();
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const

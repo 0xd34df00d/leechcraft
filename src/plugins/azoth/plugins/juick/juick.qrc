@@ -1,6 +1,0 @@
-<RCC>
-  <qresource prefix="/plugins/azoth/plugins/juick">
-    <file>resources/images/juick.svg</file>
-  </qresource>
-</RCC>
-

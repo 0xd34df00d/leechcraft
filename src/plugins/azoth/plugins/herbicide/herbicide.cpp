@@ -38,6 +38,8 @@
 #include <QDialogButtonBox>
 #include <util/util.h>
 #include <util/sll/slotclosure.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/imessage.h>
 #include <interfaces/azoth/iaccount.h>
@@ -147,8 +149,7 @@ namespace Herbicide
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon ("lcicons:/plugins/azoth/plugins/herbicide/resources/images/herbicide.svg");
-		return icon;
+		return GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon ();
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const

@@ -29,6 +29,8 @@
 
 #include "keeso.h"
 #include <QIcon>
+#include <interfaces/core/iiconthememanager.h>
+#include <interfaces/core/icoreproxy.h>
 
 namespace LC
 {
@@ -88,8 +90,7 @@ namespace Keeso
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon ("lcicons:/azoth/keeso/resources/images/keeso.svg");
-		return icon;
+		return GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon ();
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const

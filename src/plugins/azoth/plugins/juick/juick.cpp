@@ -34,6 +34,8 @@
 #include <QMessageBox>
 #include <QPushButton>
 #include <QSettings>
+#include <interfaces/core/iiconthememanager.h>
+#include <interfaces/core/icoreproxy.h>
 #include <interfaces/azoth/imessage.h>
 #include <interfaces/azoth/iclentry.h>
 #include <util/util.h>
@@ -119,8 +121,7 @@ namespace Juick
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon ("lcicons:/plugins/azoth/plugins/juick/resources/images/juick.svg");
-		return icon;
+		return GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon ();
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const

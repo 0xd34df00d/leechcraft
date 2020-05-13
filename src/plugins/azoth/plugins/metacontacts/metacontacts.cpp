@@ -31,6 +31,8 @@
 #include <QIcon>
 #include <QAction>
 #include <util/util.h>
+#include <interfaces/core/iiconthememanager.h>
+#include <interfaces/core/icoreproxy.h>
 #include <interfaces/azoth/iclentry.h>
 #include "metaprotocol.h"
 #include "core.h"
@@ -80,8 +82,7 @@ namespace Metacontacts
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon ("lcicons:/plugins/azoth/plugins/metacontacts/resources/images/metacontacts.svg");
-		return icon;
+		return GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon ();
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const

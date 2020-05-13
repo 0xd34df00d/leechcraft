@@ -1,5 +1,0 @@
-<RCC>
-  <qresource prefix="/azoth/keeso">
-    <file>resources/images/keeso.svg</file>
-  </qresource>
-</RCC>
