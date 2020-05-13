@@ -451,16 +451,21 @@ function(LC_DEFINE_PLUGIN pluginName)
 		set (UIS)
 	endif ()
 
-	if (P_TS_LANGUAGES)
-		CreateTrs ("${pluginName}" "${P_TS_LANGUAGES}" COMPILED_TRANSLATIONS)
+	file (GLOB TS_SOURCES "*.ts")
+	if (TS_SOURCES)
+		list (TRANSFORM TS_SOURCES REPLACE "(.*)\\.ts" "\\1.qm" OUTPUT_VARIABLE QM_RESULTS)
+		add_custom_command (OUTPUT ${QM_RESULTS}
+			COMMAND "${QT_LRELEASE_EXECUTABLE}" ${TS_SOURCES}
+			DEPENDS ${TS_SOURCES}
+			)
 	else ()
-		set (COMPILED_TRANSLATIONS)
+		set (QM_RESULTS)
 	endif ()
 
 	set (FULL_NAME "leechcraft_${pluginName}")
 
 	add_library (${FULL_NAME} SHARED
-		${COMPILED_TRANSLATIONS}
+		${QM_RESULTS}
 		${P_SRCS}
 		${RCCS}
 		${UIS}
@@ -468,6 +473,7 @@ function(LC_DEFINE_PLUGIN pluginName)
 	target_link_libraries (${FULL_NAME} ${LEECHCRAFT_LIBRARIES} ${P_LINK_LIBRARIES})
 
 	install (TARGETS ${FULL_NAME} DESTINATION ${LC_PLUGINS_DEST})
+	install (FILES ${QM_RESULTS} DESTINATION ${LC_TRANSLATIONS_DEST})
 
 	if (P_INSTALL_SHARE)
 		install (DIRECTORY share/ DESTINATION ${LC_SHARE_DEST})
