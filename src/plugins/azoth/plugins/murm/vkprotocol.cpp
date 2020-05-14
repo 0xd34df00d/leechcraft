@@ -31,6 +31,7 @@
 #include <QIcon>
 #include <QApplication>
 #include <QSettings>
+#include <util/sys/resourceloader.h>
 #include "vkaccount.h"
 #include "mucjoinwidget.h"
 #include "photourlstorage.h"
@@ -101,7 +102,13 @@ namespace Murm
 
 	QIcon VkProtocol::GetProtocolIcon () const
 	{
-		static QIcon icon ("lcicons:/azoth/murm/resources/images/vk.svg");
+		static QIcon icon = []
+		{
+			static Util::ResourceLoader loader { "azoth/murm/clients" };
+			loader.AddGlobalPrefix ();
+			loader.AddLocalPrefix ();
+			return loader.LoadPixmap ("vk");
+		} ();
 		return icon;
 	}
 

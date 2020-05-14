@@ -33,6 +33,7 @@
 #include <QTimer>
 #include <interfaces/azoth/iproxyobject.h>
 #include <util/sll/delayedexecutor.h>
+#include <util/sys/resourceloader.h>
 #include "xmlsettingsmanager.h"
 #include "vkaccount.h"
 #include "vkmessage.h"
@@ -493,38 +494,31 @@ namespace Murm
 	{
 		QImage GetAppImage (const AppInfo& app, const QImage& appImage, VkAccount *acc)
 		{
-			if (app.Title_.isEmpty ())
+			QString name;
+			if (app.Title_.isEmpty () && app.IsMobile_)
 			{
 				if (app.IsMobile_)
-				{
-					static QImage mobile { "lcicons:/azoth/murm/resources/images/mobile.svg" };
-					return mobile;
-				}
+					name = "mobile";
 				else
 					return acc->GetParentProtocol ()->GetProtocolIcon ().pixmap (24, 24).toImage ();
 			}
-			else if (app.Title_ == "Android")
-			{
-				static QImage android { "lcicons:/azoth/murm/resources/images/android.svg" };
-				return android;
-			}
-			else if (app.Title_ == "iPhone")
-			{
-				static QImage iphone { "lcicons:/azoth/murm/resources/images/iphone.svg" };
-				return iphone;
-			}
-			else if (app.Title_ == "iPad")
-			{
-				static QImage ipad { "lcicons:/azoth/murm/resources/images/ipad.svg" };
-				return ipad;
-			}
 			else if (app.Title_ == "Windows Phone")
-			{
-				static QImage winphone { "lcicons:/azoth/murm/resources/images/winphone.svg" };
-				return winphone;
-			}
+				name = "winphone";
+			else if (app.Title_ == "Android" || app.Title_ == "iPhone" || app.Title_ == "iPad")
+				name = app.Title_.toLower ();
 
-			return appImage;
+			if (name.isEmpty ())
+				return appImage;
+
+			static const auto& loader = [] () -> const Util::ResourceLoader&
+			{
+				static Util::ResourceLoader loader { "azoth/murm/clients" };
+				loader.AddGlobalPrefix ();
+				loader.AddLocalPrefix ();
+				return loader;
+			} ();
+
+			return loader.LoadPixmap (name).toImage ();
 		}
 	}
 

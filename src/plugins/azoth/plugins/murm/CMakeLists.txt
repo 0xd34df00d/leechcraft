@@ -34,7 +34,6 @@ LC_DEFINE_PLUGIN (azoth_murm
 		vcarddialog.ui
 		mucjoinwidget.ui
 		accountconfigdialog.ui
-	RESOURCES azothmurmresources.qrc
 	SETTINGS azothmurmsettings.xml
 	QT_COMPONENTS Concurrent Network Sql Widgets Xml
 	INSTALL_SHARE
