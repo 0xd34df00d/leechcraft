@@ -1,5 +1,0 @@
-<RCC>
-  <qresource prefix="/plugins/azoth/plugins/xtazy">
-    <file>resources/images/xtazy.svg</file>
-  </qresource>
-</RCC>

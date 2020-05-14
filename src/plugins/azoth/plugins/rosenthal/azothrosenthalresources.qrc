@@ -1,5 +1,0 @@
-<RCC>
-  <qresource prefix="/plugins/azoth/plugins/rosenthal">
-    <file>resources/images/rosenthal.svg</file>
-  </qresource>
-</RCC>

@@ -29,6 +29,8 @@
 
 #include "nativeemoticons.h"
 #include <QIcon>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
 #include <util/util.h>
 #include "nativeemoticonssource.h"
 #include "kopeteemoticonssource.h"
@@ -74,8 +76,7 @@ namespace NativeEmoticons
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon ("lcicons:/azoth/nativeemoticons/resources/images/nativeemoticons.svg");
-		return icon;
+		return GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon ();
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const

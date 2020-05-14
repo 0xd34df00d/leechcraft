@@ -29,6 +29,8 @@
 
 #include "velvetbird.h"
 #include <QIcon>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
 #include "protomanager.h"
 
 namespace LC
@@ -85,8 +87,7 @@ namespace VelvetBird
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon ("lcicons:/azoth/velvetbird/resources/images/velvetbird.svg");
-		return icon;
+		return GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon ();
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const

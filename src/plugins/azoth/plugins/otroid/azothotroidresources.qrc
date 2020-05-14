@@ -1,5 +1,0 @@
-<RCC>
-  <qresource prefix="/plugins/azoth/plugins/otroid">
-    <file>resources/images/otroid.svg</file>
-  </qresource>
-</RCC>

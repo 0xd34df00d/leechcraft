@@ -4,35 +4,15 @@ include (InitLCPlugin NO_POLICY_SCOPE)
 
 option (ENABLE_AZOTH_MUCOMMANDS_TESTS "Enable tests for Azoth MuCommands" OFF)
 
-include_directories (${AZOTH_INCLUDE_DIR}
-	${CMAKE_CURRENT_BINARY_DIR}
-	${Boost_INCLUDE_DIR}
-	${LEECHCRAFT_INCLUDE_DIR}
-	${LEECHCRAFT_INCLUDE_DIR}/azoth
+LC_DEFINE_PLUGIN (azoth_mucommands
+	SRCS
+		mucommands.cpp
+		commands.cpp
+		presencecommand.cpp
+		openurlcommand.cpp
+		descparser.cpp
+	QT_COMPONENTS Widgets
 	)
-
-set (MUCOMMANDS_SRCS
-	mucommands.cpp
-	commands.cpp
-	presencecommand.cpp
-	openurlcommand.cpp
-	descparser.cpp
-	)
-
-CreateTrs ("azoth_mucommands" "en;ru_RU" MUCOMMANDS_COMPILED_TRANSLATIONS)
-CreateTrsUpTarget ("azoth_mucommands" "en;ru_RU" "${MUCOMMANDS_SRCS}" "" ""
-		DEPENDS leechcraft_azoth_mucommands_gen_descr_ts)
-
-add_library (leechcraft_azoth_mucommands SHARED
-	${MUCOMMANDS_COMPILED_TRANSLATIONS}
-	${MUCOMMANDS_SRCS}
-	)
-target_link_libraries (leechcraft_azoth_mucommands
-	${LEECHCRAFT_LIBRARIES}
-	)
-install (TARGETS leechcraft_azoth_mucommands DESTINATION ${LC_PLUGINS_DEST})
-
-FindQtLibs (leechcraft_azoth_mucommands Core Widgets)
 
 if (ENABLE_AZOTH_MUCOMMANDS_TESTS)
 	include_directories (${CMAKE_CURRENT_BINARY_DIR}/tests ${CMAKE_CURRENT_SOURCE_DIR})
