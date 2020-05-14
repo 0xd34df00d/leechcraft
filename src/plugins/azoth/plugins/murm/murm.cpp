@@ -31,6 +31,8 @@
 #include <QIcon>
 #include <util/util.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include "vkprotocol.h"
 #include "xmlsettingsmanager.h"
@@ -76,8 +78,7 @@ namespace Murm
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon ("lcicons:/azoth/murm/resources/images/murm.svg");
-		return icon;
+		return Proxy_->GetIconThemeManager ()->GetPluginIcon ();
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
