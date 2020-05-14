@@ -320,7 +320,7 @@ namespace LC
 
 		void ResourceLoader::SetVerbose (bool verbose)
 		{
-			Verbose_ = true;
+			Verbose_ = verbose;
 		}
 
 		void ResourceLoader::ScanPath (const QString& path)
