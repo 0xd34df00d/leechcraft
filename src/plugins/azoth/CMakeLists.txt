@@ -258,7 +258,6 @@ option (ENABLE_AZOTH_VELVETBIRD "Build libpurple support plugin" OFF)
 option (ENABLE_AZOTH_XOOX "Build Xoox, the QXmpp-aided XMPP support for Azoth" ON)
 option (ENABLE_AZOTH_XTAZY "Build Xtazy for publishing current user tune" ON)
 option (ENABLE_AZOTH_ZHEET "Build Zheet, the libmsn-based Windows Live support for Azoth" OFF)
-option (ENABLE_AZOTH_WOODPECKER "Build Woodpecker, twitter client" ON)
 
 if (ENABLE_AZOTH_ABBREV)
 	add_subdirectory (plugins/abbrev)
