@@ -57,15 +57,6 @@ if (ENABLE_CRYPT)
 	add_definitions (-DENABLE_CRYPT)
 endif ()
 
-set (COMMON_SRCS
-	azothcommon.cpp
-	)
-add_library (leechcraft_azoth_common STATIC
-	${COMMON_SRCS}
-	)
-set_target_properties (leechcraft_azoth_common PROPERTIES POSITION_INDEPENDENT_CODE True)
-FindQtLibs (leechcraft_azoth_common Core)
-
 set (SRCS
 	azoth.cpp
 	core.cpp

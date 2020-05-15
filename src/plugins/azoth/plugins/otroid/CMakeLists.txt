@@ -20,6 +20,6 @@ LC_DEFINE_PLUGIN (azoth_otroid
 	FORMS initiateauthdialog.ui
 	SETTINGS azothotroidsettings.xml
 	QT_COMPONENTS Concurrent Widgets
-	LINK_LIBRARIES ${LIBOTR_LIBRARIES} leechcraft_azoth_common
+	LINK_LIBRARIES ${LIBOTR_LIBRARIES}
 	INSTALL_SHARE
 	)
