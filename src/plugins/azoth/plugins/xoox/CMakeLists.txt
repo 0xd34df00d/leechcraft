@@ -5,7 +5,6 @@ include (InitLCPlugin NO_POLICY_SCOPE)
 find_package(PkgConfig)
 pkg_check_modules(QXMPP REQUIRED IMPORTED_TARGET qxmpp)
 
-include_directories (${QCA2_INCLUDE_DIR})
 set (DEFINITIONS "")
 set (EXTRA_SRCS "")
 
@@ -157,6 +156,6 @@ LC_DEFINE_PLUGIN (azoth_xoox
 	RESOURCES azothxooxresources.qrc
 	SETTINGS azothxooxsettings.xml
 	QT_COMPONENTS Concurrent Network Sql Widgets Xml ${EXTRA_QT}
-	LINK_LIBRARIES ${QCA2_LIBRARIES} PkgConfig::QXMPP
+	LINK_LIBRARIES PkgConfig::QXMPP ${QCA2_IMPORTED_TARGET}
 	INSTALL_DESKTOP
 	)

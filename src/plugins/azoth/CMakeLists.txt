@@ -2,15 +2,11 @@ cmake_minimum_required (VERSION 3.3)
 project (leechcraft_azoth)
 include (InitLCPlugin NO_POLICY_SCOPE)
 
-set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake;${CMAKE_MODULE_PATH}")
-
-include (CMakeDependentOption)
-
 option (ENABLE_MEDIACALLS "Enable support for media calls" ON)
 
 option (USE_AZOTH_BOOST_LOCALE "Use Boost.Locale for better datetime formatting in Azoth" ON)
 if (USE_AZOTH_BOOST_LOCALE)
-	find_Package (Boost REQUIRED COMPONENTS locale)
+	find_package (Boost REQUIRED COMPONENTS locale)
 
 	add_definitions (-DUSE_BOOST_LOCALE)
 endif ()
@@ -47,12 +43,12 @@ endif ()
 
 option (ENABLE_CRYPT "Enable QCA2-based support for PGP" ON)
 
-set (QCA2_INCLUDE_DIR)
-set (QCA2_LIBRARIES)
+set (QCA2_IMPORTED_TARGET)
 
 if (ENABLE_CRYPT)
-	find_package (QCA2 REQUIRED)
-	include_directories (${QCA2_INCLUDE_DIR})
+	find_package(PkgConfig)
+	pkg_check_modules(QCA2 REQUIRED IMPORTED_TARGET qca2-qt5)
+	set (QCA2_IMPORTED_TARGET PkgConfig::QCA2)
 
 	add_definitions (-DENABLE_CRYPT)
 endif ()
@@ -192,7 +188,7 @@ add_library (leechcraft_azoth SHARED
 target_link_libraries (leechcraft_azoth
 	${Boost_LOCALE_LIBRARY}
 	${LEECHCRAFT_LIBRARIES}
-	${QCA2_LIBRARIES}
+	${QCA2_IMPORTED_TARGET}
 	)
 install (TARGETS leechcraft_azoth DESTINATION ${LC_PLUGINS_DEST})
 install (FILES azothsettings.xml DESTINATION ${LC_SETTINGS_DEST})
