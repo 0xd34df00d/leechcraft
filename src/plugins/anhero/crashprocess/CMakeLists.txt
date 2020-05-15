@@ -7,6 +7,7 @@ project (leechcraft_anhero_crashprocess)
 find_package (Boost REQUIRED COMPONENTS program_options)
 
 include_directories (
+	${LEECHCRAFT_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
 	)
