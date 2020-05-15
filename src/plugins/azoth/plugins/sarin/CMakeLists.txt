@@ -2,14 +2,8 @@ cmake_minimum_required (VERSION 3.8)
 project (leechcraft_azoth_sarin)
 include (InitLCPlugin NO_POLICY_SCOPE)
 
-set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake;${CMAKE_MODULE_PATH}")
-
-find_package (Tox)
-
-find_package (Sodium)
-set (EXTRA_LIBRARIES ${SODIUM_LIBRARIES})
-include_directories (${SODIUM_INCLUDE_DIRS})
-include_directories (${TOX_INCLUDE_DIRS})
+find_package(PkgConfig)
+pkg_check_modules(TOX REQUIRED IMPORTED_TARGET toxcore)
 
 set (EXTRA_QT)
 if (ENABLE_MEDIACALLS)
@@ -46,5 +40,5 @@ LC_DEFINE_PLUGIN (azoth_sarin
 		accountconfigdialog.ui
 		showtoxiddialog.ui
 	QT_COMPONENTS Sql Widgets ${EXTRA_QT}
-	LINK_LIBRARIES PkgConfig::TOX ${EXTRA_LIBRARIES}
+	LINK_LIBRARIES PkgConfig::TOX
 	)
