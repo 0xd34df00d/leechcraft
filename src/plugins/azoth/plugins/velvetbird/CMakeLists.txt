@@ -2,16 +2,8 @@ cmake_minimum_required (VERSION 3.3)
 project (leechcraft_azoth_velvetbird)
 include (InitLCPlugin NO_POLICY_SCOPE)
 
-set (CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
-find_package (GLIB2 REQUIRED)
-find_package (LibPurple REQUIRED)
-
-include_directories (SYSTEM
-	${GLIB2_INCLUDE_DIR}
-	${LIBPURPLE_INCLUDE_DIRS}
-	)
-
-add_definitions (${LIBPURPLE_DEFINITIONS})
+find_package (PkgConfig)
+pkg_check_modules (Purple REQUIRED IMPORTED_TARGET purple)
 
 LC_DEFINE_PLUGIN (azoth_velvetbird
 	SRCS
@@ -29,6 +21,6 @@ LC_DEFINE_PLUGIN (azoth_velvetbird
 		accountconfigdialog.ui
 	SETTINGS 
 	QT_COMPONENTS Widgets
-	LINK_LIBRARIES ${GLIB2_LIBRARIES} ${LIBPURPLE_LIBRARIES}
+	LINK_LIBRARIES PkgConfig::Purple
 	INSTALL_SHARE
 	)
