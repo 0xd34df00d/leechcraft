@@ -2,15 +2,12 @@ cmake_minimum_required (VERSION 3.3)
 project (leechcraft_azoth_xoox)
 include (InitLCPlugin NO_POLICY_SCOPE)
 
-set (CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
-
-find_package (QXmpp REQUIRED)
-find_package (Speex REQUIRED)
+find_package(PkgConfig)
+pkg_check_modules(QXMPP REQUIRED IMPORTED_TARGET qxmpp)
 
 include_directories (${AZOTH_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
-	${QXMPP_INCLUDE_DIR}
 	${QCA2_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}/azoth
@@ -175,9 +172,8 @@ add_library (leechcraft_azoth_xoox SHARED
 	)
 target_link_libraries (leechcraft_azoth_xoox
 	${LEECHCRAFT_LIBRARIES}
-	${QXMPP_LIBRARIES}
-	${SPEEX_LIBRARIES}
 	${QCA2_LIBRARIES}
+	PkgConfig::QXMPP
 	)
 install (TARGETS leechcraft_azoth_xoox DESTINATION ${LC_PLUGINS_DEST})
 install (FILES azothxooxsettings.xml DESTINATION ${LC_SETTINGS_DEST})
