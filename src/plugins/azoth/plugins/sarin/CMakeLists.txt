@@ -6,22 +6,9 @@ set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake;${CMAKE_MODULE_PATH}")
 
 find_package (Tox)
 
-option (USE_AZOTH_SARIN_NACL "Use NaCl crypto library instead of libsodium" OFF)
-
-set (EXTRA_LIBRARIES)
-if (USE_AZOTH_SARIN_NACL)
-	find_package (NaCl)
-
-	set (EXTRA_LIBRARIES ${NACL_LIBRARIES})
-	include_directories (${NACL_INCLUDE_DIRS})
-	add_definitions (-DUSE_NACL)
-else ()
-	find_package (Sodium)
-
-	set (EXTRA_LIBRARIES ${SODIUM_LIBRARIES})
-	include_directories (${SODIUM_INCLUDE_DIRS})
-endif ()
-
+find_package (Sodium)
+set (EXTRA_LIBRARIES ${SODIUM_LIBRARIES})
+include_directories (${SODIUM_INCLUDE_DIRS})
 include_directories (${TOX_INCLUDE_DIRS})
 
 set (EXTRA_QT)

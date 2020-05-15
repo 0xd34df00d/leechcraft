@@ -30,12 +30,7 @@
 #include "accregisterdetailspage.h"
 #include <random>
 #include <QtDebug>
-
-#if USE_NACL
-#include <nacl/crypto_box.h>
-#else
 #include <sodium.h>
-#endif
 
 namespace LC
 {
