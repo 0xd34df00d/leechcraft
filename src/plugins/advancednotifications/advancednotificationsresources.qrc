@@ -1,5 +1,0 @@
-<RCC>
-  <qresource prefix="/plugins/advancednotifications">
-	<file>resources/images/advancednotifications.svg</file>
-  </qresource>
-</RCC>

@@ -31,6 +31,8 @@
 #include <QIcon>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/iplugin2.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/sys/resourceloader.h>
 #include <util/util.h>
@@ -109,8 +111,7 @@ namespace AdvancedNotifications
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon ("lcicons:/plugins/advancednotifications/resources/images/advancednotifications.svg");
-		return icon;
+		return Proxy_->GetIconThemeManager ()->GetPluginIcon ();
 	}
 
 	EntityTestHandleResult Plugin::CouldHandle (const Entity& e) const

@@ -36,7 +36,6 @@ LC_DEFINE_PLUGIN (advancednotifications
 		stringlikematcherconfigwidget.ui
 		addfrommisseddialog.ui
 	SETTINGS advancednotificationssettings.xml
-	RESOURCES advancednotificationsresources.qrc
 	QT_COMPONENTS QuickWidgets
 	INSTALL_SHARE
 	)
