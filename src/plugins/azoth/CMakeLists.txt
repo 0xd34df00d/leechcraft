@@ -192,11 +192,6 @@ CreateTrsUpTarget("azoth" "en;ru_RU" "${SRCS}" "${FORMS}" "azothsettings.xml")
 QtWrapUi (UIS_H ${FORMS})
 QtAddResources (RCCS ${RESOURCES})
 
-if (WIN32)
-	find_package (Speex REQUIRED)
-	set (CUSTOM_SPEEX ${SPEEX_LIBRARIES})
-endif ()
-
 add_library (leechcraft_azoth SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
@@ -207,8 +202,6 @@ target_link_libraries (leechcraft_azoth
 	${Boost_LOCALE_LIBRARY}
 	${LEECHCRAFT_LIBRARIES}
 	${QCA2_LIBRARIES}
-	${CUSTOM_SPEEX}
-	leechcraft_azoth_common
 	)
 install (TARGETS leechcraft_azoth DESTINATION ${LC_PLUGINS_DEST})
 install (FILES azothsettings.xml DESTINATION ${LC_SETTINGS_DEST})
