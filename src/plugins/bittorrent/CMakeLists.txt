@@ -2,8 +2,6 @@ cmake_minimum_required (VERSION 3.3)
 project (leechcraft_bittorrent)
 include (InitLCPlugin NO_POLICY_SCOPE)
 
-find_package (Boost REQUIRED COMPONENTS filesystem system)
-
 find_package (PkgConfig)
 pkg_check_modules (Libtorrent REQUIRED IMPORTED_TARGET libtorrent-rasterbar)
 
@@ -105,8 +103,6 @@ add_library (leechcraft_bittorrent SHARED
 	)
 
 target_link_libraries (leechcraft_bittorrent
-	${Boost_SYSTEM_LIBRARY}
-	${Boost_FILESYSTEM_LIBRARY}
 	${LEECHCRAFT_LIBRARIES}
 	PkgConfig::Libtorrent
 	${MMDB_IMPORTED_TARGET}
