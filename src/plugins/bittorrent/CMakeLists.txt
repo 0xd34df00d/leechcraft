@@ -4,26 +4,22 @@ include (InitLCPlugin NO_POLICY_SCOPE)
 
 find_package (Boost REQUIRED COMPONENTS filesystem system)
 
-set (CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
-
-find_package (LibtorrentRasterbar REQUIRED)
+find_package (PkgConfig)
+pkg_check_modules (Libtorrent REQUIRED IMPORTED_TARGET libtorrent-rasterbar)
 
 option (ENABLE_BITTORRENT_GEOIP "Enable support for GeoIP in BitTorrent" OFF)
 
+set (MMDB_IMPORTED_TARGET)
 if (ENABLE_BITTORRENT_GEOIP)
 	add_definitions (-DENABLE_GEOIP)
-	find_package (MaxMindDB REQUIRED)
-else ()
-	set (MMDB_INCLUDE_DIRS)
-	set (MMDB_LIBRARIES)
+	pkg_check_modules (MMDB REQUIRED IMPORTED_TARGET libmaxminddb)
+	set (MMDB_IMPORTED_TARGET PkgConfig::MMDB)
 endif ()
 
 include_directories (${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${Boost_INCLUDE_DIR}
-	${LibtorrentRasterbar_INCLUDE_DIRS}
 	${LEECHCRAFT_INCLUDE_DIR}
-	${MMDB_INCLUDE_DIRS}
 	)
 
 set (SRCS
@@ -97,27 +93,6 @@ set (RESOURCES bittorrentresources.qrc)
 CreateTrs ("bittorrent" "ar;be;de;en;eo;es;fr;it;oc;pl;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget ("bittorrent" "en;ru_RU" "${SRCS}" "${FORMS}" "torrentsettings.xml")
 
-if (UNIX)
-	find_program (LPKGC_CMD pkg-config)
-
-	if (NOT LPKGC_CMD)
-		message (FATAL_ERROR "Unable to find pkgconfig")
-	endif ()
-
-	execute_process (COMMAND "${LPKGC_CMD}" libtorrent-rasterbar --cflags
-		OUTPUT_VARIABLE RB_LT_CFLAGS
-		OUTPUT_STRIP_TRAILING_WHITESPACE
-		)
-	execute_process (COMMAND "${LPKGC_CMD}" libtorrent-rasterbar --modversion
-		OUTPUT_VARIABLE RB_LT_VERSION
-		OUTPUT_STRIP_TRAILING_WHITESPACE
-		)
-	message (STATUS "BitTorrent: fetched flags for version ${RB_LT_VERSION}: ${RB_LT_CFLAGS}")
-	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${RB_LT_CFLAGS}")
-endif ()
-
-add_definitions (${LibtorrentRasterbar_DEFINITIONS})
-
 QtWrapUi (UIS_H ${FORMS})
 QtAddResources (RCCS ${RESOURCES})
 
@@ -132,10 +107,9 @@ add_library (leechcraft_bittorrent SHARED
 target_link_libraries (leechcraft_bittorrent
 	${Boost_SYSTEM_LIBRARY}
 	${Boost_FILESYSTEM_LIBRARY}
-	${QT_LIBRARIES}
-	${LibtorrentRasterbar_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
-	${MMDB_LIBRARIES}
+	PkgConfig::Libtorrent
+	${MMDB_IMPORTED_TARGET}
 )
 install (TARGETS leechcraft_bittorrent DESTINATION ${LC_PLUGINS_DEST})
 install (FILES torrentsettings.xml DESTINATION ${LC_SETTINGS_DEST})
