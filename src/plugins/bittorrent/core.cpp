@@ -1223,7 +1223,7 @@ namespace BitTorrent
 		Handles_ [idx].Handle_.rename_file (index, std::string (name.toUtf8 ().data ()));
 	}
 
-	std::vector<libtorrent::announce_entry> Core::GetTrackers (const boost::optional<int>& row) const
+	std::vector<libtorrent::announce_entry> Core::GetTrackers (const std::optional<int>& row) const
 	{
 		int tor = row ? *row : CurrentTorrent_;
 		if (!CheckValidity (tor))
@@ -1232,8 +1232,7 @@ namespace BitTorrent
 		return Handles_.at (tor).Handle_.trackers ();
 	}
 
-	void Core::SetTrackers (const std::vector<libtorrent::announce_entry>& trackers,
-			const boost::optional<int>& row)
+	void Core::SetTrackers (const std::vector<libtorrent::announce_entry>& trackers, const std::optional<int>& row)
 	{
 		int tor = row ? *row : CurrentTorrent_;
 		if (!CheckValidity (tor))
