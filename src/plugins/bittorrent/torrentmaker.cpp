@@ -29,7 +29,6 @@
 
 #include "torrentmaker.h"
 #include <deque>
-#include <boost/filesystem.hpp>
 #include <QFile>
 #include <QFileInfo>
 #include <QProgressDialog>
@@ -50,18 +49,11 @@ namespace BitTorrent
 {
 	namespace
 	{
-		bool FileFilter (const boost::filesystem::path& filename)
+		bool FileFilter (const std::string& pathStr)
 		{
-			if (filename.leaf ().string () [0] == '.')
-				return false;
-
-			QFileInfo fi (QString::fromUtf8 (filename.string ().c_str ()));
-			if ((fi.isDir () ||
-						fi.isFile () ||
-						fi.isSymLink ()) &&
-					fi.isReadable ())
-				return true;
-			return false;
+			QFileInfo fi { QString::fromStdString (pathStr) };
+			return fi.isReadable () && !fi.isHidden () &&
+					(fi.isDir () || fi.isFile () || fi.isSymLink ());
 		}
 	}
 
