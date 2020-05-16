@@ -29,7 +29,6 @@
 
 #include "torrentfilesmodel.h"
 #include <iterator>
-#include <boost/functional/hash.hpp>
 #include <QUrl>
 #include <QTimer>
 #include <QtDebug>
@@ -211,7 +210,7 @@ namespace BitTorrent
 		return false;
 	}
 
-	void TorrentFilesModel::ResetFiles (const boost::filesystem::path& basePath,
+	void TorrentFilesModel::ResetFiles (const std::filesystem::path& basePath,
 			const QList<FileInfo>& infos)
 	{
 		Clear ();
@@ -229,16 +228,11 @@ namespace BitTorrent
 			const auto& fi = infos.at (i);
 			const auto& parentItem = MkParentIfDoesntExist (fi.Path_);
 
-			const auto& filename =
-#ifdef Q_OS_WIN32
-					QString::fromUtf16 (reinterpret_cast<const ushort*> (fi.Path_.leaf ().c_str ()));
-#else
-					QString::fromUtf8 (fi.Path_.leaf ().c_str ());
-#endif
+			const auto& filename = QString::fromStdString (fi.Path_.filename ().u8string ());
 
 			const auto item = parentItem->AppendChild (parentItem);
 			item->Name_ = filename;
-			item->ParentPath_ = fi.Path_.branch_path ();
+			item->ParentPath_ = fi.Path_.parent_path ();
 			item->Priority_ = fi.Priority_;
 			item->FileIndex_ = i;
 			item->SubtreeSize_ = fi.Size_;
@@ -255,7 +249,7 @@ namespace BitTorrent
 		endInsertRows ();
 	}
 
-	void TorrentFilesModel::UpdateFiles (const boost::filesystem::path& basePath,
+	void TorrentFilesModel::UpdateFiles (const std::filesystem::path& basePath,
 			const QList<FileInfo>& infos)
 	{
 		BasePath_ = basePath;
@@ -349,7 +343,7 @@ namespace BitTorrent
 		UpdatePriorities (parent.get ());
 	}
 
-	void TorrentFilesModel::ClearEmptyParents (boost::filesystem::path path)
+	void TorrentFilesModel::ClearEmptyParents (std::filesystem::path path)
 	{
 		const auto pos = Path2Node_.find (path);
 		if (pos == Path2Node_.end ())
@@ -370,13 +364,13 @@ namespace BitTorrent
 		const auto& parentNode = node->GetParent ();
 
 		const auto nodeRow = node->GetRow ();
-		const auto& parentIndex = FindIndex (path.branch_path ());
+		const auto& parentIndex = FindIndex (path.parent_path ());
 		beginRemoveRows (parentIndex, nodeRow, nodeRow);
 		parentNode->EraseChild (parentNode->begin () + nodeRow);
 		Path2Node_.erase (pos);
 		endRemoveRows ();
 
-		ClearEmptyParents (path.branch_path ());
+		ClearEmptyParents (path.parent_path ());
 	}
 
 	void TorrentFilesModel::update ()
@@ -412,14 +406,14 @@ namespace BitTorrent
 		const auto node = filePos->second;
 		ClearEmptyParents (filePos->first);
 
-		const boost::filesystem::path newPath { newName.toUtf8 ().constData () };
+		const std::filesystem::path newPath { newName.toStdString () };
 
 		const auto& parentNode = MkParentIfDoesntExist (newPath, true);
 
-		node->Name_ = QString::fromUtf8 (newPath.leaf ().string ().c_str ());
+		node->Name_ = QString::fromStdString (newPath.filename ().u8string ());
 		node->Reparent (parentNode);
 
-		beginInsertRows (FindIndex (newPath.branch_path ()), parentNode->GetRowCount (), parentNode->GetRowCount ());
+		beginInsertRows (FindIndex (newPath.parent_path ()), parentNode->GetRowCount (), parentNode->GetRowCount ());
 		Path2Node_ [newPath] = node;
 		parentNode->AppendExisting (node);
 		endInsertRows ();

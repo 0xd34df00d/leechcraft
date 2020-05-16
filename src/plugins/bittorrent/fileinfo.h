@@ -29,7 +29,7 @@
 
 #pragma once
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 namespace LC
 {
@@ -37,7 +37,7 @@ namespace BitTorrent
 {
 	struct FileInfo
 	{
-		boost::filesystem::path Path_;
+		std::filesystem::path Path_;
 		quint64 Size_;
 		int Priority_;
 		float Progress_;

@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "addtorrentfilesmodel.h"
+#include <filesystem>
 #include <util/util.h>
 #include <util/sll/unreachable.h>
 
@@ -172,19 +173,12 @@ namespace BitTorrent
 		int fileIdx = 0;
 		for (const auto& entry : entries)
 		{
-			const boost::filesystem::path path { entry.Path_ };
+			const std::filesystem::path path { entry.Path_ };
 			const auto& parentItem = MkParentIfDoesntExist (path);
 
-			const auto& name =
-#ifdef Q_OS_WIN32
-					QString::fromUtf16 (reinterpret_cast<const ushort*> (path.leaf ().c_str ()));
-#else
-					QString::fromUtf8 (path.leaf ().c_str ());
-#endif
-
 			const auto& item = parentItem->AppendChild (parentItem);
-			item->Name_ = name;
-			item->ParentPath_ = path.branch_path ();
+			item->Name_ = QString::fromStdString (path.filename ().u8string ());
+			item->ParentPath_ = path.parent_path ();
 			item->FileIndex_ = fileIdx++;
 			item->SubtreeSize_ = entry.Size_;
 

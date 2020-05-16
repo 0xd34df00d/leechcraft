@@ -77,14 +77,14 @@ namespace BitTorrent
 		Qt::ItemFlags flags (const QModelIndex&) const override;
 		bool setData (const QModelIndex&, const QVariant&, int = Qt::EditRole) override;
 
-		void ResetFiles (const boost::filesystem::path&, const QList<FileInfo>&);
-		void UpdateFiles (const boost::filesystem::path&, const QList<FileInfo>&);
+		void ResetFiles (const std::filesystem::path&, const QList<FileInfo>&);
+		void UpdateFiles (const std::filesystem::path&, const QList<FileInfo>&);
 
 		void HandleFileActivated (QModelIndex) const;
 	private:
 		void UpdateSizeGraph (const TorrentNodeInfo_ptr&);
 		void UpdatePriorities (TorrentNodeInfo*);
-		void ClearEmptyParents (boost::filesystem::path);
+		void ClearEmptyParents (std::filesystem::path);
 	public slots:
 		void update ();
 		void handleFileRenamed (int, int, const QString&);

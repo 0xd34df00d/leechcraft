@@ -30,7 +30,7 @@
 #pragma once
 
 #include <unordered_map>
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 #include <QIcon>
 #include <QString>
 #include <QAbstractItemModel>
@@ -51,7 +51,7 @@ namespace BitTorrent
 		QString Name_;
 
 		// (ColumnPath, RawDataRole)
-		boost::filesystem::path ParentPath_;
+		std::filesystem::path ParentPath_;
 
 		// (ColumnPath, RoleFileIndex)
 		int FileIndex_ = -1;
@@ -66,7 +66,7 @@ namespace BitTorrent
 		{
 		}
 
-		boost::filesystem::path GetFullPath () const
+		std::filesystem::path GetFullPath () const
 		{
 			return ParentPath_ / Name_.toStdString ();
 		}
@@ -90,20 +90,20 @@ namespace BitTorrent
 	{
 		const QStringList HeaderData_;
 
-		struct Hash : public std::unary_function<boost::filesystem::path, size_t>
+		struct Hash
 		{
-			size_t operator() (const boost::filesystem::path& path) const
+			size_t operator() (const std::filesystem::path& path) const
 			{
-				return std::hash<std::string> {} (path.string ());
+				return std::hash<std::string> {} (path.native ());
 			}
 		};
 	protected:
-		using Path2Node_t = std::unordered_map<boost::filesystem::path, std::shared_ptr<T>, Hash>;
+		using Path2Node_t = std::unordered_map<std::filesystem::path, std::shared_ptr<T>, Hash>;
 		Path2Node_t Path2Node_;
 
 		const std::shared_ptr<T> RootNode_;
 
-		boost::filesystem::path BasePath_;
+		std::filesystem::path BasePath_;
 
 		int FilesInTorrent_ = 0;
 
@@ -124,7 +124,7 @@ namespace BitTorrent
 			return IndexForNode (node.get (), column);
 		}
 
-		QModelIndex FindIndex (const boost::filesystem::path& path) const
+		QModelIndex FindIndex (const std::filesystem::path& path) const
 		{
 			if (path.empty ())
 				return {};
@@ -136,28 +136,21 @@ namespace BitTorrent
 			return IndexForNode (pos->second);
 		}
 
-		const std::shared_ptr<T>& MkParentIfDoesntExist (const boost::filesystem::path& path, bool announce = false)
+		const std::shared_ptr<T>& MkParentIfDoesntExist (const std::filesystem::path& path, bool announce = false)
 		{
-			const auto& parentPath = path.branch_path ();
+			const auto& parentPath = path.parent_path ();
 			const auto pos = Path2Node_.find (parentPath);
 			if (pos != Path2Node_.end ())
 				return pos->second;
 
 			const auto& parent = MkParentIfDoesntExist (parentPath);
 
-			const auto& name =
-#ifdef Q_OS_WIN32
-					QString::fromUtf16 (reinterpret_cast<const ushort*> (parentPath.leaf ().c_str ()));
-#else
-					QString::fromUtf8 (parentPath.leaf ().c_str ());
-#endif
-
-			const auto& parentParentPath = parentPath.branch_path ();
+			const auto& parentParentPath = parentPath.parent_path ();
 			if (announce)
 				beginInsertRows (FindIndex (parentParentPath), parent->GetRowCount (), parent->GetRowCount ());
 			const auto& node = parent->AppendChild (parent);
 			node->ParentPath_ = parentParentPath;
-			node->Name_ = name;
+			node->Name_ = QString::fromStdString (path.filename ().u8string ());
 			node->Icon_ = Core::Instance ()->GetProxy ()->
 					GetIconThemeManager ()->GetIcon ("document-open-folder");
 

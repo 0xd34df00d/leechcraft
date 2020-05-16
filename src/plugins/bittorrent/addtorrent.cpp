@@ -28,9 +28,7 @@
  **********************************************************************/
 
 #include "addtorrent.h"
-#include <boost/date_time/posix_time/posix_time.hpp>
-#include <boost/filesystem/path.hpp>
-#include <boost/filesystem/operations.hpp>
+#include <filesystem>
 #include <libtorrent/announce_entry.hpp>
 #include <QHeaderView>
 #include <QFileDialog>
@@ -363,11 +361,7 @@ namespace BitTorrent
 	{
 		try
 		{
-#ifdef Q_OS_WIN32
-			const auto space = boost::filesystem::space (std::string (GetSavePath ().toUtf8 ().constData ()));
-#else
-			const auto space = boost::filesystem::space (GetSavePath ().toStdWString ());
-#endif
+			const auto space = std::filesystem::space (GetSavePath ().toStdString ());
 			return qMakePair<quint64, quint64> (space.available, space.capacity);
 		}
 		catch (...)
