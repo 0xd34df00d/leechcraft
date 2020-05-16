@@ -157,7 +157,7 @@ namespace BitTorrent
 
 		bool DecodeEntry (const QByteArray& data, libtorrent::bdecode_node& e)
 		{
-			boost::system::error_code ec;
+			libtorrent::error_code ec;
 			e = libtorrent::bdecode (libtorrent::span { data.constData (), data.size () }, ec);
 			if (ec)
 			{
@@ -936,7 +936,7 @@ namespace BitTorrent
 		try
 		{
 			libtorrent::add_torrent_params atp;
-			boost::system::error_code ec;
+			libtorrent::error_code ec;
 			libtorrent::parse_magnet_uri (magnet.toStdString (), atp, ec);
 			if (ec)
 			{
@@ -1452,7 +1452,7 @@ namespace BitTorrent
 		std::fill (torrent->FilePriorities_.begin (),
 				torrent->FilePriorities_.end (), 1);
 
-		boost::system::error_code ec;
+		libtorrent::error_code ec;
 		const libtorrent::span metadata { info.metadata ().get (), info.metadata_size () };
 		libtorrent::entry infoE = libtorrent::bdecode (metadata, ec);
 		if (ec)

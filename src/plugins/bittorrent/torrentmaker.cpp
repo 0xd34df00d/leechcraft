@@ -110,7 +110,7 @@ namespace BitTorrent
 		pd.setWindowTitle (tr ("Hashing torrent..."));
 		pd.setMaximum (ct.num_pieces ());
 
-		boost::system::error_code hashesError;
+		libtorrent::error_code hashesError;
 		libtorrent::set_piece_hashes (ct,
 				fullPath,
 				[&pd] (int i) { pd.setValue (i); },
