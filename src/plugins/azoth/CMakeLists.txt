@@ -208,8 +208,8 @@ include_directories (${AZOTH_INCLUDE_DIR}
 
 macro (AZOTH_SUBPLUGIN suffix descr)
 	set (defVal "ON")
-	if (ARGV)
-		set (defVal "${ARGV}")
+	if (NOT ${ARGN})
+		set (defVal "OFF")
 	endif ()
 	string (TOLOWER ${suffix} suffixL)
 	option (ENABLE_AZOTH_${suffix} "${descr}" ${defVal})
