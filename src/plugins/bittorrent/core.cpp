@@ -1612,7 +1612,7 @@ namespace BitTorrent
 
 		const auto& info = *infoPtr;
 
-		std::vector<boost::int64_t> prbytes;
+		std::vector<std::int64_t> prbytes;
 
 		int flags = 0;
 		if (!XmlSettingsManager::Instance ()->

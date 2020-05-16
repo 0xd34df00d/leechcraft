@@ -364,7 +364,7 @@ namespace BitTorrent
 
 	void SessionSettingsManager::setLoggingSettings ()
 	{
-		boost::uint32_t mask = 0;
+		int mask = 0;
 
 		if (XmlSettingsManager::Instance ()->property ("NotificationDHT").toBool ())
 			mask |= libtorrent::alert::dht_notification;
