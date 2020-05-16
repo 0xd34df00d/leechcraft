@@ -10,20 +10,12 @@ set (SLL_SRCS
 	)
 
 option (WITH_PCRE "Use PCRE regular expression engine for instead of Qt's one (recommended since QRegExps are slow)." ON)
+set (PCRE_IMPORTED_TARGET)
 if (WITH_PCRE)
-	set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-	find_package (PCRE REQUIRED)
-	message (STATUS "Found PCRE includes: ${PCRE_INCLUDE_DIR}")
-	message (STATUS "Found PCRE libraries: ${PCRE_LIBRARIES}")
-	if (PCRE_INCLUDE_DIR AND PCRE_LIBRARIES)
-		message (STATUS "Found PCRE, support for AdBlock+ separator-matching will be built")
-	else ()
-		message (FATAL_ERROR "PCRE support isn't available")
-		set (PCRE_LIBRARIES)
-	endif ()
-
+	find_package (PkgConfig)
+	pkg_check_modules (PCRE REQUIRED IMPORTED_TARGET libpcre)
 	add_definitions (-DUSE_PCRE)
-	include_directories (${PCRE_INCLUDE_DIR})
+	set (PCRE_IMPORTED_TARGET PkgConfig::PCRE)
 endif ()
 
 foreach (SRC ${SLL_SRCS})
@@ -34,9 +26,7 @@ set (UTIL_SRCS ${UTIL_SRCS} PARENT_SCOPE)
 add_library (leechcraft-util-sll${LC_LIBSUFFIX} SHARED
 	${SLL_SRCS}
 	)
-target_link_libraries (leechcraft-util-sll${LC_LIBSUFFIX}
-	${PCRE_LIBRARIES}
-	)
+target_link_libraries (leechcraft-util-sll${LC_LIBSUFFIX} ${PCRE_IMPORTED_TARGET})
 set_property (TARGET leechcraft-util-sll${LC_LIBSUFFIX} PROPERTY SOVERSION ${LC_SOVERSION}.1)
 install (TARGETS leechcraft-util-sll${LC_LIBSUFFIX} DESTINATION ${LIBDIR})
 
