@@ -118,14 +118,6 @@ endif ()
 
 add_definitions (${LibtorrentRasterbar_DEFINITIONS})
 
-if (WIN32)
-	add_definitions (-DWIN32)
-	add_definitions (-D_WIN32_WINNT=0x0500)
-	add_definitions (-DWIN32_LEAN_AND_MEAN)
-	add_definitions (-DBOOST_ASIO_DYN_LINK)
-	add_definitions (-DBOOST_ALL_NO_LIB)
-endif ()
-
 QtWrapUi (UIS_H ${FORMS})
 QtAddResources (RCCS ${RESOURCES})
 
