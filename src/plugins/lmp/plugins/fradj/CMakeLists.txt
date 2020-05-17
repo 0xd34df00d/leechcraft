@@ -44,9 +44,7 @@ add_library (leechcraft_lmp_fradj SHARED
 target_link_libraries (leechcraft_lmp_fradj
 	${LEECHCRAFT_LIBRARIES}
 	leechcraft_lmp_common
-	${GSTREAMER_LIBRARIES}
-	${GLIB2_LIBRARIES}
-	${LIBXML2_LIBRARIES}
+	PkgConfig::GStreamer
 	${ADDITIONAL_LIBS}
 	)
 

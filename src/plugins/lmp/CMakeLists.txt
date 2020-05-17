@@ -6,12 +6,10 @@ include (CMakeDependentOption)
 set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake;${CMAKE_MODULE_PATH}")
 
 # This stuff won't be need by GStreamer 1.0.
-find_package (LibXml2 REQUIRED)
-find_package (GStreamer REQUIRED)
-find_package (GLIB2 REQUIRED)
-
 find_package (PkgConfig)
 pkg_check_modules (TagLib REQUIRED IMPORTED_TARGET taglib)
+pkg_check_modules (GStreamer REQUIRED IMPORTED_TARGET gstreamer-1.0)
+#pkg_check_modules (GStreamer REQUIRED IMPORTED_TARGET gstbase-1.0)
 
 cmake_dependent_option (ENABLE_LMP_MPRIS "Enable MPRIS support for LMP" ON "NOT WIN32" OFF)
 
@@ -25,9 +23,6 @@ include_directories (
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
-	${GSTREAMER_INCLUDE_DIR}
-	${GLIB2_INCLUDE_DIR}
-	${LIBXML2_INCLUDE_DIR}
 	${LibGuess_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
@@ -43,9 +38,7 @@ add_library (leechcraft_lmp_common STATIC
 set_target_properties (leechcraft_lmp_common PROPERTIES POSITION_INDEPENDENT_CODE True)
 target_link_libraries (leechcraft_lmp_common
 	${LibGuess_LIBRARIES}
-	${GSTREAMER_LIBRARIES}
-	${GLIB2_LIBRARIES}
-	${LIBXML2_LIBRARIES}
+	PkgConfig::GStreamer
 	${LEECHCRAFT_LIBRARIES}
 	)
 
@@ -210,9 +203,7 @@ endif ()
 target_link_libraries (leechcraft_lmp
 	${LEECHCRAFT_LIBRARIES}
 	PkgConfig::TagLib
-	${GSTREAMER_LIBRARIES}
-	${GLIB2_LIBRARIES}
-	${LIBXML2_LIBRARIES}
+	PkgConfig::GStreamer
 	${LibGuess_LIBRARIES}
 	${ADDITIONAL_LIBRARIES}
 

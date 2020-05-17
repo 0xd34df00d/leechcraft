@@ -14,6 +14,7 @@ add_library (${MPRIS_SUBLIB} STATIC
 	)
 target_link_libraries (${MPRIS_SUBLIB}
 	${QT_LIBRARIES}
+	PkgConfig::GStreamer
 	)
 
 FindQtLibs (leechcraft_lmp_mpris DBus)

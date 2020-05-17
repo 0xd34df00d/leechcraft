@@ -25,9 +25,7 @@ add_library (leechcraft_lmp_httstream SHARED
 target_link_libraries (leechcraft_lmp_httstream
 	${LEECHCRAFT_LIBRARIES}
 	leechcraft_lmp_common
-	${GSTREAMER_LIBRARIES}
-	${GLIB2_LIBRARIES}
-	${LIBXML2_LIBRARIES}
+	PkgConfig::GStreamer
 	)
 
 install (TARGETS leechcraft_lmp_httstream DESTINATION ${LC_PLUGINS_DEST})

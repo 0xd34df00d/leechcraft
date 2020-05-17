@@ -31,10 +31,7 @@ add_library (leechcraft_lmp_potorchu SHARED
 target_link_libraries (leechcraft_lmp_potorchu
 	${LEECHCRAFT_LIBRARIES}
 	leechcraft_lmp_common
-	${GSTREAMER_LIBRARIES}
-	${GSTREAMER_INTERFACE_LIBRARY}
-	${GLIB2_LIBRARIES}
-	${LIBXML2_LIBRARIES}
+	PkgConfig::GStreamer
 	PkgConfig::ProjectM
 	)
 
