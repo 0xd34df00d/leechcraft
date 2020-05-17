@@ -2,13 +2,12 @@ cmake_minimum_required (VERSION 3.3)
 project (leechcraft_eleeminator)
 include (InitLCPlugin NO_POLICY_SCOPE)
 
-set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-find_package (QTermWidget REQUIRED)
+find_package (PkgConfig)
+pkg_check_modules (QTermWidget REQUIRED IMPORTED_TARGET qtermwidget5)
 
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
-	${QTERMWIDGET_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
 set (SRCS
@@ -37,7 +36,7 @@ add_library (leechcraft_eleeminator SHARED
 	)
 target_link_libraries (leechcraft_eleeminator
 	${LEECHCRAFT_LIBRARIES}
-	${QTERMWIDGET_LIBRARIES}
+	PkgConfig::QTermWidget
 	)
 install (TARGETS leechcraft_eleeminator DESTINATION ${LC_PLUGINS_DEST})
 install (FILES eleeminatorsettings.xml DESTINATION ${LC_SETTINGS_DEST})
