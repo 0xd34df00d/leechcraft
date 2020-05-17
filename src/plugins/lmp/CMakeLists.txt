@@ -10,8 +10,8 @@ find_package (LibXml2 REQUIRED)
 find_package (GStreamer REQUIRED)
 find_package (GLIB2 REQUIRED)
 
-find_package (Taglib REQUIRED)
-add_definitions (${TAGLIB_CFLAGS})
+find_package (PkgConfig)
+pkg_check_modules (TagLib REQUIRED IMPORTED_TARGET taglib)
 
 cmake_dependent_option (ENABLE_LMP_MPRIS "Enable MPRIS support for LMP" ON "NOT WIN32" OFF)
 
@@ -25,7 +25,6 @@ include_directories (
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
-	${TAGLIB_INCLUDES}
 	${GSTREAMER_INCLUDE_DIR}
 	${GLIB2_INCLUDE_DIR}
 	${LIBXML2_INCLUDE_DIR}
@@ -210,7 +209,7 @@ if (ENABLE_LMP_MPRIS)
 endif ()
 target_link_libraries (leechcraft_lmp
 	${LEECHCRAFT_LIBRARIES}
-	${TAGLIB_LIBRARIES}
+	PkgConfig::TagLib
 	${GSTREAMER_LIBRARIES}
 	${GLIB2_LIBRARIES}
 	${LIBXML2_LIBRARIES}

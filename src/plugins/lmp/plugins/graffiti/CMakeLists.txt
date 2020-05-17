@@ -2,11 +2,7 @@ cmake_minimum_required (VERSION 3.3)
 project (leechcraft_lmp_graffiti)
 include (InitLCPlugin NO_POLICY_SCOPE)
 
-find_package (Taglib REQUIRED)
-add_definitions (${TAGLIB_CFLAGS})
-
 include_directories (${LMP_INCLUDE_DIR}
-	${TAGLIB_INCLUDES}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
@@ -44,7 +40,7 @@ add_library (leechcraft_lmp_graffiti SHARED
 	)
 target_link_libraries (leechcraft_lmp_graffiti
 	${LEECHCRAFT_LIBRARIES}
-	${TAGLIB_LIBRARIES}
+	PkgConfig::TagLib
 	leechcraft_lmp_common
 	)
 
