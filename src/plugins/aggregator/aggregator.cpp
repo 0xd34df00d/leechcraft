@@ -46,6 +46,7 @@
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
+#include <interfaces/core/iiconthememanager.h>
 #include <util/tags/tagscompletionmodel.h>
 #include <util/util.h>
 #include <util/db/backendselector.h>
@@ -215,8 +216,7 @@ namespace Aggregator
 
 	QIcon Aggregator::GetIcon () const
 	{
-		static QIcon icon ("lcicons:/resources/images/aggregator.svg");
-		return icon;
+		return Proxy_->GetIconThemeManager ()->GetPluginIcon ();
 	}
 
 	TabClasses_t Aggregator::GetTabClasses () const

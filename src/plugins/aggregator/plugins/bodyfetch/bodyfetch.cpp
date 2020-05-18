@@ -35,6 +35,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/ipluginsmanager.h>
+#include <interfaces/core/iiconthememanager.h>
 #include <util/xpc/util.h>
 #include <util/sys/paths.h>
 #include <util/sll/prelude.h>
@@ -138,8 +139,7 @@ namespace BodyFetch
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon ("lcicons:/aggregator/bodyfetch/resources/images/bodyfetch.svg");
-		return icon;
+		return Proxy_->GetIconThemeManager ()->GetPluginIcon ();
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
