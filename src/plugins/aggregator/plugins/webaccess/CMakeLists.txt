@@ -1,9 +1,5 @@
-set (CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
-
 find_package (Wt REQUIRED)
 add_definitions (-DQT_NO_KEYWORDS -DWT_NO_SLOT_MACROS)
-
-include_directories (${Wt_INCLUDE_DIR})
 
 LC_DEFINE_PLUGIN (aggregator_webaccess
 	SRCS
@@ -19,7 +15,7 @@ LC_DEFINE_PLUGIN (aggregator_webaccess
 	SETTINGS aggregatorwebaccesssettings.xml
 	QT_COMPONENTS Core
 	LINK_LIBRARIES
-		${Wt_LIBRARY}
-		${Wt_HTTP_LIBRARY}
+		Wt::Wt
+		Wt::HTTP
 		leechcraft_aggregator_util
 	)
