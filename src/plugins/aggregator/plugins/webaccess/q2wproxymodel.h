@@ -29,10 +29,9 @@
 
 #pragma once
 
-#include <memory>
 #include <QObject>
 #include <QMap>
-#include <WAbstractItemModel.h>
+#include <Wt/WAbstractItemModel.h>
 #include <util/models/modelitem.h>
 #include "serverupdater.h"
 
