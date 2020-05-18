@@ -213,11 +213,7 @@ namespace Herbicide
 		if (!GetAccountProperty (acc, "EnableQuest").toBool ())
 			return false;
 
-		if (GetQuestion (acc).isEmpty () ||
-				GetAnswers (acc).isEmpty ())
-			return false;
-
-		return true;
+		return !GetQuestion (acc).isEmpty () && !GetAnswers (acc).isEmpty ();
 	}
 
 	bool Plugin::IsEntryAllowed (QObject *entryObj) const
