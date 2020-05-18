@@ -1,5 +1,0 @@
-<RCC>
-  <qresource prefix="/aggregator/bodyfetch" >
-    <file>resources/images/bodyfetch.svg</file>
-  </qresource>
-</RCC>
