@@ -47,7 +47,6 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/iiconthememanager.h>
-#include <util/tags/tagscompletionmodel.h>
 #include <util/util.h>
 #include <util/db/backendselector.h>
 #include <util/gui/util.h>
@@ -55,11 +54,9 @@
 #include <util/sll/either.h>
 #include <util/sll/visitor.h>
 #include <util/shortcuts/shortcutmanager.h>
-#include <util/tags/categoryselector.h>
 #include <util/xpc/coreproxyholder.h>
 #include <util/xpc/util.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
-#include "itemsfiltermodel.h"
 #include "channelsfiltermodel.h"
 #include "aggregator.h"
 #include "addfeeddialog.h"
