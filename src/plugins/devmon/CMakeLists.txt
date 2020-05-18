@@ -2,13 +2,12 @@ cmake_minimum_required (VERSION 3.3)
 project (leechcraft_devmon)
 include (InitLCPlugin NO_POLICY_SCOPE)
 
-set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-find_package (UDev REQUIRED)
+find_package (PkgConfig)
+pkg_check_modules (UDev REQUIRED IMPORTED_TARGET libudev)
 
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
-	${UDEV_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
 set (SRCS
@@ -24,7 +23,7 @@ add_library (leechcraft_devmon SHARED
 	)
 target_link_libraries (leechcraft_devmon
 	${LEECHCRAFT_LIBRARIES}
-	${UDEV_LIBRARIES}
+	PkgConfig::UDev
 	)
 install (TARGETS leechcraft_devmon DESTINATION ${LC_PLUGINS_DEST})
 
