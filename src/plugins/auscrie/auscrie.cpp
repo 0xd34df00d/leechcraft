@@ -61,18 +61,18 @@ namespace Auscrie
 				tr ("Make a screenshot"),
 				this);
 		connect (ShotAction_,
-				SIGNAL (triggered ()),
+				&QAction::triggered,
 				this,
-				SLOT (showDialog ()));
+				[this] { MakeScreenshot (0); });
 		connect (Dialog_,
-				SIGNAL (screenshotRequested ()),
+				&ShooterDialog::screenshotRequested,
 				this,
-				SLOT (makeScreenshot ()),
+				[this] { MakeScreenshot (Dialog_->GetTimeout () * 1000); },
 				Qt::QueuedConnection);
 		connect (Dialog_,
-				SIGNAL (accepted ()),
+				&QDialog::accepted,
 				this,
-				SLOT (performAction ()));
+				&Plugin::PerformAction);
 	}
 
 	void Plugin::SecondInit ()
@@ -113,17 +113,7 @@ namespace Auscrie
 		return result;
 	}
 
-	void Plugin::showDialog ()
-	{
-		MakeScreenshot (0);
-	}
-
-	void Plugin::makeScreenshot ()
-	{
-		MakeScreenshot (Dialog_->GetTimeout () * 1000);
-	}
-
-	void Plugin::performAction ()
+	void Plugin::PerformAction ()
 	{
 		const auto& pm = Dialog_->GetScreenshot ();
 		if (pm.isNull ())
@@ -185,15 +175,6 @@ namespace Auscrie
 		}
 	}
 
-	void Plugin::shoot ()
-	{
-		ShotAction_->setEnabled (true);
-
-		const QPixmap& pm = GetPixmap ();
-		Dialog_->show ();
-		Dialog_->SetScreenshot (pm);
-	}
-
 	void Plugin::MakeScreenshot (int timeout)
 	{
 		Dialog_->setVisible (!Dialog_->ShouldHide ());
@@ -201,7 +182,14 @@ namespace Auscrie
 		ShotAction_->setEnabled (false);
 		QTimer::singleShot (std::max (timeout, 200),
 				this,
-				SLOT (shoot ()));
+				[this]
+				{
+					ShotAction_->setEnabled (true);
+
+					const auto& pm = GetPixmap ();
+					Dialog_->show ();
+					Dialog_->SetScreenshot (pm);
+				});
 	}
 
 	QPixmap Plugin::GetPixmap () const

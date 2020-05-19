@@ -62,12 +62,8 @@ namespace Auscrie
 		QIcon GetIcon () const;
 
 		QList<QAction*> GetActions (ActionsEmbedPlace) const;
-	private slots:
-		void showDialog ();
-		void makeScreenshot ();
-		void performAction ();
-		void shoot ();
 	private:
+		void PerformAction ();
 		void MakeScreenshot (int);
 		QPixmap GetPixmap () const;
 	signals:
