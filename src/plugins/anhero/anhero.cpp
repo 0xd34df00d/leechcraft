@@ -38,6 +38,7 @@
 #include <errno.h>
 #include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
 
 namespace LC
 {
@@ -203,8 +204,7 @@ namespace AnHero
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon ("lcicons:/resources/images/anhero.svg");
-		return icon;
+		return GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon ();
 	}
 
 	void Plugin::HandleShutdownInitiated ()
