@@ -7,16 +7,8 @@ option (ENABLE_MEDIACALLS "Enable support for media calls" ON)
 option (USE_AZOTH_BOOST_LOCALE "Use Boost.Locale for better datetime formatting in Azoth" ON)
 if (USE_AZOTH_BOOST_LOCALE)
 	find_package (Boost REQUIRED COMPONENTS locale)
-
 	add_definitions (-DUSE_BOOST_LOCALE)
 endif ()
-
-include_directories (
-	${CMAKE_CURRENT_SOURCE_DIR}
-	${CMAKE_CURRENT_BINARY_DIR}
-	${Boost_INCLUDE_DIR}
-	${LEECHCRAFT_INCLUDE_DIR}
-	)
 
 option (WITH_DOCS "Enable building documentation (requires Doxygen)" OFF)
 if (WITH_DOCS)
@@ -35,6 +27,7 @@ endif ()
 
 if (ENABLE_MEDIACALLS)
 	add_definitions (-DENABLE_MEDIACALLS)
+	set (EXTRA_QT_LIBRARIES Multimedia)
 endif ()
 
 option (ENABLE_CRYPT "Enable QCA2-based support for PGP" ON)
@@ -47,154 +40,134 @@ if (ENABLE_CRYPT)
 	set (QCA2_IMPORTED_TARGET PkgConfig::QCA2)
 
 	add_definitions (-DENABLE_CRYPT)
+
+	set (EXTRA_SRCS pgpkeyselectiondialog.cpp cryptomanager.cpp)
+	set (EXTRA_FORMS pgpkeyselectiondialog.ui)
 endif ()
 
-set (SRCS
-	azoth.cpp
-	core.cpp
-	mainwidget.cpp
-	chattabsmanager.cpp
-	chattab.cpp
-	sortfilterproxymodel.cpp
-	accountslistwidget.cpp
-	setstatusdialog.cpp
-	pluginmanager.cpp
-	proxyobject.cpp
-	textedit.cpp
-	xmlsettingsmanager.cpp
-	contactlistdelegate.cpp
-	addcontactdialog.cpp
-	joinconferencedialog.cpp
-	groupeditordialog.cpp
-	transferjobmanager.cpp
-	addaccountwizardfirstpage.cpp
-	bookmarksmanagerdialog.cpp
-	accounthandlerchooserdialog.cpp
-	util.cpp
-	simpledialog.cpp
-	servicediscoverywidget.cpp
-	drawattentiondialog.cpp
-	consolewidget.cpp
-	activitydialog.cpp
-	mooddialog.cpp
-	callmanager.cpp
-	clmodel.cpp
-	callchatwidget.cpp
-	chattabwebview.cpp
-	locationdialog.cpp
-	msgformatterwidget.cpp
-	acceptriexdialog.cpp
-	shareriexdialog.cpp
-	searchwidget.cpp
-	mucinvitedialog.cpp
-	groupsenddialog.cpp
-	actionsmanager.cpp
-	importmanager.cpp
-	accountactionsmanager.cpp
-	unreadqueuemanager.cpp
-	chatstyleoptionmanager.cpp
-	microblogstab.cpp
-	riexhandler.cpp
-	filesenddialog.cpp
-	pendinguploadpaster.cpp
-	contactdropfilter.cpp
-	colorlisteditorwidget.cpp
-	customstatusesmanager.cpp
-	userslistwidget.cpp
-	keyboardrosterfixer.cpp
-	statuschangemenumanager.cpp
-	customchatstylemanager.cpp
-	advancedpermchangedialog.cpp
-	groupremovedialog.cpp
-	coremessage.cpp
-	dummymsgmanager.cpp
-	serverhistorywidget.cpp
-	dndutil.cpp
-	cltooltipmanager.cpp
-	corecommandsmanager.cpp
-	resourcesmanager.cpp
-	notificationsmanager.cpp
-	msgeditautocompleter.cpp
-	bookmarkeditdialog.cpp
-	msgsender.cpp
-	avatarsmanager.cpp
-	avatarsstorage.cpp
-	avatarsstorageondisk.cpp
-	avatarsstoragethread.cpp
-	chattabnetworkaccessmanager.cpp
-	historysyncer.cpp
-	chattabpartstatemanager.cpp
-	sslerrorshandler.cpp
-	sslerrorsdialog.cpp
-	sslerrorschoicestorage.cpp
-	contactslistview.cpp
+LC_DEFINE_PLUGIN (azoth
+	SRCS
+		azoth.cpp
+		core.cpp
+		mainwidget.cpp
+		chattabsmanager.cpp
+		chattab.cpp
+		sortfilterproxymodel.cpp
+		accountslistwidget.cpp
+		setstatusdialog.cpp
+		pluginmanager.cpp
+		proxyobject.cpp
+		textedit.cpp
+		xmlsettingsmanager.cpp
+		contactlistdelegate.cpp
+		addcontactdialog.cpp
+		joinconferencedialog.cpp
+		groupeditordialog.cpp
+		transferjobmanager.cpp
+		addaccountwizardfirstpage.cpp
+		bookmarksmanagerdialog.cpp
+		accounthandlerchooserdialog.cpp
+		util.cpp
+		simpledialog.cpp
+		servicediscoverywidget.cpp
+		drawattentiondialog.cpp
+		consolewidget.cpp
+		activitydialog.cpp
+		mooddialog.cpp
+		callmanager.cpp
+		clmodel.cpp
+		callchatwidget.cpp
+		chattabwebview.cpp
+		locationdialog.cpp
+		msgformatterwidget.cpp
+		acceptriexdialog.cpp
+		shareriexdialog.cpp
+		searchwidget.cpp
+		mucinvitedialog.cpp
+		groupsenddialog.cpp
+		actionsmanager.cpp
+		importmanager.cpp
+		accountactionsmanager.cpp
+		unreadqueuemanager.cpp
+		chatstyleoptionmanager.cpp
+		microblogstab.cpp
+		riexhandler.cpp
+		filesenddialog.cpp
+		pendinguploadpaster.cpp
+		contactdropfilter.cpp
+		colorlisteditorwidget.cpp
+		customstatusesmanager.cpp
+		userslistwidget.cpp
+		keyboardrosterfixer.cpp
+		statuschangemenumanager.cpp
+		customchatstylemanager.cpp
+		advancedpermchangedialog.cpp
+		groupremovedialog.cpp
+		coremessage.cpp
+		dummymsgmanager.cpp
+		serverhistorywidget.cpp
+		dndutil.cpp
+		cltooltipmanager.cpp
+		corecommandsmanager.cpp
+		resourcesmanager.cpp
+		notificationsmanager.cpp
+		msgeditautocompleter.cpp
+		bookmarkeditdialog.cpp
+		msgsender.cpp
+		avatarsmanager.cpp
+		avatarsstorage.cpp
+		avatarsstorageondisk.cpp
+		avatarsstoragethread.cpp
+		chattabnetworkaccessmanager.cpp
+		historysyncer.cpp
+		chattabpartstatemanager.cpp
+		sslerrorshandler.cpp
+		sslerrorsdialog.cpp
+		sslerrorschoicestorage.cpp
+		contactslistview.cpp
+		${EXTRA_SRCS}
+	FORMS
+		mainwidget.ui
+		chattab.ui
+		accountslistwidget.ui
+		setstatusdialog.ui
+		addcontactdialog.ui
+		joinconferencedialog.ui
+		groupeditordialog.ui
+		addaccountwizardfirstpage.ui
+		bookmarksmanagerdialog.ui
+		accounthandlerchooserdialog.ui
+		simpledialog.ui
+		servicediscoverywidget.ui
+		drawattentiondialog.ui
+		consolewidget.ui
+		activitydialog.ui
+		mooddialog.ui
+		callchatwidget.ui
+		locationdialog.ui
+		acceptriexdialog.ui
+		shareriexdialog.ui
+		searchwidget.ui
+		mucinvitedialog.ui
+		groupsenddialog.ui
+		microblogstab.ui
+		filesenddialog.ui
+		colorlisteditorwidget.ui
+		userslistwidget.ui
+		advancedpermchangedialog.ui
+		groupremovedialog.ui
+		serverhistorywidget.ui
+		bookmarkeditdialog.ui
+		sslerrorsdialog.ui
+		${EXTRA_FORMS}
+	SETTINGS azothsettings.xml
+	RESOURCES azothresources.qrc
+	QT_COMPONENTS Concurrent Network Sql WebKitWidgets Widgets Xml ${EXTRA_QT_LIBRARIES}
+	LINK_LIBRARIES ${Boost_LOCALE_LIBRARY} ${QCA2_IMPORTED_TARGET}
+	INSTALL_SHARE
 	)
-set (FORMS
-	mainwidget.ui
-	chattab.ui
-	accountslistwidget.ui
-	setstatusdialog.ui
-	addcontactdialog.ui
-	joinconferencedialog.ui
-	groupeditordialog.ui
-	addaccountwizardfirstpage.ui
-	bookmarksmanagerdialog.ui
-	accounthandlerchooserdialog.ui
-	simpledialog.ui
-	servicediscoverywidget.ui
-	drawattentiondialog.ui
-	consolewidget.ui
-	activitydialog.ui
-	mooddialog.ui
-	callchatwidget.ui
-	locationdialog.ui
-	acceptriexdialog.ui
-	shareriexdialog.ui
-	searchwidget.ui
-	mucinvitedialog.ui
-	groupsenddialog.ui
-	microblogstab.ui
-	filesenddialog.ui
-	colorlisteditorwidget.ui
-	userslistwidget.ui
-	advancedpermchangedialog.ui
-	groupremovedialog.ui
-	serverhistorywidget.ui
-	bookmarkeditdialog.ui
-	sslerrorsdialog.ui
-	)
-set (RESOURCES azothresources.qrc)
 
-if (ENABLE_CRYPT)
-	set (SRCS ${SRCS} pgpkeyselectiondialog.cpp cryptomanager.cpp)
-	set (FORMS ${FORMS} pgpkeyselectiondialog.ui)
-endif ()
-
-CreateTrs ("azoth" "en;es;ru_RU;tt;uk_UA" COMPILED_TRANSLATIONS)
-CreateTrsUpTarget("azoth" "en;ru_RU" "${SRCS}" "${FORMS}" "azothsettings.xml")
-QtWrapUi (UIS_H ${FORMS})
-QtAddResources (RCCS ${RESOURCES})
-
-add_library (leechcraft_azoth SHARED
-	${COMPILED_TRANSLATIONS}
-	${SRCS}
-	${UIS_H}
-	${RCCS}
-	)
-target_link_libraries (leechcraft_azoth
-	${Boost_LOCALE_LIBRARY}
-	${LEECHCRAFT_LIBRARIES}
-	${QCA2_IMPORTED_TARGET}
-	)
-install (TARGETS leechcraft_azoth DESTINATION ${LC_PLUGINS_DEST})
-install (FILES azothsettings.xml DESTINATION ${LC_SETTINGS_DEST})
-install (DIRECTORY share/azoth DESTINATION ${LC_SHARE_DEST})
 install (DIRECTORY interfaces DESTINATION include/leechcraft)
-
-FindQtLibs (leechcraft_azoth Concurrent Network Sql WebKitWidgets Widgets Xml)
-if (ENABLE_MEDIACALLS)
-	FindQtLibs (leechcraft_azoth Multimedia)
-endif ()
 
 set (AZOTH_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
