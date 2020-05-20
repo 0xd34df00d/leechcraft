@@ -1,20 +1,5 @@
 <RCC>
     <qresource prefix="/" >
         <file>resources/images/bittorrent.svg</file>
-        <file>resources/images/torrent_local.png</file>
-        <file>resources/images/torrent_network.png</file>
-		<file>resources/images/clients/ares.png</file>
-		<file>resources/images/clients/azureus.png</file>
-		<file>resources/images/clients/bitcomet.png</file>
-		<file>resources/images/clients/console.png</file>
-		<file>resources/images/clients/deluge.png</file>
-		<file>resources/images/clients/halite.png</file>
-		<file>resources/images/clients/ktorrent.png</file>
-		<file>resources/images/clients/leechcraft.png</file>
-		<file>resources/images/clients/qbittorrent.png</file>
-		<file>resources/images/clients/shareaza.png</file>
-		<file>resources/images/clients/sharktorrent.png</file>
-		<file>resources/images/clients/transmission.png</file>
-		<file>resources/images/clients/utorrent.png</file>
     </qresource>
 </RCC>
