@@ -1,5 +1,0 @@
-<RCC>
-    <qresource prefix="/" >
-        <file>resources/images/bittorrent.svg</file>
-    </qresource>
-</RCC>

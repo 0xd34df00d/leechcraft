@@ -55,6 +55,7 @@
 #include <interfaces/core/itagsmanager.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/core/ientitymanager.h>
+#include <interfaces/core/iiconthememanager.h>
 #include <util/tags/tagscompletionmodel.h>
 #include <util/tags/tagscompleter.h>
 #include <util/util.h>
@@ -179,8 +180,7 @@ namespace BitTorrent
 
 	QIcon TorrentPlugin::GetIcon () const
 	{
-		static QIcon icon ("lcicons:/resources/images/bittorrent.svg");
-		return icon;
+		return Proxy_->GetIconThemeManager ()->GetPluginIcon ();
 	}
 
 	qint64 TorrentPlugin::GetDownloadSpeed () const
