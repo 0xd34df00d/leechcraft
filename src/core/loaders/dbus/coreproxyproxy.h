@@ -42,9 +42,6 @@ namespace DBus
 	class CoreProxyProxy : public QObject
 						 , public ICoreProxy
 	{
-		Q_OBJECT
-		Q_INTERFACES (ICoreProxy)
-
 		mutable QDBusInterface Proxy_;
 	public:
 		CoreProxyProxy (const QString& service, const QDBusObjectPath& path);
