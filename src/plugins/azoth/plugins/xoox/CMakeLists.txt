@@ -3,7 +3,7 @@ project (leechcraft_azoth_xoox)
 include (InitLCPlugin NO_POLICY_SCOPE)
 
 find_package (PkgConfig)
-pkg_check_modules (QXMPP REQUIRED IMPORTED_TARGET qxmpp>=1.2.0)
+pkg_check_modules (QXMPP REQUIRED IMPORTED_TARGET qxmpp>=1.1.0)
 
 set (DEFINITIONS "")
 set (EXTRA_SRCS "")

@@ -50,6 +50,7 @@
 #include <util/sll/containerconversions.h>
 #include <util/sll/prelude.h>
 #include <util/sll/scopeguards.h>
+#include <interfaces/core/iiconthememanager.h>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/ipluginready.h>
@@ -164,6 +165,11 @@ namespace LC
 			case Qt::DecorationRole:
 			{
 				const auto& loader = AvailablePlugins_.at (index.row ());
+
+				const auto& manifestIcon = CoreProxy { loader }.GetIconThemeManager ()->GetPluginIcon ();
+				if (!manifestIcon.isNull ())
+					return manifestIcon;
+
 				if (!loader->IsLoaded ())
 					return DefaultPluginIcon_;
 				const auto& res = qobject_cast<IInfo*> (loader->Instance ())->GetIcon ();

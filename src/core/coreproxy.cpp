@@ -50,7 +50,7 @@ namespace LC
 		IconThemeEngine& Engine_ = IconThemeEngine::Instance ();
 	public:
 		IconThemeManagerProxy (Loaders::IPluginLoader_ptr loader)
-		: Loader_ { loader }
+		: Loader_ { std::move (loader) }
 		{
 		}
 
