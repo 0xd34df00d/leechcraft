@@ -7,11 +7,9 @@ pkg_check_modules (Libtorrent REQUIRED IMPORTED_TARGET libtorrent-rasterbar)
 
 option (ENABLE_BITTORRENT_GEOIP "Enable support for GeoIP in BitTorrent" OFF)
 
-set (MMDB_IMPORTED_TARGET)
 if (ENABLE_BITTORRENT_GEOIP)
 	add_definitions (-DENABLE_GEOIP)
 	pkg_check_modules (MMDB REQUIRED IMPORTED_TARGET libmaxminddb)
-	set (MMDB_IMPORTED_TARGET PkgConfig::MMDB)
 endif ()
 
 LC_DEFINE_PLUGIN (bittorrent
@@ -80,7 +78,7 @@ LC_DEFINE_PLUGIN (bittorrent
 		torrenttabfileswidget.ui
 	SETTINGS torrentsettings.xml
 	QT_COMPONENTS Xml Widgets
-	LINK_LIBRARIES PkgConfig::Libtorrent ${MMDB_IMPORTED_TARGET}
+	LINK_LIBRARIES PkgConfig::Libtorrent $<$<BOOL:${ENABLE_BITTORRENT_GEOIP}>:PkgConfig::MMDB>
 	INSTALL_SHARE
 	INSTALL_DESKTOP
 	)
