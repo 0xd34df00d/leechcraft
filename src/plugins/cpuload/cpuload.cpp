@@ -29,11 +29,12 @@
 
 #include "cpuload.h"
 #include <QIcon>
-#include <QAbstractItemModel>
 #include <util/util.h>
 
 #ifdef Q_OS_LINUX
 #include "linuxbackend.h"
+#elif defined (Q_OS_FREEBSD)
+#include "freebsdbackend.h"
 #elif defined (Q_OS_MAC)
 #include "macbackend.h"
 #endif
@@ -50,6 +51,8 @@ namespace CpuLoad
 
 #ifdef Q_OS_LINUX
 		auto backend = new LinuxBackend;
+#elif defined (Q_OS_FREEBSD)
+		auto backend = new FreeBSDBackend;
 #elif defined (Q_OS_MAC)
 		auto backend = new MacBackend;
 #else
