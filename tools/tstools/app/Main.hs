@@ -58,7 +58,7 @@ main = do
        Nothing -> pure ()
 
   files <- lsif (\subpath -> pure $ subpath /= "plugins") "." `fold` F.list
-  let sources = filter (\file -> file `hasExtension` "cpp" || file `hasExtension` "ui") files
+  let sources = filter (\file -> any (file `hasExtension`) ["cpp", "ui", "qml"]) files
   generated <- mkGenerated files
 
   tsFiles <- case languages of
