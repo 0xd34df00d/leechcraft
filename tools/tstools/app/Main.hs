@@ -19,17 +19,20 @@ xsltStyle = $(embedStringFile "transform.xsl")
 
 mkGenerated :: MonadIO io => [FilePath] -> io [FilePath]
 mkGenerated allFiles
-  | [settingFile] <- filter (("settings.xml" `T.isSuffixOf`) . fromRight "" . toText) allFiles = do
+  | null settingsFiles = pure []
+  | otherwise = do
       liftIO $ runManaged $ do
         xsltFile <- mktempfile "." "xxxxxx.xslt"
         liftIO $ writeTextFile xsltFile xsltStyle
-        output "dummy.cpp"
-          $ sed ("__FILENAME__" $> toText' (basename settingFile))
-          $ grep (has "QT_TRANSL")
-          $ inproc "xsltproc" [toText' xsltFile, toText' settingFile] empty
+        output "dummy.cpp" $ cat $ procFile xsltFile <$> settingsFiles
       pure ["dummy.cpp"]
-  | otherwise = pure []
-  where toText' = fromRight undefined . toText
+  where
+    toText' = fromRight undefined . toText
+    settingsFiles = filter (settingsFilter . fromRight "" . toText) allFiles
+    settingsFilter str = any (`T.isSuffixOf` str) ["settings.xml", ".qml.settings"]
+    procFile xsltFile settingFile = sed ("__FILENAME__" $> toText' (basename settingFile))
+                                  $ grep (has "QT_TRANSL")
+                                  $ inproc "xsltproc" [toText' xsltFile, toText' settingFile] empty
 
 guessTsBase :: FilePath -> FilePath
 guessTsBase fullPath
