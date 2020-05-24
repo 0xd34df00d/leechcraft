@@ -11,9 +11,6 @@ LC_DEFINE_PLUGIN (certmgr
 		certsmodel.cpp
 		managerdialog.cpp
 		exceptionsmodel.cpp
-	FORMS
-		acceptedrejecteddialog.ui
-		managerdialog.ui
 	SETTINGS certmgrsettings.xml
 	QT_COMPONENTS Network Widgets
 	)

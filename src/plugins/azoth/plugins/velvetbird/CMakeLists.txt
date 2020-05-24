@@ -16,10 +16,6 @@ LC_DEFINE_PLUGIN (azoth_velvetbird
 		buddy.cpp
 		convimmessage.cpp
 		accountconfigdialog.cpp
-	FORMS
-		accregfirstpage.ui
-		accountconfigdialog.ui
-	SETTINGS 
 	QT_COMPONENTS Widgets
 	LINK_LIBRARIES PkgConfig::Purple
 	INSTALL_SHARE

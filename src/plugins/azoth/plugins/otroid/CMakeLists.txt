@@ -17,7 +17,6 @@ LC_DEFINE_PLUGIN (azoth_otroid
 		privkeymanager.cpp
 		xmlsettingsmanager.cpp
 		util.cpp
-	FORMS initiateauthdialog.ui
 	SETTINGS azothotroidsettings.xml
 	QT_COMPONENTS Concurrent Widgets
 	LINK_LIBRARIES ${LIBOTR_LIBRARIES}

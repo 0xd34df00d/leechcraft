@@ -30,10 +30,6 @@ LC_DEFINE_PLUGIN (azoth_murm
 		structures.cpp
 		photourlstorage.cpp
 		servermessagessyncer.cpp
-	FORMS
-		vcarddialog.ui
-		mucjoinwidget.ui
-		accountconfigdialog.ui
 	SETTINGS azothmurmsettings.xml
 	QT_COMPONENTS Concurrent Network Sql Widgets Xml
 	INSTALL_SHARE

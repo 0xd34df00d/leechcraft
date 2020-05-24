@@ -12,9 +12,6 @@ LC_DEFINE_PLUGIN (azoth_metacontacts
 		core.cpp
 		addtometacontactsdialog.cpp
 		managecontactsdialog.cpp
-	FORMS
-		addtometacontactsdialog.ui
-		managecontactsdialog.ui
 	QT_COMPONENTS Widgets
 	INSTALL_SHARE
 	)

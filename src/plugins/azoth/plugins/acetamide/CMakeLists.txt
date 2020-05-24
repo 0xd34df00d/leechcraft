@@ -42,18 +42,6 @@ LC_DEFINE_PLUGIN (azoth_acetamide
 		usercommandmanager.cpp
 		xmlsettingsmanager.cpp
 		vcarddialog.cpp
-	FORMS
-		bookmarkeditwidget.ui
-		channelconfigwidget.ui
-		channelslistdialog.ui
-		ircaccountconfigurationdialog.ui
-		ircaccountconfigurationwidget.ui
-		ircjoingroupchat.ui
-		invitechannelsdialog.ui
-		newnickservidentifydialog.ui
-		nickservidentifywidget.ui
-		serverinfowidget.ui
-		vcarddialog.ui
 	SETTINGS azothacetamidesettings.xml
 	RESOURCES azothacetamideresources.qrc
 	QT_COMPONENTS Network Widgets Xml

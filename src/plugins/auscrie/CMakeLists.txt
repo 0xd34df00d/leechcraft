@@ -7,7 +7,6 @@ LC_DEFINE_PLUGIN (auscrie
 		auscrie.cpp
 		shooterdialog.cpp
 		util.cpp
-	FORMS shooterdialog.ui
 	QT_COMPONENTS Widgets
 	INSTALL_SHARE
 	)

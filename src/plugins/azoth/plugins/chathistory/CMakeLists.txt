@@ -13,7 +13,6 @@ LC_DEFINE_PLUGIN (azoth_chathistory
 		historyvieweventfilter.cpp
 		storagemanager.cpp
 		loggingstatekeeper.cpp
-	FORMS chathistorywidget.ui
 	SETTINGS azothchathistorysettings.xml
 	QT_COMPONENTS Core Sql Widgets
 	INSTALL_SHARE

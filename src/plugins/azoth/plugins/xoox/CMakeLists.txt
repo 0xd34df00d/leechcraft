@@ -120,24 +120,6 @@ LC_DEFINE_PLUGIN (azoth_xoox
 		deliveryreceiptsintegrator.cpp
 		$<$<BOOL:${ENABLE_CRYPT}>:xeps/pgpmanager.cpp>
 		$<$<BOOL:${ENABLE_MEDIACALLS}>:mediacall.cpp>
-	FORMS
-		glooxaccountconfigurationdialog.ui
-		glooxaccountconfigurationwidget.ui
-		joingroupchatwidget.ui
-		vcarddialog.ui
-		bookmarkeditwidget.ui
-		roomconfigwidget.ui
-		affiliationselectordialog.ui
-		inbandaccountregfirstpage.ui
-		privacylistsconfigdialog.ui
-		privacylistsitemdialog.ui
-		executecommanddialog.ui
-		commandslistpage.ui
-		commandresultpage.ui
-		vcardlisteditdialog.ui
-		gwoptionsdialog.ui
-		gwitemsremovaldialog.ui
-		xep0313prefsdialog.ui
 	RESOURCES azothxooxresources.qrc
 	SETTINGS azothxooxsettings.xml
 	QT_COMPONENTS Concurrent Network Sql Widgets Xml ${EXTRA_MULTIMEDIA_LIBRARY}

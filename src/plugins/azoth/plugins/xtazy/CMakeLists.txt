@@ -7,7 +7,6 @@ LC_DEFINE_PLUGIN (azoth_xtazy
 		xtazy.cpp
 		xmlsettingsmanager.cpp
 		tracksharedialog.cpp
-	FORMS tracksharedialog.ui
 	SETTINGS azothxtazysettings.xml
 	QT_COMPONENTS Widgets
 	INSTALL_SHARE

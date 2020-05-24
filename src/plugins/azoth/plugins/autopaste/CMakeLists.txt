@@ -16,8 +16,6 @@ LC_DEFINE_PLUGIN (azoth_autopaste
 		pasteservicebase.cpp
 		pasteservicefactory.cpp
 		xmlsettingsmanager.cpp
-	FORMS
-		pastedialog.ui
 	SETTINGS azothautopastesettings.xml
 	QT_COMPONENTS Network Widgets
 	INSTALL_SHARE

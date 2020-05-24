@@ -432,7 +432,7 @@ endfunction ()
 function(LC_DEFINE_PLUGIN pluginName)
 	set (options INSTALL_SHARE INSTALL_DESKTOP)
 	set (one_value_args SETTINGS RESOURCES)
-	set (multi_value_args SRCS FORMS QT_COMPONENTS LINK_LIBRARIES)
+	set (multi_value_args SRCS QT_COMPONENTS LINK_LIBRARIES)
 	cmake_parse_arguments (P "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
 
 	include_directories (
@@ -444,11 +444,6 @@ function(LC_DEFINE_PLUGIN pluginName)
 		QtAddResources (RCCS ${P_RESOURCES})
 	else ()
 		set (RCCS)
-	endif ()
-	if (P_FORMS)
-		QtWrapUi (UIS ${P_FORMS})
-	else ()
-		set (UIS)
 	endif ()
 
 	file (GLOB TS_SOURCES "*.ts")
@@ -469,8 +464,8 @@ function(LC_DEFINE_PLUGIN pluginName)
 		${QM_RESULTS}
 		${P_SRCS}
 		${RCCS}
-		${UIS}
 		)
+	set_target_properties (${FULL_NAME} PROPERTIES AUTOUIC TRUE)
 	target_link_libraries (${FULL_NAME} ${LEECHCRAFT_LIBRARIES} ${P_LINK_LIBRARIES})
 
 	install (TARGETS ${FULL_NAME} DESTINATION ${LC_PLUGINS_DEST})

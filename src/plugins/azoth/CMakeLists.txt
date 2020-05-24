@@ -120,40 +120,6 @@ LC_DEFINE_PLUGIN (azoth
 		sslerrorschoicestorage.cpp
 		contactslistview.cpp
 		$<$<BOOL:${ENABLE_CRYPT}>:pgpkeyselectiondialog.cpp cryptomanager.cpp>
-	FORMS
-		mainwidget.ui
-		chattab.ui
-		accountslistwidget.ui
-		setstatusdialog.ui
-		addcontactdialog.ui
-		joinconferencedialog.ui
-		groupeditordialog.ui
-		addaccountwizardfirstpage.ui
-		bookmarksmanagerdialog.ui
-		accounthandlerchooserdialog.ui
-		simpledialog.ui
-		servicediscoverywidget.ui
-		drawattentiondialog.ui
-		consolewidget.ui
-		activitydialog.ui
-		mooddialog.ui
-		callchatwidget.ui
-		locationdialog.ui
-		acceptriexdialog.ui
-		shareriexdialog.ui
-		searchwidget.ui
-		mucinvitedialog.ui
-		groupsenddialog.ui
-		microblogstab.ui
-		filesenddialog.ui
-		colorlisteditorwidget.ui
-		userslistwidget.ui
-		advancedpermchangedialog.ui
-		groupremovedialog.ui
-		serverhistorywidget.ui
-		bookmarkeditdialog.ui
-		sslerrorsdialog.ui
-		pgpkeyselectiondialog.ui
 	SETTINGS azothsettings.xml
 	RESOURCES azothresources.qrc
 	QT_COMPONENTS Concurrent Network Sql WebKitWidgets Widgets Xml ${EXTRA_MULTIMEDIA_LIBRARY}

@@ -56,26 +56,6 @@ LC_DEFINE_PLUGIN (bittorrent
 		sessionsettingsmanager.cpp
 		cachedstatuskeeper.cpp
 		geoip.cpp
-	FORMS
-		tabwidget.ui
-		addtorrent.ui
-		addmultipletorrents.ui
-		newtorrentfirststep.ui
-		newtorrentsecondstep.ui
-		newtorrentthirdstep.ui
-		movetorrentfiles.ui
-		trackerschanger.ui
-		addpeerdialog.ui
-		addwebseeddialog.ui
-		startupfirstpage.ui
-		fastspeedcontrolwidget.ui
-		banpeersdialog.ui
-		ipfilterdialog.ui
-		singletrackerchanger.ui
-		torrenttab.ui
-		torrenttabwidget.ui
-		addmagnetdialog.ui
-		torrenttabfileswidget.ui
 	SETTINGS torrentsettings.xml
 	QT_COMPONENTS Xml Widgets
 	LINK_LIBRARIES PkgConfig::Libtorrent $<$<BOOL:${ENABLE_BITTORRENT_GEOIP}>:PkgConfig::MMDB>

@@ -3,8 +3,7 @@ project (leechcraft_azoth_keeso)
 include (InitLCPlugin NO_POLICY_SCOPE)
 
 LC_DEFINE_PLUGIN (azoth_keeso
-	SRCS
-	keeso.cpp
+	SRCS keeso.cpp
 	QT_COMPONENTS Core Widgets
 	INSTALL_SHARE
 	)

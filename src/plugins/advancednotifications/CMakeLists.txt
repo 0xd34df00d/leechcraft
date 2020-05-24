@@ -28,13 +28,6 @@ LC_DEFINE_PLUGIN (advancednotifications
 		audiothememanager.cpp
 		unhandlednotificationskeeper.cpp
 		addfrommisseddialog.cpp
-	FORMS
-		notificationruleswidget.ui
-		matchconfigdialog.ui
-		boolmatcherconfigwidget.ui
-		intmatcherconfigwidget.ui
-		stringlikematcherconfigwidget.ui
-		addfrommisseddialog.ui
 	SETTINGS advancednotificationssettings.xml
 	QT_COMPONENTS QuickWidgets
 	INSTALL_SHARE

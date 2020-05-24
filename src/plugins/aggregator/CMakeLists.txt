@@ -66,18 +66,6 @@ LC_DEFINE_PLUGIN (aggregator
 		poolsmanager.cpp
 		coreproxyholder.cpp
 		feedserrormanager.cpp
-	FORMS
-		mainwidget.ui
-		addfeeddialog.ui
-		importopml.ui
-		export.ui
-		importbinary.ui
-		feedsettings.ui
-		itemswidget.ui
-		startupfirstpage.ui
-		startupsecondpage.ui
-		startupthirdpage.ui
-		export2fb2dialog.ui
 	SETTINGS aggregatorsettings.xml
 	RESOURCES aggregatorresources.qrc
 	QT_COMPONENTS Network PrintSupport Sql Widgets Xml

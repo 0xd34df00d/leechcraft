@@ -9,7 +9,6 @@ LC_DEFINE_PLUGIN (azoth_herbicide
 		xmlsettingsmanager.cpp
 		logger.cpp
 		listsholder.cpp
-	FORMS confwidget.ui
 	SETTINGS azothherbicidesettings.xml
 	QT_COMPONENTS Sql Widgets
 	INSTALL_SHARE

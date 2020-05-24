@@ -30,10 +30,6 @@ LC_DEFINE_PLUGIN (azoth_sarin
 		filetransferbase.cpp
 		filetransferin.cpp
 		filetransferout.cpp
-	FORMS
-		accregisterdetailspage.ui
-		accountconfigdialog.ui
-		showtoxiddialog.ui
 	QT_COMPONENTS Sql Widgets ${EXTRA_MULTIMEDIA_LIBRARY}
 	LINK_LIBRARIES PkgConfig::TOX
 	)
