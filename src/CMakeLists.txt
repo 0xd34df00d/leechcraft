@@ -440,12 +440,6 @@ function(LC_DEFINE_PLUGIN pluginName)
 		${LEECHCRAFT_INCLUDE_DIR}
 	)
 
-	if (P_RESOURCES)
-		QtAddResources (RCCS ${P_RESOURCES})
-	else ()
-		set (RCCS)
-	endif ()
-
 	file (GLOB TS_SOURCES "*.ts")
 	if (TS_SOURCES)
 		list (TRANSFORM TS_SOURCES REPLACE "(.*)\\.ts" "\\1.qm" OUTPUT_VARIABLE QM_RESULTS)
@@ -463,9 +457,9 @@ function(LC_DEFINE_PLUGIN pluginName)
 	add_library (${FULL_NAME} SHARED
 		${QM_RESULTS}
 		${P_SRCS}
-		${RCCS}
+		${P_RESOURCES}
 		)
-	set_target_properties (${FULL_NAME} PROPERTIES AUTOUIC TRUE)
+	set_target_properties (${FULL_NAME} PROPERTIES AUTOUIC TRUE AUTORCC TRUE)
 	target_link_libraries (${FULL_NAME} ${LEECHCRAFT_LIBRARIES} ${P_LINK_LIBRARIES})
 
 	install (TARGETS ${FULL_NAME} DESTINATION ${LC_PLUGINS_DEST})
