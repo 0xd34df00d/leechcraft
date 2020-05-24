@@ -30,9 +30,6 @@ endif ()
 CreateTrs("cpuload" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("cpuload" "en;ru_RU" "${SRCS}" "${FORMS}" "")
 
-file(GLOB QML_FILES "share/qml5/cpuload/*.qml")
-CreateQmlTrsUpTarget("cpuload" "en;ru_RU" "${QML_FILES}" "share/qml5/cpuload/CpuLoadQuark.qml.settings")
-
 add_library (leechcraft_cpuload SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
@@ -44,7 +41,5 @@ target_link_libraries (leechcraft_cpuload
 	)
 install (TARGETS leechcraft_cpuload DESTINATION ${LC_PLUGINS_DEST})
 install (DIRECTORY share/qml5/cpuload DESTINATION ${LC_QML5_DEST})
-
-CreateTrsQml("cpuload" "en;ru_RU" leechcraft_cpuload "share/qml5/cpuload")
 
 FindQtLibs (leechcraft_cpuload Quick)
