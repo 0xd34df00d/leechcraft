@@ -5,11 +5,6 @@ include (InitLCPlugin NO_POLICY_SCOPE)
 find_package(PkgConfig)
 pkg_check_modules(TOX REQUIRED IMPORTED_TARGET toxcore)
 
-set (EXTRA_QT)
-if (ENABLE_MEDIACALLS)
-	set (EXTRA_QT Multimedia)
-endif ()
-
 LC_DEFINE_PLUGIN (azoth_sarin
 	SRCS
 		sarin.cpp
@@ -39,6 +34,6 @@ LC_DEFINE_PLUGIN (azoth_sarin
 		accregisterdetailspage.ui
 		accountconfigdialog.ui
 		showtoxiddialog.ui
-	QT_COMPONENTS Sql Widgets ${EXTRA_QT}
+	QT_COMPONENTS Sql Widgets ${EXTRA_MULTIMEDIA_LIBRARY}
 	LINK_LIBRARIES PkgConfig::TOX
 	)

@@ -5,26 +5,10 @@ include (InitLCPlugin NO_POLICY_SCOPE)
 find_package (PkgConfig)
 pkg_check_modules (QXMPP REQUIRED IMPORTED_TARGET qxmpp>=1.1.0)
 
-set (DEFINITIONS "")
-set (EXTRA_SRCS "")
-
-if (ENABLE_CRYPT)
-	list (APPEND DEFINITIONS "-DENABLE_CRYPT")
-	list (APPEND EXTRA_SRCS xeps/pgpmanager.cpp)
-endif ()
-
-if (ENABLE_MEDIACALLS)
-	list (APPEND DEFINITIONS "-DENABLE_MEDIACALLS")
-	list (APPEND EXTRA_SRCS mediacall.cpp)
-endif ()
-
-add_definitions (${DEFINITIONS})
-set (CMAKE_AUTOMOC_MOC_OPTIONS ${CMAKE_AUTOMOC_MOC_OPTIONS} ${DEFINITIONS})
-
-set (EXTRA_QT)
-if (ENABLE_MEDIACALLS)
-	set (EXTRA_QT Multimedia)
-endif ()
+add_compile_definitions (
+	$<$<BOOL:${ENABLE_CRYPT}>:ENABLE_CRYPT>
+	$<$<BOOL:${ENABLE_MEDIACALLS}>:ENABLE_MEDIACALLS>
+	)
 
 LC_DEFINE_PLUGIN (azoth_xoox
 	SRCS
@@ -134,7 +118,8 @@ LC_DEFINE_PLUGIN (azoth_xoox
 		inbandaccountactions.cpp
 		xmppelementdescription.cpp
 		deliveryreceiptsintegrator.cpp
-		${EXTRA_SRCS}
+		$<$<BOOL:${ENABLE_CRYPT}>:xeps/pgpmanager.cpp>
+		$<$<BOOL:${ENABLE_MEDIACALLS}>:mediacall.cpp>
 	FORMS
 		glooxaccountconfigurationdialog.ui
 		glooxaccountconfigurationwidget.ui
@@ -155,7 +140,8 @@ LC_DEFINE_PLUGIN (azoth_xoox
 		xep0313prefsdialog.ui
 	RESOURCES azothxooxresources.qrc
 	SETTINGS azothxooxsettings.xml
-	QT_COMPONENTS Concurrent Network Sql Widgets Xml ${EXTRA_QT}
-	LINK_LIBRARIES PkgConfig::QXMPP ${QCA2_IMPORTED_TARGET}
+	QT_COMPONENTS Concurrent Network Sql Widgets Xml ${EXTRA_MULTIMEDIA_LIBRARY}
+	LINK_LIBRARIES PkgConfig::QXMPP $<$<BOOL:${ENABLE_CRYPT}>:PkgConfig::QCA2>
 	INSTALL_DESKTOP
 	)
+

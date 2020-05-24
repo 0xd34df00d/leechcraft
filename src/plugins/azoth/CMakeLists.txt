@@ -27,22 +27,16 @@ endif ()
 
 if (ENABLE_MEDIACALLS)
 	add_definitions (-DENABLE_MEDIACALLS)
-	set (EXTRA_QT_LIBRARIES Multimedia)
+	set (EXTRA_MULTIMEDIA_LIBRARY Multimedia)
 endif ()
 
 option (ENABLE_CRYPT "Enable QCA2-based support for PGP" ON)
 
-set (QCA2_IMPORTED_TARGET)
-
 if (ENABLE_CRYPT)
 	find_package(PkgConfig)
 	pkg_check_modules(QCA2 REQUIRED IMPORTED_TARGET qca2-qt5)
-	set (QCA2_IMPORTED_TARGET PkgConfig::QCA2)
 
 	add_definitions (-DENABLE_CRYPT)
-
-	set (EXTRA_SRCS pgpkeyselectiondialog.cpp cryptomanager.cpp)
-	set (EXTRA_FORMS pgpkeyselectiondialog.ui)
 endif ()
 
 LC_DEFINE_PLUGIN (azoth
@@ -125,7 +119,7 @@ LC_DEFINE_PLUGIN (azoth
 		sslerrorsdialog.cpp
 		sslerrorschoicestorage.cpp
 		contactslistview.cpp
-		${EXTRA_SRCS}
+		$<$<BOOL:${ENABLE_CRYPT}>:pgpkeyselectiondialog.cpp cryptomanager.cpp>
 	FORMS
 		mainwidget.ui
 		chattab.ui
@@ -159,11 +153,11 @@ LC_DEFINE_PLUGIN (azoth
 		serverhistorywidget.ui
 		bookmarkeditdialog.ui
 		sslerrorsdialog.ui
-		${EXTRA_FORMS}
+		pgpkeyselectiondialog.ui
 	SETTINGS azothsettings.xml
 	RESOURCES azothresources.qrc
-	QT_COMPONENTS Concurrent Network Sql WebKitWidgets Widgets Xml ${EXTRA_QT_LIBRARIES}
-	LINK_LIBRARIES ${Boost_LOCALE_LIBRARY} ${QCA2_IMPORTED_TARGET}
+	QT_COMPONENTS Concurrent Network Sql WebKitWidgets Widgets Xml ${EXTRA_MULTIMEDIA_LIBRARY}
+	LINK_LIBRARIES ${Boost_LOCALE_LIBRARY} $<$<BOOL:${ENABLE_CRYPT}>:PkgConfig::QCA2>
 	INSTALL_SHARE
 	)
 
