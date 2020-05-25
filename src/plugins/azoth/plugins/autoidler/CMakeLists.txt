@@ -2,21 +2,12 @@ cmake_minimum_required (VERSION 3.3)
 project (leechcraft_azoth_autoidler)
 include (InitLCPlugin NO_POLICY_SCOPE)
 
-if (APPLE)
-	set (ADDITIONAL_SRCS 3dparty/idle_mac.cpp)
-	set (ADDITIONAL_AUTOIDLER_LIBS "-framework ApplicationServices")
-elseif (UNIX)
-	set (ADDITIONAL_SRCS 3dparty/idle_x11.cpp)
-	set (ADDITIONAL_QT_COMPONENTS X11Extras)
+if (UNIX)
+	find_package (PkgConfig)
+	pkg_check_modules (XSS REQUIRED IMPORTED_TARGET xscrnsaver)
 
-	find_package (X11)
-
-	if (X11_Xscreensaver_FOUND)
-		include_directories ("${X11_Xscreensaver_INCLUDE_PATH}")
-		set (ADDITIONAL_AUTOIDLER_LIBS ${X11_Xscreensaver_LIB})
-	endif ()
-elseif (WIN32)
-	set (ADDITIONAL_SRCS 3dparty/idle_win.cpp)
+	set (X11_IMPL 3dparty/idle_x11.cpp)
+	set (X11_XSS_LIB PkgConfig::XSS)
 endif ()
 
 LC_DEFINE_PLUGIN (azoth_autoidler
@@ -24,9 +15,13 @@ LC_DEFINE_PLUGIN (azoth_autoidler
 		autoidler.cpp
 		xmlsettingsmanager.cpp
 		3dparty/idle.cpp
-		${ADDITIONAL_SRCS}
+		${X11_IMPL}
+		$<$<PLATFORM_ID:Win32>:3dparty/idle_win.cpp>
+		$<$<PLATFORM_ID:Darwin>:3dparty/idle_mac.cpp>
 	SETTINGS azothautoidlersettings.xml
-	QT_COMPONENTS Widgets ${ADDITIONAL_QT_COMPONENTS}
-	LINK_LIBRARIES ${ADDITIONAL_AUTOIDLER_LIBS}
+	QT_COMPONENTS Widgets ${QT_X11_EXTRA_LIBRARY}
+	LINK_LIBRARIES
+		$<$<PLATFORM_ID:Darwin>:"-framework ApplicationServices">
+		${X11_XSS_LIB}
 	INSTALL_SHARE
 	)
