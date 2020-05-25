@@ -41,6 +41,11 @@ target_link_libraries (leechcraft_lmp_common
 
 FindQtLibs (leechcraft_lmp_common Core)
 
+if (ENABLE_LMP_MPRIS)
+	add_subdirectory (mpris)
+	add_definitions (-DENABLE_MPRIS)
+endif ()
+
 set (SRCS
 	lmp.cpp
 	xmlsettingsmanager.cpp
@@ -193,10 +198,6 @@ add_library (leechcraft_lmp SHARED
 	${UIS_H}
 	${RCCS}
 	)
-if (ENABLE_LMP_MPRIS)
-	add_subdirectory (mpris)
-	add_definitions (-DENABLE_MPRIS)
-endif ()
 target_link_libraries (leechcraft_lmp
 	${LEECHCRAFT_LIBRARIES}
 	PkgConfig::TagLib
