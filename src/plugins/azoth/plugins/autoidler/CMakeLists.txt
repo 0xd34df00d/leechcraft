@@ -12,7 +12,6 @@ elseif (UNIX)
 	find_package (X11)
 
 	if (X11_Xscreensaver_FOUND)
-		add_definitions (-DHAVE_XSS)
 		include_directories ("${X11_Xscreensaver_INCLUDE_PATH}")
 		set (ADDITIONAL_AUTOIDLER_LIBS ${X11_Xscreensaver_LIB})
 	endif ()

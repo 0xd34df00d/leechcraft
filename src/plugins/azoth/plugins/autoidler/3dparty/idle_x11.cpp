@@ -20,21 +20,11 @@
 
 #include "idle.h"
 
-#ifndef HAVE_XSS
-
-IdlePlatform::IdlePlatform() {}
-IdlePlatform::~IdlePlatform() {}
-bool IdlePlatform::init() { return false; }
-int IdlePlatform::secondsIdle() { return 0; }
-
-#else
-
 #include <qapplication.h>
 #include <QDesktopWidget>
 #include <QX11Info>
 
 #include <X11/Xlib.h>
-#include <X11/Xutil.h>
 #include <X11/extensions/scrnsaver.h>
 
 static XErrorHandler old_handler = 0;
@@ -94,5 +84,3 @@ int IdlePlatform::secondsIdle()
 		return 0;
 	return d->ss_info->idle / 1000;
 }
-
-#endif
