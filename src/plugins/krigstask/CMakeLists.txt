@@ -2,7 +2,8 @@ cmake_minimum_required (VERSION 3.3)
 project (leechcraft_krigstask)
 include (InitLCPlugin NO_POLICY_SCOPE)
 
-find_package (X11 REQUIRED)
+find_package (PkgConfig)
+pkg_check_modules (XcbParts REQUIRED IMPORTED_TARGET xcomposite xcb-composite xcb-render xcb-renderutil)
 
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
@@ -24,16 +25,8 @@ add_library (leechcraft_krigstask SHARED
 	${SRCS}
 	)
 
-find_package (XCB COMPONENTS COMPOSITE XFIXES RENDER RENDERUTIL REQUIRED)
-
 set (ADDITIONAL_LIBS
-	${X11_X11_LIB}
-	${X11_Xcomposite_LIB}
-	${X11_Xfixes_LIB}
-	XCB::COMPOSITE
-	XCB::XFIXES
-	XCB::RENDER
-	XCB::RENDERUTIL
+	PkgConfig::XcbParts
 	)
 
 target_link_libraries (leechcraft_krigstask

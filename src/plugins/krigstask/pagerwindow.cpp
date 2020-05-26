@@ -44,11 +44,6 @@
 #include <util/qml/util.h>
 #include <util/models/rolenamesmixin.h>
 #include <util/x11/xwrapper.h>
-#include <X11/Xlib.h>
-#include <X11/Xutil.h>
-#include <X11/extensions/Xrender.h>
-#include <X11/extensions/Xfixes.h>
-#include <X11/extensions/Xcomposite.h>
 #include <xcb/xcb.h>
 #include <xcb/render.h>
 #include <xcb/composite.h>
