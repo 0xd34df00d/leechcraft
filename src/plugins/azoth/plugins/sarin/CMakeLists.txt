@@ -5,7 +5,7 @@ include (InitLCPlugin NO_POLICY_SCOPE)
 find_package(PkgConfig)
 pkg_check_modules(TOX REQUIRED IMPORTED_TARGET toxcore)
 
-LC_DEFINE_PLUGIN (azoth_sarin
+LC_DEFINE_PLUGIN (
 	SRCS
 		sarin.cpp
 		toxprotocol.cpp

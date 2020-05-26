@@ -2,7 +2,7 @@ cmake_minimum_required (VERSION 3.3)
 project (leechcraft_certmgr)
 include (InitLCPlugin NO_POLICY_SCOPE)
 
-LC_DEFINE_PLUGIN (certmgr
+LC_DEFINE_PLUGIN (
 	SRCS
 		certmgr.cpp
 		xmlsettingsmanager.cpp

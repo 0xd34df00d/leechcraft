@@ -2,7 +2,7 @@ cmake_minimum_required (VERSION 3.3)
 project (leechcraft_azoth_nativeemoticons)
 include (InitLCPlugin NO_POLICY_SCOPE)
 
-LC_DEFINE_PLUGIN (azoth_nativeemoticons
+LC_DEFINE_PLUGIN (
 	SRCS
 		nativeemoticons.cpp
 		nativeemoticonssource.cpp

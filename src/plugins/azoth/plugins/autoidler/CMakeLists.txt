@@ -10,7 +10,7 @@ if (UNIX)
 	set (X11_XSS_LIB PkgConfig::XSS)
 endif ()
 
-LC_DEFINE_PLUGIN (azoth_autoidler
+LC_DEFINE_PLUGIN (
 	SRCS
 		autoidler.cpp
 		xmlsettingsmanager.cpp

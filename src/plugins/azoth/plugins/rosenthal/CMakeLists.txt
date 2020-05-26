@@ -2,7 +2,7 @@ cmake_minimum_required (VERSION 3.3)
 project (leechcraft_azoth_rosenthal)
 include (InitLCPlugin NO_POLICY_SCOPE)
 
-LC_DEFINE_PLUGIN (azoth_rosenthal
+LC_DEFINE_PLUGIN (
 	SRCS
 		rosenthal.cpp
 		highlighter.cpp

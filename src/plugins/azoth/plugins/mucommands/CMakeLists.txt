@@ -4,7 +4,7 @@ include (InitLCPlugin NO_POLICY_SCOPE)
 
 option (ENABLE_AZOTH_MUCOMMANDS_TESTS "Enable tests for Azoth MuCommands" OFF)
 
-LC_DEFINE_PLUGIN (azoth_mucommands
+LC_DEFINE_PLUGIN (
 	SRCS
 		mucommands.cpp
 		commands.cpp

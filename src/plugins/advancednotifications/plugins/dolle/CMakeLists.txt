@@ -2,7 +2,7 @@ cmake_minimum_required (VERSION 3.3)
 project (leechcraft_advancednotifications_dolle)
 include (InitLCPlugin NO_POLICY_SCOPE)
 
-LC_DEFINE_PLUGIN (advancednotifications_dolle
+LC_DEFINE_PLUGIN (
 	SRCS
 		dolle.cpp
 		notificationhandler.cpp

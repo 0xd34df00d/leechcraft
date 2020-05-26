@@ -10,7 +10,7 @@ add_compile_definitions (
 	$<$<BOOL:${ENABLE_MEDIACALLS}>:ENABLE_MEDIACALLS>
 	)
 
-LC_DEFINE_PLUGIN (azoth_xoox
+LC_DEFINE_PLUGIN (
 	SRCS
 		xoox.cpp
 		glooxprotocol.cpp

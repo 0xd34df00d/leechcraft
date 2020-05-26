@@ -1,4 +1,6 @@
-LC_DEFINE_PLUGIN (aggregator_bodyfetch
+project (leechcraft_aggregator_bodyfetch)
+
+LC_DEFINE_PLUGIN (
 	SRCS
 		bodyfetch.cpp
 		workerobject.cpp

@@ -429,7 +429,7 @@ function (CreateTrsQml PlugName Langs Target QmlDirs)
 	add_dependencies (${Target} "${_marker}_whole")
 endfunction ()
 
-function(LC_DEFINE_PLUGIN pluginName)
+function(LC_DEFINE_PLUGIN)
 	set (options INSTALL_SHARE INSTALL_DESKTOP)
 	set (one_value_args SETTINGS RESOURCES)
 	set (multi_value_args SRCS QT_COMPONENTS LINK_LIBRARIES)
@@ -452,7 +452,7 @@ function(LC_DEFINE_PLUGIN pluginName)
 		set (QM_RESULTS)
 	endif ()
 
-	set (FULL_NAME "leechcraft_${pluginName}")
+	set (FULL_NAME ${PROJECT_NAME})
 
 	add_library (${FULL_NAME} SHARED
 		${QM_RESULTS}

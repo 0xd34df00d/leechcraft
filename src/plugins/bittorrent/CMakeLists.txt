@@ -12,7 +12,7 @@ if (ENABLE_BITTORRENT_GEOIP)
 	pkg_check_modules (MMDB REQUIRED IMPORTED_TARGET libmaxminddb)
 endif ()
 
-LC_DEFINE_PLUGIN (bittorrent
+LC_DEFINE_PLUGIN (
 	SRCS
 		torrentplugin.cpp
 		tabwidget.cpp

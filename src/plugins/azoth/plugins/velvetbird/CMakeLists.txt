@@ -5,7 +5,7 @@ include (InitLCPlugin NO_POLICY_SCOPE)
 find_package (PkgConfig)
 pkg_check_modules (Purple REQUIRED IMPORTED_TARGET purple)
 
-LC_DEFINE_PLUGIN (azoth_velvetbird
+LC_DEFINE_PLUGIN (
 	SRCS
 		velvetbird.cpp
 		protomanager.cpp

@@ -2,7 +2,7 @@ cmake_minimum_required (VERSION 3.3)
 project (leechcraft_advancednotifications)
 include (InitLCPlugin NO_POLICY_SCOPE)
 
-LC_DEFINE_PLUGIN (advancednotifications
+LC_DEFINE_PLUGIN (
 	SRCS
 		advancednotifications.cpp
 		generalhandler.cpp

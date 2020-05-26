@@ -1,7 +1,9 @@
+project (leechcraft_aggregator_webaccess)
+
 find_package (Wt REQUIRED)
 add_definitions (-DQT_NO_KEYWORDS -DWT_NO_SLOT_MACROS)
 
-LC_DEFINE_PLUGIN (aggregator_webaccess
+LC_DEFINE_PLUGIN (
 	SRCS
 		webaccess.cpp
 		servermanager.cpp

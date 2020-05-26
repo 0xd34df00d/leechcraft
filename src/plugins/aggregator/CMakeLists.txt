@@ -11,7 +11,7 @@ add_library (leechcraft_aggregator_util STATIC
 set_target_properties(leechcraft_aggregator_util PROPERTIES POSITION_INDEPENDENT_CODE True)
 FindQtLibs (leechcraft_aggregator_util Widgets)
 
-LC_DEFINE_PLUGIN (aggregator
+LC_DEFINE_PLUGIN (
 	SRCS
 		aggregator.cpp
 		aggregatortab.cpp

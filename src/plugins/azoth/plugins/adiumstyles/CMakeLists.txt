@@ -2,7 +2,7 @@ cmake_minimum_required (VERSION 3.3)
 project (leechcraft_azoth_adiumstyles)
 include (InitLCPlugin NO_POLICY_SCOPE)
 
-LC_DEFINE_PLUGIN (azoth_adiumstyles
+LC_DEFINE_PLUGIN (
 	SRCS
 		adiumstyles.cpp
 		adiumstylesource.cpp

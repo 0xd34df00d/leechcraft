@@ -39,7 +39,7 @@ if (ENABLE_CRYPT)
 	add_definitions (-DENABLE_CRYPT)
 endif ()
 
-LC_DEFINE_PLUGIN (azoth
+LC_DEFINE_PLUGIN (
 	SRCS
 		azoth.cpp
 		core.cpp

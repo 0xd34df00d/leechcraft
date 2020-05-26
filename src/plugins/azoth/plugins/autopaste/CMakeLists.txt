@@ -2,7 +2,7 @@ cmake_minimum_required (VERSION 3.3)
 project (leechcraft_azoth_autopaste)
 include (InitLCPlugin NO_POLICY_SCOPE)
 
-LC_DEFINE_PLUGIN (azoth_autopaste
+LC_DEFINE_PLUGIN (
 	SRCS
 		actionsstorage.cpp
 		autopaste.cpp

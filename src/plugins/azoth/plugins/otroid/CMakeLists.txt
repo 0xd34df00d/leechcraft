@@ -7,7 +7,7 @@ find_package (LibOTR REQUIRED)
 message (STATUS "Found OTR: ${LIBOTR_LIBRARY}")
 include_directories (${LIBOTR_INCLUDE_DIR})
 
-LC_DEFINE_PLUGIN (azoth_otroid
+LC_DEFINE_PLUGIN (
 	SRCS
 		otroid.cpp
 		otrhandler.cpp
