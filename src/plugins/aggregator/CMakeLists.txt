@@ -72,15 +72,5 @@ LC_DEFINE_PLUGIN (aggregator
 	INSTALL_SHARE
 	)
 
-option (ENABLE_AGGREGATOR_BODYFETCH "Enable BodyFetch for fetching full bodies of news items" ON)
-option (ENABLE_AGGREGATOR_WEBACCESS "Enable WebAccess for providing HTTP access to Aggregator" OFF)
-
-include_directories (${CMAKE_CURRENT_SOURCE_DIR})
-
-if (ENABLE_AGGREGATOR_BODYFETCH)
-	add_subdirectory (plugins/bodyfetch)
-endif ()
-
-if (ENABLE_AGGREGATOR_WEBACCESS)
-	add_subdirectory (plugins/webaccess)
-endif ()
+SUBPLUGIN (BODYFETCH "Enable BodyFetch for fetching full bodies of news items")
+SUBPLUGIN (WEBACCESS "Enable WebAccess for providing HTTP access to Aggregator" OFF)

@@ -49,23 +49,7 @@ install (DIRECTORY share/qml5/blasq DESTINATION ${LC_QML5_DEST})
 
 FindQtLibs (leechcraft_blasq Network QuickWidgets Widgets)
 
-option (ENABLE_BLASQ_RAPPOR "Build VKontakte client module for Blasq" ON)
-option (ENABLE_BLASQ_SPEGNERSI "Build Flickr client module for Blasq" ON)
-option (ENABLE_BLASQ_VANGOG "Build Picasa client module for Blasq" ON)
-option (ENABLE_BLASQ_DEATHNOTE "Build LiveJournal FotoBilder client module for Blasq" ON)
-
-if (ENABLE_BLASQ_RAPPOR)
-	add_subdirectory (plugins/rappor)
-endif ()
-
-if (ENABLE_BLASQ_SPEGNERSI)
-	add_subdirectory (plugins/spegnersi)
-endif ()
-
-if (ENABLE_BLASQ_VANGOG)
-	add_subdirectory (plugins/vangog)
-endif ()
-
-if (ENABLE_BLASQ_DEATHNOTE)
-	add_subdirectory (plugins/deathnote)
-endif ()
+SUBPLUGIN (RAPPOR "Build VKontakte client module for Blasq")
+SUBPLUGIN (SPEGNERSI "Build Flickr client module for Blasq")
+SUBPLUGIN (VANGOG "Build Picasa client module for Blasq")
+SUBPLUGIN (DEATHNOTE "Build LiveJournal FotoBilder client module for Blasq")

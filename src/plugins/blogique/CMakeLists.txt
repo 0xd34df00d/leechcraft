@@ -79,15 +79,5 @@ install (DIRECTORY share/qml5/blogique DESTINATION ${LC_QML5_DEST})
 
 FindQtLibs (leechcraft_blogique PrintSupport QuickWidgets Sql WebKitWidgets Xml)
 
-set (BLOGIQUE_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
-
-option (ENABLE_BLOGIQUE_METIDA "Build Metida, LiveJournal blogging platform" ON)
-option (ENABLE_BLOGIQUE_HESTIA "Build Hestia, local blogging platform" ON)
-
-if (ENABLE_BLOGIQUE_METIDA)
-	add_subdirectory (plugins/metida)
-endif ()
-
-if (ENABLE_BLOGIQUE_HESTIA)
-	add_subdirectory (plugins/hestia)
-endif ()
+SUBPLUGIN (METIDA "Build Metida, LiveJournal blogging platform")
+SUBPLUGIN (HESTIA "Build Hestia, local blogging platform")
