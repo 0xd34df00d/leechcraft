@@ -48,6 +48,7 @@
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <util/sll/either.h>
+#include <interfaces/core/iiconthememanager.h>
 #include <util/xpc/util.h>
 #include <util/util.h>
 #include "core.h"
@@ -112,8 +113,7 @@ namespace CSTP
 
 	QIcon CSTP::GetIcon () const
 	{
-		static QIcon icon ("lcicons:/plugins/cstp/resources/images/cstp.svg");
-		return icon;
+		return Proxy_->GetIconThemeManager ()->GetPluginIcon ();
 	}
 
 	qint64 CSTP::GetDownloadSpeed () const

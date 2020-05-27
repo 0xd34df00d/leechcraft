@@ -8,6 +8,5 @@
     <file>resources/images/clients/opera.png</file>
     <file>resources/images/clients/console.png</file>
     <file>resources/images/clients/konqueror4.png</file>
-    <file>resources/images/cstp.svg</file>
   </qresource>
 </RCC>
