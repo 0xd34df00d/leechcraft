@@ -50,6 +50,7 @@
 #include <util/sll/util.h>
 #include <util/sll/prelude.h>
 #include <util/sll/domchildrenrange.h>
+#include <util/sys/resourceloader.h>
 #include "itemhandlerfactory.h"
 #include "basesettingsmanager.h"
 #include "settingsthreadmanager.h"
@@ -591,34 +592,24 @@ namespace Util
 	QList<QImage> XmlSettingsDialog::GetImages (const QDomElement& item) const
 	{
 		QList<QImage> result;
+
+		Util::ResourceLoader loader { {} };
+		loader.AddGlobalPrefix ();
+		loader.AddLocalPrefix ();
+
 		for (const auto& binary : Util::DomChildren (item, "binary"))
 		{
 			if (binary.attribute ("type") != "image")
 				continue;
 
-			QByteArray data;
+			QImage image;
 			if (binary.attribute ("place") == "rcc")
-			{
-				QFile file (binary.text ());
-				if (!file.open (QIODevice::ReadOnly))
-				{
-					qWarning () << Q_FUNC_INFO
-						<< "could not open file"
-						<< binary.text ()
-						<< ", because"
-						<< file.errorString ();
-
-					continue;
-				}
-				data = file.readAll ();
-			}
+				image.load (binary.text ());
+			else if (binary.attribute ("place") == "share")
+				image = loader.LoadPixmap (binary.text ()).toImage ();
 			else
-			{
-				const auto& base64 = binary.text ().toLatin1 ();
-				data = QByteArray::fromBase64 (base64);
-			}
+				image = QImage::fromData (QByteArray::fromBase64 (binary.text ().toLatin1 ()));
 
-			const auto& image = QImage::fromData (data);
 			if (!image.isNull ())
 				result << image;
 		}
