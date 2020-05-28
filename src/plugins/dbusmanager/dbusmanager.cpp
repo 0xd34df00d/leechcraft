@@ -29,7 +29,8 @@
 
 #include "dbusmanager.h"
 #include <QIcon>
-#include <interfaces/entitytesthandleresult.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
 #include <util/util.h>
 #include "core.h"
 
@@ -75,8 +76,7 @@ namespace DBusManager
 
 	QIcon DBusManager::GetIcon () const
 	{
-		static QIcon icon ("lcicons:/resources/images/dbusmanager.svg");
-		return icon;
+		return GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon ();
 	}
 }
 }
