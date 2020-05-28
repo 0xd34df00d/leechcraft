@@ -10,7 +10,6 @@ LC_DEFINE_PLUGIN (
 		addtask.cpp
 		xmlsettingsmanager.cpp
 	SETTINGS cstpsettings.xml
-	RESOURCES cstpresources.qrc
 	QT_COMPONENTS Network Widgets
 	INSTALL_SHARE
 	)
