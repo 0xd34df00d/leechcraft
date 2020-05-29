@@ -3,7 +3,7 @@ project (leechcraft_kbswitch)
 include (InitLCPlugin NO_POLICY_SCOPE)
 
 find_package (PkgConfig)
-pkg_check_modules (XParts REQUIRED IMPORTED_TARGET xkbfile xcb-xkb)
+pkg_check_modules (KBSwitchXParts REQUIRED IMPORTED_TARGET xkbfile xcb-xkb)
 
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
@@ -40,7 +40,7 @@ add_library (leechcraft_kbswitch SHARED
 
 target_link_libraries (leechcraft_kbswitch
 	${LEECHCRAFT_LIBRARIES}
-	PkgConfig::XParts
+	PkgConfig::KBSwitchXParts
 	)
 install (TARGETS leechcraft_kbswitch DESTINATION ${LC_PLUGINS_DEST})
 install (FILES kbswitchsettings.xml DESTINATION ${LC_SETTINGS_DEST})
