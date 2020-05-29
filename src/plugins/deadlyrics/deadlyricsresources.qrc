@@ -1,6 +1,5 @@
 <RCC>
   <qresource prefix="/deadlyrics" >
-    <file>resources/images/deadlyrics.svg</file>
 	<file>resources/sites.xml</file>
   </qresource>
 </RCC>

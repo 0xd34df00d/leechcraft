@@ -30,6 +30,7 @@
 #include "deadlyrics.h"
 #include <QIcon>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
 #include <util/threads/futures.h>
 #include <util/sll/either.h>
 #include <util/util.h>
@@ -74,8 +75,7 @@ namespace DeadLyrics
 
 	QIcon DeadLyRicS::GetIcon () const
 	{
-		static QIcon icon ("lcicons:/deadlyrics/resources/images/deadlyrics.svg");
-		return icon;
+		return Proxy_->GetIconThemeManager ()->GetPluginIcon ();
 	}
 
 	QFuture<DeadLyRicS::LyricsQueryResult_t> DeadLyRicS::RequestLyrics (const Media::LyricsQuery& query)
