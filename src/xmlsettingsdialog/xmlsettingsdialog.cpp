@@ -33,10 +33,8 @@
 #include <QtDebug>
 #include <QGroupBox>
 #include <QPushButton>
-#include <QVBoxLayout>
 #include <QListWidget>
 #include <QStackedWidget>
-#include <QLabel>
 #include <QGridLayout>
 #include <QApplication>
 #include <QUrl>
@@ -53,7 +51,6 @@
 #include <util/sys/resourceloader.h>
 #include "itemhandlerfactory.h"
 #include "basesettingsmanager.h"
-#include "settingsthreadmanager.h"
 
 namespace LC
 {
@@ -496,30 +493,6 @@ namespace Util
 
 		WorkingObject_->setProperty (property.toLatin1 ().constData (), GetValue (item));
 	}
-
-#if defined (Q_OS_WIN32)
-#include <QCoreApplication>
-#include <QLocale>
-	namespace
-	{
-		QString GetLanguageHack ()
-		{
-			QSettings settings (QCoreApplication::organizationName (),
-					QCoreApplication::applicationName ());
-
-			auto localeName = settings.value ("Language", "system").toString ();
-
-			if (localeName == "system")
-			{
-				localeName = QString (::getenv ("LANG")).left (5);
-				if (localeName.isEmpty () || localeName.size () != 5)
-					localeName = QLocale::system ().name ();
-			}
-
-			return localeName.left (2);
-		}
-	};
-#endif
 
 	QString XmlSettingsDialog::GetLabel (const QDomElement& item) const
 	{
