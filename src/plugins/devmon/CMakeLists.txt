@@ -5,26 +5,11 @@ include (InitLCPlugin NO_POLICY_SCOPE)
 find_package (PkgConfig)
 pkg_check_modules (UDev REQUIRED IMPORTED_TARGET libudev)
 
-include_directories (
-	${CMAKE_CURRENT_BINARY_DIR}
-	${Boost_INCLUDE_DIR}
-	${LEECHCRAFT_INCLUDE_DIR}
+LC_DEFINE_PLUGIN (
+	SRCS
+		devmon.cpp
+		udevbackend.cpp
+	QT_COMPONENTS Gui
+	LINK_LIBRARIES PkgConfig::UDev
+	INSTALL_SHARE
 	)
-set (SRCS
-	devmon.cpp
-	udevbackend.cpp
-	)
-CreateTrs("devmon" "en;ru_RU" COMPILED_TRANSLATIONS)
-CreateTrsUpTarget("devmon" "en;ru_RU" "${SRCS}" "${FORMS}" "")
-
-add_library (leechcraft_devmon SHARED
-	${COMPILED_TRANSLATIONS}
-	${SRCS}
-	)
-target_link_libraries (leechcraft_devmon
-	${LEECHCRAFT_LIBRARIES}
-	PkgConfig::UDev
-	)
-install (TARGETS leechcraft_devmon DESTINATION ${LC_PLUGINS_DEST})
-
-FindQtLibs (leechcraft_devmon Core Gui)
