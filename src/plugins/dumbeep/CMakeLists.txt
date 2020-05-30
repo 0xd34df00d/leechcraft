@@ -2,24 +2,10 @@ cmake_minimum_required (VERSION 3.3)
 project (leechcraft_dumbeep)
 include (InitLCPlugin NO_POLICY_SCOPE)
 
-include_directories (
-	${CMAKE_CURRENT_BINARY_DIR}
-	${Boost_INCLUDE_DIR}
-	${LEECHCRAFT_INCLUDE_DIR}
+LC_DEFINE_PLUGIN (
+	SRCS
+		dumbeep.cpp
+		xmlsettingsmanager.cpp
+	SETTINGS dumbeepsettings.xml
+	QT_COMPONENTS Core
 	)
-set (SRCS
-	dumbeep.cpp
-	xmlsettingsmanager.cpp
-	)
-
-add_library (leechcraft_dumbeep SHARED
-	${COMPILED_TRANSLATIONS}
-	${SRCS}
-	)
-target_link_libraries (leechcraft_dumbeep
-	${LEECHCRAFT_LIBRARIES}
-	)
-install (TARGETS leechcraft_dumbeep DESTINATION ${LC_PLUGINS_DEST})
-install (FILES dumbeepsettings.xml DESTINATION ${LC_SETTINGS_DEST})
-
-FindQtLibs (leechcraft_dumbeep Core)
