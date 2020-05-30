@@ -95,8 +95,7 @@ namespace Dumbeep
 
 	EntityTestHandleResult Plugin::CouldHandle (const Entity& e) const
 	{
-		if (!XmlSettingsManager::Instance ().property ("PreferPhonon").toBool () &&
-				XmlSettingsManager::Instance ().property ("PlayerCommand").toString ().isEmpty ())
+		if (XmlSettingsManager::Instance ().property ("PlayerCommand").toString ().isEmpty ())
 			return EntityTestHandleResult ();
 
 		if (!(e.Parameters_ & Internal))
