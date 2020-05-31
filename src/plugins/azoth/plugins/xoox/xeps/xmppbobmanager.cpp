@@ -69,6 +69,15 @@ namespace Xoox
 		else
 			return false;
 
+		if (bobIq.GetData ().isNull ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "got an empty BoB"
+					<< tagName
+					<< stanza.attribute ("from");
+			return false;
+		}
+
 		BobCache_.insert (qMakePair (bobIq.GetCid (), bobIq.from ()),
 				new QByteArray (bobIq.GetData ()),
 				bobIq.GetData ().size () / 1024);
