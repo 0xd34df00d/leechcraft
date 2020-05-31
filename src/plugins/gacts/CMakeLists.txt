@@ -23,7 +23,6 @@ endif ()
 
 set (ADDITIONAL_SOURCES
 	${ADDITIONAL_SOURCES}
-	3rdparty/qxt/qxtglobal.cpp
 	3rdparty/qxt/qxtglobalshortcut.cpp
 	)
 
