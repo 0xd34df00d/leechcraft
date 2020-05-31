@@ -60,6 +60,8 @@ namespace Xoox
 			}
 			else if (XMPPBobIq::IsBobIq (stanza.firstChildElement ()))
 				bobIq.parse (stanza.firstChildElement ());
+			else
+				return false;
 		}
 		else if ((tagName == "message" || tagName == "presence") &&
 				XMPPBobIq::IsBobIq (stanza))
