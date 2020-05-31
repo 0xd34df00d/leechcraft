@@ -5,40 +5,17 @@ include (InitLCPlugin NO_POLICY_SCOPE)
 find_package (PkgConfig)
 pkg_check_modules (QTermWidget REQUIRED IMPORTED_TARGET qtermwidget5)
 
-include_directories (
-	${CMAKE_CURRENT_BINARY_DIR}
-	${Boost_INCLUDE_DIR}
-	${LEECHCRAFT_INCLUDE_DIR}
+LC_DEFINE_PLUGIN (
+	SRCS
+		eleeminator.cpp
+		termtab.cpp
+		processgraphbuilder.cpp
+		processinfo.cpp
+		xmlsettingsmanager.cpp
+		closedialog.cpp
+		colorschemesmanager.cpp
+	SETTINGS eleeminatorsettings.xml
+	QT_COMPONENTS Widgets
+	LINK_LIBRARIES PkgConfig::QTermWidget
+	INSTALL_SHARE
 	)
-set (SRCS
-	eleeminator.cpp
-	termtab.cpp
-	processgraphbuilder.cpp
-	processinfo.cpp
-	xmlsettingsmanager.cpp
-	closedialog.cpp
-	colorschemesmanager.cpp
-	)
-set (FORMS
-	closedialog.ui
-	)
-set (RESOURCES eleeminatorresources.qrc)
-QtAddResources (RCCS ${RESOURCES})
-QtWrapUi (UIS_H ${FORMS})
-CreateTrs("eleeminator" "en;ru_RU" COMPILED_TRANSLATIONS)
-CreateTrsUpTarget("eleeminator" "en;ru_RU" "${SRCS}" "${FORMS}" "eleeminatorsettings.xml")
-
-add_library (leechcraft_eleeminator SHARED
-	${COMPILED_TRANSLATIONS}
-	${SRCS}
-	${RCCS}
-	${UIS_H}
-	)
-target_link_libraries (leechcraft_eleeminator
-	${LEECHCRAFT_LIBRARIES}
-	PkgConfig::QTermWidget
-	)
-install (TARGETS leechcraft_eleeminator DESTINATION ${LC_PLUGINS_DEST})
-install (FILES eleeminatorsettings.xml DESTINATION ${LC_SETTINGS_DEST})
-
-FindQtLibs (leechcraft_eleeminator Widgets)

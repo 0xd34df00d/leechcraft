@@ -117,8 +117,7 @@ namespace Eleeminator
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon { "lcicons:/resources/images/eleeminator.svg" };
-		return icon;
+		return Proxy_->GetIconThemeManager ()->GetPluginIcon ();
 	}
 
 	TabClasses_t Plugin::GetTabClasses () const
