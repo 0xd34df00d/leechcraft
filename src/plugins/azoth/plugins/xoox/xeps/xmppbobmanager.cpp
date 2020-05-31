@@ -110,6 +110,12 @@ namespace Xoox
 		QPair<QString, QString> key (cid, jid);
 		if (BobCache_.contains (key))
 			return *BobCache_ [key];
+
+		qWarning () << Q_FUNC_INFO
+				<< "unable to find"
+				<< key
+				<< "among"
+				<< BobCache_.keys ();
 		return QByteArray ();
 	}
 }
