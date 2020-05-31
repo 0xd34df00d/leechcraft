@@ -28,26 +28,20 @@
  **********************************************************************/
 
 #include "cstp.h"
-#include <algorithm>
 #include <QMenu>
 #include <QTranslator>
-#include <QLocale>
-#include <QFileInfo>
 #include <QTabWidget>
 #include <QToolBar>
 #include <QMessageBox>
 #include <QModelIndex>
-#include <QDir>
 #include <QUrl>
 #include <QTextCodec>
-#include <QTranslator>
 #include <QMainWindow>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/ijobholderrepresentationhandler.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/irootwindowsmanager.h>
-#include <util/sll/either.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <util/xpc/util.h>
 #include <util/util.h>
