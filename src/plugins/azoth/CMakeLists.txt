@@ -4,12 +4,6 @@ include (InitLCPlugin NO_POLICY_SCOPE)
 
 option (ENABLE_MEDIACALLS "Enable support for media calls" ON)
 
-option (USE_AZOTH_BOOST_LOCALE "Use Boost.Locale for better datetime formatting in Azoth" ON)
-if (USE_AZOTH_BOOST_LOCALE)
-	find_package (Boost REQUIRED COMPONENTS locale)
-	add_definitions (-DUSE_BOOST_LOCALE)
-endif ()
-
 option (WITH_DOCS "Enable building documentation (requires Doxygen)" OFF)
 if (WITH_DOCS)
 	find_package (Doxygen REQUIRED)
@@ -123,7 +117,7 @@ LC_DEFINE_PLUGIN (
 	SETTINGS azothsettings.xml
 	RESOURCES azothresources.qrc
 	QT_COMPONENTS Concurrent Network Sql WebKitWidgets Widgets Xml ${EXTRA_MULTIMEDIA_LIBRARY}
-	LINK_LIBRARIES ${Boost_LOCALE_LIBRARY} $<$<BOOL:${ENABLE_CRYPT}>:PkgConfig::QCA2>
+	LINK_LIBRARIES $<$<BOOL:${ENABLE_CRYPT}>:PkgConfig::QCA2>
 	INSTALL_SHARE
 	)
 

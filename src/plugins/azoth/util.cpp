@@ -30,11 +30,6 @@
 #include "util.h"
 #include <cmath>
 #include <boost/optional.hpp>
-
-#ifdef USE_BOOST_LOCALE
-#include <boost/locale.hpp>
-#endif
-
 #include <QString>
 #include <QWizard>
 #include <QList>
@@ -326,29 +321,14 @@ namespace Azoth
 
 	QString PrettyPrintDateTime (const QDateTime& dt)
 	{
-#ifdef USE_BOOST_LOCALE
-		static class LocaleInitializer
+		static const auto format = []
 		{
-		public:
-			LocaleInitializer ()
-			{
-				boost::locale::generator gen;
-				std::locale::global (gen (""));
-			}
-		} loc;
-
-		const auto& cal = dt.timeSpec () == Qt::LocalTime ?
-				boost::locale::calendar {} :
-				boost::locale::calendar { "GMT" };
-		boost::locale::date_time bdt { static_cast<double> (dt.toSecsSinceEpoch ()),  cal };
-
-		std::ostringstream ostr;
-		ostr << bdt;
-
-		return QString::fromUtf8 (ostr.str ().c_str ());
-#else
-		return QLocale {}.toString (dt);
-#endif
+			return QLocale {}.dateTimeFormat ()
+					.remove (" t")
+					.remove ("t ")
+					.remove ("t");
+		} ();
+		return QLocale {}.toString (dt, format);
 	}
 
 	bool ChoosePGPKey (ISupportPGP *pgp, ICLEntry *entry)
