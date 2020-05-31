@@ -11,5 +11,4 @@ LC_DEFINE_PLUGIN (
 		udevbackend.cpp
 	QT_COMPONENTS Gui
 	LINK_LIBRARIES PkgConfig::UDev
-	INSTALL_SHARE
 	)

@@ -12,7 +12,6 @@ LC_DEFINE_PLUGIN (
 		tasks.cpp
 		tasksadaptor.cpp
 		webfilestorageadaptor.cpp
-	SETTINGS azothherbicidesettings.xml
 	QT_COMPONENTS DBus Gui
 	INSTALL_SHARE
 	)
