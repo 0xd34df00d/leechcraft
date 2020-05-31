@@ -42,7 +42,7 @@ namespace LC::Azoth::Xoox
 		QString cid;
 		if (uri.scheme () == "cid")
 		{
-			cid = uri.host ();
+			cid = uri.path ();
 			data = manager->Take (from, cid);
 		}
 		else
