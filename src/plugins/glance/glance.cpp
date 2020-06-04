@@ -91,8 +91,7 @@ namespace Glance
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon ("lcicons:/glance/resources/images/glance.svg");
-		return icon;
+		return Proxy_->GetIconThemeManager ()->GetPluginIcon ();
 	}
 
 	void Plugin::on_ActionGlance__triggered ()

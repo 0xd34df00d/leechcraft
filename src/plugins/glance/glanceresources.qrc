@@ -1,5 +1,0 @@
-<RCC>
-  <qresource prefix="/glance" >
-    <file>resources/images/glance.svg</file>
-  </qresource>
-</RCC>
