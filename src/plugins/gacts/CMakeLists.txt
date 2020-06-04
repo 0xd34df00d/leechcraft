@@ -2,59 +2,23 @@ cmake_minimum_required (VERSION 3.3)
 project (leechcraft_gacts)
 include (InitLCPlugin NO_POLICY_SCOPE)
 
-add_definitions (-DBUILD_QXT_GUI)
-
-if (WIN32)
-	set (ADDITIONAL_SOURCES
-		3rdparty/qxt/qxtglobalshortcut_win.cpp
-		)
-elseif (APPLE)
-	set (ADDITIONAL_SOURCES
-		3rdparty/qxt/qxtglobalshortcut_mac.cpp
-		)
-else ()
-	find_package (X11)
-	include_directories (${X11_INCLUDE_DIR})
-
-	set (ADDITIONAL_SOURCES
-		3rdparty/qxt/qxtglobalshortcut_x11.cpp
-		)
-endif ()
-
-set (ADDITIONAL_SOURCES
-	${ADDITIONAL_SOURCES}
-	3rdparty/qxt/qxtglobalshortcut.cpp
-	)
-
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/qxt)
 
-include_directories (
-	${CMAKE_CURRENT_BINARY_DIR}
-	${Boost_INCLUDE_DIR}
-	${LEECHCRAFT_INCLUDE_DIR}
-	)
-set (SRCS
-	gacts.cpp
-	)
-
-if (APPLE)
-	set (ADDITIONAL_LIBS "-framework CoreFoundation;-framework Carbon")
-endif ()
-
-CreateTrs("gacts" "en;ru_RU" COMPILED_TRANSLATIONS)
-CreateTrsUpTarget("gacts" "en;ru_RU" "${SRCS}" "" "")
-
-add_library (leechcraft_gacts SHARED
-	${COMPILED_TRANSLATIONS}
-	${SRCS}
-	${ADDITIONAL_SOURCES}
-	)
-target_link_libraries (leechcraft_gacts
-	${LEECHCRAFT_LIBRARIES}
-	${ADDITIONAL_LIBS}
-	)
-install (TARGETS leechcraft_gacts DESTINATION ${LC_PLUGINS_DEST})
-
 if (UNIX AND NOT APPLE)
-	FindQtLibs (leechcraft_gacts X11Extras)
+	find_package (PkgConfig)
+	pkg_check_modules (X11 REQUIRED IMPORTED_TARGET x11)
+	set (GACTS_X11_EXTRAS X11Extras)
 endif ()
+
+LC_DEFINE_PLUGIN (
+	SRCS
+		gacts.cpp
+		3rdparty/qxt/qxtglobalshortcut.cpp
+		$<$<PLATFORM_ID:Linux,FreeBSD>:3rdparty/qxt/qxtglobalshortcut_x11.cpp>
+		$<$<PLATFORM_ID:Darwin>:3rdparty/qxt/qxtglobalshortcut_mac.cpp>
+		$<$<PLATFORM_ID:Windows>:3rdparty/qxt/qxtglobalshortcut_win.cpp>
+	QT_COMPONENTS Core ${GACTS_X11_EXTRAS}
+	LINK_LIBRARIES
+		$<$<PLATFORM_ID:Linux,FreeBSD>:PkgConfig::X11>
+		$<$<PLATFORM_ID:Darwin>:"-framework CoreFoundation -framework Carbon">
+	)
