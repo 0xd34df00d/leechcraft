@@ -31,6 +31,7 @@
 #include <QIcon>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include "historyentry.h"
 #include "findproxy.h"
@@ -74,8 +75,7 @@ namespace HistoryHolder
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon ("lcicons:/resources/images/historyholder.svg");
-		return icon;
+		return GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon ();
 	}
 
 	QStringList Plugin::Provides () const

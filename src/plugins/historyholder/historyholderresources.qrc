@@ -1,7 +1,4 @@
 <RCC>
-  <qresource prefix="/" >
-	<file>resources/images/historyholder.svg</file>
-  </qresource>
   <qresource prefix="/historyholder/">
 	<file>resources/sql/create_history.sql</file>
 	<file>resources/sql/create_entities.sql</file>
