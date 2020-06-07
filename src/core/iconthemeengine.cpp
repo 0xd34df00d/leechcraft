@@ -153,21 +153,6 @@ void IconThemeEngine::UpdateIconset (const QList<QPushButton*>& buttons)
 	}
 }
 
-void IconThemeEngine::UpdateIconset (const QList<QTabWidget*>& tabs)
-{
-	FindIcons ();
-
-	for (const auto tw : tabs)
-	{
-		const auto& icons = tw->property ("TabIcons").toString ()
-			.split (" ", QString::SkipEmptyParts);
-
-		int tab = 0;
-		for (const auto& name : icons)
-			tw->setTabIcon (tab++, GetIcon (name, {}));
-	}
-}
-
 void IconThemeEngine::UpdateIconset (const QList<QToolButton*>& buttons)
 {
 	for (auto button : buttons)
@@ -183,7 +168,6 @@ void IconThemeEngine::ManageWidget (QWidget *widget)
 {
 	UpdateIconset (widget->findChildren<QAction*> ());
 	UpdateIconset (widget->findChildren<QPushButton*> ());
-	UpdateIconset (widget->findChildren<QTabWidget*> ());
 
 	widget->installEventFilter (new ChildActionEventFilter (widget));
 }

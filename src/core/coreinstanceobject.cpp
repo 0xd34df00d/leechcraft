@@ -407,7 +407,6 @@ namespace LC
 	void CoreInstanceObject::updateIconSet ()
 	{
 		IconThemeEngine::Instance ().UpdateIconset (findChildren<QAction*> ());
-		IconThemeEngine::Instance ().UpdateIconset (findChildren<QTabWidget*> ());
 	}
 
 	void CoreInstanceObject::updateColorTheme ()

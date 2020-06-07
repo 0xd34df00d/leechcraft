@@ -74,7 +74,6 @@ namespace LC
 		QIcon GetIcon (const QString&, const QString& = {});
 		void UpdateIconset (const QList<QAction*>&);
 		void UpdateIconset (const QList<QPushButton*>&);
-		void UpdateIconset (const QList<QTabWidget*>&);
 		void UpdateIconset (const QList<QToolButton*>&);
 
 		void ManageWidget (QWidget*);
