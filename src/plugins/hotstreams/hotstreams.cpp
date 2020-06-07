@@ -35,6 +35,7 @@
 #include <util/sll/prelude.h>
 #include <util/sll/delayedexecutor.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
 #include "somafmlistfetcher.h"
 #include "stealkilllistfetcher.h"
 #include "icecastfetcher.h"
@@ -137,8 +138,7 @@ namespace HotStreams
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon ("lcicons:/hotstreams/resources/images/hotstreams.svg");
-		return icon;
+		return Proxy_->GetIconThemeManager ()->GetPluginIcon ();
 	}
 
 	QList<QAbstractItemModel*> Plugin::GetRadioListItems () const
