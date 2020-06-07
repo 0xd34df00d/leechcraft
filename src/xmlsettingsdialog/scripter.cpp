@@ -32,7 +32,6 @@
 #include <QtDebug>
 #include <QStringList>
 #include <QFile>
-#include <typeinfo>
 
 using namespace LC;
 
@@ -46,11 +45,10 @@ QStringList Scripter::GetOptions ()
 {
 	Reset ();
 	const QDomElement& valueGenerator = Container_.firstChildElement ("valueGenerator");
-	QStringList result;
 	if (valueGenerator.isNull ())
 	{
 		qDebug () << Q_FUNC_INFO << "container has no valueGenerator";
-		return result;
+		return {};
 	}
 	const QString& script = GetScript (valueGenerator);
 
@@ -67,11 +65,8 @@ QStringList Scripter::GetOptions ()
 	FeedRequiredClasses ();
 
 	const QScriptValue& global = Engine_->globalObject ();
-
 	const QVariant& options = global.property ("GetOptions").call ().toVariant ();
-
-	result = options.toString ().split (",", QString::KeepEmptyParts);
-	return result;
+	return options.toString ().split (",");
 }
 
 
