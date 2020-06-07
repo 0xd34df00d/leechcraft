@@ -2,7 +2,7 @@ cmake_minimum_required (VERSION 3.3)
 project (leechcraft_htthare)
 include (InitLCPlugin NO_POLICY_SCOPE)
 
-find_package (Boost REQUIRED COMPONENTS system)
+find_package (Boost REQUIRED)
 
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
@@ -28,7 +28,6 @@ add_library (leechcraft_htthare SHARED
 	)
 target_link_libraries (leechcraft_htthare
 	${QT_LIBRARIES}
-	${Boost_SYSTEM_LIBRARY}
 	${LEECHCRAFT_LIBRARIES}
 	)
 install (TARGETS leechcraft_htthare DESTINATION ${LC_PLUGINS_DEST})
