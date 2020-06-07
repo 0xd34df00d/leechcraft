@@ -2,35 +2,16 @@ cmake_minimum_required (VERSION 3.3)
 project (leechcraft_htthare)
 include (InitLCPlugin NO_POLICY_SCOPE)
 
-find_package (Boost REQUIRED)
-
-include_directories (
-	${CMAKE_CURRENT_BINARY_DIR}
-	${Boost_INCLUDE_DIR}
-	${LEECHCRAFT_INCLUDE_DIR}
+LC_DEFINE_PLUGIN (
+	SRCS
+		htthare.cpp
+		xmlsettingsmanager.cpp
+		server.cpp
+		connection.cpp
+		requesthandler.cpp
+		storagemanager.cpp
+		iconresolver.cpp
+		trmanager.cpp
+	QT_COMPONENTS Gui Network
+	SETTINGS httharesettings.xml
 	)
-set (SRCS
-	htthare.cpp
-	xmlsettingsmanager.cpp
-	server.cpp
-	connection.cpp
-	requesthandler.cpp
-	storagemanager.cpp
-	iconresolver.cpp
-	trmanager.cpp
-	)
-CreateTrs("htthare" "en;ru_RU" COMPILED_TRANSLATIONS)
-CreateTrsUpTarget("htthare" "en;ru_RU" "${SRCS}" "${FORMS}" "httharesettings.xml")
-
-add_library (leechcraft_htthare SHARED
-	${COMPILED_TRANSLATIONS}
-	${SRCS}
-	)
-target_link_libraries (leechcraft_htthare
-	${QT_LIBRARIES}
-	${LEECHCRAFT_LIBRARIES}
-	)
-install (TARGETS leechcraft_htthare DESTINATION ${LC_PLUGINS_DEST})
-install (FILES httharesettings.xml DESTINATION ${LC_SETTINGS_DEST})
-
-FindQtLibs (leechcraft_htthare Gui Network)
