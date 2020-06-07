@@ -285,8 +285,8 @@ namespace Aggregator
 			QDomNodeList points = parent.elementsByTagNameNS (GeoRSSSimple_, "point");
 			if (points.size ())
 			{
-				QString text = points.at (0).toElement ().text ();
-				QStringList splitted = text.split (' ', QString::KeepEmptyParts);
+				const auto& text = points.at (0).toElement ().text ();
+				const auto& splitted = text.splitRef (' ');
 				if (splitted.size () == 2)
 				{
 					result.first = splitted.at (0).toDouble ();
