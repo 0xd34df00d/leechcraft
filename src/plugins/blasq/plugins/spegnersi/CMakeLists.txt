@@ -2,7 +2,8 @@ cmake_minimum_required (VERSION 3.3)
 project (leechcraft_blasq_spegnersi)
 include (InitLCPlugin NO_POLICY_SCOPE)
 
-find_package (QtKOAuth REQUIRED)
+find_package (PkgConfig)
+pkg_check_modules (KQOAuth REQUIRED IMPORTED_TARGET kqoauth)
 
 LC_DEFINE_PLUGIN (
 	SRCS
@@ -11,5 +12,5 @@ LC_DEFINE_PLUGIN (
 		flickraccount.cpp
 	RESOURCES blasqspegnersiresources.qrc
 	QT_COMPONENTS Gui Network Xml
-	LINK_LIBRARIES ${QTKOAUTH_LIBRARIES}
+	LINK_LIBRARIES PkgConfig::KQOAuth
 	)
