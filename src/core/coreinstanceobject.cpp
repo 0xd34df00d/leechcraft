@@ -80,9 +80,8 @@ namespace LC
 			{
 				fname = fname.mid (length);
 				fname.chop (3);					// for .qm
-				auto parts = fname.split ('_', QString::SkipEmptyParts);
+				auto parts = fname.split ('_');
 
-				QString language;
 				for (const auto& part : parts)
 				{
 					if (part.size () != 2)
@@ -94,7 +93,7 @@ namespace LC
 					if (locale.language () == QLocale::C)
 						continue;
 
-					language = QLocale::languageToString (locale.language ());
+					auto language = QLocale::languageToString (locale.language ());
 
 					while (part != parts.at (0))
 						parts.pop_front ();
