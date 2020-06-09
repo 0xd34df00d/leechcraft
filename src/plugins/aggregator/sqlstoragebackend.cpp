@@ -181,7 +181,7 @@ namespace LC::Aggregator
 
 		static ItemCategories FromBaseType (const BaseType& var)
 		{
-			return { var.split ("<<<", QString::SkipEmptyParts) };
+			return { var.split ("<<<") };
 		}
 	};
 

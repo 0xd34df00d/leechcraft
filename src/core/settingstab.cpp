@@ -124,8 +124,8 @@ namespace LC
 
 		QString NameForGroup (const QString& origName, const QString& group)
 		{
-			auto origSplit = origName.split (' ', QString::SkipEmptyParts);
-			auto groupSplit = group.split (' ', QString::SkipEmptyParts);
+			auto origSplit = origName.split (' ');
+			auto groupSplit = group.splitRef (' ');
 
 			while (origSplit.value (0) == groupSplit.value (0) &&
 					origSplit.size () > 1)
