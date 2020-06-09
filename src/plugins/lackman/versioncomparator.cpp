@@ -68,17 +68,13 @@ namespace LackMan
 		QStringList rightParts = rightNum.split ('.',
 				QString::SkipEmptyParts);
 
-		int maxSize = std::max (leftParts.size (), rightParts.size ());
-		for (int i = leftParts.size (); i < maxSize; ++i)
-			leftParts << "0";
-		for (int i = rightParts.size (); i < maxSize; ++i)
-			rightParts << "0";
+		int minSize = std::min (leftParts.size (), rightParts.size ());
 
 #ifdef VERSIONCOMPARATOR_DEBUG
 		qDebug () << leftParts << rightParts;
 #endif
 
-		for (int i = 0; i < maxSize; ++i)
+		for (int i = 0; i < minSize; ++i)
 		{
 			int left = leftParts.at (i).toInt ();
 			int right = rightParts.at (i).toInt ();
@@ -90,6 +86,13 @@ namespace LackMan
 			else if (left > right)
 				return false;
 		}
+
+		if (leftParts.size () >= rightParts.size ())
+			return false;
+
+		for (int i = minSize; i < rightParts.size (); ++i)
+			if (rightParts [i] != "0")
+				return true;
 
 		return false;
 	}
