@@ -98,7 +98,7 @@ namespace Poshuku
 			{
 				Title_,
 				URL_,
-				Tags_.split (" ", QString::SkipEmptyParts)
+				Tags_.split (" ", Qt::SkipEmptyParts)
 			};
 		}
 

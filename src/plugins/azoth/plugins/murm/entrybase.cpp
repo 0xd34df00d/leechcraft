@@ -488,8 +488,7 @@ namespace Murm
 			for (const auto& id : pageIds)
 				newContents += "<div id='pagestub_" + id + "'></div>";
 
-			const auto& fwdIds = info.Params_.value ("fwd")
-					.toString ().split (',', QString::SkipEmptyParts);
+			const auto& fwdIds = info.Params_.value ("fwd").toString ().split (',', Qt::SkipEmptyParts);
 			for (const auto& id : fwdIds)
 				newContents += "<div id='fwdstub_" + id + "'></div>";
 

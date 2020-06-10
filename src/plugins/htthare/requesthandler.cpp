@@ -240,7 +240,7 @@ namespace HttHare
 			if (pcPos >= 0)
 				str = str.left (pcPos);
 
-			for (const auto& elem : str.split (',', QString::SkipEmptyParts))
+			for (const auto& elem : str.splitRef (',', Qt::SkipEmptyParts))
 			{
 				const auto dashPos = elem.indexOf ('-');
 

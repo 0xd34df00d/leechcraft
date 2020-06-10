@@ -323,8 +323,7 @@ namespace FXB
 
 		DocInfo_.Genres_ = getChildValues ("genre");
 		DocInfo_.Title_ = getChildValues ("book-title").value (0);
-		DocInfo_.Keywords_ = getChildValues ("keywords")
-				.value (0).split (' ', QString::SkipEmptyParts);
+		DocInfo_.Keywords_ = getChildValues ("keywords").value (0).split (' ', Qt::SkipEmptyParts);
 
 		const auto& dateElem = elem.elementsByTagName ("date").at (0).toElement ();
 		DocInfo_.Date_.setDate (QDate::fromString (dateElem.attribute ("value"), Qt::ISODate));

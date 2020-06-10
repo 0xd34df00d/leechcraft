@@ -56,7 +56,7 @@ void TagsCompleter::OverrideModel (QAbstractItemModel *model)
 QStringList TagsCompleter::splitPath (const QString& string) const
 {
 	const auto& sep = Edit_->GetSeparator ().trimmed ();
-	auto result = string.split (sep, QString::SkipEmptyParts);
+	auto result = string.split (sep, Qt::SkipEmptyParts);
 	for (auto& s : result)
 		s = s.trimmed ();
 	return result;

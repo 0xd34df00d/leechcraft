@@ -47,7 +47,7 @@ namespace Rosenthal
 	void Highlighter::highlightBlock (const QString& text)
 	{
 		QRegExp sr ("\\W+");
-		const auto& splitted = text.simplified ().split (sr, QString::SkipEmptyParts);
+		const auto& splitted = text.split (sr, Qt::SkipEmptyParts);
 		int prevStopPos = 0;
 		for (const auto& str : splitted)
 		{

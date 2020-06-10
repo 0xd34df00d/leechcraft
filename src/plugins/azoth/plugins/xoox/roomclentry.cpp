@@ -322,8 +322,7 @@ namespace Xoox
 	QVariantMap RoomCLEntry::GetIdentifyingData () const
 	{
 		QVariantMap result;
-		const QStringList& list = RH_->
-				GetRoomJID ().split ('@', QString::SkipEmptyParts);
+		const QStringList& list = RH_->GetRoomJID ().split ('@', Qt::SkipEmptyParts);
 		const QString& room = list.at (0);
 		const QString& server = list.value (1);
 		result ["HumanReadableName"] = QString ("%2@%3 (%1)")

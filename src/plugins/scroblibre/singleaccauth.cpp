@@ -268,7 +268,7 @@ namespace Scroblibre
 		reply->deleteLater ();
 
 		const auto& data = QString::fromLatin1 (reply->readAll ());
-		auto split = data.split ('\n', QString::SkipEmptyParts);
+		auto split = data.split ('\n', Qt::SkipEmptyParts);
 		for (auto& part : split)
 			part = part.trimmed ();
 

@@ -133,7 +133,7 @@ namespace KBSwitch
 			const auto& desc = xkbRules->variants.desc [i];
 
 			const QString descStr (desc.desc);
-			const auto& split = descStr.split (':', QString::SkipEmptyParts);
+			const auto& split = descStr.split (':', Qt::SkipEmptyParts);
 			const auto& varName = split.value (0).trimmed ();
 			const auto& hrName = split.value (1).trimmed ();
 

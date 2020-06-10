@@ -258,7 +258,7 @@ namespace Snails
 
 		QUrl GetUnsubscribeUrl (const QString& text)
 		{
-			const auto& parts = text.split (',', QString::SkipEmptyParts);
+			const auto& parts = text.split (',', Qt::SkipEmptyParts);
 
 			QUrl email;
 			QUrl url;

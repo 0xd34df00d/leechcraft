@@ -102,7 +102,7 @@ namespace VaderUtil
 
 	QString SubstituteNameDomain (const QString& string, const QString& fullEmail)
 	{
-		const QStringList& splitted = fullEmail.split ('@', QString::SkipEmptyParts);
+		const QStringList& splitted = fullEmail.split ('@', Qt::SkipEmptyParts);
 		const QString& name = splitted.value (0);
 		QString domain = splitted.value (1);
 		if (domain.endsWith (".ru"))

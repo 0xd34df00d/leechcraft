@@ -820,7 +820,7 @@ namespace LMP
 
 		if (info.Artist_.isEmpty () && info.Title_.contains (" - "))
 		{
-			const auto& strs = info.Title_.split (" - ", QString::SkipEmptyParts);
+			const auto& strs = info.Title_.split (" - ", Qt::SkipEmptyParts);
 			switch (strs.size ())
 			{
 			case 2:

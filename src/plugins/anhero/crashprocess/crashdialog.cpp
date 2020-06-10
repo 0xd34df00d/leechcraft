@@ -125,7 +125,7 @@ namespace CrashProcess
 
 	void CrashDialog::done (int res)
 	{
-		auto cmdlist = CmdLine_.split (' ', QString::SkipEmptyParts);
+		auto cmdlist = CmdLine_.split (' ', Qt::SkipEmptyParts);
 		cmdlist << "--restart";
 
 		if (Ui_.RestartBox_->checkState () == Qt::Checked)

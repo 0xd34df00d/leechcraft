@@ -209,7 +209,7 @@ namespace Otlozhu
 			todo->SetComment (AsQStrings ({ item ["COMMENT"], item ["DESCRIPTION"] }));
 			todo->SetPercentage (AsInt (item ["PERCENT-COMPLETE"]));
 
-			const auto& tags = AsQString (item ["CATEGORIES"]).split (',', QString::SkipEmptyParts);
+			const auto& tags = AsQString (item ["CATEGORIES"]).split (',', Qt::SkipEmptyParts);
 			auto tm = Core::Instance ().GetProxy ()->GetTagsManager ();
 			todo->SetTagIDs (Util::Map (tags, [tm] (const QString& tag) { return tm->GetID (tag); }));
 

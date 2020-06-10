@@ -320,7 +320,7 @@ namespace LMP
 
 		const auto& goodExt = XmlSettingsManager::Instance ()
 				.property ("TestExtensions").toString ()
-				.split (' ', QString::SkipEmptyParts);
+				.split (' ', Qt::SkipEmptyParts);
 		const QFileInfo fi (path);
 		if ((fi.exists () && goodExt.contains (fi.suffix ())) ||
 				e.Additional_ ["Action"] == "AudioEnqueuePlay" ||

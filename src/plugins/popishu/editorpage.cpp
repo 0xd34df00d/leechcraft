@@ -670,7 +670,7 @@ namespace Popishu
 		emit changeTabName (this, QString ("%1 - Popishu")
 				.arg (Filename_));
 		QStringList path ("Popishu");
-		path += Filename_.split ('/', QString::SkipEmptyParts);
+		path += Filename_.split ('/', Qt::SkipEmptyParts);
 		setProperty ("WidgetLogicalPath", path);
 
 		PrependRecentFile (filename);

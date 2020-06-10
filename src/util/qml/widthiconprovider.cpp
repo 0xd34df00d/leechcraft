@@ -41,7 +41,7 @@ namespace Util
 
 	QPixmap WidthIconProvider::requestPixmap (const QString& idStr, QSize *size, const QSize& requestedSize)
 	{
-		auto list = idStr.split ('/', QString::SkipEmptyParts);
+		auto list = idStr.split ('/', Qt::SkipEmptyParts);
 		if (list.isEmpty ())
 			return QPixmap ();
 

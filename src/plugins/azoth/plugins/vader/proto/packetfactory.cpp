@@ -90,7 +90,7 @@ namespace Proto
 
 	Packet PacketFactory::RequestInfo (const QString& id)
 	{
-		const QStringList& split = id.split ("@", QString::SkipEmptyParts);
+		const QStringList& split = id.split ("@", Qt::SkipEmptyParts);
 		const QByteArray& data = ToMRIM (static_cast<quint32> (WPParams::User),
 				split.value (0),
 				static_cast<quint32> (WPParams::Domain),

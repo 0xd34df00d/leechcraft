@@ -255,7 +255,7 @@ void CategorySelector::selectNone ()
 
 void CategorySelector::lineTextChanged (const QString& text)
 {
-	const auto& tags = text.split (Separator_, QString::SkipEmptyParts);
+	const auto& tags = text.split (Separator_, Qt::SkipEmptyParts);
 	SetSelections (tags);
 }
 

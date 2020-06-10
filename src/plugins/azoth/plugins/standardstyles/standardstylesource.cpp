@@ -351,7 +351,7 @@ namespace StandardStyles
 		res.remove (" ");
 		res.remove ("rgb(");
 		res.remove (")");
-		const auto& vals = res.split (',', QString::SkipEmptyParts);
+		const auto& vals = res.splitRef (',', Qt::SkipEmptyParts);
 
 		if (vals.size () == 3)
 			bgColor.setRgb (vals.value (0).toInt (),

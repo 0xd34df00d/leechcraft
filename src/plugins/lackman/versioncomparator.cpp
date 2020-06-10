@@ -63,10 +63,8 @@ namespace LackMan
 				<< rightVer << "->" << rightNum;
 #endif
 
-		QStringList leftParts = leftNum.split ('.',
-				QString::SkipEmptyParts);
-		QStringList rightParts = rightNum.split ('.',
-				QString::SkipEmptyParts);
+		auto leftParts = leftNum.splitRef ('.', Qt::SkipEmptyParts);
+		auto rightParts = rightNum.splitRef ('.', Qt::SkipEmptyParts);
 
 		int minSize = std::min (leftParts.size (), rightParts.size ());
 

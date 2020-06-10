@@ -102,7 +102,7 @@ namespace Util
 		{
 			QStringList filterTags;
 			const auto& pattern = filterRegExp ().pattern ();
-			for (const auto& s : pattern.split (Separator_, QString::SkipEmptyParts))
+			for (const auto& s : pattern.split (Separator_, Qt::SkipEmptyParts))
 				filterTags << s.trimmed ();
 
 			if (!filterTags.size ())

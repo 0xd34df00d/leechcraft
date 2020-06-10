@@ -83,7 +83,7 @@ namespace HotStreams
 			{
 				getText ("title"),
 				getText ("description"),
-				getText ("genre").split ('|', QString::SkipEmptyParts),
+				getText ("genre").split ('|', Qt::SkipEmptyParts),
 				url,
 				QUrl (),
 				getText ("dj") + " (" + getText ("djmail") + ")",

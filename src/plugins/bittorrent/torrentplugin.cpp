@@ -230,7 +230,7 @@ namespace BitTorrent
 
 				for (const auto& p : QUrlQuery { resource }.queryItems ())
 					if (p.first == "kt")
-						for (const auto& hr : p.second.split ('+', QString::SkipEmptyParts))
+						for (const auto& hr : p.second.split ('+', Qt::SkipEmptyParts))
 							tags += tm->GetID (hr);
 
 				return Core::Instance ()->AddMagnet (resource.toString (),

@@ -209,7 +209,7 @@ namespace Azoth
 			}
 		}
 		else
-			for (const auto& str : coloring.split (' ', QString::SkipEmptyParts))
+			for (const auto& str : coloring.splitRef (' ', Qt::SkipEmptyParts))
 				result << QColor (str);
 
 		return result;

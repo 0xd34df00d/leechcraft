@@ -103,7 +103,7 @@ namespace Xoox
 				"You may now further configure account properties."));
 		const QString& jid = SecondPage_->GetJID ();
 		ConfWidget_->SetJID (jid);
-		ConfWidget_->SetNick (jid.split ('@', QString::SkipEmptyParts).value (0));
+		ConfWidget_->SetNick (jid.split ('@', Qt::SkipEmptyParts).value (0));
 		SetState (RSSuccess);
 	}
 

@@ -70,7 +70,7 @@ namespace CleanWeb
 				if (option.startsWith ("domain="))
 				{
 					const auto& domains = option.mid (7);
-					for (const auto& domain : domains.split ("|", QString::SkipEmptyParts))
+					for (const auto& domain : domains.split ("|", Qt::SkipEmptyParts))
 						if (domain.startsWith ('~'))
 							f.NotDomains_ << domain.mid (1);
 						else
@@ -238,7 +238,7 @@ namespace CleanWeb
 
 		if (actualLine.contains ('$'))
 		{
-			const auto& splitted = actualLine.split ('$', QString::SkipEmptyParts);
+			const auto& splitted = actualLine.split ('$', Qt::SkipEmptyParts);
 
 			if (splitted.size () != 2)
 			{
@@ -251,7 +251,7 @@ namespace CleanWeb
 
 			actualLine = splitted.at (0);
 
-			const auto& remaining = ParseOptions (splitted.at (1).split (',', QString::SkipEmptyParts), f);
+			const auto& remaining = ParseOptions (splitted.at (1).split (',', Qt::SkipEmptyParts), f);
 			if (remaining.size ())
 			{
 				/*

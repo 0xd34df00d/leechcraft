@@ -704,7 +704,7 @@ namespace Proto
 				const QString& boundary = headers ["Boundary"];
 				const int idx = text.indexOf (boundary);
 				if (idx > 0)
-					text = text.split (boundary, QString::SkipEmptyParts).first ();
+					text = text.split (boundary, Qt::SkipEmptyParts).first ();
 			}
 		}
 

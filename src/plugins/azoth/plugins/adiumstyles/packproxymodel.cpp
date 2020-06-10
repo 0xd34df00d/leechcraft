@@ -63,7 +63,7 @@ namespace AdiumStyles
 
 	QString PackProxyModel::GetOrigName (const QString& pack) const
 	{
-		const auto& our = pack.split ('/', QString::SkipEmptyParts).value (0);
+		const auto& our = pack.split ('/', Qt::SkipEmptyParts).value (0);
 		if (!OrigDatas_.contains (our))
 		{
 			qWarning () << Q_FUNC_INFO
@@ -78,7 +78,7 @@ namespace AdiumStyles
 
 	QString PackProxyModel::GetVariant (const QString& pack) const
 	{
-		return pack.split ('/', QString::SkipEmptyParts).value (1);
+		return pack.split ('/', Qt::SkipEmptyParts).value (1);
 	}
 
 	namespace

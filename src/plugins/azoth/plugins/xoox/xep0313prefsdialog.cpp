@@ -63,8 +63,8 @@ namespace Xoox
 		const auto idx = Ui_.DefaultMode_->currentIndex ();
 		iq.SetDefaultPolicy (static_cast<Xep0313PrefIq::DefaultPolicy> (idx));
 
-		iq.SetAllowed (Ui_.Always_->toPlainText ().split ('\n', QString::SkipEmptyParts));
-		iq.SetForbidden (Ui_.Never_->toPlainText ().split ('\n', QString::SkipEmptyParts));
+		iq.SetAllowed (Ui_.Always_->toPlainText ().split ('\n', Qt::SkipEmptyParts));
+		iq.SetForbidden (Ui_.Never_->toPlainText ().split ('\n', Qt::SkipEmptyParts));
 
 		Manager_->SetPrefs (iq);
 	}

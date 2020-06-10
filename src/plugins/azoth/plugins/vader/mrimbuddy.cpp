@@ -108,7 +108,7 @@ namespace Vader
 	{
 		TuneInfo_ = Media::AudioInfo {};
 
-		const auto& parts = tune.split ('-', QString::SkipEmptyParts);
+		const auto& parts = tune.split ('-', Qt::SkipEmptyParts);
 		if (parts.size () == 3)
 		{
 			TuneInfo_.Artist_ = parts.value (0);

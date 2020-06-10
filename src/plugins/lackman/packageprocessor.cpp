@@ -78,8 +78,7 @@ namespace LackMan
 		const QDir& packageDir = Core::Instance ().GetPackageDir (packageId);
 
 		const QByteArray& fileData = file.readAll ();
-		QStringList files = QString::fromUtf8 (fileData)
-				.split ('\n', QString::SkipEmptyParts);
+		auto files = QString::fromUtf8 (fileData).split ('\n', Qt::SkipEmptyParts);
 		files.sort ();
 		std::reverse (files.begin (), files.end ());
 		for (const auto& packageFilename : files)

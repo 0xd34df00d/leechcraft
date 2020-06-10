@@ -69,7 +69,7 @@ namespace Xtazy
 		}
 
 		QVariantMap result;
-		for (auto line : data.splitRef ('\n', QString::SkipEmptyParts))
+		for (auto line : data.splitRef ('\n', Qt::SkipEmptyParts))
 		{
 			line = line.trimmed ();
 			const int idx = line.indexOf (' ');

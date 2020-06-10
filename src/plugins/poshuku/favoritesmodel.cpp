@@ -275,7 +275,7 @@ namespace Poshuku
 			tryAddUrl (data->text (), urls.first ());
 		else if (!urls.isEmpty ())
 		{
-			auto texts = data->text ().split (';', QString::SkipEmptyParts);
+			auto texts = data->text ().split (';', Qt::SkipEmptyParts);
 			if (texts.size () != urls.size ())
 			{
 				texts.clear ();

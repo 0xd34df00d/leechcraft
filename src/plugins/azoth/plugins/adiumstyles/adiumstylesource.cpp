@@ -72,7 +72,7 @@ namespace AdiumStyles
 	{
 		if (srcPack.contains ('/'))
 		{
-			const auto& split = srcPack.split ('/', QString::SkipEmptyParts);
+			const auto& split = srcPack.split ('/', Qt::SkipEmptyParts);
 			return GetBaseURL (split.value (0));
 		}
 
@@ -158,7 +158,7 @@ namespace AdiumStyles
 	{
 		if (srcPack.contains ('/'))
 		{
-			const auto& split = srcPack.split ('/', QString::SkipEmptyParts);
+			const auto& split = srcPack.split ('/', Qt::SkipEmptyParts);
 			return GetHTMLTemplate (split.value (0), split.value (1), entryObj, frame);
 		}
 

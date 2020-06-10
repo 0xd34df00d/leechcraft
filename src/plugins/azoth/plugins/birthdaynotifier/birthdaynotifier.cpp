@@ -158,8 +158,8 @@ namespace BirthdayNotifier
 		if (!XmlSettingsManager::Instance ().property ("NotifyEnabled").toBool ())
 			return;
 
-		const auto& ranges = XmlSettingsManager::Instance ()
-				.property ("NotificationDays").toString ().split (',', QString::SkipEmptyParts);
+		const auto& rangesStr = XmlSettingsManager::Instance ().property ("NotificationDays").toString ();
+		const auto& ranges = rangesStr.splitRef (',', Qt::SkipEmptyParts);
 
 		QList<int> allowedDays;
 		for (const auto& range : ranges)
@@ -173,7 +173,7 @@ namespace BirthdayNotifier
 				continue;
 			}
 
-			const auto& ends = range.split ('-', QString::SkipEmptyParts);
+			const auto& ends = range.split ('-', Qt::SkipEmptyParts);
 			if (ends.size () != 2)
 				continue;
 

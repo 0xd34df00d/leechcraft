@@ -117,6 +117,6 @@ namespace LC
 				<< object;
 			return QVariant ();
 		}
-		return edit->toPlainText ().split ('\n', QString::SkipEmptyParts);
+		return edit->toPlainText ().split ('\n', Qt::SkipEmptyParts);
 	}
 }

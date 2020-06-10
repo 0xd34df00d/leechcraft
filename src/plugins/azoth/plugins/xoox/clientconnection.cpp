@@ -1028,7 +1028,7 @@ namespace Xoox
 	void ClientConnection::handleRoomInvitation (const QString& room,
 			const QString& inviter, const QString& reason)
 	{
-		const auto& split = room.split ('@', QString::SkipEmptyParts);
+		const auto& split = room.split ('@', Qt::SkipEmptyParts);
 
 		QVariantMap identifying;
 		identifying ["HumanReadableName"] = QString ("%2 (%1)")

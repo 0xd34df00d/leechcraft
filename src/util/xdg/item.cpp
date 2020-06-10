@@ -84,7 +84,7 @@ namespace XDG
 			command.remove ("%u");
 			command.remove ("%U");
 			command.remove ("%i");
-			auto items = command.split (' ', QString::SkipEmptyParts);
+			auto items = command.split (' ', Qt::SkipEmptyParts);
 			auto removePred = [] (const QString& str)
 				{ return str.size () == 2 && str.at (0) == '%'; };
 			items.erase (std::remove_if (items.begin (), items.end (), removePred),

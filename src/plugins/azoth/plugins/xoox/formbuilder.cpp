@@ -196,7 +196,7 @@ namespace Xoox
 
 		QVariant GetDataImpl (QTextEdit *edit) final
 		{
-			return edit->toPlainText ().split ('\n', QString::SkipEmptyParts);
+			return edit->toPlainText ().split ('\n', Qt::SkipEmptyParts);
 		}
 	};
 

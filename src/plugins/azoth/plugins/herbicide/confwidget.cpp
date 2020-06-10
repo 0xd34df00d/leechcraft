@@ -75,7 +75,7 @@ namespace Herbicide
 
 	QStringList ConfWidget::GetAnswers () const
 	{
-		return Ui_.Answers_->toPlainText ().split ('\n', QString::SkipEmptyParts);
+		return Ui_.Answers_->toPlainText ().split ('\n', Qt::SkipEmptyParts);
 	}
 
 	void ConfWidget::SaveSettings () const

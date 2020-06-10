@@ -68,7 +68,7 @@ namespace LC::Azoth::Xoox
 
 		for (const auto& conf : Mgr_.bookmarks ().conferences ())
 		{
-			const auto& split = conf.jid ().split ('@', QString::SkipEmptyParts);
+			const auto& split = conf.jid ().split ('@', Qt::SkipEmptyParts);
 			if (split.size () != 2)
 			{
 				qWarning () << Q_FUNC_INFO

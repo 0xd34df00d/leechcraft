@@ -75,7 +75,7 @@ namespace Xoox
 	, CLEntry_ (new RoomCLEntry (this, asAutojoin, Account_))
 	, HadRequestedPassword_ (false)
 	{
-		const QString& server = jid.split ('@', QString::SkipEmptyParts).value (1);
+		const QString& server = jid.split ('@', Qt::SkipEmptyParts).value (1);
 		auto sdManager = Account_->GetClientConnection ()->GetSDManager ();
 
 		QPointer<RoomHandler> pThis (this);

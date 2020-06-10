@@ -307,7 +307,7 @@ namespace Xoox
 		const QString& path = url.path ();
 		if (queryItems.contains ("join"))
 		{
-			const QStringList& split = path.split ('@', QString::SkipEmptyParts);
+			const QStringList& split = path.split ('@', Qt::SkipEmptyParts);
 			if (split.size () != 2)
 			{
 				qWarning () << Q_FUNC_INFO

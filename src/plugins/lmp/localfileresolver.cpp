@@ -82,7 +82,7 @@ namespace LMP
 			return GstUtil::FixEncoding (QString::fromUtf8 (str.toCString (true)), region);
 		};
 
-		const auto& genres = ftl (tag->genre ()).split ('/', QString::SkipEmptyParts);
+		const auto& genres = ftl (tag->genre ()).split ('/', Qt::SkipEmptyParts);
 
 		MediaInfo info
 		{

@@ -224,7 +224,7 @@ namespace Importers
 
 			QVariant ParseLine (const QString& line)
 			{
-				QStringList list = line.split ('|', QString::SkipEmptyParts);
+				auto list = line.split ('|', Qt::SkipEmptyParts);
 				if (list.size () < 5 || list [1] != "1")
 					return QVariant ();
 

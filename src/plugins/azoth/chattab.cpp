@@ -1222,7 +1222,7 @@ namespace Azoth
 		else if (host == "msgeditinsert")
 		{
 			const auto& text = url.path ().mid (1);
-			const auto& split = text.split ("/#/", QString::SkipEmptyParts);
+			const auto& split = text.split ("/#/", Qt::SkipEmptyParts);
 
 			const auto& insertText = split.value (0);
 			const auto& replaceText = split.size () > 1 ?

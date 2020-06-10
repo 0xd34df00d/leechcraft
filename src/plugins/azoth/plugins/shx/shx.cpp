@@ -145,7 +145,7 @@ namespace SHX
 				SLOT (handleFinished ()));
 
 		const auto& commandParts = XmlSettingsManager::Instance ()
-				.property ("Command").toString ().split (" ", QString::SkipEmptyParts);
+				.property ("Command").toString ().split (" ", Qt::SkipEmptyParts);
 		const auto& command = commandParts.value (0);
 		if (command.isEmpty ())
 		{

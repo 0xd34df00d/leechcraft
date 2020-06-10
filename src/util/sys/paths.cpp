@@ -96,7 +96,7 @@ namespace Util
 
 	QStringList GetSystemPaths ()
 	{
-		return QString (qgetenv ("PATH")).split (":", QString::SkipEmptyParts);
+		return QString (qgetenv ("PATH")).split (":", Qt::SkipEmptyParts);
 	}
 
 	QString FindInSystemPath (const QString& name, const QStringList& paths,

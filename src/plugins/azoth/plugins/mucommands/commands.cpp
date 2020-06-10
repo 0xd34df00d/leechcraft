@@ -132,7 +132,7 @@ namespace MuCommands
 		{
 			auto split = text
 					.section (' ', 1)
-					.split ('\n', QString::SkipEmptyParts);
+					.split ('\n', Qt::SkipEmptyParts);
 
 			if (!split.isEmpty ())
 				return split;

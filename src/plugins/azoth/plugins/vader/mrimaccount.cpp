@@ -203,7 +203,7 @@ namespace Vader
 
 	QString MRIMAccount::GetOurNick () const
 	{
-		return Login_.split ('@', QString::SkipEmptyParts).value (0);
+		return Login_.split ('@', Qt::SkipEmptyParts).value (0);
 	}
 
 	void MRIMAccount::RenameAccount (const QString& name)

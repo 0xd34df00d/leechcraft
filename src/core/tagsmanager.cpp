@@ -115,7 +115,7 @@ QStringList TagsManager::GetAllTags () const
 
 QStringList TagsManager::Split (const QString& string) const
 {
-	return Util::Map (string.split (";", QString::SkipEmptyParts),
+	return Util::Map (string.split (";", Qt::SkipEmptyParts),
 			[] (QString& s) { return std::move (s).trimmed (); });
 }
 

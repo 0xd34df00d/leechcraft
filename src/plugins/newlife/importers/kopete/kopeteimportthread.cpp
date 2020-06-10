@@ -124,7 +124,7 @@ namespace Importers
 		auto msg = doc.documentElement ().firstChildElement ("msg");
 		while (!msg.isNull ())
 		{
-			const auto& rawTime = msg.attribute ("time").split (' ', QString::SkipEmptyParts);
+			const auto& rawTime = msg.attribute ("time").split (' ', Qt::SkipEmptyParts);
 
 			QVariantMap result;
 			result ["EntryID"] = contact;

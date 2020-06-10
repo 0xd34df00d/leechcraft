@@ -122,7 +122,7 @@ namespace Dumbeep
 
 		const auto& commandStr = XmlSettingsManager::Instance ()
 				.property ("PlayerCommand").toString ();
-		const auto& parts = commandStr.split (' ', QString::SkipEmptyParts);
+		const auto& parts = commandStr.split (' ', Qt::SkipEmptyParts);
 		if (parts.isEmpty ())
 			return;
 

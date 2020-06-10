@@ -637,7 +637,7 @@ namespace LMP
 		};
 
 		const auto& title = Metadata_.value ("title");
-		const auto& split = title.split (" - ", QString::SkipEmptyParts);
+		const auto& split = title.split (" - ", Qt::SkipEmptyParts);
 		if (split.size () == 2 &&
 				(!Metadata_.contains ("artist") ||
 					Metadata_.value ("title") != split.value (1)))

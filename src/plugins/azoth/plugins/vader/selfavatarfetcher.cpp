@@ -44,7 +44,7 @@ namespace Vader
 {
 	SelfAvatarFetcher::Urls::Urls (const QString& full)
 	{
-		auto split = full.split ('@', QString::SkipEmptyParts);
+		auto split = full.split ('@', Qt::SkipEmptyParts);
 		if (split.size () != 2)
 		{
 			qWarning () << Q_FUNC_INFO

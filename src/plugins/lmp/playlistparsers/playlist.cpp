@@ -108,7 +108,7 @@ namespace LMP
 			Additional_ ["LMP/Artist"].toString (),
 			Additional_ ["LMP/Album"].toString (),
 			Additional_ ["LMP/Title"].toString (),
-			Additional_ ["LMP/Genres"].toString ().split (" / ", QString::SkipEmptyParts),
+			Additional_ ["LMP/Genres"].toString ().split (" / ", Qt::SkipEmptyParts),
 			Additional_ ["LMP/Length"].toInt (),
 			Additional_ ["LMP/Year"].toInt (),
 			Additional_ ["LMP/TrackNumber"].toInt ()

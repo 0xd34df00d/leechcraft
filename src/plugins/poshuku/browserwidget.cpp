@@ -1577,7 +1577,7 @@ namespace Poshuku
 		path << (host.isEmpty () ? QString ("Poshuku") : host);
 		path << title;
 
-		QStringList domains = host.split ('.', QString::SkipEmptyParts);
+		auto domains = host.split ('.', Qt::SkipEmptyParts);
 		while (domains.size () > 2)
 		{
 			domains.takeFirst ();

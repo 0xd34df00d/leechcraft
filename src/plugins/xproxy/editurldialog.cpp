@@ -54,7 +54,7 @@ namespace XProxy
 		{
 			rx,
 			Ui_.TargetPort_->value (),
-			Ui_.TargetProto_->text ().split (" ", QString::SkipEmptyParts)
+			Ui_.TargetProto_->text ().split (" ", Qt::SkipEmptyParts)
 		};
 	}
 

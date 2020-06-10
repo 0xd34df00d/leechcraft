@@ -351,7 +351,7 @@ namespace Graffiti
 	void GraffitiTab::on_Genre__textChanged ()
 	{
 		const auto& genreString = Ui_.Genre_->text ();
-		auto genres = genreString.split ('/', QString::SkipEmptyParts);
+		auto genres = genreString.split ('/', Qt::SkipEmptyParts);
 		for (auto& genre : genres)
 			genre = genre.trimmed ();
 

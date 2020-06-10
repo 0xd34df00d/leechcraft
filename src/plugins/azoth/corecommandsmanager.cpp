@@ -279,7 +279,7 @@ namespace Azoth
 
 		bool Help (ICLEntry *entry, const QString& text)
 		{
-			const auto& commands = text.section (' ', 1).split (' ', QString::SkipEmptyParts);
+			const auto& commands = text.section (' ', 1).split (' ', Qt::SkipEmptyParts);
 			if (commands.isEmpty ())
 				return HelpAll (entry, text);
 

@@ -491,7 +491,7 @@ namespace Acetamide
 
 		WhoIsMessage msg;
 		msg.Nick_ = QString::fromStdString (opts.Parameters_.at (1));
-		msg.Channels_ = opts.Message_.split (' ', QString::SkipEmptyParts);
+		msg.Channels_ = opts.Message_.split (' ', Qt::SkipEmptyParts);
 		ISH_->ShowWhoIsReply (msg);
 	}
 

@@ -529,7 +529,7 @@ namespace Snails
 		{
 			Addresses_t result;
 
-			for (auto address : text.split (',', QString::SkipEmptyParts))
+			for (auto address : text.split (',', Qt::SkipEmptyParts))
 			{
 				address = address.trimmed ();
 

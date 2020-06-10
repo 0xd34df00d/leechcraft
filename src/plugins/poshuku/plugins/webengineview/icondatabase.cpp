@@ -60,7 +60,7 @@ namespace LC::Poshuku::WebEngineView
 		auto WithRefs (const QUrl& url, F&& fun)
 		{
 			auto path = url.path ();
-			auto refs = path.splitRef ('/', QString::SkipEmptyParts);
+			auto refs = path.splitRef ('/', Qt::SkipEmptyParts);
 			auto host = url.host ();
 			refs.prepend ({ &host });
 

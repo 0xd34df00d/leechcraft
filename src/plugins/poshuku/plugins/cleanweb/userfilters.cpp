@@ -87,7 +87,7 @@ namespace CleanWeb
 	{
 		void AddMulti (UserFiltersModel *model, const QString& str)
 		{
-			model->AddMultiFilters (str.split ("\n", QString::SkipEmptyParts));
+			model->AddMultiFilters (str.split ("\n", Qt::SkipEmptyParts));
 		}
 	}
 
