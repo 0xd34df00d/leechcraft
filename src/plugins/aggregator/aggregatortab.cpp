@@ -90,7 +90,7 @@ namespace Aggregator
 		const auto& fm = fontMetrics ();
 		header->resizeSection (0, fm.horizontalAdvance ("Average channel name"));
 		header->resizeSection (1, fm.horizontalAdvance ("_9999_"));
-		header->resizeSection (2, fm.horizontalAdvance (QDateTime::currentDateTime ().toString (Qt::SystemLocaleShortDate) + "__"));
+		header->resizeSection (2, fm.horizontalAdvance (QLocale {}.toString (QDateTime::currentDateTime (), QLocale::ShortFormat) + "__"));
 
 		connect (Ui_.TagsLine_,
 				&QLineEdit::textChanged,

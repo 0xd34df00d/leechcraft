@@ -193,7 +193,7 @@ namespace LMP
 			item->setData (event.SmallImage_, EventsModel::Role::ImageThumbURL);
 			item->setData (event.BigImage_, EventsModel::Role::ImageBigURL);
 			item->setData (event.Tags_.join ("; "), EventsModel::Role::Tags);
-			item->setData (event.Date_.toString (Qt::SystemLocaleLongDate), EventsModel::Role::Date);
+			item->setData (QLocale {}.toString (event.Date_, QLocale::LongFormat), EventsModel::Role::Date);
 			item->setData (event.PlaceName_, EventsModel::Role::Place);
 			item->setData (event.City_, EventsModel::Role::City);
 

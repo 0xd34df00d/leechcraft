@@ -329,9 +329,10 @@ namespace Blogique
 		QString GetHtmlContent (const QList<Entry>& entries)
 		{
 			QString content;
+			QLocale loc;
 			for (const auto& entry : entries)
 			{
-				content += "<br/><br/><br/><br/><em>" + entry.Date_.toString (Qt::DefaultLocaleLongDate) + "</em><br/><br/>";
+				content += "<br/><br/><br/><br/><em>" + loc.toString (entry.Date_, QLocale::LongFormat) + "</em><br/><br/>";
 				content += "<strong>" + entry.Subject_ + "</strong><br/><br/>";
 				content += entry.Content_ + "<br/><br/>";
 				content += ("<strong>Tags:</strong><em>" + entry.Tags_.join (",") + "</em><br/><br/><br/>");
@@ -343,9 +344,10 @@ namespace Blogique
 		QString GetPlainTextContent (const QList<Entry>& entries)
 		{
 			QString content;
+			QLocale loc;
 			for (const auto& entry : entries)
 			{
-				content += "\n\n\n\n" + entry.Date_.toString (Qt::DefaultLocaleLongDate) + "\n\n";
+				content += "\n\n\n\n" + loc.toString (entry.Date_, QLocale::LongFormat) + "\n\n";
 				content += entry.Subject_ + "\n\n\n";
 				content += entry.Content_ + "\n\n";
 				content += "Tags: " + entry.Tags_.join (",") + "\n\n\n";
@@ -430,7 +432,7 @@ namespace Blogique
 				section.appendChild (p2);
 				QDomElement emphasis = doc.createElement ("emphasis");
 				p2.appendChild (emphasis);
-				QDomText sectionTitleDate = doc.createTextNode (entry.Date_.toString (Qt::DefaultLocaleLongDate));
+				QDomText sectionTitleDate = doc.createTextNode (QLocale {}.toString (entry.Date_, QLocale::LongFormat));
 				emphasis.appendChild (sectionTitleDate);
 
 				QWebView wv;

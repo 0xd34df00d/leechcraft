@@ -218,7 +218,7 @@ namespace HttHare
 			result += "<tr><td class=" + NormalizeClass (mimes.at (i).MimeType_) + "><a href='";
 			result += link + "'>" + item.fileName () + "</a></td>";
 			result += "<td>" + Util::MakePrettySize (item.size ()) + "</td>";
-			result += "<td>" + item.birthTime ().toString (Qt::SystemLocaleShortDate) + "</td></tr>";
+			result += "<td>" + QLocale {}.toString (item.birthTime (), QLocale::ShortFormat) + "</td></tr>";
 		}
 
 		result += "</table></body></html>";

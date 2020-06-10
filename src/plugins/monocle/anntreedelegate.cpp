@@ -158,7 +158,7 @@ namespace Monocle
 					.arg (tr ("Author"))
 					.arg (ann->GetAuthor ())
 					.arg (tr ("Date"))
-					.arg (ann->GetDate ().toString (Qt::DefaultLocaleShortDate)) +
+					.arg (QLocale {}.toString (ann->GetDate (), QLocale::ShortFormat)) +
 				ann->GetText ().toHtmlEscaped () +
 				"</body></html>";
 	}

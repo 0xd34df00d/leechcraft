@@ -187,8 +187,7 @@ namespace FileScheme
 			QString size;
 			if (entry.isFile ())
 				size = Util::MakePrettySize (entry.size ());
-			QString modified = entry.lastModified ()
-				.toString (Qt::SystemLocaleShortDate);
+			auto modified = QLocale {}.toString (entry.lastModified (), QLocale::ShortFormat);
 
 			rows += row
 				.arg (GetBase64 (iconProvider.icon (entry)))

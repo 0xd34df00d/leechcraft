@@ -146,8 +146,8 @@ namespace Blogique
 			item->setData (comment.CommentSubject_, CommentsModel::CommentSubject);
 			item->setData (comment.CommentText_, CommentsModel::CommentBody);
 			item->setData (comment.CommentAuthor_, CommentsModel::CommentAuthor);
-			item->setData (comment.CommentDateTime_.toString (Qt::DefaultLocaleShortDate),
-						   CommentsModel::CommentDate);
+			item->setData (QLocale {}.toString (comment.CommentDateTime_, QLocale::ShortFormat),
+						CommentsModel::CommentDate);
 			item->setData (comment.CommentUrl_, CommentsModel::CommentUrl);
 			item->setData (comment.CommentID_, CommentsModel::CommentID);
 

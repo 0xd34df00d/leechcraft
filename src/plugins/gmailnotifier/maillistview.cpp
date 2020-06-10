@@ -103,7 +103,7 @@ namespace GmailNotifier
 			else if (now.date ().year () == info.Modified_.date ().year ())
 				dateString = info.Modified_.date ().toString ("d MMM");
 			else
-				dateString = info.Modified_.date ().toString (Qt::DefaultLocaleShortDate);
+				dateString = QLocale {}.toString (info.Modified_.date (), QLocale::ShortFormat);
 			item->setData (dateString, MailListModel::Roles::ModifiedDate);
 			Model_->appendRow (item);
 		}

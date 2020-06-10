@@ -167,6 +167,7 @@ namespace LMP
 		TrackLists_.resize (releases.size ());
 
 		auto discoProv = DiscoProviders_.value (0);
+		QLocale loc;
 		for (const auto& release : releases)
 		{
 			auto item = new QStandardItem ();
@@ -174,8 +175,7 @@ namespace LMP
 			item->setData (release.Artist_, ReleasesModel::Role::ArtistName);
 			item->setData (release.ThumbImage_, ReleasesModel::Role::AlbumImageThumb);
 			item->setData (release.FullImage_, ReleasesModel::Role::AlbumImageFull);
-			item->setData (release.Date_.date ().toString (Qt::DefaultLocaleLongDate),
-						ReleasesModel::Role::ReleaseDate);
+			item->setData (loc.toString (release.Date_.date (), QLocale::LongFormat), ReleasesModel::Role::ReleaseDate);
 			item->setData (release.ReleaseURL_, ReleasesModel::Role::ReleaseURL);
 			item->setData (QString (), ReleasesModel::Role::TrackList);
 			ReleasesModel_->appendRow (item);

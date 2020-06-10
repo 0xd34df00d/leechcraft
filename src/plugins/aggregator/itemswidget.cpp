@@ -183,7 +183,7 @@ namespace Aggregator
 		header->resizeSection (0,
 				fm.horizontalAdvance ("Average news article size is about this width or maybe bigger, because they are bigger"));
 		header->resizeSection (1,
-				fm.horizontalAdvance (QDateTime::currentDateTime ().toString (Qt::SystemLocaleShortDate) + "__"));
+				fm.horizontalAdvance (QLocale {}.toString (QDateTime::currentDateTime (), QLocale::ShortFormat) + "__"));
 		connect (Impl_->Ui_.Items_->header (),
 				&QHeaderView::sectionClicked,
 				this,

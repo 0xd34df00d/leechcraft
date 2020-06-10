@@ -214,7 +214,7 @@ namespace MuCommands
 					if (date.isNull ())
 						continue;
 
-					string += date.toString (Qt::DefaultLocaleLongDate);
+					string += QLocale {}.toString (date, QLocale::LongFormat);
 					break;
 				}
 				case QVariant::StringList:

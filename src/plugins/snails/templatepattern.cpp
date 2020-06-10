@@ -114,19 +114,20 @@ namespace Snails
 
 	QList<TemplatePattern> GetKnownPatterns ()
 	{
+		static const QLocale loc;
 		static const QList<TemplatePattern> patterns
 		{
 			{
 				"ODATE",
-				Wrap ([] (const MessageInfo& info) { return info.Date_.date ().toString (Qt::DefaultLocaleShortDate); })
+				Wrap ([] (const MessageInfo& info) { return loc.toString (info.Date_.date (), QLocale::ShortFormat); })
 			},
 			{
 				"OTIME",
-				Wrap ([] (const MessageInfo& info) { return info.Date_.time ().toString (Qt::DefaultLocaleShortDate); })
+				Wrap ([] (const MessageInfo& info) { return loc.toString (info.Date_.time (), QLocale::ShortFormat); })
 			},
 			{
 				"ODATETIME",
-				Wrap ([] (const MessageInfo& info) { return info.Date_.toString (Qt::DefaultLocaleShortDate); })
+				Wrap ([] (const MessageInfo& info) { return loc.toString (info.Date_, QLocale::ShortFormat); })
 			},
 			{
 				"ONAME",

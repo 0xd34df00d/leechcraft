@@ -104,12 +104,13 @@ namespace OnlineBookmarks
 
 	void AccountsSettings::UpdateDates ()
 	{
+		QLocale loc;
 		for (auto [item, acc] : Util::Stlize (Item2Account_))
 		{
 			int row = item->row ();
 			const auto parentItem = item->parent ();
-			parentItem->child (row, 1)->setText (acc->GetLastUploadDateTime ().toString (Qt::DefaultLocaleShortDate));
-			parentItem->child (row, 2)->setText (acc->GetLastDownloadDateTime ().toString (Qt::DefaultLocaleShortDate));
+			parentItem->child (row, 1)->setText (loc.toString (acc->GetLastUploadDateTime (), QLocale::ShortFormat));
+			parentItem->child (row, 2)->setText (loc.toString (acc->GetLastDownloadDateTime (), QLocale::ShortFormat));
 		}
 	}
 
@@ -293,9 +294,7 @@ namespace OnlineBookmarks
 			else
 				parentItem = AccountsModel_->itemFromIndex (index);
 
-			QList<QStandardItem*> record;
-			QStandardItem *item = new QStandardItem (account->GetLogin ());
-			item->setEditable (false);
+			auto item = new QStandardItem (account->GetLogin ());
 			item->setCheckable (true);
 			item->setCheckState (account->IsSyncing () ? Qt::Checked : Qt::Unchecked);
 
@@ -309,17 +308,13 @@ namespace OnlineBookmarks
 
 			Item2Account_ [item] = account;
 
-			QStandardItem *uploaditem = new QStandardItem (account->GetLastUploadDateTime ()
-					.toString (Qt::DefaultLocaleShortDate));
-			uploaditem->setEditable (false);
+			QLocale loc;
+			auto uploaditem = new QStandardItem (loc.toString (account->GetLastUploadDateTime (), QLocale::ShortFormat));
+			auto downloaditem = new QStandardItem (loc.toString (account->GetLastDownloadDateTime (), QLocale::ShortFormat));
 
-			QStandardItem *downloaditem = new QStandardItem (account->GetLastDownloadDateTime ()
-					.toString (Qt::DefaultLocaleShortDate));
-			uploaditem->setEditable (false);
-
-			record << item
-					<< uploaditem
-					<< downloaditem;
+			QList<QStandardItem*> record { item, uploaditem, downloaditem };
+			for (auto cell : record)
+				cell->setEditable (false);
 			parentItem->appendRow (record);
 
 			if (account->IsSyncing ())

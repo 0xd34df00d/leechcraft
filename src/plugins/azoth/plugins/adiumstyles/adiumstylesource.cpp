@@ -146,9 +146,9 @@ namespace AdiumStyles
 			ReplaceIcon (result, "%outgoingIconPath%", selfEntry ? selfEntry->GetEntryID () : "");
 
 			const auto& now = QDateTime::currentDateTime ();
-			result.replace ("%timeOpened%",
-					now.time ().toString (Qt::SystemLocaleLongDate));
-			result.replace ("%dateOpened%", now.date ().toString (Qt::SystemLocaleLongDate));
+			QLocale loc;
+			result.replace ("%timeOpened%", loc.toString (now.time (), QLocale::LongFormat));
+			result.replace ("%dateOpened%", loc.toString (now.date (), QLocale::LongFormat));
 			FormatTime (result, "timeOpened", now);
 		}
 	}

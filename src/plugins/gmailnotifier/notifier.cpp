@@ -75,7 +75,7 @@ namespace GmailNotifier
 			result += info.AuthorEmail_ + "\">";
 			result += info.AuthorName_ + "</a><br/>";
 			result += tr ("at") + " ";
-			result += info.Modified_.toString (Qt::SystemLocaleLongDate);
+			result += QLocale {}.toString (info.Modified_, QLocale::LongFormat);
 			result += "</p><p class=\"additionaltext\">";
 			result += info.Summary_.toHtmlEscaped () + "</p>";
 
