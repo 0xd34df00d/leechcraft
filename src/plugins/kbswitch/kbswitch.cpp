@@ -29,9 +29,9 @@
 
 #include "kbswitch.h"
 #include <QIcon>
-#include <QApplication>
 #include <QStringListModel>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/util.h>
@@ -114,8 +114,7 @@ namespace KBSwitch
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon ("lcicons:/kbswitch/resources/images/kbswitch.svg");
-		return icon;
+		return Proxy_->GetIconThemeManager ()->GetPluginIcon ();
 	}
 
 	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
