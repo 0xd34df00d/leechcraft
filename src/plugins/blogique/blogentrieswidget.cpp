@@ -41,8 +41,8 @@ namespace LC
 {
 namespace Blogique
 {
-	BlogEntriesWidget::BlogEntriesWidget (QWidget *parent, Qt::WindowFlags f)
-	: QWidget (parent, f)
+	BlogEntriesWidget::BlogEntriesWidget (QWidget *parent)
+	: QWidget (parent)
 	, Account_ (0)
 	, BlogEntriesModel_ (new QStandardItemModel (this))
 	, FilterProxyModel_ (new EntriesFilterProxyModel (this))

@@ -54,7 +54,7 @@ namespace Blogique
 		QList<QAction*> LoadActions_;
 
 	public:
-		explicit BlogEntriesWidget (QWidget *parent = 0, Qt::WindowFlags f = 0);
+		explicit BlogEntriesWidget (QWidget *parent = 0);
 		QString GetName () const;
 		void SetAccount (IAccount *account);
 	private:

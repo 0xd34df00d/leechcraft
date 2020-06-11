@@ -242,7 +242,7 @@ namespace Aggregator
 	Qt::ItemFlags ChannelsModel::flags (const QModelIndex& index) const
 	{
 		if (!index.isValid ())
-			return 0;
+			return {};
 		else
 			return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 	}

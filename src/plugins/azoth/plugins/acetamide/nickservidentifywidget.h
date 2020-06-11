@@ -57,7 +57,7 @@ namespace Acetamide
 		Ui::NickServIdentifyWidget Ui_;
 		QStandardItemModel* Model_;
 	public:
-		NickServIdentifyWidget (QStandardItemModel*, QWidget* = 0, Qt::WindowFlags = 0);
+		NickServIdentifyWidget (QStandardItemModel*, QWidget* = 0);
 	private:
 		void ReadSettings ();
 	public slots:

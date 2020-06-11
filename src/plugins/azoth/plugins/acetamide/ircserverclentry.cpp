@@ -122,7 +122,7 @@ namespace Acetamide
 
 	IMUCEntry::MUCFeatures IrcServerCLEntry::GetMUCFeatures () const
 	{
-		return 0;
+		return {};
 	}
 
 	QString IrcServerCLEntry::GetMUCSubject () const

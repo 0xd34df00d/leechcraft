@@ -114,7 +114,7 @@ namespace Aggregator
 			{
 				auto de = Util::MakeEntity (QUrl (e.URL_),
 						XmlSettingsManager::Instance ()->property ("EnclosuresDownloadPath").toString (),
-						0,
+						{},
 						e.Type_);
 				de.Additional_ [" Tags"] = channel.Tags_;
 				iem->HandleEntity (de);

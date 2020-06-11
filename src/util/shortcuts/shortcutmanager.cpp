@@ -117,7 +117,7 @@ namespace Util
 	void ShortcutManager::RegisterGlobalShortcut (const QString& id,
 			QObject *target, const QByteArray& method, const ActionInfo& info)
 	{
-		Entity e = Util::MakeEntity ({}, {}, 0,
+		Entity e = Util::MakeEntity ({}, {}, {},
 				"x-leechcraft/global-action-register");
 		e.Additional_ ["Receiver"] = QVariant::fromValue (target);
 		e.Additional_ ["ActionID"] = id;

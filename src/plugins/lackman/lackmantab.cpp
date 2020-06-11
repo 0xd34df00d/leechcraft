@@ -73,7 +73,7 @@ namespace LackMan
 		new Util::ClearLineEditAddon { Core::Instance ().GetProxy (), Ui_.SearchLine_, searchLineButtonMgr };
 
 		auto selector = new Util::CategorySelector ();
-		selector->setWindowFlags (0);
+		selector->setWindowFlags ({});
 		selector->setMinimumHeight (0);
 		selector->SetCaption (tr ("Package tags"));
 		connect (selector,

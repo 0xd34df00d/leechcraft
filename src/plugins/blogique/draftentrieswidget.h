@@ -54,7 +54,7 @@ namespace Blogique
 		QHash<QStandardItem*, Entry> Item2Entry_;
 
 	public:
-		explicit DraftEntriesWidget (QWidget *parent = 0, Qt::WindowFlags f = 0);
+		explicit DraftEntriesWidget (QWidget *parent = 0);
 		QString GetName () const;
 	private:
 		void FillView (const QList<Entry>& entries);

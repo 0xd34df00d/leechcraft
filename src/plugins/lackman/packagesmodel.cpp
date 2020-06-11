@@ -190,7 +190,7 @@ namespace LackMan
 	Qt::ItemFlags PackagesModel::flags (const QModelIndex& index) const
 	{
 		if (!index.isValid ())
-			return 0;
+			return {};
 
 		auto flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 		const auto& lpi = Packages_.at (index.row ());

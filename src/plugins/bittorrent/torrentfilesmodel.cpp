@@ -124,7 +124,7 @@ namespace BitTorrent
 	Qt::ItemFlags TorrentFilesModel::flags (const QModelIndex& index) const
 	{
 		if (!index.isValid ())
-			return 0;
+			return {};
 
 		Qt::ItemFlags flags { Qt::ItemIsSelectable | Qt::ItemIsEnabled };
 		switch (index.column ())

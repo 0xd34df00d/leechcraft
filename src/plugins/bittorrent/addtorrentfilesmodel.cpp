@@ -88,7 +88,7 @@ namespace BitTorrent
 	Qt::ItemFlags AddTorrentFilesModel::flags (const QModelIndex& index) const
 	{
 		if (!index.isValid ())
-			return 0;
+			return {};
 
 		auto flags = Qt::ItemIsSelectable | Qt::ItemIsEnabled;
 		if (index.column () == ColumnPath)

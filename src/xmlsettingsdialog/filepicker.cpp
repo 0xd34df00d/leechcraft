@@ -89,7 +89,7 @@ void FilePicker::chooseFile ()
 			name = QFileDialog::getExistingDirectory (this,
 					tr ("Select directory"),
 					LineEdit_->text (),
-					0);
+					{});
 			break;
 		case Type::OpenFileName:
 			name = QFileDialog::getOpenFileName (this,

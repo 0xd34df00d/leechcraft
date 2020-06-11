@@ -42,8 +42,8 @@ namespace Azoth
 namespace Acetamide
 {
 	NickServIdentifyWidget::NickServIdentifyWidget (QStandardItemModel *model,
-			QWidget *parent , Qt::WindowFlags f)
-	: QWidget (parent, f)
+			QWidget *parent)
+	: QWidget (parent)
 	, Model_ (model)
 	{
 		Ui_.setupUi (this);

@@ -477,7 +477,7 @@ namespace LMP
 
 	void Plugin::InitShortcuts ()
 	{
-		Entity e = Util::MakeEntity (QVariant (), QString (), 0,
+		Entity e = Util::MakeEntity ({}, {}, {},
 				"x-leechcraft/global-action-register");
 		e.Additional_ ["Receiver"] = QVariant::fromValue<QObject*> (PlayerTab_->GetPlayer ());
 		auto initShortcut = [&e, this] (const QByteArray& method, const QKeySequence& seq)

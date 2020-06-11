@@ -241,7 +241,7 @@ namespace BitTorrent
 		const auto& dir = QFileDialog::getExistingDirectory (this,
 				tr ("Select save directory"),
 				Ui_.Destination_->text (),
-				0);
+				{});
 		if (dir.isEmpty ())
 			return;
 

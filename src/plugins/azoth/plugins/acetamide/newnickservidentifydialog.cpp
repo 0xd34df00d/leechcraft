@@ -36,8 +36,8 @@ namespace Azoth
 {
 namespace Acetamide
 {
-	NewNickServIdentifyDialog::NewNickServIdentifyDialog (QWidget *parent, Qt::WindowFlags f)
-	: QDialog (parent, f)
+	NewNickServIdentifyDialog::NewNickServIdentifyDialog (QWidget *parent)
+	: QDialog (parent)
 	{
 		Ui_.setupUi (this);
 	}

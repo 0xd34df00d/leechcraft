@@ -232,7 +232,7 @@ namespace Proto
 
 	quint32 Connection::SendMessage (const QString& to, const QString& message)
 	{
-		auto hp = PF_.Message (0, to, message);
+		auto hp = PF_.Message ({}, to, message);
 		Write (hp.Packet_);
 		return hp.Seq_;
 	}
@@ -273,7 +273,7 @@ namespace Proto
 
 	quint32 Connection::AddContact (quint32 group, const QString& email, const QString& name)
 	{
-		const auto& p = PF_.AddContact (0, group, email, name);
+		const auto& p = PF_.AddContact ({}, group, email, name);
 		Write (p.Packet_);
 		return p.Seq_;
 	}
