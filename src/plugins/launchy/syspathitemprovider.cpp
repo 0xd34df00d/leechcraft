@@ -49,11 +49,11 @@ namespace Launchy
 		PathItem_->setData (QStringList ("X-Console"), ModelRoles::ItemNativeCategories);
 		PathItem_->setData (false, ModelRoles::IsItemFavorite);
 
-		auto executor = [this] () -> void
+		auto executor = [this]
 		{
 			const auto& cmd = PathItem_->data (ModelRoles::ItemID).toString ();
 			if (!cmd.isEmpty ())
-				QProcess::startDetached (cmd);
+				QProcess::startDetached (cmd, {});
 		};
 		PathItem_->setData (QVariant::fromValue<Executor_f> (executor),
 				ModelRoles::ExecutorFunctor);

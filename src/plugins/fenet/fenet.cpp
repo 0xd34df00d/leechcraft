@@ -157,7 +157,7 @@ namespace LC::Fenet
 
 		const auto& session = pos->Session_;
 		qDebug () << Q_FUNC_INFO << "starting" << session;
-		Process_->start (session);
+		Process_->start (session, QStringList {});
 	}
 
 	void Plugin::KillWM ()

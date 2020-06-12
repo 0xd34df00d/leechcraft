@@ -71,7 +71,7 @@ namespace Loaders
 		if (IsLoaded ())
 			return true;
 
-		Proc_->start ("lc_plugin_wrapper");
+		Proc_->start ("lc_plugin_wrapper", QStringList {});
 
 		QLocalServer srv;
 		srv.listen (QString ("lc_waiter_%1").arg (Proc_->pid ()));

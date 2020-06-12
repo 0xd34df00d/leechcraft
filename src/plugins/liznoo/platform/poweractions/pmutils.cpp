@@ -101,7 +101,7 @@ namespace PowerActions
 			SIGNAL (finished (int, QProcess::ExitStatus)),
 			process
 		};
-		process->start ("pm-is-supported");
+		process->start ("pm-is-supported", QStringList {});
 
 		return iface.future ();
 	}
@@ -145,7 +145,7 @@ namespace PowerActions
 	{
 		const auto& app = "pm-" + State2Str (state);
 
-		QProcess::startDetached ("/usr/sbin/" + app);
+		QProcess::startDetached ("/usr/sbin/" + app, {});
 	}
 }
 }
