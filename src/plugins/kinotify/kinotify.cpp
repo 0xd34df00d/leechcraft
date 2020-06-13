@@ -98,8 +98,7 @@ namespace Kinotify
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon ("lcicons:/plugins/kinotify/resources/images/kinotify.svg");
-		return icon;
+		return Proxy_->GetIconThemeManager ()->GetPluginIcon ();
 	}
 
 	EntityTestHandleResult Plugin::CouldHandle (const Entity& e) const

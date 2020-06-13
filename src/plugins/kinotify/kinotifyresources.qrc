@@ -1,5 +1,0 @@
-<RCC>
-    <qresource prefix="/plugins/kinotify/">
-        <file>resources/images/kinotify.svg</file>
-    </qresource>
-</RCC>
