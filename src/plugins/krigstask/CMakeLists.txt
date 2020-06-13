@@ -5,35 +5,14 @@ include (InitLCPlugin NO_POLICY_SCOPE)
 find_package (PkgConfig)
 pkg_check_modules (KrigstaskXcbParts REQUIRED IMPORTED_TARGET xcomposite xcb-composite xcb-render xcb-renderutil)
 
-include_directories (
-	${CMAKE_CURRENT_BINARY_DIR}
-	${Boost_INCLUDE_DIR}
-	${LEECHCRAFT_INCLUDE_DIR}
+LC_DEFINE_PLUGIN (
+	SRCS
+		krigstask.cpp
+		windowsmodel.cpp
+		taskbarproxy.cpp
+		pagerwindow.cpp
+		pagerwindowproxy.cpp
+	QT_COMPONENTS QuickWidgets X11Extras
+	LINK_LIBRARIES PkgConfig::KrigstaskXcbParts
+	INSTALL_SHARE
 	)
-set (SRCS
-	krigstask.cpp
-	windowsmodel.cpp
-	taskbarproxy.cpp
-	pagerwindow.cpp
-	pagerwindowproxy.cpp
-	)
-CreateTrs("krigstask" "en;ru_RU" COMPILED_TRANSLATIONS)
-CreateTrsUpTarget("krigstask" "en;ru_RU" "${SRCS}" "${FORMS}" "")
-
-add_library (leechcraft_krigstask SHARED
-	${COMPILED_TRANSLATIONS}
-	${SRCS}
-	)
-
-set (ADDITIONAL_LIBS
-	PkgConfig::KrigstaskXcbParts
-	)
-
-target_link_libraries (leechcraft_krigstask
-	${LEECHCRAFT_LIBRARIES}
-	${ADDITIONAL_LIBS}
-	)
-install (TARGETS leechcraft_krigstask DESTINATION ${LC_PLUGINS_DEST})
-install (DIRECTORY share/qml5/krigstask DESTINATION ${LC_QML5_DEST})
-
-FindQtLibs (leechcraft_krigstask QuickWidgets X11Extras)
