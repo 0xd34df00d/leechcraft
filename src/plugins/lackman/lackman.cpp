@@ -33,6 +33,8 @@
 #include <util/util.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/sll/slotclosure.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
 #include <interfaces/entitytesthandleresult.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
@@ -105,8 +107,7 @@ namespace LackMan
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon ("lcicons:/resources/images/lackman.svg");
-		return icon;
+		return GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon ();
 	}
 
 	TabClasses_t Plugin::GetTabClasses () const
