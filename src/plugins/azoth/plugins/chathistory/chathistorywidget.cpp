@@ -522,7 +522,7 @@ namespace ChatHistory
 		FindBox_->clear ();
 
 		Util::Sequence (this,
-				Params_.StorageMgr_->Search (CurrentAccount_, CurrentEntry_, QDateTime { date })) >>
+				Params_.StorageMgr_->Search (CurrentAccount_, CurrentEntry_, date.startOfDay ())) >>
 				std::bind (&ChatHistoryWidget::HandleGotSearchPosition,
 						this, CurrentAccount_, CurrentEntry_, _1);
 	}

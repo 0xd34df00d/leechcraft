@@ -114,7 +114,7 @@ namespace Lastfmscrobble
 			{
 				album.firstChildElement ("name").text (),
 				album.firstChildElement ("artist").firstChildElement ("name").text (),
-				QDateTime (QDate (year, month, day)),
+				QDate { year, month, day }.startOfDay (),
 				thumb,
 				full,
 				QUrl (album.firstChildElement ("url").text ())
