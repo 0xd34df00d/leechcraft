@@ -34,10 +34,6 @@ if (UNIX OR (WIN32 AND MINGW))
 		set (CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--as-needed")
 		set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--as-needed")
 	endif ()
-
-	if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-		set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated-register")
-	endif ()
 endif ()
 
 include (CMakeDependentOption)
