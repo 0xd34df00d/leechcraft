@@ -37,6 +37,7 @@
 #include <QMenuBar>
 #include <QMainWindow>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/entitytesthandleresult.h>
@@ -94,8 +95,7 @@ namespace Lads
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon ("lcicons:/resources/images/lads.svg");
-		return icon;
+		return Proxy_->GetIconThemeManager ()->GetPluginIcon ();
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
