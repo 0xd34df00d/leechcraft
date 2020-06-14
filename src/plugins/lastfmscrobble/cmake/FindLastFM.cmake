@@ -1,11 +1,7 @@
-# - Try to find lastfm 0.3.3
-# Once done this will define
-#
-#  LastFM_FOUND - system has liblastfm
-#  LastFM_DIRS - the liblastfm include directory
-#  LastFM_LIBRARIES - Link these to use liblastfm
+# - Try to find lastfm
 #
 #  Copyright (C) 2011  Minh Ngo <nlminhtl@gmail.com>
+#  Copyright (C) 2020  Georg Rudoy <0xd34df00d@gmail.com>
 #
 #  Redistribution and use is allowed according to the terms of the New
 #  BSD license.
@@ -22,10 +18,13 @@ else ()
 		set (LastFM_FOUND TRUE)
 		message (STATUS "Found lastfm libraries at ${LastFM_LIBRARY}")
 		message (STATUS "Found lastfm headers at ${LastFM_INCLUDE_DIR}")
-	elseif (LastFM_FIND_REQUIRED)
-		message (FATAL_ERROR "Could not find liblastfm")
+		mark_as_advanced(LastFM_LIBRARY LastFM_INCLUDE_DIR)
 	endif ()
 endif ()
 
-set (LastFM_INCLUDE_DIRS ${LastFM_INCLUDE_DIR})
-set (LastFM_LIBRARIES ${LastFM_LIBRARY})
+if (LastFM_FOUND)
+	add_library (LastFM::LastFM UNKNOWN IMPORTED)
+	set_target_properties (LastFM::LastFM PROPERTIES
+		IMPORTED_LOCATION "${LastFM_LIBRARY}"
+		INTERFACE_INCLUDE_DIRECTORIES "${LastFM_INCLUDE_DIR}")
+endif ()

@@ -3,12 +3,10 @@ project (leechcraft_lastfmscrobble)
 include (InitLCPlugin NO_POLICY_SCOPE)
 
 set (CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
-
 find_package (LastFM REQUIRED)
 
 include_directories (SYSTEM
 	${Boost_INCLUDE_DIR}
-	${LastFM_INCLUDE_DIR}
 	)
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
@@ -48,7 +46,7 @@ add_library (leechcraft_lastfmscrobble SHARED
 	)
 target_link_libraries (leechcraft_lastfmscrobble
 	${LEECHCRAFT_LIBRARIES}
-	${LastFM_LIBRARIES}
+	LastFM::LastFM
 	)
 
 install (TARGETS leechcraft_lastfmscrobble DESTINATION ${LC_PLUGINS_DEST})
