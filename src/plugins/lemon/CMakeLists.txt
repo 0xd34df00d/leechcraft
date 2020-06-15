@@ -2,14 +2,10 @@ cmake_minimum_required (VERSION 3.3)
 project (leechcraft_lemon)
 include (InitLCPlugin NO_POLICY_SCOPE)
 
-set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake;${CMAKE_MODULE_PATH}")
-find_package (Libnl REQUIRED)
-find_package (Qwt REQUIRED)
+find_package (PkgConfig)
+pkg_check_modules (Qwt REQUIRED IMPORTED_TARGET Qt5Qwt)
+pkg_check_modules (LemonLibnl REQUIRED IMPORTED_TARGET libnl-3.0 libnl-route-3.0)
 
-include_directories (SYSTEM
-	${LIBNL_INCLUDE_DIR}
-	${QWT_INCLUDE_DIRS}
-	)
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
@@ -42,8 +38,8 @@ add_library (leechcraft_lemon SHARED
 	)
 target_link_libraries (leechcraft_lemon
 	${LEECHCRAFT_LIBRARIES}
-	${LIBNL_LIBRARIES}
-	${QWT_LIBRARIES}
+	PkgConfig::Qwt
+	PkgConfig::LemonLibnl
 	)
 install (TARGETS leechcraft_lemon DESTINATION ${LC_PLUGINS_DEST})
 install (DIRECTORY share/qml5/lemon DESTINATION ${LC_QML5_DEST})
