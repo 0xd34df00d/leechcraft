@@ -47,13 +47,7 @@
 
 #ifdef WITH_HTMLTIDY
 #include <tidy.h>
-
-#ifdef USE_LIBTIDY_HTML5
 #include <tidybuffio.h>
-#else
-#include <buffio.h>
-#endif
-
 #endif
 
 #include <util/util.h>
