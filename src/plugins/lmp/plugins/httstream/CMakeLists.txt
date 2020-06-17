@@ -24,7 +24,6 @@ add_library (leechcraft_lmp_httstream SHARED
 	)
 target_link_libraries (leechcraft_lmp_httstream
 	${LEECHCRAFT_LIBRARIES}
-	leechcraft_lmp_common
 	PkgConfig::GStreamer
 	)
 

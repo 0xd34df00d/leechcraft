@@ -43,7 +43,6 @@ add_library (leechcraft_lmp_fradj SHARED
 	)
 target_link_libraries (leechcraft_lmp_fradj
 	${LEECHCRAFT_LIBRARIES}
-	leechcraft_lmp_common
 	PkgConfig::GStreamer
 	${ADDITIONAL_LIBS}
 	)

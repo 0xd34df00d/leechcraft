@@ -30,7 +30,6 @@ add_library (leechcraft_lmp_potorchu SHARED
 	)
 target_link_libraries (leechcraft_lmp_potorchu
 	${LEECHCRAFT_LIBRARIES}
-	leechcraft_lmp_common
 	PkgConfig::GStreamer
 	PkgConfig::ProjectM
 	)

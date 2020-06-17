@@ -41,7 +41,6 @@ add_library (leechcraft_lmp_graffiti SHARED
 target_link_libraries (leechcraft_lmp_graffiti
 	${LEECHCRAFT_LIBRARIES}
 	PkgConfig::TagLib
-	leechcraft_lmp_common
 	)
 
 install (TARGETS leechcraft_lmp_graffiti DESTINATION ${LC_PLUGINS_DEST})

@@ -23,23 +23,6 @@ include_directories (
 	${Boost_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
-set (COMMON_SRCS
-	mediainfo.cpp
-	util/lmp/gstutil.cpp
-	util/lmp/filtersettingsmanager.cpp
-	util/lmp/util.cpp
-	)
-add_library (leechcraft_lmp_common STATIC
-	${COMMON_SRCS}
-	)
-set_target_properties (leechcraft_lmp_common PROPERTIES POSITION_INDEPENDENT_CODE True)
-target_link_libraries (leechcraft_lmp_common
-	PkgConfig::GStreamer
-	${LIBGUESS_IMPORTED_TARGET}
-	${LEECHCRAFT_LIBRARIES}
-	)
-
-FindQtLibs (leechcraft_lmp_common Core)
 
 if (ENABLE_LMP_MPRIS)
 	add_subdirectory (mpris)
@@ -123,6 +106,7 @@ set (SRCS
 	nativeplaylist.cpp
 	playlistwidgetviewexpander.cpp
 	sourceerrorhandler.cpp
+	mediainfo.cpp
 	engine/audiosource.cpp
 	engine/output.cpp
 	engine/path.cpp
@@ -151,6 +135,9 @@ set (SRCS
 	playlistparsers/m3u.cpp
 	playlistparsers/pls.cpp
 	playlistparsers/xspf.cpp
+	util/lmp/gstutil.cpp
+	util/lmp/filtersettingsmanager.cpp
+	util/lmp/util.cpp
 	)
 set (FORMS
 	playertab.ui
@@ -206,7 +193,6 @@ target_link_libraries (leechcraft_lmp
 	${ADDITIONAL_LIBRARIES}
 
 	${MPRIS_SUBLIB}
-	leechcraft_lmp_common
 	)
 
 install (TARGETS leechcraft_lmp DESTINATION ${LC_PLUGINS_DEST})
