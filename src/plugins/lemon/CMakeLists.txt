@@ -3,7 +3,7 @@ project (leechcraft_lemon)
 include (InitLCPlugin NO_POLICY_SCOPE)
 
 find_package (PkgConfig)
-pkg_check_modules (Qwt REQUIRED IMPORTED_TARGET Qt5Qwt)
+pkg_search_module (Qwt REQUIRED IMPORTED_TARGET Qt5Qwt Qt5Qwt6)
 pkg_check_modules (LemonLibnl REQUIRED IMPORTED_TARGET libnl-3.0 libnl-route-3.0)
 
 LC_DEFINE_PLUGIN (
