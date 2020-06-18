@@ -427,8 +427,8 @@ endfunction ()
 
 function(LC_DEFINE_PLUGIN)
 	set (options INSTALL_SHARE INSTALL_DESKTOP)
-	set (one_value_args SETTINGS RESOURCES)
-	set (multi_value_args SRCS QT_COMPONENTS LINK_LIBRARIES)
+	set (one_value_args RESOURCES)
+	set (multi_value_args SRCS SETTINGS QT_COMPONENTS LINK_LIBRARIES)
 	cmake_parse_arguments (P "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
 
 	include_directories (
