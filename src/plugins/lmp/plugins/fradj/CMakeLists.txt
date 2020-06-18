@@ -2,15 +2,7 @@ cmake_minimum_required (VERSION 3.3)
 project (leechcraft_lmp_fradj)
 include (InitLCPlugin NO_POLICY_SCOPE)
 
-set (ADDITIONAL_LIBRARIES)
-
-if (WITH_QWT)
-	add_definitions (-DWITH_QWT)
-	find_package (Qwt)
-
-	set (ADDITIONAL_LIBRARIES ${QWT_LIBRARIES})
-	include_directories (SYSTEM ${QWT_INCLUDE_DIRS})
-endif (WITH_QWT)
+find_package (Qwt REQUIRED)
 
 include_directories (${LMP_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
@@ -44,7 +36,7 @@ add_library (leechcraft_lmp_fradj SHARED
 target_link_libraries (leechcraft_lmp_fradj
 	${LEECHCRAFT_LIBRARIES}
 	PkgConfig::GStreamer
-	${ADDITIONAL_LIBS}
+	${QWT_LIBRARIES}
 	)
 
 install (TARGETS leechcraft_lmp_fradj DESTINATION ${LC_PLUGINS_DEST})

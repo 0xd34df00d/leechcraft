@@ -29,16 +29,11 @@
 
 #include "eqconfiguratordialog.h"
 #include <QtDebug>
-
-#ifdef WITH_QWT
-#include <qwt_plot.h>
 #include <qwt_plot.h>
 #include <qwt_plot_curve.h>
 #include <qwt_plot_grid.h>
 #include <qwt_scale_engine.h>
 #include <qwt_curve_fitter.h>
-#endif
-
 #include <util/sll/prelude.h>
 #include "eqbandwidget.h"
 
@@ -51,10 +46,8 @@ namespace Fradj
 	EqConfiguratorDialog::EqConfiguratorDialog (const BandInfos_t& bands,
 			const QList<double>& gains, const QStringList& presets, QWidget *parent)
 	: QDialog { parent }
-#ifdef WITH_QWT
 	, Plot_ { new QwtPlot }
 	, FreqCurve_ { new QwtPlotCurve }
-#endif
 	{
 		Ui_.setupUi (this);
 		Ui_.Preset_->addItems (presets);
@@ -102,7 +95,6 @@ namespace Fradj
 
 	void EqConfiguratorDialog::SetupPlot ()
 	{
-#ifdef WITH_QWT
 		Ui_.DialogLayout_->insertWidget (Ui_.DialogLayout_->count () - 1, Plot_);
 
 		Plot_->setAxisTitle (QwtPlot::xBottom, tr ("Frequency, Hz"));
@@ -125,12 +117,10 @@ namespace Fradj
 		grid->setMajorPen (QPen (Qt::gray, 1, Qt::DashLine));
 		grid->setMinorPen (QPen (Qt::gray, 1, Qt::DashLine));
 		grid->attach (Plot_);
-#endif
 	}
 
 	void EqConfiguratorDialog::rebuildPlot ()
 	{
-#ifdef WITH_QWT
 		QVector<double> xData, yData;
 		for (const auto& band : Bands_)
 		{
@@ -141,7 +131,6 @@ namespace Fradj
 		FreqCurve_->setSamples (xData, yData);
 
 		Plot_->replot ();
-#endif
 	}
 
 	void EqConfiguratorDialog::on_Preset__currentIndexChanged (const QString& preset)

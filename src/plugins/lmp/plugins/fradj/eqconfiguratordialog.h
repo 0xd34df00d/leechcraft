@@ -52,10 +52,8 @@ namespace Fradj
 
 		QList<EqBandWidget*> Bands_;
 
-#ifdef WITH_QWT
 		QwtPlot * const Plot_;
 		QwtPlotCurve * const FreqCurve_;
-#endif
 	public:
 		EqConfiguratorDialog (const BandInfos_t&,
 				const QList<double>&,
