@@ -30,6 +30,8 @@
 #include "graffiti.h"
 #include <QIcon>
 #include <util/util.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
 #include <interfaces/lmp/mediainfo.h>
 #include "graffititab.h"
 #include "progressmanager.h"
@@ -84,8 +86,7 @@ namespace Graffiti
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon ("lcicons:/lmp/graffiti/resources/images/graffiti.svg");
-		return icon;
+		return CoreProxy_->GetIconThemeManager ()->GetPluginIcon ();
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
