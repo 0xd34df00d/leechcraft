@@ -26,4 +26,5 @@ LC_DEFINE_PLUGIN (
 	SETTINGS lhtrsettings.xml
 	QT_COMPONENTS Network WebKitWidgets
 	LINK_LIBRARIES ${TIDY_LIB}
+	INSTALL_SHARE
 	)
