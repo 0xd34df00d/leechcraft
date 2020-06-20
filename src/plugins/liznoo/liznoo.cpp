@@ -35,6 +35,7 @@
 #include <QMessageBox>
 #include <QTimer>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/entitytesthandleresult.h>
 #include <util/util.h>
@@ -140,8 +141,7 @@ namespace Liznoo
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon ("lcicons:/liznoo/resources/images/liznoo.svg");
-		return icon;
+		return Proxy_->GetIconThemeManager ()->GetPluginIcon ();
 	}
 
 	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
