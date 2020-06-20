@@ -1,5 +1,0 @@
-<RCC>
-  <qresource prefix="/monocle/pdf" >
-    <file>resources/images/pdf.svg</file>
-  </qresource>
-</RCC>

@@ -109,8 +109,7 @@ namespace Monocle
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon ("lcicons:/monocle/resources/images/monocle.svg");
-		return icon;
+		return GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon ();
 	}
 
 	EntityTestHandleResult Plugin::CouldHandle (const Entity& e) const
