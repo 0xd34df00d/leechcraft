@@ -34,6 +34,7 @@
 #include <interfaces/monocle/idocument.h>
 #include <interfaces/monocle/isupportpainting.h>
 #include <interfaces/monocle/isearchabledocument.h>
+#include "monocleutilconfig.h"
 
 class QTextDocument;
 
@@ -51,9 +52,9 @@ namespace Monocle
 	 * constructor or by calling the SetDocument() method. The adapter
 	 * owns the document.
 	 */
-	class TextDocumentAdapter : public IDocument
-							  , public ISupportPainting
-							  , public ISearchableDocument
+	class MONOCLE_UTIL_API TextDocumentAdapter : public IDocument
+											   , public ISupportPainting
+											   , public ISearchableDocument
 	{
 	protected:
 		/** @brief The adapted QTextDocument.

@@ -26,7 +26,6 @@ add_library (leechcraft_monocle_fxb SHARED
 	)
 target_link_libraries (leechcraft_monocle_fxb
 	${LEECHCRAFT_LIBRARIES}
-	leechcraft_monocle_util
 	)
 install (TARGETS leechcraft_monocle_fxb DESTINATION ${LC_PLUGINS_DEST})
 install (FILES monoclefxbsettings.xml DESTINATION ${LC_SETTINGS_DEST})

@@ -62,6 +62,7 @@ set (SRCS
 	pagenumlabel.cpp
 	smoothscroller.cpp
 	common.cpp
+	util/monocle/textdocumentadapter.cpp
 	)
 set (FORMS
 	documenttab.ui
@@ -79,15 +80,6 @@ CreateTrs ("monocle" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("monocle" "en;ru_RU" "${SRCS}" "${FORMS}" "monoclesettings.xml")
 QtWrapUi (UIS_H ${FORMS})
 QtAddResources (RCCS ${RESOURCES})
-
-set (UTIL_SRCS
-	util/monocle/textdocumentadapter.cpp
-	)
-add_library (leechcraft_monocle_util STATIC
-	${UTIL_SRCS}
-	)
-set_target_properties(leechcraft_monocle_util PROPERTIES POSITION_INDEPENDENT_CODE True)
-FindQtLibs (leechcraft_monocle_util Widgets)
 
 add_library (leechcraft_monocle SHARED
 	${COMPILED_TRANSLATIONS}
