@@ -3,7 +3,6 @@ project (leechcraft_monocle)
 include (InitLCPlugin NO_POLICY_SCOPE)
 
 option (WITH_DOCS "Enable building documentation (requires Doxygen)" OFF)
-option (WITH_DOCS_INSTALL "Install generated documentation (if WITH_DOCS is set)" OFF)
 if (WITH_DOCS)
 	find_package (Doxygen REQUIRED)
 
@@ -16,9 +15,7 @@ if (WITH_DOCS)
 		COMMAND "mv" "-f" "${DOXYDIR}/out" "${CMAKE_CURRENT_BINARY_DIR}/out"
 		WORKING_DIRECTORY "${DOXYDIR}"
 	)
-	if (WITH_DOCS_INSTALL)
-		install (DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/out/html" DESTINATION "share/doc/leechcraft-monocle-${LEECHCRAFT_VERSION}")
-	endif ()
+	install (DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/out/html" DESTINATION "share/doc/leechcraft-monocle-${LEECHCRAFT_VERSION}")
 endif ()
 
 include_directories (
