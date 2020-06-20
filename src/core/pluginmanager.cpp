@@ -827,7 +827,7 @@ namespace LC
 #else
 		QString libdir (PLUGINS_LIBDIR);
 	#if defined (INSTALL_PREFIX)
-		scan (QString (INSTALL_PREFIX "/%1/leechcraft/plugins")
+		scan (QString (INSTALL_PREFIX "/%1/leechcraft/plugins-qt5")
 				.arg (libdir));
 	#else
 		scan (QString { "/usr/local/%1/leechcraft/plugins-qt5" }
