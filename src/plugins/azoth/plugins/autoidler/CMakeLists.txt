@@ -8,6 +8,7 @@ if (UNIX)
 
 	set (X11_IMPL 3dparty/idle_x11.cpp)
 	set (X11_XSS_LIB PkgConfig::XSS)
+	set (QT_X11_EXTRA_LIBRARY X11Extras)
 endif ()
 
 LC_DEFINE_PLUGIN (
