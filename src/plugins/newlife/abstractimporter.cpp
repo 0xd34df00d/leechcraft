@@ -39,11 +39,10 @@ namespace NewLife
 	{
 	}
 
-	QList<QIcon> AbstractImporter::GetIcons () const
+	QStringList AbstractImporter::GetIcons () const
 	{
-		QList<QIcon> result;
-		std::fill_n (std::back_inserter (result), GetNames ().size (),
-				QIcon { "lcicons:/resources/images/newlife.svg" });
+		QStringList result;
+		std::fill_n (std::back_inserter (result), GetNames ().size (), QString {});
 		return result;
 	}
 }

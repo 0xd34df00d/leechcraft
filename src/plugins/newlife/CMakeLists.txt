@@ -35,7 +35,6 @@ LC_DEFINE_PLUGIN (
 		importers/opera/operaimportselectpage.cpp
 		importers/jsonbookmarks/jsonbookmarksimporter.cpp
 		importers/jsonbookmarks/jsonbookmarksimportpage.cpp
-	RESOURCES newliferesources.qrc
 	QT_COMPONENTS Sql Widgets Xml
 	INSTALL_SHARE
 	)

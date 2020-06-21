@@ -47,7 +47,7 @@ namespace Importers
 		LifereaImporter (const ICoreProxy_ptr&, QWidget* = nullptr);
 
 		QStringList GetNames () const override;
-		QList<QIcon> GetIcons () const override;
+		QStringList GetIcons () const override;
 		QList<QWizardPage*> GetWizardPages () const override;
 	};
 }

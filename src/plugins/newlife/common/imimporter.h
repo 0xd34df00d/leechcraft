@@ -42,14 +42,14 @@ namespace Common
 	class IMImporter : public AbstractImporter
 	{
 		QString Name_;
-		QIcon Icon_;
+		QString Icon_;
 	protected:
 		IMImportPage *Page_;
 
-		IMImporter (const QString&, const QIcon&, IMImportPage*, QObject* = 0);
+		IMImporter (const QString&, const QString&, IMImportPage*, QObject* = 0);
 	public:
 		QStringList GetNames () const override;
-		QList<QIcon> GetIcons () const override;
+		QStringList GetIcons () const override;
 		QList<QWizardPage*> GetWizardPages () const override;
 	};
 }

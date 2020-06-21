@@ -47,9 +47,9 @@ namespace Importers
 		return { "Liferea" };
 	}
 
-	QList<QIcon> LifereaImporter::GetIcons () const
+	QStringList LifereaImporter::GetIcons () const
 	{
-		return { QIcon { ":/resources/images/apps/liferea.svg" } };
+		return { "liferea" };
 	}
 
 	QList<QWizardPage*> LifereaImporter::GetWizardPages () const

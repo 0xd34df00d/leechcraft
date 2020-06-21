@@ -48,7 +48,7 @@ namespace Importers
 		FirefoxImporter (const ICoreProxy_ptr&, QWidget* = 0);
 
 		QStringList GetNames () const;
-		QList<QIcon> GetIcons () const;
+		QStringList GetIcons () const;
 		QList<QWizardPage*> GetWizardPages () const;
 	};
 }

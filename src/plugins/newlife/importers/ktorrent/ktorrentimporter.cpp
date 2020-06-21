@@ -47,9 +47,9 @@ namespace Importers
 		return { "KTorrent" };
 	}
 
-	QList<QIcon> KTorrentImporter::GetIcons () const
+	QStringList KTorrentImporter::GetIcons () const
 	{
-		return { QIcon { ":/resources/images/apps/ktorrent.svg" } };
+		return { "ktorrent" };
 	}
 
 	QList<QWizardPage*> KTorrentImporter::GetWizardPages () const

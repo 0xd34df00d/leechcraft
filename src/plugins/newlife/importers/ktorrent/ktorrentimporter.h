@@ -47,7 +47,7 @@ namespace Importers
 		KTorrentImporter (const ICoreProxy_ptr& proxy, QWidget* = nullptr);
 
 		QStringList GetNames () const override;
-		QList<QIcon> GetIcons () const override;
+		QStringList GetIcons () const override;
 		QList<QWizardPage*> GetWizardPages () const override;
 	};
 }

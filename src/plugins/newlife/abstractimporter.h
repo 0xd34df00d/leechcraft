@@ -46,7 +46,7 @@ namespace NewLife
 	public:
 		AbstractImporter (QObject* = 0);
 
-		virtual QList<QIcon> GetIcons () const;
+		virtual QStringList GetIcons () const;
 		virtual QStringList GetNames () const = 0;
 		virtual QList<QWizardPage*> GetWizardPages () const = 0;
 	};

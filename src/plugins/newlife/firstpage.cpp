@@ -29,6 +29,9 @@
 
 #include "firstpage.h"
 #include <QVariant>
+#include <util/sys/resourceloader.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
 #include "abstractimporter.h"
 
 namespace LC
@@ -48,12 +51,27 @@ namespace NewLife
 
 	void FirstPage::SetupImporter (AbstractImporter *ai)
 	{
+		Util::ResourceLoader loader { "newlife/apps" };
+		loader.AddGlobalPrefix ();
+		loader.AddLocalPrefix ();
+
+		const auto iconMgr = GetProxyHolder ()->GetIconThemeManager ();
+
 		const auto& names = ai->GetNames ();
 		const auto& icons = ai->GetIcons ();
 		for (int i = 0; i < std::min (names.size (), icons.size ()); ++i)
-			Ui_.SourceApplication_->addItem (icons.at (i),
+		{
+			const auto& iconName = icons.at (i);
+			auto icon = QIcon { loader.LoadPixmap (iconName) };
+			if (icon.isNull ())
+				icon = iconMgr->GetIcon (iconName);
+			if (icon.isNull ())
+				icon = iconMgr->GetPluginIcon ();
+
+			Ui_.SourceApplication_->addItem (icon,
 					names.at (i),
 					QVariant::fromValue<QObject*> (ai));
+		}
 
 		auto pages = ai->GetWizardPages ();
 		if (!pages.isEmpty ())
@@ -71,8 +89,7 @@ namespace NewLife
 		if (currentIndex == -1)
 			return 0;
 
-		QObject *importerObject = Ui_.SourceApplication_->
-			itemData (currentIndex).value<QObject*> ();
+		auto importerObject = Ui_.SourceApplication_->itemData (currentIndex).value<QObject*> ();
 		return qobject_cast<AbstractImporter*> (importerObject);
 	}
 

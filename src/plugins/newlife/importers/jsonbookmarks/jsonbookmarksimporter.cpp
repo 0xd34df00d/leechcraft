@@ -47,9 +47,9 @@ namespace Importers
 		return { tr ("JSON bookmarks") };
 	}
 
-	QList<QIcon> JsonBookmarksImporter::GetIcons () const
+	QStringList JsonBookmarksImporter::GetIcons () const
 	{
-		return { QIcon::fromTheme ("favorites") };
+		return { "favorites" };
 	}
 
 	QList<QWizardPage*> JsonBookmarksImporter::GetWizardPages () const
