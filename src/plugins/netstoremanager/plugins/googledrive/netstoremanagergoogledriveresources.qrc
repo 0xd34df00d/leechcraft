@@ -1,6 +1,0 @@
-<RCC>
-  <qresource prefix="/netstoremanager/googledrive">
-    <file>resources/images/googledrivelogo.png</file>
-    <file>resources/images/googledrive.svg</file>
-  </qresource>
-</RCC>

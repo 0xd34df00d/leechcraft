@@ -29,6 +29,7 @@
 
 #include "netstoremanager.h"
 #include <QIcon>
+#include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/ientitymanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/util.h>
@@ -118,8 +119,7 @@ namespace NetStoreManager
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon ("lcicons:/netstoremanager/resources/images/netstoremanager.svg");
-		return icon;
+		return Proxy_->GetIconThemeManager ()->GetPluginIcon ();
 	}
 
 	TabClasses_t Plugin::GetTabClasses () const
