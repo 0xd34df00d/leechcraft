@@ -2,19 +2,8 @@ cmake_minimum_required (VERSION 3.3)
 project (leechcraft_rosenthal)
 include (InitLCPlugin NO_POLICY_SCOPE)
 
-set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-
-find_package (Hunspell REQUIRED)
-include_directories (${Hunspell_INCLUDE_DIR})
-
-if (MSVC)
-	add_definitions (-DWIN32 -DHUNSPELL_STATIC)
-endif ()
-
-include (cmake/CheckHunspellOverloads.cmake)
-if (HUNSPELL_HAS_CXX_OVERLOADS)
-	add_definitions (-DHUNSPELL_HAS_CXX_OVERLOADS)
-endif ()
+find_package (PkgConfig)
+pkg_check_modules (Hunspell REQUIRED IMPORTED_TARGET hunspell>=1.5.1)
 
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
@@ -37,7 +26,7 @@ add_library (leechcraft_rosenthal SHARED
 target_link_libraries (leechcraft_rosenthal
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
-	${Hunspell_LIBRARIES}
+	PkgConfig::Hunspell
 	)
 install (TARGETS leechcraft_rosenthal DESTINATION ${LC_PLUGINS_DEST})
 install (FILES rosenthalsettings.xml DESTINATION ${LC_SETTINGS_DEST})
