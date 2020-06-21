@@ -274,9 +274,7 @@ namespace OTRoid
 					entryId.constData (),
 					accId.constData (),
 					protoId.constData (),
-#if OTRL_VERSION_MAJOR >= 4
 					OTRL_INSTAG_BEST,
-#endif
 					false, nullptr, nullptr, nullptr);
 
 			const auto fp = context ?

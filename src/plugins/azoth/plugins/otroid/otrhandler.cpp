@@ -36,10 +36,7 @@
 #include <QEventLoop>
 #include <QFutureWatcher>
 #include <QtConcurrentRun>
-
-#if OTRL_VERSION_MAJOR >= 4
 #include <QTimer>
-#endif
 
 extern "C"
 {
@@ -47,10 +44,7 @@ extern "C"
 #include <libotr/privkey.h>
 #include <libotr/message.h>
 #include <libotr/proto.h>
-
-#if OTRL_VERSION_MAJOR >= 4
 #include <libotr/instag.h>
-#endif
 }
 
 #include <interfaces/azoth/iprotocol.h>
@@ -112,7 +106,6 @@ namespace OTRoid
 					u (username), prio, u (title), u (primary), u (secondary));
 		}
 
-#if OTRL_VERSION_MAJOR >= 4
 		void HandleSmpEvent (void *opData, OtrlSMPEvent smpEvent,
 				ConnContext *context, unsigned short progressPercent,
 				char *question)
@@ -204,7 +197,6 @@ namespace OTRoid
 		{
 			static_cast<OtrHandler*> (opData)->SetPollTimerInterval (interval);
 		}
-#endif
 
 		void HandleNewFingerprint (void *opData, OtrlUserState,
 				const char *accountname, const char*,
@@ -261,18 +253,14 @@ namespace OTRoid
 		otrl_privkey_read (UserState_, GetOTRFilename ("privkey").constData ());
 		otrl_privkey_read_fingerprints (UserState_,
 				GetOTRFilename ("fingerprints").constData (), NULL, NULL);
-#if OTRL_VERSION_MAJOR >= 4
 		otrl_instag_read (UserState_, GetOTRFilename ("instags").constData ());
-#endif
 
 		memset (&OtrOps_, 0, sizeof (OtrOps_));
 		OtrOps_.policy = [] (void*, ConnContext*) { return OtrlPolicy { OTRL_POLICY_DEFAULT }; };
 		OtrOps_.create_privkey = [] (void *opData, const char *accName, const char *proto)
 				{ static_cast<OtrHandler*> (opData)->CreatePrivkey (accName, proto); };
-#if OTRL_VERSION_MAJOR >= 4
 		OtrOps_.create_instag = [] (void *opData, const char *accName, const char *proto)
 				{ static_cast<OtrHandler*> (opData)->CreateInstag (accName, proto); };
-#endif
 		OtrOps_.is_logged_in = &OTR::IsLoggedIn;
 		OtrOps_.inject_message = &OTR::InjectMessage;
 		OtrOps_.update_context_list = [] (void*) {};
@@ -294,7 +282,6 @@ namespace OTRoid
 		OtrOps_.gone_secure = &OTR::HandleGoneSecure;
 		OtrOps_.gone_insecure = &OTR::HandleGoneInsecure;
 		OtrOps_.still_secure = &OTR::HandleStillSecure;
-#if OTRL_VERSION_MAJOR >= 4
 		OtrOps_.handle_smp_event = &OTR::HandleSmpEvent;
 		OtrOps_.handle_msg_event = &OTR::HandleMsgEvent;
 		OtrOps_.timer_control = &OTR::TimerControl;
@@ -306,20 +293,6 @@ namespace OTRoid
 				SLOT (pollOTR ()));
 
 		SetPollTimerInterval (otrl_message_poll_get_default_interval (UserState_));
-#else
-		OtrOps_.notify = &OTR::Notify;
-		OtrOps_.log_message = [] (void*, const char *msg)
-				{ qDebug () << "OTR:" << QString::fromUtf8 (msg).trimmed (); };
-		OtrOps_.display_otr_message = [] (void *opData, const char *accountname,
-				const char*, const char *username, const char *msg) -> int
-			{
-				static_cast<OtrHandler*> (opData)->InjectMsg (QString::fromUtf8 (accountname),
-						QString::fromUtf8 (username),
-						QString::fromUtf8 (msg), false, IMessage::Direction::In,
-						IMessage::Type::ServiceMessage);
-				return 0;
-			};
-#endif
 	}
 
 	OtrHandler::~OtrHandler ()
@@ -360,16 +333,12 @@ namespace OTRoid
 				acc->GetAccountID ().constData (),
 				proto->GetProtocolID ().constData (),
 				entry->GetEntryID ().toUtf8 ().constData (),
-#if OTRL_VERSION_MAJOR >= 4
 				OTRL_INSTAG_BEST,
-#endif
 				msg->GetBody ().toUtf8 ().constData (),
 				NULL,
 				&newMsg,
-#if OTRL_VERSION_MAJOR >= 4
 				OTRL_FRAGMENT_SEND_SKIP,
 				NULL,
-#endif
 				NULL,
 				NULL);
 
@@ -447,9 +416,7 @@ namespace OTRoid
 				&newMsg,
 				&tlvs,
 				NULL,
-#if OTRL_VERSION_MAJOR >= 4
 				NULL,
-#endif
 				NULL);
 
 		OtrlTLV *tlv = otrl_tlv_find (tlvs, OTRL_TLV_DISCONNECTED);
@@ -463,13 +430,11 @@ namespace OTRoid
 		}
 		otrl_tlv_free (tlvs);
 
-#if (OTRL_VERSION_MAJOR >= 4)
 		// Magic hack to force it work similar to libotr < 4.0.0.
 		// If user received unencrypted message he (she) should be notified.
 		// See OTRL_MSGEVENT_RCVDMSG_UNENCRYPTED as well.
 		if (!msg->GetBody ().startsWith("?OTR") && ignore && !newMsg)
 			ignore = 0;
-#endif
 
 		if (ignore)
 		{
@@ -691,7 +656,6 @@ namespace OTRoid
 				tr ("Keys are generated. Thanks for your patience."));
 	}
 
-#if OTRL_VERSION_MAJOR >= 4
 	void OtrHandler::CreateInstag (const char *accName, const char *proto)
 	{
 		otrl_instag_generate (UserState_,
@@ -777,7 +741,6 @@ namespace OTRoid
 				SLOT (handleAuthDestroyed ()));
 		Auths_ [entry] = auth;
 	}
-#endif
 
 	void OtrHandler::writeFingerprints ()
 	{
@@ -848,7 +811,6 @@ namespace OTRoid
 		ctxMenu->setProperty ("Azoth/OTRoid/IsGood", true);
 		ctxMenu->setProperty ("Azoth/OTRoid/Areas", QStringList { "contactListContextMenu" });
 
-#if OTRL_VERSION_MAJOR >= 4
 		const auto& auth = std::make_shared<QAction> (tr ("Authenticate the contact"), this);
 		auth->setProperty ("Azoth/OTRoid/IsGood", true);
 		auth->setProperty ("Azoth/OTRoid/Areas", QStringList { "contactListContextMenu" });
@@ -860,7 +822,6 @@ namespace OTRoid
 
 		buttonMenu->addAction (auth.get ());
 		ctxMenu->addAction (auth.get ());
-#endif
 
 		Entry2Action_ [entry] = EntryActions
 		{
@@ -868,11 +829,7 @@ namespace OTRoid
 			buttonMenu,
 			otr,
 			otrCtx,
-#if OTRL_VERSION_MAJOR >= 4
 			auth
-#else
-			{}
-#endif
 		};
 	}
 
@@ -888,11 +845,7 @@ namespace OTRoid
 		{
 			otrl_message_disconnect (UserState_, &OtrOps_, this,
 					accId.constData (), protoId.constData (),
-#if OTRL_VERSION_MAJOR >= 4
 					entry->GetEntryID ().toUtf8 ().constData (), OTRL_INSTAG_BEST);
-#else
-					entry->GetEntryID ().toUtf8 ().constData ());
-#endif
 			const auto& message = tr ("Private conversation closed");
 			InjectMsg (acc->GetAccountID (), entry->GetEntryID (),
 						message, false, IMessage::Direction::In, IMessage::Type::ServiceMessage);
@@ -915,7 +868,6 @@ namespace OTRoid
 		InjectMsg (entry, QString::fromUtf8 (msg.get ()), true, IMessage::Direction::Out);
 	}
 
-#if OTRL_VERSION_MAJOR >= 4
 	void OtrHandler::handleAuthRequested ()
 	{
 		auto act = qobject_cast<QAction*> (sender ());
@@ -997,7 +949,6 @@ namespace OTRoid
 	{
 		otrl_message_poll (UserState_, &OtrOps_, this);
 	}
-#endif
 }
 }
 }

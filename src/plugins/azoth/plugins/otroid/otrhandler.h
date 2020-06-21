@@ -73,9 +73,7 @@ namespace OTRoid
 		const OtrlUserState UserState_;
 		OtrlMessageAppOps OtrOps_;
 
-#if OTRL_VERSION_MAJOR >= 4
 		QTimer *PollTimer_;
-#endif
 		struct EntryActions
 		{
 			std::shared_ptr<QMenu> CtxMenu_;
@@ -120,21 +118,17 @@ namespace OTRoid
 		QString GetVisibleEntryName (const QString& accId, const QString& entryId);
 
 		void CreatePrivkey (const char*, const char*, bool confirm = true);
-#if OTRL_VERSION_MAJOR >= 4
 		void CreateInstag (const char*, const char*);
 
 		void SetPollTimerInterval (unsigned int seconds);
 		void HandleSmpEvent (OtrlSMPEvent, ConnContext*, unsigned short, const QString&);
-#endif
 	private:
 		QByteArray GetOTRFilename (const QString&) const;
 
 		void CreateActions (QObject*);
 		void SetOtrState (ICLEntry*, bool);
 
-#if OTRL_VERSION_MAJOR >= 4
 		void CreateAuthForEntry (ICLEntry*);
-#endif
 	public slots:
 		void writeFingerprints ();
 		void writeKeys ();
@@ -142,7 +136,6 @@ namespace OTRoid
 		void generateKeys (const QString&, const QString&);
 	private slots:
 		void handleOtrAction ();
-#if OTRL_VERSION_MAJOR >= 4
 		void handleAuthRequested ();
 		void startAuth (ICLEntry*, SmpMethod, const QString&, const QString&);
 		void handleAuthDestroyed ();
@@ -151,7 +144,6 @@ namespace OTRoid
 		void handleAbortSmp (ConnContext*);
 
 		void pollOTR ();
-#endif
 	signals:
 		void privKeysChanged ();
 	};
