@@ -32,6 +32,7 @@
 #include <QtDebug>
 #include "interfaces/netstoremanager/istorageplugin.h"
 #include "interfaces/netstoremanager/istorageaccount.h"
+#include "utils.h"
 
 namespace LC
 {
@@ -124,7 +125,7 @@ namespace NetStoreManager
 		IStoragePlugin *plugin = qobject_cast<IStoragePlugin*> (pObj);
 
 		QList<QStandardItem*> row;
-		row << new QStandardItem (plugin->GetStorageIcon (), acc->GetAccountName ());
+		row << new QStandardItem (Utils::GetStorageIcon (plugin), acc->GetAccountName ());
 		row << new QStandardItem (plugin->GetStorageName ());
 		Model_->appendRow (row);
 

@@ -49,6 +49,8 @@ namespace NetStoreManager
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Proxy_ = proxy;
+
 		Util::InstallTranslator ("netstoremanager");
 
 		ManagerTC_ =
@@ -81,8 +83,6 @@ namespace NetStoreManager
 				SIGNAL (fileUploaded (QString, QUrl)),
 				this,
 				SIGNAL (fileUploaded (QString, QUrl)));
-
-		Proxy_ = proxy;
 	}
 
 	void Plugin::SecondInit ()

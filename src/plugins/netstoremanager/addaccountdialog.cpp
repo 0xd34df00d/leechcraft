@@ -29,6 +29,7 @@
 
 #include "addaccountdialog.h"
 #include "interfaces/netstoremanager/istorageplugin.h"
+#include "utils.h"
 
 namespace LC
 {
@@ -41,8 +42,8 @@ namespace NetStoreManager
 
 		for (auto plugin : plugins)
 		{
-			const QString& name = plugin->GetStorageName ();
-			const QIcon& icon = plugin->GetStorageIcon ();
+			const auto& name = plugin->GetStorageName ();
+			const auto& icon = Utils::GetStorageIcon (plugin);
 			Ui_.Storage_->addItem (icon, name, QVariant::fromValue (plugin));
 		}
 	}

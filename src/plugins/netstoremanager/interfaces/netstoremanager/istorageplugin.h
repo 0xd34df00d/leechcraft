@@ -47,7 +47,7 @@ namespace NetStoreManager
 		virtual QObject* GetQObject () = 0;
 
 		virtual QString GetStorageName () const = 0;
-		virtual QIcon GetStorageIcon () const = 0;
+		virtual QString GetStorageIconName () const = 0;
 
 		virtual void RegisterAccount (const QString&) = 0;
 		virtual QObjectList GetAccounts () const = 0;

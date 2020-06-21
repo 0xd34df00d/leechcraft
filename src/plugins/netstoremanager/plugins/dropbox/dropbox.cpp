@@ -113,9 +113,9 @@ namespace DBox
 		return Util::Map (Accounts_, [] (const auto& acc) -> QObject* { return acc.get (); });
 	}
 
-	QIcon Plugin::GetStorageIcon () const
+	QString Plugin::GetStorageIconName () const
 	{
-		return QIcon (":/netstoremanager/dropbox/resources/images/dropbox-linux.png");
+		return "dropbox";
 	}
 
 	QString Plugin::GetStorageName () const

@@ -303,7 +303,7 @@ namespace NetStoreManager
 	void ManagerTab::AppendAccount (IStorageAccount *acc)
 	{
 		auto stP = qobject_cast<IStoragePlugin*> (acc->GetParentPlugin ());
-		AccountsBox_->addItem (stP->GetStorageIcon (),
+		AccountsBox_->addItem (Utils::GetStorageIcon (stP),
 				acc->GetAccountName (),
 				QVariant::fromValue<IStorageAccount*> (acc));
 		connect (acc->GetQObject (),

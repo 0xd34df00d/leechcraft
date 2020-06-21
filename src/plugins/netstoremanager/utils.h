@@ -40,6 +40,8 @@ namespace LC
 {
 namespace NetStoreManager
 {
+class IStoragePlugin;
+
 namespace Utils
 {
 	QStringList ScanDir (QDir::Filters filter, const QString& path, bool recursive = false);
@@ -48,6 +50,8 @@ namespace Utils
 	std::function<void (ISupportFileListings::RequestUrlResult_t)> HandleRequestFileUrlResult (IEntityManager *entityMgr,
 			const QString& errorText,
 			const std::function<void (QUrl)>& urlHandler);
+
+	QIcon GetStorageIcon (IStoragePlugin*);
 }
 }
 }

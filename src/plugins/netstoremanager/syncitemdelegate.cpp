@@ -33,10 +33,11 @@
 #include <QStandardItemModel>
 #include <QtDebug>
 #include <QDir>
-#include "accountsmanager.h"
-#include "directorywidget.h"
 #include "interfaces/netstoremanager/istorageaccount.h"
 #include "interfaces/netstoremanager/istorageplugin.h"
+#include "accountsmanager.h"
+#include "directorywidget.h"
+#include "utils.h"
 
 namespace LC
 {
@@ -156,7 +157,7 @@ namespace NetStoreManager
 			if (!isp)
 				continue;
 
-			box->addItem (isp->GetStorageIcon (),
+			box->addItem (Utils::GetStorageIcon (isp),
 					isp->GetStorageName() + ": " + acc->GetAccountName ());
 			box->setItemData (box->count () - 1,
 					acc->GetUniqueID (),

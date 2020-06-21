@@ -76,7 +76,7 @@ namespace DBox
 
 		QObject* GetQObject ();
 		QObjectList GetAccounts () const;
-		QIcon GetStorageIcon () const;
+		QString GetStorageIconName () const;
 		QString GetStorageName () const;
 		void RegisterAccount (const QString& name);
 		void RemoveAccount (QObject *accObj);

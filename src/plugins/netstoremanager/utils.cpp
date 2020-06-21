@@ -29,11 +29,14 @@
 
 #include "utils.h"
 #include <QUrl>
+#include <QIcon>
 #include <QtDebug>
 #include <util/sll/visitor.h>
 #include <util/sll/either.h>
+#include <util/sys/resourceloader.h>
 #include <util/xpc/util.h>
 #include <interfaces/core/ientitymanager.h>
+#include "interfaces/netstoremanager/istorageplugin.h"
 
 namespace LC
 {
@@ -103,6 +106,14 @@ namespace Utils
 				}
 			}
 		};
+	}
+
+	QIcon GetStorageIcon (IStoragePlugin *plugin)
+	{
+		Util::ResourceLoader loader { "netstoremanager/services" };
+		loader.AddGlobalPrefix ();
+		loader.AddLocalPrefix ();
+		return loader.LoadPixmap (plugin->GetStorageIconName ());
 	}
 }
 }

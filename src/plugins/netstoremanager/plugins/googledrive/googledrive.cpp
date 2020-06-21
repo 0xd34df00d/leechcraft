@@ -113,9 +113,9 @@ namespace GoogleDrive
 		return Util::Map (Accounts_, [] (const auto& acc) -> QObject* { return acc.get (); });
 	}
 
-	QIcon Plugin::GetStorageIcon () const
+	QString Plugin::GetStorageIconName () const
 	{
-		return QIcon (":/netstoremanager/googledrive/resources/images/googledrivelogo.png");
+		return "googledrive";
 	}
 
 	QString Plugin::GetStorageName () const
