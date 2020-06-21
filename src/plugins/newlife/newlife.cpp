@@ -33,6 +33,8 @@
 #include <QAction>
 #include <QTranslator>
 #include <util/util.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
 #include "common/imimportpage.h"
 #include "importwizard.h"
 
@@ -79,8 +81,7 @@ namespace NewLife
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon ("lcicons:/resources/images/newlife.svg");
-		return icon;
+		return Proxy_->GetIconThemeManager ()->GetPluginIcon ();
 	}
 
 	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace place) const
