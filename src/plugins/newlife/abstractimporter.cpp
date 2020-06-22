@@ -34,11 +34,6 @@ namespace LC
 {
 namespace NewLife
 {
-	AbstractImporter::AbstractImporter (QObject *parent)
-	: QObject (parent)
-	{
-	}
-
 	QStringList AbstractImporter::GetIcons () const
 	{
 		QStringList result;

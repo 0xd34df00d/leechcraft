@@ -90,7 +90,7 @@ namespace NewLife
 			return 0;
 
 		auto importerObject = Ui_.SourceApplication_->itemData (currentIndex).value<QObject*> ();
-		return qobject_cast<AbstractImporter*> (importerObject);
+		return static_cast<AbstractImporter*> (importerObject);
 	}
 
 	QString FirstPage::GetSelectedName () const

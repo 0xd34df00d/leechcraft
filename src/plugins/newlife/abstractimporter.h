@@ -42,9 +42,8 @@ namespace NewLife
 {
 	class AbstractImporter : public QObject
 	{
-		Q_OBJECT
 	public:
-		AbstractImporter (QObject* = 0);
+		using QObject::QObject;
 
 		virtual QStringList GetIcons () const;
 		virtual QStringList GetNames () const = 0;
