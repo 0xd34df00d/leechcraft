@@ -58,7 +58,6 @@ CreateTrsUpTarget("otlozhu" "en;ru_RU" "${SRCS}" "${FORMS}" "otlozhusettings.xml
 
 QtWrapUi (UIS_H ${FORMS})
 QtAddResources (RCCS ${RESOURCES})
-add_definitions (-DBOOST_SPIRIT_USE_PHOENIX_V3)
 
 add_library (leechcraft_otlozhu SHARED
 	${COMPILED_TRANSLATIONS}
