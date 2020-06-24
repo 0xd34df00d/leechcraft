@@ -29,7 +29,7 @@
 
 #include "core.h"
 
-#ifndef DISABLE_SYNC
+#ifdef ENABLE_SYNC
 #include "stager.h"
 #include "stagerhandler.h"
 #endif
@@ -43,7 +43,7 @@ namespace Otlozhu
 {
 	Core::Core ()
 	: TodoManager_ (new TodoManager ("Default", this))
-#ifndef DISABLE_SYNC
+#ifdef ENABLE_SYNC
 	, Stager_ (new Util::Sync::Stager ("org.LeechCraft.Otlozhu", this))
 #endif
 	{
@@ -52,7 +52,7 @@ namespace Otlozhu
 				this,
 				SIGNAL (gotEntity (LC::Entity)));
 
-#ifndef DISABLE_SYNC
+#ifdef ENABLE_SYNC
 		auto stagerHandler = new StagerHandler (this);
 
 		auto storage = TodoManager_->GetTodoStorage ();
@@ -92,7 +92,7 @@ namespace Otlozhu
 		return TodoManager_;
 	}
 
-#ifndef DISABLE_SYNC
+#ifdef ENABLE_SYNC
 	Util::Sync::Stager* Core::GetStager () const
 	{
 		return Stager_;

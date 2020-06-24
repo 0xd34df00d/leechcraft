@@ -64,7 +64,7 @@ namespace Otlozhu
 		ICoreProxy_ptr GetProxy () const;
 
 		TodoManager* GetTodoManager () const;
-#ifndef DISABLE_SYNC
+#ifdef ENABLE_SYNC
 		Util::Sync::Stager* GetStager () const;
 #endif
 	};

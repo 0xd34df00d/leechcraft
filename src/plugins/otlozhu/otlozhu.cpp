@@ -37,7 +37,7 @@
 #include <interfaces/core/itagsmanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 
-#ifndef DISABLE_SYNC
+#ifdef ENABLE_SYNC
 #include "syncproxy.h"
 #endif
 
@@ -70,7 +70,7 @@ namespace Otlozhu
 			TFOpenableByRequest | TFSingle | TFSuggestOpening
 		};
 
-#ifndef DISABLE_SYNC
+#ifdef ENABLE_SYNC
 		SyncProxy_ = new SyncProxy;
 #endif
 	}
@@ -159,7 +159,7 @@ namespace Otlozhu
 		return XSD_;
 	}
 
-#ifndef DISABLE_SYNC
+#ifdef ENABLE_SYNC
 	ISyncProxy* Plugin::GetSyncProxy ()
 	{
 		return SyncProxy_;

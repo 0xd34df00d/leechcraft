@@ -4,8 +4,8 @@ include (InitLCPlugin NO_POLICY_SCOPE)
 
 option (ENABLE_OTLOZHU_SYNC "Enable synchronization support for Otlozhu" ON)
 
-if (NOT ENABLE_OTLOZHU_SYNC)
-	add_definitions (-DDISABLE_SYNC=1)
+if (ENABLE_OTLOZHU_SYNC)
+	add_definitions (-DENABLE_SYNC)
 endif ()
 
 LC_DEFINE_PLUGIN (

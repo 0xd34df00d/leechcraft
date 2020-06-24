@@ -33,7 +33,7 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavetabs.h>
 
-#ifndef DISABLE_SYNC
+#ifdef ENABLE_SYNC
 #include <interfaces/isyncable.h>
 #endif
 
@@ -51,13 +51,13 @@ namespace Otlozhu
 					, public IHaveTabs
 					, public IHaveSettings
 					, public IEntityHandler
-#ifndef DISABLE_SYNC
+#ifdef ENABLE_SYNC
 					, public ISyncable
 #endif
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IHaveTabs IEntityHandler IHaveSettings)
-#ifndef DISABLE_SYNC
+#ifdef ENABLE_SYNC
 		Q_INTERFACES (ISyncable)
 #endif
 
@@ -67,7 +67,7 @@ namespace Otlozhu
 
 		Util::XmlSettingsDialog_ptr XSD_;
 
-#ifndef DISABLE_SYNC
+#ifdef ENABLE_SYNC
 		SyncProxy *SyncProxy_ = nullptr;
 #endif
 	public:
@@ -87,7 +87,7 @@ namespace Otlozhu
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 
-#ifndef DISABLE_SYNC
+#ifdef ENABLE_SYNC
 		ISyncProxy* GetSyncProxy ();
 #endif
 	signals:
