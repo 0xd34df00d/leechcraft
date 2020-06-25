@@ -110,10 +110,14 @@ namespace Utils
 
 	QIcon GetStorageIcon (IStoragePlugin *plugin)
 	{
-		Util::ResourceLoader loader { "netstoremanager/services" };
-		loader.AddGlobalPrefix ();
-		loader.AddLocalPrefix ();
-		return loader.LoadPixmap (plugin->GetStorageIconName ());
+		static const auto loader = []
+		{
+			auto loader = std::make_unique<Util::ResourceLoader> ("netstoremanager/services");
+			loader->AddGlobalPrefix ();
+			loader->AddLocalPrefix ();
+			return loader;
+		} ();
+		return loader->LoadPixmap (plugin->GetStorageIconName ());
 	}
 }
 }
