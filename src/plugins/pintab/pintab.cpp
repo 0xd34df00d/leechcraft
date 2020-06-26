@@ -62,18 +62,17 @@ namespace PinTab
 
 		PinTab_ = new QAction (tr ("Pin tab"), this);
 		connect (PinTab_,
-				SIGNAL (triggered ()),
+				&QAction::triggered,
 				this,
-				SLOT (pinTab ()));
+				[this] { PinTab (-1, Proxy_->GetRootWindowsManager ()->GetPreferredWindowIndex ()); });
 
 		UnPinTab_ = new QAction (tr ("Unpin tab"), this);
 		connect (UnPinTab_,
-				SIGNAL (triggered ()),
+				&QAction::triggered,
 				this,
-				SLOT (unPinTab ()));
+				[this] { UnPinTab (-1, Proxy_->GetRootWindowsManager ()->GetPreferredWindowIndex ()); });
 
-		CloseSide_ = proxy->GetRootWindowsManager ()->GetTabWidget (0)->
-				GetCloseButtonPosition ();
+		CloseSide_ = proxy->GetRootWindowsManager ()->GetTabWidget (0)->GetCloseButtonPosition ();
 	}
 
 	void Plugin::SecondInit ()
@@ -244,16 +243,6 @@ namespace PinTab
 		const auto widget = tw->Widget (index);
 		if (Window2Widget2TabData_.value (window).contains (widget))
 			proxy->CancelDefault ();
-	}
-
-	void Plugin::pinTab (int index)
-	{
-		PinTab (index, Proxy_->GetRootWindowsManager ()->GetPreferredWindowIndex ());
-	}
-
-	void Plugin::unPinTab (int index)
-	{
-		UnPinTab (index, Proxy_->GetRootWindowsManager ()->GetPreferredWindowIndex ());
 	}
 
 	void Plugin::checkPinState (int windowId, int index)

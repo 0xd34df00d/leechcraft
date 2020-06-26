@@ -81,9 +81,6 @@ namespace PinTab
 		void hookTabSetText (LC::IHookProxy_ptr proxy, int index,
 				int windowId);
 	private slots:
-		void pinTab (int index = -1);
-		void unPinTab (int index = -1);
-
 		void checkPinState (int windowId, int index);
 		void handleTabRemoving (int windowId, int index);
 
