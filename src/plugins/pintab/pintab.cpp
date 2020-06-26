@@ -34,6 +34,7 @@
 #include <QtDebug>
 #include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/icoretabwidget.h>
 #include <interfaces/core/irootwindowsmanager.h>
 
@@ -100,8 +101,7 @@ namespace PinTab
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon ("lcicons:/pintab/resources/images/pintab.svg");
-		return icon;
+		return Proxy_->GetIconThemeManager ()->GetPluginIcon ();
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const

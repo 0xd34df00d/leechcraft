@@ -1,5 +1,0 @@
-<RCC>
-  <qresource prefix="/pintab" >
-	<file>resources/images/pintab.svg</file>
-  </qresource>
-</RCC>
