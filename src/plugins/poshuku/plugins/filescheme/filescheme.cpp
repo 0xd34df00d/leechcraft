@@ -30,6 +30,8 @@
 #include "filescheme.h"
 #include <typeinfo>
 #include <QIcon>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
 #include <util/util.h>
 #include "schemereply.h"
 
@@ -71,8 +73,7 @@ namespace FileScheme
 
 	QIcon FileScheme::GetIcon () const
 	{
-		static QIcon icon ("lcicons:/plugins/poshuku/plugins/filescheme/resources/images/poshuku_filescheme.svg");
-		return icon;
+		return GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon ();
 	}
 
 	QSet<QByteArray> FileScheme::GetPluginClasses () const

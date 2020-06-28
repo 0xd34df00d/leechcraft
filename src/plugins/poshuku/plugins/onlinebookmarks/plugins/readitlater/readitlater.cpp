@@ -30,6 +30,8 @@
 #include "readitlater.h"
 #include <QIcon>
 #include <util/util.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
 #include "readitlaterauthwidget.h"
 #include "readitlaterservice.h"
 
@@ -74,8 +76,7 @@ namespace ReadItLater
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon ("lcicons:/poshuku/onlinebookmarks:readitlater/resources/images/readitlater.svg");
-		return icon;
+		return GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon ();
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const

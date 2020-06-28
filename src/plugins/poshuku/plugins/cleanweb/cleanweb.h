@@ -31,9 +31,6 @@
 
 #include <memory>
 #include <QObject>
-#include <QMap>
-#include <QTranslator>
-#include <QWebPage>
 #include <QNetworkAccessManager>
 #include <QMenu>
 #include <interfaces/iinfo.h>
@@ -45,7 +42,6 @@
 #include <interfaces/core/ihookproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
 
-class QWebView;
 class QContextMenuEvent;
 
 namespace LC

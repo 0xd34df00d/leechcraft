@@ -34,6 +34,8 @@
 #include <QMessageBox>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/util.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
 #include "xmlsettingsmanager.h"
 #include "core.h"
 #include "accountssettings.h"
@@ -93,8 +95,7 @@ namespace OnlineBookmarks
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon ("lcicons:/plugins/poshuku/plugins/onlinebookmarks/resources/images/onlinebookmarks.svg");
-		return icon;
+		return GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon ();
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const

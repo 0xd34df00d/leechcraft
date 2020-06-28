@@ -1,28 +1,12 @@
-include_directories (${POSHUKU_INCLUDE_DIR}
-	${CMAKE_CURRENT_BINARY_DIR})
-set (SPEEDDIAL_SRCS
-	speeddial.cpp
-	viewhandler.cpp
-	imagecache.cpp
-	customsitesmanager.cpp
-	xmlsettingsmanager.cpp
-	)
-set (SPEEDDIAL_RESOURCES
-	)
-CreateTrs ("poshuku_speeddial" "en;ru_RU" SPEEDDIAL_COMPILED_TRANSLATIONS)
-CreateTrsUpTarget("poshuku_speeddial" "en;ru_RU" "${SPEEDDIAL_SRCS}" "" "poshukuspeeddialsettings.xml")
+project (leechcraft_poshuku_speeddial)
 
-QtAddResources (SPEEDDIAL_RCCS ${SPEEDDIAL_RESOURCES})
-add_library (leechcraft_poshuku_speeddial SHARED
-	${SPEEDDIAL_COMPILED_TRANSLATIONS}
-	${SPEEDDIAL_SRCS}
-	${SPEEDDIAL_MOC_SRCS}
-	${SPEEDDIAL_RCCS}
+LC_DEFINE_PLUGIN (
+	SRCS
+		speeddial.cpp
+		viewhandler.cpp
+		imagecache.cpp
+		customsitesmanager.cpp
+		xmlsettingsmanager.cpp
+	SETTINGS poshukuspeeddialsettings.xml
+	QT_COMPONENTS Concurrent Widgets WebKitWidgets
 	)
-target_link_libraries (leechcraft_poshuku_speeddial
-	${LEECHCRAFT_LIBRARIES}
-	)
-install (TARGETS leechcraft_poshuku_speeddial DESTINATION ${LC_PLUGINS_DEST})
-install (FILES poshukuspeeddialsettings.xml DESTINATION ${LC_SETTINGS_DEST})
-
-FindQtLibs (leechcraft_poshuku_speeddial Concurrent Widgets WebKitWidgets)

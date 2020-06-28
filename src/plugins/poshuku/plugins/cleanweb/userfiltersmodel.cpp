@@ -35,8 +35,6 @@
 #include <QRegExp>
 #include <QAction>
 #include <QMessageBox>
-#include <qwebview.h>
-#include <qwebframe.h>
 #include <QtDebug>
 #include <util/xpc/util.h>
 #include <util/sll/prelude.h>

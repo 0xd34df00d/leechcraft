@@ -1,6 +1,5 @@
 <RCC>
   <qresource prefix="/poshuku/onlinebookmarks:readitlater" >
-    <file>resources/images/readitlater.svg</file>
 	<file>resources/images/readitlater.ico</file>
   </qresource>
 </RCC>

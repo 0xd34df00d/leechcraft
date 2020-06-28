@@ -1,6 +1,5 @@
 <RCC>
   <qresource prefix="/poshuku/onlinebookmarks:delicious" >
-    <file>resources/images/delicious.svg</file>
 	<file>resources/images/delicious.png</file>
   </qresource>
 </RCC>

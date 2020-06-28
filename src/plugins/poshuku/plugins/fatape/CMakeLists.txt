@@ -1,38 +1,16 @@
-include_directories (${POSHUKU_INCLUDE_DIR}
-	${CMAKE_CURRENT_BINARY_DIR})
-set (FATAPE_SRCS
-	createscriptdialog.cpp
-	fatape.cpp
-	greasemonkey.cpp
-	xmlsettingsmanager.cpp
-	userscript.cpp
-	userscriptcreator.cpp
-	userscriptinstallerdialog.cpp
-	userscriptsmanagerwidget.cpp
-	)
-set (FATAPE_FORMS
-	createscriptdialog.ui
-	userscriptsmanagerwidget.ui
-	userscriptinstallerdialog.ui
-	)
-set (FATAPE_RESOURCES
-	poshukufataperesources.qrc
-	)
-CreateTrs ("poshuku_fatape" "en;it;ru_RU;uk_UA" FATAPE_COMPILED_TRANSLATIONS)
-CreateTrsUpTarget("poshuku_fatape" "en;ru_RU" "${FATAPE_SRCS}" "${FATAPE_FORMS}" "poshukufatapesettings.xml")
+project (leechcraft_poshuku_fatape)
 
-QtWrapUi (FATAPE_UIS_H ${FATAPE_FORMS})
-QtAddResources (FATAPE_RCCS ${FATAPE_RESOURCES})
-add_library (leechcraft_poshuku_fatape SHARED
-	${FATAPE_SRCS}
-    ${FATAPE_UIS_H}
-	${FATAPE_COMPILED_TRANSLATIONS}
-	${FATAPE_RCCS}
+LC_DEFINE_PLUGIN (
+	SRCS
+		createscriptdialog.cpp
+		fatape.cpp
+		greasemonkey.cpp
+		xmlsettingsmanager.cpp
+		userscript.cpp
+		userscriptcreator.cpp
+		userscriptinstallerdialog.cpp
+		userscriptsmanagerwidget.cpp
+	SETTINGS poshukufatapesettings.xml
+	QT_COMPONENTS Widgets
+	INSTALL_SHARE
 	)
-target_link_libraries (leechcraft_poshuku_fatape
-	${LEECHCRAFT_LIBRARIES}
-	)
-install (TARGETS leechcraft_poshuku_fatape DESTINATION ${LC_PLUGINS_DEST})
-install (FILES poshukufatapesettings.xml DESTINATION ${LC_SETTINGS_DEST})
-
-FindQtLibs (leechcraft_poshuku_fatape Widgets WebKitWidgets)

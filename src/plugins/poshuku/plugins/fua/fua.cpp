@@ -36,6 +36,8 @@
 #include <util/util.h>
 #include <util/sll/parsejson.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
 #include <interfaces/poshuku/iproxyobject.h>
 #include "settings.h"
 #include "xmlsettingsmanager.h"
@@ -88,8 +90,7 @@ namespace Fua
 
 	QIcon FUA::GetIcon () const
 	{
-		static QIcon icon { "lcicons:/poshuku/fua/resources/images/poshuku_fua.svg" };
-		return icon;
+		return GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon ();
 	}
 
 	QSet<QByteArray> FUA::GetPluginClasses () const

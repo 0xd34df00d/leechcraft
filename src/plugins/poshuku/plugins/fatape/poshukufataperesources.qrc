@@ -1,5 +1,0 @@
-<RCC>
-  <qresource prefix="/plugins/poshuku/plugins/fatape" >
-  	<file>resources/images/fatape.svg</file>
-  </qresource>
-</RCC>

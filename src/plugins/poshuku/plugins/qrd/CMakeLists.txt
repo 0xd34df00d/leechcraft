@@ -1,30 +1,10 @@
-include_directories (${POSHUKU_INCLUDE_DIR}
-	${CMAKE_CURRENT_BINARY_DIR})
-set (QRD_SRCS
-	qrd.cpp
-	)
-set (QRD_RESOURCES
-	)
-CreateTrs ("poshuku_qrd" "en;ru_RU" QRD_COMPILED_TRANSLATIONS)
-CreateTrsUpTarget("poshuku_qrd" "en;ru_RU" "${QRD_SRCS}" "" "")
+project (leechcraft_poshuku_qrd)
 
-set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-find_package (QREncode REQUIRED)
+find_package (PkgConfig)
+pkg_check_modules (QREncode REQUIRED IMPORTED_TARGET libqrencode)
 
-include_directories (${QRENCODE_INCLUDE_DIR})
-
-QtAddResources (QRD_RCCS ${QRD_RESOURCES})
-add_library (leechcraft_poshuku_qrd SHARED
-	${QRD_COMPILED_TRANSLATIONS}
-	${QRD_SRCS}
-	${QRD_MOC_SRCS}
-	${QRD_RCCS}
+LC_DEFINE_PLUGIN (
+	SRCS qrd.cpp
+	QT_COMPONENTS Widgets
+	LINK_LIBRARIES PkgConfig::QREncode
 	)
-target_link_libraries (leechcraft_poshuku_qrd
-	${LEECHCRAFT_LIBRARIES}
-	${QRENCODE_LIBRARIES}
-	)
-install (TARGETS leechcraft_poshuku_qrd DESTINATION ${LC_PLUGINS_DEST})
-#install (FILES poshukuqrdsettings.xml DESTINATION ${LC_SETTINGS_DEST})
-
-FindQtLibs (leechcraft_poshuku_qrd Widgets)

@@ -33,7 +33,6 @@
 #include <QHash>
 #include "effects.h"
 
-class QWebView;
 class QAction;
 
 class IPluginsManager;

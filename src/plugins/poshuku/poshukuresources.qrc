@@ -1,6 +1,5 @@
 <RCC>
   <qresource prefix="/" >
-	<file>resources/images/poshuku.svg</file>
 	<file>resources/images/loading.gif</file>
 	<file>resources/images/application_atom+xml.png</file>
 	<file>resources/images/application_rss+xml.png</file>

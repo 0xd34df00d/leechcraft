@@ -1,45 +1,21 @@
-include_directories (${POSHUKU_INCLUDE_DIR}
-	${CMAKE_CURRENT_BINARY_DIR})
-set (CLEANWEB_SRCS
-	cleanweb.cpp
-	core.cpp
-	xmlsettingsmanager.cpp
-	subscriptionsmanagerwidget.cpp
-	userfilters.cpp
-	userfiltersmodel.cpp
-	filter.cpp
-	ruleoptiondialog.cpp
-	wizardgenerator.cpp
-	startupfirstpage.cpp
-	subscriptionadddialog.cpp
-	lineparser.cpp
-	subscriptionsmodel.cpp
-	)
-set (CLEANWEB_FORMS
-	subscriptionsmanagerwidget.ui
-	userfilters.ui
-	ruleoptiondialog.ui
-	subscriptionadddialog.ui
-	startupfirstpage.ui
-	)
-set (CLEANWEB_RESOURCES
-	poshukucleanwebresources.qrc
-	)
-CreateTrs ("poshuku_cleanweb" "ar;de;en;eo;es;fr;it;pl;ru_RU;uk_UA" CLEANWEB_COMPILED_TRANSLATIONS)
-CreateTrsUpTarget ("poshuku_cleanweb" "en;ru_RU" "${CLEANWEB_SRCS}" "${CLEANWEB_FORMS}" "poshukucleanwebsettings.xml")
+project (leechcraft_poshuku_cleanweb)
 
-QtWrapUi (CLEANWEB_UIS_H ${CLEANWEB_FORMS})
-QtAddResources (CLEANWEB_RCCS ${CLEANWEB_RESOURCES})
-add_library (leechcraft_poshuku_cleanweb SHARED
-	${CLEANWEB_COMPILED_TRANSLATIONS}
-	${CLEANWEB_SRCS}
-	${CLEANWEB_UIS_H}
-	${CLEANWEB_RCCS}
+LC_DEFINE_PLUGIN (
+	SRCS
+		cleanweb.cpp
+		core.cpp
+		xmlsettingsmanager.cpp
+		subscriptionsmanagerwidget.cpp
+		userfilters.cpp
+		userfiltersmodel.cpp
+		filter.cpp
+		ruleoptiondialog.cpp
+		wizardgenerator.cpp
+		startupfirstpage.cpp
+		subscriptionadddialog.cpp
+		lineparser.cpp
+		subscriptionsmodel.cpp
+	SETTINGS poshukucleanwebsettings.xml
+	QT_COMPONENTS Concurrent Widgets Xml
+	INSTALL_SHARE
 	)
-target_link_libraries (leechcraft_poshuku_cleanweb
-	${LEECHCRAFT_LIBRARIES}
-	)
-install (TARGETS leechcraft_poshuku_cleanweb DESTINATION ${LC_PLUGINS_DEST})
-install (FILES poshukucleanwebsettings.xml DESTINATION ${LC_SETTINGS_DEST})
-
-FindQtLibs (leechcraft_poshuku_cleanweb Concurrent Widgets WebKitWidgets Xml)

@@ -1,5 +1,0 @@
-<RCC>
-  <qresource prefix="/plugins/poshuku/plugins/keywords" >
-  	<file>resources/images/keywords.svg</file>
-  </qresource>
-</RCC>

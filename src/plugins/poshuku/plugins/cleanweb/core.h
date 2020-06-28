@@ -34,7 +34,6 @@
 #include <QStringList>
 #include <QNetworkReply>
 #include <QDateTime>
-#include <QWebPage>
 #include <interfaces/iinfo.h>
 #include <interfaces/idownload.h>
 #include <interfaces/poshuku/poshukutypes.h>
@@ -42,7 +41,6 @@
 #include "filter.h"
 
 class QNetworkRequest;
-class QWebPage;
 
 namespace LC
 {

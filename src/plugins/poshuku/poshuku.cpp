@@ -182,8 +182,7 @@ namespace Poshuku
 
 	QIcon Poshuku::GetIcon () const
 	{
-		static QIcon icon ("lcicons:/resources/images/poshuku.svg");
-		return icon;
+		return GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon ();
 	}
 
 	TabClasses_t Poshuku::GetTabClasses () const

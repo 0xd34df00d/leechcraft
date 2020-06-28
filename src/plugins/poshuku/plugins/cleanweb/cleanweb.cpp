@@ -30,6 +30,8 @@
 #include "cleanweb.h"
 #include <QIcon>
 #include <QTextCodec>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/poshuku/ibrowserwidget.h>
 #include <util/util.h>
@@ -91,8 +93,7 @@ namespace CleanWeb
 
 	QIcon CleanWeb::GetIcon () const
 	{
-		static QIcon icon ("lcicons:/plugins/poshuku/plugins/cleanweb/resources/images/poshuku_cleanweb.svg");
-		return icon;
+		return GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon ();
 	}
 
 	QStringList CleanWeb::Needs () const

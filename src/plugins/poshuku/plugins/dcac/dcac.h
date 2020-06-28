@@ -36,7 +36,6 @@
 #include <interfaces/core/ihookproxy.h>
 #include <interfaces/poshuku/poshukutypes.h>
 
-class QWebHitTestResult;
 class QContextMenuEvent;
 
 namespace LC

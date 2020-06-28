@@ -39,6 +39,7 @@
 #include <util/sys/paths.h>
 #include <util/sll/slotclosure.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
 #include <interfaces/poshuku/ibrowserwidget.h>
 #include <interfaces/poshuku/iwebview.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
@@ -133,8 +134,7 @@ namespace FatApe
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon ("lcicons:/plugins/poshuku/plugins/fatape/resources/images/fatape.svg");
-		return icon;
+		return CoreProxy_->GetIconThemeManager ()->GetPluginIcon ();
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
