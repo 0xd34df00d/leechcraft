@@ -30,6 +30,8 @@
 #include "popishu.h"
 #include <QTranslator>
 #include <QIcon>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
 #include <interfaces/entitytesthandleresult.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/util.h>
@@ -49,7 +51,7 @@ namespace Popishu
 		TabClass_.TabClass_ = "Popishu";
 		TabClass_.VisibleName_ = "Popishu";
 		TabClass_.Description_ = tr ("The Popishu text editor");
-		TabClass_.Icon_ = QIcon ("lcicons:/resources/images/popishu.svg");
+		TabClass_.Icon_ = GetIcon ();
 		TabClass_.Priority_ = 70;
 		TabClass_.Features_ = TFOpenableByRequest | TFSuggestOpening;
 
@@ -82,8 +84,7 @@ namespace Popishu
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon ("lcicons:/resources/images/popishu.svg");
-		return icon;
+		return Proxy_->GetIconThemeManager ()->GetPluginIcon ();
 	}
 
 	TabClasses_t Plugin::GetTabClasses () const
