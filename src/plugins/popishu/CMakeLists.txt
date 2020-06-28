@@ -3,16 +3,12 @@ project (leechcraft_popishu)
 include (InitLCPlugin NO_POLICY_SCOPE)
 
 set (CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
-find_package (QScintilla)
-if (NOT QSCINTILLA_FOUND)
-	message (ERROR "QScintilla not found, unable to build Popishu :(")
-endif ()
+find_package (QScintilla REQUIRED)
 
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
-	${QSCINTILLA_INCLUDE_DIR}
 	)
 set (SRCS
 	popishu.cpp
@@ -42,7 +38,7 @@ add_library (leechcraft_popishu SHARED
 	)
 target_link_libraries (leechcraft_popishu
 	${LEECHCRAFT_LIBRARIES}
-	${QSCINTILLA_LIBRARIES}
+	QSCINTILLA::QSCINTILLA
 	)
 install (TARGETS leechcraft_popishu DESTINATION ${LC_PLUGINS_DEST})
 install (FILES popishusettings.xml DESTINATION ${LC_SETTINGS_DEST})
