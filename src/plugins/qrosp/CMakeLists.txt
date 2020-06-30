@@ -2,42 +2,25 @@ cmake_minimum_required (VERSION 3.3)
 project (leechcraft_qrosp)
 include (InitLCPlugin NO_POLICY_SCOPE)
 
-set (CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
-find_package (Qross REQUIRED)
+find_package (PkgConfig)
+pkg_check_modules (QrossCore REQUIRED IMPORTED_TARGET qrosscore)
 
-include_directories (
-	${CMAKE_CURRENT_BINARY_DIR}
-	${Boost_INCLUDE_DIR}
-	${LEECHCRAFT_INCLUDE_DIR}
-	${QROSS_INCLUDE_DIR}
+LC_DEFINE_PLUGIN (
+	SRCS
+		qrosp.cpp
+		pluginmanager.cpp
+		wrapperobject.cpp
+		typesfactory.cpp
+		utilproxy.cpp
+		scriptloaderinstance.cpp
+		loadedscript.cpp
+		lcenv.cpp
+		wrappers/coreproxywrapper.cpp
+		wrappers/hookproxywrapper.cpp
+		wrappers/entitywrapper.cpp
+		wrappers/shortcutproxywrapper.cpp
+		wrappers/pluginsmanagerwrapper.cpp
+		wrappers/tagsmanagerwrapper.cpp
+	QT_COMPONENTS Script Widgets CorePrivate
+	LINK_LIBRARIES PkgConfig::QrossCore
 	)
-set (SRCS
-	qrosp.cpp
-	pluginmanager.cpp
-	wrapperobject.cpp
-	typesfactory.cpp
-	utilproxy.cpp
-	scriptloaderinstance.cpp
-	loadedscript.cpp
-	lcenv.cpp
-	wrappers/coreproxywrapper.cpp
-	wrappers/hookproxywrapper.cpp
-	wrappers/entitywrapper.cpp
-	wrappers/shortcutproxywrapper.cpp
-	wrappers/pluginsmanagerwrapper.cpp
-	wrappers/tagsmanagerwrapper.cpp
-	)
-
-add_library (leechcraft_qrosp SHARED
-	${COMPILED_TRANSLATIONS}
-	${SRCS}
-	)
-target_link_libraries (leechcraft_qrosp
-	${LEECHCRAFT_LIBRARIES}
-	${QROSS_LIBRARIES}
-	)
-install (TARGETS leechcraft_qrosp DESTINATION ${LC_PLUGINS_DEST})
-
-FindQtLibs (leechcraft_qrosp Script Widgets)
-
-include_directories (${Qt5Core_PRIVATE_INCLUDE_DIRS})
