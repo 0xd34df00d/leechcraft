@@ -1,6 +1,0 @@
-<RCC>
-  <qresource prefix="/plugins/azoth/plugins/zheet">
-    <file>resources/images/zheet.svg</file>
-    <file>resources/images/wlm.svg</file>
-  </qresource>
-</RCC>
