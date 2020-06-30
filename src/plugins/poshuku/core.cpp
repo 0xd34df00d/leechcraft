@@ -57,6 +57,7 @@
 #include <util/xpc/introspectable.h>
 #include <interfaces/ihaveshortcuts.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/irootwindowsmanager.h>
@@ -96,7 +97,7 @@ namespace Poshuku
 		TabClass_.TabClass_ = "Poshuku";
 		TabClass_.VisibleName_ = tr ("Poshuku");
 		TabClass_.Description_ = tr ("The Poshuku web browser");
-		TabClass_.Icon_ = QIcon ("lcicons:/resources/images/poshuku.svg");
+		TabClass_.Icon_ = GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon ();
 		TabClass_.Priority_ = 80;
 		TabClass_.Features_ = TFOpenableByRequest | TFSuggestOpening;
 

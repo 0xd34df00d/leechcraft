@@ -34,6 +34,8 @@
 #include <QUrl>
 #include <util/util.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
 #include "keywordsmanagerwidget.h"
 #include "xmlsettingsmanager.h"
 
@@ -100,8 +102,7 @@ namespace Keywords
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon ("lcicons:/plugins/poshuku/plugins/keywords/resources/images/keywords.svg");
-		return icon;
+		return GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon ();
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
