@@ -254,7 +254,6 @@ cmake_dependent_option (ENABLE_SYSNOTIFY "Build Sysnotify for using D-Bus notifi
 option (ENABLE_TEXTOGROOSE "Build Text-o-Groose, script-based lyrics fetcher" ${WITH_PLUGINS})
 option (ENABLE_TOUCHSTREAMS "Build TouchStreams, VK.com music streaming plugin" ${WITH_PLUGINS})
 option (ENABLE_TPI "Build Task Progress Indicator quark plugin" ${WITH_PLUGINS})
-option (ENABLE_VTYULC "Build VtyuLC, the videoplayer plugin" OFF)
 option (ENABLE_VROOBY "Build Vrooby, removable storage devices manager" ${WITH_PLUGINS})
 option (ENABLE_WKPLUGINS "Build WKPlugins for WebKit spellcheck and notifications" OFF)
 option (ENABLE_XPROXY "Build XProxy, the advanced proxy manager" ${WITH_PLUGINS})
@@ -817,10 +816,6 @@ endif ()
 
 if (ENABLE_DUMBEEP)
 	add_subdirectory (plugins/dumbeep)
-endif ()
-
-if (ENABLE_VTYULC)
-	add_subdirectory (plugins/vtyulc)
 endif ()
 
 if (ENABLE_WKPLUGINS)
