@@ -413,7 +413,6 @@ namespace LC
 			{
 				qDebug () << "Initializing" << ii->GetName ();
 				auto proxy = std::make_shared<CoreProxy> (Obj2Loader_ [obj]);
-				ii->SetProxy (proxy);
 				ii->Init (proxy);
 
 				const auto& path = GetPluginLibraryPath (obj);
@@ -1156,6 +1155,11 @@ namespace LC
 			auto inst = loader->Instance ();
 			Plugins_ << inst;
 			Obj2Loader_ [inst] = loader;
+
+			const auto ii = qobject_cast<IInfo*> (inst);
+			auto proxy = std::make_shared<CoreProxy> (loader);
+			ii->SetProxy (proxy);
+
 			IPluginAdaptor *ipa = qobject_cast<IPluginAdaptor*> (inst);
 			if (ipa)
 				Plugins_ << ipa->GetPlugins ();
