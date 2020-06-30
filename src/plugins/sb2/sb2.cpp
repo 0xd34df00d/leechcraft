@@ -37,6 +37,7 @@
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/imwproxy.h>
 #include "viewmanager.h"
@@ -113,8 +114,7 @@ namespace SB2
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon ("lcicons:/resources/images/sb2.svg");
-		return icon;
+		return Proxy_->GetIconThemeManager ()->GetPluginIcon ();
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
