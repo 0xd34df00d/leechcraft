@@ -32,6 +32,8 @@
 #include <QIcon>
 #include <QCoreApplication>
 #include <util/sll/prelude.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
 
 namespace LC
 {
@@ -72,8 +74,7 @@ namespace SimpleStorage
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon ("lcicons:/secman/simplestorage/resources/images/simplestorage.svg");
-		return icon;
+		return GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon ();
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const

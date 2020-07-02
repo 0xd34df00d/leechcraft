@@ -1,21 +1,7 @@
-include_directories (
-	${CMAKE_CURRENT_BINARY_DIR}
-	)
-set (SRCS
-	simplestorage.cpp
-	)
+project (leechcraft_secman_simplestorage)
 
-set (SIMPLESTORAGE_RESOURCES simplestorageresources.qrc)
-QtAddResources (SIMPLESTORAGE_RCCS ${SIMPLESTORAGE_RESOURCES})
-
-add_library (leechcraft_secman_simplestorage SHARED
-	${SIMPLESTORAGE_RCCS}
-	${COMPILED_TRANSLATIONS}
-	${SRCS}
+LC_DEFINE_PLUGIN (
+	SRCS simplestorage.cpp
+	QT_COMPONENTS Widgets
+	INSTALL_SHARE
 	)
-target_link_libraries (leechcraft_secman_simplestorage
-	${LEECHCRAFT_LIBRARIES}
-	)
-install (TARGETS leechcraft_secman_simplestorage DESTINATION ${LC_PLUGINS_DEST})
-
-FindQtLibs (leechcraft_secman_simplestorage Core Widgets)

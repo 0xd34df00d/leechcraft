@@ -31,6 +31,8 @@
 #include <QIcon>
 #include <QAction>
 #include <util/util.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
 #include "core.h"
 #include "contentsdisplaydialog.h"
 #include "persistentstorage.h"
@@ -78,8 +80,7 @@ namespace SecMan
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon ("lcicons:/resources/images/secman.svg");
-		return icon;
+		return GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon ();
 	}
 
 	QSet<QByteArray> Plugin::GetExpectedPluginClasses () const
