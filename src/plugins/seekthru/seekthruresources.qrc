@@ -1,6 +1,5 @@
 <RCC>
 	<qresource prefix="/" >
-		<file>resources/images/seekthru.svg</file>
 		<file>resources/default/general/enwiki.xml</file>
 		<file>resources/default/general/github.xml</file>
 		<file>resources/default/general/lastfm.xml</file>

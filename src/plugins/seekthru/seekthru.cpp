@@ -29,6 +29,8 @@
 
 #include "seekthru.h"
 #include <interfaces/entitytesthandleresult.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/ientitymanager.h>
 #include <util/util.h>
 #include <util/xpc/util.h>
@@ -94,8 +96,7 @@ namespace LC::SeekThru
 
 	QIcon SeekThru::GetIcon () const
 	{
-		static QIcon icon ("lcicons:/resources/images/seekthru.svg");
-		return icon;
+		return Proxy_->GetIconThemeManager ()->GetPluginIcon ();
 	}
 
 	QStringList SeekThru::Provides () const
