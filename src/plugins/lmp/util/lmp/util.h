@@ -32,6 +32,7 @@
 #include <functional>
 #include <QString>
 #include <QFlags>
+#include "lmputilconfig.h"
 
 template<typename, typename>
 class QMap;
@@ -49,16 +50,16 @@ namespace LMP
 	};
 	Q_DECLARE_FLAGS (SubstitutionFlags, SubstitutionFlag);
 
-	QMap<QString, std::function<QString (MediaInfo)>> GetSubstGetters ();
+	LMP_UTIL_API QMap<QString, std::function<QString (MediaInfo)>> GetSubstGetters ();
 
-	QMap<QString, std::function<void (MediaInfo&, QString)>> GetSubstSetters ();
+	LMP_UTIL_API QMap<QString, std::function<void (MediaInfo&, QString)>> GetSubstSetters ();
 
-	QStringList GetSubstGettersKeys ();
+	LMP_UTIL_API QStringList GetSubstGettersKeys ();
 
-	QString PerformSubstitutions (QString mask,
+	LMP_UTIL_API QString PerformSubstitutions (QString mask,
 			const MediaInfo& info, SubstitutionFlags flags = SFNone);
 
-	QStringList PerformSubstitutions (const QString& mask,
+	LMP_UTIL_API QStringList PerformSubstitutions (const QString& mask,
 			const QList<MediaInfo>& infos,
 			const std::function<void (int, QString)>& setter,
 			SubstitutionFlags flags = SFSafeFilesystem);

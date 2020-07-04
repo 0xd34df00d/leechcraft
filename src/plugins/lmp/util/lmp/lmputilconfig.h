@@ -29,34 +29,10 @@
 
 #pragma once
 
-#include <functional>
-#include <gst/gst.h>
-#include "lmputilconfig.h"
+#include <QtGlobal>
 
-template<typename Key, typename T>
-class QMap;
-class QString;
-class QByteArray;
-
-namespace LC
-{
-namespace LMP
-{
-namespace GstUtil
-{
-	LMP_UTIL_API void AddGhostPad (GstElement *from, GstElement *to, const char *name);
-
-	typedef QMap<QString, QString> TagMap_t;
-
-	LMP_UTIL_API bool ParseTagMessage (GstMessage *msg, TagMap_t& tags, const QString& region);
-
-	LMP_UTIL_API void PerformWProbe (GstPad *srcpad, const std::function<void ()>& functor);
-
-	LMP_UTIL_API void DebugPrintState (GstElement*, GstClockTime = 0.1 * GST_SECOND);
-
-	LMP_UTIL_API QString FixEncoding (const QString& str, const QString& region);
-
-	LMP_UTIL_API const char* GetTeePadTemplateName ();
-}
-}
-}
+#ifdef leechcraft_lmp_EXPORTS
+#  define LMP_UTIL_API Q_DECL_EXPORT
+#else
+#  define LMP_UTIL_API Q_DECL_IMPORT
+#endif

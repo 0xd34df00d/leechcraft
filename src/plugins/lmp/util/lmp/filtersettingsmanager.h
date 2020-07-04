@@ -30,12 +30,13 @@
 #pragma once
 
 #include <xmlsettingsdialog/basesettingsmanager.h>
+#include "lmputilconfig.h"
 
 namespace LC
 {
 namespace LMP
 {
-	class FilterSettingsManager : public Util::BaseSettingsManager
+	class LMP_UTIL_API FilterSettingsManager : public Util::BaseSettingsManager
 	{
 		Q_OBJECT
 		const QString FilterId_;
