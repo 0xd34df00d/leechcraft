@@ -30,7 +30,8 @@
 #include "summary.h"
 #include <QIcon>
 #include <util/util.h>
-#include <interfaces/entitytesthandleresult.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
 #include "core.h"
 #include "summarywidget.h"
 
@@ -114,8 +115,7 @@ namespace Summary
 
 	QIcon Summary::GetIcon () const
 	{
-		static QIcon icon ("lcicons:/plugins/summary/resources/images/summary.svg");
-		return icon;
+		return GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon ();
 	}
 
 	TabClasses_t Summary::GetTabClasses () const
