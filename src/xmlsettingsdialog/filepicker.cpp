@@ -85,24 +85,24 @@ void FilePicker::chooseFile ()
 	QString name;
 	switch (Type_)
 	{
-		case Type::ExistingDirectory:
-			name = QFileDialog::getExistingDirectory (this,
-					tr ("Select directory"),
-					LineEdit_->text (),
-					{});
-			break;
-		case Type::OpenFileName:
-			name = QFileDialog::getOpenFileName (this,
-					tr ("Select file"),
-					LineEdit_->text (),
-					Filter_);
-			break;
-		case Type::SaveFileName:
-			name = QFileDialog::getSaveFileName (this,
-					tr ("Select file"),
-					LineEdit_->text (),
-					Filter_);
-			break;
+	case Type::ExistingDirectory:
+		name = QFileDialog::getExistingDirectory (this,
+				tr ("Select directory"),
+				LineEdit_->text (),
+				{});
+		break;
+	case Type::OpenFileName:
+		name = QFileDialog::getOpenFileName (this,
+				tr ("Select file"),
+				LineEdit_->text (),
+				Filter_);
+		break;
+	case Type::SaveFileName:
+		name = QFileDialog::getSaveFileName (this,
+				tr ("Select file"),
+				LineEdit_->text (),
+				Filter_);
+		break;
 	}
 	if (name.isEmpty () && !ClearOnCancel_)
 		return;
