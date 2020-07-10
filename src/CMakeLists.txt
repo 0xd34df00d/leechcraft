@@ -227,7 +227,6 @@ option (ENABLE_BLOGIQUE "Build Blogique, LeechCraft blogging client" ${WITH_PLUG
 option (ENABLE_CERTMGR "Build CertMgr for managing SSL certificates" ${WITH_PLUGINS})
 option (ENABLE_CPULOAD "Build CpuLoad for, well, monitoring the CPU load" ${WITH_PLUGINS})
 cmake_dependent_option (ENABLE_DEVMON "Build Devmon, the devices monitor plugin" ${WITH_PLUGINS} "NOT WIN32 AND NOT APPLE" OFF)
-option (ENABLE_DLNIWE "Build DLNiwe, the DLNA server plugin" OFF)
 option (ENABLE_DOLOZHEE "Build Dolozhee, the feature request and bug reporter" ${WITH_PLUGINS})
 cmake_dependent_option (ENABLE_ELEEMINATOR "Build Leeminal, embedded LeechCraft terminal emulator" ${WITH_PLUGINS} "NOT WIN32" OFF)
 cmake_dependent_option (ENABLE_FENET "Build Fenet, WM control plugin" ${WITH_PLUGINS} "NOT WIN32 AND NOT APPLE" OFF)
@@ -728,10 +727,6 @@ endif ()
 
 if (ENABLE_DEVMON)
 	add_subdirectory (plugins/devmon)
-endif ()
-
-if (ENABLE_DLNIWE)
-	add_subdirectory (plugins/dlniwe)
 endif ()
 
 if (ENABLE_ELEEMINATOR)
