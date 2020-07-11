@@ -434,7 +434,7 @@ namespace BitTorrent
 			return;
 
 		TaskParameters tp = FromUserInitiated;
-		if (dialog.GetAddType () != Core::Started)
+		if (!dialog.ShouldAddAsStarted ())
 			tp |= NoAutostart;
 
 		QString savePath = dialog.GetSaveDirectory (),

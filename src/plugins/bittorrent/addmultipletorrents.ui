@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>518</width>
-    <height>205</height>
+    <height>238</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,36 +20,15 @@
   <layout class="QVBoxLayout">
    <item>
     <layout class="QGridLayout">
-     <item row="0" column="0">
-      <widget class="QLabel" name="label">
+     <item row="2" column="0">
+      <widget class="QLabel" name="label_3">
        <property name="text">
-        <string>Open directory:</string>
+        <string>Tags:</string>
        </property>
       </widget>
      </item>
-     <item row="0" column="1">
-      <layout class="QHBoxLayout">
-       <item>
-        <widget class="QLineEdit" name="OpenDirectory_"/>
-       </item>
-       <item>
-        <widget class="QPushButton" name="BrowseOpen_">
-         <property name="text">
-          <string>Browse...</string>
-         </property>
-         <property name="icon">
-          <iconset theme="document-open-folder"/>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="label_2">
-       <property name="text">
-        <string>Save directory:</string>
-       </property>
-      </widget>
+     <item row="2" column="1">
+      <widget class="LC::Util::TagsLineEdit" name="TagsEdit_" native="true"/>
      </item>
      <item row="1" column="1">
       <layout class="QHBoxLayout">
@@ -68,38 +47,54 @@
        </item>
       </layout>
      </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="label_3">
+     <item row="0" column="1">
+      <layout class="QHBoxLayout">
+       <item>
+        <widget class="QLineEdit" name="OpenDirectory_"/>
+       </item>
+       <item>
+        <widget class="QPushButton" name="BrowseOpen_">
+         <property name="text">
+          <string>Browse...</string>
+         </property>
+         <property name="icon">
+          <iconset theme="document-open-folder"/>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="label">
        <property name="text">
-        <string>Tags:</string>
+        <string>Open directory:</string>
        </property>
       </widget>
      </item>
-     <item row="3" column="0">
-      <widget class="QLabel" name="label_4">
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_2">
        <property name="text">
-        <string>Add as:</string>
+        <string>Save directory:</string>
        </property>
       </widget>
-     </item>
-     <item row="3" column="1">
-      <widget class="QComboBox" name="AddTypeBox_">
-       <item>
-        <property name="text">
-         <string>Started</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Paused</string>
-        </property>
-       </item>
-      </widget>
-     </item>
-     <item row="2" column="1">
-      <widget class="LC::Util::TagsLineEdit" name="TagsEdit_" native="true"/>
      </item>
     </layout>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
+      <string>Additional parameters</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <widget class="QCheckBox" name="AddAsStarted_">
+        <property name="text">
+         <string>Add as started</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
    </item>
    <item>
     <spacer>

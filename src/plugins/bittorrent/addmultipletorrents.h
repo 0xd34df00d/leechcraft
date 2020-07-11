@@ -30,7 +30,6 @@
 #pragma once
 
 #include "ui_addmultipletorrents.h"
-#include "core.h"
 
 namespace LC
 {
@@ -51,8 +50,8 @@ namespace BitTorrent
 
 		QString GetOpenDirectory () const;
 		QString GetSaveDirectory () const;
-		Core::AddType GetAddType () const;
 		QStringList GetTags () const;
+		bool ShouldAddAsStarted () const;
 	private slots:
 		void on_BrowseOpen__released ();
 		void on_BrowseSave__released ();

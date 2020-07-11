@@ -59,23 +59,14 @@ namespace BitTorrent
 		return Ui_.SaveDirectory_->text ();
 	}
 
-	Core::AddType AddMultipleTorrents::GetAddType () const
-	{
-		switch (Ui_.AddTypeBox_->currentIndex ())
-		{
-		case 0:
-			return Core::Started;
-		case 1:
-			return Core::Paused;
-		default:
-			return Core::Started;
-		}
-	}
-
 	QStringList AddMultipleTorrents::GetTags () const
 	{
-		auto tm = Core::Instance ()->GetProxy ()->GetTagsManager ();
-		return tm->SplitToIDs (Ui_.TagsEdit_->text ());
+		return GetProxyHolder ()->GetTagsManager ()->SplitToIDs (Ui_.TagsEdit_->text ());
+	}
+
+	bool AddMultipleTorrents::ShouldAddAsStarted () const
+	{
+		return Ui_.AddAsStarted_->isChecked ();
 	}
 
 	void AddMultipleTorrents::on_BrowseOpen__released ()
