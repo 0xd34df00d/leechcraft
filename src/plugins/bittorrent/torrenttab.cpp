@@ -430,9 +430,6 @@ namespace BitTorrent
 	void TorrentTab::handleOpenMultipleTorrentsTriggered ()
 	{
 		AddMultipleTorrents dialog;
-		new Util::TagsCompleter (dialog.GetEdit ());
-		dialog.GetEdit ()->AddSelector ();
-
 		if (dialog.exec () == QDialog::Rejected)
 			return;
 

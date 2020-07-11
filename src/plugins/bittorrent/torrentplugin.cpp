@@ -470,9 +470,6 @@ namespace BitTorrent
 	{
 		auto rootWM = Core::Instance ()->GetProxy ()->GetRootWindowsManager ();
 		AddMultipleTorrents dialog (rootWM->GetPreferredWindow ());
-		new Util::TagsCompleter (dialog.GetEdit ());
-		dialog.GetEdit ()->AddSelector ();
-
 		if (dialog.exec () == QDialog::Rejected)
 			return;
 

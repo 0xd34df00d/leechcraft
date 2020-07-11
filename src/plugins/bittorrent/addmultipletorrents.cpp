@@ -30,6 +30,7 @@
 #include <QFileDialog>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
+#include <util/tags/tagscompleter.h>
 #include "addmultipletorrents.h"
 #include "xmlsettingsmanager.h"
 
@@ -43,6 +44,9 @@ namespace BitTorrent
 		Ui_.setupUi (this);
 		Ui_.OpenDirectory_->setText (XmlSettingsManager::Instance ()->property ("LastTorrentDirectory").toString ());
 		Ui_.SaveDirectory_->setText (XmlSettingsManager::Instance ()->property ("LastSaveDirectory").toString ());
+
+		new Util::TagsCompleter (Ui_.TagsEdit_);
+		Ui_.TagsEdit_->AddSelector ();
 	}
 
 	QString AddMultipleTorrents::GetOpenDirectory () const
@@ -66,11 +70,6 @@ namespace BitTorrent
 		default:
 			return Core::Started;
 		}
-	}
-
-	Util::TagsLineEdit* AddMultipleTorrents::GetEdit ()
-	{
-		return Ui_.TagsEdit_;
 	}
 
 	QStringList AddMultipleTorrents::GetTags () const

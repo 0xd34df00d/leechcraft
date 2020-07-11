@@ -52,7 +52,6 @@ namespace BitTorrent
 		QString GetOpenDirectory () const;
 		QString GetSaveDirectory () const;
 		Core::AddType GetAddType () const;
-		Util::TagsLineEdit* GetEdit ();
 		QStringList GetTags () const;
 	private slots:
 		void on_BrowseOpen__released ();
