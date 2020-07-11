@@ -272,7 +272,10 @@ namespace BitTorrent
 
 		Toolbar_->addAction (OpenTorrent_);
 		Toolbar_->addAction (AddMagnet_);
+		Toolbar_->addAction (OpenMultipleTorrents_);
 		Toolbar_->addAction (RemoveTorrent_);
+		Toolbar_->addSeparator ();
+		Toolbar_->addAction (CreateTorrent_);
 		Toolbar_->addSeparator ();
 		Toolbar_->addAction (Resume_);
 		Toolbar_->addAction (Stop_);
