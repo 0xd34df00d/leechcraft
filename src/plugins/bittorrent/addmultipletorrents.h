@@ -41,13 +41,14 @@ namespace Util
 
 namespace BitTorrent
 {
-
 	class AddMultipleTorrents : public QDialog
-							  , private Ui::AddMultipleTorrents
 	{
 		Q_OBJECT
+
+		Ui::AddMultipleTorrents Ui_;
 	public:
-		AddMultipleTorrents (QWidget *parent = 0);
+		AddMultipleTorrents (QWidget *parent = nullptr);
+
 		QString GetOpenDirectory () const;
 		QString GetSaveDirectory () const;
 		Core::AddType GetAddType () const;

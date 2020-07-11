@@ -40,69 +40,67 @@ namespace BitTorrent
 	AddMultipleTorrents::AddMultipleTorrents (QWidget *parent)
 	: QDialog (parent)
 	{
-		setupUi (this);
-		OpenDirectory_->setText (XmlSettingsManager::Instance ()->
-				property ("LastTorrentDirectory").toString ());
-		SaveDirectory_->setText (XmlSettingsManager::Instance ()->
-				property ("LastSaveDirectory").toString ());
+		Ui_.setupUi (this);
+		Ui_.OpenDirectory_->setText (XmlSettingsManager::Instance ()->property ("LastTorrentDirectory").toString ());
+		Ui_.SaveDirectory_->setText (XmlSettingsManager::Instance ()->property ("LastSaveDirectory").toString ());
 	}
 
 	QString AddMultipleTorrents::GetOpenDirectory () const
 	{
-		return OpenDirectory_->text ();
+		return Ui_.OpenDirectory_->text ();
 	}
 
 	QString AddMultipleTorrents::GetSaveDirectory () const
 	{
-		return SaveDirectory_->text ();
+		return Ui_.SaveDirectory_->text ();
 	}
 
 	Core::AddType AddMultipleTorrents::GetAddType () const
 	{
-		switch (AddTypeBox_->currentIndex ())
+		switch (Ui_.AddTypeBox_->currentIndex ())
 		{
-			case 0:
-				return Core::Started;
-			case 1:
-				return Core::Paused;
-			default:
-				return Core::Started;
+		case 0:
+			return Core::Started;
+		case 1:
+			return Core::Paused;
+		default:
+			return Core::Started;
 		}
 	}
 
 	Util::TagsLineEdit* AddMultipleTorrents::GetEdit ()
 	{
-		return TagsEdit_;
+		return Ui_.TagsEdit_;
 	}
 
 	QStringList AddMultipleTorrents::GetTags () const
 	{
 		auto tm = Core::Instance ()->GetProxy ()->GetTagsManager ();
-		return tm->GetIDs (tm->Split (TagsEdit_->text ()));
+		return tm->SplitToIDs (Ui_.TagsEdit_->text ());
 	}
 
 	void AddMultipleTorrents::on_BrowseOpen__released ()
 	{
-		QString dir = QFileDialog::getExistingDirectory (this,
+		const auto& dir = QFileDialog::getExistingDirectory (this,
 				tr ("Select directory with torrents"),
-				OpenDirectory_->text ());
+				Ui_.OpenDirectory_->text ());
 		if (dir.isEmpty ())
 			return;
 
 		XmlSettingsManager::Instance ()->setProperty ("LastTorrentDirectory", dir);
-		OpenDirectory_->setText (dir);
+		Ui_.OpenDirectory_->setText (dir);
 	}
 
 	void AddMultipleTorrents::on_BrowseSave__released ()
 	{
-		QString dir = QFileDialog::getExistingDirectory (this,
+		const auto& dir = QFileDialog::getExistingDirectory (this,
 				tr ("Select save directory"),
-				SaveDirectory_->text ());
+				Ui_.SaveDirectory_->text ());
 		if (dir.isEmpty ())
 			return;
 
 		XmlSettingsManager::Instance ()->setProperty ("LastSaveDirectory", dir);
-		SaveDirectory_->setText (dir);
+		Ui_.SaveDirectory_->setText (dir);
 	}
 }
 }
