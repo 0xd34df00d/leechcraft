@@ -1005,6 +1005,20 @@ namespace BitTorrent
 		libtorrent::add_torrent_params atp;
 		try
 		{
+			if (const auto& resumeData = TryReadResumed (filename);
+					!resumeData.isEmpty ())
+				atp = libtorrent::read_resume_data (libtorrent::span { resumeData.constData (), resumeData.size () });
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to reuse torrent resume data for"
+					<< filename
+					<< "although it's been found; ignoring";
+		}
+
+		try
+		{
 			atp.ti = std::make_shared<libtorrent::torrent_info> (GetTorrentInfo (contents));
 			atp.storage_mode = GetCurrentStorageMode ();
 			atp.save_path = std::string (path.toUtf8 ().constData ());
