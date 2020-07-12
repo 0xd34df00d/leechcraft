@@ -430,6 +430,37 @@ namespace BitTorrent
 		setActionsEnabled ();
 	}
 
+	namespace
+	{
+		bool CheckExists (const QString& torrentPath, const QDir& saveDir)
+		{
+			QFile torrentFile { torrentPath };
+			if (!torrentFile.open (QIODevice::ReadOnly))
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "unable to open"
+						<< torrentPath
+						<< torrentFile.errorString ();
+				return false;
+			}
+
+			const auto& torrent = Core::Instance ()->GetTorrentInfo (torrentFile.readAll ());
+			const auto& files = torrent.files ();
+			switch (files.num_files ())
+			{
+			case 0:
+				return false;
+			case 1:
+				return saveDir.exists (QString::fromStdString (files.file_name (0).to_string ()));
+			default:
+			{
+				const auto& dirName = QString::fromStdString (files.name ());
+				return !dirName.isEmpty () && saveDir.exists (dirName);
+			}
+			}
+		}
+	}
+
 	void TorrentTab::handleOpenMultipleTorrentsTriggered ()
 	{
 		AddMultipleTorrents dialog;
@@ -440,18 +471,26 @@ namespace BitTorrent
 		if (!dialog.ShouldAddAsStarted ())
 			tp |= NoAutostart;
 
-		QString savePath = dialog.GetSaveDirectory (),
-				openPath = dialog.GetOpenDirectory ();
-		QDir dir (openPath);
-		QStringList names = dir.entryList (QStringList ("*.torrent"));
-		QStringList tags = dialog.GetTags ();
-		for (int i = 0; i < names.size (); ++i)
+		const auto& savePath = dialog.GetSaveDirectory ();
+		const auto& openPath = dialog.GetOpenDirectory ();
+		const auto& tags = dialog.GetTags ();
+		const QDir saveDir { savePath };
+		for (const auto& torrentName : QDir { openPath }.entryList (QStringList ("*.torrent")))
 		{
-			QString name = openPath;
-			if (!name.endsWith ('/'))
-				name += '/';
-			name += names.at (i);
-			Core::Instance ()->AddFile (name, savePath, tags, false);
+			auto torrentPath = openPath;
+			if (!torrentPath.endsWith ('/'))
+				torrentPath += '/';
+			torrentPath += torrentName;
+
+			if (dialog.OnlyIfExists ())
+			{
+				bool torrentExists = CheckExists (torrentPath, saveDir);
+				qDebug () << torrentName << torrentExists;
+				if (!torrentExists)
+					continue;
+			}
+
+			Core::Instance ()->AddFile (torrentPath, savePath, tags, false);
 		}
 		setActionsEnabled ();
 	}

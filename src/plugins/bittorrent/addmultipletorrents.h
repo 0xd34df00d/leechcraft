@@ -52,6 +52,7 @@ namespace BitTorrent
 		QString GetSaveDirectory () const;
 		QStringList GetTags () const;
 		bool ShouldAddAsStarted () const;
+		bool OnlyIfExists () const;
 	private slots:
 		void on_BrowseOpen__released ();
 		void on_BrowseSave__released ();

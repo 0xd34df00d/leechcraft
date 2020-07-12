@@ -69,6 +69,11 @@ namespace BitTorrent
 		return Ui_.AddAsStarted_->isChecked ();
 	}
 
+	bool AddMultipleTorrents::OnlyIfExists () const
+	{
+		return Ui_.OnlyIfExists_->isChecked ();
+	}
+
 	void AddMultipleTorrents::on_BrowseOpen__released ()
 	{
 		const auto& dir = QFileDialog::getExistingDirectory (this,
