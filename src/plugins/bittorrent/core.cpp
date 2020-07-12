@@ -1744,7 +1744,7 @@ namespace BitTorrent
 
 			const auto& prioritiesLine = settings.value ("Priorities").toByteArray ();
 			std::vector<libtorrent::download_priority_t> priorities;
-			priorities.resize (prioritiesLine.size ());
+			priorities.reserve (prioritiesLine.size ());
 			for (const auto ch : prioritiesLine)
 				priorities.emplace_back (ch);
 
