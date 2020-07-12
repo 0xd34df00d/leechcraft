@@ -969,6 +969,17 @@ namespace BitTorrent
 		{
 			set ? h.set_flags (flags) : h.unset_flags (flags);
 		}
+
+		QByteArray TryReadResumed (const QString& filename)
+		{
+			const auto& torrentsDir = Util::CreateIfNotExists ("bittorrent");
+
+			QFile resumeDataFile (torrentsDir.filePath (filename + ".resume"));
+			if (resumeDataFile.open (QIODevice::ReadOnly))
+				return resumeDataFile.readAll ();
+			else
+				return {};
+		}
 	}
 
 	QFuture<IDownload::Result> Core::AddFile (const QString& filename,
@@ -1701,20 +1712,12 @@ namespace BitTorrent
 				continue;
 			}
 
-			QFile resumeDataFile (torrentsDir.filePath (filename + ".resume"));
-			QByteArray resumed;
-			if (resumeDataFile.open (QIODevice::ReadOnly))
-			{
-				resumed = resumeDataFile.readAll ();
-				resumeDataFile.close ();
-			}
-
 			bool automanaged = settings.value ("AutoManaged", true).toBool ();
 			TaskParameters taskParameters = static_cast<TaskParameters> (settings
 						.value ("Parameters").toInt ());
 
 			auto handle = RestoreSingleTorrent (data,
-					resumed,
+					TryReadResumed (filename),
 					automanaged,
 					taskParameters & NoAutostart);
 			if (!handle.is_valid ())
