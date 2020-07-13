@@ -329,7 +329,7 @@
 				</item>
 				<item type="spinbox" property="CacheSize" default="8" minimum="1" maximum="256">
 					<label value="Cache size:" />
-					<suffix value=" KB" />
+					<suffix value=" MB" />
 				</item>
 				<item type="lineedit" property="AutomaticTags" default="automatic">
 					<label lang="en" value="Tags for automatic jobs:" />
