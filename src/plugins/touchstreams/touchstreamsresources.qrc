@@ -1,5 +1,0 @@
-<RCC>
-  <qresource prefix="/touchstreams" >
-    <file>resources/images/vk.svg</file>
-  </qresource>
-</RCC>

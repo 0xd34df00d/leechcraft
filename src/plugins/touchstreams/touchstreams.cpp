@@ -31,6 +31,8 @@
 #include <QIcon>
 #include <QStandardItem>
 #include <QFuture>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
 #include <util/sll/queuemanager.h>
 #include <util/sll/prelude.h>
 #include <util/sll/functional.h>
@@ -123,8 +125,7 @@ namespace TouchStreams
 
 	QIcon Plugin::GetServiceIcon () const
 	{
-		static QIcon icon (":/touchstreams/resources/images/vk.svg");
-		return icon;
+		return Proxy_->GetIconThemeManager ()->GetPluginIcon ();
 	}
 
 	QFuture<Media::IAudioPile::Result_t> Plugin::Search (const Media::AudioSearchRequest& req)
