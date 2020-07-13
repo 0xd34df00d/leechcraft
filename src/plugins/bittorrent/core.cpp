@@ -1765,7 +1765,8 @@ namespace BitTorrent
 					filename,
 					settings.value ("Tags").toStringList (),
 					automanaged,
-					taskParameters
+					taskParameters,
+					TorrentHandle::NoFuture {}
 				});
 			endInsertRows ();
 			qDebug () << "restored a torrent";

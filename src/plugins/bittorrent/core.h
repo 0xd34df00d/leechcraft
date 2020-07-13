@@ -116,33 +116,56 @@ namespace BitTorrent
 
 			bool PauseAfterCheck_ = false;
 
-			TorrentStruct (const libtorrent::torrent_handle& handle,
-					const QStringList& tags,
+			TorrentStruct (libtorrent::torrent_handle handle,
+					QStringList tags,
 					TaskParameters params)
-			: Handle_ { handle }
-			, Tags_ { tags }
+			: Handle_ { std::move (handle) }
+			, Tags_ { std::move (tags) }
 			, Parameters_ { params }
 			, Promise_ { QFutureInterface<IDownload::Result> {} }
 			{
 				Promise_->reportStarted ();
 			}
 
-			TorrentStruct (const std::vector<libtorrent::download_priority_t>& prios,
-					const libtorrent::torrent_handle& handle,
-					const QByteArray& torrentFile,
-					const QString& filename,
-					const QStringList& tags,
+			struct NoFuture {};
+
+			TorrentStruct (std::vector<libtorrent::download_priority_t> prios,
+					libtorrent::torrent_handle handle,
+					QByteArray torrentFile,
+					QString filename,
+					QStringList tags,
 					bool autoManaged,
-					TaskParameters params)
-			: FilePriorities_ { prios }
-			, Handle_ { handle }
-			, TorrentFileContents_ { torrentFile }
-			, TorrentFileName_ { filename }
-			, Tags_ { tags }
+					TaskParameters params,
+					NoFuture)
+			: FilePriorities_ { std::move (prios) }
+			, Handle_ { std::move (handle) }
+			, TorrentFileContents_ { std::move (torrentFile) }
+			, TorrentFileName_ { std::move (filename) }
+			, Tags_ { std::move (tags) }
 			, AutoManaged_ { autoManaged }
 			, Parameters_ { params }
-			, Promise_ { QFutureInterface<IDownload::Result> {} }
 			{
+			}
+
+			TorrentStruct (std::vector<libtorrent::download_priority_t> prios,
+					libtorrent::torrent_handle handle,
+					QByteArray torrentFile,
+					QString filename,
+					QStringList tags,
+					bool autoManaged,
+					TaskParameters params)
+			: TorrentStruct
+				{ std::move (prios)
+				, std::move (handle)
+				, std::move (torrentFile)
+				, std::move (filename)
+				, std::move (tags)
+				, autoManaged
+				, params
+				, NoFuture {}
+				}
+			{
+				Promise_ = QFutureInterface<IDownload::Result> {};
 				Promise_->reportStarted ();
 			}
 		};
