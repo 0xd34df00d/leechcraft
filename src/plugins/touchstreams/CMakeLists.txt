@@ -15,4 +15,5 @@ LC_DEFINE_PLUGIN (
 		tracksrestorehandler.cpp
 	SETTINGS touchstreamssettings.xml
 	QT_COMPONENTS Concurrent Network Widgets Xml
+	INSTALL_SHARE
 	)
