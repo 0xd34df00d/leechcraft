@@ -1,44 +1,28 @@
 cmake_minimum_required (VERSION 3.3)
 project (leechcraft_vrooby)
 include (InitLCPlugin NO_POLICY_SCOPE)
-include (CMakeDependentOption)
 
-include_directories (
-	${CMAKE_CURRENT_BINARY_DIR}
-	${Boost_INCLUDE_DIR}
-	${LEECHCRAFT_INCLUDE_DIR}
+option (ENABLE_VROOBY_UDISKS "Enable UDisks backend for Vrooby" ON)
+option (ENABLE_VROOBY_UDISKS2 "Enable UDisks2 backend for Vrooby" ON)
+
+add_compile_definitions (
+	$<$<BOOL:${ENABLE_VROOBY_UDISKS}>:ENABLE_UDISKS>
+	$<$<BOOL:${ENABLE_VROOBY_UDISKS2}>:ENABLE_UDISKS2>
 	)
-set (SRCS
-	vrooby.cpp
-	devbackend.cpp
-	trayview.cpp
-	flatmountableitems.cpp
+
+LC_DEFINE_PLUGIN (
+	SRCS
+		vrooby.cpp
+		devbackend.cpp
+		trayview.cpp
+		flatmountableitems.cpp
+		$<$<BOOL:${ENABLE_VROOBY_UDISKS}>:
+			backends/udisks/udisksbackend.cpp
+			>
+		$<$<BOOL:${ENABLE_VROOBY_UDISKS2}>:
+			backends/udisks2/udisks2backend.cpp
+			backends/udisks2/dbus/manager.cpp
+			>
+	QT_COMPONENTS DBus QuickWidgets
+	INSTALL_SHARE
 	)
-CreateTrs ("vrooby" "en;ru_RU" COMPILED_TRANSLATIONS)
-CreateTrsUpTarget("vrooby" "en;ru_RU" "${SRCS}" "" "")
-
-cmake_dependent_option (ENABLE_VROOBY_UDISKS "Enable UDisks backend for Vrooby" ON "NOT WIN32" OFF)
-cmake_dependent_option (ENABLE_VROOBY_UDISKS2 "Enable UDisks2 backend for Vrooby" ON "NOT WIN32" OFF)
-
-if (ENABLE_VROOBY_UDISKS)
-	add_subdirectory (backends/udisks)
-	add_definitions (-DENABLE_UDISKS)
-endif ()
-
-if (ENABLE_VROOBY_UDISKS2)
-	add_subdirectory (backends/udisks2)
-	add_definitions (-DENABLE_UDISKS2)
-endif ()
-
-add_library (leechcraft_vrooby SHARED
-	${COMPILED_TRANSLATIONS}
-	${SRCS}
-	)
-target_link_libraries (leechcraft_vrooby
-	${LEECHCRAFT_LIBRARIES}
-	${UDISKS_BACKEND_LIBS}
-	)
-install (TARGETS leechcraft_vrooby DESTINATION ${LC_PLUGINS_DEST})
-install (DIRECTORY share/qml5/vrooby DESTINATION ${LC_QML5_DEST})
-
-FindQtLibs (leechcraft_vrooby DBus QuickWidgets)
