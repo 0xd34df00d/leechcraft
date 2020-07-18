@@ -1,5 +1,0 @@
-<RCC>
-  <qresource prefix="/vrooby">
-	<file>resources/images/vrooby.svg</file>
-  </qresource>
-</RCC>

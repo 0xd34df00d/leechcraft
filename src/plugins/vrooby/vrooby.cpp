@@ -35,6 +35,8 @@
 #include <util/gui/geometry.h>
 #include <util/gui/unhoverdeletemixin.h>
 #include <util/sll/delayedexecutor.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/ientitymanager.h>
 
 #ifdef ENABLE_UDISKS
@@ -128,8 +130,7 @@ namespace Vrooby
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon ("lcicons:/vrooby/resources/images/vrooby.svg");
-		return icon;
+		return GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon ();
 	}
 
 	bool Plugin::SupportsDevType (DeviceType type) const

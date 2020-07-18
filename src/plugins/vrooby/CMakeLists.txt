@@ -14,8 +14,6 @@ set (SRCS
 	trayview.cpp
 	flatmountableitems.cpp
 	)
-set (RESOURCES vroobyresources.qrc)
-QtAddResources (RCCS ${RESOURCES})
 CreateTrs ("vrooby" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("vrooby" "en;ru_RU" "${SRCS}" "" "")
 
@@ -35,7 +33,6 @@ endif ()
 add_library (leechcraft_vrooby SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
-	${RCCS}
 	)
 target_link_libraries (leechcraft_vrooby
 	${LEECHCRAFT_LIBRARIES}
