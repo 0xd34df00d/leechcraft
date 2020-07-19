@@ -739,11 +739,6 @@ endif ()
 
 add_subdirectory (core)
 
-option (BUILD_CODEGEN "Build LeechCraft bindings generator (development only)" OFF)
-if (BUILD_CODEGEN)
-	add_subdirectory (codegen)
-endif ()
-
 install (DIRECTORY util/ DESTINATION include/leechcraft/util/
 	FILES_MATCHING PATTERN "*.h")
 install (DIRECTORY interfaces/ DESTINATION include/leechcraft/interfaces/
