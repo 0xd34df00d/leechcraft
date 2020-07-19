@@ -1,5 +1,0 @@
-<RCC>
-  <qresource prefix="/blogique/metida" >
-    <file>resources/images/metida.svg</file>
-  </qresource>
-</RCC>

@@ -119,8 +119,7 @@ namespace Blogique
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon ("lcicons:/plugins/blogique/resources/images/blogique.svg");
-		return icon;
+		return GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon ();
 	}
 
 	TabClasses_t Plugin::GetTabClasses () const

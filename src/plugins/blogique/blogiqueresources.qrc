@@ -1,5 +1,0 @@
-<RCC>
-	<qresource prefix="/plugins/blogique">
-		<file>resources/images/blogique.svg</file>
-	</qresource>
-</RCC>

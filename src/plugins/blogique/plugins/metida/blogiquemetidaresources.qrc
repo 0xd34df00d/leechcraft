@@ -1,4 +1,7 @@
 <RCC>
+	<qresource prefix="/blogique/metida" >
+		<file>resources/images/metida.svg</file>
+	</qresource>
 	<qresource prefix="/plugins/blogique/plugins/metida">
 		<file>resources/images/livejournalicon.svg</file>
 	</qresource>
