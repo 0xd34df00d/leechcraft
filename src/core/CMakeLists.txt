@@ -136,7 +136,7 @@ foreach (ITEM IN LISTS UTIL_FORMS XSD_FORMS)
 	list (APPEND UTILITY_FORMS "../${ITEM}")
 endforeach ()
 
-CreateTrs ("" "ro;ru_RU;de;uk_UA;it;ar;eo;es;tr;tt;en;be;fr;pl" COMPILED_TRANSLATIONS)
+CreateTrs (COMPILED_TRANSLATIONS)
 
 QT5_WRAP_UI (UIS_H ${FORMS})
 QT5_ADD_RESOURCES (RCC ${RESOURCES})

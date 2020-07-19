@@ -283,44 +283,20 @@ cmake_dependent_option (ENABLE_PIERRE "Build Pierre, Mac OS X integration layer"
 option (ENABLE_OTZERKALU "Build Otzerkalu, which allows one to download web sites recursively" OFF)
 
 find_package(Qt5LinguistTools REQUIRED)
-# Some Qt5 versions do not define a target for lconvert, so we need to find it ourselves
-if (Qt5LinguistTools_FOUND)
-	if (NOT TARGET Qt5::lconvert AND TARGET Qt5::lrelease)
-		get_target_property(_lrelease_location Qt5::lrelease LOCATION)
-		get_filename_component(_lrelease_path ${_lrelease_location} PATH)
-		find_program(QT_LCONVERT_EXECUTABLE NAMES lconvert-qt5 lconvert PATHS ${_lrelease_path} NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH)
-	elseif(TARGET Qt5::lconvert AND NOT Qt5_LCONVERT_EXECUTABLE)
-		# Newer Qt5 versions define the target, but not the Qt5_LCONVERT_EXECUTABLE variable for some reason
-		get_target_property(QT_LCONVERT_EXECUTABLE Qt5::lconvert LOCATION)
-	endif()
 
-	# Compatibility with the Qt4 variables
-	set(QT_LRELEASE_EXECUTABLE ${Qt5_LRELEASE_EXECUTABLE})
-	set(QT_LUPDATE_EXECUTABLE ${Qt5_LUPDATE_EXECUTABLE})
-	if (Qt5_LCONVERT_EXECUTABLE)
-		set(QT_LCONVERT_EXECUTABLE ${Qt5_LCONVERT_EXECUTABLE})
-	endif()
-endif()
-
-function (CreateTrs PlugName Langs CompiledTranVar)
-	string (LENGTH "${PlugName}" _pnameLength)
-	set (_basename "leechcraft")
-	if (_pnameLength)
-		set (_basename "${_basename}_${PlugName}")
+function (CreateTrs CompiledTranVar)
+	file (GLOB TS_SOURCES "*.ts")
+	if (TS_SOURCES)
+		list (TRANSFORM TS_SOURCES REPLACE "(.*)\\.ts" "\\1.qm" OUTPUT_VARIABLE QM_RESULTS)
+		add_custom_command (OUTPUT ${QM_RESULTS}
+			COMMAND Qt5::lrelease ${TS_SOURCES}
+			DEPENDS ${TS_SOURCES}
+			)
+		install (FILES ${QM_RESULTS} DESTINATION ${LC_TRANSLATIONS_DEST})
+	else ()
+		set (QM_RESULTS)
 	endif ()
-	foreach (_LANG ${Langs})
-		set (_tran ${_tran} ${_basename}_${_LANG}.ts)
-		set (_ctran ${_ctran} ${CMAKE_CURRENT_SOURCE_DIR}/${_basename}_${_LANG}.qm)
-	endforeach ()
-	set (${CompiledTranVar} ${_ctran} PARENT_SCOPE)
-
-	add_custom_command (OUTPUT ${_ctran}
-		COMMAND "${QT_LRELEASE_EXECUTABLE}" ${_tran}
-		DEPENDS ${_tran}
-		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-		)
-	install (FILES ${_ctran} DESTINATION ${LC_TRANSLATIONS_DEST})
-	set (${CompiledTranVar} ${_ctran} PARENT_SCOPE)
+	set (${CompiledTranVar} ${QM_RESULTS})
 endfunction ()
 
 function(LC_DEFINE_PLUGIN)
@@ -334,17 +310,7 @@ function(LC_DEFINE_PLUGIN)
 		${LEECHCRAFT_INCLUDE_DIR}
 	)
 
-	file (GLOB TS_SOURCES "*.ts")
-	if (TS_SOURCES)
-		list (TRANSFORM TS_SOURCES REPLACE "(.*)\\.ts" "\\1.qm" OUTPUT_VARIABLE QM_RESULTS)
-		add_custom_command (OUTPUT ${QM_RESULTS}
-			COMMAND "${QT_LRELEASE_EXECUTABLE}" ${TS_SOURCES}
-			DEPENDS ${TS_SOURCES}
-			)
-		install (FILES ${QM_RESULTS} DESTINATION ${LC_TRANSLATIONS_DEST})
-	else ()
-		set (QM_RESULTS)
-	endif ()
+	CreateTrs (QM_RESULTS)
 
 	set (FULL_NAME ${PROJECT_NAME})
 
