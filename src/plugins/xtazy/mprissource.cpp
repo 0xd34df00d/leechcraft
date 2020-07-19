@@ -126,7 +126,8 @@ namespace Xtazy
 	{
 		qDBusRegisterMetaType<PlayerStatus> ();
 
-		Util::Map (Players_, Util::BindMemFn (&MPRISSource::ConnectToBus, this));
+		for (const auto& player : Players_)
+			ConnectToBus (player);
 
 		SB_.connect ("org.freedesktop.DBus",
 				"/org/freedesktop/DBus",
