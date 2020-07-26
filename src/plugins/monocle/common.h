@@ -29,7 +29,7 @@
 
 #pragma once
 
-class QByteArray;
+class QString;
 
 namespace LC
 {
@@ -49,7 +49,7 @@ namespace Monocle
 		FitPage
 	};
 
-	QByteArray LayoutMode2Name (LayoutMode mode);
-	LayoutMode Name2LayoutMode (const QByteArray&);
+	QString LayoutMode2Name (LayoutMode mode);
+	LayoutMode Name2LayoutMode (const QString&);
 }
 }

@@ -28,13 +28,13 @@
  **********************************************************************/
 
 #include "common.h"
-#include <QByteArray>
+#include <QString>
 #include <QtDebug>
 #include <util/sll/unreachable.h>
 
 namespace LC::Monocle
 {
-	QByteArray LayoutMode2Name (LayoutMode mode)
+	QString LayoutMode2Name (LayoutMode mode)
 	{
 		switch (mode)
 		{
@@ -49,7 +49,7 @@ namespace LC::Monocle
 		Util::Unreachable ();
 	}
 
-	LayoutMode Name2LayoutMode (const QByteArray& name)
+	LayoutMode Name2LayoutMode (const QString& name)
 	{
 		if (name == "one")
 			return LayoutMode::OnePage;
