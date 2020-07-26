@@ -11,5 +11,6 @@ LC_DEFINE_PLUGIN (
 		xmlsettingsmanager.cpp
 	SETTINGS monoclefxbsettings.xml
 	QT_COMPONENTS Xml
+	LINK_LIBRARIES leechcraft_monocle
 	INSTALL_DESKTOP
 	)
