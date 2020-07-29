@@ -237,7 +237,7 @@ function (SUBPLUGIN suffix descr)
 	string (SUBSTRING ${PROJECT_NAME_UPPER} 10 -1 root_name)
 
 	set (defVal "ON")
-	if (NOT ${ARGN})
+	if (NOT ARGN)
 		set (defVal "OFF")
 	endif ()
 	string (TOLOWER ${suffix} suffixL)
