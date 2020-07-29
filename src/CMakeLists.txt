@@ -200,98 +200,6 @@ if (WITH_PLUGINS)
 	endif ()
 endif ()
 
-# Basic & traditional set of options
-option (ENABLE_ADVANCEDNOTIFICATIONS "Build Advanced Notifications module for more customizable notifications" ${WITH_PLUGINS})
-option (ENABLE_AGGREGATOR "Build Aggregator, the RSS/Atom feed reader" ${WITH_PLUGINS})
-option (ENABLE_ANHERO "Build AnHero, the crash handler" ${WITH_PLUGINS_UNIX})
-option (ENABLE_AUSCRIE "Build Auscrie, the auto screenshooter" ${WITH_PLUGINS})
-option (ENABLE_AZOTH "Build Azoth, the IM client" ${WITH_PLUGINS})
-option (ENABLE_DBUSMANAGER "Build DBusManager, the D-Bus support for the LeechCraft" ${WITH_PLUGINS_UNIX_FREE})
-option (ENABLE_DEADLYRICS "Build DeadLyrics, the client for the lyricwiki.org site" ${WITH_PLUGINS})
-option (ENABLE_GLANCE "Quick overview of tabs" ${WITH_PLUGINS})
-option (ENABLE_GMAILNOTIFIER "Build GMail Notifier which notifies about new mail in your GMail inbox" ${WITH_PLUGINS})
-option (ENABLE_HISTORYHOLDER "Build HistoryHolder, the keeper of the history" ${WITH_PLUGINS})
-option (ENABLE_HTTP "Build CSTP, the HTTP implementation" ${WITH_PLUGINS})
-option (ENABLE_HTTHARE "Build HttThare for sharing local documents via HTTP" ${WITH_PLUGINS})
-option (ENABLE_KINOTIFY "Build Kinotify, fancy kinetic notifications" ${WITH_PLUGINS})
-option (ENABLE_KNOWHOW "Build KnowHow for displaying tips of the day" ${WITH_PLUGINS})
-option (ENABLE_LMP "Build LMP, the LeechCraft Music Player" ${WITH_PLUGINS})
-option (ENABLE_NETWORKMONITOR "Build NetworkMonitor, the monitor for HTTP requests" ${WITH_PLUGINS})
-option (ENABLE_NEWLIFE "Build NewLife, the settings importer" ${WITH_PLUGINS})
-option (ENABLE_PINTAB "Build Pintab for pinning important tabs" ${WITH_PLUGINS})
-option (ENABLE_POGOOGLUE "Build Pogooglue, Google search client" ${WITH_PLUGINS})
-option (ENABLE_POSHUKU "Build Poshuku, the WWW Browser" ${WITH_PLUGINS})
-option (ENABLE_SECMAN "Build SecMan, security & personal data manager" ${WITH_PLUGINS})
-option (ENABLE_SEEKTHRU "Build SeekThru, the client for the OpenSearch-aware web sites" ${WITH_PLUGINS})
-option (ENABLE_SUMMARY "Build Summary, the plugin that shows a handy summary of the stuff going on" ${WITH_PLUGINS})
-option (ENABLE_SYNCER "Build Syncer, the synchronization plugin for LeechCraft" FALSE)
-option (ENABLE_TABSESSMANAGER "Build Tab Session Manager" ${WITH_PLUGINS})
-option (ENABLE_TABSLIST "Quick overview of tabs" ${WITH_PLUGINS})
-option (ENABLE_TORRENT "Build BitTorrent, the BitTorrent client" ${WITH_PLUGINS})
-
-# Traditional, but dependent on 3dparty
-option (ENABLE_POPISHU "Build Popishu, a simple QScintilla-based text editor" OFF)
-option (ENABLE_QROSP "Build Qrosp, the scripting support plugin" OFF)
-
-# New
-option (ENABLE_BLASQ "Build Blasq, client for cloud image storages like Picasa or Flickr" ${WITH_PLUGINS})
-option (ENABLE_BLOGIQUE "Build Blogique, LeechCraft blogging client" ${WITH_PLUGINS})
-option (ENABLE_CERTMGR "Build CertMgr for managing SSL certificates" ${WITH_PLUGINS})
-option (ENABLE_CPULOAD "Build CpuLoad for, well, monitoring the CPU load" ${WITH_PLUGINS})
-option (ENABLE_DEVMON "Build Devmon, the devices monitor plugin" ${WITH_PLUGINS_UNIX_FREE})
-option (ENABLE_DOLOZHEE "Build Dolozhee, the feature request and bug reporter" ${WITH_PLUGINS})
-option (ENABLE_ELEEMINATOR "Build Leeminal, embedded LeechCraft terminal emulator" ${WITH_PLUGINS_UNIX})
-option (ENABLE_FENET "Build Fenet, WM control plugin" ${WITH_PLUGINS_UNIX_FREE})
-option (ENABLE_FONTIAC "Build Fontiac for configurable font substitutions" ${WITH_PLUGINS})
-option (ENABLE_GACTS "Build Global Actions provider plugin" ${WITH_PLUGINS})
-option (ENABLE_HOTSENSORS "Build HotSensors, temperature sensors quark" ${WITH_PLUGINS_UNIX})
-option (ENABLE_HOTSTREAMS "Build HotStreams, radio streams provider module" ${WITH_PLUGINS})
-option (ENABLE_IMGASTE "Build Imgaste, simple image paster plugin" ${WITH_PLUGINS})
-option (ENABLE_INTERMUTKO "Build Intermutko for configuring HTTP Accept-Language header" ${WITH_PLUGINS})
-option (ENABLE_KBSWITCH "Build KBSwitch, a keyboard plugin" ${WITH_PLUGINS_UNIX_FREE})
-option (ENABLE_KRIGSTASK "Build Krigstask, applications switcher" ${WITH_PLUGINS_UNIX_FREE})
-option (ENABLE_LACKMAN "Build LackMan, the package manager for LeechCraft" ${WITH_PLUGINS})
-option (ENABLE_LADS "Build Lads, Ubuntu Unity integration layer" OFF)
-option (ENABLE_LASTFMSCROBBLE "Build Last.fm client plugin" ${WITH_PLUGINS})
-option (ENABLE_LAUGHTY "Build Desktop Notifications server" ${WITH_PLUGINS_UNIX_FREE})
-option (ENABLE_LEMON "Build LeechCraft Network Monitor" ${WITH_PLUGINS})
-option (ENABLE_LHTR "Build LeechCraft HTML Text editoR" ${WITH_PLUGINS})
-option (ENABLE_LIZNOO "Build Liznoo, our nice power manager" ${WITH_PLUGINS})
-option (ENABLE_MELLONETRAY "Build Mellonetray for providing tray area for third-party apps" ${WITH_PLUGINS_UNIX_FREE})
-option (ENABLE_MONOCLE "Build Monocle, modular document viewer for LeechCraft" ${WITH_PLUGINS})
-option (ENABLE_MUSICZOMBIE "Build MusicZombie, MusicBrainz.org client" ${WITH_PLUGINS})
-option (ENABLE_NACHEKU "Build Nacheku, clipboard/download dir watcher" ${WITH_PLUGINS})
-option (ENABLE_NAMAUTH "Build NamAuth, providing standard HTTP authentication facilities" ${WITH_PLUGINS})
-option (ENABLE_NETSTOREMANAGER "Build NetStoreManager for managing network data storages like Yandex.Disk" ${WITH_PLUGINS})
-option (ENABLE_OTLOZHU "Build Otlozhu, a GTD-inspired ToDo manager" ${WITH_PLUGINS})
-option (ENABLE_OORONEE "Build Ooronee, a quark for handling text and images dropped on it" ${WITH_PLUGINS})
-option (ENABLE_POLEEMERY "Build Poleemery, the personal finances manager" ${WITH_PLUGINS})
-option (ENABLE_ROSENTHAL "Build Rosenthal, the Hunspell-based spell checker service plugin" ${WITH_PLUGINS})
-option (ENABLE_SB2 "Build SB2, next-gen fluid sidebar" ${WITH_PLUGINS})
-option (ENABLE_SCROBLIBRE "Build ScrobLibre, multiaccount Scrobbler API 1.2 scrobbler" ${WITH_PLUGINS})
-option (ENABLE_SYSNOTIFY "Build Sysnotify for using D-Bus notification API" ${WITH_PLUGINS_UNIX_FREE})
-option (ENABLE_TEXTOGROOSE "Build Text-o-Groose, script-based lyrics fetcher" ${WITH_PLUGINS})
-option (ENABLE_TOUCHSTREAMS "Build TouchStreams, VK.com music streaming plugin" ${WITH_PLUGINS})
-option (ENABLE_TPI "Build Task Progress Indicator quark plugin" ${WITH_PLUGINS})
-option (ENABLE_VROOBY "Build Vrooby, removable storage devices manager" ${WITH_PLUGINS})
-option (ENABLE_WKPLUGINS "Build WKPlugins for WebKit spellcheck and notifications" OFF)
-option (ENABLE_XPROXY "Build XProxy, the advanced proxy manager" ${WITH_PLUGINS})
-option (ENABLE_XTAZY "Build Xtazy, plugin for keeping track of a currently playing song" ${WITH_PLUGINS})
-option (ENABLE_ZALIL "Build Zalil for uploading files to accountless filebin services" ${WITH_PLUGINS})
-
-option (ENABLE_CHOROID "Build Choroid, image viewer" OFF)
-option (ENABLE_SNAILS "Build Snails, LeechCraft mail client" OFF)
-
-# Dumb alternatives
-option (ENABLE_DUMBEEP "Build Dumbeep, a dumb sound notifier for those fearing true LMP power" OFF)
-
-option (ENABLE_Y7 "Build Y7, Windows 7 integration plugin" ${WITH_PLUGINS_WINDOWS})
-option (ENABLE_LAUNCHY "Build Launchy, third-party application launcher module" ${WITH_PLUGINS_UNIX})
-option (ENABLE_PIERRE "Build Pierre, Mac OS X integration layer" ${WITH_PLUGINS_APPLE})
-
-# Defunct
-option (ENABLE_OTZERKALU "Build Otzerkalu, which allows one to download web sites recursively" OFF)
-
 find_package(Qt5LinguistTools REQUIRED)
 
 function (CreateTrs CompiledTranVar)
@@ -351,365 +259,111 @@ endfunction()
 
 function (SUBPLUGIN suffix descr)
 	string (TOUPPER ${PROJECT_NAME} PROJECT_NAME_UPPER)
-	string (SUBSTRING ${PROJECT_NAME_UPPER} 11 -1 root_name)
+	string (SUBSTRING ${PROJECT_NAME_UPPER} 10 -1 root_name)
 
 	set (defVal "ON")
 	if (NOT ${ARGN})
 		set (defVal "OFF")
 	endif ()
 	string (TOLOWER ${suffix} suffixL)
-	option (ENABLE_${root_name}_${suffix} "${descr}" ${defVal})
-	if (ENABLE_${root_name}_${suffix})
+	option (ENABLE${root_name}_${suffix} "${descr}" ${defVal})
+	if (ENABLE${root_name}_${suffix})
 		include_directories (BEFORE ${CMAKE_CURRENT_SOURCE_DIR})
 		add_subdirectory (plugins/${suffixL})
 	endif ()
 endfunction ()
 
-if (ENABLE_SUMMARY)
-	add_subdirectory (plugins/summary)
-endif ()
-
-if (ENABLE_TORRENT)
-	add_subdirectory (plugins/bittorrent)
-endif ()
-
-if (ENABLE_AGGREGATOR)
-	add_subdirectory (plugins/aggregator)
-endif ()
-
-if (ENABLE_CHOROID)
-	add_subdirectory (plugins/choroid)
-endif ()
-
-if (ENABLE_POSHUKU)
-	add_subdirectory (plugins/poshuku)
-endif ()
-
-if (ENABLE_HTTP)
-	add_subdirectory (plugins/cstp)
-endif ()
-
-if (ENABLE_HTTHARE)
-	add_subdirectory (plugins/htthare)
-endif ()
-
-if (ENABLE_LMP)
-	add_subdirectory (plugins/lmp)
-endif ()
-
-if (ENABLE_DBUSMANAGER)
-	add_subdirectory (plugins/dbusmanager)
-endif ()
-
-if (ENABLE_DEADLYRICS)
-	add_subdirectory (plugins/deadlyrics)
-endif ()
-
-if (ENABLE_SEEKTHRU)
-	add_subdirectory (plugins/seekthru)
-endif ()
-
-if (ENABLE_NETWORKMONITOR)
-	add_subdirectory (plugins/networkmonitor)
-endif ()
-
-if (ENABLE_HISTORYHOLDER)
-	add_subdirectory (plugins/historyholder)
-endif ()
-
-if (ENABLE_NEWLIFE)
-	add_subdirectory (plugins/newlife)
-endif ()
-
-if (ENABLE_ANHERO)
-	add_subdirectory (plugins/anhero)
-endif ()
-
-if (ENABLE_KINOTIFY)
-	add_subdirectory (plugins/kinotify)
-endif ()
-
-if (ENABLE_AUSCRIE)
-	add_subdirectory (plugins/auscrie)
-endif ()
-
-if (ENABLE_AZOTH)
-	add_subdirectory (plugins/azoth)
-endif ()
-
-if (ENABLE_SECMAN)
-	add_subdirectory (plugins/secman)
-endif ()
-
-if (ENABLE_QROSP)
-	add_subdirectory (plugins/qrosp)
-endif ()
-
-if (ENABLE_POPISHU)
-	add_subdirectory (plugins/popishu)
-endif ()
-
-if (ENABLE_HARBINGER)
-	add_subdirectory (plugins/harbinger)
-endif ()
-
-if (ENABLE_HOTSENSORS)
-	add_subdirectory (plugins/hotsensors)
-endif ()
-
-if (ENABLE_HOTSTREAMS)
-	add_subdirectory (plugins/hotstreams)
-endif ()
-
-if (ENABLE_KRIGSTASK)
-	add_subdirectory (plugins/krigstask)
-endif ()
-
-if (ENABLE_LACKMAN)
-	add_subdirectory (plugins/lackman)
-endif ()
-
-if (ENABLE_LAUNCHY)
-	add_subdirectory (plugins/launchy)
-endif ()
-
-if (ENABLE_SYNCER)
-	add_subdirectory (plugins/syncer)
-endif ()
-
-if (ENABLE_SHELLOPEN)
-	add_subdirectory (plugins/shellopen)
-endif ()
-
-if (ENABLE_GMAILNOTIFIER)
-	add_subdirectory (plugins/gmailnotifier)
-endif ()
-
-if (ENABLE_OTZERKALU)
-	add_subdirectory (plugins/otzerkalu)
-endif ()
-
-if (ENABLE_ADVANCEDNOTIFICATIONS)
-	add_subdirectory (plugins/advancednotifications)
-endif ()
-
-if (ENABLE_GLANCE)
-	add_subdirectory (plugins/glance)
-endif ()
-
-if (ENABLE_TABSLIST)
-	add_subdirectory (plugins/tabslist)
-endif ()
-
-if (ENABLE_BLACKDASH)
-	add_subdirectory (plugins/blackdash)
-endif ()
-
-if (ENABLE_KNOWHOW)
-	add_subdirectory (plugins/knowhow)
-endif ()
-
-if (ENABLE_POLEEMERY)
-	add_subdirectory (plugins/poleemery)
-endif ()
-
-if (ENABLE_ROSENTHAL)
-	add_subdirectory (plugins/rosenthal)
-endif ()
-
-if (ENABLE_SB2)
-	add_subdirectory (plugins/sb2)
-endif ()
-
-if (ENABLE_SCROBLIBRE)
-	add_subdirectory (plugins/scroblibre)
-endif ()
-
-if (ENABLE_SNAILS)
-	add_subdirectory (plugins/snails)
-endif ()
-
-if (ENABLE_SYSNOTIFY)
-	add_subdirectory (plugins/sysnotify)
-endif ()
-
-if (ENABLE_TEXTOGROOSE)
-	add_subdirectory (plugins/textogroose)
-endif ()
-
-if (ENABLE_TOUCHSTREAMS)
-	add_subdirectory (plugins/touchstreams)
-endif ()
-
-if (ENABLE_TPI)
-	add_subdirectory (plugins/tpi)
-endif ()
-
-if (ENABLE_TWIFEE)
-	add_subdirectory (plugins/twifee)
-endif ()
-
-if (ENABLE_LIZNOO)
-	add_subdirectory (plugins/liznoo)
-endif ()
-
-if (ENABLE_MUSICZOMBIE)
-	add_subdirectory (plugins/musiczombie)
-endif ()
-
-if (ENABLE_NETSTOREMANAGER)
-	add_subdirectory (plugins/netstoremanager)
-endif ()
-
-if (ENABLE_TABSESSMANAGER)
-	add_subdirectory (plugins/tabsessmanager)
-endif ()
-
-if (ENABLE_LASTFMSCROBBLE)
-	add_subdirectory (plugins/lastfmscrobble)
-endif ()
-
-if (ENABLE_LAUGHTY)
-	add_subdirectory (plugins/laughty)
-endif ()
-
-if (ENABLE_LEMON)
-	add_subdirectory (plugins/lemon)
-endif ()
-
-if (ENABLE_LHTR)
-	add_subdirectory (plugins/lhtr)
-endif ()
-
-if (ENABLE_CEMENTO)
-	add_subdirectory (plugins/cemento)
-endif ()
-
-if (ENABLE_CPULOAD)
-	add_subdirectory (plugins/cpuload)
-endif ()
-
-if (ENABLE_CERTMGR)
-	add_subdirectory (plugins/certmgr)
-endif ()
-
-if (ENABLE_DEVMON)
-	add_subdirectory (plugins/devmon)
-endif ()
-
-if (ENABLE_ELEEMINATOR)
-	add_subdirectory (plugins/eleeminator)
-endif ()
-
-if (ENABLE_FENET)
-	add_subdirectory (plugins/fenet)
-endif ()
-
-if (ENABLE_FONTIAC)
-	add_subdirectory (plugins/fontiac)
-endif ()
-
-if (ENABLE_GACTS)
-	add_subdirectory (plugins/gacts)
-endif ()
-
-if (ENABLE_BLASQ)
-	add_subdirectory (plugins/blasq)
-endif ()
-
-if (ENABLE_BLOGIQUE)
-	add_subdirectory (plugins/blogique)
-endif ()
-
-if (ENABLE_MELLONETRAY)
-	add_subdirectory (plugins/mellonetray)
-endif ()
-
-if (ENABLE_MONOCLE)
-	add_subdirectory (plugins/monocle)
-endif ()
-
-if (ENABLE_PINTAB)
-	add_subdirectory (plugins/pintab)
-endif ()
-
-if (ENABLE_POGOOGLUE)
-	add_subdirectory (plugins/pogooglue)
-endif ()
-
-if (ENABLE_OTLOZHU)
-	add_subdirectory (plugins/otlozhu)
-endif ()
-
-if (ENABLE_OORONEE)
-	add_subdirectory (plugins/ooronee)
-endif ()
-
-if (ENABLE_IMGASTE)
-	add_subdirectory (plugins/imgaste)
-endif ()
-
-if (ENABLE_INTERMUTKO)
-	add_subdirectory (plugins/intermutko)
-endif ()
-
-if (ENABLE_KBSWITCH)
-	add_subdirectory (plugins/kbswitch)
-endif ()
-
-if (ENABLE_XPROXY)
-	add_subdirectory (plugins/xproxy)
-endif ()
-
-if (ENABLE_DOLOZHEE)
-	add_subdirectory (plugins/dolozhee)
-endif ()
-
-if (ENABLE_NACHEKU)
-	add_subdirectory (plugins/nacheku)
-endif ()
-
-if (ENABLE_NAMAUTH)
-	add_subdirectory (plugins/namauth)
-endif ()
-
-if (ENABLE_VROOBY)
-	add_subdirectory (plugins/vrooby)
-endif ()
-
-if (ENABLE_XTAZY)
-	add_subdirectory (plugins/xtazy)
-endif ()
-
-if (ENABLE_ZALIL)
-	add_subdirectory (plugins/zalil)
-endif ()
-
-if (ENABLE_DUMBEEP)
-	add_subdirectory (plugins/dumbeep)
-endif ()
-
-if (ENABLE_WKPLUGINS)
-	add_subdirectory (plugins/wkplugins)
-endif ()
-
-if (UNIX AND NOT APPLE)
-	if (ENABLE_LADS)
-		add_subdirectory (plugins/lads)
-	endif ()
-endif ()
-
-if (WIN32)
-	if (ENABLE_Y7)
-		add_subdirectory (plugins/y7)
-	endif ()
-endif ()
-
-if (APPLE)
-	if (ENABLE_PIERRE)
-		add_subdirectory (plugins/pierre)
-	endif ()
-endif ()
+# Basic & traditional set of options
+SUBPLUGIN (ADVANCEDNOTIFICATIONS "Build Advanced Notifications module for more customizable notifications" ${WITH_PLUGINS})
+SUBPLUGIN (AGGREGATOR "Build Aggregator, the RSS/Atom feed reader" ${WITH_PLUGINS})
+SUBPLUGIN (ANHERO "Build AnHero, the crash handler" ${WITH_PLUGINS_UNIX})
+SUBPLUGIN (AUSCRIE "Build Auscrie, the auto screenshooter" ${WITH_PLUGINS})
+SUBPLUGIN (AZOTH "Build Azoth, the IM client" ${WITH_PLUGINS})
+SUBPLUGIN (BITTORRENT "Build BitTorrent, the BitTorrent client" ${WITH_PLUGINS})
+SUBPLUGIN (DBUSMANAGER "Build DBusManager, the D-Bus support for the LeechCraft" ${WITH_PLUGINS_UNIX_FREE})
+SUBPLUGIN (DEADLYRICS "Build DeadLyrics, the client for the lyricwiki.org site" ${WITH_PLUGINS})
+SUBPLUGIN (GLANCE "Quick overview of tabs" ${WITH_PLUGINS})
+SUBPLUGIN (GMAILNOTIFIER "Build GMail Notifier which notifies about new mail in your GMail inbox" ${WITH_PLUGINS})
+SUBPLUGIN (HISTORYHOLDER "Build HistoryHolder, the keeper of the history" ${WITH_PLUGINS})
+SUBPLUGIN (CSTP "Build CSTP, the HTTP implementation" ${WITH_PLUGINS})
+SUBPLUGIN (HTTHARE "Build HttThare for sharing local documents via HTTP" ${WITH_PLUGINS})
+SUBPLUGIN (KINOTIFY "Build Kinotify, fancy kinetic notifications" ${WITH_PLUGINS})
+SUBPLUGIN (KNOWHOW "Build KnowHow for displaying tips of the day" ${WITH_PLUGINS})
+SUBPLUGIN (LMP "Build LMP, the LeechCraft Music Player" ${WITH_PLUGINS})
+SUBPLUGIN (NETWORKMONITOR "Build NetworkMonitor, the monitor for HTTP requests" ${WITH_PLUGINS})
+SUBPLUGIN (NEWLIFE "Build NewLife, the settings importer" ${WITH_PLUGINS})
+SUBPLUGIN (PINTAB "Build Pintab for pinning important tabs" ${WITH_PLUGINS})
+SUBPLUGIN (POGOOGLUE "Build Pogooglue, Google search client" ${WITH_PLUGINS})
+SUBPLUGIN (POSHUKU "Build Poshuku, the WWW Browser" ${WITH_PLUGINS})
+SUBPLUGIN (SECMAN "Build SecMan, security & personal data manager" ${WITH_PLUGINS})
+SUBPLUGIN (SEEKTHRU "Build SeekThru, the client for the OpenSearch-aware web sites" ${WITH_PLUGINS})
+SUBPLUGIN (SUMMARY "Build Summary, the plugin that shows a handy summary of the stuff going on" ${WITH_PLUGINS})
+SUBPLUGIN (SYNCER "Build Syncer, the synchronization plugin for LeechCraft" FALSE)
+SUBPLUGIN (TABSESSMANAGER "Build Tab Session Manager" ${WITH_PLUGINS})
+SUBPLUGIN (TABSLIST "Quick overview of tabs" ${WITH_PLUGINS})
+
+# Traditional, but dependent on 3dparty
+SUBPLUGIN (POPISHU "Build Popishu, a simple QScintilla-based text editor" OFF)
+SUBPLUGIN (QROSP "Build Qrosp, the scripting support plugin" OFF)
+
+# New
+SUBPLUGIN (BLASQ "Build Blasq, client for cloud image storages like Picasa or Flickr" ${WITH_PLUGINS})
+SUBPLUGIN (BLOGIQUE "Build Blogique, LeechCraft blogging client" ${WITH_PLUGINS})
+SUBPLUGIN (CERTMGR "Build CertMgr for managing SSL certificates" ${WITH_PLUGINS})
+SUBPLUGIN (CPULOAD "Build CpuLoad for, well, monitoring the CPU load" ${WITH_PLUGINS})
+SUBPLUGIN (DEVMON "Build Devmon, the devices monitor plugin" ${WITH_PLUGINS_UNIX_FREE})
+SUBPLUGIN (DOLOZHEE "Build Dolozhee, the feature request and bug reporter" ${WITH_PLUGINS})
+SUBPLUGIN (ELEEMINATOR "Build Leeminal, embedded LeechCraft terminal emulator" ${WITH_PLUGINS_UNIX})
+SUBPLUGIN (FENET "Build Fenet, WM control plugin" ${WITH_PLUGINS_UNIX_FREE})
+SUBPLUGIN (FONTIAC "Build Fontiac for configurable font substitutions" ${WITH_PLUGINS})
+SUBPLUGIN (GACTS "Build Global Actions provider plugin" ${WITH_PLUGINS})
+SUBPLUGIN (HOTSENSORS "Build HotSensors, temperature sensors quark" ${WITH_PLUGINS_UNIX})
+SUBPLUGIN (HOTSTREAMS "Build HotStreams, radio streams provider module" ${WITH_PLUGINS})
+SUBPLUGIN (IMGASTE "Build Imgaste, simple image paster plugin" ${WITH_PLUGINS})
+SUBPLUGIN (INTERMUTKO "Build Intermutko for configuring HTTP Accept-Language header" ${WITH_PLUGINS})
+SUBPLUGIN (KBSWITCH "Build KBSwitch, a keyboard plugin" ${WITH_PLUGINS_UNIX_FREE})
+SUBPLUGIN (KRIGSTASK "Build Krigstask, applications switcher" ${WITH_PLUGINS_UNIX_FREE})
+SUBPLUGIN (LACKMAN "Build LackMan, the package manager for LeechCraft" ${WITH_PLUGINS})
+SUBPLUGIN (LADS "Build Lads, Ubuntu Unity integration layer" OFF)
+SUBPLUGIN (LASTFMSCROBBLE "Build Last.fm client plugin" ${WITH_PLUGINS})
+SUBPLUGIN (LAUGHTY "Build Desktop Notifications server" ${WITH_PLUGINS_UNIX_FREE})
+SUBPLUGIN (LEMON "Build LeechCraft Network Monitor" ${WITH_PLUGINS})
+SUBPLUGIN (LHTR "Build LeechCraft HTML Text editoR" ${WITH_PLUGINS})
+SUBPLUGIN (LIZNOO "Build Liznoo, our nice power manager" ${WITH_PLUGINS})
+SUBPLUGIN (MELLONETRAY "Build Mellonetray for providing tray area for third-party apps" ${WITH_PLUGINS_UNIX_FREE})
+SUBPLUGIN (MONOCLE "Build Monocle, modular document viewer for LeechCraft" ${WITH_PLUGINS})
+SUBPLUGIN (MUSICZOMBIE "Build MusicZombie, MusicBrainz.org client" ${WITH_PLUGINS})
+SUBPLUGIN (NACHEKU "Build Nacheku, clipboard/download dir watcher" ${WITH_PLUGINS})
+SUBPLUGIN (NAMAUTH "Build NamAuth, providing standard HTTP authentication facilities" ${WITH_PLUGINS})
+SUBPLUGIN (NETSTOREMANAGER "Build NetStoreManager for managing network data storages like Yandex.Disk" ${WITH_PLUGINS})
+SUBPLUGIN (OTLOZHU "Build Otlozhu, a GTD-inspired ToDo manager" ${WITH_PLUGINS})
+SUBPLUGIN (OORONEE "Build Ooronee, a quark for handling text and images dropped on it" ${WITH_PLUGINS})
+SUBPLUGIN (POLEEMERY "Build Poleemery, the personal finances manager" ${WITH_PLUGINS})
+SUBPLUGIN (ROSENTHAL "Build Rosenthal, the Hunspell-based spell checker service plugin" ${WITH_PLUGINS})
+SUBPLUGIN (SB2 "Build SB2, next-gen fluid sidebar" ${WITH_PLUGINS})
+SUBPLUGIN (SCROBLIBRE "Build ScrobLibre, multiaccount Scrobbler API 1.2 scrobbler" ${WITH_PLUGINS})
+SUBPLUGIN (SYSNOTIFY "Build Sysnotify for using D-Bus notification API" ${WITH_PLUGINS_UNIX_FREE})
+SUBPLUGIN (TEXTOGROOSE "Build Text-o-Groose, script-based lyrics fetcher" ${WITH_PLUGINS})
+SUBPLUGIN (TOUCHSTREAMS "Build TouchStreams, VK.com music streaming plugin" ${WITH_PLUGINS})
+SUBPLUGIN (TPI "Build Task Progress Indicator quark plugin" ${WITH_PLUGINS})
+SUBPLUGIN (VROOBY "Build Vrooby, removable storage devices manager" ${WITH_PLUGINS})
+SUBPLUGIN (WKPLUGINS "Build WKPlugins for WebKit spellcheck and notifications" OFF)
+SUBPLUGIN (XPROXY "Build XProxy, the advanced proxy manager" ${WITH_PLUGINS})
+SUBPLUGIN (XTAZY "Build Xtazy, plugin for keeping track of a currently playing song" ${WITH_PLUGINS})
+SUBPLUGIN (ZALIL "Build Zalil for uploading files to accountless filebin services" ${WITH_PLUGINS})
+
+SUBPLUGIN (CHOROID "Build Choroid, image viewer" OFF)
+SUBPLUGIN (SNAILS "Build Snails, LeechCraft mail client" OFF)
+
+# Dumb alternatives
+SUBPLUGIN (DUMBEEP "Build Dumbeep, a dumb sound notifier for those fearing true LMP power" OFF)
+
+SUBPLUGIN (Y7 "Build Y7, Windows 7 integration plugin" ${WITH_PLUGINS_WINDOWS})
+SUBPLUGIN (LAUNCHY "Build Launchy, third-party application launcher module" ${WITH_PLUGINS_UNIX})
+SUBPLUGIN (PIERRE "Build Pierre, Mac OS X integration layer" ${WITH_PLUGINS_APPLE})
+
+# Defunct
+SUBPLUGIN (OTZERKALU "Build Otzerkalu, which allows one to download web sites recursively" OFF)
 
 if (NOT DEFINED LEECHCRAFT_VERSION)
 	find_program (GIT_CMD git)
