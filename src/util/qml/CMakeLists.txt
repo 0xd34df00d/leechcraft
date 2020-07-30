@@ -1,11 +1,3 @@
-if (WITH_QWT)
-	find_package (Qwt REQUIRED)
-	set (ADDITIONAL_LIBS ${QWT_LIBRARIES})
-	add_definitions (-DWITH_QWT)
-
-	include_directories (SYSTEM ${QWT_INCLUDE_DIRS})
-endif ()
-
 set (QML_SRCS
 	colorthemeproxy.cpp
 	settableiconprovider.cpp
@@ -20,6 +12,11 @@ set (QML_SRCS
 	)
 
 if (WITH_QWT)
+	find_package (PkgConfig)
+	pkg_search_module (Qwt REQUIRED IMPORTED_TARGET Qt5Qwt Qt5Qwt6)
+	set (ADDITIONAL_LIBS PkgConfig::Qwt)
+	add_definitions (-DWITH_QWT)
+
 	set (QML_SRCS ${QML_SRCS} plotitem.cpp)
 endif ()
 
