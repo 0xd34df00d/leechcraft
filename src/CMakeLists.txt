@@ -347,20 +347,7 @@ if (NOT DEFINED LEECHCRAFT_VERSION)
 		OUTPUT_STRIP_TRAILING_WHITESPACE
 		)
 	if (NOT DEFINED LEECHCRAFT_VERSION)
-		if (WIN32)
-			execute_process(COMMAND "date" "/T" OUTPUT_VARIABLE
-				${LEECHCRAFT_VERSION})
-			string(REGEX REPLACE "(..)/(..)/..(..).*" "\\3\\2\\1"
-				${LEECHCRAFT_VERSION} ${${LEECHCRAFT_VERSION}})
-		elseif(UNIX)
-			execute_process(COMMAND "date" "+%d/%m/%Y" OUTPUT_VARIABLE
-				${LEECHCRAFT_VERSION})
-			string(REGEX REPLACE "(..)/(..)/..(..).*" "\\3\\2\\1"
-				${LEECHCRAFT_VERSION} ${${LEECHCRAFT_VERSION}})
-		else ()
-			message(SEND_ERROR "date not implemented")
-			set(${RESULT} 000000)
-		endif ()
+		message (ERROR "Please define LeechCraft version")
 	endif ()
 	message (STATUS "Detected LeechCraft version: ${LEECHCRAFT_VERSION}")
 endif ()
