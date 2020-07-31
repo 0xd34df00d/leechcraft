@@ -23,7 +23,6 @@
 #include <QModelIndex>
 #include <QSessionManager>
 #include <QInputDialog>
-#include <QSplashScreen>
 #include <QProcess>
 #include <QTimer>
 #include <QCryptographicHash>
@@ -41,7 +40,6 @@
 #include <fcntl.h>
 #endif
 
-#include <interfaces/isyncable.h>
 #include <interfaces/ihaveshortcuts.h>
 #include <util/util.h>
 #include <util/structuresops.h>
