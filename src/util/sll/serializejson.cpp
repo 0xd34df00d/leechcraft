@@ -27,10 +27,24 @@ namespace Util
 	{
 		QFile file { filename };
 		if (!file.open (QIODevice::WriteOnly))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to open file"
+					<< file.fileName ()
+					<< "for writing:"
+					<< file.errorString ();
 			return SerializeResult_t::Left (file.errorString ());
+		}
 
 		if (!file.write (SerializeJson (var, compact)))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to write to file"
+					<< file.fileName ()
+					<< ":"
+					<< file.errorString ();
 			return SerializeResult_t::Left (file.errorString ());
+		}
 
 		return SerializeResult_t::Right ({});
 	}
