@@ -23,7 +23,7 @@ namespace Util
 
 	using SerializeResult_t = Either<QString, Void>;
 
-	UTIL_SLL_API SerializeResult_t SerializeJsonToFile (const QString& filename, const QVariant& var, bool compact)
+	SerializeResult_t SerializeJsonToFile (const QString& filename, const QVariant& var, bool compact)
 	{
 		QFile file { filename };
 		if (!file.open (QIODevice::WriteOnly))
