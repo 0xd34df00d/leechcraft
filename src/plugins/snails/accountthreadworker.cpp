@@ -333,7 +333,8 @@ namespace Snails
 			{
 				const auto& type = part->getType ();
 
-				if (type.getType () == "text")
+				if (type.getType () == "text" &&
+						(part->getDisposition ().getName () == "inline" || part->getName ().empty ()))
 					return;
 
 				if (type.getType () == "multipart")
