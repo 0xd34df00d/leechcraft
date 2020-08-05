@@ -381,7 +381,6 @@ install (DIRECTORY share/qml5/common DESTINATION ${LC_QML5_DEST}/org/LC)
 install (DIRECTORY freedesktop/icons/ DESTINATION share/icons/hicolor)
 if (UNIX AND NOT APPLE)
 	install (FILES InitLCPlugin.cmake DESTINATION share/cmake/Modules)
-	install (DIRECTORY cmake/ DESTINATION share/leechcraft/cmake)
 	install (FILES freedesktop/leechcraft-qt5.desktop DESTINATION share/applications)
 	install (FILES scripts/leechcraft-add-file DESTINATION bin PERMISSIONS
 		OWNER_EXECUTE OWNER_WRITE OWNER_READ GROUP_EXECUTE GROUP_READ
