@@ -375,8 +375,7 @@ install (FILES xmlsettingsdialog/xsdconfig.h DESTINATION include/leechcraft/xmls
 install (FILES xmlsettingsdialog/datasourceroles.h DESTINATION include/leechcraft/xmlsettingsdialog/)
 install (FILES ${CMAKE_CURRENT_BINARY_DIR}/config.h DESTINATION include/leechcraft/)
 
-install (DIRECTORY share/leechcraft/ DESTINATION ${LC_SHARE_DEST})
-install (DIRECTORY share/qml5/ DESTINATION ${LC_QML5_DEST})
+install (DIRECTORY share/ DESTINATION ${LC_SHARE_DEST})
 
 install (DIRECTORY freedesktop/icons/ DESTINATION share/icons/hicolor)
 if (UNIX AND NOT APPLE)
