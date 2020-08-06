@@ -338,11 +338,9 @@ configure_file (config.h.in config.h)
 configure_file (FindLeechCraft.cmake.in FindLeechCraft-qt5.cmake @ONLY)
 install (FILES ${CMAKE_CURRENT_BINARY_DIR}/FindLeechCraft-qt5.cmake DESTINATION ${LC_SHARE_DEST}/cmake/)
 
-if (APPLE)
+if (APPLE AND NOT USE_UNIX_LAYOUT)
 	configure_file (Info.plist.in Info.plist)
-	if (NOT USE_UNIX_LAYOUT)
-		install (FILES ${CMAKE_CURRENT_BINARY_DIR}/Info.plist DESTINATION ${LC_BINDIR}/../)
-	endif ()
+	install (FILES ${CMAKE_CURRENT_BINARY_DIR}/Info.plist DESTINATION ${LC_BINDIR}/../)
 endif ()
 
 add_subdirectory (core)
