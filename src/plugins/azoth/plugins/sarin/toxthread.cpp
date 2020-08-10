@@ -599,7 +599,7 @@ namespace Sarin
 			qWarning () << Q_FUNC_INFO
 					<< "got standard exception:"
 					<< e.what ();
-			emit fatalException (std::make_shared<Util::ConcurrentException<Util::NewType<std::exception, NewTypeTag>>> (e));
+			emit fatalException (std::make_shared<Util::ConcurrentStdException> (e));
 		}
 	}
 }
