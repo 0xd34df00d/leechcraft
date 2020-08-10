@@ -30,8 +30,8 @@ namespace Sarin
 		const char* what () const noexcept;
 	};
 
-	using ThreadException = Util::ConcurrentException<Util::NewType<TextExceptionBase, NewTypeTag>>;
-	using UnknownFriendException = Util::ConcurrentException<Util::NewType<TextExceptionBase, NewTypeTag>>;
+	using ThreadException = Util::ConcurrentException<Util::NewType<TextExceptionBase, struct ThreadTag>>;
+	using UnknownFriendException = Util::ConcurrentException<Util::NewType<TextExceptionBase, struct UnknownFriendTag>>;
 
 	template<typename CodeType = int>
 	class TypedCodeExceptionBase
@@ -62,9 +62,9 @@ namespace Sarin
 		}
 	};
 
-	using CallInitiateException = Util::ConcurrentException<Util::NewType<TypedCodeExceptionBase<TOXAV_ERR_CALL>, NewTypeTag>>;
-	using FrameSendException = Util::ConcurrentException<Util::NewType<TypedCodeExceptionBase<TOXAV_ERR_SEND_FRAME>, NewTypeTag>>;
-	using CallAnswerException = Util::ConcurrentException<Util::NewType<TypedCodeExceptionBase<TOXAV_ERR_ANSWER>, NewTypeTag>>;
+	using CallInitiateException = Util::ConcurrentException<Util::NewType<TypedCodeExceptionBase<TOXAV_ERR_CALL>, struct CallInitiateTag>>;
+	using FrameSendException = Util::ConcurrentException<Util::NewType<TypedCodeExceptionBase<TOXAV_ERR_SEND_FRAME>, struct FrameSendTag>>;
+	using CallAnswerException = Util::ConcurrentException<Util::NewType<TypedCodeExceptionBase<TOXAV_ERR_ANSWER>, struct CallAnswerTag>>;
 
 	template<typename T>
 	using CommandCodeException = Util::ConcurrentException<TypedCodeExceptionBase<T>>;
