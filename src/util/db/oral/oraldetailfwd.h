@@ -8,8 +8,6 @@
 
 #pragma once
 
-#include <boost/optional.hpp>
-
 namespace LC::Util::oral::detail
 {
 	struct CachedFieldsData
