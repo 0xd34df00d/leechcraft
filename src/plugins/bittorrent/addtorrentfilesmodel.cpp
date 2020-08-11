@@ -156,7 +156,7 @@ namespace BitTorrent
 			const auto& parentItem = MkParentIfDoesntExist (path);
 
 			const auto& item = parentItem->AppendChild (parentItem);
-			item->Name_ = QString::fromStdString (path.filename ().u8string ());
+			item->Name_ = QString::fromStdU16String (path.filename ().u16string ());
 			item->ParentPath_ = path.parent_path ();
 			item->FileIndex_ = fileIdx++;
 			item->SubtreeSize_ = entry.Size_;
