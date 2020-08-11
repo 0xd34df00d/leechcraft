@@ -8,7 +8,7 @@
 
 #include "entrybase.h"
 #include <variant>
-#include <boost/optional.hpp>
+#include <optional>
 #include <QIcon>
 #include <QXmlStreamWriter>
 #include <util/util.h>
@@ -108,7 +108,7 @@ namespace Murm
 			const QString Url_;
 			const QString Alt_ = {};
 
-			const boost::optional<QSize> Size_ = {};
+			const std::optional<QSize> Size_ = {};
 
 			SimpleImageInfo (const QString& url)
 			: Url_ { url }
@@ -130,13 +130,13 @@ namespace Murm
 
 			const QString Alt_;
 
-			const boost::optional<QSize> FullSize_;
-			const boost::optional<QSize> ThumbSize_;
+			const std::optional<QSize> FullSize_;
+			const std::optional<QSize> ThumbSize_;
 		};
 
 		using ImageInfo = std::variant<SimpleImageInfo, LinkImageInfo>;
 
-		void WriteImgDims (QXmlStreamWriter& w, const boost::optional<QSize>& size)
+		void WriteImgDims (QXmlStreamWriter& w, const std::optional<QSize>& size)
 		{
 			if (!size)
 				return;

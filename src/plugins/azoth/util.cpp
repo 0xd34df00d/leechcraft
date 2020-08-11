@@ -8,7 +8,6 @@
 
 #include "util.h"
 #include <cmath>
-#include <boost/optional.hpp>
 #include <QString>
 #include <QWizard>
 #include <QList>

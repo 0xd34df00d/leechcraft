@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include <boost/optional.hpp>
+#include <optional>
 #include <QObject>
 #include <QSqlDatabase>
 #include <QSqlQuery>
@@ -33,8 +33,8 @@ namespace Xoox
 	public:
 		CapsStorageOnDisk (const ILoadProgressReporter_ptr&, QObject* = nullptr);
 
-		boost::optional<QStringList> GetFeatures (const QByteArray&) const;
-		boost::optional<QList<QXmppDiscoveryIq::Identity>> GetIdentities (const QByteArray&) const;
+		std::optional<QStringList> GetFeatures (const QByteArray&) const;
+		std::optional<QList<QXmppDiscoveryIq::Identity>> GetIdentities (const QByteArray&) const;
 
 		void AddFeatures (const QByteArray&, const QStringList&);
 		void AddIdentities (const QByteArray&, const QList<QXmppDiscoveryIq::Identity>&);
