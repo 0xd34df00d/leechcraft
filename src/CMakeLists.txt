@@ -171,7 +171,7 @@ function (CreateTrs CompiledTranVar)
 	else ()
 		set (QM_RESULTS)
 	endif ()
-	set (${CompiledTranVar} ${QM_RESULTS})
+	set (${CompiledTranVar} ${QM_RESULTS} PARENT_SCOPE)
 endfunction ()
 
 function(LC_DEFINE_PLUGIN)
