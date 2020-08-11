@@ -22,9 +22,9 @@ namespace Util
 {
 	void MonadPlusTest::testBoostOptionalMplus ()
 	{
-		const boost::optional<int> val1 { 1 };
-		const boost::optional<int> val2 { 2 };
-		const auto nothing = Mzero<boost::optional<int>> ();
+		const std::optional<int> val1 { 1 };
+		const std::optional<int> val2 { 2 };
+		const auto nothing = Mzero<std::optional<int>> ();
 
 		const auto res1 = val1 + val2;
 		const auto res2 = val1 + nothing;
@@ -39,10 +39,10 @@ namespace Util
 
 	void MonadPlusTest::testBoostOptionalMsum ()
 	{
-		const boost::optional<int> val1 { 1 };
-		const boost::optional<int> val2 { 2 };
-		const boost::optional<int> val3 { 3 };
-		const auto nothing = Mzero<boost::optional<int>> ();
+		const std::optional<int> val1 { 1 };
+		const std::optional<int> val2 { 2 };
+		const std::optional<int> val3 { 3 };
+		const auto nothing = Mzero<std::optional<int>> ();
 
 		const auto res1 = Msum ({ val1, val2, val3 });
 		const auto res2 = Msum ({ val1, nothing });
@@ -59,10 +59,10 @@ namespace Util
 
 	void MonadPlusTest::testLazyBoostOptionalMsum ()
 	{
-		const auto val1 = MakeLazy (boost::optional<int> { 1 });
-		const auto val2 = MakeLazy (boost::optional<int> { 2 });
-		const auto val3 = MakeLazy (boost::optional<int> { 3 });
-		const auto nothing = MakeLazy (Mzero<boost::optional<int>> ());
+		const auto val1 = MakeLazy (std::optional<int> { 1 });
+		const auto val2 = MakeLazy (std::optional<int> { 2 });
+		const auto val3 = MakeLazy (std::optional<int> { 3 });
+		const auto nothing = MakeLazy (Mzero<std::optional<int>> ());
 
 		const auto res1 = Msum ({ val1, val2, val3 });
 		const auto res2 = Msum ({ val1, nothing });

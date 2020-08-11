@@ -200,38 +200,16 @@ namespace Util
 		using WrapVoidResult_t = typename WrapVoidResult<T>::Type;
 	}
 
-	/** @brief Implementation of the Functor class for boost.optional.
+	/** @brief Implementation of the Functor class for std::optional.
 	 *
 	 * The implementation applies the function to the contents of the
-	 * boost.optional if it's not empty, otherwise it just leaves an
-	 * empty boost.optional.
+	 * std::optional if it's not empty, otherwise it just leaves an
+	 * empty std::optional.
 	 *
 	 * This is analogous to the Maybe type.
 	 *
-	 * @tparam T The element type contained inside the boost.optional.
+	 * @tparam T The element type contained inside the std::optional.
 	 */
-	template<typename T>
-	struct InstanceFunctor<boost::optional<T>>
-	{
-		template<typename F>
-		using FmapResult_t = boost::optional<detail::WrapVoidResult_t<std::decay_t<std::result_of_t<F (T)>>>>;
-
-		template<typename F>
-		static FmapResult_t<F> Apply (const boost::optional<T>& t, const F& f)
-		{
-			if (!t)
-				return {};
-
-			if constexpr (std::is_same_v<FmapResult_t<F>, boost::optional<Void>>)
-			{
-				std::invoke (f, *t);
-				return { Void {} };
-			}
-			else
-				return { std::invoke (f, *t) };
-		}
-	};
-
 	template<typename T>
 	struct InstanceFunctor<std::optional<T>>
 	{

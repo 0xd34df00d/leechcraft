@@ -85,20 +85,6 @@ namespace Util
 	} Msum {};
 
 	template<typename T>
-	struct InstanceMonadPlus<boost::optional<T>>
-	{
-		static boost::optional<T> Mzero ()
-		{
-			return {};
-		}
-
-		static boost::optional<T> Mplus (const boost::optional<T>& t1, const boost::optional<T>& t2)
-		{
-			return t1 ? t1 : t2;
-		}
-	};
-
-	template<typename T>
 	struct InstanceMonadPlus<std::optional<T>>
 	{
 		static std::optional<T> Mzero ()
