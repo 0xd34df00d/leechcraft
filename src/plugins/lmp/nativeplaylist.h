@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include <boost/optional.hpp>
+#include <optional>
 #include "engine/audiosource.h"
 
 namespace LC
@@ -18,7 +18,7 @@ namespace LMP
 	class Playlist;
 	struct MediaInfo;
 
-	using NativePlaylistItem_t = QPair<AudioSource, boost::optional<MediaInfo>>;
+	using NativePlaylistItem_t = QPair<AudioSource, std::optional<MediaInfo>>;
 	using NativePlaylist_t = QList<NativePlaylistItem_t>;
 
 	Playlist ToDumbPlaylist (const NativePlaylist_t&);

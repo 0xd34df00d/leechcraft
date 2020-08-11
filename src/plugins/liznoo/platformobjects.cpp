@@ -9,7 +9,6 @@
 #include "platformobjects.h"
 #include <vector>
 #include <memory>
-#include <boost/optional.hpp>
 #include <QtDebug>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>

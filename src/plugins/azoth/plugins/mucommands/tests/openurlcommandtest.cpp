@@ -15,7 +15,7 @@
 QTEST_APPLESS_MAIN (LC::Azoth::MuCommands::OpenUrlCommandTest)
 
 template<typename T>
-QDebug operator<< (QDebug dbg, const boost::optional<T>& opt)
+QDebug operator<< (QDebug dbg, const std::optional<T>& opt)
 {
 	if (opt)
 		dbg.nospace () << *opt;

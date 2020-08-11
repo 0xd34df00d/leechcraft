@@ -9,7 +9,7 @@
 #include "customwebview.h"
 #include <cmath>
 #include <limits>
-#include <boost/optional.hpp>
+#include <optional>
 #include <qwebframe.h>
 #include <qwebinspector.h>
 #include <QMenu>
@@ -657,7 +657,7 @@ namespace WebKitView
 			}
 		};
 
-		boost::optional<IWebView::Feature> ConvertFeature (QWebPage::Feature feature)
+		std::optional<IWebView::Feature> ConvertFeature (QWebPage::Feature feature)
 		{
 			switch (feature)
 			{

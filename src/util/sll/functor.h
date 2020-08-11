@@ -23,7 +23,7 @@ namespace Util
 	 * Minimal complete definition:
 	 * - Apply() function and FmapResult_t alias.
 	 *
-	 * For a reference imolementation please see InstanceFunctor<boost::optional<T>>.
+	 * For a reference imolementation please see InstanceFunctor<std::optional<T>>.
 	 *
 	 * @tparam T The functor type instantiated with some concrete
 	 * containee type.

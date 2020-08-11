@@ -61,7 +61,7 @@ namespace LMP
 
 		NativePlaylist_t GetSources (const QModelIndex&) const;
 
-		boost::optional<MediaInfo> TryResolveMediaInfo (const QUrl&) const;
+		std::optional<MediaInfo> TryResolveMediaInfo (const QUrl&) const;
 	private slots:
 		void handleStaticPlaylistsChanged ();
 	};

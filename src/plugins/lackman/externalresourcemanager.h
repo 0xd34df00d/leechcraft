@@ -8,7 +8,6 @@
 
 #ifndef PLUGINS_LACKMAN_EXTERNALRESOURCEMANAGER_H
 #define PLUGINS_LACKMAN_EXTERNALRESOURCEMANAGER_H
-#include <boost/optional.hpp>
 #include <QObject>
 #include <QUrl>
 #include <QDir>

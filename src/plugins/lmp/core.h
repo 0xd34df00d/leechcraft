@@ -9,7 +9,6 @@
 #pragma once
 
 #include <memory>
-#include <boost/optional.hpp>
 #include <QObject>
 #include <interfaces/core/icoreproxy.h>
 
@@ -92,7 +91,7 @@ namespace LMP
 		Player* GetPlayer () const;
 		PreviewHandler* GetPreviewHandler () const;
 
-		boost::optional<MediaInfo> TryURLResolve (const QUrl&) const;
+		std::optional<MediaInfo> TryURLResolve (const QUrl&) const;
 	public slots:
 		void rescan ();
 	signals:

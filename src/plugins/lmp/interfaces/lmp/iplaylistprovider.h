@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include <boost/optional.hpp>
+#include <optional>
 #include <QtPlugin>
 #include <QUrl>
 #include <interfaces/media/audiostructs.h>
@@ -34,7 +34,7 @@ namespace LMP
 
 		virtual void UpdatePlaylists () = 0;
 
-		virtual boost::optional<Media::AudioInfo> GetURLInfo (const QUrl&) = 0;
+		virtual std::optional<Media::AudioInfo> GetURLInfo (const QUrl&) = 0;
 	};
 }
 }

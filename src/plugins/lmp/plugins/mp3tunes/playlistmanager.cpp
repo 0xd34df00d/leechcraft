@@ -72,11 +72,11 @@ namespace MP3Tunes
 		}
 	}
 
-	boost::optional<Media::AudioInfo> PlaylistManager::GetMediaInfo (const QUrl& url) const
+	std::optional<Media::AudioInfo> PlaylistManager::GetMediaInfo (const QUrl& url) const
 	{
 		return Infos_.contains (url) ?
-				boost::make_optional (Infos_ [url]) :
-				boost::optional<Media::AudioInfo> ();
+				std::make_optional (Infos_ [url]) :
+				std::optional<Media::AudioInfo> ();
 	}
 
 	void PlaylistManager::requestPlaylists (const QString& accName)

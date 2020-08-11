@@ -30,7 +30,7 @@ namespace FOC
 	{
 	}
 
-	boost::optional<QWebPluginFactory::Plugin> FlashOnClickPlugin::Plugin (bool isq) const
+	std::optional<QWebPluginFactory::Plugin> FlashOnClickPlugin::Plugin (bool isq) const
 	{
 		if (isq)
 			return {};

@@ -224,7 +224,7 @@ namespace LMP
 		return &M_->PreviewMgr_;
 	}
 
-	boost::optional<MediaInfo> Core::TryURLResolve (const QUrl& url) const
+	std::optional<MediaInfo> Core::TryURLResolve (const QUrl& url) const
 	{
 		return M_->PLManager_.TryResolveMediaInfo (url);
 	}

@@ -24,7 +24,7 @@ namespace Otlozhu
 	namespace
 	{
 		typedef boost::variant<std::string> FieldVal_t;
-		typedef boost::optional<FieldVal_t> MaybeFieldVal_t;
+		typedef std::optional<FieldVal_t> MaybeFieldVal_t;
 		struct Field
 		{
 			std::string Name_;
@@ -37,7 +37,7 @@ namespace Otlozhu
 			std::string Name_;
 			Fields_t Fields_;
 
-			boost::optional<FieldVal_t> operator[] (const std::string& fName) const
+			std::optional<FieldVal_t> operator[] (const std::string& fName) const
 			{
 				auto pos = std::find_if (Fields_.begin (), Fields_.end (),
 						[&fName] (const auto& field) { return field.Name_ == fName; });

@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include <boost/optional.hpp>
+#include <optional>
 #include <QStringList>
 #include <util/sll/eitherfwd.h>
 
@@ -37,11 +37,11 @@ namespace Media
 
 		/** @brief The year of the album the track is on.
 		 */
-		boost::optional<int> Year_;
+		std::optional<int> Year_;
 
 		/** @brief The track number.
 		 */
-		boost::optional<int> Track_;
+		std::optional<int> Track_;
 	};
 
 	/** @brief Describes a single lyrics result item.

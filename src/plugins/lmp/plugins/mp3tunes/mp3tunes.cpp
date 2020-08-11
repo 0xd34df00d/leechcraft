@@ -143,7 +143,7 @@ namespace MP3Tunes
 		PLManager_->Update ();
 	}
 
-	boost::optional<Media::AudioInfo> Plugin::GetURLInfo (const QUrl& url)
+	std::optional<Media::AudioInfo> Plugin::GetURLInfo (const QUrl& url)
 	{
 		return PLManager_->GetMediaInfo (url);
 	}

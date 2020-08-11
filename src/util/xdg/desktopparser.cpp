@@ -20,7 +20,7 @@ namespace XDG
 	namespace
 	{
 		typedef boost::variant<std::string, std::vector<std::string>> FieldVal_t;
-		typedef boost::optional<std::string> Lang_t;
+		typedef std::optional<std::string> Lang_t;
 		struct Field
 		{
 			std::string Name_;

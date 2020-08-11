@@ -9,7 +9,7 @@
 #pragma once
 
 #include <functional>
-#include <boost/optional.hpp>
+#include <optional>
 
 namespace LC
 {
@@ -30,7 +30,7 @@ namespace Util
 	{
 		Source Source_;
 
-		boost::optional<Object> Object_;
+		std::optional<Object> Object_;
 
 		std::function<Object (Source)> Initializer_;
 		std::function<void (Source&)> ClearSource_;

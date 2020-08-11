@@ -666,7 +666,7 @@ namespace ChatHistory
 		return SearchResult_t::Right (index);
 	}
 
-	boost::optional<int> Storage::GetAllHistoryCount ()
+	std::optional<int> Storage::GetAllHistoryCount ()
 	{
 		QSqlQuery query { *DB_ };
 		if (!query.exec ("SELECT COUNT(1) FROM azoth_history"))

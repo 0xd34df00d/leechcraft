@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include <boost/optional.hpp>
+#include <optional>
 #include <QVariantMap>
 #include <QSet>
 #include "../engine/audiosource.h"
@@ -28,7 +28,7 @@ namespace LMP
 		PlaylistItem (const AudioSource&, const QVariantMap&);
 		PlaylistItem (const AudioSource&, const MediaInfo&);
 
-		boost::optional<MediaInfo> GetMediaInfo () const;
+		std::optional<MediaInfo> GetMediaInfo () const;
 	};
 
 	class Playlist

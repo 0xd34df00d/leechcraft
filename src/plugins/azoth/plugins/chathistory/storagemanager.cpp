@@ -219,7 +219,7 @@ namespace ChatHistory
 		StartStorage ();
 
 		Util::Sequence (this, StorageThread_->ScheduleImpl (&Storage::GetAllHistoryCount)) >>
-				[=] (const boost::optional<int>& count)
+				[=] (const std::optional<int>& count)
 				{
 					const auto& text = QObject::tr ("Finished restoring history database contents. "
 							"Old file size: %1, new file size: %2, %3 records recovered.");
@@ -231,7 +231,7 @@ namespace ChatHistory
 							"Azoth ChatHistory",
 							text.arg (Util::MakePrettySize (oldSize))
 								.arg (Util::MakePrettySize (newSize))
-								.arg (count.get_value_or (0)) +
+								.arg (count.value_or (0)) +
 								" " + greet);
 				};
 	}

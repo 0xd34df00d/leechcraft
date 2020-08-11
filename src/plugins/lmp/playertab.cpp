@@ -446,7 +446,7 @@ namespace LMP
 		if (finders.isEmpty ())
 			return;
 
-		auto opt = [] (int val) -> boost::optional<int>
+		auto opt = [] (int val) -> std::optional<int>
 		{
 			if (val)
 				return val;

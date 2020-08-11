@@ -80,7 +80,7 @@ namespace MP3Tunes
 
 		QStandardItem* GetPlaylistsRoot () const;
 		void UpdatePlaylists ();
-		boost::optional<Media::AudioInfo> GetURLInfo (const QUrl&);
+		std::optional<Media::AudioInfo> GetURLInfo (const QUrl&);
 	signals:
 		void uploadFinished (const QString&,
 				LC::LMP::CloudStorageError, const QString&);
