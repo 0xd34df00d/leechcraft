@@ -10,7 +10,6 @@
 
 #include <numeric>
 #include <optional>
-#include <boost/optional.hpp>
 
 namespace LC
 {

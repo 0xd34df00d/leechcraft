@@ -10,7 +10,6 @@
 
 #include <functional>
 #include <optional>
-#include <boost/optional.hpp>
 #include "typeclassutil.h"
 #include "void.h"
 

@@ -9,7 +9,6 @@
 #pragma once
 
 #include <optional>
-#include <boost/optional.hpp>
 #include "typelist.h"
 #include "applicative.h"
 
