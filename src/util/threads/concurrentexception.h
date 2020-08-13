@@ -49,6 +49,7 @@ namespace Util
 		 * \em T.
 		 */
 		template<typename... Args>
+		requires requires (Args&&... args) { T { std::forward<Args> (args)... }; }
 		ConcurrentException (Args&&... args)
 		: T { std::forward<Args> (args)... }
 		{
