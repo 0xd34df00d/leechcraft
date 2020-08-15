@@ -2,6 +2,8 @@ cmake_minimum_required (VERSION 3.10)
 project (leechcraft_netstoremanager)
 include (InitLCPlugin NO_POLICY_SCOPE)
 
+find_package (Boost REQUIRED COMPONENTS container)
+
 LC_DEFINE_PLUGIN (
 	SRCS
 		netstoremanager.cpp
@@ -29,6 +31,7 @@ LC_DEFINE_PLUGIN (
 			>
 	SETTINGS netstoremanagersettings.xml
 	QT_COMPONENTS Network Widgets
+	LINK_LIBRARIES Boost::container
 	INSTALL_SHARE
 	)
 
