@@ -8,3 +8,4 @@ RUN eatmydata zypper dup -y
 
 RUN eatmydata zypper -n si -d leechcraft
 RUN eatmydata zypper -n in libqscintilla_qt5-devel git gzip
+RUN eatmydata zypper -n in libboost_container-devel
