@@ -37,8 +37,6 @@ namespace LC
 		QNetworkReply* createRequest (Operation,
 				const QNetworkRequest&, QIODevice*);
 	private slots:
-		void handleSslErrors (QNetworkReply*, const QList<QSslError>&);
-
 		void saveCookies () const;
 		void handleFilterTrackingCookies ();
 		void setCookiesEnabled ();

@@ -13,7 +13,6 @@
 #include <QCoreApplication>
 #include <QPointer>
 #include <QtDebug>
-#include <util/sll/slotclosure.h>
 #include "sslerrorsdialog.h"
 
 namespace LC
@@ -28,7 +27,6 @@ namespace LC
 			{
 				QCoreApplication::organizationName (),
 				QCoreApplication::applicationName ()
-
 			},
 			[] (QSettings *settings)
 			{
@@ -65,33 +63,27 @@ namespace LC
 		const auto contAsync = 1;
 
 		QEventLoop loop;
-		Util::SlotClosure<Util::NoDeletePolicy> replyExitGuard
-		{
-			[&loop, reply]
-			{
-				qDebug () << Q_FUNC_INFO
-						<< "reply died, gonna exit"
-						<< reply->error ();
-				if (loop.isRunning ())
-					loop.exit (contAsync);
-			},
-			reply,
-			SIGNAL (finished ()),
-			this
-		};
-		Util::SlotClosure<Util::NoDeletePolicy> dialogExitGuard
-		{
-			[&loop]
-			{
-				qDebug () << Q_FUNC_INFO
-						<< "dialog accepted";
-				if (loop.isRunning ())
-					loop.exit (contSync);
-			},
-			errDialog,
-			SIGNAL (finished (int)),
-			this
-		};
+		connect (reply,
+				&QNetworkReply::finished,
+				this,
+				[&loop, reply]
+				{
+					qDebug () << Q_FUNC_INFO
+							<< "reply died, gonna exit"
+							<< reply->error ();
+					if (loop.isRunning ())
+						loop.exit (contAsync);
+				});
+		connect (errDialog,
+				&QDialog::finished,
+				this,
+				[&loop]
+				{
+					qDebug () << Q_FUNC_INFO
+							<< "dialog accepted";
+					if (loop.isRunning ())
+						loop.exit (contSync);
+				});
 
 		const auto finishedHandler = [=]
 				{
@@ -101,14 +93,10 @@ namespace LC
 
 		if (loop.exec () == contAsync)
 		{
-			new Util::SlotClosure<Util::NoDeletePolicy>
-			{
-				finishedHandler,
-				errDialog,
-				SIGNAL (finished (int)),
-				this
-			};
-
+			connect (errDialog,
+					&QDialog::finished,
+					this,
+					finishedHandler);
 			return;
 		}
 		finishedHandler ();

@@ -32,9 +32,8 @@ NetworkAccessManager::NetworkAccessManager (QObject *parent)
 , CookieSaveTimer_ (new QTimer (this))
 {
 	connect (this,
-			SIGNAL (sslErrors (QNetworkReply*, QList<QSslError>)),
-			this,
-			SLOT (handleSslErrors (QNetworkReply*, QList<QSslError>)));
+			&QNetworkAccessManager::sslErrors,
+			[] (QNetworkReply *reply, const QList<QSslError>& errors) { new SslErrorsHandler { reply, errors }; });
 
 	CookieJar_ = new CustomCookieJar (this);
 	setCookieJar (CookieJar_);
@@ -125,12 +124,6 @@ QNetworkReply* NetworkAccessManager::createRequest (QNetworkAccessManager::Opera
 	QNetworkReply *result = QNetworkAccessManager::createRequest (op, r, out);
 	emit requestCreated (op, r, result);
 	return result;
-}
-
-void LC::NetworkAccessManager::handleSslErrors (QNetworkReply *replyObj,
-		const QList<QSslError>& errors)
-{
-	new SslErrorsHandler { replyObj, errors };
 }
 
 void LC::NetworkAccessManager::saveCookies () const
