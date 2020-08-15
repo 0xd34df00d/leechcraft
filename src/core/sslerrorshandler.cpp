@@ -17,6 +17,30 @@
 
 namespace LC
 {
+	namespace
+	{
+		void HandleFinished (int result,
+				SslErrorsDialog::RememberChoice rc,
+				const QString& urlString,
+				const QString& host,
+				const std::shared_ptr<QSettings>& settings)
+		{
+			const bool ignore = result == QDialog::Accepted;
+
+			switch (rc)
+			{
+			case SslErrorsDialog::RememberChoice::File:
+				settings->setValue (urlString, ignore);
+				break;
+			case SslErrorsDialog::RememberChoice::Host:
+				settings->setValue (host, ignore);
+				break;
+			default:
+				break;
+			}
+		}
+	}
+
 	SslErrorsHandler::SslErrorsHandler (QNetworkReply *reply,
 			const QList<QSslError>& errors, QObject *parent)
 	: QObject { parent }
@@ -114,26 +138,5 @@ namespace LC
 
 		if (errDialog->result () == QDialog::Accepted)
 			reply->ignoreSslErrors ();
-	}
-
-	void SslErrorsHandler::HandleFinished (int result,
-				SslErrorsDialog::RememberChoice rc,
-				const QString& urlString,
-				const QString& host,
-				const std::shared_ptr<QSettings>& settings)
-	{
-		const bool ignore = result == QDialog::Accepted;
-
-		switch (rc)
-		{
-		case SslErrorsDialog::RememberChoice::File:
-			settings->setValue (urlString, ignore);
-			break;
-		case SslErrorsDialog::RememberChoice::Host:
-			settings->setValue (host, ignore);
-			break;
-		default:
-			break;
-		}
 	}
 }

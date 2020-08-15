@@ -8,26 +8,17 @@
 
 #pragma once
 
-#include <memory>
 #include <QObject>
 #include "sslerrorsdialog.h"
 
 class QSslError;
 class QNetworkReply;
-class QSettings;
 
 namespace LC
 {
 	class SslErrorsHandler : public QObject
 	{
-		Q_OBJECT
 	public:
 		SslErrorsHandler (QNetworkReply*, const QList<QSslError>&, QObject* = nullptr);
-	private:
-		void HandleFinished (int,
-				SslErrorsDialog::RememberChoice,
-				const QString&,
-				const QString&,
-				const std::shared_ptr<QSettings>&);
 	};
 }
