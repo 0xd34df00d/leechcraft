@@ -972,7 +972,7 @@ namespace LMP
 
 		emit playerAvailable (false);
 
-		const auto future = QtConcurrent::run ([=]
+		const auto future = QtConcurrent::run ([=, this]
 				{
 					return ResolveJobResult
 					{

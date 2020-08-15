@@ -128,7 +128,7 @@ namespace LackMan
 				LackManUtil::NormalizePackageName (packageName) + ".xml.gz");
 
 		FetchImpl (packageUrl, Proxy_, this, tr ("Error fetching package info"),
-				[=] (const QString& location)
+				[=, this] (const QString& location)
 				{
 					HandlePackageFinished ({ packageUrl, baseUrl, location, packageName, newVersions, componentId });
 				});
@@ -214,7 +214,7 @@ namespace LackMan
 	void RepoInfoFetcher::HandleRIFinished (const QString& location, const QUrl& url)
 	{
 		HandleUnarch (this, Proxy_, url, location,
-				[=] (const QByteArray& data)
+				[=, this] (const QByteArray& data)
 				{
 					try
 					{
@@ -236,7 +236,7 @@ namespace LackMan
 			const QString& location, const QString& component, int repoId)
 	{
 		HandleUnarch (this, Proxy_, url, location,
-				[=] (const QByteArray& data)
+				[=, this] (const QByteArray& data)
 				{
 					try
 					{
@@ -257,7 +257,7 @@ namespace LackMan
 	void RepoInfoFetcher::HandlePackageFinished (const PendingPackage& pp)
 	{
 		HandleUnarch (this, Proxy_, pp.URL_, pp.Location_,
-				[=] (const QByteArray& data)
+				[=, this] (const QByteArray& data)
 				{
 					try
 					{

@@ -206,7 +206,7 @@ namespace TouchStreams
 			auto nam = Proxy_->GetNetworkAccessManager ();
 			RequestQueue_.push_back ([this, nam, code, user2info] (const QString& key) -> void
 				{
-					auto f = [=] (const QMap<QString, QString>& map) -> QNetworkReply*
+					auto f = [=, this] (const QMap<QString, QString>& map)
 					{
 						QUrl url ("https://api.vk.com/method/execute");
 

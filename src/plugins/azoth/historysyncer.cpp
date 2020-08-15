@@ -96,7 +96,7 @@ namespace Azoth
 			allStorages->addFuture (storage->RequestMaxTimestamp (acc));
 
 		Util::Sequence (this, QtConcurrent::run ([allStorages] { allStorages->waitForFinished (); })) >>
-				[=]
+				[=, this]
 				{
 					const auto& results = Util::Map (allStorages->futures (),
 							[] (auto future) { return future.result (); });

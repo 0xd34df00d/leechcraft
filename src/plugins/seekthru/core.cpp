@@ -229,12 +229,12 @@ namespace LC::SeekThru
 		Util::Sequence (this, result.DownloadResult_) >>
 				Util::Visitor
 				{
-					[=] (const IDownload::Error&)
+					[=, this] (const IDownload::Error&)
 					{
 						emit error (tr ("A job was delegated, but it failed.")
 								.arg (name));
 					},
-					[=] (IDownload::Success)
+					[=, this] (IDownload::Success)
 					{
 						QFile file { name };
 						if (!file.open (QIODevice::ReadOnly))

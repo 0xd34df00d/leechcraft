@@ -83,14 +83,14 @@ namespace Azoth
 		const auto entryId = entry->GetEntryID ();
 		auto future = Util::Sequence (entryObj, Storage_->GetAvatar (entry, size))
 				.DestructionValue (defaultAvatarGetter) >>
-				[=] (const MaybeImage& image)
+				[=, this] (const MaybeImage& image)
 				{
 					if (image)
 						return Util::MakeReadyFuture (*image);
 
 					auto refreshFuture = iha->RefreshAvatar (supportedSize);
 					Util::Sequence (this, refreshFuture) >>
-							[=] (QImage img)
+							[=, this] (QImage img)
 							{
 								if (auto tgtDim = Size2Dim (size); tgtDim < Size2Dim (supportedSize) && !img.isNull ())
 									img = img.scaled (tgtDim, tgtDim, Qt::KeepAspectRatio, Qt::SmoothTransformation);
@@ -98,7 +98,7 @@ namespace Azoth
 							};
 					return refreshFuture;
 				} >>
-				[=] (QImage image)
+				[=, this] (QImage image)
 				{
 					auto& sizes = PendingRequests_ [entryObj];
 
@@ -134,7 +134,7 @@ namespace Azoth
 		const auto id = ++SubscriptionID_;
 		Subscriptions_ [obj] [size] [id] = handler;
 
-		return Util::MakeScopeGuard ([=]
+		return Util::MakeScopeGuard ([=, this]
 				{
 					auto& objSubscrs = Subscriptions_ [obj];
 					auto& sizeSubscrs = objSubscrs [size];

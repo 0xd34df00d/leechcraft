@@ -334,7 +334,7 @@ namespace BitTorrent
 	QModelIndexList TorrentTab::GetSelectedRowIndexes () const
 	{
 		return Util::Map (Ui_.TorrentsView_->selectionModel ()->selectedRows (),
-				[=] (const auto& idx) { return ViewFilter_->mapToSource (idx); });
+				[&] (const auto& idx) { return ViewFilter_->mapToSource (idx); });
 	}
 
 	void TorrentTab::setActionsEnabled ()

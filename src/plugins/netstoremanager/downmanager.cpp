@@ -48,7 +48,7 @@ namespace NetStoreManager
 		Util::Sequence (this, res.DownloadResult_) >>
 				Util::Visitor
 				{
-					[=] (IDownload::Success)
+					[=, this] (IDownload::Success)
 					{
 						if (openAfterDownload)
 							SendEntity (Util::MakeEntity (QUrl::fromLocalFile (targetPath),

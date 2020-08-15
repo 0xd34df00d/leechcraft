@@ -223,7 +223,7 @@ namespace LC::Aggregator
 		Util::Sequence (this, delegateResult.DownloadResult_) >>
 				Util::Visitor
 				{
-					[=] (IDownload::Success)
+					[=, this] (IDownload::Success)
 					{
 						Util::Visit (ParseChannels (filename, url, feedId),
 								[&] (const channels_container_t& channels)
@@ -236,7 +236,7 @@ namespace LC::Aggregator
 									FeedsErrorManager_->AddFeedError (feedId, FeedsErrorManager::ParseError { error });
 								});
 					},
-					[=] (const IDownload::Error& error) { FeedsErrorManager_->AddFeedError (feedId, error); }
+					[=, this] (const IDownload::Error& error) { FeedsErrorManager_->AddFeedError (feedId, error); }
 				}.Finally ([filename] { QFile::remove (filename); });
 	}
 }

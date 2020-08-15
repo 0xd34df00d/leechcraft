@@ -65,7 +65,7 @@ namespace Poshuku
 
 			new Util::SlotClosure<Util::NoDeletePolicy>
 			{
-				[=] { LineEdit_->SetVisible (action, action->isEnabled ()); },
+				[=, this] { LineEdit_->SetVisible (action, action->isEnabled ()); },
 				action,
 				SIGNAL (changed ()),
 				action
@@ -126,7 +126,7 @@ namespace Poshuku
 					return result;
 					})();
 				)",
-				[=] (const QVariant& res)
+				[=, this] (const QVariant& res)
 				{
 					bool inserted = false;
 					for (const auto& var : res.toList ())

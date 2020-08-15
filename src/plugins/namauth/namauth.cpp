@@ -27,17 +27,17 @@ namespace NamAuth
 
 		const auto checker = Util::ConsistencyChecker::Create (SQLStorageBackend::GetDBPath (), GetName ());
 		Util::Sequence (this, checker->StartCheck ()) >>
-				[=] (const Util::ConsistencyChecker::CheckResult_t& result)
+				[=, this] (const Util::ConsistencyChecker::CheckResult_t& result)
 				{
 					Util::Visit (result,
-							[=] (Util::ConsistencyChecker::Succeeded) { InitStorage (proxy); },
-							[=] (Util::ConsistencyChecker::Failed failed)
+							[=, this] (Util::ConsistencyChecker::Succeeded) { InitStorage (proxy); },
+							[=, this] (Util::ConsistencyChecker::Failed failed)
 							{
 								Util::Sequence (this, failed->DumpReinit ()) >>
-										[=] (const Util::ConsistencyChecker::DumpResult_t& result)
+										[=, this] (const Util::ConsistencyChecker::DumpResult_t& result)
 										{
 											Util::Visit (result,
-													[=] (Util::ConsistencyChecker::DumpError err)
+													[=, this] (Util::ConsistencyChecker::DumpError err)
 													{
 														QMessageBox::critical (nullptr,
 																tr ("LeechCraft"),
@@ -50,7 +50,7 @@ namespace NamAuth
 
 														InitStorage (proxy);
 													},
-													[=] (Util::ConsistencyChecker::DumpFinished)
+													[=, this] (Util::ConsistencyChecker::DumpFinished)
 													{
 														InitStorage (proxy);
 													});

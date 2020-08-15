@@ -187,12 +187,12 @@ namespace LC::SeekThru
 			Util::Sequence (this, result.DownloadResult_) >>
 					Util::Visitor
 					{
-						[=] (const IDownload::Error&)
+						[=, this] (const IDownload::Error&)
 						{
 							emit error (tr ("Search request for URL<br />%1<br />was delegated, but it failed.")
 									.arg (url.toString ()));
 						},
-						[=] (IDownload::Success) { HandleJobFinished (job, fname); }
+						[=, this] (IDownload::Success) { HandleJobFinished (job, fname); }
 					};
 		}
 	}

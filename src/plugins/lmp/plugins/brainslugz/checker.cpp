@@ -151,14 +151,14 @@ namespace BrainSlugz
 		Util::Sequence (this, Provider_->GetDiscography (artist.Name_, {})) >>
 				Util::Visitor
 				{
-					[=] (const QString& error)
+					[=, this] (const QString& error)
 					{
 						qWarning () << Q_FUNC_INFO
 								<< artist.Name_
 								<< error;
 						Model_->MarkNoNews (artist);
 					},
-					[=] (const auto& result) { HandleDiscoReady (artist, result); }
+					[=, this] (const auto& result) { HandleDiscoReady (artist, result); }
 				}.Finally ([this] { rotateQueue (); });
 	}
 }

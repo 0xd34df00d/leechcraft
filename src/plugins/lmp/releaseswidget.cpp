@@ -164,7 +164,7 @@ namespace LMP
 						Util::Visitor
 						{
 							[] (const QString&) { qWarning () << Q_FUNC_INFO << "error fetching releases"; },
-							[=, row = ReleasesModel_->rowCount ()] (const auto& infos)
+							[=, this, row = ReleasesModel_->rowCount ()] (const auto& infos)
 							{
 								if (infos.isEmpty ())
 									return;

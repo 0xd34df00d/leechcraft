@@ -70,7 +70,7 @@ namespace LackMan
 		Util::Sequence (this, delegateResult.DownloadResult_) >>
 				Util::Visitor
 				{
-					[=] (IDownload::Success) { emit resourceFetched (url); },
+					[=, this] (IDownload::Success) { emit resourceFetched (url); },
 					[=] (const IDownload::Error& error)
 					{
 						qWarning () << Q_FUNC_INFO
@@ -78,7 +78,7 @@ namespace LackMan
 								<< url
 								<< error.Message_;
 					}
-				}.Finally ([=] { PendingResources_.remove (url); });
+				}.Finally ([=, this] { PendingResources_.remove (url); });
 	}
 
 	QString ExternalResourceManager::GetResourcePath (const QUrl& url) const

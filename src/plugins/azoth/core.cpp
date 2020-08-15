@@ -1354,7 +1354,7 @@ namespace LC::Azoth
 
 		const auto obj = entry->GetQObject ();
 		Util::Sequence (obj, AvatarsManager_->GetAvatar (obj, IHaveAvatars::Size::Thumbnail)) >>
-				[=] (QImage avatar)
+				[=, this] (QImage avatar)
 				{
 					avatar = avatar.isNull () ?
 							QImage {} :

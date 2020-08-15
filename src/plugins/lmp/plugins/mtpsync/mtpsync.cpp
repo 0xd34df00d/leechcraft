@@ -261,7 +261,7 @@ namespace MTPSync
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleUploadFinished ()));
-		const auto future = QtConcurrent::run ([=] () -> UploadInfo
+		const auto future = QtConcurrent::run ([=, this]
 			{
 				const auto cbData = new CallbackData { this, {} };
 				cbData->Timer_.start ();
@@ -273,7 +273,7 @@ namespace MTPSync
 				if (!res)
 					AppendAlbum (device, track, info);
 
-				return { res, device, localPath, track, info };
+				return UploadInfo { res, device, localPath, track, info };
 			});
 		watcher->setFuture (future);
 	}

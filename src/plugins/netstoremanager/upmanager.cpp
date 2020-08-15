@@ -188,7 +188,7 @@ namespace NetStoreManager
 		Util::Sequence (this, ifl->RequestUrl (id)) >>
 				Utils::HandleRequestFileUrlResult (Proxy_->GetEntityManager (),
 						tr ("Failed to auto-share file %1.").arg ("<em>" + fileName + "</em>"),
-						[=] (const QUrl& url) { emit fileUploaded (filePath, url); });
+						[=, this] (const QUrl& url) { emit fileUploaded (filePath, url); });
 	}
 
 	void UpManager::handleUpProgress (quint64 done, quint64 total, const QString& filepath)

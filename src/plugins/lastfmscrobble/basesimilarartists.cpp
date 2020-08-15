@@ -44,7 +44,7 @@ namespace Lastfmscrobble
 				Util::Visitor
 				{
 					[this] (Util::Void) { DecrementWaiting (); },
-					[=] (const QByteArray& data) { HandleInfoReplyFinished (data, similarity, similarTo); }
+					[=, this] (const QByteArray& data) { HandleInfoReplyFinished (data, similarity, similarTo); }
 				};
 	}
 
