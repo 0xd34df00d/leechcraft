@@ -109,11 +109,12 @@ namespace LC
 						loop.exit (contSync);
 				});
 
-		const auto finishedHandler = [=]
-				{
-					HandleFinished (errDialog->result (), errDialog->GetRememberChoice (),
-							urlString, host, settings);
-				};
+		const auto finishedHandler = [=, this]
+		{
+			HandleFinished (errDialog->result (), errDialog->GetRememberChoice (),
+					urlString, host, settings);
+			deleteLater ();
+		};
 
 		if (loop.exec () == contAsync)
 		{
