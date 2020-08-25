@@ -22,7 +22,7 @@ Q_DECLARE_METATYPE (QSet<QString>);
 
 namespace LC::Azoth::Depester
 {
-	void Plugin::Init (ICoreProxy_ptr proxy)
+	void Plugin::Init (ICoreProxy_ptr)
 	{
 		Util::InstallTranslator ("azoth_depester");
 		qRegisterMetaType<QSet<QString>> ("QSet<QString>");
@@ -30,7 +30,7 @@ namespace LC::Azoth::Depester
 
 		LoadIgnores ();
 
-		const auto iconMgr = proxy->GetIconThemeManager ();
+		const auto iconMgr = GetProxyHolder ()->GetIconThemeManager ();
 
 		auto changeHandler = [this, iconMgr] { IgnoredIcon_ = iconMgr->GetIcon ("irc-unvoice"); };
 		changeHandler ();
