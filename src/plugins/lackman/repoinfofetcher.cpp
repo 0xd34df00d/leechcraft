@@ -94,7 +94,7 @@ namespace LackMan
 			url.setPath (url.path () + "/Packages.xml.gz");
 
 		FetchImpl (url, Proxy_, this, tr ("Error fetching component"),
-				[=] (const QString& location) { HandleComponentFinished (url, location, component, repoId); });
+				[=, this] (const QString& location) { HandleComponentFinished (url, location, component, repoId); });
 	}
 
 	void RepoInfoFetcher::ScheduleFetchPackageInfo (const QUrl& url,
