@@ -19,18 +19,7 @@ namespace LC::Poshuku::WebEngineView
 	: LCJar_ { lcJar }
 	, WebEngineStore_ { weStore }
 	{
-		WebEngineStore_->deleteAllCookies ();
-
-		HandleLCCookiesAdded (LCJar_->allCookies ());
-
-		connect (LCJar_,
-				&Util::CustomCookieJar::cookiesAdded,
-				this,
-				&CookiesSyncer::HandleLCCookiesAdded);
-		connect (LCJar_,
-				&Util::CustomCookieJar::cookiesRemoved,
-				this,
-				&CookiesSyncer::HandleLCCookiesRemoved);
+		WebEngineStore_->loadAllCookies ();
 
 		connect (WebEngineStore_,
 				&QWebEngineCookieStore::cookieAdded,
@@ -42,26 +31,6 @@ namespace LC::Poshuku::WebEngineView
 				&CookiesSyncer::HandleWebEngineCookieRemoved);
 	}
 
-	void CookiesSyncer::HandleLCCookiesAdded (const QList<QNetworkCookie>& cookies)
-	{
-		qDebug () << Q_FUNC_INFO << cookies.size ();
-		for (const auto& cookie : cookies)
-		{
-			CookiesPerDomain_ [cookie.domain ()] << cookie;
-			WebEngineStore_->setCookie (cookie);
-		}
-	}
-
-	void CookiesSyncer::HandleLCCookiesRemoved (const QList<QNetworkCookie>& cookies)
-	{
-		qDebug () << Q_FUNC_INFO << cookies.size ();
-		for (const auto& cookie : cookies)
-		{
-			CookiesPerDomain_ [cookie.domain ()].removeAll (cookie);
-			WebEngineStore_->deleteCookie (cookie);
-		}
-	}
-
 	void CookiesSyncer::HandleWebEngineCookieAdded (const QNetworkCookie& cookie)
 	{
 		if (WebEngine2LCQueue_.isEmpty ())
@@ -69,23 +38,15 @@ namespace LC::Poshuku::WebEngineView
 					[this]
 					{
 						for (const auto& cookie : WebEngine2LCQueue_)
-						{
-							auto& domainCookies = CookiesPerDomain_ [cookie.domain ()];
-							if (!domainCookies.contains (cookie))
-							{
-								domainCookies << cookie;
-								LCJar_->insertCookie (cookie);
-							}
-						}
+							LCJar_->insertCookie (cookie);
 						WebEngine2LCQueue_.clear ();
 					});
 
-		WebEngine2LCQueue_.prepend (cookie);
+		WebEngine2LCQueue_.append (cookie);
 	}
 
 	void CookiesSyncer::HandleWebEngineCookieRemoved (const QNetworkCookie& cookie)
 	{
-		CookiesPerDomain_ [cookie.domain ()].removeAll (cookie);
 		WebEngine2LCQueue_.removeAll (cookie);
 		LCJar_->deleteCookie (cookie);
 	}
