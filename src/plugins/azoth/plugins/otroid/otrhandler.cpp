@@ -32,6 +32,7 @@ extern "C"
 #include <interfaces/azoth/iproxyobject.h>
 #include <interfaces/azoth/imessage.h>
 #include <interfaces/core/ientitymanager.h>
+#include <interfaces/core/iiconthememanager.h>
 #include "util.h"
 #include "authenticator.h"
 
@@ -755,7 +756,7 @@ namespace OTRoid
 		{
 			const auto& otr = std::make_shared<QAction> (tr ("Enable OTR"), this);
 			otr->setCheckable (true);
-			otr->setIcon (QIcon { "lcicons:/plugins/azoth/plugins/otroid/resources/images/otroid.svg" });
+			otr->setIcon (GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon ());
 			otr->setProperty ("Azoth/OTRoid/IsGood", true);
 			otr->setProperty ("Azoth/OTRoid/Entry", QVariant::fromValue (entry));
 			return otr;
