@@ -167,9 +167,10 @@ namespace Summary
 		return index;
 	}
 
-	SummaryWidget* Core::CreateSummaryWidget ()
+	template<typename F>
+	SummaryWidget* Core::CreateSummaryWidget (F&& f)
 	{
-		SummaryWidget *result = new SummaryWidget ();
+		auto result = new SummaryWidget ();
 		connect (result,
 				SIGNAL (changeTabName (const QString&)),
 				this,
@@ -182,6 +183,12 @@ namespace Summary
 				SIGNAL (raiseTab (QWidget*)),
 				this,
 				SIGNAL (raiseTab (QWidget*)));
+
+		std::invoke (f, *result);
+
+		emit addNewTab (tr ("Summary"), result);
+		emit changeTabIcon (result, QIcon ("lcicons:/plugins/summary/resources/images/summary.svg"));
+
 		return result;
 	}
 
@@ -215,29 +222,18 @@ namespace Summary
 
 		const auto& info = infos.first ();
 
-		Current_ = CreateSummaryWidget ();
-
-		for (const auto& pair : info.DynProperties_)
-			Current_->setProperty (pair.first, pair.second);
-
-		Current_->RestoreState (info.Data_);
-
-		emit addNewTab (tr ("Summary"), Current_);
-		emit changeTabIcon (Current_, QIcon ("lcicons:/plugins/summary/resources/images/summary.svg"));
+		Current_ = CreateSummaryWidget ([&info] (SummaryWidget& summary)
+				{
+					for (const auto& pair : info.DynProperties_)
+						summary.setProperty (pair.first, pair.second);
+					summary.RestoreState (info.Data_);
+				});
 	}
 
 	void Core::handleNewTabRequested ()
 	{
-		if (Current_)
-		{
-			emit raiseTab (Current_);
-			return;
-		}
-
-		Current_ = CreateSummaryWidget ();
-
-		emit addNewTab (tr ("Summary"), Current_);
-		emit changeTabIcon (Current_, QIcon ("lcicons:/plugins/summary/resources/images/summary.svg"));
+		if (!Current_)
+			Current_ = CreateSummaryWidget ([] (auto&&) {});
 		emit raiseTab (Current_);
 	}
 

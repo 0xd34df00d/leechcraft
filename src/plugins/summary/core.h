@@ -121,7 +121,8 @@ namespace Summary
 	public slots:
 		void handleNewTabRequested ();
 	private:
-		SummaryWidget* CreateSummaryWidget ();
+		template<typename F>
+		SummaryWidget* CreateSummaryWidget (F&& f);
 	private slots:
 		void handleChangeTabName (const QString&);
 		void handleCurrentTabChanged (int);
