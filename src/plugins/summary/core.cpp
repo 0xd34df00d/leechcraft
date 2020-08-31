@@ -169,9 +169,6 @@ namespace Summary
 
 	SummaryWidget* Core::CreateSummaryWidget ()
 	{
-		if (Current_)
-			return Current_;
-
 		SummaryWidget *result = new SummaryWidget ();
 		connect (result,
 				SIGNAL (changeTabName (const QString&)),
