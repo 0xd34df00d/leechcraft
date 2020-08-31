@@ -268,9 +268,9 @@ namespace OTRoid
 
 		PollTimer_ = new QTimer (this);
 		connect (PollTimer_,
-				SIGNAL (timeout ()),
+				&QTimer::timeout,
 				this,
-				SLOT (pollOTR ()));
+				[this] { otrl_message_poll (UserState_, &OtrOps_, this); });
 
 		SetPollTimerInterval (otrl_message_poll_get_default_interval (UserState_));
 	}
@@ -704,21 +704,26 @@ namespace OTRoid
 	{
 		const auto auth = new Authenticator { entry };
 		connect (auth,
-				SIGNAL (abortSmp (ConnContext*)),
+				&Authenticator::abortSmp,
 				this,
-				SLOT (handleAbortSmp (ConnContext*)));
+				[this] (ConnContext *context) { otrl_message_abort_smp (UserState_, &OtrOps_, this, context); });
 		connect (auth,
-				SIGNAL (gotReply (SmpMethod, QString, ConnContext*)),
+				&Authenticator::gotReply,
 				this,
-				SLOT (handleGotSmpReply (SmpMethod, QString, ConnContext*)));
+				[this] (SmpMethod, const QString& reply, ConnContext *context)
+				{
+					const auto& replyBytes = reply.toUtf8 ();
+					otrl_message_respond_smp (UserState_, &OtrOps_, this, context,
+							reinterpret_cast<const unsigned char*> (replyBytes.constData ()), replyBytes.size ());
+				});
 		connect (auth,
-				SIGNAL (initiateRequested (ICLEntry*, SmpMethod, QString, QString)),
+				&Authenticator::initiateRequested,
 				this,
-				SLOT (startAuth (ICLEntry*, SmpMethod, QString, QString)));
+				&OtrHandler::StartAuth);
 		connect (auth,
-				SIGNAL (destroyed ()),
+				&Authenticator::destroyed,
 				this,
-				SLOT (handleAuthDestroyed ()));
+				[this, entry] { Auths_.remove (entry); });
 		Auths_ [entry] = auth;
 	}
 
@@ -738,13 +743,6 @@ namespace OTRoid
 		CreatePrivkey (acc.toUtf8 ().constData (), proto.toUtf8 ().constData (), false);
 	}
 
-	void OtrHandler::handleOtrAction ()
-	{
-		auto act = qobject_cast<QAction*> (sender ());
-		auto entryObj = act->property ("Azoth/OTRoid/Entry").value<QObject*> ();
-		SetOtrState (qobject_cast<ICLEntry*> (entryObj), act->isChecked ());
-	}
-
 	QByteArray OtrHandler::GetOTRFilename (const QString& fname) const
 	{
 		return OtrDir_.absoluteFilePath (fname).toUtf8 ();
@@ -752,7 +750,7 @@ namespace OTRoid
 
 	void OtrHandler::CreateActions (QObject *entry)
 	{
-		auto makeOtrAction = [entry, this] () -> std::shared_ptr<QAction>
+		auto makeOtrAction = [entry, this]
 		{
 			const auto& otr = std::make_shared<QAction> (tr ("Enable OTR"), this);
 			otr->setCheckable (true);
@@ -762,27 +760,29 @@ namespace OTRoid
 			return otr;
 		};
 
+		auto handleOtrAction = [entry, this] (bool checked) { SetOtrState (qobject_cast<ICLEntry*> (entry), checked); };
+
 		const auto& otr = makeOtrAction ();
 		otr->setProperty ("Azoth/OTRoid/Areas", QStringList { "tabContextMenu", "toolbar" });
 		connect (otr.get (),
-				SIGNAL (triggered ()),
+				&QAction::triggered,
 				this,
-				SLOT (handleOtrAction ()));
+				handleOtrAction);
 
 		const auto& otrCtx = makeOtrAction ();
 		otrCtx->setProperty ("Azoth/OTRoid/Areas", QStringList { "contactListContextMenu" });
 		connect (otrCtx.get (),
-				SIGNAL (toggled (bool)),
+				&QAction::toggled,
 				otr.get (),
-				SLOT (setChecked (bool)));
+				&QAction::setChecked);
 		connect (otrCtx.get (),
-				SIGNAL (triggered ()),
+				&QAction::triggered,
 				this,
-				SLOT (handleOtrAction ()));
+				handleOtrAction);
 		connect (otr.get (),
-				SIGNAL (toggled (bool)),
+				&QAction::toggled,
 				otrCtx.get (),
-				SLOT (setChecked (bool)));
+				&QAction::setChecked);
 
 		const auto& buttonMenu = std::make_shared<QMenu> ();
 		otr->setMenu (buttonMenu.get ());
@@ -796,9 +796,9 @@ namespace OTRoid
 		auth->setProperty ("Azoth/OTRoid/Areas", QStringList { "contactListContextMenu" });
 		auth->setProperty ("Azoth/OTRoid/Entry", QVariant::fromValue (entry));
 		connect (auth.get (),
-				SIGNAL (triggered ()),
+				&QAction::triggered,
 				this,
-				SLOT (handleAuthRequested ()));
+				[this, entry] { HandleAuthRequested (qobject_cast<ICLEntry*> (entry)); });
 
 		buttonMenu->addAction (auth.get ());
 		ctxMenu->addAction (auth.get ());
@@ -848,14 +848,9 @@ namespace OTRoid
 		InjectMsg (entry, QString::fromUtf8 (msg.get ()), true, IMessage::Direction::Out);
 	}
 
-	void OtrHandler::handleAuthRequested ()
+	void OtrHandler::HandleAuthRequested (ICLEntry *entry)
 	{
-		auto act = qobject_cast<QAction*> (sender ());
-
-		auto entryObj = act->property ("Azoth/OTRoid/Entry").value<QObject*> ();
-		auto entry = qobject_cast<ICLEntry*> (entryObj);
-
-		if (!Entry2Action_ [entryObj].ToggleOtr_->isChecked ())
+		if (!Entry2Action_ [entry->GetQObject ()].ToggleOtr_->isChecked ())
 		{
 			if (QMessageBox::question (nullptr,
 						"LeechCraft",
@@ -874,7 +869,7 @@ namespace OTRoid
 		auth->Initiate ();
 	}
 
-	void OtrHandler::startAuth (ICLEntry *entry, SmpMethod method,
+	void OtrHandler::StartAuth (ICLEntry *entry, SmpMethod method,
 			const QString& questionStr, const QString& answerStr)
 	{
 		const auto acc = entry->GetParentAccount ();
@@ -904,30 +899,6 @@ namespace OTRoid
 					reinterpret_cast<const unsigned char*> (answer.constData ()), answer.size ());
 			break;
 		}
-	}
-
-	void OtrHandler::handleAuthDestroyed ()
-	{
-		const auto auth = static_cast<Authenticator*> (sender ());
-		const auto key = Auths_.key (auth);
-		Auths_.remove (key);
-	}
-
-	void OtrHandler::handleGotSmpReply (SmpMethod, const QString& reply, ConnContext *context)
-	{
-		const auto& replyUtf = reply.toUtf8 ();
-		otrl_message_respond_smp (UserState_, &OtrOps_, this, context,
-				reinterpret_cast<const unsigned char*> (replyUtf.constData ()), replyUtf.size ());
-	}
-
-	void OtrHandler::handleAbortSmp (ConnContext *context)
-	{
-		otrl_message_abort_smp (UserState_, &OtrOps_, this, context);
-	}
-
-	void OtrHandler::pollOTR ()
-	{
-		otrl_message_poll (UserState_, &OtrOps_, this);
 	}
 }
 }

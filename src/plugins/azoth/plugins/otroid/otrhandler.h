@@ -108,21 +108,14 @@ namespace OTRoid
 		void SetOtrState (ICLEntry*, bool);
 
 		void CreateAuthForEntry (ICLEntry*);
+		void HandleAuthRequested (ICLEntry*);
+
+		void StartAuth (ICLEntry*, SmpMethod, const QString&, const QString&);
 	public slots:
 		void writeFingerprints ();
 		void writeKeys ();
 
 		void generateKeys (const QString&, const QString&);
-	private slots:
-		void handleOtrAction ();
-		void handleAuthRequested ();
-		void startAuth (ICLEntry*, SmpMethod, const QString&, const QString&);
-		void handleAuthDestroyed ();
-
-		void handleGotSmpReply (SmpMethod, const QString&, ConnContext*);
-		void handleAbortSmp (ConnContext*);
-
-		void pollOTR ();
 	signals:
 		void privKeysChanged ();
 	};
