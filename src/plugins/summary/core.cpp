@@ -27,7 +27,7 @@ namespace Summary
 {
 	Core::Core ()
 	: MergeModel_ (new Util::MergeModel ({ {}, {}, {} }))
-	, Current_ (0)
+	, Current_ (nullptr)
 	{
 		MergeModel_->setObjectName ("Core MergeModel");
 		MergeModel_->setProperty ("__LeechCraft_own_core_model", true);
@@ -242,7 +242,7 @@ namespace Summary
 	{
 		emit removeTab (Current_);
 		Current_->deleteLater ();
-		Current_ = 0;
+		Current_ = nullptr;
 	}
 
 	void Core::handleWindow (int index)
