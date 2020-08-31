@@ -15,6 +15,7 @@
 #include <interfaces/core/icoretabwidget.h>
 #include <interfaces/core/itagsmanager.h>
 #include <interfaces/core/irootwindowsmanager.h>
+#include <interfaces/core/iiconthememanager.h>
 #include "summarywidget.h"
 #include "summarytagsfilter.h"
 
@@ -187,7 +188,7 @@ namespace Summary
 		std::invoke (f, *result);
 
 		emit addNewTab (tr ("Summary"), result);
-		emit changeTabIcon (result, QIcon ("lcicons:/plugins/summary/resources/images/summary.svg"));
+		emit changeTabIcon (result, GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon ());
 
 		return result;
 	}
