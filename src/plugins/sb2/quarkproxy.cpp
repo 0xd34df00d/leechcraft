@@ -14,6 +14,7 @@
 #include <QMainWindow>
 #include <QtDebug>
 #include <interfaces/iquarkcomponentprovider.h>
+#include <interfaces/core/iiconthememanager.h>
 #include <util/gui/geometry.h>
 #include <util/gui/autoresizemixin.h>
 #include <util/util.h>
@@ -159,7 +160,7 @@ namespace SB2
 		{
 			{
 				tr ("SB2 panel settings"),
-				QIcon { "lcicons:/resources/images/sb2.svg" },
+				GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon (),
 				Manager_->GetViewSettingsManager ()->GetXSD ()
 			}
 		};
