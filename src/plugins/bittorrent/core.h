@@ -181,7 +181,7 @@ namespace BitTorrent
 
 		std::shared_ptr<GeoIP> GeoIP_;
 
-		const QIcon TorrentIcon_ { "lcicons:/resources/images/bittorrent.svg" };
+		QIcon TorrentIcon_;
 
 		Core ();
 	public:

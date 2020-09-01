@@ -11,6 +11,7 @@
 #include <QSettings>
 #include <QCoreApplication>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include <interfaces/core/iiconthememanager.h>
 #include <util/util.h>
 #include <util/sll/prelude.h>
 #include "authmanager.h"
@@ -66,8 +67,7 @@ namespace GoogleDrive
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon ("lcicons:/netstoremanager/googledrive/resources/images/googledrive.svg");
-		return icon;
+		return GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon ();
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const

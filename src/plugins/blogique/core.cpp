@@ -13,6 +13,7 @@
 #include <QMainWindow>
 #include <interfaces/iplugin2.h>
 #include <interfaces/core/irootwindowsmanager.h>
+#include <interfaces/core/iiconthememanager.h>
 #include <util/xpc/util.h>
 #include <util/xpc/notificationactionhandler.h>
 #include <util/sll/prelude.h>
@@ -52,8 +53,7 @@ namespace Blogique
 
 	QIcon Core::GetIcon () const
 	{
-		static QIcon icon ("lcicons:/plugins/blogique/resources/images/blogique.svg");
-		return icon;
+		return GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon ();
 	}
 
 	void Core::SetCoreProxy (ICoreProxy_ptr proxy)
