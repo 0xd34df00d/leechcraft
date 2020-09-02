@@ -28,6 +28,7 @@ namespace LC
 		void pullCommandLine ();
 	private:
 		void DoLine (const boost::program_options::variables_map&, const QString&);
+		void StartServer ();
 	signals:
 		void gotEntity (const LC::Entity&);
 	};

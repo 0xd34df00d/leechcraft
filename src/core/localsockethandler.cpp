@@ -23,17 +23,8 @@ namespace LC
 	LocalSocketHandler::LocalSocketHandler ()
 	: Server_ (new QLocalServer)
 	{
-		if (!Server_->listen (Application::GetSocketName ()))
-		{
-			if (!static_cast<Application*> (qApp)->IsAlreadyRunning ())
-			{
-				qWarning () << Q_FUNC_INFO
-					<< "WTF? We cannot listen() on the local server but aren't running";
-				std::exit (Application::EGeneralSocketError);
-			}
-			else if (!qobject_cast<Application*> (qApp)->GetVarMap ().count ("plugin"))
-				std::exit (Application::EAlreadyRunning);
-		}
+		StartServer ();
+
 		connect (Server_.get (),
 				SIGNAL (newConnection ()),
 				this,
@@ -186,5 +177,47 @@ namespace LC
 			qDebug () << e.Entity_ << e.Additional_;
 			emit gotEntity (e);
 		}
+	}
+
+	namespace
+	{
+		bool ResetStale (QLocalServer& server)
+		{
+			if (server.serverError () != QAbstractSocket::AddressInUseError)
+				return false;
+
+			QLocalSocket socket;
+			socket.connectToServer (Application::GetSocketName ());
+			if (socket.waitForConnected () ||
+					socket.error () != QLocalSocket::ConnectionRefusedError)
+				return false;
+
+			qDebug () << Q_FUNC_INFO
+					<< "clearing stale local server...";
+			QLocalServer::removeServer (Application::GetSocketName ());
+			return true;
+		}
+	}
+
+	void LocalSocketHandler::StartServer ()
+	{
+		if (Server_->listen (Application::GetSocketName ()))
+			return;
+
+		qDebug () << Q_FUNC_INFO << "unable to listen:" << Server_->errorString ();
+
+		if (ResetStale (*Server_) &&
+				Server_->listen (Application::GetSocketName ()))
+			return;
+
+		qDebug () << Q_FUNC_INFO << "unable to listen [2]:" << Server_->errorString ();
+		if (!static_cast<Application*> (qApp)->IsAlreadyRunning ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "WTF? We cannot listen() on the local server but aren't running";
+			std::exit (Application::EGeneralSocketError);
+		}
+		else if (!qobject_cast<Application*> (qApp)->GetVarMap ().count ("plugin"))
+			std::exit (Application::EAlreadyRunning);
 	}
 }
