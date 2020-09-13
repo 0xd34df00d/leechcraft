@@ -30,7 +30,6 @@
 #include <util/sys/paths.h>
 #include <util/sll/slotclosure.h>
 #include <util/sll/prelude.h>
-#include <util/sll/delayedexecutor.h>
 #include <util/sll/qstringwrappers.h>
 #include <util/sll/urlaccessor.h>
 #include <util/sll/visitor.h>
@@ -390,14 +389,9 @@ namespace CleanWeb
 				const auto view = *info.View_;
 				const auto reqUrl = info.RequestUrl_;
 
-				auto exec = new Util::DelayedExecutor
-				{
-					[this, view, reqUrl] { DelayedRemoveElements (view, reqUrl); },
-					0,
-					view->GetQWidget ()
-				};
-
-				exec->moveToThread (qApp->thread ());
+				QTimer::singleShot (0,
+						view->GetQWidget (),
+						[this, view, reqUrl] { DelayedRemoveElements (view, reqUrl); });
 			}
 
 			return IInterceptableRequests::Block {};
