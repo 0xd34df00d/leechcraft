@@ -42,6 +42,9 @@ namespace Media
 		/** @brief URL of the full version of the image.
 		 */
 		QUrl Full_;
+
+		bool operator== (const ArtistImage&) const = default;
+		bool operator!= (const ArtistImage&) const = default;
 	};
 
 	/** @brief Information about artist biography.
@@ -64,6 +67,9 @@ namespace Media
 		 * similar stuff.
 		 */
 		QList<ArtistImage> OtherImages_;
+
+		bool operator== (const ArtistBio&) const = default;
+		bool operator!= (const ArtistBio&) const = default;
 	};
 
 	/** @brief Interface for plugins supporting fetching artist biography.

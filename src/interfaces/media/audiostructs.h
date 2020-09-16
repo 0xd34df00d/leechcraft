@@ -55,26 +55,8 @@ namespace Media
 		 */
 		QVariantMap Other_;
 
-		/** @brief Returns whether this audio info is equal to another one.
-		 */
-		inline bool operator== (const AudioInfo& other) const
-		{
-			return Artist_ == other.Artist_ &&
-				Album_ == other.Album_ &&
-				Title_ == other.Title_ &&
-				Genres_ == other.Genres_ &&
-				Length_ == other.Length_ &&
-				Year_ == other.Year_ &&
-				TrackNumber_ == other.TrackNumber_ &&
-				Other_ == other.Other_;
-		}
-
-		/** @brief Returns whether this audio info isn't equal to another one.
-		 */
-		inline bool operator!= (const AudioInfo& other) const
-		{
-			return !(*this == other);
-		}
+		bool operator== (const AudioInfo& other) const = default;
+		bool operator!= (const AudioInfo& other) const = default;
 	};
 
 	/** @brief Information about a tag like a genre.
@@ -84,6 +66,9 @@ namespace Media
 		/** @brief Name of the tag.
 		 */
 		QString Name_;
+
+		bool operator== (const TagInfo& other) const = default;
+		bool operator!= (const TagInfo& other) const = default;
 	};
 
 	/** @brief A list of tags.
@@ -127,6 +112,9 @@ namespace Media
 		/** @brief Genres this artist plays in.
 		 */
 		TagInfos_t Tags_;
+
+		bool operator== (const ArtistInfo& other) const = default;
+		bool operator!= (const ArtistInfo& other) const = default;
 	};
 
 	/** @brief Describes similarty information of an artist.
@@ -157,6 +145,9 @@ namespace Media
 		/** @brief Names of the artists similar to this one.
 		 */
 		QStringList SimilarTo_;
+
+		bool operator== (const SimilarityInfo& other) const = default;
+		bool operator!= (const SimilarityInfo& other) const = default;
 	};
 
 	/** @brief A list of SimilarityInfo structures.
