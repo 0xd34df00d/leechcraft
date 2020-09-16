@@ -16,9 +16,7 @@
 #include "mediainfo.h"
 #include "interfaces/lmp/collectiontypes.h"
 
-namespace LC
-{
-namespace LMP
+namespace LC::LMP
 {
 	struct RGData;
 
@@ -131,5 +129,4 @@ namespace LMP
 		void PrepareQueries ();
 		void CreateTables ();
 	};
-}
 }

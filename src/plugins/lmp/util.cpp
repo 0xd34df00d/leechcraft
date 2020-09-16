@@ -12,9 +12,7 @@
 #include <QDirIterator>
 #include <QPixmap>
 #include <QApplication>
-#include <QLabel>
 #include <QMessageBox>
-#include <QFileDialog>
 #include <QFileInfo>
 #include <util/util.h>
 #include <util/gui/util.h>
@@ -28,9 +26,7 @@
 #include "xmlsettingsmanager.h"
 #include "radiotracksgrabdialog.h"
 
-namespace LC
-{
-namespace LMP
+namespace LC::LMP
 {
 	QList<QFileInfo> RecIterateInfo (const QString& dirPath, bool followSymlinks, std::atomic<bool> *stopFlag)
 	{
@@ -116,20 +112,17 @@ namespace LMP
 			}
 		}
 
-		QStringList possibleBases;
-		possibleBases << "cover" << "folder" << "front";
+		static const QStringList possibleBases { "cover", "folder", "front" };
 
-		const QDir& dir = QFileInfo (near).absoluteDir ();
-		const QStringList& entryList = dir.entryList ({ "*.jpg", "*.png", "*.bmp" });
+		const auto& dir = QFileInfo (near).absoluteDir ();
+		const auto& entryList = dir.entryList ({ "*.jpg", "*.png", "*.bmp" });
 		if (entryList.size () > 1)
 		{
 			auto pos = std::find_if (entryList.begin (), entryList.end (),
-					[&possibleBases] (const QString& name) -> bool
+					[] (const QString& name)
 					{
-						for (const auto& pBase : possibleBases)
-							if (name.startsWith (pBase, Qt::CaseInsensitive))
-								return true;
-						return false;
+						return std::any_of (possibleBases.begin (), possibleBases.end (),
+								[&name] (const auto& pBase) { return name.startsWith (pBase, Qt::CaseInsensitive); });
 					});
 			return pos == entryList.end () ? QString () : dir.filePath (*pos);
 		}
@@ -237,7 +230,7 @@ namespace LMP
 		if (days > 30)
 			return defLocale.toString (datetime, "MMMM yyyy");
 		else if (days >= 7)
-			return QObject::tr ("%n day(s) ago", 0, days);
+			return QObject::tr ("%n day(s) ago", nullptr, days);
 		else if (days >= 2)
 			return defLocale.toString (datetime, "dddd");
 		else if (days == 1)
@@ -313,5 +306,4 @@ namespace LMP
 				[] (const MediaInfo& info) -> Media::AudioInfo { return info; });
 		GrabTracks (converted, parent);
 	}
-}
 }

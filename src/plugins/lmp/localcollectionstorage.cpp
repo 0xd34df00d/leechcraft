@@ -21,9 +21,7 @@
 #include "engine/rgfilter.h"
 #include "xmlsettingsmanager.h"
 
-namespace LC
-{
-namespace LMP
+namespace LC::LMP
 {
 	LocalCollectionStorage::LocalCollectionStorage (QObject *parent)
 	: QObject (parent)
@@ -916,5 +914,4 @@ namespace LMP
 
 		lock.Good ();
 	}
-}
 }

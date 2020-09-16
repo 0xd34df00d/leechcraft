@@ -14,9 +14,7 @@
 #include "interfaces/lmp/icollectionmodel.h"
 #include "interfaces/lmp/collectiontypes.h"
 
-namespace LC
-{
-namespace LMP
+namespace LC::LMP
 {
 	class LocalCollectionStorage;
 
@@ -78,5 +76,4 @@ namespace LMP
 
 		void UpdatePlayStats (int);
 	};
-}
 }

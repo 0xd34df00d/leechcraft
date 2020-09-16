@@ -14,13 +14,10 @@
 #include <util/sll/prelude.h>
 #include <util/sll/unreachable.h>
 #include "core.h"
-#include "localcollection.h"
 #include "localcollectionstorage.h"
 #include "util.h"
 
-namespace LC
-{
-namespace LMP
+namespace LC::LMP
 {
 	LocalCollectionModel::LocalCollectionModel (LocalCollectionStorage *storage, QObject *parent)
 	: DndActionsMixin<QStandardItemModel> { parent }
@@ -104,7 +101,7 @@ namespace LMP
 				{
 					const auto& last = LocalCollectionModel::tr ("Last playback: %1")
 							.arg (FormatDateTime (stats.LastPlay_));
-					const auto& total = LocalCollectionModel::tr ("Played %n time(s) since %1", 0, stats.Playcount_)
+					const auto& total = LocalCollectionModel::tr ("Played %n time(s) since %1", nullptr, stats.Playcount_)
 							.arg (FormatDateTime (stats.Added_));
 					item->setToolTip (last + "\n" + total);
 				}
@@ -192,7 +189,7 @@ namespace LMP
 					this,
 					artist.ID_);
 
-			for (auto album : artist.Albums_)
+			for (const auto& album : artist.Albums_)
 			{
 				auto albumItem = GetItem (Album2Item_,
 						[album, artist] (QStandardItem *item)
@@ -290,5 +287,4 @@ namespace LMP
 			item = item->parent ();
 		}
 	}
-}
 }
