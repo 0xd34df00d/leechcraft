@@ -55,6 +55,9 @@ namespace LMP
 
 	void BioPropProxy::SetBio (const Media::ArtistBio& bio)
 	{
+		if (Bio_ == bio)
+			return;
+
 		Bio_ = bio;
 
 		CachedTags_ = Util::Map (Bio_.BasicInfo_.Tags_, &Media::TagInfo::Name_).join ("; ");
