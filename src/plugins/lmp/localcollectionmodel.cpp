@@ -136,11 +136,7 @@ namespace LMP
 	QVariant LocalCollectionModel::data (const QModelIndex& index, int role) const
 	{
 		if (role == Qt::ToolTipRole)
-		{
-			const auto item = itemFromIndex (index);
-			if (item->data (role).isNull ())
-				RefreshTooltip (item, Storage_);
-		}
+			RefreshTooltip (itemFromIndex (index), Storage_);
 
 		return QStandardItemModel::data (index, role);
 	}
