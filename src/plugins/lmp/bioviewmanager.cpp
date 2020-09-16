@@ -97,10 +97,15 @@ namespace LMP
 
 	void BioViewManager::Request (Media::IArtistBioFetcher *fetcher, const QString& artist, const QStringList& releases)
 	{
-		DiscoModel_->clear ();
-		BioPropProxy_->SetBio ({});
+		// Only clear the models if the artist is different to avoid flicker in the (most common) case
+		// of the artist being the same.
+		if (CurrentArtist_ != artist)
+		{
+			DiscoModel_->clear ();
+			BioPropProxy_->SetBio ({});
 
-		CurrentArtist_ = artist;
+			CurrentArtist_ = artist;
+		}
 
 		Util::Sequence (this, fetcher->RequestArtistBio (CurrentArtist_)) >>
 				Util::Visitor
