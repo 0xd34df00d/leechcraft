@@ -230,7 +230,7 @@ namespace LMP
 
 	QString FormatDateTime (const QDateTime& datetime)
 	{
-		const QDateTime& current = QDateTime::currentDateTime ();
+		const auto& current = QDateTime::currentDateTime ();
 		const int days = datetime.daysTo (current);
 
 		QLocale defLocale;
@@ -238,10 +238,12 @@ namespace LMP
 			return defLocale.toString (datetime, "MMMM yyyy");
 		else if (days >= 7)
 			return QObject::tr ("%n day(s) ago", 0, days);
-		else if (days >= 1)
+		else if (days >= 2)
 			return defLocale.toString (datetime, "dddd");
+		else if (days == 1)
+			return QObject::tr ("yesterday");
 		else
-			return defLocale.toString (datetime.time ());
+			return QObject::tr ("today");
 	}
 
 	namespace
