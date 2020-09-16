@@ -155,6 +155,7 @@ namespace CleanWeb
 				if (!Util::RegExp::IsFast ())
 					return;
 
+				actualLine.replace (".", "\\.");
 				actualLine.replace ('*', ".*");
 				if (f.MatchType_ != FilterOption::MatchType::Wildcard)
 					actualLine.replace ('?', "\\?");
