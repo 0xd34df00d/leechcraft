@@ -216,7 +216,7 @@ namespace LC
 			emit currentChanged (currentIndex ());
 		}
 		else if (index != -1 &&
-				event->button () == Qt::MidButton &&
+				event->button () == Qt::MiddleButton &&
 				index != count () - 1)
 		{
 			auto rootWM = Core::Instance ().GetRootWindowsManager ();

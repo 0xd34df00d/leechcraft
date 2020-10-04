@@ -33,7 +33,7 @@ namespace Poshuku
 
 	auto LinkOpenModifier::GetOpenBehaviourSuggestion () const -> OpenBehaviourSuggestion
 	{
-		if (!(MouseButtons_ == Qt::MidButton ||
+		if (!(MouseButtons_ == Qt::MiddleButton ||
 				Modifiers_ & Qt::ControlModifier))
 			return {};
 
