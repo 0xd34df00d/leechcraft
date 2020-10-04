@@ -34,7 +34,7 @@ namespace Poleemery
 
 		const auto& fm = fontMetrics ();
 		auto setColWidth = [&fm, this] (EntriesModel::Columns col, const QString& str)
-			{ Ui_.OpsView_->setColumnWidth (col, fm.width (str) * 1.1); };
+			{ Ui_.OpsView_->setColumnWidth (col, fm.horizontalAdvance (str) * 1.1); };
 
 		setColWidth (EntriesModel::Columns::Date,
 				QDateTime::currentDateTime ().toString ());
