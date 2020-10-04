@@ -338,7 +338,7 @@ namespace Poleemery
 				auto item = new QwtPlotTradingCurve (currency);
 				item->setSamples (samples);
 				item->setSymbolPen (color);
-				item->setSymbolExtent (QwtDate::toDouble (QDateTime::fromTime_t (0).addDays (1)) * 3 / 5);
+				item->setSymbolExtent (QwtDate::toDouble (QDateTime::fromSecsSinceEpoch (0).addDays (1)) * 3 / 5);
 				result << item;
 			}
 			else
