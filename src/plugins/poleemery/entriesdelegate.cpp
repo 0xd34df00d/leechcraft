@@ -33,7 +33,7 @@ namespace Poleemery
 			auto result = new Util::TagsLineEdit (parent);
 			auto completer = new Util::TagsCompleter (result);
 
-			const auto& cats = Core::Instance ().GetOpsManager ()->GetKnownCategories ().toList ();
+			const auto& cats = Core::Instance ().GetOpsManager ()->GetKnownCategories ().values ();
 			completer->OverrideModel (new QStringListModel (cats, completer));
 
 			result->AddSelector ();

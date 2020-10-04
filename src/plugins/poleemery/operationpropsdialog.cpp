@@ -46,7 +46,7 @@ namespace Poleemery
 			Ui_.AccsBox_->addItem (acc.Name_);
 
 		auto completer = new Util::TagsCompleter (Ui_.Categories_);
-		const auto& cats = Core::Instance ().GetOpsManager ()->GetKnownCategories ().toList ();
+		const auto& cats = Core::Instance ().GetOpsManager ()->GetKnownCategories ().values ();
 		completer->OverrideModel (new QStringListModel (cats, completer));
 		Ui_.Categories_->AddSelector ();
 
