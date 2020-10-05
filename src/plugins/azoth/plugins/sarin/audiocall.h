@@ -22,7 +22,7 @@ template<typename T>
 class QFuture;
 
 #ifndef ENABLE_MEDIACALLS
-struct QAudioFormat;
+class QAudioFormat;
 #endif
 
 namespace LC
