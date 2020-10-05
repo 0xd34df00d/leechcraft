@@ -49,9 +49,10 @@ namespace Util
 
 		friend class LC::SettingsThread;
 	protected:
-		bool ReadAllKeys_;
+		bool ReadAllKeys_ = false;
 	public:
-		BaseSettingsManager (bool readAllKeys = false, QObject* = 0);
+		explicit BaseSettingsManager (QObject* = nullptr);
+		explicit BaseSettingsManager (bool readAllKeys, QObject* = nullptr);
 
 		/** @brief Initalizes the settings manager.
 		 *

@@ -14,13 +14,16 @@
 
 #define PROP2CHAR(a) (a.toUtf8 ().constData ())
 
-namespace LC
+namespace LC::Util
 {
-namespace Util
-{
+	BaseSettingsManager::BaseSettingsManager (QObject *parent)
+	: QObject { parent }
+	{
+	}
+
 	BaseSettingsManager::BaseSettingsManager (bool readAllKeys, QObject *parent)
-	: QObject (parent)
-	, ReadAllKeys_ (readAllKeys)
+	: QObject { parent }
+	, ReadAllKeys_ { readAllKeys }
 	{
 	}
 
@@ -242,5 +245,4 @@ namespace Util
 		cleanupMap (ApplyProps_);
 		cleanupMap (SelectProps_);
 	}
-}
 }
