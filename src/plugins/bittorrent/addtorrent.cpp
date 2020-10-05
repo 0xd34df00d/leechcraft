@@ -9,7 +9,6 @@
 #include "addtorrent.h"
 #include <filesystem>
 #include <libtorrent/announce_entry.hpp>
-#include <QHeaderView>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QSortFilterProxyModel>
