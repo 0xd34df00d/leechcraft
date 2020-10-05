@@ -12,6 +12,8 @@
 #include <util/sll/visitor.h>
 #include "settingsthreadmanager.h"
 
+#define PROP2CHAR(a) (a.toUtf8 ().constData ())
+
 namespace LC
 {
 namespace Util

@@ -19,8 +19,6 @@
 #include <QPointer>
 #include "xsdconfig.h"
 
-#define PROP2CHAR(a) (a.toUtf8 ().constData ())
-
 typedef std::shared_ptr<QSettings> Settings_ptr;
 
 namespace LC
