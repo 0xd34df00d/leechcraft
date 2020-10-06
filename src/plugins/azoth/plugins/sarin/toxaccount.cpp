@@ -310,7 +310,11 @@ namespace LC::Azoth::Sarin
 
 	ISupportMediaCalls::MediaCallFeatures ToxAccount::GetMediaCallFeatures () const
 	{
+#ifdef ENABLE_MEDIACALLS
 		return MCFSupportsAudioCalls;
+#else
+		return MCFNoFeatures;
+#endif
 	}
 
 	QObject* ToxAccount::Call (const QString& id, const QString&)
