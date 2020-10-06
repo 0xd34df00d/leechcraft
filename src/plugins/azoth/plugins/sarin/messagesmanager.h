@@ -15,11 +15,7 @@
 
 typedef struct Tox Tox;
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Sarin
+namespace LC::Azoth::Sarin
 {
 	class ToxAccount;
 	class ToxThread;
@@ -41,7 +37,7 @@ namespace Sarin
 
 		QHash<uint32_t, QPointer<ChatMessage>> MsgId2Msg_;
 	public:
-		MessagesManager (ToxAccount*);
+		explicit MessagesManager (ToxAccount*);
 
 		void SendMessage (const QByteArray& privkey, ChatMessage*);
 	private:
@@ -55,6 +51,4 @@ namespace Sarin
 
 		void gotMessage (const QByteArray&, const QString&);
 	};
-}
-}
 }

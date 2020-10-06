@@ -11,11 +11,7 @@
 #include <QtDebug>
 #include "callmanager.h"
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Sarin
+namespace LC::Azoth::Sarin
 {
 	AudioCallDevice::AudioCallDevice (int32_t callIdx, CallManager *manager)
 	: Idx_ { callIdx }
@@ -88,6 +84,4 @@ namespace Sarin
 	{
 		setErrorString (errStr);
 	}
-}
-}
 }

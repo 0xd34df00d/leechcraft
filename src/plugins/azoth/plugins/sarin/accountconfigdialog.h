@@ -11,25 +11,17 @@
 #include <QDialog>
 #include "ui_accountconfigdialog.h"
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Sarin
+namespace LC::Azoth::Sarin
 {
 	struct ToxAccountConfiguration;
 
 	class AccountConfigDialog : public QDialog
 	{
-		Q_OBJECT
-
 		Ui::AccountConfigDialog Ui_;
 	public:
-		AccountConfigDialog (QDialog* = nullptr);
+		explicit AccountConfigDialog (QDialog* = nullptr);
 
 		ToxAccountConfiguration GetConfig () const;
 		void SetConfig (const ToxAccountConfiguration&);
 	};
-}
-}
 }

@@ -14,11 +14,7 @@
 #include "accregisterdetailspage.h"
 #include "toxaccount.h"
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Sarin
+namespace LC::Azoth::Sarin
 {
 	ToxProtocol::ToxProtocol (const ICoreProxy_ptr& proxy, QObject* parentPlugin)
 	: QObject { parentPlugin }
@@ -155,6 +151,4 @@ namespace Sarin
 				QCoreApplication::applicationName () + "_Azoth_Sarin_Accounts" };
 		settings.setValue (account->GetAccountID (), account->Serialize ());
 	}
-}
-}
 }

@@ -28,11 +28,7 @@
 #include "audiocall.h"
 #include "filetransfermanager.h"
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Sarin
+namespace LC::Azoth::Sarin
 {
 	ToxAccount::ToxAccount (const QByteArray& uid, const QString& name, ToxProtocol *parent)
 	: QObject { parent }
@@ -599,6 +595,4 @@ namespace Sarin
 
 		emit statusChanged ({ SError, e->what () });
 	}
-}
-}
 }

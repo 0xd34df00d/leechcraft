@@ -8,11 +8,7 @@
 
 #include "filetransferbase.h"
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Sarin
+namespace LC::Azoth::Sarin
 {
 	FileTransferBase::FileTransferBase (const QString& azothId,
 			const QByteArray& pubkey,
@@ -34,6 +30,4 @@ namespace Sarin
 	{
 		return {};
 	}
-}
-}
 }

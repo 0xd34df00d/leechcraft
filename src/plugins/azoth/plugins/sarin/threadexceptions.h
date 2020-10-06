@@ -13,11 +13,7 @@
 #include <util/threads/concurrentexception.h>
 #include <tox/toxav.h>
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Sarin
+namespace LC::Azoth::Sarin
 {
 	using ToxException = Util::ConcurrentStdException;
 
@@ -74,6 +70,4 @@ namespace Sarin
 	{
 		return { msg, error };
 	}
-}
-}
 }

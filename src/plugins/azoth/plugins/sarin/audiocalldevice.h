@@ -13,11 +13,7 @@
 #include <QAudioFormat>
 #include "calldatawriter.h"
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Sarin
+namespace LC::Azoth::Sarin
 {
 	class CallManager;
 
@@ -45,6 +41,4 @@ namespace Sarin
 		void HandleGotFrame (int32_t, const QByteArray&);
 		void HandleWriteError (const QString&);
 	};
-}
-}
 }

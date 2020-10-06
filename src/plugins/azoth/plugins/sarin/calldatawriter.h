@@ -14,11 +14,7 @@
 
 class QAudioFormat;
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Sarin
+namespace LC::Azoth::Sarin
 {
 	class CallManager;
 
@@ -39,6 +35,4 @@ namespace Sarin
 	signals:
 		void gotError (const QString&);
 	};
-}
-}
 }

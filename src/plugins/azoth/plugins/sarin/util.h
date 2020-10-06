@@ -14,11 +14,7 @@
 
 typedef struct Tox Tox;
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Sarin
+namespace LC::Azoth::Sarin
 {
 	std::optional<qint32> GetFriendId (const Tox *tox, const QByteArray& pubkey);
 	QByteArray GetFriendId (const Tox *tox, int32_t friendId);
@@ -47,6 +43,4 @@ namespace Sarin
 	{
 		return ToxId2HR<Size> (address.data ());
 	}
-}
-}
 }

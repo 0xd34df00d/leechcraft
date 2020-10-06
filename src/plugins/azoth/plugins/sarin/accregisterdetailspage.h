@@ -11,11 +11,7 @@
 #include <QWidget>
 #include "ui_accregisterdetailspage.h"
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Sarin
+namespace LC::Azoth::Sarin
 {
 	class AccRegisterDetailsPage : public QWidget
 	{
@@ -23,13 +19,11 @@ namespace Sarin
 
 		Ui::AccRegisterDetailsPage Ui_;
 	public:
-		AccRegisterDetailsPage (QWidget* = 0);
+		explicit AccRegisterDetailsPage (QWidget* = nullptr);
 
 		QString GetId () const;
 		QString GetNickname () const;
 	private slots:
 		void on_GenerateButton__released ();
 	};
-}
-}
 }

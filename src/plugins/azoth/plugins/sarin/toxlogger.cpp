@@ -12,11 +12,7 @@
 #include <QtDebug>
 #include <util/sys/paths.h>
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Sarin
+namespace LC::Azoth::Sarin
 {
 	ToxLogger::ToxLogger (const QString& name)
 	: Name_ { name }
@@ -72,6 +68,4 @@ namespace Sarin
 				.arg (QString::fromUtf8 (message))
 				.toUtf8 ());
 	}
-}
-}
 }

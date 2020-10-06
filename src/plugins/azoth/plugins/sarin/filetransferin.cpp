@@ -11,11 +11,7 @@
 #include <tox/tox.h>
 #include "toxthread.h"
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Sarin
+namespace LC::Azoth::Sarin
 {
 	FileTransferIn::FileTransferIn (const QString& azothId,
 			const QByteArray& pubkey,
@@ -117,6 +113,4 @@ namespace Sarin
 			break;
 		}
 	}
-}
-}
 }

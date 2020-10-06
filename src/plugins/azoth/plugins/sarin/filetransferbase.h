@@ -12,11 +12,7 @@
 #include <QObject>
 #include <interfaces/azoth/itransfermanager.h>
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Sarin
+namespace LC::Azoth::Sarin
 {
 	class ToxThread;
 
@@ -42,6 +38,4 @@ namespace Sarin
 		void errorAppeared (TransferError error, const QString& msg) override;
 		void stateChanged (TransferState state) override;
 	};
-}
-}
 }

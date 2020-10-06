@@ -9,11 +9,7 @@
 #include "accountconfigdialog.h"
 #include "toxaccountconfiguration.h"
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Sarin
+namespace LC::Azoth::Sarin
 {
 	AccountConfigDialog::AccountConfigDialog (QDialog *parent)
 	: QDialog { parent }
@@ -39,6 +35,4 @@ namespace Sarin
 		Ui_.ProxyHost_->setText (config.ProxyHost_);
 		Ui_.ProxyPort_->setValue (config.ProxyPort_);
 	}
-}
-}
 }

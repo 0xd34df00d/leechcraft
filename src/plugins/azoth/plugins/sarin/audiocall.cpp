@@ -16,11 +16,7 @@
 #include "audiocalldevice.h"
 #include "toxcontact.h"
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Sarin
+namespace LC::Azoth::Sarin
 {
 	namespace
 	{
@@ -206,6 +202,4 @@ namespace Sarin
 
 		emit audioModeChanged (CurrentMode_);
 	}
-}
-}
 }

@@ -13,11 +13,7 @@
 #include <QFile>
 #include "filetransferbase.h"
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Sarin
+namespace LC::Azoth::Sarin
 {
 	class ToxThread;
 
@@ -62,6 +58,4 @@ namespace Sarin
 		void HandlePause ();
 		void HandleResume ();
 	};
-}
-}
 }

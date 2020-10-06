@@ -10,11 +10,7 @@
 #include <QDataStream>
 #include <QtDebug>
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Sarin
+namespace LC::Azoth::Sarin
 {
 	ToxAccountConfiguration::ToxAccountConfiguration (bool udp, bool ipv6, const QString& host, int port)
 	: AllowUDP_ { udp }
@@ -72,6 +68,4 @@ namespace Sarin
 					>> config.UdpHolePunching_;
 		return in;
 	}
-}
-}
 }

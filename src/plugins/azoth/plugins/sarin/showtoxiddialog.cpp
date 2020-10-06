@@ -10,11 +10,7 @@
 #include <QApplication>
 #include <QClipboard>
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Sarin
+namespace LC::Azoth::Sarin
 {
 	ShowToxIdDialog::ShowToxIdDialog (const QString& placeholder, QWidget *parent)
 	: QDialog { parent }
@@ -36,6 +32,4 @@ namespace Sarin
 		const auto& id = Ui_.ToxIdEdit_->text ();
 		QApplication::clipboard ()->setText (id, QClipboard::Clipboard);
 	}
-}
-}
 }

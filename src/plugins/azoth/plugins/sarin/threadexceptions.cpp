@@ -8,11 +8,7 @@
 
 #include "threadexceptions.h"
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Sarin
+namespace LC::Azoth::Sarin
 {
 	TextExceptionBase::TextExceptionBase (const QString& str)
 	: Msg_ { str.toUtf8 () }
@@ -23,6 +19,4 @@ namespace Sarin
 	{
 		return Msg_.constData ();
 	}
-}
-}
 }

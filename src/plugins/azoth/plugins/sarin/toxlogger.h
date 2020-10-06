@@ -11,11 +11,7 @@
 #include <QString>
 #include <tox/tox.h>
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Sarin
+namespace LC::Azoth::Sarin
 {
 	class ToxLogger
 	{
@@ -25,6 +21,4 @@ namespace Sarin
 
 		void Log (TOX_LOG_LEVEL level, const char *file, uint32_t line, const char *func, const char *message);
 	};
-}
-}
 }

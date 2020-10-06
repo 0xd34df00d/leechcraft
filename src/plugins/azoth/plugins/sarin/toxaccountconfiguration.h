@@ -12,11 +12,7 @@
 
 class QDataStream;
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Sarin
+namespace LC::Azoth::Sarin
 {
 	struct ToxAccountConfiguration
 	{
@@ -37,6 +33,4 @@ namespace Sarin
 
 	QDataStream& operator<< (QDataStream&, const ToxAccountConfiguration&);
 	QDataStream& operator>> (QDataStream&, ToxAccountConfiguration&);
-}
-}
 }

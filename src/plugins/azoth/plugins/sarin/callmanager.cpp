@@ -15,11 +15,7 @@
 #include "util.h"
 #include "threadexceptions.h"
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Sarin
+namespace LC::Azoth::Sarin
 {
 	struct CallManager::ToxAvThread : public QThread
 	{
@@ -197,6 +193,4 @@ namespace Sarin
 		const QByteArray data { reinterpret_cast<const char*> (frames), static_cast<int> (size * sizeof (int16_t)) };
 		emit gotFrame (call, data);
 	}
-}
-}
 }

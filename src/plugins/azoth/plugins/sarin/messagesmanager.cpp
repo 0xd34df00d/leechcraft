@@ -16,11 +16,7 @@
 #include "util.h"
 #include "callbackmanager.h"
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Sarin
+namespace LC::Azoth::Sarin
 {
 	MessagesManager::MessagesManager (ToxAccount *acc)
 	: QObject { acc }
@@ -173,6 +169,4 @@ namespace Sarin
 		cbMgr->Register<tox_callback_friend_read_receipt> (this,
 				[] (MessagesManager *pThis, uint32_t, uint32_t msgId) { pThis->invokeHandleReadReceipt (msgId); });
 	}
-}
-}
 }

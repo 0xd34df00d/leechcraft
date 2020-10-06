@@ -16,11 +16,7 @@
 #include "util.h"
 #include "threadexceptions.h"
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Sarin
+namespace LC::Azoth::Sarin
 {
 	FileTransferOut::FileTransferOut (const QString& azothId,
 			const QByteArray& pubkey,
@@ -244,6 +240,4 @@ namespace Sarin
 								<< error;
 				});
 	}
-}
-}
 }

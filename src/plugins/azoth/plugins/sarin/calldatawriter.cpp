@@ -11,11 +11,7 @@
 #include <util/sll/visitor.h>
 #include "callmanager.h"
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Sarin
+namespace LC::Azoth::Sarin
 {
 	CallDataWriter::CallDataWriter (int32_t callIdx, CallManager *callMgr, QObject *parent)
 	: QObject { parent }
@@ -53,6 +49,4 @@ namespace Sarin
 
 		return data.size ();
 	}
-}
-}
 }

@@ -8,11 +8,7 @@
 
 #include "callbackmanager.h"
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Sarin
+namespace LC::Azoth::Sarin
 {
 	void CallbackManager::SetTox (const std::shared_ptr<Tox>& tox)
 	{
@@ -25,6 +21,4 @@ namespace Sarin
 							regger (tox.get ());
 					});
 	}
-}
-}
 }

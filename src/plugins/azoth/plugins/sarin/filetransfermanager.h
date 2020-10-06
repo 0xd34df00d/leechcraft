@@ -14,11 +14,7 @@
 
 typedef struct Tox Tox;
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Sarin
+namespace LC::Azoth::Sarin
 {
 	class ToxThread;
 	class ToxAccount;
@@ -32,7 +28,7 @@ namespace Sarin
 		ToxAccount * const Acc_;
 		std::weak_ptr<ToxThread> ToxThread_;
 	public:
-		FileTransferManager (ToxAccount*);
+		explicit FileTransferManager (ToxAccount*);
 
 		bool IsAvailable () const override;
 		QObject* SendFile (const QString&, const QString&, const QString&, const QString&) override;
@@ -50,6 +46,4 @@ namespace Sarin
 		// Internal signal to route file info requests from Tox thread to main thread.
 		void requested (uint32_t, const QByteArray&, uint32_t, uint64_t, const QString&);
 	};
-}
-}
 }

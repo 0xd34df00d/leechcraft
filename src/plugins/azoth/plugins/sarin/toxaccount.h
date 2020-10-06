@@ -15,11 +15,7 @@
 #include <interfaces/azoth/isupportmediacalls.h>
 #include "toxaccountconfiguration.h"
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Sarin
+namespace LC::Azoth::Sarin
 {
 	class ToxProtocol;
 	class ToxThread;
@@ -137,6 +133,4 @@ namespace Sarin
 
 		void called (QObject*) override;
 	};
-}
-}
 }

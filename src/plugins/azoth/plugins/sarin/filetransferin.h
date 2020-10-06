@@ -13,11 +13,7 @@
 
 class QFile;
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Sarin
+namespace LC::Azoth::Sarin
 {
 	class FileTransferIn final : public FileTransferBase
 	{
@@ -48,6 +44,4 @@ namespace Sarin
 		void HandleData (quint32, quint32, const QByteArray&, uint64_t);
 		void HandleFileControl (uint32_t, uint32_t, int);
 	};
-}
-}
 }

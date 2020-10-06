@@ -20,11 +20,7 @@ class QFuture;
 
 class QAudioFormat;
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Sarin
+namespace LC::Azoth::Sarin
 {
 	class ToxThread;
 
@@ -71,6 +67,4 @@ namespace Sarin
 		void gotFrameParams (int32_t call, int channels, int rate);
 		void gotFrame (int32_t call, const QByteArray&);
 	};
-}
-}
 }

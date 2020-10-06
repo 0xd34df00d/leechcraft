@@ -12,11 +12,7 @@
 #include <interfaces/azoth/iprotocol.h>
 #include <interfaces/core/icoreproxy.h>
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Sarin
+namespace LC::Azoth::Sarin
 {
 	class ToxAccount;
 
@@ -57,6 +53,4 @@ namespace Sarin
 		void accountAdded (QObject*) override;
 		void accountRemoved (QObject*) override;
 	};
-}
-}
 }

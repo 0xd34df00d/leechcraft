@@ -9,11 +9,7 @@
 #include "chatmessage.h"
 #include "toxcontact.h"
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Sarin
+namespace LC::Azoth::Sarin
 {
 	ChatMessage::ChatMessage (const QString& body, IMessage::Direction dir, ToxContact *contact)
 	: QObject { contact }
@@ -97,6 +93,4 @@ namespace Sarin
 		IsDelivered_ = true;
 		emit messageDelivered ();
 	}
-}
-}
 }

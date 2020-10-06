@@ -12,11 +12,7 @@
 #include "toxaccount.h"
 #include "chatmessage.h"
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Sarin
+namespace LC::Azoth::Sarin
 {
 	ToxContact::ToxContact (const QByteArray& pubkey, ToxAccount *account)
 	: QObject { account }
@@ -169,6 +165,4 @@ namespace Sarin
 	{
 		Acc_->SendMessage (Pubkey_, msg);
 	}
-}
-}
 }

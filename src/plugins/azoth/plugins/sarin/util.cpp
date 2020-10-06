@@ -11,11 +11,7 @@
 #include <QtDebug>
 #include <tox/tox.h>
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Sarin
+namespace LC::Azoth::Sarin
 {
 	std::optional<qint32> GetFriendId (const Tox *tox, const QByteArray& pubkey)
 	{
@@ -51,6 +47,4 @@ namespace Sarin
 
 		return ToxId2HR (clientId);
 	}
-}
-}
 }

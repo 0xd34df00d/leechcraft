@@ -12,11 +12,7 @@
 #include <interfaces/azoth/imessage.h>
 #include <interfaces/azoth/iadvancedmessage.h>
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Sarin
+namespace LC::Azoth::Sarin
 {
 	class ToxContact;
 
@@ -59,6 +55,4 @@ namespace Sarin
 	signals:
 		void messageDelivered () override;
 	};
-}
-}
 }

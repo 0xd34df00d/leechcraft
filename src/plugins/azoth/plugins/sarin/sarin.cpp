@@ -12,11 +12,7 @@
 #include <tox/tox.h>
 #include "toxprotocol.h"
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Sarin
+namespace LC::Azoth::Sarin
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
@@ -79,8 +75,6 @@ namespace Sarin
 	{
 		return { Proto_.get () };
 	}
-}
-}
 }
 
 LC_EXPORT_PLUGIN (leechcraft_azoth_sarin, LC::Azoth::Sarin::Plugin);

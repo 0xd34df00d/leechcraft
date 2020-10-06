@@ -11,11 +11,7 @@
 #include <QObject>
 #include <interfaces/azoth/iclentry.h>
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Sarin
+namespace LC::Azoth::Sarin
 {
 	class ToxAccount;
 	class ChatMessage;
@@ -82,6 +78,4 @@ namespace Sarin
 		void permsChanged () override;
 		void entryGenerallyChanged () override;
 	};
-}
-}
 }

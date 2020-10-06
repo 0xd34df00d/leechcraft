@@ -11,11 +11,7 @@
 #include <QtDebug>
 #include <sodium.h>
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Sarin
+namespace LC::Azoth::Sarin
 {
 	AccRegisterDetailsPage::AccRegisterDetailsPage (QWidget *parent)
 	: QWidget { parent }
@@ -60,6 +56,4 @@ namespace Sarin
 
 		Ui_.IdEdit_->setText (idStr.toUpper ());
 	}
-}
-}
 }

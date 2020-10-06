@@ -22,11 +22,7 @@
 
 typedef struct Tox Tox;
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Sarin
+namespace LC::Azoth::Sarin
 {
 	class CallManager;
 	class CallbackManager;
@@ -126,7 +122,7 @@ namespace Sarin
 		void SetCallbacks ();
 		void RunTox ();
 	protected:
-		virtual void run ();
+		void run () override;
 	signals:
 		void statusChanged (const EntryStatus&);
 
@@ -146,6 +142,4 @@ namespace Sarin
 
 		void fatalException (const LC::Util::QtException_ptr&);
 	};
-}
-}
 }

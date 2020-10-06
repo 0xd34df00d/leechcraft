@@ -19,11 +19,7 @@
 #include "callbackmanager.h"
 #include "toxlogger.h"
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Sarin
+namespace LC::Azoth::Sarin
 {
 	ToxThread::ToxThread (const QString& name,
 			const QByteArray& state, const ToxAccountConfiguration& config)
@@ -602,6 +598,4 @@ namespace Sarin
 			emit fatalException (std::make_shared<Util::ConcurrentStdException> (e));
 		}
 	}
-}
-}
 }

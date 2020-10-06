@@ -11,11 +11,7 @@
 #include <QDialog>
 #include "ui_showtoxiddialog.h"
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Sarin
+namespace LC::Azoth::Sarin
 {
 	class ShowToxIdDialog : public QDialog
 	{
@@ -29,6 +25,4 @@ namespace Sarin
 	private slots:
 		void on_CopyButton__released ();
 	};
-}
-}
 }

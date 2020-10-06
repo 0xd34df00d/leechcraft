@@ -17,11 +17,7 @@
 
 using Tox = struct Tox;
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Sarin
+namespace LC::Azoth::Sarin
 {
 	namespace detail
 	{
@@ -230,6 +226,4 @@ namespace Sarin
 			};
 		}
 	};
-}
-}
 }

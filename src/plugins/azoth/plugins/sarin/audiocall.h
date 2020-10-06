@@ -25,11 +25,7 @@ class QFuture;
 class QAudioFormat;
 #endif
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Sarin
+namespace LC::Azoth::Sarin
 {
 	class AudioCallDevice;
 	class ToxContact;
@@ -81,6 +77,4 @@ namespace Sarin
 		void readFormatChanged ();
 		void writeFormatChanged ();
 	};
-}
-}
 }
