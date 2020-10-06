@@ -25,8 +25,11 @@
 #include "chatmessage.h"
 #include "accountconfigdialog.h"
 #include "util.h"
-#include "audiocall.h"
 #include "filetransfermanager.h"
+
+#ifdef ENABLE_MEDIACALLS
+#include "audiocall.h"
+#endif
 
 namespace LC::Azoth::Sarin
 {
@@ -312,6 +315,7 @@ namespace LC::Azoth::Sarin
 
 	QObject* ToxAccount::Call (const QString& id, const QString&)
 	{
+#ifdef ENABLE_MEDIACALLS
 		if (!Thread_)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -334,6 +338,10 @@ namespace LC::Azoth::Sarin
 		Util::Sequence (entry, Thread_->ResolveFriendId (entry->GetPubKey ())) >>
 				Util::BindMemFn (&AudioCall::SetCallIdx, call);
 		return call;
+#else
+		Q_UNUSED (id)
+		return nullptr;
+#endif
 	}
 
 	QObject* ToxAccount::GetTransferManager () const
@@ -451,15 +459,18 @@ namespace LC::Azoth::Sarin
 		if (!Thread_)
 			return;
 
+#ifdef ENABLE_MEDIACALLS
 		const auto callManager = Thread_->GetCallManager ();
 		connect (callManager,
 				&CallManager::gotIncomingCall,
 				this,
 				&ToxAccount::HandleIncomingCall);
+#endif
 	}
 
 	void ToxAccount::HandleIncomingCall (const QByteArray& pubkey, int32_t callIdx)
 	{
+#ifdef ENABLE_MEDIACALLS
 		qDebug () << Q_FUNC_INFO << pubkey << callIdx;
 		const auto entry = Contacts_.value (pubkey);
 		if (!entry)
@@ -473,6 +484,10 @@ namespace LC::Azoth::Sarin
 		const auto call = new AudioCall { entry, Thread_->GetCallManager (), AudioCall::DIn };
 		call->SetCallIdx (callIdx);
 		emit called (call);
+#else
+		Q_UNUSED (pubkey)
+		Q_UNUSED (callIdx)
+#endif
 	}
 
 	void ToxAccount::HandleToxIdRequested ()

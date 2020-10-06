@@ -5,6 +5,10 @@ include (InitLCPlugin NO_POLICY_SCOPE)
 find_package(PkgConfig)
 pkg_check_modules(TOX REQUIRED IMPORTED_TARGET toxcore)
 
+add_compile_definitions (
+	$<$<BOOL:${ENABLE_MEDIACALLS}>:ENABLE_MEDIACALLS>
+	)
+
 LC_DEFINE_PLUGIN (
 	SRCS
 		sarin.cpp
@@ -22,14 +26,16 @@ LC_DEFINE_PLUGIN (
 		accountconfigdialog.cpp
 		toxaccountconfiguration.cpp
 		util.cpp
-		callmanager.cpp
-		audiocall.cpp
-		audiocalldevice.cpp
-		calldatawriter.cpp
 		filetransfermanager.cpp
 		filetransferbase.cpp
 		filetransferin.cpp
 		filetransferout.cpp
+		$<$<BOOL:${ENABLE_MEDIACALLS}>:
+			audiocall.cpp
+			audiocalldevice.cpp
+			callmanager.cpp
+			calldatawriter.cpp
+			>
 	QT_COMPONENTS Sql Widgets ${EXTRA_MULTIMEDIA_LIBRARY}
 	LINK_LIBRARIES PkgConfig::TOX
 	)
