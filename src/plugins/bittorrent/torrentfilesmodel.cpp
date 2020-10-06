@@ -151,9 +151,8 @@ namespace BitTorrent
 				const auto& curPath = node->GetFullPathStr ();
 				if (curPath.contains ('/') && !newPath.contains ('/'))
 				{
-					auto newCurPath = curPath;
-					const auto lastIdx = newCurPath.lastIndexOf ('/');
-					newPath = newCurPath.left (lastIdx + 1) + newPath;
+					const auto lastIdx = curPath.lastIndexOf ('/');
+					newPath = curPath.left (lastIdx + 1) + newPath;
 				}
 
 				if (!node->IsEmpty ())
