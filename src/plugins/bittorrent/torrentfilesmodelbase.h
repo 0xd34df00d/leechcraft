@@ -129,7 +129,7 @@ namespace BitTorrent
 				beginInsertRows (FindIndex (parentParentPath), parent->GetRowCount (), parent->GetRowCount ());
 			const auto& node = parent->AppendChild (parent);
 			node->ParentPath_ = parentParentPath;
-			node->Name_ = QString::fromStdU16String (path.filename ().u16string ());
+			node->Name_ = QString::fromStdU16String (parentPath.filename ().u16string ());
 			node->Icon_ = Core::Instance ()->GetProxy ()->
 					GetIconThemeManager ()->GetIcon ("document-open-folder");
 
