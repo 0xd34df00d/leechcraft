@@ -161,7 +161,7 @@ namespace SB2
 		if (settingsName.isEmpty ())
 			return;
 
-		XSD_.reset (new Util::XmlSettingsDialog);
+		XSD_ = std::make_shared<Util::XmlSettingsDialog> ();
 		SettingsManager_ = new QuarkSettingsManager (URL_, ViewMgr_->GetView ()->rootContext ());
 		XSD_->RegisterObject (SettingsManager_, settingsName);
 	}

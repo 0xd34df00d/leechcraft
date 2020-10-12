@@ -317,10 +317,9 @@ namespace SB2
 
 	void ViewManager::AddComponent (QuarkComponent_ptr comp, bool force)
 	{
-		QuarkManager_ptr mgr;
 		try
 		{
-			mgr.reset (new QuarkManager (comp, this, Proxy_));
+			AddComponent (comp, std::make_shared<QuarkManager> (comp, this, Proxy_), force);
 		}
 		catch (const std::exception& e)
 		{
@@ -328,8 +327,6 @@ namespace SB2
 					<< e.what ();
 			return;
 		}
-
-		AddComponent (comp, mgr, force);
 	}
 
 	void ViewManager::AddComponent (QuarkComponent_ptr comp, QuarkManager_ptr mgr, bool force)
@@ -462,7 +459,7 @@ namespace SB2
 		qDebug () << Q_FUNC_INFO << urls;
 		for (const auto& url : urls)
 		{
-			QuarkComponent_ptr c { new QuarkComponent };
+			auto c = std::make_shared<QuarkComponent> ();
 			c->Url_ = url;
 			AddComponent (c, false);
 		}
