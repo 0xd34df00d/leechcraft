@@ -87,8 +87,9 @@ namespace SB2
 
 		void RemoveAction (QAction *act)
 		{
-			for (auto key : Actions_.keys (act))
-				Actions_.remove (key);
+			const auto pos = std::find (Actions_.begin (), Actions_.end (), act);
+			if (pos != Actions_.end ())
+				Actions_.erase (pos);
 		}
 	};
 
