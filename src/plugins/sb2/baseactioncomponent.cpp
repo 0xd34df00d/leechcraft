@@ -140,13 +140,13 @@ namespace SB2
 		{
 			View_->addAction (act);
 			connect (act,
-					SIGNAL (destroyed ()),
+					&QAction::destroyed,
 					this,
-					SLOT (handleActionDestroyed ()));
+					[this, act] { RemoveAction (act); });
 			connect (act,
-					SIGNAL (changed ()),
+					&QAction::changed,
 					this,
-					SLOT (handleActionChanged ()));
+					&BaseActionComponent::HandleActionChanged);
 			ImageProv_->SetAction (NextActionId_, act);
 
 			const auto& idStr = QString::number (NextActionId_);
@@ -170,9 +170,9 @@ namespace SB2
 		ImageProv_->RemoveAction (action);
 
 		disconnect (action,
-				0,
+				nullptr,
 				this,
-				0);
+				nullptr);
 	}
 
 	QStandardItem* BaseActionComponent::FindItem (QAction *action) const
@@ -187,13 +187,7 @@ namespace SB2
 		return 0;
 	}
 
-	void BaseActionComponent::handleActionDestroyed ()
-	{
-		auto obj = sender ();
-		RemoveAction (static_cast<QAction*> (obj));
-	}
-
-	void BaseActionComponent::handleActionChanged ()
+	void BaseActionComponent::HandleActionChanged ()
 	{
 		auto act = static_cast<QAction*> (sender ());
 		auto item = FindItem (act);

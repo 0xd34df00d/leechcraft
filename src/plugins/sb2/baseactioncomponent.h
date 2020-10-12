@@ -59,9 +59,7 @@ namespace SB2
 		virtual void RemoveAction (QAction*);
 	protected:
 		QStandardItem* FindItem (QAction*) const;
-	protected slots:
-		void handleActionDestroyed ();
-		void handleActionChanged ();
+		void HandleActionChanged ();
 	};
 }
 }
