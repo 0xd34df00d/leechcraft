@@ -29,20 +29,20 @@ namespace SB2
 	{
 		new Util::AutoResizeMixin (orig, [viewMgr] { return viewMgr->GetFreeCoords (); }, this);
 
-		if (!params.take ("keepOnFocusLeave").toBool ())
+		if (!params.take (QStringLiteral ("keepOnFocusLeave")).toBool ())
 			new Util::UnhoverDeleteMixin (this, SLOT (beforeDelete ()));
 
 		setWindowFlags (Qt::Tool | Qt::FramelessWindowHint);
 		Util::EnableTransparency (this);
 
-		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, ""))
+		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, {}))
 			engine ()->addImportPath (cand);
 
-		rootContext ()->setContextProperty ("colorProxy",
+		rootContext ()->setContextProperty (QStringLiteral ("colorProxy"),
 				new Util::ColorThemeProxy (proxy->GetColorThemeManager (), this));
 		for (const auto& key : params.keys ())
 			rootContext ()->setContextProperty (key, params [key]);
-		engine ()->addImageProvider ("ThemeIcons", new Util::ThemeImageProvider (proxy));
+		engine ()->addImageProvider (QStringLiteral ("ThemeIcons"), new Util::ThemeImageProvider (proxy));
 		setSource (url);
 
 		connect (rootObject (),
@@ -53,8 +53,7 @@ namespace SB2
 
 	void DeclarativeWindow::beforeDelete ()
 	{
-		QMetaObject::invokeMethod (rootObject (),
-				"beforeDelete");
+		QMetaObject::invokeMethod (rootObject (), "beforeDelete");
 		deleteLater ();
 	}
 }

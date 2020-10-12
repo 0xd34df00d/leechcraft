@@ -41,7 +41,7 @@ namespace SB2
 {
 	namespace
 	{
-		const QString ImageProviderID = "ThemeIcons";
+		const QString ImageProviderID = QStringLiteral ("ThemeIcons");
 
 		class ViewItemsModel : public Util::RoleNamesMixin<QStandardItemModel>
 		{
@@ -57,9 +57,9 @@ namespace SB2
 			: RoleNamesMixin<QStandardItemModel> (parent)
 			{
 				QHash<int, QByteArray> names;
-				names [Role::SourceURL] = "sourceURL";
-				names [Role::QuarkHasSettings] = "quarkHasSettings";
-				names [Role::QuarkClass] = "quarkClass";
+				names [Role::SourceURL] = QByteArrayLiteral ("sourceURL");
+				names [Role::QuarkHasSettings] = QByteArrayLiteral ("quarkHasSettings");
+				names [Role::QuarkClass] = QByteArrayLiteral ("quarkClass");
 				setRoleNames (names);
 			}
 		};
@@ -72,12 +72,12 @@ namespace SB2
 	, View_ (new SBView)
 	, Toolbar_ (new QToolBar (tr ("SB2 panel")))
 	, Window_ (window)
-	, IsDesktopMode_ (qApp->arguments ().contains ("--desktop"))
+	, IsDesktopMode_ (qApp->arguments ().contains (QStringLiteral ("--desktop")))
 	, OnloadWindowIndex_ (GetWindowIndex ())
 	, SettingsManager_ (new ViewSettingsManager (this))
 	, GeomManager_ (new ViewGeometryManager (this))
 	{
-		const auto& file = Util::GetSysPath (Util::SysPath::QML, "sb2", "SideView.qml");
+		const auto& file = Util::GetSysPath (Util::SysPath::QML, QStringLiteral ("sb2"), QStringLiteral ("SideView.qml"));
 		if (file.isEmpty ())
 		{
 			qWarning () << Q_FUNC_INFO
@@ -87,18 +87,18 @@ namespace SB2
 
 		new ViewPropsManager (this, SettingsManager_, this);
 
-		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, ""))
+		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, {}))
 			View_->engine ()->addImportPath (cand);
 
-		View_->rootContext ()->setContextProperty ("itemsModel", ViewItemsModel_);
-		View_->rootContext ()->setContextProperty ("quarkProxy", new QuarkProxy (this, proxy, this));
-		View_->rootContext ()->setContextProperty ("colorProxy",
+		View_->rootContext ()->setContextProperty (QStringLiteral ("itemsModel"), ViewItemsModel_);
+		View_->rootContext ()->setContextProperty (QStringLiteral ("quarkProxy"), new QuarkProxy (this, proxy, this));
+		View_->rootContext ()->setContextProperty (QStringLiteral ("colorProxy"),
 				new Util::ColorThemeProxy (proxy->GetColorThemeManager (), this));
-		View_->rootContext ()->setContextProperty ("SB2_settingsModeTooltip", tr ("Settings mode"));
-		View_->rootContext ()->setContextProperty ("SB2_quarkOrderTooltip", tr ("Quarks order"));
-		View_->rootContext ()->setContextProperty ("SB2_addQuarkTooltip", tr ("Add quark"));
-		View_->rootContext ()->setContextProperty ("SB2_showPanelSettingsTooltip", tr ("Show panel settings"));
-		View_->rootContext ()->setContextProperty ("quarkContext", "panel_" + QString::number (GetWindowIndex ()));
+		View_->rootContext ()->setContextProperty (QStringLiteral ("SB2_settingsModeTooltip"), tr ("Settings mode"));
+		View_->rootContext ()->setContextProperty (QStringLiteral ("SB2_quarkOrderTooltip"), tr ("Quarks order"));
+		View_->rootContext ()->setContextProperty (QStringLiteral ("SB2_addQuarkTooltip"), tr ("Add quark"));
+		View_->rootContext ()->setContextProperty (QStringLiteral ("SB2_showPanelSettingsTooltip"), tr ("Show panel settings"));
+		View_->rootContext ()->setContextProperty (QStringLiteral ("quarkContext"), "panel_" + QString::number (GetWindowIndex ()));
 		View_->engine ()->addImageProvider (ImageProviderID, new Util::ThemeImageProvider (proxy));
 
 		Toolbar_->addWidget (View_);
@@ -113,8 +113,8 @@ namespace SB2
 
 		auto toggleAct = Toolbar_->toggleViewAction ();
 		toggleAct->setProperty ("ActionIcon", "layer-visible-on");
-		toggleAct->setShortcut (QString ("Ctrl+J,S"));
-		shortcutMgr->RegisterAction ("TogglePanel", toggleAct);
+		toggleAct->setShortcut (QStringLiteral ("Ctrl+J,S"));
+		shortcutMgr->RegisterAction (QStringLiteral ("TogglePanel"), toggleAct);
 
 		window->addAction (toggleAct);
 	}
@@ -176,7 +176,7 @@ namespace SB2
 		for (const auto& component : FindAllQuarks ())
 			AddComponent (component, false);
 
-		auto watcher = new DirWatcher (Util::CreateIfNotExists ("data/quarks"), this);
+		auto watcher = new DirWatcher (Util::CreateIfNotExists (QStringLiteral ("data/quarks")), this);
 		connect (watcher,
 				SIGNAL (quarksAdded (QList<QUrl>)),
 				this,
@@ -262,10 +262,10 @@ namespace SB2
 	{
 		auto result = InternalComponents_;
 
-		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, "quarks"))
+		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, QStringLiteral ("quarks")))
 			result += ScanRootDir (QDir (cand));
 
-		const auto& local = Util::CreateIfNotExists ("data/quarks");
+		const auto& local = Util::CreateIfNotExists (QStringLiteral ("data/quarks"));
 		result += ScanRootDir (local);
 
 		auto pm = Proxy_->GetPluginsManager ();
@@ -308,7 +308,7 @@ namespace SB2
 				});
 
 		if (subSet)
-			result->beginGroup (QString ("%1_%2")
+			result->beginGroup (QStringLiteral ("%1_%2")
 					.arg (OnloadWindowIndex_)
 					.arg (IsDesktopMode_));
 
@@ -412,16 +412,16 @@ namespace SB2
 	void ViewManager::SaveRemovedList () const
 	{
 		auto settings = GetSettings ();
-		settings->beginGroup ("RemovedList");
-		settings->setValue ("IDs", QStringList (RemovedIDs_.values ()));
+		settings->beginGroup (QStringLiteral ("RemovedList"));
+		settings->setValue (QStringLiteral ("IDs"), QStringList (RemovedIDs_.values ()));
 		settings->endGroup ();
 	}
 
 	void ViewManager::LoadRemovedList ()
 	{
 		auto settings = GetSettings ();
-		settings->beginGroup ("RemovedList");
-		RemovedIDs_ = Util::AsSet (settings->value ("IDs").toStringList ());
+		settings->beginGroup (QStringLiteral ("RemovedList"));
+		RemovedIDs_ = Util::AsSet (settings->value (QStringLiteral ("IDs")).toStringList ());
 		settings->endGroup ();
 	}
 
@@ -435,16 +435,16 @@ namespace SB2
 		}
 
 		auto settings = GetSettings ();
-		settings->beginGroup ("QuarkOrder");
-		settings->setValue ("IDs", PreviousQuarkOrder_);
+		settings->beginGroup (QStringLiteral ("QuarkOrder"));
+		settings->setValue (QStringLiteral ("IDs"), PreviousQuarkOrder_);
 		settings->endGroup ();
 	}
 
 	void ViewManager::LoadQuarkOrder ()
 	{
 		auto settings = GetSettings ();
-		settings->beginGroup ("QuarkOrder");
-		PreviousQuarkOrder_ = settings->value ("IDs").toStringList ();
+		settings->beginGroup (QStringLiteral ("QuarkOrder"));
+		PreviousQuarkOrder_ = settings->value (QStringLiteral ("IDs")).toStringList ();
 		settings->endGroup ();
 	}
 

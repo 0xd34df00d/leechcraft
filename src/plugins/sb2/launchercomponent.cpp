@@ -50,13 +50,13 @@ namespace SB2
 			: RoleNamesMixin<QStandardItemModel> (parent)
 			{
 				QHash<int, QByteArray> roleNames;
-				roleNames [Roles::TabClassIcon] = "tabClassIcon";
-				roleNames [Roles::TabClassID] = "tabClassID";
-				roleNames [Roles::TabClassName] = "tabClassName";
-				roleNames [Roles::OpenedTabsCount] = "openedTabsCount";
-				roleNames [Roles::IsCurrentTab] = "isCurrentTab";
-				roleNames [Roles::CanOpenTab] = "canOpenTab";
-				roleNames [Roles::IsSingletonTab] = "isSingletonTab";
+				roleNames [Roles::TabClassIcon] = QByteArrayLiteral ("tabClassIcon");
+				roleNames [Roles::TabClassID] = QByteArrayLiteral ("tabClassID");
+				roleNames [Roles::TabClassName] = QByteArrayLiteral ("tabClassName");
+				roleNames [Roles::OpenedTabsCount] = QByteArrayLiteral ("openedTabsCount");
+				roleNames [Roles::IsCurrentTab] = QByteArrayLiteral ("isCurrentTab");
+				roleNames [Roles::CanOpenTab] = QByteArrayLiteral ("canOpenTab");
+				roleNames [Roles::IsSingletonTab] = QByteArrayLiteral ("isSingletonTab");
 				setRoleNames (roleNames);
 			}
 		};
@@ -74,7 +74,7 @@ namespace SB2
 
 		QIcon GetIcon (const QStringList& list)
 		{
-			return TabClasses_.value (list.join ("/").toLatin1 ());
+			return TabClasses_.value (list.join ('/').toLatin1 ());
 		}
 
 		void AddTabClass (const TabClassInfo& tc)
@@ -93,14 +93,14 @@ namespace SB2
 	, Proxy_ (proxy)
 	, ICTW_ (ictw)
 	, Model_ (new LauncherModel (this))
-	, Component_ (new QuarkComponent ("sb2", "LauncherComponent.qml"))
+	, Component_ (new QuarkComponent (QStringLiteral ("sb2"), QStringLiteral ("LauncherComponent.qml")))
 	, View_ (view)
 	, ImageProv_ (new TabClassImageProvider (proxy))
 	{
 		qmlRegisterType<LauncherDropArea> ("SB2", 1, 0, "LauncherDropArea");
 
-		Component_->DynamicProps_.append ({ "SB2_launcherModel", Model_ });
-		Component_->DynamicProps_.append ({ "SB2_launcherProxy", this });
+		Component_->DynamicProps_.append ({ QStringLiteral ("SB2_launcherModel"), Model_ });
+		Component_->DynamicProps_.append ({ QStringLiteral ("SB2_launcherProxy"), this });
 		Component_->ImageProviders_.append ({ ImageProviderID, ImageProv_ });
 
 		connect (ICTW_->GetQObject (),
@@ -119,18 +119,18 @@ namespace SB2
 	void LauncherComponent::SaveHiddenTCs () const
 	{
 		auto settings = View_->GetSettings ();
-		settings->beginGroup ("Launcher");
-		settings->setValue ("HiddenTCs", QVariant::fromValue (HiddenTCs_));
+		settings->beginGroup (QStringLiteral ("Launcher"));
+		settings->setValue (QStringLiteral ("HiddenTCs"), QVariant::fromValue (HiddenTCs_));
 		settings->endGroup ();
 	}
 
 	void LauncherComponent::LoadHiddenTCs ()
 	{
 		auto settings = View_->GetSettings ();
-		settings->beginGroup ("Launcher");
-		HiddenTCs_ = settings->value ("HiddenTCs").value<decltype (HiddenTCs_)> ();
-		FirstRun_ = settings->value ("FirstRun", true).toBool () && HiddenTCs_.isEmpty ();
-		settings->setValue ("FirstRun", false);
+		settings->beginGroup (QStringLiteral ("Launcher"));
+		HiddenTCs_ = settings->value (QStringLiteral ("HiddenTCs")).value<decltype (HiddenTCs_)> ();
+		FirstRun_ = settings->value (QStringLiteral ("FirstRun"), true).toBool () && HiddenTCs_.isEmpty ();
+		settings->setValue (QStringLiteral ("FirstRun"), false);
 		settings->endGroup ();
 	}
 

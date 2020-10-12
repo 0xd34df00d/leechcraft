@@ -37,9 +37,9 @@ namespace SB2
 			: RoleNamesMixin<QStandardItemModel> (parent)
 			{
 				QHash<int, QByteArray> roleNames;
-				roleNames [Roles::ActionObject] = "actionObject";
-				roleNames [Roles::ActionText] = "actionText";
-				roleNames [Roles::ActionIcon] = "actionIcon";
+				roleNames [Roles::ActionObject] = QByteArrayLiteral ("actionObject");
+				roleNames [Roles::ActionText] = QByteArrayLiteral ("actionText");
+				roleNames [Roles::ActionIcon] = QByteArrayLiteral ("actionIcon");
 				setRoleNames (roleNames);
 			}
 		};
@@ -97,7 +97,7 @@ namespace SB2
 	: QObject (parent)
 	, Proxy_ (proxy)
 	, Model_ (new TrayModel (this))
-	, Component_ (new QuarkComponent ("sb2", info.Filename_))
+	, Component_ (new QuarkComponent (QStringLiteral ("sb2"), info.Filename_))
 	, ImageProv_ (new ActionImageProvider (proxy))
 	, View_ (view)
 	, ComponentInfo_ (info)
