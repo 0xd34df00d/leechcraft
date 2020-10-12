@@ -112,17 +112,6 @@ namespace SB2
 
 	void BaseActionComponent::AddActions (QList<QAction*> acts, ActionPos pos)
 	{
-		for (auto act : QList<QAction*> (acts))
-			if (FindItem (act))
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "duplicate action inserted"
-						<< act;
-				acts.removeAll (act);
-			}
-		if (acts.isEmpty ())
-			return;
-
 		const auto& prefix = "image://" + ComponentInfo_.ImageProvID_ + '/';
 
 		int insRow = 0;
@@ -136,8 +125,16 @@ namespace SB2
 			break;
 		}
 
-		for (auto act : acts)
+		for (auto act : qAsConst (acts))
 		{
+			if (FindItem (act))
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "duplicate action inserted"
+						<< act;
+				continue;
+			}
+
 			View_->addAction (act);
 			connect (act,
 					&QAction::destroyed,
