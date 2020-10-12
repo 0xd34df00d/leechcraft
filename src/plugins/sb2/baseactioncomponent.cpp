@@ -136,14 +136,6 @@ namespace SB2
 			}
 
 			View_->addAction (act);
-			connect (act,
-					&QAction::destroyed,
-					this,
-					[this, act] { RemoveAction (act); });
-			connect (act,
-					&QAction::changed,
-					this,
-					&BaseActionComponent::HandleActionChanged);
 			ImageProv_->SetAction (NextActionId_, act);
 
 			const auto& idStr = QString::number (NextActionId_);
@@ -154,6 +146,15 @@ namespace SB2
 			item->setData (prefix + idStr + "/0", TrayModel::Roles::ActionIcon);
 			item->setData (QVariant::fromValue<QObject*> (act), TrayModel::Roles::ActionObject);
 			Model_->insertRow (insRow++, item);
+
+			connect (act,
+					&QAction::destroyed,
+					this,
+					[this, act] { RemoveAction (act); });
+			connect (act,
+					&QAction::changed,
+					this,
+					[this, act, item] { HandleActionChanged (act, item); });
 
 			++NextActionId_;
 		}
@@ -184,18 +185,8 @@ namespace SB2
 		return 0;
 	}
 
-	void BaseActionComponent::HandleActionChanged ()
+	void BaseActionComponent::HandleActionChanged (QAction *act, QStandardItem *item)
 	{
-		auto act = static_cast<QAction*> (sender ());
-		auto item = FindItem (act);
-		if (!item)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "sender not found"
-					<< sender ();
-			return;
-		}
-
 		auto str = item->data (TrayModel::Roles::ActionIcon).toString ();
 		const int lastSlash = str.lastIndexOf ('/');
 		const auto& uncacheStr = str.mid (lastSlash + 1);
