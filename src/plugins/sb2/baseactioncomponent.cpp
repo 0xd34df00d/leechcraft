@@ -55,6 +55,9 @@ namespace SB2
 		{
 		}
 
+		ActionImageProvider (const ActionImageProvider&) = delete;
+		ActionImageProvider (ActionImageProvider&&) = delete;
+
 		QIcon GetIcon (const QStringList& list)
 		{
 			const auto id = list.at (0).toInt ();
