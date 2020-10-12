@@ -110,6 +110,21 @@ namespace SB2
 		return Component_;
 	}
 
+	namespace
+	{
+		void HandleActionChanged (QAction *act, QStandardItem *item)
+		{
+			auto str = item->data (TrayModel::Roles::ActionIcon).toString ();
+			const int lastSlash = str.lastIndexOf ('/');
+			const auto& uncacheStr = str.mid (lastSlash + 1);
+			str.replace (lastSlash + 1, uncacheStr.size (), QString::number (uncacheStr.toInt () + 1));
+			item->setData (str, TrayModel::Roles::ActionIcon);
+
+			item->setData (act->toolTip ().isEmpty () ? act->text () : act->toolTip (),
+					TrayModel::Roles::ActionText);
+		}
+	}
+
 	void BaseActionComponent::AddActions (QList<QAction*> acts, ActionPos pos)
 	{
 		const auto& prefix = "image://" + ComponentInfo_.ImageProvID_ + '/';
@@ -183,18 +198,6 @@ namespace SB2
 				return item;
 		}
 		return 0;
-	}
-
-	void BaseActionComponent::HandleActionChanged (QAction *act, QStandardItem *item)
-	{
-		auto str = item->data (TrayModel::Roles::ActionIcon).toString ();
-		const int lastSlash = str.lastIndexOf ('/');
-		const auto& uncacheStr = str.mid (lastSlash + 1);
-		str.replace (lastSlash + 1, uncacheStr.size (), QString::number (uncacheStr.toInt () + 1));
-		item->setData (str, TrayModel::Roles::ActionIcon);
-
-		item->setData (act->toolTip ().isEmpty () ? act->text () : act->toolTip (),
-				TrayModel::Roles::ActionText);
 	}
 }
 }
