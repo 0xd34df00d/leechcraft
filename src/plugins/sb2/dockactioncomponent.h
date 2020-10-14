@@ -10,14 +10,11 @@
 
 #include "baseactioncomponent.h"
 
-namespace LC
-{
-namespace SB2
+namespace LC::SB2
 {
 	class DockActionComponent : public BaseActionComponent
 	{
 	public:
-		DockActionComponent (ICoreProxy_ptr, SBView*, QObject* = 0);
+		DockActionComponent (const ICoreProxy_ptr&, SBView*, QObject* = nullptr);
 	};
-}
 }

@@ -15,9 +15,7 @@
 class QFileSystemWatcher;
 class QUrl;
 
-namespace LC
-{
-namespace SB2
+namespace LC::SB2
 {
 	class DirWatcher : public QObject
 	{
@@ -30,7 +28,7 @@ namespace SB2
 
 		QSet<QString> LastQuarksList_;
 	public:
-		DirWatcher (const QDir&, QObject* = 0);
+		explicit DirWatcher (const QDir&, QObject* = nullptr);
 	private slots:
 		void handleDirectoryChanged ();
 		void notifyChanges ();
@@ -38,5 +36,4 @@ namespace SB2
 		void quarksAdded (const QList<QUrl>&);
 		void quarksRemoved (const QList<QUrl>&);
 	};
-}
 }

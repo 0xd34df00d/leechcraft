@@ -14,17 +14,19 @@ class QDockWidget;
 
 namespace LC
 {
-namespace SB2
+	enum class ActionsEmbedPlace;
+};
+
+namespace LC::SB2
 {
 	class TrayComponent : public BaseActionComponent
 	{
 		Q_OBJECT
 	public:
-		TrayComponent (ICoreProxy_ptr, SBView*, QObject* parent = 0);
+		TrayComponent (ICoreProxy_ptr, SBView*, QObject* parent = nullptr);
 	public slots:
 		void handlePluginsAvailable ();
 	private slots:
 		void handleGotActions (const QList<QAction*>&, LC::ActionsEmbedPlace);
 	};
-}
 }

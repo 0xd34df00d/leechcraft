@@ -12,7 +12,6 @@
 #include <QtDebug>
 #include <util/gui/autoresizemixin.h>
 #include <util/gui/geometry.h>
-#include <util/sys/paths.h>
 #include <util/qml/widthiconprovider.h>
 #include <util/models/rolenamesmixin.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -26,9 +25,7 @@
 
 Q_DECLARE_METATYPE (QSet<QByteArray>);
 
-namespace LC
-{
-namespace SB2
+namespace LC::SB2
 {
 	namespace
 	{
@@ -46,7 +43,7 @@ namespace SB2
 				IsSingletonTab
 			};
 
-			LauncherModel (QObject *parent)
+			explicit LauncherModel (QObject *parent)
 			: RoleNamesMixin<QStandardItemModel> (parent)
 			{
 				QHash<int, QByteArray> roleNames;
@@ -62,15 +59,18 @@ namespace SB2
 		};
 	}
 
-	class TabClassImageProvider : public Util::WidthIconProvider
+	class TabClassImageProvider final : public Util::WidthIconProvider
 	{
 		ICoreProxy_ptr Proxy_;
 		QHash<QByteArray, QIcon> TabClasses_;
 	public:
-		TabClassImageProvider (ICoreProxy_ptr proxy)
-		: Proxy_ (proxy)
+		explicit TabClassImageProvider (ICoreProxy_ptr proxy)
+		: Proxy_ { std::move (proxy) }
 		{
 		}
+
+		TabClassImageProvider (const TabClassImageProvider&) = delete;
+		TabClassImageProvider (TabClassImageProvider&&) = delete;
 
 		QIcon GetIcon (const QStringList& list)
 		{
@@ -85,10 +85,10 @@ namespace SB2
 
 	namespace
 	{
-		const QString ImageProviderID = "SB2_TabClassImage";
+		const QString ImageProviderID = QStringLiteral ("SB2_TabClassImage");
 	}
 
-	LauncherComponent::LauncherComponent (ICoreTabWidget *ictw, ICoreProxy_ptr proxy, ViewManager *view, QObject *parent)
+	LauncherComponent::LauncherComponent (ICoreTabWidget *ictw, const ICoreProxy_ptr& proxy, ViewManager *view, QObject *parent)
 	: QObject (parent)
 	, Proxy_ (proxy)
 	, ICTW_ (ictw)
@@ -154,13 +154,13 @@ namespace SB2
 	QStandardItem* LauncherComponent::TryAddTC (const TabClassInfo& tc)
 	{
 		if (!IsTabclassOpenable (tc) || HiddenTCs_.contains (tc.TabClass_))
-			return 0;
+			return nullptr;
 
 		if (FirstRun_ && !(tc.Features_ & TabFeature::TFSuggestOpening))
 		{
 			HiddenTCs_ << tc.TabClass_;
 			SaveHiddenTCs();
-			return 0;
+			return nullptr;
 		}
 
 		auto item = CreateItem (tc);
@@ -372,7 +372,7 @@ namespace SB2
 	{
 		auto widget = idx >= 0 ?
 				ICTW_->Widget (idx) :
-				0;
+				nullptr;
 
 		const auto& tc = widget ?
 				qobject_cast<ITabWidget*> (widget)->GetTabClassInfo () :
@@ -385,5 +385,4 @@ namespace SB2
 				item->setData (isSelectedTC, LauncherModel::Roles::IsCurrentTab);
 		}
 	}
-}
 }

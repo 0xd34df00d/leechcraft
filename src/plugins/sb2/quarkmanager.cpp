@@ -24,17 +24,15 @@
 #include "sbview.h"
 #include "quarksettingsmanager.h"
 
-namespace LC
-{
-namespace SB2
+namespace LC::SB2
 {
 	namespace
 	{
-		class ImageProvProxy : public QQuickImageProvider
+		class ImageProvProxy final : public QQuickImageProvider
 		{
 			QQuickImageProvider *Wrapped_;
 		public:
-			ImageProvProxy (QQuickImageProvider *other)
+			explicit ImageProvProxy (QQuickImageProvider *other)
 			: QQuickImageProvider (other->imageType ())
 			, Wrapped_ (other)
 			{
@@ -52,14 +50,11 @@ namespace SB2
 		};
 	}
 
-	QuarkManager::QuarkManager (QuarkComponent_ptr comp,
-			ViewManager *manager, ICoreProxy_ptr proxy)
+	QuarkManager::QuarkManager (QuarkComponent_ptr comp, ViewManager *manager)
 	: QObject (manager)
 	, ViewMgr_ (manager)
-	, Proxy_ (proxy)
-	, Component_ (comp)
+	, Component_ (std::move (comp))
 	, URL_ (comp->Url_)
-	, SettingsManager_ (0)
 	, Translator_ (TryLoadTranslator ())
 	, Manifest_ (URL_.toLocalFile ())
 	{
@@ -165,5 +160,4 @@ namespace SB2
 		SettingsManager_ = new QuarkSettingsManager (URL_, ViewMgr_->GetView ()->rootContext ());
 		XSD_->RegisterObject (SettingsManager_, settingsName);
 	}
-}
 }

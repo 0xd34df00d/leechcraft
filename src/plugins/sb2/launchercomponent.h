@@ -51,7 +51,7 @@ namespace SB2
 
 		bool FirstRun_;
 	public:
-		LauncherComponent (ICoreTabWidget*, ICoreProxy_ptr, ViewManager*, QObject* = 0);
+		LauncherComponent (ICoreTabWidget*, const ICoreProxy_ptr&, ViewManager*, QObject* = nullptr);
 
 		QuarkComponent_ptr GetComponent () const;
 	private:

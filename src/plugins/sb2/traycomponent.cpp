@@ -11,9 +11,7 @@
 #include <interfaces/iactionsexporter.h>
 #include <interfaces/core/ipluginsmanager.h>
 
-namespace LC
-{
-namespace SB2
+namespace LC::SB2
 {
 	TrayComponent::TrayComponent (ICoreProxy_ptr proxy, SBView *view, QObject *parent)
 	: BaseActionComponent ({ "SB2_TrayActionImage", "TrayComponent.qml", "SB2_trayModel" }, proxy, view, parent)
@@ -44,5 +42,4 @@ namespace SB2
 
 		AddActions (acts, ActionPos::End);
 	}
-}
 }

@@ -8,8 +8,8 @@
 
 #include "declarativewindow.h"
 #include <QQmlContext>
-#include <QQmlEngine>
 #include <QQuickItem>
+#include <util/sll/qtutil.h>
 #include <util/sys/paths.h>
 #include <util/qml/colorthemeproxy.h>
 #include <util/qml/themeimageprovider.h>
@@ -19,12 +19,10 @@
 #include <util/gui/util.h>
 #include "viewmanager.h"
 
-namespace LC
-{
-namespace SB2
+namespace LC::SB2
 {
 	DeclarativeWindow::DeclarativeWindow (const QUrl& url, QVariantMap params,
-			const QPoint& orig, ViewManager *viewMgr, ICoreProxy_ptr proxy, QWidget *parent)
+			const QPoint& orig, ViewManager *viewMgr, const ICoreProxy_ptr& proxy, QWidget *parent)
 	: QQuickWidget (parent)
 	{
 		new Util::AutoResizeMixin (orig, [viewMgr] { return viewMgr->GetFreeCoords (); }, this);
@@ -56,5 +54,4 @@ namespace SB2
 		QMetaObject::invokeMethod (rootObject (), "beforeDelete");
 		deleteLater ();
 	}
-}
 }

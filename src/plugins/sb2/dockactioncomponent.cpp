@@ -8,13 +8,10 @@
 
 #include "dockactioncomponent.h"
 
-namespace LC
+namespace LC::SB2
 {
-namespace SB2
-{
-	DockActionComponent::DockActionComponent (ICoreProxy_ptr proxy, SBView *view, QObject *parent)
+	DockActionComponent::DockActionComponent (const ICoreProxy_ptr& proxy, SBView *view, QObject *parent)
 	: BaseActionComponent ({ "SB2_DockActionImage", "DockComponent.qml", "SB2_dockModel" }, proxy, view, parent)
 	{
 	}
-}
 }

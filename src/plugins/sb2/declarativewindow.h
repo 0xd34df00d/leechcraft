@@ -12,9 +12,7 @@
 #include <QQuickWidget>
 #include <interfaces/core/icoreproxy.h>
 
-namespace LC
-{
-namespace SB2
+namespace LC::SB2
 {
 	class ViewManager;
 
@@ -22,9 +20,8 @@ namespace SB2
 	{
 		Q_OBJECT
 	public:
-		DeclarativeWindow (const QUrl&, QVariantMap, const QPoint&, ViewManager*, ICoreProxy_ptr, QWidget* = 0);
+		DeclarativeWindow (const QUrl&, QVariantMap, const QPoint&, ViewManager*, const ICoreProxy_ptr&, QWidget* = nullptr);
 	public slots:
 		void beforeDelete ();
 	};
-}
 }

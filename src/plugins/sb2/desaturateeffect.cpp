@@ -11,16 +11,8 @@
 #include <cmath>
 #include <QPainter>
 
-namespace LC
+namespace LC::SB2
 {
-namespace SB2
-{
-	DesaturateEffect::DesaturateEffect (QObject *parent)
-	: QGraphicsEffect (parent)
-	, Strength_ (0)
-	{
-	}
-
 	qreal DesaturateEffect::GetStrength () const
 	{
 		return Strength_;
@@ -78,5 +70,4 @@ namespace SB2
 
 		painter->drawImage (offset, img);
 	}
-}
 }

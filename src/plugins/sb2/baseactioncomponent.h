@@ -15,11 +15,7 @@
 class QStandardItemModel;
 class QStandardItem;
 
-namespace LC
-{
-enum class ActionsEmbedPlace;
-
-namespace SB2
+namespace LC::SB2
 {
 	class ActionImageProvider;
 	class SBView;
@@ -51,7 +47,7 @@ namespace SB2
 			QString ModelName_;
 		} ComponentInfo_;
 	public:
-		BaseActionComponent (const ComponentInfo& info, ICoreProxy_ptr, SBView*, QObject* parent = 0);
+		BaseActionComponent (const ComponentInfo& info, const ICoreProxy_ptr&, SBView*, QObject* parent = nullptr);
 
 		QuarkComponent_ptr GetComponent () const;
 
@@ -60,5 +56,4 @@ namespace SB2
 	protected:
 		QStandardItem* FindItem (QAction*) const;
 	};
-}
 }

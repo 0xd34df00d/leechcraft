@@ -14,21 +14,19 @@
 #include "quarkmanager.h"
 #include "viewmanager.h"
 
-namespace LC
-{
-namespace SB2
+namespace LC::SB2
 {
 	QuarkUnhideListView::QuarkUnhideListView (const QuarkComponents_t& components,
 			ViewManager *viewMgr, ICoreProxy_ptr proxy, QWidget *parent)
-	: Util::UnhideListViewBase (proxy,
-			[&components, &proxy, viewMgr] (QStandardItemModel *model)
+	: Util::UnhideListViewBase (std::move (proxy),
+			[&components, viewMgr] (QStandardItemModel *model)
 			{
 				for (const auto& comp : components)
 				{
 					std::unique_ptr<QuarkManager> qm;
 					try
 					{
-						qm = std::make_unique<QuarkManager> (comp, viewMgr, proxy);
+						qm = std::make_unique<QuarkManager> (comp, viewMgr);
 					}
 					catch (const std::exception& e)
 					{
@@ -56,7 +54,7 @@ namespace SB2
 		{
 			try
 			{
-				const auto& manager = std::make_shared<QuarkManager> (comp, ViewManager_, proxy);
+				const auto& manager = std::make_shared<QuarkManager> (comp, ViewManager_);
 				const auto& manifest = manager->GetManifest ();
 				ID2Component_ [manifest.GetID ()] = { comp, manager };
 			}
@@ -92,5 +90,4 @@ namespace SB2
 				break;
 			}
 	}
-}
 }

@@ -63,7 +63,7 @@ namespace SB2
 
 		ViewGeometryManager *GeomManager_;
 	public:
-		ViewManager (ICoreProxy_ptr, Util::ShortcutManager*, QMainWindow*, QObject* = 0);
+		ViewManager (const ICoreProxy_ptr&, Util::ShortcutManager*, QMainWindow*, QObject* = nullptr);
 
 		SBView* GetView () const;
 		QToolBar* GetToolbar () const;

@@ -17,9 +17,7 @@
 #include <interfaces/core/iiconthememanager.h>
 #include "sbview.h"
 
-namespace LC
-{
-namespace SB2
+namespace LC::SB2
 {
 	namespace
 	{
@@ -33,7 +31,7 @@ namespace SB2
 				ActionIcon
 			};
 
-			TrayModel (QObject *parent)
+			explicit TrayModel (QObject *parent)
 			: RoleNamesMixin<QStandardItemModel> (parent)
 			{
 				QHash<int, QByteArray> roleNames;
@@ -45,13 +43,13 @@ namespace SB2
 		};
 	}
 
-	class ActionImageProvider : public Util::WidthIconProvider
+	class ActionImageProvider final : public Util::WidthIconProvider
 	{
 		ICoreProxy_ptr Proxy_;
 		QHash<int, QAction*> Actions_;
 	public:
-		ActionImageProvider (ICoreProxy_ptr proxy)
-		: Proxy_ (proxy)
+		explicit ActionImageProvider (ICoreProxy_ptr proxy)
+		: Proxy_ { std::move (proxy) }
 		{
 		}
 
@@ -93,7 +91,7 @@ namespace SB2
 		}
 	};
 
-	BaseActionComponent::BaseActionComponent (const ComponentInfo& info, ICoreProxy_ptr proxy, SBView *view, QObject* parent)
+	BaseActionComponent::BaseActionComponent (const ComponentInfo& info, const ICoreProxy_ptr& proxy, SBView *view, QObject* parent)
 	: QObject (parent)
 	, Proxy_ (proxy)
 	, Model_ (new TrayModel (this))
@@ -198,7 +196,6 @@ namespace SB2
 			if (objVar.value<QObject*> () == action)
 				return item;
 		}
-		return 0;
+		return nullptr;
 	}
-}
 }

@@ -16,7 +16,6 @@
 #include <QCoreApplication>
 #include <QToolBar>
 #include <QMainWindow>
-#include <QAction>
 #include <util/sll/containerconversions.h>
 #include <util/sys/paths.h>
 #include <util/qml/colorthemeproxy.h>
@@ -35,9 +34,7 @@
 #include "viewpropsmanager.h"
 #include "dirwatcher.h"
 
-namespace LC
-{
-namespace SB2
+namespace LC::SB2
 {
 	namespace
 	{
@@ -53,7 +50,7 @@ namespace SB2
 				QuarkClass
 			};
 
-			ViewItemsModel (QObject *parent)
+			explicit ViewItemsModel (QObject *parent)
 			: RoleNamesMixin<QStandardItemModel> (parent)
 			{
 				QHash<int, QByteArray> names;
@@ -65,7 +62,7 @@ namespace SB2
 		};
 	}
 
-	ViewManager::ViewManager (ICoreProxy_ptr proxy, Util::ShortcutManager *shortcutMgr, QMainWindow *window, QObject *parent)
+	ViewManager::ViewManager (const ICoreProxy_ptr& proxy, Util::ShortcutManager *shortcutMgr, QMainWindow *window, QObject *parent)
 	: QObject (parent)
 	, Proxy_ (proxy)
 	, ViewItemsModel_ (new ViewItemsModel (this))

@@ -18,9 +18,7 @@
 
 class QTranslator;
 
-namespace LC
-{
-namespace SB2
+namespace LC::SB2
 {
 	class ViewManager;
 	class QuarkSettingsManager;
@@ -34,13 +32,13 @@ namespace SB2
 		const QUrl URL_;
 
 		Util::XmlSettingsDialog_ptr XSD_;
-		QuarkSettingsManager *SettingsManager_;
+		QuarkSettingsManager *SettingsManager_ = nullptr;
 
 		const std::shared_ptr<QTranslator> Translator_;
 
 		const Manifest Manifest_;
 	public:
-		QuarkManager (QuarkComponent_ptr, ViewManager*, ICoreProxy_ptr);
+		QuarkManager (QuarkComponent_ptr, ViewManager*);
 
 		const Manifest& GetManifest () const;
 		bool IsValidArea () const;
@@ -55,5 +53,4 @@ namespace SB2
 	};
 
 	typedef std::shared_ptr<QuarkManager> QuarkManager_ptr;
-}
 }

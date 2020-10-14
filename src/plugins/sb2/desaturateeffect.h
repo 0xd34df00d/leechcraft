@@ -10,9 +10,7 @@
 
 #include <QGraphicsEffect>
 
-namespace LC
-{
-namespace SB2
+namespace LC::SB2
 {
 	class DesaturateEffect : public QGraphicsEffect
 	{
@@ -20,16 +18,15 @@ namespace SB2
 
 		Q_PROPERTY (qreal strength READ GetStrength WRITE SetStrength NOTIFY strengthChanged)
 
-		float Strength_;
+		float Strength_ = 0;
 	public:
-		DesaturateEffect (QObject* = 0);
+		using QGraphicsEffect::QGraphicsEffect;
 
 		qreal GetStrength () const;
 		void SetStrength (qreal);
 	protected:
-		void draw (QPainter*);
+		void draw (QPainter*) final;
 	signals:
 		void strengthChanged ();
 	};
-}
 }

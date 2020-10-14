@@ -11,9 +11,7 @@
 #include <QTimer>
 #include <QUrl>
 
-namespace LC
-{
-namespace SB2
+namespace LC::SB2
 {
 	namespace
 	{
@@ -75,5 +73,4 @@ namespace SB2
 		if (!removedQuarks.isEmpty ())
 			emit quarksRemoved (toUrlList (removedQuarks));
 	}
-}
 }
