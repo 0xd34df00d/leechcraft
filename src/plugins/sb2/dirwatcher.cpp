@@ -38,23 +38,24 @@ namespace LC::SB2
 		Watcher_->addPath (Watched_.absolutePath ());
 
 		connect (Watcher_,
-				SIGNAL (directoryChanged (QString)),
+				&QFileSystemWatcher::directoryChanged,
 				this,
-				SLOT (handleDirectoryChanged ()));
+				[this]
+				{
+					if (NotifyScheduled_)
+						return;
+
+					QTimer::singleShot (1000,
+							this,
+							&DirWatcher::NotifyChanges);
+					NotifyScheduled_ = true;
+				});
 	}
 
-	void DirWatcher::handleDirectoryChanged ()
+	void DirWatcher::NotifyChanges ()
 	{
-		if (NotifyScheduled_)
-			return;
+		NotifyScheduled_ = false;
 
-		QTimer::singleShot (1000,
-				this,
-				SLOT (notifyChanges ()));
-	}
-
-	void DirWatcher::notifyChanges ()
-	{
 		auto current = ScanQuarks (Watched_);
 		const auto& newQuarks = current - LastQuarksList_;
 		const auto& removedQuarks = LastQuarksList_ - current;

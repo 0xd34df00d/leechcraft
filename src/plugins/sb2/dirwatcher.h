@@ -29,9 +29,8 @@ namespace LC::SB2
 		QSet<QString> LastQuarksList_;
 	public:
 		explicit DirWatcher (const QDir&, QObject* = nullptr);
-	private slots:
-		void handleDirectoryChanged ();
-		void notifyChanges ();
+	private:
+		void NotifyChanges ();
 	signals:
 		void quarksAdded (const QList<QUrl>&);
 		void quarksRemoved (const QList<QUrl>&);
