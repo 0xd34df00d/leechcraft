@@ -255,6 +255,26 @@ namespace LC::SB2
 		GeomManager_->SetPosition (area);
 	}
 
+	namespace
+	{
+		QuarkComponents_t ScanRootDir (const QDir& dir)
+		{
+			QuarkComponents_t result;
+			for (const auto& entry : dir.entryList (QDir::Dirs | QDir::NoDotAndDotDot | QDir::Readable))
+			{
+				QDir quarkDir (dir);
+				quarkDir.cd (entry);
+				if (!quarkDir.exists (entry + ".qml"))
+					continue;
+
+				QuarkComponent_ptr c (new QuarkComponent);
+				c->Url_ = QUrl::fromLocalFile (quarkDir.absoluteFilePath (entry + ".qml"));
+				result << c;
+			}
+			return result;
+		}
+	}
+
 	QuarkComponents_t ViewManager::FindAllQuarks () const
 	{
 		auto result = InternalComponents_;
@@ -375,23 +395,6 @@ namespace LC::SB2
 			if (!added)
 				ViewItemsModel_->appendRow (item);
 		}
-	}
-
-	QuarkComponents_t ViewManager::ScanRootDir (const QDir& dir) const
-	{
-		QuarkComponents_t result;
-		for (const auto& entry : dir.entryList (QDir::Dirs | QDir::NoDotAndDotDot | QDir::Readable))
-		{
-			QDir quarkDir (dir);
-			quarkDir.cd (entry);
-			if (!quarkDir.exists (entry + ".qml"))
-				continue;
-
-			QuarkComponent_ptr c (new QuarkComponent);
-			c->Url_ = QUrl::fromLocalFile (quarkDir.absoluteFilePath (entry + ".qml"));
-			result << c;
-		}
-		return result;
 	}
 
 	void ViewManager::AddToRemoved (const QString& id)
