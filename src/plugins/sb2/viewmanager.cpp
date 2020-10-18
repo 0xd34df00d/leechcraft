@@ -186,7 +186,7 @@ namespace LC::SB2
 		SaveQuarkOrder ();
 	}
 
-	void ViewManager::RegisterInternalComponent (QuarkComponent_ptr c)
+	void ViewManager::RegisterInternalComponent (const QuarkComponent_ptr& c)
 	{
 		InternalComponents_ << c;
 	}
@@ -229,7 +229,7 @@ namespace LC::SB2
 		}
 	}
 
-	void ViewManager::UnhideQuark (QuarkComponent_ptr component, QuarkManager_ptr manager)
+	void ViewManager::UnhideQuark (const QuarkComponent_ptr& component, const QuarkManager_ptr& manager)
 	{
 		if (!manager)
 			return;
@@ -332,11 +332,11 @@ namespace LC::SB2
 		return result;
 	}
 
-	void ViewManager::AddComponent (QuarkComponent_ptr comp, bool force)
+	void ViewManager::AddComponent (const QuarkComponent_ptr& comp, bool force)
 	{
 		try
 		{
-			AddComponent (comp, std::make_shared<QuarkManager> (comp, this, Proxy_), force);
+			AddComponent (comp, std::make_shared<QuarkManager> (comp, this), force);
 		}
 		catch (const std::exception& e)
 		{
@@ -346,7 +346,7 @@ namespace LC::SB2
 		}
 	}
 
-	void ViewManager::AddComponent (QuarkComponent_ptr comp, QuarkManager_ptr mgr, bool force)
+	void ViewManager::AddComponent (const QuarkComponent_ptr& comp, const QuarkManager_ptr& mgr, bool force)
 	{
 		if (!mgr->IsValidArea ())
 			return;

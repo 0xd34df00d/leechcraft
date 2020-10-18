@@ -74,11 +74,11 @@ namespace SB2
 		bool IsDesktopMode () const;
 
 		void SecondInit ();
-		void RegisterInternalComponent (QuarkComponent_ptr);
+		void RegisterInternalComponent (const QuarkComponent_ptr&);
 
 		void RemoveQuark (const QUrl& loadedUrl);
 		void RemoveQuark (const QString& id);
-		void UnhideQuark (QuarkComponent_ptr, QuarkManager_ptr);
+		void UnhideQuark (const QuarkComponent_ptr&, const QuarkManager_ptr&);
 		void MoveQuark (int from, int to);
 
 		void MovePanel (Qt::ToolBarArea);
@@ -94,9 +94,8 @@ namespace SB2
 		template<int Role, typename T>
 		void RemoveQuarkBy (const T&);
 
-		void AddComponent (QuarkComponent_ptr, bool forceAdd);
-		void AddComponent (QuarkComponent_ptr, QuarkManager_ptr, bool forceAdd);
-		QuarkComponents_t ScanRootDir (const QDir&) const;
+		void AddComponent (const QuarkComponent_ptr&, bool forceAdd);
+		void AddComponent (const QuarkComponent_ptr&, const QuarkManager_ptr&, bool forceAdd);
 
 		void AddToRemoved (const QString&);
 		void RemoveFromRemoved (const QString&);
