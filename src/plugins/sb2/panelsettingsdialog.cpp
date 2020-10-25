@@ -8,6 +8,7 @@
 
 #include "panelsettingsdialog.h"
 #include <QStandardItemModel>
+#include <QAbstractButton>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 
 namespace LC
@@ -33,9 +34,17 @@ namespace SB2
 		Ui_.ItemsView_->setModel (ItemsModel_);
 
 		connect (Ui_.ItemsView_->selectionModel (),
-				SIGNAL (currentChanged (QModelIndex, QModelIndex)),
+				&QItemSelectionModel::currentChanged,
 				this,
-				SLOT (handleItemSelected (QModelIndex)));
+				[this] (const QModelIndex& index)
+				{
+					if (index.isValid ())
+						Ui_.SettingsStack_->setCurrentIndex (index.row ());
+				});
+		connect (Ui_.ButtonBox_,
+				&QDialogButtonBox::clicked,
+				this,
+				&PanelSettingsDialog::HandleDialogButtonClicked);
 	}
 
 	PanelSettingsDialog::~PanelSettingsDialog()
@@ -48,7 +57,7 @@ namespace SB2
 		}
 	}
 
-	void PanelSettingsDialog::on_ButtonBox__clicked (QAbstractButton *button)
+	void PanelSettingsDialog::HandleDialogButtonClicked (QAbstractButton *button)
 	{
 		switch (Ui_.ButtonBox_->buttonRole (button))
 		{
@@ -65,14 +74,6 @@ namespace SB2
 		default:
 			break;
 		}
-	}
-
-	void PanelSettingsDialog::handleItemSelected (const QModelIndex& index)
-	{
-		if (!index.isValid ())
-			return;
-
-		Ui_.SettingsStack_->setCurrentIndex (index.row ());
 	}
 }
 }

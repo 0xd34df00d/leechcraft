@@ -33,8 +33,6 @@ namespace SB2
 
 	class PanelSettingsDialog : public QDialog
 	{
-		Q_OBJECT
-
 		Ui::PanelSettingsDialog Ui_;
 		QStandardItemModel * const ItemsModel_;
 
@@ -42,10 +40,8 @@ namespace SB2
 	public:
 		PanelSettingsDialog (const SettingsList_t&, QWidget* = nullptr);
 		~PanelSettingsDialog ();
-	private slots:
-		void on_ButtonBox__clicked (QAbstractButton*);
-
-		void handleItemSelected (const QModelIndex&);
+	private:
+		void HandleDialogButtonClicked (QAbstractButton*);
 	};
 }
 }
