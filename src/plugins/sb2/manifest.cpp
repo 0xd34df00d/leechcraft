@@ -45,14 +45,16 @@ namespace SB2
 
 		Description_ = varMap ["description"].toString ();
 
-		if (varMap.contains ("quarkID"))
-			ID_ = varMap ["quarkID"].toString ();
+		const auto& idVar = varMap ["quarkID"];
+		if (!idVar.isNull ())
+			ID_ = idVar.toString ();
 
 		IsHiddenByDefault_ = !varMap.value ("defaultVisibility", true).toBool ();
 
-		if (varMap.contains ("icon"))
+		const auto& iconVar = varMap ["icon"];
+		if (!iconVar.isNull ())
 		{
-			const auto& iconName = varMap ["icon"].toString ();
+			const auto& iconName = iconVar.toString ();
 			TryFullImage (iconName) || TryTheme (iconName) || TryLC (iconName);
 		}
 	}
