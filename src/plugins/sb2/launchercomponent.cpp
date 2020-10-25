@@ -10,6 +10,7 @@
 #include <QStandardItemModel>
 #include <QSettings>
 #include <QtDebug>
+#include <util/sll/scopeguards.h>
 #include <util/gui/autoresizemixin.h>
 #include <util/gui/geometry.h>
 #include <util/qml/widthiconprovider.h>
@@ -119,19 +120,17 @@ namespace LC::SB2
 	void LauncherComponent::SaveHiddenTCs () const
 	{
 		auto settings = View_->GetSettings ();
-		settings->beginGroup (QStringLiteral ("Launcher"));
+		auto groupGuard = Util::BeginGroup (*settings, QStringLiteral ("Launcher"));
 		settings->setValue (QStringLiteral ("HiddenTCs"), QVariant::fromValue (HiddenTCs_));
-		settings->endGroup ();
 	}
 
 	void LauncherComponent::LoadHiddenTCs ()
 	{
 		auto settings = View_->GetSettings ();
-		settings->beginGroup (QStringLiteral ("Launcher"));
+		auto groupGuard = Util::BeginGroup (*settings, QStringLiteral ("Launcher"));
 		HiddenTCs_ = settings->value (QStringLiteral ("HiddenTCs")).value<decltype (HiddenTCs_)> ();
 		FirstRun_ = settings->value (QStringLiteral ("FirstRun"), true).toBool () && HiddenTCs_.isEmpty ();
 		settings->setValue (QStringLiteral ("FirstRun"), false);
-		settings->endGroup ();
 	}
 
 	namespace

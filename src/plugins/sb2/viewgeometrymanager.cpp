@@ -7,7 +7,6 @@
  **********************************************************************/
 
 #include "viewgeometrymanager.h"
-#include <QSettings>
 #include <QToolBar>
 #include <QApplication>
 #include <QQmlContext>
@@ -15,6 +14,7 @@
 #include <QDesktopWidget>
 #include <QtDebug>
 #include <xmlsettingsdialog/basesettingsmanager.h>
+#include <util/sll/scopeguards.h>
 
 #ifdef WITH_X11
 #include <util/x11/xwrapper.h>
@@ -39,11 +39,13 @@ namespace SB2
 
 	void ViewGeometryManager::Manage ()
 	{
-		auto settings = ViewMgr_->GetSettings ();
-		settings->beginGroup ("Toolbars");
-		const auto& posSettingName = "Pos_" + QString::number (ViewMgr_->GetWindowIndex ());
-		auto pos = settings->value (posSettingName, static_cast<int> (Qt::LeftToolBarArea)).toInt ();
-		settings->endGroup ();
+		const auto pos = [this]
+		{
+			auto settings = ViewMgr_->GetSettings ();
+			auto groupGuard = Util::BeginGroup (*settings, QStringLiteral ("Toolbars"));
+			const auto& posSettingName = "Pos_" + QString::number (ViewMgr_->GetWindowIndex ());
+			return settings->value (posSettingName, static_cast<int> (Qt::LeftToolBarArea)).toInt ();
+		} ();
 
 		auto toolbar = ViewMgr_->GetToolbar ();
 #ifdef WITH_X11
@@ -141,10 +143,11 @@ namespace SB2
 
 		auto toolbar = ViewMgr_->GetToolbar ();
 
-		auto settings = ViewMgr_->GetSettings ();
-		settings->beginGroup ("Toolbars");
-		settings->setValue ("Pos_" + QString::number (ViewMgr_->GetWindowIndex ()), static_cast<int> (pos));
-		settings->endGroup ();
+		{
+			auto settings = ViewMgr_->GetSettings ();
+			const auto groupGuard = Util::BeginGroup (*settings, QStringLiteral ("Toolbars"));
+			settings->setValue ("Pos_" + QString::number (ViewMgr_->GetWindowIndex ()), static_cast<int> (pos));
+		}
 
 #ifdef WITH_X11
 		if (!ViewMgr_->IsDesktopMode ())

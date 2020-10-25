@@ -17,6 +17,7 @@
 #include <QToolBar>
 #include <QMainWindow>
 #include <util/sll/containerconversions.h>
+#include <util/sll/scopeguards.h>
 #include <util/sys/paths.h>
 #include <util/qml/colorthemeproxy.h>
 #include <util/qml/themeimageprovider.h>
@@ -317,7 +318,7 @@ namespace LC::SB2
 		const auto& org = QCoreApplication::organizationName ();
 		const auto& app = QCoreApplication::applicationName () + "_SB2";
 		std::shared_ptr<QSettings> result (new QSettings (org, app),
-				[subSet] (QSettings *settings) -> void
+				[subSet] (QSettings *settings)
 				{
 					if (subSet)
 						settings->endGroup ();
@@ -412,17 +413,15 @@ namespace LC::SB2
 	void ViewManager::SaveRemovedList () const
 	{
 		auto settings = GetSettings ();
-		settings->beginGroup (QStringLiteral ("RemovedList"));
+		auto groupGuard = Util::BeginGroup (*settings, QStringLiteral ("RemovedList"));
 		settings->setValue (QStringLiteral ("IDs"), QStringList (RemovedIDs_.values ()));
-		settings->endGroup ();
 	}
 
 	void ViewManager::LoadRemovedList ()
 	{
 		auto settings = GetSettings ();
-		settings->beginGroup (QStringLiteral ("RemovedList"));
+		auto groupGuard = Util::BeginGroup (*settings, QStringLiteral ("RemovedList"));
 		RemovedIDs_ = Util::AsSet (settings->value (QStringLiteral ("IDs")).toStringList ());
-		settings->endGroup ();
 	}
 
 	void ViewManager::SaveQuarkOrder ()
@@ -435,17 +434,15 @@ namespace LC::SB2
 		}
 
 		auto settings = GetSettings ();
-		settings->beginGroup (QStringLiteral ("QuarkOrder"));
+		auto groupGuard = Util::BeginGroup (*settings, QStringLiteral ("QuarkOrder"));
 		settings->setValue (QStringLiteral ("IDs"), PreviousQuarkOrder_);
-		settings->endGroup ();
 	}
 
 	void ViewManager::LoadQuarkOrder ()
 	{
 		auto settings = GetSettings ();
-		settings->beginGroup (QStringLiteral ("QuarkOrder"));
+		auto groupGuard = Util::BeginGroup (*settings, QStringLiteral ("QuarkOrder"));
 		PreviousQuarkOrder_ = settings->value (QStringLiteral ("IDs")).toStringList ();
-		settings->endGroup ();
 	}
 
 	int ViewManager::GetWindowIndex () const
