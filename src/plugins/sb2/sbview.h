@@ -18,8 +18,6 @@ namespace SB2
 {
 	class SBView : public QQuickWidget
 	{
-		Q_OBJECT
-
 		int Dim_ = 32;
 
 		struct UnhoverItem
