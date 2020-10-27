@@ -11,9 +11,7 @@
 #include <xmlsettingsdialog/basesettingsmanager.h>
 #include "viewmanager.h"
 
-namespace LC
-{
-namespace SB2
+namespace LC::SB2
 {
 	namespace
 	{
@@ -68,5 +66,4 @@ namespace SB2
 	{
 		return XSM_.get ();
 	}
-}
 }

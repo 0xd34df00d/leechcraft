@@ -28,9 +28,7 @@
 #include "quarkmanager.h"
 #include "panelsettingsdialog.h"
 
-namespace LC
-{
-namespace SB2
+namespace LC::SB2
 {
 	QuarkProxy::QuarkProxy (ViewManager *mgr, ICoreProxy_ptr proxy, QObject *parent)
 	: QObject (parent)
@@ -206,5 +204,4 @@ namespace SB2
 		ExtHoveredQuarkClass_ = qClass;
 		emit extHoveredQuarkClassChanged ();
 	}
-}
 }

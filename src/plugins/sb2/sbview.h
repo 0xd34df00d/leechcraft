@@ -8,13 +8,10 @@
 
 #pragma once
 
-#include <QtGlobal>
 #include <QQuickWidget>
 #include <QPointer>
 
-namespace LC
-{
-namespace SB2
+namespace LC::SB2
 {
 	class SBView : public QQuickWidget
 	{
@@ -27,7 +24,7 @@ namespace SB2
 		};
 		QList<UnhoverItem> UnhoverItems_;
 	public:
-		SBView (QWidget* = 0);
+		explicit SBView (QWidget* = nullptr);
 
 		void SetDimensions (int);
 
@@ -37,5 +34,4 @@ namespace SB2
 		void enterEvent (QEvent*) override;
 		void leaveEvent (QEvent*) override;
 	};
-}
 }

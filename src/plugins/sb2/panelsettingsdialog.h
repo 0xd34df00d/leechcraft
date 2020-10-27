@@ -14,14 +14,12 @@
 class QStandardItemModel;
 class QModelIndex;
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	class XmlSettingsDialog;
 }
 
-namespace SB2
+namespace LC::SB2
 {
 	struct SettingsItem
 	{
@@ -31,17 +29,16 @@ namespace SB2
 	};
 	using SettingsList_t = QList<SettingsItem>;
 
-	class PanelSettingsDialog : public QDialog
+	class PanelSettingsDialog final : public QDialog
 	{
 		Ui::PanelSettingsDialog Ui_;
 		QStandardItemModel * const ItemsModel_;
 
 		const QList<SettingsItem> Items_;
 	public:
-		PanelSettingsDialog (const SettingsList_t&, QWidget* = nullptr);
+		explicit PanelSettingsDialog (SettingsList_t, QWidget* = nullptr);
 		~PanelSettingsDialog ();
 	private:
 		void HandleDialogButtonClicked (QAbstractButton*);
 	};
-}
 }

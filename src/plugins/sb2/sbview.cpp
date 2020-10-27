@@ -12,9 +12,7 @@
 #include <QQuickItem>
 #include <util/sll/delayedexecutor.h>
 
-namespace LC
-{
-namespace SB2
+namespace LC::SB2
 {
 	SBView::SBView (QWidget *parent)
 	: QQuickWidget (parent)
@@ -143,5 +141,4 @@ namespace SB2
 
 		QQuickWidget::leaveEvent (lev);
 	}
-}
 }

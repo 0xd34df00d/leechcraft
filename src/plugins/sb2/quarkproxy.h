@@ -17,9 +17,7 @@
 class QUrl;
 class QPoint;
 
-namespace LC
-{
-namespace SB2
+namespace LC::SB2
 {
 	class ViewManager;
 	class DeclarativeWindow;
@@ -38,7 +36,7 @@ namespace SB2
 		QHash<QUrl, QPointer<DeclarativeWindow>> URL2LastOpened_;
 		QPointer<QuarkOrderView> QuarkOrderView_;
 	public:
-		QuarkProxy (ViewManager*, ICoreProxy_ptr, QObject* = 0);
+		QuarkProxy (ViewManager*, ICoreProxy_ptr, QObject* = nullptr);
 
 		const QString& GetExtHoveredQuarkClass () const;
 		QRect GetFreeCoords () const;
@@ -66,5 +64,4 @@ namespace SB2
 	signals:
 		void extHoveredQuarkClassChanged ();
 	};
-}
 }

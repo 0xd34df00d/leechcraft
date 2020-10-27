@@ -11,16 +11,14 @@
 #include <QtGlobal>
 #include <QQuickItem>
 
-namespace LC
-{
-namespace SB2
+namespace LC::SB2
 {
 	class LauncherDropArea : public QQuickItem
 	{
 		Q_OBJECT
 		Q_PROPERTY (bool acceptingDrops READ GetAcceptingDrops WRITE SetAcceptingDrops NOTIFY acceptingDropsChanged)
 	public:
-		LauncherDropArea (QQuickItem* = 0);
+		explicit LauncherDropArea (QQuickItem* = nullptr);
 
 		bool GetAcceptingDrops () const;
 		void SetAcceptingDrops (bool);
@@ -32,5 +30,4 @@ namespace SB2
 		void acceptingDropsChanged (bool);
 		void tabDropped (const QByteArray& tabClass);
 	};
-}
 }

@@ -12,9 +12,7 @@
 #include <interfaces/iquarkcomponentprovider.h>
 #include <interfaces/core/icoreproxy.h>
 
-namespace LC
-{
-namespace SB2
+namespace LC::SB2
 {
 	class LCMenuComponent : public QObject
 	{
@@ -23,11 +21,10 @@ namespace SB2
 		IMWProxy* Proxy_;
 		const QuarkComponent_ptr Component_;
 	public:
-		LCMenuComponent (IMWProxy*, QObject* = 0);
+		explicit LCMenuComponent (IMWProxy*, QObject* = nullptr);
 
 		QuarkComponent_ptr GetComponent () const;
 	public slots:
 		void execMenu ();
 	};
-}
 }

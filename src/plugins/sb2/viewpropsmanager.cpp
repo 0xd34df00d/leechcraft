@@ -13,9 +13,7 @@
 #include "viewmanager.h"
 #include "sbview.h"
 
-namespace LC
-{
-namespace SB2
+namespace LC::SB2
 {
 	ViewPropsManager::ViewPropsManager (ViewManager *view, ViewSettingsManager *vsm, QObject *parent)
 	: QObject (parent)
@@ -42,5 +40,4 @@ namespace SB2
 		const auto spacing = VSM_->GetXSM ()->property ("QuarkSpacing").toInt ();
 		ViewMgr_->GetView ()->rootContext ()->setContextProperty ("quarkSpacing", spacing);
 	}
-}
 }

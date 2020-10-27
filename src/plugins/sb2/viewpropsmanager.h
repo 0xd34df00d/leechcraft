@@ -10,9 +10,7 @@
 
 #include <QObject>
 
-namespace LC
-{
-namespace SB2
+namespace LC::SB2
 {
 	class ViewManager;
 	class ViewSettingsManager;
@@ -24,10 +22,9 @@ namespace SB2
 		ViewManager * const ViewMgr_;
 		ViewSettingsManager * const VSM_;
 	public:
-		ViewPropsManager (ViewManager*, ViewSettingsManager*, QObject* = 0);
+		ViewPropsManager (ViewManager*, ViewSettingsManager*, QObject* = nullptr);
 	private slots:
 		void hoverInTimeoutChanged ();
 		void quarkSpacingChanged ();
 	};
-}
 }

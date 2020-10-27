@@ -12,9 +12,7 @@
 #include <util/util.h>
 #include <util/qml/unhidelistmodel.h>
 
-namespace LC
-{
-namespace SB2
+namespace LC::SB2
 {
 	TabUnhideListView::TabUnhideListView (const QList<TabClassInfo>& tcs,
 			ICoreProxy_ptr proxy, QWidget *parent)
@@ -56,5 +54,4 @@ namespace SB2
 		if (!Model_->rowCount ())
 			deleteLater ();
 	}
-}
 }

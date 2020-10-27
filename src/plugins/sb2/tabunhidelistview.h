@@ -12,19 +12,16 @@
 #include <interfaces/core/icoreproxy.h>
 #include <util/qml/unhidelistviewbase.h>
 
-namespace LC
-{
-namespace SB2
+namespace LC::SB2
 {
 	class TabUnhideListView : public Util::UnhideListViewBase
 	{
 		Q_OBJECT
 	public:
-		TabUnhideListView (const QList<TabClassInfo>&, ICoreProxy_ptr, QWidget* = 0);
+		TabUnhideListView (const QList<TabClassInfo>&, ICoreProxy_ptr, QWidget* = nullptr);
 	private slots:
 		void unhide (const QString&);
 	signals:
 		void unhideRequested (const QByteArray&);
 	};
-}
 }

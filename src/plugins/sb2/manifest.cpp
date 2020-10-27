@@ -10,12 +10,9 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QDir>
-#include <QtDebug>
 #include <util/sll/parsejson.h>
 
-namespace LC
-{
-namespace SB2
+namespace LC::SB2
 {
 	const int IconSize = 32;
 
@@ -123,5 +120,4 @@ namespace SB2
 		Icon_.addFile ("lcicons:/resources/images/leechcraft.svg");
 		return true;
 	}
-}
 }

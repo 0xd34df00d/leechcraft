@@ -14,9 +14,7 @@
 
 class QStandardItemModel;
 
-namespace LC
-{
-namespace SB2
+namespace LC::SB2
 {
 	class ViewManager;
 
@@ -29,12 +27,11 @@ namespace SB2
 
 		QStandardItemModel *Model_;
 	public:
-		QuarkOrderView (ViewManager*, ICoreProxy_ptr, QWidget* = 0);
+		QuarkOrderView (ViewManager*, ICoreProxy_ptr, QWidget* = nullptr);
 	private slots:
 		void handleQuarkCloseRequested (const QString&);
 		void moveQuark (const QString& from, const QString& to, int shift);
 	signals:
 		void quarkClassHovered (const QString&);
 	};
-}
 }

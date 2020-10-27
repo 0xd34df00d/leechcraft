@@ -16,8 +16,7 @@ namespace LC::SB2
 	TrayComponent::TrayComponent (ICoreProxy_ptr proxy, SBView *view, QObject *parent)
 	: BaseActionComponent ({ "SB2_TrayActionImage", "TrayComponent.qml", "SB2_trayModel" }, proxy, view, parent)
 	{
-		const auto& hasActions = Proxy_->GetPluginsManager ()->
-				GetAllCastableRoots<IActionsExporter*> ();
+		const auto& hasActions = Proxy_->GetPluginsManager ()->GetAllCastableRoots<IActionsExporter*> ();
 		for (QObject *actObj : hasActions)
 			connect (actObj,
 					SIGNAL (gotActions (QList<QAction*>, LC::ActionsEmbedPlace)),

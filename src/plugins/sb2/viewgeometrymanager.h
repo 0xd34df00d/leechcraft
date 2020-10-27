@@ -10,9 +10,7 @@
 
 #include <QObject>
 
-namespace LC
-{
-namespace SB2
+namespace LC::SB2
 {
 	class ViewManager;
 
@@ -22,7 +20,7 @@ namespace SB2
 
 		ViewManager *ViewMgr_;
 	public:
-		ViewGeometryManager (ViewManager*);
+		explicit ViewGeometryManager (ViewManager*);
 
 		void Manage ();
 		void SetPosition (Qt::ToolBarArea);
@@ -30,5 +28,4 @@ namespace SB2
 		void setOrientation (Qt::Orientation);
 		void updatePanelSize ();
 	};
-}
 }

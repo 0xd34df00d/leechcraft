@@ -168,7 +168,7 @@ namespace LC::SB2
 			connect (act,
 					&QAction::changed,
 					this,
-					[this, act, item] { HandleActionChanged (act, item); });
+					[act, item] { HandleActionChanged (act, item); });
 
 			++NextActionId_;
 		}

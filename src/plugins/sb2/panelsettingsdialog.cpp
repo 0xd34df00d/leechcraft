@@ -11,14 +11,12 @@
 #include <QAbstractButton>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 
-namespace LC
+namespace LC::SB2
 {
-namespace SB2
-{
-	PanelSettingsDialog::PanelSettingsDialog (const SettingsList_t& settingsList, QWidget *parent)
+	PanelSettingsDialog::PanelSettingsDialog (SettingsList_t settingsList, QWidget *parent)
 	: QDialog { parent }
 	, ItemsModel_ { new QStandardItemModel { this } }
-	, Items_ { settingsList }
+	, Items_ { std::move (settingsList) }
 	{
 		Ui_.setupUi (this);
 
@@ -75,5 +73,4 @@ namespace SB2
 			break;
 		}
 	}
-}
 }

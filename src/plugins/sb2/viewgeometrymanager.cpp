@@ -24,9 +24,7 @@
 #include "sbview.h"
 #include "viewsettingsmanager.h"
 
-namespace LC
-{
-namespace SB2
+namespace LC::SB2
 {
 	ViewGeometryManager::ViewGeometryManager (ViewManager *parent)
 	: QObject (parent)
@@ -79,7 +77,7 @@ namespace SB2
 
 	namespace
 	{
-		QRect ToGeom (const QRect& screenGeometry, const QSize& minSize, Qt::ToolBarArea area, QSize *diff = 0)
+		QRect ToGeom (const QRect& screenGeometry, const QSize& minSize, Qt::ToolBarArea area, QSize *diff = nullptr)
 		{
 			const int addition = 2;
 			switch (area)

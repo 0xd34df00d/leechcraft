@@ -10,9 +10,7 @@
 #include <QStandardItemModel>
 #include <QMainWindow>
 #include <QQmlContext>
-#include <QQmlEngine>
 #include <QQuickItem>
-#include <QtDebug>
 #include <util/util.h>
 #include <util/sys/paths.h>
 #include <util/qml/colorthemeproxy.h>
@@ -23,9 +21,7 @@
 #include <interfaces/ihavetabs.h>
 #include <interfaces/core/icoretabwidget.h>
 
-namespace LC
-{
-namespace SB2
+namespace LC::SB2
 {
 	namespace
 	{
@@ -39,7 +35,7 @@ namespace SB2
 				TabWidgetObj
 			};
 
-			TabsListModel (QObject *parent)
+			explicit TabsListModel (QObject *parent)
 			: RoleNamesMixin<QStandardItemModel> (parent)
 			{
 				QHash<int, QByteArray> names;
@@ -50,13 +46,13 @@ namespace SB2
 		};
 	}
 
-	TabListView::TabListView (const QByteArray& tc, const QList<QWidget*>& widgets,
+	TabListView::TabListView (QByteArray tc, const QList<QWidget*>& widgets,
 			ICoreTabWidget *ictw, QMainWindow *win, ICoreProxy_ptr proxy, QWidget *parent)
 	: QQuickWidget (parent)
 	, Proxy_ (proxy)
 	, ICTW_ (ictw)
 	, MW_ (win)
-	, TC_ (tc)
+	, TC_ (std::move (tc))
 	, Model_ (new TabsListModel (this))
 	, UnhoverDeleteMixin_ (new Util::UnhoverDeleteMixin (this))
 	{
@@ -198,5 +194,4 @@ namespace SB2
 		auto itw = qobject_cast<ITabWidget*> (widgetObj);
 		itw->Remove ();
 	}
-}
 }

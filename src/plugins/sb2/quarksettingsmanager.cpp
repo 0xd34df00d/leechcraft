@@ -12,13 +12,10 @@
 #include <QFileInfo>
 #include <QtDebug>
 
-namespace LC
+namespace LC::SB2
 {
-namespace SB2
-{
-	QuarkSettingsManager::QuarkSettingsManager (const QUrl& url,
-			QQmlContext *ctx)
-	: QuarkURL_ (url)
+	QuarkSettingsManager::QuarkSettingsManager (QUrl url, QQmlContext *ctx)
+	: QuarkURL_ (std::move (url))
 	, Ctx_ (ctx)
 	{
 		Util::BaseSettingsManager::Init ();
@@ -82,5 +79,4 @@ namespace SB2
 		}
 		Ctx_->setContextProperty (name.toUtf8 ().constData (), val);
 	}
-}
 }

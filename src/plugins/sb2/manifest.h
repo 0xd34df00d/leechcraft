@@ -11,9 +11,7 @@
 #include <QStringList>
 #include <QIcon>
 
-namespace LC
-{
-namespace SB2
+namespace LC::SB2
 {
 	class Manifest
 	{
@@ -26,7 +24,7 @@ namespace SB2
 		QStringList Areas_;
 		bool IsHiddenByDefault_ = true;
 	public:
-		Manifest (const QString&);
+		explicit Manifest (const QString&);
 
 		QString GetID () const;
 		QString GetName () const;
@@ -39,5 +37,4 @@ namespace SB2
 		bool TryTheme (const QString&);
 		bool TryLC (const QString&);
 	};
-}
 }

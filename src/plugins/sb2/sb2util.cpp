@@ -8,9 +8,6 @@
 
 #include "sb2util.h"
 
-namespace LC
+namespace LC::SB2
 {
-namespace SB2
-{
-}
 }

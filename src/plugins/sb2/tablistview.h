@@ -17,16 +17,14 @@ class QStandardItemModel;
 class QMainWindow;
 class QTimer;
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	class UnhoverDeleteMixin;
 }
 
-namespace SB2
+namespace LC::SB2
 {
-	class TabListView : public QQuickWidget
+	class TabListView final : public QQuickWidget
 	{
 		Q_OBJECT
 
@@ -39,8 +37,8 @@ namespace SB2
 
 		Util::UnhoverDeleteMixin *UnhoverDeleteMixin_;
 	public:
-		TabListView (const QByteArray&, const QList<QWidget*>&,
-				ICoreTabWidget*, QMainWindow*, ICoreProxy_ptr, QWidget* = 0);
+		TabListView (QByteArray, const QList<QWidget*>&,
+				ICoreTabWidget*, QMainWindow*, ICoreProxy_ptr, QWidget* = nullptr);
 		~TabListView ();
 
 		QByteArray GetTabClass () const;
@@ -52,5 +50,4 @@ namespace SB2
 		void switchToItem (int);
 		void closeItem (int);
 	};
-}
 }

@@ -13,9 +13,7 @@
 
 class QQmlContext;
 
-namespace LC
-{
-namespace SB2
+namespace LC::SB2
 {
 	class QuarkSettingsManager : public Util::BaseSettingsManager
 	{
@@ -24,7 +22,7 @@ namespace SB2
 		const QUrl QuarkURL_;
 		QQmlContext * const Ctx_;
 	public:
-		QuarkSettingsManager (const QUrl&, QQmlContext*);
+		QuarkSettingsManager (QUrl, QQmlContext*);
 	public slots:
 		void setSettingsValue (const QString& key, const QVariant& value);
 	protected:
@@ -32,5 +30,4 @@ namespace SB2
 		void EndSettings (QSettings*) const override;
 		void PropertyChanged (const QString&, const QVariant&) override;
 	};
-}
 }

@@ -13,19 +13,20 @@
 #include <util/util.h>
 #include <interfaces/imwproxy.h>
 
-namespace LC
-{
-namespace SB2
+namespace LC::SB2
 {
 	namespace
 	{
-		class LCMenuImageProvider : public QQuickImageProvider
+		class LCMenuImageProvider final : public QQuickImageProvider
 		{
 		public:
 			LCMenuImageProvider ()
 			: QQuickImageProvider (Pixmap)
 			{
 			}
+
+			LCMenuImageProvider (const LCMenuImageProvider&) = delete;
+			LCMenuImageProvider (LCMenuImageProvider&&) = delete;
 
 			QPixmap requestPixmap (const QString&, QSize*, const QSize&)
 			{
@@ -58,5 +59,4 @@ namespace SB2
 	{
 		Proxy_->GetMainMenu ()->exec (QCursor::pos ());
 	}
-}
 }

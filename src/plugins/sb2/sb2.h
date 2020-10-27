@@ -18,14 +18,12 @@
 
 class QDockWidget;
 
-namespace LC
-{
-namespace Util
-{
-	class ShortcutManager;
-}
+namespace LC::Util
+	{
+		class ShortcutManager;
+	}
 
-namespace SB2
+namespace LC::SB2
 {
 	class ViewManager;
 	class TrayComponent;
@@ -83,6 +81,5 @@ namespace SB2
 	signals:
 		void pluginsAvailable ();
 	};
-}
 }
 

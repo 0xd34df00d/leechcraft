@@ -8,9 +8,7 @@
 
 #include "quarkorderview.h"
 #include <QQmlContext>
-#include <QQmlEngine>
 #include <QQuickItem>
-#include <QtDebug>
 #include <util/gui/unhoverdeletemixin.h>
 #include <util/sys/paths.h>
 #include <util/qml/colorthemeproxy.h>
@@ -21,9 +19,7 @@
 #include "viewmanager.h"
 #include "quarkmanager.h"
 
-namespace LC
-{
-namespace SB2
+namespace LC::SB2
 {
 	QuarkOrderView::QuarkOrderView (ViewManager *manager, ICoreProxy_ptr proxy, QWidget *parent)
 	: QQuickWidget (parent)
@@ -147,5 +143,4 @@ namespace SB2
 			--toPos;
 		Model_->insertRow (toPos, Model_->takeRow (fromPos));
 	}
-}
 }

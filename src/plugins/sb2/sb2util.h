@@ -8,9 +8,6 @@
 
 #pragma once
 
-namespace LC
+namespace LC::SB2
 {
-namespace SB2
-{
-}
 }

@@ -10,9 +10,7 @@
 #include <QCursor>
 #include <QMimeData>
 
-namespace LC
-{
-namespace SB2
+namespace LC::SB2
 {
 	LauncherDropArea::LauncherDropArea (QQuickItem *parent)
 	: QQuickItem (parent)
@@ -54,5 +52,4 @@ namespace SB2
 		unsetCursor ();
 		emit tabDropped (event->mimeData ()->data ("x-leechcraft/tab-tabclass"));
 	}
-}
 }

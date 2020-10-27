@@ -29,9 +29,7 @@
 
 Q_DECLARE_METATYPE (QSet<QByteArray>);
 
-namespace LC
-{
-namespace SB2
+namespace LC::SB2
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
@@ -195,7 +193,6 @@ namespace SB2
 	{
 		Managers_.removeAt (index);
 	}
-}
 }
 
 LC_EXPORT_PLUGIN (leechcraft_sb2, LC::SB2::Plugin);
