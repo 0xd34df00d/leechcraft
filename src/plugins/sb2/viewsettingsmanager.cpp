@@ -50,7 +50,6 @@ namespace LC::SB2
 
 	ViewSettingsManager::ViewSettingsManager (ViewManager *mgr)
 	: QObject (mgr)
-	, ViewMgr_ (mgr)
 	, XSM_ (std::make_shared<XmlViewSettingsManager> (mgr))
 	, XSD_ (std::make_shared<Util::XmlSettingsDialog> ())
 	{

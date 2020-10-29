@@ -24,7 +24,6 @@ namespace SB2
 
 	class ViewSettingsManager : public QObject
 	{
-		ViewManager * const ViewMgr_;
 		const std::shared_ptr<Util::BaseSettingsManager> XSM_;
 		const Util::XmlSettingsDialog_ptr XSD_;
 	public:
