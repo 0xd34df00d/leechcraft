@@ -147,9 +147,16 @@ namespace LC::SB2
 		QuarkOrderView_->show ();
 
 		connect (QuarkOrderView_,
-				SIGNAL (quarkClassHovered (QString)),
+				&QuarkOrderView::quarkClassHovered,
 				this,
-				SLOT (handleExtHoveredQuarkClass (QString)));
+				[this] (const QString& qClass)
+				{
+					if (ExtHoveredQuarkClass_ == qClass)
+						return;
+
+					ExtHoveredQuarkClass_ = qClass;
+					emit extHoveredQuarkClassChanged ();
+				});
 	}
 
 	void QuarkProxy::panelSettingsRequested ()
@@ -194,14 +201,5 @@ namespace LC::SB2
 	QString QuarkProxy::prettyTime (qint64 time)
 	{
 		return Util::MakeTimeFromLong (time);
-	}
-
-	void QuarkProxy::handleExtHoveredQuarkClass (const QString& qClass)
-	{
-		if (ExtHoveredQuarkClass_ == qClass)
-			return;
-
-		ExtHoveredQuarkClass_ = qClass;
-		emit extHoveredQuarkClassChanged ();
 	}
 }

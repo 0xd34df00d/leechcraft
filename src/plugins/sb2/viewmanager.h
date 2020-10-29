@@ -105,9 +105,9 @@ namespace SB2
 
 		void SaveQuarkOrder ();
 		void LoadQuarkOrder ();
-	private slots:
-		void handleQuarksAdded (const QList<QUrl>&);
-		void handleQuarksRemoved (const QList<QUrl>&);
+
+		void HandleQuarksAdded (const QList<QUrl>&);
+		void HandleQuarksRemoved (const QList<QUrl>&);
 	};
 }
 }

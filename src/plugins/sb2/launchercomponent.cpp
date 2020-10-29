@@ -293,9 +293,9 @@ namespace LC::SB2
 		list->show ();
 		list->setFocus ();
 		connect (list,
-				SIGNAL (unhideRequested (QByteArray)),
+				&TabUnhideListView::unhideRequested,
 				this,
-				SLOT (tabClassUnhideRequested (QByteArray)));
+				&LauncherComponent::tabClassUnhideRequested);
 	}
 
 	void LauncherComponent::tabListRequested (const QByteArray& tc, int x, int y)

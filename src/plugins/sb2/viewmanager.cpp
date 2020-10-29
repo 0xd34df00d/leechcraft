@@ -176,13 +176,13 @@ namespace LC::SB2
 
 		auto watcher = new DirWatcher (Util::CreateIfNotExists (QStringLiteral ("data/quarks")), this);
 		connect (watcher,
-				SIGNAL (quarksAdded (QList<QUrl>)),
+				&DirWatcher::quarksAdded,
 				this,
-				SLOT (handleQuarksAdded (QList<QUrl>)));
+				&ViewManager::HandleQuarksAdded);
 		connect (watcher,
-				SIGNAL (quarksRemoved (QList<QUrl>)),
+				&DirWatcher::quarksRemoved,
 				this,
-				SLOT (handleQuarksRemoved (QList<QUrl>)));
+				&ViewManager::HandleQuarksRemoved);
 
 		SaveQuarkOrder ();
 	}
@@ -451,7 +451,7 @@ namespace LC::SB2
 		return rootWM->GetWindowIndex (Window_);
 	}
 
-	void ViewManager::handleQuarksAdded (const QList<QUrl>& urls)
+	void ViewManager::HandleQuarksAdded (const QList<QUrl>& urls)
 	{
 		qDebug () << Q_FUNC_INFO << urls;
 		for (const auto& url : urls)
@@ -462,7 +462,7 @@ namespace LC::SB2
 		}
 	}
 
-	void ViewManager::handleQuarksRemoved (const QList<QUrl>& urls)
+	void ViewManager::HandleQuarksRemoved (const QList<QUrl>& urls)
 	{
 		qDebug () << Q_FUNC_INFO << urls;
 		for (const auto& url : urls)
@@ -472,5 +472,4 @@ namespace LC::SB2
 			RemoveFromRemoved (id);
 		}
 	}
-}
 }
