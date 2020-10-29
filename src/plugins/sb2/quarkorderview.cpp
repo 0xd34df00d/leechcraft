@@ -29,7 +29,7 @@ namespace LC::SB2
 	{
 		new Util::UnhoverDeleteMixin (this);
 
-		const auto& file = Util::GetSysPath (Util::SysPath::QML, "sb2", "QuarkOrderView.qml");
+		const auto& file = Util::GetSysPath (Util::SysPath::QML, QStringLiteral ("sb2"), QStringLiteral ("QuarkOrderView.qml"));
 		if (file.isEmpty ())
 		{
 			qWarning () << Q_FUNC_INFO
@@ -63,13 +63,13 @@ namespace LC::SB2
 		setWindowFlags (Qt::ToolTip);
 		Util::EnableTransparency (this);
 
-		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, ""))
+		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, {}))
 			engine ()->addImportPath (cand);
 
-		rootContext ()->setContextProperty ("quarkListModel", Model_);
-		rootContext ()->setContextProperty ("colorProxy",
+		rootContext ()->setContextProperty (QStringLiteral ("quarkListModel"), Model_);
+		rootContext ()->setContextProperty (QStringLiteral ("colorProxy"),
 				new Util::ColorThemeProxy (proxy->GetColorThemeManager (), this));
-		engine ()->addImageProvider ("ThemeIcons", new Util::ThemeImageProvider (proxy));
+		engine ()->addImageProvider (QStringLiteral ("ThemeIcons"), new Util::ThemeImageProvider (proxy));
 		setSource (QUrl::fromLocalFile (file));
 
 		connect (rootObject (),

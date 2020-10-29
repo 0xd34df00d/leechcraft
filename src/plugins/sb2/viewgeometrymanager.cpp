@@ -189,12 +189,12 @@ namespace LC::SB2
 		case Qt::Vertical:
 			view->resize (size);
 			view->setSizePolicy (QSizePolicy::Preferred, QSizePolicy::Expanding);
-			view->rootContext ()->setContextProperty ("viewOrient", "vertical");
+			view->rootContext ()->setContextProperty (QStringLiteral ("viewOrient"), "vertical");
 			break;
 		case Qt::Horizontal:
 			view->resize (size);
 			view->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Preferred);
-			view->rootContext ()->setContextProperty ("viewOrient", "horizontal");
+			view->rootContext ()->setContextProperty (QStringLiteral ("viewOrient"), "horizontal");
 			break;
 		}
 	}

@@ -32,12 +32,12 @@ namespace LC::SB2
 	void ViewPropsManager::hoverInTimeoutChanged ()
 	{
 		const auto timeout = VSM_->GetXSM ()->property ("CommonHoverInTimeout").toInt ();
-		ViewMgr_->GetView ()->rootContext ()->setContextProperty ("commonHoverInTimeout", timeout);
+		ViewMgr_->GetView ()->rootContext ()->setContextProperty (QStringLiteral ("commonHoverInTimeout"), timeout);
 	}
 
 	void ViewPropsManager::quarkSpacingChanged ()
 	{
 		const auto spacing = VSM_->GetXSM ()->property ("QuarkSpacing").toInt ();
-		ViewMgr_->GetView ()->rootContext ()->setContextProperty ("quarkSpacing", spacing);
+		ViewMgr_->GetView ()->rootContext ()->setContextProperty (QStringLiteral ("quarkSpacing"), spacing);
 	}
 }

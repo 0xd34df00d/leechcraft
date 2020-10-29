@@ -39,8 +39,8 @@ namespace LC::SB2
 			: RoleNamesMixin<QStandardItemModel> (parent)
 			{
 				QHash<int, QByteArray> names;
-				names [Roles::TabIcon] = "tabIcon";
-				names [Roles::TabName] = "tabName";
+				names [Roles::TabIcon] = QByteArrayLiteral ("tabIcon");
+				names [Roles::TabName] = QByteArrayLiteral ("tabName");
 				setRoleNames (names);
 			}
 		};
@@ -56,7 +56,7 @@ namespace LC::SB2
 	, Model_ (new TabsListModel (this))
 	, UnhoverDeleteMixin_ (new Util::UnhoverDeleteMixin (this))
 	{
-		const auto& file = Util::GetSysPath (Util::SysPath::QML, "sb2", "TabListView.qml");
+		const auto& file = Util::GetSysPath (Util::SysPath::QML, QStringLiteral ("sb2"), QStringLiteral ("TabListView.qml"));
 		if (file.isEmpty ())
 		{
 			qWarning () << Q_FUNC_INFO
@@ -103,14 +103,14 @@ namespace LC::SB2
 					SLOT (handleTabRemoved (QWidget*)));
 		}
 
-		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, ""))
+		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, {}))
 			engine ()->addImportPath (cand);
 
-		rootContext ()->setContextProperty ("tabsListModel", Model_);
-		rootContext ()->setContextProperty ("colorProxy",
+		rootContext ()->setContextProperty (QStringLiteral ("tabsListModel"), Model_);
+		rootContext ()->setContextProperty (QStringLiteral ("colorProxy"),
 				new Util::ColorThemeProxy (proxy->GetColorThemeManager (), this));
-		rootContext ()->setContextProperty ("longestText", longestText);
-		engine ()->addImageProvider ("ThemeIcons", new Util::ThemeImageProvider (proxy));
+		rootContext ()->setContextProperty (QStringLiteral ("longestText"), longestText);
+		engine ()->addImageProvider (QStringLiteral ("ThemeIcons"), new Util::ThemeImageProvider (proxy));
 		setSource (QUrl::fromLocalFile (file));
 
 		connect (rootObject (),

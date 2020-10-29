@@ -94,13 +94,13 @@ namespace LC::SB2
 	{
 		Qt::ToolBarArea area = Qt::BottomToolBarArea;
 
-		if (position == "left")
+		if (position == QLatin1String ("left"))
 			area = Qt::LeftToolBarArea;
-		else if (position == "right")
+		else if (position == QLatin1String ("right"))
 			area = Qt::RightToolBarArea;
-		else if (position == "top")
+		else if (position == QLatin1String ("top"))
 			area = Qt::TopToolBarArea;
-		else if (position == "bottom")
+		else if (position == QLatin1String ("bottom"))
 			area = Qt::BottomToolBarArea;
 		else
 			qWarning () << Q_FUNC_INFO

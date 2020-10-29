@@ -35,7 +35,7 @@ namespace LC::SB2
 	void LauncherDropArea::dragEnterEvent (QDragEnterEvent *event)
 	{
 		auto data = event->mimeData ();
-		if (!data->formats ().contains ("x-leechcraft/tab-tabclass"))
+		if (!data->formats ().contains (QLatin1String { "x-leechcraft/tab-tabclass" }))
 			return;
 
 		event->acceptProposedAction ();
@@ -50,6 +50,6 @@ namespace LC::SB2
 	void LauncherDropArea::dropEvent (QDropEvent *event)
 	{
 		unsetCursor ();
-		emit tabDropped (event->mimeData ()->data ("x-leechcraft/tab-tabclass"));
+		emit tabDropped (event->mimeData ()->data (QStringLiteral ("x-leechcraft/tab-tabclass")));
 	}
 }

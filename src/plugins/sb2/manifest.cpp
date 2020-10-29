@@ -37,18 +37,18 @@ namespace LC::SB2
 		if (varMap.isEmpty ())
 			return;
 
-		Name_ = varMap ["quarkName"].toString ();
-		Areas_ = varMap ["areas"].toStringList ();
+		Name_ = varMap [QStringLiteral ("quarkName")].toString ();
+		Areas_ = varMap [QStringLiteral ("areas")].toStringList ();
 
-		Description_ = varMap ["description"].toString ();
+		Description_ = varMap [QStringLiteral ("description")].toString ();
 
-		const auto& idVar = varMap ["quarkID"];
+		const auto& idVar = varMap [QStringLiteral ("quarkID")];
 		if (!idVar.isNull ())
 			ID_ = idVar.toString ();
 
-		IsHiddenByDefault_ = !varMap.value ("defaultVisibility", true).toBool ();
+		IsHiddenByDefault_ = !varMap.value (QStringLiteral ("defaultVisibility"), true).toBool ();
 
-		const auto& iconVar = varMap ["icon"];
+		const auto& iconVar = varMap [QStringLiteral ("icon")];
 		if (!iconVar.isNull ())
 		{
 			const auto& iconName = iconVar.toString ();
@@ -113,11 +113,11 @@ namespace LC::SB2
 
 	bool Manifest::TryLC (const QString& iconName)
 	{
-		if (iconName != "leechcraft")
+		if (iconName != QLatin1String { "leechcraft" })
 			return false;
 
 		Icon_ = QIcon {};
-		Icon_.addFile ("lcicons:/resources/images/leechcraft.svg");
+		Icon_.addFile (QStringLiteral ("lcicons:/resources/images/leechcraft.svg"));
 		return true;
 	}
 }

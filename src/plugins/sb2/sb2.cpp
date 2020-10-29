@@ -33,7 +33,7 @@ namespace LC::SB2
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		Util::InstallTranslator ("sb2");
+		Util::InstallTranslator (QStringLiteral ("sb2"));
 		Proxy_ = proxy;
 
 		ShortcutMgr_ = new Util::ShortcutManager (proxy, this);
@@ -81,7 +81,7 @@ namespace LC::SB2
 
 	QString Plugin::GetName () const
 	{
-		return "SB2";
+		return QStringLiteral ("SB2");
 	}
 
 	QString Plugin::GetInfo () const

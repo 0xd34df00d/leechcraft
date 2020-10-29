@@ -53,7 +53,7 @@ namespace LC::SB2
 	, XSM_ (std::make_shared<XmlViewSettingsManager> (mgr))
 	, XSD_ (std::make_shared<Util::XmlSettingsDialog> ())
 	{
-		XSD_->RegisterObject (XSM_.get (), "sb2panelsettings.xml");
+		XSD_->RegisterObject (XSM_.get (), QStringLiteral ("sb2panelsettings.xml"));
 	}
 
 	Util::XmlSettingsDialog* ViewSettingsManager::GetXSD () const

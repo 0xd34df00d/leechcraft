@@ -30,11 +30,11 @@ namespace LC::SB2
 
 			QPixmap requestPixmap (const QString&, QSize*, const QSize&)
 			{
-				return QPixmap ("lcicons:/resources/images/leechcraft.svg");
+				return QPixmap { QStringLiteral ("lcicons:/resources/images/leechcraft.svg") };
 			}
 		};
 
-		const QString ImageProviderID = "SB2_LCMenuImage";
+		const QString ImageProviderID = QStringLiteral ("SB2_LCMenuImage");
 	}
 
 	LCMenuComponent::LCMenuComponent (IMWProxy *proxy, QObject *parent)
@@ -42,9 +42,9 @@ namespace LC::SB2
 	, Proxy_ (proxy)
 	, Component_ (std::make_shared<QuarkComponent> ("sb2", "LCMenuComponent.qml"))
 	{
-		Component_->DynamicProps_.append ({ "SB2_menuComponentProxy", this });
-		Component_->StaticProps_.append ({ "SB2_menuComponentLCIcon", "image://" + ImageProviderID + "/icon" });
-		Component_->StaticProps_.append ({ "SB2_menuTooltipString", tr ("LeechCraft menu") });
+		Component_->DynamicProps_.append ({ QStringLiteral ("SB2_menuComponentProxy"), this });
+		Component_->StaticProps_.append ({ QStringLiteral ("SB2_menuComponentLCIcon"), "image://" + ImageProviderID + "/icon" });
+		Component_->StaticProps_.append ({ QStringLiteral ("SB2_menuTooltipString"), tr ("LeechCraft menu") });
 		Component_->ImageProviders_.append ({ ImageProviderID, new LCMenuImageProvider });
 
 		Proxy_->HideMainMenu ();

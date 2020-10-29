@@ -89,7 +89,7 @@ namespace LC::SB2
 	bool QuarkManager::IsValidArea () const
 	{
 		const auto& areas = Manifest_.GetAreas ();
-		return areas.isEmpty () || areas.contains ("panel");
+		return areas.isEmpty () || areas.contains (QStringLiteral ("panel"));
 	}
 
 	bool QuarkManager::HasSettings () const
@@ -121,7 +121,7 @@ namespace LC::SB2
 			return {};
 
 		auto dir = QFileInfo { URL_.toLocalFile () }.dir ();
-		if (!dir.cd ("ts"))
+		if (!dir.cd (QStringLiteral ("ts")))
 			return {};
 
 		const auto& locale = Util::GetLocaleName ();
@@ -152,7 +152,7 @@ namespace LC::SB2
 
 	void QuarkManager::CreateSettings ()
 	{
-		const auto& settingsName = GetSuffixedName (".settings");
+		const auto& settingsName = GetSuffixedName (QStringLiteral (".settings"));
 		if (settingsName.isEmpty ())
 			return;
 
