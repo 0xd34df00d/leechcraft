@@ -205,4 +205,3 @@ namespace LC::SB2
 		ViewMgr_->GetView ()->SetDimensions (xsm->property ("PanelSize").toInt ());
 	}
 }
-}

@@ -38,8 +38,10 @@ namespace LC::SB2
 
 		rootContext ()->setContextProperty (QStringLiteral ("colorProxy"),
 				new Util::ColorThemeProxy (proxy->GetColorThemeManager (), this));
-		for (const auto& key : params.keys ())
-			rootContext ()->setContextProperty (key, params [key]);
+
+		for (const auto& [key, value] : Util::Stlize (params))
+			rootContext ()->setContextProperty (key, value);
+
 		engine ()->addImageProvider (QStringLiteral ("ThemeIcons"), new Util::ThemeImageProvider (proxy));
 		setSource (url);
 

@@ -11,6 +11,7 @@
 #include <QSettings>
 #include <QtDebug>
 #include <util/sll/scopeguards.h>
+#include <util/sll/qtutil.h>
 #include <util/gui/autoresizemixin.h>
 #include <util/gui/geometry.h>
 #include <util/qml/widthiconprovider.h>
@@ -377,10 +378,10 @@ namespace LC::SB2
 				qobject_cast<ITabWidget*> (widget)->GetTabClassInfo () :
 				TabClassInfo ();
 
-		for (const auto& key : TC2Items_.keys ())
+		for (const auto& [key, items] : Util::Stlize (TC2Items_))
 		{
 			const bool isSelectedTC = key == tc.TabClass_;
-			for (auto item : TC2Items_ [key])
+			for (auto item : items)
 				item->setData (isSelectedTC, LauncherModel::Roles::IsCurrentTab);
 		}
 	}
