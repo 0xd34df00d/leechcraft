@@ -17,27 +17,19 @@ namespace LC::SB2
 {
 	ViewPropsManager::ViewPropsManager (ViewManager *view, ViewSettingsManager *vsm, QObject *parent)
 	: QObject (parent)
-	, ViewMgr_ (view)
-	, VSM_ (vsm)
 	{
-		const auto& xsm = VSM_->GetXSM ();
+		const auto& xsm = vsm->GetXSM ();
+		const auto ctx = view->GetView ()->rootContext ();
+		xsm->RegisterObject ("CommonHoverInTimeout", this,
+				[ctx] (const QVariant& prop)
+				{
+					ctx->setContextProperty (QStringLiteral ("commonHoverInTimeout"), prop.toInt ());
+				});
 
-		xsm->RegisterObject ("CommonHoverInTimeout", this, "hoverInTimeoutChanged");
-		hoverInTimeoutChanged ();
-
-		xsm->RegisterObject ("QuarkSpacing", this, "quarkSpacingChanged");
-		quarkSpacingChanged ();
-	}
-
-	void ViewPropsManager::hoverInTimeoutChanged ()
-	{
-		const auto timeout = VSM_->GetXSM ()->property ("CommonHoverInTimeout").toInt ();
-		ViewMgr_->GetView ()->rootContext ()->setContextProperty (QStringLiteral ("commonHoverInTimeout"), timeout);
-	}
-
-	void ViewPropsManager::quarkSpacingChanged ()
-	{
-		const auto spacing = VSM_->GetXSM ()->property ("QuarkSpacing").toInt ();
-		ViewMgr_->GetView ()->rootContext ()->setContextProperty (QStringLiteral ("quarkSpacing"), spacing);
+		xsm->RegisterObject ("QuarkSpacing", this,
+				[ctx] (const QVariant& prop)
+				{
+					ctx->setContextProperty (QStringLiteral ("quarkSpacing"), prop.toInt ());
+				});
 	}
 }

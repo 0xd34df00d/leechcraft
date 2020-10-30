@@ -18,13 +18,7 @@ namespace LC::SB2
 	class ViewPropsManager : public QObject
 	{
 		Q_OBJECT
-
-		ViewManager * const ViewMgr_;
-		ViewSettingsManager * const VSM_;
 	public:
 		ViewPropsManager (ViewManager*, ViewSettingsManager*, QObject* = nullptr);
-	private slots:
-		void hoverInTimeoutChanged ();
-		void quarkSpacingChanged ();
 	};
 }

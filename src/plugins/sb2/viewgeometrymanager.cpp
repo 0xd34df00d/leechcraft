@@ -31,8 +31,11 @@ namespace LC::SB2
 	, ViewMgr_ (parent)
 	{
 		const auto& xsm = ViewMgr_->GetViewSettingsManager ()->GetXSM ();
-		xsm->RegisterObject ("PanelSize", this, "updatePanelSize");
-		updatePanelSize ();
+		xsm->RegisterObject ("PanelSize", this,
+				[this] (const QVariant& prop)
+				{
+					ViewMgr_->GetView ()->SetDimensions (prop.toInt ());
+				});
 	}
 
 	void ViewGeometryManager::Manage ()
@@ -197,11 +200,5 @@ namespace LC::SB2
 			view->rootContext ()->setContextProperty (QStringLiteral ("viewOrient"), "horizontal");
 			break;
 		}
-	}
-
-	void ViewGeometryManager::updatePanelSize ()
-	{
-		const auto& xsm = ViewMgr_->GetViewSettingsManager ()->GetXSM ();
-		ViewMgr_->GetView ()->SetDimensions (xsm->property ("PanelSize").toInt ());
 	}
 }
