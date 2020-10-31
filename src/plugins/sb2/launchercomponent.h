@@ -49,7 +49,7 @@ namespace SB2
 
 		QSet<QByteArray> HiddenTCs_;
 
-		bool FirstRun_;
+		bool FirstRun_ = false;
 	public:
 		LauncherComponent (ICoreTabWidget*, const ICoreProxy_ptr&, ViewManager*, QObject* = nullptr);
 
