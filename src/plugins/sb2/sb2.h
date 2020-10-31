@@ -66,14 +66,14 @@ namespace LC::SB2
 		QMap<QString, ActionInfo> GetActionInfo () const override;
 		void SetShortcut (const QString&, const QKeySequences_t&) override;
 	public slots:
-		void hookGonnaShowStatusBar (LC::IHookProxy_ptr, bool);
-		void hookDockWidgetActionVisToggled (LC::IHookProxy_ptr,
+		void hookGonnaShowStatusBar (const LC::IHookProxy_ptr&, bool);
+		void hookDockWidgetActionVisToggled (const LC::IHookProxy_ptr&,
 				QMainWindow*, QDockWidget*, bool);
-		void hookAddingDockAction (LC::IHookProxy_ptr,
+		void hookAddingDockAction (const LC::IHookProxy_ptr&,
 				QMainWindow*, QAction*, Qt::DockWidgetArea);
-		void hookRemovingDockAction (LC::IHookProxy_ptr,
+		void hookRemovingDockAction (const LC::IHookProxy_ptr&,
 				QMainWindow*, QAction*, Qt::DockWidgetArea);
-		void hookDockBarWillBeShown (LC::IHookProxy_ptr,
+		void hookDockBarWillBeShown (const LC::IHookProxy_ptr&,
 				QMainWindow*, QToolBar*, Qt::DockWidgetArea);
 	private slots:
 		void handleWindow (int, bool init = false);

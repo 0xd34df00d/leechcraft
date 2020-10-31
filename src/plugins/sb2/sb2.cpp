@@ -109,19 +109,19 @@ namespace LC::SB2
 		ShortcutMgr_->SetShortcut (id, seqs);
 	}
 
-	void Plugin::hookGonnaShowStatusBar (LC::IHookProxy_ptr proxy, bool show)
+	void Plugin::hookGonnaShowStatusBar (const IHookProxy_ptr& proxy, bool show)
 	{
 		if (show)
 			proxy->CancelDefault ();
 	}
 
-	void Plugin::hookDockWidgetActionVisToggled (IHookProxy_ptr proxy,
+	void Plugin::hookDockWidgetActionVisToggled (const IHookProxy_ptr& proxy,
 			QMainWindow*, QDockWidget*, bool)
 	{
 		proxy->CancelDefault ();
 	}
 
-	void Plugin::hookAddingDockAction (IHookProxy_ptr,
+	void Plugin::hookAddingDockAction (const IHookProxy_ptr&,
 			QMainWindow *win, QAction *act, Qt::DockWidgetArea)
 	{
 		auto rootWM = Proxy_->GetRootWindowsManager ();
@@ -130,7 +130,7 @@ namespace LC::SB2
 		Managers_ [idx].Dock_->AddActions ({ act }, TrayComponent::ActionPos::Beginning);
 	}
 
-	void Plugin::hookRemovingDockAction (IHookProxy_ptr,
+	void Plugin::hookRemovingDockAction (const IHookProxy_ptr&,
 			QMainWindow *win, QAction *act, Qt::DockWidgetArea)
 	{
 		auto rootWM = Proxy_->GetRootWindowsManager ();
@@ -139,7 +139,7 @@ namespace LC::SB2
 		Managers_ [idx].Dock_->RemoveAction (act);
 	}
 
-	void Plugin::hookDockBarWillBeShown (IHookProxy_ptr proxy,
+	void Plugin::hookDockBarWillBeShown (const IHookProxy_ptr& proxy,
 			QMainWindow*, QToolBar*, Qt::DockWidgetArea)
 	{
 		proxy->CancelDefault ();
