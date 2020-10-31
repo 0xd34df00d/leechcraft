@@ -31,12 +31,11 @@ Q_DECLARE_METATYPE (QSet<QByteArray>);
 
 namespace LC::SB2
 {
-	void Plugin::Init (ICoreProxy_ptr proxy)
+	void Plugin::Init (ICoreProxy_ptr)
 	{
 		Util::InstallTranslator (QStringLiteral ("sb2"));
-		Proxy_ = proxy;
 
-		ShortcutMgr_ = new Util::ShortcutManager (proxy, this);
+		ShortcutMgr_ = new Util::ShortcutManager (GetProxyHolder (), this);
 		ShortcutMgr_->SetObject (this);
 
 		qmlRegisterType<QGraphicsBlurEffect> ("Effects", 1, 0, "Blur");
@@ -48,7 +47,7 @@ namespace LC::SB2
 		qRegisterMetaType<QSet<QByteArray>> ("QSet<QByteArray>");
 		qRegisterMetaTypeStreamOperators<QSet<QByteArray>> ();
 
-		auto rootWM = proxy->GetRootWindowsManager ();
+		auto rootWM = GetProxyHolder ()->GetRootWindowsManager ();
 		for (int i = 0; i < rootWM->GetWindowsCount (); ++i)
 			handleWindow (i, true);
 
@@ -91,7 +90,7 @@ namespace LC::SB2
 
 	QIcon Plugin::GetIcon () const
 	{
-		return Proxy_->GetIconThemeManager ()->GetPluginIcon ();
+		return GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon ();
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
@@ -124,7 +123,7 @@ namespace LC::SB2
 	void Plugin::hookAddingDockAction (const IHookProxy_ptr&,
 			QMainWindow *win, QAction *act, Qt::DockWidgetArea)
 	{
-		auto rootWM = Proxy_->GetRootWindowsManager ();
+		auto rootWM = GetProxyHolder ()->GetRootWindowsManager ();
 		const int idx = rootWM->GetWindowIndex (win);
 
 		Managers_ [idx].Dock_->AddActions ({ act }, TrayComponent::ActionPos::Beginning);
@@ -133,7 +132,7 @@ namespace LC::SB2
 	void Plugin::hookRemovingDockAction (const IHookProxy_ptr&,
 			QMainWindow *win, QAction *act, Qt::DockWidgetArea)
 	{
-		auto rootWM = Proxy_->GetRootWindowsManager ();
+		auto rootWM = GetProxyHolder ()->GetRootWindowsManager ();
 		const int idx = rootWM->GetWindowIndex (win);
 
 		Managers_ [idx].Dock_->RemoveAction (act);
@@ -147,10 +146,10 @@ namespace LC::SB2
 
 	void Plugin::handleWindow (int index, bool init)
 	{
-		auto rootWM = Proxy_->GetRootWindowsManager ();
+		auto rootWM = GetProxyHolder ()->GetRootWindowsManager ();
 		auto win = rootWM->GetMainWindow (index);
 
-		auto mgr = std::make_shared<ViewManager> (Proxy_, ShortcutMgr_, win, this);
+		auto mgr = std::make_shared<ViewManager> (ShortcutMgr_, win, this);
 		auto view = mgr->GetView ();
 
 		auto mwProxy = rootWM->GetMWProxy (index);
@@ -160,7 +159,7 @@ namespace LC::SB2
 
 		mgr->RegisterInternalComponent ((new LCMenuComponent (mwProxy))->GetComponent ());
 
-		auto launcher = std::make_shared<LauncherComponent> (ictw, Proxy_, mgr.get ());
+		auto launcher = std::make_shared<LauncherComponent> (ictw, mgr.get ());
 		mgr->RegisterInternalComponent (launcher->GetComponent ());
 		if (init)
 			connect (this,
@@ -170,7 +169,7 @@ namespace LC::SB2
 		else
 			launcher->handlePluginsAvailable ();
 
-		auto tray = std::make_shared<TrayComponent> (Proxy_, view);
+		auto tray = std::make_shared<TrayComponent> (view);
 		mgr->RegisterInternalComponent (tray->GetComponent ());
 		if (init)
 			connect (this,
@@ -180,7 +179,7 @@ namespace LC::SB2
 		else
 			tray->handlePluginsAvailable ();
 
-		auto dock = std::make_shared<DockActionComponent> (Proxy_, view);
+		auto dock = std::make_shared<DockActionComponent> (view);
 		mgr->RegisterInternalComponent (dock->GetComponent ());
 
 		if (!init)

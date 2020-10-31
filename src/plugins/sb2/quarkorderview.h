@@ -23,11 +23,10 @@ namespace LC::SB2
 		Q_OBJECT
 
 		ViewManager * const Manager_;
-		ICoreProxy_ptr Proxy_;
 
 		QStandardItemModel *Model_;
 	public:
-		QuarkOrderView (ViewManager*, ICoreProxy_ptr, QWidget* = nullptr);
+		QuarkOrderView (ViewManager*, QWidget* = nullptr);
 	private slots:
 		void handleQuarkCloseRequested (const QString&);
 		void moveQuark (const QString& from, const QString& to, int shift);

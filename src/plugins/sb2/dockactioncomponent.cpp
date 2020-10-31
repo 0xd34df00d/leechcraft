@@ -10,8 +10,8 @@
 
 namespace LC::SB2
 {
-	DockActionComponent::DockActionComponent (const ICoreProxy_ptr& proxy, SBView *view, QObject *parent)
-	: BaseActionComponent ({ "SB2_DockActionImage", "DockComponent.qml", "SB2_dockModel" }, proxy, view, parent)
+	DockActionComponent::DockActionComponent (SBView *view, QObject *parent)
+	: BaseActionComponent ({ "SB2_DockActionImage", "DockComponent.qml", "SB2_dockModel" }, view, parent)
 	{
 	}
 }

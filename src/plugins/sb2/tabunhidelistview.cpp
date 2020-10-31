@@ -14,9 +14,8 @@
 
 namespace LC::SB2
 {
-	TabUnhideListView::TabUnhideListView (const QList<TabClassInfo>& tcs,
-			ICoreProxy_ptr proxy, QWidget *parent)
-	: UnhideListViewBase (proxy,
+	TabUnhideListView::TabUnhideListView (const QList<TabClassInfo>& tcs, QWidget *parent)
+	: UnhideListViewBase (GetProxyHolder (),
 		[&tcs] (QStandardItemModel *model)
 		{
 			for (const auto& tc : tcs)

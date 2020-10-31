@@ -42,7 +42,6 @@ namespace SB2
 
 	class ViewManager : public QObject
 	{
-		ICoreProxy_ptr Proxy_;
 		QStandardItemModel *ViewItemsModel_;
 		SBView *View_;
 		QToolBar *Toolbar_;
@@ -61,7 +60,7 @@ namespace SB2
 
 		ViewGeometryManager *GeomManager_;
 	public:
-		ViewManager (const ICoreProxy_ptr&, Util::ShortcutManager*, QMainWindow*, QObject* = nullptr);
+		ViewManager (Util::ShortcutManager*, QMainWindow*, QObject* = nullptr);
 
 		SBView* GetView () const;
 		QToolBar* GetToolbar () const;

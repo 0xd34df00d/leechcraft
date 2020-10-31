@@ -15,6 +15,6 @@ namespace LC::SB2
 	class DockActionComponent : public BaseActionComponent
 	{
 	public:
-		DockActionComponent (const ICoreProxy_ptr&, SBView*, QObject* = nullptr);
+		explicit DockActionComponent (SBView*, QObject* = nullptr);
 	};
 }

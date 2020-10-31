@@ -17,8 +17,8 @@
 namespace LC::SB2
 {
 	QuarkUnhideListView::QuarkUnhideListView (const QuarkComponents_t& components,
-			ViewManager *viewMgr, ICoreProxy_ptr proxy, QWidget *parent)
-	: Util::UnhideListViewBase (std::move (proxy),
+			ViewManager *viewMgr, QWidget *parent)
+	: Util::UnhideListViewBase (GetProxyHolder (),
 			[&components, viewMgr] (QStandardItemModel *model)
 			{
 				for (const auto& comp : components)

@@ -24,7 +24,6 @@ namespace LC::SB2
 	{
 		Q_OBJECT
 	protected:
-		ICoreProxy_ptr Proxy_;
 		QStandardItemModel * const Model_;
 		QuarkComponent_ptr Component_;
 
@@ -47,7 +46,7 @@ namespace LC::SB2
 			QString ModelName_;
 		} ComponentInfo_;
 	public:
-		BaseActionComponent (const ComponentInfo& info, const ICoreProxy_ptr&, SBView*, QObject* parent = nullptr);
+		BaseActionComponent (const ComponentInfo& info, SBView*, QObject* parent = nullptr);
 
 		QuarkComponent_ptr GetComponent () const;
 

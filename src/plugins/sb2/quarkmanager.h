@@ -12,7 +12,6 @@
 #include <QUrl>
 #include <QIcon>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
-#include <interfaces/core/icoreproxy.h>
 #include <interfaces/iquarkcomponentprovider.h>
 #include "manifest.h"
 
@@ -26,7 +25,6 @@ namespace LC::SB2
 	class QuarkManager : public QObject
 	{
 		ViewManager * const ViewMgr_;
-		ICoreProxy_ptr Proxy_;
 
 		const QuarkComponent_ptr Component_;
 		const QUrl URL_;

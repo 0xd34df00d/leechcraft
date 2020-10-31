@@ -29,14 +29,13 @@ namespace LC::SB2
 		Q_PROPERTY (QString extHoveredQuarkClass READ GetExtHoveredQuarkClass NOTIFY extHoveredQuarkClassChanged)
 
 		ViewManager *Manager_;
-		ICoreProxy_ptr Proxy_;
 
 		QString ExtHoveredQuarkClass_;
 
 		QHash<QUrl, QPointer<DeclarativeWindow>> URL2LastOpened_;
 		QPointer<QuarkOrderView> QuarkOrderView_;
 	public:
-		QuarkProxy (ViewManager*, ICoreProxy_ptr, QObject* = nullptr);
+		QuarkProxy (ViewManager*, QObject* = nullptr);
 
 		const QString& GetExtHoveredQuarkClass () const;
 		QRect GetFreeCoords () const;

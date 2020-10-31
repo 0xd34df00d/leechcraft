@@ -22,7 +22,7 @@
 namespace LC::SB2
 {
 	DeclarativeWindow::DeclarativeWindow (const QUrl& url, QVariantMap params,
-			const QPoint& orig, ViewManager *viewMgr, const ICoreProxy_ptr& proxy, QWidget *parent)
+			const QPoint& orig, ViewManager *viewMgr, QWidget *parent)
 	: QQuickWidget (parent)
 	{
 		new Util::AutoResizeMixin (orig, [viewMgr] { return viewMgr->GetFreeCoords (); }, this);
@@ -36,13 +36,16 @@ namespace LC::SB2
 		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, {}))
 			engine ()->addImportPath (cand);
 
-		rootContext ()->setContextProperty (QStringLiteral ("colorProxy"),
-				new Util::ColorThemeProxy (proxy->GetColorThemeManager (), this));
-
+		QVector<QQmlContext::PropertyPair> propsVec
+		{
+			{ QStringLiteral ("colorProxy"),
+					QVariant::fromValue (new Util::ColorThemeProxy (GetProxyHolder ()->GetColorThemeManager (), this)) }
+		};
 		for (const auto& [key, value] : Util::Stlize (params))
-			rootContext ()->setContextProperty (key, value);
+			propsVec.push_back ({ key, value });
+		rootContext ()->setContextProperties (propsVec);
 
-		engine ()->addImageProvider (QStringLiteral ("ThemeIcons"), new Util::ThemeImageProvider (proxy));
+		engine ()->addImageProvider (QStringLiteral ("ThemeIcons"), new Util::ThemeImageProvider (GetProxyHolder ()));
 		setSource (url);
 
 		connect (rootObject (),

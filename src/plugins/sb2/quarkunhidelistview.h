@@ -32,7 +32,7 @@ namespace LC::SB2
 		};
 		QHash<QString, ComponentInfo> ID2Component_;
 	public:
-		QuarkUnhideListView (const QuarkComponents_t&, ViewManager*, ICoreProxy_ptr, QWidget*  = nullptr);
+		QuarkUnhideListView (const QuarkComponents_t&, ViewManager*, QWidget*  = nullptr);
 	private slots:
 		void unhide (const QString&);
 	};

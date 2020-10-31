@@ -63,14 +63,9 @@ namespace LC::SB2
 
 	class TabClassImageProvider final : public Util::WidthIconProvider
 	{
-		ICoreProxy_ptr Proxy_;
 		QHash<QByteArray, QIcon> TabClasses_;
 	public:
-		explicit TabClassImageProvider (ICoreProxy_ptr proxy)
-		: Proxy_ { std::move (proxy) }
-		{
-		}
-
+		TabClassImageProvider () = default;
 		TabClassImageProvider (const TabClassImageProvider&) = delete;
 		TabClassImageProvider (TabClassImageProvider&&) = delete;
 
@@ -90,14 +85,13 @@ namespace LC::SB2
 		const QString ImageProviderID = QStringLiteral ("SB2_TabClassImage");
 	}
 
-	LauncherComponent::LauncherComponent (ICoreTabWidget *ictw, const ICoreProxy_ptr& proxy, ViewManager *view, QObject *parent)
+	LauncherComponent::LauncherComponent (ICoreTabWidget *ictw, ViewManager *view, QObject *parent)
 	: QObject (parent)
-	, Proxy_ (proxy)
 	, ICTW_ (ictw)
 	, Model_ (new LauncherModel (this))
 	, Component_ (new QuarkComponent (QStringLiteral ("sb2"), QStringLiteral ("LauncherComponent.qml")))
 	, View_ (view)
-	, ImageProv_ (new TabClassImageProvider (proxy))
+	, ImageProv_ (new TabClassImageProvider ())
 	{
 		qmlRegisterType<LauncherDropArea> ("SB2", 1, 0, "LauncherDropArea");
 
@@ -192,7 +186,7 @@ namespace LC::SB2
 
 	QPair<TabClassInfo, IHaveTabs*> LauncherComponent::FindTC (const QByteArray& tc) const
 	{
-		for (auto iht : Proxy_->GetPluginsManager ()->GetAllCastableTo<IHaveTabs*> ())
+		for (auto iht : GetProxyHolder ()->GetPluginsManager ()->GetAllCastableTo<IHaveTabs*> ())
 			for (const auto& fullTC : iht->GetTabClasses ())
 				if (fullTC.TabClass_ == tc)
 					return { fullTC, iht };
@@ -202,7 +196,7 @@ namespace LC::SB2
 
 	void LauncherComponent::handlePluginsAvailable ()
 	{
-		auto hasTabs = Proxy_->GetPluginsManager ()->
+		auto hasTabs = GetProxyHolder ()->GetPluginsManager ()->
 				GetAllCastableRoots<IHaveTabs*> ();
 		for (auto ihtObj : hasTabs)
 		{
@@ -288,7 +282,7 @@ namespace LC::SB2
 				tcs << pair.first;
 		}
 
-		auto list = new TabUnhideListView (tcs, Proxy_);
+		auto list = new TabUnhideListView (tcs);
 		new Util::AutoResizeMixin ({ x, y }, [this] () { return View_->GetFreeCoords (); }, list);
 		list->show ();
 		list->setFocus ();
@@ -316,7 +310,7 @@ namespace LC::SB2
 			CurrentTabList_ = nullptr;
 		}
 
-		auto view = new TabListView (tc, widgets, ICTW_, View_->GetManagedWindow (), Proxy_);
+		auto view = new TabListView (tc, widgets, ICTW_, View_->GetManagedWindow ());
 		view->show ();
 		const auto& pos = Util::FitRect ({ x, y }, view->size (), View_->GetFreeCoords ());
 		view->move (pos);

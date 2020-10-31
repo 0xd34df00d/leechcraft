@@ -21,10 +21,9 @@
 
 namespace LC::SB2
 {
-	QuarkOrderView::QuarkOrderView (ViewManager *manager, ICoreProxy_ptr proxy, QWidget *parent)
+	QuarkOrderView::QuarkOrderView (ViewManager *manager, QWidget *parent)
 	: QQuickWidget (parent)
 	, Manager_ (manager)
-	, Proxy_ (proxy)
 	, Model_ (new Util::UnhideListModel (this))
 	{
 		new Util::UnhoverDeleteMixin (this);
@@ -68,8 +67,8 @@ namespace LC::SB2
 
 		rootContext ()->setContextProperty (QStringLiteral ("quarkListModel"), Model_);
 		rootContext ()->setContextProperty (QStringLiteral ("colorProxy"),
-				new Util::ColorThemeProxy (proxy->GetColorThemeManager (), this));
-		engine ()->addImageProvider (QStringLiteral ("ThemeIcons"), new Util::ThemeImageProvider (proxy));
+				new Util::ColorThemeProxy (GetProxyHolder ()->GetColorThemeManager (), this));
+		engine ()->addImageProvider (QStringLiteral ("ThemeIcons"), new Util::ThemeImageProvider (GetProxyHolder ()));
 		setSource (QUrl::fromLocalFile (file));
 
 		connect (rootObject (),

@@ -23,7 +23,7 @@ namespace LC::SB2
 	{
 		Q_OBJECT
 	public:
-		TrayComponent (ICoreProxy_ptr, SBView*, QObject* parent = nullptr);
+		explicit TrayComponent (SBView*, QObject* parent = nullptr);
 	public slots:
 		void handlePluginsAvailable ();
 	private slots:

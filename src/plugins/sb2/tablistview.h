@@ -28,7 +28,6 @@ namespace LC::SB2
 	{
 		Q_OBJECT
 
-		ICoreProxy_ptr Proxy_;
 		ICoreTabWidget * const ICTW_;
 		QMainWindow * const MW_;
 
@@ -38,7 +37,7 @@ namespace LC::SB2
 		Util::UnhoverDeleteMixin *UnhoverDeleteMixin_;
 	public:
 		TabListView (QByteArray, const QList<QWidget*>&,
-				ICoreTabWidget*, QMainWindow*, ICoreProxy_ptr, QWidget* = nullptr);
+				ICoreTabWidget*, QMainWindow*, QWidget* = nullptr);
 		~TabListView ();
 
 		QByteArray GetTabClass () const;

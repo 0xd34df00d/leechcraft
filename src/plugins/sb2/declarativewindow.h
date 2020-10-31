@@ -20,7 +20,7 @@ namespace LC::SB2
 	{
 		Q_OBJECT
 	public:
-		DeclarativeWindow (const QUrl&, QVariantMap, const QPoint&, ViewManager*, const ICoreProxy_ptr&, QWidget* = nullptr);
+		DeclarativeWindow (const QUrl&, QVariantMap, const QPoint&, ViewManager*, QWidget* = nullptr);
 	public slots:
 		void beforeDelete ();
 	};

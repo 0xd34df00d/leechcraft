@@ -47,9 +47,8 @@ namespace LC::SB2
 	}
 
 	TabListView::TabListView (QByteArray tc, const QList<QWidget*>& widgets,
-			ICoreTabWidget *ictw, QMainWindow *win, ICoreProxy_ptr proxy, QWidget *parent)
+			ICoreTabWidget *ictw, QMainWindow *win, QWidget *parent)
 	: QQuickWidget (parent)
-	, Proxy_ (proxy)
 	, ICTW_ (ictw)
 	, MW_ (win)
 	, TC_ (std::move (tc))
@@ -108,9 +107,9 @@ namespace LC::SB2
 
 		rootContext ()->setContextProperty (QStringLiteral ("tabsListModel"), Model_);
 		rootContext ()->setContextProperty (QStringLiteral ("colorProxy"),
-				new Util::ColorThemeProxy (proxy->GetColorThemeManager (), this));
+				new Util::ColorThemeProxy (GetProxyHolder ()->GetColorThemeManager (), this));
 		rootContext ()->setContextProperty (QStringLiteral ("longestText"), longestText);
-		engine ()->addImageProvider (QStringLiteral ("ThemeIcons"), new Util::ThemeImageProvider (proxy));
+		engine ()->addImageProvider (QStringLiteral ("ThemeIcons"), new Util::ThemeImageProvider (GetProxyHolder ()));
 		setSource (QUrl::fromLocalFile (file));
 
 		connect (rootObject (),

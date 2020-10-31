@@ -40,8 +40,6 @@ namespace LC::SB2
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.SB2")
 
-		ICoreProxy_ptr Proxy_;
-
 		struct WindowInfo
 		{
 			std::shared_ptr<ViewManager> Mgr_;

@@ -24,16 +24,14 @@
 #include "quarkorderview.h"
 #include "declarativewindow.h"
 #include "viewsettingsmanager.h"
-#include "sb2util.h"
 #include "quarkmanager.h"
 #include "panelsettingsdialog.h"
 
 namespace LC::SB2
 {
-	QuarkProxy::QuarkProxy (ViewManager *mgr, ICoreProxy_ptr proxy, QObject *parent)
+	QuarkProxy::QuarkProxy (ViewManager *mgr, QObject *parent)
 	: QObject (parent)
 	, Manager_ (mgr)
-	, Proxy_ (proxy)
 	{
 	}
 
@@ -126,7 +124,7 @@ namespace LC::SB2
 		if (toAdd.isEmpty ())
 			return;
 
-		auto unhide = new QuarkUnhideListView (toAdd, Manager_, Proxy_, Manager_->GetView ());
+		auto unhide = new QuarkUnhideListView (toAdd, Manager_, Manager_->GetView ());
 		new Util::AutoResizeMixin ({ x, y }, [this] { return Manager_->GetFreeCoords (); }, unhide);
 		unhide->show ();
 	}
@@ -139,7 +137,7 @@ namespace LC::SB2
 			return;
 		}
 
-		QuarkOrderView_ = new QuarkOrderView (Manager_, Proxy_);
+		QuarkOrderView_ = new QuarkOrderView (Manager_);
 
 		const auto& pos = Util::FitRect ({ x, y }, QuarkOrderView_->size (), GetFreeCoords (),
 				Util::FitFlag::NoOverlap);

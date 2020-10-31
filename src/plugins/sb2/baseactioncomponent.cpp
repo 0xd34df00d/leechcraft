@@ -45,14 +45,9 @@ namespace LC::SB2
 
 	class ActionImageProvider final : public Util::WidthIconProvider
 	{
-		ICoreProxy_ptr Proxy_;
 		QHash<int, QAction*> Actions_;
 	public:
-		explicit ActionImageProvider (ICoreProxy_ptr proxy)
-		: Proxy_ { std::move (proxy) }
-		{
-		}
-
+		ActionImageProvider () = default;
 		ActionImageProvider (const ActionImageProvider&) = delete;
 		ActionImageProvider (ActionImageProvider&&) = delete;
 
@@ -71,7 +66,7 @@ namespace LC::SB2
 			auto icon = act->icon ();
 			if (icon.isNull ())
 			{
-				const auto mgr = Proxy_->GetIconThemeManager ();
+				const auto mgr = GetProxyHolder ()->GetIconThemeManager ();
 				icon = mgr->GetIcon (act->property ("ActionIcon").toString (),
 						act->property ("ActionIconOff").toString ());
 			}
@@ -91,12 +86,11 @@ namespace LC::SB2
 		}
 	};
 
-	BaseActionComponent::BaseActionComponent (const ComponentInfo& info, const ICoreProxy_ptr& proxy, SBView *view, QObject* parent)
+	BaseActionComponent::BaseActionComponent (const ComponentInfo& info, SBView *view, QObject* parent)
 	: QObject (parent)
-	, Proxy_ (proxy)
 	, Model_ (new TrayModel (this))
 	, Component_ (new QuarkComponent (QStringLiteral ("sb2"), info.Filename_))
-	, ImageProv_ (new ActionImageProvider (proxy))
+	, ImageProv_ (new ActionImageProvider ())
 	, View_ (view)
 	, ComponentInfo_ (info)
 	{

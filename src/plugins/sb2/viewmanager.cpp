@@ -63,9 +63,8 @@ namespace LC::SB2
 		};
 	}
 
-	ViewManager::ViewManager (const ICoreProxy_ptr& proxy, Util::ShortcutManager *shortcutMgr, QMainWindow *window, QObject *parent)
+	ViewManager::ViewManager (Util::ShortcutManager *shortcutMgr, QMainWindow *window, QObject *parent)
 	: QObject (parent)
-	, Proxy_ (proxy)
 	, ViewItemsModel_ (new ViewItemsModel (this))
 	, View_ (new SBView)
 	, Toolbar_ (new QToolBar (tr ("SB2 panel")))
@@ -286,7 +285,7 @@ namespace LC::SB2
 		const auto& local = Util::CreateIfNotExists (QStringLiteral ("data/quarks"));
 		result += ScanRootDir (local);
 
-		auto pm = Proxy_->GetPluginsManager ();
+		auto pm = GetProxyHolder ()->GetPluginsManager ();
 		for (auto prov : pm->GetAllCastableTo<IQuarkComponentProvider*> ())
 			result += prov->GetComponents ();
 
@@ -447,7 +446,7 @@ namespace LC::SB2
 
 	int ViewManager::GetWindowIndex () const
 	{
-		auto rootWM = Proxy_->GetRootWindowsManager ();
+		auto rootWM = GetProxyHolder ()->GetRootWindowsManager ();
 		return rootWM->GetWindowIndex (Window_);
 	}
 
