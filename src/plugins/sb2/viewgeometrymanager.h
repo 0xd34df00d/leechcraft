@@ -16,15 +16,13 @@ namespace LC::SB2
 
 	class ViewGeometryManager : public QObject
 	{
-		Q_OBJECT
-
 		ViewManager *ViewMgr_;
 	public:
 		explicit ViewGeometryManager (ViewManager*);
 
 		void Manage ();
 		void SetPosition (Qt::ToolBarArea);
-	private slots:
-		void setOrientation (Qt::Orientation);
+	private:
+		void SetOrientation (Qt::Orientation);
 	};
 }

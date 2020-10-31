@@ -42,8 +42,6 @@ namespace SB2
 
 	class ViewManager : public QObject
 	{
-		Q_OBJECT
-
 		ICoreProxy_ptr Proxy_;
 		QStandardItemModel *ViewItemsModel_;
 		SBView *View_;

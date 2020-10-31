@@ -140,7 +140,7 @@ namespace LC::SB2
 
 	void ViewGeometryManager::SetPosition (Qt::ToolBarArea pos)
 	{
-		setOrientation ((pos == Qt::LeftToolBarArea || pos == Qt::RightToolBarArea) ? Qt::Vertical : Qt::Horizontal);
+		SetOrientation ((pos == Qt::LeftToolBarArea || pos == Qt::RightToolBarArea) ? Qt::Vertical : Qt::Horizontal);
 
 		auto toolbar = ViewMgr_->GetToolbar ();
 
@@ -182,7 +182,7 @@ namespace LC::SB2
 #endif
 	}
 
-	void ViewGeometryManager::setOrientation (Qt::Orientation orientation)
+	void ViewGeometryManager::SetOrientation (Qt::Orientation orientation)
 	{
 		auto view = ViewMgr_->GetView ();
 		const auto& size = view->sizeHint ();

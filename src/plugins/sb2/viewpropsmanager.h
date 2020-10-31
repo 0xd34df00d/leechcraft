@@ -17,7 +17,6 @@ namespace LC::SB2
 
 	class ViewPropsManager : public QObject
 	{
-		Q_OBJECT
 	public:
 		ViewPropsManager (ViewManager*, ViewSettingsManager*, QObject* = nullptr);
 	};
