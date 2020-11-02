@@ -61,14 +61,15 @@ namespace LC::SB2
 		if (!ViewMgr_)
 			return;
 
-		qDebug () << Q_FUNC_INFO << "adding" << comp->Url_;
-		auto ctx = manager->GetView ()->rootContext ();
-		for (const auto& pair : comp->StaticProps_)
-			ctx->setContextProperty (pair.first, pair.second);
-		for (const auto& pair : comp->DynamicProps_)
-			ctx->setContextProperty (pair.first, pair.second);
-		for (const auto& pair : comp->ContextProps_)
-			ctx->setContextProperty (pair.first, pair.second.get ());
+		qDebug () << Q_FUNC_INFO << "adding" << Component_->Url_;
+		QVector<QQmlContext::PropertyPair> props;
+		for (const auto& [name, value] : Component_->StaticProps_)
+			props.push_back ({ name, value });
+		for (const auto& [name, value] : Component_->DynamicProps_)
+			props.push_back ({ name, QVariant::fromValue (value) });
+		for (const auto& [name, value] : Component_->ContextProps_)
+			props.push_back ({ name, QVariant::fromValue (value.get ()) });
+		manager->GetView ()->rootContext ()->setContextProperties (props);
 
 		auto engine = manager->GetView ()->engine ();
 		for (const auto& pair : comp->ImageProviders_)

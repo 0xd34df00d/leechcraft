@@ -87,16 +87,18 @@ namespace LC::SB2
 		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, {}))
 			View_->engine ()->addImportPath (cand);
 
-		View_->rootContext ()->setContextProperty (QStringLiteral ("itemsModel"), ViewItemsModel_);
-		View_->rootContext ()->setContextProperty (QStringLiteral ("quarkProxy"), new QuarkProxy (this, proxy, this));
-		View_->rootContext ()->setContextProperty (QStringLiteral ("colorProxy"),
-				new Util::ColorThemeProxy (proxy->GetColorThemeManager (), this));
-		View_->rootContext ()->setContextProperty (QStringLiteral ("SB2_settingsModeTooltip"), tr ("Settings mode"));
-		View_->rootContext ()->setContextProperty (QStringLiteral ("SB2_quarkOrderTooltip"), tr ("Quarks order"));
-		View_->rootContext ()->setContextProperty (QStringLiteral ("SB2_addQuarkTooltip"), tr ("Add quark"));
-		View_->rootContext ()->setContextProperty (QStringLiteral ("SB2_showPanelSettingsTooltip"), tr ("Show panel settings"));
-		View_->rootContext ()->setContextProperty (QStringLiteral ("quarkContext"), "panel_" + QString::number (GetWindowIndex ()));
-		View_->engine ()->addImageProvider (ImageProviderID, new Util::ThemeImageProvider (proxy));
+		View_->rootContext ()->setContextProperties ({
+				{ QStringLiteral ("itemsModel"), QVariant::fromValue (ViewItemsModel_) },
+				{ QStringLiteral ("quarkProxy"), QVariant::fromValue (new QuarkProxy (this, this)) },
+				{ QStringLiteral ("colorProxy"),
+						QVariant::fromValue (new Util::ColorThemeProxy (GetProxyHolder ()->GetColorThemeManager (), this)) },
+				{ QStringLiteral ("SB2_settingsModeTooltip"), tr ("Settings mode") },
+				{ QStringLiteral ("SB2_quarkOrderTooltip"), tr ("Quarks order") },
+				{ QStringLiteral ("SB2_addQuarkTooltip"), tr ("Add quark") },
+				{ QStringLiteral ("SB2_showPanelSettingsTooltip"), tr ("Show panel settings") },
+				{ QStringLiteral ("quarkContext"), "panel_" + QString::number (GetWindowIndex ()) },
+			});
+		View_->engine ()->addImageProvider (ImageProviderID, new Util::ThemeImageProvider (GetProxyHolder ()));
 
 		Toolbar_->addWidget (View_);
 		View_->setVisible (true);
