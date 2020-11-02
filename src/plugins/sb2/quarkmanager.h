@@ -16,6 +16,7 @@
 #include "manifest.h"
 
 class QTranslator;
+class QQmlContext;
 
 namespace LC::SB2
 {
@@ -37,6 +38,8 @@ namespace LC::SB2
 		const Manifest Manifest_;
 	public:
 		QuarkManager (QuarkComponent_ptr, ViewManager*);
+
+		void SetupContext (QQmlContext*);
 
 		const Manifest& GetManifest () const;
 		bool IsValidArea () const;

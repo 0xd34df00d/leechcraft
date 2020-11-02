@@ -21,6 +21,7 @@ class QMainWindow;
 class QDir;
 class QStandardItemModel;
 class QToolBar;
+class QQmlContext;
 
 namespace LC
 {
@@ -87,6 +88,8 @@ namespace SB2
 		int GetWindowIndex () const;
 
 		std::shared_ptr<QSettings> GetSettings () const;
+
+		void SetupContext (const QUrl&, QQmlContext*);
 	private:
 		template<int Role, typename T>
 		void RemoveQuarkBy (const T&);

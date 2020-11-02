@@ -203,6 +203,19 @@ namespace LC::SB2
 		RemoveQuarkBy<ViewItemsModel::Role::QuarkClass> (id);
 	}
 
+	void ViewManager::SetupContext (const QUrl& url, QQmlContext *context)
+	{
+		const auto manager = Quark2Manager_ [url];
+		if (!manager)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no manager for"
+					<< url;
+			return;
+		}
+		manager->SetupContext (context);
+	}
+
 	template<int Role, typename T>
 	void ViewManager::RemoveQuarkBy (const T& val)
 	{

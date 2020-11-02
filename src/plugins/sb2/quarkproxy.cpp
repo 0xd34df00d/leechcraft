@@ -11,6 +11,7 @@
 #include <QToolTip>
 #include <QApplication>
 #include <QToolBar>
+#include <QQmlEngine>
 #include <QMainWindow>
 #include <QtDebug>
 #include <interfaces/iquarkcomponentprovider.h>
@@ -199,5 +200,11 @@ namespace LC::SB2
 	QString QuarkProxy::prettyTime (qint64 time)
 	{
 		return Util::MakeTimeFromLong (time);
+	}
+
+	void QuarkProxy::instantiateQuark (const QUrl& url, QObject *obj)
+	{
+		Manager_->SetupContext (url, QQmlEngine::contextForObject (obj));
+		obj->setProperty ("active", true);
 	}
 }

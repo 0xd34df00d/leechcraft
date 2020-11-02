@@ -58,6 +58,9 @@ namespace LC::SB2
 		QString prettySize (qint64);
 		QString prettySizeShort (qint64);
 		QString prettyTime (qint64);
+
+		// internal
+		void instantiateQuark (const QUrl& sourceUrl, QObject *obj);
 	signals:
 		void extHoveredQuarkClassChanged ();
 	};

@@ -204,11 +204,14 @@ Rectangle {
                     property real quarkBaseSize: isVert ? itemsView.width : itemsView.height
 
                     source: sourceURL
+                    active: false
 
                     width: parent.width
                     height: parent.height
 
                     clip: true
+
+                    Component.onCompleted: quarkProxy.instantiateQuark(sourceURL, this)
                 }
 
                 Rectangle {
