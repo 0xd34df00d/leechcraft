@@ -54,7 +54,7 @@ namespace LC::SB2
 	: QObject (manager)
 	, ViewMgr_ (manager)
 	, Component_ (std::move (comp))
-	, URL_ (comp->Url_)
+	, URL_ (Component_->Url_)
 	, Translator_ (TryLoadTranslator ())
 	, Manifest_ (URL_.toLocalFile ())
 	{
@@ -72,7 +72,7 @@ namespace LC::SB2
 		manager->GetView ()->rootContext ()->setContextProperties (props);
 
 		auto engine = manager->GetView ()->engine ();
-		for (const auto& pair : comp->ImageProviders_)
+		for (const auto& pair : Component_->ImageProviders_)
 		{
 			if (engine->imageProvider (pair.first))
 				engine->removeImageProvider (pair.first);
