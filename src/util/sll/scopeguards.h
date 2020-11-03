@@ -11,9 +11,7 @@
 #include <QSettings>
 #include "util.h"
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	/** @brief Creates a scope guard that ends the current group on \em settings.
 	 *
@@ -43,8 +41,7 @@ namespace Util
 	 */
 	[[nodiscard]] inline auto BeginGroup (QSettings& settings, const QString& group)
 	{
-		settings.beginGroup(group);
+		settings.beginGroup (group);
 		return MakeScopeGuard ([&settings] { settings.endGroup (); });
 	}
-}
 }
