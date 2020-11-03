@@ -50,7 +50,7 @@ namespace LC::SB2
 		QString GetSuffixedName (const QString&) const;
 		std::shared_ptr<QTranslator> TryLoadTranslator () const;
 
-		void CreateSettings ();
+		void CreateSettings (QQmlContext*);
 	};
 
 	typedef std::shared_ptr<QuarkManager> QuarkManager_ptr;

@@ -69,8 +69,6 @@ namespace LC::SB2
 				engine->removeImageProvider (pair.first);
 			engine->addImageProvider (pair.first, new ImageProvProxy (pair.second));
 		}
-
-		CreateSettings ();
 	}
 
 	void QuarkManager::SetupContext (QQmlContext *ctx)
@@ -84,6 +82,8 @@ namespace LC::SB2
 		for (const auto& [name, value] : Component_->ContextProps_)
 			props.push_back ({ name, QVariant::fromValue (value.get ()) });
 		ctx->parentContext ()->setContextProperties (props);
+
+		CreateSettings (ctx->parentContext ());
 	}
 
 	const Manifest& QuarkManager::GetManifest () const
@@ -155,14 +155,14 @@ namespace LC::SB2
 		return result;
 	}
 
-	void QuarkManager::CreateSettings ()
+	void QuarkManager::CreateSettings (QQmlContext *ctx)
 	{
 		const auto& settingsName = GetSuffixedName (QStringLiteral (".settings"));
 		if (settingsName.isEmpty ())
 			return;
 
 		XSD_ = std::make_shared<Util::XmlSettingsDialog> ();
-		SettingsManager_ = new QuarkSettingsManager (URL_, ViewMgr_->GetView ()->rootContext ());
+		SettingsManager_ = new QuarkSettingsManager (URL_, ctx);
 		XSD_->RegisterObject (SettingsManager_, settingsName);
 	}
 }
