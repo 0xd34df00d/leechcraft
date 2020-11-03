@@ -13,6 +13,7 @@
 #include <memory>
 #include <QStyleOption>
 #include <QColor>
+#include <util/sll/prelude.h>
 #include <qwt_plot.h>
 #include <qwt_plot_curve.h>
 #include <qwt_plot_renderer.h>
@@ -68,46 +69,66 @@ namespace Util
 		return result;
 	}
 
+	namespace
+	{
+		struct UnsupportedType
+		{
+			const char * const Field_;
+			const QVariant Value_;
+		};
+	}
+
 	void PlotItem::SetMultipoints (const QVariant& variant)
 	{
 		Multipoints_.clear ();
 
-		for (const auto& set : variant.toList ())
+		try
 		{
-			const auto& map = set.toMap ();
-
-			const auto& colorVar = map ["color"];
-			const auto& pointsVar = map ["points"];
-
-			std::optional<QColor> brushColor;
-			if (map.contains ("brushColor"))
+			for (const auto& set : variant.toList ())
 			{
-				const auto& brushVar = map ["brushColor"];
-				if (!brushVar.canConvert<QString> ())
-					qWarning () << Q_FUNC_INFO
-							<< "invalid brush color"
-							<< brushVar;
-				else
+				const auto& map = set.toMap ();
+
+				const auto& colorVar = map ["color"];
+				const auto& color = colorVar.toString ();
+				if (color.isEmpty ())
+					throw UnsupportedType { "`color` expected to be a QString", colorVar };
+
+				const auto& pointsVar = map ["points"];
+				QList<QPointF> points;
+				if (pointsVar.canConvert<QList<QPointF>> ())
+					points = pointsVar.value<QList<QPointF>> ();
+				else if (pointsVar.canConvert<QVariantList> ())
+					points = Util::Map (pointsVar.toList (),
+							[] (const QVariant& var)
+							{
+								if (var.canConvert<QPointF> ())
+									return var.toPointF ();
+								else
+									throw UnsupportedType { "point element expected to be a QPointF", var };
+							});
+
+				std::optional<QColor> brushColor;
+				if (const auto& brushVar = map ["brushColor"];
+					!brushVar.isNull ())
+				{
+					if (!brushVar.canConvert<QString> ())
+						throw UnsupportedType { "`brush` expected to be a QString", brushVar };
 					brushColor = QColor { brushVar.toString () };
-			}
+				}
 
-			if (!colorVar.canConvert<QString> () ||
-				!pointsVar.canConvert<QList<QPointF>> ())
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "invalid map"
-						<< map;
-				qWarning () << Q_FUNC_INFO
-						<< "ignoring this point";
-				continue;
+				Multipoints_.append ({ color, brushColor, points });
 			}
-
-			Multipoints_.append ({
-					map ["color"].toString (),
-					brushColor,
-					map ["points"].value<QList<QPointF>> ()
-				});
 		}
+		catch (const UnsupportedType& ty)
+		{
+			qCritical () << Q_FUNC_INFO
+					<< "invalid multipoints map: "
+					<< ty.Field_
+					<< " but got instead"
+					<< ty.Value_;
+			return;
+		}
+
 		update ();
 	}
 
