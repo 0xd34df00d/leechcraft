@@ -46,7 +46,7 @@ namespace LC::SB2
 		public:
 			enum Role
 			{
-				SourceURL= Qt::UserRole + 1,
+				SourceURL = Qt::UserRole + 1,
 				QuarkHasSettings,
 				QuarkClass
 			};
@@ -282,7 +282,7 @@ namespace LC::SB2
 				if (!quarkDir.exists (entry + ".qml"))
 					continue;
 
-				QuarkComponent_ptr c (new QuarkComponent);
+				auto c = std::make_shared<QuarkComponent> ();
 				c->Url_ = QUrl::fromLocalFile (quarkDir.absoluteFilePath (entry + ".qml"));
 				result << c;
 			}
