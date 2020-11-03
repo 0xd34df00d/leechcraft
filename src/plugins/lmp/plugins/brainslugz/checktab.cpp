@@ -93,7 +93,7 @@ namespace BrainSlugz
 			CheckView_->engine ()
 		};
 
-		new Util::QmlErrorWatcher { CheckView_ };
+		Util::WatchQmlErrors (CheckView_);
 
 		const auto& filename = Util::GetSysPath (Util::SysPath::QML, "lmp/brainslugz", "CheckView.qml");
 		CheckView_->setSource (QUrl::fromLocalFile (filename));

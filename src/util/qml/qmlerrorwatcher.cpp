@@ -10,32 +10,23 @@
 #include <QQuickWidget>
 #include <QQmlError>
 #include <QtDebug>
-#include <util/sll/slotclosure.h>
 
-namespace LC
+namespace LC::Util
 {
-namespace Util
-{
-	QmlErrorWatcher::QmlErrorWatcher (QQuickWidget *view)
-	: QObject { view }
+	void WatchQmlErrors (QQuickWidget *view)
 	{
-		new Util::SlotClosure<Util::NoDeletePolicy>
-		{
-			[view]
-			{
-				if (view->status () == QQuickWidget::Error)
+		QObject::connect (view,
+				&QQuickWidget::statusChanged,
+				[view]
 				{
-					qWarning () << Q_FUNC_INFO
-							<< "view errors:";
-					for (const auto& err : view->errors ())
-						qWarning () << "\t"
-								<< err.toString ();
-				}
-			},
-			view,
-			SIGNAL (statusChanged (QQuickWidget::Status)),
-			view
-		};
+					if (view->status () == QQuickWidget::Error)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "view errors:";
+						for (const auto& err : view->errors ())
+							qWarning () << "\t"
+									<< err.toString ();
+					}
+				});
 	}
-}
 }

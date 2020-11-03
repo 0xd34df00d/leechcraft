@@ -9,7 +9,6 @@
 #include "visualnotificationsview.h"
 #include <QQmlContext>
 #include <QQmlError>
-#include <QQmlEngine>
 #include <QtDebug>
 #include <util/sys/paths.h>
 #include <util/qml/colorthemeproxy.h>
@@ -29,7 +28,7 @@ namespace AdvancedNotifications
 		setWindowFlags (Qt::WindowStaysOnTopHint | Qt::ToolTip);
 		Util::EnableTransparency (this);
 
-		new Util::QmlErrorWatcher { this };
+		Util::WatchQmlErrors (this);
 
 		const auto& fileLocation = Util::GetSysPath (Util::SysPath::QML, "advancednotifications", "visualnotificationsview.qml");
 

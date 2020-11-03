@@ -72,8 +72,8 @@ namespace Blogique
 		TagsCloud_->setResizeMode (QQuickWidget::SizeRootObjectToView);
 		Tags_->setResizeMode (QQuickWidget::SizeRootObjectToView);
 
-		new Util::QmlErrorWatcher { TagsCloud_ };
-		new Util::QmlErrorWatcher { Tags_ };
+		Util::WatchQmlErrors (TagsCloud_);
+		Util::WatchQmlErrors (Tags_);
 
 		TagsCloud_->setSizePolicy (QSizePolicy::Ignored, QSizePolicy::Ignored);
 		Ui_.PluginOptionsWidget_->layout ()->addWidget (TagsCloud_);

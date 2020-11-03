@@ -131,7 +131,7 @@ namespace Launchy
 		View_->rootContext ()->setContextProperty ("colorProxy",
 				new Util::ColorThemeProxy (proxy->GetColorThemeManager (), parent));
 
-		new Util::QmlErrorWatcher { View_.get () };
+		Util::WatchQmlErrors (View_.get ());
 
 		View_->setSource (Util::GetSysPathUrl (Util::SysPath::QML, "launchy", "FSView.qml"));
 

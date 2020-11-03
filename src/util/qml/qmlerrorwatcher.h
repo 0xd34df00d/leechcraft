@@ -8,30 +8,17 @@
 
 #pragma once
 
-#include <QObject>
 #include "qmlconfig.h"
 
 class QQuickWidget;
 
-namespace LC
+namespace LC::Util
 {
-namespace Util
-{
-	/** @brief Utility class for logging errors from a QML view.
+	/** @brief Utility function for logging errors from a QML view.
+	 *
+	 * @param[in] view The declarative view to watch for errors.
 	 *
 	 * @ingroup QmlUtil
 	 */
-	class UTIL_QML_API QmlErrorWatcher : public QObject
-	{
-	public:
-		/** @brief Constructs the watcher for the given \em view.
-		 *
-		 * The \em view becomes the parent of the watcher, so there no
-		 * need to delete the watcher explicitly later on.
-		 *
-		 * @param[in] view The declarative view to watch for errors.
-		 */
-		QmlErrorWatcher (QQuickWidget *view);
-	};
-}
+	UTIL_QML_API void WatchQmlErrors (QQuickWidget *view);
 }
