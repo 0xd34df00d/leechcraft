@@ -34,7 +34,7 @@ namespace LC::SB2
 			}
 		};
 
-		const QString ImageProviderID = QStringLiteral ("SB2_LCMenuImage");
+		const QString ImageProviderID = QStringLiteral ("LCMenuImage");
 	}
 
 	LCMenuComponent::LCMenuComponent (IMWProxy *proxy, QObject *parent)
@@ -42,9 +42,9 @@ namespace LC::SB2
 	, Proxy_ (proxy)
 	, Component_ (std::make_shared<QuarkComponent> ("sb2", "LCMenuComponent.qml"))
 	{
-		Component_->DynamicProps_.append ({ QStringLiteral ("SB2_menuComponentProxy"), this });
-		Component_->StaticProps_.append ({ QStringLiteral ("SB2_menuComponentLCIcon"), "image://" + ImageProviderID + "/icon" });
-		Component_->StaticProps_.append ({ QStringLiteral ("SB2_menuTooltipString"), tr ("LeechCraft menu") });
+		Component_->DynamicProps_.append ({ QStringLiteral ("menuComponentProxy"), this });
+		Component_->StaticProps_.append ({ QStringLiteral ("menuComponentLCIcon"), "image://" + ImageProviderID + "/icon" });
+		Component_->StaticProps_.append ({ QStringLiteral ("menuTooltipString"), tr ("LeechCraft menu") });
 		Component_->ImageProviders_.append ({ ImageProviderID, new LCMenuImageProvider });
 
 		Proxy_->HideMainMenu ();

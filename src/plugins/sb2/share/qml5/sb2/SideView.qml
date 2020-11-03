@@ -127,7 +127,7 @@ Rectangle {
             height: width
 
             actionIconURL: "image://ThemeIcons/list-add"
-            textTooltip: SB2_addQuarkTooltip
+            textTooltip: addQuarkTooltip
 
             onTriggered: commonJS.showTooltip(addQuarkButton, function(x, y) { quarkProxy.quarkAddRequested(x, y) })
         }
@@ -139,7 +139,7 @@ Rectangle {
             height: width
 
             actionIconURL: "image://ThemeIcons/format-list-unordered"
-            textTooltip: SB2_quarkOrderTooltip
+            textTooltip: quarkOrderTooltip
 
             onTriggered: commonJS.showTooltip(setQuarkOrderButton, function(x, y) { quarkProxy.quarkOrderRequested(x, y) })
         }
@@ -151,7 +151,7 @@ Rectangle {
             height: width
 
             actionIconURL: "image://ThemeIcons/configure-toolbars"
-            textTooltip: SB2_showPanelSettingsTooltip
+            textTooltip: showPanelSettingsTooltip
 
             onTriggered: quarkProxy.panelSettingsRequested()
         }
@@ -162,7 +162,7 @@ Rectangle {
             height: width
 
             actionIconURL: "image://ThemeIcons/configure"
-            textTooltip: SB2_settingsModeTooltip
+            textTooltip: settingsModeTooltip
 
             property bool settingsMode: false
             onTriggered: { isHighlight = !isHighlight; settingsMode = !settingsMode; }

@@ -92,11 +92,12 @@ namespace LC::SB2
 				{ QStringLiteral ("quarkProxy"), QVariant::fromValue (new QuarkProxy (this, this)) },
 				{ QStringLiteral ("colorProxy"),
 						QVariant::fromValue (new Util::ColorThemeProxy (GetProxyHolder ()->GetColorThemeManager (), this)) },
-				{ QStringLiteral ("SB2_settingsModeTooltip"), tr ("Settings mode") },
-				{ QStringLiteral ("SB2_quarkOrderTooltip"), tr ("Quarks order") },
-				{ QStringLiteral ("SB2_addQuarkTooltip"), tr ("Add quark") },
-				{ QStringLiteral ("SB2_showPanelSettingsTooltip"), tr ("Show panel settings") },
 				{ QStringLiteral ("quarkContext"), "panel_" + QString::number (GetWindowIndex ()) },
+
+				{ QStringLiteral ("settingsModeTooltip"), tr ("Settings mode") },
+				{ QStringLiteral ("quarkOrderTooltip"), tr ("Quarks order") },
+				{ QStringLiteral ("addQuarkTooltip"), tr ("Add quark") },
+				{ QStringLiteral ("showPanelSettingsTooltip"), tr ("Show panel settings") },
 			});
 		View_->engine ()->addImageProvider (ImageProviderID, new Util::ThemeImageProvider (GetProxyHolder ()));
 

@@ -11,7 +11,7 @@
 namespace LC::SB2
 {
 	DockActionComponent::DockActionComponent (SBView *view, QObject *parent)
-	: BaseActionComponent ({ "SB2_DockActionImage", "DockComponent.qml", "SB2_dockModel" }, view, parent)
+	: BaseActionComponent ({ "DockActionImage", "DockComponent.qml", "dockModel" }, view, parent)
 	{
 	}
 }

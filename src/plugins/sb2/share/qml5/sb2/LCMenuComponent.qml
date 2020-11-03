@@ -15,10 +15,10 @@ Rectangle {
         width: parent.width
         height: parent.width
 
-        onTriggered: SB2_menuComponentProxy.execMenu()
-        onHeld: SB2_menuComponentProxy.execMenu()
+        onTriggered: menuComponentProxy.execMenu()
+        onHeld: menuComponentProxy.execMenu()
 
-        actionIconURL: SB2_menuComponentLCIcon
-        textTooltip: SB2_menuTooltipString
+        actionIconURL: menuComponentLCIcon
+        textTooltip: menuTooltipString
     }
 }

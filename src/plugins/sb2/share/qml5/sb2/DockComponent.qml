@@ -19,7 +19,7 @@ Rectangle {
         anchors.fill: parent
         boundsBehavior: Flickable.StopAtBounds
 
-        model: SB2_dockModel
+        model: dockModel
 
         orientation: viewOrient == "vertical" ? ListView.Vertical : ListView.Horizontal
 

@@ -31,12 +31,12 @@ Rectangle {
 
         actionIconURL: "image://ThemeIcons/list-add"
 
-        onTriggered: commonJS.showTooltip(addTCButton, function(x, y) { SB2_launcherProxy.tabUnhideListRequested(x, y) })
+        onTriggered: commonJS.showTooltip(addTCButton, function(x, y) { launcherProxy.tabUnhideListRequested(x, y) })
 
         LauncherDropArea {
             id: dropArea
             anchors.fill: parent
-            onTabDropped: SB2_launcherProxy.tabClassUnhideRequested(tabClass)
+            onTabDropped: launcherProxy.tabClassUnhideRequested(tabClass)
         }
     }
 
@@ -50,7 +50,7 @@ Rectangle {
 
         Repeater {
             id: launcherItemRepeater
-            model: SB2_launcherModel
+            model: launcherModel
             Item {
                 id: tcItem
 
@@ -73,14 +73,14 @@ Rectangle {
                         id: fadeInInterval
                         interval: SB2Launcher_FadeInTimeout
 
-                        onTriggered: commonJS.showTooltip(tcButton, function(x, y) { SB2_launcherProxy.tabListRequested(tabClassID, x, y) })
+                        onTriggered: commonJS.showTooltip(tcButton, function(x, y) { launcherProxy.tabListRequested(tabClassID, x, y) })
                     }
 
-                    onTriggered: SB2_launcherProxy.tabOpenRequested(tabClassID)
+                    onTriggered: launcherProxy.tabOpenRequested(tabClassID)
                     onHovered: fadeInInterval.start()
                     onHoverLeft: {
                         fadeInInterval.stop()
-                        SB2_launcherProxy.tabListUnhovered(tabClassID)
+                        launcherProxy.tabListUnhovered(tabClassID)
                     }
 
                     /*
@@ -103,7 +103,7 @@ Rectangle {
                         anchors.right: parent.right
 
                         actionIconURL: "image://ThemeIcons/list-remove"
-                        onTriggered: SB2_launcherProxy.tabClassHideRequested(tabClassID)
+                        onTriggered: launcherProxy.tabClassHideRequested(tabClassID)
 
                         states: [
                             State {

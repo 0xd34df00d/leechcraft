@@ -82,7 +82,7 @@ namespace LC::SB2
 
 	namespace
 	{
-		const QString ImageProviderID = QStringLiteral ("SB2_TabClassImage");
+		const QString ImageProviderID = QStringLiteral ("TabClassImage");
 	}
 
 	LauncherComponent::LauncherComponent (ICoreTabWidget *ictw, ViewManager *view, QObject *parent)
@@ -95,8 +95,8 @@ namespace LC::SB2
 	{
 		qmlRegisterType<LauncherDropArea> ("SB2", 1, 0, "LauncherDropArea");
 
-		Component_->DynamicProps_.append ({ QStringLiteral ("SB2_launcherModel"), Model_ });
-		Component_->DynamicProps_.append ({ QStringLiteral ("SB2_launcherProxy"), this });
+		Component_->DynamicProps_.append ({ QStringLiteral ("launcherModel"), Model_ });
+		Component_->DynamicProps_.append ({ QStringLiteral ("launcherProxy"), this });
 		Component_->ImageProviders_.append ({ ImageProviderID, ImageProv_ });
 
 		connect (ICTW_->GetQObject (),
