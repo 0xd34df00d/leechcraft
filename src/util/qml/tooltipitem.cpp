@@ -10,18 +10,16 @@
 #include <QToolTip>
 #include <QtDebug>
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	ToolTipItem::ToolTipItem (QQuickItem *parent)
 	: QQuickItem (parent)
 	{
 		setAcceptHoverEvents (true);
 		connect (&ShowTimer_,
-				SIGNAL (timeout ()),
+				&QTimer::timeout,
 				this,
-				SLOT (showToolTip ()));
+				&ToolTipItem::showToolTip);
 		ShowTimer_.setSingleShot (true);
 	}
 
@@ -69,5 +67,4 @@ namespace Util
 	{
 		ShowToolTip (Text_);
 	}
-}
 }

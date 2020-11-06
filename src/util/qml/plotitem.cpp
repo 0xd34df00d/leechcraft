@@ -24,9 +24,7 @@
 
 Q_DECLARE_METATYPE (QList<QPointF>)
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	PlotItem::PlotItem (QQuickItem *parent)
 	: QQuickPaintedItem { parent }
@@ -424,8 +422,7 @@ namespace Util
 	{
 		int result = 0;
 		if (LeftAxisEnabled_)
-			result += plot.axisScaleDraw (QwtPlot::yLeft)->
-					extent (plot.axisFont (QwtPlot::yLeft));
+			result += plot.axisScaleDraw (QwtPlot::yLeft)->extent (plot.axisFont (QwtPlot::yLeft));
 		return result;
 	}
 
@@ -433,11 +430,9 @@ namespace Util
 	{
 		int result = 0;
 		if (BottomAxisEnabled_)
-			result += plot.axisScaleDraw (QwtPlot::xBottom)->
-					extent (plot.axisFont (QwtPlot::xBottom));
+			result += plot.axisScaleDraw (QwtPlot::xBottom)->extent (plot.axisFont (QwtPlot::xBottom));
 		if (!PlotTitle_.isEmpty ())
 			result += plot.titleLabel ()->sizeHint ().height ();
 		return result;
 	}
-}
 }

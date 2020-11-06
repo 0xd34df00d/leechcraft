@@ -10,9 +10,7 @@
 #include <QIcon>
 #include "interfaces/core/iiconthememanager.h"
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	ThemeImageProvider::ThemeImageProvider (ICoreProxy_ptr proxy)
 	: Proxy_ (proxy)
@@ -23,5 +21,4 @@ namespace Util
 	{
 		return Proxy_->GetIconThemeManager ()->GetIcon (list.value (0));
 	}
-}
 }

@@ -11,9 +11,7 @@
 #include <QQmlEngine>
 #include <util/network/networkdiskcache.h>
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	StandardNAMFactory::StandardNAMFactory (const QString& subpath,
 			CacheSizeGetter_f getter,
@@ -35,5 +33,4 @@ namespace Util
 
 		return nam;
 	}
-}
 }

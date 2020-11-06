@@ -13,9 +13,7 @@ uint qHash (const QStringList& list)
 	return qHash (list.join ("/"));
 }
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	void SettableIconProvider::SetIcon (const QStringList& path, const QIcon& icon)
 	{
@@ -31,5 +29,4 @@ namespace Util
 	{
 		return Icons_ [path];
 	}
-}
 }

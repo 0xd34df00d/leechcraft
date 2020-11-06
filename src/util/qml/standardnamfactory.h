@@ -15,9 +15,7 @@
 
 class QQmlEngine;
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	/** @brief A standard QML QNetworkAccessManager factory.
 	 *
@@ -75,7 +73,6 @@ namespace Util
 		 * be created.
 		 * @return A new QNetworkAccessManager.
 		 */
-		QNetworkAccessManager* create (QObject *parent);
+		QNetworkAccessManager* create (QObject *parent) override;
 	};
-}
 }

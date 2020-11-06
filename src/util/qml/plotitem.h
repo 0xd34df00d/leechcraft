@@ -17,9 +17,7 @@
 
 class QwtPlot;
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	class UTIL_QML_API PlotItem : public QQuickPaintedItem
 	{
@@ -92,7 +90,7 @@ namespace Util
 
 		std::shared_ptr<QwtPlot> Plot_;
 	public:
-		PlotItem (QQuickItem* = 0);
+		explicit PlotItem (QQuickItem* = nullptr);
 
 		QList<QPointF> GetPoints () const;
 		void SetPoints (const QList<QPointF>&);
@@ -180,5 +178,4 @@ namespace Util
 
 		void extentsChanged ();
 	};
-}
 }

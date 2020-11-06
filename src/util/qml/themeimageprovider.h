@@ -12,9 +12,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include "qmlconfig.h"
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	/** @brief Provides icons from the current theme by their FDO name.
 	 *
@@ -75,7 +73,6 @@ namespace Util
 		 * @return The icon from the current iconset at the given path,
 		 * or an empty icon otherwise.
 		 */
-		QIcon GetIcon (const QStringList& path);
+		QIcon GetIcon (const QStringList& path) override;
 	};
-}
 }

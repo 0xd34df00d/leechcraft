@@ -14,9 +14,7 @@
 
 class IColorThemeManager;
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	/** @brief Proxy for QML files to use colors from current color theme.
 	 *
@@ -213,5 +211,4 @@ namespace Util
 		 */
 		void colorsChanged ();
 	};
-}
 }

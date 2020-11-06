@@ -12,9 +12,7 @@
 #include <QHash>
 #include <QIcon>
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	/** @brief QML image provider with settable icons for each path.
 	 *
@@ -67,5 +65,4 @@ namespace Util
 		 */
 		QIcon GetIcon (const QStringList& path) override;
 	};
-}
 }

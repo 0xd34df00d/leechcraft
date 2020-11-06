@@ -10,9 +10,7 @@
 #include <QtDebug>
 #include <interfaces/core/icolorthememanager.h>
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	ColorThemeProxy::ColorThemeProxy (IColorThemeManager *manager, QObject *parent)
 	: QObject (parent)
@@ -34,5 +32,4 @@ namespace Util
 	{
 		return Manager_->GetQMLColor (group, color);
 	}
-}
 }

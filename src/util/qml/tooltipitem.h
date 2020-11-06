@@ -12,9 +12,7 @@
 #include <QQuickItem>
 #include "qmlconfig.h"
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	/** @brief ToolTip for Qml objects.
 	 *
@@ -69,7 +67,7 @@ namespace Util
 		 *
 		 * @param[in] parent The parent item for this tooltip.
 		 */
-		ToolTipItem (QQuickItem *parent = nullptr);
+		explicit ToolTipItem (QQuickItem *parent = nullptr);
 
 		/** @brief Sets the text contained in this tooltip to \em text.
 		 *
@@ -115,5 +113,4 @@ namespace Util
 		 */
 		void containsMouseChanged ();
 	};
-}
 }
