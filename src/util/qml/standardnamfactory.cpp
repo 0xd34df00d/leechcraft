@@ -13,11 +13,11 @@
 
 namespace LC::Util
 {
-	StandardNAMFactory::StandardNAMFactory (const QString& subpath,
+	StandardNAMFactory::StandardNAMFactory (QString subpath,
 			CacheSizeGetter_f getter,
 			QQmlEngine *engine)
-	: Subpath_ (subpath)
-	, CacheSizeGetter_ (getter)
+	: Subpath_ (std::move (subpath))
+	, CacheSizeGetter_ (std::move (getter))
 	{
 		if (engine)
 			engine->setNetworkAccessManagerFactory (this);

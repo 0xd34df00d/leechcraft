@@ -55,7 +55,7 @@ namespace LC::Util
 		 * @param[in] engine The QML engine where this factory should be
 		 * installed, if not null.
 		 */
-		StandardNAMFactory (const QString& subpath,
+		StandardNAMFactory (QString subpath,
 				CacheSizeGetter_f getter,
 				QQmlEngine *engine = nullptr);
 
