@@ -13,11 +13,11 @@ namespace LC::Util
 	UnhideListModel::UnhideListModel (QObject *parent)
 	: RoleNamesMixin<QStandardItemModel> (parent)
 	{
-		QHash<int, QByteArray> roleNames;
-		roleNames [Roles::ItemClass] = QByteArrayLiteral ("itemClass");
-		roleNames [Roles::ItemName] = QByteArrayLiteral ("itemName");
-		roleNames [Roles::ItemDescription] = QByteArrayLiteral ("itemDescr");
-		roleNames [Roles::ItemIcon] = QByteArrayLiteral ("itemIcon");
-		setRoleNames (roleNames);
+		setRoleNames ({
+				{ Roles::ItemClass, QByteArrayLiteral ("itemClass") },
+				{ Roles::ItemName, QByteArrayLiteral ("itemName") },
+				{ Roles::ItemDescription, QByteArrayLiteral ("itemDescr") },
+				{ Roles::ItemIcon, QByteArrayLiteral ("itemIcon") },
+			});
 	}
 }
