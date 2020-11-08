@@ -28,7 +28,7 @@ namespace LC::Util
 {
 	PlotItem::PlotItem (QQuickItem *parent)
 	: QQuickPaintedItem { parent }
-	, Color_ { "#FF4B10" }
+	, Color_ { 0xFF, 0x4B, 0x10 }
 	{
 		setFlag (ItemHasContents, true);
 	}
@@ -60,7 +60,7 @@ namespace LC::Util
 			};
 
 			if (set.BrushColor_)
-				map ["brushColor"] = *set.BrushColor_;
+				map [QStringLiteral ("brushColor")] = *set.BrushColor_;
 
 			result << map;
 		}
@@ -86,12 +86,12 @@ namespace LC::Util
 			{
 				const auto& map = set.toMap ();
 
-				const auto& colorVar = map ["color"];
+				const auto& colorVar = map [QStringLiteral ("color")];
 				const auto& color = colorVar.toString ();
 				if (color.isEmpty ())
 					throw UnsupportedType { "`color` expected to be a QString", colorVar };
 
-				const auto& pointsVar = map ["points"];
+				const auto& pointsVar = map [QStringLiteral ("points")];
 				QList<QPointF> points;
 				if (pointsVar.canConvert<QList<QPointF>> ())
 					points = pointsVar.value<QList<QPointF>> ();
@@ -106,7 +106,7 @@ namespace LC::Util
 							});
 
 				std::optional<QColor> brushColor;
-				if (const auto& brushVar = map ["brushColor"];
+				if (const auto& brushVar = map [QStringLiteral ("brushColor")];
 					!brushVar.isNull ())
 				{
 					if (!brushVar.canConvert<QString> ())
