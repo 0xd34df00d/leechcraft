@@ -14,9 +14,7 @@
 
 class QIcon;
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	/** @brief Provides scalable icons to QML.
 	 *
@@ -68,5 +66,4 @@ namespace Util
 		 */
 		virtual QIcon GetIcon (const QStringList& path) = 0;
 	};
-}
 }

@@ -18,9 +18,7 @@
 #include <util/qml/unhidelistmodel.h>
 #include <util/qml/util.h>
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	UnhideListViewBase::UnhideListViewBase (ICoreProxy_ptr proxy,
 			const std::function<void (UnhideListModel*)>& filler, QWidget *parent)
@@ -67,5 +65,4 @@ namespace Util
 	{
 		Model_->invisibleRootItem ()->appendRows (items);
 	}
-}
 }

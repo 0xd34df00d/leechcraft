@@ -12,9 +12,7 @@
 #include <util/models/rolenamesmixin.h>
 #include "qmlconfig.h"
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	/** @brief A model to be used with UnhideListViewBase.
 	 *
@@ -63,7 +61,6 @@ namespace Util
 		 *
 		 * @param[in] parent The parent object of this model.
 		 */
-		UnhideListModel (QObject *parent);
+		explicit UnhideListModel (QObject *parent);
 	};
-}
 }

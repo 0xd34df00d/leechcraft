@@ -8,9 +8,7 @@
 
 #include "unhidelistmodel.h"
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	UnhideListModel::UnhideListModel (QObject *parent)
 	: RoleNamesMixin<QStandardItemModel> (parent)
@@ -22,5 +20,4 @@ namespace Util
 		roleNames [Roles::ItemIcon] = "itemIcon";
 		setRoleNames (roleNames);
 	}
-}
 }

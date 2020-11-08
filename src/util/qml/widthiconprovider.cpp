@@ -9,9 +9,7 @@
 #include "widthiconprovider.h"
 #include <QIcon>
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	WidthIconProvider::WidthIconProvider ()
 	: QQuickImageProvider (Pixmap)
@@ -41,5 +39,4 @@ namespace Util
 
 		return icon.pixmap (realSize);
 	}
-}
 }
