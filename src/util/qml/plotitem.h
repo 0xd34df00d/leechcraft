@@ -9,7 +9,6 @@
 #pragma once
 
 #include <memory>
-#include <functional>
 #include <optional>
 #include <QtGlobal>
 #include <QQuickPaintedItem>
@@ -143,8 +142,8 @@ namespace LC::Util
 
 		void paint (QPainter*) override;
 	private:
-		template<typename T>
-		void SetNewValue (T val, T& ourVal, const std::function<void ()>& notifier);
+		template<typename T, typename Notifier>
+		void SetNewValue (T val, T& ourVal, Notifier&& notifier);
 
 		int CalcXExtent (QwtPlot&) const;
 		int CalcYExtent (QwtPlot&) const;

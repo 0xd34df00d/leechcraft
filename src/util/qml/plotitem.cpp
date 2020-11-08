@@ -407,8 +407,8 @@ namespace LC::Util
 		}
 	}
 
-	template<typename T>
-	void PlotItem::SetNewValue (T val, T& ourVal, const std::function<void ()>& notifier)
+	template<typename T, typename Notifier>
+	void PlotItem::SetNewValue (T val, T& ourVal, Notifier&& notifier)
 	{
 		if (val == ourVal)
 			return;
