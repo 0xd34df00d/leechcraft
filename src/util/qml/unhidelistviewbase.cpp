@@ -20,7 +20,7 @@
 
 namespace LC::Util
 {
-	UnhideListViewBase::UnhideListViewBase (ICoreProxy_ptr proxy,
+	UnhideListViewBase::UnhideListViewBase (const ICoreProxy_ptr& proxy,
 			const std::function<void (UnhideListModel*)>& filler, QWidget *parent)
 	: QQuickWidget (parent)
 	, Model_ (new UnhideListModel (this))

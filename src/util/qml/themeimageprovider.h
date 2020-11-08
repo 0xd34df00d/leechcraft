@@ -62,7 +62,7 @@ namespace LC::Util
 		 * @param[in] proxy The proxy object passed to IInfo::Init() of
 		 * your plugin.
 		 */
-		ThemeImageProvider (ICoreProxy_ptr proxy);
+		ThemeImageProvider (const ICoreProxy_ptr& proxy);
 
 		/** @brief Returns an icon from the current iconset by its ID.
 		 *

@@ -12,7 +12,7 @@
 
 namespace LC::Util
 {
-	ThemeImageProvider::ThemeImageProvider (ICoreProxy_ptr proxy)
+	ThemeImageProvider::ThemeImageProvider (const ICoreProxy_ptr& proxy)
 	: Proxy_ (proxy)
 	{
 	}

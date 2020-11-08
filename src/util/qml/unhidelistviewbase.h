@@ -16,9 +16,7 @@
 
 class QStandardItem;
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	class UnhideListModel;
 
@@ -58,7 +56,7 @@ namespace Util
 		 *
 		 * @sa UnhideListModel
 		 */
-		UnhideListViewBase (ICoreProxy_ptr proxy,
+		UnhideListViewBase (const ICoreProxy_ptr& proxy,
 				const std::function<void (UnhideListModel*)>& modelFiller,
 				QWidget *parent = nullptr);
 
@@ -89,5 +87,4 @@ namespace Util
 		 */
 		void itemUnhideRequested (const QString& itemId);
 	};
-}
 }
