@@ -9,6 +9,7 @@
 #pragma once
 
 #include "sllconfig.h"
+#include <QLatin1String>
 
 namespace LC::Util
 {
@@ -114,5 +115,13 @@ namespace LC::Util
 				std::decay_t<decltype (BaseIt {}.value ())>
 			>;
 		return detail::Range<Iterator, BaseIt, Assoc> { std::forward<Assoc> (assoc) };
+	}
+}
+
+namespace LC
+{
+	inline QLatin1String operator"" _ql (const char *str, std::size_t size)
+	{
+		return QLatin1String { str, static_cast<int> (size) };
 	}
 }
