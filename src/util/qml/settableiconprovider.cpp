@@ -8,11 +8,6 @@
 
 #include "settableiconprovider.h"
 
-uint qHash (const QStringList& list)
-{
-	return qHash (list.join ("/"));
-}
-
 namespace LC::Util
 {
 	void SettableIconProvider::SetIcon (const QStringList& path, const QIcon& icon)
