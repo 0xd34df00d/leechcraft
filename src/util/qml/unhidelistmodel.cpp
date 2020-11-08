@@ -14,10 +14,10 @@ namespace LC::Util
 	: RoleNamesMixin<QStandardItemModel> (parent)
 	{
 		QHash<int, QByteArray> roleNames;
-		roleNames [Roles::ItemClass] = "itemClass";
-		roleNames [Roles::ItemName] = "itemName";
-		roleNames [Roles::ItemDescription] = "itemDescr";
-		roleNames [Roles::ItemIcon] = "itemIcon";
+		roleNames [Roles::ItemClass] = QByteArrayLiteral ("itemClass");
+		roleNames [Roles::ItemName] = QByteArrayLiteral ("itemName");
+		roleNames [Roles::ItemDescription] = QByteArrayLiteral ("itemDescr");
+		roleNames [Roles::ItemIcon] = QByteArrayLiteral ("itemIcon");
 		setRoleNames (roleNames);
 	}
 }

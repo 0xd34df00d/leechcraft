@@ -30,7 +30,7 @@ namespace LC::Util
 		if (filler)
 			filler (Model_);
 
-		const auto& file = GetSysPath (SysPath::QML, "common", "UnhideListView.qml");
+		const auto& file = GetSysPath (SysPath::QML, QStringLiteral ("common"), QStringLiteral ("UnhideListView.qml"));
 		if (file.isEmpty ())
 		{
 			qWarning () << Q_FUNC_INFO
@@ -42,13 +42,13 @@ namespace LC::Util
 		setWindowFlags (Qt::ToolTip);
 		Util::EnableTransparency (this);
 
-		for (const auto& cand : GetPathCandidates (SysPath::QML, ""))
+		for (const auto& cand : GetPathCandidates (SysPath::QML, {}))
 			engine ()->addImportPath (cand);
 
-		rootContext ()->setContextProperty ("unhideListModel", Model_);
-		rootContext ()->setContextProperty ("colorProxy",
+		rootContext ()->setContextProperty (QStringLiteral ("unhideListModel"), Model_);
+		rootContext ()->setContextProperty (QStringLiteral ("colorProxy"),
 				new Util::ColorThemeProxy (proxy->GetColorThemeManager (), this));
-		engine ()->addImageProvider ("ThemeIcons", new Util::ThemeImageProvider (proxy));
+		engine ()->addImageProvider (QStringLiteral ("ThemeIcons"), new Util::ThemeImageProvider (proxy));
 		setSource (QUrl::fromLocalFile (file));
 
 		connect (rootObject (),
