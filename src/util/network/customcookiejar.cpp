@@ -17,9 +17,7 @@
 #include <util/sll/util.h>
 #include <util/threads/futures.h>
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	CustomCookieJar::CustomCookieJar (QObject *parent)
 	: QNetworkCookieJar (parent)
@@ -245,5 +243,4 @@ namespace Util
 
 		return QNetworkCookieJar::setCookiesFromUrl (filtered, url);
 	}
-}
 }

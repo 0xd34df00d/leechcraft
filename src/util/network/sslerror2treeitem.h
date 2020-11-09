@@ -13,9 +13,7 @@
 class QSslError;
 class QTreeWidgetItem;
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	/** @brief Builds a tree widget representation of the given SSL error.
 	 *
@@ -29,5 +27,4 @@ namespace Util
 	 * @ingroup NetworkUtil
 	 */
 	UTIL_NETWORK_API QTreeWidgetItem* SslError2TreeItem (const QSslError& error);
-}
 }

@@ -9,15 +9,12 @@
 #include "networkdiskcache.h"
 #include <QtDebug>
 #include <QDir>
-#include <QFuture>
 #include <QMutexLocker>
 #include <util/sys/paths.h>
 #include <util/threads/futures.h>
 #include "networkdiskcachegc.h"
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	namespace
 	{
@@ -106,5 +103,4 @@ namespace Util
 
 		return CurrentSize_;
 	}
-}
 }

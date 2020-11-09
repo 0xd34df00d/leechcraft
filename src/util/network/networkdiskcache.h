@@ -14,9 +14,7 @@
 #include <util/sll/util.h>
 #include "networkconfig.h"
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	/** @brief A thread-safe garbage-collected network disk cache.
 	 *
@@ -54,7 +52,7 @@ namespace Util
 		 *
 		 * @sa GetUserDir(), UserDir::Cache.
 		 */
-		NetworkDiskCache (const QString& subpath, QObject *parent = 0);
+		explicit NetworkDiskCache (const QString& subpath, QObject *parent = nullptr);
 
 		/** @brief Reimplemented from QNetworkDiskCache.
 		 */
@@ -88,6 +86,5 @@ namespace Util
 		 */
 		qint64 expire () override;
 	};
-}
 }
 

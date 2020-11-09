@@ -8,9 +8,7 @@
 
 #include "handlenetworkreply.h"
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	ReplyWithHeaders::ReplyWithHeaders (QNetworkReply *reply)
 	: Data_ { reply->readAll () }
@@ -28,5 +26,4 @@ namespace Util
 	, HttpStatusCode_ { reply->attribute (QNetworkRequest::HttpStatusCodeAttribute) }
 	{
 	}
-}
 }

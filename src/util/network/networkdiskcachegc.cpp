@@ -18,9 +18,7 @@
 #include <util/sll/util.h>
 #include <util/threads/futures.h>
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	NetworkDiskCacheGC::NetworkDiskCacheGC ()
 	{

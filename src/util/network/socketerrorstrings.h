@@ -13,9 +13,7 @@
 
 class QString;
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	/** @brief Returns an error string for the given socket error.
 	 *
@@ -28,5 +26,4 @@ namespace Util
 	 * @ingroup NetworkUtil
 	 */
 	UTIL_NETWORK_API QString GetSocketErrorString (QAbstractSocket::SocketError error);
-}
 }

@@ -11,9 +11,7 @@
 #include <QNetworkReply>
 #include "networkconfig.h"
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	/** @brief A network reply with customizable content and reply headers.
 	 *
@@ -38,7 +36,7 @@ namespace Util
 		 * @param[in] url The URL this custom reply corresponds to.
 		 * @param[in] parent The parent object of this object.
 		 */
-		CustomNetworkReply (const QUrl& url, QObject *parent = 0);
+		explicit CustomNetworkReply (const QUrl& url, QObject *parent = nullptr);
 
 		using QNetworkReply::setError;
 		using QNetworkReply::setHeader;
@@ -97,5 +95,4 @@ namespace Util
 	protected:
 		qint64 readData (char*, qint64) override;
 	};
-}
 }

@@ -11,9 +11,7 @@
 #include <QString>
 #include "networkconfig.h"
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	struct ServiceInfo
 	{
@@ -25,5 +23,4 @@ namespace Util
 	};
 
 	UTIL_NETWORK_API QString GetServiceUrl (const ServiceInfo& serviceInfo, const QString& path);
-}
 }

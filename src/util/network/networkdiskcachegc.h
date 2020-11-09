@@ -18,9 +18,7 @@
 template<typename T>
 class QFuture;
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	/** @brief Garbage collection for a set of network disk caches.
 	 *
@@ -91,5 +89,4 @@ namespace Util
 	private slots:
 		void handleCollect ();
 	};
-}
 }

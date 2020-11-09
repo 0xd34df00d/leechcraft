@@ -11,10 +11,9 @@
 #include <QDateTime>
 #include <QTreeWidgetItem>
 #include <QSslError>
+#include <util/sll/qtutil.h>
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	QTreeWidgetItem* SslError2TreeItem (const QSslError& error)
 	{
@@ -83,5 +82,4 @@ namespace Util
 
 		return item;
 	}
-}
 }

@@ -16,9 +16,7 @@
 
 class QHostAddress;
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	typedef QList<QPair<QString, QString>> AddrList_t;
 
@@ -48,7 +46,6 @@ namespace Util
 	 * @ingroup NetworkUtil
 	 */
 	UTIL_NETWORK_API QList<QHostAddress> GetAllAddresses ();
-}
 }
 
 Q_DECLARE_METATYPE (LC::Util::AddrList_t)

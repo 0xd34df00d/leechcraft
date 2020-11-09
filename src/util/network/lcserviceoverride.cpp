@@ -8,9 +8,7 @@
 
 #include "lcserviceoverride.h"
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	namespace
 	{
@@ -47,5 +45,4 @@ namespace Util
 				.arg (GetPort (info))
 				.arg (path);
 	}
-}
 }

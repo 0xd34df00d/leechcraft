@@ -13,9 +13,7 @@
 #include <QRegExp>
 #include "networkconfig.h"
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	/** @brief A customized cookie jar with additional features.
 	 *
@@ -144,5 +142,4 @@ namespace Util
 		void cookiesAdded (const QList<QNetworkCookie>&);
 		void cookiesRemoved (const QList<QNetworkCookie>&);
 	};
-}
 }

@@ -10,9 +10,7 @@
 #include <cstring>
 #include <QTimer>
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	CustomNetworkReply::CustomNetworkReply (const QUrl& url, QObject *parent)
 	: QNetworkReply (parent)
@@ -41,10 +39,10 @@ namespace Util
 
 		QTimer::singleShot (0,
 				this,
-				SIGNAL (readyRead ()));
+				&CustomNetworkReply::readyRead);
 		QTimer::singleShot (0,
 				this,
-				SIGNAL (finished ()));
+				&CustomNetworkReply::finished);
 	}
 
 	void CustomNetworkReply::abort ()
@@ -72,5 +70,4 @@ namespace Util
 
 		return number;
 	}
-}
 }

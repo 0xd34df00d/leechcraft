@@ -10,9 +10,7 @@
 #include <QHostAddress>
 #include <QNetworkInterface>
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	AddrList_t GetLocalAddresses (int defaultPort)
 	{
@@ -43,5 +41,4 @@ namespace Util
 		return result;
 	}
 
-}
 }

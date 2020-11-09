@@ -17,9 +17,7 @@
 #include <util/threads/futures.h>
 #include "networkconfig.h"
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	template<typename F>
 	void HandleNetworkReply (QObject *context, QNetworkReply *reply, F f)
@@ -112,5 +110,4 @@ namespace Util
 	{
 		return Sequence (context, HandleReply<Args...> (reply, context));
 	}
-}
 }

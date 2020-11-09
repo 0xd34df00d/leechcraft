@@ -9,9 +9,7 @@
 #include "socketerrorstrings.h"
 #include <QObject>
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	QString GetSocketErrorString (QAbstractSocket::SocketError error)
 	{
@@ -68,5 +66,4 @@ namespace Util
 			return QObject::tr ("unknown error");
 		}
 	}
-}
 }
