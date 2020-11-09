@@ -24,9 +24,9 @@ namespace LC::Util
 	{
 		const auto timer = new QTimer { this };
 		connect (timer,
-				SIGNAL (timeout ()),
+				&QTimer::timeout,
 				this,
-				SLOT (handleCollect ()));
+				&NetworkDiskCacheGC::HandleCollect);
 		timer->start (60 * 60 * 1000);
 	}
 
@@ -124,7 +124,7 @@ namespace LC::Util
 		}
 	};
 
-	void NetworkDiskCacheGC::handleCollect ()
+	void NetworkDiskCacheGC::HandleCollect ()
 	{
 		if (IsCollecting_)
 		{
@@ -162,5 +162,4 @@ namespace LC::Util
 						LastSizes_ [pair.first] = pair.second;
 				};
 	}
-}
 }

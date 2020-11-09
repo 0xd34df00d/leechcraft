@@ -30,8 +30,6 @@ namespace LC::Util
 	 */
 	class NetworkDiskCacheGC : public QObject
 	{
-		Q_OBJECT
-
 		using CacheSizeGetters_t = QLinkedList<std::function<int ()>>;
 		QMap<QString, CacheSizeGetters_t> Directories_;
 
@@ -86,7 +84,6 @@ namespace LC::Util
 				const std::function<int ()>& sizeGetter);
 	private:
 		void UnregisterDirectory (const QString&, CacheSizeGetters_t::iterator);
-	private slots:
-		void handleCollect ();
+		void HandleCollect ();
 	};
 }
