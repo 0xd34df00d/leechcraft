@@ -55,6 +55,14 @@ namespace Util
 			return QObject::tr ("proxy not found");
 		case QAbstractSocket::ProxyProtocolError:
 			return QObject::tr ("proxy protocol error");
+		case QAbstractSocket::OperationError:
+			return QObject::tr ("incorrect socket state");
+		case QAbstractSocket::SslInternalError:
+			return QObject::tr ("SSL internal error");
+		case QAbstractSocket::SslInvalidUserDataError:
+			return QObject::tr ("invalid SSL data, like certificate, key or cypher");
+		case QAbstractSocket::TemporaryError:
+			return QObject::tr ("temporary error");
 		case QAbstractSocket::UnknownSocketError:
 		default:
 			return QObject::tr ("unknown error");
