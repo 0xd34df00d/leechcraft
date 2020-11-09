@@ -35,15 +35,15 @@ namespace Util
 		QString GetProto (const ServiceInfo& info)
 		{
 			static const auto& env = qgetenv (info.EnvPrefix_ + "_NO_HTTPS");
-			return env.isEmpty () && info.UseSslByDefault_ ? "https" : "http";
+			return env.isEmpty () && info.UseSslByDefault_ ? QStringLiteral ("https") : QStringLiteral ("http");
 		}
 	}
 
 	QString GetServiceUrl (const ServiceInfo& info, const QString& path)
 	{
-		return QString { "%1://%2:%3/%4" }
-				.arg (GetProto (info))
-				.arg (GetHost (info))
+		return QStringLiteral ("%1://%2:%3/%4")
+				.arg (GetProto (info),
+					  GetHost (info))
 				.arg (GetPort (info))
 				.arg (path);
 	}
