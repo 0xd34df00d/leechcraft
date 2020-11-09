@@ -144,11 +144,8 @@ namespace Util
 
 		bool Check (const QList<QRegExp>& list, const QString& str)
 		{
-			for (auto& rx : list)
-				if (str == rx.pattern () || rx.exactMatch (str))
-					return true;
-
-			return false;
+			return std::any_of (list.begin (), list.end (),
+					[&str] (const auto& rx) { return str == rx.pattern () || rx.exactMatch (str); });
 		}
 
 		struct CookiesDiff
