@@ -8,7 +8,6 @@
 
 #include "unhidelistviewbase.h"
 #include <QQmlContext>
-#include <QQmlEngine>
 #include <QQuickItem>
 #include <QtDebug>
 #include <util/qml/colorthemeproxy.h>

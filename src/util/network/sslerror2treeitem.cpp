@@ -45,7 +45,6 @@ namespace LC::Util
 		new QTreeWidgetItem { item, { QObject::tr ("MD5 digest:"), cer.digest ().toHex () } };
 		new QTreeWidgetItem { item, { QObject::tr ("SHA1 digest:"), cer.digest (QCryptographicHash::Sha1).toHex () } };
 
-		QString tmpString;
 		auto cvt = [] (const QStringList& list) { return list.join ("; "_ql); };
 
 		const auto issuer = new QTreeWidgetItem { item, { QObject::tr ("Issuer info") } };

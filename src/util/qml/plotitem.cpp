@@ -7,8 +7,6 @@
  **********************************************************************/
 
 #include "plotitem.h"
-#include <cmath>
-#include <limits>
 #include <vector>
 #include <memory>
 #include <QStyleOption>
