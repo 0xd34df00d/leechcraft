@@ -28,7 +28,6 @@ namespace Util
 	 */
 	class UTIL_MODELS_API FlattenFilterModel : public QAbstractItemModel
 	{
-		Q_OBJECT
 	protected:
 		QAbstractItemModel *Source_;
 		QList<QPersistentModelIndex> SourceIndexes_;
@@ -88,10 +87,10 @@ namespace Util
 		 * resulting model.
 		 */
 		virtual bool IsIndexAccepted (const QModelIndex& index) const;
-	private slots:
-		void handleDataChanged (const QModelIndex&, const QModelIndex&);
-		void handleRowsInserted (const QModelIndex&, int, int);
-		void handleRowsAboutRemoved (const QModelIndex&, int, int);
+	private:
+		void HandleDataChanged (const QModelIndex&, const QModelIndex&);
+		void HandleRowsInserted (const QModelIndex&, int, int);
+		void HandleRowsAboutRemoved (const QModelIndex&, int, int);
 	};
 }
 }

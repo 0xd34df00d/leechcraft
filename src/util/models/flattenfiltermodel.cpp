@@ -59,17 +59,17 @@ namespace Util
 		Source_ = model;
 		endResetModel ();
 		connect (Source_,
-				SIGNAL (rowsInserted (QModelIndex, int, int)),
+				&QAbstractItemModel::rowsInserted,
 				this,
-				SLOT (handleRowsInserted (QModelIndex, int, int)));
+				&FlattenFilterModel::HandleRowsInserted);
 		connect (Source_,
-				SIGNAL (rowsAboutToBeRemoved (QModelIndex, int, int)),
+				&QAbstractItemModel::rowsAboutToBeRemoved,
 				this,
-				SLOT (handleRowsAboutRemoved (QModelIndex, int, int)));
+				&FlattenFilterModel::HandleRowsAboutRemoved);
 		connect (Source_,
-				SIGNAL (dataChanged (QModelIndex, QModelIndex)),
+				&QAbstractItemModel::dataChanged,
 				this,
-				SLOT (handleDataChanged (QModelIndex, QModelIndex)));
+				&FlattenFilterModel::HandleDataChanged);
 	}
 
 	bool FlattenFilterModel::IsIndexAccepted (const QModelIndex&) const
@@ -77,7 +77,7 @@ namespace Util
 		return true;
 	}
 
-	void FlattenFilterModel::handleDataChanged (const QModelIndex& top, const QModelIndex& bottom)
+	void FlattenFilterModel::HandleDataChanged (const QModelIndex& top, const QModelIndex& bottom)
 	{
 		const auto& parent = top.parent ();
 		for (int i = top.row (); i <= bottom.row (); ++i)
@@ -92,7 +92,7 @@ namespace Util
 		}
 	}
 
-	void FlattenFilterModel::handleRowsInserted (const QModelIndex& parent, int start, int end)
+	void FlattenFilterModel::HandleRowsInserted (const QModelIndex& parent, int start, int end)
 	{
 		for (int i = start; i <= end; ++i)
 		{
@@ -105,11 +105,11 @@ namespace Util
 			}
 
 			if (int rc = Source_->rowCount (child))
-				handleRowsInserted (child, 0, rc - 1);
+				HandleRowsInserted (child, 0, rc - 1);
 		}
 	}
 
-	void FlattenFilterModel::handleRowsAboutRemoved (const QModelIndex& parent, int start, int end)
+	void FlattenFilterModel::HandleRowsAboutRemoved (const QModelIndex& parent, int start, int end)
 	{
 		for (int i = start; i <= end; ++i)
 		{
@@ -124,7 +124,7 @@ namespace Util
 			}
 
 			if (int rc = Source_->rowCount (child))
-				handleRowsAboutRemoved (child, 0, rc - 1);
+				HandleRowsAboutRemoved (child, 0, rc - 1);
 		}
 	}
 }
