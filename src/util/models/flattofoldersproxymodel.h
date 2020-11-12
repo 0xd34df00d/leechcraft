@@ -16,13 +16,11 @@
 
 class ITagsManager;
 
-namespace LC
+namespace LC::Util
 {
-struct FlatTreeItem;
-using FlatTreeItem_ptr = std::shared_ptr<FlatTreeItem>;
+	struct FlatTreeItem;
+	using FlatTreeItem_ptr = std::shared_ptr<FlatTreeItem>;
 
-namespace Util
-{
 	class UTIL_MODELS_API FlatToFoldersProxyModel : public QAbstractItemModel
 	{
 		Q_OBJECT
@@ -68,5 +66,4 @@ namespace Util
 		void handleRowsInserted (const QModelIndex&, int, int);
 		void handleRowsAboutToBeRemoved (const QModelIndex&, int, int);
 	};
-}
 }
