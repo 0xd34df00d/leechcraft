@@ -119,48 +119,29 @@ namespace LC::Util
 					Qt::ItemIsDropEnabled;
 	}
 
-	QModelIndex FlatToFoldersProxyModel::index (int row, int column,
-			const QModelIndex& parent) const
+	QModelIndex FlatToFoldersProxyModel::index (int row, int column, const QModelIndex& parent) const
 	{
 		if (!hasIndex (row, column, parent))
-			return QModelIndex ();
+			return {};
 
-		FlatTreeItem *fti = 0;
-		if (parent.isValid ())
-			fti = ToFlat (parent);
-		else
-			fti = Root_.get ();
-
-		if (fti->Type_ == FlatTreeItem::Type::Item)
-			return QModelIndex ();
-		else
-			return createIndex (row, column, fti->C_.at (row).get ());
+		const auto& fti = ToFlatOrRoot (parent);
+		return fti.Type_ == FlatTreeItem::Type::Item ?
+				QModelIndex {} :
+				createIndex (row, column, fti.C_.at (row).get ());
 	}
 
 	QModelIndex FlatToFoldersProxyModel::parent (const QModelIndex& index) const
 	{
-		FlatTreeItem *fti = 0;
-		if (index.isValid ())
-			fti = ToFlat (index);
-		else
-			fti = Root_.get ();
+		const auto& parent = ToFlatOrRoot (index).Parent_;
+		if (!parent || parent->Type_ == FlatTreeItem::Type::Root)
+			return {};
 
-		FlatTreeItem_ptr parent;
-		parent = fti->Parent_;
-
-		if (parent &&
-				parent->Type_ != FlatTreeItem::Type::Root)
-			return createIndex (parent->Row (), 0, parent.get ());
-		else
-			return QModelIndex ();
+		return createIndex (parent->Row (), 0, parent.get ());
 	}
 
 	int FlatToFoldersProxyModel::rowCount (const QModelIndex& index) const
 	{
-		if (index.isValid ())
-			return ToFlat (index)->C_.size ();
-		else
-			return Root_->C_.size ();
+		return ToFlatOrRoot (index).C_.size ();
 	}
 
 	Qt::DropActions FlatToFoldersProxyModel::supportedDropActions() const
@@ -361,6 +342,11 @@ namespace LC::Util
 		endInsertRows ();
 
 		return item;
+	}
+
+	const FlatTreeItem& FlatToFoldersProxyModel::ToFlatOrRoot (const QModelIndex& idx) const
+	{
+		return idx.isValid () ? *ToFlat (idx) : *Root_;
 	}
 
 	void FlatToFoldersProxyModel::HandleRowInserted (int i)

@@ -52,6 +52,8 @@ namespace LC::Util
 		QModelIndex MapToSource (const QModelIndex&) const;
 		QList<QModelIndex> MapFromSource (const QModelIndex&) const;
 	private:
+		const FlatTreeItem& ToFlatOrRoot (const QModelIndex&) const;
+
 		void HandleRowInserted (int);
 		void HandleRowRemoved (int);
 		void AddForTag (const QString&, const QPersistentModelIndex&);
