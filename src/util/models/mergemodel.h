@@ -172,6 +172,17 @@ namespace LC::Util
 		 */
 		int GetStartingRow (const_iterator it) const;
 
+		/** @brief Finds starting row for the model pointed by \em it.
+		 *
+		 * Returns the row in the resulting MergeModel from which do
+		 * begin rows which belong to the model corresponding to the
+		 * given const_iterator.
+		 *
+		 * @param[in] it The iterator corresponding to the model.
+		 * @return The starting row.
+		 */
+		int GetStartingRow (iterator it);
+
 		/** @brief Returns the model for the given \em row.
 		 *
 		 * Returns the model that corresponds to the given row. If

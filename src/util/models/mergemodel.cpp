@@ -322,6 +322,14 @@ namespace LC::Util
 		return result;
 	}
 
+	int MergeModel::GetStartingRow (MergeModel::iterator it)
+	{
+		int result = 0;
+		for (auto i = Models_.begin (); i != it; ++i)
+			result += (*i)->rowCount ({});
+		return result;
+	}
+
 	MergeModel::const_iterator MergeModel::GetModelForRow (int row, int *starting) const
 	{
 		const auto child = Root_->GetChild (row);
