@@ -9,9 +9,7 @@
 #include "modelitem.h"
 #include <algorithm>
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	ModelItem::ModelItem (QAbstractItemModel *model, const QModelIndex& idx, const ModelItem_wtr& parent)
 	: ModelItemBase { parent }
@@ -57,5 +55,4 @@ namespace Util
 				[&index] (const ModelItem_ptr& item) { return item->GetIndex () == index; });
 		return pos == Children_.end () ? ModelItem_ptr {} : *pos;
 	}
-}
 }

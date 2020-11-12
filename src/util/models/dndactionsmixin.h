@@ -11,9 +11,7 @@
 #include <utility>
 #include <QAbstractItemModel>
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	/** @brief Abstracts away differences between Qt4 and Qt5 in model
 	 * DnD support.
@@ -49,7 +47,7 @@ namespace Util
 		 * for the base \em Model constructor.
 		 */
 		template<typename... Args>
-		DndActionsMixin (Args&&... args)
+		explicit DndActionsMixin (Args&&... args)
 		: Model { std::forward<Args> (args)... }
 		, Drags_ { Model::supportedDragActions () }
 		, Drops_ { Model::supportedDropActions () }
@@ -76,5 +74,4 @@ namespace Util
 			Drops_ = acts;
 		}
 	};
-}
 }

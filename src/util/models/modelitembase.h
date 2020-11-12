@@ -11,9 +11,7 @@
 #include <memory>
 #include <QVector>
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	/** @brief Base class for model items for tree-like models.
 	 *
@@ -64,7 +62,7 @@ namespace Util
 		 *
 		 * @param[in] parent The weak reference to the parent item.
 		 */
-		ModelItemBase (const T_wptr& parent)
+		explicit ModelItemBase (const T_wptr& parent)
 		: Parent_ { parent }
 		{
 		}
@@ -329,5 +327,4 @@ namespace Util
 			return parent->GetRow (this->shared_from_this ());
 		}
 	};
-}
 }

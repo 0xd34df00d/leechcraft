@@ -11,9 +11,7 @@
 #include <QAbstractItemModel>
 #include "modelsconfig.h"
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	/** @brief Proxy model flattening a hierarchical model.
 	 *
@@ -29,34 +27,34 @@ namespace Util
 	class UTIL_MODELS_API FlattenFilterModel : public QAbstractItemModel
 	{
 	protected:
-		QAbstractItemModel *Source_;
+		QAbstractItemModel *Source_ = nullptr;
 		QList<QPersistentModelIndex> SourceIndexes_;
 	public:
 		/** @brief Constructs the model with the given \em parent.
 		 *
 		 * @param[in] parent The parent object of this model.
 		 */
-		FlattenFilterModel (QObject *parent = 0);
+		using QAbstractItemModel::QAbstractItemModel;
 
 		/** @brief Reimplemented from QAbstractItemModel.
 		 */
-		QModelIndex index (int, int, const QModelIndex& = QModelIndex ()) const;
+		QModelIndex index (int, int, const QModelIndex& = {}) const override;
 
 		/** @brief Reimplemented from QAbstractItemModel.
 		 */
-		QModelIndex parent (const QModelIndex&) const;
+		QModelIndex parent (const QModelIndex&) const override;
 
 		/** @brief Reimplemented from QAbstractItemModel.
 		 */
-		int rowCount (const QModelIndex& parent = QModelIndex()) const;
+		int rowCount (const QModelIndex& parent = {}) const override;
 
 		/** @brief Reimplemented from QAbstractItemModel.
 		 */
-		int columnCount (const QModelIndex& parent = QModelIndex()) const;
+		int columnCount (const QModelIndex& parent = {}) const override;
 
 		/** @brief Reimplemented from QAbstractItemModel.
 		 */
-		QVariant data (const QModelIndex& index, int role = Qt::DisplayRole) const;
+		QVariant data (const QModelIndex& index, int role = Qt::DisplayRole) const override;
 
 		/** @brief Sets the source model to \em model.
 		 *
@@ -92,5 +90,4 @@ namespace Util
 		void HandleRowsInserted (const QModelIndex&, int, int);
 		void HandleRowsAboutRemoved (const QModelIndex&, int, int);
 	};
-}
 }

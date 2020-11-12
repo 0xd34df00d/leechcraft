@@ -8,16 +8,8 @@
 
 #include "flattenfiltermodel.h"
 
-namespace LC
+namespace LC::Util
 {
-namespace Util
-{
-	FlattenFilterModel::FlattenFilterModel (QObject *parent)
-	: QAbstractItemModel (parent)
-	, Source_ (0)
-	{
-	}
-
 	QModelIndex FlattenFilterModel::index (int row, int column, const QModelIndex& parent) const
 	{
 		if (parent.isValid ())
@@ -127,5 +119,4 @@ namespace Util
 				HandleRowsAboutRemoved (child, 0, rc - 1);
 		}
 	}
-}
 }

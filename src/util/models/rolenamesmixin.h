@@ -11,9 +11,7 @@
 #include <utility>
 #include <QHash>
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	/** @brief Wraps differences between role names handling in Qt4 and
 	 * Qt5.
@@ -49,7 +47,7 @@ namespace Util
 		 * constructor.
 		 */
 		template<typename... Args>
-		RoleNamesMixin (Args&&... args)
+		explicit RoleNamesMixin (Args&&... args)
 		: Model { std::forward<Args> (args)... }
 		{
 		}
@@ -79,5 +77,4 @@ namespace Util
 			return RoleNames_;
 		}
 	};
-}
 }

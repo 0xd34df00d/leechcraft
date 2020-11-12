@@ -10,9 +10,7 @@
 #include <QAbstractItemModel>
 #include <QtDebug>
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	ModelIterator::ModelIterator (QAbstractItemModel *model,
 			int row, int col, ModelIterator::Direction dir, const QModelIndex& parent)
@@ -124,5 +122,4 @@ namespace Util
 				<< "unknown direction";
 		return Row_;
 	}
-}
 }

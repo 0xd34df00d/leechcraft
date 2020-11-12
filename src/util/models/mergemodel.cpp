@@ -13,9 +13,7 @@
 #include <QtDebug>
 #include "mergemodel.h"
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	MergeModel::MergeModel (const QStringList& headers, QObject *parent)
 	: QAbstractItemModel (parent)
@@ -507,5 +505,4 @@ namespace Util
 			result += AcceptsRow (model, i) ? 1 : 0;
 		return result;
 	}
-}
 }

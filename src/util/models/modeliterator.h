@@ -11,9 +11,7 @@
 #include <QModelIndex>
 #include "modelsconfig.h"
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	/** @brief Provides an iterator-based API to a Qt model.
 	 *
@@ -174,7 +172,6 @@ namespace Util
 		int& GetIncrementable ();
 		int GetIncrementable () const;
 	};
-}
 }
 
 namespace std

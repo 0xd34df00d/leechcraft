@@ -12,9 +12,7 @@
 #include "modelsconfig.h"
 #include "modelitembase.h"
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	class ModelItem;
 
@@ -106,5 +104,4 @@ namespace Util
 		 */
 		ModelItem_ptr FindChild (QModelIndex index) const;
 	};
-}
 }
