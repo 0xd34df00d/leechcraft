@@ -69,33 +69,34 @@ namespace LC::Util
 
 	QVariant FlatToFoldersProxyModel::data (const QModelIndex& index, int role) const
 	{
-		FlatTreeItem *fti = ToFlat (index);
+		const auto fti = ToFlat (index);
+
 		if (fti->Type_ == FlatTreeItem::Type::Item)
 		{
-			QModelIndex source = fti->Index_;
+			const auto& source = fti->Index_;
 			return source.sibling (source.row (), index.column ()).data (role);
 		}
-		else if (fti->Type_ == FlatTreeItem::Type::Folder &&
-				index.column () == 0)
+
+		if (fti->Type_ == FlatTreeItem::Type::Folder && index.column () == 0)
 		{
-			if (role == Qt::DisplayRole)
+			switch (role)
+			{
+			case Qt::DisplayRole:
 			{
 				if (fti->Tag_.isEmpty ())
 					return tr ("untagged");
 
-				QString ut = TM_->GetTag (fti->Tag_);
-				if (ut.isEmpty ())
-					return tr ("<unknown tag>");
-				else
-					return ut;
+				const auto& ut = TM_->GetTag (fti->Tag_);
+				return ut.isEmpty () ? tr ("<unknown tag>") : ut;
 			}
-			else if (role == RoleTags)
+			case RoleTags:
 				return fti->Tag_;
-			else
-				return QVariant ();
+			default:
+				return {};
+			}
 		}
-		else
-			return QVariant ();
+
+		return {};
 	}
 
 	QVariant FlatToFoldersProxyModel::headerData (int section,
