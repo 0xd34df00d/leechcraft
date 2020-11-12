@@ -49,20 +49,10 @@ namespace Util
 	void FlattenFilterModel::SetSource (QAbstractItemModel *model)
 	{
 		if (Source_)
-		{
 			disconnect (Source_,
-					SIGNAL (rowsInserted (QModelIndex, int, int)),
+					nullptr,
 					this,
-					SLOT (handleRowsInserted (QModelIndex, int, int)));
-			disconnect (Source_,
-					SIGNAL (rowsAboutToBeRemoved (QModelIndex, int, int)),
-					this,
-					SLOT (handleRowsAboutRemoved (QModelIndex, int, int)));
-			disconnect (Source_,
-					SIGNAL (dataChanged (QModelIndex, QModelIndex)),
-					this,
-					SLOT (handleDataChanged (QModelIndex, QModelIndex)));
-		}
+					nullptr);
 
 		beginResetModel ();
 		SourceIndexes_.clear ();
