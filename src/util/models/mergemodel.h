@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include <memory>
 #include <functional>
 #include <QPointer>
 #include <QAbstractProxyModel>
@@ -38,7 +37,7 @@ namespace LC::Util
 
 		mutable bool DefaultAcceptsRowImpl_ = false;
 	protected:
-		typedef QList<QPointer<QAbstractItemModel>> models_t;
+		using models_t = QList<QPointer<QAbstractItemModel>>;
 		models_t Models_;
 	private:
 		QStringList Headers_;
@@ -47,8 +46,8 @@ namespace LC::Util
 
 		QStack<std::function<void ()>> RemovalRefreshers_;
 	public:
-		typedef models_t::iterator iterator;
-		typedef models_t::const_iterator const_iterator;
+		using iterator = models_t::iterator;
+		using const_iterator = models_t::const_iterator;
 
 		/** @brief Constructs the merge model.
 		 *
@@ -57,7 +56,7 @@ namespace LC::Util
 		 * @param[in] headers The headers of the model.
 		 * @param[in] parent The parent object of the model.
 		 */
-		explicit MergeModel (const QStringList& headers, QObject *parent = nullptr);
+		explicit MergeModel (QStringList headers, QObject *parent = nullptr);
 
 		int columnCount (const QModelIndex& = QModelIndex ()) const override;
 		QVariant headerData (int, Qt::Orientation, int = Qt::DisplayRole) const override;
@@ -200,7 +199,7 @@ namespace LC::Util
 		 * @exception std::runtime_error Throws if there is no model
 		 * for such row.
 		 */
-		const_iterator GetModelForRow (int row, int *starting = 0) const;
+		const_iterator GetModelForRow (int row, int *starting = nullptr) const;
 
 		/** @brief This is an overloaded function provided for
 		 * convenience.
@@ -213,7 +212,7 @@ namespace LC::Util
 		 * @exception std::runtime_error Throws if there is no model
 		 * for such row.
 		 */
-		iterator GetModelForRow (int row, int *starting = 0);
+		iterator GetModelForRow (int row, int *starting = nullptr);
 
 		/** @brief Returns all models intalled into this one.
 		 *

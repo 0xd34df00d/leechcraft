@@ -29,7 +29,7 @@ namespace LC::Util
 			Item
 		};
 
-		Type Type_;
+		Type Type_ = Type::Root;
 
 		QPersistentModelIndex Index_;
 		QString Tag_;
@@ -57,13 +57,12 @@ namespace LC::Util
 	, TM_ { itm }
 	, Root_ { std::make_shared<FlatTreeItem> () }
 	{
-		Root_->Type_ = FlatTreeItem::Type::Root;
 	}
 
 	int FlatToFoldersProxyModel::columnCount (const QModelIndex&) const
 	{
 		return SourceModel_ ?
-			SourceModel_->columnCount (QModelIndex ()) :
+			SourceModel_->columnCount ({}) :
 			0;
 	}
 
@@ -99,25 +98,24 @@ namespace LC::Util
 		return {};
 	}
 
-	QVariant FlatToFoldersProxyModel::headerData (int section,
-			Qt::Orientation orient, int role) const
+	QVariant FlatToFoldersProxyModel::headerData (int section, Qt::Orientation orient, int role) const
 	{
-		if (SourceModel_)
-			return SourceModel_->headerData (section, orient, role);
-		else
-			return QVariant ();
+		if (!SourceModel_)
+			return {};
+
+		return SourceModel_->headerData (section, orient, role);
 	}
 
 	Qt::ItemFlags FlatToFoldersProxyModel::flags (const QModelIndex& index) const
 	{
-		auto fti = ToFlat (index);
-		if (fti && fti->Type_ == FlatTreeItem::Type::Item)
+		if (const auto fti = ToFlat (index);
+			fti && fti->Type_ == FlatTreeItem::Type::Item)
 			return fti->Index_.flags ();
-		else
-			return Qt::ItemIsSelectable |
-					Qt::ItemIsEnabled |
-					Qt::ItemIsDragEnabled |
-					Qt::ItemIsDropEnabled;
+
+		return Qt::ItemIsSelectable |
+				Qt::ItemIsEnabled |
+				Qt::ItemIsDragEnabled |
+				Qt::ItemIsDropEnabled;
 	}
 
 	QModelIndex FlatToFoldersProxyModel::index (int row, int column, const QModelIndex& parent) const
@@ -200,7 +198,7 @@ namespace LC::Util
 			{
 			case FlatTreeItem::Type::Folder:
 			case FlatTreeItem::Type::Item:
-				modified.setData ("x-leechcraft/tag", ptr->Tag_.toLatin1 ());
+				modified.setData (QStringLiteral ("x-leechcraft/tag"), ptr->Tag_.toLatin1 ());
 				break;
 			default:
 				break;
@@ -214,9 +212,9 @@ namespace LC::Util
 	{
 		if (SourceModel_)
 			disconnect (SourceModel_,
-					0,
+					nullptr,
 					this,
-					0);
+					nullptr);
 
 		SourceModel_ = model;
 
@@ -352,16 +350,16 @@ namespace LC::Util
 
 	void FlatToFoldersProxyModel::HandleRowInserted (int i)
 	{
-		QModelIndex idx = SourceModel_->index (i, 0);
+		const auto& idx = SourceModel_->index (i, 0);
 
-		QStringList tags = idx.data (RoleTags).toStringList ();
+		auto tags = idx.data (RoleTags).toStringList ();
 
 		if (tags.isEmpty ())
 			tags << QString ();
 
 		QPersistentModelIndex pidx (idx);
 
-		for (auto tag : tags)
+		for (const auto& tag : qAsConst (tags))
 			AddForTag (tag, pidx);
 	}
 
@@ -467,15 +465,15 @@ namespace LC::Util
 			AddForTag (add, pidx);
 	}
 
-	void FlatToFoldersProxyModel::handleDataChanged (const QModelIndex& topLeft,
-			const QModelIndex& bottomRight)
+	void FlatToFoldersProxyModel::handleDataChanged (const QModelIndex& topLeft, const QModelIndex& bottomRight)
 	{
-		QItemSelectionRange range (topLeft.sibling (topLeft.row (), 0),
-				bottomRight.sibling (bottomRight.row (), 0));
-		QModelIndexList indexes = range.indexes ();
-		for (int i = 0, size = indexes.size ();
-				i < size; ++i)
-			HandleChanged (indexes.at (i));
+		const QItemSelectionRange range
+		{
+			topLeft.sibling (topLeft.row (), 0),
+			bottomRight.sibling (bottomRight.row (), 0)
+		};
+		for (const auto& index : range.indexes ())
+			HandleChanged (index);
 	}
 
 	void FlatToFoldersProxyModel::handleModelReset ()

@@ -11,26 +11,24 @@
 #include <QMimeData>
 #include <QUrl>
 #include <QtDebug>
+#include <util/sll/qtutil.h>
 #include "mergemodel.h"
 
 namespace LC::Util
 {
-	MergeModel::MergeModel (const QStringList& headers, QObject *parent)
+	MergeModel::MergeModel (QStringList headers, QObject *parent)
 	: QAbstractItemModel (parent)
-	, Headers_ (headers)
+	, Headers_ (std::move (headers))
 	, Root_ (std::make_shared<ModelItem> ())
 	{
 	}
 
 	int MergeModel::columnCount (const QModelIndex& index) const
 	{
-		if (index.isValid ())
-		{
-			const auto& mapped = mapToSource (index);
-			return mapped.model ()->columnCount (mapped);
-		}
-		else
+		if (!index.isValid ())
 			return Headers_.size ();
+		const auto& mapped = mapToSource (index);
+		return mapped.model ()->columnCount (mapped);
 	}
 
 	QVariant MergeModel::headerData (int column, Qt::Orientation orient, int role) const
@@ -121,7 +119,7 @@ namespace LC::Util
 		void Merge (QMimeData *out, const QMimeData *sub)
 		{
 			for (const auto& format : sub->formats ())
-				if (format != "text/uri-list" && !out->hasFormat (format))
+				if (format != "text/uri-list"_ql && !out->hasFormat (format))
 					out->setData (format, sub->data (format));
 
 			out->setUrls (out->urls () + sub->urls ());
@@ -297,7 +295,7 @@ namespace LC::Util
 		for (auto r = Root_->begin (); r != Root_->end (); )
 			if ((*r)->GetModel () == model)
 			{
-				const auto idx = std::distance (Root_->begin (), r);
+				const auto idx = static_cast<int> (std::distance (Root_->begin (), r));
 
 				beginRemoveRows ({}, idx, idx);
 				r = Root_->EraseChild (r);
