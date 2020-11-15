@@ -208,58 +208,50 @@ namespace LC::Util
 
 		Models_.push_back (model);
 
+		auto withModel = [this, model]<typename... Args> (void (MergeModel::*method) (QAbstractItemModel*, Args...))
+		{
+			return [this, model, method] (Args... args) { (this->*method) (model, args...); };
+		};
+
 		connect (model,
-				SIGNAL (columnsAboutToBeInserted (const QModelIndex&, int, int)),
+				&QAbstractItemModel::dataChanged,
 				this,
-				SLOT (handleColumnsAboutToBeInserted (const QModelIndex&, int, int)));
+				[this] (const QModelIndex& topLeft, const QModelIndex& bottomRight)
+				{
+					emit dataChanged (mapFromSource (topLeft), mapFromSource (bottomRight));
+				});
 		connect (model,
-				SIGNAL (columnsAboutToBeRemoved (const QModelIndex&, int, int)),
+				&QAbstractItemModel::layoutAboutToBeChanged,
 				this,
-				SLOT (handleColumnsAboutToBeRemoved (const QModelIndex&, int, int)));
+				withModel (&MergeModel::HandleModelAboutToBeReset));
 		connect (model,
-				SIGNAL (columnsInserted (const QModelIndex&, int, int)),
+				&QAbstractItemModel::layoutChanged,
 				this,
-				SLOT (handleColumnsInserted (const QModelIndex&, int, int)));
+				withModel (&MergeModel::HandleModelReset));
 		connect (model,
-				SIGNAL (columnsRemoved (const QModelIndex&, int, int)),
+				&QAbstractItemModel::modelAboutToBeReset,
 				this,
-				SLOT (handleColumnsRemoved (const QModelIndex&, int, int)));
+				withModel (&MergeModel::HandleModelAboutToBeReset));
 		connect (model,
-				SIGNAL (dataChanged (const QModelIndex&, const QModelIndex&)),
+				&QAbstractItemModel::modelReset,
 				this,
-				SLOT (handleDataChanged (const QModelIndex&, const QModelIndex&)));
+				withModel (&MergeModel::HandleModelReset));
 		connect (model,
-				SIGNAL (layoutAboutToBeChanged ()),
+				&QAbstractItemModel::rowsAboutToBeInserted,
 				this,
-				SLOT (handleModelAboutToBeReset ()));
+				withModel (&MergeModel::HandleRowsAboutToBeInserted));
 		connect (model,
-				SIGNAL (layoutChanged ()),
+				&QAbstractItemModel::rowsAboutToBeRemoved,
 				this,
-				SLOT (handleModelReset ()));
+				withModel (&MergeModel::HandleRowsAboutToBeRemoved));
 		connect (model,
-				SIGNAL (modelAboutToBeReset ()),
+				&QAbstractItemModel::rowsInserted,
 				this,
-				SLOT (handleModelAboutToBeReset ()));
+				withModel (&MergeModel::HandleRowsInserted));
 		connect (model,
-				SIGNAL (modelReset ()),
+				&QAbstractItemModel::rowsRemoved,
 				this,
-				SLOT (handleModelReset ()));
-		connect (model,
-				SIGNAL (rowsAboutToBeInserted (const QModelIndex&, int, int)),
-				this,
-				SLOT (handleRowsAboutToBeInserted (const QModelIndex&, int, int)));
-		connect (model,
-				SIGNAL (rowsAboutToBeRemoved (const QModelIndex&, int, int)),
-				this,
-				SLOT (handleRowsAboutToBeRemoved (const QModelIndex&, int, int)));
-		connect (model,
-				SIGNAL (rowsInserted (const QModelIndex&, int, int)),
-				this,
-				SLOT (handleRowsInserted (const QModelIndex&, int, int)));
-		connect (model,
-				SIGNAL (rowsRemoved (const QModelIndex&, int, int)),
-				this,
-				SLOT (handleRowsRemoved (const QModelIndex&, int, int)));
+				withModel (&MergeModel::HandleRowsRemoved));
 
 		if (const auto rc = model->rowCount ())
 		{
@@ -359,17 +351,8 @@ namespace LC::Util
 		return result;
 	}
 
-	void MergeModel::handleDataChanged (const QModelIndex& topLeft,
-			const QModelIndex& bottomRight)
+	void MergeModel::HandleRowsAboutToBeInserted (QAbstractItemModel *model, const QModelIndex& parent, int first, int last)
 	{
-		emit dataChanged (mapFromSource (topLeft), mapFromSource (bottomRight));
-	}
-
-	void MergeModel::handleRowsAboutToBeInserted (const QModelIndex& parent,
-			int first, int last)
-	{
-		const auto model = static_cast<QAbstractItemModel*> (sender ());
-
 		const auto startingRow = parent.isValid () ?
 				0 :
 				GetStartingRow (FindModel (model));
@@ -377,11 +360,8 @@ namespace LC::Util
 				first + startingRow, last + startingRow);
 	}
 
-	void MergeModel::handleRowsAboutToBeRemoved (const QModelIndex& parent,
-			int first, int last)
+	void MergeModel::HandleRowsAboutToBeRemoved (QAbstractItemModel *model, const QModelIndex& parent, int first, int last)
 	{
-		auto model = static_cast<QAbstractItemModel*> (sender ());
-
 		const auto startingRow = parent.isValid () ?
 				0 :
 				GetStartingRow (FindModel (model));
@@ -403,10 +383,8 @@ namespace LC::Util
 				});
 	}
 
-	void MergeModel::handleRowsInserted (const QModelIndex& parent, int first, int last)
+	void MergeModel::HandleRowsInserted (QAbstractItemModel *model, const QModelIndex& parent, int first, int last)
 	{
-		const auto model = static_cast<QAbstractItemModel*> (sender ());
-
 		const auto startingRow = parent.isValid () ?
 				0 :
 				GetStartingRow (FindModel (model));
@@ -437,15 +415,14 @@ namespace LC::Util
 		endInsertRows ();
 	}
 
-	void MergeModel::handleRowsRemoved (const QModelIndex&, int, int)
+	void MergeModel::HandleRowsRemoved (QAbstractItemModel*, const QModelIndex&, int, int)
 	{
 		RemovalRefreshers_.pop () ();
 		endRemoveRows ();
 	}
 
-	void MergeModel::handleModelAboutToBeReset ()
+	void MergeModel::HandleModelAboutToBeReset (QAbstractItemModel *model)
 	{
-		const auto model = static_cast<QAbstractItemModel*> (sender ());
 		if (const auto rc = model->rowCount ())
 		{
 			const auto startingRow = GetStartingRow (FindModel (model));
@@ -455,9 +432,8 @@ namespace LC::Util
 		}
 	}
 
-	void MergeModel::handleModelReset ()
+	void MergeModel::HandleModelReset (QAbstractItemModel *model)
 	{
-		const auto model = static_cast<QAbstractItemModel*> (sender ());
 		if (const auto rc = model->rowCount ())
 		{
 			const auto startingRow = GetStartingRow (FindModel (model));

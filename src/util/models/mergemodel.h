@@ -223,15 +223,14 @@ namespace LC::Util
 		 * @return The list of models.
 		 */
 		QList<QAbstractItemModel*> GetAllModels () const;
-	public Q_SLOTS:
-		virtual void handleDataChanged (const QModelIndex&, const QModelIndex&);
-		virtual void handleRowsAboutToBeInserted (const QModelIndex&, int, int);
-		virtual void handleRowsAboutToBeRemoved (const QModelIndex&, int, int);
-		virtual void handleRowsInserted (const QModelIndex&, int, int);
-		virtual void handleRowsRemoved (const QModelIndex&, int, int);
-		virtual void handleModelAboutToBeReset ();
-		virtual void handleModelReset ();
 	protected:
+		virtual void HandleRowsAboutToBeInserted (QAbstractItemModel*, const QModelIndex&, int, int);
+		virtual void HandleRowsAboutToBeRemoved (QAbstractItemModel*, const QModelIndex&, int, int);
+		virtual void HandleRowsInserted (QAbstractItemModel*, const QModelIndex&, int, int);
+		virtual void HandleRowsRemoved (QAbstractItemModel*, const QModelIndex&, int, int);
+		virtual void HandleModelAboutToBeReset (QAbstractItemModel*);
+		virtual void HandleModelReset (QAbstractItemModel*);
+
 		/** @brief Allows to filter rows from the resulting model.
 		 *
 		 * This virtual function could be overridden to provide
