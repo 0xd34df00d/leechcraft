@@ -359,26 +359,6 @@ namespace LC::Util
 		return result;
 	}
 
-	void MergeModel::handleColumnsAboutToBeInserted (const QModelIndex&, int, int)
-	{
-	}
-
-	void MergeModel::handleColumnsAboutToBeRemoved (const QModelIndex&, int, int)
-	{
-		qWarning () << "model" << sender ()
-			<< "called handleColumnsAboutToBeRemoved, ignoring it";
-	}
-
-	void MergeModel::handleColumnsInserted (const QModelIndex&, int, int)
-	{
-	}
-
-	void MergeModel::handleColumnsRemoved (const QModelIndex&, int, int)
-	{
-		qWarning () << "model" << sender ()
-			<< "called handleColumnsRemoved, ignoring it";
-	}
-
 	void MergeModel::handleDataChanged (const QModelIndex& topLeft,
 			const QModelIndex& bottomRight)
 	{

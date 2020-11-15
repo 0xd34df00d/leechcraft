@@ -224,10 +224,6 @@ namespace LC::Util
 		 */
 		QList<QAbstractItemModel*> GetAllModels () const;
 	public Q_SLOTS:
-		virtual void handleColumnsAboutToBeInserted (const QModelIndex&, int, int);
-		virtual void handleColumnsAboutToBeRemoved (const QModelIndex&, int, int);
-		virtual void handleColumnsInserted (const QModelIndex&, int, int);
-		virtual void handleColumnsRemoved (const QModelIndex&, int, int);
 		virtual void handleDataChanged (const QModelIndex&, const QModelIndex&);
 		virtual void handleRowsAboutToBeInserted (const QModelIndex&, int, int);
 		virtual void handleRowsAboutToBeRemoved (const QModelIndex&, int, int);
