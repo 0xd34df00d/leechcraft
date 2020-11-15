@@ -10,7 +10,6 @@
 
 #include <util/models/mergemodel.h>
 #include <interfaces/azoth/iresourceplugin.h>
-#include <interfaces/azoth/ichatstyleresourcesource.h>
 
 namespace LC
 {
@@ -26,7 +25,7 @@ namespace Azoth
 
 		void AddSource (SrcType *src)
 		{
-			QAbstractItemModel *model = src->GetOptionsModel ();
+			const auto model = src->GetOptionsModel ();
 			Model2Source_ [model] = src;
 			HandleItems (model, 0, model->rowCount (), true);
 			AddModel (model);
@@ -42,25 +41,21 @@ namespace Azoth
 			return Option2Source_.value (opt);
 		}
 	protected:
-		virtual void handleRowsInserted (const QModelIndex& idx, int from, int to)
+		void HandleRowsInserted (QAbstractItemModel *model, const QModelIndex& idx, int from, int to) override
 		{
-			HandleItems (idx.model (), from, to, true);
-			MergeModel::handleRowsInserted (idx, from, to);
+			HandleItems (model, from, to, true);
+			MergeModel::HandleRowsInserted (model, idx, from, to);
 		}
 
-		virtual void handleRowsAboutToBeRemoved (const QModelIndex& idx, int from, int to)
+		void HandleRowsAboutToBeRemoved (QAbstractItemModel *model, const QModelIndex& idx, int from, int to) override
 		{
-			HandleItems (idx.model (), from, to, false);
-			MergeModel::handleRowsAboutToBeRemoved (idx, from, to);
+			HandleItems (model, from, to, false);
+			MergeModel::HandleRowsAboutToBeRemoved (model, idx, from, to);
 		}
 	private:
-		void HandleItems (const QAbstractItemModel *model,
-				int from, int to, bool add)
+		void HandleItems (const QAbstractItemModel *model, int from, int to, bool add)
 		{
-			if (!model)
-				model = qobject_cast<QAbstractItemModel*> (sender ());
-
-			SrcType *src = Model2Source_ [model];
+			const auto src = Model2Source_ [model];
 			for (int i = from; i <= to; ++i)
 			{
 				const QString& option = model->index (i, 0).data ().toString ();
