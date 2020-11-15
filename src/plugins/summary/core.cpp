@@ -145,15 +145,13 @@ namespace Summary
 					!model->property ("__LeechCraft_own_core_model").toBool ())
 				break;
 
-			auto pModel = qobject_cast<const QAbstractProxyModel*> (model);
-			if (pModel)
+			if (auto pModel = dynamic_cast<const QAbstractProxyModel*> (model))
 			{
 				index = pModel->mapToSource (index);
 				continue;
 			}
 
-			auto mModel = qobject_cast<const Util::MergeModel*> (model);
-			if (mModel)
+			if (auto mModel = dynamic_cast<const Util::MergeModel*> (model))
 			{
 				index = mModel->mapToSource (index);
 				continue;
