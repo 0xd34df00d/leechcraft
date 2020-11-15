@@ -33,8 +33,6 @@ namespace LC::Util
 	 */
 	class UTIL_MODELS_API MergeModel : public QAbstractItemModel
 	{
-		Q_OBJECT
-
 		mutable bool DefaultAcceptsRowImpl_ = false;
 	protected:
 		using models_t = QList<QPointer<QAbstractItemModel>>;
