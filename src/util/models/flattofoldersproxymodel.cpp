@@ -192,17 +192,15 @@ namespace LC::Util
 		for (const auto& format : data->formats ())
 			modified.setData (format, data->data (format));
 
-		if (auto ptr = static_cast<FlatTreeItem*> (parent.internalPointer ()))
+		switch (const auto ptr = static_cast<FlatTreeItem*> (parent.internalPointer ());
+				ptr->Type_)
 		{
-			switch (ptr->Type_)
-			{
-			case FlatTreeItem::Type::Folder:
-			case FlatTreeItem::Type::Item:
-				modified.setData (QStringLiteral ("x-leechcraft/tag"), ptr->Tag_.toLatin1 ());
-				break;
-			default:
-				break;
-			}
+		case FlatTreeItem::Type::Folder:
+		case FlatTreeItem::Type::Item:
+			modified.setData (QStringLiteral ("x-leechcraft/tag"), ptr->Tag_.toLatin1 ());
+			break;
+		default:
+			break;
 		}
 
 		return SourceModel_->dropMimeData (&modified, action, -1, -1, QModelIndex ());
