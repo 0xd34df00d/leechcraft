@@ -23,8 +23,6 @@ namespace LC::Util
 
 	class UTIL_MODELS_API FlatToFoldersProxyModel : public QAbstractItemModel
 	{
-		Q_OBJECT
-
 		QAbstractItemModel *SourceModel_ = nullptr;
 
 		const ITagsManager * const TM_;
