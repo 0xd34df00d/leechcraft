@@ -62,10 +62,10 @@ namespace LC::Util
 
 		FlatTreeItem_ptr FindFolder (const QString&) const;
 		FlatTreeItem_ptr GetFolder (const QString&);
-	private slots:
-		void handleDataChanged (const QModelIndex&, const QModelIndex&);
-		void handleModelReset ();
-		void handleRowsInserted (const QModelIndex&, int, int);
-		void handleRowsAboutToBeRemoved (const QModelIndex&, int, int);
+
+		void HandleDataChanged (const QModelIndex&, const QModelIndex&);
+		void HandleModelReset ();
+		void HandleRowsInserted (const QModelIndex&, int, int);
+		void HandleRowsAboutToBeRemoved (const QModelIndex&, int, int);
 	};
 }

@@ -223,40 +223,36 @@ namespace LC::Util
 			// We don't support changing columns (yet) so don't connect
 			// to columns* signals.
 			connect (model,
-					SIGNAL (headerDataChanged (Qt::Orientation, int, int)),
+					&QAbstractItemModel::headerDataChanged,
 					this,
-					SIGNAL (headerDataChanged (Qt::Orientation, int, int)));
+					&QAbstractItemModel::headerDataChanged);
 			connect (model,
-					SIGNAL (dataChanged (const QModelIndex&, const QModelIndex&)),
+					&QAbstractItemModel::dataChanged,
 					this,
-					SLOT (handleDataChanged (const QModelIndex&, const QModelIndex&)));
+					&FlatToFoldersProxyModel::HandleDataChanged);
 			connect (model,
-					SIGNAL (layoutAboutToBeChanged ()),
+					&QAbstractItemModel::layoutAboutToBeChanged,
 					this,
-					SIGNAL (layoutAboutToBeChanged ()));
+					&QAbstractItemModel::layoutAboutToBeChanged);
 			connect (model,
-					SIGNAL (layoutChanged ()),
+					&QAbstractItemModel::layoutChanged,
 					this,
-					SIGNAL (layoutChanged ()));
+					&QAbstractItemModel::layoutChanged);
 			connect (model,
-					SIGNAL (modelReset ()),
+					&QAbstractItemModel::modelReset,
 					this,
-					SLOT (handleModelReset ()));
+					&FlatToFoldersProxyModel::HandleModelReset);
 			connect (model,
-					SIGNAL (rowsInserted (const QModelIndex&,
-							int, int)),
+					&QAbstractItemModel::rowsInserted,
 					this,
-					SLOT (handleRowsInserted (const QModelIndex&,
-							int, int)));
+					&FlatToFoldersProxyModel::HandleRowsInserted);
 			connect (model,
-					SIGNAL (rowsAboutToBeRemoved (const QModelIndex&,
-							int, int)),
+					&QAbstractItemModel::rowsAboutToBeRemoved,
 					this,
-					SLOT (handleRowsAboutToBeRemoved (const QModelIndex&,
-							int, int)));
+					&FlatToFoldersProxyModel::HandleRowsAboutToBeRemoved);
 		}
 
-		handleModelReset ();
+		HandleModelReset ();
 	}
 
 	QAbstractItemModel* FlatToFoldersProxyModel::GetSourceModel () const
@@ -465,7 +461,7 @@ namespace LC::Util
 			AddForTag (add, pidx);
 	}
 
-	void FlatToFoldersProxyModel::handleDataChanged (const QModelIndex& topLeft, const QModelIndex& bottomRight)
+	void FlatToFoldersProxyModel::HandleDataChanged (const QModelIndex& topLeft, const QModelIndex& bottomRight)
 	{
 		const QItemSelectionRange range
 		{
@@ -476,7 +472,7 @@ namespace LC::Util
 			HandleChanged (index);
 	}
 
-	void FlatToFoldersProxyModel::handleModelReset ()
+	void FlatToFoldersProxyModel::HandleModelReset ()
 	{
 		if (const int size = Root_->C_.size ())
 		{
@@ -487,22 +483,17 @@ namespace LC::Util
 		}
 
 		if (SourceModel_)
-		{
-			for (int i = 0, size = SourceModel_->rowCount ();
-					i < size; ++i)
+			for (int i = 0, size = SourceModel_->rowCount (); i < size; ++i)
 				HandleRowInserted (i);
-		}
 	}
 
-	void FlatToFoldersProxyModel::handleRowsInserted (const QModelIndex&,
-			int start, int end)
+	void FlatToFoldersProxyModel::HandleRowsInserted (const QModelIndex&, int start, int end)
 	{
 		for (int i = start; i <= end; ++i)
 			HandleRowInserted (i);
 	}
 
-	void FlatToFoldersProxyModel::handleRowsAboutToBeRemoved (const QModelIndex&,
-			int start, int end)
+	void FlatToFoldersProxyModel::HandleRowsAboutToBeRemoved (const QModelIndex&, int start, int end)
 	{
 		for (int i = start; i <= end; ++i)
 			HandleRowRemoved (i);
