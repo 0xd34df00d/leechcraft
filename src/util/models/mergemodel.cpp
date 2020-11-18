@@ -116,39 +116,35 @@ namespace LC::Util
 
 	namespace
 	{
-		void Merge (QMimeData *out, const QMimeData *sub)
+		void Merge (QMimeData& out, const QMimeData& sub)
 		{
-			for (const auto& format : sub->formats ())
-				if (format != "text/uri-list"_ql && !out->hasFormat (format))
-					out->setData (format, sub->data (format));
+			for (const auto& format : sub.formats ())
+				if (format != "text/uri-list"_ql && !out.hasFormat (format))
+					out.setData (format, sub.data (format));
 
-			out->setUrls (out->urls () + sub->urls ());
+			out.setUrls (out.urls () + sub.urls ());
 		}
 	}
 
 	QMimeData* MergeModel::mimeData (const QModelIndexList& indexes) const
 	{
-		QMimeData *result = nullptr;
+		std::unique_ptr<QMimeData> result;
 
 		for (const auto& index : indexes)
 		{
 			const auto& src = mapToSource (index);
 
-			const auto subresult = src.model ()->mimeData ({ src });
-
+			std::unique_ptr<QMimeData> subresult { src.model ()->mimeData ({ src }) };
 			if (!subresult)
 				continue;
 
 			if (!result)
-				result = subresult;
+				result = std::move (subresult);
 			else
-			{
-				Merge (result, subresult);
-				delete subresult;
-			}
+				Merge (*result, *subresult);
 		}
 
-		return result;
+		return result.release ();
 	}
 
 	QModelIndex MergeModel::mapFromSource (const QModelIndex& sourceIndex) const
