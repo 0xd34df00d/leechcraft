@@ -44,7 +44,6 @@ namespace Util
 
 		QTimer *LeaveTimer_;
 		bool ContainsMouse_;
-		bool IgnoreNext_;
 	public:
 		/** @brief Creates the mixin for the given parent widget.
 		 *
@@ -86,15 +85,6 @@ namespace Util
 		 * @sa Start()
 		 */
 		void UTIL_GUI_API Stop ();
-
-		/** @brief Ignores the next leave event.
-		 *
-		 * This function is useful if one knows that the watched widget
-		 * is going to be resized, for example, and needs to cancel the
-		 * deletion of the widget upon receiving the corresponding
-		 * leave event.
-		 */
-		void UTIL_GUI_API IgnoreNext ();
 	protected:
 		bool eventFilter (QObject*, QEvent*);
 	};

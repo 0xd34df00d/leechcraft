@@ -20,7 +20,6 @@ namespace Util
 	: QObject (watched)
 	, LeaveTimer_ (new QTimer (this))
 	, ContainsMouse_ (false)
-	, IgnoreNext_ (false)
 	{
 		watched->installEventFilter (this);
 
@@ -47,31 +46,18 @@ namespace Util
 		switch (event->type ())
 		{
 		case QEvent::Enter:
-			if (!IgnoreNext_)
-			{
-				ContainsMouse_ = true;
-				LeaveTimer_->stop ();
-			}
+			ContainsMouse_ = true;
+			LeaveTimer_->stop ();
 			break;
 		case QEvent::Leave:
-			if (!IgnoreNext_)
-			{
-				ContainsMouse_ = false;
-				LeaveTimer_->start (800);
-			}
-			else
-				IgnoreNext_ = false;
+			ContainsMouse_ = false;
+			LeaveTimer_->start (800);
 			break;
 		default:
 			break;
 		}
 
 		return false;
-	}
-
-	void UnhoverDeleteMixin::IgnoreNext ()
-	{
-		IgnoreNext_ = true;
 	}
 }
 }
