@@ -11,6 +11,8 @@
 #include <QEvent>
 #include <QTimer>
 #include <QtDebug>
+#include <QApplication>
+#include <QStyle>
 
 namespace LC
 {
@@ -30,10 +32,18 @@ namespace Util
 				slot);
 	}
 
-	void UnhoverDeleteMixin::Start (int timeout)
+	namespace
+	{
+		int DefaultTimeout ()
+		{
+			return QApplication::style ()->styleHint (QStyle::SH_ToolTip_WakeUpDelay) * 2;
+		}
+	}
+
+	void UnhoverDeleteMixin::Start (std::optional<int> timeout)
 	{
 		if (!ContainsMouse_)
-			LeaveTimer_->start (timeout);
+			LeaveTimer_->start (timeout.value_or (DefaultTimeout ()));
 	}
 
 	void UnhoverDeleteMixin::Stop()
@@ -51,7 +61,7 @@ namespace Util
 			break;
 		case QEvent::Leave:
 			ContainsMouse_ = false;
-			LeaveTimer_->start (800);
+			LeaveTimer_->start (DefaultTimeout ());
 			break;
 		default:
 			break;

@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <optional>
 #include <QObject>
 #include "guiconfig.h"
 
@@ -62,11 +63,11 @@ namespace Util
 		 * nothing.
 		 *
 		 * @param[in] timeout The number of milliseconds to wait before
-		 * the widget is deleted..
+		 * the widget is deleted, or system-default timeout.
 		 *
 		 * @sa Stop()
 		 */
-		void UTIL_GUI_API Start (int timeout = 1200);
+		void UTIL_GUI_API Start (std::optional<int> timeout = {});
 
 		/** @brief Stops the previously started timer.
 		 *
