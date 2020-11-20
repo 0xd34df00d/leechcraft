@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <memory>
 #include <interfaces/core/icoreproxy.h>
 #include "guiconfig.h"
 #include "pagenotification.h"
@@ -63,7 +64,7 @@ namespace Util
 	{
 		Q_OBJECT
 
-		Ui::FindNotification * const Ui_;
+		std::unique_ptr<Ui::FindNotification> Ui_;
 		QShortcut * const EscShortcut_;
 	public:
 		/** Various options controlling the search behavior.

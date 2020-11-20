@@ -20,7 +20,7 @@ namespace Util
 {
 	FindNotification::FindNotification (ICoreProxy_ptr proxy, QWidget *parent)
 	: Util::PageNotification { parent }
-	, Ui_ { new Ui::FindNotification }
+	, Ui_ { std::make_unique<Ui::FindNotification> () }
 	, EscShortcut_ { new QShortcut { Qt::Key_Escape, this, SLOT (reject ()) } }
 	{
 		Ui_->setupUi (this);
@@ -49,10 +49,7 @@ namespace Util
 				this, SLOT (findPrevious ()), parent);
 	}
 
-	FindNotification::~FindNotification ()
-	{
-		delete Ui_;
-	}
+	FindNotification::~FindNotification () = default;
 
 	void FindNotification::SetEscCloses (bool close)
 	{
