@@ -29,8 +29,7 @@ namespace Util
 
 	FlowLayout::~FlowLayout ()
 	{
-		while (const auto item = takeAt (0))
-			delete item;
+		qDeleteAll (ItemList_);
 	}
 
 	void FlowLayout::addItem (QLayoutItem *item)
