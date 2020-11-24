@@ -23,7 +23,7 @@ namespace LC::Poshuku::WebEngineView
 	private:
 		void ClearFindResults ();
 	protected:
-		void handleNext (const QString& text, FindFlags flags) override;
-		void reject () override;
+		void HandleNext (const QString& text, FindFlags flags) override;
+		void Reject () override;
 	};
 }

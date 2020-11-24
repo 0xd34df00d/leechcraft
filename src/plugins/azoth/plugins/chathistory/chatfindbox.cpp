@@ -19,7 +19,7 @@ namespace ChatHistory
 	{
 	}
 
-	void ChatFindBox::handleNext (const QString& text, FindFlags flags)
+	void ChatFindBox::HandleNext (const QString& text, FindFlags flags)
 	{
 		emit next (text, flags);
 	}

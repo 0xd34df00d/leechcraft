@@ -92,7 +92,7 @@ namespace Monocle
 		{
 		}
 	protected:
-		void handleNext (const QString& text, FindFlags flags)
+		void HandleNext (const QString& text, FindFlags flags) override
 		{
 			SetSuccessful (SearchHandler_->Search (text, flags));
 		}

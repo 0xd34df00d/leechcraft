@@ -142,16 +142,7 @@ namespace Util
 		 * @return The find flags corresponding to the user choices.
 		 */
 		FindFlags GetFlags () const;
-	protected:
-		/** @brief Called each time the user requests a search.
-		 *
-		 * Reimplement this function to perform the actual search.
-		 *
-		 * @param[in] text The text to search for.
-		 * @param[in] flags The flags to search with.
-		 */
-		virtual void handleNext (const QString& text, FindFlags flags) = 0;
-	public slots:
+
 		/** @brief Search for the next occurrence of the search text.
 		 *
 		 * If the text has been modified since the previous call to
@@ -160,7 +151,7 @@ namespace Util
 		 *
 		 * @sa findPrevious()
 		 */
-		void findNext ();
+		void FindNext ();
 
 		/** @brief Search for the previous occurrence of the search text.
 		 *
@@ -170,15 +161,24 @@ namespace Util
 		 *
 		 * @sa findNext()
 		 */
-		void findPrevious ();
+		void FindPrevious ();
 
 		/** @brief Clears the text in the find field.
 		 *
 		 * This is equivalent to <code>SetText ({})</code>.
 		 */
-		void clear ();
-	protected slots:
-		virtual void reject ();
+		void Clear ();
+	protected:
+		/** @brief Called each time the user requests a search.
+		 *
+		 * Reimplement this function to perform the actual search.
+		 *
+		 * @param[in] text The text to search for.
+		 * @param[in] flags The flags to search with.
+		 */
+		virtual void HandleNext (const QString& text, FindFlags flags) = 0;
+
+		virtual void Reject ();
 	};
 }
 }

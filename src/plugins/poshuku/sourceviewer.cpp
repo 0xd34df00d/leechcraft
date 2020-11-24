@@ -30,7 +30,7 @@ namespace Poshuku
 			{
 			}
 		protected:
-			void handleNext (const QString& text, FindFlags flags)
+			void HandleNext (const QString& text, FindFlags flags) override
 			{
 				QTextDocument::FindFlags tdFlags;
 				if (flags & FindCaseSensitively)

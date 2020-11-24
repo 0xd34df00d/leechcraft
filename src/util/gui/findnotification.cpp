@@ -21,7 +21,7 @@ namespace Util
 	FindNotification::FindNotification (ICoreProxy_ptr proxy, QWidget *parent)
 	: Util::PageNotification { parent }
 	, Ui_ { std::make_unique<Ui::FindNotification> () }
-	, EscShortcut_ { new QShortcut { Qt::Key_Escape, this, SLOT (reject ()) } }
+	, EscShortcut_ { new QShortcut { Qt::Key_Escape, this, this, &FindNotification::Reject } }
 	{
 		Ui_->setupUi (this);
 
@@ -58,7 +58,7 @@ namespace Util
 					auto flags = GetFlags ();
 					if (Ui_->SearchBackwards_->checkState () == Qt::Checked)
 						flags |= FindBackwards;
-					handleNext (Ui_->Pattern_->text (), flags);
+					HandleNext (Ui_->Pattern_->text (), flags);
 				});
 	}
 
@@ -113,30 +113,30 @@ namespace Util
 		return flags;
 	}
 
-	void FindNotification::findNext ()
+	void FindNotification::FindNext ()
 	{
 		const auto& text = GetText ();
 		if (text.isEmpty ())
 			return;
 
-		handleNext (text, GetFlags ());
+		HandleNext (text, GetFlags ());
 	}
 
-	void FindNotification::findPrevious ()
+	void FindNotification::FindPrevious ()
 	{
 		const auto& text = GetText ();
 		if (text.isEmpty ())
 			return;
 
-		handleNext (text, GetFlags () | FindBackwards);
+		HandleNext (text, GetFlags () | FindBackwards);
 	}
 
-	void FindNotification::clear ()
+	void FindNotification::Clear ()
 	{
 		SetText ({});
 	}
 
-	void FindNotification::reject ()
+	void FindNotification::Reject ()
 	{
 		Ui_->Pattern_->clear ();
 		hide ();

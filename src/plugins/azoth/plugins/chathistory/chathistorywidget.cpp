@@ -498,7 +498,7 @@ namespace ChatHistory
 		ShowLoading ();
 
 		PreviousSearchText_.clear ();
-		FindBox_->clear ();
+		FindBox_->Clear ();
 
 		Util::Sequence (this,
 				Params_.StorageMgr_->Search (CurrentAccount_, CurrentEntry_, date.startOfDay ())) >>

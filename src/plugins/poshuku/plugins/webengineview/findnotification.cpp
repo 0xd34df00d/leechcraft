@@ -24,7 +24,7 @@ namespace LC::Poshuku::WebEngineView
 						return;
 
 					ClearFindResults ();
-					findNext ();
+					FindNext ();
 				});
 	}
 
@@ -50,7 +50,7 @@ namespace LC::Poshuku::WebEngineView
 		}
 	}
 
-	void FindNotification::handleNext (const QString& text, FindFlags findFlags)
+	void FindNotification::HandleNext (const QString& text, FindFlags findFlags)
 	{
 		const auto flags = ToPageFlags (findFlags);
 
@@ -63,9 +63,9 @@ namespace LC::Poshuku::WebEngineView
 		WebView_->findText (text, flags, [this] (bool found) { SetSuccessful (found); });
 	}
 
-	void FindNotification::reject ()
+	void FindNotification::Reject ()
 	{
-		Util::FindNotification::reject ();
+		Util::FindNotification::Reject ();
 		ClearFindResults ();
 	}
 }

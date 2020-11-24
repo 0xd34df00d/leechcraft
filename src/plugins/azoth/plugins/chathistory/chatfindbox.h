@@ -22,7 +22,7 @@ namespace ChatHistory
 	public:
 		ChatFindBox (ICoreProxy_ptr, QWidget*);
 	protected:
-		void handleNext (const QString& text, FindFlags flags);
+		void HandleNext (const QString& text, FindFlags flags) override;
 	signals:
 		void next (const QString&, ChatFindBox::FindFlags);
 	};

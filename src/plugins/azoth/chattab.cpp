@@ -2023,7 +2023,7 @@ namespace Azoth
 	void ChatTab::handleChatWindowSearch (const QString& text)
 	{
 		ChatFinder_->SetText (text);
-		ChatFinder_->findNext ();
+		ChatFinder_->FindNext ();
 
 		ChatFinder_->show ();
 	}

@@ -8,7 +8,6 @@
 
 #include "findnotificationwk.h"
 #include <QWebView>
-#include <util/sll/slotclosure.h>
 
 namespace LC
 {
@@ -18,20 +17,17 @@ namespace Util
 	: FindNotification { proxy, near }
 	, WebView_ { near }
 	{
-		new Util::SlotClosure<Util::NoDeletePolicy>
-		{
-			[this]
-			{
-				if (PreviousFindText_.isEmpty ())
-					return;
+		connect (near,
+				&QWebView::loadFinished,
+				this,
+				[this]
+				{
+					if (PreviousFindText_.isEmpty ())
+						return;
 
-				ClearFindResults ();
-				findNext ();
-			},
-			near,
-			SIGNAL (loadFinished (bool)),
-			this
-		};
+					ClearFindResults ();
+					FindNext ();
+				});
 	}
 
 	QWebPage::FindFlags FindNotificationWk::ToPageFlags (FindFlags flags)
@@ -50,11 +46,11 @@ namespace Util
 
 	void FindNotificationWk::ClearFindResults ()
 	{
-		PreviousFindText_ = "";
-		WebView_->page ()->findText ("", QWebPage::HighlightAllOccurrences);
+		PreviousFindText_.clear ();
+		WebView_->page ()->findText ({}, QWebPage::HighlightAllOccurrences);
 	}
 
-	void FindNotificationWk::handleNext (const QString& text, FindNotification::FindFlags findFlags)
+	void FindNotificationWk::HandleNext (const QString& text, FindNotification::FindFlags findFlags)
 	{
 		const auto flags = ToPageFlags (findFlags);
 
@@ -70,9 +66,9 @@ namespace Util
 		SetSuccessful (found);
 	}
 
-	void FindNotificationWk::reject ()
+	void FindNotificationWk::Reject ()
 	{
-		FindNotification::reject ();
+		FindNotification::Reject ();
 		ClearFindResults ();
 	}
 }
