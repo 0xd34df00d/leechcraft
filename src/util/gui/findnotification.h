@@ -179,9 +179,6 @@ namespace Util
 		void clear ();
 	protected slots:
 		virtual void reject ();
-	private slots:
-		void on_Pattern__textChanged (const QString&);
-		void on_FindButton__released ();
 	};
 }
 }

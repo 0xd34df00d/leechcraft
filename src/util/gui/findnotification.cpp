@@ -47,6 +47,19 @@ namespace Util
 				this, SLOT (findNext ()), parent);
 		CreateShortcuts (scProxy->GetShortcuts (coreInstance, "Find.Prev"),
 				this, SLOT (findPrevious ()), parent);
+
+		connect (Ui_->Pattern_,
+				&QLineEdit::textChanged,
+				[this] (const auto& str) { Ui_->FindButton_->setEnabled (!str.isEmpty ()); });
+		connect (Ui_->FindButton_,
+				&QPushButton::released,
+				[this]
+				{
+					auto flags = GetFlags ();
+					if (Ui_->SearchBackwards_->checkState () == Qt::Checked)
+						flags |= FindBackwards;
+					handleNext (Ui_->Pattern_->text (), flags);
+				});
 	}
 
 	FindNotification::~FindNotification () = default;
@@ -127,20 +140,6 @@ namespace Util
 	{
 		Ui_->Pattern_->clear ();
 		hide ();
-	}
-
-	void FindNotification::on_Pattern__textChanged (const QString& newText)
-	{
-		Ui_->FindButton_->setEnabled (!newText.isEmpty ());
-	}
-
-	void FindNotification::on_FindButton__released ()
-	{
-		auto flags = GetFlags ();
-		if (Ui_->SearchBackwards_->checkState () == Qt::Checked)
-			flags |= FindBackwards;
-
-		handleNext (Ui_->Pattern_->text (), flags);
 	}
 }
 }
