@@ -457,7 +457,7 @@ namespace LC
 		PluginTreeBuilder_->AddObjects (Plugins_);
 		PluginTreeBuilder_->Calculate ();
 
-		const auto& ordered = PluginTreeBuilder_->GetResult ();
+		auto ordered = PluginTreeBuilder_->GetResult ();
 
 		for (const auto plugin : Plugins_)
 			if (!ordered.contains (plugin))
@@ -479,6 +479,10 @@ namespace LC
 
 		SetInitStage (InitStage::BeforeSecond);
 
+		// FirstInitAll() might have resulted in some plugins failing to
+		// initialize and the deps tree being recomputed,
+		// so we need to update the list of plugins to be initialized.
+		ordered = PluginTreeBuilder_->GetResult ();
 		for (const auto obj : ordered)
 			Core::Instance ().Setup (obj);
 
