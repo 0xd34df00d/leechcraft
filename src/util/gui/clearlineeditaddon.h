@@ -46,8 +46,6 @@ namespace Util
 		Q_OBJECT
 
 		QToolButton * const Button_;
-		QLineEdit * const Edit_;
-
 		QShortcut * const EscShortcut_;
 	public:
 		/** @brief Creates the addon and installs it on the given edit.
@@ -87,8 +85,6 @@ namespace Util
 		 * edit.
 		 */
 		void SetEscClearsEdit (bool clears);
-	private slots:
-		void updateButton (const QString&);
 	};
 }
 }

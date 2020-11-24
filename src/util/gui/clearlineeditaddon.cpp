@@ -28,7 +28,6 @@ namespace Util
 			QLineEdit *edit, LineEditButtonManager *mgr)
 	: QObject { edit }
 	, Button_ { new QToolButton { edit } }
-	, Edit_ { edit }
 	, EscShortcut_ { new QShortcut { Qt::Key_Escape, edit, SLOT (clear ()), nullptr, Qt::WidgetShortcut } }
 	{
 		const bool isRtl = QApplication::layoutDirection () == Qt::RightToLeft;
@@ -43,22 +42,17 @@ namespace Util
 		Button_->hide ();
 
 		connect (Button_,
-				SIGNAL (clicked ()),
+				&QToolButton::clicked,
 				edit,
-				SLOT (clear ()));
-		connect (edit,
-				SIGNAL (textChanged (QString)),
-				this,
-				SLOT (updateButton (QString)));
+				&QLineEdit::clear);
 
-		updateButton (edit->text ());
+		connect (edit,
+				&QLineEdit::textChanged,
+				this,
+				[this] (const QString& str) { Button_->setVisible (!str.isEmpty ()); });
+		Button_->setVisible (!edit->text ().isEmpty ());
 
 		mgr->Add (Button_);
-	}
-
-	void ClearLineEditAddon::updateButton (const QString& text)
-	{
-		Button_->setVisible (!text.isEmpty ());
 	}
 
 	void ClearLineEditAddon::SetEscClearsEdit (bool clears)
