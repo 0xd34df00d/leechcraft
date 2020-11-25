@@ -26,7 +26,8 @@ namespace Util
 	{
 		edit->installEventFilter (this);
 
-		if (edit->findChildren<LineEditButtonManager*> ().size () > 1)
+		const auto markName = "LC.Core.HasLineEditButtonManager";
+		if (edit->property (markName).toBool ())
 		{
 			std::string str { "LineEditButtonManager is already installed on the edit" };
 
@@ -36,6 +37,8 @@ namespace Util
 
 			throw std::runtime_error (str);
 		}
+
+		edit->setProperty (markName, true);
 	}
 
 	void LineEditButtonManager::Add (QToolButton *button)
