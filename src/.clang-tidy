@@ -6,6 +6,7 @@ Checks: >
   modernize-*,
   performance-*,
   readability-*,
+  -cppcoreguidelines-non-private-member-variables-in-classes,
   -cppcoreguidelines-pro-bounds-array-to-pointer-decay,
   -google-default-arguments,
   -misc-non-private-member-variables-in-classes,
