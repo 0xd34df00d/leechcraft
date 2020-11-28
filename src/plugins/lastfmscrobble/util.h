@@ -24,7 +24,7 @@ namespace LC
 namespace Lastfmscrobble
 {
 	using ParamsMap_t = QMap<QString, QString>;
-	using ParamsList_t = QList<QPair<QString, QString>>;
+	using ParamsList_t = QList<std::pair<QString, QString>>;
 
 	void AddLanguageParam (ParamsMap_t& params);
 

@@ -15,8 +15,6 @@
 #include <QUrlQuery>
 #include <ws.h>
 #include <util/util.h>
-#include <util/sll/util.h>
-#include <util/sll/qtutil.h>
 #include <util/sll/prelude.h>
 #include "xmlsettingsmanager.h"
 
@@ -85,11 +83,7 @@ namespace Lastfmscrobble
 
 	QNetworkReply* Request (const QString& method, QNetworkAccessManager *nam, const ParamsMap_t& map)
 	{
-		ParamsList_t paramsList;
-		paramsList.reserve (map.size ());
-		const auto& stlized = Util::StlizeCopy<QPair> (map);
-		std::copy (stlized.begin (), stlized.end (), std::back_inserter (paramsList));
-
+		ParamsList_t paramsList { map.keyValueBegin (), map.keyValueEnd () };
 		return Request (method, nam, std::move (paramsList));
 	}
 

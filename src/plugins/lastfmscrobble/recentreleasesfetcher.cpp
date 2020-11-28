@@ -9,7 +9,6 @@
 #include "recentreleasesfetcher.h"
 #include <algorithm>
 #include <QNetworkAccessManager>
-#include <QNetworkReply>
 #include <QtDebug>
 #include <QDomDocument>
 #include <util/threads/futures.h>
@@ -30,7 +29,7 @@ namespace Lastfmscrobble
 
 		const auto& user = XmlSettingsManager::Instance ()
 				.property ("lastfm.login").toString ();
-		const QList<QPair<QString, QString>> params
+		const QList<std::pair<QString, QString>> params
 		{
 			{ "user", user },
 			{ "userecs", withRecs ? "1" : "0" }

@@ -103,7 +103,7 @@ namespace Lastfmscrobble
 
 	namespace
 	{
-		QList<QPair<QString, QString>> MakeLoveBanParams (const lastfm::MutableTrack& track)
+		QList<std::pair<QString, QString>> MakeLoveBanParams (const lastfm::MutableTrack& track)
 		{
 			return
 			{
