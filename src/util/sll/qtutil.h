@@ -103,19 +103,6 @@ namespace LC::Util
 			>;
 		return detail::Range<Iterator, BaseIt, Assoc> { std::forward<Assoc> (assoc) };
 	}
-
-	template<template<typename K, typename V> class PairType = std::pair, typename Assoc>
-	auto StlizeCopy (Assoc&& assoc)
-	{
-		using BaseIt = decltype (assoc.begin ());
-		using Iterator = detail::Iterator<
-				PairType,
-				BaseIt,
-				std::decay_t<decltype (BaseIt {}.key ())>,
-				std::decay_t<decltype (BaseIt {}.value ())>
-			>;
-		return detail::Range<Iterator, BaseIt, Assoc> { std::forward<Assoc> (assoc) };
-	}
 }
 
 namespace LC

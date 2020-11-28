@@ -8,9 +8,6 @@
 
 #include "qtutil.h"
 
-namespace LC
+namespace LC::Util
 {
-namespace Util
-{
-}
 }
