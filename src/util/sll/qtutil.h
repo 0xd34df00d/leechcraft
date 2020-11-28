@@ -13,61 +13,12 @@
 
 namespace LC::Util
 {
-	namespace detail
-	{
-		template<template<typename, typename> class PairType, typename BaseIt, typename Key, typename Value>
-		struct Iterator
-		{
-			using iterator_category = std::bidirectional_iterator_tag;
-			using difference_type = std::ptrdiff_t;
-
-			using value_type = PairType<Key, Value>;
-			using reference = value_type;
-			using pointer = value_type*;
-
-			BaseIt BaseIt_;
-
-			bool operator== (const Iterator& other) const { return BaseIt_ == other.BaseIt_; }
-			bool operator!= (const Iterator& other) const { return BaseIt_ != other.BaseIt_; }
-
-			reference operator* () { return { BaseIt_.key (), BaseIt_.value () }; }
-
-			Iterator& operator++ ()
-			{
-				++BaseIt_;
-				return *this;
-			}
-
-			Iterator operator++ (int) & { return { BaseIt_++ }; }
-
-			Iterator& operator-- ()
-			{
-				--BaseIt_;
-				return *this;
-			}
-
-			Iterator operator-- (int) & { return { BaseIt_-- }; }
-		};
-
-		template<typename Iter, typename BaseIter, typename Assoc>
-		struct Range
-		{
-			Assoc Assoc_;
-
-			BaseIter Begin_ = Assoc_.begin ();
-			BaseIter End_ = Assoc_.end ();
-
-			auto begin () const { return Iter { Begin_ }; }
-			auto end () const { return Iter { End_ }; }
-		};
-	}
-
 	/** @brief Converts an Qt's associative sequence \em assoc to an
 	 * STL-like iteratable range.
 	 *
 	 * This function takes an associative container \em assoc (one of
 	 * Qt's containers like QHash and QMap) and returns a range with
-	 * <code>value_type</code> equal to <code>PairType<K, V></code>.
+	 * <code>value_type</code> equal to <code>std::pair<K, V></code>.
 	 *
 	 * This way, both the key and the value of each pair in the \em assoc
 	 * can be accessed in a range-for loop, for example.
@@ -87,21 +38,20 @@ namespace LC::Util
 	 * @return A range with iterators providing access to both the key
 	 * and the value via its <code>value_type</code>.
 	 *
-	 * @tparam PairType The type of the pairs that should be used in the
-	 * resulting range's iterators' <code>value_type</code>.
 	 * @tparam Assoc The type of the source Qt associative container.
 	 */
-	template<template<typename K, typename V> class PairType = std::pair, typename Assoc>
+	template<typename Assoc>
 	auto Stlize (Assoc&& assoc)
 	{
-		using BaseIt = decltype (assoc.begin ());
-		using Iterator = detail::Iterator<
-				PairType,
-				BaseIt,
-				decltype (BaseIt {}.key ()),
-				decltype (BaseIt {}.value ())
-			>;
-		return detail::Range<Iterator, BaseIt, Assoc> { std::forward<Assoc> (assoc) };
+		struct Range
+		{
+			Assoc Assoc_;
+
+			auto begin () const { return Assoc_.keyValueBegin (); }
+			auto end () const { return Assoc_.keyValueEnd (); }
+		};
+
+		return Range { std::forward<Assoc> (assoc) };
 	}
 }
 
