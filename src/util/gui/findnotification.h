@@ -101,7 +101,7 @@ namespace Util
 		 * notification.
 		 * @param[in] near The widget near which to embed.
 		 */
-		FindNotification (ICoreProxy_ptr proxy, QWidget *near);
+		FindNotification (const ICoreProxy_ptr& proxy, QWidget *near);
 		~FindNotification ();
 
 		/** @brief Sets whether Esc closes the widget.

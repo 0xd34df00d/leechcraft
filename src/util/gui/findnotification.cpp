@@ -18,7 +18,7 @@ namespace LC
 {
 namespace Util
 {
-	FindNotification::FindNotification (ICoreProxy_ptr proxy, QWidget *parent)
+	FindNotification::FindNotification (const ICoreProxy_ptr& proxy, QWidget *parent)
 	: Util::PageNotification { parent }
 	, Ui_ { std::make_unique<Ui::FindNotification> () }
 	, EscShortcut_ { new QShortcut { Qt::Key_Escape, this, this, &FindNotification::Reject } }

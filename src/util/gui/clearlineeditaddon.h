@@ -60,7 +60,7 @@ namespace Util
 		 * @param[in] edit The line edit to install this addon into. The
 		 * edit takes ownership of the addon.
 		 */
-		ClearLineEditAddon (ICoreProxy_ptr proxy, QLineEdit *edit);
+		ClearLineEditAddon (const ICoreProxy_ptr& proxy, QLineEdit *edit);
 
 		/** @brief Creates the addon and installs it on the given edit.
 		 *
@@ -75,7 +75,7 @@ namespace Util
 		 * @param[in] manager The line edit button manager to use instead
 		 * of the default internal one.
 		 */
-		ClearLineEditAddon (ICoreProxy_ptr proxy, QLineEdit *edit, LineEditButtonManager *manager);
+		ClearLineEditAddon (const ICoreProxy_ptr& proxy, QLineEdit *edit, LineEditButtonManager *manager);
 
 		/** @brief Toggles whether Esc button clears the line edit.
 		 *

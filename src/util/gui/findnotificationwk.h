@@ -46,7 +46,7 @@ namespace Util
 		 *
 		 * @sa FindNotification
 		 */
-		FindNotificationWk (ICoreProxy_ptr proxy, QWebView *near);
+		FindNotificationWk (const ICoreProxy_ptr& proxy, QWebView *near);
 
 		/** @brief Converts the given \em findFlags to WebKit find flags.
 		 *

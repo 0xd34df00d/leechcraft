@@ -19,12 +19,12 @@ namespace LC
 {
 namespace Util
 {
-	ClearLineEditAddon::ClearLineEditAddon (ICoreProxy_ptr proxy, QLineEdit *edit)
+	ClearLineEditAddon::ClearLineEditAddon (const ICoreProxy_ptr& proxy, QLineEdit *edit)
 	: ClearLineEditAddon { proxy, edit, new LineEditButtonManager { edit } }
 	{
 	}
 
-	ClearLineEditAddon::ClearLineEditAddon (ICoreProxy_ptr proxy,
+	ClearLineEditAddon::ClearLineEditAddon (const ICoreProxy_ptr& proxy,
 			QLineEdit *edit, LineEditButtonManager *mgr)
 	: QObject { edit }
 	, Button_ { new QToolButton { edit } }

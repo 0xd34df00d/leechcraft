@@ -13,7 +13,7 @@ namespace LC
 {
 namespace Util
 {
-	FindNotificationWk::FindNotificationWk (ICoreProxy_ptr proxy, QWebView *near)
+	FindNotificationWk::FindNotificationWk (const ICoreProxy_ptr& proxy, QWebView *near)
 	: FindNotification { proxy, near }
 	, WebView_ { near }
 	{
