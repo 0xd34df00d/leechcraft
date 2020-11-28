@@ -9,9 +9,7 @@
 #include "findnotificationwk.h"
 #include <QWebView>
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	FindNotificationWk::FindNotificationWk (const ICoreProxy_ptr& proxy, QWebView *near)
 	: FindNotification { proxy, near }
@@ -71,5 +69,4 @@ namespace Util
 		FindNotification::Reject ();
 		ClearFindResults ();
 	}
-}
 }

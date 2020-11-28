@@ -15,9 +15,7 @@
 #include "lineeditbuttonmanager.h"
 #include "interfaces/core/iiconthememanager.h"
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	ClearLineEditAddon::ClearLineEditAddon (const ICoreProxy_ptr& proxy, QLineEdit *edit)
 	: ClearLineEditAddon { proxy, edit, new LineEditButtonManager { edit } }
@@ -59,5 +57,4 @@ namespace Util
 	{
 		EscShortcut_->setEnabled (clears);
 	}
-}
 }

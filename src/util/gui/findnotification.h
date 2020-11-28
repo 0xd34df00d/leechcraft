@@ -20,9 +20,7 @@ namespace Ui
 	class FindNotification;
 }
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	/** @brief A horizontal bar with typical widgets for text search.
 	 *
@@ -102,7 +100,7 @@ namespace Util
 		 * @param[in] near The widget near which to embed.
 		 */
 		FindNotification (const ICoreProxy_ptr& proxy, QWidget *near);
-		~FindNotification ();
+		~FindNotification () override;
 
 		/** @brief Sets whether Esc closes the widget.
 		 *
@@ -180,5 +178,4 @@ namespace Util
 
 		virtual void Reject ();
 	};
-}
 }

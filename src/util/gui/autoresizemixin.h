@@ -17,9 +17,7 @@
 class QWidget;
 class QWindow;
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	/** @brief Automatically moves a widget to fit a rectangle on resize.
 	 *
@@ -87,9 +85,8 @@ namespace Util
 
 		/** @brief Listens for resize events and refits the widget.
 		 */
-		bool eventFilter (QObject*, QEvent*);
+		bool eventFilter (QObject*, QEvent*) override;
 	private:
 		void Refit (const QSize&);
 	};
-}
 }

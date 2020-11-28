@@ -14,9 +14,7 @@
 class QToolButton;
 class QLineEdit;
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	/** @brief Manages additional overlay buttons in a QLineEdit.
 	 *
@@ -57,7 +55,7 @@ namespace Util
 		 * @exception std::runtime_error the line edit is already managed
 		 * by another LineEditButtonManager instance.
 		 */
-		LineEditButtonManager (QLineEdit *edit);
+		explicit LineEditButtonManager (QLineEdit *edit);
 
 		/** @brief Adds a \em button to the line edit.
 		 *
@@ -65,9 +63,8 @@ namespace Util
 		 */
 		void Add (QToolButton *button);
 	protected:
-		bool eventFilter (QObject*, QEvent*);
+		bool eventFilter (QObject*, QEvent*) override;
 	private:
 		void UpdatePos ();
 	};
-}
 }

@@ -14,9 +14,7 @@
 #include <QDialogButtonBox>
 #include "ui_sslcertificateinfowidget.h"
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	SslCertificateInfoWidget::SslCertificateInfoWidget (QWidget *parent)
 	: QWidget { parent }
@@ -72,7 +70,7 @@ namespace Util
 
 	QDialog* MakeCertificateViewerDialog (const QSslCertificate& cert, QWidget *parent)
 	{
-		auto dia = new QDialog { parent };
+		const auto dia = new QDialog { parent };
 		dia->setLayout (new QVBoxLayout);
 
 		const auto certWidget = new Util::SslCertificateInfoWidget;
@@ -80,17 +78,16 @@ namespace Util
 
 		const auto buttons = new QDialogButtonBox { QDialogButtonBox::Close };
 		QObject::connect (buttons,
-				SIGNAL (accepted ()),
+				&QDialogButtonBox::accepted,
 				dia,
-				SLOT (accept ()));
+				&QDialog::accept);
 		QObject::connect (buttons,
-				SIGNAL (rejected ()),
+				&QDialogButtonBox::rejected,
 				dia,
-				SLOT (reject ()));
+				&QDialog::reject);
 		dia->layout ()->addWidget (buttons);
 
 		certWidget->SetCertificate (cert);
 		return dia;
 	}
-}
 }

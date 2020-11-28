@@ -12,15 +12,13 @@
 #include <QResizeEvent>
 #include <util/gui/geometry.h>
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	AutoResizeMixin::AutoResizeMixin (const QPoint& point, RectGetter_f size, QWidget *view)
 	: QObject (view)
 	, OrigPoint_ (point)
 	, Mover_ ([view] (const QPoint& pos) { view->move (pos); })
-	, Rect_ (size)
+	, Rect_ (std::move (size))
 	{
 		view->installEventFilter (this);
 		Refit (view->size ());
@@ -30,7 +28,7 @@ namespace Util
 	: QObject (window)
 	, OrigPoint_ (point)
 	, Mover_ ([window] (const QPoint& pos) { window->setPosition (pos); })
-	, Rect_ (size)
+	, Rect_ (std::move (size))
 	{
 		window->installEventFilter (this);
 		Refit (window->size ());
@@ -50,5 +48,4 @@ namespace Util
 	{
 		Mover_ (FitRect (OrigPoint_, size, Rect_ (), Util::FitFlag::NoOverlap));
 	}
-}
 }

@@ -9,9 +9,7 @@
 #include "flowlayout.h"
 #include <QWidget>
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	FlowLayout::FlowLayout (QWidget *parent,
 			int margin, int hspace, int vspace)
@@ -78,10 +76,10 @@ namespace Util
 
 	QLayoutItem* FlowLayout::takeAt (int idx)
 	{
-		if (idx >= 0 && idx < ItemList_.size ())
-			return ItemList_.takeAt (idx);
-		else
+		if (idx < 0 || idx >= ItemList_.size ())
 			return nullptr;
+
+		return ItemList_.takeAt (idx);
 	}
 
 	QSize FlowLayout::minimumSize () const
@@ -155,13 +153,12 @@ namespace Util
 		const auto obj = parent ();
 		if (!obj)
 			return -1;
-		else if (obj->isWidgetType ())
-		{
-			const auto pw = static_cast<QWidget*> (obj);
-			return pw->style ()->pixelMetric (pm, 0, pw);
-		}
-		else
-			return static_cast<QLayout*> (obj)->spacing ();
+
+		if (const auto pw = dynamic_cast<QWidget*> (obj))
+			return pw->style ()->pixelMetric (pm, nullptr, pw);
+		if (const auto lay = dynamic_cast<QLayout*> (obj))
+			return lay->spacing ();
+
+		return -1;
 	}
-}
 }

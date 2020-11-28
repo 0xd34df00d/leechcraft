@@ -17,15 +17,13 @@
 #include <QtDebug>
 #include "geometry.h"
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	namespace
 	{
 		class AADisplayEventFilter : public QObject
 		{
-			QWidget *Display_;
+			QWidget * const Display_;
 		public:
 			explicit AADisplayEventFilter (QWidget *display)
 			: QObject (display)
@@ -53,7 +51,7 @@ namespace Util
 
 				QTimer::singleShot (0,
 						Display_,
-						SLOT (close ()));
+						&QWidget::close);
 				return true;
 			}
 		};
@@ -61,14 +59,15 @@ namespace Util
 
 	QLabel* ShowPixmapLabel (const QPixmap& srcPx, const QPoint& pos)
 	{
-		const auto& availGeom = AvailableGeometry (pos).size () * 0.9;
+		const auto scaleFactor = 0.9;
+		const auto& availGeom = AvailableGeometry (pos).size () * scaleFactor;
 
 		auto px = srcPx;
 		if (px.size ().width () > availGeom.width () ||
 			px.size ().height () > availGeom.height ())
 			px = px.scaled (availGeom, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 
-		auto label = new QLabel;
+		const auto label = new QLabel;
 		label->setWindowFlags (Qt::Tool);
 		label->setAttribute (Qt::WA_DeleteOnClose);
 		label->setFixedSize (px.size ());
@@ -106,5 +105,4 @@ namespace Util
 	{
 		return "<em>" + name + "</em>";
 	}
-}
 }

@@ -9,9 +9,7 @@
 #include "colorbutton.h"
 #include <QColorDialog>
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	ColorButton::ColorButton (QWidget *parent)
 	: QPushButton { parent }
@@ -53,5 +51,4 @@ namespace Util
 
 		SetColor (color);
 	}
-}
 }

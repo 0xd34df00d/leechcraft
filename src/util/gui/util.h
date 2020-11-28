@@ -21,9 +21,7 @@ class QColor;
 class QWidget;
 class QStyleOptionViewItem;
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	/** @brief Shows a pixmap at the given pos.
 	 *
@@ -109,5 +107,4 @@ namespace Util
 
 		mimeData->setData (name, infosData);
 	}
-}
 }

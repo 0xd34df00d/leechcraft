@@ -13,9 +13,7 @@
 
 class QWebView;
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	/** @brief A helper class to aid connecting FindNotification with
 	 * Qt WebKit.
@@ -61,5 +59,4 @@ namespace Util
 		void HandleNext (const QString& text, FindFlags flags) override;
 		void Reject () override;
 	};
-}
 }

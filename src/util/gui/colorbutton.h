@@ -12,9 +12,7 @@
 #include <QColor>
 #include "guiconfig.h"
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	/** @brief A button for choosing a color.
 	 *
@@ -32,7 +30,7 @@ namespace Util
 		 *
 		 * @param[in] parent The parent widget for the button.
 		 */
-		ColorButton (QWidget *parent = 0);
+		explicit ColorButton (QWidget *parent = nullptr);
 
 		/** @brief Returns the current color represented by this button.
 		 *
@@ -66,5 +64,4 @@ namespace Util
 		 */
 		void colorChanged (const QColor& color);
 	};
-}
 }

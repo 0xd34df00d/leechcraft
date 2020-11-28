@@ -11,9 +11,7 @@
 #include <QWidget>
 #include "guiconfig.h"
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	/** @brief A horizontal widget embedding into the parent layout of
 	 * the passed \em parent widget.
@@ -33,7 +31,6 @@ namespace Util
 		 *
 		 * @param[in] parent The widget whose parent layout should be used.
 		 */
-		PageNotification (QWidget *parent);
+		explicit PageNotification (QWidget *parent);
 	};
-}
 }

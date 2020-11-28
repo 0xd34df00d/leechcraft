@@ -44,7 +44,7 @@ namespace Util
 		Q_OBJECT
 
 		QTimer *LeaveTimer_;
-		bool ContainsMouse_;
+		bool ContainsMouse_ = false;
 	public:
 		/** @brief Creates the mixin for the given parent widget.
 		 *
@@ -53,7 +53,7 @@ namespace Util
 		 * @param[in] slot The slot to call when enough time has passed
 		 * since mouse leave. By default it is <code>deleteLater()</code>.
 		 */
-		UTIL_GUI_API UnhoverDeleteMixin (QObject *parent, const char *slot = SLOT (deleteLater ()));
+		UTIL_GUI_API explicit UnhoverDeleteMixin (QObject *parent, const char *slot = SLOT (deleteLater ()));
 
 		/** @brief Manually starts the timer.
 		 *
@@ -87,7 +87,7 @@ namespace Util
 		 */
 		void UTIL_GUI_API Stop ();
 	protected:
-		bool eventFilter (QObject*, QEvent*);
+		bool eventFilter (QObject*, QEvent*) override;
 	};
 }
 }

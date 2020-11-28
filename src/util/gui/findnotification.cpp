@@ -14,9 +14,7 @@
 #include "util/shortcuts/util.h"
 #include "ui_findnotification.h"
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	FindNotification::FindNotification (const ICoreProxy_ptr& proxy, QWidget *parent)
 	: Util::PageNotification { parent }
@@ -141,5 +139,4 @@ namespace Util
 		Ui_->Pattern_->clear ();
 		hide ();
 	}
-}
 }

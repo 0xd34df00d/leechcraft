@@ -16,9 +16,7 @@ class QLineEdit;
 class QToolButton;
 class QShortcut;
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	class LineEditButtonManager;
 
@@ -86,5 +84,4 @@ namespace Util
 		 */
 		void SetEscClearsEdit (bool clears);
 	};
-}
 }

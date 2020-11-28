@@ -6,15 +6,13 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#ifndef UTIL_FLOWLAYOUT_H
-#define UTIL_FLOWLAYOUT_H
+#pragma once
+
 #include <QLayout>
 #include <QStyle>
 #include "guiconfig.h"
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	/** @brief A simple flow layout implementation.
 	 *
@@ -29,9 +27,9 @@ namespace Util
 		int HSpace_;
 		int VSpace_;
 	public:
-		FlowLayout (QWidget*, int = -1, int = -1, int = -1);
-		FlowLayout (int = -1, int = -1, int = -1);
-		virtual ~FlowLayout ();
+		explicit FlowLayout (QWidget*, int = -1, int = -1, int = -1);
+		explicit FlowLayout (int = -1, int = -1, int = -1);
+		~FlowLayout () override;
 
 		void addItem (QLayoutItem*) override;
 
@@ -52,6 +50,3 @@ namespace Util
 		int SmartSpacing (QStyle::PixelMetric) const;
 	};
 }
-}
-
-#endif

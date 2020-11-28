@@ -14,14 +14,11 @@
 #include <QApplication>
 #include <QStyle>
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	UnhoverDeleteMixin::UnhoverDeleteMixin (QObject *watched, const char *slot)
 	: QObject (watched)
 	, LeaveTimer_ (new QTimer (this))
-	, ContainsMouse_ (false)
 	{
 		watched->installEventFilter (this);
 
@@ -69,5 +66,4 @@ namespace Util
 
 		return false;
 	}
-}
 }

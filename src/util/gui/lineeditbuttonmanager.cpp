@@ -14,9 +14,7 @@
 #include <QEvent>
 #include <QtDebug>
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	LineEditButtonManager::LineEditButtonManager (QLineEdit *edit)
 	: QObject { edit }
@@ -79,5 +77,4 @@ namespace Util
 					(rect.bottom () + 1 - hint.height ()) / 2);
 		}
 	}
-}
 }

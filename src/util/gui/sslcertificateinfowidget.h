@@ -20,19 +20,16 @@ namespace Ui
 	class SslCertificateInfoWidget;
 }
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	class UTIL_GUI_API SslCertificateInfoWidget : public QWidget
 	{
 		std::shared_ptr<Ui::SslCertificateInfoWidget> Ui_;
 	public:
-		SslCertificateInfoWidget (QWidget* = nullptr);
+		explicit SslCertificateInfoWidget (QWidget* = nullptr);
 
 		void SetCertificate (const QSslCertificate&);
 	};
 
 	UTIL_GUI_API QDialog* MakeCertificateViewerDialog (const QSslCertificate&, QWidget* = nullptr);
-}
 }

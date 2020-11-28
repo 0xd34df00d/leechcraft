@@ -10,9 +10,7 @@
 #include <stdexcept>
 #include <QVBoxLayout>
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	PageNotification::PageNotification (QWidget *widget)
 	: QWidget (widget)
@@ -24,5 +22,4 @@ namespace Util
 		const auto idx = lay->indexOf (widget);
 		lay->insertWidget (idx + 1, this);
 	}
-}
 }
