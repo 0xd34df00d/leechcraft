@@ -30,7 +30,7 @@ namespace HotStreams
 			friend bool operator== (const StationInfo&, const StationInfo&);
 		};
 
-		using StationInfoList_t = QList<QPair<QString, QList<StationInfo>>>;
+		using StationInfoList_t = QList<std::pair<QString, QList<StationInfo>>>;
 	private:
 		StationInfoList_t Stations_;
 	public:

@@ -237,7 +237,7 @@ namespace HotStreams
 			if (stations.size () > 20)
 				CoalesceOthers (stations, 20);
 
-			return Util::Map (Util::StlizeCopy<QPair> (stations), Util::Id);
+			return { stations.keyValueBegin (), stations.keyValueEnd () };
 		}
 	}
 
