@@ -7,8 +7,6 @@
  **********************************************************************/
 
 #include "util.h"
-#include <QShortcut>
-#include <util/sll/slotclosure.h>
 
 namespace LC
 {
@@ -18,16 +16,10 @@ namespace Util
 			const std::function<void ()>& func, QWidget *parent)
 	{
 		for (const auto& sc : shortcuts)
-		{
-			const auto obj = new QShortcut { sc, parent };
-			new Util::SlotClosure<Util::NoDeletePolicy>
-			{
-				func,
-				obj,
-				SIGNAL (activated ()),
-				parent
-			};
-		}
+			QObject::connect (new QShortcut { sc, parent },
+					&QShortcut::activated,
+					parent,
+					func);
 	}
 
 	void CreateShortcuts (const QList<QKeySequence>& shortcuts,
