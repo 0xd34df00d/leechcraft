@@ -53,8 +53,8 @@ namespace LC::Util
 		 * @sa SetColor(), colorChanged()
 		 */
 		void SetColor (const QColor& color);
-	private slots:
-		void handleSelector ();
+	private:
+		void HandleSelector ();
 	signals:
 		/** @brief Emitted when the color is changed.
 		 *

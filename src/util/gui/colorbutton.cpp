@@ -15,9 +15,9 @@ namespace LC::Util
 	: QPushButton { parent }
 	{
 		connect (this,
-				SIGNAL (released ()),
+				&QPushButton::released,
 				this,
-				SLOT (handleSelector ()));
+				&ColorButton::HandleSelector);
 
 		SetColor (Qt::black);
 	}
@@ -40,7 +40,7 @@ namespace LC::Util
 		setIcon (px);
 	}
 
-	void ColorButton::handleSelector ()
+	void ColorButton::HandleSelector ()
 	{
 		const auto color = QColorDialog::getColor (Color_,
 				this,
