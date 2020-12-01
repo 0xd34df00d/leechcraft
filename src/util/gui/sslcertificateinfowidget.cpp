@@ -8,10 +8,10 @@
 
 #include "sslcertificateinfowidget.h"
 #include <QSslCertificate>
-#include <QDateTime>
 #include <QVBoxLayout>
 #include <QDialog>
 #include <QDialogButtonBox>
+#include <util/sll/qtutil.h>
 #include "ui_sslcertificateinfowidget.h"
 
 namespace LC::Util
@@ -38,11 +38,11 @@ namespace LC::Util
 	{
 		auto setSubjectInfo = [&cert] (QLabel *label, QSslCertificate::SubjectInfo key)
 		{
-			label->setText (cert.subjectInfo (key).join ("; "));
+			label->setText (cert.subjectInfo (key).join ("; "_ql));
 		};
 		auto setIssuerInfo = [&cert] (QLabel *label, QSslCertificate::SubjectInfo key)
 		{
-			label->setText (cert.issuerInfo (key).join ("; "));
+			label->setText (cert.issuerInfo (key).join ("; "_ql));
 		};
 
 		setSubjectInfo (Ui_->SubjectCommonName_, QSslCertificate::CommonName);

@@ -30,13 +30,13 @@ namespace LC::Util
 	{
 		const bool isRtl = QApplication::layoutDirection () == Qt::RightToLeft;
 		const auto& icon = proxy->GetIconThemeManager ()->GetIcon (isRtl ?
-				"edit-clear-locationbar-ltr" :
-				"edit-clear-locationbar-rtl");
+				QStringLiteral ("edit-clear-locationbar-ltr") :
+				QStringLiteral ("edit-clear-locationbar-rtl"));
 
 		Button_->setIconSize (QSize (16, 16));
 		Button_->setIcon (icon);
 		Button_->setCursor (Qt::ArrowCursor);
-		Button_->setStyleSheet ("QToolButton { border: none; padding: 0px; }");
+		Button_->setStyleSheet (QStringLiteral ("QToolButton { border: none; padding: 0px; }"));
 		Button_->hide ();
 
 		connect (Button_,

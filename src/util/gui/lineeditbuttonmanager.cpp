@@ -46,7 +46,7 @@ namespace LC::Util
 		const auto& buttonSH = button->sizeHint ();
 		Pad_ += buttonSH.width ();
 
-		Edit_->setStyleSheet (QString ("QLineEdit { padding-right: %1px; }")
+		Edit_->setStyleSheet (QStringLiteral ("QLineEdit { padding-right: %1px; }")
 					.arg (Pad_));
 
 		UpdatePos ();

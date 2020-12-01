@@ -30,21 +30,20 @@ namespace LC::Util
 		const auto addon = new Util::ClearLineEditAddon { proxy, Ui_->Pattern_ };
 		addon->SetEscClearsEdit (false);
 
-		const auto coreInstance = proxy->GetPluginsManager ()->
-				GetPluginByID ("org.LeechCraft.CoreInstance");
+		const auto coreInstance = proxy->GetPluginsManager ()->GetPluginByID ("org.LeechCraft.CoreInstance");
 		const auto scProxy = proxy->GetShortcutProxy ();
 
-		CreateShortcuts (scProxy->GetShortcuts (coreInstance, "Find.Show"),
+		CreateShortcuts (scProxy->GetShortcuts (coreInstance, QStringLiteral ("Find.Show")),
 				[this]
 				{
 					show ();
 					setFocus ();
 				},
 				parent);
-		CreateShortcuts (scProxy->GetShortcuts (coreInstance, "Find.Next"),
-				this, SLOT (findNext ()), parent);
-		CreateShortcuts (scProxy->GetShortcuts (coreInstance, "Find.Prev"),
-				this, SLOT (findPrevious ()), parent);
+		CreateShortcuts (scProxy->GetShortcuts (coreInstance, QStringLiteral ("Find.Next")),
+				this, &FindNotification::FindNext, parent);
+		CreateShortcuts (scProxy->GetShortcuts (coreInstance, QStringLiteral ("Find.Prev")),
+				this, &FindNotification::FindPrevious, parent);
 
 		connect (Ui_->Pattern_,
 				&QLineEdit::textChanged,
