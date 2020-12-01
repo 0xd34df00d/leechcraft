@@ -9,6 +9,7 @@
 #pragma once
 
 #include <functional>
+#include <QShortcut>
 #include "shortcutsconfig.h"
 
 class QKeySequence;
@@ -38,6 +39,14 @@ namespace Util
 	 */
 	UTIL_SHORTCUTS_API void CreateShortcuts (const QList<QKeySequence>& seqs,
 			const std::function<void ()>& func, QWidget *parent);
+
+	template<typename Obj>
+	void CreateShortcuts (const QList<QKeySequence>& seqs,
+			Obj *obj, void (Obj::*member) (), QWidget *parent)
+	{
+		for (const auto& sc : seqs)
+			new QShortcut { sc, parent, obj, member };
+	}
 
 	/** @brief Makes \em metamethod invokable with shortcuts in \em seq.
 	 *
