@@ -48,7 +48,7 @@ namespace LC::Util
 		Ui_->PostgresPassword_->setText (Manager_->Property ("PostgresPassword", "").toString ());
 
 		Ui_->MysqlHostname_->setText (Manager_->Property ("MysqlHostname", "localhost").toString ());
-		Ui_->MysqlPort_->setValue (Manager_->Property ("MysqlPort", 5432).toInt ());
+		Ui_->MysqlPort_->setValue (Manager_->Property ("MysqlPort", 3306).toInt ());
 		Ui_->MysqlDBName_->setText (Manager_->Property ("MysqlDBName", "").toString ());
 		Ui_->MysqlUsername_->setText (Manager_->Property ("MysqlUsername", "").toString ());
 		Ui_->MysqlPassword_->setText (Manager_->Property ("MysqlPassword", "").toString ());
