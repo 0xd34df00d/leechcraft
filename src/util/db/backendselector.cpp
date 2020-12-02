@@ -41,14 +41,16 @@ namespace LC::Util
 		Ui_->StorageType_->setCurrentIndex (index);
 		Ui_->Settings_->setCurrentIndex (index);
 
+		const auto defaultPgPort = 5432;
 		Ui_->PostgresHostname_->setText (Manager_->Property ("PostgresHostname", "localhost").toString ());
-		Ui_->PostgresPort_->setValue (Manager_->Property ("PostgresPort", 5432).toInt ());
+		Ui_->PostgresPort_->setValue (Manager_->Property ("PostgresPort", defaultPgPort).toInt ());
 		Ui_->PostgresDBName_->setText (Manager_->Property ("PostgresDBName", "").toString ());
 		Ui_->PostgresUsername_->setText (Manager_->Property ("PostgresUsername", "").toString ());
 		Ui_->PostgresPassword_->setText (Manager_->Property ("PostgresPassword", "").toString ());
 
+		const auto defaultMysqlPort = 3306;
 		Ui_->MysqlHostname_->setText (Manager_->Property ("MysqlHostname", "localhost").toString ());
-		Ui_->MysqlPort_->setValue (Manager_->Property ("MysqlPort", 3306).toInt ());
+		Ui_->MysqlPort_->setValue (Manager_->Property ("MysqlPort", defaultMysqlPort).toInt ());
 		Ui_->MysqlDBName_->setText (Manager_->Property ("MysqlDBName", "").toString ());
 		Ui_->MysqlUsername_->setText (Manager_->Property ("MysqlUsername", "").toString ());
 		Ui_->MysqlPassword_->setText (Manager_->Property ("MysqlPassword", "").toString ());
