@@ -21,9 +21,10 @@ class IShortcutProxy;
 
 namespace LC
 {
-struct Entity;
+	struct Entity;
+}
 
-namespace Util
+namespace LC::Util
 {
 	/** @brief Aids in providing configurable shortcuts.
 	 *
@@ -71,7 +72,7 @@ namespace Util
 		 * your plugin.
 		 * @param[in] parent The parent object of this object.
 		 */
-		ShortcutManager (ICoreProxy_ptr proxy, QObject *parent = nullptr);
+		explicit ShortcutManager (const ICoreProxy_ptr& proxy, QObject *parent = nullptr);
 
 		/** @brief Sets the plugin instance object of this manager.
 		 *
@@ -190,5 +191,4 @@ namespace Util
 	private:
 		bool HasActionInfo (const QString&) const;
 	};
-}
 }

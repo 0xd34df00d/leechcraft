@@ -16,13 +16,11 @@
 #include "interfaces/core/iiconthememanager.h"
 #include "interfaces/core/ishortcutproxy.h"
 
-namespace LC
+namespace LC::Util
 {
-namespace Util
-{
-	ShortcutManager::ShortcutManager (ICoreProxy_ptr proxy, QObject *parent)
-	: QObject (parent)
-	, CoreProxy_ (proxy)
+	ShortcutManager::ShortcutManager (const ICoreProxy_ptr& proxy, QObject *parent)
+	: QObject { parent }
+	, CoreProxy_ { proxy }
 	{
 	}
 
@@ -141,9 +139,9 @@ namespace Util
 				subsc->setContext (sc->context ());
 				subsc->setKey (seqs.value (i));
 				connect (subsc,
-						SIGNAL (activated ()),
+						&QShortcut::activated,
 						sc,
-						SIGNAL (activated ()));
+						&QShortcut::activated);
 				Shortcut2Subs_ [sc] << subsc;
 			}
 		}
@@ -174,5 +172,4 @@ namespace Util
 		return ActionInfo_.contains (id) &&
 				!ActionInfo_ [id].UserVisibleText_.isEmpty ();
 	}
-}
 }

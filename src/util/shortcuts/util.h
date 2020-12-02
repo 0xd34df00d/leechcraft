@@ -10,18 +10,14 @@
 
 #include <functional>
 #include <QShortcut>
+#include <QList>
 #include "shortcutsconfig.h"
 
 class QKeySequence;
 class QWidget;
 class QObject;
 
-template<typename T>
-class QList;
-
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	/** @brief Makes \em func invokable with shortcuts in \em seq.
 	 *
@@ -66,5 +62,4 @@ namespace Util
 	 */
 	UTIL_SHORTCUTS_API void CreateShortcuts (const QList<QKeySequence>& seqs,
 			QObject *object, const char *metamethod, QWidget *parent);
-}
 }

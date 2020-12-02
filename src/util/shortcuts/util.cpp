@@ -8,9 +8,7 @@
 
 #include "util.h"
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	void CreateShortcuts (const QList<QKeySequence>& shortcuts,
 			const std::function<void ()>& func, QWidget *parent)
@@ -31,5 +29,4 @@ namespace Util
 					object,
 					metamethod);
 	}
-}
 }
