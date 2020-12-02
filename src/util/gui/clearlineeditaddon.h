@@ -41,8 +41,6 @@ namespace LC::Util
 	 */
 	class UTIL_GUI_API ClearLineEditAddon : public QObject
 	{
-		Q_OBJECT
-
 		QToolButton * const Button_;
 		QShortcut * const EscShortcut_;
 	public:

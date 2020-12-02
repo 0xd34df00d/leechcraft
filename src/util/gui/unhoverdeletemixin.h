@@ -41,8 +41,6 @@ namespace Util
 	 */
 	class UnhoverDeleteMixin : public QObject
 	{
-		Q_OBJECT
-
 		QTimer *LeaveTimer_;
 		bool ContainsMouse_ = false;
 	public:

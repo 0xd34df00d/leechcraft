@@ -60,8 +60,6 @@ namespace LC::Util
 	 */
 	class UTIL_GUI_API FindNotification : public PageNotification
 	{
-		Q_OBJECT
-
 		std::unique_ptr<Ui::FindNotification> Ui_;
 		QShortcut * const EscShortcut_;
 	public:
