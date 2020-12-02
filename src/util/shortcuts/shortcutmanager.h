@@ -53,8 +53,6 @@ namespace Util
 	 */
 	class UTIL_SHORTCUTS_API ShortcutManager : public QObject
 	{
-		Q_OBJECT
-
 		ICoreProxy_ptr CoreProxy_;
 		QObject *ContextObj_ = nullptr;
 
@@ -191,9 +189,6 @@ namespace Util
 		ShortcutManager& operator<< (const QPair<QString, QAction*>& pair);
 	private:
 		bool HasActionInfo (const QString&) const;
-	private slots:
-		void handleActionDestroyed ();
-		void handleShortcutDestroyed ();
 	};
 }
 }

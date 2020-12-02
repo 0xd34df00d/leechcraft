@@ -35,9 +35,13 @@ namespace Util
 	{
 		Actions_ [id] << act;
 		connect (act,
-				SIGNAL (destroyed ()),
+				&QObject::destroyed,
 				this,
-				SLOT (handleActionDestroyed ()));
+				[this, act]
+				{
+					for (auto& list : Actions_)
+						list.removeAll (act);
+				});
 
 		if (HasActionInfo (id))
 		{
@@ -76,9 +80,15 @@ namespace Util
 	{
 		Shortcuts_ [id] << shortcut;
 		connect (shortcut,
-				SIGNAL (destroyed ()),
+				&QObject::destroyed,
 				this,
-				SLOT (handleShortcutDestroyed ()));
+				[this, shortcut]
+				{
+					for (auto& list : Shortcuts_)
+						list.removeAll (shortcut);
+
+					qDeleteAll (Shortcut2Subs_.take (shortcut));
+				});
 
 		RegisterActionInfo (id, info);
 
@@ -163,22 +173,6 @@ namespace Util
 	{
 		return ActionInfo_.contains (id) &&
 				!ActionInfo_ [id].UserVisibleText_.isEmpty ();
-	}
-
-	void ShortcutManager::handleActionDestroyed ()
-	{
-		auto act = static_cast<QAction*> (sender ());
-		for (auto& list : Actions_)
-			list.removeAll (act);
-	}
-
-	void ShortcutManager::handleShortcutDestroyed()
-	{
-		auto sc = static_cast<QShortcut*> (sender ());
-		for (auto& list : Shortcuts_)
-			list.removeAll (sc);
-
-		qDeleteAll (Shortcut2Subs_.take (sc));
 	}
 }
 }
