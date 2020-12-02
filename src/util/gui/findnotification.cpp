@@ -78,25 +78,17 @@ namespace LC::Util
 
 	void FindNotification::SetSuccessful (bool success)
 	{
-		auto ss = QString { "QLineEdit {"
-				"background-color:rgb(" };
+		auto ss = QStringLiteral ("QLineEdit { background-color: ");
 		if (!success)
-			ss.append ("255,0,0");
+			ss.append ("#FF0000");
 		else
 		{
 			auto color = QApplication::palette ().color (QPalette::Base);
 			color.setRedF (color.redF () / 2);
 			color.setBlueF (color.blueF () / 2);
-
-			int r = 0, g = 0, b = 0;
-			color.getRgb (&r, &g, &b);
-
-			ss.append (QString ("%1,%2,%3")
-					.arg (r)
-					.arg (g)
-					.arg (b));
+			ss.append (color.name ());
 		}
-		ss.append (") }");
+		ss.append (" }");
 		Ui_->Pattern_->setStyleSheet (ss);
 	}
 
