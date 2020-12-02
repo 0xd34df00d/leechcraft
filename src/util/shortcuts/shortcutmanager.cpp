@@ -107,12 +107,12 @@ namespace Util
 			QObject *target, const QByteArray& method, const ActionInfo& info)
 	{
 		Entity e = Util::MakeEntity ({}, {}, {},
-				"x-leechcraft/global-action-register");
-		e.Additional_ ["Receiver"] = QVariant::fromValue (target);
-		e.Additional_ ["ActionID"] = id;
-		e.Additional_ ["Method"] = method;
-		e.Additional_ ["Shortcut"] = QVariant::fromValue (info.Seqs_.value (0));
-		e.Additional_ ["AltShortcuts"] = Util::Map (info.Seqs_.mid (1), &QVariant::fromValue<QKeySequence>);
+				QStringLiteral ("x-leechcraft/global-action-register"));
+		e.Additional_ [QStringLiteral ("Receiver")] = QVariant::fromValue (target);
+		e.Additional_ [QStringLiteral ("ActionID")] = id;
+		e.Additional_ [QStringLiteral ("Method")] = method;
+		e.Additional_ [QStringLiteral ("Shortcut")] = QVariant::fromValue (info.Seqs_.value (0));
+		e.Additional_ [QStringLiteral ("AltShortcuts")] = Util::Map (info.Seqs_.mid (1), &QVariant::fromValue<QKeySequence>);
 		Globals_ [id] = e;
 
 		ActionInfo_ [id] = info;
@@ -151,8 +151,8 @@ namespace Util
 		if (Globals_.contains (id))
 		{
 			auto& e = Globals_ [id];
-			e.Additional_ ["Shortcut"] = QVariant::fromValue (seqs.value (0));
-			e.Additional_ ["AltShortcuts"] = Util::Map (seqs.mid (1),
+			e.Additional_ [QStringLiteral ("Shortcut")] = QVariant::fromValue (seqs.value (0));
+			e.Additional_ [QStringLiteral ("AltShortcuts")] = Util::Map (seqs.mid (1),
 					&QVariant::fromValue<QKeySequence>);
 			CoreProxy_->GetEntityManager ()->HandleEntity (e);
 		}
