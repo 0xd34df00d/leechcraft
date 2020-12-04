@@ -50,6 +50,10 @@ namespace Util
 		struct IFailed
 		{
 			virtual QFuture<DumpResult_t> DumpReinit () = 0;
+
+			// Not having a virtual dtor here is fine, since its subclasses will
+			// only be deleted through a shared_ptr, which remembers the exact
+			// type of the constructed object.
 		};
 		using Failed = std::shared_ptr<IFailed>;
 
