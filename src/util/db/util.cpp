@@ -51,31 +51,9 @@ namespace Util
 
 	namespace
 	{
-		template<typename To, typename From>
-		std::enable_if_t<std::is_same<From, To> {}, To> DumbCast (From from)
+		uintptr_t Thread2Num (QThread *thread)
 		{
-			return from;
-		}
-
-		template<typename To, typename From>
-		std::enable_if_t<!std::is_same<From, To> {} &&
-					std::is_integral<From> {} &&
-					std::is_integral<To> {}, To> DumbCast (From from)
-		{
-			return static_cast<To> (from);
-		}
-
-		template<typename To, typename From>
-		std::enable_if_t<!std::is_same<From, To> {} &&
-					!(std::is_integral<From> {} &&
-						std::is_integral<To> {}), To> DumbCast (From from)
-		{
-			return reinterpret_cast<To> (from);
-		}
-
-		uintptr_t Handle2Num (Qt::HANDLE handle)
-		{
-			return DumbCast<uintptr_t> (handle);
+			return thread - static_cast<QThread*> (nullptr);
 		}
 	}
 
@@ -83,7 +61,7 @@ namespace Util
 	{
 		return (base + ".%1_%2")
 				.arg (qrand ())
-				.arg (Handle2Num (QThread::currentThreadId ()));
+				.arg (Thread2Num (QThread::currentThread ()));
 	}
 }
 }
