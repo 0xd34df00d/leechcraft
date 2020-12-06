@@ -16,9 +16,7 @@
 class QSqlDatabase;
 class QString;
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	/** @brief Runs the given query \em text on the given \em db.
 	 *
@@ -123,5 +121,4 @@ namespace Util
 	 * @ingroup DbUtil
 	 */
 	UTIL_DB_API QString GenConnectionName (const QString& base);
-}
 }

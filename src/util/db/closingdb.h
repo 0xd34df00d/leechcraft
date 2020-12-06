@@ -11,9 +11,7 @@
 #include <QSqlDatabase>
 #include "dbconfig.h"
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	class UTIL_DB_API ClosingDB final
 	{
@@ -28,5 +26,4 @@ namespace Util
 		const QSqlDatabase* operator-> () const;
 		QSqlDatabase* operator-> ();
 	};
-}
 }

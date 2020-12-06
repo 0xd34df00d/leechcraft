@@ -12,9 +12,7 @@
 #include <QThread>
 #include "dblock.h"
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	QSqlQuery RunTextQuery (const QSqlDatabase& db, const QString& text)
 	{
@@ -63,5 +61,4 @@ namespace Util
 				.arg (qrand ())
 				.arg (Thread2Num (QThread::currentThread ()));
 	}
-}
 }

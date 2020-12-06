@@ -9,9 +9,7 @@
 #include "closingdb.h"
 #include <QtDebug>
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	ClosingDB::ClosingDB (const QString& driver, const QString& connName)
 	: DB_ { QSqlDatabase::contains (connName) ?
@@ -43,5 +41,4 @@ namespace Util
 	{
 		return &DB_;
 	}
-}
 }

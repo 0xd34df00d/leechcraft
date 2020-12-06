@@ -13,9 +13,7 @@
 #include <QFuture>
 #include "dbconfig.h"
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	class UTIL_DB_API Dumper : public QObject
 	{
@@ -50,5 +48,4 @@ namespace Util
 		void HandleProcessError (const QProcess*);
 		void ReportResult (const Result_t&);
 	};
-}
 }

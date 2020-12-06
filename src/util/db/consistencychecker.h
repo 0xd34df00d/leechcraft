@@ -19,9 +19,7 @@ class QFuture;
 template<typename>
 class QFutureInterface;
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	class UTIL_DB_API ConsistencyChecker : public QObject
 										 , public std::enable_shared_from_this<ConsistencyChecker>
@@ -31,9 +29,9 @@ namespace Util
 
 		friend class FailedImpl;
 
-		ConsistencyChecker (const QString& dbPath, const QString& dialogContext, QObject* = nullptr);
+		ConsistencyChecker (QString dbPath, QString dialogContext, QObject* = nullptr);
 	public:
-		static std::shared_ptr<ConsistencyChecker> Create (const QString& dbPath, const QString& dialogContext);
+		static std::shared_ptr<ConsistencyChecker> Create (QString dbPath, QString dialogContext);
 
 		struct DumpFinished
 		{
@@ -68,5 +66,4 @@ namespace Util
 
 		void HandleDumperFinished (QFutureInterface<DumpResult_t>, const QString&);
 	};
-}
 }

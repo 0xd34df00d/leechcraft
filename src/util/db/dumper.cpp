@@ -9,9 +9,7 @@
 #include "dumper.h"
 #include <QtDebug>
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	Dumper::Dumper (const QString& from, const QString& to, QObject *parent)
 	: QObject { parent }
@@ -113,5 +111,4 @@ namespace Util
 	{
 		Iface_.reportFinished (&result);
 	}
-}
 }

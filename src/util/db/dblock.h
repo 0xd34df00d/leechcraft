@@ -62,7 +62,7 @@ namespace Util
 		 * @param[in] database Non-const reference to the database to be
 		 * guarded.
 		 */
-		UTIL_DB_API DBLock (QSqlDatabase& database);
+		UTIL_DB_API explicit DBLock (QSqlDatabase& database);
 
 		/** @brief Destructor.
 		 *

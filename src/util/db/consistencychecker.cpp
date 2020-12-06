@@ -12,7 +12,6 @@
 #include <QSqlDatabase>
 #include <QMessageBox>
 #include <QtConcurrentRun>
-#include <util/sll/slotclosure.h>
 #include <util/sll/visitor.h>
 #include <util/sys/paths.h>
 #include <util/threads/futures.h>
@@ -20,16 +19,14 @@
 #include "dumper.h"
 #include "util.h"
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	class FailedImpl final : public ConsistencyChecker::IFailed
 	{
 		const std::shared_ptr<ConsistencyChecker> Checker_;
 	public:
-		FailedImpl (const std::shared_ptr<ConsistencyChecker>& checker)
-		: Checker_ { checker }
+		explicit FailedImpl (std::shared_ptr<ConsistencyChecker> checker)
+		: Checker_ {std::move (checker)}
 		{
 		}
 	private:
@@ -39,23 +36,21 @@ namespace Util
 		}
 	};
 
-	ConsistencyChecker::ConsistencyChecker (const QString& dbPath,
-			const QString& dialogContext, QObject *parent)
+	ConsistencyChecker::ConsistencyChecker (QString dbPath, QString dialogContext, QObject *parent)
 	: QObject { parent }
-	, DBPath_ { dbPath }
-	, DialogContext_ { dialogContext }
+	, DBPath_ { std::move (dbPath) }
+	, DialogContext_ { std::move (dialogContext) }
 	{
 	}
 
-	std::shared_ptr<ConsistencyChecker> ConsistencyChecker::Create (const QString& dbPath, const QString& dialogContext)
+	std::shared_ptr<ConsistencyChecker> ConsistencyChecker::Create (QString dbPath, QString dialogContext)
 	{
-		return std::shared_ptr<ConsistencyChecker> { new ConsistencyChecker { dbPath, dialogContext } };
+		return std::shared_ptr<ConsistencyChecker> { new ConsistencyChecker { std::move (dbPath), std::move (dialogContext) } };
 	}
 
 	QFuture<ConsistencyChecker::CheckResult_t> ConsistencyChecker::StartCheck ()
 	{
-		const auto managed = shared_from_this ();
-		return QtConcurrent::run ([managed] { return managed->CheckDB (); });
+		return QtConcurrent::run ([pThis = shared_from_this ()] { return pThis->CheckDB (); });
 	}
 
 	ConsistencyChecker::CheckResult_t ConsistencyChecker::CheckDB ()
@@ -182,7 +177,7 @@ namespace Util
 								ReportResult (iface,
 										DumpError { tr ("Unable to restore the database.") + " " + error.What_ });
 							},
-							[iface, newPath, managed] (const Dumper::Finished&) { managed->HandleDumperFinished (iface, newPath); });
+							[iface, newPath, managed] (Dumper::Finished) { managed->HandleDumperFinished (iface, newPath); });
 				};
 	}
 
@@ -203,5 +198,4 @@ namespace Util
 
 		ReportResult (iface, DumpFinished { oldSize, newSize });
 	}
-}
 }
