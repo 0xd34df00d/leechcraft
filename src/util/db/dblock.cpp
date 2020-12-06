@@ -15,70 +15,75 @@
 #include <QVariant>
 #include <QtDebug>
 
-QSet<QString> LC::Util::DBLock::LockedBases_;
-QMutex LC::Util::DBLock::LockedMutex_;
-
-LC::Util::DBLock::DBLock (QSqlDatabase& database)
-: Database_ (database)
+namespace LC::Util
 {
-}
+	QSet<QString> DBLock::LockedBases_;
 
-LC::Util::DBLock::~DBLock ()
-{
-	if (!Initialized_)
-		return;
+	QMutex DBLock::LockedMutex_;
 
-	if (Good_ ? !Database_.commit () : !Database_.rollback ())
-		DumpError (Database_.lastError ());
-
+	DBLock::DBLock (QSqlDatabase& database)
+	: Database_ { database }
 	{
-		QMutexLocker locker (&LockedMutex_);
-		LockedBases_.remove (Database_.connectionName ());
 	}
-}
 
-void LC::Util::DBLock::Init ()
-{
+	DBLock::~DBLock ()
 	{
-		QMutexLocker locker (&LockedMutex_);
-		const auto& conn = Database_.connectionName ();
-		if (LockedBases_.contains (conn))
+		if (!Initialized_)
 			return;
-		LockedBases_ << conn;
+
+		if (Good_ ?
+				!Database_.commit () :
+				!Database_.rollback ())
+			DumpError (Database_.lastError ());
+
+		{
+			QMutexLocker locker (&LockedMutex_);
+			LockedBases_.remove (Database_.connectionName ());
+		}
 	}
 
-	if (!Database_.transaction ())
+	void DBLock::Init ()
 	{
-		DumpError (Database_.lastError ());
-		throw std::runtime_error ("Could not start transaction");
+		{
+			QMutexLocker locker (&LockedMutex_);
+			const auto& conn = Database_.connectionName ();
+			if (LockedBases_.contains (conn))
+				return;
+			LockedBases_ << conn;
+		}
+
+		if (!Database_.transaction ())
+		{
+			DumpError (Database_.lastError ());
+			throw std::runtime_error ("Could not start transaction");
+		}
+		Initialized_ = true;
 	}
-	Initialized_ = true;
+
+	void DBLock::Good ()
+	{
+		Good_ = true;
+	}
+
+	void DBLock::DumpError (const QSqlError& lastError)
+	{
+		qWarning () << lastError.text () << "|"
+				<< lastError.type ();
+	}
+
+	void DBLock::DumpError (const QSqlQuery& lastQuery)
+	{
+		qWarning () << "query:" << lastQuery.lastQuery ();
+		DumpError (lastQuery.lastError ());
+		qWarning () << "bound values:" << lastQuery.boundValues ();
+	}
+
+	void DBLock::Execute (QSqlQuery& query)
+	{
+		if (query.exec ())
+			return;
+
+		DumpError (query);
+		throw std::runtime_error ("Query execution failed.");
+	}
 }
-
-void LC::Util::DBLock::Good ()
-{
-	Good_ = true;
-}
-
-void LC::Util::DBLock::DumpError (const QSqlError& lastError)
-{
-	qWarning () << lastError.text () << "|"
-		<< lastError.type ();
-}
-
-void LC::Util::DBLock::DumpError (const QSqlQuery& lastQuery)
-{
-	qWarning () << "query:" << lastQuery.lastQuery ();
-	DumpError (lastQuery.lastError ());
-	qWarning () << "bound values:" << lastQuery.boundValues ();
-}
-
-void LC::Util::DBLock::Execute (QSqlQuery& query)
-{
-	if (query.exec ())
-		return;
-
-	DumpError (query);
-	throw std::runtime_error ("Query execution failed.");
-}
-
