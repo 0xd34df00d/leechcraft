@@ -75,26 +75,34 @@ namespace Util
 		switch (process->exitStatus ())
 		{
 		case QProcess::CrashExit:
+		{
 			if (HadError_)
 				break;
 
 			HadError_ = true;
-			ReportResult (tr ("Dumping process crashed: %1.")
+			auto errMsg = tr ("Dumping process crashed: %1.")
 					.arg (stderr.isEmpty () ?
 							process->errorString () :
-							stderr));
+							stderr);
+			ReportResult (Error { std::move (errMsg) });
 			break;
+		}
 		case QProcess::NormalExit:
+		{
 			if (exitCode)
-				ReportResult (tr ("Dumping process finished with error: %1 (%2).")
+			{
+				auto errMsg = tr ("Dumping process finished with error: %1 (%2).")
 						.arg (stderr)
-						.arg (exitCode));
+						.arg (exitCode);
+				ReportResult (Error { std::move (errMsg) });
+			}
 			else if (++FinishedCount_ == 2)
 			{
 				ReportResult (Finished {});
 				deleteLater ();
 			}
 			break;
+		}
 		}
 	}
 
@@ -109,12 +117,10 @@ namespace Util
 
 		HadError_ = true;
 
-		if (process->error () == QProcess::FailedToStart)
-			ReportResult (tr ("Unable to start dumping process: %1. Do you have sqlite3 installed?")
-					.arg (process->errorString ()));
-		else
-			ReportResult (tr ("Unable to dump the database: %1.")
-					.arg (process->errorString ()));
+		const auto& errMsg = process->error () == QProcess::FailedToStart ?
+				tr ("Unable to start dumping process: %1. Do you have sqlite3 installed?") :
+				tr ("Unable to dump the database: %1.");
+		ReportResult (Error { errMsg.arg (process->errorString ()) });
 	}
 
 	void Dumper::ReportResult (const Result_t& result)

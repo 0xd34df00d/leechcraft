@@ -33,8 +33,8 @@ namespace Util
 		{
 			QString What_;
 
-			Error (const QString& str)
-			: What_ { str }
+			explicit Error (QString str)
+			: What_ { std::move (str) }
 			{
 			}
 		};
