@@ -8,7 +8,6 @@
 
 #include "dumper.h"
 #include <QtDebug>
-#include <util/sll/slotclosure.h>
 
 namespace LC
 {
@@ -23,35 +22,22 @@ namespace Util
 
 		Dumper_->setStandardOutputProcess (Restorer_);
 
-		new Util::SlotClosure<Util::NoDeletePolicy>
-		{
-			[this] { HandleProcessError (Dumper_); },
-			Dumper_,
-			SIGNAL (error (QProcess::ProcessError)),
-			Dumper_
-		};
-		new Util::SlotClosure<Util::NoDeletePolicy>
-		{
-			[this] { HandleProcessError (Restorer_); },
-			Restorer_,
-			SIGNAL (error (QProcess::ProcessError)),
-			Restorer_
-		};
-
-		new Util::SlotClosure<Util::NoDeletePolicy>
-		{
-			[this] { HandleProcessFinished (Dumper_); },
-			Dumper_,
-			SIGNAL (finished (int, QProcess::ExitStatus)),
-			Dumper_
-		};
-		new Util::SlotClosure<Util::NoDeletePolicy>
-		{
-			[this] { HandleProcessFinished (Restorer_); },
-			Restorer_,
-			SIGNAL (finished (int, QProcess::ExitStatus)),
-			Restorer_
-		};
+		connect (Dumper_,
+				&QProcess::errorOccurred,
+				this,
+				[this] { HandleProcessError (Dumper_); });
+		connect (Restorer_,
+				&QProcess::errorOccurred,
+				this,
+				[this] { HandleProcessError (Restorer_); });
+		connect (Dumper_,
+				qOverload<int, QProcess::ExitStatus> (&QProcess::finished),
+				this,
+				[this] { HandleProcessFinished (Dumper_); });
+		connect (Restorer_,
+				qOverload<int, QProcess::ExitStatus> (&QProcess::finished),
+				this,
+				[this] { HandleProcessFinished (Restorer_); });
 
 		Dumper_->start ("sqlite3", { from, ".dump" });
 		Restorer_->start ("sqlite3", { to });
