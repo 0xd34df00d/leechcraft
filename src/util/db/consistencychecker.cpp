@@ -79,9 +79,9 @@ namespace LC::Util
 		}
 
 		QSqlQuery pragma { *db };
-		const QString checkQuery = qgetenv ("LC_THOROUGH_SQLITE_CHECK") == "1" ?
-				"PRAGMA integrity_check;" :
-				"PRAGMA quick_check;";
+		static const QString checkQuery = qgetenv ("LC_THOROUGH_SQLITE_CHECK") == "1" ?
+				QStringLiteral ("PRAGMA integrity_check;") :
+				QStringLiteral ("PRAGMA quick_check;");
 		const auto isGood = pragma.exec (checkQuery) &&
 				pragma.next () &&
 				pragma.value (0) == "ok";
@@ -136,9 +136,9 @@ namespace LC::Util
 							"%2 while the restored file is expected to be around %3. "
 							"Please either free some disk space on this partition "
 							"and retry or cancel the restore process.")
-								.arg ("<em>" + DBPath_ + "</em>")
-								.arg (Util::MakePrettySize (available))
-								.arg (Util::MakePrettySize (filesize)),
+								.arg ("<em>" + DBPath_ + "</em>",
+									  Util::MakePrettySize (available),
+								      Util::MakePrettySize (filesize)),
 						QMessageBox::Retry | QMessageBox::Cancel) == QMessageBox::Cancel)
 			{
 				ReportResult (iface, DumpError { tr ("Not enough available disk space.") });
@@ -191,8 +191,8 @@ namespace LC::Util
 			QMessageBox::critical (nullptr,
 					DialogContext_,
 					tr ("Unable to backup %1 to %2. Please remove %2 and hit OK.")
-						.arg (DBPath_)
-						.arg (backup));
+						.arg (DBPath_,
+							  backup));
 
 		QFile::rename (to, DBPath_);
 

@@ -14,21 +14,21 @@
 namespace LC::Util
 {
 	BackendSelector::BackendSelector (BaseSettingsManager *m, QWidget *parent)
-	: QWidget (parent)
-	, Manager_ (m)
+	: QWidget { parent }
+	, Ui_ { std::make_unique<Ui::BackendSelector> () }
+	, Manager_ { m }
 	{
-		Ui_ = new Ui::BackendSelector;
 		Ui_->setupUi (this);
 
 		FillUI ();
 
 		// We should check from last to first
-		if (!QSqlDatabase::isDriverAvailable ("QMYSQL"))
+		if (!QSqlDatabase::isDriverAvailable (QStringLiteral ("QMYSQL")))
 		{
 			Ui_->MySQLSettings_->setEnabled (false);
 			Ui_->StorageType_->removeItem (2);
 		}
-		if (!QSqlDatabase::isDriverAvailable ("QPSQL"))
+		if (!QSqlDatabase::isDriverAvailable (QStringLiteral ("QPSQL")))
 		{
 			Ui_->PostgreSQLSettings_->setEnabled (false);
 			Ui_->StorageType_->removeItem (1);
@@ -78,4 +78,3 @@ namespace LC::Util
 		FillUI ();
 	}
 }
-

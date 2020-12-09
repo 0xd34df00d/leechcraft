@@ -37,8 +37,9 @@ namespace LC::Util
 				this,
 				[this] { HandleProcessFinished (Restorer_); });
 
-		Dumper_->start ("sqlite3", { from, ".dump" });
-		Restorer_->start ("sqlite3", { to });
+		static const QString sqliteExecutable = QStringLiteral ("sqlite3");
+		Dumper_->start (sqliteExecutable, { from, QStringLiteral (".dump") });
+		Restorer_->start (sqliteExecutable, { to });
 	}
 
 	QFuture<Dumper::Result_t> Dumper::GetFuture ()
