@@ -17,8 +17,6 @@ namespace LC::Util
 {
 	class UTIL_DB_API Dumper : public QObject
 	{
-		Q_OBJECT
-
 		QProcess * const Dumper_;
 		QProcess * const Restorer_;
 
