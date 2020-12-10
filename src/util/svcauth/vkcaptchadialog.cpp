@@ -28,7 +28,7 @@ namespace SvcAuth
 	VkCaptchaDialog::VkCaptchaDialog (const QUrl& url,
 			const QString& cid, QNetworkAccessManager *manager, QWidget *parent)
 	: QDialog (parent)
-	, Ui_ (new Ui::VkCaptchaDialog)
+	, Ui_ (std::make_unique<Ui::VkCaptchaDialog> ())
 	, Cid_ (cid)
 	{
 		Ui_->setupUi (this);
@@ -39,6 +39,8 @@ namespace SvcAuth
 				this,
 				SLOT (handleGotImage ()));
 	}
+
+	VkCaptchaDialog::~VkCaptchaDialog () = default;
 
 	void VkCaptchaDialog::SetContextName (const QString& context)
 	{

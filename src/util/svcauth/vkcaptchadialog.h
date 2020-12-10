@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <memory>
 #include <QDialog>
 #include <QVariantMap>
 #include "svcauthconfig.h"
@@ -30,12 +31,13 @@ namespace SvcAuth
 	{
 		Q_OBJECT
 
-		Ui::VkCaptchaDialog * const Ui_;
+		const std::unique_ptr<Ui::VkCaptchaDialog> Ui_;
 
 		const QString Cid_;
 	public:
 		VkCaptchaDialog (const QVariantMap& errorMap, QNetworkAccessManager*, QWidget* = 0);
 		VkCaptchaDialog (const QUrl&, const QString&, QNetworkAccessManager*, QWidget* = 0);
+		~VkCaptchaDialog () override;
 
 		void SetContextName (const QString&);
 
