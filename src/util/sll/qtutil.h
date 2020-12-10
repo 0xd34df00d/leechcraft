@@ -53,6 +53,16 @@ namespace LC::Util
 
 		return Range { std::forward<Assoc> (assoc) };
 	}
+
+	inline QByteArray AsByteArray (std::string_view view)
+	{
+		return QByteArray::fromRawData (view.data (), view.size ());
+	}
+
+	inline std::string_view AsStringView (const QByteArray& arr)
+	{
+		return { arr.constData (), static_cast<size_t> (arr.size ()) };
+	}
 }
 
 namespace LC
