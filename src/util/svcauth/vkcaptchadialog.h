@@ -38,8 +38,6 @@ namespace LC::Util::SvcAuth
 		void SetContextName (const QString&);
 
 		void done (int) override;
-	private slots:
-		void handleGotImage ();
 	signals:
 		void gotCaptcha (const QString& cid, const QString& value);
 	};

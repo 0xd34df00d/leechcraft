@@ -31,9 +31,16 @@ namespace LC::Util::SvcAuth
 
 		auto reply = manager->get (QNetworkRequest (url));
 		connect (reply,
-				SIGNAL (finished ()),
+				&QNetworkReply::finished,
 				this,
-				SLOT (handleGotImage ()));
+				[this, reply]
+				{
+					reply->deleteLater ();
+
+					QPixmap px;
+					px.loadFromData (reply->readAll ());
+					Ui_->ImageLabel_->setPixmap (px);
+				});
 	}
 
 	VkCaptchaDialog::~VkCaptchaDialog () = default;
@@ -53,15 +60,5 @@ namespace LC::Util::SvcAuth
 			emit gotCaptcha (Cid_, Ui_->Text_->text ());
 
 		deleteLater ();
-	}
-
-	void VkCaptchaDialog::handleGotImage ()
-	{
-		auto reply = qobject_cast<QNetworkReply*> (sender ());
-		reply->deleteLater ();
-
-		QPixmap px;
-		px.loadFromData (reply->readAll ());
-		Ui_->ImageLabel_->setPixmap (px);
 	}
 }

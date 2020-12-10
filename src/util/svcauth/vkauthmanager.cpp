@@ -19,18 +19,13 @@
 #include <util/network/customcookiejar.h>
 #include <util/sll/queuemanager.h>
 #include <util/sll/urloperator.h>
-#include <util/sll/slotclosure.h>
 #include <util/sll/either.h>
 #include <util/xpc/util.h>
 #include <util/threads/futures.h>
 #include <interfaces/core/ientitymanager.h>
 #include <xmlsettingsdialog/basesettingsmanager.h>
 
-namespace LC
-{
-namespace Util
-{
-namespace SvcAuth
+namespace LC::Util::SvcAuth
 {
 	namespace
 	{
@@ -63,9 +58,13 @@ namespace SvcAuth
 
 		ScheduleTimer_->setSingleShot (true);
 		connect (ScheduleTimer_,
-				SIGNAL (timeout ()),
+				&QTimer::timeout,
 				this,
-				SLOT (execScheduledRequest ()));
+				[this]
+				{
+					IsRequestScheduled_ = false;
+					RequestAuthKey ();
+				});
 	}
 
 	bool VkAuthManager::IsAuthenticated () const
@@ -188,9 +187,9 @@ namespace SvcAuth
 		qDebug () << Q_FUNC_INFO << url;
 		auto reply = AuthNAM_->get (QNetworkRequest (url));
 		connect (reply,
-				SIGNAL (finished ()),
+				&QNetworkReply::finished,
 				this,
-				SLOT (handleGotForm ()));
+				[this, reply] { HandleGotForm (reply); });
 	}
 
 	void VkAuthManager::RequestAuthKey ()
@@ -272,9 +271,9 @@ namespace SvcAuth
 
 		auto reply = AuthNAM_->get (QNetworkRequest { url });
 		connect (reply,
-				SIGNAL (finished ()),
+				&QNetworkReply::finished,
 				reply,
-				SLOT (deleteLater ()));
+				&QNetworkReply::deleteLater);
 	}
 
 	void VkAuthManager::clearAuthData ()
@@ -321,23 +320,23 @@ namespace SvcAuth
 		view->setUrl (URL_);
 
 		connect (view,
-				SIGNAL (urlChanged (QUrl)),
+				&QWebView::urlChanged,
 				this,
-				SLOT (handleViewUrlChanged (QUrl)));
+				[this, view] (const QUrl& url)
+				{
+
+					if (!CheckReply (url))
+						return;
+
+					emit cookiesChanged (Cookies_->Save ());
+					view->deleteLater ();
+				});
 
 		new CloseEventFilter { [this] { emit authCanceled (); }, view };
 	}
 
-	void VkAuthManager::execScheduledRequest ()
+	void VkAuthManager::HandleGotForm (QNetworkReply *reply)
 	{
-		IsRequestScheduled_ = false;
-
-		RequestAuthKey ();
-	}
-
-	void VkAuthManager::handleGotForm ()
-	{
-		auto reply = qobject_cast<QNetworkReply*> (sender ());
 		reply->deleteLater ();
 
 		if (reply->error () != QNetworkReply::NoError)
@@ -369,15 +368,4 @@ namespace SvcAuth
 
 		RequestURL (location);
 	}
-
-	void VkAuthManager::handleViewUrlChanged (const QUrl& url)
-	{
-		if (!CheckReply (url))
-			return;
-
-		emit cookiesChanged (Cookies_->Save ());
-		sender ()->deleteLater ();
-	}
-}
-}
 }

@@ -102,13 +102,10 @@ namespace SvcAuth
 		bool CheckError (const QUrl&);
 
 		void ScheduleTrack (const QString&);
+		void HandleGotForm (QNetworkReply*);
 	public slots:
 		void clearAuthData ();
 		void reauth ();
-	private slots:
-		void execScheduledRequest ();
-		void handleGotForm ();
-		void handleViewUrlChanged (const QUrl&);
 	signals:
 		void gotAuthKey (const QString&);
 		void cookiesChanged (const QByteArray&);
