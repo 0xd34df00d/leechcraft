@@ -91,7 +91,7 @@ namespace Util
 		for (const auto& pair : Util::Stlize (Family2Chooser_))
 		{
 			const auto& option = Family2Name_ [pair.first];
-			pair.second->SetFont (BSM_->property (option).value<QFont> ());
+			pair.second->SetFont (BSM_->property (option.data ()).value<QFont> ());
 		}
 	}
 
@@ -108,7 +108,7 @@ namespace Util
 	{
 		for (const auto& pair : Util::Stlize (PendingSizeChanges_))
 		{
-			BSM_->setProperty (Size2Name_ [pair.first], pair.second);
+			BSM_->setProperty (Size2Name_ [pair.first].data (), pair.second);
 			emit sizeChanged (pair.first, pair.second);
 
 			for (const auto settable : Settables_)
@@ -152,7 +152,7 @@ namespace Util
 
 		for (const auto& pair : Util::Stlize (PendingFontChanges_))
 		{
-			BSM_->setProperty (Family2Name_ [pair.first], pair.second);
+			BSM_->setProperty (Family2Name_ [pair.first].data (), pair.second);
 			emit fontChanged (pair.first, pair.second);
 
 			for (const auto settable : Settables_)
