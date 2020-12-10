@@ -20,6 +20,7 @@
 #include <util/sll/queuemanager.h>
 #include <util/sll/urloperator.h>
 #include <util/sll/either.h>
+#include <util/sll/qtutil.h>
 #include <util/xpc/util.h>
 #include <util/threads/futures.h>
 #include <interfaces/core/ientitymanager.h>
@@ -33,15 +34,15 @@ namespace LC::Util::SvcAuth
 		{
 			auto url = QUrl::fromEncoded ("https://oauth.vk.com/authorize?redirect_uri=http%3A%2F%2Foauth.vk.com%2Fblank.html&response_type=token&state=");
 			UrlOperator { url }
-					("client_id", id)
-					("scope", scope.join (","));
+					(QStringLiteral ("client_id"), id)
+					(QStringLiteral ("scope"), scope.join (','));
 			return url;
 		}
 	}
 
 	VkAuthManager::VkAuthManager (const QString& accName,
 			const QString& id, const QStringList& scope,
-			const QByteArray& cookies, ICoreProxy_ptr proxy,
+			const QByteArray& cookies, const ICoreProxy_ptr& proxy,
 			QueueManager *queueMgr, QObject *parent)
 	: QObject (parent)
 	, Proxy_ (proxy)
@@ -206,13 +207,13 @@ namespace LC::Util::SvcAuth
 
 	bool VkAuthManager::CheckReply (QUrl location)
 	{
-		if (location.path () != "/blank.html")
+		if (location.path () != "/blank.html"_ql)
 			return CheckError (location);
 
 		location = QUrl::fromEncoded (location.toEncoded ().replace ('#', '?'));
 		const QUrlQuery query { location };
-		Token_ = query.queryItemValue ("access_token");
-		ValidFor_ = query.queryItemValue ("expires_in").toInt ();
+		Token_ = query.queryItemValue (QStringLiteral ("access_token"));
+		ValidFor_ = query.queryItemValue (QStringLiteral ("expires_in")).toInt ();
 		ReceivedAt_ = QDateTime::currentDateTime ();
 		qDebug () << Q_FUNC_INFO << Token_ << ValidFor_;
 		IsRequesting_ = false;
@@ -226,10 +227,10 @@ namespace LC::Util::SvcAuth
 
 	bool VkAuthManager::CheckError (const QUrl& url)
 	{
-		if (url.path () != "/error")
+		if (url.path () != "/error"_ql)
 			return false;
 
-		const auto errNum = QUrlQuery { url }.queryItemValue ("err").toInt ();
+		const auto errNum = QUrlQuery { url }.queryItemValue (QStringLiteral ("err")).toInt ();
 
 		IsRequesting_ = false;
 
@@ -244,7 +245,7 @@ namespace LC::Util::SvcAuth
 			return true;
 		}
 
-		const auto& e = Util::MakeNotification ("VK.com",
+		const auto& e = Util::MakeNotification (QStringLiteral ("VK.com"),
 				tr ("VK.com authentication for %1 failed because of error %2. "
 					"Report upstream please.")
 					.arg (AccountHR_)
@@ -265,9 +266,9 @@ namespace LC::Util::SvcAuth
 
 		HasTracked_ = true;
 
-		QUrl url { "https://api.vk.com/method/stats.trackVisitor" };
+		QUrl url { QStringLiteral ("https://api.vk.com/method/stats.trackVisitor") };
 		Util::UrlOperator { url }
-				("access_token", key);
+				(QStringLiteral ("access_token"), key);
 
 		auto reply = AuthNAM_->get (QNetworkRequest { url });
 		connect (reply,
@@ -298,7 +299,7 @@ namespace LC::Util::SvcAuth
 				handlee->installEventFilter (this);
 			}
 
-			bool eventFilter (QObject*, QEvent *event)
+			bool eventFilter (QObject*, QEvent *event) override
 			{
 				if (event->type () == QEvent::Close)
 					Handler_ ();

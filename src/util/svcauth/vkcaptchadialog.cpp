@@ -16,8 +16,13 @@ namespace LC::Util::SvcAuth
 {
 	VkCaptchaDialog::VkCaptchaDialog (const QVariantMap& errorMap,
 			QNetworkAccessManager *nam, QWidget *w)
-	: VkCaptchaDialog (errorMap ["captcha_img"].toString (),
-			errorMap ["captcha_sid"].toString (), nam, w)
+	: VkCaptchaDialog
+		{
+			errorMap [QStringLiteral ("captcha_img")].toString (),
+			errorMap [QStringLiteral ("captcha_sid")].toString (),
+			nam,
+			w
+		}
 	{
 	}
 

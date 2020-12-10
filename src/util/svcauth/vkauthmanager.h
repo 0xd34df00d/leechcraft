@@ -74,7 +74,7 @@ namespace SvcAuth
 	public:
 		VkAuthManager (const QString& accountName, const QString& clientId,
 				const QStringList& scope, const QByteArray& cookies,
-				ICoreProxy_ptr, QueueManager* = nullptr, QObject* = nullptr);
+				const ICoreProxy_ptr&, QueueManager* = nullptr, QObject* = nullptr);
 
 		bool IsAuthenticated () const;
 		bool HadAuthentication () const;
