@@ -21,11 +21,7 @@ namespace Ui
 	class VkCaptchaDialog;
 }
 
-namespace LC
-{
-namespace Util
-{
-namespace SvcAuth
+namespace LC::Util::SvcAuth
 {
 	class UTIL_SVCAUTH_API VkCaptchaDialog : public QDialog
 	{
@@ -35,8 +31,8 @@ namespace SvcAuth
 
 		const QString Cid_;
 	public:
-		VkCaptchaDialog (const QVariantMap& errorMap, QNetworkAccessManager*, QWidget* = 0);
-		VkCaptchaDialog (const QUrl&, const QString&, QNetworkAccessManager*, QWidget* = 0);
+		VkCaptchaDialog (const QVariantMap& errorMap, QNetworkAccessManager*, QWidget* = nullptr);
+		VkCaptchaDialog (const QUrl&, const QString&, QNetworkAccessManager*, QWidget* = nullptr);
 		~VkCaptchaDialog () override;
 
 		void SetContextName (const QString&);
@@ -47,6 +43,4 @@ namespace SvcAuth
 	signals:
 		void gotCaptcha (const QString& cid, const QString& value);
 	};
-}
-}
 }

@@ -23,9 +23,7 @@ class QTimer;
 template<typename>
 class QFuture;
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 class QueueManager;
 enum class QueuePriority;
@@ -117,6 +115,5 @@ namespace SvcAuth
 		void authCanceled ();
 		void justAuthenticated ();
 	};
-}
 }
 }

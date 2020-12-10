@@ -12,11 +12,7 @@
 #include <QNetworkReply>
 #include "ui_vkcaptchadialog.h"
 
-namespace LC
-{
-namespace Util
-{
-namespace SvcAuth
+namespace LC::Util::SvcAuth
 {
 	VkCaptchaDialog::VkCaptchaDialog (const QVariantMap& errorMap,
 			QNetworkAccessManager *nam, QWidget *w)
@@ -68,6 +64,4 @@ namespace SvcAuth
 		px.loadFromData (reply->readAll ());
 		Ui_->ImageLabel_->setPixmap (px);
 	}
-}
-}
 }
