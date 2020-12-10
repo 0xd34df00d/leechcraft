@@ -1006,7 +1006,7 @@ namespace Murm
 	void VkConnection::reauth ()
 	{
 		Logger_ << "reauthing";
-		AuthMgr_->clearAuthData ();
+		AuthMgr_->ClearAuthData ();
 		LPManager_->ForceServerRequery ();
 		LPManager_->start ();
 		AuthMgr_->GetAuthKey ();

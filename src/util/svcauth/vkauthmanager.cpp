@@ -239,7 +239,7 @@ namespace LC::Util::SvcAuth
 				<< errNum;
 		if (errNum == 2)
 		{
-			clearAuthData ();
+			ClearAuthData ();
 
 			RequestAuthKey ();
 			return true;
@@ -277,7 +277,7 @@ namespace LC::Util::SvcAuth
 				&QNetworkReply::deleteLater);
 	}
 
-	void VkAuthManager::clearAuthData ()
+	void VkAuthManager::ClearAuthData ()
 	{
 		Cookies_->Load ({});
 		Token_.clear ();
@@ -308,7 +308,7 @@ namespace LC::Util::SvcAuth
 		};
 	}
 
-	void VkAuthManager::reauth ()
+	void VkAuthManager::Reauth ()
 	{
 		auto view = new QWebView;
 		view->setWindowTitle (tr ("VK.com authentication for %1")
@@ -360,7 +360,7 @@ namespace LC::Util::SvcAuth
 		const auto& location = reply->header (QNetworkRequest::LocationHeader).toUrl ();
 		if (location.isEmpty ())
 		{
-			reauth ();
+			Reauth ();
 			return;
 		}
 

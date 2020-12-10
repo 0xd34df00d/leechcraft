@@ -93,6 +93,9 @@ namespace SvcAuth
 		[[nodiscard]] ScheduleGuard_t ManageQueue (PrioRequestQueue_ptr);
 
 		void SetSilentMode (bool);
+
+		void ClearAuthData ();
+		void Reauth ();
 	private:
 		void InvokeQueues (const QString&);
 
@@ -103,9 +106,6 @@ namespace SvcAuth
 
 		void ScheduleTrack (const QString&);
 		void HandleGotForm (QNetworkReply*);
-	public slots:
-		void clearAuthData ();
-		void reauth ();
 	signals:
 		void gotAuthKey (const QString&);
 		void cookiesChanged (const QByteArray&);

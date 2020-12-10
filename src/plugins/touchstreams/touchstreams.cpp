@@ -129,8 +129,8 @@ namespace TouchStreams
 	{
 		if (index.data (Media::RadioItemRole::RadioID).toString () == "auth")
 		{
-			AuthMgr_->clearAuthData ();
-			AuthMgr_->reauth ();
+			AuthMgr_->ClearAuthData ();
+			AuthMgr_->Reauth ();
 		}
 
 		return {};
