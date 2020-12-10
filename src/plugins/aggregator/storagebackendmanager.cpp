@@ -10,6 +10,7 @@
 #include <QCoreApplication>
 #include <QThread>
 #include <util/sll/either.h>
+#include <util/sll/qtutil.h>
 #include "dumbstorage.h"
 #include "xmlsettingsmanager.h"
 
@@ -52,14 +53,15 @@ namespace Aggregator
 
 		auto runUpdate = [this, &strType] (auto updater, const char *suffix, int targetVersion)
 		{
-			const auto curVersion = XmlSettingsManager::Instance ()->Property (strType + suffix, targetVersion).toInt ();
+			const auto& fullPropName = strType + suffix;
+			const auto curVersion = XmlSettingsManager::Instance ()->Property (Util::AsStringView (fullPropName), targetVersion).toInt ();
 			if (curVersion == targetVersion)
 				return true;
 
 			if (!std::invoke (updater, PrimaryStorageBackend_.get (), curVersion))
 				return false;
 
-			XmlSettingsManager::Instance ()->setProperty (strType + suffix, targetVersion);
+			XmlSettingsManager::Instance ()->setProperty (fullPropName, targetVersion);
 			return true;
 		};
 

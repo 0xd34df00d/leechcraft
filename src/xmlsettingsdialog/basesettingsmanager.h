@@ -127,7 +127,7 @@ namespace Util
 		 * @param[in] def Default value of the property.
 		 * @return Resulting value of the property.
 		 */
-		QVariant Property (const QString& propName, const QVariant& def);
+		QVariant Property (std::string_view propName, const QVariant& def);
 
 		/** @brief Sets the value directly, without metaproperties system.
 		 *

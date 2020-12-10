@@ -68,13 +68,13 @@ namespace LC::Util
 			RegisterObject (prop, object, funcName, flags);
 	}
 
-	QVariant BaseSettingsManager::Property (const QString& propName, const QVariant& def)
+	QVariant BaseSettingsManager::Property (std::string_view propName, const QVariant& def)
 	{
-		auto result = property (PROP2CHAR (propName));
+		auto result = property (propName.data ());
 		if (!result.isValid ())
 		{
 			result = def;
-			setProperty (PROP2CHAR (propName), def);
+			setProperty (propName.data (), def);
 		}
 
 		return result;

@@ -835,7 +835,7 @@ namespace Azoth
 				const QString& path = BuildPath (index);
 
 				const bool expanded = ProxyModel_->IsMUCMode () ||
-						XmlSettingsManager::Instance ().Property (path, true).toBool ();
+						XmlSettingsManager::Instance ().Property (path.toStdString (), true).toBool ();
 				if (expanded)
 					QMetaObject::invokeMethod (this,
 							"expandIndex",

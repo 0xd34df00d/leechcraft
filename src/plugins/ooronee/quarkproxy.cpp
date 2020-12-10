@@ -11,6 +11,7 @@
 #include <QMenu>
 #include <QUrl>
 #include <util/sll/prelude.h>
+#include <util/sll/qtutil.h>
 #include <util/xpc/util.h>
 #include <util/xpc/stddatafiltermenucreator.h>
 #include <interfaces/core/icoreproxy.h>
@@ -45,8 +46,7 @@ namespace Ooronee
 
 		const auto getId = [&typeId] (const QByteArray& prefix)
 		{
-			return XmlSettingsManager::Instance ()
-				.Property (prefix + typeId, {}).toByteArray ();
+			return XmlSettingsManager::Instance ().Property (Util::AsStringView (prefix + typeId), {}).toByteArray ();
 		};
 		const auto& prevPluginId = getId ("PrevHandler");
 		const auto& prevVariantId = getId ("PrevVariant");

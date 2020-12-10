@@ -1694,7 +1694,7 @@ namespace LC::Azoth
 		const auto& accountId = account->GetAccountID ();
 		const auto& accountName = account->GetAccountName ();
 
-		const auto& showKey = QString::fromUtf8 ("ShowAccount_" + accountId);
+		const auto& showKey = "ShowAccount_" + accountId.toStdString ();
 		const bool show = XmlSettingsManager::Instance ().Property (showKey, true).toBool ();
 		account->SetShownInRoster (show);
 

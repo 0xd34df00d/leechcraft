@@ -29,6 +29,7 @@
 #include <util/xpc/util.h>
 #include <util/network/networkdiskcache.h>
 #include <util/sll/slotclosure.h>
+#include <util/sll/qtutil.h>
 #include "interfaces/blasq/iaccount.h"
 #include "interfaces/blasq/isupportuploads.h"
 #include "interfaces/blasq/isupportdeletes.h"
@@ -658,7 +659,7 @@ namespace Blasq
 				20;
 
 		const auto value = XmlSettingsManager::Instance ()
-				.Property (GetUniSettingName (), static_cast<int> (defValue)).toInt ();
+				.Property (Util::AsStringView (GetUniSettingName ()), static_cast<int> (defValue)).toInt ();
 		if (value > UniSlider_->maximum ())
 		{
 			UniSlider_->setRange (0, SingleImageMode_ ? Zooms.size () - 1 : 100);
