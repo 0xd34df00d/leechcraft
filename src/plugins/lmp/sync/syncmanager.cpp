@@ -78,14 +78,14 @@ namespace LMP
 	{
 		Util::Either<ResolveError, QString> FixMask (const QString& mask, const QString& transcoded)
 		{
-			return Core::Instance ().GetLocalFileResolver ()->ResolveInfo (transcoded) >>
+			return Core::Instance ().GetLocalFileResolver ()->ResolveInfo (transcoded) *
 					[&] (const MediaInfo& info)
 					{
 						auto result = PerformSubstitutions (mask, info, SubstitutionFlag::SFSafeFilesystem);
 						const auto& ext = QFileInfo (transcoded).suffix ();
 						if (!result.endsWith (ext))
 							result += "." + ext;
-						return ITagResolver::ResolveResult_t::Right (result);
+						return result;
 					};
 		}
 	}
