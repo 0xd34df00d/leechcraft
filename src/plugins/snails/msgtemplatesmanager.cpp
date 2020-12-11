@@ -12,6 +12,8 @@
 #include <QtDebug>
 #include <interfaces/itexteditor.h>
 #include <util/sll/either.h>
+#include <util/sll/functor.h>
+#include <util/sll/applicative.h>
 #include <util/sll/monadplus.h>
 #include <util/sll/curry.h>
 #include <util/sys/paths.h>

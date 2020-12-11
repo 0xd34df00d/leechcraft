@@ -18,6 +18,7 @@
 #include <util/sll/slotclosure.h>
 #include <util/sll/util.h>
 #include <util/sll/either.h>
+#include <util/sll/monad.h>
 #include <util/sll/void.h>
 #include <util/threads/futures.h>
 #include <interfaces/azoth/iprotocol.h>

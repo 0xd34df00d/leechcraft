@@ -14,6 +14,7 @@
 #include <util/lmp/util.h>
 #include <util/sll/either.h>
 #include <util/sll/visitor.h>
+#include <util/sll/functor.h>
 #include "copymanager.h"
 #include "../core.h"
 #include "../localfileresolver.h"
