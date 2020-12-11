@@ -35,6 +35,8 @@ namespace LC::Util
 		}
 	}
 
+	BackendSelector::~BackendSelector () = default;
+
 	void BackendSelector::FillUI ()
 	{
 		int index = Ui_->StorageType_->findText (Manager_->Property ("StorageType", "SQLite").toString ());
