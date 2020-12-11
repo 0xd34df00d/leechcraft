@@ -11,9 +11,6 @@
 #include <variant>
 #include <optional>
 #include <type_traits>
-#include "functor.h"
-#include "applicative.h"
-#include "monad.h"
 #include "visitor.h"
 
 namespace LC
@@ -204,74 +201,5 @@ namespace Util
 	{
 		return Visit (either.AsVariant (), std::forward<Args> (args)...);
 	}
-
-	template<typename L, typename R>
-	struct InstanceFunctor<Either<L, R>>
-	{
-		template<typename F>
-		using FmapResult_t = Either<L, std::result_of_t<F (R)>>;
-
-		template<typename F>
-		static FmapResult_t<F> Apply (const Either<L, R>& either, const F& f)
-		{
-			if (either.IsLeft ())
-				return FmapResult_t<F>::Left (either.GetLeft ());
-
-			return FmapResult_t<F>::Right (f (either.GetRight ()));
-		}
-	};
-
-	template<typename L, typename R>
-	struct InstanceApplicative<Either<L, R>>
-	{
-		using Type_t = Either<L, R>;
-
-		template<typename>
-		struct GSLResult;
-
-		template<typename V>
-		struct GSLResult<Either<L, V>>
-		{
-			using Type_t = Either<L, std::result_of_t<R (const V&)>>;
-		};
-
-		template<typename RP>
-		static Either<L, RP> Pure (const RP& v)
-		{
-			return Either<L, RP>::Right (v);
-		}
-
-		template<typename AV>
-		static GSLResult_t<Type_t, AV> GSL (const Type_t& f, const AV& v)
-		{
-			using R_t = GSLResult_t<Type_t, AV>;
-
-			if (f.IsLeft ())
-				return R_t::Left (f.GetLeft ());
-
-			if (v.IsLeft ())
-				return R_t::Left (v.GetLeft ());
-
-			return R_t::Right (f.GetRight () (v.GetRight ()));
-		}
-	};
-
-	template<typename L, typename R>
-	struct InstanceMonad<Either<L, R>>
-	{
-		template<typename F>
-		using BindResult_t = std::result_of_t<F (R)>;
-
-		template<typename F>
-		static BindResult_t<F> Bind (const Either<L, R>& value, const F& f)
-		{
-			using R_t = BindResult_t<F>;
-
-			if (value.IsLeft ())
-				return R_t::Left (value.GetLeft ());
-
-			return f (value.GetRight ());
-		}
-	};
 }
 }

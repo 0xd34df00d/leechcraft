@@ -11,6 +11,8 @@
 #include <either.h>
 #include <curry.h>
 #include <void.h>
+#include <functor.h>
+#include <monad.h>
 
 QTEST_MAIN (LC::Util::EitherTest)
 

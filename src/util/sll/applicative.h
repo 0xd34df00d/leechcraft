@@ -9,6 +9,7 @@
 #pragma once
 
 #include <optional>
+#include "either.h"
 
 namespace LC
 {
@@ -75,5 +76,41 @@ namespace Util
 			return { (*f) (*v) };
 		}
 	};
+
+	template<typename L, typename R>
+	struct InstanceApplicative<Either<L, R>>
+	{
+		using Type_t = Either<L, R>;
+
+		template<typename>
+		struct GSLResult;
+
+		template<typename V>
+		struct GSLResult<Either<L, V>>
+		{
+			using Type_t = Either<L, std::result_of_t<R (const V&)>>;
+		};
+
+		template<typename RP>
+		static Either<L, RP> Pure (const RP& v)
+		{
+			return Either<L, RP>::Right (v);
+		}
+
+		template<typename AV>
+		static GSLResult_t<Type_t, AV> GSL (const Type_t& f, const AV& v)
+		{
+			using R_t = GSLResult_t<Type_t, AV>;
+
+			if (f.IsLeft ())
+				return R_t::Left (f.GetLeft ());
+
+			if (v.IsLeft ())
+				return R_t::Left (v.GetLeft ());
+
+			return R_t::Right (f.GetRight () (v.GetRight ()));
+		}
+	};
+
 }
 }

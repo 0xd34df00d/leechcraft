@@ -11,6 +11,7 @@
 #include <optional>
 #include "typelist.h"
 #include "applicative.h"
+#include "either.h"
 
 namespace LC
 {
@@ -98,6 +99,24 @@ namespace Util
 				return {};
 
 			return f (*value);
+		}
+	};
+
+	template<typename L, typename R>
+	struct InstanceMonad<Either<L, R>>
+	{
+		template<typename F>
+		using BindResult_t = std::result_of_t<F (R)>;
+
+		template<typename F>
+		static BindResult_t<F> Bind (const Either<L, R>& value, const F& f)
+		{
+			using R_t = BindResult_t<F>;
+
+			if (value.IsLeft ())
+				return R_t::Left (value.GetLeft ());
+
+			return f (value.GetRight ());
 		}
 	};
 }
