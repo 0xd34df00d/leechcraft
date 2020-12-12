@@ -19,20 +19,6 @@ set (SYS_SRCS
 	cpufeatures.cpp
 	)
 
-if (UNIX AND NOT APPLE)
-	set (SYS_SRCS ${SYS_SRCS} extensionsdataimpl_x11.cpp)
-
-	add_definitions (-DHAVE_EXTENSIONS_DATA)
-elseif (APPLE)
-	set (SYS_SRCS ${SYS_SRCS} extensionsdataimpl_mac.mm)
-
-	add_definitions (-DHAVE_EXTENSIONS_DATA)
-elseif (WIN32)
-	set (SYS_SRCS ${SYS_SRCS} extensionsdataimpl_w32.cpp)
-
-	add_definitions (-DHAVE_EXTENSIONS_DATA)
-endif ()
-
 foreach (SRC ${SYS_SRCS})
 	set (UTIL_SRCS "${UTIL_SRCS};util/sys/${SRC}")
 endforeach ()
