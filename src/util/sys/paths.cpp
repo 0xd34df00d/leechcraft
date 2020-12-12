@@ -75,7 +75,7 @@ namespace Util
 
 	QStringList GetSystemPaths ()
 	{
-		return QString (qgetenv ("PATH")).split (":", Qt::SkipEmptyParts);
+		return QString (qgetenv ("PATH")).split (':', Qt::SkipEmptyParts);
 	}
 
 	QString FindInSystemPath (const QString& name, const QStringList& paths,
@@ -115,7 +115,7 @@ namespace Util
 		if (!path.endsWith ('/'))
 			path += '/';
 		if (dir == UserDir::Cache)
-			path += "leechcraft5/";
+			path += QLatin1String ("leechcraft5/");
 		path += subpath;
 
 		if (!QDir {}.exists (path) &&

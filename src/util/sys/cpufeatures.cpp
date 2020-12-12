@@ -111,8 +111,8 @@ namespace Util
 		}
 
 		qDebug () << Q_FUNC_INFO;
-		qDebug () << "detected the following CPU features:" << detected.join (" ").toUtf8 ().constData ();
-		qDebug () << "couldn't detect the following CPU features:" << undetected.join (" ").toUtf8 ().constData ();
+		qDebug () << "detected the following CPU features:" << detected.join (' ').toUtf8 ().constData ();
+		qDebug () << "couldn't detect the following CPU features:" << undetected.join (' ').toUtf8 ().constData ();
 	}
 }
 }
