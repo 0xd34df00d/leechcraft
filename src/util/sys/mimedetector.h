@@ -18,14 +18,8 @@ namespace LC
 {
 namespace Util
 {
-	class MimeDetectorImpl;
-
-	class MimeDetector
+	struct MimeDetector
 	{
-		const std::shared_ptr<MimeDetectorImpl> Impl_;
-	public:
-		UTIL_SYS_API MimeDetector ();
-
 		UTIL_SYS_API QByteArray Detect (const QString&);
 		UTIL_SYS_API QByteArray operator() (const QString&);
 	};

@@ -7,56 +7,16 @@
  **********************************************************************/
 
 #include "mimedetector.h"
-
 #include <QString>
-
-#ifdef HAVE_MAGIC
-#include <magic.h>
-#endif
+#include <QMimeDatabase>
 
 namespace LC
 {
 namespace Util
 {
-#ifdef HAVE_MAGIC
-	class MimeDetectorImpl
-	{
-		std::shared_ptr<magic_set> Magic_;
-	public:
-		MimeDetectorImpl ()
-		: Magic_ (magic_open (MAGIC_MIME_TYPE), magic_close)
-		{
-			magic_load (Magic_.get (), nullptr);
-		}
-
-		QByteArray Detect (const QString& path)
-		{
-			return magic_file (Magic_.get (), path.toUtf8 ().constData ());
-		}
-	};
-#else
-	class MimeDetectorImpl
-	{
-	public:
-		MimeDetectorImpl ()
-		{
-		}
-
-		QByteArray Detect (const QString&)
-		{
-			return "application/octet-stream";
-		}
-	};
-#endif
-
-	MimeDetector::MimeDetector ()
-	: Impl_ { std::make_shared<MimeDetectorImpl> () }
-	{
-	}
-
 	QByteArray MimeDetector::Detect (const QString& path)
 	{
-		return Impl_->Detect (path);
+		return QMimeDatabase {}.mimeTypeForFile (path).name ().toUtf8 ();
 	}
 
 	QByteArray MimeDetector::operator() (const QString& path)

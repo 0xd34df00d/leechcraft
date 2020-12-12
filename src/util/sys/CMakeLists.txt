@@ -1,13 +1,3 @@
-find_package (MAGIC)
-if (MAGIC_FOUND)
-	add_definitions (-DHAVE_MAGIC)
-else ()
-	set (MAGIC_INCLUDE_DIRS)
-	set (MAGIC_LIBRARIES)
-endif ()
-
-include_directories (${MAGIC_INCLUDE_DIRS})
-
 set (SYS_SRCS
 	mimedetector.cpp
 	paths.cpp
@@ -30,7 +20,6 @@ add_library (leechcraft-util-sys${LC_LIBSUFFIX} SHARED
 target_link_libraries (leechcraft-util-sys${LC_LIBSUFFIX}
 	leechcraft-util-sll${LC_LIBSUFFIX}
 	leechcraft-util${LC_LIBSUFFIX}
-	${MAGIC_LIBRARIES}
 	)
 set_property (TARGET leechcraft-util-sys${LC_LIBSUFFIX} PROPERTY SOVERSION ${LC_SOVERSION}.1)
 install (TARGETS leechcraft-util-sys${LC_LIBSUFFIX} DESTINATION ${LIBDIR})
