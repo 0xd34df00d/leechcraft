@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include <memory>
 #include "sysconfig.h"
 
 class QString;
@@ -18,13 +17,9 @@ namespace LC
 {
 namespace Util
 {
-	class ExtensionsDataImpl;
-
 	class ExtensionsData
 	{
-		const std::shared_ptr<ExtensionsDataImpl> Impl_;
-
-		ExtensionsData ();
+		ExtensionsData () = default;
 
 		ExtensionsData (const ExtensionsData&) = delete;
 		ExtensionsData& operator= (const ExtensionsData&) = delete;

@@ -8,52 +8,39 @@
 
 #include "extensionsdata.h"
 #include <QIcon>
-#include "extensionsdataimpl.h"
+#include <QMimeDatabase>
 
 namespace LC
 {
 namespace Util
 {
-	ExtensionsData::ExtensionsData ()
-#ifdef HAVE_EXTENSIONS_DATA
-	: Impl_ { new ExtensionsDataImpl }
-#else
-	: Impl_ { nullptr }
-#endif
-	{
-	}
-
 	ExtensionsData& ExtensionsData::Instance ()
 	{
 		static ExtensionsData ed;
 		return ed;
 	}
 
+	namespace
+	{
+		auto GetMimeTypeForExt (const QString& extension)
+		{
+			return QMimeDatabase {}.mimeTypeForFile (extension, QMimeDatabase::MatchExtension);
+		}
+	}
+
 	QString ExtensionsData::GetMime (const QString& extension) const
 	{
-#ifdef HAVE_EXTENSIONS_DATA
-		return Impl_ ? Impl_->GetMimeDatabase () [extension] : QString {};
-#else
-		return {};
-#endif
+		return GetMimeTypeForExt (extension).name ();
 	}
 
 	QIcon ExtensionsData::GetExtIcon (const QString& extension) const
 	{
-#ifdef HAVE_EXTENSIONS_DATA
-		return Impl_ ? Impl_->GetExtIcon (extension) : QIcon {};
-#else
-		return {};
-#endif
+		return QIcon::fromTheme (GetMimeTypeForExt (extension).iconName ());
 	}
 
 	QIcon ExtensionsData::GetMimeIcon (const QString& mime) const
 	{
-#ifdef HAVE_EXTENSIONS_DATA
-		return Impl_ ? Impl_->GetMimeIcon (mime) : QIcon {};
-#else
-		return {};
-#endif
+		return QIcon::fromTheme (QMimeDatabase {}.mimeTypeForName (mime).iconName ());
 	}
 }
 }
