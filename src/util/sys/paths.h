@@ -180,7 +180,7 @@ namespace Util
 	 * @param[in] pattern Pattern of the filename.
 	 * @return The filename.
 	 */
-	UTIL_SYS_API QString GetTemporaryName (const QString& pattern = QString ("lc_temp.XXXXXX"));
+	UTIL_SYS_API QString GetTemporaryName (const QString& pattern = {});
 
 	/** @brief Contains information about a partition's disk space.
 	 */

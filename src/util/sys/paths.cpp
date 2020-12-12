@@ -144,7 +144,8 @@ namespace Util
 
 	QString GetTemporaryName (const QString& pattern)
 	{
-		QTemporaryFile file (QDir::tempPath () + "/" + pattern);
+		static const auto defaultPattern = QStringLiteral ("lc_temp.XXXXXX");
+		QTemporaryFile file (QDir::tempPath () + '/' + (pattern.isEmpty () ? defaultPattern : pattern));
 		file.open ();
 		QString name = file.fileName ();
 		file.close ();
