@@ -27,6 +27,14 @@ namespace SysInfo
 	 */
 	struct OSInfo
 	{
+		/** @brief Describes the CPU architecture of the OS.
+		 *
+		 * This describes the architecture of the OS, not the machine
+		 * itself. Thus, a 32-bit Linux running on a 64-bit CPU will
+		 * still be reported as \em x86 instead of \em x86_64.
+		 */
+		QString Arch_;
+
 		/** @brief The name of the OS, including the distribution.
 		 *
 		 * Typical values are:
@@ -64,36 +72,6 @@ namespace SysInfo
 		 * @sa Name_
 		 */
 		QString Flavour_;
-
-		/** @brief Describes the CPU architecture of the OS.
-		 *
-		 * This describes the architecture of the OS, not the machine
-		 * itself. Thus, a 32-bit Linux running on a 64-bit CPU will
-		 * still be reported as \em x86 instead of \em x86_64.
-		 */
-		QString Arch_;
-
-		/** @brief Constructs the OSInfo object.
-		 *
-		 * Sets both the Name_ and the Flavour_ of the OS to \em name.
-		 *
-		 * \param[in] arch Initializer for the Arch_ field.
-		 * \param[in] name Initializer for the Name_ and Flavour_ fields.
-		 * \param[in] version Initializer for the Version_ field.
-		 */
-		UTIL_SYS_API OSInfo (const QString& arch, const QString& name, const QString& version);
-
-		/** @brief Constructs the OSInfo object.
-		 *
-		 * \param[in] arch Initializer for the Arch_ field.
-		 * \param[in] flavour Initializer for the Flavour_ field.
-		 * \param[in] name Initializer for the Name_ field.
-		 * \param[in] version Initializer for the Version_ field.
-		 */
-		UTIL_SYS_API OSInfo (const QString& arch,
-				const QString& flavour,
-				const QString& name,
-				const QString& version);
 	};
 
 	/** @brief Returns more precise information about OS name and version.

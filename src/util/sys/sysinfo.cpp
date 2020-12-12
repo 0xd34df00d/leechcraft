@@ -23,20 +23,6 @@ namespace Util
 {
 namespace SysInfo
 {
-	OSInfo::OSInfo (const QString& arch, const QString& name, const QString& version)
-	: OSInfo { arch, name, name, version }
-	{
-	}
-
-	OSInfo::OSInfo (const QString& arch, const QString& flavour,
-			const QString& name, const QString& version)
-	: Name_ { name }
-	, Version_ { version }
-	, Flavour_ { flavour }
-	, Arch_ { arch }
-	{
-	}
-
 	QString GetOSName ()
 	{
 		const auto& info = GetOSInfo ();
@@ -150,7 +136,7 @@ namespace SysInfo
 		const auto retVer = [] (const QString& version)
 		{
 			// LC only supports building on OS X 10.7 and higher, which all work only on x86_64.
-			return OSInfo { "x86_64", "Mac OS X", version };
+			return OSInfo { .Arch_ = "x86_64", .Name_ = "Mac OS X", .Version_ = version };
 		};
 
 		for (auto minor = 7; minor < 16; ++minor)
@@ -163,9 +149,9 @@ namespace SysInfo
 		{
 			return OSInfo
 			{
-				QSysInfo::WordSize == 64 ? "x86_64" : "x86",
-				"Windows",
-				version
+				.Arch_ = QSysInfo::WordSize == 64 ? "x86_64" : "x86",
+				.Name_ = "Windows",
+				.Version_ = version
 			};
 		};
 
@@ -216,14 +202,14 @@ namespace SysInfo
 
 		return
 		{
-			u.machine,
-			u.sysname,
-			osName.isEmpty () ? u.sysname : osName,
-			QString ("%1 %2 %3").arg (u.machine, u.release, u.version)
+			.Arch_ = u.machine,
+			.Name_ = osName.isEmpty () ? u.sysname : osName,
+			.Version_ = QString ("%1 %2 %3").arg (u.machine, u.release, u.version),
+			.Flavour_ = u.sysname,
 		};
 #endif
 
-		return { "Unknown arch", "Unknown OS", "Unknown version" };
+		return { .Arch_ = "Unknown arch", .Name_ = "Unknown OS", .Version_ = "Unknown version" };
 	}
 }
 }
