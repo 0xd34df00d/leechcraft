@@ -14,29 +14,30 @@
 #include <QLineEdit>
 #include "tagslineedit.h"
 
-using namespace LC::Util;
-
-QAbstractItemModel *LC::Util::TagsCompleter::CompletionModel_ = 0;
-
-TagsCompleter::TagsCompleter (TagsLineEdit *toComplete)
-: QCompleter (toComplete)
-, Edit_ (toComplete)
+namespace LC::Util
 {
-	setCompletionRole (Qt::DisplayRole);
-	setModel (CompletionModel_);
-	toComplete->SetCompleter (this);
-}
+	QAbstractItemModel *TagsCompleter::CompletionModel_ = 0;
 
-void TagsCompleter::OverrideModel (QAbstractItemModel *model)
-{
-	setModel (model);
-}
+	TagsCompleter::TagsCompleter (TagsLineEdit *toComplete)
+	: QCompleter (toComplete)
+	, Edit_ (toComplete)
+	{
+		setCompletionRole (Qt::DisplayRole);
+		setModel (CompletionModel_);
+		toComplete->SetCompleter (this);
+	}
 
-QStringList TagsCompleter::splitPath (const QString& string) const
-{
-	const auto& sep = Edit_->GetSeparator ().trimmed ();
-	auto result = string.split (sep, Qt::SkipEmptyParts);
-	for (auto& s : result)
-		s = s.trimmed ();
-	return result;
+	void TagsCompleter::OverrideModel (QAbstractItemModel *model)
+	{
+		setModel (model);
+	}
+
+	QStringList TagsCompleter::splitPath (const QString& string) const
+	{
+		const auto& sep = Edit_->GetSeparator ().trimmed ();
+		auto result = string.split (sep, Qt::SkipEmptyParts);
+		for (auto& s : result)
+			s = s.trimmed ();
+		return result;
+	}
 }
