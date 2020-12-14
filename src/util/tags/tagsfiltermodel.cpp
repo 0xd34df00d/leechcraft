@@ -9,6 +9,7 @@
 #include <QStringList>
 #include <QtDebug>
 #include "tagsfiltermodel.h"
+#include "util.h"
 
 namespace LC
 {
@@ -17,7 +18,7 @@ namespace Util
 	TagsFilterModel::TagsFilterModel (QObject *parent)
 	: QSortFilterProxyModel (parent)
 	, NormalMode_ (true)
-	, Separator_ (";")
+	, Separator_ (GetDefaultTagsSeparator ())
 	, TagsMode_ (TagsInclusionMode::All)
 	{
 	}

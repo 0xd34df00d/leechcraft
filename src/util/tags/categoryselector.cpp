@@ -18,6 +18,7 @@
 #include <QAction>
 #include <QtDebug>
 #include "ui_categoryselector.h"
+#include "util.h"
 
 namespace LC::Util
 {
@@ -26,7 +27,7 @@ namespace LC::Util
 	CategorySelector::CategorySelector (QWidget *parent)
 	: QDialog (parent)
 	, Ui_ (new Ui::CategorySelector)
-	, Separator_ ("; ")
+	, Separator_ (GetDefaultTagsSeparator ())
 	{
 		setWindowTitle (tr ("Tags selector"));
 		setWindowFlags (Qt::Dialog | Qt::WindowStaysOnTopHint);

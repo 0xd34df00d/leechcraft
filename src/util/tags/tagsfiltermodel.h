@@ -70,12 +70,12 @@ namespace Util
 		 * one set via <code>setFilterFixedString()</code> method) into
 		 * the list of tags.
 		 *
-		 * The default separator is <em>;</em>.
-		 *
 		 * Setting this property will invalidate the model if the
 		 * <code>dynamicSortFilter()</code> property is true.
 		 *
 		 * @param[in] separator The separator string.
+		 *
+		 * @sa GetDefaultTagsSeparator()
 		 */
 		void SetSeparator (const QString& separator);
 

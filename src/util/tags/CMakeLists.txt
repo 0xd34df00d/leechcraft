@@ -5,6 +5,7 @@ set (TAGS_SRCS
 	tagscompletionmodel.cpp
 	tagslineedit.cpp
 	tagsfiltermodel.cpp
+	util.cpp
 	)
 set (TAGS_FORMS
 	categoryselector.ui

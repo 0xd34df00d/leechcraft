@@ -26,7 +26,7 @@ namespace Util
 	TagsLineEdit::TagsLineEdit (QWidget *parent)
 	: QLineEdit (parent)
 	, Completer_ (0)
-	, Separator_ ("; ")
+	, Separator_ (GetDefaultTagsSeparator ())
 	{
 	}
 

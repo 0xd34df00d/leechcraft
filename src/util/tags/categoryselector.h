@@ -112,9 +112,8 @@ namespace LC::Util
 
 		/** @brief Returns the separator for the tags.
 		 *
-		 * The default separator is "; ".
-		 *
 		 * @sa SetSeparator()
+		 * @sa GetDefaultTagsSeparator()
 		 */
 		QString GetSeparator () const;
 
