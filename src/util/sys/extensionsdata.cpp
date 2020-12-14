@@ -10,9 +10,7 @@
 #include <QIcon>
 #include <QMimeDatabase>
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	ExtensionsData& ExtensionsData::Instance ()
 	{
@@ -42,5 +40,4 @@ namespace Util
 	{
 		return QIcon::fromTheme (QMimeDatabase {}.mimeTypeForName (mime).iconName ());
 	}
-}
 }

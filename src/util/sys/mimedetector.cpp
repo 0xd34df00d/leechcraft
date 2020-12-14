@@ -10,9 +10,7 @@
 #include <QString>
 #include <QMimeDatabase>
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	QByteArray MimeDetector::Detect (const QString& path)
 	{
@@ -28,5 +26,4 @@ namespace Util
 	{
 		return MimeDetector {} (path);
 	}
-}
 }

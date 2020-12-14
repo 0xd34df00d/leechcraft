@@ -13,9 +13,7 @@
 class QString;
 class QIcon;
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	class ExtensionsData
 	{
@@ -30,5 +28,4 @@ namespace Util
 		UTIL_SYS_API QIcon GetExtIcon (const QString& extension) const;
 		UTIL_SYS_API QIcon GetMimeIcon (const QString& mime) const;
 	};
-}
 }

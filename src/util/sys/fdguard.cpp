@@ -12,9 +12,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	FDGuard::FDGuard (const char *file, int mode)
 	: FD_ { open (file, mode) }
@@ -54,5 +52,4 @@ namespace Util
 	{
 		std::swap (g1.FD_, g2.FD_);
 	}
-}
 }

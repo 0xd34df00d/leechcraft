@@ -11,11 +11,7 @@
 #include <QString>
 #include "sysconfig.h"
 
-namespace LC
-{
-namespace Util
-{
-namespace SysInfo
+namespace LC::Util::SysInfo
 {
 	/** @brief Returns a string of OS name and version joined together.
 	 *
@@ -80,6 +76,4 @@ namespace SysInfo
 	 * fields.
 	 */
 	UTIL_SYS_API OSInfo GetOSInfo ();
-}
-}
 }

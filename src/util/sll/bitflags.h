@@ -10,21 +10,19 @@
 
 #include <type_traits>
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	template<typename T>
 	class BitFlags
 	{
-		static_assert (std::is_enum<T>::value, "The instantiating type should be a enumeration");
+		static_assert (std::is_enum_v<T>, "The instantiating type should be a enumeration");
 
 		using St_t = std::underlying_type_t<T>;
 		St_t Storage_ = 0;
 	public:
 		BitFlags () = default;
 
-		BitFlags (T t)
+		explicit (false) BitFlags (T t)
 		: Storage_ { static_cast<St_t> (t) }
 		{
 		}
@@ -58,7 +56,6 @@ namespace Util
 			return left;
 		}
 	};
-}
 }
 
 #define DECLARE_BIT_FLAGS(F) \

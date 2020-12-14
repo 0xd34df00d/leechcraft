@@ -21,9 +21,7 @@
 
 #include <util/sll/unreachable.h>
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	CpuFeatures::CpuFeatures ()
 	{
@@ -94,7 +92,7 @@ namespace Util
 
 	void CpuFeatures::DumpDetectedFeatures () const
 	{
-		if (qgetenv ("DUMP_CPUFEATURES").isEmpty ())
+		if (qEnvironmentVariableIsEmpty ("DUMP_CPUFEATURES"))
 			return;
 
 		QStringList detected;
@@ -114,5 +112,4 @@ namespace Util
 		qDebug () << "detected the following CPU features:" << detected.join (' ').toUtf8 ().constData ();
 		qDebug () << "couldn't detect the following CPU features:" << undetected.join (' ').toUtf8 ().constData ();
 	}
-}
 }

@@ -14,9 +14,7 @@
 
 class QString;
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	class UTIL_SYS_API CpuFeatures
 	{
@@ -53,5 +51,4 @@ namespace Util
 	private:
 		void DumpDetectedFeatures () const;
 	};
-}
 }

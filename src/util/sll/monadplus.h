@@ -75,7 +75,7 @@ namespace Util
 		}
 
 		template<typename T>
-		auto operator() (const std::initializer_list<T>& vec) const
+		auto operator() (std::initializer_list<T> vec) const
 		{
 			using std::begin;
 			using std::end;

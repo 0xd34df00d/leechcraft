@@ -13,15 +13,10 @@
 
 #include <QProcess>
 #include <QTextStream>
-#include <QFileInfo>
 #include <QFile>
 #include <QSettings>
 
-namespace LC
-{
-namespace Util
-{
-namespace SysInfo
+namespace LC::Util::SysInfo
 {
 	QString GetOSName ()
 	{
@@ -184,10 +179,8 @@ namespace SysInfo
 		}
 #else
 		auto osName = Linux::GetEtcOsName ();
-
 		if (osName.isEmpty ())
 			osName = Linux::GetEtcName ();
-
 		if (osName.isEmpty ())
 			osName = Linux::GetLSBName ();
 
@@ -207,6 +200,4 @@ namespace SysInfo
 
 		return { .Arch_ = "Unknown arch", .Name_ = "Unknown OS", .Version_ = "Unknown version" };
 	}
-}
-}
 }

@@ -11,9 +11,7 @@
 #include <algorithm>
 #include <QHash>
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	namespace CacheStrat
 	{
@@ -24,13 +22,6 @@ namespace Util
 			struct ValueAddon
 			{
 				size_t LastAccess_ = 0;
-
-				ValueAddon () = default;
-
-				ValueAddon (size_t la)
-				: LastAccess_ { la }
-				{
-				}
 			};
 
 			ValueAddon CreateInfo ()
@@ -49,7 +40,7 @@ namespace Util
 			}
 		};
 
-		inline bool operator< (const LRU::ValueAddon& v1, const LRU::ValueAddon& v2)
+		inline bool operator< (LRU::ValueAddon v1, LRU::ValueAddon v2)
 		{
 			return v1.LastAccess_ < v2.LastAccess_;
 		}
@@ -72,7 +63,7 @@ namespace Util
 
 		CS CacheStratState_;
 	public:
-		AssocCache (size_t maxCost)
+		explicit AssocCache (size_t maxCost)
 		: MaxCost_ { maxCost }
 		{
 		}
@@ -133,5 +124,4 @@ namespace Util
 			Hash_.erase (pos);
 		}
 	}
-}
 }

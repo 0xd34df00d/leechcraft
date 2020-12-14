@@ -8,15 +8,12 @@
 
 #pragma once
 
-#include <memory>
 #include "sysconfig.h"
 
 class QString;
 class QByteArray;
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	struct MimeDetector
 	{
@@ -25,5 +22,4 @@ namespace Util
 	};
 
 	UTIL_SYS_API QByteArray DetectFileMime (const QString&);
-}
 }

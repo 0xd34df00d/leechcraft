@@ -16,9 +16,7 @@
 class QDir;
 class QUrl;
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	/** @brief Describes various root paths recognized by GetSysPath().
 	 *
@@ -142,7 +140,7 @@ namespace Util
 	 * @return The full path to the first found file or an empty string.
 	 */
 	UTIL_SYS_API QString FindInSystemPath (const QString& name, const QStringList& paths,
-			const std::function<bool (QFileInfo)>& filter = std::function<bool (QFileInfo)> ());
+			const std::function<bool (QFileInfo)>& filter = {});
 
 	/** @brief Describes various user-specific paths.
 	 */
@@ -213,5 +211,4 @@ namespace Util
 	 * containing \em path.
 	 */
 	UTIL_SYS_API SpaceInfo GetSpaceInfo (const QString& path);
-}
 }

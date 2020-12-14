@@ -11,9 +11,7 @@
 
 #include "sysconfig.h"
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	class UTIL_SYS_API FDGuard
 	{
@@ -28,9 +26,8 @@ namespace Util
 		FDGuard& operator= (FDGuard&& other);
 
 		explicit operator bool () const;
-		operator int () const;
+		explicit (false) operator int () const;
 
 		friend void swap (FDGuard& g1, FDGuard& g2);
 	};
-}
 }

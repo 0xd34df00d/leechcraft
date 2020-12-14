@@ -23,12 +23,9 @@ namespace LC::Util
 	: QObject (parent)
 	, RelativePath_ (relPath)
 	, SubElemModel_ (new QStandardItemModel (this))
-	, AttrFilters_ (QDir::Dirs | QDir::NoDotAndDotDot | QDir::Readable)
 	, SortModel_ (new QSortFilterProxyModel (this))
 	, Watcher_ (new QFileSystemWatcher (this))
 	, CacheFlushTimer_ (new QTimer (this))
-	, CachePathContents_ (0)
-	, CachePixmaps_ (0)
 	{
 		if (RelativePath_.startsWith ('/'))
 			RelativePath_ = RelativePath_.mid (1);
@@ -306,7 +303,7 @@ namespace LC::Util
 		for (const auto& entry : QDir (path).entryList (NameFilters_, AttrFilters_))
 		{
 			Entry2Paths_ [entry] << path;
-			if (SubElemModel_->findItems (entry).size ())
+			if (!SubElemModel_->findItems (entry).isEmpty ())
 				continue;
 
 			SubElemModel_->appendRow (new QStandardItem (entry));
@@ -317,8 +314,8 @@ namespace LC::Util
 	{
 		emit watchedDirectoriesChanged ();
 
-		for (auto i = Entry2Paths_.begin (), end = Entry2Paths_.end (); i != end; ++i)
-			i->removeAll (path);
+		for (auto& paths : Entry2Paths_)
+			paths.removeAll (path);
 
 		QFileInfo fi (path);
 		if (fi.exists () &&

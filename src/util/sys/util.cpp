@@ -10,9 +10,7 @@
 #include <QString>
 #include <QImageWriter>
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	bool HasSupportedImageExtension (const QString& filename)
 	{
@@ -34,5 +32,4 @@ namespace Util
 		return false;
 #endif
 	}
-}
 }

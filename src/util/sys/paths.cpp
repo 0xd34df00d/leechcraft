@@ -20,9 +20,7 @@
 #include <QStandardPaths>
 #include <util/util.h>
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	QStringList GetPathCandidates (SysPath path, QString suffix)
 	{
@@ -135,11 +133,11 @@ namespace Util
 			throw std::runtime_error (qPrintable (QObject::tr ("Could not create %1")
 						.arg (QDir::toNativeSeparators (home.filePath (path)))));
 
-		if (home.cd (path))
-			return home;
-		else
+		if (!home.cd (path))
 			throw std::runtime_error (qPrintable (QObject::tr ("Could not cd into %1")
-						.arg (QDir::toNativeSeparators (home.filePath (path)))));
+					.arg (QDir::toNativeSeparators (home.filePath (path)))));
+
+		return home;
 	}
 
 	QString GetTemporaryName (const QString& pattern)
@@ -158,10 +156,9 @@ namespace Util
 		const auto& info = std::filesystem::space (path.toStdString ());
 		return
 		{
-			info.capacity,
-			info.free,
-			info.available
+			.Capacity_ = info.capacity,
+			.Free_ = info.free,
+			.Available_ = info.available
 		};
 	}
-}
 }

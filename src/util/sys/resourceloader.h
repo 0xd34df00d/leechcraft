@@ -24,7 +24,7 @@ class QTimer;
 
 namespace LC::Util
 {
-	typedef std::shared_ptr<QIODevice> QIODevice_ptr;
+	using QIODevice_ptr = std::shared_ptr<QIODevice>;
 
 	/** @brief Utility class for loading a file from a set of locations.
 	 *
@@ -78,14 +78,14 @@ namespace LC::Util
 
 		QStandardItemModel *SubElemModel_;
 		QStringList NameFilters_;
-		QDir::Filters AttrFilters_;
+		QDir::Filters AttrFilters_ = QDir::Dirs | QDir::NoDotAndDotDot | QDir::Readable;
 		QSortFilterProxyModel *SortModel_;
 
 		QFileSystemWatcher *Watcher_;
 
 		QTimer *CacheFlushTimer_;
-		mutable QCache<QString, QByteArray> CachePathContents_;
-		mutable QCache<QString, QPixmap> CachePixmaps_;
+		mutable QCache<QString, QByteArray> CachePathContents_ { 0 };
+		mutable QCache<QString, QPixmap> CachePixmaps_ { 0 };
 
 		bool Verbose_ = false;
 	public:
@@ -95,7 +95,7 @@ namespace LC::Util
 		 * where the resources will be searched for.
 		 * @param[in] obj Parent object.
 		 */
-		ResourceLoader (const QString& relPath, QObject* obj = 0);
+		explicit ResourceLoader (const QString& relPath, QObject* obj = nullptr);
 
 		/** @brief Registers global OS-dependent prefixes.
 		 *

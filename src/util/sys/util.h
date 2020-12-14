@@ -12,9 +12,7 @@
 
 class QString;
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	/** @brief Checks if the given filename has a known image extension.
 	 *
@@ -27,5 +25,4 @@ namespace Util
 	UTIL_SYS_API bool HasSupportedImageExtension (const QString& filename);
 
 	UTIL_SYS_API bool IsOSXLoadFromBundle ();
-}
 }
