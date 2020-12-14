@@ -326,9 +326,7 @@ namespace LC::Util
 		void SetVerbose (bool verbose);
 	private:
 		void ScanPath (const QString&);
-	private slots:
-		void handleDirectoryChanged (const QString&);
-		void handleFlushCaches ();
+		void HandleDirectoryChanged (const QString&);
 	signals:
 		void watchedDirectoriesChanged ();
 	};

@@ -40,14 +40,14 @@ namespace LC::Util
 		SortModel_->sort (0);
 
 		connect (Watcher_,
-				SIGNAL (directoryChanged (const QString&)),
+				&QFileSystemWatcher::directoryChanged,
 				this,
-				SLOT (handleDirectoryChanged (const QString&)));
+				&ResourceLoader::HandleDirectoryChanged);
 
 		connect (CacheFlushTimer_,
-				SIGNAL (timeout ()),
+				&QTimer::timeout,
 				this,
-				SLOT (handleFlushCaches ()));
+				&ResourceLoader::FlushCache);
 	}
 
 	void ResourceLoader::AddLocalPrefix (QString prefix)
@@ -138,7 +138,8 @@ namespace LC::Util
 
 	void ResourceLoader::FlushCache ()
 	{
-		handleFlushCaches ();
+		CachePathContents_.clear ();
+		CachePixmaps_.clear ();
 	}
 
 	QFileInfoList ResourceLoader::List (const QString& option,
@@ -312,7 +313,7 @@ namespace LC::Util
 		}
 	}
 
-	void ResourceLoader::handleDirectoryChanged (const QString& path)
+	void ResourceLoader::HandleDirectoryChanged (const QString& path)
 	{
 		emit watchedDirectoriesChanged ();
 
@@ -338,11 +339,5 @@ namespace LC::Util
 			for (auto item : SubElemModel_->findItems (entry))
 				SubElemModel_->removeRow (item->row ());
 		}
-	}
-
-	void ResourceLoader::handleFlushCaches ()
-	{
-		CachePathContents_.clear ();
-		CachePixmaps_.clear ();
 	}
 }
