@@ -39,7 +39,7 @@ namespace Util
 			invalidateFilter ();
 	}
 
-	void TagsFilterModel::setTagsMode (bool tags)
+	void TagsFilterModel::SetTagsMode (bool tags)
 	{
 		NormalMode_ = !tags;
 

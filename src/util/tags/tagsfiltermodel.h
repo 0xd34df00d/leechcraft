@@ -87,16 +87,14 @@ namespace Util
 		 * @param[in] mode The tags inclusion mode.
 		 */
 		void SetTagsInclusionMode (TagsInclusionMode mode);
-	public slots:
+
 		/** @brief Sets whether the tags filtering mode is enabled.
 		 *
 		 * By default the tags mode is disabled.
 		 *
 		 * @param[in] enabled Whether the tags mode should be enabled.
-		 *
-		 * @sa enableTagsMode(), disableTagsMode()
 		 */
-		void setTagsMode (bool enabled);
+		void SetTagsMode (bool enabled);
 	protected:
 		/** @brief Reimplemented from QSortFilterProxyModel::filterAcceptsRow().
 		 */

@@ -17,7 +17,7 @@ namespace Aggregator
 	: Util::TagsFilterModel (parent)
 	{
 		setDynamicSortFilter (true);
-		setTagsMode (true);
+		SetTagsMode (true);
 	}
 	
 	QStringList ChannelsFilterModel::GetTagsForIndex (int row) const

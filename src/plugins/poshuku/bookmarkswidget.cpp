@@ -131,22 +131,22 @@ namespace Poshuku
 
 		switch (section)
 		{
-			case 1:
-				FavoritesFilterModel_->setTagsMode (false);
-				FavoritesFilterModel_->setFilterWildcard (text);
-				break;
-			case 2:
-				FavoritesFilterModel_->setTagsMode (false);
-				FavoritesFilterModel_->setFilterRegExp (text);
-				break;
-			case 3:
-				FavoritesFilterModel_->setTagsMode (true);
-				FavoritesFilterModel_->setFilterFixedString (text);
-				break;
-			default:
-				FavoritesFilterModel_->setTagsMode (false);
-				FavoritesFilterModel_->setFilterFixedString (text);
-				break;
+		case 1:
+			FavoritesFilterModel_->SetTagsMode (false);
+			FavoritesFilterModel_->setFilterWildcard (text);
+			break;
+		case 2:
+			FavoritesFilterModel_->SetTagsMode (false);
+			FavoritesFilterModel_->setFilterRegExp (text);
+			break;
+		case 3:
+			FavoritesFilterModel_->SetTagsMode (true);
+			FavoritesFilterModel_->setFilterFixedString (text);
+			break;
+		default:
+			FavoritesFilterModel_->SetTagsMode (false);
+			FavoritesFilterModel_->setFilterFixedString (text);
+			break;
 		}
 
 		FavoritesFilterModel_->

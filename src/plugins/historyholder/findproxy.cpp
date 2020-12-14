@@ -34,7 +34,7 @@ namespace HistoryHolder
 		default:
 			setFilterFixedString (r.String_);
 			if (r.Type_ == Request::RTTag)
-				setTagsMode (true);
+				SetTagsMode (true);
 			break;
 		}
 	}
