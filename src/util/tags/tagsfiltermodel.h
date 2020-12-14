@@ -30,8 +30,6 @@ namespace Util
 	 */
 	class UTIL_TAGS_API TagsFilterModel : public QSortFilterProxyModel
 	{
-		Q_OBJECT
-
 		bool NormalMode_;
 		QString Separator_;
 	public:
