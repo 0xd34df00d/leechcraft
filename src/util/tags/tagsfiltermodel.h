@@ -97,22 +97,6 @@ namespace Util
 		 * @sa enableTagsMode(), disableTagsMode()
 		 */
 		void setTagsMode (bool enabled);
-
-		/** @brief Convenience slot enabling the tags mode.
-		 *
-		 * This slot is equivalent to <code>setTagsMode (true)</code>.
-		 *
-		 * @sa setTagsMode()
-		 */
-		void enableTagsMode ();
-
-		/** @brief Convenience slot disabling the tags mode.
-		 *
-		 * This slot is equivalent to <code>setTagsMode (false)</code>.
-		 *
-		 * @sa setTagsMode()
-		 */
-		void disableTagsMode ();
 	protected:
 		/** @brief Reimplemented from QSortFilterProxyModel::filterAcceptsRow().
 		 */

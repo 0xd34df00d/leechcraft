@@ -47,16 +47,6 @@ namespace Util
 			invalidateFilter ();
 	}
 
-	void TagsFilterModel::enableTagsMode ()
-	{
-		setTagsMode (true);
-	}
-
-	void TagsFilterModel::disableTagsMode ()
-	{
-		setTagsMode (false);
-	}
-
 	bool TagsFilterModel::filterAcceptsRow (int source_row, const QModelIndex& index) const
 	{
 		if (NormalMode_)
