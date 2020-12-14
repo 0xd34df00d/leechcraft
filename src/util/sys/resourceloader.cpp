@@ -326,18 +326,14 @@ namespace LC::Util
 				fi.isReadable ())
 			ScanPath (path);
 
-		QStringList toRemove;
-		for (auto i = Entry2Paths_.begin (), end = Entry2Paths_.end (); i != end; ++i)
+		for (auto i = Entry2Paths_.begin (); i != Entry2Paths_.end ();)
 			if (i->isEmpty ())
-				toRemove << i.key ();
-
-		for (const auto& entry : toRemove)
-		{
-			Entry2Paths_.remove (entry);
-
-			auto items = SubElemModel_->findItems (entry);
-			for (auto item : SubElemModel_->findItems (entry))
-				SubElemModel_->removeRow (item->row ());
-		}
+			{
+				for (auto item : SubElemModel_->findItems (i.key ()))
+					SubElemModel_->removeRow (item->row ());
+				i = Entry2Paths_.erase (i);
+			}
+			else
+				++i;
 	}
 }
