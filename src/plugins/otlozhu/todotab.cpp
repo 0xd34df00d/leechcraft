@@ -56,13 +56,13 @@ namespace Otlozhu
 				ProxyModel_,
 				SLOT (setFilterFixedString (QString)));
 		connect (Ui_.FilterLine_,
-				SIGNAL (textChanged (QString)),
+				&QLineEdit::textChanged,
 				ProxyModel_,
-				SLOT (disableTagsMode ()));
+				[this] { ProxyModel_->setTagsMode (false); });
 		connect (Ui_.FilterLine_,
-				SIGNAL (tagsChosen ()),
+				&Util::TagsLineEdit::tagsChosen,
 				ProxyModel_,
-				SLOT (enableTagsMode ()));
+				[this] { ProxyModel_->setTagsMode (true); });
 		Ui_.TodoTree_->setModel (ProxyModel_);
 
 		QAction *addTodo = new QAction (tr ("Add task..."), this);
