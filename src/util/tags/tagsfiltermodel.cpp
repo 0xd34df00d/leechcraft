@@ -76,9 +76,9 @@ namespace Util
 
 	bool TagsFilterModel::FilterTagsMode (int sourceRow, const QModelIndex&) const
 	{
-		QStringList filterTags;
+		QList<QStringRef> filterTags;
 		const auto& pattern = filterRegExp ().pattern ();
-		for (const auto& s : pattern.split (Separator_, Qt::SkipEmptyParts))
+		for (const auto& s : pattern.splitRef (Separator_, Qt::SkipEmptyParts))
 			filterTags << s.trimmed ();
 
 		if (!filterTags.size ())
