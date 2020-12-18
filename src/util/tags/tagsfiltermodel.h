@@ -108,6 +108,9 @@ namespace Util
 		 * @return The list of tags for the \em row.
 		 */
 		virtual QStringList GetTagsForIndex (int row) const = 0;
+	private:
+		bool FilterNormalMode (int, const QModelIndex&) const;
+		bool FilterTagsMode (int, const QModelIndex&) const;
 	};
 };
 }

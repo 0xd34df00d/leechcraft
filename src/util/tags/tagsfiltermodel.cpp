@@ -47,54 +47,59 @@ namespace Util
 			invalidateFilter ();
 	}
 
-	bool TagsFilterModel::filterAcceptsRow (int source_row, const QModelIndex& index) const
+	bool TagsFilterModel::filterAcceptsRow (int sourceRow, const QModelIndex& index) const
 	{
-		if (NormalMode_)
-		{
-			if (index.isValid () && sourceModel ()->rowCount (index))
-				return true;
+		return NormalMode_ ?
+				FilterNormalMode (sourceRow, index) :
+				FilterTagsMode (sourceRow, index);
+	}
 
-			const auto& pattern = filterRegExp ().pattern ();
-			if (pattern.isEmpty ())
-				return true;
-
-			for (int i = 0, cc = sourceModel ()->columnCount (index); i < cc; ++i)
-			{
-				const auto& rowIdx = sourceModel ()->index (source_row, i, index);
-				const auto& str = rowIdx.data ().toString ();
-				if (str.contains (pattern) || filterRegExp ().exactMatch (str))
-					return true;
-			}
-
-			return false;
-		}
-		else
-		{
-			QStringList filterTags;
-			const auto& pattern = filterRegExp ().pattern ();
-			for (const auto& s : pattern.split (Separator_, Qt::SkipEmptyParts))
-				filterTags << s.trimmed ();
-
-			if (!filterTags.size ())
-				return true;
-
-			const auto& itemTags = GetTagsForIndex (source_row);
-			for (int i = 0; i < filterTags.size (); ++i)
-			{
-				bool found = false;
-				for (int j = 0; j < itemTags.size (); ++j)
-					if (itemTags.at (j).contains (filterTags.at (i)))
-					{
-						found = true;
-						break;
-					}
-				if (!found)
-					return false;
-				else if (TagsMode_ == TagsInclusionMode::Any)
-					return true;
-			}
+	bool TagsFilterModel::FilterNormalMode (int sourceRow, const QModelIndex& index) const
+	{
+		if (index.isValid () && sourceModel ()->rowCount (index))
 			return true;
+
+		const auto& pattern = filterRegExp ().pattern ();
+		if (pattern.isEmpty ())
+			return true;
+
+		for (int i = 0, cc = sourceModel ()->columnCount (index); i < cc; ++i)
+		{
+			const auto& rowIdx = sourceModel ()->index (sourceRow, i, index);
+			const auto& str = rowIdx.data ().toString ();
+			if (str.contains (pattern) || filterRegExp ().exactMatch (str))
+				return true;
 		}
+
+		return false;
+	}
+
+	bool TagsFilterModel::FilterTagsMode (int sourceRow, const QModelIndex&) const
+	{
+		QStringList filterTags;
+		const auto& pattern = filterRegExp ().pattern ();
+		for (const auto& s : pattern.split (Separator_, Qt::SkipEmptyParts))
+			filterTags << s.trimmed ();
+
+		if (!filterTags.size ())
+			return true;
+
+		const auto& itemTags = GetTagsForIndex (sourceRow);
+		for (int i = 0; i < filterTags.size (); ++i)
+		{
+			bool found = false;
+			for (int j = 0; j < itemTags.size (); ++j)
+				if (itemTags.at (j).contains (filterTags.at (i)))
+				{
+					found = true;
+					break;
+				}
+			if (!found)
+				return false;
+			else if (TagsMode_ == TagsInclusionMode::Any)
+				return true;
+		}
+		return true;
 	}
 }
 }
