@@ -88,7 +88,7 @@ namespace Util
 		for (const auto& tag : filterTags)
 		{
 			const bool found = std::any_of (itemTags.begin (), itemTags.end (),
-					[&] (const QString& itemTag) { return itemTag.contains (tag); });
+					[&] (const QString& itemTag) { return itemTag == tag; });
 			if (!found)
 				return false;
 			else if (TagsMode_ == TagsInclusionMode::Any)
