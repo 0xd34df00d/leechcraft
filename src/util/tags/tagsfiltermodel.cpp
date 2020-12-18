@@ -85,15 +85,10 @@ namespace Util
 			return true;
 
 		const auto& itemTags = GetTagsForIndex (sourceRow);
-		for (int i = 0; i < filterTags.size (); ++i)
+		for (const auto& tag : filterTags)
 		{
-			bool found = false;
-			for (int j = 0; j < itemTags.size (); ++j)
-				if (itemTags.at (j).contains (filterTags.at (i)))
-				{
-					found = true;
-					break;
-				}
+			const bool found = std::any_of (itemTags.begin (), itemTags.end (),
+					[&] (const QString& itemTag) { return itemTag.contains (tag); });
 			if (!found)
 				return false;
 			else if (TagsMode_ == TagsInclusionMode::Any)
