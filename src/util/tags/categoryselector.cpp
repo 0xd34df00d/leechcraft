@@ -200,8 +200,8 @@ namespace LC::Util
 
 	void CategorySelector::lineTextChanged (const QString& text)
 	{
-		const auto& tags = text.split (Separator_, Qt::SkipEmptyParts);
-		SetSelections (tags);
+		auto guard = DisableNotifications (false);
+		SetSelections (text.split (Separator_, Qt::SkipEmptyParts));
 	}
 
 	void CategorySelector::NotifyTagsSelection ()
