@@ -45,17 +45,17 @@ namespace LC::Util
 				this,
 				SLOT (buttonToggled ()));
 
-		QAction *all = new QAction (tr ("Select all"), this);
+		const auto all = new QAction (tr ("Select all"), this);
 		connect (all,
-				SIGNAL (triggered ()),
+				&QAction::triggered,
 				this,
-				SLOT (selectAll ()));
+				&CategorySelector::SelectAll);
 
-		QAction *none = new QAction (tr ("Select none"), this);
+		const auto none = new QAction (tr ("Select none"), this);
 		connect (none,
-				SIGNAL (triggered ()),
+				&QAction::triggered,
 				this,
-				SLOT (selectNone ()));
+				&CategorySelector::SelectNone);
 
 		Ui_->Tree_->addAction (all);
 		Ui_->Tree_->addAction (none);
@@ -192,7 +192,7 @@ namespace LC::Util
 			move (pos - QPoint (dx, dy));
 	}
 
-	void CategorySelector::selectAll ()
+	void CategorySelector::SelectAll ()
 	{
 		disconnect (Ui_->Tree_,
 				SIGNAL (itemChanged (QTreeWidgetItem*, int)),
@@ -216,7 +216,7 @@ namespace LC::Util
 		emit tagsSelectionChanged (tags);
 	}
 
-	void CategorySelector::selectNone ()
+	void CategorySelector::SelectNone ()
 	{
 		disconnect (Ui_->Tree_,
 				SIGNAL (itemChanged (QTreeWidgetItem*, int)),

@@ -133,14 +133,6 @@ namespace LC::Util
 		 * won't be beoynd the screen. if it would, moves back.
 		 */
 		virtual void moveEvent (QMoveEvent*);
-	public slots:
-		/** @brief Selects all variants.
-		 */
-		void selectAll ();
-
-		/** @brief Deselects all variants.
-		 */
-		void selectNone ();
 
 		/** @brief Sets possible selections.
 		 *
@@ -162,6 +154,13 @@ namespace LC::Util
 		 */
 		void SetPossibleSelections (QStringList selections, bool sort = true);
 
+		/** @brief Selects all variants.
+		 */
+		void SelectAll ();
+
+		/** @brief Deselects all variants.
+		 */
+		void SelectNone ();
 		/** @brief Notifies CategorySelector about logical selection
 		 * changes.
 		 *
