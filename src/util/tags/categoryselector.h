@@ -160,7 +160,7 @@ namespace LC::Util
 		 * @sa GetSelections()
 		 * @sa GetSelectedIndexes()
 		 */
-		void setPossibleSelections (QStringList selections, bool sort = true);
+		void SetPossibleSelections (QStringList selections, bool sort = true);
 
 		/** @brief Notifies CategorySelector about logical selection
 		 * changes.

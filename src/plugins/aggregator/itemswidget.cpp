@@ -473,14 +473,14 @@ namespace Aggregator
 
 		if (!allCategories.isEmpty ())
 		{
-			Impl_->ItemCategorySelector_->setPossibleSelections (allCategories);
+			Impl_->ItemCategorySelector_->SetPossibleSelections (allCategories);
 			if (XmlSettingsManager::Instance ()->property ("ShowCategorySelector").toBool ())
 				Impl_->ItemCategorySelector_->show ();
 			RestoreSplitter ();
 		}
 		else
 		{
-			Impl_->ItemCategorySelector_->setPossibleSelections ({});
+			Impl_->ItemCategorySelector_->SetPossibleSelections ({});
 			Impl_->ItemCategorySelector_->hide ();
 		}
 	}

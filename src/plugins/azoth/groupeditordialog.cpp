@@ -25,7 +25,7 @@ namespace Azoth
 		Ui_.setupUi (this);
 
 		Ui_.GroupsSelector_->setWindowFlags (Qt::Widget);
-		Ui_.GroupsSelector_->setPossibleSelections (allGroups);
+		Ui_.GroupsSelector_->SetPossibleSelections (allGroups);
 		Ui_.GroupsSelector_->SetSelections (initial);
 
 		const auto tc = new Util::TagsCompleter (Ui_.CategoriesLineEdit_);

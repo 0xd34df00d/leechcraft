@@ -42,7 +42,7 @@ namespace Aggregator
 
 		Selector_ = new Util::CategorySelector (this);
 		Selector_->setWindowFlags (Qt::Widget);
-		Selector_->setPossibleSelections (QStringList ());
+		Selector_->SetPossibleSelections ({});
 		Ui_.VLayout_->addWidget (Selector_);
 
 		connect (Ui_.ChannelsTree_->selectionModel (),
@@ -475,7 +475,7 @@ namespace Aggregator
 
 	void Export2FB2Dialog::handleChannelsSelectionChanged ()
 	{
-		Selector_->setPossibleSelections (CatsFromIndexes (Ui_.ChannelsTree_->selectionModel ()->selectedRows ()));
+		Selector_->SetPossibleSelections (CatsFromIndexes (Ui_.ChannelsTree_->selectionModel ()->selectedRows ()));
 		Selector_->selectAll ();
 
 		if (!HasBeenTextModified_ &&

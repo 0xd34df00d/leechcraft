@@ -71,7 +71,7 @@ namespace LC::Util
 		Caption_ = caption;
 	}
 
-	void CategorySelector::setPossibleSelections (QStringList mytags, bool sort)
+	void CategorySelector::SetPossibleSelections (QStringList mytags, bool sort)
 	{
 		disconnect (Ui_->Tree_,
 				SIGNAL (itemChanged (QTreeWidgetItem*, int)),

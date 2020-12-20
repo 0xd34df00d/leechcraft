@@ -58,11 +58,11 @@ namespace Otlozhu
 		connect (Ui_.FilterLine_,
 				&QLineEdit::textChanged,
 				ProxyModel_,
-				[this] { ProxyModel_->setTagsMode (false); });
+				[this] { ProxyModel_->SetTagsMode (false); });
 		connect (Ui_.FilterLine_,
 				&Util::TagsLineEdit::tagsChosen,
 				ProxyModel_,
-				[this] { ProxyModel_->setTagsMode (true); });
+				[this] { ProxyModel_->SetTagsMode (true); });
 		Ui_.TodoTree_->setModel (ProxyModel_);
 
 		QAction *addTodo = new QAction (tr ("Add task..."), this);
