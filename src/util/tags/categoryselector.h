@@ -168,7 +168,7 @@ namespace LC::Util
 		 */
 		void NotifyTagsSelection ();
 
-		[[nodiscard]] Util::DefaultScopeGuard DisableNotifications ();
+		[[nodiscard]] Util::DefaultScopeGuard DisableNotifications (bool reemit = true);
 	public slots:
 		/** @brief Notifies CategorySelector about logical selection
 		 * changes.

@@ -210,13 +210,15 @@ namespace LC::Util
 			emit tagsSelectionChanged (GetSelections ());
 	}
 
-	DefaultScopeGuard CategorySelector::DisableNotifications ()
+	DefaultScopeGuard CategorySelector::DisableNotifications (bool reemit)
 	{
+		auto prevValue = NotificationsEnabled_;
 		NotificationsEnabled_ = false;
-		return MakeScopeGuard ([this]
+		return MakeScopeGuard ([this, prevValue, reemit]
 				{
-					NotificationsEnabled_ = true;
-					NotifyTagsSelection ();
+					NotificationsEnabled_ = prevValue;
+					if (reemit)
+						NotifyTagsSelection ();
 				});
 	}
 }
