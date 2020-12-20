@@ -41,9 +41,9 @@ namespace LC::Util
 		setMinimumHeight (avail.height () / 3 * 2);
 
 		connect (Ui_->Tree_,
-				SIGNAL (itemChanged (QTreeWidgetItem*, int)),
+				&QTreeWidget::itemChanged,
 				this,
-				SLOT (buttonToggled ()));
+				&CategorySelector::NotifyTagsSelection);
 
 		const auto all = new QAction (tr ("Select all"), this);
 		connect (all,
@@ -73,10 +73,7 @@ namespace LC::Util
 
 	void CategorySelector::SetPossibleSelections (QStringList mytags, bool sort)
 	{
-		disconnect (Ui_->Tree_,
-				SIGNAL (itemChanged (QTreeWidgetItem*, int)),
-				this,
-				SLOT (buttonToggled ()));
+		auto guard = DisableNotifications ();
 
 		Ui_->Tree_->clear ();
 
@@ -97,13 +94,6 @@ namespace LC::Util
 		Ui_->Tree_->addTopLevelItems (items);
 
 		Ui_->Tree_->setHeaderLabel (Caption_);
-
-		connect (Ui_->Tree_,
-				SIGNAL (itemChanged (QTreeWidgetItem*, int)),
-				this,
-				SLOT (buttonToggled ()));
-
-		emit tagsSelectionChanged (QStringList ());
 	}
 
 	QStringList CategorySelector::GetSelections () const
@@ -136,7 +126,8 @@ namespace LC::Util
 
 	void CategorySelector::SetSelections (const QStringList& tags)
 	{
-		blockSignals (true);
+		auto guard = DisableNotifications ();
+
 		for (int i = 0; i < Ui_->Tree_->topLevelItemCount (); ++i)
 		{
 			const auto& tagVar = Ui_->Tree_->topLevelItem (i)->data (0, RoleTag);
@@ -145,7 +136,6 @@ namespace LC::Util
 					Qt::Unchecked;
 			Ui_->Tree_->topLevelItem (i)->setCheckState (0, state);
 		}
-		blockSignals (false);
 	}
 
 	QString CategorySelector::GetSeparator () const
@@ -194,44 +184,18 @@ namespace LC::Util
 
 	void CategorySelector::SelectAll ()
 	{
-		disconnect (Ui_->Tree_,
-				SIGNAL (itemChanged (QTreeWidgetItem*, int)),
-				this,
-				SLOT (buttonToggled ()));
-
-		QStringList tags;
+		auto guard = DisableNotifications ();
 
 		for (int i = 0, size = Ui_->Tree_->topLevelItemCount (); i < size; ++i)
-		{
-			const auto item = Ui_->Tree_->topLevelItem (i);
-			item->setCheckState (0, Qt::Checked);
-			tags += item->data (0, RoleTag).toString ();
-		}
-
-		connect (Ui_->Tree_,
-				SIGNAL (itemChanged (QTreeWidgetItem*, int)),
-				this,
-				SLOT (buttonToggled ()));
-
-		emit tagsSelectionChanged (tags);
+			Ui_->Tree_->topLevelItem (i)->setCheckState (0, Qt::Checked);
 	}
 
 	void CategorySelector::SelectNone ()
 	{
-		disconnect (Ui_->Tree_,
-				SIGNAL (itemChanged (QTreeWidgetItem*, int)),
-				this,
-				SLOT (buttonToggled ()));
+		auto guard = DisableNotifications ();
 
 		for (int i = 0; i < Ui_->Tree_->topLevelItemCount (); ++i)
 			Ui_->Tree_->topLevelItem (i)->setCheckState (0, Qt::Unchecked);
-
-		connect (Ui_->Tree_,
-				SIGNAL (itemChanged (QTreeWidgetItem*, int)),
-				this,
-				SLOT (buttonToggled ()));
-
-		emit tagsSelectionChanged (QStringList ());
 	}
 
 	void CategorySelector::lineTextChanged (const QString& text)
@@ -240,8 +204,19 @@ namespace LC::Util
 		SetSelections (tags);
 	}
 
-	void CategorySelector::buttonToggled ()
+	void CategorySelector::NotifyTagsSelection ()
 	{
-		emit tagsSelectionChanged (GetSelections ());
+		if (NotificationsEnabled_)
+			emit tagsSelectionChanged (GetSelections ());
+	}
+
+	DefaultScopeGuard CategorySelector::DisableNotifications ()
+	{
+		NotificationsEnabled_ = false;
+		return MakeScopeGuard ([this]
+				{
+					NotificationsEnabled_ = true;
+					NotifyTagsSelection ();
+				});
 	}
 }

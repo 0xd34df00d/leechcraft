@@ -10,6 +10,7 @@
 
 #include <memory>
 #include <QDialog>
+#include <util/sll/util.h>
 #include "tagsconfig.h"
 
 class QStringList;
@@ -50,6 +51,7 @@ namespace LC::Util
 
 		QString Caption_;
 		QString Separator_;
+		bool NotificationsEnabled_ = true;
 	public:
 		enum class ButtonsMode
 		{
@@ -128,11 +130,6 @@ namespace LC::Util
 		/** @brief Sets the buttons mode.
 		 */
 		void SetButtonsMode (ButtonsMode);
-	protected:
-		/** @brief Checks whether after the move event the selector
-		 * won't be beoynd the screen. if it would, moves back.
-		 */
-		virtual void moveEvent (QMoveEvent*);
 
 		/** @brief Sets possible selections.
 		 *
@@ -161,6 +158,18 @@ namespace LC::Util
 		/** @brief Deselects all variants.
 		 */
 		void SelectNone ();
+	protected:
+		/** @brief Checks whether after the move event the selector
+		 * won't be beoynd the screen. if it would, moves back.
+		 */
+		void moveEvent (QMoveEvent*) override;
+	private:
+		/** @brief Emits selectionChanged() to notify about selection changes.
+		 */
+		void NotifyTagsSelection ();
+
+		[[nodiscard]] Util::DefaultScopeGuard DisableNotifications ();
+	public slots:
 		/** @brief Notifies CategorySelector about logical selection
 		 * changes.
 		 *
@@ -171,10 +180,6 @@ namespace LC::Util
 		 * @param[in] newText The text of the line edit.
 		 */
 		void lineTextChanged (const QString& newText);
-	private slots:
-		/** @brief Emits selectionChanged() to notify about selection changes.
-		 */
-		void buttonToggled ();
 	signals:
 		/** @brief Indicates that selections have changed.
 		 *
