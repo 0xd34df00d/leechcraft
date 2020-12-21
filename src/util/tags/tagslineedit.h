@@ -33,7 +33,7 @@ namespace Util
 
 		friend class TagsCompleter;
 
-		std::unique_ptr<CategorySelector> CategorySelector_;
+		CategorySelector *CategorySelector_;
 		TagsCompleter *Completer_;
 
 		QString Separator_;
@@ -63,8 +63,9 @@ namespace Util
 		 */
 		void AddSelector (LineEditButtonManager *manager = nullptr);
 
+		void AddSelector (CategorySelector*);
+
 		/** @brief Returns the separator for the tags.
-		 *
 		 *
 		 * @sa SetSeparator()
 		 * @sa GetDefaultTagsSeparator ()

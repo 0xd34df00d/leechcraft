@@ -32,32 +32,10 @@ namespace Util
 
 	void TagsLineEdit::AddSelector (LineEditButtonManager *mgr)
 	{
-		CategorySelector_.reset (new CategorySelector (parentWidget ()));
-		CategorySelector_->SetSeparator (Separator_);
-		CategorySelector_->hide ();
+		auto selector = new CategorySelector (this);
+		selector->hide ();
 
-		QAbstractItemModel *model = Completer_->model ();
-
-		if (model->metaObject ()->indexOfSignal (QMetaObject::normalizedSignature ("tagsUpdated (QStringList)")) >= 0)
-			connect (model,
-					SIGNAL (tagsUpdated (QStringList)),
-					this,
-					SLOT (handleTagsUpdated (QStringList)));
-
-		QStringList initialTags;
-		for (int i = 0; i < model->rowCount (); ++i)
-			initialTags << model->data (model->index (i, 0)).toString ();
-		handleTagsUpdated (initialTags);
-
-		connect (CategorySelector_.get (),
-				SIGNAL (tagsSelectionChanged (const QStringList&)),
-				this,
-				SLOT (handleSelectionChanged (const QStringList&)));
-
-		connect (this,
-				SIGNAL (textChanged (const QString&)),
-				CategorySelector_.get (),
-				SLOT (lineTextChanged (const QString&)));
+		AddSelector (selector);
 
 		if (!mgr)
 			mgr = new LineEditButtonManager { this };
@@ -74,6 +52,35 @@ namespace Util
 				SIGNAL (clicked ()),
 				this,
 				SLOT (showSelector ()));
+	}
+
+	void TagsLineEdit::AddSelector (CategorySelector *selector)
+	{
+		CategorySelector_ = selector;
+		CategorySelector_->SetSeparator (Separator_);
+
+		QAbstractItemModel *model = Completer_->model ();
+
+		if (model->metaObject ()->indexOfSignal (QMetaObject::normalizedSignature ("tagsUpdated (QStringList)")) >= 0)
+			connect (model,
+					SIGNAL (tagsUpdated (QStringList)),
+					this,
+					SLOT (handleTagsUpdated (QStringList)));
+
+		QStringList initialTags;
+		for (int i = 0; i < model->rowCount (); ++i)
+			initialTags << model->data (model->index (i, 0)).toString ();
+		handleTagsUpdated (initialTags);
+
+		connect (CategorySelector_,
+				SIGNAL (tagsSelectionChanged (const QStringList&)),
+				this,
+				SLOT (handleSelectionChanged (const QStringList&)));
+
+		connect (this,
+				&QLineEdit::textChanged,
+				CategorySelector_,
+				&CategorySelector::SetSelectionsFromString);
 	}
 
 	QString TagsLineEdit::GetSeparator () const
@@ -110,13 +117,13 @@ namespace Util
 
 	void TagsLineEdit::handleTagsUpdated (const QStringList& tags)
 	{
-		CategorySelector_->setPossibleSelections (tags);
+		CategorySelector_->SetPossibleSelections (tags);
 	}
 
 	void TagsLineEdit::setTags (const QStringList& tags)
 	{
 		setText (tags.join (Separator_));
-		if (CategorySelector_.get ())
+		if (CategorySelector_)
 			CategorySelector_->SetSelections (tags);
 	}
 
@@ -179,7 +186,7 @@ namespace Util
 
 	void TagsLineEdit::contextMenuEvent (QContextMenuEvent *e)
 	{
-		if (!CategorySelector_.get ())
+		if (!CategorySelector_ || CategorySelector_->parentWidget () != this)
 		{
 			QLineEdit::contextMenuEvent (e);
 			return;

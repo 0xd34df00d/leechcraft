@@ -198,7 +198,7 @@ namespace LC::Util
 			Ui_->Tree_->topLevelItem (i)->setCheckState (0, Qt::Unchecked);
 	}
 
-	void CategorySelector::lineTextChanged (const QString& text)
+	void CategorySelector::SetSelectionsFromString (const QString& text)
 	{
 		auto guard = DisableNotifications (false);
 		SetSelections (text.split (Separator_, Qt::SkipEmptyParts));

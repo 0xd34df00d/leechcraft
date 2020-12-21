@@ -158,6 +158,16 @@ namespace LC::Util
 		/** @brief Deselects all variants.
 		 */
 		void SelectNone ();
+
+		/** @brief Notifies CategorySelector about logical selection changes.
+		 *
+		 * This slot is usually used to notify CategorySelector about
+		 * selection changes done via a related widget - for example, a line
+		 * edit with tags.
+		 *
+		 * @param[in] newText The text of the line edit.
+		 */
+		void SetSelectionsFromString (const QString& newText);
 	protected:
 		/** @brief Checks whether after the move event the selector
 		 * won't be beoynd the screen. if it would, moves back.
@@ -169,17 +179,6 @@ namespace LC::Util
 		void NotifyTagsSelection ();
 
 		[[nodiscard]] Util::DefaultScopeGuard DisableNotifications (bool reemit = true);
-	public slots:
-		/** @brief Notifies CategorySelector about logical selection
-		 * changes.
-		 *
-		 * This slot is usually used to notify CategorySelector about
-		 * selection changes done via a related widget - for example, a line
-		 * edit with tags.
-		 *
-		 * @param[in] newText The text of the line edit.
-		 */
-		void lineTextChanged (const QString& newText);
 	signals:
 		/** @brief Indicates that selections have changed.
 		 *
