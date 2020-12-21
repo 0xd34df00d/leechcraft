@@ -25,8 +25,6 @@ namespace Azoth
 				const QStringList& all, QWidget* = 0);
 
 		QStringList GetGroups () const;
-	private slots:
-		void on_GroupsSelector__tagsSelectionChanged (const QStringList&);
 	};
 }
 }
