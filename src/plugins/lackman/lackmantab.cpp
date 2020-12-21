@@ -47,7 +47,6 @@ namespace LackMan
 
 		auto tc = new Util::TagsCompleter (Ui_.SearchLine_);
 		tc->OverrideModel (TagsModel_);
-		Ui_.SearchLine_->AddSelector (searchLineButtonMgr);
 
 		new Util::ClearLineEditAddon { Core::Instance ().GetProxy (), Ui_.SearchLine_, searchLineButtonMgr };
 
@@ -55,15 +54,8 @@ namespace LackMan
 		selector->setWindowFlags ({});
 		selector->setMinimumHeight (0);
 		selector->SetCaption (tr ("Package tags"));
-		connect (selector,
-				SIGNAL (tagsSelectionChanged (QStringList)),
-				Ui_.SearchLine_,
-				SLOT (handleSelectionChanged (QStringList)));
-		connect (Ui_.SearchLine_,
-				SIGNAL (textChanged (QString)),
-				selector,
-				SLOT (lineTextChanged (QString)));
 		selector->setSizePolicy (QSizePolicy::Preferred, QSizePolicy::Expanding);
+		Ui_.SearchLine_->AddSelector (selector);
 		Ui_.SearchLayout_->addWidget (selector);
 		Ui_.SearchSplitter_->setStretchFactor (0, 2);
 		Ui_.SearchSplitter_->setStretchFactor (1, 9);
