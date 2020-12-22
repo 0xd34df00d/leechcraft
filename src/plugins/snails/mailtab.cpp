@@ -910,7 +910,7 @@ namespace Snails
 				folderPaths << folder.Path_;
 			}
 
-			sel.setPossibleSelections (folderNames, false);
+			sel.SetPossibleSelections (folderNames, false);
 			sel.SetButtonsMode (Util::CategorySelector::ButtonsMode::AcceptReject);
 
 			if (sel.exec () != QDialog::Accepted)
