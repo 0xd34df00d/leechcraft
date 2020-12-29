@@ -11,7 +11,7 @@
 
 namespace LC::Util
 {
-	QString GetDefaultTagsSeprator ()
+	QString GetDefaultTagsSeparator ()
 	{
 		return QStringLiteral ("; ");
 	}
