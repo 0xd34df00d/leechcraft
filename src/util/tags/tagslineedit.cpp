@@ -18,14 +18,12 @@
 #include "gui/lineeditbuttonmanager.h"
 #include "tagscompletionmodel.h"
 #include "tagscompleter.h"
+#include "util.h"
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	TagsLineEdit::TagsLineEdit (QWidget *parent)
 	: QLineEdit (parent)
-	, Completer_ (0)
 	, Separator_ (GetDefaultTagsSeparator ())
 	{
 	}
@@ -234,5 +232,4 @@ namespace Util
 			last = wtext.size ();
 		return wtext.mid (first, last - first);
 	}
-}
 }

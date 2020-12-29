@@ -13,9 +13,7 @@
 #include "tagsconfig.h"
 #include "categoryselector.h"
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	class TagsCompleter;
 	class LineEditButtonManager;
@@ -34,7 +32,7 @@ namespace Util
 		friend class TagsCompleter;
 
 		CategorySelector *CategorySelector_;
-		TagsCompleter *Completer_;
+		TagsCompleter *Completer_ = nullptr;
 
 		QString Separator_;
 	public:
@@ -44,7 +42,7 @@ namespace Util
 		 *
 		 * @param[in] parent Parent widget.
 		 */
-		TagsLineEdit (QWidget *parent);
+		explicit TagsLineEdit (QWidget *parent);
 
 		/** @brief Adds the selector widget to the line edit.
 		 *
@@ -111,14 +109,13 @@ namespace Util
 		void handleSelectionChanged (const QStringList&);
 		void showSelector ();
 	protected:
-		virtual void keyPressEvent (QKeyEvent*);
-		virtual void focusInEvent (QFocusEvent*);
-		virtual void contextMenuEvent (QContextMenuEvent*);
+		void keyPressEvent (QKeyEvent*) override;
+		void focusInEvent (QFocusEvent*) override;
+		void contextMenuEvent (QContextMenuEvent*) override;
 		void SetCompleter (TagsCompleter*);
 	private:
 		QString textUnderCursor () const;
 	signals:
 		void tagsChosen ();
 	};
-}
 }

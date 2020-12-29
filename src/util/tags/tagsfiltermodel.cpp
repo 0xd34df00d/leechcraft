@@ -6,20 +6,17 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
+#include "tagsfiltermodel.h"
 #include <QStringList>
 #include <QtDebug>
-#include "tagsfiltermodel.h"
+#include <util/sll/unreachable.h>
 #include "util.h"
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	TagsFilterModel::TagsFilterModel (QObject *parent)
 	: QSortFilterProxyModel (parent)
-	, NormalMode_ (true)
 	, Separator_ (GetDefaultTagsSeparator ())
-	, TagsMode_ (TagsInclusionMode::All)
 	{
 	}
 
@@ -81,7 +78,7 @@ namespace Util
 		for (const auto& s : pattern.splitRef (Separator_, Qt::SkipEmptyParts))
 			filterTags << s.trimmed ();
 
-		if (!filterTags.size ())
+		if (filterTags.isEmpty ())
 			return true;
 
 		const auto& itemTags = GetTagsForIndex (sourceRow);
@@ -93,7 +90,7 @@ namespace Util
 		case TagsInclusionMode::All:
 			return std::all_of (filterTags.begin (), filterTags.end (), hasTag);
 		}
-		return true;
+
+		Util::Unreachable ();
 	}
-}
 }

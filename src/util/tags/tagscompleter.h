@@ -51,7 +51,7 @@ namespace LC::Util
 		 * @param[in] line The line edit which would be used for tag
 		 * completion.
 		 */
-		UTIL_TAGS_API TagsCompleter (TagsLineEdit *line);
+		UTIL_TAGS_API explicit TagsCompleter (TagsLineEdit *line);
 
 		/** @brief Replaces the model this completer works with.
 		 *
@@ -72,7 +72,7 @@ namespace LC::Util
 		 * @param[in] path The tags sequence to split.
 		 * @return Splitted sequence.
 		 */
-		UTIL_TAGS_API virtual QStringList splitPath (const QString& path) const;
+		UTIL_TAGS_API QStringList splitPath (const QString& path) const override;
 	protected:
 		static void SetModel (QAbstractItemModel *model)
 		{

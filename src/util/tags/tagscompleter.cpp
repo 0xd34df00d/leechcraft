@@ -7,16 +7,13 @@
  **********************************************************************/
 
 #include "tagscompleter.h"
-#include <algorithm>
 #include <QtDebug>
-#include <QWidget>
 #include <QStringList>
-#include <QLineEdit>
 #include "tagslineedit.h"
 
 namespace LC::Util
 {
-	QAbstractItemModel *TagsCompleter::CompletionModel_ = 0;
+	QAbstractItemModel *TagsCompleter::CompletionModel_ = nullptr;
 
 	TagsCompleter::TagsCompleter (TagsLineEdit *toComplete)
 	: QCompleter (toComplete)

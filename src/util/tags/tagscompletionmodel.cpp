@@ -10,15 +10,8 @@
 #include <QtDebug>
 #include "tagscompletionmodel.h"
 
-namespace LC
+namespace LC::Util
 {
-namespace Util
-{
-	TagsCompletionModel::TagsCompletionModel (QObject *parent)
-	: QStringListModel (parent)
-	{
-	}
-
 	void TagsCompletionModel::UpdateTags (const QStringList& newTags)
 	{
 		auto oldTags = stringList ();
@@ -29,5 +22,4 @@ namespace Util
 		setStringList (oldTags);
 		emit tagsUpdated (oldTags);
 	}
-}
 }

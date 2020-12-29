@@ -37,8 +37,8 @@ namespace LC::Util
 	 *
 	 * CategorySelector emits selectionChanged() signal when user changes
 	 * his selection. CategorySelector's primary purpose is to help user to
-	 * select tags using a line edit, so there's a convenience slot
-	 * lineTextChanged() which could be used to notify CategorySelector
+	 * select tags using a line edit, so there's a convenience function
+	 * SetSelectionsFromString() which can be used to notify CategorySelector
 	 * about changes of possible categories. There are also convenience
 	 * slots selectAll() and selectNone() which could be used to mark all
 	 * and no elements in the list respectively.
@@ -68,7 +68,7 @@ namespace LC::Util
 		 *
 		 * @param[in] parent Pointer to parent widget.
 		 */
-		CategorySelector (QWidget *parent = 0);
+		explicit CategorySelector (QWidget *parent = nullptr);
 
 		/** @brief Sets the caption of this selector.
 		 *

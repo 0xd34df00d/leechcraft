@@ -12,9 +12,7 @@
 #include <QStringList>
 #include "tagsconfig.h"
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	/** @brief A QStringListModel providing additional methods for tags.
 	 *
@@ -25,11 +23,7 @@ namespace Util
 	{
 		Q_OBJECT
 	public:
-		/** @brief Creates the model with the given parent.
-		 *
-		 * @param[in] parent The parent object of this model.
-		 */
-		TagsCompletionModel (QObject *parent = 0);
+		using QStringListModel::QStringListModel;
 
 		/** @brief Adds new tags to the list of tags.
 		 *
@@ -47,5 +41,4 @@ namespace Util
 		 */
 		void tagsUpdated (const QStringList& allTags);
 	};
-}
 }

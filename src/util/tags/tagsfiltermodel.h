@@ -11,9 +11,7 @@
 #include <QSortFilterProxyModel>
 #include "tagsconfig.h"
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	/** @brief Provides filter model with additional tags filter mode.
 	 *
@@ -22,7 +20,7 @@ namespace Util
 	 * if all tags from the request are found in the row (the default
 	 * mode) or if the intersection of the two sets is just non-empty.
 	 * The mode can be set via SetTagsInclusionMode() function. The tags
-	 * filtering mode itself is enabled via setTagsMode() slot.
+	 * filtering mode itself is enabled via SetTagsMode() function.
 	 *
 	 * The tags are obtained by splitting the filter pattern by the
 	 * separator, which is <em>;</em> by default but can be set via the
@@ -30,7 +28,7 @@ namespace Util
 	 */
 	class UTIL_TAGS_API TagsFilterModel : public QSortFilterProxyModel
 	{
-		bool NormalMode_;
+		bool NormalMode_ = true;
 		QString Separator_;
 	public:
 		/** @brief Describes the modes of matching two sets of tags.
@@ -54,13 +52,13 @@ namespace Util
 			All
 		};
 	private:
-		TagsInclusionMode TagsMode_;
+		TagsInclusionMode TagsMode_ = TagsInclusionMode::All;
 	public:
 		/** @brief Creates the model with the given parent.
 		 *
 		 * @param[in] parent The parent object of this model.
 		 */
-		TagsFilterModel (QObject *parent = 0);
+		explicit TagsFilterModel (QObject *parent = nullptr);
 
 		/** @brief Sets the separator for the tags.
 		 *
@@ -96,7 +94,7 @@ namespace Util
 	protected:
 		/** @brief Reimplemented from QSortFilterProxyModel::filterAcceptsRow().
 		 */
-		virtual bool filterAcceptsRow (int, const QModelIndex&) const;
+		bool filterAcceptsRow (int, const QModelIndex&) const override;
 
 		/** @brief Returns the list of tags for the given row.
 		 *
@@ -112,5 +110,4 @@ namespace Util
 		bool FilterNormalMode (int, const QModelIndex&) const;
 		bool FilterTagsMode (int, const QModelIndex&) const;
 	};
-};
 }

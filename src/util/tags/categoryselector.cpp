@@ -22,7 +22,7 @@
 
 namespace LC::Util
 {
-	const int RoleTag = 52;
+	const int RoleTag = Qt::UserRole;
 
 	CategorySelector::CategorySelector (QWidget *parent)
 	: QDialog (parent)
