@@ -78,14 +78,6 @@ namespace LC::Util
 		 */
 		void SetSeparator (const QString&);
 	public slots:
-		/** @brief Completes the string.
-		 *
-		 * Completes the current text in line edit with completion passed
-		 * throught string parameter.
-		 *
-		 * @param[in] string String with completion.
-		 */
-		void insertTag (const QString& string);
 
 		/** @brief Sets thew new list of the available tags.
 		 *
@@ -105,15 +97,21 @@ namespace LC::Util
 		 * @param[in] tags The list of selected tags.
 		 */
 		void setTags (const QStringList& tags);
-	private slots:
-		void handleSelectionChanged (const QStringList&);
-		void showSelector ();
 	protected:
 		void keyPressEvent (QKeyEvent*) override;
 		void focusInEvent (QFocusEvent*) override;
 		void contextMenuEvent (QContextMenuEvent*) override;
 		void SetCompleter (TagsCompleter*);
 	private:
+		/** @brief Completes the string.
+		 *
+		 * Completes the current text in line edit with completion passed
+		 * throught string parameter.
+		 *
+		 * @param[in] string String with completion.
+		 */
+		void InsertTag (const QString& string);
+
 		QString textUnderCursor () const;
 	signals:
 		void tagsChosen ();

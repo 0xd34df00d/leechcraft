@@ -15,6 +15,7 @@
 #include <QPushButton>
 #include <QToolButton>
 #include <QAbstractItemView>
+#include <util/sll/qtutil.h>
 #include "gui/lineeditbuttonmanager.h"
 #include "tagscompletionmodel.h"
 #include "tagscompleter.h"
@@ -40,16 +41,20 @@ namespace LC::Util
 
 		auto button = new QToolButton { this };
 		button->setIconSize ({ 16, 16 });
-		button->setIcon (QIcon::fromTheme ("mail-tagged"));
+		button->setIcon (QIcon::fromTheme (QStringLiteral ("mail-tagged")));
 		button->setCursor (Qt::ArrowCursor);
-		button->setStyleSheet ("QToolButton { border: none; padding: 0px; }");
+		button->setStyleSheet (QStringLiteral ("QToolButton { border: none; padding: 0px; }"));
 
 		mgr->Add (button);
 
 		connect (button,
-				SIGNAL (clicked ()),
+				&QToolButton::clicked,
 				this,
-				SLOT (showSelector ()));
+				[selector]
+				{
+					selector->move (QCursor::pos ());
+					selector->show ();
+				});
 	}
 
 	void TagsLineEdit::AddSelector (CategorySelector *selector)
@@ -71,9 +76,13 @@ namespace LC::Util
 		handleTagsUpdated (initialTags);
 
 		connect (CategorySelector_,
-				SIGNAL (tagsSelectionChanged (const QStringList&)),
+				&CategorySelector::tagsSelectionChanged,
 				this,
-				SLOT (handleSelectionChanged (const QStringList&)));
+				[this] (const QStringList& tags)
+				{
+					setText (tags.join (Separator_));
+					emit tagsChosen ();
+				});
 
 		connect (this,
 				&QLineEdit::textChanged,
@@ -93,7 +102,7 @@ namespace LC::Util
 			CategorySelector_->SetSeparator (sep);
 	}
 
-	void TagsLineEdit::insertTag (const QString& completion)
+	void TagsLineEdit::InsertTag (const QString& completion)
 	{
 		if (Completer_->widget () != this)
 			return;
@@ -123,19 +132,6 @@ namespace LC::Util
 		setText (tags.join (Separator_));
 		if (CategorySelector_)
 			CategorySelector_->SetSelections (tags);
-	}
-
-	void TagsLineEdit::handleSelectionChanged (const QStringList& tags)
-	{
-		setText (tags.join (Separator_));
-
-		emit tagsChosen ();
-	}
-
-	void TagsLineEdit::showSelector ()
-	{
-		CategorySelector_->move (QCursor::pos ());
-		CategorySelector_->show ();
 	}
 
 	void TagsLineEdit::keyPressEvent (QKeyEvent *e)
@@ -198,9 +194,9 @@ namespace LC::Util
 	{
 		if (Completer_)
 			disconnect (Completer_,
-					0,
+					nullptr,
 					this,
-					0);
+					nullptr);
 
 		Completer_ = c;
 
@@ -210,15 +206,15 @@ namespace LC::Util
 		Completer_->setWidget (this);
 		Completer_->setCompletionMode (QCompleter::PopupCompletion);
 		connect (Completer_,
-				SIGNAL (activated (const QString&)),
+				qOverload<const QString&> (&QCompleter::activated),
 				this,
-				SLOT (insertTag (const QString&)));
+				&TagsLineEdit::InsertTag);
 	}
 
 	QString TagsLineEdit::textUnderCursor () const
 	{
 		auto rxStr = Separator_;
-		rxStr.replace (' ', "\\s*");
+		rxStr.replace (' ', R"(\s*)"_ql);
 
 		QRegExp rx (rxStr);
 
