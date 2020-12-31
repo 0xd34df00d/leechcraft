@@ -476,7 +476,7 @@ namespace Aggregator
 	void Export2FB2Dialog::handleChannelsSelectionChanged ()
 	{
 		Selector_->SetPossibleSelections (CatsFromIndexes (Ui_.ChannelsTree_->selectionModel ()->selectedRows ()));
-		Selector_->selectAll ();
+		Selector_->SelectAll ();
 
 		if (!HasBeenTextModified_ &&
 				Ui_.ChannelsTree_->selectionModel ()->selectedRows ().size () <= 1)

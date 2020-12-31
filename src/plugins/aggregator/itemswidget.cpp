@@ -1449,7 +1449,7 @@ namespace Aggregator
 		if (!XmlSettingsManager::Instance ()->
 				property ("ShowCategorySelector").toBool ())
 		{
-			Impl_->ItemCategorySelector_->selectAll ();
+			Impl_->ItemCategorySelector_->SelectAll ();
 			Impl_->ItemCategorySelector_->hide ();
 		}
 		else if (Impl_->ItemCategorySelector_->GetSelections ().size ())
