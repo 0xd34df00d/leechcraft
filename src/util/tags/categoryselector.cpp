@@ -126,7 +126,7 @@ namespace LC::Util
 
 	void CategorySelector::SetSelections (const QStringList& tags)
 	{
-		auto guard = DisableNotifications ();
+		auto guard = DisableNotifications (false);
 
 		for (int i = 0; i < Ui_->Tree_->topLevelItemCount (); ++i)
 		{
