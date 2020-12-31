@@ -17,8 +17,6 @@ namespace Azoth
 {
 	class GroupEditorDialog : public QDialog
 	{
-		Q_OBJECT
-
 		Ui::GroupEditorDialog Ui_;
 	public:
 		GroupEditorDialog (const QStringList& initial,
