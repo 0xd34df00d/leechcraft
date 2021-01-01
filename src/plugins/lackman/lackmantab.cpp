@@ -121,7 +121,6 @@ namespace LackMan
 
 		const QStringList& tags = Core::Instance ().GetAllTags ();
 		handleTagsUpdated (tags);
-		Ui_.SearchLine_->handleTagsUpdated (tags);
 		selector->SetPossibleSelections (tags);
 		handleFetchListUpdated ({});
 
