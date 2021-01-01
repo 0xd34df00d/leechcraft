@@ -19,9 +19,7 @@
 #include "threadsconfig.h"
 #include "concurrentexception.h"
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	template<typename R, typename F, typename... Args>
 	void ReportFutureResult (QFutureInterface<R>& iface, F&& f, Args&&... args)
@@ -555,5 +553,4 @@ namespace Util
 		iface.reportFinished (&t);
 		return iface.future ();
 	}
-}
 }

@@ -10,9 +10,7 @@
 
 #include <QObject>
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	class MonadicFuturesTest : public QObject
 	{
@@ -21,5 +19,4 @@ namespace Util
 		void testFunctor ();
 		void testFunctorReady ();
 	};
-}
 }

@@ -8,11 +8,8 @@
 
 #pragma once
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	template<typename>
 	class WorkerThread;
-}
 }

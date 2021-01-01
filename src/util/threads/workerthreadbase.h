@@ -19,9 +19,7 @@
 #include "futures.h"
 #include "threadsconfig.h"
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	class UTIL_THREADS_API WorkerThreadBase : public QThread
 	{
@@ -192,5 +190,4 @@ namespace Util
 			Worker_.reset ();
 		}
 	};
-}
 }

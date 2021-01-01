@@ -13,9 +13,7 @@
 
 QTEST_MAIN (LC::Util::MonadicFuturesTest)
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	void MonadicFuturesTest::testFunctor ()
 	{
@@ -52,5 +50,4 @@ namespace Util
 
 		QCOMPARE (res.result (), std::string { "10" });
 	}
-}
 }

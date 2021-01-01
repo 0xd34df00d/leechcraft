@@ -14,9 +14,7 @@
 
 QTEST_MAIN (LC::Util::FuturesTest)
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	void FuturesTest::testSequencer ()
 	{
@@ -226,5 +224,4 @@ namespace Util
 		QCOMPARE (count, 3);
 		QCOMPARE (sum, 6);
 	}
-}
 }

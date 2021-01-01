@@ -9,9 +9,7 @@
 #include "workerthreadbase.h"
 #include <util/sll/slotclosure.h>
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	void WorkerThreadBase::SetPaused (bool paused)
 	{
@@ -65,5 +63,4 @@ namespace Util
 		for (const auto& func : funcs)
 			func ();
 	}
-}
 }

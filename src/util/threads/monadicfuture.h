@@ -10,12 +10,9 @@
 
 #include <QFuture>
 #include <util/sll/functor.h>
-#include <util/sll/monad.h>
 #include "futures.h"
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	template<typename T>
 	struct InstanceFunctor<QFuture<T>>
@@ -30,5 +27,4 @@ namespace Util
 					[func] (const T& val) { return MakeReadyFuture (func (val)); };
 		}
 	};
-}
 }

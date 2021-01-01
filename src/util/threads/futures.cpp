@@ -8,9 +8,6 @@
 
 #include "futures.h"
 
-namespace LC
+namespace LC::Util
 {
-namespace Util
-{
-}
 }

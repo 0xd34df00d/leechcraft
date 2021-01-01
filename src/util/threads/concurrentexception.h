@@ -12,9 +12,7 @@
 #include <QFuture>
 #include <util/sll/newtype.h>
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	using QtException_t = QException;
 
@@ -50,7 +48,7 @@ namespace Util
 		 */
 		template<typename... Args>
 		requires requires (Args&&... args) { T { std::forward<Args> (args)... }; }
-		ConcurrentException (Args&&... args)
+		explicit ConcurrentException (Args&&... args)
 		: T { std::forward<Args> (args)... }
 		{
 		}
@@ -84,7 +82,6 @@ namespace Util
 	};
 
 	using ConcurrentStdException = Util::ConcurrentException<Util::NewType<std::exception, struct StdException>>;
-}
 }
 
 Q_DECLARE_METATYPE (LC::Util::QtException_ptr)

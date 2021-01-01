@@ -10,9 +10,7 @@
 
 #include <QObject>
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	class FuturesTest : public QObject
 	{
@@ -31,5 +29,4 @@ namespace Util
 		void testMulti ();
 		void testMultiRange ();
 	};
-}
 }
