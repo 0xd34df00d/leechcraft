@@ -68,6 +68,6 @@ namespace LC::Azoth::Sarin
 	template<typename T>
 	CommandCodeException<T> MakeCommandCodeException (const QByteArray& msg, T error)
 	{
-		return { msg, error };
+		return CommandCodeException<T> { msg, error };
 	}
 }
