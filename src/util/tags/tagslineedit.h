@@ -78,16 +78,6 @@ namespace LC::Util
 		 */
 		void SetSeparator (const QString&);
 	public slots:
-
-		/** @brief Sets thew new list of the available tags.
-		 *
-		 * The list of tags will be passed to the selector if it was
-		 * added via AddSelector().
-		 *
-		 * @param[in] allTags The list of new available tags.
-		 */
-		void handleTagsUpdated (const QStringList& allTags);
-
 		/** @brief Sets the currently selected tags.
 		 *
 		 * Sets the line edit text to tags joined by separator. If

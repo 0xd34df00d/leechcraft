@@ -64,16 +64,10 @@ namespace LC::Util
 
 		QAbstractItemModel *model = Completer_->model ();
 
-		if (model->metaObject ()->indexOfSignal (QMetaObject::normalizedSignature ("tagsUpdated (QStringList)")) >= 0)
-			connect (model,
-					SIGNAL (tagsUpdated (QStringList)),
-					this,
-					SLOT (handleTagsUpdated (QStringList)));
-
 		QStringList initialTags;
 		for (int i = 0; i < model->rowCount (); ++i)
 			initialTags << model->data (model->index (i, 0)).toString ();
-		handleTagsUpdated (initialTags);
+		CategorySelector_->SetPossibleSelections (initialTags);
 
 		connect (CategorySelector_,
 				&CategorySelector::tagsSelectionChanged,
@@ -120,11 +114,6 @@ namespace LC::Util
 		setText (wtext);
 
 		emit tagsChosen ();
-	}
-
-	void TagsLineEdit::handleTagsUpdated (const QStringList& tags)
-	{
-		CategorySelector_->SetPossibleSelections (tags);
 	}
 
 	void TagsLineEdit::setTags (const QStringList& tags)
