@@ -11,7 +11,6 @@
 #include <QtDebug>
 #include <util/threads/futures.h>
 #include "vcardstorageondisk.h"
-#include "vcardstorageondiskwriter.h"
 
 namespace LC
 {
@@ -22,26 +21,17 @@ namespace Xoox
 	VCardStorage::VCardStorage (QObject *parent)
 	: QObject { parent }
 	, DB_ { new VCardStorageOnDisk { this } }
-	, Writer_
-	{
-		new VCardStorageOnDiskWriter,
-		[] (VCardStorageOnDiskWriter *writer)
-		{
-			writer->quit ();
-			writer->wait (5000);
-			delete writer;
-		}
-	}
+	, Writer_ { new Util::WorkerThread<VCardStorageOnDisk> (this) }
 	, VCardCache_ { 1024 * 1024 }
 	{
-		Writer_->start (QThread::IdlePriority);
+		Writer_->start (QThread::LowestPriority);
 	}
 
 	void VCardStorage::SetVCard (const QString& jid, const QString& vcard)
 	{
 		PendingVCards_ [jid] = vcard;
 
-		Util::Sequence (this, Writer_->SetVCard (jid, vcard)) >>
+		Util::Sequence (this, Writer_->ScheduleImpl (&VCardStorageOnDisk::SetVCard, jid, vcard)) >>
 				[this, jid] { PendingVCards_.remove (jid); };
 	}
 
@@ -84,7 +74,7 @@ namespace Xoox
 	{
 		PendingHashes_ [jid] = hash;
 
-		Util::Sequence (this, Writer_->SetVCardPhotoHash (jid, hash)) >>
+		Util::Sequence (this, Writer_->ScheduleImpl (&VCardStorageOnDisk::SetVCardPhotoHash, jid, hash)) >>
 				[this, jid] { PendingHashes_.remove (jid); };
 	}
 

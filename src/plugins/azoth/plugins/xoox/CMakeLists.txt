@@ -108,7 +108,6 @@ LC_DEFINE_PLUGIN (
 		rostersaver.cpp
 		vcardstorage.cpp
 		vcardstorageondisk.cpp
-		vcardstorageondiskwriter.cpp
 		sslerrorshandler.cpp
 		offlinedatasource.cpp
 		callshandler.cpp

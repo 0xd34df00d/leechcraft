@@ -13,6 +13,7 @@
 #include <QObject>
 #include <QCache>
 #include <QXmppVCardIq.h>
+#include <util/threads/workerthreadbase.h>
 
 namespace LC
 {
@@ -21,12 +22,11 @@ namespace Azoth
 namespace Xoox
 {
 	class VCardStorageOnDisk;
-	class VCardStorageOnDiskWriter;
 
 	class VCardStorage : public QObject
 	{
 		VCardStorageOnDisk * const DB_;
-		const std::shared_ptr<VCardStorageOnDiskWriter> Writer_;
+		const std::shared_ptr<Util::WorkerThread<VCardStorageOnDisk>> Writer_;
 
 		QMap<QString, QString> PendingVCards_;
 		QMap<QString, QByteArray> PendingHashes_;
