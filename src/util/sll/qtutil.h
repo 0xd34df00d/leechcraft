@@ -26,9 +26,8 @@ namespace LC::Util
 	 * Example usage:
 	 *	\code
 		QMap<QString, int> someMap;
-		for (const auto& pair : Util::Stlize (someMap))
-			qDebug () << pair.first		// outputs a QString key
-					<< pair.second;		// outputs an integer value corresponding to the key
+		for (const auto& [key, value] : Util::Stlize (someMap))
+			qDebug () << key << value;
 		\endcode
 	 *
 	 * All kinds of accesses are supported: elements of a non-const
@@ -54,16 +53,43 @@ namespace LC::Util
 		return Range { std::forward<Assoc> (assoc) };
 	}
 
+	/** @brief Convert the view into a QByteArray without copying.
+	 *
+	 * The lifetime of the view should be not less than the
+	 * lifetime of the returned QByteArray and any of its copies.
+	 *
+	 * For a version without this requirement, see ToByteArray()
+	 *
+	 * @param view An std::string_view to be represented as a QByteArray.
+	 * @return A QByteArray referring to the same chunk of memory as the view.
+	 *
+	 * @sa ToByteArray()
+	 */
 	inline QByteArray AsByteArray (std::string_view view)
 	{
 		return QByteArray::fromRawData (view.data (), view.size ());
 	}
 
+	/** @brief Create a QByteArray with the data referenced by the view.
+	 *
+	 * The data within view is copied into the returned QByteArray, so,
+	 * unlike AsByteArray(), there are no requirements on the lifetime of view.
+	 *
+	 * @param view An std::string_view to be represented as a QByteArray.
+	 * @return A QByteArray with the same data as the view.
+	 *
+	 * @sa AsByteArray()
+	 */
 	inline QByteArray ToByteArray (std::string_view view)
 	{
 		return { view.data (), static_cast<int> (view.size ()) };
 	}
 
+	/** @brief Create a std::string_view referring the data within a QByteArray.
+	 *
+	 * @param arr A QByteArray.
+	 * @return An std::string_view referencing the data within arr.
+	 */
 	inline std::string_view AsStringView (const QByteArray& arr)
 	{
 		return { arr.constData (), static_cast<size_t> (arr.size ()) };
