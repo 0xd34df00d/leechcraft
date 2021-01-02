@@ -238,29 +238,26 @@ namespace Util
 				&length, reinterpret_cast<uchar**> (&data), XA_ATOM))
 			return result;
 
-		for (ulong i = 0; i < length; ++i)
+		auto get = [this] (const QByteArray& atom) { return GetAtom ("_NET_WM_STATE_" + atom); };
+
+		static const QHash<Atom, WinStateFlag> atom2flag
 		{
-			const auto curAtom = data [i];
+			{ get ("MODAL"), WinStateFlag::Modal },
+			{ get ("STICKY"), WinStateFlag::Sticky },
+			{ get ("MAXIMIZED_VERT"), WinStateFlag::MaximizedVert },
+			{ get ("MAXIMIZED_HORZ"), WinStateFlag::MaximizedHorz },
+			{ get ("SHADED"), WinStateFlag::Shaded },
+			{ get ("SKIP_TASKBAR"), WinStateFlag::SkipTaskbar },
+			{ get ("SKIP_PAGER"), WinStateFlag::SkipPager },
+			{ get ("HIDDEN"), WinStateFlag::Hidden },
+			{ get ("FULLSCREEN"), WinStateFlag::Fullscreen },
+			{ get ("ABOVE"), WinStateFlag::OnTop },
+			{ get ("BELOW"), WinStateFlag::OnBottom },
+			{ get ("DEMANDS_ATTENTION"), WinStateFlag::Attention },
+		};
 
-			auto set = [this, &curAtom, &result] (const QString& atom, WinStateFlag flag)
-			{
-				if (curAtom == GetAtom ("_NET_WM_STATE_" + atom))
-					result |= flag;
-			};
-
-			set ("MODAL", WinStateFlag::Modal);
-			set ("STICKY", WinStateFlag::Sticky);
-			set ("MAXIMIZED_VERT", WinStateFlag::MaximizedVert);
-			set ("MAXIMIZED_HORZ", WinStateFlag::MaximizedHorz);
-			set ("SHADED", WinStateFlag::Shaded);
-			set ("SKIP_TASKBAR", WinStateFlag::SkipTaskbar);
-			set ("SKIP_PAGER", WinStateFlag::SkipPager);
-			set ("HIDDEN", WinStateFlag::Hidden);
-			set ("FULLSCREEN", WinStateFlag::Fullscreen);
-			set ("ABOVE", WinStateFlag::OnTop);
-			set ("BELOW", WinStateFlag::OnBottom);
-			set ("DEMANDS_ATTENTION", WinStateFlag::Attention);
-		}
+		for (ulong i = 0; i < length; ++i)
+			result |= atom2flag.value (data [i], static_cast<WinStateFlag> (0));
 
 		XFree (data);
 
@@ -277,29 +274,26 @@ namespace Util
 				&length, reinterpret_cast<uchar**> (&data), XA_ATOM))
 			return result;
 
-		for (ulong i = 0; i < length; ++i)
+		auto get = [this] (const QByteArray& atom) { return GetAtom ("_NET_WM_ACTION_" + atom); };
+
+		static const QHash<Atom, AllowedActionFlag> atom2flag
 		{
-			const auto curAtom = data [i];
+			{ get ("MOVE"), AllowedActionFlag::Move },
+			{ get ("RESIZE"), AllowedActionFlag::Resize },
+			{ get ("MINIMIZE"), AllowedActionFlag::Minimize },
+			{ get ("SHADE"), AllowedActionFlag::Shade },
+			{ get ("STICK"), AllowedActionFlag::Stick },
+			{ get ("MAXIMIZE_HORZ"), AllowedActionFlag::MaximizeHorz },
+			{ get ("MAXIMIZE_VERT"), AllowedActionFlag::MaximizeVert },
+			{ get ("FULLSCREEN"), AllowedActionFlag::ShowFullscreen },
+			{ get ("CHANGE_DESKTOP"), AllowedActionFlag::ChangeDesktop },
+			{ get ("CLOSE"), AllowedActionFlag::Close },
+			{ get ("ABOVE"), AllowedActionFlag::MoveToTop },
+			{ get ("BELOW"), AllowedActionFlag::MoveToBottom },
+		};
 
-			auto set = [this, &curAtom, &result] (const QString& atom, AllowedActionFlag flag)
-			{
-				if (curAtom == GetAtom ("_NET_WM_ACTION_" + atom))
-					result |= flag;
-			};
-
-			set ("MOVE", AllowedActionFlag::Move);
-			set ("RESIZE", AllowedActionFlag::Resize);
-			set ("MINIMIZE", AllowedActionFlag::Minimize);
-			set ("SHADE", AllowedActionFlag::Shade);
-			set ("STICK", AllowedActionFlag::Stick);
-			set ("MAXIMIZE_HORZ", AllowedActionFlag::MaximizeHorz);
-			set ("MAXIMIZE_VERT", AllowedActionFlag::MaximizeVert);
-			set ("FULLSCREEN", AllowedActionFlag::ShowFullscreen);
-			set ("CHANGE_DESKTOP", AllowedActionFlag::ChangeDesktop);
-			set ("CLOSE", AllowedActionFlag::Close);
-			set ("ABOVE", AllowedActionFlag::MoveToTop);
-			set ("BELOW", AllowedActionFlag::MoveToBottom);
-		}
+		for (ulong i = 0; i < length; ++i)
+			result |= atom2flag.value (data [i], static_cast<AllowedActionFlag> (0));
 
 		XFree (data);
 
