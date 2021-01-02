@@ -9,6 +9,7 @@
 #include "traymodel.h"
 #include <QAbstractEventDispatcher>
 #include <QtDebug>
+#include <util/sll/qtutil.h>
 #include <util/x11/xwrapper.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
@@ -67,7 +68,8 @@ namespace Mellonetray
 		const auto disp = w.GetDisplay ();
 		const auto rootWin = w.GetRootWindow ();
 
-		const auto atom = w.GetAtom (QString ("_NET_SYSTEM_TRAY_S%1").arg (DefaultScreen (disp)));
+		const auto& defaultScreenStr = QByteArray::number (DefaultScreen (disp));
+		const auto atom = w.GetAtom (Util::AsStringView ("_NET_SYSTEM_TRAY_S%1" + defaultScreenStr));
 
 		if (XGetSelectionOwner (disp, atom) != None)
 		{
