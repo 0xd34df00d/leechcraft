@@ -9,6 +9,7 @@
 #include "xwrapper.h"
 #include <limits>
 #include <type_traits>
+#include <bit>
 #include <QString>
 #include <QPixmap>
 #include <QIcon>
@@ -24,9 +25,7 @@
 #include <xcb/xcb.h>
 #include <util/sll/qtutil.h>
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	const int SourcePager = 2;
 
@@ -88,20 +87,32 @@ namespace Util
 		template<typename T>
 		class Guarded
 		{
-			T *Data_;
+			T *Data_ = nullptr;
 		public:
-			Guarded ()
-			: Data_ { nullptr }
+			Guarded () = default;
+
+			Guarded (const Guarded&) = delete;
+			Guarded& operator= (const Guarded&) = delete;
+
+			Guarded (Guarded&& other) noexcept
+			: Data_ { other.Data_ }
 			{
+				other.Data_ = nullptr;
 			}
 
-			~Guarded ()
+			Guarded& operator= (Guarded&& other) noexcept
+			{
+				std::swap (Data_, other.Data_);
+				return *this;
+			}
+
+			~Guarded () noexcept
 			{
 				if (Data_)
 					XFree (Data_);
 			}
 
-			T** Get (bool clear = true)
+			T** Get (bool clear = true) noexcept
 			{
 				if (clear && Data_)
 					XFree (Data_);
@@ -109,7 +120,7 @@ namespace Util
 			}
 
 			template<typename U>
-			U GetAs (bool clear = true)
+			U GetAs (bool clear = true) noexcept
 			{
 				if (clear && Data_)
 					XFree (Data_);
@@ -118,22 +129,22 @@ namespace Util
 						reinterpret_cast<U> (Data_);
 			}
 
-			T operator[] (size_t idx) const
+			T operator[] (size_t idx) const noexcept
 			{
 				return Data_ [idx];
 			}
 
-			T& operator[] (size_t idx)
+			T& operator[] (size_t idx) noexcept
 			{
 				return Data_ [idx];
 			}
 
-			operator bool () const
+			explicit operator bool () const noexcept
 			{
 				return Data_ != nullptr;
 			}
 
-			bool operator! () const
+			bool operator! () const noexcept
 			{
 				return !Data_;
 			}
@@ -170,13 +181,11 @@ namespace Util
 		if (GetWinProp (wid, GetAtom ("_NET_WM_VISIBLE_NAME"), &length, data.Get (), utf8Str))
 			name = QString::fromUtf8 (data.GetAs<char*> (false));
 
-		if (name.isEmpty ())
-			if (GetWinProp (wid, GetAtom ("_NET_WM_NAME"), &length, data.Get (), utf8Str))
-				name = QString::fromUtf8 (data.GetAs<char*> (false));
+		if (name.isEmpty () && GetWinProp (wid, GetAtom ("_NET_WM_NAME"), &length, data.Get (), utf8Str))
+			name = QString::fromUtf8 (data.GetAs<char*> (false));
 
-		if (name.isEmpty ())
-			if (GetWinProp (wid, GetAtom ("XA_WM_NAME"), &length, data.Get (), XA_STRING))
-				name = QString::fromUtf8 (data.GetAs<char*> (false));
+		if (name.isEmpty () && GetWinProp (wid, GetAtom ("XA_WM_NAME"), &length, data.Get (), XA_STRING))
+			name = QString::fromUtf8 (data.GetAs<char*> (false));
 
 		if (name.isEmpty ())
 		{
@@ -308,16 +317,13 @@ namespace Util
 	{
 		ulong length = 0;
 		Guarded<uchar> data;
-		if (GetWinProp (wid, GetAtom ("WM_CLASS"), &length, data.Get ()) &&
-				QString (data.GetAs<char*> (false)).startsWith ("leechcraft"))
-			return true;
-
-		return false;
+		return GetWinProp (wid, GetAtom ("WM_CLASS"), &length, data.Get ()) &&
+				QString (data.GetAs<char*> (false)).startsWith ("leechcraft"_ql);
 	}
 
 	bool XWrapper::ShouldShow (Window wid)
 	{
-		const QList<Atom> ignoreAtoms
+		static const QList<Atom> ignoreAtoms
 		{
 			GetAtom ("_NET_WM_WINDOW_TYPE_DESKTOP"),
 			GetAtom ("_NET_WM_WINDOW_TYPE_DOCK"),
@@ -762,5 +768,4 @@ namespace Util
 	void XWrapper::initialize ()
 	{
 	}
-}
 }

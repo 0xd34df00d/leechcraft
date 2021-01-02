@@ -10,9 +10,7 @@
 
 #include <QFlags>
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	enum WinStateFlag
 	{
@@ -51,7 +49,6 @@ namespace Util
 	};
 
 	Q_DECLARE_FLAGS (AllowedActionFlags, AllowedActionFlag)
-}
 }
 
 Q_DECLARE_OPERATORS_FOR_FLAGS (LC::Util::WinStateFlags)
