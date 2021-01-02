@@ -229,17 +229,26 @@ namespace Util
 		return icon;
 	}
 
-	WinStateFlags XWrapper::GetWindowState (Window wid)
+	template<typename Flag>
+	QFlags<Flag> XWrapper::GetFlagsList (Window wid, Atom property, const QHash<Atom, Flag>& atom2flag) const
 	{
-		WinStateFlags result;
+		QFlags<Flag> result;
 
 		ulong length = 0;
 		ulong *data = 0;
-		if (!GetWinProp (wid, GetAtom ("_NET_WM_STATE"),
-				&length, reinterpret_cast<uchar**> (&data), XA_ATOM))
+		if (!GetWinProp (wid, property, &length, reinterpret_cast<uchar**> (&data), XA_ATOM))
 			return result;
 
+		for (ulong i = 0; i < length; ++i)
+			result |= atom2flag.value (data [i], static_cast<Flag> (0));
 
+		XFree (data);
+
+		return result;
+	}
+
+	WinStateFlags XWrapper::GetWindowState (Window wid)
+	{
 		auto get = [this] (const QByteArray& atom) { return GetAtom (AsStringView ("_NET_WM_STATE_" + atom)); };
 		static const QHash<Atom, WinStateFlag> atom2flag
 		{
@@ -257,24 +266,11 @@ namespace Util
 			{ get ("DEMANDS_ATTENTION"), WinStateFlag::Attention },
 		};
 
-		for (ulong i = 0; i < length; ++i)
-			result |= atom2flag.value (data [i], static_cast<WinStateFlag> (0));
-
-		XFree (data);
-
-		return result;
+		return GetFlagsList (wid, GetAtom ("_NET_WM_STATE"), atom2flag);
 	}
 
 	AllowedActionFlags XWrapper::GetWindowActions (Window wid)
 	{
-		AllowedActionFlags result;
-
-		ulong length = 0;
-		ulong *data = 0;
-		if (!GetWinProp (wid, GetAtom ("_NET_WM_ALLOWED_ACTIONS"),
-				&length, reinterpret_cast<uchar**> (&data), XA_ATOM))
-			return result;
-
 		auto get = [this] (const QByteArray& atom) { return GetAtom (AsStringView ("_NET_WM_ACTION_" + atom)); };
 		static const QHash<Atom, AllowedActionFlag> atom2flag
 		{
@@ -292,12 +288,7 @@ namespace Util
 			{ get ("BELOW"), AllowedActionFlag::MoveToBottom },
 		};
 
-		for (ulong i = 0; i < length; ++i)
-			result |= atom2flag.value (data [i], static_cast<AllowedActionFlag> (0));
-
-		XFree (data);
-
-		return result;
+		return GetFlagsList (wid, GetAtom ("_NET_WM_ALLOWED_ACTIONS"), atom2flag);
 	}
 
 	Window XWrapper::GetActiveApp ()

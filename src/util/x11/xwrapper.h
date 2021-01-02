@@ -117,6 +117,9 @@ namespace Util
 		template<typename T>
 		void HandlePropNotify (T);
 
+		template<typename Flag>
+		QFlags<Flag> GetFlagsList (Window wid, Atom property, const QHash<Atom, Flag>& atom2flag) const;
+
 		Window GetActiveWindow ();
 
 		bool GetWinProp (Window, Atom, ulong*, uchar**, Atom = static_cast<Atom> (0)) const;
