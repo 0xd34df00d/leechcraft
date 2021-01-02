@@ -415,21 +415,23 @@ namespace Util
 			ulong topStartX, ulong topEndX,
 			ulong bottomStartX, ulong bottomEndX)
 	{
-		ulong struts[12] = { 0 };
+		ulong struts [12] =
+		{
+			left,
+			right,
+			top,
+			bottom,
 
-		struts [0] = left;
-		struts [1] = right;
-		struts [2] = top;
-		struts [3] = bottom;
+			leftStartY,
+			leftEndY,
+			rightStartY,
+			rightEndY,
 
-		struts [4] = leftStartY;
-		struts [5] = leftEndY;
-		struts [6] = rightStartY;
-		struts [7] = rightEndY;
-		struts [8] = topStartX;
-		struts [9] = topEndX;
-		struts [10] = bottomStartX;
-		struts [11] = bottomEndX;
+			topStartX,
+			topEndX,
+			bottomStartX,
+			bottomEndX
+		};
 
 		XChangeProperty (Display_, wid, GetAtom ("_NET_WM_STRUT_PARTIAL"),
 				XA_CARDINAL, 32, PropModeReplace, reinterpret_cast<uchar*> (struts), 12);
