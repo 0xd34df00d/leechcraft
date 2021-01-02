@@ -22,6 +22,7 @@
 #include <X11/Xutil.h>
 #include <X11/Xatom.h>
 #include <xcb/xcb.h>
+#include <util/sll/qtutil.h>
 
 namespace LC
 {
@@ -238,8 +239,8 @@ namespace Util
 				&length, reinterpret_cast<uchar**> (&data), XA_ATOM))
 			return result;
 
-		auto get = [this] (const QByteArray& atom) { return GetAtom ("_NET_WM_STATE_" + atom); };
 
+		auto get = [this] (const QByteArray& atom) { return GetAtom (AsStringView ("_NET_WM_STATE_" + atom)); };
 		static const QHash<Atom, WinStateFlag> atom2flag
 		{
 			{ get ("MODAL"), WinStateFlag::Modal },
@@ -274,8 +275,7 @@ namespace Util
 				&length, reinterpret_cast<uchar**> (&data), XA_ATOM))
 			return result;
 
-		auto get = [this] (const QByteArray& atom) { return GetAtom ("_NET_WM_ACTION_" + atom); };
-
+		auto get = [this] (const QByteArray& atom) { return GetAtom (AsStringView ("_NET_WM_ACTION_" + atom)); };
 		static const QHash<Atom, AllowedActionFlag> atom2flag
 		{
 			{ get ("MOVE"), AllowedActionFlag::Move },
@@ -702,13 +702,14 @@ namespace Util
 		return GetAvailableGeometry (QApplication::desktop ()->screenNumber (widget));
 	}
 
-	Atom XWrapper::GetAtom (const QString& name)
+	Atom XWrapper::GetAtom (std::string_view name)
 	{
-		if (Atoms_.contains (name))
-			return Atoms_ [name];
+		const auto pos = Atoms_.find (AsByteArray (name));
+		if (pos != Atoms_.end ())
+			return *pos;
 
-		auto atom = XInternAtom (Display_, name.toLocal8Bit (), false);
-		Atoms_ [name] = atom;
+		auto atom = XInternAtom (Display_, name.data (), false);
+		Atoms_ [ToByteArray (name)] = atom;
 		return atom;
 	}
 

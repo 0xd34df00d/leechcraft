@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <string>
 #include <QX11Info>
 #include <QList>
 #include <QString>
@@ -39,7 +40,7 @@ namespace Util
 		Display *Display_;
 		Window AppWin_;
 
-		QHash<QString, Atom> Atoms_;
+		QHash<QByteArray, Atom> Atoms_;
 
 		XWrapper ();
 	public:
@@ -103,7 +104,15 @@ namespace Util
 		QRect GetAvailableGeometry (int screen = -1);
 		QRect GetAvailableGeometry (QWidget*);
 
-		Atom GetAtom (const QString&);
+		/** @brief Returns the atom denoting the given string.
+		 *
+		 * @param[in] string A view to a (null-terminated) string with the name of the atom.
+		 * @return An X11 Atom.
+		 *
+		 * @note The string pointed by str should be null-terminated — that is, <code>std::strlen(str.data())</code>
+		 * should be equal to <code>str.size()</code>.
+		 */
+		Atom GetAtom (std::string_view str);
 	private:
 		template<typename T>
 		void HandlePropNotify (T);
