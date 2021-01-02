@@ -23,14 +23,12 @@ class QIcon;
 class QWidget;
 class QRect;
 
-typedef unsigned long Window;
+using Window = unsigned long;
 #define _XTYPEDEF_XID
 
-typedef union _XEvent XEvent;
+using XEvent = union _XEvent;
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	class UTIL_X11_API XWrapper : public QObject
 								, public QAbstractNativeEventFilter
@@ -76,11 +74,11 @@ namespace Util
 		void SetStrut (QWidget*, Qt::ToolBarArea);
 		void ClearStrut (QWidget*);
 		void SetStrut (Window wid,
-				int left, int right, int top, int bottom,
-				int leftStartY, int leftEndY,
-				int rightStartY, int rightEndY,
-				int topStartX, int topEndX,
-				int bottomStartX, int bottomEndX);
+				ulong left, ulong right, ulong top, ulong bottom,
+				ulong leftStartY, ulong leftEndY,
+				ulong rightStartY, ulong rightEndY,
+				ulong topStartX, ulong topEndX,
+				ulong bottomStartX, ulong bottomEndX);
 
 		void RaiseWindow (Window);
 		void MinimizeWindow (Window);
@@ -140,5 +138,4 @@ namespace Util
 		void windowStateChanged (ulong);
 		void windowActionsChanged (ulong);
 	};
-}
 }

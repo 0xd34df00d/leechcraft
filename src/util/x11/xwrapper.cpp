@@ -409,11 +409,11 @@ namespace Util
 	}
 
 	void XWrapper::SetStrut (Window wid,
-			int left, int right, int top, int bottom,
-			int leftStartY, int leftEndY,
-			int rightStartY, int rightEndY,
-			int topStartX, int topEndX,
-			int bottomStartX, int bottomEndX)
+			ulong left, ulong right, ulong top, ulong bottom,
+			ulong leftStartY, ulong leftEndY,
+			ulong rightStartY, ulong rightEndY,
+			ulong topStartX, ulong topEndX,
+			ulong bottomStartX, ulong bottomEndX)
 	{
 		ulong struts[12] = { 0 };
 
