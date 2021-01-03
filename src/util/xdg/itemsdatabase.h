@@ -33,10 +33,7 @@ namespace XDG
 	 */
 	class UTIL_XDG_API ItemsDatabase : public ItemsFinder
 	{
-		Q_OBJECT
-
 		bool UpdateScheduled_ = false;
-		QFileSystemWatcher * const Watcher_;
 	public:
 		/** @brief Creates the ItemsDatabase for the given \em types.
 		 *
@@ -48,8 +45,6 @@ namespace XDG
 		 * @sa ItemsFinder::ItemsFinder
 		 */
 		ItemsDatabase (const ICoreProxy_ptr& proxy, const QList<Type>& types, QObject *parent = nullptr);
-	private slots:
-		void scheduleUpdate ();
 	};
 }
 }

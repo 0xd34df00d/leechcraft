@@ -97,16 +97,8 @@ namespace LC::Util::XDG
 		 * if there is no such item.
 		 */
 		Item_ptr FindItem (const QString& permanentID) const;
-	public slots:
-		/** @brief Updates the list of items.
-		 *
-		 * If IsReady() returns false, and thus no items are known to the
-		 * finder yet, this function blocks and emits itemsListChanged()
-		 * before returning.
-		 *
-		 * Otherwise, this function spawns an asynchronous update process.
-		 */
-		void update ();
+	protected:
+		void Update ();
 	signals:
 		/** @brief Notifies when the list of items changes in any way.
 		 */

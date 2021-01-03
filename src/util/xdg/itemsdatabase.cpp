@@ -8,9 +8,7 @@
 
 #include "itemsdatabase.h"
 #include <QFileSystemWatcher>
-#include <QSet>
-#include <QStringList>
-#include <util/sll/delayedexecutor.h>
+#include <QTimer>
 #include "itemtypes.h"
 
 namespace LC
@@ -21,27 +19,26 @@ namespace XDG
 {
 	ItemsDatabase::ItemsDatabase (const ICoreProxy_ptr& proxy, const QList<Type>& types, QObject *parent)
 	: ItemsFinder { proxy, types, parent }
-	, Watcher_ { new QFileSystemWatcher { this } }
 	{
-		Watcher_->addPaths (ToPaths (types));
-		connect (Watcher_,
-				SIGNAL (directoryChanged (QString)),
+		const auto watcher = new QFileSystemWatcher { this };
+		watcher->addPaths (ToPaths (types));
+		connect (watcher,
+				&QFileSystemWatcher::directoryChanged,
 				this,
-				SLOT (scheduleUpdate ()));
-	}
-
-	void ItemsDatabase::scheduleUpdate ()
-	{
-		if (UpdateScheduled_)
-			return;
-
-		UpdateScheduled_ = true;
-		Util::ExecuteLater ([this]
+				[this]
 				{
-					UpdateScheduled_ = false;
-					update ();
-				},
-				10000);
+					if (UpdateScheduled_)
+						return;
+
+					UpdateScheduled_ = true;
+					QTimer::singleShot (10000,
+							this,
+							[this]
+							{
+								UpdateScheduled_ = false;
+								Update ();
+							});
+				});
 	}
 }
 }

@@ -25,7 +25,7 @@ namespace LC::Util::XDG
 	, Proxy_ { proxy }
 	, Types_ { types }
 	{
-		QTimer::singleShot (1000, this, SLOT (update ()));
+		QTimer::singleShot (1000, this, &ItemsFinder::Update);
 	}
 
 	bool ItemsFinder::IsReady () const
@@ -212,7 +212,7 @@ namespace LC::Util::XDG
 		}
 	}
 
-	void ItemsFinder::update ()
+	void ItemsFinder::Update ()
 	{
 		if (IsScanning_)
 			return;
