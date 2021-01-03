@@ -12,11 +12,7 @@
 #include <QtDebug>
 #include <util/sll/prelude.h>
 
-namespace LC
-{
-namespace Util
-{
-namespace XDG
+namespace LC::Util::XDG
 {
 	namespace
 	{
@@ -65,6 +61,4 @@ namespace XDG
 	{
 		return Util::ConcatMap (types, ToPathsRecurse);
 	}
-}
-}
 }

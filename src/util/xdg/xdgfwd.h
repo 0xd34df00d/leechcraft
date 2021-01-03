@@ -9,18 +9,12 @@
 #pragma once
 
 #include <memory>
-#include "xdg.h"
+#include "xdgconfig.h"
 
-namespace LC
-{
-namespace Util
-{
-namespace XDG
+namespace LC::Util::XDG
 {
 	class UTIL_XDG_API Item;
-	typedef std::shared_ptr<Item> Item_ptr;
+	using Item_ptr = std::shared_ptr<Item>;
 
 	class UTIL_XDG_API ItemsFinder;
-}
-}
 }

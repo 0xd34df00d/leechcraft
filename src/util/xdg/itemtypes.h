@@ -15,11 +15,7 @@ class QList;
 
 class QStringList;
 
-namespace LC
-{
-namespace Util
-{
-namespace XDG
+namespace LC::Util::XDG
 {
 	/** @brief Describes the various types of XDG <code>.desktop</code>
 	 * files.
@@ -52,6 +48,4 @@ namespace XDG
 	 * reside.
 	 */
 	UTIL_XDG_API QStringList ToPaths (const QList<Type>& types);
-}
-}
 }

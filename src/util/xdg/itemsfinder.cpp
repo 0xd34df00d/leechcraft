@@ -17,13 +17,9 @@
 #include "xdg.h"
 #include "item.h"
 
-namespace LC
+namespace LC::Util::XDG
 {
-namespace Util
-{
-namespace XDG
-{
-	ItemsFinder::ItemsFinder (ICoreProxy_ptr proxy,
+	ItemsFinder::ItemsFinder (const ICoreProxy_ptr& proxy,
 			const QList<Type>& types, QObject *parent)
 	: QObject { parent }
 	, Proxy_ { proxy }
@@ -224,7 +220,7 @@ namespace XDG
 		IsScanning_ = true;
 
 		Util::Sequence (this, QtConcurrent::run (FindAndParse, Types_)) >>
-				[this] (Cat2ID2Item_t result)
+				[this] (const Cat2ID2Item_t& result)
 				{
 					return QtConcurrent::run (Merge, Items_, result);
 				} >>
@@ -240,6 +236,4 @@ namespace XDG
 					}
 				};
 	}
-}
-}
 }

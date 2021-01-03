@@ -14,14 +14,8 @@ class QString;
 class QIcon;
 class QPixmap;
 
-namespace LC
-{
-namespace Util
-{
-namespace XDG
+namespace LC::Util::XDG
 {
 	UTIL_XDG_API QIcon GetAppIcon (const QString& iconName);
 	UTIL_XDG_API QPixmap GetAppPixmap (const QString& iconName);
-}
-}
 }

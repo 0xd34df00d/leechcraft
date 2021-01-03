@@ -11,17 +11,14 @@
 #include <QFile>
 #include <QUrl>
 #include <QProcess>
+#include <util/sll/qtutil.h>
 #include <util/xpc/util.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/iiconthememanager.h>
 #include "desktopparser.h"
 #include "xdg.h"
 
-namespace LC
-{
-namespace Util
-{
-namespace XDG
+namespace LC::Util::XDG
 {
 	bool operator== (const Item& left, const Item& right)
 	{
@@ -191,8 +188,8 @@ namespace XDG
 		QHash<QString, QString> FirstValues (const QHash<QString, QStringList>& hash)
 		{
 			QHash<QString, QString> result;
-			for (auto i = hash.begin (), end = hash.end (); i != end; ++i)
-				result [i.key ()] = i->value (0);
+			for (const auto& [key, values] : Util::Stlize (hash))
+				result [key] = values.value (0);
 			return result;
 		}
 	}
@@ -241,8 +238,6 @@ namespace XDG
 
 	QDebug operator<< (QDebug dbg, const Item& item)
 	{
-		return item.DebugPrint (dbg);
+		return item.DebugPrint (std::move (dbg));
 	}
-}
-}
 }

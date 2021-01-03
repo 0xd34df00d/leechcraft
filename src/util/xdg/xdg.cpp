@@ -10,11 +10,7 @@
 #include <QIcon>
 #include <QFile>
 
-namespace LC
-{
-namespace Util
-{
-namespace XDG
+namespace LC::Util::XDG
 {
 	QIcon GetAppIcon (const QString& name)
 	{
@@ -39,20 +35,17 @@ namespace XDG
 		for (auto ext : { ".png", ".svg", ".xpm", ".jpg", "" })
 		{
 			for (auto prefix : prefixes)
-				if (QFile::exists (prefix + name + ext))
-					return { prefix + name + ext };
+				if (const auto& str = prefix + name + ext;
+					QFile::exists (str))
+					return { str };
 
-			for (auto themeDir : themes)
+			for (const auto& themeDir : themes)
 				for (const auto& size : sizes)
-				{
-					const auto& str = themeDir + size + 'x' + size + "/apps/" + name + ext;
-					if (QFile::exists (str))
+					if (const auto& str = themeDir + size + 'x' + size + "/apps/" + name + ext;
+						QFile::exists (str))
 						return { str };
-				}
 		}
 
 		return {};
 	}
-}
-}
 }

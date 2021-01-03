@@ -11,38 +11,32 @@
 #include <boost/spirit/include/phoenix.hpp>
 #include <boost/fusion/adapted.hpp>
 
-namespace LC
-{
-namespace Util
-{
-namespace XDG
+namespace LC::Util::XDG
 {
 	namespace
 	{
-		typedef boost::variant<std::string, std::vector<std::string>> FieldVal_t;
-		typedef std::optional<std::string> Lang_t;
+		using FieldVal_t = boost::variant<std::string, std::vector<std::string>>;
+		using Lang_t = std::optional<std::string>;
 		struct Field
 		{
 			std::string Name_;
 			Lang_t Lang_;
 			FieldVal_t Val_;
 		};
-		typedef std::vector<Field> Fields_t;
+		using Fields_t = std::vector<Field>;
 
 		struct Group
 		{
 			std::string Name_;
 			Fields_t Fields_;
 		};
-		typedef std::vector<Group> Groups_t;
+		using Groups_t = std::vector<Group>;
 
 		struct File
 		{
 			Groups_t Groups_;
 		};
 	}
-}
-}
 }
 
 BOOST_FUSION_ADAPT_STRUCT (LC::Util::XDG::Field,
@@ -57,15 +51,10 @@ BOOST_FUSION_ADAPT_STRUCT (LC::Util::XDG::Group,
 BOOST_FUSION_ADAPT_STRUCT (LC::Util::XDG::File,
 		Groups_)
 
-namespace LC
-{
-namespace Util
-{
-namespace XDG
+namespace LC::Util::XDG
 {
 	namespace
 	{
-		namespace ascii = boost::spirit::ascii;
 		namespace qi = boost::spirit::qi;
 		namespace phoenix = boost::phoenix;
 
@@ -162,6 +151,4 @@ namespace XDG
 		}
 		return result;
 	}
-}
-}
 }

@@ -14,11 +14,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include "xdgconfig.h"
 
-namespace LC
-{
-namespace Util
-{
-namespace XDG
+namespace LC::Util::XDG
 {
 	class UTIL_XDG_API Item;
 	using Item_ptr = std::shared_ptr<Item>;
@@ -116,6 +112,4 @@ namespace XDG
 		 */
 		void itemsListChanged ();
 	};
-}
-}
 }

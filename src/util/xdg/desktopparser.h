@@ -12,11 +12,7 @@
 #include <QStringList>
 #include "xdgconfig.h"
 
-namespace LC
-{
-namespace Util
-{
-namespace XDG
+namespace LC::Util::XDG
 {
 	/** @brief A parser for XDG <code>.desktop</code> files.
 	 *
@@ -54,6 +50,4 @@ namespace XDG
 		 */
 		UTIL_XDG_API Result_t operator() (const QByteArray& data);
 	};
-}
-}
 }
