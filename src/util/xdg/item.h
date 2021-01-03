@@ -17,11 +17,7 @@
 #include "xdgconfig.h"
 #include "itemtypes.h"
 
-namespace LC
-{
-namespace Util
-{
-namespace XDG
+namespace LC::Util::XDG
 {
 	class Item;
 
@@ -242,6 +238,4 @@ namespace XDG
 	 * @return The debugging \em stream with the contents of the \em item.
 	 */
 	QDebug operator<< (QDebug stream, const Item& item);
-}
-}
 }

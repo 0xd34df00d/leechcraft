@@ -11,11 +11,7 @@
 #include <QTimer>
 #include "itemtypes.h"
 
-namespace LC
-{
-namespace Util
-{
-namespace XDG
+namespace LC::Util::XDG
 {
 	ItemsDatabase::ItemsDatabase (const ICoreProxy_ptr& proxy, const QList<Type>& types, QObject *parent)
 	: ItemsFinder { proxy, types, parent }
@@ -40,6 +36,4 @@ namespace XDG
 							});
 				});
 	}
-}
-}
 }

@@ -12,11 +12,7 @@
 
 class QFileSystemWatcher;
 
-namespace LC
-{
-namespace Util
-{
-namespace XDG
+namespace LC::Util::XDG
 {
 	/** @brief An ItemsFinder automatically watching for changes in
 	 * <code>.desktop</code> files.
@@ -46,6 +42,4 @@ namespace XDG
 		 */
 		ItemsDatabase (const ICoreProxy_ptr& proxy, const QList<Type>& types, QObject *parent = nullptr);
 	};
-}
-}
 }
