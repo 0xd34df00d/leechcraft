@@ -54,12 +54,12 @@ namespace LC::Util::XDG
 
 		if (GetType () == Type::Application)
 		{
-			command.remove ("%c");
-			command.remove ("%f");
-			command.remove ("%F");
-			command.remove ("%u");
-			command.remove ("%U");
-			command.remove ("%i");
+			command.remove (QStringLiteral ("%c"));
+			command.remove (QStringLiteral ("%f"));
+			command.remove (QStringLiteral ("%F"));
+			command.remove (QStringLiteral ("%u"));
+			command.remove (QStringLiteral ("%U"));
+			command.remove (QStringLiteral ("%i"));
 			auto items = command.split (' ', Qt::SkipEmptyParts);
 			auto removePred = [] (const QString& str)
 				{ return str.size () == 2 && str.at (0) == '%'; };
@@ -144,7 +144,7 @@ namespace LC::Util::XDG
 			if (name.isEmpty ())
 				return QIcon ();
 
-			if (name.endsWith (".png") || name.endsWith (".svg"))
+			if (name.endsWith (".png"_ql) || name.endsWith (".svg"_ql))
 				name.chop (4);
 
 			auto result = proxy->GetIconThemeManager ()->GetIcon (name);
@@ -201,37 +201,37 @@ namespace LC::Util::XDG
 			throw std::runtime_error ("Unable to open file");
 
 		const auto& result = Util::XDG::DesktopParser {} (file.readAll ());
-		const auto& group = result ["Desktop Entry"];
+		const auto& group = result [QStringLiteral ("Desktop Entry")];
 
 		const auto& item = std::make_shared<Item> ();
-		item->Name_ = FirstValues (group ["Name"]);
-		item->GenericName_ = FirstValues (group ["GenericName"]);
-		item->Comments_ = FirstValues (group ["Comment"]);
+		item->Name_ = FirstValues (group [QStringLiteral ("Name")]);
+		item->GenericName_ = FirstValues (group [QStringLiteral ("GenericName")]);
+		item->Comments_ = FirstValues (group [QStringLiteral ("Comment")]);
 
-		item->Categories_ = group ["Categories"] [{}];
+		item->Categories_ = group [QStringLiteral ("Categories")] [{}];
 
 		auto getSingle = [&group] (const QString& name) { return group [name] [{}].value (0); };
 
-		item->IconName_ = getSingle ("Icon");
+		item->IconName_ = getSingle (QStringLiteral ("Icon"));
 
-		const auto& typeStr = getSingle ("Type");
-		if (typeStr == "Application")
+		const auto& typeStr = getSingle (QStringLiteral ("Type"));
+		if (typeStr == "Application"_ql)
 		{
 			item->Type_ = Type::Application;
-			item->Command_ = getSingle ("Exec");
-			item->WD_ = getSingle ("Path");
+			item->Command_ = getSingle (QStringLiteral ("Exec"));
+			item->WD_ = getSingle (QStringLiteral ("Path"));
 		}
-		else if (typeStr == "URL")
+		else if (typeStr == "URL"_ql)
 		{
 			item->Type_ = Type::URL;
-			item->Command_ = getSingle ("URL");
+			item->Command_ = getSingle (QStringLiteral ("URL"));
 		}
-		else if (typeStr == "Directory")
+		else if (typeStr == "Directory"_ql)
 			item->Type_ = Type::Dir;
 		else
 			item->Type_ = Type::Other;
 
-		item->IsHidden_ = getSingle ("NoDisplay").toLower () == "true";
+		item->IsHidden_ = getSingle (QStringLiteral ("NoDisplay")).toLower () == "true"_ql;
 
 		return item;
 	}

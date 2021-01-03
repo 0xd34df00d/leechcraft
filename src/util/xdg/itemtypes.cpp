@@ -25,8 +25,8 @@ namespace LC::Util::XDG
 			case Type::URL:
 				return
 				{
-					"/usr/share/applications",
-					"/usr/local/share/applications"
+					QStringLiteral ("/usr/share/applications"),
+					QStringLiteral ("/usr/local/share/applications")
 				};
 			case Type::Other:
 				return {};

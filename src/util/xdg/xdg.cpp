@@ -28,8 +28,8 @@ namespace LC::Util::XDG
 		const auto sizes = { "192", "128", "96", "72", "64", "48", "36", "32" };
 		const QStringList themes
 		{
-			"/usr/local/share/icons/hicolor/",
-			"/usr/share/icons/hicolor/"
+			QStringLiteral ("/usr/local/share/icons/hicolor/"),
+			QStringLiteral ("/usr/share/icons/hicolor/")
 		};
 
 		for (auto ext : { ".png", ".svg", ".xpm", ".jpg", "" })

@@ -82,7 +82,7 @@ namespace LC::Util::XDG
 
 		QStringList ScanDir (const QString& path)
 		{
-			const auto& infos = QDir (path).entryInfoList ({ "*.desktop" },
+			const auto& infos = QDir (path).entryInfoList ({ QStringLiteral ("*.desktop") },
 						QDir::Files | QDir::AllDirs | QDir::NoDotAndDotDot);
 
 			return Util::ConcatMap (infos,
@@ -127,7 +127,7 @@ namespace LC::Util::XDG
 				}
 
 				for (const auto& cat : item->GetCategories ())
-					if (!cat.startsWith ("X-"))
+					if (!cat.startsWith ("X-"_ql))
 						result [cat] [item->GetPermanentID ()] = item;
 			}
 
