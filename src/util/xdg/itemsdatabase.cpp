@@ -19,7 +19,7 @@ namespace Util
 {
 namespace XDG
 {
-	ItemsDatabase::ItemsDatabase (ICoreProxy_ptr proxy, const QList<Type>& types, QObject *parent)
+	ItemsDatabase::ItemsDatabase (const ICoreProxy_ptr& proxy, const QList<Type>& types, QObject *parent)
 	: ItemsFinder { proxy, types, parent }
 	, Watcher_ { new QFileSystemWatcher { this } }
 	{

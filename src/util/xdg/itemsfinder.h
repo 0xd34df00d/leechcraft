@@ -63,7 +63,7 @@ namespace LC::Util::XDG
 		 * @param[in] types The item types to watch for.
 		 * @param[in] parent The parent object of this finder.
 		 */
-		ItemsFinder (ICoreProxy_ptr, const QList<Type>& types, QObject *parent = nullptr);
+		ItemsFinder (const ICoreProxy_ptr&, const QList<Type>& types, QObject *parent = nullptr);
 
 		/** @brief Checks whether this items finder is ready.
 		 *

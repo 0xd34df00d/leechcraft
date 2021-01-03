@@ -48,7 +48,7 @@ namespace LC::Util::XDG
 		return IsHidden_;
 	}
 
-	void Item::Execute (ICoreProxy_ptr proxy) const
+	void Item::Execute (const ICoreProxy_ptr& proxy) const
 	{
 		auto command = GetCommand ();
 

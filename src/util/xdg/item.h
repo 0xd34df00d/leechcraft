@@ -100,7 +100,7 @@ namespace XDG
 		 * @param[in] proxy The ICoreProxy_ptr object to use if needed
 		 * during execution.
 		 */
-		void Execute (ICoreProxy_ptr proxy) const;
+		void Execute (const ICoreProxy_ptr& proxy) const;
 
 		/** @brief Returns the name of this item.
 		 *

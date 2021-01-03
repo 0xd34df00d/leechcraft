@@ -47,7 +47,7 @@ namespace XDG
 		 *
 		 * @sa ItemsFinder::ItemsFinder
 		 */
-		ItemsDatabase (ICoreProxy_ptr proxy, const QList<Type>& types, QObject *parent = nullptr);
+		ItemsDatabase (const ICoreProxy_ptr& proxy, const QList<Type>& types, QObject *parent = nullptr);
 	private slots:
 		void scheduleUpdate ();
 	};
