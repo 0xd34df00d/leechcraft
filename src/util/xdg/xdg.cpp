@@ -19,14 +19,14 @@ namespace LC::Util::XDG
 
 	QPixmap GetAppPixmap (const QString& name)
 	{
-		const auto prefixes =
+		static const auto prefixes =
 		{
 			"/usr/share/pixmaps/",
 			"/usr/local/share/pixmaps/"
 		};
 
-		const auto sizes = { "192", "128", "96", "72", "64", "48", "36", "32" };
-		const QStringList themes
+		static const auto sizes = { "192", "128", "96", "72", "64", "48", "36", "32" };
+		static const QStringList themes
 		{
 			QStringLiteral ("/usr/local/share/icons/hicolor/"),
 			QStringLiteral ("/usr/share/icons/hicolor/")
