@@ -9,9 +9,7 @@
 #include "notificationactionhandler.h"
 #include <QStringList>
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	NotificationActionHandler::NotificationActionHandler (Entity& e, QObject*)
 	: Entity_ (e)
@@ -39,5 +37,4 @@ namespace Util
 
 		ActionName2Callback_.at (idx).second ();
 	}
-}
 }

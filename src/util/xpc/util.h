@@ -21,9 +21,7 @@
 class IEntityManager;
 class QStandardItem;
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	/** @brief Creates an Advanced Notifications-enabled notify entity.
 	 *
@@ -252,7 +250,6 @@ namespace Util
 	UTIL_XPC_API void InitJobHolderRow (const QList<QStandardItem*>& row);
 
 	using LazyNotificationPixmap_t = std::function<std::optional<QFuture<QImage>> ()>;
-}
 }
 
 Q_DECLARE_METATYPE (LC::Util::LazyNotificationPixmap_t)

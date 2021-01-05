@@ -18,9 +18,7 @@
 
 Q_DECLARE_METATYPE (QVariantList*);
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	Entity MakeAN (const QString& header, const QString& text, Priority priority,
 			const QString& senderID, const QString& cat, const QString& type,
@@ -175,5 +173,4 @@ namespace Util
 		const ProcessStateInfo state { 0, 0, {}, ProcessStateInfo::State::Running };
 		item->setData (QVariant::fromValue (state), JobHolderRole::ProcessState);
 	}
-}
 }

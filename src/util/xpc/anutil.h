@@ -16,11 +16,7 @@ class QStringList;
 template<typename K, typename V>
 class QMap;
 
-namespace LC
-{
-namespace Util
-{
-namespace AN
+namespace LC::Util::AN
 {
 	/** @brief Returns the map from the category ID to its name.
 	 *
@@ -64,6 +60,4 @@ namespace AN
 	 * @sa GetANCategoryName()
 	 */
 	UTIL_XPC_API QString GetTypeName (const QString& type);
-}
-}
 }

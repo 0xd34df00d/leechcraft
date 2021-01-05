@@ -13,9 +13,7 @@
 #include "interfaces/iinfo.h"
 #include "interfaces/core/ihookproxy.h"
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	/** @brief Standard implementation of IHookProxy.
 	 *
@@ -42,13 +40,13 @@ namespace Util
 		 * @sa SetValue()
 		 * @sa GetValue()
 		 */
-		DefaultHookProxy (QMap<QByteArray, QVariant> values);
+		explicit DefaultHookProxy (QMap<QByteArray, QVariant> values);
 
 		/** @brief Reimplemented from IHookProxy::CancelDefault().
 		 *
 		 * @sa IsCancelled()
 		 */
-		void CancelDefault ();
+		void CancelDefault () override;
 
 		/** @brief Returns whether the default implementation is canceled.
 		 *
@@ -63,11 +61,11 @@ namespace Util
 
 		/** @brief Reimplemented from IHookProxy::GetReturnValue().
 		 */
-		const QVariant& GetReturnValue () const;
+		const QVariant& GetReturnValue () const override;
 
 		/** @brief Reimplemented from IHookProxy::SetReturnValue().
 		 */
-		void SetReturnValue (const QVariant&);
+		void SetReturnValue (const QVariant&) override;
 
 		/** @brief Fills the value of the given parameter set by SetValue().
 		 *
@@ -95,13 +93,12 @@ namespace Util
 
 		/** @brief Reimplemented from IHookProxy::GetValue().
 		 */
-		QVariant GetValue (const QByteArray&) const;
+		QVariant GetValue (const QByteArray&) const override;
 
 		/** @brief Reimplemented from IHookProxy::SetValue().
 		 */
-		void SetValue (const QByteArray&, const QVariant&);
+		void SetValue (const QByteArray&, const QVariant&) override;
 	};
 
-	typedef std::shared_ptr<DefaultHookProxy> DefaultHookProxy_ptr;
-}
+	using DefaultHookProxy_ptr = std::shared_ptr<DefaultHookProxy>;
 }

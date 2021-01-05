@@ -18,9 +18,7 @@
 #include <util/sll/eithercont.h>
 #include <util/sll/slotclosure.h>
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	namespace
 	{
@@ -137,5 +135,4 @@ namespace Util
 			if (const auto& storage = plugin->RequestStorage ())
 				storage->Set (key.toUtf8 (), password);
 	}
-}
 }

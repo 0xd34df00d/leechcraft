@@ -13,9 +13,7 @@
 #include <interfaces/structures.h>
 #include "xpcconfig.h"
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	/** @brief Aids in adding actions to notifications.
 	 *
@@ -57,7 +55,7 @@ namespace Util
 	public:
 		/** @brief Type of functions used as actions in the handler.
 		 */
-		typedef std::function<void ()> Callback_t;
+		using Callback_t = std::function<void ()>;
 	private:
 		QList<QPair<QString, Callback_t>> ActionName2Callback_;
 
@@ -69,7 +67,7 @@ namespace Util
 		 *
 		 * @param[in] entity The entity to add actions to.
 		 */
-		UTIL_XPC_API NotificationActionHandler (Entity& entity, QObject* = 0);
+		UTIL_XPC_API explicit NotificationActionHandler (Entity& entity, QObject* = nullptr);
 
 		/** @brief Adds an action with the given name.
 		 *
@@ -91,5 +89,4 @@ namespace Util
 	public slots:
 		void notificationActionTriggered (int);
 	};
-}
 }

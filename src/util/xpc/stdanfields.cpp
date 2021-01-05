@@ -12,9 +12,7 @@
 #include <interfaces/an/ianemitter.h>
 #include <interfaces/an/constants.h>
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	QList<ANFieldData> GetStdANFields (const QString& type)
 	{
@@ -262,5 +260,4 @@ namespace Util
 			result << list;
 		return result;
 	}
-}
 }

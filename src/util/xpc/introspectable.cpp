@@ -10,9 +10,7 @@
 #include <string>
 #include <QtDebug>
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	Introspectable& Introspectable::Instance ()
 	{
@@ -39,5 +37,4 @@ namespace Util
 				<< variant;
 		throw std::runtime_error { "Unregistered type: " + std::to_string (type) };
 	}
-}
 }

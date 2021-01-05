@@ -13,9 +13,7 @@
 
 class IEntityManager;
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	class UTIL_XPC_API ScreensaverProhibitor final
 	{
@@ -25,7 +23,7 @@ namespace Util
 		IEntityManager * const IEM_;
 		const QString ContextID_;
 	public:
-		ScreensaverProhibitor (IEntityManager*);
+		explicit ScreensaverProhibitor (IEntityManager*);
 		~ScreensaverProhibitor ();
 
 		ScreensaverProhibitor (const ScreensaverProhibitor&) = delete;
@@ -38,5 +36,4 @@ namespace Util
 	private:
 		void SendEntity (bool);
 	};
-}
 }

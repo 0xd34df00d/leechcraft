@@ -14,9 +14,7 @@
 class QString;
 class QObject;
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	template<typename, typename>
 	class EitherCont;
@@ -83,5 +81,4 @@ namespace Util
 	UTIL_XPC_API void SavePassword (const QString& password,
 			const QString& keyName,
 			const ICoreProxy_ptr& proxy);
-}
 }

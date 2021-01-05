@@ -12,11 +12,7 @@
 #include <QMap>
 #include <interfaces/an/constants.h>
 
-namespace LC
-{
-namespace Util
-{
-namespace AN
+namespace LC::Util::AN
 {
 	namespace LAN = LC::AN;
 
@@ -157,6 +153,4 @@ namespace AN
 		};
 		return type2hr.value (type, type);
 	}
-}
-}
 }

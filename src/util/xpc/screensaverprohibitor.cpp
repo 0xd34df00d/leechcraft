@@ -12,9 +12,7 @@
 #include <interfaces/core/ientitymanager.h>
 #include "util.h"
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	ScreensaverProhibitor::ScreensaverProhibitor (IEntityManager *iem)
 	: IEM_ { iem }
@@ -58,5 +56,4 @@ namespace Util
 			};
 		IEM_->HandleEntity (e);
 	}
-}
 }

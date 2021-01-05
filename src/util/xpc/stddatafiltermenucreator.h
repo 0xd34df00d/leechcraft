@@ -15,9 +15,7 @@ class QVariant;
 class IEntityManager;
 class QMenu;
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	/** @brief Adds actions to handle some data with relevant IDataFilter
 	 * plugins to a menu.
@@ -90,5 +88,4 @@ namespace Util
 		 */
 		const QByteArray& GetChosenVariant () const;
 	};
-}
 }

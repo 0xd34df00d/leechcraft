@@ -8,9 +8,7 @@
 
 #include "defaulthookproxy.h"
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	DefaultHookProxy::DefaultHookProxy (QMap<QByteArray, QVariant> map)
 	: Name2NewVal_ { std::move (map) }
@@ -46,5 +44,4 @@ namespace Util
 	{
 		Name2NewVal_ [name] = val;
 	}
-}
 }

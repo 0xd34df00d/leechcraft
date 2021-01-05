@@ -14,9 +14,7 @@
 #include <QVariantMap>
 #include "xpcconfig.h"
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	using Introspect_f = std::function<QVariantMap (QVariant)>;
 
@@ -52,5 +50,4 @@ namespace Util
 
 		QVariantMap operator() (const QVariant&) const;
 	};
-}
 }

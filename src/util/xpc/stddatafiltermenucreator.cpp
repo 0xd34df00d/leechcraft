@@ -15,9 +15,7 @@
 #include <interfaces/core/ientitymanager.h>
 #include "util.h"
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	namespace
 	{
@@ -84,5 +82,4 @@ namespace Util
 	{
 		return ChosenVariant_;
 	}
-}
 }
