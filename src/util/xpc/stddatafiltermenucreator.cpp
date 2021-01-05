@@ -35,12 +35,11 @@ namespace LC::Util
 
 	StdDataFilterMenuCreator::StdDataFilterMenuCreator (const QVariant& dataVar, IEntityManager *em, QMenu *menu)
 	: QObject (menu)
-	, EntityMgr_ (em)
 	{
 		auto entity = MakeEntity (dataVar,
 				QString (),
 				FromUserInitiated | OnlyHandle,
-				"x-leechcraft/data-filter-request");
+				QStringLiteral ("x-leechcraft/data-filter-request"));
 		for (auto plugin : em->GetPossibleHandlers (entity))
 		{
 			auto ii = qobject_cast<IInfo*> (plugin);
@@ -53,10 +52,10 @@ namespace LC::Util
 			if (vars.isEmpty ())
 				continue;
 
-			const auto actor = [this, entity, plugin] (const IDataFilter::FilterVariant& var) mutable
+			const auto actor = [this, entity, plugin, em] (const IDataFilter::FilterVariant& var) mutable
 					{
-						entity.Additional_ ["DataFilter"] = var.ID_;
-						EntityMgr_->HandleEntity (entity, plugin);
+						entity.Additional_ [QStringLiteral ("DataFilter")] = var.ID_;
+						em->HandleEntity (entity, plugin);
 
 						ChosenPlugin_ = qobject_cast<IInfo*> (plugin)->GetUniqueID ();
 						ChosenVariant_ = var.ID_;

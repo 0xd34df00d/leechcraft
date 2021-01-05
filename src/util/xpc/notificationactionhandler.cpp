@@ -14,14 +14,15 @@ namespace LC::Util
 	NotificationActionHandler::NotificationActionHandler (Entity& e, QObject*)
 	: Entity_ (e)
 	{
-		Entity_.Additional_ ["HandlingObject"] = QVariant::fromValue<QObject_ptr> (QObject_ptr (this));
+		Entity_.Additional_ [QStringLiteral ("HandlingObject")] = QVariant::fromValue (QObject_ptr (this));
 	}
 
 	void NotificationActionHandler::AddFunction (const QString& name, Callback_t callback)
 	{
 		ActionName2Callback_ << qMakePair (name, callback);
-		const QStringList& sl = Entity_.Additional_ ["NotificationActions"].toStringList ();
-		Entity_.Additional_ ["NotificationActions"] = sl + QStringList (name);
+		static const auto notificationAction = QStringLiteral ("NotificationActions");
+		const QStringList& sl = Entity_.Additional_ [notificationAction].toStringList ();
+		Entity_.Additional_ [notificationAction] = sl + QStringList (name);
 	}
 
 	void NotificationActionHandler::AddDependentObject (QObject *obj)

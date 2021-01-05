@@ -43,8 +43,6 @@ namespace LC::Util
 	 */
 	class UTIL_XPC_API StdDataFilterMenuCreator : public QObject
 	{
-		IEntityManager * const EntityMgr_;
-
 		QByteArray ChosenPlugin_;
 		QByteArray ChosenVariant_;
 	public:

@@ -7,7 +7,6 @@
  **********************************************************************/
 
 #include "screensaverprohibitor.h"
-#include <QString>
 #include <QUuid>
 #include <interfaces/core/ientitymanager.h>
 #include "util.h"
@@ -49,10 +48,10 @@ namespace LC::Util
 
 	void ScreensaverProhibitor::SendEntity (bool prohibit)
 	{
-		auto e = MakeEntity ("ScreensaverProhibition", {}, {}, "x-leechcraft/power-management");
+		auto e = MakeEntity ("ScreensaverProhibition", {}, {}, QStringLiteral ("x-leechcraft/power-management"));
 		e.Additional_ = {
-				{ "Enable", prohibit },
-				{ "ContextID", ContextID_ }
+				{ QStringLiteral ("Enable"), prohibit },
+				{ QStringLiteral ("ContextID"), ContextID_ }
 			};
 		IEM_->HandleEntity (e);
 	}

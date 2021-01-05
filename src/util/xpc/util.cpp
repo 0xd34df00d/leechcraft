@@ -8,7 +8,7 @@
 
 #include "util.h"
 #include <QStandardItem>
-#include <util/util.h>
+#include <util/sll/qtutil.h>
 #include <interfaces/idatafilter.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -47,7 +47,7 @@ namespace LC::Util
 	{
 		auto e = MakeNotification (title, {}, {});
 		e.Additional_ [AN::EF::SenderID] = senderID;
-		e.Additional_ [AN::EF::EventID] = "org.LC.AdvNotifications.RuleRegister";
+		e.Additional_ [AN::EF::EventID] = QStringLiteral ("org.LC.AdvNotifications.RuleRegister");
 		e.Additional_ [AN::EF::EventCategory] = cat;
 		e.Additional_ [AN::EF::EventType] = types;
 		e.Additional_ [AN::EF::OpenConfiguration] = openConfiguration;
@@ -70,7 +70,7 @@ namespace LC::Util
 
 	QList<QObject*> GetDataFilters (const QVariant& data, IEntityManager* manager)
 	{
-		const auto& e = MakeEntity (data, QString (), {}, "x-leechcraft/data-filter-request");
+		const auto& e = MakeEntity (data, QString (), {}, QStringLiteral ("x-leechcraft/data-filter-request"));
 		const auto& handlers = manager->GetPossibleHandlers (e);
 
 		QList<QObject*> result;
@@ -95,12 +95,12 @@ namespace LC::Util
 	Entity MakeNotification (const QString& header,
 			const QString& text, Priority priority)
 	{
-		Entity result = MakeEntity (header,
-				QString (),
+		auto result = MakeEntity (header,
+				{},
 				AutoAccept | OnlyHandle,
-				"x-leechcraft/notification");
-		result.Additional_ ["Text"] = text;
-		result.Additional_ ["Priority"] = QVariant::fromValue (priority);
+				QStringLiteral ("x-leechcraft/notification"));
+		result.Additional_ [QStringLiteral ("Text")] = text;
+		result.Additional_ [QStringLiteral ("Priority")] = QVariant::fromValue (priority);
 		return result;
 	}
 
@@ -144,7 +144,7 @@ namespace LC::Util
 			qint64 done, qint64 total, const QString& text)
 	{
 		const auto item = row.value (JobHolderColumn::JobProgress);
-		if (text.contains ("%1") && text.contains ("%2"))
+		if (text.contains ("%1"_ql) && text.contains ("%2"_ql))
 			item->setText (text.arg (done).arg (total));
 		else
 			item->setText (text);

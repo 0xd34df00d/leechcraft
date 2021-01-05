@@ -64,7 +64,7 @@ namespace LC::Util
 		}
 
 		const auto& result = QInputDialog::getText (nullptr,
-				"LeechCraft",
+				QStringLiteral ("LeechCraft"),
 				diaText,
 				QLineEdit::Password);
 		if (!result.isNull ())
@@ -90,7 +90,7 @@ namespace LC::Util
 
 		const auto dialog = new QInputDialog;
 		dialog->setInputMode (QInputDialog::TextInput);
-		dialog->setWindowTitle ("LeechCraft");
+		dialog->setWindowTitle (QStringLiteral ("LeechCraft"));
 		dialog->setLabelText (diaText);
 		dialog->setTextEchoMode (QLineEdit::Password);
 		dialog->setAttribute (Qt::WA_DeleteOnClose);
