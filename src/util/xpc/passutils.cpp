@@ -16,7 +16,6 @@
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/ipersistentstorageplugin.h>
 #include <util/sll/eithercont.h>
-#include <util/sll/slotclosure.h>
 
 namespace LC::Util
 {
@@ -97,32 +96,20 @@ namespace LC::Util
 
 		if (depender)
 			QObject::connect (depender,
-					SIGNAL (destroyed ()),
+					&QObject::destroyed,
 					dialog,
-					SLOT (deleteLater ()));
+					&QObject::deleteLater);
 
-		new Util::SlotClosure<Util::DeleteLaterPolicy>
-		{
-			[dialog, cont]
-			{
-				const auto& value = dialog->textValue ();
-				if (value.isEmpty ())
-					cont.Left ();
-				else
-					cont.Right (value);
-			},
-			dialog,
-			SIGNAL (accepted ()),
-			dialog
-		};
-
-		new Util::SlotClosure<Util::DeleteLaterPolicy>
-		{
-			[cont] { cont.Left (); },
-			dialog,
-			SIGNAL (rejected ()),
-			dialog
-		};
+		QObject::connect (dialog,
+				&QDialog::finished,
+				[dialog, cont] (int r)
+				{
+					const auto& value = dialog->textValue ();
+					if (r == QDialog::Rejected || value.isEmpty ())
+						cont.Left ();
+					else
+						cont.Right (value);
+				});
 
 		dialog->show ();
 	}

@@ -9,7 +9,6 @@
 #include "stddatafiltermenucreator.h"
 #include <QVariant>
 #include <QMenu>
-#include <util/sll/slotclosure.h>
 #include <interfaces/iinfo.h>
 #include <interfaces/idatafilter.h>
 #include <interfaces/core/ientitymanager.h>
@@ -23,13 +22,9 @@ namespace LC::Util
 		void AddDatafilterMenuItem (const IDataFilter::FilterVariant& var, QMenu *menu, T actor)
 		{
 				const auto act = menu->addAction (var.Icon_, var.Name_);
-				new Util::SlotClosure<Util::DeleteLaterPolicy>
-				{
-					[var, actor] () mutable { actor (var); },
-					act,
-					SIGNAL (triggered ()),
-					act
-				};
+				QObject::connect (act,
+						&QAction::triggered,
+						[var, actor] () mutable { actor (var); });
 		}
 	}
 
