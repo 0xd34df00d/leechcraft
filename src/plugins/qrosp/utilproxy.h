@@ -26,7 +26,6 @@ namespace Qrosp
 	public:
 		UtilProxy (QObject* = 0);
 	public slots:
-		QString GetUserText (const LC::Entity& entity) const;
 		QString MakePrettySize (qint64 size) const;
 		QString MakeTimeFromLong (ulong time) const;
 		QTranslator* InstallTranslator (const QString& base,

@@ -32,14 +32,6 @@ namespace LC::Util
 	 */
 	UTIL_API QString GetAsBase64Src (const QImage& image);
 
-	/** @brief Return the user-readable representation of the entity.
-	 *
-	 * @param[in] entity The Entity from which to make the
-	 * user-readable representation.
-	 * @return The user-readable string describing the entity.
-	 */
-	UTIL_API QString GetUserText (const Entity& entity);
-
 	/** @brief Makes a formatted size from number.
 	 *
 	 * Converts, for example, 1048576 to 1.0 MB.

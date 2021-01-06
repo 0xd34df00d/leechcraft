@@ -21,11 +21,6 @@ namespace Qrosp
 	{
 	}
 
-	QString UtilProxy::GetUserText (const LC::Entity& entity) const
-	{
-		return Util::GetUserText (entity);
-	}
-
 	QString UtilProxy::MakePrettySize (qint64 size) const
 	{
 		return Util::MakePrettySize (size);
