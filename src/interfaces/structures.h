@@ -9,12 +9,9 @@
 #pragma once
 
 #include <memory>
-#include <QPointer>
 #include <QMetaType>
 #include <QVariant>
 #include <QString>
-#include <QByteArray>
-#include <QtDebug>
 
 class QMenu;
 class QIODevice;
@@ -227,7 +224,6 @@ namespace LC
 typedef std::shared_ptr<QObject> QObject_ptr;
 
 Q_DECLARE_METATYPE (LC::Entity)
-Q_DECLARE_METATYPE (QIODevice*)
 Q_DECLARE_METATYPE (QObject_ptr)
 Q_DECLARE_METATYPE (LC::TaskParameters)
 Q_DECLARE_METATYPE (LC::Priority)
