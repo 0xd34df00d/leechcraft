@@ -12,7 +12,7 @@
 #include <QDomDocument>
 #include <QDomElement>
 #include <QtDebug>
-#include <util/util.h>
+#include <util/sll/buildtagstree.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
 #include "storagebackendmanager.h"
@@ -72,20 +72,6 @@ namespace Aggregator
 		}
 	}
 
-	namespace
-	{
-		QString TagGetter (const QDomElement& elem)
-		{
-			return elem.attribute ("text");
-		}
-
-		void TagSetter (QDomElement& result, const QString& tag)
-		{
-			result.setAttribute ("text", tag);
-			result.setAttribute ("isOpen", "true");
-		}
-	}
-
 	void OPMLWriter::WriteBody (QDomElement& root,
 			QDomDocument& doc,
 			const channels_shorts_t& channels) const
@@ -98,10 +84,14 @@ namespace Aggregator
 			auto tags = TagsManager_->GetTags (cs.Tags_);
 			tags.sort ();
 
-			auto inserter = Util::GetElementForTags (tags,
+			auto inserter = Util::BuildTagsTree (tags,
 					body, doc, "outline",
-					&TagGetter,
-					&TagSetter);
+					[] (const QDomElement& elem) { return elem.attribute ("text"); },
+					[] (QDomElement& result, const QString& tag)
+					{
+						result.setAttribute ("text", tag);
+						result.setAttribute ("isOpen", "true");
+					});
 			auto item = doc.createElement ("outline");
 			item.setAttribute ("title", cs.Title_);
 			item.setAttribute ("xmlUrl", sb->GetFeed (cs.FeedID_).URL_);

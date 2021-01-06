@@ -1,4 +1,5 @@
 set (SLL_SRCS
+	buildtagstree.cpp
 	delayedexecutor.cpp
 	queuemanager.cpp
 	regexp.cpp
@@ -30,7 +31,7 @@ target_link_libraries (leechcraft-util-sll${LC_LIBSUFFIX} ${PCRE_IMPORTED_TARGET
 set_property (TARGET leechcraft-util-sll${LC_LIBSUFFIX} PROPERTY SOVERSION ${LC_SOVERSION}.1)
 install (TARGETS leechcraft-util-sll${LC_LIBSUFFIX} DESTINATION ${LIBDIR})
 
-FindQtLibs (leechcraft-util-sll${LC_LIBSUFFIX} Core Concurrent)
+FindQtLibs (leechcraft-util-sll${LC_LIBSUFFIX} Core Concurrent Xml)
 
 if (ENABLE_UTIL_TESTS)
 	include_directories (${CMAKE_CURRENT_BINARY_DIR}/tests ${CMAKE_CURRENT_SOURCE_DIR})

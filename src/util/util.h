@@ -12,7 +12,6 @@
 #include <QString>
 #include <QDir>
 #include <QModelIndex>
-#include <QtXml/QDomElement>
 #include <QtDebug>
 #include <interfaces/structures.h>
 
@@ -152,85 +151,4 @@ namespace LC::Util
 	 */
 	UTIL_API QAction* CreateSeparator (QObject *parent);
 
-	/** @brief Returns an element for a given tags list.
-	 *
-	 * This function tries to implement projection from tags to a
-	 * hierarchical structure in form of XML. It traverses the tags
-	 * list and creates child nodes from the document, appending
-	 * the hierarchical structure's tree root to the node. It
-	 * returns the parent element to which the item should be
-	 * appended.
-	 *
-	 * For empty tags list it just returns node converted to the
-	 * QDomElement.
-	 *
-	 * tagSetter is a function or functor that should be able to
-	 * take two parameters, a QDomElement and a QString, and set
-	 * tags for it.
-	 *
-	 * tagGetter is a function or functor that should be able to
-	 * take one parameter, a QDomElement, and return a QString for
-	 * it with tags previously set with tagSetter.
-	 *
-	 * @param[in] tags List of tags.
-	 * @param[in] node The parent-most node to which all other nodes
-	 * are appended.
-	 * @param[in] document The document containing all these nodes.
-	 * @param[in] elementName The name of the XML element that
-	 * carries info about the tags.
-	 * @param[in] tagSetter Setter function for the tags for the
-	 * given element.
-	 * @param[in] tagGetter Getter function for the tags for the
-	 * given element.
-	 * @return Parent element of the item with tags.
-	 */
-	template<typename TagGetter, typename TagSetter>
-	QDomElement GetElementForTags (const QStringList& tags,
-			QDomNode& node,
-			QDomDocument& document,
-			const QString& elementName,
-			TagGetter tagGetter,
-			TagSetter tagSetter)
-	{
-		if (!tags.size ())
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "no tags"
-				<< elementName;
-			return node.toElement ();
-		}
-
-		QDomNodeList elements = node.childNodes ();
-		for (int i = 0; i < elements.size (); ++i)
-		{
-			QDomElement elem = elements.at (i).toElement ();
-			if (tagGetter (elem) == tags.at (0))
-			{
-				if (tags.size () > 1)
-				{
-					QStringList childTags = tags;
-					childTags.removeAt (0);
-					return GetElementForTags (childTags, elem,
-							document, elementName,
-							tagGetter, tagSetter);
-				}
-				else
-					return elem;
-			}
-		}
-
-		QDomElement result = document.createElement (elementName);
-		tagSetter (result, tags.at (0));
-		node.appendChild (result);
-		if (tags.size () > 1)
-		{
-			QStringList childTags = tags;
-			childTags.removeAt (0);
-			return GetElementForTags (childTags, result,
-					document, elementName,
-					tagGetter, tagSetter);
-		}
-		else
-			return result;
-	}
 }

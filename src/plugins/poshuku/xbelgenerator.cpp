@@ -9,31 +9,13 @@
 #include "xbelgenerator.h"
 #include <QByteArray>
 #include <QDomDocument>
-#include <QDomElement>
-#include <util/util.h>
+#include <util/sll/buildtagstree.h>
 #include "core.h"
 
 namespace LC
 {
 namespace Poshuku
 {
-	QString TagGetter (const QDomElement& elem)
-	{
-		if (elem.tagName () == "folder")
-			return elem.firstChildElement ("title").text ();
-		else
-			return QString ();
-	}
-
-	void TagSetter (QDomDocument& doc,
-			QDomElement& elem, const QString& tag)
-	{
-		QDomElement title = doc.createElement ("title");
-		QDomText text = doc.createTextNode (tag);
-		title.appendChild (text);
-		elem.appendChild (title);
-	}
-
 	XbelGenerator::XbelGenerator (QByteArray& output)
 	{
 		QDomDocument document;
@@ -45,9 +27,19 @@ namespace Poshuku
 		for (auto i = items.begin (), end = items.end ();
 				i != end; ++i)
 		{
-			QDomElement inserter = Util::GetElementForTags (i->Tags_,
-					root, document, "folder", TagGetter,
-					[&document] (QDomElement& elem, const QString& tag) { TagSetter (document, elem, tag); });
+			QDomElement inserter = Util::BuildTagsTree (i->Tags_,
+					root, document, "folder",
+					[] (const QDomElement& elem)
+					{
+						return elem.tagName () == "folder" ? elem.firstChildElement ("title").text () : QString {};
+					},
+					[&document] (QDomElement& elem, const QString& tag)
+					{
+						auto title = document.createElement ("title");
+						auto text = document.createTextNode (tag);
+						title.appendChild (text);
+						elem.appendChild (title);
+					});
 
 			QDomElement item = document.createElement ("bookmark");
 			item.setAttribute ("href", i->URL_);
