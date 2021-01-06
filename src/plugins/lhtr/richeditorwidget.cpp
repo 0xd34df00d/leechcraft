@@ -23,6 +23,7 @@
 #include <QXmlStreamWriter>
 #include <QNetworkRequest>
 #include <QtDebug>
+#include <QDomDocument>
 
 #ifdef WITH_HTMLTIDY
 #include <tidy.h>

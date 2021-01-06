@@ -11,7 +11,7 @@
 #include <QDomDocument>
 #include <QDir>
 #include <QUrl>
-#include <util/util.h>
+#include <QtDebug>
 #include <util/sys/paths.h>
 
 namespace LC

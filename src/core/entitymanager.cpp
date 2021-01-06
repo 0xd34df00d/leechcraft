@@ -13,6 +13,7 @@
 #include <QFuture>
 #include <QDesktopServices>
 #include <QUrl>
+#include <QTextCodec>
 #include "util/util.h"
 #include "util/sll/prelude.h"
 #include "util/sll/either.h"

@@ -10,7 +10,7 @@
 #include <QTreeView>
 #include <QPainter>
 #include <QApplication>
-#include <util/util.h>
+#include <interfaces/structures.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/icoreproxy.h>
 #include "player.h"

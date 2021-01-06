@@ -10,6 +10,7 @@
 
 #include <functional>
 #include <QObject>
+#include <QPointer>
 #include <interfaces/structures.h>
 #include "xpcconfig.h"
 

@@ -11,6 +11,8 @@
 #include <QStandardItemModel>
 #include <QStringListModel>
 #include <QCoreApplication>
+#include <QDir>
+#include <QLocale>
 #include <util/util.h>
 #include <util/sys/paths.h>
 #include "xmlsettingsmanager.h"

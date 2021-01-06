@@ -10,6 +10,7 @@
 #include <stdexcept>
 #include <QSqlError>
 #include <QSqlRecord>
+#include <QtDebug>
 #include <util/db/dblock.h>
 #include <util/sll/qtutil.h>
 #include <util/util.h>

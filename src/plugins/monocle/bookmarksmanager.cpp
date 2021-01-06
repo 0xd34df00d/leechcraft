@@ -9,8 +9,8 @@
 #include "bookmarksmanager.h"
 #include <QUrl>
 #include <QFileInfo>
+#include <QDir>
 #include <QtDebug>
-#include <util/util.h>
 #include <util/sys/paths.h>
 #include "bookmark.h"
 

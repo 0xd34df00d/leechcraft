@@ -9,6 +9,7 @@
 #include "kopeteimportpage.h"
 #include <QDir>
 #include <QStandardItemModel>
+#include <QtDebug>
 #include <util/sll/prelude.h>
 #include "kopeteimportthread.h"
 

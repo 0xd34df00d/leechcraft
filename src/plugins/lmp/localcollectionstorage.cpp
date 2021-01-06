@@ -12,6 +12,7 @@
 #include <QSqlQuery>
 #include <QFileInfo>
 #include <QThread>
+#include <QDir>
 #include <util/util.h>
 #include <util/db/dblock.h>
 #include <util/db/util.h>

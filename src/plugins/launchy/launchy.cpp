@@ -9,6 +9,7 @@
 #include "launchy.h"
 #include <QIcon>
 #include <QAction>
+#include <QAbstractItemModel>
 #include <util/util.h>
 #include <util/sys/paths.h>
 #include <util/shortcuts/shortcutmanager.h>

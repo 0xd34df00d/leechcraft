@@ -10,6 +10,8 @@
 #include <QLineEdit>
 #include <QTextCodec>
 #include <QDomDocument>
+#include <QFile>
+#include <QtDebug>
 #include <util/util.h>
 #include <util/sll/domchildrenrange.h>
 #include <util/sll/prelude.h>

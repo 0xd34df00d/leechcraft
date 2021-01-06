@@ -10,6 +10,7 @@
 #include <QFile>
 #include <QDataStream>
 #include <QSslConfiguration>
+#include <QDir>
 #include <QtDebug>
 #include <util/util.h>
 #include <util/sys/paths.h>

@@ -8,6 +8,7 @@
 
 #include "historyentry.h"
 #include <QDataStream>
+#include <QtDebug>
 #include <util/structuresops.h>
 
 namespace LC

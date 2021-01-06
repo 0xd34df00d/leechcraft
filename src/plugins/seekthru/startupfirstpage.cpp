@@ -7,10 +7,10 @@
  **********************************************************************/
 
 #include "startupfirstpage.h"
-#include <typeinfo>
 #include <QLineEdit>
 #include <QTextCodec>
 #include <QComboBox>
+#include <QFile>
 #include <util/util.h>
 #include "xmlsettingsmanager.h"
 #include "core.h"

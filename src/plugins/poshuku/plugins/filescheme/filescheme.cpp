@@ -7,8 +7,8 @@
  **********************************************************************/
 
 #include "filescheme.h"
-#include <typeinfo>
 #include <QIcon>
+#include <QFileInfo>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <util/util.h>

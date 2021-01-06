@@ -16,6 +16,7 @@
 #include <QMetaMethod>
 #include <QInputDialog>
 #include <QMainWindow>
+#include <QDomElement>
 #include <QStringListModel>
 #include <QMessageBox>
 #include <QClipboard>

@@ -19,7 +19,7 @@
 #include <QTextCodec>
 #include <QTextStream>
 #include <QStandardPaths>
-#include <util/util.h>
+#include <QDir>
 #include <util/sys/paths.h>
 #include <util/sll/prelude.h>
 #include <util/sll/slotclosure.h>

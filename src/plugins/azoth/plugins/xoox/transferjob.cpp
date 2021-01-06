@@ -8,7 +8,8 @@
 
 #include "transferjob.h"
 #include <QFile>
-#include <util/util.h>
+#include <QFileInfo>
+#include <QDir>
 #include "core.h"
 #include "clientconnection.h"
 #include "transfermanager.h"

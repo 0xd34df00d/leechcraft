@@ -10,6 +10,7 @@
 #include <QDir>
 #include <QStandardItemModel>
 #include <QDomDocument>
+#include <QtDebug>
 #include "imimportpage.h"
 
 namespace LC

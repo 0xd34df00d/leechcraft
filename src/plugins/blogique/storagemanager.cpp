@@ -10,6 +10,7 @@
 #include <stdexcept>
 #include <QtDebug>
 #include <QSqlError>
+#include <QDir>
 #include <util/util.h>
 #include <util/db/dblock.h>
 #include <util/sys/paths.h>

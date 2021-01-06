@@ -10,6 +10,7 @@
 #include <QIcon>
 #include <QAction>
 #include <QTimer>
+#include <QDir>
 #include <util/util.h>
 #include <util/sys/paths.h>
 #include "reportwizard.h"

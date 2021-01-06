@@ -7,6 +7,7 @@
  **********************************************************************/
 
 #include "structuresops.h"
+#include <QtDebug>
 
 QDataStream& operator<< (QDataStream& out, const LC::Entity& e)
 {

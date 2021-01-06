@@ -9,6 +9,7 @@
 #include "namauth.h"
 #include <QIcon>
 #include <QMessageBox>
+#include <QFile>
 #include <interfaces/core/icoreproxy.h>
 #include <util/util.h>
 #include <util/sll/visitor.h>

@@ -7,8 +7,8 @@
  **********************************************************************/
 
 #include "postoptionswidget.h"
+#include <QDir>
 #include <QtDebug>
-#include <util/util.h>
 #include <util/sys/paths.h>
 #include <util/qml/themeimageprovider.h>
 #include <interfaces/core/ipluginsmanager.h>

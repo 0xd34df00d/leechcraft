@@ -8,6 +8,8 @@
 
 #include "graffiti.h"
 #include <QIcon>
+#include <QFileInfo>
+#include <QDir>
 #include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>

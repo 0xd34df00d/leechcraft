@@ -15,6 +15,8 @@
 #include <QImageReader>
 #include <QClipboard>
 #include <QApplication>
+#include <QFile>
+#include <QFileInfo>
 #include <util/sys/mimedetector.h>
 #include <util/threads/futures.h>
 #include <util/sll/visitor.h>

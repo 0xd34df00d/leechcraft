@@ -8,6 +8,7 @@
 
 #include "cpuload.h"
 #include <QIcon>
+#include <QAbstractItemModel>
 #include <util/util.h>
 
 #ifdef Q_OS_LINUX
