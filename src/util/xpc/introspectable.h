@@ -30,16 +30,15 @@ namespace LC::Util
 		static Introspectable& Instance ();
 
 		template<typename T, typename U>
-		void Register (const U& intro, std::result_of_t<U (QVariant)>* = nullptr)
+		void Register (const U& intro)
 		{
-			const auto id = qMetaTypeId<T> ();
-			Intros_ [id] = intro;
-		}
-
-		template<typename T, typename U>
-		void Register (const U& intro, std::result_of_t<U (T)>* = nullptr)
-		{
-			Register<T> ([intro] (const QVariant& var) { return std::invoke (intro, var.value<T> ()); });
+			if constexpr (std::is_invocable_v<U, QVariant>)
+			{
+				const auto id = qMetaTypeId<T> ();
+				Intros_ [id] = intro;
+			}
+			else
+				Register<T> ([intro] (const QVariant& var) { return std::invoke (intro, var.value<T> ()); });
 		}
 
 		template<typename T>
