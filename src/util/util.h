@@ -10,14 +10,17 @@
 
 #include "utilconfig.h"
 #include <QString>
-#include <QDir>
-#include <QModelIndex>
-#include <QtDebug>
-#include <interfaces/structures.h>
 
 class QTranslator;
 class QLocale;
 class QAction;
+class QImage;
+class QObject;
+
+template<typename T>
+class QList;
+
+class QModelIndex;
 
 namespace LC::Util
 {
@@ -131,7 +134,6 @@ namespace LC::Util
 	 */
 	UTIL_API QString GetLanguage ();
 
-
 	UTIL_API QList<QModelIndex> GetSummarySelectedRows (QObject *sender);
 
 	/** @brief Returns the action that is set to act as a separator.
@@ -142,5 +144,4 @@ namespace LC::Util
 	 * @return The separator action.
 	 */
 	UTIL_API QAction* CreateSeparator (QObject *parent);
-
 }
