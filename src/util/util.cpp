@@ -7,22 +7,17 @@
  **********************************************************************/
 
 #include "util.h"
-#include <functional>
 #include <stdexcept>
-#include <type_traits>
 #include <QString>
 #include <QApplication>
 #include <QTranslator>
 #include <QLocale>
-#include <QFile>
-#include <QDir>
 #include <QTime>
 #include <QSettings>
 #include <QTextCodec>
 #include <QUrl>
 #include <QAction>
 #include <QBuffer>
-#include <QPainter>
 #include <QAction>
 #include <QtDebug>
 
@@ -253,32 +248,3 @@ QAction* LC::Util::CreateSeparator (QObject *parent)
 	return result;
 }
 
-QPixmap LC::Util::DrawOverlayText (QPixmap px,
-		const QString& text, QFont font, const QPen& pen, const QBrush& brush)
-{
-	const auto& iconSize = px.size () / px.devicePixelRatio ();
-
-	const auto fontHeight = iconSize.height () * 0.45;
-	font.setPixelSize (std::max (6., fontHeight));
-
-	const QFontMetrics fm (font);
-	const auto width = fm.horizontalAdvance (text) + 2. * iconSize.width () / 10.;
-	const auto height = fm.height () + 2. * iconSize.height () / 10.;
-	const bool tooSmall = width > iconSize.width ();
-
-	const QRect textRect (iconSize.width () - width, iconSize.height () - height, width, height);
-
-	QPainter p (&px);
-	p.setBrush (brush);
-	p.setFont (font);
-	p.setPen (pen);
-	p.setRenderHint (QPainter::Antialiasing);
-	p.setRenderHint (QPainter::TextAntialiasing);
-	p.drawRoundedRect (textRect, 4, 4);
-	p.drawText (textRect,
-			Qt::AlignCenter,
-			tooSmall ? "#" : text);
-	p.end ();
-
-	return px;
-}

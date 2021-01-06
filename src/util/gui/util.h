@@ -98,6 +98,8 @@ namespace LC::Util
 	 */
 	UTIL_GUI_API QString FormatName (const QString& name);
 
+	UTIL_GUI_API QPixmap DrawOverlayText (QPixmap px, const QString& text, QFont font, const QPen& pen, const QBrush& brush);
+
 	template<typename T>
 	void Save2MimeData (QMimeData *mimeData, const QString& name, const T& t)
 	{

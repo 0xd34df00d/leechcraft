@@ -13,6 +13,7 @@
 #include <QKeyEvent>
 #include <QTimer>
 #include <QLabel>
+#include <QPainter>
 #include <QStyleOptionViewItem>
 #include <QtDebug>
 #include "geometry.h"
@@ -104,5 +105,35 @@ namespace LC::Util
 	QString FormatName (const QString& name)
 	{
 		return "<em>" + name + "</em>";
+	}
+
+	QPixmap DrawOverlayText (QPixmap px,
+			const QString& text, QFont font, const QPen& pen, const QBrush& brush)
+	{
+		const auto& iconSize = px.size () / px.devicePixelRatio ();
+
+		const auto fontHeight = iconSize.height () * 0.45;
+		font.setPixelSize (std::max (6., fontHeight));
+
+		const QFontMetrics fm (font);
+		const auto width = fm.horizontalAdvance (text) + 2. * iconSize.width () / 10.;
+		const auto height = fm.height () + 2. * iconSize.height () / 10.;
+		const bool tooSmall = width > iconSize.width ();
+
+		const QRect textRect (iconSize.width () - width, iconSize.height () - height, width, height);
+
+		QPainter p (&px);
+		p.setBrush (brush);
+		p.setFont (font);
+		p.setPen (pen);
+		p.setRenderHint (QPainter::Antialiasing);
+		p.setRenderHint (QPainter::TextAntialiasing);
+		p.drawRoundedRect (textRect, 4, 4);
+		p.drawText (textRect,
+				Qt::AlignCenter,
+				tooSmall ? "#" : text);
+		p.end ();
+
+		return px;
 	}
 }
