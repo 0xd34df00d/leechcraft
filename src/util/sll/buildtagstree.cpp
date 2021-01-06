@@ -16,7 +16,7 @@ namespace LC::Util
 			QDomDocument& document,
 			const QString& elementName,
 			const std::function<QString (QDomElement)>& tagGetter,
-			const std::function<void (QDomElement, QString)>& tagSetter)
+			const std::function<void (QDomElement&, QString)>& tagSetter)
 	{
 		if (tags.isEmpty ())
 			return node.toElement ();
