@@ -25,7 +25,6 @@
 #include <QtConcurrentMap>
 #include <QMessageBox>
 #include <QMainWindow>
-#include <util/exceptions.h>
 #include <util/sll/containerconversions.h>
 #include <util/sll/prelude.h>
 #include <util/sll/scopeguards.h>

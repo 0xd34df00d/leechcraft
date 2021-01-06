@@ -63,7 +63,6 @@ set (LEECHCRAFT_UTIL_LIBRARIES ${LEECHCRAFT_UTIL_LIBRARIES} PARENT_SCOPE)
 set (SRCS
 	util.cpp
 	structuresops.cpp
-	exceptions.cpp
 	)
 
 foreach (SRC ${SRCS})
