@@ -90,4 +90,4 @@ target_link_libraries (leechcraft-util${LC_LIBSUFFIX}
 set_property (TARGET leechcraft-util${LC_LIBSUFFIX} PROPERTY SOVERSION ${LC_SOVERSION})
 install (TARGETS leechcraft-util${LC_LIBSUFFIX} DESTINATION ${LIBDIR})
 
-FindQtLibs (leechcraft-util${LC_LIBSUFFIX} Xml Qml Sql Widgets)
+FindQtLibs (leechcraft-util${LC_LIBSUFFIX} Widgets)
