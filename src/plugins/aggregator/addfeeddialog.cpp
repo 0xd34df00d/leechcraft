@@ -7,7 +7,6 @@
  **********************************************************************/
 
 #include <util/tags/tagscompleter.h>
-#include <util/tags/tagscompletionmodel.h>
 #include <interfaces/core/itagsmanager.h>
 #include "addfeeddialog.h"
 

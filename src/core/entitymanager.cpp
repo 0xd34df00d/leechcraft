@@ -15,8 +15,6 @@
 #include <QUrl>
 #include <QTextCodec>
 #include "util/util.h"
-#include "util/sll/prelude.h"
-#include "util/sll/either.h"
 #include "util/sll/slotclosure.h"
 #include "interfaces/structures.h"
 #include "interfaces/idownload.h"
