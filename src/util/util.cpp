@@ -21,6 +21,7 @@
 #include <QAction>
 #include <QModelIndexList>
 #include <QtDebug>
+#include <util/sll/qtutil.h>
 
 namespace LC::Util
 {
@@ -30,8 +31,7 @@ namespace LC::Util
 		buf.open (QIODevice::ReadWrite);
 		const auto compression = 100;
 		pix.save (&buf, "PNG", compression);
-		return QString ("data:image/png;base64,%1")
-				.arg (QString (buf.buffer ().toBase64 ()));
+		return QStringLiteral ("data:image/png;base64,") + buf.buffer ().toBase64 ();
 	}
 
 	namespace
@@ -76,8 +76,9 @@ namespace LC::Util
 
 	QString MakeTimeFromLong (ulong time)
 	{
-		int d = time / 86400;
-		time -= d * 86400;
+		const auto secsPerDay = 86400;
+		int d = time / secsPerDay;
+		time -= d * secsPerDay;
 		QString result;
 		if (d)
 			result += QObject::tr ("%n day(s), ", "", d);
@@ -132,7 +133,7 @@ namespace LC::Util
 		const auto& localeName = GetLocaleName ();
 		if (auto transl = LoadTranslator (baseName, localeName, prefix, appName))
 		{
-			qApp->installTranslator (transl);
+			QCoreApplication::installTranslator (transl);
 			return transl;
 		}
 
@@ -149,18 +150,18 @@ namespace LC::Util
 	{
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName ());
-		QString localeName = settings.value ("Language", "system").toString ();
+		QString localeName = settings.value (QStringLiteral ("Language"), QStringLiteral ("system")).toString ();
 
-		if (localeName == "system")
+		if (localeName == "system"_ql)
 		{
-			localeName = QString (::getenv ("LANG")).left (5);
+			const auto localeLen = 5;
+			localeName = qEnvironmentVariable ("LANG").left (localeLen);
 
-			if (localeName == "C" || localeName.isEmpty ())
-				localeName = "en_US";
+			if (localeName == "C"_ql || localeName.isEmpty ())
+				localeName = QStringLiteral ("en_US");
 
-			if (localeName.isEmpty () || localeName.size () != 5)
-				localeName = QLocale::system ().name ();
-			localeName = localeName.left (5);
+			if (localeName.isEmpty () || localeName.size () != localeLen)
+				localeName = QLocale::system ().name ().left (localeLen);
 		}
 
 		if (localeName.size () == 2)
@@ -168,7 +169,7 @@ namespace LC::Util
 			auto lang = QLocale (localeName).language ();
 			const auto& cs = QLocale::countriesForLanguage (lang);
 			if (cs.isEmpty ())
-				localeName += "_00";
+				localeName += "_00"_ql;
 			else
 				localeName = QLocale (lang, cs.at (0)).name ();
 		}
@@ -179,7 +180,7 @@ namespace LC::Util
 	QString GetInternetLocaleName (const QLocale& locale)
 	{
 		if (locale.language () == QLocale::AnyLanguage)
-			return "*";
+			return QStringLiteral ("*");
 
 		auto locStr = locale.name ();
 		locStr.replace ('_', '-');
