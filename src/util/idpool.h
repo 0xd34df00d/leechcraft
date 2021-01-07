@@ -23,7 +23,7 @@ namespace LC::Util
 	 * support <code>operator++()</code>.
 	 */
 	template<typename T>
-	class IDPool
+	class IDPool final
 	{
 		T CurrentID_;
 	public:
@@ -33,12 +33,6 @@ namespace LC::Util
 		 */
 		explicit IDPool (const T& id = T ())
 		: CurrentID_ { id }
-		{
-		}
-
-		/** @brief Destroys the pool.
-		 */
-		virtual ~IDPool ()
 		{
 		}
 
