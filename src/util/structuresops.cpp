@@ -27,7 +27,7 @@ QDataStream& operator>> (QDataStream& in, LC::Entity& e)
 	in >> version;
 	if (version == 2)
 	{
-		quint32 parameters;
+		quint32 parameters = 0;
 		in >> e.Entity_
 			>> e.Location_
 			>> e.Mime_
@@ -62,7 +62,7 @@ QDataStream& operator>> (QDataStream& in, LC::Entity& e)
 	else if (version == 1)
 	{
 		QByteArray buf;
-		quint32 parameters;
+		quint32 parameters = 0;
 		in >> buf
 			>> e.Location_
 			>> e.Mime_

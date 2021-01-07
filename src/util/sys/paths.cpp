@@ -18,7 +18,6 @@
 #include <QDir>
 #include <QUrl>
 #include <QStandardPaths>
-#include <util/util.h>
 
 namespace LC::Util
 {

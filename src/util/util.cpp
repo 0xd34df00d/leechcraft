@@ -193,7 +193,7 @@ namespace LC::Util
 
 	QModelIndexList GetSummarySelectedRows (QObject *sender)
 	{
-		QAction *senderAct = qobject_cast<QAction*> (sender);
+		const auto senderAct = qobject_cast<QAction*> (sender);
 		if (!senderAct)
 		{
 			QString debugString;
@@ -205,13 +205,12 @@ namespace LC::Util
 			throw std::runtime_error (qPrintable (debugString));
 		}
 
-		return senderAct->
-				property ("SelectedRows").value<QList<QModelIndex>> ();
+		return senderAct->property ("SelectedRows").value<QList<QModelIndex>> ();
 	}
 
 	QAction* CreateSeparator (QObject *parent)
 	{
-		QAction *result = new QAction (parent);
+		const auto result = new QAction (parent);
 		result->setSeparator (true);
 		return result;
 	}

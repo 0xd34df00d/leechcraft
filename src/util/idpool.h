@@ -14,9 +14,7 @@
 #include <QDataStream>
 #include <QtDebug>
 
-namespace LC
-{
-namespace Util
+namespace LC::Util
 {
 	/** @brief A simple pool of identificators of the given type.
 	 *
@@ -33,8 +31,8 @@ namespace Util
 		 *
 		 * @param[in] id The initial value of the pool.
 		 */
-		IDPool (const T& id = T ())
-		: CurrentID_ (id)
+		explicit IDPool (const T& id = T ())
+		: CurrentID_ { id }
 		{
 		}
 
@@ -68,7 +66,7 @@ namespace Util
 		 */
 		void FreeID (T id)
 		{
-			Q_UNUSED (id);
+			Q_UNUSED (id)
 		}
 
 		/** @brief Saves the state of this pool.
@@ -109,5 +107,4 @@ namespace Util
 						<< ", not restoring state.";
 		}
 	};
-}
 }

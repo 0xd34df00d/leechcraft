@@ -113,14 +113,15 @@ namespace LC::Util
 		const auto& iconSize = px.size () / px.devicePixelRatio ();
 
 		const auto fontHeight = iconSize.height () * 0.45;
-		font.setPixelSize (std::max (6., fontHeight));
+		const auto minFontHeight = 6.0;
+		font.setPixelSize (static_cast<int> (std::max (minFontHeight, fontHeight)));
 
 		const QFontMetrics fm (font);
 		const auto width = fm.horizontalAdvance (text) + 2. * iconSize.width () / 10.;
 		const auto height = fm.height () + 2. * iconSize.height () / 10.;
 		const bool tooSmall = width > iconSize.width ();
 
-		const QRect textRect (iconSize.width () - width, iconSize.height () - height, width, height);
+		const QRectF textRect (iconSize.width () - width, iconSize.height () - height, width, height);
 
 		QPainter p (&px);
 		p.setBrush (brush);
@@ -131,7 +132,7 @@ namespace LC::Util
 		p.drawRoundedRect (textRect, 4, 4);
 		p.drawText (textRect,
 				Qt::AlignCenter,
-				tooSmall ? "#" : text);
+				tooSmall ? QStringLiteral ("#") : text);
 		p.end ();
 
 		return px;
