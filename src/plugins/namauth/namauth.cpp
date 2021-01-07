@@ -28,35 +28,33 @@ namespace NamAuth
 
 		const auto checker = Util::ConsistencyChecker::Create (SQLStorageBackend::GetDBPath (), GetName ());
 		Util::Sequence (this, checker->StartCheck ()) >>
-				[=, this] (const Util::ConsistencyChecker::CheckResult_t& result)
+				Util::Visitor
 				{
-					Util::Visit (result,
-							[=, this] (Util::ConsistencyChecker::Succeeded) { InitStorage (proxy); },
-							[=, this] (Util::ConsistencyChecker::Failed failed)
-							{
-								Util::Sequence (this, failed->DumpReinit ()) >>
-										[=, this] (const Util::ConsistencyChecker::DumpResult_t& result)
-										{
-											Util::Visit (result,
-													[=, this] (Util::ConsistencyChecker::DumpError err)
-													{
-														QMessageBox::critical (nullptr,
-																tr ("LeechCraft"),
-																tr ("Unable to recover the HTTP passwords database: %1.")
-																		.arg (err.Error_));
+					[=, this] (Util::ConsistencyChecker::Succeeded) { InitStorage (proxy); },
+					[=, this] (const Util::ConsistencyChecker::Failed& failed)
+					{
+						Util::Sequence (this, failed->DumpReinit ()) >>
+								Util::Visitor
+								{
+									[=, this] (const Util::ConsistencyChecker::DumpError& err)
+									{
+										QMessageBox::critical (nullptr,
+												tr ("LeechCraft"),
+												tr ("Unable to recover the HTTP passwords database: %1.")
+														.arg (err.Error_));
 
-														const auto& path = SQLStorageBackend::GetDBPath ();
-														QFile::copy (path, path + ".old");
-														QFile::remove (path);
+										const auto& path = SQLStorageBackend::GetDBPath ();
+										QFile::copy (path, path + ".old");
+										QFile::remove (path);
 
-														InitStorage (proxy);
-													},
-													[=, this] (Util::ConsistencyChecker::DumpFinished)
-													{
-														InitStorage (proxy);
-													});
-										};
-							});
+										InitStorage (proxy);
+									},
+									[=, this] (Util::ConsistencyChecker::DumpFinished)
+									{
+										InitStorage (proxy);
+									}
+								};
+					}
 				};
 	}
 
