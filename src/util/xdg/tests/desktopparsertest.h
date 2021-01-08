@@ -17,5 +17,6 @@ namespace LC::Util::XDG
 		Q_OBJECT
 	private slots:
 		void testBasicFile ();
+		void testComments ();
 	};
 }
