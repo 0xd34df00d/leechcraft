@@ -143,6 +143,9 @@ namespace LC::Util::XDG
 			Group_t group;
 			for (const auto& field : item.Fields_)
 			{
+				if (field.Name_.empty () && field.Val_ == FieldVal_t { std::string {} })
+					continue;
+
 				const auto& values = boost::apply_visitor (ValGetter (), field.Val_);
 				const auto& lang = field.Lang_ ? ToUtf8 (*field.Lang_) : QString ();
 				group [ToUtf8 (field.Name_)] [lang] = values;
