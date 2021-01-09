@@ -35,7 +35,6 @@
 #include <util/xpc/stddatafiltermenucreator.h>
 #include <util/gui/findnotification.h>
 #include <util/sll/prelude.h>
-#include <util/sll/delayedexecutor.h>
 #include <util/sll/overload.h>
 #include <util/sll/unreachable.h>
 #include <interfaces/imwproxy.h>
@@ -416,7 +415,7 @@ namespace Monocle
 		LayoutManager_->SetFixedScale (scale);
 		Relayout ();
 
-		Util::ExecuteLater ([point, this] { CenterOn (point); });
+		QTimer::singleShot (0, this, [point, this] { CenterOn (point); });
 	}
 
 	void DocumentTab::ReloadDoc (const QString& doc)

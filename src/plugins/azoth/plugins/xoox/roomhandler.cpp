@@ -13,10 +13,10 @@
 #include <QVBoxLayout>
 #include <QDialogButtonBox>
 #include <QLabel>
+#include <QTimer>
 #include <QXmppVCardIq.h>
 #include <QXmppMucManager.h>
 #include <QXmppClient.h>
-#include <util/sll/delayedexecutor.h>
 #include <util/sll/util.h>
 #include <util/sll/eithercont.h>
 #include <util/sll/prelude.h>
@@ -83,7 +83,7 @@ namespace Xoox
 				SLOT (handlePendingForm (QXmppDataForm*, const QString&)),
 				Qt::QueuedConnection);
 
-		Util::ExecuteLater ([this] { Room_->join (); });
+		QTimer::singleShot (0, this, [this] { Room_->join (); });
 	}
 
 	QString RoomHandler::GetRoomJID () const
@@ -694,11 +694,11 @@ namespace Xoox
 		else if (pres.mucStatusCodes ().contains (301))
 			!us ?
 				MakeBanMessage (nick, reason) :
-				Util::ExecuteLater ([=] { CLEntry_->beenBanned (reason); });
+				QTimer::singleShot (0, this, [=] { CLEntry_->beenBanned (reason); });
 		else if (pres.mucStatusCodes ().contains (307))
 			!us ?
 				MakeKickMessage (nick, reason) :
-				Util::ExecuteLater ([=] { CLEntry_->beenKicked (reason); });
+				QTimer::singleShot (0, this, [=] { CLEntry_->beenKicked (reason); });
 		else
 			MakeLeaveMessage (pres, nick);
 
@@ -708,7 +708,7 @@ namespace Xoox
 							std::all_of (Nick2Entry_.begin (), Nick2Entry_.end (),
 									[] (const RoomParticipantEntry_ptr& entry)
 										{ return entry->GetStatus ({}).State_ == SOffline; }))
-						new Util::DelayedExecutor { [this] { Join (); }, 5000, this };
+						QTimer::singleShot (5000, this, &RoomHandler::Join);
 				});
 
 		if (us)

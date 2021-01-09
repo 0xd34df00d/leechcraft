@@ -25,11 +25,11 @@
 #include <QPrintDialog>
 #include <QPrintPreviewDialog>
 #include <QFileDialog>
+#include <QTimer>
 #include <QtDebug>
 #include <util/xpc/util.h>
 #include <util/xpc/defaulthookproxy.h>
 #include <util/gui/findnotificationwk.h>
-#include <util/sll/delayedexecutor.h>
 #include <util/sll/unreachable.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
@@ -294,7 +294,8 @@ namespace WebKitView
 				callback (res);
 
 			if (flags & EvaluateJSFlag::RecurseSubframes)
-				Util::ExecuteLater ([eval, framePtr = QPointer<QWebFrame> { frame }]
+				QTimer::singleShot (0,
+						[eval, framePtr = QPointer { frame }]
 						{
 							if (!framePtr)
 								return;

@@ -7,9 +7,8 @@
  **********************************************************************/
 
 #include "messagesmanager.h"
+#include <QTimer>
 #include <tox/tox.h>
-#include <util/sll/slotclosure.h>
-#include <util/sll/delayedexecutor.h>
 #include "toxaccount.h"
 #include "toxthread.h"
 #include "chatmessage.h"
@@ -93,11 +92,8 @@ namespace LC::Azoth::Sarin
 						qWarning () << Q_FUNC_INFO
 								<< "message was not sent, resending in 5 seconds";
 
-						new Util::DelayedExecutor
-						{
-							[result, this] { SendMessage (result.Privkey_, result.Msg_); },
-							5000
-						};
+						QTimer::singleShot (5000, this,
+								[result, this] { SendMessage (result.Privkey_, result.Msg_); });
 					}
 					else
 						MsgId2Msg_ [result.Result_] = result.Msg_;

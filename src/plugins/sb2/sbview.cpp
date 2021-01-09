@@ -10,7 +10,6 @@
 #include <QLayout>
 #include <QQmlEngine>
 #include <QQuickItem>
-#include <util/sll/delayedexecutor.h>
 
 namespace LC::SB2
 {

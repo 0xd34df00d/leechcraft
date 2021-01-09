@@ -7,9 +7,9 @@
  **********************************************************************/
 
 #include "sslerrorshandler.h"
+#include <QTimer>
 #include <QtDebug>
 #include <QXmppClient.h>
-#include <util/sll/delayedexecutor.h>
 
 namespace LC
 {
@@ -53,10 +53,7 @@ namespace Xoox
 
 				Client_->configuration ().setIgnoreSslErrors (true);
 
-				Util::ExecuteLater ([client = Client_]
-						{
-							client->configuration ().setIgnoreSslErrors (false);
-						});
+				QTimer::singleShot (0, [client = Client_] { client->configuration ().setIgnoreSslErrors (false); });
 			}
 
 			void Abort () override

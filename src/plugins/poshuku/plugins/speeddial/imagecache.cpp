@@ -7,16 +7,15 @@
  **********************************************************************/
 
 #include "imagecache.h"
-#include <QDesktopServices>
 #include <QImage>
 #include <QUrl>
 #include <QDateTime>
 #include <QWebPage>
 #include <QWebFrame>
 #include <QPainter>
+#include <QTimer>
 #include <QtDebug>
 #include <util/sys/paths.h>
-#include <util/sll/delayedexecutor.h>
 #include <util/sll/util.h>
 #include "xmlsettingsmanager.h"
 
@@ -127,10 +126,6 @@ namespace LC::Poshuku::SpeedDial
 	{
 		const auto page = qobject_cast<QWebPage*> (sender ());
 
-		new Util::DelayedExecutor
-		{
-			[this, page] { Render (page); },
-			1000
-		};
+		QTimer::singleShot (1000, this, [this, page] { Render (page); });
 	}
 }

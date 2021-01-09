@@ -8,7 +8,7 @@
 
 #include "playlistwidgetviewexpander.h"
 #include <QAbstractItemModel>
-#include <util/sll/delayedexecutor.h>
+#include <QTimer>
 
 namespace LC
 {
@@ -33,7 +33,8 @@ namespace LMP
 
 		IsScheduled_ = true;
 
-		Util::ExecuteLater ([this]
+		QTimer::singleShot (0, this,
+				[this]
 				{
 					IsScheduled_ = false;
 					Expander_ ();

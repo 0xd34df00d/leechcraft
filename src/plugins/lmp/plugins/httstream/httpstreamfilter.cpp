@@ -11,7 +11,6 @@
 #include <QtDebug>
 #include <QTimer>
 #include <gst/gst.h>
-#include <util/sll/delayedexecutor.h>
 #include "interfaces/lmp/ifilterconfigurator.h"
 #include "util/lmp/gstutil.h"
 #include "httpserver.h"
@@ -134,7 +133,7 @@ namespace HttStream
 				<< reason
 				<< "; scheduling readd...";
 
-		Util::ExecuteLater ([this, fd] { g_signal_emit_by_name (MSS_, "add", fd); });
+		QTimer::singleShot (0, this, [this, fd] { g_signal_emit_by_name (MSS_, "add", fd); });
 	}
 
 	GstElement* HttpStreamFilter::GetElement () const

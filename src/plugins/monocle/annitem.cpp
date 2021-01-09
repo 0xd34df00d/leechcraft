@@ -9,8 +9,8 @@
 #include "annitem.h"
 #include <QBrush>
 #include <QCursor>
+#include <QTimer>
 #include <QtDebug>
-#include <util/sll/delayedexecutor.h>
 
 namespace LC
 {
@@ -19,7 +19,7 @@ namespace Monocle
 	AnnBaseItem::AnnBaseItem (const IAnnotation_ptr& ann)
 	: BaseAnn_ { ann }
 	{
-		Util::ExecuteLater ([this] { SetSelected (false); });
+		QTimer::singleShot (0, [this] { SetSelected (false); });
 	}
 
 	QGraphicsItem* AnnBaseItem::GetItem ()

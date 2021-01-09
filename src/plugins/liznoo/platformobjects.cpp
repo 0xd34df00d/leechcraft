@@ -7,13 +7,11 @@
  **********************************************************************/
 
 #include "platformobjects.h"
-#include <vector>
 #include <memory>
 #include <QtDebug>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
 #include <util/threads/futures.h>
-#include <util/sll/delayedexecutor.h>
 #include <util/sll/either.h>
 #include "availabilitychecker.h"
 #include "platform/screen/screenplatform.h"

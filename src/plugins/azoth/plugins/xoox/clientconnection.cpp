@@ -19,7 +19,6 @@
 #include <QXmppDiscoveryManager.h>
 #include <QXmppPubSubIq.h>
 #include <util/sll/containerconversions.h>
-#include <util/sll/delayedexecutor.h>
 #include <util/sll/prelude.h>
 #include <util/xpc/util.h>
 #include <util/network/socketerrorstrings.h>

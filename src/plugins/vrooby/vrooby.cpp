@@ -9,11 +9,11 @@
 #include "vrooby.h"
 #include <QIcon>
 #include <QAction>
+#include <QTimer>
 #include <util/util.h>
 #include <util/xpc/util.h>
 #include <util/gui/geometry.h>
 #include <util/gui/unhoverdeletemixin.h>
-#include <util/sll/delayedexecutor.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/ientitymanager.h>
@@ -68,7 +68,7 @@ namespace Vrooby
 					tr ("No backends are available, tried the following: %1.")
 						.arg (allBackends.join ("; ")),
 					Priority::Critical);
-			Util::ExecuteLater ([e, proxy] { proxy->GetEntityManager ()->HandleEntity (e); });
+			QTimer::singleShot (0, this, [e, proxy] { proxy->GetEntityManager ()->HandleEntity (e); });
 		}
 	}
 

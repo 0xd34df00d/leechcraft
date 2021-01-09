@@ -7,8 +7,8 @@
  **********************************************************************/
 
 #include "threadpool.h"
+#include <QTimer>
 #include <util/sll/visitor.h>
-#include <util/sll/delayedexecutor.h>
 #include <util/sll/prelude.h>
 #include <util/threads/futures.h>
 #include <util/threads/monadicfuture.h>
@@ -119,7 +119,7 @@ namespace Snails
 			Scheduled_.takeFirst () (thread);
 
 		if (!Scheduled_.isEmpty ())
-			Util::ExecuteLater ([this] { RunThreads (); });
+			QTimer::singleShot (0, this, &ThreadPool::RunThreads);
 	}
 
 	AccountThread* ThreadPool::GetNextThread ()

@@ -12,7 +12,6 @@
 #include <QTimer>
 #include <util/util.h>
 #include <util/sll/prelude.h>
-#include <util/sll/delayedexecutor.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include "somafmlistfetcher.h"
@@ -93,7 +92,7 @@ namespace HotStreams
 
 	void Plugin::SecondInit ()
 	{
-		Util::ExecuteLater ([this] { RefreshItems ({}); }, 5000);
+		QTimer::singleShot (5000, this, [this] { RefreshItems ({}); });
 	}
 
 	QByteArray Plugin::GetUniqueID () const

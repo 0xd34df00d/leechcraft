@@ -11,7 +11,6 @@
 #include <QtDebug>
 #include <QTimer>
 #include <interfaces/azoth/iproxyobject.h>
-#include <util/sll/delayedexecutor.h>
 #include <util/sys/resourceloader.h>
 #include "xmlsettingsmanager.h"
 #include "vkaccount.h"
@@ -623,33 +622,34 @@ namespace Murm
 
 		const auto photoUrlStorage = Account_->GetParentProtocol ()->GetPhotoUrlStorage ();
 
-		Util::ExecuteLater ([=] {
-				if (!safeThis)
-					return;
+		QTimer::singleShot (0, this,
+				[=] {
+					if (!safeThis)
+						return;
 
-				const auto& storedUrl = photoUrlStorage->GetUserUrl (id);
-				if (!storedUrl)
-				{
+					const auto& storedUrl = photoUrlStorage->GetUserUrl (id);
+					if (!storedUrl)
+					{
+						photoUrlStorage->SetUserUrl (id, url);
+						return;
+					}
+
+					if (*storedUrl == url)
+						return;
+
+					qDebug () << Q_FUNC_INFO
+							<< "photo for"
+							<< id
+							<< GetEntryName ()
+							<< "changed from"
+							<< *storedUrl
+							<< "to"
+							<< url;
+
+					emit avatarChanged (this);
+
 					photoUrlStorage->SetUserUrl (id, url);
-					return;
-				}
-
-				if (*storedUrl == url)
-					return;
-
-				qDebug () << Q_FUNC_INFO
-						<< "photo for"
-						<< id
-						<< GetEntryName ()
-						<< "changed from"
-						<< *storedUrl
-						<< "to"
-						<< url;
-
-				emit avatarChanged (this);
-
-				photoUrlStorage->SetUserUrl (id, url);
-			});
+				});
 	}
 }
 }

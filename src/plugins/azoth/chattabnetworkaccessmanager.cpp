@@ -9,9 +9,9 @@
 #include "chattabnetworkaccessmanager.h"
 #include <QNetworkRequest>
 #include <QNetworkReply>
+#include <QTimer>
 #include <QtDebug>
 #include <QBuffer>
-#include <util/sll/delayedexecutor.h>
 #include <util/threads/futures.h>
 #include "avatarsmanager.h"
 #include "core.h"
@@ -44,7 +44,7 @@ namespace Azoth
 			setAttribute (QNetworkRequest::HttpStatusCodeAttribute, 200);
 			setAttribute (QNetworkRequest::HttpReasonPhraseAttribute, QByteArray { "OK" });
 
-			Util::ExecuteLater ([this] { emit metaDataChanged (); });
+			QTimer::singleShot (0, this, [this] { emit metaDataChanged (); });
 
 			const auto& entryIdPath = req.url ().path ().section ('/', 1, 1);
 			const auto& entryId = QString::fromUtf8 (QByteArray::fromBase64 (entryIdPath.toLatin1 ()));
@@ -52,8 +52,8 @@ namespace Azoth
 			const auto entryObj = Core::Instance ().GetEntry (entryId);
 			if (!entryObj)
 			{
-				Util::ExecuteLater ([this]
-						{ HandleImage (ResourcesManager::Instance ().GetDefaultAvatar (32)); });
+				QTimer::singleShot (0, this,
+						[this] { HandleImage (ResourcesManager::Instance ().GetDefaultAvatar (32)); });
 				return;
 			}
 

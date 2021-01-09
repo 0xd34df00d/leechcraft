@@ -10,14 +10,11 @@
 #include <boost/range/adaptor/reversed.hpp>
 #include <QStringList>
 #include <QtDebug>
-#include <QUrl>
 #include <QTimer>
 #include <QImage>
 #include <QWidget>
 #include <util/util.h>
-#include <util/xpc/util.h>
 #include <util/sll/slotclosure.h>
-#include <util/sll/delayedexecutor.h>
 #include <util/sll/prelude.h>
 #include <util/sll/qtutil.h>
 #include <interfaces/azoth/iclentry.h>
@@ -35,9 +32,7 @@
 #include <interfaces/azoth/isupportlastactivity.h>
 #include <interfaces/azoth/ihaveservicediscovery.h>
 #include <interfaces/azoth/iprovidecommands.h>
-#include <interfaces/azoth/ihavedirectedstatus.h>
 #include <interfaces/azoth/imucprotocol.h>
-#include <interfaces/core/ientitymanager.h>
 
 namespace LC
 {
@@ -525,24 +520,21 @@ namespace MuCommands
 				if (acc->GetCLEntries ().contains (entryObj))
 					return;
 
-				new Util::DelayedExecutor
-				{
-					[acc, mucData] ()
-					{
-						const auto proto = qobject_cast<IMUCProtocol*> (acc->GetParentProtocol ());
-						if (!proto)
-							return;
+				QTimer::singleShot (1000,
+						[acc, mucData]
+						{
+							const auto proto = qobject_cast<IMUCProtocol*> (acc->GetParentProtocol ());
+							if (!proto)
+								return;
 
-						std::unique_ptr<QWidget> jw { proto->GetMUCJoinWidget () };
-						if (!jw)
-							return;
+							std::unique_ptr<QWidget> jw { proto->GetMUCJoinWidget () };
+							if (!jw)
+								return;
 
-						const auto imjw = qobject_cast<IMUCJoinWidget*> (jw.get ());
-						imjw->SetIdentifyingData (mucData);
-						imjw->Join (acc->GetQObject ());
-					},
-					1000
-				};
+							const auto imjw = qobject_cast<IMUCJoinWidget*> (jw.get ());
+							imjw->SetIdentifyingData (mucData);
+							imjw->Join (acc->GetQObject ());
+						});
 			},
 			acc->GetQObject (),
 			SIGNAL (removedCLItems (QList<QObject*>)),

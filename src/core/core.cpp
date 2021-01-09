@@ -26,11 +26,11 @@
 #include <QInputDialog>
 #include <QMimeData>
 #include <QNetworkCookie>
+#include <QTimer>
 #include <util/xpc/util.h>
 #include <util/network/customcookiejar.h>
 #include <util/sll/prelude.h>
 #include <util/xpc/defaulthookproxy.h>
-#include <util/sll/delayedexecutor.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <interfaces/iinfo.h>
 #include <interfaces/idownload.h>
@@ -122,7 +122,8 @@ namespace LC
 
 		RootWindowsManager_->Release ();
 
-		Util::ExecuteLater ([this]
+		QTimer::singleShot (0, this,
+				[this]
 				{
 					LocalSocketHandler_.reset ();
 					XmlSettingsManager::Instance ()->setProperty ("FirstStart", "false");

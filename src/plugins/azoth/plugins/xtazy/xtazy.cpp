@@ -10,8 +10,8 @@
 #include <QIcon>
 #include <QMessageBox>
 #include <QUrl>
+#include <QTimer>
 #include <util/util.h>
-#include <util/sll/delayedexecutor.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -141,11 +141,8 @@ namespace Xtazy
 		{
 			const auto& eId = entry->GetEntryID ();
 			const auto& accId = entry->GetParentAccount ()->GetAccountID ();
-			new Util::DelayedExecutor
-			{
-				[this, eId, accId, songStr] { AzothProxy_->OpenChat (eId, accId, songStr); },
-				0
-			};
+			QTimer::singleShot (0, this,
+					[this, eId, accId, songStr] { AzothProxy_->OpenChat (eId, accId, songStr); });
 
 			return true;
 		}

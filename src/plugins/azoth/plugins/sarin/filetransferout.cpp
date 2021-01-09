@@ -7,9 +7,9 @@
  **********************************************************************/
 
 #include "filetransferout.h"
+#include <QTimer>
 #include <tox/tox.h>
 #include <util/threads/futures.h>
-#include <util/sll/delayedexecutor.h>
 #include <util/sll/either.h>
 #include <util/sll/visitor.h>
 #include "toxthread.h"
@@ -34,16 +34,14 @@ namespace LC::Azoth::Sarin
 					<< "unable to open local file"
 					<< filename;
 
-			new Util::DelayedExecutor
-			{
-				[this]
-				{
-					emit errorAppeared (TEFileAccessError,
-							tr ("Error opening local file: %1.")
-								.arg (File_.errorString ()));
-					emit stateChanged (TransferState::TSFinished);
-				}
-			};
+			QTimer::singleShot (0, this,
+					[this]
+					{
+						emit errorAppeared (TEFileAccessError,
+								tr ("Error opening local file: %1.")
+									.arg (File_.errorString ()));
+						emit stateChanged (TransferState::TSFinished);
+					});
 
 			return;
 		}

@@ -10,11 +10,11 @@
 #include <QSettings>
 #include <QCoreApplication>
 #include <QIcon>
+#include <QTimer>
 #include <util/util.h>
 #include <util/db/dblock.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/util.h>
-#include <util/sll/delayedexecutor.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -217,8 +217,7 @@ namespace LastSeen
 			break;
 		}
 
-		auto st = Storage_;
-		Util::ExecuteLater ([stats, st, id] { st->SetEntryStats (id, stats); });
+		QTimer::singleShot (0, [stats, st = Storage_, id] { st->SetEntryStats (id, stats); });
 	}
 
 	void Plugin::hookTooltipBeforeVariants (IHookProxy_ptr proxy, QObject *entryObj)

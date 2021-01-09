@@ -18,10 +18,10 @@
 #include <QSettings>
 #include <QClipboard>
 #include <QFileDialog>
+#include <QTimer>
 #include <util/util.h>
 #include <util/xpc/defaulthookproxy.h>
 #include <util/shortcuts/shortcutmanager.h>
-#include <util/sll/delayedexecutor.h>
 #include <util/sll/prelude.h>
 #include <util/sll/visitor.h>
 #include <util/sll/void.h>
@@ -428,15 +428,12 @@ namespace Azoth
 			imjw->AccountSelected (accObj);
 			imjw->SetIdentifyingData (data);
 
-			new Util::DelayedExecutor
-			{
-				[w, imjw, accObj] () -> void
-				{
-					imjw->Join (accObj);
-					w->deleteLater ();
-				},
-				1000
-			};
+			QTimer::singleShot (1000,
+					[w, imjw, accObj]
+					{
+						imjw->Join (accObj);
+						w->deleteLater ();
+					});
 		}
 
 		void ConfigureMUC (ICLEntry *entry)

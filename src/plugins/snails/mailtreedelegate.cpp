@@ -13,9 +13,9 @@
 #include <QTreeView>
 #include <QProxyStyle>
 #include <QMenu>
+#include <QTimer>
 #include <QtDebug>
 #include <util/sll/slotclosure.h>
-#include <util/sll/delayedexecutor.h>
 #include "common.h"
 #include "mailtab.h"
 #include "mailmodel.h"
@@ -315,7 +315,7 @@ namespace Snails
 		for (const auto& actInfo : actionInfos)
 			BuildAction (std::bind (Loader_, id), container, actInfo);
 
-		Util::ExecuteLater ([=] { updateEditorGeometry (container, option, index); });
+		QTimer::singleShot (0, this, [=] { updateEditorGeometry (container, option, index); });
 
 		return container;
 	}

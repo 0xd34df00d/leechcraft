@@ -17,12 +17,12 @@
 #include <QInputDialog>
 #include <QTextDocument>
 #include <QToolButton>
+#include <QTimer>
 #include <util/util.h>
 #include <util/sys/mimedetector.h>
 #include <util/sys/extensionsdata.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/visitor.h>
-#include <util/sll/delayedexecutor.h>
 #include <util/sll/unreachable.h>
 #include <util/sll/prelude.h>
 #include <util/xpc/util.h>
@@ -169,10 +169,8 @@ namespace Snails
 		OrigReferences_ = info.References_;
 		OrigMessageId_ = info.MessageId_;
 
-		Util::ExecuteLater ([=]
-				{
-					Ui_.Editor_->GetCurrentEditor ()->GetWidget ()->setFocus ();
-				});
+		QTimer::singleShot (0, this,
+				[this] { Ui_.Editor_->GetCurrentEditor ()->GetWidget ()->setFocus (); });
 	}
 
 	void ComposeMessageTab::PrepareLinkedEditor (const MessageBodies& bodies)

@@ -29,7 +29,6 @@
 #include <util/gui/clearlineeditaddon.h>
 #include <util/sll/functional.h>
 #include <util/sll/slotclosure.h>
-#include <util/sll/delayedexecutor.h>
 #include <util/sll/prelude.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/ientitymanager.h>
@@ -857,7 +856,7 @@ namespace LMP
 		{
 			[bar, val]
 			{
-				Util::ExecuteLater ([=] { bar->setValue (std::min (val, bar->maximum ())); });
+				QTimer::singleShot (0, bar, [=] { bar->setValue (std::min (val, bar->maximum ())); });
 			},
 			PlaylistFilter_,
 			SIGNAL (modelReset ()),

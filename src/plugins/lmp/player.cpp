@@ -15,11 +15,11 @@
 #include <QUrl>
 #include <QtConcurrentRun>
 #include <QFutureSynchronizer>
+#include <QTimer>
 #include <QApplication>
 #include <util/util.h>
 #include <util/xpc/util.h>
 #include <util/sll/slotclosure.h>
-#include <util/sll/delayedexecutor.h>
 #include <util/sll/prelude.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/visitor.h>
@@ -1618,7 +1618,7 @@ namespace LMP
 
 		const auto& path = current.GetLocalPath ();
 		if (!path.isEmpty ())
-			Util::ExecuteLater ([=] { Core::Instance ().GetLocalCollection ()->RecordPlayedTrack (path); });
+			QTimer::singleShot (0, [=] { Core::Instance ().GetLocalCollection ()->RecordPlayedTrack (path); });
 
 		const auto& next = GetNextSource (current);
 

@@ -51,7 +51,6 @@
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/ishortcutproxy.h>
-#include <util/sll/delayedexecutor.h>
 #include "interfaces/poshuku/iwebview.h"
 #include "interfaces/poshuku/iwebviewhistory.h"
 #include "core.h"
@@ -549,7 +548,8 @@ namespace Poshuku
 		}
 
 		if (!settings.WebHistorySerialized_.isEmpty ())
-			Util::ExecuteLater ([this, hist = settings.WebHistorySerialized_]
+			QTimer::singleShot (0, this,
+					[this, hist = settings.WebHistorySerialized_]
 					{
 						QDataStream str { hist };
 						WebView_->GetHistory ()->Load (str);

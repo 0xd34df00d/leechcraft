@@ -16,9 +16,9 @@
 #include <QDateTime>
 #include <QApplication>
 #include <QStyle>
+#include <QTimer>
 #include <QtDebug>
 #include <util/util.h>
-#include <util/sll/delayedexecutor.h>
 
 namespace LC
 {
@@ -36,7 +36,7 @@ namespace FileScheme
 		Buffer_.open (QIODevice::ReadWrite);
 		setError (NoError, tr ("No error"));
 
-		Util::ExecuteLater ([this] { List (); });
+		QTimer::singleShot (0, this, &SchemeReply::List);
 		open (QIODevice::ReadOnly);
 	}
 

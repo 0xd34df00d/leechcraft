@@ -9,9 +9,9 @@
 #include "sdsession.h"
 #include <QStandardItemModel>
 #include <QDomElement>
+#include <QTimer>
 #include <QtDebug>
 #include <QXmppDiscoveryIq.h>
-#include <util/sll/delayedexecutor.h>
 #include "glooxaccount.h"
 #include "clientconnection.h"
 #include "clientconnectionextensionsmanager.h"
@@ -323,7 +323,7 @@ namespace Xoox
 						item.node ());
 			}
 
-			Util::ExecuteLater ([=] { (*requestBatch) (start); }, 2000);
+			QTimer::singleShot (2000, [=] { (*requestBatch) (start); });
 		};
 
 		(*requestBatch) (0);
@@ -379,9 +379,8 @@ namespace Xoox
 		elem.setAttribute ("xmlns", XooxUtil::NsRegister);
 		iq.setExtensions ({ elem });
 
-		QPointer<SDSession> safeThis (this);
 		Account_->GetClientConnection ()->SendPacketWCallback (iq,
-				[safeThis] (const QXmppIq& iq)
+				[safeThis = QPointer { this }] (const QXmppIq& iq)
 				{
 					if (safeThis)
 						safeThis->handleRegistrationForm (iq);

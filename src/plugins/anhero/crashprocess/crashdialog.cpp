@@ -12,11 +12,11 @@
 #include <QMessageBox>
 #include <QClipboard>
 #include <QProcess>
+#include <QTimer>
 #include <QtDebug>
 #include <util/util.h>
 #include <util/sys/sysinfo.h>
 #include <util/sys/paths.h>
-#include <util/sll/delayedexecutor.h>
 #include "appinfo.h"
 #include "gdblauncher.h"
 #include "highlighter.h"
@@ -129,11 +129,7 @@ namespace CrashProcess
 
 	void CrashDialog::handleFinished (int code, QProcess::ExitStatus)
 	{
-		new Util::DelayedExecutor
-		{
-			[this] { GdbLauncher_.reset (); },
-			0
-		};
+		QTimer::singleShot (0, this, [this] { GdbLauncher_.reset (); });
 
 		Ui_.TraceDisplay_->append ("\n\nGDB exited with code " + QString::number (code));
 		SetInteractionAllowed (true);

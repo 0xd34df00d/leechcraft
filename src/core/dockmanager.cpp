@@ -8,13 +8,11 @@
 
 #include "dockmanager.h"
 #include <QDockWidget>
-#include <QToolButton>
 #include <QToolBar>
-#include <QMenu>
+#include <QTimer>
 #include <QResizeEvent>
 #include <util/xpc/defaulthookproxy.h>
 #include <util/sll/qtutil.h>
-#include <util/sll/delayedexecutor.h>
 #include <interfaces/ihavetabs.h>
 #include "tabmanager.h"
 #include "core.h"
@@ -155,7 +153,8 @@ namespace LC
 				dock->setMinimumWidth (width);
 				dock->setMaximumWidth (width);
 
-				Util::ExecuteLater ([dock = QPointer<QDockWidget> { dock }, prevMin, prevMax]
+				QTimer::singleShot (0, this,
+						[dock = QPointer { dock }, prevMin, prevMax]
 						{
 							if (!dock)
 								return;

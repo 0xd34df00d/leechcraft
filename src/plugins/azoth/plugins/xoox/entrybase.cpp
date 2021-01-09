@@ -27,7 +27,6 @@
 #include <util/util.h>
 #include <util/xpc/util.h>
 #include <util/sll/qtutil.h>
-#include <util/sll/delayedexecutor.h>
 #include <util/threads/futures.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include <interfaces/azoth/azothutil.h>

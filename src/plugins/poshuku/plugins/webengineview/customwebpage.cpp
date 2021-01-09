@@ -7,7 +7,7 @@
  **********************************************************************/
 
 #include "customwebpage.h"
-#include <util/sll/delayedexecutor.h>
+#include <QTimer>
 #include <interfaces/poshuku/iproxyobject.h>
 #include "customwebview.h"
 
@@ -19,7 +19,8 @@ namespace LC::Poshuku::WebEngineView
 	, PoshukuProxy_ { poshukuProxy }
 	, LinkOpenModifier_ { poshukuProxy->GetLinkOpenModifier () }
 	{
-		Util::ExecuteLater ([this]
+		QTimer::singleShot (0, this,
+				[this]
 				{
 					LinkOpenModifier_->InstallOn (view ());
 					for (const auto child : view ()->findChildren<QWidget*> ())

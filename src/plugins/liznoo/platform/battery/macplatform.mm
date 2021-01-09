@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "macplatform.h"
+#include <QTimer>
 #include <QtDebug>
 #include <mach/mach_port.h>
 #include <mach/mach_interface.h>
@@ -38,7 +39,6 @@
 #include <IOKit/ps/IOPowerSources.h>
 #include <IOKit/ps/IOPSKeys.h>
 #include <CoreFoundation/CFNumber.h>
-#include <util/sll/delayedexecutor.h>
 
 namespace LeechCraft
 {
@@ -55,11 +55,7 @@ namespace Battery
 				PSEventsSource_,
 				kCFRunLoopCommonModes);
 
-		new Util::DelayedExecutor
-		{
-			[this] { HandlePowerSourcesChanged (); },
-			100
-		};
+		QTimer::singleShot (100, this, &MacPlatform::HandlePowerSourcesChanged);
 	}
 
 	MacPlatform::~MacPlatform ()
