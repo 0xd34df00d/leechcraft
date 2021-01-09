@@ -79,12 +79,7 @@ namespace BitTorrent
 
 	QStringList AddMagnetDialog::GetTags () const
 	{
-		auto tm = Core::Instance ()->GetProxy ()->GetTagsManager ();
-
-		QStringList result;
-		for (const auto& tag : tm->Split (Ui_.Tags_->text ()))
-			result << tm->GetID (tag);
-		return result;
+		return GetProxyHolder ()->GetTagsManager ()->SplitToIDs (Ui_.Tags_->text ());
 	}
 
 	void AddMagnetDialog::on_BrowseButton__released()
