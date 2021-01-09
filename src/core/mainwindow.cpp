@@ -22,7 +22,6 @@
 #include <util/xpc/util.h>
 #include <util/xpc/defaulthookproxy.h>
 #include <util/shortcuts/shortcutmanager.h>
-#include <util/sll/delayedexecutor.h>
 #include <interfaces/iactionsexporter.h>
 #include <interfaces/ihavetabs.h>
 #include "core.h"
@@ -126,7 +125,8 @@ void LC::MainWindow::Init ()
 		connect (&Core::Instance (),
 				&Core::initialized,
 				this,
-				[this] { Util::ExecuteLater ([this] { doDelayedInit (); }); });
+				&MainWindow::doDelayedInit,
+				Qt::QueuedConnection);
 }
 
 void LC::MainWindow::handleShortcutFullscreenMode ()
