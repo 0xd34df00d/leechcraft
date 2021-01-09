@@ -19,5 +19,6 @@ namespace LC::Util::XDG
 		void testBasicFile ();
 		void testComments ();
 		void testLists ();
+		void testLangs ();
 	};
 }

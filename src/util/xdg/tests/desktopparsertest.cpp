@@ -98,4 +98,36 @@ Icon=
 		};
 		QCOMPARE (res, expected);
 	}
+
+	void DesktopParserTest::testLangs ()
+	{
+		DesktopParser p;
+		const auto& res = p (R"(
+[Desktop Entry]
+Name=XSession
+Name[en]=xsession
+Name[ru]=XSESSION
+Comment=This session logs you into your custom Xsession
+Icon=
+)");
+		const DesktopParser::Result_t expected
+		{
+			{
+				"Desktop Entry",
+				{
+					{
+						"Name",
+						{
+							{ {}, { "XSession", } },
+							{ { "en" }, { "xsession" } },
+							{ { "ru" }, { "XSESSION" } },
+						}
+					},
+					{ "Comment", SingleValue ("This session logs you into your custom Xsession") },
+					{ "Icon", SingleValue ("") },
+				}
+			}
+		};
+		QCOMPARE (res, expected);
+	}
 }
