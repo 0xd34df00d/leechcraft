@@ -234,8 +234,9 @@ namespace HotStreams
 				return {};
 			}
 
-			if (stations.size () > 20)
-				CoalesceOthers (stations, 20);
+			const auto sectionLimit = 20;
+			if (stations.size () > sectionLimit)
+				CoalesceOthers (stations, sectionLimit);
 
 			return { stations.keyValueBegin (), stations.keyValueEnd () };
 		}
