@@ -18,5 +18,6 @@ namespace LC::Util::XDG
 	private slots:
 		void testBasicFile ();
 		void testComments ();
+		void testLists ();
 	};
 }

@@ -75,4 +75,27 @@ Icon=
 		};
 		QCOMPARE (res, expected);
 	}
+
+	void DesktopParserTest::testLists ()
+	{
+		DesktopParser p;
+		const auto& res = p (R"(
+[Desktop Entry]
+Name=XSession;xsession;XSESSION
+Comment=This session logs you into your custom Xsession
+Icon=
+)");
+		const DesktopParser::Result_t expected
+		{
+			{
+				"Desktop Entry",
+				{
+					{ "Name",  { { {}, { "XSession", "xsession", "XSESSION" } } } },
+					{ "Comment", SingleValue ("This session logs you into your custom Xsession") },
+					{ "Icon", SingleValue ("") },
+				}
+			}
+		};
+		QCOMPARE (res, expected);
+	}
 }
