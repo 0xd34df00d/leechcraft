@@ -10,31 +10,19 @@
 
 #include "ui_addmultipletorrents.h"
 
-namespace LC
-{
-namespace Util
-{
-	class TagsLineEdit;
-}
-
-namespace BitTorrent
+namespace LC::BitTorrent
 {
 	class AddMultipleTorrents : public QDialog
 	{
-		Q_OBJECT
 
 		Ui::AddMultipleTorrents Ui_;
 	public:
-		AddMultipleTorrents (QWidget *parent = nullptr);
+		explicit AddMultipleTorrents (QWidget *parent = nullptr);
 
 		QString GetOpenDirectory () const;
 		QString GetSaveDirectory () const;
 		QStringList GetTags () const;
 		bool ShouldAddAsStarted () const;
 		bool OnlyIfExists () const;
-	private slots:
-		void on_BrowseOpen__released ();
-		void on_BrowseSave__released ();
 	};
-}
 }

@@ -13,19 +13,40 @@
 #include "addmultipletorrents.h"
 #include "xmlsettingsmanager.h"
 
-namespace LC
-{
-namespace BitTorrent
+namespace LC::BitTorrent
 {
 	AddMultipleTorrents::AddMultipleTorrents (QWidget *parent)
 	: QDialog (parent)
 	{
 		Ui_.setupUi (this);
-		Ui_.OpenDirectory_->setText (XmlSettingsManager::Instance ()->property ("LastTorrentDirectory").toString ());
-		Ui_.SaveDirectory_->setText (XmlSettingsManager::Instance ()->property ("LastSaveDirectory").toString ());
+		auto xsm = XmlSettingsManager::Instance ();
+		Ui_.OpenDirectory_->setText (xsm->property ("LastTorrentDirectory").toString ());
+		Ui_.SaveDirectory_->setText (xsm->property ("LastSaveDirectory").toString ());
 
 		new Util::TagsCompleter (Ui_.TagsEdit_);
 		Ui_.TagsEdit_->AddSelector ();
+
+		const auto chooser = [this, xsm] (const QString& header, QLineEdit *edit, const char *propName)
+		{
+			return [=]
+			{
+				const auto& dir = QFileDialog::getExistingDirectory (this,
+						header,
+						edit->text ());
+				if (dir.isEmpty ())
+					return;
+
+				xsm->setProperty (propName, dir);
+				edit->setText (dir);
+			};
+		};
+
+		connect (Ui_.BrowseOpen_,
+				&QPushButton::released,
+				chooser (tr ("Select directory with torrents"), Ui_.OpenDirectory_, "LastTorrentDirectory"));
+		connect (Ui_.BrowseSave_,
+				&QPushButton::released,
+				chooser (tr ("Select save directory"), Ui_.SaveDirectory_, "LastSaveDirectory"));
 	}
 
 	QString AddMultipleTorrents::GetOpenDirectory () const
@@ -52,29 +73,4 @@ namespace BitTorrent
 	{
 		return Ui_.OnlyIfExists_->isChecked ();
 	}
-
-	void AddMultipleTorrents::on_BrowseOpen__released ()
-	{
-		const auto& dir = QFileDialog::getExistingDirectory (this,
-				tr ("Select directory with torrents"),
-				Ui_.OpenDirectory_->text ());
-		if (dir.isEmpty ())
-			return;
-
-		XmlSettingsManager::Instance ()->setProperty ("LastTorrentDirectory", dir);
-		Ui_.OpenDirectory_->setText (dir);
-	}
-
-	void AddMultipleTorrents::on_BrowseSave__released ()
-	{
-		const auto& dir = QFileDialog::getExistingDirectory (this,
-				tr ("Select save directory"),
-				Ui_.SaveDirectory_->text ());
-		if (dir.isEmpty ())
-			return;
-
-		XmlSettingsManager::Instance ()->setProperty ("LastSaveDirectory", dir);
-		Ui_.SaveDirectory_->setText (dir);
-	}
-}
 }
