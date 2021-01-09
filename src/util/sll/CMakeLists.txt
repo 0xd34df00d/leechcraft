@@ -1,6 +1,5 @@
 set (SLL_SRCS
 	buildtagstree.cpp
-	delayedexecutor.cpp
 	queuemanager.cpp
 	regexp.cpp
 	slotclosure.cpp
