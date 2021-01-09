@@ -7,6 +7,7 @@
  **********************************************************************/
 
 #include "addmagnetdialog.h"
+#include <optional>
 #include <QClipboard>
 #include <QFileDialog>
 #include <QUrl>
@@ -32,10 +33,10 @@ namespace BitTorrent
 					[] (const auto& item) { return item.first == "xt" && item.second.startsWith ("urn:btih:"); });
 		}
 
-		QString CheckClipboard (QClipboard::Mode mode)
+		std::optional<QString> CheckClipboard (QClipboard::Mode mode)
 		{
 			const auto& text = qApp->clipboard ()->text (mode);
-			return IsMagnet (text) ? text : QString {};
+			return IsMagnet (text) ? text : std::optional<QString> {};
 		}
 	}
 
@@ -44,12 +45,11 @@ namespace BitTorrent
 	{
 		Ui_.setupUi (this);
 
-		auto text = CheckClipboard (QClipboard::Clipboard);
-		if (text.isEmpty ())
-			text = CheckClipboard (QClipboard::Selection);
-
-		if (!text.isEmpty ())
-			Ui_.Magnet_->setText (text);
+		auto magnet = CheckClipboard (QClipboard::Clipboard);
+		if (!magnet)
+			magnet = CheckClipboard (QClipboard::Selection);
+		if (magnet)
+			Ui_.Magnet_->setText (*magnet);
 
 		const auto& dir = XmlSettingsManager::Instance ()->
 				property ("LastSaveDirectory").toString ();
