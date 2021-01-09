@@ -43,11 +43,8 @@ namespace Xoox
 		QAudioFormat GetAudioReadFormat () const;
 		QAudioFormat GetAudioWriteFormat () const;
 		QIODevice* GetVideoDevice ();
-	private slots:
-		void handleStateChanged (QXmppCall::State);
 	signals:
 		void stateChanged (LC::Azoth::IMediaCall::State);
-		void audioModeChanged (QIODevice::OpenMode);
 
 		void readFormatChanged ();
 		void writeFormatChanged ();

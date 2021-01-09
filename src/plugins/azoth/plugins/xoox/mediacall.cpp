@@ -10,7 +10,6 @@
 #include <QAudioFormat>
 #include <QtDebug>
 #include <QXmppCallManager.h>
-#include <QXmppRtpChannel.h>
 #include "clientconnection.h"
 #include "glooxaccount.h"
 
@@ -26,13 +25,9 @@ namespace Xoox
 	, Account_ (acc)
 	{
 		connect (Call_,
-				SIGNAL (stateChanged (QXmppCall::State)),
+				&QXmppCall::stateChanged,
 				this,
-				SLOT (handleStateChanged (QXmppCall::State)));
-		connect (Call_,
-				SIGNAL (audioModeChanged (QIODevice::OpenMode)),
-				this,
-				SIGNAL (audioModeChanged (QIODevice::OpenMode)));
+				[this] (QXmppCall::State state) { emit stateChanged (static_cast<State> (state); ) });
 	}
 
 	IMediaCall::Direction MediaCall::GetDirection () const
@@ -94,12 +89,7 @@ namespace Xoox
 
 	QIODevice* MediaCall::GetVideoDevice ()
 	{
-		return 0;
-	}
-
-	void MediaCall::handleStateChanged (QXmppCall::State state)
-	{
-		emit stateChanged (static_cast<State> (state));
+		return nullptr;
 	}
 }
 }
