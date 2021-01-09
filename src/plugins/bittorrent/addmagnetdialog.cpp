@@ -13,7 +13,6 @@
 #include <QUrlQuery>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
-#include "core.h"
 #include "xmlsettingsmanager.h"
 
 namespace LC
@@ -56,15 +55,34 @@ namespace BitTorrent
 				property ("LastSaveDirectory").toString ();
 		Ui_.SavePath_->setText (dir);
 
+		const auto checkComplete = [this]
+		{
+			const auto isComplete = !Ui_.SavePath_->text ().isEmpty () &&
+					IsMagnet (Ui_.Magnet_->text ());
+			Ui_.ButtonBox_->button (QDialogButtonBox::Ok)->setEnabled (isComplete);
+		};
 		checkComplete ();
 		connect (Ui_.SavePath_,
-				SIGNAL (textChanged (QString)),
-				this,
-				SLOT (checkComplete ()));
+				&QLineEdit::textChanged,
+				checkComplete);
 		connect (Ui_.Magnet_,
-				SIGNAL (textChanged (QString)),
-				this,
-				SLOT (checkComplete ()));
+				&QLineEdit::textChanged,
+				checkComplete);
+
+		connect (Ui_.BrowseButton_,
+				&QPushButton::released,
+				[this]
+				{
+					const auto& dir = QFileDialog::getExistingDirectory (this,
+							tr ("Select save directory"),
+							Ui_.SavePath_->text (),
+							{});
+					if (dir.isEmpty ())
+						return;
+
+					XmlSettingsManager::Instance ()->setProperty ("LastSaveDirectory", dir);
+					Ui_.SavePath_->setText (dir);
+				});
 	}
 
 	QString AddMagnetDialog::GetLink () const
@@ -80,26 +98,6 @@ namespace BitTorrent
 	QStringList AddMagnetDialog::GetTags () const
 	{
 		return GetProxyHolder ()->GetTagsManager ()->SplitToIDs (Ui_.Tags_->text ());
-	}
-
-	void AddMagnetDialog::on_BrowseButton__released()
-	{
-		const auto& dir = QFileDialog::getExistingDirectory (this,
-				tr ("Select save directory"),
-				Ui_.SavePath_->text (),
-				{});
-		if (dir.isEmpty ())
-			return;
-
-		XmlSettingsManager::Instance ()->setProperty ("LastSaveDirectory", dir);
-		Ui_.SavePath_->setText (dir);
-	}
-
-	void AddMagnetDialog::checkComplete ()
-	{
-		const auto isComplete = !Ui_.SavePath_->text ().isEmpty () &&
-				IsMagnet (Ui_.Magnet_->text ());
-		Ui_.ButtonBox_->button (QDialogButtonBox::Ok)->setEnabled (isComplete);
 	}
 }
 }

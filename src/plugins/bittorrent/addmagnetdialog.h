@@ -17,8 +17,6 @@ namespace BitTorrent
 {
 	class AddMagnetDialog : public QDialog
 	{
-		Q_OBJECT
-
 		Ui::AddMagnetDialog Ui_;
 	public:
 		AddMagnetDialog (QWidget* = 0);
@@ -26,9 +24,6 @@ namespace BitTorrent
 		QString GetLink () const;
 		QString GetPath () const;
 		QStringList GetTags () const;
-	private slots:
-		void on_BrowseButton__released ();
-		void checkComplete ();
 	};
 }
 }
