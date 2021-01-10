@@ -36,6 +36,7 @@
 #include "tabviewproxymodel.h"
 #include "addmagnetdialog.h"
 #include "xmlsettingsmanager.h"
+#include "types.h"
 
 namespace LC
 {
@@ -384,7 +385,7 @@ namespace BitTorrent
 		const auto& tags = dia->GetTags ();
 
 		TaskParameters tp = FromUserInitiated;
-		if (dia->GetAddType () != Core::Started)
+		if (dia->GetAddType () != AddState::Started)
 			tp |= NoAutostart;
 		Core::Instance ()->AddFile (filename,
 				path,

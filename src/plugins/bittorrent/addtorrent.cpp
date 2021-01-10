@@ -137,16 +137,16 @@ namespace BitTorrent
 		return FilesModel_->GetSelectedFiles ();
 	}
 
-	Core::AddType AddTorrent::GetAddType () const
+	AddState AddTorrent::GetAddType () const
 	{
 		switch (Ui_.AddTypeBox_->currentIndex ())
 		{
 		case 0:
-			return Core::Started;
+			return AddState::Started;
 		case 1:
-			return Core::Paused;
+			return AddState::Paused;
 		default:
-			return Core::Started;
+			return AddState::Started;
 		}
 	}
 

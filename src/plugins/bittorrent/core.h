@@ -200,11 +200,6 @@ namespace BitTorrent
 			ColumnUploaded,
 			ColumnRatio
 		};
-		enum AddType
-		{
-			Started,
-			Paused
-		};
 		enum Roles
 		{
 			FullLengthText = Qt::UserRole + 1,

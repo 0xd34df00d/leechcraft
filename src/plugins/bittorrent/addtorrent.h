@@ -38,7 +38,7 @@ namespace BitTorrent
 		QString GetSavePath () const;
 		bool GetTryLive () const;
 		QVector<bool> GetSelectedFiles () const;
-		Core::AddType GetAddType () const;
+		AddState GetAddType () const;
 		void SetTags (const QStringList& tags);
 		QStringList GetTags () const;
 		Util::TagsLineEdit* GetEdit ();

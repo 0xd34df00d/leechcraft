@@ -55,6 +55,7 @@
 #include "torrenttab.h"
 #include "sessionsettingsmanager.h"
 #include "sessionstats.h"
+#include "types.h"
 
 using LC::ActionInfo;
 using namespace LC::Util;
@@ -271,7 +272,7 @@ namespace BitTorrent
 			tryLive = AddTorrentDialog_->GetTryLive ();
 			files = AddTorrentDialog_->GetSelectedFiles ();
 			tags = AddTorrentDialog_->GetTags ();
-			if (AddTorrentDialog_->GetAddType () == Core::Started)
+			if (AddTorrentDialog_->GetAddType () == AddState::Started)
 				e.Parameters_ &= ~NoAutostart;
 			else
 				e.Parameters_ |= NoAutostart;
@@ -434,7 +435,7 @@ namespace BitTorrent
 		QVector<bool> files = AddTorrentDialog_->GetSelectedFiles ();
 		QStringList tags = AddTorrentDialog_->GetTags ();
 		TaskParameters tp = FromUserInitiated;
-		if (AddTorrentDialog_->GetAddType () != Core::Started)
+		if (AddTorrentDialog_->GetAddType () != AddState::Started)
 			tp |= NoAutostart;
 		Core::Instance ()->AddFile (filename,
 				path,
