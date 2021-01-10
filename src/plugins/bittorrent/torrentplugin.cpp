@@ -239,12 +239,12 @@ namespace BitTorrent
 			return Util::MakeReadyFuture (Result::Left ({ Error::Type::LocalError, "Unable to open file" }));
 		}
 
-		AddTorrentDialog_->Reinit ();
-		AddTorrentDialog_->SetFilename (suggestedFname);
+		AddTorrent dia;
+		dia.SetFilename (suggestedFname);
 		if (!e.Location_.isEmpty ())
-			AddTorrentDialog_->SetSavePath (e.Location_);
+			dia.SetSavePath (e.Location_);
 		else if (e.Parameters_ & IsDownloaded && !suggestedFname.isEmpty ())
-			AddTorrentDialog_->SetSavePath (QFileInfo (suggestedFname).absolutePath ());
+			dia.SetSavePath (QFileInfo (suggestedFname).absolutePath ());
 
 		QString path;
 		QStringList tags = e.Additional_ [" Tags"].toStringList ();
@@ -254,25 +254,25 @@ namespace BitTorrent
 		if (e.Parameters_ & FromUserInitiated)
 		{
 			if (!tags.isEmpty ())
-				AddTorrentDialog_->SetTags (tags);
+				dia.SetTags (tags);
 
-			AddTorrentDialog_->show ();
+			dia.show ();
 			QEventLoop dialogGuard;
-			connect (AddTorrentDialog_.get (),
-					SIGNAL (finished (int)),
+			connect (&dia,
+					&QDialog::finished,
 					&dialogGuard,
-					SLOT (quit ()));
+					&QEventLoop::quit);
 			dialogGuard.exec ();
 
-			if (AddTorrentDialog_->result () == QDialog::Rejected)
+			if (dia.result () == QDialog::Rejected)
 				return Util::MakeReadyFuture (Result::Left ({ Error::Type::UserCanceled, {} }));
 
-			fname = AddTorrentDialog_->GetFilename (),
-			path = AddTorrentDialog_->GetSavePath ();
-			tryLive = AddTorrentDialog_->GetTryLive ();
-			files = AddTorrentDialog_->GetSelectedFiles ();
-			tags = AddTorrentDialog_->GetTags ();
-			if (AddTorrentDialog_->GetAddType () == AddState::Started)
+			fname = dia.GetFilename (),
+			path = dia.GetSavePath ();
+			tryLive = dia.GetTryLive ();
+			files = dia.GetSelectedFiles ();
+			tags = dia.GetTags ();
+			if (dia.GetAddType () == AddState::Started)
 				e.Parameters_ &= ~NoAutostart;
 			else
 				e.Parameters_ |= NoAutostart;
@@ -281,9 +281,8 @@ namespace BitTorrent
 		{
 			fname = suggestedFname;
 			path = e.Location_;
-			const auto& tagsString = XmlSettingsManager::Instance ()->property ("AutomaticTags").toString ();
-			const auto& hrTags = Core::Instance ()->GetProxy ()->GetTagsManager ()->Split (tagsString);
-			tags = Core::Instance ()->GetProxy ()->GetTagsManager ()->GetIDs (hrTags);
+			const auto& autoTags = XmlSettingsManager::Instance ()->property ("AutomaticTags").toString ();
+			tags = GetProxyHolder ()->GetTagsManager ()->SplitToIDs (autoTags);
 		}
 		auto result = Core::Instance ()->AddFile (fname,
 				path,
@@ -417,25 +416,25 @@ namespace BitTorrent
 
 	void TorrentPlugin::on_OpenTorrent__triggered ()
 	{
-		AddTorrentDialog_->Reinit ();
-		AddTorrentDialog_->show ();
+		AddTorrent dia;
+		dia.show ();
 		QEventLoop dialogGuard;
-		connect (AddTorrentDialog_.get (),
-				SIGNAL (finished (int)),
+		connect (&dia,
+				&QDialog::finished,
 				&dialogGuard,
-				SLOT (quit ()));
+				&QEventLoop::quit);
 		dialogGuard.exec ();
 
-		if (AddTorrentDialog_->result () == QDialog::Rejected)
+		if (dia.result () == QDialog::Rejected)
 			return;
 
-		QString filename = AddTorrentDialog_->GetFilename (),
-				path = AddTorrentDialog_->GetSavePath ();
-		bool tryLive = AddTorrentDialog_->GetTryLive ();
-		QVector<bool> files = AddTorrentDialog_->GetSelectedFiles ();
-		QStringList tags = AddTorrentDialog_->GetTags ();
+		const auto& filename = dia.GetFilename ();
+		const auto& path = dia.GetSavePath ();
+		bool tryLive = dia.GetTryLive ();
+		QVector<bool> files = dia.GetSelectedFiles ();
+		QStringList tags = dia.GetTags ();
 		TaskParameters tp = FromUserInitiated;
-		if (AddTorrentDialog_->GetAddType () != AddState::Started)
+		if (dia.GetAddType () != AddState::Started)
 			tp |= NoAutostart;
 		Core::Instance ()->AddFile (filename,
 				path,
@@ -902,16 +901,11 @@ namespace BitTorrent
 		SetupActions ();
 		TabWidget_.reset (new TabWidget);
 
-		AddTorrentDialog_.reset (new AddTorrent);
-
 		Core::Instance ()->SetWidgets (Toolbar_.get (), TabWidget_.get ());
 	}
 
 	void TorrentPlugin::SetupStuff ()
 	{
-		TagsAddDiaCompleter_.reset (new Util::TagsCompleter (AddTorrentDialog_->GetEdit ()));
-		AddTorrentDialog_->GetEdit ()->AddSelector ();
-
 		auto statsUpdateTimer = new QTimer { this };
 		connect (statsUpdateTimer,
 				SIGNAL (timeout ()),

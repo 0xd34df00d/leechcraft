@@ -15,6 +15,7 @@
 #include <QMenu>
 #include <util/util.h>
 #include <util/sll/prelude.h>
+#include <util/tags/tagscompleter.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
 #include "addtorrentfilesmodel.h"
@@ -31,6 +32,9 @@ namespace BitTorrent
 	, ProxyModel_ { new QSortFilterProxyModel { this } }
 	{
 		Ui_.setupUi (this);
+
+		new Util::TagsCompleter { Ui_.TagsEdit_ };
+		Ui_.TagsEdit_->AddSelector ();
 
 		ProxyModel_->setSourceModel (FilesModel_);
 		ProxyModel_->setSortRole (AddTorrentFilesModel::RoleSort);

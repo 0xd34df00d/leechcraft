@@ -24,7 +24,6 @@
 #include <interfaces/istartupwizard.h>
 #include <interfaces/iactionsexporter.h>
 #include <interfaces/ihavediaginfo.h>
-#include <util/tags/tagscompleter.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "tabwidget.h"
 #include "torrentinfo.h"
@@ -77,8 +76,6 @@ namespace BitTorrent
 		ICoreProxy_ptr Proxy_;
 
 		std::shared_ptr<LC::Util::XmlSettingsDialog> XmlSettingsDialog_;
-		std::unique_ptr<AddTorrent> AddTorrentDialog_;
-		std::unique_ptr<LC::Util::TagsCompleter> TagsAddDiaCompleter_;
 		std::unique_ptr<TabWidget> TabWidget_;
 		std::unique_ptr<QToolBar> Toolbar_;
 		std::unique_ptr<QAction> OpenTorrent_,
