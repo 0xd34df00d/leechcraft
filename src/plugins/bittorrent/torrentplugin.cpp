@@ -193,6 +193,20 @@ namespace BitTorrent
 		return Core::Instance ()->CouldDownload (e);
 	}
 
+	namespace
+	{
+		void ExecDialog (QDialog& dia)
+		{
+			dia.show ();
+			QEventLoop dialogGuard;
+			QObject::connect (&dia,
+					&QDialog::finished,
+					&dialogGuard,
+					&QEventLoop::quit);
+			dialogGuard.exec ();
+		}
+	}
+
 	QFuture<IDownload::Result> TorrentPlugin::AddJob (Entity e)
 	{
 		QString suggestedFname;
@@ -256,13 +270,7 @@ namespace BitTorrent
 			if (!tags.isEmpty ())
 				dia.SetTags (tags);
 
-			dia.show ();
-			QEventLoop dialogGuard;
-			connect (&dia,
-					&QDialog::finished,
-					&dialogGuard,
-					&QEventLoop::quit);
-			dialogGuard.exec ();
+			ExecDialog (dia);
 
 			if (dia.result () == QDialog::Rejected)
 				return Util::MakeReadyFuture (Result::Left ({ Error::Type::UserCanceled, {} }));
@@ -417,13 +425,7 @@ namespace BitTorrent
 	void TorrentPlugin::on_OpenTorrent__triggered ()
 	{
 		AddTorrent dia;
-		dia.show ();
-		QEventLoop dialogGuard;
-		connect (&dia,
-				&QDialog::finished,
-				&dialogGuard,
-				&QEventLoop::quit);
-		dialogGuard.exec ();
+		ExecDialog (dia);
 
 		if (dia.result () == QDialog::Rejected)
 			return;
