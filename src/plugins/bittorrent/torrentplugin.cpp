@@ -210,26 +210,25 @@ namespace BitTorrent
 	QFuture<IDownload::Result> TorrentPlugin::AddJob (Entity e)
 	{
 		QString suggestedFname;
-		auto tm = Core::Instance ()->GetProxy ()->GetTagsManager ();
+
+		const auto tagsMgr = GetProxyHolder ()->GetTagsManager ();
+
+		const auto& suggestedTags = e.Additional_ [" Tags"].toStringList ();
+		const auto& autoTags = XmlSettingsManager::Instance ()->property ("AutomaticTags").toString ();
+		auto tagsIds = tagsMgr->SplitToIDs (autoTags) + tagsMgr->GetIDs (suggestedTags);
 
 		if (e.Entity_.canConvert<QUrl> ())
 		{
 			QUrl resource = e.Entity_.toUrl ();
 			if (resource.scheme () == "magnet")
 			{
-				auto at = XmlSettingsManager::Instance ()->property ("AutomaticTags").toString ();
-				auto tags = e.Additional_ [" Tags"].toStringList ();
-				for (const auto& tag : tm->Split (at))
-					tags << tm->GetID (tag);
-
-				for (const auto& p : QUrlQuery { resource }.queryItems ())
-					if (p.first == "kt")
-						for (const auto& hr : p.second.split ('+', Qt::SkipEmptyParts))
-							tags += tm->GetID (hr);
+				for (const auto& [key, value] : QUrlQuery { resource }.queryItems ())
+					if (key == QStringLiteral ("kt"))
+						tagsIds += tagsMgr->GetIDs (value.split ('+', Qt::SkipEmptyParts));
 
 				return Core::Instance ()->AddMagnet (resource.toString (),
 						e.Location_,
-						tags,
+						tagsIds,
 						e.Parameters_);
 			}
 			else if (resource.scheme () == "file")
@@ -254,7 +253,6 @@ namespace BitTorrent
 		}
 
 		QString path;
-		QStringList tags = e.Additional_ [" Tags"].toStringList ();
 		QVector<bool> files;
 		QString fname;
 		bool tryLive = e.Additional_ ["TryToStreamLive"].toBool ();
@@ -267,8 +265,8 @@ namespace BitTorrent
 			else if (e.Parameters_ & IsDownloaded && !suggestedFname.isEmpty ())
 				dia.SetSavePath (QFileInfo (suggestedFname).absolutePath ());
 
-			if (!tags.isEmpty ())
-				dia.SetTags (tags);
+			if (!suggestedTags.isEmpty ())
+				dia.SetTags (suggestedTags);
 
 			ExecDialog (dia);
 
@@ -279,7 +277,7 @@ namespace BitTorrent
 			path = dia.GetSavePath ();
 			tryLive = dia.GetTryLive ();
 			files = dia.GetSelectedFiles ();
-			tags = dia.GetTags ();
+			tagsIds = dia.GetTags ();
 			if (dia.GetAddType () == AddState::Started)
 				e.Parameters_ &= ~NoAutostart;
 			else
@@ -289,12 +287,10 @@ namespace BitTorrent
 		{
 			fname = suggestedFname;
 			path = e.Location_;
-			const auto& autoTags = XmlSettingsManager::Instance ()->property ("AutomaticTags").toString ();
-			tags = GetProxyHolder ()->GetTagsManager ()->SplitToIDs (autoTags);
 		}
 		auto result = Core::Instance ()->AddFile (fname,
 				path,
-				tags,
+				tagsIds,
 				tryLive,
 				files,
 				e.Parameters_);
