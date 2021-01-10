@@ -239,13 +239,6 @@ namespace BitTorrent
 			return Util::MakeReadyFuture (Result::Left ({ Error::Type::LocalError, "Unable to open file" }));
 		}
 
-		AddTorrent dia;
-		dia.SetFilename (suggestedFname);
-		if (!e.Location_.isEmpty ())
-			dia.SetSavePath (e.Location_);
-		else if (e.Parameters_ & IsDownloaded && !suggestedFname.isEmpty ())
-			dia.SetSavePath (QFileInfo (suggestedFname).absolutePath ());
-
 		QString path;
 		QStringList tags = e.Additional_ [" Tags"].toStringList ();
 		QVector<bool> files;
@@ -253,6 +246,13 @@ namespace BitTorrent
 		bool tryLive = e.Additional_ ["TryToStreamLive"].toBool ();
 		if (e.Parameters_ & FromUserInitiated)
 		{
+			AddTorrent dia;
+			dia.SetFilename (suggestedFname);
+			if (!e.Location_.isEmpty ())
+				dia.SetSavePath (e.Location_);
+			else if (e.Parameters_ & IsDownloaded && !suggestedFname.isEmpty ())
+				dia.SetSavePath (QFileInfo (suggestedFname).absolutePath ());
+
 			if (!tags.isEmpty ())
 				dia.SetTags (tags);
 
