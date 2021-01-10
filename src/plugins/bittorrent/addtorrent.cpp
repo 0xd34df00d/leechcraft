@@ -8,7 +8,6 @@
 
 #include "addtorrent.h"
 #include <filesystem>
-#include <libtorrent/announce_entry.hpp>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QSortFilterProxyModel>
@@ -22,9 +21,7 @@
 #include "xmlsettingsmanager.h"
 #include "core.h"
 
-namespace LC
-{
-namespace BitTorrent
+namespace LC::BitTorrent
 {
 	AddTorrent::AddTorrent (QWidget *parent)
 	: QDialog { parent }
@@ -45,18 +42,21 @@ namespace BitTorrent
 
 		Ui_.OK_->setEnabled (false);
 
-		connect (this,
-				SIGNAL (on_TorrentFile__textChanged ()),
+		const auto setOkEnabled = [this]
+		{
+			Ui_.OK_->setEnabled (QFileInfo { Ui_.TorrentFile_->text () }.isReadable () &&
+					QFileInfo::exists (Ui_.Destination_->text ()));
+		};
+		connect (Ui_.TorrentFile_,
+				&QLineEdit::textChanged,
+				setOkEnabled);
+		connect (Ui_.Destination_,
+				&QLineEdit::textChanged,
+				setOkEnabled);
+		connect (Ui_.Destination_,
+				&QLineEdit::textChanged,
 				this,
-				SLOT (setOkEnabled ()));
-		connect (this,
-				SIGNAL (on_Destination__textChanged ()),
-				this,
-				SLOT (setOkEnabled ()));
-		connect (this,
-				SIGNAL (on_Destination__textChanged ()),
-				this,
-				SLOT (updateAvailableSpace ()));
+				&AddTorrent::UpdateSpaceDisplay);
 
 		auto markMenu = new QMenu { Ui_.MarkMenuButton_ };
 		markMenu->addActions ({
@@ -71,43 +71,60 @@ namespace BitTorrent
 
 		const auto header = Ui_.FilesView_->header ();
 		const auto& fm = fontMetrics ();
-		header->resizeSection (0, fm.horizontalAdvance ("Thisisanaveragetorrentcontainedfilename,ormaybeevenbiggerthanthat!"));
-		header->resizeSection (1, fm.horizontalAdvance ("_999.9 MB_"));
+		header->resizeSection (0, fm.horizontalAdvance (QStringLiteral ("Thisisanaveragetorrentcontainedfilename,ormaybeevenbiggerthanthat!")));
+		header->resizeSection (1, fm.horizontalAdvance (QStringLiteral ("_999.9 MB_")));
 		header->setStretchLastSection (true);
 
 		connect (Ui_.ExpandAll_,
-				SIGNAL (released ()),
+				&QPushButton::released,
 				Ui_.FilesView_,
-				SLOT (expandAll ()));
+				&QTreeView::expandAll);
 		connect (Ui_.CollapseAll_,
-				SIGNAL (released ()),
+				&QPushButton::released,
 				Ui_.FilesView_,
-				SLOT (collapseAll ()));
-	}
+				&QTreeView::collapseAll);
 
-	void AddTorrent::Reinit ()
-	{
-		FilesModel_->Clear ();
-		Ui_.TorrentFile_->setText ("");
-		Ui_.TrackerURL_->setText (tr ("<unknown>"));
-		Ui_.Size_->setText (tr ("<unknown>"));
-		Ui_.Creator_->setText (tr ("<unknown>"));
-		Ui_.Comment_->setText (tr ("<unknown>"));
-		Ui_.Date_->setText (tr ("<unknown>"));
+		connect (Ui_.TorrentBrowse_,
+				&QPushButton::released,
+				this,
+				&AddTorrent::BrowseForTorrent);
+		connect (Ui_.DestinationBrowse_,
+				&QPushButton::released,
+				this,
+				&AddTorrent::BrowseForDestination);
 
-		const auto& dir = XmlSettingsManager::Instance ()->
-				property ("LastSaveDirectory").toString ();
-		Ui_.Destination_->setText (dir);
+		connect (Ui_.MarkAll_,
+				&QAction::triggered,
+				FilesModel_,
+				&AddTorrentFilesModel::MarkAll);
+		connect (Ui_.UnmarkAll_,
+				&QAction::triggered,
+				FilesModel_,
+				&AddTorrentFilesModel::UnmarkAll);
+		connect (Ui_.MarkExisting_,
+				&QAction::triggered,
+				[this] { MarkExisting (Qt::Checked, Qt::Unchecked); });
+		connect (Ui_.MarkMissing_,
+				&QAction::triggered,
+				[this] { MarkExisting (Qt::Unchecked, Qt::Checked); });
 
-		updateAvailableSpace ();
+		const auto selectedAsFilesModel = [this]
+		{
+			return Util::Map (Ui_.FilesView_->selectionModel ()->selectedRows (),
+					[this] (const QModelIndex& idx) { return ProxyModel_->mapToSource (idx); });
+		};
+		connect (Ui_.MarkSelected_,
+				&QAction::triggered,
+				[=] { FilesModel_->MarkIndexes (selectedAsFilesModel ()); });
+		connect (Ui_.UnmarkSelected_,
+				&QAction::triggered,
+				[=] { FilesModel_->UnmarkIndexes (selectedAsFilesModel ()); });
 	}
 
 	void AddTorrent::SetFilename (const QString& filename)
 	{
 		if (filename.isEmpty ())
 			return;
-
-		Reinit ();
 
 		XmlSettingsManager::Instance ()->setProperty ("LastTorrentDirectory",
 				QFileInfo (filename).absolutePath ());
@@ -164,28 +181,36 @@ namespace BitTorrent
 		return GetProxyHolder ()->GetTagsManager ()->SplitToIDs (Ui_.TagsEdit_->text ());
 	}
 
-	Util::TagsLineEdit* AddTorrent::GetEdit ()
+	namespace
 	{
-		return Ui_.TagsEdit_;
-	}
-
-	void AddTorrent::setOkEnabled ()
-	{
-		Ui_.OK_->setEnabled (QFileInfo (Ui_.TorrentFile_->text ()).isReadable () &&
-				QFileInfo (Ui_.Destination_->text ()).exists ());
-	}
-
-	void AddTorrent::updateAvailableSpace ()
-	{
-		const auto& pair = GetAvailableSpaceInDestination ();
-		const quint64 availableSpace = pair.first;
-		const quint64 totalSpace = pair.second;
-
-		if (availableSpace != static_cast<quint64> (-1))
+		struct SpaceInfo
 		{
-			Ui_.AvailSpaceLabel_->setText (tr ("%1 free").arg (Util::MakePrettySize (availableSpace)));
+			uint64_t Available_;
+			int UsedPercentage_;
+		};
+
+		std::optional<SpaceInfo> GetAvailableSpace (const QString& path)
+		{
+			try
+			{
+				const auto space = std::filesystem::space (path.toStdString ());
+				const int freePercentage = 100 * space.available / space.capacity;
+				return SpaceInfo { .Available_ = space.available, .UsedPercentage_ = 100 - freePercentage };
+			}
+			catch (...)
+			{
+				return {};
+			}
+		}
+	}
+
+	void AddTorrent::UpdateSpaceDisplay ()
+	{
+		if (const auto space = GetAvailableSpace (GetSavePath ()))
+		{
+			Ui_.AvailSpaceLabel_->setText (tr ("%1 free").arg (Util::MakePrettySize (space->Available_)));
+			Ui_.AvailSpaceBar_->setValue (space->UsedPercentage_);
 			Ui_.AvailSpaceBar_->show ();
-			Ui_.AvailSpaceBar_->setValue (100 - 100 * availableSpace / totalSpace);
 		}
 		else
 		{
@@ -194,7 +219,7 @@ namespace BitTorrent
 		}
 	}
 
-	void AddTorrent::on_TorrentBrowse__released ()
+	void AddTorrent::BrowseForTorrent ()
 	{
 		const auto& filename = QFileDialog::getOpenFileName (this,
 				tr ("Select torrent file"),
@@ -203,16 +228,14 @@ namespace BitTorrent
 		if (filename.isEmpty ())
 			return;
 
-		Reinit ();
-
 		XmlSettingsManager::Instance ()->setProperty ("LastTorrentDirectory",
-				QFileInfo (filename).absolutePath ());
+				QFileInfo { filename }.absolutePath ());
 		Ui_.TorrentFile_->setText (filename);
 
 		ParseBrowsed ();
 	}
 
-	void AddTorrent::on_DestinationBrowse__released ()
+	void AddTorrent::BrowseForDestination ()
 	{
 		const auto& dir = QFileDialog::getExistingDirectory (this,
 				tr ("Select save directory"),
@@ -225,42 +248,7 @@ namespace BitTorrent
 		Ui_.Destination_->setText (dir);
 	}
 
-	void AddTorrent::on_MarkAll__triggered ()
-	{
-		FilesModel_->MarkAll ();
-	}
-
-	void AddTorrent::on_UnmarkAll__triggered ()
-	{
-		FilesModel_->UnmarkAll ();
-	}
-
-	void AddTorrent::on_MarkSelected__triggered ()
-	{
-		const auto& indices = Util::Map (Ui_.FilesView_->selectionModel ()->selectedRows (),
-				[this] (const QModelIndex& idx) { return ProxyModel_->mapToSource (idx); });
-		FilesModel_->MarkIndexes (indices);
-	}
-
-	void AddTorrent::on_UnmarkSelected__triggered ()
-	{
-		const auto& indices = Util::Map (Ui_.FilesView_->selectionModel ()->selectedRows (),
-				[this] (const QModelIndex& idx) { return ProxyModel_->mapToSource (idx); });
-		FilesModel_->UnmarkIndexes (indices);
-	}
-
-	void AddTorrent::on_MarkExisting__triggered ()
-	{
-		MarkExisting ([] (bool exists) { return exists ? Qt::Checked : Qt::Unchecked; });
-	}
-
-	void AddTorrent::on_MarkMissing__triggered ()
-	{
-		MarkExisting ([] (bool exists) { return exists ? Qt::Unchecked : Qt::Checked; });
-	}
-
-	template<typename T>
-	void AddTorrent::MarkExisting (T bool2mark)
+	void AddTorrent::MarkExisting (Qt::CheckState ifExists, Qt::CheckState ifNotExists)
 	{
 		auto rootPath = GetSavePath ();
 		if (!rootPath.endsWith ('/'))
@@ -279,7 +267,7 @@ namespace BitTorrent
 				const auto& subpath = idx.data (AddTorrentFilesModel::RoleFullPath).toString ();
 
 				const bool exists = QFile::exists (rootPath + subpath);
-				FilesModel_->setData (idx, bool2mark (exists), Qt::CheckStateRole);
+				FilesModel_->setData (idx, exists ? ifExists : ifNotExists, Qt::CheckStateRole);
 			}
 		}
 	}
@@ -292,7 +280,7 @@ namespace BitTorrent
 		if (!info.is_valid ())
 		{
 			QMessageBox::critical (this,
-					"LeechCraft",
+					QStringLiteral ("LeechCraft"),
 					tr ("Looks like %1 is not a valid torrent file.")
 						.arg ("<em>" + filename + "</em>"));
 			return;
@@ -304,8 +292,8 @@ namespace BitTorrent
 			Ui_.TrackerURL_->setText (tr ("<no trackers>"));
 		Ui_.Size_->setText (Util::MakePrettySize (info.total_size ()));
 
-		QString creator = QString::fromUtf8 (info.creator ().c_str ()),
-				comment = QString::fromUtf8 (info.comment ().c_str ());
+		auto creator = QString::fromStdString (info.creator ());
+		auto comment = QString::fromStdString (info.comment ());
 
 		QString date;
 		if (const auto maybeDate = info.creation_date ())
@@ -332,18 +320,4 @@ namespace BitTorrent
 
 		Ui_.FilesView_->expandAll ();
 	}
-
-	QPair<quint64, quint64> AddTorrent::GetAvailableSpaceInDestination ()
-	{
-		try
-		{
-			const auto space = std::filesystem::space (GetSavePath ().toStdString ());
-			return qMakePair<quint64, quint64> (space.available, space.capacity);
-		}
-		catch (...)
-		{
-			return qMakePair<quint64, quint64> (-1, -1);
-		}
-	}
-}
 }

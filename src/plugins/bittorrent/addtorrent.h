@@ -11,27 +11,24 @@
 #include <QDialog>
 #include <QVector>
 #include "ui_addtorrent.h"
-#include "core.h"
+#include "types.h"
 
 class QSortFilterProxyModel;
 
-namespace LC
-{
-namespace BitTorrent
+namespace LC::BitTorrent
 {
 	class AddTorrentFilesModel;
 
 	class AddTorrent : public QDialog
 	{
-		Q_OBJECT
 
 		Ui::AddTorrent Ui_;
 
 		AddTorrentFilesModel * const FilesModel_;
 		QSortFilterProxyModel * const ProxyModel_;
 	public:
-		AddTorrent (QWidget *parent = 0);
-		void Reinit ();
+		explicit AddTorrent (QWidget *parent = nullptr);
+
 		void SetFilename (const QString&);
 		void SetSavePath (const QString&);
 		QString GetFilename () const;
@@ -41,29 +38,11 @@ namespace BitTorrent
 		AddState GetAddType () const;
 		void SetTags (const QStringList& tags);
 		QStringList GetTags () const;
-		Util::TagsLineEdit* GetEdit ();
-	private slots:
-		void on_TorrentBrowse__released ();
-		void on_DestinationBrowse__released ();
-
-		void on_MarkAll__triggered ();
-		void on_UnmarkAll__triggered ();
-		void on_MarkSelected__triggered ();
-		void on_UnmarkSelected__triggered ();
-		void on_MarkExisting__triggered ();
-		void on_MarkMissing__triggered ();
-
-		void setOkEnabled ();
-		void updateAvailableSpace ();
 	private:
-		template<typename T>
-		void MarkExisting (T);
-
+		void UpdateSpaceDisplay ();
+		void BrowseForTorrent ();
+		void BrowseForDestination ();
+		void MarkExisting (Qt::CheckState ifExists, Qt::CheckState ifNotExists);
 		void ParseBrowsed ();
-		QPair<quint64, quint64> GetAvailableSpaceInDestination ();
-	signals:
-		void on_TorrentFile__textChanged ();
-		void on_Destination__textChanged ();
 	};
-}
 }
