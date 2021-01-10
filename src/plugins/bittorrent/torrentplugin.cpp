@@ -233,13 +233,13 @@ namespace BitTorrent
 			}
 			else if (resource.scheme () == "file")
 				suggestedFname = resource.toLocalFile ();
-			else if (Core::Instance ()->IsValidTorrent (e.Entity_.toByteArray ()))
-			{
-				QTemporaryFile tmpFile ("lctemporarybittorrentfile.XXXXXX");
-				tmpFile.write (e.Entity_.toByteArray ());
-				suggestedFname = tmpFile.fileName ().toUtf8 ();
-				tmpFile.setAutoRemove (false);
-			}
+		}
+		else if (Core::Instance ()->IsValidTorrent (e.Entity_.toByteArray ()))
+		{
+			QTemporaryFile tmpFile ("lctemporarybittorrentfile.XXXXXX");
+			tmpFile.write (e.Entity_.toByteArray ());
+			suggestedFname = tmpFile.fileName ().toUtf8 ();
+			tmpFile.setAutoRemove (false);
 		}
 
 		QFile file { suggestedFname };
