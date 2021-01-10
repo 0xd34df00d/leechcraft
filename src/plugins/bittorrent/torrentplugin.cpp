@@ -901,7 +901,6 @@ namespace BitTorrent
 
 		SetupActions ();
 		TabWidget_.reset (new TabWidget);
-		TorrentSelectionChanged_ = true;
 
 		AddTorrentDialog_.reset (new AddTorrent);
 

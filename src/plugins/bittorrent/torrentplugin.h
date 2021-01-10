@@ -78,7 +78,6 @@ namespace BitTorrent
 
 		std::shared_ptr<LC::Util::XmlSettingsDialog> XmlSettingsDialog_;
 		std::unique_ptr<AddTorrent> AddTorrentDialog_;
-		bool TorrentSelectionChanged_;
 		std::unique_ptr<LC::Util::TagsCompleter> TagsAddDiaCompleter_;
 		std::unique_ptr<TabWidget> TabWidget_;
 		std::unique_ptr<QToolBar> Toolbar_;
