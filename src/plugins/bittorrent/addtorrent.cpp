@@ -156,18 +156,12 @@ namespace BitTorrent
 
 	void AddTorrent::SetTags (const QStringList& ids)
 	{
-		auto tm = Core::Instance ()->GetProxy ()->GetTagsManager ();
-		Ui_.TagsEdit_->setText (tm->Join (tm->GetTags (ids)));
+		Ui_.TagsEdit_->setText (GetProxyHolder ()->GetTagsManager ()->JoinIDs (ids));
 	}
 
 	QStringList AddTorrent::GetTags () const
 	{
-		auto tm = Core::Instance ()->GetProxy ()->GetTagsManager ();
-
-		QStringList result;
-		for (const auto& tag : tm->Split (Ui_.TagsEdit_->text ()))
-			result << tm->GetID (tag);
-		return result;
+		return GetProxyHolder ()->GetTagsManager ()->SplitToIDs (Ui_.TagsEdit_->text ());
 	}
 
 	Util::TagsLineEdit* AddTorrent::GetEdit ()
