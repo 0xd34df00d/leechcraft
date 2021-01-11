@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1012</width>
-    <height>565</height>
+    <height>620</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,11 +15,19 @@
   </property>
   <property name="windowIcon">
    <iconset>
-    <normaloff/>
-   </iconset>
+    <normaloff>.</normaloff>.</iconset>
   </property>
   <layout class="QVBoxLayout">
-   <property name="margin">
+   <property name="leftMargin">
+    <number>2</number>
+   </property>
+   <property name="topMargin">
+    <number>2</number>
+   </property>
+   <property name="rightMargin">
+    <number>2</number>
+   </property>
+   <property name="bottomMargin">
     <number>2</number>
    </property>
    <item>
@@ -244,15 +252,24 @@
      <property name="title">
       <string>Info</string>
      </property>
-     <layout class="QFormLayout" name="formLayout">
+     <layout class="QFormLayout" name="InfoLayout_">
       <property name="fieldGrowthPolicy">
        <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
       </property>
-      <property name="margin">
+      <property name="leftMargin">
+       <number>4</number>
+      </property>
+      <property name="topMargin">
+       <number>4</number>
+      </property>
+      <property name="rightMargin">
+       <number>4</number>
+      </property>
+      <property name="bottomMargin">
        <number>4</number>
       </property>
       <item row="0" column="0">
-       <widget class="QLabel" name="label_2">
+       <widget class="QLabel" name="TrackerURLLabel_">
         <property name="text">
          <string>Tracker URL:</string>
         </property>
@@ -280,7 +297,7 @@
        </widget>
       </item>
       <item row="2" column="0">
-       <widget class="QLabel" name="label_6">
+       <widget class="QLabel" name="CreatorLabel_">
         <property name="text">
          <string>Creator:</string>
         </property>
@@ -294,7 +311,7 @@
        </widget>
       </item>
       <item row="3" column="0">
-       <widget class="QLabel" name="label_8">
+       <widget class="QLabel" name="CommentLabel_">
         <property name="text">
          <string>Comment:</string>
         </property>
@@ -308,7 +325,7 @@
        </widget>
       </item>
       <item row="4" column="0">
-       <widget class="QLabel" name="label_12">
+       <widget class="QLabel" name="DateLabel_">
         <property name="text">
          <string>Date:</string>
         </property>
@@ -397,9 +414,7 @@
    <header location="global">util/tags/tagslineedit.h</header>
   </customwidget>
  </customwidgets>
- <resources>
-  <include location="bittorrentresources.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>OK_</sender>

@@ -13,6 +13,7 @@
 #include <QSortFilterProxyModel>
 #include <QMenu>
 #include <util/util.h>
+#include <util/gui/util.h>
 #include <util/sll/prelude.h>
 #include <util/tags/tagscompleter.h>
 #include <interfaces/core/icoreproxy.h>
@@ -303,31 +304,26 @@ namespace LC::BitTorrent
 
 		const auto& info = *maybeInfo;
 
-		if (info.trackers ().size ())
-			Ui_.TrackerURL_->setText (QString::fromStdString (info.trackers ().at (0).url));
-		else
-			Ui_.TrackerURL_->setText (tr ("<no trackers>"));
 		Ui_.Size_->setText (Util::MakePrettySize (info.total_size ()));
 
-		auto creator = QString::fromStdString (info.creator ());
-		auto comment = QString::fromStdString (info.comment ());
+		const auto setText = [this] (QLabel *edit, const QString& text)
+		{
+			edit->setText (text);
 
-		QString date;
-		if (const auto maybeDate = info.creation_date ())
-			date = QDateTime::fromSecsSinceEpoch (maybeDate).toString ();
+			Ui_.InfoLayout_->labelForField (edit)->setVisible (!text.isEmpty ());
+			edit->setVisible (!text.isEmpty ());
+		};
 
-		if (!creator.isEmpty () && !creator.isNull ())
-			Ui_.Creator_->setText (creator);
-		else
-			Ui_.Creator_->setText ("<>");
-		if (!comment.isEmpty () && !comment.isNull ())
-			Ui_.Comment_->setText (comment);
-		else
-			Ui_.Comment_->setText ("<>");
-		if (!date.isEmpty () && !date.isNull ())
-			Ui_.Date_->setText (date);
-		else
-			Ui_.Date_->setText ("<>");
+		setText (Ui_.TrackerURL_,
+				info.trackers ().empty () ?
+					QString {} :
+					QString::fromStdString (info.trackers ().at (0).url));
+		setText (Ui_.Creator_, QString::fromStdString (info.creator ()));
+		setText (Ui_.Comment_, QString::fromStdString (info.comment ()));
+		setText (Ui_.Date_,
+				info.creation_date () ?
+					QDateTime::fromSecsSinceEpoch (info.creation_date ()).toString () :
+					QString {});
 
 		QList<AddTorrentFilesModel::FileEntry> fileEntries;
 		const auto& torrentFiles = info.files ();
