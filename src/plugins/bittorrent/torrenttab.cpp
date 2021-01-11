@@ -414,19 +414,32 @@ namespace BitTorrent
 				return false;
 			}
 
-			const auto& torrent = Core::Instance ()->GetTorrentInfo (torrentFile.readAll ());
-			const auto& files = torrent.files ();
-			switch (files.num_files ())
+			const auto& torrentData = torrentFile.readAll ();
+			try
 			{
-			case 0:
-				return false;
-			case 1:
-				return saveDir.exists (QString::fromStdString (files.file_name (0).to_string ()));
-			default:
-			{
-				const auto& dirName = QString::fromStdString (files.name ());
-				return !dirName.isEmpty () && saveDir.exists (dirName);
+
+				libtorrent::torrent_info torrent { torrentData.constData (), torrentData.size () };
+				const auto& files = torrent.files ();
+				switch (files.num_files ())
+				{
+				case 0:
+					return false;
+				case 1:
+					return saveDir.exists (QString::fromStdString (files.file_name (0).to_string ()));
+				default:
+				{
+					const auto& dirName = QString::fromStdString (files.name ());
+					return !dirName.isEmpty () && saveDir.exists (dirName);
+				}
+				}
 			}
+			catch (const std::exception& e)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "unable to parse"
+						<< torrentPath
+						<< e.what ();
+				return false;
 			}
 		}
 	}

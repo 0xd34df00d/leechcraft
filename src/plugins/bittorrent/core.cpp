@@ -720,32 +720,6 @@ namespace BitTorrent
 		return Handles_.at (idx).Handle_;
 	}
 
-	libtorrent::torrent_info Core::GetTorrentInfo (const QString& filename)
-	{
-		QFile file (filename);
-		if (!file.open (QIODevice::ReadOnly))
-		{
-			ShowError (tr ("Could not open file %1 for read: %2")
-					.arg (filename).arg (file.errorString ()));
-			return libtorrent::torrent_info (libtorrent::sha1_hash ());
-		}
-		return GetTorrentInfo (file.readAll ());
-	}
-
-	libtorrent::torrent_info Core::GetTorrentInfo (const QByteArray& data)
-	{
-		try
-		{
-			libtorrent::torrent_info result (data.constData (), data.size ());
-			return result;
-		}
-		catch (const std::exception& e)
-		{
-			HandleLibtorrentException (e);
-			return libtorrent::torrent_info (libtorrent::sha1_hash ());
-		}
-	}
-
 	bool Core::IsValidTorrent (const QByteArray& torrentData) const
 	{
 		try
@@ -1000,7 +974,7 @@ namespace BitTorrent
 
 		try
 		{
-			atp.ti = std::make_shared<libtorrent::torrent_info> (GetTorrentInfo (contents));
+			atp.ti = std::make_shared<libtorrent::torrent_info> (contents.constData (), contents.size ());
 			atp.storage_mode = GetCurrentStorageMode ();
 			atp.save_path = std::string (path.toUtf8 ().constData ());
 			if (!autoManaged)

@@ -19,7 +19,6 @@
 #include <interfaces/core/itagsmanager.h>
 #include "addtorrentfilesmodel.h"
 #include "xmlsettingsmanager.h"
-#include "core.h"
 
 namespace LC::BitTorrent
 {
@@ -275,16 +274,34 @@ namespace LC::BitTorrent
 	void AddTorrent::ParseBrowsed ()
 	{
 		const auto& filename = Ui_.TorrentFile_->text ();
-		const auto& info = Core::Instance ()->GetTorrentInfo (filename);
-		Ui_.OK_->setEnabled (info.is_valid ());
-		if (!info.is_valid ())
+
+		QFile file { filename };
+		if (!file.open (QIODevice::ReadOnly))
 		{
-			QMessageBox::critical (this,
-					QStringLiteral ("LeechCraft"),
-					tr ("Looks like %1 is not a valid torrent file.")
-						.arg ("<em>" + filename + "</em>"));
+			qWarning () << Q_FUNC_INFO
+					<< "unable to open file"
+					<< filename
+					<< file.errorString ();
 			return;
 		}
+
+		std::optional<libtorrent::torrent_info> maybeInfo;
+		try
+		{
+			const auto& contents = file.readAll ();
+			maybeInfo.emplace (contents.constData (), contents.size ());
+		}
+		catch (const std::exception& e)
+		{
+			Ui_.OK_->setEnabled (false);
+			QMessageBox::critical (this,
+					QStringLiteral ("LeechCraft"),
+					tr ("Unable to parse %1: %2.")
+						.arg (Util::FormatName (filename), e.what ()));
+			return;
+		}
+
+		const auto& info = *maybeInfo;
 
 		if (info.trackers ().size ())
 			Ui_.TrackerURL_->setText (QString::fromStdString (info.trackers ().at (0).url));
