@@ -23,6 +23,11 @@ namespace BitTorrent
 		LoadSettings ();
 	}
 
+	namespace
+	{
+		static constexpr int MinimumSpeed = 50;
+	}
+
 	void FastSpeedControlWidget::LoadSettings ()
 	{
 		QSettings settings (QCoreApplication::organizationName (),
@@ -35,7 +40,7 @@ namespace BitTorrent
 		Ui_.Slider_->setValue (num);
 		SetNum (num);
 
-		int prev = 50;
+		int prev = MinimumSpeed;
 		for (int i = 0; i < static_cast<int> (Widgets_.size ()); ++i)
 		{
 			settings.setArrayIndex (i);
