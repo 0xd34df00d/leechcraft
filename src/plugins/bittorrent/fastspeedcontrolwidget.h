@@ -8,8 +8,8 @@
 
 #pragma once
 
+#include <vector>
 #include <QWidget>
-#include <QList>
 #include "ui_fastspeedcontrolwidget.h"
 
 namespace LC
@@ -21,7 +21,7 @@ namespace BitTorrent
 		Q_OBJECT
 
 		Ui::FastSpeedControlWidget Ui_;
-		QList<QPair<QSpinBox*, QSpinBox*>> Widgets_;
+		std::vector<std::pair<std::unique_ptr<QSpinBox>, std::unique_ptr<QSpinBox>>> Widgets_;
 	public:
 		FastSpeedControlWidget (QWidget* = 0);
 	private:

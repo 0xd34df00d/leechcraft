@@ -36,7 +36,7 @@ namespace BitTorrent
 		SetNum (num);
 
 		int prev = 50;
-		for (int i = 0; i < Widgets_.size (); ++i)
+		for (int i = 0; i < static_cast<int> (Widgets_.size ()); ++i)
 		{
 			settings.setArrayIndex (i);
 			Widgets_.at (i).first->
@@ -56,7 +56,7 @@ namespace BitTorrent
 		settings.beginGroup ("FastSpeedControl");
 		settings.remove ("");
 		settings.beginWriteArray ("Values");
-		for (int i = 0; i < Widgets_.size (); ++i)
+		for (int i = 0; i < static_cast<int> (Widgets_.size ()); ++i)
 		{
 			settings.setArrayIndex (i);
 			settings.setValue ("DownValue", Widgets_.at (i).first->value ());
@@ -68,41 +68,39 @@ namespace BitTorrent
 
 	void FastSpeedControlWidget::SetNum (int num)
 	{
-		while (Widgets_.size () < num)
+		while (static_cast<int> (Widgets_.size ()) < num)
 		{
-			QHBoxLayout *lay = new QHBoxLayout ();
-			QSpinBox *down = new QSpinBox ();
-			QSpinBox *up = new QSpinBox ();
-			lay->addWidget (down);
-			lay->addWidget (up);
+			const auto lay = new QHBoxLayout ();
+			auto down = std::make_unique<QSpinBox> ();
+			auto up = std::make_unique<QSpinBox> ();
+			lay->addWidget (down.get ());
+			lay->addWidget (up.get ());
 			static_cast<QBoxLayout*> (layout ())->addLayout (lay);
-			Widgets_ << qMakePair (down, up);
 
 			down->setSuffix (tr (" KiB/s"));
 			up->setSuffix (tr (" KiB/s"));
 			down->setRange (1, 1024 * 1024);
 			up->setRange (1, 1024 * 1024);
 
-			if (Widgets_.size () > 1)
+			if (!Widgets_.empty ())
 			{
-				QPair<QSpinBox*, QSpinBox*> prev = Widgets_.at (Widgets_.size () - 2);
-				down->setValue (prev.first->value () * 3);
-				up->setValue (prev.second->value () * 3);
+				const auto& [prevDown, prevUp] = Widgets_.back ();
+				down->setValue (prevDown->value () * 3);
+				up->setValue (prevUp->value () * 3);
 			}
 			else
 			{
-				down->setValue (50);
-				up->setValue (50);
+				down->setValue (MinimumSpeed);
+				up->setValue (MinimumSpeed);
 			}
+
+			Widgets_.emplace_back (std::move (down), std::move (up));
 		}
 
-		while (Widgets_.size () > num)
+		while (static_cast<int> (Widgets_.size ()) > num)
 		{
 			delete layout ()->takeAt (layout ()->count () - 1);
-
-			QPair<QSpinBox*, QSpinBox*> pair = Widgets_.takeLast ();
-			delete pair.first;
-			delete pair.second;
+			Widgets_.pop_back ();
 		}
 	}
 
