@@ -61,6 +61,19 @@ namespace LC::BitTorrent
 		};
 	}
 
+	namespace Fields
+	{
+		static const auto Output = QStringLiteral ("Output");
+		static const auto AnnounceURL = QStringLiteral ("AnnounceURL");
+		static const auto Date = QStringLiteral ("Date");
+		static const auto Comment = QStringLiteral ("Comment");
+		static const auto RootPath = QStringLiteral ("RootPath");
+		static const auto URLSeeds = QStringLiteral ("URLSeeds");
+		static const auto DHTEnabled = QStringLiteral ("DHTEnabled");
+		static const auto DHTNodes = QStringLiteral ("DHTNodes");
+		static const auto PieceSize = QStringLiteral("PieceSize");
+	}
+
 	NewTorrentWizard::NewTorrentWizard (QWidget *parent)
 	: QWizard (parent)
 	{
@@ -76,16 +89,17 @@ namespace LC::BitTorrent
 	{
 		NewTorrentParams result;
 
-		result.Output_ = field ("Output").toString ();
-		result.AnnounceURL_ = field ("AnnounceURL").toString ();
-		result.Date_ = field ("Date").toDate ();
-		result.Comment_ = field ("Comment").toString ();
-		result.Path_ = field ("RootPath").toString ();
-		result.URLSeeds_ = field ("URLSeeds").toString ().split (QRegExp("\\s+"));
-		result.DHTEnabled_ = field ("DHTEnabled").toBool ();
-		result.DHTNodes_ = field ("DHTNodes").toString ().split (QRegExp("\\s+"));
+		using namespace Fields;
+		result.Output_ = field (Output).toString ();
+		result.AnnounceURL_ = field (AnnounceURL).toString ();
+		result.Date_ = field (Date).toDate ();
+		result.Comment_ = field (Comment).toString ();
+		result.Path_ = field (RootPath).toString ();
+		result.URLSeeds_ = field (URLSeeds).toString ().split (QRegExp ("\\s+"));
+		result.DHTEnabled_ = field (DHTEnabled).toBool ();
+		result.DHTNodes_ = field (DHTNodes).toString ().split (QRegExp ("\\s+"));
 		result.PieceSize_ = 32 * 1024;
-		int index = field ("PieceSize").toInt ();
+		int index = field (PieceSize).toInt ();
 		while (index--)
 			result.PieceSize_ *= 2;
 
@@ -115,11 +129,14 @@ namespace LC::BitTorrent
 		: QWizardPage { parent }
 		{
 			setupUi (this);
-			registerField ("Output", Output_);
-			registerField ("AnnounceURL*", AnnounceURL_);
-			registerField ("Date", Date_);
-			registerField ("Comment", Comment_);
-			registerField ("RootPath", RootPath_);
+
+			using namespace Fields;
+			registerField (Output, Output_);
+			registerField (AnnounceURL + '*', AnnounceURL_);
+			registerField (Date, Date_);
+			registerField (Comment, Comment_);
+			registerField (RootPath, RootPath_);
+
 			Date_->setDateTime (QDateTime::currentDateTime ());
 			Output_->setText (XmlSettingsManager::Instance ()->property ("LastMakeTorrentDirectory").toString ());
 			RootPath_->setText (XmlSettingsManager::Instance ()->property ("LastAddDirectory").toString ());
@@ -216,10 +233,12 @@ namespace LC::BitTorrent
 		: QWizardPage { parent }
 		{
 			setupUi (this);
-			registerField ("PieceSize", PieceSize_);
-			registerField ("URLSeeds", URLSeeds_);
-			registerField ("DHTEnabled", DHTEnabled_);
-			registerField ("DHTNodes", DHTNodes_);
+
+			using namespace Fields;
+			registerField (PieceSize, PieceSize_);
+			registerField (URLSeeds, URLSeeds_);
+			registerField (DHTEnabled, DHTEnabled_);
+			registerField (DHTNodes, DHTNodes_);
 
 			connect (PieceSize_,
 					qOverload<int> (&QComboBox::currentIndexChanged),
@@ -243,7 +262,7 @@ namespace LC::BitTorrent
 		void ThirdStep::initializePage ()
 		{
 			TotalSize_ = 0;
-			QString path = field ("RootPath").toString ();
+			QString path = field (Fields::RootPath).toString ();
 
 			QFileInfo pathInfo (path);
 			if (pathInfo.isDir ())
