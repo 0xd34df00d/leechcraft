@@ -25,6 +25,11 @@ namespace BitTorrent
 
 	namespace
 	{
+		static const QString GroupName = QStringLiteral ("FastSpeedControl");
+		static const QString ArrayName = QStringLiteral ("Values");
+		static const QString DownValue = QStringLiteral ("DownValue");
+		static const QString UpValue = QStringLiteral ("UpValue");
+
 		static constexpr int MinimumSpeed = 50;
 	}
 
@@ -32,8 +37,8 @@ namespace BitTorrent
 	{
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Torrent");
-		settings.beginGroup ("FastSpeedControl");
-		int num = settings.beginReadArray ("Values");
+		settings.beginGroup (GroupName);
+		int num = settings.beginReadArray (ArrayName);
 		if (!num)
 			num = 1;
 		Ui_.Box_->setValue (num);
@@ -44,10 +49,9 @@ namespace BitTorrent
 		for (int i = 0; i < static_cast<int> (Widgets_.size ()); ++i)
 		{
 			settings.setArrayIndex (i);
-			Widgets_.at (i).first->
-				setValue (settings.value ("DownValue", prev).toInt ());
-			Widgets_.at (i).second->
-				setValue (settings.value ("UpValue", prev).toInt ());
+			auto& [down, up] = Widgets_ [i];
+			down->setValue (settings.value (DownValue, prev).toInt ());
+			up->setValue (settings.value (UpValue, prev).toInt ());
 			prev *= 3;
 		}
 		settings.endArray ();
@@ -58,14 +62,15 @@ namespace BitTorrent
 	{
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Torrent");
-		settings.beginGroup ("FastSpeedControl");
-		settings.remove ("");
-		settings.beginWriteArray ("Values");
+		settings.beginGroup (GroupName);
+		settings.remove ({});
+		settings.beginWriteArray (ArrayName);
 		for (int i = 0; i < static_cast<int> (Widgets_.size ()); ++i)
 		{
 			settings.setArrayIndex (i);
-			settings.setValue ("DownValue", Widgets_.at (i).first->value ());
-			settings.setValue ("UpValue", Widgets_.at (i).second->value ());
+			auto& [down, up] = Widgets_ [i];
+			settings.setValue (DownValue, down->value ());
+			settings.setValue (UpValue, up->value ());
 		}
 		settings.endArray ();
 		settings.endGroup ();

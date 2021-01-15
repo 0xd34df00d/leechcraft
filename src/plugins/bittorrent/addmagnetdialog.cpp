@@ -25,12 +25,16 @@ namespace BitTorrent
 		bool IsMagnet (const QString& link)
 		{
 			const auto& url = QUrl::fromUserInput (link);
-			if (!url.isValid () || url.scheme () != "magnet")
+			if (!url.isValid () || url.scheme () != QStringLiteral ("magnet"))
 				return false;
 
 			const auto& items = QUrlQuery { url }.queryItems ();
 			return std::any_of (items.begin (), items.end (),
-					[] (const auto& item) { return item.first == "xt" && item.second.startsWith ("urn:btih:"); });
+					[] (const auto& item)
+					{
+						return item.first == QStringLiteral ("xt") &&
+								item.second.startsWith (QStringLiteral ("urn:btih:"));
+					});
 		}
 
 		std::optional<QString> CheckClipboard (QClipboard::Mode mode)
@@ -51,8 +55,7 @@ namespace BitTorrent
 		if (magnet)
 			Ui_.Magnet_->setText (*magnet);
 
-		const auto& dir = XmlSettingsManager::Instance ()->
-				property ("LastSaveDirectory").toString ();
+		const auto& dir = XmlSettingsManager::Instance ()->property ("LastSaveDirectory").toString ();
 		Ui_.SavePath_->setText (dir);
 
 		const auto checkComplete = [this]
