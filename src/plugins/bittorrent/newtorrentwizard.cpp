@@ -72,11 +72,6 @@ namespace LC::BitTorrent
 		setPage (PageSecondStep, new ThirdStep);
 	}
 
-	void NewTorrentWizard::accept ()
-	{
-		QWizard::accept ();
-	}
-
 	NewTorrentParams NewTorrentWizard::GetParams () const
 	{
 		NewTorrentParams result;

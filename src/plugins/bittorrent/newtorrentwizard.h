@@ -20,7 +20,6 @@ namespace LC::BitTorrent
 	public:
 		explicit NewTorrentWizard (QWidget *parent = nullptr);
 
-		void accept () override;
 		NewTorrentParams GetParams () const;
 	};
 }
