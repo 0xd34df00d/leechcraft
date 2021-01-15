@@ -19,10 +19,6 @@ LC_DEFINE_PLUGIN (
 		core.cpp
 		addtorrent.cpp
 		newtorrentwizard.cpp
-		intropage.cpp
-		firststep.cpp
-		secondstep.cpp
-		thirdstep.cpp
 		addmultipletorrents.cpp
 		pieceswidget.cpp
 		xmlsettingsmanager.cpp

@@ -9,24 +9,18 @@
 #pragma once
 
 #include <QWizard>
-#include "newtorrentparams.h"
 
-namespace LC
+namespace LC::BitTorrent
 {
-namespace BitTorrent
-{
+	struct NewTorrentParams;
+
 	class NewTorrentWizard : public QWizard
 	{
 		Q_OBJECT
 	public:
-		enum Page { PageIntro
-			, PageFirstStep
-			, PageSecondStep
-			, PageThirdStep };
+		explicit NewTorrentWizard (QWidget *parent = nullptr);
 
-		NewTorrentWizard (QWidget *parent = 0);
-		virtual void accept ();
+		void accept () override;
 		NewTorrentParams GetParams () const;
 	};
-}
 }
