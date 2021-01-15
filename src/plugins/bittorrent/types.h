@@ -15,4 +15,10 @@ namespace LC::BitTorrent
 		Started,
 		Paused
 	};
+
+	enum class WebSeedType
+	{
+		Bep17,
+		Bep19
+	};
 }

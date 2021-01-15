@@ -1150,26 +1150,38 @@ namespace BitTorrent
 				});
 	}
 
-	void Core::AddWebSeed (const QString& ws, bool url, int idx)
+	void Core::AddWebSeed (const QString& ws, WebSeedType type, int idx)
 	{
 		if (!CheckValidity (idx))
 			return;
 
-		if (url)
-			Handles_.at (idx).Handle_.add_url_seed (ws.toStdString ());
-		else
-			Handles_.at (idx).Handle_.add_http_seed (ws.toStdString ());
+		auto& handle = Handles_.at (idx).Handle_;
+		switch (type)
+		{
+		case WebSeedType::Bep17:
+			handle.add_http_seed (ws.toStdString ());
+			break;
+		case WebSeedType::Bep19:
+			handle.add_url_seed (ws.toStdString ());
+			break;
+		}
 	}
 
-	void Core::RemoveWebSeed (const QString& ws, bool url, int idx)
+	void Core::RemoveWebSeed (const QString& ws, WebSeedType type, int idx)
 	{
 		if (!CheckValidity (idx))
 			return;
 
-		if (url)
-			Handles_.at (idx).Handle_.remove_url_seed (ws.toStdString ());
-		else
-			Handles_.at (idx).Handle_.remove_http_seed (ws.toStdString ());
+		auto& handle = Handles_.at (idx).Handle_;
+		switch (type)
+		{
+		case WebSeedType::Bep17:
+			handle.remove_http_seed (ws.toStdString ());
+			break;
+		case WebSeedType::Bep19:
+			handle.remove_url_seed (ws.toStdString ());
+			break;
+		}
 	}
 
 	void Core::SetFilePriority (int file, int priority, int idx)

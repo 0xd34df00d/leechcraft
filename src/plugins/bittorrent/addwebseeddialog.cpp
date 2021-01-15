@@ -23,9 +23,9 @@ namespace BitTorrent
 		return Ui_.URL_->text ();
 	}
 
-	bool AddWebSeedDialog::GetType () const
+	WebSeedType AddWebSeedDialog::GetType () const
 	{
-		return Ui_.BEP19_->isChecked ();
+		return Ui_.BEP19_->isChecked () ? WebSeedType::Bep19 : WebSeedType::Bep17;
 	}
 }
 }

@@ -545,10 +545,10 @@ namespace BitTorrent
 
 	void TorrentTabWidget::handleRemoveWebSeed ()
 	{
-		QModelIndex index = Ui_.WebSeedsView_->currentIndex ();
-		QString url = index.sibling (index.row (), 0).data ().toString ();
-		bool bep19 = index.sibling (index.row (), 1).data ().toString () == "BEP 19";
-		Core::Instance ()->RemoveWebSeed (index.data ().toString (), bep19, Index_);
+		auto index = Ui_.WebSeedsView_->currentIndex ();
+		auto url = index.sibling (index.row (), 0).data ().toString ();
+		auto type = index.sibling (index.row (), 1).data ().toString () == "BEP 19" ? WebSeedType::Bep19 : WebSeedType::Bep17;
+		Core::Instance ()->RemoveWebSeed (index.data ().toString (), type, Index_);
 	}
 }
 }

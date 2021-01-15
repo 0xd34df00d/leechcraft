@@ -29,6 +29,7 @@
 #include "torrentinfo.h"
 #include "fileinfo.h"
 #include "peerinfo.h"
+#include "types.h"
 
 class QTimer;
 class QDomElement;
@@ -295,8 +296,8 @@ namespace BitTorrent
 		int GetTorrentDownloadRate (int) const;
 		int GetTorrentUploadRate (int) const;
 		void AddPeer (const QString&, unsigned short, int);
-		void AddWebSeed (const QString&, bool, int);
-		void RemoveWebSeed (const QString&, bool, int);
+		void AddWebSeed (const QString&, WebSeedType, int);
+		void RemoveWebSeed (const QString&, WebSeedType, int);
 		void SetFilePriority (int, int, int);
 		void SetFilename (int, const QString&, int);
 
