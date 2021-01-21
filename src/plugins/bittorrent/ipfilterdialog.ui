@@ -44,6 +44,9 @@
      </item>
      <item>
       <widget class="QPushButton" name="Modify_">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="text">
         <string>Modify...</string>
        </property>
@@ -51,6 +54,9 @@
      </item>
      <item>
       <widget class="QPushButton" name="Remove_">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="text">
         <string>Remove</string>
        </property>

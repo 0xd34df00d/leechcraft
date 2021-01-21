@@ -11,27 +11,21 @@
 #include <QDialog>
 #include "ui_ipfilterdialog.h"
 
-namespace LC
-{
-namespace BitTorrent
+namespace LC::BitTorrent
 {
 	using BanRange_t = QPair<QString, QString>;
 
 	class IPFilterDialog : public QDialog
 	{
-		Q_OBJECT
+		Q_DECLARE_TR_FUNCTIONS (LC::BitTorrent::IPFilterDialog)
 
 		Ui::IPFilterDialog Ui_;
 	public:
-		IPFilterDialog (QWidget* = 0);
+		explicit IPFilterDialog (QWidget* = nullptr);
 
 		QList<QPair<BanRange_t, bool>> GetFilter () const;
-	private slots:
-		void on_Tree__currentItemChanged (QTreeWidgetItem*);
-		void on_Tree__itemClicked (QTreeWidgetItem*, int);
-		void on_Add__released ();
-		void on_Modify__released ();
-		void on_Remove__released ();
+	private:
+		void Add ();
+		void Modify ();
 	};
-}
 }
