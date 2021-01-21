@@ -16,9 +16,7 @@
 #include <interfaces/core/itagsmanager.h>
 #include "xmlsettingsmanager.h"
 
-namespace LC
-{
-namespace BitTorrent
+namespace LC::BitTorrent
 {
 	namespace
 	{
@@ -102,5 +100,4 @@ namespace BitTorrent
 	{
 		return GetProxyHolder ()->GetTagsManager ()->SplitToIDs (Ui_.Tags_->text ());
 	}
-}
 }

@@ -13,9 +13,7 @@
 #include <libtorrent/torrent_handle.hpp>
 #include <libtorrent/torrent_status.hpp>
 
-namespace LC
-{
-namespace BitTorrent
+namespace LC::BitTorrent
 {
 	class CachedStatusKeeper : public QObject
 	{
@@ -36,5 +34,4 @@ namespace BitTorrent
 		libtorrent::torrent_status GetStatus (const libtorrent::torrent_handle&, FlagsType_t flags = {});
 		void HandleStatusUpdatePosted (const libtorrent::torrent_status&);
 	};
-}
 }

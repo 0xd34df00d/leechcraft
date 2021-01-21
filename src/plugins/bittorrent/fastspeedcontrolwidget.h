@@ -12,9 +12,7 @@
 #include <QWidget>
 #include "ui_fastspeedcontrolwidget.h"
 
-namespace LC
-{
-namespace BitTorrent
+namespace LC::BitTorrent
 {
 	class FastSpeedControlWidget : public QWidget
 	{
@@ -23,19 +21,15 @@ namespace BitTorrent
 		Ui::FastSpeedControlWidget Ui_;
 		std::vector<std::pair<std::unique_ptr<QSpinBox>, std::unique_ptr<QSpinBox>>> Widgets_;
 	public:
-		FastSpeedControlWidget (QWidget* = 0);
+		explicit FastSpeedControlWidget (QWidget* = nullptr);
 	private:
 		void LoadSettings ();
 		void SaveSettings ();
 		void SetNum (int);
-	private slots:
-		void on_Box__valueChanged (int);
-		void on_Slider__valueChanged (int);
 	public slots:
 		void accept ();
 		void reject ();
 	signals:
 		void speedsChanged ();
 	};
-}
 }

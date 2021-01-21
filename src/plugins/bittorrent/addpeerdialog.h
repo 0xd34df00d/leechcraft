@@ -11,20 +11,15 @@
 #include <QDialog>
 #include "ui_addpeerdialog.h"
 
-namespace LC
-{
-namespace BitTorrent
+namespace LC::BitTorrent
 {
 	class AddPeerDialog : public QDialog
 	{
-		Q_OBJECT
-
 		Ui::AddPeerDialog Ui_;
 	public:
-		AddPeerDialog (QWidget* = 0);
+		explicit AddPeerDialog (QWidget* = nullptr);
 
 		QString GetIP () const;
 		int GetPort () const;
 	};
-}
 }

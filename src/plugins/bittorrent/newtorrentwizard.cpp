@@ -85,9 +85,9 @@ namespace LC::BitTorrent
 		setWindowTitle (tr ("New torrent wizard"));
 		setWizardStyle (QWizard::ModernStyle);
 
-		setPage (PageIntro, new IntroPage);
-		setPage (PageFirstStep, new FirstStep);
-		setPage (PageSecondStep, new ThirdStep);
+		setPage (PageIntro, new IntroPage { this });
+		setPage (PageFirstStep, new FirstStep { this });
+		setPage (PageSecondStep, new ThirdStep { this });
 	}
 
 	NewTorrentParams NewTorrentWizard::GetParams () const

@@ -11,9 +11,7 @@
 #include <QHBoxLayout>
 #include <util/util.h>
 
-namespace LC
-{
-namespace BitTorrent
+namespace LC::BitTorrent
 {
 	FastSpeedControlWidget::FastSpeedControlWidget (QWidget *parent)
 	: QWidget (parent)
@@ -21,6 +19,15 @@ namespace BitTorrent
 		Ui_.setupUi (this);
 
 		LoadSettings ();
+
+		connect (Ui_.Box_,
+				qOverload<int> (&QSpinBox::valueChanged),
+				this,
+				&FastSpeedControlWidget::SetNum);
+		connect (Ui_.Slider_,
+				&QSlider::valueChanged,
+				this,
+				&FastSpeedControlWidget::SetNum);
 	}
 
 	namespace
@@ -85,7 +92,7 @@ namespace BitTorrent
 			auto up = std::make_unique<QSpinBox> ();
 			lay->addWidget (down.get ());
 			lay->addWidget (up.get ());
-			static_cast<QBoxLayout*> (layout ())->addLayout (lay);
+			Ui_.Layout_->addLayout (lay);
 
 			down->setSuffix (tr (" KiB/s"));
 			up->setSuffix (tr (" KiB/s"));
@@ -114,16 +121,6 @@ namespace BitTorrent
 		}
 	}
 
-	void FastSpeedControlWidget::on_Box__valueChanged (int val)
-	{
-		SetNum (val);
-	}
-
-	void FastSpeedControlWidget::on_Slider__valueChanged (int val)
-	{
-		SetNum (val);
-	}
-
 	void FastSpeedControlWidget::accept ()
 	{
 		SaveSettings ();
@@ -135,5 +132,4 @@ namespace BitTorrent
 	{
 		LoadSettings ();
 	}
-}
 }

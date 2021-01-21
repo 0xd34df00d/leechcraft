@@ -9,9 +9,7 @@
 #include "addpeerdialog.h"
 #include "ipvalidators.h"
 
-namespace LC
-{
-namespace BitTorrent
+namespace LC::BitTorrent
 {
 	AddPeerDialog::AddPeerDialog (QWidget *parent)
 	: QDialog (parent)
@@ -30,5 +28,4 @@ namespace BitTorrent
 	{
 		return Ui_.Port_->value ();
 	}
-}
 }

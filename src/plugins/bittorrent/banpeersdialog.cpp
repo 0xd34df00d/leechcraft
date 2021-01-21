@@ -9,9 +9,7 @@
 #include "banpeersdialog.h"
 #include "ipvalidators.h"
 
-namespace LC
-{
-namespace BitTorrent
+namespace LC::BitTorrent
 {
 	BanPeersDialog::BanPeersDialog (QWidget *parent)
 	: QDialog (parent)
@@ -25,7 +23,7 @@ namespace BitTorrent
 
 	void BanPeersDialog::SetIP (const QString& ip)
 	{
-		if (ip.contains (":"))
+		if (ip.contains (':'))
 		{
 			Ui_.RadioIP6_->setChecked (true);
 			Ui_.IP6Start_->setText (ip);
@@ -40,7 +38,7 @@ namespace BitTorrent
 
 	void BanPeersDialog::SetIP (const QString& first, const QString& last)
 	{
-		if (first.contains (":"))
+		if (first.contains (':'))
 		{
 			Ui_.RadioIP6_->setChecked (true);
 			Ui_.IP6Start_->setText (first);
@@ -76,5 +74,4 @@ namespace BitTorrent
 				Ui_.IP6End_->text () :
 				QString ();
 	}
-}
 }

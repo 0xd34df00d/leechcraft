@@ -8,12 +8,10 @@
 
 #include "addwebseeddialog.h"
 
-namespace LC
-{
-namespace BitTorrent
+namespace LC::BitTorrent
 {
 	AddWebSeedDialog::AddWebSeedDialog (QWidget *parent)
-	: QDialog (parent)
+	: QDialog { parent }
 	{
 		Ui_.setupUi (this);
 	}
@@ -27,5 +25,4 @@ namespace BitTorrent
 	{
 		return Ui_.BEP19_->isChecked () ? WebSeedType::Bep19 : WebSeedType::Bep17;
 	}
-}
 }

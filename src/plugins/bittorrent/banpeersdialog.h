@@ -11,22 +11,17 @@
 #include <QDialog>
 #include "ui_banpeersdialog.h"
 
-namespace LC
-{
-namespace BitTorrent
+namespace LC::BitTorrent
 {
 	class BanPeersDialog : public QDialog
 	{
-		Q_OBJECT
-
 		Ui::BanPeersDialog Ui_;
 	public:
-		BanPeersDialog (QWidget* = 0);
+		explicit BanPeersDialog (QWidget* = nullptr);
 
 		void SetIP (const QString&);
 		void SetIP (const QString&, const QString&);
 		QString GetStart () const;
 		QString GetEnd () const;
 	};
-}
 }

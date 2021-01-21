@@ -12,20 +12,15 @@
 #include "ui_addwebseeddialog.h"
 #include "types.h"
 
-namespace LC
-{
-namespace BitTorrent
+namespace LC::BitTorrent
 {
 	class AddWebSeedDialog : public QDialog
 	{
-		Q_OBJECT
-
 		Ui::AddWebSeedDialog Ui_;
 	public:
-		AddWebSeedDialog (QWidget* = 0);
+		explicit AddWebSeedDialog (QWidget* = nullptr);
 
 		QString GetURL () const;
 		WebSeedType GetType () const;
 	};
-}
 }

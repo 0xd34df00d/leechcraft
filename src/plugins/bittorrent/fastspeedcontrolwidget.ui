@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string/>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
+  <layout class="QVBoxLayout" name="Layout_">
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>

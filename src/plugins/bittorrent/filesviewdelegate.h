@@ -12,15 +12,13 @@
 
 class QTreeView;
 
-namespace LC
-{
-namespace BitTorrent
+namespace LC::BitTorrent
 {
 	class FilesViewDelegate : public QStyledItemDelegate
 	{
 		QTreeView * const View_;
 	public:
-		FilesViewDelegate (QTreeView *parent = nullptr);
+		explicit FilesViewDelegate (QTreeView *parent = nullptr);
 
 		QWidget* createEditor (QWidget*, const QStyleOptionViewItem&, const QModelIndex&) const override;
 		void paint (QPainter*, const QStyleOptionViewItem&, const QModelIndex&) const override;
@@ -28,5 +26,4 @@ namespace BitTorrent
 		void setModelData (QWidget*, QAbstractItemModel*, const QModelIndex&) const override;
 		void updateEditorGeometry (QWidget*, const QStyleOptionViewItem&, const QModelIndex&) const override;
 	};
-}
 }

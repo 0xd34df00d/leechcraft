@@ -8,9 +8,7 @@
 
 #include "cachedstatuskeeper.h"
 
-namespace LC
-{
-namespace BitTorrent
+namespace LC::BitTorrent
 {
 	libtorrent::torrent_status CachedStatusKeeper::GetStatus (const libtorrent::torrent_handle& handle, FlagsType_t flags)
 	{
@@ -19,8 +17,8 @@ namespace BitTorrent
 			const auto& item = Handle2Status_ [handle];
 			if ((item.ReqFlags_ & flags) == flags)
 				return item.Status_;
-			else
-				flags |= item.ReqFlags_;
+
+			flags |= item.ReqFlags_;
 		}
 
 		const auto& status = handle.status (flags);
@@ -32,5 +30,4 @@ namespace BitTorrent
 	{
 		Handle2Status_ [status.handle] = { status, AllFlags };
 	}
-}
 }

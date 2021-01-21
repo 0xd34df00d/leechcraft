@@ -414,9 +414,8 @@ namespace BitTorrent
 
 	QString TorrentPlugin::GetDiagInfoString () const
 	{
-		return QString ("Built with rb_libtorrent %1 (%2).")
-				.arg (LIBTORRENT_VERSION)
-				.arg (LIBTORRENT_REVISION);
+		return QStringLiteral ("Built with rb_libtorrent %1 (%2).")
+				.arg (LIBTORRENT_VERSION, LIBTORRENT_REVISION);
 	}
 
 	void TorrentPlugin::on_OpenTorrent__triggered ()

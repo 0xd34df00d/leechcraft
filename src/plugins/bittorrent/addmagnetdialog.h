@@ -11,9 +11,7 @@
 #include <QDialog>
 #include "ui_addmagnetdialog.h"
 
-namespace LC
-{
-namespace BitTorrent
+namespace LC::BitTorrent
 {
 	class AddMagnetDialog : public QDialog
 	{
@@ -21,11 +19,10 @@ namespace BitTorrent
 
 		Ui::AddMagnetDialog Ui_;
 	public:
-		AddMagnetDialog (QWidget* = 0);
+		explicit AddMagnetDialog (QWidget* = nullptr);
 
 		QString GetLink () const;
 		QString GetPath () const;
 		QStringList GetTags () const;
 	};
-}
 }
