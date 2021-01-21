@@ -56,6 +56,7 @@
 #include "sessionsettingsmanager.h"
 #include "sessionstats.h"
 #include "types.h"
+#include "newtorrentparams.h"
 
 using LC::ActionInfo;
 using namespace LC::Util;

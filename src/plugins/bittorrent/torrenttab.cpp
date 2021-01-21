@@ -37,6 +37,7 @@
 #include "addmagnetdialog.h"
 #include "xmlsettingsmanager.h"
 #include "types.h"
+#include "newtorrentparams.h"
 
 namespace LC
 {
