@@ -21,6 +21,7 @@ namespace LC::BitTorrent
 
 	class AddTorrent : public QDialog
 	{
+		Q_DECLARE_TR_FUNCTIONS (LC::BitTorrent::AddTorrent)
 
 		Ui::AddTorrent Ui_;
 

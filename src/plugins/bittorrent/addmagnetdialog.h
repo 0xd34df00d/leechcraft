@@ -17,6 +17,8 @@ namespace BitTorrent
 {
 	class AddMagnetDialog : public QDialog
 	{
+		Q_DECLARE_TR_FUNCTIONS (LC::BitTorrent::AddMagnetDialog)
+
 		Ui::AddMagnetDialog Ui_;
 	public:
 		AddMagnetDialog (QWidget* = 0);

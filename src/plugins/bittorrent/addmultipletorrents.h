@@ -14,6 +14,7 @@ namespace LC::BitTorrent
 {
 	class AddMultipleTorrents : public QDialog
 	{
+		Q_DECLARE_TR_FUNCTIONS (LC::BitTorrent::AddMultipleTorrents)
 
 		Ui::AddMultipleTorrents Ui_;
 	public:
