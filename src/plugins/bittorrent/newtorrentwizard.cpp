@@ -59,6 +59,11 @@ namespace LC::BitTorrent
 
 			void initializePage () override;
 		};
+
+		int GetPieceSize (int choice)
+		{
+			return 32 * 1024 * std::pow (2, choice);
+		}
 	}
 
 	namespace Fields
@@ -98,10 +103,7 @@ namespace LC::BitTorrent
 		result.URLSeeds_ = field (URLSeeds).toString ().split (QRegExp ("\\s+"));
 		result.DHTEnabled_ = field (DHTEnabled).toBool ();
 		result.DHTNodes_ = field (DHTNodes).toString ().split (QRegExp ("\\s+"));
-		result.PieceSize_ = 32 * 1024;
-		int index = field (PieceSize).toInt ();
-		while (index--)
-			result.PieceSize_ *= 2;
+		result.PieceSize_ = GetPieceSize (field (PieceSize).toInt ());
 
 		if (result.Path_.endsWith ('/'))
 			result.Path_.remove (result.Path_.size () - 1, 1);
@@ -244,13 +246,10 @@ namespace LC::BitTorrent
 					qOverload<int> (&QComboBox::currentIndexChanged),
 					[this]
 					{
-						quint32 mul = 32 * 1024;
-						int index = PieceSize_->currentIndex ();
-						while (index--)
-							mul *= 2;
+						const auto pieceSize = GetPieceSize (PieceSize_->currentIndex ());
 
-						int numPieces = TotalSize_ / mul;
-						if (TotalSize_ % mul)
+						int numPieces = TotalSize_ / pieceSize;
+						if (TotalSize_ % pieceSize)
 							++numPieces;
 
 						NumPieces_->setText (QString::number (numPieces) +
@@ -281,11 +280,11 @@ namespace LC::BitTorrent
 					pathInfo.isReadable ())
 				TotalSize_ += pathInfo.size ();
 
-			quint64 max = std::log (static_cast<long double> (TotalSize_ / 102400)) * 80;
+			const quint64 maxPieceCount = std::log (static_cast<long double> (TotalSize_ / 102400)) * 80;
 
 			quint32 pieceSize = 32 * 1024;
 			int shouldIndex = 0;
-			for (; TotalSize_ / pieceSize >= max; pieceSize *= 2, ++shouldIndex) ;
+			for (; TotalSize_ / pieceSize >= maxPieceCount; pieceSize *= 2, ++shouldIndex) ;
 
 			if (shouldIndex > PieceSize_->count () - 1)
 				shouldIndex = PieceSize_->count () - 1;
