@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>447</width>
-    <height>124</height>
+    <height>168</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -40,6 +40,9 @@
       <widget class="QPushButton" name="BrowseButton_">
        <property name="text">
         <string>Browse...</string>
+       </property>
+       <property name="icon">
+        <iconset theme="document-open-folder"/>
        </property>
       </widget>
      </item>

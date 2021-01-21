@@ -14,7 +14,7 @@
    <string>Main parameters</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="resources.qrc">
+   <iconset>
     <normaloff>:/resources/images/bittorrent.svg</normaloff>:/resources/images/bittorrent.svg</iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout">
@@ -34,6 +34,9 @@
       <widget class="QPushButton" name="BrowseOutput_">
        <property name="text">
         <string>Browse...</string>
+       </property>
+       <property name="icon">
+        <iconset theme="document-open-folder"/>
        </property>
       </widget>
      </item>
@@ -71,12 +74,18 @@
          <property name="text">
           <string>File...</string>
          </property>
+         <property name="icon">
+          <iconset theme="document-open"/>
+         </property>
         </widget>
        </item>
        <item>
         <widget class="QPushButton" name="BrowseDirectory_">
          <property name="text">
           <string>Directory...</string>
+         </property>
+         <property name="icon">
+          <iconset theme="document-open-folder"/>
          </property>
         </widget>
        </item>
@@ -115,18 +124,7 @@
     <widget class="QTextEdit" name="Comment_"/>
    </item>
   </layout>
-  <zorder>label_4</zorder>
-  <zorder>label_2</zorder>
-  <zorder>AnnounceURL_</zorder>
-  <zorder>label_6</zorder>
-  <zorder>label_5</zorder>
-  <zorder>Date_</zorder>
-  <zorder>label_3</zorder>
-  <zorder>Comment_</zorder>
-  <zorder>RootPath_</zorder>
  </widget>
- <resources>
-  <include location="resources.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

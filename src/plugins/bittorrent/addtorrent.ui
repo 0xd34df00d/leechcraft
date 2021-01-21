@@ -53,6 +53,9 @@
           <property name="text">
            <string>Browse...</string>
           </property>
+          <property name="icon">
+           <iconset theme="document-open"/>
+          </property>
           <property name="autoDefault">
            <bool>false</bool>
           </property>
@@ -110,8 +113,14 @@
             <property name="text">
              <string>Mark...</string>
             </property>
+            <property name="icon">
+             <iconset theme="checkbox"/>
+            </property>
             <property name="popupMode">
              <enum>QToolButton::InstantPopup</enum>
+            </property>
+            <property name="toolButtonStyle">
+             <enum>Qt::ToolButtonTextBesideIcon</enum>
             </property>
            </widget>
           </item>
@@ -127,12 +136,18 @@
             <property name="text">
              <string>Expand all</string>
             </property>
+            <property name="icon">
+             <iconset theme="view-list-tree"/>
+            </property>
            </widget>
           </item>
           <item>
            <widget class="QPushButton" name="CollapseAll_">
             <property name="text">
              <string>Collapse all</string>
+            </property>
+            <property name="icon">
+             <iconset theme="view-list-text"/>
             </property>
            </widget>
           </item>
@@ -171,6 +186,9 @@
            <widget class="QPushButton" name="DestinationBrowse_">
             <property name="text">
              <string>Browse...</string>
+            </property>
+            <property name="icon">
+             <iconset theme="document-open-folder"/>
             </property>
             <property name="autoDefault">
              <bool>false</bool>
