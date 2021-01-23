@@ -149,7 +149,7 @@ namespace LC
 
 		/** @brief Parameters of this task.
 		 */
-		TaskParameters Parameters_;
+		TaskParameters Parameters_ = NoParameters;
 
 		/** @brief Additional parameters.
 		 *
@@ -162,8 +162,6 @@ namespace LC
 		 *   QStringList with IDs of tags of the entity.
 		 */
 		QMap<QString, QVariant> Additional_;
-
-		Entity () {}
 	};
 
 	/** This enumeration describes the additional roles that may be
