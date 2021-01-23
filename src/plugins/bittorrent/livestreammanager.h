@@ -8,35 +8,30 @@
 
 #pragma once
 
+#include <memory>
 #include <QObject>
-#include <QList>
-#include <libtorrent/torrent_handle.hpp>
-#include <libtorrent/alert_types.hpp>
-#include <interfaces/core/icoreproxy.h>
-#include <interfaces/structures.h>
+#include <QMap>
 
-namespace LC
+namespace libtorrent
 {
-namespace BitTorrent
+	class torrent_handle;
+	class read_piece_alert;
+};
+
+namespace LC::BitTorrent
 {
 	class LiveStreamDevice;
 	class CachedStatusKeeper;
 
 	class LiveStreamManager : public QObject
 	{
-		Q_OBJECT
-
-		const ICoreProxy_ptr Proxy_;
 		CachedStatusKeeper * const StatusKeeper_;
-		QMap<libtorrent::torrent_handle, LiveStreamDevice*> Handle2Device_;
+		QMap<libtorrent::torrent_handle, std::shared_ptr<LiveStreamDevice>> Handle2Device_;
 	public:
-		LiveStreamManager (CachedStatusKeeper*, const ICoreProxy_ptr&, QObject* = nullptr);
+		explicit LiveStreamManager (CachedStatusKeeper*, QObject* = nullptr);
 
 		void EnableOn (const libtorrent::torrent_handle&);
 		bool IsEnabledOn (const libtorrent::torrent_handle&);
 		void PieceRead (const libtorrent::read_piece_alert&);
-	private slots:
-		void handleDeviceReady (LiveStreamDevice*);
 	};
-}
 }

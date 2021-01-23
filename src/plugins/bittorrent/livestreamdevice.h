@@ -12,25 +12,24 @@
 #include <QFile>
 #include <libtorrent/torrent_handle.hpp>
 #include <libtorrent/torrent_info.hpp>
-#include <libtorrent/alert_types.hpp>
 
-namespace LC
+namespace libtorrent
 {
-namespace BitTorrent
+	class read_piece_alert;
+}
+
+namespace LC::BitTorrent
 {
 	class CachedStatusKeeper;
 
 	class LiveStreamDevice : public QIODevice
 	{
-		Q_OBJECT
-
 		CachedStatusKeeper * const StatusKeeper_;
 
 		const libtorrent::torrent_handle Handle_;
 		const libtorrent::torrent_info TI_;
 		const int NumPieces_ = TI_.num_pieces ();
 
-		int LastIndex_ = 0;
 		// Which piece would be read next.
 		int ReadPos_ = 0;
 		// Offset in the next piece pointed by ReadPos_;
@@ -54,10 +53,7 @@ namespace BitTorrent
 		qint64 writeData (const char*, qint64) override;
 	private:
 		void CheckNextChunk ();
-	private slots:
-		void reschedule ();
-	signals:
-		void ready (LiveStreamDevice*);
+		void EmitReadyEntity ();
+		void Reschedule ();
 	};
-}
 }

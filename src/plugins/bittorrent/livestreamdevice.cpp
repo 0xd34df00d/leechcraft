@@ -8,11 +8,13 @@
 
 #include "livestreamdevice.h"
 #include <QtDebug>
+#include <libtorrent/alert_types.hpp>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ientitymanager.h>
+#include <util/xpc/util.h>
 #include "cachedstatuskeeper.h"
 
-namespace LC
-{
-namespace BitTorrent
+namespace LC::BitTorrent
 {
 	using th = libtorrent::torrent_handle;
 
@@ -44,23 +46,18 @@ namespace BitTorrent
 			throw std::runtime_error { QIODevice::errorString ().toStdString () };
 		}
 
-		reschedule ();
+		Reschedule ();
 	}
 
 	qint64 LiveStreamDevice::bytesAvailable () const
 	{
 		qint64 result = 0;
 		const auto& pieces = StatusKeeper_->GetStatus (Handle_, th::query_pieces).pieces;
-		qDebug () << Q_FUNC_INFO << Offset_ << ReadPos_ << pieces [ReadPos_];
 		for (int i = ReadPos_; pieces [i]; ++i)
-		{
 			result += TI_.piece_size (i);
-			qDebug () << "added:" << result;
-		}
 		result -= Offset_;
 		if (result < 0)
 			result = 0;
-		qDebug () << "result:" << result;
 		return result;
 	}
 
@@ -86,7 +83,6 @@ namespace BitTorrent
 	bool LiveStreamDevice::seek (qint64 pos)
 	{
 		QIODevice::seek (pos);
-		qDebug () << Q_FUNC_INFO << pos;
 
 		int i = 0;
 		while (pos >= TI_.piece_size (i))
@@ -94,9 +90,7 @@ namespace BitTorrent
 		ReadPos_ = i;
 		Offset_ = pos;
 
-		qDebug () << ReadPos_ << Offset_;
-
-		reschedule ();
+		Reschedule ();
 
 		return true;
 	}
@@ -110,21 +104,23 @@ namespace BitTorrent
 	{
 		CheckReady ();
 		CheckNextChunk ();
-		reschedule ();
+		Reschedule ();
 	}
 
 	void LiveStreamDevice::CheckReady ()
 	{
+		if (IsReady_)
+			return;
+
 		const auto& pieces = StatusKeeper_->GetStatus (Handle_, th::query_pieces).pieces;
-		if (!IsReady_ &&
-				pieces [0] &&
+		if (pieces [0] &&
 				pieces [NumPieces_ - 1])
 		{
-			std::vector<libtorrent::download_priority_t> prios (NumPieces_, libtorrent::low_priority);
+			std::vector<libtorrent::download_priority_t> prios { NumPieces_, libtorrent::low_priority };
 			Handle_.prioritize_pieces (prios);
 
 			IsReady_ = true;
-			emit ready (this);
+			EmitReadyEntity ();
 		}
 	}
 
@@ -143,13 +139,9 @@ namespace BitTorrent
 		const qint64 result = File_.read (data, std::min (max, ba));
 		File_.close ();
 
-		qDebug () << Q_FUNC_INFO << result << Offset_ << ReadPos_ << max << ba;
-
 		Offset_ += result;
 		while (Offset_ >= TI_.piece_size (ReadPos_))
 			Offset_ -= TI_.piece_size (ReadPos_++);
-
-		qDebug () << Offset_ << ReadPos_ << bytesAvailable ();
 
 		return result;
 	}
@@ -171,7 +163,18 @@ namespace BitTorrent
 			emit readyRead ();
 	}
 
-	void LiveStreamDevice::reschedule ()
+	void LiveStreamDevice::EmitReadyEntity ()
+	{
+		Entity e
+		{
+			.Entity_ = QVariant::fromValue<QIODevice*> (this),
+			.Mime_ = QStringLiteral ("x-leechcraft/media-qiodevice"),
+			.Parameters_ = FromUserInitiated,
+		};
+		GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
+	}
+
+	void LiveStreamDevice::Reschedule ()
 	{
 		const auto& status = StatusKeeper_->GetStatus (Handle_, th::query_pieces);
 		const auto& pieces = status.pieces;
@@ -199,18 +202,15 @@ namespace BitTorrent
 
 			if (!pieces [0])
 			{
-				qDebug () << "scheduling first piece";
 				Handle_.set_piece_deadline (0, 500, alertFlag);
 				prios [0] = libtorrent::top_priority;
 			}
 			if (!pieces [NumPieces_ - 1])
 			{
-				qDebug () << "scheduling last piece";
 				Handle_.set_piece_deadline (NumPieces_ - 1, 500, alertFlag);
 				prios [NumPieces_ - 1] = libtorrent::top_priority;
 			}
 			Handle_.prioritize_pieces (prios);
 		}
 	}
-}
 }

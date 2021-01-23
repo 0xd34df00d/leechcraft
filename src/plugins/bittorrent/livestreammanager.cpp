@@ -7,43 +7,34 @@
  **********************************************************************/
 
 #include "livestreammanager.h"
-#include <interfaces/core/ientitymanager.h>
+#include <QtDebug>
+#include <libtorrent/alert_types.hpp>
 #include "livestreamdevice.h"
 
-namespace LC
+namespace LC::BitTorrent
 {
-namespace BitTorrent
-{
-	LiveStreamManager::LiveStreamManager (CachedStatusKeeper *keeper,
-			const ICoreProxy_ptr& proxy, QObject *parent)
+	LiveStreamManager::LiveStreamManager (CachedStatusKeeper *keeper, QObject *parent)
 	: QObject { parent }
-	, Proxy_ { proxy }
 	, StatusKeeper_ { keeper }
 	{
 	}
 
 	void LiveStreamManager::EnableOn (const libtorrent::torrent_handle& handle)
 	{
-		if (!Handle2Device_.contains (handle))
-		{
-			LiveStreamDevice *lsd = nullptr;
-			try
-			{
-				lsd = new LiveStreamDevice { handle, StatusKeeper_, this };
-			}
-			catch (const std::runtime_error& e)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< e.what ();
-				return;
-			}
+		if (Handle2Device_.contains (handle))
+			return;
 
-			Handle2Device_ [handle] = lsd;
-			connect (lsd,
-					SIGNAL (ready (LiveStreamDevice*)),
-					this,
-					SLOT (handleDeviceReady (LiveStreamDevice*)));
+		try
+		{
+			auto lsd = std::make_shared<LiveStreamDevice> (handle, StatusKeeper_);
 			lsd->CheckReady ();
+
+			Handle2Device_ [handle] = std::move (lsd);
+		}
+		catch (const std::runtime_error& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< e.what ();
 		}
 	}
 
@@ -66,14 +57,4 @@ namespace BitTorrent
 
 		Handle2Device_ [handle]->PieceRead (a);
 	}
-
-	void LiveStreamManager::handleDeviceReady (LiveStreamDevice *lsd)
-	{
-		Entity e;
-		e.Entity_ = QVariant::fromValue<QIODevice*> (lsd);
-		e.Parameters_ = FromUserInitiated;
-		e.Mime_ = "x-leechcraft/media-qiodevice";
-		Proxy_->GetEntityManager ()->HandleEntity (e);
-	}
-}
 }
