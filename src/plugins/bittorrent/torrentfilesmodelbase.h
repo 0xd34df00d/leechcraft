@@ -16,11 +16,8 @@
 #include <util/models/modelitembase.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
-#include "core.h"
 
-namespace LC
-{
-namespace BitTorrent
+namespace LC::BitTorrent
 {
 	template<typename T>
 	struct TorrentNodeInfoBase : public Util::ModelItemBase<T>
@@ -40,7 +37,7 @@ namespace BitTorrent
 		// (ColumnProgress, RawDataRole)
 		qulonglong SubtreeSize_ = 0;
 
-		TorrentNodeInfoBase (const std::shared_ptr<T>& parent)
+		explicit TorrentNodeInfoBase (const std::shared_ptr<T>& parent)
 		: Util::ModelItemBase<T> { parent }
 		{
 		}
@@ -86,9 +83,9 @@ namespace BitTorrent
 
 		int FilesInTorrent_ = 0;
 
-		TorrentFilesModelBase (const QStringList& headers, QObject *parent = nullptr)
+		explicit TorrentFilesModelBase (QStringList headers, QObject *parent = nullptr)
 		: QAbstractItemModel { parent }
-		, HeaderData_ { headers }
+		, HeaderData_ { std::move (headers) }
 		, RootNode_ { std::make_shared<T> (std::shared_ptr<T> {}) }
 		{
 		}
@@ -130,8 +127,7 @@ namespace BitTorrent
 			const auto& node = parent->AppendChild (parent);
 			node->ParentPath_ = parentParentPath;
 			node->Name_ = QString::fromStdU16String (parentPath.filename ().u16string ());
-			node->Icon_ = Core::Instance ()->GetProxy ()->
-					GetIconThemeManager ()->GetIcon ("document-open-folder");
+			node->Icon_ = GetProxyHolder ()->GetIconThemeManager ()->GetIcon (QStringLiteral ("document-open-folder"));
 
 			const auto& insertResult = Path2Node_.insert ({ parentPath, node });
 			if (announce)
@@ -140,12 +136,12 @@ namespace BitTorrent
 			return insertResult.first->second;
 		}
 	public:
-		int columnCount (const QModelIndex&) const override final
+		int columnCount (const QModelIndex&) const final
 		{
 			return HeaderData_.size ();
 		}
 
-		QVariant headerData (int h, Qt::Orientation orient, int role) const override final
+		QVariant headerData (int h, Qt::Orientation orient, int role) const final
 		{
 			if (orient == Qt::Horizontal && role == Qt::DisplayRole)
 				return HeaderData_.value (h);
@@ -153,7 +149,7 @@ namespace BitTorrent
 			return {};
 		}
 
-		QModelIndex index (int row, int col, const QModelIndex& parent = {}) const override final
+		QModelIndex index (int row, int col, const QModelIndex& parent = {}) const final
 		{
 			if (!hasIndex (row, col, parent))
 				return {};
@@ -167,7 +163,7 @@ namespace BitTorrent
 			return {};
 		}
 
-		QModelIndex parent (const QModelIndex& index) const override final
+		QModelIndex parent (const QModelIndex& index) const final
 		{
 			if (!index.isValid ())
 				return {};
@@ -181,7 +177,7 @@ namespace BitTorrent
 			return IndexForNode (parent);
 		}
 
-		int rowCount (const QModelIndex& parent) const override final
+		int rowCount (const QModelIndex& parent) const final
 		{
 			const auto nodePtr = parent.isValid () ?
 					static_cast<T*> (parent.internalPointer ()) :
@@ -204,5 +200,4 @@ namespace BitTorrent
 			Path2Node_.clear ();
 		}
 	};
-}
 }

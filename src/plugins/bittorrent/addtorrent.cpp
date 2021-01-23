@@ -12,6 +12,7 @@
 #include <QMessageBox>
 #include <QSortFilterProxyModel>
 #include <QMenu>
+#include <libtorrent/torrent_info.hpp>
 #include <util/util.h>
 #include <util/gui/util.h>
 #include <util/sll/prelude.h>

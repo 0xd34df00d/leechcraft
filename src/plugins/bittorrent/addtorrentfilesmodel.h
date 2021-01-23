@@ -10,9 +10,7 @@
 
 #include "torrentfilesmodelbase.h"
 
-namespace LC
-{
-namespace BitTorrent
+namespace LC::BitTorrent
 {
 	struct AddTorrentNodeInfo : public TorrentNodeInfoBase<AddTorrentNodeInfo>
 	{
@@ -20,7 +18,7 @@ namespace BitTorrent
 
 		using TorrentNodeInfoBase<AddTorrentNodeInfo>::TorrentNodeInfoBase;
 	};
-	typedef std::shared_ptr<AddTorrentNodeInfo> AddTorrentNodeInfo_ptr;
+	using AddTorrentNodeInfo_ptr = std::shared_ptr<AddTorrentNodeInfo>;
 
 	class AddTorrentFilesModel final : public TorrentFilesModelBase<AddTorrentNodeInfo>
 	{
@@ -45,7 +43,7 @@ namespace BitTorrent
 			int64_t Size_;
 		};
 
-		AddTorrentFilesModel (QObject *parent = nullptr);
+		explicit AddTorrentFilesModel (QObject *parent = nullptr);
 
 		QVariant data (const QModelIndex&, int = Qt::DisplayRole) const override;
 		Qt::ItemFlags flags (const QModelIndex&) const override;
@@ -60,5 +58,4 @@ namespace BitTorrent
 
 		void UpdateSizeGraph (const AddTorrentNodeInfo_ptr& node);
 	};
-}
 }

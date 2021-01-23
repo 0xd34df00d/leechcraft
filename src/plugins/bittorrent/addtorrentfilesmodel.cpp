@@ -11,9 +11,7 @@
 #include <util/util.h>
 #include <util/sll/unreachable.h>
 
-namespace LC
-{
-namespace BitTorrent
+namespace LC::BitTorrent
 {
 	AddTorrentFilesModel::AddTorrentFilesModel (QObject *parent)
 	: TorrentFilesModelBase { { tr ("Name"), tr ("Size") },  parent }
@@ -227,5 +225,4 @@ namespace BitTorrent
 
 		node->SubtreeSize_ = size;
 	}
-}
 }
