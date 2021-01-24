@@ -27,11 +27,8 @@ namespace BitTorrent
 		Q_OBJECT
 
 		Ui::TorrentTabWidget *Ui_;
-		QSortFilterProxyModel *ProxyModel_;
-		QPersistentModelIndex Current_;
 	public:
-		PeersTabLinker (Ui::TorrentTabWidget*,
-				QSortFilterProxyModel*, QObject* = 0);
+		PeersTabLinker (Ui::TorrentTabWidget*, QObject* = nullptr);
 	private slots:
 		void handleNewRow (const QModelIndex&);
 		void update ();

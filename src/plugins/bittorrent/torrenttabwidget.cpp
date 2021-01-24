@@ -54,7 +54,7 @@ namespace BitTorrent
 				SIGNAL (currentChanged (const QModelIndex&, const QModelIndex&)),
 				this,
 				SLOT (currentPeerChanged (const QModelIndex&)));
-		new PeersTabLinker (&Ui_, PeersSorter_, this);
+		new PeersTabLinker (&Ui_, this);
 
 		header = Ui_.WebSeedsView_->header ();
 		header->resizeSection (0, fm.horizontalAdvance ("average.domain.name.of.a.tracker"));

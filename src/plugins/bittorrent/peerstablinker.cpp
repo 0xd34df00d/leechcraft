@@ -19,30 +19,24 @@ namespace LC
 namespace BitTorrent
 {
 	PeersTabLinker::PeersTabLinker (Ui::TorrentTabWidget *ui,
-			QSortFilterProxyModel *proxy,
 			QObject *parent)
-	: QObject (parent)
-	, Ui_ (ui)
-	, ProxyModel_ (proxy)
+	: QObject { parent }
+	, Ui_ { ui }
 	{
 		connect (Ui_->PeersView_->selectionModel (),
-				SIGNAL (currentRowChanged (const QModelIndex&, const QModelIndex&)),
+				&QItemSelectionModel::currentRowChanged,
 				this,
-				SLOT (handleNewRow (const QModelIndex&)));
+				&PeersTabLinker::Update);
 	}
 
-	void PeersTabLinker::handleNewRow (const QModelIndex& pi)
+	void PeersTabLinker::Update ()
 	{
-		if (!pi.isValid ())
-			return;
+		QTimer::singleShot (1000, this, &PeersTabLinker::Update);
 
-		Current_ = ProxyModel_->mapToSource (pi);
-		update ();
-	}
+		const auto& current = Ui_->PeersView_->currentIndex ();
+		const auto& p = current.data (PeersModel::PeerInfoRole).value<PeerInfo> ();
 
-	void PeersTabLinker::update ()
-	{
-		if (!Current_.isValid ())
+		if (!current.isValid () || !p.PI_)
 		{
 			Ui_->PeerInfo_->clear ();
 			Ui_->PeerType_->clear ();
@@ -64,10 +58,6 @@ namespace BitTorrent
 			Ui_->PeerRTT_->clear ();
 			return;
 		}
-
-		const auto& p = Current_.data (PeersModel::PeerInfoRole).value<PeerInfo> ();
-
-		QTimer::singleShot (1000, this, SLOT (update ()));
 
 		QString source;
 		if (p.PI_->source & libtorrent::peer_info::tracker)
