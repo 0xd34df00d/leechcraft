@@ -44,24 +44,24 @@ namespace BitTorrent
 	{
 		if (!Current_.isValid ())
 		{
-			Ui_->PeerInfo_->setText ("");
-			Ui_->PeerType_->setText ("");
-			Ui_->PeerSpeed_->setText ("");
-			Ui_->PeerPayloadSpeed_->setText ("");
-			Ui_->PeerPeakSpeeds_->setText ("");
-			Ui_->PeerDownloaded_->setText ("");
-			Ui_->PeerRemoteDLSpeed_->setText ("");
-			Ui_->PeerProgress_->setText ("");
-			Ui_->PeerIsSeed_->setText ("");
-			Ui_->PeerLastRequest_->setText ("");
-			Ui_->PeerLastActive_->setText ("");
-			Ui_->PeerSendBuffer_->setText ("");
-			Ui_->PeerReceiveBuffer_->setText ("");
-			Ui_->PeerNumHashfails_->setText ("");
-			Ui_->PeerQueues_->setText ("");
-			Ui_->PeerFailcount_->setText ("");
-			Ui_->PeerPendingDisk_->setText ("");
-			Ui_->PeerRTT_->setText ("");
+			Ui_->PeerInfo_->clear ();
+			Ui_->PeerType_->clear ();
+			Ui_->PeerSpeed_->clear ();
+			Ui_->PeerPayloadSpeed_->clear ();
+			Ui_->PeerPeakSpeeds_->clear ();
+			Ui_->PeerDownloaded_->clear ();
+			Ui_->PeerRemoteDLSpeed_->clear ();
+			Ui_->PeerProgress_->clear ();
+			Ui_->PeerIsSeed_->clear ();
+			Ui_->PeerLastRequest_->clear ();
+			Ui_->PeerLastActive_->clear ();
+			Ui_->PeerSendBuffer_->clear ();
+			Ui_->PeerReceiveBuffer_->clear ();
+			Ui_->PeerNumHashfails_->clear ();
+			Ui_->PeerQueues_->clear ();
+			Ui_->PeerFailcount_->clear ();
+			Ui_->PeerPendingDisk_->clear ();
+			Ui_->PeerRTT_->clear ();
 			return;
 		}
 
