@@ -18,20 +18,14 @@ namespace Ui
 	class TorrentTabWidget;
 }
 
-namespace LC
-{
-namespace BitTorrent
+namespace LC::BitTorrent
 {
 	class PeersTabLinker : public QObject
 	{
-		Q_OBJECT
-
 		Ui::TorrentTabWidget *Ui_;
 	public:
 		PeersTabLinker (Ui::TorrentTabWidget*, QObject* = nullptr);
-	private slots:
-		void handleNewRow (const QModelIndex&);
-		void update ();
+	private:
+		void Update ();
 	};
-}
 }

@@ -9,14 +9,13 @@
 #include "peerstablinker.h"
 #include <QTimer>
 #include <QSortFilterProxyModel>
+#include <QTime>
+#include <libtorrent/peer_info.hpp>
 #include <util/util.h>
 #include "ui_torrenttabwidget.h"
-#include "core.h"
 #include "peersmodel.h"
 
-namespace LC
-{
-namespace BitTorrent
+namespace LC::BitTorrent
 {
 	PeersTabLinker::PeersTabLinker (Ui::TorrentTabWidget *ui,
 			QObject *parent)
@@ -59,21 +58,22 @@ namespace BitTorrent
 			return;
 		}
 
-		QString source;
+		QStringList sources;
+		const auto maxSourcesCount = 5;
+		sources.reserve (maxSourcesCount);
 		if (p.PI_->source & libtorrent::peer_info::tracker)
-			source += "tracker ";
+			sources << QStringLiteral ("tracker");
 		if (p.PI_->source & libtorrent::peer_info::dht)
-			source += "DHT ";
+			sources << QStringLiteral ("DHT");
 		if (p.PI_->source & libtorrent::peer_info::pex)
-			source += "PEX ";
+			sources << QStringLiteral ("PEX");
 		if (p.PI_->source & libtorrent::peer_info::lsd)
-			source += "LSD ";
+			sources << QStringLiteral ("LSD");
 		if (p.PI_->source & libtorrent::peer_info::resume_data)
-			source += "resume ";
+			sources << QStringLiteral ("resume");
+
 		Ui_->PeerInfo_->setText (tr ("%1 %2 from %3")
-				.arg (p.IP_)
-				.arg (p.Client_)
-				.arg (source));
+				.arg (p.IP_, p.Client_, sources.join (' ')));
 
 		Ui_->PeerType_->setText (p.PI_->connection_type ==
 					libtorrent::peer_info::standard_bittorrent ?
@@ -83,23 +83,23 @@ namespace BitTorrent
 		Ui_->PeerPieces_->setPieceMap (p.PI_->pieces);
 
 		Ui_->PeerSpeed_->setText (tr ("%1/s | %2/s")
-				.arg (Util::MakePrettySize (p.PI_->down_speed))
-				.arg (Util::MakePrettySize (p.PI_->up_speed)));
+				.arg (Util::MakePrettySize (p.PI_->down_speed),
+					  Util::MakePrettySize (p.PI_->up_speed)));
 
 		Ui_->PeerPayloadSpeed_->setText (tr ("%1/s | %2/s")
-				.arg (Util::MakePrettySize (p.PI_->payload_down_speed))
-				.arg (Util::MakePrettySize (p.PI_->payload_up_speed)));
+				.arg (Util::MakePrettySize (p.PI_->payload_down_speed),
+					  Util::MakePrettySize (p.PI_->payload_up_speed)));
 
 		Ui_->PeerPeakSpeeds_->setText (tr ("%1/s | %2/s")
-				.arg (Util::MakePrettySize (p.PI_->download_rate_peak))
-				.arg (Util::MakePrettySize (p.PI_->upload_rate_peak)));
+				.arg (Util::MakePrettySize (p.PI_->download_rate_peak),
+					  Util::MakePrettySize (p.PI_->upload_rate_peak)));
 
 		Ui_->PeerRemoteDLSpeed_->setText (tr ("%1/s")
 				.arg (Util::MakePrettySize (p.PI_->remote_dl_rate)));
 
 		Ui_->PeerDownloaded_->setText (tr ("%1 | %2")
-				.arg (Util::MakePrettySize (p.PI_->total_download))
-				.arg (Util::MakePrettySize (p.PI_->total_upload)));
+				.arg (Util::MakePrettySize (p.PI_->total_download),
+					  Util::MakePrettySize (p.PI_->total_upload)));
 
 		if (p.PI_->downloading_piece_index >= 0)
 			Ui_->PeerProgress_->setText (tr ("%1 (piece %2, block %3, %4/%5)")
@@ -109,8 +109,7 @@ namespace BitTorrent
 					.arg (p.PI_->downloading_progress)
 					.arg (p.PI_->downloading_total));
 		else
-			Ui_->PeerProgress_->setText (QString ("%1")
-					.arg (p.PI_->progress));
+			Ui_->PeerProgress_->setText (QString::number (p.PI_->progress));
 
 		Ui_->PeerIsSeed_->setText (p.PI_->seed ?
 				tr ("yes") : tr ("no"));
@@ -123,16 +122,14 @@ namespace BitTorrent
 		const auto& lastActive = QTime {}.addMSecs (libtorrent::total_milliseconds (p.PI_->last_active));
 		Ui_->PeerLastActive_->setText (lastActive.toString ());
 
-		int sendBuf = p.PI_->send_buffer_size;
-		if (sendBuf)
+		if (int sendBuf = p.PI_->send_buffer_size)
 			Ui_->PeerSendBuffer_->setText (tr ("%1% of %2")
 					.arg (100 * p.PI_->used_send_buffer / sendBuf)
 					.arg (sendBuf));
 		else
 			Ui_->PeerSendBuffer_->setText (tr ("No send buffer"));
 
-		int recBuf = p.PI_->receive_buffer_size;
-		if (recBuf)
+		if (int recBuf = p.PI_->receive_buffer_size)
 			Ui_->PeerReceiveBuffer_->setText (tr ("%1% of %2")
 					.arg (100 * p.PI_->used_receive_buffer / recBuf)
 					.arg (recBuf));
@@ -151,5 +148,4 @@ namespace BitTorrent
 
 		Ui_->PeerRTT_->setText (QString::number (p.PI_->rtt));
 	}
-}
 }
