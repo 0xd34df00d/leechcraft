@@ -59,6 +59,9 @@ namespace BitTorrent
 		const int i = index.row ();
 		const auto& pi = Peers_.at (i);
 
+		if (role == PeerInfoRole)
+			return QVariant::fromValue (pi);
+
 		if (index.column () == 0)
 		{
 			const auto& code = Peers_.at (i).CountryCode_;
@@ -152,13 +155,6 @@ namespace BitTorrent
 	int PeersModel::rowCount (const QModelIndex&) const
 	{
 		return Peers_.size ();
-	}
-
-	const PeerInfo& PeersModel::GetPeerInfo (const QModelIndex& index) const
-	{
-		if (index.row () >= Peers_.size ())
-			throw std::runtime_error ("Index too large");
-		return Peers_.at (index.row ());
 	}
 
 	void PeersModel::update ()

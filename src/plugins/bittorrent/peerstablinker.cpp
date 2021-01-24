@@ -65,18 +65,7 @@ namespace BitTorrent
 			return;
 		}
 
-		PeerInfo p;
-		try
-		{
-			auto model = static_cast<const PeersModel*> (Current_.model ());
-			p = model->GetPeerInfo (Current_);
-		}
-		catch (...)
-		{
-			Current_ = QModelIndex ();
-			update ();
-			return;
-		}
+		const auto& p = Current_.data (PeersModel::PeerInfoRole).value<PeerInfo> ();
 
 		QTimer::singleShot (1000, this, SLOT (update ()));
 

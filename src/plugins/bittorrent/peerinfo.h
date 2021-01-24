@@ -10,6 +10,7 @@
 
 #include <memory>
 #include <QString>
+#include <QMetaType>
 
 namespace libtorrent
 {
@@ -27,3 +28,5 @@ namespace LC::BitTorrent
 		std::shared_ptr<libtorrent::peer_info> PI_;
 	};
 }
+
+Q_DECLARE_METATYPE (LC::BitTorrent::PeerInfo)

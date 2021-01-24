@@ -28,7 +28,11 @@ namespace BitTorrent
 
 		QString FlagsPath_;
 	public:
-		enum { SortRole = Qt::UserRole + 1 };
+		enum
+		{
+			SortRole = Qt::UserRole + 1,
+			PeerInfoRole
+		};
 
 		explicit PeersModel (int idx, QObject *parent = nullptr);
 
