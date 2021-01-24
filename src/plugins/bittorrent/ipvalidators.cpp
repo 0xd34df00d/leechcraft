@@ -9,15 +9,8 @@
 #include "ipvalidators.h"
 #include <QStringList>
 
-namespace LC
+namespace LC::BitTorrent
 {
-namespace BitTorrent
-{
-	ValidateIPv4::ValidateIPv4 (QObject *parent)
-	: QValidator (parent)
-	{
-	}
-
 	QValidator::State ValidateIPv4::validate (QString& input, int&) const
 	{
 		const auto& octets = input.splitRef ('.', Qt::SkipEmptyParts);
@@ -34,14 +27,9 @@ namespace BitTorrent
 		return Acceptable;
 	}
 
-	ValidateIPv6::ValidateIPv6 (QObject *parent)
-	: QValidator (parent)
-	{
-	}
-
 	QValidator::State ValidateIPv6::validate (QString& input, int&) const
 	{
-		if (input.count ("::") > 1)
+		if (input.count (QStringLiteral ("::")) > 1)
 			return Intermediate;
 
 		const auto& octets = input.split (':', Qt::SkipEmptyParts);
@@ -57,5 +45,4 @@ namespace BitTorrent
 		}
 		return Acceptable;
 	}
-}
 }

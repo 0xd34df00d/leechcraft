@@ -11,20 +11,16 @@
 #include <QDialog>
 #include "ui_movetorrentfiles.h"
 
-namespace LC
-{
-namespace BitTorrent
+namespace LC::BitTorrent
 {
 	class MoveTorrentFiles : public QDialog
 	{
-		Q_OBJECT
+		Q_DECLARE_TR_FUNCTIONS (LC::BitTorrent::MoveTorrentFiles)
 
 		Ui::MoveTorrentFiles Ui_;
 	public:
 		explicit MoveTorrentFiles (QStringList oldDirectories, QWidget *parent = nullptr);
+
 		QString GetNewLocation () const;
-	private slots:
-		void on_Browse__released ();
 	};
-}
 }

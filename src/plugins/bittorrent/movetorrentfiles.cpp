@@ -8,48 +8,47 @@
 
 #include "movetorrentfiles.h"
 #include <QFileDialog>
-#include <xmlsettingsmanager.h>
+#include "xmlsettingsmanager.h"
 
-namespace LC
-{
-namespace BitTorrent
+namespace LC::BitTorrent
 {
 	MoveTorrentFiles::MoveTorrentFiles (QStringList oldDirectories, QWidget *parent)
 	: QDialog { parent }
 	{
 		Ui_.setupUi (this);
 
-		Q_ASSERT (!oldDirectories.empty ());
-
 		oldDirectories.removeDuplicates ();
 
-		if (1 == oldDirectories.size ())
+		if (oldDirectories.size () == 1)
 			Ui_.OldLocation_->setText (oldDirectories.front ());
 		else
 		{
-			Ui_.OldLocation_->setToolTip (oldDirectories.join (", "));
+			Ui_.OldLocation_->setToolTip (oldDirectories.join (QStringLiteral (", ")));
 			Ui_.OldLocation_->setPlaceholderText (tr ("Multiple directories"));
 		}
 
 		const auto xsm = XmlSettingsManager::Instance ();
-		const auto& moveDirectory = xsm->Property ("LastMoveDirectory",
-					xsm->property ("LastSaveDirectory").toString ()).toString ();
+		const auto& saveDirectory = xsm->property ("LastSaveDirectory").toString ();
+		const auto& moveDirectory = xsm->Property ("LastMoveDirectory", saveDirectory).toString ();
 
 		Ui_.NewLocation_->setText (moveDirectory);
+
+		connect (Ui_.Browse_,
+				&QPushButton::released,
+				[this]
+				{
+					const auto& dir = QFileDialog::getExistingDirectory (this,
+							tr ("New location"),
+							Ui_.NewLocation_->text ());
+					if (dir.isEmpty ())
+						return;
+
+					Ui_.NewLocation_->setText (dir);
+				});
 	}
 
 	QString MoveTorrentFiles::GetNewLocation () const
 	{
 		return Ui_.NewLocation_->text ();
 	}
-
-	void MoveTorrentFiles::on_Browse__released ()
-	{
-		const auto& dir = QFileDialog::getExistingDirectory (this, tr ("New location"),
-				Ui_.NewLocation_->text ());
-		if (dir.isEmpty () || dir == Ui_.NewLocation_->text ())
-			return;
-		Ui_.NewLocation_->setText (dir);
-	}
-}
 }

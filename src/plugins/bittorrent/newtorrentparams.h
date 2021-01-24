@@ -12,21 +12,18 @@
 #include <QString>
 #include <QStringList>
 
-namespace LC
-{
-namespace BitTorrent
+namespace LC::BitTorrent
 {
 	struct NewTorrentParams
 	{
-		QString Output_
-			, AnnounceURL_
-			, Comment_
-			, Path_;
+		QString Output_;
+		QString AnnounceURL_;
+		QString Comment_;
+		QString Path_;
 		QDate Date_;
 		int PieceSize_;
 		QStringList URLSeeds_;
 		QStringList DHTNodes_;
 		bool DHTEnabled_;
 	};
-}
 }

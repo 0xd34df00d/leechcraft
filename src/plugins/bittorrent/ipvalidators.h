@@ -10,24 +10,21 @@
 
 #include <QValidator>
 
-namespace LC
-{
-namespace BitTorrent
+namespace LC::BitTorrent
 {
 	class ValidateIPv4 : public QValidator
 	{
 	public:
-		ValidateIPv4 (QObject* = 0);
+		using QValidator::QValidator;
 
-		State validate (QString&, int&) const;
+		State validate (QString&, int&) const override;
 	};
 
 	class ValidateIPv6 : public QValidator
 	{
 	public:
-		ValidateIPv6 (QObject* = 0);
+		using QValidator::QValidator;
 
-		State validate (QString&, int&) const;
+		State validate (QString&, int&) const override;
 	};
-}
 }

@@ -8,19 +8,15 @@
 
 #pragma once
 
-#include <vector>
 #include <memory>
-#include <QTime>
-#include <libtorrent/peer_info.hpp>
+#include <QString>
 
 namespace libtorrent
 {
     struct peer_info;
 }
 
-namespace LC
-{
-namespace BitTorrent
+namespace LC::BitTorrent
 {
 	struct PeerInfo
 	{
@@ -30,5 +26,4 @@ namespace BitTorrent
 		QString CountryCode_;
 		std::shared_ptr<libtorrent::peer_info> PI_;
 	};
-}
 }
