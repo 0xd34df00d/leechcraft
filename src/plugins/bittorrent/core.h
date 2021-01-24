@@ -52,7 +52,6 @@ class ShortcutManager;
 }
 namespace BitTorrent
 {
-	class NotifyManager;
 	class PiecesModel;
 	class PeersModel;
 	class TorrentFilesModel;
@@ -160,8 +159,6 @@ namespace BitTorrent
 		typedef QMap<QString, PerTrackerStats> pertrackerstats_t;
 	private:
 		CachedStatusKeeper * const StatusKeeper_;
-
-		NotifyManager *NotifyManager_;
 
 		libtorrent::session *Session_ = nullptr;
 		SessionSettingsManager *SessionSettingsMgr_ = nullptr;

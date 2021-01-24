@@ -45,7 +45,6 @@ LC_DEFINE_PLUGIN (
 		torrenttab.cpp
 		torrenttabwidget.cpp
 		tabviewproxymodel.cpp
-		notifymanager.cpp
 		addmagnetdialog.cpp
 		addtorrentfilesmodel.cpp
 		torrenttabfileswidget.cpp

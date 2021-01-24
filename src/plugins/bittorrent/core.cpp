@@ -72,7 +72,6 @@
 #include "torrentfilesmodel.h"
 #include "livestreammanager.h"
 #include "torrentmaker.h"
-#include "notifymanager.h"
 #include "sessionsettingsmanager.h"
 #include "cachedstatuskeeper.h"
 #include "geoip.h"
@@ -95,7 +94,6 @@ namespace BitTorrent
 
 	Core::Core ()
 	: StatusKeeper_ { new CachedStatusKeeper { this } }
-	, NotifyManager_ { new NotifyManager { this } }
 	, FinishedTimer_ { new QTimer }
 	, WarningWatchdog_ { new QTimer }
 	, GeoIP_ { std::make_shared<GeoIP> () }
@@ -236,7 +234,7 @@ namespace BitTorrent
 	{
 		Proxy_ = proxy;
 		ShortcutMgr_ = new ShortcutManager (proxy, this);
-		LiveStreamManager_ = std::make_shared<LiveStreamManager> (StatusKeeper_, proxy);
+		LiveStreamManager_ = std::make_shared<LiveStreamManager> (StatusKeeper_);
 	}
 
 	ICoreProxy_ptr Core::GetProxy () const
