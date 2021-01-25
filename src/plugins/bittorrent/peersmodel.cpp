@@ -16,13 +16,10 @@
 #include <util/sll/unreachable.h>
 #include "core.h"
 
-namespace LC
-{
-namespace BitTorrent
+namespace LC::BitTorrent
 {
 	PeersModel::PeersModel (int idx, QObject *parent)
 	: QAbstractItemModel (parent)
-	, CurrentTorrent_ (-1)
 	, Index_ (idx)
 	{
 		Headers_ << tr ("IP")
@@ -33,7 +30,7 @@ namespace BitTorrent
 			<< tr ("Client")
 			<< tr ("Available pieces");
 
-		FlagsPath_ = Util::GetSysPath (Util::SysPath::Share, "global_icons/flags", QString ());
+		FlagsPath_ = Util::GetSysPath (Util::SysPath::Share, QStringLiteral ("global_icons/flags"), {});
 
 		auto timer = new QTimer (this);
 		connect (timer,
@@ -164,7 +161,7 @@ namespace BitTorrent
 
 	void PeersModel::Clear ()
 	{
-		if (!Peers_.size ())
+		if (Peers_.isEmpty ())
 			return;
 
 		beginRemoveRows (QModelIndex (), 0, Peers_.size () - 1);
@@ -215,5 +212,4 @@ namespace BitTorrent
 			endInsertRows ();
 		}
 	}
-}
 }

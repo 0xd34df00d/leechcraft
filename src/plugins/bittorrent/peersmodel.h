@@ -10,12 +10,9 @@
 
 #include <QAbstractItemModel>
 #include <QStringList>
-#include <QList>
 #include "peerinfo.h"
 
-namespace LC
-{
-namespace BitTorrent
+namespace LC::BitTorrent
 {
 	class PeersModel : public QAbstractItemModel
 	{
@@ -23,7 +20,6 @@ namespace BitTorrent
 
 		QStringList Headers_;
 		QList<PeerInfo> Peers_;
-		int CurrentTorrent_;
 		const int Index_;
 
 		QString FlagsPath_;
@@ -36,21 +32,18 @@ namespace BitTorrent
 
 		explicit PeersModel (int idx, QObject *parent = nullptr);
 
-		virtual int columnCount (const QModelIndex& = QModelIndex ()) const;
-		virtual QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;
-		virtual Qt::ItemFlags flags (const QModelIndex&) const;
-		virtual bool hasChildren (const QModelIndex&) const;
-		virtual QVariant headerData (int, Qt::Orientation, int = Qt::DisplayRole) const;
-		virtual QModelIndex index (int, int, const QModelIndex& = QModelIndex ()) const;
-		virtual QModelIndex parent (const QModelIndex&) const;
-		virtual int rowCount (const QModelIndex& parent = QModelIndex ()) const;
-
-		const PeerInfo& GetPeerInfo (const QModelIndex&) const;
+		int columnCount (const QModelIndex& = {}) const override;
+		QVariant data (const QModelIndex&, int = Qt::DisplayRole) const override;
+		Qt::ItemFlags flags (const QModelIndex&) const override;
+		bool hasChildren (const QModelIndex&) const override;
+		QVariant headerData (int, Qt::Orientation, int = Qt::DisplayRole) const override;
+		QModelIndex index (int, int, const QModelIndex& = {}) const override;
+		QModelIndex parent (const QModelIndex&) const override;
+		int rowCount (const QModelIndex& parent = {}) const override;
 	public slots:
 		void update ();
 	private:
 		void Clear ();
 		void Update (const QList<PeerInfo>&);
 	};
-}
 }

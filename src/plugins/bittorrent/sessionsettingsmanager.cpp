@@ -14,13 +14,11 @@
 #include <libtorrent/extensions/ut_metadata.hpp>
 #include <libtorrent/extensions/ut_pex.hpp>
 #include <libtorrent/extensions/smart_ban.hpp>
-#include <util/xpc/util.h>
 #include <util/sll/slotclosure.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <util/sll/util.h>
 #include "xmlsettingsmanager.h"
-#include "core.h"
 
 namespace LC
 {
