@@ -80,7 +80,10 @@ namespace BitTorrent
 	, ViewFilter_ (new TabViewProxyModel (this))
 	{
 		Ui_.setupUi (this);
-		Ui_.Tabs_->SetSessionSettingsManager (Core::Instance ()->GetSessionSettingsManager ());
+		Ui_.Tabs_->SetDependencies ({
+				Core::Instance ()->GetSessionSettingsManager (),
+				Core::Instance ()->GetSessionHolder ()
+			});
 
 		ViewFilter_->setDynamicSortFilter (true);
 		ViewFilter_->setSortRole (Core::Roles::SortRole);

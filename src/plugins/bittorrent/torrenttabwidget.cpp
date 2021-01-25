@@ -134,26 +134,27 @@ namespace BitTorrent
 		setTabWidgetSettings ();
 	}
 
-	void TorrentTabWidget::SetSessionSettingsManager (SessionSettingsManager *ssm)
+	void TorrentTabWidget::SetDependencies (const Dependencies& deps)
 	{
-		SSM_ = ssm;
-
+		SSM_ = deps.SSM_;
 		connect (Ui_.OverallDownloadRateController_,
 				qOverload<int> (&QSpinBox::valueChanged),
-				ssm,
+				SSM_,
 				&SessionSettingsManager::SetOverallDownloadRate);
 		connect (Ui_.OverallUploadRateController_,
 				qOverload<int> (&QSpinBox::valueChanged),
-				ssm,
+				SSM_,
 				&SessionSettingsManager::SetOverallUploadRate);
 		connect (Ui_.DownloadingTorrents_,
 				qOverload<int> (&QSpinBox::valueChanged),
-				ssm,
+				SSM_,
 				&SessionSettingsManager::SetMaxDownloadingTorrents);
 		connect (Ui_.UploadingTorrents_,
 				qOverload<int> (&QSpinBox::valueChanged),
-				ssm,
+				SSM_,
 				&SessionSettingsManager::SetMaxUploadingTorrents);
+
+		Ui_.PagePeers_->SetSessionHolder (deps.Holder_);
 	}
 
 	void TorrentTabWidget::SetChangeTrackersAction (QAction *changeTrackers)

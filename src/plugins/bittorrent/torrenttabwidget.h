@@ -33,7 +33,13 @@ namespace BitTorrent
 	public:
 		explicit TorrentTabWidget (QWidget* = nullptr);
 
-		void SetSessionSettingsManager (SessionSettingsManager*);
+		struct Dependencies
+		{
+			SessionSettingsManager *SSM_;
+			const SessionHolder& Holder_;
+		};
+
+		void SetDependencies (const Dependencies&);
 
 		void SetChangeTrackersAction (QAction*);
 

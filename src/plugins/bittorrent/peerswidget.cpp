@@ -70,12 +70,17 @@ namespace LC::BitTorrent
 				});
 	}
 
-	void PeersWidget::SetPeersModel (PeersModel *model, int torrentIdx)
+	void PeersWidget::SetSessionHolder (const SessionHolder& holder)
 	{
-		TorrentIdx_ = torrentIdx;
+		Holder_ = &holder;
+	}
+
+	void PeersWidget::SetSelectedTorrent (int torrent)
+	{
+		TorrentIdx_ = torrent;
 
 		auto prevModel = PeersSorter_->sourceModel ();
-		PeersSorter_->setSourceModel (model);
+		PeersSorter_->setSourceModel (new PeersModel (torrent));
 		delete prevModel;
 	}
 

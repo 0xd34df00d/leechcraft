@@ -16,17 +16,22 @@ class QSortFilterProxyModel;
 namespace LC::BitTorrent
 {
 	class PeersModel;
+	class SessionHolder;
 
 	class PeersWidget : public QWidget
 	{
 		Ui::PeersWidget Ui_;
+
+		const SessionHolder *Holder_ = nullptr;
 
 		QSortFilterProxyModel * const PeersSorter_;
 		int TorrentIdx_ = -1;
 	public:
 		explicit PeersWidget (QWidget* = nullptr);
 
-		void SetPeersModel (PeersModel*, int torrentIdx);
+		void SetSessionHolder (const SessionHolder&);
+
+		void SetSelectedTorrent (int);
 		void Update ();
 	};
 }
