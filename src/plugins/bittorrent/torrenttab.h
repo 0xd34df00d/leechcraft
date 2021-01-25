@@ -16,6 +16,8 @@ namespace LC
 {
 namespace BitTorrent
 {
+	class SessionHolder;
+
 	class TorrentTab : public QWidget
 					 , public ITabWidget
 	{
@@ -23,6 +25,8 @@ namespace BitTorrent
 		Q_INTERFACES (ITabWidget)
 
 		Ui::TorrentTab Ui_;
+
+		const SessionHolder& Holder_;
 
 		const TabClassInfo TC_;
 		QObject *ParentMT_;
@@ -48,7 +52,7 @@ namespace BitTorrent
 
 		QSortFilterProxyModel *ViewFilter_;
 	public:
-		TorrentTab (const TabClassInfo&, QObject*);
+		TorrentTab (const SessionHolder&, const TabClassInfo&, QObject*);
 
 		TabClassInfo GetTabClassInfo () const;
 		QObject* ParentMultiTabs ();

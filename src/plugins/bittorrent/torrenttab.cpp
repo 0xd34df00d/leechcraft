@@ -73,16 +73,17 @@ namespace BitTorrent
 		};
 	}
 
-	TorrentTab::TorrentTab (const TabClassInfo& tc, QObject *mt)
-	: TC_ (tc)
-	, ParentMT_ (mt)
-	, Toolbar_ (new QToolBar ("BitTorrent"))
-	, ViewFilter_ (new TabViewProxyModel (this))
+	TorrentTab::TorrentTab (const SessionHolder& holder, const TabClassInfo& tc, QObject *mt)
+	: Holder_ { holder }
+	, TC_ { tc }
+	, ParentMT_ { mt }
+	, Toolbar_ { new QToolBar { "BitTorrent" } }
+	, ViewFilter_ { new TabViewProxyModel { this } }
 	{
 		Ui_.setupUi (this);
 		Ui_.Tabs_->SetDependencies ({
 				Core::Instance ()->GetSessionSettingsManager (),
-				Core::Instance ()->GetSessionHolder ()
+				holder
 			});
 
 		ViewFilter_->setDynamicSortFilter (true);
