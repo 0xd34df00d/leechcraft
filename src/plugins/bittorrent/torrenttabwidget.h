@@ -9,10 +9,7 @@
 #pragma once
 
 #include <QTabWidget>
-#include <QAction>
 #include "ui_torrenttabwidget.h"
-
-class QSortFilterProxyModel;
 
 namespace LC
 {
@@ -30,7 +27,6 @@ namespace BitTorrent
 		int Index_ = -1;
 		QList<int> SelectedIndices_;
 
-		QSortFilterProxyModel *PeersSorter_;
 	public:
 		TorrentTabWidget (QWidget* = 0);
 
@@ -64,11 +60,8 @@ namespace BitTorrent
 
 		void on_LabelComment__linkActivated (const QString&);
 
-		void handleAddPeer ();
-		void handleBanPeer ();
 		void handleAddWebSeed ();
 
-		void currentPeerChanged (const QModelIndex&);
 		void currentWebSeedChanged (const QModelIndex&);
 		void handleRemoveWebSeed ();
 	};

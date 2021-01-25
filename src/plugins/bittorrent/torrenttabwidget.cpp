@@ -8,7 +8,7 @@
 
 #include "torrenttabwidget.h"
 #include <chrono>
-#include <QSortFilterProxyModel>
+#include <QAction>
 #include <QUrl>
 #include <libtorrent/session.hpp>
 #include <libtorrent/lazy_entry.hpp>
@@ -20,12 +20,9 @@
 #include <interfaces/core/ientitymanager.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
-#include "peerstablinker.h"
 #include "piecesmodel.h"
 #include "peersmodel.h"
-#include "addpeerdialog.h"
 #include "addwebseeddialog.h"
-#include "banpeersdialog.h"
 #include "sessionsettingsmanager.h"
 #include "sessionstats.h"
 
@@ -35,7 +32,6 @@ namespace BitTorrent
 {
 	TorrentTabWidget::TorrentTabWidget (QWidget *parent)
 	: QTabWidget (parent)
-	, PeersSorter_ (new QSortFilterProxyModel (this))
 	{
 		Ui_.setupUi (this);
 		new Util::TagsCompleter (Ui_.TorrentTags_);
@@ -46,15 +42,6 @@ namespace BitTorrent
 		header->resizeSection (2, fm.horizontalAdvance ("1234.5678 bytes/s"));
 
 		Ui_.TorrentTags_->AddSelector ();
-
-		PeersSorter_->setDynamicSortFilter (true);
-		PeersSorter_->setSortRole (PeersModel::SortRole);
-		Ui_.PeersView_->setModel (PeersSorter_);
-		connect (Ui_.PeersView_->selectionModel (),
-				SIGNAL (currentChanged (const QModelIndex&, const QModelIndex&)),
-				this,
-				SLOT (currentPeerChanged (const QModelIndex&)));
-		new PeersTabLinker (&Ui_, this);
 
 		header = Ui_.WebSeedsView_->header ();
 		header->resizeSection (0, fm.horizontalAdvance ("average.domain.name.of.a.tracker"));
@@ -113,27 +100,6 @@ namespace BitTorrent
 
 		UpdateDashboard ();
 
-		AddPeer_ = new QAction (tr ("Add peer..."),
-				Ui_.PeersView_);
-		AddPeer_->setProperty ("ActionIcon", "list-add-user");
-		AddPeer_->setObjectName ("AddPeer_");
-		connect (AddPeer_,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleAddPeer ()));
-		Ui_.PeersView_->addAction (AddPeer_);
-
-		BanPeer_ = new QAction (tr ("Ban peer..."),
-				Ui_.PeersView_);
-		BanPeer_->setProperty ("ActionIcon", "im-ban-user");
-		BanPeer_->setObjectName ("BanPeer_");
-		BanPeer_->setEnabled (false);
-		connect (BanPeer_,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleBanPeer ()));
-		Ui_.PeersView_->addAction (BanPeer_);
-
 		AddWebSeed_ = new QAction (tr ("Add web seed..."),
 				Ui_.WebSeedsView_);
 		AddWebSeed_->setObjectName ("AddWebSeed_");
@@ -188,14 +154,11 @@ namespace BitTorrent
 		const QList<QAbstractItemModel*> oldModels
 		{
 			Ui_.PiecesView_->model (),
-			PeersSorter_->sourceModel (),
 			Ui_.WebSeedsView_->model ()
 		};
 
-		auto piecesModel = Core::Instance ()->GetPiecesModel (Index_);
-		Ui_.PiecesView_->setModel (piecesModel);
-
-		PeersSorter_->setSourceModel (Core::Instance ()->GetPeersModel (Index_));
+		Ui_.PiecesView_->setModel (Core::Instance ()->GetPiecesModel (Index_));
+		Ui_.PagePeers_->SetPeersModel (Core::Instance ()->GetPeersModel (Index_));
 
 		Ui_.WebSeedsView_->setModel (Core::Instance ()->GetWebSeedsModel (Index_));
 		connect (Ui_.WebSeedsView_->selectionModel (),
@@ -499,27 +462,6 @@ namespace BitTorrent
 				property ("ActiveTorrentPeers").toBool ());
 	}
 
-	void TorrentTabWidget::handleAddPeer ()
-	{
-		AddPeerDialog peer;
-		if (peer.exec () != QDialog::Accepted)
-			return;
-
-		Core::Instance ()->AddPeer (peer.GetIP (), peer.GetPort (), Index_);
-	}
-
-	void TorrentTabWidget::handleBanPeer ()
-	{
-		QModelIndex peerIndex = Ui_.PeersView_->currentIndex ();
-
-		BanPeersDialog ban;
-		ban.SetIP (peerIndex.sibling (peerIndex.row (), 0).data ().toString ());
-		if (ban.exec () != QDialog::Accepted)
-			return;
-
-		Core::Instance ()->BanPeers (qMakePair (ban.GetStart (), ban.GetEnd ()));
-	}
-
 	void TorrentTabWidget::handleAddWebSeed ()
 	{
 		AddWebSeedDialog ws;
@@ -531,11 +473,6 @@ namespace BitTorrent
 			return;
 
 		Core::Instance ()->AddWebSeed (ws.GetURL (), ws.GetType (), Index_);
-	}
-
-	void TorrentTabWidget::currentPeerChanged (const QModelIndex& index)
-	{
-		BanPeer_->setEnabled (index.isValid ());
 	}
 
 	void TorrentTabWidget::currentWebSeedChanged (const QModelIndex& index)

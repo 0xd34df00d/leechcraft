@@ -28,7 +28,6 @@ LC_DEFINE_PLUGIN (
 		filesviewdelegate.cpp
 		movetorrentfiles.cpp
 		trackerschanger.cpp
-		peerstablinker.cpp
 		addpeerdialog.cpp
 		ipvalidators.cpp
 		addwebseeddialog.cpp
@@ -51,6 +50,7 @@ LC_DEFINE_PLUGIN (
 		sessionsettingsmanager.cpp
 		cachedstatuskeeper.cpp
 		geoip.cpp
+		peerswidget.cpp
 	SETTINGS torrentsettings.xml
 	QT_COMPONENTS Xml Widgets
 	LINK_LIBRARIES PkgConfig::Libtorrent $<$<BOOL:${ENABLE_BITTORRENT_GEOIP}>:PkgConfig::MMDB>

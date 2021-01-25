@@ -16,7 +16,6 @@
 #include "core.h"
 #include "torrentfilesmodel.h"
 #include "xmlsettingsmanager.h"
-#include "peerstablinker.h"
 #include "piecesmodel.h"
 #include "peersmodel.h"
 #include "addpeerdialog.h"

@@ -8,24 +8,25 @@
 
 #pragma once
 
-#include <QObject>
-#include <QPersistentModelIndex>
+#include <QWidget>
+#include "ui_peerswidget.h"
 
 class QSortFilterProxyModel;
 
-namespace Ui
-{
-	class TorrentTabWidget;
-}
-
 namespace LC::BitTorrent
 {
-	class PeersTabLinker : public QObject
+	class PeersModel;
+
+	class PeersWidget : public QWidget
 	{
-		Ui::TorrentTabWidget *Ui_;
+		Ui::PeersWidget Ui_;
+
+		QSortFilterProxyModel * const PeersSorter_;
+		int TorrentIdx_ = -1;
 	public:
-		PeersTabLinker (Ui::TorrentTabWidget*, QObject* = nullptr);
-	private:
+		explicit PeersWidget (QWidget* = nullptr);
+
+		void SetPeersModel (PeersModel*, int torrentIdx);
 		void Update ();
 	};
 }
