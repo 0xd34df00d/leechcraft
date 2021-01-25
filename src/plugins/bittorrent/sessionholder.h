@@ -25,6 +25,12 @@ namespace LC::BitTorrent
 	public:
 		explicit SessionHolder (libtorrent::session&);
 
+		SessionHolder (const SessionHolder&) = delete;
+		SessionHolder (SessionHolder&&) = delete;
+
+		SessionHolder& operator= (const SessionHolder&) = delete;
+		SessionHolder& operator= (SessionHolder&&) = delete;
+
 		libtorrent::session& GetSession ();
 
 		libtorrent::torrent_handle& operator[] (int);
