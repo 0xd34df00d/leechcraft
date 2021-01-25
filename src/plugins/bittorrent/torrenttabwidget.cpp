@@ -47,18 +47,6 @@ namespace BitTorrent
 		header->resizeSection (0, fm.horizontalAdvance ("average.domain.name.of.a.tracker"));
 		header->resizeSection (1, fm.horizontalAdvance ("  BEP 99  "));
 
-		connect (Ui_.OverallDownloadRateController_,
-				qOverload<int> (&QSpinBox::valueChanged),
-				[this] (int val) { SSM_->SetOverallDownloadRate (val); });
-		connect (Ui_.OverallUploadRateController_,
-				qOverload<int> (&QSpinBox::valueChanged),
-				[this] (int val) { SSM_->SetOverallUploadRate (val); });
-		connect (Ui_.DownloadingTorrents_,
-				qOverload<int> (&QSpinBox::valueChanged),
-				[this] (int val) { SSM_->SetMaxDownloadingTorrents (val); });
-		connect (Ui_.UploadingTorrents_,
-				qOverload<int> (&QSpinBox::valueChanged),
-				[this] (int val) { SSM_->SetMaxUploadingTorrents (val); });
 		connect (Ui_.TorrentDownloadRateController_,
 				qOverload<int> (&QSpinBox::valueChanged),
 				[this] (int val)
@@ -149,6 +137,23 @@ namespace BitTorrent
 	void TorrentTabWidget::SetSessionSettingsManager (SessionSettingsManager *ssm)
 	{
 		SSM_ = ssm;
+
+		connect (Ui_.OverallDownloadRateController_,
+				qOverload<int> (&QSpinBox::valueChanged),
+				ssm,
+				&SessionSettingsManager::SetOverallDownloadRate);
+		connect (Ui_.OverallUploadRateController_,
+				qOverload<int> (&QSpinBox::valueChanged),
+				ssm,
+				&SessionSettingsManager::SetOverallUploadRate);
+		connect (Ui_.DownloadingTorrents_,
+				qOverload<int> (&QSpinBox::valueChanged),
+				ssm,
+				&SessionSettingsManager::SetMaxDownloadingTorrents);
+		connect (Ui_.UploadingTorrents_,
+				qOverload<int> (&QSpinBox::valueChanged),
+				ssm,
+				&SessionSettingsManager::SetMaxUploadingTorrents);
 	}
 
 	void TorrentTabWidget::SetChangeTrackersAction (QAction *changeTrackers)
