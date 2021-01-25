@@ -30,6 +30,7 @@
 #include "fileinfo.h"
 #include "peerinfo.h"
 #include "types.h"
+#include "sessionholder.h"
 
 class QTimer;
 class QDomElement;
@@ -83,7 +84,6 @@ namespace BitTorrent
 			QByteArray TorrentFileContents_ = {};
 			QString TorrentFileName_ = {};
 			TorrentState State_ = TSIdle;
-			double Ratio_ = 0;
 			/** Holds the IDs of tags of the torrent.
 				*/
 			QStringList Tags_;
@@ -181,6 +181,8 @@ namespace BitTorrent
 
 		QIcon TorrentIcon_;
 
+		SessionHolder Holder_;
+
 		Core ();
 	public:
 		enum Columns
@@ -213,6 +215,8 @@ namespace BitTorrent
 
 		void SetProxy (ICoreProxy_ptr);
 		ICoreProxy_ptr GetProxy () const;
+
+		SessionHolder& GetSessionHolder ();
 
 		Util::ShortcutManager* GetShortcutManager () const;
 

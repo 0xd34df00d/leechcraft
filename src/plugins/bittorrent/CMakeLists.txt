@@ -51,6 +51,7 @@ LC_DEFINE_PLUGIN (
 		cachedstatuskeeper.cpp
 		geoip.cpp
 		peerswidget.cpp
+		sessionholder.cpp
 	SETTINGS torrentsettings.xml
 	QT_COMPONENTS Xml Widgets
 	LINK_LIBRARIES PkgConfig::Libtorrent $<$<BOOL:${ENABLE_BITTORRENT_GEOIP}>:PkgConfig::MMDB>

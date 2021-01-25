@@ -127,9 +127,15 @@ namespace BitTorrent
 	, WarningWatchdog_ { new QTimer }
 	, GeoIP_ { std::make_shared<GeoIP> () }
 	, TorrentIcon_ { GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon () }
+	, Holder_ { *Session_ }
 	{
 		setObjectName ("BitTorrent Core");
 		ExternalAddress_ = tr ("Unknown");
+	}
+
+	SessionHolder& Core::GetSessionHolder ()
+	{
+		return Holder_;
 	}
 
 	void Core::SetWidgets (QToolBar *tool, QWidget *tab)
@@ -919,6 +925,7 @@ namespace BitTorrent
 
 		beginInsertRows ({}, Handles_.size (), Handles_.size ());
 		Handles_.append ({ handle, tags, params });
+		Holder_.AddHandle (handle);
 		endInsertRows ();
 
 		return Handles_.back ().Promise_->future ();
@@ -1023,6 +1030,7 @@ namespace BitTorrent
 				autoManaged,
 				params
 			});
+		Holder_.AddHandle (handle);
 		endInsertRows ();
 
 		if (tryLive)
@@ -1048,6 +1056,7 @@ namespace BitTorrent
 		Session_->remove_torrent (Handles_.at (pos).Handle_, options);
 
 		Handles_.removeAt (pos);
+		Holder_.RemoveHandleAt (pos);
 
 		endRemoveRows ();
 
@@ -1534,6 +1543,7 @@ namespace BitTorrent
 			Handles_.at (*i).Handle_.queue_position_up ();
 			std::swap (Handles_ [*i],
 					Handles_ [*i - 1]);
+			Holder_.MoveUp (*i);
 
 			emit dataChanged (index (*i - 1, 0),
 					index (*i, columnCount () - 1));
@@ -1556,6 +1566,7 @@ namespace BitTorrent
 			Handles_.at (*i).Handle_.queue_position_down ();
 			std::swap (Handles_ [*i],
 					Handles_ [*i + 1]);
+			Holder_.MoveDown (*i);
 
 			emit dataChanged (index (*i, 0),
 					index (*i + 1, columnCount () - 1));
@@ -1655,6 +1666,8 @@ namespace BitTorrent
 		beginInsertRows (QModelIndex (), 0, 0);
 		Handles_.push_front (tmp);
 		endInsertRows ();
+
+		Holder_.MoveToTop (row);
 	}
 
 	void Core::MoveToBottom (int row)
@@ -1668,6 +1681,8 @@ namespace BitTorrent
 		beginInsertRows (QModelIndex (), Handles_.size (), Handles_.size ());
 		Handles_.push_back (tmp);
 		endInsertRows ();
+
+		Holder_.MoveToBottom (row);
 	}
 
 	void Core::RestoreTorrents ()
@@ -1741,6 +1756,7 @@ namespace BitTorrent
 					taskParameters,
 					TorrentStruct::NoFuture {}
 				});
+			Holder_.AddHandle (handle);
 			endInsertRows ();
 			qDebug () << "restored a torrent";
 		}
