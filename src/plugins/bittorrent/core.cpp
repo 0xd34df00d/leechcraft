@@ -92,8 +92,37 @@ namespace BitTorrent
 		return &core;
 	}
 
+	namespace
+	{
+		auto BuildFingerprint (const ICoreProxy_ptr& proxy)
+		{
+			auto ver = proxy->GetVersion ().section ('-', 0, 0);
+			const auto& vers = ver.splitRef ('.', Qt::SkipEmptyParts);
+			if (vers.size () != 3)
+				throw std::runtime_error ("Malformed version string " + ver.toStdString ());
+			ver = QStringLiteral ("%1%2")
+					.arg (vers.at (1).toInt (), 2, 10, QChar ('0'))
+					.arg (vers.at (2).toInt (), 2, 10, QChar ('0'));
+
+			if (ver.size () != 4)
+				ver = QStringLiteral ("1111");
+
+			auto dig = [&ver] (int pos) { return ver.at (pos).digitValue (); };
+
+			return libtorrent::generate_fingerprint ("LC", dig (0), dig (1), dig (2), dig (3));
+		}
+
+		auto CreateSession ()
+		{
+			libtorrent::settings_pack pack;
+			pack.set_str (libtorrent::settings_pack::peer_fingerprint, BuildFingerprint (GetProxyHolder ()));
+			return new libtorrent::session (pack, {});
+		}
+	}
+
 	Core::Core ()
 	: StatusKeeper_ { new CachedStatusKeeper { this } }
+	, Session_ { CreateSession () }
 	, FinishedTimer_ { new QTimer }
 	, WarningWatchdog_ { new QTimer }
 	, GeoIP_ { std::make_shared<GeoIP> () }
@@ -116,24 +145,6 @@ namespace BitTorrent
 
 	namespace
 	{
-		auto BuildFingerprint (const ICoreProxy_ptr& proxy)
-		{
-			auto ver = proxy->GetVersion ().section ('-', 0, 0);
-			const auto& vers = ver.splitRef ('.', Qt::SkipEmptyParts);
-			if (vers.size () != 3)
-				throw std::runtime_error ("Malformed version string " + ver.toStdString ());
-			ver = QString ("%1%2")
-					.arg (vers.at (1).toInt (), 2, 10, QChar ('0'))
-					.arg (vers.at (2).toInt (), 2, 10, QChar ('0'));
-
-			if (ver.size () != 4)
-				ver = "1111";
-
-			auto dig = [&ver] (int pos) { return ver.at (pos).digitValue (); };
-
-			return libtorrent::generate_fingerprint ("LC", dig (0), dig (1), dig (2), dig (3));
-		}
-
 		bool DecodeEntry (const QByteArray& data, libtorrent::bdecode_node& e)
 		{
 			libtorrent::error_code ec;
@@ -154,9 +165,6 @@ namespace BitTorrent
 	{
 		try
 		{
-			libtorrent::settings_pack pack;
-			pack.set_str (libtorrent::settings_pack::peer_fingerprint, BuildFingerprint (Proxy_));
-			Session_ = new libtorrent::session (pack, {});
 			Session_->set_ip_filter ({});
 
 			SessionSettingsMgr_ = new SessionSettingsManager { Session_, Proxy_, this };
