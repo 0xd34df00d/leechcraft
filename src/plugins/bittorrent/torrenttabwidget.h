@@ -15,6 +15,8 @@ namespace LC
 {
 namespace BitTorrent
 {
+	class SessionSettingsManager;
+
 	class TorrentTabWidget : public QTabWidget
 	{
 		Q_OBJECT
@@ -27,8 +29,11 @@ namespace BitTorrent
 		int Index_ = -1;
 		QList<int> SelectedIndices_;
 
+		SessionSettingsManager *SSM_ = nullptr;
 	public:
-		TorrentTabWidget (QWidget* = 0);
+		explicit TorrentTabWidget (QWidget* = nullptr);
+
+		void SetSessionSettingsManager (SessionSettingsManager*);
 
 		void SetChangeTrackersAction (QAction*);
 
@@ -45,17 +50,6 @@ namespace BitTorrent
 		void UpdateOverallStats ();
 		void UpdateTorrentControl ();
 	private slots:
-		void on_OverallDownloadRateController__valueChanged (int);
-		void on_OverallUploadRateController__valueChanged (int);
-		void on_TorrentDownloadRateController__valueChanged (int);
-		void on_TorrentUploadRateController__valueChanged (int);
-		void on_TorrentManaged__stateChanged (int);
-		void on_TorrentSequentialDownload__stateChanged (int);
-		void on_TorrentSuperSeeding__stateChanged (int);
-		void on_DownloadingTorrents__valueChanged (int);
-		void on_UploadingTorrents__valueChanged (int);
-		void on_TorrentTags__editingFinished ();
-
 		void setTabWidgetSettings ();
 
 		void on_LabelComment__linkActivated (const QString&);
