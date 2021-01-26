@@ -9,6 +9,7 @@
 #pragma once
 
 #include <QWizard>
+#include <QCoreApplication>
 
 namespace LC::BitTorrent
 {
@@ -16,7 +17,7 @@ namespace LC::BitTorrent
 
 	class NewTorrentWizard : public QWizard
 	{
-		Q_OBJECT
+		Q_DECLARE_TR_FUNCTIONS (LC::BitTorrent::NewTorrentWizard)
 	public:
 		explicit NewTorrentWizard (QWidget *parent = nullptr);
 

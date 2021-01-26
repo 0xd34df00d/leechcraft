@@ -31,6 +31,8 @@ namespace LC::BitTorrent
 
 		class IntroPage : public QWizardPage
 		{
+			Q_DECLARE_TR_FUNCTIONS (LC::BitTorrent::IntroPage)
+
 			QLabel *Label_;
 		public:
 			explicit IntroPage (QWidget *parent = nullptr);
@@ -39,6 +41,7 @@ namespace LC::BitTorrent
 		class FirstStep : public QWizardPage
 						, private Ui::NewTorrentFirstStep
 		{
+			Q_DECLARE_TR_FUNCTIONS (LC::BitTorrent::FirstStep)
 		public:
 			explicit FirstStep (QWidget *parent = nullptr);
 
@@ -53,6 +56,8 @@ namespace LC::BitTorrent
 		class ThirdStep : public QWizardPage
 						, private Ui::NewTorrentThirdStep
 		{
+			Q_DECLARE_TR_FUNCTIONS (LC::BitTorrent::ThirdStep)
+
 			quint64 TotalSize_ = 0;
 		public:
 			explicit ThirdStep (QWidget *parent = nullptr);
