@@ -27,10 +27,13 @@ namespace BitTorrent
 		Ui::TabWidget Ui_;
 		bool TorrentSelectionChanged_ = false;
 		Util::TagsCompleter *TagsChangeCompleter_;
-	public:
-		TabWidget (SessionHolder&, QWidget* = 0);
 
-		void InvalidateSelection ();
+		int Torrent_ = -1;
+	public:
+		explicit TabWidget (SessionHolder&, QWidget* = nullptr);
+
+		int GetCurrentTorrent () const;
+		void SetCurrentTorrent (int);
 	public slots:
 		void updateTorrentStats (const QModelIndex&, const QModelIndex&);
 		void updateTorrentStats ();

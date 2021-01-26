@@ -166,7 +166,6 @@ namespace BitTorrent
 		typedef QList<TorrentStruct> HandleDict_t;
 		HandleDict_t Handles_;
 		QList<QString> Headers_;
-		mutable int CurrentTorrent_ = -1;
 		std::shared_ptr<QTimer> FinishedTimer_, WarningWatchdog_;
 		std::shared_ptr<LiveStreamManager> LiveStreamManager_;
 		QString ExternalAddress_;
@@ -247,9 +246,9 @@ namespace BitTorrent
 		SessionStats GetSessionStats () const;
 		void GetPerTracker (pertrackerstats_t&) const;
 		int GetListenPort () const;
-		QList<PeerInfo> GetPeers (int = -1) const;
-		QStringList GetTagsForIndex (int = -1) const;
-		void UpdateTags (const QStringList&, int = -1);
+		QList<PeerInfo> GetPeers (int) const;
+		QStringList GetTagsForIndex (int) const;
+		void UpdateTags (const QStringList&, int);
 		/** @brief Adds the  given magnet link to the queue.
 			*
 			* Fetches the torrent and starts downloading the magnet link to
@@ -297,16 +296,14 @@ namespace BitTorrent
 		void SetFilePriority (int, int, int);
 		void SetFilename (int, const QString&, int);
 
-		std::vector<libtorrent::announce_entry> GetTrackers (const std::optional<int>& = {}) const;
-		void SetTrackers (const std::vector<libtorrent::announce_entry>&, const std::optional<int>& = {});
+		std::vector<libtorrent::announce_entry> GetTrackers (int) const;
+		void SetTrackers (const std::vector<libtorrent::announce_entry>&, int);
 
 		QString GetMagnetLink (int) const;
 
 		QString GetTorrentDirectory (int) const;
 		bool MoveTorrentFiles (const QString&, int);
 
-		void SetCurrentTorrent (int);
-		int GetCurrentTorrent () const;
 		bool IsTorrentManaged (int) const;
 		void SetTorrentManaged (bool, int);
 		bool IsTorrentSequentialDownload (int) const;
@@ -330,7 +327,7 @@ namespace BitTorrent
 		void MoveToTop (const std::vector<int>&);
 		void MoveToBottom (const std::vector<int>&);
 
-		QList<FileInfo> GetTorrentFiles (int = -1) const;
+		QList<FileInfo> GetTorrentFiles (int) const;
 	private:
 		HandleDict_t::iterator FindHandle (const libtorrent::torrent_handle&);
 		HandleDict_t::const_iterator FindHandle (const libtorrent::torrent_handle&) const;

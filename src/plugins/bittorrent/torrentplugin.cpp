@@ -318,9 +318,7 @@ namespace BitTorrent
 
 			void HandleCurrentRowChanged (const QModelIndex& index) override
 			{
-				Core::Instance ()->SetCurrentTorrent (index.row ());
-				if (index.isValid ())
-					Plugin_->TabWidget_->InvalidateSelection ();
+				Plugin_->TabWidget_->SetCurrentTorrent (index.row ());
 
 				Plugin_->setActionsEnabled ();
 			}
@@ -531,7 +529,7 @@ namespace BitTorrent
 
 		for (int row : rows)
 			Core::Instance ()->RemoveTorrent (row, withFiles);
-		TabWidget_->InvalidateSelection ();
+		TabWidget_->SetCurrentTorrent (-1);
 		setActionsEnabled ();
 	}
 
@@ -784,9 +782,7 @@ namespace BitTorrent
 		}
 
 		if (allTrackers.empty ())
-			allTrackers = Core::Instance ()->
-					GetTrackers (Core::Instance ()->
-							GetCurrentTorrent ());
+			allTrackers = Core::Instance ()->GetTrackers (TabWidget_->GetCurrentTorrent ());
 
 		std::stable_sort (allTrackers.begin (), allTrackers.end (),
 				[] (const libtorrent::announce_entry& l, const libtorrent::announce_entry& r)
@@ -815,7 +811,7 @@ namespace BitTorrent
 
 	void TorrentPlugin::on_MoveFiles__triggered ()
 	{
-		const auto& oldDir = Core::Instance ()->GetTorrentDirectory (Core::Instance ()->GetCurrentTorrent ());
+		const auto& oldDir = Core::Instance ()->GetTorrentDirectory (TabWidget_->GetCurrentTorrent ());
 		MoveTorrentFiles mtf { { oldDir } };
 		if (mtf.exec () == QDialog::Rejected)
 			return;
@@ -824,7 +820,7 @@ namespace BitTorrent
 		if (oldDir == newDir)
 			return;
 
-		if (!Core::Instance ()->MoveTorrentFiles (newDir, Core::Instance ()->GetCurrentTorrent ()))
+		if (!Core::Instance ()->MoveTorrentFiles (newDir, TabWidget_->GetCurrentTorrent ()))
 		{
 			const auto& msg = tr ("Failed to move torrent's files from %1 to %2")
 					.arg (oldDir)
@@ -837,7 +833,7 @@ namespace BitTorrent
 
 	void TorrentPlugin::on_MakeMagnetLink__triggered ()
 	{
-		QString magnet = Core::Instance ()->GetMagnetLink (Core::Instance ()->GetCurrentTorrent ());
+		QString magnet = Core::Instance ()->GetMagnetLink (TabWidget_->GetCurrentTorrent ());
 		if (magnet.isEmpty ())
 			return;
 
@@ -853,7 +849,7 @@ namespace BitTorrent
 
 	void TorrentPlugin::on_OpenInTorrentTab__triggered ()
 	{
-		const auto torrent = Core::Instance ()->GetCurrentTorrent ();
+		const auto torrent = TabWidget_->GetCurrentTorrent ();
 		if (torrent == -1)
 			return;
 
@@ -870,10 +866,8 @@ namespace BitTorrent
 
 	void TorrentPlugin::setActionsEnabled ()
 	{
-		int torrent = Core::Instance ()->GetCurrentTorrent ();
-		bool isValid = false;
-		if (torrent != -1)
-			isValid = Core::Instance ()->CheckValidity (torrent);
+		int torrent = TabWidget_->GetCurrentTorrent ();
+		bool isValid = Core::Instance ()->CheckValidity (torrent);
 		RemoveTorrent_->setEnabled (isValid);
 		Stop_->setEnabled (isValid);
 		Resume_->setEnabled (isValid);

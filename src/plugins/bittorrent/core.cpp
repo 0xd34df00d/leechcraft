@@ -705,9 +705,6 @@ namespace BitTorrent
 
 	libtorrent::torrent_handle Core::GetTorrentHandle (int idx) const
 	{
-		if (idx < 0)
-			idx = CurrentTorrent_;
-
 		if (idx >= Handles_.size ())
 			return {};
 
@@ -803,9 +800,6 @@ namespace BitTorrent
 
 	QList<PeerInfo> Core::GetPeers (int idx) const
 	{
-		if (idx < 0)
-			idx = CurrentTorrent_;
-
 		if (!CheckValidity (idx))
 			return QList<PeerInfo> ();
 
@@ -843,18 +837,12 @@ namespace BitTorrent
 
 	QStringList Core::GetTagsForIndex (int torrent) const
 	{
-		if (torrent != -1)
-			return GetTagsForIndexImpl (torrent);
-		else
-			return GetTagsForIndexImpl (CurrentTorrent_);
+		return GetTagsForIndexImpl (torrent);
 	}
 
 	void Core::UpdateTags (const QStringList& tags, int torrent)
 	{
-		if (torrent != -1)
-			UpdateTagsImpl (tags, torrent);
-		else
-			UpdateTagsImpl (tags, CurrentTorrent_);
+		UpdateTagsImpl (tags, torrent);
 	}
 
 	namespace
@@ -1173,23 +1161,21 @@ namespace BitTorrent
 		Handles_ [idx].Handle_.rename_file (index, std::string (name.toUtf8 ().data ()));
 	}
 
-	std::vector<libtorrent::announce_entry> Core::GetTrackers (const std::optional<int>& row) const
+	std::vector<libtorrent::announce_entry> Core::GetTrackers (int row) const
 	{
-		int tor = row ? *row : CurrentTorrent_;
-		if (!CheckValidity (tor))
+		if (!CheckValidity (row))
 			return {};
 
-		return Handles_.at (tor).Handle_.trackers ();
+		return Handles_.at (row).Handle_.trackers ();
 	}
 
-	void Core::SetTrackers (const std::vector<libtorrent::announce_entry>& trackers, const std::optional<int>& row)
+	void Core::SetTrackers (const std::vector<libtorrent::announce_entry>& trackers, int row)
 	{
-		int tor = row ? *row : CurrentTorrent_;
-		if (!CheckValidity (tor))
+		if (!CheckValidity (row))
 			return;
 
-		Handles_ [tor].Handle_.replace_trackers (trackers);
-		Handles_ [tor].Handle_.force_reannounce ();
+		Handles_ [row].Handle_.replace_trackers (trackers);
+		Handles_ [row].Handle_.force_reannounce ();
 	}
 
 	QString Core::GetMagnetLink (int idx) const
@@ -1219,16 +1205,6 @@ namespace BitTorrent
 
 		Handles_.at (idx).Handle_.move_storage (newDir.toUtf8 ().constData ());
 		return true;
-	}
-
-	void Core::SetCurrentTorrent (int torrent)
-	{
-		CurrentTorrent_ = torrent;
-	}
-
-	int Core::GetCurrentTorrent () const
-	{
-		return CurrentTorrent_;
 	}
 
 	bool Core::IsTorrentManaged (int idx) const
@@ -1504,9 +1480,6 @@ namespace BitTorrent
 
 	QList<FileInfo> Core::GetTorrentFiles (int idx) const
 	{
-		if (idx == -1)
-			idx = CurrentTorrent_;
-
 		if (!CheckValidity (idx))
 			return {};
 
@@ -1860,8 +1833,6 @@ namespace BitTorrent
 					<< i;
 				continue;
 			}
-			int oldCurrent = CurrentTorrent_;
-			CurrentTorrent_ = i;
 			try
 			{
 				QFile file_info (torrentsDir.filePath (Handles_.at (i).TorrentFileName_));
@@ -1901,7 +1872,6 @@ namespace BitTorrent
 			{
 				qWarning () << Q_FUNC_INFO << "unknown exception";
 			}
-			CurrentTorrent_ = oldCurrent;
 		}
 		settings.endArray ();
 
