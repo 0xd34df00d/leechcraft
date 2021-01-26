@@ -14,22 +14,21 @@
 
 namespace LC
 {
-namespace
-{
-	class TagsCompleter;
-}
-
 namespace BitTorrent
 {
+	class SessionHolder;
+
 	class TabWidget : public QWidget
 	{
 		Q_OBJECT
+
+		SessionHolder& Holder_;
 
 		Ui::TabWidget Ui_;
 		bool TorrentSelectionChanged_ = false;
 		Util::TagsCompleter *TagsChangeCompleter_;
 	public:
-		TabWidget (QWidget* = 0);
+		TabWidget (SessionHolder&, QWidget* = 0);
 
 		void InvalidateSelection ();
 	public slots:

@@ -28,8 +28,9 @@ namespace LC
 {
 namespace BitTorrent
 {
-	TabWidget::TabWidget (QWidget *parent)
+	TabWidget::TabWidget (SessionHolder& holder, QWidget *parent)
 	: QWidget { parent }
+	, Holder_ { holder }
 	{
 		Ui_.setupUi (this);
 

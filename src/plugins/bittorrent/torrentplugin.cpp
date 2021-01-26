@@ -889,7 +889,7 @@ namespace BitTorrent
 		Core::Instance ()->DoDelayedInit ();
 
 		SetupActions ();
-		TabWidget_.reset (new TabWidget);
+		TabWidget_.reset (new TabWidget { Core::Instance ()->GetSessionHolder () });
 
 		Core::Instance ()->SetWidgets (Toolbar_.get (), TabWidget_.get ());
 	}
