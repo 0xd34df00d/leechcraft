@@ -17,31 +17,20 @@
 #include <QToolBar>
 #include <QTimer>
 #include <QMenu>
-#include <QDomDocument>
-#include <QDomElement>
-#include <QDomNode>
 #include <QtDebug>
 #include <QApplication>
 #include <QStandardItemModel>
-#include <QDomElement>
-#include <QDomDocument>
 #include <QXmlStreamWriter>
 #include <QTemporaryFile>
 #include <QMessageBox>
 #include <QUrl>
 #include <QTextCodec>
-#include <QDataStream>
 #include <QDesktopServices>
 #include <QUrlQuery>
 #include <libtorrent/bencode.hpp>
 #include <libtorrent/entry.hpp>
-#include <libtorrent/create_torrent.hpp>
-#include <libtorrent/file_pool.hpp>
-#include <libtorrent/hasher.hpp>
-#include <libtorrent/storage.hpp>
 #include <libtorrent/file.hpp>
 #include <libtorrent/magnet_uri.hpp>
-#include <libtorrent/ip_filter.hpp>
 #include <libtorrent/version.hpp>
 #include <libtorrent/session.hpp>
 #include <libtorrent/lazy_entry.hpp>
@@ -52,7 +41,6 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
 #include <interfaces/core/ientitymanager.h>
-#include <interfaces/core/iiconthememanager.h>
 #include <interfaces/ijobholder.h>
 #include <interfaces/an/constants.h>
 #include <util/tags/tagscompletionmodel.h>
@@ -61,14 +49,12 @@
 #include <util/xpc/util.h>
 #include <util/xpc/notificationactionhandler.h>
 #include <util/sll/util.h>
-#include <util/sll/qtutil.h>
 #include <util/sll/prelude.h>
 #include <util/sll/either.h>
 #include <util/sys/paths.h>
 #include <util/threads/futures.h>
 #include "xmlsettingsmanager.h"
 #include "piecesmodel.h"
-#include "peersmodel.h"
 #include "torrentfilesmodel.h"
 #include "livestreammanager.h"
 #include "torrentmaker.h"
@@ -172,8 +158,6 @@ namespace BitTorrent
 	{
 		try
 		{
-			Session_->set_ip_filter ({});
-
 			SessionSettingsMgr_ = new SessionSettingsManager { Session_, Proxy_, this };
 
 			auto sstateVariant = XmlSettingsManager::Instance ()->
@@ -322,11 +306,6 @@ namespace BitTorrent
 	PiecesModel* Core::GetPiecesModel (int idx)
 	{
 		return idx >= 0 ? new PiecesModel (idx) : 0;
-	}
-
-	PeersModel* Core::GetPeersModel (int idx)
-	{
-		return idx >= 0 ? new PeersModel (idx) : 0;
 	}
 
 	QAbstractItemModel* Core::GetWebSeedsModel (int idx)

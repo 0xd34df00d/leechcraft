@@ -225,7 +225,6 @@ namespace BitTorrent
 
 		EntityTestHandleResult CouldDownload (const LC::Entity&) const;
 		PiecesModel* GetPiecesModel (int);
-		PeersModel* GetPeersModel (int);
 		QAbstractItemModel* GetWebSeedsModel (int);
 		TorrentFilesModel* GetTorrentFilesModel (int);
 		CachedStatusKeeper* GetStatusKeeper () const;
