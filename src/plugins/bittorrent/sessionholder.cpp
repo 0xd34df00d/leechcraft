@@ -16,7 +16,7 @@ namespace LC::BitTorrent
 	{
 	}
 
-	libtorrent::session& SessionHolder::GetSession ()
+	libtorrent::session& SessionHolder::GetSession () const
 	{
 		return Session_;
 	}

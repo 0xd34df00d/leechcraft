@@ -179,7 +179,7 @@ namespace BitTorrent
 		};
 
 		Ui_.PiecesView_->setModel (Core::Instance ()->GetPiecesModel (Index_));
-		Ui_.PagePeers_->SetPeersModel (Core::Instance ()->GetPeersModel (Index_), Index_);
+		Ui_.PagePeers_->SetSelectedTorrent (Index_);
 
 		Ui_.WebSeedsView_->setModel (Core::Instance ()->GetWebSeedsModel (Index_));
 		connect (Ui_.WebSeedsView_->selectionModel (),

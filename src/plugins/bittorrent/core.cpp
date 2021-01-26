@@ -76,6 +76,7 @@
 #include "cachedstatuskeeper.h"
 #include "geoip.h"
 #include "sessionstats.h"
+#include "ltutils.h"
 
 Q_DECLARE_METATYPE (QMenu*)
 Q_DECLARE_METATYPE (QToolBar*)
@@ -1156,17 +1157,6 @@ namespace BitTorrent
 			return -1;
 	}
 
-	void Core::AddPeer (const QString& ip, unsigned short port, int idx)
-	{
-		if (!CheckValidity (idx))
-			return;
-
-		Handles_.at (idx).Handle_.connect_peer (libtorrent::tcp::endpoint {
-					libtorrent::address::from_string (ip.toStdString ()),
-					port
-				});
-	}
-
 	void Core::AddWebSeed (const QString& ws, WebSeedType type, int idx)
 	{
 		if (!CheckValidity (idx))
@@ -1355,50 +1345,6 @@ namespace BitTorrent
 	QString Core::GetExternalAddress () const
 	{
 		return ExternalAddress_;
-	}
-
-	void Core::BanPeers (const BanRange_t& peers, bool block)
-	{
-		libtorrent::ip_filter filter = Session_->get_ip_filter ();
-		filter.add_rule (libtorrent::address::from_string (peers.first.toStdString ()),
-				libtorrent::address::from_string (peers.second.toStdString ()),
-				block ?
-					libtorrent::ip_filter::blocked :
-					0);
-		Session_->set_ip_filter (filter);
-
-		ScheduleSave ();
-	}
-
-	void Core::ClearFilter ()
-	{
-		Session_->set_ip_filter (libtorrent::ip_filter ());
-		ScheduleSave ();
-	}
-
-	namespace
-	{
-		template<typename Range>
-		BanRange_t GetBanRange (const Range& range)
-		{
-			return
-			{
-				QString::fromStdString (range.first.to_string ()),
-				QString::fromStdString (range.last.to_string ())
-			};
-		}
-	}
-
-	QMap<BanRange_t, bool> Core::GetFilter () const
-	{
-		const auto& [v4, v6] = Session_->get_ip_filter ().export_filter ();
-
-		QMap<BanRange_t, bool> result;
-		for (const auto& range : v4)
-			result [GetBanRange (range)] = range.flags;
-		for (const auto& range : v6)
-			result [GetBanRange (range)] = range.flags;
-		return result;
 	}
 
 	void Core::SaveResumeData (const libtorrent::save_resume_data_alert& a) const
@@ -1763,18 +1709,9 @@ namespace BitTorrent
 			qDebug () << "restored a torrent";
 		}
 		settings.endArray ();
-
-		int filters = settings.beginReadArray ("IPFilter");
-		for (int i = 0; i < filters; ++i)
-		{
-			settings.setArrayIndex (i);
-			BanRange_t range (settings.value ("First").toString (),
-					settings.value ("Last").toString ());
-			bool block = settings.value ("Block").toBool ();
-			BanPeers (range, block);
-		}
-		settings.endArray ();
 		settings.endGroup ();
+
+		RestoreFilter (*Session_);
 	}
 
 	libtorrent::torrent_handle Core::RestoreSingleTorrent (const QByteArray& data,
@@ -2017,17 +1954,6 @@ namespace BitTorrent
 		}
 		settings.endArray ();
 
-		settings.beginWriteArray ("IPFilter");
-		settings.remove ("");
-		int i = 0;
-		for (const auto& pair : Util::Stlize (GetFilter ()))
-		{
-			settings.setArrayIndex (i++);
-			settings.setValue ("First", pair.first.first);
-			settings.setValue ("Last", pair.first.second);
-			settings.setValue ("Block", pair.second);
-		}
-		settings.endArray ();
 		settings.endGroup ();
 
 		constexpr auto saveflags = libtorrent::save_state_flags_t::all ();

@@ -9,6 +9,7 @@
 #pragma once
 
 #include <QDialog>
+#include "ltutils.h"
 #include "ui_ipfilterdialog.h"
 
 namespace LC::BitTorrent
@@ -21,9 +22,9 @@ namespace LC::BitTorrent
 
 		Ui::IPFilterDialog Ui_;
 	public:
-		explicit IPFilterDialog (QWidget* = nullptr);
+		explicit IPFilterDialog (const BanList_t&, QWidget* = nullptr);
 
-		QList<QPair<BanRange_t, bool>> GetFilter () const;
+		BanList_t GetFilter () const;
 	private:
 		void Add ();
 		void Modify ();

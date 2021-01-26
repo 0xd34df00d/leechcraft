@@ -31,7 +31,7 @@ namespace LC::BitTorrent
 		SessionHolder& operator= (const SessionHolder&) = delete;
 		SessionHolder& operator= (SessionHolder&&) = delete;
 
-		libtorrent::session& GetSession ();
+		libtorrent::session& GetSession () const;
 
 		libtorrent::torrent_handle& operator[] (int);
 		const libtorrent::torrent_handle& operator[] (int) const;

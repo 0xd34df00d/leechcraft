@@ -297,7 +297,6 @@ namespace BitTorrent
 		void SetTorrentUploadRate (int, int);
 		int GetTorrentDownloadRate (int) const;
 		int GetTorrentUploadRate (int) const;
-		void AddPeer (const QString&, unsigned short, int);
 		void AddWebSeed (const QString&, WebSeedType, int);
 		void RemoveWebSeed (const QString&, WebSeedType, int);
 		void SetFilePriority (int, int, int);
@@ -322,9 +321,6 @@ namespace BitTorrent
 		void MakeTorrent (const NewTorrentParams&) const;
 		void SetExternalAddress (const QString&);
 		QString GetExternalAddress () const;
-		void BanPeers (const BanRange_t&, bool = true);
-		void ClearFilter ();
-		QMap<BanRange_t, bool> GetFilter () const;
 		bool CheckValidity (int) const;
 
 		void SaveResumeData (const libtorrent::save_resume_data_alert&) const;

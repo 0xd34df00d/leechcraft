@@ -7,16 +7,14 @@
  **********************************************************************/
 
 #include "ipfilterdialog.h"
-#include <util/sll/qtutil.h>
-#include "core.h"
 #include "banpeersdialog.h"
 
 namespace LC::BitTorrent
 {
 	const int BlockRole = Qt::UserRole + 1;
 
-	IPFilterDialog::IPFilterDialog (QWidget *parent)
-	: QDialog (parent)
+	IPFilterDialog::IPFilterDialog (const BanList_t& banList, QWidget *parent)
+	: QDialog { parent }
 	{
 		Ui_.setupUi (this);
 
@@ -53,11 +51,11 @@ namespace LC::BitTorrent
 				&QPushButton::released,
 				[this] { delete Ui_.Tree_->currentItem (); });
 
-		for (const auto& [key, block] : Util::Stlize (Core::Instance ()->GetFilter ()))
+		for (const auto& [range, block] : banList)
 		{
 			const auto item = new QTreeWidgetItem (Ui_.Tree_);
-			item->setText (0, key.first);
-			item->setText (1, key.second);
+			item->setText (0, range.first);
+			item->setText (1, range.second);
 			item->setText (2, block ?
 					tr ("block") :
 					tr ("allow"));
@@ -65,14 +63,17 @@ namespace LC::BitTorrent
 		}
 	}
 
-	QList<QPair<BanRange_t, bool>> IPFilterDialog::GetFilter () const
+	BanList_t IPFilterDialog::GetFilter () const
 	{
-		QList<QPair<BanRange_t, bool>> result;
+		BanList_t result;
+		result.reserve (Ui_.Tree_->topLevelItemCount ());
 		for (int i = 0, size = Ui_.Tree_->topLevelItemCount (); i < size; ++i)
 		{
-			QTreeWidgetItem *item = Ui_.Tree_->topLevelItem (i);
-			result << qMakePair (qMakePair (item->text (0), item->text (1)),
-					item->data (2, BlockRole).toBool ());
+			const auto item = Ui_.Tree_->topLevelItem (i);
+			result.push_back ({
+					{ item->text (0), item->text (1) },
+					item->data (2, BlockRole).toBool ()
+				});
 		}
 		return result;
 	}

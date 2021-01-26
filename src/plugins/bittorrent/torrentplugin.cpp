@@ -50,13 +50,13 @@
 #include "trackerschanger.h"
 #include "wizardgenerator.h"
 #include "fastspeedcontrolwidget.h"
-#include "ipfilterdialog.h"
 #include "speedselectoraction.h"
 #include "torrenttab.h"
 #include "sessionsettingsmanager.h"
 #include "sessionstats.h"
 #include "types.h"
 #include "newtorrentparams.h"
+#include "ltutils.h"
 
 using LC::ActionInfo;
 using namespace LC::Util;
@@ -118,7 +118,7 @@ namespace BitTorrent
 
 		setActionsEnabled ();
 
-		TorrentTab_ = new TorrentTab (TabTC_, this);
+		TorrentTab_ = new TorrentTab (Core::Instance ()->GetSessionHolder (), TabTC_, this);
 		connect (TorrentTab_,
 				SIGNAL (removeTab (QWidget*)),
 				this,
@@ -472,15 +472,7 @@ namespace BitTorrent
 
 	void TorrentPlugin::on_IPFilter__triggered ()
 	{
-		IPFilterDialog dia;
-		if (dia.exec () != QDialog::Accepted)
-			return;
-
-		Core::Instance ()->ClearFilter ();
-
-		const auto& filter = dia.GetFilter ();
-		for (const auto& pair : filter)
-			Core::Instance ()->BanPeers (pair.first, pair.second);
+		RunIPFilterDialog (Core::Instance ()->GetSessionHolder ().GetSession ());
 	}
 
 	void TorrentPlugin::on_CreateTorrent__triggered ()

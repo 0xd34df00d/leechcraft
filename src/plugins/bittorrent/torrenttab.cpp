@@ -29,7 +29,6 @@
 #include "core.h"
 #include "addtorrent.h"
 #include "addmultipletorrents.h"
-#include "ipfilterdialog.h"
 #include "newtorrentwizard.h"
 #include "trackerschanger.h"
 #include "movetorrentfiles.h"
@@ -38,6 +37,8 @@
 #include "xmlsettingsmanager.h"
 #include "types.h"
 #include "newtorrentparams.h"
+#include "sessionholder.h"
+#include "ltutils.h"
 
 namespace LC
 {
@@ -486,13 +487,7 @@ namespace BitTorrent
 
 	void TorrentTab::handleIPFilterTriggered ()
 	{
-		IPFilterDialog dia;
-		if (dia.exec () != QDialog::Accepted)
-			return;
-
-		Core::Instance ()->ClearFilter ();
-		for (const auto& pair : dia.GetFilter ())
-			Core::Instance ()->BanPeers (pair.first, pair.second);
+		RunIPFilterDialog (Holder_.GetSession ());
 	}
 
 	void TorrentTab::handleCreateTorrentTriggered ()
