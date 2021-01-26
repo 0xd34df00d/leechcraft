@@ -292,10 +292,6 @@ namespace BitTorrent
 		void ResumeTorrent (int);
 		void ForceReannounce (int);
 		void ForceRecheck (int);
-		void SetTorrentDownloadRate (int, int);
-		void SetTorrentUploadRate (int, int);
-		int GetTorrentDownloadRate (int) const;
-		int GetTorrentUploadRate (int) const;
 		void AddWebSeed (const QString&, WebSeedType, int);
 		void RemoveWebSeed (const QString&, WebSeedType, int);
 		void SetFilePriority (int, int, int);

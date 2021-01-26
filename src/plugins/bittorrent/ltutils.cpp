@@ -132,4 +132,26 @@ namespace LC::BitTorrent
 			BanPeers (session, pair.first, pair.second);
 		SaveFilter (session);
 	}
+
+	void SetDownloadLimit (libtorrent::torrent_handle& handle, int limit)
+	{
+		handle.set_download_limit (limit >= 0 ? limit * 1024 : limit);
+	}
+
+	int GetDownloadLimit (const libtorrent::torrent_handle& handle)
+	{
+		const auto val = handle.download_limit ();
+		return val >= 0 ? val / 1024 : val;
+	}
+
+	void SetUploadLimit (libtorrent::torrent_handle& handle, int limit)
+	{
+		handle.set_upload_limit (limit >= 0 ? limit * 1024 : limit);
+	}
+
+	int GetUploadLimit (const libtorrent::torrent_handle& handle)
+	{
+		const auto val = handle.upload_limit ();
+		return val >= 0 ? val / 1024 : val;
+	}
 }

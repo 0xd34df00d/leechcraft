@@ -36,4 +36,10 @@ namespace LC::BitTorrent
 	void ClearFilter (libtorrent::session&);
 
 	void RunIPFilterDialog (libtorrent::session&);
+
+	// in kbps, -1 for unlimilted
+	void SetDownloadLimit (libtorrent::torrent_handle&, int);
+	int GetDownloadLimit (const libtorrent::torrent_handle&);
+	void SetUploadLimit (libtorrent::torrent_handle&, int);
+	int GetUploadLimit (const libtorrent::torrent_handle&);
 }

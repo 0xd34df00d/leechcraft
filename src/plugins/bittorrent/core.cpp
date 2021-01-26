@@ -1108,34 +1108,6 @@ namespace BitTorrent
 		}
 	}
 
-	void Core::SetTorrentDownloadRate (int val, int idx)
-	{
-		if (CheckValidity (idx))
-			Handles_.at (idx).Handle_.set_download_limit (val == 0 ? -1 : val * 1024);
-	}
-
-	void Core::SetTorrentUploadRate (int val, int idx)
-	{
-		if (CheckValidity (idx))
-			Handles_.at (idx).Handle_.set_upload_limit (val == 0 ? -1 : val * 1024);
-	}
-
-	int Core::GetTorrentDownloadRate (int idx) const
-	{
-		if (CheckValidity (idx))
-			return Handles_.at (idx).Handle_.download_limit () / 1024;
-		else
-			return -1;
-	}
-
-	int Core::GetTorrentUploadRate (int idx) const
-	{
-		if (CheckValidity (idx))
-			return Handles_.at (idx).Handle_.upload_limit () / 1024;
-		else
-			return -1;
-	}
-
 	void Core::AddWebSeed (const QString& ws, WebSeedType type, int idx)
 	{
 		if (!CheckValidity (idx))

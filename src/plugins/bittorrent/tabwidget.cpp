@@ -23,6 +23,7 @@
 #include "banpeersdialog.h"
 #include "sessionsettingsmanager.h"
 #include "sessionstats.h"
+#include "ltutils.h"
 
 namespace LC
 {
@@ -91,8 +92,8 @@ namespace BitTorrent
 	{
 		const auto current = Core::Instance ()->GetCurrentTorrent ();
 
-		Ui_.TorrentDownloadRateController_->setValue (Core::Instance ()->GetTorrentDownloadRate (current));
-		Ui_.TorrentUploadRateController_->setValue (Core::Instance ()->GetTorrentUploadRate (current));
+		Ui_.TorrentDownloadRateController_->setValue (GetDownloadLimit (Holder_ [current]));
+		Ui_.TorrentUploadRateController_->setValue (GetUploadLimit (Holder_ [current]));
 		Ui_.TorrentManaged_->setCheckState (Core::Instance ()->IsTorrentManaged (current) ?
 					Qt::Checked :
 					Qt::Unchecked);
@@ -135,12 +136,12 @@ namespace BitTorrent
 
 	void TabWidget::on_TorrentDownloadRateController__valueChanged (int val)
 	{
-		Core::Instance ()->SetTorrentDownloadRate (val, Core::Instance ()->GetCurrentTorrent ());
+		SetDownloadLimit (Holder_ [Core::Instance ()->GetCurrentTorrent ()], val);
 	}
 
 	void TabWidget::on_TorrentUploadRateController__valueChanged (int val)
 	{
-		Core::Instance ()->SetTorrentUploadRate (val, Core::Instance ()->GetCurrentTorrent ());
+		SetUploadLimit (Holder_ [Core::Instance ()->GetCurrentTorrent ()], val);
 	}
 
 	void TabWidget::on_TorrentManaged__clicked (bool managed)

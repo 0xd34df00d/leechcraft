@@ -77,14 +77,17 @@
             <property name="suffix">
              <string> kb/s</string>
             </property>
+            <property name="minimum">
+             <number>-1</number>
+            </property>
             <property name="maximum">
-             <number>10000</number>
+             <number>100000</number>
             </property>
             <property name="singleStep">
              <number>100</number>
             </property>
             <property name="value">
-             <number>0</number>
+             <number>-1</number>
             </property>
            </widget>
           </item>
@@ -109,14 +112,17 @@
             <property name="suffix">
              <string> kb/s</string>
             </property>
+            <property name="minimum">
+             <number>-1</number>
+            </property>
             <property name="maximum">
-             <number>10000</number>
+             <number>100000</number>
             </property>
             <property name="singleStep">
              <number>100</number>
             </property>
             <property name="value">
-             <number>0</number>
+             <number>-1</number>
             </property>
            </widget>
           </item>
