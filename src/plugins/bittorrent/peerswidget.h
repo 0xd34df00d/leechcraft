@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <memory>
 #include <QWidget>
 #include "ui_peerswidget.h"
 
@@ -24,10 +25,12 @@ namespace LC::BitTorrent
 
 		const SessionHolder *Holder_ = nullptr;
 
+		std::unique_ptr<PeersModel> CurrentModel_;
 		QSortFilterProxyModel * const PeersSorter_;
 		int TorrentIdx_ = -1;
 	public:
 		explicit PeersWidget (QWidget* = nullptr);
+		~PeersWidget () override;
 
 		void SetSessionHolder (const SessionHolder&);
 

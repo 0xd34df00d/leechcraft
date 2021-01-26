@@ -74,6 +74,8 @@ namespace LC::BitTorrent
 				});
 	}
 
+	PeersWidget::~PeersWidget () = default;
+
 	void PeersWidget::SetSessionHolder (const SessionHolder& holder)
 	{
 		Holder_ = &holder;
@@ -83,9 +85,9 @@ namespace LC::BitTorrent
 	{
 		TorrentIdx_ = torrent;
 
-		auto prevModel = PeersSorter_->sourceModel ();
-		PeersSorter_->setSourceModel (new PeersModel (torrent));
-		delete prevModel;
+		auto newModel = std::make_unique<PeersModel> (torrent);
+		PeersSorter_->setSourceModel (newModel.get ());
+		CurrentModel_ = std::move (newModel);
 	}
 
 	void PeersWidget::Update ()
