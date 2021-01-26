@@ -667,7 +667,7 @@ namespace BitTorrent
 		}
 
 		if (allTrackers.empty ())
-			allTrackers = Core::Instance ()->GetTrackers (Core::Instance ()->GetCurrentTorrent ());
+			allTrackers = Core::Instance ()->GetTrackers (GetCurrentTorrent ());
 
 		std::stable_sort (allTrackers.begin (), allTrackers.end (),
 				Util::ComparingBy (&libtorrent::announce_entry::url));
