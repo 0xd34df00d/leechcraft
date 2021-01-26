@@ -52,7 +52,7 @@ namespace BitTorrent
 
 		QSortFilterProxyModel *ViewFilter_;
 	public:
-		TorrentTab (const SessionHolder&, const TabClassInfo&, QObject*);
+		TorrentTab (SessionHolder&, const TabClassInfo&, QObject*);
 
 		TabClassInfo GetTabClassInfo () const;
 		QObject* ParentMultiTabs ();

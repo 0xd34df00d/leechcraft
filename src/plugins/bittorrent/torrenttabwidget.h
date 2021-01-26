@@ -11,9 +11,7 @@
 #include <QTabWidget>
 #include "ui_torrenttabwidget.h"
 
-namespace LC
-{
-namespace BitTorrent
+namespace LC::BitTorrent
 {
 	class SessionSettingsManager;
 
@@ -30,13 +28,14 @@ namespace BitTorrent
 		QList<int> SelectedIndices_;
 
 		SessionSettingsManager *SSM_ = nullptr;
+		SessionHolder *Holder_ = nullptr;
 	public:
 		explicit TorrentTabWidget (QWidget* = nullptr);
 
 		struct Dependencies
 		{
 			SessionSettingsManager *SSM_;
-			const SessionHolder& Holder_;
+			SessionHolder& Holder_;
 		};
 
 		void SetDependencies (const Dependencies&);
@@ -65,5 +64,4 @@ namespace BitTorrent
 		void currentWebSeedChanged (const QModelIndex&);
 		void handleRemoveWebSeed ();
 	};
-}
 }

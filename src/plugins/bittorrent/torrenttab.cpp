@@ -74,7 +74,7 @@ namespace BitTorrent
 		};
 	}
 
-	TorrentTab::TorrentTab (const SessionHolder& holder, const TabClassInfo& tc, QObject *mt)
+	TorrentTab::TorrentTab (SessionHolder& holder, const TabClassInfo& tc, QObject *mt)
 	: Holder_ { holder }
 	, TC_ { tc }
 	, ParentMT_ { mt }
