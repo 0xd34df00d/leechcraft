@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include <memory>
 #include <QAbstractItemModel>
 #include <QStringList>
 #include "peerinfo.h"
@@ -21,8 +20,6 @@ namespace LC::BitTorrent
 	class PeersModel : public QAbstractItemModel
 	{
 		Q_OBJECT
-
-		static std::shared_ptr<GeoIP> GeoIP_;
 
 		const QString FlagsPath_;
 		const QStringList Headers_;

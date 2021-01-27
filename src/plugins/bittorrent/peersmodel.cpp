@@ -21,8 +21,6 @@
 
 namespace LC::BitTorrent
 {
-	std::shared_ptr<GeoIP> PeersModel::GeoIP_ {};
-
 	PeersModel::PeersModel (const SessionHolder& holder, int idx, QObject *parent)
 	: QAbstractItemModel { parent }
 	, FlagsPath_ { Util::GetSysPath (Util::SysPath::Share, QStringLiteral ("global_icons/flags"), {}) }
@@ -39,9 +37,6 @@ namespace LC::BitTorrent
 	, Holder_ { holder }
 	, Index_ { idx }
 	{
-		if (!GeoIP_)
-			GeoIP_ = std::make_shared<GeoIP> ();
-
 		auto timer = new QTimer (this);
 		connect (timer,
 				SIGNAL (timeout ()),
@@ -178,6 +173,7 @@ namespace LC::BitTorrent
 			if (!localPieces [i])
 				ourMissing << i;
 
+		auto& geoIP = GeoIP::Instance ();
 		for (size_t i = 0; i < peerInfos.size (); ++i)
 		{
 			const libtorrent::peer_info& pi = peerInfos [i];
@@ -190,7 +186,7 @@ namespace LC::BitTorrent
 				QString::fromStdString (pi.ip.address ().to_string ()),
 				QString::fromUtf8 (pi.client.c_str ()),
 				interesting,
-				GeoIP_->GetCountry (pi.ip.address ()).value_or (QString {}),
+				geoIP.GetCountry (pi.ip.address ()).value_or (QString {}),
 				std::make_shared<libtorrent::peer_info> (pi)
 			};
 			result << ppi;

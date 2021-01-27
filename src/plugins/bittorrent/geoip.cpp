@@ -109,4 +109,10 @@ namespace LC::BitTorrent
 		return {};
 	}
 #endif
+
+	GeoIP& GeoIP::Instance ()
+	{
+		static GeoIP geoIP;
+		return geoIP;
+	}
 }

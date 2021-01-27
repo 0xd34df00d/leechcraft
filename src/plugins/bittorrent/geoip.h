@@ -21,8 +21,10 @@ namespace LC::BitTorrent
 	{
 		using ImplPtr_t = std::shared_ptr<MMDB_s>;
 		ImplPtr_t Impl_;
-	public:
+
 		GeoIP ();
+	public:
+		static GeoIP& Instance ();
 
 		std::optional<QString> GetCountry (const libtorrent::address&) const;
 	};
