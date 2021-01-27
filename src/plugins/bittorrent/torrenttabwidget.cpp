@@ -185,7 +185,6 @@ namespace LC::BitTorrent
 
 		const QList<QAbstractItemModel*> oldModels
 		{
-			Ui_.PiecesView_->model (),
 			Ui_.WebSeedsView_->model ()
 		};
 
