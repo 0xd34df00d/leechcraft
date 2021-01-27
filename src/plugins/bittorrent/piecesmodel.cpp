@@ -7,12 +7,10 @@
  **********************************************************************/
 
 #include "piecesmodel.h"
-#include "core.h"
 #include <QTimer>
+#include "core.h"
 
-namespace LC
-{
-namespace BitTorrent
+namespace LC::BitTorrent
 {
 	bool PiecesModel::Info::operator== (const Info& other) const
 	{
@@ -43,14 +41,16 @@ namespace BitTorrent
 	QVariant PiecesModel::data (const QModelIndex& index, int role) const
 	{
 		if (!index.isValid () || role != Qt::DisplayRole)
-			return QVariant ();
+			return {};
 
 		switch (index.column ())
 		{
 		case 0:
 			return QString::number (Pieces_.at (index.row ()).Index_);
 		case 1:
-			return QString ("%1/%2").arg (Pieces_.at (index.row ()).FinishedBlocks_).arg (Pieces_.at (index.row ()).TotalBlocks_);
+			return QStringLiteral ("%1/%2")
+					.arg (Pieces_.at (index.row ()).FinishedBlocks_)
+					.arg (Pieces_.at (index.row ()).TotalBlocks_);
 		default:
 			return QVariant ();
 		}
@@ -69,18 +69,15 @@ namespace BitTorrent
 	QModelIndex PiecesModel::index (int row, int column, const QModelIndex&) const
 	{
 		if (!hasIndex (row, column))
-			return QModelIndex ();
+			return {};
 
 		return createIndex (row, column);
 	}
 
 	QVariant PiecesModel::headerData (int column, Qt::Orientation orient, int role) const
 	{
-		if (orient == Qt::Vertical)
-			return QVariant ();
-
-		if (role != Qt::DisplayRole)
-			return QVariant ();
+		if (orient == Qt::Vertical || role != Qt::DisplayRole)
+			return {};
 
 		return Headers_ [column];
 	}
@@ -107,21 +104,7 @@ namespace BitTorrent
 
 		std::vector<libtorrent::partial_piece_info> queue;
 		handle.get_download_queue (queue);
-		Update (queue);
-	}
 
-	void PiecesModel::Clear ()
-	{
-		if (!Pieces_.size ())
-			return;
-
-		beginRemoveRows (QModelIndex (), 0, Pieces_.size () - 1);
-		Pieces_.clear ();
-		endRemoveRows ();
-	}
-
-	void PiecesModel::Update (const std::vector<libtorrent::partial_piece_info>& queue)
-	{
 		QList<Info> pieces2Insert;
 		QMap<int, int> index2position;
 
@@ -130,11 +113,10 @@ namespace BitTorrent
 			index2position [Pieces_.at (i).Index_] = i;
 
 		// Update
-		for (size_t i = 0, size = queue.size (); i < size; ++i)
+		for (auto & ppi : queue)
 		{
-			const auto& ppi = queue [i];
-
 			bool found = false;
+
 			for (int j = 0; j < initSize; ++j)
 				if (Pieces_.at (j).Index_ == ppi.piece_index)
 				{
@@ -155,22 +137,31 @@ namespace BitTorrent
 		}
 
 		// Remove
-		QList<int> values = index2position.values ();
+		auto values = index2position.values ();
 		std::sort (values.begin (), values.end (), std::greater<> ());
-		for (int i = 0; i < values.size (); ++i)
+		for (auto value : values)
 		{
-			beginRemoveRows (QModelIndex (), values.at (i), values.at (i));
-			Pieces_.removeAt (values.at (i));
+			beginRemoveRows (QModelIndex (), value, value);
+			Pieces_.removeAt (value);
 			endRemoveRows ();
 		}
 
 		// Insert new
-		if (pieces2Insert.size ())
+		if (!pieces2Insert.isEmpty ())
 		{
 			beginInsertRows (QModelIndex (), Pieces_.size (), Pieces_.size () + pieces2Insert.size () - 1);
 			Pieces_ += pieces2Insert;
 			endInsertRows ();
 		}
 	}
-}
+
+	void PiecesModel::Clear ()
+	{
+		if (Pieces_.isEmpty ())
+			return;
+
+		beginRemoveRows ({}, 0, Pieces_.size () - 1);
+		Pieces_.clear ();
+		endRemoveRows ();
+	}
 }

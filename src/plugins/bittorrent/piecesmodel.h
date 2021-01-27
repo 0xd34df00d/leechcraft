@@ -8,15 +8,11 @@
 
 #pragma once
 
+#include <vector>
 #include <QAbstractItemModel>
 #include <QStringList>
-#include <QList>
-#include <vector>
-#include <libtorrent/torrent_handle.hpp>
 
-namespace LC
-{
-namespace BitTorrent
+namespace LC::BitTorrent
 {
 	class PiecesModel : public QAbstractItemModel
 	{
@@ -35,21 +31,19 @@ namespace BitTorrent
 
 		const int Index_;
 	public:
-		PiecesModel (int, QObject *parent = 0);
+		explicit PiecesModel (int, QObject *parent = nullptr);
 
-		virtual int columnCount (const QModelIndex&) const;
-		virtual QVariant data (const QModelIndex&, int role = Qt::DisplayRole) const;
-		virtual Qt::ItemFlags flags (const QModelIndex&) const;
-		virtual bool hasChildren (const QModelIndex&) const;
-		virtual QVariant headerData (int, Qt::Orientation, int role = Qt::DisplayRole) const;
-		virtual QModelIndex index (int, int, const QModelIndex& parent = QModelIndex ()) const;
-		virtual QModelIndex parent (const QModelIndex&) const;
-		virtual int rowCount (const QModelIndex& parent = QModelIndex ()) const;
+		int columnCount (const QModelIndex&) const override;
+		QVariant data (const QModelIndex&, int role = Qt::DisplayRole) const override;
+		Qt::ItemFlags flags (const QModelIndex&) const override;
+		bool hasChildren (const QModelIndex&) const override;
+		QVariant headerData (int, Qt::Orientation, int role = Qt::DisplayRole) const override;
+		QModelIndex index (int, int, const QModelIndex& parent = {}) const override;
+		QModelIndex parent (const QModelIndex&) const override;
+		int rowCount (const QModelIndex& parent = {}) const override;
 	public slots:
 		void update ();
 	private:
 		void Clear ();
-		void Update (const std::vector<libtorrent::partial_piece_info>&);
 	};
-}
 }
