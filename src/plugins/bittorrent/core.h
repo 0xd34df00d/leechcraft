@@ -53,8 +53,6 @@ class ShortcutManager;
 }
 namespace BitTorrent
 {
-	class PiecesModel;
-	class PeersModel;
 	class TorrentFilesModel;
 	class LiveStreamManager;
 	class SessionSettingsManager;
@@ -220,7 +218,6 @@ namespace BitTorrent
 		SessionSettingsManager* GetSessionSettingsManager () const;
 
 		EntityTestHandleResult CouldDownload (const LC::Entity&) const;
-		PiecesModel* GetPiecesModel (int);
 		QAbstractItemModel* GetWebSeedsModel (int);
 		TorrentFilesModel* GetTorrentFilesModel (int);
 		CachedStatusKeeper* GetStatusKeeper () const;

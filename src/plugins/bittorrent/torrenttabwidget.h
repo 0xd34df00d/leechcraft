@@ -8,12 +8,14 @@
 
 #pragma once
 
+#include <memory>
 #include <QTabWidget>
 #include "ui_torrenttabwidget.h"
 
 namespace LC::BitTorrent
 {
 	class SessionSettingsManager;
+	class PiecesModel;
 
 	class TorrentTabWidget : public QTabWidget
 	{
@@ -29,8 +31,11 @@ namespace LC::BitTorrent
 
 		SessionSettingsManager *SSM_ = nullptr;
 		SessionHolder *Holder_ = nullptr;
+
+		std::unique_ptr<PiecesModel> PiecesModel_;
 	public:
 		explicit TorrentTabWidget (QWidget* = nullptr);
+		~TorrentTabWidget () override;
 
 		struct Dependencies
 		{

@@ -54,7 +54,6 @@
 #include <util/sys/paths.h>
 #include <util/threads/futures.h>
 #include "xmlsettingsmanager.h"
-#include "piecesmodel.h"
 #include "torrentfilesmodel.h"
 #include "livestreammanager.h"
 #include "torrentmaker.h"
@@ -299,11 +298,6 @@ namespace BitTorrent
 					EntityTestHandleResult ();
 		else
 			return EntityTestHandleResult ();
-	}
-
-	PiecesModel* Core::GetPiecesModel (int idx)
-	{
-		return idx >= 0 ? new PiecesModel (idx) : 0;
 	}
 
 	QAbstractItemModel* Core::GetWebSeedsModel (int idx)

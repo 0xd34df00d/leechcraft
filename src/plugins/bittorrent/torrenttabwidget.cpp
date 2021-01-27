@@ -178,7 +178,10 @@ namespace LC::BitTorrent
 			Ui_.WebSeedsView_->model ()
 		};
 
-		Ui_.PiecesView_->setModel (Core::Instance ()->GetPiecesModel (Index_));
+		auto newPiecesModel = std::make_unique<PiecesModel> (Index_);
+		Ui_.PiecesView_->setModel (newPiecesModel.get ());
+		PiecesModel_ = std::move (newPiecesModel);
+
 		Ui_.PagePeers_->SetSelectedTorrent (Index_);
 
 		Ui_.WebSeedsView_->setModel (Core::Instance ()->GetWebSeedsModel (Index_));
