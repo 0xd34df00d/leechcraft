@@ -97,7 +97,6 @@ namespace LC::BitTorrent
 
 	void PiecesModel::Update ()
 	{
-		Clear ();
 		const auto& handle = Core::Instance ()->GetTorrentHandle (Index_);
 		if (!handle.is_valid ())
 			return;
@@ -153,15 +152,5 @@ namespace LC::BitTorrent
 			Pieces_ += pieces2Insert;
 			endInsertRows ();
 		}
-	}
-
-	void PiecesModel::Clear ()
-	{
-		if (Pieces_.isEmpty ())
-			return;
-
-		beginRemoveRows ({}, 0, Pieces_.size () - 1);
-		Pieces_.clear ();
-		endRemoveRows ();
 	}
 }

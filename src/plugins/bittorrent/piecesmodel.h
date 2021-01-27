@@ -43,7 +43,5 @@ namespace LC::BitTorrent
 		int rowCount (const QModelIndex& parent = {}) const override;
 
 		void Update ();
-	private:
-		void Clear ();
 	};
 }
