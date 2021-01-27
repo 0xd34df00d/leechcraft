@@ -27,9 +27,7 @@
 #include "sessionstats.h"
 #include "ltutils.h"
 
-namespace LC
-{
-namespace BitTorrent
+namespace LC::BitTorrent
 {
 	TorrentTabWidget::TorrentTabWidget (QWidget *parent)
 	: QTabWidget (parent)
@@ -407,27 +405,20 @@ namespace BitTorrent
 		const auto& e = Util::MakeEntity (QUrl::fromEncoded (link.toUtf8 ()),
 				{},
 				TaskParameter::FromUserInitiated | TaskParameter::OnlyHandle);
-		Core::Instance ()->GetProxy ()->GetEntityManager ()->HandleEntity (e);
+		GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 	}
 
 	void TorrentTabWidget::setTabWidgetSettings ()
 	{
-		Ui_.BoxSessionStats_->setVisible (XmlSettingsManager::Instance ()->
-				property ("ActiveSessionStats").toBool ());
-		Ui_.BoxAdvancedSessionStats_->setVisible (XmlSettingsManager::Instance ()->
-				property ("ActiveAdvancedSessionStats").toBool ());
-		Ui_.BoxPerTrackerStats_->setVisible (XmlSettingsManager::Instance ()->
-				property ("ActiveTrackerStats").toBool ());
-		Ui_.BoxCacheStats_->setVisible (XmlSettingsManager::Instance ()->
-				property ("ActiveCacheStats").toBool ());
-		Ui_.BoxTorrentStatus_->setVisible (XmlSettingsManager::Instance ()->
-				property ("ActiveTorrentStatus").toBool ());
-		Ui_.BoxTorrentAdvancedStatus_->setVisible (XmlSettingsManager::Instance ()->
-				property ("ActiveTorrentAdvancedStatus").toBool ());
-		Ui_.BoxTorrentInfo_->setVisible (XmlSettingsManager::Instance ()->
-				property ("ActiveTorrentInfo").toBool ());
-		Ui_.BoxTorrentPeers_->setVisible (XmlSettingsManager::Instance ()->
-				property ("ActiveTorrentPeers").toBool ());
+		auto xsm = XmlSettingsManager::Instance ();
+		Ui_.BoxSessionStats_->setVisible (xsm->property ("ActiveSessionStats").toBool ());
+		Ui_.BoxAdvancedSessionStats_->setVisible (xsm->property ("ActiveAdvancedSessionStats").toBool ());
+		Ui_.BoxPerTrackerStats_->setVisible (xsm->property ("ActiveTrackerStats").toBool ());
+		Ui_.BoxCacheStats_->setVisible (xsm->property ("ActiveCacheStats").toBool ());
+		Ui_.BoxTorrentStatus_->setVisible (xsm->property ("ActiveTorrentStatus").toBool ());
+		Ui_.BoxTorrentAdvancedStatus_->setVisible (xsm->property ("ActiveTorrentAdvancedStatus").toBool ());
+		Ui_.BoxTorrentInfo_->setVisible (xsm->property ("ActiveTorrentInfo").toBool ());
+		Ui_.BoxTorrentPeers_->setVisible (xsm->property ("ActiveTorrentPeers").toBool ());
 	}
 
 	void TorrentTabWidget::handleAddWebSeed ()
@@ -455,5 +446,4 @@ namespace BitTorrent
 		auto type = index.sibling (index.row (), 1).data ().toString () == "BEP 19" ? WebSeedType::Bep19 : WebSeedType::Bep17;
 		Core::Instance ()->RemoveWebSeed (index.data ().toString (), type, Index_);
 	}
-}
 }

@@ -16,6 +16,7 @@
 #include <util/util.h>
 #include <util/sys/paths.h>
 #include <util/sll/unreachable.h>
+#include <util/sll/qtutil.h>
 #include "geoip.h"
 #include "sessionholder.h"
 
@@ -56,7 +57,7 @@ namespace LC::BitTorrent
 	QVariant PeersModel::data (const QModelIndex& index, int role) const
 	{
 		if (!index.isValid ())
-			return QVariant ();
+			return {};
 
 		const int i = index.row ();
 		const auto& pi = Peers_.at (i);
@@ -64,7 +65,7 @@ namespace LC::BitTorrent
 		if (role == PeerInfoRole)
 			return QVariant::fromValue (pi);
 
-		if (index.column () == 0)
+		if (index.column () == ColumnIP)
 		{
 			const auto& code = Peers_.at (i).CountryCode_;
 			switch (role)
@@ -75,8 +76,8 @@ namespace LC::BitTorrent
 			case SortRole:
 				return pi.IP_;
 			case Qt::ToolTipRole:
-				return code.isEmpty () || code == "--" || code == "00" ?
-						QString () :
+				return code.isEmpty () || code == "--"_ql || code == "00"_ql ?
+						QString {} :
 						code;
 			default:
 				return {};
@@ -90,34 +91,34 @@ namespace LC::BitTorrent
 
 		switch (index.column ())
 		{
-		case 1:
+		case ColumnDownloadRate:
 			if (isDisplayRole)
 				return Util::MakePrettySize (pi.PI_->payload_down_speed) + tr ("/s");
 			else
 				return pi.PI_->payload_down_speed;
-		case 2:
+		case ColumnUploadRate:
 			if (isDisplayRole)
 				return Util::MakePrettySize (pi.PI_->payload_up_speed) + tr ("/s");
 			else
 				return pi.PI_->payload_up_speed;
-		case 3:
+		case ColumnDownloaded:
 			if (isDisplayRole)
 				return Util::MakePrettySize (pi.PI_->total_download);
 			else
 				return static_cast<qulonglong> (pi.PI_->total_download);
-		case 4:
+		case ColumnUploaded:
 			if (isDisplayRole)
 				return Util::MakePrettySize (pi.PI_->total_upload);
 			else
 				return static_cast<qulonglong> (pi.PI_->total_upload);
-		case 5:
+		case ColumnClient:
 			return pi.Client_;
-		case 6:
+		case ColumnPieces:
 			return tr ("%1/%2")
 				.arg (pi.RemoteHas_)
 				.arg (pi.PI_->num_pieces);
 		default:
-			return "Unhandled column";
+			return {};
 		}
 
 		Util::Unreachable ();
@@ -136,7 +137,7 @@ namespace LC::BitTorrent
 	QModelIndex PeersModel::index (int row, int column, const QModelIndex&) const
 	{
 		if (!hasIndex (row, column))
-			return QModelIndex ();
+			return {};
 
 		return createIndex (row, column);
 	}
@@ -161,7 +162,6 @@ namespace LC::BitTorrent
 
 	void PeersModel::update ()
 	{
-		QList<PeerInfo> result;
 		std::vector<libtorrent::peer_info> peerInfos;
 		const auto& handle = Holder_ [Index_];
 		handle.get_peer_info (peerInfos);
@@ -174,25 +174,24 @@ namespace LC::BitTorrent
 				ourMissing << i;
 
 		auto& geoIP = GeoIP::Instance ();
-		for (size_t i = 0; i < peerInfos.size (); ++i)
-		{
-			const libtorrent::peer_info& pi = peerInfos [i];
 
+		QList<PeerInfo> peers;
+		peers.reserve (peerInfos.size ());
+		for (const auto& pi : peerInfos)
+		{
 			const int interesting = std::count_if (ourMissing.begin (), ourMissing.end (),
 					[&pi] (int idx) { return idx < pi.pieces.size () && pi.pieces [idx]; });
 
-			PeerInfo ppi
-			{
-				QString::fromStdString (pi.ip.address ().to_string ()),
-				QString::fromUtf8 (pi.client.c_str ()),
-				interesting,
-				geoIP.GetCountry (pi.ip.address ()).value_or (QString {}),
-				std::make_shared<libtorrent::peer_info> (pi)
-			};
-			result << ppi;
+			peers.push_back ({
+					QString::fromStdString (pi.ip.address ().to_string ()),
+					QString::fromUtf8 (pi.client.c_str ()),
+					interesting,
+					geoIP.GetCountry (pi.ip.address ()).value_or (QString {}),
+					std::make_shared<libtorrent::peer_info> (pi)
+				});
 		}
 
-		Update (result);
+		Update (peers);
 	}
 
 	void PeersModel::Clear ()
@@ -207,41 +206,39 @@ namespace LC::BitTorrent
 
 	void PeersModel::Update (const QList<PeerInfo>& peers)
 	{
-		QHash<QString, int> IP2position;
+		QHash<QString, int> ip2position;
+		ip2position.reserve (Peers_.size ());
 		for (int i = 0; i < Peers_.size (); ++i)
-			IP2position [Peers_.at (i).IP_] = i;
+			ip2position [Peers_.at (i).IP_] = i;
 
-		int psize = peers.size ();
 		QList<PeerInfo> peers2insert;
-		for (int i = 0; i < psize; ++i)
+		for (const auto& pi : peers)
 		{
-			const PeerInfo& pi = peers.at (i);
-			QHash<QString, int>::iterator pos = IP2position.find (pi.IP_);
-			if (pos != IP2position.end ())
+			auto pos = ip2position.find (pi.IP_);
+			if (pos != ip2position.end ())
 			{
 				Peers_ [pos.value ()] = pi;
-				QModelIndex chin1 = index (pos.value (), 0);
-				QModelIndex chin2 = index (pos.value (), columnCount () - 1);
+				auto chin1 = index (pos.value (), 0);
+				auto chin2 = index (pos.value (), columnCount () - 1);
 				emit dataChanged (chin1, chin2);
-				IP2position.erase (pos);
+				ip2position.erase (pos);
 			}
 			else
 				peers2insert << pi;
 		}
 
-		QList<int> values = IP2position.values ();
-		std::sort (values.begin (), values.end (), std::greater<int> ());
-		for (int i = 0; i < values.size (); ++i)
+		auto values = ip2position.values ();
+		std::sort (values.begin (), values.end (), std::greater<> ());
+		for (int val : values)
 		{
-			int val = values.at (i);
 			beginRemoveRows (QModelIndex (), val, val);
 			Peers_.removeAt (val);
 			endRemoveRows ();
 		}
 
-		if (peers2insert.size ())
+		if (!peers2insert.isEmpty ())
 		{
-			beginInsertRows (QModelIndex (),
+			beginInsertRows ({},
 					Peers_.size (),
 					Peers_.size () + peers2insert.size () - 1);
 			Peers_ += peers2insert;

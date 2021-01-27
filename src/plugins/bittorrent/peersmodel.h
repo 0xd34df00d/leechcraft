@@ -34,6 +34,17 @@ namespace LC::BitTorrent
 			PeerInfoRole
 		};
 
+		enum Columns
+		{
+			ColumnIP,
+			ColumnDownloadRate,
+			ColumnUploadRate,
+			ColumnDownloaded,
+			ColumnUploaded,
+			ColumnClient,
+			ColumnPieces
+		};
+
 		explicit PeersModel (const SessionHolder&, int idx, QObject *parent = nullptr);
 
 		int columnCount (const QModelIndex& = {}) const override;
