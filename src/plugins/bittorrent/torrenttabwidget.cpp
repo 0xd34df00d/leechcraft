@@ -189,7 +189,7 @@ namespace LC::BitTorrent
 			Ui_.WebSeedsView_->model ()
 		};
 
-		auto newPiecesModel = std::make_unique<PiecesModel> (Index_);
+		auto newPiecesModel = std::make_unique<PiecesModel> (*Holder_, Index_);
 		Ui_.PiecesView_->setModel (newPiecesModel.get ());
 		PiecesModel_ = std::move (newPiecesModel);
 

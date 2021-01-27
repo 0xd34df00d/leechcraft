@@ -14,6 +14,8 @@
 
 namespace LC::BitTorrent
 {
+	class SessionHolder;
+
 	class PiecesModel : public QAbstractItemModel
 	{
 		Q_DECLARE_TR_FUNCTIONS (LC::BitTorrent::PiecesModel)
@@ -29,9 +31,10 @@ namespace LC::BitTorrent
 		};
 		QList<Info> Pieces_;
 
+		const SessionHolder& Holder_;
 		const int Index_;
 	public:
-		explicit PiecesModel (int, QObject *parent = nullptr);
+		PiecesModel (const SessionHolder&, int torrent, QObject *parent = nullptr);
 
 		int columnCount (const QModelIndex&) const override;
 		QVariant data (const QModelIndex&, int role = Qt::DisplayRole) const override;

@@ -7,7 +7,8 @@
  **********************************************************************/
 
 #include "piecesmodel.h"
-#include "core.h"
+#include <libtorrent/torrent_handle.hpp>
+#include "sessionholder.h"
 
 namespace LC::BitTorrent
 {
@@ -16,8 +17,10 @@ namespace LC::BitTorrent
 		return Index_ == other.Index_;
 	}
 
+	PiecesModel::PiecesModel (const SessionHolder& holder, int index, QObject *parent)
 	: QAbstractItemModel { parent }
 	, Headers_ { tr ("Index"), tr ("State") }
+	, Holder_ { holder }
 	, Index_ { index }
 	{
 	}
@@ -86,7 +89,7 @@ namespace LC::BitTorrent
 
 	void PiecesModel::Update ()
 	{
-		const auto& handle = Core::Instance ()->GetTorrentHandle (Index_);
+		const auto& handle = Holder_ [Index_];
 		if (!handle.is_valid ())
 			return;
 
