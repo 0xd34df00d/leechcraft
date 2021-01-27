@@ -69,7 +69,7 @@ namespace LC::BitTorrent
 				&QItemSelectionModel::currentRowChanged,
 				[this, banPeer] (const QModelIndex& idx)
 				{
-					Update ();
+					UpdateDetails ();
 					banPeer->setEnabled (idx.isValid ());
 				});
 	}
@@ -92,8 +92,14 @@ namespace LC::BitTorrent
 
 	void PeersWidget::Update ()
 	{
-		QTimer::singleShot (1000, this, &PeersWidget::Update);
+		if (CurrentModel_)
+			CurrentModel_->Update ();
 
+		UpdateDetails ();
+	}
+
+	void PeersWidget::UpdateDetails ()
+	{
 		const auto& current = Ui_.PeersView_->currentIndex ();
 		const auto& p = current.data (PeersModel::PeerInfoRole).value<PeerInfo> ();
 

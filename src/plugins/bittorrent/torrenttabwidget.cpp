@@ -10,6 +10,7 @@
 #include <chrono>
 #include <QAction>
 #include <QUrl>
+#include <QTimer>
 #include <libtorrent/session.hpp>
 #include <libtorrent/lazy_entry.hpp>
 #include <util/util.h>
@@ -20,8 +21,8 @@
 #include <interfaces/core/ientitymanager.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
-#include "piecesmodel.h"
 #include "peersmodel.h"
+#include "piecesmodel.h"
 #include "addwebseeddialog.h"
 #include "sessionsettingsmanager.h"
 #include "sessionstats.h"
@@ -155,6 +156,16 @@ namespace LC::BitTorrent
 					const auto& tags = GetProxyHolder ()->GetTagsManager ()->Split (Ui_.TorrentTags_->text ());
 					ForEachSelected ([&tags] (int idx) { Core::Instance ()->UpdateTags (tags, idx); });
 				});
+
+		const auto timer = new QTimer { this };
+		timer->setTimerType (Qt::VeryCoarseTimer);
+		timer->callOnTimeout ([this]
+				{
+					Ui_.PagePeers_->Update ();
+					if (PiecesModel_)
+						PiecesModel_->Update ();
+				});
+		timer->start (2000);
 	}
 
 	void TorrentTabWidget::SetChangeTrackersAction (QAction *changeTrackers)

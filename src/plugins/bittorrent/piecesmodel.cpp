@@ -95,7 +95,7 @@ namespace LC::BitTorrent
 		return Pieces_.size ();
 	}
 
-	void PiecesModel::update ()
+	void PiecesModel::Update ()
 	{
 		Clear ();
 		const auto& handle = Core::Instance ()->GetTorrentHandle (Index_);

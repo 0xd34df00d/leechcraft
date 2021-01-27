@@ -9,7 +9,6 @@
 #include "peersmodel.h"
 #include <numeric>
 #include <QIcon>
-#include <QTimer>
 #include <libtorrent/peer_info.hpp>
 #include <libtorrent/torrent_handle.hpp>
 #include <libtorrent/torrent_status.hpp>
@@ -38,15 +37,6 @@ namespace LC::BitTorrent
 	, Holder_ { holder }
 	, Index_ { idx }
 	{
-		auto timer = new QTimer (this);
-		connect (timer,
-				SIGNAL (timeout ()),
-				this,
-				SLOT (update ()));
-		timer->start (2000);
-		QTimer::singleShot (0,
-				this,
-				SLOT (update ()));
 	}
 
 	int PeersModel::columnCount (const QModelIndex&) const
@@ -160,7 +150,7 @@ namespace LC::BitTorrent
 		return Peers_.size ();
 	}
 
-	void PeersModel::update ()
+	void PeersModel::Update ()
 	{
 		std::vector<libtorrent::peer_info> peerInfos;
 		const auto& handle = Holder_ [Index_];

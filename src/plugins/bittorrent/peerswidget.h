@@ -36,5 +36,7 @@ namespace LC::BitTorrent
 
 		void SetSelectedTorrent (int);
 		void Update ();
+	private:
+		void UpdateDetails ();
 	};
 }

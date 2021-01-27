@@ -10,6 +10,7 @@
 
 #include <QAbstractItemModel>
 #include <QStringList>
+#include <QCoreApplication>
 #include "peerinfo.h"
 
 namespace LC::BitTorrent
@@ -19,7 +20,7 @@ namespace LC::BitTorrent
 
 	class PeersModel : public QAbstractItemModel
 	{
-		Q_OBJECT
+		Q_DECLARE_TR_FUNCTIONS (LC::BitTorrent::PeersModel)
 
 		const QString FlagsPath_;
 		const QStringList Headers_;
@@ -55,8 +56,8 @@ namespace LC::BitTorrent
 		QModelIndex index (int, int, const QModelIndex& = {}) const override;
 		QModelIndex parent (const QModelIndex&) const override;
 		int rowCount (const QModelIndex& parent = {}) const override;
-	public slots:
-		void update ();
+
+		void Update ();
 	private:
 		void Clear ();
 		void Update (const QList<PeerInfo>&);

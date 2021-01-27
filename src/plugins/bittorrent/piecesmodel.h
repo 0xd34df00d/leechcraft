@@ -8,15 +8,15 @@
 
 #pragma once
 
-#include <vector>
 #include <QAbstractItemModel>
+#include <QCoreApplication>
 #include <QStringList>
 
 namespace LC::BitTorrent
 {
 	class PiecesModel : public QAbstractItemModel
 	{
-		Q_OBJECT
+		Q_DECLARE_TR_FUNCTIONS (LC::BitTorrent::PiecesModel)
 
 		QStringList Headers_;
 		struct Info
@@ -41,8 +41,8 @@ namespace LC::BitTorrent
 		QModelIndex index (int, int, const QModelIndex& parent = {}) const override;
 		QModelIndex parent (const QModelIndex&) const override;
 		int rowCount (const QModelIndex& parent = {}) const override;
-	public slots:
-		void update ();
+
+		void Update ();
 	private:
 		void Clear ();
 	};
