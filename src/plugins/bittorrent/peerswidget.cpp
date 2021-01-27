@@ -10,7 +10,6 @@
 #include <QAction>
 #include <QSortFilterProxyModel>
 #include <QTime>
-#include <QTimer>
 #include <libtorrent/peer_info.hpp>
 #include <util/util.h>
 #include "peerinfo.h"

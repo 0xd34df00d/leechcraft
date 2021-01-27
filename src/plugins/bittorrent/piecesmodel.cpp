@@ -7,7 +7,6 @@
  **********************************************************************/
 
 #include "piecesmodel.h"
-#include <QTimer>
 #include "core.h"
 
 namespace LC::BitTorrent
@@ -22,15 +21,6 @@ namespace LC::BitTorrent
 	, Index_ (index)
 	{
 		Headers_ << tr ("Index") << tr ("State");
-		auto timer = new QTimer (this);
-		connect (timer,
-				SIGNAL (timeout ()),
-				this,
-				SLOT (update ()));
-		timer->start (2000);
-		QTimer::singleShot (0,
-				this,
-				SLOT (update ()));
 	}
 
 	int PiecesModel::columnCount (const QModelIndex&) const
