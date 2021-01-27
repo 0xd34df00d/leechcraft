@@ -16,11 +16,10 @@ namespace LC::BitTorrent
 		return Index_ == other.Index_;
 	}
 
-	PiecesModel::PiecesModel (int index, QObject *parent)
-	: QAbstractItemModel (parent)
-	, Index_ (index)
+	: QAbstractItemModel { parent }
+	, Headers_ { tr ("Index"), tr ("State") }
+	, Index_ { index }
 	{
-		Headers_ << tr ("Index") << tr ("State");
 	}
 
 	int PiecesModel::columnCount (const QModelIndex&) const
