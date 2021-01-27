@@ -60,7 +60,6 @@
 #include "torrentmaker.h"
 #include "sessionsettingsmanager.h"
 #include "cachedstatuskeeper.h"
-#include "geoip.h"
 #include "sessionstats.h"
 #include "ltutils.h"
 
@@ -112,7 +111,6 @@ namespace BitTorrent
 	, Session_ { CreateSession () }
 	, FinishedTimer_ { new QTimer }
 	, WarningWatchdog_ { new QTimer }
-	, GeoIP_ { std::make_shared<GeoIP> () }
 	, TorrentIcon_ { GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon () }
 	, Holder_ { *Session_ }
 	{
@@ -796,43 +794,6 @@ namespace BitTorrent
 	int Core::GetListenPort () const
 	{
 		return Session_->listen_port ();
-	}
-
-	QList<PeerInfo> Core::GetPeers (int idx) const
-	{
-		if (!CheckValidity (idx))
-			return QList<PeerInfo> ();
-
-		QList<PeerInfo> result;
-		std::vector<libtorrent::peer_info> peerInfos;
-		Handles_.at (idx).Handle_.get_peer_info (peerInfos);
-
-		const auto& localPieces = Handles_.at (idx).Handle_.status (libtorrent::torrent_handle::query_pieces).pieces;
-
-		QList<int> ourMissing;
-		for (int i = 0, size = localPieces.size (); i < size; ++i)
-			if (!localPieces [i])
-				ourMissing << i;
-
-		for (size_t i = 0; i < peerInfos.size (); ++i)
-		{
-			const libtorrent::peer_info& pi = peerInfos [i];
-
-			const int interesting = std::count_if (ourMissing.begin (), ourMissing.end (),
-					[&pi] (int idx) { return idx < pi.pieces.size () && pi.pieces [idx]; });
-
-			PeerInfo ppi
-			{
-				QString::fromStdString (pi.ip.address ().to_string ()),
-				QString::fromUtf8 (pi.client.c_str ()),
-				interesting,
-				GeoIP_->GetCountry (pi.ip.address ()).value_or (QString {}),
-				std::make_shared<libtorrent::peer_info> (pi)
-			};
-			result << ppi;
-		}
-
-		return result;
 	}
 
 	QStringList Core::GetTagsForIndex (int torrent) const

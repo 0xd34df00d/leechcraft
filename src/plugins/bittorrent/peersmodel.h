@@ -8,21 +8,28 @@
 
 #pragma once
 
+#include <memory>
 #include <QAbstractItemModel>
 #include <QStringList>
 #include "peerinfo.h"
 
 namespace LC::BitTorrent
 {
+	class SessionHolder;
+	class GeoIP;
+
 	class PeersModel : public QAbstractItemModel
 	{
 		Q_OBJECT
 
-		QStringList Headers_;
-		QList<PeerInfo> Peers_;
+		static std::shared_ptr<GeoIP> GeoIP_;
+
+		const QString FlagsPath_;
+		const QStringList Headers_;
+		const SessionHolder& Holder_;
 		const int Index_;
 
-		QString FlagsPath_;
+		QList<PeerInfo> Peers_;
 	public:
 		enum
 		{
@@ -30,7 +37,7 @@ namespace LC::BitTorrent
 			PeerInfoRole
 		};
 
-		explicit PeersModel (int idx, QObject *parent = nullptr);
+		explicit PeersModel (const SessionHolder&, int idx, QObject *parent = nullptr);
 
 		int columnCount (const QModelIndex& = {}) const override;
 		QVariant data (const QModelIndex&, int = Qt::DisplayRole) const override;

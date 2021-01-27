@@ -8,29 +8,39 @@
 
 #include "peersmodel.h"
 #include <numeric>
+#include <QIcon>
 #include <QTimer>
-#include <QApplication>
-#include <QtDebug>
+#include <libtorrent/peer_info.hpp>
+#include <libtorrent/torrent_handle.hpp>
+#include <libtorrent/torrent_status.hpp>
 #include <util/util.h>
 #include <util/sys/paths.h>
 #include <util/sll/unreachable.h>
-#include "core.h"
+#include "geoip.h"
+#include "sessionholder.h"
 
 namespace LC::BitTorrent
 {
-	PeersModel::PeersModel (int idx, QObject *parent)
-	: QAbstractItemModel (parent)
-	, Index_ (idx)
-	{
-		Headers_ << tr ("IP")
-			<< tr ("Download rate")
-			<< tr ("Upload rate")
-			<< tr ("Downloaded")
-			<< tr ("Uploaded")
-			<< tr ("Client")
-			<< tr ("Available pieces");
+	std::shared_ptr<GeoIP> PeersModel::GeoIP_ {};
 
-		FlagsPath_ = Util::GetSysPath (Util::SysPath::Share, QStringLiteral ("global_icons/flags"), {});
+	PeersModel::PeersModel (const SessionHolder& holder, int idx, QObject *parent)
+	: QAbstractItemModel { parent }
+	, FlagsPath_ { Util::GetSysPath (Util::SysPath::Share, QStringLiteral ("global_icons/flags"), {}) }
+	, Headers_
+	{
+		tr ("IP"),
+		tr ("Download rate"),
+		tr ("Upload rate"),
+		tr ("Downloaded"),
+		tr ("Uploaded"),
+		tr ("Client"),
+		tr ("Available pieces"),
+	}
+	, Holder_ { holder }
+	, Index_ { idx }
+	{
+		if (!GeoIP_)
+			GeoIP_ = std::make_shared<GeoIP> ();
 
 		auto timer = new QTimer (this);
 		connect (timer,
@@ -156,7 +166,37 @@ namespace LC::BitTorrent
 
 	void PeersModel::update ()
 	{
-		Update (Core::Instance ()->GetPeers (Index_));
+		QList<PeerInfo> result;
+		std::vector<libtorrent::peer_info> peerInfos;
+		const auto& handle = Holder_ [Index_];
+		handle.get_peer_info (peerInfos);
+
+		const auto& localPieces = handle.status (libtorrent::torrent_handle::query_pieces).pieces;
+
+		QList<int> ourMissing;
+		for (int i = 0, size = localPieces.size (); i < size; ++i)
+			if (!localPieces [i])
+				ourMissing << i;
+
+		for (size_t i = 0; i < peerInfos.size (); ++i)
+		{
+			const libtorrent::peer_info& pi = peerInfos [i];
+
+			const int interesting = std::count_if (ourMissing.begin (), ourMissing.end (),
+					[&pi] (int idx) { return idx < pi.pieces.size () && pi.pieces [idx]; });
+
+			PeerInfo ppi
+			{
+				QString::fromStdString (pi.ip.address ().to_string ()),
+				QString::fromUtf8 (pi.client.c_str ()),
+				interesting,
+				GeoIP_->GetCountry (pi.ip.address ()).value_or (QString {}),
+				std::make_shared<libtorrent::peer_info> (pi)
+			};
+			result << ppi;
+		}
+
+		Update (result);
 	}
 
 	void PeersModel::Clear ()

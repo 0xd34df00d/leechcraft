@@ -59,7 +59,6 @@ namespace BitTorrent
 	class LiveStreamManager;
 	class SessionSettingsManager;
 	class CachedStatusKeeper;
-	class GeoIP;
 	struct SessionStats;
 	struct NewTorrentParams;
 
@@ -176,8 +175,6 @@ namespace BitTorrent
 		QMenu *Menu_ = nullptr;
 		Util::ShortcutManager *ShortcutMgr_ = nullptr;
 
-		std::shared_ptr<GeoIP> GeoIP_;
-
 		QIcon TorrentIcon_;
 
 		SessionHolder Holder_;
@@ -246,7 +243,6 @@ namespace BitTorrent
 		SessionStats GetSessionStats () const;
 		void GetPerTracker (pertrackerstats_t&) const;
 		int GetListenPort () const;
-		QList<PeerInfo> GetPeers (int) const;
 		QStringList GetTagsForIndex (int) const;
 		void UpdateTags (const QStringList&, int);
 		/** @brief Adds the  given magnet link to the queue.

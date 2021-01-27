@@ -85,7 +85,7 @@ namespace LC::BitTorrent
 	{
 		TorrentIdx_ = torrent;
 
-		auto newModel = std::make_unique<PeersModel> (torrent);
+		auto newModel = std::make_unique<PeersModel> (*Holder_, torrent);
 		PeersSorter_->setSourceModel (newModel.get ());
 		CurrentModel_ = std::move (newModel);
 	}
