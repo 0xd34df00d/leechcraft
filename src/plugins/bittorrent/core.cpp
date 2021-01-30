@@ -1303,9 +1303,9 @@ namespace BitTorrent
 		h.pause ();
 	}
 
-	void Core::MoveUp (const std::vector<int>& selections)
+	void Core::MoveUp (const QList<int>& selections)
 	{
-		if (!selections.size ())
+		if (selections.isEmpty ())
 			return;
 
 		for (auto i = selections.begin (),
@@ -1326,9 +1326,9 @@ namespace BitTorrent
 		}
 	}
 
-	void Core::MoveDown (const std::vector<int>& selections)
+	void Core::MoveDown (const QList<int>& selections)
 	{
-		if (!selections.size ())
+		if (selections.isEmpty ())
 			return;
 
 		for (auto i = selections.begin (),
@@ -1349,9 +1349,9 @@ namespace BitTorrent
 		}
 	}
 
-	void Core::MoveToTop (const std::vector<int>& selections)
+	void Core::MoveToTop (const QList<int>& selections)
 	{
-		if (!selections.size ())
+		if (selections.isEmpty ())
 			return;
 
 		for (auto i = selections.begin (),
@@ -1364,9 +1364,9 @@ namespace BitTorrent
 			MoveToTop (*i);
 	}
 
-	void Core::MoveToBottom (const std::vector<int>& selections)
+	void Core::MoveToBottom (const QList<int>& selections)
 	{
-		if (!selections.size ())
+		if (selections.isEmpty ())
 			return;
 
 		for (auto i = selections.begin (),

@@ -573,8 +573,7 @@ namespace BitTorrent
 
 	namespace
 	{
-		std::vector<int> GetSelections (QAbstractItemModel *model,
-				QObject *sender)
+		QList<int> GetSelections (QAbstractItemModel *model, QObject *sender)
 		{
 			QModelIndexList sis;
 			try
@@ -588,7 +587,7 @@ namespace BitTorrent
 				throw;
 			}
 
-			std::vector<int> selections;
+			QList<int> selections;
 			for (const auto& si : sis)
 			{
 				auto mapped = Core::Instance ()->GetProxy ()->MapToSource (si);
@@ -615,7 +614,7 @@ namespace BitTorrent
 			return;
 		}
 
-		std::vector<int> selections;
+		QList<int> selections;
 		try
 		{
 			selections = GetSelections (GetRepresentation (), sender ());
@@ -664,7 +663,7 @@ namespace BitTorrent
 			return;
 		}
 
-		std::vector<int> selections;
+		QList<int> selections;
 		try
 		{
 			selections = GetSelections (GetRepresentation (), sender ());
@@ -678,8 +677,7 @@ namespace BitTorrent
 
 		Core::Instance ()->MoveDown (selections);
 
-		QItemSelectionModel *sel = qobject_cast<QItemSelectionModel*> (sender ()->
-				property ("ItemSelectionModel").value<QObject*> ());
+		const auto sel = qobject_cast<QItemSelectionModel*> (sender ()->property ("ItemSelectionModel").value<QObject*> ());
 
 		if (sel)
 			sel->clearSelection ();

@@ -544,24 +544,12 @@ namespace BitTorrent
 		setActionsEnabled ();
 	}
 
-	namespace
-	{
-		template<typename T>
-		std::vector<T> List2Vector (const QList<T>& list)
-		{
-			std::vector<T> result;
-			result.reserve (list.size ());
-			std::copy (list.begin (), list.end (), std::back_inserter (result));
-			return result;
-		}
-	}
-
 	void TorrentTab::handleMoveUpTriggered ()
 	{
 		const auto& sis = GetSelectedRowIndexes ();
 		const auto& selections = GetSelectedRows ();
 
-		Core::Instance ()->MoveUp (List2Vector (selections));
+		Core::Instance ()->MoveUp (selections);
 
 		auto sel = Ui_.TorrentsView_->selectionModel ();
 		sel->clearSelection ();
@@ -581,7 +569,7 @@ namespace BitTorrent
 		const auto& sis = GetSelectedRowIndexes ();
 		const auto& selections = GetSelectedRows ();
 
-		Core::Instance ()->MoveDown (List2Vector (selections));
+		Core::Instance ()->MoveDown (selections);
 
 		auto sel = Ui_.TorrentsView_->selectionModel ();
 		sel->clearSelection ();
@@ -601,7 +589,7 @@ namespace BitTorrent
 	{
 		try
 		{
-			Core::Instance ()->MoveToTop (List2Vector (GetSelectedRows ()));
+			Core::Instance ()->MoveToTop (GetSelectedRows ());
 		}
 		catch (const std::exception& e)
 		{
@@ -615,7 +603,7 @@ namespace BitTorrent
 	{
 		try
 		{
-			Core::Instance ()->MoveToBottom (List2Vector (GetSelectedRows ()));
+			Core::Instance ()->MoveToBottom (GetSelectedRows ());
 		}
 		catch (const std::exception& e)
 		{

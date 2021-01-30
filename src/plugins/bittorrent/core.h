@@ -312,10 +312,10 @@ namespace BitTorrent
 
 		void HandleTorrentChecked (const libtorrent::torrent_handle&);
 
-		void MoveUp (const std::vector<int>&);
-		void MoveDown (const std::vector<int>&);
-		void MoveToTop (const std::vector<int>&);
-		void MoveToBottom (const std::vector<int>&);
+		void MoveUp (const QList<int>&);
+		void MoveDown (const QList<int>&);
+		void MoveToTop (const QList<int>&);
+		void MoveToBottom (const QList<int>&);
 
 		QList<FileInfo> GetTorrentFiles (int) const;
 	private:
