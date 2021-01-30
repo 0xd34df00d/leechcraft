@@ -136,22 +136,34 @@ namespace LC::BitTorrent
 
 	void SetDownloadLimit (libtorrent::torrent_handle& handle, int limit)
 	{
+		if (!handle.is_valid ())
+			return;
+
 		handle.set_download_limit (limit >= 0 ? limit * 1024 : limit);
 	}
 
 	int GetDownloadLimit (const libtorrent::torrent_handle& handle)
 	{
+		if (!handle.is_valid ())
+			return -1;
+
 		const auto val = handle.download_limit ();
 		return val >= 0 ? val / 1024 : val;
 	}
 
 	void SetUploadLimit (libtorrent::torrent_handle& handle, int limit)
 	{
+		if (!handle.is_valid ())
+			return;
+
 		handle.set_upload_limit (limit >= 0 ? limit * 1024 : limit);
 	}
 
 	int GetUploadLimit (const libtorrent::torrent_handle& handle)
 	{
+		if (!handle.is_valid ())
+			return -1;
+
 		const auto val = handle.upload_limit ();
 		return val >= 0 ? val / 1024 : val;
 	}
