@@ -60,12 +60,11 @@ namespace LC::BitTorrent
 		void UpdateOverallStats ();
 		void UpdateTorrentControl ();
 	private slots:
-		void setTabWidgetSettings ();
-
 		void on_LabelComment__linkActivated (const QString&);
 
 		void handleAddWebSeed ();
 
+		void SetTabWidgetSettings ();
 		void currentWebSeedChanged (const QModelIndex&);
 		void handleRemoveWebSeed ();
 	};

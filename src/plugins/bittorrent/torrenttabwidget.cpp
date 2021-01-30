@@ -77,20 +77,17 @@ namespace LC::BitTorrent
 		Ui_.WebSeedsView_->addAction (AddWebSeed_);
 		Ui_.WebSeedsView_->addAction (RemoveWebSeed_);
 
-		const QList<QByteArray> tabWidgetSettings
-		{
-			"ActiveSessionStats",
-			"ActiveAdvancedSessionStats",
-			"ActiveTrackerStats",
-			"ActiveCacheStats",
-			"ActiveTorrentStatus",
-			"ActiveTorrentAdvancedStatus",
-			"ActiveTorrentInfo",
-			"ActiveTorrentPeers"
-		};
-		XmlSettingsManager::Instance ()->RegisterObject (tabWidgetSettings, this, "setTorrentTabWidgetSettings");
-
-		setTabWidgetSettings ();
+		XmlSettingsManager::Instance ()->RegisterObject ({
+					"ActiveSessionStats",
+					"ActiveAdvancedSessionStats",
+					"ActiveTrackerStats",
+					"ActiveCacheStats",
+					"ActiveTorrentStatus",
+					"ActiveTorrentAdvancedStatus",
+					"ActiveTorrentInfo",
+					"ActiveTorrentPeers"
+				},
+				this, [this] { SetTabWidgetSettings (); });
 	}
 
 	void TorrentTabWidget::SetDependencies (const Dependencies& deps)
@@ -421,7 +418,7 @@ namespace LC::BitTorrent
 		GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 	}
 
-	void TorrentTabWidget::setTabWidgetSettings ()
+	void TorrentTabWidget::SetTabWidgetSettings ()
 	{
 		auto xsm = XmlSettingsManager::Instance ();
 		Ui_.BoxSessionStats_->setVisible (xsm->property ("ActiveSessionStats").toBool ());
