@@ -546,71 +546,22 @@ namespace BitTorrent
 
 	void TorrentTab::handleMoveUpTriggered ()
 	{
-		const auto& sis = GetSelectedRowIndexes ();
-		const auto& selections = GetSelectedRows ();
-
-		Core::Instance ()->MoveUp (selections);
-
-		auto sel = Ui_.TorrentsView_->selectionModel ();
-		sel->clearSelection ();
-
-		QItemSelection selection;
-		for (const auto& si : sis)
-		{
-			auto sibling = si.sibling (std::max (si.row () - 1, 0), si.column ());
-			selection.select (sibling, sibling);
-		}
-
-		sel->select (selection, QItemSelectionModel::Rows | QItemSelectionModel::Select);
+		Core::Instance ()->MoveUp (GetSelectedRows ());
 	}
 
 	void TorrentTab::handleMoveDownTriggered ()
 	{
-		const auto& sis = GetSelectedRowIndexes ();
-		const auto& selections = GetSelectedRows ();
-
-		Core::Instance ()->MoveDown (selections);
-
-		auto sel = Ui_.TorrentsView_->selectionModel ();
-		sel->clearSelection ();
-
-		QItemSelection selection;
-		const auto& rowCount = Core::Instance ()->rowCount ();
-		for (const auto& si : sis)
-		{
-			auto sibling = si.sibling (std::min (si.row () + 1, rowCount - 1), 0);
-			selection.select (sibling, sibling);
-		}
-
-		sel->select (selection, QItemSelectionModel::Rows | QItemSelectionModel::Select);
+		Core::Instance ()->MoveDown (GetSelectedRows ());
 	}
 
 	void TorrentTab::handleMoveToTopTriggered ()
 	{
-		try
-		{
-			Core::Instance ()->MoveToTop (GetSelectedRows ());
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< e.what ();
-			return;
-		}
+		Core::Instance ()->MoveToTop (GetSelectedRows ());
 	}
 
 	void TorrentTab::handleMoveToBottomTriggered ()
 	{
-		try
-		{
-			Core::Instance ()->MoveToBottom (GetSelectedRows ());
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< e.what ();
-			return;
-		}
+		Core::Instance ()->MoveToBottom (GetSelectedRows ());
 	}
 
 	void TorrentTab::handleForceReannounceTriggered ()
