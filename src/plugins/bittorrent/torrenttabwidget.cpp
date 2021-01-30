@@ -95,6 +95,8 @@ namespace LC::BitTorrent
 				this, [this] { SetTabWidgetSettings (); });
 	}
 
+	TorrentTabWidget::~TorrentTabWidget () = default;
+
 	void TorrentTabWidget::SetDependencies (const Dependencies& deps)
 	{
 		SSM_ = deps.SSM_;
