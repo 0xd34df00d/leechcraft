@@ -115,6 +115,10 @@ namespace Util
 		void RegisterObject (const QList<QByteArray>& propNames,
 				QObject *object, const QByteArray& funcName, EventFlags flags = EventFlag::Apply);
 
+		void RegisterObject (const QList<QByteArray>& propName,
+				QObject *object, const std::function<void ()>&,
+				EventFlags flags = EventFlags { EventFlag::Apply } | EventFlag::ImmediateUpdate);
+
 		/** @brief Gets a property with default value.
 		 *
 		 * This is a wrapper around standard QObject::property() function.

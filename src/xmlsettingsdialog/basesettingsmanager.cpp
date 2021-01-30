@@ -68,6 +68,14 @@ namespace LC::Util
 			RegisterObject (prop, object, funcName, flags);
 	}
 
+	void BaseSettingsManager::RegisterObject (const QList<QByteArray>& propNames,
+			QObject *object, const std::function<void ()>& func, EventFlags flags)
+	{
+		const std::function<void (QVariant)> wrapper = [func] (const QVariant&) { func (); };
+		for (const auto& prop : propNames)
+			RegisterObject (prop, object, wrapper, flags);
+	}
+
 	QVariant BaseSettingsManager::Property (std::string_view propName, const QVariant& def)
 	{
 		auto result = property (propName.data ());
