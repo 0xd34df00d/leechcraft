@@ -8,9 +8,6 @@
 
 #pragma once
 
-#include <memory>
-
-class QAbstractItemModel;
 class QString;
 
 template<typename, typename>
@@ -45,6 +42,4 @@ namespace LC::BitTorrent
 	int GetDownloadLimit (const libtorrent::torrent_handle&);
 	void SetUploadLimit (libtorrent::torrent_handle&, int);
 	int GetUploadLimit (const libtorrent::torrent_handle&);
-
-	std::unique_ptr<QAbstractItemModel> MakeWebSeedsModel (const libtorrent::torrent_handle&);
 }

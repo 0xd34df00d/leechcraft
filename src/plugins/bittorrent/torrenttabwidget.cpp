@@ -9,8 +9,9 @@
 #include "torrenttabwidget.h"
 #include <chrono>
 #include <QAction>
-#include <QUrl>
+#include <QStandardItemModel>
 #include <QTimer>
+#include <QUrl>
 #include <libtorrent/lazy_entry.hpp>
 #include <util/util.h>
 #include <util/xpc/util.h>
@@ -175,6 +176,33 @@ namespace LC::BitTorrent
 	void TorrentTabWidget::SetChangeTrackersAction (QAction *changeTrackers)
 	{
 		Ui_.TrackersButton_->setDefaultAction (changeTrackers);
+	}
+
+	namespace
+	{
+		std::unique_ptr<QAbstractItemModel> MakeWebSeedsModel (const libtorrent::torrent_handle& handle)
+		{
+			auto model = std::make_unique<QStandardItemModel> ();
+
+			model->setHorizontalHeaderLabels ({ QObject::tr ("URL"),  QObject::tr ("Standard") });
+
+			if (!handle.is_valid ())
+				return model;
+
+			for (const auto& url : handle.url_seeds ())
+				model->appendRow ({
+						new QStandardItem (QString::fromStdString (url)),
+						new QStandardItem ("BEP 19")
+				});
+
+			for (const auto& url : handle.http_seeds ())
+				model->appendRow ({
+						new QStandardItem (QString::fromStdString (url)),
+						new QStandardItem ("BEP 17")
+				});
+
+			return model;
+		}
 	}
 
 	void TorrentTabWidget::SetCurrentIndex (int index)
