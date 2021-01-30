@@ -154,6 +154,9 @@ namespace LC::BitTorrent
 	{
 		std::vector<libtorrent::peer_info> peerInfos;
 		const auto& handle = Holder_ [Index_];
+		if (!handle.is_valid ())
+			return;
+
 		handle.get_peer_info (peerInfos);
 
 		const auto& localPieces = handle.status (libtorrent::torrent_handle::query_pieces).pieces;

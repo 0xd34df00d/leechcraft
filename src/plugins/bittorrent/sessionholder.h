@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <memory>
 #include <QList>
 
 namespace libtorrent
@@ -18,12 +19,14 @@ namespace libtorrent
 
 namespace LC::BitTorrent
 {
-	class SessionHolder
+	class SessionHolder final
 	{
 		libtorrent::session& Session_;
 		QList<libtorrent::torrent_handle> Handles_;
+		std::unique_ptr<libtorrent::torrent_handle> InvalidHandle_;
 	public:
 		explicit SessionHolder (libtorrent::session&);
+		~SessionHolder ();
 
 		SessionHolder (const SessionHolder&) = delete;
 		SessionHolder (SessionHolder&&) = delete;

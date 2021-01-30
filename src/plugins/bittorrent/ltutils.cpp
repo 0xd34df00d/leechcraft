@@ -162,6 +162,9 @@ namespace LC::BitTorrent
 
 		model->setHorizontalHeaderLabels ({ QObject::tr ("URL"),  QObject::tr ("Standard") });
 
+		if (!handle.is_valid ())
+			return model;
+
 		for (const auto& url : handle.url_seeds ())
 			model->appendRow ({
 					new QStandardItem (QString::fromUtf8 (url.c_str ())),

@@ -13,8 +13,11 @@ namespace LC::BitTorrent
 {
 	SessionHolder::SessionHolder (libtorrent::session& session)
 	: Session_ { session }
+	, InvalidHandle_ { std::make_unique<libtorrent::torrent_handle> () }
 	{
 	}
+
+	SessionHolder::~SessionHolder () = default;
 
 	libtorrent::session& SessionHolder::GetSession () const
 	{
@@ -23,11 +26,15 @@ namespace LC::BitTorrent
 
 	libtorrent::torrent_handle& SessionHolder::operator[] (int idx)
 	{
+		if (idx < 0 || idx >= Handles_.size ())
+			return *InvalidHandle_;
 		return Handles_ [idx];
 	}
 
 	const libtorrent::torrent_handle& SessionHolder::operator[] (int idx) const
 	{
+		if (idx < 0 || idx >= Handles_.size ())
+			return *InvalidHandle_;
 		return Handles_.at (idx);
 	}
 
