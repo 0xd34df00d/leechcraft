@@ -12,6 +12,8 @@
 #include <QTabWidget>
 #include "ui_torrenttabwidget.h"
 
+class QAbstractItemModel;
+
 namespace LC::BitTorrent
 {
 	class SessionSettingsManager;
@@ -22,10 +24,7 @@ namespace LC::BitTorrent
 		Q_OBJECT
 
 		Ui::TorrentTabWidget Ui_;
-		QAction *AddPeer_;
-		QAction *BanPeer_;
-		QAction *AddWebSeed_;
-		QAction *RemoveWebSeed_;
+		QAction *RemoveWebSeedAction_;
 		int Index_ = -1;
 		QList<int> SelectedIndices_;
 
@@ -33,6 +32,7 @@ namespace LC::BitTorrent
 		SessionHolder *Holder_ = nullptr;
 
 		std::unique_ptr<PiecesModel> PiecesModel_;
+		std::unique_ptr<QAbstractItemModel> WebSeedsModel_;
 	public:
 		explicit TorrentTabWidget (QWidget* = nullptr);
 		~TorrentTabWidget () override;
@@ -52,18 +52,17 @@ namespace LC::BitTorrent
 		void InvalidateSelection ();
 	private:
 		void UpdateTorrentStats ();
+
 		template<typename F>
 		void ForEachSelected (F&&) const;
 
 		void UpdateDashboard ();
 		void UpdateOverallStats ();
 		void UpdateTorrentControl ();
-	private slots:
 
-		void handleAddWebSeed ();
+		void AddWebSeed ();
+		void RemoveWebSeed ();
 
 		void SetTabWidgetSettings ();
-		void currentWebSeedChanged (const QModelIndex&);
-		void handleRemoveWebSeed ();
 	};
 }

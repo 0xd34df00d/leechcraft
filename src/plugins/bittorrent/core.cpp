@@ -300,26 +300,6 @@ namespace BitTorrent
 			return EntityTestHandleResult ();
 	}
 
-	QAbstractItemModel* Core::GetWebSeedsModel (int idx)
-	{
-		if (idx < 0)
-			return 0;
-
-		auto model = new QStandardItemModel;
-		model->setHorizontalHeaderLabels ({tr ("URL"), tr ("Standard") });
-		for (const auto& url : Handles_.at (idx).Handle_.url_seeds ())
-			model->appendRow ({
-						new QStandardItem (QString::fromUtf8 (url.c_str ())),
-						new QStandardItem ("BEP 19")
-					});
-		for (const auto& url : Handles_.at (idx).Handle_.http_seeds ())
-			model->appendRow ({
-						new QStandardItem (QString::fromUtf8 (url.c_str ())),
-						new QStandardItem ("BEP 17")
-					});
-		return model;
-	}
-
 	TorrentFilesModel* Core::GetTorrentFilesModel (int idx)
 	{
 		if (idx < 0)
@@ -1048,40 +1028,6 @@ namespace BitTorrent
 		{
 			handle.resume ();
 			Handles_ [pos].PauseAfterCheck_ = true;
-		}
-	}
-
-	void Core::AddWebSeed (const QString& ws, WebSeedType type, int idx)
-	{
-		if (!CheckValidity (idx))
-			return;
-
-		auto& handle = Handles_.at (idx).Handle_;
-		switch (type)
-		{
-		case WebSeedType::Bep17:
-			handle.add_http_seed (ws.toStdString ());
-			break;
-		case WebSeedType::Bep19:
-			handle.add_url_seed (ws.toStdString ());
-			break;
-		}
-	}
-
-	void Core::RemoveWebSeed (const QString& ws, WebSeedType type, int idx)
-	{
-		if (!CheckValidity (idx))
-			return;
-
-		auto& handle = Handles_.at (idx).Handle_;
-		switch (type)
-		{
-		case WebSeedType::Bep17:
-			handle.remove_http_seed (ws.toStdString ());
-			break;
-		case WebSeedType::Bep19:
-			handle.remove_url_seed (ws.toStdString ());
-			break;
 		}
 	}
 

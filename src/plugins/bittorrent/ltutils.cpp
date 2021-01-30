@@ -11,6 +11,7 @@
 #include <QPair>
 #include <QSettings>
 #include <QCoreApplication>
+#include <QStandardItemModel>
 #include <libtorrent/address.hpp>
 #include <libtorrent/ip_filter.hpp>
 #include <libtorrent/torrent_handle.hpp>
@@ -153,5 +154,26 @@ namespace LC::BitTorrent
 	{
 		const auto val = handle.upload_limit ();
 		return val >= 0 ? val / 1024 : val;
+	}
+
+	std::unique_ptr<QAbstractItemModel> MakeWebSeedsModel (const libtorrent::torrent_handle& handle)
+	{
+		auto model = std::make_unique<QStandardItemModel> ();
+
+		model->setHorizontalHeaderLabels ({ QObject::tr ("URL"),  QObject::tr ("Standard") });
+
+		for (const auto& url : handle.url_seeds ())
+			model->appendRow ({
+					new QStandardItem (QString::fromUtf8 (url.c_str ())),
+					new QStandardItem ("BEP 19")
+			});
+
+		for (const auto& url : handle.http_seeds ())
+			model->appendRow ({
+					new QStandardItem (QString::fromUtf8 (url.c_str ())),
+					new QStandardItem ("BEP 17")
+			});
+
+		return model;
 	}
 }

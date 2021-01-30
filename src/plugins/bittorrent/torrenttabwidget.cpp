@@ -11,7 +11,6 @@
 #include <QAction>
 #include <QUrl>
 #include <QTimer>
-#include <libtorrent/session.hpp>
 #include <libtorrent/lazy_entry.hpp>
 #include <util/util.h>
 #include <util/xpc/util.h>
@@ -57,25 +56,22 @@ namespace LC::BitTorrent
 				this,
 				&TorrentTabWidget::UpdateTorrentStats);
 
-		AddWebSeed_ = new QAction (tr ("Add web seed..."),
-				Ui_.WebSeedsView_);
-		AddWebSeed_->setObjectName ("AddWebSeed_");
-		connect (AddWebSeed_,
-				SIGNAL (triggered ()),
+		const auto addWebSeedAct = new QAction (tr ("Add web seed..."), Ui_.WebSeedsView_);
+		connect (addWebSeedAct,
+				&QAction::triggered,
 				this,
-				SLOT (handleAddWebSeed ()));
+				&TorrentTabWidget::AddWebSeed);
+		Ui_.WebSeedsView_->addAction (addWebSeedAct);
 
-		RemoveWebSeed_ = new QAction (tr ("Remove web seed"),
-				Ui_.WebSeedsView_);
-		RemoveWebSeed_->setProperty ("ActionIcon", "list-remove-user");
-		RemoveWebSeed_->setObjectName ("RemoveWebSeed_");
-		RemoveWebSeed_->setEnabled (false);
-		connect (RemoveWebSeed_,
-				SIGNAL (triggered ()),
+		RemoveWebSeedAction_ = new QAction (tr ("Remove web seed"), Ui_.WebSeedsView_);
+		RemoveWebSeedAction_->setProperty ("ActionIcon", "list-remove-user");
+		RemoveWebSeedAction_->setEnabled (false);
+		connect (RemoveWebSeedAction_,
+				&QAction::triggered,
 				this,
-				SLOT (handleRemoveWebSeed ()));
-		Ui_.WebSeedsView_->addAction (AddWebSeed_);
-		Ui_.WebSeedsView_->addAction (RemoveWebSeed_);
+				&TorrentTabWidget::RemoveWebSeed);
+		Ui_.WebSeedsView_->addAction (RemoveWebSeedAction_);
+
 		connect (Ui_.LabelComment_,
 				&QLabel::linkActivated,
 				[] (const QString& link)
@@ -189,24 +185,18 @@ namespace LC::BitTorrent
 
 		Ui_.FilesWidget_->SetCurrentIndex (Index_);
 
-		const QList<QAbstractItemModel*> oldModels
-		{
-			Ui_.WebSeedsView_->model ()
-		};
-
 		auto newPiecesModel = std::make_unique<PiecesModel> (*Holder_, Index_);
 		Ui_.PiecesView_->setModel (newPiecesModel.get ());
 		PiecesModel_ = std::move (newPiecesModel);
 
 		Ui_.PagePeers_->SetSelectedTorrent (Index_);
 
-		Ui_.WebSeedsView_->setModel (Core::Instance ()->GetWebSeedsModel (Index_));
+		auto newWebSeedsModel = MakeWebSeedsModel ((*Holder_) [Index_]);
+		Ui_.WebSeedsView_->setModel (newWebSeedsModel.get ());
 		connect (Ui_.WebSeedsView_->selectionModel (),
-				SIGNAL (currentChanged (QModelIndex, QModelIndex)),
-				this,
-				SLOT (currentWebSeedChanged (QModelIndex)));
-
-		qDeleteAll (oldModels);
+				&QItemSelectionModel::currentChanged,
+				[this] (const QModelIndex& idx) { RemoveWebSeedAction_->setEnabled (idx.isValid ()); });
+		WebSeedsModel_ = std::move (newWebSeedsModel);
 	}
 
 	void TorrentTabWidget::SetSelectedIndices (const QList<int>& indices)
@@ -419,6 +409,48 @@ namespace LC::BitTorrent
 		Ui_.LabelDownBandwidthQueue_->setText (QString::number (i->Status_.down_bandwidth_queue));
 	}
 
+	void TorrentTabWidget::AddWebSeed ()
+	{
+		AddWebSeedDialog ws;
+		if (ws.exec () != QDialog::Accepted)
+			return;
+
+		const auto& url = ws.GetURL ();
+		if (url.isEmpty () || !QUrl { ws.GetURL () }.isValid ())
+			return;
+
+		auto& handle = (*Holder_) [Index_];
+		switch (ws.GetType ())
+		{
+		case WebSeedType::Bep17:
+			handle.add_http_seed (url.toStdString ());
+			break;
+		case WebSeedType::Bep19:
+			handle.add_url_seed (url.toStdString ());
+			break;
+		}
+	}
+
+	void TorrentTabWidget::RemoveWebSeed ()
+	{
+		auto index = Ui_.WebSeedsView_->currentIndex ();
+		auto url = index.sibling (index.row (), 0).data ().toString ().toStdString ();
+		auto type = index.sibling (index.row (), 1).data ().toString () == "BEP 19" ?
+				WebSeedType::Bep19 :
+				WebSeedType::Bep17;
+
+		auto& handle = (*Holder_) [Index_];
+		switch (type)
+		{
+		case WebSeedType::Bep17:
+			handle.remove_http_seed (url);
+			break;
+		case WebSeedType::Bep19:
+			handle.remove_url_seed (url);
+			break;
+		}
+	}
+
 	void TorrentTabWidget::SetTabWidgetSettings ()
 	{
 		auto xsm = XmlSettingsManager::Instance ();
@@ -430,31 +462,5 @@ namespace LC::BitTorrent
 		Ui_.BoxTorrentAdvancedStatus_->setVisible (xsm->property ("ActiveTorrentAdvancedStatus").toBool ());
 		Ui_.BoxTorrentInfo_->setVisible (xsm->property ("ActiveTorrentInfo").toBool ());
 		Ui_.BoxTorrentPeers_->setVisible (xsm->property ("ActiveTorrentPeers").toBool ());
-	}
-
-	void TorrentTabWidget::handleAddWebSeed ()
-	{
-		AddWebSeedDialog ws;
-		if (ws.exec () != QDialog::Accepted ||
-				ws.GetURL ().isEmpty ())
-			return;
-
-		if (!QUrl (ws.GetURL ()).isValid ())
-			return;
-
-		Core::Instance ()->AddWebSeed (ws.GetURL (), ws.GetType (), Index_);
-	}
-
-	void TorrentTabWidget::currentWebSeedChanged (const QModelIndex& index)
-	{
-		RemoveWebSeed_->setEnabled (index.isValid ());
-	}
-
-	void TorrentTabWidget::handleRemoveWebSeed ()
-	{
-		auto index = Ui_.WebSeedsView_->currentIndex ();
-		auto url = index.sibling (index.row (), 0).data ().toString ();
-		auto type = index.sibling (index.row (), 1).data ().toString () == "BEP 19" ? WebSeedType::Bep19 : WebSeedType::Bep17;
-		Core::Instance ()->RemoveWebSeed (index.data ().toString (), type, Index_);
 	}
 }
