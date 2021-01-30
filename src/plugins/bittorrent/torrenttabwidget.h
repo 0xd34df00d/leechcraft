@@ -50,9 +50,8 @@ namespace LC::BitTorrent
 		void SetCurrentIndex (int);
 		void SetSelectedIndices (const QList<int>&);
 		void InvalidateSelection ();
-	public slots:
-		void updateTorrentStats ();
 	private:
+		void UpdateTorrentStats ();
 		template<typename F>
 		void ForEachSelected (F&&) const;
 
@@ -60,7 +59,6 @@ namespace LC::BitTorrent
 		void UpdateOverallStats ();
 		void UpdateTorrentControl ();
 	private slots:
-		void on_LabelComment__linkActivated (const QString&);
 
 		void handleAddWebSeed ();
 

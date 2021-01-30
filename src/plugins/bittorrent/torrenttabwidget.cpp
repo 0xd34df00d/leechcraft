@@ -48,14 +48,14 @@ namespace LC::BitTorrent
 		header->resizeSection (1, fm.horizontalAdvance ("  BEP 99  "));
 
 		connect (Core::Instance (),
-				SIGNAL (torrentsStatusesUpdated ()),
+				&Core::torrentsStatusesUpdated,
 				this,
-				SLOT (updateTorrentStats ()),
+				&TorrentTabWidget::UpdateTorrentStats,
 				Qt::QueuedConnection);
 		connect (this,
-				SIGNAL (currentChanged (int)),
+				&QTabWidget::currentChanged,
 				this,
-				SLOT (updateTorrentStats ()));
+				&TorrentTabWidget::UpdateTorrentStats);
 
 		AddWebSeed_ = new QAction (tr ("Add web seed..."),
 				Ui_.WebSeedsView_);
@@ -76,6 +76,15 @@ namespace LC::BitTorrent
 				SLOT (handleRemoveWebSeed ()));
 		Ui_.WebSeedsView_->addAction (AddWebSeed_);
 		Ui_.WebSeedsView_->addAction (RemoveWebSeed_);
+		connect (Ui_.LabelComment_,
+				&QLabel::linkActivated,
+				[] (const QString& link)
+				{
+					const auto& e = Util::MakeEntity (QUrl::fromEncoded (link.toUtf8 ()),
+							{},
+							TaskParameter::FromUserInitiated | TaskParameter::OnlyHandle);
+					GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
+				});
 
 		XmlSettingsManager::Instance ()->RegisterObject ({
 					"ActiveSessionStats",
@@ -209,10 +218,10 @@ namespace LC::BitTorrent
 	{
 		Ui_.TorrentTags_->setText (Core::Instance ()->GetProxy ()->GetTagsManager ()->
 				Join (Core::Instance ()->GetTagsForIndex (Index_)));
-		updateTorrentStats ();
+		UpdateTorrentStats ();
 	}
 
-	void TorrentTabWidget::updateTorrentStats ()
+	void TorrentTabWidget::UpdateTorrentStats ()
 	{
 		UpdateDashboard ();
 		UpdateOverallStats ();
@@ -408,14 +417,6 @@ namespace LC::BitTorrent
 		Ui_.LabelConnectCandidates_->setText (QString::number (i->Status_.connect_candidates));
 		Ui_.LabelUpBandwidthQueue_->setText (QString::number (i->Status_.up_bandwidth_queue));
 		Ui_.LabelDownBandwidthQueue_->setText (QString::number (i->Status_.down_bandwidth_queue));
-	}
-
-	void TorrentTabWidget::on_LabelComment__linkActivated (const QString& link)
-	{
-		const auto& e = Util::MakeEntity (QUrl::fromEncoded (link.toUtf8 ()),
-				{},
-				TaskParameter::FromUserInitiated | TaskParameter::OnlyHandle);
-		GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 	}
 
 	void TorrentTabWidget::SetTabWidgetSettings ()
