@@ -21,7 +21,7 @@ namespace LC::BitTorrent
 
 	class TorrentTabWidget : public QTabWidget
 	{
-		Q_OBJECT
+		Q_DECLARE_TR_FUNCTIONS (LC::BitTorrent::TorrentTabWidget)
 
 		Ui::TorrentTabWidget Ui_;
 		QAction *RemoveWebSeedAction_;
