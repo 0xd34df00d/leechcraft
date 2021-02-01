@@ -1999,6 +1999,10 @@ namespace BitTorrent
 		void operator() (const libtorrent::torrent_deleted_alert&) const
 		{
 		}
+
+		void operator() (const libtorrent::listen_succeeded_alert&) const
+		{
+		}
 	private:
 		QString GetTorrentName (const libtorrent::torrent_handle& handle) const
 		{
@@ -2084,6 +2088,7 @@ namespace BitTorrent
 					, libtorrent::piece_finished_alert
 					, libtorrent::torrent_removed_alert
 					, libtorrent::torrent_deleted_alert
+					, libtorrent::listen_succeeded_alert
 					> (alert, sd);
 			}
 			catch (const std::exception&)
