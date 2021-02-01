@@ -193,7 +193,9 @@ namespace LC
 		 *
 		 * @sa ProcessStateInfo
 		 */
-		ProcessState = CustomDataRoles::RoleMAX + 1
+		ProcessState = CustomDataRoles::RoleMAX + 1,
+
+		JobHolderRoleMax
 	};
 }
 
