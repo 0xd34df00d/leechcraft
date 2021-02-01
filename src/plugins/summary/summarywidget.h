@@ -45,6 +45,7 @@ namespace Summary
 		QSortFilterProxyModel *Sorter_;
 
 		QHash<const QAbstractItemModel*, IJobHolderRepresentationHandler_ptr> SrcModel2Handler_;
+		QSet<const QAbstractItemModel*> PreviouslySelectedModels_;
 	public:
 		explicit SummaryWidget (QWidget* = nullptr);
 		~SummaryWidget () override;

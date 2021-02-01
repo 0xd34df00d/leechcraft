@@ -26,6 +26,7 @@
 #include <interfaces/imwproxy.h>
 #include <util/gui/clearlineeditaddon.h>
 #include <util/sll/curry.h>
+#include <util/sll/qtutil.h>
 #include "core.h"
 #include "summary.h"
 #include "modeldelegate.h"
@@ -179,6 +180,26 @@ namespace Summary
 		connectAction (&QAbstractItemView::doubleClicked, &IJobHolderRepresentationHandler::HandleDoubleClicked);
 		connectAction (&QAbstractItemView::entered, &IJobHolderRepresentationHandler::HandleEntered);
 		connectAction (&QAbstractItemView::pressed, &IJobHolderRepresentationHandler::HandlePressed);
+
+		connect (Ui_.PluginsTasksTree_->selectionModel (),
+				&QItemSelectionModel::selectionChanged,
+				[this]
+				{
+					QHash<const QAbstractItemModel*, QModelIndexList> newSelections;
+					for (const auto& row : Ui_.PluginsTasksTree_->selectionModel ()->selectedRows ())
+					{
+						const auto& mapped = Core::Instance ().MapToSourceRecursively (row);
+						newSelections [mapped.model ()] << mapped;
+					}
+
+					for (const auto& [model, rows] : Util::Stlize (newSelections))
+						SrcModel2Handler_ [model]->HandleSelectedRowsChanged (rows);
+
+					QSet<const QAbstractItemModel*> curModels { newSelections.keyBegin (), newSelections.keyEnd () };
+					for (const auto model : PreviouslySelectedModels_ - curModels)
+						SrcModel2Handler_ [model]->HandleSelectedRowsChanged ({});
+					PreviouslySelectedModels_ = curModels;
+				});
 	}
 
 	SummaryWidget::~SummaryWidget ()
