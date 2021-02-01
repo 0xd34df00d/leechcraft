@@ -25,8 +25,6 @@ namespace BitTorrent
 		SessionHolder& Holder_;
 
 		Ui::TabWidget Ui_;
-		bool TorrentSelectionChanged_ = false;
-		Util::TagsCompleter *TagsChangeCompleter_;
 
 		int Torrent_ = -1;
 	public:

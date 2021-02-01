@@ -33,7 +33,7 @@ namespace BitTorrent
 	{
 		Ui_.setupUi (this);
 
-		TagsChangeCompleter_ = new Util::TagsCompleter { Ui_.TorrentTags_ };
+		new Util::TagsCompleter { Ui_.TorrentTags_ };
 		Ui_.TorrentTags_->AddSelector ();
 
 		connect (Core::Instance (),
@@ -56,7 +56,6 @@ namespace BitTorrent
 		if (Torrent_ == -1)
 			return;
 
-		TorrentSelectionChanged_ = true;
 		const auto& tags = Core::Instance ()->GetTagsForIndex (Torrent_);
 		Ui_.TorrentTags_->setText (GetProxyHolder ()->GetTagsManager ()->Join (tags));
 		updateTorrentStats ();
@@ -76,7 +75,6 @@ namespace BitTorrent
 		UpdateTorrentControl ();
 		UpdateDashboard ();
 		UpdateOverallStats ();
-		TorrentSelectionChanged_ = false;
 	}
 
 	void TabWidget::UpdateOverallStats ()
