@@ -12,6 +12,9 @@
 
 class QModelIndex;
 
+template<typename>
+class QList;
+
 class IJobHolderRepresentationHandler
 {
 public:
@@ -20,6 +23,7 @@ public:
 	virtual void HandleCurrentChanged (const QModelIndex&) {}
 	virtual void HandleCurrentColumnChanged (const QModelIndex&) {}
 	virtual void HandleCurrentRowChanged (const QModelIndex&) {}
+	virtual void HandleSelectedRowsChanged (const QList<QModelIndex>&) {}
 
 	virtual void HandleActivated (const QModelIndex&) {}
 	virtual void HandleClicked (const QModelIndex&) {}
