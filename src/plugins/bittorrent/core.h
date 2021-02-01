@@ -23,6 +23,7 @@
 #include <libtorrent/session_status.hpp>
 #include <interfaces/iinfo.h>
 #include <interfaces/structures.h>
+#include <interfaces/ijobholder.h>
 #include <interfaces/idownload.h>
 #include <util/tags/tagscompletionmodel.h>
 #include <util/sll/either.h>
@@ -82,7 +83,7 @@ namespace BitTorrent
 			QString TorrentFileName_ = {};
 			TorrentState State_ = TSIdle;
 			/** Holds the IDs of tags of the torrent.
-				*/
+			 */
 			QStringList Tags_;
 			bool AutoManaged_ = true;
 
@@ -196,9 +197,10 @@ namespace BitTorrent
 		};
 		enum Roles
 		{
-			FullLengthText = Qt::UserRole + 1,
+			Tags = CustomDataRoles::RoleTags,
+			FullLengthText = JobHolderRoleMax,
 			SortRole,
-			HandleIndex
+			HandleIndex,
 		};
 
 		static Core* Instance ();
