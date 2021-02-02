@@ -99,11 +99,9 @@ namespace BitTorrent
 		}
 
 		libtorrent::entry e = ct.generate ();
-		std::deque<char> outbuf;
+		QByteArray outbuf;
 		libtorrent::bencode (std::back_inserter (outbuf), e);
-
-		for (size_t i = 0; i < outbuf.size (); ++i)
-			file.write (&outbuf.at (i), 1);
+		file.write (outbuf);
 		file.close ();
 
 		auto rootWM = Core::Instance ()->GetProxy ()->GetRootWindowsManager ();
