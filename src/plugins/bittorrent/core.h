@@ -302,7 +302,7 @@ namespace BitTorrent
 		void SetTorrentSequentialDownload (bool, int);
 		bool IsTorrentSuperSeeding (int) const;
 		void SetTorrentSuperSeeding (bool, int);
-		void MakeTorrent (const NewTorrentParams&) const;
+		void MakeTorrent (const NewTorrentParams&);
 		void SetExternalAddress (const QString&);
 		QString GetExternalAddress () const;
 		bool CheckValidity (int) const;

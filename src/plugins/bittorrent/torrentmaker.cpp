@@ -7,7 +7,7 @@
  **********************************************************************/
 
 #include "torrentmaker.h"
-#include <deque>
+#include <QCoreApplication>
 #include <QFile>
 #include <QFileInfo>
 #include <QProgressDialog>
@@ -20,11 +20,9 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/core/ientitymanager.h>
-#include "core.h"
+#include "newtorrentparams.h"
 
-namespace LC
-{
-namespace BitTorrent
+namespace LC::BitTorrent
 {
 	namespace
 	{
@@ -34,15 +32,21 @@ namespace BitTorrent
 			return fi.isReadable () && !fi.isHidden () &&
 					(fi.isDir () || fi.isFile () || fi.isSymLink ());
 		}
+
+		void ReportError (const QString& error)
+		{
+			const auto& entity = Util::MakeNotification ("BitTorrent", error, Priority::Critical);
+			GetProxyHolder ()->GetEntityManager ()->HandleEntity (entity);
+		}
+
+		struct Tr
+		{
+			// for compatibility with earlier translation files
+			Q_DECLARE_TR_FUNCTIONS (LC::BitTorrent::TorrentMaker)
+		};
 	}
 
-	TorrentMaker::TorrentMaker (const ICoreProxy_ptr& proxy, QObject *parent)
-	: QObject { parent }
-	, Proxy_ { proxy }
-	{
-	}
-
-	void TorrentMaker::Start (NewTorrentParams params)
+	std::optional<QString> CreateTorrent (const NewTorrentParams& params)
 	{
 		QString filename = params.Output_;
 		if (!filename.endsWith (".torrent"))
@@ -50,17 +54,17 @@ namespace BitTorrent
 		QFile file (filename);
 		if (!file.open (QIODevice::WriteOnly | QIODevice::Truncate))
 		{
-			ReportError (tr ("Could not open file %1 for write!").arg (filename));
-			return;
+			ReportError (Tr::tr ("Could not open file %1 for write!").arg (filename));
+			return {};
 		}
 
 		libtorrent::file_storage fs;
-		const auto& fullPath = std::string (params.Path_.toUtf8 ().constData ());
+		const auto& fullPath = params.Path_.toStdString ();
 		libtorrent::add_files (fs, fullPath, FileFilter);
 		libtorrent::create_torrent ct (fs, params.PieceSize_);
 
 		ct.set_creator (qPrintable (QString ("LeechCraft BitTorrent %1")
-					.arg (Core::Instance ()->GetProxy ()->GetVersion ())));
+					.arg (GetProxyHolder ()->GetVersion ())));
 		if (!params.Comment_.isEmpty ())
 			ct.set_comment (params.Comment_.toUtf8 ());
 		for (int i = 0; i < params.URLSeeds_.size (); ++i)
@@ -78,7 +82,7 @@ namespace BitTorrent
 		ct.add_tracker (params.AnnounceURL_.toStdString ());
 
 		QProgressDialog pd;
-		pd.setWindowTitle (tr ("Hashing torrent..."));
+		pd.setWindowTitle (Tr::tr ("Hashing torrent..."));
 		pd.setMaximum (ct.num_pieces ());
 
 		libtorrent::error_code hashesError;
@@ -93,9 +97,9 @@ namespace BitTorrent
 					<< "while in libtorrent::set_piece_hashes():"
 					<< message
 					<< hashesError.category ().name ();
-			ReportError (tr ("Torrent creation failed: %1")
+			ReportError (Tr::tr ("Torrent creation failed: %1")
 					.arg (message));
-			return;
+			return {};
 		}
 
 		libtorrent::entry e = ct.generate ();
@@ -104,23 +108,16 @@ namespace BitTorrent
 		file.write (outbuf);
 		file.close ();
 
-		auto rootWM = Core::Instance ()->GetProxy ()->GetRootWindowsManager ();
+		auto rootWM = GetProxyHolder ()->GetRootWindowsManager ();
 		if (QMessageBox::question (rootWM->GetPreferredWindow (),
 					"LeechCraft",
-					tr ("Torrent file generated: %1.<br />Do you want to start seeding now?")
+					Tr::tr ("Torrent file generated: %1.<br />Do you want to start seeding now?")
 						.arg (QDir::toNativeSeparators (filename)),
 					QMessageBox::Yes | QMessageBox::No) ==
 				QMessageBox::Yes)
-			Core::Instance ()->AddFile (filename,
-					QString::fromUtf8 (fullPath.c_str ()),
-					QStringList (),
-					false);
+			return { filename };
+
+		return {};
 	}
 
-	void TorrentMaker::ReportError (const QString& error)
-	{
-		const auto& entity = Util::MakeNotification ("BitTorrent", error, Priority::Critical);
-		Proxy_->GetEntityManager ()->HandleEntity (entity);
-	}
-}
 }

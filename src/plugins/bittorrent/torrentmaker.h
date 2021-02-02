@@ -8,24 +8,13 @@
 
 #pragma once
 
-#include <QObject>
-#include <interfaces/core/icoreproxy.h>
-#include "newtorrentparams.h"
+#include <optional>
 
-namespace LC
-{
-namespace BitTorrent
-{
-	class TorrentMaker : public QObject
-	{
-		Q_OBJECT
+class QString;
 
-		const ICoreProxy_ptr Proxy_;
-	public:
-		TorrentMaker (const ICoreProxy_ptr&, QObject* = 0);
-		void Start (NewTorrentParams);
-	private:
-		void ReportError (const QString&);
-	};
-}
+namespace LC::BitTorrent
+{
+	struct NewTorrentParams;
+
+	std::optional<QString> CreateTorrent (const NewTorrentParams&);
 }

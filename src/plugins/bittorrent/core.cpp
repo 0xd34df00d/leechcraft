@@ -61,6 +61,7 @@
 #include "cachedstatuskeeper.h"
 #include "sessionstats.h"
 #include "ltutils.h"
+#include "newtorrentparams.h"
 
 Q_DECLARE_METATYPE (QMenu*)
 Q_DECLARE_METATYPE (QToolBar*)
@@ -1159,10 +1160,10 @@ namespace BitTorrent
 		ToggleFlag (Handles_ [idx].Handle_, libtorrent::torrent_flags::super_seeding, sup);
 	}
 
-	void Core::MakeTorrent (const NewTorrentParams& params) const
+	void Core::MakeTorrent (const NewTorrentParams& params)
 	{
-		const auto tm = new TorrentMaker { Proxy_ };
-		tm->Start (params);
+		if (const auto result = CreateTorrent (params))
+			AddFile (*result, params.Path_, {}, false);
 	}
 
 	void Core::SetExternalAddress (const QString& address)
