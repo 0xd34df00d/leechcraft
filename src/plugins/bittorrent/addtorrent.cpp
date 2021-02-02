@@ -43,6 +43,8 @@ namespace LC::BitTorrent
 
 		Ui_.OK_->setEnabled (false);
 
+		Ui_.Destination_->setText (XmlSettingsManager::Instance ()->property ("LastSaveDirectory").toString ());
+
 		const auto setOkEnabled = [this]
 		{
 			Ui_.OK_->setEnabled (QFileInfo { Ui_.TorrentFile_->text () }.isReadable () &&
