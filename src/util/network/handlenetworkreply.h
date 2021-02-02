@@ -9,7 +9,6 @@
 #pragma once
 
 #include <QNetworkReply>
-#include <util/sll/slotclosure.h>
 #include <util/sll/either.h>
 #include <util/sll/overload.h>
 #include <util/sll/void.h>
@@ -22,17 +21,14 @@ namespace LC::Util
 	template<typename F>
 	void HandleNetworkReply (QObject *context, QNetworkReply *reply, F f)
 	{
-		new Util::SlotClosure<Util::DeleteLaterPolicy>
-		{
-			[reply, f]
-			{
-				reply->deleteLater ();
-				f (reply->readAll ());
-			},
-			reply,
-			SIGNAL (finished ()),
-			context
-		};
+		QObject::connect (reply,
+				&QNetworkReply::finished,
+				context,
+				[reply, f]
+				{
+					reply->deleteLater ();
+					f (reply->readAll ());
+				});
 	}
 
 	template<typename>
