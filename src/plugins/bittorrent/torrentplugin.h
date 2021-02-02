@@ -73,8 +73,6 @@ namespace BitTorrent
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.BitTorrent")
 
-		ICoreProxy_ptr Proxy_;
-
 		std::shared_ptr<LC::Util::XmlSettingsDialog> XmlSettingsDialog_;
 		std::unique_ptr<TabWidget> TabWidget_;
 		std::unique_ptr<QToolBar> Toolbar_;

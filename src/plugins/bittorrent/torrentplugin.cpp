@@ -98,8 +98,6 @@ namespace BitTorrent
 
 	void TorrentPlugin::Init (ICoreProxy_ptr proxy)
 	{
-		Proxy_ = proxy;
-
 		InstallTranslator ("bittorrent");
 		Core::Instance ()->SetProxy (proxy);
 
@@ -161,7 +159,7 @@ namespace BitTorrent
 
 	QIcon TorrentPlugin::GetIcon () const
 	{
-		return Proxy_->GetIconThemeManager ()->GetPluginIcon ();
+		return GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon ();
 	}
 
 	qint64 TorrentPlugin::GetDownloadSpeed () const
