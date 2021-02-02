@@ -121,7 +121,7 @@ namespace LC::BitTorrent
 		session.set_ip_filter ({});
 	}
 
-	void RunIPSessionDialog (libtorrent::session& session)
+	void RunIPFilterDialog (libtorrent::session& session)
 	{
 		IPFilterDialog dia { GetFilter (session) };
 		if (dia.exec () != QDialog::Accepted)
