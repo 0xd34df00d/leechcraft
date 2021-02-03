@@ -7,9 +7,6 @@
  **********************************************************************/
 
 #include "torrenttab.h"
-#include <QDir>
-#include <QMessageBox>
-#include <QInputDialog>
 #include <QStyledItemDelegate>
 #include <QSortFilterProxyModel>
 #include <QToolBar>
@@ -21,24 +18,17 @@
 #include <util/gui/lineeditbuttonmanager.h>
 #include <util/gui/util.h>
 #include <util/sll/prelude.h>
-#include <util/sll/views.h>
-#include <util/xpc/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/itagsmanager.h>
 #include "core.h"
-#include "addtorrent.h"
-#include "addmultipletorrents.h"
-#include "newtorrentwizard.h"
-#include "trackerschanger.h"
 #include "movetorrentfiles.h"
 #include "tabviewproxymodel.h"
-#include "addmagnetdialog.h"
 #include "xmlsettingsmanager.h"
 #include "types.h"
-#include "newtorrentparams.h"
 #include "sessionholder.h"
 #include "ltutils.h"
+#include "listactions.h"
 
 namespace LC
 {
@@ -78,7 +68,7 @@ namespace BitTorrent
 	: Holder_ { holder }
 	, TC_ { tc }
 	, ParentMT_ { mt }
-	, Toolbar_ { new QToolBar { "BitTorrent" } }
+	, Actions_ { new ListActions { holder, this } }
 	, ViewFilter_ { new TabViewProxyModel { this } }
 	{
 		Ui_.setupUi (this);
@@ -102,7 +92,13 @@ namespace BitTorrent
 				});
 		connect (Ui_.TorrentsView_->selectionModel (),
 				&QItemSelectionModel::selectionChanged,
-				[this] { Ui_.Tabs_->SetSelectedIndices (GetSelectedRows ()); });
+				[this]
+				{
+					const auto& rows = Ui_.TorrentsView_->selectionModel ()->selectedRows ();
+					const auto& idxs = Util::Map (rows,
+							[] (const QModelIndex& idx) { return idx.data (Core::HandleIndex).toInt (); });
+					Ui_.Tabs_->SetSelectedIndices (idxs);
+				});
 		Ui_.TorrentsView_->sortByColumn (Core::ColumnID, Qt::SortOrder::AscendingOrder);
 
 		QHeaderView *header = Ui_.TorrentsView_->header ();
@@ -126,163 +122,23 @@ namespace BitTorrent
 				ViewFilter_,
 				SLOT (setStateFilterMode (int)));
 
-		OpenTorrent_ = new QAction (tr ("Open torrent..."), Toolbar_);
-		OpenTorrent_->setShortcut (Qt::Key_Insert);
-		OpenTorrent_->setProperty ("ActionIcon", "document-open");
-		connect (OpenTorrent_,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleOpenTorrentTriggered ()));
+		auto selModel = Ui_.TorrentsView_->selectionModel ();
+		connect (selModel,
+				&QItemSelectionModel::currentRowChanged,
+				Actions_,
+				&ListActions::SetCurrentIndex);
+		connect (selModel,
+				&QItemSelectionModel::selectionChanged,
+				Actions_,
+				[this, selModel] { Actions_->SetCurrentSelection (selModel->selectedRows ()); });
 
-		AddMagnet_ = new QAction (tr ("Add magnet link..."), Toolbar_);
-		AddMagnet_->setProperty ("ActionIcon", "document-open-remote");
-		connect (AddMagnet_,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleAddMagnetTriggered ()));
-
-		CreateTorrent_ = new QAction (tr ("Create torrent..."), Toolbar_);
-		CreateTorrent_->setProperty ("ActionIcon", "document-new");
-		connect (CreateTorrent_,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleCreateTorrentTriggered ()));
-
-		OpenMultipleTorrents_ = new QAction (tr ("Open multiple torrents..."), Toolbar_);
-		OpenMultipleTorrents_->setProperty ("ActionIcon", "document-open-folder");
-		connect (OpenMultipleTorrents_,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleOpenMultipleTorrentsTriggered ()));
-
-		IPFilter_ = new QAction (tr ("IP filter..."), Toolbar_);
-		IPFilter_->setProperty ("ActionIcon", "view-filter");
-		connect (IPFilter_,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleIPFilterTriggered ()));
-
-		RemoveTorrent_ = new QAction (tr ("Remove"), Toolbar_);
-		RemoveTorrent_->setShortcut (tr ("Del"));
-		RemoveTorrent_->setProperty ("ActionIcon", "list-remove");
-		connect (RemoveTorrent_,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleRemoveTorrentTriggered ()));
-
-		Resume_ = new QAction (tr ("Resume"), Toolbar_);
-		Resume_->setShortcut (tr ("R"));
-		Resume_->setProperty ("ActionIcon", "media-playback-start");
-		connect (Resume_,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleResumeTriggered ()));
-
-		Stop_ = new QAction (tr ("Pause"), Toolbar_);
-		Stop_->setShortcut (tr ("S"));
-		Stop_->setProperty ("ActionIcon", "media-playback-pause");
-		connect (Stop_,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleStopTriggered ()));
-
-		MoveUp_ = new QAction (tr ("Move up"), Toolbar_);
-		MoveUp_->setShortcut (Qt::CTRL + Qt::Key_Up);
-		MoveUp_->setProperty ("ActionIcon", "go-up");
-		connect (MoveUp_,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleMoveUpTriggered ()));
-
-		MoveDown_ = new QAction (tr ("Move down"), Toolbar_);
-		MoveDown_->setShortcut (Qt::CTRL + Qt::Key_Down);
-		MoveDown_->setProperty ("ActionIcon", "go-down");
-		connect (MoveDown_,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleMoveDownTriggered ()));
-
-		MoveToTop_ = new QAction (tr ("Move to top"), Toolbar_);
-		MoveToTop_->setShortcut (Qt::CTRL + Qt::SHIFT + Qt::Key_Up);
-		MoveToTop_->setProperty ("ActionIcon", "go-top");
-		connect (MoveToTop_,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleMoveToTopTriggered ()));
-
-		MoveToBottom_ = new QAction (tr ("Move to bottom"), Toolbar_);
-		MoveToBottom_->setShortcut (Qt::CTRL + Qt::SHIFT + Qt::Key_Down);
-		MoveToBottom_->setProperty ("ActionIcon", "go-bottom");
-		connect (MoveToBottom_,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleMoveToBottomTriggered ()));
-
-		ForceReannounce_ = new QAction (tr ("Reannounce"), Toolbar_);
-		ForceReannounce_->setShortcut (tr ("F"));
-		ForceReannounce_->setProperty ("ActionIcon", "network-wireless");
-		connect (ForceReannounce_,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleForceReannounceTriggered ()));
-
-		ForceRecheck_ = new QAction (tr ("Recheck"), Toolbar_);
-		ForceRecheck_->setProperty ("ActionIcon", "tools-check-spelling");
-		connect (ForceRecheck_,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleForceRecheckTriggered ()));
-
-		MoveFiles_ = new QAction (tr ("Move files..."), Toolbar_);
-		MoveFiles_->setShortcut (tr ("M"));
-		MoveFiles_->setProperty ("ActionIcon", "transform-move");
-		connect (MoveFiles_,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleMoveFilesTriggered ()));
-
-		ChangeTrackers_ = new QAction (tr ("Change trackers..."), Toolbar_);
-		ChangeTrackers_->setShortcut (tr ("C"));
-		ChangeTrackers_->setProperty ("ActionIcon", "view-media-playlist");
-		connect (ChangeTrackers_,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleChangeTrackersTriggered ()));
-		Ui_.Tabs_->SetChangeTrackersAction (ChangeTrackers_);
-
-		MakeMagnetLink_ = new QAction (tr ("Make magnet link..."), Toolbar_);
-		MakeMagnetLink_->setProperty ("ActionIcon", "insert-link");
-		connect (MakeMagnetLink_,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleMakeMagnetLinkTriggered ()));
-
-		Toolbar_->addAction (OpenTorrent_);
-		Toolbar_->addAction (AddMagnet_);
-		Toolbar_->addAction (OpenMultipleTorrents_);
-		Toolbar_->addAction (RemoveTorrent_);
-		Toolbar_->addSeparator ();
-		Toolbar_->addAction (CreateTorrent_);
-		Toolbar_->addSeparator ();
-		Toolbar_->addAction (Resume_);
-		Toolbar_->addAction (Stop_);
-		Toolbar_->addSeparator ();
-		Toolbar_->addAction (MoveUp_);
-		Toolbar_->addAction (MoveDown_);
-		Toolbar_->addAction (MoveToTop_);
-		Toolbar_->addAction (MoveToBottom_);
-		Toolbar_->addSeparator ();
-		Toolbar_->addAction (ForceReannounce_);
-		Toolbar_->addAction (ForceRecheck_);
-		Toolbar_->addAction (MoveFiles_);
-		Toolbar_->addAction (ChangeTrackers_);
-		Toolbar_->addAction (MakeMagnetLink_);
-
-		setActionsEnabled ();
-		connect (Ui_.TorrentsView_->selectionModel (),
-				SIGNAL (currentRowChanged (QModelIndex, QModelIndex)),
-				this,
-				SLOT (setActionsEnabled ()));
+		connect (Ui_.TorrentsView_,
+				&QTreeView::customContextMenuRequested,
+				[this] (QPoint at)
+				{
+					const auto& globalAt = Ui_.TorrentsView_->viewport ()->mapToGlobal (at);
+					Actions_->MakeContextMenu ()->popup (globalAt);
+				});
 		/*
 		Toolbar_->addSeparator ();
 		DownSelectorAction_ = new SpeedSelectorAction ("Down", this);
@@ -320,366 +176,13 @@ namespace BitTorrent
 
 	QToolBar* TorrentTab::GetToolBar () const
 	{
-		return Toolbar_;
+		return Actions_->GetToolbar ();
 	}
 
 	void TorrentTab::SetCurrentTorrent (int row)
 	{
 		const auto& srcIdx = Core::Instance ()->index (row, 0);
 		Ui_.TorrentsView_->setCurrentIndex (ViewFilter_->mapFromSource (srcIdx));
-	}
-
-	int TorrentTab::GetCurrentTorrent () const
-	{
-		return ViewFilter_->mapToSource (Ui_.TorrentsView_->currentIndex ()).row ();
-	}
-
-	QList<int> TorrentTab::GetSelectedRows () const
-	{
-		return Util::Map (GetSelectedRowIndexes (), &QModelIndex::row);
-	}
-
-	QModelIndexList TorrentTab::GetSelectedRowIndexes () const
-	{
-		return Util::Map (Ui_.TorrentsView_->selectionModel ()->selectedRows (),
-				[&] (const auto& idx) { return ViewFilter_->mapToSource (idx); });
-	}
-
-	void TorrentTab::setActionsEnabled ()
-	{
-		const auto& actions =
-		{
-			Resume_, Stop_, MakeMagnetLink_, RemoveTorrent_,
-			MoveUp_, MoveDown_, MoveToTop_, MoveToBottom_,
-			ForceReannounce_, ForceRecheck_, MoveFiles_, ChangeTrackers_
-		};
-		const bool enable = Ui_.TorrentsView_->currentIndex ().isValid ();
-
-		for (auto action : actions)
-			action->setEnabled (enable);
-	}
-
-	void TorrentTab::on_TorrentsView__customContextMenuRequested (const QPoint& point)
-	{
-		QMenu menu;
-		menu.addActions ({ Resume_, Stop_, MakeMagnetLink_, RemoveTorrent_ });
-		menu.addSeparator ();
-		menu.addActions ({ MoveToTop_, MoveUp_, MoveDown_, MoveToBottom_ });
-		menu.addSeparator ();
-		menu.addActions ({ ForceReannounce_, ForceRecheck_, MoveFiles_, ChangeTrackers_ });
-		menu.exec (Ui_.TorrentsView_->viewport ()->mapToGlobal (point));
-	}
-
-	void TorrentTab::handleOpenTorrentTriggered ()
-	{
-		const auto dia = new AddTorrent (this);
-		connect (dia,
-				&QDialog::accepted,
-				this,
-				[this, dia]
-				{
-					TaskParameters tp = FromUserInitiated;
-					if (dia->GetAddType () != AddState::Started)
-						tp |= NoAutostart;
-					Core::Instance ()->AddFile (dia->GetFilename (),
-							dia->GetSavePath (),
-							dia->GetTags (),
-							dia->GetTryLive (),
-							dia->GetSelectedFiles (),
-							tp);
-
-					setActionsEnabled ();
-				});
-		dia->show ();
-		dia->setAttribute (Qt::WA_DeleteOnClose);
-	}
-
-	void TorrentTab::handleAddMagnetTriggered ()
-	{
-		AddMagnetDialog dia;
-		if (dia.exec () != QDialog::Accepted)
-			return;
-
-		Core::Instance ()->AddMagnet (dia.GetLink (),
-				dia.GetPath (),
-				dia.GetTags ());
-
-		setActionsEnabled ();
-	}
-
-	namespace
-	{
-		bool CheckExists (const QString& torrentPath, const QDir& saveDir)
-		{
-			QFile torrentFile { torrentPath };
-			if (!torrentFile.open (QIODevice::ReadOnly))
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "unable to open"
-						<< torrentPath
-						<< torrentFile.errorString ();
-				return false;
-			}
-
-			const auto& torrentData = torrentFile.readAll ();
-			try
-			{
-
-				libtorrent::torrent_info torrent { torrentData.constData (), torrentData.size () };
-				const auto& files = torrent.files ();
-				switch (files.num_files ())
-				{
-				case 0:
-					return false;
-				case 1:
-					return saveDir.exists (QString::fromStdString (files.file_name (0).to_string ()));
-				default:
-				{
-					const auto& dirName = QString::fromStdString (files.name ());
-					return !dirName.isEmpty () && saveDir.exists (dirName);
-				}
-				}
-			}
-			catch (const std::exception& e)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "unable to parse"
-						<< torrentPath
-						<< e.what ();
-				return false;
-			}
-		}
-	}
-
-	void TorrentTab::handleOpenMultipleTorrentsTriggered ()
-	{
-		AddMultipleTorrents dialog;
-		if (dialog.exec () == QDialog::Rejected)
-			return;
-
-		TaskParameters tp = FromUserInitiated;
-		if (!dialog.ShouldAddAsStarted ())
-			tp |= NoAutostart;
-
-		const auto& savePath = dialog.GetSaveDirectory ();
-		const auto& openPath = dialog.GetOpenDirectory ();
-		const auto& tags = dialog.GetTags ();
-		const QDir saveDir { savePath };
-		for (const auto& torrentName : QDir { openPath }.entryList (QStringList ("*.torrent")))
-		{
-			auto torrentPath = openPath;
-			if (!torrentPath.endsWith ('/'))
-				torrentPath += '/';
-			torrentPath += torrentName;
-
-			if (dialog.OnlyIfExists ())
-			{
-				bool torrentExists = CheckExists (torrentPath, saveDir);
-				qDebug () << torrentName << torrentExists;
-				if (!torrentExists)
-					continue;
-			}
-
-			Core::Instance ()->AddFile (torrentPath, savePath, tags, false);
-		}
-		setActionsEnabled ();
-	}
-
-	void TorrentTab::handleIPFilterTriggered ()
-	{
-		RunIPFilterDialog (Holder_.GetSession ());
-	}
-
-	void TorrentTab::handleCreateTorrentTriggered ()
-	{
-		NewTorrentWizard wizard;
-		if (wizard.exec () == QDialog::Accepted)
-			Core::Instance ()->MakeTorrent (wizard.GetParams ());
-		setActionsEnabled ();
-	}
-
-	void TorrentTab::handleRemoveTorrentTriggered ()
-	{
-		auto rows = GetSelectedRows ();
-
-		QMessageBox confirm (QMessageBox::Question,
-				"LeechCraft BitTorrent",
-				tr ("Do you really want to delete %n torrent(s)?", 0, rows.size ()),
-				QMessageBox::Cancel);
-		auto deleteTorrentsButton = confirm.addButton (tr ("&Delete"),
-				QMessageBox::ActionRole);
-		auto deleteTorrentsAndFilesButton = confirm.addButton (tr ("Delete with &files"),
-				QMessageBox::ActionRole);
-		confirm.setDefaultButton (QMessageBox::Cancel);
-
-		confirm.exec ();
-
-		bool withFiles = false;
-		if (confirm.clickedButton () == deleteTorrentsAndFilesButton)
-			withFiles = true;
-		else if (confirm.clickedButton () == deleteTorrentsButton)
-			; // go ahead and just delete the torrent
-		else
-			return;
-
-		std::sort (rows.begin (), rows.end (), std::greater<> ());
-
-		for (int row : rows)
-			Core::Instance ()->RemoveTorrent (row, withFiles);
-		Ui_.Tabs_->InvalidateSelection ();
-		setActionsEnabled ();
-	}
-
-	void TorrentTab::handleResumeTriggered ()
-	{
-		for (int row : GetSelectedRows ())
-			Core::Instance ()->ResumeTorrent (row);
-		setActionsEnabled ();
-	}
-
-	void TorrentTab::handleStopTriggered ()
-	{
-		for (int row : GetSelectedRows ())
-			Core::Instance ()->PauseTorrent (row);
-		setActionsEnabled ();
-	}
-
-	void TorrentTab::handleMoveUpTriggered ()
-	{
-		Core::Instance ()->MoveUp (GetSelectedRows ());
-	}
-
-	void TorrentTab::handleMoveDownTriggered ()
-	{
-		Core::Instance ()->MoveDown (GetSelectedRows ());
-	}
-
-	void TorrentTab::handleMoveToTopTriggered ()
-	{
-		Core::Instance ()->MoveToTop (GetSelectedRows ());
-	}
-
-	void TorrentTab::handleMoveToBottomTriggered ()
-	{
-		Core::Instance ()->MoveToBottom (GetSelectedRows ());
-	}
-
-	void TorrentTab::handleForceReannounceTriggered ()
-	{
-		try
-		{
-			for (int torrent : GetSelectedRows ())
-				Core::Instance ()->ForceReannounce (torrent);
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< e.what ();
-			return;
-		}
-	}
-
-	void TorrentTab::handleForceRecheckTriggered ()
-	{
-		try
-		{
-			for (int torrent : GetSelectedRows ())
-				Core::Instance ()->ForceRecheck (torrent);
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< e.what ();
-			return;
-		}
-	}
-
-	void TorrentTab::handleChangeTrackersTriggered ()
-	{
-		const auto& sis = GetSelectedRowIndexes ();
-
-		std::vector<libtorrent::announce_entry> allTrackers;
-		for (const auto& si : sis)
-		{
-			auto those = Core::Instance ()->GetTrackers (si.row ());
-			std::copy (those.begin (), those.end (), std::back_inserter (allTrackers));
-		}
-
-		if (allTrackers.empty ())
-			allTrackers = Core::Instance ()->GetTrackers (GetCurrentTorrent ());
-
-		std::stable_sort (allTrackers.begin (), allTrackers.end (),
-				Util::ComparingBy (&libtorrent::announce_entry::url));
-
-		auto newLast = std::unique (allTrackers.begin (), allTrackers.end (),
-				[] (const libtorrent::announce_entry& l, const libtorrent::announce_entry& r)
-					{ return l.url == r.url; });
-
-		allTrackers.erase (newLast, allTrackers.end ());
-
-		if (allTrackers.empty ())
-			return;
-
-		TrackersChanger changer;
-		changer.SetTrackers (allTrackers);
-		if (changer.exec () != QDialog::Accepted)
-			return;
-
-		const auto& trackers = changer.GetTrackers ();
-		for (const auto& si : sis)
-			Core::Instance ()->SetTrackers (trackers, si.row ());
-	}
-
-	void TorrentTab::handleMoveFilesTriggered ()
-	{
-		const auto currentRows = GetSelectedRows ();
-
-		if (currentRows.empty() )
-			return;
-
-		const auto oldDirs = Util::Map (currentRows,
-				[] (const int row) { return Core::Instance ()->GetTorrentDirectory (row); });
-
-		MoveTorrentFiles mtf { oldDirs };
-
-		if (mtf.exec () == QDialog::Rejected)
-			return;
-
-		const auto newDir = mtf.GetNewLocation ();
-
-		XmlSettingsManager::Instance ()->setProperty ("LastMoveDirectory", newDir);
-
-		for (auto it : Util::Views::Zip (currentRows, oldDirs))
-		{
-			if (it.second == newDir)
-				continue;
-
-			if (!Core::Instance ()->MoveTorrentFiles (newDir, it.first))
-			{
-				const auto& text = tr ("Failed to move torrent's files from %1 to %2.")
-						.arg (it.second)
-						.arg (newDir);
-				const auto& e = Util::MakeNotification ("BitTorrent", text, Priority::Critical);
-				Core::Instance ()->GetProxy ()->GetEntityManager ()->HandleEntity (e);
-			}
-		}
-
-	}
-
-	void TorrentTab::handleMakeMagnetLinkTriggered ()
-	{
-		QString magnet = Core::Instance ()->GetMagnetLink (GetCurrentTorrent ());
-		if (magnet.isEmpty ())
-			return;
-
-		QInputDialog *dia = new QInputDialog ();
-		dia->setWindowTitle ("LeechCraft");
-		dia->setLabelText (tr ("Magnet link:"));
-		dia->setAttribute (Qt::WA_DeleteOnClose);
-		dia->setInputMode (QInputDialog::TextInput);
-		dia->setTextValue (magnet);
-		dia->resize (700, dia->height ());
-		dia->show ();
 	}
 }
 }

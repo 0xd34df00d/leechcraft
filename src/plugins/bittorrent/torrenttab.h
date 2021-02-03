@@ -17,6 +17,7 @@ namespace LC
 namespace BitTorrent
 {
 	class SessionHolder;
+	class ListActions;
 
 	class TorrentTab : public QWidget
 					 , public ITabWidget
@@ -31,24 +32,7 @@ namespace BitTorrent
 		const TabClassInfo TC_;
 		QObject *ParentMT_;
 
-		QToolBar *Toolbar_;
-		QAction *OpenTorrent_;
-		QAction *AddMagnet_;
-		QAction *RemoveTorrent_;
-		QAction *Resume_;
-		QAction *Stop_;
-		QAction *CreateTorrent_;
-		QAction *MoveUp_;
-		QAction *MoveDown_;
-		QAction *MoveToTop_;
-		QAction *MoveToBottom_;
-		QAction *ForceReannounce_;
-		QAction *ForceRecheck_;
-		QAction *OpenMultipleTorrents_;
-		QAction *IPFilter_;
-		QAction *MoveFiles_;
-		QAction *ChangeTrackers_;
-		QAction *MakeMagnetLink_;
+		ListActions * const Actions_;
 
 		QSortFilterProxyModel *ViewFilter_;
 	public:
@@ -60,33 +44,6 @@ namespace BitTorrent
 		void Remove ();
 
 		void SetCurrentTorrent (int);
-	private:
-		int GetCurrentTorrent () const;
-		QList<int> GetSelectedRows () const;
-		QModelIndexList GetSelectedRowIndexes () const;
-	private slots:
-		void setActionsEnabled ();
-
-		void on_TorrentsView__customContextMenuRequested (const QPoint&);
-
-		void handleOpenTorrentTriggered ();
-		void handleAddMagnetTriggered ();
-		void handleOpenMultipleTorrentsTriggered ();
-
-		void handleIPFilterTriggered ();
-		void handleCreateTorrentTriggered ();
-		void handleRemoveTorrentTriggered ();
-		void handleResumeTriggered ();
-		void handleStopTriggered ();
-		void handleMoveUpTriggered ();
-		void handleMoveDownTriggered ();
-		void handleMoveToTopTriggered ();
-		void handleMoveToBottomTriggered ();
-		void handleForceReannounceTriggered ();
-		void handleForceRecheckTriggered ();
-		void handleChangeTrackersTriggered ();
-		void handleMoveFilesTriggered ();
-		void handleMakeMagnetLinkTriggered ();
 	signals:
 		void removeTab (QWidget*);
 	};

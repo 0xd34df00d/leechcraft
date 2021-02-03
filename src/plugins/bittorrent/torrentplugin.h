@@ -26,7 +26,6 @@
 #include <interfaces/ihavediaginfo.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "tabwidget.h"
-#include "torrentinfo.h"
 
 class QTimer;
 class QToolBar;
@@ -40,7 +39,7 @@ namespace LC
 namespace BitTorrent
 {
 	class AddTorrent;
-	class RepresentationModel;
+	class ListActions;
 	class SpeedSelectorAction;
 	class TorrentTab;
 
@@ -75,49 +74,10 @@ namespace BitTorrent
 
 		std::shared_ptr<LC::Util::XmlSettingsDialog> XmlSettingsDialog_;
 		std::unique_ptr<TabWidget> TabWidget_;
-		std::unique_ptr<QToolBar> Toolbar_;
-		std::unique_ptr<QAction> OpenTorrent_,
-			RemoveTorrent_,
-			Resume_,
-			Stop_,
-			CreateTorrent_,
-			MoveUp_,
-			MoveDown_,
-			MoveToTop_,
-			MoveToBottom_,
-			ForceReannounce_,
-			ForceRecheck_,
-			OpenMultipleTorrents_,
-			IPFilter_,
-			MoveFiles_,
-			ChangeTrackers_,
-			MakeMagnetLink_,
-			OpenInTorrentTab_;
+		ListActions *Actions_;
 
 		SpeedSelectorAction *DownSelectorAction_,
 				*UpSelectorAction_;
-
-		enum
-		{
-			EAOpenTorrent_,
-			EAChangeTrackers_,
-			EACreateTorrent_,
-			EAOpenMultipleTorrents_,
-			EARemoveTorrent_,
-			EAResume_,
-			EAStop_,
-			EAMoveUp_,
-			EAMoveDown_,
-			EAMoveToTop_,
-			EAMoveToBottom_,
-			EAForceReannounce_,
-			EAForceRecheck_,
-			EAMoveFiles_,
-			EAImport_,
-			EAExport_,
-			EAMakeMagnetLink_,
-			EAIPFilter_
-		};
 
 		TabClassInfo TabTC_;
 		TorrentTab *TorrentTab_;
@@ -175,25 +135,7 @@ namespace BitTorrent
 		// IHaveDiagInfo
 		QString GetDiagInfoString () const override;
 	private slots:
-		void on_OpenTorrent__triggered ();
-		void on_OpenMultipleTorrents__triggered ();
-		void on_IPFilter__triggered ();
-		void on_CreateTorrent__triggered ();
-		void on_RemoveTorrent__triggered ();
-		void on_Resume__triggered ();
-		void on_Stop__triggered ();
-		void on_MoveUp__triggered ();
-		void on_MoveDown__triggered ();
-		void on_MoveToTop__triggered ();
-		void on_MoveToBottom__triggered ();
-		void on_ForceReannounce__triggered ();
-		void on_ForceRecheck__triggered ();
-		void on_ChangeTrackers__triggered ();
-		void on_MoveFiles__triggered ();
-		void on_MakeMagnetLink__triggered ();
-		void on_OpenInTorrentTab__triggered ();
 		void handleFastSpeedComboboxes ();
-		void setActionsEnabled ();
 	private:
 		void SetupCore ();
 		void SetupStuff ();

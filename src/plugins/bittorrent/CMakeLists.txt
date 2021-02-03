@@ -19,28 +19,18 @@ LC_DEFINE_PLUGIN (
 		core.cpp
 		addtorrent.cpp
 		newtorrentwizard.cpp
-		addmultipletorrents.cpp
 		pieceswidget.cpp
 		xmlsettingsmanager.cpp
 		piecesmodel.cpp
 		torrentfilesmodel.cpp
 		peersmodel.cpp
 		filesviewdelegate.cpp
-		movetorrentfiles.cpp
-		trackerschanger.cpp
-		addpeerdialog.cpp
-		ipvalidators.cpp
-		addwebseeddialog.cpp
 		wizardgenerator.cpp
 		startupfirstpage.cpp
-		fastspeedcontrolwidget.cpp
-		banpeersdialog.cpp
-		ipfilterdialog.cpp
 		livestreammanager.cpp
 		livestreamdevice.cpp
 		speedselectoraction.cpp
 		torrentmaker.cpp
-		singletrackerchanger.cpp
 		torrenttab.cpp
 		torrenttabwidget.cpp
 		tabviewproxymodel.cpp
@@ -48,11 +38,23 @@ LC_DEFINE_PLUGIN (
 		addtorrentfilesmodel.cpp
 		torrenttabfileswidget.cpp
 		sessionsettingsmanager.cpp
+		peerswidget.cpp
+		ltutils.cpp
+		listactions.cpp
+		sessionholder.cpp
+
+		banpeersdialog.cpp
+		addwebseeddialog.cpp
+		ipvalidators.cpp
+		fastspeedcontrolwidget.cpp
+		singletrackerchanger.cpp
 		cachedstatuskeeper.cpp
 		geoip.cpp
-		peerswidget.cpp
-		sessionholder.cpp
-		ltutils.cpp
+		movetorrentfiles.cpp
+		trackerschanger.cpp
+		addpeerdialog.cpp
+		addmultipletorrents.cpp
+		ipfilterdialog.cpp
 	SETTINGS torrentsettings.xml
 	QT_COMPONENTS Xml Widgets
 	LINK_LIBRARIES PkgConfig::Libtorrent $<$<BOOL:${ENABLE_BITTORRENT_GEOIP}>:PkgConfig::MMDB>
