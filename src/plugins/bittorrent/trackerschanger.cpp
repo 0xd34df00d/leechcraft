@@ -19,7 +19,7 @@ namespace LC
 {
 namespace BitTorrent
 {
-	TrackersChanger::TrackersChanger (QWidget *parent)
+	TrackersChanger::TrackersChanger (const std::vector<libtorrent::announce_entry>& trackers, QWidget *parent)
 	: QDialog (parent)
 	{
 		Ui_.setupUi (this);
@@ -28,12 +28,8 @@ namespace BitTorrent
 				SIGNAL (currentItemChanged (QTreeWidgetItem*, QTreeWidgetItem*)),
 				this,
 				SLOT (currentItemChanged (QTreeWidgetItem*)));
-		currentItemChanged (0);
-	}
+		currentItemChanged (nullptr);
 
-	void TrackersChanger::SetTrackers (const std::vector<libtorrent::announce_entry>& trackers)
-	{
-		Ui_.Trackers_->clear ();
 		for (const auto& tracker : trackers)
 		{
 			const bool torrent = tracker.source & libtorrent::announce_entry::source_torrent;

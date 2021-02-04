@@ -22,8 +22,8 @@ namespace BitTorrent
 
 		Ui::TrackersChanger Ui_;
 	public:
-		TrackersChanger (QWidget* = 0);
-		void SetTrackers (const std::vector<libtorrent::announce_entry>&);
+		TrackersChanger (const std::vector<libtorrent::announce_entry>&, QWidget* = 0);
+
 		std::vector<libtorrent::announce_entry> GetTrackers () const;
 	private slots:
 		void currentItemChanged (QTreeWidgetItem*);
