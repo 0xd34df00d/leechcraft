@@ -89,7 +89,7 @@
       <item>
        <widget class="QCheckBox" name="AddAsStarted_">
         <property name="text">
-         <string>Add as started</string>
+         <string>Start torrents after adding</string>
         </property>
         <property name="checked">
          <bool>true</bool>
@@ -98,8 +98,18 @@
       </item>
       <item>
        <widget class="QCheckBox" name="OnlyIfExists_">
+        <property name="toolTip">
+         <string>If this option is checked, the only torrents added are those for which at least some files are already downloaded. Namely, for a single-file torrent it checks the presentce of the corresponding file in the destination path, and for a multi-file torrent it checks the presence of the root directory of the torrent.
+
+This is useful, for example, when you need to re-add a bunch of torrents you were already seeding after the tracker has changed the torrent files, requiring you to re-download them.</string>
+        </property>
+        <property name="whatsThis">
+         <string>If this option is checked, the only torrents added are those for which at least some files are already downloaded. Namely, for a single-file torrent it checks the presentce of the corresponding file in the destination path, and for a multi-file torrent it checks the presence of the root directory of the torrent.
+
+This is useful, for example, when you need to re-add a bunch of torrents you were already seeding after the tracker has changed the torrent files, requiring you to re-download them.</string>
+        </property>
         <property name="text">
-         <string>Only if torrent files already exist</string>
+         <string>Add a torrent only if its files already exist</string>
         </property>
        </widget>
       </item>
