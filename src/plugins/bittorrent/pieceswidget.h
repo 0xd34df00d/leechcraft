@@ -9,24 +9,18 @@
 #pragma once
 
 #include <QLabel>
-#include <vector>
 #include <libtorrent/bitfield.hpp>
 
-namespace LC
-{
-namespace BitTorrent
+namespace LC::BitTorrent
 {
 	class PiecesWidget : public QLabel
 	{
-		Q_OBJECT
-
 		libtorrent::bitfield Pieces_;
 	public:
-		PiecesWidget (QWidget *parent = 0);
-	public slots:
-		void setPieceMap (const libtorrent::bitfield&);
+		using QLabel::QLabel;
+
+		void SetPieceMap (const libtorrent::bitfield&);
 	private:
-		void paintEvent (QPaintEvent*);
+		void paintEvent (QPaintEvent*) override;
 	};
-}
 }

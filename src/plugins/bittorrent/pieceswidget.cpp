@@ -14,16 +14,9 @@
 #include <QApplication>
 #include <QPalette>
 
-namespace LC
+namespace LC::BitTorrent
 {
-namespace BitTorrent
-{
-	PiecesWidget::PiecesWidget (QWidget *parent)
-	: QLabel (parent)
-	{
-	}
-
-	void PiecesWidget::setPieceMap (const libtorrent::bitfield& pieces)
+	void PiecesWidget::SetPieceMap (const libtorrent::bitfield& pieces)
 	{
 		Pieces_ = pieces;
 
@@ -59,8 +52,7 @@ namespace BitTorrent
 	{
 		int s = Pieces_.size ();
 		QPainter painter (this);
-		painter.setRenderHints (QPainter::Antialiasing |
-				QPainter::SmoothPixmapTransform);
+		painter.setRenderHints (QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
 		if (!s)
 		{
 			painter.setBackgroundMode (Qt::OpaqueMode);
@@ -78,10 +70,8 @@ namespace BitTorrent
 		tempPainter.setPen (backgroundColor);
 		tempPainter.drawLine (0, 0, s, 0);
 		QList<QPair<int, int>> trues = FindTrues (Pieces_);
-		for (int i = 0; i < trues.size (); ++i)
+		for (const auto& pair : trues)
 		{
-			QPair<int, int> pair = trues.at (i);
-
 			tempPainter.setPen (downloadedPieceColor);
 			tempPainter.drawLine (pair.first, 0, pair.second, 0);
 		}
@@ -93,5 +83,4 @@ namespace BitTorrent
 		e->accept ();
 	}
 
-}
 }

@@ -123,7 +123,7 @@ namespace BitTorrent
 		Ui_.LabelWantedDownloaded_->setText (Util::MakePrettySize (i->Status_.total_wanted_done));
 		Ui_.LabelWantedSize_->setText (Util::MakePrettySize (i->Status_.total_wanted));
 		Ui_.LabelTotalUploaded_->setText (Util::MakePrettySize (i->Status_.all_time_upload));
-		Ui_.PiecesWidget_->setPieceMap (i->Status_.pieces);
+		Ui_.PiecesWidget_->SetPieceMap (i->Status_.pieces);
 		Ui_.LabelName_->setText (QString::fromStdString (i->Status_.name));
 	}
 

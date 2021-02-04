@@ -397,7 +397,7 @@ namespace LC::BitTorrent
 							static_cast<double> (i->Status_.total_payload_download), 'g', 4));
 		else
 			Ui_.LabelTorrentRating_->setText (QString::fromUtf8 ("\u221E"));
-		Ui_.PiecesWidget_->setPieceMap (i->Status_.pieces);
+		Ui_.PiecesWidget_->SetPieceMap (i->Status_.pieces);
 		Ui_.LabelTracker_->setText (QString::fromStdString (i->Status_.current_tracker));
 		Ui_.LabelDestination_->setText (QString ("<a href='%1'>%1</a>")
 					.arg (i->Destination_));

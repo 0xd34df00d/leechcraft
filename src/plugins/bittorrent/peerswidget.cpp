@@ -147,7 +147,7 @@ namespace LC::BitTorrent
 				tr ("Standard BitTorrent peer") :
 				tr ("Web seed"));
 
-		Ui_.PeerPieces_->setPieceMap (p.PI_->pieces);
+		Ui_.PeerPieces_->SetPieceMap (p.PI_->pieces);
 
 		Ui_.PeerSpeed_->setText (tr ("%1/s | %2/s")
 				.arg (Util::MakePrettySize (p.PI_->down_speed),
