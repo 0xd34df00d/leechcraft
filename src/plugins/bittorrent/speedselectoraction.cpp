@@ -7,60 +7,59 @@
  **********************************************************************/
 
 #include "speedselectoraction.h"
-#include <functional>
 #include <QComboBox>
 #include <QSettings>
-#include <QTimer>
 #include <QCoreApplication>
 #include "xmlsettingsmanager.h"
-#include "core.h"
 
-namespace LC
+namespace LC::BitTorrent
 {
-namespace BitTorrent
-{
-	SpeedSelectorAction::SpeedSelectorAction (const QString& s, QObject *parent)
-	: QWidgetAction (parent)
-	, Setting_ (s)
+	SpeedSelectorAction::SpeedSelectorAction (QString s, QObject *parent)
+	: QWidgetAction { parent }
+	, Setting_ { std::move (s) }
 	{
 	}
 
 	int SpeedSelectorAction::CurrentData ()
 	{
-		QList<QWidget*> ws = createdWidgets ();
-		if (ws.size ())
-		{
-			QComboBox *bx = static_cast<QComboBox*> (ws.at (0));
-			return bx->itemData (bx->currentIndex ()).toInt ();
-		}
-		else
+		if (Boxes_.isEmpty ())
 			return 0;
+
+		const auto bx = Boxes_.at (0);
+		return bx->itemData (bx->currentIndex ()).toInt ();
 	}
 
-	QWidget* SpeedSelectorAction::createWidget (QWidget *parent)
+	namespace
 	{
-		QComboBox *selector = new QComboBox (parent);
-		connect (selector,
-				SIGNAL (currentIndexChanged (int)),
-				this,
-				SLOT (syncSpeeds (int)));
+		QList<int> GetSpeeds (const QString& setting)
+		{
+			QList<int> result;
 
-		QTimer::singleShot (0,
-				this,
-				SLOT (handleSpeedsChanged ()));
+			QSettings settings (QCoreApplication::organizationName (),
+					QCoreApplication::applicationName () + "_Torrent");
+			settings.beginGroup (QStringLiteral ("FastSpeedControl"));
+			int num = settings.beginReadArray (QStringLiteral ("Values"));
+			for (int i = 0; i < num; ++i)
+			{
+				settings.setArrayIndex (i);
+				result << settings.value (setting + "Value").toInt ();
+			}
+			settings.endArray ();
+			settings.endGroup ();
 
-		return selector;
+			return result;
+		}
+
+		void UpdateSpeeds (QComboBox *selector, const QList<int>& speeds)
+		{
+			selector->clear ();
+			for (const auto dv : speeds)
+				selector->addItem (SpeedSelectorAction::tr ("%1 KiB/s").arg (dv), dv);
+		}
 	}
 
-	void SpeedSelectorAction::deleteWidget (QWidget *w)
+	void SpeedSelectorAction::HandleSpeedsChanged ()
 	{
-		delete w;
-	}
-
-	void SpeedSelectorAction::handleSpeedsChanged ()
-	{
-		Call ([] (QComboBox *box) { box->clear (); });
-
 		if (!XmlSettingsManager::Instance ()->
 				property ("EnableFastSpeedControl").toBool ())
 		{
@@ -68,37 +67,34 @@ namespace BitTorrent
 			return;
 		}
 
-		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_Torrent");
-		settings.beginGroup ("FastSpeedControl");
-		int num = settings.beginReadArray ("Values");
-		for (int i = 0; i < num; ++i)
-		{
-			settings.setArrayIndex (i);
-			int dv = settings.value (Setting_ + "Value").toInt ();
-			const auto& str = tr ("%1 KiB/s").arg (dv);
-			Call ([dv, str] (QComboBox *box) { box->addItem (str, dv); });
-		}
-		settings.endArray ();
-		settings.endGroup ();
-
-		Call ([] (QComboBox *box) { box->addItem (QString::fromUtf8 ("\u221E"), 0); });
-		Call ([] (QComboBox *box) { box->setCurrentIndex (box->count () - 1); });
+		const auto& speeds = GetSpeeds (Setting_);
+		for (const auto box : Boxes_)
+			UpdateSpeeds (box, speeds);
 
 		setVisible (true);
 	}
 
-	void SpeedSelectorAction::syncSpeeds (int s)
+	QWidget* SpeedSelectorAction::createWidget (QWidget *parent)
 	{
-		Call ([s] (QComboBox *box) { box->setCurrentIndex (s); });
-		emit currentIndexChanged (s);
+		const auto selector = new QComboBox { parent };
+		connect (selector,
+				qOverload<int> (&QComboBox::currentIndexChanged),
+				this,
+				[this] (int s)
+				{
+					for (const auto w : Boxes_)
+						w->setCurrentIndex (s);
+					emit currentIndexChanged (s);
+				});
+
+		UpdateSpeeds (selector, GetSpeeds (Setting_));
+
+		return selector;
 	}
 
-	template<typename F>
-	void SpeedSelectorAction::Call (F&& f)
+	void SpeedSelectorAction::deleteWidget (QWidget *w)
 	{
-		for (const auto w : createdWidgets ())
-			f (static_cast<QComboBox*> (w));
+		Boxes_.removeOne (static_cast<QComboBox*> (w));
+		delete w;
 	}
-}
 }

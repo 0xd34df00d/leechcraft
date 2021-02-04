@@ -9,33 +9,26 @@
 #pragma once
 
 #include <QWidgetAction>
-#include <QComboBox>
 
-namespace LC
-{
-namespace BitTorrent
+class QComboBox;
+
+namespace LC::BitTorrent
 {
 	class SpeedSelectorAction : public QWidgetAction
 	{
 		Q_OBJECT
 
-		QString Setting_;
+		const QString Setting_;
+		QList<QComboBox*> Boxes_;
 	public:
-		SpeedSelectorAction (const QString&, QObject*);
+		SpeedSelectorAction (QString, QObject*);
 
 		int CurrentData ();
+		void HandleSpeedsChanged ();
 	protected:
 		QWidget* createWidget (QWidget*) override;
 		void deleteWidget (QWidget*) override;
-	public slots:
-		void handleSpeedsChanged ();
-	private slots:
-		void syncSpeeds (int);
-	private:
-		template<typename F>
-		void Call (F&&);
 	signals:
 		void currentIndexChanged (int);
 	};
-}
 }

@@ -118,9 +118,9 @@ namespace BitTorrent
 				SLOT (setFilterFixedString (QString)));
 
 		connect (Ui_.TorrentStateFilter_,
-				SIGNAL (currentIndexChanged (int)),
+				qOverload<int> (&QComboBox::currentIndexChanged),
 				ViewFilter_,
-				SLOT (setStateFilterMode (int)));
+				&TabViewProxyModel::SetStateFilterMode);
 
 		auto selModel = Ui_.TorrentsView_->selectionModel ();
 		connect (selModel,
