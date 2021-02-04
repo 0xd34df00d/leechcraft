@@ -73,6 +73,20 @@ namespace LC::BitTorrent
 				return false;
 			}
 		}
+
+		template<typename Dia, typename ParentF, typename Handler>
+		auto RunDialog (const ParentF& parentF, Handler&& f)
+		{
+			return [&parentF, f]
+			{
+				const auto dia = new Dia { parentF () };
+				dia->setAttribute (Qt::WA_DeleteOnClose);
+				dia->show ();
+				QObject::connect (dia,
+						&QDialog::accepted,
+						[dia, f] { f (dia); });
+			};
+		}
 	}
 
 	ListActions::ListActions (const Dependencies& deps, QWidget *parent)
@@ -81,91 +95,75 @@ namespace LC::BitTorrent
 	, Toolbar_ { new QToolBar { "BitTorrent" } }
 	{
 		OpenTorrent_ = Toolbar_->addAction (tr ("Open torrent..."), this,
-				[this, parent]
-				{
-					const auto dia = new AddTorrent { parent };
-					connect (dia,
-							&QDialog::accepted,
-							this,
-							[this, dia]
-							{
-								TaskParameters tp = FromUserInitiated;
-								if (dia->GetAddType () != AddState::Started)
-									tp |= NoAutostart;
-								Core::Instance ()->AddFile (dia->GetFilename (),
-										dia->GetSavePath (),
-										dia->GetTags (),
-										dia->GetTryLive (),
-										dia->GetSelectedFiles (),
-										tp);
+				RunDialog<AddTorrent> (D_.GetPreferredParent_,
+						[this] (AddTorrent *dia)
+						{
+							TaskParameters tp = FromUserInitiated;
+							if (dia->GetAddType () != AddState::Started)
+								tp |= NoAutostart;
+							Core::Instance ()->AddFile (dia->GetFilename (),
+									dia->GetSavePath (),
+									dia->GetTags (),
+									dia->GetTryLive (),
+									dia->GetSelectedFiles (),
+									tp);
 
-								SetActionsEnabled ();
-							});
-					dia->show ();
-					dia->setAttribute (Qt::WA_DeleteOnClose);
-				});
+							SetActionsEnabled ();
+						}));
 		OpenTorrent_->setShortcut (Qt::Key_Insert);
 		OpenTorrent_->setProperty ("ActionIcon", "document-open");
 
 		AddMagnet_ = Toolbar_->addAction (tr ("Add magnet link..."), this,
-				[this]
-				{
-					// TODO make this non-modal
-					AddMagnetDialog dia;
-					if (dia.exec () != QDialog::Accepted)
-						return;
-
-					Core::Instance ()->AddMagnet (dia.GetLink (),
-							dia.GetPath (),
-							dia.GetTags ());
-					SetActionsEnabled ();
-				});
+				RunDialog<AddMagnetDialog> (D_.GetPreferredParent_,
+						[this] (AddMagnetDialog *dia)
+						{
+							Core::Instance ()->AddMagnet (dia->GetLink (),
+									dia->GetPath (),
+									dia->GetTags ());
+							SetActionsEnabled ();
+						}));
 		AddMagnet_->setProperty ("ActionIcon", "document-open-remote");
 
 		OpenMultipleTorrents_ = Toolbar_->addAction (tr ("Open multiple torrents..."), this,
-				[this]
-				{
-					// TODO make this non-modal
-					AddMultipleTorrents dialog;
-					if (dialog.exec () == QDialog::Rejected)
-						return;
-
-					TaskParameters tp = FromUserInitiated;
-					if (!dialog.ShouldAddAsStarted ())
-						tp |= NoAutostart;
-
-					const auto& savePath = dialog.GetSaveDirectory ();
-					const auto& openPath = dialog.GetOpenDirectory ();
-					const auto& tags = dialog.GetTags ();
-					const QDir saveDir { savePath };
-					for (const auto& torrentName : QDir { openPath }.entryList ({ "*.torrent" }))
-					{
-						auto torrentPath = openPath;
-						if (!torrentPath.endsWith ('/'))
-							torrentPath += '/';
-						torrentPath += torrentName;
-
-						if (dialog.OnlyIfExists ())
+				RunDialog<AddMultipleTorrents> (D_.GetPreferredParent_,
+						[this] (AddMultipleTorrents *dia)
 						{
-							bool torrentExists = CheckExists (torrentPath, saveDir);
-							qDebug () << torrentName << torrentExists;
-							if (!torrentExists)
-								continue;
-						}
+							TaskParameters tp = FromUserInitiated;
+							if (!dia->ShouldAddAsStarted ())
+								tp |= NoAutostart;
 
-						Core::Instance ()->AddFile (torrentPath, savePath, tags, false);
-					}
+							const auto& savePath = dia->GetSaveDirectory ();
+							const auto& openPath = dia->GetOpenDirectory ();
+							const auto& tags = dia->GetTags ();
+							const QDir saveDir { savePath };
+							for (const auto& torrentName : QDir { openPath }.entryList ({ "*.torrent" }))
+							{
+								auto torrentPath = openPath;
+								if (!torrentPath.endsWith ('/'))
+									torrentPath += '/';
+								torrentPath += torrentName;
 
-					SetActionsEnabled ();
-				});
+								if (dia->OnlyIfExists ())
+								{
+									bool torrentExists = CheckExists (torrentPath, saveDir);
+									qDebug () << torrentName << torrentExists;
+									if (!torrentExists)
+										continue;
+								}
+
+								Core::Instance ()->AddFile (torrentPath, savePath, tags, false);
+							}
+
+							SetActionsEnabled ();
+						}));
 		OpenMultipleTorrents_->setProperty ("ActionIcon", "document-open-folder");
 
 		RemoveTorrent_ = Toolbar_->addAction (tr ("Remove"), this,
 				[this]
 				{
 					QMessageBox confirm (QMessageBox::Question,
-							"LeechCraft BitTorrent",
-							tr ("Do you really want to delete %n torrent(s)?", 0, CurSelection_.size ()),
+							QStringLiteral ("BitTorrent"),
+							tr ("Do you really want to delete %n torrent(s)?", nullptr, CurSelection_.size ()),
 							QMessageBox::Cancel);
 					confirm.addButton (tr ("&Delete"), QMessageBox::DestructiveRole);
 					auto withFilesButton = confirm.addButton (tr ("Delete with &files"), QMessageBox::DestructiveRole);
@@ -191,13 +189,8 @@ namespace LC::BitTorrent
 		Toolbar_->addSeparator ();
 
 		CreateTorrent_ = Toolbar_->addAction (tr ("Create torrent..."), this,
-				[]
-				{
-					// TODO make this non-modal
-					NewTorrentWizard wizard;
-					if (wizard.exec () == QDialog::Accepted)
-						Core::Instance ()->MakeTorrent (wizard.GetParams ());
-				});
+				RunDialog<NewTorrentWizard> (D_.GetPreferredParent_,
+						[] (NewTorrentWizard *dia) { Core::Instance ()->MakeTorrent (dia->GetParams ()); }));
 		CreateTorrent_->setProperty ("ActionIcon", "document-new");
 
 		Toolbar_->addSeparator ();
@@ -262,38 +255,40 @@ namespace LC::BitTorrent
 		ForceRecheck_->setProperty ("ActionIcon", "tools-check-spelling");
 
 		MoveFiles_ = Toolbar_->addAction (tr ("Move files..."), this,
-				[this, parent]
+				[this]
 				{
 					const auto currentRows = GetSelectedHandlesIndices ();
-
 					if (currentRows.empty() )
 						return;
 
 					const auto oldDirs = Util::Map (currentRows,
 							[] (const int row) { return Core::Instance ()->GetTorrentDirectory (row); });
 
-					// TODO make this non-modal
-					MoveTorrentFiles mtf { oldDirs };
+					const auto mtf = new MoveTorrentFiles { oldDirs, D_.GetPreferredParent_ () };
+					mtf->setAttribute (Qt::WA_DeleteOnClose);
+					mtf->show ();
 
-					if (mtf.exec () == QDialog::Rejected)
-						return;
+					connect (mtf,
+							&QDialog::accepted,
+							this,
+							[=]
+							{
+								const auto newDir = mtf->GetNewLocation ();
 
-					const auto newDir = mtf.GetNewLocation ();
+								XmlSettingsManager::Instance ()->setProperty ("LastMoveDirectory", newDir);
 
-					XmlSettingsManager::Instance ()->setProperty ("LastMoveDirectory", newDir);
+								for (auto it : Util::Views::Zip (currentRows, oldDirs))
+								{
+									if (it.second == newDir)
+										continue;
 
-					for (auto it : Util::Views::Zip (currentRows, oldDirs))
-					{
-						if (it.second == newDir)
-							continue;
-
-						if (!Core::Instance ()->MoveTorrentFiles (newDir, it.first))
-						{
-							const auto& text = tr ("Failed to move torrent's files from %1 to %2.")
-									.arg (it.second, newDir);
-							QMessageBox::critical (parent, "BitTorrent", text);
-						}
-					}
+									if (!Core::Instance ()->MoveTorrentFiles (newDir, it.first))
+										QMessageBox::critical (D_.GetPreferredParent_ (),
+												QStringLiteral ("BitTorrent"),
+												tr ("Failed to move torrent's files from %1 to %2.")
+														.arg (it.second, newDir));
+								}
+							});
 				});
 		MoveFiles_->setShortcut (tr ("M"));
 		MoveFiles_->setProperty ("ActionIcon", "transform-move");
@@ -318,22 +313,25 @@ namespace LC::BitTorrent
 
 					auto newLast = std::unique (allTrackers.begin (), allTrackers.end (),
 							[] (const libtorrent::announce_entry& l, const libtorrent::announce_entry& r)
-							{ return l.url == r.url; });
+								{ return l.url == r.url; });
 
 					allTrackers.erase (newLast, allTrackers.end ());
 
 					if (allTrackers.empty ())
 						return;
 
-					// TODO make this non-model
-					TrackersChanger changer;
-					changer.SetTrackers (allTrackers);
-					if (changer.exec () != QDialog::Accepted)
-						return;
-
-					const auto& trackers = changer.GetTrackers ();
-					for (const auto& index : idxs)
-						Core::Instance ()->SetTrackers (trackers, index);
+					auto changer = new TrackersChanger { allTrackers, D_.GetPreferredParent_ () };
+					changer->setAttribute (Qt::WA_DeleteOnClose);
+					changer->show ();
+					connect (changer,
+							&QDialog::accepted,
+							this,
+							[=]
+							{
+								const auto& trackers = changer->GetTrackers ();
+								for (const auto& index : idxs)
+									Core::Instance ()->SetTrackers (trackers, index);
+							});
 				});
 		ChangeTrackers_->setShortcut (tr ("C"));
 		ChangeTrackers_->setProperty ("ActionIcon", "view-media-playlist");
