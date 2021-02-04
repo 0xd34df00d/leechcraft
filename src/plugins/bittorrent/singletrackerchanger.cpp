@@ -10,19 +10,14 @@
 #include <QValidator>
 #include <QUrl>
 
-namespace LC
-{
-namespace BitTorrent
+namespace LC::BitTorrent
 {
 	class URLValidator : public QValidator
 	{
 	public:
-		URLValidator (QObject *parent)
-		: QValidator (parent)
-		{
-		}
+		using QValidator::QValidator;
 
-		State validate (QString& input, int&) const
+		State validate (QString& input, int&) const override
 		{
 			QUrl url (input);
 			return url.isValid () ? Acceptable : Intermediate;
@@ -30,10 +25,10 @@ namespace BitTorrent
 	};
 
 	SingleTrackerChanger::SingleTrackerChanger (QWidget *parent)
-	: QDialog (parent)
+	: QDialog { parent }
 	{
 		Ui_.setupUi (this);
-		Ui_.Tracker_->setValidator (new URLValidator (this));
+		Ui_.Tracker_->setValidator (new URLValidator { this });
 	}
 
 	void SingleTrackerChanger::SetTracker (const QString& tracker)
@@ -55,5 +50,4 @@ namespace BitTorrent
 	{
 		return Ui_.Tier_->value ();
 	}
-}
 }

@@ -11,22 +11,17 @@
 #include <QDialog>
 #include "ui_singletrackerchanger.h"
 
-namespace LC
-{
-namespace BitTorrent
+namespace LC::BitTorrent
 {
 	class SingleTrackerChanger : public QDialog
 	{
-		Q_OBJECT
-
 		Ui::SingleTrackerChanger Ui_;
 	public:
-		SingleTrackerChanger (QWidget* = 0);
+		explicit SingleTrackerChanger (QWidget* = nullptr);
 
 		void SetTracker (const QString&);
 		void SetTier (int);
 		QString GetTracker () const;
 		int GetTier () const;
 	};
-}
 }
