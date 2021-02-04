@@ -9,13 +9,18 @@
 #pragma once
 
 #include <QLabel>
-#include <libtorrent/bitfield.hpp>
+#include <QVector>
+
+namespace libtorrent
+{
+	class bitfield;
+}
 
 namespace LC::BitTorrent
 {
 	class PiecesWidget : public QLabel
 	{
-		libtorrent::bitfield Pieces_;
+		QVector<QPair<int, int>> TrueRanges_;
 	public:
 		using QLabel::QLabel;
 

@@ -8,52 +8,51 @@
 
 #include "pieceswidget.h"
 #include <QPainter>
-#include <QPaintEvent>
-#include <QVector>
 #include <QtDebug>
 #include <QApplication>
 #include <QPalette>
+#include <libtorrent/bitfield.hpp>
 
 namespace LC::BitTorrent
 {
+	namespace
+	{
+		QVector<QPair<int, int>> FindTrues (const libtorrent::bitfield& pieces)
+		{
+			QVector<QPair<int, int>> result;
+			bool prevVal = pieces [0];
+			int prevPos = 0;
+			int size = static_cast<int> (pieces.size ());
+			for (int i = 1; i < size; ++i)
+				if (pieces [i] != prevVal)
+				{
+					if (prevVal)
+						result.append ({ prevPos, i });
+					prevPos = i;
+					prevVal = 1 - prevVal;
+				}
+
+			if (!prevVal)
+				return result;
+
+			if (!prevPos || result.empty ())
+				result.append ({ 0, size });
+			else if (result.last ().second != size - 1)
+				result.append ({ prevPos, size });
+
+			return result;
+		}
+	}
+
 	void PiecesWidget::SetPieceMap (const libtorrent::bitfield& pieces)
 	{
-		Pieces_ = pieces;
-
+		TrueRanges_ = FindTrues (pieces);
 		update ();
 	}
 
-	QList<QPair<int, int>> FindTrues (const libtorrent::bitfield& pieces)
+	void PiecesWidget::paintEvent (QPaintEvent*)
 	{
-		QList<QPair<int, int>> result;
-		bool prevVal = pieces [0];
-		int prevPos = 0;
-		int size = static_cast<int> (pieces.size ());
-		for (int i = 1; i < size; ++i)
-			if (pieces [i] != prevVal)
-			{
-				if (prevVal)
-					result << qMakePair (prevPos, i);
-				prevPos = i;
-				prevVal = 1 - prevVal;
-			}
-
-		if (!prevVal)
-			return result;
-
-		if (!prevPos)
-			result.append ({ 0, size });
-		else if (result.empty ())
-			result.append ({ 0, size });
-		else if (result.last ().second != size - 1)
-			result.append ({ prevPos, size });
-
-		return result;
-	}
-
-	void PiecesWidget::paintEvent (QPaintEvent *e)
-	{
-		int s = Pieces_.size ();
+		int s = TrueRanges_.size ();
 		QPainter painter (this);
 		painter.setRenderHints (QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
 		if (!s)
@@ -64,16 +63,14 @@ namespace LC::BitTorrent
 			return;
 		}
 
-		const QPalette& palette = QApplication::palette ();
-		const QColor& backgroundColor = palette.color (QPalette::Base);
-		const QColor& downloadedPieceColor = palette.color (QPalette::Highlight);
+		const auto& backgroundColor = palette ().color (QPalette::Base);
+		const auto& downloadedPieceColor = palette ().color (QPalette::Highlight);
 
 		QPixmap tempPicture (s, 1);
 		QPainter tempPainter (&tempPicture);
 		tempPainter.setPen (backgroundColor);
 		tempPainter.drawLine (0, 0, s, 0);
-		QList<QPair<int, int>> trues = FindTrues (Pieces_);
-		for (const auto& pair : trues)
+		for (const auto& pair : TrueRanges_)
 		{
 			tempPainter.setPen (downloadedPieceColor);
 			tempPainter.drawLine (pair.first, 0, pair.second, 0);
@@ -82,8 +79,5 @@ namespace LC::BitTorrent
 
 		painter.drawPixmap (QRect (0, 0, width (), height ()), tempPicture);
 		painter.end ();
-
-		e->accept ();
 	}
-
 }
