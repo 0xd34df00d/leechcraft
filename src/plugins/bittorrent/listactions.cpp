@@ -75,9 +75,9 @@ namespace LC::BitTorrent
 		}
 	}
 
-	ListActions::ListActions (const SessionHolder& holder, QWidget *parent)
+	ListActions::ListActions (const Dependencies& deps, QWidget *parent)
 	: QObject { parent }
-	, Holder_ { holder }
+	, D_ { deps }
 	, Toolbar_ { new QToolBar { "BitTorrent" } }
 	{
 		OpenTorrent_ = Toolbar_->addAction (tr ("Open torrent..."), this,
@@ -361,7 +361,7 @@ namespace LC::BitTorrent
 		Toolbar_->addSeparator ();
 
 		IPFilter_ = Toolbar_->addAction (tr ("IP filter..."), this,
-				[this] { RunIPFilterDialog (Holder_.GetSession ()); });
+				[this] { RunIPFilterDialog (D_.Holder_.GetSession ()); });
 		IPFilter_->setProperty ("ActionIcon", "view-filter");
 
 		SetActionsEnabled ();

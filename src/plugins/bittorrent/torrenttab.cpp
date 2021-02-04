@@ -68,7 +68,7 @@ namespace BitTorrent
 	: Holder_ { holder }
 	, TC_ { tc }
 	, ParentMT_ { mt }
-	, Actions_ { new ListActions { holder, this } }
+	, Actions_ { new ListActions { { holder, [this] { return this; } }, this } }
 	, ViewFilter_ { new TabViewProxyModel { this } }
 	{
 		Ui_.setupUi (this);

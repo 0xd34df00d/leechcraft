@@ -18,12 +18,14 @@
 #include <QSortFilterProxyModel>
 #include <QUrlQuery>
 #include <QFileInfo>
+#include <QMainWindow>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/ijobholderrepresentationhandler.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/iiconthememanager.h>
+#include <interfaces/core/irootwindowsmanager.h>
 #include <util/tags/tagscompleter.h>
 #include <util/util.h>
 #include <util/threads/futures.h>
@@ -93,7 +95,13 @@ namespace BitTorrent
 			TFSingle | TFOpenableByRequest | TFSuggestOpening
 		};
 
-		Actions_ = new ListActions { Core::Instance ()->GetSessionHolder () };
+		Actions_ = new ListActions
+		{
+			{
+				.Holder_ = Core::Instance ()->GetSessionHolder (),
+				.GetPreferredParent_ = [] { return GetProxyHolder ()->GetRootWindowsManager ()->GetPreferredWindow (); }
+			}
+		};
 
 		SetupCore ();
 		SetupStuff ();

@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <functional>
 #include <QObject>
 #include <QModelIndexList>
 #include <QCoreApplication>
@@ -24,8 +25,14 @@ namespace LC::BitTorrent
 	class ListActions final : public QObject
 	{
 		Q_DECLARE_TR_FUNCTIONS (LC::BitTorrent::ListActions)
-
-		const SessionHolder& Holder_;
+	public:
+		struct Dependencies
+		{
+			const SessionHolder& Holder_;
+			std::function<QWidget* ()> GetPreferredParent_;
+		};
+	private:
+		const Dependencies D_;
 
 		QToolBar * const Toolbar_;
 
@@ -50,7 +57,7 @@ namespace LC::BitTorrent
 		QModelIndex CurIdx_;
 		QModelIndexList CurSelection_;
 	public:
-		explicit ListActions (const SessionHolder&, QWidget* = nullptr);
+		explicit ListActions (const Dependencies&, QWidget* = nullptr);
 
 		QToolBar* GetToolbar () const;
 
