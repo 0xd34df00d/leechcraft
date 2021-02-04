@@ -49,7 +49,7 @@ namespace BitTorrent
 					return;
 				}
 
-				const auto progress = index.data (Core::SortRole).toDouble ();
+				const auto progress = index.data (Roles::SortRole).toDouble ();
 
 				QStyleOptionProgressBar pbo;
 				pbo.rect = option.rect;
@@ -78,7 +78,7 @@ namespace BitTorrent
 			});
 
 		ViewFilter_->setDynamicSortFilter (true);
-		ViewFilter_->setSortRole (Core::Roles::SortRole);
+		ViewFilter_->setSortRole (Roles::SortRole);
 		ViewFilter_->setSourceModel (Core::Instance ());
 
 		Ui_.TorrentsView_->setItemDelegate (new TorrentsListDelegate (Ui_.TorrentsView_));
@@ -96,7 +96,7 @@ namespace BitTorrent
 				{
 					const auto& rows = Ui_.TorrentsView_->selectionModel ()->selectedRows ();
 					const auto& idxs = Util::Map (rows,
-							[] (const QModelIndex& idx) { return idx.data (Core::HandleIndex).toInt (); });
+							[] (const QModelIndex& idx) { return idx.data (Roles::HandleIndex).toInt (); });
 					Ui_.Tabs_->SetSelectedIndices (idxs);
 				});
 		Ui_.TorrentsView_->sortByColumn (Core::ColumnID, Qt::SortOrder::AscendingOrder);

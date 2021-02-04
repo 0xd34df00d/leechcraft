@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include <qnamespace.h>
+
 namespace LC::BitTorrent
 {
 	enum class AddState
@@ -20,5 +22,15 @@ namespace LC::BitTorrent
 	{
 		Bep17,
 		Bep19
+	};
+
+	struct Roles
+	{
+		enum
+		{
+			FullLengthText = Qt::UserRole,
+			SortRole,
+			HandleIndex,
+		};
 	};
 }

@@ -195,13 +195,6 @@ namespace BitTorrent
 			ColumnUploaded,
 			ColumnRatio
 		};
-		enum Roles
-		{
-			Tags = CustomDataRoles::RoleTags,
-			FullLengthText = JobHolderRoleMax,
-			SortRole,
-			HandleIndex,
-		};
 
 		static Core* Instance ();
 

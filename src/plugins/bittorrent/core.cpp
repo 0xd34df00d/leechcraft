@@ -399,7 +399,7 @@ namespace BitTorrent
 			return QVariant::fromValue<QWidget*> (TabWidget_);
 		if (role == RoleContextMenu)
 			return QVariant::fromValue<QMenu*> (Menu_);
-		if (role == HandleIndex)
+		if (role == Roles::HandleIndex)
 			return index.row ();
 
 		const int row = index.row ();
