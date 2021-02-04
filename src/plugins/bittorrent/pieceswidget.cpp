@@ -38,12 +38,15 @@ namespace LC::BitTorrent
 				prevVal = 1 - prevVal;
 			}
 
-		if (!prevPos && prevVal)
-			result << qMakePair<int, int> (0, pieces.size ());
-		else if (prevVal && result.size () && result.last ().second != size - 1)
-			result << qMakePair<int, int> (prevPos, size);
-		else if (prevVal && !result.size ())
-			result << qMakePair<int, int> (0, size);
+		if (!prevVal)
+			return result;
+
+		if (!prevPos)
+			result.append ({ 0, size });
+		else if (result.empty ())
+			result.append ({ 0, size });
+		else if (result.last ().second != size - 1)
+			result.append ({ prevPos, size });
 
 		return result;
 	}
