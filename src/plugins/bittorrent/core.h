@@ -67,14 +67,6 @@ namespace BitTorrent
 	{
 		Q_OBJECT
 
-		enum TorrentState
-		{
-			TSIdle,
-			TSPreparing,
-			TSDownloading,
-			TSSeeding
-		};
-
 		struct TorrentStruct
 		{
 			std::vector<libtorrent::download_priority_t> FilePriorities_ = {};

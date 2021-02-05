@@ -24,6 +24,14 @@ namespace LC::BitTorrent
 		Bep19
 	};
 
+	enum TorrentState
+	{
+		TSIdle,
+		TSPreparing,
+		TSDownloading,
+		TSSeeding
+	};
+
 	struct Roles
 	{
 		enum
