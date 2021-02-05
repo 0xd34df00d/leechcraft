@@ -415,6 +415,16 @@ namespace BitTorrent
 
 		switch (role)
 		{
+		case Roles::IsSeeding:
+			if (IsPaused (status))
+				return false;
+			return status.state == libtorrent::torrent_status::seeding ||
+					status.state == libtorrent::torrent_status::finished;
+		case Roles::IsLeeching:
+			if (IsPaused (status))
+				return false;
+			return status.state == libtorrent::torrent_status::downloading ||
+					status.state == libtorrent::torrent_status::downloading_metadata;
 		case Qt::DecorationRole:
 			if (column != ColumnName)
 				return {};

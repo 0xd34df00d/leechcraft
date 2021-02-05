@@ -39,6 +39,8 @@ namespace LC::BitTorrent
 			FullLengthText = Qt::UserRole,
 			SortRole,
 			HandleIndex,
+			IsLeeching,
+			IsSeeding,
 		};
 	};
 }
