@@ -10,36 +10,31 @@
 #include <algorithm>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
-#include "core.h"
+#include <interfaces/structures.h>
+#include "types.h"
 
-namespace LC
+namespace LC::BitTorrent
 {
-namespace BitTorrent
-{
-	TabViewProxyModel::TabViewProxyModel (QObject *parent)
-	: QSortFilterProxyModel (parent)
-	, StateFilter_ (StateFilterMode::All)
+	void TabViewProxyModel::SetStateFilterMode (int mode)
 	{
+		StateFilter_ = static_cast<StateFilterMode> (mode);
+		invalidateFilter ();
 	}
 
 	bool TabViewProxyModel::filterAcceptsRow (int row, const QModelIndex&) const
 	{
-		const auto& idx = Core::Instance ()->index (row, Core::ColumnName);
-		const auto& h = Core::Instance ()->GetTorrentHandle (idx.row ());
-		const auto state = h.status ().state;
+		const auto& idx = sourceModel ()->index (row, 0, {});
 
 		switch (StateFilter_)
 		{
 		case StateFilterMode::All:
 			break;
 		case StateFilterMode::Downloading:
-			if (state != libtorrent::torrent_status::downloading_metadata &&
-					state != libtorrent::torrent_status::downloading)
+			if (!idx.data (Roles::IsLeeching).toBool ())
 				return false;
 			break;
 		case StateFilterMode::Seeding:
-			if (state != libtorrent::torrent_status::seeding &&
-					state != libtorrent::torrent_status::finished)
+			if (!idx.data (Roles::IsSeeding).toBool ())
 				return false;
 			break;
 		}
@@ -51,18 +46,11 @@ namespace BitTorrent
 		if (idx.data ().toString ().contains (pattern, Qt::CaseInsensitive))
 			return true;
 
-		auto tm = Core::Instance ()->GetProxy ()->GetTagsManager ();
+		auto tm = GetProxyHolder ()->GetTagsManager ();
 		const auto& reqTags = tm->Split (pattern);
 		const auto& torrentTags = idx.data (RoleTags).toStringList ();
 
 		return std::any_of (torrentTags.begin (), torrentTags.end (),
 				[&] (const auto& tagId) { return reqTags.contains (tm->GetTag (tagId)); });
 	}
-
-	void TabViewProxyModel::setStateFilterMode (int mode)
-	{
-		StateFilter_ = static_cast<StateFilterMode> (mode);
-		invalidateFilter ();
-	}
-}
 }

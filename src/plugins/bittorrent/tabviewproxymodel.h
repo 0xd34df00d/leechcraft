@@ -10,26 +10,21 @@
 
 #include <QSortFilterProxyModel>
 
-namespace LC
-{
-namespace BitTorrent
+namespace LC::BitTorrent
 {
 	class TabViewProxyModel : public QSortFilterProxyModel
 	{
-		Q_OBJECT
-
 		enum class StateFilterMode
 		{
 			All,
 			Downloading,
 			Seeding
-		} StateFilter_;
+		} StateFilter_ = StateFilterMode::All;
 	public:
-		TabViewProxyModel (QObject* = 0);
+		using QSortFilterProxyModel::QSortFilterProxyModel;
+
+		void SetStateFilterMode (int);
 	protected:
-		bool filterAcceptsRow (int, const QModelIndex&) const;
-	public slots:
-		void setStateFilterMode (int);
+		bool filterAcceptsRow (int, const QModelIndex&) const override;
 	};
-}
 }
