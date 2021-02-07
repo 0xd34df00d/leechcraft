@@ -17,9 +17,7 @@ namespace libtorrent
 	class session;
 }
 
-namespace LC
-{
-namespace BitTorrent
+namespace LC::BitTorrent
 {
 	class SessionSettingsManager : public QObject
 	{
@@ -50,22 +48,13 @@ namespace BitTorrent
 		int GetMaxUploadingTorrents () const;
 	private:
 		void ManipulateSettings ();
-	private slots:
-		void setLoggingSettings ();
-		void tcpPortRangeChanged ();
-		void maxUploadsChanged ();
-		void maxConnectionsChanged ();
-		void setProxySettings ();
-		void setGeneralSettings ();
-		void setDHTSettings ();
-
-		void checkStorageSettings (const QVariant&);
-
-		void setScrapeInterval ();
-		void autosaveIntervalChanged ();
+		void SetLoggingSettings ();
+		void TcpPortRangeChanged ();
+		void SetProxySettings ();
+		void SetGeneralSettings ();
+		void SetDHTSettings ();
 	signals:
 		void scrapeRequested ();
 		void saveSettingsRequested ();
 	};
-}
 }
