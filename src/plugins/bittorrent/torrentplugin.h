@@ -134,8 +134,6 @@ namespace BitTorrent
 
 		// IHaveDiagInfo
 		QString GetDiagInfoString () const override;
-	private slots:
-		void handleFastSpeedComboboxes ();
 	private:
 		void SetupCore ();
 		void SetupStuff ();

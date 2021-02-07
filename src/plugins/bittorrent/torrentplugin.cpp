@@ -391,13 +391,6 @@ namespace BitTorrent
 				.arg (LIBTORRENT_VERSION, LIBTORRENT_REVISION);
 	}
 
-	void TorrentPlugin::handleFastSpeedComboboxes ()
-	{
-		const auto ssm = Core::Instance ()->GetSessionSettingsManager ();
-		ssm->SetOverallDownloadRate (DownSelectorAction_->CurrentData ());
-		ssm->SetOverallUploadRate (UpSelectorAction_->CurrentData ());
-	}
-
 	void TorrentPlugin::SetupCore ()
 	{
 		XmlSettingsDialog_.reset (new XmlSettingsDialog ());
@@ -421,22 +414,20 @@ namespace BitTorrent
 				SLOT (updateTorrentStats ()));
 		statsUpdateTimer->start (2000);
 
-		FastSpeedControlWidget *fsc = new FastSpeedControlWidget ();
+		const auto selectorsUpdater = [this]
+		{
+			DownSelectorAction_->HandleSpeedsChanged ();
+			UpSelectorAction_->HandleSpeedsChanged ();
+		};
+
+		const auto fsc = new FastSpeedControlWidget ();
 		XmlSettingsDialog_->SetCustomWidget ("FastSpeedControl", fsc);
 		connect (fsc,
-				SIGNAL (speedsChanged ()),
-				DownSelectorAction_,
-				SLOT (handleSpeedsChanged ()));
-		connect (fsc,
-				SIGNAL (speedsChanged ()),
-				UpSelectorAction_,
-				SLOT (handleSpeedsChanged ()));
-		XmlSettingsManager::Instance ()->
-			RegisterObject ("EnableFastSpeedControl",
-				DownSelectorAction_, "handleSpeedsChanged");
-		XmlSettingsManager::Instance ()->
-			RegisterObject ("EnableFastSpeedControl",
-				UpSelectorAction_, "handleSpeedsChanged");
+				&FastSpeedControlWidget::speedsChanged,
+				this,
+				selectorsUpdater);
+		XmlSettingsManager::Instance ()->RegisterObject ("EnableFastSpeedControl",
+				this, [=] (auto) { selectorsUpdater (); });
 	}
 
 	void TorrentPlugin::SetupActions ()
@@ -457,21 +448,13 @@ namespace BitTorrent
 		toolbar->addSeparator ();
 		toolbar->addAction (openInTorrentTab);
 		toolbar->addSeparator ();
-		DownSelectorAction_ = new SpeedSelectorAction ("Down", this);
-		DownSelectorAction_->HandleSpeedsChanged ();
-		toolbar->addAction (DownSelectorAction_);
-		UpSelectorAction_ = new SpeedSelectorAction ("Up", this);
-		UpSelectorAction_->HandleSpeedsChanged ();
-		toolbar->addAction (UpSelectorAction_);
 
-		connect (DownSelectorAction_,
-				SIGNAL (currentIndexChanged (int)),
-				this,
-				SLOT (handleFastSpeedComboboxes ()));
-		connect (UpSelectorAction_,
-				SIGNAL (currentIndexChanged (int)),
-				this,
-				SLOT (handleFastSpeedComboboxes ()));
+		const auto ssm = Core::Instance ()->GetSessionSettingsManager ();
+
+		DownSelectorAction_ = new SpeedSelectorAction { ssm, &SessionSettingsManager::SetOverallDownloadRate, "Down", this };
+		toolbar->addAction (DownSelectorAction_);
+		UpSelectorAction_ = new SpeedSelectorAction { ssm, &SessionSettingsManager::SetOverallUploadRate, "Up", this };
+		toolbar->addAction (UpSelectorAction_);
 
 		auto contextMenu = Actions_->MakeContextMenu ();
 		contextMenu->addSeparator ();

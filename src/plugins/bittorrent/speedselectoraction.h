@@ -9,26 +9,31 @@
 #pragma once
 
 #include <QWidgetAction>
+#include <QCoreApplication>
 
 class QComboBox;
 
 namespace LC::BitTorrent
 {
+	class SessionSettingsManager;
+
 	class SpeedSelectorAction : public QWidgetAction
 	{
-		Q_OBJECT
+		Q_DECLARE_TR_FUNCTIONS (LC::BitTorrent::SpeedSelectorAction)
+
+		using Setter_t = void (SessionSettingsManager::*) (int);
+
+		SessionSettingsManager * const SSM_;
+		const Setter_t Setter_;
 
 		const QString Setting_;
 		QList<QComboBox*> Boxes_;
 	public:
-		SpeedSelectorAction (QString, QObject*);
+		SpeedSelectorAction (SessionSettingsManager*, Setter_t, const QString&, QObject*);
 
-		int CurrentData ();
 		void HandleSpeedsChanged ();
 	protected:
 		QWidget* createWidget (QWidget*) override;
 		void deleteWidget (QWidget*) override;
-	signals:
-		void currentIndexChanged (int);
 	};
 }

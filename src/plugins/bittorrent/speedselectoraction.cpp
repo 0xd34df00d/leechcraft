@@ -9,24 +9,19 @@
 #include "speedselectoraction.h"
 #include <QComboBox>
 #include <QSettings>
-#include <QCoreApplication>
 #include "xmlsettingsmanager.h"
 
 namespace LC::BitTorrent
 {
-	SpeedSelectorAction::SpeedSelectorAction (QString s, QObject *parent)
+	SpeedSelectorAction::SpeedSelectorAction (SessionSettingsManager *ssm,
+			Setter_t setter,
+			const QString& s,
+			QObject *parent)
 	: QWidgetAction { parent }
-	, Setting_ { std::move (s) }
+	, SSM_ { ssm }
+	, Setter_ { setter }
+	, Setting_ { s }
 	{
-	}
-
-	int SpeedSelectorAction::CurrentData ()
-	{
-		if (Boxes_.isEmpty ())
-			return 0;
-
-		const auto bx = Boxes_.at (0);
-		return bx->itemData (bx->currentIndex ()).toInt ();
 	}
 
 	namespace
@@ -84,7 +79,7 @@ namespace LC::BitTorrent
 				{
 					for (const auto w : Boxes_)
 						w->setCurrentIndex (s);
-					emit currentIndexChanged (s);
+					(SSM_->*Setter_) (s);
 				});
 
 		UpdateSpeeds (selector, GetSpeeds (Setting_));
