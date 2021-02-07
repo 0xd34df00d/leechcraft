@@ -156,7 +156,7 @@ namespace BitTorrent
 	{
 		try
 		{
-			SessionSettingsMgr_ = new SessionSettingsManager { Session_, Proxy_, this };
+			SessionSettingsMgr_ = new SessionSettingsManager { Session_, this };
 
 			auto sstateVariant = XmlSettingsManager::Instance ()->
 					property ("SessionState");

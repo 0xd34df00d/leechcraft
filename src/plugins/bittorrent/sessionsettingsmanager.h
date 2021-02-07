@@ -9,7 +9,6 @@
 #pragma once
 
 #include <QObject>
-#include <interfaces/core/icoreproxy.h>
 
 class QTimer;
 
@@ -27,11 +26,10 @@ namespace BitTorrent
 		Q_OBJECT
 
 		libtorrent::session * const Session_;
-		const ICoreProxy_ptr Proxy_;
 		QTimer * const ScrapeTimer_;
 		QTimer * const SettingsSaveTimer_;
 	public:
-		SessionSettingsManager (libtorrent::session*, const ICoreProxy_ptr& proxy, QObject* = nullptr);
+		explicit SessionSettingsManager (libtorrent::session*, QObject* = nullptr);
 
 		enum class Preset
 		{

@@ -14,6 +14,7 @@
 #include <libtorrent/extensions/ut_metadata.hpp>
 #include <libtorrent/extensions/ut_pex.hpp>
 #include <libtorrent/extensions/smart_ban.hpp>
+#include <interfaces/core/icoreproxy.h>
 #include <util/sll/slotclosure.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/irootwindowsmanager.h>
@@ -24,10 +25,9 @@ namespace LC
 {
 namespace BitTorrent
 {
-	SessionSettingsManager::SessionSettingsManager (libtorrent::session *session, const ICoreProxy_ptr& proxy, QObject *parent)
+	SessionSettingsManager::SessionSettingsManager (libtorrent::session *session, QObject *parent)
 	: QObject { parent }
 	, Session_ { session }
-	, Proxy_ { proxy }
 	, ScrapeTimer_ { new QTimer { this } }
 	, SettingsSaveTimer_ { new QTimer { this } }
 	{
@@ -578,7 +578,7 @@ namespace BitTorrent
 		if (val.toBool ())
 			return;
 
-		const auto rootWM = Proxy_->GetRootWindowsManager ();
+		const auto rootWM = GetProxyHolder ()->GetRootWindowsManager ();
 
 		const auto box = new QMessageBox
 		{
