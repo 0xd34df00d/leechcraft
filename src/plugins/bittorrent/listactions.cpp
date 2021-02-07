@@ -306,7 +306,7 @@ namespace LC::BitTorrent
 					}
 
 					if (allTrackers.empty ())
-						allTrackers = Core::Instance ()->GetTrackers (CurIdx_.data (Core::HandleIndex).toInt ());
+						allTrackers = Core::Instance ()->GetTrackers (CurIdx_.data (Roles::HandleIndex).toInt ());
 
 					std::stable_sort (allTrackers.begin (), allTrackers.end (),
 							Util::ComparingBy (&libtorrent::announce_entry::url));
@@ -341,7 +341,7 @@ namespace LC::BitTorrent
 		MakeMagnetLink_ = Toolbar_->addAction (tr ("Make magnet link..."), this,
 				[this]
 				{
-					const auto magnet = Core::Instance ()->GetMagnetLink (CurIdx_.data (Core::HandleIndex).toInt ());
+					const auto magnet = Core::Instance ()->GetMagnetLink (CurIdx_.data (Roles::HandleIndex).toInt ());
 					if (magnet.isEmpty ())
 						return;
 
@@ -415,7 +415,7 @@ namespace LC::BitTorrent
 
 	QList<int> ListActions::GetSelectedHandlesIndices () const
 	{
-		return Util::Map (CurSelection_, [] (const QModelIndex& idx) { return idx.data (Core::HandleIndex).toInt (); });
+		return Util::Map (CurSelection_, [] (const QModelIndex& idx) { return idx.data (Roles::HandleIndex).toInt (); });
 	}
 
 }

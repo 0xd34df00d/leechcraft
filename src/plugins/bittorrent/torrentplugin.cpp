@@ -67,7 +67,7 @@ namespace BitTorrent
 				const int normCol = index.column ();
 
 				if (normCol == Core::ColumnProgress && role == Qt::DisplayRole)
-					return sourceModel ()->data (index, Core::Roles::FullLengthText);
+					return sourceModel ()->data (index, Roles::FullLengthText);
 				else
 					return QSortFilterProxyModel::data (unmapped, role);
 			}
@@ -458,10 +458,10 @@ namespace BitTorrent
 		toolbar->addAction (openInTorrentTab);
 		toolbar->addSeparator ();
 		DownSelectorAction_ = new SpeedSelectorAction ("Down", this);
-		DownSelectorAction_->handleSpeedsChanged ();
+		DownSelectorAction_->HandleSpeedsChanged ();
 		toolbar->addAction (DownSelectorAction_);
 		UpSelectorAction_ = new SpeedSelectorAction ("Up", this);
-		UpSelectorAction_->handleSpeedsChanged ();
+		UpSelectorAction_->HandleSpeedsChanged ();
 		toolbar->addAction (UpSelectorAction_);
 
 		connect (DownSelectorAction_,

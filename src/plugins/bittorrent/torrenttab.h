@@ -16,8 +16,9 @@ namespace LC
 {
 namespace BitTorrent
 {
-	class SessionHolder;
 	class ListActions;
+	class SessionHolder;
+	class TabViewProxyModel;
 
 	class TorrentTab : public QWidget
 					 , public ITabWidget
@@ -34,7 +35,7 @@ namespace BitTorrent
 
 		ListActions * const Actions_;
 
-		QSortFilterProxyModel *ViewFilter_;
+		TabViewProxyModel *ViewFilter_;
 	public:
 		TorrentTab (SessionHolder&, const TabClassInfo&, QObject*);
 
