@@ -8,19 +8,17 @@
 
 #include "startupfirstpage.h"
 #include "xmlsettingsmanager.h"
-#include "core.h"
 #include "sessionsettingsmanager.h"
 
-namespace LC
+namespace LC::BitTorrent
 {
-namespace BitTorrent
-{
-	StartupFirstPage::StartupFirstPage (QWidget *parent)
-	: QWizardPage (parent)
+	StartupFirstPage::StartupFirstPage (SessionSettingsManager *ssm, QWidget *parent)
+	: QWizardPage { parent }
+	, SSM_ { ssm }
 	{
 		Ui_.setupUi (this);
 
-		setTitle ("BitTorrent");
+		setTitle (QStringLiteral ("BitTorrent"));
 		setSubTitle (tr ("Set basic options"));
 
 		setProperty ("WizardType", 1);
@@ -29,28 +27,23 @@ namespace BitTorrent
 	void StartupFirstPage::initializePage ()
 	{
 		connect (wizard (),
-				SIGNAL (accepted ()),
+				&QWizard::accepted,
 				this,
-				SLOT (handleAccepted ()));
+				[this]
+				{
+					const QList<QVariant> ports
+					{
+						Ui_.LowerPort_->value (),
+						Ui_.UpperPort_->value ()
+					};
+					const auto xsm = XmlSettingsManager::Instance ();
+					xsm->setProperty ("TCPPortRange", ports);
+					xsm->setProperty ("MaxUploads", Ui_.UploadConnections_->value ());
+					xsm->setProperty ("MaxConnections", Ui_.TotalConnections_->value ());
+
+					const auto idx = Ui_.SettingsSet_->currentIndex ();
+					const auto preset = static_cast<SessionSettingsManager::Preset> (idx);
+					SSM_->SetPreset (preset);
+				});
 	}
-
-	void StartupFirstPage::handleAccepted ()
-	{
-		const QList<QVariant> ports
-		{
-			Ui_.LowerPort_->value (),
-			Ui_.UpperPort_->value ()
-		};
-		XmlSettingsManager::Instance ()->setProperty ("TCPPortRange", ports);
-
-		XmlSettingsManager::Instance ()->setProperty ("MaxUploads",
-				Ui_.UploadConnections_->value ());
-		XmlSettingsManager::Instance ()->setProperty ("MaxConnections",
-				Ui_.TotalConnections_->value ());
-
-		const auto idx = Ui_.SettingsSet_->currentIndex ();
-		const auto sset = static_cast<SessionSettingsManager::Preset> (idx);
-		Core::Instance ()->GetSessionSettingsManager ()->SetPreset (sset);
-	}
-}
 }

@@ -377,10 +377,10 @@ namespace BitTorrent
 
 	QList<QWizardPage*> TorrentPlugin::GetWizardPages () const
 	{
-		return WizardGenerator {}.GetPages ();
+		return WizardGenerator {}.GetPages (Core::Instance ()->GetSessionSettingsManager ());
 	}
 
-	QList<QAction*> TorrentPlugin::GetActions (ActionsEmbedPlace place) const
+	QList<QAction*> TorrentPlugin::GetActions (ActionsEmbedPlace) const
 	{
 		return {};
 	}

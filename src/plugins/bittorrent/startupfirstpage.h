@@ -11,21 +11,18 @@
 #include <QWizardPage>
 #include "ui_startupfirstpage.h"
 
-namespace LC
+namespace LC::BitTorrent
 {
-namespace BitTorrent
-{
+	class SessionSettingsManager;
+
 	class StartupFirstPage : public QWizardPage
 	{
-		Q_OBJECT
-
 		Ui::StartupFirstPageWidget Ui_;
-	public:
-		StartupFirstPage (QWidget* = 0);
 
-		void initializePage ();
-	private slots:
-		void handleAccepted ();
+		SessionSettingsManager * const SSM_;
+	public:
+		explicit StartupFirstPage (SessionSettingsManager*, QWidget* = nullptr);
+
+		void initializePage () override;
 	};
-}
 }
