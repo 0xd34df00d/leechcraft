@@ -114,6 +114,24 @@ namespace BitTorrent
 	, TorrentIcon_ { GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon () }
 	, Holder_ { *Session_ }
 	{
+		auto settings = Session_->get_settings ();
+		settings.set_int (libtorrent::settings_pack::alert_queue_size, 10000);
+		{
+			using namespace libtorrent::alert_category;
+			settings.set_int (libtorrent::settings_pack::alert_mask,
+					all &
+					~block_progress &
+					~peer &
+					~upload &
+					~peer_log &
+					~torrent_log &
+					~dht_log &
+					~port_mapping_log &
+					~picker_log &
+					~session_log);
+		}
+		Session_->apply_settings (settings);
+
 		setObjectName ("BitTorrent Core");
 		ExternalAddress_ = tr ("Unknown");
 	}
