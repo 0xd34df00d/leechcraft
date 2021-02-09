@@ -340,8 +340,6 @@ namespace BitTorrent
 					return Core::tr ("Finished");
 				case libtorrent::torrent_status::seeding:
 					return Core::tr ("Seeding");
-				case libtorrent::torrent_status::allocating:
-					return Core::tr ("Allocating");
 				case libtorrent::torrent_status::checking_resume_data:
 					return Core::tr ("Checking resume data");
 			}
@@ -443,8 +441,6 @@ namespace BitTorrent
 			case libtorrent::torrent_status::downloading:
 			case libtorrent::torrent_status::downloading_metadata:
 				return QIcon::fromTheme ("arrow-down");
-			case libtorrent::torrent_status::allocating:
-				return QIcon::fromTheme ("media-playback-start");
 			case libtorrent::torrent_status::finished:
 				return QIcon::fromTheme ("arrow-up");
 			case libtorrent::torrent_status::seeding:
@@ -1822,7 +1818,6 @@ namespace BitTorrent
 			{
 			case libtorrent::torrent_status::checking_files:
 			case libtorrent::torrent_status::checking_resume_data:
-			case libtorrent::torrent_status::allocating:
 			case libtorrent::torrent_status::downloading_metadata:
 				Handles_ [i].State_ = TSPreparing;
 				break;
