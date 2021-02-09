@@ -1964,6 +1964,11 @@ namespace BitTorrent
 			Core_.UpdateStatus ({ a.handle.status () });
 		}
 
+		void operator() (const libtorrent::torrent_finished_alert&)
+		{
+			NeedToLog_ = false;
+		}
+
 		void operator() (const libtorrent::dht_announce_alert& a)
 		{
 			qDebug () << "<libtorrent> <DHT>"
@@ -2016,8 +2021,9 @@ namespace BitTorrent
 			Core_.UpdateStatus ({ a.handle.status () });
 		}
 
-		void operator() (const libtorrent::piece_finished_alert&) const
+		void operator() (const libtorrent::piece_finished_alert&)
 		{
+			NeedToLog_ = false;
 		}
 
 		void operator() (const libtorrent::torrent_removed_alert&) const
@@ -2030,6 +2036,26 @@ namespace BitTorrent
 
 		void operator() (const libtorrent::listen_succeeded_alert&) const
 		{
+		}
+
+		void operator() (const libtorrent::file_completed_alert&)
+		{
+			NeedToLog_ = false;
+		}
+
+		void operator() (const libtorrent::tracker_announce_alert&)
+		{
+			NeedToLog_ = false;
+		}
+
+		void operator() (const libtorrent::cache_flushed_alert&)
+		{
+			NeedToLog_ = false;
+		}
+
+		void operator() (const libtorrent::state_changed_alert& a)
+		{
+			Core_.UpdateStatus ({ a.handle.status () });
 		}
 	private:
 		QString GetTorrentName (const libtorrent::torrent_handle& handle) const
@@ -2118,6 +2144,11 @@ namespace BitTorrent
 					, libtorrent::torrent_removed_alert
 					, libtorrent::torrent_deleted_alert
 					, libtorrent::listen_succeeded_alert
+					, libtorrent::file_completed_alert
+					, libtorrent::tracker_announce_alert
+					, libtorrent::cache_flushed_alert
+					, libtorrent::state_changed_alert
+					, libtorrent::torrent_finished_alert
 					> (alert, sd);
 			}
 			catch (const std::exception&)
