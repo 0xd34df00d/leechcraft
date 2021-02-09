@@ -170,19 +170,21 @@ namespace BitTorrent
 					libtorrent::settings_pack settings;
 					settings.set_int (libtorrent::settings_pack::alert_queue_size, 10000);
 					{
-						using namespace libtorrent::alert_category;
+						namespace cat = libtorrent::alert_category;
 						settings.set_int (libtorrent::settings_pack::alert_mask,
-								all &
-								~block_progress &
-								~peer &
-								~upload &
-								~libtorrent::alert_category::connect &
-								~peer_log &
-								~torrent_log &
-								~dht_log &
-								~port_mapping_log &
-								~picker_log &
-								~session_log &
+								cat::all &
+								~cat::block_progress &
+								~cat::peer &
+								~cat::upload &
+								~cat::stats &
+								~cat::connect &
+								~cat::piece_progress &
+								~cat::peer_log &
+								~cat::torrent_log &
+								~cat::dht_log &
+								~cat::port_mapping_log &
+								~cat::picker_log &
+								~cat::session_log &
 								~libtorrent::alert::progress_notification);
 					}
 					Session_->apply_settings (settings);
