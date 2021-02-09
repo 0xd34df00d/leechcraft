@@ -162,9 +162,6 @@
 					<item type="checkbox" property="PrioritizePartialPieces" default="true">
 						<label lang="en" value="Prioritize partial pieces" />
 					</item>
-					<item type="checkbox" property="StrictSuperSeeding" default="false">
-						<label lang="en" value="Strict super seeding" />
-					</item>
 					<item type="spinbox" property="TrackerCompletionTimeout" default="60" minimum="10" maximum="300" step="10">
 						<label value="Tracker request completion timeout:" />
 						<suffix value=" s" />
