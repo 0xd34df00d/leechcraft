@@ -7,8 +7,6 @@
  **********************************************************************/
 
 #include "tabwidget.h"
-#include <QSortFilterProxyModel>
-#include <QUrl>
 #include <util/util.h>
 #include <util/tags/tagscompleter.h>
 #include <interfaces/core/icoreproxy.h>
@@ -16,20 +14,18 @@
 #include "core.h"
 #include "torrentfilesmodel.h"
 #include "xmlsettingsmanager.h"
-#include "piecesmodel.h"
 #include "peersmodel.h"
 #include "addwebseeddialog.h"
 #include "sessionsettingsmanager.h"
 #include "sessionstats.h"
 #include "ltutils.h"
 
-namespace LC
+namespace LC::BitTorrent
 {
-namespace BitTorrent
-{
-	TabWidget::TabWidget (SessionHolder& holder, QWidget *parent)
+	TabWidget::TabWidget (SessionHolder& holder, SessionSettingsManager& ssm, QWidget *parent)
 	: QWidget { parent }
 	, Holder_ { holder }
+	, SSM_ { ssm }
 	{
 		Ui_.setupUi (this);
 
@@ -37,11 +33,52 @@ namespace BitTorrent
 		Ui_.TorrentTags_->AddSelector ();
 
 		connect (Core::Instance (),
-				SIGNAL (dataChanged (QModelIndex, QModelIndex)),
+				&QAbstractItemModel::dataChanged,
 				this,
-				SLOT (updateTorrentStats (QModelIndex, QModelIndex)));
+				[this] (const QModelIndex& from, const QModelIndex& to)
+				{
+					if (from.data (Roles::HandleIndex).toInt () <= Torrent_ &&
+							Torrent_ <= to.data (Roles::HandleIndex).toInt ())
+						UpdateTorrentStats ();
+				});
 
 		UpdateDashboard ();
+
+		connect (Ui_.OverallDownloadRateController_,
+				qOverload<int> (&QSpinBox::valueChanged),
+				&SSM_,
+				&SessionSettingsManager::SetOverallDownloadRate);
+		connect (Ui_.OverallUploadRateController_,
+				qOverload<int> (&QSpinBox::valueChanged),
+				&SSM_,
+				&SessionSettingsManager::SetOverallUploadRate);
+		connect (Ui_.TorrentDownloadRateController_,
+				qOverload<int> (&QSpinBox::valueChanged),
+				[this] (int val) { SetDownloadLimit (Holder_ [Torrent_], val); });
+		connect (Ui_.TorrentUploadRateController_,
+				qOverload<int> (&QSpinBox::valueChanged),
+				[this] (int val) { SetUploadLimit (Holder_ [Torrent_], val); });
+		connect (Ui_.TorrentManaged_,
+				&QCheckBox::clicked,
+				[this] (bool managed) { Core::Instance ()->SetTorrentManaged (managed, Torrent_); });
+		connect (Ui_.TorrentSequentialDownload_,
+				&QCheckBox::clicked,
+				[this] (bool managed) { Core::Instance ()->SetTorrentSequentialDownload (managed, Torrent_); });
+		connect (Ui_.DownloadingTorrents_,
+				qOverload<int> (&QSpinBox::valueChanged),
+				&SSM_,
+				&SessionSettingsManager::SetMaxDownloadingTorrents);
+		connect (Ui_.UploadingTorrents_,
+				qOverload<int> (&QSpinBox::valueChanged),
+				&SSM_,
+				&SessionSettingsManager::SetMaxUploadingTorrents);
+		connect (Ui_.TorrentTags_,
+				&QLineEdit::editingFinished,
+				[this]
+				{
+					const auto& split = GetProxyHolder ()->GetTagsManager ()->Split (Ui_.TorrentTags_->text ());
+					Core::Instance ()->UpdateTags (split, Torrent_);
+				});
 	}
 
 	int TabWidget::GetCurrentTorrent () const
@@ -58,16 +95,10 @@ namespace BitTorrent
 
 		const auto& tags = Core::Instance ()->GetTagsForIndex (Torrent_);
 		Ui_.TorrentTags_->setText (GetProxyHolder ()->GetTagsManager ()->Join (tags));
-		updateTorrentStats ();
+		UpdateTorrentStats ();
 	}
 
-	void TabWidget::updateTorrentStats (const QModelIndex& from, const QModelIndex& to)
-	{
-		if (from.row () <= Torrent_ && Torrent_ <= to.row ())
-			updateTorrentStats ();
-	}
-
-	void TabWidget::updateTorrentStats ()
+	void TabWidget::UpdateTorrentStats ()
 	{
 		if (Torrent_ == -1)
 			return;
@@ -86,11 +117,10 @@ namespace BitTorrent
 
 	void TabWidget::UpdateDashboard ()
 	{
-		const auto ssm = Core::Instance ()->GetSessionSettingsManager ();
-		Ui_.OverallDownloadRateController_->setValue (ssm->GetOverallDownloadRate ());
-		Ui_.OverallUploadRateController_->setValue (ssm->GetOverallUploadRate ());
-		Ui_.DownloadingTorrents_->setValue (ssm->GetMaxDownloadingTorrents ());
-		Ui_.UploadingTorrents_->setValue (ssm->GetMaxUploadingTorrents ());
+		Ui_.OverallDownloadRateController_->setValue (SSM_->GetOverallDownloadRate ());
+		Ui_.OverallUploadRateController_->setValue (SSM_->GetOverallUploadRate ());
+		Ui_.DownloadingTorrents_->setValue (SSM_->GetMaxDownloadingTorrents ());
+		Ui_.UploadingTorrents_->setValue (SSM_->GetMaxUploadingTorrents ());
 	}
 
 	void TabWidget::UpdateTorrentControl ()
@@ -126,51 +156,4 @@ namespace BitTorrent
 		Ui_.PiecesWidget_->SetPieceMap (i->Status_.pieces);
 		Ui_.LabelName_->setText (QString::fromStdString (i->Status_.name));
 	}
-
-	void TabWidget::on_OverallDownloadRateController__valueChanged (int val)
-	{
-		Core::Instance ()->GetSessionSettingsManager ()->SetOverallDownloadRate (val);
-	}
-
-	void TabWidget::on_OverallUploadRateController__valueChanged (int val)
-	{
-		Core::Instance ()->GetSessionSettingsManager ()->SetOverallUploadRate (val);
-	}
-
-	void TabWidget::on_TorrentDownloadRateController__valueChanged (int val)
-	{
-		SetDownloadLimit (Holder_ [Torrent_], val);
-	}
-
-	void TabWidget::on_TorrentUploadRateController__valueChanged (int val)
-	{
-		SetUploadLimit (Holder_ [Torrent_], val);
-	}
-
-	void TabWidget::on_TorrentManaged__clicked (bool managed)
-	{
-		Core::Instance ()->SetTorrentManaged (managed, Torrent_);
-	}
-
-	void TabWidget::on_TorrentSequentialDownload__clicked (bool managed)
-	{
-		Core::Instance ()->SetTorrentSequentialDownload (managed, Torrent_);
-	}
-
-	void TabWidget::on_DownloadingTorrents__valueChanged (int newValue)
-	{
-		Core::Instance ()->GetSessionSettingsManager ()->SetMaxDownloadingTorrents (newValue);
-	}
-
-	void TabWidget::on_UploadingTorrents__valueChanged (int newValue)
-	{
-		Core::Instance ()->GetSessionSettingsManager ()->SetMaxUploadingTorrents (newValue);
-	}
-
-	void TabWidget::on_TorrentTags__editingFinished ()
-	{
-		const auto& split = GetProxyHolder ()->GetTagsManager ()->Split (Ui_.TorrentTags_->text ());
-		Core::Instance ()->UpdateTags (split, Torrent_);
-	}
-}
 }

@@ -400,7 +400,11 @@ namespace BitTorrent
 		Core::Instance ()->DoDelayedInit ();
 
 		SetupActions ();
-		TabWidget_.reset (new TabWidget { Core::Instance ()->GetSessionHolder () });
+		TabWidget_.reset (new TabWidget
+			{
+				Core::Instance ()->GetSessionHolder (),
+				*Core::Instance ()->GetSessionSettingsManager (),
+			});
 
 		Core::Instance ()->SetWidgets (Actions_->GetToolbar (), TabWidget_.get ());
 	}
@@ -408,10 +412,7 @@ namespace BitTorrent
 	void TorrentPlugin::SetupStuff ()
 	{
 		auto statsUpdateTimer = new QTimer { this };
-		connect (statsUpdateTimer,
-				SIGNAL (timeout ()),
-				TabWidget_.get (),
-				SLOT (updateTorrentStats ()));
+		statsUpdateTimer->callOnTimeout (TabWidget_.get (), &TabWidget::UpdateTorrentStats);
 		statsUpdateTimer->start (2000);
 
 		const auto selectorsUpdater = [this]
