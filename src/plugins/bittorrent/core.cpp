@@ -1933,9 +1933,10 @@ namespace BitTorrent
 			IEM_->HandleEntity (Util::MakeNotification ("BitTorrent", text, Priority::Critical));
 		}
 
-		void operator() (const libtorrent::read_piece_alert& a) const
+		void operator() (const libtorrent::read_piece_alert& a)
 		{
 			Core_.PieceRead (a);
+			NeedToLog_ = false;
 		}
 
 		void operator() (const libtorrent::state_update_alert& a)
