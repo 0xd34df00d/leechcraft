@@ -176,6 +176,7 @@ namespace BitTorrent
 								~block_progress &
 								~peer &
 								~upload &
+								~libtorrent::alert_category::connect &
 								~peer_log &
 								~torrent_log &
 								~dht_log &
