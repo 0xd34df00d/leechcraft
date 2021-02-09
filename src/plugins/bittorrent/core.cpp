@@ -2049,6 +2049,7 @@ namespace BitTorrent
 
 			void operator() (libtorrent::alert *alert) const
 			{
+				D_.NeedToLog_ = false;
 				qDebug () << Q_FUNC_INFO
 						<< "unhandled alert type"
 						<< Info_
