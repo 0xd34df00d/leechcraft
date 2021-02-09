@@ -362,48 +362,8 @@ namespace LC::BitTorrent
 						ScrapeTimer_->stop ();
 				});
 
-		const QList<QByteArray> loggingSettings
-		{
-			"PerformanceWarning",
-			"NotificationError",
-			"NotificationPeer",
-			"NotificationPortMapping",
-			"NotificationStorage",
-			"NotificationTracker",
-			"NotificationStatus",
-			"NotificationIPBlock",
-			"NotificationDHT"
-		};
-		XmlSettingsManager::Instance ()->RegisterObject (loggingSettings,
-				this, [this] { SetLoggingSettings (); });
-
 		XmlSettingsManager::Instance ()->RegisterObject ("NotificationStorage",
 				this, &CheckStorageSettings, Util::BaseSettingsManager::EventFlag::Select);
-	}
-
-	void SessionSettingsManager::SetLoggingSettings ()
-	{
-		libtorrent::alert_category_t mask {};
-
-		const auto xsm = XmlSettingsManager::Instance ();
-		const auto set = [&mask, xsm] (const char *propName, libtorrent::alert_category_t alert)
-		{
-			if (xsm->property (propName).toBool ())
-				mask |= alert;
-		};
-		set ("NotificationDHT", libtorrent::alert::dht_notification);
-		set ("PerformanceWarning", libtorrent::alert::performance_warning);
-		set ("NotificationError", libtorrent::alert::error_notification);
-		set ("NotificationPeer", libtorrent::alert::peer_notification);
-		set ("NotificationPortMapping", libtorrent::alert::port_mapping_notification);
-		set ("NotificationStorage", libtorrent::alert::storage_notification);
-		set ("NotificationTracker", libtorrent::alert::tracker_notification);
-		set ("NotificationStatus", libtorrent::alert::status_notification);
-		set ("NotificationIPBlock", libtorrent::alert::ip_block_notification);
-
-		auto settings = Session_->get_settings ();
-		settings.set_int (libtorrent::settings_pack::alert_mask, mask);
-		Session_->apply_settings (settings);
 	}
 
 	void SessionSettingsManager::TcpPortRangeChanged ()

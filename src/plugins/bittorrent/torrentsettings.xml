@@ -366,39 +366,6 @@
 				</item>
 			</scrollarea>
 		</tab>
-		<tab>
-			<label lang="en" value="Logging" />
-			<groupbox>
-				<label lang="en" value="Logging levels" />
-				<item type="checkbox" property="NotificationError" default="on">
-					<label lang="en" value="Error notifications" />
-				</item>
-				<item type="checkbox" property="NotificationPeer" default="off">
-					<label lang="en" value="Peer events" />
-				</item>
-				<item type="checkbox" property="NotificationPortMapping" default="off">
-					<label lang="en" value="Port mapping events" />
-				</item>
-				<item type="checkbox" property="NotificationStorage" default="on">
-					<label lang="en" value="Storage events" />
-				</item>
-				<item type="checkbox" property="NotificationTracker" default="off">
-					<label lang="en" value="Tracker events" />
-				</item>
-				<item type="checkbox" property="NotificationStatus" default="on">
-					<label lang="en" value="State change events" />
-				</item>
-				<item type="checkbox" property="NotificationIPBlock" default="on">
-					<label lang="en" value="IP block events" />
-				</item>
-				<item type="checkbox" property="PerformanceWarning" default="on">
-					<label lang="en" value="Performance warnings" />
-				</item>
-				<item type="checkbox" property="NotificationDHT" default="true">
-					<label value="DHT events" />
-				</item>
-			</groupbox>
-		</tab>
 	</page>
 	<page>
 		<label lang="en" value="Info pane" />

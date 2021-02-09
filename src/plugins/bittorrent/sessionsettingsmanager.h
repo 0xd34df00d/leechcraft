@@ -48,7 +48,6 @@ namespace LC::BitTorrent
 		int GetMaxUploadingTorrents () const;
 	private:
 		void ManipulateSettings ();
-		void SetLoggingSettings ();
 		void TcpPortRangeChanged ();
 		void SetProxySettings ();
 		void SetGeneralSettings ();
