@@ -117,10 +117,10 @@ namespace LC::BitTorrent
 
 	void TabWidget::UpdateDashboard ()
 	{
-		Ui_.OverallDownloadRateController_->setValue (SSM_->GetOverallDownloadRate ());
-		Ui_.OverallUploadRateController_->setValue (SSM_->GetOverallUploadRate ());
-		Ui_.DownloadingTorrents_->setValue (SSM_->GetMaxDownloadingTorrents ());
-		Ui_.UploadingTorrents_->setValue (SSM_->GetMaxUploadingTorrents ());
+		Ui_.OverallDownloadRateController_->setValue (SSM_.GetOverallDownloadRate ());
+		Ui_.OverallUploadRateController_->setValue (SSM_.GetOverallUploadRate ());
+		Ui_.DownloadingTorrents_->setValue (SSM_.GetMaxDownloadingTorrents ());
+		Ui_.UploadingTorrents_->setValue (SSM_.GetMaxUploadingTorrents ());
 	}
 
 	void TabWidget::UpdateTorrentControl ()

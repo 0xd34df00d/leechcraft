@@ -10,6 +10,7 @@
 
 #include <QWidget>
 #include <QAction>
+#include <QCoreApplication>
 #include "ui_tabwidget.h"
 
 namespace LC::BitTorrent
@@ -19,6 +20,8 @@ namespace LC::BitTorrent
 
 	class TabWidget : public QWidget
 	{
+		Q_DECLARE_TR_FUNCTIONS (LC::BitTorrent::TabWidget)
+
 		SessionHolder& Holder_;
 		SessionSettingsManager& SSM_;
 
