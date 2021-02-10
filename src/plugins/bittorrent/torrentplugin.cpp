@@ -162,20 +162,6 @@ namespace BitTorrent
 		return Core::Instance ()->GetSessionStats ().Rate_.Up_;
 	}
 
-	void TorrentPlugin::StartAll ()
-	{
-		int numTorrents = Core::Instance ()->columnCount (QModelIndex ());
-		for (int i = 0; i < numTorrents; ++i)
-			Core::Instance ()->ResumeTorrent (i);
-	}
-
-	void TorrentPlugin::StopAll ()
-	{
-		int numTorrents = Core::Instance ()->columnCount (QModelIndex ());
-		for (int i = 0; i < numTorrents; ++i)
-			Core::Instance ()->PauseTorrent (i);
-	}
-
 	EntityTestHandleResult TorrentPlugin::CouldDownload (const Entity& e) const
 	{
 		return Core::Instance ()->CouldDownload (e);

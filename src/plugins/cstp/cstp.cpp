@@ -99,16 +99,6 @@ namespace CSTP
 		return 0;
 	}
 
-	void CSTP::StartAll ()
-	{
-		Core::Instance ().startAllTriggered ();
-	}
-
-	void CSTP::StopAll ()
-	{
-		Core::Instance ().stopAllTriggered ();
-	}
-
 	EntityTestHandleResult CSTP::CouldDownload (const LC::Entity& e) const
 	{
 		return Core::Instance ().CouldDownload (e);

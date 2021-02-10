@@ -54,8 +54,6 @@ namespace CSTP
 
 		qint64 GetDownloadSpeed () const override;
 		qint64 GetUploadSpeed () const override;
-		void StartAll () override;
-		void StopAll () override;
 		EntityTestHandleResult CouldDownload (const LC::Entity&) const override;
 		QFuture<Result> AddJob (LC::Entity) override;
 

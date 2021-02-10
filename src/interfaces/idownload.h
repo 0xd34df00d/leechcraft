@@ -97,19 +97,6 @@ public:
 	 */
 	virtual qint64 GetUploadSpeed () const = 0;
 
-	/** @brief Starts all tasks.
-	 *
-	 * This is called by LeechCraft when it wants all plugins to start
-	 * all of its tasks.
-	 */
-	virtual void StartAll () = 0;
-	/** @brief Stops all tasks.
-	 *
-	 * This is called by LeechCraft when it wants all plugins to stop
-	 * all of its tasks.
-	 */
-	virtual void StopAll () = 0;
-
 	/** @brief Returns whether plugin can handle given entity.
 	 *
 	 * This function is used to query every loaded plugin providing the
