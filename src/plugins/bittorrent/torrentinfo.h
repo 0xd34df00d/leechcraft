@@ -9,21 +9,16 @@
 #pragma once
 
 #include <memory>
-#include <QTime>
 #include <libtorrent/torrent_info.hpp>
-#include <libtorrent/torrent_handle.hpp>
 #include <libtorrent/session_status.hpp>
 
-namespace LC
-{
-namespace BitTorrent
+namespace LC::BitTorrent
 {
 	struct TorrentInfo
 	{
-		QString Destination_,
-				State_;
+		QString Destination_;
+		QString State_;
 		libtorrent::torrent_status Status_;
 		std::unique_ptr<libtorrent::torrent_info> Info_;
 	};
-}
 }

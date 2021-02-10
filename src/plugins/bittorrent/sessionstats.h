@@ -10,9 +10,7 @@
 
 #include <cstdint>
 
-namespace LC
-{
-namespace BitTorrent
+namespace LC::BitTorrent
 {
 	struct SessionStats
 	{
@@ -49,5 +47,4 @@ namespace BitTorrent
 		int CacheSize_;
 		int ReadCacheSize_;
 	};
-}
 }

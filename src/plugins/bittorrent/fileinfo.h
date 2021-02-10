@@ -10,9 +10,7 @@
 
 #include <filesystem>
 
-namespace LC
-{
-namespace BitTorrent
+namespace LC::BitTorrent
 {
 	struct FileInfo
 	{
@@ -21,5 +19,4 @@ namespace BitTorrent
 		int Priority_;
 		float Progress_;
 	};
-}
 }
