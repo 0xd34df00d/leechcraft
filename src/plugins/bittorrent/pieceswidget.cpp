@@ -46,16 +46,16 @@ namespace LC::BitTorrent
 
 	void PiecesWidget::SetPieceMap (const libtorrent::bitfield& pieces)
 	{
+		PiecesCount_ = pieces.size ();
 		TrueRanges_ = FindTrues (pieces);
 		update ();
 	}
 
 	void PiecesWidget::paintEvent (QPaintEvent*)
 	{
-		int s = TrueRanges_.size ();
 		QPainter painter (this);
 		painter.setRenderHints (QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
-		if (!s)
+		if (!PiecesCount_)
 		{
 			painter.setBackgroundMode (Qt::OpaqueMode);
 			painter.setBackground (Qt::white);
@@ -66,10 +66,10 @@ namespace LC::BitTorrent
 		const auto& backgroundColor = palette ().color (QPalette::Base);
 		const auto& downloadedPieceColor = palette ().color (QPalette::Highlight);
 
-		QPixmap tempPicture (s, 1);
+		QPixmap tempPicture (PiecesCount_, 1);
 		QPainter tempPainter (&tempPicture);
 		tempPainter.setPen (backgroundColor);
-		tempPainter.drawLine (0, 0, s, 0);
+		tempPainter.drawLine (0, 0, PiecesCount_, 0);
 		for (const auto& pair : TrueRanges_)
 		{
 			tempPainter.setPen (downloadedPieceColor);
