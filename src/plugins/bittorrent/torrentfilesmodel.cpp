@@ -7,7 +7,6 @@
  **********************************************************************/
 
 #include "torrentfilesmodel.h"
-#include <iterator>
 #include <QUrl>
 #include <QTimer>
 #include <QtDebug>
@@ -20,24 +19,17 @@
 #include "core.h"
 #include "cachedstatuskeeper.h"
 
-namespace LC
-{
-namespace BitTorrent
+namespace LC::BitTorrent
 {
 	TorrentFilesModel::TorrentFilesModel (int index)
 	: TorrentFilesModelBase { { tr ("Name"), tr ("Priority"), tr ("Progress") } }
 	, Index_ { index }
 	{
 		auto timer = new QTimer (this);
-		connect (timer,
-				SIGNAL (timeout ()),
-				this,
-				SLOT (update ()));
+		timer->callOnTimeout (this, &TorrentFilesModel::Update);
 		timer->start (2000);
 
-		QTimer::singleShot (0,
-				this,
-				SLOT (update ()));
+		Update ();
 	}
 
 	QVariant TorrentFilesModel::data (const QModelIndex& index, int role) const
@@ -54,10 +46,9 @@ namespace BitTorrent
 
 			if (node->Priority_ > 0)
 				return Qt::Checked;
-			else if (node->Priority_ < 0)
+			if (node->Priority_ < 0)
 				return Qt::PartiallyChecked;
-			else
-				return Qt::Unchecked;
+			return Qt::Unchecked;
 		case Qt::DisplayRole:
 			switch (index.column ())
 			{
@@ -266,7 +257,7 @@ namespace BitTorrent
 
 		const auto iem = Core::Instance ()->GetProxy ()->GetEntityManager ();
 		if (std::abs (item->Progress_ - 1) >= std::numeric_limits<decltype (item->Progress_)>::epsilon ())
-			iem->HandleEntity (Util::MakeNotification ("BitTorrent",
+			iem->HandleEntity (Util::MakeNotification (QStringLiteral ("BitTorrent"),
 					tr ("%1 hasn't finished downloading yet.")
 						.arg ("<em>" + item->Name_ + "</em>"),
 					Priority::Warning));
@@ -321,7 +312,7 @@ namespace BitTorrent
 		UpdatePriorities (parent.get ());
 	}
 
-	void TorrentFilesModel::ClearEmptyParents (std::filesystem::path path)
+	void TorrentFilesModel::ClearEmptyParents (const std::filesystem::path& path)
 	{
 		const auto pos = Path2Node_.find (path);
 		if (pos == Path2Node_.end ())
@@ -351,7 +342,7 @@ namespace BitTorrent
 		ClearEmptyParents (path.parent_path ());
 	}
 
-	void TorrentFilesModel::update ()
+	void TorrentFilesModel::Update ()
 	{
 		const auto& handle = Core::Instance ()->GetTorrentHandle (Index_);
 		const auto& base = Core::Instance ()->GetStatusKeeper ()->
@@ -361,7 +352,7 @@ namespace BitTorrent
 		UpdateFiles (base, files);
 	}
 
-	void TorrentFilesModel::handleFileRenamed (int torrent, int file, const QString& newName)
+	void TorrentFilesModel::HandleFileRenamed (int torrent, int file, const QString& newName)
 	{
 		if (torrent != Index_)
 			return;
@@ -398,5 +389,4 @@ namespace BitTorrent
 
 		UpdateSizeGraph (RootNode_);
 	}
-}
 }

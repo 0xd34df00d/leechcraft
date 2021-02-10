@@ -9,14 +9,10 @@
 #pragma once
 
 #include <QStringList>
-#include <libtorrent/torrent_info.hpp>
-#include <interfaces/structures.h>
 #include "fileinfo.h"
 #include "torrentfilesmodelbase.h"
 
-namespace LC
-{
-namespace BitTorrent
+namespace LC::BitTorrent
 {
 	struct TorrentNodeInfo : public TorrentNodeInfoBase<TorrentNodeInfo>
 	{
@@ -25,12 +21,10 @@ namespace BitTorrent
 
 		using TorrentNodeInfoBase<TorrentNodeInfo>::TorrentNodeInfoBase;
 	};
-	typedef std::shared_ptr<TorrentNodeInfo> TorrentNodeInfo_ptr;
+	using TorrentNodeInfo_ptr = std::shared_ptr<TorrentNodeInfo>;
 
 	class TorrentFilesModel : public TorrentFilesModelBase<TorrentNodeInfo>
 	{
-		Q_OBJECT
-
 		const int Index_ = -1;
 	public:
 		enum
@@ -50,7 +44,7 @@ namespace BitTorrent
 			ColumnProgress,
 		};
 
-		TorrentFilesModel (int);
+		explicit TorrentFilesModel (int);
 
 		QVariant data (const QModelIndex&, int = Qt::DisplayRole) const override;
 		Qt::ItemFlags flags (const QModelIndex&) const override;
@@ -60,13 +54,12 @@ namespace BitTorrent
 		void UpdateFiles (const std::filesystem::path&, const QList<FileInfo>&);
 
 		void HandleFileActivated (QModelIndex) const;
+
+		void HandleFileRenamed (int, int, const QString&);
 	private:
+		void Update ();
 		void UpdateSizeGraph (const TorrentNodeInfo_ptr&);
 		void UpdatePriorities (TorrentNodeInfo*);
-		void ClearEmptyParents (std::filesystem::path);
-	public slots:
-		void update ();
-		void handleFileRenamed (int, int, const QString&);
+		void ClearEmptyParents (const std::filesystem::path&);
 	};
-}
 }

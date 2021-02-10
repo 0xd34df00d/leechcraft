@@ -90,7 +90,7 @@ namespace BitTorrent
 		connect (Core::Instance (),
 				&Core::fileRenamed,
 				CurrentFilesModel_,
-				&TorrentFilesModel::handleFileRenamed);
+				&TorrentFilesModel::HandleFileRenamed);
 		ProxyModel_->setSourceModel (CurrentFilesModel_);
 		QTimer::singleShot (0,
 				Ui_.FilesView_,
