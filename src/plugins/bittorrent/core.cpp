@@ -353,20 +353,20 @@ namespace BitTorrent
 		{
 			switch (state)
 			{
-				case libtorrent::torrent_status::checking_files:
-					return Core::tr ("Checking files");
-				case libtorrent::torrent_status::downloading_metadata:
-					return Core::tr ("Downloading metadata");
-				case libtorrent::torrent_status::downloading:
-					return Core::tr ("Downloading");
-				case libtorrent::torrent_status::finished:
-					return Core::tr ("Finished");
-				case libtorrent::torrent_status::seeding:
-					return Core::tr ("Seeding");
-				case libtorrent::torrent_status::checking_resume_data:
-					return Core::tr ("Checking resume data");
+			case libtorrent::torrent_status::checking_files:
+				return Core::tr ("Checking files");
+			case libtorrent::torrent_status::downloading_metadata:
+				return Core::tr ("Downloading metadata");
+			case libtorrent::torrent_status::downloading:
+				return Core::tr ("Downloading");
+			case libtorrent::torrent_status::finished:
+				return Core::tr ("Finished");
+			case libtorrent::torrent_status::seeding:
+				return Core::tr ("Seeding");
+			case libtorrent::torrent_status::checking_resume_data:
+				return Core::tr ("Checking resume data");
 			}
-			return "Uninitialized?!";
+			return {};
 		}
 
 		bool IsPaused (const libtorrent::torrent_status& status)
@@ -414,14 +414,17 @@ namespace BitTorrent
 
 	QVariant Core::data (const QModelIndex& index, int role) const
 	{
-		if (role == RoleControls)
+		switch (role)
+		{
+		case RoleControls:
 			return QVariant::fromValue<QToolBar*> (Toolbar_);
-		if (role == RoleAdditionalInfo)
+		case RoleAdditionalInfo:
 			return QVariant::fromValue<QWidget*> (TabWidget_);
-		if (role == RoleContextMenu)
+		case RoleContextMenu:
 			return QVariant::fromValue<QMenu*> (Menu_);
-		if (role == Roles::HandleIndex)
+		case Roles::HandleIndex:
 			return index.row ();
+		}
 
 		const int row = index.row ();
 		const int column = index.column ();

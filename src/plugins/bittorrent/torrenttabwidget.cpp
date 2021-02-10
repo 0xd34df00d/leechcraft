@@ -34,18 +34,19 @@ namespace LC::BitTorrent
 	: QTabWidget (parent)
 	{
 		Ui_.setupUi (this);
+
 		new Util::TagsCompleter (Ui_.TorrentTags_);
 		auto header = Ui_.PerTrackerStats_->header ();
 		const auto& fm = fontMetrics ();
-		header->resizeSection (0, fm.horizontalAdvance ("www.domain.name.org"));
-		header->resizeSection (1, fm.horizontalAdvance ("1234.5678 bytes/s"));
-		header->resizeSection (2, fm.horizontalAdvance ("1234.5678 bytes/s"));
+		header->resizeSection (0, fm.horizontalAdvance (QStringLiteral ("www.domain.name.org")));
+		header->resizeSection (1, fm.horizontalAdvance (QStringLiteral ("1234.5678 bytes/s")));
+		header->resizeSection (2, fm.horizontalAdvance (QStringLiteral ("1234.5678 bytes/s")));
 
 		Ui_.TorrentTags_->AddSelector ();
 
 		header = Ui_.WebSeedsView_->header ();
-		header->resizeSection (0, fm.horizontalAdvance ("average.domain.name.of.a.tracker"));
-		header->resizeSection (1, fm.horizontalAdvance ("  BEP 99  "));
+		header->resizeSection (0, fm.horizontalAdvance (QStringLiteral ("average.domain.name.of.a.tracker")));
+		header->resizeSection (1, fm.horizontalAdvance (QStringLiteral ("  BEP 99  ")));
 
 		connect (Core::Instance (),
 				&Core::torrentsStatusesUpdated,
@@ -236,8 +237,8 @@ namespace LC::BitTorrent
 
 	void TorrentTabWidget::InvalidateSelection ()
 	{
-		Ui_.TorrentTags_->setText (Core::Instance ()->GetProxy ()->GetTagsManager ()->
-				Join (Core::Instance ()->GetTagsForIndex (Index_)));
+		const auto& tags = Core::Instance ()->GetTagsForIndex (Index_);
+		Ui_.TorrentTags_->setText (GetProxyHolder ()->GetTagsManager ()->Join (tags));
 		UpdateTorrentStats ();
 	}
 
@@ -347,12 +348,9 @@ namespace LC::BitTorrent
 	{
 		Ui_.TorrentDownloadRateController_->setValue (GetDownloadLimit ((*Holder_) [Index_]));
 		Ui_.TorrentUploadRateController_->setValue (GetUploadLimit ((*Holder_) [Index_]));
-		Ui_.TorrentManaged_->setCheckState (Core::Instance ()->
-				IsTorrentManaged (Index_) ? Qt::Checked : Qt::Unchecked);
-		Ui_.TorrentSequentialDownload_->setCheckState (Core::Instance ()->
-				IsTorrentSequentialDownload (Index_) ? Qt::Checked : Qt::Unchecked);
-		Ui_.TorrentSuperSeeding_->setCheckState (Core::Instance ()->
-				IsTorrentSuperSeeding (Index_) ? Qt::Checked : Qt::Unchecked);
+		Ui_.TorrentManaged_->setCheckState (Core::Instance ()->IsTorrentManaged (Index_) ? Qt::Checked : Qt::Unchecked);
+		Ui_.TorrentSequentialDownload_->setCheckState (Core::Instance ()->IsTorrentSequentialDownload (Index_) ? Qt::Checked : Qt::Unchecked);
+		Ui_.TorrentSuperSeeding_->setCheckState (Core::Instance ()->IsTorrentSuperSeeding (Index_) ? Qt::Checked : Qt::Unchecked);
 
 		std::unique_ptr<TorrentInfo> i;
 		try
