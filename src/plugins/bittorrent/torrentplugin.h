@@ -9,12 +9,8 @@
 #pragma once
 
 #include <memory>
-#include <deque>
-#include <QMainWindow>
-#include <QToolBar>
 #include <interfaces/iinfo.h>
 #include <interfaces/idownload.h>
-#include <interfaces/ientityhandler.h>
 #include <interfaces/ijobholder.h>
 #include <interfaces/iimportexport.h>
 #include <interfaces/itaggablejobs.h>
@@ -34,9 +30,7 @@ class QTabWidget;
 class QTranslator;
 class QSortFilterProxyModel;
 
-namespace LC
-{
-namespace BitTorrent
+namespace LC::BitTorrent
 {
 	class AddTorrent;
 	class ListActions;
@@ -76,8 +70,8 @@ namespace BitTorrent
 		std::unique_ptr<TabWidget> TabWidget_;
 		ListActions *Actions_;
 
-		SpeedSelectorAction *DownSelectorAction_,
-				*UpSelectorAction_;
+		SpeedSelectorAction *DownSelectorAction_;
+		SpeedSelectorAction *UpSelectorAction_;
 
 		TabClassInfo TabTC_;
 		TorrentTab *TorrentTab_;
@@ -146,5 +140,4 @@ namespace BitTorrent
 
 		void gotActions (QList<QAction*>, LC::ActionsEmbedPlace) override;
 	};
-}
 }

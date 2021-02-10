@@ -13,31 +13,25 @@
 
 class QSortFilterProxyModel;
 
-namespace LC
-{
-namespace BitTorrent
+namespace LC::BitTorrent
 {
 	class TorrentFilesModel;
 
 	class TorrentTabFilesWidget : public QWidget
 	{
-		Q_OBJECT
+		Q_DECLARE_TR_FUNCTIONS (LC::BitTorrent::TorrentTabFilesWidget)
 
 		Ui::TorrentTabFilesWidget Ui_;
 		QSortFilterProxyModel * const ProxyModel_;
 
 		TorrentFilesModel *CurrentFilesModel_ = nullptr;
 	public:
-		TorrentTabFilesWidget (QWidget* = nullptr);
+		explicit TorrentTabFilesWidget (QWidget* = nullptr);
 
 		void SetCurrentIndex (int);
 	private:
 		QList<QModelIndex> GetSelectedIndexes () const;
-	private slots:
-		void currentFileChanged (const QModelIndex&);
-		void on_FilePriorityRegulator__valueChanged (int);
-
-		void on_FilesView__customContextMenuRequested (const QPoint&);
+		void HandleFileSelected (const QModelIndex&);
+		void ShowContextMenu (const QPoint&);
 	};
-}
 }

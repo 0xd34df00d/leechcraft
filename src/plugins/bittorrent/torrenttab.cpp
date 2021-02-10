@@ -8,11 +8,8 @@
 
 #include "torrenttab.h"
 #include <QStyledItemDelegate>
-#include <QSortFilterProxyModel>
 #include <QToolBar>
 #include <QMenu>
-#include <libtorrent/session.hpp>
-#include <libtorrent/announce_entry.hpp>
 #include <util/tags/tagscompleter.h>
 #include <util/gui/clearlineeditaddon.h>
 #include <util/gui/lineeditbuttonmanager.h>
@@ -30,9 +27,7 @@
 #include "ltutils.h"
 #include "listactions.h"
 
-namespace LC
-{
-namespace BitTorrent
+namespace LC::BitTorrent
 {
 	namespace
 	{
@@ -51,11 +46,13 @@ namespace BitTorrent
 
 				const auto progress = index.data (Roles::SortRole).toDouble ();
 
+				const auto precision = 1000;
+
 				QStyleOptionProgressBar pbo;
 				pbo.rect = option.rect;
 				pbo.minimum = 0;
-				pbo.maximum = 1000;
-				pbo.progress = std::round (progress * 1000);
+				pbo.maximum = precision;
+				pbo.progress = std::round (progress * precision);
 				pbo.state = option.state;
 				pbo.text = Util::ElideProgressBarText (index.data ().toString (), option);
 				pbo.textVisible = true;
@@ -104,18 +101,18 @@ namespace BitTorrent
 		QHeaderView *header = Ui_.TorrentsView_->header ();
 		const auto& fm = fontMetrics ();
 		header->resizeSection (Core::Columns::ColumnID,
-				fm.horizontalAdvance ("999"));
+				fm.horizontalAdvance (QStringLiteral ("999")));
 		header->resizeSection (Core::Columns::ColumnName,
-				fm.horizontalAdvance ("boardwalk.empire.s03e02.hdtv.720p.ac3.rus.eng.novafilm.tv.mkv") * 1.3);
+				fm.horizontalAdvance (QStringLiteral ("boardwalk.empire.s03e02.hdtv.720p.ac3.rus.eng.novafilm.tv.mkv")) * 1.3);
 
 		auto buttonMgr = new Util::LineEditButtonManager (Ui_.SearchLine_);
 		new Util::TagsCompleter (Ui_.SearchLine_);
 		Ui_.SearchLine_->AddSelector (buttonMgr);
-		new Util::ClearLineEditAddon (Core::Instance ()->GetProxy (), Ui_.SearchLine_, buttonMgr);
+		new Util::ClearLineEditAddon (GetProxyHolder (), Ui_.SearchLine_, buttonMgr);
 		connect (Ui_.SearchLine_,
-				SIGNAL (textChanged (QString)),
+				&QLineEdit::textChanged,
 				ViewFilter_,
-				SLOT (setFilterFixedString (QString)));
+				&QSortFilterProxyModel::setFilterFixedString);
 
 		connect (Ui_.TorrentStateFilter_,
 				qOverload<int> (&QComboBox::currentIndexChanged),
@@ -184,5 +181,4 @@ namespace BitTorrent
 		const auto& srcIdx = Core::Instance ()->index (row, 0);
 		Ui_.TorrentsView_->setCurrentIndex (ViewFilter_->mapFromSource (srcIdx));
 	}
-}
 }

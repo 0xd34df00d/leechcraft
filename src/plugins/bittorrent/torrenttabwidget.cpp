@@ -12,10 +12,11 @@
 #include <QStandardItemModel>
 #include <QTimer>
 #include <QUrl>
-#include <libtorrent/lazy_entry.hpp>
+#include <memory>
 #include <util/util.h>
-#include <util/xpc/util.h>
+#include <util/sll/qtutil.h>
 #include <util/tags/tagscompleter.h>
+#include <util/xpc/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
 #include <interfaces/core/ientitymanager.h>
@@ -271,10 +272,9 @@ namespace LC::BitTorrent
 
 		auto percent = [] (auto t1, auto t2)
 		{
-			if (t2)
-				return " (" + QString::number (t1 * 100.0 / t2, 'f', 1) + "%)";
-			else
+			if (!t2)
 				return QString {};
+			return " (" + QString::number (t1 * 100.0 / t2, 'f', 1) + "%)";
 		};
 
 		auto speed = [percent] (auto t1, auto t2)
@@ -364,7 +364,7 @@ namespace LC::BitTorrent
 		}
 
 		if (!i->Info_)
-			i->Info_.reset (new libtorrent::torrent_info { libtorrent::bdecode_node {} });
+			i->Info_ = std::make_unique<libtorrent::torrent_info> (libtorrent::bdecode_node {});
 
 		Ui_.TorrentControlTab_->setEnabled (true);
 		Ui_.LabelState_->setText (i->State_);
@@ -384,7 +384,7 @@ namespace LC::BitTorrent
 			Ui_.LabelTorrentOverallRating_->setText (QString::number (i->Status_.all_time_upload /
 							static_cast<double> (i->Status_.all_time_download), 'g', 4));
 		else
-			Ui_.LabelTorrentOverallRating_->setText (QString::fromUtf8 ("\u221E"));
+			Ui_.LabelTorrentOverallRating_->setText (QStringLiteral ("\u221E"));
 		Ui_.LabelSeedRank_->setText (QString::number (i->Status_.seed_rank));
 		Ui_.LabelActiveTime_->setText (Util::MakeTimeFromLong (i->Status_.active_duration.count ()));
 		Ui_.LabelSeedingTime_->setText (Util::MakeTimeFromLong (i->Status_.seeding_duration.count ()));
@@ -394,17 +394,17 @@ namespace LC::BitTorrent
 			Ui_.LabelTorrentRating_->setText (QString::number (i->Status_.total_payload_upload /
 							static_cast<double> (i->Status_.total_payload_download), 'g', 4));
 		else
-			Ui_.LabelTorrentRating_->setText (QString::fromUtf8 ("\u221E"));
+			Ui_.LabelTorrentRating_->setText (QStringLiteral ("\u221E"));
 		Ui_.PiecesWidget_->SetPieceMap (i->Status_.pieces);
 		Ui_.LabelTracker_->setText (QString::fromStdString (i->Status_.current_tracker));
-		Ui_.LabelDestination_->setText (QString ("<a href='%1'>%1</a>")
+		Ui_.LabelDestination_->setText (QStringLiteral ("<a href='%1'>%1</a>")
 					.arg (i->Destination_));
 		Ui_.LabelName_->setText (QString::fromStdString (i->Status_.name));
 		Ui_.LabelCreator_->setText (QString::fromStdString (i->Info_->creator ()));
 
 		const auto& commentString = QString::fromStdString (i->Info_->comment ());
 		if (QUrl::fromEncoded (commentString.toUtf8 ()).isValid ())
-			Ui_.LabelComment_->setText (QString ("<a href='%1'>%1</a>")
+			Ui_.LabelComment_->setText (QStringLiteral ("<a href='%1'>%1</a>")
 					.arg (commentString));
 		else
 			Ui_.LabelComment_->setText (commentString);
@@ -462,8 +462,8 @@ namespace LC::BitTorrent
 	void TorrentTabWidget::RemoveWebSeed ()
 	{
 		auto index = Ui_.WebSeedsView_->currentIndex ();
-		auto url = index.sibling (index.row (), 0).data ().toString ().toStdString ();
-		auto type = index.sibling (index.row (), 1).data ().toString () == "BEP 19" ?
+		auto url = index.siblingAtColumn (0).data ().toString ().toStdString ();
+		auto type = index.siblingAtColumn (1).data ().toString () == "BEP 19"_ql ?
 				WebSeedType::Bep19 :
 				WebSeedType::Bep17;
 

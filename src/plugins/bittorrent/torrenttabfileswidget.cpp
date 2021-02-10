@@ -11,20 +11,17 @@
 #include <QTimer>
 #include <QSortFilterProxyModel>
 #include <util/gui/clearlineeditaddon.h>
-#include <util/sll/slotclosure.h>
 #include <util/sll/prelude.h>
 #include <util/util.h>
 #include "filesviewdelegate.h"
 #include "core.h"
 #include "torrentfilesmodel.h"
 
-namespace LC
-{
-namespace BitTorrent
+namespace LC::BitTorrent
 {
 	namespace
 	{
-		class FilesProxyModel : public QSortFilterProxyModel
+		class FilesProxyModel final : public QSortFilterProxyModel
 		{
 		public:
 			FilesProxyModel (QObject *parent)
@@ -56,27 +53,42 @@ namespace BitTorrent
 	{
 		Ui_.setupUi (this);
 
-		new Util::ClearLineEditAddon { Core::Instance ()->GetProxy (), Ui_.SearchLine_ };
+		new Util::ClearLineEditAddon { GetProxyHolder (), Ui_.SearchLine_ };
 
 		ProxyModel_->setSortRole (TorrentFilesModel::RoleSort);
 		Ui_.FilesView_->setItemDelegate (new FilesViewDelegate (Ui_.FilesView_));
 		Ui_.FilesView_->setModel (ProxyModel_);
 
 		connect (Ui_.FilesView_->selectionModel (),
-				SIGNAL (currentChanged (const QModelIndex&, const QModelIndex&)),
+				&QItemSelectionModel::currentChanged,
 				this,
-				SLOT (currentFileChanged (const QModelIndex&)));
+				&TorrentTabFilesWidget::HandleFileSelected);
 
-		currentFileChanged ({});
+		HandleFileSelected ({});
 
 		connect (Ui_.SearchLine_,
-				SIGNAL (textChanged (QString)),
-				ProxyModel_,
-				SLOT (setFilterFixedString (QString)));
-		connect (Ui_.SearchLine_,
-				SIGNAL (textChanged (QString)),
-				Ui_.FilesView_,
-				SLOT (expandAll ()));
+				&QLineEdit::textChanged,
+				[this] (const QString& text)
+				{
+					ProxyModel_->setFilterFixedString (text);
+					Ui_.FilesView_->expandAll ();
+				});
+
+		connect (Ui_.FilePriorityRegulator_,
+				qOverload<int> (&QSpinBox::valueChanged),
+				[this] (int prio)
+				{
+					for (auto idx : GetSelectedIndexes ())
+					{
+						idx = idx.siblingAtColumn (TorrentFilesModel::ColumnPriority);
+						Ui_.FilesView_->model ()->setData (idx, prio);
+					}
+				});
+
+		connect (Ui_.FilesView_,
+				&QTreeView::customContextMenuRequested,
+				this,
+				&TorrentTabFilesWidget::ShowContextMenu);
 	}
 
 	void TorrentTabFilesWidget::SetCurrentIndex (int index)
@@ -94,13 +106,13 @@ namespace BitTorrent
 		ProxyModel_->setSourceModel (CurrentFilesModel_);
 		QTimer::singleShot (0,
 				Ui_.FilesView_,
-				SLOT (expandAll ()));
+				&QTreeView::expandAll);
 
 		Ui_.SearchLine_->setVisible (Core::Instance ()->GetTorrentFiles (index).size () > 1);
 
 		const auto& fm = Ui_.FilesView_->fontMetrics ();
 		Ui_.FilesView_->header ()->resizeSection (0,
-				fm.horizontalAdvance ("some very long file name or a directory name in a torrent file"));
+				fm.horizontalAdvance (QStringLiteral ("some very long file name or a directory name in a torrent file")));
 	}
 
 	QList<QModelIndex> TorrentTabFilesWidget::GetSelectedIndexes () const
@@ -114,14 +126,14 @@ namespace BitTorrent
 		return selected;
 	}
 
-	void TorrentTabFilesWidget::currentFileChanged (const QModelIndex& index)
+	void TorrentTabFilesWidget::HandleFileSelected (const QModelIndex& index)
 	{
 		Ui_.FilePriorityRegulator_->setEnabled (index.isValid ());
 
 		if (!index.isValid ())
 		{
-			Ui_.FilePath_->setText ("");
-			Ui_.FileProgress_->setText ("");
+			Ui_.FilePath_->setText ({});
+			Ui_.FileProgress_->setText ({});
 			Ui_.FilePriorityRegulator_->blockSignals (true);
 			Ui_.FilePriorityRegulator_->setValue (0);
 			Ui_.FilePriorityRegulator_->blockSignals (false);
@@ -129,29 +141,26 @@ namespace BitTorrent
 		else
 		{
 			auto path = index.data (TorrentFilesModel::RoleFullPath).toString ();
-			path = QApplication::fontMetrics ()
-				.elidedText (path,
-						Qt::ElideLeft,
-						Ui_.FilePath_->width ());
+			path = fontMetrics ().elidedText (path,
+					Qt::ElideLeft,
+					Ui_.FilePath_->width ());
 			Ui_.FilePath_->setText (path);
 
-			auto sindex = index.sibling (index.row (),
-					TorrentFilesModel::ColumnProgress);
+			auto sindex = index.siblingAtColumn (TorrentFilesModel::ColumnProgress);
 			double progress = sindex.data (TorrentFilesModel::RoleProgress).toDouble ();
 			qint64 size = sindex.data (TorrentFilesModel::RoleSize).toLongLong ();
 			qint64 done = progress * size;
 			Ui_.FileProgress_->setText (tr ("%1% (%2 of %3)")
 					.arg (progress * 100, 0, 'f', 1)
-					.arg (Util::MakePrettySize (done))
-					.arg (Util::MakePrettySize (size)));
+					.arg (Util::MakePrettySize (done),
+						  Util::MakePrettySize (size)));
 
 			Ui_.FilePriorityRegulator_->blockSignals (true);
 			if (index.model ()->rowCount (index))
 				Ui_.FilePriorityRegulator_->setValue (1);
 			else
 			{
-				auto prindex = index.sibling (index.row (),
-						TorrentFilesModel::ColumnPriority);
+				auto prindex = index.siblingAtColumn (TorrentFilesModel::ColumnPriority);
 				int priority = prindex.data ().toInt ();
 				Ui_.FilePriorityRegulator_->setValue (priority);
 			}
@@ -159,18 +168,9 @@ namespace BitTorrent
 		}
 	}
 
-	void TorrentTabFilesWidget::on_FilePriorityRegulator__valueChanged (int prio)
+	void TorrentTabFilesWidget::ShowContextMenu (const QPoint& pos)
 	{
-		for (auto idx : GetSelectedIndexes ())
-		{
-			idx = idx.sibling (idx.row (), TorrentFilesModel::ColumnPriority);
-			Ui_.FilesView_->model ()->setData (idx, prio);
-		}
-	}
-
-	void TorrentTabFilesWidget::on_FilesView__customContextMenuRequested (const QPoint& pos)
-	{
-		const auto itm = Core::Instance ()->GetProxy ()->GetIconThemeManager ();
+		const auto itm = GetProxyHolder ()->GetIconThemeManager ();
 
 		QMenu menu;
 
@@ -187,19 +187,14 @@ namespace BitTorrent
 			const auto& openActName = openable.size () == 1 ?
 					tr ("Open file") :
 					tr ("Open %n file(s)", 0, openable.size ());
-			const auto openAct = menu.addAction (openActName);
-			openAct->setIcon (itm->GetIcon ("document-open"));
-			new Util::SlotClosure<Util::DeleteLaterPolicy>
-			{
-				[openable, this]
-				{
-					for (const auto& idx : openable)
-						CurrentFilesModel_->HandleFileActivated (ProxyModel_->mapToSource (idx));
-				},
-				openAct,
-				SIGNAL (triggered ()),
-				openAct
-			};
+			const auto openAct = menu.addAction (openActName,
+					this,
+					[openable, this]
+					{
+						for (const auto& idx : openable)
+							CurrentFilesModel_->HandleFileActivated (ProxyModel_->mapToSource (idx));
+					});
+			openAct->setIcon (itm->GetIcon (QStringLiteral ("document-open")));
 
 			menu.addSeparator ();
 		}
@@ -221,8 +216,7 @@ namespace BitTorrent
 					}),
 				[] (const QPair<QModelIndex, QString>& idxPair)
 				{
-					return idxPair.first
-							.sibling (idxPair.first.row (), TorrentFilesModel::ColumnPriority);
+					return idxPair.first.siblingAtColumn (TorrentFilesModel::ColumnPriority);
 				});
 		if (!priorityRoots.isEmpty ())
 		{
@@ -243,26 +237,19 @@ namespace BitTorrent
 			{
 				const auto prio = descr.first;
 
-				const auto act = subMenu->addAction (QString::number (prio) + " " + descr.second);
-
-				new Util::SlotClosure<Util::DeleteLaterPolicy>
-				{
-					[this, prio, priorityRoots]
-					{
-						for (const auto& idx : priorityRoots)
-							ProxyModel_->setData (idx, prio);
-					},
-					act,
-					SIGNAL (triggered ()),
-					act
-				};
+				subMenu->addAction (QString::number (prio) + " " + descr.second,
+						this,
+						[this, prio, priorityRoots]
+						{
+							for (const auto& idx : priorityRoots)
+								ProxyModel_->setData (idx, prio);
+						});
 			}
 		}
 
-		menu.addAction (tr ("Expand all"), Ui_.FilesView_, SLOT (expandAll ()));
-		menu.addAction (tr ("Collapse all"), Ui_.FilesView_, SLOT (collapseAll ()));
+		menu.addAction (tr ("Expand all"), Ui_.FilesView_, &QTreeView::expandAll);
+		menu.addAction (tr ("Collapse all"), Ui_.FilesView_, &QTreeView::collapseAll);
 
 		menu.exec (Ui_.FilesView_->viewport ()->mapToGlobal (pos));
 	}
-}
 }

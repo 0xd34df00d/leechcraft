@@ -12,9 +12,7 @@
 #include <interfaces/ihavetabs.h>
 #include "ui_torrenttab.h"
 
-namespace LC
-{
-namespace BitTorrent
+namespace LC::BitTorrent
 {
 	class ListActions;
 	class SessionHolder;
@@ -39,14 +37,13 @@ namespace BitTorrent
 	public:
 		TorrentTab (SessionHolder&, const TabClassInfo&, QObject*);
 
-		TabClassInfo GetTabClassInfo () const;
-		QObject* ParentMultiTabs ();
-		QToolBar* GetToolBar () const;
-		void Remove ();
+		TabClassInfo GetTabClassInfo () const override;
+		QObject* ParentMultiTabs () override;
+		QToolBar* GetToolBar () const override;
+		void Remove () override;
 
 		void SetCurrentTorrent (int);
 	signals:
 		void removeTab (QWidget*);
 	};
-}
 }

@@ -12,7 +12,6 @@
 #include <QtDebug>
 #include <QMenu>
 #include <QAction>
-#include <QTabWidget>
 #include <QTimer>
 #include <QToolBar>
 #include <QSortFilterProxyModel>
@@ -28,8 +27,10 @@
 #include <interfaces/core/irootwindowsmanager.h>
 #include <util/tags/tagscompleter.h>
 #include <util/util.h>
-#include <util/threads/futures.h>
+#include <util/sll/qtutil.h>
 #include <util/shortcuts/shortcutmanager.h>
+#include <util/threads/futures.h>
+#include <util/xpc/util.h>
 #include "core.h"
 #include "addtorrent.h"
 #include "xmlsettingsmanager.h"
@@ -41,13 +42,12 @@
 #include "sessionstats.h"
 #include "types.h"
 #include "listactions.h"
+#include "ltutils.h"
 
 using LC::ActionInfo;
 using namespace LC::Util;
 
-namespace LC
-{
-namespace BitTorrent
+namespace LC::BitTorrent
 {
 	namespace
 	{
@@ -65,11 +65,10 @@ namespace BitTorrent
 			{
 				const auto& index = mapToSource (unmapped);
 				const int normCol = index.column ();
-
 				if (normCol == Core::ColumnProgress && role == Qt::DisplayRole)
 					return sourceModel ()->data (index, Roles::FullLengthText);
-				else
-					return QSortFilterProxyModel::data (unmapped, role);
+
+				return QSortFilterProxyModel::data (unmapped, role);
 			}
 		protected:
 			bool filterAcceptsColumn (int sourceColumn, const QModelIndex&) const override
@@ -82,7 +81,7 @@ namespace BitTorrent
 
 	void TorrentPlugin::Init (ICoreProxy_ptr proxy)
 	{
-		InstallTranslator ("bittorrent");
+		InstallTranslator (QStringLiteral ("bittorrent"));
 		Core::Instance ()->SetProxy (proxy);
 
 		TabTC_ =
@@ -108,9 +107,9 @@ namespace BitTorrent
 
 		TorrentTab_ = new TorrentTab (Core::Instance ()->GetSessionHolder (), TabTC_, this);
 		connect (TorrentTab_,
-				SIGNAL (removeTab (QWidget*)),
+				&TorrentTab::removeTab,
 				this,
-				SIGNAL (removeTab (QWidget*)));
+				&TorrentPlugin::removeTab);
 
 		ReprProxy_ = new ReprProxy (Core::Instance ());
 	}
@@ -126,7 +125,7 @@ namespace BitTorrent
 
 	QString TorrentPlugin::GetName () const
 	{
-		return "BitTorrent";
+		return QStringLiteral ("BitTorrent");
 	}
 
 	QString TorrentPlugin::GetInfo () const
@@ -136,7 +135,7 @@ namespace BitTorrent
 
 	QStringList TorrentPlugin::Provides () const
 	{
-		return QStringList ("bittorrent") << "resume" << "remoteable";
+		return { QStringLiteral ("bittorrent"), QStringLiteral ("resume"), QStringLiteral ("remoteable") };
 	}
 
 	void TorrentPlugin::Release ()
@@ -375,8 +374,7 @@ namespace BitTorrent
 		return XmlSettingsDialog_;
 	}
 
-	void TorrentPlugin::SetShortcut (const QString& name,
-			const QKeySequences_t& shortcuts)
+	void TorrentPlugin::SetShortcut (const QString& name, const QKeySequences_t& shortcuts)
 	{
 		Core::Instance ()->GetShortcutManager ()->SetShortcut (name, shortcuts);
 	}
@@ -395,7 +393,7 @@ namespace BitTorrent
 	{
 		if (tc == TabTC_.TabClass_)
 		{
-			emit addNewTab ("BitTorrent", TorrentTab_);
+			emit addNewTab (QStringLiteral ("BitTorrent"), TorrentTab_);
 			emit raiseTab (TorrentTab_);
 		}
 		else
@@ -422,18 +420,14 @@ namespace BitTorrent
 
 	void TorrentPlugin::SetupCore ()
 	{
-		XmlSettingsDialog_.reset (new XmlSettingsDialog ());
-		XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
-				"torrentsettings.xml");
+		XmlSettingsDialog_ = std::make_shared<XmlSettingsDialog> ();
+		XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (), QStringLiteral ("torrentsettings.xml"));
 
 		Core::Instance ()->DoDelayedInit ();
 
 		SetupActions ();
-		TabWidget_.reset (new TabWidget
-			{
-				Core::Instance ()->GetSessionHolder (),
-				*Core::Instance ()->GetSessionSettingsManager (),
-			});
+		TabWidget_ = std::make_unique<TabWidget> (Core::Instance ()->GetSessionHolder (),
+				*Core::Instance ()->GetSessionSettingsManager ());
 
 		Core::Instance ()->SetWidgets (Actions_->GetToolbar (), TabWidget_.get ());
 	}
@@ -451,7 +445,7 @@ namespace BitTorrent
 		};
 
 		const auto fsc = new FastSpeedControlWidget ();
-		XmlSettingsDialog_->SetCustomWidget ("FastSpeedControl", fsc);
+		XmlSettingsDialog_->SetCustomWidget (QStringLiteral ("FastSpeedControl"), fsc);
 		connect (fsc,
 				&FastSpeedControlWidget::speedsChanged,
 				this,
@@ -481,9 +475,21 @@ namespace BitTorrent
 
 		const auto ssm = Core::Instance ()->GetSessionSettingsManager ();
 
-		DownSelectorAction_ = new SpeedSelectorAction { ssm, &SessionSettingsManager::SetOverallDownloadRate, "Down", this };
+		DownSelectorAction_ = new SpeedSelectorAction
+		{
+			ssm,
+			&SessionSettingsManager::SetOverallDownloadRate,
+			QStringLiteral ("Down"),
+			this
+		};
 		toolbar->addAction (DownSelectorAction_);
-		UpSelectorAction_ = new SpeedSelectorAction { ssm, &SessionSettingsManager::SetOverallUploadRate, "Up", this };
+		UpSelectorAction_ = new SpeedSelectorAction
+		{
+			ssm,
+			&SessionSettingsManager::SetOverallUploadRate,
+			QStringLiteral ("Up"),
+			this
+		};
 		toolbar->addAction (UpSelectorAction_);
 
 		auto contextMenu = Actions_->MakeContextMenu ();
@@ -491,7 +497,6 @@ namespace BitTorrent
 		contextMenu->addAction (openInTorrentTab);
 		Core::Instance ()->SetMenu (contextMenu);
 	}
-}
 }
 
 LC_EXPORT_PLUGIN (leechcraft_bittorrent, LC::BitTorrent::TorrentPlugin);
