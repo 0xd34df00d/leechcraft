@@ -204,7 +204,6 @@ namespace BitTorrent
 
 		SessionSettingsManager* GetSessionSettingsManager () const;
 
-		EntityTestHandleResult CouldDownload (const LC::Entity&) const;
 		CachedStatusKeeper* GetStatusKeeper () const;
 
 		virtual int columnCount (const QModelIndex& = QModelIndex ()) const;
@@ -220,7 +219,6 @@ namespace BitTorrent
 
 		libtorrent::torrent_handle GetTorrentHandle (int) const;
 
-		bool IsValidTorrent (const QByteArray&) const;
 		std::unique_ptr<TorrentInfo> GetTorrentStats (int) const;
 		SessionStats GetSessionStats () const;
 		void GetPerTracker (pertrackerstats_t&) const;

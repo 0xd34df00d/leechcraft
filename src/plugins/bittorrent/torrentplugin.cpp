@@ -162,9 +162,63 @@ namespace BitTorrent
 		return Core::Instance ()->GetSessionStats ().Rate_.Up_;
 	}
 
+	namespace
+	{
+		EntityTestHandleResult CouldDownloadUrl (const QUrl& url)
+		{
+			if (url.scheme () == "magnet"_ql)
+			{
+				const auto& items = QUrlQuery { url }.queryItems ();
+				const bool hasMagnet = std::any_of (items.begin (), items.end (),
+						[] (const auto& item) { return item.first == "xt" && item.second.startsWith ("urn:btih:"); });
+				return hasMagnet ?
+						EntityTestHandleResult { EntityTestHandleResult::PIdeal } :
+						EntityTestHandleResult {};
+			}
+
+			if (url.scheme () == "file"_ql)
+			{
+				const auto& str = url.toLocalFile ();
+				QFile file { str };
+				if (!file.exists () ||
+						!file.open (QIODevice::ReadOnly))
+					return {};
+
+				const auto xsm = XmlSettingsManager::Instance ();
+				if (file.size () > xsm->property ("MaxAutoTorrentSize").toInt () * 1024 * 1024)
+				{
+					if (str.endsWith (".torrent"_ql, Qt::CaseInsensitive) &&
+							xsm->property ("NotifyAboutTooBig").toBool ())
+					{
+						auto msg = TorrentPlugin::tr ("Rejecting file %1 because it's bigger than current auto limit.")
+								.arg (str);
+						const auto& entity = Util::MakeNotification (QStringLiteral ("BitTorrent"),
+								msg, Priority::Warning);
+						GetProxyHolder ()->GetEntityManager ()->HandleEntity (entity);
+					}
+					return EntityTestHandleResult ();
+				}
+
+				return IsValidTorrent (file.readAll ()) ?
+						EntityTestHandleResult (EntityTestHandleResult::PIdeal) :
+						EntityTestHandleResult ();
+			}
+
+			return {};
+		}
+	}
+
 	EntityTestHandleResult TorrentPlugin::CouldDownload (const Entity& e) const
 	{
-		return Core::Instance ()->CouldDownload (e);
+		if (e.Entity_.canConvert<QUrl> ())
+			return CouldDownloadUrl (e.Entity_.toUrl ());
+
+		if (e.Entity_.canConvert<QByteArray> ())
+			return IsValidTorrent (e.Entity_.toByteArray ()) ?
+					EntityTestHandleResult (EntityTestHandleResult::PIdeal) :
+					EntityTestHandleResult ();
+
+		return {};
 	}
 
 	namespace

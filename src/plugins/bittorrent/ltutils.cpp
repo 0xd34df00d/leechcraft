@@ -14,6 +14,7 @@
 #include <libtorrent/address.hpp>
 #include <libtorrent/ip_filter.hpp>
 #include <libtorrent/torrent_handle.hpp>
+#include <libtorrent/torrent_info.hpp>
 #include <libtorrent/session.hpp>
 #include "ipfilterdialog.h"
 
@@ -165,5 +166,12 @@ namespace LC::BitTorrent
 
 		const auto val = handle.upload_limit ();
 		return val >= 0 ? val / 1024 : val;
+	}
+
+	bool IsValidTorrent (const QByteArray& data)
+	{
+		libtorrent::error_code ec;
+		libtorrent::torrent_info result { data.constData (), data.size (), ec };
+		return !ec;
 	}
 }

@@ -272,58 +272,6 @@ namespace BitTorrent
 		return SessionSettingsMgr_;
 	}
 
-	EntityTestHandleResult Core::CouldDownload (const Entity& e) const
-	{
-		if (e.Entity_.canConvert<QUrl> ())
-		{
-			QUrl url = e.Entity_.toUrl ();
-			if (url.scheme () == "magnet")
-			{
-				const auto& items = QUrlQuery { url }.queryItems ();
-				const bool hasMagnet = std::any_of (items.begin (), items.end (),
-						[] (const auto& item) { return item.first == "xt" && item.second.startsWith ("urn:btih:"); });
-				return hasMagnet ?
-						EntityTestHandleResult { EntityTestHandleResult::PIdeal } :
-						EntityTestHandleResult {};
-			}
-			else if (url.scheme () == "file")
-			{
-				QString str = url.toLocalFile ();
-				QFile file (str);
-				if (!file.exists () ||
-						!file.open (QIODevice::ReadOnly))
-					return EntityTestHandleResult ();
-
-				if (file.size () > XmlSettingsManager::Instance ()->
-						property ("MaxAutoTorrentSize").toInt () * 1024 * 1024)
-				{
-					if (str.endsWith (".torrent", Qt::CaseInsensitive) &&
-							XmlSettingsManager::Instance ()->
-								property ("NotifyAboutTooBig").toBool ())
-					{
-						const auto& msg = tr ("Rejecting file %1 because it's "
-								"bigger than current auto limit.").arg (str);
-						const auto& entity = Util::MakeNotification ("BitTorrent", msg, Priority::Warning);
-						Proxy_->GetEntityManager ()->HandleEntity (entity);
-					}
-					return EntityTestHandleResult ();
-				}
-				else
-					return IsValidTorrent (file.readAll ()) ?
-							EntityTestHandleResult (EntityTestHandleResult::PIdeal) :
-							EntityTestHandleResult ();
-			}
-			else
-				return EntityTestHandleResult ();
-		}
-		else if (e.Entity_.canConvert<QByteArray> ())
-			return IsValidTorrent (e.Entity_.toByteArray ()) ?
-					EntityTestHandleResult (EntityTestHandleResult::PIdeal) :
-					EntityTestHandleResult ();
-		else
-			return EntityTestHandleResult ();
-	}
-
 	CachedStatusKeeper* Core::GetStatusKeeper () const
 	{
 		return StatusKeeper_;
@@ -701,19 +649,6 @@ namespace BitTorrent
 			return {};
 
 		return Handles_.at (idx).Handle_;
-	}
-
-	bool Core::IsValidTorrent (const QByteArray& torrentData) const
-	{
-		try
-		{
-			libtorrent::torrent_info result (torrentData.constData (), torrentData.size ());
-		}
-		catch (...)
-		{
-			return false;
-		}
-		return true;
 	}
 
 	std::unique_ptr<TorrentInfo> Core::GetTorrentStats (int idx) const
