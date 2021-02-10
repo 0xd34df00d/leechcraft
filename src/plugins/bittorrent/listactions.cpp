@@ -301,12 +301,10 @@ namespace LC::BitTorrent
 					std::vector<libtorrent::announce_entry> allTrackers;
 					for (const auto& index : idxs)
 					{
-						auto those = Core::Instance ()->GetTrackers (index);
-						std::copy (those.begin (), those.end (), std::back_inserter (allTrackers));
+						const auto& handle = D_.Holder_ [index];
+						auto those = handle.trackers ();
+						std::move (those.begin (), those.end (), std::back_inserter (allTrackers));
 					}
-
-					if (allTrackers.empty ())
-						allTrackers = Core::Instance ()->GetTrackers (CurIdx_.data (Roles::HandleIndex).toInt ());
 
 					std::stable_sort (allTrackers.begin (), allTrackers.end (),
 							Util::ComparingBy (&libtorrent::announce_entry::url));
@@ -330,7 +328,11 @@ namespace LC::BitTorrent
 							{
 								const auto& trackers = changer->GetTrackers ();
 								for (const auto& index : idxs)
-									Core::Instance ()->SetTrackers (trackers, index);
+								{
+									const auto& handle = D_.Holder_ [index];
+									handle.replace_trackers (trackers);
+									handle.force_reannounce ();
+								}
 							});
 				});
 		ChangeTrackers_->setShortcut (tr ("C"));

@@ -270,9 +270,6 @@ namespace BitTorrent
 		void SetFilePriority (int, int, int);
 		void SetFilename (int, const QString&, int);
 
-		std::vector<libtorrent::announce_entry> GetTrackers (int) const;
-		void SetTrackers (const std::vector<libtorrent::announce_entry>&, int);
-
 		QString GetMagnetLink (int) const;
 
 		QString GetTorrentDirectory (int) const;

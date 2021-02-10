@@ -1017,23 +1017,6 @@ namespace BitTorrent
 		Handles_ [idx].Handle_.rename_file (index, std::string (name.toUtf8 ().data ()));
 	}
 
-	std::vector<libtorrent::announce_entry> Core::GetTrackers (int row) const
-	{
-		if (!CheckValidity (row))
-			return {};
-
-		return Handles_.at (row).Handle_.trackers ();
-	}
-
-	void Core::SetTrackers (const std::vector<libtorrent::announce_entry>& trackers, int row)
-	{
-		if (!CheckValidity (row))
-			return;
-
-		Handles_ [row].Handle_.replace_trackers (trackers);
-		Handles_ [row].Handle_.force_reannounce ();
-	}
-
 	QString Core::GetMagnetLink (int idx) const
 	{
 		if (!CheckValidity (idx))
