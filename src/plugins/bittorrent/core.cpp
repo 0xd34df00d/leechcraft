@@ -2162,7 +2162,7 @@ namespace BitTorrent
 				if (sd.NeedToLog_)
 				{
 					const auto& logmsg = QString::fromUtf8 (alert->message ().c_str ());
-					qDebug () << "<libtorrent>" << logmsg;
+					qDebug () << "<libtorrent>" << alert->type () << logmsg;
 				}
 			}
 			catch (const std::exception& e)
