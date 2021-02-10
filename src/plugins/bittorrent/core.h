@@ -205,7 +205,6 @@ namespace BitTorrent
 		SessionSettingsManager* GetSessionSettingsManager () const;
 
 		EntityTestHandleResult CouldDownload (const LC::Entity&) const;
-		TorrentFilesModel* GetTorrentFilesModel (int);
 		CachedStatusKeeper* GetStatusKeeper () const;
 
 		virtual int columnCount (const QModelIndex& = QModelIndex ()) const;

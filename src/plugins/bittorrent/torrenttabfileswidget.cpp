@@ -86,7 +86,11 @@ namespace BitTorrent
 
 		Ui_.SearchLine_->clear ();
 
-		CurrentFilesModel_ = Core::Instance ()->GetTorrentFilesModel (index);
+		CurrentFilesModel_ = new TorrentFilesModel { index };
+		connect (Core::Instance (),
+				&Core::fileRenamed,
+				CurrentFilesModel_,
+				&TorrentFilesModel::handleFileRenamed);
 		ProxyModel_->setSourceModel (CurrentFilesModel_);
 		QTimer::singleShot (0,
 				Ui_.FilesView_,

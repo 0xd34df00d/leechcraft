@@ -41,6 +41,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
 #include <interfaces/core/ientitymanager.h>
+#include <interfaces/core/iiconthememanager.h>
 #include <interfaces/ijobholder.h>
 #include <interfaces/an/constants.h>
 #include <util/tags/tagscompletionmodel.h>
@@ -54,7 +55,6 @@
 #include <util/sys/paths.h>
 #include <util/threads/futures.h>
 #include "xmlsettingsmanager.h"
-#include "torrentfilesmodel.h"
 #include "livestreammanager.h"
 #include "torrentmaker.h"
 #include "sessionsettingsmanager.h"
@@ -322,19 +322,6 @@ namespace BitTorrent
 					EntityTestHandleResult ();
 		else
 			return EntityTestHandleResult ();
-	}
-
-	TorrentFilesModel* Core::GetTorrentFilesModel (int idx)
-	{
-		if (idx < 0)
-			return 0;
-
-		const auto tfm = new TorrentFilesModel (idx);
-		connect (this,
-				SIGNAL (fileRenamed (int, int, QString)),
-				tfm,
-				SLOT (handleFileRenamed (int, int, QString)));
-		return tfm;
 	}
 
 	CachedStatusKeeper* Core::GetStatusKeeper () const
