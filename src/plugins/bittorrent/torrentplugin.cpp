@@ -241,14 +241,14 @@ namespace BitTorrent
 
 		const auto tagsMgr = GetProxyHolder ()->GetTagsManager ();
 
-		const auto& suggestedTags = e.Additional_ [" Tags"].toStringList ();
+		const auto& suggestedTags = e.Additional_ [QStringLiteral (" Tags")].toStringList ();
 		const auto& autoTags = XmlSettingsManager::Instance ()->property ("AutomaticTags").toString ();
 		auto tagsIds = tagsMgr->SplitToIDs (autoTags) + tagsMgr->GetIDs (suggestedTags);
 
 		if (e.Entity_.canConvert<QUrl> ())
 		{
 			QUrl resource = e.Entity_.toUrl ();
-			if (resource.scheme () == "magnet")
+			if (resource.scheme () == "magnet"_ql)
 			{
 				for (const auto& [key, value] : QUrlQuery { resource }.queryItems ())
 					if (key == QStringLiteral ("kt"))
@@ -259,42 +259,31 @@ namespace BitTorrent
 						tagsIds,
 						e.Parameters_);
 			}
-			else if (resource.scheme () == "file")
+
+			if (resource.scheme () == "file"_ql)
 				suggestedFname = resource.toLocalFile ();
 		}
-		else if (Core::Instance ()->IsValidTorrent (e.Entity_.toByteArray ()))
+		else if (IsValidTorrent (e.Entity_.toByteArray ()))
 		{
-			QTemporaryFile tmpFile ("lctemporarybittorrentfile.XXXXXX");
+			QTemporaryFile tmpFile { QStringLiteral ("lctemporarybittorrentfile.XXXXXX") };
 			tmpFile.write (e.Entity_.toByteArray ());
 			suggestedFname = tmpFile.fileName ().toUtf8 ();
 			tmpFile.setAutoRemove (false);
 		}
 
-		QFile file { suggestedFname };
-		if (!file.open (QIODevice::ReadOnly))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to open file"
-					<< suggestedFname
-					<< file.errorString ();
-			return Util::MakeReadyFuture (Result::Left ({ Error::Type::LocalError, "Unable to open file" }));
-		}
-
 		QString path;
 		QVector<bool> files;
 		QString fname;
-		bool tryLive = e.Additional_ ["TryToStreamLive"].toBool ();
+		bool tryLive = e.Additional_ [QStringLiteral ("TryToStreamLive")].toBool ();
 		if (e.Parameters_ & FromUserInitiated)
 		{
 			AddTorrent dia;
 			dia.SetFilename (suggestedFname);
+			dia.SetTags (suggestedTags);
 			if (!e.Location_.isEmpty ())
 				dia.SetSavePath (e.Location_);
 			else if (e.Parameters_ & IsDownloaded && !suggestedFname.isEmpty ())
 				dia.SetSavePath (QFileInfo (suggestedFname).absolutePath ());
-
-			if (!suggestedTags.isEmpty ())
-				dia.SetTags (suggestedTags);
 
 			ExecDialog (dia);
 
@@ -322,7 +311,7 @@ namespace BitTorrent
 				tryLive,
 				files,
 				e.Parameters_);
-		file.remove ();
+		QFile::remove (suggestedFname);
 		return result;
 	}
 
