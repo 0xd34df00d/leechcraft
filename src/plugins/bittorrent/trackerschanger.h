@@ -9,27 +9,28 @@
 #pragma once
 
 #include <QDialog>
-#include <libtorrent/torrent_info.hpp>
+#include <QCoreApplication>
 #include "ui_trackerschanger.h"
 
-namespace LC
+namespace libtorrent
 {
-namespace BitTorrent
+	class announce_entry;
+}
+
+namespace LC::BitTorrent
 {
 	class TrackersChanger : public QDialog
 	{
-		Q_OBJECT
+		Q_DECLARE_TR_FUNCTIONS (LC::BitTorrent::TrackersChanger)
 
 		Ui::TrackersChanger Ui_;
 	public:
-		TrackersChanger (const std::vector<libtorrent::announce_entry>&, QWidget* = 0);
+		explicit TrackersChanger (const std::vector<libtorrent::announce_entry>&, QWidget* = nullptr);
 
 		std::vector<libtorrent::announce_entry> GetTrackers () const;
 	private slots:
-		void currentItemChanged (QTreeWidgetItem*);
-		void on_ButtonAdd__released ();
-		void on_ButtonModify__released ();
-		void on_ButtonRemove__released ();
+		void AddTracker ();
+		void ModifyTracker ();
+		void RemoveTracker ();
 	};
-}
 }

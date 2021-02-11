@@ -12,24 +12,39 @@
 #include <libtorrent/announce_entry.hpp>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
-#include "core.h"
 #include "singletrackerchanger.h"
 
-namespace LC
-{
-namespace BitTorrent
+namespace LC::BitTorrent
 {
 	TrackersChanger::TrackersChanger (const std::vector<libtorrent::announce_entry>& trackers, QWidget *parent)
-	: QDialog (parent)
+	: QDialog { parent }
 	{
 		Ui_.setupUi (this);
 
+		auto enableButtons = [this] (QTreeWidgetItem *item)
+		{
+			Ui_.ButtonModify_->setEnabled (item);
+			Ui_.ButtonRemove_->setEnabled (item);
+		};
 		connect (Ui_.Trackers_,
-				SIGNAL (currentItemChanged (QTreeWidgetItem*, QTreeWidgetItem*)),
-				this,
-				SLOT (currentItemChanged (QTreeWidgetItem*)));
-		currentItemChanged (nullptr);
+				&QTreeWidget::currentItemChanged,
+				enableButtons);
+		enableButtons (nullptr);
 
+		connect (Ui_.ButtonAdd_,
+				&QPushButton::released,
+				this,
+				&TrackersChanger::AddTracker);
+		connect (Ui_.ButtonModify_,
+				&QPushButton::released,
+				this,
+				&TrackersChanger::ModifyTracker);
+		connect (Ui_.ButtonRemove_,
+				&QPushButton::released,
+				this,
+				&TrackersChanger::RemoveTracker);
+
+		QList<QTreeWidgetItem*> items;
 		for (const auto& tracker : trackers)
 		{
 			const bool torrent = tracker.source & libtorrent::announce_entry::source_torrent;
@@ -41,26 +56,28 @@ namespace BitTorrent
 
 			const auto now = std::chrono::system_clock::now ();
 			for (const auto& endpoint : tracker.endpoints)
-			{
-				const QStringList strings
+				items << new QTreeWidgetItem
 				{
-					QString::fromUtf8 (tracker.url.c_str ()),
-					QString::number (tracker.tier),
-					tr ("%1 s").arg (libtorrent::total_seconds (endpoint.next_announce - now)),
-					QString::number (endpoint.fails),
-					QString::number (tracker.fail_limit),
-					showBool (tracker.verified),
-					showBool (endpoint.updating),
-					showBool (endpoint.start_sent),
-					showBool (endpoint.complete_sent),
-					showBool (torrent),
-					showBool (client),
-					showBool (magnet),
-					showBool (tex)
+					QStringList
+					{
+						QString::fromStdString (tracker.url),
+						QString::number (tracker.tier),
+						tr ("%1 s").arg (libtorrent::total_seconds (endpoint.next_announce - now)),
+						QString::number (endpoint.fails),
+						QString::number (tracker.fail_limit),
+						showBool (tracker.verified),
+						showBool (endpoint.updating),
+						showBool (endpoint.start_sent),
+						showBool (endpoint.complete_sent),
+						showBool (torrent),
+						showBool (client),
+						showBool (magnet),
+						showBool (tex)
+
+					}
 				};
-				Ui_.Trackers_->addTopLevelItem (new QTreeWidgetItem (strings));
-			}
 		}
+		Ui_.Trackers_->addTopLevelItems (items);
 		for (int i = 0; i < Ui_.Trackers_->columnCount (); ++i)
 			Ui_.Trackers_->resizeColumnToContents (i);
 	}
@@ -79,33 +96,29 @@ namespace BitTorrent
 		return result;
 	}
 
-	void TrackersChanger::currentItemChanged (QTreeWidgetItem *current)
+	void TrackersChanger::AddTracker ()
 	{
-		Ui_.ButtonModify_->setEnabled (current);
-		Ui_.ButtonRemove_->setEnabled (current);
-	}
-
-	void TrackersChanger::on_ButtonAdd__released ()
-	{
-		SingleTrackerChanger dia (this);
+		SingleTrackerChanger dia { this };
 		if (dia.exec () != QDialog::Accepted)
 			return;
 
-		QStringList strings;
-		strings << dia.GetTracker ()
-			<< QString::number (dia.GetTier ());
+		QStringList strings
+		{
+			dia.GetTracker (),
+			QString::number (dia.GetTier ())
+		};
 		while (strings.size () < Ui_.Trackers_->columnCount ())
-			strings << QString ();
-		Ui_.Trackers_->addTopLevelItem (new QTreeWidgetItem (strings));
+			strings << QString {};
+		Ui_.Trackers_->addTopLevelItem (new QTreeWidgetItem { strings });
 	}
 
-	void TrackersChanger::on_ButtonModify__released ()
+	void TrackersChanger::ModifyTracker ()
 	{
-		QTreeWidgetItem *current = Ui_.Trackers_->currentItem ();
+		const auto current = Ui_.Trackers_->currentItem ();
 		if (!current)
 			return;
 
-		SingleTrackerChanger dia (this);
+		SingleTrackerChanger dia { this };
 		dia.SetTracker (current->text (0));
 		dia.SetTier (current->text (1).toInt ());
 		if (dia.exec () != QDialog::Accepted)
@@ -115,20 +128,18 @@ namespace BitTorrent
 		current->setText (1, QString::number (dia.GetTier ()));
 	}
 
-	void TrackersChanger::on_ButtonRemove__released ()
+	void TrackersChanger::RemoveTracker ()
 	{
-		QTreeWidgetItem *current = Ui_.Trackers_->currentItem ();
+		const auto current = Ui_.Trackers_->currentItem ();
 		if (!current)
 			return;
 
-		auto rootWM = Core::Instance ()->GetProxy ()->GetRootWindowsManager ();
+		auto rootWM = GetProxyHolder ()->GetRootWindowsManager ();
 		if (QMessageBox::question (rootWM->GetPreferredWindow (),
 					tr ("Confirm tracker removal"),
-					tr ("Are you sure you want to remove the "
-						"following tracker:<br />%1")
+					tr ("Are you sure you want to remove the following tracker:<br />%1")
 						.arg (current->text (0)),
 					QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
 			delete current;
 	}
-}
 }
