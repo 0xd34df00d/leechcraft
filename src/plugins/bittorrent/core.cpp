@@ -190,39 +190,6 @@ namespace BitTorrent
 					HandleTorrentChecked (a.handle);
 					UpdateStatus ({ a.handle.status () });
 				});
-		Dispatcher_.RegisterHandler ([] (const dht_announce_alert& a)
-				{
-					qDebug () << "<libtorrent> <DHT>"
-							<< "got announce from"
-							<< a.ip.to_string ().c_str ()
-							<< ":"
-							<< a.port
-							<< "; the SHA1 hash is"
-							<< QByteArray::fromStdString (a.info_hash.to_string ());
-					return false;
-				});
-		Dispatcher_.RegisterHandler ([] (const dht_reply_alert& a)
-				{
-					qDebug () << "<libtorrent> <DHT>"
-							<< "got reply with"
-							<< a.num_peers
-							<< "peers";
-					return false;
-				});
-		Dispatcher_.RegisterHandler ([] (const dht_bootstrap_alert& a)
-				{
-					qDebug () << "<libtorrent> <DHT>"
-							<< "bootstrapped; "
-							<< a.message ().c_str ();
-					return false;
-				});
-		Dispatcher_.RegisterHandler ([] (const dht_get_peers_alert& a)
-				{
-					qDebug () << "<libtorrent> <DHT>"
-							<< "got peers for"
-							<< QByteArray::fromStdString (a.info_hash.to_string ());
-					return false;
-				});
 
 		Dispatcher_.Swallow (torrent_finished_alert::alert_type, false);
 		Dispatcher_.Swallow (file_completed_alert::alert_type, false);
@@ -231,6 +198,10 @@ namespace BitTorrent
 		Dispatcher_.Swallow (torrent_removed_alert::alert_type, true);
 		Dispatcher_.Swallow (torrent_deleted_alert::alert_type, true);
 		Dispatcher_.Swallow (listen_succeeded_alert::alert_type, true);
+		Dispatcher_.Swallow (dht_announce_alert::alert_type, true);
+		Dispatcher_.Swallow (dht_reply_alert::alert_type, true);
+		Dispatcher_.Swallow (dht_bootstrap_alert::alert_type, true);
+		Dispatcher_.Swallow (dht_get_peers_alert::alert_type, true);
 	}
 
 	SessionHolder& Core::GetSessionHolder ()
