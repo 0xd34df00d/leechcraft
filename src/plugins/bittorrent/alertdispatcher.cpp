@@ -1,0 +1,50 @@
+/**********************************************************************
+ * LeechCraft - modular cross-platform feature rich internet client.
+ * Copyright (C) 2006-2014  Georg Rudoy
+ *
+ * Distributed under the Boost Software License, Version 1.0.
+ * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
+ **********************************************************************/
+
+#include "alertdispatcher.h"
+#include <QtDebug>
+#include <libtorrent/alert.hpp>
+#include <libtorrent/session.hpp>
+
+namespace LC::BitTorrent
+{
+	AlertDispatcher::AlertDispatcher (libtorrent::session& session)
+	: Session_ { session }
+	{
+	}
+
+	void AlertDispatcher::Swallow (int alertType, bool logging)
+	{
+		Handlers_ [alertType].push_back ([logging] (const libtorrent::alert&) { return logging; });
+	}
+
+	void AlertDispatcher::PollAlerts ()
+	{
+		std::vector<libtorrent::alert*> alerts;
+		Session_.pop_alerts (&alerts);
+		for (const auto alert : alerts)
+			DispatchAlert (*alert);
+	}
+
+	void AlertDispatcher::DispatchAlert (const libtorrent::alert& alert) const
+	{
+		const auto& handlersList = Handlers_ [alert.type ()];
+		if (handlersList.empty ())
+		{
+			qDebug () << "<libtorrent> unhandled alert:" << alert.type () << alert.message ().c_str ();
+			return;
+		}
+
+		bool log = true;
+		for (const auto& handler : handlersList)
+			log = log && handler (alert);
+
+		if (log)
+			qDebug () << "<libtorrent>" << alert.type () << alert.message ().c_str ();
+	}
+}

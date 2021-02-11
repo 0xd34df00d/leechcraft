@@ -42,6 +42,7 @@ LC_DEFINE_PLUGIN (
 		ltutils.cpp
 		listactions.cpp
 		sessionholder.cpp
+		alertdispatcher.cpp
 
 		banpeersdialog.cpp
 		addwebseeddialog.cpp
