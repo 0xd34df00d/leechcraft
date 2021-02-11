@@ -32,6 +32,7 @@
 #include "peerinfo.h"
 #include "types.h"
 #include "sessionholder.h"
+#include "alertdispatcher.h"
 
 class QTimer;
 class QDomElement;
@@ -169,6 +170,7 @@ namespace BitTorrent
 		QIcon TorrentIcon_;
 
 		SessionHolder Holder_;
+		AlertDispatcher Dispatcher_;
 
 		Core ();
 	public:
@@ -199,6 +201,7 @@ namespace BitTorrent
 		ICoreProxy_ptr GetProxy () const;
 
 		SessionHolder& GetSessionHolder ();
+		AlertDispatcher& GetAlertDispatcher ();
 
 		Util::ShortcutManager* GetShortcutManager () const;
 

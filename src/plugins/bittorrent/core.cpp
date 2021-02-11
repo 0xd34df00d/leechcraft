@@ -113,14 +113,134 @@ namespace BitTorrent
 	, WarningWatchdog_ { new QTimer }
 	, TorrentIcon_ { GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon () }
 	, Holder_ { *Session_ }
+	, Dispatcher_ { *Session_ }
 	{
 		setObjectName ("BitTorrent Core");
 		ExternalAddress_ = tr ("Unknown");
+
+		using namespace libtorrent;
+		auto iem = GetProxyHolder ()->GetEntityManager ();
+		Dispatcher_.RegisterHandler ([this] (const external_ip_alert& a)
+				{
+					SetExternalAddress (QString::fromStdString (a.external_address.to_string ()));
+				});
+		Dispatcher_.RegisterHandler ([this] (const save_resume_data_alert& a) { SaveResumeData (a); });
+		Dispatcher_.RegisterHandler ([iem] (const save_resume_data_failed_alert& a)
+				{
+					const auto& text = tr ("Saving resume data failed for torrent:<br />%1<br />%2")
+							.arg (a.torrent_name (),
+								  a.error.message ().c_str ());
+					iem->HandleEntity (Util::MakeNotification ("BitTorrent", text, Priority::Warning));
+				});
+		Dispatcher_.RegisterHandler ([iem] (const storage_moved_alert& a)
+				{
+					const auto& text = tr ("Storage for torrent:<br />%1<br />moved successfully to:<br />%2")
+							.arg (a.torrent_name (),
+								  a.storage_path ());
+					iem->HandleEntity (Util::MakeNotification ("BitTorrent", text, Priority::Info));
+				});
+		Dispatcher_.RegisterHandler ([iem] (const storage_moved_failed_alert& a)
+				{
+					const auto& text = tr ("Storage move failure:<br />%2<br />for torrent:<br />%1")
+							.arg (a.torrent_name (),
+								  a.error.message ().c_str ());
+					iem->HandleEntity (Util::MakeNotification ("BitTorrent", text, Priority::Critical));
+				});
+		Dispatcher_.RegisterHandler ([this] (const metadata_received_alert& a) { HandleMetadata (a); });
+		Dispatcher_.RegisterHandler ([this] (const file_renamed_alert& a) { HandleFileRenamed (a); });
+		Dispatcher_.RegisterHandler ([iem] (const file_rename_failed_alert& a)
+				{
+					const auto& text = tr ("File rename failed for torrent:<br />%1<br />file %2, error:<br />%3")
+							.arg (a.torrent_name (),
+								  QString::number (a.index),
+								  a.error.message ().c_str ());
+					iem->HandleEntity (Util::MakeNotification ("BitTorrent", text, Priority::Critical));
+				});
+		Dispatcher_.RegisterHandler ([iem] (const torrent_delete_failed_alert& a)
+				{
+					const auto& text = tr ("Failed to delete torrent:<br />%1<br />error:<br />%2")
+							.arg (a.torrent_name (),
+								  a.error.message ().c_str ());
+					iem->HandleEntity (Util::MakeNotification ("BitTorrent", text, Priority::Critical));
+				});
+		Dispatcher_.RegisterHandler ([iem] (const file_error_alert& a)
+				{
+					const auto& text = tr ("File error for torrent:<br />%1<br />file:<br />%2<br />error:<br />%3")
+							.arg (a.torrent_name (),
+								  a.filename (),
+								  a.error.message ().c_str ());
+					iem->HandleEntity (Util::MakeNotification ("BitTorrent", text, Priority::Critical));
+				});
+		Dispatcher_.RegisterHandler ([this] (const read_piece_alert& a)
+				{
+					PieceRead (a);
+					return false;
+				});
+		Dispatcher_.RegisterHandler ([this] (const state_update_alert& a)
+				{
+					UpdateStatus (a.status);
+					return false;
+				});
+		Dispatcher_.RegisterHandler ([this] (const torrent_paused_alert& a) { UpdateStatus ({ a.handle.status () }); });
+		Dispatcher_.RegisterHandler ([this] (const torrent_resumed_alert& a) { UpdateStatus ({ a.handle.status () }); });
+		Dispatcher_.RegisterHandler ([this] (const state_changed_alert& a) { UpdateStatus ({ a.handle.status () }); });
+		Dispatcher_.RegisterHandler ([this] (const torrent_error_alert& a) { UpdateStatus ({ a.handle.status () }); });
+		Dispatcher_.RegisterHandler ([this] (const torrent_checked_alert& a)
+				{
+					HandleTorrentChecked (a.handle);
+					UpdateStatus ({ a.handle.status () });
+				});
+		Dispatcher_.RegisterHandler ([] (const dht_announce_alert& a)
+				{
+					qDebug () << "<libtorrent> <DHT>"
+							<< "got announce from"
+							<< a.ip.to_string ().c_str ()
+							<< ":"
+							<< a.port
+							<< "; the SHA1 hash is"
+							<< QByteArray::fromStdString (a.info_hash.to_string ());
+					return false;
+				});
+		Dispatcher_.RegisterHandler ([] (const dht_reply_alert& a)
+				{
+					qDebug () << "<libtorrent> <DHT>"
+							<< "got reply with"
+							<< a.num_peers
+							<< "peers";
+					return false;
+				});
+		Dispatcher_.RegisterHandler ([] (const dht_bootstrap_alert& a)
+				{
+					qDebug () << "<libtorrent> <DHT>"
+							<< "bootstrapped; "
+							<< a.message ().c_str ();
+					return false;
+				});
+		Dispatcher_.RegisterHandler ([] (const dht_get_peers_alert& a)
+				{
+					qDebug () << "<libtorrent> <DHT>"
+							<< "got peers for"
+							<< QByteArray::fromStdString (a.info_hash.to_string ());
+					return false;
+				});
+
+		Dispatcher_.Swallow (torrent_finished_alert::alert_type, false);
+		Dispatcher_.Swallow (file_completed_alert::alert_type, false);
+		Dispatcher_.Swallow (tracker_announce_alert::alert_type, false);
+		Dispatcher_.Swallow (cache_flushed_alert::alert_type, false);
+		Dispatcher_.Swallow (torrent_removed_alert::alert_type, true);
+		Dispatcher_.Swallow (torrent_deleted_alert::alert_type, true);
+		Dispatcher_.Swallow (listen_succeeded_alert::alert_type, true);
 	}
 
 	SessionHolder& Core::GetSessionHolder ()
 	{
 		return Holder_;
+	}
+
+	AlertDispatcher& Core::GetAlertDispatcher ()
+	{
+		return Dispatcher_;
 	}
 
 	void Core::SetWidgets (QToolBar *tool, QWidget *tab)
@@ -1769,315 +1889,10 @@ namespace BitTorrent
 		}
 	}
 
-	struct SimpleDispatcher
-	{
-		bool NeedToLog_ = true;
-
-		IEntityManager * const IEM_;
-		Core& Core_;
-
-		SimpleDispatcher (Core& core, const ICoreProxy_ptr& proxy)
-		: IEM_ { proxy->GetEntityManager () }
-		, Core_ { core }
-		{
-		}
-
-		void operator() (const libtorrent::external_ip_alert& a) const
-		{
-			const auto& extAddrStr = QString::fromStdString (a.external_address.to_string ());
-			Core_.SetExternalAddress (extAddrStr);
-		}
-
-		void operator() (const libtorrent::save_resume_data_alert& a) const
-		{
-			Core_.SaveResumeData (a);
-		}
-
-		void operator() (const libtorrent::save_resume_data_failed_alert& a) const
-		{
-			const auto& text = QObject::tr ("Saving resume data failed for torrent:<br />%1<br />%2")
-					.arg (GetTorrentName (a.handle))
-					.arg (QString::fromUtf8 (a.error.message ().c_str ()));
-			IEM_->HandleEntity (Util::MakeNotification ("BitTorrent", text, Priority::Warning));
-		}
-
-		void operator() (const libtorrent::storage_moved_alert& a) const
-		{
-			const auto& text = QObject::tr ("Storage for torrent:<br />%1"
-						"<br />moved successfully to:<br />%2")
-					.arg (GetTorrentName (a.handle))
-					.arg (QString::fromUtf8 (a.storage_path ()));
-			IEM_->HandleEntity (Util::MakeNotification ("BitTorrent", text, Priority::Info));
-		}
-
-		void operator() (const libtorrent::storage_moved_failed_alert& a) const
-		{
-			const auto& text = QObject::tr ("Storage move failure:<br />%2<br />for torrent:<br />%1")
-					.arg (GetTorrentName (a.handle))
-					.arg (QString::fromUtf8 (a.error.message ().c_str ()));
-			IEM_->HandleEntity (Util::MakeNotification ("BitTorrent", text, Priority::Critical));
-		}
-
-		void operator() (const libtorrent::metadata_received_alert& a) const
-		{
-			Core_.HandleMetadata (a);
-		}
-
-		void operator() (const libtorrent::file_renamed_alert& a) const
-		{
-			Core_.HandleFileRenamed (a);
-		}
-
-		void operator() (const libtorrent::file_rename_failed_alert& a) const
-		{
-			const auto& text = QObject::tr ("File rename failed for torrent:<br />%1<br />"
-						"file %2, error:<br />%3")
-					.arg (GetTorrentName (a.handle))
-					.arg (QString::number (a.index))
-					.arg (QString::fromUtf8 (a.error.message ().c_str ()));
-			IEM_->HandleEntity (Util::MakeNotification ("BitTorrent", text, Priority::Critical));
-		}
-
-		void operator() (const libtorrent::torrent_delete_failed_alert& a) const
-		{
-			const auto& text = QObject::tr ("Failed to delete torrent:<br />%1<br />error:<br />%2")
-					.arg (GetTorrentName (a.handle))
-					.arg (QString::fromUtf8 (a.error.message ().c_str ()));
-			IEM_->HandleEntity (Util::MakeNotification ("BitTorrent", text, Priority::Critical));
-		}
-
-		void operator() (const libtorrent::read_piece_alert& a)
-		{
-			Core_.PieceRead (a);
-			NeedToLog_ = false;
-		}
-
-		void operator() (const libtorrent::state_update_alert& a)
-		{
-			Core_.UpdateStatus (a.status);
-			NeedToLog_ = false;
-		}
-
-		void operator() (const libtorrent::torrent_paused_alert& a) const
-		{
-			Core_.UpdateStatus ({ a.handle.status () });
-		}
-
-		void operator() (const libtorrent::torrent_resumed_alert& a) const
-		{
-			Core_.UpdateStatus ({ a.handle.status () });
-		}
-
-		void operator() (const libtorrent::torrent_checked_alert& a) const
-		{
-			Core_.HandleTorrentChecked (a.handle);
-			Core_.UpdateStatus ({ a.handle.status () });
-		}
-
-		void operator() (const libtorrent::torrent_finished_alert&)
-		{
-			NeedToLog_ = false;
-		}
-
-		void operator() (const libtorrent::dht_announce_alert& a)
-		{
-			qDebug () << "<libtorrent> <DHT>"
-					<< "got announce from"
-					<< a.ip.to_string ().c_str ()
-					<< ":"
-					<< a.port
-					<< "; the SHA1 hash is"
-					<< QByteArray::fromStdString (a.info_hash.to_string ());
-			NeedToLog_ = false;
-		}
-
-		void operator() (const libtorrent::dht_reply_alert& a)
-		{
-			qDebug () << "<libtorrent> <DHT>"
-					<< "got reply with"
-					<< a.num_peers
-					<< "peers";
-			NeedToLog_ = false;
-		}
-
-		void operator() (const libtorrent::dht_bootstrap_alert& a)
-		{
-			qDebug () << "<libtorrent> <DHT>"
-					<< "bootstrapped; "
-					<< a.message ().c_str ();
-			NeedToLog_ = false;
-		}
-
-		void operator() (const libtorrent::dht_get_peers_alert& a)
-		{
-			qDebug () << "<libtorrent> <DHT>"
-					<< "got peers for"
-					<< QByteArray::fromStdString (a.info_hash.to_string ());
-			NeedToLog_ = false;
-		}
-
-		void operator() (const libtorrent::file_error_alert& a) const
-		{
-			const auto& text = QObject::tr ("File error for torrent:<br />%1<br />"
-						"file:<br />%2<br />error:<br />%3")
-					.arg (GetTorrentName (a.handle))
-					.arg (QString::fromUtf8 (a.filename ()))
-					.arg (QString::fromUtf8 (a.error.message ().c_str ()));
-			IEM_->HandleEntity (Util::MakeNotification ("BitTorrent", text, Priority::Critical));
-		}
-
-		void operator() (const libtorrent::torrent_error_alert& a) const
-		{
-			Core_.UpdateStatus ({ a.handle.status () });
-		}
-
-		void operator() (const libtorrent::piece_finished_alert&)
-		{
-			NeedToLog_ = false;
-		}
-
-		void operator() (const libtorrent::torrent_removed_alert&) const
-		{
-		}
-
-		void operator() (const libtorrent::torrent_deleted_alert&) const
-		{
-		}
-
-		void operator() (const libtorrent::listen_succeeded_alert&) const
-		{
-		}
-
-		void operator() (const libtorrent::file_completed_alert&)
-		{
-			NeedToLog_ = false;
-		}
-
-		void operator() (const libtorrent::tracker_announce_alert&)
-		{
-			NeedToLog_ = false;
-		}
-
-		void operator() (const libtorrent::cache_flushed_alert&)
-		{
-			NeedToLog_ = false;
-		}
-
-		void operator() (const libtorrent::state_changed_alert& a)
-		{
-			Core_.UpdateStatus ({ a.handle.status () });
-		}
-	private:
-		QString GetTorrentName (const libtorrent::torrent_handle& handle) const
-		{
-			const auto& status = Core_.GetStatusKeeper ()->GetStatus (handle, libtorrent::torrent_handle::query_name);
-			return QString::fromStdString (status.name);
-		}
-	};
-
-	namespace
-	{
-		template<typename Dispatcher, typename... Types>
-		struct HandleAlertImpl;
-
-		template<typename Dispatcher>
-		struct HandleAlertImpl<Dispatcher>
-		{
-			const int Info_;
-			Dispatcher& D_;
-
-			void operator() (libtorrent::alert *alert) const
-			{
-				D_.NeedToLog_ = false;
-				qDebug () << Q_FUNC_INFO
-						<< "unhandled alert type"
-						<< Info_
-						<< ":"
-						<< alert->message ().c_str ();
-			}
-		};
-
-		template<typename Dispatcher, typename Head, typename... Tail>
-		struct HandleAlertImpl<Dispatcher, Head, Tail...>
-		{
-			const int Info_;
-			Dispatcher& D_;
-
-			void operator() (libtorrent::alert *alert) const
-			{
-				if (Info_ == Head::alert_type)
-					D_ (*static_cast<Head*> (alert));
-				else
-					HandleAlertImpl<Dispatcher, Tail...> { Info_, D_ } (alert);
-			}
-		};
-
-		template<typename... Types, typename Dispatcher>
-		void HandleAlert (libtorrent::alert *alert, Dispatcher& dispatcher)
-		{
-			HandleAlertImpl<Dispatcher, Types...> { alert->type (), dispatcher } (alert);
-		}
-	}
-
 	void Core::queryLibtorrent ()
 	{
 		Session_->post_torrent_updates ();
-
-		std::vector<libtorrent::alert*> alerts;
-		Session_->pop_alerts (&alerts);
-		for (const auto alert : alerts)
-		{
-			SimpleDispatcher sd { *this, Proxy_ };
-			try
-			{
-				HandleAlert<
-					libtorrent::external_ip_alert
-					, libtorrent::save_resume_data_alert
-					, libtorrent::save_resume_data_failed_alert
-					, libtorrent::storage_moved_alert
-					, libtorrent::storage_moved_failed_alert
-					, libtorrent::metadata_received_alert
-					, libtorrent::file_error_alert
-					, libtorrent::file_renamed_alert
-					, libtorrent::file_rename_failed_alert
-					, libtorrent::read_piece_alert
-					, libtorrent::state_update_alert
-					, libtorrent::torrent_paused_alert
-					, libtorrent::torrent_resumed_alert
-					, libtorrent::torrent_checked_alert
-					, libtorrent::dht_announce_alert
-					, libtorrent::dht_reply_alert
-					, libtorrent::dht_bootstrap_alert
-					, libtorrent::dht_get_peers_alert
-					, libtorrent::torrent_error_alert
-					, libtorrent::piece_finished_alert
-					, libtorrent::torrent_removed_alert
-					, libtorrent::torrent_deleted_alert
-					, libtorrent::listen_succeeded_alert
-					, libtorrent::file_completed_alert
-					, libtorrent::tracker_announce_alert
-					, libtorrent::cache_flushed_alert
-					, libtorrent::state_changed_alert
-					, libtorrent::torrent_finished_alert
-					> (alert, sd);
-			}
-			catch (const std::exception&)
-			{
-			}
-
-			try
-			{
-				if (sd.NeedToLog_)
-				{
-					const auto& logmsg = QString::fromUtf8 (alert->message ().c_str ());
-					qDebug () << "<libtorrent>" << alert->type () << logmsg;
-				}
-			}
-			catch (const std::exception& e)
-			{
-				qWarning () << Q_FUNC_INFO << typeid (e).name ();
-			}
-		}
+		Dispatcher_.PollAlerts ();
 	}
 
 	void Core::scrape ()
