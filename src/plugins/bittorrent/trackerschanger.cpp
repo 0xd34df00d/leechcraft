@@ -111,15 +111,8 @@ namespace BitTorrent
 		if (dia.exec () != QDialog::Accepted)
 			return;
 
-		QStringList strings;
-		strings << dia.GetTracker ()
-			<< QString::number (dia.GetTier ());
-		while (strings.size () < Ui_.Trackers_->columnCount ())
-			strings << QString ();
-
-		int idx = Ui_.Trackers_->indexOfTopLevelItem (current);
-		Ui_.Trackers_->insertTopLevelItem (idx, new QTreeWidgetItem (strings));
-		delete Ui_.Trackers_->takeTopLevelItem (idx);
+		current->setText (0, dia.GetTracker ());
+		current->setText (1, QString::number (dia.GetTier ()));
 	}
 
 	void TrackersChanger::on_ButtonRemove__released ()
