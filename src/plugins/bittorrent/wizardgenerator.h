@@ -12,16 +12,9 @@
 
 class QWizardPage;
 
-namespace LC
-{
-namespace BitTorrent
+namespace LC::BitTorrent
 {
 	class SessionSettingsManager;
 
-	class WizardGenerator
-	{
-	public:
-		QList<QWizardPage*> GetPages (SessionSettingsManager*);
-	};
-}
+	QList<QWizardPage*> CreateStartupWizard (SessionSettingsManager*);
 }

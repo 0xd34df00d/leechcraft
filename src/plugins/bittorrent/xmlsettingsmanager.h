@@ -10,9 +10,7 @@
 
 #include <xmlsettingsdialog/basesettingsmanager.h>
 
-namespace LC
-{
-namespace BitTorrent
+namespace LC::BitTorrent
 {
 	class XmlSettingsManager : public Util::BaseSettingsManager
 	{
@@ -20,8 +18,7 @@ namespace BitTorrent
 	public:
 		static XmlSettingsManager* Instance ();
 	protected:
-		virtual QSettings* BeginSettings () const;
-		virtual void EndSettings (QSettings*) const;
+		QSettings* BeginSettings () const override;
+		void EndSettings (QSettings*) const override;
 	};
-}
 }

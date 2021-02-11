@@ -10,9 +10,7 @@
 #include <QSettings>
 #include <QCoreApplication>
 
-namespace LC
-{
-namespace BitTorrent
+namespace LC::BitTorrent
 {
 	XmlSettingsManager::XmlSettingsManager ()
 	{
@@ -34,5 +32,4 @@ namespace BitTorrent
 	void XmlSettingsManager::EndSettings (QSettings*) const
 	{
 	}
-}
 }

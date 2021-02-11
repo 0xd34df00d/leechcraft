@@ -404,7 +404,7 @@ namespace LC::BitTorrent
 
 	QList<QWizardPage*> TorrentPlugin::GetWizardPages () const
 	{
-		return WizardGenerator {}.GetPages (Core::Instance ()->GetSessionSettingsManager ());
+		return CreateStartupWizard (Core::Instance ()->GetSessionSettingsManager ());
 	}
 
 	QList<QAction*> TorrentPlugin::GetActions (ActionsEmbedPlace) const

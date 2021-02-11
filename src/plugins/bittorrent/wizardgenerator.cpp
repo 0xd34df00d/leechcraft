@@ -10,11 +10,9 @@
 #include "xmlsettingsmanager.h"
 #include "startupfirstpage.h"
 
-namespace LC
+namespace LC::BitTorrent
 {
-namespace BitTorrent
-{
-	QList<QWizardPage*> WizardGenerator::GetPages (SessionSettingsManager *ssm)
+	QList<QWizardPage*> CreateStartupWizard (SessionSettingsManager *ssm)
 	{
 		QList<QWizardPage*> result;
 		int version = XmlSettingsManager::Instance ()->Property ("StartupVersion", 0).toInt ();
@@ -26,5 +24,4 @@ namespace BitTorrent
 		XmlSettingsManager::Instance ()->setProperty ("StartupVersion", version);
 		return result;
 	}
-}
 }
