@@ -973,7 +973,6 @@ namespace BitTorrent
 			torrentFileName.append (".torrent");
 
 		Handles_.append ({
-				priorities,
 				handle,
 				contents,
 				torrentFileName,
@@ -1082,22 +1081,7 @@ namespace BitTorrent
 		if (!CheckValidity (idx))
 			return;
 
-		if (priority > 7)
-			priority = 7;
-		else if (priority < 0)
-			priority = 0;
-
-		try
-		{
-			Handles_ [idx].FilePriorities_.at (file) = priority;
-			Handles_.at (idx).Handle_.prioritize_files (Handles_.at (idx).FilePriorities_);
-		}
-		catch (...)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< QString ("index for torrent %1, file %2 is out of bounds")
-					.arg (idx).arg (file);
-		}
+		Handles_.at (idx).Handle_.file_priority (file, std::clamp (priority, 0, 7));
 	}
 
 	void Core::SetFilename (int index, const QString& name, int idx)
@@ -1260,9 +1244,6 @@ namespace BitTorrent
 
 		const auto& info = *file;
 		torrent->TorrentFileName_ = QString::fromUtf8 (info.name ().c_str ()) + ".torrent";
-		torrent->FilePriorities_.resize (info.num_files ());
-		std::fill (torrent->FilePriorities_.begin (),
-				torrent->FilePriorities_.end (), 1);
 
 		libtorrent::error_code ec;
 		const libtorrent::span metadata { info.metadata ().get (), info.metadata_size () };
@@ -1430,12 +1411,14 @@ namespace BitTorrent
 			flags |= libtorrent::torrent_handle::piece_granularity;
 		handle.file_progress (prbytes, flags);
 
+		const auto& priorities = Handles_.at (idx).Handle_.get_file_priorities ();
+
 		for (int i = 0, numFiles = info.num_files (); i < numFiles; ++i)
 		{
 			FileInfo fi;
 			fi.Path_ = info.files ().file_path (i);
 			fi.Size_ = info.files ().file_size (i);
-			fi.Priority_ = Handles_.at (idx).FilePriorities_.at (i);
+			fi.Priority_ = priorities [i];
 			fi.Progress_ = fi.Size_ ?
 					prbytes.at (i) / static_cast<float> (fi.Size_) :
 					1;
@@ -1532,24 +1515,8 @@ namespace BitTorrent
 				continue;
 			}
 
-			const auto& prioritiesLine = settings.value ("Priorities").toByteArray ();
-			std::vector<libtorrent::download_priority_t> priorities;
-			priorities.reserve (prioritiesLine.size ());
-			for (const auto ch : prioritiesLine)
-				priorities.emplace_back (ch);
-
-			if (priorities.empty ())
-			{
-				const auto& infoPtr = StatusKeeper_->GetStatus (handle,
-							libtorrent::torrent_handle::query_torrent_file).torrent_file.lock ();
-				priorities.resize (infoPtr ? infoPtr->num_files () : 0, libtorrent::default_priority);
-			}
-
-			handle.prioritize_files (priorities);
-
 			beginInsertRows ({}, Handles_.size (), Handles_.size ());
 			Handles_.append ({
-					priorities,
 					handle,
 					data,
 					filename,
@@ -1786,12 +1753,6 @@ namespace BitTorrent
 					settings.setValue ("Tags", Handles_.at (i).Tags_);
 					settings.setValue ("Parameters", static_cast<int> (Handles_.at (i).Parameters_));
 					settings.setValue ("AutoManaged", Handles_.at (i).AutoManaged_);
-
-					QByteArray prioritiesLine;
-					prioritiesLine.reserve (Handles_.at (i).FilePriorities_.size ());
-					for (const auto prio : Handles_.at (i).FilePriorities_)
-						prioritiesLine.push_back (static_cast<uint8_t> (prio));
-					settings.setValue ("Priorities", prioritiesLine);
 				}
 			}
 			catch (const std::exception& e)

@@ -70,7 +70,6 @@ namespace BitTorrent
 
 		struct TorrentStruct
 		{
-			std::vector<libtorrent::download_priority_t> FilePriorities_ = {};
 			libtorrent::torrent_handle Handle_;
 			QByteArray TorrentFileContents_ = {};
 			QString TorrentFileName_ = {};
@@ -99,16 +98,14 @@ namespace BitTorrent
 
 			struct NoFuture {};
 
-			TorrentStruct (std::vector<libtorrent::download_priority_t> prios,
-					libtorrent::torrent_handle handle,
+			TorrentStruct (libtorrent::torrent_handle handle,
 					QByteArray torrentFile,
 					QString filename,
 					QStringList tags,
 					bool autoManaged,
 					TaskParameters params,
 					NoFuture)
-			: FilePriorities_ { std::move (prios) }
-			, Handle_ { std::move (handle) }
+			: Handle_ { std::move (handle) }
 			, TorrentFileContents_ { std::move (torrentFile) }
 			, TorrentFileName_ { std::move (filename) }
 			, Tags_ { std::move (tags) }
@@ -117,16 +114,14 @@ namespace BitTorrent
 			{
 			}
 
-			TorrentStruct (std::vector<libtorrent::download_priority_t> prios,
-					libtorrent::torrent_handle handle,
+			TorrentStruct (libtorrent::torrent_handle handle,
 					QByteArray torrentFile,
 					QString filename,
 					QStringList tags,
 					bool autoManaged,
 					TaskParameters params)
 			: TorrentStruct
-				{ std::move (prios)
-				, std::move (handle)
+				{ std::move (handle)
 				, std::move (torrentFile)
 				, std::move (filename)
 				, std::move (tags)
