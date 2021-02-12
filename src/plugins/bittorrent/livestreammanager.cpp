@@ -9,14 +9,28 @@
 #include "livestreammanager.h"
 #include <QtDebug>
 #include <libtorrent/alert_types.hpp>
+#include "alertdispatcher.h"
 #include "livestreamdevice.h"
 
 namespace LC::BitTorrent
 {
-	LiveStreamManager::LiveStreamManager (CachedStatusKeeper *keeper, QObject *parent)
+	LiveStreamManager::LiveStreamManager (CachedStatusKeeper& keeper, AlertDispatcher& dispatcher, QObject *parent)
 	: QObject { parent }
 	, StatusKeeper_ { keeper }
 	{
+		dispatcher.RegisterHandler ([this] (const libtorrent::read_piece_alert& a)
+				{
+					const auto& handle = a.handle;
+					const auto& device = Handle2Device_.value (handle);
+					if (!device)
+						qWarning () << Q_FUNC_INFO
+								<< "Handle2Device_ doesn't contain handle"
+								<< Handle2Device_.size ();
+					else
+						device->PieceRead (a);
+
+					return false;
+				});
 	}
 
 	void LiveStreamManager::EnableOn (const libtorrent::torrent_handle& handle)
@@ -41,20 +55,5 @@ namespace LC::BitTorrent
 	bool LiveStreamManager::IsEnabledOn (const libtorrent::torrent_handle& handle)
 	{
 		return Handle2Device_.contains (handle);
-	}
-
-	void LiveStreamManager::PieceRead (const libtorrent::read_piece_alert& a)
-	{
-		const auto& handle = a.handle;
-
-		if (!Handle2Device_.contains (handle))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "Handle2Device_ doesn't contain handle"
-					<< Handle2Device_.size ();
-			return;
-		}
-
-		Handle2Device_ [handle]->PieceRead (a);
 	}
 }

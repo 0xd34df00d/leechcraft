@@ -18,8 +18,7 @@ namespace LC::BitTorrent
 {
 	using th = libtorrent::torrent_handle;
 
-	LiveStreamDevice::LiveStreamDevice (const libtorrent::torrent_handle& h,
-			CachedStatusKeeper *keeper, QObject *parent)
+	LiveStreamDevice::LiveStreamDevice (const libtorrent::torrent_handle& h, CachedStatusKeeper& keeper, QObject *parent)
 	: QIODevice (parent)
 	, StatusKeeper_ (keeper)
 	, Handle_ (h)
@@ -27,14 +26,14 @@ namespace LC::BitTorrent
 	{
 		[&]
 		{
-			const auto tf = keeper->GetStatus (h, th::query_pieces | th::query_torrent_file).torrent_file.lock ();
+			const auto tf = keeper.GetStatus (h, th::query_pieces | th::query_torrent_file).torrent_file.lock ();
 			if (!tf)
 				throw std::runtime_error { LiveStreamDevice::tr ("No metadata is available yet.").toStdString () };
 			return *tf;
 		} ()
 	}
 	{
-		const auto& tpath = keeper->GetStatus (h, th::query_save_path).save_path;
+		const auto& tpath = keeper.GetStatus (h, th::query_save_path).save_path;
 		const auto& fpath = TI_.files ().file_path (0);
 		File_.setFileName (QString::fromStdString (tpath + '/' + fpath));
 
@@ -52,7 +51,7 @@ namespace LC::BitTorrent
 	qint64 LiveStreamDevice::bytesAvailable () const
 	{
 		qint64 result = 0;
-		const auto& pieces = StatusKeeper_->GetStatus (Handle_, th::query_pieces).pieces;
+		const auto& pieces = StatusKeeper_.GetStatus (Handle_, th::query_pieces).pieces;
 		for (int i = ReadPos_; pieces [i]; ++i)
 			result += TI_.piece_size (i);
 		result -= Offset_;
@@ -97,7 +96,7 @@ namespace LC::BitTorrent
 
 	qint64 LiveStreamDevice::size () const
 	{
-		return StatusKeeper_->GetStatus (Handle_).total_wanted;
+		return StatusKeeper_.GetStatus (Handle_).total_wanted;
 	}
 
 	void LiveStreamDevice::PieceRead (const libtorrent::read_piece_alert&)
@@ -112,7 +111,7 @@ namespace LC::BitTorrent
 		if (IsReady_)
 			return;
 
-		const auto& pieces = StatusKeeper_->GetStatus (Handle_, th::query_pieces).pieces;
+		const auto& pieces = StatusKeeper_.GetStatus (Handle_, th::query_pieces).pieces;
 		if (pieces [0] &&
 				pieces [NumPieces_ - 1])
 		{
@@ -154,7 +153,7 @@ namespace LC::BitTorrent
 	void LiveStreamDevice::CheckNextChunk ()
 	{
 		bool hasMoreData = false;
-		const auto& pieces = StatusKeeper_->GetStatus (Handle_, th::query_pieces).pieces;
+		const auto& pieces = StatusKeeper_.GetStatus (Handle_, th::query_pieces).pieces;
 		for (int i = ReadPos_ + 1;
 				i < NumPieces_ && pieces [i];
 				++i, hasMoreData = true);
@@ -176,7 +175,7 @@ namespace LC::BitTorrent
 
 	void LiveStreamDevice::Reschedule ()
 	{
-		const auto& status = StatusKeeper_->GetStatus (Handle_, th::query_pieces);
+		const auto& status = StatusKeeper_.GetStatus (Handle_, th::query_pieces);
 		const auto& pieces = status.pieces;
 		int speed = status.download_payload_rate;
 		int size = TI_.piece_length ();

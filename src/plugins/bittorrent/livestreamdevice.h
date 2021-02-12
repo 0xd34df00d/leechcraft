@@ -24,7 +24,7 @@ namespace LC::BitTorrent
 
 	class LiveStreamDevice : public QIODevice
 	{
-		CachedStatusKeeper * const StatusKeeper_;
+		CachedStatusKeeper& StatusKeeper_;
 
 		const libtorrent::torrent_handle Handle_;
 		const libtorrent::torrent_info TI_;
@@ -37,7 +37,7 @@ namespace LC::BitTorrent
 		bool IsReady_ = 0;
 		QFile File_;
 	public:
-		LiveStreamDevice (const libtorrent::torrent_handle&, CachedStatusKeeper*, QObject* = nullptr);
+		LiveStreamDevice (const libtorrent::torrent_handle&, CachedStatusKeeper&, QObject* = nullptr);
 
 		qint64 bytesAvailable () const override;
 		bool isSequential () const override;

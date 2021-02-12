@@ -171,11 +171,6 @@ namespace BitTorrent
 								  a.error.message ().c_str ());
 					iem->HandleEntity (Util::MakeNotification ("BitTorrent", text, Priority::Critical));
 				});
-		Dispatcher_.RegisterHandler ([this] (const read_piece_alert& a)
-				{
-					PieceRead (a);
-					return false;
-				});
 		Dispatcher_.RegisterHandler ([this] (const state_update_alert& a)
 				{
 					UpdateStatus (a.status);
@@ -345,7 +340,7 @@ namespace BitTorrent
 	{
 		Proxy_ = proxy;
 		ShortcutMgr_ = new ShortcutManager (proxy, this);
-		LiveStreamManager_ = std::make_shared<LiveStreamManager> (StatusKeeper_);
+		LiveStreamManager_ = std::make_shared<LiveStreamManager> (*StatusKeeper_, Dispatcher_);
 	}
 
 	ICoreProxy_ptr Core::GetProxy () const
@@ -1264,11 +1259,6 @@ namespace BitTorrent
 			<< torrent->TorrentFileName_;
 
 		ScheduleSave ();
-	}
-
-	void Core::PieceRead (const libtorrent::read_piece_alert& a)
-	{
-		LiveStreamManager_->PieceRead (a);
 	}
 
 	void Core::UpdateStatus (const std::vector<libtorrent::torrent_status>& statuses)

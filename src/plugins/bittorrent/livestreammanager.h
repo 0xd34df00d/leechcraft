@@ -15,23 +15,22 @@
 namespace libtorrent
 {
 	class torrent_handle;
-	class read_piece_alert;
 };
 
 namespace LC::BitTorrent
 {
-	class LiveStreamDevice;
+	class AlertDispatcher;
 	class CachedStatusKeeper;
+	class LiveStreamDevice;
 
 	class LiveStreamManager : public QObject
 	{
-		CachedStatusKeeper * const StatusKeeper_;
+		CachedStatusKeeper& StatusKeeper_;
 		QMap<libtorrent::torrent_handle, std::shared_ptr<LiveStreamDevice>> Handle2Device_;
 	public:
-		explicit LiveStreamManager (CachedStatusKeeper*, QObject* = nullptr);
+		explicit LiveStreamManager (CachedStatusKeeper&, AlertDispatcher&, QObject* = nullptr);
 
 		void EnableOn (const libtorrent::torrent_handle&);
 		bool IsEnabledOn (const libtorrent::torrent_handle&);
-		void PieceRead (const libtorrent::read_piece_alert&);
 	};
 }
