@@ -137,7 +137,7 @@ namespace LC::BitTorrent
 		SaveFilter (session);
 	}
 
-	void SetDownloadLimit (libtorrent::torrent_handle& handle, int limit)
+	void SetDownloadLimit (const libtorrent::torrent_handle& handle, int limit)
 	{
 		if (!handle.is_valid ())
 			return;
@@ -154,7 +154,7 @@ namespace LC::BitTorrent
 		return val >= 0 ? val / 1024 : val;
 	}
 
-	void SetUploadLimit (libtorrent::torrent_handle& handle, int limit)
+	void SetUploadLimit (const libtorrent::torrent_handle& handle, int limit)
 	{
 		if (!handle.is_valid ())
 			return;
