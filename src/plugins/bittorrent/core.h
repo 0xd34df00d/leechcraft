@@ -278,7 +278,6 @@ namespace BitTorrent
 		bool IsTorrentSuperSeeding (int) const;
 		void SetTorrentSuperSeeding (bool, int);
 		void MakeTorrent (const NewTorrentParams&);
-		void SetExternalAddress (const QString&);
 		QString GetExternalAddress () const;
 		bool CheckValidity (int) const;
 

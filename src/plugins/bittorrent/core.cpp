@@ -122,7 +122,7 @@ namespace BitTorrent
 		auto iem = GetProxyHolder ()->GetEntityManager ();
 		Dispatcher_.RegisterHandler ([this] (const external_ip_alert& a)
 				{
-					SetExternalAddress (QString::fromStdString (a.external_address.to_string ()));
+					ExternalAddress_ = QString::fromStdString (a.external_address.to_string ());
 				});
 		Dispatcher_.RegisterHandler ([this] (const save_resume_data_alert& a) { SaveResumeData (a); });
 		Dispatcher_.RegisterHandler ([iem] (const save_resume_data_failed_alert& a)
@@ -1171,11 +1171,6 @@ namespace BitTorrent
 	{
 		if (const auto result = CreateTorrent (params))
 			AddFile (*result, params.Path_, {}, false);
-	}
-
-	void Core::SetExternalAddress (const QString& address)
-	{
-		ExternalAddress_ = address;
 	}
 
 	QString Core::GetExternalAddress () const
