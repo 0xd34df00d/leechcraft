@@ -9,6 +9,7 @@
 #pragma once
 
 class QByteArray;
+class QModelIndex;
 class QString;
 
 template<typename, typename>
@@ -45,4 +46,6 @@ namespace LC::BitTorrent
 	int GetUploadLimit (const libtorrent::torrent_handle&);
 
 	bool IsValidTorrent (const QByteArray&);
+
+	const libtorrent::torrent_handle& GetTorrentHandle (const QModelIndex&);
 }

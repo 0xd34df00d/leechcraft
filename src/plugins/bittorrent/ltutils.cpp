@@ -17,6 +17,9 @@
 #include <libtorrent/torrent_info.hpp>
 #include <libtorrent/session.hpp>
 #include "ipfilterdialog.h"
+#include "types.h"
+
+Q_DECLARE_METATYPE (const libtorrent::torrent_handle*)
 
 namespace LC::BitTorrent
 {
@@ -173,5 +176,10 @@ namespace LC::BitTorrent
 		libtorrent::error_code ec;
 		libtorrent::torrent_info result { data.constData (), data.size (), ec };
 		return !ec;
+	}
+
+	const libtorrent::torrent_handle& GetTorrentHandle (const QModelIndex& index)
+	{
+		return *index.data (Roles::TorrentHandle).value<const libtorrent::torrent_handle*> ();
 	}
 }

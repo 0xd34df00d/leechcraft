@@ -65,6 +65,7 @@
 
 Q_DECLARE_METATYPE (QMenu*)
 Q_DECLARE_METATYPE (QToolBar*)
+Q_DECLARE_METATYPE (const libtorrent::torrent_handle*)
 
 using namespace LC::Util;
 
@@ -435,6 +436,10 @@ namespace BitTorrent
 
 	QVariant Core::data (const QModelIndex& index, int role) const
 	{
+		const int row = index.row ();
+		const int column = index.column ();
+		const auto& h = Handles_.at (row).Handle_;
+
 		switch (role)
 		{
 		case RoleControls:
@@ -445,15 +450,10 @@ namespace BitTorrent
 			return QVariant::fromValue<QMenu*> (Menu_);
 		case Roles::HandleIndex:
 			return index.row ();
+		case Roles::TorrentHandle:
+			return QVariant::fromValue (&h);
 		}
 
-		const int row = index.row ();
-		const int column = index.column ();
-
-		if (!CheckValidity (row))
-			return QVariant ();
-
-		const auto& h = Handles_.at (row).Handle_;
 		const auto& status = StatusKeeper_->GetStatus (h,
 				libtorrent::torrent_handle::query_name |
 				libtorrent::torrent_handle::query_save_path);

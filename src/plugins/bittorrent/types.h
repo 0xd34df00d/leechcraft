@@ -41,6 +41,7 @@ namespace LC::BitTorrent
 			HandleIndex,
 			IsLeeching,
 			IsSeeding,
+			TorrentHandle,
 		};
 	};
 }
