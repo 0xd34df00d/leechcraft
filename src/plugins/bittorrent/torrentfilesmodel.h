@@ -8,9 +8,15 @@
 
 #pragma once
 
+#include <memory>
 #include <QStringList>
 #include "fileinfo.h"
 #include "torrentfilesmodelbase.h"
+
+namespace libtorrent
+{
+	class torrent_handle;
+}
 
 namespace LC::BitTorrent
 {
@@ -23,9 +29,14 @@ namespace LC::BitTorrent
 	};
 	using TorrentNodeInfo_ptr = std::shared_ptr<TorrentNodeInfo>;
 
+	class AlertDispatcher;
+	class AlertDispatcherRegGuard;
+
 	class TorrentFilesModel : public TorrentFilesModelBase<TorrentNodeInfo>
 	{
 		const int Index_ = -1;
+		std::unique_ptr<libtorrent::torrent_handle> Handle_;
+		std::unique_ptr<AlertDispatcherRegGuard> RegGuard_;
 	public:
 		enum
 		{
@@ -44,7 +55,8 @@ namespace LC::BitTorrent
 			ColumnProgress,
 		};
 
-		explicit TorrentFilesModel (int);
+		TorrentFilesModel (const libtorrent::torrent_handle&, AlertDispatcher&);
+		~TorrentFilesModel () override;
 
 		QVariant data (const QModelIndex&, int = Qt::DisplayRole) const override;
 		Qt::ItemFlags flags (const QModelIndex&) const override;
@@ -54,9 +66,9 @@ namespace LC::BitTorrent
 		void UpdateFiles (const std::filesystem::path&, const QList<FileInfo>&);
 
 		void HandleFileActivated (QModelIndex) const;
-
-		void HandleFileRenamed (int, int, const QString&);
 	private:
+		void HandleFileRenamed (int, const QString&);
+
 		void Update ();
 		void UpdateSizeGraph (const TorrentNodeInfo_ptr&);
 		void UpdatePriorities (TorrentNodeInfo*);

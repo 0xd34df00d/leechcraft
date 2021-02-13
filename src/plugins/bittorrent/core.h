@@ -307,7 +307,6 @@ namespace BitTorrent
 				bool);
 
 		void HandleSingleFinished (int);
-		void HandleFileRenamed (const libtorrent::file_renamed_alert&);
 
 		/** Returns human-readable list of tags for the given torrent.
 		 *
@@ -331,9 +330,6 @@ namespace BitTorrent
 		void scrape ();
 		void queryLibtorrent ();
 	signals:
-		void addToHistory (const QString&, const QString&, quint64,
-				const QDateTime&, const QStringList&);
-		void fileRenamed (int torrent, int file, const QString& newName);
 		void torrentsStatusesUpdated ();
 	};
 }

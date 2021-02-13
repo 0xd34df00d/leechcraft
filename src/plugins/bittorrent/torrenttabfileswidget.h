@@ -9,6 +9,7 @@
 #pragma once
 
 #include <QWidget>
+#include <QModelIndex>
 #include "ui_torrenttabfileswidget.h"
 
 class QSortFilterProxyModel;
@@ -28,7 +29,7 @@ namespace LC::BitTorrent
 	public:
 		explicit TorrentTabFilesWidget (QWidget* = nullptr);
 
-		void SetCurrentIndex (int);
+		void SetCurrentIndex (const QModelIndex&);
 	private:
 		QList<QModelIndex> GetSelectedIndexes () const;
 		void HandleFileSelected (const QModelIndex&);

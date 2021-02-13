@@ -10,27 +10,38 @@
 #include <QUrl>
 #include <QTimer>
 #include <QtDebug>
+#include <libtorrent/alert_types.hpp>
 #include <util/util.h>
 #include <util/xpc/util.h>
 #include <util/sll/unreachable.h>
 #include <util/sys/extensionsdata.h>
 #include <util/models/modelitembase.h>
 #include <interfaces/core/ientitymanager.h>
+#include "alertdispatcher.h"
 #include "core.h"
 #include "cachedstatuskeeper.h"
 
 namespace LC::BitTorrent
 {
-	TorrentFilesModel::TorrentFilesModel (int index)
+	TorrentFilesModel::TorrentFilesModel (const libtorrent::torrent_handle& handle, AlertDispatcher& dispatcher)
 	: TorrentFilesModelBase { { tr ("Name"), tr ("Priority"), tr ("Progress") } }
-	, Index_ { index }
+	, Handle_ { std::make_unique<libtorrent::torrent_handle> (handle) }
 	{
 		auto timer = new QTimer (this);
 		timer->callOnTimeout (this, &TorrentFilesModel::Update);
 		timer->start (2000);
 
 		Update ();
+
+		RegGuard_ = dispatcher.RegisterTemporaryHandler ([this] (const libtorrent::file_renamed_alert& a)
+				{
+					if (a.handle != *Handle_)
+						return;
+					HandleFileRenamed (a.index, QString::fromUtf8 (a.new_name ()));
+				});
 	}
+
+	TorrentFilesModel::~TorrentFilesModel () = default;
 
 	QVariant TorrentFilesModel::data (const QModelIndex& index, int role) const
 	{
@@ -345,18 +356,14 @@ namespace LC::BitTorrent
 	void TorrentFilesModel::Update ()
 	{
 		const auto& handle = Core::Instance ()->GetTorrentHandle (Index_);
-		const auto& base = Core::Instance ()->GetStatusKeeper ()->
-				GetStatus (handle, libtorrent::torrent_handle::query_save_path).save_path;
+		const auto& base = Core::Instance ()->GetStatusKeeper ()->GetStatus (handle, libtorrent::torrent_handle::query_save_path).save_path;
 
 		const auto& files = Core::Instance ()->GetTorrentFiles (Index_);
 		UpdateFiles (base, files);
 	}
 
-	void TorrentFilesModel::HandleFileRenamed (int torrent, int file, const QString& newName)
+	void TorrentFilesModel::HandleFileRenamed (int file, const QString& newName)
 	{
-		if (torrent != Index_)
-			return;
-
 		const auto filePos = std::find_if (Path2Node_.begin (), Path2Node_.end (),
 				[file] (const Path2Node_t::value_type& pair)
 					{ return pair.second->FileIndex_ == file; });
@@ -365,8 +372,6 @@ namespace LC::BitTorrent
 			qWarning () << Q_FUNC_INFO
 					<< "unknown file index"
 					<< file
-					<< "for torrent"
-					<< torrent
 					<< "was renamed to"
 					<< newName;
 			return;

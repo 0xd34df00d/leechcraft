@@ -148,7 +148,6 @@ namespace BitTorrent
 					iem->HandleEntity (Util::MakeNotification ("BitTorrent", text, Priority::Critical));
 				});
 		Dispatcher_.RegisterHandler ([this] (const metadata_received_alert& a) { HandleMetadata (a); });
-		Dispatcher_.RegisterHandler ([this] (const file_renamed_alert& a) { HandleFileRenamed (a); });
 		Dispatcher_.RegisterHandler ([iem] (const file_rename_failed_alert& a)
 				{
 					const auto& text = tr ("File rename failed for torrent:<br />%1<br />file %2, error:<br />%3")
@@ -1677,20 +1676,6 @@ namespace BitTorrent
 
 		if (torrent.Promise_)
 			Util::ReportFutureResult (*torrent.Promise_, IDownload::Result::Right ({}));
-	}
-
-	void Core::HandleFileRenamed (const libtorrent::file_renamed_alert& a)
-	{
-		const auto pos = FindHandle (a.handle);
-		if (pos == Handles_.end ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unknown handle";
-			return;
-		}
-
-		const auto& newName = QString::fromUtf8 (a.new_name ());
-		emit fileRenamed (std::distance (Handles_.begin (), pos), a.index, newName);
 	}
 
 	QStringList Core::GetTagsForIndexImpl (int torrent) const
