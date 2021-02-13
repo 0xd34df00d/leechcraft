@@ -432,6 +432,49 @@ namespace BitTorrent
 			else
 				return stateStr;
 		}
+
+		TorrentInfo GetTorrentStats (const libtorrent::torrent_handle& handle, CachedStatusKeeper& keeper)
+		{
+			auto status = keeper.GetStatus (handle, CachedStatusKeeper::AllFlags);
+			TorrentInfo info
+			{
+				.Destination_ = QString::fromStdString (status.save_path),
+				.State_ = GetStringForStatus (status),
+				.Status_ = status,
+				.Info_ = handle.torrent_file () ? *handle.torrent_file () : std::optional<libtorrent::torrent_info> {},
+			};
+			if (status.errc)
+				info.State_ += " (" + QString::fromStdString (status.errc.message ()) + ")";
+			return info;
+
+		}
+
+		void ToggleFlag (libtorrent::torrent_handle& h, libtorrent::torrent_flags_t flags, bool set)
+		{
+			set ? h.set_flags (flags) : h.unset_flags (flags);
+		}
+	}
+
+	bool Core::setData (const QModelIndex& index, const QVariant& data, int role)
+	{
+		auto& ts = Handles_ [index.row ()];
+		switch (role)
+		{
+		case Roles::TorrentTags:
+			ts.Tags_ = data.toStringList ();
+			return true;
+		case Roles::IsManaged:
+			ts.AutoManaged_ = data.toBool ();
+			return true;
+		case Roles::IsSequentialDownloading:
+			ToggleFlag (ts.Handle_, libtorrent::torrent_flags::sequential_download, data.toBool ());
+			return true;
+		case Roles::IsSuperSeeding:
+			ToggleFlag (ts.Handle_, libtorrent::torrent_flags::super_seeding, data.toBool ());
+			return true;
+		}
+
+		return false;
 	}
 
 	QVariant Core::data (const QModelIndex& index, int role) const
@@ -452,6 +495,14 @@ namespace BitTorrent
 			return index.row ();
 		case Roles::TorrentHandle:
 			return QVariant::fromValue (&h);
+		case Roles::IsManaged:
+			return Handles_ [row].AutoManaged_;
+		case Roles::IsSequentialDownloading:
+			return static_cast<bool> (StatusKeeper_->GetStatus (h).flags & libtorrent::torrent_flags::sequential_download);
+		case Roles::IsSuperSeeding:
+			return static_cast<bool> (StatusKeeper_->GetStatus (h).flags & libtorrent::torrent_flags::super_seeding);
+		case Roles::TorrentStats:
+			return QVariant::fromValue (GetTorrentStats (h, *StatusKeeper_));
 		}
 
 		const auto& status = StatusKeeper_->GetStatus (h,
@@ -659,6 +710,7 @@ namespace BitTorrent
 			return result;
 		}
 		case RoleTags:
+		case Roles::TorrentTags:
 			return Handles_.at (row).Tags_;
 		case CustomDataRoles::RoleJobHolderRow:
 			return QVariant::fromValue<JobHolderRow> (JobHolderRow::DownloadProgress);
@@ -879,11 +931,6 @@ namespace BitTorrent
 
 	namespace
 	{
-		void ToggleFlag (libtorrent::torrent_handle& h, libtorrent::torrent_flags_t flags, bool set)
-		{
-			set ? h.set_flags (flags) : h.unset_flags (flags);
-		}
-
 		QByteArray TryReadResumed (const QString& filename)
 		{
 			const auto& torrentsDir = Util::CreateIfNotExists ("bittorrent");

@@ -22,3 +22,5 @@ namespace LC::BitTorrent
 		std::unique_ptr<libtorrent::torrent_info> Info_;
 	};
 }
+
+Q_DECLARE_METATYPE (LC::BitTorrent::TorrentInfo)

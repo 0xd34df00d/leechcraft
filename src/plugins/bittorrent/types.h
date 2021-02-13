@@ -42,6 +42,11 @@ namespace LC::BitTorrent
 			IsLeeching,
 			IsSeeding,
 			TorrentHandle,
+			TorrentTags,
+			IsManaged,
+			IsSequentialDownloading,
+			IsSuperSeeding,
+			TorrentStats,
 		};
 	};
 }

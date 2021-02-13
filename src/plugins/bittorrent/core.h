@@ -204,6 +204,7 @@ namespace BitTorrent
 
 		virtual int columnCount (const QModelIndex& = QModelIndex ()) const;
 		virtual QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;
+		virtual bool setData (const QModelIndex&, const QVariant&, int);
 		virtual Qt::ItemFlags flags (const QModelIndex&) const;
 		virtual bool hasChildren (const QModelIndex&) const;
 		virtual QVariant headerData (int, Qt::Orientation, int = Qt::DisplayRole) const;
