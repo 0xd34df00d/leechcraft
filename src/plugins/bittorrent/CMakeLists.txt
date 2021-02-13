@@ -41,7 +41,6 @@ LC_DEFINE_PLUGIN (
 		peerswidget.cpp
 		ltutils.cpp
 		listactions.cpp
-		sessionholder.cpp
 		alertdispatcher.cpp
 
 		banpeersdialog.cpp

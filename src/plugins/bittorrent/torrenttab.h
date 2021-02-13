@@ -14,10 +14,14 @@
 
 class QModelIndex;
 
+namespace libtorrent
+{
+	class session;
+}
+
 namespace LC::BitTorrent
 {
 	class ListActions;
-	class SessionHolder;
 	class TabViewProxyModel;
 
 	class TorrentTab : public QWidget
@@ -28,7 +32,7 @@ namespace LC::BitTorrent
 
 		Ui::TorrentTab Ui_;
 
-		const SessionHolder& Holder_;
+		const libtorrent::session& Session_;
 
 		const TabClassInfo TC_;
 		QObject *ParentMT_;
@@ -37,7 +41,7 @@ namespace LC::BitTorrent
 
 		TabViewProxyModel *ViewFilter_;
 	public:
-		TorrentTab (SessionHolder&, const TabClassInfo&, QObject*);
+		TorrentTab (libtorrent::session&, const TabClassInfo&, QObject*);
 
 		TabClassInfo GetTabClassInfo () const override;
 		QObject* ParentMultiTabs () override;

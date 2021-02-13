@@ -22,7 +22,6 @@
 #include "tabviewproxymodel.h"
 #include "xmlsettingsmanager.h"
 #include "types.h"
-#include "sessionholder.h"
 #include "ltutils.h"
 #include "listactions.h"
 
@@ -60,11 +59,11 @@ namespace LC::BitTorrent
 		};
 	}
 
-	TorrentTab::TorrentTab (SessionHolder& holder, const TabClassInfo& tc, QObject *mt)
-	: Holder_ { holder }
+	TorrentTab::TorrentTab (libtorrent::session& session, const TabClassInfo& tc, QObject *mt)
+	: Session_ { session }
 	, TC_ { tc }
 	, ParentMT_ { mt }
-	, Actions_ { new ListActions { { holder, [this] { return this; } }, this } }
+	, Actions_ { new ListActions { { session, [this] { return this; } }, this } }
 	, ViewFilter_ { new TabViewProxyModel { this } }
 	{
 		Ui_.setupUi (this);
@@ -72,7 +71,7 @@ namespace LC::BitTorrent
 				Core::Instance ()->GetAlertDispatcher (),
 				*Core::Instance (),
 				Core::Instance ()->GetSessionSettingsManager (),
-				holder
+				session
 			});
 
 		ViewFilter_->setDynamicSortFilter (true);

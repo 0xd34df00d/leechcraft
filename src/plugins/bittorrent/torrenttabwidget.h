@@ -15,6 +15,11 @@
 
 class QAbstractItemModel;
 
+namespace libtorrent
+{
+	class session;
+}
+
 namespace LC::BitTorrent
 {
 	class SessionSettingsManager;
@@ -32,7 +37,6 @@ namespace LC::BitTorrent
 
 		QAbstractItemModel *Model_ = nullptr;
 		SessionSettingsManager *SSM_ = nullptr;
-		SessionHolder *Holder_ = nullptr;
 
 		std::unique_ptr<PiecesModel> PiecesModel_;
 		std::unique_ptr<QAbstractItemModel> WebSeedsModel_;
@@ -45,7 +49,7 @@ namespace LC::BitTorrent
 			AlertDispatcher& AlertDispatcher_;
 			QAbstractItemModel& Model_;
 			SessionSettingsManager *SSM_;
-			SessionHolder& Holder_;
+			libtorrent::session& Session_;
 		};
 
 		void SetDependencies (const Dependencies&);

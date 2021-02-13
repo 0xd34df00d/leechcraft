@@ -25,7 +25,6 @@
 #include "movetorrentfiles.h"
 #include "newtorrentparams.h"
 #include "newtorrentwizard.h"
-#include "sessionholder.h"
 #include "trackerschanger.h"
 #include "xmlsettingsmanager.h"
 
@@ -296,12 +295,10 @@ namespace LC::BitTorrent
 		ChangeTrackers_ = Toolbar_->addAction (tr ("Change trackers..."), this,
 				[this]
 				{
-					const auto& idxs = GetSelectedHandlesIndices ();
-
 					std::vector<libtorrent::announce_entry> allTrackers;
-					for (const auto& index : idxs)
+					for (const auto& index : CurSelection_)
 					{
-						const auto& handle = D_.Holder_ [index];
+						const auto& handle = GetTorrentHandle (index);
 						auto those = handle.trackers ();
 						std::move (those.begin (), those.end (), std::back_inserter (allTrackers));
 					}
@@ -327,9 +324,9 @@ namespace LC::BitTorrent
 							[=]
 							{
 								const auto& trackers = changer->GetTrackers ();
-								for (const auto& index : idxs)
+								for (const auto& index : CurSelection_)
 								{
-									const auto& handle = D_.Holder_ [index];
+									const auto& handle = GetTorrentHandle (index);
 									handle.replace_trackers (trackers);
 									handle.force_reannounce ();
 								}
@@ -360,8 +357,7 @@ namespace LC::BitTorrent
 
 		Toolbar_->addSeparator ();
 
-		IPFilter_ = Toolbar_->addAction (tr ("IP filter..."), this,
-				[this] { RunIPFilterDialog (D_.Holder_.GetSession ()); });
+		IPFilter_ = Toolbar_->addAction (tr ("IP filter..."), this, [this] { RunIPFilterDialog (D_.Session_); });
 		IPFilter_->setProperty ("ActionIcon", "view-filter");
 
 		SetActionsEnabled ();

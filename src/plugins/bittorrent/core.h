@@ -31,7 +31,6 @@
 #include "fileinfo.h"
 #include "peerinfo.h"
 #include "types.h"
-#include "sessionholder.h"
 #include "alertdispatcher.h"
 
 class QTimer;
@@ -161,8 +160,6 @@ namespace BitTorrent
 		Util::ShortcutManager *ShortcutMgr_ = nullptr;
 
 		QIcon TorrentIcon_;
-
-		SessionHolder Holder_;
 		AlertDispatcher Dispatcher_;
 
 		Core ();
@@ -193,7 +190,6 @@ namespace BitTorrent
 		void SetProxy (ICoreProxy_ptr);
 		ICoreProxy_ptr GetProxy () const;
 
-		SessionHolder& GetSessionHolder ();
 		AlertDispatcher& GetAlertDispatcher ();
 
 		Util::ShortcutManager* GetShortcutManager () const;
@@ -214,6 +210,7 @@ namespace BitTorrent
 
 		QIcon GetTorrentIcon (int) const;
 
+		libtorrent::session& GetSession ();
 		libtorrent::torrent_handle GetTorrentHandle (int) const;
 
 		SessionStats GetSessionStats () const;

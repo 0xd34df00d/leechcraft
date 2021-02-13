@@ -122,8 +122,7 @@ namespace LC::BitTorrent
 				SSM_,
 				&SessionSettingsManager::SetMaxUploadingTorrents);
 
-		Holder_ = &deps.Holder_;
-		Ui_.PagePeers_->SetSessionHolder (deps.Holder_);
+		Ui_.PagePeers_->SetSession (deps.Session_);
 
 		Model_ = &deps.Model_;
 

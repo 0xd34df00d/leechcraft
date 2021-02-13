@@ -97,7 +97,7 @@ namespace LC::BitTorrent
 		Actions_ = new ListActions
 		{
 			{
-				.Holder_ = Core::Instance ()->GetSessionHolder (),
+				.Session_ = Core::Instance ()->GetSession (),
 				.GetPreferredParent_ = [] { return GetProxyHolder ()->GetRootWindowsManager ()->GetPreferredWindow (); }
 			}
 		};
@@ -105,7 +105,7 @@ namespace LC::BitTorrent
 		SetupCore ();
 		SetupStuff ();
 
-		TorrentTab_ = new TorrentTab (Core::Instance ()->GetSessionHolder (), TabTC_, this);
+		TorrentTab_ = new TorrentTab (Core::Instance ()->GetSession (), TabTC_, this);
 		connect (TorrentTab_,
 				&TorrentTab::removeTab,
 				this,
@@ -427,7 +427,7 @@ namespace LC::BitTorrent
 
 		SetupActions ();
 		TabWidget_ = std::make_unique<TabWidget> (*Core::Instance (),
-				Core::Instance ()->GetSessionHolder ().GetSession (),
+				Core::Instance ()->GetSession (),
 				*Core::Instance ()->GetSessionSettingsManager ());
 
 		Core::Instance ()->SetWidgets (Actions_->GetToolbar (), TabWidget_.get ());

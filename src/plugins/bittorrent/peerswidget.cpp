@@ -16,7 +16,6 @@
 #include "peersmodel.h"
 #include "addpeerdialog.h"
 #include "banpeersdialog.h"
-#include "sessionholder.h"
 #include "ltutils.h"
 #include "types.h"
 
@@ -59,8 +58,8 @@ namespace LC::BitTorrent
 					ban.SetIP (idx.sibling (idx.row (), 0).data ().toString ());
 					if (ban.exec () == QDialog::Accepted)
 					{
-						BanPeers (Holder_->GetSession (), qMakePair (ban.GetStart (), ban.GetEnd ()));
-						SaveFilter (Holder_->GetSession ());
+						BanPeers (*Session_, qMakePair (ban.GetStart (), ban.GetEnd ()));
+						SaveFilter (*Session_);
 					}
 				});
 		Ui_.PeersView_->addAction (banPeer);
@@ -76,9 +75,9 @@ namespace LC::BitTorrent
 
 	PeersWidget::~PeersWidget () = default;
 
-	void PeersWidget::SetSessionHolder (const SessionHolder& holder)
+	void PeersWidget::SetSession (libtorrent::session& session)
 	{
-		Holder_ = &holder;
+		Session_ = &session;
 	}
 
 	void PeersWidget::SetSelectedTorrent (const QModelIndex& torrent)

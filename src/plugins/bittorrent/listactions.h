@@ -18,17 +18,20 @@ class QMenu;
 class QToolBar;
 class QWidget;
 
+namespace libtorrent
+{
+	class session;
+}
+
 namespace LC::BitTorrent
 {
-	class SessionHolder;
-
 	class ListActions final : public QObject
 	{
 		Q_DECLARE_TR_FUNCTIONS (LC::BitTorrent::ListActions)
 	public:
 		struct Dependencies
 		{
-			const SessionHolder& Holder_;
+			libtorrent::session& Session_;
 			std::function<QWidget* ()> GetPreferredParent_;
 		};
 	private:
