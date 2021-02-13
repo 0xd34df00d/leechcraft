@@ -49,4 +49,23 @@ namespace LC::BitTorrent
 			TorrentStats,
 		};
 	};
+
+	struct Columns
+	{
+		enum
+		{
+			ColumnID,
+			ColumnName,
+			ColumnState,
+			ColumnProgress,  // percentage, Downloaded of Size
+			ColumnDownSpeed,
+			ColumnUpSpeed,
+			ColumnLeechers,
+			ColumnSeeders,
+			ColumnSize,
+			ColumnDownloaded,
+			ColumnUploaded,
+			ColumnRatio
+		};
+	};
 }

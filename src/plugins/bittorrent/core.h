@@ -164,22 +164,6 @@ namespace BitTorrent
 
 		Core ();
 	public:
-		enum Columns
-		{
-			ColumnID,
-			ColumnName,
-			ColumnState,
-			ColumnProgress,  // percentage, Downloaded of Size
-			ColumnDownSpeed,
-			ColumnUpSpeed,
-			ColumnLeechers,
-			ColumnSeeders,
-			ColumnSize,
-			ColumnDownloaded,
-			ColumnUploaded,
-			ColumnRatio
-		};
-
 		static Core* Instance ();
 
 		void SetWidgets (QToolBar*, QWidget*);

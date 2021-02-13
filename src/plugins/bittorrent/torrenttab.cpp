@@ -36,7 +36,7 @@ namespace LC::BitTorrent
 
 			void paint (QPainter *painter, const QStyleOptionViewItem& option, const QModelIndex& index) const override
 			{
-				if (index.column () != Core::ColumnProgress)
+				if (index.column () != Columns::ColumnProgress)
 				{
 					QStyledItemDelegate::paint (painter, option, index);
 					return;
@@ -91,13 +91,13 @@ namespace LC::BitTorrent
 					const auto& rows = Ui_.TorrentsView_->selectionModel ()->selectedRows ();
 					Ui_.Tabs_->SetSelectedIndices (rows);
 				});
-		Ui_.TorrentsView_->sortByColumn (Core::ColumnID, Qt::SortOrder::AscendingOrder);
+		Ui_.TorrentsView_->sortByColumn (Columns::ColumnID, Qt::SortOrder::AscendingOrder);
 
 		QHeaderView *header = Ui_.TorrentsView_->header ();
 		const auto& fm = fontMetrics ();
-		header->resizeSection (Core::Columns::ColumnID,
+		header->resizeSection (Columns::ColumnID,
 				fm.horizontalAdvance (QStringLiteral ("999")));
-		header->resizeSection (Core::Columns::ColumnName,
+		header->resizeSection (Columns::ColumnName,
 				fm.horizontalAdvance (QStringLiteral ("boardwalk.empire.s03e02.hdtv.720p.ac3.rus.eng.novafilm.tv.mkv")) * 1.3);
 
 		auto buttonMgr = new Util::LineEditButtonManager (Ui_.SearchLine_);

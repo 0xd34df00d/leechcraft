@@ -515,7 +515,7 @@ namespace BitTorrent
 			return status.state == libtorrent::torrent_status::downloading ||
 					status.state == libtorrent::torrent_status::downloading_metadata;
 		case Qt::DecorationRole:
-			if (column != ColumnName)
+			if (column != Columns::ColumnName)
 				return {};
 
 			if (status.errc)
@@ -542,31 +542,31 @@ namespace BitTorrent
 		case Roles::SortRole:
 			switch (column)
 			{
-			case ColumnID:
+			case Columns::ColumnID:
 				return row + 1;
-			case ColumnName:
+			case Columns::ColumnName:
 				return QString::fromStdString (status.name);
-			case ColumnState:
+			case Columns::ColumnState:
 				return IsPaused (status) ?
 						-1 :
 						static_cast<int> (status.state);
-			case ColumnProgress:
+			case Columns::ColumnProgress:
 				return status.progress;
-			case ColumnDownSpeed:
+			case Columns::ColumnDownSpeed:
 				return status.download_payload_rate;
-			case ColumnUpSpeed:
+			case Columns::ColumnUpSpeed:
 				return status.upload_payload_rate;
-			case ColumnLeechers:
+			case Columns::ColumnLeechers:
 				return status.num_peers - status.num_seeds;
-			case ColumnSeeders:
+			case Columns::ColumnSeeders:
 				return status.num_seeds;
-			case ColumnDownloaded:
+			case Columns::ColumnDownloaded:
 				return static_cast<quint64> (status.all_time_download);
-			case ColumnSize:
+			case Columns::ColumnSize:
 				return static_cast<quint64> (status.total_wanted);
-			case ColumnUploaded:
+			case Columns::ColumnUploaded:
 				return static_cast<quint64> (status.all_time_upload);
-			case ColumnRatio:
+			case Columns::ColumnRatio:
 				if (status.all_time_download)
 					return static_cast<double> (status.all_time_upload) / status.all_time_download;
 
@@ -580,13 +580,13 @@ namespace BitTorrent
 		case Qt::DisplayRole:
 			switch (column)
 			{
-			case ColumnID:
+			case Columns::ColumnID:
 				return row + 1;
-			case ColumnName:
+			case Columns::ColumnName:
 				return QString::fromStdString (status.name);
-			case ColumnState:
+			case Columns::ColumnState:
 				return GetStringForStatus (status);
-			case ColumnProgress:
+			case Columns::ColumnProgress:
 				if (role == Roles::FullLengthText)
 				{
 					if (status.state == libtorrent::torrent_status::downloading)
@@ -651,21 +651,21 @@ namespace BitTorrent
 								.arg (Util::MakePrettySize (status.total_wanted));
 					}
 				}
-			case ColumnDownSpeed:
+			case Columns::ColumnDownSpeed:
 				return Util::MakePrettySize (status.download_payload_rate) + tr ("/s");
-			case ColumnUpSpeed:
+			case Columns::ColumnUpSpeed:
 				return Util::MakePrettySize (status.upload_payload_rate) + tr ("/s");
-			case ColumnLeechers:
+			case Columns::ColumnLeechers:
 				return QString::number (status.num_peers - status.num_seeds);
-			case ColumnSeeders:
+			case Columns::ColumnSeeders:
 				return QString::number (status.num_seeds);
-			case ColumnDownloaded:
+			case Columns::ColumnDownloaded:
 				return Util::MakePrettySize (status.all_time_download);
-			case ColumnSize:
+			case Columns::ColumnSize:
 				return Util::MakePrettySize (status.total_wanted);
-			case ColumnUploaded:
+			case Columns::ColumnUploaded:
 				return Util::MakePrettySize (status.all_time_upload);
-			case ColumnRatio:
+			case Columns::ColumnRatio:
 				if (status.all_time_download)
 				{
 					const auto ratio = static_cast<double> (status.all_time_upload) / status.all_time_download;

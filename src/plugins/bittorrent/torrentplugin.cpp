@@ -65,7 +65,7 @@ namespace LC::BitTorrent
 			{
 				const auto& index = mapToSource (unmapped);
 				const int normCol = index.column ();
-				if (normCol == Core::ColumnProgress && role == Qt::DisplayRole)
+				if (normCol == Columns::ColumnProgress && role == Qt::DisplayRole)
 					return sourceModel ()->data (index, Roles::FullLengthText);
 
 				return QSortFilterProxyModel::data (unmapped, role);
@@ -73,8 +73,8 @@ namespace LC::BitTorrent
 		protected:
 			bool filterAcceptsColumn (int sourceColumn, const QModelIndex&) const override
 			{
-				return sourceColumn >= Core::Columns::ColumnName &&
-						sourceColumn <= Core::Columns::ColumnProgress;
+				return sourceColumn >= Columns::ColumnName &&
+						sourceColumn <= Columns::ColumnProgress;
 			}
 		};
 	}
