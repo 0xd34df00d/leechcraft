@@ -460,7 +460,7 @@ namespace BitTorrent
 		switch (role)
 		{
 		case Roles::TorrentTags:
-			ts.Tags_ = data.toStringList ();
+			ts.Tags_ = Proxy_->GetTagsManager ()->GetIDs (data.toStringList ());
 			return true;
 		case Roles::IsManaged:
 			ts.AutoManaged_ = data.toBool ();
@@ -709,8 +709,9 @@ namespace BitTorrent
 			return result;
 		}
 		case RoleTags:
-		case Roles::TorrentTags:
 			return Handles_.at (row).Tags_;
+		case Roles::TorrentTags:
+			return Proxy_->GetTagsManager ()->GetTags (Handles_.at (row).Tags_);
 		case CustomDataRoles::RoleJobHolderRow:
 			return QVariant::fromValue<JobHolderRow> (JobHolderRow::DownloadProgress);
 		case JobHolderRole::ProcessState:
