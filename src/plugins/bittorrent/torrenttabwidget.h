@@ -10,6 +10,7 @@
 
 #include <memory>
 #include <QTabWidget>
+#include <QModelIndex>
 #include "ui_torrenttabwidget.h"
 
 class QAbstractItemModel;
@@ -25,9 +26,11 @@ namespace LC::BitTorrent
 
 		Ui::TorrentTabWidget Ui_;
 		QAction *RemoveWebSeedAction_;
-		int Index_ = -1;
-		QList<int> SelectedIndices_;
 
+		QModelIndex Index_;
+		QList<QModelIndex> SelectedIndices_;
+
+		QAbstractItemModel *Model_ = nullptr;
 		SessionSettingsManager *SSM_ = nullptr;
 		SessionHolder *Holder_ = nullptr;
 
@@ -39,6 +42,7 @@ namespace LC::BitTorrent
 
 		struct Dependencies
 		{
+			QAbstractItemModel& Model_;
 			SessionSettingsManager *SSM_;
 			SessionHolder& Holder_;
 		};
@@ -47,8 +51,8 @@ namespace LC::BitTorrent
 
 		void SetChangeTrackersAction (QAction*);
 
-		void SetCurrentIndex (int);
-		void SetSelectedIndices (const QList<int>&);
+		void SetCurrentIndex (const QModelIndex&);
+		void SetSelectedIndices (const QList<QModelIndex>&);
 		void InvalidateSelection ();
 	private:
 		void UpdateTorrentStats ();

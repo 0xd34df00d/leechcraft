@@ -11,28 +11,35 @@
 #include <QWidget>
 #include <QAction>
 #include <QCoreApplication>
+#include <QModelIndex>
 #include "ui_tabwidget.h"
+
+namespace libtorrent
+{
+	class session;
+}
 
 namespace LC::BitTorrent
 {
-	class SessionHolder;
 	class SessionSettingsManager;
 
 	class TabWidget : public QWidget
 	{
 		Q_DECLARE_TR_FUNCTIONS (LC::BitTorrent::TabWidget)
 
-		SessionHolder& Holder_;
+		libtorrent::session& Session_;
 		SessionSettingsManager& SSM_;
 
 		Ui::TabWidget Ui_;
 
-		int Torrent_ = -1;
-	public:
-		explicit TabWidget (SessionHolder&, SessionSettingsManager&, QWidget* = nullptr);
+		QAbstractItemModel& Model_;
 
-		int GetCurrentTorrent () const;
-		void SetCurrentTorrent (int);
+		QModelIndex Torrent_;
+	public:
+		explicit TabWidget (QAbstractItemModel&, libtorrent::session&, SessionSettingsManager&, QWidget* = nullptr);
+
+		QModelIndex GetCurrentTorrent () const;
+		void SetCurrentTorrent (const QModelIndex&);
 		void UpdateTorrentStats ();
 	private:
 		void UpdateDashboard ();

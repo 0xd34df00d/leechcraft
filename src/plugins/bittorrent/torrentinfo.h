@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include <memory>
+#include <optional>
 #include <libtorrent/torrent_info.hpp>
 #include <libtorrent/session_status.hpp>
 
@@ -19,7 +19,7 @@ namespace LC::BitTorrent
 		QString Destination_;
 		QString State_;
 		libtorrent::torrent_status Status_;
-		std::unique_ptr<libtorrent::torrent_info> Info_;
+		std::optional<libtorrent::torrent_info> Info_;
 	};
 }
 

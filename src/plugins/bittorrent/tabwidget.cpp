@@ -14,7 +14,6 @@
 #include "core.h"
 #include "torrentfilesmodel.h"
 #include "xmlsettingsmanager.h"
-#include "peersmodel.h"
 #include "addwebseeddialog.h"
 #include "sessionsettingsmanager.h"
 #include "sessionstats.h"
@@ -22,23 +21,23 @@
 
 namespace LC::BitTorrent
 {
-	TabWidget::TabWidget (SessionHolder& holder, SessionSettingsManager& ssm, QWidget *parent)
+	TabWidget::TabWidget (QAbstractItemModel& model, libtorrent::session& session, SessionSettingsManager& ssm, QWidget *parent)
 	: QWidget { parent }
-	, Holder_ { holder }
+	, Session_ { session }
 	, SSM_ { ssm }
+	, Model_ { model }
 	{
 		Ui_.setupUi (this);
 
 		new Util::TagsCompleter { Ui_.TorrentTags_ };
 		Ui_.TorrentTags_->AddSelector ();
 
-		connect (Core::Instance (),
+		connect (&model,
 				&QAbstractItemModel::dataChanged,
 				this,
 				[this] (const QModelIndex& from, const QModelIndex& to)
 				{
-					if (from.data (Roles::HandleIndex).toInt () <= Torrent_ &&
-							Torrent_ <= to.data (Roles::HandleIndex).toInt ())
+					if (from.row () <= Torrent_.row () && Torrent_.row () <= to.row ())
 						UpdateTorrentStats ();
 				});
 
@@ -54,16 +53,16 @@ namespace LC::BitTorrent
 				&SessionSettingsManager::SetOverallUploadRate);
 		connect (Ui_.TorrentDownloadRateController_,
 				qOverload<int> (&QSpinBox::valueChanged),
-				[this] (int val) { SetDownloadLimit (Holder_ [Torrent_], val); });
+				[this] (int val) { SetDownloadLimit (GetTorrentHandle (Torrent_), val); });
 		connect (Ui_.TorrentUploadRateController_,
 				qOverload<int> (&QSpinBox::valueChanged),
-				[this] (int val) { SetUploadLimit (Holder_ [Torrent_], val); });
+				[this] (int val) { SetUploadLimit (GetTorrentHandle (Torrent_), val); });
 		connect (Ui_.TorrentManaged_,
 				&QCheckBox::clicked,
-				[this] (bool managed) { Core::Instance ()->SetTorrentManaged (managed, Torrent_); });
+				[this] (bool managed) { Model_.setData (Torrent_, managed, Roles::IsManaged); });
 		connect (Ui_.TorrentSequentialDownload_,
 				&QCheckBox::clicked,
-				[this] (bool managed) { Core::Instance ()->SetTorrentSequentialDownload (managed, Torrent_); });
+				[this] (bool sequential) { Model_.setData (Torrent_, sequential, Roles::IsSequentialDownloading); });
 		connect (Ui_.DownloadingTorrents_,
 				qOverload<int> (&QSpinBox::valueChanged),
 				&SSM_,
@@ -76,31 +75,33 @@ namespace LC::BitTorrent
 				&QLineEdit::editingFinished,
 				[this]
 				{
-					const auto& split = GetProxyHolder ()->GetTagsManager ()->Split (Ui_.TorrentTags_->text ());
-					Core::Instance ()->UpdateTags (split, Torrent_);
+					const auto& tags = GetProxyHolder ()->GetTagsManager ()->Split (Ui_.TorrentTags_->text ());
+					Model_.setData (Torrent_, tags, Roles::TorrentTags);
 				});
 	}
 
-	int TabWidget::GetCurrentTorrent () const
+	QModelIndex TabWidget::GetCurrentTorrent () const
 	{
 		return Torrent_;
 	}
 
-	void TabWidget::SetCurrentTorrent (int torrent)
+	void TabWidget::SetCurrentTorrent (const QModelIndex& torrent)
 	{
+		Q_ASSERT (torrent.model () == &Model_);
+
 		Torrent_ = torrent;
 
-		if (Torrent_ == -1)
+		if (!Torrent_.isValid ())
 			return;
 
-		const auto& tags = Core::Instance ()->GetTagsForIndex (Torrent_);
+		const auto& tags = Torrent_.data (Roles::TorrentTags).toStringList ();
 		Ui_.TorrentTags_->setText (GetProxyHolder ()->GetTagsManager ()->Join (tags));
 		UpdateTorrentStats ();
 	}
 
 	void TabWidget::UpdateTorrentStats ()
 	{
-		if (Torrent_ == -1)
+		if (!Torrent_.isValid ())
 			return;
 
 		UpdateTorrentControl ();
@@ -125,35 +126,28 @@ namespace LC::BitTorrent
 
 	void TabWidget::UpdateTorrentControl ()
 	{
-		Ui_.TorrentDownloadRateController_->setValue (GetDownloadLimit (Holder_ [Torrent_]));
-		Ui_.TorrentUploadRateController_->setValue (GetUploadLimit (Holder_ [Torrent_]));
-		Ui_.TorrentManaged_->setCheckState (Core::Instance ()->IsTorrentManaged (Torrent_) ?
+		const auto& handle = GetTorrentHandle (Torrent_);
+		Ui_.TorrentDownloadRateController_->setValue (GetDownloadLimit (handle));
+		Ui_.TorrentUploadRateController_->setValue (GetUploadLimit (handle));
+		Ui_.TorrentManaged_->setCheckState (Torrent_.data (Roles::IsManaged).toBool () ?
 					Qt::Checked :
 					Qt::Unchecked);
 
-		Ui_.TorrentSequentialDownload_->setCheckState (Core::Instance ()->
-				IsTorrentSequentialDownload (Torrent_) ? Qt::Checked : Qt::Unchecked);
+		Ui_.TorrentSequentialDownload_->setCheckState (Torrent_.data (Roles::IsSequentialDownloading).toBool () ?
+				Qt::Checked :
+				Qt::Unchecked);
 
-		std::unique_ptr<TorrentInfo> i;
-		try
-		{
-			i = Core::Instance ()->GetTorrentStats (Torrent_);
-		}
-		catch (...)
-		{
-			Ui_.TorrentSettingsBox_->setEnabled (false);
-			return;
-		}
+		const auto& info = Torrent_.data (Roles::TorrentStats).value<TorrentInfo> ();
 
 		Ui_.TorrentSettingsBox_->setEnabled (true);
-		Ui_.LabelState_->setText (i->State_);
-		Ui_.LabelDownloadRate_->setText (Util::MakePrettySize (i->Status_.download_rate) + tr ("/s"));
-		Ui_.LabelUploadRate_->setText (Util::MakePrettySize (i->Status_.upload_rate) + tr ("/s"));
-		Ui_.LabelProgress_->setText (QString::number (i->Status_.progress * 100, 'f', 2) + "%");
-		Ui_.LabelWantedDownloaded_->setText (Util::MakePrettySize (i->Status_.total_wanted_done));
-		Ui_.LabelWantedSize_->setText (Util::MakePrettySize (i->Status_.total_wanted));
-		Ui_.LabelTotalUploaded_->setText (Util::MakePrettySize (i->Status_.all_time_upload));
-		Ui_.PiecesWidget_->SetPieceMap (i->Status_.pieces);
-		Ui_.LabelName_->setText (QString::fromStdString (i->Status_.name));
+		Ui_.LabelState_->setText (info.State_);
+		Ui_.LabelDownloadRate_->setText (Util::MakePrettySize (info.Status_.download_rate) + tr ("/s"));
+		Ui_.LabelUploadRate_->setText (Util::MakePrettySize (info.Status_.upload_rate) + tr ("/s"));
+		Ui_.LabelProgress_->setText (QString::number (info.Status_.progress * 100, 'f', 2) + "%");
+		Ui_.LabelWantedDownloaded_->setText (Util::MakePrettySize (info.Status_.total_wanted_done));
+		Ui_.LabelWantedSize_->setText (Util::MakePrettySize (info.Status_.total_wanted));
+		Ui_.LabelTotalUploaded_->setText (Util::MakePrettySize (info.Status_.all_time_upload));
+		Ui_.PiecesWidget_->SetPieceMap (info.Status_.pieces);
+		Ui_.LabelName_->setText (QString::fromStdString (info.Status_.name));
 	}
 }

@@ -18,6 +18,7 @@
 #include "banpeersdialog.h"
 #include "sessionholder.h"
 #include "ltutils.h"
+#include "types.h"
 
 namespace LC::BitTorrent
 {
@@ -40,7 +41,7 @@ namespace LC::BitTorrent
 				{
 					AddPeerDialog peer;
 					if (peer.exec () == QDialog::Accepted)
-						AddPeer ((*Holder_) [TorrentIdx_], peer.GetIP (), peer.GetPort ());
+						AddPeer (GetTorrentHandle (TorrentIdx_), peer.GetIP (), peer.GetPort ());
 				});
 		Ui_.PeersView_->addAction (addPeer);
 
@@ -80,11 +81,11 @@ namespace LC::BitTorrent
 		Holder_ = &holder;
 	}
 
-	void PeersWidget::SetSelectedTorrent (int torrent)
+	void PeersWidget::SetSelectedTorrent (const QModelIndex& torrent)
 	{
 		TorrentIdx_ = torrent;
 
-		auto newModel = std::make_unique<PeersModel> (*Holder_, torrent);
+		auto newModel = std::make_unique<PeersModel> (torrent);
 		PeersSorter_->setSourceModel (newModel.get ());
 		CurrentModel_ = std::move (newModel);
 	}

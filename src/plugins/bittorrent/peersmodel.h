@@ -15,7 +15,6 @@
 
 namespace LC::BitTorrent
 {
-	class SessionHolder;
 	class GeoIP;
 
 	class PeersModel : public QAbstractItemModel
@@ -24,8 +23,7 @@ namespace LC::BitTorrent
 
 		const QString FlagsPath_;
 		const QStringList Headers_;
-		const SessionHolder& Holder_;
-		const int Index_;
+		const QModelIndex Index_;
 
 		QList<PeerInfo> Peers_;
 	public:
@@ -46,7 +44,7 @@ namespace LC::BitTorrent
 			ColumnPieces
 		};
 
-		explicit PeersModel (const SessionHolder&, int idx, QObject *parent = nullptr);
+		explicit PeersModel (const QModelIndex& torrentIdx, QObject *parent = nullptr);
 
 		int columnCount (const QModelIndex& = {}) const override;
 		QVariant data (const QModelIndex&, int = Qt::DisplayRole) const override;

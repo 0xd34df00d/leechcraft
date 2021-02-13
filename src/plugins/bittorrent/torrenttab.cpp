@@ -14,7 +14,6 @@
 #include <util/gui/clearlineeditaddon.h>
 #include <util/gui/lineeditbuttonmanager.h>
 #include <util/gui/util.h>
-#include <util/sll/prelude.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/itagsmanager.h>
@@ -70,6 +69,7 @@ namespace LC::BitTorrent
 	{
 		Ui_.setupUi (this);
 		Ui_.Tabs_->SetDependencies ({
+				*Core::Instance (),
 				Core::Instance ()->GetSessionSettingsManager (),
 				holder
 			});
@@ -83,18 +83,13 @@ namespace LC::BitTorrent
 		Ui_.TorrentsView_->setModel (ViewFilter_);
 		connect (Ui_.TorrentsView_->selectionModel (),
 				&QItemSelectionModel::currentChanged,
-				[this] (const QModelIndex& index)
-				{
-					Ui_.Tabs_->SetCurrentIndex (ViewFilter_->mapToSource (index).row ());
-				});
+				[this] (const QModelIndex& index) { Ui_.Tabs_->SetCurrentIndex (ViewFilter_->mapToSource (index)); });
 		connect (Ui_.TorrentsView_->selectionModel (),
 				&QItemSelectionModel::selectionChanged,
 				[this]
 				{
 					const auto& rows = Ui_.TorrentsView_->selectionModel ()->selectedRows ();
-					const auto& idxs = Util::Map (rows,
-							[] (const QModelIndex& idx) { return idx.data (Roles::HandleIndex).toInt (); });
-					Ui_.Tabs_->SetSelectedIndices (idxs);
+					Ui_.Tabs_->SetSelectedIndices (rows);
 				});
 		Ui_.TorrentsView_->sortByColumn (Core::ColumnID, Qt::SortOrder::AscendingOrder);
 
@@ -176,9 +171,8 @@ namespace LC::BitTorrent
 		return Actions_->GetToolbar ();
 	}
 
-	void TorrentTab::SetCurrentTorrent (int row)
+	void TorrentTab::SetCurrentTorrent (const QModelIndex& idx)
 	{
-		const auto& srcIdx = Core::Instance ()->index (row, 0);
-		Ui_.TorrentsView_->setCurrentIndex (ViewFilter_->mapFromSource (srcIdx));
+		Ui_.TorrentsView_->setCurrentIndex (ViewFilter_->mapFromSource (idx));
 	}
 }

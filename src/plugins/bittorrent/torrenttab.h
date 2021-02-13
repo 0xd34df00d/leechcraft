@@ -12,6 +12,8 @@
 #include <interfaces/ihavetabs.h>
 #include "ui_torrenttab.h"
 
+class QModelIndex;
+
 namespace LC::BitTorrent
 {
 	class ListActions;
@@ -42,7 +44,7 @@ namespace LC::BitTorrent
 		QToolBar* GetToolBar () const override;
 		void Remove () override;
 
-		void SetCurrentTorrent (int);
+		void SetCurrentTorrent (const QModelIndex&);
 	signals:
 		void removeTab (QWidget*);
 	};

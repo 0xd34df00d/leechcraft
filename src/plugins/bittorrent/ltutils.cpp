@@ -180,6 +180,10 @@ namespace LC::BitTorrent
 
 	const libtorrent::torrent_handle& GetTorrentHandle (const QModelIndex& index)
 	{
+		static const libtorrent::torrent_handle guard;
+		if (!index.isValid ())
+			return guard;
+
 		return *index.data (Roles::TorrentHandle).value<const libtorrent::torrent_handle*> ();
 	}
 }

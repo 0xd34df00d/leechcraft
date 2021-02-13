@@ -333,7 +333,7 @@ namespace LC::BitTorrent
 			void HandleCurrentRowChanged (const QModelIndex& index) override
 			{
 				Plugin_->Actions_->SetCurrentIndex (index);
-				Plugin_->TabWidget_->SetCurrentTorrent (index.row ());
+				Plugin_->TabWidget_->SetCurrentTorrent (index);
 			}
 
 			void HandleSelectedRowsChanged (const QModelIndexList& indexes) override
@@ -426,7 +426,8 @@ namespace LC::BitTorrent
 		Core::Instance ()->DoDelayedInit ();
 
 		SetupActions ();
-		TabWidget_ = std::make_unique<TabWidget> (Core::Instance ()->GetSessionHolder (),
+		TabWidget_ = std::make_unique<TabWidget> (*Core::Instance (),
+				Core::Instance ()->GetSessionHolder ().GetSession (),
 				*Core::Instance ()->GetSessionSettingsManager ());
 
 		Core::Instance ()->SetWidgets (Actions_->GetToolbar (), TabWidget_.get ());
@@ -461,7 +462,7 @@ namespace LC::BitTorrent
 				[this]
 				{
 					const auto torrent = TabWidget_->GetCurrentTorrent ();
-					if (torrent == -1)
+					if (!torrent.isValid ())
 						return;
 
 					TorrentTab_->SetCurrentTorrent (torrent);

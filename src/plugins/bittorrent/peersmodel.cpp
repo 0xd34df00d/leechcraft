@@ -17,11 +17,12 @@
 #include <util/sll/unreachable.h>
 #include <util/sll/qtutil.h>
 #include "geoip.h"
-#include "sessionholder.h"
+#include "types.h"
+#include "ltutils.h"
 
 namespace LC::BitTorrent
 {
-	PeersModel::PeersModel (const SessionHolder& holder, int idx, QObject *parent)
+	PeersModel::PeersModel (const QModelIndex& idx, QObject *parent)
 	: QAbstractItemModel { parent }
 	, FlagsPath_ { Util::GetSysPath (Util::SysPath::Share, QStringLiteral ("global_icons/flags"), {}) }
 	, Headers_
@@ -34,7 +35,6 @@ namespace LC::BitTorrent
 		tr ("Client"),
 		tr ("Available pieces"),
 	}
-	, Holder_ { holder }
 	, Index_ { idx }
 	{
 	}
@@ -153,7 +153,7 @@ namespace LC::BitTorrent
 	void PeersModel::Update ()
 	{
 		std::vector<libtorrent::peer_info> peerInfos;
-		const auto& handle = Holder_ [Index_];
+		const auto& handle = GetTorrentHandle (Index_);
 		if (!handle.is_valid ())
 			return;
 

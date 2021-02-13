@@ -27,14 +27,14 @@ namespace LC::BitTorrent
 
 		std::unique_ptr<PeersModel> CurrentModel_;
 		QSortFilterProxyModel * const PeersSorter_;
-		int TorrentIdx_ = -1;
+		QModelIndex TorrentIdx_;
 	public:
 		explicit PeersWidget (QWidget* = nullptr);
 		~PeersWidget () override;
 
 		void SetSessionHolder (const SessionHolder&);
 
-		void SetSelectedTorrent (int);
+		void SetSelectedTorrent (const QModelIndex&);
 		void Update ();
 	private:
 		void UpdateDetails ();
