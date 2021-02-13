@@ -216,7 +216,6 @@ namespace BitTorrent
 
 		libtorrent::torrent_handle GetTorrentHandle (int) const;
 
-		std::unique_ptr<TorrentInfo> GetTorrentStats (int) const;
 		SessionStats GetSessionStats () const;
 		void GetPerTracker (pertrackerstats_t&) const;
 		int GetListenPort () const;
@@ -272,12 +271,6 @@ namespace BitTorrent
 		QString GetTorrentDirectory (int) const;
 		bool MoveTorrentFiles (const QString&, int);
 
-		bool IsTorrentManaged (int) const;
-		void SetTorrentManaged (bool, int);
-		bool IsTorrentSequentialDownload (int) const;
-		void SetTorrentSequentialDownload (bool, int);
-		bool IsTorrentSuperSeeding (int) const;
-		void SetTorrentSuperSeeding (bool, int);
 		void MakeTorrent (const NewTorrentParams&);
 		QString GetExternalAddress () const;
 		bool CheckValidity (int) const;

@@ -789,24 +789,6 @@ namespace BitTorrent
 		return Handles_.at (idx).Handle_;
 	}
 
-	std::unique_ptr<TorrentInfo> Core::GetTorrentStats (int idx) const
-	{
-		if (!CheckValidity (idx))
-			throw std::runtime_error ("Invalid torrent for stats");
-
-		const auto& handle = Handles_.at (idx).Handle_;
-
-		auto result = std::make_unique<TorrentInfo> ();
-		result->Status_ = StatusKeeper_->GetStatus (handle, CachedStatusKeeper::AllFlags);
-		if (const auto info = handle.torrent_file ())
-			result->Info_.reset (new libtorrent::torrent_info (*info));
-		result->Destination_ = QString::fromStdString (result->Status_.save_path);
-		result->State_ = GetStringForStatus (result->Status_);
-		if (result->Status_.errc)
-			result->State_ = " (" + QString::fromStdString (result->Status_.errc.message ()) + ")";
-		return result;
-	}
-
 	SessionStats Core::GetSessionStats () const
 	{
 		const auto& status = Session_->status ();
@@ -1161,57 +1143,6 @@ namespace BitTorrent
 
 		Handles_.at (idx).Handle_.move_storage (newDir.toUtf8 ().constData ());
 		return true;
-	}
-
-	bool Core::IsTorrentManaged (int idx) const
-	{
-		if (!CheckValidity (idx))
-			return false;
-
-		return IsAutoManaged (StatusKeeper_->GetStatus (Handles_.at (idx).Handle_));
-	}
-
-	void Core::SetTorrentManaged (bool man, int idx)
-	{
-		if (!CheckValidity (idx))
-			return;
-
-		ToggleFlag (Handles_ [idx].Handle_, libtorrent::torrent_flags::auto_managed, man);
-		Handles_ [idx].AutoManaged_ = man;
-	}
-
-	bool Core::IsTorrentSequentialDownload (int idx) const
-	{
-		if (!CheckValidity (idx))
-			return false;
-
-		const auto& status = StatusKeeper_->GetStatus (Handles_.at (idx).Handle_);
-		return status.flags & libtorrent::torrent_flags::sequential_download;
-	}
-
-	void Core::SetTorrentSequentialDownload (bool seq, int idx)
-	{
-		if (!CheckValidity (idx))
-			return;
-
-		ToggleFlag (Handles_ [idx].Handle_, libtorrent::torrent_flags::sequential_download, seq);
-	}
-
-	bool Core::IsTorrentSuperSeeding (int idx) const
-	{
-		if (!CheckValidity (idx))
-			return false;
-
-		const auto& status = StatusKeeper_->GetStatus (Handles_.at (idx).Handle_);
-		return status.flags & libtorrent::torrent_flags::super_seeding;
-	}
-
-	void Core::SetTorrentSuperSeeding (bool sup, int idx)
-	{
-		if (!CheckValidity (idx))
-			return;
-
-		ToggleFlag (Handles_ [idx].Handle_, libtorrent::torrent_flags::super_seeding, sup);
 	}
 
 	void Core::MakeTorrent (const NewTorrentParams& params)
