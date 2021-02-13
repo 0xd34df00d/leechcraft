@@ -104,7 +104,7 @@ namespace LC::BitTorrent
 	{
 		Ui_.FilesWidget_->SetAlertDispatcher (deps.AlertDispatcher_);
 
-		SSM_ = deps.SSM_;
+		SSM_ = &deps.SSM_;
 		connect (Ui_.OverallDownloadRateController_,
 				qOverload<int> (&QSpinBox::valueChanged),
 				SSM_,

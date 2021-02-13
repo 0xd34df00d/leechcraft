@@ -48,7 +48,7 @@ namespace LC::BitTorrent
 		{
 			AlertDispatcher& AlertDispatcher_;
 			QAbstractItemModel& Model_;
-			SessionSettingsManager *SSM_;
+			SessionSettingsManager& SSM_;
 			libtorrent::session& Session_;
 		};
 

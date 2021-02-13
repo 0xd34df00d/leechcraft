@@ -31,8 +31,16 @@ namespace LC::BitTorrent
 		Q_INTERFACES (ITabWidget)
 
 		Ui::TorrentTab Ui_;
-
-		const libtorrent::session& Session_;
+	public:
+		struct Dependencies
+		{
+			libtorrent::session& Session_;
+			QAbstractItemModel& Model_;
+			AlertDispatcher& Dispatcher_;
+			SessionSettingsManager& SSM_;
+		};
+	private:
+		Dependencies D_;
 
 		const TabClassInfo TC_;
 		QObject *ParentMT_;
@@ -41,7 +49,7 @@ namespace LC::BitTorrent
 
 		TabViewProxyModel *ViewFilter_;
 	public:
-		TorrentTab (libtorrent::session&, const TabClassInfo&, QObject*);
+		TorrentTab (const Dependencies&, const TabClassInfo&, QObject*);
 
 		TabClassInfo GetTabClassInfo () const override;
 		QObject* ParentMultiTabs () override;

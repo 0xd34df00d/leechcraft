@@ -7,6 +7,7 @@
  **********************************************************************/
 
 #include "torrenttab.h"
+#include <cmath>
 #include <QStyledItemDelegate>
 #include <QToolBar>
 #include <QMenu>
@@ -17,7 +18,6 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/itagsmanager.h>
-#include "core.h"
 #include "movetorrentfiles.h"
 #include "tabviewproxymodel.h"
 #include "xmlsettingsmanager.h"
@@ -59,24 +59,24 @@ namespace LC::BitTorrent
 		};
 	}
 
-	TorrentTab::TorrentTab (libtorrent::session& session, const TabClassInfo& tc, QObject *mt)
-	: Session_ { session }
+	TorrentTab::TorrentTab (const Dependencies& deps, const TabClassInfo& tc, QObject *mt)
+	: D_ { deps }
 	, TC_ { tc }
 	, ParentMT_ { mt }
-	, Actions_ { new ListActions { { session, [this] { return this; } }, this } }
+	, Actions_ { new ListActions { { deps.Session_, [this] { return this; } }, this } }
 	, ViewFilter_ { new TabViewProxyModel { this } }
 	{
 		Ui_.setupUi (this);
 		Ui_.Tabs_->SetDependencies ({
-				Core::Instance ()->GetAlertDispatcher (),
-				*Core::Instance (),
-				Core::Instance ()->GetSessionSettingsManager (),
-				session
+				deps.Dispatcher_,
+				deps.Model_,
+				deps.SSM_,
+				deps.Session_,
 			});
 
 		ViewFilter_->setDynamicSortFilter (true);
 		ViewFilter_->setSortRole (Roles::SortRole);
-		ViewFilter_->setSourceModel (Core::Instance ());
+		ViewFilter_->setSourceModel (&deps.Model_);
 
 		Ui_.TorrentsView_->setItemDelegate (new TorrentsListDelegate (Ui_.TorrentsView_));
 

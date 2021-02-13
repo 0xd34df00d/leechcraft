@@ -105,7 +105,18 @@ namespace LC::BitTorrent
 		SetupCore ();
 		SetupStuff ();
 
-		TorrentTab_ = new TorrentTab (Core::Instance ()->GetSession (), TabTC_, this);
+		TorrentTab_ = new TorrentTab
+		{
+			{
+				.Session_ = Core::Instance ()->GetSession (),
+				.Model_ = *Core::Instance (),
+				.Dispatcher_ = Core::Instance ()->GetAlertDispatcher (),
+				.SSM_ = *Core::Instance ()->GetSessionSettingsManager ()
+			},
+			TabTC_,
+			this
+		};
+
 		connect (TorrentTab_,
 				&TorrentTab::removeTab,
 				this,
