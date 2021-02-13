@@ -69,6 +69,7 @@ namespace LC::BitTorrent
 	{
 		Ui_.setupUi (this);
 		Ui_.Tabs_->SetDependencies ({
+				Core::Instance ()->GetAlertDispatcher (),
 				*Core::Instance (),
 				Core::Instance ()->GetSessionSettingsManager (),
 				holder

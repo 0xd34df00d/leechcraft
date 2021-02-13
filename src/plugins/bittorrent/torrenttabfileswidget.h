@@ -16,6 +16,7 @@ class QSortFilterProxyModel;
 
 namespace LC::BitTorrent
 {
+	class AlertDispatcher;
 	class TorrentFilesModel;
 
 	class TorrentTabFilesWidget : public QWidget
@@ -25,9 +26,13 @@ namespace LC::BitTorrent
 		Ui::TorrentTabFilesWidget Ui_;
 		QSortFilterProxyModel * const ProxyModel_;
 
+		AlertDispatcher *AlertDispatcher_;
+
 		TorrentFilesModel *CurrentFilesModel_ = nullptr;
 	public:
 		explicit TorrentTabFilesWidget (QWidget* = nullptr);
+
+		void SetAlertDispatcher (AlertDispatcher&);
 
 		void SetCurrentIndex (const QModelIndex&);
 	private:

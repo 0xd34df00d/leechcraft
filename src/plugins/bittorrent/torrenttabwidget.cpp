@@ -102,6 +102,8 @@ namespace LC::BitTorrent
 
 	void TorrentTabWidget::SetDependencies (const Dependencies& deps)
 	{
+		Ui_.FilesWidget_->SetAlertDispatcher (deps.AlertDispatcher_);
+
 		SSM_ = deps.SSM_;
 		connect (Ui_.OverallDownloadRateController_,
 				qOverload<int> (&QSpinBox::valueChanged),

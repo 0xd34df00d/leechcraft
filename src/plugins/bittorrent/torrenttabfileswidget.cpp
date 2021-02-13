@@ -14,7 +14,6 @@
 #include <util/sll/prelude.h>
 #include <util/util.h>
 #include "filesviewdelegate.h"
-#include "core.h"
 #include "ltutils.h"
 #include "torrentfilesmodel.h"
 
@@ -92,6 +91,11 @@ namespace LC::BitTorrent
 				&TorrentTabFilesWidget::ShowContextMenu);
 	}
 
+	void TorrentTabFilesWidget::SetAlertDispatcher (AlertDispatcher& dispatcher)
+	{
+		AlertDispatcher_ = &dispatcher;
+	}
+
 	void TorrentTabFilesWidget::SetCurrentIndex (const QModelIndex& index)
 	{
 		ProxyModel_->setSourceModel (nullptr);
@@ -101,13 +105,13 @@ namespace LC::BitTorrent
 
 		const auto& handle = GetTorrentHandle (index);
 
-		CurrentFilesModel_ = new TorrentFilesModel { handle, Core::Instance ()->GetAlertDispatcher () };
+		CurrentFilesModel_ = new TorrentFilesModel { handle, *AlertDispatcher_ };
 		ProxyModel_->setSourceModel (CurrentFilesModel_);
 		QTimer::singleShot (0,
 				Ui_.FilesView_,
 				&QTreeView::expandAll);
 
-		const auto filesCount = handle.torrent_file () ? handle.torrent_file ()->num_files () : 0;
+		const auto filesCount = GetFilesCount (handle);
 		Ui_.SearchLine_->setVisible (filesCount > 1);
 
 		const auto& fm = Ui_.FilesView_->fontMetrics ();

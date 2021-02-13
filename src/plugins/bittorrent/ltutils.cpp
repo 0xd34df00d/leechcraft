@@ -186,4 +186,9 @@ namespace LC::BitTorrent
 
 		return *index.data (Roles::TorrentHandle).value<const libtorrent::torrent_handle*> ();
 	}
+
+	int GetFilesCount (const libtorrent::torrent_handle& handle)
+	{
+		return handle.torrent_file () ? handle.torrent_file ()->num_files () : 0;
+	}
 }

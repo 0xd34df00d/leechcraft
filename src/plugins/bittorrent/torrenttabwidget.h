@@ -42,6 +42,7 @@ namespace LC::BitTorrent
 
 		struct Dependencies
 		{
+			AlertDispatcher& AlertDispatcher_;
 			QAbstractItemModel& Model_;
 			SessionSettingsManager *SSM_;
 			SessionHolder& Holder_;
