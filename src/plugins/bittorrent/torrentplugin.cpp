@@ -164,12 +164,12 @@ namespace LC::BitTorrent
 
 	qint64 TorrentPlugin::GetDownloadSpeed () const
 	{
-		return Core::Instance ()->GetSessionStats ().Rate_.Down_;
+		return GetSessionStats (Core::Instance ()->GetSession ()).Rate_.Down_;
 	}
 
 	qint64 TorrentPlugin::GetUploadSpeed () const
 	{
-		return Core::Instance ()->GetSessionStats ().Rate_.Up_;
+		return GetSessionStats (Core::Instance ()->GetSession ()).Rate_.Up_;
 	}
 
 	namespace

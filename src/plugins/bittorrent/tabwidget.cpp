@@ -11,13 +11,13 @@
 #include <util/tags/tagscompleter.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
-#include "core.h"
 #include "torrentfilesmodel.h"
 #include "xmlsettingsmanager.h"
 #include "addwebseeddialog.h"
 #include "sessionsettingsmanager.h"
 #include "sessionstats.h"
 #include "ltutils.h"
+#include "torrentinfo.h"
 
 namespace LC::BitTorrent
 {
@@ -111,7 +111,7 @@ namespace LC::BitTorrent
 
 	void TabWidget::UpdateOverallStats ()
 	{
-		const auto& stats = Core::Instance ()->GetSessionStats ();
+		const auto& stats = GetSessionStats (Session_);
 		Ui_.LabelTotalDownloadRate_->setText (Util::MakePrettySize (stats.Rate_.Down_) + tr ("/s"));
 		Ui_.LabelTotalUploadRate_->setText (Util::MakePrettySize (stats.Rate_.Up_) + tr ("/s"));
 	}

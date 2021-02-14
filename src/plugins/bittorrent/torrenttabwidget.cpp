@@ -102,6 +102,8 @@ namespace LC::BitTorrent
 
 	void TorrentTabWidget::SetDependencies (const Dependencies& deps)
 	{
+		Session_ = &deps.Session_;
+
 		Ui_.FilesWidget_->SetAlertDispatcher (deps.AlertDispatcher_);
 
 		SSM_ = &deps.SSM_;
@@ -262,7 +264,7 @@ namespace LC::BitTorrent
 
 	void TorrentTabWidget::UpdateOverallStats ()
 	{
-		const auto& stats = Core::Instance ()->GetSessionStats ();
+		const auto& stats = GetSessionStats (*Session_);
 
 		Ui_.LabelTotalDownloadRate_->setText (Util::MakePrettySize (stats.Rate_.Down_) + tr ("/s"));
 		Ui_.LabelTotalUploadRate_->setText (Util::MakePrettySize (stats.Rate_.Up_) + tr ("/s"));

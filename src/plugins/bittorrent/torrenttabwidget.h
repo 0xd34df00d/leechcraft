@@ -37,6 +37,7 @@ namespace LC::BitTorrent
 
 		QAbstractItemModel *Model_ = nullptr;
 		SessionSettingsManager *SSM_ = nullptr;
+		libtorrent::session *Session_ = nullptr;
 
 		std::unique_ptr<PiecesModel> PiecesModel_;
 		std::unique_ptr<QAbstractItemModel> WebSeedsModel_;

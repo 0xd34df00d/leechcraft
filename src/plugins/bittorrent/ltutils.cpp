@@ -16,7 +16,9 @@
 #include <libtorrent/torrent_handle.hpp>
 #include <libtorrent/torrent_info.hpp>
 #include <libtorrent/session.hpp>
+#include <libtorrent/session_status.hpp>
 #include "ipfilterdialog.h"
+#include "sessionstats.h"
 #include "types.h"
 
 Q_DECLARE_METATYPE (const libtorrent::torrent_handle*)
@@ -190,5 +192,42 @@ namespace LC::BitTorrent
 	int GetFilesCount (const libtorrent::torrent_handle& handle)
 	{
 		return handle.torrent_file () ? handle.torrent_file ()->num_files () : 0;
+	}
+
+	SessionStats GetSessionStats (const libtorrent::session& session)
+	{
+		const auto& status = session.status ();
+
+		libtorrent::cache_status cacheStatus;
+		session.get_cache_info (&cacheStatus, {}, libtorrent::session::disk_cache_no_pieces);
+
+		return
+		{
+			{ status.download_rate, status.upload_rate },
+			{ status.ip_overhead_download_rate, status.ip_overhead_upload_rate },
+			{ status.dht_download_rate, status.dht_upload_rate },
+			{ status.tracker_download_rate, status.tracker_upload_rate },
+
+			{ status.total_download, status.total_upload },
+			{ status.total_ip_overhead_download, status.total_ip_overhead_upload },
+			{ status.total_dht_download, status.total_dht_upload },
+			{ status.total_tracker_download, status.total_tracker_upload },
+			{ status.total_payload_download, status.total_payload_upload },
+
+			status.num_peers,
+			status.dht_global_nodes,
+			status.dht_nodes,
+			status.dht_torrents,
+
+			status.total_failed_bytes,
+			status.total_redundant_bytes,
+
+			cacheStatus.blocks_written,
+			cacheStatus.writes,
+			cacheStatus.blocks_read,
+			cacheStatus.blocks_read_hit,
+			cacheStatus.cache_size,
+			cacheStatus.read_cache_size,
+		};
 	}
 }

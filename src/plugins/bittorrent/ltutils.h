@@ -50,4 +50,7 @@ namespace LC::BitTorrent
 	const libtorrent::torrent_handle& GetTorrentHandle (const QModelIndex&);
 
 	int GetFilesCount (const libtorrent::torrent_handle&);
+
+	struct SessionStats;
+	SessionStats GetSessionStats (const libtorrent::session&);
 }

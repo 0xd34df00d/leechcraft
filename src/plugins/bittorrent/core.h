@@ -197,7 +197,6 @@ namespace BitTorrent
 		libtorrent::session& GetSession ();
 		libtorrent::torrent_handle GetTorrentHandle (int) const;
 
-		SessionStats GetSessionStats () const;
 		void GetPerTracker (pertrackerstats_t&) const;
 		int GetListenPort () const;
 		QStringList GetTagsForIndex (int) const;
