@@ -133,14 +133,6 @@ namespace BitTorrent
 				Promise_->reportStarted ();
 			}
 		};
-	public:
-		struct PerTrackerStats
-		{
-			qint64 DownloadRate_ = 0;
-			qint64 UploadRate_ = 0;
-		};
-		typedef QMap<QString, PerTrackerStats> pertrackerstats_t;
-	private:
 		CachedStatusKeeper * const StatusKeeper_;
 
 		libtorrent::session *Session_ = nullptr;
@@ -197,7 +189,6 @@ namespace BitTorrent
 		libtorrent::session& GetSession ();
 		libtorrent::torrent_handle GetTorrentHandle (int) const;
 
-		void GetPerTracker (pertrackerstats_t&) const;
 		int GetListenPort () const;
 		QStringList GetTagsForIndex (int) const;
 		void UpdateTags (const QStringList&, int);
@@ -265,8 +256,6 @@ namespace BitTorrent
 		void MoveDown (const QList<int>&);
 		void MoveToTop (const QList<int>&);
 		void MoveToBottom (const QList<int>&);
-
-		QList<FileInfo> GetTorrentFiles (int) const;
 	private:
 		HandleDict_t::iterator FindHandle (const libtorrent::torrent_handle&);
 		HandleDict_t::const_iterator FindHandle (const libtorrent::torrent_handle&) const;

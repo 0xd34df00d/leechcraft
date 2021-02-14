@@ -788,20 +788,6 @@ namespace BitTorrent
 		return Handles_.at (idx).Handle_;
 	}
 
-	void Core::GetPerTracker (Core::pertrackerstats_t& stats) const
-	{
-		for (const auto& handle : Handles_)
-		{
-			const auto& s = handle.Handle_.status ({});
-			QString domain = QUrl (s.current_tracker.c_str ()).host ();
-			if (domain.size ())
-			{
-				stats [domain].DownloadRate_ += s.download_payload_rate;
-				stats [domain].UploadRate_ += s.upload_payload_rate;
-			}
-		}
-	}
-
 	int Core::GetListenPort () const
 	{
 		return Session_->listen_port ();
@@ -1307,45 +1293,6 @@ namespace BitTorrent
 		for (auto i = selections.begin (),
 				end = selections.end (); i != end; ++i)
 			MoveToBottom (*i);
-	}
-
-	QList<FileInfo> Core::GetTorrentFiles (int idx) const
-	{
-		if (!CheckValidity (idx))
-			return {};
-
-		QList<FileInfo> result;
-		const auto& handle = Handles_.at (idx).Handle_;
-		const auto& infoPtr = StatusKeeper_->GetStatus (handle,
-					libtorrent::torrent_handle::query_torrent_file).torrent_file.lock ();
-		if (!infoPtr)
-			return {};
-
-		const auto& info = *infoPtr;
-
-		std::vector<std::int64_t> prbytes;
-
-		int flags = 0;
-		if (!XmlSettingsManager::Instance ()->
-				property ("AccurateFileProgress").toBool ())
-			flags |= libtorrent::torrent_handle::piece_granularity;
-		handle.file_progress (prbytes, flags);
-
-		const auto& priorities = Handles_.at (idx).Handle_.get_file_priorities ();
-
-		for (int i = 0, numFiles = info.num_files (); i < numFiles; ++i)
-		{
-			FileInfo fi;
-			fi.Path_ = info.files ().file_path (i);
-			fi.Size_ = info.files ().file_size (i);
-			fi.Priority_ = priorities [i];
-			fi.Progress_ = fi.Size_ ?
-					prbytes.at (i) / static_cast<float> (fi.Size_) :
-					1;
-			result << fi;
-		}
-
-		return result;
 	}
 
 	auto Core::FindHandle (const libtorrent::torrent_handle& h) -> HandleDict_t::iterator

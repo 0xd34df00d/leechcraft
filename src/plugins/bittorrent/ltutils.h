@@ -8,12 +8,17 @@
 
 #pragma once
 
+#include <cstdint>
+
 class QByteArray;
 class QModelIndex;
 class QString;
 
 template<typename, typename>
 class QPair;
+
+template<typename, typename>
+class QMap;
 
 template<typename>
 class QList;
@@ -53,4 +58,14 @@ namespace LC::BitTorrent
 
 	struct SessionStats;
 	SessionStats GetSessionStats (const libtorrent::session&);
+
+	struct FileInfo;
+	QList<FileInfo> GetTorrentFiles (const libtorrent::torrent_handle);
+
+	struct PerTrackerStats
+	{
+		int64_t DownloadRate_ = 0;
+		int64_t UploadRate_ = 0;
+	};
+	QMap<QString, PerTrackerStats> GetPerTrackerStats (const libtorrent::session&);
 }

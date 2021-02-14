@@ -29,6 +29,7 @@
 #include "sessionsettingsmanager.h"
 #include "sessionstats.h"
 #include "ltutils.h"
+#include "torrentinfo.h"
 
 namespace LC::BitTorrent
 {
@@ -327,16 +328,16 @@ namespace LC::BitTorrent
 		Ui_.ReadHitRatio_->setText (QString::number (static_cast<double> (stats.BlocksReadHit_) / stats.BlocksRead_));
 		Ui_.ReadCacheSize_->setText (QString::number (stats.ReadCacheSize_));
 
-		Core::pertrackerstats_t ptstats;
-		Core::Instance ()->GetPerTracker (ptstats);
 		Ui_.PerTrackerStats_->clear ();
 
-		for (auto i = ptstats.begin (), end = ptstats.end (); i != end; ++i)
+		for (const auto& [domain, stats] : Util::Stlize (GetPerTrackerStats (*Session_)))
 		{
-			QStringList strings;
-			strings	<< i.key ()
-				<< Util::MakePrettySize (i->DownloadRate_) + tr ("/s")
-				<< Util::MakePrettySize (i->UploadRate_) + tr ("/s");
+			const QStringList strings
+			{
+				domain,
+				Util::MakePrettySize (stats.DownloadRate_) + tr ("/s"),
+				Util::MakePrettySize (stats.UploadRate_) + tr ("/s"),
+			};
 
 			new QTreeWidgetItem (Ui_.PerTrackerStats_, strings);
 		}

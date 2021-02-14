@@ -20,6 +20,7 @@
 #include "alertdispatcher.h"
 #include "core.h"
 #include "cachedstatuskeeper.h"
+#include "ltutils.h"
 
 namespace LC::BitTorrent
 {
@@ -35,9 +36,8 @@ namespace LC::BitTorrent
 
 		RegGuard_ = dispatcher.RegisterTemporaryHandler ([this] (const libtorrent::file_renamed_alert& a)
 				{
-					if (a.handle != *Handle_)
-						return;
-					HandleFileRenamed (a.index, QString::fromUtf8 (a.new_name ()));
+					if (a.handle == *Handle_)
+						HandleFileRenamed (a.index, QString::fromUtf8 (a.new_name ()));
 				});
 	}
 
@@ -266,7 +266,7 @@ namespace LC::BitTorrent
 
 		const auto item = static_cast<TorrentNodeInfo*> (index.internalPointer ());
 
-		const auto iem = Core::Instance ()->GetProxy ()->GetEntityManager ();
+		const auto iem = GetProxyHolder ()->GetEntityManager ();
 		if (std::abs (item->Progress_ - 1) >= std::numeric_limits<decltype (item->Progress_)>::epsilon ())
 			iem->HandleEntity (Util::MakeNotification (QStringLiteral ("BitTorrent"),
 					tr ("%1 hasn't finished downloading yet.")
@@ -357,7 +357,7 @@ namespace LC::BitTorrent
 	{
 		const auto& base = Core::Instance ()->GetStatusKeeper ()->GetStatus (*Handle_, libtorrent::torrent_handle::query_save_path).save_path;
 
-		const auto& files = Core::Instance ()->GetTorrentFiles (Index_);
+		const auto& files = GetTorrentFiles (*Handle_);
 		UpdateFiles (base, files);
 	}
 

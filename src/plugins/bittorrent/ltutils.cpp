@@ -11,15 +11,18 @@
 #include <QPair>
 #include <QSettings>
 #include <QCoreApplication>
+#include <QUrl>
 #include <libtorrent/address.hpp>
 #include <libtorrent/ip_filter.hpp>
 #include <libtorrent/torrent_handle.hpp>
 #include <libtorrent/torrent_info.hpp>
 #include <libtorrent/session.hpp>
 #include <libtorrent/session_status.hpp>
+#include "fileinfo.h"
 #include "ipfilterdialog.h"
 #include "sessionstats.h"
 #include "types.h"
+#include "xmlsettingsmanager.h"
 
 Q_DECLARE_METATYPE (const libtorrent::torrent_handle*)
 
@@ -229,5 +232,55 @@ namespace LC::BitTorrent
 			cacheStatus.cache_size,
 			cacheStatus.read_cache_size,
 		};
+	}
+
+	QList<FileInfo> GetTorrentFiles (const libtorrent::torrent_handle handle)
+	{
+		QList<FileInfo> result;
+		const auto& infoPtr = handle.torrent_file ();
+		if (!infoPtr)
+			return {};
+
+		const auto& info = *infoPtr;
+
+		std::vector<std::int64_t> prbytes;
+
+		int flags = 0;
+		if (!XmlSettingsManager::Instance ()->property ("AccurateFileProgress").toBool ())
+			flags |= libtorrent::torrent_handle::piece_granularity;
+		handle.file_progress (prbytes, flags);
+
+		const auto& priorities = handle.get_file_priorities ();
+
+		for (int i = 0, numFiles = info.num_files (); i < numFiles; ++i)
+		{
+			FileInfo fi;
+			fi.Path_ = info.files ().file_path (i);
+			fi.Size_ = info.files ().file_size (i);
+			fi.Priority_ = priorities [i];
+			fi.Progress_ = fi.Size_ ?
+					prbytes.at (i) / static_cast<float> (fi.Size_) :
+					1;
+			result << fi;
+		}
+
+		return result;
+	}
+
+	QMap<QString, PerTrackerStats> GetPerTrackerStats (const libtorrent::session& session)
+	{
+		QMap<QString, PerTrackerStats> stats;
+		for (const auto& handle : session.get_torrents ())
+		{
+			const auto& s = handle.status ({});
+			auto domain = QUrl { s.current_tracker.c_str () }.host ();
+			if (!domain.isEmpty ())
+			{
+				auto& domainStats = stats [domain];
+				domainStats.DownloadRate_ += s.download_payload_rate;
+				domainStats.UploadRate_ += s.upload_payload_rate;
+			}
+		}
+		return stats;
 	}
 }
