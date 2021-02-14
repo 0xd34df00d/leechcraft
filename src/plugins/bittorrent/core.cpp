@@ -995,22 +995,6 @@ namespace BitTorrent
 		}
 	}
 
-	void Core::SetFilePriority (int file, int priority, int idx)
-	{
-		if (!CheckValidity (idx))
-			return;
-
-		Handles_.at (idx).Handle_.file_priority (file, std::clamp (priority, 0, 7));
-	}
-
-	void Core::SetFilename (int index, const QString& name, int idx)
-	{
-		if (!CheckValidity (idx))
-			return;
-
-		Handles_ [idx].Handle_.rename_file (index, std::string (name.toUtf8 ().data ()));
-	}
-
 	QString Core::GetMagnetLink (int idx) const
 	{
 		if (!CheckValidity (idx))

@@ -34,7 +34,6 @@ namespace LC::BitTorrent
 
 	class TorrentFilesModel : public TorrentFilesModelBase<TorrentNodeInfo>
 	{
-		const int Index_ = -1;
 		std::unique_ptr<libtorrent::torrent_handle> Handle_;
 		std::unique_ptr<AlertDispatcherRegGuard> RegGuard_;
 	public:

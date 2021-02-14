@@ -218,8 +218,6 @@ namespace BitTorrent
 		void ResumeTorrent (int);
 		void ForceReannounce (int);
 		void ForceRecheck (int);
-		void SetFilePriority (int, int, int);
-		void SetFilename (int, const QString&, int);
 
 		QString GetMagnetLink (int) const;
 

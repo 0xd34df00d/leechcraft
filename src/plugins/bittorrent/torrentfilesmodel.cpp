@@ -136,7 +136,7 @@ namespace LC::BitTorrent
 			else
 			{
 				const auto newPriority = value.toInt ();
-				Core::Instance ()->SetFilePriority (node->FileIndex_, newPriority, Index_);
+				Handle_->file_priority (node->FileIndex_, std::clamp (newPriority, 0, 7));
 				node->Priority_ = newPriority;
 				emit dataChanged (index.sibling (index.row (), ColumnPath), index);
 
@@ -167,7 +167,7 @@ namespace LC::BitTorrent
 								{
 									auto specificPath = node->GetFullPathStr ();
 									specificPath.replace (0, curPathSize, newPath);
-									Core::Instance ()->SetFilename (node->FileIndex_, specificPath, Index_);
+									Handle_->rename_file (node->FileIndex_, specificPath.toStdString ());
 								}
 								else
 									for (const auto& subnode : *node)
@@ -176,7 +176,7 @@ namespace LC::BitTorrent
 					setter (node);
 				}
 				else
-					Core::Instance ()->SetFilename (node->FileIndex_, newPath, Index_);
+					Handle_->rename_file (node->FileIndex_, newPath.toStdString ());
 				return true;
 			}
 			case Qt::CheckStateRole:
@@ -355,8 +355,7 @@ namespace LC::BitTorrent
 
 	void TorrentFilesModel::Update ()
 	{
-		const auto& base = Core::Instance ()->GetStatusKeeper ()->GetStatus (*Handle_, libtorrent::torrent_handle::query_save_path).save_path;
-
+		const auto& base = Handle_->status (libtorrent::torrent_handle::query_save_path).save_path;
 		const auto& files = GetTorrentFiles (*Handle_);
 		UpdateFiles (base, files);
 	}
