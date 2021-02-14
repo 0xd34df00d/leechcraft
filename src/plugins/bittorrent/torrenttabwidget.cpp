@@ -51,11 +51,6 @@ namespace LC::BitTorrent
 		header->resizeSection (0, fm.horizontalAdvance (QStringLiteral ("average.domain.name.of.a.tracker")));
 		header->resizeSection (1, fm.horizontalAdvance (QStringLiteral ("  BEP 99  ")));
 
-		connect (Core::Instance (),
-				&Core::torrentsStatusesUpdated,
-				this,
-				&TorrentTabWidget::UpdateTorrentStats,
-				Qt::QueuedConnection);
 		connect (this,
 				&QTabWidget::currentChanged,
 				this,
@@ -129,6 +124,14 @@ namespace LC::BitTorrent
 		Ui_.PagePeers_->SetSession (deps.Session_);
 
 		Model_ = &deps.Model_;
+		connect (Model_,
+				&QAbstractItemModel::dataChanged,
+				this,
+				[this] (const QModelIndex& from, const QModelIndex& to)
+				{
+					if (from.row () <= Index_.row () && Index_.row () <= to.row ())
+						UpdateTorrentStats ();
+				});
 
 		connect (Ui_.TorrentDownloadRateController_,
 				qOverload<int> (&QSpinBox::valueChanged),
@@ -175,6 +178,8 @@ namespace LC::BitTorrent
 		timer->setTimerType (Qt::VeryCoarseTimer);
 		timer->callOnTimeout ([this]
 				{
+					UpdateOverallStats ();
+
 					Ui_.PagePeers_->Update ();
 					if (PiecesModel_)
 						PiecesModel_->Update ();
@@ -250,13 +255,6 @@ namespace LC::BitTorrent
 		UpdateTorrentStats ();
 	}
 
-	void TorrentTabWidget::UpdateTorrentStats ()
-	{
-		UpdateDashboard ();
-		UpdateOverallStats ();
-		UpdateTorrentControl ();
-	}
-
 	template<typename F>
 	void TorrentTabWidget::ForEachSelected (F&& f) const
 	{
@@ -266,6 +264,8 @@ namespace LC::BitTorrent
 
 	void TorrentTabWidget::UpdateOverallStats ()
 	{
+		UpdateDashboard ();
+
 		const auto& stats = GetSessionStats (*Session_);
 
 		Ui_.LabelTotalDownloadRate_->setText (Util::MakePrettySize (stats.Rate_.Down_) + tr ("/s"));
@@ -350,7 +350,7 @@ namespace LC::BitTorrent
 		Ui_.UploadingTorrents_->setValue (SSM_->GetMaxUploadingTorrents ());
 	}
 
-	void TorrentTabWidget::UpdateTorrentControl ()
+	void TorrentTabWidget::UpdateTorrentStats ()
 	{
 		if (!Index_.isValid ())
 		{

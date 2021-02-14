@@ -61,14 +61,13 @@ namespace LC::BitTorrent
 		void SetSelectedIndices (const QList<QModelIndex>&);
 		void InvalidateSelection ();
 	private:
+		void UpdateOverallStats ();
 		void UpdateTorrentStats ();
 
 		template<typename F>
 		void ForEachSelected (F&&) const;
 
 		void UpdateDashboard ();
-		void UpdateOverallStats ();
-		void UpdateTorrentControl ();
 
 		void AddWebSeed ();
 		void RemoveWebSeed ();
