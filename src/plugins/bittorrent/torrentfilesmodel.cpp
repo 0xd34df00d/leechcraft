@@ -18,8 +18,6 @@
 #include <util/models/modelitembase.h>
 #include <interfaces/core/ientitymanager.h>
 #include "alertdispatcher.h"
-#include "core.h"
-#include "cachedstatuskeeper.h"
 #include "ltutils.h"
 
 namespace LC::BitTorrent
