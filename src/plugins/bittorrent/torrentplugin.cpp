@@ -377,7 +377,8 @@ namespace LC::BitTorrent
 
 	void TorrentPlugin::SetTags (int torrent, const QStringList& tags)
 	{
-		Core::Instance ()->UpdateTags (tags, torrent);
+		auto& model = *Core::Instance ();
+		model.setData (model.index (torrent, 0), tags, Roles::TorrentTags);
 	}
 
 	XmlSettingsDialog_ptr TorrentPlugin::GetSettingsDialog () const

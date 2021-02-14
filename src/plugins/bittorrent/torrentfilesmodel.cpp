@@ -355,8 +355,7 @@ namespace LC::BitTorrent
 
 	void TorrentFilesModel::Update ()
 	{
-		const auto& handle = Core::Instance ()->GetTorrentHandle (Index_);
-		const auto& base = Core::Instance ()->GetStatusKeeper ()->GetStatus (handle, libtorrent::torrent_handle::query_save_path).save_path;
+		const auto& base = Core::Instance ()->GetStatusKeeper ()->GetStatus (*Handle_, libtorrent::torrent_handle::query_save_path).save_path;
 
 		const auto& files = Core::Instance ()->GetTorrentFiles (Index_);
 		UpdateFiles (base, files);

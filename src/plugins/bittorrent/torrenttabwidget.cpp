@@ -13,6 +13,7 @@
 #include <QTimer>
 #include <QUrl>
 #include <memory>
+#include <libtorrent/session.hpp>
 #include <util/util.h>
 #include <util/sll/qtutil.h>
 #include <util/tags/tagscompleter.h>
@@ -307,7 +308,7 @@ namespace LC::BitTorrent
 				") " +
 				QString::number (stats.DHTNodes_));
 		Ui_.LabelDHTTorrents_->setText (QString::number (stats.DHTTorrents_));
-		Ui_.LabelListenPort_->setText (QString::number (Core::Instance ()->GetListenPort ()));
+		Ui_.LabelListenPort_->setText (QString::number (Session_->listen_port ()));
 		if (stats.PayloadTotal_.Down_)
 			Ui_.LabelSessionRating_->setText (QString::number (stats.PayloadTotal_.Up_ /
 					static_cast<double> (stats.PayloadTotal_.Down_), 'g', 4));
