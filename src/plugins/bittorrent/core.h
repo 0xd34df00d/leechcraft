@@ -143,7 +143,6 @@ namespace BitTorrent
 		QList<QString> Headers_;
 		std::shared_ptr<QTimer> FinishedTimer_, WarningWatchdog_;
 		std::shared_ptr<LiveStreamManager> LiveStreamManager_;
-		QString ExternalAddress_;
 		bool SaveScheduled_ = false;
 		QToolBar *Toolbar_ = nullptr;
 		QWidget *TabWidget_ = nullptr;
@@ -243,7 +242,6 @@ namespace BitTorrent
 		bool MoveTorrentFiles (const QString&, int);
 
 		void MakeTorrent (const NewTorrentParams&);
-		QString GetExternalAddress () const;
 		bool CheckValidity (int) const;
 
 		void SaveResumeData (const libtorrent::save_resume_data_alert&) const;

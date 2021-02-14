@@ -116,14 +116,9 @@ namespace BitTorrent
 	, Dispatcher_ { *Session_ }
 	{
 		setObjectName ("BitTorrent Core");
-		ExternalAddress_ = tr ("Unknown");
 
 		using namespace libtorrent;
 		auto iem = GetProxyHolder ()->GetEntityManager ();
-		Dispatcher_.RegisterHandler ([this] (const external_ip_alert& a)
-				{
-					ExternalAddress_ = QString::fromStdString (a.external_address.to_string ());
-				});
 		Dispatcher_.RegisterHandler ([this] (const save_resume_data_alert& a) { SaveResumeData (a); });
 		Dispatcher_.RegisterHandler ([iem] (const save_resume_data_failed_alert& a)
 				{
@@ -196,6 +191,7 @@ namespace BitTorrent
 		Dispatcher_.Swallow (dht_reply_alert::alert_type, true);
 		Dispatcher_.Swallow (dht_bootstrap_alert::alert_type, true);
 		Dispatcher_.Swallow (dht_get_peers_alert::alert_type, true);
+		Dispatcher_.Swallow (external_ip_alert::alert_type, true);
 	}
 
 	AlertDispatcher& Core::GetAlertDispatcher ()
@@ -1094,11 +1090,6 @@ namespace BitTorrent
 	{
 		if (const auto result = CreateTorrent (params))
 			AddFile (*result, params.Path_, {}, false);
-	}
-
-	QString Core::GetExternalAddress () const
-	{
-		return ExternalAddress_;
 	}
 
 	void Core::SaveResumeData (const libtorrent::save_resume_data_alert& a) const

@@ -317,7 +317,6 @@ namespace LC::BitTorrent
 			Ui_.LabelSessionRating_->setText (QString::fromUtf8 ("\u221E"));
 		Ui_.LabelTotalFailedData_->setText (Util::MakePrettySize (stats.TotalFailedBytes_));
 		Ui_.LabelTotalRedundantData_->setText (Util::MakePrettySize (stats.TotalRedundantBytes_));
-		Ui_.LabelExternalAddress_->setText (Core::Instance ()->GetExternalAddress ());
 
 		Ui_.BlocksWritten_->setText (QString::number (stats.BlocksWritten_));
 		Ui_.Writes_->setText (QString::number (stats.Writes_));
