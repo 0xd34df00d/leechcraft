@@ -8,28 +8,20 @@
 
 #pragma once
 
-#include <list>
 #include <memory>
 #include <optional>
 #include <QAbstractItemModel>
-#include <QPair>
 #include <QList>
 #include <QVector>
-#include <QIcon>
 #include <QFutureInterface>
 #include <libtorrent/alert_types.hpp>
 #include <libtorrent/torrent_info.hpp>
 #include <libtorrent/torrent_handle.hpp>
-#include <libtorrent/session_status.hpp>
 #include <interfaces/iinfo.h>
 #include <interfaces/structures.h>
-#include <interfaces/ijobholder.h>
 #include <interfaces/idownload.h>
-#include <util/tags/tagscompletionmodel.h>
 #include <util/sll/either.h>
-#include "torrentinfo.h"
 #include "fileinfo.h"
-#include "peerinfo.h"
 #include "types.h"
 #include "alertdispatcher.h"
 
@@ -150,7 +142,6 @@ namespace BitTorrent
 		QMenu *Menu_ = nullptr;
 		Util::ShortcutManager *ShortcutMgr_ = nullptr;
 
-		QIcon TorrentIcon_;
 		AlertDispatcher Dispatcher_;
 
 		Core ();
@@ -183,14 +174,8 @@ namespace BitTorrent
 		virtual QModelIndex parent (const QModelIndex&) const;
 		virtual int rowCount (const QModelIndex& = QModelIndex ()) const;
 
-		QIcon GetTorrentIcon (int) const;
-
 		libtorrent::session& GetSession ();
-		libtorrent::torrent_handle GetTorrentHandle (int) const;
 
-		int GetListenPort () const;
-		QStringList GetTagsForIndex (int) const;
-		void UpdateTags (const QStringList&, int);
 		/** @brief Adds the  given magnet link to the queue.
 			*
 			* Fetches the torrent and starts downloading the magnet link to
@@ -268,20 +253,7 @@ namespace BitTorrent
 
 		void HandleSingleFinished (int);
 
-		/** Returns human-readable list of tags for the given torrent.
-		 *
-		 * @param[in] torrent The ID of the torrent.
-		 * @return The human-readable list of tags.
-		 */
-		QStringList GetTagsForIndexImpl (int torrent) const;
-		/** Sets the tags for the given torrent.
-		 *
-		 * @param[in] tags The human-readable list of tags.
-		 * @param[in] torrent The ID of the torrent.
-		 */
-		void UpdateTagsImpl (const QStringList& tags, int torrent);
 		void ScheduleSave ();
-		void HandleLibtorrentException (const std::exception&);
 
 		void ShowError (const QString&);
 	private slots:

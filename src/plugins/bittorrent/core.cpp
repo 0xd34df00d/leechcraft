@@ -9,9 +9,8 @@
 #include "core.h"
 #include <memory>
 #include <numeric>
-#include <typeinfo>
-#include <QFile>
 #include <QDir>
+#include <QFile>
 #include <QFileInfo>
 #include <QSettings>
 #include <QToolBar>
@@ -19,14 +18,9 @@
 #include <QMenu>
 #include <QtDebug>
 #include <QApplication>
-#include <QStandardItemModel>
-#include <QXmlStreamWriter>
 #include <QTemporaryFile>
-#include <QMessageBox>
 #include <QUrl>
-#include <QTextCodec>
 #include <QDesktopServices>
-#include <QUrlQuery>
 #include <libtorrent/bencode.hpp>
 #include <libtorrent/entry.hpp>
 #include <libtorrent/file.hpp>
@@ -34,7 +28,6 @@
 #include <libtorrent/version.hpp>
 #include <libtorrent/session.hpp>
 #include <libtorrent/lazy_entry.hpp>
-#include <libtorrent/announce_entry.hpp>
 #include <libtorrent/read_resume_data.hpp>
 #include <libtorrent/write_resume_data.hpp>
 #include <interfaces/entitytesthandleresult.h>
@@ -50,7 +43,6 @@
 #include <util/xpc/util.h>
 #include <util/xpc/notificationactionhandler.h>
 #include <util/sll/util.h>
-#include <util/sll/prelude.h>
 #include <util/sll/either.h>
 #include <util/sys/paths.h>
 #include <util/threads/futures.h>
@@ -59,9 +51,9 @@
 #include "torrentmaker.h"
 #include "sessionsettingsmanager.h"
 #include "cachedstatuskeeper.h"
-#include "sessionstats.h"
 #include "ltutils.h"
 #include "newtorrentparams.h"
+#include "torrentinfo.h"
 
 Q_DECLARE_METATYPE (QMenu*)
 Q_DECLARE_METATYPE (QToolBar*)
@@ -112,7 +104,6 @@ namespace BitTorrent
 	, Session_ { CreateSession () }
 	, FinishedTimer_ { new QTimer }
 	, WarningWatchdog_ { new QTimer }
-	, TorrentIcon_ { GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon () }
 	, Dispatcher_ { *Session_ }
 	{
 		setObjectName ("BitTorrent Core");
@@ -766,37 +757,9 @@ namespace BitTorrent
 		return Handles_.size ();
 	}
 
-	QIcon Core::GetTorrentIcon (int) const
-	{
-		return TorrentIcon_;
-	}
-
 	libtorrent::session& Core::GetSession ()
 	{
 		return *Session_;
-	}
-
-	libtorrent::torrent_handle Core::GetTorrentHandle (int idx) const
-	{
-		if (idx >= Handles_.size ())
-			return {};
-
-		return Handles_.at (idx).Handle_;
-	}
-
-	int Core::GetListenPort () const
-	{
-		return Session_->listen_port ();
-	}
-
-	QStringList Core::GetTagsForIndex (int torrent) const
-	{
-		return GetTagsForIndexImpl (torrent);
-	}
-
-	void Core::UpdateTags (const QStringList& tags, int torrent)
-	{
-		UpdateTagsImpl (tags, torrent);
 	}
 
 	namespace
@@ -843,7 +806,7 @@ namespace BitTorrent
 		}
 		catch (const std::exception& e)
 		{
-			HandleLibtorrentException (e);
+			qCritical () << Q_FUNC_INFO << e.what ();
 			return MakeErrorResult ("Torrent error");
 		}
 
@@ -918,7 +881,7 @@ namespace BitTorrent
 		}
 		catch (const std::exception& e)
 		{
-			HandleLibtorrentException (e);
+			qCritical () << Q_FUNC_INFO << e.what ();
 			return MakeErrorResult ("Torrent error");
 		}
 
@@ -1004,16 +967,7 @@ namespace BitTorrent
 		if (!CheckValidity (pos))
 			return;
 
-		try
-		{
-			Handles_.at (pos).Handle_.force_reannounce ();
-		}
-		catch (const std::exception& e)
-		{
-			HandleLibtorrentException (e);
-			ShowError (tr ("Torrent %1 could not be reannounced at the "
-						"moment, try again later.").arg (pos));
-		}
+		Handles_.at (pos).Handle_.force_reannounce ();
 	}
 
 	void Core::ForceRecheck (int pos)
@@ -1415,7 +1369,6 @@ namespace BitTorrent
 		catch (const std::exception& e)
 		{
 			qWarning () << Q_FUNC_INFO << e.what ();
-			HandleLibtorrentException (e);
 		}
 
 		return handle;
@@ -1482,7 +1435,6 @@ namespace BitTorrent
 				});
 		iem->HandleEntity (notifyE);
 
-		auto localeCodec = QTextCodec::codecForLocale ();
 		Entity e;
 		e.Parameters_ = IsDownloaded;
 		e.Location_ = torrent.TorrentFileName_;
@@ -1491,31 +1443,12 @@ namespace BitTorrent
 
 		for (int i = 0, numFiles = info.num_files (); i < numFiles; ++i)
 		{
-			const QByteArray path { (savePath + '/' + info.files ().file_path (i)).c_str () };
-			e.Entity_ = QUrl::fromLocalFile (localeCodec->toUnicode (path));
+			e.Entity_ = QUrl::fromLocalFile (QString::fromStdString (savePath + '/' + info.files ().file_path (i)));
 			iem->HandleEntity (e);
 		}
 
 		if (torrent.Promise_)
 			Util::ReportFutureResult (*torrent.Promise_, IDownload::Result::Right ({}));
-	}
-
-	QStringList Core::GetTagsForIndexImpl (int torrent) const
-	{
-		if (!CheckValidity (torrent))
-			return {};
-
-		return Util::Map (Handles_.at (torrent).Tags_,
-				[this] (const QString& id) { return Proxy_->GetTagsManager ()->GetTag (id); });
-	}
-
-	void Core::UpdateTagsImpl (const QStringList& tags, int torrent)
-	{
-		if (!CheckValidity (torrent))
-			return;
-
-		Handles_ [torrent].Tags_ = Util::Map (tags,
-				[this] (const QString& tag) { return Proxy_->GetTagsManager ()->GetID (tag); });
 	}
 
 	void Core::ScheduleSave ()
@@ -1528,12 +1461,6 @@ namespace BitTorrent
 				SLOT (writeSettings ()));
 
 		SaveScheduled_ = true;
-	}
-
-	void Core::HandleLibtorrentException (const std::exception& e)
-	{
-		ShowError (tr ("libtorrent error: %1")
-				.arg (e.what ()));
 	}
 
 	void Core::ShowError (const QString& msg)
