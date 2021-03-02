@@ -27,6 +27,7 @@
 #include <interfaces/core/irootwindowsmanager.h>
 #include <util/tags/tagscompleter.h>
 #include <util/util.h>
+#include <util/sll/prelude.h>
 #include <util/sll/qtutil.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/threads/futures.h>
@@ -341,14 +342,17 @@ namespace LC::BitTorrent
 			{
 			}
 
-			void HandleCurrentRowChanged (const QModelIndex& index) override
+			void HandleCurrentRowChanged (const QModelIndex& srcIdx) override
 			{
+				const auto& index = Plugin_->ReprProxy_->mapToSource (srcIdx);
 				Plugin_->Actions_->SetCurrentIndex (index);
 				Plugin_->TabWidget_->SetCurrentTorrent (index);
 			}
 
-			void HandleSelectedRowsChanged (const QModelIndexList& indexes) override
+			void HandleSelectedRowsChanged (const QModelIndexList& srcIdxs) override
 			{
+				const auto& indexes = Util::Map (srcIdxs,
+						[this] (const auto& idx) { return Plugin_->ReprProxy_->mapToSource (idx); });
 				Plugin_->Actions_->SetCurrentSelection (indexes);
 			}
 		};
