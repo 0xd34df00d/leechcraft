@@ -67,8 +67,6 @@ namespace AnHero
 			if (RecGuard++)
 				return;
 
-			alarm (5);
-
 			char sigtxt [10];
 			sprintf (sigtxt, "%d", signal);
 
