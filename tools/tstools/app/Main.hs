@@ -45,6 +45,7 @@ guessTsBase fullPath
 data Options w = Options
   { path :: w ::: Maybe String <?> "Path to the plugin directory"
   , languages :: w ::: [String] <?> "List of languages to generate or update translations for (update all if empty)"
+  , dropObsolete :: w ::: Bool <?> "Drop obsolete translations"
   } deriving (Generic)
 
 instance ParseRecord (Options Wrapped)
@@ -52,6 +53,9 @@ instance ParseRecord (Options Wrapped)
 main :: IO ()
 main = do
   Options { .. } <- unwrapRecord "tstools"
+
+  let noobsoleteArg | dropObsolete = ["-noobsolete"]
+                    | otherwise = []
 
   case path of
        Just path' -> cd $ fromString path'
@@ -67,7 +71,7 @@ main = do
                         tsBase <- guessTsBase <$> pwd
                         pure $ (\lang -> [i|#{toTextHR tsBase}_#{lang}.ts|]) <$> languages
   forM_ tsFiles $ \tsFile -> do
-    let lupdateArgs = ["-noobsolete"] <> fmap toTextHR (sources <> generated) <> ["-ts", toTextHR tsFile]
+    let lupdateArgs = noobsoleteArg <> fmap toTextHR (sources <> generated) <> ["-ts", toTextHR tsFile]
     view $ inproc "lupdate" lupdateArgs empty
 
   mapM_ rm generated
