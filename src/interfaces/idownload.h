@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include <QByteArray>
 #include <QUrl>
 #include <QtPlugin>
 #include <util/sll/eitherfwd.h>
