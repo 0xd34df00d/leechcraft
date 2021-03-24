@@ -82,8 +82,7 @@ namespace HotSensors
 			item->setData (QVariant::fromValue (maxPoints), SensorsGraphModel::MaxPointsList);
 			item->setData (max, SensorsGraphModel::MaxTemp);
 			item->setData (crit, SensorsGraphModel::CritTemp);
-			item->setData (HistoryManager::GetMaxHistorySize (),
-					SensorsGraphModel::MaxPointsCount);
+			item->setData (HistoryManager::GetMaxHistorySize (), SensorsGraphModel::MaxPointsCount);
 			if (!isKnownSensor)
 				items << item;
 		}
