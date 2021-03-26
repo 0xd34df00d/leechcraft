@@ -7,6 +7,7 @@
  **********************************************************************/
 
 #include "highlighter.h"
+#include <QStringMatcher>
 #include <QtDebug>
 
 namespace LC::AnHero::CrashProcess
@@ -21,15 +22,17 @@ namespace LC::AnHero::CrashProcess
 
 	namespace
 	{
-		int FindOneOf (const QString& text, int from, const QList<QByteArray>& variants)
+		using Matchers = std::initializer_list<QStringMatcher>;
+
+		int FindOneOf (const QString& text, int from, const Matchers& matchers)
 		{
-			for (const auto& marker : variants)
+			for (const auto& matcher : matchers)
 			{
-				const auto tmpIdx = text.indexOf (marker, from);
+				const auto tmpIdx = matcher.indexIn (text, from);
 				if (tmpIdx == -1)
 					continue;
 
-				return tmpIdx + marker.size ();
+				return tmpIdx + matcher.pattern ().size ();
 			}
 
 			return -1;
@@ -66,7 +69,14 @@ namespace LC::AnHero::CrashProcess
 			funcStartIdx = text.indexOf (' ', addrEnd + 1) + 1;
 		}
 		else
-			funcStartIdx = FindOneOf (text, numberEnd, { " to ", " in " });
+		{
+			static const Matchers matchers
+			{
+				QStringMatcher { QStringLiteral (" to ") },
+				QStringMatcher { QStringLiteral (" in ") },
+			};
+			funcStartIdx = FindOneOf (text, numberEnd, matchers);
+		}
 
 		if (funcStartIdx != -1)
 			ParseFunction (text, funcStartIdx);
@@ -109,7 +119,12 @@ namespace LC::AnHero::CrashProcess
 
 	void Highlighter::ParseRest (const QString& text, int fromAround)
 	{
-		const auto restIdx = FindOneOf (text, fromAround, { " at ", " from " });
+		static const Matchers matchers
+		{
+			QStringMatcher { QStringLiteral (" at ") },
+			QStringMatcher { QStringLiteral (" from ") },
+		};
+		const auto restIdx = FindOneOf (text, fromAround, matchers);
 
 		auto colonIdx = text.lastIndexOf (':');
 		if (colonIdx < restIdx)
