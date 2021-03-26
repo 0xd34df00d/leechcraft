@@ -7,6 +7,7 @@
  **********************************************************************/
 
 #include "highlighter.h"
+#include <optional>
 #include <QStringMatcher>
 #include <QtDebug>
 
@@ -26,16 +27,19 @@ namespace LC::AnHero::CrashProcess
 
 		int FindOneOf (const QString& text, int from, const Matchers& matchers)
 		{
+			std::optional<int> minNextPos;
+
 			for (const auto& matcher : matchers)
 			{
-				const auto tmpIdx = matcher.indexIn (text, from);
-				if (tmpIdx == -1)
+				const auto matchIdx = matcher.indexIn (text, from);
+				if (matchIdx == -1)
 					continue;
 
-				return tmpIdx + matcher.pattern ().size ();
+				const auto nextPos = matchIdx + matcher.pattern ().size ();
+				minNextPos = minNextPos ? std::min (*minNextPos, nextPos) : nextPos;
 			}
 
-			return -1;
+			return minNextPos.value_or (-1);
 		}
 	}
 
