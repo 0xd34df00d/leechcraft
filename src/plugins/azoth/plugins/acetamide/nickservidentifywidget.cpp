@@ -57,22 +57,16 @@ namespace Acetamide
 			nsi.AuthString_ = subList [3];
 			nsi.AuthMessage_ = subList [4];
 
-			QList<QStandardItem*> identify;
-			QStandardItem *serverItem = new QStandardItem (nsi.Server_);
-			serverItem->setEditable (false);
-			QStandardItem *nickItem = new QStandardItem (nsi.Nick_);
-			nickItem->setEditable (false);
-			QStandardItem *nickServNickItem = new QStandardItem (nsi.NickServNick_);
-			nickServNickItem->setEditable (false);
-			QStandardItem *authStringItem = new QStandardItem (nsi.AuthString_);
-			authStringItem->setEditable (false);
-			QStandardItem *authMessageItem = new QStandardItem (nsi.AuthMessage_);
-			authMessageItem->setEditable (false);
-			identify << serverItem
-					<< nickItem
-					<< nickServNickItem
-					<< authStringItem
-					<< authMessageItem;
+			const QList<QStandardItem*> identify
+			{
+				new QStandardItem (nsi.Server_),
+				new QStandardItem (nsi.Nick_),
+				new QStandardItem (nsi.NickServNick_),
+				new QStandardItem (nsi.AuthString_),
+				new QStandardItem (nsi.AuthMessage_),
+			};
+			for (const auto item : identify)
+				item->setEditable (false);
 			Model_->appendRow (identify);
 			Core::Instance ().AddNickServIdentify (nsi);
 		}
@@ -83,12 +77,14 @@ namespace Acetamide
 		QList<QStringList> list;
 		for (int i = 0; i < Model_->rowCount (); ++i)
 		{
-			QStringList record;
-			record << Model_->item (i, Column::ServerName)->text ()
-					<< Model_->item (i, Column::Nick)->text ()
-					<< Model_->item (i, Column::NickServ)->text ()
-					<< Model_->item (i, Column::AuthString)->text ()
-					<< Model_->item (i, Column::AuthMessage)->text ();
+			const QStringList record
+			{
+				Model_->item (i, Column::ServerName)->text (),
+				Model_->item (i, Column::Nick)->text (),
+				Model_->item (i, Column::NickServ)->text (),
+				Model_->item (i, Column::AuthString)->text (),
+				Model_->item (i, Column::AuthMessage)->text (),
+			};
 			list << record;
 		}
 
