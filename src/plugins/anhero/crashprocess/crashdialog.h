@@ -14,11 +14,7 @@
 #include "ui_crashdialog.h"
 #include "appinfo.h"
 
-namespace LC
-{
-namespace AnHero
-{
-namespace CrashProcess
+namespace LC::AnHero::CrashProcess
 {
 	struct AppInfo;
 	class GDBLauncher;
@@ -33,7 +29,7 @@ namespace CrashProcess
 
 		std::shared_ptr<GDBLauncher> GdbLauncher_;
 	public:
-		CrashDialog (const AppInfo&, QWidget* = 0);
+		explicit CrashDialog (const AppInfo&, QWidget* = nullptr);
 	private:
 		void SetFormat ();
 		void WriteTrace (const QString&);
@@ -51,6 +47,4 @@ namespace CrashProcess
 		void on_Copy__released ();
 		void on_Save__released ();
 	};
-}
-}
 }

@@ -9,11 +9,7 @@
 #include "highlighter.h"
 #include <QtDebug>
 
-namespace LC
-{
-namespace AnHero
-{
-namespace CrashProcess
+namespace LC::AnHero::CrashProcess
 {
 	void Highlighter::highlightBlock (const QString& text)
 	{
@@ -42,7 +38,6 @@ namespace CrashProcess
 
 	void Highlighter::ParseBTLine (const QString& text)
 	{
-
 		auto numberEnd = text.indexOf (' ');
 		setFormat (0, numberEnd, QColor ("#555555"));
 
@@ -125,6 +120,4 @@ namespace CrashProcess
 
 		setFormat (restIdx, colonIdx - restIdx, QColor ("#0057AE"));
 	}
-}
-}
 }

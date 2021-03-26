@@ -10,11 +10,7 @@
 
 #include <QString>
 
-namespace LC
-{
-namespace AnHero
-{
-namespace CrashProcess
+namespace LC::AnHero::CrashProcess
 {
 	struct AppInfo
 	{
@@ -29,6 +25,4 @@ namespace CrashProcess
 		bool SuggestRestart_;
 	};
 
-}
-}
 }

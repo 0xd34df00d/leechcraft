@@ -12,11 +12,7 @@
 #include <QTextStream>
 #include <QtDebug>
 
-namespace LC
-{
-namespace AnHero
-{
-namespace CrashProcess
+namespace LC::AnHero::CrashProcess
 {
 	GDBLauncher::GDBLauncher (quint64 pid, const QString& path, QObject *parent)
 	: QObject (parent)
@@ -129,6 +125,4 @@ namespace CrashProcess
 		for (const auto& str : strs)
 			emit gotOutput (str);
 	}
-}
-}
 }

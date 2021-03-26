@@ -13,11 +13,7 @@
 
 class QProcess;
 
-namespace LC
-{
-namespace AnHero
-{
-namespace CrashProcess
+namespace LC::AnHero::CrashProcess
 {
 	class GDBLauncher : public QObject
 	{
@@ -25,8 +21,8 @@ namespace CrashProcess
 
 		QProcess * const Proc_;
 	public:
-		GDBLauncher (quint64 pid, const QString& path, QObject* = 0);
-		~GDBLauncher ();
+		GDBLauncher (quint64 pid, const QString& path, QObject* = nullptr);
+		~GDBLauncher () override;
 	private slots:
 		void handleError ();
 
@@ -38,6 +34,4 @@ namespace CrashProcess
 		void finished (int, QProcess::ExitStatus);
 		void error (QProcess::ExitStatus, int, QProcess::ProcessError, const QString&);
 	};
-}
-}
 }

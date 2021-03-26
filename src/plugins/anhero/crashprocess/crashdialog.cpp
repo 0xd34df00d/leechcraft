@@ -21,11 +21,7 @@
 #include "gdblauncher.h"
 #include "highlighter.h"
 
-namespace LC
-{
-namespace AnHero
-{
-namespace CrashProcess
+namespace LC::AnHero::CrashProcess
 {
 	CrashDialog::CrashDialog (const AppInfo& info, QWidget *parent)
 	: QDialog (parent, Qt::Window)
@@ -218,6 +214,4 @@ namespace CrashProcess
 
 		WriteTrace (filename);
 	}
-}
-}
 }

@@ -10,11 +10,7 @@
 
 #include <QSyntaxHighlighter>
 
-namespace LC
-{
-namespace AnHero
-{
-namespace CrashProcess
+namespace LC::AnHero::CrashProcess
 {
 	class Highlighter : public QSyntaxHighlighter
 	{
@@ -29,6 +25,4 @@ namespace CrashProcess
 		void ParseCppFunction (const QString&, int, int);
 		void ParseRest (const QString&, int);
 	};
-}
-}
 }
