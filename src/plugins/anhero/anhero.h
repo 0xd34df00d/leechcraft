@@ -9,13 +9,10 @@
 #pragma once
 
 #include <QObject>
-#include <QStringList>
 #include <interfaces/iinfo.h>
 #include <interfaces/ishutdownlistener.h>
 
-namespace LC
-{
-namespace AnHero
+namespace LC::AnHero
 {
 	class Plugin : public QObject
 				 , public IInfo
@@ -26,15 +23,14 @@ namespace AnHero
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.AnHero")
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		void Release ();
-		QByteArray GetUniqueID () const;
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+		void Init (ICoreProxy_ptr) override;
+		void SecondInit () override;
+		void Release () override;
+		QByteArray GetUniqueID () const override;
+		QString GetName () const override;
+		QString GetInfo () const override;
+		QIcon GetIcon () const override;
 
-		void HandleShutdownInitiated ();
+		void HandleShutdownInitiated () override;
 	};
-}
 }

@@ -9,19 +9,17 @@
 #include "anhero.h"
 #include <QIcon>
 #include <QCoreApplication>
-#include <signal.h>
+#include <csignal>
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/resource.h>
 #include <sys/wait.h>
-#include <errno.h>
+#include <cerrno>
 #include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 
-namespace LC
-{
-namespace AnHero
+namespace LC::AnHero
 {
 	namespace
 	{
@@ -188,7 +186,6 @@ namespace AnHero
 	{
 		IsShuttingDown_ = true;
 	}
-}
 }
 
 LC_EXPORT_PLUGIN (leechcraft_anhero, LC::AnHero::Plugin);
