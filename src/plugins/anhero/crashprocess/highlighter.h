@@ -19,7 +19,7 @@ namespace CrashProcess
 	class Highlighter : public QSyntaxHighlighter
 	{
 	public:
-		Highlighter (QTextDocument*);
+		using QSyntaxHighlighter::QSyntaxHighlighter;
 
 		void highlightBlock (const QString& text) override;
 	private:

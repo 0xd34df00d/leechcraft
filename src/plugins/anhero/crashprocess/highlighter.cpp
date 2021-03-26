@@ -15,11 +15,6 @@ namespace AnHero
 {
 namespace CrashProcess
 {
-	Highlighter::Highlighter (QTextDocument *doc)
-	: QSyntaxHighlighter (doc)
-	{
-	}
-
 	void Highlighter::highlightBlock (const QString& text)
 	{
 		if (text.startsWith ("Thread "))
