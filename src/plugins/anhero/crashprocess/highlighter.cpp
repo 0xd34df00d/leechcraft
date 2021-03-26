@@ -51,14 +51,14 @@ namespace LC::AnHero::CrashProcess
 		while (text.at (numberEnd) == ' ')
 			++numberEnd;
 
-		const QString sighandlerMarker ("signal handler called");
-		const auto sigIdx = text.indexOf (sighandlerMarker);
+		static const QStringMatcher sighandlerMarker { QStringLiteral ("signal handler called") };
+		const auto sigIdx = sighandlerMarker.indexIn (text);
 		if (sigIdx > 0)
 		{
 			QTextCharFormat fmt;
 			fmt.setFontWeight (QFont::Bold);
 			fmt.setForeground ({ "#E20800" });
-			setFormat (sigIdx, sighandlerMarker.size (), fmt);
+			setFormat (sigIdx, sighandlerMarker.pattern ().size (), fmt);
 			return;
 		}
 
