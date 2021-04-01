@@ -16,5 +16,7 @@ namespace LC::Util
 	{
 		Q_OBJECT
 	private slots:
+		void testColorOperator ();
+		void testColorOperatorConstexpr ();
 	};
 }

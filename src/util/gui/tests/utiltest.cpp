@@ -11,3 +11,17 @@
 #include "util.h"
 
 QTEST_MAIN (LC::Util::UtilTest)
+
+namespace LC::Util
+{
+	void UtilTest::testColorOperator ()
+	{
+		QCOMPARE ("#abcdef"_color, QColor { "#abcdef" });
+	}
+
+	void UtilTest::testColorOperatorConstexpr ()
+	{
+		constexpr QColor parsed = "#abcdef"_color;
+		QCOMPARE (parsed, QColor { "#abcdef" });
+	}
+}
