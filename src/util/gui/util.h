@@ -110,3 +110,31 @@ namespace LC::Util
 		mimeData->setData (name, infosData);
 	}
 }
+
+namespace LC
+{
+	inline constexpr QColor operator"" _color (const char *str, std::size_t size)
+	{
+		if (size != 7)
+			throw std::runtime_error { "invalid color size" };
+
+		constexpr auto digit = [] (char digit)
+		{
+			if (digit >= '0' && digit <= '9')
+				return digit - '0';
+			if (digit >= 'a' && digit <= 'f')
+				return digit - 'a' + 0xa;
+			if (digit >= 'A' && digit <= 'F')
+				return digit - 'A' + 0xa;
+
+			throw std::runtime_error { "unable to parse" };
+		};
+
+		constexpr auto group = [digit] (const char *str)
+		{
+			return digit (str [0]) * 16 + digit (str [1]);
+		};
+
+		return QColor { group (str + 1), group (str + 3), group (str + 5) };
+	}
+}
