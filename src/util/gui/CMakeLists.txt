@@ -44,3 +44,9 @@ set_property (TARGET leechcraft-util-gui${LC_LIBSUFFIX} PROPERTY SOVERSION ${LC_
 install (TARGETS leechcraft-util-gui${LC_LIBSUFFIX} DESTINATION ${LIBDIR})
 
 FindQtLibs (leechcraft-util-gui${LC_LIBSUFFIX} Network WebKitWidgets Widgets)
+
+if (ENABLE_UTIL_TESTS)
+	include_directories (${CMAKE_CURRENT_BINARY_DIR}/tests ${CMAKE_CURRENT_SOURCE_DIR})
+
+	AddUtilTest (gui_util tests/utiltest.cpp UtilGuiUtilTest leechcraft-util-gui${LC_LIBSUFFIX})
+endif ()
