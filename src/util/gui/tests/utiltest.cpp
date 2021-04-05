@@ -14,14 +14,14 @@ QTEST_MAIN (LC::Util::UtilTest)
 
 namespace LC::Util
 {
-	void UtilTest::testColorOperator ()
+	void UtilTest::testRgbOperator ()
 	{
-		QCOMPARE ("#abcdef"_color, QColor { "#abcdef" });
+		QCOMPARE ("#abcdef"_rgb, QColor { "#abcdef" });
 	}
 
-	void UtilTest::testColorOperatorConstexpr ()
+	void UtilTest::testRgbOperatorConstexpr ()
 	{
-		constexpr QColor parsed = "#abcdef"_color;
+		constexpr QColor parsed = "#abcdef"_rgb;
 		QCOMPARE (parsed, QColor { "#abcdef" });
 	}
 }
