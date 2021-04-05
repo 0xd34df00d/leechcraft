@@ -98,7 +98,7 @@ namespace LC::Util
 
 namespace LC
 {
-	inline constexpr QLatin1String operator"" _ql (const char *str, std::size_t size)
+	constexpr QLatin1String operator"" _ql (const char *str, std::size_t size)
 	{
 		return QLatin1String { str, static_cast<int> (size) };
 	}
