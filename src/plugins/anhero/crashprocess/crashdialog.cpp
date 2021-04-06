@@ -116,15 +116,6 @@ namespace LC::AnHero::CrashProcess
 		Ui_.TraceDisplay_->append (part);
 	}
 
-	namespace
-	{
-		template<typename T>
-		std::reverse_iterator<T> MakeReverse (T t)
-		{
-			return std::reverse_iterator<T> { t };
-		}
-	}
-
 	void CrashDialog::handleFinished (int code, QProcess::ExitStatus)
 	{
 		QTimer::singleShot (0, this, [this] { GdbLauncher_.reset (); });
@@ -139,9 +130,9 @@ namespace LC::AnHero::CrashProcess
 		if (pos == lines.end ())
 			return;
 
-		const auto lastThread = std::find_if (MakeReverse (pos), MakeReverse (lines.begin ()),
+		const auto lastThread = std::find_if (std::reverse_iterator { pos }, std::reverse_iterator { lines.begin () },
 				[] (const QString& text) { return text.startsWith ("Thread "_ql); });
-		if (lastThread == MakeReverse (lines.begin ()))
+		if (lastThread == std::reverse_iterator { lines.begin () })
 			return;
 
 		lines.erase (lastThread.base (), pos);
