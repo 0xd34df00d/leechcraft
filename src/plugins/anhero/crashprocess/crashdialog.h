@@ -34,9 +34,6 @@ namespace LC::AnHero::CrashProcess
 		void SetFormat ();
 		void WriteTrace (const QString&);
 		void SetInteractionAllowed (bool);
-	public slots:
-		void accept ();
-		void done (int);
 	private slots:
 		void appendTrace (const QString&);
 		void handleFinished (int, QProcess::ExitStatus);

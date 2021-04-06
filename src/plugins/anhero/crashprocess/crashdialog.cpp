@@ -25,6 +25,15 @@
 
 namespace LC::AnHero::CrashProcess
 {
+	namespace
+	{
+		QString GetNowFilename ()
+		{
+			const auto& nowStr = QDateTime::currentDateTime ().toString (QStringLiteral ("yy_MM_dd-hh_mm_ss"));
+			return "lc_crash_" + nowStr + ".log";
+		}
+	}
+
 	CrashDialog::CrashDialog (const AppInfo& info, QWidget *parent)
 	: QDialog (parent, Qt::Window)
 	, CmdLine_ (info.ExecLine_)
@@ -46,6 +55,24 @@ namespace LC::AnHero::CrashProcess
 				this,
 				SLOT (reload ()));
 		reload ();
+
+		connect (this,
+				&QDialog::finished,
+				[this] (int result)
+				{
+					if (result == QDialog::Accepted)
+					{
+						auto reportsDir = Util::CreateIfNotExists (QStringLiteral ("dolozhee/crashreports"));
+						const auto& filename = reportsDir.absoluteFilePath (GetNowFilename ());
+						WriteTrace (filename);
+					}
+
+					auto cmdlist = CmdLine_.split (' ', Qt::SkipEmptyParts);
+					cmdlist << QStringLiteral ("--restart");
+
+					if (Ui_.RestartBox_->checkState () == Qt::Checked)
+						QProcess::startDetached (Info_.Path_, cmdlist);
+				});
 
 		setAttribute (Qt::WA_DeleteOnClose);
 
@@ -80,35 +107,6 @@ namespace LC::AnHero::CrashProcess
 		Ui_.Copy_->setEnabled (allowed);
 		Ui_.Save_->setEnabled (allowed);
 		Ui_.DialogButtons_->button (QDialogButtonBox::Ok)->setEnabled (allowed);
-	}
-
-	namespace
-	{
-		QString GetNowFilename ()
-		{
-			const auto& nowStr = QDateTime::currentDateTime ().toString (QStringLiteral ("yy_MM_dd-hh_mm_ss"));
-			return "lc_crash_" + nowStr + ".log";
-		}
-	}
-
-	void CrashDialog::accept ()
-	{
-		auto reportsDir = Util::CreateIfNotExists (QStringLiteral ("dolozhee/crashreports"));
-		const auto& filename = reportsDir.absoluteFilePath (GetNowFilename ());
-		WriteTrace (filename);
-
-		QDialog::accept ();
-	}
-
-	void CrashDialog::done (int res)
-	{
-		auto cmdlist = CmdLine_.split (' ', Qt::SkipEmptyParts);
-		cmdlist << QStringLiteral ("--restart");
-
-		if (Ui_.RestartBox_->checkState () == Qt::Checked)
-			QProcess::startDetached (Info_.Path_, cmdlist);
-
-		QDialog::done (res);
 	}
 
 	void CrashDialog::appendTrace (const QString& part)
