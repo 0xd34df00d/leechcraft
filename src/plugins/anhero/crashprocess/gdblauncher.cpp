@@ -7,7 +7,6 @@
  **********************************************************************/
 
 #include "gdblauncher.h"
-#include <stdexcept>
 #include <QProcess>
 #include <QtDebug>
 
@@ -17,6 +16,42 @@ namespace LC::AnHero::CrashProcess
 	: QObject (parent)
 	, Proc_ (new QProcess (this))
 	{
+		connect (Proc_,
+				&QProcess::started,
+				[this]
+				{
+					Proc_->write ("thread\n");
+					Proc_->write ("thread apply all bt\n");
+					Proc_->write ("q\n");
+				});
+		connect (Proc_,
+				&QProcess::errorOccurred,
+				[this]
+				{
+					qDebug () << Q_FUNC_INFO
+							<< "status:"
+							<< Proc_->exitStatus ()
+							<< "code:"
+							<< Proc_->exitCode ()
+							<< "error:"
+							<< Proc_->error ()
+							<< "str:"
+							<< Proc_->errorString ();
+
+					emit error (Proc_->exitStatus (),
+						Proc_->exitCode (),
+						Proc_->error (),
+						Proc_->errorString ());
+				});
+		connect (Proc_,
+				&QProcess::readyReadStandardOutput,
+				this,
+				&GDBLauncher::ConsumeStdout);
+		connect (Proc_,
+				qOverload<int, QProcess::ExitStatus> (&QProcess::finished),
+				this,
+				&GDBLauncher::finished);
+
 		Proc_->start (QStringLiteral ("gdb"),
 				{
 					"-nw",
@@ -26,22 +61,6 @@ namespace LC::AnHero::CrashProcess
 					QString::number (pid),
 					path
 				});
-		connect (Proc_,
-				SIGNAL (started ()),
-				this,
-				SLOT (feedInitialCommands ()));
-		connect (Proc_,
-				SIGNAL (error (QProcess::ProcessError)),
-				this,
-				SLOT (handleError ()));
-		connect (Proc_,
-				SIGNAL (readyReadStandardOutput ()),
-				this,
-				SLOT (consumeStdout ()));
-		connect (Proc_,
-				SIGNAL (finished (int, QProcess::ExitStatus)),
-				this,
-				SIGNAL (finished (int, QProcess::ExitStatus)));
 	}
 
 	GDBLauncher::~GDBLauncher ()
@@ -54,32 +73,7 @@ namespace LC::AnHero::CrashProcess
 		}
 	}
 
-	void GDBLauncher::handleError ()
-	{
-		qDebug () << Q_FUNC_INFO
-				<< "status:"
-				<< Proc_->exitStatus ()
-				<< "code:"
-				<< Proc_->exitCode ()
-				<< "error:"
-				<< Proc_->error ()
-				<< "str:"
-				<< Proc_->errorString ();
-
-		emit error (Proc_->exitStatus (),
-				Proc_->exitCode (),
-				Proc_->error (),
-				Proc_->errorString ());
-	}
-
-	void GDBLauncher::feedInitialCommands ()
-	{
-		Proc_->write ("thread\n");
-		Proc_->write ("thread apply all bt\n");
-		Proc_->write ("q\n");
-	}
-
-	void GDBLauncher::consumeStdout ()
+	void GDBLauncher::ConsumeStdout ()
 	{
 		auto strs = Proc_->readAllStandardOutput ().trimmed ().split ('\n');
 		strs.erase (std::remove_if (strs.begin (), strs.end (),

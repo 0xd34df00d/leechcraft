@@ -51,10 +51,31 @@ namespace LC::AnHero::CrashProcess
 		new Highlighter (Ui_.TraceDisplay_->document ());
 
 		connect (Ui_.Reload_,
-				SIGNAL (released ()),
+				&QPushButton::released,
 				this,
-				SLOT (reload ()));
-		reload ();
+				&CrashDialog::Reload);
+		Reload ();
+
+		connect (Ui_.Copy_,
+				&QPushButton::released,
+				[this]
+				{
+					const auto& text = Ui_.TraceDisplay_->toPlainText ();
+					QGuiApplication::clipboard ()->setText (text, QClipboard::Clipboard);
+				});
+
+		connect (Ui_.Save_,
+				&QPushButton::released,
+				[this]
+				{
+					const auto& filename = QFileDialog::getSaveFileName (this,
+							tr ("Save crash info"),
+							QDir::homePath () + "/" + GetNowFilename ());
+					if (filename.isEmpty ())
+						return;
+
+					WriteTrace (filename);
+				});
 
 		connect (this,
 				&QDialog::finished,
@@ -109,12 +130,7 @@ namespace LC::AnHero::CrashProcess
 		Ui_.DialogButtons_->button (QDialogButtonBox::Ok)->setEnabled (allowed);
 	}
 
-	void CrashDialog::appendTrace (const QString& part)
-	{
-		Ui_.TraceDisplay_->append (part);
-	}
-
-	void CrashDialog::handleFinished (int code, QProcess::ExitStatus)
+	void CrashDialog::HandleGdbFinished (int code, QProcess::ExitStatus)
 	{
 		QTimer::singleShot (0, this, [this] { GdbLauncher_.reset (); });
 
@@ -143,16 +159,7 @@ namespace LC::AnHero::CrashProcess
 			Ui_.TraceDisplay_->append (line);
 	}
 
-	void CrashDialog::handleError (QProcess::ExitStatus, int code, QProcess::ProcessError error, const QString& errorStr)
-	{
-		Ui_.TraceDisplay_->append (QStringLiteral ("\n\nGDB crashed :("));
-		Ui_.TraceDisplay_->append (tr ("Exit code: %1; error code: %2; error string: %3.")
-				.arg (code)
-				.arg (error)
-				.arg (errorStr));
-	}
-
-	void CrashDialog::reload ()
+	void CrashDialog::Reload ()
 	{
 		Ui_.TraceDisplay_->clear ();
 
@@ -160,17 +167,23 @@ namespace LC::AnHero::CrashProcess
 
 		GdbLauncher_ = std::make_shared<GDBLauncher> (Info_.PID_, Info_.Path_);
 		connect (GdbLauncher_.get (),
-				SIGNAL (gotOutput (QString)),
-				this,
-				SLOT (appendTrace (QString)));
+				&GDBLauncher::gotOutput,
+				Ui_.TraceDisplay_,
+				&QTextEdit::append);
 		connect (GdbLauncher_.get (),
-				SIGNAL (finished (int, QProcess::ExitStatus)),
+				&GDBLauncher::finished,
 				this,
-				SLOT (handleFinished (int, QProcess::ExitStatus)));
+				&CrashDialog::HandleGdbFinished);
 		connect (GdbLauncher_.get (),
-				SIGNAL (error (QProcess::ExitStatus, int, QProcess::ProcessError, QString)),
-				this,
-				SLOT (handleError (QProcess::ExitStatus, int, QProcess::ProcessError, QString)));
+				&GDBLauncher::error,
+				[this] (QProcess::ExitStatus, int code, QProcess::ProcessError error, const QString& errorStr)
+				{
+					Ui_.TraceDisplay_->append (QStringLiteral ("\n\nGDB crashed :("));
+					Ui_.TraceDisplay_->append (tr ("Exit code: %1; error code: %2; error string: %3.")
+							.arg (code)
+							.arg (error)
+							.arg (errorStr));
+				});
 
 		Ui_.TraceDisplay_->append (QStringLiteral ("=== SYSTEM INFO ==="));
 		Ui_.TraceDisplay_->append ("Offending signal: " + QString::number (Info_.Signal_));
@@ -186,23 +199,5 @@ namespace LC::AnHero::CrashProcess
 		Ui_.TraceDisplay_->append (QStringLiteral ("\n\n=== BACKTRACE ==="));
 
 		SetInteractionAllowed (false);
-	}
-
-	void CrashDialog::on_Copy__released ()
-	{
-		const auto& text = Ui_.TraceDisplay_->toPlainText ();
-		QGuiApplication::clipboard ()->setText (text, QClipboard::Clipboard);
-	}
-
-	void CrashDialog::on_Save__released ()
-	{
-		const auto& filename = QFileDialog::getSaveFileName (this,
-				tr ("Save crash info"),
-				QDir::homePath () + "/" + GetNowFilename ());
-
-		if (filename.isEmpty ())
-			return;
-
-		WriteTrace (filename);
 	}
 }

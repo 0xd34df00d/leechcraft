@@ -34,14 +34,8 @@ namespace LC::AnHero::CrashProcess
 		void SetFormat ();
 		void WriteTrace (const QString&);
 		void SetInteractionAllowed (bool);
-	private slots:
-		void appendTrace (const QString&);
-		void handleFinished (int, QProcess::ExitStatus);
-		void handleError (QProcess::ExitStatus, int, QProcess::ProcessError, const QString&);
 
-		void reload ();
-
-		void on_Copy__released ();
-		void on_Save__released ();
+		void Reload ();
+		void HandleGdbFinished (int, QProcess::ExitStatus);
 	};
 }

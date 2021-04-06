@@ -23,12 +23,8 @@ namespace LC::AnHero::CrashProcess
 	public:
 		GDBLauncher (quint64 pid, const QString& path, QObject* = nullptr);
 		~GDBLauncher () override;
-	private slots:
-		void handleError ();
-
-		void feedInitialCommands ();
-
-		void consumeStdout ();
+	private:
+		void ConsumeStdout ();
 	signals:
 		void gotOutput (const QString&);
 		void finished (int, QProcess::ExitStatus);
