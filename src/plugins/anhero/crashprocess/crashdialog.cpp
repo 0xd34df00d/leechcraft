@@ -15,6 +15,8 @@
 #include <QTimer>
 #include <QtDebug>
 #include <util/util.h>
+#include <util/gui/util.h>
+#include <util/sll/qtutil.h>
 #include <util/sys/sysinfo.h>
 #include <util/sys/paths.h>
 #include "appinfo.h"
@@ -32,7 +34,7 @@ namespace LC::AnHero::CrashProcess
 
 		Ui_.InfoLabel_->setText (tr ("Unfortunately LeechCraft has crashed. This is the info we could collect:"));
 
-		QFont traceFont ("Terminus");
+		QFont traceFont (QStringLiteral ("Terminus"));
 		traceFont.setStyleHint (QFont::TypeWriter);
 		Ui_.TraceDisplay_->setFont (traceFont);
 		Ui_.RestartBox_->setCheckState (info.SuggestRestart_ ? Qt::Checked : Qt::Unchecked);
@@ -54,7 +56,7 @@ namespace LC::AnHero::CrashProcess
 	{
 		auto doc = Ui_.TraceDisplay_->document ();
 		auto frameFmt = doc->rootFrame ()->frameFormat ();
-		frameFmt.setBackground ({ "#dddddd" });
+		frameFmt.setBackground ("#dddddd"_rgb);
 		doc->rootFrame ()->setFrameFormat (frameFmt);
 	}
 
@@ -64,7 +66,7 @@ namespace LC::AnHero::CrashProcess
 		if (!file.open (QIODevice::WriteOnly | QIODevice::Truncate))
 		{
 			QMessageBox::critical (this,
-					"LeechCraft",
+					QStringLiteral ("LeechCraft"),
 					tr ("Cannot open file: %1")
 						.arg (file.errorString ()));
 			return;
@@ -84,14 +86,14 @@ namespace LC::AnHero::CrashProcess
 	{
 		QString GetNowFilename ()
 		{
-			const auto& nowStr = QDateTime::currentDateTime ().toString ("yy_MM_dd-hh_mm_ss");
+			const auto& nowStr = QDateTime::currentDateTime ().toString (QStringLiteral ("yy_MM_dd-hh_mm_ss"));
 			return "lc_crash_" + nowStr + ".log";
 		}
 	}
 
 	void CrashDialog::accept ()
 	{
-		auto reportsDir = Util::CreateIfNotExists ("dolozhee/crashreports");
+		auto reportsDir = Util::CreateIfNotExists (QStringLiteral ("dolozhee/crashreports"));
 		const auto& filename = reportsDir.absoluteFilePath (GetNowFilename ());
 		WriteTrace (filename);
 
@@ -101,7 +103,7 @@ namespace LC::AnHero::CrashProcess
 	void CrashDialog::done (int res)
 	{
 		auto cmdlist = CmdLine_.split (' ', Qt::SkipEmptyParts);
-		cmdlist << "--restart";
+		cmdlist << QStringLiteral ("--restart");
 
 		if (Ui_.RestartBox_->checkState () == Qt::Checked)
 			QProcess::startDetached (Info_.Path_, cmdlist);
@@ -130,15 +132,15 @@ namespace LC::AnHero::CrashProcess
 		Ui_.TraceDisplay_->append ("\n\nGDB exited with code " + QString::number (code));
 		SetInteractionAllowed (true);
 
-		auto lines = Ui_.TraceDisplay_->toPlainText ().split ("\n");
+		auto lines = Ui_.TraceDisplay_->toPlainText ().split ('\n');
 
 		const auto pos = std::find_if (lines.begin (), lines.end (),
-				[] (const QString& line) { return line.contains ("signal handler called"); });
+				[] (const QString& line) { return line.contains ("signal handler called"_ql); });
 		if (pos == lines.end ())
 			return;
 
 		const auto lastThread = std::find_if (MakeReverse (pos), MakeReverse (lines.begin ()),
-				[] (const QString& text) { return text.startsWith ("Thread "); });
+				[] (const QString& text) { return text.startsWith ("Thread "_ql); });
 		if (lastThread == MakeReverse (lines.begin ()))
 			return;
 
@@ -181,7 +183,7 @@ namespace LC::AnHero::CrashProcess
 				this,
 				SLOT (handleError (QProcess::ExitStatus, int, QProcess::ProcessError, QString)));
 
-		Ui_.TraceDisplay_->append ("=== SYSTEM INFO ===");
+		Ui_.TraceDisplay_->append (QStringLiteral ("=== SYSTEM INFO ==="));
 		Ui_.TraceDisplay_->append ("Offending signal: " + QString::number (Info_.Signal_));
 		Ui_.TraceDisplay_->append ("App path: " + Info_.Path_);
 		Ui_.TraceDisplay_->append ("App version: " + Info_.Version_);
@@ -192,7 +194,7 @@ namespace LC::AnHero::CrashProcess
 		Ui_.TraceDisplay_->append ("OS: " + osInfo.Name_);
 		Ui_.TraceDisplay_->append ("OS version: " + osInfo.Version_);
 
-		Ui_.TraceDisplay_->append ("\n\n=== BACKTRACE ===");
+		Ui_.TraceDisplay_->append (QStringLiteral ("\n\n=== BACKTRACE ==="));
 
 		SetInteractionAllowed (false);
 	}

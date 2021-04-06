@@ -11,14 +11,15 @@
 #include <QStringMatcher>
 #include <QtDebug>
 #include <util/gui/util.h>
+#include <util/sll/qtutil.h>
 
 namespace LC::AnHero::CrashProcess
 {
 	void Highlighter::highlightBlock (const QString& text)
 	{
-		if (text.startsWith ("Thread "))
+		if (text.startsWith ("Thread "_ql))
 			setFormat (0, text.size (), "#B3925D"_rgb);
-		else if (text.startsWith ("#"))
+		else if (text.startsWith ('#'))
 			ParseBTLine (text);
 	}
 
@@ -91,7 +92,7 @@ namespace LC::AnHero::CrashProcess
 
 	void Highlighter::ParseFunction (const QString& text, int funcStartIdx)
 	{
-		const auto doubleColon = text.lastIndexOf ("::", text.indexOf ('(', funcStartIdx));
+		const auto doubleColon = text.lastIndexOf ("::"_ql, text.indexOf ('(', funcStartIdx));
 		if (doubleColon == -1)
 			ParseCFunction (text, funcStartIdx);
 		else

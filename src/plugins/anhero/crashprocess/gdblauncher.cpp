@@ -9,7 +9,6 @@
 #include "gdblauncher.h"
 #include <stdexcept>
 #include <QProcess>
-#include <QTextStream>
 #include <QtDebug>
 
 namespace LC::AnHero::CrashProcess
@@ -18,7 +17,7 @@ namespace LC::AnHero::CrashProcess
 	: QObject (parent)
 	, Proc_ (new QProcess (this))
 	{
-		Proc_->start ("gdb",
+		Proc_->start (QStringLiteral ("gdb"),
 				{
 					"-nw",
 					"-n",
@@ -88,7 +87,7 @@ namespace LC::AnHero::CrashProcess
 					{
 						return !str.isEmpty () &&
 								std::all_of (str.begin (), str.end (),
-										[] (const QChar& c) { return c == '.'; });
+										[] (QChar c) { return c == '.'; });
 					}),
 				strs.end ());
 
