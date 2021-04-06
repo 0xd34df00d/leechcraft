@@ -156,7 +156,7 @@ namespace LC::AnHero::CrashProcess
 
 	void CrashDialog::handleError (QProcess::ExitStatus, int code, QProcess::ProcessError error, const QString& errorStr)
 	{
-		Ui_.TraceDisplay_->append ("\n\nGDB crashed :(");
+		Ui_.TraceDisplay_->append (QStringLiteral ("\n\nGDB crashed :("));
 		Ui_.TraceDisplay_->append (tr ("Exit code: %1; error code: %2; error string: %3.")
 				.arg (code)
 				.arg (error)
@@ -187,7 +187,7 @@ namespace LC::AnHero::CrashProcess
 		Ui_.TraceDisplay_->append ("Offending signal: " + QString::number (Info_.Signal_));
 		Ui_.TraceDisplay_->append ("App path: " + Info_.Path_);
 		Ui_.TraceDisplay_->append ("App version: " + Info_.Version_);
-		Ui_.TraceDisplay_->append ("Qt version (build-time): " + QString (QT_VERSION_STR));
+		Ui_.TraceDisplay_->append ("Qt version (build-time): " + QStringLiteral (QT_VERSION_STR));
 		Ui_.TraceDisplay_->append ("Qt version (runtime): " + QString (qVersion ()));
 
 		const auto& osInfo = Util::SysInfo::GetOSInfo ();
