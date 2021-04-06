@@ -139,7 +139,7 @@ namespace LC::AnHero::CrashProcess
 
 		const auto lastThread = std::find_if (MakeReverse (pos), MakeReverse (lines.begin ()),
 				[] (const QString& text) { return text.startsWith ("Thread "); });
-		if (lastThread == MakeReverse (lines.end ()))
+		if (lastThread == MakeReverse (lines.begin ()))
 			return;
 
 		lines.erase (lastThread.base (), pos);
