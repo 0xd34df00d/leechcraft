@@ -206,7 +206,7 @@ namespace LC::AnHero::CrashProcess
 	void CrashDialog::on_Save__released ()
 	{
 		const auto& filename = QFileDialog::getSaveFileName (this,
-				"Save crash info",
+				tr ("Save crash info"),
 				QDir::homePath () + "/" + GetNowFilename ());
 
 		if (filename.isEmpty ())
