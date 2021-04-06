@@ -202,7 +202,7 @@ namespace LC::AnHero::CrashProcess
 	void CrashDialog::on_Copy__released ()
 	{
 		const auto& text = Ui_.TraceDisplay_->toPlainText ();
-		qApp->clipboard ()->setText (text, QClipboard::Clipboard);
+		QGuiApplication::clipboard ()->setText (text, QClipboard::Clipboard);
 	}
 
 	void CrashDialog::on_Save__released ()
