@@ -10,13 +10,14 @@
 #include <optional>
 #include <QStringMatcher>
 #include <QtDebug>
+#include <util/gui/util.h>
 
 namespace LC::AnHero::CrashProcess
 {
 	void Highlighter::highlightBlock (const QString& text)
 	{
 		if (text.startsWith ("Thread "))
-			setFormat (0, text.size (), QColor ("#B3925D"));
+			setFormat (0, text.size (), "#B3925D"_rgb);
 		else if (text.startsWith ("#"))
 			ParseBTLine (text);
 	}
@@ -46,7 +47,7 @@ namespace LC::AnHero::CrashProcess
 	void Highlighter::ParseBTLine (const QString& text)
 	{
 		auto numberEnd = text.indexOf (' ');
-		setFormat (0, numberEnd, QColor ("#555555"));
+		setFormat (0, numberEnd, "#555555"_rgb);
 
 		while (text.at (numberEnd) == ' ')
 			++numberEnd;
@@ -57,7 +58,7 @@ namespace LC::AnHero::CrashProcess
 		{
 			QTextCharFormat fmt;
 			fmt.setFontWeight (QFont::Bold);
-			fmt.setForeground ({ "#E20800" });
+			fmt.setForeground ("#E20800"_rgb);
 			setFormat (sigIdx, sighandlerMarker.pattern ().size (), fmt);
 			return;
 		}
@@ -68,7 +69,7 @@ namespace LC::AnHero::CrashProcess
 		if (isAddr)
 		{
 			const auto addrEnd = text.indexOf (' ', numberEnd);
-			setFormat (numberEnd, addrEnd - numberEnd, QColor ("#BBBBBB"));
+			setFormat (numberEnd, addrEnd - numberEnd, "#BBBBBB"_rgb);
 
 			funcStartIdx = text.indexOf (' ', addrEnd + 1) + 1;
 		}
@@ -101,9 +102,9 @@ namespace LC::AnHero::CrashProcess
 	{
 		const auto funcEndIdx = text.indexOf (' ', funcStartIdx);
 		if (text [funcStartIdx] == '?' && text [funcStartIdx + 1] == '?')
-			setFormat (funcStartIdx, funcEndIdx - funcStartIdx, QColor ("#E85752"));
+			setFormat (funcStartIdx, funcEndIdx - funcStartIdx, "#E85752"_rgb);
 		else
-			setFormat (funcStartIdx, funcEndIdx - funcStartIdx, QColor ("#462886"));
+			setFormat (funcStartIdx, funcEndIdx - funcStartIdx, "#462886"_rgb);
 
 		ParseRest (text, funcEndIdx);
 	}
@@ -111,11 +112,11 @@ namespace LC::AnHero::CrashProcess
 	void Highlighter::ParseCppFunction (const QString& text, int funcStartIdx, int doubleColonIdx)
 	{
 		const auto parenIdx = text.indexOf ('(', doubleColonIdx);
-		setFormat (funcStartIdx, doubleColonIdx - funcStartIdx, QColor ("#008C00"));
+		setFormat (funcStartIdx, doubleColonIdx - funcStartIdx, "#008C00"_rgb);
 
 		QTextCharFormat fmt;
 		fmt.setFontWeight (QFont::Bold);
-		fmt.setForeground ({ "#644A9B" });
+		fmt.setForeground ("#644A9B"_rgb);
 		setFormat (doubleColonIdx + 2, parenIdx - doubleColonIdx - 2, fmt);
 
 		ParseRest (text, parenIdx);
@@ -137,6 +138,6 @@ namespace LC::AnHero::CrashProcess
 		if (colonIdx == -1)
 			colonIdx = text.size ();
 
-		setFormat (restIdx, colonIdx - restIdx, QColor ("#0057AE"));
+		setFormat (restIdx, colonIdx - restIdx, "#0057AE"_rgb);
 	}
 }
