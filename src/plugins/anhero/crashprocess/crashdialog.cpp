@@ -88,11 +88,12 @@ namespace LC::AnHero::CrashProcess
 						WriteTrace (filename);
 					}
 
-					auto cmdlist = CmdLine_.split (' ', Qt::SkipEmptyParts);
-					cmdlist << QStringLiteral ("--restart");
-
 					if (Ui_.RestartBox_->checkState () == Qt::Checked)
+					{
+						auto cmdlist = CmdLine_.split (' ', Qt::SkipEmptyParts);
+						cmdlist << QStringLiteral ("--restart");
 						QProcess::startDetached (Info_.Path_, cmdlist);
+					}
 				});
 
 		setAttribute (Qt::WA_DeleteOnClose);
