@@ -9,6 +9,7 @@
 #include "anhero.h"
 #include <QIcon>
 #include <QCoreApplication>
+#include <charconv>
 #include <csignal>
 #include <unistd.h>
 #include <sys/types.h>
@@ -59,17 +60,25 @@ namespace LC::AnHero
 			}
 		}
 
+		namespace
+		{
+			auto ToChars (auto val)
+			{
+				constexpr auto maxLen = 10;
+				std::array<char, maxLen> arr { { 0 } };
+				std::to_chars (&arr [0], &arr [0] + maxLen, val);
+				return arr;
+			}
+		}
+
 		void DefaultCrashHandler (int signal)
 		{
 			static uint8_t RecGuard = 0;
 			if (RecGuard++)
 				return;
 
-			char sigtxt [10];
-			sprintf (sigtxt, "%d", signal);
-
-			char pidtxt [10];
-			sprintf (pidtxt, "%lld", QCoreApplication::applicationPid ());
+			const auto sigtxt = ToChars (signal);
+			const auto pidtxt = ToChars (QCoreApplication::applicationPid ());
 
 #if defined (Q_OS_MAC) && !defined (USE_UNIX_LAYOUT)
 			char crashprocess [1024] = { 0 };
