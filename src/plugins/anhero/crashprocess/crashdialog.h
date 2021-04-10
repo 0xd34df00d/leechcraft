@@ -21,7 +21,7 @@ namespace LC::AnHero::CrashProcess
 
 	class CrashDialog : public QDialog
 	{
-		Q_OBJECT
+		Q_DECLARE_TR_FUNCTIONS (LC::AnHero::CrashProcess::CrashDialog)
 
 		Ui::CrashDialog Ui_;
 		const QString CmdLine_;
