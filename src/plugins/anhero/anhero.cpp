@@ -112,7 +112,8 @@ namespace LC::AnHero
 			};
 
 			Exec (argv);
-			_exit (255);
+			const auto crashExitCode = 255;
+			_exit (crashExitCode);
 		}
 
 		void SetCrashHandler (void (*handler) (int))
@@ -183,7 +184,7 @@ namespace LC::AnHero
 
 	QString Plugin::GetName () const
 	{
-		return "AnHero";
+		return QStringLiteral ("AnHero");
 	}
 
 	QString Plugin::GetInfo () const
