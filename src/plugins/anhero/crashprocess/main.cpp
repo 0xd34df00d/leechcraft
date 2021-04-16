@@ -12,6 +12,8 @@
 #include <iostream>
 #include <boost/program_options.hpp>
 #include <QApplication>
+#include <QTranslator>
+#include <QtDebug>
 #include "appinfo.h"
 #include "crashdialog.h"
 
@@ -42,6 +44,7 @@ namespace
 				("version", bpo::value<std::string> ()->required (), "the LeechCraft version at the moment of the crash")
 				("suggest_restart", bpo::value<int> (), "suggest restarting LeechCraft (0 or 1)")
 				("cmdline", bpo::value<std::string> (), "the command line LeechCraft was started with")
+				("tsfile", bpo::value<std::string> (), "the translation file to use for translating UI strings")
 				("help", "show help message");
 
 		bpo::command_line_parser parser (argc, argv);
@@ -80,6 +83,7 @@ namespace
 			.Path_ = QString::fromUtf8 (vm ["path"].as<std::string> ().c_str ()),
 			.Version_ = vm ["version"].as<std::string> ().c_str (),
 			.ExecLine_ = vm ["cmdline"].as<std::string> ().c_str (),
+			.TsFile_ = vm ["tsfile"].as<std::string> ().c_str (),
 			.SuggestRestart_ = vm ["suggest_restart"].as<int> () != 0,
 		};
 	}
@@ -90,6 +94,13 @@ int main (int argc, char **argv)
 	QApplication app (argc, argv);
 
 	const auto& info = ParseOptions (argc, argv);
+
+	QTranslator translator;
+	if (!translator.load (info.TsFile_, {}, {}, ""))
+		qWarning () << "unable to load translations from"
+				<< info.TsFile_;
+
+	QApplication::installTranslator (&translator);
 
 	new CrashProcess::CrashDialog (info);
 	return app.exec ();

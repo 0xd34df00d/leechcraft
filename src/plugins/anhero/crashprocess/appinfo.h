@@ -22,6 +22,8 @@ namespace LC::AnHero::CrashProcess
 
 		QString ExecLine_;
 
+		QString TsFile_;
+
 		bool SuggestRestart_;
 	};
 
