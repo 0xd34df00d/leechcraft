@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Crash</string>
+   <string>Crash report</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -30,7 +30,7 @@
    <item>
     <widget class="QLabel" name="label">
      <property name="text">
-      <string>You could save it for later use or just accept this dialog, and in this case the Dolozhee module (if installed) will prompt you to upload the crash log with some more data to our bugtracker.</string>
+      <string>You can save the report for later or just accept this dialog, and in this case the Dolozhee module (if installed) will prompt you to upload the crash report to our bugtracker next time LeechCraft starts.</string>
      </property>
      <property name="textFormat">
       <enum>Qt::RichText</enum>
@@ -58,10 +58,11 @@
      <item>
       <widget class="QPushButton" name="Reload_">
        <property name="text">
-        <string>Reload</string>
+        <string>Reload symbols</string>
        </property>
        <property name="icon">
-        <iconset theme="view-refresh"/>
+        <iconset theme="view-refresh">
+         <normaloff>.</normaloff>.</iconset>
        </property>
       </widget>
      </item>
@@ -72,8 +73,7 @@
        </property>
        <property name="icon">
         <iconset theme="edit-copy">
-         <normaloff/>
-        </iconset>
+         <normaloff>.</normaloff>.</iconset>
        </property>
       </widget>
      </item>
@@ -84,8 +84,7 @@
        </property>
        <property name="icon">
         <iconset theme="document-save">
-         <normaloff/>
-        </iconset>
+         <normaloff>.</normaloff>.</iconset>
        </property>
       </widget>
      </item>
