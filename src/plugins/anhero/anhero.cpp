@@ -9,6 +9,7 @@
 #include "anhero.h"
 #include <QIcon>
 #include <QCoreApplication>
+#include <QTranslator>
 #include <charconv>
 #include <csignal>
 #include <unistd.h>
@@ -28,6 +29,7 @@ namespace LC::AnHero
 		QByteArray AppDir_;
 		QByteArray AppVersion_;
 		QByteArray AppArgs_;
+		QByteArray TsFile_;
 		bool IsShuttingDown_ = false;
 
 		void CloseFiles ()
@@ -102,6 +104,8 @@ namespace LC::AnHero
 				AppVersion_.constData (),
 				"--cmdline",
 				AppArgs_.constData (),
+				"--tsfile",
+				TsFile_.constData (),
 				"--suggest_restart",
 				IsShuttingDown_ ? "0" : "1",
 				nullptr
@@ -143,7 +147,7 @@ namespace LC::AnHero
 
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		Util::InstallTranslator ("anhero");
+		auto translator = Util::InstallTranslator ("anhero");
 
 		auto args = QCoreApplication::arguments ();
 		if (args.contains ("-noanhero"))
@@ -160,6 +164,7 @@ namespace LC::AnHero
 		AppDir_ = QCoreApplication::applicationDirPath ().toUtf8 ();
 		AppVersion_ = proxy->GetVersion ().toUtf8 ();
 		AppArgs_ = args.join (" ").toUtf8 ();
+		TsFile_ = translator->filePath ().toUtf8 ();
 		SetCrashHandler (DefaultCrashHandler);
 	}
 
