@@ -95,9 +95,9 @@ namespace LC::AnHero
 				"lc_anhero_crashprocess-qt5",
 #endif
 				"--signal",
-				sigtxt,
+				&sigtxt [0],
 				"--pid",
-				pidtxt,
+				&pidtxt [0],
 				"--path",
 				AppPath_.constData (),
 				"--version",
