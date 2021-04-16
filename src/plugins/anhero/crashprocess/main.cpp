@@ -75,12 +75,12 @@ namespace
 
 		return
 		{
-			vm ["signal"].as<int> (),
-			vm ["pid"].as<uint64_t> (),
-			QString::fromUtf8 (vm ["path"].as<std::string> ().c_str ()),
-			vm ["version"].as<std::string> ().c_str (),
-			vm ["cmdline"].as<std::string> ().c_str (),
-			vm ["suggest_restart"].as<int> () != 0
+			.Signal_ = vm ["signal"].as<int> (),
+			.PID_ = vm ["pid"].as<uint64_t> (),
+			.Path_ = QString::fromUtf8 (vm ["path"].as<std::string> ().c_str ()),
+			.Version_ = vm ["version"].as<std::string> ().c_str (),
+			.ExecLine_ = vm ["cmdline"].as<std::string> ().c_str (),
+			.SuggestRestart_ = vm ["suggest_restart"].as<int> () != 0,
 		};
 	}
 }
