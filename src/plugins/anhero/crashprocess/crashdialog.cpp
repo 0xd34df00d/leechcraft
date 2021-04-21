@@ -43,8 +43,7 @@ namespace LC::AnHero::CrashProcess
 
 		Ui_.InfoLabel_->setText (tr ("Unfortunately LeechCraft has crashed. This is the info we could collect:"));
 
-		QFont traceFont (QStringLiteral ("Terminus"));
-		traceFont.setStyleHint (QFont::TypeWriter);
+		QFont traceFont { QStringLiteral ("monospace") };
 		Ui_.TraceDisplay_->setFont (traceFont);
 		Ui_.RestartBox_->setCheckState (info.SuggestRestart_ ? Qt::Checked : Qt::Unchecked);
 
