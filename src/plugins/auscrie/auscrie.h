@@ -32,21 +32,21 @@ namespace Auscrie
 		QAction *ShotAction_;
 		ShooterDialog *Dialog_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		void Release ();
-		QByteArray GetUniqueID () const;
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+		void Init (ICoreProxy_ptr) override;
+		void SecondInit () override;
+		void Release () override;
+		QByteArray GetUniqueID () const override;
+		QString GetName () const override;
+		QString GetInfo () const override;
+		QIcon GetIcon () const override;
 
-		QList<QAction*> GetActions (ActionsEmbedPlace) const;
+		QList<QAction*> GetActions (ActionsEmbedPlace) const override;
 	private:
 		void PerformAction ();
 		void MakeScreenshot (int);
 		QPixmap GetPixmap () const;
 	signals:
-		void gotActions (QList<QAction*>, LC::ActionsEmbedPlace);
+		void gotActions (QList<QAction*>, LC::ActionsEmbedPlace) override;
 	};
 }
 }

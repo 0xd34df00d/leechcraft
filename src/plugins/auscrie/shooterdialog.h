@@ -62,7 +62,7 @@ namespace Auscrie
 		void SetScreenshot (const QPixmap&);
 		QPixmap GetScreenshot () const;
 
-		void resizeEvent (QResizeEvent*);
+		void resizeEvent (QResizeEvent*) override;
 	private:
 		void RescaleLabel ();
 	private slots:
