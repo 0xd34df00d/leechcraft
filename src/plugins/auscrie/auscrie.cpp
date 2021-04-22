@@ -28,13 +28,11 @@ namespace LC
 {
 namespace Auscrie
 {
-	void Plugin::Init (ICoreProxy_ptr proxy)
+	void Plugin::Init (ICoreProxy_ptr)
 	{
-		Proxy_ = proxy;
-
 		Util::InstallTranslator ("auscrie");
 
-		Dialog_ = new ShooterDialog (proxy);
+		Dialog_ = new ShooterDialog;
 
 		ShotAction_ = new QAction (GetIcon (),
 				tr ("Make a screenshot"),
@@ -79,7 +77,7 @@ namespace Auscrie
 
 	QIcon Plugin::GetIcon () const
 	{
-		return Proxy_->GetIconThemeManager ()->GetPluginIcon ();
+		return GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon ();
 	}
 
 	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace place) const
@@ -98,19 +96,19 @@ namespace Auscrie
 		if (pm.isNull ())
 			return;
 
-		auto mw = Proxy_->GetRootWindowsManager ()->GetPreferredWindow ();
+		auto mw = GetProxyHolder ()->GetRootWindowsManager ()->GetPreferredWindow ();
 		const int quality = Dialog_->GetQuality ();
 
 		switch (Dialog_->GetAction ())
 		{
 		case ShooterDialog::Action::Save:
 		{
-			QString path = Proxy_->GetSettingsManager ()->
-				Property ("PluginsStorage/Auscrie/SavePath",
-						QDir::currentPath () + "01." + Dialog_->GetFormat ())
-				.toString ();
+			const auto sm = GetProxyHolder ()->GetSettingsManager ();
+			const auto settingsKey = "PluginsStorage/Auscrie/SavePath";
+			const auto& defaultPath = QDir::currentPath () + "01." + Dialog_->GetFormat ();
+			const auto& path = sm->Property (settingsKey, defaultPath).toString ();
 
-			QString filename = QFileDialog::getSaveFileName (mw,
+			const auto& filename = QFileDialog::getSaveFileName (mw,
 					tr ("Save as"),
 					path,
 					tr ("%1 files (*.%1);;All files (*.*)")
@@ -121,9 +119,7 @@ namespace Auscrie
 				pm.save (filename,
 						qPrintable (Dialog_->GetFormat ()),
 						quality);
-				Proxy_->GetSettingsManager ()->
-					setProperty ("PluginsStorage/Auscrie/SavePath",
-							filename);
+				sm->setProperty (settingsKey, filename);
 			}
 			break;
 		}
@@ -173,7 +169,7 @@ namespace Auscrie
 
 	QPixmap Plugin::GetPixmap () const
 	{
-		auto rootWin = Proxy_->GetRootWindowsManager ()->GetPreferredWindow ();
+		auto rootWin = GetProxyHolder ()->GetRootWindowsManager ()->GetPreferredWindow ();
 
 		// Qt folks have decided that grabbing screens is "insecure", so there is no good substitute for this API
 		// now that it's deprecated. The suggestion is to use platform-dependent code.

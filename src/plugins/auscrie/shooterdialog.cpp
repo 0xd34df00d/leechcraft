@@ -18,9 +18,8 @@ namespace LC
 {
 namespace Auscrie
 {
-	ShooterDialog::ShooterDialog (ICoreProxy_ptr proxy, QWidget *parent)
+	ShooterDialog::ShooterDialog (QWidget *parent)
 	: QDialog (parent)
-	, Proxy_ (proxy)
 	{
 		Ui_.setupUi (this);
 		on_Format__currentIndexChanged (Ui_.Format_->currentText ());
@@ -99,7 +98,7 @@ namespace Auscrie
 		const auto& selected = RestoreFilterState ();
 
 		const auto& imageVar = QVariant::fromValue (px.toImage ());
-		const auto& filters = Util::GetDataFilters (imageVar, Proxy_->GetEntityManager ());
+		const auto& filters = Util::GetDataFilters (imageVar, GetProxyHolder ()->GetEntityManager ());
 		for (auto filter : filters)
 		{
 			auto idf = qobject_cast<IDataFilter*> (filter);

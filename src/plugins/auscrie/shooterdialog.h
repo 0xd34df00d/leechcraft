@@ -21,7 +21,6 @@ namespace Auscrie
 		Q_OBJECT
 
 		Ui::ShooterDialog Ui_;
-		const ICoreProxy_ptr Proxy_;
 		QPixmap CurrentScreenshot_;
 	public:
 		struct FilterData
@@ -46,7 +45,7 @@ namespace Auscrie
 			WholeDesktop
 		};
 
-		ShooterDialog (ICoreProxy_ptr, QWidget* = 0);
+		explicit ShooterDialog (QWidget* = nullptr);
 
 		Action GetAction () const;
 
