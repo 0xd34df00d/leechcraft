@@ -140,10 +140,10 @@ namespace Auscrie
 
 	void ShooterDialog::on_Format__currentIndexChanged (const QString& str)
 	{
-		if (str == "JPG")
-			Ui_.SettingLabel_->setText ("Quality:");
+		if (str == "JPG"_ql)
+			Ui_.SettingLabel_->setText (tr ("Quality:"));
 		else
-			Ui_.SettingLabel_->setText ("Compression:");
+			Ui_.SettingLabel_->setText (tr ("Compression:"));
 	}
 }
 }
