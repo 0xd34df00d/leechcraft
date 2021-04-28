@@ -9,7 +9,6 @@
 #include <QMainWindow>
 #include <QIcon>
 #include <QTimer>
-#include <QBuffer>
 #include <QDir>
 #include <QFileDialog>
 #include <QDesktopWidget>
