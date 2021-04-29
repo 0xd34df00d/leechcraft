@@ -154,7 +154,8 @@ namespace Auscrie
 		Dialog_->setVisible (!Dialog_->ShouldHide ());
 
 		ShotAction_->setEnabled (false);
-		QTimer::singleShot (std::max (timeout, 200),
+		const auto minTimeout = 200;
+		QTimer::singleShot (std::max (timeout, minTimeout),
 				this,
 				[this]
 				{
