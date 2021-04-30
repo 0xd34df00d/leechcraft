@@ -15,26 +15,31 @@ namespace LC
 {
 namespace Auscrie
 {
+	namespace
+	{
+		const auto FilterGroup = QStringLiteral ("Filter");
+		const auto PluginIdName = QStringLiteral ("PluginId");
+		const auto VariantName = QStringLiteral ("Variant");
+	}
+
 	void SaveFilterState (const FilterState& data)
 	{
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Auscrie");
-		settings.beginGroup ("Filter");
-		settings.setValue ("PluginId", data.PluginId_);
-		settings.setValue ("Variant", data.Variant_);
-		settings.endGroup ();
+		const auto guard = Util::BeginGroup (settings, FilterGroup);
+		settings.setValue (PluginIdName, data.PluginId_);
+		settings.setValue (VariantName, data.Variant_);
 	}
 
 	FilterState RestoreFilterState ()
 	{
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Auscrie");
-		const auto guard = Util::BeginGroup (settings, "Filter");
-
+		const auto guard = Util::BeginGroup (settings, FilterGroup);
 		return
 		{
-			settings.value ("PluginId").toByteArray (),
-			settings.value ("Variant").toByteArray ()
+			settings.value (PluginIdName).toByteArray (),
+			settings.value (VariantName).toByteArray ()
 		};
 	}
 }

@@ -29,7 +29,7 @@ namespace Auscrie
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-		Util::InstallTranslator ("auscrie");
+		Util::InstallTranslator (QStringLiteral ("auscrie"));
 
 		Dialog_ = new ShooterDialog;
 
@@ -66,7 +66,7 @@ namespace Auscrie
 
 	QString Plugin::GetName () const
 	{
-		return "Auscrie";
+		return QStringLiteral ("Auscrie");
 	}
 
 	QString Plugin::GetInfo () const
@@ -133,10 +133,10 @@ namespace Auscrie
 			}
 
 			auto e = Util::MakeEntity (pm.toImage (),
-					{}, {}, "x-leechcraft/data-filter-request");
-			e.Additional_ ["Format"] = Dialog_->GetFormat ();
-			e.Additional_ ["Quality"] = quality;
-			e.Additional_ ["DataFilter"] = info.Variant_;
+					{}, {}, QStringLiteral ("x-leechcraft/data-filter-request"));
+			e.Additional_ [QStringLiteral ("Format")] = Dialog_->GetFormat ();
+			e.Additional_ [QStringLiteral ("Quality")] = quality;
+			e.Additional_ [QStringLiteral ("DataFilter")] = info.Variant_;
 
 			auto ieh = qobject_cast<IEntityHandler*> (info.Object_);
 			ieh->Handle (e);
