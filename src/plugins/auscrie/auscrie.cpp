@@ -183,14 +183,14 @@ namespace Auscrie
 			return QPixmap::grabWidget (rootWin);
 		case ShooterDialog::Mode::CurrentScreen:
 		{
- 			auto desk = qApp->desktop ();
+			auto desk = QApplication::desktop ();
 			auto screen = desk->screen (desk->screenNumber (QCursor::pos ()));
 			auto geom = desk->screenGeometry (QCursor::pos ());
 			return QPixmap::grabWindow (screen->winId (),
 					geom.x (), geom.y (), geom.width (), geom.height ());
 		}
 		case ShooterDialog::Mode::WholeDesktop:
-			return QPixmap::grabWindow (qApp->desktop ()->winId ());
+			return QPixmap::grabWindow (QApplication::desktop ()->winId ());
 		}
 #pragma GCC diagnostic pop
 
