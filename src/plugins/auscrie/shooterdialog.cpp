@@ -79,7 +79,7 @@ namespace LC::Auscrie
 		const int val = Ui_.QualityBox_->value ();
 		return Ui_.Format_->currentText () == "JPG" ?
 				val :
-				100 - val;
+				Ui_.QualityBox_->maximum () - val;
 	}
 
 	ShooterDialog::FilterData ShooterDialog::GetDFInfo () const
