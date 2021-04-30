@@ -13,15 +13,13 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/iactionsexporter.h>
 
-namespace LC
-{
-namespace Auscrie
+namespace LC::Auscrie
 {
 	class ShooterDialog;
 
 	class Plugin : public QObject
-					, public IInfo
-					, public IActionsExporter
+				 , public IInfo
+				 , public IActionsExporter
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IActionsExporter)
@@ -48,5 +46,4 @@ namespace Auscrie
 	signals:
 		void gotActions (QList<QAction*>, LC::ActionsEmbedPlace) override;
 	};
-}
 }

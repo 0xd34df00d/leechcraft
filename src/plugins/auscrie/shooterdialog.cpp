@@ -11,13 +11,12 @@
 #include <QtDebug>
 #include <util/sll/qtutil.h>
 #include <util/xpc/util.h>
+#include <interfaces/core/icoreproxy.h>
 #include <interfaces/idatafilter.h>
 #include <interfaces/iinfo.h>
 #include "util.h"
 
-namespace LC
-{
-namespace Auscrie
+namespace LC::Auscrie
 {
 	ShooterDialog::ShooterDialog (QWidget *parent)
 	: QDialog (parent)
@@ -146,5 +145,4 @@ namespace Auscrie
 		else
 			Ui_.SettingLabel_->setText (tr ("Compression:"));
 	}
-}
 }

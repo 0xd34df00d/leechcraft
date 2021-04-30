@@ -11,9 +11,7 @@
 #include <QCoreApplication>
 #include <util/sll/scopeguards.h>
 
-namespace LC
-{
-namespace Auscrie
+namespace LC::Auscrie
 {
 	namespace
 	{
@@ -42,5 +40,4 @@ namespace Auscrie
 			settings.value (VariantName).toByteArray ()
 		};
 	}
-}
 }

@@ -12,9 +12,7 @@
 
 class QObject;
 
-namespace LC
-{
-namespace Auscrie
+namespace LC::Auscrie
 {
 	struct FilterState
 	{
@@ -24,5 +22,4 @@ namespace Auscrie
 
 	void SaveFilterState (const FilterState&);
 	FilterState RestoreFilterState ();
-}
 }

@@ -23,9 +23,7 @@
 #include "shooterdialog.h"
 #include "util.h"
 
-namespace LC
-{
-namespace Auscrie
+namespace LC::Auscrie
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
@@ -196,7 +194,6 @@ namespace Auscrie
 
 		Util::Unreachable ();
 	}
-}
 }
 
 LC_EXPORT_PLUGIN (leechcraft_auscrie, LC::Auscrie::Plugin);

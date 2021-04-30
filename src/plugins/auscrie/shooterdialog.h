@@ -6,15 +6,12 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#ifndef PLUGINS_AUSCRIE_SHOOTERDIALOG_H
-#define PLUGINS_AUSCRIE_SHOOTERDIALOG_H
+#pragma once
+
 #include <QDialog>
-#include <interfaces/core/icoreproxy.h>
 #include "ui_shooterdialog.h"
 
-namespace LC
-{
-namespace Auscrie
+namespace LC::Auscrie
 {
 	class ShooterDialog : public QDialog
 	{
@@ -70,6 +67,3 @@ namespace Auscrie
 		void screenshotRequested ();
 	};
 }
-}
-
-#endif
