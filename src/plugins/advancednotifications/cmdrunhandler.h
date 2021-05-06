@@ -19,7 +19,6 @@ namespace AdvancedNotifications
 {
 	class CmdRunHandler : public ConcreteHandlerBase
 	{
-		Q_OBJECT
 	public:
 		CmdRunHandler ();
 
