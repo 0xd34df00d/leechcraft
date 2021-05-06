@@ -4,22 +4,22 @@
 <context>
     <name>LC::Auscrie::Plugin</name>
     <message>
-        <location filename="auscrie.cpp" line="60"/>
+        <location filename="auscrie.cpp" line="35"/>
         <source>Make a screenshot</source>
         <translation>Make a screenshot</translation>
     </message>
     <message>
-        <location filename="auscrie.cpp" line="97"/>
+        <location filename="auscrie.cpp" line="72"/>
         <source>Simple auto screenshotter.</source>
         <translation>Simple auto screenshotter.</translation>
     </message>
     <message>
-        <location filename="auscrie.cpp" line="145"/>
+        <location filename="auscrie.cpp" line="109"/>
         <source>Save as</source>
         <translation>Save as</translation>
     </message>
     <message>
-        <location filename="auscrie.cpp" line="147"/>
+        <location filename="auscrie.cpp" line="111"/>
         <source>%1 files (*.%1);;All files (*.*)</source>
         <translation>%1 files (*.%1);;All files (*.*)</translation>
     </message>
@@ -27,12 +27,22 @@
 <context>
     <name>LC::Auscrie::ShooterDialog</name>
     <message>
-        <location filename="shooterdialog.cpp" line="49"/>
+        <location filename="shooterdialog.cpp" line="46"/>
+        <source>Quality:</source>
+        <translation>Quality:</translation>
+    </message>
+    <message>
+        <location filename="shooterdialog.cpp" line="47"/>
+        <source>Compression:</source>
+        <translation>Compression:</translation>
+    </message>
+    <message>
+        <location filename="shooterdialog.cpp" line="55"/>
         <source>Make screenshot</source>
         <translation>Make screenshot</translation>
     </message>
     <message>
-        <location filename="shooterdialog.cpp" line="141"/>
+        <location filename="shooterdialog.cpp" line="147"/>
         <source>save</source>
         <translation>save</translation>
     </message>

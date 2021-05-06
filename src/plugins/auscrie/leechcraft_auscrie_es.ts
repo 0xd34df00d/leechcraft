@@ -1,43 +1,50 @@
-<?xml version="1.0" ?><!DOCTYPE TS><TS language="es" version="2.0">
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.1" language="es">
 <context>
     <name>LC::Auscrie::Plugin</name>
     <message>
-        <location filename="auscrie.cpp" line="45"/>
+        <location filename="auscrie.cpp" line="35"/>
         <source>Make a screenshot</source>
         <translation>Tomar un Screenshot</translation>
     </message>
     <message>
-        <location filename="auscrie.cpp" line="78"/>
-        <source>Simple auto screenshoter.</source>
+        <location filename="auscrie.cpp" line="72"/>
+        <source>Simple auto screenshotter.</source>
         <translation>Capturador de pantalla automatico simple.</translation>
     </message>
     <message>
-        <location filename="auscrie.cpp" line="127"/>
+        <location filename="auscrie.cpp" line="109"/>
         <source>Save as</source>
-        <translation>Guardar como...</translation>
+        <translation>Guardar como</translation>
     </message>
     <message>
-        <location filename="auscrie.cpp" line="129"/>
+        <location filename="auscrie.cpp" line="111"/>
         <source>%1 files (*.%1);;All files (*.*)</source>
         <translation>%1 archivos (*.%1);;Todos archivos (*.*)</translation>
     </message>
 </context>
 <context>
-    <name>LC::Auscrie::Poster</name>
+    <name>LC::Auscrie::ShooterDialog</name>
     <message>
-        <location filename="poster.cpp" line="187"/>
-        <source>Page parse failed</source>
-        <translation>Page parse failed</translation>
+        <location filename="shooterdialog.cpp" line="46"/>
+        <source>Quality:</source>
+        <translation>Calidad:</translation>
     </message>
     <message>
-        <location filename="poster.cpp" line="194"/>
-        <source>Image pasted: %1, the URL was copied to the clipboard</source>
-        <translation>Imagen que se pega: %1, URL se ha copiado en el portapapeles</translation>
+        <location filename="shooterdialog.cpp" line="47"/>
+        <source>Compression:</source>
+        <translation>Compresión:</translation>
     </message>
     <message>
-        <location filename="poster.cpp" line="206"/>
-        <source>Upload of screenshot failed: %1</source>
-        <translation>Descarga de la captura fracasó: %1</translation>
+        <location filename="shooterdialog.cpp" line="55"/>
+        <source>Make screenshot</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="shooterdialog.cpp" line="147"/>
+        <source>save</source>
+        <translation>Guardar</translation>
     </message>
 </context>
 <context>
@@ -48,87 +55,67 @@
         <translation>Tomar un Screenshot</translation>
     </message>
     <message>
-        <location filename="shooterdialog.ui" line="23"/>
+        <location filename="shooterdialog.ui" line="41"/>
         <source>Action:</source>
         <translation>Acción:</translation>
     </message>
     <message>
-        <location filename="shooterdialog.ui" line="31"/>
-        <source>upload to dump.bitcheese.net</source>
-        <translation>Cargar en dump.bitcheese.net</translation>
-    </message>
-    <message>
-        <location filename="shooterdialog.ui" line="36"/>
-        <source>upload to Savepic.ru</source>
-        <translation>Cargar en Savepic.ru</translation>
-    </message>
-    <message>
-        <location filename="shooterdialog.ui" line="41"/>
-        <source>upload to Imagebin.ca</source>
-        <translation>Cargar en Imagebin.ca</translation>
-    </message>
-    <message>
-        <location filename="shooterdialog.ui" line="46"/>
-        <source>save</source>
-        <translation>Guardar</translation>
-    </message>
-    <message>
-        <location filename="shooterdialog.ui" line="54"/>
+        <location filename="shooterdialog.ui" line="92"/>
         <source>Timeout:</source>
         <translation>Tiempo de espera</translation>
     </message>
     <message>
-        <location filename="shooterdialog.ui" line="61"/>
+        <location filename="shooterdialog.ui" line="99"/>
         <source> s</source>
         <translation> s</translation>
     </message>
     <message>
-        <location filename="shooterdialog.ui" line="68"/>
+        <location filename="shooterdialog.ui" line="106"/>
         <source>Format:</source>
         <translation>Formato:</translation>
     </message>
     <message>
-        <location filename="shooterdialog.ui" line="81"/>
+        <location filename="shooterdialog.ui" line="119"/>
         <source>JPG</source>
         <translation>JPG</translation>
     </message>
     <message>
-        <location filename="shooterdialog.ui" line="142"/>
+        <location filename="shooterdialog.ui" line="51"/>
         <source>Mode:</source>
         <translation>Modo:</translation>
     </message>
     <message>
-        <location filename="shooterdialog.ui" line="150"/>
+        <location filename="shooterdialog.ui" line="59"/>
         <source>LeechCraft window and everything on top</source>
         <translation>Ventana de LeechCraft y todo sobre</translation>
     </message>
     <message>
-        <location filename="shooterdialog.ui" line="155"/>
+        <location filename="shooterdialog.ui" line="64"/>
         <source>LeechCraft window</source>
         <translation>Ventana de LeechCraft</translation>
     </message>
     <message>
-        <location filename="shooterdialog.ui" line="160"/>
+        <location filename="shooterdialog.ui" line="69"/>
         <source>Current screen</source>
         <translation>Pantalla actual</translation>
     </message>
     <message>
-        <location filename="shooterdialog.ui" line="165"/>
+        <location filename="shooterdialog.ui" line="74"/>
         <source>Whole desktop</source>
         <translation>Escritorio completo</translation>
     </message>
     <message>
-        <location filename="shooterdialog.ui" line="173"/>
+        <location filename="shooterdialog.ui" line="82"/>
         <source>Hide this dialog</source>
         <translation>Ocultar este diálogo</translation>
     </message>
     <message>
-        <location filename="shooterdialog.ui" line="76"/>
+        <location filename="shooterdialog.ui" line="114"/>
         <source>PNG</source>
         <translation>PNG</translation>
     </message>
     <message>
-        <location filename="shooterdialog.ui" line="89"/>
+        <location filename="shooterdialog.ui" line="127"/>
         <source>Quality:</source>
         <translation>Calidad:</translation>
     </message>
