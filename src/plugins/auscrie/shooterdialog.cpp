@@ -18,6 +18,23 @@
 
 namespace LC::Auscrie
 {
+	namespace
+	{
+		enum class Criteria
+		{
+			Compression,
+			Quality,
+		};
+
+		Criteria GetFormatCriteria (const QString& fmt)
+		{
+			if (fmt == "JPG"_ql)
+				return Criteria::Quality;
+
+			return Criteria::Compression;
+		}
+	}
+
 	ShooterDialog::ShooterDialog (QWidget *parent)
 	: QDialog (parent)
 	{
@@ -25,10 +42,10 @@ namespace LC::Auscrie
 
 		auto updateSettingsLabel = [this] (const QString& fmt)
 		{
-			if (fmt == "JPG"_ql)
-				Ui_.SettingLabel_->setText (tr ("Quality:"));
-			else
-				Ui_.SettingLabel_->setText (tr ("Compression:"));
+			const auto& criteriaText = GetFormatCriteria (fmt) == Criteria::Quality ?
+					tr ("Quality:") :
+					tr ("Compression:");
+			Ui_.SettingLabel_->setText (criteriaText);
 		};
 		updateSettingsLabel (Ui_.Format_->currentText ());
 		connect (Ui_.Format_,
@@ -88,7 +105,7 @@ namespace LC::Auscrie
 	int ShooterDialog::GetQuality () const
 	{
 		const int val = Ui_.QualityBox_->value ();
-		return Ui_.Format_->currentText () == "JPG" ?
+		return GetFormatCriteria (Ui_.Format_->currentText ()) == Criteria::Quality ?
 				val :
 				Ui_.QualityBox_->maximum () - val;
 	}
