@@ -46,31 +46,18 @@ namespace AdvancedNotifications
 		appendRow (item);
 
 		connect (action,
-				SIGNAL (toggled (bool)),
+				&QAction::toggled,
 				this,
-				SLOT (handleActionToggled (bool)));
+				[action, item] (bool checked)
+				{
+					item->setData (ChooseIcon (action, checked), Roles::IconName);
+					item->setData (checked, Roles::IsActionChecked);
+				});
 	}
 
 	void ActionsModel::triggerAction (int index)
 	{
 		Actions_.at (index)->trigger ();
-	}
-
-	void ActionsModel::handleActionToggled (bool checked)
-	{
-		auto action = static_cast<QAction*> (sender ());
-		const auto pos = Actions_.indexOf (action);
-		if (pos == -1)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< sender ()
-					<< "not found in"
-					<< Actions_;
-			return;
-		}
-
-		item (pos)->setData (ChooseIcon (action, checked), Roles::IconName);
-		item (pos)->setData (checked, Roles::IsActionChecked);
 	}
 }
 }

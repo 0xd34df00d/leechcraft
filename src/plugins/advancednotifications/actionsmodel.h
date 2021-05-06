@@ -34,8 +34,6 @@ namespace AdvancedNotifications
 		void AddAction (QAction*);
 	public slots:
 		void triggerAction (int);
-	private slots:
-		void handleActionToggled (bool);
 	};
 }
 }
