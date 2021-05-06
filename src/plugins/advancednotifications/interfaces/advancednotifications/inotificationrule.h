@@ -8,6 +8,8 @@
 
 #pragma once
 
+class QColor;
+
 namespace LC
 {
 namespace AdvancedNotifications
