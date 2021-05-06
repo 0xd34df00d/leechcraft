@@ -7,6 +7,7 @@
  **********************************************************************/
 
 #include "audiothememanager.h"
+#include <util/sll/prelude.h>
 #include <util/sys/resourceloader.h>
 #include "xmlsettingsmanager.h"
 
@@ -22,16 +23,24 @@ namespace AdvancedNotifications
 		Loader_->AddGlobalPrefix ();
 	}
 
+	namespace
+	{
+		QStringList VariantsWithExtension (const QString& base)
+		{
+			static const QStringList exts
+			{
+				QStringLiteral (".ogg"),
+				QStringLiteral (".wav"),
+				QStringLiteral (".flac"),
+				QStringLiteral (".mp3"),
+			};
+			return Util::Map (exts, [&base] (const QString& ext) { return base + ext; });
+		}
+	}
+
 	QFileInfoList AudioThemeManager::GetFilesList (const QString& theme) const
 	{
-		static const QStringList filters
-		{
-			"*.ogg",
-			"*.wav",
-			"*.flac",
-			"*.mp3"
-		};
-
+		static const auto filters = VariantsWithExtension (QStringLiteral ("*"));
 		return Loader_->List (theme, filters, QDir::Files | QDir::Readable);
 	}
 
@@ -50,16 +59,7 @@ namespace AdvancedNotifications
 
 		const auto& option = XmlSettingsManager::Instance ().property ("AudioTheme").toString ();
 		const auto& base = option + '/' + fname;
-
-		const QStringList pathVariants
-		{
-			base + ".ogg",
-			base + ".wav",
-			base + ".flac",
-			base + ".mp3"
-		};
-
-		return Loader_->GetPath (pathVariants);
+		return Loader_->GetPath (VariantsWithExtension (base));
 	}
 }
 }
