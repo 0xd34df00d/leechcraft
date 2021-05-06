@@ -22,14 +22,25 @@ namespace LC::Auscrie
 	: QDialog (parent)
 	{
 		Ui_.setupUi (this);
-		on_Format__currentIndexChanged (Ui_.Format_->currentText ());
+
+		auto updateSettingsLabel = [this] (const QString& fmt)
+		{
+			if (fmt == "JPG"_ql)
+				Ui_.SettingLabel_->setText (tr ("Quality:"));
+			else
+				Ui_.SettingLabel_->setText (tr ("Compression:"));
+		};
+		updateSettingsLabel (Ui_.Format_->currentText ());
+		connect (Ui_.Format_,
+				qOverload<const QString&> (&QComboBox::currentIndexChanged),
+				updateSettingsLabel);
 
 		auto button = new QPushButton (tr ("Make screenshot"));
 		Ui_.ButtonBox_->addButton (button, QDialogButtonBox::ApplyRole);
 		connect (button,
-				SIGNAL (released ()),
+				&QPushButton::released,
 				this,
-				SIGNAL (screenshotRequested ()));
+				&ShooterDialog::screenshotRequested);
 	}
 
 	ShooterDialog::Action ShooterDialog::GetAction () const
@@ -136,13 +147,5 @@ namespace LC::Auscrie
 		const auto& scaled = CurrentScreenshot_.scaled (Ui_.ScreenshotLabel_->size (),
 				Qt::KeepAspectRatio, Qt::SmoothTransformation);
 		Ui_.ScreenshotLabel_->setPixmap (scaled);
-	}
-
-	void ShooterDialog::on_Format__currentIndexChanged (const QString& str)
-	{
-		if (str == "JPG"_ql)
-			Ui_.SettingLabel_->setText (tr ("Quality:"));
-		else
-			Ui_.SettingLabel_->setText (tr ("Compression:"));
 	}
 }

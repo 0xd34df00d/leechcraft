@@ -61,8 +61,6 @@ namespace LC::Auscrie
 		void resizeEvent (QResizeEvent*) override;
 	private:
 		void RescaleLabel ();
-	private slots:
-		void on_Format__currentIndexChanged (const QString&);
 	signals:
 		void screenshotRequested ();
 	};
