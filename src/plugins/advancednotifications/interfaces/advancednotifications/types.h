@@ -10,9 +10,7 @@
 
 #include <QFlags>
 
-namespace LC
-{
-namespace AdvancedNotifications
+namespace LC::AdvancedNotifications
 {
 	enum NotificationMethod
 	{
@@ -26,7 +24,6 @@ namespace AdvancedNotifications
 	};
 
 	Q_DECLARE_FLAGS (NotificationMethods, NotificationMethod);
-}
 }
 
 Q_DECLARE_OPERATORS_FOR_FLAGS (LC::AdvancedNotifications::NotificationMethods)

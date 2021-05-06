@@ -10,18 +10,15 @@
 
 class QColor;
 
-namespace LC
-{
-namespace AdvancedNotifications
+namespace LC::AdvancedNotifications
 {
 	class INotificationRule
 	{
 	public:
-		virtual ~INotificationRule () {}
+		virtual ~INotificationRule () = default;
 
 		virtual bool IsNull () const = 0;
 
 		virtual QColor GetColor () const = 0;
 	};
-}
 }

@@ -12,22 +12,19 @@
 #include <QList>
 #include <QtPlugin>
 
-namespace LC
-{
-namespace AdvancedNotifications
+namespace LC::AdvancedNotifications
 {
 	class INotificationHandler;
 
-	typedef std::shared_ptr<INotificationHandler> INotificationHandler_ptr;
+	using INotificationHandler_ptr = std::shared_ptr<INotificationHandler>;
 
 	class INotificationBackendPlugin
 	{
 	public:
-		virtual ~INotificationBackendPlugin () {}
+		virtual ~INotificationBackendPlugin () = default;
 
 		virtual QList<INotificationHandler_ptr> GetNotificationHandlers () const = 0;
 	};
-}
 }
 
 Q_DECLARE_INTERFACE (LC::AdvancedNotifications::INotificationBackendPlugin,

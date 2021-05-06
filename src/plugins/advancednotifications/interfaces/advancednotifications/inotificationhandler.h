@@ -23,13 +23,13 @@ namespace AdvancedNotifications
 	class INotificationHandler
 	{
 	public:
-		virtual ~INotificationHandler () {}
+		virtual ~INotificationHandler () = default;
 
 		virtual NotificationMethod GetHandlerMethod () const = 0;
 		virtual void Handle (const Entity&, const INotificationRule&) = 0;
 	};
 
-	typedef std::shared_ptr<INotificationHandler> INotificationHandler_ptr;
+	using INotificationHandler_ptr = std::shared_ptr<INotificationHandler>;
 }
 }
 
