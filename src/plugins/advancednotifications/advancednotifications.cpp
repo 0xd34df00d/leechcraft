@@ -22,6 +22,7 @@
 #include "quarkproxy.h"
 #include "audiothememanager.h"
 #include "unhandlednotificationskeeper.h"
+#include "fields.h"
 #include "interfaces/advancednotifications/inotificationbackendplugin.h"
 
 namespace LC
@@ -96,9 +97,9 @@ namespace AdvancedNotifications
 	EntityTestHandleResult Plugin::CouldHandle (const Entity& e) const
 	{
 		const bool can = e.Mime_.startsWith ("x-leechcraft/notification") &&
-				e.Additional_.contains ("org.LC.AdvNotifications.SenderID") &&
-				e.Additional_.contains ("org.LC.AdvNotifications.EventID") &&
-				e.Additional_.contains ("org.LC.AdvNotifications.EventCategory");
+				e.Additional_.contains (Fields::SenderID) &&
+				e.Additional_.contains (Fields::EventID) &&
+				e.Additional_.contains (Fields::EventCategory);
 
 		if (!can)
 			return EntityTestHandleResult ();

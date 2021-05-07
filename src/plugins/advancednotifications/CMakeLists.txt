@@ -28,6 +28,7 @@ LC_DEFINE_PLUGIN (
 		audiothememanager.cpp
 		unhandlednotificationskeeper.cpp
 		addfrommisseddialog.cpp
+		fields.cpp
 	SETTINGS advancednotificationssettings.xml
 	QT_COMPONENTS QuickWidgets
 	INSTALL_SHARE

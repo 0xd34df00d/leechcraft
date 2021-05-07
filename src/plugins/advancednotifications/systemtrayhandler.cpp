@@ -24,6 +24,7 @@
 #include "generalhandler.h"
 #include "xmlsettingsmanager.h"
 #include "visualnotificationsview.h"
+#include "fields.h"
 
 namespace LC
 {
@@ -96,10 +97,10 @@ namespace AdvancedNotifications
 
 	void SystemTrayHandler::Handle (const Entity& e, const NotificationRule&)
 	{
-		const QString& cat = e.Additional_ ["org.LC.AdvNotifications.EventCategory"].toString ();
-		const QString& eventId = e.Additional_ ["org.LC.AdvNotifications.EventID"].toString ();
+		const QString& cat = e.Additional_ [Fields::EventCategory].toString ();
+		const QString& eventId = e.Additional_ [Fields::EventID].toString ();
 
-		if (cat == "org.LC.AdvNotifications.Cancel")
+		if (cat == Fields::Values::CancelEvent)
 		{
 			if (Events_.remove (eventId))
 				RebuildState ();

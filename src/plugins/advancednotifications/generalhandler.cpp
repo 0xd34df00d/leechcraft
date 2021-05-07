@@ -17,6 +17,7 @@
 #include "wmurgenthandler.h"
 #include "rulesmanager.h"
 #include "unhandlednotificationskeeper.h"
+#include "fields.h"
 
 namespace LC
 {
@@ -74,7 +75,7 @@ namespace AdvancedNotifications
 			return;
 		}
 
-		if (e.Additional_ ["org.LC.AdvNotifications.EventCategory"] == "org.LC.AdvNotifications.Cancel")
+		if (e.Additional_ [Fields::EventCategory] == Fields::Values::CancelEvent)
 		{
 			for (const auto& handler : Handlers_)
 				handler->Handle (e, NotificationRule {});

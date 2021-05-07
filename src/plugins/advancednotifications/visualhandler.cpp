@@ -10,6 +10,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
 #include "generalhandler.h"
+#include "fields.h"
 
 namespace LC
 {
@@ -22,10 +23,10 @@ namespace AdvancedNotifications
 
 	void VisualHandler::Handle (const Entity& orig, const NotificationRule&)
 	{
-		if (orig.Additional_ ["org.LC.AdvNotifications.EventCategory"].toString () == "org.LC.AdvNotifications.Cancel")
+		if (orig.Additional_ [Fields::EventCategory].toString () == Fields::Values::CancelEvent)
 			return;
 
-		const QString& evId = orig.Additional_ ["org.LC.AdvNotifications.EventID"].toString ();
+		const QString& evId = orig.Additional_ [Fields::EventID].toString ();
 		if (ActiveEvents_.contains (evId))
 			return;
 
