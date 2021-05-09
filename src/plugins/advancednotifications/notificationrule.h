@@ -82,7 +82,7 @@ namespace AdvancedNotifications
 		void SetTypes (const QStringList&);
 
 		NotificationMethods GetMethods () const;
-		void SetMethods (const NotificationMethods&);
+		void SetMethods (NotificationMethods);
 		void AddMethod (NotificationMethod);
 
 		FieldMatches_t GetFieldMatches () const;

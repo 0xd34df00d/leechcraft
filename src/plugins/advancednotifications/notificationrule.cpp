@@ -66,7 +66,7 @@ namespace AdvancedNotifications
 		return Methods_;
 	}
 
-	void NotificationRule::SetMethods (const NotificationMethods& methods)
+	void NotificationRule::SetMethods (NotificationMethods methods)
 	{
 		Methods_ = methods;
 	}
