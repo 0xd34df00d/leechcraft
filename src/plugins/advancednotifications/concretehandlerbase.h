@@ -10,7 +10,6 @@
 
 #include <memory>
 #include <QObject>
-#include "common.h"
 #include "interfaces/advancednotifications/inotificationhandler.h"
 
 namespace LC
@@ -25,11 +24,7 @@ namespace AdvancedNotifications
 	class ConcreteHandlerBase : public QObject
 							  , public INotificationHandler
 	{
-	protected:
-		GeneralHandler *GH_;
 	public:
-		void SetGeneralHandler (GeneralHandler*);
-
 		virtual void Handle (const Entity&, const NotificationRule&) = 0;
 		void Handle (const Entity&, const INotificationRule&);
 	};

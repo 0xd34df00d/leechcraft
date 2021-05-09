@@ -7,6 +7,7 @@
  **********************************************************************/
 
 #include "generalhandler.h"
+#include <QAction>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include "systemtrayhandler.h"
@@ -27,7 +28,7 @@ namespace AdvancedNotifications
 	, UnhandledKeeper_ { keeper }
 	{
 		const auto sysTrayHandler = std::make_shared<SystemTrayHandler> ();
-		const QList<ConcreteHandlerBase_ptr> coreHandlers
+		Handlers_ =
 		{
 			sysTrayHandler,
 			std::make_shared<VisualHandler> (),
@@ -35,12 +36,6 @@ namespace AdvancedNotifications
 			std::make_shared<CmdRunHandler> (),
 			std::make_shared<WMUrgentHandler> ()
 		};
-
-		for (const auto& handler : coreHandlers)
-		{
-			handler->SetGeneralHandler (this);
-			Handlers_ << handler;
-		}
 
 		connect (sysTrayHandler.get (),
 				&SystemTrayHandler::gotActions,
