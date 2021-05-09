@@ -20,5 +20,7 @@ namespace LC::AdvancedNotifications
 		virtual bool IsNull () const = 0;
 
 		virtual QColor GetColor () const = 0;
+
+		bool operator== (const INotificationRule&) const = default;
 	};
 }
