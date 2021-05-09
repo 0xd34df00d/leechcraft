@@ -10,9 +10,7 @@
 #include <QAction>
 #include "xmlsettingsmanager.h"
 
-namespace LC
-{
-namespace AdvancedNotifications
+namespace LC::AdvancedNotifications
 {
 	EnableSoundActionManager::EnableSoundActionManager (QObject *parent)
 	: QObject (parent)
@@ -23,14 +21,18 @@ namespace AdvancedNotifications
 		EnableAction_->setProperty ("ActionIconOff", "audio-volume-muted");
 		EnableAction_->setProperty ("Action/ID", "org.LeechCraft.AdvancedNotifications.EnableSound");
 
+		auto& xsm = XmlSettingsManager::Instance ();
 		connect (EnableAction_,
-				SIGNAL (toggled (bool)),
+				&QAction::triggered,
 				this,
-				SLOT (enableSounds (bool)));
+				[&xsm] (bool enable)
+				{
+					if (enable != xsm.property ("EnableAudioNots").toBool ())
+						xsm.setProperty ("EnableAudioNots", enable);
+				});
 
-		XmlSettingsManager::Instance ().RegisterObject ("EnableAudioNots",
-				this, "xsdPropChanged");
-		xsdPropChanged ();
+		xsm.RegisterObject ("EnableAudioNots", this,
+				[this] (const QVariant& value) { EnableAction_->setChecked (value.toBool ()); });
 	}
 
 	QAction* EnableSoundActionManager::GetAction () const
@@ -53,18 +55,4 @@ namespace AdvancedNotifications
 
 		return result;
 	}
-
-	void EnableSoundActionManager::xsdPropChanged ()
-	{
-		EnableAction_->setChecked (XmlSettingsManager::Instance ()
-				.property ("EnableAudioNots").toBool ());
-	}
-
-	void EnableSoundActionManager::enableSounds (bool enable)
-	{
-		if (enable != XmlSettingsManager::Instance ()
-				.property ("EnableAudioNots").toBool ())
-			XmlSettingsManager::Instance ().setProperty ("EnableAudioNots", enable);
-	}
-}
 }

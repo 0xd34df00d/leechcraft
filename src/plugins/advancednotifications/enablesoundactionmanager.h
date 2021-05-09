@@ -6,33 +6,23 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#ifndef PLUGINS_ADVANCEDNOTIFICATIONS_ENABLESOUNDACTIONMANAGER_H
-#define PLUGINS_ADVANCEDNOTIFICATIONS_ENABLESOUNDACTIONMANAGER_H
+#pragma once
+
 #include <QObject>
 #include <interfaces/iactionsexporter.h>
 
 class QAction;
 
-namespace LC
-{
-namespace AdvancedNotifications
+namespace LC::AdvancedNotifications
 {
 	class EnableSoundActionManager : public QObject
 	{
-		Q_OBJECT
-
-		QAction *EnableAction_;
+		QAction * const EnableAction_;
 	public:
-		EnableSoundActionManager (QObject* = 0);
+		explicit EnableSoundActionManager (QObject* = nullptr);
 
 		QAction* GetAction () const;
 
 		QList<QAction*> GetActions (ActionsEmbedPlace) const;
-	private slots:
-		void xsdPropChanged ();
-		void enableSounds (bool);
 	};
 }
-}
-
-#endif
