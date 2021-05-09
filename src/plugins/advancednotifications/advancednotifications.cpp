@@ -33,8 +33,6 @@ namespace AdvancedNotifications
 	{
 		Util::InstallTranslator ("advancednotifications");
 
-		Proxy_ = proxy;
-
 		RulesManager_ = new RulesManager { proxy, this };
 
 		auto audioThemeMgr = new AudioThemeManager { this };
@@ -48,7 +46,7 @@ namespace AdvancedNotifications
 				new NotificationRulesWidget { RulesManager_, audioThemeMgr, unhandledKeeper, proxy });
 		SettingsDialog_->SetDataSource ("AudioTheme", audioThemeMgr->GetSettingsModel ());
 
-		GeneralHandler_ = std::make_shared<GeneralHandler> (RulesManager_, audioThemeMgr, unhandledKeeper, proxy);
+		GeneralHandler_ = std::make_shared<GeneralHandler> (RulesManager_, audioThemeMgr, unhandledKeeper);
 		connect (GeneralHandler_.get (),
 				SIGNAL (gotActions (QList<QAction*>, LC::ActionsEmbedPlace)),
 				this,
@@ -91,7 +89,7 @@ namespace AdvancedNotifications
 
 	QIcon Plugin::GetIcon () const
 	{
-		return Proxy_->GetIconThemeManager ()->GetPluginIcon ();
+		return GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon ();
 	}
 
 	EntityTestHandleResult Plugin::CouldHandle (const Entity& e) const

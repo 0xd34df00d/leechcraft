@@ -51,7 +51,7 @@ namespace AdvancedNotifications
 
 	namespace
 	{
-		QFuture<QPixmap> GetPixmap (const Entity& e, ICoreProxy_ptr proxy)
+		QFuture<QPixmap> GetPixmap (const Entity& e)
 		{
 			const auto& pxVar = e.Additional_ ["NotificationPixmap"];
 
@@ -62,7 +62,7 @@ namespace AdvancedNotifications
 				return Util::MakeReadyFuture (QPixmap::fromImage (pxVar.value<QImage> ()));
 
 			const auto prio = e.Additional_ ["Priority"].value<Priority> ();
-			auto getDefault = [proxy, prio]
+			auto getDefault = [prio]
 			{
 				QString mi = "information";
 				switch (prio)
@@ -76,7 +76,7 @@ namespace AdvancedNotifications
 					break;
 				}
 
-				const auto& pixmap = proxy->GetIconThemeManager ()->
+				const auto& pixmap = GetProxyHolder ()->GetIconThemeManager ()->
 						GetIcon ("dialog-" + mi).pixmap (QSize (64, 64));
 				return Util::MakeReadyFuture (pixmap);
 			};
@@ -129,7 +129,7 @@ namespace AdvancedNotifications
 		Events_ [eventId].ExtendedText_ = e.Additional_ ["org.LC.AdvNotifications.ExtendedText"].toString ();
 		Events_ [eventId].FullText_ = e.Additional_ ["org.LC.AdvNotifications.FullText"].toString ();
 
-		const auto& pxFuture = GetPixmap (e, GH_->GetProxy ());
+		const auto& pxFuture = GetPixmap (e);
 		if (pxFuture.isFinished ())
 			Events_ [eventId].Pixmap_ = pxFuture;
 		else
@@ -164,7 +164,7 @@ namespace AdvancedNotifications
 				this,
 				SLOT (handleTrayActivated (QSystemTrayIcon::ActivationReason)));
 
-		const auto vnv = new VisualNotificationsView { GH_->GetProxy () };
+		const auto vnv = new VisualNotificationsView { GetProxyHolder () };
 		connect (vnv,
 				SIGNAL (actionTriggered (const QString&, int)),
 				this,
@@ -194,7 +194,7 @@ namespace AdvancedNotifications
 
 		emit gotActions ({ action }, ActionsEmbedPlace::LCTray);
 
-		const auto vnv = new VisualNotificationsView { GH_->GetProxy () };
+		const auto vnv = new VisualNotificationsView { GetProxyHolder () };
 		connect (vnv,
 				SIGNAL (actionTriggered (const QString&, int)),
 				this,
@@ -411,7 +411,7 @@ namespace AdvancedNotifications
 			return;
 
 		const auto canceller = Events_.value (event).Canceller_;
-		GH_->GetProxy ()->GetEntityManager ()->HandleEntity (canceller);
+		GetProxyHolder ()->GetEntityManager ()->HandleEntity (canceller);
 	}
 
 	namespace

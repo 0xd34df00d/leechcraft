@@ -23,11 +23,9 @@ namespace LC
 {
 namespace AdvancedNotifications
 {
-	GeneralHandler::GeneralHandler (RulesManager *rm, const AudioThemeManager *mgr,
-			UnhandledNotificationsKeeper *keeper, const ICoreProxy_ptr& proxy)
+	GeneralHandler::GeneralHandler (RulesManager *rm, const AudioThemeManager *mgr, UnhandledNotificationsKeeper *keeper)
 	: RulesManager_ { rm }
 	, UnhandledKeeper_ { keeper }
-	, Proxy_ { proxy }
 	{
 		const QList<ConcreteHandlerBase_ptr> coreHandlers
 		{
@@ -100,11 +98,6 @@ namespace AdvancedNotifications
 			UnhandledKeeper_->AddUnhandled (e);
 	}
 
-	ICoreProxy_ptr GeneralHandler::GetProxy () const
-	{
-		return Proxy_;
-	}
-
 	QIcon GeneralHandler::GetIconForCategory (const QString& cat) const
 	{
 		auto name = Cat2IconName_.value (cat);
@@ -116,7 +109,7 @@ namespace AdvancedNotifications
 			name = "dialog-information";
 		}
 
-		return Proxy_->GetIconThemeManager ()->GetIcon (name);
+		return GetProxyHolder ()->GetIconThemeManager ()->GetIcon (name);
 	}
 }
 }

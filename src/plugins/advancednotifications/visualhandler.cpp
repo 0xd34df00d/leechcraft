@@ -70,7 +70,7 @@ namespace AdvancedNotifications
 		QVariant probe = QVariant::fromValue<QObject_ptr> (probeObj);
 		e.Additional_ ["RemovalProbe"] = probe;
 
-		GH_->GetProxy ()->GetEntityManager ()->HandleEntity (e);
+		GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 	}
 
 	void VisualHandler::handleProbeDestroyed ()

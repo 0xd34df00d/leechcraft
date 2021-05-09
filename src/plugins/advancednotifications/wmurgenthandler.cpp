@@ -37,7 +37,7 @@ namespace AdvancedNotifications
 		bool ok = false;
 		auto winIdx = e.Additional_ ["org.LC.AdvNotifications.WindowIndex"].toInt (&ok);
 
-		auto rootWM = GH_->GetProxy ()->GetRootWindowsManager ();
+		auto rootWM = GetProxyHolder ()->GetRootWindowsManager ();
 
 		if (winIdx < 0 || winIdx >= rootWM->GetWindowsCount ())
 		{

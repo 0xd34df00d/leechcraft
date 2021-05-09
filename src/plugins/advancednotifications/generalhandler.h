@@ -29,20 +29,17 @@ namespace AdvancedNotifications
 
 		RulesManager * const RulesManager_;
 		UnhandledNotificationsKeeper * const UnhandledKeeper_;
-		ICoreProxy_ptr Proxy_;
 
 		QList<INotificationHandler_ptr> Handlers_;
 
 		QMap<QString, QString> Cat2IconName_;
 	public:
-		GeneralHandler (RulesManager*, const AudioThemeManager*,
-				UnhandledNotificationsKeeper*, const ICoreProxy_ptr&);
+		GeneralHandler (RulesManager*, const AudioThemeManager*, UnhandledNotificationsKeeper*);
 
 		void RegisterHandler (const INotificationHandler_ptr&);
 
 		void Handle (const Entity&);
 
-		ICoreProxy_ptr GetProxy () const;
 		QIcon GetIconForCategory (const QString&) const;
 	signals:
 		void gotActions (QList<QAction*>, LC::ActionsEmbedPlace);
