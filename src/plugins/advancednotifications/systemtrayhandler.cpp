@@ -7,13 +7,14 @@
  **********************************************************************/
 
 #include "systemtrayhandler.h"
-#include <interfaces/structures.h>
-#include <interfaces/core/icoreproxy.h>
-#include <interfaces/core/iiconthememanager.h>
-#include <interfaces/core/ientitymanager.h>
 #include <QMenu>
 #include <QPainter>
 #include <QApplication>
+#include <interfaces/structures.h>
+#include <interfaces/an/constants.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/iiconthememanager.h>
+#include <interfaces/core/ientitymanager.h>
 #include <util/xpc/util.h>
 #include <util/gui/geometry.h>
 #include <util/gui/unhoverdeletemixin.h>
@@ -146,6 +147,35 @@ namespace AdvancedNotifications
 		RebuildState ();
 	}
 
+	namespace
+	{
+		QIcon GetIconForCategory (const QString& cat)
+		{
+			static const QMap<QString, QString> cat2iconName
+			{
+				{ AN::CatDownloads, "folder-downloads" },
+				{ AN::CatIM, "mail-unread-new" },
+				{ AN::CatOrganizer, "view-calendar" },
+				{ AN::CatGeneric, "preferences-desktop-notification-bell" },
+				{ AN::CatPackageManager, "system-software-update" },
+				{ AN::CatMediaPlayer, "applications-multimedia" },
+				{ AN::CatTerminal, "utilities-terminal" },
+				{ AN::CatNews, "view-pim-news" },
+			};
+
+			auto name = cat2iconName.value (cat);
+			if (name.isEmpty ())
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "no icon for category"
+						<< cat;
+				name = "dialog-information"_ql;
+			}
+
+			return GetProxyHolder ()->GetIconThemeManager ()->GetIcon (name);
+		}
+	}
+
 	void SystemTrayHandler::PrepareSysTrayIcon (const QString& category)
 	{
 #ifdef Q_OS_MAC
@@ -155,7 +185,7 @@ namespace AdvancedNotifications
 		if (Category2Icon_.contains (category))
 			return;
 
-		QSystemTrayIcon *trayIcon = new QSystemTrayIcon (GH_->GetIconForCategory (category));
+		QSystemTrayIcon *trayIcon = new QSystemTrayIcon (GetIconForCategory (category));
 		trayIcon->setContextMenu (new QMenu ());
 		Category2Icon_ [category] = trayIcon;
 
@@ -184,7 +214,7 @@ namespace AdvancedNotifications
 		if (Category2Action_.contains (category))
 			return;
 
-		const auto action = new QAction (GH_->GetIconForCategory (category), category, this);
+		const auto action = new QAction (GetIconForCategory (category), category, this);
 		Category2Action_ [category] = action;
 
 		connect (action,
@@ -331,7 +361,7 @@ namespace AdvancedNotifications
 	template<typename T>
 	void SystemTrayHandler::UpdateIcon (T iconable, const QString& category)
 	{
-		QIcon icon = GH_->GetIconForCategory (category);
+		QIcon icon = GetIconForCategory (category);
 		if (!XmlSettingsManager::Instance ()
 				.property ("EnableCounter." + category.toLatin1 ()).toBool ())
 		{

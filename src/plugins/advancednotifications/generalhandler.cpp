@@ -7,7 +7,6 @@
  **********************************************************************/
 
 #include "generalhandler.h"
-#include <interfaces/an/constants.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include "systemtrayhandler.h"
@@ -46,18 +45,6 @@ namespace AdvancedNotifications
 				SIGNAL (gotActions (QList<QAction*>, LC::ActionsEmbedPlace)),
 				this,
 				SIGNAL (gotActions (QList<QAction*>, LC::ActionsEmbedPlace)));
-
-		Cat2IconName_ =
-		{
-			{ AN::CatDownloads, "folder-downloads" },
-			{ AN::CatIM, "mail-unread-new" },
-			{ AN::CatOrganizer, "view-calendar" },
-			{ AN::CatGeneric, "preferences-desktop-notification-bell" },
-			{ AN::CatPackageManager, "system-software-update" },
-			{ AN::CatMediaPlayer, "applications-multimedia" },
-			{ AN::CatTerminal, "utilities-terminal" },
-			{ AN::CatNews, "view-pim-news" }
-		};
 	}
 
 	void GeneralHandler::RegisterHandler (const INotificationHandler_ptr& handler)
@@ -96,20 +83,6 @@ namespace AdvancedNotifications
 
 		if (!wasHandled)
 			UnhandledKeeper_->AddUnhandled (e);
-	}
-
-	QIcon GeneralHandler::GetIconForCategory (const QString& cat) const
-	{
-		auto name = Cat2IconName_.value (cat);
-		if (name.isEmpty ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "no icon for category"
-					<< cat;
-			name = "dialog-information";
-		}
-
-		return GetProxyHolder ()->GetIconThemeManager ()->GetIcon (name);
 	}
 }
 }

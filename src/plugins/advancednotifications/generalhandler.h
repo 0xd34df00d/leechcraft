@@ -31,16 +31,12 @@ namespace AdvancedNotifications
 		UnhandledNotificationsKeeper * const UnhandledKeeper_;
 
 		QList<INotificationHandler_ptr> Handlers_;
-
-		QMap<QString, QString> Cat2IconName_;
 	public:
 		GeneralHandler (RulesManager*, const AudioThemeManager*, UnhandledNotificationsKeeper*);
 
 		void RegisterHandler (const INotificationHandler_ptr&);
 
 		void Handle (const Entity&);
-
-		QIcon GetIconForCategory (const QString&) const;
 	signals:
 		void gotActions (QList<QAction*>, LC::ActionsEmbedPlace);
 	};
