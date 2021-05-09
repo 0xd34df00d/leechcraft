@@ -16,61 +16,11 @@ namespace LC
 {
 namespace AdvancedNotifications
 {
-	bool operator== (const VisualParams&, const VisualParams&)
-	{
-		return true;
-	}
-
-	AudioParams::AudioParams ()
-	{
-	}
-
-	AudioParams::AudioParams (const QString& fname)
-	: Filename_ (fname)
-	{
-	}
-
-	bool operator== (const AudioParams& ap1, const AudioParams& ap2)
-	{
-		return ap1.Filename_ == ap2.Filename_;
-	}
-
-	bool operator== (const TrayParams&, const TrayParams&)
-	{
-		return true;
-	}
-
-	CmdParams::CmdParams ()
-	{
-	}
-
-	CmdParams::CmdParams (const QString& cmd, const QStringList& args)
-	: Cmd_ (cmd)
-	, Args_ (args)
-	{
-	}
-
-	bool operator== (const CmdParams& cp1, const CmdParams& cp2)
-	{
-		return cp1.Args_ == cp2.Args_ &&
-			cp1.Cmd_ == cp2.Cmd_;
-	}
-
-	NotificationRule::NotificationRule ()
-	: Methods_ (NMNone)
-	, IsEnabled_ (true)
-	, IsSingleShot_ (false)
-	{
-	}
-
 	NotificationRule::NotificationRule (const QString& name,
 			const QString& cat, const QStringList& types)
 	: Name_ (name)
 	, Category_ (cat)
 	, Types_ (types)
-	, Methods_ (NMNone)
-	, IsEnabled_ (true)
-	, IsSingleShot_ (false)
 	{
 	}
 
@@ -276,27 +226,6 @@ namespace AdvancedNotifications
 			match.Load (stream);
 			FieldMatches_ << match;
 		}
-	}
-
-	bool operator== (const NotificationRule& r1, const NotificationRule& r2)
-	{
-		return r1.GetMethods () == r2.GetMethods () &&
-			r1.IsEnabled () == r2.IsEnabled () &&
-			r1.IsSingleShot () == r2.IsSingleShot () &&
-			r1.GetName () == r2.GetName () &&
-			r1.GetCategory () == r2.GetCategory () &&
-			r1.GetTypes () == r2.GetTypes () &&
-			r1.GetFieldMatches () == r2.GetFieldMatches () &&
-			r1.GetVisualParams () == r2.GetVisualParams () &&
-			r1.GetAudioParams () == r2.GetAudioParams () &&
-			r1.GetTrayParams () == r2.GetTrayParams () &&
-			r1.GetCmdParams () == r2.GetCmdParams () &&
-			r1.GetColor () == r2.GetColor ();
-	}
-
-	bool operator!= (const NotificationRule& r1, const NotificationRule& r2)
-	{
-		return !(r1 == r2);
 	}
 
 	namespace

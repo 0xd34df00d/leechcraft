@@ -130,12 +130,12 @@ namespace AdvancedNotifications
 		const QString& audioFile = audioIdx >= 0 ?
 				Ui_.AudioFile_->itemText (audioIdx) :
 				QString ();
-		rule.SetAudioParams (AudioParams (audioFile));
+		rule.SetAudioParams ({ audioFile });
 
 		QStringList cmdArgs;
 		for (int i = 0; i < Ui_.CommandArgsTree_->topLevelItemCount (); ++i)
 			cmdArgs << Ui_.CommandArgsTree_->topLevelItem (i)->text (0);
-		rule.SetCmdParams (CmdParams (Ui_.CommandLineEdit_->text ().simplified (), cmdArgs));
+		rule.SetCmdParams ({ .Cmd_ = Ui_.CommandLineEdit_->text ().simplified (), .Args_ = cmdArgs });
 
 		if (!curIdx.isValid ())
 			curIdx = Ui_.RulesTree_->currentIndex ();

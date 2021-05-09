@@ -297,19 +297,19 @@ namespace AdvancedNotifications
 			NotificationRule chatMsg (tr ("Incoming chat messages"), AN::CatIM,
 					QStringList (AN::TypeIMIncMsg));
 			chatMsg.SetMethods (NMVisual | NMTray | NMAudio | NMUrgentHint | NMSystemDependent);
-			chatMsg.SetAudioParams (AudioParams ("im-incoming-message"));
+			chatMsg.SetAudioParams ({ "im-incoming-message" });
 			Rules_ << chatMsg;
 
 			NotificationRule mucHigh (tr ("MUC highlights"), AN::CatIM,
 					QStringList (AN::TypeIMMUCHighlight));
 			mucHigh.SetMethods (NMVisual | NMTray | NMAudio | NMUrgentHint | NMSystemDependent);
-			mucHigh.SetAudioParams (AudioParams ("im-muc-highlight"));
+			mucHigh.SetAudioParams ({ "im-muc-highlight" });
 			Rules_ << mucHigh;
 
 			NotificationRule mucInv (tr ("MUC invitations"), AN::CatIM,
 					QStringList (AN::TypeIMMUCInvite));
 			mucInv.SetMethods (NMVisual | NMTray | NMAudio | NMUrgentHint | NMSystemDependent);
-			mucInv.SetAudioParams (AudioParams ("im-attention"));
+			mucInv.SetAudioParams ({ "im-attention" });
 			Rules_ << mucInv;
 
 			NotificationRule incFile (tr ("Incoming file transfers"), AN::CatIM,
@@ -320,7 +320,7 @@ namespace AdvancedNotifications
 			NotificationRule subscrReq (tr ("Subscription requests"), AN::CatIM,
 					QStringList (AN::TypeIMSubscrRequest));
 			subscrReq.SetMethods (NMVisual | NMTray | NMAudio | NMUrgentHint | NMSystemDependent);
-			subscrReq.SetAudioParams (AudioParams ("im-auth-requested"));
+			subscrReq.SetAudioParams ({ "im-auth-requested" });
 			Rules_ << subscrReq;
 
 			NotificationRule subscrChanges (tr ("Subscription changes"), AN::CatIM,
@@ -334,7 +334,7 @@ namespace AdvancedNotifications
 			NotificationRule attentionDrawn (tr ("Attention requests"), AN::CatIM,
 					QStringList (AN::TypeIMAttention));
 			attentionDrawn.SetMethods (NMVisual | NMTray | NMAudio | NMUrgentHint | NMSystemDependent);
-			attentionDrawn.SetAudioParams (AudioParams ("im-attention"));
+			attentionDrawn.SetAudioParams ({ "im-attention" });
 			Rules_ << attentionDrawn;
 		}
 
@@ -343,7 +343,7 @@ namespace AdvancedNotifications
 			NotificationRule eventDue (tr ("Event is due"), AN::CatOrganizer,
 					QStringList (AN::TypeOrganizerEventDue));
 			eventDue.SetMethods (NMVisual | NMTray | NMAudio | NMSystemDependent);
-			eventDue.SetAudioParams (AudioParams ("org-event-due"));
+			eventDue.SetAudioParams ({ "org-event-due" });
 			Rules_ << eventDue;
 		}
 
@@ -357,7 +357,7 @@ namespace AdvancedNotifications
 			NotificationRule downloadError (tr ("Download error"), AN::CatDownloads,
 					QStringList (AN::TypeDownloadError));
 			downloadError.SetMethods (NMVisual | NMTray | NMAudio | NMSystemDependent);
-			downloadError.SetAudioParams (AudioParams ("error"));
+			downloadError.SetAudioParams ({ "error" });
 			Rules_ << downloadError;
 		}
 

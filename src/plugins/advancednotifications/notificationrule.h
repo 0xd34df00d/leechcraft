@@ -24,36 +24,28 @@ namespace AdvancedNotifications
 {
 	struct VisualParams
 	{
+		bool operator== (const VisualParams&) const = default;
 	};
-
-	bool operator== (const VisualParams&, const VisualParams&);
 
 	struct AudioParams
 	{
 		QString Filename_;
 
-		AudioParams ();
-		AudioParams (const QString&);
+		bool operator== (const AudioParams&) const = default;
 	};
-
-	bool operator== (const AudioParams&, const AudioParams&);
 
 	struct TrayParams
 	{
+		bool operator== (const TrayParams&) const = default;
 	};
-
-	bool operator== (const TrayParams&, const TrayParams&);
 
 	struct CmdParams
 	{
 		QString Cmd_;
 		QStringList Args_;
 
-		CmdParams ();
-		CmdParams (const QString&, const QStringList& = QStringList ());
+		bool operator== (const CmdParams&) const = default;
 	};
-
-	bool operator== (const CmdParams&, const CmdParams&);
 
 	class NotificationRule : public INotificationRule
 	{
@@ -61,7 +53,7 @@ namespace AdvancedNotifications
 		QString Category_;
 		QStringList Types_;
 
-		NotificationMethods Methods_;
+		NotificationMethods Methods_ = NMNone;
 
 		FieldMatches_t FieldMatches_;
 
@@ -70,16 +62,15 @@ namespace AdvancedNotifications
 		VisualParams VisualParams_;
 		CmdParams CmdParams_;
 
-		bool IsEnabled_;
-		bool IsSingleShot_;
+		bool IsEnabled_ = true;
+		bool IsSingleShot_ = false;
 
-		QColor Color_ { Qt::red };
+		QColor Color_ = Qt::red;
 	public:
-		NotificationRule ();
-		NotificationRule (const QString& name,
-				const QString& cat, const QStringList& types);
+		NotificationRule () = default;
+		NotificationRule (const QString& name, const QString& cat, const QStringList& types);
 
-		bool IsNull () const;
+		bool IsNull () const override;
 
 		QString GetName () const;
 		void SetName (const QString&);
@@ -116,15 +107,14 @@ namespace AdvancedNotifications
 		bool IsSingleShot () const;
 		void SetSingleShot (bool);
 
-		QColor GetColor () const;
+		QColor GetColor () const override;
 		void SetColor (const QColor&);
 
 		void Save (QDataStream&) const;
 		void Load (QDataStream&);
-	};
 
-	bool operator== (const NotificationRule&, const NotificationRule&);
-	bool operator!= (const NotificationRule&, const NotificationRule&);
+		bool operator== (const NotificationRule&) const = default;
+	};
 
 	void DebugEquals (const NotificationRule&, const NotificationRule&);
 }
