@@ -26,9 +26,10 @@ namespace AdvancedNotifications
 	: RulesManager_ { rm }
 	, UnhandledKeeper_ { keeper }
 	{
+		const auto sysTrayHandler = std::make_shared<SystemTrayHandler> ();
 		const QList<ConcreteHandlerBase_ptr> coreHandlers
 		{
-			std::make_shared<SystemTrayHandler> (),
+			sysTrayHandler,
 			std::make_shared<VisualHandler> (),
 			std::make_shared<AudioHandler> (mgr),
 			std::make_shared<CmdRunHandler> (),
@@ -41,10 +42,10 @@ namespace AdvancedNotifications
 			Handlers_ << handler;
 		}
 
-		connect (coreHandlers.first ().get (),
-				SIGNAL (gotActions (QList<QAction*>, LC::ActionsEmbedPlace)),
+		connect (sysTrayHandler.get (),
+				&SystemTrayHandler::gotActions,
 				this,
-				SIGNAL (gotActions (QList<QAction*>, LC::ActionsEmbedPlace)));
+				&GeneralHandler::gotActions);
 	}
 
 	void GeneralHandler::RegisterHandler (const INotificationHandler_ptr& handler)
