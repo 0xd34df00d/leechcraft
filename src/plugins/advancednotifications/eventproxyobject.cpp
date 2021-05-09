@@ -27,19 +27,20 @@ namespace AdvancedNotifications
 		int i = 0;
 		for (const auto& action : ed.Actions_)
 		{
-			QObject *proxy = new ActionsProxyObject (action, this);
-			proxy->setProperty ("ActionIndex", i++);
+			auto proxy = new ActionsProxyObject (action, this);
 			connect (proxy,
-					SIGNAL (actionSelected ()),
-					this,
-					SLOT (handleActionSelected ()));
+					&ActionsProxyObject::actionSelected,
+					[this, idx = i++]
+					{
+						emit actionTriggered (E_.EventID_, idx);
+					});
 			model << proxy;
 		}
 
 		connect (this,
-				SIGNAL (dismissEvent ()),
+				&EventProxyObject::dismissEvent,
 				this,
-				SLOT (handleDismissEvent ()),
+				[this] { emit dismissEventRequested (E_.EventID_); },
 				Qt::QueuedConnection);
 
 		ActionsModel_ = QVariant::fromValue<QList<QObject*>> (model);
@@ -65,17 +66,6 @@ namespace AdvancedNotifications
 	QVariant EventProxyObject::eventActionsModel () const
 	{
 		return ActionsModel_;
-	}
-
-	void EventProxyObject::handleActionSelected ()
-	{
-		const int idx = sender ()->property ("ActionIndex").toInt ();
-		emit actionTriggered (E_.EventID_, idx);
-	}
-
-	void EventProxyObject::handleDismissEvent ()
-	{
-		emit dismissEventRequested (E_.EventID_);
 	}
 }
 }
