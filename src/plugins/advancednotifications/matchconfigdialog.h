@@ -31,7 +31,6 @@ namespace AdvancedNotifications
 
 		Ui::MatchConfigDialog Ui_;
 
-		QString Cat_;
 		QSet<QString> Types_;
 		TypedMatcherBase_ptr CurrentMatcher_;
 
