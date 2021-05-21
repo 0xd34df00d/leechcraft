@@ -11,14 +11,8 @@
 #include "notificationrule.h"
 #include "fields.h"
 
-namespace LC
+namespace LC::AdvancedNotifications
 {
-namespace AdvancedNotifications
-{
-	CmdRunHandler::CmdRunHandler ()
-	{
-	}
-
 	NotificationMethod CmdRunHandler::GetHandlerMethod () const
 	{
 		return NMCommand;
@@ -53,5 +47,4 @@ namespace AdvancedNotifications
 
 		QProcess::startDetached (params.Cmd_, args);
 	}
-}
 }

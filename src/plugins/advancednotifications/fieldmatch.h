@@ -6,31 +6,29 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#ifndef PLUGINS_ADVANCEDNOTIFICATIONS_FIELDMATCH_H
-#define PLUGINS_ADVANCEDNOTIFICATIONS_FIELDMATCH_H
+#pragma once
+
 #include <memory>
 #include <QString>
 #include <QVariant>
 
-namespace LC
-{
-namespace AdvancedNotifications
+namespace LC::AdvancedNotifications
 {
 	class TypedMatcherBase;
 
-	typedef std::shared_ptr<TypedMatcherBase> TypedMatcherBase_ptr;
+	using TypedMatcherBase_ptr = std::shared_ptr<TypedMatcherBase>;
 
 	class FieldMatch
 	{
 		QString PluginID_;
 		QString FieldName_;
 
-		QVariant::Type FieldType_;
+		QVariant::Type FieldType_ = QVariant::Invalid;
 
 		TypedMatcherBase_ptr Matcher_;
 	public:
-		FieldMatch ();
-		FieldMatch (QVariant::Type);
+		FieldMatch () = default;
+		explicit FieldMatch (QVariant::Type);
 		FieldMatch (QVariant::Type, TypedMatcherBase_ptr);
 
 		QString GetPluginID () const;
@@ -50,8 +48,5 @@ namespace AdvancedNotifications
 
 	bool operator== (const FieldMatch&, const FieldMatch&);
 
-	typedef QList<FieldMatch> FieldMatches_t;
+	using FieldMatches_t = QList<FieldMatch>;
 }
-}
-
-#endif

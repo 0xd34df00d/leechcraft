@@ -9,13 +9,10 @@
 #include "concretehandlerbase.h"
 #include "notificationrule.h"
 
-namespace LC
-{
-namespace AdvancedNotifications
+namespace LC::AdvancedNotifications
 {
 	void ConcreteHandlerBase::Handle (const Entity& e, const INotificationRule& rule)
 	{
 		Handle (e, dynamic_cast<const NotificationRule&> (rule));
 	}
-}
 }

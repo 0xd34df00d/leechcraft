@@ -25,9 +25,7 @@
 #include "fields.h"
 #include "interfaces/advancednotifications/inotificationbackendplugin.h"
 
-namespace LC
-{
-namespace AdvancedNotifications
+namespace LC::AdvancedNotifications
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
@@ -156,7 +154,6 @@ namespace AdvancedNotifications
 	{
 		RulesManager_->SuggestRuleConfiguration (rule);
 	}
-}
 }
 
 LC_EXPORT_PLUGIN (leechcraft_advancednotifications, LC::AdvancedNotifications::Plugin);

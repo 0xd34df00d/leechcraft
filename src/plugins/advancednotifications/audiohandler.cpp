@@ -16,9 +16,7 @@
 #include "audiothememanager.h"
 #include "notificationrule.h"
 
-namespace LC
-{
-namespace AdvancedNotifications
+namespace LC::AdvancedNotifications
 {
 	AudioHandler::AudioHandler (const AudioThemeManager *mgr)
 	: AudioThemeMgr_ { mgr }
@@ -47,5 +45,4 @@ namespace AdvancedNotifications
 		const auto& e = Util::MakeEntity (fname, QString (), Internal);
 		GH_->GetProxy ()->GetEntityManager ()->HandleEntity (e);
 	}
-}
 }

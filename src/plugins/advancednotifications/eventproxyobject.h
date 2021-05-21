@@ -6,15 +6,13 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#ifndef PLUGINS_ADVANCEDNOTIFICATIONS_QML_EVENTPROXYOBJECT_H
-#define PLUGINS_ADVANCEDNOTIFICATIONS_QML_EVENTPROXYOBJECT_H
+#pragma once
+
 #include <QObject>
 #include <QUrl>
 #include "eventdata.h"
 
-namespace LC
-{
-namespace AdvancedNotifications
+namespace LC::AdvancedNotifications
 {
 	class EventProxyObject : public QObject
 	{
@@ -28,7 +26,7 @@ namespace AdvancedNotifications
 		QUrl CachedImage_;
 		QVariant ActionsModel_;
 	public:
-		EventProxyObject (const EventData&, QObject* = 0);
+		explicit EventProxyObject (const EventData&, QObject* = nullptr);
 
 		int count () const;
 		QUrl image () const;
@@ -48,6 +46,3 @@ namespace AdvancedNotifications
 		void dismissEventRequested (const QString&);
 	};
 }
-}
-
-#endif

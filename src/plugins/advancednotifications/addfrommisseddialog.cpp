@@ -8,9 +8,7 @@
 
 #include "addfrommisseddialog.h"
 
-namespace LC
-{
-namespace AdvancedNotifications
+namespace LC::AdvancedNotifications
 {
 	AddFromMissedDialog::AddFromMissedDialog (QAbstractItemModel *model, QWidget *parent)
 	: QDialog { parent }
@@ -23,5 +21,4 @@ namespace AdvancedNotifications
 	{
 		return Ui_.MissedView_->selectionModel ()->selectedRows ();
 	}
-}
 }

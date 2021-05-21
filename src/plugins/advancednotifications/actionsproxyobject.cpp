@@ -8,9 +8,7 @@
 
 #include "actionsproxyobject.h"
 
-namespace LC
-{
-namespace AdvancedNotifications
+namespace LC::AdvancedNotifications
 {
 	ActionsProxyObject::ActionsProxyObject (const QString& actionText, QObject *parent)
 	: QObject (parent)
@@ -22,5 +20,4 @@ namespace AdvancedNotifications
 	{
 		return ActionText_;
 	}
-}
 }

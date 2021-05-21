@@ -11,25 +11,17 @@
 #include <QtDebug>
 #include "typedmatchers.h"
 
-namespace LC
+namespace LC::AdvancedNotifications
 {
-namespace AdvancedNotifications
-{
-	FieldMatch::FieldMatch ()
-	: FieldType_ (QVariant::Invalid)
-	{
-	}
-
 	FieldMatch::FieldMatch (QVariant::Type type)
 	: FieldType_ (type)
 	, Matcher_ (TypedMatcherBase::Create (type))
 	{
 	}
 
-	FieldMatch::FieldMatch (QVariant::Type type,
-			TypedMatcherBase_ptr matcher)
+	FieldMatch::FieldMatch (QVariant::Type type, TypedMatcherBase_ptr matcher)
 	: FieldType_ (type)
-	, Matcher_ (matcher)
+	, Matcher_ (std::move (matcher))
 	{
 	}
 
@@ -106,5 +98,4 @@ namespace AdvancedNotifications
 			f1.GetPluginID () == f2.GetPluginID () &&
 			f1.GetFieldName () == f2.GetFieldName ();
 	}
-}
 }

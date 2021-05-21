@@ -11,9 +11,7 @@
 #include <util/sys/resourceloader.h>
 #include "xmlsettingsmanager.h"
 
-namespace LC
-{
-namespace AdvancedNotifications
+namespace LC::AdvancedNotifications
 {
 	AudioThemeManager::AudioThemeManager (QObject *parent)
 	: QObject { parent }
@@ -61,5 +59,4 @@ namespace AdvancedNotifications
 		const auto& base = option + '/' + fname;
 		return Loader_->GetPath (VariantsWithExtension (base));
 	}
-}
 }

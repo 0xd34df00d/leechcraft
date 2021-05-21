@@ -15,9 +15,7 @@
 #include <interfaces/iactionsexporter.h>
 #include "concretehandlerbase.h"
 
-namespace LC
-{
-namespace AdvancedNotifications
+namespace LC::AdvancedNotifications
 {
 	class RulesManager;
 	class AudioThemeManager;
@@ -40,5 +38,4 @@ namespace AdvancedNotifications
 	signals:
 		void gotActions (QList<QAction*>, LC::ActionsEmbedPlace);
 	};
-}
 }

@@ -10,9 +10,7 @@
 #include <QAction>
 #include <QtDebug>
 
-namespace LC
-{
-namespace AdvancedNotifications
+namespace LC::AdvancedNotifications
 {
 	ActionsModel::ActionsModel (QObject *parent)
 	: RoleNamesMixin<QStandardItemModel> (parent)
@@ -59,5 +57,4 @@ namespace AdvancedNotifications
 	{
 		Actions_.at (index)->trigger ();
 	}
-}
 }

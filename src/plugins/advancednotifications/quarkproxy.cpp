@@ -11,9 +11,7 @@
 #include "actionsmodel.h"
 #include "enablesoundactionmanager.h"
 
-namespace LC
-{
-namespace AdvancedNotifications
+namespace LC::AdvancedNotifications
 {
 	QuarkProxy::QuarkProxy (QObject *parent)
 	: QObject (parent)
@@ -27,5 +25,4 @@ namespace AdvancedNotifications
 	{
 		return QVariant::fromValue<QObject*> (ActionsModel_);
 	}
-}
 }

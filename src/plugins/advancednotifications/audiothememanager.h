@@ -30,7 +30,7 @@ namespace AdvancedNotifications
 	{
 		std::shared_ptr<Util::ResourceLoader> Loader_;
 	public:
-		AudioThemeManager (QObject* = nullptr);
+		explicit AudioThemeManager (QObject* = nullptr);
 
 		QFileInfoList GetFilesList (const QString& theme) const;
 		QAbstractItemModel* GetSettingsModel () const;

@@ -12,9 +12,7 @@
 #include <QPixmap>
 #include <interfaces/structures.h>
 
-namespace LC
-{
-namespace AdvancedNotifications
+namespace LC::AdvancedNotifications
 {
 	struct EventData
 	{
@@ -31,5 +29,4 @@ namespace AdvancedNotifications
 
 		Entity Canceller_;
 	};
-}
 }

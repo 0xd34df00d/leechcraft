@@ -10,9 +10,7 @@
 
 #include <QObject>
 
-namespace LC
-{
-namespace AdvancedNotifications
+namespace LC::AdvancedNotifications
 {
 	class ActionsModel;
 
@@ -22,9 +20,8 @@ namespace AdvancedNotifications
 
 		ActionsModel *ActionsModel_;
 	public:
-		QuarkProxy (QObject* = 0);
+		explicit QuarkProxy (QObject* = nullptr);
 	public slots:
 		QVariant getActionsModel () const;
 	};
-}
 }

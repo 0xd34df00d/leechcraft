@@ -17,8 +17,7 @@ namespace LC
 {
 namespace AdvancedNotifications
 {
-	MatchConfigDialog::MatchConfigDialog (const QMap<QObject*, QList<ANFieldData>>& map,
-			QWidget *parent)
+	MatchConfigDialog::MatchConfigDialog (const QMap<QObject*, QList<ANFieldData>>& map, QWidget *parent)
 	: QDialog (parent)
 	, FieldsMap_ (map)
 	{
@@ -145,8 +144,8 @@ namespace AdvancedNotifications
 		Ui_.DescriptionLabel_->setText (data.Description_);
 
 		QLayout *lay = Ui_.ConfigWidget_->layout ();
-		QLayoutItem *oldItem = 0;
-		while ((oldItem = lay->takeAt (0)) != 0)
+		QLayoutItem *oldItem = nullptr;
+		while ((oldItem = lay->takeAt (0)))
 		{
 			delete oldItem->widget ();
 			delete oldItem;

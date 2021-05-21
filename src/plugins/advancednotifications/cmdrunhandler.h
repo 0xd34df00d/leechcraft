@@ -6,26 +6,20 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#ifndef PLUGINS_ADVANCEDNOTIFICATIONS_CMDRUNHANDLER_H
-#define PLUGINS_ADVANCEDNOTIFICATIONS_CMDRUNHANDLER_H
-#include <QObject>
+#pragma once
+
 #include <interfaces/structures.h>
 #include "concretehandlerbase.h"
 #include "eventdata.h"
 
-namespace LC
-{
-namespace AdvancedNotifications
+namespace LC::AdvancedNotifications
 {
 	class CmdRunHandler : public ConcreteHandlerBase
 	{
 	public:
-		CmdRunHandler ();
+		CmdRunHandler () = default;
 
-		NotificationMethod GetHandlerMethod () const;
-		void Handle (const Entity&, const NotificationRule&);
+		NotificationMethod GetHandlerMethod () const override;
+		void Handle (const Entity&, const NotificationRule&) override;
 	};
 }
-}
-
-#endif

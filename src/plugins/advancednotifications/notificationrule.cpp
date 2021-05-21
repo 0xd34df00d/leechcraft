@@ -12,9 +12,7 @@
 #include <QtDebug>
 #include <util/sll/containerconversions.h>
 
-namespace LC
-{
-namespace AdvancedNotifications
+namespace LC::AdvancedNotifications
 {
 	NotificationRule::NotificationRule (const QString& name,
 			const QString& cat, const QStringList& types)
@@ -256,7 +254,6 @@ namespace AdvancedNotifications
 		DebugSingle (r1, r2, &NotificationRule::GetCmdParams);
 		DebugSingle (r1, r2, &NotificationRule::GetColor);
 	}
-}
 }
 
 QDebug operator<< (QDebug dbg, const LC::AdvancedNotifications::FieldMatch& match)

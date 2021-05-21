@@ -13,9 +13,7 @@
 
 class QAction;
 
-namespace LC
-{
-namespace AdvancedNotifications
+namespace LC::AdvancedNotifications
 {
 	class ActionsModel : public Util::RoleNamesMixin<QStandardItemModel>
 	{
@@ -29,11 +27,10 @@ namespace AdvancedNotifications
 			IsActionChecked
 		};
 
-		ActionsModel (QObject*);
+		explicit ActionsModel (QObject*);
 
 		void AddAction (QAction*);
 	public slots:
 		void triggerAction (int);
 	};
-}
 }

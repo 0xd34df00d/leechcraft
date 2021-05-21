@@ -19,9 +19,7 @@
 #include "unhandlednotificationskeeper.h"
 #include "fields.h"
 
-namespace LC
-{
-namespace AdvancedNotifications
+namespace LC::AdvancedNotifications
 {
 	GeneralHandler::GeneralHandler (RulesManager *rm, const AudioThemeManager *mgr, UnhandledNotificationsKeeper *keeper)
 	: RulesManager_ { rm }
@@ -80,5 +78,4 @@ namespace AdvancedNotifications
 		if (!wasHandled)
 			UnhandledKeeper_->AddUnhandled (e);
 	}
-}
 }

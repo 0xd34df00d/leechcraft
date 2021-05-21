@@ -19,9 +19,7 @@
 #include <interfaces/ipluginready.h>
 #include <interfaces/an/ianrulesstorage.h>
 
-namespace LC
-{
-namespace AdvancedNotifications
+namespace LC::AdvancedNotifications
 {
 	class GeneralHandler;
 	class RulesManager;
@@ -46,8 +44,6 @@ namespace AdvancedNotifications
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.AdvancedNotifications")
 
-		ICoreProxy_ptr Proxy_;
-
 		RulesManager *RulesManager_;
 
 		Util::XmlSettingsDialog_ptr SettingsDialog_;
@@ -56,32 +52,31 @@ namespace AdvancedNotifications
 
 		QuarkComponent_ptr Component_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+		void Init (ICoreProxy_ptr) override;
+		void SecondInit () override;
+		QByteArray GetUniqueID () const override;
+		void Release () override;
+		QString GetName () const override;
+		QString GetInfo () const override;
+		QIcon GetIcon () const override;
 
-		EntityTestHandleResult CouldHandle (const Entity&) const;
-		void Handle (Entity);
+		EntityTestHandleResult CouldHandle (const Entity&) const override;
+		void Handle (Entity) override;
 
-		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const override;
 
-		QList<QAction*> GetActions (ActionsEmbedPlace) const;
+		QList<QAction*> GetActions (ActionsEmbedPlace) const override;
 
-		QuarkComponents_t GetComponents () const;
+		QuarkComponents_t GetComponents () const override;
 
-		QSet<QByteArray> GetExpectedPluginClasses () const;
-		void AddPlugin (QObject*);
+		QSet<QByteArray> GetExpectedPluginClasses () const override;
+		void AddPlugin (QObject*) override;
 
-		QList<Entity> GetAllRules (const QString&) const;
-		void RequestRuleConfiguration (const Entity&);
+		QList<Entity> GetAllRules (const QString&) const override;
+		void RequestRuleConfiguration (const Entity&) override;
 	signals:
-		void gotActions (QList<QAction*>, LC::ActionsEmbedPlace);
+		void gotActions (QList<QAction*>, LC::ActionsEmbedPlace) override;
 
-		void rulesChanged ();
+		void rulesChanged () override;
 	};
-}
 }

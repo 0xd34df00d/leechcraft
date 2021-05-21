@@ -8,16 +8,13 @@
 
 #pragma once
 
-#include <QObject>
 #include <QHash>
 #include <QDateTime>
 #include <interfaces/structures.h>
 #include "concretehandlerbase.h"
 #include "eventdata.h"
 
-namespace LC
-{
-namespace AdvancedNotifications
+namespace LC::AdvancedNotifications
 {
 	class AudioThemeManager;
 
@@ -27,10 +24,9 @@ namespace AdvancedNotifications
 
 		QHash<QString, QDateTime> LastNotify_;
 	public:
-		AudioHandler (const AudioThemeManager*);
+		explicit AudioHandler (const AudioThemeManager*);
 
-		NotificationMethod GetHandlerMethod () const;
-		void Handle (const Entity&, const NotificationRule&);
+		NotificationMethod GetHandlerMethod () const override;
+		void Handle (const Entity&, const NotificationRule&) override;
 	};
-}
 }

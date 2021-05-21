@@ -6,13 +6,11 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#ifndef PLUGINS_ADVANCEDNOTIFICATIONS_QML_ACTIONSPROXYOBJECT_H
-#define PLUGINS_ADVANCEDNOTIFICATIONS_QML_ACTIONSPROXYOBJECT_H
+#pragma once
+
 #include <QObject>
 
-namespace LC
-{
-namespace AdvancedNotifications
+namespace LC::AdvancedNotifications
 {
 	class ActionsProxyObject : public QObject
 	{
@@ -21,7 +19,7 @@ namespace AdvancedNotifications
 
 		QString ActionText_;
 	public:
-		ActionsProxyObject (const QString&, QObject* = 0);
+		explicit ActionsProxyObject (const QString&, QObject* = nullptr);
 
 		QString actionText () const;
 	signals:
@@ -30,6 +28,3 @@ namespace AdvancedNotifications
 		void actionSelected ();
 	};
 }
-}
-
-#endif

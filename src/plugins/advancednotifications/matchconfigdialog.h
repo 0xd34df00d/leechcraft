@@ -21,7 +21,7 @@ struct ANFieldData;
 namespace AdvancedNotifications
 {
 	class TypedMatcherBase;
-	typedef std::shared_ptr<TypedMatcherBase> TypedMatcherBase_ptr;
+	using TypedMatcherBase_ptr = std::shared_ptr<TypedMatcherBase>;
 
 	class FieldMatch;
 
@@ -36,7 +36,7 @@ namespace AdvancedNotifications
 
 		QMap<QObject*, QList<ANFieldData>> FieldsMap_;
 	public:
-		MatchConfigDialog (const QMap<QObject*, QList<ANFieldData>>&, QWidget* = 0);
+		explicit MatchConfigDialog (const QMap<QObject*, QList<ANFieldData>>&, QWidget* = nullptr);
 
 		FieldMatch GetFieldMatch () const;
 		void SetFieldMatch (const FieldMatch&);

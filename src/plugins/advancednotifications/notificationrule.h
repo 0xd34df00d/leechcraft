@@ -18,9 +18,7 @@
 class QDataStream;
 class QDebug;
 
-namespace LC
-{
-namespace AdvancedNotifications
+namespace LC::AdvancedNotifications
 {
 	struct VisualParams
 	{
@@ -117,7 +115,6 @@ namespace AdvancedNotifications
 	};
 
 	void DebugEquals (const NotificationRule&, const NotificationRule&);
-}
 }
 
 QDebug operator<< (QDebug dbg, const LC::AdvancedNotifications::FieldMatch&);

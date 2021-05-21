@@ -11,17 +11,14 @@
 #include <QDialog>
 #include "ui_addfrommisseddialog.h"
 
-namespace LC
-{
-namespace AdvancedNotifications
+namespace LC::AdvancedNotifications
 {
 	class AddFromMissedDialog : public QDialog
 	{
 		Ui::AddFromMissedDialog Ui_;
 	public:
-		AddFromMissedDialog (QAbstractItemModel*, QWidget* = nullptr);
+		explicit AddFromMissedDialog (QAbstractItemModel*, QWidget* = nullptr);
 
 		QList<QModelIndex> GetSelectedRows () const;
 	};
-}
 }
