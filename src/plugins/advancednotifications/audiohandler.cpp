@@ -43,6 +43,6 @@ namespace LC::AdvancedNotifications
 		LastNotify_ [fname] = now;
 
 		const auto& e = Util::MakeEntity (fname, QString (), Internal);
-		GH_->GetProxy ()->GetEntityManager ()->HandleEntity (e);
+		GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 	}
 }
