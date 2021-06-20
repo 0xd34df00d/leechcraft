@@ -134,7 +134,7 @@ namespace Util
 
 			WrapType_t<ResultCont_t> cont;
 			for (auto&& t : c)
-				detail::Append (cont, std::invoke (f, t));
+				Append (cont, std::invoke (f, t));
 			return cont;
 		}
 	}
