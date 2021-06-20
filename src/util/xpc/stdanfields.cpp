@@ -146,7 +146,7 @@ namespace LC::Util
 					},
 					{
 						AN::Field::IMLocationLocality,
-						QObject::tr ("Longitude"),
+						QObject::tr ("Locality"),
 						QObject::tr ("The the exact locality (like a city or a town) the contact is currently in."),
 						QVariant::String,
 						{
