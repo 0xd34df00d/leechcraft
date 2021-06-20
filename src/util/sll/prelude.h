@@ -215,7 +215,7 @@ namespace Util
 		return std::forward<Cont> (cont);
 	}
 
-	constexpr auto Id = [] (auto&& t) ->decltype (auto) { return std::forward<decltype (t)> (t); };
+	constexpr auto Id = [] (auto&& t) -> decltype (auto) { return std::forward<decltype (t)> (t); };
 
 	template<typename R>
 	auto ComparingBy (R r)
