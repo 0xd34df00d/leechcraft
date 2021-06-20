@@ -9,6 +9,7 @@
 #pragma once
 
 #include <stdexcept>
+#include <optional>
 #include <QHash>
 #include <QString>
 #include <QtDebug>

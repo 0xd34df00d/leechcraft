@@ -10,6 +10,7 @@
 
 #include <functional>
 #include <memory>
+#include <optional>
 #include <QStyledItemDelegate>
 
 class QByteArray;

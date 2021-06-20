@@ -9,6 +9,7 @@
 #pragma once
 
 #include <memory>
+#include <optional>
 #include <QObject>
 #include <interfaces/core/icoreproxy.h>
 

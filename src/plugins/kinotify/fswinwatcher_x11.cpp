@@ -7,6 +7,7 @@
  **********************************************************************/
 
 #include "fswinwatcher.h"
+#include <optional>
 #include <QX11Info>
 #include <QMainWindow>
 #include <X11/Xlib.h>

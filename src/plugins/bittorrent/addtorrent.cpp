@@ -8,6 +8,7 @@
 
 #include "addtorrent.h"
 #include <filesystem>
+#include <optional>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QSortFilterProxyModel>
