@@ -23,8 +23,8 @@ namespace LC::Util
 				{
 					{
 						AN::Field::MediaTitle,
-						QObject::tr ("Title metadata"),
-						QObject::tr ("Title of the track being played."),
+						QObject::tr ("Track title"),
+						QObject::tr ("The track that the contact is currently listening to."),
 						QVariant::String,
 						{
 							AN::TypeIMEventTuneChange
@@ -32,8 +32,8 @@ namespace LC::Util
 					},
 					{
 						AN::Field::MediaAlbum,
-						QObject::tr ("Album metadata"),
-						QObject::tr ("Album of the track being played."),
+						QObject::tr ("Track album"),
+						QObject::tr ("The album that the contact is currently listening to."),
 						QVariant::String,
 						{
 							AN::TypeIMEventTuneChange
@@ -41,8 +41,8 @@ namespace LC::Util
 					},
 					{
 						AN::Field::MediaArtist,
-						QObject::tr ("Artist metadata"),
-						QObject::tr ("Artist of the track being played."),
+						QObject::tr ("Track artist"),
+						QObject::tr ("The artist the contact is currently listening to."),
 						QVariant::String,
 						{
 							AN::TypeIMEventTuneChange
@@ -50,8 +50,8 @@ namespace LC::Util
 					},
 					{
 						AN::Field::MediaLength,
-						QObject::tr ("Length metadata"),
-						QObject::tr ("Length of the track being played."),
+						QObject::tr ("Track length"),
+						QObject::tr ("Length of the track the contact is currently listening to."),
 						QVariant::Int,
 						{
 							AN::TypeIMEventTuneChange
