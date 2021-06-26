@@ -170,17 +170,17 @@ namespace AdvancedNotifications
 
 		NotificationRule rule (title, category, types);
 
-		if (e.Additional_ ["org.LC.AdvNotifications.SingleShot"].toBool ())
+		if (e.Additional_ [AN::EF::IsSingleShot].toBool ())
 			rule.SetSingleShot (true);
 
-		if (e.Additional_ ["org.LC.AdvNotifications.NotifyPersistent"].toBool ())
+		if (e.Additional_ [AN::EF::NotifyPersistent].toBool ())
 			rule.AddMethod (NMTray);
 
-		if (e.Additional_ ["org.LC.AdvNotifications.NotifyTransient"].toBool ())
+		if (e.Additional_ [AN::EF::NotifyTransient].toBool ())
 			rule.AddMethod (NMVisual);
 
 		const auto& typeSet = Util::AsSet (types);
-		if (e.Additional_ ["org.LC.AdvNotifications.NotifyAudio"].toBool ())
+		if (e.Additional_ [AN::EF::NotifyAudio].toBool ())
 		{
 			rule.AddMethod (NMAudio);
 
@@ -250,7 +250,7 @@ namespace AdvancedNotifications
 	{
 		XmlSettingsManager::Instance ().ShowSettingsPage ("RulesWidget");
 
-		const auto id = rule.Additional_ ["org.LC.AdvNotifications.RuleID"].toInt ();
+		const auto id = rule.Additional_ [AN::EF::RuleID].toInt ();
 		emit focusOnRule (RulesModel_->index (id, 0));
 	}
 
@@ -264,12 +264,13 @@ namespace AdvancedNotifications
 				continue;
 
 			auto e = Util::MakeEntity (rule.GetName (), {}, {}, {});
-			e.Additional_ ["org.LC.AdvNotifications.RuleID"] = i;
 			e.Additional_ [AN::EF::SenderID] = "org.LeechCraft.AdvancedNotifications";
 			e.Additional_ [AN::EF::EventCategory] = rule.GetCategory ();
 			e.Additional_ [AN::EF::EventType] = QStringList { rule.GetTypes ().values () };
-			e.Additional_ ["org.LC.AdvNotifications.AssocColor"] = rule.GetColor ();
-			e.Additional_ ["org.LC.AdvNotifications.IsEnabled"] = rule.IsEnabled ();
+
+			e.Additional_ [AN::EF::RuleID] = i;
+			e.Additional_ [AN::EF::AssocColor] = rule.GetColor ();
+			e.Additional_ [AN::EF::IsEnabled] = rule.IsEnabled ();
 
 			for (const auto& fieldMatch : rule.GetFieldMatches ())
 			{
