@@ -257,29 +257,29 @@ namespace LC::AdvancedNotifications
 
 			return {};
 		}
-	}
 
-	QList<QStandardItem*> NotificationRulesWidget::MatchToRow (const FieldMatch& match) const
-	{
-		auto fieldName = match.GetFieldName ();
+		QList<QStandardItem*> MatchToRow (const FieldMatch& match)
+		{
+			auto fieldName = match.GetFieldName ();
 
-		const auto& fields = Util::GetStdANFields ({}) + GetPluginFields (match.GetPluginID ().toUtf8 ());
+			const auto& fields = Util::GetStdANFields ({}) + GetPluginFields (match.GetPluginID ().toUtf8 ());
 
-		const auto pos = std::find_if (fields.begin (), fields.end (),
-				[&fieldName] (const auto& field) { return field.ID_ == fieldName; });
-		if (pos != fields.end ())
-			fieldName = pos->Name_;
-		else
-			qWarning () << Q_FUNC_INFO
-					<< "unable to find field"
-					<< fieldName;
+			const auto pos = std::find_if (fields.begin (), fields.end (),
+					[&fieldName] (const auto& field) { return field.ID_ == fieldName; });
+			if (pos != fields.end ())
+				fieldName = pos->Name_;
+			else
+				qWarning () << Q_FUNC_INFO
+						<< "unable to find field"
+						<< fieldName;
 
-		QList<QStandardItem*> items;
-		items << new QStandardItem (fieldName);
-		items << new QStandardItem (match.GetMatcher () ?
-				match.GetMatcher ()->GetHRDescription () :
-				tr ("<empty matcher>"));
-		return items;
+			QList<QStandardItem*> items;
+			items << new QStandardItem (fieldName);
+			items << new QStandardItem (match.GetMatcher () ?
+					match.GetMatcher ()->GetHRDescription () :
+					NotificationRulesWidget::tr ("<empty matcher>"));
+			return items;
+		}
 	}
 
 	QHash<QObject*, QList<ANFieldData>> NotificationRulesWidget::GetRelevantANFieldsWPlugins () const

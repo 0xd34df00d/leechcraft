@@ -50,7 +50,6 @@ namespace AdvancedNotifications
 		QStringList GetSelectedTypes () const;
 
 		NotificationRule GetRuleFromUI (QModelIndex = {}) const;
-		QList<QStandardItem*> MatchToRow (const FieldMatch&) const;
 
 		QHash<QObject*, QList<ANFieldData>> GetRelevantANFieldsWPlugins () const;
 		QList<ANFieldData> GetRelevantANFields () const;
