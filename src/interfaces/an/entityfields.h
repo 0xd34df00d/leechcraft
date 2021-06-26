@@ -10,17 +10,13 @@
 
 #include <QString>
 
-namespace LC
-{
-namespace AN
-{
 /** @brief Namespace for various AN entity fields.
  *
  * This namespace contains various constants for widely-used fields
  * in an AdvancedNotifications-related Entity structure. Both event
  * notification fields and rule creation fields are mentioned.
  */
-namespace EF
+namespace LC::AN::EF
 {
 	/** @brief The plugin ID of the sender (QByteArray or QString).
 	 *
@@ -150,6 +146,4 @@ namespace EF
 	 * @note This field is optional for rule creation entities.
 	 */
 	Q_DECL_IMPORT extern const QString NotifyAudio;
-}
-}
 }
