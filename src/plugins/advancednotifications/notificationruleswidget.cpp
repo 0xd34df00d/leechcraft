@@ -84,7 +84,7 @@ namespace LC::AdvancedNotifications
 				&QPushButton::released,
 				withCurrentRule ([this] (const auto& index)
 						{
-							RM_->UpdateRule (index, GetRuleFromUI ());
+							RM_->UpdateRule (index, GetRuleFromUI (index));
 							Ui_.RulesTree_->setCurrentIndex (index);
 						}));
 		connect (Ui_.MoveRuleUp_,
