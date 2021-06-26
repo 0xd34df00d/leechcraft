@@ -25,7 +25,6 @@
 #include <util/models/rolenamesmixin.h>
 #include "typedmatchers.h"
 #include "xmlsettingsmanager.h"
-#include "fields.h"
 
 namespace LC
 {
@@ -94,7 +93,7 @@ namespace AdvancedNotifications
 
 	QList<NotificationRule> RulesManager::GetRules (const Entity& e)
 	{
-		const QString& type = e.Additional_ [Fields::EventType].toString ();
+		const QString& type = e.Additional_ [AN::EF::EventType].toString ();
 
 		QList<NotificationRule> result;
 
@@ -156,9 +155,9 @@ namespace AdvancedNotifications
 	std::optional<NotificationRule> RulesManager::CreateRuleFromEntity (const Entity& e)
 	{
 		const auto& title = e.Entity_.toString ();
-		const auto& sender = e.Additional_ [Fields::SenderID].toByteArray ();
-		const auto& category = e.Additional_ [Fields::EventCategory].toString ();
-		const auto& types = e.Additional_ [Fields::EventType].toStringList ();
+		const auto& sender = e.Additional_ [AN::EF::SenderID].toByteArray ();
+		const auto& category = e.Additional_ [AN::EF::EventCategory].toString ();
+		const auto& types = e.Additional_ [AN::EF::EventType].toStringList ();
 
 		const auto plugin = GetProxyHolder ()->GetPluginsManager ()->GetPluginByID (sender);
 		if (!plugin)
@@ -266,9 +265,9 @@ namespace AdvancedNotifications
 
 			auto e = Util::MakeEntity (rule.GetName (), {}, {}, {});
 			e.Additional_ ["org.LC.AdvNotifications.RuleID"] = i;
-			e.Additional_ [Fields::SenderID] = "org.LeechCraft.AdvancedNotifications";
-			e.Additional_ [Fields::EventCategory] = rule.GetCategory ();
-			e.Additional_ [Fields::EventType] = QStringList { rule.GetTypes ().values () };
+			e.Additional_ [AN::EF::SenderID] = "org.LeechCraft.AdvancedNotifications";
+			e.Additional_ [AN::EF::EventCategory] = rule.GetCategory ();
+			e.Additional_ [AN::EF::EventType] = QStringList { rule.GetTypes ().values () };
 			e.Additional_ ["org.LC.AdvNotifications.AssocColor"] = rule.GetColor ();
 			e.Additional_ ["org.LC.AdvNotifications.IsEnabled"] = rule.IsEnabled ();
 

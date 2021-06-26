@@ -13,8 +13,9 @@
 #include <interfaces/structures.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
+#include <interfaces/an/constants.h>
+#include <interfaces/an/entityfields.h>
 #include "generalhandler.h"
-#include "fields.h"
 
 namespace LC
 {
@@ -31,7 +32,7 @@ namespace AdvancedNotifications
 
 	void WMUrgentHandler::Handle (const Entity& e, const NotificationRule&)
 	{
-		if (e.Additional_ [Fields::EventCategory].toString () == Fields::Values::CancelEvent)
+		if (e.Additional_ [AN::EF::EventCategory].toString () == AN::CatEventCancel)
 			return;
 
 		bool ok = false;

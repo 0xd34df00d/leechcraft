@@ -12,6 +12,7 @@
 #include <interfaces/iplugin2.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
+#include <interfaces/an/entityfields.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/sys/resourceloader.h>
 #include <util/util.h>
@@ -22,7 +23,6 @@
 #include "quarkproxy.h"
 #include "audiothememanager.h"
 #include "unhandlednotificationskeeper.h"
-#include "fields.h"
 #include "interfaces/advancednotifications/inotificationbackendplugin.h"
 
 namespace LC::AdvancedNotifications
@@ -93,9 +93,9 @@ namespace LC::AdvancedNotifications
 	EntityTestHandleResult Plugin::CouldHandle (const Entity& e) const
 	{
 		const bool can = e.Mime_.startsWith ("x-leechcraft/notification") &&
-				e.Additional_.contains (Fields::SenderID) &&
-				e.Additional_.contains (Fields::EventID) &&
-				e.Additional_.contains (Fields::EventCategory);
+				e.Additional_.contains (AN::EF::SenderID) &&
+				e.Additional_.contains (AN::EF::EventID) &&
+				e.Additional_.contains (AN::EF::EventCategory);
 
 		if (!can)
 			return EntityTestHandleResult ();

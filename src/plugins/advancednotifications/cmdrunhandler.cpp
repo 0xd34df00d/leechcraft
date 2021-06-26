@@ -8,8 +8,9 @@
 
 #include "cmdrunhandler.h"
 #include <QProcess>
+#include <interfaces/an/constants.h>
+#include <interfaces/an/entityfields.h>
 #include "notificationrule.h"
-#include "fields.h"
 
 namespace LC::AdvancedNotifications
 {
@@ -20,7 +21,7 @@ namespace LC::AdvancedNotifications
 
 	void CmdRunHandler::Handle (const Entity& e, const NotificationRule& rule)
 	{
-		if (e.Additional_ [Fields::EventCategory].toString () == Fields::Values::CancelEvent)
+		if (e.Additional_ [AN::EF::EventCategory].toString () == AN::CatEventCancel)
 			return;
 
 		const CmdParams& params = rule.GetCmdParams ();

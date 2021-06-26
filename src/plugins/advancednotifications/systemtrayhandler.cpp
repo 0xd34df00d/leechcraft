@@ -12,6 +12,7 @@
 #include <QApplication>
 #include <interfaces/structures.h>
 #include <interfaces/an/constants.h>
+#include <interfaces/an/entityfields.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/ientitymanager.h>
@@ -25,7 +26,6 @@
 #include "generalhandler.h"
 #include "xmlsettingsmanager.h"
 #include "visualnotificationsview.h"
-#include "fields.h"
 
 namespace LC
 {
@@ -98,10 +98,10 @@ namespace AdvancedNotifications
 
 	void SystemTrayHandler::Handle (const Entity& e, const NotificationRule&)
 	{
-		const QString& cat = e.Additional_ [Fields::EventCategory].toString ();
-		const QString& eventId = e.Additional_ [Fields::EventID].toString ();
+		const QString& cat = e.Additional_ [AN::EF::EventCategory].toString ();
+		const QString& eventId = e.Additional_ [AN::EF::EventID].toString ();
 
-		if (cat == Fields::Values::CancelEvent)
+		if (cat == AN::CatEventCancel)
 		{
 			if (Events_.remove (eventId))
 				RebuildState ();

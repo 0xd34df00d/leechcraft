@@ -9,8 +9,9 @@
 #include "visualhandler.h"
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
+#include <interfaces/an/constants.h>
+#include <interfaces/an/entityfields.h>
 #include "generalhandler.h"
-#include "fields.h"
 
 namespace LC
 {
@@ -23,10 +24,10 @@ namespace AdvancedNotifications
 
 	void VisualHandler::Handle (const Entity& orig, const NotificationRule&)
 	{
-		if (orig.Additional_ [Fields::EventCategory].toString () == Fields::Values::CancelEvent)
+		if (orig.Additional_ [AN::EF::EventCategory].toString () == AN::CatEventCancel)
 			return;
 
-		const QString& evId = orig.Additional_ [Fields::EventID].toString ();
+		const QString& evId = orig.Additional_ [AN::EF::EventID].toString ();
 		if (ActiveEvents_.contains (evId))
 			return;
 

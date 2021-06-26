@@ -9,6 +9,8 @@
 #include "generalhandler.h"
 #include <QAction>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/an/constants.h>
+#include <interfaces/an/entityfields.h>
 #include <interfaces/core/iiconthememanager.h>
 #include "systemtrayhandler.h"
 #include "visualhandler.h"
@@ -17,7 +19,6 @@
 #include "wmurgenthandler.h"
 #include "rulesmanager.h"
 #include "unhandlednotificationskeeper.h"
-#include "fields.h"
 
 namespace LC::AdvancedNotifications
 {
@@ -54,7 +55,7 @@ namespace LC::AdvancedNotifications
 			return;
 		}
 
-		if (e.Additional_ [Fields::EventCategory] == Fields::Values::CancelEvent)
+		if (e.Additional_ [AN::EF::EventCategory].toString () == AN::CatEventCancel)
 		{
 			for (const auto& handler : Handlers_)
 				handler->Handle (e, NotificationRule {});
