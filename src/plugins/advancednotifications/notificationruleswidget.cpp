@@ -45,6 +45,10 @@ namespace LC::AdvancedNotifications
 	, MatchesModel_ (new QStandardItemModel (this))
 	{
 		Ui_.setupUi (this);
+
+		Ui_.RulesTree_->setModel (RM_->GetRulesModel ());
+		Ui_.MatchesTree_->setModel (MatchesModel_);
+
 		connect (Ui_.RulesTree_->selectionModel (),
 				&QItemSelectionModel::currentRowChanged,
 				this,
@@ -157,9 +161,6 @@ namespace LC::AdvancedNotifications
 							QItemSelectionModel::SelectCurrent | QItemSelectionModel::Rows);
 					Ui_.RulesTree_->setCurrentIndex (index);
 				});
-
-		Ui_.RulesTree_->setModel (RM_->GetRulesModel ());
-		Ui_.MatchesTree_->setModel (MatchesModel_);
 
 		for (const auto& pair : Util::Stlize (Util::AN::GetCategoryNameMap ()))
 			Ui_.EventCat_->addItem (pair.second, pair.first);
