@@ -27,7 +27,7 @@ namespace AdvancedNotifications
 
 	class MatchConfigDialog : public QDialog
 	{
-		Q_OBJECT
+		Q_DECLARE_TR_FUNCTIONS (LC::AdvancedNotifications::MatchConfigDialog)
 
 		Ui::MatchConfigDialog Ui_;
 
@@ -43,9 +43,8 @@ namespace AdvancedNotifications
 	private:
 		int SelectPlugin (const QByteArray&, const QString&);
 		void AddFields (const QList<ANFieldData>&);
-	private slots:
-		void on_SourcePlugin__activated (int);
-		void on_FieldName__activated (int);
+		void ShowPluginFields (int);
+		void ShowField (int);
 	};
 }
 }

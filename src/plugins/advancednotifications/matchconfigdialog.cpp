@@ -22,6 +22,14 @@ namespace AdvancedNotifications
 	, FieldsMap_ (map)
 	{
 		Ui_.setupUi (this);
+		connect (Ui_.SourcePlugin_,
+				qOverload<int> (&QComboBox::currentIndexChanged),
+				this,
+				&MatchConfigDialog::ShowPluginFields);
+		connect (Ui_.FieldName_,
+				qOverload<int> (&QComboBox::currentIndexChanged),
+				this,
+				&MatchConfigDialog::ShowField);
 
 		if (!FieldsMap_ [nullptr].isEmpty ())
 			Ui_.SourcePlugin_->addItem (tr ("Standard fields"));
@@ -35,9 +43,6 @@ namespace AdvancedNotifications
 			Ui_.SourcePlugin_->addItem (ii->GetIcon (),
 					ii->GetName (), QVariant::fromValue (i.key ()));
 		}
-
-		if (Ui_.SourcePlugin_->count ())
-			on_SourcePlugin__activated (0);
 	}
 
 	FieldMatch MatchConfigDialog::GetFieldMatch () const
@@ -72,7 +77,6 @@ namespace AdvancedNotifications
 			return;
 
 		Ui_.FieldName_->setCurrentIndex (fieldIdx);
-		on_FieldName__activated (fieldIdx);
 
 		if (CurrentMatcher_)
 		{
@@ -104,7 +108,6 @@ namespace AdvancedNotifications
 				if (fields.at (i).ID_ == fieldId)
 				{
 					Ui_.SourcePlugin_->setCurrentIndex (idx);
-					on_SourcePlugin__activated (idx);
 					return i;
 				}
 
@@ -127,18 +130,15 @@ namespace AdvancedNotifications
 			Ui_.FieldName_->addItem (data.Name_, QVariant::fromValue (data));
 	}
 
-	void MatchConfigDialog::on_SourcePlugin__activated (int idx)
+	void MatchConfigDialog::ShowPluginFields (int idx)
 	{
 		Ui_.FieldName_->clear ();
 
 		const auto pObj = Ui_.SourcePlugin_->itemData (idx).value<QObject*> ();
 		AddFields (FieldsMap_ [pObj]);
-
-		if (Ui_.FieldName_->count ())
-			on_FieldName__activated (0);
 	}
 
-	void MatchConfigDialog::on_FieldName__activated (int idx)
+	void MatchConfigDialog::ShowField (int idx)
 	{
 		const auto& data = Ui_.FieldName_->itemData (idx).value<ANFieldData> ();
 		Ui_.DescriptionLabel_->setText (data.Description_);
