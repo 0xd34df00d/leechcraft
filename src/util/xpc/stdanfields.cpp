@@ -231,6 +231,16 @@ namespace LC::Util
 							AN::TypeNewsSourceBroken,
 							AN::TypeNewsSourceUpdated
 						}
+					},
+					{
+						AN::Field::NewsSourceURL,
+						QObject::tr ("News source URL"),
+						QObject::tr ("The URL of the news source that caused the notification."),
+						QVariant::String,
+						{
+							AN::TypeNewsSourceBroken,
+							AN::TypeNewsSourceUpdated
+						}
 					}
 				}
 			},

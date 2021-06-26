@@ -292,6 +292,10 @@ namespace AN
 		/** @brief News source name (QString).
 		 */
 		Q_DECL_IMPORT extern const QString NewsSourceName;
+
+		/** @brief News source URL (QString).
+		 */
+		Q_DECL_IMPORT extern const QString NewsSourceURL;
 	}
 }
 }

@@ -83,6 +83,7 @@ namespace LC::AN
 		const QString IMLocationCountry { QStringLiteral (CAT_IM ".Fields.Location.Country") };
 		const QString IMLocationLocality { QStringLiteral (CAT_IM ".Fields.Location.Locality") };
 		const QString NewsSourceName { QStringLiteral (CAT_NEWS ".Fields.Source.Name") };
+		const QString NewsSourceURL { QStringLiteral (CAT_NEWS ".Fields.Source.URL") };
 	}
 
 	namespace EF
