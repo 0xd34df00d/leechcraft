@@ -97,10 +97,17 @@ namespace LC::AN
 		const QString ExtendedText { QStringLiteral ("org.LC.AdvNotifications.ExtendedText") };
 		const QString DeltaCount { QStringLiteral ("org.LC.AdvNotifications.DeltaCount") };
 		const QString Count { QStringLiteral ("org.LC.AdvNotifications.Count") };
+
+		const QString WindowIndex { QStringLiteral ("org.LC.AdvNotifications.WindowIndex") };
+
 		const QString OpenConfiguration { QStringLiteral ("org.LC.AdvNotifications.OpenConfiguration") };
 		const QString IsSingleShot { QStringLiteral ("org.LC.AdvNotifications.SingleShot") };
 		const QString NotifyTransient { QStringLiteral ("org.LC.AdvNotifications.NotifyTransient") };
 		const QString NotifyPersistent { QStringLiteral ("org.LC.AdvNotifications.NotifyPersistent") };
 		const QString NotifyAudio { QStringLiteral ("org.LC.AdvNotifications.NotifyAudio") };
+
+		const QString RuleID { QStringLiteral ("org.LC.AdvNotifications.RuleID") };
+		const QString AssocColor { QStringLiteral ("org.LC.AdvNotifications.AssocColor") };
+		const QString IsEnabled { QStringLiteral ("org.LC.AdvNotifications.IsEnabled") };
 	}
 }

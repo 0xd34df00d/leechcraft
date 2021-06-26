@@ -112,6 +112,15 @@ namespace LC::AN::EF
 	 */
 	Q_DECL_IMPORT extern const QString Count;
 
+	/** @brief The index of the window associated with this event (int).
+	 *
+	 * This field contains the index of the window containing the tab
+	 * (or other widget) associated with the event.
+	 * For example, for an IM notification, this could be the window
+	 * containing the tab with the conversation in question.
+	 */
+	Q_DECL_IMPORT extern const QString WindowIndex;
+
 	/** @brief Whether configuration dialog should be opened (bool).
 	 *
 	 * If this field is set to <code>true</code>,
@@ -146,4 +155,8 @@ namespace LC::AN::EF
 	 * @note This field is optional for rule creation entities.
 	 */
 	Q_DECL_IMPORT extern const QString NotifyAudio;
+
+	Q_DECL_IMPORT extern const QString RuleID;
+	Q_DECL_IMPORT extern const QString AssocColor;
+	Q_DECL_IMPORT extern const QString IsEnabled;
 }
