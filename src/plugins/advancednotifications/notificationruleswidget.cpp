@@ -66,6 +66,19 @@ namespace LC::AdvancedNotifications
 				&QPushButton::released,
 				this,
 				&NotificationRulesWidget::AddFromMissed);
+		const auto dependButtons = [] (QTreeView *view, const QList<QWidget*>& buttons)
+		{
+			auto enabler = [buttons] (const QModelIndex& index)
+			{
+				for (const auto button : buttons)
+					button->setEnabled (index.isValid ());
+			};
+			connect (view->selectionModel (),
+					&QItemSelectionModel::currentRowChanged,
+					enabler);
+			enabler (view->currentIndex ());
+		};
+
 		connect (Ui_.UpdateRule_,
 				&QPushButton::released,
 				withCurrentRule ([this] (const auto& index)
@@ -82,6 +95,7 @@ namespace LC::AdvancedNotifications
 		connect (Ui_.RemoveRule_,
 				&QPushButton::released,
 				withCurrentRule ([this] (const auto& index) { RM_->removeRule (index); }));
+		dependButtons (Ui_.RulesTree_, { Ui_.UpdateRule_, Ui_.MoveRuleUp_, Ui_.MoveRuleDown_, Ui_.RemoveRule_ });
 
 		connect (Ui_.DefaultRules_,
 				&QPushButton::released,
@@ -100,6 +114,7 @@ namespace LC::AdvancedNotifications
 				&QPushButton::released,
 				this,
 				&NotificationRulesWidget::RemoveMatch);
+		dependButtons (Ui_.MatchesTree_, { Ui_.ModifyMatch_, Ui_.RemoveMatch_ });
 
 		connect (Ui_.BrowseAudioFile_,
 				&QPushButton::released,
@@ -122,6 +137,7 @@ namespace LC::AdvancedNotifications
 				&QPushButton::released,
 				this,
 				&NotificationRulesWidget::RemoveArgument);
+		dependButtons (Ui_.CommandArgsTree_, { Ui_.ModifyArgument_, Ui_.RemoveArgument_ });
 
 		connect (Ui_.EventCat_,
 				qOverload<int> (&QComboBox::currentIndexChanged),
