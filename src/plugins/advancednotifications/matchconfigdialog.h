@@ -10,6 +10,7 @@
 
 #include <memory>
 #include <QSet>
+#include <QHash>
 #include <QDialog>
 #include <interfaces/an/ianemitter.h>
 #include "ui_matchconfigdialog.h"
@@ -34,9 +35,9 @@ namespace AdvancedNotifications
 		QSet<QString> Types_;
 		TypedMatcherBase_ptr CurrentMatcher_;
 
-		QMap<QObject*, QList<ANFieldData>> FieldsMap_;
+		const QHash<QObject*, QList<ANFieldData>> FieldsMap_;
 	public:
-		explicit MatchConfigDialog (const QMap<QObject*, QList<ANFieldData>>&, QWidget* = nullptr);
+		explicit MatchConfigDialog (const QHash<QObject*, QList<ANFieldData>>&, QWidget* = nullptr);
 
 		FieldMatch GetFieldMatch () const;
 		void SetFieldMatch (const FieldMatch&);

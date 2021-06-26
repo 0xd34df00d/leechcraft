@@ -183,9 +183,9 @@ namespace AdvancedNotifications
 		return items;
 	}
 
-	QMap<QObject*, QList<ANFieldData>> NotificationRulesWidget::GetRelevantANFieldsWPlugins () const
+	QHash<QObject*, QList<ANFieldData>> NotificationRulesWidget::GetRelevantANFieldsWPlugins () const
 	{
-		QMap<QObject*, QList<ANFieldData>> result;
+		QHash<QObject*, QList<ANFieldData>> result;
 		result [nullptr] += Util::GetStdANFields (GetCurrentCat ());
 		for (const auto& type : GetSelectedTypes ())
 			result [nullptr] += Util::GetStdANFields (type);

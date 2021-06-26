@@ -52,7 +52,7 @@ namespace AdvancedNotifications
 		NotificationRule GetRuleFromUI (QModelIndex = {}) const;
 		QList<QStandardItem*> MatchToRow (const FieldMatch&) const;
 
-		QMap<QObject*, QList<ANFieldData>> GetRelevantANFieldsWPlugins () const;
+		QHash<QObject*, QList<ANFieldData>> GetRelevantANFieldsWPlugins () const;
 		QList<ANFieldData> GetRelevantANFields () const;
 		QString GetArgumentText ();
 	private slots:

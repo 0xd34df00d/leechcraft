@@ -17,7 +17,7 @@ namespace LC
 {
 namespace AdvancedNotifications
 {
-	MatchConfigDialog::MatchConfigDialog (const QMap<QObject*, QList<ANFieldData>>& map, QWidget *parent)
+	MatchConfigDialog::MatchConfigDialog (const QHash<QObject*, QList<ANFieldData>>& map, QWidget *parent)
 	: QDialog (parent)
 	, FieldsMap_ (map)
 	{
