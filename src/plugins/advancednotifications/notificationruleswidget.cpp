@@ -32,9 +32,7 @@
 #include "unhandlednotificationskeeper.h"
 #include "addfrommisseddialog.h"
 
-namespace LC
-{
-namespace AdvancedNotifications
+namespace LC::AdvancedNotifications
 {
 	NotificationRulesWidget::NotificationRulesWidget (RulesManager *rm,
 			const AudioThemeManager *audioMgr,
@@ -47,26 +45,114 @@ namespace AdvancedNotifications
 	, MatchesModel_ (new QStandardItemModel (this))
 	{
 		Ui_.setupUi (this);
+		const auto withCurrentRule = [this] (auto f)
+		{
+			return [this, f]
+			{
+				const auto& index = Ui_.RulesTree_->currentIndex ();
+				if (index.isValid ())
+					f (index);
+			};
+		};
+		connect (Ui_.RulesTree_->selectionModel (),
+				&QItemSelectionModel::currentRowChanged,
+				this,
+				&NotificationRulesWidget::HandleItemSelected);
+
+		connect (Ui_.AddRule_,
+				&QPushButton::released,
+				[this] { RM_->PrependRule (); });
+		connect (Ui_.AddFromMissed_,
+				&QPushButton::released,
+				this,
+				&NotificationRulesWidget::AddFromMissed);
+		connect (Ui_.UpdateRule_,
+				&QPushButton::released,
+				withCurrentRule ([this] (const auto& index)
+						{
+							RM_->UpdateRule (index, GetRuleFromUI ());
+							Ui_.RulesTree_->setCurrentIndex (index);
+						}));
+		connect (Ui_.MoveRuleUp_,
+				&QPushButton::released,
+				withCurrentRule ([this] (const auto& index) { RM_->moveUp (index); }));
+		connect (Ui_.MoveRuleDown_,
+				&QPushButton::released,
+				withCurrentRule ([this] (const auto& index) { RM_->moveDown (index); }));
+		connect (Ui_.RemoveRule_,
+				&QPushButton::released,
+				withCurrentRule ([this] (const auto& index) { RM_->removeRule (index); }));
+
+		connect (Ui_.DefaultRules_,
+				&QPushButton::released,
+				this,
+				&NotificationRulesWidget::ResetRules);
+
+		connect (Ui_.AddMatch_,
+				&QPushButton::released,
+				this,
+				&NotificationRulesWidget::AddMatch);
+		connect (Ui_.ModifyMatch_,
+				&QPushButton::released,
+				this,
+				&NotificationRulesWidget::ModifyMatch);
+		connect (Ui_.RemoveMatch_,
+				&QPushButton::released,
+				this,
+				&NotificationRulesWidget::RemoveMatch);
+
+		connect (Ui_.BrowseAudioFile_,
+				&QPushButton::released,
+				this,
+				&NotificationRulesWidget::BrowseAudioFile);
+		connect (Ui_.TestAudio_,
+				&QPushButton::released,
+				this,
+				&NotificationRulesWidget::TestAudio);
+
+		connect (Ui_.AddArgument_,
+				&QPushButton::released,
+				this,
+				&NotificationRulesWidget::AddArgument);
+		connect (Ui_.ModifyArgument_,
+				&QPushButton::released,
+				this,
+				&NotificationRulesWidget::ModifyArgument);
+		connect (Ui_.RemoveArgument_,
+				&QPushButton::released,
+				this,
+				&NotificationRulesWidget::RemoveArgument);
+
+		connect (Ui_.EventCat_,
+				qOverload<int> (&QComboBox::currentIndexChanged),
+				this,
+				&NotificationRulesWidget::PopulateCategories);
+
+		connect (Ui_.NotifyAudio_,
+				&QCheckBox::stateChanged,
+				[this] (int state) { Ui_.PageAudio_->setEnabled (state == Qt::Checked); });
+		connect (Ui_.NotifyCmd_,
+				&QCheckBox::stateChanged,
+				[this] (int state) { Ui_.PageCommand_->setEnabled (state == Qt::Checked); });
+
+		connect (rm,
+				&RulesManager::focusOnRule,
+				this,
+				[this] (const QModelIndex& index)
+				{
+					Ui_.RulesTree_->selectionModel ()->select (index,
+							QItemSelectionModel::SelectCurrent | QItemSelectionModel::Rows);
+					Ui_.RulesTree_->setCurrentIndex (index);
+				});
+
 		Ui_.RulesTree_->setModel (RM_->GetRulesModel ());
 		Ui_.MatchesTree_->setModel (MatchesModel_);
 
-		connect (Ui_.RulesTree_->selectionModel (),
-				SIGNAL (currentChanged (QModelIndex, QModelIndex)),
-				this,
-				SLOT (handleItemSelected (QModelIndex, QModelIndex)));
-
-		connect (rm,
-				SIGNAL (focusOnRule (QModelIndex)),
-				this,
-				SLOT (selectRule (QModelIndex)));
-
 		for (const auto& pair : Util::Stlize (Util::AN::GetCategoryNameMap ()))
 			Ui_.EventCat_->addItem (pair.second, pair.first);
-		on_EventCat__currentIndexChanged (0);
 
 		XmlSettingsManager::Instance ().RegisterObject ("AudioTheme",
-				this, "resetAudioFileBox");
-		resetAudioFileBox ();
+				this, [this] (const QVariant&) { ResetAudioFileBox (); });
 	}
 
 	void NotificationRulesWidget::ResetMatchesModel ()
@@ -77,8 +163,7 @@ namespace AdvancedNotifications
 
 	QString NotificationRulesWidget::GetCurrentCat () const
 	{
-		const auto idx = Ui_.EventCat_->currentIndex ();
-		return Ui_.EventCat_->itemData (idx).toString ();
+		return Ui_.EventCat_->currentData ().toString ();
 	}
 
 	QStringList NotificationRulesWidget::GetSelectedTypes () const
@@ -243,7 +328,7 @@ namespace AdvancedNotifications
 				value;
 	}
 
-	void NotificationRulesWidget::handleItemSelected (const QModelIndex& index, const QModelIndex& prevIndex)
+	void NotificationRulesWidget::HandleItemSelected (const QModelIndex& index, const QModelIndex& prevIndex)
 	{
 		if (prevIndex.isValid ())
 		{
@@ -257,7 +342,7 @@ namespace AdvancedNotifications
 				RM_->UpdateRule (prevIndex, uiRule);
 		}
 
-		resetAudioFileBox ();
+		ResetAudioFileBox ();
 		Ui_.CommandArgsTree_->clear ();
 		Ui_.CommandLineEdit_->setText (QString ());
 
@@ -276,19 +361,14 @@ namespace AdvancedNotifications
 
 		Ui_.RuleName_->setText (rule.GetName ());
 
-		const NotificationMethods methods = rule.GetMethods ();
-		Ui_.NotifyVisual_->setCheckState ((methods & NMVisual) ?
-				Qt::Checked : Qt::Unchecked);
-		Ui_.NotifySysTray_->setCheckState ((methods & NMTray) ?
-				Qt::Checked : Qt::Unchecked);
-		Ui_.NotifyAudio_->setCheckState ((methods & NMAudio) ?
-				Qt::Checked : Qt::Unchecked);
-		Ui_.NotifyCmd_->setCheckState ((methods & NMCommand) ?
-				Qt::Checked : Qt::Unchecked);
-		Ui_.NotifyUrgent_->setCheckState ((methods & NMUrgentHint) ?
-				Qt::Checked : Qt::Unchecked);
-		Ui_.NotifySystemDependent_->setCheckState ((methods & NMSystemDependent) ?
-				Qt::Checked : Qt::Unchecked);
+		const auto checkMethod = [methods = rule.GetMethods ()] (NotificationMethod method)
+				{ return (methods & method) ? Qt::Checked : Qt::Unchecked; };
+		Ui_.NotifyVisual_->setCheckState (checkMethod (NMVisual));
+		Ui_.NotifySysTray_->setCheckState (checkMethod (NMTray));
+		Ui_.NotifyAudio_->setCheckState (checkMethod (NMAudio));
+		Ui_.NotifyCmd_->setCheckState (checkMethod (NMCommand));
+		Ui_.NotifyUrgent_->setCheckState (checkMethod (NMUrgentHint));
+		Ui_.NotifySystemDependent_->setCheckState (checkMethod (NMSystemDependent));
 
 		ResetMatchesModel ();
 		Matches_ = rule.GetFieldMatches ();
@@ -327,19 +407,7 @@ namespace AdvancedNotifications
 		Ui_.ColorButton_->SetColor (rule.GetColor ());
 	}
 
-	void NotificationRulesWidget::selectRule (const QModelIndex& index)
-	{
-		Ui_.RulesTree_->selectionModel ()->select (index,
-				QItemSelectionModel::SelectCurrent | QItemSelectionModel::Rows);
-		Ui_.RulesTree_->setCurrentIndex (index);
-	}
-
-	void NotificationRulesWidget::on_AddRule__released ()
-	{
-		RM_->PrependRule ();
-	}
-
-	void NotificationRulesWidget::on_AddFromMissed__released ()
+	void NotificationRulesWidget::AddFromMissed ()
 	{
 		auto dia = new AddFromMissedDialog { UnhandledKeeper_->GetUnhandledModel (), this };
 		dia->setAttribute (Qt::WA_DeleteOnClose);
@@ -355,36 +423,7 @@ namespace AdvancedNotifications
 		connect (dia, &QDialog::accepted, this, handleAccepted);
 	}
 
-	void NotificationRulesWidget::on_UpdateRule__released ()
-	{
-		const auto& index = Ui_.RulesTree_->currentIndex ();
-		if (!index.isValid ())
-			return;
-
-		RM_->UpdateRule (index, GetRuleFromUI ());
-		Ui_.RulesTree_->setCurrentIndex (index);
-	}
-
-	void NotificationRulesWidget::on_MoveRuleUp__released ()
-	{
-		RM_->moveUp (Ui_.RulesTree_->currentIndex ());
-	}
-
-	void NotificationRulesWidget::on_MoveRuleDown__released ()
-	{
-		RM_->moveDown (Ui_.RulesTree_->currentIndex ());
-	}
-
-	void NotificationRulesWidget::on_RemoveRule__released ()
-	{
-		const QModelIndex& index = Ui_.RulesTree_->currentIndex ();
-		if (!index.isValid ())
-			return;
-
-		RM_->removeRule (index);
-	}
-
-	void NotificationRulesWidget::on_DefaultRules__released ()
+	void NotificationRulesWidget::ResetRules ()
 	{
 		if (QMessageBox::question (this,
 					"LeechCraft",
@@ -396,7 +435,7 @@ namespace AdvancedNotifications
 		RM_->reset ();
 	}
 
-	void NotificationRulesWidget::on_AddMatch__released ()
+	void NotificationRulesWidget::AddMatch ()
 	{
 		MatchConfigDialog dia (GetRelevantANFieldsWPlugins (), this);
 		if (dia.exec () != QDialog::Accepted)
@@ -407,9 +446,9 @@ namespace AdvancedNotifications
 		MatchesModel_->appendRow (MatchToRow (match));
 	}
 
-	void NotificationRulesWidget::on_ModifyMatch__released ()
+	void NotificationRulesWidget::ModifyMatch ()
 	{
-		const QModelIndex& index = Ui_.MatchesTree_->currentIndex ();
+		const auto& index = Ui_.MatchesTree_->currentIndex ();
 		if (!index.isValid ())
 			return;
 
@@ -427,17 +466,17 @@ namespace AdvancedNotifications
 			MatchesModel_->setItem (row, i++, item);
 	}
 
-	void NotificationRulesWidget::on_RemoveMatch__released ()
+	void NotificationRulesWidget::RemoveMatch ()
 	{
-		const QModelIndex& index = Ui_.MatchesTree_->currentIndex ();
-		if (!index.isValid ())
-			return;
-
-		Matches_.removeAt (index.row ());
-		MatchesModel_->removeRow (index.row ());
+		const auto& index = Ui_.MatchesTree_->currentIndex ();
+		if (index.isValid ())
+		{
+			Matches_.removeAt (index.row ());
+			MatchesModel_->removeRow (index.row ());
+		}
 	}
 
-	void NotificationRulesWidget::on_EventCat__currentIndexChanged (int)
+	void NotificationRulesWidget::PopulateCategories ()
 	{
 		const auto& catId = GetCurrentCat ();
 		Ui_.EventTypes_->clear ();
@@ -445,32 +484,14 @@ namespace AdvancedNotifications
 		for (const auto& type : Util::AN::GetKnownEventTypes (catId))
 		{
 			const auto& hr = Util::AN::GetTypeName (type);
-			QTreeWidgetItem *item = new QTreeWidgetItem (QStringList (hr));
+			const auto item = new QTreeWidgetItem (QStringList (hr));
 			item->setData (0, Qt::UserRole, type);
 			item->setCheckState (0, Qt::Unchecked);
 			Ui_.EventTypes_->addTopLevelItem (item);
 		}
 	}
 
-	void NotificationRulesWidget::on_NotifyVisual__stateChanged (int)
-	{
-	}
-
-	void NotificationRulesWidget::on_NotifySysTray__stateChanged (int)
-	{
-	}
-
-	void NotificationRulesWidget::on_NotifyAudio__stateChanged (int state)
-	{
-		Ui_.PageAudio_->setEnabled (state == Qt::Checked);
-	}
-
-	void NotificationRulesWidget::on_NotifyCmd__stateChanged (int state)
-	{
-		Ui_.PageCommand_->setEnabled (state == Qt::Checked);
-	}
-
-	void NotificationRulesWidget::on_BrowseAudioFile__released ()
+	void NotificationRulesWidget::BrowseAudioFile ()
 	{
 		const QString& fname = QFileDialog::getOpenFileName (this,
 				tr ("Select audio file"),
@@ -492,7 +513,7 @@ namespace AdvancedNotifications
 		Ui_.AudioFile_->setCurrentIndex (0);
 	}
 
-	void NotificationRulesWidget::on_TestAudio__released ()
+	void NotificationRulesWidget::TestAudio ()
 	{
 		const int idx = Ui_.AudioFile_->currentIndex ();
 		if (idx == -1)
@@ -511,7 +532,7 @@ namespace AdvancedNotifications
 						.arg ("<em>" + path + "</em>"));
 	}
 
-	void NotificationRulesWidget::on_AddArgument__released()
+	void NotificationRulesWidget::AddArgument ()
 	{
 		const auto& text = GetArgumentText ();
 		if (text.isEmpty ())
@@ -520,9 +541,9 @@ namespace AdvancedNotifications
 		new QTreeWidgetItem (Ui_.CommandArgsTree_, QStringList (text));
 	}
 
-	void NotificationRulesWidget::on_ModifyArgument__released()
+	void NotificationRulesWidget::ModifyArgument ()
 	{
-		QTreeWidgetItem *item = Ui_.CommandArgsTree_->currentItem ();
+		const auto item = Ui_.CommandArgsTree_->currentItem ();
 		if (!item)
 			return;
 
@@ -533,16 +554,16 @@ namespace AdvancedNotifications
 		item->setText (0, text);
 	}
 
-	void NotificationRulesWidget::on_RemoveArgument__released()
+	void NotificationRulesWidget::RemoveArgument ()
 	{
-		const QModelIndex& index = Ui_.CommandArgsTree_->currentIndex ();
+		const auto& index = Ui_.CommandArgsTree_->currentIndex ();
 		if (!index.isValid ())
 			return;
 
 		delete Ui_.CommandArgsTree_->takeTopLevelItem (index.row ());
 	}
 
-	void NotificationRulesWidget::resetAudioFileBox ()
+	void NotificationRulesWidget::ResetAudioFileBox ()
 	{
 		Ui_.AudioFile_->clear ();
 
@@ -550,5 +571,4 @@ namespace AdvancedNotifications
 		for (const auto& file : AudioThemeManager_->GetFilesList (theme))
 			Ui_.AudioFile_->addItem (file.baseName (), file.absoluteFilePath ());
 	}
-}
 }

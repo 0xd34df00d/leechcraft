@@ -28,7 +28,7 @@ namespace AdvancedNotifications
 
 	class NotificationRulesWidget : public QWidget
 	{
-		Q_OBJECT
+		Q_DECLARE_TR_FUNCTIONS (LC::AdvancedNotifications::NotificationRulesWidget)
 
 		Ui::NotificationRulesWidget Ui_;
 
@@ -42,7 +42,7 @@ namespace AdvancedNotifications
 		NotificationRulesWidget (RulesManager*,
 				const AudioThemeManager*,
 				const UnhandledNotificationsKeeper*,
-				QWidget* = 0);
+				QWidget* = nullptr);
 	private:
 		void ResetMatchesModel ();
 
@@ -55,37 +55,25 @@ namespace AdvancedNotifications
 		QHash<QObject*, QList<ANFieldData>> GetRelevantANFieldsWPlugins () const;
 		QList<ANFieldData> GetRelevantANFields () const;
 		QString GetArgumentText ();
-	private slots:
-		void handleItemSelected (const QModelIndex&, const QModelIndex&);
-		void selectRule (const QModelIndex&);
 
-		void on_AddRule__released ();
-		void on_AddFromMissed__released ();
-		void on_UpdateRule__released ();
-		void on_MoveRuleUp__released ();
-		void on_MoveRuleDown__released ();
-		void on_RemoveRule__released ();
-		void on_DefaultRules__released ();
+		void HandleItemSelected (const QModelIndex&, const QModelIndex&);
 
-		void on_AddMatch__released ();
-		void on_ModifyMatch__released ();
-		void on_RemoveMatch__released ();
+		void AddFromMissed ();
+		void ResetRules ();
 
-		void on_EventCat__currentIndexChanged (int);
+		void AddMatch ();
+		void ModifyMatch ();
+		void RemoveMatch ();
 
-		void on_NotifyVisual__stateChanged (int);
-		void on_NotifySysTray__stateChanged (int);
-		void on_NotifyAudio__stateChanged (int);
-		void on_NotifyCmd__stateChanged (int);
+		void BrowseAudioFile ();
+		void TestAudio ();
 
-		void on_BrowseAudioFile__released ();
-		void on_TestAudio__released ();
+		void AddArgument ();
+		void ModifyArgument ();
+		void RemoveArgument ();
 
-		void on_AddArgument__released ();
-		void on_ModifyArgument__released ();
-		void on_RemoveArgument__released ();
-
-		void resetAudioFileBox ();
+		void PopulateCategories ();
+		void ResetAudioFileBox ();
 	};
 }
 }
