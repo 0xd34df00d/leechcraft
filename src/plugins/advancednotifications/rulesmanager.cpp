@@ -65,9 +65,8 @@ namespace AdvancedNotifications
 		};
 	}
 
-	RulesManager::RulesManager (const ICoreProxy_ptr& proxy, QObject *parent)
+	RulesManager::RulesManager (QObject *parent)
 	: QObject (parent)
-	, Proxy_ (proxy)
 	, RulesModel_ (new RulesModel (this))
 	{
 		qRegisterMetaType<NotificationRule> ("LC::AdvancedNotifications::NotificationRule");
@@ -161,7 +160,7 @@ namespace AdvancedNotifications
 		const auto& category = e.Additional_ [Fields::EventCategory].toString ();
 		const auto& types = e.Additional_ [Fields::EventType].toStringList ();
 
-		const auto plugin = Proxy_->GetPluginsManager ()->GetPluginByID (sender);
+		const auto plugin = GetProxyHolder ()->GetPluginsManager ()->GetPluginByID (sender);
 		if (!plugin)
 		{
 			qWarning () << Q_FUNC_INFO

@@ -10,7 +10,6 @@
 
 #include <optional>
 #include <QObject>
-#include <interfaces/core/icoreproxyfwd.h>
 #include "notificationrule.h"
 
 class QAbstractItemModel;
@@ -28,12 +27,10 @@ namespace AdvancedNotifications
 	{
 		Q_OBJECT
 
-		const ICoreProxy_ptr Proxy_;
-
 		QList<NotificationRule> Rules_;
 		QStandardItemModel *RulesModel_;
 	public:
-		RulesManager (const ICoreProxy_ptr&, QObject* = 0);
+		RulesManager (QObject* = 0);
 
 		QAbstractItemModel* GetRulesModel () const;
 		QList<NotificationRule> GetRulesList () const;

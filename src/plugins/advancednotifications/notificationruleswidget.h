@@ -10,7 +10,6 @@
 
 #include <QWidget>
 #include <QList>
-#include <interfaces/core/icoreproxyfwd.h>
 #include "ui_notificationruleswidget.h"
 #include "notificationrule.h"
 
@@ -36,13 +35,14 @@ namespace AdvancedNotifications
 		RulesManager * const RM_;
 		const AudioThemeManager * const AudioThemeManager_;
 		const UnhandledNotificationsKeeper * const UnhandledKeeper_;
-		const ICoreProxy_ptr Proxy_;
 
 		FieldMatches_t Matches_;
 		QStandardItemModel *MatchesModel_;
 	public:
-		NotificationRulesWidget (RulesManager*, const AudioThemeManager*,
-				const UnhandledNotificationsKeeper*, const ICoreProxy_ptr&, QWidget* = 0);
+		NotificationRulesWidget (RulesManager*,
+				const AudioThemeManager*,
+				const UnhandledNotificationsKeeper*,
+				QWidget* = 0);
 	private:
 		void ResetMatchesModel ();
 

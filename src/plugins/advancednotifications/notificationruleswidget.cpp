@@ -39,13 +39,11 @@ namespace AdvancedNotifications
 	NotificationRulesWidget::NotificationRulesWidget (RulesManager *rm,
 			const AudioThemeManager *audioMgr,
 			const UnhandledNotificationsKeeper *unhandledKeeper,
-			const ICoreProxy_ptr& proxy,
 			QWidget *parent)
 	: QWidget (parent)
 	, RM_ (rm)
 	, AudioThemeManager_ (audioMgr)
 	, UnhandledKeeper_ (unhandledKeeper)
-	, Proxy_ (proxy)
 	, MatchesModel_ (new QStandardItemModel (this))
 	{
 		Ui_.setupUi (this);
@@ -149,12 +147,12 @@ namespace AdvancedNotifications
 
 	namespace
 	{
-		QList<ANFieldData> GetPluginFields (const QByteArray& pluginId, const ICoreProxy_ptr& proxy)
+		QList<ANFieldData> GetPluginFields (const QByteArray& pluginId)
 		{
 			if (pluginId.isEmpty ())
 				return {};
 
-			auto pObj = proxy->GetPluginsManager ()->GetPluginByID (pluginId);
+			auto pObj = GetProxyHolder ()->GetPluginsManager ()->GetPluginByID (pluginId);
 			if (auto iae = qobject_cast<IANEmitter*> (pObj))
 				return iae->GetANFields ();
 
@@ -166,7 +164,7 @@ namespace AdvancedNotifications
 	{
 		auto fieldName = match.GetFieldName ();
 
-		const auto& fields = Util::GetStdANFields ({}) + GetPluginFields (match.GetPluginID ().toUtf8 (), Proxy_);
+		const auto& fields = Util::GetStdANFields ({}) + GetPluginFields (match.GetPluginID ().toUtf8 ());
 
 		const auto pos = std::find_if (fields.begin (), fields.end (),
 				[&fieldName] (const auto& field) { return field.ID_ == fieldName; });
@@ -192,7 +190,7 @@ namespace AdvancedNotifications
 		for (const auto& type : GetSelectedTypes ())
 			result [nullptr] += Util::GetStdANFields (type);
 
-		const auto& emitters = Proxy_->GetPluginsManager ()->GetAllCastableRoots<IANEmitter*> ();
+		const auto& emitters = GetProxyHolder ()->GetPluginsManager ()->GetAllCastableRoots<IANEmitter*> ();
 		for (auto emitterObj : emitters)
 		{
 			auto emitter = qobject_cast<IANEmitter*> (emitterObj);
@@ -505,7 +503,7 @@ namespace AdvancedNotifications
 			return;
 
 		const auto& e = Util::MakeEntity (path, {}, Internal | FromUserInitiated);
-		const bool wasHandled = Proxy_->GetEntityManager ()->HandleEntity (e);
+		const bool wasHandled = GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 		if (!wasHandled)
 			QMessageBox::critical (this,
 					"LeechCraft",

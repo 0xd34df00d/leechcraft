@@ -23,9 +23,8 @@ namespace LC
 {
 namespace AdvancedNotifications
 {
-	UnhandledNotificationsKeeper::UnhandledNotificationsKeeper (const ICoreProxy_ptr& proxy, QObject *parent)
+	UnhandledNotificationsKeeper::UnhandledNotificationsKeeper (QObject *parent)
 	: QObject { parent }
-	, Proxy_ { proxy }
 	, Model_ { new QStandardItemModel { this } }
 	{
 		Model_->setHorizontalHeaderLabels ({ tr ("Title"), tr ("Text"), tr ("Category"), tr ("Type") });
@@ -53,7 +52,7 @@ namespace AdvancedNotifications
 
 		auto possibleFields = Util::GetStdANFields (category) + Util::GetStdANFields (type);
 		const auto& sender = e.Additional_ ["org.LC.AdvNotifications.SenderID"].toByteArray ();
-		if (const auto iane = qobject_cast<IANEmitter*> (Proxy_->GetPluginsManager ()->GetPluginByID (sender)))
+		if (const auto iane = qobject_cast<IANEmitter*> (GetProxyHolder ()->GetPluginsManager ()->GetPluginByID (sender)))
 			possibleFields += iane->GetANFields ();
 
 		for (const auto& fieldData : possibleFields)
