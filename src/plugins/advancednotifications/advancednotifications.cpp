@@ -27,21 +27,21 @@
 
 namespace LC::AdvancedNotifications
 {
-	void Plugin::Init (ICoreProxy_ptr proxy)
+	void Plugin::Init (ICoreProxy_ptr)
 	{
 		Util::InstallTranslator ("advancednotifications");
 
-		RulesManager_ = new RulesManager { proxy, this };
+		RulesManager_ = new RulesManager { this };
 
 		auto audioThemeMgr = new AudioThemeManager { this };
 
-		auto unhandledKeeper = new UnhandledNotificationsKeeper { proxy, this };
+		auto unhandledKeeper = new UnhandledNotificationsKeeper { this };
 
 		SettingsDialog_ = std::make_shared<Util::XmlSettingsDialog> ();
 		SettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"advancednotificationssettings.xml");
 		SettingsDialog_->SetCustomWidget ("RulesWidget",
-				new NotificationRulesWidget { RulesManager_, audioThemeMgr, unhandledKeeper, proxy });
+				new NotificationRulesWidget { RulesManager_, audioThemeMgr, unhandledKeeper });
 		SettingsDialog_->SetDataSource ("AudioTheme", audioThemeMgr->GetSettingsModel ());
 
 		GeneralHandler_ = std::make_shared<GeneralHandler> (RulesManager_, audioThemeMgr, unhandledKeeper);
