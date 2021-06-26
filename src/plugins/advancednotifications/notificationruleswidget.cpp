@@ -45,15 +45,6 @@ namespace LC::AdvancedNotifications
 	, MatchesModel_ (new QStandardItemModel (this))
 	{
 		Ui_.setupUi (this);
-		const auto withCurrentRule = [this] (auto f)
-		{
-			return [this, f]
-			{
-				const auto& index = Ui_.RulesTree_->currentIndex ();
-				if (index.isValid ())
-					f (index);
-			};
-		};
 		connect (Ui_.RulesTree_->selectionModel (),
 				&QItemSelectionModel::currentRowChanged,
 				this,
@@ -66,6 +57,12 @@ namespace LC::AdvancedNotifications
 				&QPushButton::released,
 				this,
 				&NotificationRulesWidget::AddFromMissed);
+
+		const auto withCurrentRule = [this] (auto f)
+		{
+			return [this, f] { f (Ui_.RulesTree_->currentIndex ()); };
+		};
+
 		const auto dependButtons = [] (QTreeView *view, const QList<QWidget*>& buttons)
 		{
 			auto enabler = [buttons] (const QModelIndex& index)
@@ -464,11 +461,7 @@ namespace LC::AdvancedNotifications
 
 	void NotificationRulesWidget::ModifyMatch ()
 	{
-		const auto& index = Ui_.MatchesTree_->currentIndex ();
-		if (!index.isValid ())
-			return;
-
-		const int row = index.row ();
+		const int row = Ui_.MatchesTree_->currentIndex ().row ();
 
 		MatchConfigDialog dia (GetRelevantANFieldsWPlugins (), this);
 		dia.SetFieldMatch (Matches_.value (row));
@@ -484,12 +477,9 @@ namespace LC::AdvancedNotifications
 
 	void NotificationRulesWidget::RemoveMatch ()
 	{
-		const auto& index = Ui_.MatchesTree_->currentIndex ();
-		if (index.isValid ())
-		{
-			Matches_.removeAt (index.row ());
-			MatchesModel_->removeRow (index.row ());
-		}
+		const int row = Ui_.MatchesTree_->currentIndex ().row ();
+		Matches_.removeAt (row);
+		MatchesModel_->removeRow (row);
 	}
 
 	void NotificationRulesWidget::PopulateCategories ()
@@ -559,23 +549,16 @@ namespace LC::AdvancedNotifications
 
 	void NotificationRulesWidget::ModifyArgument ()
 	{
-		const auto item = Ui_.CommandArgsTree_->currentItem ();
-		if (!item)
-			return;
-
 		const auto& text = GetArgumentText ();
 		if (text.isEmpty ())
 			return;
 
-		item->setText (0, text);
+		Ui_.CommandArgsTree_->currentItem ()->setText (0, text);
 	}
 
 	void NotificationRulesWidget::RemoveArgument ()
 	{
 		const auto& index = Ui_.CommandArgsTree_->currentIndex ();
-		if (!index.isValid ())
-			return;
-
 		delete Ui_.CommandArgsTree_->takeTopLevelItem (index.row ());
 	}
 
