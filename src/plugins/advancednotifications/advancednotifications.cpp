@@ -40,7 +40,7 @@ namespace LC::AdvancedNotifications
 		SettingsDialog_ = std::make_shared<Util::XmlSettingsDialog> ();
 		SettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"advancednotificationssettings.xml");
-		SettingsDialog_->SetCustomWidget ("RulesWidget",
+		SettingsDialog_->SetCustomWidget (NotificationRulesWidget::GetSettingsWidgetName (),
 				new NotificationRulesWidget { RulesManager_, audioThemeMgr, unhandledKeeper });
 		SettingsDialog_->SetDataSource ("AudioTheme", audioThemeMgr->GetSettingsModel ());
 

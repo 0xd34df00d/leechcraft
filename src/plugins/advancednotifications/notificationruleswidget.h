@@ -39,6 +39,8 @@ namespace AdvancedNotifications
 		FieldMatches_t Matches_;
 		QStandardItemModel *MatchesModel_;
 	public:
+		static QString GetSettingsWidgetName ();
+
 		NotificationRulesWidget (RulesManager*,
 				const AudioThemeManager*,
 				const UnhandledNotificationsKeeper*,

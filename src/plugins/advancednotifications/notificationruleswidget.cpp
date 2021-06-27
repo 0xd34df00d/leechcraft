@@ -34,6 +34,11 @@
 
 namespace LC::AdvancedNotifications
 {
+	QString NotificationRulesWidget::GetSettingsWidgetName ()
+	{
+		return QStringLiteral ("RulesWidget");
+	}
+
 	NotificationRulesWidget::NotificationRulesWidget (RulesManager *rm,
 			const AudioThemeManager *audioMgr,
 			const UnhandledNotificationsKeeper *unhandledKeeper,
@@ -157,7 +162,7 @@ namespace LC::AdvancedNotifications
 				this,
 				[this] (const QModelIndex& index)
 				{
-					XmlSettingsManager::Instance ().ShowSettingsPage ("RulesWidget");
+					XmlSettingsManager::Instance ().ShowSettingsPage (GetSettingsWidgetName ());
 
 					Ui_.RulesTree_->selectionModel ()->select (index,
 							QItemSelectionModel::SelectCurrent | QItemSelectionModel::Rows);
