@@ -157,6 +157,8 @@ namespace LC::AdvancedNotifications
 				this,
 				[this] (const QModelIndex& index)
 				{
+					XmlSettingsManager::Instance ().ShowSettingsPage ("RulesWidget");
+
 					Ui_.RulesTree_->selectionModel ()->select (index,
 							QItemSelectionModel::SelectCurrent | QItemSelectionModel::Rows);
 					Ui_.RulesTree_->setCurrentIndex (index);

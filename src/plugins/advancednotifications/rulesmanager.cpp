@@ -240,16 +240,11 @@ namespace AdvancedNotifications
 		SaveSettings ();
 
 		if (e.Additional_.value (AN::EF::OpenConfiguration).toBool ())
-		{
-			XmlSettingsManager::Instance ().ShowSettingsPage ("RulesWidget");
 			emit focusOnRule (RulesModel_->index (0, 0));
-		}
 	}
 
 	void RulesManager::SuggestRuleConfiguration (const Entity& rule)
 	{
-		XmlSettingsManager::Instance ().ShowSettingsPage ("RulesWidget");
-
 		const auto id = rule.Additional_ [AN::EF::RuleID].toInt ();
 		emit focusOnRule (RulesModel_->index (id, 0));
 	}
