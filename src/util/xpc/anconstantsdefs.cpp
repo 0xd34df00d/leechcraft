@@ -6,8 +6,19 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
+#include <interfaces/structuresconstants.h>
 #include <interfaces/an/constants.h>
 #include <interfaces/an/entityfields.h>
+
+namespace LC::EF
+{
+	const QString Priority { QStringLiteral ("Priority") };
+	const QString NotificationActions { QStringLiteral ("NotificationActions") };
+	const QString NotificationPixmap { QStringLiteral ("NotificationPixmap") };
+	const QString HandlingObject { QStringLiteral ("HandlingObject") };
+	const QString UserVisibleName { QStringLiteral ("UserVisibleName") };
+	const QString Tags { QStringLiteral (" Tags") };
+}
 
 namespace LC::AN
 {
