@@ -37,8 +37,7 @@ namespace AdvancedNotifications
 
 	SystemTrayHandler::~SystemTrayHandler ()
 	{
-		const auto& icons = Category2Icon_.values ();
-		for (auto icon : icons)
+		for (auto icon : Category2Icon_)
 		{
 			icon->hide ();
 			delete icon;
