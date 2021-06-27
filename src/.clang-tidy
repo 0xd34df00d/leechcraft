@@ -6,6 +6,7 @@ Checks: >
   modernize-*,
   performance-*,
   readability-*,
+  -cert-err58-cpp,
   -cppcoreguidelines-non-private-member-variables-in-classes,
   -cppcoreguidelines-owning-memory,
   -cppcoreguidelines-pro-bounds-array-to-pointer-decay,
