@@ -177,10 +177,7 @@ namespace AdvancedNotifications
 
 	void SystemTrayHandler::PrepareSysTrayIcon (const QString& category)
 	{
-#ifdef Q_OS_MAC
-		return;
-#endif
-
+#ifndef Q_OS_MACOS
 		if (Category2Icon_.contains (category))
 			return;
 
@@ -206,6 +203,7 @@ namespace AdvancedNotifications
 
 		if (XmlSettingsManager::Instance ().property ("HideOnHoverOut").toBool ())
 			new Util::UnhoverDeleteMixin (vnv, SLOT (hide ()));
+#endif
 	}
 
 	void SystemTrayHandler::PrepareLCTrayAction (const QString& category)
