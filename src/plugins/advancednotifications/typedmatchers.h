@@ -35,7 +35,6 @@ namespace AdvancedNotifications
 		QWidget *CW_ = nullptr;
 	public:
 		static TypedMatcherBase_ptr Create (QVariant::Type, const ANFieldData& = {});
-		static TypedMatcherBase_ptr Create (QVariant::Type, const QVariant&);
 
 		virtual QVariantMap Save () const = 0;
 		virtual void Load (const QVariantMap&) = 0;
