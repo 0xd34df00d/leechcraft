@@ -51,7 +51,6 @@ namespace AdvancedNotifications
 		void ResetModel ();
 		void SaveSettings () const;
 
-		QList<QStandardItem*> RuleToRow (const NotificationRule&) const;
 	public slots:
 		void removeRule (const QModelIndex&);
 		void moveUp (const QModelIndex&);

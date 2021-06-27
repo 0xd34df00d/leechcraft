@@ -138,6 +138,30 @@ namespace AdvancedNotifications
 		setRuleEnabled (idx, enabled);
 	}
 
+	namespace
+	{
+		QList<QStandardItem*> RuleToRow (const NotificationRule& rule)
+		{
+			const QStringList hrTypes { Util::Map (rule.GetTypes ().values (), Util::AN::GetTypeName) };
+
+			QList<QStandardItem*> items;
+			items << new QStandardItem (rule.GetName ());
+			items << new QStandardItem (Util::AN::GetCategoryName (rule.GetCategory ()));
+			items << new QStandardItem (hrTypes.join (QStringLiteral ("; ")));
+
+			items.first ()->setCheckable (true);
+			items.first ()->setCheckState (rule.IsEnabled () ? Qt::Checked : Qt::Unchecked);
+
+			for (auto item : items)
+			{
+				item->setData (rule.GetName (), RulesModel::Roles::RuleName);
+				item->setData (rule.IsEnabled (), RulesModel::Roles::IsRuleEnabled);
+			}
+
+			return items;
+		}
+	}
+
 	void RulesManager::UpdateRule (const QModelIndex& index, const NotificationRule& rule)
 	{
 		if (rule.IsNull ())
@@ -459,27 +483,6 @@ namespace AdvancedNotifications
 		settings.endGroup ();
 
 		emit rulesChanged ();
-	}
-
-	QList<QStandardItem*> RulesManager::RuleToRow (const NotificationRule& rule) const
-	{
-		const QStringList hrTypes { Util::Map (rule.GetTypes ().values (), Util::AN::GetTypeName) };
-
-		QList<QStandardItem*> items;
-		items << new QStandardItem (rule.GetName ());
-		items << new QStandardItem (Util::AN::GetCategoryName (rule.GetCategory ()));
-		items << new QStandardItem (hrTypes.join ("; "));
-
-		items.first ()->setCheckable (true);
-		items.first ()->setCheckState (rule.IsEnabled () ? Qt::Checked : Qt::Unchecked);
-
-		for (auto item : items)
-		{
-			item->setData (rule.GetName (), RulesModel::Roles::RuleName);
-			item->setData (rule.IsEnabled (), RulesModel::Roles::IsRuleEnabled);
-		}
-
-		return items;
 	}
 
 	void RulesManager::removeRule (const QModelIndex& index)
