@@ -54,14 +54,9 @@ namespace AdvancedNotifications
 		void UpdateIcon (T iconable, const QString&);
 		void UpdateSysTrayIcon (QSystemTrayIcon*);
 		void UpdateTrayAction (QAction*);
-	private slots:
-		void handleActionTriggered ();
-		void handleActionTriggered (const QString&, int);
-		void dismissNotification ();
-		void dismissNotification (const QString&);
 
-		void handleTrayActivated (QSystemTrayIcon::ActivationReason);
-		void handleLCAction ();
+		void HandleActionTriggered (const QString&, int);
+		void DismissNotification (const QString&);
 	signals:
 		void gotActions (QList<QAction*>, LC::ActionsEmbedPlace);
 	};

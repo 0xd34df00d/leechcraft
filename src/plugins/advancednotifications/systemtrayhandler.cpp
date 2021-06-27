@@ -173,6 +173,16 @@ namespace AdvancedNotifications
 
 			return GetProxyHolder ()->GetIconThemeManager ()->GetIcon (name);
 		}
+
+		void ShowVNV (VisualNotificationsView *view, const QList<EventData>& events)
+		{
+			if (!view->isVisible ())
+			{
+				view->SetEvents (events);
+				view->move (Util::FitRectScreen (QCursor::pos (), view->size ()));
+			}
+			view->setVisible (!view->isVisible ());
+		}
 	}
 
 	void SystemTrayHandler::PrepareSysTrayIcon (const QString& category)
@@ -181,24 +191,28 @@ namespace AdvancedNotifications
 		if (Category2Icon_.contains (category))
 			return;
 
-		QSystemTrayIcon *trayIcon = new QSystemTrayIcon (GetIconForCategory (category));
+		const auto trayIcon = new QSystemTrayIcon (GetIconForCategory (category));
 		trayIcon->setContextMenu (new QMenu ());
 		Category2Icon_ [category] = trayIcon;
 
 		connect (trayIcon,
-				SIGNAL (activated (QSystemTrayIcon::ActivationReason)),
+				&QSystemTrayIcon::activated,
 				this,
-				SLOT (handleTrayActivated (QSystemTrayIcon::ActivationReason)));
+				[this, trayIcon] (QSystemTrayIcon::ActivationReason reason)
+				{
+					if (reason == QSystemTrayIcon::Trigger)
+						ShowVNV (Icon2NotificationView_ [trayIcon], EventsForIcon_ [trayIcon]);
+				});
 
 		const auto vnv = new VisualNotificationsView { GetProxyHolder () };
 		connect (vnv,
-				SIGNAL (actionTriggered (const QString&, int)),
+				&VisualNotificationsView::actionTriggered,
 				this,
-				SLOT (handleActionTriggered (const QString&, int)));
+				&SystemTrayHandler::HandleActionTriggered);
 		connect (vnv,
-				SIGNAL (dismissEvent (const QString&)),
+				&VisualNotificationsView::dismissEvent,
 				this,
-				SLOT (dismissNotification (const QString&)));
+				&SystemTrayHandler::DismissNotification);
 		Icon2NotificationView_ [trayIcon] = vnv;
 
 		if (XmlSettingsManager::Instance ().property ("HideOnHoverOut").toBool ())
@@ -215,21 +229,24 @@ namespace AdvancedNotifications
 		Category2Action_ [category] = action;
 
 		connect (action,
-				SIGNAL (triggered ()),
+				&QAction::triggered,
 				this,
-				SLOT (handleLCAction ()));
+				[this, action]
+				{
+					ShowVNV (Action2NotificationView_ [action], EventsForAction_ [action]);
+				});
 
 		emit gotActions ({ action }, ActionsEmbedPlace::LCTray);
 
 		const auto vnv = new VisualNotificationsView { GetProxyHolder () };
 		connect (vnv,
-				SIGNAL (actionTriggered (const QString&, int)),
+				&VisualNotificationsView::actionTriggered,
 				this,
-				SLOT (handleActionTriggered (const QString&, int)));
+				&SystemTrayHandler::HandleActionTriggered);
 		connect (vnv,
-				SIGNAL (dismissEvent (const QString&)),
+				&VisualNotificationsView::dismissEvent,
 				this,
-				SLOT (dismissNotification (const QString&)));
+				&SystemTrayHandler::DismissNotification);
 		Action2NotificationView_ [action] = vnv;
 
 		if (XmlSettingsManager::Instance ().property ("HideOnHoverOut").toBool ())
@@ -248,21 +265,20 @@ namespace AdvancedNotifications
 		int actionIdx = 0;
 		for (const auto& actionName : data.Actions_)
 		{
-			QAction *action = menu->addAction (actionName);
-			action->setProperty ("Index", actionIdx++);
-			action->setProperty ("EventID", event);
+			const auto action = menu->addAction (actionName);
 			connect (action,
-					SIGNAL (triggered ()),
+					&QAction::triggered,
 					this,
-					SLOT (handleActionTriggered ()), Qt::QueuedConnection);
+					[this, event, idx = actionIdx++] { HandleActionTriggered (event, idx); },
+					Qt::QueuedConnection);
 		}
 
-		QAction *dismiss = menu->addAction (tr ("Dismiss"));
-		dismiss->setProperty ("EventID", event);
+		const auto dismiss = menu->addAction (tr ("Dismiss"));
 		connect (dismiss,
-				SIGNAL (triggered ()),
+				&QAction::triggered,
 				this,
-				SLOT (dismissNotification ()), Qt::QueuedConnection);
+				[this, event] { DismissNotification (event); },
+				Qt::QueuedConnection);
 
 		menu->addSeparator ();
 		menu->addAction (data.ExtendedText_)->setEnabled (false);
@@ -403,15 +419,7 @@ namespace AdvancedNotifications
 		UpdateIcon (action, Category2Action_.key (action));
 	}
 
-	void SystemTrayHandler::handleActionTriggered ()
-	{
-		const QString& event = sender ()->property ("EventID").toString ();
-		const int index = sender ()->property ("Index").toInt ();
-
-		handleActionTriggered (event, index);
-	}
-
-	void SystemTrayHandler::handleActionTriggered (const QString& event, int index)
+	void SystemTrayHandler::HandleActionTriggered (const QString& event, int index)
 	{
 		if (!Events_.contains (event))
 		{
@@ -427,62 +435,13 @@ namespace AdvancedNotifications
 				Q_ARG (int, index));
 	}
 
-	void SystemTrayHandler::dismissNotification ()
-	{
-		dismissNotification (sender ()->property ("EventID").toString ());
-	}
-
-	void SystemTrayHandler::dismissNotification (const QString& event)
+	void SystemTrayHandler::DismissNotification (const QString& event)
 	{
 		if (!Events_.contains (event))
 			return;
 
 		const auto canceller = Events_.value (event).Canceller_;
 		GetProxyHolder ()->GetEntityManager ()->HandleEntity (canceller);
-	}
-
-	namespace
-	{
-		void ShowVNV (VisualNotificationsView *view, const QList<EventData>& events)
-		{
-			if (!view->isVisible ())
-			{
-				view->SetEvents (events);
-				view->move (Util::FitRectScreen (QCursor::pos (), view->size ()));
-			}
-			view->setVisible (!view->isVisible ());
-		}
-	}
-
-	void SystemTrayHandler::handleTrayActivated (QSystemTrayIcon::ActivationReason reason)
-	{
-		if (reason != QSystemTrayIcon::Trigger)
-			return;
-
-		QSystemTrayIcon *trayIcon = qobject_cast<QSystemTrayIcon*> (sender ());
-		if (!trayIcon)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< sender ()
-					<< "is not a QSystemTrayIcon";
-			return;
-		}
-
-		ShowVNV (Icon2NotificationView_ [trayIcon], EventsForIcon_ [trayIcon]);
-	}
-
-	void SystemTrayHandler::handleLCAction ()
-	{
-		QAction *action = qobject_cast<QAction*> (sender ());
-		if (!action)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< sender ()
-					<< "is not a QSystemTrayIcon";
-			return;
-		}
-
-		ShowVNV (Action2NotificationView_ [action], EventsForAction_ [action]);
 	}
 }
 }
