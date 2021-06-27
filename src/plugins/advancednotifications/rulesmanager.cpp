@@ -413,13 +413,20 @@ namespace AdvancedNotifications
 		}
 	}
 
+	namespace Keys
+	{
+		const QString RulesGroup = QStringLiteral ("rules");
+		const QString RulesList = QStringLiteral ("RulesList");
+		const QString DefaultRulesVersion = QStringLiteral ("DefaultRulesVersion");
+	}
+
 	void RulesManager::LoadSettings ()
 	{
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_AdvancedNotifications");
-		settings.beginGroup ("rules");
-		Rules_ = settings.value ("RulesList").value<QList<NotificationRule>> ();
-		int rulesVersion = settings.value ("DefaultRulesVersion", 1).toInt ();
+		settings.beginGroup (Keys::RulesGroup);
+		Rules_ = settings.value (Keys::RulesList).value<QList<NotificationRule>> ();
+		int rulesVersion = settings.value (Keys::DefaultRulesVersion, 1).toInt ();
 
 		const int currentDefVersion = 7;
 		if (Rules_.isEmpty ())
@@ -431,7 +438,7 @@ namespace AdvancedNotifications
 		if (shouldSave)
 			SaveSettings ();
 
-		settings.setValue ("DefaultRulesVersion", currentDefVersion);
+		settings.setValue (Keys::DefaultRulesVersion, currentDefVersion);
 		settings.endGroup ();
 
 		ResetModel ();
@@ -452,8 +459,8 @@ namespace AdvancedNotifications
 	{
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_AdvancedNotifications");
-		settings.beginGroup ("rules");
-		settings.setValue ("RulesList", QVariant::fromValue<QList<NotificationRule>> (Rules_));
+		settings.beginGroup (Keys::RulesGroup);
+		settings.setValue (Keys::RulesList, QVariant::fromValue<QList<NotificationRule>> (Rules_));
 		settings.endGroup ();
 
 		emit rulesChanged ();
