@@ -17,5 +17,6 @@ namespace LC::EF
 	Q_DECL_IMPORT extern const QString NotificationPixmap;
 	Q_DECL_IMPORT extern const QString HandlingObject;
 	Q_DECL_IMPORT extern const QString UserVisibleName;
+	Q_DECL_IMPORT extern const QString Text;
 	Q_DECL_IMPORT extern const QString Tags;
 }
