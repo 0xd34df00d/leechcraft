@@ -21,6 +21,11 @@ namespace LC::EF
 	const QString Tags { QStringLiteral (" Tags") };
 }
 
+namespace LC::Mimes
+{
+	const QString Notification { QStringLiteral ("x-leechcraft/notification") };
+}
+
 namespace LC::AN
 {
 	const QString CatEventCancel { QStringLiteral ("org.LC.AdvNotifications.Cancel") };

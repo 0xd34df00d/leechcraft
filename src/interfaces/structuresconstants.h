@@ -20,3 +20,8 @@ namespace LC::EF
 	Q_DECL_IMPORT extern const QString Text;
 	Q_DECL_IMPORT extern const QString Tags;
 }
+
+namespace LC::Mimes
+{
+	Q_DECL_IMPORT extern const QString Notification;
+}
