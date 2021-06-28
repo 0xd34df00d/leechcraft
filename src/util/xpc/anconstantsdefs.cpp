@@ -23,7 +23,9 @@ namespace LC::EF
 
 namespace LC::Mimes
 {
-	const QString Notification { QStringLiteral ("x-leechcraft/notification") };
+#define MIME_NOTIFICATION "x-leechcraft/notification"
+	const QString Notification { QStringLiteral (MIME_NOTIFICATION) };
+	const QString NotificationRuleCreate { QStringLiteral (MIME_NOTIFICATION "-rule-create") };
 }
 
 namespace LC::AN

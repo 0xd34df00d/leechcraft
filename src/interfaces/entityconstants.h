@@ -24,4 +24,5 @@ namespace LC::EF
 namespace LC::Mimes
 {
 	Q_DECL_IMPORT extern const QString Notification;
+	Q_DECL_IMPORT extern const QString NotificationRuleCreate;
 }
