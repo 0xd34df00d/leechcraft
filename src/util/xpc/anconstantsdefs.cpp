@@ -6,7 +6,7 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#include <interfaces/structuresconstants.h>
+#include <interfaces/entityconstants.h>
 #include <interfaces/an/constants.h>
 #include <interfaces/an/entityfields.h>
 
