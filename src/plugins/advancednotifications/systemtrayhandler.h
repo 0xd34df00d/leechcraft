@@ -41,10 +41,10 @@ namespace AdvancedNotifications
 		QMap<QAction*, VisualNotificationsView*> Action2NotificationView_;
 	public:
 		SystemTrayHandler ();
-		~SystemTrayHandler ();
+		~SystemTrayHandler () override;
 
-		NotificationMethod GetHandlerMethod () const;
-		void Handle (const Entity&, const NotificationRule&);
+		NotificationMethod GetHandlerMethod () const override;
+		void Handle (const Entity&, const NotificationRule&) override;
 	private:
 		void PrepareSysTrayIcon (const QString&);
 		void PrepareLCTrayAction (const QString&);

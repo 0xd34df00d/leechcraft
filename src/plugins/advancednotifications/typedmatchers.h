@@ -62,16 +62,16 @@ namespace AdvancedNotifications
 	public:
 		StringLikeMatcher (const QStringList& variants = {});
 
-		QVariantMap Save () const;
-		void Load (const QVariantMap&);
+		QVariantMap Save () const override;
+		void Load (const QVariantMap&) override;
 
-		void SetValue (const ANFieldValue&);
-		void SetValue (const QVariant&);
-		ANFieldValue GetValue () const;
+		void SetValue (const ANFieldValue&) override;
+		void SetValue (const QVariant&) override;
+		ANFieldValue GetValue () const override;
 
-		QWidget* GetConfigWidget ();
-		void SyncToWidget ();
-		void SyncWidgetTo ();
+		QWidget* GetConfigWidget () override;
+		void SyncToWidget () override;
+		void SyncWidgetTo () override;
 	};
 
 	class StringMatcher final : public StringLikeMatcher
@@ -79,9 +79,9 @@ namespace AdvancedNotifications
 	public:
 		using StringLikeMatcher::StringLikeMatcher;
 
-		bool Match (const QVariant&) const;
+		bool Match (const QVariant&) const override;
 
-		QString GetHRDescription () const;
+		QString GetHRDescription () const override;
 	};
 
 	class StringListMatcher final : public StringLikeMatcher
@@ -89,9 +89,9 @@ namespace AdvancedNotifications
 	public:
 		StringListMatcher (const QStringList& variants = {});
 
-		bool Match (const QVariant&) const;
+		bool Match (const QVariant&) const override;
 
-		QString GetHRDescription () const;
+		QString GetHRDescription () const override;
 	};
 
 	class UrlMatcher final : public StringLikeMatcher
@@ -99,9 +99,9 @@ namespace AdvancedNotifications
 	public:
 		UrlMatcher ();
 
-		bool Match (const QVariant&) const;
+		bool Match (const QVariant&) const override;
 
-		QString GetHRDescription () const;
+		QString GetHRDescription () const override;
 	};
 
 	class BoolMatcher final : public TypedMatcherBase
@@ -113,19 +113,19 @@ namespace AdvancedNotifications
 	public:
 		BoolMatcher (const QString& fieldName);
 
-		QVariantMap Save () const;
-		void Load (const QVariantMap&);
+		QVariantMap Save () const override;
+		void Load (const QVariantMap&) override;
 
-		void SetValue (const ANFieldValue&);
-		void SetValue (const QVariant&);
-		ANFieldValue GetValue () const;
+		void SetValue (const ANFieldValue&) override;
+		void SetValue (const QVariant&) override;
+		ANFieldValue GetValue () const override;
 
-		bool Match (const QVariant&) const;
+		bool Match (const QVariant&) const override;
 
-		QString GetHRDescription () const;
-		QWidget* GetConfigWidget ();
-		void SyncToWidget ();
-		void SyncWidgetTo ();
+		QString GetHRDescription () const override;
+		QWidget* GetConfigWidget () override;
+		void SyncToWidget () override;
+		void SyncWidgetTo () override;
 	};
 
 	class IntMatcher final : public TypedMatcherBase
@@ -137,19 +137,19 @@ namespace AdvancedNotifications
 	public:
 		IntMatcher ();
 
-		QVariantMap Save () const;
-		void Load (const QVariantMap&);
+		QVariantMap Save () const override;
+		void Load (const QVariantMap&) override;
 
-		void SetValue (const ANFieldValue&);
-		void SetValue (const QVariant&);
-		ANFieldValue GetValue () const;
+		void SetValue (const ANFieldValue&) override;
+		void SetValue (const QVariant&) override;
+		ANFieldValue GetValue () const override;
 
-		bool Match (const QVariant&) const;
+		bool Match (const QVariant&) const override;
 
-		QString GetHRDescription () const;
-		QWidget* GetConfigWidget ();
-		void SyncToWidget ();
-		void SyncWidgetTo ();
+		QString GetHRDescription () const override;
+		QWidget* GetConfigWidget () override;
+		void SyncToWidget () override;
+		void SyncWidgetTo () override;
 	};
 }
 }
