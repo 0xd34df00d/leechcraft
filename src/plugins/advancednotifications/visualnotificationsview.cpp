@@ -30,7 +30,9 @@ namespace AdvancedNotifications
 
 		Util::WatchQmlErrors (this);
 
-		const auto& fileLocation = Util::GetSysPath (Util::SysPath::QML, "advancednotifications", "visualnotificationsview.qml");
+		const auto& fileLocation = Util::GetSysPath (Util::SysPath::QML,
+				QStringLiteral ("advancednotifications"),
+				QStringLiteral ("visualnotificationsview.qml"));
 
 		if (fileLocation.isEmpty ())
 		{
@@ -43,11 +45,11 @@ namespace AdvancedNotifications
 
 		Location_ = QUrl::fromLocalFile (fileLocation);
 
-		rootContext ()->setContextProperty ("colorProxy",
+		rootContext ()->setContextProperty (QStringLiteral ("colorProxy"),
 				new Util::ColorThemeProxy (proxy->GetColorThemeManager (), this));
-		engine ()->addImageProvider ("ThemeIcons", new Util::ThemeImageProvider (proxy));
+		engine ()->addImageProvider (QStringLiteral ("ThemeIcons"), new Util::ThemeImageProvider (proxy));
 
-		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, ""))
+		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, {}))
 			engine ()->addImportPath (cand);
 	}
 
@@ -70,7 +72,7 @@ namespace AdvancedNotifications
 			LastEvents_ << obj;
 		}
 
-		rootContext ()->setContextProperty ("eventsModel",
+		rootContext ()->setContextProperty (QStringLiteral ("eventsModel"),
 				QVariant::fromValue<QList<QObject*>> (LastEvents_));
 
 		setSource (Location_);

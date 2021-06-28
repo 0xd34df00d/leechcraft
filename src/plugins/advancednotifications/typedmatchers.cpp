@@ -422,11 +422,11 @@ namespace AdvancedNotifications
 
 		QString op;
 		if ((Value_.Ops_ & ANIntFieldValue::OGreater))
-			op += ">";
+			op += ">"_ql;
 		if ((Value_.Ops_ & ANIntFieldValue::OLess))
-			op += "<";
+			op += "<"_ql;
 		if ((Value_.Ops_ & ANIntFieldValue::OEqual))
-			op += "=";
+			op += "="_ql;
 
 		return QObject::tr ("is %1 then %2")
 				.arg (op)

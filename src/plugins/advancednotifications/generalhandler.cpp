@@ -11,7 +11,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/an/constants.h>
 #include <interfaces/an/entityfields.h>
-#include <interfaces/core/iiconthememanager.h>
+#include <interfaces/entityconstants.h>
 #include "systemtrayhandler.h"
 #include "visualhandler.h"
 #include "audiohandler.h"
@@ -49,7 +49,7 @@ namespace LC::AdvancedNotifications
 
 	void GeneralHandler::Handle (const Entity& e)
 	{
-		if (e.Mime_ == "x-leechcraft/notification-rule-create")
+		if (e.Mime_ == Mimes::NotificationRuleCreate)
 		{
 			RulesManager_->HandleEntity (e);
 			return;

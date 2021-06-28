@@ -9,9 +9,10 @@
 #include "visualhandler.h"
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
+#include <interfaces/entityconstants.h>
 #include <interfaces/an/constants.h>
 #include <interfaces/an/entityfields.h>
-#include "generalhandler.h"
+#include <util/sll/qtutil.h>
 
 namespace LC
 {
@@ -33,12 +34,12 @@ namespace AdvancedNotifications
 
 		Entity e = orig;
 
-		if (e.Additional_ ["Text"].toString ().isEmpty ())
+		if (e.Additional_ [EF::Text].toString ().isEmpty ())
 		{
-			if (!e.Additional_ ["org.LC.AdvNotifications.FullText"].toString ().isEmpty ())
-				e.Additional_ ["Text"] = e.Additional_ ["org.LC.AdvNotifications.FullText"];
-			else if (!e.Additional_ ["org.LC.AdvNotifications.ExtendedText"].toString ().isEmpty ())
-				e.Additional_ ["Text"] = e.Additional_ ["org.LC.AdvNotifications.ExtendedText"];
+			if (!e.Additional_ [AN::EF::FullText].toString ().isEmpty ())
+				e.Additional_ [EF::Text] = e.Additional_ [AN::EF::FullText];
+			else if (!e.Additional_ [AN::EF::ExtendedText].toString ().isEmpty ())
+				e.Additional_ [EF::Text] = e.Additional_ [AN::EF::ExtendedText];
 			else
 			{
 				qWarning () << Q_FUNC_INFO
@@ -52,14 +53,15 @@ namespace AdvancedNotifications
 		for (auto i = e.Additional_.begin (); i !=  e.Additional_.end (); )
 		{
 			const auto& key = i.key ();
-			if (key.startsWith ("org.LC.AdvNotifications."))
+			if (key.startsWith ("org.LC.AdvNotifications."_ql))
 				i = e.Additional_.erase (i);
 			else
 				++i;
 		}
 
-		if (e.Mime_.endsWith ("+advanced"))
-			e.Mime_.remove ("+advanced");
+		static const auto advSuffix = "+advanced"_ql;
+		if (e.Mime_.endsWith (advSuffix))
+			e.Mime_.remove (advSuffix);
 
 		QObject_ptr probeObj (new QObject ());
 		ActiveEvents_ << evId;

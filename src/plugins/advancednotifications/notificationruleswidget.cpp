@@ -34,6 +34,11 @@
 
 namespace LC::AdvancedNotifications
 {
+	namespace
+	{
+		const auto MessageBoxTitle = QStringLiteral ("LeechCraft");
+	}
+
 	QString NotificationRulesWidget::GetSettingsWidgetName ()
 	{
 		return QStringLiteral ("RulesWidget");
@@ -322,18 +327,18 @@ namespace LC::AdvancedNotifications
 
 		if (fields.isEmpty ())
 			return QInputDialog::getText (this,
-					"LeechCraft",
+					MessageBoxTitle,
 					tr ("Please enter the argument:"));
 
 		QStringList items;
 		for (const auto& field : fields)
 			items << tr ("Custom field %1 (%2)")
-					.arg (field.Name_)
-					.arg (field.Description_);
+					.arg (field.Name_,
+						  field.Description_);
 
 		bool ok = false;
 		const auto& value = QInputDialog::getItem (this,
-				"LeechCraft",
+				MessageBoxTitle,
 				tr ("Please enter the argument:"),
 				items,
 				0,
@@ -357,7 +362,7 @@ namespace LC::AdvancedNotifications
 			const auto& uiRule = GetRuleFromUI (prevIndex);
 			if (uiRule != prevRule &&
 					QMessageBox::question (this,
-							"LeechCraft",
+							MessageBoxTitle,
 							tr ("The rule has been changed. Do you want to save it?"),
 							QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
 				RM_->UpdateRule (prevIndex, uiRule);
@@ -447,7 +452,7 @@ namespace LC::AdvancedNotifications
 	void NotificationRulesWidget::ResetRules ()
 	{
 		if (QMessageBox::question (this,
-					"LeechCraft",
+					MessageBoxTitle,
 					tr ("Are you sure you want to replace all rules with "
 						"the default set?"),
 					QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
@@ -541,7 +546,7 @@ namespace LC::AdvancedNotifications
 		const bool wasHandled = GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 		if (!wasHandled)
 			QMessageBox::critical (this,
-					"LeechCraft",
+					MessageBoxTitle,
 					tr ("No plugin has been found to play %1.")
 						.arg ("<em>" + path + "</em>"));
 	}

@@ -17,7 +17,6 @@
 #include <util/xpc/stdanfields.h>
 #include <util/sll/prelude.h>
 #include <util/sll/qtutil.h>
-#include "notificationrule.h"
 
 namespace LC
 {
@@ -51,7 +50,7 @@ namespace AdvancedNotifications
 		row [0]->setData (QVariant::fromValue (e));
 
 		auto possibleFields = Util::GetStdANFields (category) + Util::GetStdANFields (type);
-		const auto& sender = e.Additional_ ["org.LC.AdvNotifications.SenderID"].toByteArray ();
+		const auto& sender = e.Additional_ [AN::EF::SenderID].toByteArray ();
 		if (const auto iane = qobject_cast<IANEmitter*> (GetProxyHolder ()->GetPluginsManager ()->GetPluginByID (sender)))
 			possibleFields += iane->GetANFields ();
 

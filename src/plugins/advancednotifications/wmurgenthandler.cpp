@@ -36,7 +36,7 @@ namespace AdvancedNotifications
 			return;
 
 		bool ok = false;
-		auto winIdx = e.Additional_ ["org.LC.AdvNotifications.WindowIndex"].toInt (&ok);
+		auto winIdx = e.Additional_ [AN::EF::WindowIndex].toInt (&ok);
 
 		auto rootWM = GetProxyHolder ()->GetRootWindowsManager ();
 

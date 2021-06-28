@@ -11,6 +11,7 @@
 #include <QPainter>
 #include <QApplication>
 #include <interfaces/structures.h>
+#include <interfaces/entityconstants.h>
 #include <interfaces/an/constants.h>
 #include <interfaces/an/entityfields.h>
 #include <interfaces/core/icoreproxy.h>
@@ -53,7 +54,7 @@ namespace AdvancedNotifications
 	{
 		QFuture<QPixmap> GetPixmap (const Entity& e)
 		{
-			const auto& pxVar = e.Additional_ ["NotificationPixmap"];
+			const auto& pxVar = e.Additional_ [EF::NotificationPixmap];
 
 			if (pxVar.canConvert<QPixmap> ())
 				return Util::MakeReadyFuture (pxVar.value<QPixmap> ());
@@ -61,18 +62,20 @@ namespace AdvancedNotifications
 			if (pxVar.canConvert<QImage> ())
 				return Util::MakeReadyFuture (QPixmap::fromImage (pxVar.value<QImage> ()));
 
-			const auto prio = e.Additional_ ["Priority"].value<Priority> ();
+			const auto prio = e.Additional_ [EF::Priority].value<Priority> ();
 			auto getDefault = [prio]
 			{
-				QString mi = "information";
+				QString mi;
 				switch (prio)
 				{
+				case Priority::Info:
+					mi = "information"_ql;
+					break;
 				case Priority::Warning:
-					mi = "warning";
+					mi = "warning"_ql;
 					break;
 				case Priority::Critical:
-					mi = "error";
-				default:
+					mi = "error"_ql;
 					break;
 				}
 
@@ -115,19 +118,19 @@ namespace AdvancedNotifications
 			data.EventID_ = eventId;
 			data.Count_ = 0;
 			data.Category_ = cat;
-			data.VisualPath_ = e.Additional_ ["org.LC.AdvNotifications.VisualPath"].toStringList ();
-			data.HandlingObject_ = e.Additional_ ["HandlingObject"].value<QObject_ptr> ();
-			data.Actions_ = e.Additional_ ["NotificationActions"].toStringList ();
+			data.VisualPath_ = e.Additional_ [AN::EF::VisualPath].toStringList ();
+			data.HandlingObject_ = e.Additional_ [EF::HandlingObject].value<QObject_ptr> ();
+			data.Actions_ = e.Additional_ [EF::NotificationActions].toStringList ();
 			data.Canceller_ = Util::MakeANCancel (e);
 			Events_ [eventId] = data;
 		}
 
-		if (const int delta = e.Additional_.value ("org.LC.AdvNotifications.DeltaCount", 0).toInt ())
+		if (const int delta = e.Additional_.value (AN::EF::DeltaCount, 0).toInt ())
 			Events_ [eventId].Count_ += delta;
 		else
-			Events_ [eventId].Count_ = e.Additional_.value ("org.LC.AdvNotifications.Count", 1).toInt ();
-		Events_ [eventId].ExtendedText_ = e.Additional_ ["org.LC.AdvNotifications.ExtendedText"].toString ();
-		Events_ [eventId].FullText_ = e.Additional_ ["org.LC.AdvNotifications.FullText"].toString ();
+			Events_ [eventId].Count_ = e.Additional_.value (AN::EF::Count, 1).toInt ();
+		Events_ [eventId].ExtendedText_ = e.Additional_ [AN::EF::ExtendedText].toString ();
+		Events_ [eventId].FullText_ = e.Additional_ [AN::EF::FullText].toString ();
 
 		const auto& pxFuture = GetPixmap (e);
 		if (pxFuture.isFinished ())

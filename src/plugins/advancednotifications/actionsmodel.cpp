@@ -15,10 +15,10 @@ namespace LC::AdvancedNotifications
 	ActionsModel::ActionsModel (QObject *parent)
 	: RoleNamesMixin<QStandardItemModel> (parent)
 	{
-		QHash<int, QByteArray> roleNames;
-		roleNames [Roles::IconName] = "iconName";
-		roleNames [Roles::IsActionChecked] = "isActionChecked";
-		setRoleNames (roleNames);
+		setRoleNames ({
+				{ Roles::IconName, QByteArrayLiteral ("iconName") },
+				{ Roles::IsActionChecked, QByteArrayLiteral ("isActionChecked") },
+			});
 	}
 
 	namespace

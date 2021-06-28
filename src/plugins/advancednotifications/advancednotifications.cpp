@@ -10,6 +10,7 @@
 #include <QIcon>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/iplugin2.h>
+#include <interfaces/entityconstants.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/an/entityfields.h>
@@ -29,7 +30,7 @@ namespace LC::AdvancedNotifications
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-		Util::InstallTranslator ("advancednotifications");
+		Util::InstallTranslator (QStringLiteral ("advancednotifications"));
 
 		RulesManager_ = new RulesManager { this };
 
@@ -39,10 +40,10 @@ namespace LC::AdvancedNotifications
 
 		SettingsDialog_ = std::make_shared<Util::XmlSettingsDialog> ();
 		SettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
-				"advancednotificationssettings.xml");
+				QStringLiteral ("advancednotificationssettings.xml"));
 		SettingsDialog_->SetCustomWidget (NotificationRulesWidget::GetSettingsWidgetName (),
 				new NotificationRulesWidget { RulesManager_, audioThemeMgr, unhandledKeeper });
-		SettingsDialog_->SetDataSource ("AudioTheme", audioThemeMgr->GetSettingsModel ());
+		SettingsDialog_->SetDataSource (QStringLiteral ("AudioTheme"), audioThemeMgr->GetSettingsModel ());
 
 		GeneralHandler_ = std::make_shared<GeneralHandler> (RulesManager_, audioThemeMgr, unhandledKeeper);
 		connect (GeneralHandler_.get (),
@@ -51,9 +52,18 @@ namespace LC::AdvancedNotifications
 				SIGNAL (gotActions (QList<QAction*>, LC::ActionsEmbedPlace)));
 
 		Component_ = std::make_shared<QuarkComponent> ("advancednotifications", "ANQuark.qml");
-		Component_->StaticProps_.push_back ({ "AN_quarkTooltip", tr ("Toggle Advanced Notifications rules...") });
-		Component_->DynamicProps_.push_back ({ "AN_rulesManager", RulesManager_ });
-		Component_->DynamicProps_.push_back ({ "AN_proxy", new QuarkProxy });
+		Component_->StaticProps_.push_back ({
+				QStringLiteral ("AN_quarkTooltip"),
+				tr ("Toggle Advanced Notifications rules...")
+			});
+		Component_->DynamicProps_.push_back ({
+				QStringLiteral ("AN_rulesManager"),
+				RulesManager_
+			});
+		Component_->DynamicProps_.push_back ({
+				QStringLiteral ("AN_proxy"),
+				new QuarkProxy
+			});
 
 		connect (RulesManager_,
 				SIGNAL (rulesChanged ()),
@@ -77,7 +87,7 @@ namespace LC::AdvancedNotifications
 
 	QString Plugin::GetName () const
 	{
-		return "Advanced Notifications";
+		return QStringLiteral ("Advanced Notifications");
 	}
 
 	QString Plugin::GetInfo () const
@@ -92,7 +102,7 @@ namespace LC::AdvancedNotifications
 
 	EntityTestHandleResult Plugin::CouldHandle (const Entity& e) const
 	{
-		const bool can = e.Mime_.startsWith ("x-leechcraft/notification") &&
+		const bool can = e.Mime_.startsWith (Mimes::Notification) &&
 				e.Additional_.contains (AN::EF::SenderID) &&
 				e.Additional_.contains (AN::EF::EventID) &&
 				e.Additional_.contains (AN::EF::EventCategory);

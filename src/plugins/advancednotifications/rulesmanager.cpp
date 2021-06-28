@@ -56,10 +56,10 @@ namespace AdvancedNotifications
 			RulesModel (QObject *parent)
 			: RoleNamesMixin<QStandardItemModel> (parent)
 			{
-				QHash<int, QByteArray> roleNames;
-				roleNames [Roles::RuleName] = "ruleName";
-				roleNames [Roles::IsRuleEnabled] = "isRuleEnabled";
-				setRoleNames (roleNames);
+				setRoleNames ({
+						{ Roles::RuleName, QByteArrayLiteral ("ruleName") },
+						{ Roles::IsRuleEnabled, QByteArrayLiteral ("isRuleEnabled") },
+					});
 			}
 		};
 	}
@@ -466,9 +466,7 @@ namespace AdvancedNotifications
 	void RulesManager::ResetModel ()
 	{
 		RulesModel_->clear ();
-		RulesModel_->setHorizontalHeaderLabels (QStringList (tr ("Name"))
-				<< tr ("Category")
-				<< tr ("Type"));
+		RulesModel_->setHorizontalHeaderLabels ({ tr ("Name"), tr ("Category"), tr ("Type") });
 
 		for (const auto& rule : Rules_)
 			RulesModel_->appendRow (RuleToRow (rule));
