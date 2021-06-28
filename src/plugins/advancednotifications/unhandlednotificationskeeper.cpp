@@ -18,9 +18,7 @@
 #include <util/sll/prelude.h>
 #include <util/sll/qtutil.h>
 
-namespace LC
-{
-namespace AdvancedNotifications
+namespace LC::AdvancedNotifications
 {
 	UnhandledNotificationsKeeper::UnhandledNotificationsKeeper (QObject *parent)
 	: QObject { parent }
@@ -31,7 +29,8 @@ namespace AdvancedNotifications
 
 	void UnhandledNotificationsKeeper::AddUnhandled (const Entity& e)
 	{
-		while (Model_->rowCount () >= 1000)
+		const int maxCount = 1000;
+		while (Model_->rowCount () >= maxCount)
 			Model_->removeRow (0);
 
 		const auto& category = e.Additional_ [AN::EF::EventCategory].toString ();
@@ -122,5 +121,4 @@ namespace AdvancedNotifications
 
 		return result;
 	}
-}
 }

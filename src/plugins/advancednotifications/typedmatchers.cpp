@@ -12,13 +12,12 @@
 #include <QtDebug>
 #include <QUrl>
 #include <util/sll/visitor.h>
+#include <util/sll/qtutil.h>
 #include "ui_boolmatcherconfigwidget.h"
 #include "ui_intmatcherconfigwidget.h"
 #include "ui_stringlikematcherconfigwidget.h"
 
-namespace LC
-{
-namespace AdvancedNotifications
+namespace LC::AdvancedNotifications
 {
 	namespace
 	{
@@ -255,10 +254,6 @@ namespace AdvancedNotifications
 				QObject::tr ("doesn't contain element matching %1").arg (p);
 	}
 
-	UrlMatcher::UrlMatcher ()
-	{
-	}
-
 	bool UrlMatcher::Match (const QVariant& var) const
 	{
 		if (!var.canConvert<QUrl> ())
@@ -472,5 +467,4 @@ namespace AdvancedNotifications
 		Ui_->Boundary_->setValue (Value_.Boundary_);
 		Ui_->OpType_->setCurrentIndex (Ops2pos_ [Value_.Ops_]);
 	}
-}
 }

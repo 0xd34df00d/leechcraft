@@ -30,7 +30,7 @@ namespace AdvancedNotifications
 		QList<NotificationRule> Rules_;
 		QStandardItemModel *RulesModel_;
 	public:
-		RulesManager (QObject* = 0);
+		explicit RulesManager (QObject* = nullptr);
 
 		QAbstractItemModel* GetRulesModel () const;
 		QList<NotificationRule> GetRulesList () const;
@@ -51,6 +51,7 @@ namespace AdvancedNotifications
 		void ResetModel ();
 		void SaveSettings () const;
 
+		void HandleItemChanged (QStandardItem*);
 	public slots:
 		void removeRule (const QModelIndex&);
 		void moveUp (const QModelIndex&);
@@ -59,8 +60,6 @@ namespace AdvancedNotifications
 		void reset ();
 
 		QVariant getRulesModel () const;
-	private slots:
-		void handleItemChanged (QStandardItem*);
 	signals:
 		void focusOnRule (const QModelIndex&);
 

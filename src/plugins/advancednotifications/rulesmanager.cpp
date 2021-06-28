@@ -26,9 +26,7 @@
 #include "typedmatchers.h"
 #include "xmlsettingsmanager.h"
 
-namespace LC
-{
-namespace AdvancedNotifications
+namespace LC::AdvancedNotifications
 {
 	QDataStream& operator<< (QDataStream& out, const NotificationRule& r)
 	{
@@ -53,7 +51,7 @@ namespace AdvancedNotifications
 				IsRuleEnabled
 			};
 
-			RulesModel (QObject *parent)
+			explicit RulesModel (QObject *parent)
 			: RoleNamesMixin<QStandardItemModel> (parent)
 			{
 				setRoleNames ({
@@ -76,9 +74,9 @@ namespace AdvancedNotifications
 		LoadSettings ();
 
 		connect (RulesModel_,
-				SIGNAL (itemChanged (QStandardItem*)),
+				&QStandardItemModel::itemChanged,
 				this,
-				SLOT (handleItemChanged (QStandardItem*)));
+				&RulesManager::HandleItemChanged);
 	}
 
 	QAbstractItemModel* RulesManager::GetRulesModel () const
@@ -526,15 +524,15 @@ namespace AdvancedNotifications
 		if (auto item = RulesModel_->item (idx))
 		{
 			disconnect (RulesModel_,
-					SIGNAL (itemChanged (QStandardItem*)),
+					&QStandardItemModel::itemChanged,
 					this,
-					SLOT (handleItemChanged (QStandardItem*)));
+					&RulesManager::HandleItemChanged);
 			item->setData (enabled, RulesModel::Roles::IsRuleEnabled);
 			item->setCheckState (enabled ? Qt::Checked : Qt::Unchecked);
 			connect (RulesModel_,
-					SIGNAL (itemChanged (QStandardItem*)),
+					&QStandardItemModel::itemChanged,
 					this,
-					SLOT (handleItemChanged (QStandardItem*)));
+					&RulesManager::HandleItemChanged);
 		}
 	}
 
@@ -553,7 +551,7 @@ namespace AdvancedNotifications
 		return QVariant::fromValue<QObject*> (RulesModel_);
 	}
 
-	void RulesManager::handleItemChanged (QStandardItem *item)
+	void RulesManager::HandleItemChanged (QStandardItem *item)
 	{
 		if (item->column ())
 			return;
@@ -571,5 +569,4 @@ namespace AdvancedNotifications
 
 		SaveSettings ();
 	}
-}
 }

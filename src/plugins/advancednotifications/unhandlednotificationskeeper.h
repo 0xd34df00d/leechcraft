@@ -26,7 +26,7 @@ namespace AdvancedNotifications
 	{
 		QStandardItemModel * const Model_;
 	public:
-		UnhandledNotificationsKeeper (QObject* = nullptr);
+		explicit UnhandledNotificationsKeeper (QObject* = nullptr);
 
 		void AddUnhandled (const Entity&);
 

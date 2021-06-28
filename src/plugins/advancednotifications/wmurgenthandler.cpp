@@ -17,14 +17,8 @@
 #include <interfaces/an/entityfields.h>
 #include "generalhandler.h"
 
-namespace LC
+namespace LC::AdvancedNotifications
 {
-namespace AdvancedNotifications
-{
-	WMUrgentHandler::WMUrgentHandler ()
-	{
-	}
-
 	NotificationMethod WMUrgentHandler::GetHandlerMethod () const
 	{
 		return NMUrgentHint;
@@ -55,5 +49,4 @@ namespace AdvancedNotifications
 		if (!win->isActiveWindow ())
 			QApplication::alert (win);
 	}
-}
 }

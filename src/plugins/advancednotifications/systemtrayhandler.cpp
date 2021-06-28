@@ -28,14 +28,8 @@
 #include "xmlsettingsmanager.h"
 #include "visualnotificationsview.h"
 
-namespace LC
+namespace LC::AdvancedNotifications
 {
-namespace AdvancedNotifications
-{
-	SystemTrayHandler::SystemTrayHandler ()
-	{
-	}
-
 	SystemTrayHandler::~SystemTrayHandler ()
 	{
 		for (auto icon : Category2Icon_)
@@ -79,8 +73,9 @@ namespace AdvancedNotifications
 					break;
 				}
 
+				const auto iconSize = 64;
 				const auto& pixmap = GetProxyHolder ()->GetIconThemeManager ()->
-						GetIcon ("dialog-" + mi).pixmap (QSize (64, 64));
+						GetIcon ("dialog-" + mi).pixmap ({ iconSize, iconSize });
 				return Util::MakeReadyFuture (pixmap);
 			};
 
@@ -393,9 +388,9 @@ namespace AdvancedNotifications
 							acc;
 				});
 
-		const auto& palette = qApp->palette ();
+		const auto& palette = QGuiApplication::palette ();
 
-		QFont font = qApp->font ();
+		auto font = QGuiApplication::font ();
 		font.setItalic (true);
 
 		QIcon withText;
@@ -446,5 +441,4 @@ namespace AdvancedNotifications
 		const auto canceller = Events_.value (event).Canceller_;
 		GetProxyHolder ()->GetEntityManager ()->HandleEntity (canceller);
 	}
-}
 }

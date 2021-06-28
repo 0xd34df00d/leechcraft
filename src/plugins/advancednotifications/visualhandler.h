@@ -11,22 +11,15 @@
 #include <QObject>
 #include <interfaces/structures.h>
 #include "concretehandlerbase.h"
-#include "eventdata.h"
+#include "notificationrule.h"
 
-namespace LC
-{
-namespace AdvancedNotifications
+namespace LC::AdvancedNotifications
 {
 	class VisualHandler : public ConcreteHandlerBase
 	{
-		Q_OBJECT
-
 		QSet<QString> ActiveEvents_;
 	public:
-		NotificationMethod GetHandlerMethod () const;
-		void Handle (const Entity&, const NotificationRule&);
-	private slots:
-		void handleProbeDestroyed ();
+		NotificationMethod GetHandlerMethod () const override;
+		void Handle (const Entity&, const NotificationRule&) override;
 	};
-}
 }

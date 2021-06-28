@@ -19,9 +19,7 @@
 #include "eventproxyobject.h"
 #include "generalhandler.h"
 
-namespace LC
-{
-namespace AdvancedNotifications
+namespace LC::AdvancedNotifications
 {
 	VisualNotificationsView::VisualNotificationsView (const ICoreProxy_ptr& proxy)
 	{
@@ -62,13 +60,13 @@ namespace AdvancedNotifications
 		{
 			const auto obj = new EventProxyObject (ed, this);
 			connect (obj,
-					SIGNAL (actionTriggered (const QString&, int)),
+					&EventProxyObject::actionTriggered,
 					this,
-					SIGNAL (actionTriggered (const QString&, int)));
+					&VisualNotificationsView::actionTriggered);
 			connect (obj,
-					SIGNAL (dismissEventRequested (const QString&)),
+					&EventProxyObject::dismissEventRequested,
 					this,
-					SIGNAL (dismissEvent (const QString&)));
+					&VisualNotificationsView::dismissEvent);
 			LastEvents_ << obj;
 		}
 
@@ -79,5 +77,4 @@ namespace AdvancedNotifications
 
 		qDeleteAll (oldEvents);
 	}
-}
 }

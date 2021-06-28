@@ -47,9 +47,9 @@ namespace LC::AdvancedNotifications
 
 		GeneralHandler_ = std::make_shared<GeneralHandler> (RulesManager_, audioThemeMgr, unhandledKeeper);
 		connect (GeneralHandler_.get (),
-				SIGNAL (gotActions (QList<QAction*>, LC::ActionsEmbedPlace)),
+				&GeneralHandler::gotActions,
 				this,
-				SIGNAL (gotActions (QList<QAction*>, LC::ActionsEmbedPlace)));
+				&Plugin::gotActions);
 
 		Component_ = std::make_shared<QuarkComponent> ("advancednotifications", "ANQuark.qml");
 		Component_->StaticProps_.push_back ({
@@ -66,9 +66,9 @@ namespace LC::AdvancedNotifications
 			});
 
 		connect (RulesManager_,
-				SIGNAL (rulesChanged ()),
+				&RulesManager::rulesChanged,
 				this,
-				SIGNAL (rulesChanged ()));
+				&Plugin::rulesChanged);
 	}
 
 	void Plugin::SecondInit ()

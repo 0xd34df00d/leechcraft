@@ -14,9 +14,7 @@
 #include <interfaces/an/entityfields.h>
 #include <util/sll/qtutil.h>
 
-namespace LC
-{
-namespace AdvancedNotifications
+namespace LC::AdvancedNotifications
 {
 	NotificationMethod VisualHandler::GetHandlerMethod () const
 	{
@@ -63,23 +61,16 @@ namespace AdvancedNotifications
 		if (e.Mime_.endsWith (advSuffix))
 			e.Mime_.remove (advSuffix);
 
-		QObject_ptr probeObj (new QObject ());
 		ActiveEvents_ << evId;
-		probeObj->setProperty ("EventID", evId);
-		connect (probeObj.get (),
-				SIGNAL (destroyed ()),
+
+		auto probe = std::make_shared<QObject> ();
+		probe->setProperty ("EventID", evId);
+		connect (probe.get (),
+				&QObject::destroyed,
 				this,
-				SLOT (handleProbeDestroyed ()));
-		QVariant probe = QVariant::fromValue<QObject_ptr> (probeObj);
-		e.Additional_ ["RemovalProbe"] = probe;
+				[this, evId] { ActiveEvents_.remove (evId); });
+		e.Additional_ [QStringLiteral ("AN/RemovalProbe")] = QVariant::fromValue<QObject_ptr> (probe);
 
 		GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 	}
-
-	void VisualHandler::handleProbeDestroyed ()
-	{
-		const QString& evId = sender ()->property ("EventID").toString ();
-		ActiveEvents_.remove (evId);
-	}
-}
 }

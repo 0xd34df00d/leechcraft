@@ -13,9 +13,7 @@
 #include "typedmatchers.h"
 #include "fieldmatch.h"
 
-namespace LC
-{
-namespace AdvancedNotifications
+namespace LC::AdvancedNotifications
 {
 	MatchConfigDialog::MatchConfigDialog (const QHash<QObject*, QList<ANFieldData>>& map, QWidget *parent)
 	: QDialog (parent)
@@ -99,7 +97,7 @@ namespace AdvancedNotifications
 				}
 			}
 
-		auto tryIdx = [this, &fieldId] (int idx) -> int
+		auto tryIdx = [this, &fieldId] (int idx)
 		{
 			const auto pObj = Ui_.SourcePlugin_->itemData (idx).value<QObject*> ();
 			const auto& fields = FieldsMap_ [pObj];
@@ -144,8 +142,7 @@ namespace AdvancedNotifications
 		Ui_.DescriptionLabel_->setText (data.Description_);
 
 		QLayout *lay = Ui_.ConfigWidget_->layout ();
-		QLayoutItem *oldItem = nullptr;
-		while ((oldItem = lay->takeAt (0)))
+		while (auto oldItem = lay->takeAt (0))
 		{
 			delete oldItem->widget ();
 			delete oldItem;
@@ -158,5 +155,4 @@ namespace AdvancedNotifications
 			lay->addWidget (new QLabel (tr ("Invalid matcher type %1.")
 						.arg (QVariant::typeToName (data.Type_))));
 	}
-}
 }

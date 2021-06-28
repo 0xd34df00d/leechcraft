@@ -10,7 +10,6 @@
 
 #include <memory>
 #include <QString>
-#include <QRegExp>
 #include <QVariant>
 #include <interfaces/an/ianemitter.h>
 
@@ -21,13 +20,11 @@ namespace Ui
 	class StringLikeMatcherConfigWidget;
 }
 
-namespace LC
-{
-namespace AdvancedNotifications
+namespace LC::AdvancedNotifications
 {
 	class TypedMatcherBase;
 
-	typedef std::shared_ptr<TypedMatcherBase> TypedMatcherBase_ptr;
+	using TypedMatcherBase_ptr = std::shared_ptr<TypedMatcherBase>;
 
 	class TypedMatcherBase
 	{
@@ -60,7 +57,7 @@ namespace AdvancedNotifications
 
 		std::shared_ptr<Ui::StringLikeMatcherConfigWidget> Ui_;
 	public:
-		StringLikeMatcher (const QStringList& variants = {});
+		explicit StringLikeMatcher (const QStringList& variants = {});
 
 		QVariantMap Save () const override;
 		void Load (const QVariantMap&) override;
@@ -87,7 +84,7 @@ namespace AdvancedNotifications
 	class StringListMatcher final : public StringLikeMatcher
 	{
 	public:
-		StringListMatcher (const QStringList& variants = {});
+		explicit StringListMatcher (const QStringList& variants = {});
 
 		bool Match (const QVariant&) const override;
 
@@ -97,7 +94,7 @@ namespace AdvancedNotifications
 	class UrlMatcher final : public StringLikeMatcher
 	{
 	public:
-		UrlMatcher ();
+		UrlMatcher () = default;
 
 		bool Match (const QVariant&) const override;
 
@@ -111,7 +108,7 @@ namespace AdvancedNotifications
 		const QString FieldName_;
 		std::shared_ptr<Ui::BoolMatcherConfigWidget> Ui_;
 	public:
-		BoolMatcher (const QString& fieldName);
+		explicit BoolMatcher (const QString& fieldName);
 
 		QVariantMap Save () const override;
 		void Load (const QVariantMap&) override;
@@ -151,5 +148,4 @@ namespace AdvancedNotifications
 		void SyncToWidget () override;
 		void SyncWidgetTo () override;
 	};
-}
 }

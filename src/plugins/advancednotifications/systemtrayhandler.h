@@ -20,9 +20,7 @@
 
 class QSystemTrayIcon;
 
-namespace LC
-{
-namespace AdvancedNotifications
+namespace LC::AdvancedNotifications
 {
 	class VisualNotificationsView;
 
@@ -40,7 +38,7 @@ namespace AdvancedNotifications
 		QMap<QAction*, QList<EventData>> EventsForAction_;
 		QMap<QAction*, VisualNotificationsView*> Action2NotificationView_;
 	public:
-		SystemTrayHandler ();
+		SystemTrayHandler () = default;
 		~SystemTrayHandler () override;
 
 		NotificationMethod GetHandlerMethod () const override;
@@ -60,5 +58,4 @@ namespace AdvancedNotifications
 	signals:
 		void gotActions (QList<QAction*>, LC::ActionsEmbedPlace);
 	};
-}
 }

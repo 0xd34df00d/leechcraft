@@ -10,18 +10,12 @@
 
 #include "concretehandlerbase.h"
 
-namespace LC
-{
-namespace AdvancedNotifications
+namespace LC::AdvancedNotifications
 {
 	class WMUrgentHandler : public ConcreteHandlerBase
 	{
-		Q_OBJECT
 	public:
-		WMUrgentHandler ();
-
-		NotificationMethod GetHandlerMethod () const;
-		void Handle (const Entity&, const NotificationRule&);
+		NotificationMethod GetHandlerMethod () const override;
+		void Handle (const Entity&, const NotificationRule&) override;
 	};
-}
 }

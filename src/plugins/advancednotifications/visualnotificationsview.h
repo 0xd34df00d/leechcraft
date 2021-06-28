@@ -13,9 +13,7 @@
 #include <interfaces/core/icoreproxyfwd.h>
 #include "eventdata.h"
 
-namespace LC
-{
-namespace AdvancedNotifications
+namespace LC::AdvancedNotifications
 {
 	class VisualNotificationsView : public QQuickWidget
 	{
@@ -24,12 +22,11 @@ namespace AdvancedNotifications
 		QObjectList LastEvents_;
 		QUrl Location_;
 	public:
-		VisualNotificationsView (const ICoreProxy_ptr&);
+		explicit VisualNotificationsView (const ICoreProxy_ptr&);
 
 		void SetEvents (const QList<EventData>&);
 	signals:
 		void actionTriggered (const QString&, int);
 		void dismissEvent (const QString&);
 	};
-}
 }
