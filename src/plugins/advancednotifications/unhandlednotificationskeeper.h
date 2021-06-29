@@ -9,6 +9,7 @@
 #pragma once
 
 #include <QObject>
+#include <QCoreApplication>
 
 class QAbstractItemModel;
 class QStandardItemModel;
@@ -24,6 +25,8 @@ namespace AdvancedNotifications
 
 	class UnhandledNotificationsKeeper : public QObject
 	{
+		Q_DECLARE_TR_FUNCTIONS (LC::AdvancedNotifications::UnhandledNotificationsKeeper)
+
 		QStandardItemModel * const Model_;
 	public:
 		explicit UnhandledNotificationsKeeper (QObject* = nullptr);

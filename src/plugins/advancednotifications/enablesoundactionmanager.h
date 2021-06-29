@@ -9,6 +9,7 @@
 #pragma once
 
 #include <QObject>
+#include <QCoreApplication>
 #include <interfaces/iactionsexporter.h>
 
 class QAction;
@@ -17,6 +18,8 @@ namespace LC::AdvancedNotifications
 {
 	class EnableSoundActionManager : public QObject
 	{
+		Q_DECLARE_TR_FUNCTIONS (LC::AdvancedNotifications::EnableSoundActionManager)
+
 		QAction * const EnableAction_;
 	public:
 		explicit EnableSoundActionManager (QObject* = nullptr);
