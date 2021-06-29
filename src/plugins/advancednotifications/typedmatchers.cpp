@@ -59,19 +59,25 @@ namespace LC::AdvancedNotifications
 	{
 	}
 
+	namespace Keys
+	{
+		const QString Rx = QStringLiteral ("Rx");
+		const QString Contains = QStringLiteral ("Cont");
+	}
+
 	QVariantMap StringLikeMatcher::Save () const
 	{
 		return
 		{
-			{ "Rx", Value_.Rx_ },
-			{ "Cont", Value_.Contains_ }
+			{ Keys::Rx, Value_.Rx_ },
+			{ Keys::Contains, Value_.Contains_ }
 		};
 	}
 
 	void StringLikeMatcher::Load (const QVariantMap& map)
 	{
-		Value_.Rx_ = map ["Rx"].toRegExp ();
-		Value_.Contains_ = map ["Cont"].toBool ();
+		Value_.Rx_ = map [Keys::Rx].toRegExp ();
+		Value_.Contains_ = map [Keys::Contains].toBool ();
 	}
 
 	namespace
@@ -278,14 +284,19 @@ namespace LC::AdvancedNotifications
 	{
 	}
 
+	namespace Keys
+	{
+		const QString IsSet = QStringLiteral ("IsSet");
+	}
+
 	QVariantMap BoolMatcher::Save () const
 	{
-		return { { "IsSet", Value_.IsSet_ } };
+		return { { Keys::IsSet, Value_.IsSet_ } };
 	}
 
 	void BoolMatcher::Load (const QVariantMap& map)
 	{
-		Value_.IsSet_ = map.value ("IsSet").toBool ();
+		Value_.IsSet_ = map.value (Keys::IsSet).toBool ();
 	}
 
 	void BoolMatcher::SetValue (const ANFieldValue& variant)
@@ -363,18 +374,25 @@ namespace LC::AdvancedNotifications
 		Ops2pos_ [ANIntFieldValue::OLess] = 4;
 	}
 
+	namespace Keys
+	{
+		const QString Boundary = QStringLiteral ("Bd");
+		const QString Ops = QStringLiteral ("Ops");
+	}
+
 	QVariantMap IntMatcher::Save () const
 	{
-		QVariantMap result;
-		result ["Bd"] = Value_.Boundary_;
-		result ["Ops"] = static_cast<quint16> (Value_.Ops_);
-		return result;
+		return
+		{
+			{ Keys::Boundary, Value_.Boundary_ },
+			{ Keys::Ops, static_cast<quint16> (Value_.Ops_) },
+		};
 	}
 
 	void IntMatcher::Load (const QVariantMap& map)
 	{
-		Value_.Boundary_ = map ["Bd"].toInt ();
-		Value_.Ops_ = static_cast<ANIntFieldValue::Operations> (map ["Ops"].value<quint16> ());
+		Value_.Boundary_ = map [Keys::Boundary].toInt ();
+		Value_.Ops_ = static_cast<ANIntFieldValue::Operations> (map [Keys::Ops].value<quint16> ());
 	}
 
 	void IntMatcher::SetValue (const ANFieldValue& variant)
