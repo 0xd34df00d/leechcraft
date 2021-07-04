@@ -11,9 +11,7 @@
 #include <QString>
 #include <QFlags>
 
-namespace LC
-{
-namespace AN
+namespace LC::AN
 {
 	/** @brief Event cancel pseudo-category.
 	 *
@@ -297,7 +295,6 @@ namespace AN
 		 */
 		Q_DECL_IMPORT extern const QString NewsSourceURL;
 	}
-}
 }
 
 Q_DECLARE_OPERATORS_FOR_FLAGS (LC::AN::NotifyFlags)
