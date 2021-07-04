@@ -50,7 +50,7 @@
 <context>
     <name>LC::AdvancedNotifications::EnableSoundActionManager</name>
     <message>
-        <location filename="enablesoundactionmanager.cpp" line="40"/>
+        <location filename="enablesoundactionmanager.cpp" line="17"/>
         <source>Enable sound notifications</source>
         <translation>Включить звуковые уведомления</translation>
     </message>
@@ -58,12 +58,12 @@
 <context>
     <name>LC::AdvancedNotifications::MatchConfigDialog</name>
     <message>
-        <location filename="matchconfigdialog.cpp" line="49"/>
+        <location filename="matchconfigdialog.cpp" line="33"/>
         <source>Standard fields</source>
         <translation>Стандартные поля</translation>
     </message>
     <message>
-        <location filename="matchconfigdialog.cpp" line="180"/>
+        <location filename="matchconfigdialog.cpp" line="155"/>
         <source>Invalid matcher type %1.</source>
         <translation>Неверный тип матчера %1.</translation>
     </message>
@@ -71,54 +71,54 @@
 <context>
     <name>LC::AdvancedNotifications::NotificationRulesWidget</name>
     <message>
-        <location filename="notificationruleswidget.cpp" line="97"/>
+        <location filename="notificationruleswidget.cpp" line="187"/>
         <source>Field name</source>
         <translation>Имя поля</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="97"/>
+        <location filename="notificationruleswidget.cpp" line="187"/>
         <source>Rule description</source>
         <translation>Описание правила</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="204"/>
+        <location filename="notificationruleswidget.cpp" line="292"/>
         <source>&lt;empty matcher&gt;</source>
         <translation>&lt;пустой матчер&gt;</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="246"/>
+        <location filename="notificationruleswidget.cpp" line="335"/>
         <source>Custom field %1 (%2)</source>
         <translation>Особое поле %1 (%2)</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="277"/>
+        <location filename="notificationruleswidget.cpp" line="366"/>
         <source>The rule has been changed. Do you want to save it?</source>
         <oldsource>The rule has been changed. Do you want to save it</oldsource>
         <translation>Правило было изменено. Вы желаете его сохранить?</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="413"/>
+        <location filename="notificationruleswidget.cpp" line="456"/>
         <source>Are you sure you want to replace all rules with the default set?</source>
         <translation>Вы уверены, что хотите заменить все правила набором по умолчанию?</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="498"/>
+        <location filename="notificationruleswidget.cpp" line="516"/>
         <source>Select audio file</source>
         <translation>Выбор аудиофайла</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="500"/>
+        <location filename="notificationruleswidget.cpp" line="518"/>
         <source>Audio files (*.ogg *.wav *.flac *.mp3);;All files (*.*)</source>
         <translation>Аудиофайлы (*.ogg *.wav *.flac *.mp3);;Все файлы (*.*)</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="532"/>
+        <location filename="notificationruleswidget.cpp" line="550"/>
         <source>No plugin has been found to play %1.</source>
         <translation>Не найден модуль для проигрывания %1.</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="242"/>
-        <location filename="notificationruleswidget.cpp" line="253"/>
+        <location filename="notificationruleswidget.cpp" line="331"/>
+        <location filename="notificationruleswidget.cpp" line="342"/>
         <source>Please enter the argument:</source>
         <translation>Введите аргумент:</translation>
     </message>
@@ -126,12 +126,12 @@
 <context>
     <name>LC::AdvancedNotifications::Plugin</name>
     <message>
-        <location filename="advancednotifications.cpp" line="76"/>
+        <location filename="advancednotifications.cpp" line="57"/>
         <source>Toggle Advanced Notifications rules...</source>
         <translation>Переключить правила Advanced Notifications...</translation>
     </message>
     <message>
-        <location filename="advancednotifications.cpp" line="107"/>
+        <location filename="advancednotifications.cpp" line="95"/>
         <source>Module for the advanced notifications framework.</source>
         <translation>Модуль для фреймворка Advanced Notifications.</translation>
     </message>
@@ -139,92 +139,102 @@
 <context>
     <name>LC::AdvancedNotifications::RulesManager</name>
     <message>
-        <location filename="rulesmanager.cpp" line="362"/>
+        <location filename="rulesmanager.cpp" line="359"/>
         <source>Event is due</source>
         <translation>Пришел срок события</translation>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="376"/>
+        <location filename="rulesmanager.cpp" line="373"/>
         <source>Download error</source>
         <translation>Ошибка скачивания</translation>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="371"/>
+        <location filename="rulesmanager.cpp" line="368"/>
         <source>Download finished</source>
         <translation>Скачивание завершено</translation>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="393"/>
+        <location filename="rulesmanager.cpp" line="390"/>
         <source>Package updated</source>
         <translation>Пакет обновлен</translation>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="385"/>
+        <location filename="rulesmanager.cpp" line="382"/>
         <source>Generic</source>
         <translation>Общее</translation>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="316"/>
+        <location filename="rulesmanager.cpp" line="313"/>
         <source>Incoming chat messages</source>
         <translation>Входящие сообщения в чате</translation>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="322"/>
+        <location filename="rulesmanager.cpp" line="319"/>
         <source>MUC highlights</source>
         <translation>Подсветки в конференциях</translation>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="328"/>
+        <location filename="rulesmanager.cpp" line="325"/>
         <source>MUC invitations</source>
         <translation>Приглашения в конференции</translation>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="334"/>
+        <location filename="rulesmanager.cpp" line="331"/>
         <source>Incoming file transfers</source>
         <translation>Входящие передачи файлов</translation>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="339"/>
+        <location filename="rulesmanager.cpp" line="336"/>
         <source>Subscription requests</source>
         <translation>Запросы авторизации</translation>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="345"/>
+        <location filename="rulesmanager.cpp" line="342"/>
         <source>Subscription changes</source>
         <translation>Изменения авторизации</translation>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="353"/>
+        <location filename="rulesmanager.cpp" line="350"/>
         <source>Attention requests</source>
         <translation>Запросы внимания</translation>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="405"/>
+        <location filename="rulesmanager.cpp" line="402"/>
         <source>Bell in inactive terminal</source>
         <translation>Сигнал в неактивном терминале</translation>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="411"/>
+        <location filename="rulesmanager.cpp" line="408"/>
         <source>Activity in inactive terminal</source>
         <translation>Активность в неактивном терминале</translation>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="417"/>
+        <location filename="rulesmanager.cpp" line="414"/>
         <source>Inactivity in inactive terminal</source>
         <translation>Отсутствие активности в неактивном терминале</translation>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="452"/>
+        <location filename="rulesmanager.cpp" line="423"/>
+        <source>News source updated</source>
+        <translation>Источник новостей обновился</translation>
+    </message>
+    <message>
+        <location filename="rulesmanager.cpp" line="427"/>
+        <source>News source broken</source>
+        <translation>Источник новостей сломался</translation>
+    </message>
+    <message>
+        <location filename="rulesmanager.cpp" line="467"/>
         <source>Name</source>
         <translation>Имя</translation>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="453"/>
+        <location filename="rulesmanager.cpp" line="467"/>
         <source>Category</source>
         <translation>Категория</translation>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="454"/>
+        <location filename="rulesmanager.cpp" line="467"/>
         <source>Type</source>
         <translation>Тип</translation>
     </message>
@@ -232,7 +242,7 @@
 <context>
     <name>LC::AdvancedNotifications::SystemTrayHandler</name>
     <message>
-        <location filename="systemtrayhandler.cpp" line="252"/>
+        <location filename="systemtrayhandler.cpp" line="274"/>
         <source>Dismiss</source>
         <translation>Пропустить</translation>
     </message>
@@ -240,22 +250,22 @@
 <context>
     <name>LC::AdvancedNotifications::UnhandledNotificationsKeeper</name>
     <message>
-        <location filename="unhandlednotificationskeeper.cpp" line="52"/>
+        <location filename="unhandlednotificationskeeper.cpp" line="27"/>
         <source>Title</source>
         <translation>Название</translation>
     </message>
     <message>
-        <location filename="unhandlednotificationskeeper.cpp" line="52"/>
+        <location filename="unhandlednotificationskeeper.cpp" line="27"/>
         <source>Text</source>
         <translation>Текст</translation>
     </message>
     <message>
-        <location filename="unhandlednotificationskeeper.cpp" line="52"/>
+        <location filename="unhandlednotificationskeeper.cpp" line="27"/>
         <source>Category</source>
         <translation>Категория</translation>
     </message>
     <message>
-        <location filename="unhandlednotificationskeeper.cpp" line="52"/>
+        <location filename="unhandlednotificationskeeper.cpp" line="27"/>
         <source>Type</source>
         <translation>Тип</translation>
     </message>
@@ -456,52 +466,52 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="typedmatchers.cpp" line="265"/>
+        <location filename="typedmatchers.cpp" line="235"/>
         <source>contains pattern `%1`</source>
         <translation>содержит шаблон `%1`</translation>
     </message>
     <message>
-        <location filename="typedmatchers.cpp" line="266"/>
+        <location filename="typedmatchers.cpp" line="236"/>
         <source>doesn&apos;t contain pattern `%1`</source>
         <translation>не содержит шаблон `%1`</translation>
     </message>
     <message>
-        <location filename="typedmatchers.cpp" line="289"/>
+        <location filename="typedmatchers.cpp" line="259"/>
         <source>contains element matching %1</source>
         <translation>содержит элемент, удовлетворяющий `%1`</translation>
     </message>
     <message>
-        <location filename="typedmatchers.cpp" line="290"/>
+        <location filename="typedmatchers.cpp" line="260"/>
         <source>doesn&apos;t contain element matching %1</source>
         <translation>не содержит элемент, удовлетворяющий `%1`</translation>
     </message>
     <message>
-        <location filename="typedmatchers.cpp" line="312"/>
+        <location filename="typedmatchers.cpp" line="278"/>
         <source>matches URL or pattern `%1`</source>
         <translation>совпадает с URL или шаблоном `%1`</translation>
     </message>
     <message>
-        <location filename="typedmatchers.cpp" line="313"/>
+        <location filename="typedmatchers.cpp" line="279"/>
         <source>doesn&apos;t match URL or pattern `%1`</source>
         <translation>не совпадает с URL или шаблоном `%1`</translation>
     </message>
     <message>
-        <location filename="typedmatchers.cpp" line="354"/>
+        <location filename="typedmatchers.cpp" line="325"/>
         <source>yes</source>
         <translation>да</translation>
     </message>
     <message>
-        <location filename="typedmatchers.cpp" line="355"/>
+        <location filename="typedmatchers.cpp" line="326"/>
         <source>no</source>
         <translation>нет</translation>
     </message>
     <message>
-        <location filename="typedmatchers.cpp" line="456"/>
+        <location filename="typedmatchers.cpp" line="434"/>
         <source>equals to %1</source>
         <translation>равняется %1</translation>
     </message>
     <message>
-        <location filename="typedmatchers.cpp" line="466"/>
+        <location filename="typedmatchers.cpp" line="444"/>
         <source>is %1 then %2</source>
         <translation>%1 чем %2</translation>
     </message>
