@@ -11,6 +11,7 @@
 #include <memory>
 #include <QStyleOption>
 #include <QColor>
+#include <QPen>
 #include <util/sll/prelude.h>
 #include <qwt_plot.h>
 #include <qwt_plot_curve.h>
