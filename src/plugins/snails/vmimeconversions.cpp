@@ -21,6 +21,18 @@ namespace LC
 {
 namespace Snails
 {
+	Address Mailbox2Strings (const vmime::shared_ptr<const vmime::mailbox>& mbox)
+	{
+		if (!mbox)
+			return {};
+
+		return
+		{
+			StringizeCT (mbox->getName ()),
+			QString::fromStdString (mbox->getEmail ().toString ())
+		};
+	}
+
 	QStringList GetFolderPath (const vmime::shared_ptr<vmime::net::folder>& folder)
 	{
 		QStringList pathList;

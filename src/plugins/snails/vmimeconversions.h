@@ -10,7 +10,6 @@
 #pragma once
 
 #include <QString>
-#include <QPair>
 #include <vmime/mailbox.hpp>
 #include <vmime/charsetConverter.hpp>
 #include <vmime/utility/outputStreamStringAdapter.hpp>
@@ -72,17 +71,7 @@ namespace Snails
 		return QString::fromStdString(w.getConvertedText (vmime::charsets::UTF_8));
 	}
 
-	inline Address Mailbox2Strings (const vmime::shared_ptr<const vmime::mailbox>& mbox)
-	{
-		if (!mbox)
-			return {};
-
-		return
-		{
-			StringizeCT (mbox->getName ()),
-			QString::fromStdString (mbox->getEmail ().toString ())
-		};
-	}
+	Address Mailbox2Strings (const vmime::shared_ptr<const vmime::mailbox>& mbox);
 
 	QStringList GetFolderPath (const vmime::shared_ptr<vmime::net::folder>&);
 	vmime::net::messageSet ToMessageSet (const QList<QByteArray>&);
