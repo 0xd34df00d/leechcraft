@@ -505,30 +505,6 @@ namespace Snails
 		        sph::f<&MsgHeader::MsgUniqueId_> == sph::f<&Message::UniqueId_>);
 	}
 
-	namespace
-	{
-		template<char Ch>
-		auto Join (const QList<QByteArray>& arrs)
-		{
-			if (arrs.isEmpty ())
-				return QByteArray {};
-
-			QByteArray result;
-			const auto totalLength = std::accumulate (arrs.begin (), arrs.end (), 0,
-					[] (int acc, const auto& arr) { return acc + arr.size (); });
-			result.reserve (arrs.size () - 1 + totalLength);
-			bool isFirst = true;
-			for (const auto& arr : arrs)
-			{
-				if (!isFirst)
-					result += Ch;
-				isFirst = false;
-				result += arr;
-			}
-			return result;
-		}
-	}
-
 	int AccountDatabase::AddMessageUnfoldered (const MessageInfo& msg)
 	{
 		auto id = Messages_->Insert ({
@@ -538,8 +514,8 @@ namespace Snails
 				msg.Subject_,
 				msg.Date_,
 				msg.Size_,
-				Join<'\n'> (msg.References_),
-				Join<'\n'> (msg.InReplyTo_)
+				msg.References_.join ('\n'),
+				msg.InReplyTo_.join ('\n')
 			});
 
 		for (const auto& [type, addrs] : Util::Stlize (msg.Addresses_))
