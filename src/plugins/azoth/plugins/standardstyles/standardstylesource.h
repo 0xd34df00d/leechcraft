@@ -58,10 +58,10 @@ namespace StandardStyles
 		QList<QColor> CreateColors (const QString&, QWebFrame*);
 		QString GetMessageID (QObject*);
 		QString GetStatusImage (const QString&);
+		void HandleMessageDestroyed (QObject*);
+		void HandleFrameDestroyed (QObject*);
 	private slots:
 		void handleMessageDelivered ();
-		void handleMessageDestroyed ();
-		void handleFrameDestroyed ();
 	};
 }
 }

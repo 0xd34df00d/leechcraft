@@ -138,9 +138,9 @@ namespace StandardStyles
 			entryName += '/' + msg->GetOtherVariant ();
 
 		connect (msgObj,
-				SIGNAL (destroyed ()),
+				&QObject::destroyed,
 				this,
-				SLOT (handleMessageDestroyed ()),
+				&StandardStyleSource::HandleMessageDestroyed,
 				Qt::UniqueConnection);
 
 		const auto advMsg = qobject_cast<IAdvancedMessage*> (msgObj);
@@ -152,10 +152,11 @@ namespace StandardStyles
 					SIGNAL (messageDelivered ()),
 					this,
 					SLOT (handleMessageDelivered ()));
+
 			connect (frame,
-					SIGNAL (destroyed (QObject*)),
+					&QObject::destroyed,
 					this,
-					SLOT (handleFrameDestroyed ()),
+					&StandardStyleSource::HandleFrameDestroyed,
 					Qt::UniqueConnection);
 			Msg2Frame_ [msgObj] = frame;
 		}
@@ -360,6 +361,11 @@ namespace StandardStyles
 		return Util::GetAsBase64Src (img);
 	}
 
+	void StandardStyleSource::HandleMessageDestroyed (QObject *msgObj)
+	{
+		Msg2Frame_.remove (msgObj);
+	}
+
 	void StandardStyleSource::handleMessageDelivered ()
 	{
 		QWebFrame *frame = Msg2Frame_.take (sender ());
@@ -376,18 +382,11 @@ namespace StandardStyles
 				SLOT (handleMessageDelivered ()));
 	}
 
-	void StandardStyleSource::handleMessageDestroyed ()
+	void StandardStyleSource::HandleFrameDestroyed (QObject *frameObj)
 	{
-		Msg2Frame_.remove (sender ());
-	}
-
-	void StandardStyleSource::handleFrameDestroyed ()
-	{
-		IsLastMsgRead_.remove (static_cast<QWebFrame*> (sender ()));
-		const QObject *snd = sender ();
-		for (QHash<QObject*, QWebFrame*>::iterator i = Msg2Frame_.begin ();
-				i != Msg2Frame_.end (); )
-			if (i.value () == snd)
+		IsLastMsgRead_.remove (static_cast<QWebFrame*> (frameObj));
+		for (auto i = Msg2Frame_.begin (); i != Msg2Frame_.end (); )
+			if (i.value () == frameObj)
 				i = Msg2Frame_.erase (i);
 			else
 				++i;
