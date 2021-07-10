@@ -14,6 +14,7 @@
 #include <QPalette>
 #include <QtDebug>
 #include <util/sys/resourceloader.h>
+#include <util/sll/qtutil.h>
 #include <util/util.h>
 #include <interfaces/azoth/imessage.h>
 #include <interfaces/azoth/iadvancedmessage.h>
@@ -30,7 +31,7 @@ namespace StandardStyles
 {
 	StandardStyleSource::StandardStyleSource (IProxyObject *proxy, QObject *parent)
 	: QObject (parent)
-	, StylesLoader_ (new Util::ResourceLoader ("azoth/styles/standard/", this))
+	, StylesLoader_ (new Util::ResourceLoader (QStringLiteral ("azoth/styles/standard/"), this))
 	, Proxy_ (proxy)
 	{
 		StylesLoader_->AddGlobalPrefix ();
@@ -94,13 +95,13 @@ namespace StandardStyles
 		}
 
 		QString data = QString::fromUtf8 (dev->readAll ());
-		data.replace ("BACKGROUNDCOLOR",
+		data.replace ("BACKGROUNDCOLOR"_ql,
 				QApplication::palette ().color (QPalette::Base).name ());
-		data.replace ("FOREGROUNDCOLOR",
+		data.replace ("FOREGROUNDCOLOR"_ql,
 				QApplication::palette ().color (QPalette::Text).name ());
-		data.replace ("LINKCOLOR",
+		data.replace ("LINKCOLOR"_ql,
 				QApplication::palette ().color (QPalette::Link).name ());
-		data.replace ("HIGHLIGHTCOLOR",
+		data.replace ("HIGHLIGHTCOLOR"_ql,
 				Proxy_->GetSettingsManager ()->
 						property ("HighlightColor").toString ());
 		return data;
@@ -113,7 +114,7 @@ namespace StandardStyles
 		{
 			const QString& pre = type == IMessage::Type::MUCMessage ?
 					"<span class='nickname' style='color: " + color + "'>" :
-					"<span class='nickname'>";
+					QStringLiteral ("<span class='nickname'>");
 			return pre + part.toHtmlEscaped () + "</span>";
 		}
 	}
@@ -122,7 +123,7 @@ namespace StandardStyles
 			QObject *msgObj, const ChatMsgAppendInfo& info)
 	{
 		QObject *azothSettings = Proxy_->GetSettingsManager ();
-		const auto& colors = CreateColors (frame->metaData ().value ("coloring"), frame);
+		const auto& colors = CreateColors (frame->metaData ().value (QStringLiteral ("coloring")), frame);
 		auto& formatter = Proxy_->GetFormatterProxy ();
 
 		const QString& msgId = GetMessageID (msgObj);
@@ -172,8 +173,8 @@ namespace StandardStyles
 
 		body = formatter.FormatBody (body, msg->GetQObject (), colors);
 
-		const QString dateBegin ("<span class='datetime'>");
-		const QString dateEnd ("</span>");
+		const auto dateBegin = QStringLiteral ("<span class='datetime'>");
+		const auto dateEnd = QStringLiteral ("</span>");
 
 		const QString& preNick =
 				WrapNickPart (azothSettings->property ("PreNickText").toString (),
@@ -196,14 +197,14 @@ namespace StandardStyles
 			switch (msg->GetMessageType ())
 			{
 			case IMessage::Type::ChatMessage:
-				statusIconName = "notification_chat_receive";
+				statusIconName = "notification_chat_receive"_ql;
 				divClass = msg->GetDirection () == IMessage::Direction::In ?
-						"msgin" :
-						"msgout";
+						"msgin"_ql :
+						"msgout"_ql;
 				[[fallthrough]];
 			case IMessage::Type::MUCMessage:
 			{
-				statusIconName = "notification_chat_receive";
+				statusIconName = "notification_chat_receive"_ql;
 
 				if (body.startsWith ("/me "))
 				{
@@ -211,7 +212,7 @@ namespace StandardStyles
 					string.append ("* ");
 					string.append (formatter.FormatNickname (entryName, msg->GetQObject (), nickColor));
 					string.append (' ');
-					divClass = "slashmechatmsg";
+					divClass = "slashmechatmsg"_ql;
 				}
 				else
 				{
@@ -221,34 +222,34 @@ namespace StandardStyles
 					string.append (' ');
 					if (divClass.isEmpty ())
 						divClass = info.IsHighlightMsg_ ?
-								"highlightchatmsg" :
-								"chatmsg";
+								"highlightchatmsg"_ql :
+								"chatmsg"_ql;
 				}
 				break;
 			}
 			case IMessage::Type::EventMessage:
-				statusIconName = "notification_chat_info";
+				statusIconName = "notification_chat_info"_ql;
 				string.append ("! ");
-				divClass = "eventmsg";
+				divClass = "eventmsg"_ql;
 				break;
 			case IMessage::Type::StatusMessage:
-				statusIconName = "notification_chat_info";
+				statusIconName = "notification_chat_info"_ql;
 				string.append ("* ");
-				divClass = "statusmsg";
+				divClass = "statusmsg"_ql;
 				break;
 			case IMessage::Type::ServiceMessage:
-				statusIconName = "notification_chat_info";
+				statusIconName = "notification_chat_info"_ql;
 				string.append ("* ");
-				divClass = "servicemsg";
+				divClass = "servicemsg"_ql;
 				break;
 			}
 			break;
 		}
 		case IMessage::Direction::Out:
 		{
-			statusIconName = "notification_chat_send";
+			statusIconName = "notification_chat_send"_ql;
 			if (advMsg && advMsg->IsDelivered ())
-				statusIconName = "notification_chat_delivery_ok";
+				statusIconName = "notification_chat_delivery_ok"_ql;
 
 			const auto entry = other ? qobject_cast<IMUCEntry*> (other->GetParentCLEntryObject ()) : nullptr;
 			const auto& nick = entry ?
@@ -256,19 +257,19 @@ namespace StandardStyles
 					(other ?
 							other->GetParentAccount ()->GetOurNick () :
 							QString {});
-			if (body.startsWith ("/leechcraft "))
+			if (body.startsWith ("/leechcraft "_ql))
 			{
 				body = body.mid (12);
 				string.append ("* ");
 			}
-			else if (body.startsWith ("/me ") &&
+			else if (body.startsWith ("/me "_ql) &&
 					msg->GetMessageType () != IMessage::Type::MUCMessage)
 			{
 				body = body.mid (3);
 				string.append ("* ");
 				string.append (formatter.FormatNickname (nick, msg->GetQObject (), nickColor));
 				string.append (' ');
-				divClass = "slashmechatmsg";
+				divClass = "slashmechatmsg"_ql;
 			}
 			else
 			{
@@ -278,18 +279,17 @@ namespace StandardStyles
 				string.append (' ');
 			}
 			if (divClass.isEmpty ())
-				divClass = "msgout";
+				divClass = "msgout"_ql;
 			break;
 		}
 		}
 
 		if (!statusIconName.isEmpty ())
-			string.prepend (QString ("<img src='%1' style='max-width: 1em; max-height: 1em;' id='%2' class='deliveryStatusIcon' />")
-					.arg (GetStatusImage (statusIconName))
-					.arg (msgId));
+			string.prepend (QStringLiteral ("<img src='%1' style='max-width: 1em; max-height: 1em;' id='%2' class='deliveryStatusIcon' />")
+					.arg (GetStatusImage (statusIconName), msgId));
 		string.append (body);
 
-		QWebElement elem = frame->findFirstElement ("body");
+		QWebElement elem = frame->findFirstElement (QStringLiteral ("body"));
 
 		if (msg->GetMessageType () == IMessage::Type::ChatMessage ||
 			msg->GetMessageType () == IMessage::Type::MUCMessage)
@@ -298,17 +298,16 @@ namespace StandardStyles
 			if (!info.IsActiveChat_ &&
 					!isRead && IsLastMsgRead_.value (frame, false))
 			{
-				auto hr = elem.findFirst ("hr[class=\"lastSeparator\"]");
+				auto hr = elem.findFirst (QStringLiteral ("hr[class=\"lastSeparator\"]"));
 				if (!hr.isNull ())
 					hr.removeFromDocument ();
-				elem.appendInside ("<hr class=\"lastSeparator\" />");
+				elem.appendInside (QStringLiteral ("<hr class=\"lastSeparator\" />"));
 			}
 			IsLastMsgRead_ [frame] = isRead;
 		}
 
-		elem.appendInside (QString ("<div class='%1' style='word-wrap: break-word;'>%2</div>")
-					.arg (divClass)
-					.arg (string));
+		elem.appendInside (QStringLiteral ("<div class='%1' style='word-wrap: break-word;'>%2</div>")
+					.arg (divClass, string));
 		return true;
 	}
 
@@ -328,9 +327,9 @@ namespace StandardStyles
 
 		const auto js = "window.getComputedStyle(document.body) ['background-color']";
 		auto res = frame->evaluateJavaScript (js).toString ();
-		res.remove (" ");
-		res.remove ("rgb(");
-		res.remove (")");
+		res.remove (' ');
+		res.remove (QStringLiteral ("rgb("));
+		res.remove (')');
 		const auto& vals = res.splitRef (',', Qt::SkipEmptyParts);
 
 		if (vals.size () == 3)
@@ -374,7 +373,7 @@ namespace StandardStyles
 
 		const QString& msgId = GetMessageID (sender ());
 		QWebElement elem = frame->findFirstElement ("img[id=\"" + msgId + "\"]");
-		elem.setAttribute ("src", GetStatusImage ("notification_chat_delivery_ok"));
+		elem.setAttribute (QStringLiteral ("src"), GetStatusImage (QStringLiteral ("notification_chat_delivery_ok")));
 
 		disconnect (sender (),
 				SIGNAL (messageDelivered ()),

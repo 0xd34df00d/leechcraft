@@ -22,7 +22,7 @@ namespace StandardStyles
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-		Util::InstallTranslator ("azoth_standardstyles");
+		Util::InstallTranslator (QStringLiteral ("azoth_standardstyles"));
 	}
 
 	void Plugin::SecondInit ()
@@ -40,7 +40,7 @@ namespace StandardStyles
 
 	QString Plugin::GetName () const
 	{
-		return "Azoth StandardStyles";
+		return QStringLiteral ("Azoth StandardStyles");
 	}
 
 	QString Plugin::GetInfo () const
@@ -55,10 +55,11 @@ namespace StandardStyles
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
 	{
-		QSet<QByteArray> result;
-		result << "org.LeechCraft.Plugins.Azoth.Plugins.IGeneralPlugin";
-		result << "org.LeechCraft.Plugins.Azoth.Plugins.IResourceSourcePlugin";
-		return result;
+		return
+		{
+			"org.LeechCraft.Plugins.Azoth.Plugins.IGeneralPlugin",
+			"org.LeechCraft.Plugins.Azoth.Plugins.IResourceSourcePlugin"
+		};
 	}
 
 	QList<QObject*> Plugin::GetResourceSources () const
