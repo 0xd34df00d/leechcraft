@@ -33,7 +33,8 @@ namespace LC::Azoth::StandardStyles
 		StylesLoader_->AddGlobalPrefix ();
 		StylesLoader_->AddLocalPrefix ();
 
-		StylesLoader_->SetCacheParams (256, 0);
+		const auto stylesCacheSizeKb = 256;
+		StylesLoader_->SetCacheParams (stylesCacheSizeKb, 0);
 	}
 
 	QAbstractItemModel* StandardStyleSource::GetOptionsModel() const
