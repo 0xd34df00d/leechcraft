@@ -347,7 +347,7 @@ namespace StandardStyles
 
 	QString StandardStyleSource::GetMessageID (QObject *msgObj)
 	{
-		return QString::number (reinterpret_cast<uintptr_t> (msgObj));
+		return QString::number (std::bit_cast<uintptr_t> (msgObj));
 	}
 
 	QString StandardStyleSource::GetStatusImage (const QString& statusIconName)
