@@ -45,19 +45,20 @@ namespace StandardStyles
 
 		QHash<QObject*, QWebFrame*> Msg2Frame_;
 	public:
-		StandardStyleSource (IProxyObject*, QObject* = 0);
+		explicit StandardStyleSource (IProxyObject*, QObject* = nullptr);
 
-		QAbstractItemModel* GetOptionsModel () const;
-		QUrl GetBaseURL (const QString&) const;
+		QAbstractItemModel* GetOptionsModel () const override;
+		QUrl GetBaseURL (const QString&) const override;
 		QString GetHTMLTemplate (const QString&,
-				const QString&, QObject*, QWebFrame*) const;
-		bool AppendMessage (QWebFrame*, QObject*, const ChatMsgAppendInfo&);
-		void FrameFocused (QWebFrame*);
-		QStringList GetVariantsForPack (const QString&);
+				const QString&, QObject*, QWebFrame*) const override;
+		bool AppendMessage (QWebFrame*, QObject*, const ChatMsgAppendInfo&) override;
+		void FrameFocused (QWebFrame*) override;
+		QStringList GetVariantsForPack (const QString&) override;
 	private:
 		QList<QColor> CreateColors (const QString&, QWebFrame*);
 		QString GetMessageID (QObject*);
 		QString GetStatusImage (const QString&);
+
 		void HandleMessageDestroyed (QObject*);
 		void HandleFrameDestroyed (QObject*);
 	private slots:

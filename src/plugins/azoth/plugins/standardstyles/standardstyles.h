@@ -13,11 +13,10 @@
 #include <interfaces/iplugin2.h>
 #include <interfaces/azoth/iresourceplugin.h>
 
-namespace LC
-{
-namespace Azoth
+namespace LC::Azoth
 {
 class IProxyObject;
+
 namespace StandardStyles
 {
 	class Plugin : public QObject
@@ -33,20 +32,19 @@ namespace StandardStyles
 		IProxyObject *Proxy_ = nullptr;
 		QObjectList ResourceSources_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		void Release ();
-		QByteArray GetUniqueID () const;
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+		void Init (ICoreProxy_ptr) override;
+		void SecondInit () override;
+		void Release () override;
+		QByteArray GetUniqueID () const override;
+		QString GetName () const override;
+		QString GetInfo () const override;
+		QIcon GetIcon () const override;
 
-		QSet<QByteArray> GetPluginClasses () const;
+		QSet<QByteArray> GetPluginClasses () const override;
 
-		QList<QObject*> GetResourceSources () const;
+		QList<QObject*> GetResourceSources () const override;
 	public slots:
 		void initPlugin (QObject*);
 	};
-}
 }
 }

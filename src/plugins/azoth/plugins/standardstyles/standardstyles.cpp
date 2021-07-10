@@ -14,11 +14,7 @@
 #include <util/util.h>
 #include "standardstylesource.h"
 
-namespace LC
-{
-namespace Azoth
-{
-namespace StandardStyles
+namespace LC::Azoth::StandardStyles
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
@@ -72,8 +68,6 @@ namespace StandardStyles
 		Proxy_ = qobject_cast<IProxyObject*> (proxy);
 		ResourceSources_ << new StandardStyleSource (Proxy_);
 	}
-}
-}
 }
 
 LC_EXPORT_PLUGIN (leechcraft_azoth_standardstyles, LC::Azoth::StandardStyles::Plugin);

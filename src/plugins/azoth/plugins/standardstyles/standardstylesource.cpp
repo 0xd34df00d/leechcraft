@@ -23,11 +23,7 @@
 #include <interfaces/azoth/imucentry.h>
 #include <interfaces/azoth/iproxyobject.h>
 
-namespace LC
-{
-namespace Azoth
-{
-namespace StandardStyles
+namespace LC::Azoth::StandardStyles
 {
 	StandardStyleSource::StandardStyleSource (IProxyObject *proxy, QObject *parent)
 	: QObject (parent)
@@ -176,12 +172,10 @@ namespace StandardStyles
 		const auto dateBegin = QStringLiteral ("<span class='datetime'>");
 		const auto dateEnd = QStringLiteral ("</span>");
 
-		const QString& preNick =
-				WrapNickPart (azothSettings->property ("PreNickText").toString (),
-						nickColor, msg->GetMessageType ());
-		const QString& postNick =
-				WrapNickPart (azothSettings->property ("PostNickText").toString (),
-						nickColor, msg->GetMessageType ());
+		const auto& preNick = WrapNickPart (azothSettings->property ("PreNickText").toString (),
+				nickColor, msg->GetMessageType ());
+		const auto& postNick = WrapNickPart (azothSettings->property ("PostNickText").toString (),
+				nickColor, msg->GetMessageType ());
 
 		QString divClass;
 		QString statusIconName;
@@ -339,8 +333,7 @@ namespace StandardStyles
 		const auto& mangledScheme = scheme + bgColor.name ();
 
 		if (!Coloring2Colors_.contains (mangledScheme))
-			Coloring2Colors_ [mangledScheme] = Proxy_->
-					GetFormatterProxy ().GenerateColors (scheme, bgColor);
+			Coloring2Colors_ [mangledScheme] = Proxy_->GetFormatterProxy ().GenerateColors (scheme, bgColor);
 
 		return Coloring2Colors_ [mangledScheme];
 	}
@@ -390,6 +383,4 @@ namespace StandardStyles
 			else
 				++i;
 	}
-}
-}
 }
