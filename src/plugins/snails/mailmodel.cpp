@@ -177,7 +177,7 @@ namespace Snails
 			if (const auto unread = structItem->UnreadChildren_.size ())
 				return unread;
 
-			return role == Sort ? 0 : QString::fromUtf8 ("·");
+			return role == Sort ? QVariant { 0 } : QVariant { QStringLiteral ("·") };
 		case Column::StatusIcon:
 			break;
 		}
