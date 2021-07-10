@@ -52,7 +52,7 @@ namespace Snails
 		vmime::string outStr;
 		converter->convert (stringized, outStr);
 
-		return QString::fromUtf8 (outStr.c_str ());
+		return QString::fromStdString (outStr);
 	}
 
 	template<typename T>
@@ -63,13 +63,13 @@ namespace Snails
 
 		t->extract (out);
 
-		return QString::fromUtf8 (str.c_str ());
+		return QString::fromStdString (str);
 	}
 
 	template<typename T>
 	QString StringizeCT (const T& w)
 	{
-		return QString::fromUtf8 (w.getConvertedText (vmime::charsets::UTF_8).c_str ());
+		return QString::fromStdString(w.getConvertedText (vmime::charsets::UTF_8));
 	}
 
 	inline Address Mailbox2Strings (const vmime::shared_ptr<const vmime::mailbox>& mbox)
@@ -80,7 +80,7 @@ namespace Snails
 		return
 		{
 			StringizeCT (mbox->getName ()),
-			QString::fromUtf8 (mbox->getEmail ().toString ().c_str ())
+			QString::fromStdString (mbox->getEmail ().toString ())
 		};
 	}
 

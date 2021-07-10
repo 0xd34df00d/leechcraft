@@ -78,7 +78,7 @@ namespace Snails
 			if (!ref)
 				return {};
 
-			return QString::fromUtf8 (ref->getLeft ().c_str ());
+			return QString::fromStdString (ref->getLeft ());
 		}
 
 		class GithubProvider final : public MessageListActionsProvider
@@ -133,7 +133,7 @@ namespace Snails
 				if (!ref)
 					return {};
 
-				const auto& left = QString::fromUtf8 (ref->getLeft ().c_str ());
+				const auto& left = QString::fromStdString (ref->getLeft ());
 				const auto bugId = left.section ('-', 1, 1);
 
 				return

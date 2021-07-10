@@ -465,7 +465,7 @@ namespace Snails
 		{
 			const auto& strVal = subjectHeader->getValue ();
 			const auto& str = vmime::dynamicCast<const vmime::text> (strVal);
-			msg.Subject_ = QString::fromUtf8 (str->getConvertedText (utf8cs).c_str ());
+			msg.Subject_ = QString::fromStdString (str->getConvertedText (utf8cs));
 		}
 		else
 			qWarning () << "no 'subject' data";
