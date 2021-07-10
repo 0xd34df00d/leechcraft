@@ -37,7 +37,7 @@ namespace StandardStyles
 
 		std::shared_ptr<Util::ResourceLoader> StylesLoader_;
 
-		QMap<QWebFrame*, bool> IsLastMsgRead_;
+		QMap<QObject*, bool> IsLastMsgRead_;
 		IProxyObject *Proxy_;
 
 		mutable QHash<QString, QList<QColor>> Coloring2Colors_;

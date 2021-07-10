@@ -380,7 +380,7 @@ namespace LC::Azoth::StandardStyles
 
 	void StandardStyleSource::HandleFrameDestroyed (QObject *frameObj)
 	{
-		IsLastMsgRead_.remove (static_cast<QWebFrame*> (frameObj));
+		IsLastMsgRead_.remove (frameObj);
 		for (auto i = Msg2Frame_.begin (); i != Msg2Frame_.end (); )
 			if (i.value () == frameObj)
 				i = Msg2Frame_.erase (i);
