@@ -177,6 +177,9 @@ namespace LC::Azoth::StandardStyles
 		const auto dateBegin = QStringLiteral ("<span class='datetime'>");
 		const auto dateEnd = QStringLiteral ("</span>");
 
+		const auto slashMeMarker = "/me "_ql;
+		const auto leechcraftMarker = "/leechcraft "_ql;
+
 		const auto& preNick = WrapNickPart (azothSettings->property ("PreNickText").toString (),
 				nickColor, msg->GetMessageType ());
 		const auto& postNick = WrapNickPart (azothSettings->property ("PostNickText").toString (),
@@ -205,9 +208,9 @@ namespace LC::Azoth::StandardStyles
 			{
 				statusIconName = "notification_chat_receive"_ql;
 
-				if (body.startsWith ("/me "))
+				if (body.startsWith (slashMeMarker))
 				{
-					body = body.mid (3);
+					body = body.mid (slashMeMarker.size ());
 					string.append ("* ");
 					string.append (formatter.FormatNickname (entryName, msg->GetQObject (), nickColor));
 					string.append (' ');
@@ -256,15 +259,15 @@ namespace LC::Azoth::StandardStyles
 					(other ?
 							other->GetParentAccount ()->GetOurNick () :
 							QString {});
-			if (body.startsWith ("/leechcraft "_ql))
+			if (body.startsWith (leechcraftMarker))
 			{
-				body = body.mid (12);
+				body = body.mid (leechcraftMarker.size ());
 				string.append ("* ");
 			}
-			else if (body.startsWith ("/me "_ql) &&
+			else if (body.startsWith (slashMeMarker) &&
 					msg->GetMessageType () != IMessage::Type::MUCMessage)
 			{
-				body = body.mid (3);
+				body = body.mid (slashMeMarker.size ());
 				string.append ("* ");
 				string.append (formatter.FormatNickname (nick, msg->GetQObject (), nickColor));
 				string.append (' ');
