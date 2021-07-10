@@ -30,7 +30,7 @@ namespace StandardStyles
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.StandardStyles")
 
-		IProxyObject *Proxy_;
+		IProxyObject *Proxy_ = nullptr;
 		QObjectList ResourceSources_;
 	public:
 		void Init (ICoreProxy_ptr);

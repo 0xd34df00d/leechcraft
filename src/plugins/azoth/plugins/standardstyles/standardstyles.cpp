@@ -22,8 +22,6 @@ namespace StandardStyles
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-		Proxy_ = 0;
-
 		Util::InstallTranslator ("azoth_standardstyles");
 	}
 
