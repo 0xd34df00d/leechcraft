@@ -56,7 +56,6 @@ namespace StandardStyles
 		QStringList GetVariantsForPack (const QString&) override;
 	private:
 		QList<QColor> CreateColors (const QString&, QWebFrame*);
-		QString GetMessageID (QObject*);
 		QString GetStatusImage (const QString&);
 
 		void HandleMessageDestroyed (QObject*);

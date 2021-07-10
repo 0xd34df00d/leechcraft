@@ -113,6 +113,11 @@ namespace LC::Azoth::StandardStyles
 					QStringLiteral ("<span class='nickname'>");
 			return pre + part.toHtmlEscaped () + "</span>";
 		}
+
+		QString GetMessageID (QObject *msgObj)
+		{
+			return QString::number (std::bit_cast<uintptr_t> (msgObj));
+		}
 	}
 
 	bool StandardStyleSource::AppendMessage (QWebFrame *frame,
@@ -336,11 +341,6 @@ namespace LC::Azoth::StandardStyles
 			Coloring2Colors_ [mangledScheme] = Proxy_->GetFormatterProxy ().GenerateColors (scheme, bgColor);
 
 		return Coloring2Colors_ [mangledScheme];
-	}
-
-	QString StandardStyleSource::GetMessageID (QObject *msgObj)
-	{
-		return QString::number (std::bit_cast<uintptr_t> (msgObj));
 	}
 
 	QString StandardStyleSource::GetStatusImage (const QString& statusIconName)
