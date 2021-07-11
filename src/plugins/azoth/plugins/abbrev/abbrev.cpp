@@ -140,7 +140,7 @@ namespace LC::Azoth::Abbrev
 								  abbrev.Expansion_);
 				});
 
-		const auto& text = tr ("%n abbreviation(s):", 0, abbrevs.size ()) +
+		const auto& text = tr ("%n abbreviation(s):", nullptr, abbrevs.size ()) +
 				"<ol><li>" + abbrevs.join (QStringLiteral ("</li><li>")) + "</li></ol>";
 
 		const auto entryObj = entry->GetQObject ();

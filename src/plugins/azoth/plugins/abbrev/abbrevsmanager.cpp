@@ -56,7 +56,7 @@ namespace LC::Azoth::Abbrev
 
 	namespace
 	{
-		bool IsBadChar (const QChar& c)
+		bool IsBadChar (QChar c)
 		{
 			return c.isLetter ();
 		}
@@ -94,7 +94,8 @@ namespace LC::Azoth::Abbrev
 				break;
 
 			text = result;
-			if (++cyclesCount >= 1024)
+			const auto expansionsLimit = 1024;
+			if (++cyclesCount >= expansionsLimit)
 				throw CommandException { tr ("Too much expansions during abbreviations application. Check your rules.") };
 		}
 

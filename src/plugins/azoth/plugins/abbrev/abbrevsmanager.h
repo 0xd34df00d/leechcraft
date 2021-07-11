@@ -20,7 +20,7 @@ namespace LC::Azoth::Abbrev
 
 		QList<Abbreviation> Abbrevs_;
 	public:
-		AbbrevsManager (QObject* = nullptr);
+		explicit AbbrevsManager (QObject* = nullptr);
 
 		void Add (const Abbreviation&);
 		const QList<Abbreviation>& List () const;
