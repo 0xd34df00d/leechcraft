@@ -23,7 +23,7 @@ namespace LC::Azoth::Abbrev
 		qRegisterMetaTypeStreamOperators<Abbreviation> ();
 		qRegisterMetaTypeStreamOperators<QList<Abbreviation>> ();
 
-		Util::InstallTranslator ("azoth_abbrev");
+		Util::InstallTranslator (QStringLiteral ("azoth_abbrev"));
 
 		Manager_ = std::make_shared<AbbrevsManager> ();
 
@@ -96,7 +96,7 @@ namespace LC::Azoth::Abbrev
 
 	QString Plugin::GetName () const
 	{
-		return "Azoth Abbrev";
+		return QStringLiteral ("Azoth Abbrev");
 	}
 
 	QString Plugin::GetInfo () const
@@ -111,9 +111,7 @@ namespace LC::Azoth::Abbrev
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
 	{
-		QSet<QByteArray> result;
-		result << "org.LeechCraft.Plugins.Azoth.Plugins.IGeneralPlugin";
-		return result;
+		return { "org.LeechCraft.Plugins.Azoth.Plugins.IGeneralPlugin" };
 	}
 
 	QMap<QString, ActionInfo> Plugin::GetActionInfo () const
@@ -135,12 +133,12 @@ namespace LC::Azoth::Abbrev
 	{
 		QStringList abbrevs;
 		for (const auto& abbrev : Manager_->List ())
-			abbrevs << QString::fromUtf8 ("%1 → %2")
-					.arg (abbrev.Pattern_)
-					.arg (abbrev.Expansion_);
+			abbrevs << QStringLiteral ("%1 → %2")
+					.arg (abbrev.Pattern_,
+						  abbrev.Expansion_);
 
 		const auto& text = tr ("%n abbreviation(s):", 0, abbrevs.size ()) +
-				"<ol><li>" + abbrevs.join ("</li><li>") + "</li></ol>";
+				"<ol><li>" + abbrevs.join (QStringLiteral ("</li><li>")) + "</li></ol>";
 
 		const auto entryObj = entry->GetQObject ();
 		const auto msgObj = AzothProxy_->CreateCoreMessage (text,
