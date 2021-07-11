@@ -437,7 +437,7 @@ namespace Snails
 				const auto fieldPtr = field.get ();
 				qWarning () << "no"
 						<< static_cast<int> (type)
-						<< "data: cannot cast to mailbox list"
+						<< "data: cannot cast to a mailbox list or a mailbox"
 						<< typeid (*fieldPtr).name ();
 			}
 		};
